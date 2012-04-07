@@ -1,0 +1,10 @@
+{
+	"home"		: [],
+	"profile"	: [
+		"home",
+		"login",
+		"logout",
+		"registration",
+		"confirmation"
+	]
+}

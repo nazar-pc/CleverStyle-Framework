@@ -1,0 +1,26 @@
+{
+	"general"		: [
+		"site_info",
+		"system",
+		"optimization",
+		"visual_style",
+		"languages",
+		"about_server"
+	],
+	"components"	: [
+		"modules",
+		"blocks",
+		"plugins",
+		"databases",
+		"storages",
+		"security"
+	],
+	"users"			: [
+		"general",
+		"users",
+		"groups",
+		"permissions",
+		"statistic",
+		"mail"
+	]
+}

@@ -1,0 +1,28 @@
+body {
+	background-color: #666;
+}
+td#main_content > section > article > div {
+	background: rgba(255, 255, 255, 0.95);
+}
+td#main_content, #body > table {
+	background: rgba(255, 255, 255, 0.15);
+	border: 1px solid rgba(255, 255, 255, 0.25);
+}
+a {
+	color: #000;
+	/*border-bottom: 1px dashed #000;*/
+}
+.form_element, .form_element:hover, .form_element:focus {
+	background: #fff;
+	border-color: rgb(110, 188, 0);
+}
+.white, a:hover.white  {
+	border: none;
+	color: #fff;
+	text-decoration: none;
+}
+a.black, a:hover.black {
+	border: none;
+	color: #000;
+	text-decoration: none;
+}

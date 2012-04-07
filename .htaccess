@@ -1,0 +1,25 @@
+AddDefaultCharset utf-8
+Options -All -Multiviews +FollowSymLinks
+IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
+
+RewriteEngine On
+RewriteBase /
+
+<Files *.jpg>
+	RewriteEngine Off
+</Files>
+<Files license.txt> 
+	RewriteEngine Off
+</Files>
+<Files Storage.php> 
+	RewriteEngine Off
+</Files>
+<Files readme.html> 
+	RewriteEngine Off
+</Files>
+<Files favicon.ico> 
+	RewriteEngine Off
+</Files>
+
+RewriteRule .* index.php
+

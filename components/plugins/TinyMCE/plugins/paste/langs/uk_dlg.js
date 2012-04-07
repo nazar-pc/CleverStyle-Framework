@@ -1,0 +1,1 @@
+tinyMCE.addI18n('uk.paste_dlg',{"word_title":"Використовуйте CTRL+V для вставки тексту у вікно.","text_linebreaks":"Зберігати переноси рядків","text_title":"Використовуйте CTRL+V для вставки тексту у вікно."});

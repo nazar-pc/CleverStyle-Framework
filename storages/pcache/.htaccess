@@ -1,0 +1,3 @@
+Allow From All
+AddEncoding gzip .js
+AddEncoding gzip .css

@@ -1,0 +1,70 @@
+#loading {
+	bottom: 20px;
+	position: fixed;
+	right: 20px;
+	width: 200px;
+}
+#loading > div {
+	background-color: #6ebc00;
+	box-shadow: 0 0 15px #000;
+	-moz-box-shadow: 0 0 15px #000;
+	-webkit-box-shadow: 0 0 15px #000;
+	opacity: 0;
+	position: relative;
+	transition: all 0.3s linear;
+	-o-transition: all 0.3s linear;
+	-moz-transition: all 0.3s linear;
+	-webkit-transition: all 0.3s linear;
+}
+#loading > #n1 {
+	border-radius: 24px;
+	height: 48px;
+	left: 76px;
+	top: 6px;
+	width: 48px;
+}
+#loading > #n2 {
+	border-radius: 20px;
+	height: 40px;
+	left: 24px;
+	margin-top: -18px;
+	top: 0;
+	width: 40px;
+}
+#loading > #n3 {
+	border-radius: 18px;
+	height: 36px;
+	left: 6px;
+	margin-top: 10px;
+	top: 0;
+	width: 36px;
+}
+#loading > #n4 {
+	border-radius: 14px;
+	height: 28px;
+	left: 16px;
+	margin-top: 10px;
+	top: 0;
+	width: 28px;
+}
+#loading > #n5 {
+	border-radius: 10px;
+	height: 20px;
+	left: 38px;
+	top: 2px;
+	width: 20px;
+}
+#loading > #n6 {
+	border-radius: 8px;
+	height: 16px;
+	left: 62px;
+	top: -2px;
+	width: 16px;
+}
+#loading > #n7 {
+	border-radius: 6px;
+	height: 12px;
+	left: 86px;
+	top: -8px;
+	width: 12px;
+}

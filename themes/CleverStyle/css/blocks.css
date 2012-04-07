@@ -1,0 +1,14 @@
+td#left_blocks, td#right_blocks {
+	max-width: 250px;
+	min-width: 150px;
+	vertical-align: top;
+	width: 15%;
+}
+td#left_blocks > aside > div, td#right_blocks > aside > div {
+	margin: 10px;
+	padding: 10px;
+	border-radius: 7px;
+}
+footer > div#footer {
+	padding: 5px;
+}

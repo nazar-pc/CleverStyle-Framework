@@ -1,0 +1,48 @@
+#header_green {
+	background-color: rgb(110, 188, 0);
+	background-image: -ms-linear-gradient(top, rgb(203, 255, 129) 0%, rgb(110, 188, 0) 80%);
+	background-image: -moz-linear-gradient(top, rgb(203, 255, 129) 0%, rgb(110, 188, 0) 80%);
+	background-image: -o-linear-gradient(top, rgb(203, 255, 129) 0%, rgb(110, 188, 0) 80%);
+	background-image: -webkit-linear-gradient(top, rgb(203, 255, 129) 0%, rgb(110, 188, 0) 80%);
+	background-image: linear-gradient(top, rgb(203, 255, 129) 0%, rgb(110, 188, 0) 80%);
+}
+#header_black {
+	background-color: rgb(0, 0, 0);
+	background-image: -ms-linear-gradient(top, rgb(125, 125, 125) 0%, rgb(0, 0, 0) 90%);
+	background-image: -moz-linear-gradient(top, rgb(125, 125, 125) 0%, rgb(0, 0, 0) 90%);
+	background-image: -o-linear-gradient(top, rgb(125, 125, 125) 0%, rgb(0, 0, 0) 90%);
+	background-image: -webkit-linear-gradient(top, rgb(125, 125, 125) 0%, rgb(0, 0, 0) 90%);
+	background-image: linear-gradient(top, rgb(125, 125, 125) 0%, rgb(0, 0, 0) 90%);
+	box-shadow: 0 0 20px #000;
+}
+#user_header {
+	background-color: rgba(255, 255, 255, 0.5);
+	border: 1px solid rgba(255, 255, 255, 0.6);
+}
+#avatar_header {
+	background-color: rgba(0, 0, 0, 0.15);
+	border: 1px solid rgba(0, 0, 0, 0.6);
+	color: #fff;
+	text-shadow:  0 0 20px #fff;
+}
+#main-menu, #main-menu > a, #main-submenu > a {
+	color: #fff;
+}
+#main-menu > a {
+	text-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
+}
+#main-menu > a:hover, #main-submenu > a:hover, #main-submenu > a.active {
+	color: #000;
+	text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+}
+#menu-more {
+	color: rgb(110, 188, 0);
+}
+#menu-more > a {
+	border-top: 2px solid rgb(110, 188, 0);
+	color: rgb(110, 188, 0);
+}
+#menu-more > a:hover, #menu-more > a.active {
+	border-top-color: #ddd;
+	color: #ddd;
+}
