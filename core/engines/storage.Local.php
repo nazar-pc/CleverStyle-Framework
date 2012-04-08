@@ -1,8 +1,8 @@
 <?php
 class StorageLocal extends StorageAbstract {
 	function __construct ($base_url, $host, $user = '', $password = '') {
+		$this->base_url = url_by_source(STORAGE);
 		$this->connected = true;
-		$this->base_url = $base_url;
 	}
 	function get_list ($dir, $mask = false, $mode='f', $with_path = false, $subfolders = false, $sort = false, $exclusion = false) {
 		return call_user_func_array(__FUNCTION__, func_get_args());
@@ -47,4 +47,3 @@ class StorageLocal extends StorageAbstract {
 		return call_user_func_array(__FUNCTION__, func_get_args());
 	}
 }
-?>

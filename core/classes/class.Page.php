@@ -534,6 +534,7 @@ class Page {
 			);
 			unset($queries);
 		}
+		//TODO Storages information
 		//Cookies
 		if ($Config->core['show_cookies']) {
 			$this->debug_info .= h::{'p#debug_cookies_toggle.ui-widget-header.for_state_messages.center'}(

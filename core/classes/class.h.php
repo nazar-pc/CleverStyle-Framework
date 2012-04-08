@@ -1,6 +1,10 @@
 <?php
 //Класс для отрисовки различных елементов HTML страницы в соответствии со стандартами HTML5, и с более понятным и функциональным синтаксисом
-class h {
+/**
+ *
+ * If defined constant "xhtml_tags_style" - tags will be generated according to rules of xhtml
+ */
+class h {//TODO array of void elements for general processing
 	protected static	$unit_atributes = [	//Одиночные атрибуты, которые не имеют значения
 		'async',
 		'defer',
@@ -12,8 +16,7 @@ class h {
 		'required',
 		'disabled',
 		'multiple'
-	],
-	$single_tag_xml_style = false;
+	];
 	//Отступы строк для красивого исходного кода
 	static function level ($in, $level = 1) {
 		if ($level < 1) {
@@ -69,7 +72,7 @@ class h {
 			if (is_int($key)) {
 				unset($data[$key]);
 				if (in_array($value, self::$unit_atributes)) {
-					$add .= ' '.$value;
+					$add .= ' '.$value.(defined('xhtml_tags_style') ? '='.$q.$value.$q : '');
 				}
 			} elseif ($value !== false) {
 				$add .= ' '.$key.'='.$q.$value.$q;
@@ -163,7 +166,7 @@ class h {
 			$data_title = $data['data-title'];
 			unset($data['data-title']);
 		}
-		$return = '<'.$tag.$add.(self::$single_tag_xml_style ? ' /' : '').'>'.$in."\n";
+		$return = '<'.$tag.$add.(defined('xhtml_tags_style') ? ' /' : '').'>'.$in."\n";
 		return isset($data_title) ? self::label($return, array('data-title' => $data_title)) : $return;
 	}
 

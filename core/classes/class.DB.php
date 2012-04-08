@@ -17,11 +17,11 @@ class DB {
 		unset($GLOBALS['DB_USER'], $GLOBALS['DB_PASSWORD']);
 	}
 	/**
-	 * @param bool|null|string $status		<b>null</b>		- returns array of connections with objects<br>
+	 * @param	bool|null|string $status		<b>null</b>		- returns array of connections with objects<br>
 	 * 										<b>true|1</b>	- returns array of names of succesfull connections<br>
 	 * 										<b>false|0</b>	- returns array of names of failed connections<br>
 	 * 										<b>mirror</b>	- returns array of names of mirror connections
-	 * @return array|null
+	 * @return	array|null
 	 */
 	function get_connections_list ($status = null) {
 		if ($status === null) {
@@ -38,8 +38,8 @@ class DB {
 	//Обработка запросов получения данных БД
 	//При соответствующей настройке срабатывает балансировка нагрузки на БД
 	/**
-	 * @param int $connection
-	 * @return bool|object
+	 * @param	int			$connection
+	 * @return	bool|object
 	 */
 	function __get ($connection) {
 		if (!is_int($connection) && $connection != '0') {
@@ -63,7 +63,7 @@ class DB {
 					return $this->mirrors[$connection];
 				} else {
 					unset($mirror_connection);
-					return $this->__call($connection, array(true));
+					return $this->__call($connection, [true]);
 				}
 			} else {
 				return $this->connecting($connection);
@@ -78,7 +78,7 @@ class DB {
 		if (is_int($connection) || $connection == '0') {
 			return $this->connecting($connection, isset($mode[0]) ? (bool)$mode[0] : false);
 		} elseif (method_exists('DatabaseAbstract', $connection)) {
-			return call_user_func_array(array($this->{0}, $connection), $mode);
+			return call_user_func_array([$this->{0}, $connection], $mode);
 		} else {
 			return false;
 		}
@@ -189,14 +189,14 @@ class DB {
 			} elseif (isset($data[0])) {
 				if ($data[0] == 0) {
 					global $DB_TYPE, $DB_NAME;
-					$db = array(
-								'type'		=> $DB_TYPE,
-								'host'		=> $DB_HOST,
-								'name'		=> $DB_NAME,
-								'user'		=> $this->DB_USER,
-								'password'	=> $this->DB_PASSWORD,
-								'codepage'	=> $DB_CODEPAGE
-					);
+					$db = [
+						'type'		=> $DB_TYPE,
+						'host'		=> $DB_HOST,
+						'name'		=> $DB_NAME,
+						'user'		=> $this->DB_USER,
+						'password'	=> $this->DB_PASSWORD,
+						'codepage'	=> $DB_CODEPAGE
+					];
 				} else {
 					$db = $Config->db[$data[0]];
 				}
@@ -221,4 +221,3 @@ class DB {
 	 */
 	function __clone () {}
 }
-?>

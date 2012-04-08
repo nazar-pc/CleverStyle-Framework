@@ -918,8 +918,16 @@
 	}
 	/**
 	 * Check password strength
-	 * @param string $password
-	 * @return int In range [0..7]
+	 *
+	 * @param	string	$password
+	 * @return	int		In range [0..7]<br><br>
+	 * 					<b>1</b> - numbers<br>
+	 *  				<b>2</b> - numbers + letters<br>
+	 * 					<b>3</b> - numbers + letters in different registers<br>
+	 * 		 			<b>4</b> - numbers + letters in different registers + special symbol on usual keyboard +=/^ and others<br>
+	 * 					<b>5</b> - numbers + letters in different registers + special symbols (more than one)<br>
+	 * 					<b>6</b> - as 5, but + special symbol, which can't be found on usual keyboard or non-latin letter<br>
+	 * 					<b>7</b> - as 5, but + special symbols, which can't be found on usual keyboard or non-latin letter (more than one symbol)<br>
 	 */
 	function password_check ($password) {
 		global $Config;
@@ -927,22 +935,25 @@
 		$password	= preg_replace('/\s+/', ' ', $password);
 		$s			= 0;
 		if(strlen($password) >= $min) {
-			++$s;
-			if(preg_match('/[0-9]+/', $password)) {
-				++$s;
+			if(preg_match('/[~!@#\$%\^&\*\(\)\-_=+\|\\/;:,\.\?\[\]\{\}]+/', $password, $match)) {
+				$s = 4;
+				if (strlen(implode('', $match)) > 1) {
+					++$s;
+				}
+			} else {
+				if(preg_match('/[A-Z]+/', $password)) {
+					++$s;
+				}
+				if(preg_match('/[a-z]+/', $password)) {
+					++$s;
+				}
+				if(preg_match('/[0-9]+/', $password)) {
+					++$s;
+				}
 			}
-			if(preg_match('/[a-z]+/', $password)) {
+			if (preg_match('/[^[0-9a-z~!@#\$%\^&\*\(\)\-_=+\|\\/;:,\.\?\[\]\{\}]]+/i', $password, $match)) {
 				++$s;
-			}
-			if(preg_match('/[A-Z]+/', $password)) {
-				++$s;
-			}
-			if(preg_match('/\W/', $password)) {
-				++$s;
-			}
-			if ($strlen = preg_match('/^[0-9a-z]|^\W/i', $password)) {
-				++$s;
-				if ($strlen > 1) {
+				if (strlen(implode('', $match)) > 1) {
 					++$s;
 				}
 			}
@@ -950,15 +961,21 @@
 		return $s;
 	}
 	/**
-	 * Generates passwords till 5 level of strength, 6-7 - only for humans:)
-	 * @param int $length
-	 * @param int $strength In range [1..5], but it must be smaller, than $length
-	 * @return string
+	 * Generates passwords till 5th level of strength, 6-7 - only for humans:)
+	 *
+	 * @param	int		$length
+	 * @param	int		$strength In range [1..5], but it must be smaller, than $length<br><br>
+	 * 					<b>1</b> - numbers<br>
+	 * 					<b>2</b> - numbers + letters<br>
+	 * 					<b>3</b> - numbers + letters in different registers<br>
+	 * 					<b>4</b> - numbers + letters in different registers + special symbol<br>
+	 * 					<b>5</b> - numbers + letters in different registers + special symbols (more than one)
+	 * @return	string
 	 */
-	function password_generate ($length = 10, $strength = 5) {//TODO check correspondence with input strength and real strength of output password
+	function password_generate ($length = 10, $strength = 5) {
 		static $special = [
 			'~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_',
-			'=', '+', '\\', '/', ';', ':', ',', '.', '?', '[', ']', '{', '}'
+			'=', '+', '|', '\\', '/', ';', ':', ',', '.', '?', '[', ']', '{', '}'
 		];
 		static $small, $capital;
 		if (!isset($small)) {
@@ -981,13 +998,13 @@
 		if ($strength > $length) {
 			$strength = $length;
 		}
-		if ($strength == 5) {
+		if ($strength > 3) {
 			$symbols = array_merge($symbols, $special);
 		}
-		if ($strength > 3) {
+		if ($strength > 2) {
 			$symbols = array_merge($symbols, $capital);
 		}
-		if ($strength > 2) {
+		if ($strength > 1) {
 			$symbols = array_merge($symbols, $small);
 		}
 		$size = count($symbols)-1;
@@ -995,10 +1012,11 @@
 			for ($i = 0; $i < $length; ++$i) {
 				$password[] = $symbols[rand(0, $size)];
 			}
-			if (password_check(implode('', $password))) {
-				shuffle($password);
+			shuffle($password);
+			if (password_check(implode('', $password)) == $strength) {
 				return implode('', $password);
 			}
+			$password = [];
 		}
 		return '';
 	}

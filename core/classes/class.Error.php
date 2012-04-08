@@ -87,9 +87,9 @@ class Error {
 			}
 		}
 	}
-	private function log ($text) {
+	protected function log ($text) {
 	}
-	private function mail ($text) {
+	protected function mail ($text) {
 	}
 	function num () {
         return $this->num;

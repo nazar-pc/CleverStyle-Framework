@@ -1,16 +1,27 @@
 <?php
-class Storage {//TODO total refactoring!!!!!!!!!!!! like DB class
+class Storage {
 	public		$time					= 0,
-				$successful_connections	= [],
-				$false_connections		= [],
-				$connections			= [];
-
+				$successful_connections	= [],//TODO make hidden property
+				$false_connections		= [],//TODO make hidden property
+				$connections			= [];//TODO make hidden property
+	//TODO get_connections_list like in DB class for Debugging
 	//Обработка подключений к хранилищам
 	function __get ($connection) {
+		if (!is_int($connection) && $connection != '0') {
+			return false;
+		}
 		return $this->connecting($connection);
 	}
+	//Обработка запросов получения и изменения данных БД
+	function __call ($connection, $mode) {
+		if (method_exists('StorageAbstract', $connection)) {
+			return call_user_func_array([$this->{0}, $connection], $mode);
+		} else {
+			return false;
+		}
+	}
 	//Обработка всех подключений к хранилищам
-	private function connecting ($connection) {
+	protected function connecting ($connection) {
 		//Если соединение есть в списке неудачных - выходим
 		if (isset($this->false_connections[$connection])) {
 			return false;
@@ -25,10 +36,12 @@ class Storage {//TODO total refactoring!!!!!!!!!!!! like DB class
 			return false;
 		}
 		//Если подключается локальное хранилище
-		if ($connection == 'core' || $connection == 0) {
-			$storage['connection'] = 'StorageLocal';
-			$storage['url'] = url_by_source(STORAGE);
-			$storage['host'] = '';
+		if ($connection == 0) {
+			$storage['connection']	= 'Local';
+			$storage['url']			= '';
+			$storage['host']		= 'localhost';
+			$storage['user']		= '';
+			$storage['password']	= '';
 		} else {
 			//Загружаем настройки
 			$storage = &$Config->storage[$connection];
@@ -39,15 +52,6 @@ class Storage {//TODO total refactoring!!!!!!!!!!!! like DB class
 		if (is_object($this->connections[$connection]) && $this->connections[$connection]->connected) {
 			$this->successful_connections[] = $connection.'/'.$storage['host'].'/'.$storage['connection'];
 			unset($storage);
-			//Ускоряем повторную операцию доступа к этому хранилищу
-			if ($connection == 'core') {
-				$zero = 0;
-				$this->$zero = $this->$connection;
-				unset($zero);
-			}
-			if ($connection == 0) {
-				$this->core = $this->$connection;
-			}
 			$this->$connection = $this->connections[$connection];
 			return $this->connections[$connection];
 		//Если подключение не удалось - разрушаем соединение
