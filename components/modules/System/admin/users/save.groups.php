@@ -24,5 +24,6 @@ if (isset($_POST['mode'])) {
 			$Index->save(
 				$User->set_group_permissions($_POST['permission'], $_POST['id'])
 			);
+		break;
 	}
 }

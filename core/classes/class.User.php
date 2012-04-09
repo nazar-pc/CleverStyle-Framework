@@ -462,7 +462,24 @@ class User {
 		if (!$user) {
 			return false;
 		}
-		return $this->set_any_permissions($data, $user, 'group');
+		$delete = [];
+		foreach ($data as $i => $val) {
+			if ($val == -1) {
+				$delete[] = (int)$i;
+				unset($data[$i]);
+			}
+		}
+		$return = true;
+		if (!empty($delete)) {
+			$return = $this->db_prime()->q('DELETE FROM `[prefix]users_permissions` WHERE `id` = '.$user.' AND `permission` IN ('.implode(', ', $delete).')');
+		}
+		unset($delete);
+		if (empty($data)) {
+			global $Cache;
+			unset($Cache->{'users/permissions/'.$user});
+			return $return;
+		}
+		return $return && $this->set_any_permissions($data, $user, 'user');
 	}
 	/**
 	 * Get user groups
@@ -660,7 +677,7 @@ class User {
 			if (is_array($permissions_array)) {
 				$permissions = [];
 				foreach ($permissions_array as $permission) {
-					$permissions[$permission['permission']] = $permission['value'];
+					$permissions[$permission['permission']] = (int)(bool)$permission['value'];
 				}
 				unset($permissions_array, $permission);
 				return $Cache->{$path.$id} = $permissions;
@@ -688,7 +705,7 @@ class User {
 				$table	= '[prefix]users_permissions';
 			break;
 			case 'group':
-				$table	= '[prefix]group_permissions';
+				$table	= '[prefix]groups_permissions';
 			break;
 			default:
 				return false;
@@ -726,9 +743,11 @@ class User {
 			}
 		}
 		global $Cache;
-		unset($Cache->{'users/permissions'});
 		if ($type == 'group') {
+			unset($Cache->{'users/permissions'});
 			unset($Cache->{'groups/permissions/'.$id});
+		} elseif ($type == 'user') {
+			unset($Cache->{'users/permissions/'.$id});
 		}
 		return $return;
 	}

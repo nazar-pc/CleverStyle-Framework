@@ -231,6 +231,74 @@ if (isset($rc[2], $rc[3])) {
 				h::{'button[type=submit]'}($L->yes)
 			);
 		break;
+		case 'permissions':
+			if (!isset($rc[3])) {
+				break;
+			}
+			$a->apply		= false;
+			$a->cancel_back	= true;
+			global $Cache;
+			$permissions	= $Cache->permissions_table;
+			$permission		= $User->get_user_permissions($rc[3]);
+			$tabs			= [];
+			$tabs_content	= '';
+			foreach ($permissions as $group => $list) {
+				$tabs[]		= h::{'a'}(
+					$L->{'permissions_group_'.$group},
+					[
+						'href'	=> '#permissions_group_'.strtr($group, '/', '_')
+					]
+				);
+				$content	= [];
+				foreach($list as $label => $id) {
+					$content[] = h::{'th.ui-widget-header.ui-corner-all'}($L->{'permission_label_'.$label}).
+						h::{'td input[type=radio]'}([
+							'name'			=> 'permission['.$id.']',
+							'checked'		=> isset($permission[$id]) ? $permission[$id] : -1,
+							'value'			=> [-1, 0, 1],
+							'in'			=> [$L->inherited, $L->deny, $L->allow]
+						]);
+				}
+				if (count($list) % 2) {
+					$content[] = h::{'td[colspan=2]'}();
+				}
+				$count		= count($content);
+				$content_	= '';
+				for ($i = 0; $i < $count; $i += 2) {
+					$content_ .= h::tr(
+						$content[$i].
+							$content[$i+1]
+					);
+				}
+				unset($content);
+				$tabs_content .= h::{'div#permissions_group_'.strtr($group, '/', '_').' table.admin_table.center_all'}(
+					h::{'tr td.left_all[colspan=4]'}(
+						h::{'button.permissions_group_invert'}($L->invert).
+							h::{'button.permissions_group_allow_all'}($L->allow_all).
+							h::{'button.permissions_group_deny_all'}($L->deny_all)
+					).
+					h::tr($content_)
+				);
+			}
+			unset($content);
+			$User->get(['username', 'login', 'email'], $rc[3]);
+			$a->content(
+				h::{'p.ui-priority-primary.for_state_messages'}(
+					$L->permissions_for_user(
+						$User->get('username', $rc[3]) ?: $User->get('login', $rc[3]) ?: $User->get('email', $rc[3])
+					)
+				).
+				h::{'div#group_permissions_tabs'}(
+					h::{'ul li'}($tabs).
+					$tabs_content
+				).
+				h::br().
+				h::{'input[type=hidden]'}([
+					'name'	=> 'id',
+					'value'	=> $rc[3]
+				])
+			);
+		break;
 	}
 	$a->content(
 		h::{'input[type=hidden]'}([
@@ -355,6 +423,17 @@ if (isset($rc[2], $rc[3])) {
 						'href'		=> $a->action.'/'.($User->get('status', $id) == 1 ? 'deactivate' : 'activate').'/'.$id
 					]
 				) : ''
+			).
+			h::a(
+				h::{'button.compact'}(
+					h::icon('flag'),
+					[
+						'data-title'	=> $L->edit_user_permissions
+					]
+				),
+				[
+					'href'	=> $a->action.'/permissions/'.$id
+				]
 			);
 			$user_data		= $User->get($columns, $id);
 			if (isset($user_data['regip'])) {

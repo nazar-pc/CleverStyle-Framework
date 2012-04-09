@@ -204,7 +204,7 @@ $(function() {
 	});
 	$('#group_permissions_tabs').tabs();
 	$('button.permissions_group_invert').mousedown(function () {
-		$(this).parentsUntil('div').find(':radio:not(:checked)').prop('checked', true).button('refresh');
+		$(this).parentsUntil('div').find(':radio:not(:checked)[value!=-1]').prop('checked', true).button('refresh');
 	});
 	$('button.permissions_group_allow_all').mousedown(function () {
 		$(this).parentsUntil('div').find(':radio:[value=1]').prop('checked', true).button('refresh');

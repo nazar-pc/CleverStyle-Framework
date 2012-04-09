@@ -23,7 +23,7 @@ if (isset($rc[2])) {
 					])
 				)
 			);
-	break;
+		break;
 		case 'edit':
 			if (!isset($rc[3])) {
 				break;

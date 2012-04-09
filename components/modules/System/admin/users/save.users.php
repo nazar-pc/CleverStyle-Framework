@@ -107,4 +107,9 @@ switch ($_POST['mode']) {
 			$Index->save(true);
 		}
 	break;
+	case 'permissions':
+		$Index->save(
+			$User->set_user_permissions($_POST['permission'], $_POST['id'])
+		);
+	break;
 }
