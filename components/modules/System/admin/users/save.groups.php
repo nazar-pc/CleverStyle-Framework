@@ -5,23 +5,15 @@ if (!isset($_POST['mode'])) {
 global $Config, $Page, $Index, $User, $L;
 if (isset($_POST['mode'])) {
 	switch ($_POST['mode']) {
-		case 'edit':
-			$group_data = &$_POST['group'];
-			$columns = array(
-				'id',
-				'title',
-				'description',
-				'data'
+		case 'add':
+			$Index->save(
+				$User->add_group($_POST['group']['title'], $_POST['group']['description'])
 			);
-			foreach ($group_data as $item => &$value) {
-				if (in_array($item, $columns) && $item != 'data') {
-					$value = xap($value, false);
-				}
-			}
-			unset($item, $value, $columns);
-			//TODO use save_group_data here
-			$User->__finish();
-			$Index->save(true);
+		break;
+		case 'edit':
+			$Index->save(
+				$User->set_group_data($_POST['group'], $_POST['group']['id'])
+			);
 		break;
 		case 'delete':
 			$Index->save(

@@ -1,5 +1,4 @@
 <?php
-
 class User {
 	protected	$secret,							//Secret random phrase for separating internal
 													//function calling from external ones
@@ -226,6 +225,9 @@ class User {
 	 */
 	function get ($item, $user = false, $stop_key = false) {
 		$user = (int)($user ?: $this->id);
+		if (!$user) {
+			return false;
+		}
 		global $Cache;
 		//Key of stopping, prohibits getting of data from db, when retrieves array of data
 		static $_stop_key;
@@ -268,6 +270,9 @@ class User {
 			);
 			if (is_array($res)) {
 				$this->update_cache[$user] = true;
+				if (isset($res['data'])) {
+					$res['data'] = _json_decode($res['data']);
+				}
 				$data = array_merge((array)$data, $res);
 				$result = array_merge($result, $res);
 				//Пересортируем результирующий массив в том же порядке, что и входящий массив элементов
@@ -300,6 +305,9 @@ class User {
 				$new_data = $this->db()->qf('SELECT `'.$item.'` FROM `[prefix]users` WHERE `id` = '.($user).' LIMIT 1');
 				if (is_array($new_data)) {
 					$this->update_cache[$user] = true;
+					if (isset($data['data'])) {
+						$data['data'] = _json_decode($data['data']);
+					}
 					return $data[$item] = &$new_data[$item];
 				}
 			}
@@ -310,9 +318,13 @@ class User {
 	 * @param array|string $item
 	 * @param $value
 	 * @param bool|int $user
+	 * @return bool
 	 */
 	function set ($item, $value, $user = false) {
 		$user = (int)($user ?: $this->id);
+		if (!$user) {
+			return false;
+		}
 		if (is_array($item)) {
 			foreach ($item as $i => &$v) {
 				if (in_array($i, $this->users_columns) && $i != 'id') {
@@ -331,6 +343,7 @@ class User {
 				$this->data_set[$user][$item] = $this->data[$user][$item];
 			}
 		}
+		return true;
 	}
 	function __get ($item) {
 		return $this->get($item);
@@ -402,6 +415,9 @@ class User {
 	 */
 	function permission ($group, $label, $user = false) {
 		$user = (int)($user ?: $this->id);
+		if (!$user) {
+			return false;
+		}
 		if (!isset($this->data[$user])) {
 			$data[$user] = [];
 		}
@@ -430,42 +446,37 @@ class User {
 	 * @return array|bool
 	 */
 	function get_user_permissions ($user = false) {
-		global $Cache;
 		$user = (int)($user ?: $this->id);
-		if (($permissions = $Cache->{'users/permissions/'.$user}) === false) {
-			$permissions_array = $this->db()->qfa(
-				'SELECT `permission`, `value`
-				FROM `[prefix]users_permissions`
-				WHERE `id` = '.$this->id
-			);
-			if (is_array($permissions_array)) {
-				$permissions = [];
-				foreach ($permissions_array as $permission) {
-					$permissions[$permission['permission']] = $permission['value'];
-				}
-				unset($permissions_array, $permission);
-				return $Cache->{'users/permissions/'.$user} = $permissions;
-			} else {
-				return $Cache->{'users/permissions/'.$user} = false;
-			}
+		if (!$user) {
+			return false;
 		}
-		return $permissions;
+		return $this->get_any_permissions($user, 'user');
 	}
 	/**
-	 * @param array $data
-	 * @param bool|int $user
+	 * @param	array		$data
+	 * @param	bool|int	$user
+	 * @return	bool
 	 */
-	function set_user_permissions ($data, $user = false) {//TODO set_user_permissions
-
+	function set_user_permissions ($data, $user = false) {
+		$user = (int)($user ?: $this->id);
+		if (!$user) {
+			return false;
+		}
+		return $this->set_any_permissions($data, $user, 'group');
 	}
 	/**
-	 * @param bool|int $user
-	 * @return array|bool
+	 * Get user groups
+	 *
+	 * @param	bool|int $user
+	 * @return	array|bool
 	 */
 	function get_user_groups ($user = false) {
-		global $Cache;
 		$user = (int)($user ?: $this->id);
-		if (($groups = $Cache->{'users_groups/'.$user}) === false) {
+		if (!$user) {
+			return false;
+		}
+		global $Cache;
+		if (($groups = $Cache->{'users/groups/'.$user}) === false) {
 			$groups = $this->db()->qfa('SELECT `group` FROM `[prefix]users_groups` WHERE `id` = '.$user);
 			if (is_array($groups)) {
 				foreach ($groups as &$group) {
@@ -473,18 +484,70 @@ class User {
 				}
 			}
 			unset($group);
-			return $Cache->{'users_groups/'.$user} = $groups;
+			return $Cache->{'users/groups/'.$user} = $groups;
 		}
 		return $groups;
 	}
-	function set_user_groups () {//TODO set_user_groups
-
-	}
-	function add_group ($title, $description) {//TODO add_group
-
+	/**
+	 * Set user groups
+	 *
+	 * @param	array	$data
+	 * @param	int		$user
+	 * @return	bool
+	 */
+	function set_user_groups ($data, $user) {
+		$user		= (int)($user ?: $this->id);
+		if (!$user) {
+			return false;
+		}
+		$exitsing	= $this->db_prime()->qfa('SELECT `group` FROM `[prefix]users_groups` WHERE `id` = '.$user);
+		$return		= true;
+		foreach ($exitsing as &$group) {
+			$group = $group['group'];
+		}
+		unset($group);
+		$insert		= array_diff($data, $exitsing);
+		$delete		= array_diff($exitsing, $data);
+		unset($data, $exitsing);
+		$return	= $return && $this->db_prime()->q(
+			'DELETE FROM `[prefix]users_groups` WHERE `id` ='.$user.' AND `group` IN ('.implode(', ', $delete).')'
+		);
+		$q			= [];
+		foreach ($insert as $group) {
+			$q[] = $user.', '.(int)$group;
+		}
+		$return		= $return && $this->db_prime()->q('INSERT INTO `[prefix]users_groups`
+				(`id`, `group`)
+			VALUES
+				('.implode('), (', $q).')'
+		);
+		global $Cache;
+		unset($Cache->{'users/groups/'.$user});
+		return $return;
 	}
 	/**
-	 * Delete
+	 * Add new group
+	 *
+	 * @param string $title
+	 * @param string $description
+	 * @return bool|int
+	 */
+	function add_group ($title, $description) {
+		$title			= $this->db_prime()->sip(xap($title, false));
+		$description	= $this->db_prime()->sip(xap($description, false));
+		if (!$title || !$description) {
+			return false;
+		}
+		if ($this->db_prime()->q(
+			'INSERT INTO `[prefix]groups` (`title`, `description`) VALUES ('.$title.', '.$description.')'
+		)) {
+			return $this->db_prime()->insert_id();
+		} else {
+			return false;
+		}
+	}
+	/**
+	 * Delete group
 	 *
 	 * @param $group
 	 * @return bool
@@ -494,12 +557,12 @@ class User {
 		if ($group != 1 && $group != 2 && $group != 3) {
 			$return = $this->db_prime()->q([
 				'DELETE FROM `[prefix]groups` WHERE `id` = '.$group,
-				'DELETE FROM `[prefix]groups` WHERE `id` = '.$group,
-				'DELETE FROM `[prefix]users_groups` WHERE `group` = '.$group
+				'DELETE FROM `[prefix]users_groups` WHERE `group` = '.$group,
+				'DELETE FROM `[prefix]groups_permissions` WHERE `id` = '.$group
 			]);
 			global $Cache;
 			unset(
-				$Cache->users_groups,
+				$Cache->{'users/groups/'.$group},
 				$Cache->{'users/permissions'},
 				$Cache->{'groups/'.$group},
 				$Cache->{'groups/permissions/'.$group}
@@ -516,59 +579,129 @@ class User {
 	function get_group_data ($group) {
 		global $Cache;
 		$group = (int)$group;
+		if (!$group) {
+			return false;
+		}
 		if (($group_data = $Cache->{'groups/'.$group}) === false) {
-			return $Cache->{'groups/'.$group} = $this->db()->qf(
+			$group_data = $this->db()->qf(
 				'SELECT `title`, `description`, `data`
 				FROM `[prefix]groups`
 				WHERE `id` = '.$group.'
 				LIMIT 1'
 			);
+			$group_data['data'] = _json_decode($group_data['data']);
+			$Cache->{'groups/'.$group} = $group_data;
 		}
 		return $group_data;
 	}
-	function set_group_data ($data, $group) {//TODO set_group_data
-
+	function set_group_data ($data, $group) {
+		$group = (int)$group;
+		if (!$group) {
+			return false;
+		}
+		$update = [];
+		if (isset($data['title'])) {
+			$update[] = '`title` = '.$this->db_prime()->sip(xap($data['title'], false));
+		}
+		if (isset($data['description'])) {
+			$update[] = '`description` = '.$this->db_prime()->sip(xap($data['description'], false));
+		}
+		if (isset($data['data'])) {
+			$update[] = '`data` = '.$this->db_prime()->sip(_json_encode($data['data']));
+		}
+		if (!empty($update) && $this->db_prime()->q('UPDATE `[prefix]groups` SET '.implode(', ', $update).' WHERE `id` = '.$group.' LIMIT 1')) {
+			global $Cache;
+			unset($Cache->{'groups/'.$group});
+			return true;
+		} else {
+			return false;
+		}
 	}
 	/**
 	 * @param int $group
 	 * @return array
 	 */
 	function get_group_permissions ($group) {
-		global $Cache;
-		$group = (int)$group;
-		if (($group_permissions = $Cache->{'groups/permissions/'.$group}) === false) {
-			$group_permissions_list = $this->db()->qfa(
-				'SELECT `permission`, `value`
-				FROM `[prefix]groups_permissions`
-				WHERE `id` = '.$group
-			);
-			if (is_array($group_permissions_list)) {
-				$group_permissions = [];
-				foreach ($group_permissions_list as &$permission) {
-					$group_permissions[$permission['permission']] = $permission['value'];
-				}
-				unset($group_permissions_list, $permission);
-				return $Cache->{'groups/permissions/'.$group} = $group_permissions;
-			} else {
-				return $Cache->{'groups/permissions/'.$group} = false;
-			}
-		}
-		return $group_permissions;
+		return $this->get_any_permissions($group, 'group');
 	}
 	function set_group_permissions ($data, $group) {
-		if (!is_array($data) || empty($data) || !$group) {
+		return $this->set_any_permissions($data, (int)$group, 'group');
+	}
+	/**
+	 * Common function for get_user_permissions() and get_group_permissions() because of their similarity
+	 *
+	 * @param	int			$id
+	 * @param	string		$type
+	 * @return	array|bool
+	 */
+	protected function get_any_permissions ($id, $type) {
+		if (!($id = (int)$id)) {
 			return false;
 		}
-		$group		= (int)$group;
-		$exitsing	= $this->db_prime()->qfa('SELECT `permission`, `value` FROM `[prefix]groups_permissions` WHERE `id` = '.$group);
+		switch ($type) {
+			case 'user':
+				$table	= '[prefix]users_permissions';
+				$path	= 'users/permissions/';
+				break;
+			case 'group':
+				$table	= '[prefix]group_permissions';
+				$path	= 'groups/permissions/';
+				break;
+			default:
+				return false;
+		}
+		global $Cache;
+		if (($permissions = $Cache->{$path.$id}) === false) {
+			$permissions_array = $this->db()->qfa(
+				'SELECT `permission`, `value`
+				FROM `'.$table.'`
+				WHERE `id` = '.$id
+			);
+			if (is_array($permissions_array)) {
+				$permissions = [];
+				foreach ($permissions_array as $permission) {
+					$permissions[$permission['permission']] = $permission['value'];
+				}
+				unset($permissions_array, $permission);
+				return $Cache->{$path.$id} = $permissions;
+			} else {
+				return $Cache->{$path.$id} = false;
+			}
+		}
+		return $permissions;
+	}
+	/**
+	 * Common function for set_user_permissions() and set_group_permissions() because of their similarity
+	 *
+	 * @param	array	$data
+	 * @param	int		$id
+	 * @param	string	$type
+	 * @return	bool
+	 */
+	protected function set_any_permissions ($data, $id, $type) {
+		$id			= (int)$id;
+		if (!is_array($data) || empty($data) || !$id) {
+			return false;
+		}
+		switch ($type) {
+			case 'user':
+				$table	= '[prefix]users_permissions';
+			break;
+			case 'group':
+				$table	= '[prefix]group_permissions';
+			break;
+			default:
+				return false;
+		}
+		$exitsing	= $this->db_prime()->qfa('SELECT `permission`, `value` FROM `'.$table.'` WHERE `id` = '.$id);
 		$return		= true;
 		if (!empty($exitsing)) {
 			$update		= [];
 			foreach ($exitsing as $permission => $value) {
 				if (isset($data[$permission]) && $data[$permission] != $value) {
-					$update[] = 'UPDATE `[prefix]groups_permissions`
+					$update[] = 'UPDATE `'.$table.'`
 						SET `value` = '.(int)(bool)$data[$permission].'
-						WHERE `permission` = '.$permission.' AND `id` = '.$group;
+						WHERE `permission` = '.$permission.' AND `id` = '.$id;
 				}
 				unset($data[$permission]);
 			}
@@ -581,11 +714,11 @@ class User {
 		if (!empty($data)) {
 			$insert	= [];
 			foreach ($data as $permission => $value) {
-				$insert[] = $group.', '.(int)$permission.', '.(int)(bool)$value;
+				$insert[] = $id.', '.(int)$permission.', '.(int)(bool)$value;
 			}
 			unset($data, $permission, $value);
 			if (!empty($insert)) {
-				$return = $return && $this->db_prime()->q('INSERT INTO `[prefix]groups_permissions`
+				$return = $return && $this->db_prime()->q('INSERT INTO `'.$table.'`
 						(`id`, `permission`, `value`)
 					VALUES
 						('.implode('), (', $insert).')'
@@ -593,10 +726,10 @@ class User {
 			}
 		}
 		global $Cache;
-		unset(
-			$Cache->{'users/permissions'},
-			$Cache->{'groups/permissions/'.$group}
-		);
+		unset($Cache->{'users/permissions'});
+		if ($type == 'group') {
+			unset($Cache->{'groups/permissions/'.$id});
+		}
 		return $return;
 	}
 	/**
@@ -965,6 +1098,13 @@ class User {
 				$data = [];
 				foreach ($data_set as $i => &$val) {
 					if (in_array($i, $users_columns) && $i != 'id') {
+						if ($i == 'data') {
+							$val = _json_encode($val);
+						} elseif ($i == 'text') {
+							$val = xap($val, true);
+						} else {
+							$val = xap($val, false);
+						}
 						$data[] = '`'.$i.'` = '.$this->db_prime()->sip($val);
 					}
 				}

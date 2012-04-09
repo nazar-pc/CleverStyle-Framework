@@ -2,9 +2,32 @@
 global $Config, $Index, $L, $User;
 $a				= &$Index;
 $rc				= &$Config->routing['current'];
-if (isset($rc[2], $rc[3])) {
+if (isset($rc[2])) {
 	switch ($rc[2]) {
+		case 'add':
+			$a->apply		= false;
+			$a->cancel_back	= true;
+			$a->content(
+				h::{'table.admin_table.center_all'}(
+					h::{'tr th.ui-widget-header.ui-corner-all'}([
+						$L->group_title,
+						$L->description
+					]).
+					h::{'tr td.ui-widget-content.ui-corner-all'}([
+						h::{'input.form_element'}([
+							'name'		=> 'group[title]'
+						]),
+						h::{'input.form_element'}([
+							'name'		=> 'group[description]'
+						])
+					])
+				)
+			);
+	break;
 		case 'edit':
+			if (!isset($rc[3])) {
+				break;
+			}
 			$a->apply		= false;
 			$a->cancel_back	= true;
 			$group_data		= $User->get_group_data($rc[3]);
@@ -41,6 +64,9 @@ if (isset($rc[2], $rc[3])) {
 			);
 		break;
 		case 'delete':
+			if (!isset($rc[3])) {
+				break;
+			}
 			$a->buttons		= false;
 			$a->cancel_back	= true;
 			$permission		= $User->db()->qf('SELECT `title` FROM `[prefix]groups` WHERE `id` = '.(int)$rc[3].' LIMIT 1');
@@ -58,6 +84,9 @@ if (isset($rc[2], $rc[3])) {
 			$Page->warning($L->changing_settings_warning);
 		break;
 		case 'permissions':
+			if (!isset($rc[3])) {
+				break;
+			}
 			$a->apply		= false;
 			$a->cancel_back	= true;
 			global $Cache;
@@ -162,7 +191,7 @@ if (isset($rc[2], $rc[3])) {
 				[
 					'href'	=> $a->action.'/delete/'.$id
 				]
-			) : '').//TODO make delete function
+			) : '').
 			h::a(
 				h::{'button.compact'}(
 					h::icon('flag'),
@@ -182,8 +211,15 @@ if (isset($rc[2], $rc[3])) {
 	unset($id, $group_data, $groups_ids);
 	$a->content(
 		h::{'table.admin_table.center_all'}(
-			$groups_list
-		)//TODO make add group function
-	//TODO write set and delete group functions in User
+			$groups_list.
+			h::{'tr td.left_all[colspan=4]'}(
+				h::button(
+					$L->add_group,
+					[
+						'onMouseDown' => 'javasript: location.href= \'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add\';'
+					]
+				)
+			)
+		)
 	);
 }
