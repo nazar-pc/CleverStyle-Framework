@@ -165,13 +165,16 @@ class Config {
 			if (!defined('MODULE')) {
 				define('MODULE', array_shift($rc));
 			}
-		} else {
+		} elseif (!isset($rc[0]) || $rc[0] == '') {
 			if (!defined('MODULE')) {
 				define('MODULE', 'System');
-				if (!ADMIN && !API && !defined('HOME')) {
+				if (!ADMIN && !API && !isset($rc[1])) {
 					define('HOME', true);
 				}
 			}
+		} else {
+			define('MODULE', 'System');
+			define('ERROR_PAGE', 404);
 		}
 		!defined('HOME')	&& define('HOME', false);
 		//Скорректированный полный путь страницы (рекомендуемый к использованию)

@@ -2,83 +2,109 @@
 class Index {
 	public		$Content,
 
-				$savecross		= false,
+				$savecross			= false,
 
-				$menu_auto		= true,
-				$submenu_auto	= false,
-				$menumore_auto	= false,
+				$menu_auto			= true,
+				$submenu_auto		= false,
+				$menumore_auto		= false,
 
-				$savefile		= 'save',
-				$post_title		= '',
-				$form			= false,
-				$file_upload	= false,
-				$form_atributes	= [],
+				$savefile			= 'save',
+				$post_title			= '',
+				$form				= false,
+				$file_upload		= false,
+				$form_atributes		= [],
 				$action,
-				$buttons		= true,
-				$apply			= true,
-				$cancel			= ' disabled',
-				$cancel_back	= false,
-				$reset			= true,
-				$post_buttons	= '',
+				$buttons			= true,
+				$apply				= true,
+				$cancel				= ' disabled',
+				$cancel_back		= false,
+				$reset				= true,
+				$post_buttons		= '',
 
-				$init_auto		= true,
-				$generate_auto	= true,
+				$init_auto			= true,
+				$generate_auto		= true,
 
-				$admin			= false,
-				$module			= false,
-				$api			= false;
+				$admin				= false,
+				$module				= false,
+				$api				= false;
 
-	protected	$preload		= [],
-				$postload		= [],
+	protected	$preload			= [],
+				$postload			= [],
 
-				$structure		= [],
-				$parts			= [],
-				$subparts		= [],
-				$triggers_reg	= false,
-				$triggers;
+				$structure			= [],
+				$parts				= [],
+				$subparts			= [],
+				$triggers_reg		= false,
+				$triggers,
+				$permission_group;
 
 	function __construct () {
 		global $Config, $User;
+		$admin_path	= MODULES.DS.MODULE.DS.'admin';
+		$api_path	= MODULES.DS.MODULE.DS.'api';
 		if (
-			ADMIN && $User->is('admin') && _file_exists(MODULES.DS.MODULE.DS.'admin') &&
-			(
-				_file_exists(MODULES.DS.MODULE.DS.'admin'.DS.'index.php') ||
-				_file_exists(MODULES.DS.MODULE.DS.'admin'.DS.'index.json')
-			)
+			ADMIN && $User->is('admin') &&
+			_file_exists($admin_path) && (_file_exists($admin_path.DS.'index.php') || _file_exists($admin_path.DS.'index.json'))
 		) {
-			define('MFOLDER', MODULES.DS.MODULE.DS.'admin');
-			$this->form = true;
-			$this->admin = true;
+			if (!$User->permission($this->permission_group = MODULE.'/admin', 'index')) {
+				define('ERROR_PAGE', 403);
+				return;
+			}
+			define('MFOLDER', $admin_path);
+			$this->form		= true;
+			$this->admin	= true;
 		} elseif (
-			API && _file_exists(MODULES.DS.MODULE.DS.'api') &&
-			(
-				_file_exists(MODULES.DS.MODULE.DS.'api'.DS.'index.php') ||
-				_file_exists(MODULES.DS.MODULE.DS.'api'.DS.'index.json')
-			)
+			API
+			&& _file_exists($api_path) && (_file_exists($api_path.DS.'index.php') || _file_exists($api_path.DS.'index.json'))
 		) {
-			define('MFOLDER', MODULES.DS.MODULE.DS.'api');
-			$this->api = true;
+			if (!$User->permission($this->permission_group = MODULE.'/api', 'index')) {
+				define('ERROR_PAGE', 403);
+				return;
+			}
+			define('MFOLDER', $api_path);
+			$this->api		= true;
 		} else {
+			if (!$User->permission($this->permission_group = MODULE, 'index')) {
+				define('ERROR_PAGE', 403);
+				return;
+			}
 			define('MFOLDER', MODULES.DS.MODULE);
-			$this->module = true;
+			$this->module	= true;
 		}
+		unset($admin_path, $api_path);
+		//Plugins processing
 		foreach ($Config->components['plugins'] as $plugin) {
 			_include(PLUGINS.DS.$plugin.DS.'index.php', true, false);
 		}
 		_include(MFOLDER.DS.'prepare.php', true, false);
 	}
 	protected function init () {
-		global $Config, $L, $Page;
+		global $Config, $L, $Page, $User;
 		$rc = &$Config->routing['current'];
 		if (_file_exists(MFOLDER.DS.'index.json')) {
 			$this->structure	= _json_decode(_file_get_contents(MFOLDER.DS.'index.json'));
 			if (is_array($this->structure)) {
 				foreach ($this->structure as $item => $value) {
-					$this->parts[] = $item;
-					if (isset($rc[0]) && $item == $rc[0] && is_array($value)) {
-						$this->subparts = $value;
+					if ($User->permission($this->permission_group, $item)) {
+						$this->parts[] = $item;
+						if (isset($rc[0]) && $item == $rc[0] && is_array($value)) {
+							foreach ($value as $subpart) {
+								if ($User->permission($this->permission_group, $item.'/'.$subpart)) {
+									$this->subparts[] = $subpart;
+								} elseif ($rc[1] == $subpart) {
+									define('ERROR_PAGE', 403);
+									$this->__finish();
+									return;
+								}
+							}
+						}
+					} elseif ($rc[0] == $item) {
+						define('ERROR_PAGE', 403);
+						$this->__finish();
+						return;
 					}
 				}
+				unset($item, $value, $subpart);
 			}
 		}
 		_include(MFOLDER.DS.'index.php', true, false);
@@ -87,11 +113,7 @@ class Index {
 			$Page->title($L->{HOME ? 'home' : MODULE});
 		}
 		if ($this->parts) {
-			if (
-				!isset($rc[0]) ||
-				($this->parts && !in_array($rc[0], $this->parts)) ||
-				(!_file_exists(MFOLDER.DS.$rc[0]) && !_file_exists(MFOLDER.DS.$rc[0].'.php'))
-			) {
+			if (!isset($rc[0]) || ($rc[0] == '' && !empty($this->parts))) {
 				if (API) {
 					__finish();
 				}
@@ -99,6 +121,10 @@ class Index {
 				if (isset($this->structure[$rc[0]]) && is_array($this->structure[$rc[0]])) {
 					$this->subparts = $this->structure[$rc[0]];
 				}
+			} elseif ($rc[0] != '' && !empty($this->parts) && !in_array($rc[0], $this->parts)) {
+				define('ERROR_PAGE', 404);
+				$this->__finish();
+				return;
 			}
 			if (!$this->api) {
 				if (!HOME) {
@@ -110,15 +136,15 @@ class Index {
 			}
 			_include(MFOLDER.DS.$rc[0].'.php', true, false);
 			if ($this->subparts) {
-				if (
-					!isset($rc[1]) ||
-					($this->subparts && !in_array($rc[1], $this->subparts)) ||
-					!_file_exists(MFOLDER.DS.$rc[0].DS.$rc[1].'.php')
-				) {
+				if (!isset($rc[1]) || ($rc[1] == '' && !empty($this->subparts))) {
 					if (API) {
 						__finish();
 					}
 					$rc[1] = $this->subparts[0];
+				} elseif ($rc[1] != '' && !empty($this->subparts) && !in_array($rc[1], $this->subparts)) {
+					define('ERROR_PAGE', 404);
+					$this->__finish();
+					return;
 				}
 				if (!$this->api) {
 					if (!HOME) {
@@ -468,6 +494,12 @@ class Index {
 	 */
 	function __clone () {}
 	function __finish () {
+		if (defined('ERROR_PAGE')) {
+			$this->form = false;
+			global $Error;
+			$Error->page();
+			return;
+		}
 		closure_process($this->preload);
 		if (!$this->admin && !$this->api && _file_exists(MFOLDER.DS.'index.html')) {
 			global $Page;

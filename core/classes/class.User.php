@@ -407,14 +407,19 @@ class User {
 		return is_array($data) && $data['id'] != 1 ? $data['id'] : false;
 	}
 	/**
+	 * Returns permission state for specified user
+	 *
 	 * @param int $group		Permission group
 	 * @param string $label		Permission label
 	 * @param bool|int $user
 	 *
-	 * @return bool
+	 * @return bool				If permission exists - returns its state for specified user, otherwise returns true
 	 */
 	function permission ($group, $label, $user = false) {
 		$user = (int)($user ?: $this->id);
+		if ($this->is('system') || $user == 2) {
+			return true;
+		}
 		if (!$user) {
 			return false;
 		}
@@ -437,9 +442,11 @@ class User {
 			$permission = $this->permissions_table[$group][$label];
 			if (isset($this->data[$user]['permissions'][$permission])) {
 				return (bool)$this->data[$user]['permissions'][$permission];
+			} else {
+				return false;
 			}
 		}
-		return false;
+		return true;
 	}
 	/**
 	 * @param bool|int $user

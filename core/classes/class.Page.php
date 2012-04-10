@@ -580,6 +580,10 @@ class Page {
 			$text
 		);
 	}
+	//Error pages processing
+	function error ($page) {//TODO Error pages processing
+
+	}
 	/**
 	 * Substitutes header information about user, login/registration forms, etc.
 	 */

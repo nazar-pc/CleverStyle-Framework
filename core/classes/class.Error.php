@@ -1,5 +1,5 @@
 <?php
-class Error {
+class Error {//TODO need hard work for constructing of structure and errors processing
 	public		$error	= true;
 	protected	$init = false,	//For single initialization
 				$num	= 0;
@@ -94,6 +94,17 @@ class Error {
 	function num () {
         return $this->num;
     }
+	function page ($page = false) {
+		if ($page === false) {
+			if (defined('ERROR_PAGE')) {
+				$page = ERROR_PAGE;
+			} else {
+				return;
+			}
+		}
+		global $Page;
+		$Page->error($page);
+	}
 	/*function __call ($func, $args) {//TODO Is it necessary?
 		$this->process($args);
 	}*/

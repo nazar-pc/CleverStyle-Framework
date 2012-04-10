@@ -229,4 +229,26 @@ $(function() {
 		'padding'			: '5px',
 		'width'				: 'auto'
 	}).addClass('ui-widget-content');
+	if (in_admin && module == 'System' && routing[0] == 'components' && routing[1] == 'blocks' && routing[2] != 'settings') {
+		$('#apply_settings, #save_settings').click(
+			function () {
+				$('#position').val(
+					json_encode({
+						top:		$('#top_blocks_items').sortable('toArray'),
+						left:		$('#left_blocks_items').sortable('toArray'),
+						floating:	$('#floating_blocks_items').sortable('toArray'),
+						right:		$('#right_blocks_items').sortable('toArray'),
+						bottom:		$('#bottom_blocks_items').sortable('toArray')
+					})
+				);
+			}
+		);
+		$('#top_blocks_items, #left_blocks_items, #floating_blocks_items, #right_blocks_items, #bottom_blocks_items').sortable({
+			connectWith:	'.blocks_items',
+			placeholder:	'ui-state-default',
+			items:			'li:not(.ui-state-disabled)',
+			cancel:			'.ui-state-disabled',
+			update:			function () {save = true;}
+		}).disableSelection();
+	}
 });

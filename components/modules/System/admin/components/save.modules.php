@@ -108,7 +108,7 @@ if (isset($_POST['update_modules_list'])) {
 				]
 			)) {
 				if (isset($_POST['db']) && is_array($_POST['db']) && count($Config->db) > 1) {
-					$module_data['db'] = $_POST['db'];//TODO data validation
+					$module_data['db'] = xap($_POST['db']);
 					$a->save('components');
 				}
 			}
@@ -121,7 +121,7 @@ if (isset($_POST['update_modules_list'])) {
 				]
 			)) {
 				if(isset($_POST['storage']) && is_array($_POST['storage']) && count($Config->storage) > 1) {
-					$module_data['storage'] = $_POST['storage'];//TODO data validation
+					$module_data['storage'] = xap($_POST['storage']);
 					$a->save('components');
 				}
 			}

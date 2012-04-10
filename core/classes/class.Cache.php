@@ -153,17 +153,16 @@ class Cache {
 			global $Core;
 			foreach ($Config->server['mirrors']['http'] as $url) {
 				if (!($url == $Config->server['host'] && $Config->server['protocol'] == 'http')) {
-					$Core->send('http://'.$url.'/api/'.MODULE.'/admin/cache/del', ['item' => $item]);
+					$Core->send('http://'.$url.'/api/System/admin/cache/del', ['item' => $item]);
 				}
 			}
 			foreach ($Config->server['mirrors']['https'] as $url) {
 				if (!($url != $Config->server['host'] && $Config->server['protocol'] == 'https')) {
-					$Core->send('https://'.$url.'/api/'.MODULE.'/admin/cache/del', ['item' => $item]);
+					$Core->send('https://'.$url.'/api/System/admin/cache/del', ['item' => $item]);
 				}
 			}
 			unset($url);
 		}
-
 		if (is_object($this->memcache) && $this->memcache->get(DOMAIN.$item)) {
 			$this->memcache->delete(DOMAIN.$item);
 		}
