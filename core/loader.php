@@ -47,6 +47,23 @@ $loader_init_memory = memory_get_usage();
 //ВНИМАНИЕ: Отключение создания следующих объектов или изменение порядка почти на 100% приведет к полной неработоспособности движка!!!
 //При необходимости изменения логики работы первычных классов движка используйте пользовательские версии файлов, не изменяя порядок загрузки
 $Objects = new Objects;								//Объект подключения и выгрузки классов
+//This block only for IDE
+if (false) {
+	global $Core, $Cache, $Text, $L, $Page, $Error, $db, $Storage, $Config, $Mail, $Key, $User, $Index;
+	$Core		= new Core();
+	$Cache		= new Cache();
+	$Text		= new Text();
+	$L			= new Language();
+	$Page		= new Page();
+	$Error		= new Error();
+	$db			= new DB();
+	$Storage	= new Storage();
+	$Config		= new Config();
+	$Mail		= new Mail();
+	$Key		= new Key();
+	$User		= new User();
+	$Index		= new Index();
+}
 $Objects->load(
 	array(
 		'Core',										//Объект ядра движка (проверка путей и функции шифрования)

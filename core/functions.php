@@ -168,10 +168,7 @@
 		while (($file = _readdir($dirc)) || $file === '0') {	//If file name if '0', it considered as boolean false, that's why,
 																//I have added $file === '0'
 			if (
-				(
-					$mask && !preg_match($mask, $file) &&
-					(!$subfolders || !_is_dir($dir.$file))
-				) ||
+				($mask && !preg_match($mask, $file) && (!$subfolders || !_is_dir($dir.$file))) ||
 				$file == '.' || $file == '..' || $file == '.htaccess' || $file == '.htpasswd' || $file == '.gitignore'
 			) {
 				continue;
@@ -628,19 +625,6 @@
 	//настоятельно рекомендуется к использованию вместо стандартной!
 	function _json_encode ($in) {
 		return json_encode($in, JSON_UNESCAPED_UNICODE);
-		/*return html_entity_decode(
-			preg_replace(
-				'/\\\&#x([0-9a-fA-F]{3});/',
-				'\\\\\u0$1',
-				preg_replace(
-					'/\\\u0([0-9a-fA-F]{3})/',
-					'&#x$1;',
-					json_encode($in)
-				)
-			),
-			ENT_NOQUOTES,
-			CHARSET
-		);*/
 	}
 	//Аналог системной функции json_decode, сразу возвращает ассоциативный массив, просто так удобнее вызывать
 	function _json_decode ($in, $depth = 512) {

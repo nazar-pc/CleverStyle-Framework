@@ -1,7 +1,13 @@
 <?php
 
 class Config {
-	public	$admin_parts	= [				//Столбцы в БД в таблице конфигурации движка
+	public	$core			= [],
+			$db				= [],
+			$storage		= [],
+			$components		= [],
+			$replace		= [],
+			$routing		= [],
+			$admin_parts	= [				//Столбцы в БД в таблице конфигурации движка
 				'core',
 				'db',
 				'storage',
@@ -165,16 +171,13 @@ class Config {
 			if (!defined('MODULE')) {
 				define('MODULE', array_shift($rc));
 			}
-		} elseif (!isset($rc[0]) || $rc[0] == '') {
+		} else {
 			if (!defined('MODULE')) {
 				define('MODULE', 'System');
 				if (!ADMIN && !API && !isset($rc[1])) {
 					define('HOME', true);
 				}
 			}
-		} else {
-			define('MODULE', 'System');
-			define('ERROR_PAGE', 404);
 		}
 		!defined('HOME')	&& define('HOME', false);
 		//Скорректированный полный путь страницы (рекомендуемый к использованию)

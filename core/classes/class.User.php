@@ -91,7 +91,7 @@ class User {
 				}
 			}
 			//Устанавливаем метку, что это бот. В любом случае изменение любых настроек,
-			//в том числе и языка и вида интерфейса для него недоступно
+			//в том числе языка и вида интерфейса для него недоступно
 			$this->current['is']['bot'] = true;
 			//Устанавливаем метку, что это гость, это нужно для упрощения доступа к материалам,
 			//доступ к которым не ограничивается
@@ -203,18 +203,6 @@ class User {
 		$this->init = true;
 		if (($this->users_columns = $Cache->users_columns) === false) {
 			$this->users_columns = $Cache->users_columns = $this->db()->columns('[prefix]users');
-		}
-		if (($this->permissions_table = $Cache->permissions_table) === false) {
-			$permissions_table	= [];
-			$data				= $this->db()->qfa('SELECT `id`, `label`, `group` FROM `[prefix]permissions`');
-			foreach ($data as $item) {
-				if (!isset($permissions_table[$item['group']])) {
-					$permissions_table[$item['group']] = [];
-				}
-				$permissions_table[$item['group']][$item['label']] = $item['id'];
-			}
-			unset($data, $item);
-			$this->permissions_table = $Cache->permissions_table = $permissions_table;
 		}
 	}
 	/**
@@ -438,14 +426,6 @@ class User {
 			$this->data[$user]['permissions'] = array_merge($permissions, $this->get_user_permissions($user));
 			unset($permissions);
 		}
-		if (isset($this->permissions_table[$group], $this->permissions_table[$group][$label])) {
-			$permission = $this->permissions_table[$group][$label];
-			if (isset($this->data[$user]['permissions'][$permission])) {
-				return (bool)$this->data[$user]['permissions'][$permission];
-			} else {
-				return false;
-			}
-		}
 		return true;
 	}
 	/**
@@ -598,9 +578,10 @@ class User {
 	}
 	/**
 	 * @param int $group
+	 * @param bool|string $item
 	 * @return array|bool
 	 */
-	function get_group_data ($group) {
+	function get_group_data ($group, $item = false) {
 		global $Cache;
 		$group = (int)$group;
 		if (!$group) {
@@ -616,7 +597,15 @@ class User {
 			$group_data['data'] = _json_decode($group_data['data']);
 			$Cache->{'groups/'.$group} = $group_data;
 		}
-		return $group_data;
+		if ($item !== false) {
+			if (isset($group_data[$item])) {
+				return $group_data;
+			} else {
+				return false;
+			}
+		} else {
+			return $group_data;
+		}
 	}
 	function set_group_data ($data, $group) {
 		$group = (int)$group;
@@ -757,6 +746,29 @@ class User {
 			unset($Cache->{'users/permissions/'.$id});
 		}
 		return $return;
+	}
+	function get_permissions_table () {
+		if (empty($this->permissions_table)) {
+			global $Cache;
+			if (($this->permissions_table = $Cache->permissions_table) === false) {
+				$this->permissions_table	= [];
+				$data						= $this->db()->qfa('SELECT `id`, `label`, `group` FROM `[prefix]permissions`');
+				foreach ($data as $item) {
+					if (!isset($this->permissions_table[$item['group']])) {
+						$this->permissions_table[$item['group']] = [];
+					}
+					$this->permissions_table[$item['group']][$item['label']] = $item['id'];
+				}
+				unset($data, $item);
+				$Cache->permissions_table = $this->permissions_table;
+			}
+		}
+		return $this->permissions_table;
+	}
+	function del_permission_table () {
+		$this->permissions_table = [];
+		global $Cache;
+		unset($Cache->permissions_table);
 	}
 	/**
 	 * Find the session by id, and return id of owner (user)

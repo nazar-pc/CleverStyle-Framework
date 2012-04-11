@@ -63,7 +63,7 @@ if (isset($rc[2], $rc[3])) {
 } else {
 	$a->buttons			= false;
 	global $Cache;
-	$permissions		= $Cache->permissions_table;//TODO Groups collapsing
+	$permissions		= $User->get_permissions_table();//TODO Groups collapsing
 	$permissions_list	= [
 		h::{'th.ui-widget-header.ui-corner-all'}([$L->action, 'id', $L->group, $L->label]),
 		h::{'th.ui-widget-header.ui-corner-all'}([$L->action, 'id', $L->group, $L->label])

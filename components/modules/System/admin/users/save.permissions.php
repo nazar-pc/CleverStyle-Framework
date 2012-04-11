@@ -16,7 +16,7 @@ switch ($_POST['mode']) {
 			WHERE
 				`id` = '.$permission['id'].'
 			LIMIT 1');
-		unset($Cache->{'permissions_table'});
+		$User->del_permission_table();
 		$Index->save(true);
 	break;
 	case 'delete':
@@ -26,7 +26,8 @@ switch ($_POST['mode']) {
 			'DELETE FROM `[prefix]groups_permissions` WHERE `permission` = '.$id,
 			'DELETE FROM `[prefix]users_permissions` WHERE `permission` = '.$id
 		]);
-		unset($Cache->{'permissions_table'}, $Cache->{'users/permissions'}, $Cache->{'groups/permissions'});
+		$User->del_permission_table();
+		unset($Cache->{'users/permissions'}, $Cache->{'groups/permissions'});
 		$Index->save(true);
 		break;
 }

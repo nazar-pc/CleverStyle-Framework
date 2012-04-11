@@ -90,7 +90,7 @@ if (isset($rc[2])) {
 			$a->apply		= false;
 			$a->cancel_back	= true;
 			global $Cache;
-			$permissions	= $Cache->permissions_table;
+			$permissions	= $User->get_permissions_table();
 			$permission		= $User->get_group_permissions($rc[3]);
 			$tabs			= [];
 			$tabs_content	= '';
@@ -136,7 +136,7 @@ if (isset($rc[2])) {
 			$a->content(
 				h::{'p.ui-priority-primary.for_state_messages'}(
 					$L->permissions_for_group(
-						$User->get_group_data($rc[3])['title']
+						$User->get_group_data($rc[3], 'title')
 					)
 				).
 				h::{'div#group_permissions_tabs'}(

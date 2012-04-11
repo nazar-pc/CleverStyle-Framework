@@ -94,8 +94,9 @@ if (isset($_POST['update_modules_list'])) {
 						'DELETE FROM `[prefix]groups_permissions` WHERE `permission` IN ('.$permissions_ids.')',
 						'DELETE FROM `[prefix]users_permissions` WHERE `permission` IN ('.$permissions_ids.')'
 					]);
-					global $Cache;
-					unset($Cache->{'permissions_table'}, $Cache->{'users/permissions'}, $Cache->{'groups/permissions'});
+					global $Cache, $User;
+					$User->del_permission_table();
+					unset($Cache->{'users/permissions'}, $Cache->{'groups/permissions'});
 				}
 				$a->save('components');
 			}
