@@ -3,75 +3,38 @@
 //иначе работоспособность движка может быть нарушена
 	//Специальные функции для обработки подключения пользовательских файлов ядра
 	//Являются расширенными аналогами стандартных функций, настоятельно рекомендуются к использованию вместо стандартных
-		if (defined('USE_CUSTOM') && USE_CUSTOM) {
-			function _require ($file, $once = false, $show_errors = true) {
-				$file = str_to_path($file);
-				if (file_exists($file_x = str_replace(DIR, CUSTOM_DIR, $file)) || file_exists($file_x = $file)) {
-					if ($once) {
-						return require_once $file_x;
-					} else {
-						return require $file_x;
-					}
+		function _require ($file, $once = false, $show_errors = true) {
+			$file = str_to_path($file);
+			if (file_exists($file)) {
+				if ($once) {
+					return require_once $file;
 				} else {
-					global $L, $Error;
-					if ($show_errors && is_object($Error)) {
-						$data = debug_backtrace();
-						$Error->process(null, $L->file.' '.$file.' '.$L->not_exists, $data[0]['file'], $data[0]['line']);
-					}
-					return false;
+					return require $file;
 				}
+			} else {
+				global $L, $Error;
+				if ($show_errors && is_object($Error)) {
+					$data = debug_backtrace();
+					$Error->process(null, $L->file.' '.$file.' '.$L->not_exists, $data[0]['file'], $data[0]['line']);
+				}
+				return false;
 			}
-			function _include ($file, $once = false, $show_errors = true) {
-				$file = str_to_path($file);
-				if (file_exists($file_x = str_replace(DIR, CUSTOM_DIR, $file)) || file_exists($file_x = $file)) {
-					if ($once) {
-						return include_once $file_x;
-					} else {
-						return include $file_x;
-					}
+		}
+		function _include ($file, $once = false, $show_errors = true) {
+			$file = str_to_path($file);
+			if (file_exists($file)) {
+				if ($once) {
+					return include_once $file;
 				} else {
-					global $L, $Error;
-					if ($show_errors && is_object($Error)) {
-						$data = debug_backtrace();
-						$Error->process(null, $L->file.' '.$file.' '.$L->not_exists, $data[0]['file'], $data[0]['line']);
-					}
-					return false;
+					return include $file;
 				}
-			}
-		} else {
-			function _require ($file, $once = false, $show_errors = true) {
-				$file = str_to_path($file);
-				if (file_exists($file)) {
-					if ($once) {
-						return require_once $file;
-					} else {
-						return require $file;
-					}
-				} else {
-					global $L, $Error;
-					if ($show_errors && is_object($Error)) {
-						$data = debug_backtrace();
-						$Error->process(null, $L->file.' '.$file.' '.$L->not_exists, $data[0]['file'], $data[0]['line']);
-					}
-					return false;
+			} else {
+				global $L, $Error;
+				if ($show_errors && is_object($Error)) {
+					$data = debug_backtrace();
+					$Error->process(null, $L->file.' '.$file.' '.$L->not_exists, $data[0]['file'], $data[0]['line']);
 				}
-			}
-			function _include ($file, $once = false, $show_errors = true) {
-				$file = str_to_path($file);
-				if (file_exists($file)) {
-					if ($once) {
-						return include_once $file;
-					} else {
-						return include $file;
-					}
-				} else {
-					global $L, $Error;
-					if ($show_errors && is_object($Error)) {
-						$data = debug_backtrace();
-						$Error->process(null, $L->file.' '.$file.' '.$L->not_exists, $data[0]['file'], $data[0]['line']);
-					}
-					return false;
-				}
+				return false;
 			}
 		}
 		function _require_once ($file, $show_errors) {
@@ -915,7 +878,7 @@
 	 */
 	function password_check ($password) {
 		global $Config;
-		$min		= is_object($Config) ? $Config->core['password_min_length'] : 4;
+		$min		= is_object($Config) && $Config->core['password_min_length'] ? $Config->core['password_min_length'] : 4;
 		$password	= preg_replace('/\s+/', ' ', $password);
 		$s			= 0;
 		if(strlen($password) >= $min) {
@@ -962,6 +925,14 @@
 			'=', '+', '|', '\\', '/', ';', ':', ',', '.', '?', '[', ']', '{', '}'
 		];
 		static $small, $capital;
+		if ($length < 4) {
+			$length = 4;
+		}
+		if ($strength < 1) {
+			$strength = 1;
+		} elseif ($strength > $length) {
+			$strength = $length;
+		}
 		if (!isset($small)) {
 			$small = [];
 			for ($i = 97; $i <= 122; ++$i) {

@@ -55,7 +55,7 @@ $a->content(
 					array(
 						'name'			=> 'core[password_min_length]',
 						'value'			=> $Config->core['password_min_length'],
-						'min'			=> 1
+						'min'			=> 4
 					)
 				)
 			)

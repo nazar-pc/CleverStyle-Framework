@@ -33,10 +33,9 @@ if ($Mail->send_to(
 	$body
 )) {
 	_setcookie('confirm', 1);
-	header('Location: '.$_SERVER['PHP_SELF']);
+	header('Location: '.MODULE.'/profile/confirmation');
 } else {
 	$User->registration_cancel();
 	$Page->title($L->sending_mail_error_title);
 	$Page->warning($L->sending_mail_error);
 }
-?>

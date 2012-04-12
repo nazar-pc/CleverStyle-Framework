@@ -67,13 +67,12 @@ class Mail extends PHPMailer {
 			$signature = '';
 		}
 		if (substr($body, 0, 5) != '<html') {
-			global $Page;
 			if (substr($body, 0, 5) != '<body') {
-				$body = $Page->body($body.$signature);
+				$body = h::body($body.$signature);
 			}
-			$body = $Page->html(
-				$Page->head(
-					$Page->meta(
+			$body = h::html(
+				h::head(
+					h::meta(
 						array(
 							'content'		=> 'text/html; charset='.CHARSET,
 							'http-equiv'	=> 'Content-Type'
@@ -126,4 +125,3 @@ class Mail extends PHPMailer {
 		return $result;
 	}
 }
-?>

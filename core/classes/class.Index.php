@@ -91,7 +91,7 @@ class Index {
 							foreach ($value as $subpart) {
 								if ($User->permission($this->permission_group, $item.'/'.$subpart)) {
 									$this->subparts[] = $subpart;
-								} elseif ($rc[1] == $subpart) {
+								} elseif (isset($rc[1]) && $rc[1] == $subpart) {
 									define('ERROR_PAGE', 403);
 									$this->__finish();
 									return;
@@ -113,7 +113,7 @@ class Index {
 			$Page->title($L->{HOME ? 'home' : MODULE});
 		}
 		if ($this->parts) {
-			if (!isset($rc[0]) || ($rc[0] == '' && !empty($this->parts))) {
+			if (!isset($rc[0]) || $rc[0] == '') {
 				if (API) {
 					__finish();
 				}
@@ -504,9 +504,9 @@ class Index {
 		if (!$this->admin && !$this->api && _file_exists(MFOLDER.DS.'index.html')) {
 			global $Page;
 			$Page->content(_file_get_contents(MFOLDER.DS.'index.html'));
-			return;
+		} else {
+			$this->init_auto	&& $this->init();
 		}
-		$this->init_auto		&& $this->init();
 		$this->generate_auto	&& $this->generate();
 		closure_process($this->postload);
 	}

@@ -21,7 +21,7 @@ class Key {
 			WHERE
 				(
 					`id` = '.$db->$database()->sip($id_key).' OR `key` = '.$db->$database()->sip($id_key).'
-				) AND `expire` >= '.TIME.' LIMIT 1'
+				) AND `expire` >= '.TIME.' ORDER BY `id` DESC LIMIT 1'
 		);
 		$this->del($database, $id_key);
 		if (!$result || !is_array($result) || empty($result)) {

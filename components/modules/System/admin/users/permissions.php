@@ -2,12 +2,34 @@
 global $Config, $Index, $L, $User;
 $a				= &$Index;
 $rc				= &$Config->routing['current'];
-if (isset($rc[2], $rc[3])) {
+if (isset($rc[2])) {
 	switch ($rc[2]) {
-		case 'edit':
+		case 'add':
 			$a->apply		= false;
 			$a->cancel_back	= true;
-			$content		= $content_ = '';
+			$a->content(
+				h::{'table.admin_table.center_all'}(
+					h::{'tr th.ui-widget-header.ui-corner-all'}([
+						$L->group,
+						$L->label
+					]).
+					h::{'tr td.ui-widget-content.ui-corner-all'}([
+						h::{'input.form_element'}([
+							'name'		=> 'permission[group]'
+						]),
+						h::{'input.form_element'}([
+							'name'		=> 'permission[label]'
+						])
+					])
+				)
+			);
+		break;
+		case 'edit':
+			if (!isset($rc[3])) {
+				break;
+			}
+			$a->apply		= false;
+			$a->cancel_back	= true;
 			$permission		= $User->db()->qf('SELECT `id`, `label`, `group` FROM `[prefix]permissions` WHERE `id` = '.(int)$rc[3].' LIMIT 1');
 			$a->content(
 				h::{'table.admin_table.center_all'}(
@@ -37,6 +59,9 @@ if (isset($rc[2], $rc[3])) {
 			$Page->warning($L->changing_settings_warning);
 		break;
 		case 'delete':
+			if (!isset($rc[3])) {
+				break;
+			}
 			$a->buttons		= false;
 			$a->cancel_back	= true;
 			$permission		= $User->db()->qf('SELECT `label`, `group` FROM `[prefix]permissions` WHERE `id` = '.(int)$rc[3].' LIMIT 1');
@@ -126,8 +151,15 @@ if (isset($rc[2], $rc[3])) {
 	unset($permissions_list);
 	$a->content(
 		h::{'table.admin_table.center_all'}(
-			$permissions_list_
-		)//TODO make add permission function
-	//TODO write check permission function in Index
+			$permissions_list_.
+			h::{'tr td.left_all[colspan=8]'}(
+				h::button(
+					$L->add_permission,
+					[
+						'onMouseDown' => 'javasript: location.href= \'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add\';'
+					]
+				)
+			)
+		)
 	);
 }

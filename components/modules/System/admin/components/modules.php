@@ -1,13 +1,15 @@
 <?php
 global $Config, $Index, $L, $db;
-$a = &$Index;
-$rc = &$Config->routing['current'];
-$a->buttons = false;
+$a					= &$Index;
+$rc					= &$Config->routing['current'];
+$a->buttons			= false;
+$display_modules	= true;
 if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[2])) {
 	switch ($rc[2]) {
 		case 'install':
+			$display_modules = false;
 			$a->content(
-				$a->p(
+				h::p(
 					$L->installation_of_module.' '.h::b($rc[3])
 				)
 			);
@@ -36,8 +38,9 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 			}
 		break;
 		case 'uninstall':
+			$display_modules = false;
 			$a->content(
-				$a->p(
+				h::p(
 					$L->uninstallation_of_module.' '.h::b($rc[3])
 				)
 			);
@@ -66,6 +69,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 			}
 		break;
 		case 'db':
+			$display_modules = false;
 			global $Page;
 			$Page->warning($L->changing_settings_warning);
 			if (count($Config->db) > 1) {
@@ -86,53 +90,46 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 							$dbs_name[] = $db_data['name'].' ('.$db_data['host'].' / '.$db_data['type'].')';
 						}
 					}
-					$db_list[] = h::{'th.ui-widget-header.ui-corner-all'}(
-						array(
-							h::info('db_purpose'),
-							h::info('system_db')
-						)
-					);
+					$db_list[] = h::{'th.ui-widget-header.ui-corner-all'}([
+						h::info('db_purpose'),
+						h::info('system_db')
+					]);
 					$db_json = _json_decode(_file_get_contents(MODULES.DS.$rc[3].DS.'admin'.DS.'db.json'));
 					foreach ($db_json as $database) {
-						$db_list[] = h::{'td.ui-widget-content.ui-corner-all'}(
-							[
-								$L->{$rc[3].'_db_'.$database},
-								h::{'select.form_element'}(
-									[
-										'in'		=> $dbs_name,
-										'value'		=> $dbs
-									],
-									[
-										'name'		=> 'db['.$database.']',
-										'selected'	=> isset($Config->components['modules'][$rc[3]]['db'][$database]) ?
-											$Config->components['modules'][$rc[3]]['db'][$database] : 0,
-										'size'		=> 5
-									]
-								)
-							]
-						);
+						$db_list[] = h::{'td.ui-widget-content.ui-corner-all'}([
+							$L->{$rc[3].'_db_'.$database},
+							h::{'select.form_element'}(
+								[
+									'in'		=> $dbs_name,
+									'value'		=> $dbs
+								],
+								[
+									'name'		=> 'db['.$database.']',
+									'selected'	=> isset($Config->components['modules'][$rc[3]]['db'][$database]) ?
+										$Config->components['modules'][$rc[3]]['db'][$database] : 0,
+									'size'		=> 5
+								]
+							)
+						]);
 					}
 					$a->content(
 						h::{'table.admin_table'}(
 							h::tr($db_list)
 						).
-						h::{'input[type=hidden]'}(
-							[
-								'name'		=> 'module',
-								'value'		=> $rc[3]
-							]
-						).
-						h::{'input[type=hidden]'}(
-							[
-								'name'	=> 'mode',
-								'value'	=> $rc[2]
-							]
-						)
+						h::{'input[type=hidden]'}([
+							'name'		=> 'module',
+							'value'		=> $rc[3]
+						]).
+						h::{'input[type=hidden]'}([
+							'name'	=> 'mode',
+							'value'	=> $rc[2]
+						])
 					);
 				}
 			}
 		break;
 		case 'storage':
+			$display_modules = false;
 			global $Page;
 			$Page->warning($L->changing_settings_warning);
 			if (count($Config->storage) > 1) {
@@ -145,8 +142,8 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					$a->buttons = true;
 					$a->apply = false;
 					$a->cancel_back = true;
-					$storages = array(0);
-					$storages_name = array($L->core_storage);
+					$storages = [0];
+					$storages_name = [$L->core_storage];
 					foreach ($Config->storage as $i => &$storage_data) {
 						if ($i) {
 							$storages[] = $i;
@@ -154,49 +151,40 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 						}
 					}
 					unset($i, $storage_data);
-					$storage_list[] = h::{'th.ui-widget-header.ui-corner-all'}(
-						[
-							h::info('module_storage'),//TODO add strings into language file and check processing of storage configuration
-							h::info('system_storage')
-						]
-					);
+					$storage_list[] = h::{'th.ui-widget-header.ui-corner-all'}([
+						h::info('storage_purpose'),//TODO  check processing of storage configuration
+						h::info('system_storage')
+					]);
 					$storage_json = _json_decode(_file_get_contents(MODULES.DS.$rc[3].DS.'admin'.DS.'storage.json'));
 					foreach ($storage_json as $storage) {
-						$storage_translate = $rc[3].'_storage_'.$storage;
-						$storage_list[] = h::{'td.ui-widget-content.ui-corner-all'}(
-							[
-								$L->$storage_translate,
-								h::{'select.form_element'}(
-									[
-										'in'		=> $storages_name,
-										'value'		=> $storages
-									],
-									[
-										'name'		=> 'storage['.$storage.']',
-										'selected'	=> isset($Config->components['modules'][$rc[3]]['storage'][$storage]) ?
-											$Config->components['modules'][$rc[3]]['storage'][$storage] : 0,
-										'size'		=> 5
-									]
-								)
-							]
-						);
+						$storage_list[] = h::{'td.ui-widget-content.ui-corner-all'}([
+							$L->{$rc[3].'_storage_'.$storage},
+							h::{'select.form_element'}(
+								[
+									'in'		=> $storages_name,
+									'value'		=> $storages
+								],
+								[
+									'name'		=> 'storage['.$storage.']',
+									'selected'	=> isset($Config->components['modules'][$rc[3]]['storage'][$storage]) ?
+										$Config->components['modules'][$rc[3]]['storage'][$storage] : 0,
+									'size'		=> 5
+								]
+							)
+						]);
 					}
 					$a->content(
 						h::{'table.admin_table'}(
 							h::tr($storage_list)
 						).
-						h::{'input[type=hidden]'}(
-							[
-								'name'		=> 'module',
-								'value'		=> $rc[3]
-							]
-						).
-						h::{'input[type=hidden]'}(
-							[
-								'name'	=> 'mode',
-								'value'	=> $rc[2]
-							]
-						)
+						h::{'input[type=hidden]'}([
+							'name'		=> 'module',
+							'value'		=> $rc[3]
+						]).
+						h::{'input[type=hidden]'}([
+							'name'	=> 'mode',
+							'value'	=> $rc[2]
+						])
 					);
 				}
 			}
@@ -210,7 +198,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					'name' => $rc[3]
 				]
 			);
-			break;
+		break;
 		case 'disable':
 			$Config->components['modules'][$rc[3]]['active'] = 0;
 			$a->save('components');
@@ -220,7 +208,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					'name' => $rc[3]
 				]
 			);
-			break;
+		break;
 	}
 	switch ($rc[2]) {
 		case 'install':
@@ -228,26 +216,23 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 		case 'db':
 		case 'storage':
 			$a->content(
-				h::{'input[type=hidden]'}(
-					[
-						'name'	=> 'mode',
-						'value'	=> $rc[2]
-					]
-				)
+				h::{'input[type=hidden]'}([
+					'name'	=> 'mode',
+					'value'	=> $rc[2]
+				])
 			);
 	}
-} else {
+}
+if ($display_modules) {
 	unset($rc);
 	global $Cache;
 	$db_users_items = $Cache->users_columns;
 	$modules_list = h::tr(
-		h::{'th.ui-widget-header.ui-corner-all'}(
-			[
-				$L->module_name,
-				$L->state,
-				$L->action
-			]
-		)
+		h::{'th.ui-widget-header.ui-corner-all'}([
+			$L->module_name,
+			$L->state,
+			$L->action
+		])
 	);
 	foreach ($Config->components['modules'] as $module => &$mdata) {
 		//If module if enabled or disabled
@@ -422,7 +407,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 			h::{'td.ui-widget-content.ui-corner-all'}($module).
 			h::{'td.ui-widget-content.ui-corner-all'}(
 				h::icon(
-					$mdata['active'] == 1 ? 'check' : ($mdata['active'] == 2 ? 'minusthick' : 'closethick'),
+					$mdata['active'] == 1 ? 'check' : ($mdata['active'] == 0 ? 'minusthick' : 'closethick'),
 					[
 						'data-title'	=> $mdata['active'] == 1 ? $L->enabled :
 							($mdata['active'] == 2 ? $L->disabled : $L->uninstalled.' ('.$L->not_installed.')')
@@ -434,9 +419,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 		);
 	}
 	$a->content(
-		h::{'table.admin_table.center_all'}(
-			$modules_list
-		).
+		h::{'table.admin_table.center_all'}($modules_list).
 		h::{'button[type=submit]'}(
 			$L->update_modules_list,
 			[

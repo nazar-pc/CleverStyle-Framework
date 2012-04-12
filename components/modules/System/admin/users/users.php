@@ -238,7 +238,7 @@ if (isset($rc[2], $rc[3])) {
 			$a->apply		= false;
 			$a->cancel_back	= true;
 			global $Cache;
-			$permissions	= $User->get_permission_table();;
+			$permissions	= $User->get_permissions_table();;
 			$permission		= $User->get_user_permissions($rc[3]);
 			$tabs			= [];
 			$tabs_content	= '';

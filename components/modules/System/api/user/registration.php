@@ -56,4 +56,3 @@ if ($Mail->send_to(
 	$User->registration_cancel();
 	$Page->content($L->sending_mail_error);
 }
-?>

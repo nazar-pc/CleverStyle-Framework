@@ -89,6 +89,10 @@ if (isset($_POST['update_modules_list'])) {
 						`group` = '.$User->db_prime()->sip($_POST['module'].'/admin')
 				);
 				if (!empty($permissions_ids)) {
+					foreach ($permissions_ids as &$id) {
+						$id = $id['id'];
+					}
+					unset($id);
 					$permissions_ids = implode(',', $permissions_ids);
 					$User->db_prime()->q([
 						'DELETE FROM `[prefix]groups_permissions` WHERE `permission` IN ('.$permissions_ids.')',

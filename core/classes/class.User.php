@@ -213,6 +213,16 @@ class User {
 	 */
 	function get ($item, $user = false, $stop_key = false) {
 		$user = (int)($user ?: $this->id);
+		switch ($item) {
+			case 'user_agent':
+				return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+			case 'ip':
+				return $_SERVER['REMOTE_ADDR'];
+			case 'forwarded_for':
+				return isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : false;
+			case 'client_ip':
+				return isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : false;
+		}
 		if (!$user) {
 			return false;
 		}
@@ -221,15 +231,6 @@ class User {
 		static $_stop_key;
 		if (!isset($_stop_key)) {
 			$_stop_key = uniqid();
-		}
-		if ($item == 'user_agent') {
-			return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
-		} elseif ($item == 'ip') {
-			return $this->data[$this->id][$item] = $_SERVER['REMOTE_ADDR'];
-		} elseif ($item == 'forwarded_for') {
-			return $this->data[$this->id][$item] = isset($_SERVER['HTTP_X_FORWARDED_FOR'])	? $_SERVER['HTTP_X_FORWARDED_FOR'] : false;
-		} elseif ($item == 'client_ip') {
-			return $this->data[$this->id][$item] = isset($_SERVER['HTTP_CLIENT_IP'])		? $_SERVER['HTTP_CLIENT_IP'] : false;
 		}
 		//Link for simplier use
 		$data = &$this->data[$user];
@@ -412,21 +413,31 @@ class User {
 			return false;
 		}
 		if (!isset($this->data[$user])) {
-			$data[$user] = [];
+			$this->data[$user] = [];
 		}
 		if (!isset($this->data[$user]['permissions'])) {
-			$groups = $this->get_user_groups($user);
-			$permissions = [];
+			$groups								= $this->get_user_groups($user);
+			$this->data[$user]['permissions']	= [];
+			$permissions						= &$this->data[$user]['permissions'];
 			if (is_array($groups)) {
 				foreach ($groups as $group_id) {
-					$permissions = array_merge($permissions, $this->get_group_permissions($group_id));
+					$permissions = array_merge($permissions ?: [], $this->get_group_permissions($group_id) ?: []);
 				}
 			}
 			unset($groups, $group_id);
-			$this->data[$user]['permissions'] = array_merge($permissions, $this->get_user_permissions($user));
+			$permissions						= array_merge($permissions ?: [], $this->get_user_permissions($user) ?: []);
 			unset($permissions);
 		}
-		return true;
+		if (isset($this->get_permissions_table()[$group], $this->get_permissions_table()[$group][$label])) {
+			$permission = $this->get_permissions_table()[$group][$label];
+			if (isset($this->data[$user]['permissions'][$permission])) {
+				return (bool)$this->data[$user]['permissions'][$permission];
+			} else {
+				return false;
+			}
+		} else {
+			return true;
+		}
 	}
 	/**
 	 * @param bool|int $user
@@ -458,7 +469,9 @@ class User {
 		}
 		$return = true;
 		if (!empty($delete)) {
-			$return = $this->db_prime()->q('DELETE FROM `[prefix]users_permissions` WHERE `id` = '.$user.' AND `permission` IN ('.implode(', ', $delete).')');
+			$return = $this->db_prime()->q(
+				'DELETE FROM `[prefix]users_permissions` WHERE `id` = '.$user.' AND `permission` IN ('.implode(', ', $delete).')'
+			);
 		}
 		unset($delete);
 		if (empty($data)) {
@@ -770,6 +783,51 @@ class User {
 		global $Cache;
 		unset($Cache->permissions_table);
 	}
+	function add_permission ($group, $label) {
+		$group	= $this->db_prime()->sip(xap($group));
+		$label	= $this->db_prime()->sip(xap($label));
+		if ($this->db_prime()->q('INSERT INTO `[prefix]permissions` (`label`, `group`) VALUES ('.$label.', '.$group.')')) {
+			$this->del_permission_table();
+			return $this->db_prime()->insert_id();
+		} else {
+			return false;
+		}
+	}
+	function get_permission ($id) {
+		$id		= (int)$id;
+		if (!$id) {
+			return false;
+		}
+		return $this->db_prime()->qf('SELECT `id`, `label`, `group` FROM `[prefix]permissions` WHERE `id` = '.$id);
+	}
+	function set_permission ($id, $group, $label) {
+		$id		= (int)$id;
+		if (!$id) {
+			return false;
+		}
+		$group	= $this->db_prime()->sip(xap($group));
+		$label	= $this->db_prime()->sip(xap($label));
+		if ($this->db_prime()->q('UPDATE `[prefix]permissions` SET `label` = '.$label.', `group` = '.$group.' WHERE `id` = '.$id)) {
+			$this->del_permission_table();
+			return true;
+		} else {
+			return false;
+		}
+	}
+	function del_permission ($id) {
+		$id		= (int)$id;
+		if (!$id) {
+			return false;
+		}
+		if ($this->db_prime()->q('DELETE FROM `[prefix]permissions` WHERE `id` = '.$id)) {
+			global $Cache;
+			unset($Cache->{'users/permissions'}, $Cache->{'groups/permissions'});
+			$this->del_permission_table();
+			return true;
+		} else {
+			return false;
+		}
+	}
 	/**
 	 * Find the session by id, and return id of owner (user)
 	 * @param string $session_id
@@ -1000,7 +1058,6 @@ class User {
 				`password_hash`,
 				`email`,
 				`email_hash`,
-				`groups`,
 				`regdate`,
 				`regip`,
 				`regkey`,
@@ -1011,7 +1068,6 @@ class User {
 				\''.hash('sha512', $password).'\',
 				'.$this->db_prime()->sip($email).',
 				\''.$email_.'\',
-				2,
 				'.TIME.',
 				\''.ip2hex($this->ip).'\',
 				\''.$reg_key.'\',
@@ -1035,7 +1091,7 @@ class User {
 				'reg_key'	=> $Config->core['require_registration_confirmation'] ? $reg_key : true,
 				'password'	=> $password
 			];
-		} else {
+		} else {echo mysql_error();
 			return 'error';
 		}
 	}
@@ -1072,14 +1128,15 @@ class User {
 		if (!isset($data['email'])) {
 			return false;
 		}
-		$this->reg_id = $data['id'];
-		$password	= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
+		$this->reg_id	= $data['id'];
+		$password		= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
 		$this->db_prime()->q('UPDATE `[prefix]users`
 			SET
 				`password_hash` = \''.hash('sha512', $password).'\',
 				`status` = 1
 			WHERE `id` = '.$this->reg_id
 		);
+		$this->db_prime()->q('INSERT INTO `[prefix]users_groups` (`id`, `group`) VALUES ('.$this->reg_id.', 2)');
 		$this->add_session($this->reg_id);
 		return [
 			'email'		=> $data['email'],
@@ -1094,21 +1151,21 @@ class User {
 			return;
 		}
 		$this->add_session(1);
-		$this->db_prime()->q('UPDATE `[prefix]users`
-			SET
-				`login` = null,
-				`login_hash` = null,
-				`username` = \'deleted\',
-				`password_hash` = null,
-				`email` = null,
-				`email_hash` = null,
-				`groups` = null,
-				`regdate` = 0,
-				`regip` = null,
-				`regkey` = null,
-				`status` = -1
-			WHERE `id` = '.$this->reg_id
-		);
+		$this->db_prime()->q([
+			'UPDATE `[prefix]users`
+				SET
+					`login` = null,
+					`login_hash` = null,
+					`username` = \'deleted\',
+					`password_hash` = null,
+					`email` = null,
+					`email_hash` = null,
+					`regdate` = 0,
+					`regip` = null,
+					`regkey` = null,
+					`status` = -1
+				WHERE `id` = '.$this->reg_id.' LIMIT 1'
+		]);
 		$this->reg_id = 0;
 	}
 	/**
