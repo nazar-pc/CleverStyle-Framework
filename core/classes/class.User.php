@@ -1,8 +1,6 @@
 <?php
 class User {
-	protected	$secret,							//Secret random phrase for separating internal
-													//function calling from external ones
-				$current				= [
+	protected	$current				= [
 					'session'		=> false,
 					'is'			=> [
 						'admin'			=> false,
@@ -25,7 +23,6 @@ class User {
 				$permissions_table		= [];		//Array of all permissions for quick selecting
 
 	function __construct () {
-		$this->secret = uniqid();
 		global $Cache, $Config, $Page, $L, $Key;
 		//Detecting of current user
 		//Last part in page path - key
@@ -67,18 +64,17 @@ class User {
 			}
 		}
 		unset($key_data, $key, $rc);
-		//Пользователь может устанавливать cookies
-		if (setcookie($test = uniqid(), 'test')) {
-			setcookie($test, '');
-			unset($test);
-			//Получение id пользователя по сессии
+		//If session exists
+		if (_getcookie('session')) {
 			$this->id = $this->get_session();
-		//Не может установивить cookie - значит (вероятнее всего) бот
 		} else {
-			unset($test);
-			//Получаем список известных ботов
+			//Loading bots list
 			if (($bots = $Cache->{'users/bots'}) === false) {
-				$bots = $this->db()->qfa('SELECT `id`, `login`, `email` FROM `[prefix]users` WHERE 3 IN (`groups`)');
+				$bots = $this->db()->qfa(
+					'SELECT `u`.`id`, `u`.`login`, `u`.`email`
+					FROM `[prefix]users` AS `u`, `[prefix]users_groups` AS `g`
+					WHERE `u`.`id` = `g`.`id` AND `g`.`group` = 3'
+				);
 				if (is_array($bots) && !empty($bots)) {
 					foreach ($bots as &$bot) {
 						$bot['login'] = _json_decode($bot['login']);
@@ -90,22 +86,16 @@ class User {
 					$Cache->{'users/bots'} = 'null';
 				}
 			}
-			//Устанавливаем метку, что это бот. В любом случае изменение любых настроек,
-			//в том числе языка и вида интерфейса для него недоступно
-			$this->current['is']['bot'] = true;
-			//Устанавливаем метку, что это гость, это нужно для упрощения доступа к материалам,
-			//доступ к которым не ограничивается
-			$this->current['is']['guest'] = true;
-			//Для бота символически логином является $_SERVER['HTTP_USER_AGENT'] (название робота),
-			//а электронной почтой  - $_SERVER['REMOTE_ADDR'] (IP робота)
-			$user_agent	= $this->current['user_agent']	= $_SERVER['HTTP_USER_AGENT'];
-			$ip			= $this->current['ip']			= $_SERVER['REMOTE_ADDR'];
-			$bot_hash	= hash('sha224', $user_agent.$ip);
-			//Если список известных ботов не пустой - определяем бота
+			//For bot symbolic login is $_SERVER['HTTP_USER_AGENT'] (bot user agent),
+			//and email  - $_SERVER['REMOTE_ADDR'] (bot IP)
+			$user_agent						= $this->current['user_agent']	= $_SERVER['HTTP_USER_AGENT'];
+			$ip								= $this->current['ip']			= $_SERVER['REMOTE_ADDR'];
+			$bot_hash						= hash('sha224', $user_agent.$ip);
+			//If list is not empty - try to find bot
 			if (is_array($bots) && !empty($bots)) {
-				//Загружаем данные
+				//Load data
 				if (($this->id = $Cache->{'users/'.$bot_hash}) === false) {
-					//Данных нет - ищем бота в списке известных
+					//If no data - try to find bot in list of known bots
 					foreach ($bots as &$bot) {
 						foreach ($bot['login'] as $login) {
 							if ($user_agent == $login || preg_match($user_agent, $login)) {
@@ -120,22 +110,24 @@ class User {
 							}
 						}
 					}
-					unset($bots, $login, $email);
-					//Если получен id - бот найден
+					unset($bots, $bot, $login, $email);
+					//If found id - this i bot
 					if ($this->id) {
 						$Cache->{'users/'.$bot_hash} = $this->id;
-					//Если такого бота в БД нет - определяем как гостя
+					//If bot not found - will be guest
 					} else {
 						$Cache->{'users/'.$bot_hash} = $this->id = 1;
 					}
 				}
-			//Список ботов пустой - определяем как гостя
+			//Bots is is empty - will be guest
 			} else {
 				$Cache->{'users/'.$bot_hash} = $this->id = 1;
 			}
+			unset($bots, $user_agent, $ip, $bot_hash);
+			$this->add_session($this->id);
 		}
-		//Загружаем данные пользователя
-		//Точка возврата, выполняется, если аккаунт блокирован, неактивирован, или отключен
+		//Load user data
+		//Return point, runs if user is blocked, inactive, or disabled
 		getting_user_data:
 		unset($data);
 		$data = &$this->data[$this->id];
@@ -146,34 +138,38 @@ class User {
 				WHERE `id` = '.$this->id.'
 				LIMIT 1'
 			);
-			if (is_array($data)) {
-				$Cache->{'users/'.$this->id} = $data;
-				if ($data['status'] != 1) {
-					if ($data['status'] == 0) {
-						$Page->warning($L->your_account_disabled);
-						//Отмечаем как гостя, и получаем данные заново
-						$this->id = 1;
-						$this->del_session();
-						goto getting_user_data;
-					} else {
-						$Page->warning($L->your_account_is_not_active);
-						//Отмечаем как гостя, и получаем данные заново
-						$this->id = 1;
-						$this->del_session();
-						goto getting_user_data;
-					}
-				} elseif ($data['block_until'] > TIME) {
-					$Page->warning($L->your_account_blocked_until.' '.date($L->_datetime, $data['block_until']));
-					//Отмечаем как гостя, и получаем данные заново
+		}
+		if (is_array($data)) {
+			$Cache->{'users/'.$this->id} = $data;
+			if ($data['status'] != 1) {
+				//If user is disabled
+				if ($data['status'] == 0) {
+					$Page->warning($L->your_account_disabled);
+					//Mark user as guest, load data again
+					$this->id = 1;
+					$this->del_session();
+					goto getting_user_data;
+				//If user is not active
+				} else {
+					$Page->warning($L->your_account_is_not_active);
+					//Mark user as guest, load data again
 					$this->id = 1;
 					$this->del_session();
 					goto getting_user_data;
 				}
-			} elseif ($this->id != 1) {
-				//Если данные не были получены - отмечаем, как гостя и пытаемся получить данные заново
+			//If user if blocked
+			} elseif ($data['block_until'] > TIME) {
+				$Page->warning($L->your_account_blocked_until.' '.date($L->_datetime, $data['block_until']));
+				//Mark user as guest, load data again
 				$this->id = 1;
+				$this->del_session();
 				goto getting_user_data;
 			}
+		} elseif ($this->id != 1) {
+			//If data wasn't loaded - mark user as guest, load data again
+			$this->id = 1;
+			$this->del_session();
+			goto getting_user_data;
 		}
 		unset($data);
 		if ($this->id == 1) {
@@ -187,6 +183,7 @@ class User {
 			} elseif (in_array(2, $groups)) {
 				$this->current['is']['user']	= true;
 			} elseif (in_array(3, $groups)) {
+				$this->current['is']['guest']	= true;
 				$this->current['is']['bot']		= true;
 			}
 			unset($groups);
@@ -208,11 +205,9 @@ class User {
 	/**
 	 * @param array|string $item
 	 * @param bool|int $user
-	 * @param bool $stop_key
 	 * @return array|bool
 	 */
-	function get ($item, $user = false, $stop_key = false) {
-		$user = (int)($user ?: $this->id);
+	function get ($item, $user = false) {
 		switch ($item) {
 			case 'user_agent':
 				return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
@@ -223,15 +218,20 @@ class User {
 			case 'client_ip':
 				return isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : false;
 		}
+		return $this->get_internal($item, $user);
+	}
+	/**
+	 * @param array|string $item
+	 * @param bool|int $user
+	 * @param bool $cache_only
+	 * @return array|bool
+	 */
+	protected function get_internal ($item, $user = false, $cache_only = false) {
+		$user = (int)($user ?: $this->id);
 		if (!$user) {
 			return false;
 		}
 		global $Cache;
-		//Key of stopping, prohibits getting of data from db, when retrieves array of data
-		static $_stop_key;
-		if (!isset($_stop_key)) {
-			$_stop_key = uniqid();
-		}
 		//Link for simplier use
 		$data = &$this->data[$user];
 		//Если получаем массив значений
@@ -240,7 +240,7 @@ class User {
 			//Пытаемся достать значения с локального кеша, иначе составляем массив недостающих значений
 			foreach ($item as $i) {
 				if (in_array($i, $this->users_columns)) {
-					if (($res = $this->get($i, $user, $_stop_key)) != $_stop_key) {
+					if (($res = $this->get($i, $user, true)) !== false) {
 						$result[$i] = $res;
 					} else {
 						$new_items[] = $i;
@@ -273,14 +273,14 @@ class User {
 			} else {
 				return false;
 			}
-		//Если получаем одно значение
+			//Если получаем одно значение
 		} elseif (in_array($item, $this->users_columns)) {
 			//Указатель начала получения данных
 			get_data:
 			//Если данные в локальном кеше - возвращаем
 			if (isset($data[$item])) {
 				return $data[$item];
-			//Иначе если из кеша данные не доставали - пробуем достать
+				//Иначе если из кеша данные не доставали - пробуем достать
 			} elseif (!isset($new_data) && ($new_data = $Cache->{'users/'.$user}) && is_array($new_data)) {
 				//Обновляем локальный кеш
 				if (is_array($new_data)) {
@@ -288,9 +288,7 @@ class User {
 				}
 				//Делаем новую попытку загрузки данных
 				goto get_data;
-			} elseif ($stop_key == $_stop_key) {
-				return $stop_key;
-			} else {
+			} elseif (!$cache_only) {
 				$new_data = $this->db()->qf('SELECT `'.$item.'` FROM `[prefix]users` WHERE `id` = '.($user).' LIMIT 1');
 				if (is_array($new_data)) {
 					$this->update_cache[$user] = true;
@@ -388,10 +386,11 @@ class User {
 			return false;
 		}
 		$data = $this->db()->qf(
-			'SELECT `id` FROM `[prefix]users` WHERE '.
-				'`login_hash` = '.$this->db()->sip($login_hash).' OR '.
-				'`email_hash` = '.$this->db()->sip($login_hash).' '.
-				'LIMIT 1'
+			'SELECT `id` FROM `[prefix]users`
+			WHERE
+				`login_hash` = '.$this->db()->sip($login_hash).' OR
+				`email_hash` = '.$this->db()->sip($login_hash).'
+			LIMIT 1'
 		);
 		return is_array($data) && $data['id'] != 1 ? $data['id'] : false;
 	}
@@ -533,7 +532,8 @@ class User {
 		foreach ($insert as $group) {
 			$q[] = $user.', '.(int)$group;
 		}
-		$return		= $return && $this->db_prime()->q('INSERT INTO `[prefix]users_groups`
+		$return		= $return && $this->db_prime()->q(
+			'INSERT INTO `[prefix]users_groups`
 				(`id`, `group`)
 			VALUES
 				('.implode('), (', $q).')'
@@ -744,7 +744,8 @@ class User {
 			}
 			unset($data, $permission, $value);
 			if (!empty($insert)) {
-				$return = $return && $this->db_prime()->q('INSERT INTO `'.$table.'`
+				$return = $return && $this->db_prime()->q(
+					'INSERT INTO `'.$table.'`
 						(`id`, `permission`, `value`)
 					VALUES
 						('.implode('), (', $insert).')'
@@ -830,17 +831,18 @@ class User {
 	}
 	/**
 	 * Find the session by id, and return id of owner (user)
+	 *
 	 * @param string $session_id
-	 * @param bool|string $secret For internal usage
 	 * @return int User id
 	 */
-	function get_session ($session_id = '', $secret = false) {
+	function get_session ($session_id = '') {
 		$this->current['session'] = _getcookie('session');
 		$session_id = $session_id ?: $this->current['session'];
 		global $Cache, $Config;
 		$result = false;
 		if ($session_id && !($result = $Cache->{'sessions/'.$session_id})) {
-			$result = $this->db()->qf('SELECT
+			$result = $this->db()->qf(
+				'SELECT
 					`user`, `expire`, `user_agent`, `ip`, `forwarded_for`, `client_ip`
 				FROM `[prefix]sessions`
 				WHERE
@@ -853,15 +855,13 @@ class User {
 			);
 			$Cache->{'sessions/'.$session_id} = $result;
 		}
-		if ($secret === $this->secret) {
-			return $result['user'];
-		}
 		if (!$session_id || !is_array($result)) {
 			$this->add_session(1);
 			return 1;
 		}
 		if ($result['expire'] - TIME < $Config->core['session_expire'] * $Config->core['update_ratio'] / 100) {
-			$this->db_prime()->q('UPDATE `[prefix]sessions`
+			$this->db_prime()->q(
+				'UPDATE `[prefix]sessions`
 				SET `expire` = '.(TIME + $Config->core['session_expire']).'
 				WHERE `id` = \''.$session_id.'\''
 			);
@@ -872,12 +872,13 @@ class User {
 	}
 	/**
 	 * Create the session for the user with specified id
+	 *
 	 * @param int $id
 	 * @return bool
 	 */
 	function add_session ($id) {
 		if (preg_match('/^[0-9a-z]{32}$/', $this->current['session'])) {
-			$this->del_session();
+			$this->del_session(null, false);
 		}
 		global $Config;
 		//Generate hash in cycle, to obtain unique value
@@ -922,14 +923,17 @@ class User {
 	}
 	/**
 	 * Remove the session
+	 *
 	 * @param string $session_id
+	 * @param bool   $create_guest_session
+	 *
 	 * @return bool
 	 */
-	function del_session ($session_id = '') {
+	function del_session ($session_id = null, $create_guest_session = true) {
 		global $Cache;
 		$session_id = $session_id ?: $this->current['session'];
 		$this->current['session'] = false;
-		$this->add_session(1);
+		$create_guest_session && $this->add_session(1);
 		if (!preg_match('/^[0-9a-z]{32}$/', $session_id)) {
 			return false;
 		}
@@ -990,7 +994,8 @@ class User {
 			return;
 		}
 		if ($result) {
-			$this->db_prime()->q('UPDATE `[prefix]logins`
+			$this->db_prime()->q(
+				'UPDATE `[prefix]logins`
 				SET `expire` = 0
 				WHERE
 					`expire` > '.TIME.' AND (
@@ -1029,7 +1034,8 @@ class User {
 		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			return false;
 		}
-		$this->db_prime()->q('UPDATE `[prefix]users` SET
+		$this->db_prime()->q(
+			'UPDATE `[prefix]users` SET
 				`login` = null,
 				`login_hash` = null,
 				`username` = \'deleted\',
@@ -1052,7 +1058,8 @@ class User {
 		}
 		$password	= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
 		$reg_key	= md5($password.$this->ip);
-		if ($this->db_prime()->q('INSERT INTO `[prefix]users` (
+		if ($this->db_prime()->q(
+			'INSERT INTO `[prefix]users` (
 				`login`,
 				`login_hash`,
 				`password_hash`,
@@ -1079,12 +1086,14 @@ class User {
 				$this->add_session($this->reg_id);
 			}
 			if ($this->reg_id % $Config->core['inserts_limit'] == 0) {
-				$this->db_prime()->q('DELETE FROM `[prefix]users` WHERE
-					`login_hash` = null AND
-					`email_hash` = null AND
-					`password_hash` = null AND
-					`id` != 1 AND
-					`id` != 2'
+				$this->db_prime()->q(
+					'DELETE FROM `[prefix]users`
+					WHERE
+						`login_hash` = null AND
+						`email_hash` = null AND
+						`password_hash` = null AND
+						`id` != 1 AND
+						`id` != 2'
 				);
 			}
 			return [
@@ -1105,7 +1114,8 @@ class User {
 		if (!preg_match('/^[0-9a-z]{32}$/', $reg_key)) {
 			return false;
 		}
-		$this->db_prime()->q('UPDATE `[prefix]users` SET
+		$this->db_prime()->q(
+			'UPDATE `[prefix]users` SET
 				`login` = null,
 				`login_hash` = null,
 				`username` = \'deleted\',
@@ -1130,7 +1140,8 @@ class User {
 		}
 		$this->reg_id	= $data['id'];
 		$password		= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
-		$this->db_prime()->q('UPDATE `[prefix]users`
+		$this->db_prime()->q(
+			'UPDATE `[prefix]users`
 			SET
 				`password_hash` = \''.hash('sha512', $password).'\',
 				`status` = 1
@@ -1153,18 +1164,18 @@ class User {
 		$this->add_session(1);
 		$this->db_prime()->q([
 			'UPDATE `[prefix]users`
-				SET
-					`login` = null,
-					`login_hash` = null,
-					`username` = \'deleted\',
-					`password_hash` = null,
-					`email` = null,
-					`email_hash` = null,
-					`regdate` = 0,
-					`regip` = null,
-					`regkey` = null,
-					`status` = -1
-				WHERE `id` = '.$this->reg_id.' LIMIT 1'
+			SET
+				`login` = null,
+				`login_hash` = null,
+				`username` = \'deleted\',
+				`password_hash` = null,
+				`email` = null,
+				`email_hash` = null,
+				`regdate` = 0,
+				`regip` = null,
+				`regkey` = null,
+				`status` = -1
+			WHERE `id` = '.$this->reg_id.' LIMIT 1'
 		]);
 		$this->reg_id = 0;
 	}

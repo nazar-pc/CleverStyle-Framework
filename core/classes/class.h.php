@@ -566,6 +566,9 @@ class h {//TODO array of void elements for general processing
 				if (isset($in['in'])) {
 					$Page->replace($uniqid, is_array($in['in']) ? implode("\n", $in['in']) : $in['in']);
 					$in['in'] = $uniqid;
+				} else {
+					$Page->replace($uniqid, implode("\n", $in));
+					$in = $uniqid;
 				}
 			} else {
 				$Page->replace($uniqid, is_array($in) ? implode("\n", $in) : $in);

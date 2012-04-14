@@ -568,13 +568,13 @@ class Page {
 		}
 		$this->debug_info = preg_replace($this->Search, $this->Replace, $this->debug_info);
 	}
-	//Отображение уведомления
+	//Display notice
 	function notice ($text) {
 		$this->Top .= h::{'div.ui-state-highlight.ui-corner-all.ui-priority-primary.center.for_state_messages'}(
 			$text
 		);
 	}
-	//Отображение предупреждения
+	//Display warning
 	function warning ($text) {
 		$this->Top .= h::{'div.ui-state-error.ui-corner-all.ui-priority-primary.center.for_state_messages'}(
 			$text
@@ -582,7 +582,7 @@ class Page {
 	}
 	//Error pages processing
 	function error ($page) {//TODO Error pages processing
-
+		$this->warning($page);
 	}
 	/**
 	 * Substitutes header information about user, login/registration forms, etc.
