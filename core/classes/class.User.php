@@ -24,6 +24,9 @@ class User {
 
 	function __construct () {
 		global $Cache, $Config, $Page, $L, $Key;
+		if (($this->users_columns = $Cache->users_columns) === false) {
+			$this->users_columns = $Cache->users_columns = $this->db()->columns('[prefix]users');
+		}
 		//Detecting of current user
 		//Last part in page path - key
 		$rc = &$Config->routing['current'];
@@ -130,7 +133,6 @@ class User {
 		//Return point, runs if user is blocked, inactive, or disabled
 		getting_user_data:
 		unset($data);
-		$data = &$this->data[$this->id];
 		if (($data = $Cache->{'users/'.$this->id}) === false) {
 			$data = $this->db()->qf(
 				'SELECT `login`, `username`, `language`, `timezone`, `status`, `block_until`, `avatar`
@@ -171,12 +173,13 @@ class User {
 			$this->del_session();
 			goto getting_user_data;
 		}
+		$this->data[$this->id] = array_merge($data, $this->data[$this->id] ?: []);
 		unset($data);
 		if ($this->id == 1) {
 			$this->current['is']['guest'] = true;
 		} else {
 			//Checking of user type
-			$groups = $this->get_user_groups();
+			$groups = $this->get_user_groups() ?: [];
 			if (in_array(1, $groups)) {
 				$this->current['is']['admin']	= true;
 				$this->current['is']['user']	= true;
@@ -198,9 +201,6 @@ class User {
 			}
 		}
 		$this->init = true;
-		if (($this->users_columns = $Cache->users_columns) === false) {
-			$this->users_columns = $Cache->users_columns = $this->db()->columns('[prefix]users');
-		}
 	}
 	/**
 	 * @param array|string $item
@@ -284,7 +284,7 @@ class User {
 			} elseif (!isset($new_data) && ($new_data = $Cache->{'users/'.$user}) && is_array($new_data)) {
 				//Обновляем локальный кеш
 				if (is_array($new_data)) {
-					$data = $new_data;
+					$data = array_merge((array)$data, $new_data);
 				}
 				//Делаем новую попытку загрузки данных
 				goto get_data;
@@ -292,8 +292,8 @@ class User {
 				$new_data = $this->db()->qf('SELECT `'.$item.'` FROM `[prefix]users` WHERE `id` = '.($user).' LIMIT 1');
 				if (is_array($new_data)) {
 					$this->update_cache[$user] = true;
-					if (isset($data['data'])) {
-						$data['data'] = _json_decode($data['data']);
+					if (isset($new_data['data'])) {
+						$new_data['data'] = _json_decode($new_data['data']);
 					}
 					return $data[$item] = &$new_data[$item];
 				}
@@ -319,11 +319,6 @@ class User {
 				}
 			}
 		} elseif (in_array($item, $this->users_columns) && $item != 'id') {
-			if ($item == 'about') {
-				$value = xap($value, true);
-			} elseif ($item != 'data') {
-				$value = xap($value);
-			}
 			$this->update_cache[$user] = true;
 			$this->data[$user][$item] = $value;
 			if ($this->init) {
@@ -488,7 +483,7 @@ class User {
 	 */
 	function get_user_groups ($user = false) {
 		$user = (int)($user ?: $this->id);
-		if (!$user) {
+		if (!$user || $user == 1) {
 			return false;
 		}
 		global $Cache;
@@ -859,14 +854,26 @@ class User {
 			$this->add_session(1);
 			return 1;
 		}
+		$update = [];
+		if ($this->get('lastlogin', $result['user']) < TIME - $Config->core['online_time']) {
+			$update[] = 'UPDATE `[prefix]users`
+				SET
+					`lastlogin`	= '.TIME.',
+					`lastip`	= \''.($ip = ip2hex($this->ip)).'\'
+				WHERE `id` ='.$result['user'];
+			$this->set('lastlogin', TIME, $result['user']);
+			$this->set('lastip', $ip, $result['user']);
+			unset($ip);
+		}
 		if ($result['expire'] - TIME < $Config->core['session_expire'] * $Config->core['update_ratio'] / 100) {
-			$this->db_prime()->q(
-				'UPDATE `[prefix]sessions`
+			$update[] = 'UPDATE `[prefix]sessions`
 				SET `expire` = '.(TIME + $Config->core['session_expire']).'
-				WHERE `id` = \''.$session_id.'\''
-			);
+				WHERE `id` = \''.$session_id.'\'';
 			$result['expire'] = TIME + $Config->core['session_expire'];
 			$Cache->{'sessions/'.$session_id} = $result;
+		}
+		if (!empty($update)) {
+			$this->db_prime()->q($update);
 		}
 		return $result['user'];
 	}
@@ -877,6 +884,10 @@ class User {
 	 * @return bool
 	 */
 	function add_session ($id) {
+		$id = (int)$id;
+		if (!$id) {
+			$id = 1;
+		}
 		if (preg_match('/^[0-9a-z]{32}$/', $this->current['session'])) {
 			$this->del_session(null, false);
 		}
@@ -900,11 +911,7 @@ class User {
 						\''.($forwarded_for = ip2hex($this->forwarded_for)).'\',
 						\''.($client_ip = ip2hex($this->client_ip)).'\'
 					)',
-				'UPDATE `[prefix]users`
-					SET
-						`lastlogin`	= '.TIME.',
-						`lastip`	= \''.$ip.'\'
-					WHERE `id` ='.$id
+				'UPDATE `[prefix]users` SET `lastlogin` = '.TIME.', `lastip` = \''.$ip.'\' WHERE `id` ='.$id
 			]);
 			global $Cache;
 			$Cache->{'sessions/'.$hash} = $this->current['session'] = [
@@ -1100,7 +1107,7 @@ class User {
 				'reg_key'	=> $Config->core['require_registration_confirmation'] ? $reg_key : true,
 				'password'	=> $password
 			];
-		} else {echo mysql_error();
+		} else {
 			return 'error';
 		}
 	}
@@ -1188,6 +1195,35 @@ class User {
 	 */
 	function __finish () {
 		global $Cache;
+		//Update users data
+		$users_columns = $Cache->users_columns;
+		if (is_array($this->data_set) && !empty($this->data_set)) {
+			$update = [];
+			foreach ($this->data_set as $id => &$data_set) {
+				$data = [];
+				foreach ($data_set as $i => &$val) {
+					if (in_array($i, $users_columns) && $i != 'id') {
+						if ($i == 'data') {
+							$data[] = '`'.$i.'` = '.$this->db_prime()->sip(_json_encode($val));
+							continue;
+						} elseif ($i == 'text') {
+							$val = xap($val, true);
+						} else {
+							$val = xap($val, false);
+						}
+						$data[] = '`'.$i.'` = '.$this->db_prime()->sip($val);
+					} elseif ($i != 'id') {
+						unset($data_set[$i]);
+					}
+				}
+				$update[] = 'UPDATE `[prefix]users` SET '.implode(', ', $data).' WHERE `id` = '.$id;
+				unset($i, $val, $data);
+			}
+			if (!empty($update)) {
+				$this->db_prime()->q($update);
+			}
+			unset($update);
+		}
 		//Update users cache
 		foreach ($this->data as $id => &$data) {
 			if (isset($this->update_cache[$id]) && $this->update_cache[$id]) {
@@ -1197,27 +1233,6 @@ class User {
 		}
 		$this->update_cache = [];
 		unset($id, $data);
-		//Update users data
-		$users_columns = $Cache->users_columns;
-		if (is_array($this->data_set) && !empty($this->data_set)) {
-			foreach ($this->data_set as $id => &$data_set) {
-				$data = [];
-				foreach ($data_set as $i => &$val) {
-					if (in_array($i, $users_columns) && $i != 'id') {
-						if ($i == 'data') {
-							$val = _json_encode($val);
-						} elseif ($i == 'text') {
-							$val = xap($val, true);
-						} else {
-							$val = xap($val, false);
-						}
-						$data[] = '`'.$i.'` = '.$this->db_prime()->sip($val);
-					}
-				}
-				$this->db_prime()->q('UPDATE `[prefix]users` SET '.implode(', ', $data).' WHERE `id` = '.$id);
-				unset($i, $val, $data);
-			}
-		}
 		$this->data_set = [];
 	}
 }

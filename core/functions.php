@@ -101,8 +101,26 @@
 			$interface = false;
 		}
 	}
-	//Функция для получения списка содержимого директории (и поддиректорий при необходимости)
-	function get_list ($dir, $mask = false, $mode='f', $with_path = false, $subfolders = false, $sort = false, $exclusion = false) {
+	/**
+	 * Function for getting content of a directory
+	 *
+	 * @param	string		$dir			Directory for searching
+	 * @param	bool|string	$mask			Regexp for items
+	 * @param	string		$mode			Mode of searching<br>
+	 * 										<b>f</b> - files only<br>
+	 * 										<b>d</b> - directories only<br>
+	 * 										<b>fd</b> - both files and directories
+	 * @param	bool|string	$prefix_path	Path to be added to the beginning of every found item. If <b>true</b> - prefix will
+	 * 										be absolute path to item on server.
+	 * @param	bool		$subfolders		Search in subdirectories or not
+	 * @param	bool		$sort			Sort mode in format <b>mode|order</b>:<br>
+	 * 										Possible values for mode: <b>name</b> (default), <b>date</b>, <b>size</b>
+	 * 										Possible values for mode: <b>asc</b>, <b>desc</b>
+	 * @param	bool|string	$exclusion		If specified file exists in scanned directory - it will be excluded from scanning
+	 *
+	 * @return	array|bool
+	 */
+	function get_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subfolders = false, $sort = false, $exclusion = false) {
 		if ($mode == 'df') {
 			$mode = 'fd';
 		}
@@ -113,10 +131,17 @@
 		if ($sort !== false) {
 			$sort = mb_strtolower($sort);
 			$sort_x = explode('|', $sort);
+			if (!isset($sort_x[1]) || $sort_x[1] != 'desc') {
+				$sort_x[1] = 'asc';
+			}
 		}
 		if (isset($sort_x) && $sort_x[0] == 'date') {
 			$prepare = function (&$list, &$tmp, $link) {
 				$list[_fileatime($link) ?: _filemtime($link)] = $tmp;
+			};
+		} elseif (isset($sort_x) && $sort_x[0] == 'size') {
+			$prepare = function (&$list, &$tmp, $link) {
+				$list[_filesize($link)] = $tmp;
 			};
 		} else {
 			$prepare = function (&$list, &$tmp, $link) {
@@ -124,78 +149,64 @@
 			};
 		}
 		$list = [];
-		if ($with_path != 1 && $with_path) {
-			$with_path = rtrim($with_path, DS).DS;
+		if ($prefix_path !== true && $prefix_path) {
+			$prefix_path = rtrim($prefix_path, DS).DS;
 		}
 		$dirc = _opendir($dir);
-		while (($file = _readdir($dirc)) || $file === '0') {	//If file name if '0', it considered as boolean false, that's why,
-																//I have added $file === '0'
+		//If file name if '0', it considered as boolean false, that's why $file === '0' was added
+		while (($file = _readdir($dirc)) || $file === '0') {
 			if (
 				($mask && !preg_match($mask, $file) && (!$subfolders || !_is_dir($dir.$file))) ||
 				$file == '.' || $file == '..' || $file == '.htaccess' || $file == '.htpasswd' || $file == '.gitignore'
 			) {
 				continue;
 			}
-			if (_is_file($dir.$file) && ($mode == 'f' || $mode == 'fd')) {
-				if ($with_path == 1) {
-					$tmp = $dir.$file;
-				} elseif ($with_path) {
-					$tmp = $with_path.$file;
-				} else {
-					$tmp = $file;
-				}
-				$prepare($list, $tmp, $dir.$file);
-				unset($tmp);
-			} elseif (_is_dir($dir.$file) && ($mode == 'd' || $mode == 'fd')) {
-				if ($with_path == 1) {
-					$tmp = $dir.$file;
-				} elseif ($with_path) {
-					$tmp = $with_path.$file;
-				} else {
-					$tmp = $file;
-				}
-				$prepare($list, $tmp, $dir.$file);
-				unset($tmp);
+			if (
+				(_is_file($dir.$file) && ($mode == 'f' || $mode == 'fd')) ||
+				(_is_dir($dir.$file) && ($mode == 'd' || $mode == 'fd'))
+			) {
+				$prepare(
+					$list,
+					$prefix_path === true ? $dir.$file : $prefix_path ? $prefix_path.$file : $file,
+					$dir.$file
+				);
 			}
 			if ($subfolders && _is_dir($dir.$file)) {
-				if ($with_path == 1) {
-					$get_list = get_list($dir.$file, $mask, $mode, $with_path, $subfolders, $sort, $exclusion);
-					if (is_array($get_list)) {
-						$list = array_merge($list, $get_list);
-					}
-					unset($get_list);
-				} elseif ($with_path) {
-					$get_list = get_list($dir.$file, $mask, $mode, $with_path.$file, $subfolders, $sort, $exclusion);
-					if (is_array($get_list)) {
-						$list = array_merge($list, $get_list);
-					}
-					unset($get_list);
-				}
+				$list = array_merge(
+					$list,
+					get_list(
+						$dir.$file,
+						$mask,
+						$mode,
+						$prefix_path === true || $prefix_path === false ? $prefix_path : $prefix_path.$file,
+						$subfolders,
+						$sort,
+						$exclusion
+					) ?: []
+				);
 			}
 		}
 		closedir($dirc);
 		unset($prepare);
-		if (empty($list)) {
-			return $list;
-		} else {
-			if (isset($sort_x)) {
-				if ($sort_x[0] == 'name') {
-					if (isset($sort_x[1]) && $sort_x[1] == 'desc') {
-						natcasesort($list);
-						$list = array_reverse($list);
-					} else {
-						natcasesort($list);
-					}
-				} elseif ($sort_x[0] == 'date') {
-					if (isset($sort_x[1]) && $sort_x[1] == 'desc') {
+		if (!empty($list) && isset($sort_x)) {
+			switch ($sort_x[0]) {
+				case 'date':
+				case 'size':
+					if ($sort_x[1] == 'desc') {
 						krsort($list);
 					} else {
 						ksort($list);
 					}
-				}
+				break;
+				case 'name':
+					natcasesort($list);
+					if ($sort_x[1] == 'desc') {
+						$list = array_reverse($list);
+					}
+				break;
 			}
-			return $list;
 		}
+		return $list;
 	}
 	//Функции str_to_path() и path_to_str() являются обратными, и используются при работе с файловой системой.
 	//Так, как в разных операционных системах названия одних и тех же файлов с Unicode символами php может отображать по разному,

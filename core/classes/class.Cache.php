@@ -5,12 +5,7 @@ class Cache {
 				$memcache = false,
 				/*$memcached = false,*/
 				$cache = true,				//Cache state (on/off)
-				$size = false,				//Cache size
-				$secret;					//Secret random phrase for separating internal
-											//function calling from external ones
-	function __construct () {
-		$this->secret = uniqid();
-	}
+				$size = false;				//Cache size
 	function init ($disk_cache, $memcache) {
 		if ($this->disk = (bool)$disk_cache) {
 			$this->disk_size = $disk_cache*1048576;
@@ -94,7 +89,11 @@ class Cache {
 			}
 			if (!_file_exists(CACHE.DS.$item) || _is_writable(CACHE.DS.$item)) {
 				if ($this->disk_size > 0) {
-					if (($dsize = strlen($data)) > $this->disk_size) {
+					$dsize = strlen($data);
+					if (_file_exists(CACHE.DS.$item)) {
+						$dsize -= _filesize(CACHE.DS.$item);
+					}
+					if ($dsize > $this->disk_size) {
 						return false;
 					}
 					if (_file_exists(CACHE.DS.'size')) {
@@ -108,9 +107,6 @@ class Cache {
 					}
 					unset($size);
 					$this->size += $dsize;
-					if (_file_exists(CACHE.DS.$item)) {
-						$this->size -= _filesize(CACHE.DS.$item);
-					}
 					if ($this->size > $this->disk_size) {
 						$cache_list = get_list(CACHE, false, 'f', true, true, 'date|desc');
 						foreach ($cache_list as $file) {
@@ -144,12 +140,15 @@ class Cache {
 		}
 		return true;
 	}
-	function del ($item, $secret = false) {
+	function del ($item) {
+		return $this->del_internal($item);
+	}
+	protected function del_internal ($item, $process_mirrors = true) {
 		if (empty($item) || $item == '/') {
 			return false;
 		}
 		global $Config, $User;
-		if ($secret !== $this->secret && is_object($User) && !$User->is('system') && $Config->server['mirrors']['count'] > 1) {
+		if ($process_mirrors && is_object($User) && !$User->is('system') && $Config->server['mirrors']['count'] > 1) {
 			global $Core;
 			foreach ($Config->server['mirrors']['http'] as $url) {
 				if (!($url == $Config->server['host'] && $Config->server['protocol'] == 'http')) {
@@ -173,7 +172,7 @@ class Cache {
 			if (_is_dir(CACHE.DS.$item)) {
 				$files = get_list(CACHE.DS.$item, false, 'fd');
 				foreach ($files as $file) {
-					$this->del($item.'/'.$file, $this->secret);
+					$this->del($item.'/'.$file, false);
 				}
 				unset($files, $file);
 				return _rmdir(CACHE.DS.$item);

@@ -136,7 +136,7 @@ class h {//TODO array of void elements for general processing
 	}
 	//Метод для простой обертки контента парными тегами
 	static function swrap ($in = '', $data = [], $tag = 'div') {
-		return self::wrap(array_merge(is_array($in) ? $in : array('in' => $in), is_array($data) ? $data : [], array('tag' => $tag)));
+		return self::wrap(array_merge(is_array($in) ? $in : ['in' => $in], is_array($data) ? $data : [], ['tag' => $tag]));
 	}
 	//Метод для разворота массива навыворот для select и radio
 	protected static function array_flip ($in, $num) {
@@ -167,7 +167,7 @@ class h {//TODO array of void elements for general processing
 			unset($data['data-title']);
 		}
 		$return = '<'.$tag.$add.(defined('xhtml_tags_style') ? ' /' : '').'>'.$in."\n";
-		return isset($data_title) ? self::label($return, array('data-title' => $data_title)) : $return;
+		return isset($data_title) ? self::label($return, ['data-title' => $data_title]) : $return;
 	}
 
 	//HTML тэги
@@ -359,7 +359,7 @@ class h {//TODO array of void elements for general processing
 
 	static function input		($in = [], $data = []) {
 		if (!empty($data)) {
-			$in = array_merge(array('in' => $in), $data);
+			$in = array_merge(['in' => $in], $data);
 		}
 		if (isset($in['type']) && $in['type'] == 'radio') {
 			if (is_array($in)) {
@@ -392,7 +392,7 @@ class h {//TODO array of void elements for general processing
 						$item['id'] = uniqid('input_');
 					}
 					if (isset($item['in'])) {
-						$item['in'] = self::label($item['in'], array('for' => $item['id']));
+						$item['in'] = self::label($item['in'], ['for' => $item['id']]);
 					}
 					$item['tag'] = __FUNCTION__;
 					if (isset($item['value'])) {
@@ -405,7 +405,7 @@ class h {//TODO array of void elements for general processing
 				if (!isset($in['id'])) {
 					$in['id'] = uniqid('input_');
 				}
-				$in['in'] = self::label($in['in'], array('for' => $in['id']));
+				$in['in'] = self::label($in['in'], ['for' => $in['id']]);
 				$in['tag'] = __FUNCTION__;
 				if (isset($in['value'])) {
 					$in['value'] = filter($in['value']);
@@ -479,7 +479,7 @@ class h {//TODO array of void elements for general processing
 			$selected = false;
 			if (isset($data['selected']) && is_array($in['value'])) {
 				if (!is_array($data['selected'])) {
-					$data['selected'] = array($data['selected']);
+					$data['selected'] = [$data['selected']];
 				}
 				foreach ($in['value'] as $i => $v) {
 					if (in_array($v, $data['selected'])) {
@@ -595,7 +595,7 @@ class h {//TODO array of void elements for general processing
 	static function info		($in = '', $data = []) {
 		global $Config, $L;
 		if (is_object($Config) && $Config->core['show_tooltips']) {
-			return self::label($L->$in, array_merge(array('data-title' => $L->{$in.'_info'}), $data));
+			return self::label($L->$in, array_merge(['data-title' => $L->{$in.'_info'}], $data));
 		} else {
 			return self::label($L->$in, $data);
 		}
@@ -627,13 +627,13 @@ class h {//TODO array of void elements for general processing
 					}
 				}
 				if ($int) {
-					$data = array('in' => $data[0]);
+					$data = ['in' => $data[0]];
 				} else {
 					$data = $data[0];
 				}
 				unset($int, $i, $v);
 			} else {
-				$data = array('in' => $data[0]);
+				$data = ['in' => $data[0]];
 			}
 		} else {
 			$data = [];

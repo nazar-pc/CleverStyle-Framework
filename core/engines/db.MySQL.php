@@ -140,4 +140,3 @@ class MySQL extends DatabaseAbstract {
 		}
 	}
 }
-?>

@@ -33,8 +33,6 @@ class Page {
 				];
 
 	protected	$init = false,										//For single initialization
-				$secret,											//Secret random phrase for separating internal
-																	//function calling from external ones
 				$theme, $color_scheme, $pcache_basename, $includes,
 				$user_avatar_image, $user_avatar_text, $user_info,
 				$core_js	= [0 => '', 1 => ''],
@@ -48,7 +46,6 @@ class Page {
 		global $interface;
 		$this->interface = (bool)$interface;
 		unset($GLOBALS['interface']);
-		$this->secret = uniqid();
 	}
 	function init ($name, $keywords, $description, $theme, $color_scheme) {
 		$this->theme = $theme;
@@ -236,23 +233,34 @@ class Page {
 		}
 	}
 	//Добавление ссылок на подключаемые JavaScript файлы
-	function js ($add, $mode = 'file', $secret = false) {
+	function js ($add, $mode = 'file') {
+		$this->js_internal($add, $mode);
+	}
+	protected function js_internal ($add, $mode = 'file', $core = false) {
 		if (is_array($add)) {
 			foreach ($add as $script) {
 				if ($script) {
-					$this->js($script, $mode, $secret);
+					$this->js_internal($script, $mode, $core);
 				}
 			}
 		} elseif ($add) {
-			if ($secret == $this->secret) {
+			if ($core) {
 				if ($mode == 'file') {
-					$this->core_js[0] .= h::script(array('type'	=> 'text/javascript', 'src'	=> $add, 'level'	=> false))."\n";
+					$this->core_js[0] .= h::script([
+						'type'	=> 'text/javascript',
+						'src'	=> $add,
+						'level'	=> false
+					])."\n";
 				} elseif ($mode == 'code') {
 					$this->core_js[1] .= $add."\n";
 				}
 			} else {
 				if ($mode == 'file') {
-					$this->js[0] .= h::script(array('type'	=> 'text/javascript', 'src'	=> $add, 'level'	=> false))."\n";
+					$this->js[0] .= h::script([
+						'type'	=> 'text/javascript',
+						'src'	=> $add,
+						'level'	=> false
+					])."\n";
 				} elseif ($mode == 'code') {
 					$this->js[1] .= $add."\n";
 				}
@@ -260,23 +268,34 @@ class Page {
 		}
 	}
 	//Добавление ссылок на подключаемые CSS стили
-	function css ($add, $mode = 'file', $secret = false) {
+	function css ($add, $mode = 'file') {
+		$this->css_internal($add, $mode);
+	}
+	function css_internal ($add, $mode = 'file', $core = false) {
 		if (is_array($add)) {
 			foreach ($add as $style) {
 				if ($style) {
-					$this->css($style, $mode, $secret);
+					$this->css_internal($style, $mode, $core);
 				}
 			}
 		} elseif ($add) {
-			if ($secret == $this->secret) {
+			if ($core) {
 				if ($mode == 'file') {
-					$this->core_css[0] .= h::link(array('type'	=> 'text/css', 'href'	=> $add, 'rel'	=> 'stylesheet'));
+					$this->core_css[0] .= h::link([
+						'type'	=> 'text/css',
+						'href'	=> $add,
+						'rel'	=> 'stylesheet'
+					]);
 				} elseif ($mode == 'code') {
 					$this->core_css[1] = $add."\n";
 				}
 			} else {
 				if ($mode == 'file') {
-					$this->css[0] .= h::link(array('type'	=> 'text/css', 'href'	=> $add, 'rel'	=> 'stylesheet'));
+					$this->css[0] .= h::link([
+						'type'	=> 'text/css',
+						'href'	=> $add,
+						'rel'	=> 'stylesheet'
+					]);
 				} elseif ($mode == 'code') {
 					$this->css[1] = $add."\n";
 				}
@@ -313,7 +332,7 @@ class Page {
 				$file .= '?'.$key;
 			}
 			unset($file);
-			$this->css($css_list, 'file', $this->secret);
+			$this->css($css_list, 'file', true);
 			//Подключение JavaScript
 			$js_list = get_list(PCACHE, '/^[^_](.*)\.js$/i', 'f', 'storages/pcache');
 			if (DS != '/') {
@@ -324,16 +343,16 @@ class Page {
 				$file .= '?'.$key;
 			}
 			unset($file);
-			$this->js($js_list, 'file', $this->secret);
+			$this->js($js_list, 'file', true);
 		} else {
 			$this->get_includes_list();
 			//Подключение CSS стилей
 			foreach ($this->includes['css'] as $file) {
-				$this->css($file, 'file', $this->secret);
+				$this->css($file, 'file', true);
 			}
 			//Подключение JavaScript
 			foreach ($this->includes['js'] as $file) {
-				$this->js($file, 'file', $this->secret);
+				$this->js($file, 'file', true);
 			}
 		}
 	}
