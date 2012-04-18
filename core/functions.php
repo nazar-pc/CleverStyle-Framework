@@ -136,15 +136,15 @@
 			}
 		}
 		if (isset($sort_x) && $sort_x[0] == 'date') {
-			$prepare = function (&$list, &$tmp, $link) {
+			$prepare = function (&$list, $tmp, $link) {
 				$list[_fileatime($link) ?: _filemtime($link)] = $tmp;
 			};
 		} elseif (isset($sort_x) && $sort_x[0] == 'size') {
-			$prepare = function (&$list, &$tmp, $link) {
+			$prepare = function (&$list, $tmp, $link) {
 				$list[_filesize($link)] = $tmp;
 			};
 		} else {
-			$prepare = function (&$list, &$tmp, $link) {
+			$prepare = function (&$list, $tmp, $link) {
 				$list[] = $tmp;
 			};
 		}
@@ -167,7 +167,7 @@
 			) {
 				$prepare(
 					$list,
-					$prefix_path === true ? $dir.$file : $prefix_path ? $prefix_path.$file : $file,
+					$prefix_path === true ? $dir.$file : ($prefix_path ? $prefix_path.$file : $file),
 					$dir.$file
 				);
 			}
@@ -234,7 +234,7 @@
 				}
 				return $path;
 			}
-			return CHARSET == FS_CHARSET ? $path : is_unicode($path) ? $path : iconv(FS_CHARSET, CHARSET, $path);
+			return CHARSET == FS_CHARSET ? $path : (is_unicode($path) ? $path : iconv(FS_CHARSET, CHARSET, $path));
 		}
 		//Detection of unicode strings
 		if (!function_exists('is_unicode')) {

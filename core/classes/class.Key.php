@@ -11,28 +11,7 @@ class Key {
 			}
 		}
 	}
-	function get ($database, $id_key, $get_data = false) {
-		if (!(is_int($id_key) || preg_match('/^[a-z0-9]{56}$/', $id_key))) {
-			return false;
-		}
-		global $db;
-		$result = $db->$database->qf(
-			'SELECT `id`'.($get_data ? ', `data`' : '').' FROM `[prefix]keys`
-			WHERE
-				(
-					`id` = '.$db->$database()->sip($id_key).' OR `key` = '.$db->$database()->sip($id_key).'
-				) AND `expire` >= '.TIME.' ORDER BY `id` DESC LIMIT 1'
-		);
-		$this->del($database, $id_key);
-		if (!$result || !is_array($result) || empty($result)) {
-			return false;
-		} elseif ($get_data) {
-			return _json_decode($result['data']);
-		} else {
-			return true;
-		}
-	}
-	function put ($database, $key = false, $data = null, $expire = 0) {
+	function add ($database, $key = false, $data = null, $expire = 0) {
 		if (!preg_match('/^[a-z0-9]{56}$/', $key)) {
 			if ($key === false) {
 				$key = $this->generate($database);
@@ -66,6 +45,27 @@ class Key {
 			$db->$database()->q('DELETE FROM `[prefix]keys` WHERE `expire` < '.TIME);
 		}
 		return $id;
+	}
+	function get ($database, $id_key, $get_data = false) {
+		if (!(is_int($id_key) || preg_match('/^[a-z0-9]{56}$/', $id_key))) {
+			return false;
+		}
+		global $db;
+		$result = $db->$database->qf(
+			'SELECT `id`'.($get_data ? ', `data`' : '').' FROM `[prefix]keys`
+			WHERE
+				(
+					`id` = '.$db->$database()->sip($id_key).' OR `key` = '.$db->$database()->sip($id_key).'
+				) AND `expire` >= '.TIME.' ORDER BY `id` DESC LIMIT 1'
+		);
+		$this->del($database, $id_key);
+		if (!$result || !is_array($result) || empty($result)) {
+			return false;
+		} elseif ($get_data) {
+			return _json_decode($result['data']);
+		} else {
+			return true;
+		}
 	}
 	function del ($database, $id_key) {
 		if (!(is_int($id_key) || preg_match('/^[a-z0-9]{56}$/', $id_key))) {

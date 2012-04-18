@@ -32,7 +32,7 @@ class MySQL extends DatabaseAbstract {
 	}
 	//Запрос в БД
 	//(текст_запроса)
-	function q ($query = '') {
+	function q ($query) {
 		if (is_array($query) && !empty($query)) {
 			$return = true;
 			foreach ($query as $q) {

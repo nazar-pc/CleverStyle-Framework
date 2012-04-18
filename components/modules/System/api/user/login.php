@@ -26,7 +26,7 @@ if (isset($_POST['login']) && !empty($_POST['login']) && !isset($_POST['auth_has
 		return;
 	}
 	$random_hash = hash('sha224', MICROTIME);
-	if ($Key->put(
+	if ($Key->add(
 		$Config->components['modules']['System']['db']['keys'],
 		hash('sha224', $User->ip.$User->user_agent.$_POST['login']),
 		array(

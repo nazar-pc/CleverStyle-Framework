@@ -147,7 +147,7 @@ class Core {
 		$database	= $Config->components['modules']['System']['db']['keys'];
 		$key		= $Key->generate($database);
 		$url		= $url ? $url.'/'.$key : $key;
-		$Key->put(
+		$Key->add(
 			$database,
 			$key,
 			['url' => implode(':', $host).'/'.$url],

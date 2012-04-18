@@ -1085,7 +1085,7 @@ class User {
 				'.TIME.',
 				\''.ip2hex($this->ip).'\',
 				\''.$reg_key.'\',
-				'.($Config->core['require_registration_confirmation'] ? '-1' : '1').'
+				'.($Config->core['require_registration_confirmation'] ? -1 : 1).'
 			)'
 		)) {
 			$this->reg_id = $this->db_prime()->insert_id();

@@ -340,7 +340,7 @@ if (isset($rc[2], $rc[3])) {
 			return str_replace('%%', $_POST['search_column'], $in);
 		};
 	} else {
-		$where_func = function ($in) use ($search_columns) {
+		$where_func = function ($in) use (&$search_columns) {
 			$return = [];
 			foreach ($search_columns as $column) {
 				$return[] = str_replace('%%', $column, $in);

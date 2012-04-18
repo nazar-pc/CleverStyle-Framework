@@ -46,7 +46,7 @@ abstract class DatabaseAbstract {
 	 * @param array|string $query
 	 * @return resource
 	 */
-	abstract function q ($query = '');
+	abstract function q ($query);
 	//Подсчёт количества строк
 	//([ресурс_запроса])
 	/**
