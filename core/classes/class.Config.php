@@ -221,7 +221,7 @@ class Config {
 		asort($this->core['languages']);
 	}
 	//Перестройка кеша настроек
-	function load () {
+	protected function load () {
 		global $db;
 		$query = [];
 		foreach ($this->admin_parts as $part) {
@@ -251,8 +251,11 @@ class Config {
 	}
 	//Применение изменений без сохранения в БД
 	function apply () {
+		return $this->apply_internal();
+	}
+	protected function apply_internal ($cache_not_saved_mark = true) {
 		global $Error, $Cache;
-		//Перезапись кеша
+		//If errors - cache updating must be stopped
 		if ($Error->num()) {
 			return false;
 		}
@@ -264,6 +267,11 @@ class Config {
 		unset($part);
 		if (isset($Config['routing']['current'])) {
 			unset($Config['routing']['current']);
+		}
+		if ($cache_not_saved_mark) {
+			$Config['core']['cache_not_saved'] = $this->core['cache_not_saved'] = true;
+		} else {
+			unset($Config['core']['cache_not_saved'], $this->core['cache_not_saved']);
 		}
 		$Cache->config = $Config;
 		return true;
@@ -290,7 +298,7 @@ class Config {
 		}
 		unset($parts, $part, $temp);
 		if (!empty($query) && $db->{0}->q('UPDATE `[prefix]config` SET '.implode(', ', $query).' WHERE `domain` = \''.DOMAIN.'\' LIMIT 1')) {
-			$this->apply();
+			$this->apply_internal(false);
 			return true;
 		}
 		return false;
@@ -300,7 +308,7 @@ class Config {
 		global $Cache;
 		unset($Cache->config);
 		$this->load();
-		$this->apply();
+		$this->apply_internal(false);
 	}
 	/**
 	 * Cloning restriction

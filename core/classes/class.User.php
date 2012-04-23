@@ -855,13 +855,13 @@ class User {
 			return 1;
 		}
 		$update = [];
-		if ($this->get('lastlogin', $result['user']) < TIME - $Config->core['online_time']) {
+		if ($this->get('last_login', $result['user']) < TIME - $Config->core['online_time']) {
 			$update[] = 'UPDATE `[prefix]users`
 				SET
-					`lastlogin`	= '.TIME.',
+					`last_login`	= '.TIME.',
 					`lastip`	= \''.($ip = ip2hex($this->ip)).'\'
 				WHERE `id` ='.$result['user'];
-			$this->set('lastlogin', TIME, $result['user']);
+			$this->set('last_login', TIME, $result['user']);
 			$this->set('lastip', $ip, $result['user']);
 			unset($ip);
 		}
@@ -911,7 +911,7 @@ class User {
 						\''.($forwarded_for = ip2hex($this->forwarded_for)).'\',
 						\''.($client_ip = ip2hex($this->client_ip)).'\'
 					)',
-				'UPDATE `[prefix]users` SET `lastlogin` = '.TIME.', `lastip` = \''.$ip.'\' WHERE `id` ='.$id
+				'UPDATE `[prefix]users` SET `last_login` = '.TIME.', `lastip` = \''.$ip.'\' WHERE `id` ='.$id
 			]);
 			global $Cache;
 			$Cache->{'sessions/'.$hash} = $this->current['session'] = [
@@ -1050,14 +1050,14 @@ class User {
 				`email` = null,
 				`email_hash` = null,
 				`groups` = null,
-				`regdate` = 0,
-				`regip` = null,
-				`regkey` = null
+				`reg_date` = 0,
+				`reg_ip` = null,
+				`reg_key` = null
 			WHERE
-				`lastlogin` = 0 AND
+				`last_login` = 0 AND
 				`status` = -1 AND
-				`regdate` != 0 AND
-				`regdate` < '.(TIME - $Config->core['registration_confirmation_time']*86400)
+				`reg_date` != 0 AND
+				`reg_date` < '.(TIME - $Config->core['registration_confirmation_time']*86400)
 		);
 		$email_ = hash('sha224', $email);
 		if (!$this->db_prime()->q('SELECT `id` FROM `[prefix]users` WHERE `email_hash` = \''.$email_.'\' LIMIT 1')) {
@@ -1072,9 +1072,9 @@ class User {
 				`password_hash`,
 				`email`,
 				`email_hash`,
-				`regdate`,
-				`regip`,
-				`regkey`,
+				`reg_date`,
+				`reg_ip`,
+				`reg_key`,
 				`status`
 			) VALUES (
 				'.$this->db_prime()->sip($email).',
@@ -1130,17 +1130,17 @@ class User {
 				`email` = null,
 				`email_hash` = null,
 				`groups` = null,
-				`regdate` = 0,
-				`regip` = null,
-				`regkey` = null
+				`reg_date` = 0,
+				`reg_ip` = null,
+				`reg_key` = null
 			WHERE
-				`lastlogin` = 0 AND
+				`last_login` = 0 AND
 				`status` = -1 AND
-				`regdate` != 0 AND
-				`regdate` < '.(TIME - $Config->core['registration_confirmation_time']*86400)
+				`reg_date` != 0 AND
+				`reg_date` < '.(TIME - $Config->core['registration_confirmation_time']*86400)
 		);
 		$data = $this->db_prime()->qf(
-			'SELECT `id`, `email` FROM `[prefix]users` WHERE `regkey` = \''.$reg_key.'\' AND `status` = -1 LIMIT 1'
+			'SELECT `id`, `email` FROM `[prefix]users` WHERE `reg_key` = \''.$reg_key.'\' AND `status` = -1 LIMIT 1'
 		);
 		if (!isset($data['email'])) {
 			return false;
@@ -1178,9 +1178,9 @@ class User {
 				`password_hash` = null,
 				`email` = null,
 				`email_hash` = null,
-				`regdate` = 0,
-				`regip` = null,
-				`regkey` = null,
+				`reg_date` = 0,
+				`reg_ip` = null,
+				`reg_key` = null,
 				`status` = -1
 			WHERE `id` = '.$this->reg_id.' LIMIT 1'
 		]);

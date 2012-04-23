@@ -136,9 +136,6 @@ $(function() {
 	$('.reload_button').click(function () {
 		location.reload();
 	});
-	$('.blocks_items_title+a, .blocks_items_title+a+a').click(function () {
-		menuadmin(this.href, true); return false;
-	});
 	$('#change_theme, #change_color_scheme, #change_language').click(function () {
 		$('#apply_settings').click();
 	});

@@ -104,7 +104,6 @@ if (isset($rc[2], $rc[3]) && isset($Config->components['blocks'][$rc[3]])) {
 	}
 }
 if (!isset($edit)) {
-	$a->savecross = true;
 	$a->reset = false;
 	$a->post_buttons .= h::{'button.reload_button'}(
 		$L->reset
@@ -153,7 +152,7 @@ if (!isset($edit)) {
 			h::a(
 				h::{'div icon'}('wrench'),
 				[
-					'href'			=> $a->action.'/settings/'.$block,
+					'href'			=> $a->action.'/edit/'.$block,
 					'data-title'	=> $L->edit.' '.$L->block
 				]
 			).

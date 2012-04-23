@@ -59,11 +59,11 @@ if (isset($rc[2], $rc[3])) {
 					'email',
 					'language',
 					'timezone',
-					'regdate',
-					'regip',
+					'reg_date',
+					'reg_ip',
 					'status',
 					'block_until',
-					'lastlogin',
+					'last_login',
 					'lastip',
 					'gender',
 					/*'country',
@@ -80,7 +80,7 @@ if (isset($rc[2], $rc[3])) {
 				$rc[3]
 			);
 			$timezones	= get_timezones_list();
-			$regip		= hex2ip($user_data['regip'], 10);
+			$reg_ip		= hex2ip($user_data['reg_ip'], 10);
 			$lastip		= hex2ip($user_data['lastip'], 10);
 			$row		= function ($row1, $row2) {
 				return	h::{'th.ui-widget-header.ui-corner-all'}($row1).
@@ -90,11 +90,11 @@ if (isset($rc[2], $rc[3])) {
 				h::{'table#users_edit.admin_table.center_all tr'}([
 					$row('id', $rc[3]),
 
-					$row($L->registration_date, $user_data['regdate'] ? date($L->_date, $user_data['regdate']) : $L->undefined),
+					$row($L->registration_date, $user_data['reg_date'] ? date($L->_date, $user_data['reg_date']) : $L->undefined),
 
-					$row($L->registration_ip, $regip[0] ? $regip[0].($regip[1] ? h::br().$regip[1] : '') : $L->undefined),
+					$row($L->registration_ip, $reg_ip[0] ? $reg_ip[0].($reg_ip[1] ? h::br().$reg_ip[1] : '') : $L->undefined),
 
-					$row($L->last_login, $user_data['lastlogin'] ? date($L->_datetime, $user_data['lastlogin']) : $L->undefined),
+					$row($L->last_login, $user_data['last_login'] ? date($L->_datetime, $user_data['last_login']) : $L->undefined),
 
 					$row($L->last_ip, $lastip[0] ? $lastip[0].($lastip[1] ? h::br().$lastip[1] : '') : $L->undefined),
 
@@ -436,12 +436,12 @@ if (isset($rc[2], $rc[3])) {
 				]
 			);
 			$user_data		= $User->get($columns, $id);
-			if (isset($user_data['regip'])) {
-				$user_data['regip'] = hex2ip($user_data['regip'], 10);
-				if ($user_data['regip'][1]) {
-					$user_data['regip'] = $user_data['regip'][0].h::br().$user_data['regip'][1];
+			if (isset($user_data['reg_ip'])) {
+				$user_data['reg_ip'] = hex2ip($user_data['reg_ip'], 10);
+				if ($user_data['reg_ip'][1]) {
+					$user_data['reg_ip'] = $user_data['reg_ip'][0].h::br().$user_data['reg_ip'][1];
 				} else {
-					$user_data['regip'] = $user_data['regip'][0];
+					$user_data['reg_ip'] = $user_data['reg_ip'][0];
 				}
 			}
 			if (isset($user_data['lastip'])) {

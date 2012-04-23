@@ -107,7 +107,7 @@
 	 * @param	string		$dir			Directory for searching
 	 * @param	bool|string	$mask			Regexp for items
 	 * @param	string		$mode			Mode of searching<br>
-	 * 										<b>f</b> - files only<br>
+	 * 										<b>f</b> - files only<br> (default)
 	 * 										<b>d</b> - directories only<br>
 	 * 										<b>fd</b> - both files and directories
 	 * @param	bool|string	$prefix_path	Path to be added to the beginning of every found item. If <b>true</b> - prefix will
@@ -558,7 +558,7 @@
 			case 'strtoupper':
 				return $mode($text);
 			default:
-				return str_replace(['&', '"', '<', '>'], ['&amp;', '&quot;', '&lt;', '&gt;'], trim($text));
+				return str_replace(['"', '&', '\'', '<', '>'], ['&quot;', '&amp;', '&apos;', '&lt;', '&gt;'], trim($text));
 		}
 	}
 	//Функции работы со строками аналоги системных, но вместо входящей строки могут принимать массив для его рекурсивной обработки
@@ -678,7 +678,7 @@
 			}
 			return $in;
 		} elseif ($html === true) {
-			//Делаем безопасный html
+			//Make safe HTML
 			$in = preg_replace(
 				'/(<(link|script|iframe|object|applet|embed).*?>[^<]*(<\/(link|script|iframe).*?>)?)/i',
 				'',
@@ -704,7 +704,7 @@
 		} elseif ($html === false) {
 			return strip_tags($in);
 		} else {
-			return htmlentities($in);
+			return htmlspecialchars($in, ENT_QUOTES | ENT_HTML5 | ENT_DISALLOWED | ENT_SUBSTITUTE);
 		}
 	}
 	if (!function_exists('hex2bin')) {

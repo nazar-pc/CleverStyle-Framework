@@ -1,19 +1,3 @@
-var	save = false;
-function menuadmin (item, direct_link) {
-	var url = direct_link ? item : current_base_url+'/'+item;
-	if (!save) {
-		document.location.href = url;
-	} else {
-		if (confirm(save_before)) {
-			$('#admin_form').attr('action', url);
-			$('#save_settings').click();
-		} else {
-			if (confirm(continue_transfer)) {
-				document.location.href = url;
-			}
-		}
-	}
-}
 function debug_window () {
 	$('#debug').dialog('open');
 }

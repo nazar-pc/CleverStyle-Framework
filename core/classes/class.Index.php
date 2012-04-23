@@ -2,8 +2,6 @@
 class Index {
 	public		$Content,
 
-				$savecross			= false,
-
 				$menu_auto			= true,
 				$submenu_auto		= false,
 				$menumore_auto		= false,
@@ -227,8 +225,7 @@ class Index {
 				array(
 					'id'		=> $subpart.'_a',
 					'href'		=> ($this->admin ? 'admin/' : '').MODULE.'/'.$Config->routing['current'][0].'/'.$subpart,
-					'class'		=> $Config->routing['current'][1] == $subpart ? 'active' : '',
-					'onClick'	=> $this->savecross && $this->form ? 'menuadmin(\''.$subpart.'\', false); return false;' : ''
+					'class'		=> $Config->routing['current'][1] == $subpart ? 'active' : ''
 				)
 			);
 		}
@@ -241,8 +238,7 @@ class Index {
 		if (!$this->api) {
 			global $User;
 			$Page->js(
-				'var save_before = "'.$L->save_before.'",'.
-					'continue_transfer = "'.$L->continue_transfer.'",'.
+				'var continue_transfer = "'.$L->continue_transfer.'",'.
 					'base_url = "'.$Config->server['base_url'].'",'.
 					'current_base_url = "'.$Config->server['base_url'].'/'.($this->admin ? 'admin/' : '').MODULE.
 						(isset($Config->routing['current'][0]) ? '/'.$Config->routing['current'][0] : '').'",'.
@@ -325,7 +321,7 @@ class Index {
 								'data-title'	=> $this->cancel_back ? '' : $L->cancel_info,
 								'type'			=> $this->cancel_back ? 'button' : 'submit',
 								'onClick'		=> $this->cancel_back ? 'history.go(-1);' : '',
-								'add'			=> $this->cancel_back ? '' : $this->cancel
+								'add'			=> $this->cancel_back ? '' : (isset($Config->core['cache_not_saved']) ? '' : $this->cancel)
 							)
 						)
 					: '').
@@ -346,7 +342,6 @@ class Index {
 						'enctype'	=> $this->file_upload ? 'multipart/form-data' : false,
 						'action'	=> $this->action,
 						'id'		=> 'admin_form',
-						'onReset'	=> 'save = 0;',
 						'class'		=> 'admin_form'
 					)+$this->form_atributes
 				), 1
@@ -372,9 +367,6 @@ class Index {
 		if (($parts === null && $Config->apply()) || $parts) {
 			$this->post_title = $L->changes_applied;
 			$Page->notice($L->changes_applied.$L->check_applied);
-			$this->cancel = '';
-			global $Page;
-			$Page->js("\$(function(){save = true;});", 'code');
 			return true;
 		} else {
 			$this->post_title = $L->changes_apply_error;
