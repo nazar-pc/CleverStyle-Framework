@@ -855,14 +855,14 @@ class User {
 			return 1;
 		}
 		$update = [];
-		if ($this->get('last_login', $result['user']) < TIME - $Config->core['online_time']) {
+		if ($result['user'] != 0 && $this->get('last_login', $result['user']) < TIME - $Config->core['online_time']) {
 			$update[] = 'UPDATE `[prefix]users`
 				SET
 					`last_login`	= '.TIME.',
-					`lastip`	= \''.($ip = ip2hex($this->ip)).'\'
+					`last_ip`	= \''.($ip = ip2hex($this->ip)).'\'
 				WHERE `id` ='.$result['user'];
 			$this->set('last_login', TIME, $result['user']);
-			$this->set('lastip', $ip, $result['user']);
+			$this->set('last_ip', $ip, $result['user']);
 			unset($ip);
 		}
 		if ($result['expire'] - TIME < $Config->core['session_expire'] * $Config->core['update_ratio'] / 100) {
@@ -911,7 +911,7 @@ class User {
 						\''.($forwarded_for = ip2hex($this->forwarded_for)).'\',
 						\''.($client_ip = ip2hex($this->client_ip)).'\'
 					)',
-				'UPDATE `[prefix]users` SET `last_login` = '.TIME.', `lastip` = \''.$ip.'\' WHERE `id` ='.$id
+				'UPDATE `[prefix]users` SET `last_login` = '.TIME.', `last_ip` = \''.$ip.'\' WHERE `id` ='.$id
 			]);
 			global $Cache;
 			$Cache->{'sessions/'.$hash} = $this->current['session'] = [

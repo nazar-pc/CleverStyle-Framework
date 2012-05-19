@@ -57,7 +57,7 @@ foreach ($plugins as $plugin) {
 			_file_get_contents($file),
 			[
 				'id'			=> $plugin.'_readme',
-				'class'			=> 'dialog',
+				'class'			=> 'cs-dialog',
 				'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
 				'title'			=> $plugin.' -> '.$L->information_about_plugin
 			]
@@ -82,7 +82,7 @@ foreach ($plugins as $plugin) {
 			_file_get_contents($file),
 			[
 				'id'			=> $plugin.'_license',
-				'class'			=> 'dialog',
+				'class'			=> 'cs-dialog',
 				'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
 				'title'			=> $plugin.' -> '.$L->license
 			]
@@ -98,7 +98,7 @@ foreach ($plugins as $plugin) {
 	unset($tag, $file);
 	$state = in_array($plugin, $Config->components['plugins']);
 	$action .= h::a(
-		h::{'button.compact'}(
+		h::{'button.cs-button-compact'}(
 			h::icon($state ? 'minusthick' : 'check'),
 			[
 				'data-title'	=> $state ? $L->disable : $L->enable
@@ -119,10 +119,10 @@ foreach ($plugins as $plugin) {
 			).
 			$addition_state
 		).
-		h::{'td.ui-widget-content.ui-corner-all.plugins_config_buttons'}($action)
+		h::{'td.ui-widget-content.ui-corner-all.cs-plugins-config-buttons'}($action)
 	);
 }
 unset($plugins, $plugin, $state, $addition_state, $action);
 $a->content(
-	h::{'table.admin_table.center_all'}($plugins_list)
+	h::{'table.cs-admin-table.cs-center-all'}($plugins_list)
 );

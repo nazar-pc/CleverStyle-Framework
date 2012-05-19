@@ -66,7 +66,13 @@ class Storage {
 			return false;
 		}
 	}
-	//Тестовое подключение к хранилищу
+
+	/**
+	 * Test connection to the Storage
+	 * @param array|bool|string $data
+	 *
+	 * @return bool
+	 */
 	function test ($data = false) {
 		if (empty($data)) {
 			return false;

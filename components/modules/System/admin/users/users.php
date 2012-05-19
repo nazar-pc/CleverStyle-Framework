@@ -17,13 +17,13 @@ if (isset($rc[2], $rc[3])) {
 				).
 				h::{'td.ui-widget-content.ui-corner-all'}(
 					$column == 'data' || $column == 'about' ?
-						h::{'textarea.form_element'}(
+						h::{'textarea.cs-form-element'}(
 							$user_data[$column],
 							[
 								'name'		=> 'user['.$column.']'
 							]
 						) :
-						h::{'input.form_element'}([
+						h::{'input.cs-form-element'}([
 							'name'		=> 'user['.$column.']',
 							'value'		=> $user_data[$column],
 							$column == 'id' ? 'readonly' : false
@@ -46,7 +46,7 @@ if (isset($rc[2], $rc[3])) {
 			}
 			unset($i, $column, $content_);
 			$a->content(
-				h::{'table#users_raw_edit.admin_table.center_all'}($content)
+				h::{'table#users_raw_edit.cs-admin-table.cs-center-all'}($content)
 			);
 		break;
 		case 'edit':
@@ -64,7 +64,7 @@ if (isset($rc[2], $rc[3])) {
 					'status',
 					'block_until',
 					'last_login',
-					'lastip',
+					'last_ip',
 					'gender',
 					/*'country',
 					'region',
@@ -81,13 +81,13 @@ if (isset($rc[2], $rc[3])) {
 			);
 			$timezones	= get_timezones_list();
 			$reg_ip		= hex2ip($user_data['reg_ip'], 10);
-			$lastip		= hex2ip($user_data['lastip'], 10);
+			$last_ip	= hex2ip($user_data['last_ip'], 10);
 			$row		= function ($row1, $row2) {
 				return	h::{'th.ui-widget-header.ui-corner-all'}($row1).
 						h::{'td.ui-widget-content.ui-corner-all'}($row2);
 			};
 			$a->content(
-				h::{'table#users_edit.admin_table.center_all tr'}([
+				h::{'table#users_edit.cs-admin-table.cs-center-all tr'}([
 					$row('id', $rc[3]),
 
 					$row($L->registration_date, $user_data['reg_date'] ? date($L->_date, $user_data['reg_date']) : $L->undefined),
@@ -96,33 +96,33 @@ if (isset($rc[2], $rc[3])) {
 
 					$row($L->last_login, $user_data['last_login'] ? date($L->_datetime, $user_data['last_login']) : $L->undefined),
 
-					$row($L->last_ip, $lastip[0] ? $lastip[0].($lastip[1] ? h::br().$lastip[1] : '') : $L->undefined),
+					$row($L->last_ip, $last_ip[0] ? $last_ip[0].($last_ip[1] ? h::br().$last_ip[1] : '') : $L->undefined),
 
-					$row($L->login, h::{'input.form_element'}([
+					$row($L->login, h::{'input.cs-form-element'}([
 						'name'		=> 'user[login]',
 						'value'		=> $user_data['login']
 					])),
 
-					$row($L->username, h::{'input.form_element'}([
+					$row($L->username, h::{'input.cs-form-element'}([
 						'name'	=> 'user[username]',
 						'value'	=> $user_data['username']
 					])),
 
-					$row($L->email, h::{'input.form_element'}([
+					$row($L->email, h::{'input.cs-form-element'}([
 						'name'		=> 'user[email]',
 						'value'		=> $user_data['email']
 					])),
 
 					$row(
 						$L->password_only_for_changing.h::{'icon#show_password'}('locked'),
-						h::{'input.form_element[type=password]'}([
+						h::{'input.cs-form-element[type=password]'}([
 							'id'	=> 'user_password',
 							'name'	=> 'user[password]',
 							'value'	=> ''
 						])
 					),
 
-					$row($L->language, h::{'select.form_element'}(
+					$row($L->language, h::{'select.cs-form-element'}(
 						[
 							'in'		=> array_merge([$L->system_default.' ('.$Config->core['language'].')'], $Config->core['active_languages']),
 							'value'		=> array_merge([''], $Config->core['active_languages'])
@@ -134,7 +134,7 @@ if (isset($rc[2], $rc[3])) {
 						]
 					)),
 
-					$row($L->timezone, h::{'select.form_element'}(
+					$row($L->timezone, h::{'select.cs-form-element'}(
 						[
 							'in'		=> array_merge([$L->system_default.' ('.$Config->core['timezone'].')'], array_values($timezones)),
 							'value'		=> array_merge([''], array_keys($timezones))
@@ -146,51 +146,51 @@ if (isset($rc[2], $rc[3])) {
 						]
 					)),
 
-					$row($L->status, h::{'input.form_element[type=radio]'}([
+					$row($L->status, h::{'input.cs-form-element[type=radio]'}([
 						'name'		=> 'user[status]',
 						'checked'	=> $user_data['status'],
 						'value'		=> [-1, 0, 1],
 						'in'		=> [$L->is_not_activated, $L->inactive, $L->active]
 					])),
 
-					$row(h::info('block_until'), h::{'input.form_element[type=datetime-local]'}([
+					$row(h::info('block_until'), h::{'input.cs-form-element[type=datetime-local]'}([
 						'name'		=> 'user[block_until]',
 						'value'		=> date('Y-m-d\TH:i', $user_data['block_until'] ?: TIME)
 					])),
 
-					$row($L->gender, h::{'input.form_element[type=radio]'}([
+					$row($L->gender, h::{'input.cs-form-element[type=radio]'}([
 						'name'		=> 'user[gender]',
 						'checked'	=> $user_data['gender'],
 						'value'		=> [-1, 0, 1],
 						'in'		=> [$L->undefined, $L->male, $L->female]
 					])),
 
-					$row(h::info('birthday'), h::{'input.form_element[type=date]'}([
+					$row(h::info('birthday'), h::{'input.cs-form-element[type=date]'}([
 						'name'		=> 'user[birthday]',
 						'value'		=> date('Y-m-d', $user_data['birthday'] ?: TIME)
 					])),
 
-					$row($L->avatar, h::{'input.form_element'}([
+					$row($L->avatar, h::{'input.cs-form-element'}([
 						'name'		=> 'user[avatar]',
 						'value'		=> $user_data['avatar']
 					])),
 
-					$row($L->website, h::{'input.form_element'}([
+					$row($L->website, h::{'input.cs-form-element'}([
 						'name'		=> 'user[website]',
 						'value'		=> $user_data['website']
 					])),
 
-					$row($L->icq, h::{'input.form_element'}([
+					$row($L->icq, h::{'input.cs-form-element'}([
 						'name'		=> 'user[icq]',
 						'value'		=> $user_data['icq'] ?: ''
 					])),
 
-					$row($L->skype, h::{'input.form_element'}([
+					$row($L->skype, h::{'input.cs-form-element'}([
 						'name'		=> 'user[skype]',
 						'value'		=> $user_data['skype']
 					])),
 
-					$row($L->about_myself, h::{'textarea.form_element'}([
+					$row($L->about_myself, h::{'textarea.cs-form-element'}([
 						'name'		=> 'user[about]',
 						'value'		=> $user_data['about']
 					]))
@@ -206,7 +206,7 @@ if (isset($rc[2], $rc[3])) {
 			$a->cancel_back	= true;
 			$user_data		= $User->get(['login', 'username'], $rc[3]);
 			$a->content(
-				h::{'p.center_all'}(
+				h::{'p.cs-center-all'}(
 					$L->sure_deactivate_user($user_data['username'] ?: $user_data['login'])
 				).
 				h::{'input[type=hidden]'}([
@@ -221,7 +221,7 @@ if (isset($rc[2], $rc[3])) {
 			$a->cancel_back	= true;
 			$user_data		= $User->get(['login', 'username'], $rc[3]);
 			$a->content(
-				h::{'p.center_all'}(
+				h::{'p.cs-center-all'}(
 					$L->sure_activate_user($user_data['username'] ?: $user_data['login'])
 				).
 				h::{'input[type=hidden]'}([
@@ -271,8 +271,8 @@ if (isset($rc[2], $rc[3])) {
 					);
 				}
 				unset($content);
-				$tabs_content .= h::{'div#permissions_group_'.strtr($group, '/', '_').' table.admin_table.center_all'}(
-					h::{'tr td.left_all[colspan=4]'}(
+				$tabs_content .= h::{'div#permissions_group_'.strtr($group, '/', '_').' table.cs-admin-table.cs-center-all'}(
+					h::{'tr td.cs-left-all[colspan=4]'}(
 						h::{'button.permissions_group_invert'}($L->invert).
 							h::{'button.permissions_group_allow_all'}($L->allow_all).
 							h::{'button.permissions_group_deny_all'}($L->deny_all)
@@ -283,7 +283,7 @@ if (isset($rc[2], $rc[3])) {
 			unset($content);
 			$User->get(['username', 'login', 'email'], $rc[3]);
 			$a->content(
-				h::{'p.ui-priority-primary.for_state_messages'}(
+				h::{'p.ui-priority-primary.cs-state-messages'}(
 					$L->permissions_for_user(
 						$User->get('username', $rc[3]) ?: $User->get('login', $rc[3]) ?: $User->get('email', $rc[3])
 					)
@@ -390,7 +390,7 @@ if (isset($rc[2], $rc[3])) {
 		foreach ($users_ids as $id) {
 			$id = $id['id'];
 			$action = h::a(
-				h::{'button.compact'}(
+				h::{'button.cs-button-compact'}(
 					h::icon('pencil'),
 					[
 						'data-title'	=> $L->edit_raw_user_data
@@ -401,7 +401,7 @@ if (isset($rc[2], $rc[3])) {
 				]
 			).
 			h::a(
-				h::{'button.compact'}(
+				h::{'button.cs-button-compact'}(
 					h::icon('wrench'),
 					[
 						'data-title'	=> $L->edit_user_data
@@ -413,7 +413,7 @@ if (isset($rc[2], $rc[3])) {
 			).
 			($id != 1 && $id != 2 ?
 				h::a(
-					h::{'button.compact'}(
+					h::{'button.cs-button-compact'}(
 						h::icon($User->get('status', $id) == 1 ? 'minusthick' : 'check'),
 						[
 							'data-title'	=> $L->deactivate_user
@@ -425,7 +425,7 @@ if (isset($rc[2], $rc[3])) {
 				) : ''
 			).
 			h::a(
-				h::{'button.compact'}(
+				h::{'button.cs-button-compact'}(
 					h::icon('flag'),
 					[
 						'data-title'	=> $L->edit_user_permissions
@@ -444,12 +444,12 @@ if (isset($rc[2], $rc[3])) {
 					$user_data['reg_ip'] = $user_data['reg_ip'][0];
 				}
 			}
-			if (isset($user_data['lastip'])) {
-				$user_data['lastip'] = hex2ip($user_data['lastip'], 10);
-				if ($user_data['lastip'][1]) {
-					$user_data['lastip'] = $user_data['lastip'][0].h::br().$user_data['lastip'][1];
+			if (isset($user_data['last_ip'])) {
+				$user_data['last_ip'] = hex2ip($user_data['last_ip'], 10);
+				if ($user_data['last_ip'][1]) {
+					$user_data['last_ip'] = $user_data['last_ip'][0].h::br().$user_data['last_ip'][1];
 				} else {
-					$user_data['lastip'] = $user_data['lastip'][0];
+					$user_data['last_ip'] = $user_data['last_ip'][0];
 				}
 			}
 			$groups			= $User->get_user_groups($id);
@@ -483,7 +483,7 @@ if (isset($rc[2], $rc[3])) {
 				)
 			).
 			h::{'div#search_settings'}(
-				h::{'select.form_element'}(
+				h::{'select.cs-form-element'}(
 					[
 						'in'		=> array_merge([$L->all_columns], $search_columns),
 						'values'	=> array_merge([''], $search_columns)
@@ -494,14 +494,14 @@ if (isset($rc[2], $rc[3])) {
 					]
 				).
 				$L->search_mode.' '.
-				h::{'select.form_element'}(
+				h::{'select.cs-form-element'}(
 					$search_modes,
 					[
 						'selected'	=> $search_mode ?: 'LIKE',
 						'name'		=> 'search_mode'
 					]
 				).
-				h::{'input.form_element'}(
+				h::{'input.cs-form-element'}(
 					[
 						'value'			=> $search_text,
 						'name'			=> 'search_text',
@@ -509,7 +509,7 @@ if (isset($rc[2], $rc[3])) {
 					]
 				).
 				$L->page.' '.
-				h::{'input.form_element[type=number]'}(
+				h::{'input.cs-form-element[type=number]'}(
 					[
 						'value'	=> $start+1,
 						'min'	=> 1,
@@ -518,7 +518,7 @@ if (isset($rc[2], $rc[3])) {
 					]
 				).
 				$L->items.' '.
-				h::{'input.form_element[type=number]'}(
+				h::{'input.cs-form-element[type=number]'}(
 					[
 						'value'	=> $limit,
 						'min'	=> 1,
@@ -545,14 +545,14 @@ if (isset($rc[2], $rc[3])) {
 				'style'	=> 'margin: 5px 100% 5px 0;'
 			]
 		).
-		h::{'p.left'}(
+		h::{'p.cs-left'}(
 			$L->founded_users($results_count).
 			($results_count > $limit ? ' / '.$L->page_from($start+1, ceil($results_count/$limit)) : '')
 		).
-		h::{'table.admin_table.center_all'}(
+		h::{'table.cs-admin-table.cs-center-all'}(
 			$users_list
 		).
-		h::{'p.left'}(
+		h::{'p.cs-left'}(
 			$L->founded_users($results_count).
 			($results_count > $limit ? ' / '.$L->page_from($start+1, ceil($results_count/$limit)) : '')
 		)//TODO make add user function

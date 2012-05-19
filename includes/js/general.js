@@ -39,7 +39,7 @@ $(function() {
 		show:		'scale',
 		width:		'700'
 	});
-	$('.dialog').each(function () {
+	$('.cs-dialog').each(function () {
 		if ($(this).attr('data-dialog')) {
 			$(this).dialog($.secureEvalJSON($(this).attr('data-dialog')));
 		} else {
@@ -125,10 +125,10 @@ $(function() {
 				]
 			});
 	});
-	$('.restore_password').mousedown(function() {
+	$('.cs-header-restore-password').mousedown(function() {
 		//TODO Restore password processing
 	});
-	$('.header_back').click(function() {
+	$('.cs-header-back').click(function() {
 		$('#anonym_header_form').slideDown();
 		$('#register_header_form').slideUp();
 		$('#login_header_form').slideUp();
@@ -226,7 +226,7 @@ $(function() {
 		'padding'			: '5px',
 		'width'				: 'auto'
 	}).addClass('ui-widget-content');
-	if (in_admin && module == 'System' && routing[0] == 'components' && routing[1] == 'blocks' && routing[2] != 'settings') {
+	if (in_admin && module == 'System' && routing[0] == 'components' && routing[1] == 'blocks' && routing[2] != 'edit' && routing[2] != 'add') {
 		$('#apply_settings, #save_settings').click(
 			function () {
 				$('#position').val(
@@ -241,11 +241,10 @@ $(function() {
 			}
 		);
 		$('#top_blocks_items, #left_blocks_items, #floating_blocks_items, #right_blocks_items, #bottom_blocks_items').sortable({
-			connectWith:	'.blocks_items',
+			connectWith:	'.cs-blocks-items',
 			placeholder:	'ui-state-default',
 			items:			'li:not(.ui-state-disabled)',
-			cancel:			'.ui-state-disabled',
-			update:			function () {save = true;}
+			cancel:			'.ui-state-disabled'
 		}).disableSelection();
 	}
 });

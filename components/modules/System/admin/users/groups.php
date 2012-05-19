@@ -8,16 +8,16 @@ if (isset($rc[2])) {
 			$a->apply		= false;
 			$a->cancel_back	= true;
 			$a->content(
-				h::{'table.admin_table.center_all'}(
+				h::{'table.cs-admin-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
 						$L->group_title,
 						$L->description
 					]).
 					h::{'tr td.ui-widget-content.ui-corner-all'}([
-						h::{'input.form_element'}([
+						h::{'input.cs-form-element'}([
 							'name'		=> 'group[title]'
 						]),
-						h::{'input.form_element'}([
+						h::{'input.cs-form-element'}([
 							'name'		=> 'group[description]'
 						])
 					])
@@ -32,7 +32,7 @@ if (isset($rc[2])) {
 			$a->cancel_back	= true;
 			$group_data		= $User->get_group_data($rc[3]);
 			$a->content(
-				h::{'table.admin_table.center_all'}(
+				h::{'table.cs-admin-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
 						'&nbsp;id&nbsp;',
 						$L->group_title,
@@ -41,15 +41,15 @@ if (isset($rc[2])) {
 					]).
 					h::{'tr td.ui-widget-content.ui-corner-all'}([
 						$rc[3],
-						h::{'input.form_element'}([
+						h::{'input.cs-form-element'}([
 							'name'		=> 'group[title]',
 							'value'		=> $group_data['title']
 						]),
-						h::{'input.form_element'}([
+						h::{'input.cs-form-element'}([
 							'name'		=> 'group[description]',
 							'value'		=> $group_data['description']
 						]),
-						h::{'textarea.form_element'}(
+						h::{'textarea.cs-form-element'}(
 							$group_data['data'],
 							[
 								'name'		=> 'group[data]'
@@ -71,7 +71,7 @@ if (isset($rc[2])) {
 			$a->cancel_back	= true;
 			$permission		= $User->db()->qf('SELECT `title` FROM `[prefix]groups` WHERE `id` = '.(int)$rc[3].' LIMIT 1');
 			$a->content(
-				h::{'p.center_all'}(
+				h::{'p.cs-center-all'}(
 					$L->sure_delete_group($permission['title'])
 				).
 				h::{'input[type=hidden]'}([
@@ -123,8 +123,8 @@ if (isset($rc[2])) {
 					);
 				}
 				unset($content);
-				$tabs_content .= h::{'div#permissions_group_'.strtr($group, '/', '_').' table.admin_table.center_all'}(
-					h::{'tr td.left_all[colspan=4]'}(
+				$tabs_content .= h::{'div#permissions_group_'.strtr($group, '/', '_').' table.cs-admin-table.cs-center-all'}(
+					h::{'tr td.cs-left-all[colspan=4]'}(
 						h::{'button.permissions_group_invert'}($L->invert).
 						h::{'button.permissions_group_allow_all'}($L->allow_all).
 						h::{'button.permissions_group_deny_all'}($L->deny_all)
@@ -134,7 +134,7 @@ if (isset($rc[2])) {
 			}
 			unset($content);
 			$a->content(
-				h::{'p.ui-priority-primary.for_state_messages'}(
+				h::{'p.ui-priority-primary.cs-state-messages'}(
 					$L->permissions_for_group(
 						$User->get_group_data($rc[3], 'title')
 					)
@@ -171,7 +171,7 @@ if (isset($rc[2])) {
 		$group_data = $User->get_group_data($id);
 		$groups_list .= h::{'tr td.ui-widget-content.ui-corner-all'}([
 			h::a(
-				h::{'button.compact'}(
+				h::{'button.cs-button-compact'}(
 					h::icon('wrench'),
 					[
 						'data-title'	=> $L->edit_group_data
@@ -182,7 +182,7 @@ if (isset($rc[2])) {
 				]
 			).
 			($id != 1 && $id != 2 && $id != 3 ? h::a(
-				h::{'button.compact'}(
+				h::{'button.cs-button-compact'}(
 					h::icon('trash'),
 					[
 						'data-title'	=> $L->delete
@@ -193,7 +193,7 @@ if (isset($rc[2])) {
 				]
 			) : '').
 			h::a(
-				h::{'button.compact'}(
+				h::{'button.cs-button-compact'}(
 					h::icon('flag'),
 					[
 						'data-title'	=> $L->edit_group_permissions
@@ -210,9 +210,9 @@ if (isset($rc[2])) {
 	}
 	unset($id, $group_data, $groups_ids);
 	$a->content(
-		h::{'table.admin_table.center_all'}(
+		h::{'table.cs-admin-table.cs-center-all'}(
 			$groups_list.
-			h::{'tr td.left_all[colspan=4]'}(
+			h::{'tr td.cs-left-all[colspan=4]'}(
 				h::button(
 					$L->add_group,
 					[

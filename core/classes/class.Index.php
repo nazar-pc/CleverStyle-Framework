@@ -342,7 +342,7 @@ class Index {
 						'enctype'	=> $this->file_upload ? 'multipart/form-data' : false,
 						'action'	=> $this->action,
 						'id'		=> 'admin_form',
-						'class'		=> 'admin_form'
+						'class'		=> 'cs-admin-form'
 					)+$this->form_atributes
 				), 1
 			);

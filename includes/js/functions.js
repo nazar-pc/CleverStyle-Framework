@@ -213,3 +213,19 @@ function registration (email) {
 		}
 	);
 }
+/**
+ * For textarea in blocks editing
+ * @param item
+ */
+function block_switch_textarea (item) {
+	$('#html').hide();
+	$('#php').hide();
+	switch ($(item).val()) {
+		case 'html':
+			$('#html').show();
+		break;
+		case 'php':
+			$('#php').show();
+		break;
+	}
+}

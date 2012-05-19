@@ -8,16 +8,16 @@ if (isset($rc[2])) {
 			$a->apply		= false;
 			$a->cancel_back	= true;
 			$a->content(
-				h::{'table.admin_table.center_all'}(
+				h::{'table.cs-admin-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
 						$L->group,
 						$L->label
 					]).
 					h::{'tr td.ui-widget-content.ui-corner-all'}([
-						h::{'input.form_element'}([
+						h::{'input.cs-form-element'}([
 							'name'		=> 'permission[group]'
 						]),
-						h::{'input.form_element'}([
+						h::{'input.cs-form-element'}([
 							'name'		=> 'permission[label]'
 						])
 					])
@@ -32,7 +32,7 @@ if (isset($rc[2])) {
 			$a->cancel_back	= true;
 			$permission		= $User->db()->qf('SELECT `id`, `label`, `group` FROM `[prefix]permissions` WHERE `id` = '.(int)$rc[3].' LIMIT 1');
 			$a->content(
-				h::{'table.admin_table.center_all'}(
+				h::{'table.cs-admin-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
 						'&nbsp;id&nbsp;',
 						$L->group,
@@ -40,11 +40,11 @@ if (isset($rc[2])) {
 					]).
 					h::{'tr td.ui-widget-content.ui-corner-all'}([
 						$rc[3],
-						h::{'input.form_element'}([
+						h::{'input.cs-form-element'}([
 							'name'		=> 'permission[group]',
 							'value'		=> $permission['group']
 						]),
-						h::{'input.form_element'}([
+						h::{'input.cs-form-element'}([
 							'name'		=> 'permission[label]',
 							'value'		=> $permission['label']
 						])
@@ -66,7 +66,7 @@ if (isset($rc[2])) {
 			$a->cancel_back	= true;
 			$permission		= $User->db()->qf('SELECT `label`, `group` FROM `[prefix]permissions` WHERE `id` = '.(int)$rc[3].' LIMIT 1');
 			$a->content(
-				h::{'p.center_all'}(
+				h::{'p.cs-center-all'}(
 					$L->sure_delete_permission($permission['group'].'/'.$permission['label'])
 				).
 				h::{'input[type=hidden]'}([
@@ -97,9 +97,9 @@ if (isset($rc[2])) {
 	foreach ($permissions as $group => $list) {
 		foreach ($list as $label => $id) {
 			++$count;
-			$permissions_list[] = h::{'td.ui-widget-content.ui-corner-all.left_all'}([
+			$permissions_list[] = h::{'td.ui-widget-content.ui-corner-all.cs-left-all'}([
 				h::a(
-					h::{'button.compact'}(
+					h::{'button.cs-button-compact'}(
 						h::icon('wrench'),
 						[
 							'data-title'	=> $L->edit
@@ -110,7 +110,7 @@ if (isset($rc[2])) {
 					]
 				).
 				h::a(
-					h::{'button.compact'}(
+					h::{'button.cs-button-compact'}(
 						h::icon('trash'),
 						[
 							'data-title'	=> $L->delete
@@ -150,9 +150,9 @@ if (isset($rc[2])) {
 	}
 	unset($permissions_list);
 	$a->content(
-		h::{'table.admin_table.center_all'}(
+		h::{'table.cs-admin-table.cs-center-all'}(
 			$permissions_list_.
-			h::{'tr td.left_all[colspan=8]'}(
+			h::{'tr td.cs-left-all[colspan=8]'}(
 				h::button(
 					$L->add_permission,
 					[

@@ -12,7 +12,7 @@ a {
 	color: #000;
 	/*border-bottom: 1px dashed #000;*/
 }
-.form_element, .form_element:hover, .form_element:focus {
+.cs-form-element, .cs-form-element:hover, .cs-form-element:focus {
 	background: #fff;
 	border-color: rgb(110, 188, 0);
 }

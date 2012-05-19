@@ -2,7 +2,7 @@
 global $L, $Config, $Index, $Cache;
 $a = &$Index;
 $a->content(
-	h::{'table.admin_table.left_even.right_odd'}(
+	h::{'table.cs-admin-table.cs-left-even.cs-right-odd'}(
 		h::tr(
 			h::{'td info'}('disk_cache').
 			h::{'td input[type=radio]'}([
@@ -14,7 +14,7 @@ $a->content(
 		).
 		h::tr(
 			h::{'td info'}('disk_cache_size').
-			h::{'td input.form_element[type=number]'}([
+			h::{'td input.cs-form-element[type=number]'}([
 				'name'			=> 'core[disk_cache_size]',
 				'value'			=> $Config->core['disk_cache_size'],
 				'min'			=> 0
@@ -53,7 +53,7 @@ $a->content(
 		).
 		h::{'tr#zlib_compression'}(
 			h::td($L->zlib_compression_level).
-			h::{'td input.form_element[type=range]'}([
+			h::{'td input.cs-form-element[type=range]'}([
 				'name'			=> 'core[zlib_compression_level]',
 				'value'			=> $Config->core['zlib_compression_level'],
 				'min'			=> 1,
@@ -84,7 +84,7 @@ $a->content(
 		).
 		h::tr(
 			h::{'td info'}('inserts_limit').
-			h::{'td input.form_element[type=number]'}([
+			h::{'td input.cs-form-element[type=number]'}([
 				'name'			=> 'core[inserts_limit]',
 				'value'			=> $Config->core['inserts_limit'],
 				'min'			=> 1
@@ -93,7 +93,7 @@ $a->content(
 		h::tr(
 			h::{'td info'}('update_ratio').
 			h::td(
-				h::{'input.form_element[type=number]'}([
+				h::{'input.cs-form-element[type=number]'}([
 					'name'			=> 'core[update_ratio]',
 					'value'			=> $Config->core['update_ratio'],
 					'min'			=> 0,

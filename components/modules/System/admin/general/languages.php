@@ -3,11 +3,11 @@ global $Config, $Index, $L;
 $Config->reload_languages();
 $a = &$Index;
 $a->content(
-	h::{'table.admin_table.left_even.right_odd'}(
+	h::{'table.cs-admin-table.cs-left-even.cs-right-odd'}(
 		h::tr(
 			h::td(h::info('current_language')).
 			h::td(
-				h::{'select#change_language.form_element'}(
+				h::{'select#change_language.cs-form-element'}(
 					$Config->core['active_languages'],
 					array(
 						'name'		=> 'core[language]',
@@ -20,7 +20,7 @@ $a->content(
 		h::tr(
 			h::td(h::info('active_languages')).
 			h::td(
-				h::{'select#change_active_languages.form_element'}(
+				h::{'select#change_active_languages.cs-form-element'}(
 					$Config->core['languages'],
 					array(
 						'name'		=> 'core[active_languages][]',

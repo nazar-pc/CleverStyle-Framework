@@ -3,11 +3,11 @@ global $Config, $Index, $L;
 $Config->reload_themes();
 $a = &$Index;
 $a->content(
-	h::{'table.admin_table.left_even.right_odd'}(
+	h::{'table.cs-admin-table.cs-left-even.cs-right-odd'}(
 		h::tr(
 			h::td(h::info('current_theme')).
 			h::td(
-				h::{'select#change_theme.form_element'}(
+				h::{'select#change_theme.cs-form-element'}(
 					$Config->core['active_themes'],
 					array(
 						'name'		=> 'core[theme]',
@@ -20,7 +20,7 @@ $a->content(
 		h::tr(
 			h::td(h::info('active_themes')).
 			h::td(
-				h::{'select#change_active_themes.form_element'}(
+				h::{'select#change_active_themes.cs-form-element'}(
 					$Config->core['themes'],
 					array(
 						'name'		=> 'core[active_themes][]',
@@ -34,7 +34,7 @@ $a->content(
 		h::tr(
 			h::td(h::info('color_scheme')).
 			h::td(
-				h::{'select#change_color_scheme.form_element'}(
+				h::{'select#change_color_scheme.cs-form-element'}(
 					$Config->core['color_schemes'][$Config->core['theme']],
 					array(
 						'name'		=> 'core[color_scheme]',

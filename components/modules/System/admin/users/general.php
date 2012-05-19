@@ -3,10 +3,10 @@ global $Config, $Index, $L;
 $a = &$Index;
 
 $a->content(
-	h::{'table.admin_table.left_even.right_odd'}(
+	h::{'table.cs-admin-table.cs-left-even.cs-right-odd'}(
 		h::{'tr td'}([
 			h::info('session_expire'),
-			h::{'input.form_element[type=number]'}([
+			h::{'input.cs-form-element[type=number]'}([
 				'name'			=> 'core[session_expire]',
 				'value'			=> $Config->core['session_expire'],
 				'min'			=> 1
@@ -15,7 +15,7 @@ $a->content(
 		]).
 		h::{'tr td'}([
 			h::info('online_time'),
-			h::{'input.form_element[type=number]'}([
+			h::{'input.cs-form-element[type=number]'}([
 				'name'			=> 'core[online_time]',
 				'value'			=> $Config->core['online_time'],
 				'min'			=> 1
@@ -24,7 +24,7 @@ $a->content(
 		]).
 		h::{'tr td'}([
 			h::info('login_attempts_block_count'),
-			h::{'input.form_element[type=number]'}([
+			h::{'input.cs-form-element[type=number]'}([
 				'name'			=> 'core[login_attempts_block_count]',
 				'value'			=> $Config->core['login_attempts_block_count'],
 				'min'			=> 0,
@@ -43,7 +43,7 @@ $a->content(
 		h::{'tr#login_attempts_block_count'}(
 			h::td(h::info('login_attempts_block_time')).
 			h::td(
-				h::{'input.form_element[type=number]'}([
+				h::{'input.cs-form-element[type=number]'}([
 					'name'			=> 'core[login_attempts_block_time]',
 					'value'			=> $Config->core['login_attempts_block_time'],
 					'min'			=> 1
@@ -56,7 +56,7 @@ $a->content(
 		).
 		h::{'tr td'}([
 			h::info('password_min_length'),
-			h::{'input.form_element[type=number]'}([
+			h::{'input.cs-form-element[type=number]'}([
 				'name'			=> 'core[password_min_length]',
 				'value'			=> $Config->core['password_min_length'],
 				'min'			=> 4
@@ -64,7 +64,7 @@ $a->content(
 		]).
 		h::{'tr td'}([
 			h::info('password_min_strength'),
-			h::{'input.form_element[type=range]'}([
+			h::{'input.cs-form-element[type=range]'}([
 				'name'			=> 'core[password_min_strength]',
 				'value'			=> $Config->core['password_min_strength'],
 				'min'			=> 0,
@@ -108,7 +108,7 @@ $a->content(
 		h::{'tr.allow_user_registration.require_registration_confirmation'}(
 			h::td(h::info('registration_confirmation_time')).
 			h::td(
-				h::{'input.form_element[type=number]'}([
+				h::{'input.cs-form-element[type=number]'}([
 					 'name'			=> 'core[registration_confirmation_time]',
 					 'value'		=> $Config->core['registration_confirmation_time'],
 					 'min'			=> 1
@@ -136,7 +136,7 @@ $a->content(
 		).
 		h::{'tr td'}([
 			$L->site_rules,
-			h::{'textarea#site_rules.EDITORH.form_element'}(
+			h::{'textarea#site_rules.EDITORH.cs-form-element'}(
 				$Config->core['rules'],
 				[
 					'name' => 'core[rules]'

@@ -4,11 +4,11 @@ $a = &$Index;
 $timezones = get_timezones_list();
 
 $a->content(
-	h::{'table.admin_table.left_even.right_odd'}(
+	h::{'table.cs-admin-table.cs-left-even.cs-right-odd'}(
 		h::tr(
 			h::td(h::info('name2')).
 			h::td(
-				h::{'input.form_element'}(
+				h::{'input.cs-form-element'}(
 					array(
 						'name'	=> 'core[name]',
 						'value' => $Config->core['name']
@@ -19,7 +19,7 @@ $a->content(
 		h::tr(
 			h::td(h::info('url')).
 			h::td(
-				h::{'input.form_element'}(
+				h::{'input.cs-form-element'}(
 					array(
 						'name'	=> 'core[url]',
 						'value' => $Config->core['url']
@@ -30,7 +30,7 @@ $a->content(
 		h::tr(
 			h::td(h::info('cookie_domain')).
 			h::td(
-				h::{'input.form_element'}(
+				h::{'input.cs-form-element'}(
 					array(
 						'name'	=> 'core[cookie_domain]',
 						'value' => $Config->core['cookie_domain']
@@ -41,7 +41,7 @@ $a->content(
 		h::tr(
 			h::td(h::info('cookie_path')).
 			h::td(
-				h::{'input.form_element'}(
+				h::{'input.cs-form-element'}(
 					array(
 						'name'	=> 'core[cookie_path]',
 						'value' => $Config->core['cookie_path']
@@ -52,7 +52,7 @@ $a->content(
 		h::tr(
 			h::td(h::info('cookie_prefix')).
 			h::td(
-				h::{'input.form_element'}(
+				h::{'input.cs-form-element'}(
 					array(
 						'name'	=> 'core[cookie_prefix]',
 						'value' => $Config->core['cookie_prefix']
@@ -76,15 +76,15 @@ $a->content(
 					h::{'tr#site_info_config_mirrors'}(
 						h::td(
 							array(
-								h::{'textarea.form_element'}(
+								h::{'textarea.cs-form-element.cs-wide-textarea'}(
 									$Config->core['mirrors_url'],
 									array('name' => 'core[mirrors_url]')
 								),
-								h::{'textarea.form_element'}(
+								h::{'textarea.cs-form-element.cs-wide-textarea'}(
 									$Config->core['mirrors_cookie_domain'],
 									array('name' => 'core[mirrors_cookie_domain]')
 								),
-								h::{'textarea.form_element'}(
+								h::{'textarea.cs-form-element.cs-wide-textarea'}(
 									$Config->core['mirrors_cookie_path'],
 									array('name' => 'core[mirrors_cookie_path]')
 								)
@@ -97,7 +97,7 @@ $a->content(
 		h::tr(
 			h::td(h::info('keywords')).
 			h::td(
-				h::{'input.form_element'}(
+				h::{'input.cs-form-element'}(
 					array(
 						'name'	=> 'core[keywords]',
 						'value' => $Config->core['keywords']
@@ -108,7 +108,7 @@ $a->content(
 		h::tr(
 			h::td(h::info('description')).
 			h::td(
-				h::{'input.form_element'}(
+				h::{'input.cs-form-element'}(
 					array(
 						'name'	=> 'core[description]',
 						'value' => $Config->core['description']
@@ -119,7 +119,7 @@ $a->content(
 		h::tr(
 			h::td(h::info('timezone')).
 			h::td(
-				h::{'select.form_element'}(
+				h::{'select.cs-form-element'}(
 					array(
 						'in'		=> array_values($timezones),
 						'value'		=> array_keys($timezones)
@@ -135,7 +135,7 @@ $a->content(
 		h::tr(
 			h::td(h::info('admin_mail')).
 			h::td(
-				h::{'input.form_element[type=email]'}(
+				h::{'input.cs-form-element[type=email]'}(
 					array(
 						'name'	=> 'core[admin_mail]',
 						'value' => $Config->core['admin_mail']
@@ -146,7 +146,7 @@ $a->content(
 		h::tr(
 			h::td(h::info('admin_phone')).
 			h::td(
-				h::{'input.form_element[type=tel]'}(
+				h::{'input.cs-form-element[type=tel]'}(
 					array(
 						'name'	=> 'core[admin_phone]',
 						'value' => $Config->core['admin_phone']

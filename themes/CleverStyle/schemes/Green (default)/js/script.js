@@ -17,7 +17,7 @@ var loading_interval, loading_angle = 0;
 			l = Math.floor(Math.random()*(window.innerWidth-bokehSize));
 			t = Math.floor(Math.random()*(height-bokehSize));
 			bokeh = $("<div>")
-				.addClass("background")
+				.addClass("cs-background")
 				.css({
 						'left': l+'px',
 						'top': t+'px',

@@ -3,7 +3,7 @@ global $Config, $Index, $L;
 $a = &$Index;
 
 $a->content(
-	h::{'table.admin_table.left_even.right_odd'}(
+	h::{'table.cs-admin-table.cs-left-even.cs-right-odd'}(
 		h::tr(
 			h::td(h::info('smtp')).
 			h::td(
@@ -25,7 +25,7 @@ $a->content(
 					h::tr(
 						h::td(h::info('smtp_host')).
 						h::td(
-							h::{'input.form_element'}(
+							h::{'input.cs-form-element'}(
 								array(
 									'name'	=> 'core[smtp_host]',
 									'value' => $Config->core['smtp_host']
@@ -36,7 +36,7 @@ $a->content(
 					h::tr(
 						h::td(h::info('smtp_port')).
 						h::td(
-							h::{'input.form_element'}(
+							h::{'input.cs-form-element'}(
 								array(
 									'name'	=> 'core[smtp_port]',
 									'value' => $Config->core['smtp_port']
@@ -74,7 +74,7 @@ $a->content(
 					h::{'tr#smtp_user'}(
 						h::td($L->smtp_user).
 						h::td(
-							h::{'input.form_element'}(
+							h::{'input.cs-form-element'}(
 								array(
 									'name'	=> 'core[smtp_user]',
 									'value' => $Config->core['smtp_user']
@@ -88,7 +88,7 @@ $a->content(
 					h::{'tr#smtp_password'}(
 						h::td(h::info('smtp_password')).
 						h::td(
-							h::{'input.form_element'}(
+							h::{'input.cs-form-element'}(
 								array(
 									'name'	=> 'core[smtp_password]',
 									'value' => $Config->core['smtp_password']
@@ -106,7 +106,7 @@ $a->content(
 		h::tr(
 			h::td(h::info('mail_from')).
 			h::td(
-				h::{'input.form_element'}(
+				h::{'input.cs-form-element'}(
 					array(
 						'name'	=> 'core[mail_from]',
 						'value' => $Config->core['mail_from']
@@ -117,7 +117,7 @@ $a->content(
 		h::tr(
 			h::td($L->mail_from_name).
 				h::td(
-					h::{'input.form_element'}(
+					h::{'input.cs-form-element'}(
 						array(
 							 'name'	=> 'core[mail_from_name]',
 							 'value' => $Config->core['mail_from_name']
@@ -128,7 +128,7 @@ $a->content(
 		h::tr(
 			h::td(h::info('mail_signature')).
 				h::td(
-					h::{'textarea.EDITORH.form_element'}(
+					h::{'textarea.EDITORH.cs-form-element'}(
 						$Config->core['mail_signature'],
 						array('name' => 'core[mail_signature]')
 					)

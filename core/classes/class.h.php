@@ -109,9 +109,9 @@ class h {//TODO array of void elements for general processing
 		if (isset($data['data-title']) && $data['data-title']) {
 			$data['data-title'] = filter($data['data-title']);
 			if (isset($data['class'])) {
-				$data['class'] .= ' info';
+				$data['class'] .= ' cs-info';
 			} else {
-				$data['class'] = 'info';
+				$data['class'] = 'cs-info';
 			}
 		}
 		if (isset($data['data-dialog'])) {
@@ -363,27 +363,28 @@ class h {//TODO array of void elements for general processing
 		}
 		if (isset($in['type']) && $in['type'] == 'radio') {
 			if (is_array($in)) {
-				if (isset($in['checked'])) {
-					if (isset($in['add']) && !is_array($in['add'])) {
-						$add = $in['add'];
-						$in['add'] = [];
-						foreach ($in['in'] as $v) {
-							$in['add'][] = $add;
-						}
-						unset($add);
-					}
-					foreach ($in['value'] as $i => $v) {
-						if ($v == $in['checked']) {
-							if (!isset($in['add'][$i])) {
-								$in['add'][$i] = ' checked';
-							} else {
-								$in['add'][$i] .= ' checked';
-							}
-							break;
-						}
-					}
-					unset($in['checked'], $i, $v);
+				if (!isset($in['checked'])) {
+					$in['checked'] = $in['value'][0];
 				}
+				if (isset($in['add']) && !is_array($in['add'])) {
+					$add = $in['add'];
+					$in['add'] = [];
+					foreach ($in['in'] as $v) {
+						$in['add'][] = $add;
+					}
+					unset($add);
+				}
+				foreach ($in['value'] as $i => $v) {
+					if ($v == $in['checked']) {
+						if (!isset($in['add'][$i])) {
+							$in['add'][$i] = ' checked';
+						} else {
+							$in['add'][$i] .= ' checked';
+						}
+						break;
+					}
+				}
+				unset($in['checked'], $i, $v);
 				$items = self::array_flip($in, count($in['in']));
 				unset($in, $v, $i);
 				$temp = '';

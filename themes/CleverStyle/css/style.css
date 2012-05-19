@@ -6,6 +6,10 @@ body {
 	width       : 100%;
 }
 
+code {
+	font-family : "DejaVu Sans Mono", "Courier New", monospace;
+}
+
 #body {
 	margin : 7px;
 }
@@ -17,17 +21,17 @@ body {
 	width              : 100%;
 }
 
-.admin_form {
+.cs-admin-form {
 	text-align : center;
 	width      : 100%;
 }
 
-.admin_table {
+.cs-admin-table {
 	margin : auto auto 15px;
 	width  : 100%;
 }
 
-.admin_table > tbody > tr > td.ui-widget-shadow {
+.cs-admin-table > tbody > tr > td.ui-widget-shadow {
 	opacity : 1;
 }
 
@@ -46,31 +50,10 @@ td#main_content > section > article > div {
 a {
 	text-decoration : none;
 }
-/*
-a:hover {
-	border-bottom-style : solid;
-}
 
-a[href='#'] {
-	border-bottom-style : none;
-}
-
-a:hover[href='#'] {
-	border-bottom-style : inherit;
-}
-
-a[target="_blank"]::after,
-a[target="_new"]::after {
-	content : "↑";
-}
-
-a[href^="http://"]::after {
-	content : "↗";
-}*/
-
-.form_element,
-.form_element:hover,
-.form_element:focus {
+.cs-form-element,
+.cs-form-element:hover,
+.cs-form-element:focus {
 	border             : solid 2px;
 	border-radius      : 5px;
 	border-spacing     : 0;
@@ -83,15 +66,15 @@ select {
 	outline : none;
 }
 
-.admin_table input[type=number],
-.admin_table input[type=range] {
+.cs-admin-table input[type=number],
+.cs-admin-table input[type=range] {
 	width : 90px;
 }
 
-.admin_table input[type=text],
-.admin_table input[type=password],
-.admin_table input[type=email],
-.admin_table input[type=tel] {
+.cs-admin-table input[type=text],
+.cs-admin-table input[type=password],
+.cs-admin-table input[type=email],
+.cs-admin-table input[type=tel] {
 	width : 250px;
 }
 
@@ -106,8 +89,8 @@ textarea {
 	white-space : nowrap;
 }
 
-button.compact > span,
-input[type=button].compact > span {
+button.cs-button-compact > span,
+input[type=button].cs-button-compact > span {
 	padding : 2px 3px !important;
 }
 
@@ -119,48 +102,32 @@ footer {
 	padding    : 0;
 }
 
-.for_state_messages {
+.cs-state-messages {
 	padding    : 5px;
 }
 
-.background {
-	position : absolute;
-	z-index  : -100;
-}
-
-/*a.nul,
-a.nul:hover,
-a.nul:active,
-a.nul:visited {
-	border-bottom-style : none;
-}*/
-
-.dialog {
+.cs-dialog {
 	display : none;
 }
 
-.blocks_items {
+.cs-blocks-items {
 	list-style-type : none;
 	margin          : 0;
 	padding         : 5px;
 }
 
-.blocks_items li {
+.cs-blocks-items li {
 	cursor  : move;
 	margin  : 0 5px 5px 5px;
 	padding : 5px;
 }
 
-.info {
-	/*cursor : help;*/
-}
-
-.storages_config_buttons,
-.modules_config_buttons button,
-.db_config_buttons button,
-.db_config_buttons_ button,
-.plugins_config_buttons button,
-.storages_config_buttons button,
+.cs-storages-config-buttons,
+.cs-modules-config-buttons button,
+.cs-db-config-buttons button,
+.cs-db-config-buttons-r button,
+.cs-plugins-config-buttons button,
+.cs-storages-config-buttons button,
 #apply_settings,
 #save_settings,
 #cancel_settings,
@@ -171,133 +138,125 @@ a.nul:visited {
 	cursor : pointer;
 }
 
-.dialog {
-	display : none;
-}
-
 #login_slide,
 #registration_slide {
 	float      : none !important;
 	margin-top : 4px !important;
 }
 
-.header_back,
-.restore_password {
+.cs-header-back,
+.cs-header-restore-password {
 	float : right !important;
 }
 
-#register_header_form .header_back,
-#register_header_form .restore_password {
+#register_header_form .cs-header-back,
+#register_header_form .cs-header-restore-password {
 	margin-top : 4px !important;
 }
 
-.center_odd > tbody > tr > td:nth-child(odd),
-.center_even > tbody > tr > td:nth-child(even),
-.center_all > tbody > tr > td,
-tr.center_all > td,
-td.center_all {
+.cs-center-odd > tbody > tr > td:nth-child(odd),
+.cs-center-even > tbody > tr > td:nth-child(even),
+.cs-center-all > tbody > tr > td,
+tr.cs-center-all > td,
+td.cs-center-all {
 	text-align     : center;
 	vertical-align : middle;
 	padding        : 2px;
 }
 
-td.center_all {
+td.cs-center-all {
 	text-align : center !important;
 }
 
-.center {
+.cs-center {
 	text-align: center;
 }
 
-.right_odd > tbody > tr > td:nth-child(odd),
-.right_even > tbody > tr > td:nth-child(even),
-.right_all > tbody > tr > td,
-tr.right_all > td,
-td.right_all {
+.cs-right-odd > tbody > tr > td:nth-child(odd),
+.cs-right-even > tbody > tr > td:nth-child(even),
+.cs-right-all > tbody > tr > td,
+tr.cs-right-all > td,
+td.cs-right-all {
 	text-align     : right;
 	vertical-align : top;
 	padding        : 2px;
 }
 
-td.right_all {
+td.cs-right-all {
 	text-align : right !important;
 }
-.right {
+.cs-right {
 	text-align: right;
 }
 
-.left_odd > tbody > tr > td:nth-child(odd),
-.left_even > tbody > tr > td:nth-child(even),
-.left_all > tbody > tr > td,
-tr.left_all > td,
-td.left_all {
+.cs-left-odd > tbody > tr > td:nth-child(odd),
+.cs-left-even > tbody > tr > td:nth-child(even),
+.cs-left-all > tbody > tr > td,
+tr.cs-left-all > td,
+td.cs-left-all {
 	text-align     : left;
 	vertical-align : top;
 	padding        : 2px;
 }
 
-td.left_all {
+td.cs-left-all {
 	text-align : left !important;
 }
 
-.left {
+.cs-left {
 	text-align: left;
 }
 
-.blocks_items_title {
+.cs-blocks-items-title {
 	float        : left;
 	width        : 100%;
 	margin-right : -40px;
 }
 
-.blocks_items_title+a,
-.blocks_items_title+a+a {
+.cs-blocks-items-title+a,
+.cs-blocks-items-title+a+a,
+.cs-blocks-items-title+a+a+a {
 	cursor  : pointer;
 	display : inline-block;
 }
 
-.blocks_items_groups {
+.cs-blocks-items-groups {
 	width : 33%;
 }
 
-.modules_config_buttons,
-.db_config_buttons {
+.cs-modules-config-buttons,
+.cs-db-config-buttons {
 	text-align : left !important;
 }
 
-.db_config_buttons_ {
+.cs-db-config-buttons-r {
 	text-align : right !important;
 }
 
-.test_result {
+.cs-test-result {
 	text-align     : center;
 	text-transform : capitalize;
 }
 
-.db_add input,
-.block_add input[type=text],
-.storage_add input {
+.cs-add-db input,
+.cs-add-block input[type=text],
+.cs-add-storage input {
 	width : auto !important;
 }
 
-.php_components,
-.sql_properties,
-.php_ini_settings {
+.cs-php-components,
+.cs-sql-properties,
+.cs-php-ini-settings {
 	width : 100%;
 }
 
-#debug_form, .padding_left {
+.cs-padding-left {
 	padding-left : 20px;
 }
 
 #system_config_routing td,
 #system_config_replace td {
 	width : 50%;
-}
-
-#system_config_routing td textarea,
-#system_config_replace td textarea {
-	width : 90%;
 }
 
 #site_info_config_mirrors td:nth-child(1) {
@@ -312,7 +271,7 @@ td.left_all {
 	width : 20%;
 }
 
-#site_info_config_mirrors textarea {
+textarea.cs-wide-textarea {
 	width : 90%;
 }
 
@@ -320,16 +279,12 @@ td.left_all {
 	width : 100%;
 }
 
-.code_debug {
+.cs-debug-code {
 	border-left  : 1px solid;
 	display      : block;
 	margin       : 10px 5px 10px 20px;
 	padding-left : 10px;
 	text-align   : left;
-}
-
-code {
-	font-family : "DejaVu Sans Mono", "Courier New", monospace;
 }
 
 #debug_queries {

@@ -453,17 +453,17 @@ class Page {
 		//Объекты
 		if ($Config->core['show_objects_data']) {
 			global $Objects, $timeload, $loader_init_memory;
-			$this->debug_info .= h::{'p#debug_objects_toggle.ui-widget-header.for_state_messages.center'}(
+			$this->debug_info .= h::{'p#debug_objects_toggle.ui-widget-header.cs-state-messages.cs-center'}(
 				$span.$L->objects
 			);
 			$debug_info =	h::p(
 								$L->total_list.': '.implode(', ', array_keys($Objects->Loaded))
 							).h::p(
 								$L->loader
-							).h::{'p.padding_left'}(
+							).h::{'p.cs-padding-left'}(
 								$L->creation_duration.': '.
 									format_time(round($timeload['loader_init'] - $timeload['start'], 5))
-							).h::{'p.padding_left'}(
+							).h::{'p.cs-padding-left'}(
 								$L->memory_usage.': '.
 									format_filesize($loader_init_memory, 5)
 							);
@@ -471,19 +471,19 @@ class Page {
 			foreach ($Objects->Loaded as $object => &$data) {
 				$debug_info .=	h::p(
 									$object
-								).h::{'p.padding_left'}(
+								).h::{'p.cs-padding-left'}(
 									$L->creation_duration.': '.
 										format_time(round($data[0] - $last, 5))
-								).h::{'p.padding_left'}(
+								).h::{'p.cs-padding-left'}(
 									$L->time_from_start_execution.': '.
 										format_time(round($data[0] - $timeload['start'], 5))
-								).h::{'p.padding_left'}(
+								).h::{'p.cs-padding-left'}(
 									$L->memory_usage.': '.
 										format_filesize($data[1], 5)
 								);
 				$last = $data[0];
 			}
-			$this->debug_info .= h::{'div#debug_objects.padding_left'}(
+			$this->debug_info .= h::{'div#debug_objects.cs-padding-left'}(
 				$debug_info,
 				array('style' => 'display: none;')
 			);
@@ -491,7 +491,7 @@ class Page {
 		}
 		//Данные пользователя
 		if ($Config->core['show_user_data']) {
-			$this->debug_info .= h::{'p#debug_user_toggle.ui-widget-header.for_state_messages.center'}(
+			$this->debug_info .= h::{'p#debug_user_toggle.ui-widget-header.cs-state-messages.cs-center'}(
 				$span.$L->user_data
 			);
 			global $loader_init_memory;
@@ -505,7 +505,7 @@ class Page {
 		}
 		//Запросы в БД
 		if ($Config->core['show_queries']) {
-			$this->debug_info .= h::{'p#debug_queries_toggle.ui-widget-header.for_state_messages.center'}(
+			$this->debug_info .= h::{'p#debug_queries_toggle.ui-widget-header.cs-state-messages.cs-center'}(
 				$span.$L->queries
 			);
 			$queries =	h::p(
@@ -523,7 +523,7 @@ class Page {
 			$connections = $db->get_connections_list();
 			foreach ($connections as $name => $database) {
 				$name = $name != 0 ? $L->db.' '.$database->database : $L->core_db.' ('.$database->database.')';
-				$queries .= h::{'p.padding_left'}(
+				$queries .= h::{'p.cs-padding-left'}(
 					$name.
 					', '.$L->duration_of_connecting_with_db.' '.$L->during.' '.round($database->connecting_time, 5).
 					', '.$database->queries['num'].' '.$L->queries_to_db.' '.$L->during.' '.format_time(round($database->time, 5)).':'
@@ -535,14 +535,14 @@ class Page {
 						'#'.h::i(format_time(round($database->queries['time'][$i], 5))).
 						($error = (strtolower(substr($text, 0, 6)) == 'select' && !$database->queries['resource'][$i]) ? '('.$L->error.')' : ''),
 						array(
-							'class' => ($database->queries['time'][$i] > 0.1 ? 'ui-state-highlight ' : '').($error ? 'ui-state-error ' : '').'code_debug'
+							'class' => ($database->queries['time'][$i] > 0.1 ? 'ui-state-highlight ' : '').($error ? 'ui-state-error ' : '').'cs-debug-code'
 						)
 					);
 				}
 				unset($error);
 			}
 			unset($connections, $name, $database, $i, $text);
-			$this->debug_info .= h::{'div#debug_queries.padding_left'}(
+			$this->debug_info .= h::{'div#debug_queries.cs-padding-left'}(
 				h::p(
 					$L->total.' '.$db->queries.' '.$L->queries_to_db.' '.$L->during.' '.format_time(round($db->time, 5)).($db->queries ? ':' : '')
 				).
@@ -556,7 +556,7 @@ class Page {
 		//TODO Storages information
 		//Cookies
 		if ($Config->core['show_cookies']) {
-			$this->debug_info .= h::{'p#debug_cookies_toggle.ui-widget-header.for_state_messages.center'}(
+			$this->debug_info .= h::{'p#debug_cookies_toggle.ui-widget-header.cs-state-messages.cs-center'}(
 				$span.$L->cookies
 			);
 			$debug_info = h::tr(
@@ -572,7 +572,7 @@ class Page {
 			unset($i, $v);
 			$this->debug_info .= h::{'div#debug_cookies'}(
 				h::level(
-					h::{'table.padding_left'}(
+					h::{'table.cs-padding-left'}(
 						$debug_info,
 						array(
 							 'style' => 'width: 100%'
@@ -589,13 +589,13 @@ class Page {
 	}
 	//Display notice
 	function notice ($text) {
-		$this->Top .= h::{'div.ui-state-highlight.ui-corner-all.ui-priority-primary.center.for_state_messages'}(
+		$this->Top .= h::{'div.ui-state-highlight.ui-corner-all.ui-priority-primary.cs-center.cs-state-messages'}(
 			$text
 		);
 	}
 	//Display warning
 	function warning ($text) {
-		$this->Top .= h::{'div.ui-state-error.ui-corner-all.ui-priority-primary.center.for_state_messages'}(
+		$this->Top .= h::{'div.ui-state-error.ui-corner-all.ui-priority-primary.cs-center.cs-state-messages'}(
 			$text
 		);
 	}
@@ -621,10 +621,10 @@ class Page {
 			$this->user_avatar_image = 'none';
 			$this->user_info = h::{'div#anonym_header_form'}(
 				h::b($L->hello.', '.$L->guest.'!').h::br().
-					h::{'button#login_slide.compact'}(
+					h::{'button#login_slide.cs-button-compact'}(
 						h::icon('check').$L->log_in
 					).
-					h::{'button#registration_slide.compact'}(
+					h::{'button#registration_slide.cs-button-compact'}(
 						h::icon('pencil').$L->register,
 						array(
 							 'data-title'	=> $L->quick_registration_form
@@ -642,14 +642,14 @@ class Page {
 						 'in'			=> array_merge(array(''), (array)_mb_substr(get_list(MODULES.DS.'System'.DS.'registration', '/^.*?\.php$/i', 'f'), 0, -4))
 					)
 				).
-				h::{'button#register_process.compact[tabindex=2]'}(h::icon('pencil').$L->register).
-				h::{'button.compact.header_back[tabindex=3]'}(
+				h::{'button#register_process.cs-button-compact[tabindex=2]'}(h::icon('pencil').$L->register).
+				h::{'button.cs-button-compact.cs-header-back[tabindex=3]'}(
 					h::icon('carat-1-s'),
 					array(
 						 'data-title'	=> $L->back
 					)
 				).
-				h::{'button.compact.restore_password[tabindex=4]'}(
+				h::{'button.cs-button-compact.cs-header-restore-password[tabindex=4]'}(
 					h::icon('help'),
 					array(
 						 'data-title'	=> $L->restore_password
@@ -676,14 +676,14 @@ class Page {
 					)
 				).
 				h::{'icon#show_password.pointer'}('locked').
-				h::{'button#login_process.compact[tabindex=3]'}(h::icon('check').$L->log_in).
-				h::{'button.compact.header_back[tabindex=5]'}(
+				h::{'button#login_process.cs-button-compact[tabindex=3]'}(h::icon('check').$L->log_in).
+				h::{'button.cs-button-compact.cs-header-back[tabindex=5]'}(
 					h::icon('carat-1-s'),
 					array(
 						 'data-title'	=> $L->back
 					)
 				).
-				h::{'button.compact.restore_password[tabindex=4]'}(
+				h::{'button.cs-button-compact.cs-header-restore-password[tabindex=4]'}(
 					h::icon('help'),
 					array(
 						 'data-title'	=> $L->restore_password

@@ -98,7 +98,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					foreach ($db_json as $database) {
 						$db_list[] = h::{'td.ui-widget-content.ui-corner-all'}([
 							$L->{$rc[3].'_db_'.$database},
-							h::{'select.form_element'}(
+							h::{'select.cs-form-element'}(
 								[
 									'in'		=> $dbs_name,
 									'value'		=> $dbs
@@ -113,7 +113,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 						]);
 					}
 					$a->content(
-						h::{'table.admin_table'}(
+						h::{'table.cs-admin-table'}(
 							h::tr($db_list)
 						).
 						h::{'input[type=hidden]'}([
@@ -159,7 +159,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					foreach ($storage_json as $storage) {
 						$storage_list[] = h::{'td.ui-widget-content.ui-corner-all'}([
 							$L->{$rc[3].'_storage_'.$storage},
-							h::{'select.form_element'}(
+							h::{'select.cs-form-element'}(
 								[
 									'in'		=> $storages_name,
 									'value'		=> $storages
@@ -174,7 +174,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 						]);
 					}
 					$a->content(
-						h::{'table.admin_table'}(
+						h::{'table.cs-admin-table'}(
 							h::tr($storage_list)
 						).
 						h::{'input[type=hidden]'}([
@@ -241,7 +241,7 @@ if ($display_modules) {
 			//DataBases tettings
 			if (_file_exists(MODULES.DS.$module.DS.'admin'.DS.'db.json') && count($Config->db) > 1) {
 				$action .= h::a(
-					h::{'button.compact'}(
+					h::{'button.cs-button-compact'}(
 						h::icon('gear'),
 						[
 							'data-title'	=> $L->databases
@@ -255,7 +255,7 @@ if ($display_modules) {
 			//Storages
 			if (_file_exists(MODULES.DS.$module.DS.'admin'.DS.'storage.json') && count($Config->storage) > 1) {
 				$action .= h::a(
-					h::{'button.compact'}(
+					h::{'button.cs-button-compact'}(
 						h::icon('disk'),
 						[
 							'data-title'	=> $L->storages
@@ -281,7 +281,7 @@ if ($display_modules) {
 						_file_get_contents($file),
 						[
 							'id'			=> $module.'_api',
-							'class'			=> 'dialog',
+							'class'			=> 'cs-dialog',
 							'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
 							'title'			=> $module.' -> '.$L->api
 						]
@@ -307,7 +307,7 @@ if ($display_modules) {
 					_file_get_contents($file),
 					[
 						'id'			=> $module.'_readme',
-						'class'			=> 'dialog',
+						'class'			=> 'cs-dialog',
 						'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
 						'title'			=> $module.' -> '.$L->information_about_module
 					]
@@ -332,7 +332,7 @@ if ($display_modules) {
 					_file_get_contents($file),
 					[
 						'id'			=> $module.'_license',
-						'class'			=> 'dialog',
+						'class'			=> 'cs-dialog',
 						'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
 						'title'			=> $module.' -> '.$L->license
 					]
@@ -355,7 +355,7 @@ if ($display_modules) {
 					)
 				) {
 					$action .= h::a(
-						h::{'button.compact'}(
+						h::{'button.cs-button-compact'}(
 							h::icon('wrench'),
 							[
 								'data-title'	=> $L->settings
@@ -367,7 +367,7 @@ if ($display_modules) {
 					);
 				}
 				$action .= h::a(
-					h::{'button.compact'}(
+					h::{'button.cs-button-compact'}(
 						h::icon($mdata['active'] == 1 ? 'minusthick' : 'check'),
 						[
 							'data-title'	=> $mdata['active'] == 1 ? $L->disable : $L->enable
@@ -378,7 +378,7 @@ if ($display_modules) {
 					]
 				).
 				h::a(
-					h::{'button.compact'}(
+					h::{'button.cs-button-compact'}(
 						h::icon('trash'),
 						[
 							'data-title'	=> $L->uninstall
@@ -392,7 +392,7 @@ if ($display_modules) {
 		//If module uninstalled or not installed yet
 		} else {
 			$action .= h::a(
-				h::{'button.compact'}(
+				h::{'button.cs-button-compact'}(
 					h::icon('arrowthickstop-1-s'),
 					[
 						'data-title'	=> $L->install
@@ -415,11 +415,11 @@ if ($display_modules) {
 				).
 				$addition_state
 			).
-			h::{'td.ui-widget-content.ui-corner-all.modules_config_buttons'}($action)
+			h::{'td.ui-widget-content.ui-corner-all.cs-modules-config-buttons'}($action)
 		);
 	}
 	$a->content(
-		h::{'table.admin_table.center_all'}($modules_list).
+		h::{'table.cs-admin-table.cs-center-all'}($modules_list).
 		h::{'button[type=submit]'}(
 			$L->update_modules_list,
 			[

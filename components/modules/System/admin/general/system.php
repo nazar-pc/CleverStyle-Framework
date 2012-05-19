@@ -2,7 +2,7 @@
 global $L, $Config, $Index;
 
 $Index->content(
-	h::{'table.admin_table.left_even.right_odd tr'}([
+	h::{'table.cs-admin-table.cs-left-even.cs-right-odd tr'}([
 		h::td([
 			h::info('site_mode'),
 			h::{'input[type=radio]'}([
@@ -15,7 +15,7 @@ $Index->content(
 
 		h::td([
 			h::info('closed_title'),
-			h::{'input.form_element'}([
+			h::{'input.cs-form-element'}([
 				'name'			=> 'core[closed_title]',
 				'value'			=> $Config->core['closed_title']
 			])
@@ -23,7 +23,7 @@ $Index->content(
 
 		h::td([
 			h::info('closed_text'),
-			h::{'textarea#closed_text.EDITORH.form_element'}(
+			h::{'textarea#closed_text.EDITORH.cs-form-element'}(
 				$Config->core['closed_text'],
 				[
 					'name'		=> 'core[closed_text]'
@@ -33,7 +33,7 @@ $Index->content(
 
 		h::td([
 			h::info('title_delimiter'),
-			h::{'input.form_element'}([
+			h::{'input.cs-form-element'}([
 				'name'			=> 'core[title_delimiter]',
 				'value'			=> $Config->core['title_delimiter']
 			])
@@ -71,7 +71,7 @@ $Index->content(
 		]),
 
 		h::td().
-		h::{'td#debug_form'}(
+		h::{'td#debug_form.cs-padding-left'}(
 			h::{'table tr'}([
 				h::td([
 					$L->show_objects_data,
@@ -124,13 +124,13 @@ $Index->content(
 				h::{'td info'}('routing_in').
 				h::{'td info'}('routing_out'),
 
-				h::{'td textarea.form_element'}(
+				h::{'td textarea.cs-form-element.cs-wide-textarea'}(
 					$Config->routing['in'],
 					[
 						'name'				=> 'routing[in]'
 					]
 				).
-				h::{'td textarea.form_element'}(
+				h::{'td textarea.cs-form-element.cs-wide-textarea'}(
 					$Config->routing['out'],
 					[
 						'name'				=> 'routing[out]'
@@ -145,13 +145,13 @@ $Index->content(
 					h::{'td info'}('replace_in').
 					h::{'td info'}('replace_out'),
 
-					h::{'td textarea.form_element'}(
+					h::{'td textarea.cs-form-element.cs-wide-textarea'}(
 						$Config->replace['in'],
 						[
 							'name'			=> 'replace[in]'
 						]
 					).
-					h::{'td textarea.form_element'}(
+					h::{'td textarea.cs-form-element.cs-wide-textarea'}(
 						$Config->replace['out'],
 						[
 							'name'			=> 'replace[out]'

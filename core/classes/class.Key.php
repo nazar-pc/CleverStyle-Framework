@@ -22,7 +22,7 @@ class Key {
 		global $db, $Config;
 		$expire = (int)$expire;
 		if ($expire == 0 && $expire < TIME) {
-			$expire = TIME+$Config->core['key_expire'];
+			$expire = TIME + $Config->core['key_expire'];
 		}
 		$this->del($database, $key);
 		$id = $db->$database()->insert_id(

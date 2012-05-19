@@ -32,7 +32,7 @@ if (isset($rc[2])) {
 			}
 			$a->action = 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
 			$a->content(
-				h::{'table.admin_table.center_all'}(
+				h::{'table.cs-admin-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
 						$rc[2] == 'add' ? h::info('db_mirror') : false,
 						h::info('db_host'),
@@ -43,9 +43,9 @@ if (isset($rc[2])) {
 						h::info('db_password'),
 						h::info('db_codepage')
 					]).
-					h::{'tr td.ui-widget-content.ui-corner-all.db_add'}([
+					h::{'tr td.ui-widget-content.ui-corner-all.cs-add-db'}([
 						($rc[2] == 'add' ?
-							h::{'select.form_element'}(
+							h::{'select.cs-form-element'}(
 								[
 									'in'		=> $dbsname,
 									'value'		=> $dbs
@@ -57,11 +57,11 @@ if (isset($rc[2])) {
 								]
 							)
 							: false),
-						h::{'input.form_element'}([
+						h::{'input.cs-form-element'}([
 							'name'		=> 'db[host]',
 							'value'		=> $rc[2] == 'edit' ? $database['host'] : $DB_HOST
 						]),
-						h::{'select.form_element'}(
+						h::{'select.cs-form-element'}(
 							[
 								'in'		=> _mb_substr(get_list(ENGINES, '/^db\..*?\.php$/i', 'f'), 3, -4)
 							],
@@ -71,23 +71,23 @@ if (isset($rc[2])) {
 								'size'		=> 5
 							]
 						),
-						h::{'input.form_element'}([
+						h::{'input.cs-form-element'}([
 							'name'		=> 'db[prefix]',
 							'value'		=> $rc[2] == 'edit' ? $database['prefix'] : $DB_PREFIX
 						]),
-						h::{'input.form_element'}([
+						h::{'input.cs-form-element'}([
 							'name'		=> 'db[name]',
 							'value'		=> $rc[2] == 'edit' ? $database['name'] : ''
 						]),
-						h::{'input.form_element'}([
+						h::{'input.cs-form-element'}([
 							'name'		=> 'db[user]',
 							'value'		=> $rc[2] == 'edit' ? $database['user'] : ''
 						]),
-						h::{'input.form_element'}([
+						h::{'input.cs-form-element'}([
 							'name'		=> 'db[password]',
 							'value'		=> $rc[2] == 'edit' ? $database['password'] : ''
 						]),
-						h::{'input.form_element'}([
+						h::{'input.cs-form-element'}([
 							'name'		=> 'db[codepage]',
 							'value'		=> $rc[2] == 'edit' ? $database['codepage'] : $DB_CODEPAGE
 						]).
@@ -135,7 +135,7 @@ if (isset($rc[2])) {
 			} else {
 				$a->action = 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
 				$a->content(
-					h::{'p.center_all'}(
+					h::{'p.cs-center-all'}(
 						$L->sure_to_delete.' '.(isset($rc[4]) ? $L->mirror.' '.h::b($rc[3] ? $L->db.' '.$Config->db[$rc[3]]['name'] : $L->core_db).', ' : $L->db).' '.
 							h::b(
 								isset($rc[4]) ? $Config->db[$rc[3]]['mirrors'][$rc[4]]['name'] : $Config->db[$rc[3]]['name']
@@ -161,19 +161,19 @@ if (isset($rc[2])) {
 			global $Page, $db;
 			if (isset($rc[4])) {
 				$Page->content(
-					h::{'p.test_result'}(
+					h::{'p.cs-test-result'}(
 						$db->test([$rc[3], $rc[4]]) ? $L->success : $L->fail
 					)
 				);
 			} elseif (isset($rc[3])) {
 				$Page->content(
-					h::{'p.test_result'}(
+					h::{'p.cs-test-result'}(
 						$db->test([$rc[3]]) ? $L->success : $L->fail
 					)
 				);
 			} else {
 				$Page->content(
-					h::{'p.test_result'}(
+					h::{'p.cs-test-result'}(
 						$db->test($_POST['db']) ? $L->success : $L->fail
 					)
 				);
@@ -194,7 +194,7 @@ if (isset($rc[2])) {
 		$db_list .=	h::tr(
 			h::td(
 				h::a(
-					h::{'button.compact'}(
+					h::{'button.cs-button-compact'}(
 						h::icon('plus'),
 						[
 							'data-title'	=> $L->add.' '.$L->mirror.' '.$L->of_db
@@ -205,7 +205,7 @@ if (isset($rc[2])) {
 					]
 				).($i ? 
 				h::a(
-					h::{'button.compact'}(
+					h::{'button.cs-button-compact'}(
 						h::icon('wrench'),
 						[
 							'data-title'	=> $L->edit.' '.$L->db
@@ -216,7 +216,7 @@ if (isset($rc[2])) {
 					]
 				).
 				h::a(
-					h::{'button.compact'}(
+					h::{'button.cs-button-compact'}(
 						h::icon('trash'),
 						[
 							'data-title'	=> $L->delete.' '.$L->db
@@ -227,7 +227,7 @@ if (isset($rc[2])) {
 					]
 				) : '').
 				h::a(
-					h::{'button.compact'}(
+					h::{'button.cs-button-compact'}(
 						h::icon('signal-diag'),
 						[
 							'data-title'	=> $L->test_connection
@@ -238,7 +238,7 @@ if (isset($rc[2])) {
 					]
 				),
 				[
-					'class'	=> 'ui-corner-all db_config_buttons '.($i ? 'ui-widget-content' : 'ui-state-highlight')
+					'class'	=> 'ui-corner-all cs-db-config-buttons '.($i ? 'ui-widget-content' : 'ui-state-highlight')
 				]
 			).
 			h::td(
@@ -258,9 +258,9 @@ if (isset($rc[2])) {
 		foreach ($Config->db[$i]['mirrors'] as $m => &$mirror) {
 			if (is_array($mirror) && !empty($mirror)) {
 				$db_list .=	h::tr(
-					h::{'td.ui-widget-content.ui-corner-all.db_config_buttons_'}(
+					h::{'td.ui-widget-content.ui-corner-all.cs-db-config-buttons-r'}(
 						h::a(
-							h::{'button.compact'}(
+							h::{'button.cs-button-compact'}(
 								h::icon('wrench'),
 								[
 									'data-title'	=> $L->edit.' '.$L->mirror.' '.$L->of_db
@@ -271,7 +271,7 @@ if (isset($rc[2])) {
 							]
 						).
 						h::a(
-							h::{'button.compact'}(
+							h::{'button.cs-button-compact'}(
 								h::icon('trash'),
 								[
 									'data-title'	=> $L->delete.' '.$L->mirror.' '.$L->of_db
@@ -282,7 +282,7 @@ if (isset($rc[2])) {
 							]
 						).
 						h::a(
-							h::{'button.compact'}(
+							h::{'button.cs-button-compact'}(
 								h::icon('signal-diag'),
 								[
 									'data-title'	=> $L->test_connection
@@ -308,9 +308,9 @@ if (isset($rc[2])) {
 	}
 	unset($i, $db_data);
 	$a->content(
-		h::{'table.admin_table'}(
+		h::{'table.cs-admin-table'}(
 			$db_list.
-			h::{'tr td.left_all[colspan=7]'}(
+			h::{'tr td.cs-left-all[colspan=7]'}(
 				h::button(
 					$L->add_database,
 					[
@@ -319,8 +319,8 @@ if (isset($rc[2])) {
 				).h::br()
 			).
 			h::tr(
-				h::{'td.right_all[colspan=4] info'}('db_balance').
-				h::{'td.left_all[colspan=3] input[type=radio]'}([
+				h::{'td.cs-right-all[colspan=4] info'}('db_balance').
+				h::{'td.cs-left-all[colspan=3] input[type=radio]'}([
 					'name'			=> 'core[db_balance]',
 					'checked'		=> $Config->core['db_balance'],
 					'value'			=> array(0, 1),
@@ -328,12 +328,12 @@ if (isset($rc[2])) {
 				])
 			).
 			h::tr(
-				h::{'td.right_all[colspan=4] info'}('maindb_for_write').
-				h::{'td.left_all[colspan=3] input[type=radio]'}([
+				h::{'td.cs-right-all[colspan=4] info'}('maindb_for_write').
+				h::{'td.cs-left-all[colspan=3] input[type=radio]'}([
 					'name'			=> 'core[maindb_for_write]',
 					'checked'		=> $Config->core['maindb_for_write'],
 					'value'			=> array(0, 1),
-					'class'			=> array('form_element'),
+					'class'			=> array('cs-form-element'),
 					'in'			=> array($L->off, $L->on)
 				])
 			)
@@ -345,7 +345,7 @@ if (isset($rc[2])) {
 	);
 }
 $test_dialog && $a->content(
-	h::{'div#test_db.dialog'}([
+	h::{'div#test_db.cs-dialog'}([
 		'data-dialog'	=> '{"autoOpen":false,"height":"75","hide":"puff","modal":true,"show":"scale","width":"250"}',
 		'title'			=> $L->test_connection
 	])

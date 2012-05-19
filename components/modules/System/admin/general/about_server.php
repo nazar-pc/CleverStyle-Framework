@@ -8,9 +8,9 @@ $state = function ($state) {
 	return ($state ? 'ui-state-highlight' : 'ui-state-error').' ui-corner-all';
 };
 $a->content(
-	h::{'table.admin_table.left_even.right_odd tr'}([
-		h::{'td.right_all[colspan=2]'}(
-			h::{'div#system_readme.dialog'}(
+	h::{'table.cs-admin-table.cs-left-even.cs-right-odd tr'}([
+		h::{'td.cs-right-all[colspan=2]'}(
+			h::{'div#system_readme.cs-dialog'}(
 				_file_get_contents(DIR.DS.'readme.html'),
 				[
 					'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
@@ -23,7 +23,7 @@ $a->content(
 					'data-title'	=> $L->click_to_view_details
 				]
 			).
-			h::{'pre#system_license.dialog'}(
+			h::{'pre#system_license.cs-dialog'}(
 				_file_get_contents(DIR.DS.'license.txt'),
 				[
 					'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
@@ -74,9 +74,9 @@ $a->content(
 			]
 		),
 		h::td($L->components.' PHP:').
-		h::{'td table.left_odd.php_components tr'}([
+		h::{'td table.cs-left-odd.cs-php-components tr'}([
 			h::td($L->memcache_lib.':').
-			h::td($L->get(memcache()), ['class' => $state(memcache())]),
+			h::td($L->get(memcache())),
 
 			memcache() && $Cache->memcache ?
 				h::td($L->version.' memcache:').
@@ -84,7 +84,7 @@ $a->content(
 			: false,
 /*
 			h::td($L->memcached_lib.':').
-			h::td($L->get(memcached()), ['class' => $state(memcached())]),
+			h::td($L->get(memcached())),
 
 */					h::td($L->mcrypt.':').
 			h::td(
@@ -118,7 +118,7 @@ $a->content(
 				$DB_TYPE
 		]),
 		h::td($L->properties.' '.$DB_TYPE.':').
-		h::{'td table.left_odd.sql_properties tr'}([
+		h::{'td table.cs-left-odd.cs-sql-properties tr'}([
 			h::td([
 				$L->host.':',
 				$DB_HOST
@@ -140,13 +140,13 @@ $a->content(
 			]),
 			h::td([
 				$L->encodings.':',
-				h::{'table.left_odd'}(get_sql_info())
+				h::{'table.cs-left-odd'}(get_sql_info())
 			])
 		]),
 		function_exists('apache_get_version') ?
 			h::td([
 				$L->configs.' "php.ini":',
-				h::{'table.left_odd.php_ini_settings tr'}([
+				h::{'table.cs-left-odd.cs-php-ini-settings tr'}([
 					h::td($L->allow_file_upload.':').
 					h::td(
 						$L->get(ini_get('file_uploads')),

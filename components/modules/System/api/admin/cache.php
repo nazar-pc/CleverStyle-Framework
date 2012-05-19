@@ -27,9 +27,9 @@ if ($User->is('admin') && isset($rc[2])) {
 					unset($url);
 				}
 				$Cache->disable();
-				$Page->Content = $ajax ? h::{'p.ui-state-highlight.ui-corner-all.for_state_messages'}($L->done) : 1;
+				$Page->Content = $ajax ? h::{'p.ui-state-highlight.ui-corner-all.cs-state-messages'}($L->done) : 1;
 			} else {
-				$Page->Content = $ajax ? h::{'p.ui-state-error.ui-corner-all.for_state_messages'}($L->error) : 0;
+				$Page->Content = $ajax ? h::{'p.ui-state-error.ui-corner-all.cs-state-messages'}($L->error) : 0;
 			}
 		break;
 		case 'flush_pcache':
@@ -47,9 +47,9 @@ if ($User->is('admin') && isset($rc[2])) {
 					unset($url);
 				}
 				time_limit_pause(false);
-				$Page->Content = $ajax ? h::{'p.ui-state-highlight.ui-corner-all.for_state_messages'}($L->done) : 1;
+				$Page->Content = $ajax ? h::{'p.ui-state-highlight.ui-corner-all.cs-state-messages'}($L->done) : 1;
 			} else {
-				$Page->Content = $ajax ? h::{'p.ui-state-error.ui-corner-all.for_state_messages'}($L->error) : 0;
+				$Page->Content = $ajax ? h::{'p.ui-state-error.ui-corner-all.cs-state-messages'}($L->error) : 0;
 			}
 	}
 }
