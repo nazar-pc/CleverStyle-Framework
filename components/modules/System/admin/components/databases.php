@@ -145,11 +145,20 @@ if (isset($rc[2])) {
 							'/'.
 							(isset($rc[4]) ? $Config->db[$rc[3]]['mirrors'][$rc[4]]['type'] : $Config->db[$rc[3]]['type']).
 							')?'.
-							h::{'input[type=hidden]'}(array('name'	=> 'mode',		'value'		=> 'delete')).
-							h::{'input[type=hidden]'}(array('name'	=> 'database',	'value'		=> $rc[3])).
+							h::{'input[type=hidden]'}([
+								'name'	=> 'mode',
+								'value'	=> 'delete'
+							]).
+							h::{'input[type=hidden]'}([
+								'name'	=> 'database',
+								'value'	=> $rc[3]
+							]).
 							(isset($rc[4]) ?
-								h::{'input[type=hidden]'}(array('name'	=> 'mirror',	'value'		=> $rc[4]))
-								: '')
+								h::{'input[type=hidden]'}([
+									'name'	=> 'mirror',
+									'value'	=> $rc[4]
+								])
+							: '')
 					).
 						h::{'button[type=submit]'}($L->yes)
 				);

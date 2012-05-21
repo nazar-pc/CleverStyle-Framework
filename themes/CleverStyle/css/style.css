@@ -121,6 +121,9 @@ footer {
 	margin  : 0 5px 5px 5px;
 	padding : 5px;
 }
+.cs-blocks-items li:nth-child(1) {
+	cursor: p
+}
 
 .cs-storages-config-buttons,
 .cs-modules-config-buttons button,
@@ -209,8 +212,11 @@ td.cs-left-all {
 
 .cs-blocks-items-title {
 	float        : left;
+	height: 16px;
+	margin-right : -60px;
+	overflow	 : hidden;
+	text-align	 : left;
 	width        : 100%;
-	margin-right : -40px;
 }
 
 .cs-blocks-items-title+a,

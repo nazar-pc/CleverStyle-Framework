@@ -133,7 +133,7 @@ $(function() {
 		$('#register_header_form').slideUp();
 		$('#login_header_form').slideUp();
 	});
-	$('.reload_button').click(function () {
+	$('.cs-reload-button').click(function () {
 		location.reload();
 	});
 	$('#change_theme, #change_color_scheme, #change_language').click(function () {

@@ -32,7 +32,7 @@ class Index {
 				$structure			= [],
 				$parts				= [],
 				$subparts			= [],
-				$triggers_reg		= false,
+				$triggers_init		= false,
 				$triggers,
 				$permission_group;
 
@@ -176,26 +176,26 @@ class Index {
 			if ($Config->core['debug']) {
 				$Page->mainmenu .= h::a(
 					mb_substr($L->debug, 0, 1),
-					array(
+					[
 						 'onClick'	=> 'debug_window();',
 						 'title'	=> $L->debug
-					)
+					]
 				);
 			}
 			$Page->mainmenu .= h::a(
 				mb_substr($L->administration, 0, 1),
-				array(
+				[
 					 'href'		=> 'admin',
 					 'title'	=> $L->administration
-				)
+				]
 			);
 		}
 		$Page->mainmenu .= h::a(
 			$L->home,
-			array(
+			[
 				 'href'		=> '/',
 				 'title'	=> $L->home
-			)
+			]
 		);
 	}
 	protected function mainsubmenu () {
@@ -206,11 +206,11 @@ class Index {
 		foreach ($this->parts as $part) {
 			$Page->mainsubmenu .= h::a(
 				$L->$part,
-				array(
+				[
 					'id'		=> $part.'_a',
 					'href'		=> ($this->admin ? 'admin/' : '').MODULE.'/'.$part,
 					'class'		=> isset($Config->routing['current'][0]) && $Config->routing['current'][0] == $part ? 'active' : ''
-				)
+				]
 			);
 		}
 	}
@@ -222,11 +222,11 @@ class Index {
 		foreach ($this->subparts as $subpart) {
 			$Page->menumore .= h::a(
 				$L->$subpart,
-				array(
+				[
 					'id'		=> $subpart.'_a',
 					'href'		=> ($this->admin ? 'admin/' : '').MODULE.'/'.$Config->routing['current'][0].'/'.$subpart,
 					'class'		=> $Config->routing['current'][1] == $subpart ? 'active' : ''
-				)
+				]
 			);
 		}
 	}
@@ -272,49 +272,50 @@ class Index {
 				'code'
 			);
 		}
+		$this->blocks_processing();
 		if ($this->form) {
 			$Page->content(
 				h::form(
 					$this->Content.
 					(isset($Config->routing['current'][1]) ? h::input(
-						array(
+						[
 							'type'	=> 'hidden',
 							'name'	=> 'subpart',
 							'value'	=> $Config->routing['current'][1]
-						)
+						]
 					) : '').
 					//Кнопка применить
 					($this->apply && $this->buttons ?
 						h::button(
 							$L->apply,
-							array(
+							[
 								'name'			=> 'edit_settings',
 								'data-title'	=> $L->apply_info,
 								'id'			=> 'apply_settings',
 								'type'			=> 'submit',
 								'value'			=> 'apply',
 								'add'			=> $Cache->cache ? '' : ' disabled'
-							)
+							]
 						)
 					: '').
 					//Кнопка сохранить
 					($this->buttons ?
 						h::button(
 							$L->save,
-							array(
+							[
 								'name'			=> 'edit_settings',
 								'data-title'	=> $L->save_info,
 								'id'			=> 'save_settings',
 								'type'			=> 'submit',
 								'value'			=> 'save'
-							)
+							]
 						)
 					: '').
 					//Кнопка отмена (отменяет настройки или возвращает на предыдущую страницу)
 					(($this->apply && $this->buttons) || $this->cancel_back ?
 						h::button(
 							$L->cancel,
-							array(
+							[
 								'name'			=> 'edit_settings',
 								'id'			=> 'cancel_settings',
 								'value'			=> 'cancel',
@@ -322,33 +323,75 @@ class Index {
 								'type'			=> $this->cancel_back ? 'button' : 'submit',
 								'onClick'		=> $this->cancel_back ? 'history.go(-1);' : '',
 								'add'			=> $this->cancel_back ? '' : (isset($Config->core['cache_not_saved']) ? '' : $this->cancel)
-							)
+							]
 						)
 					: '').
 					//Кнопка сбросить
 					($this->buttons && $this->reset ?
 						h::button(
 							$L->reset,
-							array(
+							[
 								'id'			=> 'reset_settings',
 								'data-title'	=> $L->reset_info,
 								'type'			=> 'reset'
-							)
+							]
 						)
 					: '').
 					$this->post_buttons,
-					array(
+					[
 						'method'	=> 'post',
 						'enctype'	=> $this->file_upload ? 'multipart/form-data' : false,
 						'action'	=> $this->action,
 						'id'		=> 'admin_form',
 						'class'		=> 'cs-admin-form'
-					)+$this->form_atributes
+					]+$this->form_atributes
 				), 1
 			);
 		} else {
 			$Page->content($this->Content);
 		}
+	}
+	protected function blocks_processing () {
+		global $Page, $Config;
+		$blocks_array = [
+			'top'		=> '',
+			'left'		=> '',
+			'right'		=> '',
+			'bottom'	=> ''
+		];
+		foreach ($Config->components['blocks'] as $block) {
+			if (!$block['active'] || ($block['expire'] != 0 && $block['expire'] < TIME) || $block['start'] > TIME) {
+				continue;
+			}
+			switch ($block['type']) {
+				default:
+					ob_start();
+					_include(BLOCKS.DS.'block.'.$block['type'].'.php', false, false);
+					$content = ob_get_clean();
+				break;
+				case 'html':
+				case 'raw_html':
+					$content = $block['data'];
+				break;
+			}
+			$template = _file_exists(TEMPLATES.DS.'blocks'.DS.'block.'.$block['template']) ?
+							TEMPLATES.DS.'blocks'.DS.'block.'.$block['template'] :
+							TEMPLATES.DS.'blocks'.DS.'block.default.html';
+			$content = str_replace(
+				['<!--id-->', '<!--title-->', '<!--content-->'],
+				[$block['index'], $block['title'], $content],
+				_file_get_contents($template)
+			);
+			if ($block['position'] == 'floating') {
+				$Page->replace('<!--block#'.$block['index'].'-->', $content);
+			} else {
+				$blocks_array[$block['position']] .= $content;
+			}
+		}
+		$Page->Top		.= $blocks_array['top'];
+		$Page->Left		.= $blocks_array['left'];
+		$Page->Right	.= $blocks_array['right'];
+		$Page->Bottom	.= $blocks_array['bottom'];
 	}
 	function save ($parts = null) {
 		global $L, $Page, $Config;
@@ -439,7 +482,7 @@ class Index {
 	 * @return bool
 	 */
 	function run_trigger ($action, $data = null) {
-		if (!$this->triggers_reg) {
+		if (!$this->triggers_init) {
 			global $Config;
 			$modules = array_keys($Config->components['modules']);
 			foreach ($modules as $module) {
@@ -451,7 +494,7 @@ class Index {
 				_include(PLUGINS.DS.$plugin.DS.'trigger.php', true, false);
 			}
 			unset($plugins, $plugin);
-			$this->triggers_reg = true;
+			$this->triggers_init = true;
 		}
 		$action = explode('/', $action);
 		if (!is_array($action) || empty($action)) {

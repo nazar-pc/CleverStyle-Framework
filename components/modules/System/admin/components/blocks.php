@@ -19,6 +19,29 @@ if (isset($rc[2])) {
 			$Config->components['blocks'][$rc[3]]['active'] = 0;
 			$a->save('components');
 		break;
+		case 'delete':
+			if (!isset($rc[3], $Config->components['blocks'][$rc[3]])) {
+				break;
+			}
+			$form			= false;
+			$a->buttons		= false;
+			$a->cancel_back	= true;
+			$a->action		= 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
+			$a->content(
+				h::{'p.cs-center-all'}(
+					$L->sure_to_delete_block($Config->components['blocks'][$rc[3]]['title']).
+					h::{'input[type=hidden]'}([
+						'name'	=> 'mode',
+						'value'	=> 'delete'
+					]).
+					h::{'input[type=hidden]'}([
+						'name'	=> 'id',
+						'value'	=> $rc[3]
+					])
+				).
+				h::{'button[type=submit]'}($L->yes)
+			);
+		break;
 		case 'add':
 			$form					= false;
 			$a->apply				= false;
@@ -38,7 +61,7 @@ if (isset($rc[2])) {
 					h::{'tr td.ui-widget-content.ui-corner-all.cs-add-block'}([
 						h::{'select.cs-form-element'}(
 							[
-								'in'		=> array_merge(['html', 'php'],_mb_substr(get_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4))
+								'in'		=> array_merge(['html', 'raw_html'], _mb_substr(get_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4))
 							],
 							[
 								'name'		=> 'block[type]',
@@ -88,11 +111,11 @@ if (isset($rc[2])) {
 							'name'	=> 'block[html]'
 						]
 					).
-					h::{'tr#php'}(
+					h::{'tr#raw_html'}(
 						h::{'td.ui-widget-content.ui-corner-all[colspan=7] textarea.cs-form-element.cs-wide-textarea'}(
-							"<?php\n",
+							'',
 							[
-								'name'	=> 'block[php]'
+								'name'	=> 'block[raw_html]'
 							]
 						),
 						[
@@ -173,11 +196,11 @@ if (isset($rc[2])) {
 							[
 								'name'	=> 'block[html]'
 							]
-						) : ($block['type'] == 'php' ?
+						) : ($block['type'] == 'raw_html' ?
 						h::{'tr td.ui-widget-content.ui-corner-all[colspan=6] textarea.cs-form-element.cs-wide-textarea'}(
 							$block['data'],
 							[
-								'name'	=> 'block[php]'
+								'name'	=> 'block[raw_html]'
 							]
 						) : '')
 					)
@@ -196,7 +219,7 @@ if (isset($rc[2])) {
 }
 if ($form) {
 	$a->reset = false;
-	$a->post_buttons .= h::{'button.reload_button'}(
+	$a->post_buttons .= h::{'button.cs-reload-button'}(
 		$L->reset
 	);
 	$blocks_array = [
@@ -208,7 +231,7 @@ if ($form) {
 	];
 	foreach ($Config->components['blocks'] as $id => $block) {
 		$blocks_array[$block['position']] .= h::li(
-			h::{'div.cs-blocks-items-title'}($block['title']).
+			h::{'div.cs-blocks-items-title'}('#'.$block['index'].' '.$block['title']).
 			h::a(
 				h::{'div icon'}('wrench'),
 				[
@@ -219,8 +242,15 @@ if ($form) {
 			h::a(
 				h::{'div icon'}($block['active'] ? 'minusthick' : 'check'),
 				[
-					'href'			=> $a->action.'/'.($block['active'] ? 'disable' : 'enable').'/'.$block,
+					'href'			=> $a->action.'/'.($block['active'] ? 'disable' : 'enable').'/'.$id,
 					'data-title'	=> $L->{$block['active'] ? 'disable' : 'enable'}
+				]
+			).
+			h::a(
+				h::{'div icon'}('trash'),
+				[
+					'href'			=> $a->action.'/delete/'.$id,
+					'data-title'	=> $L->delete
 				]
 			),
 			[
@@ -243,7 +273,7 @@ if ($form) {
 				$content,
 				[
 					'data-mode'		=> 'open',
-					'id'			=> $position.'_cs_blocks_items'
+					'id'			=> $position.'_blocks_items'
 				]
 			)
 		);

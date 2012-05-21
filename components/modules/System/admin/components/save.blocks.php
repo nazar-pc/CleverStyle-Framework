@@ -10,7 +10,8 @@ if (isset($_POST['mode'])) {
 			if ($_POST['mode'] == 'add') {
 				$block	= [
 					'position'	=> 'floating',
-					'type'		=> xap($block_new['type'])
+					'type'		=> xap($block_new['type']),
+					'index'	=> substr(TIME, 3)
 				];
 			} else {
 				$block	= &$Config->components['blocks'][$block_new['id']];
@@ -39,9 +40,9 @@ if (isset($_POST['mode'])) {
 			$block['update']		= $block_new['update'][0]*60+$block_new['update'][1];
 			if ($block['type'] == 'html') {
 				$block['data'] = xap($block_new['html'], true);
-			} elseif ($block['type'] == 'php') {
-				$block['data'] = $block_new['php'];
-			} else {
+			} elseif ($block['type'] == 'raw_html') {
+				$block['data'] = $block_new['raw_html'];
+			} elseif ($_POST['mode'] == 'add') {
 				$block['data'] = '';
 			}
 			if ($_POST['mode'] == 'add') {
@@ -49,6 +50,12 @@ if (isset($_POST['mode'])) {
 			}
 			unset($block, $block_new);
 			$a->save('components');
+		break;
+		case 'delete':
+			if (isset($_POST['id'], $Config->components['blocks'][$_POST['id']])) {
+				unset($Config->components['blocks'][$_POST['id']]);
+				$a->save('components');
+			}
 		break;
 	}
 } elseif (isset($_POST['edit_settings'])) {

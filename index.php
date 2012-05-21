@@ -22,16 +22,16 @@
 //Задаем время старта выполнения для использования при необходимости как текущего времени
 define('MICROTIME',	microtime(true));					//Время в секундах (с плавающей точкой)
 define('TIME',		round(MICROTIME));					//Время в секундах (целое число)
-define('CHARSET', 'utf-8');								//Основная кодировка
+define('CHARSET',	'utf-8');							//Основная кодировка
 define(
 	'FS_CHARSET',										//Кодировка файловой системы (названий файлов) (изменять при наличии проблемм)
 	strtolower(PHP_OS) == 'winnt' ? 'windows-1251' : 'utf-8'
 );
-define('DS', DIRECTORY_SEPARATOR);						//Алиас для системной константы разделителя путей
-define('PS', PATH_SEPARATOR);							//Алиас для системной константы разделителя папок включений
-define('OUT_CLEAN', false);								//Включить захват вывода (для безопасности)
+define('DS',		DIRECTORY_SEPARATOR);				//Алиас для системной константы разделителя путей
+define('PS',		PATH_SEPARATOR);					//Алиас для системной константы разделителя папок включений
+define('OUT_CLEAN',	false);								//Включить захват вывода (для безопасности)
 OUT_CLEAN && ob_start();								//Захват вывода для избежания вывода нежелательных данных
 require_once __DIR__.DS.'core'.DS.'functions.php';		//Подключение библиотеки базовых функций
-define('DIR', path_to_str(__DIR__));					//Алиас корневой папки сайта
+define('DIR',		path_to_str(__DIR__));				//Алиас корневой папки сайта
 chdir(DIR);
 _require(DIR.DS.'core'.DS.'loader.php', true, true);	//Передача управления загрузчику движка

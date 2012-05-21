@@ -222,10 +222,10 @@ function block_switch_textarea (item) {
 	$('#php').hide();
 	switch ($(item).val()) {
 		case 'html':
-			$('#html').show();
+			$('#raw_html').show();
 		break;
 		case 'php':
-			$('#php').show();
+			$('#raw_html').show();
 		break;
 	}
 }

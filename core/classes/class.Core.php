@@ -126,12 +126,41 @@ class Core {
 			unset($this->key[$name], $this->iv[$name], $this->td[$name]);
 		}
 	}
+
 	/**
+	 * Sending system api request to all mirrors
+	 *
+	 * @param        $path
+	 * @param string $data
+	 *
+	 * @return array
+	 */
+	function api_request ($path, $data = '') {
+		global $Config;
+		$result	= [];
+		if (is_object($Config) && $Config->server['mirrors']['count'] > 1) {
+			foreach ($Config->server['mirrors']['http'] as $url) {
+				if (!($url == $Config->server['host'] && $Config->server['protocol'] == 'http')) {
+					$result['http://'.$url] = $this->send('http://'.$url.'/api/'.$path, $data);
+				}
+			}
+			foreach ($Config->server['mirrors']['https'] as $url) {
+				if (!($url != $Config->server['host'] && $Config->server['protocol'] == 'https')) {
+					$result['https://'.$url] = $this->send('https://'.$url.'/api/'.$path, $data);
+				}
+			}
+		}
+		return $result;
+	}
+	/**
+	 * Sending of api request to the specified host
+	 *
 	 * @param string $url With prefix <b>https://</b> (<b>http://</b> can be missed), and (if necessary) with port address
 	 * @param mixed $data Any type of data, will be accessable through <b>$_POST['data']</b>
+	 *
 	 * @return array|bool Array <b>[0 => headers, 1 => body]</b> in case of successful connection, <b>false</b> on failure
 	 */
-	function send ($url, $data = '') {
+	protected function send ($url, $data) {
 		global $Key, $Config;
 		if (!(is_object($Key) && is_object($Config))) {
 			return false;

@@ -147,20 +147,10 @@ class Cache {
 		if (empty($item) || $item == '/') {
 			return false;
 		}
-		global $Config, $User;
-		if ($process_mirrors && is_object($User) && !$User->is('system') && $Config->server['mirrors']['count'] > 1) {
+		global $User;
+		if ($process_mirrors && is_object($User) && !$User->is('system')) {
 			global $Core;
-			foreach ($Config->server['mirrors']['http'] as $url) {
-				if (!($url == $Config->server['host'] && $Config->server['protocol'] == 'http')) {
-					$Core->send('http://'.$url.'/api/System/admin/cache/del', ['item' => $item]);
-				}
-			}
-			foreach ($Config->server['mirrors']['https'] as $url) {
-				if (!($url != $Config->server['host'] && $Config->server['protocol'] == 'https')) {
-					$Core->send('https://'.$url.'/api/System/admin/cache/del', ['item' => $item]);
-				}
-			}
-			unset($url);
+			$Core->api_request('System/admin/cache/del', ['item' => $item]);
 		}
 		if (is_object($this->memcache) && $this->memcache->get(DOMAIN.$item)) {
 			$this->memcache->delete(DOMAIN.$item);

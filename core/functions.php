@@ -115,7 +115,7 @@
 	 * @param	bool		$subfolders		Search in subdirectories or not
 	 * @param	bool		$sort			Sort mode in format <b>mode|order</b>:<br>
 	 * 										Possible values for mode: <b>name</b> (default), <b>date</b>, <b>size</b>
-	 * 										Possible values for mode: <b>asc</b>, <b>desc</b>
+	 * 										Possible values for mode: <b>asc</b> (default), <b>desc</b>
 	 * @param	bool|string	$exclusion		If specified file exists in scanned directory - it will be excluded from scanning
 	 *
 	 * @return	array|bool
@@ -128,7 +128,10 @@
 		if (!_is_dir($dir) || ($exclusion !== false && _file_exists($dir.$exclusion))) {
 			return false;
 		}
-		if ($sort !== false) {
+		if ($sort === false) {
+			$sort = 'name';
+			$sort_x = ['name', 'acs'];
+		} else {
 			$sort = mb_strtolower($sort);
 			$sort_x = explode('|', $sort);
 			if (!isset($sort_x[1]) || $sort_x[1] != 'desc') {
@@ -206,7 +209,7 @@
 				break;
 			}
 		}
-		return $list;
+		return array_values($list);
 	}
 	//Функции str_to_path() и path_to_str() являются обратными, и используются при работе с файловой системой.
 	//Так, как в разных операционных системах названия одних и тех же файлов с Unicode символами php может отображать по разному,
