@@ -61,13 +61,16 @@ class Index {
 			}
 			define('MFOLDER', $api_path);
 			$this->api		= true;
-		} else {
+		} elseif (_file_exists(MODULES.DS.MODULE)) {
 			if (!$User->permission($this->permission_group = MODULE, 'index')) {
 				define('ERROR_PAGE', 403);
 				return;
 			}
 			define('MFOLDER', MODULES.DS.MODULE);
 			$this->module	= true;
+		} else {
+			define('ERROR_PAGE', 404);
+			return;
 		}
 		unset($admin_path, $api_path);
 		//Plugins processing

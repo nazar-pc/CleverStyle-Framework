@@ -97,7 +97,7 @@ class Error {//TODO need hard work for constructing of structure and errors proc
 	function page ($page = false) {
 		if ($page === false) {
 			if (defined('ERROR_PAGE')) {
-				$page = ERROR_PAGE;
+				$page = ERROR_PAGE;//TODO Switch with headers sending for different errors
 			} else {
 				return;
 			}

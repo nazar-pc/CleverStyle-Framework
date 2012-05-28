@@ -1,12 +1,45 @@
 <?php
-global $Config, $Index;
+global $Config, $Index, $User;
 $a = &$Index;
 $rc			= &$Config->routing['current'];
 $update		= false;
 if (isset($_POST['update_modules_list'])) {
-	$modules_list	= array_fill_keys(get_list(MODULES, false, 'd'), array('active' => -1, 'db' => [], 'storage' => []));
+	//List of currently presented modules in file system
+	$modules_list	= array_fill_keys(
+		$new_modules = get_list(MODULES, false, 'd'),
+		[
+			'active'	=> -1,
+			'db'		=> [],
+			'storage'	=> []
+		]
+	);
+	//Already known modules
 	$modules		= &$Config->components['modules'];
-	$modules		= array_merge($modules_list, array_intersect_key($modules, $modules_list));
+	$old_modules	= array_keys($modules);
+	//Deletion of undefined modules permissions
+	if ($new_modules != $old_modules) {
+		$permissions_ids = [];
+		foreach ($old_modules as $module) {
+			if (!isset($modules_list[$module])) {
+				$permissions_ids = array_merge(
+					$permissions_ids,
+					$User->get_permission(null, $module),
+					$User->get_permission(null, $module.'/admin')
+				);
+			}
+		}
+		unset($old_modules, $module);
+		if (!empty($permissions_ids)) {
+			foreach ($permissions_ids as &$id) {
+				$id = $id['id'];
+			}
+			unset($id);
+			$User->del_permission($permissions_ids);
+		}
+		unset($permissions_ids);
+	}
+	unset($new_modules, $old_modules);
+	$modules			= array_merge($modules_list, array_intersect_key($modules, $modules_list));
 	ksort($modules);
 	$a->save('components');
 } elseif (isset($_POST['mode'], $_POST['module'], $Config->components['modules'][$_POST['module']])) {
@@ -61,17 +94,12 @@ if (isset($_POST['update_modules_list'])) {
 						unset($structure, $item, $part, $subpart);
 					}
 				}
-				global $User;
-				$query = [];
 				foreach ($permissions as $group => $list) {
 					foreach ($list as $label) {
-						$query[] = $User->db_prime()->sip($label).', '.$User->db_prime()->sip($group);
+						$User->add_permission($group, $label);
 					}
 				}
 				unset($permissions, $group, $list, $label);
-				$User->db_prime()->q(
-					'INSERT INTO `[prefix]permissions` (`label`, `group`) VALUES ('.implode('), (', $query).')'
-				);
 			}
 		break;
 		case 'uninstall':
@@ -82,25 +110,15 @@ if (isset($_POST['update_modules_list'])) {
 				]
 			)) {
 				$module_data = ['active' => -1];
-				global $User;
-				$permissions_ids = $User->db_prime()->qfa('SELECT `id` FROM `[prefix]permissions`
-					WHERE
-						`group` = '.$User->db_prime()->sip($_POST['module']).' OR
-						`group` = '.$User->db_prime()->sip($_POST['module'].'/admin')
+				$permissions_ids = array_merge(
+					$User->get_permission(null, $_POST['module']),
+					$User->get_permission(null, $_POST['module'].'/admin')
 				);
 				if (!empty($permissions_ids)) {
 					foreach ($permissions_ids as &$id) {
 						$id = $id['id'];
 					}
-					unset($id);
-					$permissions_ids = implode(',', $permissions_ids);
-					$User->db_prime()->q([
-						'DELETE FROM `[prefix]groups_permissions` WHERE `permission` IN ('.$permissions_ids.')',
-						'DELETE FROM `[prefix]users_permissions` WHERE `permission` IN ('.$permissions_ids.')'
-					]);
-					global $Cache, $User;
-					$User->del_permission_table();
-					unset($Cache->{'users/permissions'}, $Cache->{'groups/permissions'});
+					$User->del_permission($permissions_ids);
 				}
 				$a->save('components');
 			}

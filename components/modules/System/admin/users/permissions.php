@@ -30,7 +30,7 @@ if (isset($rc[2])) {
 			}
 			$a->apply		= false;
 			$a->cancel_back	= true;
-			$permission		= $User->db()->qf('SELECT `id`, `label`, `group` FROM `[prefix]permissions` WHERE `id` = '.(int)$rc[3].' LIMIT 1');
+			$permission		= $User->get_permission($rc[3]);
 			$a->content(
 				h::{'table.cs-admin-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
@@ -64,7 +64,7 @@ if (isset($rc[2])) {
 			}
 			$a->buttons		= false;
 			$a->cancel_back	= true;
-			$permission		= $User->db()->qf('SELECT `label`, `group` FROM `[prefix]permissions` WHERE `id` = '.(int)$rc[3].' LIMIT 1');
+			$permission		= $User->get_permission($rc[3]);
 			$a->content(
 				h::{'p.cs-center-all'}(
 					$L->sure_delete_permission($permission['group'].'/'.$permission['label'])
@@ -152,13 +152,11 @@ if (isset($rc[2])) {
 	$a->content(
 		h::{'table.cs-admin-table.cs-center-all'}(
 			$permissions_list_.
-			h::{'tr td.cs-left-all[colspan=8]'}(
-				h::button(
-					$L->add_permission,
-					[
-						'onMouseDown' => 'javasript: location.href= \'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add\';'
-					]
-				)
+			h::{'tr td.cs-left-all[colspan=8] button'}(
+				$L->add_permission,
+				[
+					'onMouseDown' => 'javasript: location.href= \'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add\';'
+				]
 			)
 		)
 	);

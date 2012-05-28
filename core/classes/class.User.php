@@ -564,7 +564,7 @@ class User {
 	 * @param $group
 	 * @return bool
 	 */
-	function delete_group ($group) {
+	function del_group ($group) {
 		$group = (int)$group;
 		if ($group != 1 && $group != 2 && $group != 3) {
 			$return = $this->db_prime()->q([
@@ -607,7 +607,7 @@ class User {
 		}
 		if ($item !== false) {
 			if (isset($group_data[$item])) {
-				return $group_data;
+				return $group_data[$item];
 			} else {
 				return false;
 			}
@@ -789,12 +789,36 @@ class User {
 			return false;
 		}
 	}
-	function get_permission ($id) {
-		$id		= (int)$id;
-		if (!$id) {
-			return false;
+
+	/**
+	 * Get permission data<br>
+	 * If <b>$group</b> or/and <b>$label</b> parameter is specified, <b>$id</b> is ignored.
+	 *
+	 * @param int     $id
+	 * @param string $group
+	 * @param string $label
+	 *
+	 * @return array|bool If only <b>$id</b> specified - result is array of permission data,
+	 * in other cases result will be array of arrays of corresponding permissions data.
+	 */
+	function get_permission ($id = null, $group = null, $label = null) {
+		if ($group !== null && $group && $label !== null && $label) {
+			return $this->db()->qfa('
+				SELECT `id`, `label`, `group`
+				FROM `[prefix]permissions`
+				WHERE `group` = '.$this->db()->sip($group).' AND `label` = '.$this->db()->sip($label)
+			);
+		} elseif ($group !== null && $group) {
+			return $this->db()->qfa('SELECT `id`, `label`, `group` FROM `[prefix]permissions` WHERE `group` = '.$this->db()->sip($group));
+		} elseif ($label !== null && $label) {
+			return $this->db()->qfa('SELECT `id`, `label`, `group` FROM `[prefix]permissions` WHERE `label` = '.$this->db()->sip($label));
+		} else {
+			$id		= (int)$id;
+			if (!$id) {
+				return false;
+			}
+			return $this->db()->qf('SELECT `id`, `label`, `group` FROM `[prefix]permissions` WHERE `id` = '.$id.' LIMIT 1');
 		}
-		return $this->db_prime()->qf('SELECT `id`, `label`, `group` FROM `[prefix]permissions` WHERE `id` = '.$id);
 	}
 	function set_permission ($id, $group, $label) {
 		$id		= (int)$id;
@@ -803,19 +827,41 @@ class User {
 		}
 		$group	= $this->db_prime()->sip(xap($group));
 		$label	= $this->db_prime()->sip(xap($label));
-		if ($this->db_prime()->q('UPDATE `[prefix]permissions` SET `label` = '.$label.', `group` = '.$group.' WHERE `id` = '.$id)) {
+		if ($this->db_prime()->q('UPDATE `[prefix]permissions` SET `label` = '.$label.', `group` = '.$group.' WHERE `id` = '.$id.' LIMIT 1')) {
 			$this->del_permission_table();
 			return true;
 		} else {
 			return false;
 		}
 	}
+	/**
+	 * Deleting of permission or array of permissions
+	 *
+	 * @param array|int $id
+	 *
+	 * @return bool
+	 */
 	function del_permission ($id) {
+		if (is_array($id) && !empty($id)) {
+			foreach ($id as &$item) {
+				$item = (int)$item;
+			}
+			$id = implode(',', $id);
+			return $this->db_prime()->q([
+				'DELETE FROM `[prefix]permissions`			WHERE `id` IN ('.$id.') LIMIT 1',
+				'DELETE FROM `[prefix]users_permissions`	WHERE `permission` IN ('.$id.')',
+				'DELETE FROM `[prefix]groups_permissions`	WHERE `permission` IN ('.$id.')'
+			]);
+		}
 		$id		= (int)$id;
 		if (!$id) {
 			return false;
 		}
-		if ($this->db_prime()->q('DELETE FROM `[prefix]permissions` WHERE `id` = '.$id)) {
+		if ($this->db_prime()->q([
+			'DELETE FROM `[prefix]permissions`			WHERE `id` = '.$id.' LIMIT 1',
+			'DELETE FROM `[prefix]users_permissions`	WHERE `permission` = '.$id,
+			'DELETE FROM `[prefix]groups_permissions`	WHERE `permission` = '.$id
+		])) {
 			global $Cache;
 			unset($Cache->{'users/permissions'}, $Cache->{'groups/permissions'});
 			$this->del_permission_table();

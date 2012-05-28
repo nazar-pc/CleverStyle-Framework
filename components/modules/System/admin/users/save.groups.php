@@ -17,7 +17,7 @@ if (isset($_POST['mode'])) {
 		break;
 		case 'delete':
 			$Index->save(
-				$User->delete_group($_POST['id'])
+				$User->del_group($_POST['id'])
 			);
 		break;
 		case 'permissions':

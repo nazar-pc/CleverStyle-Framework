@@ -3,38 +3,42 @@ global $Config, $Index, $L;
 $a = &$Index;
 $rc = &$Config->routing['current'];
 $a->form = false;
-$mode = isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3]);
 $plugins = get_list(PLUGINS, false, 'd');
-if ($mode && $rc[2] == 'enable') {
-	if (!in_array($rc[3], $Config->components['plugins']) && in_array($rc[3], $plugins)) {
-		$Config->components['plugins'][] = $rc[3];
-		$a->save('components');
-		$a->run_trigger(
-			'admin/System/components/plugins/enable',
-			[
-				'name' => $rc[3]
-			]
-		);
-	}
-} elseif ($mode && $rc[2] == 'disable') {
-	if (in_array($rc[3], $Config->components['plugins'])) {
-		foreach ($Config->components['plugins'] as $i => $plugin) {
-			if ($plugin == $rc[3] || !in_array($rc[3], $plugins)) {
-				unset($Config->components['plugins'][$i], $i, $plugin);
-				break;
+if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
+	switch ($rc[2]) {
+		case 'enable':
+			if (!in_array($rc[3], $Config->components['plugins']) && in_array($rc[3], $plugins)) {
+				$Config->components['plugins'][] = $rc[3];
+				$a->save('components');
+				$a->run_trigger(
+					'admin/System/components/plugins/enable',
+					[
+						'name' => $rc[3]
+					]
+				);
 			}
-		}
-		unset($i, $plugin);
-		$a->save('components');
-		$a->run_trigger(
-			'admin/System/components/plugins/disable',
-			[
-				'name' => $rc[3]
-			]
-		);
+		break;
+		case 'disable':
+			if (in_array($rc[3], $Config->components['plugins'])) {
+				foreach ($Config->components['plugins'] as $i => $plugin) {
+					if ($plugin == $rc[3] || !in_array($rc[3], $plugins)) {
+						unset($Config->components['plugins'][$i], $i, $plugin);
+						break;
+					}
+				}
+				unset($i, $plugin);
+				$a->save('components');
+				$a->run_trigger(
+					'admin/System/components/plugins/disable',
+					[
+						'name' => $rc[3]
+					]
+				);
+			}
+		break;
 	}
 }
-unset($rc, $mode);
+unset($rc);
 $plugins_list = h::tr(
 	h::{'th.ui-widget-header.ui-corner-all'}(
 		[
@@ -46,7 +50,7 @@ $plugins_list = h::tr(
 );
 foreach ($plugins as $plugin) {
 	$addition_state = $action = '';
-	//Информация о плагине
+	//Information about plugin
 	if (_file_exists($file = PLUGINS.DS.$plugin.DS.'readme.txt') || _file_exists($file = PLUGINS.DS.$plugin.DS.'readme.html')) {
 		if (substr($file, -3) == 'txt') {
 			$tag = 'pre';
@@ -71,7 +75,7 @@ foreach ($plugins as $plugin) {
 		);
 	}
 	unset($tag, $file);
-	//Лицензия
+	//License
 	if (_file_exists($file = PLUGINS.DS.$plugin.DS.'license.txt') || _file_exists($file = PLUGINS.DS.$plugin.DS.'license.html')) {
 		if (substr($file, -3) == 'txt') {
 			$tag = 'pre';

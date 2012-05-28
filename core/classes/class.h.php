@@ -643,6 +643,7 @@ class h {//TODO array of void elements for general processing
 		$merge		= true;
 		foreach ($input as &$item) {
 			$attrs = [];
+			//Atributes processing
 			if (($pos = strpos($item, '[')) !== false) {
 				$attrs_ = explode('][', substr($item, $pos+1, -1));
 				foreach ($attrs_ as &$attr) {
@@ -652,6 +653,7 @@ class h {//TODO array of void elements for general processing
 				unset($attrs_);
 				$item = substr($item, 0, $pos);
 			}
+			//Classes processing
 			if (($pos = strpos($item, '.')) !== false) {
 				if (!isset($attrs['class'])) {
 					$attrs['class'] = '';
@@ -659,6 +661,7 @@ class h {//TODO array of void elements for general processing
 				$attrs['class']	= trim($attrs['class'].' '.str_replace('.', ' ', substr($item, $pos)));
 				$item			= substr($item, 0, $pos);
 			}
+			//Id and tag determination
 			$item	= explode('#', $item);
 			$tag	= $item[0];
 			if (isset($item[1])) {

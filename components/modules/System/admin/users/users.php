@@ -452,7 +452,7 @@ if (isset($rc[2], $rc[3])) {
 					$user_data['last_ip'] = $user_data['last_ip'][0];
 				}
 			}
-			$groups			= $User->get_user_groups($id);
+			$groups			= (array)$User->get_user_groups($id);
 			if (in_array(1, $groups)) {
 				$type = h::info('a');
 			} elseif (in_array(2, $groups)) {
