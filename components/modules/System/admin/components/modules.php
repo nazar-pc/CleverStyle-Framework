@@ -225,8 +225,8 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 }
 if ($display_modules) {
 	unset($rc);
-	global $Cache;
-	$db_users_items = $Cache->users_columns;
+	global $User;
+	$db_users_items = $User->get_users_columns();
 	$modules_list = h::tr(
 		h::{'th.ui-widget-header.ui-corner-all'}([
 			$L->module_name,

@@ -61,10 +61,32 @@ if (isset($_POST['mode'])) {
 						null,
 						'Block',
 						$Config->components['blocks'][$_POST['id']]['index']
-					)['id']
+					)[0]['id']
 				);
 				unset($Config->components['blocks'][$_POST['id']]);
 				$a->save('components');
+			}
+		break;
+		case 'permissions':
+			if (isset($_POST['block'], $_POST['block']['id'], $Config->components['blocks'][$_POST['block']['id']])) {
+				global $User;
+				$permission = $User->get_permission(
+					null,
+					'Block',
+					$Config->components['blocks'][$_POST['block']['id']]['index']
+				)[0]['id'];
+				$result = true;
+				if (isset($_POST['groups'])) {
+					foreach ($_POST['groups'] as $group => $value) {
+						$result = $result && $User->set_group_permissions([$permission => $value], $group);
+					}
+				}
+				if (isset($_POST['users'])) {
+					foreach ($_POST['users'] as $user => $value) {
+						$result = $result && $User->set_user_permissions([$permission => $value], $user);
+					}
+				}
+				$a->save($result);
 			}
 		break;
 	}

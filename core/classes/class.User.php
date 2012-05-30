@@ -24,8 +24,8 @@ class User {
 
 	function __construct () {
 		global $Cache, $Config, $Page, $L, $Key;
-		if (($this->users_columns = $Cache->users_columns) === false) {
-			$this->users_columns = $Cache->users_columns = $this->db()->columns('[prefix]users');
+		if (($this->users_columns = $Cache->{'users/columns'}) === false) {
+			$this->users_columns = $Cache->{'users/columns'} = $this->db()->columns('[prefix]users');
 		}
 		//Detecting of current user
 		//Last part in page path - key
@@ -363,7 +363,7 @@ class User {
 		return $this->db_prime;
 	}
 	/**
-	 * Who is visitor
+	 * Who is current visitor
 	 * @param string $mode admin|user|guest|bot|system
 	 * @return bool
 	 */
@@ -390,6 +390,31 @@ class User {
 		return is_array($data) && $data['id'] != 1 ? $data['id'] : false;
 	}
 	/**
+	 * Returns user name or login or email, depending on existed in DB information
+	 *
+	 * @param  bool|int $user
+	 * @return bool|int
+	 */
+	function get_username ($user = false) {
+		$user = (int)($user ?: $this->id);
+		return $this->get('username', $user) ?: ($this->get('login', $user) ?: $this->get('email', $user));
+	}
+	function search_users ($search_phrase) {
+		$search_phrase = $this->db()->sip(trim($search_phrase, "%\n").'%');
+		$found_users = $this->db()->qfa('
+			SELECT `id`
+			FROM `[prefix]users`
+			WHERE
+				`login`		LIKE '.$search_phrase.' OR
+				`username`	LIKE '.$search_phrase.' OR
+				`email`		LIKE '.$search_phrase
+		);
+		foreach ($found_users as &$user) {
+			$user = $user['id'];
+		}
+		return $found_users;
+	}
+	/**
 	 * Returns permission state for specified user
 	 *
 	 * @param int $group		Permission group
@@ -398,7 +423,7 @@ class User {
 	 *
 	 * @return bool				If permission exists - returns its state for specified user, otherwise returns true
 	 */
-	function permission ($group, $label, $user = false) {
+	function get_user_permission ($group, $label, $user = false) {
 		$user = (int)($user ?: $this->id);
 		if ($this->is('system') || $user == 2) {
 			return true;
@@ -434,6 +459,8 @@ class User {
 		}
 	}
 	/**
+	 * Returns array of all permissions state for specified user
+	 *
 	 * @param bool|int $user
 	 * @return array|bool
 	 */
@@ -454,26 +481,7 @@ class User {
 		if (!$user) {
 			return false;
 		}
-		$delete = [];
-		foreach ($data as $i => $val) {
-			if ($val == -1) {
-				$delete[] = (int)$i;
-				unset($data[$i]);
-			}
-		}
-		$return = true;
-		if (!empty($delete)) {
-			$return = $this->db_prime()->q(
-				'DELETE FROM `[prefix]users_permissions` WHERE `id` = '.$user.' AND `permission` IN ('.implode(', ', $delete).')'
-			);
-		}
-		unset($delete);
-		if (empty($data)) {
-			global $Cache;
-			unset($Cache->{'users/permissions/'.$user});
-			return $return;
-		}
-		return $return && $this->set_any_permissions($data, $user, 'user');
+		return $this->set_any_permissions($data, $user, 'user');
 	}
 	/**
 	 * Get user groups
@@ -583,6 +591,17 @@ class User {
 		} else {
 			return false;
 		}
+	}
+	/**
+	 * @return array|bool
+	 */
+	function get_groups_list () {
+		global $Cache;
+		if (($groups_list = $Cache->{'groups/list'}) === false) {
+			$groups_list = $this->db()->qfa('SELECT `id`, `title`, `description` FROM `[prefix]groups`');
+			$Cache->{'groups/list'} = $groups_list;
+		}
+		return $groups_list;
 	}
 	/**
 	 * @param int $group
@@ -707,52 +726,73 @@ class User {
 		switch ($type) {
 			case 'user':
 				$table	= '[prefix]users_permissions';
-			break;
+				$path	= 'users/permissions/';
+				break;
 			case 'group':
 				$table	= '[prefix]groups_permissions';
-			break;
+				$path	= 'groups/permissions/';
+				break;
 			default:
 				return false;
 		}
-		$exitsing	= $this->db_prime()->qfa('SELECT `permission`, `value` FROM `'.$table.'` WHERE `id` = '.$id);
-		$return		= true;
-		if (!empty($exitsing)) {
-			$update		= [];
-			foreach ($exitsing as $permission => $value) {
-				if (isset($data[$permission]) && $data[$permission] != $value) {
-					$update[] = 'UPDATE `'.$table.'`
-						SET `value` = '.(int)(bool)$data[$permission].'
-						WHERE `permission` = '.$permission.' AND `id` = '.$id;
-				}
-				unset($data[$permission]);
+		$delete = [];
+		foreach ($data as $i => $val) {
+			if ($val == -1) {
+				$delete[] = (int)$i;
+				unset($data[$i]);
 			}
-			unset($exitsing, $permission, $value);
-			if (!empty($update)) {
-				$return = $return && $this->db_prime()->q($update);
-			}
-			unset($update);
 		}
+		unset($i, $val);
+		$return = true;
+		if (!empty($delete)) {
+			$return = $this->db_prime()->q(
+				'DELETE FROM `'.$table.'` WHERE `id` = '.$id.' AND `permission` IN ('.implode(', ', $delete).')'
+			);
+		}
+		unset($delete);
 		if (!empty($data)) {
-			$insert	= [];
-			foreach ($data as $permission => $value) {
-				$insert[] = $id.', '.(int)$permission.', '.(int)(bool)$value;
+			$exitsing_	= $this->db_prime()->qfa('SELECT `permission`, `value` FROM `'.$table.'` WHERE `id` = '.$id);
+			$exitsing	= [];
+			foreach ($exitsing_ as $item) {
+				$exitsing[$item['permission']] = $item['value'];
 			}
-			unset($data, $permission, $value);
-			if (!empty($insert)) {
-				$return = $return && $this->db_prime()->q(
-					'INSERT INTO `'.$table.'`
-						(`id`, `permission`, `value`)
-					VALUES
-						('.implode('), (', $insert).')'
-				);
+			unset($exitsing_, $item);
+			if (!empty($exitsing)) {
+				$update		= [];
+				foreach ($exitsing as $permission => $value) {
+					if (isset($data[$permission]) && $data[$permission] != $value) {
+						$update[] = 'UPDATE `'.$table.'`
+							SET `value` = '.(int)(bool)$data[$permission].'
+							WHERE `permission` = '.$permission.' AND `id` = '.$id;
+					}
+					unset($data[$permission]);
+				}
+				unset($exitsing, $permission, $value);
+				if (!empty($update)) {
+					$return = $return && $this->db_prime()->q($update);
+				}
+				unset($update);
+			}
+			if (!empty($data)) {
+				$insert	= [];
+				foreach ($data as $permission => $value) {
+					$insert[] = $id.', '.(int)$permission.', '.(int)(bool)$value;
+				}
+				unset($data, $permission, $value);
+				if (!empty($insert)) {
+					$return = $return && $this->db_prime()->q(
+						'INSERT INTO `'.$table.'`
+							(`id`, `permission`, `value`)
+						VALUES
+							('.implode('), (', $insert).')'
+					);
+				}
 			}
 		}
 		global $Cache;
+		unset($Cache->{$path.$id});
 		if ($type == 'group') {
 			unset($Cache->{'users/permissions'});
-			unset($Cache->{'groups/permissions/'.$id});
-		} elseif ($type == 'user') {
-			unset($Cache->{'users/permissions/'.$id});
 		}
 		return $return;
 	}
@@ -795,18 +835,27 @@ class User {
 	 * If <b>$group</b> or/and <b>$label</b> parameter is specified, <b>$id</b> is ignored.
 	 *
 	 * @param int     $id
-	 * @param string $group
-	 * @param string $label
+	 * @param string  $group
+	 * @param string  $label
+	 * @param string  $condition and|or
 	 *
 	 * @return array|bool If only <b>$id</b> specified - result is array of permission data,
 	 * in other cases result will be array of arrays of corresponding permissions data.
 	 */
-	function get_permission ($id = null, $group = null, $label = null) {
+	function get_permission ($id = null, $group = null, $label = null, $condition = 'and') {
+		switch ($condition) {
+			case 'or':
+				$condition = 'OR';
+			break;
+			default:
+				$condition = 'AND';
+			break;
+		}
 		if ($group !== null && $group && $label !== null && $label) {
 			return $this->db()->qfa('
 				SELECT `id`, `label`, `group`
 				FROM `[prefix]permissions`
-				WHERE `group` = '.$this->db()->sip($group).' AND `label` = '.$this->db()->sip($label)
+				WHERE `group` = '.$this->db()->sip($group).' '.$condition.' `label` = '.$this->db()->sip($label)
 			);
 		} elseif ($group !== null && $group) {
 			return $this->db()->qfa('SELECT `id`, `label`, `group` FROM `[prefix]permissions` WHERE `group` = '.$this->db()->sip($group));
@@ -1232,6 +1281,9 @@ class User {
 		]);
 		$this->reg_id = 0;
 	}
+	function get_users_columns () {
+		return $this->users_columns;
+	}
 	/**
 	 * Cloning restriction
 	 */
@@ -1242,7 +1294,7 @@ class User {
 	function __finish () {
 		global $Cache;
 		//Update users data
-		$users_columns = $Cache->users_columns;
+		$users_columns = $Cache->{'users/columns'};
 		if (is_array($this->data_set) && !empty($this->data_set)) {
 			$update = [];
 			foreach ($this->data_set as $id => &$data_set) {

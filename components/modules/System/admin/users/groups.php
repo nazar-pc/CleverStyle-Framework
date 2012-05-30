@@ -69,10 +69,10 @@ if (isset($rc[2])) {
 			}
 			$a->buttons		= false;
 			$a->cancel_back	= true;
-			$permission		= $User->db()->qf('SELECT `title` FROM `[prefix]groups` WHERE `id` = '.(int)$rc[3].' LIMIT 1');
+			$group			= $User->get_group_data($rc[3]);
 			$a->content(
 				h::{'p.cs-center-all'}(
-					$L->sure_delete_group($permission['title'])
+					$L->sure_delete_group($group['title'])
 				).
 				h::{'input[type=hidden]'}([
 					'name'	=> 'id',
@@ -95,7 +95,7 @@ if (isset($rc[2])) {
 			$tabs			= [];
 			$tabs_content	= '';
 			foreach ($permissions as $group => $list) {
-				$tabs[]		= h::{'a'}(
+				$tabs[]		= h::a(
 					$L->{'permissions_group_'.$group},
 					[
 						'href'	=> '#permissions_group_'.strtr($group, '/', '_')
@@ -115,24 +115,21 @@ if (isset($rc[2])) {
 					$content[] = h::{'td[colspan=2]'}();
 				}
 				$count		= count($content);
-				$content_	= '';
+				$content_	= [];
 				for ($i = 0; $i < $count; $i += 2) {
-					$content_ .= h::tr(
-						$content[$i].
-							$content[$i+1]
-					);
+					$content_[]	= $content[$i].$content[$i+1];
 				}
 				unset($content);
 				$tabs_content .= h::{'div#permissions_group_'.strtr($group, '/', '_').' table.cs-admin-table.cs-center-all'}(
 					h::{'tr td.cs-left-all[colspan=4]'}(
-						h::{'button.permissions_group_invert'}($L->invert).
-						h::{'button.permissions_group_allow_all'}($L->allow_all).
-						h::{'button.permissions_group_deny_all'}($L->deny_all)
+						h::{'button.cs-permissions-invert'}($L->invert).
+						h::{'button.cs-permissions-allow-all'}($L->allow_all).
+						h::{'button.cs-permissions-deny-all'}($L->deny_all)
 					).
 					h::tr($content_)
 				);
 			}
-			unset($content);
+			unset($content_);
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages'}(
 					$L->permissions_for_group(
@@ -159,7 +156,7 @@ if (isset($rc[2])) {
 	);
 } else {
 	$a->buttons		= false;
-	$groups_ids		= $User->db()->qfa('SELECT `id` FROM `[prefix]groups` ORDER BY `id`');
+	$groups_ids		= $User->get_groups_list();
 	$groups_list	= h::{'tr th.ui-widget-header.ui-corner-all'}([
 		$L->action,
 		'id',
@@ -212,13 +209,11 @@ if (isset($rc[2])) {
 	$a->content(
 		h::{'table.cs-admin-table.cs-center-all'}(
 			$groups_list.
-			h::{'tr td.cs-left-all[colspan=4]'}(
-				h::button(
-					$L->add_group,
-					[
-						'onMouseDown' => 'javasript: location.href= \'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add\';'
-					]
-				)
+			h::{'tr td.cs-left-all[colspan=4] button'}(
+				$L->add_group,
+				[
+					'onMouseDown' => 'javasript: location.href= \'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add\';'
+				]
 			)
 		)
 	);

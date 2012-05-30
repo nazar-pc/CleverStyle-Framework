@@ -7,12 +7,12 @@ $(function() {
 	) {
 		alert('Go away with your old browser! And come back with newer version, than now:)');
 	}
-	$(":radio").each(function () {
+	$(':radio').each(function () {
 		if (!$(this).hasClass('noui')) {
 			$(this).parent().buttonset();
 		}
 	});
-	$(":checkbox").each(function () {
+	$(':checkbox').each(function () {
 		if (!$(this).hasClass('noui')) {
 			if ($(this).parent('label')) {
 				$(this).parent().buttonset();
@@ -21,12 +21,12 @@ $(function() {
 			}
 		}
 	});
-	$("select").each(function () {
+	$('select').each(function () {
 		if (!$(this).hasClass('noui')) {
 			//$(this).chosen(); //TODO Find some good replacement (or wait for jQuery UI 1.9)
 		}
 	});
-	$(":button").each(function (index) {
+	$(':button').each(function () {
 		if (!$(this).hasClass('noui')) {
 			$(this).button();
 		}
@@ -45,12 +45,6 @@ $(function() {
 		} else {
 			$(this).dialog();
 		}
-	});
-	$('#admin_form *').change(function(){
-		save = true;
-	});
-	$('#admin_form:reset').change(function(){
-		save = false;
 	});
 	$('textarea').each(function () {
 		if (!$(this).is('.EDITOR, .EDITORH, .SEDITOR, .noresize')) {
@@ -199,14 +193,14 @@ $(function() {
 		collapsible:	true,
 		cookie:			{}
 	});
-	$('#group_permissions_tabs').tabs();
-	$('button.permissions_group_invert').mousedown(function () {
+	$('#group_permissions_tabs, #user_permissions_tabs, #block_permissions_tabs').tabs();
+	$('button.cs-permissions-invert').mousedown(function () {
 		$(this).parentsUntil('div').find(':radio:not(:checked)[value!=-1]').prop('checked', true).button('refresh');
 	});
-	$('button.permissions_group_allow_all').mousedown(function () {
+	$('button.cs-permissions-allow-all').mousedown(function () {
 		$(this).parentsUntil('div').find(':radio:[value=1]').prop('checked', true).button('refresh');
 	});
-	$('button.permissions_group_deny_all').mousedown(function () {
+	$('button.cs-permissions-deny-all').mousedown(function () {
 		$(this).parentsUntil('div').find(':radio:[value=0]').prop('checked', true).button('refresh');
 	});
 	$('#columns_settings ol').css({
@@ -221,11 +215,44 @@ $(function() {
 			});
 			$("#columns").val(result.join(';'));
 		}
-	}).children('li').css({//TODO Serialization of selected items and accounting last search (page changing)
+	}).children('li').css({
 		'margin'			: '3px',
 		'padding'			: '5px',
 		'width'				: 'auto'
 	}).addClass('ui-widget-content');
+	$('#block_users_search').keyup(function () {
+		if (event.which != 13) {
+			return;
+		}
+		$('.cs-block-users-changed').removeClass('cs-block-users-changed').appendTo('#block_users_changed_permissions').each(function () {
+			var id = $(this).find(':radio:first').attr('name');
+			$('#block_users_search_found').val(
+				$('#block_users_search_found').val()+','+id.substring(6, id.length-1)
+			);
+		});
+		$('#block_users_search_results').load(
+			current_base_url+'/'+routing[0]+'/'+routing[1]+'/search_users',
+			{
+				found_users		: $('#block_users_search_found').val(),
+				permission		: $(this).attr('permission'),
+				search_phrase	: $(this).val()
+			},
+			function () {
+				$('#block_users_search_results :radio').each(function () {
+					if (!$(this).hasClass('noui')) {
+						$(this).parent().buttonset();
+					}
+				}).change(function () {
+					$(this).parentsUntil('tr').parent().addClass('cs-block-users-changed');
+				});
+			}
+		);
+	}).keydown(function () {
+		if (event.which == 13) {
+			return false;
+		}
+	});
+	$('#block_users_search_results :radio');
 	if (in_admin && module == 'System' && routing[0] == 'components' && routing[1] == 'blocks' && routing[2] != 'edit' && routing[2] != 'add') {
 		$('#apply_settings, #save_settings').click(
 			function () {

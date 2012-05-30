@@ -116,8 +116,9 @@ if (isset($rc[2])) {
 		break;
 		case 'test':
 			interface_off();
-			$test_dialog = false;
-			$a->form = false;
+			$test_dialog		= false;
+			$a->form			= false;
+			$a->generate_auto	= false;
 			global $Page, $Storage;
 			if (isset($rc[3])) {
 				$Page->Content = h::{'p.cs-test-result'}($Storage->test([$rc[3]]) ? $L->success : $L->fail);

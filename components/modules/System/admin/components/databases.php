@@ -166,7 +166,8 @@ if (isset($rc[2])) {
 		break;
 		case 'test':
 			interface_off();
-			$a->form = false;
+			$a->form			= false;
+			$a->generate_auto	= false;
 			global $Page, $db;
 			if (isset($rc[4])) {
 				$Page->content(

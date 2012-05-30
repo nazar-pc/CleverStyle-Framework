@@ -182,10 +182,6 @@ class Config {
 		!defined('HOME')	&& define('HOME', false);
 		//Скорректированный полный путь страницы (рекомендуемый к использованию)
 		$this->server['current_url'] = (ADMIN ? 'admin/' : '').MODULE.(API ? 'api/' : '').'/'.implode('/', $rc);
-		//Определение необходимости отключить интерфейс
-		if (API) {
-			interface_off();
-		}
 		unset($rc, $r);
 		if (isset($_SERVER['HTTP_REFERER'])) {
 			$ref				= &$this->server['referer'];

@@ -615,83 +615,77 @@ class Page {
 				$this->user_avatar_text = '?';
 				$this->user_avatar_image = 'none';
 			}
-			$this->user_info = h::b($L->hello.', '.($User->username ?: $User->login ?: $User->email).'!').h::br();
+			$this->user_info = h::b($L->hello.', '.$User->get_username().'!').h::br();
 		} else {
 			$this->user_avatar_text = '?';
 			$this->user_avatar_image = 'none';
 			$this->user_info = h::{'div#anonym_header_form'}(
 				h::b($L->hello.', '.$L->guest.'!').h::br().
-					h::{'button#login_slide.cs-button-compact'}(
-						h::icon('check').$L->log_in
-					).
-					h::{'button#registration_slide.cs-button-compact'}(
-						h::icon('pencil').$L->register,
-						array(
-							 'data-title'	=> $L->quick_registration_form
-						)
-					)
+				h::{'button#login_slide.cs-button-compact'}(
+					h::icon('check').$L->log_in
+				).
+				h::{'button#registration_slide.cs-button-compact'}(
+					h::icon('pencil').$L->register,
+					[
+						 'data-title'	=> $L->quick_registration_form
+					]
+				)
 			).
 			h::{'div#register_header_form'}(
 				h::{'input#register[tabindex=1]'}(
-					array(
+					[
 						 'placeholder'	=> $L->email_or
-					)
+					]
 				).
 				h::{'select#register_list'}(
-					array(
-						 'in'			=> array_merge(array(''), (array)_mb_substr(get_list(MODULES.DS.'System'.DS.'registration', '/^.*?\.php$/i', 'f'), 0, -4))
-					)
+					[
+						 'in'			=> array_merge([''], (array)_mb_substr(get_list(MODULES.DS.'System'.DS.'registration', '/^.*?\.php$/i', 'f'), 0, -4))
+					]
 				).
 				h::{'button#register_process.cs-button-compact[tabindex=2]'}(h::icon('pencil').$L->register).
 				h::{'button.cs-button-compact.cs-header-back[tabindex=3]'}(
 					h::icon('carat-1-s'),
-					array(
+					[
 						 'data-title'	=> $L->back
-					)
+					]
 				).
 				h::{'button.cs-button-compact.cs-header-restore-password[tabindex=4]'}(
 					h::icon('help'),
-					array(
+					[
 						 'data-title'	=> $L->restore_password
-					)
+					]
 				),
-				array(
+				[
 					 'style'	=> 'display: none;'
-				)
+				]
 			).
 			h::{'div#login_header_form'}(
-				h::{'input#user_login[tabindex=1]'}(
-					array(
-						 'placeholder'	=> $L->login_or_email_or
-					)
-				).
-				h::{'select#login_list'}(
-					array(
-						 'in'			=> array_merge(array(''), (array)_mb_substr(get_list(MODULES.DS.'System'.DS.'registration', '/^.*?\.php$/i', 'f'), 0, -4))
-					)
-				).
-				h::{'input#user_password[type=password][tabindex=2]'}(
-					array(
-						 'placeholder'	=> $L->password
-					)
-				).
+				h::{'input#user_login[tabindex=1]'}([
+					'placeholder'	=> $L->login_or_email_or
+				]).
+				h::{'select#login_list'}([
+					'in'			=> array_merge([''], (array)_mb_substr(get_list(MODULES.DS.'System'.DS.'registration', '/^.*?\.php$/i', 'f'), 0, -4))
+				]).
+				h::{'input#user_password[type=password][tabindex=2]'}([
+					'placeholder'	=> $L->password
+				]).
 				h::{'icon#show_password.pointer'}('locked').
 				h::{'button#login_process.cs-button-compact[tabindex=3]'}(h::icon('check').$L->log_in).
 				h::{'button.cs-button-compact.cs-header-back[tabindex=5]'}(
 					h::icon('carat-1-s'),
-					array(
-						 'data-title'	=> $L->back
-					)
+					[
+						'data-title'	=> $L->back
+					]
 				).
 				h::{'button.cs-button-compact.cs-header-restore-password[tabindex=4]'}(
 					h::icon('help'),
-					array(
-						 'data-title'	=> $L->restore_password
-					)
+					[
+						'data-title'	=> $L->restore_password
+					]
 				),
-				array(
-					 'style'	=> 'display: none;'
-				)
+				[
+					'style'	=> 'display: none;'
+				]
 			);
 		}
 	}

@@ -212,8 +212,8 @@ td.cs-left-all {
 
 .cs-blocks-items-title {
 	float        : left;
-	height: 16px;
-	margin-right : -60px;
+	height		 : 16px;
+	margin-right : -64px;
 	overflow	 : hidden;
 	text-align	 : left;
 	width        : 100%;
@@ -221,9 +221,11 @@ td.cs-left-all {
 
 .cs-blocks-items-title+a,
 .cs-blocks-items-title+a+a,
-.cs-blocks-items-title+a+a+a {
+.cs-blocks-items-title+a+a+a,
+.cs-blocks-items-title+a+a+a+a {
 	cursor  : pointer;
 	display : inline-block;
+	margin  : 0 -2px;
 }
 
 .cs-blocks-items-groups {

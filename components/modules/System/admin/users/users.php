@@ -1,8 +1,8 @@
 <?php
-global $Config, $Index, $L, $Cache, $User;
+global $Config, $Index, $L, $User;
 $a				= &$Index;
 $rc				= &$Config->routing['current'];
-$search_columns	= $Cache->users_columns;
+$search_columns	= $User->get_users_columns();
 if (isset($rc[2], $rc[3])) {
 	switch ($rc[2]) {
 		case 'edit_raw':
@@ -237,13 +237,12 @@ if (isset($rc[2], $rc[3])) {
 			}
 			$a->apply		= false;
 			$a->cancel_back	= true;
-			global $Cache;
 			$permissions	= $User->get_permissions_table();;
 			$permission		= $User->get_user_permissions($rc[3]);
 			$tabs			= [];
 			$tabs_content	= '';
 			foreach ($permissions as $group => $list) {
-				$tabs[]		= h::{'a'}(
+				$tabs[]		= h::a(
 					$L->{'permissions_group_'.$group},
 					[
 						'href'	=> '#permissions_group_'.strtr($group, '/', '_')
@@ -263,32 +262,28 @@ if (isset($rc[2], $rc[3])) {
 					$content[] = h::{'td[colspan=2]'}();
 				}
 				$count		= count($content);
-				$content_	= '';
+				$content_	= [];
 				for ($i = 0; $i < $count; $i += 2) {
-					$content_ .= h::tr(
-						$content[$i].
-							$content[$i+1]
-					);
+					$content_[]	= $content[$i].$content[$i+1];
 				}
 				unset($content);
 				$tabs_content .= h::{'div#permissions_group_'.strtr($group, '/', '_').' table.cs-admin-table.cs-center-all'}(
 					h::{'tr td.cs-left-all[colspan=4]'}(
-						h::{'button.permissions_group_invert'}($L->invert).
-							h::{'button.permissions_group_allow_all'}($L->allow_all).
-							h::{'button.permissions_group_deny_all'}($L->deny_all)
+						h::{'button.cs-permissions-invert'}($L->invert).
+						h::{'button.cs-permissions-allow-all'}($L->allow_all).
+						h::{'button.cs-permissions-deny-all'}($L->deny_all)
 					).
 					h::tr($content_)
 				);
 			}
-			unset($content);
-			$User->get(['username', 'login', 'email'], $rc[3]);
+			unset($content_);
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages'}(
 					$L->permissions_for_user(
-						$User->get('username', $rc[3]) ?: $User->get('login', $rc[3]) ?: $User->get('email', $rc[3])
+						$User->get_username($rc[3])
 					)
 				).
-				h::{'div#group_permissions_tabs'}(
+				h::{'div#user_permissions_tabs'}(
 					h::{'ul li'}($tabs).
 					$tabs_content
 				).

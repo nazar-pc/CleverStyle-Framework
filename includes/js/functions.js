@@ -99,14 +99,22 @@ function blocks_toggle (position) {
 		$('#'+position+'_blocks_items').attr('data-mode', 'open');
 	}
 }
-//Для удобства и простоты - обертки для функций JavaScript с названиями аналогичных функций в PHP
+/**
+ * For convenience and simplicity - wrapper for JavaScript functions with names of similar to corresponding functions in PHP
+ */
 function json_encode (obj) {
 	return $.toJSON(obj);
 }
 function json_decode (str) {
 	return $.secureEvalJSON(str);
 }
-//Поддерживает алгоритмы sha224, sha256, sha384, sha512
+/**
+ * Supports algorithms sha224, sha256, sha384, sha512
+ *
+ * @param algo Choosen algorithm
+ * @param data String to be hashed
+ * @return string
+ */
 function hash (algo, data) {
 	return (new jsSHA(data)).getHash(algo);
 }

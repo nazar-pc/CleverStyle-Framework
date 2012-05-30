@@ -19,9 +19,9 @@ if ($User->is('admin') && isset($rc[2])) {
 					time_limit_pause(false);
 				}
 				$Cache->disable();
-				$Page->Content = $ajax ? h::{'p.ui-state-highlight.ui-corner-all.cs-state-messages'}($L->done) : 1;
+				$Page->content($ajax ? h::{'p.ui-state-highlight.ui-corner-all.cs-state-messages'}($L->done) : 1);
 			} else {
-				$Page->Content = $ajax ? h::{'p.ui-state-error.ui-corner-all.cs-state-messages'}($L->error) : 0;
+				$Page->content($ajax ? h::{'p.ui-state-error.ui-corner-all.cs-state-messages'}($L->error) : 0);
 			}
 		break;
 		case 'flush_pcache':
@@ -33,9 +33,10 @@ if ($User->is('admin') && isset($rc[2])) {
 					$Core->api_request(MODULE.'/admin/cache/flush_pcache/1');
 					time_limit_pause(false);
 				}
-				$Page->Content = $ajax ? h::{'p.ui-state-highlight.ui-corner-all.cs-state-messages'}($L->done) : 1;
+				$Page->content($ajax ? h::{'p.ui-state-highlight.ui-corner-all.cs-state-messages'}($L->done) : 1);
 			} else {
-				$Page->Content = $ajax ? h::{'p.ui-state-error.ui-corner-all.cs-state-messages'}($L->error) : 0;
+				$Page->content($ajax ? h::{'p.ui-state-error.ui-corner-all.cs-state-messages'}($L->error) : 0);
 			}
+		break;
 	}
 }

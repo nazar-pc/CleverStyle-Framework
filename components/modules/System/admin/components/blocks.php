@@ -215,6 +215,139 @@ if (isset($rc[2])) {
 				])
 			);
 		break;
+		case 'permissions':
+			if (!isset($rc[3], $Config->components['blocks'][$rc[3]])) {
+				break;
+			}
+			global $User;
+			$form			= false;
+			$a->apply		= false;
+			$a->cancel_back	= true;
+			$block			= &$Config->components['blocks'][$rc[3]];
+			$permission		= $User->get_permission(null, 'Block', $block['index'])[0]['id'];
+			$groups			= $User->get_groups_list();
+			$groups_content	= [];
+			foreach ($groups as $group) {
+				$group_permission = $User->db()->qf('
+					SELECT `value`
+					FROM `[prefix]groups_permissions`
+					WHERE `id` = '.$group['id'].' AND `permission` = '.$permission
+				)['value'];
+				$groups_content[] = h::{'th.ui-widget-header.ui-corner-all'}(
+					$group['title'],
+					[
+						'data-title'	=> $group['description']
+					]
+				).
+				h::{'td input[type=radio]'}([
+					'name'			=> 'groups['.$group['id'].']',
+					'checked'		=> $group_permission === false ? -1 : $group_permission,
+					'value'			=> [-1, 0, 1],
+					'in'			=> [$L->inherited, $L->deny, $L->allow]
+				]);
+			}
+			unset($groups, $group, $group_permission);
+			$users_list		= $User->db()->qfa('SELECT `id`, `value` FROM `[prefix]users_permissions` WHERE `permission` = '.$permission);
+			$users_content	= [];
+			foreach ($users_list as &$user) {
+				$value				= $user['value'];
+				$user				= $user['id'];
+				$users_content[]	= h::{'th.ui-widget-header.ui-corner-all'}($User->get_username($user)).
+					h::{'td input[type=radio]'}([
+						'name'			=> 'users['.$user.']',
+						'checked'		=> $value,
+						'value'			=> [-1, 0, 1],
+						'in'			=> [$L->inherited, $L->deny, $L->allow]
+					]);
+			}
+			unset($user, $value);
+			$a->content(
+				h::{'p.ui-priority-primary.cs-state-messages'}(
+					$L->permissions_for_block(
+						$block['title']
+					)
+				).
+				h::{'div#block_permissions_tabs'}(
+					h::{'ul li'}([
+						h::a(
+							$L->groups,
+							[
+								'href'	=> '#block_groups_permissions'
+							]
+						),
+						h::a(
+							$L->users,
+							[
+								'href'	=> '#block_users_permissions'
+							]
+						)
+					]).
+					h::{'div#block_groups_permissions table.cs-admin-table.cs-center-all'}(
+						h::{'tr td.cs-left-all[colspan=4]'}(
+							h::{'button.cs-permissions-invert'}($L->invert).
+							h::{'button.cs-permissions-allow-all'}($L->allow_all).
+							h::{'button.cs-permissions-deny-all'}($L->deny_all)
+						).
+						h::tr($groups_content)
+					).
+					h::{'input#block_users_search_found[type=hidden]'}([
+						'value'	=> implode(',', $users_list)
+					]).
+					h::{'div#block_users_permissions table.cs-admin-table.cs-center-all tr'}([
+						h::{'td.cs-left-all'}(
+							h::{'button.cs-permissions-invert'}($L->invert).
+							h::{'button.cs-permissions-allow-all'}($L->allow_all).
+							h::{'button.cs-permissions-deny-all'}($L->deny_all)
+						),
+						h::{'td table#block_users_changed_permissions.cs-admin-table.cs-center-all tr'}($users_content),
+						h::{'td input#block_users_search.cs-form-element[type=search]'}([
+							'autocomplete'	=> 'off',
+							'permission'	=> $permission,
+							'placeholder'	=> $L->type_username_or_email,
+							'style'			=> 'width: 100%'
+						]),
+						h::{'td#block_users_search_results'}(
+						)
+					])
+				).
+				h::br().
+				h::{'input[type=hidden]'}([
+					'name'	=> 'block[id]',
+					'value'	=> $rc[3]
+				]).
+				h::{'input[type=hidden]'}([
+					'name'	=> 'mode',
+					'value'	=> $rc[2]
+				])
+			);
+		break;
+		case 'search_users':
+			$form				= false;
+			$a->generate_auto	= false;
+			interface_off();
+			global $User;
+			$users_list		= $User->search_users($_POST['search_phrase']);
+			$found_users	= explode(',', $_POST['found_users']);
+			$permission		= (int)$_POST['permission'];
+			$content		= [];
+			foreach ($users_list as $user) {
+				if (in_array($user, $found_users)) {
+					continue;
+				}
+				$found_users[]	= $user;
+				$value			= $User->db()->qf('SELECT `value` FROM `[prefix]users_permissions` WHERE `id` = '.$user.' AND `permission` = ');
+				$content[]		= h::{'th.ui-widget-header.ui-corner-all'}($User->get_username($user)).
+					h::{'td input[type=radio]'}([
+						'name'			=> 'users['.$user.']',
+						'checked'		=> $value ? $value['value'] : -1,
+						'value'			=> [-1, 0, 1],
+						'in'			=> [$L->inherited, $L->deny, $L->allow]
+					]);
+			}
+			$Page->content(
+				h::{'table.cs-admin-table.cs-center-all tr'}($content)
+			);
+		break;
 	}
 }
 if ($form) {
@@ -236,7 +369,14 @@ if ($form) {
 				h::{'div icon'}('wrench'),
 				[
 					'href'			=> $a->action.'/edit/'.$id,
-					'data-title'	=> $L->edit.' '.$L->block
+					'data-title'	=> $L->edit
+				]
+			).
+			h::a(
+				h::{'div icon'}('flag'),
+				[
+					'href'			=> $a->action.'/permissions/'.$id,
+					'data-title'	=> $L->edit_permissions
 				]
 			).
 			h::a(

@@ -41,10 +41,10 @@ class Index {
 		$admin_path	= MODULES.DS.MODULE.DS.'admin';
 		$api_path	= MODULES.DS.MODULE.DS.'api';
 		if (
-			ADMIN && $User->is('admin') &&
+			ADMIN &&
 			_file_exists($admin_path) && (_file_exists($admin_path.DS.'index.php') || _file_exists($admin_path.DS.'index.json'))
 		) {
-			if (!$User->permission($this->permission_group = MODULE.'/admin', 'index')) {
+			if (!($User->is('admin') && $User->get_user_permission($this->permission_group = MODULE.'/admin', 'index'))) {
 				define('ERROR_PAGE', 403);
 				return;
 			}
@@ -55,14 +55,14 @@ class Index {
 			API
 			&& _file_exists($api_path) && (_file_exists($api_path.DS.'index.php') || _file_exists($api_path.DS.'index.json'))
 		) {
-			if (!$User->permission($this->permission_group = MODULE.'/api', 'index')) {
+			if (!$User->get_user_permission($this->permission_group = MODULE.'/api', 'index')) {
 				define('ERROR_PAGE', 403);
 				return;
 			}
 			define('MFOLDER', $api_path);
 			$this->api		= true;
 		} elseif (_file_exists(MODULES.DS.MODULE)) {
-			if (!$User->permission($this->permission_group = MODULE, 'index')) {
+			if (!$User->get_user_permission($this->permission_group = MODULE, 'index')) {
 				define('ERROR_PAGE', 403);
 				return;
 			}
@@ -86,11 +86,11 @@ class Index {
 			$this->structure	= _json_decode(_file_get_contents(MFOLDER.DS.'index.json'));
 			if (is_array($this->structure)) {
 				foreach ($this->structure as $item => $value) {
-					if ($User->permission($this->permission_group, $item)) {
+					if ($User->get_user_permission($this->permission_group, $item)) {
 						$this->parts[] = $item;
 						if (isset($rc[0]) && $item == $rc[0] && is_array($value)) {
 							foreach ($value as $subpart) {
-								if ($User->permission($this->permission_group, $item.'/'.$subpart)) {
+								if ($User->get_user_permission($this->permission_group, $item.'/'.$subpart)) {
 									$this->subparts[] = $subpart;
 								} elseif (isset($rc[1]) && $rc[1] == $subpart) {
 									define('ERROR_PAGE', 403);
@@ -234,47 +234,49 @@ class Index {
 		}
 	}
 	protected function generate () {
-		global $Config, $L, $Page, $Cache;
+		global $Page;
+		if ($this->api) {
+			interface_off();
+			$Page->content($this->Content);
+			return;
+		}
+		global $Config, $L, $Cache, $User;
 		$this->menu_auto		&& $this->mainmenu();
 		$this->submenu_auto		&& $this->mainsubmenu();
 		$this->menumore_auto	&& $this->menumore();
-		if (!$this->api) {
-			global $User;
-			$Page->js(
-				'var continue_transfer = "'.$L->continue_transfer.'",'.
-					'base_url = "'.$Config->server['base_url'].'",'.
-					'current_base_url = "'.$Config->server['base_url'].'/'.($this->admin ? 'admin/' : '').MODULE.
-						(isset($Config->routing['current'][0]) ? '/'.$Config->routing['current'][0] : '').'",'.
-					'yes = "'.$L->yes.'",'.
-					'no = "'.$L->no.'",'.
-					($User->is('guest') ?
-						'auth_error_connection = "'.$L->auth_error_connection.'",'.
-						'reg_connection_error = "'.$L->reg_error_connection.'",'.
-						'please_type_your_email = "'.$L->please_type_your_email.'",'.
-						'please_type_correct_email = "'.$L->please_type_correct_email.'",'.
-						'reg_success = "'.$L->reg_success.'",'.
-						'reg_confirmation = "'.$L->reg_confirmation.'",'.
-						'reg_error_connection = "'.$L->reg_error_connection.'",'.
-						'rules_agree = "'.$L->rules_agree.'",'.
-						'rules_text = "'.$Config->core['rules'].'",'.
-						'reg_success = "'.$L->reg_success.'",'.
-						'reg_success_confirmation = "'.$L->reg_success_confirmation.'",'
-					: '').
-					($Config->core['debug'] ?
-						'objects = "'.$L->objects.'",'.
-						'user_data = "'.$L->user_data.'",'.
-						'queries = "'.$L->queries.'",'.
-						'cookies = "'.$L->cookies.'",'
-					: '').
-					'language = "'.$L->clanguage.'",'.
-					'language_en = "'.$L->clanguage_en.'",'.
-					'lang = "'.$L->clang.'",'.
-					'module = "'.MODULE.'",'.
-					'in_admin = '.(int)$this->admin.','.
-					'routing = '._json_encode($Config->routing['current']).';',
-				'code'
-			);
-		}
+		$Page->js(
+			'var continue_transfer = "'.$L->continue_transfer.'",'.
+				'base_url = "'.$Config->server['base_url'].'",'.
+				'current_base_url = "'.$Config->server['base_url'].'/'.($this->admin ? 'admin/' : '').MODULE.'",'.
+				'yes = "'.$L->yes.'",'.
+				'no = "'.$L->no.'",'.
+				($User->is('guest') ?
+					'auth_error_connection = "'.$L->auth_error_connection.'",'.
+					'reg_connection_error = "'.$L->reg_error_connection.'",'.
+					'please_type_your_email = "'.$L->please_type_your_email.'",'.
+					'please_type_correct_email = "'.$L->please_type_correct_email.'",'.
+					'reg_success = "'.$L->reg_success.'",'.
+					'reg_confirmation = "'.$L->reg_confirmation.'",'.
+					'reg_error_connection = "'.$L->reg_error_connection.'",'.
+					'rules_agree = "'.$L->rules_agree.'",'.
+					'rules_text = "'.$Config->core['rules'].'",'.
+					'reg_success = "'.$L->reg_success.'",'.
+					'reg_success_confirmation = "'.$L->reg_success_confirmation.'",'
+				: '').
+				($Config->core['debug'] ?
+					'objects = "'.$L->objects.'",'.
+					'user_data = "'.$L->user_data.'",'.
+					'queries = "'.$L->queries.'",'.
+					'cookies = "'.$L->cookies.'",'
+				: '').
+				'language = "'.$L->clanguage.'",'.
+				'language_en = "'.$L->clanguage_en.'",'.
+				'lang = "'.$L->clang.'",'.
+				'module = "'.MODULE.'",'.
+				'in_admin = '.(int)$this->admin.','.
+				'routing = '._json_encode($Config->routing['current']).';',
+			'code'
+		);
 		$this->blocks_processing();
 		if ($this->form) {
 			$Page->content(
@@ -355,7 +357,7 @@ class Index {
 		}
 	}
 	protected function blocks_processing () {
-		global $Page, $Config;
+		global $Page, $Config, $User;
 		$blocks_array = [
 			'top'		=> '',
 			'left'		=> '',
@@ -363,7 +365,12 @@ class Index {
 			'bottom'	=> ''
 		];
 		foreach ($Config->components['blocks'] as $block) {
-			if (!$block['active'] || ($block['expire'] != 0 && $block['expire'] < TIME) || $block['start'] > TIME) {
+			if (
+				!$block['active'] ||
+				($block['expire'] != 0 && $block['expire'] < TIME) ||
+				$block['start'] > TIME ||
+				!($User->get_user_permission('Block', $block['index']))
+			) {
 				continue;
 			}
 			switch ($block['type']) {
