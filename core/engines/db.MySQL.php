@@ -1,7 +1,6 @@
 <?php
 class MySQL extends DatabaseAbstract {
 	//Создание подключения
-	//(название_бд, пользователь, пароль [, хост [, кодовая страница]]
 	function __construct ($database, $user = '', $password = '', $host = 'localhost', $codepage = false) {
 		$this->connecting_time = microtime(true);
 		$this->id = @mysql_connect($host, $user, $password);
@@ -23,7 +22,7 @@ class MySQL extends DatabaseAbstract {
 		$this->connecting_time = microtime(true) - $this->connecting_time;
 		global $db;
 		$db->time += $this->connecting_time;
-		$this->engine = 'mysql';
+		$this->engine = 'MySQL';
 		return $this->id;
 	}
 	//Смена текущей БД
@@ -31,7 +30,6 @@ class MySQL extends DatabaseAbstract {
 		return @mysql_select_db($database, $this->id);
 	}
 	//Запрос в БД
-	//(текст_запроса)
 	function q ($query) {
 		if (is_array($query) && !empty($query)) {
 			$return = true;
@@ -43,29 +41,27 @@ class MySQL extends DatabaseAbstract {
 		if(!$query) {
 			return false;
 		}
-		if (is_resource($this->query['resource'])) {
-			@mysql_free_result($this->query['resource']);
-		}
 		global $db;
 		$this->query['time']			= microtime(true);
 		$this->queries['text'][]		= $this->query['text']				= str_replace('[prefix]', $this->prefix, $query);
-		$this->queries['resource'][]	= (bool)$this->query['resource']	= @mysql_query($this->query['text'], $this->id);
+		$resource						= @mysql_query($this->query['text'], $this->id);
+		$this->queries['resource'][]	= $resource;
 		$this->query['time']			= round(microtime(true) - $this->query['time'], 6);
 		$this->time						+= $this->query['time'];
-		$db->time						+= $this->queries['time'][]			= $this->query['time'];
+		$this->queries['time'][]		= $this->query['time'];
+		$db->time						+= $this->query['time'];
 		++$this->queries['num'];
 		++$db->queries;
-		if ($this->query['resource']) {
-			return $this->query['resource'];
-		} else {
-			return false;
-		}
+		return $resource;
 	}
 	//Подсчёт количества строк
-	//([ресурс_запроса])
+	/**
+	 * @param bool|resource $query_resource
+	 * @return int|bool
+	 */
 	function n ($query_resource = false) {
 		if($query_resource === false) {
-			$query_resource = $this->query['resource'];
+			$query_resource = $this->queries['resource'][count($this->queries['resource'])-1];
 		}
 		if(is_resource($query_resource)) {
 			return @mysql_num_rows($query_resource);
@@ -74,35 +70,54 @@ class MySQL extends DatabaseAbstract {
 		}
 	}
 	//Получение результатов
-	//([ресурс_запроса [, в_виде_массива_результатов [, тип_возвращаемого_массива]]])
-	function f ($query_resource = false, $array = false, $result_type = MYSQL_ASSOC) {	//MYSQL_BOTH==3, MYSQL_ASSOC==1, MYSQL_NUM==2
+	/**
+	 * @param bool|resource $query_resource
+	 * @param bool|string   $one_column
+	 * @param bool $array
+	 *
+	 * @return array|bool
+	 */
+	function f ($query_resource = false, $one_column = false, $array = false) {
 		if ($query_resource === false) {
-			$query_resource = $this->query['resource'];
+			$query_resource = $this->queries['resource'][count($this->queries['resource'])-1];
 		}
 		if (is_resource($query_resource)) {
 			if ($array) {
 				$result = [];
-				while ($current = @mysql_fetch_array($query_resource, $result_type)) {
-					$result[] = $current;
+				if ($one_column === false) {
+					while ($current = @mysql_fetch_array($query_resource, MYSQL_ASSOC)) {
+						$result[] = $current;
+					}
+				} else {
+					$one_column = (string)$one_column;
+					while ($current = @mysql_fetch_array($query_resource, MYSQL_ASSOC)) {
+						$result[] = $current[$one_column];
+					}
 				}
 				return $result;
 			} else {
-				return @mysql_fetch_array($query_resource, $result_type);
+				$result	= @mysql_fetch_array($query_resource, MYSQL_ASSOC);
+				if ($one_column && is_array($result)) {
+					return $result[$one_column];
+				}
+				return $result;
 			}
 		} else {
 			return false;
 		}
 	}
 	//id последнего insert запроса
-	//([ресурс_запроса])
 	function insert_id () {
 		return @mysql_insert_id($this->id);
 	}
 	//Очистка результатов запроса
-	//([ресурс_запроса])
+	/**
+	 * @param bool|resource $query_resource
+	 * @return bool
+	 */
 	function free ($query_resource = false) {
 		if($query_resource === false) {
-			$query_resource = $this->query['resource'];
+			$query_resource = $this->queries['resource'][count($this->queries['resource'])-1];
 		}
 		if(is_resource($query_resource)) {
 			return @mysql_free_result($query_resource);
@@ -131,9 +146,13 @@ class MySQL extends DatabaseAbstract {
 	//Отключение от БД
 	function __destruct () {
 		if($this->connected && is_resource($this->id)) {
-			if (is_resource($this->query['resource'])) {
-				@mysql_free_result($this->query['resource']);
-				$this->query['resource'] = '';
+			if (is_array($this->queries['resource'])) {
+				foreach ($this->queries['resource'] as &$resource) {
+					if (is_resource($resource)) {
+						@mysql_free_result($resource);
+						$resource = false;
+					}
+				}
 			}
 			@mysql_close($this->id);
 			$this->connected = false;

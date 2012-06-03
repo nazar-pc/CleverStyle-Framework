@@ -5,7 +5,7 @@ if (!isset($_POST['mode'])) {
 global $Config, $Page, $Index, $User, $L;
 switch ($_POST['mode']) {
 	case 'edit_raw':
-		$User->set($_POST['user'], false, $_POST['user']['id']);
+		$User->set($_POST['user'], null, $_POST['user']['id']);
 		$User->__finish();
 		$Index->save();
 	break;

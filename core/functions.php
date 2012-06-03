@@ -992,8 +992,11 @@
 	//Некоторые функции для определение состояния сервера
 	//Проверка версии БД
 	function check_db () {
-		global $DB_TYPE, $db;
+		global $DB_TYPE, $db, $L;
 		global $$DB_TYPE;
+		if (!$$DB_TYPE) {
+			return $L->unsupported_db_type;
+		}
 		preg_match('/[\.0-9]+/', $db->server(), $db_version);
 		return (bool)version_compare($db_version[0], $$DB_TYPE, '>=');
 	}
@@ -1052,31 +1055,6 @@
 		} else {
 			return $L->indefinite;
 		}
-	}
-	//Информация о кодировках SQL
-	function get_sql_info () {
-		global $L, $db, $DB_TYPE;
-		global $$DB_TYPE;
-		$sql_encoding = '';
-		$sql = $db->q('SHOW VARIABLES');
-		while ($data = $db->f($sql, false, MYSQL_NUM)) {
-			switch ($data[0]) {
-				case 'character_set_client':
-				case 'character_set_connection':
-				case 'character_set_database':
-				case 'character_set_results':
-				case 'character_set_server':
-				case 'character_set_system':
-				case 'collation_connection':
-				case 'collation_database':
-				case 'collation_server':
-					$sql_encoding .= h::{'tr td'}([
-						$L->$data[0],
-						$data[1]
-					]);
-			}
-		}
-		return $sql_encoding;
 	}
 
 $temp = base64_decode('Y29weXJpZ2h0');

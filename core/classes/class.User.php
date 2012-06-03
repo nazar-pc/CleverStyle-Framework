@@ -289,13 +289,13 @@ class User {
 				//Делаем новую попытку загрузки данных
 				goto get_data;
 			} elseif (!$cache_only) {
-				$new_data = $this->db()->qf('SELECT `'.$item.'` FROM `[prefix]users` WHERE `id` = '.($user).' LIMIT 1');
-				if (is_array($new_data)) {
+				$new_data = $this->db()->qf('SELECT `'.$item.'` FROM `[prefix]users` WHERE `id` = '.($user).' LIMIT 1', $item);
+				if ($new_data) {
 					$this->update_cache[$user] = true;
-					if (isset($new_data['data'])) {
-						$new_data['data'] = _json_decode($new_data['data']);
+					if ($item == 'data') {
+						$new_data = _json_decode($new_data);
 					}
-					return $data[$item] = &$new_data[$item];
+					return $data[$item] = $new_data;
 				}
 			}
 		}
@@ -380,14 +380,15 @@ class User {
 		if (!preg_match('/^[0-9a-z]{56}$/', $login_hash)) {
 			return false;
 		}
-		$data = $this->db()->qf(
+		$id = $this->db()->qf(
 			'SELECT `id` FROM `[prefix]users`
 			WHERE
 				`login_hash` = '.$this->db()->sip($login_hash).' OR
 				`email_hash` = '.$this->db()->sip($login_hash).'
-			LIMIT 1'
+			LIMIT 1',
+			'id'
 		);
-		return is_array($data) && $data['id'] != 1 ? $data['id'] : false;
+		return $id && $id != 1 ? $id : false;
 	}
 	/**
 	 * Returns user name or login or email, depending on existed in DB information
@@ -407,11 +408,9 @@ class User {
 			WHERE
 				`login`		LIKE '.$search_phrase.' OR
 				`username`	LIKE '.$search_phrase.' OR
-				`email`		LIKE '.$search_phrase
+				`email`		LIKE '.$search_phrase,
+			'id'
 		);
-		foreach ($found_users as &$user) {
-			$user = $user['id'];
-		}
 		return $found_users;
 	}
 	/**
@@ -496,13 +495,7 @@ class User {
 		}
 		global $Cache;
 		if (($groups = $Cache->{'users/groups/'.$user}) === false) {
-			$groups = $this->db()->qfa('SELECT `group` FROM `[prefix]users_groups` WHERE `id` = '.$user);
-			if (is_array($groups)) {
-				foreach ($groups as &$group) {
-					$group = $group['group'];
-				}
-			}
-			unset($group);
+			$groups = $this->db()->qfa('SELECT `group` FROM `[prefix]users_groups` WHERE `id` = '.$user, 'group');
 			return $Cache->{'users/groups/'.$user} = $groups;
 		}
 		return $groups;
@@ -519,12 +512,8 @@ class User {
 		if (!$user) {
 			return false;
 		}
-		$exitsing	= $this->db_prime()->qfa('SELECT `group` FROM `[prefix]users_groups` WHERE `id` = '.$user);
+		$exitsing	= $this->get_user_groups($user);
 		$return		= true;
-		foreach ($exitsing as &$group) {
-			$group = $group['group'];
-		}
-		unset($group);
 		$insert		= array_diff($data, $exitsing);
 		$delete		= array_diff($exitsing, $data);
 		unset($data, $exitsing);
@@ -692,11 +681,7 @@ class User {
 		}
 		global $Cache;
 		if (($permissions = $Cache->{$path.$id}) === false) {
-			$permissions_array = $this->db()->qfa(
-				'SELECT `permission`, `value`
-				FROM `'.$table.'`
-				WHERE `id` = '.$id
-			);
+			$permissions_array = $this->db()->qfa('SELECT `permission`, `value` FROM `'.$table.'` WHERE `id` = '.$id);
 			if (is_array($permissions_array)) {
 				$permissions = [];
 				foreach ($permissions_array as $permission) {
@@ -751,12 +736,7 @@ class User {
 		}
 		unset($delete);
 		if (!empty($data)) {
-			$exitsing_	= $this->db_prime()->qfa('SELECT `permission`, `value` FROM `'.$table.'` WHERE `id` = '.$id);
-			$exitsing	= [];
-			foreach ($exitsing_ as $item) {
-				$exitsing[$item['permission']] = $item['value'];
-			}
-			unset($exitsing_, $item);
+			$exitsing	= $this->get_any_permissions($id, $type);
 			if (!empty($exitsing)) {
 				$update		= [];
 				foreach ($exitsing as $permission => $value) {
@@ -1055,9 +1035,12 @@ class User {
 		global $Cache;
 		$id = $id ?: $this->id;
 		_setcookie('session', '');
-		$data = $this->db_prime()->qfa('SELECT `id` FROM `[prefix]sessions` WHERE `user` = '.$this->id);
-		foreach ($data as $session) {
-			unset($Cache->{'sessions/'.$session['id']});
+		$sessions = $this->db_prime()->qfa('SELECT `id` FROM `[prefix]sessions` WHERE `user` = '.$this->id, 'id');
+		if (is_array($sessions)) {
+			foreach ($sessions as $session) {
+				unset($Cache->{'sessions/'.$session});
+			}
+			unset($sessions, $session);
 		}
 		$this->add_session(1);
 		return $id ? $this->db_prime()->q('UPDATE `[prefix]sessions` SET `expire` = 0 WHERE `user` = '.$this->id) : false;
@@ -1075,15 +1058,14 @@ class User {
 		if (isset($this->cache['login_attempts'][$login_hash])) {
 			return $this->cache['login_attempts'][$login_hash];
 		}
-		$return = $this->db()->qf(
+		$count = $this->db()->qf(
 			'SELECT COUNT(`expire`) as `count` FROM `[prefix]logins` '.
 				'WHERE `expire` > '.TIME.' AND ('.
 					'`login_hash` = \''.$login_hash.'\' OR `ip` = \''.ip2hex($this->ip).'\''.
 				')',
-			false,
-			MYSQL_NUM
+			'count'
 		);
-		return isset($return['count']) ? $this->cache['login_attempts'][$login_hash] = $return['count'] : 0;
+		return $count ? $this->cache['login_attempts'][$login_hash] = $count : 0;
 	}
 	/**
 	 * Process login result

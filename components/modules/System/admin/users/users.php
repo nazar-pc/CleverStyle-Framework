@@ -369,10 +369,11 @@ if (isset($rc[2], $rc[3])) {
 				break;
 		}
 	}
-	$results_count	= $u_db->qf('SELECT COUNT(`id`) AS `count` FROM `[prefix]users` WHERE '.$where);
-	if ($results_count = $results_count['count']) {
+	$results_count	= $u_db->qf('SELECT COUNT(`id`) AS `count` FROM `[prefix]users` WHERE '.$where, 'count');
+	if ($results_count) {
 		$users_ids = $u_db->qfa(
-			'SELECT `id` FROM `[prefix]users` WHERE '.$where.' ORDER BY `id` LIMIT '.($start*$limit).', '.$limit
+			'SELECT `id` FROM `[prefix]users` WHERE '.$where.' ORDER BY `id` LIMIT '.($start*$limit).', '.$limit,
+			'id'
 		);
 	}
 	$users_list				= h::{'tr th.ui-widget-header.ui-corner-all'}(
@@ -383,7 +384,6 @@ if (isset($rc[2], $rc[3])) {
 	);
 	if (isset($users_ids) && is_array($users_ids)) {
 		foreach ($users_ids as $id) {
-			$id = $id['id'];
 			$action = h::a(
 				h::{'button.cs-button-compact'}(
 					h::icon('pencil'),

@@ -231,8 +231,9 @@ if (isset($rc[2])) {
 				$group_permission = $User->db()->qf('
 					SELECT `value`
 					FROM `[prefix]groups_permissions`
-					WHERE `id` = '.$group['id'].' AND `permission` = '.$permission
-				)['value'];
+					WHERE `id` = '.$group['id'].' AND `permission` = '.$permission,
+					'value'
+				);
 				$groups_content[] = h::{'th.ui-widget-header.ui-corner-all'}(
 					$group['title'],
 					[
@@ -335,11 +336,11 @@ if (isset($rc[2])) {
 					continue;
 				}
 				$found_users[]	= $user;
-				$value			= $User->db()->qf('SELECT `value` FROM `[prefix]users_permissions` WHERE `id` = '.$user.' AND `permission` = ');
+				$value			= $User->db()->qf('SELECT `value` FROM `[prefix]users_permissions` WHERE `id` = '.$user.' AND `permission` = '.$permission, 'value');
 				$content[]		= h::{'th.ui-widget-header.ui-corner-all'}($User->get_username($user)).
 					h::{'td input[type=radio]'}([
 						'name'			=> 'users['.$user.']',
-						'checked'		=> $value ? $value['value'] : -1,
+						'checked'		=> $value !== false ? $value : -1,
 						'value'			=> [-1, 0, 1],
 						'in'			=> [$L->inherited, $L->deny, $L->allow]
 					]);

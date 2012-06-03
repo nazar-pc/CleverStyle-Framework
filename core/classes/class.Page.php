@@ -156,15 +156,14 @@ class Page {
 						h::meta(array('name'		=> 'keywords',			'content'	=> $this->Keywords)).
 						h::meta(array('name'		=> 'description',		'content'	=> $this->Description)).
 						h::meta(array('name'		=> 'generator',			'content'	=> $copyright[0])).
-						h::link(
-							array(
+						h::link([
 								'rel'		=> 'shortcut icon',
 								'href'		=> _file_exists(THEMES.'/'.$this->theme.'/'.$this->color_scheme.'/'.'img/favicon.ico') ?
 												'themes/'.$this->theme.'/'.$this->color_scheme.'/img/favicon.ico' :
 												_file_exists(THEMES.'/'.$this->theme.'/img/favicon.ico') ?
 												'themes/'.$this->theme.'/img/favicon.ico' :
 												'includes/img/favicon.ico'
-						)).
+						]).
 						(is_object($Config) ? h::base($Config->server['base_url']) : '').
 						$this->Head.
 						implode('', $this->core_css).
@@ -247,7 +246,6 @@ class Page {
 			if ($core) {
 				if ($mode == 'file') {
 					$this->core_js[0] .= h::script([
-						'type'	=> 'text/javascript',
 						'src'	=> $add,
 						'level'	=> false
 					])."\n";
@@ -257,7 +255,6 @@ class Page {
 			} else {
 				if ($mode == 'file') {
 					$this->js[0] .= h::script([
-						'type'	=> 'text/javascript',
 						'src'	=> $add,
 						'level'	=> false
 					])."\n";
@@ -282,7 +279,6 @@ class Page {
 			if ($core) {
 				if ($mode == 'file') {
 					$this->core_css[0] .= h::link([
-						'type'	=> 'text/css',
 						'href'	=> $add,
 						'rel'	=> 'stylesheet'
 					]);
@@ -292,7 +288,6 @@ class Page {
 			} else {
 				if ($mode == 'file') {
 					$this->css[0] .= h::link([
-						'type'	=> 'text/css',
 						'href'	=> $add,
 						'rel'	=> 'stylesheet'
 					]);

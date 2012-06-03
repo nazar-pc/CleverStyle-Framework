@@ -11,20 +11,18 @@ abstract class DatabaseAbstract {
 								'end'		=> '',
 								'time'		=> '',
 								'text'		=> '',
-								'resource'	=> '',
 								'id'		=> ''
 							),
 				$queries	= array(				//Массив для хранения данных всех выполненых запросов
 								'num'		=> '',
 								'time'		=> [],
 								'text'		=> [],
-								'result'	=> []
+								'resource'	=> []
 							),
 				$connecting_time;					//Время соединения
 	protected	$id;								//Указатель на соединение с БД
 	
 	//Создание подключения
-	//(название_бд, пользователь, пароль [, хост [, кодовая страница]]
 	/**
 	 * @param string $database
 	 * @param string $user
@@ -40,7 +38,6 @@ abstract class DatabaseAbstract {
 	 */
 	abstract function select_db ($database);
 	//Запрос в БД
-	//(текст_запроса)
 	/**
 	 * @abstract
 	 * @param array|string $query
@@ -48,59 +45,59 @@ abstract class DatabaseAbstract {
 	 */
 	abstract function q ($query);
 	//Подсчёт количества строк
-	//([ресурс_запроса])
 	/**
 	 * @abstract
 	 * @param bool|resource $query_resource
+	 *
 	 * @return int|bool
 	 */
 	abstract function n ($query_resource = false);
 	//Получение результатов
-	//([ресурс_запроса [, в_виде_массива_результатов [, тип_возвращаемого_массива]]])
 	/**
 	 * @abstract
+	 *
 	 * @param bool|resource $query_resource
-	 * @param bool $array
-	 * @param int $result_type
+	 * @param bool          $array
+	 * @param bool|string   $one_column
+	 *
 	 * @return array|bool
 	 */
-	abstract function f ($query_resource = false, $array = false, $result_type = MYSQL_ASSOC);	//MYSQL_BOTH==3, MYSQL_ASSOC==1, MYSQL_NUM==2
+	abstract function f ($query_resource = false, $one_column = false, $array = false);
 	//Упрощенный интерфейс метода для получения результата в виде массива
-	//([ресурс_запроса [, тип_возвращаемого_массива]])
 	/**
 	 * @param bool|resource $query_resource
-	 * @param int $result_type
+	 * @param bool|string   $one_column
+	 *
 	 * @return array|bool
 	 */
-	function fa ($query_resource = false, $result_type = MYSQL_ASSOC) {
-		return $this->f($query_resource, true, $result_type);
+	function fa ($query_resource = false, $one_column = false) {
+		return $this->f($query_resource, $one_column, true);
 	}
 	//Запрос с получением результатов, результаты запросов кешируются при соответствующей настройке сайта
-	//(текст_запроса [, тип_возвращаемого_массива [, в_виде массива]])
 	/**
 	 * @param string $query
-	 * @param bool $array
-	 * @param int $result_type
+	 * @param bool|string   $one_column
+	 *
 	 * @return array|bool
 	 */
-	function qf ($query = '', $array = false, $result_type = MYSQL_ASSOC) {
+	function qf ($query = '', $one_column = false) {
 		if (!$query) {
 			return false;
 		}
-		return $this->f($this->q($query), $array, $result_type);
+		return $this->f($this->q($query), $one_column, false);
 	}
 	//Упрощенный интерфейс метода выполнения запроса с получением результата в виде массива
-	//(текст_запроса [, тип_возвращаемого_массива])
 	/**
-	 * @param string $query
-	 * @param int $result_type
+	 * @param string        $query
+	 * @param bool|string   $one_column
+	 *
 	 * @return array|bool
 	 */
-	function qfa ($query = '', $result_type = MYSQL_ASSOC) {
+	function qfa ($query = '', $one_column = false) {
 		if (!$query) {
 			return false;
 		}
-		return $this->qf($query, true, $result_type);
+		return $this->f($this->q($query), $one_column, true);
 	}
 	//id последнего insert запроса
 	/**
@@ -109,15 +106,13 @@ abstract class DatabaseAbstract {
 	 */
 	abstract function insert_id ();
 	//Очистка результатов запроса
-	//([ресурс_запроса])
 	/**
 	 * @abstract
 	 * @param bool|resource $query_resource
-	 * @result bool
+	 * @return bool
 	 */
 	abstract function free ($query_resource = false);
 	//Получение списка полей таблицы
-	//(название_таблицы [, похожих_на [, тип_возвращаемого_массива]])
 	/**
 	 * @param string $table
 	 * @param bool|string $like
@@ -138,7 +133,6 @@ abstract class DatabaseAbstract {
 		return $fields;
 	}
 	//Получение списка колонок таблицы
-	//(название_таблицы [, похожих_на [, тип_возвращаемого_массива]])
 	/**
 	 * @param string $table
 	 * @param bool|string $like
@@ -158,8 +152,6 @@ abstract class DatabaseAbstract {
 		}
 		return $columns;
 	}
-	//Получение списка таблиц БД (если БД не указана - используется текущая)
-	//([похожих_на [, тип_возвращаемого_массива]]])
 	function tables ($like = false) {
 		if ($like) {
 			return $this->qfa('SHOW TABLES FROM `'.$this->database.'` LIKE \''.$like.'\'');

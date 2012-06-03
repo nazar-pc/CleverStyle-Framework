@@ -125,7 +125,7 @@ $a->content(
 			]),
 			h::td($L->version.' '.$DB_TYPE.':').
 			h::td(
-				$db->server().(!check_db() ? ' ('.$L->required.' '.$$DB_TYPE.' '.$L->or_higher.')' : ''),
+				$db->server().(!is_bool($check_db = check_db()) ? $check_db : (!$check_db ? ' ('.$L->required.' '.$$DB_TYPE.' '.$L->or_higher.')' : '')),
 				[
 					'class' => $state(check_db())
 				]
@@ -137,10 +137,6 @@ $a->content(
 			h::td([
 				$L->prefix_of_db.':',
 				$DB_PREFIX
-			]),
-			h::td([
-				$L->encodings.':',
-				h::{'table.cs-left-odd'}(get_sql_info())
 			])
 		]),
 		function_exists('apache_get_version') ?
