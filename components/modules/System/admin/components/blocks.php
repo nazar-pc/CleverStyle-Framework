@@ -18,6 +18,8 @@ if (isset($rc[2])) {
 			}
 			$Config->components['blocks'][$rc[3]]['active'] = 0;
 			$a->save('components');
+			global $Cache;
+			unset($Cache->{'blocks/'.$Config->components['blocks'][$rc[3]]['index']});
 		break;
 		case 'delete':
 			if (!isset($rc[3], $Config->components['blocks'][$rc[3]])) {
@@ -336,7 +338,12 @@ if (isset($rc[2])) {
 					continue;
 				}
 				$found_users[]	= $user;
-				$value			= $User->db()->qf('SELECT `value` FROM `[prefix]users_permissions` WHERE `id` = '.$user.' AND `permission` = '.$permission, 'value');
+				$value			= $User->db()->qf('
+					SELECT `value`
+					FROM `[prefix]users_permissions`
+					WHERE `id` = '.$user.' AND `permission` = '.$permission,
+					'value'
+				);
 				$content[]		= h::{'th.ui-widget-header.ui-corner-all'}($User->get_username($user)).
 					h::{'td input[type=radio]'}([
 						'name'			=> 'users['.$user.']',

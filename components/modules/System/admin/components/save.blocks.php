@@ -49,21 +49,29 @@ if (isset($_POST['mode'])) {
 				$Config->components['blocks'][] = $block;
 				global $User;
 				$User->add_permission('Block', $block['index']);
+			} else {
+				global $Cache;
+				unset($Cache->{'blocks/'.$block['index']});
 			}
 			unset($block, $block_new);
 			$a->save('components');
 		break;
 		case 'delete':
 			if (isset($_POST['id'], $Config->components['blocks'][$_POST['id']])) {
-				global $User;
+				$block = &$Config->components['blocks'][$_POST['id']];
+				global $User, $Cache;
 				$User->del_permission(
 					$User->get_permission(
 						null,
 						'Block',
-						$Config->components['blocks'][$_POST['id']]['index']
+						$block['index']
 					)[0]['id']
 				);
-				unset($Config->components['blocks'][$_POST['id']]);
+				unset(
+					$Cache->{'blocks/'.$block['index']},
+					$block,
+					$Config->components['blocks'][$_POST['id']]
+				);
 				$a->save('components');
 			}
 		break;

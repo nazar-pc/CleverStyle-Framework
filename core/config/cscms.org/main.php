@@ -9,9 +9,9 @@ global	$DB_HOST,
 		
 		$LANGUAGE,
 
-		$MEMCACHE_HOST,
-		$MEMCACHE_PORT,
-		
+		$CACHE_ENGINE,
+		$CACHE_SIZE,
+
 		$KEY;
 
 define('DOMAIN', 'cscms.org');
@@ -24,6 +24,6 @@ $DB_PASSWORD	= '1111';
 $DB_PREFIX		= 'prefix_';
 $DB_CODEPAGE	= 'utf8';
 $LANGUAGE		= 'Русский';
-$MEMCACHE_HOST	= 'localhost';
-$MEMCACHE_PORT	= '11211';
+$CACHE_ENGINE	= 'FileSystem';
+$CACHE_SIZE		= 5;				//Cache size in MB, 0 means without limitation
 $KEY			= 'f40fbea2ee5a24ce581fb53510883dfcf40fbea2ee5a24ce581fb535';

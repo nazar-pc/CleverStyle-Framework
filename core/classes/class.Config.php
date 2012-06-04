@@ -68,8 +68,11 @@ class Config {
 	//Инициализация движка (или реинициалицазия при необходимости)
 	function init() {
 		global $Cache, $L, $Error, $Page;
+		if ($this->core['debug'] && !defined('DEBUG')) {
+			define('DEBUG', true);
+		}
 		//Инициализация объекта кеша с использованием настроек движка
-		$Cache->init($this->core['disk_cache'] ? $this->core['disk_cache_size'] : false, $this->core['memcache']);
+		$Cache->init();
 		//Инициализация объекта языков с использованием настроек движка
 		$L->init($this->core['active_languages'], $this->core['language']);
 		//Инициализация объекта страницы с использованием настроек движка

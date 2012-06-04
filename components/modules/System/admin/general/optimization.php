@@ -4,43 +4,6 @@ $a = &$Index;
 $a->content(
 	h::{'table.cs-admin-table.cs-left-even.cs-right-odd'}(
 		h::tr(
-			h::{'td info'}('disk_cache').
-			h::{'td input[type=radio]'}([
-				'name'			=> 'core[disk_cache]',
-				'checked'		=> $Config->core['disk_cache'],
-				'value'			=> array(0, 1),
-				'in'			=> array($L->off, $L->on)
-			])
-		).
-		h::tr(
-			h::{'td info'}('disk_cache_size').
-			h::{'td input.cs-form-element[type=number]'}([
-				'name'			=> 'core[disk_cache_size]',
-				'value'			=> $Config->core['disk_cache_size'],
-				'min'			=> 0
-			])
-		).
-		h::tr(
-			h::{'td info'}('memcache').
-			h::{'td input[type=radio]'}([
-				'name'			=> 'core[memcache]',
-				'checked'		=> $Config->core['memcache'],
-				'value'			=> array(0, 1),
-				'in'			=> array($L->off, $L->on),
-				'add'			=> memcache() ? '' : ' disabled'
-			])
-		).
-/*		h::tr(
-			h::{'td info'}('memcached').
-			h::{'td input[type=radio]'}([
-				'name'			=> 'core[memcached]',
-				'checked'		=> $Config->core['memcached'],
-				'value'			=> array(0, 1),
-				'in'			=> array($L->off, $L->on),
-				'add'			=> memcache() ? '' : ' disabled'
-			])
-		).*/
-		h::tr(
 			h::{'td info'}('zlib_compression').
 			h::{'td input[type=radio]'}([
 				'name'			=> 'core[zlib_compression]',
@@ -109,7 +72,7 @@ $a->content(
 		h::tr(
 			h::{'td button'}(
 				$L->clean_settings_cache,
-				$Cache->cache ? [
+				$Cache->cache_state() ? [
 					'onMouseDown'	=> 'admin_cache('.
 						'\'#clean_cache\','.
 						'\''.$Config->server['base_url'].'/api/'.MODULE.'/admin/cache/flush_cache\''.

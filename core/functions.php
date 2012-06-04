@@ -46,9 +46,10 @@
 	//Автозагрузка необходимых классов
 	spl_autoload_register(function ($class) {
 		_require(CLASSES.DS.'class.'.$class.'.php', true, false) ||
+		_require(ENGINES.DS.$class.'.php', true, false) ||
+		_require(ENGINES.DS.'cache.'.$class.'.php', true, false) ||
 		_require(ENGINES.DS.'db.'.$class.'.php', true, false) ||
-		_require(ENGINES.DS.'storage.'.$class.'.php', true, false) ||
-		_require(ENGINES.DS.$class.'.php', true, false);
+		_require(ENGINES.DS.'storage.'.$class.'.php', true, false);
 	});
 	//Функция для корректной остановки выполнения из любого места движка
 	function __finish () {
@@ -408,10 +409,6 @@
 			}
 		}
 		unset($list, $item);
-		global $Cache;
-		if (is_object($Cache) && $Cache->memcache) {
-			$ok = $Cache->flush_memcache() && $ok;
-		}
 		time_limit_pause(false);
 		return $ok;
 	}
@@ -1023,14 +1020,6 @@
 		}
 		return $mcrypt_data[$n];
 	}
-	//Проверка наличия memcache
-	function memcache () {
-		return function_exists('memcache_add');
-	}
-	//Проверка наличия memcached
-	/*function memcached () {
-		return function_exists('memcached_add');
-	}*/
 	//Проверка наличия zlib
 	function zlib () {
 		return extension_loaded('zlib');

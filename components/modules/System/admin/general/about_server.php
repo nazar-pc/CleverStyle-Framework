@@ -75,18 +75,7 @@ $a->content(
 		),
 		h::td($L->components.' PHP:').
 		h::{'td table.cs-left-odd.cs-php-components tr'}([
-			h::td($L->memcache_lib.':').
-			h::td($L->get(memcache())),
-
-			memcache() && $Cache->memcache ?
-				h::td($L->version.' memcache:').
-				h::td($Cache->memcache_getversion(), ['class' => 'ui-state-highlight'])
-			: false,
-/*
-			h::td($L->memcached_lib.':').
-			h::td($L->get(memcached())),
-
-*/					h::td($L->mcrypt.':').
+			h::td($L->mcrypt.':').
 			h::td(
 				check_mcrypt() ? $L->on : $L->off.$a->sup('(!)', ['title'	=> $L->mcrypt_warning]),
 				['class' => $state(check_mcrypt())]

@@ -1,5 +1,7 @@
 <?php
-class Index {
+/**
+
+ */class Index {
 	public		$Content,
 
 				$menu_auto			= true,
@@ -299,7 +301,7 @@ class Index {
 								'id'			=> 'apply_settings',
 								'type'			=> 'submit',
 								'value'			=> 'apply',
-								'add'			=> $Cache->cache ? '' : ' disabled'
+								'add'			=> $Cache->cache_state() ? '' : ' disabled'
 							]
 						)
 					: '').
@@ -357,7 +359,7 @@ class Index {
 		}
 	}
 	protected function blocks_processing () {
-		global $Page, $Config, $User;
+		global $Page, $Config, $User, $Cache;
 		$blocks_array = [
 			'top'		=> '',
 			'left'		=> '',
@@ -373,29 +375,40 @@ class Index {
 			) {
 				continue;
 			}
-			switch ($block['type']) {
-				default:
-					ob_start();
-					_include(BLOCKS.DS.'block.'.$block['type'].'.php', false, false);
-					$content = ob_get_clean();
-				break;
-				case 'html':
-				case 'raw_html':
-					$content = $block['data'];
-				break;
+			$block_cache = $Cache->{'blocks/'.$block['index']};
+			if (!is_array($block_cache) || $block_cache['expire'] < TIME - $block['update']) {
+				$block_cache			= [];
+				switch ($block['type']) {
+					default:
+						ob_start();
+						_include(BLOCKS.DS.'block.'.$block['type'].'.php', false, false);
+						$content = ob_get_clean();
+					break;
+					case 'html':
+					case 'raw_html':
+						$content = $block['data'];
+					break;
+				}
+				$template				= _file_exists(TEMPLATES.DS.'blocks'.DS.'block.'.$block['template']) ?
+														TEMPLATES.DS.'blocks'.DS.'block.'.$block['template'] :
+														TEMPLATES.DS.'blocks'.DS.'block.default.html';
+				$block_cache['content']	= str_replace(
+					['<!--id-->', '<!--title-->', '<!--content-->'],
+					[$block['index'], $block['title'], $content],
+					_file_get_contents($template)
+				);
+				if ($block['update'] > 0) {
+					$block_cache['expire']				= TIME - $block['update'];
+					$Cache->{'blocks/'.$block['index']}	= $block_cache;
+				}
 			}
-			$template = _file_exists(TEMPLATES.DS.'blocks'.DS.'block.'.$block['template']) ?
-							TEMPLATES.DS.'blocks'.DS.'block.'.$block['template'] :
-							TEMPLATES.DS.'blocks'.DS.'block.default.html';
-			$content = str_replace(
-				['<!--id-->', '<!--title-->', '<!--content-->'],
-				[$block['index'], $block['title'], $content],
-				_file_get_contents($template)
-			);
 			if ($block['position'] == 'floating') {
-				$Page->replace('<!--block#'.$block['index'].'-->', $content);
+				$Page->replace(
+					'<!--block#'.$block['index'].'-->',
+					$block_cache['content']
+				);
 			} else {
-				$blocks_array[$block['position']] .= $content;
+				$blocks_array[$block['position']] .= $block_cache['content'];
 			}
 		}
 		$Page->Top		.= $blocks_array['top'];
