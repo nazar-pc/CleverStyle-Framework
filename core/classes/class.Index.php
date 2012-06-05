@@ -1,7 +1,5 @@
 <?php
-/**
-
- */class Index {
+class Index {
 	public		$Content,
 
 				$menu_auto			= true,
@@ -15,10 +13,11 @@
 				$form_atributes		= [],
 				$action,
 				$buttons			= true,
-				$apply				= true,
-				$cancel				= ' disabled',
-				$cancel_back		= false,
-				$reset				= true,
+				$save_button		= true,
+				$apply_button		= true,
+				$cancel_button		= ' disabled',
+				$cancel_button_back	= false,
+				$reset_button		= true,
 				$post_buttons		= '',
 
 				$init_auto			= true,
@@ -291,8 +290,8 @@
 							'value'	=> $Config->routing['current'][1]
 						]
 					) : '').
-					//Кнопка применить
-					($this->apply && $this->buttons ?
+					//Apply button
+					($this->apply_button && $this->buttons ?
 						h::button(
 							$L->apply,
 							[
@@ -305,8 +304,8 @@
 							]
 						)
 					: '').
-					//Кнопка сохранить
-					($this->buttons ?
+					//Save button
+					($this->save_button && $this->buttons ?
 						h::button(
 							$L->save,
 							[
@@ -318,23 +317,23 @@
 							]
 						)
 					: '').
-					//Кнопка отмена (отменяет настройки или возвращает на предыдущую страницу)
-					(($this->apply && $this->buttons) || $this->cancel_back ?
+					//Cancel button (cancel changes or returns to the previous page)
+					(($this->apply_button && $this->buttons) || $this->cancel_button_back ?
 						h::button(
 							$L->cancel,
 							[
 								'name'			=> 'edit_settings',
 								'id'			=> 'cancel_settings',
 								'value'			=> 'cancel',
-								'data-title'	=> $this->cancel_back ? '' : $L->cancel_info,
-								'type'			=> $this->cancel_back ? 'button' : 'submit',
-								'onClick'		=> $this->cancel_back ? 'history.go(-1);' : '',
-								'add'			=> $this->cancel_back ? '' : (isset($Config->core['cache_not_saved']) ? '' : $this->cancel)
+								'data-title'	=> $this->cancel_button_back ? '' : $L->cancel_info,
+								'type'			=> $this->cancel_button_back ? 'button' : 'submit',
+								'onClick'		=> $this->cancel_button_back ? 'history.go(-1);' : '',
+								'add'			=> $this->cancel_button_back ? '' : (isset($Config->core['cache_not_saved']) ? '' : $this->cancel)
 							]
 						)
 					: '').
-					//Кнопка сбросить
-					($this->buttons && $this->reset ?
+					//Reset button
+					($this->buttons && $this->reset_button ?
 						h::button(
 							$L->reset,
 							[
@@ -418,7 +417,7 @@
 	}
 	function save ($parts = null) {
 		global $L, $Page, $Config;
-		if ((($parts === null || is_array($parts) || in_array($parts, $Config->admin_parts)) && $Config->save($parts)) || $parts) {
+		if ($parts === true || (($parts === null || is_array($parts) || in_array($parts, $Config->admin_parts)) && $Config->save($parts))) {
 			$this->post_title = $L->changes_saved;
 			$Page->notice($L->changes_saved);
 			return true;
@@ -430,7 +429,7 @@
 	}
 	function apply ($parts = null) {
 		global $L, $Page, $Config;
-		if (($parts === null && $Config->apply()) || $parts) {
+		if ($parts === true || ($parts === null && $Config->apply())) {
 			$this->post_title = $L->changes_applied;
 			$Page->notice($L->changes_applied.$L->check_applied);
 			return true;

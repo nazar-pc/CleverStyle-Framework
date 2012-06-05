@@ -289,10 +289,10 @@ class Config {
 				if ($part == 'routing') {
 					$temp = $this->routing;
 					unset($temp['current']);
-					$query[] = '`'.$part.'` = '.$db->{0}->sip(_json_encode($temp));
+					$query[] = '`'.$part.'` = '.$db->{0}->s(_json_encode($temp));
 					continue;
 				}
-				$query[] = '`'.$part.'` = '.$db->{0}->sip(_json_encode($this->$part));
+				$query[] = '`'.$part.'` = '.$db->{0}->s(_json_encode($this->$part));
 			}
 		}
 		unset($parts, $part, $temp);

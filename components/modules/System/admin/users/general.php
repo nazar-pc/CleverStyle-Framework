@@ -112,7 +112,8 @@ $a->content(
 					 'name'			=> 'core[registration_confirmation_time]',
 					 'value'		=> $Config->core['registration_confirmation_time'],
 					 'min'			=> 1
-				])
+				]).
+				$L->days
 			),
 			[
 				 'style'	=>	$Config->core['allow_user_registration'] == 0 ||

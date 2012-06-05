@@ -4,8 +4,8 @@ $a = &$Index;
 $rc = &$Config->routing['current'];
 $test_dialog = true;
 if (isset($rc[2])) {
-	$a->apply = false;
-	$a->cancel_back = true;
+	$a->apply_button		= false;
+	$a->cancel_button_back	= true;
 	switch ($rc[2]) {
 		case 'add':
 		case 'edit':
@@ -17,69 +17,58 @@ if (isset($rc[2])) {
 				$a->content(
 					h::{'table.cs-admin-table.cs-center-all'}(
 						h::tr(
-							h::{'th.ui-widget-header.ui-corner-all'}(
-								array(
-									h::info('storageurl'),
-									h::info('storagehost'),
-									h::info('storageconnection'),
-									h::info('storageuser'),
-									h::info('storagepass')
-								)
-							)
+							h::{'th.ui-widget-header.ui-corner-all'}([
+								h::info('storageurl'),
+								h::info('storagehost'),
+								h::info('storageconnection'),
+								h::info('storageuser'),
+								h::info('storagepass')
+							])
 						).
 						h::tr(
-							h::{'td.ui-widget-content.ui-corner-all.cs-add-storage'}(
-								array(
-									h::{'input.cs-form-element'}(
-										array(
-											'name'		=> 'storage[url]',
-											'value'		=> $rc[2] == 'edit' ? $storage['url'] : ''
-										)
-									),
-									h::{'input.cs-form-element'}(
-										array(
-											'name'		=> 'storage[host]',
-											'value'		=> $rc[2] == 'edit' ? $storage['host'] : ''
-										)
-									),
-									h::{'select.cs-form-element'}(
-										array(
-											'in'		=> _mb_substr(get_list(ENGINES, '/^storage\..*?\.php$/i', 'f'), 8, -4)
-										),
-										array(
-											'name'		=> 'storage[connection]',
-											'selected'	=> $rc[2] == 'edit' ? $storage['connection'] : '',
-											'size'		=> 5
-										)
-									),
-									h::{'input.cs-form-element'}(
-										array(
-											'name'		=> 'storage[user]',
-											'value'		=> $rc[2] == 'edit' ? $storage['user'] : ''
-										)
-									),
-									h::{'input.cs-form-element'}(
-										array(
-											'name'		=> 'storage[password]',
-											'value'		=> $rc[2] == 'edit' ? $storage['password'] : ''
-										)
-									).
-									h::{'input[type=hidden]'}(
-										array(
-											'name'		=> 'mode',
-											'value'		=> $rc[2] == 'edit' ? 'edit' : 'add'
-										)
-									).
-									(isset($rc[3]) ? h::{'input[type=hidden]'}(array('name' => 'storage_id', 'value' => $rc[3])) : '')
-								)
-							)
+							h::{'td.ui-widget-content.ui-corner-all.cs-add-storage'}([
+								h::{'input.cs-form-element'}([
+									'name'		=> 'storage[url]',
+									'value'		=> $rc[2] == 'edit' ? $storage['url'] : ''
+								]),
+								h::{'input.cs-form-element'}([
+									'name'		=> 'storage[host]',
+									'value'		=> $rc[2] == 'edit' ? $storage['host'] : ''
+								]),
+								h::{'select.cs-form-element'}(
+									[
+										'in'		=> _mb_substr(get_list(ENGINES, '/^storage\..*?\.php$/i', 'f'), 8, -4)
+									],
+									[
+										'name'		=> 'storage[connection]',
+										'selected'	=> $rc[2] == 'edit' ? $storage['connection'] : '',
+										'size'		=> 5
+									]
+								),
+								h::{'input.cs-form-element'}([
+									'name'		=> 'storage[user]',
+									'value'		=> $rc[2] == 'edit' ? $storage['user'] : ''
+								]),
+								h::{'input.cs-form-element'}([
+									'name'		=> 'storage[password]',
+									'value'		=> $rc[2] == 'edit' ? $storage['password'] : ''
+								]).
+								h::{'input[type=hidden]'}([
+									'name'		=> 'mode',
+									'value'		=> $rc[2] == 'edit' ? 'edit' : 'add'
+								]).
+								(isset($rc[3]) ? h::{'input[type=hidden]'}([
+									'name'	=> 'storage_id',
+									'value'	=> $rc[3]
+								]) : '')
+							])
 						)
 					).
 					h::button(
 						$L->test_connection,
-						array(
+						[
 							'onMouseDown'	=> 'storage_test(\''.$a->action.'/test\');'
-						)
+						]
 					)
 				);
 			}
@@ -107,8 +96,14 @@ if (isset($rc[2])) {
 					h::{'p.cs-center-all'}(
 						$L->sure_to_delete.' '.$L->storage.' '.
 							h::b($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']).'?'.
-							h::{'input[type=hidden]'}(array('name'	=> 'mode',		'value'		=> 'delete')).
-							h::{'input[type=hidden]'}(array('name'	=> 'storage',	'value'		=> $rc[3]))
+							h::{'input[type=hidden]'}([
+								'name'	=> 'mode',
+								'value'	=> 'delete'
+							]).
+							h::{'input[type=hidden]'}([
+								'name'	=> 'storage',
+								'value'	=> $rc[3]
+							])
 					).
 					h::{'button[type=submit]'}($L->yes)
 				);

@@ -5,8 +5,8 @@ $rc				= &$Config->routing['current'];
 if (isset($rc[2])) {
 	switch ($rc[2]) {
 		case 'add':
-			$a->apply		= false;
-			$a->cancel_back	= true;
+			$a->apply_button		= false;
+			$a->cancel_button_back	= true;
 			$a->content(
 				h::{'table.cs-admin-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
@@ -28,9 +28,9 @@ if (isset($rc[2])) {
 			if (!isset($rc[3])) {
 				break;
 			}
-			$a->apply		= false;
-			$a->cancel_back	= true;
-			$permission		= $User->get_permission($rc[3]);
+			$a->apply_button		= false;
+			$a->cancel_button_back	= true;
+			$permission				= $User->get_permission($rc[3]);
 			$a->content(
 				h::{'table.cs-admin-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
@@ -62,9 +62,9 @@ if (isset($rc[2])) {
 			if (!isset($rc[3])) {
 				break;
 			}
-			$a->buttons		= false;
-			$a->cancel_back	= true;
-			$permission		= $User->get_permission($rc[3]);
+			$a->buttons				= false;
+			$a->cancel_button_back	= true;
+			$permission				= $User->get_permission($rc[3]);
 			$a->content(
 				h::{'p.cs-center-all'}(
 					$L->sure_delete_permission($permission['group'].'/'.$permission['label'])
@@ -94,6 +94,11 @@ if (isset($rc[2])) {
 		h::{'th.ui-widget-header.ui-corner-all'}([$L->action, 'id', $L->group, $L->label])
 	];
 	$count = 0;
+	$blocks					= [];
+	foreach ($Config->components['blocks'] as $block) {
+		$blocks[$block['index']] = $block['title'];
+	}
+	unset($block);
 	foreach ($permissions as $group => $list) {
 		foreach ($list as $label => $id) {
 			++$count;
@@ -130,7 +135,7 @@ if (isset($rc[2])) {
 				h::span(
 					$label,
 					[
-						'data-title'	=> $L->{'permission_label_'.$label}//TODO labels in language file
+						'data-title'	=> $group != 'Block' ? $L->{'permission_label_'.$label} : $blocks[$label]
 					]
 				)
 			]);
@@ -139,7 +144,7 @@ if (isset($rc[2])) {
 	if ($count % 2) {
 		$permissions_list[] = h::{'td[colspan=4]'}();
 	}
-	unset($permissions, $group, $list, $label, $id);
+	unset($permissions, $group, $list, $label, $id, $blocks);
 	$count				= count($permissions_list);
 	$permissions_list_	= '';
 	for ($i = 0; $i < $count; $i += 2) {

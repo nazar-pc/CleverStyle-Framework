@@ -6,18 +6,25 @@
  */
 class h {//TODO array of void elements for general processing
 	protected static	$unit_atributes = [	//Одиночные атрибуты, которые не имеют значения
-		'async',
-		'defer',
-		'formnovalidate',
-		'autofocus',
-		'checked',
-		'selected',
-		'readonly',
-		'required',
-		'disabled',
-		'multiple'
-	];
-	//Отступы строк для красивого исходного кода
+			'async',
+			'defer',
+			'formnovalidate',
+			'autofocus',
+			'checked',
+			'selected',
+			'readonly',
+			'required',
+			'disabled',
+			'multiple'
+		],
+		$unpaired_tags = [
+			'link',
+			'meta',
+			'base',
+			'hr',
+			'img'
+		];
+	//Отступы строк yдля красивого исходного кода
 	static function level ($in, $level = 1) {
 		if ($level < 1) {
 			return $in;
@@ -85,7 +92,7 @@ class h {//TODO array of void elements for general processing
 	 *
 	 * @static
 	 * @param string $url
-	 * @param bool $absolute	Returns absolute url
+	 * @param bool $absolute	Returns absolute url or relative
 	 * @return string
 	 */
 	static function url ($url, $absolute = false) {
@@ -98,14 +105,23 @@ class h {//TODO array of void elements for general processing
 		}
 		return $url;
 	}
-	//Добавление данных в основную часть страницы (для удобства и избежания случайной перезаписи всей страницы)
-	//Используется наследуемыми классами
-	//Метод для обертки контента парными тегами
-	static function wrap ($data = []) {
-		$data = (array)$data;
-		$in = $add = '';
-		$tag = 'div';
-		$level = 1;
+
+	/**
+	 * Pair tags processing
+	 * @static
+	 *
+	 * @param string $in
+	 * @param array  $data
+	 * @param string $tag
+	 *
+	 * @return bool|string
+	 */
+	protected static function wrap ($in = '', $data = [], $tag = 'div') {
+		$data	= array_merge(is_array($in) ? $in : ['in' => $in], is_array($data) ? $data : [], ['tag' => $tag]);
+		$data	= (array)$data;
+		$in		= $add = '';
+		$tag	= 'div';
+		$level	= 1;
 		if (isset($data['data-title']) && $data['data-title']) {
 			$data['data-title'] = filter($data['data-title']);
 			if (isset($data['class'])) {
@@ -134,10 +150,6 @@ class h {//TODO array of void elements for general processing
 				'</'.$tag.'>'.
 				($level ? "\n" : '');
 	}
-	//Метод для простой обертки контента парными тегами
-	static function swrap ($in = '', $data = [], $tag = 'div') {
-		return self::wrap(array_merge(is_array($in) ? $in : ['in' => $in], is_array($data) ? $data : [], ['tag' => $tag]));
-	}
 	//Метод для разворота массива навыворот для select и radio
 	protected static function array_flip ($in, $num) {
 		$options = [];
@@ -155,7 +167,7 @@ class h {//TODO array of void elements for general processing
 		return $options;
 	}
 	//Метод для обертки контента непарными тегами
-	static function iwrap ($data = []) {
+	protected static function u_wrap ($data = []) {
 		$data = (array)$data;
 		$in = $add = '';
 		$tag = 'input';
@@ -171,101 +183,6 @@ class h {//TODO array of void elements for general processing
 	}
 
 	//HTML тэги
-		//Простая обработка
-			//Парные теги
-	static function html		($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function head		($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function title		($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function body		($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function form		($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function div		($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function p			($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function label		($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function menu		($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function a			($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function script		($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function i			($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function b			($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function u			($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function span		($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function strong		($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function em			($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function h1			($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function h2			($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function h3			($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function h4			($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function h5			($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function h6			($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function sup		($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-	static function sub		($in = '', $data = []) {
-		return self::swrap($in, $data, __FUNCTION__);
-	}
-			//Непарные теги
-	static function link		($in = []) {
-		$in['tag'] = __FUNCTION__;
-		return self::iwrap($in);
-	}
-	static function meta		($in = []) {
-		$in['tag'] = __FUNCTION__;
-		return self::iwrap($in);
-	}
-	static function base		($in = []) {
-		$data['href']	= $in;
-		$data['tag']	= __FUNCTION__;
-		return self::iwrap($data);
-	}
-	static function hr			($in = []) {
-		$in['tag'] = __FUNCTION__;
-		return self::iwrap($in);
-	}
 		//Специфическая обработка (похожие в обработке теги групируются в шаблоны - template_#)
 	/**
 	 * Template 2
@@ -286,9 +203,9 @@ class h {//TODO array of void elements for general processing
 				foreach ($in as $item) {
 					$temp .= self::tr(self::$add_tag($item, $data2));
 				}
-				return self::swrap($temp, $data, $function);
+				return self::wrap($temp, $data, $function);
 			} else {
-				return self::swrap($in, $data, $function);
+				return self::wrap($in, $data, $function);
 			}
 		}
 		static function table		($in = [], $data = [], $data2 = []) {
@@ -319,11 +236,11 @@ class h {//TODO array of void elements for general processing
 			if (is_array($in)) {
 				$temp = '';
 				foreach ($in as $item) {
-					$temp .= self::swrap($item, $data, $function);
+					$temp .= self::wrap($item, $data, $function);
 				}
 				return $temp;
 			} else {
-				return self::swrap($in, $data, $function);
+				return self::wrap($in, $data, $function);
 			}
 		}
 		static function tr			($in = '', $data = []) {
@@ -399,7 +316,7 @@ class h {//TODO array of void elements for general processing
 					if (isset($item['value'])) {
 						$item['value'] = filter($item['value']);
 					}
-					$temp .= self::iwrap($item);
+					$temp .= self::u_wrap($item);
 				}
 				return $temp;
 			} else {
@@ -411,7 +328,7 @@ class h {//TODO array of void elements for general processing
 				if (isset($in['value'])) {
 					$in['value'] = filter($in['value']);
 				}
-				return self::iwrap($in);
+				return self::u_wrap($in);
 			}
 		} else {
 			if (
@@ -439,7 +356,7 @@ class h {//TODO array of void elements for general processing
 				if (isset($in['value'])) {
 					$in['value'] = filter($in['value']);
 				}
-				return self::iwrap($in);
+				return self::u_wrap($in);
 			}
 		}
 	}
@@ -457,7 +374,7 @@ class h {//TODO array of void elements for general processing
 	 */
 		protected static function template_3 ($in = '', $data = [], $function) {
 			if (!is_array($in)) {
-				return self::swrap($in, $data, $function);
+				return self::wrap($in, $data, $function);
 			}
 			if (!isset($in['value']) && isset($in['in']) && is_array($in['in'])) {
 				$in['value'] = &$in['in'];
@@ -519,7 +436,7 @@ class h {//TODO array of void elements for general processing
 			}
 			$options = self::array_flip($in, isset($i) ? $i+1 : count($in['in']));
 			unset($in);
-			return self::swrap(self::option($options), $data, $function);
+			return self::wrap(self::option($options), $data, $function);
 		}
 		static function select		($in = '', $data = []) {
 			return self::template_3($in, $data, __FUNCTION__);
@@ -538,7 +455,7 @@ class h {//TODO array of void elements for general processing
 				$data['type'] = 'button';
 			}
 		}
-		return self::swrap($in, $data, __FUNCTION__);
+		return self::wrap($in, $data, __FUNCTION__);
 	}
 	static function style		($in = '', $data = []) {
 		if (is_array($in)) {
@@ -550,7 +467,7 @@ class h {//TODO array of void elements for general processing
 				$data['type'] = 'text/css';
 			}
 		}
-		return self::swrap($in, $data, __FUNCTION__);
+		return self::wrap($in, $data, __FUNCTION__);
 	}
 	/**
 	 * Template 4
@@ -576,7 +493,7 @@ class h {//TODO array of void elements for general processing
 				$in = $uniqid;
 			}
 			$data['level'] = false;
-			return self::swrap($in, $data, $function);
+			return self::wrap($in, $data, $function);
 		}
 		static function textarea	($in = '', $data = []) {
 			return self::template_4($in, $data, __FUNCTION__);
@@ -590,7 +507,7 @@ class h {//TODO array of void elements for general processing
 
 	static function br			($repeat = 1) {
 		$in['tag'] = __FUNCTION__;
-		return str_repeat(self::iwrap($in), $repeat);
+		return str_repeat(self::u_wrap($in), $repeat);
 	}
 	//Псевдо-элементы
 	static function info		($in = '', $data = []) {
@@ -639,6 +556,7 @@ class h {//TODO array of void elements for general processing
 		} else {
 			$data = [];
 		}
+		//For analyzing specified tags from the end
 		$input		= array_reverse(explode(' ', $input));
 		$merge		= true;
 		foreach ($input as &$item) {
@@ -650,7 +568,7 @@ class h {//TODO array of void elements for general processing
 					$attr				= explode('=', $attr);
 					$attrs[$attr[0]]	= isset($attr[1]) ? $attr[1] : '';
 				}
-				unset($attrs_);
+				unset($attrs_, $attr);
 				$item = substr($item, 0, $pos);
 			}
 			//Classes processing
@@ -679,7 +597,15 @@ class h {//TODO array of void elements for general processing
 					$in = '';
 				}
 			}
-			$in		= self::$tag($in, $attrs);
+			if (method_exists('h', $tag)) {
+				$in				= self::$tag($in, $attrs);
+			} elseif (in_array($tag, self::$unpaired_tags)) {
+				$attrs['tag']	= $tag;
+				$attrs['in']	= $in;
+				$in				= self::u_wrap($attrs);
+			} else {
+				$in				= self::wrap($in, $attrs, $tag);
+			}
 		}
 		if (isset($in)) {
 			return $in;

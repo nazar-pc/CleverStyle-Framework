@@ -8,7 +8,7 @@ class FileSystem extends CacheAbstract {
 
 	function __construct () {
 		global $CACHE_SIZE;
-		$this->cache_size = $CACHE_SIZE;
+		$this->cache_size = $CACHE_SIZE*1048576;
 	}
 	/**
 	 * @param string $item

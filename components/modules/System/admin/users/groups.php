@@ -5,8 +5,8 @@ $rc				= &$Config->routing['current'];
 if (isset($rc[2])) {
 	switch ($rc[2]) {
 		case 'add':
-			$a->apply		= false;
-			$a->cancel_back	= true;
+			$a->apply_button		= false;
+			$a->cancel_button_back	= true;
 			$a->content(
 				h::{'table.cs-admin-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
@@ -28,9 +28,9 @@ if (isset($rc[2])) {
 			if (!isset($rc[3])) {
 				break;
 			}
-			$a->apply		= false;
-			$a->cancel_back	= true;
-			$group_data		= $User->get_group_data($rc[3]);
+			$a->apply_button		= false;
+			$a->cancel_button_back	= true;
+			$group_data				= $User->get_group_data($rc[3]);
 			$a->content(
 				h::{'table.cs-admin-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
@@ -67,9 +67,9 @@ if (isset($rc[2])) {
 			if (!isset($rc[3])) {
 				break;
 			}
-			$a->buttons		= false;
-			$a->cancel_back	= true;
-			$group			= $User->get_group_data($rc[3]);
+			$a->buttons				= false;
+			$a->cancel_button_back	= true;
+			$group					= $User->get_group_data($rc[3]);
 			$a->content(
 				h::{'p.cs-center-all'}(
 					$L->sure_delete_group($group['title'])
@@ -87,13 +87,18 @@ if (isset($rc[2])) {
 			if (!isset($rc[3])) {
 				break;
 			}
-			$a->apply		= false;
-			$a->cancel_back	= true;
+			$a->apply_button		= false;
+			$a->cancel_button_back	= true;
 			global $Cache;
-			$permissions	= $User->get_permissions_table();
-			$permission		= $User->get_group_permissions($rc[3]);
-			$tabs			= [];
-			$tabs_content	= '';
+			$permissions			= $User->get_permissions_table();
+			$permission				= $User->get_group_permissions($rc[3]);
+			$tabs					= [];
+			$tabs_content			= '';
+			$blocks					= [];
+			foreach ($Config->components['blocks'] as $block) {
+				$blocks[$block['index']] = $block['title'];
+			}
+			unset($block);
 			foreach ($permissions as $group => $list) {
 				$tabs[]		= h::a(
 					$L->{'permissions_group_'.$group},
@@ -103,13 +108,15 @@ if (isset($rc[2])) {
 				);
 				$content	= [];
 				foreach($list as $label => $id) {
-					$content[] = h::{'th.ui-widget-header.ui-corner-all'}($L->{'permission_label_'.$label}).
-						h::{'td input[type=radio]'}([
-							'name'			=> 'permission['.$id.']',
-							'checked'		=> isset($permission[$id]) ? $permission[$id] : 0,
-							'value'			=> [0, 1],
-							'in'			=> [$L->deny, $L->allow]
-						]);
+					$content[] = h::{'th.ui-widget-header.ui-corner-all'}(
+						$group != 'Block' ? $L->{'permission_label_'.$label} : $blocks[$label]
+					).
+					h::{'td input[type=radio]'}([
+						'name'			=> 'permission['.$id.']',
+						'checked'		=> isset($permission[$id]) ? $permission[$id] : 1,
+						'value'			=> [0, 1],
+						'in'			=> [$L->deny, $L->allow]
+					]);
 				}
 				if (count($list) % 2) {
 					$content[] = h::{'td[colspan=2]'}();
@@ -119,7 +126,6 @@ if (isset($rc[2])) {
 				for ($i = 0; $i < $count; $i += 2) {
 					$content_[]	= $content[$i].$content[$i+1];
 				}
-				unset($content);
 				$tabs_content .= h::{'div#permissions_group_'.strtr($group, '/', '_').' table.cs-admin-table.cs-center-all'}(
 					h::{'tr td.cs-left-all[colspan=4]'}(
 						h::{'button.cs-permissions-invert'}($L->invert).
@@ -129,7 +135,7 @@ if (isset($rc[2])) {
 					h::tr($content_)
 				);
 			}
-			unset($content_);
+			unset($content, $content_, $count, $i, $permissions, $group, $list, $label, $id, $blocks);
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages'}(
 					$L->permissions_for_group(

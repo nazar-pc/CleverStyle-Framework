@@ -99,12 +99,13 @@ abstract class DatabaseAbstract {
 		}
 		return $this->f($this->q($query), $one_column, true);
 	}
-	//id последнего insert запроса
 	/**
+	 * Get id of last inserted row
 	 * @abstract
-	 * @return int Id of last inserted row
+	 *
+	 * @return int
 	 */
-	abstract function insert_id ();
+	abstract function id ();
 	//Очистка результатов запроса
 	/**
 	 * @abstract
@@ -165,7 +166,7 @@ abstract class DatabaseAbstract {
 	 * @param $data
 	 * @return string
 	 */
-	abstract function sip ($data);
+	abstract function s ($data);
 	//Информация о сервере
 	abstract function server ();
 	/**

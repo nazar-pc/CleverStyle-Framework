@@ -25,10 +25,10 @@ if (isset($rc[2])) {
 			if (!isset($rc[3], $Config->components['blocks'][$rc[3]])) {
 				break;
 			}
-			$form			= false;
-			$a->buttons		= false;
-			$a->cancel_back	= true;
-			$a->action		= 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
+			$form					= false;
+			$a->buttons				= false;
+			$a->cancel_button_back	= true;
+			$a->action				= 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
 			$a->content(
 				h::{'p.cs-center-all'}(
 					$L->sure_to_delete_block($Config->components['blocks'][$rc[3]]['title']).
@@ -46,8 +46,8 @@ if (isset($rc[2])) {
 		break;
 		case 'add':
 			$form					= false;
-			$a->apply				= false;
-			$a->cancel_back			= true;
+			$a->apply_button		= false;
+			$a->cancel_button_back	= true;
 			$a->form_atributes[]	= 'formnovalidate';
 			$a->content(
 				h::{'table.cs-admin-table.cs-center-all'}(
@@ -136,8 +136,8 @@ if (isset($rc[2])) {
 				break;
 			}
 			$form					= false;
-			$a->apply				= false;
-			$a->cancel_back			= true;
+			$a->apply_button		= false;
+			$a->cancel_button_back	= true;
 			$a->form_atributes[]	= 'formnovalidate';
 			$block = &$Config->components['blocks'][$rc[3]];
 			$a->content(
@@ -222,13 +222,13 @@ if (isset($rc[2])) {
 				break;
 			}
 			global $User;
-			$form			= false;
-			$a->apply		= false;
-			$a->cancel_back	= true;
-			$block			= &$Config->components['blocks'][$rc[3]];
-			$permission		= $User->get_permission(null, 'Block', $block['index'])[0]['id'];
-			$groups			= $User->get_groups_list();
-			$groups_content	= [];
+			$form					= false;
+			$a->apply_button		= false;
+			$a->cancel_button_back	= true;
+			$block					= &$Config->components['blocks'][$rc[3]];
+			$permission				= $User->get_permission(null, 'Block', $block['index'])[0]['id'];
+			$groups					= $User->get_groups_list();
+			$groups_content			= [];
 			foreach ($groups as $group) {
 				$group_permission = $User->db()->qf('
 					SELECT `value`
@@ -244,12 +244,22 @@ if (isset($rc[2])) {
 				).
 				h::{'td input[type=radio]'}([
 					'name'			=> 'groups['.$group['id'].']',
-					'checked'		=> $group_permission === false ? -1 : $group_permission,
-					'value'			=> [-1, 0, 1],
-					'in'			=> [$L->inherited, $L->deny, $L->allow]
+					'checked'		=> $group_permission === false ? 1 : $group_permission,
+					'value'			=> [0, 1],
+					'in'			=> [$L->deny, $L->allow]
 				]);
 			}
 			unset($groups, $group, $group_permission);
+			if (count($groups_content) % 2) {
+				$groups_content[] = h::{'td[colspan=2]'}();
+			}
+			$count			= count($groups_content);
+			$content_		= [];
+			for ($i = 0; $i < $count; $i += 2) {
+				$content_[]	= $groups_content[$i].$groups_content[$i+1];
+			}
+			$groups_content	= $content_;
+			unset($count, $content_);
 			$users_list		= $User->db()->qfa('SELECT `id`, `value` FROM `[prefix]users_permissions` WHERE `permission` = '.$permission);
 			$users_content	= [];
 			foreach ($users_list as &$user) {
@@ -349,7 +359,11 @@ if (isset($rc[2])) {
 						'name'			=> 'users['.$user.']',
 						'checked'		=> $value !== false ? $value : -1,
 						'value'			=> [-1, 0, 1],
-						'in'			=> [$L->inherited, $L->deny, $L->allow]
+						'in'			=> [
+							$L->inherited.' ('.($value !== false && !$value ? '-' : '+').')',
+							$L->deny,
+							$L->allow
+						]
 					]);
 			}
 			$Page->content(
@@ -359,8 +373,8 @@ if (isset($rc[2])) {
 	}
 }
 if ($form) {
-	$a->reset = false;
-	$a->post_buttons .= h::{'button.cs-reload-button'}(
+	$a->reset_button	= false;
+	$a->post_buttons	.= h::{'button.cs-reload-button'}(
 		$L->reset
 	);
 	$blocks_array = [

@@ -106,8 +106,12 @@ class MySQL extends DatabaseAbstract {
 			return false;
 		}
 	}
-	//id последнего insert запроса
-	function insert_id () {
+	/**
+	 * Get id of last inserted row
+	 *
+	 * @return int
+	 */
+	function id () {
 		return @mysql_insert_id($this->id);
 	}
 	//Очистка результатов запроса
@@ -131,7 +135,7 @@ class MySQL extends DatabaseAbstract {
 	 * @param $data
 	 * @return string
 	 */
-	function sip ($data) {
+	function s ($data) {
 		if (is_int($data)) {
 			return $data;
 		} else {

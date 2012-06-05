@@ -4,210 +4,295 @@ $a				= &$Index;
 $rc				= &$Config->routing['current'];
 $search_columns	= $User->get_users_columns();
 if (isset($rc[2], $rc[3])) {
+	$is_bot = in_array(3, (array)$User->get_user_groups($rc[3]));
 	switch ($rc[2]) {
-		case 'edit_raw':
-			$a->apply		= false;
-			$a->cancel_back	= true;
-			$content		= $content_ = '';
-			$user_data		= $User->get($search_columns, $rc[3]);
-			$last			= count($search_columns)-1;
-			foreach ($search_columns as $i => $column) {
-				$content_ .= h::{'th.ui-widget-header.ui-corner-all'}(
-					$column
-				).
-				h::{'td.ui-widget-content.ui-corner-all'}(
-					$column == 'data' || $column == 'about' ?
-						h::{'textarea.cs-form-element'}(
-							$user_data[$column],
-							[
-								'name'		=> 'user['.$column.']'
-							]
-						) :
-						h::{'input.cs-form-element'}([
-							'name'		=> 'user['.$column.']',
-							'value'		=> $user_data[$column],
-							$column == 'id' ? 'readonly' : false
-						]),
-					[
-						'colspan'	=> $i == $last ? 3 : false
-					]
-				);
-				if  ($i % 2) {
-					$content .= h::tr(
-						$content_
-					);
-					$content_ = '';
-				}
-			}
-			if ($content_ != '') {
-				$content .= h::tr(
-					$content_
-				);
-			}
-			unset($i, $column, $content_);
+		case 'add':
+			$a->apply_button		= false;
+			$a->cancel_button_back	= true;
 			$a->content(
-				h::{'table#users_raw_edit.cs-admin-table.cs-center-all'}($content)
-			);
-		break;
-		case 'edit':
-			$a->apply		= false;
-			$a->cancel_back	= true;
-			$user_data		= $User->get(
-				[
-					'login',
-					'username',
-					'email',
-					'language',
-					'timezone',
-					'reg_date',
-					'reg_ip',
-					'status',
-					'block_until',
-					'last_login',
-					'last_ip',
-					'gender',
-					/*'country',
-					'region',
-					'district',
-					'city',*/
-					'birthday',
-					'avatar',
-					'website',
-					'icq',
-					'skype',
-					'about'
-				],
-				$rc[3]
-			);
-			$timezones	= get_timezones_list();
-			$reg_ip		= hex2ip($user_data['reg_ip'], 10);
-			$last_ip	= hex2ip($user_data['last_ip'], 10);
-			$row		= function ($row1, $row2) {
-				return	h::{'th.ui-widget-header.ui-corner-all'}($row1).
-						h::{'td.ui-widget-content.ui-corner-all'}($row2);
-			};
-			$a->content(
-				h::{'table#users_edit.cs-admin-table.cs-center-all tr'}([
-					$row('id', $rc[3]),
-
-					$row($L->registration_date, $user_data['reg_date'] ? date($L->_date, $user_data['reg_date']) : $L->undefined),
-
-					$row($L->registration_ip, $reg_ip[0] ? $reg_ip[0].($reg_ip[1] ? h::br().$reg_ip[1] : '') : $L->undefined),
-
-					$row($L->last_login, $user_data['last_login'] ? date($L->_datetime, $user_data['last_login']) : $L->undefined),
-
-					$row($L->last_ip, $last_ip[0] ? $last_ip[0].($last_ip[1] ? h::br().$last_ip[1] : '') : $L->undefined),
-
-					$row($L->login, h::{'input.cs-form-element'}([
-						'name'		=> 'user[login]',
-						'value'		=> $user_data['login']
-					])),
-
-					$row($L->username, h::{'input.cs-form-element'}([
-						'name'	=> 'user[username]',
-						'value'	=> $user_data['username']
-					])),
-
-					$row($L->email, h::{'input.cs-form-element'}([
-						'name'		=> 'user[email]',
-						'value'		=> $user_data['email']
-					])),
-
-					$row(
-						$L->password_only_for_changing.h::{'icon#show_password'}('locked'),
-						h::{'input.cs-form-element[type=password]'}([
-							'id'	=> 'user_password',
-							'name'	=> 'user[password]',
-							'value'	=> ''
-						])
-					),
-
-					$row($L->language, h::{'select.cs-form-element'}(
-						[
-							'in'		=> array_merge([$L->system_default.' ('.$Config->core['language'].')'], $Config->core['active_languages']),
-							'value'		=> array_merge([''], $Config->core['active_languages'])
-						],
-						[
-							'name'		=> 'user[language]',
-							'selected'	=> $user_data['language'],
-							'size'		=> 5
-						]
-					)),
-
-					$row($L->timezone, h::{'select.cs-form-element'}(
-						[
-							'in'		=> array_merge([$L->system_default.' ('.$Config->core['timezone'].')'], array_values($timezones)),
-							'value'		=> array_merge([''], array_keys($timezones))
-						],
-						[
-							'name'		=> 'user[timezone]',
-							'selected'	=> $user_data['timezone'],
-							'size'		=> 5
-						]
-					)),
-
-					$row($L->status, h::{'input.cs-form-element[type=radio]'}([
-						'name'		=> 'user[status]',
-						'checked'	=> $user_data['status'],
-						'value'		=> [-1, 0, 1],
-						'in'		=> [$L->is_not_activated, $L->inactive, $L->active]
-					])),
-
-					$row(h::info('block_until'), h::{'input.cs-form-element[type=datetime-local]'}([
-						'name'		=> 'user[block_until]',
-						'value'		=> date('Y-m-d\TH:i', $user_data['block_until'] ?: TIME)
-					])),
-
-					$row($L->gender, h::{'input.cs-form-element[type=radio]'}([
-						'name'		=> 'user[gender]',
-						'checked'	=> $user_data['gender'],
-						'value'		=> [-1, 0, 1],
-						'in'		=> [$L->undefined, $L->male, $L->female]
-					])),
-
-					$row(h::info('birthday'), h::{'input.cs-form-element[type=date]'}([
-						'name'		=> 'user[birthday]',
-						'value'		=> date('Y-m-d', $user_data['birthday'] ?: TIME)
-					])),
-
-					$row($L->avatar, h::{'input.cs-form-element'}([
-						'name'		=> 'user[avatar]',
-						'value'		=> $user_data['avatar']
-					])),
-
-					$row($L->website, h::{'input.cs-form-element'}([
-						'name'		=> 'user[website]',
-						'value'		=> $user_data['website']
-					])),
-
-					$row($L->icq, h::{'input.cs-form-element'}([
-						'name'		=> 'user[icq]',
-						'value'		=> $user_data['icq'] ?: ''
-					])),
-
-					$row($L->skype, h::{'input.cs-form-element'}([
-						'name'		=> 'user[skype]',
-						'value'		=> $user_data['skype']
-					])),
-
-					$row($L->about_myself, h::{'textarea.cs-form-element'}([
-						'name'		=> 'user[about]',
-						'value'		=> $user_data['about']
-					]))
-				]).
-				h::{'input[type=hidden]'}([
-					'name'	=> 'user[id]',
-					'value'	=> $rc[3]
+				h::{'p input.cs-form-element.cs-add-user'}([
+					'name'			=> 'email',
+					'placeholder'	=> $L->email
 				])
 			);
 		break;
+		case 'add_bot':
+			$a->apply_button		= false;
+			$a->cancel_button_back	= true;
+			$a->content(
+				h::{'table.cs-admin-table.cs-left-even.cs-right-odd tr'}([
+					h::td(
+						[
+							$L->bot_name,
+							h::{'input.cs-form-element.cs-add-bot'}([
+								'name'	=> 'name'
+							])
+						],
+						[
+							'style'	=> 'width: 50%'
+						]
+					),
+					h::td([
+							h::info('bot_user_agent'),
+							h::{'input.cs-form-element.cs-add-bot'}([
+								'name'	=> 'user_agent'
+							])
+					]),
+					h::td([
+						h::info('bot_ip'),
+						h::{'input.cs-form-element.cs-add-bot'}([
+							'name'	=> 'ip'
+						])
+					])
+				])
+			);
+		break;
+		case 'edit_raw':
+			if (!$is_bot) {
+				$a->apply_button		= false;
+				$a->cancel_button_back	= true;
+				$content				= $content_ = '';
+				$user_data				= $User->get($search_columns, $rc[3]);
+				$last					= count($search_columns)-1;
+				foreach ($search_columns as $i => $column) {
+					$content_ .= h::{'th.ui-widget-header.ui-corner-all'}(
+						$column
+					).
+					h::{'td.ui-widget-content.ui-corner-all'}(
+						$column == 'data' || $column == 'about' ?
+							h::{'textarea.cs-form-element'}(
+								$user_data[$column],
+								[
+									'name'		=> 'user['.$column.']'
+								]
+							) :
+							h::{'input.cs-form-element'}([
+								'name'		=> 'user['.$column.']',
+								'value'		=> $user_data[$column],
+								$column == 'id' ? 'readonly' : false
+							]),
+						[
+							'colspan'	=> $i == $last ? 3 : false
+						]
+					);
+					if  ($i % 2) {
+						$content .= h::tr(
+							$content_
+						);
+						$content_ = '';
+					}
+				}
+				if ($content_ != '') {
+					$content .= h::tr(
+						$content_
+					);
+				}
+				unset($i, $column, $content_);
+				$a->content(
+					h::{'table#users_raw_edit.cs-admin-table.cs-center-all'}($content)
+				);
+			}
+		break;
+		case 'edit':
+			$a->apply_button		= false;
+			$a->cancel_button_back	= true;
+			if (!$is_bot) {
+				$user_data				= $User->get(
+					[
+						'login',
+						'username',
+						'email',
+						'language',
+						'timezone',
+						'reg_date',
+						'reg_ip',
+						'status',
+						'block_until',
+						'last_login',
+						'last_ip',
+						'gender',
+						'birthday',
+						'avatar',
+						'website',
+						'icq',
+						'skype',
+						'about'
+					],
+					$rc[3]
+				);
+				$timezones				= get_timezones_list();
+				$reg_ip					= hex2ip($user_data['reg_ip'], 10);
+				$last_ip				= hex2ip($user_data['last_ip'], 10);
+				$row					= function ($row1, $row2) {
+					return	h::{'th.ui-widget-header.ui-corner-all'}($row1).
+							h::{'td.ui-widget-content.ui-corner-all'}($row2);
+				};
+				$a->content(
+					h::{'table#users_edit.cs-admin-table.cs-center-all tr'}([
+						$row('id', $rc[3]),
+
+						$row($L->registration_date, $user_data['reg_date'] ? date($L->_date, $user_data['reg_date']) : $L->undefined),
+
+						$row($L->registration_ip, $reg_ip[0] ? $reg_ip[0].($reg_ip[1] ? h::br().$reg_ip[1] : '') : $L->undefined),
+
+						$row($L->last_login, $user_data['last_login'] ? date($L->_datetime, $user_data['last_login']) : $L->undefined),
+
+						$row($L->last_ip, $last_ip[0] ? $last_ip[0].($last_ip[1] ? h::br().$last_ip[1] : '') : $L->undefined),
+
+						$row($L->login, h::{'input.cs-form-element'}([
+							'name'		=> 'user[login]',
+							'value'		=> $user_data['login']
+						])),
+
+						$row($L->username, h::{'input.cs-form-element'}([
+							'name'	=> 'user[username]',
+							'value'	=> $user_data['username']
+						])),
+
+						$row($L->email, h::{'input.cs-form-element'}([
+							'name'		=> 'user[email]',
+							'value'		=> $user_data['email']
+						])),
+
+						$row(
+							$L->password_only_for_changing.h::{'icon#show_password'}('locked'),
+							h::{'input.cs-form-element[type=password]'}([
+								'id'	=> 'user_password',
+								'name'	=> 'user[password]',
+								'value'	=> ''
+							])
+						),
+
+						$row($L->language, h::{'select.cs-form-element'}(
+							[
+								'in'		=> array_merge([$L->system_default.' ('.$Config->core['language'].')'], $Config->core['active_languages']),
+								'value'		=> array_merge([''], $Config->core['active_languages'])
+							],
+							[
+								'name'		=> 'user[language]',
+								'selected'	=> $user_data['language'],
+								'size'		=> 5
+							]
+						)),
+
+						$row($L->timezone, h::{'select.cs-form-element'}(
+							[
+								'in'		=> array_merge([$L->system_default.' ('.$Config->core['timezone'].')'], array_values($timezones)),
+								'value'		=> array_merge([''], array_keys($timezones))
+							],
+							[
+								'name'		=> 'user[timezone]',
+								'selected'	=> $user_data['timezone'],
+								'size'		=> 5
+							]
+						)),
+
+						$row($L->status, h::{'input.cs-form-element[type=radio]'}([
+							'name'		=> 'user[status]',
+							'checked'	=> $user_data['status'],
+							'value'		=> [-1, 0, 1],
+							'in'		=> [$L->is_not_activated, $L->inactive, $L->active]
+						])),
+
+						$row(h::info('block_until'), h::{'input.cs-form-element[type=datetime-local]'}([
+							'name'		=> 'user[block_until]',
+							'value'		=> date('Y-m-d\TH:i', $user_data['block_until'] ?: TIME)
+						])),
+
+						$row($L->gender, h::{'input.cs-form-element[type=radio]'}([
+							'name'		=> 'user[gender]',
+							'checked'	=> $user_data['gender'],
+							'value'		=> [-1, 0, 1],
+							'in'		=> [$L->undefined, $L->male, $L->female]
+						])),
+
+						$row(h::info('birthday'), h::{'input.cs-form-element[type=date]'}([
+							'name'		=> 'user[birthday]',
+							'value'		=> date('Y-m-d', $user_data['birthday'] ?: TIME)
+						])),
+
+						$row($L->avatar, h::{'input.cs-form-element'}([
+							'name'		=> 'user[avatar]',
+							'value'		=> $user_data['avatar']
+						])),
+
+						$row($L->website, h::{'input.cs-form-element'}([
+							'name'		=> 'user[website]',
+							'value'		=> $user_data['website']
+						])),
+
+						$row($L->icq, h::{'input.cs-form-element'}([
+							'name'		=> 'user[icq]',
+							'value'		=> $user_data['icq'] ?: ''
+						])),
+
+						$row($L->skype, h::{'input.cs-form-element'}([
+							'name'		=> 'user[skype]',
+							'value'		=> $user_data['skype']
+						])),
+
+						$row($L->about_myself, h::{'textarea.cs-form-element'}([
+							'name'		=> 'user[about]',
+							'value'		=> $user_data['about']
+						]))
+					]).
+					h::{'input[type=hidden]'}([
+						'name'	=> 'user[id]',
+						'value'	=> $rc[3]
+					])
+				);
+			} else {
+				$bot_data	= $User->get(
+					[
+						'login',
+						'email',
+						'username'
+					],
+					$rc[3]
+				);
+				$a->content(
+					h::{'table.cs-admin-table.cs-left-even.cs-right-odd tr'}([
+						h::td(
+							[
+								$L->bot_name,
+								h::{'input.cs-form-element.cs-add-bot'}([
+									'name'	=> 'bot[name]',
+									'value'	=> $bot_data['username']
+								])
+							],
+							[
+								'style'	=> 'width: 50%'
+							]
+						),
+						h::td([
+							h::info('bot_user_agent'),
+							h::{'input.cs-form-element.cs-add-bot'}([
+								'name'	=> 'bot[user_agent]',
+								'value'	=> $bot_data['login']
+							])
+						]),
+						h::td([
+							h::info('bot_ip'),
+							h::{'input.cs-form-element.cs-add-bot'}([
+								'name'	=> 'bot[ip]',
+								'value'	=> $bot_data['email']
+							])
+						])
+					]).
+					h::{'input[type=hidden]'}([
+						'name'	=> 'bot[id]',
+						'value'	=> $rc[3]
+					])
+				);
+			}
+		break;
 		case 'deactivate':
-			$a->buttons		= false;
-			$a->cancel_back	= true;
-			$user_data		= $User->get(['login', 'username'], $rc[3]);
+			$a->buttons				= false;
+			$a->cancel_button_back	= true;
+			$user_data				= $User->get(['login', 'username'], $rc[3]);
 			$a->content(
 				h::{'p.cs-center-all'}(
-					$L->sure_deactivate_user($user_data['username'] ?: $user_data['login'])
+					$L->{$is_bot ? 'sure_deactivate_bot' : 'sure_deactivate_user'}($user_data['username'] ?: $user_data['login'])
 				).
 				h::{'input[type=hidden]'}([
 					'name'	=> 'id',
@@ -217,12 +302,12 @@ if (isset($rc[2], $rc[3])) {
 			);
 		break;
 		case 'activate':
-			$a->buttons		= false;
-			$a->cancel_back	= true;
-			$user_data		= $User->get(['login', 'username'], $rc[3]);
+			$a->buttons				= false;
+			$a->cancel_button_back	= true;
+			$user_data				= $User->get(['login', 'username'], $rc[3]);
 			$a->content(
 				h::{'p.cs-center-all'}(
-					$L->sure_activate_user($user_data['username'] ?: $user_data['login'])
+					$L->{$is_bot ? 'sure_activate_bot' : 'sure_activate_user'}($user_data['username'] ?: $user_data['login'])
 				).
 				h::{'input[type=hidden]'}([
 					'name'	=> 'id',
@@ -235,12 +320,17 @@ if (isset($rc[2], $rc[3])) {
 			if (!isset($rc[3])) {
 				break;
 			}
-			$a->apply		= false;
-			$a->cancel_back	= true;
-			$permissions	= $User->get_permissions_table();;
-			$permission		= $User->get_user_permissions($rc[3]);
-			$tabs			= [];
-			$tabs_content	= '';
+			$a->apply_button		= false;
+			$a->cancel_button_back	= true;
+			$permissions			= $User->get_permissions_table();;
+			$permission				= $User->get_user_permissions($rc[3]);
+			$tabs					= [];
+			$tabs_content			= '';
+			$blocks					= [];
+			foreach ($Config->components['blocks'] as $block) {
+				$blocks[$block['index']] = $block['title'];
+			}
+			unset($block);
 			foreach ($permissions as $group => $list) {
 				$tabs[]		= h::a(
 					$L->{'permissions_group_'.$group},
@@ -250,13 +340,19 @@ if (isset($rc[2], $rc[3])) {
 				);
 				$content	= [];
 				foreach($list as $label => $id) {
-					$content[] = h::{'th.ui-widget-header.ui-corner-all'}($L->{'permission_label_'.$label}).
-						h::{'td input[type=radio]'}([
-							'name'			=> 'permission['.$id.']',
-							'checked'		=> isset($permission[$id]) ? $permission[$id] : -1,
-							'value'			=> [-1, 0, 1],
-							'in'			=> [$L->inherited, $L->deny, $L->allow]
-						]);
+					$content[] = h::{'th.ui-widget-header.ui-corner-all'}(
+						$group != 'Block' ? $L->{'permission_label_'.$label} : $blocks[$label]
+					).
+					h::{'td input[type=radio]'}([
+						'name'			=> 'permission['.$id.']',
+						'checked'		=> isset($permission[$id]) ? $permission[$id] : -1,
+						'value'			=> [-1, 0, 1],
+						'in'			=> [
+							$L->inherited.' ('.(isset($permission[$id]) && !$permission[$id] ? '-' : '+').')',
+							$L->deny,
+							$L->allow
+						]
+					]);
 				}
 				if (count($list) % 2) {
 					$content[] = h::{'td[colspan=2]'}();
@@ -266,7 +362,6 @@ if (isset($rc[2], $rc[3])) {
 				for ($i = 0; $i < $count; $i += 2) {
 					$content_[]	= $content[$i].$content[$i+1];
 				}
-				unset($content);
 				$tabs_content .= h::{'div#permissions_group_'.strtr($group, '/', '_').' table.cs-admin-table.cs-center-all'}(
 					h::{'tr td.cs-left-all[colspan=4]'}(
 						h::{'button.cs-permissions-invert'}($L->invert).
@@ -276,10 +371,10 @@ if (isset($rc[2], $rc[3])) {
 					h::tr($content_)
 				);
 			}
-			unset($content_);
+			unset($content, $content_, $count, $i, $permissions, $group, $list, $label, $id, $blocks);
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages'}(
-					$L->permissions_for_user(
+					$L->{$is_bot ? 'permissions_for_bot' : 'permissions_for_user'}(
 						$User->get_username($rc[3])
 					)
 				).
@@ -357,7 +452,7 @@ if (isset($rc[2], $rc[3])) {
 			case 'NOT LIKE':
 			case 'REGEXP':
 			case 'NOT REGEXP':
-				$search_text_ = $u_db->sip($search_text);
+				$search_text_ = $u_db->s($search_text);
 				$where = $where_func('`%%` '.$search_mode." ".$search_text_);
 				unset($search_text_);
 				break;
@@ -384,7 +479,8 @@ if (isset($rc[2], $rc[3])) {
 	);
 	if (isset($users_ids) && is_array($users_ids)) {
 		foreach ($users_ids as $id) {
-			$action = h::a(
+			$groups			= (array)$User->get_user_groups($id);
+			$action			= (!in_array(3, $groups) ? h::a(
 				h::{'button.cs-button-compact'}(
 					h::icon('pencil'),
 					[
@@ -394,12 +490,12 @@ if (isset($rc[2], $rc[3])) {
 				[
 					'href'		=> $a->action.'/edit_raw/'.$id
 				]
-			).
+			) : '').
 			h::a(
 				h::{'button.cs-button-compact'}(
 					h::icon('wrench'),
 					[
-						'data-title'	=> $L->edit_user_data
+						'data-title'	=> $L->{in_array(3, $groups) ? 'edit_bot_data' : 'edit_user_data'}
 					]
 				),
 				[
@@ -411,7 +507,7 @@ if (isset($rc[2], $rc[3])) {
 					h::{'button.cs-button-compact'}(
 						h::icon($User->get('status', $id) == 1 ? 'minusthick' : 'check'),
 						[
-							'data-title'	=> $L->deactivate_user
+							'data-title'	=> $L->{($User->get('status', $id) == 1 ? 'de' : '').'activate_'.(in_array(3, $groups) ? 'bot' : 'user')}
 						]
 					),
 					[
@@ -423,7 +519,7 @@ if (isset($rc[2], $rc[3])) {
 				h::{'button.cs-button-compact'}(
 					h::icon('flag'),
 					[
-						'data-title'	=> $L->edit_user_permissions
+						'data-title'	=> $L->{in_array(3, $groups) ? 'edit_bot_permissions' : 'edit_user_permissions'}
 					]
 				),
 				[
@@ -447,7 +543,6 @@ if (isset($rc[2], $rc[3])) {
 					$user_data['last_ip'] = $user_data['last_ip'][0];
 				}
 			}
-			$groups			= (array)$User->get_user_groups($id);
 			if (in_array(1, $groups)) {
 				$type = h::info('a');
 			} elseif (in_array(2, $groups)) {
@@ -534,11 +629,8 @@ if (isset($rc[2], $rc[3])) {
 				])
 			)
 		).
-		h::{'button[type=submit'}(
-			$L->search,
-			[
-				'style'	=> 'margin: 5px 100% 5px 0;'
-			]
+		h::{'p.cs-left button[type=submit'}(
+			$L->search
 		).
 		h::{'p.cs-left'}(
 			$L->founded_users($results_count).
@@ -550,6 +642,20 @@ if (isset($rc[2], $rc[3])) {
 		h::{'p.cs-left'}(
 			$L->founded_users($results_count).
 			($results_count > $limit ? ' / '.$L->page_from($start+1, ceil($results_count/$limit)) : '')
-		)//TODO make add user function
+		).
+		h::{'p.cs-left'}(
+			h::button(
+				$L->add_user,
+				[
+					'onMouseDown' => 'javasript: location.href= \'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add/0\';',
+				]
+			).
+			h::button(
+				$L->add_bot,
+				[
+					'onMouseDown' => 'javasript: location.href= \'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add_bot/0\';',
+				]
+			)
+		)
 	);
 }

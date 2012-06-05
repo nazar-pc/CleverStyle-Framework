@@ -4,8 +4,8 @@ $a				= &$Index;
 $rc				= &$Config->routing['current'];
 $test_dialog	= false;
 if (isset($rc[2])) {
-	$a->apply = false;
-	$a->cancel_back = true;
+	$a->apply_button		= false;
+	$a->cancel_button_back	= true;
 	switch ($rc[2]) {
 		case 'edit':
 			if (!isset($rc[3])) {

@@ -87,15 +87,14 @@ class Text {
 		}
 		$Cache->{'texts/'.$database.'/'.$id} = $text;
 		if ($update) {
-			if ($db->$database()->q('UPDATE `[prefix]texts` SET `text` = '.$db->$database()->sip(_json_encode($text)).' WHERE `id` = '.$id.' LIMIT 1')) {
+			if ($db->$database()->q('UPDATE `[prefix]texts` SET `text` = '.$db->$database()->s(_json_encode($text)).' WHERE `id` = '.$id.' LIMIT 1')) {
 				return '{¶'.$id.'}';
 			} else {
 				return false;
 			}
 		} else {
-			$id = $db->$database()->insert_id(
-				$db->$database()->q('INSERT INTO `[prefix]texts` (`text`) VALUES '.'('.$db->$database()->sip(_json_encode($text)).')')
-			);
+			$db->$database()->q('INSERT INTO `[prefix]texts` (`text`) VALUES '.'('.$db->$database()->s(_json_encode($text)).')')
+			$id = $db->$database()->id();
 			if ($id && $id % $Config->core['inserts_limit'] == 0) { //Чистим устаревшие тексты
 				$db->$database()->q('DELETE FROM `[prefix]keys` WHERE `text` = null AND `relation` = null AND `relation_id` = 0');
 			}
@@ -123,7 +122,7 @@ class Text {
 			}
 		}
 		if ($db->$database()->q('UPDATE `[prefix]texts` SET
-				`relation` = '.$db->$database()->sip($relation).',
+				`relation` = '.$db->$database()->s($relation).',
 				`relation_id` = '.(int)$relation_id.'
 			WHERE `id` = '.$id.' LIMIT 1'
 		)) {

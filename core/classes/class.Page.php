@@ -153,9 +153,18 @@ class Page {
 			$this->js[1] = h::script($this->js[1]);
 		}
 		$this->Head =	h::title($this->Title).
-						h::meta(array('name'		=> 'keywords',			'content'	=> $this->Keywords)).
-						h::meta(array('name'		=> 'description',		'content'	=> $this->Description)).
-						h::meta(array('name'		=> 'generator',			'content'	=> $copyright[0])).
+						h::meta([
+							'name'		=> 'keywords',
+							'content'	=> $this->Keywords
+						]).
+						h::meta([
+							'name'		=> 'description',
+							'content'	=> $this->Description
+						]).
+						h::meta([
+							'name'		=> 'generator',
+							'content'	=> $copyright[0]
+						]).
 						h::link([
 								'rel'		=> 'shortcut icon',
 								'href'		=> _file_exists(THEMES.'/'.$this->theme.'/'.$this->color_scheme.'/'.'img/favicon.ico') ?
@@ -164,7 +173,11 @@ class Page {
 												'themes/'.$this->theme.'/img/favicon.ico' :
 												'includes/img/favicon.ico'
 						]).
-						(is_object($Config) ? h::base($Config->server['base_url']) : '').
+						(
+							is_object($Config) ? h::base([
+								'href' => $Config->server['base_url']
+							]) : ''
+						).
 						$this->Head.
 						implode('', $this->core_css).
 						implode('', $this->css).
@@ -172,44 +185,44 @@ class Page {
 						implode('', $this->js);
 		$this->Footer .= $this->footer($stop);
 		//Подстановка контента в шаблон
-		$construct['in'] = array(
-								'<!--html_lang-->',
-								'<!--head-->',
-								'<!--pre_Body-->',
-								'<!--header-->',
-								'<!--main-menu-->',
-								'<!--main-submenu-->',
-								'<!--menu-more-->',
-								'<!--user_avatar_image-->',
-								'<!--user_avatar_text-->',
-								'<!--user_info-->',
-								'<!--left_blocks-->',
-								'<!--top_blocks-->',
-								'<!--content-->',
-								'<!--bottom_blocks-->',
-								'<!--right_blocks-->',
-								'<!--footer-->',
-								'<!--post_Body-->'
-							);
-		$construct['out'] = array(
-									$L->clang,
-									h::level($this->Head, $this->level['Head']),
-									h::level($this->pre_Body, $this->level['pre_Body']),
-									h::level($this->Header, $this->level['Header']),
-									h::level($this->mainmenu, $this->level['mainmenu']),
-									h::level($this->mainsubmenu, $this->level['mainsubmenu']),
-									h::level($this->menumore, $this->level['menumore']),
-									$this->user_avatar_image,
-									h::level($this->user_avatar_text, $this->level['user_avatar_text']),
-									h::level($this->user_info, $this->level['user_info']),
-									h::level($this->Left, $this->level['Left']),
-									h::level($this->Top, $this->level['Top']),
-									h::level($this->Content, $this->level['Content']),
-									h::level($this->Bottom, $this->level['Bottom']),
-									h::level($this->Right, $this->level['Right']),
-									h::level($this->Footer, $this->level['Footer']),
-									h::level($this->post_Body, $this->level['post_Body'])
-								 );
+		$construct['in'] = [
+			'<!--html_lang-->',
+			'<!--head-->',
+			'<!--pre_Body-->',
+			'<!--header-->',
+			'<!--main-menu-->',
+			'<!--main-submenu-->',
+			'<!--menu-more-->',
+			'<!--user_avatar_image-->',
+			'<!--user_avatar_text-->',
+			'<!--user_info-->',
+			'<!--left_blocks-->',
+			'<!--top_blocks-->',
+			'<!--content-->',
+			'<!--bottom_blocks-->',
+			'<!--right_blocks-->',
+			'<!--footer-->',
+			'<!--post_Body-->'
+		];
+		$construct['out'] = [
+			$L->clang,
+			h::level($this->Head, $this->level['Head']),
+			h::level($this->pre_Body, $this->level['pre_Body']),
+			h::level($this->Header, $this->level['Header']),
+			h::level($this->mainmenu, $this->level['mainmenu']),
+			h::level($this->mainsubmenu, $this->level['mainsubmenu']),
+			h::level($this->menumore, $this->level['menumore']),
+			$this->user_avatar_image,
+			h::level($this->user_avatar_text, $this->level['user_avatar_text']),
+			h::level($this->user_info, $this->level['user_info']),
+			h::level($this->Left, $this->level['Left']),
+			h::level($this->Top, $this->level['Top']),
+			h::level($this->Content, $this->level['Content']),
+			h::level($this->Bottom, $this->level['Bottom']),
+			h::level($this->Right, $this->level['Right']),
+			h::level($this->Footer, $this->level['Footer']),
+			h::level($this->post_Body, $this->level['post_Body'])
+		 ];
 		$this->Html = str_replace($construct['in'], $construct['out'], $this->Html);
 	}
 	//Задание елементов замены в исходном коде

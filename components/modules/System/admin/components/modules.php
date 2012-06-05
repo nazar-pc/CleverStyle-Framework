@@ -19,7 +19,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					'name' => $rc[3]
 				]
 			)) {
-				$a->cancel_back = true;
+				$a->cancel_button_back = true;
 				$a->content(
 					h::{'button[type=submit]'}($L->install).
 					h::{'input[type=hidden]'}(
@@ -50,7 +50,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					'name' => $rc[3]
 				]
 			)) {
-				$a->cancel_back = true;
+				$a->cancel_button_back = true;
 				$a->content(
 					h::{'button[type=submit]'}($L->uninstall).
 					h::{'input[type=hidden]'}(
@@ -79,11 +79,11 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 						'name' => $rc[3]
 					]
 				)) {
-					$a->buttons = true;
-					$a->apply = false;
-					$a->cancel_back = true;
-					$dbs = [0];
-					$dbs_name = [$L->core_db];
+					$a->buttons				= true;
+					$a->apply_button		= false;
+					$a->cancel_button_back	= true;
+					$dbs					= [0];
+					$dbs_name				= [$L->core_db];
 					foreach ($Config->db as $i => &$db_data) {
 						if ($i) {
 							$dbs[] = $i;
@@ -139,11 +139,11 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 						'name' => $rc[3]
 					]
 				)) {
-					$a->buttons = true;
-					$a->apply = false;
-					$a->cancel_back = true;
-					$storages = [0];
-					$storages_name = [$L->core_storage];
+					$a->buttons				= true;
+					$a->apply_button		= false;
+					$a->cancel_button_back	= true;
+					$storages				= [0];
+					$storages_name			= [$L->core_storage];
 					foreach ($Config->storage as $i => &$storage_data) {
 						if ($i) {
 							$storages[] = $i;

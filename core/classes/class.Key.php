@@ -25,22 +25,21 @@ class Key {
 			$expire = TIME + $Config->core['key_expire'];
 		}
 		$this->del($database, $key);
-		$id = $db->$database()->insert_id(
-			$db->$database()->q(
-				'INSERT INTO `[prefix]keys`
-					(
-						`key`,
-						`expire`,
-						`data`
-					)
-				VALUES
-					(
-						'.$db->$database()->sip($key).',
-						'.$expire.',
-						'.$db->$database()->sip(_json_encode($data)).'
-					)'
-			)
+		$db->$database()->q(
+			'INSERT INTO `[prefix]keys`
+				(
+					`key`,
+					`expire`,
+					`data`
+				)
+			VALUES
+				(
+					'.$db->$database()->s($key).',
+					'.$expire.',
+					'.$db->$database()->s(_json_encode($data)).'
+				)'
 		);
+		$id = $db->$database()->id();
 		if ($id && ($id % $Config->core['inserts_limit']) == 0) { //Cleaning old keys
 			$db->$database()->q('DELETE FROM `[prefix]keys` WHERE `expire` < '.TIME);
 		}
@@ -55,7 +54,7 @@ class Key {
 			'SELECT `id`'.($get_data ? ', `data`' : '').' FROM `[prefix]keys`
 			WHERE
 				(
-					`id` = '.$db->$database()->sip($id_key).' OR `key` = '.$db->$database()->sip($id_key).'
+					`id` = '.$db->$database()->s($id_key).' OR `key` = '.$db->$database()->s($id_key).'
 				) AND `expire` >= '.TIME.' ORDER BY `id` DESC LIMIT 1'
 		);
 		$this->del($database, $id_key);
@@ -72,7 +71,7 @@ class Key {
 			return false;
 		}
 		global $db;
-		$id_key = $db->$database()->sip($id_key);
+		$id_key = $db->$database()->s($id_key);
 		return $db->$database()->q('UPDATE `[prefix]keys`
 			SET `expire` = 0, `data` = null, key=null
 			WHERE (`id` = '.$id_key.' OR `key` = '.$id_key.')'
