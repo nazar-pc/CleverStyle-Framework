@@ -226,9 +226,10 @@
 			}
 			//Null byte injection protection
 			$str = null_byte_filter($str);
-			return CHARSET == FS_CHARSET || strpos($str, 'http:\\') === 0 || strpos($str, 'https:\\') === 0 || strpos($str, 'ftp:\\') === 0 ?
-				$str :
-				!is_unicode($str) ? $str : iconv(CHARSET, FS_CHARSET, $str);
+			return	FS_CHARSET == 'utf-8' ||
+					strpos($str, 'http:\\') === 0 ||
+					strpos($str, 'https:\\') === 0 ||
+					strpos($str, 'ftp:\\') === 0 ? $str : !is_unicode($str) ? $str : iconv('utf-8', FS_CHARSET, $str);
 		}
 		//Функция подготавливает строку, которая была получена как путь в файловой системе, для использования в движке
 		function path_to_str ($path) {
@@ -238,7 +239,7 @@
 				}
 				return $path;
 			}
-			return CHARSET == FS_CHARSET ? $path : (is_unicode($path) ? $path : iconv(FS_CHARSET, CHARSET, $path));
+			return FS_CHARSET == 'utf-8' ? $path : (is_unicode($path) ? $path : iconv(FS_CHARSET, 'utf-8', $path));
 		}
 		//Detection of unicode strings
 		if (!function_exists('is_unicode')) {
@@ -558,7 +559,7 @@
 			case 'strtoupper':
 				return $mode($text);
 			default:
-				return str_replace(['"', '&', '\'', '<', '>'], ['&quot;', '&amp;', '&apos;', '&lt;', '&gt;'], trim($text));
+				return str_replace(['&', '"', '\'', '<', '>'], ['&amp;', '&quot;', '&apos;', '&lt;', '&gt;'], trim($text));
 		}
 	}
 	//Функции работы со строками аналоги системных, но вместо входящей строки могут принимать массив для его рекурсивной обработки
@@ -685,7 +686,7 @@
 				$in
 			);
 			$in = preg_replace(
-				'/(script:)|(expression\()/i',
+				'/(script:)|(data:)|(expression\()/i',
 				'\\1&nbsp;',
 				$in
 			);

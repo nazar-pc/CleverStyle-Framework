@@ -54,7 +54,7 @@ class Page {
 			return;
 		}
 		$this->init = true;
-		$this->Title[0] = htmlentities($name, ENT_COMPAT, CHARSET);
+		$this->Title[0] = htmlentities($name, ENT_COMPAT, 'utf-8');
 		$this->Keywords = $keywords;
 		$this->Description = $description;
 	}
@@ -312,7 +312,7 @@ class Page {
 	}
 	//Добавление данных в заголовок страницы (для избежания случайной перезаписи всего заголовка)
 	function title ($add) {
-		$this->Title[] = htmlentities($add, ENT_COMPAT, CHARSET);
+		$this->Title[] = htmlentities($add, ENT_COMPAT, 'utf-8');
 	}
 	//Подключение JavaScript и CSS файлов
 	protected function load_includes () {
@@ -399,9 +399,11 @@ class Page {
 				if (_file_exists($file)) {
 					$current_cache = _file_get_contents($file);
 					if ($extension == 'css') {
-						$this->images_substitution($current_cache, $file);
+						//Insert external elements into resulting css file
+						//It is needed, because those files will not be copied into new destination of resulting css file
+						$this->css_includes_processing($current_cache, $file);
 					}
-					$temp_cache .= $current_cache."\n";
+					$temp_cache .= $current_cache;
 					unset($current_cache);
 				}
 			}
@@ -410,26 +412,68 @@ class Page {
 		}
 		_file_put_contents(PCACHE.DS.'pcache_key', mb_substr(md5($key), 0, 5), LOCK_EX|FILE_BINARY);
 	}
-	//Подстановка изображений при сжатии CSS
-	protected function images_substitution (&$data, $file) {
+
+	/**
+	 * Analyses file for images, fonts and css links and include they content into single resulting css file.<br>
+	 * Supports next file extensions for possible includes:<br>
+	 * jpeg, jpe, jpg, gif, png, ttf, ttc, svg, svgz, woff, eot, css
+	 *
+	 * @param $data	//Content of processed file
+	 * @param $file	//Path to file, that includes specified in previous parameter content
+	 */
+	function css_includes_processing (&$data, $file) {
+		$cwd	= getcwd();
 		_chdir(_dirname($file));
+		//Simple minification, deletes comments, new lines, tabulations and some spaces
+		$data	= preg_replace('#(/\*.*?\*/)|\t|\n|\r#s', '', $data);
+		$data	= preg_replace('#\s*([,:;+>{}])\s*#s', '$1', $data);
+		//Includes processing
 		preg_replace_callback(
-			'/url\((.*?)\)/',
+			'/(url\((.*?)\))|(@import[\s\t\n\r]{0,1}[\'"](.*?)[\'"])/',
 			function ($link) use (&$data) {
-				$link[0] = trim($link[1], '\'" ');	//array(0 - фильтрованный адрес, 1 - исходные данные)
-				$format = substr($link[0], -3);
-				if ($format == 'peg' && substr($link[0], -4) == 'jpeg') {
-					$format = 'jpg';
+				$link		= trim(array_pop($link), '\'" ');
+				$format		= substr($link, strrpos($link, '.') + 1);
+				$mime_type	= 'text/html';
+				switch ($format) {
+					case 'jpeg':
+					case 'jpe':
+					case 'jpg':
+						$mime_type = 'image/jpg';
+					break;
+					case 'gif':
+						$mime_type = 'image/gif';
+					break;
+					case 'png':
+						$mime_type = 'image/png';
+					break;
+					case 'ttf':
+					case 'ttc':
+						$mime_type = 'application/x-font-ttf';
+					break;
+					case 'svg':
+					case 'svgz':
+						$mime_type = 'image/svg+xml';
+					break;
+					case 'woff':
+						$mime_type = 'application/x-font-woff';
+					break;
+					case 'eot':
+						$mime_type = 'application/vnd.ms-fontobject';
+					break;
+					case 'css':
+						$mime_type = 'text/css';
+					break;
 				}
-				if (($format == 'jpg' || $format == 'png' || $format == 'gif') && _file_exists(_realpath($link[0]))) {
-					$data = str_replace($link[1], 'data:image/'.$format.';base64,'.base64_encode(_file_get_contents(_realpath($link[0]))), $data);
-				} elseif ($format == 'css' && _file_exists(_realpath($link[0]))) {
-					$data = str_replace($link[1], 'data:text/'.$format.';base64,'.base64_encode(_file_get_contents(_realpath($link[0]))), $data);
+				$content	= _file_get_contents(_realpath($link));
+				//For recursing includes processing
+				if ($format == 'css') {
+					$this->css_includes_processing($content, _realpath($link));
 				}
+				$data = str_replace($link, 'data:'.$mime_type.';charset=utf-8;base64,'.base64_encode($content), $data);
 			},
 			$data
 		);
-		_chdir(DIR);
+		_chdir($cwd);
 	}
 	//Генерирование информации о процессе загрузки страницы
 	protected function footer ($stop) {

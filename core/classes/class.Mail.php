@@ -17,7 +17,7 @@ class Mail extends PHPMailer {
 		}
 		$this->From		= $Config->core['mail_from'];
 		$this->FromName	= $Config->core['mail_from_name'];
-		$this->CharSet	= CHARSET;
+		$this->CharSet	= 'utf-8';
 		$this->IsHTML();
 	}
 	/**
@@ -72,12 +72,10 @@ class Mail extends PHPMailer {
 			}
 			$body = h::html(
 				h::head(
-					h::meta(
-						array(
-							'content'		=> 'text/html; charset='.CHARSET,
-							'http-equiv'	=> 'Content-Type'
-						)
-					)
+					h::meta([
+						'content'		=> 'text/html; charset=utf-8',
+						'http-equiv'	=> 'Content-Type'
+					])
 				).
 				$body
 			);

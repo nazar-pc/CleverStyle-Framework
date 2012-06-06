@@ -4,9 +4,9 @@ $timeload['start'] = MICROTIME;
 $interface = true;
 error_reporting(E_ALL | E_STRICT);
 //error_reporting(0);
-header('Content-Type: text/html; charset='.CHARSET);
+header('Content-Type: text/html; charset=utf-8');
 header("Connection: close");
-mb_internal_encoding(CHARSET);
+mb_internal_encoding('utf-8');
 //Убиваем небезопасные глобальные переменные, использование GET метода для передачи переменных не рекомендуется
 //Вместо GET используйте POST
 $_GET						= [];
