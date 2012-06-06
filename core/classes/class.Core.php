@@ -6,7 +6,9 @@ class Core {
 				$key				= [],
 				$encrypt_support	= false,
 				$KEY,
-				$IV;
+				$IV,
+				$triggers_init		= false,
+				$triggers;
 	//Инициализация начальных параметров и функций шифрования
 	function __construct() {
 		if (!_require(CONFIG.DS.CDOMAIN.DS.'main.php', true, false)) {
@@ -130,8 +132,9 @@ class Core {
 	/**
 	 * Sending system api request to all mirrors
 	 *
-	 * @param        $path
-	 * @param string $data
+	 * @param string $path	Path for api request, for example <b>System/admin/setcookie<b>, where
+	 * <b>System</b> - module name, <b>admin/setcookie</b> - path to action file in current module api structure
+	 * @param mixed  $data	$data Any type of data, will be accessible through <b>$_POST['data']</b>
 	 *
 	 * @return array
 	 */
@@ -156,7 +159,7 @@ class Core {
 	 * Sending of api request to the specified host
 	 *
 	 * @param string $url With prefix <b>https://</b> (<b>http://</b> can be missed), and (if necessary) with port address
-	 * @param mixed $data Any type of data, will be accessable through <b>$_POST['data']</b>
+	 * @param mixed $data Any type of data, will be accessible through <b>$_POST['data']</b>
 	 *
 	 * @return array|bool Array <b>[0 => headers, 1 => body]</b> in case of successful connection, <b>false</b> on failure
 	 */
@@ -194,16 +197,105 @@ class Core {
 		fwrite(
 			$socket,
 			'POST /'.$url." HTTP/1.1\r\n".
-				'Host: '.implode(':', $host)."\r\n".
-				"Content-type: application/x-www-form-urlencoded\r\n".
-				"Content-length:".strlen($data)."\r\n".
-				"Accept:*/*\r\n".
-				"User-agent: CleverStyle CMS\r\n\r\n".
-				$data."\r\n\r\n"
+			'Host: '.implode(':', $host)."\r\n".
+			"Content-type: application/x-www-form-urlencoded\r\n".
+			"Content-length:".strlen($data)."\r\n".
+			"Accept:*/*\r\n".
+			"User-agent: CleverStyle CMS\r\n\r\n".
+			$data."\r\n\r\n"
 		);
 		$return = explode("\r\n\r\n", stream_get_contents($socket), 2);
 		time_limit_pause(false);
 		fclose($socket);
+		return $return;
+	}
+	/**
+	 * Registration of triggers for actions
+	 *
+	 * @param array $trigger
+	 *
+	 * @return bool
+	 */
+	function register_trigger ($trigger) {
+		return $this->register_trigger_internal($trigger);
+	}
+	/**
+	 * Registration of triggers for actions
+	 *
+	 * @param array $trigger
+	 * @param array|null $triggers Is used for nested structure
+	 *
+	 * @return bool
+	 */
+	protected function register_trigger_internal ($trigger, &$triggers = null) {
+		if ((!is_array($trigger) || empty($trigger)) && !($trigger instanceof Closure)) {
+			return false;
+		}
+		if ($triggers === null) {
+			$triggers = &$this->triggers;
+		}
+		if ($trigger instanceof Closure) {
+			$triggers[] = $trigger;
+			return true;
+		}
+		$return = true;
+		foreach ($trigger as $item => $function) {
+			if (!isset($triggers[$item])) {
+				$triggers[$item] = [];
+			}
+			$return = $return && $this->register_trigger_internal($function, $triggers[$item]);
+		}
+		return $return;
+	}
+	/**
+	 * Running trigers for some actions
+	 *
+	 * @param string $action
+	 * @param mixed $data
+	 *
+	 * @return bool
+	 */
+	function run_trigger ($action, $data = null) {
+		if (!$this->triggers_init) {
+			global $Config;
+			$modules = array_keys($Config->components['modules']);
+			foreach ($modules as $module) {
+				_include(MODULES.DS.$module.DS.'trigger.php', true, false);
+			}
+			unset($modules, $module);
+			$plugins = get_list(PLUGINS, false, 'd');
+			foreach ($plugins as $plugin) {
+				_include(PLUGINS.DS.$plugin.DS.'trigger.php', true, false);
+			}
+			unset($plugins, $plugin);
+			$this->triggers_init = true;
+		}
+		$action = explode('/', $action);
+		if (!is_array($action) || empty($action)) {
+			return false;
+		}
+		$triggers = $this->triggers;
+		foreach ($action as $item) {
+			if (is_array($triggers) && isset($triggers[$item])) {
+				$triggers = $triggers[$item];
+			} else {
+				return true;
+			}
+		}
+		unset($action, $item);
+		if (!is_array($triggers) || empty($triggers)) {
+			return false;
+		}
+		$return = true;
+		foreach ($triggers as $trigger) {
+			if ($trigger instanceof Closure) {
+				if ($data === null) {
+					$return = $return && $trigger();
+				} else {
+					$return = $return && $trigger($data);
+				}
+			}
+		}
 		return $return;
 	}
 	/**

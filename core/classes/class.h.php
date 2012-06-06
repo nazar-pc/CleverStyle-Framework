@@ -2,7 +2,7 @@
 //Класс для отрисовки различных елементов HTML страницы в соответствии со стандартами HTML5, и с более понятным и функциональным синтаксисом
 /**
  *
- * If defined constant "xhtml_tags_style" - tags will be generated according to rules of xhtml
+ * If defined constant "XHTML_TAGS_STYLE" - tags will be generated according to rules of xhtml
  */
 class h {//TODO array of void elements for general processing
 	protected static	$unit_atributes = [	//Одиночные атрибуты, которые не имеют значения
@@ -79,7 +79,7 @@ class h {//TODO array of void elements for general processing
 			if (is_int($key)) {
 				unset($data[$key]);
 				if (in_array($value, self::$unit_atributes)) {
-					$add .= ' '.$value.(defined('xhtml_tags_style') ? '='.$q.$value.$q : '');
+					$add .= ' '.$value.(defined('XHTML_TAGS_STYLE') ? '='.$q.$value.$q : '');
 				}
 			} elseif ($value !== false) {
 				$add .= ' '.$key.'='.$q.$value.$q;
@@ -178,7 +178,7 @@ class h {//TODO array of void elements for general processing
 			$data_title = $data['data-title'];
 			unset($data['data-title']);
 		}
-		$return = '<'.$tag.$add.(defined('xhtml_tags_style') ? ' /' : '').'>'.$in."\n";
+		$return = '<'.$tag.$add.(defined('XHTML_TAGS_STYLE') ? ' /' : '').'>'.$in."\n";
 		return isset($data_title) ? self::label($return, ['data-title' => $data_title]) : $return;
 	}
 

@@ -31,6 +31,12 @@ class Cache {
 		}
 		return $this->instance->del($item);
 	}
+	function clean () {
+		if (!$this->cache) {
+			return true;
+		}
+		return $this->instance->clean();
+	}
 	function cache_state() {
 		return $this->cache;
 	}

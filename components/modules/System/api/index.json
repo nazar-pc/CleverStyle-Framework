@@ -1,11 +1,12 @@
 {
-	"user"	: [
+	"user"		: [
 		"blank",
 		"login",
 		"logout",
 		"registration"
 	],
-	"admin"	: [
-		"cache"
+	"admin"		: [
+		"cache",
+		"setcookie"
 	]
 }

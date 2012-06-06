@@ -1,4 +1,14 @@
 <?php
+/**
+ * Provides next @triggers:<br>
+ * &nbsp;admin/System/general/languages/load<br>
+ * &nbsp;[
+ * &nbsp;&nbsp;'clanguage'		=> <i>clanguage</i><br>
+ * &nbsp;&nbsp;'clang'			=> <i>clang</i><br>
+ * &nbsp;&nbsp;'clanguage_en'	=> <i>clanguage_en</i><br>
+ * &nbsp;&nbsp;'clocale'		=> <i>clocale</i><br>
+ * &nbsp;]
+ */
 class Language {
 	public		$clanguage,								//Current language
 				$time = '';								//Closure for time processing
@@ -97,6 +107,7 @@ class Language {
 				return true;
 			} elseif (_file_exists(LANGUAGES.'/lang.'.$this->clanguage.'.json')) {
 				$data = _file(LANGUAGES.'/lang.'.$this->clanguage.'.json', FILE_SKIP_EMPTY_LINES);
+				_include(LANGUAGES.'/lang.'.$this->clanguage.'.php', false, false);
 				foreach ($data as $i => $line) {
 					if (substr(ltrim($line), 0, 2) == '//') {
 						unset($data[$i]);
@@ -114,6 +125,16 @@ class Language {
 				if(!isset($this->translate['clocale'])) {
 					$this->translate['clocale'] = $this->clang.'_'.mb_strtoupper($this->clang);
 				}
+				global $Core;
+				$Core->run_trigger(
+					'admin/System/general/languages/load',
+					[
+						'clanguage'		=> $this->translate['clanguage'],
+						'clang'			=> $this->translate['clang'],
+						'clanguage_en'	=> $this->translate['clanguage_en'],
+						'clocale'		=> $this->translate['clocale']
+					]
+				);
 				setlocale(LC_TIME | (defined('LC_MESSAGES') ? LC_MESSAGES : 0), $this->clocale);
 				if (!($Text instanceof Loader)) {
 					$Text->language($this->clang);

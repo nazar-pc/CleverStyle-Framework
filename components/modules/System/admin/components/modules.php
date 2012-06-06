@@ -1,4 +1,19 @@
 <?php
+/**
+ * Provides next @triggers:<br>
+ * &nbsp;admin/System/components/modules/install/prepare<br>
+ * &nbsp;['name'	=> <i>module_name</i>]<br>
+ * &nbsp;admin/System/components/modules/uninstall/prepare<br>
+ * &nbsp;['name'	=> <i>module_name</i>]<br>
+ * &nbsp;admin/System/components/modules/db/prepare<br>
+ * &nbsp;['name'	=> <i>module_name</i>]<br>
+ * &nbsp;admin/System/components/modules/storage/prepare<br>
+ * &nbsp;['name'	=> <i>module_name</i>]<br>
+ * &nbsp;admin/System/components/modules/enable<br>
+ * &nbsp;['name'	=> <i>module_name</i>]<br>
+ * &nbsp;admin/System/components/modules/disable<br>
+ * &nbsp;['name'	=> <i>module_name</i>]
+ */
 global $Config, $Index, $L, $db;
 $a					= &$Index;
 $rc					= &$Config->routing['current'];

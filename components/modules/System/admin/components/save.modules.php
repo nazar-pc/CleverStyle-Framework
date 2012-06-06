@@ -1,4 +1,15 @@
 <?php
+/**
+ * Provides next @triggers:<br>
+ * &nbsp;admin/System/components/modules/install/process<br>
+ * &nbsp;['name'	=> <i>module_name</i>]<br>
+ * &nbsp;admin/System/components/modules/uninstall/process<br>
+ * &nbsp;['name'	=> <i>module_name</i>]<br>
+ * &nbsp;admin/System/components/modules/db/process<br>
+ * &nbsp;['name'	=> <i>module_name</i>]<br>
+ * &nbsp;admin/System/components/modules/install/process<br>
+ * &nbsp;['name'	=> <i>module_name</i>]
+ */
 global $Config, $Index, $User;
 $a = &$Index;
 $rc			= &$Config->routing['current'];

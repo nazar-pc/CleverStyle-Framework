@@ -69,7 +69,7 @@ class User {
 		unset($key_data, $key, $rc);
 		//If session exists
 		if (_getcookie('session')) {
-			$this->id = $this->get_session();
+			$this->id = $this->get_session_user();
 		} else {
 			//Loading bots list
 			if (($bots = $Cache->{'users/bots'}) === false) {
@@ -89,10 +89,7 @@ class User {
 					$Cache->{'users/bots'} = 'null';
 				}
 			}
-			/**
-			 * For bots:
-			 * login is user agent, email is IP
-			 */
+			//For bots: login is user agent, email is IP
 			$bot_hash	= hash('sha224', $this->user_agent.$this->ip);
 			//If list is not empty - try to find bot
 			if (is_array($bots) && !empty($bots)) {
@@ -947,12 +944,20 @@ class User {
 		}
 	}
 	/**
+	 * Returns current session
+	 *
+	 * @return string Session id
+	 */
+	function get_session () {
+		return $this->current['session'];
+	}
+	/**
 	 * Find the session by id, and return id of owner (user)
 	 *
 	 * @param string $session_id
 	 * @return int User id
 	 */
-	function get_session ($session_id = '') {
+	function get_session_user ($session_id = '') {
 		$this->current['session'] = _getcookie('session');
 		$session_id = $session_id ?: $this->current['session'];
 		global $Cache, $Config;
@@ -1044,8 +1049,8 @@ class User {
 				'forwarded_for'	=> $forwarded_for,
 				'client_ip'		=> $client_ip
 			];
-			_setcookie('session', $hash, TIME + $Config->core['session_expire'], false, true);
-			$this->get_session();
+			_setcookie('session', $hash, TIME + $Config->core['session_expire'], true);
+			$this->get_session_user();
 			return true;
 		}
 		return false;
@@ -1251,7 +1256,6 @@ class User {
 			WHERE
 				`last_login` = 0 AND
 				`status` = \'-1\' AND
-				`reg_date` != 0 AND
 				`reg_date` < '.(TIME - $Config->core['registration_confirmation_time']*86400),	//1 day = 86400 seconds
 			'id'
 		);
@@ -1307,48 +1311,48 @@ class User {
 			foreach ($user as $id) {
 				$this->del_user_internal($id, false);
 			}
+			$user = implode(',', $user);
 			$this->db_prime()->q(
-				'UPDATE `[prefix]users` SET
-					`login` = null,
-					`login_hash` = null,
-					`username` = \'deleted\',
-					`password_hash` = null,
-					`email` = null,
-					`email_hash` = null,
-					`groups` = null,
-					`reg_date` = 0,
-					`reg_ip` = null,
-					`reg_key` = null
+				"UPDATE `[prefix]users` SET
+					`login`			= null,
+					`login_hash`	= null,
+					`username`		= 'deleted',
+					`password_hash`	= null,
+					`email`			= null,
+					`email_hash`	= null,
+					`reg_date`		= 0,
+					`reg_ip`		= null,
+					`reg_key`		= null,
+					`status`		= '-1'
 				WHERE
-					`id` IN ('.implode(',', $user).')'
+					`id` IN ($user)"
 			);
 			return;
 		}
+		$user = (int)$user;
 		if (!$user) {
 			return;
 		}
-		$this->set_user_groups([], $this->reg_id);
-		$this->del_user_permissions($this->reg_id);
+		$this->set_user_groups([], $user);
+		$this->del_user_permissions($user);
 		global $Cache;
-		unset(
-		$Cache->{'users/'.$user}
-		);
+		unset($Cache->{'users/'.$user});
 		if ($update) {
 			$this->db_prime()->q(
-				'UPDATE `[prefix]users` SET
-					`login` = null,
-					`login_hash` = null,
-					`username` = \'deleted\',
-					`password_hash` = null,
-					`email` = null,
-					`email_hash` = null,
-					`groups` = null,
-					`reg_date` = 0,
-					`reg_ip` = null,
-					`reg_key` = null
+				"UPDATE `[prefix]users` SET
+					`login`			= null,
+					`login_hash`	= null,
+					`username`		= 'deleted',
+					`password_hash`	= null,
+					`email`			= null,
+					`email_hash`	= null,
+					`reg_date`		= 0,
+					`reg_ip`		= null,
+					`reg_key`		= null,
+					`status`		= '-1'
 				WHERE
-					`id` = '.$user.'
-				LIMIT 1'
+					`id` = $user
+				LIMIT 1"
 			);
 		}
 	}

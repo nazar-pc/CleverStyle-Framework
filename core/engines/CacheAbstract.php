@@ -25,4 +25,10 @@ abstract class CacheAbstract {
 	 * @return bool
 	 */
 	abstract function del ($item);
+	/**
+	 * @abstract
+	 *
+	 * @return bool
+	 */
+	abstract function clean ();
 }

@@ -1,4 +1,11 @@
 <?php
+/**
+ * Provides next @triggers:<br>
+ * &nbsp;admin/System/components/plugins/enable<br>
+ * &nbsp;['name'	=> <i>plugin_name</i>]<br>
+ * &nbsp;admin/System/components/plugins/disable<br>
+ * &nbsp;['name'	=> <i>plugin_name</i>]
+ */
 global $Config, $Index, $L;
 $a = &$Index;
 $rc = &$Config->routing['current'];

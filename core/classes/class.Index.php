@@ -22,10 +22,7 @@ class Index {
 
 				$init_auto			= true,
 				$generate_auto		= true,
-
-				$admin				= false,
-				$module				= false,
-				$api				= false;
+				$stop				= false;	//Gives the ability to stop further processing
 
 	protected	$preload			= [],
 				$postload			= [],
@@ -33,9 +30,11 @@ class Index {
 				$structure			= [],
 				$parts				= [],
 				$subparts			= [],
-				$triggers_init		= false,
-				$triggers,
-				$permission_group;
+				$permission_group,
+
+				$admin				= false,
+				$module				= false,
+				$api				= false;
 
 	function __construct () {
 		global $Config, $User;
@@ -80,6 +79,13 @@ class Index {
 		}
 		_include(MFOLDER.DS.'prepare.php', true, false);
 	}
+	function content ($add, $level = false) {
+		if ($level !== false) {
+			$this->Content .= h::level($add, $level);
+		} else {
+			$this->Content .= $add;
+		}
+	}
 	protected function init () {
 		global $Config, $L, $Page, $User;
 		$rc = &$Config->routing['current'];
@@ -110,6 +116,9 @@ class Index {
 			}
 		}
 		_include(MFOLDER.DS.'index.php', true, false);
+		if ($this->stop) {
+			return;
+		}
 		$this->admin && $Page->title($L->administration);
 		if (!$this->api) {
 			$Page->title($L->{HOME ? 'home' : MODULE});
@@ -137,6 +146,9 @@ class Index {
 				_include(MFOLDER.DS.$this->savefile.'.php', true, false);
 			}
 			_include(MFOLDER.DS.$rc[0].'.php', true, false);
+			if ($this->stop) {
+				return;
+			}
 			if ($this->subparts) {
 				if (!isset($rc[1]) || ($rc[1] == '' && !empty($this->subparts))) {
 					if (API) {
@@ -155,6 +167,9 @@ class Index {
 					$this->action = ($this->admin ? 'admin/' : '').MODULE.'/'.$rc[0].'/'.$rc[1];
 				}
 				_include(MFOLDER.DS.$rc[0].DS.$rc[1].'.php', true, false);
+				if ($this->stop) {
+					return;
+				}
 			} elseif (!$this->api) {
 				$this->action = ($this->admin ? 'admin/' : '').MODULE.'/'.$rc[0];
 			}
@@ -165,13 +180,6 @@ class Index {
 		} elseif (!$this->api) {
 			$this->action = $Config->server['current_url'];
 			_include(MFOLDER.DS.$this->savefile.'.php', true, false);
-		}
-	}
-	function content ($add, $level = false) {
-		if ($level !== false) {
-			$this->Content .= h::level($add, $level);
-		} else {
-			$this->Content .= $add;
 		}
 	}
 	protected function mainmenu () {
@@ -449,102 +457,37 @@ class Index {
 	 * Adding functions for executing before initialization processing of modules
 	 *
 	 * @param Closure[] $closure
-	 * @param bool $remove_others
+	 * @param bool $remove_others	Allows to remove others closures for preload
+	 *
+	 * @return bool
 	 */
 	function preload ($closure, $remove_others = false) {
 		if ($remove_others) {
 			$this->preload = [];
 		}
-		$this->preload[] = $closure;
+		if ($closure instanceof Closure) {
+			$this->preload[] = $closure;
+			return true;
+		}
+		return false;
 	}
 	/**
 	 * Adding functions for executing after generating processing of modules
 	 *
 	 * @param Closure[] $closure
-	 * @param bool $remove_others
+	 * @param bool $remove_others	Allows to remove others closures for postload
+	 *
+	 * @return bool
 	 */
 	function postload ($closure, $remove_others = false) {
 		if ($remove_others) {
 			$this->postload = [];
 		}
-		$this->postload[] = $closure;
-	}
-	/**
-	 * Registration of triggers for actions
-	 *
-	 * @param array $trigger
-	 * @param array|null $triggers
-	 * @return bool
-	 */
-	function register_trigger ($trigger, &$triggers = null) {
-		if ((!is_array($trigger) || empty($trigger)) && !($trigger instanceof Closure)) {
-			return false;
-		}
-		if ($triggers === null) {
-			$triggers = &$this->triggers;
-		}
-		if ($trigger instanceof Closure) {
-			$triggers[] = $trigger;
+		if ($closure instanceof Closure) {
+			$this->postload[] = $closure;
 			return true;
 		}
-		$return = true;
-		foreach ($trigger as $item => $function) {
-			if (!isset($triggers[$item])) {
-				$triggers[$item] = [];
-			}
-			$return = $return && $this->register_trigger($function, $triggers[$item]);
-		}
-		return $return;
-	}
-	/**
-	 * Running trigers for some actions
-	 *
-	 * @param string $action
-	 * @param mixed $data
-	 * @return bool
-	 */
-	function run_trigger ($action, $data = null) {
-		if (!$this->triggers_init) {
-			global $Config;
-			$modules = array_keys($Config->components['modules']);
-			foreach ($modules as $module) {
-				_include(MODULES.DS.$module.DS.'trigger.php', true, false);
-			}
-			unset($modules, $module);
-			$plugins = get_list(PLUGINS, false, 'd');
-			foreach ($plugins as $plugin) {
-				_include(PLUGINS.DS.$plugin.DS.'trigger.php', true, false);
-			}
-			unset($plugins, $plugin);
-			$this->triggers_init = true;
-		}
-		$action = explode('/', $action);
-		if (!is_array($action) || empty($action)) {
-			return false;
-		}
-		$triggers = $this->triggers;
-		foreach ($action as $item) {
-			if (is_array($triggers) && isset($triggers[$item])) {
-				$triggers = $triggers[$item];
-			} else {
-				return true;
-			}
-		}
-		unset($action, $item);
-		if (!is_array($triggers) || empty($triggers)) {
-			return false;
-		}
-		$return = true;
-		foreach ($triggers as $trigger) {
-			if ($trigger instanceof Closure) {
-				if ($data === null) {
-					$return = $return && $trigger();
-				} else {
-					$return = $return && $trigger($data);
-				}
-			}
-		}
-		return $return;
+		return false;
 	}
 	/**
 	 * Cloning restriction
@@ -563,6 +506,9 @@ class Index {
 			$Page->content(_file_get_contents(MFOLDER.DS.'index.html'));
 		} else {
 			$this->init_auto	&& $this->init();
+		}
+		if ($this->stop) {
+			return;
 		}
 		$this->generate_auto	&& $this->generate();
 		closure_process($this->postload);

@@ -29,11 +29,11 @@ if ($_POST['edit_settings'] == 'apply' || $_POST['edit_settings'] == 'save') {
 }
 if ($_POST['edit_settings'] == 'apply' && $Cache->cache_state()) {
 	if ($Index->apply() && !$Config->core['cache_compress_js_css']) {
-		flush_pcache();
+		clean_pcache();
 	}
 } elseif ($_POST['edit_settings'] == 'save' && isset($update)) {
 	if ($Index->save() && !$Config->core['cache_compress_js_css']) {
-		flush_pcache();
+		clean_pcache();
 	}
 } elseif ($_POST['edit_settings'] == 'cancel' && $Cache->cache_state()) {
 	$Index->cancel();

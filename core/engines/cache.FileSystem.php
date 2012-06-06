@@ -1,7 +1,7 @@
 <?php
 /**
  * Provides cache functionality based on file system structure.
- * Require configuration variable $CACHE_SIZE with maximum allowed cache size in MB, 0 means without limitation
+ * Require configuration variable $CACHE_SIZE with maximum allowed cache size in MB, 0 means without limitation (is not recomended)
  */
 class FileSystem extends CacheAbstract {
 	protected $cache_size;
@@ -171,5 +171,21 @@ class FileSystem extends CacheAbstract {
 			return false;
 		}
 		return true;
+	}
+	/**
+	 * @return bool
+	 */
+	function clean () {
+		$ok = true;
+		$list = get_list(CACHE, false, 'fd', true, true, 'name|desc');
+		foreach ($list as $item) {
+			if (_is_writable($item)) {
+				_is_dir($item) ? @_rmdir($item) : @_unlink($item);
+			} else {
+				$ok = false;
+			}
+		}
+		unset($list, $item);
+		return $ok;
 	}
 }
