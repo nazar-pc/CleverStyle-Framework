@@ -1,8 +1,12 @@
 <?php
+/**
+ * Provides next triggers:<br>
+ *  admin/System/general/optimization/clean_pcache
+ */
 if (!isset($_POST['edit_settings'])) {
 	return;
 }
-global $Config, $L, $Index, $Cache;
+global $Config, $L, $Index, $Cache, $Core;
 if ($_POST['edit_settings'] == 'apply' || $_POST['edit_settings'] == 'save') {
 	foreach ($Config->admin_parts as $part) {
 		if (isset($_POST[$part])) {
@@ -30,10 +34,12 @@ if ($_POST['edit_settings'] == 'apply' || $_POST['edit_settings'] == 'save') {
 if ($_POST['edit_settings'] == 'apply' && $Cache->cache_state()) {
 	if ($Index->apply() && !$Config->core['cache_compress_js_css']) {
 		clean_pcache();
+		$Core->run_trigger('admin/System/general/optimization/clean_pcache');
 	}
 } elseif ($_POST['edit_settings'] == 'save' && isset($update)) {
 	if ($Index->save() && !$Config->core['cache_compress_js_css']) {
 		clean_pcache();
+		$Core->run_trigger('admin/System/general/optimization/clean_pcache');
 	}
 } elseif ($_POST['edit_settings'] == 'cancel' && $Cache->cache_state()) {
 	$Index->cancel();

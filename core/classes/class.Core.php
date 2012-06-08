@@ -1,12 +1,10 @@
 <?php
 //Класс ядра
 class Core {
-	protected	$iv					= [],
-				$td					= [],
-				$key				= [],
+	protected	$iv,
+				$td,
+				$key,
 				$encrypt_support	= false,
-				$KEY,
-				$IV,
 				$triggers_init		= false,
 				$triggers;
 	//Инициализация начальных параметров и функций шифрования
@@ -19,14 +17,6 @@ class Core {
 		define('CACHE',		STORAGES.DS.DOMAIN.DS.'cache');		//Папка с кешем домена
 		define('LOGS',		STORAGES.DS.DOMAIN.DS.'logs');		//Папка для логов домена
 		define('TEMP',		STORAGES.DS.DOMAIN.DS.'temp');		//Папка для временных файлов домена
-		global	$DB_HOST,
-				$DB_TYPE,
-				$DB_NAME,
-				$DB_USER,
-				$DB_PASSWORD,
-				$DB_PREFIX,
-				$DB_CODEPAGE,
-				$KEY;
 		!_is_dir(STORAGES.DS.DOMAIN)	&& @_mkdir(STORAGES.DS.DOMAIN, 0770);
 		!_is_dir(STORAGE)				&& @_mkdir(STORAGE, 0777)	&& _file_put_contents(
 			STORAGE.DS.'.htaccess',
@@ -43,54 +33,40 @@ class Core {
 			'Allow From All'
 		);
 		if ($this->encrypt_support = check_mcrypt()) {
-			$this->KEY	= $KEY;
-			$this->IV	= $DB_HOST.$DB_TYPE.$DB_NAME.$DB_USER.$DB_PASSWORD.$DB_PREFIX.$DB_CODEPAGE;
-		}
-		unset($GLOBALS['KEY']);
-	}
-	/**
-	 * Encryption initialization
-	 * @param string $name
-	 * @param string $key
-	 * @param string $iv
-	 * @param bool|resource $td
-	 * @return mixed
-	 */
-	function crypt_open ($name, $key, $iv, $td = false) {
-		if (!$this->encrypt_support || empty($name) || empty($key) || empty($iv)) {
-			return;
-		}
-		$this->key[$name] = $key;
-		$this->iv[$name] = $iv;
-		if ($td === false) {
-			$this->td[$name] = $td['core'];
-		} else {
-			$this->td[$name] = $td;
+			global	$KEY, $IV;
+			$this->key	= $KEY;
+			$this->iv	= $IV;
+			unset($GLOBALS['KEY'], $GLOBALS['IV']);
 		}
 	}
 	/**
 	 * Encryption of data
-	 * @param string $data
-	 * @param string $name
+	 *
+	 * @param string      $data	Data to be encrypted
+	 * @param bool|string $key	Key, if not specified - system key will be used
+	 *
 	 * @return bool|string
 	 */
-	function encrypt ($data, $name = 'core') {
+	function encrypt ($data, $key = false) {
 		if (!$this->encrypt_support) {
 			return $data;
 		}
-		if ($name == 'core' && !isset($this->td[$name])) {
-			$td = mcrypt_module_open(MCRYPT_BLOWFISH,'','cbc','');
-			$this->crypt_open(
-				'core',
-				mb_substr($this->KEY, 0, mcrypt_enc_get_key_size($td)),
-				mb_substr(md5($this->IV), 0, mcrypt_enc_get_iv_size($td)),
-				$td
-			);
-			unset($td);
+		if (!is_resource($this->td)) {
+			$this->td	= mcrypt_module_open(MCRYPT_BLOWFISH,'','cbc','');
+			$this->key	= mb_substr($this->key, 0, mcrypt_enc_get_key_size($this->td));
+			$this->iv	= mb_substr(md5($this->iv), 0, mcrypt_enc_get_iv_size($this->td));
 		}
-		mcrypt_generic_init($this->td[$name], $this->key[$name], $this->iv[$name]);
-		$encrypted = mcrypt_generic($this->td[$name], @serialize(array('key' => $this->key[$name], 'data' => $data)));
-		mcrypt_generic_deinit($this->td[$name]);
+		if ($key === false) {
+			$key		= $this->key;
+		} else {
+			$key		= mb_substr(md5($this->key).md5($key), 0, mcrypt_enc_get_key_size($this->td));
+		}
+		mcrypt_generic_init($this->td, $key, $this->iv);
+		$encrypted = mcrypt_generic($this->td, @serialize([
+			'key'	=> $key,
+			'data'	=> $data
+		]));
+		mcrypt_generic_deinit($this->td);
 		if ($encrypted) {
 			return $encrypted;
 		} else {
@@ -99,36 +75,37 @@ class Core {
 	}
 	/**
 	 * Decryption of data
-	 * @param string $data
-	 * @param string $name
+	 *
+	 * @param string      $data	Data to be decrypted
+	 * @param bool|string $key	Key, if not specified - system key will be used
+	 *
 	 * @return bool|mixed
 	 */
-	function decrypt ($data, $name = 'core') {
+	function decrypt ($data, $key = false) {
 		if (!$this->encrypt_support) {
 			return $data;
 		}
-		mcrypt_generic_init($this->td[$name], $this->key[$name], $this->iv[$name]);
+		if (!is_resource($this->td)) {
+			$this->td	= mcrypt_module_open(MCRYPT_BLOWFISH,'','cbc','');
+			$this->key	= mb_substr($this->key, 0, mcrypt_enc_get_key_size($this->td));
+			$this->iv	= mb_substr(md5($this->iv), 0, mcrypt_enc_get_iv_size($this->td));
+		}
+		if ($key === false) {
+			$key		= $this->key;
+		} else {
+			$key		= mb_substr(md5($this->key).md5($key), 0, mcrypt_enc_get_key_size($this->td));
+		}
+		mcrypt_generic_init($this->td, $key, $this->iv);
 		errors_off();
-		$decrypted = @unserialize(mdecrypt_generic($this->td[$name], $data));
+		$decrypted = @unserialize(mdecrypt_generic($this->td, $data));
 		errors_on();
-		mcrypt_generic_deinit($this->td[$name]);
-		if (is_array($decrypted) && $decrypted['key'] == $this->key[$name]) {
+		mcrypt_generic_deinit($this->td);
+		if (is_array($decrypted) && $decrypted['key'] == $key) {
 			return $decrypted['data'];
 		} else {
 			return false;
 		}
 	}
-	/**
-	 * Encryption deinitialization
-	 * @param string $name
-	 */
-	function crypt_close ($name) {
-		if ($this->encrypt_support && isset($this->td[$name]) && is_resource($this->td[$name])) {
-			mcrypt_module_close($this->td[$name]);
-			unset($this->key[$name], $this->iv[$name], $this->td[$name]);
-		}
-	}
-
 	/**
 	 * Sending system api request to all mirrors
 	 *
@@ -209,14 +186,46 @@ class Core {
 		fclose($socket);
 		return $return;
 	}
+
 	/**
 	 * Registration of triggers for actions
 	 *
-	 * @param array $trigger
+	 * @param array|string $trigger	For example it can be array like <code>[
+	 *   'admin' => [
+	 *     'System' => [
+	 *       'components' => [
+	 *         'plugins' => [
+	 *           'enable' => [
+	 *             function () {{ }
+	 *           ]
+	 *         ]
+	 *       ]
+	 *     ]
+	 *   ]
+	 * ]
+	 * </code>
+	 * or string<br>
+	 * 'admin/System/components/plugins/disable'
+	 * @param Closure|null $closure if <b>$trigger</b> is string - this parameter must containg Closure [optional]
 	 *
 	 * @return bool
 	 */
-	function register_trigger ($trigger) {
+	function register_trigger ($trigger, $closure = null) {
+		if (is_string($trigger) && $closure instanceof Closure) {
+			$trigger		= explode('/', $trigger);
+			$new_trigger	= [];
+			$tmp			= &$new_trigger;
+			foreach ($trigger as $item) {
+				$tmp[$item] = [];
+				$tmp		= &$tmp[$item];
+			}
+			$tmp			= $closure;
+			$trigger		= $new_trigger;
+			unset($new_trigger, $tmp, $item);
+		}
+		if (!is_array($trigger)) {
+			return false;
+		}
 		return $this->register_trigger_internal($trigger);
 	}
 	/**
@@ -250,8 +259,8 @@ class Core {
 	/**
 	 * Running trigers for some actions
 	 *
-	 * @param string $action
-	 * @param mixed $data
+	 * @param string $action	For example <i>admin/System/components/plugins/disable</i>
+	 * @param mixed $data		For example ['name'	=> <i>plugin_name</i>]
 	 *
 	 * @return bool
 	 */
@@ -307,12 +316,9 @@ class Core {
 	 * @return mixed
 	 */
 	function __finish () {
-		if (!$this->encrypt_support) {
-			return;
+		if (is_resource($this->td)) {
+			mcrypt_module_close($this->td);
+			unset($this->key, $this->iv, $this->td);
 		}
-		foreach ($this->td as $td) {
-			 is_resource($td) && mcrypt_module_close($td);
-		}
-		unset($this->key, $this->iv, $this->td);
 	}
 }

@@ -28,13 +28,9 @@ var loading_interval, loading_angle = 0;
 						'border': '1px solid rgba('+bokehColour+', 0.5)',
 						'overflow': 'hidden'
 					});
-			if ($.browser.msie && $.browser.version >= 10) {
+			if ($.browser.msie && $.browser.version >= 10) {//TODO new gradient rules CSS3
 				bokeh.css({
 					'background': '-ms-radial-gradient(contain, rgba('+bokehColour+', 0.7), rgba('+bokehColour+',0.3))'
-				});
-			} else if ($.browser.msie && $.browser.version == 9) {
-				bokeh.css({
-					'background': 'rgba('+bokehColour+', 0.4)'
 				});
 			} else if ($.browser.opera) {
 				bokeh.css({

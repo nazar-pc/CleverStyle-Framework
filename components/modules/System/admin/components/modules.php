@@ -1,20 +1,20 @@
 <?php
 /**
- * Provides next @triggers:<br>
- * &nbsp;admin/System/components/modules/install/prepare<br>
- * &nbsp;['name'	=> <i>module_name</i>]<br>
- * &nbsp;admin/System/components/modules/uninstall/prepare<br>
- * &nbsp;['name'	=> <i>module_name</i>]<br>
- * &nbsp;admin/System/components/modules/db/prepare<br>
- * &nbsp;['name'	=> <i>module_name</i>]<br>
- * &nbsp;admin/System/components/modules/storage/prepare<br>
- * &nbsp;['name'	=> <i>module_name</i>]<br>
- * &nbsp;admin/System/components/modules/enable<br>
- * &nbsp;['name'	=> <i>module_name</i>]<br>
- * &nbsp;admin/System/components/modules/disable<br>
- * &nbsp;['name'	=> <i>module_name</i>]
+ * Provides next triggers:<br>
+ *  admin/System/components/modules/install/prepare<br>
+ *  ['name'	=> <i>module_name</i>]<br>
+ *  admin/System/components/modules/uninstall/prepare<br>
+ *  ['name'	=> <i>module_name</i>]<br>
+ *  admin/System/components/modules/db/prepare<br>
+ *  ['name'	=> <i>module_name</i>]<br>
+ *  admin/System/components/modules/storage/prepare<br>
+ *  ['name'	=> <i>module_name</i>]<br>
+ *  admin/System/components/modules/enable<br>
+ *  ['name'	=> <i>module_name</i>]<br>
+ *  admin/System/components/modules/disable<br>
+ *  ['name'	=> <i>module_name</i>]
  */
-global $Config, $Index, $L, $db;
+global $Config, $Index, $L, $db, $Core;
 $a					= &$Index;
 $rc					= &$Config->routing['current'];
 $a->buttons			= false;
@@ -28,7 +28,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					$L->installation_of_module.' '.h::b($rc[3])
 				)
 			);
-			if ($a->run_trigger(
+			if ($Core->run_trigger(
 				'admin/System/components/modules/install/prepare',
 				[
 					'name' => $rc[3]
@@ -59,7 +59,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					$L->uninstallation_of_module.' '.h::b($rc[3])
 				)
 			);
-			if ($a->run_trigger(
+			if ($Core->run_trigger(
 				'admin/System/components/modules/uninstall/prepare',
 				[
 					'name' => $rc[3]
@@ -88,7 +88,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 			global $Page;
 			$Page->warning($L->changing_settings_warning);
 			if (count($Config->db) > 1) {
-				if ($a->run_trigger(
+				if ($Core->run_trigger(
 					'admin/System/components/modules/db/prepare',
 					[
 						'name' => $rc[3]
@@ -148,7 +148,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 			global $Page;
 			$Page->warning($L->changing_settings_warning);
 			if (count($Config->storage) > 1) {
-				if ($a->run_trigger(
+				if ($Core->run_trigger(
 					'admin/System/components/modules/storage/prepare',
 					[
 						'name' => $rc[3]
@@ -207,7 +207,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 		case 'enable':
 			$Config->components['modules'][$rc[3]]['active'] = 1;
 			$a->save('components');
-			$a->run_trigger(
+			$Core->run_trigger(
 				'admin/System/components/modules/enable',
 				[
 					'name' => $rc[3]
@@ -217,7 +217,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 		case 'disable':
 			$Config->components['modules'][$rc[3]]['active'] = 0;
 			$a->save('components');
-			$a->run_trigger(
+			$Core->run_trigger(
 				'admin/System/components/modules/disable',
 				[
 					'name' => $rc[3]

@@ -1,16 +1,16 @@
 <?php
 /**
- * Provides next @triggers:<br>
- * &nbsp;admin/System/components/modules/install/process<br>
- * &nbsp;['name'	=> <i>module_name</i>]<br>
- * &nbsp;admin/System/components/modules/uninstall/process<br>
- * &nbsp;['name'	=> <i>module_name</i>]<br>
- * &nbsp;admin/System/components/modules/db/process<br>
- * &nbsp;['name'	=> <i>module_name</i>]<br>
- * &nbsp;admin/System/components/modules/install/process<br>
- * &nbsp;['name'	=> <i>module_name</i>]
+ * Provides next triggers:<br>
+ *  admin/System/components/modules/install/process<br>
+ *  ['name'	=> <i>module_name</i>]<br>
+ *  admin/System/components/modules/uninstall/process<br>
+ *  ['name'	=> <i>module_name</i>]<br>
+ *  admin/System/components/modules/db/process<br>
+ *  ['name'	=> <i>module_name</i>]<br>
+ *  admin/System/components/modules/install/process<br>
+ *  ['name'	=> <i>module_name</i>]
  */
-global $Config, $Index, $User;
+global $Config, $Index, $User, $Core;
 $a = &$Index;
 $rc			= &$Config->routing['current'];
 $update		= false;
@@ -57,7 +57,7 @@ if (isset($_POST['update_modules_list'])) {
 	$module_data = &$Config->components['modules'][$_POST['module']];
 	switch ($_POST['mode']) {
 		case 'install':
-			if ($a->run_trigger(
+			if ($Core->run_trigger(
 				'admin/System/components/modules/install/process',
 				[
 					'name' => $_POST['module']
@@ -114,7 +114,7 @@ if (isset($_POST['update_modules_list'])) {
 			}
 		break;
 		case 'uninstall':
-			if ($a->run_trigger(
+			if ($Core->run_trigger(
 				'admin/System/components/modules/uninstall/process',
 				[
 					'name' => $_POST['module']
@@ -135,7 +135,7 @@ if (isset($_POST['update_modules_list'])) {
 			}
 		break;
 		case 'db':
-			if ($a->run_trigger(
+			if ($Core->run_trigger(
 				'admin/System/components/modules/db/process',
 				[
 					'name' => $_POST['module']
@@ -148,7 +148,7 @@ if (isset($_POST['update_modules_list'])) {
 			}
 		break;
 		case 'storage':
-			if ($a->run_trigger(
+			if ($Core->run_trigger(
 				'admin/System/components/modules/install/process',
 				[
 					'name' => $_POST['module']

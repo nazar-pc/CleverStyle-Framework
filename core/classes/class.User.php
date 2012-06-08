@@ -194,6 +194,9 @@ class User {
 				date_default_timezone_set($this->timezone);
 			}
 			if ($this->language) {
+				if ($this->language != _getcookie('language')) {
+					_setcookie('language', $this->language);
+				}
 				$L->change($this->language);
 			}
 		}

@@ -1,13 +1,13 @@
 <?php
 /**
- * Provides next @triggers:<br>
- * &nbsp;admin/System/general/languages/load<br>
- * &nbsp;[
- * &nbsp;&nbsp;'clanguage'		=> <i>clanguage</i><br>
- * &nbsp;&nbsp;'clang'			=> <i>clang</i><br>
- * &nbsp;&nbsp;'clanguage_en'	=> <i>clanguage_en</i><br>
- * &nbsp;&nbsp;'clocale'		=> <i>clocale</i><br>
- * &nbsp;]
+ * Provides next triggers:<br>
+ *  admin/System/general/languages/load<code>
+ *  [
+ *   'clanguage'	=> <i>clanguage</i><br>
+ *   'clang'		=> <i>clang</i><br>
+ *   'clanguage_en'	=> <i>clanguage_en</i><br>
+ *   'clocale'		=> <i>clocale</i><br>
+ *  ]</code>
  */
 class Language {
 	public		$clanguage,								//Current language
@@ -24,8 +24,9 @@ class Language {
 		$this->change($LANGUAGE);
 	}
 	/**
-	 * @param array $active_languages
+	 * @param array  $active_languages
 	 * @param string $language
+	 *
 	 * @return void
 	 */
 	function init ($active_languages, $language) {
@@ -33,17 +34,49 @@ class Language {
 			return;
 		}
 		$this->init = true;
-		$this->change(_getcookie('language') && in_array(_getcookie('language'), $active_languages) ? _getcookie('language') : $language);
+		$this->change(
+			_getcookie('language') && in_array(_getcookie('language'), $active_languages) ? _getcookie('language') : (
+				$this->scan_aliases($active_languages) ?: $language
+			)
+		);
 		if ($this->need_to_rebuild_cache) {
 			global $Cache;
-			$Cache->{'language/'.$this->clanguage} = $this->translate;
+			$Cache->{'languages/'.$this->clanguage} = $this->translate;
 			$this->need_to_rebuild_cache = false;
 			$this->init = true;
 		}
 	}
 	/**
+	 * @param array $active_languages
+	 *
+	 * @return bool|string
+	 */
+	protected function scan_aliases ($active_languages) {
+		global $Cache;
+		if (!($aliases = $Cache->{'languages/aliases'})) {
+			$aliases		= [];
+			$aliases_list	= _strtolower(get_list(LANGUAGES.DS.'aliases'));
+			foreach ($aliases_list as $alias) {
+				$aliases[$alias] = _file_get_contents(LANGUAGES.DS.'aliases'.DS.$alias);
+			}
+			unset($aliases_list, $alias);
+			$Cache->{'languages/aliases'} = $aliases;
+		}
+		$accept_languages = explode(',', strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']));
+		foreach ($accept_languages as $index => $language) {
+			$index = substr($index, 0, strpos($index, ';'));
+			if (in_array($index, $aliases) && in_array($index, $active_languages)) {
+				_setcookie('language', $language);
+				return $language;
+			}
+		}
+		return false;
+	}
+	/**
 	 * Get translation
+	 *
 	 * @param string $item
+	 *
 	 * @return string
 	 */
 	function get ($item) {
@@ -51,8 +84,10 @@ class Language {
 	}
 	/**
 	 * Set translation
+	 *
 	 * @param array|string $item
 	 * @param null|string $value
+	 *
 	 * @return string
 	 */
 	function set ($item, $value = null) {
@@ -66,8 +101,9 @@ class Language {
 	}
 	/**
 	 * Get translation
-	 * @see get()
+	 *
 	 * @param string $item
+	 *
 	 * @return string
 	 */
 	function __get ($item) {
@@ -75,9 +111,10 @@ class Language {
 	}
 	/**
 	 * Set translation
-	 * @see set()
+	 *
 	 * @param array|string $item
 	 * @param null|string $value
+	 *
 	 * @return string
 	 */
 	function __set ($item, $value = null) {
@@ -85,7 +122,9 @@ class Language {
 	}
 	/**
 	 * Change language
+	 *
 	 * @param string $language
+	 *
 	 * @return bool
 	 */
 	function change ($language) {
@@ -99,7 +138,7 @@ class Language {
 		if (!is_object($Config) || ($Config->core['multilanguage'] && in_array($language, $Config->core['active_languages']))) {
 			global $Cache, $Text;
 			$this->clanguage = $language;
-			if ($translate = $Cache->{'language/'.$this->clanguage}) {
+			if ($translate = $Cache->{'languages/'.$this->clanguage}) {
 				$this->set($translate);
 				if (!($Text instanceof Loader)) {
 					$Text->language($this->clang);
@@ -152,9 +191,11 @@ class Language {
 	}
 	/**
 	 * Time formatting according to the current language (adding correct endings)
+	 *
 	 * @param int $in		time in seconds
 	 * @param string $type	Type of formatting<br>
 	 * 						s - seconds<br>m - minutes<br>h - hours<br>d - days<br>M - months<br>y - years
+	 *
 	 * @return string
 	 */
 	function time ($in, $type) {
@@ -193,9 +234,11 @@ class Language {
 	}
 	/**
 	 * Allows to use formatted strings in translations
+	 *
 	 * @see format()
 	 * @param $name
 	 * @param $arguments
+	 *
 	 * @return string
 	 */
 	function __call ($name, $arguments) {
@@ -203,8 +246,10 @@ class Language {
 	}
 	/**
 	 * Allows to use formatted strings in translations
+	 *
 	 * @param $name
 	 * @param $arguments
+	 *
 	 * @return string
 	 */
 	function format ($name, $arguments) {

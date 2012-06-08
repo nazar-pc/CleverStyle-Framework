@@ -1,12 +1,12 @@
 <?php
 /**
- * Provides next @triggers:<br>
- * &nbsp;admin/System/components/plugins/enable<br>
- * &nbsp;['name'	=> <i>plugin_name</i>]<br>
- * &nbsp;admin/System/components/plugins/disable<br>
- * &nbsp;['name'	=> <i>plugin_name</i>]
+ * Provides next triggers:<br>
+ *  admin/System/components/plugins/enable<br>
+ *  ['name'	=> <i>plugin_name</i>]<br>
+ *  admin/System/components/plugins/disable<br>
+ *  ['name'	=> <i>plugin_name</i>]
  */
-global $Config, $Index, $L;
+global $Config, $Index, $L, $Core;
 $a = &$Index;
 $rc = &$Config->routing['current'];
 $a->form = false;
@@ -17,7 +17,7 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 			if (!in_array($rc[3], $Config->components['plugins']) && in_array($rc[3], $plugins)) {
 				$Config->components['plugins'][] = $rc[3];
 				$a->save('components');
-				$a->run_trigger(
+				$Core->run_trigger(
 					'admin/System/components/plugins/enable',
 					[
 						'name' => $rc[3]
@@ -35,7 +35,7 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 				}
 				unset($i, $plugin);
 				$a->save('components');
-				$a->run_trigger(
+				$Core->run_trigger(
 					'admin/System/components/plugins/disable',
 					[
 						'name' => $rc[3]
