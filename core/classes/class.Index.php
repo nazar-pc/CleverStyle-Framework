@@ -243,13 +243,12 @@ class Index {
 		}
 	}
 	protected function generate () {
-		global $Page;
+		global $Page, $Config, $L, $Cache, $User;
 		if ($this->api) {
 			interface_off();
 			$Page->content($this->Content);
 			return;
 		}
-		global $Config, $L, $Cache, $User;
 		$this->menu_auto		&& $this->mainmenu();
 		$this->submenu_auto		&& $this->mainsubmenu();
 		$this->menumore_auto	&& $this->menumore();
@@ -284,6 +283,11 @@ class Index {
 				'module = "'.MODULE.'",'.
 				'in_admin = '.(int)$this->admin.','.
 				'debug = '.(int)(defined('DEGUB') && DEBUG).','.
+				'session_id = "'.$User->get_session().'",'.
+				'cookie_prefix = "'.$Config->core['cookie_prefix'].'",'.
+				'cookie_domain = "'.$Config->core['cookie_domain'].'",'.
+				'cookie_path = "'.$Config->core['cookie_path'].'",'.
+				'protocol = "'.$Config->server['protocol'].'",'.
 				'routing = '._json_encode($Config->routing['current']).';',
 			'code'
 		);

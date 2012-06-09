@@ -626,10 +626,10 @@
 		static $path, $domain, $prefix, $secure;
 		global $Config, $Core;
 		if (!isset($prefix) && is_object($Config)) {
-			$path	= $Config->server['cookie_path'];
-			$domain	= $Config->server['cookie_domain'];
-			$secure	= $Config->server['protocol'] == 'https';
 			$prefix	= $Config->core['cookie_prefix'];
+			$path	= $Config->core['cookie_path'];
+			$domain	= $Config->core['cookie_domain'];
+			$secure	= $Config->server['protocol'] == 'https';
 		}
 		$_COOKIE[$prefix.$name] = $value;
 		if (!$api && is_object($Core)) {

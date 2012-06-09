@@ -145,14 +145,12 @@ class User {
 				if ($data['status'] == 0) {
 					$Page->warning($L->your_account_disabled);
 					//Mark user as guest, load data again
-					$this->id = 1;
 					$this->del_session();
 					goto getting_user_data;
 				//If user is not active
 				} else {
 					$Page->warning($L->your_account_is_not_active);
 					//Mark user as guest, load data again
-					$this->id = 1;
 					$this->del_session();
 					goto getting_user_data;
 				}
@@ -160,13 +158,11 @@ class User {
 			} elseif ($data['block_until'] > TIME) {
 				$Page->warning($L->your_account_blocked_until.' '.date($L->_datetime, $data['block_until']));
 				//Mark user as guest, load data again
-				$this->id = 1;
 				$this->del_session();
 				goto getting_user_data;
 			}
 		} elseif ($this->id != 1) {
 			//If data wasn't loaded - mark user as guest, load data again
-			$this->id = 1;
 			$this->del_session();
 			goto getting_user_data;
 		}
@@ -199,6 +195,11 @@ class User {
 				}
 				$L->change($this->language);
 			}
+		}
+		//Security check for data, sended with POST method
+		$session_id = $this->get_session();
+		if (!isset($_POST[$session_id]) || $_POST[$session_id] != $session_id) {
+			$_POST = [];
 		}
 		$this->init = true;
 	}
@@ -1049,7 +1050,7 @@ class User {
 			$id = 1;
 		}
 		if (preg_match('/^[0-9a-z]{32}$/', $this->current['session'])) {
-			$this->del_session(null, false);
+			$this->del_session_internal(null, false);
 		}
 		global $Config;
 		//Generate hash in cycle, to obtain unique value
@@ -1089,27 +1090,41 @@ class User {
 		return false;
 	}
 	/**
-	 * Remove the session
+	 * Deletion of the session
+	 *
+	 * @param string $session_id
+	 *
+	 * @return bool
+	 */
+	function del_session ($session_id = null) {
+		return $this->del_session_internal($session_id);
+	}
+	/**
+	 * Deletion of the session
 	 *
 	 * @param string $session_id
 	 * @param bool   $create_guest_session
 	 *
 	 * @return bool
 	 */
-	function del_session ($session_id = null, $create_guest_session = true) {
-		global $Cache;
+	function del_session_internal ($session_id = null, $create_guest_session = true) {
 		$session_id = $session_id ?: $this->current['session'];
+		global $Cache;
 		$this->current['session'] = false;
-		$create_guest_session && $this->add_session(1);
+		_setcookie('session', '');
 		if (!preg_match('/^[0-9a-z]{32}$/', $session_id)) {
 			return false;
 		}
 		unset($Cache->{'sessions/'.$session_id});
-		return $session_id ? $this->db_prime()->q(
+		$result = $session_id ? $this->db_prime()->q(
 			'UPDATE `[prefix]sessions`
 			SET `expire` = 0
 			WHERE `id` = \''.$session_id.'\''
 		) : false;
+		if ($create_guest_session) {
+			return $this->add_session(1);
+		}
+		return $result;
 	}
 	/**
 	 * Remove all user sessions
@@ -1120,15 +1135,18 @@ class User {
 		global $Cache;
 		$id = $id ?: $this->id;
 		_setcookie('session', '');
-		$sessions = $this->db_prime()->qfa('SELECT `id` FROM `[prefix]sessions` WHERE `user` = '.$this->id, 'id');
+		$sessions = $this->db_prime()->qfa('SELECT `id` FROM `[prefix]sessions` WHERE `user` = '.$id, 'id');
 		if (is_array($sessions)) {
+			$delete = [];
 			foreach ($sessions as $session) {
-				unset($Cache->{'sessions/'.$session});
+				$delete[] = 'sessions/'.$session;
 			}
-			unset($sessions, $session);
+			$Cache->del($delete);
+			unset($delete, $sessions, $session);
 		}
+		$result = $this->db_prime()->q('UPDATE `[prefix]sessions` SET `expire` = 0 WHERE `user` = '.$id);
 		$this->add_session(1);
-		return $id ? $this->db_prime()->q('UPDATE `[prefix]sessions` SET `expire` = 0 WHERE `user` = '.$this->id) : false;
+		return $result;
 	}
 	/**
 	 * Check number of login attempts

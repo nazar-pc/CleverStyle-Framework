@@ -64,7 +64,7 @@ var loading_interval, loading_angle = 0;
 					header_move_allow = false;
 					header_elements.animate({'marginTop': '+='+header_offset+'px'}, header_delay, 'swing', function () {
 						header_visible = 'show';
-						setcookie('header_visible', header_visible, '/');
+						setcookie('header_visible', header_visible);
 						header_move_allow = true;
 					});
 				}
@@ -76,7 +76,7 @@ var loading_interval, loading_angle = 0;
 					header_move_allow = false;
 					header_elements.animate({'marginTop': '-='+header_offset+'px'}, header_delay, 'swing', function () {
 						header_visible = 'hide';
-						setcookie('header_visible', header_visible, '/');
+						setcookie('header_visible', header_visible);
 						header_move_allow = true;
 					});
 				}
@@ -88,7 +88,7 @@ var loading_interval, loading_angle = 0;
 					header_move_allow = false;
 					header_elements.animate({'marginTop': '-='+header_offset+'px'}, header_delay, 'swing', function () {
 						header_visible = 'hide';
-						setcookie('header_visible', header_visible, '/');
+						setcookie('header_visible', header_visible);
 						header_move_allow = true;
 					});
 				}

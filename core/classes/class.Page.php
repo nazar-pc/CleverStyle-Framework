@@ -671,12 +671,21 @@ class Page {
 				$this->user_avatar_text = '?';
 				$this->user_avatar_image = 'none';
 			}
-			$this->user_info = h::b($L->hello.', '.$User->get_username().'!').h::br();
+			$this->user_info = h::b($L->hello.', '.$User->get_username().'!').
+			h::{'icon#logout_process'}(
+				'power',
+				[
+					'style'		=> 'cursor: pointer;',
+					'data-title'	=> $L->logout
+				]
+			).
+			h::br();
 		} else {
 			$this->user_avatar_text = '?';
 			$this->user_avatar_image = 'none';
 			$this->user_info = h::{'div#anonym_header_form'}(
-				h::b($L->hello.', '.$L->guest.'!').h::br().
+				h::b($L->hello.', '.$L->guest.'!').
+				h::br().
 				h::{'button#login_slide.cs-button-compact'}(
 					h::icon('check').$L->log_in
 				).

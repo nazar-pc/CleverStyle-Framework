@@ -29,11 +29,11 @@ if (isset($_POST['login']) && !empty($_POST['login']) && !isset($_POST['auth_has
 	if ($Key->add(
 		$Config->components['modules']['System']['db']['keys'],
 		hash('sha224', $User->ip.$User->user_agent.$_POST['login']),
-		array(
+		[
 			'random_hash'	=> $random_hash,
 			'login'			=> $_POST['login'],
 			'id'			=> $id
-		)
+		]
 	)) {
 		$Page->content($random_hash);
 	} else {

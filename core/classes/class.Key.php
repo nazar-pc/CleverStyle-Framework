@@ -25,10 +25,6 @@ class Key {
 			} else {
 				return false;
 			}
-		} elseif ($database->qf(
-			'SELECT `id` FROM `[prefix]keys` WHERE `key` = \''.$key.'\' AND `expire` >= '.TIME.' LIMIT 1'
-		)) {
-			return false;
 		}
 		$expire = (int)$expire;
 		if ($expire == 0 && $expire < TIME) {

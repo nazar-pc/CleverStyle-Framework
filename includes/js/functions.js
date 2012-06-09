@@ -118,37 +118,42 @@ function json_decode (str) {
 function hash (algo, data) {
 	return (new jsSHA(data)).getHash(algo);
 }
-function setcookie (name, value, expires, path, domain, secure) {
-	return $.cookie(name, value, {expires: expires, path: path ? path : '/', domain: domain, secure: secure});
+function setcookie (name, value, expires) {
+	name = cookie_prefix+name;
+	return $.cookie(name, value, {expires: expires, path: cookie_path, domain: cookie_domain, secure: protocol == 'https'});
 }
 function getcookie (name) {
 	return $.cookie(name);
 }
 /**
  * Login into system
+ *
  * @param login
  * @param password
  */
 function login (login, password) {
+	var data = {
+		login: hash('sha224', login)
+	};
+	data[session_id] = session_id;
 	$.ajax(
 		base_url+"/api/user/login",
 		{
 			type: 'post',
 			cache: false,
-			data: {
-				login: hash('sha224', login)
-			},
+			data: data,
 			success: function(random_hash) {
 				if (random_hash.length == 56) {
+					data.auth_hash = hash(
+						'sha512',
+						hash('sha224', login)+hash('sha512', password)+navigator.userAgent+random_hash
+					);
 					$.ajax(
 						base_url+"/api/user/login",
 						{
 							type: 'post',
 							cache: false,
-							data: {
-								auth_hash: hash('sha512', hash('sha224', login)+hash('sha512', password)+navigator.userAgent+random_hash),
-								login: hash('sha224', login)
-							},
+							data: data,
 							success: function(result) {
 								if (result == 'reload') {
 									location.reload();
@@ -174,6 +179,30 @@ function login (login, password) {
 	);
 }
 /**
+ * Logout
+ *
+ */
+function logout () {
+	var data = {
+		logout: true
+	};
+	data[session_id] = session_id;
+	$.ajax(
+		base_url+"/api/System/user/logout",
+		{
+			type: 'post',
+			cache: false,
+			data: data,
+			success: function() {
+				location.reload();
+			},
+			error: function() {
+				alert(auth_error_connection);
+			}
+		}
+	);
+}
+/**
  * Registration in the system
  * @param email
  */
@@ -182,14 +211,16 @@ function registration (email) {
 		alert(please_type_your_email);
 		return;
 	}
+	var data = {
+		email: email
+	};
+	data[session_id] = session_id;
 	$.ajax(
-		base_url+"/api/user/registration",
+		base_url+"/api/System/user/registration",
 		{
 			type: 'post',
 			cache: false,
-			data: {
-				email: email
-			},
+			data: data,
 			success: function(result) {
 				if (result == 'reg_confirmation') {
 					$('<div>'+reg_confirmation+'</div>')

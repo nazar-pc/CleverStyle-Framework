@@ -87,6 +87,9 @@ $(function() {
 	$('#login_process').mousedown(function() {
 		login($('#user_login').val(), $('#user_password').val());
 	});
+	$('#logout_process').mousedown(function() {
+		logout();
+	});
 	$('#show_password').mousedown(function() {
 		if ($('#user_password').prop('type') == 'password') {
 			$('#user_password').prop('type', 'text');
