@@ -166,7 +166,7 @@ class h {//TODO array of void elements for general processing
 		}
 		return $options;
 	}
-	//Метод для обертки контента непарными тегами
+	//Wrapper for processing unpaired tags
 	protected static function u_wrap ($data = []) {
 		$data = (array)$data;
 		$in = $add = '';
@@ -182,8 +182,18 @@ class h {//TODO array of void elements for general processing
 		return isset($data_title) ? self::label($return, ['data-title' => $data_title]) : $return;
 	}
 
-	//HTML тэги
-		//Специфическая обработка (похожие в обработке теги групируются в шаблоны - template_#)
+	static function form		($in = '', $data = []) {
+		global $User;
+		if (is_object($User)) {
+			$in .= self::input([
+				'type'	=> 'hidden',
+				'name'	=> $User->get_session(),
+				'value'	=> $User->get_session()
+			]);
+		}
+		return self::wrap($in, $data, __FUNCTION__);
+	}
+	//Specific tags processing (similar are collected in templates - template_#)
 	/**
 	 * Template 2
 	 *
