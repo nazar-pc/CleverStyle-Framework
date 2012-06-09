@@ -7,6 +7,7 @@ if (!isset($_POST['edit_settings'])) {
 	return;
 }
 global $Config, $L, $Index, $Cache, $Core;
+$debug = $Config->core['debug'];
 if ($_POST['edit_settings'] == 'apply' || $_POST['edit_settings'] == 'save') {
 	foreach ($Config->admin_parts as $part) {
 		if (isset($_POST[$part])) {
@@ -25,7 +26,6 @@ if ($_POST['edit_settings'] == 'apply' || $_POST['edit_settings'] == 'save') {
 				}
 				unset($i, $value);
 			}
-			$update[] = $part;
 			unset($temp);
 		}
 	}
@@ -36,10 +36,14 @@ if ($_POST['edit_settings'] == 'apply' && $Cache->cache_state()) {
 		clean_pcache();
 		$Core->run_trigger('admin/System/general/optimization/clean_pcache');
 	}
-} elseif ($_POST['edit_settings'] == 'save' && isset($update)) {
-	if ($Index->save() && !$Config->core['cache_compress_js_css']) {
+} elseif ($_POST['edit_settings'] == 'save') {
+	$save = $Index->save();
+	if ($save && !$Config->core['cache_compress_js_css']) {
 		clean_pcache();
 		$Core->run_trigger('admin/System/general/optimization/clean_pcache');
+	}
+	if ($save && ($Config->core['debug'] != $debug) && !$Config->core['debug']) {
+		$Cache->clean();
 	}
 } elseif ($_POST['edit_settings'] == 'cancel' && $Cache->cache_state()) {
 	$Index->cancel();

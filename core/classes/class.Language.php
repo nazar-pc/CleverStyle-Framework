@@ -53,7 +53,7 @@ class Language {
 	 */
 	protected function scan_aliases ($active_languages) {
 		global $Cache;
-		if (!($aliases = $Cache->{'languages/aliases'})) {
+		if (($aliases = $Cache->{'languages/aliases'}) === false) {
 			$aliases		= [];
 			$aliases_list	= _strtolower(get_list(LANGUAGES.DS.'aliases'));
 			foreach ($aliases_list as $alias) {

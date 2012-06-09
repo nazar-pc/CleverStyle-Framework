@@ -111,13 +111,13 @@ footer {
 	display : none;
 }
 
-.cs-blocks-items {
+.cs-blocks-items, #users_groups_list, #users_groups_list_selected {
 	list-style-type : none;
 	margin          : 0;
 	padding         : 5px;
 }
 
-.cs-blocks-items li {
+.cs-blocks-items li, #users_groups_list li, #users_groups_list_selected li {
 	cursor  : move;
 	margin  : 0 5px 5px 5px;
 	padding : 5px;
@@ -305,4 +305,7 @@ textarea.cs-wide-textarea {
 }
 .cs-add-bot {
 	width: 450px;
+}
+#columns_settings li {
+	cursor: pointer;
 }

@@ -1,13 +1,13 @@
 <?php
 //For working with global system objects
 class Objects {
-	public	$Loaded				= [],		//Массив со списком объектов, и данными о занятом объеме памяти
+	public	$Loaded				= [],		//Array with list of loaded objects, and information about amount of used memory
 											//после их создания, и длительностью содания
 			$unload_priority	= [
-				'Key',
 				'Page',
 				'User',
 				'Config',
+				'Key',
 				'db',
 				'Error',
 				'L',
@@ -21,7 +21,12 @@ class Objects {
 	function add ($name) {
 		$this->List[$name] = $name;
 	}
-	//Метод подключения классов
+	/**
+	 * @param array|string     $class
+	 * @param bool             $custom_name
+	 *
+	 * @return bool|object
+	 */
 	function load ($class, $custom_name = false) {
 		global $stop;
 		if (empty($class)) {

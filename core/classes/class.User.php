@@ -281,7 +281,7 @@ class User {
 			if (isset($data[$item])) {
 				return $data[$item];
 				//Иначе если из кеша данные не доставали - пробуем достать
-			} elseif (!isset($new_data) && ($new_data = $Cache->{'users/'.$user}) && is_array($new_data)) {
+			} elseif (!isset($new_data) && ($new_data = $Cache->{'users/'.$user}) !== false && is_array($new_data)) {
 				//Обновляем локальный кеш
 				if (is_array($new_data)) {
 					$data = array_merge((array)$data, $new_data);
@@ -290,7 +290,7 @@ class User {
 				goto get_data;
 			} elseif (!$cache_only) {
 				$new_data = $this->db()->qf('SELECT `'.$item.'` FROM `[prefix]users` WHERE `id` = '.($user).' LIMIT 1', $item);
-				if ($new_data) {
+				if ($new_data !== false) {
 					$this->update_cache[$user] = true;
 					if ($item == 'data') {
 						$new_data = _json_decode($new_data);
@@ -506,7 +506,7 @@ class User {
 		}
 		global $Cache;
 		if (($groups = $Cache->{'users/groups/'.$user}) === false) {
-			$groups = $this->db()->qfa('SELECT `group` FROM `[prefix]users_groups` WHERE `id` = '.$user, 'group');
+			$groups = $this->db()->qfa('SELECT `group` FROM `[prefix]users_groups` WHERE `id` = '.$user.' ORDER BY `priority` DESC', 'group');
 			return $Cache->{'users/groups/'.$user} = $groups;
 		}
 		return $groups;
@@ -523,26 +523,44 @@ class User {
 		if (!$user) {
 			return false;
 		}
+		if (!empty($data)) {
+			foreach ($data as $i => &$group) {
+				if (!($group = (int)$group)) {
+					unset($data[$i]);
+				}
+			}
+		}
+		unset($i, $group);
 		$exitsing	= $this->get_user_groups($user);
 		$return		= true;
 		$insert		= array_diff($data, $exitsing);
 		$delete		= array_diff($exitsing, $data);
-		unset($data, $exitsing);
+		unset($exitsing);
 		if (!empty($delete)) {
 			$return	= $return && $this->db_prime()->q(
 				'DELETE FROM `[prefix]users_groups` WHERE `id` ='.$user.' AND `group` IN ('.implode(', ', $delete).')'
 			);
 		}
-		$q			= [];
-		foreach ($insert as $group) {
-			$q[] = $user.', '.(int)$group;
+		unset($delete);
+		if (!empty($insert)) {
+			$q			= [];
+			foreach ($insert as $group) {
+				$q[] = $user.', '.(int)$group;
+			}
+			unset($group, $insert);
+			$return		= $return && $this->db_prime()->q('
+				INSERT INTO `[prefix]users_groups`
+					(`id`, `group`)
+				VALUES
+					('.implode('), (', $q).')'
+			);
+			unset($q);
 		}
-		$return		= $return && $this->db_prime()->q('
-			INSERT INTO `[prefix]users_groups`
-				(`id`, `group`)
-			VALUES
-				('.implode('), (', $q).')'
-		);
+		$update		= [];
+		foreach ($data as $i => $group) {
+			$update[] = 'UPDATE `[prefix]users_groups` SET `priority` = '.(int)$i.' WHERE `id` = '.$user.' AND `group` = '.$group.' LIMIT 1';
+		}
+		$return		= $return && $this->db_prime()->q($update);
 		global $Cache;
 		unset($Cache->{'users/groups/'.$user});
 		return $return;
@@ -563,6 +581,8 @@ class User {
 		if ($this->db_prime()->q(
 			'INSERT INTO `[prefix]groups` (`title`, `description`) VALUES ('.$title.', '.$description.')'
 		)) {
+			global $Cache;
+			unset($Cache->{'groups/list'});
 			return $this->db_prime()->id();
 		} else {
 			return false;
@@ -587,7 +607,8 @@ class User {
 				$Cache->{'users/groups/'.$group},
 				$Cache->{'users/permissions'},
 				$Cache->{'groups/'.$group},
-				$Cache->{'groups/permissions/'.$group}
+				$Cache->{'groups/permissions/'.$group},
+				$Cache->{'groups/list'}
 			);
 			return (bool)$return;
 		} else {
@@ -653,7 +674,10 @@ class User {
 		}
 		if (!empty($update) && $this->db_prime()->q('UPDATE `[prefix]groups` SET '.implode(', ', $update).' WHERE `id` = '.$group.' LIMIT 1')) {
 			global $Cache;
-			unset($Cache->{'groups/'.$group});
+			unset(
+				$Cache->{'groups/'.$group},
+				$Cache->{'groups/list'}
+			);
 			return true;
 		} else {
 			return false;
@@ -973,12 +997,18 @@ class User {
 				WHERE
 					`id` = '.$this->db()->s($session_id).' AND
 					`expire` > '.TIME.' AND
-					`user_agent` = '.$this->db()->s($this->user_agent).' AND
-					`ip` = \''.ip2hex($this->ip).'\' AND
-					`forwarded_for` = \''.ip2hex($this->forwarded_for).'\' AND
-					`client_ip` = \''.ip2hex($this->client_ip).'\''
+					`user_agent` = '.$this->db()->s($this->user_agent).
+					(
+					$Config->core['remember_user_ip'] ? ' AND
+						`ip` = \''.ip2hex($this->ip).'\' AND
+						`forwarded_for` = \''.ip2hex($this->forwarded_for).'\' AND
+						`client_ip` = \''.ip2hex($this->client_ip).'\'' : ''
+					).'
+				LIMIT 1'
 			);
-			$Cache->{'sessions/'.$session_id} = $result;
+			if ($result) {
+				$Cache->{'sessions/'.$session_id} = $result;
+			}
 		}
 		if (!$session_id || !is_array($result)) {
 			$this->add_session(1);

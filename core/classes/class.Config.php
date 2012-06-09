@@ -1,5 +1,4 @@
 <?php
-
 class Config {
 	public	$core			= [],
 			$db				= [],
@@ -104,7 +103,7 @@ class Config {
 		}
 		$this->server['mirrors'][$core_url[0]] = array_merge($this->server['mirrors'][$core_url[0]], $core_url[1]);
 		unset($core_url, $url);
-		//Если это не главный домен - ищем совпадение в зеркалах
+		//If it  is not the main domain - try to find match in mirrors
 		if ($url_replace === false && !empty($this->core['mirrors_url'])) {
 			$mirrors_url = explode("\n", $this->core['mirrors_url']);
 			foreach ($mirrors_url as $i => $mirror_url) {
@@ -123,13 +122,13 @@ class Config {
 				}
 			}
 			unset($mirrors_url, $mirror_url, $url, $i);
-			//Если в зеркалах соответствие не найдено - зеркало не разрешено!
+			//If match in mirrors was not found - mirror is not allowed!
 			if ($this->mirror_index == -1) {
 				global $Error, $L;
 				$this->server['base_url'] = '';
 				$Error->process($L->mirror_not_allowed, 'stop');
 			}
-		//Если соответствие нигде не найдено - зеркало не разрешено!
+		//If match was not found - mirror is not allowed!
 		} elseif ($url_replace === false) {
 			global $Error, $L;
 			$this->server['base_url'] = '';
@@ -147,20 +146,20 @@ class Config {
 			$this->server['mirrors']['count'] = count($this->server['mirrors']['http'])+count($this->server['mirrors']['https']);
 			unset($mirrors_url, $mirror_url);
 		}
-		//Подготавливаем адрес страницы без базовой части
+		//Preparing page url without basic path
 		$this->server['url'] = str_replace('//', '/', trim(str_replace($url_replace, '', $this->server['url']), ' /\\'));
 		unset($url_replace);
 		$r	= &$this->routing;
 		$rc	= &$r['current'];
-		//Получаем путь к странице в виде массива
+		//Obtaining page path in form of array
 		$rc = explode('/', str_replace($r['in'], $r['out'], trim($this->server['url'], '/')));
-		//Если адрес похож на адрес админки
+		//If url looks like admin query
 		if (isset($rc[0]) && mb_strtolower($rc[0]) == 'admin') {
 			if (!defined('ADMIN')) {
 				define('ADMIN', true);
 			}
 			array_shift($rc);
-		//Если адрес похож на запрос к API
+		//If url looks like API query
 		} elseif (isset($rc[0]) && mb_strtolower($rc[0]) == 'api') {
 			if (!defined('API')) {
 				define('API', true);

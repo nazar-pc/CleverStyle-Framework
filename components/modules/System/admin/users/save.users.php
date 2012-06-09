@@ -18,7 +18,12 @@ switch ($_POST['mode']) {
 		}
 	break;
 	case 'edit_raw':
-		if (isset($_POST['user']['id']) && !in_array(3, (array)$User->get_user_groups($_POST['user']['id']))) {
+		if (
+			isset($_POST['user']['id']) &&
+			$_POST['user']['id'] != 1 &&
+			$_POST['user']['id'] != 2 &&
+			!in_array(3, (array)$User->get_user_groups($_POST['user']['id']))
+		) {
 			$User->set($_POST['user'], null, $_POST['user']['id']);
 			$User->__finish();
 			$Index->save(true);
@@ -26,6 +31,9 @@ switch ($_POST['mode']) {
 	break;
 	case 'edit':
 		if (isset($_POST['user']) && !in_array(3, (array)$User->get_user_groups($_POST['user']['id']))) {
+			if ($_POST['user']['id'] == 1 || $_POST['user']['id'] == 2) {
+				break;
+			}
 			$user_data = &$_POST['user'];
 			$columns = array(
 				'id',
@@ -110,6 +118,9 @@ switch ($_POST['mode']) {
 	break;
 	case 'deactivate':
 		if (isset($_POST['id'])) {
+			if ($_POST['id'] == 1 || $_POST['id'] == 2) {
+				break;
+			}
 			$id = (int)$_POST['id'];
 			if ($id != 1 && $id != 2) {
 				$User->set('status', 0, $id);
@@ -119,6 +130,9 @@ switch ($_POST['mode']) {
 	break;
 	case 'activate':
 		if (isset($_POST['id'])) {
+			if ($_POST['id'] == 1 || $_POST['id'] == 2) {
+				break;
+			}
 			$id = (int)$_POST['id'];
 			if ($id != 1 && $id != 2) {
 				$User->set('status', 1, $id);
@@ -128,8 +142,26 @@ switch ($_POST['mode']) {
 	break;
 	case 'permissions':
 		if (isset($_POST['id'], $_POST['permission'])) {
+			if ($_POST['id'] == 2) {
+				break;
+			}
 			$Index->save(
 				$User->set_user_permissions($_POST['permission'], $_POST['id'])
+			);
+		}
+	break;
+	case 'groups':
+		if (isset($_POST['user'], $_POST['user']['id'], $_POST['user']['groups']) && $_POST['user']['groups']) {
+			if ($_POST['user']['id'] == 2 || in_array(3, (array)$User->get_user_groups($_POST['user']['id']))) {
+				break;
+			}
+			$_POST['user']['groups'] = _json_decode($_POST['user']['groups']);
+			foreach ($_POST['user']['groups'] as &$group) {
+				$group = (int)substr($group, 5);
+			}
+			unset($group);
+			$Index->save(
+				$User->set_user_groups($_POST['user']['groups'], $_POST['user']['id'])
 			);
 		}
 	break;

@@ -319,8 +319,7 @@ if (isset($rc[2])) {
 							'placeholder'	=> $L->type_username_or_email,
 							'style'			=> 'width: 100%'
 						]),
-						h::{'td#block_users_search_results'}(
-						)
+						h::{'td#block_users_search_results'}()
 					])
 				).
 				h::br().

@@ -50,11 +50,9 @@ if ($Config->core['cache_compress_js_css']) {
 		LOCK_EX|FILE_BINARY
 	);
 } else {
-	$Page->js(
-		array(
-			'components/plugins/'.$plugin.'/jquery.tinymce.js',
-			'components/plugins/'.$plugin.'/tiny_mce.js',
-			'components/plugins/'.$plugin.'/TinyMCE.js'
-		)
-	);
+	$Page->js([
+		'components/plugins/'.$plugin.'/jquery.tinymce.js',
+		'components/plugins/'.$plugin.'/tiny_mce.js',
+		'components/plugins/'.$plugin.'/TinyMCE.js'
+	]);
 }

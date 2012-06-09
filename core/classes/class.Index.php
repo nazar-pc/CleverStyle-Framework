@@ -283,6 +283,7 @@ class Index {
 				'lang = "'.$L->clang.'",'.
 				'module = "'.MODULE.'",'.
 				'in_admin = '.(int)$this->admin.','.
+				'debug = '.(int)(defined('DEGUB') && DEBUG).','.
 				'routing = '._json_encode($Config->routing['current']).';',
 			'code'
 		);

@@ -48,55 +48,59 @@ if (isset($rc[2], $rc[3])) {
 			);
 		break;
 		case 'edit_raw':
-			if (!$is_bot) {
-				$a->apply_button		= false;
-				$a->cancel_button_back	= true;
-				$content				= $content_ = '';
-				$user_data				= $User->get($search_columns, $rc[3]);
-				$last					= count($search_columns)-1;
-				foreach ($search_columns as $i => $column) {
-					$content_ .= h::{'th.ui-widget-header.ui-corner-all'}(
-						$column
-					).
-					h::{'td.ui-widget-content.ui-corner-all'}(
-						$column == 'data' || $column == 'about' ?
-							h::{'textarea.cs-form-element'}(
-								$user_data[$column],
-								[
-									'name'		=> 'user['.$column.']'
-								]
-							) :
-							h::{'input.cs-form-element'}([
-								'name'		=> 'user['.$column.']',
-								'value'		=> $user_data[$column],
-								$column == 'id' ? 'readonly' : false
-							]),
-						[
-							'colspan'	=> $i == $last ? 3 : false
-						]
-					);
-					if  ($i % 2) {
-						$content .= h::tr(
-							$content_
-						);
-						$content_ = '';
-					}
-				}
-				if ($content_ != '') {
+			if ($is_bot || $rc[3] == 1 || $rc[3] == 2) {
+				break;
+			}
+			$a->apply_button		= false;
+			$a->cancel_button_back	= true;
+			$content				= $content_ = '';
+			$user_data				= $User->get($search_columns, $rc[3]);
+			$last					= count($search_columns)-1;
+			foreach ($search_columns as $i => $column) {
+				$content_ .= h::{'th.ui-widget-header.ui-corner-all'}(
+					$column
+				).
+				h::{'td.ui-widget-content.ui-corner-all'}(
+					$column == 'data' || $column == 'about' ?
+						h::{'textarea.cs-form-element'}(
+							$user_data[$column],
+							[
+								'name'		=> 'user['.$column.']'
+							]
+						) :
+						h::{'input.cs-form-element'}([
+							'name'		=> 'user['.$column.']',
+							'value'		=> $user_data[$column],
+							$column == 'id' ? 'readonly' : false
+						]),
+					[
+						'colspan'	=> $i == $last ? 3 : false
+					]
+				);
+				if  ($i % 2) {
 					$content .= h::tr(
 						$content_
 					);
+					$content_ = '';
 				}
-				unset($i, $column, $content_);
-				$a->content(
-					h::{'table#users_raw_edit.cs-admin-table.cs-center-all'}($content)
+			}
+			if ($content_ != '') {
+				$content .= h::tr(
+					$content_
 				);
 			}
+			unset($i, $column, $content_);
+			$a->content(
+				h::{'table#users_raw_edit.cs-admin-table.cs-center-all'}($content)
+			);
 		break;
 		case 'edit':
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
 			if (!$is_bot) {
+				if ($rc[3] == 1 || $rc[3] == 2) {
+					break;
+				}
 				$user_data				= $User->get(
 					[
 						'login',
@@ -123,9 +127,9 @@ if (isset($rc[2], $rc[3])) {
 				$timezones				= get_timezones_list();
 				$reg_ip					= hex2ip($user_data['reg_ip'], 10);
 				$last_ip				= hex2ip($user_data['last_ip'], 10);
-				$row					= function ($row1, $row2) {
-					return	h::{'th.ui-widget-header.ui-corner-all'}($row1).
-							h::{'td.ui-widget-content.ui-corner-all'}($row2);
+				$row					= function ($col1, $col2) {
+					return	h::{'th.ui-widget-header.ui-corner-all'}($col1).
+							h::{'td.ui-widget-content.ui-corner-all'}($col2);
 				};
 				$a->content(
 					h::{'table#users_edit.cs-admin-table.cs-center-all tr'}([
@@ -287,6 +291,9 @@ if (isset($rc[2], $rc[3])) {
 			}
 		break;
 		case 'deactivate':
+			if ($rc[3] == 1 || $rc[3] == 2) {
+				break;
+			}
 			$a->buttons				= false;
 			$a->cancel_button_back	= true;
 			$user_data				= $User->get(['login', 'username'], $rc[3]);
@@ -302,6 +309,9 @@ if (isset($rc[2], $rc[3])) {
 			);
 		break;
 		case 'activate':
+			if ($rc[3] == 1 || $rc[3] == 2) {
+				break;
+			}
 			$a->buttons				= false;
 			$a->cancel_button_back	= true;
 			$user_data				= $User->get(['login', 'username'], $rc[3]);
@@ -317,7 +327,7 @@ if (isset($rc[2], $rc[3])) {
 			);
 		break;
 		case 'permissions':
-			if (!isset($rc[3])) {
+			if (!isset($rc[3]) || $rc[3] == 2) {
 				break;
 			}
 			$a->apply_button		= false;
@@ -373,7 +383,7 @@ if (isset($rc[2], $rc[3])) {
 			}
 			unset($content, $content_, $count, $i, $permissions, $group, $list, $label, $id, $blocks);
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages'}(
+				h::{'p.cs-center-all'}(
 					$L->{$is_bot ? 'permissions_for_bot' : 'permissions_for_user'}(
 						$User->get_username($rc[3])
 					)
@@ -386,6 +396,73 @@ if (isset($rc[2], $rc[3])) {
 				h::{'input[type=hidden]'}([
 					'name'	=> 'id',
 					'value'	=> $rc[3]
+				])
+			);
+		break;
+		case 'groups':
+			if (!isset($rc[3]) || $rc[3] == 2 || $is_bot) {
+				break;
+			}
+			$a->apply_button		= false;
+			$a->cancel_button_back	= true;
+			$user_groups			= array_reverse($User->get_user_groups($rc[3]));
+			$all_groups				= $User->get_groups_list();
+			$groups_selected		= h::{'li.ui-state-disabled.ui-state-highlight.ui-corner-all'}(
+				$L->selected_groups
+			);
+			$groups_list			= h::{'li.ui-state-disabled.ui-state-highlight.ui-corner-all'}(
+				$L->other_groups
+			);
+			if (is_array($user_groups) && !empty($user_groups)) {
+				foreach ($user_groups as $i => $group) {
+					$group				= ['id' => $group]+$User->get_group_data($group);
+					$groups_selected	.= h::{'li.ui-widget-header.ui-corner-all'}(
+						$group['title'],
+						[
+							'id'			=> 'group'.$group['id'],
+							'data-title'	=> $group['description']
+						]
+					);
+				}
+			}
+			if (is_array($all_groups) && !empty($all_groups)) {
+				foreach ($all_groups as $i => $group) {
+					if ($group['id'] == 3 || in_array($group['id'], $user_groups)) {
+						continue;
+					}
+					$groups_list	.= h::{'li.ui-widget-content.ui-corner-all'}(
+						$group['title'],
+						[
+							'id'			=> 'group'.$group['id'],
+							'data-title'	=> $group['description']
+						]
+					);
+				}
+			}
+			$a->content(
+				h::{'p.cs-center-all'}(
+					$L->user_groups(
+						$User->get_username($rc[3])
+					),
+					[
+						'data-title'	=> $L->user_groups_info
+					]
+				).
+				h::{'table.cs-admin-table tr td'}(
+					[
+						h::{'ul#users_groups_list_selected'}($groups_selected),
+						h::{'ul#users_groups_list'}($groups_list)
+					],
+					[
+						'style'	=> 'vertical-align: top;'
+					]
+				).
+				h::{'input[type=hidden]'}([
+					'name'	=> 'user[id]',
+					'value'	=> $rc[3]
+				]).
+				h::{'input#user_groups[type=hidden]'}([
+					'name'	=> 'user[groups]'
 				])
 			);
 		break;
@@ -480,27 +557,29 @@ if (isset($rc[2], $rc[3])) {
 	if (isset($users_ids) && is_array($users_ids)) {
 		foreach ($users_ids as $id) {
 			$groups			= (array)$User->get_user_groups($id);
-			$action			= (!in_array(3, $groups) ? h::a(
-				h::{'button.cs-button-compact'}(
-					h::icon('pencil'),
+			$buttons		= ($id != 1 && $id != 2 && !in_array(3, $groups) ?
+				h::a(
+					h::{'button.cs-button-compact'}(
+						h::icon('pencil'),
+						[
+							'data-title'	=> $L->edit_raw_user_data
+						]
+					),
 					[
-						'data-title'	=> $L->edit_raw_user_data
+						'href'		=> $a->action.'/edit_raw/'.$id
 					]
-				),
-				[
-					'href'		=> $a->action.'/edit_raw/'.$id
-				]
-			) : '').
-			h::a(
-				h::{'button.cs-button-compact'}(
-					h::icon('wrench'),
+				).
+				h::a(
+					h::{'button.cs-button-compact'}(
+						h::icon('wrench'),
+						[
+							'data-title'	=> $L->{in_array(3, $groups) ? 'edit_bot_data' : 'edit_user_data'}
+						]
+					),
 					[
-						'data-title'	=> $L->{in_array(3, $groups) ? 'edit_bot_data' : 'edit_user_data'}
+						'href'		=> $a->action.'/edit/'.$id
 					]
-				),
-				[
-					'href'		=> $a->action.'/edit/'.$id
-				]
+				) : ''
 			).
 			($id != 1 && $id != 2 ?
 				h::a(
@@ -514,19 +593,35 @@ if (isset($rc[2], $rc[3])) {
 						'href'		=> $a->action.'/'.($User->get('status', $id) == 1 ? 'deactivate' : 'activate').'/'.$id
 					]
 				) : ''
-			).
-			h::a(
-				h::{'button.cs-button-compact'}(
-					h::icon('flag'),
+			).($id != 1 && $id != 2 && !in_array(3, $groups) ?
+				h::a(
+					h::{'button.cs-button-compact'}(
+						h::icon('person'),
+						[
+							'data-title'	=> $L->edit_user_groups
+						]
+					),
 					[
-						'data-title'	=> $L->{in_array(3, $groups) ? 'edit_bot_permissions' : 'edit_user_permissions'}
+						'href'	=> $a->action.'/groups/'.$id
 					]
-				),
-				[
-					'href'	=> $a->action.'/permissions/'.$id
-				]
+				) : ''
+			).($id != 2  ?
+				h::a(
+					h::{'button.cs-button-compact'}(
+						h::icon('key'),
+						[
+							'data-title'	=> $L->{in_array(3, $groups) ? 'edit_bot_permissions' : 'edit_user_permissions'}
+						]
+					),
+					[
+						'href'	=> $a->action.'/permissions/'.$id
+					]
+				) : '-'
 			);
 			$user_data		= $User->get($columns, $id);
+			if ($id == 2 && isset($user_data['password_hash'])) {
+				$user_data['password_hash'] = '*****';
+			}
 			if (isset($user_data['reg_ip'])) {
 				$user_data['reg_ip'] = hex2ip($user_data['reg_ip'], 10);
 				if ($user_data['reg_ip'][1]) {
@@ -552,10 +647,10 @@ if (isset($rc[2], $rc[3])) {
 			} else {
 				$type = h::info('g');
 			}
-			$users_list		.= vsprintf($users_list_template, array($action, $type)+$user_data);
+			$users_list		.= vsprintf($users_list_template, [$buttons, $type]+$user_data);
 		}
 	}
-	unset($users_list_template, $id, $action, $user_data, $users_ids);
+	unset($users_list_template, $id, $buttons, $user_data, $users_ids);
 	$a->content(
 		h::{'div#search_users_tabs'}(
 			h::ul(
@@ -621,7 +716,7 @@ if (isset($rc[2], $rc[3])) {
 				]
 			).
 			h::{'div#columns_settings'}(
-				h::ol(
+				h::ul(
 					$columns_list
 				).
 				h::{'input#columns[type=hidden]'}([

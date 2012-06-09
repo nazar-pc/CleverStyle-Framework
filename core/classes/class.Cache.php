@@ -26,16 +26,18 @@ class Cache {
 		return $this->instance->set($item, $data);
 	}
 	function del ($item) {
-		if (!$this->cache) {
-			return true;
+		if (is_object($this->instance)){
+			return $this->instance->del($item);
+		} else {
+			return false;
 		}
-		return $this->instance->del($item);
 	}
 	function clean () {
-		if (!$this->cache) {
-			return true;
+		if (is_object($this->instance)){
+			return $this->instance->clean();
+		} else {
+			return false;
 		}
-		return $this->instance->clean();
 	}
 	function cache_state() {
 		return $this->cache;

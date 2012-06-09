@@ -113,9 +113,9 @@ if (isset($rc[2])) {
 					).
 					h::{'td input[type=radio]'}([
 						'name'			=> 'permission['.$id.']',
-						'checked'		=> isset($permission[$id]) ? $permission[$id] : 1,
-						'value'			=> [0, 1],
-						'in'			=> [$L->deny, $L->allow]
+						'checked'		=> isset($permission[$id]) ? $permission[$id] : -1,
+						'value'			=> [-1, 0, 1],
+						'in'			=> [$L->not_specified, $L->deny, $L->allow]
 					]);
 				}
 				if (count($list) % 2) {
@@ -197,7 +197,7 @@ if (isset($rc[2])) {
 			) : '').
 			h::a(
 				h::{'button.cs-button-compact'}(
-					h::icon('flag'),
+					h::icon('key'),
 					[
 						'data-title'	=> $L->edit_group_permissions
 					]

@@ -1,4 +1,8 @@
 <?php
+/**
+ * Provides next triggers:<br>
+ *  System/Page/pre_display<code>
+ */
 class Page {
 	public		$Content, $interface = true,
 				$Html = '', $Keywords = '', $Description = '', $Title = [],
@@ -340,7 +344,7 @@ class Page {
 				$file .= '?'.$key;
 			}
 			unset($file);
-			$this->css($css_list, 'file', true);
+			$this->css_internal($css_list, 'file', true);
 			//Подключение JavaScript
 			$js_list = get_list(PCACHE, '/^[^_](.*)\.js$/i', 'f', 'storages/pcache');
 			if (DS != '/') {
@@ -351,16 +355,16 @@ class Page {
 				$file .= '?'.$key;
 			}
 			unset($file);
-			$this->js($js_list, 'file', true);
+			$this->js_internal($js_list, 'file', true);
 		} else {
 			$this->get_includes_list();
 			//Подключение CSS стилей
 			foreach ($this->includes['css'] as $file) {
-				$this->css($file, 'file', true);
+				$this->css_internal($file, 'file', true);
 			}
 			//Подключение JavaScript
 			foreach ($this->includes['js'] as $file) {
-				$this->js($file, 'file', true);
+				$this->js_internal($file, 'file', true);
 			}
 		}
 	}
@@ -758,7 +762,8 @@ class Page {
 			//Обработка замены контента
 			echo preg_replace($this->Search, $this->Replace, $this->Content);
 		} else {
-			global $stop, $Error, $L, $timeload, $User;
+			global $stop, $Error, $L, $timeload, $User, $Core;
+			$Core->run_trigger('System/Page/pre_display');
 			//Обработка шаблона, наполнение его содержимым
 			$this->prepare($stop);
 			//Обработка замены контента

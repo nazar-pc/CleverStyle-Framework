@@ -55,6 +55,15 @@ $a->content(
 			]
 		).
 		h::{'tr td'}([
+			h::info('remember_user_ip'),
+			h::{'input[type=radio]'}([
+				'name'			=> 'core[remember_user_ip]',
+				'checked'		=> $Config->core['remember_user_ip'],
+				'value'			=> [0, 1],
+				'in'			=> [$L->off, $L->on]
+			])
+		]).
+		h::{'tr td'}([
 			h::info('password_min_length'),
 			h::{'input.cs-form-element[type=number]'}([
 				'name'			=> 'core[password_min_length]',

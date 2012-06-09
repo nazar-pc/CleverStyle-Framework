@@ -632,15 +632,36 @@
 			$prefix	= $Config->core['cookie_prefix'];
 		}
 		$_COOKIE[$prefix.$name] = $value;
-		if (!$api) {
-			$Core->api_request(
-				'System/admin/cookie',
-				[
-					'name'		=> $name,
-					'value'		=> $value,
-					'expire'	=> $expire,
-					'httponly'	=> $httponly
-				]
+		if (!$api && is_object($Core)) {
+			$data = [
+				'name'		=> $name,
+				'value'		=> $value,
+				'expire'	=> $expire,
+				'httponly'	=> $httponly
+			];
+			$Core->register_trigger(
+				'System/Page/pre_display',
+				function () use ($data) {
+					global $Config, $Key, $Page, $User, $db;
+					if ($Config->server['mirrors']['count'] > 1) {
+						$mirrors_url			= explode("\n", $this->core['mirrors_url']);
+						$mirrors_cookie_domain	= explode("\n", $this->core['mirrors_cookie_domain']);
+						$database				= $db->{$Config->components['modules']['System']['db']['keys']}();
+						$data['check']			= md5($User->ip.$User->forwarded_for.$User->client_ip.$User->user_agent._json_encode($data));
+						$js						= '';
+						foreach ($mirrors_cookie_domain as $i => $domain) {
+							$mirrors_url[$i] = explode(';', $mirrors_url[$i], 2)[0];
+							if ($domain && ($mirrors_url[$i] != $Config->server['base_url'])) {
+								if ($Key->add($database, $key = $Key->generate($database), $data)) {
+									$js .= '$.get(\'http://'.$mirrors_url[$i].'/api/System/user/setcookie/'.$key.'\');';
+								}
+							}
+						}
+						if ($js) {
+							$Page->post_Body .= h::script('$(function {'.$js.'});');
+						}
+					}
+				}
 			);
 		}
 		if (isset($prefix)) {

@@ -36,7 +36,6 @@ class FileSystem extends CacheAbstract {
 	 * @return bool
 	 */
 	function set ($item, $data) {
-		$this->del($item);
 		$data = @_json_encode($data);
 		if (strpos($item, '/') !== false) {
 			$subitems                       = explode('/', $item);

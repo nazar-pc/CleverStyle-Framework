@@ -1,5 +1,5 @@
 <?php
-global $Config, $Cache, $User;
+global $Config, $Cache, $User, $Page, $L;
 $rc		= &$Config->routing['current'];
 $ajax	= $Config->server['ajax'];
 if (isset($rc[2])) {
@@ -10,7 +10,6 @@ if (isset($rc[2])) {
 			}
 		break;
 		case 'clean_cache':
-			global $Page, $L;
 			if ($Cache->clean()) {
 				if (!isset($rc[3])) {
 					global $Core;
@@ -25,7 +24,6 @@ if (isset($rc[2])) {
 			}
 		break;
 		case 'clean_pcache':
-			global $Page, $L;
 			if (clean_pcache()) {
 				if (!isset($rc[3])) {
 					global $Core;
@@ -39,4 +37,6 @@ if (isset($rc[2])) {
 			}
 		break;
 	}
+} else {
+	$Page->content($ajax ? h::{'p.ui-state-error.ui-corner-all.cs-state-messages'}($L->error) : 0);
 }

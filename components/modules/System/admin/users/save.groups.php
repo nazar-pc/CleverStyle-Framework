@@ -7,7 +7,7 @@ if (isset($_POST['mode'])) {
 	switch ($_POST['mode']) {
 		case 'add':
 			$Index->save(
-				$User->add_group($_POST['group']['title'], $_POST['group']['description'])
+				(bool)$User->add_group($_POST['group']['title'], $_POST['group']['description'])
 			);
 		break;
 		case 'edit':
