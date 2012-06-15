@@ -107,6 +107,7 @@ if (isset($rc[2], $rc[3])) {
 						'username',
 						'email',
 						'language',
+						'theme',
 						'timezone',
 						'reg_date',
 						'reg_ip',
@@ -175,6 +176,18 @@ if (isset($rc[2], $rc[3])) {
 							[
 								'name'		=> 'user[language]',
 								'selected'	=> $user_data['language'],
+								'size'		=> 5
+							]
+						)),
+
+						$row($L->theme, h::{'select.cs-form-element'}(
+							[
+								'in'		=> array_merge([$L->system_default.' ('.$Config->core['theme'].')'], $Config->core['active_themes']),
+								'value'		=> array_merge([''], $Config->core['active_themes'])
+							],
+							[
+								'name'		=> 'user[theme]',
+								'selected'	=> $user_data['theme'],
 								'size'		=> 5
 							]
 						)),

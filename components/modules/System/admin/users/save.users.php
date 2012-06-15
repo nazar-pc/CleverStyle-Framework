@@ -42,6 +42,7 @@ switch ($_POST['mode']) {
 				'password',
 				'email',
 				'language',
+				'theme',
 				'timezone',
 				'status',
 				'block_until',

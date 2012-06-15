@@ -52,8 +52,6 @@ class Page {
 		unset($GLOBALS['interface']);
 	}
 	function init ($name, $keywords, $description, $theme, $color_scheme) {
-		$this->theme = $theme;
-		$this->color_scheme = $color_scheme;
 		if ($this->init) {
 			return;
 		}
@@ -61,6 +59,14 @@ class Page {
 		$this->Title[0] = htmlentities($name, ENT_COMPAT, 'utf-8');
 		$this->Keywords = $keywords;
 		$this->Description = $description;
+		$this->set_theme($theme);
+		$this->set_color_scheme($color_scheme);
+	}
+	function set_theme ($theme) {
+		$this->theme = $theme;
+	}
+	function set_color_scheme ($color_scheme) {
+		$this->color_scheme = $color_scheme;
 	}
 	function content ($add, $level = false) {
 		if ($level !== false) {
@@ -73,22 +79,28 @@ class Page {
 	protected function load($stop) {
 		global $Config, $L;
 		//Определение темы оформления
-		if (
-			is_object($Config) && $Config->core['allow_change_theme'] &&
-			_getcookie('theme') && in_array(_getcookie('theme'), $Config->core['active_themes'])
-		) {
-			$this->theme = _getcookie('theme');
-		}
-		if (is_object($Config) && $Config->core['site_mode']) {
-			if (
-				$Config->core['allow_change_theme'] && _getcookie('color_scheme') &&
-				in_array(_getcookie('color_scheme'), $Config->core['color_schemes'])
-			) {
-				$this->color_scheme = _getcookie('color_scheme');
+		if (is_object($Config) && $Config->core['allow_change_theme']) {
+			$this->theme		= in_array($this->theme, $Config->core['active_themes']) ? $this->theme : $Config->core['theme'];
+			$theme				= _getcookie('theme');
+			if ($theme && $theme !== $this->theme && in_array($theme, $Config->core['active_themes'])) {
+				$this->theme = $theme;
 			}
+			unset($theme);
+			$this->theme	= in_array($this->theme, $Config->core['active_themes']) ? $this->theme : $Config->core['theme'];
+			$theme			= _getcookie('theme');
+			if ($theme && $theme !== $this->theme && in_array($theme, $Config->core['active_themes'])) {
+				$this->theme = $theme;
+			}
+			unset($theme);
+			$this->color_scheme	= in_array($this->color_scheme, $Config->core['color_schemes'][$this->theme]) ? $this->color_scheme : $Config->core['color_schemes'][$this->theme][0];
+			$color_scheme		= _getcookie('color_scheme');
+			if ($color_scheme && $color_scheme !== $this->color_scheme && in_array($color_scheme, $Config->core['color_schemes'][$this->theme])) {
+				$this->color_scheme = $color_scheme;
+			}
+			unset($color_scheme);
 		}
 		//Задание названия файлов кеша
-		$this->pcache_basename = '_'.$this->theme.' '.$this->color_scheme.'_'.$L->clang.'.';
+		$this->pcache_basename = '_'.$this->theme.'_'.$this->color_scheme.'_'.$L->clang.'.';
 		//Загрузка шаблона
 		if ($this->interface) {
 			ob_start();
@@ -237,11 +249,16 @@ class Page {
 	function replace ($search, $replace = '') {
 		if (is_array($search)) {
 			foreach ($search as $i => $val) {
+				$char = mb_substr($val, 0, 1);
+				if ($char != mb_substr($val, -1)) {
+					$val = '/'.$val.'/';
+				}
 				$this->Search[] = '/'.trim($val, '/').'/';
 				$this->Replace[] = is_array($replace) ? $replace[$i] : $replace;
 			}
 		} else {
-			if (mb_substr($search, 0, 1) != '/') {
+			$char = mb_substr($search, 0, 1);
+			if ($char != mb_substr($search, -1)) {
 				$search = '/'.$search.'/';
 			}
 			$this->Search[] = $search;

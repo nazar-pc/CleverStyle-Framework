@@ -31,9 +31,11 @@ class Config {
 					'protocol'	=> '',
 					'local'		=> false
 				],
-				'ajax'			=> false	//Is this page request via AJAX
+				'ajax'			=> false,	//Is this page request via AJAX
+				'mirror_index'	=> -1		//Индекс текущего адреса сайта в списке зеркал ('-1' - не зеркало, а основной домен)
 			],
-			$mirror_index	= -1;			//Индекс текущего адреса сайта в списке зеркал ('-1' - не зеркало, а основной домен)
+			$can_be_admin		= true;		//Alows to check ability to be admin user (can be limited by IP)
+	protected	$init = false;
 
 	//Инициализация параметров системы
 	function __construct () {
@@ -78,8 +80,38 @@ class Config {
 		$Page->init($this->core['name'], $this->core['keywords'], $this->core['description'], $this->core['theme'], $this->core['color_scheme']);
 		//Инициализация объекта обработки ошибок
 		$Error->init();
+		if (!$this->init) {
+			$this->init = true;
+			if ($this->check_ip($this->core['ip_black_list'])) {
+				define('ERROR_PAGE', 403);
+				$Error->page();
+				__finish();
+				return;
+			}
+		}
 		//Установка часового пояса по-умолчанию
 		date_default_timezone_set($this->core['timezone']);
+	}
+	protected function check_ip ($ips) {
+		if (is_array($ips) && !empty($ips)) {
+			$REMOTE_ADDR			= $_SERVER['REMOTE_ADDR'];
+			$HTTP_X_FORWARDED_FOR	= isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : false;
+			$HTTP_CLIENT_IP			= isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : false;
+			foreach ($ips as $ip) {
+				$char = mb_substr($ip, 0, 1);
+				if ($char != mb_substr($ip, -1)) {
+					$ip = '/'.$ip.'/';
+				}
+				if (
+					preg_match($REMOTE_ADDR, $ip) ||
+					($HTTP_X_FORWARDED_FOR && preg_match($HTTP_X_FORWARDED_FOR, $ip)) ||
+					($HTTP_CLIENT_IP && preg_match($HTTP_CLIENT_IP, $ip))
+				) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	//Анализ и обработка текущего адреса страницы
 	protected function routing () {
@@ -105,7 +137,7 @@ class Config {
 		unset($core_url, $url);
 		//If it  is not the main domain - try to find match in mirrors
 		if ($url_replace === false && !empty($this->core['mirrors_url'])) {
-			$mirrors_url = explode("\n", $this->core['mirrors_url']);
+			$mirrors_url = $this->core['mirrors_url'];
 			foreach ($mirrors_url as $i => $mirror_url) {
 				$mirror_url		= explode('://', $mirror_url, 2);
 				$mirror_url[1]	= explode(';', $mirror_url[1]);
@@ -113,9 +145,9 @@ class Config {
 				if ($mirror_url[0] == $this->server['protocol']) {
 					foreach ($mirror_url[1] as $url) {
 						if (mb_strpos($this->server['url'], $url) === 0) {
-							$this->server['base_url']	= $this->server['protocol'].'://'.$url;
-							$url_replace				= $url;
-							$this->mirror_index			= $i;
+							$this->server['base_url']		= $this->server['protocol'].'://'.$url;
+							$url_replace					= $url;
+							$this->server['mirror_index']	= $i;
 							break 2;
 						}
 					}
@@ -123,7 +155,7 @@ class Config {
 			}
 			unset($mirrors_url, $mirror_url, $url, $i);
 			//If match in mirrors was not found - mirror is not allowed!
-			if ($this->mirror_index == -1) {
+			if ($this->server['mirror_index'] == -1) {
 				global $Error, $L;
 				$this->server['base_url'] = '';
 				$Error->process($L->mirror_not_allowed, 'stop');
@@ -135,12 +167,12 @@ class Config {
 			$Error->process($L->mirror_not_allowed, 'stop');
 		}
 		if (!empty($this->core['mirrors_url'])) {
-			$mirrors_url = explode("\n", $this->core['mirrors_url']);
+			$mirrors_url = $this->core['mirrors_url'];
 			foreach ($mirrors_url as $mirror_url) {
 				$mirror_url									= explode('://', $mirror_url, 2);
 				$this->server['mirrors'][$mirror_url[0]]	= array_merge(
-					$this->server['mirrors'][$mirror_url[0]],
-					explode(';', $mirror_url[1])
+					isset($this->server['mirrors'][$mirror_url[0]]) ? $this->server['mirrors'][$mirror_url[0]] : [],
+					isset($mirror_url[1]) ? explode(';', $mirror_url[1]) : []
 				);
 			}
 			$this->server['mirrors']['count'] = count($this->server['mirrors']['http'])+count($this->server['mirrors']['https']);
@@ -155,6 +187,13 @@ class Config {
 		$rc = explode('/', str_replace($r['in'], $r['out'], trim($this->server['url'], '/')));
 		//If url looks like admin query
 		if (isset($rc[0]) && mb_strtolower($rc[0]) == 'admin') {
+			if ($this->core['ip_admin_list_only'] && !$this->check_ip($this->core['ip_admin_list'])) {
+				define('ERROR_PAGE', 403);
+				global $Error;
+				$Error->page();
+				__finish();
+				return;
+			}
 			if (!defined('ADMIN')) {
 				define('ADMIN', true);
 			}
@@ -165,6 +204,9 @@ class Config {
 				define('API', true);
 			}
 			array_shift($rc);
+		}
+		if ($this->core['ip_admin_list_only'] && !$this->check_ip($this->core['ip_admin_list'])) {
+			$this->can_be_admin = false;
 		}
 		!defined('ADMIN')	&& define('ADMIN', false);
 		!defined('API')		&& define('API', false);

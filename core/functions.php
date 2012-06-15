@@ -626,10 +626,15 @@
 		static $path, $domain, $prefix, $secure;
 		global $Config, $Core;
 		if (!isset($prefix) && is_object($Config)) {
-			$prefix	= $Config->core['cookie_prefix'];
-			$path	= $Config->core['cookie_path'];
-			$domain	= $Config->core['cookie_domain'];
-			$secure	= $Config->server['protocol'] == 'https';
+			$prefix		= $Config->core['cookie_prefix'];
+			$secure		= $Config->server['protocol'] == 'https';
+			if ($Config->server['mirror_index'] == -1) {
+				$domain	= $Config->core['cookie_domain'];
+				$path	= $Config->core['cookie_path'];
+			} else {
+				$domain	= $Config->core['mirrors_cookie_domain'][$Config->server['mirror_index']];
+				$path	= $Config->core['mirrors_cookie_path'][$Config->server['mirror_index']];
+			}
 		}
 		$_COOKIE[$prefix.$name] = $value;
 		if (!$api && is_object($Core)) {
@@ -644,8 +649,8 @@
 				function () use ($data) {
 					global $Config, $Key, $Page, $User, $db;
 					if ($Config->server['mirrors']['count'] > 1) {
-						$mirrors_url			= explode("\n", $this->core['mirrors_url']);
-						$mirrors_cookie_domain	= explode("\n", $this->core['mirrors_cookie_domain']);
+						$mirrors_url			= $Config->core['mirrors_url'];
+						$mirrors_cookie_domain	= $Config->core['mirrors_cookie_domain'];
 						$database				= $db->{$Config->components['modules']['System']['db']['keys']}();
 						$data['check']			= md5($User->ip.$User->forwarded_for.$User->client_ip.$User->user_agent._json_encode($data));
 						$js						= '';
@@ -975,19 +980,13 @@
 			$strength = $length;
 		}
 		if (!isset($small)) {
-			$small = [];
-			for ($i = 97; $i <= 122; ++$i) {
-				$small[] = chr($i);
-			}
+			$small = range('a', 'z');
 		}
 		if (!isset($capital)) {
-			$capital = [];
-			for ($i = 65; $i <= 90; ++$i) {
-				$capital[] = chr($i);
-			}
+			$capital = range('A', 'Z');
 		}
 		$password = [];
-		$symbols = [0,1,2,3,4,5,6,7,8,9];
+		$symbols = range(0, 9);
 		if ($strength > 5) {
 			$strength = 5;
 		}

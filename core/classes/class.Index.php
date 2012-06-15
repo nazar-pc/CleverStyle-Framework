@@ -243,7 +243,7 @@ class Index {
 		}
 	}
 	protected function generate () {
-		global $Page, $Config, $L, $Cache, $User;
+		global $Page, $Config, $L, $Cache;
 		if ($this->api) {
 			interface_off();
 			$Page->content($this->Content);
@@ -252,45 +252,6 @@ class Index {
 		$this->menu_auto		&& $this->mainmenu();
 		$this->submenu_auto		&& $this->mainsubmenu();
 		$this->menumore_auto	&& $this->menumore();
-		$Page->js(
-			'var continue_transfer = "'.$L->continue_transfer.'",'.
-				'base_url = "'.$Config->server['base_url'].'",'.
-				'current_base_url = "'.$Config->server['base_url'].'/'.($this->admin ? 'admin/' : '').MODULE.'",'.
-				'yes = "'.$L->yes.'",'.
-				'no = "'.$L->no.'",'.
-				($User->is('guest') ?
-					'auth_error_connection = "'.$L->auth_error_connection.'",'.
-					'reg_connection_error = "'.$L->reg_error_connection.'",'.
-					'please_type_your_email = "'.$L->please_type_your_email.'",'.
-					'please_type_correct_email = "'.$L->please_type_correct_email.'",'.
-					'reg_success = "'.$L->reg_success.'",'.
-					'reg_confirmation = "'.$L->reg_confirmation.'",'.
-					'reg_error_connection = "'.$L->reg_error_connection.'",'.
-					'rules_agree = "'.$L->rules_agree.'",'.
-					'rules_text = "'.$Config->core['rules'].'",'.
-					'reg_success = "'.$L->reg_success.'",'.
-					'reg_success_confirmation = "'.$L->reg_success_confirmation.'",'
-				: '').
-				($Config->core['debug'] ?
-					'objects = "'.$L->objects.'",'.
-					'user_data = "'.$L->user_data.'",'.
-					'queries = "'.$L->queries.'",'.
-					'cookies = "'.$L->cookies.'",'
-				: '').
-				'language = "'.$L->clanguage.'",'.
-				'language_en = "'.$L->clanguage_en.'",'.
-				'lang = "'.$L->clang.'",'.
-				'module = "'.MODULE.'",'.
-				'in_admin = '.(int)$this->admin.','.
-				'debug = '.(int)(defined('DEGUB') && DEBUG).','.
-				'session_id = "'.$User->get_session().'",'.
-				'cookie_prefix = "'.$Config->core['cookie_prefix'].'",'.
-				'cookie_domain = "'.$Config->core['cookie_domain'].'",'.
-				'cookie_path = "'.$Config->core['cookie_path'].'",'.
-				'protocol = "'.$Config->server['protocol'].'",'.
-				'routing = '._json_encode($Config->routing['current']).';',
-			'code'
-		);
 		$this->blocks_processing();
 		if ($this->form) {
 			$Page->content(
@@ -368,6 +329,50 @@ class Index {
 			);
 		} else {
 			$Page->content($this->Content);
+		}
+	}
+	protected function js_vars () {
+		if (!$this->api) {
+			global $Config, $Page, $User, $L;
+			$Page->js(
+				'var continue_transfer = "'.$L->continue_transfer.'",'.
+					'base_url = "'.$Config->server['base_url'].'",'.
+					'current_base_url = "'.$Config->server['base_url'].'/'.($this->admin ? 'admin/' : '').MODULE.'",'.
+					'yes = "'.$L->yes.'",'.
+					'no = "'.$L->no.'",'.
+					($User->is('guest') ?
+						'auth_error_connection = "'.$L->auth_error_connection.'",'.
+							'reg_connection_error = "'.$L->reg_error_connection.'",'.
+							'please_type_your_email = "'.$L->please_type_your_email.'",'.
+							'please_type_correct_email = "'.$L->please_type_correct_email.'",'.
+							'reg_success = "'.$L->reg_success.'",'.
+							'reg_confirmation = "'.$L->reg_confirmation.'",'.
+							'reg_error_connection = "'.$L->reg_error_connection.'",'.
+							'rules_agree = "'.$L->rules_agree.'",'.
+							'rules_text = "'.$Config->core['rules'].'",'.
+							'reg_success = "'.$L->reg_success.'",'.
+							'reg_success_confirmation = "'.$L->reg_success_confirmation.'",'
+						: '').
+					($Config->core['debug'] ?
+						'objects = "'.$L->objects.'",'.
+							'user_data = "'.$L->user_data.'",'.
+							'queries = "'.$L->queries.'",'.
+							'cookies = "'.$L->cookies.'",'
+						: '').
+					'language = "'.$L->clanguage.'",'.
+					'language_en = "'.$L->clanguage_en.'",'.
+					'lang = "'.$L->clang.'",'.
+					'module = "'.MODULE.'",'.
+					'in_admin = '.(int)$this->admin.','.
+					'debug = '.(int)(defined('DEGUB') && DEBUG).','.
+					'session_id = "'.$User->get_session().'",'.
+					'cookie_prefix = "'.$Config->core['cookie_prefix'].'",'.
+					'cookie_domain = "'.$Config->core['cookie_domain'].'",'.
+					'cookie_path = "'.$Config->core['cookie_path'].'",'.
+					'protocol = "'.$Config->server['protocol'].'",'.
+					'routing = '._json_encode($Config->routing['current']).';',
+				'code'
+			);
 		}
 	}
 	protected function blocks_processing () {
@@ -502,6 +507,7 @@ class Index {
 		if (defined('ERROR_PAGE')) {
 			$this->form = false;
 			global $Error;
+			$this->js_vars();
 			$Error->page();
 			return;
 		}
@@ -515,7 +521,10 @@ class Index {
 		if ($this->stop) {
 			return;
 		}
-		$this->generate_auto	&& $this->generate();
+		if ($this->generate_auto) {
+			$this->js_vars();
+			$this->generate();
+		}
 		closure_process($this->postload);
 	}
 }

@@ -13,7 +13,16 @@ if ($_POST['edit_settings'] == 'apply' || $_POST['edit_settings'] == 'save') {
 		if (isset($_POST[$part])) {
 			$temp = &$Config->$part;
 			foreach ($_POST[$part] as $item => $value) {
-				$temp[$item] = $value;
+				switch ($item) {
+					case 'mirrors_url':
+					case 'mirrors_cookie_domain':
+					case 'mirrors_cookie_path':
+					case 'ip_black_list':
+					case 'ip_admin_list':
+						$value = explode("\n", $value);
+					break;
+				}
+				$temp[$item] = xap($value, true);
 			}
 			unset($item, $value);
 			if ($part == 'routing' || $part == 'replace') {

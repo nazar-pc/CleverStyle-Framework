@@ -174,7 +174,7 @@ class User {
 			//Checking of user type
 			$groups = $this->get_user_groups() ?: [];
 			if (in_array(1, $groups)) {
-				$this->current['is']['admin']	= true;
+				$this->current['is']['admin']	= $Config->can_be_admin;
 				$this->current['is']['user']	= true;
 			} elseif (in_array(2, $groups)) {
 				$this->current['is']['user']	= true;
@@ -1085,6 +1085,9 @@ class User {
 			];
 			_setcookie('session', $hash, TIME + $Config->core['session_expire'], true);
 			$this->get_session_user();
+			if (($this->db()->qf('SELECT COUNT(`id`) AS `count` FROM `[prefix]sessions`', 'count') % $Config->core['inserts_limit']) == 0) {
+				$this->db_prime()->q('DELETE FROM `[prefix]sessions` WHERE `expire` < '.TIME);
+			}
 			return true;
 		}
 		return false;
