@@ -44,6 +44,16 @@ $a->content(
 			).
 			h::br().
 			$L->current_ip.': '.h::b($User->ip)
+		]),
+
+		h::td([
+			h::info('on_error_globals_dump'),
+			h::{'input[type=radio]'}([
+				'name'			=> 'core[on_error_globals_dump]',
+				'checked'		=> $Config->core['on_error_globals_dump'],
+				'value'			=> [0, 1],
+				'in'			=> [$L->off, $L->on]
+			])
 		])
 	])
-);
+);//TODO logs reader

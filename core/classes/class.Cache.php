@@ -20,6 +20,9 @@ class Cache {
 		return $this->instance->get($item);
 	}
 	function set ($item, $data) {
+		if (is_object($this->instance)){
+			$this->instance->del($item);
+		}
 		if (!$this->cache) {
 			return true;
 		}

@@ -4,7 +4,8 @@
  * Require configuration variable $CACHE_SIZE with maximum allowed cache size in MB, 0 means without limitation (is not recomended)
  */
 class FileSystem extends CacheAbstract {
-	protected $cache_size;
+	protected	$cache_size,
+				$size			= null;
 
 	function __construct () {
 		global $CACHE_SIZE;
@@ -38,13 +39,8 @@ class FileSystem extends CacheAbstract {
 	function set ($item, $data) {
 		$data = @_json_encode($data);
 		if (strpos($item, '/') !== false) {
-			$subitems                       = explode('/', $item);
+			$subitems                       = explode('/', trim($item, "\n/"));
 			$subitems[count($subitems) - 1] = trim($subitems[count($subitems) - 1]);
-			if (!strlen($subitems[count($subitems) - 1])) {
-				global $Error, $L;
-				$Error->process($L->file.' '.CACHE.DS.$item.' '.$L->not_exists);
-				return false;
-			}
 			$item = str_replace('/', DS, $item);
 			$last = count($subitems) - 1;
 			$path = [];
@@ -73,8 +69,7 @@ class FileSystem extends CacheAbstract {
 				}
 				$size_file = _fopen(CACHE.DS.'size', 'c+b');
 				flock($size_file, LOCK_EX);
-				$this->size = 0;
-				if (isset($size) && $this->size === false) {
+				if (isset($size) && $this->size === null) {
 					$this->size = (int)fread($size_file, $size);
 				}
 				unset($size);
@@ -105,8 +100,8 @@ class FileSystem extends CacheAbstract {
 				return _file_put_contents(CACHE.DS.$item, $data, LOCK_EX | FILE_BINARY);
 			}
 		} else {
-			global $Error, $L;
-			$Error->process($L->file.' '.CACHE.DS.$item.' '.$L->not_writable);
+			global $L;
+			trigger_error($L->file.' '.CACHE.DS.$item.' '.$L->not_writable, E_WARNING);
 			return false;
 		}
 	}

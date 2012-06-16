@@ -46,6 +46,7 @@ class Index {
 		) {
 			if (!($User->is('admin') && $User->get_user_permission($this->permission_group = MODULE.'/admin', 'index'))) {
 				define('ERROR_PAGE', 403);
+				$this->__finish();
 				return;
 			}
 			define('MFOLDER', $admin_path);
@@ -57,6 +58,7 @@ class Index {
 		) {
 			if (!$User->get_user_permission($this->permission_group = MODULE.'/api', 'index')) {
 				define('ERROR_PAGE', 403);
+				$this->__finish();
 				return;
 			}
 			define('MFOLDER', $api_path);
@@ -64,12 +66,14 @@ class Index {
 		} elseif (_file_exists(MODULES.DS.MODULE)) {
 			if (!$User->get_user_permission($this->permission_group = MODULE, 'index')) {
 				define('ERROR_PAGE', 403);
+				$this->__finish();
 				return;
 			}
 			define('MFOLDER', MODULES.DS.MODULE);
 			$this->module	= true;
 		} else {
 			define('ERROR_PAGE', 404);
+			$this->__finish();
 			return;
 		}
 		unset($admin_path, $api_path);
@@ -184,8 +188,8 @@ class Index {
 	}
 	protected function mainmenu () {
 		global $Config, $L, $Page, $User;
-		if ($User->is('admin')) {
-			if ($Config->core['debug']) {
+		if ($User->is('admin') || ($Config->can_be_admin && $Config->core['ip_admin_list_only'])) {
+			if (defined('DEBUG') && DEBUG) {
 				$Page->mainmenu .= h::a(
 					mb_substr($L->debug, 0, 1),
 					[
@@ -302,7 +306,7 @@ class Index {
 								'data-title'	=> $this->cancel_button_back ? '' : $L->cancel_info,
 								'type'			=> $this->cancel_button_back ? 'button' : 'submit',
 								'onClick'		=> $this->cancel_button_back ? 'history.go(-1);' : '',
-								'add'			=> $this->cancel_button_back ? '' : (isset($Config->core['cache_not_saved']) ? '' : $this->cancel)
+								'add'			=> $this->cancel_button_back ? '' : (isset($Config->core['cache_not_saved']) ? '' : $this->cancel_button)
 							]
 						)
 					: '').
@@ -353,7 +357,7 @@ class Index {
 							'reg_success = "'.$L->reg_success.'",'.
 							'reg_success_confirmation = "'.$L->reg_success_confirmation.'",'
 						: '').
-					($Config->core['debug'] ?
+					(defined('DEBUG') && DEBUG && ($User->is('admin') || ($Config->can_be_admin && $Config->core['ip_admin_list_only'])) ?
 						'objects = "'.$L->objects.'",'.
 							'user_data = "'.$L->user_data.'",'.
 							'queries = "'.$L->queries.'",'.
@@ -364,7 +368,7 @@ class Index {
 					'lang = "'.$L->clang.'",'.
 					'module = "'.MODULE.'",'.
 					'in_admin = '.(int)$this->admin.','.
-					'debug = '.(int)(defined('DEGUB') && DEBUG).','.
+					'debug = '.(int)(defined('DEBUG') && DEBUG).','.
 					'session_id = "'.$User->get_session().'",'.
 					'cookie_prefix = "'.$Config->core['cookie_prefix'].'",'.
 					'cookie_domain = "'.$Config->core['cookie_domain'].'",'.
@@ -506,10 +510,9 @@ class Index {
 	function __finish () {
 		if (defined('ERROR_PAGE')) {
 			$this->form = false;
-			global $Error;
+			global $Page;
 			$this->js_vars();
-			$Error->page();
-			return;
+			$Page->error_page();
 		}
 		closure_process($this->preload);
 		if (!$this->admin && !$this->api && _file_exists(MFOLDER.DS.'index.html')) {

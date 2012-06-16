@@ -16,9 +16,9 @@ $_REQUEST					= [];
 //CDOMAIN - константа, содержащая домен текущего сайта
 //(он может отличатся от базового домена, если вы находитесь на зеркале)
 define('CDOMAIN',		$_SERVER['HTTP_HOST']);		//Доменное имя текущего сайта
+define('CONFIG',		DIR.DS.'config');			//Папка конфигурации
 define('CORE',			DIR.DS.'core');				//Папка ядра
 	define('CLASSES',	CORE.DS.'classes');			//Папка с классами
-	define('CONFIG',	CORE.DS.'config');			//Папка конфигурации
 	define('ENGINES',	CORE.DS.'engines');			//Папка с движками БД и хранилищ
 	define('LANGUAGES',	CORE.DS.'languages');		//Папка с языковыми файлами
 define('INCLUDES',		DIR.DS.'includes');			//Папка с включениями
@@ -39,7 +39,6 @@ _require(CORE.DS.'required_verions.php', true, true);
 //Including of custom user files
 _include(CORE.DS.'custom.php', true, false);
 
-$stop						= 0;
 $timeload['loader_init']	= microtime(true);
 $loader_init_memory			= memory_get_usage();
 //Запуск ядра и первичных классов, создание необходимых объектов

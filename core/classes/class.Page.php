@@ -76,7 +76,7 @@ class Page {
 		}
 	}
 	//Загрузка и обработка темы оформления, подготовка шаблона
-	protected function load($stop) {
+	protected function load() {
 		global $Config, $L;
 		//Определение темы оформления
 		if (is_object($Config) && $Config->core['allow_change_theme']) {
@@ -105,17 +105,15 @@ class Page {
 		if ($this->interface) {
 			ob_start();
 			if (
-				is_object($Config) && !$stop && $Config->core['site_mode'] &&
+				is_object($Config) && $Config->core['site_mode'] &&
 				(_file_exists(THEMES.DS.$this->theme.DS.'index.html') || _file_exists(THEMES.DS.$this->theme.DS.'index.php'))
 			) {
 				_require(THEMES.DS.$this->theme.DS.'prepare.php', true, false);
 				if (!_include(THEMES.DS.$this->theme.DS.'index.php', true, false)) {
 					_include(THEMES.DS.$this->theme.DS.'index.html', true);
 				}
-			} elseif ($stop == 1 && _file_exists(THEMES.DS.$this->theme.DS.'closed.html')) {
+			} elseif ($Config->core['site_mode'] == 1 && _file_exists(THEMES.DS.$this->theme.DS.'closed.html')) {
 				_include(THEMES.DS.$this->theme.DS.'closed.html', 1);
-			} elseif ($stop == 2 && _file_exists(THEMES.DS.$this->theme.DS.'error.html')) {
-				_include(THEMES.DS.$this->theme.DS.'error.html', 1);
 			} else {
 				echo	"<!doctype html>\n".
 						"<html>\n".
@@ -131,29 +129,27 @@ class Page {
 		}
 	}
 	//Обработка шаблона и подготовка данных к выводу
-	protected function prepare ($stop) {
+	protected function prepare () {
 		global $copyright, $L, $Config;
 		//Загрузка настроек оформления и шаблона темы
-		$this->load($stop);
+		$this->load();
 		//Загрузка стилей и скриптов
 		$this->load_includes();
 		//Загрузка данных о пользователе
 		$this->get_header_info();
 		//Формирование заголовка
-		if (!$stop) {
-			foreach ($this->Title as $i => $v) {
-				if (!trim($v)) {
-					unset($this->Title[$i]);
-				} else {
-					$this->Title[$i] = trim($v);
-				}
-			}
-			if (is_object($Config)) {
-				$this->Title = $Config->core['title_reverse'] ? array_reverse($this->Title) : $this->Title;
-				$this->Title = implode(' '.trim($Config->core['title_delimiter']).' ', $this->Title);
+		foreach ($this->Title as $i => $v) {
+			if (!trim($v)) {
+				unset($this->Title[$i]);
 			} else {
-				$this->Title = $this->Title[0];
+				$this->Title[$i] = trim($v);
 			}
+		}
+		if (is_object($Config)) {
+			$this->Title = $Config->core['title_reverse'] ? array_reverse($this->Title) : $this->Title;
+			$this->Title = implode(' '.trim($Config->core['title_delimiter']).' ', $this->Title);
+		} else {
+			$this->Title = $this->Title[0];
 		}
 		//Формирование содержимого <head>
 		if ($this->core_css[1]) {
@@ -199,7 +195,7 @@ class Page {
 						implode('', $this->css).
 						implode('', $this->core_js).
 						implode('', $this->js);
-		$this->Footer .= $this->footer($stop);
+		$this->Footer .= $this->footer();
 		//Подстановка контента в шаблон
 		$construct['in'] = [
 			'<!--html_lang-->',
@@ -497,21 +493,19 @@ class Page {
 		_chdir($cwd);
 	}
 	//Генерирование информации о процессе загрузки страницы
-	protected function footer ($stop) {
+	protected function footer () {
 		global $copyright, $L, $db;
 		if (!($copyright && is_array($copyright))) {
 			exit;
 		}
 		$footer = h::div($copyright[1].h::br().$copyright[2], array('id'	=> 'copyright'));
-		if (!$stop) {
-			$footer =	h::div(
-							$L->page_generated.' <!--generate time--> '.
-							', '.(is_object($db) ? $db->queries : 0).' '.$L->queries_to_db.' '.$L->during.' '.format_time((is_object($db) ? round($db->time, 5) : 0)).
-							', '.$L->peak_memory_usage.' <!--peak memory usage-->',
-							array('id'	=> 'execution_info')
-						).
-						$footer;
-		}
+		$footer =	h::div(
+			$L->page_generated.' <!--generate time--> '.
+			', '.(is_object($db) ? $db->queries : 0).' '.$L->queries_to_db.' '.$L->during.' '.format_time((is_object($db) ? round($db->time, 5) : 0)).
+			', '.$L->peak_memory_usage.' <!--peak memory usage-->',
+			array('id'	=> 'execution_info')
+		).
+		$footer;
 		return $footer;
 	}
 	//Сбор и отображение отладочных данных
@@ -672,9 +666,35 @@ class Page {
 			$text
 		);
 	}
-	//Error pages processing
-	function error ($page) {//TODO Error pages processing
-		$this->warning($page);
+	/**
+	 * Error pages processing
+	 */
+	function error_page () {
+		interface_off();
+		$string_code = null;
+		switch (ERROR_PAGE) {
+			case 400:
+				$string_code = '400 Bad Request';
+				break;
+			case 403:
+				$string_code = '403 Forbidden';
+				break;
+			case 404:
+				$string_code = '404 Not Found';
+				break;
+			case 500:
+				$string_code = '500 Internal Server Error';
+				break;
+		}
+		if ($string_code) {
+			header($_SERVER['SERVER_PROTOCOL'].' '.$string_code);
+		}
+		ob_start();
+		if (!_include(THEMES.DS.$this->theme.DS.'error.html') && !_include(THEMES.DS.$this->theme.DS.'error.php')) {
+			echo "<!doctype html>\n".$string_code;
+		}
+		$this->Content = ob_get_clean();
+		__finish();
 	}
 	/**
 	 * Substitutes header information about user, login/registration forms, etc.
@@ -788,10 +808,11 @@ class Page {
 			//Обработка замены контента
 			echo preg_replace($this->Search, $this->Replace, $this->Content);
 		} else {
-			global $stop, $Error, $L, $timeload, $User, $Core;
+			global $Error, $L, $timeload, $User, $Core;
 			$Core->run_trigger('System/Page/pre_display');
+			$Error->display();
 			//Обработка шаблона, наполнение его содержимым
-			$this->prepare($stop);
+			$this->prepare();
 			//Обработка замены контента
 			$this->Html = preg_replace($this->Search, $this->Replace, $this->Html);
 			//Опеределение типа сжатия сжатия
@@ -804,7 +825,13 @@ class Page {
 				ini_set('zlib.output_compression_level', $Config->core['zlib_compression_level']);
 			}
 			$timeload['end'] = microtime(true);
-			if (is_object($User) && $User->is('admin') && is_object($Config) && $Config->core['debug']) {
+			if (
+				is_object($User) && (
+					$User->is('admin') || (
+						$Config->can_be_admin && $Config->core['ip_admin_list_only']
+					)
+				) && defined('DEBUG') && DEBUG
+			) {
 				$this->debug();
 			}
 			echo str_replace(

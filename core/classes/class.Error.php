@@ -1,115 +1,105 @@
 <?php
-class Error {//TODO need hard work for constructing of structure and errors processing
-	public		$error	= true;
-	protected	$init = false,	//For single initialization
-				$num	= 0;
-	function init () {
-		if ($this->init) {
-			return;
-		}
-		$this->init = true;
+class Error {
+	public		$error					= true;
+	protected	$num					= 0,	//Number of occured errors
+				$errors_list_all		= [],	//Array of all errors
+				$errors_list_display	= [];	//Array of non-critical errors to show to user
+	function __construct () {
 		global $Error;
 		$Error = $this;
-		//set_error_handler(array($Error, 'process'));
+		set_error_handler([$Error, 'trigger']);
 	}
-	function process ($errno, $errstr='', $errfile=true, $errline='') {
+
+	/**
+	 * Is used as error handler
+	 *
+	 * @param      $level	Error level
+	 * @param null $string	Error message
+	 */
+	function trigger ($level, $string = null) {
 		if (!$this->error) {
 			return;
 		}
-		global $L, $Page, $Config;
-		if (is_array($errno)) {
-			$args = $errno;
-			unset($errno);
-			$errno		= isset($args[0]) ? $args[0] : '';
-			$errstr		= isset($args[1]) ? $args[1] : $errstr;
-			$errfile	= isset($args[2]) ? $args[2] : $errfile;
-			$errline	= isset($args[3]) ? $args[3] : $errline;
-			unset($args);
+		$string = xap($string);
+		global $Config, $Index, $Page;
+		$dump = 'null';
+		$debug_backtrace = debug_backtrace();
+		if (is_object($Config) && $Config->core['on_error_objects_dump']) {
+			ob_start();
+			var_dump($GLOBALS);
+			$dump = _json_encode([
+				'GLOBALS'			=> ob_get_clean(),
+				'debug_backtrace'	=> $debug_backtrace
+			]);
 		}
-		if ($errfile && $errline) {
-			switch ($errno) {
-				case E_USER_ERROR:
-				case E_ERROR:
-					++$this->num;
-					$Page->Title = array($L->fatal.' #'.$errno.': '.$errstr.' '.$L->page_generation_aborted.'...');
-					$Page->content(
-						'<p><span style="text-transform: uppercase; font-weight: bold;">'.$L->fatal.' #'.$errno.':</span> '.$errstr.' '.$L->on_line.' '.$errline.' '.$L->of_file.' '
-						.$errfile.', PHP '.PHP_VERSION.' ('.PHP_OS.")<br>\n"
-						.$L->page_generation_aborted."...<br>\n"
-						.$L->report_to_admin."<br>\n"
-						.(is_object($Config) ?
-							($Config->core['admin_mail'] ? $L->admin_mail.': <a href="mailto:'.$Config->core['admin_mail']."\">".$Config->core['admin_mail']."</a><br>\n" : '')
-							.($Config->core['admin_phone'] ? $L->admin_phone.': '.$Config->core['admin_phone']."<br>\n" : '')
-						: '').'<br>'
-					);
-					global $stop;
-					$stop = 2;
-					__finish();
-				break;
-				
-				case E_USER_WARNING:
-				case E_WARNING:
-					$Page->content(
-						'<span style="text-transform: uppercase; font-weight: bold;">'.$L->error.' #'.$errno.':</span> '.$errstr.' '.$L->on_line.' '.$errline.' '.$L->of_file.' '
-						.$errfile.', PHP '.PHP_VERSION.' ('.PHP_OS.")<br>"
-						.$L->report_to_admin."<br>\n"
-						.(is_object($Config) ?
-							($Config->core['admin_mail'] ? $L->admin_mail.': <a href="mailto:'.$Config->core['admin_mail']."\">".$Config->core['admin_mail']."</a><br>\n" : '')
-							.($Config->core['admin_phone'] ? $L->admin_phone.': '.$Config->core['admin_phone']."<br>\n" : '')
-						: '').'<br>'
-					);
-				break;
-				
-				case E_USER_NOTICE:
-				case E_NOTICE:
-					$Page->content(
-						'<span style="text-transform: uppercase; font-weight: bold;">'.$L->warning.' #'.$errno.':</span> '.$errstr.' '.$L->on_line.' '.$errline.' '.$L->of_file.' '
-						.$errfile.', PHP '.PHP_VERSION.' ('.PHP_OS.")<br><br>\n"
-					);
-				break;
-				
-				default:
-					$Page->content(
-						'<span style="text-transform: uppercase; font-weight: bold;">'.$L->error.':</span> '.$errstr.' '.$L->on_line.' '.$errline.' '.$L->of_file.' '
-						.$errfile.', PHP '.PHP_VERSION.' ('.PHP_OS.")<br><br>\n"
-					);
-				break;
-			}
-		} else {
-			if ($errstr == 'stop') {
-				$Page->Title = array($Page->Title[0], $L->fatal.' '.$L->page_generation_aborted.'...');
-				$Page->Content = '<h2 align="center"><span style="text-transform: uppercase; font-weight: bold;">'.$L->error.':</span> '.$errno."<br></h2>\n";
-				global $stop;
-				$stop = 2;
-				__finish();
-			} else {
-				$Page->content('<span style="text-transform: uppercase; font-weight: bold;">'.$L->error.':</span> '.$errno."<br>\n");
-			}
+		switch ($level) {
+			case E_USER_ERROR:
+			case E_ERROR:
+				++$this->num;
+				$this->errors_list_all[]		=	'E '.date('H:i:s', TIME).' ['.MICROTIME.'] '.$string.
+													' Occured: '.$debug_backtrace[1]['file'].':'.$debug_backtrace[1]['line'].' Dump: '.$dump."\n";
+				define('ERROR_PAGE', 500);
+				if (is_object($Index)) {
+					$Index->__finish();
+				} else {
+					$Page->error_page();
+				}
+			break;
+			case E_USER_WARNING:
+			case E_WARNING:
+				++$this->num;
+				$this->errors_list_all[]		=	'W '.date('H:i:s', TIME).' ['.MICROTIME.'] '.$string.
+													' Occured: '.$debug_backtrace[1]['file'].':'.$debug_backtrace[1]['line'].' Dump: '.$dump."\n";
+			break;
+			default:
+				$this->errors_list_all[]		=	'N '.date('H:i:s', TIME).' ['.MICROTIME.'] '.$string.
+													' Occured: '.$debug_backtrace[1]['file'].':'.$debug_backtrace[1]['line'].' Dump: '.$dump."\n";
+				$this->errors_list_display[]	= $string;
+			break;
 		}
 	}
-	protected function log ($text) {
-	}
-	protected function mail ($text) {
-	}
+	/**
+	 * Get number of occured errors
+	 *
+	 * @return int
+	 */
 	function num () {
         return $this->num;
     }
-	function page ($page = false) {
-		if ($page === false) {
-			if (defined('ERROR_PAGE')) {
-				$page = ERROR_PAGE;//TODO Switch with headers sending for different errors
-			} else {
-				return;
+	/**
+ 	 * Displaying errors
+	 */
+	function display () {
+		global $User;
+		if ($User->is('admin')) {
+			if (!empty($this->errors_list_all)) {
+				global $Page;
+				foreach ($this->errors_list_all as $error) {
+					$Page->warning($error);
+				}
+				$this->errors_list_all = [];
+			}
+		} else {
+			if (!empty($this->errors_list_display)) {
+				global $Page;
+				foreach ($this->errors_list_display as $error) {
+					$Page->warning($error);
+				}
+				$this->errors_list_display = [];
 			}
 		}
-		global $Page;
-		$Page->error($page);
 	}
-	/*function __call ($func, $args) {//TODO Is it necessary?
-		$this->process($args);
-	}*/
 	/**
 	 * Cloning restriction
 	 */
 	function __clone () {}
+	/**
+ 	 * Writing occured errors to the log file
+	 */
+	function __finish () {
+		if (!empty($this->errors_list_all)) {
+			_file_put_contents(LOGS.DS.date('d-m-Y', TIME), implode("\n", $this->errors_list_all)."\n", LOCK_EX | FILE_APPEND);
+			$this->errors_list_all = [];
+		}
+	}
 }

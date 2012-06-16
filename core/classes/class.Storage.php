@@ -61,8 +61,8 @@ class Storage {
 			$this->false_connections[$connection] = $connection.'/'.$storage['host'].'/'.$storage['connection'];
 			unset($storage);
 			//Выводим ошибку подключения к хранилищу
-			global $Error, $L;
-			$Error->process($L->error_storage.' '.$this->false_connections[$connection]);
+			global $L;
+			trigger_error($L->error_storage.' '.$this->false_connections[$connection], E_WARNING);
 			return false;
 		}
 	}

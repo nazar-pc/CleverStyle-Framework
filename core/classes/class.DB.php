@@ -167,11 +167,11 @@ class DB {
 			}
 			//Если подключалось не зеркало - выводим ошибку подключения к БД
 			if (!is_array($mirror)) {
-				global $Error, $L;
+				global $L;
 				if ($connection == 0) {
-					$Error->process($L->error_core_db, 'stop');
+					trigger_error($L->error_core_db, E_ERROR);
 				} else {
-					$Error->process($L->error_db.' '.$this->false_connections[$connection]);
+					trigger_error($L->error_db.' '.$this->false_connections[$connection], E_WARNING);
 				}
 			}
 			return false;

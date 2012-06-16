@@ -151,11 +151,10 @@ class Text {
 		if (!is_object($database) || empty($data)) {
 			return false;
 		}
-		$object = $this;
 		return preg_replace_callback(
 			'/\{¶([0-9]*?)\}/',
-			function ($input) use ($database, $object) {
-				return $object->get($database, $input[1]);
+			function ($input) use ($database) {
+				return $this->get($database, $input[1]);
 			},
 			$data
 		);

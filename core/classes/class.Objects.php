@@ -9,12 +9,12 @@ class Objects {
 				'Config',
 				'Key',
 				'db',
-				'Error',
 				'L',
 				'Text',
 				'Cache',
 				'Core',
-				'Storage'
+				'Storage',
+				'Error'
 			];
 	private	$List				= [];
 	//Добавление в список объектов для их разрушения по окончанию работы
@@ -28,10 +28,9 @@ class Objects {
 	 * @return bool|object
 	 */
 	function load ($class, $custom_name = false) {
-		global $stop;
 		if (empty($class)) {
 			return false;
-		} elseif (!$stop && !is_array($class)) {
+		} elseif (!defined('STOP') && !is_array($class)) {
 			$loader = false;
 			if (substr($class, 0, 1) == '_') {
 				$class	= substr($class, 1);
@@ -47,7 +46,7 @@ class Objects {
 						} else {
 							$this->List[$custom_name]	= $custom_name;
 							$$custom_name				= new $class();
-							$this->Loaded[$custom_name]	= array(microtime(true), memory_get_usage());
+							$this->Loaded[$custom_name]	= [microtime(true), memory_get_usage()];
 						}
 					}
 					return $$custom_name;
@@ -60,17 +59,17 @@ class Objects {
 						} else {
 							$this->List[$class]		= $class;
 							$$class					= new $class();
-							$this->Loaded[$class]	= array(microtime(true), memory_get_usage());
+							$this->Loaded[$class]	= [microtime(true), memory_get_usage()];
 						}
 					}
 					return $$class;
 				}
 			} else {
-				global $Error, $L;
-				$Error->process($L->class.' '.h::b($class).' '.$L->not_exists, 'stop');
+				global $L;
+				trigger_error($L->class.' '.h::b($class).' '.$L->not_exists, E_ERROR);
 				return false;
 			}
-		} elseif (!$stop && is_array($class)) {
+		} elseif (!defined('STOP') && is_array($class)) {
 			foreach ($class as $c) {
 				if (is_array($c)) {
 					$this->load($c[0], isset($c[1]) ? $c[1] : false);

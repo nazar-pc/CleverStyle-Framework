@@ -18,10 +18,9 @@
 					return require $file;
 				}
 			} else {
-				global $L, $Error;
-				if (is_bool($show_errors) && $show_errors && is_object($Error)) {
+				if (is_bool($show_errors) && $show_errors) {
 					$data = debug_backtrace();
-					$Error->process(null, $L->file.' '.$file.' '.$L->not_exists, $data[0]['file'], $data[0]['line']);
+					trigger_error('File '.$file.' does not exists in '.$data[0]['file'].' on line '.$data[0]['line'], E_ERROR);
 				} elseif ($show_errors instanceof Closure) {
 					return (bool)$show_errors();
 				}
@@ -44,10 +43,9 @@
 					return include $file;
 				}
 			} else {
-				global $L, $Error;
-				if (is_bool($show_errors) && $show_errors && is_object($Error)) {
+				if (is_bool($show_errors) && $show_errors) {
 					$data = debug_backtrace();
-					$Error->process(null, $L->file.' '.$file.' '.$L->not_exists, $data[0]['file'], $data[0]['line']);
+					trigger_error('File '.$file.' does not exists in '.$data[0]['file'].' on line '.$data[0]['line'], E_WARNING);
 				} elseif ($show_errors instanceof Closure) {
 					return (bool)$show_errors();
 				}

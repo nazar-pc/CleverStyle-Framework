@@ -39,7 +39,8 @@ class Config {
 
 	//Инициализация параметров системы
 	function __construct () {
-		global $Cache;
+		global $Cache, $Config;
+		$Config = $this;
 		//Считывание настроек с кеша и определение недостающих данных
 		$config = $Cache->config;
 		if (is_array($config)) {
@@ -68,7 +69,7 @@ class Config {
 	}
 	//Инициализация движка (или реинициалицазия при необходимости)
 	function init() {
-		global $Cache, $L, $Error, $Page;
+		global $Cache, $L, $Page;
 		if ($this->core['debug'] && !defined('DEBUG')) {
 			define('DEBUG', true);
 		}
@@ -78,14 +79,12 @@ class Config {
 		$L->init($this->core['active_languages'], $this->core['language']);
 		//Инициализация объекта страницы с использованием настроек движка
 		$Page->init($this->core['name'], $this->core['keywords'], $this->core['description'], $this->core['theme'], $this->core['color_scheme']);
-		//Инициализация объекта обработки ошибок
-		$Error->init();
 		if (!$this->init) {
+			$Page->replace($this->replace['in'], $this->replace['out']);
 			$this->init = true;
 			if ($this->check_ip($this->core['ip_black_list'])) {
 				define('ERROR_PAGE', 403);
-				$Error->page();
-				__finish();
+				$Page->error_page();
 				return;
 			}
 		}
@@ -97,17 +96,21 @@ class Config {
 			$REMOTE_ADDR			= $_SERVER['REMOTE_ADDR'];
 			$HTTP_X_FORWARDED_FOR	= isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : false;
 			$HTTP_CLIENT_IP			= isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : false;
-			foreach ($ips as $ip) {
-				$char = mb_substr($ip, 0, 1);
-				if ($char != mb_substr($ip, -1)) {
-					$ip = '/'.$ip.'/';
-				}
-				if (
-					preg_match($REMOTE_ADDR, $ip) ||
-					($HTTP_X_FORWARDED_FOR && preg_match($HTTP_X_FORWARDED_FOR, $ip)) ||
-					($HTTP_CLIENT_IP && preg_match($HTTP_CLIENT_IP, $ip))
-				) {
-					return true;
+			if (!empty($ips)) {
+				foreach ($ips as $ip) {
+					if (!empty($ip)) {
+						$char = mb_substr($ip, 0, 1);
+						if ($char != mb_substr($ip, -1)) {
+							$ip = '/'.$ip.'/';
+						}
+						if (
+							preg_match($REMOTE_ADDR, $ip) ||
+							($HTTP_X_FORWARDED_FOR && preg_match($HTTP_X_FORWARDED_FOR, $ip)) ||
+							($HTTP_CLIENT_IP && preg_match($HTTP_CLIENT_IP, $ip))
+						) {
+							return true;
+						}
+					}
 				}
 			}
 		}
@@ -156,15 +159,15 @@ class Config {
 			unset($mirrors_url, $mirror_url, $url, $i);
 			//If match in mirrors was not found - mirror is not allowed!
 			if ($this->server['mirror_index'] == -1) {
-				global $Error, $L;
+				global $L;
 				$this->server['base_url'] = '';
-				$Error->process($L->mirror_not_allowed, 'stop');
+				trigger_error($L->mirror_not_allowed, E_ERROR);
 			}
 		//If match was not found - mirror is not allowed!
 		} elseif ($url_replace === false) {
-			global $Error, $L;
+			global $L;
 			$this->server['base_url'] = '';
-			$Error->process($L->mirror_not_allowed, 'stop');
+			trigger_error($L->mirror_not_allowed, E_ERROR);
 		}
 		if (!empty($this->core['mirrors_url'])) {
 			$mirrors_url = $this->core['mirrors_url'];
@@ -189,9 +192,8 @@ class Config {
 		if (isset($rc[0]) && mb_strtolower($rc[0]) == 'admin') {
 			if ($this->core['ip_admin_list_only'] && !$this->check_ip($this->core['ip_admin_list'])) {
 				define('ERROR_PAGE', 403);
-				global $Error;
-				$Error->page();
-				__finish();
+				global $Page;
+				$Page->error_page();
 				return;
 			}
 			if (!defined('ADMIN')) {
