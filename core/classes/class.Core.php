@@ -119,14 +119,14 @@ class Core {
 		global $Config;
 		$result	= [];
 		if (is_object($Config) && $Config->server['mirrors']['count'] > 1) {
-			foreach ($Config->server['mirrors']['http'] as $url) {
-				if (!($url == $Config->server['host'] && $Config->server['protocol'] == 'http')) {
-					$result['http://'.$url] = $this->send('http://'.$url.'/api/'.$path, $data);
+			foreach ($Config->server['mirrors']['http'] as $domain) {
+				if (!($domain == $Config->server['host'] && $Config->server['protocol'] == 'http')) {
+					$result['http://'.$domain] = $this->send('http://'.$domain.'/api/'.$path, $data);
 				}
 			}
-			foreach ($Config->server['mirrors']['https'] as $url) {
-				if (!($url != $Config->server['host'] && $Config->server['protocol'] == 'https')) {
-					$result['https://'.$url] = $this->send('https://'.$url.'/api/'.$path, $data);
+			foreach ($Config->server['mirrors']['https'] as $domain) {
+				if (!($domain != $Config->server['host'] && $Config->server['protocol'] == 'https')) {
+					$result['https://'.$domain] = $this->send('https://'.$domain.'/api/'.$path, $data);
 				}
 			}
 		}

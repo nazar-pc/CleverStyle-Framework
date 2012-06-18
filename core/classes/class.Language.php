@@ -41,6 +41,16 @@ class Language {
 		);
 		if ($this->need_to_rebuild_cache) {
 			global $Cache;
+			global $Core;
+			$Core->run_trigger(
+				'admin/System/general/languages/load',
+				[
+					'clanguage'		=> $this->translate['clanguage'],
+					'clang'			=> $this->translate['clang'],
+					'clanguage_en'	=> $this->translate['clanguage_en'],
+					'clocale'		=> $this->translate['clocale']
+				]
+			);
 			$Cache->{'languages/'.$this->clanguage} = $this->translate;
 			$this->need_to_rebuild_cache = false;
 			$this->init = true;
@@ -164,16 +174,6 @@ class Language {
 				if(!isset($this->translate['clocale'])) {
 					$this->translate['clocale'] = $this->clang.'_'.mb_strtoupper($this->clang);
 				}
-				global $Core;
-				$Core->run_trigger(
-					'admin/System/general/languages/load',
-					[
-						'clanguage'		=> $this->translate['clanguage'],
-						'clang'			=> $this->translate['clang'],
-						'clanguage_en'	=> $this->translate['clanguage_en'],
-						'clocale'		=> $this->translate['clocale']
-					]
-				);
 				setlocale(LC_TIME | (defined('LC_MESSAGES') ? LC_MESSAGES : 0), $this->clocale);
 				if (!($Text instanceof Loader)) {
 					$Text->language($this->clang);

@@ -182,7 +182,7 @@ class Index {
 				$Page->title($this->post_title);
 			}
 		} elseif (!$this->api) {
-			$this->action = $Config->server['current_url'];
+			$this->action = $Config->server['corrected_full_address'];
 			_include(MFOLDER.DS.$this->savefile.'.php', true, false);
 		}
 	}
@@ -517,7 +517,9 @@ class Index {
 		closure_process($this->preload);
 		if (!$this->admin && !$this->api && _file_exists(MFOLDER.DS.'index.html')) {
 			global $Page;
-			$Page->content(_file_get_contents(MFOLDER.DS.'index.html'));
+			ob_start();
+			_include(MFOLDER.DS.'index.html', false, false);
+			$Page->content(ob_get_clean());
 		} else {
 			$this->init_auto	&& $this->init();
 		}

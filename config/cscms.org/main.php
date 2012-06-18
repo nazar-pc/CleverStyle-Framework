@@ -29,3 +29,4 @@ $CACHE_ENGINE	= 'FileSystem';
 $CACHE_SIZE		= 5;				//Cache size in MB, 0 means without limitation
 $KEY			= 'f40fbea2ee5a24ce581fb53510883dfcf40fbea2ee5a24ce581fb535';
 $IV				= 'f40fbea2ee5a24ce581fb53510883dfcf40fbea2ee5a24ce581fb535';
+#define('DEBUG', true);

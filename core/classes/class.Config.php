@@ -1,4 +1,8 @@
 <?php
+/**
+ * Provides next triggers:<br>
+ *  System/Config/routing_replace<code>
+ */
 class Config {
 	public	$core			= [],
 			$db				= [],
@@ -6,7 +10,7 @@ class Config {
 			$components		= [],
 			$replace		= [],
 			$routing		= [],
-			$admin_parts	= [				//Столбцы в БД в таблице конфигурации движка
+			$admin_parts	= [				//Conumns in DB table of engine configuration
 				'core',
 				'db',
 				'storage',
@@ -14,25 +18,25 @@ class Config {
 				'replace',
 				'routing'
 			],
-			$server			= [				//Массив некоторых настроек адресов, зеркал и прочего
-				'url'			=> '',		//Сырой путь страницы (тот, который вводит пользователь в строке адреса)
-				'host'			=> '',		//Host
-				'current_url'	=> '',		//Скорректированный полный путь страницы (рекомендуемый к использованию)
-				'protocol'		=> '',		//Протокол страницы (http/https)
-				'base_url'		=> '',		//Адрес главной страницы текущего зеркала с учётом префикса протокола (http/https)
-				'mirrors'	=> [			//Массив всех адресов, по которым разрешен доступ к сайту
-					'count'		=> 0,		//Общее количество
-					'http'		=> [],		//Небезопасные адреса
-					'https'		=> []		//Безопасные адреса
+			$server							= [			//Array of some address data about mirrors and current address properties
+				'raw_relative_address'		=> '',		//Raw page url (in browser's address bar)
+				'host'						=> '',		//Current domain
+				'corrected_full_address'	=> '',		//Corrected full page address (recommended for usage)
+				'protocol'					=> '',		//Page protocol (http/https)
+				'base_url'					=> '',		//Address of the main page of current mirror, including prefix (http/https)
+				'mirrors'					=> [		//Array of all domains, which allowed to access the site
+					'count'		=> 0,					//Total count
+					'http'		=> [],					//Unsecure (http) domains
+					'https'		=> []					//Secure (https) domains
 				],
-				'referer'		=> [
+				'referer'					=> [
 					'url'		=> '',
 					'host'		=> '',
 					'protocol'	=> '',
 					'local'		=> false
 				],
-				'ajax'			=> false,	//Is this page request via AJAX
-				'mirror_index'	=> -1		//Индекс текущего адреса сайта в списке зеркал ('-1' - не зеркало, а основной домен)
+				'ajax'						=> false,	//Is this page request via AJAX
+				'mirror_index'				=> -1		//Index of current domain in mirrors list ('-1' - main domain, not mirror)
 			],
 			$can_be_admin		= true;		//Alows to check ability to be admin user (can be limited by IP)
 	protected	$init = false;
@@ -67,8 +71,8 @@ class Config {
 		//Запуск роутинга адреса
 		$this->routing();
 	}
-	//Инициализация движка (или реинициалицазия при необходимости)
-	function init() {
+	//Engine initialization (or reinitialization if necessary)
+	protected function init() {
 		global $Cache, $L, $Page;
 		if ($this->core['debug'] && !defined('DEBUG')) {
 			define('DEBUG', true);
@@ -118,28 +122,29 @@ class Config {
 	}
 	//Анализ и обработка текущего адреса страницы
 	protected function routing () {
-		$this->server['url']		= urldecode($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-		$this->server['url']		= null_byte_filter($this->server['url']);
-		$this->server['host']		= $_SERVER['HTTP_HOST'];
-		$this->server['protocol']	= isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http';
-		$core_url					= explode('://', $this->core['url'], 2);
-		$core_url[1]				= explode(';', $core_url[1]);
+		global $Core, $L, $Page;
+		$this->server['raw_relative_address']	= urldecode($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+		$this->server['raw_relative_address']	= null_byte_filter($this->server['raw_relative_address']);
+		$this->server['host']					= $_SERVER['HTTP_HOST'];
+		$this->server['protocol']				= isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http';
+		$core_url								= explode('://', $this->core['url'], 2);
+		$core_url[1]							= explode(';', $core_url[1]);
 		//$core_url = array(0 => протокол, 1 => array(список из домена и IP адресов))
 		//Проверяем, сходится ли адрес с главным доменом
-		$url_replace = false;
+		$current_domain = false;
 		if ($core_url[0] == $this->server['protocol']) {
-			foreach ($core_url[1] as $url) {
-				if (mb_strpos($this->server['url'], $url) === 0) {
-					$this->server['base_url']	= $this->server['protocol'].'://'.$url;
-					$url_replace				= $url;
+			foreach ($core_url[1] as $domain) {
+				if (mb_strpos($this->server['raw_relative_address'], $domain) === 0) {
+					$this->server['base_url']	= $this->server['protocol'].'://'.$domain;
+					$current_domain				= $domain;
 					break;
 				}
 			}
 		}
 		$this->server['mirrors'][$core_url[0]] = array_merge($this->server['mirrors'][$core_url[0]], $core_url[1]);
-		unset($core_url, $url);
+		unset($core_url, $domain);
 		//If it  is not the main domain - try to find match in mirrors
-		if ($url_replace === false && !empty($this->core['mirrors_url'])) {
+		if ($current_domain === false && !empty($this->core['mirrors_url'])) {
 			$mirrors_url = $this->core['mirrors_url'];
 			foreach ($mirrors_url as $i => $mirror_url) {
 				$mirror_url		= explode('://', $mirror_url, 2);
@@ -147,9 +152,9 @@ class Config {
 				//$mirror_url = array(0 => протокол, 1 => array(список из домена и IP адресов))
 				if ($mirror_url[0] == $this->server['protocol']) {
 					foreach ($mirror_url[1] as $url) {
-						if (mb_strpos($this->server['url'], $url) === 0) {
+						if (mb_strpos($this->server['raw_relative_address'], $url) === 0) {
 							$this->server['base_url']		= $this->server['protocol'].'://'.$url;
-							$url_replace					= $url;
+							$current_domain					= $url;
 							$this->server['mirror_index']	= $i;
 							break 2;
 						}
@@ -159,13 +164,11 @@ class Config {
 			unset($mirrors_url, $mirror_url, $url, $i);
 			//If match in mirrors was not found - mirror is not allowed!
 			if ($this->server['mirror_index'] == -1) {
-				global $L;
 				$this->server['base_url'] = '';
 				trigger_error($L->mirror_not_allowed, E_ERROR);
 			}
 		//If match was not found - mirror is not allowed!
-		} elseif ($url_replace === false) {
-			global $L;
+		} elseif ($current_domain === false) {
 			$this->server['base_url'] = '';
 			trigger_error($L->mirror_not_allowed, E_ERROR);
 		}
@@ -182,17 +185,37 @@ class Config {
 			unset($mirrors_url, $mirror_url);
 		}
 		//Preparing page url without basic path
-		$this->server['url'] = str_replace('//', '/', trim(str_replace($url_replace, '', $this->server['url']), ' /\\'));
-		unset($url_replace);
-		$r	= &$this->routing;
-		$rc	= &$r['current'];
+		$this->server['raw_relative_address'] = str_replace(
+			'//',
+			'/',
+			trim(str_replace($current_domain, '', $this->server['raw_relative_address']), ' /\\')
+		);
+		unset($current_domain);
+		$r			= &$this->routing;
+		$rc			= &$r['current'];
+		$rc			= $this->server['raw_relative_address'];
+		//Routing replacing
+		if (!empty($r['in'])) {
+			$search		= [];
+			$replace	= [];
+			foreach ($r['in'] as $i => $val) {
+				$char = mb_substr($val, 0, 1);
+				if ($char != mb_substr($val, -1)) {
+					$val = '/'.$val.'/';
+				}
+				$search[] = '/'.trim($val, '/').'/';
+				$replace[] = $r['out'][$i];
+			}
+			$rc	= preg_replace($search, $replace, $rc);
+			unset($search, $replace);
+		}
+		$Core->run_trigger('System/Config/routing_replace');
 		//Obtaining page path in form of array
-		$rc = explode('/', str_replace($r['in'], $r['out'], trim($this->server['url'], '/')));
-		//If url looks like admin query
+		$rc = explode('/', $rc);
+		//If url looks like admin page
 		if (isset($rc[0]) && mb_strtolower($rc[0]) == 'admin') {
 			if ($this->core['ip_admin_list_only'] && !$this->check_ip($this->core['ip_admin_list'])) {
 				define('ERROR_PAGE', 403);
-				global $Page;
 				$Page->error_page();
 				return;
 			}
@@ -200,7 +223,7 @@ class Config {
 				define('ADMIN', true);
 			}
 			array_shift($rc);
-		//If url looks like API query
+		//If url looks like API page
 		} elseif (isset($rc[0]) && mb_strtolower($rc[0]) == 'api') {
 			if (!defined('API')) {
 				define('API', true);
@@ -212,7 +235,7 @@ class Config {
 		}
 		!defined('ADMIN')	&& define('ADMIN', false);
 		!defined('API')		&& define('API', false);
-		//Определение модуля модуля
+		//Module detection
 		if (isset($rc[0]) && in_array(mb_strtolower($rc[0]), _mb_strtolower(array_keys($this->components['modules'])))) {
 			if (!defined('MODULE')) {
 				define('MODULE', array_shift($rc));
@@ -226,8 +249,8 @@ class Config {
 			}
 		}
 		!defined('HOME')	&& define('HOME', false);
-		//Скорректированный полный путь страницы (рекомендуемый к использованию)
-		$this->server['current_url'] = (ADMIN ? 'admin/' : '').MODULE.(API ? 'api/' : '').'/'.implode('/', $rc);
+		//Corrected full page address (recommended for usage)
+		$this->server['corrected_full_address'] = (ADMIN ? 'admin/' : '').MODULE.(API ? 'api/' : '').'/'.implode('/', $rc);
 		unset($rc, $r);
 		if (isset($_SERVER['HTTP_REFERER'])) {
 			$ref				= &$this->server['referer'];

@@ -177,6 +177,10 @@ class Page {
 							'name'		=> 'generator',
 							'content'	=> $copyright[0]
 						]).
+						(ADMIN || API ? h::meta([
+							'name'		=> 'robots',
+							'content'	=> 'noindex,nofollow'
+						]) : '').
 						h::link([
 								'rel'		=> 'shortcut icon',
 								'href'		=> _file_exists(THEMES.'/'.$this->theme.'/'.$this->color_scheme.'/'.'img/favicon.ico') ?
@@ -237,8 +241,9 @@ class Page {
 		 ];
 		$this->Html = str_replace($construct['in'], $construct['out'], $this->Html);
 	}
-	//Задание елементов замены в исходном коде
 	/**
+	 * Replacing anything in source code of filally genereted page
+	 *
 	 * @param array|string $search
 	 * @param array|string $replace
 	 */
@@ -298,7 +303,7 @@ class Page {
 	function css ($add, $mode = 'file') {
 		$this->css_internal($add, $mode);
 	}
-	function css_internal ($add, $mode = 'file', $core = false) {
+	protected function css_internal ($add, $mode = 'file', $core = false) {
 		if (is_array($add)) {
 			foreach ($add as $style) {
 				if ($style) {
@@ -817,12 +822,9 @@ class Page {
 			$this->Html = preg_replace($this->Search, $this->Replace, $this->Html);
 			//Опеределение типа сжатия сжатия
 			$ob = false;
-			if (is_object($Config) && !zlib_autocompression() && $Config->core['gzip_compression'] && (is_object($Error) && !$Error->num())) {
+			if (is_object($Config) && !zlib_compression() && $Config->core['gzip_compression'] && (is_object($Error) && !$Error->num())) {
 				ob_start('ob_gzhandler');
 				$ob = true;
-			} elseif (is_object($Config) && $Config->core['zlib_compression'] && $Config->core['zlib_compression_level'] && zlib() && (is_object($Error) && !$Error->num())) {
-				ini_set('zlib.output_compression', 'On');
-				ini_set('zlib.output_compression_level', $Config->core['zlib_compression_level']);
 			}
 			$timeload['end'] = microtime(true);
 			if (

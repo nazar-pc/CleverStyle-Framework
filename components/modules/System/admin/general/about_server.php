@@ -95,12 +95,15 @@ $a->content(
 			h::td($L->get(zlib())),
 
 			zlib() ?
-				h::td($L->zlib_autocompression.':').
-				h::td(
-					$L->get(zlib_autocompression()),
-					['class' => $state(!zlib_autocompression())]
-				)
+				h::td($L->zlib_compression.':').
+				h::td($L->get(zlib_compression()))
+			: false,
+
+			zlib_compression() ?
+				h::td($L->zlib_compression_level.':').
+				h::td(zlib_compression_level())
 			: false
+
 		]),
 		h::td([
 				$L->main_db.':',

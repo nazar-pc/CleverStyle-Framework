@@ -47,24 +47,24 @@ class User {
 			is_array($key_data)
 		) {
 			unset($rc[count($rc) - 1]);
-			$url			= &$Config->server['url'];
-			$current_url	= &$Config->server['current_url'];
-			if ($this->current['is']['system'] = $key_data['url'] == $Config->server['host'].'/'.$url) {
+			$raw_address	= &$Config->server['raw_relative_address'];
+			$full_address	= &$Config->server['corrected_full_address'];
+			if ($this->current['is']['system'] = $key_data['url'] == $Config->server['host'].'/'.$raw_address) {
 				$this->current['is']['admin'] = true;
-				$url = substr($url, 0, strrpos($url, '/'));
-				$current_url = substr($current_url, 0, strrpos($current_url, '/'));
 				interface_off();
 				$_POST['data'] = _json_decode($_POST['data']);
 				return;
 			} else {
-				$url = substr($url, 0, strrpos($url, '/'));
-				$current_url = substr($current_url, 0, strrpos($current_url, '/'));
 				$this->current['is']['guest'] = true;
 				//Иммитируем неудачный вход, чтобы при намеренной попытке взлома заблокировать доступ
 				$this->login_result(false, hash('sha224', 'system'));
 				unset($_POST['data']);
 				sleep(1);
 			}
+			$raw_address	= substr($raw_address, 0, strrpos($raw_address, '/'));
+			$full_address	= substr($full_address, 0, strrpos($full_address, '/'));
+			unset($raw_address, $full_address);
+			unset($rc[count($rc) - 1]);
 		}
 		unset($key_data, $key, $rc);
 		//If session exists
@@ -435,15 +435,17 @@ class User {
 			$this->data[$user] = [];
 		}
 		if (!isset($this->data[$user]['permissions'])) {
-			$groups								= $this->get_user_groups($user);
 			$this->data[$user]['permissions']	= [];
 			$permissions						= &$this->data[$user]['permissions'];
-			if (is_array($groups)) {
-				foreach ($groups as $group_id) {
-					$permissions = array_merge($permissions ?: [], $this->get_group_permissions($group_id) ?: []);
+			if ($user != 1) {
+				$groups								= $this->get_user_groups($user);
+				if (is_array($groups)) {
+					foreach ($groups as $group_id) {
+						$permissions = array_merge($permissions ?: [], $this->get_group_permissions($group_id) ?: []);
+					}
 				}
+				unset($groups, $group_id);
 			}
-			unset($groups, $group_id);
 			$permissions						= array_merge($permissions ?: [], $this->get_user_permissions($user) ?: []);
 			unset($permissions);
 		}

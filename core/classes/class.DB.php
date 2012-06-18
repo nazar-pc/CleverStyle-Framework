@@ -53,7 +53,7 @@ class DB {
 		} elseif (isset($this->connections[$connection])) {
 			return $this->connections[$connection];
 		//Проверяем, включена ли функция балансировки нагрузки и количество зеркал БД, подключаемся к БД
-		} elseif (is_object($Config) && $Config->core['db_balance'] && $mirrors = count($Config->db[$connection]['mirrors'])) {
+		} elseif (is_object($Config) && !empty($Config->core) && $Config->core['db_balance'] && $mirrors = count($Config->db[$connection]['mirrors'])) {
 			$select = mt_rand(0, $Config->core['maindb_for_write'] ? $mirrors - 1 : $mirrors);
 			if ($select < $mirrors) {
 				$mirror = $Config->db[$connection]['mirrors'][--$select];

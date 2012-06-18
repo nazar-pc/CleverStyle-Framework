@@ -7,6 +7,7 @@ error_reporting(E_ALL | E_STRICT);
 header('Content-Type: text/html; charset=utf-8');
 header("Connection: close");
 mb_internal_encoding('utf-8');
+date_default_timezone_set(date_default_timezone_get()); //PHP warning fix
 //Убиваем небезопасные глобальные переменные, использование GET метода для передачи переменных не рекомендуется
 //Вместо GET используйте POST
 $_GET						= [];
@@ -48,12 +49,12 @@ $Objects					= new Objects;			//Объект подключения и выгр�
 //Next block only for IDE
 if (false) {
 	global $Core, $Cache, $Text, $L, $Page, $Error, $db, $Storage, $Config, $Mail, $Key, $User, $Index;
+	$Error		= new Error();
 	$Core		= new Core();
 	$Cache		= new Cache();
 	$Text		= new Text();
 	$L			= new Language();
 	$Page		= new Page();
-	$Error		= new Error();
 	$db			= new DB();
 	$Storage	= new Storage();
 	$Config		= new Config();
@@ -63,12 +64,12 @@ if (false) {
 	$Index		= new Index();
 }
 $Objects->load([
+	'Error',										//Объект обработки ошибок
 	'Core',											//Объект ядра движка (проверка путей и функции шифрования)
 	'Cache',										//Объект системного кеша
 	'_Text',										//Объект поддержки мультиязычного текстового контента
 	['Language', 'L'],								//Объект музьтиязычности
 	'Page',											//Объект генерирования страницы
-	'Error',										//Объект обработки ошибок
 	['DB', 'db'],									//Объект БД
 	'_Storage',										//Объект Хранилищ
 	'Config',										//Объект настроек

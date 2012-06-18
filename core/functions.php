@@ -1052,10 +1052,13 @@
 		return extension_loaded('zlib');
 	}
 	//Проверка автоматического сжатия страниц с помощью zlib
-	function zlib_autocompression () {
-		return zlib() && mb_strtolower(ini_get('zlib.output_compression')) == 'on';
+	function zlib_compression () {
+		return zlib() && strtolower(ini_get('zlib.output_compression')) != 'off';
 	}
-	//Проверка отображения ошибок
+	function zlib_compression_level () {
+		return ini_get('zlib.output_compression_level');
+	}
+//Проверка отображения ошибок
 	function display_errors () {
 		return (bool)ini_get('display_errors');
 	}

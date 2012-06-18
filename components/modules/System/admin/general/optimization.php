@@ -4,36 +4,13 @@ $a = &$Index;
 $a->content(
 	h::{'table.cs-admin-table.cs-left-even.cs-right-odd'}(
 		h::tr(
-			h::{'td info'}('zlib_compression').
-			h::{'td input[type=radio]'}([
-				'name'			=> 'core[zlib_compression]',
-				'checked'		=> $Config->core['zlib_compression'],
-				'value'			=> array(0, 1),
-				'in'			=> array($L->off, $L->on),
-				'onClick'		=> zlib() ? array('$(\'#zlib_compression\').hide();', '$(\'#zlib_compression\').show();') : '',
-				'add'			=> zlib_autocompression() ? ' disabled' : ''
-			])
-		).
-		h::{'tr#zlib_compression'}(
-			h::td($L->zlib_compression_level).
-			h::{'td input.cs-form-element[type=range]'}([
-				'name'			=> 'core[zlib_compression_level]',
-				'value'			=> $Config->core['zlib_compression_level'],
-				'min'			=> 1,
-				'max'			=> 9
-			]),
-			[
-				'style'	=> ($Config->core['zlib_compression'] || zlib_autocompression() ? '' : 'display: none; ')
-			]
-		).
-		h::tr(
 			h::{'td info'}('gzip_compression').
 			h::{'td input[type=radio]'}([
 				'name'			=> 'core[gzip_compression]',
 				'checked'		=> $Config->core['gzip_compression'],
-				'value'			=> array(0, 1),
-				'in'			=> array($L->off, $L->on),
-				'add'			=> !zlib_autocompression() || $Config->core['zlib_compression'] ? '' : ' disabled'
+				'value'			=> [0, 1],
+				'in'			=> [$L->off, $L->on],
+				'add'			=> zlib_compression() ? ' disabled' : ''
 			])
 		).
 		h::tr(
@@ -41,8 +18,8 @@ $a->content(
 			h::{'td input[type=radio]'}([
 				'name'			=> 'core[cache_compress_js_css]',
 				'checked'		=> $Config->core['cache_compress_js_css'],
-				'value'			=> array(0, 1),
-				'in'			=> array($L->off, $L->on)
+				'value'			=> [0, 1],
+				'in'			=> [$L->off, $L->on]
 			])
 		).
 		h::tr(
