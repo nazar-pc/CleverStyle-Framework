@@ -4,48 +4,47 @@
  *  System/Config/routing_replace<code>
  */
 class Config {
-	public	$core			= [],
-			$db				= [],
-			$storage		= [],
-			$components		= [],
-			$replace		= [],
-			$routing		= [],
-			$admin_parts	= [				//Conumns in DB table of engine configuration
-				'core',
-				'db',
-				'storage',
-				'components',
-				'replace',
-				'routing'
-			],
-			$server							= [			//Array of some address data about mirrors and current address properties
-				'raw_relative_address'		=> '',		//Raw page url (in browser's address bar)
-				'host'						=> '',		//Current domain
-				'corrected_full_address'	=> '',		//Corrected full page address (recommended for usage)
-				'protocol'					=> '',		//Page protocol (http/https)
-				'base_url'					=> '',		//Address of the main page of current mirror, including prefix (http/https)
-				'mirrors'					=> [		//Array of all domains, which allowed to access the site
-					'count'		=> 0,					//Total count
-					'http'		=> [],					//Unsecure (http) domains
-					'https'		=> []					//Secure (https) domains
+	public		$core			= [],
+				$db				= [],
+				$storage		= [],
+				$components		= [],
+				$replace		= [],
+				$routing		= [],
+				$admin_parts	= [				//Conumns in DB table of engine configuration
+					'core',
+					'db',
+					'storage',
+					'components',
+					'replace',
+					'routing'
 				],
-				'referer'					=> [
-					'url'		=> '',
-					'host'		=> '',
-					'protocol'	=> '',
-					'local'		=> false
+				$server							= [			//Array of some address data about mirrors and current address properties
+					'raw_relative_address'		=> '',		//Raw page url (in browser's address bar)
+					'host'						=> '',		//Current domain
+					'corrected_full_address'	=> '',		//Corrected full page address (recommended for usage)
+					'protocol'					=> '',		//Page protocol (http/https)
+					'base_url'					=> '',		//Address of the main page of current mirror, including prefix (http/https)
+					'mirrors'					=> [		//Array of all domains, which allowed to access the site
+						'count'		=> 0,					//Total count
+						'http'		=> [],					//Unsecure (http) domains
+						'https'		=> []					//Secure (https) domains
+					],
+					'referer'					=> [
+						'url'		=> '',
+						'host'		=> '',
+						'protocol'	=> '',
+						'local'		=> false
+					],
+					'ajax'						=> false,	//Is this page request via AJAX
+					'mirror_index'				=> -1		//Index of current domain in mirrors list ('-1' - main domain, not mirror)
 				],
-				'ajax'						=> false,	//Is this page request via AJAX
-				'mirror_index'				=> -1		//Index of current domain in mirrors list ('-1' - main domain, not mirror)
-			],
-			$can_be_admin		= true;		//Alows to check ability to be admin user (can be limited by IP)
+				$can_be_admin		= true;		//Alows to check ability to be admin user (can be limited by IP)
 	protected	$init = false;
 
-	//Инициализация параметров системы
 	function __construct () {
 		global $Cache, $Config;
 		$Config = $this;
-		//Считывание настроек с кеша и определение недостающих данных
+		//Reading settings from cache and defining missing data
 		$config = $Cache->config;
 		if (is_array($config)) {
 			$query = false;
@@ -61,14 +60,14 @@ class Config {
 		} else {
 			$query = true;
 		}
-		//Перестройка кеша при необходимости
+		//Cache rebuilding, if necessary
 		if ($query == true) {
 			$this->load();
 		} else {
-			//Инициализация движка
+			//Engine initialization with current configuration
 			$this->init();
 		}
-		//Запуск роутинга адреса
+		//Address routing
 		$this->routing();
 	}
 	//Engine initialization (or reinitialization if necessary)
@@ -77,11 +76,8 @@ class Config {
 		if ($this->core['debug'] && !defined('DEBUG')) {
 			define('DEBUG', true);
 		}
-		//Инициализация объекта кеша с использованием настроек движка
 		$Cache->init();
-		//Инициализация объекта языков с использованием настроек движка
 		$L->init($this->core['active_languages'], $this->core['language']);
-		//Инициализация объекта страницы с использованием настроек движка
 		$Page->init($this->core['name'], $this->core['keywords'], $this->core['description'], $this->core['theme'], $this->core['color_scheme']);
 		if (!$this->init) {
 			$Page->replace($this->replace['in'], $this->replace['out']);
@@ -92,7 +88,7 @@ class Config {
 				return;
 			}
 		}
-		//Установка часового пояса по-умолчанию
+		//Setting system timezone
 		date_default_timezone_set($this->core['timezone']);
 	}
 	protected function check_ip ($ips) {
@@ -120,7 +116,7 @@ class Config {
 		}
 		return false;
 	}
-	//Анализ и обработка текущего адреса страницы
+	//Analyzing and processing of current page address
 	protected function routing () {
 		global $Core, $L, $Page;
 		$this->server['raw_relative_address']	= urldecode($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
@@ -129,8 +125,8 @@ class Config {
 		$this->server['protocol']				= isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http';
 		$core_url								= explode('://', $this->core['url'], 2);
 		$core_url[1]							= explode(';', $core_url[1]);
-		//$core_url = array(0 => протокол, 1 => array(список из домена и IP адресов))
-		//Проверяем, сходится ли адрес с главным доменом
+		//$core_url = array(0 => protocol, 1 => array(list of domain and IP addresses))
+		//Check, whether it is main domain
 		$current_domain = false;
 		if ($core_url[0] == $this->server['protocol']) {
 			foreach ($core_url[1] as $domain) {
@@ -165,12 +161,12 @@ class Config {
 			//If match in mirrors was not found - mirror is not allowed!
 			if ($this->server['mirror_index'] == -1) {
 				$this->server['base_url'] = '';
-				trigger_error($L->mirror_not_allowed, E_ERROR);
+				trigger_error($L->mirror_not_allowed, E_USER_ERROR);
 			}
 		//If match was not found - mirror is not allowed!
 		} elseif ($current_domain === false) {
 			$this->server['base_url'] = '';
-			trigger_error($L->mirror_not_allowed, E_ERROR);
+			trigger_error($L->mirror_not_allowed, E_USER_ERROR);
 		}
 		if (!empty($this->core['mirrors_url'])) {
 			$mirrors_url = $this->core['mirrors_url'];
@@ -236,7 +232,7 @@ class Config {
 		!defined('ADMIN')	&& define('ADMIN', false);
 		!defined('API')		&& define('API', false);
 		//Module detection
-		if (isset($rc[0]) && in_array(mb_strtolower($rc[0]), _mb_strtolower(array_keys($this->components['modules'])))) {
+		if (isset($rc[0]) && in_array(mb_strtolower($rc[0]), _mb_strtolower(array_keys($this->components['modules']))) && (ADMIN || $this->components['modules'][$rc[0]]['active'] == 1)) {
 			if (!defined('MODULE')) {
 				define('MODULE', array_shift($rc));
 			}
@@ -265,7 +261,7 @@ class Config {
 		}
 		$this->server['ajax'] = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
 	}
-	//Обновление информации о текущем наборе тем оформления
+	//Updating information about set of available themes
 	function reload_themes () {
 		$this->core['themes'] = get_list(THEMES, false, 'd');
 		asort($this->core['themes']);
@@ -275,7 +271,7 @@ class Config {
 			asort($this->core['color_schemes'][$theme]);
 		}
 	}
-	//Обновление списка текущих языков
+	//Updating information about set of available languages
 	function reload_languages () {
 		$this->core['languages'] = array_unique(
 			array_merge(
@@ -285,7 +281,7 @@ class Config {
 		);
 		asort($this->core['languages']);
 	}
-	//Перестройка кеша настроек
+	//Reloading of settings cache
 	protected function load () {
 		global $db;
 		$query = [];
@@ -314,7 +310,7 @@ class Config {
 		$this->apply();
 		return true;
 	}
-	//Применение изменений без сохранения в БД
+	//Applying settings without saving changes into db
 	function apply () {
 		return $this->apply_internal();
 	}
@@ -341,7 +337,7 @@ class Config {
 		$Cache->config = $Config;
 		return true;
 	}
-	//Сохранение и применение изменений
+	//Saving settings
 	function save ($parts = null) {
 		global $db;
 		if ($parts === null || empty($parts)) {
@@ -368,7 +364,7 @@ class Config {
 		}
 		return false;
 	}
-	//Отмена примененных изменений и перестройка кеша
+	//Canceling of applied settings
 	function cancel () {
 		global $Cache;
 		unset($Cache->config);

@@ -66,7 +66,7 @@ class Objects {
 				}
 			} else {
 				global $L;
-				trigger_error($L->class.' '.h::b($class).' '.$L->not_exists, E_ERROR);
+				trigger_error($L->class.' '.h::b($class).' '.$L->not_exists, E_USER_ERROR);
 				return false;
 			}
 		} elseif (!defined('STOP') && is_array($class)) {

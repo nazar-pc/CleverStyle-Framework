@@ -19,7 +19,7 @@ class HTTP extends StorageAbstract {
 	protected function request ($data) {
 		$socket = fsockopen($this->host[0], isset($this->host[1]) ? $this->host[1] : 80, $errno, $errstr);
 		if(!is_resource($socket)) {
-			trigger_error('#'.$errno.' '.$errstr, E_WARNING);
+			trigger_error('#'.$errno.' '.$errstr, E_USER_WARNING);
 			$this->connected = false;
 			return false;
 		}

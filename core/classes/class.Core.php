@@ -7,16 +7,16 @@ class Core {
 				$encrypt_support	= false,
 				$triggers_init		= false,
 				$triggers;
-	//Инициализация начальных параметров и функций шифрования
+
 	function __construct() {
 		if (!_require(CONFIG.DS.CDOMAIN.DS.'main.php', true, false)) {
-			header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found');
+			error_header(404);
 			__finish();
 		}
-		define('STORAGE',	STORAGES.DS.DOMAIN.DS.'public');	//Локальное публичное хранилище домена
-		define('CACHE',		STORAGES.DS.DOMAIN.DS.'cache');		//Папка с кешем домена
-		define('LOGS',		STORAGES.DS.DOMAIN.DS.'logs');		//Папка для логов домена
-		define('TEMP',		STORAGES.DS.DOMAIN.DS.'temp');		//Папка для временных файлов домена
+		define('STORAGE',	STORAGES.DS.DOMAIN.DS.'public');	//Local public storage for current domain
+		define('CACHE',		STORAGES.DS.DOMAIN.DS.'cache');		//Cache directory for current domain
+		define('LOGS',		STORAGES.DS.DOMAIN.DS.'logs');		//Log directory for current domain
+		define('TEMP',		STORAGES.DS.DOMAIN.DS.'temp');		//Temp directory for current domain
 		!_is_dir(STORAGES.DS.DOMAIN)	&& @_mkdir(STORAGES.DS.DOMAIN, 0770);
 		!_is_dir(STORAGE)				&& @_mkdir(STORAGE, 0777)	&& _file_put_contents(
 			STORAGE.DS.'.htaccess',
@@ -164,7 +164,7 @@ class Core {
 		);
 		$socket	= fsockopen($host[0], isset($host[1]) ? $host[1] : $protocol == 'http' ? 80 : 443, $errno, $errstr);
 		if(!is_resource($socket)) {
-			trigger_error('#'.$errno.' '.$errstr, E_WARNING);
+			trigger_error('#'.$errno.' '.$errstr, E_USER_WARNING);
 			$this->connected = false;
 			return false;
 		}

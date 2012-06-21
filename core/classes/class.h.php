@@ -4,7 +4,7 @@
  *
  * If defined constant "XHTML_TAGS_STYLE" - tags will be generated according to rules of xhtml
  */
-class h {//TODO array of void elements for general processing
+class h {//TODO full array of unpaired tags for general processing
 	protected static	$unit_atributes = [	//Одиночные атрибуты, которые не имеют значения
 			'async',
 			'defer',
@@ -208,7 +208,7 @@ class h {//TODO array of void elements for general processing
 	 * @return	bool|string
 	 */
 		protected static function template_1 ($in, $data, $data2, $function, $add_tag = 'td') {
-			if (is_array($in)) {
+			if (is_array($in) && !isset($in['in'])) {
 				$temp = '';
 				foreach ($in as $item) {
 					$temp .= self::tr(self::$add_tag($item, $data2));

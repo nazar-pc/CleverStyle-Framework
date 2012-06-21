@@ -97,16 +97,20 @@ class User {
 				if (($this->id = $Cache->{'users/'.$bot_hash}) === false) {
 					//If no data - try to find bot in list of known bots
 					foreach ($bots as &$bot) {
-						foreach ($bot['login'] as $login) {
-							if ($this->user_agent == $login || preg_match($login, $this->user_agent)) {
-								$this->id = $bot['id'];
-								break 2;
+						if (is_array($bot['login']) && !empty($bot['login'])) {
+							foreach ($bot['login'] as $login) {
+								if ($this->user_agent == $login || preg_match($login, $this->user_agent)) {
+									$this->id = $bot['id'];
+									break 2;
+								}
 							}
 						}
-						foreach ($bot['email'] as $email) {
-							if ($this->ip == $email || preg_match($email, $this->ip)) {
-								$this->id = $bot['id'];
-								break 2;
+						if (is_array($bot['email']) && !empty($bot['email'])) {
+							foreach ($bot['email'] as $email) {
+								if ($this->ip == $email || preg_match($email, $this->ip)) {
+									$this->id = $bot['id'];
+									break 2;
+								}
 							}
 						}
 					}
@@ -129,17 +133,8 @@ class User {
 		//Load user data
 		//Return point, runs if user is blocked, inactive, or disabled
 		getting_user_data:
-		unset($data);
-		if (($data = $Cache->{'users/'.$this->id}) === false) {
-			$data = $this->db()->qf(
-				'SELECT `login`, `username`, `language`, `timezone`, `status`, `block_until`, `avatar`
-				FROM `[prefix]users`
-				WHERE `id` = '.$this->id.'
-				LIMIT 1'
-			);
-		}
+		$data = $this->get(['login', 'username', 'language', 'timezone', 'status', 'block_until', 'avatar']);
 		if (is_array($data)) {
-			$Cache->{'users/'.$this->id} = $data;
 			if ($data['status'] != 1) {
 				//If user is disabled
 				if ($data['status'] == 0) {
@@ -1239,6 +1234,12 @@ class User {
 			return false;
 		}
 		$email_hash		= hash('sha224', $email);
+		$login			= strstr($email, '@', true);
+		$login_hash		= hash('sha224', $login);
+		if ($this->get_id($login_hash) !== false) {
+			$login		= $email;
+			$login_hash	= $email_hash;
+		}
 		if (!$this->db_prime()->q("SELECT `id` FROM `[prefix]users` WHERE `email_hash` = '$email_hash' LIMIT 1")) {
 			return 'exists';
 		}
@@ -1258,8 +1259,8 @@ class User {
 				`reg_key`,
 				`status`
 			) VALUES (
-				'$email',
-				'$email_hash',
+				'$login',
+				'$login_hash',
 				'$password_hash',
 				'$email',
 				'$email_hash',

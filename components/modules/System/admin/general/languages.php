@@ -27,16 +27,14 @@ $a->content(
 				]
 			)
 		]),
-		h::td(
+		h::td([
 			h::info('multilanguage'),
-			h::{'input[type=radio]'}(
-				[
+			h::{'input[type=radio]'}([
 					'name'			=> 'core[multilanguage]',
 					'checked'		=> $Config->core['multilanguage'],
 					'value'			=> [0, 1],
 					'in'			=> [$L->off, $L->on],
-				]
-			)
-		)
+			])
+		])
 	])
 );

@@ -16,9 +16,12 @@ if (isset($_POST['mode'])) {
 			);
 		break;
 		case 'delete':
-			$Index->save(
-				$User->del_group($_POST['id'])
-			);
+			$id = (int)$_POST['id'];
+			if ($id != 1 && $id != 2 && $id != 3) {
+				$Index->save(
+					$User->del_group($_POST['id'])
+				);
+			}
 		break;
 		case 'permissions':
 			$Index->save(

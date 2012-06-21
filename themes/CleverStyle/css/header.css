@@ -30,6 +30,7 @@
 	z-index: 3;
 }
 #avatar_header {
+	background-size: 100%;
 	border-radius: 5px;
 	float: left;
 	font-size: 80px;

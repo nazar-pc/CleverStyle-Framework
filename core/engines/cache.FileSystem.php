@@ -101,7 +101,7 @@ class FileSystem extends CacheAbstract {
 			}
 		} else {
 			global $L;
-			trigger_error($L->file.' '.CACHE.DS.$item.' '.$L->not_writable, E_WARNING);
+			trigger_error($L->file.' '.CACHE.DS.$item.' '.$L->not_writable, E_USER_WARNING);
 			return false;
 		}
 	}

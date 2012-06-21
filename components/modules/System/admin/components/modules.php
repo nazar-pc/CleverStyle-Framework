@@ -35,20 +35,12 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 				]
 			)) {
 				$a->cancel_button_back = true;
+				goto module_db_settings;
+				back_to_module_installation_1:
+				goto module_storage_settings;
+				back_to_module_installation_2:
 				$a->content(
-					h::{'button[type=submit]'}($L->install).
-					h::{'input[type=hidden]'}(
-						[
-							'name'		=> 'module',
-							'value'		=> $rc[3]
-						]
-					).
-					h::{'input[type=hidden]'}(
-						[
-							'name'	=> 'mode',
-							'value'	=> $rc[2]
-						]
-					)
+					h::{'button[type=submit]'}($L->install)
 				);
 			}
 		break;
@@ -67,19 +59,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 			)) {
 				$a->cancel_button_back = true;
 				$a->content(
-					h::{'button[type=submit]'}($L->uninstall).
-					h::{'input[type=hidden]'}(
-						[
-							'name'		=> 'module',
-							'value'		=> $rc[3]
-						]
-					).
-					h::{'input[type=hidden]'}(
-						[
-							'name'	=> 'mode',
-							'value'	=> $rc[2]
-						]
-					)
+					h::{'button[type=submit]'}($L->uninstall)
 				);
 			}
 		break;
@@ -97,49 +77,48 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					$a->buttons				= true;
 					$a->apply_button		= false;
 					$a->cancel_button_back	= true;
-					$dbs					= [0];
-					$dbs_name				= [$L->core_db];
-					foreach ($Config->db as $i => &$db_data) {
-						if ($i) {
-							$dbs[] = $i;
-							$dbs_name[] = $db_data['name'].' ('.$db_data['host'].' / '.$db_data['type'].')';
+					module_db_settings:
+					if (_file_exists(MODULES.DS.$rc[3].DS.'admin'.DS.'db.json')) {
+						$dbs					= [0 => $L->core_db];
+						foreach ($Config->db as $i => &$db_data) {
+							if ($i) {
+								$dbs[$i] = $db_data['name'].' ('.$db_data['host'].' / '.$db_data['type'].')';
+							}
 						}
-					}
-					$db_list[] = h::{'th.ui-widget-header.ui-corner-all'}([
-						h::info('db_purpose'),
-						h::info('system_db')
-					]);
-					$db_json = _json_decode(_file_get_contents(MODULES.DS.$rc[3].DS.'admin'.DS.'db.json'));
-					foreach ($db_json as $database) {
-						$db_list[] = h::{'td.ui-widget-content.ui-corner-all'}([
-							$L->{$rc[3].'_db_'.$database},
-							h::{'select.cs-form-element'}(
-								[
-									'in'		=> $dbs_name,
-									'value'		=> $dbs
-								],
-								[
-									'name'		=> 'db['.$database.']',
-									'selected'	=> isset($Config->components['modules'][$rc[3]]['db'][$database]) ?
-										$Config->components['modules'][$rc[3]]['db'][$database] : 0,
-									'size'		=> 5
-								]
-							)
+						unset($i, $db_data);
+						$db_list[] = h::{'th.ui-widget-header.ui-corner-all'}([
+							h::info('db_purpose'),
+							h::info('system_db')
 						]);
+						$db_json = _json_decode(_file_get_contents(MODULES.DS.$rc[3].DS.'admin'.DS.'db.json'));
+						foreach ($db_json as $database) {
+							$db_list[] = h::{'td.ui-widget-content.ui-corner-all'}([
+								$L->{$rc[3].'_db_'.$database},
+								h::{'select.cs-form-element'}(
+									[
+										'in'		=> array_keys($dbs),
+										'value'		=> array_values($dbs)
+									],
+									[
+										'name'		=> 'db['.$database.']',
+										'selected'	=> isset($Config->components['modules'][$rc[3]]['db'][$database]) ?
+											$Config->components['modules'][$rc[3]]['db'][$database] : 0,
+										'size'		=> 5
+									]
+								)
+							]);
+						}
+						unset($db_json, $dbs, $database);
+						$a->content(
+							h::{'table.cs-admin-table'}(
+								h::tr($db_list)
+							)
+						);
+						unset($db_list);
 					}
-					$a->content(
-						h::{'table.cs-admin-table'}(
-							h::tr($db_list)
-						).
-						h::{'input[type=hidden]'}([
-							'name'		=> 'module',
-							'value'		=> $rc[3]
-						]).
-						h::{'input[type=hidden]'}([
-							'name'	=> 'mode',
-							'value'	=> $rc[2]
-						])
-					);
+					if ($rc[2] == 'install') {
+						goto back_to_module_installation_1;
+					}
 				}
 			}
 		break;
@@ -157,50 +136,48 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					$a->buttons				= true;
 					$a->apply_button		= false;
 					$a->cancel_button_back	= true;
-					$storages				= [0];
-					$storages_name			= [$L->core_storage];
-					foreach ($Config->storage as $i => &$storage_data) {
-						if ($i) {
-							$storages[] = $i;
-							$storages_name[] = $storage_data['host'].'('.$storage_data['connection'].')';
+					module_storage_settings:
+					if (_file_exists(MODULES.DS.$rc[3].DS.'admin'.DS.'storage.json')) {
+						$storages				= [0 => $L->core_storage];
+						foreach ($Config->storage as $i => &$storage_data) {
+							if ($i) {
+								$storages[$i] = $storage_data['host'].'('.$storage_data['connection'].')';
+							}
 						}
-					}
-					unset($i, $storage_data);
-					$storage_list[] = h::{'th.ui-widget-header.ui-corner-all'}([
-						h::info('storage_purpose'),//TODO  check processing of storage configuration
-						h::info('system_storage')
-					]);
-					$storage_json = _json_decode(_file_get_contents(MODULES.DS.$rc[3].DS.'admin'.DS.'storage.json'));
-					foreach ($storage_json as $storage) {
-						$storage_list[] = h::{'td.ui-widget-content.ui-corner-all'}([
-							$L->{$rc[3].'_storage_'.$storage},
-							h::{'select.cs-form-element'}(
-								[
-									'in'		=> $storages_name,
-									'value'		=> $storages
-								],
-								[
-									'name'		=> 'storage['.$storage.']',
-									'selected'	=> isset($Config->components['modules'][$rc[3]]['storage'][$storage]) ?
-										$Config->components['modules'][$rc[3]]['storage'][$storage] : 0,
-									'size'		=> 5
-								]
-							)
+						unset($i, $storage_data);
+						$storage_list[] = h::{'th.ui-widget-header.ui-corner-all'}([
+							h::info('storage_purpose'),
+							h::info('system_storage')
 						]);
+						$storage_json = _json_decode(_file_get_contents(MODULES.DS.$rc[3].DS.'admin'.DS.'storage.json'));
+						foreach ($storage_json as $storage) {
+							$storage_list[] = h::{'td.ui-widget-content.ui-corner-all'}([
+								$L->{$rc[3].'_storage_'.$storage},
+								h::{'select.cs-form-element'}(
+									[
+										'in'		=> array_keys($storages),
+										'value'		=> array_values($storages)
+									],
+									[
+										'name'		=> 'storage['.$storage.']',
+										'selected'	=> isset($Config->components['modules'][$rc[3]]['storage'][$storage]) ?
+											$Config->components['modules'][$rc[3]]['storage'][$storage] : 0,
+										'size'		=> 5
+									]
+								)
+							]);
+						}
+						unset($storage_json, $storages, $storage);
+						$a->content(
+							h::{'table.cs-admin-table'}(
+								h::tr($storage_list)
+							)
+						);
+						unset($storage_list);
 					}
-					$a->content(
-						h::{'table.cs-admin-table'}(
-							h::tr($storage_list)
-						).
-						h::{'input[type=hidden]'}([
-							'name'		=> 'module',
-							'value'		=> $rc[3]
-						]).
-						h::{'input[type=hidden]'}([
-							'name'	=> 'mode',
-							'value'	=> $rc[2]
-						])
-					);
+					if ($rc[2] == 'install') {
+						goto back_to_module_installation_2;
+					}
 				}
 			}
 		break;
@@ -234,6 +211,10 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 				h::{'input[type=hidden]'}([
 					'name'	=> 'mode',
 					'value'	=> $rc[2]
+				]).
+				h::{'input[type=hidden]'}([
+					'name'		=> 'module',
+					'value'		=> $rc[3]
 				])
 			);
 	}

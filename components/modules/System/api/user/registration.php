@@ -32,14 +32,14 @@ global $Mail;
 $confirm = $Config->core['require_registration_confirmation'];
 if ($confirm) {
 	$body = $L->reg_need_confirmation_mail_body(
-		substr($_POST['email'], 0, strpos($_POST['email'], '@')),
+		strstr($_POST['email'], '@', true),
 		$Config->core['name'],
 		$Config->core['url'].'/profile/confirmation/'.$result['reg_key'],
 		$L->time($Config->core['registration_confirmation_time'], 'd')
 	);
 } else {
 	$body = $L->reg_success_mail_body(
-		substr($_POST['email'], 0, strpos($_POST['email'], '@')),
+		strstr($_POST['email'], '@', true),
 		$Config->core['name'],
 		$Config->core['url'].'/profile',
 		$_POST['email'],

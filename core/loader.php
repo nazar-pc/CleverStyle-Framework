@@ -7,7 +7,6 @@ error_reporting(E_ALL | E_STRICT);
 header('Content-Type: text/html; charset=utf-8');
 header("Connection: close");
 mb_internal_encoding('utf-8');
-date_default_timezone_set(date_default_timezone_get()); //PHP warning fix
 //Убиваем небезопасные глобальные переменные, использование GET метода для передачи переменных не рекомендуется
 //Вместо GET используйте POST
 $_GET						= [];

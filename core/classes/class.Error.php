@@ -30,9 +30,9 @@ class Error {
 			$file	= $debug_backtrace[1]['file'];
 			$line	= $debug_backtrace[1]['line'];
 		}
-		if ((is_object($Config) && $Config->core['on_error_objects_dump']) || (!is_object($Config) && defined('DEBUG'))) {
+		if ((is_object($Config) && $Config->core['on_error_globals_dump']) || (!is_object($Config) && defined('DEBUG'))) {
 			$dump = _json_encode([
-				'GLOBALS'			=> $GLOBALS,
+				'GLOBALS'			=> isset($GLOBALS['Objects']) ? $GLOBALS['Objects'] : null,
 				'debug_backtrace'	=> $debug_backtrace
 			]);
 		}
@@ -104,7 +104,7 @@ class Error {
 	function __finish () {
 		if (!empty($this->errors_list_all)) {
 			$this->errors_list_all		= str_replace('%time%', date('H:i:s', TIME), $this->errors_list_all);
-			_file_put_contents(LOGS.DS.date('d-m-Y', TIME), implode("\n", $this->errors_list_all)."\n", LOCK_EX | FILE_APPEND);
+			_file_put_contents(LOGS.DS.date('d-m-Y', TIME).'_'.strtr(date_default_timezone_get(), '/', '_'), implode("\n", $this->errors_list_all)."\n", LOCK_EX | FILE_APPEND);
 			$this->errors_list_all = [];
 		}
 	}

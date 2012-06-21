@@ -169,9 +169,9 @@ class DB {
 			if (!is_array($mirror)) {
 				global $L;
 				if ($connection == 0) {
-					trigger_error($L->error_core_db, E_ERROR);
+					trigger_error($L->error_core_db, E_USER_ERROR);
 				} else {
-					trigger_error($L->error_db.' '.$this->false_connections[$connection], E_WARNING);
+					trigger_error($L->error_db.' '.$this->false_connections[$connection], E_USER_WARNING);
 				}
 			}
 			return false;

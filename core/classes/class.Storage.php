@@ -62,7 +62,7 @@ class Storage {
 			unset($storage);
 			//Выводим ошибку подключения к хранилищу
 			global $L;
-			trigger_error($L->error_storage.' '.$this->false_connections[$connection], E_WARNING);
+			trigger_error($L->error_storage.' '.$this->false_connections[$connection], E_USER_WARNING);
 			return false;
 		}
 	}

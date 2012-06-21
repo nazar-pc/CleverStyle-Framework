@@ -20,7 +20,7 @@
 			} else {
 				if (is_bool($show_errors) && $show_errors) {
 					$data = debug_backtrace();
-					trigger_error('File '.$file.' does not exists in '.$data[0]['file'].' on line '.$data[0]['line'], E_ERROR);
+					trigger_error('File '.$file.' does not exists in '.$data[0]['file'].' on line '.$data[0]['line'], E_USER_ERROR);
 				} elseif ($show_errors instanceof Closure) {
 					return (bool)$show_errors();
 				}
@@ -45,7 +45,7 @@
 			} else {
 				if (is_bool($show_errors) && $show_errors) {
 					$data = debug_backtrace();
-					trigger_error('File '.$file.' does not exists in '.$data[0]['file'].' on line '.$data[0]['line'], E_WARNING);
+					trigger_error('File '.$file.' does not exists in '.$data[0]['file'].' on line '.$data[0]['line'], E_USER_WARNING);
 				} elseif ($show_errors instanceof Closure) {
 					return (bool)$show_errors();
 				}
@@ -254,9 +254,10 @@
 			//Null byte injection protection
 			$str = null_byte_filter($str);
 			return	FS_CHARSET == 'utf-8' ||
-					strpos($str, 'http:\\') === 0 ||
-					strpos($str, 'https:\\') === 0 ||
-					strpos($str, 'ftp:\\') === 0 ? $str : !is_unicode($str) ? $str : iconv('utf-8', FS_CHARSET, $str);
+					strpos($str, 'http://') === 0 ||
+					strpos($str, 'https://') === 0 ||
+					strpos($str, 'ftp://') === 0 ||
+					strpos($str, '//') === 0 ? $str : !is_unicode($str) ? $str : iconv('utf-8', FS_CHARSET, $str);
 		}
 		//Функция подготавливает строку, которая была получена как путь в файловой системе, для использования в движке
 		function path_to_str ($path) {
@@ -271,27 +272,7 @@
 		//Detection of unicode strings
 		if (!function_exists('is_unicode')) {
 			function is_unicode ($s) {
-				//From http://w3.org/International/questions/qa-forms-utf-8.html
-				return preg_match('%^(?:
-				   [\x09\x0A\x0D\x20-\x7E]            # ASCII
-				 | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
-				 | \xE0[\xA0-\xBF][\x80-\xBF]         # excluding overlongs
-				 | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
-				 | \xED[\x80-\x9F][\x80-\xBF]         # excluding surrogates
-				 | \xF0[\x90-\xBF][\x80-\xBF]{2}      # planes 1-3
-				 | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
-				 | \xF4[\x80-\x8F][\x80-\xBF]{2}      # plane 16
-				)*$%xs', $s);
-				//Another way
-				/*$s	= urlencode($s);
-				$l	= strlen($s);
-				$u	= strlen(str_replace(array('%D0', '%D1'), '', strtoupper($s)));
-
-				if ($u > 0){
-					$k = $l/$u;
-					return ($k > 1.2) && ($k < 2.2);
-				}
-				return false;*/
+				return mb_check_encoding ($s, 'utf-8');
 			}
 		}
 	//Аналоги системных функций с теми же параметрами в том же порядке. Настоятельно рекомендуется использовать вместо стандартных
@@ -729,7 +710,7 @@
 				$in
 			);
 			$in = preg_replace(//TODO page redirection processing
-				'/((src|href).*?=.*?)(http:\/\/)/i',
+				'/((href).*?=.*?)(http:\/\/)/i',
 				'\\1redirect/\\2',
 				$in
 			);
@@ -875,35 +856,18 @@
 	 */
 	function get_timezones_list () {
 		global $Cache;
-		if (($timezones = $Cache->timezones) === false) {
-			$tzs = timezone_abbreviations_list();
-			$timezones_ = $timezones = [];
-			foreach ($tzs as &$tz) {
-				foreach ($tz as &$v) {
-					if ($v['timezone_id']) {
-						/*$sign = $v['offset'] < 0 ? '-' : '+';*/
-						$v['o'] = abs($v['offset']);
-						/*$sec	= fmod($v['o'], 60);
-						$min	= fmod(floor($v['o']/60), 60);
-						$hour	= floor($v['o']/3600);*/
-						$id		= explode('/', $v['timezone_id']);
-						$timezones_[$id[0].$v['offset']]['id'] = &$v['timezone_id'];
-						$timezones_[$id[0].$v['offset']]['value'] = strtr($v['timezone_id'], '_', ' ')/*.//TODO function bug with time
-							' ('.$sign.
-								$hour.':'.
-								str_pad($min, 2, 0, STR_PAD_LEFT).':'.
-								str_pad($sec, 2, 0, STR_PAD_LEFT).
-							')'*/;
-					}
-				}
+		if (!is_object($Cache) || ($timezones = $Cache->timezones) === false) {
+			$tzs = timezone_identifiers_list();
+			$timezones = [];
+			foreach ($tzs as $tz) {
+				$offset = (new DateTimeZone($tz))->getOffset(new DateTime);
+				$timezones[explode('/', $tz, 2)[0].$offset] = $tz.' '.$offset;
 			}
-			unset($tzs, $tz, $v, $tmp);
-			ksort($timezones_);
-			foreach ($timezones_ as &$tz) {
-				$timezones[$tz['id']] = &$tz['value'];
+			unset($tzs, $tz, $offset);
+			ksort($timezones);
+			if (is_object($Cache)) {
+				$Cache->timezones = $timezones;
 			}
-			unset($timezones_, $tz);
-			$Cache->timezones = $timezones;
 		}
 		return $timezones;
 	}
@@ -1058,7 +1022,7 @@
 	function zlib_compression_level () {
 		return ini_get('zlib.output_compression_level');
 	}
-//Проверка отображения ошибок
+	//Проверка отображения ошибок
 	function display_errors () {
 		return (bool)ini_get('display_errors');
 	}
@@ -1074,6 +1038,34 @@
 		} else {
 			return $L->indefinite;
 		}
+	}
+	/**
+	 * Sends header with string representation of error code, for example "404 Not Found" for corresponding server protocol
+	 *
+	 * @param int $code Error code number
+	 *
+	 * @return null|string String representation of error code
+	 */
+	function error_header ($code) {
+		$string_code = null;
+		switch ($code) {
+			case 400:
+				$string_code = '400 Bad Request';
+				break;
+			case 403:
+				$string_code = '403 Forbidden';
+				break;
+			case 404:
+				$string_code = '404 Not Found';
+				break;
+			case 500:
+				$string_code = '500 Internal Server Error';
+				break;
+		}
+		if ($string_code) {
+			header($_SERVER['SERVER_PROTOCOL'].' '.$string_code);
+		}
+		return $string_code;
 	}
 
 $temp = base64_decode('Y29weXJpZ2h0');

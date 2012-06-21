@@ -24,7 +24,6 @@ class Page {
 					'mainmenu'			=> 3,
 					'mainsubmenu'		=> 3,
 					'menumore'			=> 3,
-					'user_avatar_text'	=> 5,
 					'user_info'			=> 5,
 					'debug_info'		=> 3,
 					'Left'				=> 3,
@@ -36,9 +35,8 @@ class Page {
 					'post_Body'			=> 2
 				];
 
-	protected	$init = false,										//For single initialization
-				$theme, $color_scheme, $pcache_basename, $includes,
-				$user_avatar_image, $user_avatar_text, $user_info,
+	protected	$theme, $color_scheme, $pcache_basename, $includes,
+				$user_avatar_image, $user_info,
 				$core_js	= [0 => '', 1 => ''],
 				$core_css	= [0 => '', 1 => ''],
 				$js			= [0 => '', 1 => ''],
@@ -52,10 +50,6 @@ class Page {
 		unset($GLOBALS['interface']);
 	}
 	function init ($name, $keywords, $description, $theme, $color_scheme) {
-		if ($this->init) {
-			return;
-		}
-		$this->init = true;
 		$this->Title[0] = htmlentities($name, ENT_COMPAT, 'utf-8');
 		$this->Keywords = $keywords;
 		$this->Description = $description;
@@ -210,7 +204,6 @@ class Page {
 			'<!--main-submenu-->',
 			'<!--menu-more-->',
 			'<!--user_avatar_image-->',
-			'<!--user_avatar_text-->',
 			'<!--user_info-->',
 			'<!--left_blocks-->',
 			'<!--top_blocks-->',
@@ -229,7 +222,6 @@ class Page {
 			h::level($this->mainsubmenu, $this->level['mainsubmenu']),
 			h::level($this->menumore, $this->level['menumore']),
 			$this->user_avatar_image,
-			h::level($this->user_avatar_text, $this->level['user_avatar_text']),
 			h::level($this->user_info, $this->level['user_info']),
 			h::level($this->Left, $this->level['Left']),
 			h::level($this->Top, $this->level['Top']),
@@ -676,27 +668,9 @@ class Page {
 	 */
 	function error_page () {
 		interface_off();
-		$string_code = null;
-		switch (ERROR_PAGE) {
-			case 400:
-				$string_code = '400 Bad Request';
-				break;
-			case 403:
-				$string_code = '403 Forbidden';
-				break;
-			case 404:
-				$string_code = '404 Not Found';
-				break;
-			case 500:
-				$string_code = '500 Internal Server Error';
-				break;
-		}
-		if ($string_code) {
-			header($_SERVER['SERVER_PROTOCOL'].' '.$string_code);
-		}
 		ob_start();
-		if (!_include(THEMES.DS.$this->theme.DS.'error.html') && !_include(THEMES.DS.$this->theme.DS.'error.php')) {
-			echo "<!doctype html>\n".$string_code;
+		if (!_include(THEMES.DS.$this->theme.DS.'error.html', true, false) && !_include(THEMES.DS.$this->theme.DS.'error.php', true, false)) {
+			echo "<!doctype html>\n".(error_header(ERROR_PAGE) ?: ERROR_PAGE);
 		}
 		$this->Content = ob_get_clean();
 		__finish();
@@ -710,8 +684,7 @@ class Page {
 			if ($User->avatar) {
 				$this->user_avatar_image = 'url('.h::url($User->avatar, true).')';
 			} else {
-				$this->user_avatar_text = '?';
-				$this->user_avatar_image = 'none';
+				$this->user_avatar_image = 'url(/includes/img/guest.gif)';
 			}
 			$this->user_info = h::b($L->hello.', '.$User->get_username().'!').
 			h::{'icon#logout_process'}(
@@ -723,8 +696,7 @@ class Page {
 			).
 			h::br();
 		} else {
-			$this->user_avatar_text = '?';
-			$this->user_avatar_image = 'none';
+			$this->user_avatar_image = 'url(/includes/img/guest.gif)';
 			$this->user_info = h::{'div#anonym_header_form'}(
 				h::b($L->hello.', '.$L->guest.'!').
 				h::br().

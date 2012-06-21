@@ -18,20 +18,21 @@ switch ($_POST['mode']) {
 		}
 	break;
 	case 'edit_raw':
+		$id = (int)$_POST['user']['id'];
 		if (
-			isset($_POST['user']['id']) &&
-			$_POST['user']['id'] != 1 &&
-			$_POST['user']['id'] != 2 &&
-			!in_array(3, (array)$User->get_user_groups($_POST['user']['id']))
+			$id != 1 &&
+			$id != 2 &&
+			!in_array(3, (array)$User->get_user_groups($id))
 		) {
-			$User->set($_POST['user'], null, $_POST['user']['id']);
+			$User->set($_POST['user'], null, $id);
 			$User->__finish();
 			$Index->save(true);
 		}
 	break;
 	case 'edit':
-		if (isset($_POST['user']) && !in_array(3, (array)$User->get_user_groups($_POST['user']['id']))) {
-			if ($_POST['user']['id'] == 1 || $_POST['user']['id'] == 2) {
+		$id = (int)$_POST['user']['id'];
+		if (!in_array(3, (array)$User->get_user_groups($id))) {
+			if ($id == 1 || $id == 2) {
 				break;
 			}
 			$user_data = &$_POST['user'];
@@ -104,13 +105,24 @@ switch ($_POST['mode']) {
 				}
 			}
 			unset($user_data['password']);
-			if ($user_data['login']) {
+			if (
+				$user_data['login'] &&
+				(
+					!filter_var($user_data['login'], FILTER_VALIDATE_EMAIL) ||
+					$user_data['login'] == $user_data['email']
+				) &&
+				$User->get_id(hash('sha224', $user_data['login'])) === false
+			) {
 				$user_data['login_hash'] = hash('sha224', $user_data['login']);
+			} else {
+				unset($user_data['login']);
 			}
 			if ($user_data['email']) {
 				$user_data['email_hash'] = hash('sha224', $user_data['email']);
+			} else {
+				unset($user_data['login']);
 			}
-			$User->set($user_data, '', $user_data['id']);
+			$User->set($user_data, '', $id);
 			$User->__finish();
 			$Index->save(true);
 		} elseif (isset($_POST['bot'])) {

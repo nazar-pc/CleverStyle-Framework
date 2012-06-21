@@ -21,7 +21,7 @@ if ($result === false) {
 	return;
 }
 $body = $L->reg_success_mail_body(
-	substr($result['email'], 0, strpos($result['email'], '@')),
+	strstr($result['email'], '@', true),
 	$Config->core['name'],
 	$Config->core['url'].'/profile',
 	$result['email'],
