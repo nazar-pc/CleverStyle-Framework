@@ -135,5 +135,5 @@ foreach ($plugins as $plugin) {
 }
 unset($plugins, $plugin, $state, $addition_state, $action);
 $a->content(
-	h::{'table.cs-admin-table.cs-center-all'}($plugins_list)
+	h::{'table.cs-fullwidth-table.cs-center-all'}($plugins_list)
 );

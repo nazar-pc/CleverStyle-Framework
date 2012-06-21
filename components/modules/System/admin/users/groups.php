@@ -8,7 +8,7 @@ if (isset($rc[2])) {
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
 			$a->content(
-				h::{'table.cs-admin-table.cs-center-all'}(
+				h::{'table.cs-fullwidth-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
 						$L->group_title,
 						$L->description
@@ -32,7 +32,7 @@ if (isset($rc[2])) {
 			$a->cancel_button_back	= true;
 			$group_data				= $User->get_group_data($rc[3]);
 			$a->content(
-				h::{'table.cs-admin-table.cs-center-all'}(
+				h::{'table.cs-fullwidth-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
 						'&nbsp;id&nbsp;',
 						$L->group_title,
@@ -126,7 +126,7 @@ if (isset($rc[2])) {
 				for ($i = 0; $i < $count; $i += 2) {
 					$content_[]	= $content[$i].$content[$i+1];
 				}
-				$tabs_content .= h::{'div#permissions_group_'.strtr($group, '/', '_').' table.cs-admin-table.cs-center-all'}(
+				$tabs_content .= h::{'div#permissions_group_'.strtr($group, '/', '_').' table.cs-fullwidth-table.cs-center-all'}(
 					h::{'tr td.cs-left-all[colspan=4]'}(
 						h::{'button.cs-permissions-invert'}($L->invert).
 						h::{'button.cs-permissions-allow-all'}($L->allow_all).
@@ -213,7 +213,7 @@ if (isset($rc[2])) {
 	}
 	unset($id, $group_data, $groups_ids);
 	$a->content(
-		h::{'table.cs-admin-table.cs-center-all'}(
+		h::{'table.cs-fullwidth-table.cs-center-all'}(
 			$groups_list.
 			h::{'tr td.cs-left-all[colspan=4] button'}(
 				$L->add_group,

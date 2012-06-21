@@ -31,8 +31,13 @@ if (isset($rc[2])) {
 				unset($i, $db);
 			}
 			$a->action = 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
+			/**
+			 * @var array $dbsname
+			 * @var array $dbs
+			 * @var array $database
+			 */
 			$a->content(
-				h::{'table.cs-admin-table.cs-center-all'}(
+				h::{'table.cs-fullwidth-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
 						$rc[2] == 'add' ? h::info('db_mirror') : false,
 						h::info('db_host'),
@@ -203,48 +208,32 @@ if (isset($rc[2])) {
 	foreach ($Config->db as $i => &$db_data) {
 		$db_list .=	h::tr(
 			h::td(
-				h::a(
-					h::{'button.cs-button-compact'}(
-						h::icon('plus'),
-						[
-							'data-title'	=> $L->add.' '.$L->mirror.' '.$L->of_db
-						]
-					),
+				h::{'a.cs-button.cs-button-compact'}(
+					h::icon('plus'),
 					[
-						'href'		=> $a->action.'/add/'.$i
+						'href'			=> $a->action.'/add/'.$i,
+						'data-title'	=> $L->add.' '.$L->mirror.' '.$L->of_db
 					]
 				).($i ? 
-				h::a(
-					h::{'button.cs-button-compact'}(
-						h::icon('wrench'),
-						[
-							'data-title'	=> $L->edit.' '.$L->db
-						]
-					),
+				h::{'a.cs-button.cs-button-compact'}(
+					h::icon('wrench'),
 					[
-						'href'		=> $a->action.'/edit/'.$i
+						'href'			=> $a->action.'/edit/'.$i,
+						'data-title'	=> $L->edit.' '.$L->db
 					]
 				).
-				h::a(
-					h::{'button.cs-button-compact'}(
-						h::icon('trash'),
-						[
-							'data-title'	=> $L->delete.' '.$L->db
-						]
-					),
+				h::{'a.cs-button.cs-button-compact'}(
+					h::icon('trash'),
 					[
-						'href'		=> $a->action.'/delete/'.$i
+						'href'			=> $a->action.'/delete/'.$i,
+						'data-title'	=> $L->delete.' '.$L->db
 					]
 				) : '').
-				h::a(
-					h::{'button.cs-button-compact'}(
-						h::icon('signal-diag'),
-						[
-							'data-title'	=> $L->test_connection
-						]
-					),
+				h::{'a.cs-button.cs-button-compact'}(
+					h::icon('signal-diag'),
 					[
-						'onMouseDown'	=> 'db_test(\''.$a->action.'/test/'.$i.'\', true);'
+						'onMouseDown'	=> 'db_test(\''.$a->action.'/test/'.$i.'\', true);',
+						'data-title'	=> $L->test_connection
 					]
 				),
 				[
@@ -269,37 +258,25 @@ if (isset($rc[2])) {
 			if (is_array($mirror) && !empty($mirror)) {
 				$db_list .=	h::tr(
 					h::{'td.ui-widget-content.ui-corner-all.cs-db-config-buttons-r'}(
-						h::a(
-							h::{'button.cs-button-compact'}(
-								h::icon('wrench'),
-								[
-									'data-title'	=> $L->edit.' '.$L->mirror.' '.$L->of_db
-								]
-							),
+						h::{'a.cs-button.cs-button-compact'}(
+							h::icon('wrench'),
 							[
-								'href'		=> 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/edit/'.$i.'/'.$m
+								'href'			=> 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/edit/'.$i.'/'.$m,
+								'data-title'	=> $L->edit.' '.$L->mirror.' '.$L->of_db
 							]
 						).
-						h::a(
-							h::{'button.cs-button-compact'}(
-								h::icon('trash'),
-								[
-									'data-title'	=> $L->delete.' '.$L->mirror.' '.$L->of_db
-								]
-							),
+						h::{'a.cs-button.cs-button-compact'}(
+							h::icon('trash'),
 							[
-								'href'		=> 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/delete/'.$i.'/'.$m
+								'href'			=> 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/delete/'.$i.'/'.$m,
+								'data-title'	=> $L->delete.' '.$L->mirror.' '.$L->of_db
 							]
 						).
-						h::a(
-							h::{'button.cs-button-compact'}(
-								h::icon('signal-diag'),
-								[
-									'data-title'	=> $L->test_connection
-								]
-							),
+						h::{'a.cs-button.cs-button-compact'}(
+							h::icon('signal-diag'),
 							[
-								'onMouseDown'	=> 'db_test(\''.$a->action.'/test/'.$i.'/'.$m.'\', true);'
+								'onMouseDown'	=> 'db_test(\''.$a->action.'/test/'.$i.'/'.$m.'\', true);',
+								'data-title'	=> $L->test_connection
 							]
 						)
 					).
@@ -318,7 +295,7 @@ if (isset($rc[2])) {
 	}
 	unset($i, $db_data);
 	$a->content(
-		h::{'table.cs-admin-table'}(
+		h::{'table.cs-fullwidth-table'}(
 			$db_list.
 			h::{'tr td.cs-left-all[colspan=7]'}(
 				h::button(

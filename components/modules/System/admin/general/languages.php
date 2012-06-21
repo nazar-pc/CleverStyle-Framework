@@ -3,7 +3,7 @@ global $Config, $Index, $L;
 $Config->reload_languages();
 $a = &$Index;
 $a->content(
-	h::{'table.cs-admin-table.cs-left-even.cs-right-odd tr'}([
+	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}([
 		h::td([
 			h::info('current_language'),
 			h::{'select#change_language.cs-form-element'}(

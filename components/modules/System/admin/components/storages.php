@@ -15,7 +15,7 @@ if (isset($rc[2])) {
 				}
 				$a->action = 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
 				$a->content(
-					h::{'table.cs-admin-table.cs-center-all'}(
+					h::{'table.cs-fullwidth-table.cs-center-all'}(
 						h::tr(
 							h::{'th.ui-widget-header.ui-corner-all'}([
 								h::info('storageurl'),
@@ -136,37 +136,25 @@ if (isset($rc[2])) {
 		$storage_list .=	h::tr(
 			h::td(
 				($i ? 
-				h::a(
-					h::{'button.cs-button-compact'}(
-						h::icon('wrench'),
-						[
-							'data-title'	=> $L->edit.' '.$L->storage
-						]
-					),
+				h::{'a.cs-button.cs-button-compact'}(
+					h::icon('wrench'),
 					[
-						'href'		=> $a->action.'/edit/'.$i
+						'href'			=> $a->action.'/edit/'.$i,
+						'data-title'	=> $L->edit.' '.$L->storage
 					]
 				).
-				h::a(
-					h::{'button.cs-button-compact'}(
-						h::icon('trash'),
-						[
-							'data-title'	=> $L->delete.' '.$L->storage
-						]
-					),
+				h::{'a.cs-button.cs-button-compact'}(
+					h::icon('trash'),
 					[
-						'href'		=> $a->action.'/delete/'.$i
+						'href'			=> $a->action.'/delete/'.$i,
+						'data-title'	=> $L->delete.' '.$L->storage
 					]
 				).
-				h::a(
-					h::{'button.cs-button-compact'}(
-						h::icon('signal-diag'),
-						[
-							'data-title'	=> $L->test_connection
-						]
-					),
+				h::{'a.cs-button.cs-button-compact'}(
+					h::icon('signal-diag'),
 					[
-						'onMouseDown'	=> 'storage_test(\''.$a->action.'/test/'.$i.'\', true);'
+						'onMouseDown'	=> 'storage_test(\''.$a->action.'/test/'.$i.'\', true);',
+						'data-title'	=> $L->test_connection
 					]
 				) : '-'),
 				[
@@ -188,7 +176,7 @@ if (isset($rc[2])) {
 	}
 	unset($i, $storage_data);
 	$a->content(
-		h::{'table.cs-admin-table.cs-center-all'}(
+		h::{'table.cs-fullwidth-table.cs-center-all'}(
 			$storage_list.
 			h::tr(
 				h::{'td.cs-left-all[colspan=4]'}(

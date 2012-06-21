@@ -858,13 +858,26 @@
 		global $Cache;
 		if (!is_object($Cache) || ($timezones = $Cache->timezones) === false) {
 			$tzs = timezone_identifiers_list();
-			$timezones = [];
+			$timezones_ = $timezones = [];
 			foreach ($tzs as $tz) {
-				$offset = (new DateTimeZone($tz))->getOffset(new DateTime);
-				$timezones[explode('/', $tz, 2)[0].$offset] = $tz.' '.$offset;
+				$offset		= (new DateTimeZone($tz))->getOffset(new DateTime);
+				$offset_	=	($offset < 0 ? '-' : '+').
+								str_pad(floor(abs($offset / 3600)), 2, 0, STR_PAD_LEFT).':'.
+								str_pad(abs(($offset % 3600) / 60), 2, 0, STR_PAD_LEFT);
+				$timezones_[(39600 + $offset).$tz] = [
+					'key'	=> strtr($tz, '_', ' ').' ('.$offset_.')',
+					'value'	=> $tz
+				];
 			}
 			unset($tzs, $tz, $offset);
-			ksort($timezones);
+			ksort($timezones_, SORT_NATURAL);
+			/**
+			 * @var array $offset
+			 */
+			foreach ($timezones_ as $tz) {
+				$timezones[$tz['key']] = $tz['value'];
+			}
+			unset($timezones_, $tz);
 			if (is_object($Cache)) {
 				$Cache->timezones = $timezones;
 			}

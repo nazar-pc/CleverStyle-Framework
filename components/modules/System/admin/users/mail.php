@@ -3,7 +3,7 @@ global $Config, $Index, $L;
 $a = &$Index;
 
 $a->content(
-	h::{'table.cs-admin-table.cs-left-even.cs-right-odd'}(
+	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd'}(
 		h::tr(
 			h::td(h::info('smtp')).
 			h::td(

@@ -26,7 +26,7 @@ $(function() {
 			//$(this).chosen(); //TODO Find some good replacement (or wait for jQuery UI 1.9)
 		}
 	});
-	$(':button').each(function () {
+	$(':button, .cs-button').each(function () {
 		if (!$(this).hasClass('noui')) {
 			$(this).button();
 		}

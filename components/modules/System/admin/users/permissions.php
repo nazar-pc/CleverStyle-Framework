@@ -8,7 +8,7 @@ if (isset($rc[2])) {
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
 			$a->content(
-				h::{'table.cs-admin-table.cs-center-all'}(
+				h::{'table.cs-fullwidth-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
 						$L->group,
 						$L->label
@@ -32,7 +32,7 @@ if (isset($rc[2])) {
 			$a->cancel_button_back	= true;
 			$permission				= $User->get_permission($rc[3]);
 			$a->content(
-				h::{'table.cs-admin-table.cs-center-all'}(
+				h::{'table.cs-fullwidth-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
 						'&nbsp;id&nbsp;',
 						$L->group,
@@ -155,7 +155,7 @@ if (isset($rc[2])) {
 	}
 	unset($permissions_list);
 	$a->content(
-		h::{'table.cs-admin-table.cs-center-all'}(
+		h::{'table.cs-fullwidth-table.cs-center-all'}(
 			$permissions_list_.
 			h::{'tr td.cs-left-all[colspan=8] button'}(
 				$L->add_permission,

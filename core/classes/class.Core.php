@@ -295,6 +295,9 @@ class Core {
 			return false;
 		}
 		$return = true;
+		/**
+		 * @var Closure $trigger
+		 */
 		foreach ($triggers as $trigger) {
 			if ($trigger instanceof Closure) {
 				if ($data === null) {

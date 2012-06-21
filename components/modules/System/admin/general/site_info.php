@@ -4,7 +4,7 @@ $a = &$Index;
 $timezones = get_timezones_list();
 
 $a->content(
-	h::{'table.cs-admin-table.cs-left-even.cs-right-odd tr'}([
+	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}([
 		h::td([
 			h::info('name2'),
 			h::{'input.cs-form-element'}([
@@ -96,8 +96,8 @@ $a->content(
 			h::info('timezone'),
 			h::{'select.cs-form-element'}(
 				[
-					'in'		=> array_values($timezones),
-					'value'		=> array_keys($timezones)
+					'in'		=> array_keys($timezones),
+					'value'		=> array_values($timezones)
 				],
 				[
 					'name'		=> 'core[timezone]',

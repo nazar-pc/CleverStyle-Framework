@@ -161,7 +161,6 @@ class User {
 			$this->del_session();
 			goto getting_user_data;
 		}
-		$this->data[$this->id] = array_merge($data, $this->data[$this->id] ?: []);
 		unset($data);
 		if ($this->id == 1) {
 			$this->current['is']['guest'] = true;
@@ -189,6 +188,19 @@ class User {
 					_setcookie('language', $this->language);
 				}
 				$L->change($this->language);
+			}
+			if ($this->theme) {
+				$theme = _json_decode($this->theme);
+				if (
+					!is_array($theme) &&
+					$theme['theme'] &&
+					$theme['color_scheme'] &&
+					$theme['theme'] != _getcookie('theme') &&
+					$theme['color_scheme'] != _getcookie('color_scheme')
+				) {
+					_setcookie('theme', $theme['theme']);
+					_setcookie('color_scheme', $theme['color_scheme']);
+				}
 			}
 		}
 		//Security check for data, sended with POST method
@@ -303,7 +315,7 @@ class User {
 	 * @param bool|int $user
 	 * @return bool
 	 */
-	function set ($item, $value, $user = false) {
+	function set ($item, $value = '', $user = false) {
 		$user = (int)($user ?: $this->id);
 		if (!$user) {
 			return false;
@@ -315,6 +327,10 @@ class User {
 				}
 			}
 		} elseif (in_array($item, $this->users_columns) && $item != 'id') {
+			if ($item == 'login') {
+				global $Cache;
+				unset($Cache->{'users/'.hash('sha224', $this->$item)});
+			}
 			$this->update_cache[$user] = true;
 			$this->data[$user][$item] = $value;
 			if ($this->init) {
@@ -376,14 +392,17 @@ class User {
 		if (!preg_match('/^[0-9a-z]{56}$/', $login_hash)) {
 			return false;
 		}
-		$id = $this->db()->qf(
-			'SELECT `id` FROM `[prefix]users`
-			WHERE
-				`login_hash` = '.$this->db()->s($login_hash).' OR
-				`email_hash` = '.$this->db()->s($login_hash).'
-			LIMIT 1',
-			'id'
-		);
+		global $Cache;
+		if (($id = $Cache->{'users/'.$login_hash}) === false) {
+			$Cache->{'users/'.$login_hash} = $id = $this->db()->qf(
+				'SELECT `id` FROM `[prefix]users`
+				WHERE
+					`login_hash` = '.$this->db()->s($login_hash).' OR
+					`email_hash` = '.$this->db()->s($login_hash).'
+				LIMIT 1',
+				'id'
+			);
+		}
 		return $id && $id != 1 ? $id : false;
 	}
 	/**
@@ -619,8 +638,7 @@ class User {
 	function get_groups_list () {
 		global $Cache;
 		if (($groups_list = $Cache->{'groups/list'}) === false) {
-			$groups_list = $this->db()->qfa('SELECT `id`, `title`, `description` FROM `[prefix]groups`');
-			$Cache->{'groups/list'} = $groups_list;
+			$Cache->{'groups/list'} = $groups_list = $this->db()->qfa('SELECT `id`, `title`, `description` FROM `[prefix]groups`');
 		}
 		return $groups_list;
 	}
@@ -1069,7 +1087,7 @@ class User {
 						\''.($forwarded_for = ip2hex($this->forwarded_for)).'\',
 						\''.($client_ip = ip2hex($this->client_ip)).'\'
 					)',
-				'UPDATE `[prefix]users` SET `last_login` = '.TIME.', `last_ip` = \''.$ip.'\' WHERE `id` ='.$id
+				$id != 1 ? 'UPDATE `[prefix]users` SET `last_login` = '.TIME.', `last_ip` = \''.$ip.'\' WHERE `id` ='.$id : false
 			]);
 			global $Cache;
 			$Cache->{'sessions/'.$hash} = $this->current['session'] = [

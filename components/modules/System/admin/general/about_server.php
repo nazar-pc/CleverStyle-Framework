@@ -8,7 +8,7 @@ $state = function ($state) {
 	return ($state ? 'ui-state-highlight' : 'ui-state-error').' ui-corner-all';
 };
 $a->content(
-	h::{'table.cs-admin-table.cs-left-even.cs-right-odd tr'}([
+	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}([
 		h::{'td.cs-right-all[colspan=2]'}(
 			h::{'div#system_readme.cs-dialog'}(
 				_file_get_contents(DIR.DS.'readme.html'),

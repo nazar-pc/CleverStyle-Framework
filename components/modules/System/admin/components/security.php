@@ -3,7 +3,7 @@ global $Config, $Index, $L, $User;
 $a = &$Index;
 
 $a->content(
-	h::{'table.cs-admin-table.cs-left-even.cs-right-odd tr'}([
+	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}([
 		h::td([
 			h::info('key_expire'),
 			h::{'input.cs-form-element[type=number]'}([

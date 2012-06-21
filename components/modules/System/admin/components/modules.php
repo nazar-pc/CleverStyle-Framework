@@ -96,8 +96,8 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 								$L->{$rc[3].'_db_'.$database},
 								h::{'select.cs-form-element'}(
 									[
-										'in'		=> array_keys($dbs),
-										'value'		=> array_values($dbs)
+										'in'		=> array_values($dbs),
+										'value'		=> array_keys($dbs)
 									],
 									[
 										'name'		=> 'db['.$database.']',
@@ -110,7 +110,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 						}
 						unset($db_json, $dbs, $database);
 						$a->content(
-							h::{'table.cs-admin-table'}(
+							h::{'table.cs-fullwidth-table'}(
 								h::tr($db_list)
 							)
 						);
@@ -155,8 +155,8 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 								$L->{$rc[3].'_storage_'.$storage},
 								h::{'select.cs-form-element'}(
 									[
-										'in'		=> array_keys($storages),
-										'value'		=> array_values($storages)
+										'in'		=> array_values($storages),
+										'value'		=> array_keys($storages)
 									],
 									[
 										'name'		=> 'storage['.$storage.']',
@@ -169,7 +169,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 						}
 						unset($storage_json, $storages, $storage);
 						$a->content(
-							h::{'table.cs-admin-table'}(
+							h::{'table.cs-fullwidth-table'}(
 								h::tr($storage_list)
 							)
 						);
@@ -213,8 +213,8 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					'value'	=> $rc[2]
 				]).
 				h::{'input[type=hidden]'}([
-					'name'		=> 'module',
-					'value'		=> $rc[3]
+					'name'	=> 'module',
+					'value'	=> $rc[3]
 				])
 			);
 	}
@@ -236,29 +236,21 @@ if ($display_modules) {
 		if ($mdata['active'] == 1 || $mdata['active'] == 0) {
 			//DataBases tettings
 			if (_file_exists(MODULES.DS.$module.DS.'admin'.DS.'db.json') && count($Config->db) > 1) {
-				$action .= h::a(
-					h::{'button.cs-button-compact'}(
-						h::icon('gear'),
-						[
-							'data-title'	=> $L->databases
-						]
-					),
+				$action .= h::{'a.cs-button.cs-button-compact'}(
+					h::icon('gear'),
 					[
-						'href'		=> $a->action.'/db/'.$module
+						'href'			=> $a->action.'/db/'.$module,
+						'data-title'	=> $L->databases
 					]
 				);
 			}
 			//Storages
 			if (_file_exists(MODULES.DS.$module.DS.'admin'.DS.'storage.json') && count($Config->storage) > 1) {
-				$action .= h::a(
-					h::{'button.cs-button-compact'}(
-						h::icon('disk'),
-						[
-							'data-title'	=> $L->storages
-						]
-					),
+				$action .= h::{'a.cs-button.cs-button-compact'}(
+					h::icon('disk'),
 					[
-						'href'		=> $a->action.'/storage/'.$module
+						'href'			=> $a->action.'/storage/'.$module,
+						'data-title'	=> $L->storages
 					]
 				);
 			}
@@ -350,52 +342,36 @@ if ($display_modules) {
 						_file_exists(MODULES.DS.$module.DS.'admin'.DS.'index.json')
 					)
 				) {
-					$action .= h::a(
-						h::{'button.cs-button-compact'}(
-							h::icon('wrench'),
-							[
-								'data-title'	=> $L->settings
-							]
-						),
+					$action .= h::{'a.cs-button.cs-button-compact'}(
+						h::icon('wrench'),
 						[
-							'href'		=> 'admin/'.$module
+							'href'			=> 'admin/'.$module,
+							'data-title'	=> $L->settings
 						]
 					);
 				}
-				$action .= h::a(
-					h::{'button.cs-button-compact'}(
-						h::icon($mdata['active'] == 1 ? 'minusthick' : 'check'),
-						[
-							'data-title'	=> $mdata['active'] == 1 ? $L->disable : $L->enable
-						]
-					),
+				$action .= h::{'a.cs-button.cs-button-compact'}(
+					h::icon($mdata['active'] == 1 ? 'minusthick' : 'check'),
 					[
-						'href'		=> $a->action.($mdata['active'] == 1 ? '/disable/' : '/enable/').$module
+						'href'			=> $a->action.($mdata['active'] == 1 ? '/disable/' : '/enable/').$module,
+						'data-title'	=> $mdata['active'] == 1 ? $L->disable : $L->enable
 					]
 				).
-				h::a(
-					h::{'button.cs-button-compact'}(
-						h::icon('trash'),
-						[
-							'data-title'	=> $L->uninstall
-						]
-					),
+				h::{'a.cs-button.cs-button-compact'}(
+					h::icon('trash'),
 					[
-						'href'		=> $a->action.'/uninstall/'.$module
+						'href'			=> $a->action.'/uninstall/'.$module,
+						'data-title'	=> $L->uninstall
 					]
 				);
 			}
 		//If module uninstalled or not installed yet
 		} else {
-			$action .= h::a(
-				h::{'button.cs-button-compact'}(
-					h::icon('arrowthickstop-1-s'),
-					[
-						'data-title'	=> $L->install
-					]
-				),
+			$action .= h::{'a.cs-button.cs-button-compact'}(
+				h::icon('arrowthickstop-1-s'),
 				[
-					'href'		=> $a->action.'/install/'.$module
+					'href'			=> $a->action.'/install/'.$module,
+					'data-title'	=> $L->install
 				]
 			);
 		}
@@ -415,7 +391,7 @@ if ($display_modules) {
 		);
 	}
 	$a->content(
-		h::{'table.cs-admin-table.cs-center-all'}($modules_list).
+		h::{'table.cs-fullwidth-table.cs-center-all'}($modules_list).
 		h::{'button[type=submit]'}(
 			$L->update_modules_list,
 			[

@@ -20,7 +20,7 @@ if (isset($rc[2], $rc[3])) {
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
 			$a->content(
-				h::{'table.cs-admin-table.cs-left-even.cs-right-odd tr'}([
+				h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}([
 					h::td(
 						[
 							$L->bot_name,
@@ -91,7 +91,7 @@ if (isset($rc[2], $rc[3])) {
 			}
 			unset($i, $column, $content_);
 			$a->content(
-				h::{'table#users_raw_edit.cs-admin-table.cs-center-all'}($content)
+				h::{'table#users_raw_edit.cs-fullwidth-table.cs-center-all'}($content)
 			);
 		break;
 		case 'edit':
@@ -132,8 +132,20 @@ if (isset($rc[2], $rc[3])) {
 					return	h::{'th.ui-widget-header.ui-corner-all'}($col1).
 							h::{'td.ui-widget-content.ui-corner-all'}($col2);
 				};
+				$themes					= [
+					$L->system_default.' ('.$Config->core['theme'].' - '.$Config->core['color_scheme'].')' => ''
+				];
+				foreach ($Config->core['active_themes'] as $theme) {
+					foreach ($Config->core['color_schemes'][$theme] as $color_scheme) {
+						$themes[$theme.' - '.$color_scheme] = _json_encode([
+							'theme'			=> $theme,
+							'color_scheme'	=> $color_scheme
+						]);
+					}
+				}
+				unset($theme, $color_scheme);
 				$a->content(
-					h::{'table#users_edit.cs-admin-table.cs-center-all tr'}([
+					h::{'table#users_edit.cs-fullwidth-table.cs-center-all tr'}([
 						$row('id', $rc[3]),
 
 						$row($L->registration_date, $user_data['reg_date'] ? date($L->_date, $user_data['reg_date']) : $L->undefined),
@@ -182,8 +194,8 @@ if (isset($rc[2], $rc[3])) {
 
 						$row($L->theme, h::{'select.cs-form-element'}(
 							[
-								'in'		=> array_merge([$L->system_default.' ('.$Config->core['theme'].')'], $Config->core['active_themes']),
-								'value'		=> array_merge([''], $Config->core['active_themes'])
+								'in'		=> array_keys($themes),
+								'value'		=> array_values($themes)
 							],
 							[
 								'name'		=> 'user[theme]',
@@ -194,8 +206,8 @@ if (isset($rc[2], $rc[3])) {
 
 						$row($L->timezone, h::{'select.cs-form-element'}(
 							[
-								'in'		=> array_merge([$L->system_default.' ('.$Config->core['timezone'].')'], array_values($timezones)),
-								'value'		=> array_merge([''], array_keys($timezones))
+								'in'		=> array_merge([$L->system_default.' ('.$Config->core['timezone'].')'], array_keys($timezones)),
+								'value'		=> array_merge([''], array_values($timezones))
 							],
 							[
 								'name'		=> 'user[timezone]',
@@ -248,10 +260,12 @@ if (isset($rc[2], $rc[3])) {
 							'value'		=> $user_data['skype']
 						])),
 
-						$row($L->about_myself, h::{'textarea.cs-form-element'}([
-							'name'		=> 'user[about]',
-							'value'		=> $user_data['about']
-						]))
+						$row($L->about_myself, h::{'textarea.cs-form-element'}(
+							$user_data['about'],
+							[
+								'name'		=> 'user[about]',
+							]
+						))
 					]).
 					h::{'input[type=hidden]'}([
 						'name'	=> 'user[id]',
@@ -268,7 +282,7 @@ if (isset($rc[2], $rc[3])) {
 					$rc[3]
 				);
 				$a->content(
-					h::{'table.cs-admin-table.cs-left-even.cs-right-odd tr'}([
+					h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}([
 						h::td(
 							[
 								$L->bot_name,
@@ -385,7 +399,7 @@ if (isset($rc[2], $rc[3])) {
 				for ($i = 0; $i < $count; $i += 2) {
 					$content_[]	= $content[$i].$content[$i+1];
 				}
-				$tabs_content .= h::{'div#permissions_group_'.strtr($group, '/', '_').' table.cs-admin-table.cs-center-all'}(
+				$tabs_content .= h::{'div#permissions_group_'.strtr($group, '/', '_').' table.cs-fullwidth-table.cs-center-all'}(
 					h::{'tr td.cs-left-all[colspan=4]'}(
 						h::{'button.cs-permissions-invert'}($L->invert).
 						h::{'button.cs-permissions-allow-all'}($L->allow_all).
@@ -461,7 +475,7 @@ if (isset($rc[2], $rc[3])) {
 						'data-title'	=> $L->user_groups_info
 					]
 				).
-				h::{'table.cs-admin-table tr td'}(
+				h::{'table.cs-fullwidth-table tr td'}(
 					[
 						h::{'ul#users_groups_list_selected'}($groups_selected),
 						h::{'ul#users_groups_list'}($groups_list)
@@ -744,7 +758,7 @@ if (isset($rc[2], $rc[3])) {
 			$L->founded_users($results_count).
 			($results_count > $limit ? ' / '.$L->page_from($start+1, ceil($results_count/$limit)) : '')
 		).
-		h::{'table.cs-admin-table.cs-center-all'}(
+		h::{'table.cs-fullwidth-table.cs-center-all'}(
 			$users_list
 		).
 		h::{'p.cs-left'}(

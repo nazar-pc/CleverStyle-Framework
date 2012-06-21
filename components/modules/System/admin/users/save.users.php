@@ -107,14 +107,20 @@ switch ($_POST['mode']) {
 			unset($user_data['password']);
 			if (
 				$user_data['login'] &&
+				$user_data['login'] != $User->get('login', $id) &&
 				(
-					!filter_var($user_data['login'], FILTER_VALIDATE_EMAIL) ||
+					(
+						!filter_var($user_data['login'], FILTER_VALIDATE_EMAIL) &&
+						$User->get_id(hash('sha224', $user_data['login'])) === false
+					) ||
 					$user_data['login'] == $user_data['email']
-				) &&
-				$User->get_id(hash('sha224', $user_data['login'])) === false
+				)
 			) {
 				$user_data['login_hash'] = hash('sha224', $user_data['login']);
 			} else {
+				if ($user_data['login'] != $User->get('login', $id)) {
+					$Page->warning($L->login_occupied_or_is_not_valid);
+				}
 				unset($user_data['login']);
 			}
 			if ($user_data['email']) {

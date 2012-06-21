@@ -6,7 +6,6 @@
  *   'clanguage'	=> <i>clanguage</i><br>
  *   'clang'		=> <i>clang</i><br>
  *   'clanguage_en'	=> <i>clanguage_en</i><br>
- *   'clocale'		=> <i>clocale</i><br>
  *  ]</code>
  */
 class Language {
@@ -47,8 +46,7 @@ class Language {
 				[
 					'clanguage'		=> $this->translate['clanguage'],
 					'clang'			=> $this->translate['clang'],
-					'clanguage_en'	=> $this->translate['clanguage_en'],
-					'clocale'		=> $this->translate['clocale']
+					'clanguage_en'	=> $this->translate['clanguage_en']
 				]
 			);
 			$Cache->{'languages/'.$this->clanguage} = $this->translate;
@@ -171,10 +169,6 @@ class Language {
 				if(!isset($this->translate['clanguage_en'])) {
 					$this->translate['clanguage_en'] = $this->clanguage;
 				}
-				if(!isset($this->translate['clocale'])) {
-					$this->translate['clocale'] = $this->clang.'_'.mb_strtoupper($this->clang);
-				}
-				setlocale(LC_TIME | (defined('LC_MESSAGES') ? LC_MESSAGES : 0), $this->clocale);
 				if (!($Text instanceof Loader)) {
 					$Text->language($this->clang);
 				}
@@ -254,6 +248,72 @@ class Language {
 	 */
 	function format ($name, $arguments) {
 		return vsprintf($this->get($name), $arguments);
+	}
+
+	/**
+	 * Formatting data according to language locale (translating months names, days of week, etc.)
+	 *
+	 * @param array|string $data
+	 * @param bool         $short_may	When in date() or similar functions "M" format option is used, third month "May"
+	 * 									have the same short textual representation as full, so, this option allows to
+	 * 									specify, which exactly form of representation do you want
+	 *
+	 * @return array|string
+	 */
+	function to_locale ($data, $short_may = false) {
+		if (is_array($data)) {
+			foreach ($data as &$item) {
+				$item = $this->to_locale($item, $short_may);
+			}
+			return $data;
+		}
+		if ($short_may) {
+			$data = str_replace('May', 'MaY', $data);
+		}
+		$from = [
+			'January',
+			'February',
+			'March',
+			'April',
+			'May',
+			'June',
+			'July',
+			'August',
+			'September',
+			'October',
+			'November',
+			'December',
+			'Jan',
+			'Feb',
+			'Mar',
+			'Apr',
+			'MaY',
+			'Jun',
+			'Jul',
+			'Aug',
+			'Sep',
+			'Oct',
+			'Nov',
+			'Dec',
+			'Sunday',
+			'Monday',
+			'Tuesday',
+			'Wednesday',
+			'Thursday',
+			'Friday',
+			'Saturday',
+			'Sun',
+			'Mon',
+			'Tue',
+			'Wed',
+			'Thu',
+			'Fri',
+			'Sat'
+		];
+		foreach ($from as $f) {
+			$data = str_replace($f, $this->get('l_'.$f), $data);
+		}
+		return $data;
 	}
 	/**
 	 * Cloning restriction

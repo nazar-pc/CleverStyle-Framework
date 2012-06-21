@@ -2,7 +2,7 @@
 global $L, $Config, $Index;
 
 $Index->content(
-	h::{'table.cs-admin-table.cs-left-even.cs-right-odd tr'}([
+	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}([
 		h::td([
 			h::info('site_mode'),
 			h::{'input[type=radio]'}([

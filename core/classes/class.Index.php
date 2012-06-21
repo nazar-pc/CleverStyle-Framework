@@ -22,6 +22,7 @@ class Index {
 
 				$init_auto			= true,
 				$generate_auto		= true,
+				$title_auto			= true,
 				$stop				= false;	//Gives the ability to stop further processing
 
 	protected	$preload			= [],
@@ -37,7 +38,8 @@ class Index {
 				$api				= false;
 
 	function __construct () {
-		global $Config, $User;
+		global $Config, $User, $Index;
+		$Index = $this;
 		$admin_path	= MODULES.DS.MODULE.DS.'admin';
 		$api_path	= MODULES.DS.MODULE.DS.'api';
 		if (
@@ -124,7 +126,7 @@ class Index {
 			return;
 		}
 		$this->admin && $Page->title($L->administration);
-		if (!$this->api) {
+		if (!$this->api && $this->title_auto) {
 			$Page->title($L->{HOME ? 'home' : MODULE});
 		}
 		if ($this->parts) {
@@ -142,7 +144,7 @@ class Index {
 				return;
 			}
 			if (!$this->api) {
-				if (!HOME) {
+				if (!HOME && $this->title_auto) {
 					$Page->title($L->$rc[0]);
 				}
 			}
@@ -165,7 +167,7 @@ class Index {
 					return;
 				}
 				if (!$this->api) {
-					if (!HOME) {
+					if (!HOME && $this->title_auto) {
 						$Page->title($L->$rc[1]);
 					}
 					$this->action = ($this->admin ? 'admin/' : '').MODULE.'/'.$rc[0].'/'.$rc[1];
@@ -178,7 +180,7 @@ class Index {
 				$this->action = ($this->admin ? 'admin/' : '').MODULE.'/'.$rc[0];
 			}
 			unset($rc);
-			if ($this->post_title) {
+			if ($this->post_title && $this->title_auto) {
 				$Page->title($this->post_title);
 			}
 		} elseif (!$this->api) {
@@ -223,7 +225,6 @@ class Index {
 			$Page->mainsubmenu .= h::a(
 				$L->$part,
 				[
-					'id'		=> $part.'_a',
 					'href'		=> ($this->admin ? 'admin/' : '').MODULE.'/'.$part,
 					'class'		=> isset($Config->routing['current'][0]) && $Config->routing['current'][0] == $part ? 'active' : ''
 				]
@@ -239,7 +240,6 @@ class Index {
 			$Page->menumore .= h::a(
 				$L->$subpart,
 				[
-					'id'		=> $subpart.'_a',
 					'href'		=> ($this->admin ? 'admin/' : '').MODULE.'/'.$Config->routing['current'][0].'/'.$subpart,
 					'class'		=> $Config->routing['current'][1] == $subpart ? 'active' : ''
 				]
@@ -327,11 +327,11 @@ class Index {
 						'enctype'	=> $this->file_upload ? 'multipart/form-data' : false,
 						'action'	=> $this->action,
 						'id'		=> 'admin_form',
-						'class'		=> 'cs-admin-form'
+						'class'		=> 'cs-fullwidth-form'
 					]+$this->form_atributes
 				), 1
 			);
-		} else {
+		} elseif ($this->Content) {
 			$Page->content($this->Content);
 		}
 	}
@@ -516,10 +516,13 @@ class Index {
 		}
 		closure_process($this->preload);
 		if (!$this->admin && !$this->api && _file_exists(MFOLDER.DS.'index.html')) {
-			global $Page;
+			global $Page, $L;
 			ob_start();
 			_include(MFOLDER.DS.'index.html', false, false);
 			$Page->content(ob_get_clean());
+			if ($this->title_auto) {
+				$Page->title($L->{HOME ? 'home' : MODULE});
+			}
 		} else {
 			$this->init_auto	&& $this->init();
 		}

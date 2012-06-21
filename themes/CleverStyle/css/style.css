@@ -21,17 +21,17 @@ code {
 	width              : 100%;
 }
 
-.cs-admin-form {
+.cs-fullwidth-form {
 	text-align : center;
 	width      : 100%;
 }
 
-.cs-admin-table {
+.cs-fullwidth-table {
 	margin : auto auto 15px;
 	width  : 100%;
 }
 
-.cs-admin-table > tbody > tr > td.ui-widget-shadow {
+.cs-fullwidth-table > tbody > tr > td.ui-widget-shadow {
 	opacity : 1;
 }
 
@@ -66,15 +66,15 @@ select {
 	outline : none;
 }
 
-.cs-admin-table input[type=number],
-.cs-admin-table input[type=range] {
+.cs-fullwidth-table input[type=number],
+.cs-fullwidth-table input[type=range] {
 	width : 90px;
 }
 
-.cs-admin-table input[type=text],
-.cs-admin-table input[type=password],
-.cs-admin-table input[type=email],
-.cs-admin-table input[type=tel] {
+.cs-fullwidth-table input[type=text],
+.cs-fullwidth-table input[type=password],
+.cs-fullwidth-table input[type=email],
+.cs-fullwidth-table input[type=tel] {
 	width : 250px;
 }
 
@@ -89,8 +89,7 @@ textarea {
 	white-space : nowrap;
 }
 
-button.cs-button-compact > span,
-input[type=button].cs-button-compact > span {
+.cs-button-compact > span {
 	padding : 2px 3px !important;
 }
 
@@ -140,6 +139,10 @@ footer {
 #system_license_open,
 #user_info_header button {
 	cursor : pointer;
+}
+
+#user_info_header .actions {
+	margin: 5px 0;
 }
 
 #login_slide,
@@ -303,9 +306,38 @@ textarea.cs-wide-textarea {
 .cs-add-user {
 	width: 250px;
 }
+
 .cs-add-bot {
 	width: 450px;
 }
+
 #columns_settings li {
 	cursor: pointer;
+}
+
+.cs-profile-table td {
+	vertical-align: top;
+}
+
+h1 {
+	font-size: 18px;
+	font-weight: 100;
+}
+
+h2 {
+	font-size: 16px;
+	font-weight: 100;
+}
+.cs-profile-table h2 {
+	margin: 0 0 10px 0;
+}
+
+.cs-profile-avatar {
+	width: 138px;
+}
+
+.cs-profile-avatar img {
+	height: 128px;
+	margin: 5px;
+	width: 128px;
 }

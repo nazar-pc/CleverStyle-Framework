@@ -2,7 +2,7 @@
 global $L, $Config, $Index, $Cache;
 $a = &$Index;
 $a->content(
-	h::{'table.cs-admin-table.cs-left-even.cs-right-odd'}(
+	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd'}(
 		h::tr(
 			h::{'td info'}('gzip_compression').
 			h::{'td input[type=radio]'}([

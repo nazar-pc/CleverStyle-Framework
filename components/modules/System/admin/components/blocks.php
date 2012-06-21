@@ -50,7 +50,7 @@ if (isset($rc[2])) {
 			$a->cancel_button_back	= true;
 			$a->form_atributes[]	= 'formnovalidate';
 			$a->content(
-				h::{'table.cs-admin-table.cs-center-all'}(
+				h::{'table.cs-fullwidth-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
 						h::info('block_type'),
 						h::info('block_title'),
@@ -141,7 +141,7 @@ if (isset($rc[2])) {
 			$a->form_atributes[]	= 'formnovalidate';
 			$block = &$Config->components['blocks'][$rc[3]];
 			$a->content(
-				h::{'table.cs-admin-table.cs-center-all'}(
+				h::{'table.cs-fullwidth-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
 						h::info('block_title'),
 						h::info('block_active'),
@@ -295,7 +295,7 @@ if (isset($rc[2])) {
 							]
 						)
 					]).
-					h::{'div#block_groups_permissions table.cs-admin-table.cs-center-all'}(
+					h::{'div#block_groups_permissions table.cs-fullwidth-table.cs-center-all'}(
 						h::{'tr td.cs-left-all[colspan=4]'}(
 							h::{'button.cs-permissions-invert'}($L->invert).
 							h::{'button.cs-permissions-allow-all'}($L->allow_all).
@@ -306,13 +306,13 @@ if (isset($rc[2])) {
 					h::{'input#block_users_search_found[type=hidden]'}([
 						'value'	=> implode(',', $users_list)
 					]).
-					h::{'div#block_users_permissions table.cs-admin-table.cs-center-all tr'}([
+					h::{'div#block_users_permissions table.cs-fullwidth-table.cs-center-all tr'}([
 						h::{'td.cs-left-all'}(
 							h::{'button.cs-permissions-invert'}($L->invert).
 							h::{'button.cs-permissions-allow-all'}($L->allow_all).
 							h::{'button.cs-permissions-deny-all'}($L->deny_all)
 						),
-						h::{'td table#block_users_changed_permissions.cs-admin-table.cs-center-all tr'}($users_content),
+						h::{'td table#block_users_changed_permissions.cs-fullwidth-table.cs-center-all tr'}($users_content),
 						h::{'td input#block_users_search.cs-form-element[type=search]'}([
 							'autocomplete'	=> 'off',
 							'permission'	=> $permission,
@@ -366,7 +366,7 @@ if (isset($rc[2])) {
 					]);
 			}
 			$Page->content(
-				h::{'table.cs-admin-table.cs-center-all tr'}($content)
+				h::{'table.cs-fullwidth-table.cs-center-all tr'}($content)
 			);
 		break;
 	}
@@ -441,7 +441,7 @@ if ($form) {
 	}
 	unset($position, $content);
 	$a->content(
-		h::{'table.cs-admin-table tr'}([
+		h::{'table.cs-fullwidth-table tr'}([
 			h::td().$blocks_array['top'].h::td(),
 
 			$blocks_array['left'].$blocks_array['floating'].$blocks_array['right'],

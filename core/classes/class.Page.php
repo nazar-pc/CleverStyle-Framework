@@ -2,6 +2,10 @@
 /**
  * Provides next triggers:<br>
  *  System/Page/pre_display<code>
+ *  System/Page/get_header_info<code>
+ *  [
+ *   'id'	=> <i>user_id</i><br>
+ *  ]</code>
  */
 class Page {
 	public		$Content, $interface = true,
@@ -679,7 +683,7 @@ class Page {
 	 * Substitutes header information about user, login/registration forms, etc.
 	 */
 	protected function get_header_info () {
-		global $User, $L;
+		global $User, $L, $Core;
 		if (is_object ($User) && $User->is('user')) {
 			if ($User->avatar) {
 				$this->user_avatar_image = 'url('.h::url($User->avatar, true).')';
@@ -690,11 +694,31 @@ class Page {
 			h::{'icon#logout_process'}(
 				'power',
 				[
-					'style'		=> 'cursor: pointer;',
+					'style'			=> 'cursor: pointer;',
 					'data-title'	=> $L->logout
 				]
 			).
-			h::br();
+			h::{'p.actions'}(
+				h::a(
+					$L->profile,
+					[
+						'href'	=> '/profile/'.$User->login
+					]
+				).
+				'|'.
+				h::a(
+					$L->settings,
+					[
+						'href'	=> '/profile/settings'
+					]
+				)
+			);
+			$Core->run_trigger(
+				'System/Page/get_header_info',
+				[
+					'id'	=> $User->get('id')
+				]
+			);
 		} else {
 			$this->user_avatar_image = 'url(/includes/img/guest.gif)';
 			$this->user_info = h::{'div#anonym_header_form'}(
