@@ -1,5 +1,5 @@
 <?php
-global $Config, $Index, $L, $User;
+global $Config, $Index, $L, $User, $Page;
 $a				= &$Index;
 $rc				= &$Config->routing['current'];
 if (isset($rc[2])) {
@@ -7,7 +7,11 @@ if (isset($rc[2])) {
 		case 'add':
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
+			$Page->title($L->adding_a_group);
 			$a->content(
+				h::{'p.ui-priority-primary.cs-state-messages'}(
+					$L->adding_a_group
+				).
 				h::{'table.cs-fullwidth-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
 						$L->group_title,
@@ -31,7 +35,13 @@ if (isset($rc[2])) {
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
 			$group_data				= $User->get_group_data($rc[3]);
+			$Page->title(
+				$L->editing_a_group($group_data['title'])
+			);
 			$a->content(
+				h::{'p.ui-priority-primary.cs-state-messages'}(
+					$L->editing_a_group($group_data['title'])
+				).
 				h::{'table.cs-fullwidth-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
 						'&nbsp;id&nbsp;',
@@ -70,8 +80,11 @@ if (isset($rc[2])) {
 			$a->buttons				= false;
 			$a->cancel_button_back	= true;
 			$group					= $User->get_group_data($rc[3]);
+			$Page->title(
+				$L->deleting_a_group($group['title'])
+			);
 			$a->content(
-				h::{'p.cs-center-all'}(
+				h::{'p.ui-priority-primary.cs-state-messages'}(
 					$L->sure_delete_group($group['title'])
 				).
 				h::{'input[type=hidden]'}([
@@ -136,6 +149,11 @@ if (isset($rc[2])) {
 				);
 			}
 			unset($content, $content_, $count, $i, $permissions, $group, $list, $label, $id, $blocks);
+			$Page->title(
+				$L->permissions_for_group(
+					$User->get_group_data($rc[3], 'title')
+				)
+			);
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages'}(
 					$L->permissions_for_group(

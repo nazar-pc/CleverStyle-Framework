@@ -1,6 +1,6 @@
 <?php
 
-global $L, $DB_TYPE, $DB_HOST, $DB_NAME, $DB_PREFIX, $db, $Cache;
+global $L, $DB_TYPE, $DB_HOST, $DB_NAME, $DB_PREFIX, $db, $Cache, $STORAGE_TYPE;
 global $$DB_TYPE, $Index, $PHP, $mcrypt;
 $a = &$Index;
 $a->form = false;
@@ -102,8 +102,13 @@ $a->content(
 			zlib_compression() ?
 				h::td($L->zlib_compression_level.':').
 				h::td(zlib_compression_level())
-			: false
+			: false,
 
+			h::td($L->curl_lib.':').
+			h::td(
+				$L->get(curl()),
+				['class' => $state(curl())]
+			)
 		]),
 		h::td([
 				$L->main_db.':',
@@ -130,6 +135,10 @@ $a->content(
 				$L->prefix_of_db.':',
 				$DB_PREFIX
 			])
+		]),
+		h::td([
+			$L->main_storage.':',
+			$STORAGE_TYPE
 		]),
 		function_exists('apache_get_version') ?
 			h::td([

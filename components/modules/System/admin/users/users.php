@@ -1,5 +1,5 @@
 <?php
-global $Config, $Index, $L, $User;
+global $Config, $Index, $L, $User, $Page;
 $a				= &$Index;
 $rc				= &$Config->routing['current'];
 $search_columns	= $User->get_users_columns();
@@ -9,7 +9,11 @@ if (isset($rc[2], $rc[3])) {
 		case 'add':
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
+			$Page->title($L->adding_a_user);
 			$a->content(
+				h::{'p.ui-priority-primary.cs-state-messages'}(
+					$L->adding_a_user
+				).
 				h::{'p input.cs-form-element.cs-add-user'}([
 					'name'			=> 'email',
 					'placeholder'	=> $L->email
@@ -19,7 +23,11 @@ if (isset($rc[2], $rc[3])) {
 		case 'add_bot':
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
+			$Page->title($L->adding_a_bot);
 			$a->content(
+				h::{'p.ui-priority-primary.cs-state-messages'}(
+					$L->adding_a_bot
+				).
 				h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}([
 					h::td(
 						[
@@ -90,7 +98,15 @@ if (isset($rc[2], $rc[3])) {
 				);
 			}
 			unset($i, $column, $content_);
+			$Page->title(
+				$L->editing_raw_data_of_user($User->get_username($rc[3]))
+			);
 			$a->content(
+				h::{'p.ui-priority-primary.cs-state-messages'}(
+					$L->editing_raw_data_of_user(
+						$User->get_username($rc[3])
+					)
+				).
 				h::{'table#users_raw_edit.cs-fullwidth-table.cs-center-all'}($content)
 			);
 		break;
@@ -144,7 +160,15 @@ if (isset($rc[2], $rc[3])) {
 					}
 				}
 				unset($theme, $color_scheme);
+				$Page->title(
+					$L->editing_data_of_user($User->get_username($rc[3]))
+				);
 				$a->content(
+					h::{'p.ui-priority-primary.cs-state-messages'}(
+						$L->editing_data_of_user(
+							$User->get_username($rc[3])
+						)
+					).
 					h::{'table#users_edit.cs-fullwidth-table.cs-center-all tr'}([
 						$row('id', $rc[3]),
 
@@ -281,7 +305,15 @@ if (isset($rc[2], $rc[3])) {
 					],
 					$rc[3]
 				);
+				$Page->title(
+					$L->edit_data_of_bot($bot_data['username'])
+				);
 				$a->content(
+					h::{'p.ui-priority-primary.cs-state-messages'}(
+						$L->edit_data_of_bot(
+							$bot_data['username']
+						)
+					).
 					h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}([
 						h::td(
 							[
@@ -409,8 +441,11 @@ if (isset($rc[2], $rc[3])) {
 				);
 			}
 			unset($content, $content_, $count, $i, $permissions, $group, $list, $label, $id, $blocks);
+			$Page->title($L->{$is_bot ? 'permissions_for_bot' : 'permissions_for_user'}(
+				$User->get_username($rc[3])
+			));
 			$a->content(
-				h::{'p.cs-center-all'}(
+				h::{'p.ui-priority-primary.cs-state-messages'}(
 					$L->{$is_bot ? 'permissions_for_bot' : 'permissions_for_user'}(
 						$User->get_username($rc[3])
 					)
@@ -466,8 +501,11 @@ if (isset($rc[2], $rc[3])) {
 					);
 				}
 			}
+			$Page->title(
+				$L->user_groups($User->get_username($rc[3]))
+			);
 			$a->content(
-				h::{'p.cs-center-all'}(
+				h::{'p.ui-priority-primary.cs-state-messages'}(
 					$L->user_groups(
 						$User->get_username($rc[3])
 					),
@@ -568,10 +606,17 @@ if (isset($rc[2], $rc[3])) {
 				break;
 		}
 	}
-	$results_count	= $u_db->qf('SELECT COUNT(`id`) AS `count` FROM `[prefix]users` WHERE '.$where, 'count');
+	$results_count	= $u_db->qf("
+		SELECT COUNT(`id`) AS `count`
+		FROM `[prefix]users`
+		WHERE ($where) AND `status` != '-1'", 'count');
 	if ($results_count) {
-		$users_ids = $u_db->qfa(
-			'SELECT `id` FROM `[prefix]users` WHERE '.$where.' ORDER BY `id` LIMIT '.($start*$limit).', '.$limit,
+		$users_ids = $u_db->qfa('
+			SELECT `id`
+			FROM `[prefix]users`
+			WHERE ('.$where.') AND `status` != \'-1\'
+			ORDER BY `id`
+			LIMIT '.($start*$limit).', '.$limit,
 			'id'
 		);
 	}
@@ -596,7 +641,7 @@ if (isset($rc[2], $rc[3])) {
 						'href'		=> $a->action.'/edit_raw/'.$id
 					]
 				).
-				h::a(
+				(!$Config->core['simple_admin_mode'] ? h::a(
 					h::{'button.cs-button-compact'}(
 						h::icon('wrench'),
 						[
@@ -606,7 +651,7 @@ if (isset($rc[2], $rc[3])) {
 					[
 						'href'		=> $a->action.'/edit/'.$id
 					]
-				) : ''
+				) : false) : ''
 			).
 			($id != 1 && $id != 2 ?
 				h::a(

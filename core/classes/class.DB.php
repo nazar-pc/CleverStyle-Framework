@@ -17,7 +17,7 @@ class DB {
 		unset($GLOBALS['DB_USER'], $GLOBALS['DB_PASSWORD']);
 	}
 	/**
-	 * @param	bool|null|string $status		<b>null</b>		- returns array of connections with objects<br>
+	 * @param	bool|null|string $status	<b>null</b>		- returns array of connections with objects<br>
 	 * 										<b>true|1</b>	- returns array of names of succesfull connections<br>
 	 * 										<b>false|0</b>	- returns array of names of failed connections<br>
 	 * 										<b>mirror</b>	- returns array of names of mirror connections

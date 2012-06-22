@@ -1,5 +1,5 @@
 <?php
-global $Config, $Index, $L;
+global $Config, $Index, $L, $Page;
 $a = &$Index;
 $rc = &$Config->routing['current'];
 $test_dialog = true;
@@ -9,69 +9,74 @@ if (isset($rc[2])) {
 	switch ($rc[2]) {
 		case 'add':
 		case 'edit':
-			if (isset($rc[3])) {
-				if ($rc[2] == 'edit') {
-					$storage = &$Config->storage[$rc[3]];
-				}
-				$a->action = 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
-				$a->content(
-					h::{'table.cs-fullwidth-table.cs-center-all'}(
-						h::tr(
-							h::{'th.ui-widget-header.ui-corner-all'}([
-								h::info('storageurl'),
-								h::info('storagehost'),
-								h::info('storageconnection'),
-								h::info('storageuser'),
-								h::info('storagepass')
-							])
-						).
-						h::tr(
-							h::{'td.ui-widget-content.ui-corner-all.cs-add-storage'}([
-								h::{'input.cs-form-element'}([
-									'name'		=> 'storage[url]',
-									'value'		=> $rc[2] == 'edit' ? $storage['url'] : ''
-								]),
-								h::{'input.cs-form-element'}([
-									'name'		=> 'storage[host]',
-									'value'		=> $rc[2] == 'edit' ? $storage['host'] : ''
-								]),
-								h::{'select.cs-form-element'}(
-									[
-										'in'		=> _mb_substr(get_list(ENGINES, '/^storage\..*?\.php$/i', 'f'), 8, -4)
-									],
-									[
-										'name'		=> 'storage[connection]',
-										'selected'	=> $rc[2] == 'edit' ? $storage['connection'] : '',
-										'size'		=> 5
-									]
-								),
-								h::{'input.cs-form-element'}([
-									'name'		=> 'storage[user]',
-									'value'		=> $rc[2] == 'edit' ? $storage['user'] : ''
-								]),
-								h::{'input.cs-form-element'}([
-									'name'		=> 'storage[password]',
-									'value'		=> $rc[2] == 'edit' ? $storage['password'] : ''
-								]).
-								h::{'input[type=hidden]'}([
-									'name'		=> 'mode',
-									'value'		=> $rc[2] == 'edit' ? 'edit' : 'add'
-								]).
-								(isset($rc[3]) ? h::{'input[type=hidden]'}([
-									'name'	=> 'storage_id',
-									'value'	=> $rc[3]
-								]) : '')
-							])
-						)
-					).
-					h::button(
-						$L->test_connection,
-						[
-							'onMouseDown'	=> 'storage_test(\''.$a->action.'/test\');'
-						]
-					)
-				);
+			if ($rc[2] == 'edit' && isset($rc[3])) {
+				$storage = &$Config->storage[$rc[3]];
 			}
+			/**
+ 			 * @var array $storage
+			 */
+			$a->action = 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
+			$Page->title($rc[2] == 'edit' ? $L->editing_a_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']) : $L->adding_a_storage);
+			$a->content(
+				h::{'p.ui-priority-primary.cs-state-messages'}(
+					$rc[2] == 'edit' ? $L->editing_a_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']) : $L->adding_a_storage
+				).
+				h::{'table.cs-fullwidth-table.cs-center-all'}(
+					h::tr(
+						h::{'th.ui-widget-header.ui-corner-all'}([
+							h::info('storageurl'),
+							h::info('storagehost'),
+							h::info('storageconnection'),
+							h::info('storageuser'),
+							h::info('storagepass')
+						])
+					).
+					h::tr(
+						h::{'td.ui-widget-content.ui-corner-all.cs-add-storage'}([
+							h::{'input.cs-form-element'}([
+								'name'		=> 'storage[url]',
+								'value'		=> $rc[2] == 'edit' ? $storage['url'] : ''
+							]),
+							h::{'input.cs-form-element'}([
+								'name'		=> 'storage[host]',
+								'value'		=> $rc[2] == 'edit' ? $storage['host'] : ''
+							]),
+							h::{'select.cs-form-element'}(
+								[
+									'in'		=> _mb_substr(get_list(ENGINES, '/^storage\..*?\.php$/i', 'f'), 8, -4)
+								],
+								[
+									'name'		=> 'storage[connection]',
+									'selected'	=> $rc[2] == 'edit' ? $storage['connection'] : '',
+									'size'		=> 5
+								]
+							),
+							h::{'input.cs-form-element'}([
+								'name'		=> 'storage[user]',
+								'value'		=> $rc[2] == 'edit' ? $storage['user'] : ''
+							]),
+							h::{'input.cs-form-element'}([
+								'name'		=> 'storage[password]',
+								'value'		=> $rc[2] == 'edit' ? $storage['password'] : ''
+							]).
+							h::{'input[type=hidden]'}([
+								'name'		=> 'mode',
+								'value'		=> $rc[2] == 'edit' ? 'edit' : 'add'
+							]).
+							(isset($rc[3]) ? h::{'input[type=hidden]'}([
+								'name'	=> 'storage_id',
+								'value'	=> $rc[3]
+							]) : '')
+						])
+					)
+				).
+				h::button(
+					$L->test_connection,
+					[
+						'onMouseDown'	=> 'storage_test(\''.$a->action.'/test\');'
+					]
+				)
+			);
 		break;
 		case 'delete':
 			$a->buttons = false;
@@ -92,10 +97,11 @@ if (isset($rc[2])) {
 				$Page->warning($L->storage_used_by_modules.': '.implode(', ', $modules));
 			} else {
 				$a->action = 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
+				$Page->title($L->deleting_a_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']));
 				$a->content(
-					h::{'p.cs-center-all'}(
+					h::{'p.ui-priority-primary.cs-state-messages'}(
 						$L->sure_to_delete.' '.$L->storage.' '.
-							h::b($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']).'?'.
+							$Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection'].'?'.
 							h::{'input[type=hidden]'}([
 								'name'	=> 'mode',
 								'value'	=> 'delete'
@@ -132,6 +138,7 @@ if (isset($rc[2])) {
 			$L->storageuser
 		])
 	);
+	global $STORAGE_TYPE, $STORAGE_URL, $STORAGE_HOST, $STORAGE_USER;
 	foreach ($Config->storage as $i => &$storage_data) {
 		$storage_list .=	h::tr(
 			h::td(
@@ -163,10 +170,10 @@ if (isset($rc[2])) {
 			).
 			h::td(
 				[
-					$i	? $storage_data['url']			: url_by_source(STORAGE),
-					$i	? $storage_data['host']			: 'localhost',
-					$i	? $storage_data['connection']	: 'Local',
-					$i	? $storage_data['user']			: '-'
+					$i	? $storage_data['url']			: $STORAGE_URL ?: url_by_source(STORAGE),
+					$i	? $storage_data['host']			: $STORAGE_HOST,
+					$i	? $storage_data['connection']	: $STORAGE_TYPE,
+					$i	? $storage_data['user']			: $STORAGE_USER ?: '-'
 				],
 				[
 					'class'	=> 'ui-corner-all '.($i ? 'ui-widget-content' : 'ui-state-highlight')

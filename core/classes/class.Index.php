@@ -95,8 +95,13 @@ class Index {
 	protected function init () {
 		global $Config, $L, $Page, $User;
 		$rc = &$Config->routing['current'];
-		if (_file_exists(MFOLDER.DS.'index.json')) {
-			$this->structure	= _json_decode(_file_get_contents(MFOLDER.DS.'index.json'));
+		if ($Config->core['simple_admin_mode'] && _file_exists(MFOLDER.DS.'index_simple.json')) {
+			$structure_file	= 'index_simple.json';
+		} else {
+			$structure_file	= 'index.json';
+		}
+		if (_file_exists(MFOLDER.DS.$structure_file)) {
+			$this->structure	= _json_decode(_file_get_contents(MFOLDER.DS.$structure_file));
 			if (is_array($this->structure)) {
 				foreach ($this->structure as $item => $value) {
 					if ($User->get_user_permission($this->permission_group, $item)) {

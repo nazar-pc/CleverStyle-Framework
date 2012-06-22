@@ -29,8 +29,9 @@ if (isset($rc[2])) {
 			$a->buttons				= false;
 			$a->cancel_button_back	= true;
 			$a->action				= 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
+			$Page->title($L->deleting_a_block($Config->components['blocks'][$rc[3]]['title']));
 			$a->content(
-				h::{'p.cs-center-all'}(
+				h::{'p.ui-priority-primary.cs-state-messages'}(
 					$L->sure_to_delete_block($Config->components['blocks'][$rc[3]]['title']).
 					h::{'input[type=hidden]'}([
 						'name'	=> 'mode',
@@ -49,7 +50,11 @@ if (isset($rc[2])) {
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
 			$a->form_atributes[]	= 'formnovalidate';
+			$Page->title($L->adding_a_block);
 			$a->content(
+				h::{'p.ui-priority-primary.cs-state-messages'}(
+					$L->adding_a_block
+				).
 				h::{'table.cs-fullwidth-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
 						h::info('block_type'),
@@ -140,7 +145,11 @@ if (isset($rc[2])) {
 			$a->cancel_button_back	= true;
 			$a->form_atributes[]	= 'formnovalidate';
 			$block = &$Config->components['blocks'][$rc[3]];
+			$Page->title($L->editing_a_block($block['title']));
 			$a->content(
+				h::{'p.ui-priority-primary.cs-state-messages'}(
+					$L->editing_a_block($block['title'])
+				).
 				h::{'table.cs-fullwidth-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
 						h::info('block_title'),
@@ -244,9 +253,9 @@ if (isset($rc[2])) {
 				).
 				h::{'td input[type=radio]'}([
 					'name'			=> 'groups['.$group['id'].']',
-					'checked'		=> $group_permission === false ? 1 : $group_permission,
-					'value'			=> [0, 1],
-					'in'			=> [$L->deny, $L->allow]
+					'checked'		=> $group_permission === false ? -1 : $group_permission,
+					'value'			=> [-1, 0, 1],
+					'in'			=> [$L->inherited, $L->deny, $L->allow]
 				]);
 			}
 			unset($groups, $group, $group_permission);
@@ -274,11 +283,10 @@ if (isset($rc[2])) {
 					]);
 			}
 			unset($user, $value);
+			$Page->title($L->permissions_for_block($block['title']));
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages'}(
-					$L->permissions_for_block(
-						$block['title']
-					)
+					$L->permissions_for_block($block['title'])
 				).
 				h::{'div#block_permissions_tabs'}(
 					h::{'ul li'}([
@@ -316,7 +324,7 @@ if (isset($rc[2])) {
 						h::{'td input#block_users_search.cs-form-element[type=search]'}([
 							'autocomplete'	=> 'off',
 							'permission'	=> $permission,
-							'placeholder'	=> $L->type_username_or_email,
+							'placeholder'	=> $L->type_username_or_email_press_enter,
 							'style'			=> 'width: 100%'
 						]),
 						h::{'td#block_users_search_results'}()

@@ -235,13 +235,15 @@ $(function() {
 					$('#block_users_search_found').val()+','+id.substring(6, id.length-1)
 				);
 			});
+			var data = {
+				found_users		: $('#block_users_search_found').val(),
+				permission		: $(this).attr('permission'),
+				search_phrase	: $(this).val()
+			};
+			data[session_id] = session_id;
 			$('#block_users_search_results').load(
 				current_base_url+'/'+routing[0]+'/'+routing[1]+'/search_users',
-				{
-					found_users		: $('#block_users_search_found').val(),
-					permission		: $(this).attr('permission'),
-					search_phrase	: $(this).val()
-				},
+				data,
 				function () {
 					$('#block_users_search_results :radio').each(function () {
 						if (!$(this).hasClass('noui')) {

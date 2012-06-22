@@ -417,13 +417,15 @@ class User {
 	}
 	function search_users ($search_phrase) {
 		$search_phrase = $this->db()->s(trim($search_phrase, "%\n").'%');
-		$found_users = $this->db()->qfa('
+		$found_users = $this->db()->qfa("
 			SELECT `id`
 			FROM `[prefix]users`
 			WHERE
-				`login`		LIKE '.$search_phrase.' OR
-				`username`	LIKE '.$search_phrase.' OR
-				`email`		LIKE '.$search_phrase,
+				(
+					`login`		LIKE $search_phrase OR
+					`username`	LIKE $search_phrase OR
+					`email`		LIKE $search_phrase
+				) AND `status` != '-1'",
 			'id'
 		);
 		return $found_users;
@@ -579,7 +581,10 @@ class User {
 		}
 		$return		= $return && $this->db_prime()->q($update);
 		global $Cache;
-		unset($Cache->{'users/groups/'.$user});
+		unset(
+			$Cache->{'users/groups/'.$user},
+			$Cache->{'users/permissions/'.$user}
+		);
 		return $return;
 	}
 	/**
@@ -833,7 +838,7 @@ class User {
 		return $return;
 	}
 	/**
-	 * Common function for del_user_permissions() and del_group_permissions() because of their similarity
+	 * Common function for del_user_permissions_all() and del_group_permissions_all() because of their similarity
 	 *
 	 * @param	int		$id
 	 * @param	string	$type
@@ -1300,11 +1305,12 @@ class User {
 					DELETE
 					FROM `[prefix]users`
 					WHERE
-						`login_hash` = null AND
-						`email_hash` = null AND
-						`password_hash` = null AND
-						`id` != 1 AND
-						`id` != 2'
+						`login_hash`	= \'\' AND
+						`email_hash`	= \'\' AND
+						`password_hash`	= \'\' AND
+						`status`		= \'-1\' AND
+						`id`			!= 1 AND
+						`id`			!= 2'
 				);
 			}
 			return [
@@ -1409,7 +1415,7 @@ class User {
 			return;
 		}
 		$this->set_user_groups([], $user);
-		$this->del_user_permissions($user);
+		$this->del_user_permissions_all($user);
 		global $Cache;
 		unset($Cache->{'users/'.$user});
 		if ($update) {

@@ -1,5 +1,5 @@
 <?php
-global $Config, $Index, $L, $User;
+global $Config, $Index, $L, $User, $Page;
 $a				= &$Index;
 $rc				= &$Config->routing['current'];
 if (isset($rc[2])) {
@@ -7,7 +7,11 @@ if (isset($rc[2])) {
 		case 'add':
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
+			$Page->title($L->adding_a_permission);
 			$a->content(
+				h::{'p.ui-priority-primary.cs-state-messages'}(
+					$L->adding_a_permission
+				).
 				h::{'table.cs-fullwidth-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
 						$L->group,
@@ -31,7 +35,13 @@ if (isset($rc[2])) {
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
 			$permission				= $User->get_permission($rc[3]);
+			$Page->title(
+				$L->editing_a_permission($permission['group'].'/'.$permission['label'])
+			);
 			$a->content(
+				h::{'p.ui-priority-primary.cs-state-messages'}(
+					$L->editing_a_permission($permission['group'].'/'.$permission['label'])
+				).
 				h::{'table.cs-fullwidth-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
 						'&nbsp;id&nbsp;',
@@ -65,8 +75,11 @@ if (isset($rc[2])) {
 			$a->buttons				= false;
 			$a->cancel_button_back	= true;
 			$permission				= $User->get_permission($rc[3]);
+			$Page->title(
+				$L->deleting_a_permission($permission['group'].'/'.$permission['label'])
+			);
 			$a->content(
-				h::{'p.cs-center-all'}(
+				h::{'p.ui-priority-primary.cs-state-messages'}(
 					$L->sure_delete_permission($permission['group'].'/'.$permission['label'])
 				).
 				h::{'input[type=hidden]'}([

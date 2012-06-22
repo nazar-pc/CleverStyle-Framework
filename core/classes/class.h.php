@@ -349,7 +349,7 @@ class h {//TODO full array of unpaired tags for general processing
 				unset($num);
 				$return = '';
 				foreach ($items as $item) {
-					$return .= self::{__FUNCTION__}($item);
+					$return .= self::input($item);
 				}
 				return $return;
 			} else {

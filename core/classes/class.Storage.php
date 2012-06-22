@@ -1,11 +1,31 @@
 <?php
 class Storage {
-	public		$time					= 0,
-				$successful_connections	= [],//TODO make hidden property
-				$false_connections		= [],//TODO make hidden property
-				$connections			= [];//TODO make hidden property
-	//TODO get_connections_list like in DB class for Debugging
+	public		$time					= 0;
+	protected	$connections			= [],
+				$successful_connections	= [],
+				$false_connections		= [];
+
+	/**
+	 * @param	bool|null|string $status	<b>null</b>		- returns array of connections with objects<br>
+	 * 										<b>true|1</b>	- returns array of names of succesfull connections<br>
+	 * 										<b>false|0</b>	- returns array of names of failed connections<br>
+	 * @return	array|null
+	 */
+	function get_connections_list ($status = null) {
+		if ($status === null) {
+			return $this->connections;
+		} elseif ($status == 0) {
+			return $this->false_connections;
+		} elseif ($status == 1) {
+			return $this->successful_connections;
+		}
+		return null;
+	}
 	//Обработка подключений к хранилищам
+	/**
+	 * @param	int			$connection
+	 * @return	bool|object
+	 */
 	function __get ($connection) {
 		if (!is_int($connection) && $connection != '0') {
 			return false;
@@ -37,11 +57,12 @@ class Storage {
 		}
 		//Если подключается локальное хранилище
 		if ($connection == 0) {
-			$storage['connection']	= 'Local';
-			$storage['url']			= '';
-			$storage['host']		= 'localhost';
-			$storage['user']		= '';
-			$storage['password']	= '';
+			global $STORAGE_TYPE, $STORAGE_URL, $STORAGE_HOST, $STORAGE_USER, $STORAGE_PASSWORD;
+			$storage['connection']	= $STORAGE_TYPE;
+			$storage['url']			= $STORAGE_URL;
+			$storage['host']		= $STORAGE_HOST;
+			$storage['user']		= $STORAGE_USER;
+			$storage['password']	= $STORAGE_PASSWORD;
 		} else {
 			//Загружаем настройки
 			$storage = &$Config->storage[$connection];

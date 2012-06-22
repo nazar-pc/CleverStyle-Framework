@@ -76,7 +76,8 @@
 		_require(ENGINES.DS.$class.'.php', true, false) ||
 		_require(ENGINES.DS.'cache.'.$class.'.php', true, false) ||
 		_require(ENGINES.DS.'db.'.$class.'.php', true, false) ||
-		_require(ENGINES.DS.'storage.'.$class.'.php', true, false);
+		_require(ENGINES.DS.'storage.'.$class.'.php', true, false) ||
+		_require(ENGINES.DS.'translate.'.$class.'.php', true, false);
 	});
 	//Функция для корректной остановки выполнения из любого места движка
 	function __finish () {
@@ -1035,6 +1036,10 @@
 	function zlib_compression_level () {
 		return ini_get('zlib.output_compression_level');
 	}
+	//Проверка наличия curl
+	function curl () {
+		return extension_loaded('curl');
+	}
 	//Проверка отображения ошибок
 	function display_errors () {
 		return (bool)ini_get('display_errors');
@@ -1051,6 +1056,38 @@
 		} else {
 			return $L->indefinite;
 		}
+	}
+	/**
+	 * @param string $host
+	 * @param string $path
+	 * @param array  $data
+	 *
+	 * @return bool|string
+	 */
+	function post_request ($host, $path, $data) {
+		if (!is_array($data) || empty($data)) {
+			return false;
+		}
+		$host	= explode(':', $host);
+		$socket = fsockopen($host[0], isset($host[1]) ? $host[1] : 80);
+		if(!is_resource($socket)) {
+			return false;
+		}
+		$data = http_build_query($data, null, null, PHP_QUERY_RFC3986);
+		fwrite(
+			$socket,
+			"POST $path HTTP/1.1\r\n".
+			'Host: '.implode(':', $host)."\r\n".
+			"Content-type: text/plain\r\n".
+			"Content-length:".strlen($data)."\r\n".
+			"Accept:*/*\r\n".
+			"User-agent: CleverStyle CMS\r\n\r\n".
+			$data."\r\n\r\n"
+		);
+		unset($data);
+		$return = explode("\r\n\r\n", stream_get_contents($socket), 2)[1];
+		fclose($socket);
+		return $return;
 	}
 	/**
 	 * Sends header with string representation of error code, for example "404 Not Found" for corresponding server protocol

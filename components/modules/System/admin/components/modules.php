@@ -14,7 +14,7 @@
  *  admin/System/components/modules/disable<br>
  *  ['name'	=> <i>module_name</i>]
  */
-global $Config, $Index, $L, $db, $Core;
+global $Config, $Index, $L, $db, $Core, $Page;
 $a					= &$Index;
 $rc					= &$Config->routing['current'];
 $a->buttons			= false;
@@ -23,9 +23,10 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 	switch ($rc[2]) {
 		case 'install':
 			$display_modules = false;
+			$Page->title($L->installation_of_module.' '.$rc[3]);
 			$a->content(
-				h::p(
-					$L->installation_of_module.' '.h::b($rc[3])
+				h::{'p.ui-priority-primary.cs-state-messages'}(
+					$L->installation_of_module.' '.$rc[3]
 				)
 			);
 			if ($Core->run_trigger(
@@ -35,10 +36,37 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 				]
 			)) {
 				$a->cancel_button_back = true;
-				goto module_db_settings;
-				back_to_module_installation_1:
-				goto module_storage_settings;
-				back_to_module_installation_2:
+				if ($Config->core['simple_admin_mode']) {
+					if (_file_exists(MODULES.DS.$rc[3].DS.'admin'.DS.'db.json')) {
+						$db_json = _json_decode(_file_get_contents(MODULES.DS.$rc[3].DS.'admin'.DS.'db.json'));
+						foreach ($db_json as $database) {
+							$a->content(
+								h::{'input[type=hidden]'}([
+									'name'		=> 'db['.$database.']',
+									'value'		=> 0
+								])
+							);
+						}
+						unset($db_json, $database);
+					}
+					if (_file_exists(MODULES.DS.$rc[3].DS.'admin'.DS.'storage.json')) {
+						$storage_json = _json_decode(_file_get_contents(MODULES.DS.$rc[3].DS.'admin'.DS.'storage.json'));
+						foreach ($storage_json as $storage) {
+							$a->content(
+								h::{'input[type=hidden]'}([
+									'name'		=> 'storage['.$storage.']',
+									'value'		=> 0
+								])
+							);
+						}
+						unset($storage_json, $storage);
+					}
+				} else {
+					goto module_db_settings;
+					back_to_module_installation_1:
+					goto module_storage_settings;
+					back_to_module_installation_2:
+				}
 				$a->content(
 					h::{'button[type=submit]'}($L->install)
 				);
@@ -46,9 +74,10 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 		break;
 		case 'uninstall':
 			$display_modules = false;
+			$Page->title($L->uninstallation_of_module.' '.$rc[3]);
 			$a->content(
-				h::p(
-					$L->uninstallation_of_module.' '.h::b($rc[3])
+				h::{'p.ui-priority-primary.cs-state-messages'}(
+					$L->uninstallation_of_module.' '.$rc[3]
 				)
 			);
 			if ($Core->run_trigger(
@@ -65,9 +94,15 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 		break;
 		case 'db':
 			$display_modules = false;
-			global $Page;
-			$Page->warning($L->changing_settings_warning);
 			if (count($Config->db) > 1) {
+				global $Page;
+				$Page->warning($L->changing_settings_warning);
+				$Page->title($L->db_settings_for_module.' '.$rc[3]);
+				$a->content(
+					h::{'p.ui-priority-primary.cs-state-messages'}(
+						$L->db_settings_for_module.' '.$rc[3]
+					)
+				);
 				if ($Core->run_trigger(
 					'admin/System/components/modules/db/prepare',
 					[
@@ -124,9 +159,15 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 		break;
 		case 'storage':
 			$display_modules = false;
-			global $Page;
-			$Page->warning($L->changing_settings_warning);
 			if (count($Config->storage) > 1) {
+				global $Page;
+				$Page->warning($L->changing_settings_warning);
+				$Page->title($L->storage_settings_for_module.' '.$rc[3]);
+				$a->content(
+					h::{'p.ui-priority-primary.cs-state-messages'}(
+						$L->storage_settings_for_module.' '.$rc[3]
+					)
+				);
 				if ($Core->run_trigger(
 					'admin/System/components/modules/storage/prepare',
 					[
@@ -234,26 +275,6 @@ if ($display_modules) {
 		//If module if enabled or disabled
 		$addition_state = $action = '';
 		if ($mdata['active'] == 1 || $mdata['active'] == 0) {
-			//DataBases tettings
-			if (_file_exists(MODULES.DS.$module.DS.'admin'.DS.'db.json') && count($Config->db) > 1) {
-				$action .= h::{'a.cs-button.cs-button-compact'}(
-					h::icon('gear'),
-					[
-						'href'			=> $a->action.'/db/'.$module,
-						'data-title'	=> $L->databases
-					]
-				);
-			}
-			//Storages
-			if (_file_exists(MODULES.DS.$module.DS.'admin'.DS.'storage.json') && count($Config->storage) > 1) {
-				$action .= h::{'a.cs-button.cs-button-compact'}(
-					h::icon('disk'),
-					[
-						'href'			=> $a->action.'/storage/'.$module,
-						'data-title'	=> $L->storages
-					]
-				);
-			}
 			//Notice about API existence
 			if (_is_dir(MODULES.DS.$module.DS.'api')) {
 				if (
@@ -334,6 +355,26 @@ if ($display_modules) {
 				);
 			}
 			unset($tag, $file);
+			//DataBases tettings
+			if (!$Config->core['simple_admin_mode'] && _file_exists(MODULES.DS.$module.DS.'admin'.DS.'db.json') && count($Config->db) > 1) {
+				$action .= h::{'a.cs-button.cs-button-compact'}(
+					h::icon('gear'),
+					[
+						'href'			=> $a->action.'/db/'.$module,
+						'data-title'	=> $L->databases
+					]
+				);
+			}
+			//Storages
+			if (!$Config->core['simple_admin_mode'] && _file_exists(MODULES.DS.$module.DS.'admin'.DS.'storage.json') && count($Config->storage) > 1) {
+				$action .= h::{'a.cs-button.cs-button-compact'}(
+					h::icon('disk'),
+					[
+						'href'			=> $a->action.'/storage/'.$module,
+						'data-title'	=> $L->storages
+					]
+				);
+			}
 			if (mb_strtolower($module) != 'system') {
 				if (
 					_is_dir(MODULES.DS.$module.DS.'admin') &&

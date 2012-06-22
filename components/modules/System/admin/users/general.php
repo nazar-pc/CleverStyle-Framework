@@ -125,7 +125,7 @@ $a->content(
 				$L->days
 			),
 			[
-				 'style'	=>	$Config->core['allow_user_registration'] == 0 ||
+				 'style'	=>	$Config->core['allow_user_registration'] == 1 &&
 					 			$Config->core['require_registration_confirmation'] == 1 ? '' : 'display: none;'
 			]
 		).
@@ -140,7 +140,7 @@ $a->content(
 				])
 			),
 			[
-				 'style'	=>	$Config->core['allow_user_registration'] == 0 ||
+				 'style'	=>	$Config->core['allow_user_registration'] == 1 &&
 					 			$Config->core['require_registration_confirmation'] == 1 ? '' : 'display: none;'
 			]
 		).

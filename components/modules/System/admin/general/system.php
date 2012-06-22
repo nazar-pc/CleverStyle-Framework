@@ -60,6 +60,16 @@ $Index->content(
 		]),
 
 		h::td([
+			h::info('simple_admin_mode'),
+			h::{'input[type=radio]'}([
+				'name'			=> 'core[simple_admin_mode]',
+				'checked'		=> $Config->core['simple_admin_mode'],
+				'value'			=> [0, 1],
+				'in'			=> [$L->off, $L->on]
+			])
+		]),
+
+		(!$Config->core['simple_admin_mode'] ? h::td([
 			h::info('debug'),
 				h::{'input[type=radio]'}([
 				'name'			=> 'core[debug]',
@@ -68,9 +78,9 @@ $Index->content(
 				'in'			=> [$L->off, $L->on],
 				'OnClick'		=> ['$(\'#debug_form\').hide();', '$(\'#debug_form\').show();']
 			])
-		]),
+		]) : false),
 
-		h::td().
+		(!$Config->core['simple_admin_mode'] ? h::td().
 		h::{'td#debug_form.cs-padding-left'}(
 			h::{'table tr'}([
 				h::td([
@@ -116,9 +126,9 @@ $Index->content(
 			[
 				'style' => ($Config->core['debug'] == 0 ? 'display: none;' : '')
 			]
-		),
+		) : false),
 
-		h::td([
+		(!$Config->core['simple_admin_mode'] ? h::td([
 			h::info('routing'),
 			h::{'table#system_config_routing tr'}([
 				h::{'td info'}('routing_in').
@@ -137,9 +147,9 @@ $Index->content(
 					]
 				)
 			])
-		]),
+		]) : false),
 
-		h::td([
+		(!$Config->core['simple_admin_mode'] ? h::td([
 			h::info('replace'),
 			h::{'table#system_config_replace tr'}([
 					h::{'td info'}('replace_in').
@@ -158,6 +168,6 @@ $Index->content(
 						]
 					)
 			])
-		])
+		]) : false)
 	])
 );

@@ -4,9 +4,13 @@ global $Config, $Page, $User, $L;
 //пользователь активен, и не блокиирован - выполняем операцию аутентификации, иначе выдаем ошибку
 if (!$Config->server['referer']['local'] || !$Config->server['ajax'] || !isset($_POST['email'])) {
 	sleep(1);
+	$Page->content('reload');
 	return;
 } elseif (!$User->is('guest')) {
 	$Page->content('reload');
+	return;
+} elseif (!$Config->core['allow_user_registration']) {
+	$Page->content($L->registration_prohibited);
 	return;
 } elseif (empty($_POST['email'])) {
 	$Page->content($L->please_type_your_email);

@@ -13,39 +13,39 @@ $a->content(
 			])
 		]),
 
-		h::td([
+		(!$Config->core['simple_admin_mode'] ? h::td([
 			h::info('url'),
 			h::{'input.cs-form-element'}([
 				'name'	=> 'core[url]',
 				'value' => $Config->core['url']
 			])
-		]),
+		]) : false),
 
-		h::td([
+		(!$Config->core['simple_admin_mode'] ? h::td([
 			h::info('cookie_domain'),
 			h::{'input.cs-form-element'}([
 				'name'	=> 'core[cookie_domain]',
 				'value' => $Config->core['cookie_domain']
 			])
-		]),
+		]) : false),
 
-		h::td([
+		(!$Config->core['simple_admin_mode'] ? h::td([
 			h::info('cookie_path'),
 			h::{'input.cs-form-element'}([
 				'name'	=> 'core[cookie_path]',
 				'value' => $Config->core['cookie_path']
 			])
-		]),
+		]) : false),
 
-		h::td([
+		(!$Config->core['simple_admin_mode'] ? h::td([
 			h::info('cookie_prefix'),
 			h::{'input.cs-form-element'}([
 				'name'	=> 'core[cookie_prefix]',
 				'value' => $Config->core['cookie_prefix']
 			])
-		]),
+		]) : false),
 
-		h::td([
+		(!$Config->core['simple_admin_mode'] ? h::td([
 			h::info('mirrors'),
 			h::table(
 				h::{'tr td'}([
@@ -74,7 +74,7 @@ $a->content(
 					)
 				])
 			)
-		]),
+		]) : false),
 
 		h::td([
 			h::info('keywords'),
@@ -108,10 +108,10 @@ $a->content(
 		]),
 
 		h::td([
-			h::info('admin_mail'),
+			h::info('admin_email'),
 			h::{'input.cs-form-element[type=email]'}([
-				'name'	=> 'core[admin_mail]',
-				'value' => $Config->core['admin_mail']
+				'name'	=> 'core[admin_email]',
+				'value' => $Config->core['admin_email']
 			])
 		]),
 

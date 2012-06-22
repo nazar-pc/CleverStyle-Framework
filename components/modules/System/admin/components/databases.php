@@ -1,5 +1,5 @@
 <?php
-global $Config, $Index, $L, $DB_HOST, $DB_TYPE, $DB_PREFIX, $DB_NAME, $DB_CODEPAGE;
+global $Config, $Index, $L, $Page, $DB_HOST, $DB_TYPE, $DB_PREFIX, $DB_NAME, $DB_CODEPAGE;
 $a				= &$Index;
 $rc				= &$Config->routing['current'];
 $test_dialog	= false;
@@ -36,7 +36,21 @@ if (isset($rc[2])) {
 			 * @var array $dbs
 			 * @var array $database
 			 */
+			$mirror		= isset($rc[4]);
+			$cdb		= $Config->db[$rc[3]];
+			if ($mirror) {
+				$cdbm	= $Config->db[$rc[3]]['mirrors'][$rc[4]];
+				$name	= $L->mirror.' '.($rc[3] ? $L->db.' '.$cdb['name'] : $L->core_db).', '.$cdbm['name'].' ('.$cdbm['host'].'/'.$cdbm['type'].')?';
+				unset($cdbm);
+			} else {
+				$name	= $L->db.' '.$cdb['name'].' ('.$cdb['host'].'/'.$cdb['type'].')?';
+			}
+			unset($mirror, $cdb);
+			$Page->title($rc[2] == 'edit' ? $L->editing_a_database($name) : $L->adding_a_database);
 			$a->content(
+				h::{'p.ui-priority-primary.cs-state-messages'}(
+					$rc[2] == 'edit' ? $L->editing_a_database($name) : $L->adding_a_database
+				).
 				h::{'table.cs-fullwidth-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
 						$rc[2] == 'add' ? h::info('db_mirror') : false,
@@ -138,18 +152,21 @@ if (isset($rc[2])) {
 				global $Page;
 				$Page->warning($L->db_used_by_modules.': '.implode(', ', $content));
 			} else {
-				$a->action = 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
+				$a->action	= 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
+				$mirror		= isset($rc[4]);
+				$cdb		= $Config->db[$rc[3]];
+				if ($mirror) {
+					$cdbm	= $Config->db[$rc[3]]['mirrors'][$rc[4]];
+					$name	= $L->mirror.' '.($rc[3] ? $L->db.' '.$cdb['name'] : $L->core_db).', '.$cdbm['name'].' ('.$cdbm['host'].'/'.$cdbm['type'].')?';
+					unset($cdbm);
+				} else {
+					$name	= $L->db.' '.$cdb['name'].' ('.$cdb['host'].'/'.$cdb['type'].')?';
+				}
+				unset($mirror, $cdb);
+				$Page->title($L->deleting_a_database($name));
 				$a->content(
-					h::{'p.cs-center-all'}(
-						$L->sure_to_delete.' '.(isset($rc[4]) ? $L->mirror.' '.h::b($rc[3] ? $L->db.' '.$Config->db[$rc[3]]['name'] : $L->core_db).', ' : $L->db).' '.
-							h::b(
-								isset($rc[4]) ? $Config->db[$rc[3]]['mirrors'][$rc[4]]['name'] : $Config->db[$rc[3]]['name']
-							).
-							' ('.
-							(isset($rc[4]) ? $Config->db[$rc[3]]['mirrors'][$rc[4]]['host'] : $Config->db[$rc[3]]['host']).
-							'/'.
-							(isset($rc[4]) ? $Config->db[$rc[3]]['mirrors'][$rc[4]]['type'] : $Config->db[$rc[3]]['type']).
-							')?'.
+					h::{'p.ui-priority-primary.cs-state-messages'}(
+						$L->sure_to_delete.' '.$name.
 							h::{'input[type=hidden]'}([
 								'name'	=> 'mode',
 								'value'	=> 'delete'
@@ -165,7 +182,7 @@ if (isset($rc[2])) {
 								])
 							: '')
 					).
-						h::{'button[type=submit]'}($L->yes)
+					h::{'button[type=submit]'}($L->yes)
 				);
 			}
 		break;

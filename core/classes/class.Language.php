@@ -33,11 +33,13 @@ class Language {
 			return;
 		}
 		$this->init = true;
-		$this->change(
-			_getcookie('language') && in_array(_getcookie('language'), $active_languages) ? _getcookie('language') : (
-				$this->scan_aliases($active_languages) ?: $language
-			)
-		);
+		if (!FIXED_LANGUAGE) {
+			$this->change(
+				_getcookie('language') && in_array(_getcookie('language'), $active_languages) ? _getcookie('language') : (
+					$this->scan_aliases($active_languages) ?: $language
+				)
+			);
+		}
 		if ($this->need_to_rebuild_cache) {
 			global $Cache;
 			global $Core;
@@ -144,13 +146,10 @@ class Language {
 		}
 		global $Config;
 		if (!is_object($Config) || ($Config->core['multilanguage'] && in_array($language, $Config->core['active_languages']))) {
-			global $Cache, $Text;
+			global $Cache;
 			$this->clanguage = $language;
 			if ($translate = $Cache->{'languages/'.$this->clanguage}) {
 				$this->set($translate);
-				if (!($Text instanceof Loader)) {
-					$Text->language($this->clang);
-				}
 				return true;
 			} elseif (_file_exists(LANGUAGES.'/lang.'.$this->clanguage.'.json')) {
 				$data = _file(LANGUAGES.'/lang.'.$this->clanguage.'.json', FILE_SKIP_EMPTY_LINES);
@@ -168,9 +167,6 @@ class Language {
 				}
 				if(!isset($this->translate['clanguage_en'])) {
 					$this->translate['clanguage_en'] = $this->clanguage;
-				}
-				if (!($Text instanceof Loader)) {
-					$Text->language($this->clang);
 				}
 				$this->need_to_rebuild_cache = true;
 				if ($this->init) {
