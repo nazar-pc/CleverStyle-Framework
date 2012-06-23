@@ -64,13 +64,15 @@ class FileSystem extends CacheAbstract {
 				if ($dsize > $this->cache_size) {
 					return false;
 				}
-				if (_file_exists(CACHE.DS.'size')) {
+				if ($this->size === null && _file_exists(CACHE.DS.'size')) {
 					$size = _filesize(CACHE.DS.'size');
 				}
 				$size_file = _fopen(CACHE.DS.'size', 'c+b');
 				flock($size_file, LOCK_EX);
 				if (isset($size) && $this->size === null) {
 					$this->size = (int)fread($size_file, $size);
+				} elseif ($this->size === null) {
+					$this->size = 0;
 				}
 				unset($size);
 				$this->size += $dsize;
@@ -141,14 +143,13 @@ class FileSystem extends CacheAbstract {
 				return _rmdir(CACHE.DS.$item);
 			}
 			if ($this->cache_size > 0) {
+				if ($this->size === null && _file_exists(CACHE.DS.'size')) {
+					$size = _filesize(CACHE.DS.'size');
+				}
 				$size_file = _fopen(CACHE.DS.'size', 'c+b');
 				flock($size_file, LOCK_EX);
-				if ($this->size === false) {
-					$this->size = '';
-					while (!feof($size_file)) {
-						$this->size .= fread($size_file, 20);
-					}
-					$this->size = (int)$this->size;
+				if (isset($size) && $this->size === null) {
+					$this->size .= (int)fread($size_file, $size);
 				}
 				$this->size -= _filesize(CACHE.DS.$item);
 				if (_unlink(CACHE.DS.$item)) {

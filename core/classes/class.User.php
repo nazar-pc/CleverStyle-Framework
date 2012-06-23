@@ -992,9 +992,9 @@ class User {
 		}
 	}
 	/**
-	 * Returns current session
+	 * Returns current session id
 	 *
-	 * @return string Session id
+	 * @return string
 	 */
 	function get_session () {
 		return $this->current['session'];

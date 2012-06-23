@@ -2,9 +2,12 @@
 global $Config, $Page, $User, $L;
 //Если AJAX запрос от локального реферала, пользователь гость и количество попыток входа допустимо,
 //пользователь активен, и не блокиирован - выполняем операцию аутентификации, иначе выдаем ошибку
-if (!$Config->server['referer']['local'] || !$Config->server['ajax'] || !isset($_POST['email'])) {
+if (
+	!$Config->server['referer']['local'] ||
+	!$Config->server['ajax'] ||
+	!isset($_POST['email'])
+) {
 	sleep(1);
-	$Page->content('reload');
 	return;
 } elseif (!$User->is('guest')) {
 	$Page->content('reload');
@@ -32,7 +35,6 @@ if ($result === false) {
 	$Page->content($L->reg_error_exists);
 	return;
 }
-global $Mail;
 $confirm = $Config->core['require_registration_confirmation'];
 if ($confirm) {
 	$body = $L->reg_need_confirmation_mail_body(
@@ -50,6 +52,7 @@ if ($confirm) {
 		$result['password']
 	);
 }
+global $Mail;
 if ($Mail->send_to(
 	$_POST['email'],
 	$L->{$confirm ? 'reg_need_confirmation_mail' : 'reg_success_mail'}($Config->core['name']),

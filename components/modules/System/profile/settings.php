@@ -89,12 +89,17 @@ switch (isset($Config->routing['current'][2]) ? $Config->routing['current'][2] :
 				[
 					'href'	=> $Index->action.'/general'
 				]
+			).
+			h::{'a.cs-button'}(
+				$L->change_password,
+				[
+					'href'	=> $Index->action.'/change_password'
+				]
 			)
 		);
 		$Core->run_trigger('System/profile/settings');
 		break;
 	case 'general':
-		$Page->title($L->general);
 		$user_data					= $User->get($columns);
 		unset($columns);
 		$timezones					= get_timezones_list();
@@ -117,15 +122,18 @@ switch (isset($Config->routing['current'][2]) ? $Config->routing['current'][2] :
 		$Index->form				= true;
 		$Index->apply_button		= false;
 		$Index->cancel_button_back	= true;
-		$Page->title($L->settings);
+		$Page->title($L->general);
 		$Index->content(
+			h::{'p.ui-priority-primary.cs-state-messages'}(
+				$L->general_settings
+			).
 			h::{'table#users_edit.cs-fullwidth-table.cs-center-all tr'}([
-				$row($L->login, h::{'input.cs-form-element'}([
+				$row($L->old_password, h::{'input.cs-form-element'}([
 					'name'		=> 'user[login]',
 					'value'		=> $user_data['login']
 				])),
 
-				$row($L->username, h::{'input.cs-form-element'}([
+				$row($L->new_password, h::{'input.cs-form-element'}([
 					'name'	=> 'user[username]',
 					'value'	=> $user_data['username']
 				])),
@@ -205,6 +213,34 @@ switch (isset($Config->routing['current'][2]) ? $Config->routing['current'][2] :
 					]
 				))
 			])
+		);
+	break;
+	case 'change_password':
+		$Index->form				= true;
+		$Index->buttons				= false;
+		$Index->cancel_button_back	= true;
+		$Page->title($L->password_changing);
+		$Index->content(
+			h::{'p.ui-priority-primary.cs-state-messages'}(
+				$L->password_changing
+			).
+			h::{'table#users_edit.cs-fullwidth-table.cs-center-all tr'}([
+				h::{'th.ui-widget-header.ui-corner-all'}(
+					$L->current_password.h::{'icon#current_password'}('locked')
+				).
+				h::{'td.ui-widget-content.ui-corner-all'}(
+					h::{'input#current_user_password.cs-form-element[type=password]'}()
+				),
+				h::{'th.ui-widget-header.ui-corner-all'}(
+					$L->new_password.h::{'icon#new_password'}('locked')
+				).
+				h::{'td.ui-widget-content.ui-corner-all'}(
+					h::{'input#new_user_password.cs-form-element[type=password]'}()
+				)
+			]).
+			h::{'button#change_password'}(
+				$L->change_password
+			)
 		);
 	break;
 }

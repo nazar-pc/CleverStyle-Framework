@@ -37,7 +37,7 @@ if (isset($_POST['mode'])) {
 				$block['expire']	= 0;
 			}
 			$block_new['update']	= explode(':', $block_new['update']);
-			$block['update']		= $block_new['update'][0]*60+$block_new['update'][1];
+			$block['update']		= ($block_new['update'][0] * 60 + $block_new['update'][1]) * 60;
 			if ($block['type'] == 'html') {
 				$block['data'] = xap($block_new['html'], true);
 			} elseif ($block['type'] == 'raw_html') {

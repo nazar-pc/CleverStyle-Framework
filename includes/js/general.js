@@ -99,6 +99,24 @@ $(function() {
 			$(this).addClass('ui-icon-locked').removeClass('ui-icon-unlocked');
 		}
 	});
+	$('#current_password').mousedown(function() {
+		if ($('#current_user_password').prop('type') == 'password') {
+			$('#current_user_password').prop('type', 'text');
+			$(this).addClass('ui-icon-unlocked').removeClass('ui-icon-locked');
+		} else {
+			$('#current_user_password').prop('type', 'password');
+			$(this).addClass('ui-icon-locked').removeClass('ui-icon-unlocked');
+		}
+	});
+	$('#new_password').mousedown(function() {
+		if ($('#new_user_password').prop('type') == 'password') {
+			$('#new_user_password').prop('type', 'text');
+			$(this).addClass('ui-icon-unlocked').removeClass('ui-icon-locked');
+		} else {
+			$('#new_user_password').prop('type', 'password');
+			$(this).addClass('ui-icon-locked').removeClass('ui-icon-unlocked');
+		}
+	});
 	$('#register_process').mousedown(function() {
 		$('<div title="'+rules_agree+'">'+rules_text+'</div>')
 			.appendTo('body')
@@ -121,6 +139,9 @@ $(function() {
 					}
 				]
 			});
+	});
+	$('#change_password').mousedown(function() {
+		change_password($('#current_user_password').val(), $('#new_user_password').val());
 	});
 	$('.cs-header-restore-password').mousedown(function() {
 		//TODO Restore password processing
@@ -291,5 +312,8 @@ $(function() {
 				);
 			}
 		}).disableSelection();
+		$('#auto_translation_engine select').change(function () {
+			$('#auto_translation_engine_settings').html(base64_decode($(this).children(':selected').data('settings')));
+		});
 	}
 });

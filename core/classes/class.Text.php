@@ -26,11 +26,7 @@ class Text {
 			unset($data);
 		}
 		if (($text = $Cache->{$index}) === false) {
-			$database = $db->$database;
-			/**
- 			 * @var DatabaseAbstract $database
-			 */
-			$text = $database->qf('
+			$text = $db->$database->qf('
 				SELECT `text`
 				FROM `[prefix]texts`
 				WHERE
@@ -41,7 +37,7 @@ class Text {
 				'text'
 			);
 			if (!is_array($text) || empty($text)) {
-				$text = $database->qf('
+				$text = $db->$database->qf('
 						SELECT `text`, `lang`
 						FROM `[prefix]texts`
 						WHERE
@@ -54,15 +50,15 @@ class Text {
 					list($text, $lang) = $text;
 				}
 				global $Config;
-				if ($Config->core['auto_translation'] && $lang){
-					///TODO auto_translation + translate engine
+				if ($Config->core['auto_translation'] && $lang && $text){
+					$text = $Config->core['auto_translation_engine']['name']::translate($text, $lang, $L->lang) ?: $text;
+					$this->set($database, $group, $label, $text);
 				}
 			}
 			$Cache->{'texts/'.$database.'/'.$index} = $text;
 		}
 		return $text;
 	}
-
 	/**
 	 * Sets text
 	 *
@@ -101,7 +97,7 @@ class Text {
 			$id = $database->id();
 			global $Config;
 			if ($id && $id % $Config->core['inserts_limit'] == 0) { //Clean up old texts
-				$db->$database()->q("DELETE FROM `[prefix]texts` WHERE `lang` = ''");
+				$database->q("DELETE FROM `[prefix]texts` WHERE `lang` = ''");
 			}
 			if ($id) {
 				return '{¶'.$id.'}';
@@ -110,7 +106,6 @@ class Text {
 			}
 		}
 	}
-
 	/**
 	 * @param int        $database
 	 * @param string     $group
@@ -126,8 +121,8 @@ class Text {
 			SELECT `id`
 			FROM `[prefix]texts`
 			WHERE
-				`group`	= '.$database->s($group).' AND
-				`label`	= '.$database->s($label),
+				`group`	= '.$db->$database()->s($group).' AND
+				`label`	= '.$db->$database()->s($label),
 			'id'
 		);
 		foreach ($ids as $id) {
@@ -142,9 +137,9 @@ class Text {
 				`text`	= null,
 				`lang`	= null
 			WHERE
-				`group`	= '.$database->s($group).' AND
-				`label`	= '.$database->s($label).' AND
-				`lang`	= '.$database->s($L->clang)
+				`group`	= '.$db->$database()->s($group).' AND
+				`label`	= '.$db->$database()->s($label).' AND
+				`lang`	= '.$db->$database()->s($L->clang)
 		);
 	}
 	function process ($database, $data) {

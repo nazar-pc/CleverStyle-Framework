@@ -1,3 +1,6 @@
+String.prototype.replaceAt=function(index, symbol) {
+	return this.substr(0, index)+symbol+this.substr(index+symbol.length);
+};
 function debug_window () {
 	$('#debug').dialog('open');
 }
@@ -111,8 +114,8 @@ function json_decode (str) {
 /**
  * Supports algorithms sha224, sha256, sha384, sha512
  *
- * @param algo Choosen algorithm
- * @param data String to be hashed
+ * @param {string} algo Choosen algorithm
+ * @param {string} data String to be hashed
  * @return string
  */
 function hash (algo, data) {
@@ -128,8 +131,8 @@ function getcookie (name) {
 /**
  * Login into system
  *
- * @param login
- * @param password
+ * @param {string} login
+ * @param {string} password
  */
 function login (login, password) {
 	var data = {
@@ -137,7 +140,7 @@ function login (login, password) {
 	};
 	data[session_id] = session_id;
 	$.ajax(
-		base_url+"/api/user/login",
+		base_url+'/api/System/user/login',
 		{
 			type: 'post',
 			cache: false,
@@ -180,7 +183,6 @@ function login (login, password) {
 }
 /**
  * Logout
- *
  */
 function logout () {
 	var data = {
@@ -188,7 +190,7 @@ function logout () {
 	};
 	data[session_id] = session_id;
 	$.ajax(
-		base_url+"/api/System/user/logout",
+		base_url+'/api/System/user/logout',
 		{
 			type: 'post',
 			cache: false,
@@ -204,7 +206,8 @@ function logout () {
 }
 /**
  * Registration in the system
- * @param email
+ *
+ * @param {string} email
  */
 function registration (email) {
 	if (!email) {
@@ -216,7 +219,7 @@ function registration (email) {
 	};
 	data[session_id] = session_id;
 	$.ajax(
-		base_url+"/api/System/user/registration",
+		base_url+'/api/System/user/registration',
 		{
 			type: 'post',
 			cache: false,
@@ -253,6 +256,49 @@ function registration (email) {
 	);
 }
 /**
+ * Password changing
+ *
+ * @param {string} current_password
+ * @param {string} new_password
+ */
+function change_password (current_password, new_password) {
+	if (!current_password) {
+		alert(please_type_current_password);
+		return;
+	} else if (!new_password) {
+		alert(please_type_new_password);
+		return;
+	} else if (current_password == new_password) {
+		alert(current_new_password_equal);
+		return;
+	}
+	current_password	= hash('sha512', current_password);
+	new_password		= hash('sha512', new_password);
+	var data = {
+		verify_hash		: hash('sha224', current_password+session_id),
+		new_password	: xor_string(current_password, new_password)
+	};
+	data[session_id] = session_id;
+	$.ajax(
+		base_url+'/api/System/user/change_password',
+		{
+			type: 'post',
+			cache: false,
+			data: data,
+			success: function(result) {
+				if (result == 'OK') {
+					alert(password_changed_succesfully);
+				} else {
+					alert(result);
+				}
+			},
+			error: function() {
+				alert(password_changing_error_connection);
+			}
+		}
+	);
+}
+/**
  * For textarea in blocks editing
  * @param item
  */
@@ -267,4 +313,37 @@ function block_switch_textarea (item) {
 			$('#raw_html').show();
 		break;
 	}
+}
+function base64_encode (str) {
+	return window.btoa(str);
+}
+
+function base64_decode (str) {
+	return window.atob(str);
+}
+/**
+ * Bitwise XOR operation for 2 strings
+ *
+ * @param {string} string1
+ * @param {string} string2
+ *
+ * @return string
+ */
+function xor_string (string1, string2) {
+	var	len1	= string1.length,
+		len2	= string2.length;
+	if (len2 > len1) {
+		var tmp;
+		tmp		= string1;
+		string1	= string2;
+		string2	= tmp;
+		tmp		= len1;
+		len1	= len2;
+		len2	= tmp;
+	}
+	for (var i = 0; i < len1; ++i) {
+		var pos = i % len2;
+		string1 = string1.replaceAt(i, String.fromCharCode(string1.charCodeAt(i) ^ string2.charCodeAt(pos)));
+	}
+	return string1;
 }

@@ -197,8 +197,8 @@ if (isset($rc[2])) {
 						]),
 						h::{'input.cs-form-element[type=time]'}([
 							'name'		=> 'block[update]',
-							'value'		=> str_pad(round($block['update'] / 60), 2, 0, STR_PAD_LEFT).':'.
-								str_pad(round($block['update'] % 60), 2, 0, STR_PAD_LEFT)
+							'value'		=> str_pad(round($block['update'] / 3600), 2, 0, STR_PAD_LEFT).':'.
+								str_pad(round($block['update'] % 3600), 2, 0, STR_PAD_LEFT)
 						])
 					]).
 					($block['type'] == 'html' ?

@@ -1,22 +1,23 @@
 <?php
 /****************************************************************************\
-| Минимальные требования для полнофункциональной работы:					*|
-|	1) Версии програмного обеспечения сервера:								*|
-|		+ Apache Web Server				>= 2								*|
-|		+ PHP							>= 5.4;								*|
-|			Наличие библиотек PHP:											*|
-|			+ mcrypt					>= 2.4								*|
-|			+ iconv															*|
-|			+ mbstring														*|
-|		+ MySQL							>= 5.0.7;							*|
-|	2) Версии браузеров:													*|
-|		+ Opera Internet Browser		>= 11.10;							*|
-|		+ Microsoft Internet Explorer	>= 10;								*|
-|		+ Google Chrome					>= 11;								*|
+| Minimal requirements for full-featured work:								*|
+|	1) Versions of server software:											*|
+|		* Apache Web Server				>= 2								*|
+|		* PHP							>= 5.4;								*|
+|			Presence of libraries PHP:										*|
+|			* mcrypt					>= 2.4								*|
+|			* iconv															*|
+|			* mbstring														*|
+|			* cURL															*|
+|		* MySQL							>= 5.0.7;							*|
+|	2) Browsers versions:													*|
+|		* Opera Internet Browser		>= 11.10;							*|
+|		* Microsoft Internet Explorer	>= 10;								*|
+|		* Google Chrome					>= 11;								*|
 |			(Webkit 534.24+)												*|
-|		+ Safari						>= 5;								*|
+|		* Safari						>= 5;								*|
 |			(Webkit 534.24+)												*|
-|		+ Mozilla Firefox				>= 4;								*|
+|		* Mozilla Firefox				>= 4;								*|
 \****************************************************************************/
 
 //Задаем время старта выполнения для использования при необходимости как текущего времени

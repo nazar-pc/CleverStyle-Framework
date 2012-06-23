@@ -350,7 +350,7 @@ class Index {
 					'yes = "'.$L->yes.'",'.
 					'no = "'.$L->no.'",'.
 					($User->is('guest') ?
-						'auth_error_connection = "'.$L->auth_error_connection.'",'.
+							'auth_error_connection = "'.$L->auth_error_connection.'",'.
 							'reg_connection_error = "'.$L->reg_error_connection.'",'.
 							'please_type_your_email = "'.$L->please_type_your_email.'",'.
 							'please_type_correct_email = "'.$L->please_type_correct_email.'",'.
@@ -362,8 +362,15 @@ class Index {
 							'reg_success = "'.$L->reg_success.'",'.
 							'reg_success_confirmation = "'.$L->reg_success_confirmation.'",'
 						: '').
+					($User->is('user') ?
+							'please_type_current_password = "'.$L->please_type_current_password.'",'.
+							'please_type_new_password = "'.$L->please_type_new_password.'",'.
+							'current_new_password_equal = "'.$L->current_new_password_equal.'",'.
+							'password_changed_succesfully = "'.$L->password_changed_succesfully.'",'.
+							'password_changing_error_connection = "'.$L->password_changing_error_connection.'",'
+						: '').
 					(defined('DEBUG') && DEBUG && ($User->is('admin') || ($Config->can_be_admin && $Config->core['ip_admin_list_only'])) ?
-						'objects = "'.$L->objects.'",'.
+							'objects = "'.$L->objects.'",'.
 							'user_data = "'.$L->user_data.'",'.
 							'queries = "'.$L->queries.'",'.
 							'cookies = "'.$L->cookies.'",'
@@ -402,7 +409,7 @@ class Index {
 				continue;
 			}
 			$block_cache = $Cache->{'blocks/'.$block['index']};
-			if (!is_array($block_cache) || $block_cache['expire'] < TIME - $block['update']) {
+			if (!is_array($block_cache) || (isset($block_cache['expire']) && $block_cache['expire'] < TIME - $block['update'])) {
 				$block_cache			= [];
 				switch ($block['type']) {
 					default:
@@ -424,7 +431,7 @@ class Index {
 					_file_get_contents($template)
 				);
 				if ($block['update'] > 0) {
-					$block_cache['expire']				= TIME - $block['update'];
+					$block_cache['expire']				= TIME + $block['update'];
 					$Cache->{'blocks/'.$block['index']}	= $block_cache;
 				}
 			}

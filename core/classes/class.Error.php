@@ -32,7 +32,7 @@ class Error {
 		}
 		if ((is_object($Config) && $Config->core['on_error_globals_dump']) || (!is_object($Config) && defined('DEBUG'))) {
 			$dump = _json_encode([
-				'GLOBALS'			=> isset($GLOBALS['Objects']) ? $GLOBALS['Objects'] : null,
+				'Objects'			=> isset($GLOBALS['Objects']) ? $GLOBALS['Objects'] : null,
 				'debug_backtrace'	=> $debug_backtrace
 			]);
 		}

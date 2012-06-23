@@ -1,2 +1,2 @@
 <?php
-//Add some code here if you want
+//Add some code you want

@@ -405,6 +405,12 @@ class h {//TODO full array of unpaired tags for general processing
 				return false;
 			}
 			$selected = false;
+			foreach ($data as $attr => &$value) {
+				if (is_array($value)) {
+					$in[$attr] = $value;
+					unset($data[$attr]);
+				}
+			}
 			if (isset($data['selected']) && is_array($in['value'])) {
 				if (!is_array($data['selected'])) {
 					$data['selected'] = [$data['selected']];

@@ -185,8 +185,11 @@
 			$prefix_path = rtrim($prefix_path, DS).DS;
 		}
 		$dirc = _opendir($dir);
+		if (!is_resource($dirc)) {
+			return false;
+		}
 		//If file name if '0', it considered as boolean false, that's why $file === '0' was added
-		while (($file = _readdir($dirc)) || $file === '0') {
+		while (($file = _readdir($dirc)) !== false) {
 			if (
 				($mask && !preg_match($mask, $file) && (!$subfolders || !_is_dir($dir.$file))) ||
 				$file == '.' || $file == '..' || $file == '.htaccess' || $file == '.htpasswd' || $file == '.gitignore'
@@ -1116,6 +1119,26 @@
 			header($_SERVER['SERVER_PROTOCOL'].' '.$string_code);
 		}
 		return $string_code;
+	}
+	/**
+	 * Bitwise XOR operation for 2 strings
+	 *
+	 * @param string $string1
+	 * @param string $string2
+	 *
+	 * @return string
+	 */
+	function xor_string ($string1, $string2) {
+		$len1	= mb_strlen($string1);
+		$len2	= mb_strlen($string2);
+		if ($len2 > $len1) {
+			list($string1, $string2, $len1, $len2) = [$string2, $string1, $len2, $len1];
+		}
+		for ($i = 0; $i < $len1; ++$i) {
+			$pos = $i % $len2;
+			$string1[$i] = chr(ord($string1[$i]) ^ ord($string2[$pos]));
+		}
+		return $string1;
 	}
 
 $temp = base64_decode('Y29weXJpZ2h0');

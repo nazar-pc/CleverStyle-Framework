@@ -1,7 +1,6 @@
 <?php
 /**
  * Provides translation functionality based on Bing translator.
- * Require configuration variable $BING_TRANSLATOR = array('client_id' => *, 'client_secret' => *)
  */
 class BingTranslate extends TranslateAbstract {
 	protected static	$accessToken	= '';
@@ -17,20 +16,21 @@ class BingTranslate extends TranslateAbstract {
 	 */
 	static function translate ($text, $from, $to) {
 		if (empty(self::$accessToken)) {
-			global $BING_TRANSLATOR;
+			global $Config;
+			$settings =  $Config->core['auto_translation'];
 			if (!(
-				is_array($BING_TRANSLATOR) &&
-				isset($BING_TRANSLATOR['client_id'], $BING_TRANSLATOR['client_secret']) &&
-				$BING_TRANSLATOR['client_id'] &&
-				$BING_TRANSLATOR['client_secret']
+				curl() &&
+				isset($settings['client_id'], $settings['client_secret']) &&
+				$settings['client_id'] &&
+				$settings['client_secret']
 			)) {
 				return false;
 			}
 			self::$accessToken  = self::getTokens(
 				'client_credentials',
 				'http://api.microsofttranslator.com',
-				$BING_TRANSLATOR['client_id'],
-				$BING_TRANSLATOR['client_secret'],
+				$settings['client_id'],
+				$settings['client_secret'],
 				'https://datamarket.accesscontrol.windows.net/v2/OAuth2-13/'
 			);
 		}

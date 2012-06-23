@@ -18,8 +18,6 @@ global	$DB_HOST,
 		$CACHE_ENGINE,
 		$CACHE_SIZE,
 
-		$BING_TRANSLATOR,
-
 		$KEY,
 		$IV;
 
@@ -43,11 +41,6 @@ $LANGUAGE			= 'Русский';
 
 $CACHE_ENGINE		= 'FileSystem';
 $CACHE_SIZE			= 5;				//Cache size in MB, 0 means without limitation
-
-$BING_TRANSLATOR	= [					//Auth parameter for Bing translator API
-	'client_id'		=> '',
-	'client_secret'	=> ''
-];
 
 $KEY				= 'f40fbea2ee5a24ce581fb53510883dfcf40fbea2ee5a24ce581fb535';
 $IV					= 'f40fbea2ee5a24ce581fb53510883dfcf40fbea2ee5a24ce581fb535';
