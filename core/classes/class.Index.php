@@ -1,6 +1,7 @@
 <?php
 namespace cs;
-use \h as h;
+use \h;
+use \Closure;
 class Index {
 	public		$Content,
 
@@ -256,7 +257,6 @@ class Index {
 	protected function generate () {
 		global $Page, $Config, $L, $Cache;
 		if ($this->api) {
-			interface_off();
 			$Page->content($this->Content);
 			return;
 		}
@@ -336,7 +336,7 @@ class Index {
 						'id'		=> 'admin_form',
 						'class'		=> 'cs-fullwidth-form'
 					]+$this->form_atributes
-				), 1
+				)
 			);
 		} elseif ($this->Content) {
 			$Page->content($this->Content);
@@ -519,6 +519,8 @@ class Index {
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
 	function __finish () {

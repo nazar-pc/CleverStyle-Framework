@@ -5,7 +5,7 @@ global	$DB_HOST,
 		$DB_USER,
 		$DB_PASSWORD,
 		$DB_PREFIX,
-		$DB_CODEPAGE,
+		$DB_CHARSET,
 
 		$STORAGE_TYPE,
 		$STORAGE_URL,
@@ -24,12 +24,12 @@ global	$DB_HOST,
 define('DOMAIN', 'cscms.org');
 
 $DB_HOST			= 'localhost';
-$DB_TYPE			= 'MySQL';
+$DB_TYPE			= 'MySQLi';
 $DB_NAME			= 'CleverStyle';
 $DB_USER			= 'CleverStyle';
 $DB_PASSWORD		= '1111';
 $DB_PREFIX			= 'prefix_';
-$DB_CODEPAGE		= 'utf8';
+$DB_CHARSET			= 'utf8';
 
 $STORAGE_TYPE		= 'Local';
 $STORAGE_URL		= '';

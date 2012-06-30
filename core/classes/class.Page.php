@@ -1,6 +1,6 @@
 <?php
 namespace cs;
-use \h as h;
+use \h;
 /**
  * Provides next triggers:<br>
  *  System/Page/pre_display<code>
@@ -32,11 +32,11 @@ class Page {
 					'menumore'			=> 3,
 					'user_info'			=> 5,
 					'debug_info'		=> 3,
-					'Left'				=> 3,
-					'Top'				=> 3,
+					'Left'				=> 7,
+					'Top'				=> 7,
 					'Content'			=> 8,
-					'Bottom'			=> 3,
-					'Right'				=> 3,
+					'Bottom'			=> 7,
+					'Right'				=> 7,
 					'Footer'			=> 4,
 					'post_Body'			=> 2
 				];
@@ -603,7 +603,7 @@ class Page {
 						$text.
 						h::br(2).
 						'#'.h::i(format_time(round($database->queries['time'][$i], 5))).
-						($error = (strtolower(substr($text, 0, 6)) == 'select' && !$database->queries['resource'][$i]) ? '('.$L->error.')' : ''),
+						($error = (strtolower(substr($text, 0, 6)) == 'select' && !$database->queries['result'][$i]) ? '('.$L->error.')' : ''),
 						array(
 							'class' => ($database->queries['time'][$i] > 0.1 ? 'ui-state-highlight ' : '').($error ? 'ui-state-error ' : '').'cs-debug-code'
 						)
@@ -796,6 +796,8 @@ class Page {
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
 	//Генерирование страницы

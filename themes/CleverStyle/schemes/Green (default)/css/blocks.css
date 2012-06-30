@@ -1,9 +1,3 @@
-td#left_blocks > aside > div, td#right_blocks > aside > div {
-/*	background: rgba(255, 255, 255, 0.7);*/
-/*	box-shadow: 0 0 15px #fff;
-	-moz-box-shadow: 0 0 15px #fff;
-	-webkit-box-shadow: 0 0 15px #fff;*/
-}
 footer > div#footer {
 	background: rgba(255, 255, 255, 0.3);
 	color: #fff;

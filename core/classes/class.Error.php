@@ -1,7 +1,7 @@
 <?php
 namespace cs;
 class Error {
-	public		$error					= true;
+	public		$error					= true;	//Process errors
 	protected	$num					= 0,	//Number of occured errors
 				$errors_list_all		= [],	//Array of all errors
 				$errors_list_display	= [];	//Array of non-critical errors to show to user
@@ -23,19 +23,27 @@ class Error {
 		$string = xap($string);
 		global $Config, $Index, $Page;
 		$dump = 'null';
-		$debug_backtrace = debug_backtrace();
-		if (isset($debug_backtrace[0]['file'], $debug_backtrace[0]['file'])) {
-			$file	= $debug_backtrace[0]['file'];
-			$line	= $debug_backtrace[0]['line'];
-		} else {
-			$file	= $debug_backtrace[1]['file'];
-			$line	= $debug_backtrace[1]['line'];
-		}
 		if ((is_object($Config) && $Config->core['on_error_globals_dump']) || (!is_object($Config) && defined('DEBUG'))) {
+			$debug_backtrace	= debug_backtrace();
+			if (isset($debug_backtrace[0]['file'], $debug_backtrace[0]['file'])) {
+				$file	= $debug_backtrace[0]['file'];
+				$line	= $debug_backtrace[0]['line'];
+			} else {
+				$file	= $debug_backtrace[1]['file'];
+				$line	= $debug_backtrace[1]['line'];
+			}
+			global $Objects;
+			$objects_array		= [];
+			if (is_object($Objects)) {
+				foreach ($Objects->Loaded as $object => $data) {
+					$objects_array[$object] = print_r($GLOBALS[$object], true);
+				}
+			}
 			$dump = _json_encode([
-				'Objects'			=> isset($GLOBALS['Objects']) ? $GLOBALS['Objects'] : null,
+				'Objects'			=> $objects_array,
 				'debug_backtrace'	=> $debug_backtrace
 			]);
+			unset($debug_backtrace, $objects_array);
 		}
 		switch ($level) {
 			case E_USER_ERROR:
@@ -97,6 +105,8 @@ class Error {
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
 	/**

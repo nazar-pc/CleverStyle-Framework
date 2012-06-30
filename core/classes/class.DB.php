@@ -40,7 +40,8 @@ class DB {
 	//При соответствующей настройке срабатывает балансировка нагрузки на БД
 	/**
 	 * @param	int			$connection
-	 * @return	bool|object
+	 *
+	 * @return	bool|database\_Abstract
 	 */
 	function __get ($connection) {
 		if (!is_int($connection) && $connection != '0') {
@@ -75,6 +76,12 @@ class DB {
 		}
 	}
 	//Обработка запросов получения и изменения данных БД
+	/**
+	 * @param	int				$connection
+	 * @param	array			$mode
+	 *
+	 * @return	bool|database\_Abstract
+	 */
 	function __call ($connection, $mode) {
 		if (is_int($connection) || $connection == '0') {
 			return $this->connecting($connection, isset($mode[0]) ? (bool)$mode[0] : false);
@@ -101,13 +108,13 @@ class DB {
 		global $Config, $L, $DB_NAME;
 		//Если подключается БД ядра
 		if ($connection == 0 && !is_array($mirror)) {
-			global $DB_HOST, $DB_TYPE, $DB_NAME, $DB_PREFIX, $DB_CODEPAGE;
+			global $DB_HOST, $DB_TYPE, $DB_NAME, $DB_PREFIX, $DB_CHARSET;
 			$db['type']		= $DB_TYPE;
 			$db['name']		= $DB_NAME;
 			$db['user']		= $this->DB_USER;
 			$db['password']	= $this->DB_PASSWORD;
 			$db['host']		= $DB_HOST;
-			$db['codepage']	= $DB_CODEPAGE;
+			$db['charset']	= $DB_CHARSET;
 			$db['prefix']	= $DB_PREFIX;
 		} else {
 			//Если подключается зеркало БД
@@ -125,15 +132,11 @@ class DB {
 		//Создаем новое подключение к БД
 		errors_off();
 		$engine_class					= '\\cs\\database\\'.$db['type'];
-		$this->connections[$connection]	= new $engine_class($db['name'], $db['user'], $db['password'], $db['host'], $db['codepage']);
+		$this->connections[$connection]	= new $engine_class($db['name'], $db['user'], $db['password'], $db['host'], $db['charset']);
 		errors_on();
 		//В случае успешного подключения - заносим в общий список подключений, и возвращаем ссылку на подключение
 		if (is_object($this->connections[$connection]) && $this->connections[$connection]->connected) {
 			$this->successful_connections[] = ($connection == 0 ? $L->core_db.'('.$DB_NAME.')' : $connection).'/'.$db['host'].'/'.$db['type'];
-			//Устанавливаем текущую БД
-			if ($this->connections[$connection]->database != $connection) {
-				$this->connections[$connection]->select_db($connection);
-			}
 			//Устанавливаем текущий префикс
 			$this->connections[$connection]->prefix = $db['prefix'];
 			unset($db);
@@ -181,7 +184,7 @@ class DB {
 	}
 	//Тестовое подключение к БД
 	function test ($data = false) {
-		global $DB_HOST, $DB_CODEPAGE;
+		global $DB_HOST, $DB_CHARSET;
 		if (empty($data)) {
 			return false;
 		} elseif (is_array($data)) {
@@ -197,7 +200,7 @@ class DB {
 						'name'		=> $DB_NAME,
 						'user'		=> $this->DB_USER,
 						'password'	=> $this->DB_PASSWORD,
-						'codepage'	=> $DB_CODEPAGE
+						'charset'	=> $DB_CHARSET
 					];
 				} else {
 					$db = $Config->db[$data[0]];
@@ -212,7 +215,7 @@ class DB {
 		if (is_array($db)) {
 			errors_off();
 			$engine_class	= '\\cs\\database\\'.$db['type'];
-			$test			= new $engine_class($db['name'], $db['user'], $db['password'], $db['host'] ?: $DB_HOST, $db['codepage'] ?: $DB_CODEPAGE);
+			$test			= new $engine_class($db['name'], $db['user'], $db['password'], $db['host'] ?: $DB_HOST, $db['charset'] ?: $DB_CHARSET);
 			errors_on();
 			return $test->connected;
 		} else {
@@ -221,6 +224,8 @@ class DB {
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
 }

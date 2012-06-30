@@ -14,6 +14,7 @@ class Key {
 				return $key;
 			}
 		}
+		return false;
 	}
 	function add ($database, $key = false, $data = null, $expire = 0) {
 		global $db, $Config;
@@ -48,7 +49,7 @@ class Key {
 		);
 		$id = $database->id();
 		if ($id && ($id % $Config->core['inserts_limit']) == 0) { //Cleaning old keys
-			$database->q('DELETE FROM `[prefix]keys` WHERE `expire` < '.TIME);
+			$database->aq('DELETE FROM `[prefix]keys` WHERE `expire` < '.TIME);
 		}
 		return $id;
 	}
@@ -95,6 +96,8 @@ class Key {
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
 }

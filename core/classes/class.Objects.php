@@ -1,6 +1,6 @@
 <?php
 namespace cs;
-use \h as h;
+use \h;
 //For working with global system objects
 class Objects {
 	public	$Loaded				= [],		//Array with list of loaded objects, and information about amount of used memory
@@ -46,7 +46,7 @@ class Objects {
 				global $$object_name;
 				if (!is_object($$object_name) || $$object_name instanceof Loader) {
 					if ($loader) {
-						$$object_name				= new Loader($object_name, $class);
+						$$object_name				= new Loader($class, $object_name);
 					} else {
 						$this->List[$object_name]	= $object_name;
 						$$object_name				= new $class();
@@ -55,7 +55,7 @@ class Objects {
 				}
 				return $$object_name;
 			} else {
-				trigger_error('Class '.h::b($class).' not exists', E_USER_ERROR);
+				trigger_error('Class '.h::b($class, ['level' => 0]).' not exists', E_USER_ERROR);
 				return false;
 			}
 		} elseif (!defined('STOP') && is_array($class)) {
@@ -85,6 +85,8 @@ class Objects {
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
 	//При уничтожении этого объекта уничтожаются все зарегистрированные глобальные объекты,

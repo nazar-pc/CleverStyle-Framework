@@ -47,7 +47,7 @@ function db_test (url, added) {
 			user:		document.getElementsByName('db[user]').item(0).value,
 			password:	document.getElementsByName('db[password]').item(0).value,
 			host:		document.getElementsByName('db[host]').item(0).value,
-			codepage:	document.getElementsByName('db[codepage]').item(0).value
+			charset:	document.getElementsByName('db[charset]').item(0).value
 		});
 		$.ajax({
 			url:		url,

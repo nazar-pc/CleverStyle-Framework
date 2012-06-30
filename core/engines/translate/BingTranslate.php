@@ -1,6 +1,6 @@
 <?php
 namespace cs\translate;
-use \Exception as Exception;
+use \Exception, \SoapClient;
 /**
  * Provides translation functionality based on Bing translator.
  */
@@ -43,7 +43,7 @@ class BingTranslate extends _Abstract {
 			]
 		]);
 		//Call Soap Client and get translation
-		return @(new \SoapClient(
+		return @(new SoapClient(
 			'http://api.microsofttranslator.com/V2/Soap.svc',
 			[
 				'soap_version'		=> 'SOAP_1_2',

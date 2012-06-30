@@ -3,10 +3,16 @@
  * Provides next triggers:<br>
  *  admin/System/components/modules/install/process<br>
  *  ['name'	=> <i>module_name</i>]<br>
+ *
  *  admin/System/components/modules/uninstall/process<br>
  *  ['name'	=> <i>module_name</i>]<br>
+ *
+ *  admin/System/components/modules/default_module/process<br>
+ *  ['name'	=> <i>module_name</i>]<br>
+ *
  *  admin/System/components/modules/db/process<br>
  *  ['name'	=> <i>module_name</i>]<br>
+ *
  *  admin/System/components/modules/install/process<br>
  *  ['name'	=> <i>module_name</i>]
  */
@@ -15,7 +21,9 @@ $a = &$Index;
 $rc			= &$Config->routing['current'];
 $update		= false;
 if (isset($_POST['update_modules_list'])) {
-	//List of currently presented modules in file system
+	/**
+	 * List of currently presented modules in file system
+	 */
 	$modules_list	= array_fill_keys(
 		$new_modules = get_list(MODULES, false, 'd'),
 		[
@@ -24,10 +32,14 @@ if (isset($_POST['update_modules_list'])) {
 			'storage'	=> []
 		]
 	);
-	//Already known modules
+	/**
+	 * Already known modules
+	 */
 	$modules		= &$Config->components['modules'];
 	$old_modules	= array_keys($modules);
-	//Deletion of undefined modules permissions
+	/**
+	 * Deletion of undefined modules permissions
+	 */
 	if ($new_modules != $old_modules) {
 		$permissions_ids = [];
 		foreach ($old_modules as $module) {
@@ -132,6 +144,19 @@ if (isset($_POST['update_modules_list'])) {
 					$User->del_permission($permissions_ids);
 				}
 				$a->save('components');
+			}
+		break;
+		case 'default_module':
+			if ($module_data['active'] == 1 && $_POST['module'] != 'System' && $_POST['module'] != $Config->core['default_module']) {
+				if ($Core->run_trigger(
+					'admin/System/components/modules/default_module/process',
+					[
+						'name' => $_POST['module']
+					]
+				)) {
+					$Config->core['default_module'] = $_POST['module'];
+					$a->save('core');
+				}
 			}
 		break;
 		case 'db':

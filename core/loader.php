@@ -17,7 +17,6 @@ $_REQUEST					= [];
 //(он может отличатся от базового домена, если вы находитесь на зеркале)
 define('CDOMAIN',		$_SERVER['HTTP_HOST']);		//Доменное имя текущего сайта
 define('CONFIG',		DIR.DS.'config');			//Папка конфигурации
-define('CORE',			DIR.DS.'core');				//Папка ядра
 	define('CLASSES',	CORE.DS.'classes');			//Папка с классами
 	define('ENGINES',	CORE.DS.'engines');			//Папка с движками БД и хранилищ
 	define('LANGUAGES',	CORE.DS.'languages');		//Папка с языковыми файлами

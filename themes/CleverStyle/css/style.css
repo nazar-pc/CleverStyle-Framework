@@ -31,7 +31,7 @@ code {
 	width  : 100%;
 }
 
-.cs-fullwidth-table > tbody > tr > td.ui-widget-shadow {
+.cs-fullwidth-table > tbody > tr > .ui-widget-shadow {
 	opacity : 1;
 }
 
@@ -41,7 +41,7 @@ td#main_content {
 	vertical-align     : top;
 }
 
-td#main_content > section > article > div {
+td#main_content > section > article {
 	border-radius      : 5px;
 	padding            : 10px;
 	height             : 100%;

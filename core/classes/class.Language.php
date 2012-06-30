@@ -1,5 +1,6 @@
 <?php
 namespace cs;
+use \Closure;
 /**
  * Provides next triggers:<br>
  *  admin/System/general/languages/load<code>
@@ -314,6 +315,8 @@ class Language {
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
 }

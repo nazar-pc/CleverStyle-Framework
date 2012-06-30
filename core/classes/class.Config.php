@@ -232,6 +232,7 @@ class Config {
 				define('API', true);
 			}
 			array_shift($rc);
+			interface_off();
 		}
 		if ($this->core['ip_admin_list_only'] && !$this->check_ip($this->core['ip_admin_list'])) {
 			$this->can_be_admin = false;
@@ -245,7 +246,7 @@ class Config {
 			}
 		} else {
 			if (!defined('MODULE')) {
-				define('MODULE', 'System');
+				define('MODULE', ADMIN || API || $rc[0] ? 'System' : $this->core['default_module']);
 				if (!ADMIN && !API && !isset($rc[1])) {
 					define('HOME', true);
 				}
@@ -430,6 +431,8 @@ class Config {
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
 }

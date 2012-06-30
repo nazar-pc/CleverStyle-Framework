@@ -3,14 +3,22 @@
  * Provides next triggers:<br>
  *  admin/System/components/modules/install/prepare<br>
  *  ['name'	=> <i>module_name</i>]<br>
+ *
  *  admin/System/components/modules/uninstall/prepare<br>
  *  ['name'	=> <i>module_name</i>]<br>
+ *
+ *  admin/System/components/modules/default_module/prepare<br>
+ *  ['name'	=> <i>module_name</i>]<br>
+ *
  *  admin/System/components/modules/db/prepare<br>
  *  ['name'	=> <i>module_name</i>]<br>
+ *
  *  admin/System/components/modules/storage/prepare<br>
  *  ['name'	=> <i>module_name</i>]<br>
+ *
  *  admin/System/components/modules/enable<br>
  *  ['name'	=> <i>module_name</i>]<br>
+ *
  *  admin/System/components/modules/disable<br>
  *  ['name'	=> <i>module_name</i>]
  */
@@ -23,10 +31,10 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 	switch ($rc[2]) {
 		case 'install':
 			$display_modules = false;
-			$Page->title($L->installation_of_module.' '.$rc[3]);
+			$Page->title($L->installation_of_module($rc[3]));
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages'}(
-					$L->installation_of_module.' '.$rc[3]
+					$L->installation_of_module($rc[3])
 				)
 			);
 			if ($Core->run_trigger(
@@ -74,14 +82,34 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 		break;
 		case 'uninstall':
 			$display_modules = false;
-			$Page->title($L->uninstallation_of_module.' '.$rc[3]);
+			$Page->title($L->uninstallation_of_module($rc[3]));
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages'}(
-					$L->uninstallation_of_module.' '.$rc[3]
+					$L->uninstallation_of_module($rc[3])
 				)
 			);
 			if ($Core->run_trigger(
 				'admin/System/components/modules/uninstall/prepare',
+				[
+					'name' => $rc[3]
+				]
+			)) {
+				$a->cancel_button_back = true;
+				$a->content(
+					h::{'button[type=submit]'}($L->uninstall)
+				);
+			}
+		break;
+		case 'default_module':
+			$display_modules = false;
+			$Page->title($L->setting_default_module($rc[3]));
+			$a->content(
+				h::{'p.ui-priority-primary.cs-state-messages'}(
+					$L->setting_default_module($rc[3])
+				)
+			);
+			if ($Core->run_trigger(
+				'admin/System/components/modules/default_module/prepare',
 				[
 					'name' => $rc[3]
 				]
@@ -97,10 +125,10 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 			if (count($Config->db) > 1) {
 				global $Page;
 				$Page->warning($L->changing_settings_warning);
-				$Page->title($L->db_settings_for_module.' '.$rc[3]);
+				$Page->title($L->db_settings_for_module($rc[3]));
 				$a->content(
 					h::{'p.ui-priority-primary.cs-state-messages'}(
-						$L->db_settings_for_module.' '.$rc[3]
+						$L->db_settings_for_module($rc[3])
 					)
 				);
 				if ($Core->run_trigger(
@@ -162,10 +190,10 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 			if (count($Config->storage) > 1) {
 				global $Page;
 				$Page->warning($L->changing_settings_warning);
-				$Page->title($L->storage_settings_for_module.' '.$rc[3]);
+				$Page->title($L->storage_settings_for_module($rc[3]));
 				$a->content(
 					h::{'p.ui-priority-primary.cs-state-messages'}(
-						$L->storage_settings_for_module.' '.$rc[3]
+						$L->storage_settings_for_module($rc[3])
 					)
 				);
 				if ($Core->run_trigger(
@@ -272,10 +300,14 @@ if ($display_modules) {
 		])
 	);
 	foreach ($Config->components['modules'] as $module => &$mdata) {
-		//If module if enabled or disabled
+		/**
+		 * If module if enabled or disabled
+		 */
 		$addition_state = $action = '';
 		if ($mdata['active'] == 1 || $mdata['active'] == 0) {
-			//Notice about API existence
+			/**
+			 * Notice about API existence
+			 */
 			if (_is_dir(MODULES.DS.$module.DS.'api')) {
 				if (
 					_file_exists($file = MODULES.DS.$module.DS.'api'.DS.'readme.txt') ||
@@ -305,7 +337,9 @@ if ($display_modules) {
 				);
 				unset($tag, $file);
 			}
-			//Information about module
+			/**
+			 * Information about module
+			 */
 			if (_file_exists($file = MODULES.DS.$module.DS.'readme.txt') || _file_exists($file = MODULES.DS.$module.DS.'readme.html')) {
 				if (substr($file, -3) == 'txt') {
 					$tag = 'pre';
@@ -330,7 +364,9 @@ if ($display_modules) {
 				);
 			}
 			unset($tag, $file);
-			//License
+			/**
+			 * License
+			 */
 			if (_file_exists($file = MODULES.DS.$module.DS.'license.txt') || _file_exists($file = MODULES.DS.$module.DS.'license.html')) {
 				if (substr($file, -3) == 'txt') {
 					$tag = 'pre';
@@ -355,7 +391,21 @@ if ($display_modules) {
 				);
 			}
 			unset($tag, $file);
-			//DataBases tettings
+			/**
+ 			 * Setting default module
+			 */
+			if ($mdata['active'] == 1 && $module != 'System' && $module != $Config->core['default_module']) {
+				$action .= h::{'a.cs-button.cs-button-compact'}(
+					h::icon('home'),
+					[
+						'href'			=> $a->action.'/default_module/'.$module,
+						'data-title'	=> $L->make_default_module
+					]
+				);
+			}
+			/**
+			 * DataBases settings
+			 */
 			if (!$Config->core['simple_admin_mode'] && _file_exists(MODULES.DS.$module.DS.'admin'.DS.'db.json') && count($Config->db) > 1) {
 				$action .= h::{'a.cs-button.cs-button-compact'}(
 					h::icon('gear'),
@@ -365,7 +415,9 @@ if ($display_modules) {
 					]
 				);
 			}
-			//Storages
+			/**
+			 * Storages settings
+			 */
 			if (!$Config->core['simple_admin_mode'] && _file_exists(MODULES.DS.$module.DS.'admin'.DS.'storage.json') && count($Config->storage) > 1) {
 				$action .= h::{'a.cs-button.cs-button-compact'}(
 					h::icon('disk'),
@@ -391,22 +443,26 @@ if ($display_modules) {
 						]
 					);
 				}
-				$action .= h::{'a.cs-button.cs-button-compact'}(
-					h::icon($mdata['active'] == 1 ? 'minusthick' : 'check'),
-					[
-						'href'			=> $a->action.($mdata['active'] == 1 ? '/disable/' : '/enable/').$module,
-						'data-title'	=> $mdata['active'] == 1 ? $L->disable : $L->enable
-					]
-				).
-				h::{'a.cs-button.cs-button-compact'}(
-					h::icon('trash'),
-					[
-						'href'			=> $a->action.'/uninstall/'.$module,
-						'data-title'	=> $L->uninstall
-					]
-				);
+				if ($module != $Config->core['default_module']) {
+					$action .= h::{'a.cs-button.cs-button-compact'}(
+						h::icon($mdata['active'] == 1 ? 'minusthick' : 'check'),
+						[
+							'href'			=> $a->action.($mdata['active'] == 1 ? '/disable/' : '/enable/').$module,
+							'data-title'	=> $mdata['active'] == 1 ? $L->disable : $L->enable
+						]
+					).
+					h::{'a.cs-button.cs-button-compact'}(
+						h::icon('trash'),
+						[
+							'href'			=> $a->action.'/uninstall/'.$module,
+							'data-title'	=> $L->uninstall
+						]
+					);
+				}
 			}
-		//If module uninstalled or not installed yet
+		/**
+		 * If module uninstalled or not installed yet
+		 */
 		} else {
 			$action .= h::{'a.cs-button.cs-button-compact'}(
 				h::icon('arrowthickstop-1-s'),
@@ -420,10 +476,17 @@ if ($display_modules) {
 			h::{'td.ui-widget-content.ui-corner-all'}($module).
 			h::{'td.ui-widget-content.ui-corner-all'}(
 				h::icon(
-					$mdata['active'] == 1 ? 'check' : ($mdata['active'] == 0 ? 'minusthick' : 'closethick'),
+					$mdata['active'] == 1 ? (
+						$module == $Config->core['default_module'] ? 'home' : 'check'
+					) : (
+						$mdata['active'] == 0 ? 'minusthick' : 'closethick'
+					),
 					[
-						'data-title'	=> $mdata['active'] == 1 ? $L->enabled :
-							($mdata['active'] == 2 ? $L->disabled : $L->uninstalled.' ('.$L->not_installed.')')
+						'data-title'	=> $mdata['active'] == 1 ? (
+							$module == $Config->core['default_module'] ? $L->default_module : $L->enabled
+						) : (
+							$mdata['active'] == 2 ? $L->disabled : $L->uninstalled.' ('.$L->not_installed.')'
+						)
 					]
 				).
 				$addition_state

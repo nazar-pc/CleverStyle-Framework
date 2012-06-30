@@ -120,6 +120,8 @@ class Storage {
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
 }

@@ -1,6 +1,5 @@
 {
 	"user"		: [
-		"blank",
 		"login",
 		"logout",
 		"registration",

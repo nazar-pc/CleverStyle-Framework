@@ -99,7 +99,7 @@ class Text {
 			$id = $database->id();
 			global $Config;
 			if ($id && $id % $Config->core['inserts_limit'] == 0) { //Clean up old texts
-				$database->q("DELETE FROM `[prefix]texts` WHERE `lang` = ''");
+				$database->aq("DELETE FROM `[prefix]texts` WHERE `lang` = ''");
 			}
 			if ($id) {
 				return '{¶'.$id.'}';
@@ -145,7 +145,7 @@ class Text {
 		);
 	}
 	function process ($database, $data) {
-		if (!is_object($database) || empty($data)) {
+		if (empty($data)) {
 			return false;
 		}
 		return preg_replace_callback(
@@ -158,6 +158,8 @@ class Text {
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
 }

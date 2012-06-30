@@ -1100,7 +1100,7 @@ class User {
 			_setcookie('session', $hash, TIME + $Config->core['session_expire'], true);
 			$this->get_session_user();
 			if (($this->db()->qf('SELECT COUNT(`id`) AS `count` FROM `[prefix]sessions`', 'count') % $Config->core['inserts_limit']) == 0) {
-				$this->db_prime()->q('DELETE FROM `[prefix]sessions` WHERE `expire` < '.TIME);
+				$this->db_prime()->aq('DELETE FROM `[prefix]sessions` WHERE `expire` < '.TIME);
 			}
 			return true;
 		}
@@ -1224,7 +1224,7 @@ class User {
 			}
 			global $Config;
 			if ($this->db_prime()->id() % $Config->core['inserts_limit'] == 0) {
-				$this->db_prime()->q('DELETE FROM `[prefix]logins` WHERE `expire` < '.TIME);
+				$this->db_prime()->aq('DELETE FROM `[prefix]logins` WHERE `expire` < '.TIME);
 			}
 		}
 	}
@@ -1295,7 +1295,7 @@ class User {
 				$this->add_session($this->reg_id);
 			}
 			if ($this->reg_id % $Config->core['inserts_limit'] == 0) {
-				$this->db_prime()->q('
+				$this->db_prime()->aq('
 					DELETE
 					FROM `[prefix]users`
 					WHERE
@@ -1466,6 +1466,8 @@ class User {
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
 	/**

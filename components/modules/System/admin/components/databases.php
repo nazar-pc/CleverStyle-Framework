@@ -1,5 +1,5 @@
 <?php
-global $Config, $Index, $L, $Page, $DB_HOST, $DB_TYPE, $DB_PREFIX, $DB_NAME, $DB_CODEPAGE;
+global $Config, $Index, $L, $Page, $DB_HOST, $DB_TYPE, $DB_PREFIX, $DB_NAME, $DB_CHARSET;
 $a				= &$Index;
 $rc				= &$Config->routing['current'];
 $test_dialog	= false;
@@ -61,7 +61,7 @@ if (isset($rc[2])) {
 						h::info('db_name'),
 						h::info('db_user'),
 						h::info('db_password'),
-						h::info('db_codepage')
+						h::info('db_charset')
 					]).
 					h::{'tr td.ui-widget-content.ui-corner-all.cs-add-db'}([
 						($rc[2] == 'add' ?
@@ -108,8 +108,8 @@ if (isset($rc[2])) {
 							'value'		=> $rc[2] == 'edit' ? $database['password'] : ''
 						]),
 						h::{'input.cs-form-element'}([
-							'name'		=> 'db[codepage]',
-							'value'		=> $rc[2] == 'edit' ? $database['codepage'] : $DB_CODEPAGE
+							'name'		=> 'db[charset]',
+							'value'		=> $rc[2] == 'edit' ? $database['charset'] : $DB_CHARSET
 						]).
 						h::{'input[type=hidden]'}([
 							'name'		=> 'mode',
@@ -221,7 +221,7 @@ if (isset($rc[2])) {
 		$L->db_prefix,
 		$L->db_name,
 		$L->db_user,
-		$L->db_codepage
+		$L->db_charset
 	]);
 	foreach ($Config->db as $i => &$db_data) {
 		$db_list .=	h::tr(
@@ -265,7 +265,7 @@ if (isset($rc[2])) {
 					$i	? $db_data['prefix']	: $DB_PREFIX,
 					$i	? $db_data['name']		: $DB_NAME,
 					$i	? $db_data['user']		: '*****',
-					$i	? $db_data['codepage']	: $DB_CODEPAGE
+					$i	? $db_data['charset']	: $DB_CHARSET
 				],
 				[
 					'class'	=> 'ui-corner-all '.($i ? 'ui-widget-content' : 'ui-state-highlight')
@@ -304,7 +304,7 @@ if (isset($rc[2])) {
 						$mirror['prefix'],
 						$mirror['name'],
 						$mirror['user'],
-						$mirror['codepage']
+						$mirror['charset']
 					])
 				);
 			}

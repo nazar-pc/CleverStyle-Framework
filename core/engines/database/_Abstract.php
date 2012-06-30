@@ -1,84 +1,181 @@
 <?php
 namespace cs\database;
 abstract class _Abstract {
-	public		$connected	= false,				//Метка наличия соединения
-				$engine		= false,				//Тип движка БД, может использоваться при построении запросов,
-													//чтобы учитывать особенности конкретного движка (название в нижнем регистре)
-				$database,							//Текущая БД
-				$prefix,							//Текущий префикс
-				$time,								//Массив для хранения общей длительности выполнения запросов
-				$query		= array(				//Массив для хранения данных последнего выполненого запроса
+				/**
+				 * Is connection established
+				 *
+				 * @var bool
+				 */
+	public		$connected	= false,
+				/**
+				 * Is DB type, may be used for constructing requests, accounting particular features of current DB (lowercase name)
+				 *
+				 * @var bool
+				 */
+				$db_type	= false,
+				/**
+				 * Current DB
+				 *
+				 * @var string
+				 */
+				$database,
+				/**
+				 * Current prefix
+				 *
+				 * @var string
+				 */
+				$prefix,
+				/**
+				 * Total time of requests execution
+				 *
+				 * @var int
+				 */
+				$time,
+				/**
+				 * Array for storing of data of the last executed request
+				 *
+				 * @var array
+				 */
+				$query		= [
 								'start'		=> '',
 								'end'		=> '',
 								'time'		=> '',
 								'text'		=> '',
 								'id'		=> ''
-							),
-				$queries	= array(				//Массив для хранения данных всех выполненых запросов
+							],
+				/**
+				 * Array for storing data of all executed requests
+				 *
+				 * @var array
+				 */
+				$queries	= [
 								'num'		=> '',
 								'time'		=> [],
 								'text'		=> [],
-								'resource'	=> []
-							),
-				$connecting_time;					//Время соединения
-	protected	$id;								//Указатель на соединение с БД
-	
-	//Создание подключения
+								'result'	=> []
+							],
+				/**
+				 * Connection time
+				 *
+				 * @var int
+				 */
+				$connecting_time;
+				/**
+				 * Asynchronous request
+				 *
+				 * @var bool
+				 */
+	protected	$async		= false;
+
 	/**
-	 * @param string $database
-	 * @param string $user
-	 * @param string $password
-	 * @param string $host
-	 * @param bool|string $codepage
+	 * Connecting to DB
+	 *
+	 * @param string      $database
+	 * @param string      $user
+	 * @param string      $password
+	 * @param string      $host
+	 * @param bool|string $charset
 	 */
-	abstract function __construct ($database, $user = '', $password = '', $host = 'localhost', $codepage = false);
-	//Смена текущей БД
-	/**
-	 * @abstract
-	 * @param string $database
-	 */
-	abstract function select_db ($database);
+	abstract function __construct ($database, $user = '', $password = '', $host = 'localhost', $charset = 'utf8');
 	/**
 	 * SQL request into DB
 	 *
 	 * @abstract
+	 *
 	 * @param string|string[] $query
-	 * @return bool|resource
+	 *
+	 * @return bool|object|resource
 	 */
-	abstract function q ($query);
-	//Подсчёт количества строк
+	function q ($query) {
+		if (is_array($query) && !empty($query)) {
+			$return = true;
+			foreach ($query as $q) {
+				$return = $return && $this->q($q);
+			}
+			return $return;
+		}
+		if(!$query) {
+			return false;
+		}
+		global $db;
+		$this->query['time']		= microtime(true);
+		$this->queries['text'][]	= $this->query['text']				= str_replace('[prefix]', $this->prefix, $query);
+		$result						= $this->q_internal($this->query['text']);
+		$this->queries['result'][]	= $result;
+		$this->query['time']		= round(microtime(true) - $this->query['time'], 6);
+		$this->time					+= $this->query['time'];
+		$this->queries['time'][]	= $this->query['time'];
+		$db->time					+= $this->query['time'];
+		++$this->queries['num'];
+		++$db->queries;
+		return $result;
+	}
 	/**
+	 * SQL request into DB
+	 *
 	 * @abstract
-	 * @param bool|resource $query_resource
+	 *
+	 * @param string|string[] $query
+	 *
+	 * @return bool|object|resource
+	 */
+	abstract protected function q_internal ($query);
+	/**
+	 * Asynchronous SQL request into DB (if is not supported - ordinary request will me executed).
+	 * Result of execution can't be obtained, so, use it, for example, for deleting some non-critical data
+	 *
+	 * @abstract
+	 *
+	 * @param string|string[] $query
+	 *
+	 * @return bool|object|resource
+	 */
+	function aq ($query) {
+		$this->async	= true;
+		$result			= $this->q($query);
+		$this->async	= false;
+		return $result;
+	}
+	/**
+	 * Getting number of selected rows
+	 *
+	 * @abstract
+	 *
+	 * @param bool|object|resource $query_result
 	 *
 	 * @return int|bool
 	 */
-	abstract function n ($query_resource = false);
-	//Получение результатов
+	abstract function n ($query_result = false);
 	/**
+	 * Fetch a result row as an associative array
+	 *
 	 * @abstract
 	 *
-	 * @param bool|resource $query_resource
-	 * @param bool          $array
-	 * @param bool|string   $one_column
+	 * @param bool|object|resource	$query_result
+	 * @param bool					$array			If <b>true</b> returns array of associative arrays of all fetched rows
+	 * @param bool|string			$one_column		This parameter may contain name of interested column,
+	 * 												and function will return not array with one element, but directly its value
 	 *
 	 * @return array|bool
 	 */
-	abstract function f ($query_resource = false, $one_column = false, $array = false);
-	//Упрощенный интерфейс метода для получения результата в виде массива
+	abstract function f ($query_result = false, $one_column = false, $array = false);
 	/**
-	 * @param bool|resource $query_resource
+	 * Similar to ::f() method, with parameter <b>$array</b> = true
+	 *
+	 * @param bool|object|resource $query_result
 	 * @param bool|string   $one_column
 	 *
 	 * @return array|bool
 	 */
-	function fa ($query_resource = false, $one_column = false) {
-		return $this->f($query_resource, $one_column, true);
+	function fa ($query_result = false, $one_column = false) {
+		return $this->f($query_result, $one_column, true);
 	}
-	//Запрос с получением результатов, результаты запросов кешируются при соответствующей настройке сайта
 	/**
-	 * @param string $query
-	 * @param bool|string   $one_column
+	 * Combination of ::q() and ::f() methods
+	 *
+	 * @param string		$query
+	 * @param bool|string   $one_column	This parameter may contain name of interested column,
+	 * 									and function will return not array with one element, but directly its value
 	 *
 	 * @return array|bool
 	 */
@@ -88,8 +185,9 @@ abstract class _Abstract {
 		}
 		return $this->f($this->q($query), $one_column, false);
 	}
-	//Упрощенный интерфейс метода выполнения запроса с получением результата в виде массива
 	/**
+	 * Combination of ::q() and ::fa() methods
+	 *
 	 * @param string        $query
 	 * @param bool|string   $one_column
 	 *
@@ -103,42 +201,28 @@ abstract class _Abstract {
 	}
 	/**
 	 * Get id of last inserted row
+	 *
 	 * @abstract
 	 *
 	 * @return int
 	 */
 	abstract function id ();
-	//Очистка результатов запроса
 	/**
+	 * Free result memory
+	 *
 	 * @abstract
-	 * @param bool|resource $query_resource
+	 *
+	 * @param bool|object|resource $query_result
+	 *
 	 * @return bool
 	 */
-	abstract function free ($query_resource = false);
-	//Получение списка полей таблицы
+	abstract function free ($query_result = false);
 	/**
+	 * Get columns list of table
+	 *
 	 * @param string $table
 	 * @param bool|string $like
-	 * @return array|bool
-	 */
-	function fields ($table, $like = false) {
-		if(!$table) {
-			return false;
-		}
-		if ($like) {
-			$fields = $this->qfa('SHOW FIELDS FROM `'.$table.'` LIKE \''.$like.'\'');
-		} else {
-			$fields = $this->qfa('SHOW FIELDS FROM `'.$table.'`');
-		}
-		foreach ($fields as &$field) {
-			$field = $field['Field'];
-		}
-		return $fields;
-	}
-	//Получение списка колонок таблицы
-	/**
-	 * @param string $table
-	 * @param bool|string $like
+	 *
 	 * @return array|bool
 	 */
 	function columns ($table, $like = false) {
@@ -165,16 +249,26 @@ abstract class _Abstract {
 	/**
 	 * Preparing string for using in SQL query
 	 * SQL Injection Protection
-	 * @param $data
+	 *
+	 * @param $string
+	 *
 	 * @return string
 	 */
-	abstract function s ($data);
-	//Информация о сервере
+	abstract function s ($string);
+	/**
+	 * Get information about server
+	 *
+	 * @return string
+	 */
 	abstract function server ();
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	final function __clone () {}
-	//Отключение от БД
+	/**
+	 * Disconnecting from DB
+	 */
 	abstract function __destruct ();
 }

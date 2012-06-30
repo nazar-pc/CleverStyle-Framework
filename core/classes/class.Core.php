@@ -1,6 +1,6 @@
 <?php
 namespace cs;
-use \Closure as Closure;
+use \Closure;
 //Класс ядра
 class Core {
 	protected	$iv,
@@ -313,6 +313,8 @@ class Core {
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
 	/**
