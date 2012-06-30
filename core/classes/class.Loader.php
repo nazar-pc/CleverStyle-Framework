@@ -1,4 +1,5 @@
 <?php
+namespace cs;
 /**
  * For providing loaders for some "heavy" objects
  * Such objects will be initialized only if they realy needed, otherwise we can skip their initialization in order

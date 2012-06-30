@@ -1,4 +1,6 @@
 <?php
+namespace cs;
+use \Closure as Closure;
 //Класс ядра
 class Core {
 	protected	$iv,

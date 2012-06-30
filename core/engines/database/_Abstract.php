@@ -1,5 +1,6 @@
 <?php
-abstract class DatabaseAbstract {
+namespace cs\database;
+abstract class _Abstract {
 	public		$connected	= false,				//Метка наличия соединения
 				$engine		= false,				//Тип движка БД, может использоваться при построении запросов,
 													//чтобы учитывать особенности конкретного движка (название в нижнем регистре)
@@ -37,11 +38,12 @@ abstract class DatabaseAbstract {
 	 * @param string $database
 	 */
 	abstract function select_db ($database);
-	//Запрос в БД
 	/**
+	 * SQL request into DB
+	 *
 	 * @abstract
-	 * @param array|string $query
-	 * @return resource
+	 * @param string|string[] $query
+	 * @return bool|resource
 	 */
 	abstract function q ($query);
 	//Подсчёт количества строк

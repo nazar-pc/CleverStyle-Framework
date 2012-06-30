@@ -19,6 +19,16 @@ if (isset($rc[2])) {
 				} else {
 					$database = &$Config->db[$rc[3]];
 				}
+				$mirror		= isset($rc[4]);
+				$cdb		= $Config->db[$rc[3]];
+				if ($mirror) {
+					$cdbm	= $Config->db[$rc[3]]['mirrors'][$rc[4]];
+					$name	= $L->mirror.' '.($rc[3] ? $L->db.' '.$cdb['name'] : $L->core_db).', '.$cdbm['name'].' ('.$cdbm['host'].'/'.$cdbm['type'].')?';
+					unset($cdbm);
+				} else {
+					$name	= $L->db.' '.$cdb['name'].' ('.$cdb['host'].'/'.$cdb['type'].')?';
+				}
+				unset($mirror, $cdb);
 			} elseif ($rc[2] == 'add') {
 				$dbs = array(-1, 0);
 				$dbsname = array($L->separate_db, $L->core_db);
@@ -35,17 +45,8 @@ if (isset($rc[2])) {
 			 * @var array $dbsname
 			 * @var array $dbs
 			 * @var array $database
+			 * @var string $name
 			 */
-			$mirror		= isset($rc[4]);
-			$cdb		= $Config->db[$rc[3]];
-			if ($mirror) {
-				$cdbm	= $Config->db[$rc[3]]['mirrors'][$rc[4]];
-				$name	= $L->mirror.' '.($rc[3] ? $L->db.' '.$cdb['name'] : $L->core_db).', '.$cdbm['name'].' ('.$cdbm['host'].'/'.$cdbm['type'].')?';
-				unset($cdbm);
-			} else {
-				$name	= $L->db.' '.$cdb['name'].' ('.$cdb['host'].'/'.$cdb['type'].')?';
-			}
-			unset($mirror, $cdb);
 			$Page->title($rc[2] == 'edit' ? $L->editing_a_database($name) : $L->adding_a_database);
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages'}(
@@ -82,7 +83,7 @@ if (isset($rc[2])) {
 						]),
 						h::{'select.cs-form-element'}(
 							[
-								'in'		=> _mb_substr(get_list(ENGINES, '/^db\..*?\.php$/i', 'f'), 3, -4)
+								'in'		=> _mb_substr(get_list(ENGINES.DS.'database', '/^[^_].*?\.php$/i', 'f'), 0, -4)
 							],
 							[
 								'name'		=> 'db[type]',

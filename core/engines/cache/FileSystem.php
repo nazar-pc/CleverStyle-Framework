@@ -1,9 +1,10 @@
 <?php
+namespace cs\cache;
 /**
  * Provides cache functionality based on file system structure.
  * Require configuration variable $CACHE_SIZE with maximum allowed cache size in MB, 0 means without limitation (is not recomended)
  */
-class FileSystem extends CacheAbstract {
+class FileSystem extends _Abstract {
 	protected	$cache_size,
 				$size			= null;
 

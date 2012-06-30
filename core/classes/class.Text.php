@@ -1,4 +1,5 @@
 <?php
+namespace cs;
 class Text {
 	/**
 	 * Gets text
@@ -51,7 +52,8 @@ class Text {
 				}
 				global $Config;
 				if ($Config->core['auto_translation'] && $lang && $text){
-					$text = $Config->core['auto_translation_engine']['name']::translate($text, $lang, $L->lang) ?: $text;
+					$engine_class	= '\\cs\\translate\\'.$Config->core['auto_translation_engine']['name'];
+					$text			= $engine_class::translate($text, $lang, $L->lang) ?: $text;
 					$this->set($database, $group, $label, $text);
 				}
 			}
@@ -75,7 +77,7 @@ class Text {
 		unset($Cache->{$index});
 		$database = $db->$database();
 		/**
-		 * @var DatabaseAbstract $database
+		 * @var \cs\database\_Abstract $database
 		 */
 		if ($id = $database->q('
 			SELECT `id`

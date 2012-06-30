@@ -1,45 +1,51 @@
 <?php
+namespace cs;
 /**
  * Provides next triggers:<br>
  *  System/Config/routing_replace<code>
+ *  [
+ *   'routing'	=> <i>Closure</i> //Closure return reference to current routing string, this string must be changed<br>
+ *  ]</code>
  */
 class Config {
-	public		$core			= [],
-				$db				= [],
-				$storage		= [],
-				$components		= [],
-				$replace		= [],
-				$routing		= [],
-				$admin_parts	= [				//Conumns in DB table of engine configuration
-					'core',
-					'db',
-					'storage',
-					'components',
-					'replace',
-					'routing'
-				],
-				$server							= [			//Array of some address data about mirrors and current address properties
-					'raw_relative_address'		=> '',		//Raw page url (in browser's address bar)
-					'host'						=> '',		//Current domain
-					'corrected_full_address'	=> '',		//Corrected full page address (recommended for usage)
-					'protocol'					=> '',		//Page protocol (http/https)
-					'base_url'					=> '',		//Address of the main page of current mirror, including prefix (http/https)
-					'mirrors'					=> [		//Array of all domains, which allowed to access the site
-						'count'		=> 0,					//Total count
-						'http'		=> [],					//Unsecure (http) domains
-						'https'		=> []					//Secure (https) domains
+	protected	$data = [
+					'core'			=> [],
+					'db'			=> [],
+					'storage'		=> [],
+					'components'	=> [],
+					'replace'		=> [],
+					'routing'		=> [],
+					'admin_parts'	=> [						//Conumns in DB table of engine configuration
+						'core',
+						'db',
+						'storage',
+						'components',
+						'replace',
+						'routing'
 					],
-					'referer'					=> [
-						'url'		=> '',
-						'host'		=> '',
-						'protocol'	=> '',
-						'local'		=> false
+					'server'		=> [						//Array of some address data about mirrors and current address properties
+						'raw_relative_address'		=> '',		//Raw page url (in browser's address bar)
+						'host'						=> '',		//Current domain
+						'corrected_full_address'	=> '',		//Corrected full page address (recommended for usage)
+						'protocol'					=> '',		//Page protocol (http/https)
+						'base_url'					=> '',		//Address of the main page of current mirror, including prefix (http/https)
+						'mirrors'					=> [		//Array of all domains, which allowed to access the site
+							'count'		=> 0,					//Total count
+							'http'		=> [],					//Unsecure (http) domains
+							'https'		=> []					//Secure (https) domains
+						],
+						'referer'					=> [
+							'url'		=> '',
+							'host'		=> '',
+							'protocol'	=> '',
+							'local'		=> false
+						],
+						'ajax'						=> false,	//Is this page request via AJAX
+						'mirror_index'				=> -1		//Index of current domain in mirrors list ('-1' - main domain, not mirror)
 					],
-					'ajax'						=> false,	//Is this page request via AJAX
-					'mirror_index'				=> -1		//Index of current domain in mirrors list ('-1' - main domain, not mirror)
+					'can_be_admin'		=> true					//Alows to check ability to be admin user (can be limited by IP)
 				],
-				$can_be_admin		= true;		//Alows to check ability to be admin user (can be limited by IP)
-	protected	$init = false;
+				$init = false;
 
 	function __construct () {
 		global $Cache, $Config;
@@ -192,20 +198,21 @@ class Config {
 		$rc			= $this->server['raw_relative_address'];
 		//Routing replacing
 		if (!empty($r['in'])) {
-			$search		= [];
-			$replace	= [];
-			foreach ($r['in'] as $i => $val) {
-				$char = mb_substr($val, 0, 1);
-				if ($char != mb_substr($val, -1)) {
-					$val = '/'.$val.'/';
-				}
-				$search[] = '/'.trim($val, '/').'/';
-				$replace[] = $r['out'][$i];
+			errors_off();
+			foreach ($r['in'] as $i => $search) {
+				$rc = preg_replace($search, $r['out'][$i], $rc) ?: str_replace($search, $r['out'], $rc);
 			}
-			$rc	= preg_replace($search, $replace, $rc);
-			unset($search, $replace);
+			errors_on();
+			unset($i, $search);
 		}
-		$Core->run_trigger('System/Config/routing_replace');
+		$Core->run_trigger(
+			'System/Config/routing_replace',
+			[
+				'routing' => function &() use (&$rc) {//This allows to change protected current routing path string inside trigger function
+					return $rc;
+				}
+			]
+		);
 		//Obtaining page path in form of array
 		$rc = explode('/', $rc);
 		//If url looks like admin page
@@ -347,7 +354,7 @@ class Config {
 		}
 		$query = '';
 		foreach ($parts as $part) {
-			if (isset($this->$part)) {
+			if (isset($this->data[$part])) {
 				if ($part == 'routing') {
 					$temp = $this->routing;
 					unset($temp['current']);
@@ -370,6 +377,56 @@ class Config {
 		unset($Cache->config);
 		$this->load();
 		$this->apply_internal(false);
+	}
+	function &__get ($item) {
+		if (isset($this->data[$item])) {
+			global $User;
+			$debug_backtrace = debug_backtrace()[1];
+			$debug_backtrace = [
+				'class'		=> isset($debug_backtrace['class']) ? $debug_backtrace['class'] : '',
+				'function'	=> isset($debug_backtrace['function']) ? $debug_backtrace['function'] : ''
+			];
+			//Allow modification only for administrators or requests from methods of Config class or from Index::init()
+			if (
+				(
+					is_object($User) && $User->is('admin')
+				) ||
+				$debug_backtrace['class'] == 'cs\\Config' ||
+				(
+					$debug_backtrace['class'] == 'cs\\Index' && $debug_backtrace['function'] == 'init'
+				)
+			) {
+				$return = &$this->data[$item];
+			} else {
+				$return = $this->data[$item];
+			}
+			return $return;
+		}
+		return false;
+	}
+	function __set ($item, $data) {
+		global $User;
+		$debug_backtrace = debug_backtrace()[1];
+		$debug_backtrace = [
+			'class'		=> $debug_backtrace['class'],
+			'function'	=> $debug_backtrace['function']
+		];
+		//Allow modification only for administrators or requests from methods of Config class or from Index::init()
+		if (
+			!isset($this->data[$item]) ||
+			(
+				(
+					is_object($User) && !$User->is('admin')
+				) &&
+				$debug_backtrace['class'] != 'cs\\Config' &&
+				!(
+					$debug_backtrace['class'] == 'cs\\Index' && $debug_backtrace['function'] == 'init'
+				)
+			)
+		) {
+			return false;
+		}
+		return $this->data[$item] = $data;
 	}
 	/**
 	 * Cloning restriction

@@ -43,7 +43,7 @@ if (isset($rc[2])) {
 							]),
 							h::{'select.cs-form-element'}(
 								[
-									'in'		=> _mb_substr(get_list(ENGINES, '/^storage\..*?\.php$/i', 'f'), 8, -4)
+									'in'		=> _mb_substr(get_list(ENGINES.DS.'storage', '/^[^_].*?\.php$/i', 'f'), 0, -4)
 								],
 								[
 									'name'		=> 'storage[connection]',
@@ -165,7 +165,7 @@ if (isset($rc[2])) {
 					]
 				) : '-'),
 				[
-					'class'	=> 'ui-corner-all cs-storages-config-buttons '.($i ? 'ui-widget-content' : 'ui-state-highlight')
+					'class'	=> 'ui-corner-all '.($i ? 'ui-widget-content' : 'ui-state-highlight')
 				]
 			).
 			h::td(

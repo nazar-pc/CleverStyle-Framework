@@ -1,4 +1,6 @@
 <?php
+namespace cs;
+use \h as h;
 /**
  * Provides next triggers:<br>
  *  System/Page/pre_display<code>
@@ -240,27 +242,27 @@ class Page {
 	/**
 	 * Replacing anything in source code of filally genereted page
 	 *
-	 * @param array|string $search
-	 * @param array|string $replace
+	 * @param string|string[] $search
+	 * @param string|string[] $replace
 	 */
 	function replace ($search, $replace = '') {
 		if (is_array($search)) {
 			foreach ($search as $i => $val) {
-				$char = mb_substr($val, 0, 1);
-				if ($char != mb_substr($val, -1)) {
-					$val = '/'.$val.'/';
-				}
-				$this->Search[] = '/'.trim($val, '/').'/';
+				$this->Search[] = $val;
 				$this->Replace[] = is_array($replace) ? $replace[$i] : $replace;
 			}
 		} else {
-			$char = mb_substr($search, 0, 1);
-			if ($char != mb_substr($search, -1)) {
-				$search = '/'.$search.'/';
-			}
 			$this->Search[] = $search;
 			$this->Replace[] = $replace;
 		}
+	}
+	protected function process_replacing ($data) {
+		errors_off();
+		foreach ($this->Search as $i => $search) {
+			$data = preg_replace($search, $this->Replace[$i], $data) ?: str_replace($search, $this->Replace[$i], $data);
+		}
+		errors_on();
+		return $data;
 	}
 	//Добавление ссылок на подключаемые JavaScript файлы
 	function js ($add, $mode = 'file') {
@@ -442,7 +444,7 @@ class Page {
 	function css_includes_processing (&$data, $file) {
 		$cwd	= getcwd();
 		_chdir(_dirname($file));
-		//Simple minification, deletes comments, new lines, tabulations and some spaces
+		//Simple minification, deletes comments, new lines, tabulations and unnecessary spaces
 		$data	= preg_replace('#(/\*.*?\*/)|\t|\n|\r#s', '', $data);
 		$data	= preg_replace('#\s*([,:;+>{}])\s*#s', '$1', $data);
 		//Includes processing
@@ -653,7 +655,7 @@ class Page {
 			);
 			unset($debug_info);
 		}
-		$this->debug_info = preg_replace($this->Search, $this->Replace, $this->debug_info);
+		$this->debug_info = $this->process_replacing($this->debug_info);
 	}
 	//Display notice
 	function notice ($text) {
@@ -807,7 +809,7 @@ class Page {
 		//Для AJAX и API запросов не выводится весь интерфейс страницы, только основное содержание
 		if (!$this->interface) {
 			//Обработка замены контента
-			echo preg_replace($this->Search, $this->Replace, $this->Content);
+			echo $this->process_replacing($this->Content);
 		} else {
 			global $Error, $L, $timeload, $User, $Core;
 			$Core->run_trigger('System/Page/pre_display');
@@ -815,7 +817,7 @@ class Page {
 			//Обработка шаблона, наполнение его содержимым
 			$this->prepare();
 			//Обработка замены контента
-			$this->Html = preg_replace($this->Search, $this->Replace, $this->Html);
+			$this->Html = $this->process_replacing($this->Html);
 			//Опеределение типа сжатия сжатия
 			$ob = false;
 			if (is_object($Config) && !zlib_compression() && $Config->core['gzip_compression'] && (is_object($Error) && !$Error->num())) {

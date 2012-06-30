@@ -130,7 +130,7 @@ foreach ($plugins as $plugin) {
 			).
 			$addition_state
 		).
-		h::{'td.ui-widget-content.ui-corner-all.cs-plugins-config-buttons'}($action)
+		h::{'td.ui-widget-content.ui-corner-all'}($action)
 	);
 }
 unset($plugins, $plugin, $state, $addition_state, $action);

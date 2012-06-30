@@ -1,5 +1,6 @@
 <?php
-class MySQL extends DatabaseAbstract {
+namespace cs\database;
+class MySQL extends _Abstract {
 	//Создание подключения
 	function __construct ($database, $user = '', $password = '', $host = 'localhost', $codepage = false) {
 		$this->connecting_time = microtime(true);
@@ -29,7 +30,13 @@ class MySQL extends DatabaseAbstract {
 	function select_db ($database) {
 		return @mysql_select_db($database, $this->id);
 	}
-	//Запрос в БД
+	/**
+	 * SQL request into DB
+	 *
+	 * @abstract
+	 * @param string|string[] $query
+	 * @return bool|resource
+	 */
 	function q ($query) {
 		if (is_array($query) && !empty($query)) {
 			$return = true;

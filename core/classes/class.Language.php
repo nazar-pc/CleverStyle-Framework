@@ -1,4 +1,5 @@
 <?php
+namespace cs;
 /**
  * Provides next triggers:<br>
  *  admin/System/general/languages/load<code>
@@ -249,12 +250,12 @@ class Language {
 	/**
 	 * Formatting data according to language locale (translating months names, days of week, etc.)
 	 *
-	 * @param array|string $data
-	 * @param bool         $short_may	When in date() or similar functions "M" format option is used, third month "May"
-	 * 									have the same short textual representation as full, so, this option allows to
-	 * 									specify, which exactly form of representation do you want
+	 * @param string|string[] $data
+	 * @param bool            $short_may	When in date() or similar functions "M" format option is used, third month "May"
+	 * 										have the same short textual representation as full, so, this option allows to
+	 * 										specify, which exactly form of representation do you want
 	 *
-	 * @return array|string
+	 * @return string|string[]
 	 */
 	function to_locale ($data, $short_may = false) {
 		if (is_array($data)) {

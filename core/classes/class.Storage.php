@@ -1,4 +1,5 @@
 <?php
+namespace cs;
 class Storage {
 	public		$time					= 0;
 	protected	$connections			= [],
@@ -34,7 +35,7 @@ class Storage {
 	}
 	//Обработка запросов получения и изменения данных БД
 	function __call ($connection, $mode) {
-		if (method_exists('StorageAbstract', $connection)) {
+		if (method_exists('\\cs\\storage\\_Abstract', $connection)) {
 			return call_user_func_array([$this->{0}, $connection], $mode);
 		} else {
 			return false;
@@ -68,7 +69,8 @@ class Storage {
 			$storage = &$Config->storage[$connection];
 		}
 		//Создаем новое подключение к хранилищу
-		$this->connections[$connection] = new $storage['connection']($storage['url'], $storage['host'], $storage['user'], $storage['password']);
+		$engine_class					= '\\cs\\storage\\'.$storage['connection'];
+		$this->connections[$connection]	= new $engine_class($storage['url'], $storage['host'], $storage['user'], $storage['password']);
 		//В случае успешного подключения - заносим в общий список подключений, и возвращаем ссылку на подключение
 		if (is_object($this->connections[$connection]) && $this->connections[$connection]->connected) {
 			$this->successful_connections[] = $connection.'/'.$storage['host'].'/'.$storage['connection'];
@@ -109,7 +111,8 @@ class Storage {
 		}
 		unset($data);
 		if (is_array($storage)) {
-			$test = new $storage['connection']($storage['url'], $storage['host'], $storage['user'], $storage['password']);
+			$connection_class	= '\\cs\\storage\\'.$storage['connection'];
+			$test				= new $connection_class($storage['url'], $storage['host'], $storage['user'], $storage['password']);
 			return $test->connected;
 		} else {
 			return false;

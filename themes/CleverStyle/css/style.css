@@ -125,12 +125,9 @@ footer {
 	cursor: pointer !important;
 }
 
-.cs-storages-config-buttons,
 .cs-modules-config-buttons button,
 .cs-db-config-buttons button,
 .cs-db-config-buttons-r button,
-.cs-plugins-config-buttons button,
-.cs-storages-config-buttons button,
 #apply_settings,
 #save_settings,
 #cancel_settings,

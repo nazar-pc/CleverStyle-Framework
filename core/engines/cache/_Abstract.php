@@ -1,5 +1,6 @@
 <?php
-abstract class CacheAbstract {
+namespace cs\cache;
+abstract class _Abstract {
 	/**
 	 * @abstract
 	 *

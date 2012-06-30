@@ -70,14 +70,18 @@
 		function _include_once ($file, $show_errors) {
 			return _include($file, true, $show_errors);
 		}
-	//Автозагрузка необходимых классов
+	//Class autoloading
 	spl_autoload_register(function ($class) {
-		_require(CLASSES.DS.'class.'.$class.'.php', true, false) ||
-		_require(ENGINES.DS.$class.'.php', true, false) ||
-		_require(ENGINES.DS.'cache.'.$class.'.php', true, false) ||
-		_require(ENGINES.DS.'db.'.$class.'.php', true, false) ||
-		_require(ENGINES.DS.'storage.'.$class.'.php', true, false) ||
-		_require(ENGINES.DS.'translate.'.$class.'.php', true, false);
+		if (substr($class, 0, 3) == 'cs\\') {
+			$class	= substr($class, 3);
+		}
+		$class	= explode('\\', $class);
+		$class	= [
+			'namespace'	=> count($class) > 1 ? implode(DS, array_slice($class, 0, -1)).DS : '',
+			'name'		=> array_pop($class)
+		];
+		_require(CLASSES.DS.$class['namespace'].'class.'.$class['name'].'.php', true, false) ||
+		_require(ENGINES.DS.$class['namespace'].$class['name'].'.php', true, false);
 	});
 	//Функция для корректной остановки выполнения из любого места движка
 	function __finish () {
@@ -512,12 +516,12 @@
 	}
 	/**
 	 * Filtering and functions for recursive processing of arrays
-	 * @param array|string $text
+	 * @param string|string[] $text
 	 * @param string $mode
 	 * @param bool|string $data
 	 * @param null|string $data2
 	 * @param null|string $data3
-	 * @return array|string
+	 * @return string|string[]
 	 */
 	function filter ($text, $mode = '', $data = false, $data2 = null, $data3 = null) {
 		if (is_array($text)) {
@@ -685,9 +689,9 @@
 	/**
 	 * XSS Attack Protection
 	 *
-	 * @param array|string $in HTML code
+	 * @param string|string[] $in HTML code
 	 * @param bool|string $html <b>text</b> - text at output (default), <b>true</b> - processed HTML at output, <b>false</b> - HTML tags will be deleted
-	 * @return array|string
+	 * @return string|string[]
 	 */
 	function xap ($in, $html = 'text') {
 		if (is_array($in)) {

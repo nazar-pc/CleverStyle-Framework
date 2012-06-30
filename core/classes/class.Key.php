@@ -1,4 +1,5 @@
 <?php
+namespace cs;
 class Key {
 	function generate ($database) {
 		global $db;

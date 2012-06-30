@@ -1,4 +1,5 @@
 <?php
+namespace cs;
 class Cache {
 	protected	$cache,					//Cache state
 				$init		= false,	//Initialization state
@@ -7,7 +8,8 @@ class Cache {
 		$this->init();
 		if (!$this->init && $this->cache) {
 			global $CACHE_ENGINE;
-			$this->instance = new $CACHE_ENGINE();
+			$engine_class	= '\\cs\\cache\\'.$CACHE_ENGINE;
+			$this->instance	= new $engine_class();
 		}
 	}
 	function init () {

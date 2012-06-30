@@ -37,44 +37,27 @@ define('THEMES',		DIR.DS.'themes');			//Папка с темами
 //Load information about minimal needed Software versions
 _require(CORE.DS.'required_verions.php', true, true);
 //Including of custom user files
-_include(CORE.DS.'custom.php', true, false);
+_include(DIR.DS.'custom.php', true, false);
 
 $timeload['loader_init']	= microtime(true);
 $loader_init_memory			= memory_get_usage();
 //Запуск ядра и первичных классов, создание необходимых объектов
 //ВНИМАНИЕ: Отключение создания следующих объектов или изменение порядка почти на 100% приведет к полной неработоспособности движка!!!
 //При необходимости изменения логики работы первычных классов движка используйте пользовательские версии файлов, не изменяя порядок загрузки
-$Objects					= new Objects;			//Объект подключения и выгрузки классов
-//Next block only for IDE
-if (false) {
-	global $Core, $Cache, $Text, $L, $Page, $Error, $db, $Storage, $Config, $Mail, $Key, $User, $Index;
-	$Error		= new Error();
-	$Core		= new Core();
-	$Cache		= new Cache();
-	$Text		= new Text();
-	$L			= new Language();
-	$Page		= new Page();
-	$db			= new DB();
-	$Storage	= new Storage();
-	$Config		= new Config();
-	$Mail		= new Mail();
-	$Key		= new Key();
-	$User		= new User();
-	$Index		= new Index();
-}
+$Objects					= new \cs\Objects;			//Объект подключения и выгрузки классов
 $Objects->load([
-	'Error',										//Объект обработки ошибок
-	'Core',											//Объект ядра движка (проверка путей и функции шифрования)
-	'Cache',										//Объект системного кеша
-	'_Text',										//Объект поддержки мультиязычного текстового контента
-	['Language', 'L'],								//Объект музьтиязычности
-	'Page',											//Объект генерирования страницы
-	['DB', 'db'],									//Объект БД
-	'_Storage',										//Объект Хранилищ
-	'Config',										//Объект настроек
-	'_Mail',										//Объект работы с почтой
-	'_Key',											//Объект веменных ключей
-	'User',											//Объект пользователя
-	'Index'											//Объект, который управляет обработкой компонентов
+	'cs\\Error',									//Объект обработки ошибок
+	'cs\\Core',										//Объект ядра движка (проверка путей и функции шифрования)
+	'cs\\Cache',									//Объект системного кеша
+	'_cs\\Text',									//Объект поддержки мультиязычного текстового контента
+	['cs\\Language',	'L'],						//Объект музьтиязычности
+	'cs\\Page',										//Объект генерирования страницы
+	['cs\\DB',			'db'],						//Объект БД
+	'_cs\\Storage',									//Объект Хранилищ
+	'cs\\Config',									//Объект настроек
+	'_cs\\Mail',									//Объект работы с почтой
+	'_cs\\Key',										//Объект веменных ключей
+	'cs\\User',										//Объект пользователя
+	'cs\\Index'										//Объект, который управляет обработкой компонентов
 ]);
 $Objects->__finish();								//Выгружает классы, отображает сгенерированный контент и корректно завершает работу

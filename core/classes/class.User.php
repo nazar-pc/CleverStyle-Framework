@@ -1,4 +1,5 @@
 <?php
+namespace cs;
 class User {
 	protected	$current				= [
 					'session'		=> false,
@@ -29,7 +30,7 @@ class User {
 		}
 		//Detecting of current user
 		//Last part in page path - key
-		$rc = &$Config->routing['current'];
+		$rc = $Config->routing['current'];
 		if (
 			$this->user_agent == 'CleverStyle CMS' &&
 			(
@@ -46,10 +47,7 @@ class User {
 			) &&
 			is_array($key_data)
 		) {
-			unset($rc[count($rc) - 1]);
-			$raw_address	= &$Config->server['raw_relative_address'];
-			$full_address	= &$Config->server['corrected_full_address'];
-			if ($this->current['is']['system'] = $key_data['url'] == $Config->server['host'].'/'.$raw_address) {
+			if ($this->current['is']['system'] = $key_data['url'] == $Config->server['host'].'/'.$Config->server['raw_relative_address']) {
 				$this->current['is']['admin'] = true;
 				interface_off();
 				$_POST['data'] = _json_decode($_POST['data']);
@@ -61,10 +59,6 @@ class User {
 				unset($_POST['data']);
 				sleep(1);
 			}
-			$raw_address	= substr($raw_address, 0, strrpos($raw_address, '/'));
-			$full_address	= substr($full_address, 0, strrpos($full_address, '/'));
-			unset($raw_address, $full_address);
-			unset($rc[count($rc) - 1]);
 		}
 		unset($key_data, $key, $rc);
 		//If session exists
@@ -211,9 +205,9 @@ class User {
 		$this->init = true;
 	}
 	/**
-	 * @param array|string $item
+	 * @param string|string[] $item
 	 * @param bool|int $user
-	 * @return array|bool
+	 * @return bool|string|string[]
 	 */
 	function get ($item, $user = false) {
 		switch ($item) {
@@ -229,10 +223,10 @@ class User {
 		return $this->get_internal($item, $user);
 	}
 	/**
-	 * @param array|string $item
+	 * @param string|string[] $item
 	 * @param bool|int $user
 	 * @param bool $cache_only
-	 * @return array|bool
+	 * @return bool|string|string[]
 	 */
 	protected function get_internal ($item, $user = false, $cache_only = false) {
 		$user = (int)($user ?: $this->id);
@@ -347,7 +341,7 @@ class User {
 	}
 	/**
 	 * Returns link to the object of db for reading (can be mirror)
-	 * @return DatabaseAbstract
+	 * @return \cs\database\_Abstract
 	 */
 	function db () {
 		if (is_object($this->db)) {
@@ -363,7 +357,7 @@ class User {
 	}
 	/**
 	 * Returns link to the object of db for writting (always main db)
-	 * @return DatabaseAbstract
+	 * @return \cs\database\_Abstract
 	 */
 	function db_prime () {
 		if (is_object($this->db_prime)) {

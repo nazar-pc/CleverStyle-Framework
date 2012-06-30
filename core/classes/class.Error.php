@@ -1,4 +1,5 @@
 <?php
+namespace cs;
 class Error {
 	public		$error					= true;
 	protected	$num					= 0,	//Number of occured errors

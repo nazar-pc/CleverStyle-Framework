@@ -1,4 +1,6 @@
 <?php
+namespace cs;
+use \h as h;
 class Index {
 	public		$Content,
 

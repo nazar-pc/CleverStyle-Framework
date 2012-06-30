@@ -1,5 +1,6 @@
 <?php
-class HTTP extends StorageAbstract {
+namespace cs\storage;
+class HTTP extends _Abstract {
 	protected	$host,
 				$user,
 				$password;

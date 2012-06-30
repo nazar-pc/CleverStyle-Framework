@@ -75,7 +75,7 @@ if (isset($_POST['login']) && !empty($_POST['login']) && !isset($_POST['auth_has
 	if ($Config->core['login_attempts_block_count'] && $User->login_attempts() >= $Config->core['login_attempts_block_count']*2/3) {
 		$Page->content(' '.$L->login_attempts_left.' '.($Config->core['login_attempts_block_count']-$User->login_attempts()));
 		sleep(1);
-	} elseif (!$Config->core['login_attempts_block_count']) {
+	} elseif (!$Config->core['login_attempts_block_count'] && $User->login_attempts() > 3) {
 		sleep($User->login_attempts()*0.5);
 	}
 }

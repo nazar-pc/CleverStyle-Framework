@@ -1,5 +1,6 @@
 <?php
-abstract class TranslateAbstract {
+namespace cs\translate;
+abstract class _Abstract {
 	/**
 	 * @static
 	 * Text translation from one language to another

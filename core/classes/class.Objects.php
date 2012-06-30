@@ -1,4 +1,6 @@
 <?php
+namespace cs;
+use \h as h;
 //For working with global system objects
 class Objects {
 	public	$Loaded				= [],		//Array with list of loaded objects, and information about amount of used memory
@@ -23,11 +25,11 @@ class Objects {
 	}
 	/**
 	 * @param array|string     $class
-	 * @param bool             $custom_name
+	 * @param bool             $object_name
 	 *
 	 * @return bool|object
 	 */
-	function load ($class, $custom_name = false) {
+	function load ($class, $object_name = null) {
 		if (empty($class)) {
 			return false;
 		} elseif (!defined('STOP') && !is_array($class)) {
@@ -37,36 +39,23 @@ class Objects {
 				$loader	= true;
 			}
 			if ($loader || class_exists($class)) {
-				//Используем заданное имя для объекта
-				if ($custom_name !== false) {
-					global $$custom_name;
-					if (!is_object($$custom_name) || $$custom_name instanceof Loader) {
-						if ($loader) {
-							$$custom_name				= new Loader($custom_name, $class);
-						} else {
-							$this->List[$custom_name]	= $custom_name;
-							$$custom_name				= new $class();
-							$this->Loaded[$custom_name]	= [microtime(true), memory_get_usage()];
-						}
-					}
-					return $$custom_name;
-				//Для имени объекта используем название класса
-				} else {
-					global $$class;
-					if (!is_object($$class) || $$class instanceof Loader) {
-						if ($loader) {
-							$$class					= new Loader($class, $class);
-						} else {
-							$this->List[$class]		= $class;
-							$$class					= new $class();
-							$this->Loaded[$class]	= [microtime(true), memory_get_usage()];
-						}
-					}
-					return $$class;
+				if ($object_name === null) {
+					$object_name = explode('\\', $class);
+					$object_name = array_pop($object_name);
 				}
+				global $$object_name;
+				if (!is_object($$object_name) || $$object_name instanceof Loader) {
+					if ($loader) {
+						$$object_name				= new Loader($object_name, $class);
+					} else {
+						$this->List[$object_name]	= $object_name;
+						$$object_name				= new $class();
+						$this->Loaded[$object_name]	= [microtime(true), memory_get_usage()];
+					}
+				}
+				return $$object_name;
 			} else {
-				global $L;
-				trigger_error($L->class.' '.h::b($class).' '.$L->not_exists, E_USER_ERROR);
+				trigger_error('Class '.h::b($class).' not exists', E_USER_ERROR);
 				return false;
 			}
 		} elseif (!defined('STOP') && is_array($class)) {

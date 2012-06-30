@@ -1,4 +1,5 @@
 <?php
+namespace cs;
 class DB {
 	public		$queries				= 0,
 				$time					= 0;
@@ -77,7 +78,7 @@ class DB {
 	function __call ($connection, $mode) {
 		if (is_int($connection) || $connection == '0') {
 			return $this->connecting($connection, isset($mode[0]) ? (bool)$mode[0] : false);
-		} elseif (method_exists('DatabaseAbstract', $connection)) {
+		} elseif (method_exists('\\cs\\database\\_Abstract', $connection)) {
 			return call_user_func_array([$this->{0}, $connection], $mode);
 		} else {
 			return false;
@@ -123,7 +124,8 @@ class DB {
 		}
 		//Создаем новое подключение к БД
 		errors_off();
-		$this->connections[$connection] = new $db['type']($db['name'], $db['user'], $db['password'], $db['host'], $db['codepage']);
+		$engine_class					= '\\cs\\database\\'.$db['type'];
+		$this->connections[$connection]	= new $engine_class($db['name'], $db['user'], $db['password'], $db['host'], $db['codepage']);
 		errors_on();
 		//В случае успешного подключения - заносим в общий список подключений, и возвращаем ссылку на подключение
 		if (is_object($this->connections[$connection]) && $this->connections[$connection]->connected) {
@@ -209,7 +211,8 @@ class DB {
 		unset($data);
 		if (is_array($db)) {
 			errors_off();
-			$test = new $db['type']($db['name'], $db['user'], $db['password'], $db['host'] ?: $DB_HOST, $db['codepage'] ?: $DB_CODEPAGE);
+			$engine_class	= '\\cs\\database\\'.$db['type'];
+			$test			= new $engine_class($db['name'], $db['user'], $db['password'], $db['host'] ?: $DB_HOST, $db['codepage'] ?: $DB_CODEPAGE);
 			errors_on();
 			return $test->connected;
 		} else {
