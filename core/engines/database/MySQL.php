@@ -9,11 +9,11 @@ class MySQL extends _Abstract {
 	/**
 	 * Connecting to DB
 	 *
-	 * @param string      $database
-	 * @param string      $user
-	 * @param string      $password
-	 * @param string      $host
-	 * @param bool|string $charset
+	 * @param string	$database
+	 * @param string	$user
+	 * @param string	$password
+	 * @param string	$host
+	 * @param string	$charset
 	 *
 	 * @return bool|MySQL
 	 */
@@ -134,21 +134,20 @@ class MySQL extends _Abstract {
 			return (bool)$query_result;
 		}
 	}
+
 	/**
 	 * Preparing string for using in SQL query
 	 * SQL Injection Protection
 	 *
-	 * @param $string
+	 * @param string	$string
+	 * @param bool		$single_quotes_around
 	 *
 	 * @return string
 	 */
-	function s ($string) {
-		if (is_int($string)) {
-			return $string;
-		} else {
-			return "'".mysql_real_escape_string($string)."'";
-			//return 'unhex(\''.bin2hex((string)$string).'\')';
-		}
+	protected function s_internal ($string, $single_quotes_around = true) {
+		$return	= mysql_real_escape_string($string, $this->id);
+		return $single_quotes_around ? "'$return'" : $return;
+		//return 'unhex(\''.bin2hex((string)$string).'\')';
 	}
 	/**
 	 * Get information about server

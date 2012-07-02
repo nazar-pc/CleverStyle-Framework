@@ -6,7 +6,7 @@ global $Index, $User, $Cache;
 switch ($_POST['mode']) {
 	case 'add':
 		$Index->save(
-			$User->add_permission($_POST['permission']['group'], $_POST['permission']['label'])
+			(bool)$User->add_permission($_POST['permission']['group'], $_POST['permission']['label'])
 		);
 	break;
 	case 'edit':

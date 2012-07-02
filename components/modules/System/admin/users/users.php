@@ -540,7 +540,7 @@ if (isset($rc[2], $rc[3])) {
 	);
 } else {
 	$a->buttons		= false;
-	$u_db			= $User->db();
+	$users_db			= $User->db();
 	$columns		= isset($_POST['columns']) && $_POST['columns'] ? explode(';', $_POST['columns']) : [
 		'id', 'login', 'username', 'email'
 	];
@@ -594,31 +594,37 @@ if (isset($rc[2], $rc[3])) {
 			case 'NOT LIKE':
 			case 'REGEXP':
 			case 'NOT REGEXP':
-				$search_text_ = $u_db->s($search_text);
+				$search_text_ = $users_db->s($search_text);
 				$where = $where_func('`%%` '.$search_mode." ".$search_text_);
 				unset($search_text_);
 				break;
 			case 'IN':
 			case 'NOT IN':
-				$search_text_ = "'".implode("', '", _trim(explode(',', $search_text), "\n'"))."'";
+				$search_text_ = implode(
+					", ",
+					$users_db->s(
+						_trim(
+							explode(',', $search_text),
+							"\n'"
+						)
+					)
+				);
 				$where = $where_func('`%%` '.$search_mode.' ('.$search_text_.')');
 				unset($search_text_);
 				break;
 		}
 	}
-	$results_count	= $u_db->qf("
-		SELECT COUNT(`id`) AS `count`
-		FROM `[prefix]users`
-		WHERE ($where) AND `status` != '-1'", 'count');
+	$results_count	= $users_db->qf(
+		"SELECT COUNT(`id`) AS `count` FROM `[prefix]users` WHERE ($where) AND `status` != '-1'",
+		'count'
+	);
 	if ($results_count) {
-		$users_ids = $u_db->qfa('
-			SELECT `id`
-			FROM `[prefix]users`
-			WHERE ('.$where.') AND `status` != \'-1\'
-			ORDER BY `id`
-			LIMIT '.($start*$limit).', '.$limit,
+		$from		= $start*$limit;
+		$users_ids	= $users_db->qfa(
+			"SELECT `id` FROM `[prefix]users` WHERE ($where) AND `status` != '-1' ORDER BY `id` LIMIT $from, $limit",
 			'id'
 		);
+		unset($from);
 	}
 	$users_list				= h::{'tr th.ui-widget-header.ui-corner-all'}(
 		array_merge([$L->action, ''], $columns)

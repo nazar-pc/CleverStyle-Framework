@@ -68,9 +68,9 @@ class User {
 			//Loading bots list
 			if (($bots = $Cache->{'users/bots'}) === false) {
 				$bots = $this->db()->qfa(
-					'SELECT `u`.`id`, `u`.`login`, `u`.`email`
+					"SELECT `u`.`id`, `u`.`login`, `u`.`email`
 					FROM `[prefix]users` AS `u`, `[prefix]users_groups` AS `g`
-					WHERE `u`.`id` = `g`.`id` AND `g`.`group` = 3 AND `u`.`status` = 1'
+					WHERE `u`.`id` = `g`.`id` AND `g`.`group` = 3 AND `u`.`status` = 1"
 				);
 				if (is_array($bots) && !empty($bots)) {
 					foreach ($bots as &$bot) {
@@ -253,12 +253,9 @@ class User {
 				return $result;
 			}
 			//Если есть недостающие значения - достаем их из БД
-			$res = $this->db()->qf(
-				'SELECT `'.implode('`, `', $new_items).'`
-				FROM `[prefix]users`
-				WHERE `id` = '.$user.'
-				LIMIT 1'
-			);
+			$new_items	= '`'.implode('`, `', $new_items).'`';
+			$res = $this->db()->qf("SELECT $new_items FROM `[prefix]users` WHERE `id` = '$user' LIMIT 1");
+			unset($new_items);
 			if (is_array($res)) {
 				$this->update_cache[$user] = true;
 				if (isset($res['data'])) {
@@ -291,7 +288,7 @@ class User {
 				//Делаем новую попытку загрузки данных
 				goto get_data;
 			} elseif (!$cache_only) {
-				$new_data = $this->db()->qf('SELECT `'.$item.'` FROM `[prefix]users` WHERE `id` = '.($user).' LIMIT 1', $item);
+				$new_data = $this->db()->qf("SELECT `$item` FROM `[prefix]users` WHERE `id` = '$user' LIMIT 1", $item);
 				if ($new_data !== false) {
 					$this->update_cache[$user] = true;
 					if ($item == 'data') {
@@ -309,7 +306,7 @@ class User {
 	 * @param bool|int $user
 	 * @return bool
 	 */
-	function set ($item, $value = '', $user = false) {
+	function set ($item, $value = null, $user = false) {
 		$user = (int)($user ?: $this->id);
 		if (!$user) {
 			return false;
@@ -379,7 +376,7 @@ class User {
 	/**
 	 * Returns user id by login or email hash (sha224)
 	 *
-	 * @param  string $login_hash
+	 * @param  string $login_hash	Login or email hash
 	 * @return bool|int
 	 */
 	function get_id ($login_hash) {
@@ -389,11 +386,10 @@ class User {
 		global $Cache;
 		if (($id = $Cache->{'users/'.$login_hash}) === false) {
 			$Cache->{'users/'.$login_hash} = $id = $this->db()->qf(
-				'SELECT `id` FROM `[prefix]users`
-				WHERE
-					`login_hash` = '.$this->db()->s($login_hash).' OR
-					`email_hash` = '.$this->db()->s($login_hash).'
-				LIMIT 1',
+				[
+					"SELECT `id` FROM `[prefix]users` WHERE `login_hash` = '%1\$s' OR `email_hash` = '%1\$s' LIMIT 1",
+					$login_hash
+				],
 				'id'
 			);
 		}
@@ -410,22 +406,19 @@ class User {
 		return $this->get('username', $user) ?: ($this->get('login', $user) ?: $this->get('email', $user));
 	}
 	function search_users ($search_phrase) {
-		$search_phrase = $this->db()->s(trim($search_phrase, "%\n").'%');
-		$found_users = $this->db()->qfa("
-			SELECT `id`
-			FROM `[prefix]users`
-			WHERE
-				(
-					`login`		LIKE $search_phrase OR
-					`username`	LIKE $search_phrase OR
-					`email`		LIKE $search_phrase
-				) AND `status` != '-1'",
+		$search_phrase = trim($search_phrase, "%\n");
+		$found_users = $this->db()->qfa(
+			[
+				"SELECT `id` FROM `[prefix]users` WHERE (`login` LIKE '%1\$s' OR `username` LIKE '%1\$s' OR `email` LIKE '%1\$s') AND `status` != '-1'",
+				$search_phrase
+			],
 			'id'
 		);
 		return $found_users;
 	}
 	/**
-	 * Returns permission state for specified user
+	 * Returns permission state for specified user.<br>
+	 * Rules: if not denied - allowed
 	 *
 	 * @param int $group		Permission group
 	 * @param string $label		Permission label
@@ -448,7 +441,7 @@ class User {
 			$this->data[$user]['permissions']	= [];
 			$permissions						= &$this->data[$user]['permissions'];
 			if ($user != 1) {
-				$groups								= $this->get_user_groups($user);
+				$groups							= $this->get_user_groups($user);
 				if (is_array($groups)) {
 					foreach ($groups as $group_id) {
 						$permissions = array_merge($permissions ?: [], $this->get_group_permissions($group_id) ?: []);
@@ -464,7 +457,7 @@ class User {
 			if (isset($this->data[$user]['permissions'][$permission])) {
 				return (bool)$this->data[$user]['permissions'][$permission];
 			} else {
-				return false;
+				return true;
 			}
 		} else {
 			return true;
@@ -519,7 +512,7 @@ class User {
 		}
 		global $Cache;
 		if (($groups = $Cache->{'users/groups/'.$user}) === false) {
-			$groups = $this->db()->qfa('SELECT `group` FROM `[prefix]users_groups` WHERE `id` = '.$user.' ORDER BY `priority` DESC', 'group');
+			$groups = $this->db()->qfa("SELECT `group` FROM `[prefix]users_groups` WHERE `id` = '$user' ORDER BY `priority` DESC", 'group');
 			return $Cache->{'users/groups/'.$user} = $groups;
 		}
 		return $groups;
@@ -536,7 +529,7 @@ class User {
 		if (!$user) {
 			return false;
 		}
-		if (!empty($data)) {
+		if (!empty($data) && is_array_assoc($data)) {
 			foreach ($data as $i => &$group) {
 				if (!($group = (int)$group)) {
 					unset($data[$i]);
@@ -550,28 +543,23 @@ class User {
 		$delete		= array_diff($exitsing, $data);
 		unset($exitsing);
 		if (!empty($delete)) {
-			$return	= $return && $this->db_prime()->q(
-				'DELETE FROM `[prefix]users_groups` WHERE `id` ='.$user.' AND `group` IN ('.implode(', ', $delete).')'
-			);
+			$delete	= implode(', ', $delete);
+			$return	= $return && $this->db_prime()->q("DELETE FROM `[prefix]users_groups` WHERE `id` ='$user' AND `group` IN ($delete)");
 		}
 		unset($delete);
 		if (!empty($insert)) {
-			$q			= [];
+			$q		= [];
 			foreach ($insert as $group) {
-				$q[] = $user.', '.(int)$group;
+				$q[] = $user.', '.$group;
 			}
 			unset($group, $insert);
-			$return		= $return && $this->db_prime()->q('
-				INSERT INTO `[prefix]users_groups`
-					(`id`, `group`)
-				VALUES
-					('.implode('), (', $q).')'
-			);
+			$q		= implode('), (', $q);
+			$return	= $return && $this->db_prime()->q("INSERT INTO `[prefix]users_groups` (`id`, `group`) VALUES ('$q')");
 			unset($q);
 		}
 		$update		= [];
 		foreach ($data as $i => $group) {
-			$update[] = 'UPDATE `[prefix]users_groups` SET `priority` = '.(int)$i.' WHERE `id` = '.$user.' AND `group` = '.$group.' LIMIT 1';
+			$update[] = "UPDATE `[prefix]users_groups` SET `priority` = '$i' WHERE `id` = '$user.' AND `group` = '$group' LIMIT 1";
 		}
 		$return		= $return && $this->db_prime()->q($update);
 		global $Cache;
@@ -594,9 +582,7 @@ class User {
 		if (!$title || !$description) {
 			return false;
 		}
-		if ($this->db_prime()->q(
-			'INSERT INTO `[prefix]groups` (`title`, `description`) VALUES ('.$title.', '.$description.')'
-		)) {
+		if ($this->db_prime()->q("INSERT INTO `[prefix]groups` (`title`, `description`) VALUES ('%s', '%s')", $title, $description)) {
 			global $Cache;
 			unset($Cache->{'groups/list'});
 			return $this->db_prime()->id();
@@ -614,9 +600,9 @@ class User {
 		$group = (int)$group;
 		if ($group != 1 && $group != 2 && $group != 3) {
 			$return = $this->db_prime()->q([
-				'DELETE FROM `[prefix]groups` WHERE `id` = '.$group,
-				'DELETE FROM `[prefix]users_groups` WHERE `group` = '.$group,
-				'DELETE FROM `[prefix]groups_permissions` WHERE `id` = '.$group
+				"DELETE FROM `[prefix]groups` WHERE `id` = $group",
+				"DELETE FROM `[prefix]users_groups` WHERE `group` = $group",
+				"DELETE FROM `[prefix]groups_permissions` WHERE `id` = $group"
 			]);
 			global $Cache;
 			unset(
@@ -637,7 +623,7 @@ class User {
 	function get_groups_list () {
 		global $Cache;
 		if (($groups_list = $Cache->{'groups/list'}) === false) {
-			$Cache->{'groups/list'} = $groups_list = $this->db()->qfa('SELECT `id`, `title`, `description` FROM `[prefix]groups`');
+			$Cache->{'groups/list'} = $groups_list = $this->db()->qfa("SELECT `id`, `title`, `description` FROM `[prefix]groups`");
 		}
 		return $groups_list;
 	}
@@ -653,12 +639,7 @@ class User {
 			return false;
 		}
 		if (($group_data = $Cache->{'groups/'.$group}) === false) {
-			$group_data = $this->db()->qf(
-				'SELECT `title`, `description`, `data`
-				FROM `[prefix]groups`
-				WHERE `id` = '.$group.'
-				LIMIT 1'
-			);
+			$group_data = $this->db()->qf("SELECT `title`, `description`, `data` FROM `[prefix]groups` WHERE `id` = '$group' LIMIT 1");
 			$group_data['data'] = _json_decode($group_data['data']);
 			$Cache->{'groups/'.$group} = $group_data;
 		}
@@ -687,7 +668,8 @@ class User {
 		if (isset($data['data'])) {
 			$update[] = '`data` = '.$this->db_prime()->s(_json_encode($data['data']));
 		}
-		if (!empty($update) && $this->db_prime()->q('UPDATE `[prefix]groups` SET '.implode(', ', $update).' WHERE `id` = '.$group.' LIMIT 1')) {
+		$update	= implode(', ', $update);
+		if (!empty($update) && $this->db_prime()->q("UPDATE `[prefix]groups` SET $update WHERE `id` = '$group' LIMIT 1")) {
 			global $Cache;
 			unset(
 				$Cache->{'groups/'.$group},
@@ -736,7 +718,7 @@ class User {
 		}
 		global $Cache;
 		if (($permissions = $Cache->{$path.$id}) === false) {
-			$permissions_array = $this->db()->qfa('SELECT `permission`, `value` FROM `'.$table.'` WHERE `id` = '.$id);
+			$permissions_array = $this->db()->qfa("SELECT `permission`, `value` FROM `$table` WHERE `id` = '$id'");
 			if (is_array($permissions_array)) {
 				$permissions = [];
 				foreach ($permissions_array as $permission) {
@@ -785,8 +767,9 @@ class User {
 		unset($i, $val);
 		$return = true;
 		if (!empty($delete)) {
-			$return = $this->db_prime()->q(
-				'DELETE FROM `'.$table.'` WHERE `id` = '.$id.' AND `permission` IN ('.implode(', ', $delete).')'
+			$delete	= implode(', ', $delete);
+			$return	= $this->db_prime()->q(
+				"DELETE FROM `$table` WHERE `id` = '$id' AND `permission` IN ($delete)"
 			);
 		}
 		unset($delete);
@@ -796,9 +779,8 @@ class User {
 				$update		= [];
 				foreach ($exitsing as $permission => $value) {
 					if (isset($data[$permission]) && $data[$permission] != $value) {
-						$update[] = 'UPDATE `'.$table.'`
-							SET `value` = '.(int)(bool)$data[$permission].'
-							WHERE `permission` = '.$permission.' AND `id` = '.$id;
+						$value		= (int)(bool)$data[$permission];
+						$update[]	= "UPDATE `$table` SET `value` = '$value' WHERE `permission` = '$permission' AND `id` = '$id'";
 					}
 					unset($data[$permission]);
 				}
@@ -815,12 +797,8 @@ class User {
 				}
 				unset($data, $permission, $value);
 				if (!empty($insert)) {
-					$return = $return && $this->db_prime()->q(
-						'INSERT INTO `'.$table.'`
-							(`id`, `permission`, `value`)
-						VALUES
-							('.implode('), (', $insert).')'
-					);
+					$insert	= implode('), (', $insert);
+					$return	= $return && $this->db_prime()->q("INSERT INTO `$table` (`id`, `permission`, `value`) VALUES ($insert)");
 				}
 			}
 		}
@@ -855,7 +833,7 @@ class User {
 			default:
 				return false;
 		}
-		$return = $this->db_prime()->q('DELETE FROM `'.$table.'` WHERE `id` = '.$id);
+		$return = $this->db_prime()->q("DELETE FROM `$table` WHERE `id` = '$id'");
 		if ($return) {
 			global $Cache;
 			unset($Cache->{$path.$id});
@@ -887,9 +865,7 @@ class User {
 		unset($Cache->permissions_table);
 	}
 	function add_permission ($group, $label) {
-		$group	= $this->db_prime()->s(xap($group));
-		$label	= $this->db_prime()->s(xap($label));
-		if ($this->db_prime()->q('INSERT INTO `[prefix]permissions` (`label`, `group`) VALUES ('.$label.', '.$group.')')) {
+		if ($this->db_prime()->q("INSERT INTO `[prefix]permissions` (`label`, `group`) VALUES ('%s', '%s')", xap($label), xap($group))) {
 			$this->del_permission_table();
 			return $this->db_prime()->id();
 		} else {
@@ -918,21 +894,21 @@ class User {
 			break;
 		}
 		if ($group !== null && $group && $label !== null && $label) {
-			return $this->db()->qfa('
-				SELECT `id`, `label`, `group`
-				FROM `[prefix]permissions`
-				WHERE `group` = '.$this->db()->s($group).' '.$condition.' `label` = '.$this->db()->s($label)
-			);
+			return $this->db()->qfa([
+				"SELECT `id`, `label`, `group` FROM `[prefix]permissions` WHERE `group` = '%s' $condition `label` = '%s'",
+				$group,
+				$label
+			]);
 		} elseif ($group !== null && $group) {
-			return $this->db()->qfa('SELECT `id`, `label`, `group` FROM `[prefix]permissions` WHERE `group` = '.$this->db()->s($group));
+			return $this->db()->qfa(["SELECT `id`, `label`, `group` FROM `[prefix]permissions` WHERE `group` = '%s'", $group]);
 		} elseif ($label !== null && $label) {
-			return $this->db()->qfa('SELECT `id`, `label`, `group` FROM `[prefix]permissions` WHERE `label` = '.$this->db()->s($label));
+			return $this->db()->qfa(["SELECT `id`, `label`, `group` FROM `[prefix]permissions` WHERE `label` = '%s'", $label]);
 		} else {
 			$id		= (int)$id;
 			if (!$id) {
 				return false;
 			}
-			return $this->db()->qf('SELECT `id`, `label`, `group` FROM `[prefix]permissions` WHERE `id` = '.$id.' LIMIT 1');
+			return $this->db()->qf("SELECT `id`, `label`, `group` FROM `[prefix]permissions` WHERE `id` = '$id' LIMIT 1");
 		}
 	}
 	function set_permission ($id, $group, $label) {
@@ -942,7 +918,7 @@ class User {
 		}
 		$group	= $this->db_prime()->s(xap($group));
 		$label	= $this->db_prime()->s(xap($label));
-		if ($this->db_prime()->q('UPDATE `[prefix]permissions` SET `label` = '.$label.', `group` = '.$group.' WHERE `id` = '.$id.' LIMIT 1')) {
+		if ($this->db_prime()->q("UPDATE `[prefix]permissions` SET `label` = '%s', `group` = '%s' WHERE `id` = '$id' LIMIT 1", $label, $group)) {
 			$this->del_permission_table();
 			return true;
 		} else {
@@ -963,9 +939,9 @@ class User {
 			}
 			$id = implode(',', $id);
 			return $this->db_prime()->q([
-				'DELETE FROM `[prefix]permissions`			WHERE `id` IN ('.$id.') LIMIT 1',
-				'DELETE FROM `[prefix]users_permissions`	WHERE `permission` IN ('.$id.')',
-				'DELETE FROM `[prefix]groups_permissions`	WHERE `permission` IN ('.$id.')'
+				"DELETE FROM `[prefix]permissions` WHERE `id` IN ($id)",
+				"DELETE FROM `[prefix]users_permissions` WHERE `permission` IN ($id)",
+				"DELETE FROM `[prefix]groups_permissions` WHERE `permission` IN ($id)"
 			]);
 		}
 		$id		= (int)$id;
@@ -973,9 +949,9 @@ class User {
 			return false;
 		}
 		if ($this->db_prime()->q([
-			'DELETE FROM `[prefix]permissions`			WHERE `id` = '.$id.' LIMIT 1',
-			'DELETE FROM `[prefix]users_permissions`	WHERE `permission` = '.$id,
-			'DELETE FROM `[prefix]groups_permissions`	WHERE `permission` = '.$id
+			"DELETE FROM `[prefix]permissions` WHERE `id` = '$id' LIMIT 1",
+			"DELETE FROM `[prefix]users_permissions` WHERE `permission` = '$id'",
+			"DELETE FROM `[prefix]groups_permissions` WHERE `permission` = '$id'"
 		])) {
 			global $Cache;
 			unset($Cache->{'users/permissions'}, $Cache->{'groups/permissions'});
@@ -1004,23 +980,20 @@ class User {
 		$session_id = $session_id ?: $this->current['session'];
 		global $Cache, $Config;
 		$result = false;
+		$time	= TIME;
 		if ($session_id && !($result = $Cache->{'sessions/'.$session_id})) {
-			$result = $this->db()->qf(
-				'SELECT
-					`user`, `expire`, `user_agent`, `ip`, `forwarded_for`, `client_ip`
-				FROM `[prefix]sessions`
-				WHERE
-					`id` = '.$this->db()->s($session_id).' AND
-					`expire` > '.TIME.' AND
-					`user_agent` = '.$this->db()->s($this->user_agent).
-					(
-					$Config->core['remember_user_ip'] ? ' AND
-						`ip` = \''.ip2hex($this->ip).'\' AND
-						`forwarded_for` = \''.ip2hex($this->forwarded_for).'\' AND
-						`client_ip` = \''.ip2hex($this->client_ip).'\'' : ''
-					).'
-				LIMIT 1'
-			);
+			$condition	= $Config->core['remember_user_ip'] ?
+				" AND `ip` = '".ip2hex($this->ip)."' AND `forwarded_for` = '".ip2hex($this->forwarded_for)."' AND `client_ip` = '".ip2hex($this->client_ip)."'"
+				: ''
+			;
+			$result	= $this->db()->qf([
+				"SELECT `user`, `expire`, `user_agent`, `ip`, `forwarded_for`, `client_ip` FROM `[prefix]sessions`
+				WHERE `id` = '%s' AND `expire` > $time AND `user_agent` = '%s' $condition
+				LIMIT 1",
+				$session_id,
+				$this->user_agent
+			]);
+			unset($condition);
 			if ($result) {
 				$Cache->{'sessions/'.$session_id} = $result;
 			}
@@ -1031,20 +1004,21 @@ class User {
 		}
 		$update = [];
 		if ($result['user'] != 0 && $this->get('last_login', $result['user']) < TIME - $Config->core['online_time']) {
-			$update[] = 'UPDATE `[prefix]users`
-				SET
-					`last_login`	= '.TIME.',
-					`last_ip`	= \''.($ip = ip2hex($this->ip)).'\'
-				WHERE `id` ='.$result['user'];
-			$this->set('last_login', TIME, $result['user']);
-			$this->set('last_ip', $ip, $result['user']);
+			$ip = ip2hex($this->ip);
+			$update[] = "UPDATE `[prefix]users` SET `last_login` = $time, `last_ip` = '$ip' WHERE `id` ='$result[user]'";
+			$this->set(
+				[
+					'last_login'	=> TIME,
+					'last_ip'		=> $ip
+				],
+				null,
+				$result['user']
+			);
 			unset($ip);
 		}
 		if ($result['expire'] - TIME < $Config->core['session_expire'] * $Config->core['update_ratio'] / 100) {
-			$update[] = 'UPDATE `[prefix]sessions`
-				SET `expire` = '.(TIME + $Config->core['session_expire']).'
-				WHERE `id` = \''.$session_id.'\'';
-			$result['expire'] = TIME + $Config->core['session_expire'];
+			$result['expire']	= TIME + $Config->core['session_expire'];
+			$update[]			= "UPDATE `[prefix]sessions` SET `expire` = '$result[expire]' WHERE `id` = '$session_id'";
 			$Cache->{'sessions/'.$session_id} = $result;
 		}
 		if (!empty($update)) {
@@ -1069,25 +1043,27 @@ class User {
 		global $Config;
 		//Generate hash in cycle, to obtain unique value
 		for ($i = 0; $hash = md5(MICROTIME + $i); ++$i) {
-			if ($this->db_prime()->qf('SELECT `id` FROM `[prefix]sessions` WHERE `id` = \''.$hash.'\' LIMIT 1')) {
+			if ($this->db_prime()->qf("SELECT `id` FROM `[prefix]sessions` WHERE `id` = '$hash' LIMIT 1")) {
 				continue;
 			}
-			$this->db_prime()->q([
-				'INSERT INTO `[prefix]sessions`
+			$this->db_prime()->q(
+				"INSERT INTO `[prefix]sessions`
 					(`id`, `user`, `created`, `expire`, `user_agent`, `ip`, `forwarded_for`, `client_ip`)
 						VALUES
-					(
-						\''.$hash.'\',
-						'.$id.',
-						'.TIME.',
-						'.(TIME + $Config->core['session_expire']).',
-						'.$this->db_prime()->s($this->user_agent).',
-						\''.($ip = ip2hex($this->ip)).'\',
-						\''.($forwarded_for = ip2hex($this->forwarded_for)).'\',
-						\''.($client_ip = ip2hex($this->client_ip)).'\'
-					)',
-				$id != 1 ? 'UPDATE `[prefix]users` SET `last_login` = '.TIME.', `last_ip` = \''.$ip.'\' WHERE `id` ='.$id : false
-			]);
+					('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+				$hash,
+				$id,
+				TIME,
+				TIME + $Config->core['session_expire'],
+				$this->user_agent,
+				$ip				= ip2hex($this->ip),
+				$forwarded_for	= ip2hex($this->forwarded_for),
+				$client_ip		= ip2hex($this->client_ip)
+			);
+			$time	= TIME;
+			if ($id != 1) {
+				$this->db_prime()->q("UPDATE `[prefix]users` SET `last_login` = $time, `last_ip` = '$ip.' WHERE `id` ='$id'");
+			}
 			global $Cache;
 			$Cache->{'sessions/'.$hash} = $this->current['session'] = [
 				'user'			=> $id,
@@ -1099,8 +1075,8 @@ class User {
 			];
 			_setcookie('session', $hash, TIME + $Config->core['session_expire'], true);
 			$this->get_session_user();
-			if (($this->db()->qf('SELECT COUNT(`id`) AS `count` FROM `[prefix]sessions`', 'count') % $Config->core['inserts_limit']) == 0) {
-				$this->db_prime()->aq('DELETE FROM `[prefix]sessions` WHERE `expire` < '.TIME);
+			if (($this->db()->qf("SELECT COUNT(`id`) AS `count` FROM `[prefix]sessions`", 'count') % $Config->core['inserts_limit']) == 0) {
+				$this->db_prime()->aq("DELETE FROM `[prefix]sessions` WHERE `expire` < $time");
 			}
 			return true;
 		}
@@ -1133,11 +1109,7 @@ class User {
 			return false;
 		}
 		unset($Cache->{'sessions/'.$session_id});
-		$result = $session_id ? $this->db_prime()->q(
-			'UPDATE `[prefix]sessions`
-			SET `expire` = 0
-			WHERE `id` = \''.$session_id.'\''
-		) : false;
+		$result = $session_id ? $this->db_prime()->q("UPDATE `[prefix]sessions` SET `expire` = 0 WHERE `id` = '$session_id'") : false;
 		if ($create_guest_session) {
 			return $this->add_session(1);
 		}
@@ -1152,7 +1124,7 @@ class User {
 		global $Cache;
 		$id = $id ?: $this->id;
 		_setcookie('session', '');
-		$sessions = $this->db_prime()->qfa('SELECT `id` FROM `[prefix]sessions` WHERE `user` = '.$id, 'id');
+		$sessions = $this->db_prime()->qfa("SELECT `id` FROM `[prefix]sessions` WHERE `user` = '$id'", 'id');
 		if (is_array($sessions)) {
 			$delete = [];
 			foreach ($sessions as $session) {
@@ -1161,7 +1133,7 @@ class User {
 			$Cache->del($delete);
 			unset($delete, $sessions, $session);
 		}
-		$result = $this->db_prime()->q('UPDATE `[prefix]sessions` SET `expire` = 0 WHERE `user` = '.$id);
+		$result = $this->db_prime()->q("UPDATE `[prefix]sessions` SET `expire` = 0 WHERE `user` = '$id'");
 		$this->add_session(1);
 		return $result;
 	}
@@ -1178,11 +1150,10 @@ class User {
 		if (isset($this->cache['login_attempts'][$login_hash])) {
 			return $this->cache['login_attempts'][$login_hash];
 		}
-		$count = $this->db()->qf(
-			'SELECT COUNT(`expire`) as `count` FROM `[prefix]logins` '.
-				'WHERE `expire` > '.TIME.' AND ('.
-					'`login_hash` = \''.$login_hash.'\' OR `ip` = \''.ip2hex($this->ip).'\''.
-				')',
+		$time	= TIME;
+		$ip		= ip2hex($this->ip);
+		$count	= $this->db()->qf(
+			"SELECT COUNT(`expire`) as `count` FROM `[prefix]logins` WHERE `expire` > $time AND (`login_hash` = '$login_hash' OR `ip` = '$ip')",
 			'count'
 		);
 		return $count ? $this->cache['login_attempts'][$login_hash] = $count : 0;
@@ -1197,34 +1168,26 @@ class User {
 		if (!preg_match('/^[0-9a-z]{56}$/', $login_hash)) {
 			return;
 		}
+		$ip	= ip2hex($this->ip);
 		if ($result) {
 			$this->db_prime()->q(
-				'UPDATE `[prefix]logins`
-				SET `expire` = 0
-				WHERE
-					`expire` > '.TIME.' AND (
-						`login_hash` = \''.$login_hash.'\' OR `ip` = \''.ip2hex($this->ip).'\'
-					)'
+				"UPDATE `[prefix]logins` SET `expire` = 0 WHERE `expire` > '.TIME.' AND (`login_hash` = '$login_hash' OR `ip` = '$ip')"
 			);
 		} else {
 			global $Config;
 			$this->db_prime()->q(
-				'INSERT INTO `[prefix]logins` (
-					`expire`,
-					`login_hash`,
-					`ip`
-				) VALUES (
-					'.(TIME + $Config->core['login_attempts_block_time']).',
-					\''.$login_hash.'\',
-					\''.ip2hex($this->ip).'\'
-				)'
+				"INSERT INTO `[prefix]logins` (`expire`, `login_hash`, `ip`) VALUES ('%s', '%s', '%s')",
+				TIME + $Config->core['login_attempts_block_time'],
+				$login_hash,
+				$ip
 			);
 			if (isset($this->cache['login_attempts'][$login_hash])) {
 				++$this->cache['login_attempts'][$login_hash];
 			}
 			global $Config;
 			if ($this->db_prime()->id() % $Config->core['inserts_limit'] == 0) {
-				$this->db_prime()->aq('DELETE FROM `[prefix]logins` WHERE `expire` < '.TIME);
+				$time	= TIME;
+				$this->db_prime()->aq("DELETE FROM `[prefix]logins` WHERE `expire` < $time");
 			}
 		}
 	}
@@ -1263,52 +1226,37 @@ class User {
 		$password		= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
 		$password_hash	= hash('sha512', $password);
 		$reg_key		= md5($password.$this->ip);
-		$ip_hash		= ip2hex($this->ip);
-		if ($this->db_prime()->q(
+		if ($this->db_prime()->q([
 			"INSERT INTO `[prefix]users` (
-				`login`,
-				`login_hash`,
-				`password_hash`,
-				`email`,
-				`email_hash`,
-				`reg_date`,
-				`reg_ip`,
-				`reg_key`,
-				`status`
+				`login`, `login_hash`, `password_hash`, `email`, `email_hash`, `reg_date`, `reg_ip`, `reg_key`, `status`
 			) VALUES (
-				'$login',
-				'$login_hash',
-				'$password_hash',
-				'$email',
-				'$email_hash',
-				".TIME.",
-				'$ip_hash',
-				'$reg_key',
-				".(!$confirmation ? 1 : ($Config->core['require_registration_confirmation'] ? "'-1'" : 1))."
-			)"
-		)) {
+				'%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s'
+			)",
+			$login,
+			$login_hash,
+			$password_hash,
+			$email,
+			$email_hash,
+			TIME,
+			ip2hex($this->ip),
+			$reg_key,
+			!$confirmation || !$Config->core['require_registration_confirmation'] ? 1 : -1
+		])) {
 			$this->reg_id = $this->db_prime()->id();
-			if (!$confirmation) {
+			if (!$confirmation || !$Config->core['require_registration_confirmation']) {
 				$this->set_user_groups([2], $this->reg_id);
 			}
-			if (!$Config->core['require_registration_confirmation'] && $Config->core['autologin_after_registration']) {
+			if ($Config->core['autologin_after_registration']) {
 				$this->add_session($this->reg_id);
 			}
 			if ($this->reg_id % $Config->core['inserts_limit'] == 0) {
-				$this->db_prime()->aq('
-					DELETE
-					FROM `[prefix]users`
-					WHERE
-						`login_hash`	= \'\' AND
-						`email_hash`	= \'\' AND
-						`password_hash`	= \'\' AND
-						`status`		= \'-1\' AND
-						`id`			!= 1 AND
-						`id`			!= 2'
+				$this->db_prime()->aq(
+					"DELETE FROM `[prefix]users`
+					WHERE `login_hash` = '' AND `email_hash` = '' AND `password_hash` = '' AND `status` = '-1' AND `id` != 1 AND `id` != 2"
 				);
 			}
 			return [
-				'reg_key'	=> !$confirmation ? true : ($Config->core['require_registration_confirmation'] ? $reg_key : true),
+				'reg_key'	=> !$confirmation || !$Config->core['require_registration_confirmation'] ? true : $reg_key,
 				'password'	=> $password,
 				'id'		=> $this->reg_id
 			];
@@ -1326,17 +1274,14 @@ class User {
 		if (!preg_match('/^[0-9a-z]{32}$/', $reg_key)) {
 			return false;
 		}
-		$ids = $this->db_prime()->qfa(
-			'SELECT `id` FROM `[prefix]users`
-			WHERE
-				`last_login` = 0 AND
-				`status` = \'-1\' AND
-				`reg_date` < '.(TIME - $Config->core['registration_confirmation_time']*86400),	//1 day = 86400 seconds
+		$reg_date		= TIME - $Config->core['registration_confirmation_time']*86400;	//1 day = 86400 seconds
+		$ids			= $this->db_prime()->qfa(
+			"SELECT `id` FROM `[prefix]users` WHERE `last_login` = 0 AND `status` = \'-1\' AND `reg_date` < $reg_date",
 			'id'
 		);
 		$this->del_user($ids);
-		$data = $this->db_prime()->qf(
-			'SELECT `id`, `email` FROM `[prefix]users` WHERE `reg_key` = \''.$reg_key.'\' AND `status` = \'-1\' LIMIT 1'
+		$data			= $this->db_prime()->qf(
+			"SELECT `id`, `email` FROM `[prefix]users` WHERE `reg_key` = '$reg_key' AND `status` = '-1' LIMIT 1"
 		);
 		if (!isset($data['email'])) {
 			return false;
@@ -1441,10 +1386,12 @@ class User {
 	 * @return bool|int				//Bot <b>id</b> in DB or <b>false</b> on error
 	 */
 	function add_boot ($name, $user_agent, $ip) {
-		$name		= $this->db_prime()->s(xap($name));
-		$user_agent	= $this->db_prime()->s(xap($user_agent));
-		$ip			= $this->db_prime()->s(xap($ip));
-		if ($this->db_prime()->q("INSERT INTO `[prefix]users` (`username`, `login`, `email`, `status`) VALUES ($name, $user_agent, $ip, 1)")) {
+		if ($this->db_prime()->q(
+			"INSERT INTO `[prefix]users` (`username`, `login`, `email`, `status`) VALUES ('%s', '%s', '%s', 1)",
+			xap($name),
+			xap($user_agent),
+			xap($ip)
+		)) {
 			$this->set_user_groups([3], $this->db_prime()->id());
 			return $this->db_prime()->id();
 		} else {
@@ -1496,7 +1443,8 @@ class User {
 						unset($data_set[$i]);
 					}
 				}
-				$update[] = 'UPDATE `[prefix]users` SET '.implode(', ', $data).' WHERE `id` = '.$id;
+				$data		= implode(', ', $data);
+				$update[]	= "UPDATE `[prefix]users` SET $data WHERE `id` = '$id'";
 				unset($i, $val, $data);
 			}
 			if (!empty($update)) {

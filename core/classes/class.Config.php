@@ -297,7 +297,11 @@ class Config {
 			$query[] = '`'.$part.'`';
 		}
 		unset($part);
-		$result = $db->qf('SELECT '.implode(', ', $query).' FROM `[prefix]config` WHERE `domain` = \''.DOMAIN.'\' LIMIT 1');
+		$query	= implode(', ', $query);
+		$result = $db->qf([
+			"SELECT $query FROM `[prefix]config` WHERE `domain` = '%s' LIMIT 1",
+			DOMAIN
+		]);
 		if (isset($this->routing['current'])) {
 			$current_routing = $this->routing['current'];
 		}
@@ -366,7 +370,8 @@ class Config {
 			}
 		}
 		unset($parts, $part, $temp);
-		if (!empty($query) && $db->{0}->q('UPDATE `[prefix]config` SET '.implode(', ', $query).' WHERE `domain` = \''.DOMAIN.'\' LIMIT 1')) {
+		$query	= implode(', ', $query);
+		if ($db->{0}->q("UPDATE `[prefix]config` SET $query WHERE `domain` = '%s' LIMIT 1", DOMAIN)) {
 			$this->apply_internal(false);
 			return true;
 		}
@@ -392,7 +397,7 @@ class Config {
 				(
 					is_object($User) && $User->is('admin')
 				) ||
-				$debug_backtrace['class'] == 'cs\\Config' ||
+				$debug_backtrace['class'] == __CLASS__ ||
 				(
 					$debug_backtrace['class'] == 'cs\\Index' && $debug_backtrace['function'] == 'init'
 				)
@@ -419,7 +424,7 @@ class Config {
 				(
 					is_object($User) && !$User->is('admin')
 				) &&
-				$debug_backtrace['class'] != 'cs\\Config' &&
+				$debug_backtrace['class'] != __CLASS__ &&
 				!(
 					$debug_backtrace['class'] == 'cs\\Index' && $debug_backtrace['function'] == 'init'
 				)

@@ -8,7 +8,7 @@ abstract class _Abstract {
 				 */
 	public		$connected	= false,
 				/**
-				 * Is DB type, may be used for constructing requests, accounting particular features of current DB (lowercase name)
+				 * DB type, may be used for constructing requests, accounting particular features of current DB (lowercase name)
 				 *
 				 * @var bool
 				 */
@@ -37,23 +37,23 @@ abstract class _Abstract {
 				 * @var array
 				 */
 				$query		= [
-								'start'		=> '',
-								'end'		=> '',
-								'time'		=> '',
-								'text'		=> '',
-								'id'		=> ''
-							],
+					'start'		=> '',
+					'end'		=> '',
+					'time'		=> '',
+					'text'		=> '',
+					'id'		=> ''
+				],
 				/**
 				 * Array for storing data of all executed requests
 				 *
 				 * @var array
 				 */
 				$queries	= [
-								'num'		=> '',
-								'time'		=> [],
-								'text'		=> [],
-								'result'	=> []
-							],
+					'num'		=> '',
+					'time'		=> [],
+					'text'		=> [],
+					'result'	=> []
+				],
 				/**
 				 * Connection time
 				 *
@@ -70,11 +70,11 @@ abstract class _Abstract {
 	/**
 	 * Connecting to DB
 	 *
-	 * @param string      $database
-	 * @param string      $user
-	 * @param string      $password
-	 * @param string      $host
-	 * @param bool|string $charset
+	 * @param string	$database
+	 * @param string	$user
+	 * @param string	$password
+	 * @param string	$host
+	 * @param string	$charset
 	 */
 	abstract function __construct ($database, $user = '', $password = '', $host = 'localhost', $charset = 'utf8');
 	/**
@@ -82,15 +82,40 @@ abstract class _Abstract {
 	 *
 	 * @abstract
 	 *
-	 * @param string|string[] $query
+	 * @param string|string[]		$query	SQL query string, may be a format string in accordance with the first parameter of sprintf() function
+	 * @param string|string[]		$params	May be array of arguments for formatting of <b>$query</b><br>
+	 * 										or string - in this case it will be first argument for formatting of <b>$query</b>
+	 * @param string				$param	if <b>$params</s> is string - this parameter will be second argument for formatting of <b>$query</b>.
+	 * 										If you need more arguments - add them after this one, function will accept them.
 	 *
 	 * @return bool|object|resource
 	 */
-	function q ($query) {
+	function q ($query, $params = [], $param = null) {
+		$query	= str_replace('[prefix]', $this->prefix, $query);
+		switch (func_num_args()) {
+			default:
+				$params	= array_slice(func_get_args(), 1);
+			break;
+			case 0:
+				return false;
+			case 1:
+			case 2:
+				if (!is_array($params)) {
+					$params	= [$params];
+				}
+			break;
+		}
+		if (!empty($params)) {
+			unset($param);
+			foreach ($params as &$param) {
+				$param	= $this->s($param, false);
+			}
+			unset($param);
+		}
 		if (is_array($query) && !empty($query)) {
 			$return = true;
 			foreach ($query as $q) {
-				$return = $return && $this->q($q);
+				$return = $return && $this->q(empty($params) ? $q : vsprintf($q, $params));
 			}
 			return $return;
 		}
@@ -99,7 +124,7 @@ abstract class _Abstract {
 		}
 		global $db;
 		$this->query['time']		= microtime(true);
-		$this->queries['text'][]	= $this->query['text']				= str_replace('[prefix]', $this->prefix, $query);
+		$this->queries['text'][]	= $this->query['text']				= empty($params) ? $query : vsprintf($query, $params);
 		$result						= $this->q_internal($this->query['text']);
 		$this->queries['result'][]	= $result;
 		$this->query['time']		= round(microtime(true) - $this->query['time'], 6);
@@ -108,6 +133,26 @@ abstract class _Abstract {
 		$db->time					+= $this->query['time'];
 		++$this->queries['num'];
 		++$db->queries;
+		return $result;
+	}
+	/**
+	 * Asynchronous SQL request into DB (if is not supported - ordinary request will me executed).
+	 * Result of execution can't be obtained, so, use it, for example, for deleting some non-critical data
+	 *
+	 * @abstract
+	 *
+	 * @param string|string[]		$query	SQL query string, may be a format string in accordance with the first parameter of sprintf() function
+	 * @param string|string[]		$params	May be array of arguments for formatting of <b>$query</b><br>
+	 * 										or string - in this case it will be first argument for formatting of <b>$query</b>
+	 * @param string				$param	if <b>$params</s> is string - this parameter will be second argument for formatting of <b>$query</b>.
+	 * 										If you need more arguments - add them after this one, function will accept them.
+	 *
+	 * @return bool|object|resource
+	 */
+	function aq ($query, $params = [], $param = null) {
+		$this->async	= true;
+		$result			= call_user_func_array([$this, 'q'], func_get_args());
+		$this->async	= false;
 		return $result;
 	}
 	/**
@@ -120,22 +165,6 @@ abstract class _Abstract {
 	 * @return bool|object|resource
 	 */
 	abstract protected function q_internal ($query);
-	/**
-	 * Asynchronous SQL request into DB (if is not supported - ordinary request will me executed).
-	 * Result of execution can't be obtained, so, use it, for example, for deleting some non-critical data
-	 *
-	 * @abstract
-	 *
-	 * @param string|string[] $query
-	 *
-	 * @return bool|object|resource
-	 */
-	function aq ($query) {
-		$this->async	= true;
-		$result			= $this->q($query);
-		$this->async	= false;
-		return $result;
-	}
 	/**
 	 * Getting number of selected rows
 	 *
@@ -173,31 +202,48 @@ abstract class _Abstract {
 	/**
 	 * Combination of ::q() and ::f() methods
 	 *
-	 * @param string		$query
+	 * @param array|string	$query		SQL query string, may be a format string in accordance with the first parameter of sprintf() function
 	 * @param bool|string   $one_column	This parameter may contain name of interested column,
 	 * 									and function will return not array with one element, but directly its value
 	 *
 	 * @return array|bool
 	 */
 	function qf ($query = '', $one_column = false) {
+		$params	= [];
+		if (is_array($query) && !empty($query)) {
+			if (count($query) == 2) {
+				$params	= $query[1];
+			} elseif (count($query) > 2) {
+				$params	= array_slice($query, 1);
+			}
+			$query	= $query[0];
+		}
 		if (!$query) {
 			return false;
 		}
-		return $this->f($this->q($query), $one_column, false);
+		return $this->f($this->q($query, $params), $one_column, false);
 	}
 	/**
 	 * Combination of ::q() and ::fa() methods
 	 *
-	 * @param string        $query
-	 * @param bool|string   $one_column
+	 * @param array|string	$query		SQL query string, may be a format string in accordance with the first parameter of sprintf() function
+	 * @param bool|string   $one_column	This parameter may contain name of interested column,
+	 * 									and function will return not array with one element, but directly its value
 	 *
 	 * @return array|bool
 	 */
 	function qfa ($query = '', $one_column = false) {
+		$params	= [];
+		if (is_array($query) && !empty($query)) {
+			if (isset($query[1])) {
+				$params	= $query[1];
+			}
+			$query	= $query[0];
+		}
 		if (!$query) {
 			return false;
 		}
-		return $this->f($this->q($query), $one_column, true);
+		return $this->f($this->q($query, $params), $one_column, true);
 	}
 	/**
 	 * Get id of last inserted row
@@ -250,11 +296,30 @@ abstract class _Abstract {
 	 * Preparing string for using in SQL query
 	 * SQL Injection Protection
 	 *
-	 * @param $string
+	 * @param string|string[]	$string
+	 * @param bool				$single_quotes_around
 	 *
 	 * @return string
 	 */
-	abstract function s ($string);
+	function s ($string, $single_quotes_around = true) {
+		if (is_array($string)) {
+			foreach ($string as &$s) {
+				$s	= $this->s_internal($s, $single_quotes_around);
+			}
+			return $string;
+		}
+		return $this->s_internal($string, $single_quotes_around);
+	}
+	/**
+	 * Preparing string for using in SQL query
+	 * SQL Injection Protection
+	 *
+	 * @param string	$string
+	 * @param bool		$single_quotes_around
+	 *
+	 * @return string
+	 */
+	abstract protected function s_internal ($string, $single_quotes_around);
 	/**
 	 * Get information about server
 	 *

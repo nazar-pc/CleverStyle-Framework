@@ -239,10 +239,12 @@ if (isset($rc[2])) {
 			$groups					= $User->get_groups_list();
 			$groups_content			= [];
 			foreach ($groups as $group) {
-				$group_permission = $User->db()->qf('
-					SELECT `value`
-					FROM `[prefix]groups_permissions`
-					WHERE `id` = '.$group['id'].' AND `permission` = '.$permission,
+				$group_permission = $User->db()->qf(
+					[
+						"SELECT `value` FROM `[prefix]groups_permissions` WHERE `id` = '%s' AND `permission` = '%s'",
+						$group['id'],
+						$permission
+					],
 					'value'
 				);
 				$groups_content[] = h::{'th.ui-widget-header.ui-corner-all'}(
@@ -269,7 +271,10 @@ if (isset($rc[2])) {
 			}
 			$groups_content	= $content_;
 			unset($count, $content_);
-			$users_list		= $User->db()->qfa('SELECT `id`, `value` FROM `[prefix]users_permissions` WHERE `permission` = '.$permission);
+			$users_list		= $User->db()->qfa([
+				"SELECT `id`, `value` FROM `[prefix]users_permissions` WHERE `permission` = '%s'",
+				$permission
+			]);
 			$users_content	= [];
 			foreach ($users_list as &$user) {
 				$value				= $user['value'];
@@ -355,10 +360,12 @@ if (isset($rc[2])) {
 					continue;
 				}
 				$found_users[]	= $user;
-				$value			= $User->db()->qf('
-					SELECT `value`
-					FROM `[prefix]users_permissions`
-					WHERE `id` = '.$user.' AND `permission` = '.$permission,
+				$value			= $User->db()->qf(
+					[
+						"SELECT `value` FROM `[prefix]users_permissions` WHERE `id` = '%s' AND `permission` = '%s'",
+						$user,
+						$permission
+					],
 					'value'
 				);
 				$content[]		= h::{'th.ui-widget-header.ui-corner-all'}($User->get_username($user)).

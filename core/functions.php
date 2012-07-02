@@ -1144,6 +1144,17 @@
 		}
 		return $string1;
 	}
+	/**
+	 * Checks associativity of array
+	 *
+	 * @param array	$array	Array to be checked
+	 *
+	 * @return bool
+	 */
+	function is_array_assoc ($array) {
+		$keys = array_keys($array);
+		return array_keys($keys) !== $keys;
+	}
 
 $temp = base64_decode('Y29weXJpZ2h0');
 $$temp = [

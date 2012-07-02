@@ -7,9 +7,10 @@ class Key {
 			$database = $db->$database();
 		}
 		while (true) {
-			$key = hash('sha224', microtime(true));
+			$key	= hash('sha224', microtime(true));
+			$time	= TIME;
 			if (!$database->qf(
-				'SELECT `id` FROM `[prefix]keys` WHERE `key` = \''.$key.'\' AND `expire` >= '.TIME.' LIMIT 1'
+				"SELECT `id` FROM `[prefix]keys` WHERE `key` = '$key' AND `expire` >= $time LIMIT 1"
 			)) {
 				return $key;
 			}
@@ -34,22 +35,15 @@ class Key {
 		}
 		$this->del($database, $key);
 		$database->q(
-			'INSERT INTO `[prefix]keys`
-				(
-					`key`,
-					`expire`,
-					`data`
-				)
-			VALUES
-				(
-					'.$database->s($key).',
-					'.$expire.',
-					'.$database->s(_json_encode($data)).'
-				)'
+			"INSERT INTO `[prefix]keys` (`key`, `expire`, `data`) VALUES ('%s', '%s', '%s')", $key, $expire, _json_encode($data)
 		);
 		$id = $database->id();
-		if ($id && ($id % $Config->core['inserts_limit']) == 0) { //Cleaning old keys
-			$database->aq('DELETE FROM `[prefix]keys` WHERE `expire` < '.TIME);
+		/**
+		 * Cleaning old keys
+		 */
+		if ($id && ($id % $Config->core['inserts_limit']) == 0) {
+			$time	= TIME;
+			$database->aq("DELETE FROM `[prefix]keys` WHERE `expire` < $time");
 		}
 		return $id;
 	}
@@ -61,16 +55,10 @@ class Key {
 		if (!is_object($database)) {
 			$database = $db->$database();
 		}
-		$result = $database->qf(
-			'SELECT `id`'.($get_data ? ', `data`' : '').' FROM `[prefix]keys`
-			WHERE
-				(
-					`id` = '.$database->s($id_key).' OR `key` = '.$database->s($id_key).'
-				) AND
-				`expire` >= '.TIME.'
-			ORDER BY `id` DESC
-			LIMIT 1'
-		);
+		$time	= TIME;
+		$result	= $database->qf([
+			"SELECT `id`, `data` FROM `[prefix]keys` WHERE (`id` = '$id_key' OR `key` = '$id_key') AND `expire` >= $time ORDER BY `id` DESC LIMIT 1"
+		]);
 		$this->del($database, $id_key);
 		if (!$result || !is_array($result) || empty($result)) {
 			return false;
@@ -89,9 +77,8 @@ class Key {
 			$database = $db->$database();
 		}
 		$id_key = $database->s($id_key);
-		return $database->q('UPDATE `[prefix]keys`
-			SET `expire` = 0, `data` = null, key=null
-			WHERE (`id` = '.$id_key.' OR `key` = '.$id_key.')'
+		return $database->q(
+			"UPDATE `[prefix]keys` SET `expire` = 0, `data` = null, key=null WHERE (`id` = '$id_key' OR `key` = '$id_key')"
 		);
 	}
 	/**
