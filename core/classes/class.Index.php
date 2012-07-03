@@ -370,13 +370,8 @@ class Index {
 							'current_new_password_equal = "'.$L->current_new_password_equal.'",'.
 							'password_changed_succesfully = "'.$L->password_changed_succesfully.'",'.
 							'password_changing_error_connection = "'.$L->password_changing_error_connection.'",'
-						: '').
-					(defined('DEBUG') && DEBUG && ($User->is('admin') || ($Config->can_be_admin && $Config->core['ip_admin_list_only'])) ?
-							'objects = "'.$L->objects.'",'.
-							'user_data = "'.$L->user_data.'",'.
-							'queries = "'.$L->queries.'",'.
-							'cookies = "'.$L->cookies.'",'
-						: '').
+						: ''
+					).
 					'language = "'.$L->clanguage.'",'.
 					'language_en = "'.$L->clanguage_en.'",'.
 					'lang = "'.$L->clang.'",'.

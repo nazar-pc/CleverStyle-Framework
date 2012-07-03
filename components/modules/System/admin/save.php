@@ -51,7 +51,7 @@ if ($_POST['edit_settings'] == 'apply' && $Cache->cache_state()) {
 		clean_pcache();
 		$Core->run_trigger('admin/System/general/optimization/clean_pcache');
 	}
-	if ($save && ($Config->core['debug'] != $debug) && !$Config->core['debug']) {
+	if ($save && ($Config->core['debug'] != $debug) && $Config->core['debug']) {
 		$Cache->clean();
 	}
 } elseif ($_POST['edit_settings'] == 'cancel' && $Cache->cache_state()) {

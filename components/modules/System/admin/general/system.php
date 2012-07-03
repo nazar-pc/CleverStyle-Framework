@@ -94,20 +94,10 @@ $Index->content(
 				]),
 
 				h::td([
-					$L->show_user_data,
+					$L->show_db_queries,
 					h::{'input[type=radio]'}([
-						'name'			=> 'core[show_user_data]',
-						'checked'		=> $Config->core['show_user_data'],
-						'value'			=> [0, 1],
-						'in'			=> [$L->off, $L->on]
-					])
-				]),
-
-				h::td([
-					$L->show_queries,
-					h::{'input[type=radio]'}([
-						'name'			=> 'core[show_queries]',
-						'checked'		=> $Config->core['show_queries'],
+						'name'			=> 'core[show_db_queries]',
+						'checked'		=> $Config->core['show_db_queries'],
 						'value'			=> [0, 1],
 						'in'			=> [$L->off, $L->on]
 					])

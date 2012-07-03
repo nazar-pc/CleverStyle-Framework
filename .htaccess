@@ -5,9 +5,6 @@ IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
 RewriteEngine On
 RewriteBase /
 
-<Files *.jpg>
-	RewriteEngine Off
-</Files>
 <Files license.txt> 
 	RewriteEngine Off
 </Files>
@@ -21,7 +18,7 @@ RewriteBase /
 	RewriteEngine Off
 </Files>
 
-#php_value zlib.output_compression off
+php_value zlib.output_compression off
 
 RewriteRule .* index.php
 

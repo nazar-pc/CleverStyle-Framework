@@ -73,6 +73,10 @@ class Config {
 			//Engine initialization with current configuration
 			$this->init();
 		}
+		if (!_file_exists(MODULES.DS.$this->core['default_module'])) {
+			$this->core['default_module']	= 'System';
+			$this->save('core');
+		}
 		//Address routing
 		$this->routing();
 	}
@@ -240,7 +244,16 @@ class Config {
 		!defined('ADMIN')	&& define('ADMIN', false);
 		!defined('API')		&& define('API', false);
 		//Module detection
-		if (isset($rc[0]) && in_array(mb_strtolower($rc[0]), _mb_strtolower(array_keys($this->components['modules']))) && (ADMIN || $this->components['modules'][$rc[0]]['active'] == 1)) {
+		if (
+			isset($rc[0]) &&
+			in_array(
+				mb_strtolower($rc[0]),
+				_mb_strtolower(array_keys($this->components['modules']))
+			) &&
+			(
+				ADMIN || $this->components['modules'][$rc[0]]['active'] == 1
+			)
+		) {
 			if (!defined('MODULE')) {
 				define('MODULE', array_shift($rc));
 			}

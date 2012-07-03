@@ -1169,9 +1169,10 @@ class User {
 			return;
 		}
 		$ip	= ip2hex($this->ip);
+		$time	= TIME;
 		if ($result) {
 			$this->db_prime()->q(
-				"UPDATE `[prefix]logins` SET `expire` = 0 WHERE `expire` > '.TIME.' AND (`login_hash` = '$login_hash' OR `ip` = '$ip')"
+				"UPDATE `[prefix]logins` SET `expire` = 0 WHERE `expire` > $time AND (`login_hash` = '$login_hash' OR `ip` = '$ip')"
 			);
 		} else {
 			global $Config;
@@ -1186,7 +1187,6 @@ class User {
 			}
 			global $Config;
 			if ($this->db_prime()->id() % $Config->core['inserts_limit'] == 0) {
-				$time	= TIME;
 				$this->db_prime()->aq("DELETE FROM `[prefix]logins` WHERE `expire` < $time");
 			}
 		}
@@ -1276,7 +1276,7 @@ class User {
 		}
 		$reg_date		= TIME - $Config->core['registration_confirmation_time']*86400;	//1 day = 86400 seconds
 		$ids			= $this->db_prime()->qfa(
-			"SELECT `id` FROM `[prefix]users` WHERE `last_login` = 0 AND `status` = \'-1\' AND `reg_date` < $reg_date",
+			"SELECT `id` FROM `[prefix]users` WHERE `last_login` = 0 AND `status` = '-1' AND `reg_date` < $reg_date",
 			'id'
 		);
 		$this->del_user($ids);

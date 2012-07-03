@@ -150,52 +150,9 @@ $(function() {
 		$('#anonym_header_form').slideDown();
 		$('#register_header_form, #login_header_form').slideUp();
 	});
-	if (debug) {
-		$('#debug_objects_toggle').click(function () {
-			$('#debug_objects').toggle(500);
-			if($(this).hasClass('open')){
-				var add = '<span class="ui-icon ui-icon-triangle-1-e" style="display: inline-block;"></span>';
-				$(this).removeClass('open');
-			} else {
-				var add = '<span class="ui-icon ui-icon-triangle-1-se" style="display: inline-block;"></span>';
-				$(this).addClass('open');
-			}
-			$(this).html(add+objects);
-		});
-		$('#debug_user_toggle').click(function () {
-			$('#debug_user').toggle(500);
-			if($(this).hasClass('open')){
-				var add = '<span class="ui-icon ui-icon-triangle-1-e" style="display: inline-block;"></span>';
-				$(this).removeClass('open');
-			} else {
-				var add = '<span class="ui-icon ui-icon-triangle-1-se" style="display: inline-block;"></span>';
-				$(this).addClass('open');
-			}
-			$(this).html(add+user_data);
-		});
-		$('#debug_queries_toggle').click(function () {
-			$('#debug_queries').toggle(500);
-			if($(this).hasClass('open')) {
-				var add = '<span class="ui-icon ui-icon-triangle-1-e" style="display: inline-block;"></span>';
-				$(this).removeClass('open');
-			} else {
-				var add = '<span class="ui-icon ui-icon-triangle-1-se" style="display: inline-block;"></span>';
-				$(this).addClass('open');
-			}
-			$(this).html(add+queries);
-		});
-		$('#debug_cookies_toggle').click(function () {
-			$('#debug_cookies').toggle(500);
-			if($(this).hasClass('open')) {
-				var add = '<span class="ui-icon ui-icon-triangle-1-e" style="display: inline-block;"></span>';
-				$(this).removeClass('open');
-			}else{
-				var add = '<span class="ui-icon ui-icon-triangle-1-se" style="display: inline-block;"></span>';
-				$(this).addClass('open');
-			}
-			$(this).html(add+cookies);
-		});
-	}
+	$('#debug_window_tabs').tabs({
+		collapsible:	true
+	});
 	if (in_admin) {
 		$('.cs-reload-button').click(function () {
 			location.reload();

@@ -501,8 +501,8 @@ class Page {
 		if (!($copyright && is_array($copyright))) {
 			exit;
 		}
-		$footer = h::div($copyright[1].h::br().$copyright[2], array('id'	=> 'copyright'));
-		$footer =	h::div(
+		$footer	= h::div($copyright[1].h::br().$copyright[2], ['id'	=> 'copyright']);
+		$footer	= h::div(
 			$L->page_generated.' <!--generate time--> '.
 			', '.(is_object($db) ? $db->queries : 0).' '.$L->queries_to_db.' '.$L->during.' '.format_time((is_object($db) ? round($db->time, 5) : 0)).
 			', '.$L->peak_memory_usage.' <!--peak memory usage-->',
@@ -512,158 +512,157 @@ class Page {
 		return $footer;
 	}
 	//Сбор и отображение отладочных данных
-	protected function debug () {
+	protected function get_debug_info () {
 		global $Config, $L, $db;
-		$span = h::{'span.ui-icon.ui-icon-triangle-1-e'}(
-			array(
-				 'style'	=> 'display: inline-block;',
-				 'level'	=> 0
-			)
-		);
-		//Объекты
+		$debug_tabs			= '';
+		$debug_tabs_content	= '';
+		/**
+ 		 * Objects
+		 */
 		if ($Config->core['show_objects_data']) {
 			global $Objects, $timeload, $loader_init_memory;
-			$this->debug_info .= h::{'p#debug_objects_toggle.ui-widget-header.cs-state-messages.cs-center'}(
-				$span.$L->objects
+			$debug_tabs			.= h::{'li a'}(
+				$L->objects,
+				[
+					'href'	=> '#debug_objects_tab'
+				]
 			);
-			$debug_info =	h::p(
-								$L->total_list.': '.implode(', ', array_keys($Objects->Loaded))
-							).h::p(
-								$L->loader
-							).h::{'p.cs-padding-left'}(
-								$L->creation_duration.': '.
-									format_time(round($timeload['loader_init'] - $timeload['start'], 5))
-							).h::{'p.cs-padding-left'}(
-								$L->memory_usage.': '.
-									format_filesize($loader_init_memory, 5)
-							);
-			$last = $timeload['loader_init'];
-			foreach ($Objects->Loaded as $object => &$data) {
-				$debug_info .=	h::p(
-									$object
-								).h::{'p.cs-padding-left'}(
-									$L->creation_duration.': '.
-										format_time(round($data[0] - $last, 5))
-								).h::{'p.cs-padding-left'}(
-									$L->time_from_start_execution.': '.
-										format_time(round($data[0] - $timeload['start'], 5))
-								).h::{'p.cs-padding-left'}(
-									$L->memory_usage.': '.
-										format_filesize($data[1], 5)
-								);
+			$tmp				= '';
+			$last				= $timeload['loader_init'];
+			foreach ($Objects->Loaded as $object => $data) {
+				$tmp .=	h::p(
+					$object
+				).
+				h::{'p.cs-padding-left'}(
+					$L->creation_duration.': '.format_time(round($data[0] - $last, 5))
+				).
+				h::{'p.cs-padding-left'}(
+					$L->time_from_start_execution.': '.format_time(round($data[0] - $timeload['start'], 5))
+				).
+				h::{'p.cs-padding-left'}(
+					 $L->memory_usage.': '.format_filesize($data[1], 5)
+				);
 				$last = $data[0];
 			}
-			$this->debug_info .= h::{'div#debug_objects.cs-padding-left'}(
-				$debug_info,
-				array('style' => 'display: none;')
+			unset($object, $data, $last);
+			$debug_tabs_content	.= h::{'div#debug_objects_tab'}(
+				h::p(
+					$L->total_list_of_objects.': '.implode(', ', array_keys($Objects->Loaded))
+				).
+				h::p(
+					$L->loader
+				).
+				h::{'p.cs-padding-left'}(
+					$L->creation_duration.': '.format_time(round($timeload['loader_init'] - $timeload['start'], 5))
+				).
+				h::{'p.cs-padding-left'}(
+					$L->memory_usage.': '.format_filesize($loader_init_memory, 5)
+				).
+				$tmp
 			);
-			unset($loader_init_memory, $last, $object, $data, $debug_info);
+			unset($tmp);
 		}
-		//Данные пользователя
-		if ($Config->core['show_user_data']) {
-			$this->debug_info .= h::{'p#debug_user_toggle.ui-widget-header.cs-state-messages.cs-center'}(
-				$span.$L->user_data
+		/**
+ 		 * DB queries
+		 */
+		if ($Config->core['show_db_queries']) {
+			$debug_tabs			.= h::{'li a'}(
+				$L->db_queries,
+				[
+				'href'	=> '#debug_db_queries_tab'
+				]
 			);
-			global $loader_init_memory;
-			$this->debug_info .= h::{'div#debug_user'}(
-				'',//TODO Show user information
-				array(
-					'style' => 'display: none;'
-				)
-			);
-			unset($loader_init_memory, $last, $object, $data);
-		}
-		//Запросы в БД
-		if ($Config->core['show_queries']) {
-			$this->debug_info .= h::{'p#debug_queries_toggle.ui-widget-header.cs-state-messages.cs-center'}(
-				$span.$L->queries
-			);
-			$queries =	h::p(
-				$L->false_connections.': '.h::b(implode(', ', $db->get_connections_list(false)) ?: $L->no)
-			).
-			h::p(
-				$L->successful_connections.': '.h::b(implode(', ', $db->get_connections_list(true)) ?: $L->no)
-			).
-			h::p(
-				$L->mirrors_connections.': '.h::b(implode(', ', $db->get_connections_list('mirror')) ?: $L->no)
-			).
-			h::p(
-				$L->active_connections.': '.(count($db->get_connections_list()) ? '' : h::b($L->no))
-			);
-			$connections = $db->get_connections_list();
-			foreach ($connections as $name => $database) {
-				$name = $name != 0 ? $L->db.' '.$database->database : $L->core_db.' ('.$database->database.')';
-				$queries .= h::{'p.cs-padding-left'}(
-					$name.
-					', '.$L->duration_of_connecting_with_db.' '.$L->during.' '.round($database->connecting_time, 5).
-					', '.$database->queries['num'].' '.$L->queries_to_db.' '.$L->during.' '.format_time(round($database->time, 5)).':'
+			$tmp				= '';
+			foreach ($db->get_connections_list() as $name => $database) {
+				$tmp	.= h::{'p.cs-padding-left'}(
+					$L->debug_db_info(
+						$name != 0 ? $L->db.' '.$database->database : $L->core_db.' ('.$database->database.')',
+						format_time(round($database->connecting_time, 5)),
+						$database->queries['num'],
+						format_time(round($database->time, 5))
+					)
 				);
-				foreach ($database->queries['text'] as $i => &$text) {
-					$queries .= h::code(
+				foreach ($database->queries['text'] as $i => $text) {
+					$tmp	.= h::code(
 						$text.
 						h::br(2).
 						'#'.h::i(format_time(round($database->queries['time'][$i], 5))).
-						($error = (strtolower(substr($text, 0, 6)) == 'select' && !$database->queries['result'][$i]) ? '('.$L->error.')' : ''),
-						array(
+						($error = (stripos($text, 'select') === 0 && !$database->queries['result'][$i]) ? '('.$L->error.')' : ''),
+						[
 							'class' => ($database->queries['time'][$i] > 0.1 ? 'ui-state-highlight ' : '').($error ? 'ui-state-error ' : '').'cs-debug-code'
-						)
+						]
 					);
 				}
-				unset($error);
 			}
-			unset($connections, $name, $database, $i, $text);
-			$this->debug_info .= h::{'div#debug_queries.cs-padding-left'}(
+			unset($error, $name, $database, $i, $text);
+			$debug_tabs_content	.= h::{'div#debug_db_queries_tab'}(
 				h::p(
-					$L->total.' '.$db->queries.' '.$L->queries_to_db.' '.$L->during.' '.format_time(round($db->time, 5)).($db->queries ? ':' : '')
+					$L->debug_db_total($db->queries, format_time(round($db->time, 5)))
 				).
-				$queries,
-				array(
-					'style' => 'display: none; '
-				)
+				h::p(
+					$L->false_connections.': '.h::b(implode(', ', $db->get_connections_list(false)) ?: $L->no)
+				).
+				h::p(
+					$L->successful_connections.': '.h::b(implode(', ', $db->get_connections_list(true)) ?: $L->no)
+				).
+				h::p(
+					$L->mirrors_connections.': '.h::b(implode(', ', $db->get_connections_list('mirror')) ?: $L->no)
+				).
+				h::p(
+					$L->active_connections.': '.(count($db->get_connections_list()) ? '' : h::b($L->no))
+				).
+				$tmp
 			);
-			unset($queries);
+			unset($tmp);
 		}
 		//TODO Storages information
-		//Cookies
+		/**
+ 		 * Cookies
+		 */
 		if ($Config->core['show_cookies']) {
-			$this->debug_info .= h::{'p#debug_cookies_toggle.ui-widget-header.cs-state-messages.cs-center'}(
-				$span.$L->cookies
+			$debug_tabs			.= h::{'li a'}(
+				$L->cookies,
+				[
+				'href'	=> '#debug_cookies_tab'
+				]
 			);
-			$debug_info = h::tr(
-				h::td($L->key.':', array('style' => 'width: 20%;')).
-				h::td($L->value, array('style' => 'width: 80%;'))
-			);
+			$tmp				= [h::td($L->key.':', ['style' => 'width: 20%;']).h::td($L->value)];
 			foreach ($_COOKIE as $i => $v) {
-				$debug_info .= h::tr(
-					h::td($i.':', array('style' => 'width: 20%;')).
-					h::td(xap($v), array('style' => 'width: 80%;'))
-				);
+				$tmp[]	= h::td($i.':', ['style' => 'width: 20%;']).h::td(xap($v));
 			}
 			unset($i, $v);
-			$this->debug_info .= h::{'div#debug_cookies'}(
-				h::level(
-					h::{'table.cs-padding-left'}(
-						$debug_info,
-						array(
-							 'style' => 'width: 100%'
-						)
-					)
-				),
-				array(
-					'style'	=> 'display: none;'
+			$debug_tabs_content	.= h::{'div#debug_cookies_tab'}(
+				h::{'table.cs-padding-left'}(
+					h::tr($tmp),
+					[
+					'style' => 'width: 100%'
+					]
 				)
 			);
-			unset($debug_info);
+			unset($tmp);
 		}
-		$this->debug_info = $this->process_replacing($this->debug_info);
+		$this->debug_info = $this->process_replacing(
+			h::{'div#debug_window_tabs'}(
+				h::ul($debug_tabs).
+				$debug_tabs_content
+			)
+		);
 	}
-	//Display notice
+	/**
+	 * Display notice
+	 *
+	 * @param string $text
+	 */
 	function notice ($text) {
 		$this->Top .= h::{'div.ui-state-highlight.ui-corner-all.ui-priority-primary.cs-center.cs-state-messages'}(
 			$text
 		);
 	}
-	//Display warning
+	/**
+	 * Display warning
+	 *
+	 * @param string $text
+	 */
 	function warning ($text) {
 		$this->Top .= h::{'div.ui-state-error.ui-corner-all.ui-priority-primary.cs-center.cs-state-messages'}(
 			$text
@@ -834,7 +833,7 @@ class Page {
 					)
 				) && defined('DEBUG') && DEBUG
 			) {
-				$this->debug();
+				$this->get_debug_info();
 			}
 			echo str_replace(
 				[
@@ -863,6 +862,5 @@ class Page {
 				ob_end_flush();
 			}
 		}
-		//Обработка замены контента и вывод сгенерированной страницы
 	}
 }
