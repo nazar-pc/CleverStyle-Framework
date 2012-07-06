@@ -234,7 +234,7 @@ if (isset($rc[2])) {
 			$form					= false;
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
-			$block					= &$Config->components['blocks'][$rc[3]];
+			$block					= $Config->components['blocks'][$rc[3]];
 			$permission				= $User->get_permission(null, 'Block', $block['index'])[0]['id'];
 			$groups					= $User->get_groups_list();
 			$groups_content			= [];

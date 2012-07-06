@@ -118,7 +118,6 @@ class h {//TODO full array of unpaired tags for general processing
 	 */
 	protected static function wrap ($in = '', $data = [], $tag = 'div') {
 		$data	= array_merge(is_array($in) ? $in : ['in' => $in], is_array($data) ? $data : [], ['tag' => $tag]);
-		$data	= (array)$data;
 		$in		= $add = '';
 		$tag	= 'div';
 		$level	= 1;
@@ -242,7 +241,7 @@ class h {//TODO full array of unpaired tags for general processing
 	 *
 	 * @return	bool|string
 	 */
-		protected static function template_2 ($in, $data, $function) {
+	/*	protected static function template_2 ($in, $data, $function) {
 			if (is_array($in)) {
 				$temp = '';
 				foreach ($in as $item) {
@@ -282,7 +281,7 @@ class h {//TODO full array of unpaired tags for general processing
 		}
 		static function option		($in = '', $data = []) {
 			return self::template_2($in, $data, __FUNCTION__);
-		}
+		}*/
 
 	static function input		($in = [], $data = []) {
 		if (!empty($data)) {
@@ -386,25 +385,35 @@ class h {//TODO full array of unpaired tags for general processing
 			if (!is_array($in)) {
 				return self::wrap($in, $data, $function);
 			}
-			if (!isset($in['value']) && isset($in['in']) && is_array($in['in'])) {
-				$in['value'] = &$in['in'];
-			} elseif (!isset($in['in']) && isset($in['value']) && is_array($in['value'])) {
-				$in['in'] = &$in['value'];
+			if (
+				!isset($in['value']) && isset($in['in']) && is_array($in['in'])
+			) {
+				$in['value']	= &$in['in'];
 			} elseif (
-				(!isset($in['in']) || !is_array($in['in'])) &&
-				(!isset($in['value']) || !is_array($in['value'])) &&
+				!isset($in['in']) && isset($in['value']) && is_array($in['value'])
+			) {
+				$in['in']		= &$in['value'];
+			} elseif (
+				(
+					!isset($in['in']) || !is_array($in['in'])
+				) &&
+				(
+					!isset($in['value']) || !is_array($in['value'])
+				) &&
 				is_array($in)
 			) {
-				$temp = $in;
-				$in = [];
-				$in['value'] = &$temp;
-				$in['in'] = &$temp;
+				$temp			= $in;
+				$in				= [];
+				$in['value']	= &$temp;
+				$in['in']		= &$temp;
 				unset($temp);
 			}
 			if (!isset($in['value']) && !isset($in['in'])) {
 				return false;
 			}
-			$selected = false;
+			/**
+ 			 * Moves arrays of attributes into option tags
+			 */
 			foreach ($data as $attr => &$value) {
 				if (is_array($value)) {
 					$in[$attr] = $value;
@@ -413,46 +422,31 @@ class h {//TODO full array of unpaired tags for general processing
 			}
 			if (isset($data['selected']) && is_array($in['value'])) {
 				if (!is_array($data['selected'])) {
-					$data['selected'] = [$data['selected']];
+					$data['selected']	= [$data['selected']];
 				}
 				foreach ($in['value'] as $i => $v) {
 					if (in_array($v, $data['selected'])) {
 						if (!isset($in['add'][$i])) {
-							$in['add'][$i] = ' selected';
-							$selected = true;
+							$in['add'][$i]	= ' selected';
 						} else {
-							$in['add'][$i] .= ' selected';
-							$selected = true;
+							$in['add'][$i]	.= ' selected';
 						}
 					}
 				}
 				unset($data['selected'], $i, $v);
 			}
-			if (isset($in['selected'])) {
-				if (is_array($in['selected'])) {
-					foreach ($in['selected'] as $i => $v) {
-						if (!isset($in['add'][$i])) {
-							$in['add'][$i] = $v ? ' selected' : '';
-							$selected = true;
-						} else {
-							$in['add'][$i] .= $v ? ' selected' : '';
-							$selected = true;
-						}
-					}
-				}
-				unset($in['selected'], $i, $v);
-			}
-			if (!$selected && $function == 'select') {
-				if (!isset($in['add'][0])) {
-					$in['add'][0] = 'selected';
-				} else {
-					$in['add'][0] .= ' selected';
-				}
-				unset($selected);
-			}
 			$options = self::array_flip($in, isset($i) ? $i+1 : count($in['in']));
 			unset($in);
-			return self::wrap(self::option($options), $data, $function);
+			foreach ($options as &$option) {
+				$option			= [
+					$option['in'],
+					$option
+				];
+				unset($option[1]['in']);
+				$option			= self::option($option[0], $option[1]);
+			}
+			unset($option);
+			return self::wrap(implode('', $options), $data, $function);
 		}
 		static function select		($in = '', $data = []) {
 			return self::template_3($in, $data, __FUNCTION__);
@@ -547,86 +541,206 @@ class h {//TODO full array of unpaired tags for general processing
 		}
 		return self::span($data);
 	}
+	/**
+	 * @static
+	 *
+	 * @param $input
+	 * @param $data
+	 *
+	 * @return null|string
+	 */
 	static function __callStatic ($input, $data) {
-		if (is_array($data) && count($data) == 2) {
-			$data[1]['in']	= $data[0];
-			$data			= $data[1];
-		} elseif(is_array($data) && !empty($data)) {
-			if (is_array($data[0])) {
-				$int = true;
-				foreach ($data[0] as $i => $v) {
-					if (!is_int($i)) {
-						$int = false;
-						break;
-					}
+		if (is_scalar($data)) {
+			$data		= [$data];
+		}
+		/**
+ 		 * Analysis of called tag. If space found - nested tags presented.
+		 */
+		if (strpos($input, ' ') !== false) {
+			$input		= explode(' ', $input, 2);
+			/**
+ 			 * If array of attributes not found - create empty one.
+			 */
+			if (!isset($data[1])) {
+				$data[1]	= [];
+			}
+			/**
+ 			 * If tag name ends with pipe "|" symbol - for every element of array separate copy of current tag will be created
+			 */
+			if (strpos($input[0], '|') !== false) {
+				$input[0]	= substr($input[0], 0, -1);
+				$output		= [];
+				foreach ($data[0] as &$d) {
+					$output[]	= self::__callStatic($input[1], $d);
 				}
-				if ($int) {
-					$data = ['in' => $data[0]];
-				} else {
-					$data = $data[0];
-				}
-				unset($int, $i, $v);
+				unset($d);
 			} else {
-				$data = ['in' => $data[0]];
+				$output		= self::__callStatic(
+					$input[1],
+					[
+						isset($data[0]) ? $data[0] : '',
+						isset($data[1]) ? $data[1] : []
+					]
+				);
+			}
+			return self::__callStatic(
+				$input[0],
+				[
+					$output
+				]
+			);
+		}
+		/**
+		 * Fix for textarea tag, which can accept array as content
+		 */
+		if (strpos($input, 'textarea') === 0 && is_array_indexed($data[0]) && !is_array($data[0][0])) {
+			$data[0]	= implode("\n", $data[0]);
+		}
+		/**
+		 * If associative array given then for every element of array separate copy of current tag will be created
+		 */
+		if (is_array_indexed($data) && isset($data[0])) {
+			/**
+			 * Second part of expression - fix for "select" and "datalist" tags bescause they accept arrays as values
+			 */
+			if (
+				is_array_indexed($data[0]) &&
+				(
+					(
+						strpos($input, 'select') !== 0 && strpos($input, 'datalist') !== 0
+					) ||
+					is_array_indexed($data[0][0])
+				)
+			) {
+				$output	= '';
+				/**
+				 * If array of attributes not found - create empty one.
+				 */
+				if (!isset($data[1])) {
+					$data[1]	= [];
+				}
+				foreach ($data[0] as &$d) {
+					if (!is_array($d)) {
+						$d	= [$d];
+					}
+					$output	.= self::__callStatic(
+						$input,
+						[
+							$d[0],
+							array_merge($data[1], isset($d[1]) ? $d[1] : [])
+						]
+					);
+				}
+				return $output;
+			} elseif(!is_array($data[0]) && !in_array($data[0], self::$unit_atributes) && isset($data[1]) && !is_array($data[1])) {
+				$output	= '';
+				/**
+				 * If array of attributes not found - create empty one.
+				 */
+				foreach ($data as &$d) {
+					if (!is_array($d)) {
+						$d	= [$d];
+					}
+					$output	.= self::__callStatic(
+						$input,
+						[
+							$d[0],
+							isset($d[1]) ? $d[1] : []
+						]
+					);
+				}
+				return $output;
 			}
 		} else {
-			$data = [];
+			$data[0]	= $data;
 		}
-		//For analyzing specified tags from the end
-		$input		= array_reverse(explode(' ', $input));
-		$merge		= true;
-		foreach ($input as &$item) {
-			$attrs = [];
-			//Atributes processing
-			if (($pos = strpos($item, '[')) !== false) {
-				$attrs_ = explode('][', substr($item, $pos+1, -1));
-				foreach ($attrs_ as &$attr) {
-					$attr				= explode('=', $attr);
-					$attrs[$attr[0]]	= isset($attr[1]) ? $attr[1] : '';
-				}
-				unset($attrs_, $attr);
-				$item = substr($item, 0, $pos);
+		if (!isset($data[0])) {
+			$data[0]	=  '';
+		}
+		/**
+ 		 * Second part of expression - fix for "select" and "datalist" tags bescause they accept array as values
+		 */
+		if (
+			!is_array($data[0]) ||
+			(
+				(
+					strpos($input, 'select') === 0 || strpos($input, 'datalist') === 0
+				) &&
+				!isset($data[0]['in'])
+			)
+		) {
+			$data[0]	= ['in'	=> $data[0]];
+		}
+		if (isset($data[1])) {
+			$data		= array_merge($data[0], $data[1]);
+		} else {
+			$data		= $data[0];
+		}
+		$attrs	= [];
+		/**
+		 * Atributes processing
+		 */
+		if (($pos = strpos($input, '[')) !== false) {
+			$attrs_ = explode('][', substr($input, $pos+1, -1));
+			$input = substr($input, 0, $pos);
+			foreach ($attrs_ as &$attr) {
+				$attr				= explode('=', $attr);
+				$attrs[$attr[0]]	= isset($attr[1]) ? $attr[1] : '';
 			}
-			//Classes processing
-			if (($pos = strpos($item, '.')) !== false) {
-				if (!isset($attrs['class'])) {
-					$attrs['class'] = '';
-				}
-				$attrs['class']	= trim($attrs['class'].' '.str_replace('.', ' ', substr($item, $pos)));
-				$item			= substr($item, 0, $pos);
+			unset($attrs_, $attr);
+		}
+		/**
+		 * Classes processing
+		 */
+		if (($pos = strpos($input, '.')) !== false) {
+			if (!isset($attrs['class'])) {
+				$attrs['class'] = '';
 			}
-			//Id and tag determination
-			$item	= explode('#', $item);
-			$tag	= $item[0];
-			if (isset($item[1])) {
-				$attrs['id'] = $item[1];
-			}
-			if ($merge) {
-				$attrs = array_merge((array)$data, $attrs);
-				$merge = false;
-			}
-			if (!isset($in)) {
-				if (isset($attrs['in'])) {
-					$in = $attrs['in'];
-					unset($attrs['in']);
-				} else {
-					$in = '';
-				}
-			}
-			if (method_exists('h', $tag)) {
-				$in				= self::$tag($in, $attrs);
-			} elseif (in_array($tag, self::$unpaired_tags)) {
-				$attrs['tag']	= $tag;
-				$attrs['in']	= $in;
-				$in				= self::u_wrap($attrs);
+			$attrs['class']	= trim($attrs['class'].' '.str_replace('.', ' ', substr($input, $pos)));
+			$input			= substr($input, 0, $pos);
+		}
+		unset($pos);
+		/**
+		 * Id and tag determination
+		 */
+		$input	= explode('#', $input);
+		$tag	= $input[0];
+		if (isset($input[1])) {
+			$attrs['id'] = $input[1];
+		}
+		$attrs = array_merge($data, $attrs);
+		if ($tag == 'select' || $tag == 'datalist') {
+			if (isset($attrs['value'])) {
+				$in = [
+					'in'	=> $attrs['in'],
+					'value'	=> $attrs['value']
+				];
+				unset($attrs['in'], $attrs['value']);
 			} else {
-				$in				= self::wrap($in, $attrs, $tag);
+				$in = [
+					'in'	=> $attrs['in']
+				];
+				unset($attrs['in']);
 			}
+		} elseif (isset($attrs['in'])) {
+			$in = $attrs['in'];
+			unset($attrs['in']);
+		} else {
+			$in = '';
+		}
+		if (method_exists('h', $tag)) {
+			$in				= self::$tag($in, $attrs);
+		} elseif (in_array($tag, self::$unpaired_tags)) {
+			$attrs['tag']	= $tag;
+			$attrs['in']	= $in;
+			$in				= self::u_wrap($attrs);
+		} else {
+			$in				= self::wrap($in, $attrs, $tag);
 		}
 		if (isset($in)) {
 			return $in;
 		} else {
-			return false;
+			return '';
 		}
 	}
 }

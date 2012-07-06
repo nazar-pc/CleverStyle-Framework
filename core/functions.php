@@ -1152,8 +1152,24 @@
 	 * @return bool
 	 */
 	function is_array_assoc ($array) {
+		if (!is_array($array) || empty($array)) {
+			return false;
+		}
 		$keys = array_keys($array);
 		return array_keys($keys) !== $keys;
+	}
+	/**
+	 * Checks whether array is indexed or not
+	 *
+	 * @param array	$array	Array to be checked
+	 *
+	 * @return bool
+	 */
+	function is_array_indexed ($array) {
+		if (!is_array($array) || empty($array)) {
+			return false;
+		}
+		return !is_array_assoc($array);
 	}
 
 $temp = base64_decode('Y29weXJpZ2h0');

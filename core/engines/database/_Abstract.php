@@ -235,8 +235,10 @@ abstract class _Abstract {
 	function qfa ($query = '', $one_column = false) {
 		$params	= [];
 		if (is_array($query) && !empty($query)) {
-			if (isset($query[1])) {
+			if (count($query) == 2) {
 				$params	= $query[1];
+			} elseif (count($query) > 2) {
+				$params	= array_slice($query, 1);
 			}
 			$query	= $query[0];
 		}

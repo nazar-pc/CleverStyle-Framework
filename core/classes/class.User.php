@@ -529,7 +529,7 @@ class User {
 		if (!$user) {
 			return false;
 		}
-		if (!empty($data) && is_array_assoc($data)) {
+		if (!empty($data) && is_array_indexed($data)) {
 			foreach ($data as $i => &$group) {
 				if (!($group = (int)$group)) {
 					unset($data[$i]);

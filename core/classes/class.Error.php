@@ -23,21 +23,25 @@ class Error {
 		$string = xap($string);
 		global $Config, $Index, $Page;
 		$dump = 'null';
+		$debug_backtrace	= debug_backtrace();
+		if (isset($debug_backtrace[0]['file'], $debug_backtrace[0]['file'])) {
+			$file	= $debug_backtrace[0]['file'];
+			$line	= $debug_backtrace[0]['line'];
+		} else {
+			$file	= $debug_backtrace[1]['file'];
+			$line	= $debug_backtrace[1]['line'];
+		}
 		if ((is_object($Config) && $Config->core['on_error_globals_dump']) || (!is_object($Config) && defined('DEBUG'))) {
-			$debug_backtrace	= debug_backtrace();
-			if (isset($debug_backtrace[0]['file'], $debug_backtrace[0]['file'])) {
-				$file	= $debug_backtrace[0]['file'];
-				$line	= $debug_backtrace[0]['line'];
-			} else {
-				$file	= $debug_backtrace[1]['file'];
-				$line	= $debug_backtrace[1]['line'];
-			}
 			global $Objects;
 			$objects_array		= [];
 			if (is_object($Objects)) {
 				foreach ($Objects->Loaded as $object => $data) {
+					if (!isset($GLOBALS[$object])) {
+						continue;
+					}
 					$objects_array[$object] = print_r($GLOBALS[$object], true);
 				}
+				unset($object, $data);
 			}
 			$dump = _json_encode([
 				'Objects'			=> $objects_array,

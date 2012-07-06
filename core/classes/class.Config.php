@@ -367,8 +367,8 @@ class Config {
 		global $db;
 		if ($parts === null || empty($parts)) {
 			$parts = $this->admin_parts;
-		} elseif (!is_array($parts)) {
-			$parts = (array)$parts;
+		} elseif (is_scalar($parts)) {
+			$parts = [$parts];
 		}
 		$query = '';
 		foreach ($parts as $part) {
@@ -399,7 +399,7 @@ class Config {
 	}
 	function &__get ($item) {
 		if (isset($this->data[$item])) {
-			global $User;
+			global $User, $Index;
 			$debug_backtrace = debug_backtrace()[1];
 			$debug_backtrace = [
 				'class'		=> isset($debug_backtrace['class']) ? $debug_backtrace['class'] : '',
@@ -412,7 +412,7 @@ class Config {
 				) ||
 				$debug_backtrace['class'] == __CLASS__ ||
 				(
-					$debug_backtrace['class'] == 'cs\\Index' && $debug_backtrace['function'] == 'init'
+					is_object($Index) && $debug_backtrace['class'] == get_class($Index) && $debug_backtrace['function'] == 'init'
 				)
 			) {
 				$return = &$this->data[$item];
@@ -424,7 +424,7 @@ class Config {
 		return false;
 	}
 	function __set ($item, $data) {
-		global $User;
+		global $User, $Index;
 		$debug_backtrace = debug_backtrace()[1];
 		$debug_backtrace = [
 			'class'		=> $debug_backtrace['class'],
@@ -439,7 +439,7 @@ class Config {
 				) &&
 				$debug_backtrace['class'] != __CLASS__ &&
 				!(
-					$debug_backtrace['class'] == 'cs\\Index' && $debug_backtrace['function'] == 'init'
+					is_object($Index) && $debug_backtrace['class'] == get_class($Index) && $debug_backtrace['function'] == 'init'
 				)
 			)
 		) {
