@@ -71,15 +71,15 @@ class HTTP extends _Abstract {
 		return $result[1];
 	}
 	function copy ($source, $dest) {
-		if (($source == _realpath($source)) === false) {
+		if (($source == realpath($source)) === false) {
 			return false;
 		}
 		$temp = md5(uniqid(microtime(true)));
-		while (_file_exists(TEMP.DS.$temp)) {
+		while (file_exists(TEMP.'/'.$temp)) {
 			$temp = md5(uniqid(microtime(true)));
 		}
 		time_limit_pause();
-		if (!_copy($source, TEMP.DS.$temp)) {
+		if (!copy($source, TEMP.'/'.$temp)) {
 			time_limit_pause(false);
 			return false;
 		}
@@ -87,7 +87,7 @@ class HTTP extends _Abstract {
 		global $Config;
 		$source = $Config->server['base_url'].'/'.$temp;
 		$result = $this->request(['function' => __FUNCTION__, 'source' => $source, 'dest' => $dest, 'http' => $temp]);
-		_unlink(TEMP.DS.$temp);
+		unlink(TEMP.'/'.$temp);
 		return (bool)$result[1];
 	}
 	function unlink ($filename) {
@@ -100,30 +100,30 @@ class HTTP extends _Abstract {
 	}
 	function move_uploaded_file ($filename, $destination) {
 		$temp = md5(uniqid(microtime(true)));
-		while (_file_exists(TEMP.DS.$temp)) {
+		while (file_exists(TEMP.'/'.$temp)) {
 			$temp = md5(uniqid(microtime(true)));
 		}
 		time_limit_pause();
-		if (_move_uploaded_file($filename, TEMP.DS.$temp) === false) {
+		if (move_uploaded_file($filename, TEMP.'/'.$temp) === false) {
 			time_limit_pause(false);
 			return false;
 		}
 		time_limit_pause(false);
 		global $Config;
 		$result = $this->request(['function' => __FUNCTION__, 'filename' => $Config->server['base_url'].'/'.$temp, 'destination' => $destination]);
-		_unlink(TEMP.DS.$temp);
+		unlink(TEMP.'/'.$temp);
 		return (bool)$result[1];
 	}
 	function rename ($oldname, $newname) {
-		if (($oldname == _realpath($oldname)) === false) {
+		if (($oldname == realpath($oldname)) === false) {
 			return false;
 		}
 		$temp = md5(uniqid(microtime(true)));
-		while (_file_exists(TEMP.DS.$temp)) {
+		while (file_exists(TEMP.'/'.$temp)) {
 			$temp = md5(uniqid(microtime(true)));
 		}
 		time_limit_pause();
-		if (!_copy($oldname, TEMP.DS.$temp)) {
+		if (!copy($oldname, TEMP.'/'.$temp)) {
 			time_limit_pause(false);
 			return false;
 		}
@@ -132,9 +132,9 @@ class HTTP extends _Abstract {
 		$oldname_x	= $oldname;
 		$oldname	= $Config->server['base_url'].'/'.$temp;
 		$result		= $this->request(['function' => __FUNCTION__, 'oldname' => $oldname, 'newname' => $newname, 'http' => $temp]);
-		_unlink(TEMP.DS.$temp);
+		unlink(TEMP.'/'.$temp);
 		if ($result[1]) {
-			_unlink($oldname_x);
+			unlink($oldname_x);
 		}
 		return (bool)$result[1];
 	}

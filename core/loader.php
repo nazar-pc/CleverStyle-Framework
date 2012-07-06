@@ -1,62 +1,82 @@
 <?php
+require_once CORE.'/functions.php';		//Including file with general system functions
+
 global $Objects, $timeload, $loader_init_memory, $interface;
+
 $timeload['start'] = MICROTIME;
 $interface = true;
-error_reporting(E_ALL | E_STRICT);
+
+error_reporting(E_ALL);
 //error_reporting(0);
+
 header('Content-Type: text/html; charset=utf-8');
 header("Connection: close");
 mb_internal_encoding('utf-8');
-//Убиваем небезопасные глобальные переменные, использование GET метода для передачи переменных не рекомендуется
-//Вместо GET используйте POST
+
+/**
+ * Cleaning unsecure global variables. Use $_POST instead of $_GET
+ */
 $_GET						= [];
 $_REQUEST					= [];
-//Задание базовых констант с путями системных папок
-//DOMAIN - константа, содержащая базовый домен сайта
-//CDOMAIN - константа, содержащая домен текущего сайта
-//(он может отличатся от базового домена, если вы находитесь на зеркале)
-define('CDOMAIN',		$_SERVER['HTTP_HOST']);		//Доменное имя текущего сайта
-define('CONFIG',		DIR.DS.'config');			//Папка конфигурации
-	define('CLASSES',	CORE.DS.'classes');			//Папка с классами
-	define('ENGINES',	CORE.DS.'engines');			//Папка с движками БД и хранилищ
-	define('LANGUAGES',	CORE.DS.'languages');		//Папка с языковыми файлами
-define('INCLUDES',		DIR.DS.'includes');			//Папка с включениями
-	define('CSS',		INCLUDES.DS.'css');			//Папка с CSS стилями
-	define('IMG',		INCLUDES.DS.'img');			//Папка с изображениями
-	define('JS',		INCLUDES.DS.'js');			//Папка с JavaScript скриптами
-define('TEMPLATES',		DIR.DS.'templates');		//Папка с шаблонами
-define('COMPONENTS',	DIR.DS.'components');		//Папка для компонентов
-	define('BLOCKS',	COMPONENTS.DS.'blocks');	//Папка для блоков
-	define('MODULES',	COMPONENTS.DS.'modules');	//Папка для модулей
-	define('PLUGINS',	COMPONENTS.DS.'plugins');	//Папка для плагинов
-define('STORAGES',		DIR.DS.'storages');			//Локальное хранилище
-	define('PCACHE',	STORAGES.DS.'pcache');		//Папка с публичным кешем (доступным пользователю извне)
-define('THEMES',		DIR.DS.'themes');			//Папка с темами
 
-//Load information about minimal needed Software versions
-_require(CORE.DS.'required_verions.php', true, true);
-//Including of custom user files
-_include(DIR.DS.'custom.php', true, false);
+/**
+ * DOMAIN - constant, that contains base domain
+ * CDOMAIN - constant, that contain domain of current mirror
+ */
+define('CDOMAIN',	$_SERVER['HTTP_HOST']);
+/**
+ * Setting of basic constants with paths to system directories
+ */
+define('CONFIG',	DIR.'/config');					//Directory for configuration
+define('CLASSES',	CORE.'/classes');				//Directory for main core classes
+define('ENGINES',	CORE.'/engines');				//Directory for cache, DB, storage and translation engines
+define('LANGUAGES',	CORE.'/languages');				//Languages directory
+define('CSS',		DIR.'/includes/css');			//Directory with CSS files
+define('IMG',		DIR.'/includes/img');			//Directody with images
+define('JS',		DIR.'/includes/js');			//Directory for JavaScript files
+define('TEMPLATES',	DIR.'/templates');				//Templates directory
+define('BLOCKS',	DIR.'/components/blocks');		//Blocks directory
+define('MODULES',	DIR.'/components/modules');		//Modules directory
+define('PLUGINS',	DIR.'/components/plugins');		//Plugins directory
+define('STORAGE',	DIR.'/storage/public');			//Local public storage for current domain
+define('CACHE',		DIR.'/storage/cache');			//Cache directory for current domain
+define('LOGS',		DIR.'/storage/logs');			//Log directory for current domain
+define('TEMP',		DIR.'/storage/temp');			//Temp directory for current domain
+define('PCACHE',	DIR.'/storage/pcache');			//Directory with public cache (available from the outside)
+define('THEMES',	DIR.'/themes');					//themes dir
+
+/**
+ * Load information about minimal needed Software versions
+ */
+require_once CORE.'/required_verions.php';
+/**
+ * Including of custom user file
+ */
+_include_once(DIR.'/custom.php', false);
 
 $timeload['loader_init']	= microtime(true);
 $loader_init_memory			= memory_get_usage();
-//Запуск ядра и первичных классов, создание необходимых объектов
-//ВНИМАНИЕ: Отключение создания следующих объектов или изменение порядка почти на 100% приведет к полной неработоспособности движка!!!
-//При необходимости изменения логики работы первычных классов движка используйте пользовательские версии файлов, не изменяя порядок загрузки
-$Objects					= new \cs\Objects;			//Объект подключения и выгрузки классов
+
+/**
+ * Loading of core and primary system classes, creating of necessary objects.
+ * WARNING: Disabling of creating the following objects or changing the order almost 100% will lead to a complete engine inoperable!
+ * If necessary, change the logic of the primary objects of engine, use custom.php file for including own versions of classes,
+ * and this versions will be used instead of system ones.
+ */
+$Objects					= new \cs\Objects;		//Object of creating and destroying of other objects
 $Objects->load([
-	'cs\\Error',									//Объект обработки ошибок
-	'cs\\Core',										//Объект ядра движка (проверка путей и функции шифрования)
-	'cs\\Cache',									//Объект системного кеша
-	'_cs\\Text',									//Объект поддержки мультиязычного текстового контента
-	['cs\\Language',	'L'],						//Объект музьтиязычности
-	'cs\\Page',										//Объект генерирования страницы
-	['cs\\DB',			'db'],						//Объект БД
-	'_cs\\Storage',									//Объект Хранилищ
-	'cs\\Config',									//Объект настроек
-	'_cs\\Mail',									//Объект работы с почтой
-	'_cs\\Key',										//Объект веменных ключей
-	'cs\\User',										//Объект пользователя
-	'cs\\Index'										//Объект, который управляет обработкой компонентов
+	'cs\\Error',									//Object of errors processing
+	'cs\\Core',										//Core object
+	'cs\\Cache',									//System cache object
+	'_cs\\Text',									//Object of multilingual content
+	['cs\\Language',	'L'],						//Object of multilingual interface
+	'cs\\Page',										//Page generation object
+	['cs\\DB',			'db'],						//DataBase object
+	'_cs\\Storage',									//Storage object
+	'cs\\Config',									//Configuration object
+	'_cs\\Mail',									//Object for sending of emails
+	'_cs\\Key',										//Objects of temporary keys
+	'cs\\User',										//Object of user
+	'cs\\Index'										//Object, that supports of components processing
 ]);
-$Objects->__finish();								//Выгружает классы, отображает сгенерированный контент и корректно завершает работу
+$Objects->__finish();								//Unloading of objects, displaying of generated content and correct termination

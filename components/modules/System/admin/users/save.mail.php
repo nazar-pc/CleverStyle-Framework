@@ -1,3 +1,3 @@
 <?php
 global $Index;
-_include(MFOLDER.'/'.$Index->savefile.'.php', true, false);
+_include_once(MFOLDER.'/'.$Index->savefile.'.php', false);

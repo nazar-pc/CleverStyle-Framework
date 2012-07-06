@@ -119,7 +119,7 @@ class Error {
 	function __finish () {
 		if (!empty($this->errors_list_all)) {
 			$this->errors_list_all		= str_replace('%time%', date('H:i:s', TIME), $this->errors_list_all);
-			_file_put_contents(LOGS.DS.date('d-m-Y', TIME).'_'.strtr(date_default_timezone_get(), '/', '_'), implode("\n", $this->errors_list_all)."\n", LOCK_EX | FILE_APPEND);
+			file_put_contents(LOGS.'/'.date('d-m-Y', TIME).'_'.strtr(date_default_timezone_get(), '/', '_'), implode("\n", $this->errors_list_all)."\n", LOCK_EX | FILE_APPEND);
 			$this->errors_list_all = [];
 		}
 	}

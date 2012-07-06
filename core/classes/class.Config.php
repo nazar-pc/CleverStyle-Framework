@@ -73,7 +73,7 @@ class Config {
 			//Engine initialization with current configuration
 			$this->init();
 		}
-		if (!_file_exists(MODULES.DS.$this->core['default_module'])) {
+		if (!file_exists(MODULES.'/'.$this->core['default_module'])) {
 			$this->core['default_module']	= 'System';
 			$this->save('core');
 		}
@@ -390,7 +390,9 @@ class Config {
 		}
 		return false;
 	}
-	//Canceling of applied settings
+	/**
+	 * Canceling of applied settings
+	 */
 	function cancel () {
 		global $Cache;
 		unset($Cache->config);
@@ -399,48 +401,50 @@ class Config {
 	}
 	function &__get ($item) {
 		if (isset($this->data[$item])) {
-			global $User, $Index;
+			global $User;
 			$debug_backtrace = debug_backtrace()[1];
 			$debug_backtrace = [
 				'class'		=> isset($debug_backtrace['class']) ? $debug_backtrace['class'] : '',
 				'function'	=> isset($debug_backtrace['function']) ? $debug_backtrace['function'] : ''
 			];
-			//Allow modification only for administrators or requests from methods of Config class or from Index::init()
+			/**
+			 * Allow to modify only $this->data['route']['current'].
+			 * Other modifications only for administrators or requests from methods of Config class
+			 */
 			if (
 				(
 					is_object($User) && $User->is('admin')
 				) ||
-				$debug_backtrace['class'] == __CLASS__ ||
-				(
-					is_object($Index) && $debug_backtrace['class'] == get_class($Index) && $debug_backtrace['function'] == 'init'
-				)
+				$debug_backtrace['class'] == __CLASS__
 			) {
 				$return = &$this->data[$item];
 			} else {
 				$return = $this->data[$item];
+				if ($item == 'routing') {
+					$return['current']	= &$this->data['routing']['current'];
+				}
 			}
 			return $return;
 		}
 		return false;
 	}
 	function __set ($item, $data) {
-		global $User, $Index;
+		global $User;
 		$debug_backtrace = debug_backtrace()[1];
 		$debug_backtrace = [
 			'class'		=> $debug_backtrace['class'],
 			'function'	=> $debug_backtrace['function']
 		];
-		//Allow modification only for administrators or requests from methods of Config class or from Index::init()
+		/**
+		 * Allow modification only for administrators or requests from methods of Config class
+		 */
 		if (
 			!isset($this->data[$item]) ||
 			(
 				(
 					is_object($User) && !$User->is('admin')
 				) &&
-				$debug_backtrace['class'] != __CLASS__ &&
-				!(
-					is_object($Index) && $debug_backtrace['class'] == get_class($Index) && $debug_backtrace['function'] == 'init'
-				)
+				$debug_backtrace['class'] != __CLASS__
 			)
 		) {
 			return false;

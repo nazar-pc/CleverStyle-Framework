@@ -10,22 +10,19 @@
 		 * @return bool
 		 */
 		function _require ($file, $once = false, $show_errors = true) {
-			$file = str_to_path($file);
 			if (file_exists($file)) {
 				if ($once) {
 					return require_once $file;
 				} else {
 					return require $file;
 				}
-			} else {
-				if (is_bool($show_errors) && $show_errors) {
-					$data = debug_backtrace();
-					trigger_error('File '.$file.' does not exists in '.$data[0]['file'].' on line '.$data[0]['line'], E_USER_ERROR);
-				} elseif ($show_errors instanceof Closure) {
-					return (bool)$show_errors();
-				}
-				return false;
+			} elseif (is_bool($show_errors) && $show_errors) {
+				$data = debug_backtrace()[0];
+				trigger_error('File '.$file.' does not exists in '.$data['file'].' on line '.$data['line'], E_USER_ERROR);
+			} elseif ($show_errors instanceof Closure) {
+				return (bool)$show_errors();
 			}
+			return false;
 		}
 		/**
 		 * @param string		$file
@@ -35,22 +32,19 @@
 		 * @return bool
 		 */
 		function _include ($file, $once = false, $show_errors = true) {
-			$file = str_to_path($file);
 			if (file_exists($file)) {
 				if ($once) {
 					return include_once $file;
 				} else {
 					return include $file;
 				}
-			} else {
-				if (is_bool($show_errors) && $show_errors) {
-					$data = debug_backtrace();
-					trigger_error('File '.$file.' does not exists in '.$data[0]['file'].' on line '.$data[0]['line'], E_USER_WARNING);
-				} elseif ($show_errors instanceof Closure) {
+			} elseif (is_bool($show_errors) && $show_errors) {
+					$data = debug_backtrace()[0];
+					trigger_error('File '.$file.' does not exists in '.$data['file'].' on line '.$data['line'], E_USER_WARNING);
+			} elseif ($show_errors instanceof Closure) {
 					return (bool)$show_errors();
-				}
-				return false;
 			}
+			return false;
 		}
 		/**
 		 * @param string		$file
@@ -58,7 +52,7 @@
 		 *
 		 * @return bool
 		 */
-		function _require_once ($file, $show_errors) {
+		function _require_once ($file, $show_errors = true) {
 			return _require($file, true, $show_errors);
 		}
 		/**
@@ -67,7 +61,7 @@
 		 *
 		 * @return bool
 		 */
-		function _include_once ($file, $show_errors) {
+		function _include_once ($file, $show_errors = true) {
 			return _include($file, true, $show_errors);
 		}
 	//Class autoloading
@@ -77,11 +71,11 @@
 		}
 		$class	= explode('\\', $class);
 		$class	= [
-			'namespace'	=> count($class) > 1 ? implode(DS, array_slice($class, 0, -1)).DS : '',
+			'namespace'	=> count($class) > 1 ? implode('/', array_slice($class, 0, -1)).'/' : '',
 			'name'		=> array_pop($class)
 		];
-		_require(CLASSES.DS.$class['namespace'].'class.'.$class['name'].'.php', true, false) ||
-		_require(ENGINES.DS.$class['namespace'].$class['name'].'.php', true, false);
+		_require_once(CLASSES.'/'.$class['namespace'].'class.'.$class['name'].'.php', false) ||
+		_require_once(ENGINES.'/'.$class['namespace'].$class['name'].'.php', false);
 	});
 	//Функция для корректной остановки выполнения из любого места движка
 	function __finish () {
@@ -157,8 +151,8 @@
 		if ($mode == 'df') {
 			$mode = 'fd';
 		}
-		$dir = rtrim($dir, DS).DS;
-		if (!_is_dir($dir) || ($exclusion !== false && _file_exists($dir.$exclusion))) {
+		$dir = rtrim($dir, '/').'/';
+		if (!is_dir($dir) || ($exclusion !== false && file_exists($dir.$exclusion))) {
 			return false;
 		}
 		if ($sort === false) {
@@ -173,11 +167,11 @@
 		}
 		if (isset($sort_x) && $sort_x[0] == 'date') {
 			$prepare = function (&$list, $tmp, $link) {
-				$list[_fileatime($link) ?: _filemtime($link)] = $tmp;
+				$list[fileatime($link) ?: filemtime($link)] = $tmp;
 			};
 		} elseif (isset($sort_x) && $sort_x[0] == 'size') {
 			$prepare = function (&$list, $tmp, $link) {
-				$list[_filesize($link)] = $tmp;
+				$list[filesize($link)] = $tmp;
 			};
 		} else {
 			$prepare = function (&$list, $tmp, $link) {
@@ -186,23 +180,23 @@
 		}
 		$list = [];
 		if ($prefix_path !== true && $prefix_path) {
-			$prefix_path = rtrim($prefix_path, DS).DS;
+			$prefix_path = rtrim($prefix_path, '/').'/';
 		}
-		$dirc = _opendir($dir);
+		$dirc = opendir($dir);
 		if (!is_resource($dirc)) {
 			return false;
 		}
 		//If file name if '0', it considered as boolean false, that's why $file === '0' was added
-		while (($file = _readdir($dirc)) !== false) {
+		while (($file = readdir($dirc)) !== false) {
 			if (
-				($mask && !preg_match($mask, $file) && (!$subfolders || !_is_dir($dir.$file))) ||
+				($mask && !preg_match($mask, $file) && (!$subfolders || !is_dir($dir.$file))) ||
 				$file == '.' || $file == '..' || $file == '.htaccess' || $file == '.htpasswd' || $file == '.gitignore'
 			) {
 				continue;
 			}
 			if (
-				(_is_file($dir.$file) && ($mode == 'f' || $mode == 'fd')) ||
-				(_is_dir($dir.$file) && ($mode == 'd' || $mode == 'fd'))
+				(is_file($dir.$file) && ($mode == 'f' || $mode == 'fd')) ||
+				(is_dir($dir.$file) && ($mode == 'd' || $mode == 'fd'))
 			) {
 				$prepare(
 					$list,
@@ -210,7 +204,7 @@
 					$dir.$file
 				);
 			}
-			if ($subfolders && _is_dir($dir.$file)) {
+			if ($subfolders && is_dir($dir.$file)) {
 				$list = array_merge(
 					$list,
 					get_list(
@@ -247,155 +241,25 @@
 		}
 		return array_values($list);
 	}
-	//Функции str_to_path() и path_to_str() являются обратными, и используются при работе с файловой системой.
-	//Так, как в разных операционных системах названия одних и тех же файлов с Unicode символами php может отображать по разному,
-	//эти две функции обеспечивают кроссплатформенность работы с адресами файлов и папок в Unicode кодировке, и их настоятельно
-	//рекомендуется использовать везде, где нет уверенности в том, что Unicode символы не встретятся в пути к файлу или папке.
-		//Функция подготавливает строку, которая должна использоваться как путь для файловой системы
-		function str_to_path ($str) {
-			if (is_array($str)) {
-				foreach ($str as &$s) {
-					$s = str_to_path($s);
-				}
-				return $str;
-			}
-			//Null byte injection protection
-			$str = null_byte_filter($str);
-			return	FS_CHARSET == 'utf-8' ||
-					strpos($str, 'http://') === 0 ||
-					strpos($str, 'https://') === 0 ||
-					strpos($str, 'ftp://') === 0 ||
-					strpos($str, '//') === 0 ? $str : !is_unicode($str) ? $str : iconv('utf-8', FS_CHARSET, $str);
+	if (!function_exists('is_unicode')) {
+		/**
+		 * Detection of unicode strings
+		 *
+		 * @param string $s
+		 *
+		 * @return bool
+		 */
+		function is_unicode ($s) {
+			return mb_check_encoding($s, 'utf-8');
 		}
-		//Функция подготавливает строку, которая была получена как путь в файловой системе, для использования в движке
-		function path_to_str ($path) {
-			if (is_array($path)) {
-				foreach ($path as &$p) {
-					$p = str_to_path($p);
-				}
-				return $path;
-			}
-			return FS_CHARSET == 'utf-8' ? $path : (is_unicode($path) ? $path : iconv(FS_CHARSET, 'utf-8', $path));
-		}
-		//Detection of unicode strings
-		if (!function_exists('is_unicode')) {
-			function is_unicode ($s) {
-				return mb_check_encoding ($s, 'utf-8');
-			}
-		}
-	//Аналоги системных функций с теми же параметрами в том же порядке. Настоятельно рекомендуется использовать вместо стандартных
-	//При использовании этих функций будет небольшая потеря в скорости, зато нивелируются различия в операционных системах
-	//при использовании кириллических и других Unicode символов (не латинских) в пути к файлу или папке
-		function _file ($filename, $flags = 0, $context = null) {
-			return is_null($context) ?
-					file(str_to_path($filename), $flags) :
-					file(str_to_path($filename), $flags, $context);
-		}
-		function _file_get_contents ($filename, $flags = 0, $context = null, $offset = -1, $maxlen = -1) {
-			return is_null($context) ?
-					file_get_contents(str_to_path($filename), $flags, $context, $offset) :
-					file_get_contents(str_to_path($filename), $flags, $context, $offset, $maxlen);
-		}
-		function _file_put_contents ($filename, $data, $flags = 0, $context = null) {
-			return is_null($context) ?
-					file_put_contents(str_to_path($filename), $data, $flags) :
-					file_put_contents(str_to_path($filename), $data, $flags, $context);
-		}
-		function _copy ($source, $dest, $context = null) {
-			return is_null($context) ?
-					copy(str_to_path($source), str_to_path($dest)) :
-					copy(str_to_path($source), str_to_path($dest), $context);
-		}
-		function _unlink ($filename, $context = null) {
-			return is_null($context) ?
-					unlink(str_to_path($filename)) :
-					unlink(str_to_path($filename), $context);
-		}
-		function _file_exists ($filename) {
-			return file_exists(str_to_path($filename));
-		}
-		function _rename ($oldname, $newname, $context = null) {
-			return is_null($context) ?
-					rename(str_to_path($oldname), str_to_path($newname)) :
-					rename(str_to_path($oldname), str_to_path($newname), $context);
-		}
-		function _mkdir ($pathname, $mode = 0777, $recursive = false, $context = null) {
-			return is_null($context) ?
-					mkdir(str_to_path($pathname), $mode, $recursive) :
-					mkdir(str_to_path($pathname), $mode, $recursive, $context);
-		}
-		function _rmdir ($dirname, $context = null) {
-			return is_null($context) ?
-					rmdir(str_to_path($dirname)) :
-					rmdir(str_to_path($dirname), $context);
-		}
-		function _basename ($path, $suffix = '') {
-			return basename(str_to_path($path), $suffix);
-		}
-		function _dirname ($path) {
-			return dirname(str_to_path($path));
-		}
-		function _chdir ($directory) {
-			return chdir(str_to_path($directory));
-		}
-		function _filesize ($filename) {
-			return filesize(str_to_path($filename));
-		}
-		function _fopen ($filename, $mode, $use_include_path = false, $context = null) {
-			return is_null($context) ?
-					fopen(str_to_path($filename), $mode, $use_include_path) :
-					fopen(str_to_path($filename), $mode, $use_include_path, $context);
-		}
-		function _opendir ($path, $context = null) {
-			return is_null($context) ?
-					opendir(str_to_path($path)) :
-					opendir(str_to_path($path), $context);
-		}
-		function _readdir ($dir_handle = null) {
-			return path_to_str(readdir($dir_handle));
-		}
-		function _scandir ($directory, $sorting_order = null, $context = null) {
-			return is_null($context) ?
-				path_to_str(scandir(str_to_path($directory), $sorting_order)) :
-				path_to_str(scandir(str_to_path($directory), $sorting_order, $context));
-		}
-		function _is_dir ($filename) {
-			return is_dir(str_to_path($filename));
-		}
-		function _is_file ($filename) {
-			return is_file(str_to_path($filename));
-		}
-		function _is_readable ($filename) {
-			return is_readable(str_to_path($filename));
-		}
-		function _is_writable ($filename) {
-			return is_writable(str_to_path($filename));
-		}
-		function _is_uploaded_file ($filename) {
-			return is_uploaded_file(str_to_path($filename));
-		}
-		function _move_uploaded_file ($filename, $destination) {
-			return move_uploaded_file(str_to_path($filename), str_to_path($destination));
-		}
-		function _realpath ($path) {
-			return realpath(str_to_path($path));
-		}
-		function _filectime ($filename) {
-			return filectime(str_to_path($filename));
-		}
-		function _fileatime ($filename) {
-			return fileatime(str_to_path($filename));
-		}
-		function _filemtime ($filename) {
-			return filemtime(str_to_path($filename));
-		}
+	}
 	//Получить URL файла по его расположению в файловой системе
 	function url_by_source ($source) {
-		$source = _realpath($source);
-		if (strpos($source, DIR.DS) === 0) {
+		$source = realpath($source);
+		if (strpos($source, DIR.'/') === 0) {
 			global $Config;
 			if (is_object($Config)) {
-				return str_replace(DS, '/', str_replace(DIR, $Config->server['base_url'], $source));
+				return str_replace(DIR, $Config->server['base_url'], $source);
 			}
 		}
 		return false;
@@ -405,7 +269,7 @@
 		global $Config;
 		if (strpos($url, $Config->server['base_url']) === 0) {
 			if (is_object($Config)) {
-				return str_replace('/', DS, str_replace($Config->server['base_url'], DIR, $url));
+				return str_replace($Config->server['base_url'], DIR, $url);
 			}
 		}
 		return false;
@@ -418,8 +282,8 @@
 		$ok = true;
 		$list = get_list(PCACHE, false, 'fd', true, true, 'name|desc');
 		foreach ($list as $item) {
-			if (_is_writable($item)) {
-				_is_dir($item) ? @_rmdir($item) : @_unlink($item);
+			if (is_writable($item)) {
+				is_dir($item) ? @rmdir($item) : @unlink($item);
 			} else {
 				$ok = false;
 			}
@@ -1004,7 +868,7 @@
 		global $DB_TYPE, $db, $L;
 		global $$DB_TYPE;
 		if (!$$DB_TYPE) {
-			return $L->unsupported_db_type;
+			return ' '.$L->unknown_db_type;
 		}
 		preg_match('/[\.0-9]+/', $db->server(), $db_version);
 		return (bool)version_compare($db_version[0], $$DB_TYPE, '>=');
@@ -1170,6 +1034,39 @@
 			return false;
 		}
 		return !is_array_assoc($array);
+	}
+	/**
+	 * Works like <b>array_flip()</b> function, but is used when every item of array is not a string, but also array
+	 *
+	 * @param array			$array	At least one item must be array, some other items may be strings (or numbers)
+	 *
+	 * @return array|bool
+	 */
+	function array_flip_3d ($array) {
+		if (!is_array($array)) {
+			return false;
+		}
+		$result	= [];
+		$size	= 0;
+		foreach ($array as $a) {
+			if (is_array($a)) {
+				$count	= count($a);
+				$size	= $size < $count ? $count : $size;
+			}
+		}
+		unset($a, $count);
+		foreach ($array as $i => $a) {
+			for ($n = 0; $n < $size; ++$n) {
+				if (is_array($a)) {
+					if (isset($a[$n])) {
+						$result[$n][$i] = $a[$n];
+					}
+				} else {
+					$result[$n][$i] = $a;
+				}
+			}
+		}
+		return $result;
 	}
 
 $temp = base64_decode('Y29weXJpZ2h0');

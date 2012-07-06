@@ -2,11 +2,11 @@
 global $Config, $Index, $L, $LANGUAGE;
 $Config->reload_languages();
 $a = &$Index;
-$translate_engines			= _mb_substr(get_list(ENGINES.DS.'translate', '/^[^_].*?\.php$/i', 'f'), 0, -4);
+$translate_engines			= _mb_substr(get_list(ENGINES.'/translate', '/^[^_].*?\.php$/i', 'f'), 0, -4);
 $translate_engines_settings	= [];
 $current_engine_settings	= '';
 foreach ($translate_engines as $engine) {
-	$parameters					= _json_decode(_file_get_contents(ENGINES.DS.'translate'.DS.$engine.'.json'));
+	$parameters					= _json_decode(file_get_contents(ENGINES.'/translate/'.$engine.'.json'));
 	if (is_array($parameters) && !empty($parameters)) {
 		$table							= '';
 		foreach ($parameters as $paremeter => $description) {

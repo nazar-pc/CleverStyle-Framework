@@ -58,14 +58,14 @@ $plugins_list = h::tr(
 foreach ($plugins as $plugin) {
 	$addition_state = $action = '';
 	//Information about plugin
-	if (_file_exists($file = PLUGINS.DS.$plugin.DS.'readme.txt') || _file_exists($file = PLUGINS.DS.$plugin.DS.'readme.html')) {
+	if (file_exists($file = PLUGINS.'/'.$plugin.'/readme.txt') || file_exists($file = PLUGINS.'/'.$plugin.'/readme.html')) {
 		if (substr($file, -3) == 'txt') {
 			$tag = 'pre';
 		} else {
 			$tag = 'div';
 		}
 		$addition_state .= h::$tag(
-			_file_get_contents($file),
+			file_get_contents($file),
 			[
 				'id'			=> $plugin.'_readme',
 				'class'			=> 'cs-dialog',
@@ -83,14 +83,14 @@ foreach ($plugins as $plugin) {
 	}
 	unset($tag, $file);
 	//License
-	if (_file_exists($file = PLUGINS.DS.$plugin.DS.'license.txt') || _file_exists($file = PLUGINS.DS.$plugin.DS.'license.html')) {
+	if (file_exists($file = PLUGINS.'/'.$plugin.'/license.txt') || file_exists($file = PLUGINS.'/'.$plugin.'/license.html')) {
 		if (substr($file, -3) == 'txt') {
 			$tag = 'pre';
 		} else {
 			$tag = 'div';
 		}
 		$addition_state .= h::$tag(
-			_file_get_contents($file),
+			file_get_contents($file),
 			[
 				'id'			=> $plugin.'_license',
 				'class'			=> 'cs-dialog',

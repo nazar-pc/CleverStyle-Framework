@@ -106,15 +106,13 @@ class Page {
 			ob_start();
 			if (
 				is_object($Config) && $Config->core['site_mode'] &&
-				(_file_exists(THEMES.DS.$this->theme.DS.'index.html') || _file_exists(THEMES.DS.$this->theme.DS.'index.php'))
+				(file_exists(THEMES.'/'.$this->theme.'/index.html') || file_exists(THEMES.'/'.$this->theme.'/index.php'))
 			) {
-				_require(THEMES.DS.$this->theme.DS.'prepare.php', true, false);
-				if (!_include(THEMES.DS.$this->theme.DS.'index.php', true, false)) {
-					_include(THEMES.DS.$this->theme.DS.'index.html', true);
+				_include_once(THEMES.'/'.$this->theme.'/prepare.php', false);
+				if (!_include_once(THEMES.'/'.$this->theme.'/index.php', false)) {
+					_include_once(THEMES.'/'.$this->theme.'/index.html');
 				}
-			} elseif ($Config->core['site_mode'] == 1 && _file_exists(THEMES.DS.$this->theme.DS.'closed.html')) {
-				_include(THEMES.DS.$this->theme.DS.'closed.html', 1);
-			} else {
+			} elseif (!($Config->core['site_mode'] == 1 && _include_once(THEMES.'/'.$this->theme.'/closed.html'))) {
 				echo	"<!doctype html>\n".
 						"<html>\n".
 						"	<head>\n".
@@ -183,9 +181,9 @@ class Page {
 						]) : '').
 						h::link([
 								'rel'		=> 'shortcut icon',
-								'href'		=> _file_exists(THEMES.'/'.$this->theme.'/'.$this->color_scheme.'/'.'img/favicon.ico') ?
+								'href'		=> file_exists(THEMES.'/'.$this->theme.'/'.$this->color_scheme.'/'.'img/favicon.ico') ?
 												'themes/'.$this->theme.'/'.$this->color_scheme.'/img/favicon.ico' :
-												_file_exists(THEMES.'/'.$this->theme.'/img/favicon.ico') ?
+												file_exists(THEMES.'/'.$this->theme.'/img/favicon.ico') ?
 												'themes/'.$this->theme.'/img/favicon.ico' :
 												'includes/img/favicon.ico'
 						]).
@@ -343,30 +341,30 @@ class Page {
 		if ($Config->core['cache_compress_js_css']) {
 			//Проверка текущего кеша
 			if (
-				!_file_exists(PCACHE.DS.$this->pcache_basename.'css') ||
-				!_file_exists(PCACHE.DS.$this->pcache_basename.'js') ||
-				!_file_exists(PCACHE.DS.'pcache_key')
+				!file_exists(PCACHE.'/'.$this->pcache_basename.'css') ||
+				!file_exists(PCACHE.'/'.$this->pcache_basename.'js') ||
+				!file_exists(PCACHE.'/pcache_key')
 			) {
 				$this->rebuild_cache();
 			}
-			$key = _file_get_contents(PCACHE.DS.'pcache_key');
+			$key = file_get_contents(PCACHE.'/pcache_key');
 			//Подключение CSS стилей
-			$css_list = get_list(PCACHE, '/^[^_](.*)\.css$/i', 'f', 'storages/pcache');
-			if (DS != '/') {
-				$css_list = str_replace(DS, '/', $css_list);
-			}
-			$css_list = array_merge(array('storages/pcache/'.$this->pcache_basename.'css'), $css_list);
+			$css_list = get_list(PCACHE, '/^[^_](.*)\.css$/i', 'f', 'storage/pcache');
+			$css_list = array_merge(
+				['storage/pcache/'.$this->pcache_basename.'css'],
+				$css_list
+			);
 			foreach ($css_list as &$file) {
 				$file .= '?'.$key;
 			}
 			unset($file);
 			$this->css_internal($css_list, 'file', true);
 			//Подключение JavaScript
-			$js_list = get_list(PCACHE, '/^[^_](.*)\.js$/i', 'f', 'storages/pcache');
-			if (DS != '/') {
-				$js_list = str_replace(DS, '/', $js_list);
-			}
-			$js_list = array_merge(array('storages/pcache/'.$this->pcache_basename.'js'), $js_list);
+			$js_list = get_list(PCACHE, '/^[^_](.*)\.js$/i', 'f', 'storage/pcache');
+			$js_list = array_merge(
+				['storage/pcache/'.$this->pcache_basename.'js'],
+				$js_list
+			);
 			foreach ($js_list as &$file) {
 				$file .= '?'.$key;
 			}
@@ -386,26 +384,23 @@ class Page {
 	}
 	//Загрузка списка JavaScript и CSS файлов
 	protected function get_includes_list ($for_cache = false) {
-		$theme_folder	= THEMES.DS.$this->theme;
-		$scheme_folder	= $theme_folder.DS.'schemes'.DS.$this->color_scheme;
+		$theme_folder	= THEMES.'/'.$this->theme;
+		$scheme_folder	= $theme_folder.'/schemes/'.$this->color_scheme;
 		$theme_pfolder	= 'themes/'.$this->theme;
 		$scheme_pfolder	= $theme_pfolder.'/schemes/'.$this->color_scheme;
 		$this->includes = array(
 			'css' => array_merge(
-				(array)get_list(INCLUDES.DS.'css',			'/(.*)\.css$/i',	'f', $for_cache ? true : 'includes/css',			true, false, '!include'),
-				(array)get_list($theme_folder.DS.'css',		'/(.*)\.css$/i',	'f', $for_cache ? true : $theme_pfolder.'/css',		true, false, '!include'),
-				(array)get_list($scheme_folder.DS.'css',	'/(.*)\.css$/i',	'f', $for_cache ? true : $scheme_pfolder.'/css',	true, false, '!include')
+				(array)get_list(CSS,					'/(.*)\.css$/i',	'f', $for_cache ? true : 'includes/css',			true, false, '!include'),
+				(array)get_list($theme_folder.'/css',	'/(.*)\.css$/i',	'f', $for_cache ? true : $theme_pfolder.'/css',		true, false, '!include'),
+				(array)get_list($scheme_folder.'/css',	'/(.*)\.css$/i',	'f', $for_cache ? true : $scheme_pfolder.'/css',	true, false, '!include')
 			),
 			'js' => array_merge(
-				(array)get_list(INCLUDES.DS.'js',			'/(.*)\.js$/i',		'f', $for_cache ? true : 'includes/js',				true, false, '!include'),
-				(array)get_list($theme_folder.DS.'js',		'/(.*)\.js$/i',		'f', $for_cache ? true : $theme_pfolder.'/js',		true, false, '!include'),
-				(array)get_list($scheme_folder.DS.'js',		'/(.*)\.js$/i',		'f', $for_cache ? true : $scheme_pfolder.'/js',		true, false, '!include')
+				(array)get_list(JS,						'/(.*)\.js$/i',		'f', $for_cache ? true : 'includes/js',				true, false, '!include'),
+				(array)get_list($theme_folder.'/js',	'/(.*)\.js$/i',		'f', $for_cache ? true : $theme_pfolder.'/js',		true, false, '!include'),
+				(array)get_list($scheme_folder.'/js',	'/(.*)\.js$/i',		'f', $for_cache ? true : $scheme_pfolder.'/js',		true, false, '!include')
 			)
 		);
 		unset($theme_folder, $scheme_folder, $theme_pfolder, $scheme_pfolder);
-		if (!$for_cache && DS != '/') {
-			$this->includes = str_replace(DS, '/', $this->includes);
-		}
 		sort($this->includes['css']);
 		sort($this->includes['js']);
 	}
@@ -416,8 +411,8 @@ class Page {
 		foreach ($this->includes as $extension => &$files) {
 			$temp_cache = '';
 			foreach ($files as $file) {
-				if (_file_exists($file)) {
-					$current_cache = _file_get_contents($file);
+				if (file_exists($file)) {
+					$current_cache = file_get_contents($file);
 					if ($extension == 'css') {
 						//Insert external elements into resulting css file
 						//It is needed, because those files will not be copied into new destination of resulting css file
@@ -427,10 +422,10 @@ class Page {
 					unset($current_cache);
 				}
 			}
-			_file_put_contents(PCACHE.DS.$this->pcache_basename.$extension, gzencode($temp_cache, 9), LOCK_EX|FILE_BINARY);
+			file_put_contents(PCACHE.'/'.$this->pcache_basename.$extension, gzencode($temp_cache, 9), LOCK_EX|FILE_BINARY);
 			$key .= md5($temp_cache);
 		}
-		_file_put_contents(PCACHE.DS.'pcache_key', mb_substr(md5($key), 0, 5), LOCK_EX|FILE_BINARY);
+		file_put_contents(PCACHE.'/pcache_key', mb_substr(md5($key), 0, 5), LOCK_EX|FILE_BINARY);
 	}
 
 	/**
@@ -443,7 +438,7 @@ class Page {
 	 */
 	function css_includes_processing (&$data, $file) {
 		$cwd	= getcwd();
-		_chdir(_dirname($file));
+		chdir(dirname($file));
 		//Simple minification, deletes comments, new lines, tabulations and unnecessary spaces
 		$data	= preg_replace('#(/\*.*?\*/)|\t|\n|\r#s', '', $data);
 		$data	= preg_replace('#\s*([,:;+>{}])\s*#s', '$1', $data);
@@ -484,16 +479,16 @@ class Page {
 						$mime_type = 'text/css';
 					break;
 				}
-				$content	= _file_get_contents(_realpath($link));
+				$content	= file_get_contents(realpath($link));
 				//For recursing includes processing
 				if ($format == 'css') {
-					$this->css_includes_processing($content, _realpath($link));
+					$this->css_includes_processing($content, realpath($link));
 				}
 				$data = str_replace($link, 'data:'.$mime_type.';charset=utf-8;base64,'.base64_encode($content), $data);
 			},
 			$data
 		);
-		_chdir($cwd);
+		chdir($cwd);
 	}
 	//Генерирование информации о процессе загрузки страницы
 	protected function footer () {
@@ -674,7 +669,10 @@ class Page {
 	function error_page () {
 		interface_off();
 		ob_start();
-		if (!_include(THEMES.DS.$this->theme.DS.'error.html', true, false) && !_include(THEMES.DS.$this->theme.DS.'error.php', true, false)) {
+		if (
+			!_include_once(THEMES.'/'.$this->theme.'/error.html', false) &&
+			!_include_once(THEMES.'/'.$this->theme.'/error.php', false)
+		) {
 			echo "<!doctype html>\n".(error_header(ERROR_PAGE) ?: ERROR_PAGE);
 		}
 		$this->Content = ob_get_clean();
@@ -743,7 +741,7 @@ class Page {
 				).
 				h::{'select#register_list'}(
 					[
-						 'in'			=> array_merge([''], (array)_mb_substr(get_list(MODULES.DS.'System'.DS.'registration', '/^.*?\.php$/i', 'f'), 0, -4))
+						 'in'			=> array_merge([''], (array)_mb_substr(get_list(MODULES.'/System/registration', '/^.*?\.php$/i', 'f'), 0, -4))
 					]
 				).
 				h::{'button#register_process.cs-button-compact[tabindex=2]'}(h::icon('pencil').$L->register).
@@ -768,7 +766,7 @@ class Page {
 					'placeholder'	=> $L->login_or_email_or
 				]).
 				h::{'select#login_list'}([
-					'in'			=> array_merge([''], (array)_mb_substr(get_list(MODULES.DS.'System'.DS.'registration', '/^.*?\.php$/i', 'f'), 0, -4))
+					'in'			=> array_merge([''], (array)_mb_substr(get_list(MODULES.'/System/registration', '/^.*?\.php$/i', 'f'), 0, -4))
 				]).
 				h::{'input#user_password[type=password][tabindex=2]'}([
 					'placeholder'	=> $L->password

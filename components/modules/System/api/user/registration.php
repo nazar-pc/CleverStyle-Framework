@@ -19,7 +19,7 @@ if (
 	$Page->content($L->please_type_your_email);
 	sleep(1);
 	return;
-} elseif (file_exists(MFOLDER.DS.'registration'.DS.str_replace('/', '', $_POST['email']).'.php')) {
+} elseif (file_exists(MFOLDER.'/registration/'.str_replace('/', '', $_POST['email']).'.php')) {
 	//TODO foreign login systems processing
 	return;
 }

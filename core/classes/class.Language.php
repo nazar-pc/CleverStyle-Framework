@@ -67,9 +67,9 @@ class Language {
 		global $Cache;
 		if (($aliases = $Cache->{'languages/aliases'}) === false) {
 			$aliases		= [];
-			$aliases_list	= _strtolower(get_list(LANGUAGES.DS.'aliases'));
+			$aliases_list	= _strtolower(get_list(LANGUAGES.'/aliases'));
 			foreach ($aliases_list as $alias) {
-				$aliases[$alias] = _file_get_contents(LANGUAGES.DS.'aliases'.DS.$alias);
+				$aliases[$alias] = file_get_contents(LANGUAGES.'/aliases/'.$alias);
 			}
 			unset($aliases_list, $alias);
 			$Cache->{'languages/aliases'} = $aliases;
@@ -153,8 +153,8 @@ class Language {
 			if ($translate = $Cache->{'languages/'.$this->clanguage}) {
 				$this->set($translate);
 				return true;
-			} elseif (_file_exists(LANGUAGES.'/lang.'.$this->clanguage.'.json')) {
-				$data = _file(LANGUAGES.'/lang.'.$this->clanguage.'.json', FILE_SKIP_EMPTY_LINES);
+			} elseif (file_exists(LANGUAGES.'/lang.'.$this->clanguage.'.json')) {
+				$data = file(LANGUAGES.'/lang.'.$this->clanguage.'.json', FILE_SKIP_EMPTY_LINES);
 				_include(LANGUAGES.'/lang.'.$this->clanguage.'.php', false, false);
 				foreach ($data as $i => $line) {
 					if (substr(ltrim($line), 0, 2) == '//') {

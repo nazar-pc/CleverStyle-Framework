@@ -43,11 +43,11 @@ class Index {
 	function __construct () {
 		global $Config, $User, $Index;
 		$Index = $this;
-		$admin_path	= MODULES.DS.MODULE.DS.'admin';
-		$api_path	= MODULES.DS.MODULE.DS.'api';
+		$admin_path	= MODULES.'/'.MODULE.'/admin';
+		$api_path	= MODULES.'/'.MODULE.'/api';
 		if (
 			ADMIN &&
-			_file_exists($admin_path) && (_file_exists($admin_path.DS.'index.php') || _file_exists($admin_path.DS.'index.json'))
+			file_exists($admin_path) && (file_exists($admin_path.'/index.php') || file_exists($admin_path.'/index.json'))
 		) {
 			if (!($User->is('admin') && $User->get_user_permission($this->permission_group = MODULE.'/admin', 'index'))) {
 				define('ERROR_PAGE', 403);
@@ -59,7 +59,7 @@ class Index {
 			$this->admin	= true;
 		} elseif (
 			API
-			&& _file_exists($api_path) && (_file_exists($api_path.DS.'index.php') || _file_exists($api_path.DS.'index.json'))
+			&& file_exists($api_path) && (file_exists($api_path.'/index.php') || file_exists($api_path.'/index.json'))
 		) {
 			if (!$User->get_user_permission($this->permission_group = MODULE.'/api', 'index')) {
 				define('ERROR_PAGE', 403);
@@ -68,13 +68,13 @@ class Index {
 			}
 			define('MFOLDER', $api_path);
 			$this->api		= true;
-		} elseif (_file_exists(MODULES.DS.MODULE)) {
+		} elseif (file_exists(MODULES.'/'.MODULE)) {
 			if (!$User->get_user_permission($this->permission_group = MODULE, 'index')) {
 				define('ERROR_PAGE', 403);
 				$this->__finish();
 				return;
 			}
-			define('MFOLDER', MODULES.DS.MODULE);
+			define('MFOLDER', MODULES.'/'.MODULE);
 			$this->module	= true;
 		} else {
 			define('ERROR_PAGE', 404);
@@ -84,9 +84,9 @@ class Index {
 		unset($admin_path, $api_path);
 		//Plugins processing
 		foreach ($Config->components['plugins'] as $plugin) {
-			_include(PLUGINS.DS.$plugin.DS.'index.php', true, false);
+			_include_once(PLUGINS.'/'.$plugin.'/index.php', false);
 		}
-		_include(MFOLDER.DS.'prepare.php', true, false);
+		_include_once(MFOLDER.'/prepare.php', false);
 	}
 	function content ($add, $level = false) {
 		if ($level !== false) {
@@ -98,13 +98,13 @@ class Index {
 	protected function init () {
 		global $Config, $L, $Page, $User;
 		$rc = &$Config->routing['current'];
-		if ($Config->core['simple_admin_mode'] && _file_exists(MFOLDER.DS.'index_simple.json')) {
+		if ($Config->core['simple_admin_mode'] && file_exists(MFOLDER.'/index_simple.json')) {
 			$structure_file	= 'index_simple.json';
 		} else {
 			$structure_file	= 'index.json';
 		}
-		if (_file_exists(MFOLDER.DS.$structure_file)) {
-			$this->structure	= _json_decode(_file_get_contents(MFOLDER.DS.$structure_file));
+		if (file_exists(MFOLDER.'/'.$structure_file)) {
+			$this->structure	= _json_decode(file_get_contents(MFOLDER.'/'.$structure_file));
 			if (is_array($this->structure)) {
 				foreach ($this->structure as $item => $value) {
 					if ($User->get_user_permission($this->permission_group, $item)) {
@@ -129,7 +129,7 @@ class Index {
 				unset($item, $value, $subpart);
 			}
 		}
-		_include(MFOLDER.DS.'index.php', true, false);
+		_include_once(MFOLDER.'/index.php', false);
 		if ($this->stop) {
 			return;
 		}
@@ -156,10 +156,10 @@ class Index {
 					$Page->title($L->$rc[0]);
 				}
 			}
-			if ($this->admin && !_include(MFOLDER.DS.$rc[0].DS.$this->savefile.'.php', true, false)) {
-				_include(MFOLDER.DS.$this->savefile.'.php', true, false);
+			if ($this->admin && !_include_once(MFOLDER.'/'.$rc[0].'/'.$this->savefile.'.php', false)) {
+				_include_once(MFOLDER.'/'.$this->savefile.'.php', false);
 			}
-			_include(MFOLDER.DS.$rc[0].'.php', true, false);
+			_include_once(MFOLDER.'/'.$rc[0].'.php', false);
 			if ($this->stop) {
 				return;
 			}
@@ -180,7 +180,7 @@ class Index {
 					}
 					$this->action = ($this->admin ? 'admin/' : '').MODULE.'/'.$rc[0].'/'.$rc[1];
 				}
-				_include(MFOLDER.DS.$rc[0].DS.$rc[1].'.php', true, false);
+				_include_once(MFOLDER.'/'.$rc[0].'/'.$rc[1].'.php', false);
 				if ($this->stop) {
 					return;
 				}
@@ -193,7 +193,7 @@ class Index {
 			}
 		} elseif (!$this->api) {
 			$this->action = $Config->server['corrected_full_address'];
-			_include(MFOLDER.DS.$this->savefile.'.php', true, false);
+			_include_once(MFOLDER.'/'.$this->savefile.'.php', false);
 		}
 	}
 	protected function mainmenu () {
@@ -411,7 +411,7 @@ class Index {
 				switch ($block['type']) {
 					default:
 						ob_start();
-						_include(BLOCKS.DS.'block.'.$block['type'].'.php', false, false);
+						_include(BLOCKS.'/block.'.$block['type'].'.php', false, false);
 						$content = ob_get_clean();
 					break;
 					case 'html':
@@ -419,13 +419,13 @@ class Index {
 						$content = $block['data'];
 					break;
 				}
-				$template				= _file_exists(TEMPLATES.DS.'blocks'.DS.'block.'.$block['template']) ?
-														TEMPLATES.DS.'blocks'.DS.'block.'.$block['template'] :
-														TEMPLATES.DS.'blocks'.DS.'block.default.html';
+				$template				= file_exists(TEMPLATES.'/blocks/block.'.$block['template']) ?
+														TEMPLATES.'/blocks/block.'.$block['template'] :
+														TEMPLATES.'/blocks/block.default.html';
 				$block_cache['content']	= str_replace(
 					['<!--id-->', '<!--title-->', '<!--content-->'],
 					[$block['index'], $block['title'], $content],
-					_file_get_contents($template)
+					file_get_contents($template)
 				);
 				if ($block['update'] > 0) {
 					$block_cache['expire']				= TIME + $block['update'];
@@ -526,10 +526,10 @@ class Index {
 			$Page->error_page();
 		}
 		closure_process($this->preload);
-		if (!$this->admin && !$this->api && _file_exists(MFOLDER.DS.'index.html')) {
+		if (!$this->admin && !$this->api && file_exists(MFOLDER.'/index.html')) {
 			global $Page, $L;
 			ob_start();
-			_include(MFOLDER.DS.'index.html', false, false);
+			_include(MFOLDER.'/index.html', false, false);
 			$Page->content(ob_get_clean());
 			if ($this->title_auto) {
 				$Page->title($L->{HOME ? 'home' : MODULE});

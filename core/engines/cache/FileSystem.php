@@ -18,14 +18,11 @@ class FileSystem extends _Abstract {
 	 * @return bool|mixed
 	 */
 	function get ($item) {
-		if (DS != '/') {
-			$item = str_replace('/', DS, $item);
-		}
-		if (_is_file(CACHE.DS.$item) && _is_readable(CACHE.DS.$item) && $cache = _file_get_contents(CACHE.DS.$item, FILE_BINARY)) {
+		if (is_file(CACHE.'/'.$item) && is_readable(CACHE.'/'.$item) && $cache = file_get_contents(CACHE.'/'.$item, FILE_BINARY)) {
 			if (($cache = @_json_decode($cache)) !== false) {
 				return $cache;
 			} else {
-				_unlink(CACHE.DS.$item);
+				unlink(CACHE.'/'.$item);
 				return false;
 			}
 		}
@@ -42,7 +39,6 @@ class FileSystem extends _Abstract {
 		if (strpos($item, '/') !== false) {
 			$subitems                       = explode('/', trim($item, "\n/"));
 			$subitems[count($subitems) - 1] = trim($subitems[count($subitems) - 1]);
-			$item = str_replace('/', DS, $item);
 			$last = count($subitems) - 1;
 			$path = [];
 			foreach ($subitems as $i => $subitem) {
@@ -50,25 +46,25 @@ class FileSystem extends _Abstract {
 					break;
 				}
 				$path[] = $subitem;
-				if (!_is_dir(CACHE.DS.implode(DS, $path))) {
-					@_mkdir(CACHE.DS.implode(DS, $path), 0770);
+				if (!is_dir(CACHE.'/'.implode('/', $path))) {
+					@mkdir(CACHE.'/'.implode('/', $path), 0770);
 				}
 			}
 			unset($subitems, $last, $path, $i, $subitem);
 		}
-		if (!_file_exists(CACHE.DS.$item) || _is_writable(CACHE.DS.$item)) {
+		if (!file_exists(CACHE.'/'.$item) || is_writable(CACHE.'/'.$item)) {
 			if ($this->cache_size > 0) {
 				$dsize = strlen($data);
-				if (_file_exists(CACHE.DS.$item)) {
-					$dsize -= _filesize(CACHE.DS.$item);
+				if (file_exists(CACHE.'/'.$item)) {
+					$dsize -= filesize(CACHE.'/'.$item);
 				}
 				if ($dsize > $this->cache_size) {
 					return false;
 				}
-				if ($this->size === null && _file_exists(CACHE.DS.'size')) {
-					$size = _filesize(CACHE.DS.'size');
+				if ($this->size === null && file_exists(CACHE.'/size')) {
+					$size = filesize(CACHE.'/size');
 				}
-				$size_file = _fopen(CACHE.DS.'size', 'c+b');
+				$size_file = fopen(CACHE.'/size', 'c+b');
 				flock($size_file, LOCK_EX);
 				if (isset($size) && $this->size === null) {
 					$this->size = (int)fread($size_file, $size);
@@ -80,8 +76,8 @@ class FileSystem extends _Abstract {
 				if ($this->size > $this->cache_size) {
 					$cache_list = get_list(CACHE, false, 'f', true, true, 'date|desc');
 					foreach ($cache_list as $file) {
-						$this->size -= _filesize($file);
-						_unlink($file);
+						$this->size -= filesize($file);
+						unlink($file);
 						$disk_size = $this->cache_size * 2 / 3;
 						if ($this->size <= $disk_size) {
 							break;
@@ -89,7 +85,7 @@ class FileSystem extends _Abstract {
 					}
 					unset($cache_list, $file);
 				}
-				if (($return = _file_put_contents(CACHE.DS.$item, $data, LOCK_EX | FILE_BINARY)) !== false) {
+				if (($return = file_put_contents(CACHE.'/'.$item, $data, LOCK_EX | FILE_BINARY)) !== false) {
 					ftruncate($size_file, 0);
 					fseek($size_file, 0);
 					fwrite($size_file, $this->size > 0 ? $this->size : 0);
@@ -100,11 +96,11 @@ class FileSystem extends _Abstract {
 				fclose($size_file);
 				return $return;
 			} else {
-				return _file_put_contents(CACHE.DS.$item, $data, LOCK_EX | FILE_BINARY);
+				return file_put_contents(CACHE.'/'.$item, $data, LOCK_EX | FILE_BINARY);
 			}
 		} else {
 			global $L;
-			trigger_error($L->file.' '.CACHE.DS.$item.' '.$L->not_writable, E_USER_WARNING);
+			trigger_error($L->file.' '.CACHE.'/'.$item.' '.$L->not_writable, E_USER_WARNING);
 			return false;
 		}
 	}
@@ -131,29 +127,26 @@ class FileSystem extends _Abstract {
 			global $Core;
 			$Core->api_request('System/admin/cache/del', ['item' => $item]);
 		}
-		if (DS != '/') {
-			$item = str_replace('/', DS, $item);
-		}
-		if (_is_writable(CACHE.DS.$item)) {
-			if (_is_dir(CACHE.DS.$item)) {
-				$files = get_list(CACHE.DS.$item, false, 'fd');
+		if (is_writable(CACHE.'/'.$item)) {
+			if (is_dir(CACHE.'/'.$item)) {
+				$files = get_list(CACHE.'/'.$item, false, 'fd');
 				foreach ($files as $file) {
 					$this->del($item.'/'.$file, false);
 				}
 				unset($files, $file);
-				return _rmdir(CACHE.DS.$item);
+				return rmdir(CACHE.'/'.$item);
 			}
 			if ($this->cache_size > 0) {
-				if ($this->size === null && _file_exists(CACHE.DS.'size')) {
-					$size = _filesize(CACHE.DS.'size');
+				if ($this->size === null && file_exists(CACHE.'/size')) {
+					$size = filesize(CACHE.'/size');
 				}
-				$size_file = _fopen(CACHE.DS.'size', 'c+b');
+				$size_file = fopen(CACHE.'/size', 'c+b');
 				flock($size_file, LOCK_EX);
 				if (isset($size) && $this->size === null) {
 					$this->size .= (int)fread($size_file, $size);
 				}
-				$this->size -= _filesize(CACHE.DS.$item);
-				if (_unlink(CACHE.DS.$item)) {
+				$this->size -= filesize(CACHE.'/'.$item);
+				if (unlink(CACHE.'/'.$item)) {
 					ftruncate($size_file, 0);
 					fseek($size_file, 0);
 					fwrite($size_file, $this->size > 0 ? $this->size : 0);
@@ -161,9 +154,9 @@ class FileSystem extends _Abstract {
 				flock($size_file, LOCK_UN);
 				fclose($size_file);
 			} else {
-				_unlink(CACHE.DS.$item);
+				unlink(CACHE.'/'.$item);
 			}
-		} elseif (_file_exists(CACHE.DS.$item)) {
+		} elseif (file_exists(CACHE.'/'.$item)) {
 			return false;
 		}
 		return true;
@@ -175,8 +168,8 @@ class FileSystem extends _Abstract {
 		$ok = true;
 		$list = get_list(CACHE, false, 'fd', true, true, 'name|desc');
 		foreach ($list as $item) {
-			if (_is_writable($item)) {
-				_is_dir($item) ? @_rmdir($item) : @_unlink($item);
+			if (is_writable($item)) {
+				is_dir($item) ? @rmdir($item) : @unlink($item);
 			} else {
 				$ok = false;
 			}

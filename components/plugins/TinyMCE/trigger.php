@@ -4,9 +4,9 @@ $clean_pcache = function ($data = null) {
 	$plugin = basename(__DIR__);
 	if (
 		($data['name'] == $plugin || $data === null) &&
-		_file_exists(PCACHE.DS.'plugin.'.$plugin.'.js')
+		file_exists(PCACHE.'/plugin.'.$plugin.'.js')
 	) {
-		_unlink(PCACHE.DS.'plugin.'.$plugin.'.js');
+		unlink(PCACHE.'/plugin.'.$plugin.'.js');
 	}
 };
 $Core->register_trigger('admin/System/components/plugins/disable',			$clean_pcache);

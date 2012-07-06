@@ -11,27 +11,22 @@ class Core {
 				$triggers;
 
 	function __construct() {
-		if (!_require(CONFIG.DS.CDOMAIN.DS.'main.php', true, false)) {
+		if (!_require_once(CONFIG.'/main.php', false)) {
 			error_header(404);
 			__finish();
 		}
-		define('STORAGE',	STORAGES.DS.DOMAIN.DS.'public');	//Local public storage for current domain
-		define('CACHE',		STORAGES.DS.DOMAIN.DS.'cache');		//Cache directory for current domain
-		define('LOGS',		STORAGES.DS.DOMAIN.DS.'logs');		//Log directory for current domain
-		define('TEMP',		STORAGES.DS.DOMAIN.DS.'temp');		//Temp directory for current domain
-		!_is_dir(STORAGES.DS.DOMAIN)	&& @_mkdir(STORAGES.DS.DOMAIN, 0770);
-		!_is_dir(STORAGE)				&& @_mkdir(STORAGE, 0777)	&& _file_put_contents(
-			STORAGE.DS.'.htaccess',
+		!is_dir(STORAGE)				&& @mkdir(STORAGE, 0777)	&& file_put_contents(
+			STORAGE.'/.htaccess',
 			'Allow From All'
 		);
-		!_is_dir(CACHE)					&& @_mkdir(CACHE, 0770);
-		!_is_dir(PCACHE)				&& @_mkdir(PCACHE, 0777)	&& _file_put_contents(
-			PCACHE.DS.'.htaccess',
+		!is_dir(CACHE)					&& @mkdir(CACHE, 0770);
+		!is_dir(PCACHE)					&& @mkdir(PCACHE, 0777)		&& file_put_contents(
+			PCACHE.'/.htaccess',
 			"Allow From All\r\nAddEncoding gzip .js\r\nAddEncoding gzip .css"
 		);
-		!_is_dir(LOGS)					&& @_mkdir(LOGS, 0770);
-		!_is_dir(TEMP)					&& @_mkdir(TEMP, 0777)		&& _file_put_contents(
-			TEMP.DS.'.htaccess',
+		!is_dir(LOGS)					&& @mkdir(LOGS, 0770);
+		!is_dir(TEMP)					&& @mkdir(TEMP, 0777)		&& file_put_contents(
+			TEMP.'/.htaccess',
 			'Allow From All'
 		);
 		if ($this->encrypt_support = check_mcrypt()) {
@@ -270,12 +265,12 @@ class Core {
 			global $Config;
 			$modules = array_keys($Config->components['modules']);
 			foreach ($modules as $module) {
-				_include(MODULES.DS.$module.DS.'trigger.php', true, false);
+				_include_once(MODULES.'/'.$module.'/trigger.php', false);
 			}
 			unset($modules, $module);
 			$plugins = get_list(PLUGINS, false, 'd');
 			foreach ($plugins as $plugin) {
-				_include(PLUGINS.DS.$plugin.DS.'trigger.php', true, false);
+				_include_once(PLUGINS.'/'.$plugin.'/trigger.php', false);
 			}
 			unset($plugins, $plugin);
 			$this->triggers_init = true;

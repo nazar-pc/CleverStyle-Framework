@@ -86,8 +86,8 @@ if (isset($_POST['update_modules_list'])) {
 				$permissions = [
 					$_POST['module'] => ['index']
 				];
-				if (_file_exists(MODULES.DS.$_POST['module'].DS.'index.json')) {
-					$structure = _json_decode(_file_get_contents(MODULES.DS.$_POST['module'].DS.'index.json'));
+				if (file_exists(MODULES.'/'.$_POST['module'].'/index.json')) {
+					$structure = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/index.json'));
 					foreach ($structure as $item => $part) {
 						if (is_array($part)) {
 							$permissions[$_POST['module']][] = $item;
@@ -100,10 +100,10 @@ if (isset($_POST['update_modules_list'])) {
 					}
 					unset($structure, $item, $part, $subpart);
 				}
-				if (_file_exists(MODULES.DS.$_POST['module'].DS.'admin')) {
+				if (file_exists(MODULES.'/'.$_POST['module'].'/admin')) {
 					$permissions[$_POST['module'].'/admin'] = ['index'];
-					if (_file_exists(MODULES.DS.$_POST['module'].DS.'admin'.DS.'index.json')) {
-						$structure = _json_decode(_file_get_contents(MODULES.DS.$_POST['module'].DS.'admin'.DS.'index.json'));
+					if (file_exists(MODULES.'/'.$_POST['module'].'/admin/index.json')) {
+						$structure = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/admin/index.json'));
 						foreach ($structure as $item => $part) {
 							if (is_array($part)) {
 								$permissions[$_POST['module'].'/admin'][] = $item;

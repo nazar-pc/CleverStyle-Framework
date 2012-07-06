@@ -149,22 +149,6 @@ class h {//TODO full array of unpaired tags for general processing
 				'</'.$tag.'>'.
 				($level ? "\n" : '');
 	}
-	//Метод для разворота массива навыворот для select и radio
-	protected static function array_flip ($in, $num) {
-		$options = [];
-		foreach ($in as $i => $v) {
-			for ($n = 0; $n < $num; ++$n) {
-				if (is_array($v)) {
-					if (isset($v[$n])) {
-						$options[$n][$i] = $v[$n];
-					}
-				} else {
-					$options[$n][$i] = $v;
-				}
-			}
-		}
-		return $options;
-	}
 	//Wrapper for processing unpaired tags
 	protected static function u_wrap ($data = []) {
 		$data = (array)$data;
@@ -192,97 +176,6 @@ class h {//TODO full array of unpaired tags for general processing
 		}
 		return self::wrap($in, $data, __FUNCTION__);
 	}
-	//Specific tags processing (similar are collected in templates - template_#)
-	/**
-	 * Template 2
-	 *
-	 * @static
-	 *
-	 * @param	array|string    $in
-	 * @param	array           $data
-	 * @param	array			$data2
-	 * @param	string			$function
-	 * @param	string			$add_tag
-	 *
-	 * @return	bool|string
-	 */
-		protected static function template_1 ($in, $data, $data2, $function, $add_tag = 'td') {
-			if (is_array($in) && !isset($in['in'])) {
-				$temp = '';
-				foreach ($in as $item) {
-					$temp .= self::tr(self::$add_tag($item, $data2));
-				}
-				return self::wrap($temp, $data, $function);
-			} else {
-				return self::wrap($in, $data, $function);
-			}
-		}
-		static function table		($in = [], $data = [], $data2 = []) {
-			return self::template_1($in, $data, $data2, __FUNCTION__);
-		}
-		static function thead		($in = [], $data = [], $data2 = []) {
-			return self::template_1($in, $data, $data2, __FUNCTION__, 'th');
-		}
-		static function tbody		($in = [], $data = [], $data2 = []) {
-			return self::template_1($in, $data, $data2, __FUNCTION__);
-		}
-		static function tfoot		($in = [], $data = [], $data2 = []) {
-			return self::template_1($in, $data, $data2, __FUNCTION__, 'th');
-		}
-
-	/**
-	 * Template 2
-	 *
-	 * @static
-	 *
-	 * @param	array|string    $in
-	 * @param	array           $data
-	 * @param	string			$function
-	 *
-	 * @return	bool|string
-	 */
-	/*	protected static function template_2 ($in, $data, $function) {
-			if (is_array($in)) {
-				$temp = '';
-				foreach ($in as $item) {
-					$temp .= self::wrap($item, $data, $function);
-				}
-				return $temp;
-			} else {
-				return self::wrap($in, $data, $function);
-			}
-		}
-		static function tr			($in = '', $data = []) {
-			return self::template_2($in, $data, __FUNCTION__);
-		}
-		static function th			($in = '', $data = []) {
-			return self::template_2($in, $data, __FUNCTION__);
-		}
-		static function td			($in = '', $data = []) {
-			return self::template_2($in, $data, __FUNCTION__);
-		}
-		static function ul			($in = '', $data = []) {
-			return self::template_2($in, $data, __FUNCTION__);
-		}
-		static function ol			($in = '', $data = []) {
-			return self::template_2($in, $data, __FUNCTION__);
-		}
-		static function li			($in = '', $data = []) {
-			return self::template_2($in, $data, __FUNCTION__);
-		}
-		static function dl			($in = '', $data = []) {
-			return self::template_2($in, $data, __FUNCTION__);
-		}
-		static function dt			($in = '', $data = []) {
-			return self::template_2($in, $data, __FUNCTION__);
-		}
-		static function dd			($in = '', $data = []) {
-			return self::template_2($in, $data, __FUNCTION__);
-		}
-		static function option		($in = '', $data = []) {
-			return self::template_2($in, $data, __FUNCTION__);
-		}*/
-
 	static function input		($in = [], $data = []) {
 		if (!empty($data)) {
 			$in = array_merge(['in' => $in], $data);
@@ -311,7 +204,7 @@ class h {//TODO full array of unpaired tags for general processing
 					}
 				}
 				unset($in['checked'], $i, $v);
-				$items = self::array_flip($in, count($in['in']));
+				$items = array_flip_3d($in);
 				unset($in, $v, $i);
 				$temp = '';
 				foreach ($items as $item) {
@@ -341,11 +234,14 @@ class h {//TODO full array of unpaired tags for general processing
 			}
 		} else {
 			if (
-				(isset($in['name'])	&& is_array($in['name'])	&& ($num = count($in['name'])) > 0) ||
-				(isset($in['id'])	&& is_array($in['id'])		&& ($num = count($in['id'])) > 0)
+				(
+					isset($in['name'])	&& is_array($in['name'])
+				) ||
+				(
+					isset($in['id'])	&& is_array($in['id'])
+				)
 			) {
-				$items = self::array_flip($in, $num);
-				unset($num);
+				$items = array_flip_3d($in);
 				$return = '';
 				foreach ($items as $item) {
 					$return .= self::input($item);
@@ -369,9 +265,8 @@ class h {//TODO full array of unpaired tags for general processing
 			}
 		}
 	}
-
 	/**
-	 * Template 3
+	 * Template 1
 	 *
 	 * @static
 	 *
@@ -381,80 +276,114 @@ class h {//TODO full array of unpaired tags for general processing
 	 *
 	 * @return	bool|string
 	 */
-		protected static function template_3 ($in = '', $data = [], $function) {
-			if (!is_array($in)) {
-				return self::wrap($in, $data, $function);
+	protected static function template_1 ($in = '', $data = [], $function) {
+		if (!is_array($in)) {
+			return self::wrap($in, $data, $function);
+		}
+		if (
+			!isset($in['value']) && isset($in['in']) && is_array($in['in'])
+		) {
+			$in['value']	= &$in['in'];
+		} elseif (
+			!isset($in['in']) && isset($in['value']) && is_array($in['value'])
+		) {
+			$in['in']		= &$in['value'];
+		} elseif (
+			(
+				!isset($in['in']) || !is_array($in['in'])
+			) &&
+			(
+				!isset($in['value']) || !is_array($in['value'])
+			) &&
+			is_array($in)
+		) {
+			$temp			= $in;
+			$in				= [];
+			$in['value']	= &$temp;
+			$in['in']		= &$temp;
+			unset($temp);
+		}
+		if (!isset($in['value']) && !isset($in['in'])) {
+			return false;
+		}
+		/**
+		 * Moves arrays of attributes into option tags
+		 */
+		foreach ($data as $attr => &$value) {
+			if (is_array($value)) {
+				$in[$attr] = $value;
+				unset($data[$attr]);
 			}
-			if (
-				!isset($in['value']) && isset($in['in']) && is_array($in['in'])
-			) {
-				$in['value']	= &$in['in'];
-			} elseif (
-				!isset($in['in']) && isset($in['value']) && is_array($in['value'])
-			) {
-				$in['in']		= &$in['value'];
-			} elseif (
-				(
-					!isset($in['in']) || !is_array($in['in'])
-				) &&
-				(
-					!isset($in['value']) || !is_array($in['value'])
-				) &&
-				is_array($in)
-			) {
-				$temp			= $in;
-				$in				= [];
-				$in['value']	= &$temp;
-				$in['in']		= &$temp;
-				unset($temp);
+		}
+		if (isset($data['selected']) && is_array($in['value'])) {
+			if (!is_array($data['selected'])) {
+				$data['selected']	= [$data['selected']];
 			}
-			if (!isset($in['value']) && !isset($in['in'])) {
-				return false;
-			}
-			/**
- 			 * Moves arrays of attributes into option tags
-			 */
-			foreach ($data as $attr => &$value) {
-				if (is_array($value)) {
-					$in[$attr] = $value;
-					unset($data[$attr]);
-				}
-			}
-			if (isset($data['selected']) && is_array($in['value'])) {
-				if (!is_array($data['selected'])) {
-					$data['selected']	= [$data['selected']];
-				}
-				foreach ($in['value'] as $i => $v) {
-					if (in_array($v, $data['selected'])) {
-						if (!isset($in['add'][$i])) {
-							$in['add'][$i]	= ' selected';
-						} else {
-							$in['add'][$i]	.= ' selected';
-						}
+			foreach ($in['value'] as $i => $v) {
+				if (in_array($v, $data['selected'])) {
+					if (!isset($in['add'][$i])) {
+						$in['add'][$i]	= ' selected';
+					} else {
+						$in['add'][$i]	.= ' selected';
 					}
 				}
-				unset($data['selected'], $i, $v);
 			}
-			$options = self::array_flip($in, isset($i) ? $i+1 : count($in['in']));
-			unset($in);
-			foreach ($options as &$option) {
-				$option			= [
-					$option['in'],
-					$option
-				];
-				unset($option[1]['in']);
-				$option			= self::option($option[0], $option[1]);
+			unset($data['selected'], $i, $v);
+		}
+		$options = array_flip_3d($in);
+		unset($in);
+		foreach ($options as &$option) {
+			$option			= [
+				$option['in'],
+				$option
+			];
+			unset($option[1]['in']);
+			$option			= self::option($option[0], $option[1]);
+		}
+		unset($option);
+		return self::wrap(implode('', $options), $data, $function);
+	}
+	static function select		($in = '', $data = []) {
+		return self::template_1($in, $data, __FUNCTION__);
+	}
+	static function datalist	($in = '', $data = []) {
+		return self::template_1($in, $data, __FUNCTION__);
+	}
+	/**
+	 * Template 2
+	 * @static
+	 * @param array|string $in
+	 * @param array        $data
+	 * @param string       $function
+	 * @return bool|string
+	 */
+	protected static function template_2 ($in = '', $data = [], $function) {
+		global $Page;
+		$uniqid = uniqid('html_replace_');
+		if (is_array($in)) {
+			if (isset($in['in'])) {
+				$Page->replace($uniqid, is_array($in['in']) ? implode("\n", $in['in']) : $in['in']);
+				$in['in'] = $uniqid;
+			} else {
+				$Page->replace($uniqid, implode("\n", $in));
+				$in = $uniqid;
 			}
-			unset($option);
-			return self::wrap(implode('', $options), $data, $function);
+		} else {
+			$Page->replace($uniqid, is_array($in) ? implode("\n", $in) : $in);
+			$in = $uniqid;
 		}
-		static function select		($in = '', $data = []) {
-			return self::template_3($in, $data, __FUNCTION__);
-		}
-		static function datalist	($in = '', $data = []) {
-			return self::template_3($in, $data, __FUNCTION__);
-		}
-
+		$data['level'] = false;
+		return self::wrap($in, $data, $function);
+	}
+	static function textarea	($in = '', $data = []) {
+		return self::template_2($in, $data, __FUNCTION__);
+	}
+	static function pre		($in = '', $data = []) {
+		return self::template_2($in, $data, __FUNCTION__);
+	}
+	static function code		($in = '', $data = []) {
+		return self::template_2($in, $data, __FUNCTION__);
+	}
 	static function button		($in = '', $data = []) {
 		if (is_array($in)) {
 			if (!isset($in['type'])) {
@@ -479,42 +408,6 @@ class h {//TODO full array of unpaired tags for general processing
 		}
 		return self::wrap($in, $data, __FUNCTION__);
 	}
-	/**
-	 * Template 4
-	 * @static
-	 * @param array|string $in
-	 * @param array        $data
-	 * @param string       $function
-	 * @return bool|string
-	 */
-		protected static function template_4 ($in = '', $data = [], $function) {
-			global $Page;
-			$uniqid = uniqid('html_replace_');
-			if (is_array($in)) {
-				if (isset($in['in'])) {
-					$Page->replace($uniqid, is_array($in['in']) ? implode("\n", $in['in']) : $in['in']);
-					$in['in'] = $uniqid;
-				} else {
-					$Page->replace($uniqid, implode("\n", $in));
-					$in = $uniqid;
-				}
-			} else {
-				$Page->replace($uniqid, is_array($in) ? implode("\n", $in) : $in);
-				$in = $uniqid;
-			}
-			$data['level'] = false;
-			return self::wrap($in, $data, $function);
-		}
-		static function textarea	($in = '', $data = []) {
-			return self::template_4($in, $data, __FUNCTION__);
-		}
-		static function pre		($in = '', $data = []) {
-			return self::template_4($in, $data, __FUNCTION__);
-		}
-		static function code		($in = '', $data = []) {
-			return self::template_4($in, $data, __FUNCTION__);
-		}
-
 	static function br			($repeat = 1) {
 		$in['tag'] = __FUNCTION__;
 		return str_repeat(self::u_wrap($in), $repeat);
@@ -544,12 +437,15 @@ class h {//TODO full array of unpaired tags for general processing
 	/**
 	 * @static
 	 *
-	 * @param $input
-	 * @param $data
+	 * @param string	$input
+	 * @param mixed		$data
 	 *
-	 * @return null|string
+	 * @return string
 	 */
-	static function __callStatic ($input, $data) {
+	static function __callStatic ($input, $data) {//if ($input == 'tr') {print_r(debug_backtrace());die;}
+		if ($data === false || (isset($data[0]) &&  $data[0] === false)) {
+			return '';
+		}
 		if (is_scalar($data)) {
 			$data		= [$data];
 		}
@@ -571,10 +467,18 @@ class h {//TODO full array of unpaired tags for general processing
 				$input[0]	= substr($input[0], 0, -1);
 				$output		= [];
 				foreach ($data[0] as &$d) {
-					$output[]	= self::__callStatic($input[1], $d);
+					if (isset($d[0]) && is_array_indexed($d[0])) {
+						$output[]	= [
+							self::__callStatic($input[1], $d[0]),
+							$d[1]
+						];
+
+					} else {
+						$output[]	= self::__callStatic($input[1], $d);
+					}
 				}
 				unset($d);
-			} else {
+			} elseif (!isset($data[1]) || is_array_assoc($data[1])) {
 				$output		= self::__callStatic(
 					$input[1],
 					[
@@ -582,11 +486,17 @@ class h {//TODO full array of unpaired tags for general processing
 						isset($data[1]) ? $data[1] : []
 					]
 				);
+			} else {
+				$output		= self::__callStatic(
+					$input[1],
+					$data
+				);
 			}
 			return self::__callStatic(
 				$input[0],
 				[
-					$output
+					$output,
+					$data[1]
 				]
 			);
 		}

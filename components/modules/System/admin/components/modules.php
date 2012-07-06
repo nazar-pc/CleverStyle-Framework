@@ -45,8 +45,8 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 			)) {
 				$a->cancel_button_back = true;
 				if ($Config->core['simple_admin_mode']) {
-					if (_file_exists(MODULES.DS.$rc[3].DS.'admin'.DS.'db.json')) {
-						$db_json = _json_decode(_file_get_contents(MODULES.DS.$rc[3].DS.'admin'.DS.'db.json'));
+					if (file_exists(MODULES.'/'.$rc[3].'/admin/db.json')) {
+						$db_json = _json_decode(file_get_contents(MODULES.'/'.$rc[3].'/admin/db.json'));
 						foreach ($db_json as $database) {
 							$a->content(
 								h::{'input[type=hidden]'}([
@@ -57,8 +57,8 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 						}
 						unset($db_json, $database);
 					}
-					if (_file_exists(MODULES.DS.$rc[3].DS.'admin'.DS.'storage.json')) {
-						$storage_json = _json_decode(_file_get_contents(MODULES.DS.$rc[3].DS.'admin'.DS.'storage.json'));
+					if (file_exists(MODULES.'/'.$rc[3].'/admin/storage.json')) {
+						$storage_json = _json_decode(file_get_contents(MODULES.'/'.$rc[3].'/admin/storage.json'));
 						foreach ($storage_json as $storage) {
 							$a->content(
 								h::{'input[type=hidden]'}([
@@ -141,7 +141,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					$a->apply_button		= false;
 					$a->cancel_button_back	= true;
 					module_db_settings:
-					if (_file_exists(MODULES.DS.$rc[3].DS.'admin'.DS.'db.json')) {
+					if (file_exists(MODULES.'/'.$rc[3].'/admin/db.json')) {
 						$dbs					= [0 => $L->core_db];
 						foreach ($Config->db as $i => &$db_data) {
 							if ($i) {
@@ -153,7 +153,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 							h::info('db_purpose'),
 							h::info('system_db')
 						]);
-						$db_json = _json_decode(_file_get_contents(MODULES.DS.$rc[3].DS.'admin'.DS.'db.json'));
+						$db_json = _json_decode(file_get_contents(MODULES.'/'.$rc[3].'/admin/db.json'));
 						foreach ($db_json as $database) {
 							$db_list[] = h::{'td.ui-widget-content.ui-corner-all'}([
 								$L->{$rc[3].'_db_'.$database},
@@ -206,7 +206,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					$a->apply_button		= false;
 					$a->cancel_button_back	= true;
 					module_storage_settings:
-					if (_file_exists(MODULES.DS.$rc[3].DS.'admin'.DS.'storage.json')) {
+					if (file_exists(MODULES.'/'.$rc[3].'/admin/storage.json')) {
 						$storages				= [0 => $L->core_storage];
 						foreach ($Config->storage as $i => &$storage_data) {
 							if ($i) {
@@ -218,7 +218,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 							h::info('storage_purpose'),
 							h::info('system_storage')
 						]);
-						$storage_json = _json_decode(_file_get_contents(MODULES.DS.$rc[3].DS.'admin'.DS.'storage.json'));
+						$storage_json = _json_decode(file_get_contents(MODULES.'/'.$rc[3].'/admin/storage.json'));
 						foreach ($storage_json as $storage) {
 							$storage_list[] = h::{'td.ui-widget-content.ui-corner-all'}([
 								$L->{$rc[3].'_storage_'.$storage},
@@ -308,10 +308,10 @@ if ($display_modules) {
 			/**
 			 * Notice about API existence
 			 */
-			if (_is_dir(MODULES.DS.$module.DS.'api')) {
+			if (is_dir(MODULES.'/'.$module.'/api')) {
 				if (
-					_file_exists($file = MODULES.DS.$module.DS.'api'.DS.'readme.txt') ||
-					_file_exists($file = MODULES.DS.$module.DS.'api'.DS.'readme.html')
+					file_exists($file = MODULES.'/'.$module.'/api/readme.txt') ||
+					file_exists($file = MODULES.'/'.$module.'/api/readme.html')
 				) {
 					if (substr($file, -3) == 'txt') {
 						$tag = 'pre';
@@ -319,7 +319,7 @@ if ($display_modules) {
 						$tag = 'div';
 					}
 					$addition_state .= h::$tag(
-						_file_get_contents($file),
+						file_get_contents($file),
 						[
 							'id'			=> $module.'_api',
 							'class'			=> 'cs-dialog',
@@ -331,7 +331,7 @@ if ($display_modules) {
 				$addition_state .= h::{'icon.pointer'}(
 					'link',
 					[
-						'data-title'	=> $L->api_exists.h::br().(_file_exists($file) ? $L->click_to_view_details : ''),
+						'data-title'	=> $L->api_exists.h::br().(file_exists($file) ? $L->click_to_view_details : ''),
 						'onClick'		=> '$(\'#'.$module.'_api\').dialog(\'open\');'
 					]
 				);
@@ -340,14 +340,14 @@ if ($display_modules) {
 			/**
 			 * Information about module
 			 */
-			if (_file_exists($file = MODULES.DS.$module.DS.'readme.txt') || _file_exists($file = MODULES.DS.$module.DS.'readme.html')) {
+			if (file_exists($file = MODULES.'/'.$module.'/readme.txt') || file_exists($file = MODULES.'/'.$module.'/readme.html')) {
 				if (substr($file, -3) == 'txt') {
 					$tag = 'pre';
 				} else {
 					$tag = 'div';
 				}
 				$addition_state .= h::$tag(
-					_file_get_contents($file),
+					file_get_contents($file),
 					[
 						'id'			=> $module.'_readme',
 						'class'			=> 'cs-dialog',
@@ -367,14 +367,14 @@ if ($display_modules) {
 			/**
 			 * License
 			 */
-			if (_file_exists($file = MODULES.DS.$module.DS.'license.txt') || _file_exists($file = MODULES.DS.$module.DS.'license.html')) {
+			if (file_exists($file = MODULES.'/'.$module.'/license.txt') || file_exists($file = MODULES.'/'.$module.'/license.html')) {
 				if (substr($file, -3) == 'txt') {
 					$tag = 'pre';
 				} else {
 					$tag = 'div';
 				}
 				$addition_state .= h::$tag(
-					_file_get_contents($file),
+					file_get_contents($file),
 					[
 						'id'			=> $module.'_license',
 						'class'			=> 'cs-dialog',
@@ -406,7 +406,7 @@ if ($display_modules) {
 			/**
 			 * DataBases settings
 			 */
-			if (!$Config->core['simple_admin_mode'] && _file_exists(MODULES.DS.$module.DS.'admin'.DS.'db.json') && count($Config->db) > 1) {
+			if (!$Config->core['simple_admin_mode'] && file_exists(MODULES.'/'.$module.'/admin/db.json') && count($Config->db) > 1) {
 				$action .= h::{'a.cs-button.cs-button-compact'}(
 					h::icon('gear'),
 					[
@@ -418,7 +418,7 @@ if ($display_modules) {
 			/**
 			 * Storages settings
 			 */
-			if (!$Config->core['simple_admin_mode'] && _file_exists(MODULES.DS.$module.DS.'admin'.DS.'storage.json') && count($Config->storage) > 1) {
+			if (!$Config->core['simple_admin_mode'] && file_exists(MODULES.'/'.$module.'/admin/storage.json') && count($Config->storage) > 1) {
 				$action .= h::{'a.cs-button.cs-button-compact'}(
 					h::icon('disk'),
 					[
@@ -429,10 +429,10 @@ if ($display_modules) {
 			}
 			if (mb_strtolower($module) != 'system') {
 				if (
-					_is_dir(MODULES.DS.$module.DS.'admin') &&
+					is_dir(MODULES.'/'.$module.'/admin') &&
 					(
-						_file_exists(MODULES.DS.$module.DS.'admin'.DS.'index.php') ||
-						_file_exists(MODULES.DS.$module.DS.'admin'.DS.'index.json')
+						file_exists(MODULES.'/'.$module.'/admin/index.php') ||
+						file_exists(MODULES.'/'.$module.'/admin/index.json')
 					)
 				) {
 					$action .= h::{'a.cs-button.cs-button-compact'}(

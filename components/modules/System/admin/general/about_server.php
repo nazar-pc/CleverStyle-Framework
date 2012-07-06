@@ -11,7 +11,7 @@ $a->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}([
 		h::{'td.cs-right-all[colspan=2]'}(
 			h::{'div#system_readme.cs-dialog'}(
-				_file_get_contents(DIR.DS.'readme.html'),
+				file_get_contents(DIR.'/readme.html'),
 				[
 					'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
 					'title'			=> $L->system.' -> '.$L->information_about_system
@@ -24,7 +24,7 @@ $a->content(
 				]
 			).
 			h::{'pre#system_license.cs-dialog'}(
-				_file_get_contents(DIR.DS.'license.txt'),
+				file_get_contents(DIR.'/license.txt'),
 				[
 					'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
 					'title'			=> $L->system.' -> '.$L->license

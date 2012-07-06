@@ -86,7 +86,7 @@ if (isset($rc[2])) {
 						]),
 						h::{'select.cs-form-element'}(
 							[
-								'in'		=> _mb_substr(get_list(TEMPLATES.DS.'blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6)
+								'in'		=> _mb_substr(get_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6)
 							],
 							[
 								'name'		=> 'block[template]',
@@ -172,7 +172,7 @@ if (isset($rc[2])) {
 						]),
 						h::{'select.cs-form-element'}(
 							[
-								'in'		=> _mb_substr(get_list(TEMPLATES.DS.'blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6)
+								'in'		=> _mb_substr(get_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6)
 							],
 							[
 								'name'		=> 'block[template]',
