@@ -1,46 +1,15 @@
 <?php
 global $Config, $Index, $L;
-$a = &$Index;
-$timezones = get_timezones_list();
-
-$a->content(
+$timezones	= get_timezones_list();
+$sa			= $Config->core['simple_admin_mode'];
+$Index->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}([
-		[
-			h::info('name2'),
-			h::{'input.cs-form-element'}([
-				'name'	=> 'core[name]',
-				'value' => $Config->core['name']
-			])
-		],
-		(!$Config->core['simple_admin_mode'] ? [
-			h::info('url'),
-			h::{'input.cs-form-element'}([
-				'name'	=> 'core[url]',
-				'value' => $Config->core['url']
-			])
-		] : false),
-		(!$Config->core['simple_admin_mode'] ? [
-			h::info('cookie_domain'),
-			h::{'input.cs-form-element'}([
-				'name'	=> 'core[cookie_domain]',
-				'value' => $Config->core['cookie_domain']
-			])
-		] : false),
-		(!$Config->core['simple_admin_mode'] ? [
-			h::info('cookie_path'),
-			h::{'input.cs-form-element'}([
-				'name'	=> 'core[cookie_path]',
-				'value' => $Config->core['cookie_path']
-			])
-		] : false),
-		(!$Config->core['simple_admin_mode'] ? [
-			h::info('cookie_prefix'),
-			h::{'input.cs-form-element'}([
-				'name'	=> 'core[cookie_prefix]',
-				'value' => $Config->core['cookie_prefix']
-			])
-		] : false),
-		(!$Config->core['simple_admin_mode'] ? [
+		system_input_core('name', 'text', 'site_name'),
+		!$sa ? system_input_core('url') : false,
+		!$sa ? system_input_core('cookie_domain') : false,
+		!$sa ? system_input_core('cookie_path') : false,
+		!$sa ? system_input_core('cookie_prefix') : false,
+		!$sa ? [
 			h::info('mirrors'),
 			h::{'table tr| td'}([
 				[
@@ -53,19 +22,19 @@ $a->content(
 						h::{'textarea.cs-form-element.cs-wide-textarea'}(
 							$Config->core['mirrors_url'],
 							[
-								'name' => 'core[mirrors_url]'
+							'name' => 'core[mirrors_url]'
 							]
 						),
 						h::{'textarea.cs-form-element.cs-wide-textarea'}(
 							$Config->core['mirrors_cookie_domain'],
 							[
-								'name' => 'core[mirrors_cookie_domain]'
+							'name' => 'core[mirrors_cookie_domain]'
 							]
 						),
 						h::{'textarea.cs-form-element.cs-wide-textarea'}(
 							$Config->core['mirrors_cookie_path'],
 							[
-								'name' => 'core[mirrors_cookie_path]'
+							'name' => 'core[mirrors_cookie_path]'
 							]
 						)
 					],
@@ -74,21 +43,9 @@ $a->content(
 					]
 				]
 			])
-		] : false),
-		[
-			h::info('keywords'),
-			h::{'input.cs-form-element'}([
-				'name'	=> 'core[keywords]',
-				'value' => $Config->core['keywords']
-			])
-		],
-		[
-			h::info('description'),
-			h::{'input.cs-form-element'}([
-				'name'	=> 'core[description]',
-				'value' => $Config->core['description']
-			])
-		],
+		] : false,
+		system_input_core('keywords'),
+		system_input_core('description'),
 		[
 			h::info('timezone'),
 			h::{'select.cs-form-element'}(
@@ -103,19 +60,7 @@ $a->content(
 				]
 			)
 		],
-		[
-			h::info('admin_email'),
-			h::{'input.cs-form-element[type=email]'}([
-				'name'	=> 'core[admin_email]',
-				'value' => $Config->core['admin_email']
-			])
-		],
-		[
-			h::info('admin_phone'),
-			h::{'input.cs-form-element[type=tel]'}([
-				'name'	=> 'core[admin_phone]',
-				'value' => $Config->core['admin_phone']
-			])
-		]
+		system_input_core('admin_email', 'email'),
+		system_input_core('admin_phone', 'tel')
 	])
 );

@@ -1,7 +1,7 @@
 <?php
 global $Config, $Index, $L, $Page, $DB_HOST, $DB_TYPE, $DB_PREFIX, $DB_NAME, $DB_CHARSET;
 $a				= &$Index;
-$rc				= &$Config->routing['current'];
+$rc				= $Config->routing['current'];
 $test_dialog	= false;
 if (isset($rc[2])) {
 	$a->apply_button		= false;

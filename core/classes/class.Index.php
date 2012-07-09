@@ -97,7 +97,7 @@ class Index {
 	}
 	protected function init () {
 		global $Config, $L, $Page, $User;
-		$rc = &$Config->routing['current'];
+		$rc = &$Config->__get('routing')['current'];
 		if ($Config->core['simple_admin_mode'] && file_exists(MFOLDER.'/index_simple.json')) {
 			$structure_file	= 'index_simple.json';
 		} else {

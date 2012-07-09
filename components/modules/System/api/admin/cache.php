@@ -1,6 +1,6 @@
 <?php
 global $Config, $Cache, $User, $Page, $L;
-$rc		= &$Config->routing['current'];
+$rc		= $Config->routing['current'];
 $ajax	= $Config->server['ajax'];
 if (isset($rc[2])) {
 	switch ($rc[2]) {

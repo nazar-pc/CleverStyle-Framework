@@ -1,5 +1,5 @@
 <?php
-require_once CORE.'/functions.php';		//Including file with general system functions
+require_once CORE.'/functions.php';					//Including file with general system functions
 
 global $Objects, $timeload, $loader_init_memory, $interface;
 
@@ -19,11 +19,6 @@ mb_internal_encoding('utf-8');
 $_GET						= [];
 $_REQUEST					= [];
 
-/**
- * DOMAIN - constant, that contains base domain
- * CDOMAIN - constant, that contain domain of current mirror
- */
-define('CDOMAIN',	$_SERVER['HTTP_HOST']);
 /**
  * Setting of basic constants with paths to system directories
  */

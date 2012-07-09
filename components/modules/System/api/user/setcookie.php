@@ -1,6 +1,6 @@
 <?php
 global $Config, $Page, $Key, $User, $db;
-$rc = &$Config->routing['current'];
+$rc = $Config->routing['current'];
 if (
 	!isset($rc[3]) ||
 	!preg_match('/^[a-z0-9]{56}$/', $rc[3]) ||

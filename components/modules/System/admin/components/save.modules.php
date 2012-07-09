@@ -18,7 +18,7 @@
  */
 global $Config, $Index, $User, $Core;
 $a = &$Index;
-$rc			= &$Config->routing['current'];
+$rc			= $Config->routing['current'];
 $update		= false;
 if (isset($_POST['update_modules_list'])) {
 	/**

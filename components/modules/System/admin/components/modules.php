@@ -24,7 +24,7 @@
  */
 global $Config, $Index, $L, $db, $Core, $Page;
 $a					= &$Index;
-$rc					= &$Config->routing['current'];
+$rc					= $Config->routing['current'];
 $a->buttons			= false;
 $display_modules	= true;
 if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[2])) {

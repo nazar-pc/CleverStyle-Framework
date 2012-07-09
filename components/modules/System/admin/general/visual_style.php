@@ -3,54 +3,10 @@ global $Config, $Index, $L;
 $Config->reload_themes();
 $a = &$Index;
 $a->content(
-	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}([
-		h::td([
-			h::info('current_theme'),
-			h::{'select#change_theme.cs-form-element'}(
-				$Config->core['active_themes'],
-				[
-					'name'		=> 'core[theme]',
-					'selected'	=> $Config->core['theme'],
-					'size'		=> 5
-				]
-			)
-		]),
-
-		h::td([
-			h::info('active_themes'),
-			h::{'select#change_active_themes.cs-form-element'}(
-				$Config->core['themes'],
-				[
-					'name'		=> 'core[active_themes][]',
-					'selected'	=> $Config->core['active_themes'],
-					'size'		=> 5,
-					'multiple'
-				]
-			)
-		]),
-
-		h::td([
-			h::info('color_scheme'),
-			h::{'select#change_color_scheme.cs-form-element'}(
-				$Config->core['color_schemes'][$Config->core['theme']],
-				[
-					'name'		=> 'core[color_scheme]',
-					'selected'	=> $Config->core['color_scheme'],
-					'size'		=> 5
-				]
-			)
-		]),
-
-		h::td([
-			h::info('allow_change_theme'),
-			h::{'input[type=radio]'}(
-				[
-					'name'		=> 'core[allow_change_theme]',
-					'checked'	=> $Config->core['allow_change_theme'],
-					'value'		=> [0, 1],
-					'in'		=> [$L->off, $L->on]
-				]
-			)
-		])
+	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}([
+		system_select_core($Config->core['active_themes'],							'theme',			'change_theme',			'current_theme'),
+		system_select_core($Config->core['themes'],									'active_themes',	'change_active_themes',	null, true),
+		system_select_core($Config->core['color_schemes'][$Config->core['theme']],	'color_scheme',		'change_color_scheme'),
+		system_input_core('allow_change_theme', 'radio'),
 	])
 );

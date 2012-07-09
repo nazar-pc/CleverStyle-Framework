@@ -1,7 +1,7 @@
 <?php
 global $Config, $Index, $L, $Page;
 $a		= &$Index;
-$rc		= &$Config->routing['current'];
+$rc		= $Config->routing['current'];
 $form	= true;
 if (isset($rc[2])) {
 	switch ($rc[2]) {

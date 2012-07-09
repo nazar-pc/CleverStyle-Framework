@@ -1,7 +1,7 @@
 <?php
 global $Config, $Index, $L, $User, $Page;
 $a				= &$Index;
-$rc				= &$Config->routing['current'];
+$rc				= $Config->routing['current'];
 if (isset($rc[2])) {
 	switch ($rc[2]) {
 		case 'add':

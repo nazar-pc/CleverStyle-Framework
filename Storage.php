@@ -9,18 +9,14 @@ $DOMAIN = str_replace(
 	(string)$_POST['domain']
 );
 $DOMAIN = null_byte_filter($DOMAIN);
-define('STORAGE',	__DIR__.'/storages/'.$DOMAIN.'/public');	//For storage on the same server as site or
-																	//if there are several storages for several domains
-																	//on one server
+define('STORAGE',	__DIR__.'/storage/public');						//For storage on the same server as site
 //define('STORAGE',	__DIR__);										//For storage on separate server
 if (
 	$_SERVER['HTTP_USER_AGENT'] == 'CleverStyle CMS' &&
-	strpos($DOMAIN, '\\') === false &&
-	strpos($DOMAIN, '/') === false &&
-	file_exists(__DIR__.'/storages/'.$DOMAIN.'/config.php') &&
+	file_exists(__DIR__.'/storage/config.php') &&
 	isset($_POST['data'])
 ) {
-	include __DIR__.'/storages/'.$DOMAIN.'/config.php';
+	include __DIR__.'/storage/config.php';
 	global $STORAGE_USER, $STORAGE_PASSWORD;
 	$data = _json_decode(urldecode($_POST['data']));
 	$KEY = substr($data['key'], 0, 32);

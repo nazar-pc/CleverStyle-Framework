@@ -1,157 +1,77 @@
 <?php
 global $Config, $Index, $L;
-$a = &$Index;
 
-$a->content(
-	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd'}(
-		h::{'tr td'}([
-			h::info('session_expire'),
-			h::{'input.cs-form-element[type=number]'}([
-				'name'			=> 'core[session_expire]',
-				'value'			=> $Config->core['session_expire'],
-				'min'			=> 1
-			]).
-			$L->seconds
-		]).
-		h::{'tr td'}([
-			h::info('online_time'),
-			h::{'input.cs-form-element[type=number]'}([
-				'name'			=> 'core[online_time]',
-				'value'			=> $Config->core['online_time'],
-				'min'			=> 1
-			]).
-			$L->seconds
-		]).
-		h::{'tr td'}([
+$Index->content(
+	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}([
+		system_input_core('session_expire', 'number', null, false, 1, false, $L->seconds),
+		system_input_core('online_time', 'number', null, false, 1, false, $L->seconds),
+		[
 			h::info('login_attempts_block_count'),
 			h::{'input.cs-form-element[type=number]'}([
-				'name'			=> 'core[login_attempts_block_count]',
-				'value'			=> $Config->core['login_attempts_block_count'],
-				'min'			=> 0,
-				'onClick'		=> 'if ($(this).val() == 0) {'.
-										'$(\'#login_attempts_block_count\').hide();'.
-									'} else {'.
-										'$(\'#login_attempts_block_count\').show();'.
-									'}',
-				'onChange'		=> 'if ($(this).val() == 0) {'.
-									 	'$(\'#login_attempts_block_count\').hide();'.
-									 '} else {'.
-									 	'$(\'#login_attempts_block_count\').show();'.
-									 '}'
+				'name'		=> 'core[login_attempts_block_count]',
+				'value'		=> $Config->core['login_attempts_block_count'],
+				'min'		=> 0,
+				'onClick'	=> "if ($(this).val() == 0) { $('.cs-login-attempts-block-count').hide(); } else { $('.cs-login-attempts-block-count').show(); }",
+				'onChange'	=> "if ($(this).val() == 0) { $('.cs-login-attempts-block-count').hide(); } else { $('.cs-login-attempts-block-count').show(); }"
 			])
-		]).
-		h::{'tr#login_attempts_block_count'}(
-			h::td(h::info('login_attempts_block_time')).
-			h::td(
-				h::{'input.cs-form-element[type=number]'}([
-					'name'			=> 'core[login_attempts_block_time]',
-					'value'			=> $Config->core['login_attempts_block_time'],
-					'min'			=> 1
-				]).
-				$L->seconds
-			),
+		],
+		[
+			system_input_core('login_attempts_block_time', 'number', null, false, 1, false, $L->seconds),
 			[
-				 'style'	=> $Config->core['login_attempts_block_count'] == 0 ? 'display: none;' : ''
+				'style'	=> $Config->core['login_attempts_block_count'] == 0 ? 'display: none;' : '',
+				'class'	=> 'cs-login-attempts-block-count'
 			]
-		).
-		h::{'tr td'}([
-			h::info('remember_user_ip'),
-			h::{'input[type=radio]'}([
-				'name'			=> 'core[remember_user_ip]',
-				'checked'		=> $Config->core['remember_user_ip'],
-				'value'			=> [0, 1],
-				'in'			=> [$L->off, $L->on]
-			])
-		]).
-		h::{'tr td'}([
-			h::info('password_min_length'),
-			h::{'input.cs-form-element[type=number]'}([
-				'name'			=> 'core[password_min_length]',
-				'value'			=> $Config->core['password_min_length'],
-				'min'			=> 4
-			])
-		]).
-		h::{'tr td'}([
-			h::info('password_min_strength'),
-			h::{'input.cs-form-element[type=range]'}([
-				'name'			=> 'core[password_min_strength]',
-				'value'			=> $Config->core['password_min_strength'],
-				'min'			=> 0,
-				'max'			=> 7
-			])
-		]).
-		h::{'tr td'}([
+		],
+		system_input_core('remember_user_ip', 'radio'),
+		system_input_core('password_min_length', 'number', null, false, 4),
+		system_input_core('password_min_strength', 'range', null, false, 0, 7),
+		[
 			h::info('allow_user_registration'),
 			h::{'input[type=radio]'}([
-				'name'			=> 'core[allow_user_registration]',
-				'checked'		=> $Config->core['allow_user_registration'],
-				'value'			=> [0, 1],
-				'in'			=> [$L->off, $L->on],
-				'onClick'		=> [
-					'$(\'.allow_user_registration\').hide();',
-					'$(\'.allow_user_registration\').show();'.
-					'if (!$(\'#require_registration_confirmation input[value=1]\').prop(\'checked\')) {'.
-						'$(\'.require_registration_confirmation\').hide();'.
-					'}'
+				'name'		=> 'core[allow_user_registration]',
+				'checked'	=> $Config->core['allow_user_registration'],
+				'value'		=> [0, 1],
+				'in'		=> [$L->off, $L->on],
+				'onClick'	=> [
+					"$('.cs-allow-user-registration').hide();",
+					"$('.cs-allow-user-registration').show();".
+						"if (!$('.cs-allow-user-registration input[value=1]').prop('checked')) { $('.cs-require-registration-confirmation').hide(); }"
 				]
 			])
-		]).
-		h::{'tr.allow_user_registration'}(
-			h::td(h::info('require_registration_confirmation')).
-			h::{'td#require_registration_confirmation'}(
+		],
+		[
+			[
+				h::info('require_registration_confirmation'),
 				h::{'input[type=radio]'}([
 					'name'			=> 'core[require_registration_confirmation]',
 					'checked'		=> $Config->core['require_registration_confirmation'],
 					'value'			=> [0, 1],
 					'in'			=> [$L->off, $L->on],
 					'onClick'		=> [
-						'$(\'.require_registration_confirmation\').hide();',
-						'$(\'.require_registration_confirmation\').show();'
+						"$('.cs-require-registration-confirmation').hide();",
+						"$('.cs-require-registration-confirmation').show();"
 					]
 				])
-			),
+			],
 			[
-				 'style'	=> $Config->core['allow_user_registration'] == 0 ? 'display: none;' : ''
+				'style'	=> $Config->core['allow_user_registration'] == 0 ? 'display: none;' : '',
+				'class'	=> 'cs-allow-user-registration'
 			]
-		).
-		h::{'tr.allow_user_registration.require_registration_confirmation'}(
-			h::td(h::info('registration_confirmation_time')).
-			h::td(
-				h::{'input.cs-form-element[type=number]'}([
-					 'name'			=> 'core[registration_confirmation_time]',
-					 'value'		=> $Config->core['registration_confirmation_time'],
-					 'min'			=> 1
-				]).
-				$L->days
-			),
+		],
+		[
+			system_input_core('registration_confirmation_time', 'number', null, false, 1, false, $L->days),
 			[
-				 'style'	=>	$Config->core['allow_user_registration'] == 1 &&
-					 			$Config->core['require_registration_confirmation'] == 1 ? '' : 'display: none;'
+				'style'	=>	$Config->core['allow_user_registration'] == 1 && $Config->core['require_registration_confirmation'] == 1 ? '' : 'display: none;',
+				'class'	=> 'cs-allow-user-registration cs-require-registration-confirmation'
 			]
-		).
-		h::{'tr.allow_user_registration.require_registration_confirmation'}(
-			h::td(h::info('autologin_after_registration')).
-			h::td(
-				h::{'input[type=radio]'}([
-					'name'			=> 'core[autologin_after_registration]',
-					'checked'		=> $Config->core['autologin_after_registration'],
-					'value'			=> [0, 1],
-					'in'			=> [$L->off, $L->on]
-				])
-			),
+		],
+		[
+			system_input_core('autologin_after_registration', 'radio'),
 			[
-				 'style'	=>	$Config->core['allow_user_registration'] == 1 &&
-					 			$Config->core['require_registration_confirmation'] == 1 ? '' : 'display: none;'
+				'style'	=>	$Config->core['allow_user_registration'] == 1 && $Config->core['require_registration_confirmation'] == 1 ? '' : 'display: none;',
+				'class'	=> 'cs-allow-user-registration cs-require-registration-confirmation'
 			]
-		).
-		h::{'tr td'}([
-			$L->site_rules,
-			h::{'textarea#site_rules.EDITORH.cs-form-element'}(
-				$Config->core['rules'],
-				[
-					'name' => 'core[rules]'
-				]
-			)
-		])
-	)
+		],
+		system_textarea_core('rules', false, 'EDITORH')
+	])
 );

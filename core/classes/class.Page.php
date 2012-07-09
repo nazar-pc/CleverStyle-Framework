@@ -496,15 +496,17 @@ class Page {
 		if (!($copyright && is_array($copyright))) {
 			exit;
 		}
-		$footer	= h::div($copyright[1].h::br().$copyright[2], ['id'	=> 'copyright']);
-		$footer	= h::div(
-			$L->page_generated.' <!--generate time--> '.
-			', '.(is_object($db) ? $db->queries : 0).' '.$L->queries_to_db.' '.$L->during.' '.format_time((is_object($db) ? round($db->time, 5) : 0)).
-			', '.$L->peak_memory_usage.' <!--peak memory usage-->',
-			array('id'	=> 'execution_info')
+		return h::div(
+			$L->page_footer_info('<!--generate time-->', $db->queries, format_time(round($db->time, 5)), '<!--peak memory usage-->')
 		).
-		$footer;
-		return $footer;
+		h::div(
+			$copyright[1].
+			h::br()
+			.$copyright[2],
+			[
+				'id'	=> 'copyright'
+			]
+		);
 	}
 	//Сбор и отображение отладочных данных
 	protected function get_debug_info () {
@@ -516,12 +518,12 @@ class Page {
 		 */
 		if ($Config->core['show_objects_data']) {
 			global $Objects, $timeload, $loader_init_memory;
-			$debug_tabs			.= h::{'li a'}(
+			$debug_tabs[]			= [
 				$L->objects,
 				[
 					'href'	=> '#debug_objects_tab'
 				]
-			);
+			];
 			$tmp				= '';
 			$last				= $timeload['loader_init'];
 			foreach ($Objects->Loaded as $object => $data) {
@@ -529,28 +531,20 @@ class Page {
 					$object
 				).
 				h::{'p.cs-padding-left'}(
-					$L->creation_duration.': '.format_time(round($data[0] - $last, 5))
-				).
-				h::{'p.cs-padding-left'}(
-					$L->time_from_start_execution.': '.format_time(round($data[0] - $timeload['start'], 5))
-				).
-				h::{'p.cs-padding-left'}(
-					 $L->memory_usage.': '.format_filesize($data[1], 5)
+					$L->creation_duration.': '.format_time(round($data[0] - $last, 5)),
+					$L->time_from_start_execution.': '.format_time(round($data[0] - $timeload['start'], 5)),
+					$L->memory_usage.': '.format_filesize($data[1], 5)
 				);
 				$last = $data[0];
 			}
 			unset($object, $data, $last);
 			$debug_tabs_content	.= h::{'div#debug_objects_tab'}(
 				h::p(
-					$L->total_list_of_objects.': '.implode(', ', array_keys($Objects->Loaded))
-				).
-				h::p(
+					$L->total_list_of_objects.': '.implode(', ', array_keys($Objects->Loaded)),
 					$L->loader
 				).
 				h::{'p.cs-padding-left'}(
-					$L->creation_duration.': '.format_time(round($timeload['loader_init'] - $timeload['start'], 5))
-				).
-				h::{'p.cs-padding-left'}(
+					$L->creation_duration.': '.format_time(round($timeload['loader_init'] - $timeload['start'], 5)),
 					$L->memory_usage.': '.format_filesize($loader_init_memory, 5)
 				).
 				$tmp
@@ -561,12 +555,12 @@ class Page {
  		 * DB queries
 		 */
 		if ($Config->core['show_db_queries']) {
-			$debug_tabs			.= h::{'li a'}(
+			$debug_tabs[]		= [
 				$L->db_queries,
 				[
-				'href'	=> '#debug_db_queries_tab'
+					'href'	=> '#debug_db_queries_tab'
 				]
-			);
+			];
 			$tmp				= '';
 			foreach ($db->get_connections_list() as $name => $database) {
 				$tmp	.= h::{'p.cs-padding-left'}(
@@ -592,18 +586,10 @@ class Page {
 			unset($error, $name, $database, $i, $text);
 			$debug_tabs_content	.= h::{'div#debug_db_queries_tab'}(
 				h::p(
-					$L->debug_db_total($db->queries, format_time(round($db->time, 5)))
-				).
-				h::p(
-					$L->false_connections.': '.h::b(implode(', ', $db->get_connections_list(false)) ?: $L->no)
-				).
-				h::p(
-					$L->successful_connections.': '.h::b(implode(', ', $db->get_connections_list(true)) ?: $L->no)
-				).
-				h::p(
-					$L->mirrors_connections.': '.h::b(implode(', ', $db->get_connections_list('mirror')) ?: $L->no)
-				).
-				h::p(
+					$L->debug_db_total($db->queries, format_time(round($db->time, 5))),
+					$L->false_connections.': '.h::b(implode(', ', $db->get_connections_list(false)) ?: $L->no),
+					$L->successful_connections.': '.h::b(implode(', ', $db->get_connections_list(true)) ?: $L->no),
+					$L->mirrors_connections.': '.h::b(implode(', ', $db->get_connections_list('mirror')) ?: $L->no),
 					$L->active_connections.': '.(count($db->get_connections_list()) ? '' : h::b($L->no))
 				).
 				$tmp
@@ -615,12 +601,12 @@ class Page {
  		 * Cookies
 		 */
 		if ($Config->core['show_cookies']) {
-			$debug_tabs			.= h::{'li a'}(
+			$debug_tabs[]		= [
 				$L->cookies,
 				[
-				'href'	=> '#debug_cookies_tab'
+					'href'	=> '#debug_cookies_tab'
 				]
-			);
+			];
 			$tmp				= [h::td($L->key.':', ['style' => 'width: 20%;']).h::td($L->value)];
 			foreach ($_COOKIE as $i => $v) {
 				$tmp[]	= h::td($i.':', ['style' => 'width: 20%;']).h::td(xap($v));
@@ -630,7 +616,7 @@ class Page {
 				h::{'table.cs-padding-left'}(
 					h::tr($tmp),
 					[
-					'style' => 'width: 100%'
+						'style' => 'width: 100%'
 					]
 				)
 			);
@@ -638,7 +624,7 @@ class Page {
 		}
 		$this->debug_info = $this->process_replacing(
 			h::{'div#debug_window_tabs'}(
-				h::ul($debug_tabs).
+				h::{'ul li| a'}($debug_tabs).
 				$debug_tabs_content
 			)
 		);

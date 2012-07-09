@@ -1,7 +1,7 @@
 <?php
 global $Config, $Index;
 $a = &$Index;
-$rc = &$Config->routing['current'];
+$rc = $Config->routing['current'];
 if (isset($_POST['mode'])) {
 	switch ($_POST['mode']) {
 		case 'add':

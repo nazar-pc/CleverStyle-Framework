@@ -1,8 +1,6 @@
 <?php
 global $Config, $Index, $L;
-$a = &$Index;
-
-$a->content(
+$Index->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}([
 		h::td([
 			h::info('smtp'),

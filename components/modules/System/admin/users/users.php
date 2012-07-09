@@ -1,7 +1,7 @@
 <?php
 global $Config, $Index, $L, $User, $Page;
 $a				= &$Index;
-$rc				= &$Config->routing['current'];
+$rc				= $Config->routing['current'];
 $search_columns	= $User->get_users_columns();
 if (isset($rc[2], $rc[3])) {
 	$is_bot = in_array(3, (array)$User->get_user_groups($rc[3]));
@@ -731,20 +731,20 @@ if (isset($rc[2], $rc[3])) {
 	unset($users_list_template, $id, $buttons, $user_data, $users_ids);
 	$a->content(
 		h::{'div#search_users_tabs'}(
-			h::ul(
-				h::{'li a'}(
+			h::{'ul li| a'}([
+				[
 					$L->search,
 					[
 						'href' => '#search_settings'
 					]
-				).
-				h::{'li a'}(
+				],
+				[
 					h::info('show_columns'),
 					[
 						'href' => '#columns_settings'
 					]
-				)
-			).
+				]
+			]).
 			h::{'div#search_settings'}(
 				h::{'select.cs-form-element'}(
 					[
@@ -802,21 +802,17 @@ if (isset($rc[2], $rc[3])) {
 				])
 			)
 		).
-		h::{'p.cs-left button[type=submit'}(
-			$L->search
-		).
 		h::{'p.cs-left'}(
-			$L->founded_users($results_count).
-			($results_count > $limit ? ' / '.$L->page_from($start+1, ceil($results_count/$limit)) : '')
+			h::{'button[type=submit]'}(
+				$L->search
+			),
+			$L->founded_users($results_count).($results_count > $limit ? ' / '.$L->page_from($start+1, ceil($results_count/$limit)) : '')
 		).
 		h::{'table.cs-fullwidth-table.cs-center-all'}(
 			$users_list
 		).
 		h::{'p.cs-left'}(
-			$L->founded_users($results_count).
-			($results_count > $limit ? ' / '.$L->page_from($start+1, ceil($results_count/$limit)) : '')
-		).
-		h::{'p.cs-left'}(
+			$L->founded_users($results_count).($results_count > $limit ? ' / '.$L->page_from($start+1, ceil($results_count/$limit)) : ''),
 			h::button(
 				$L->add_user,
 				[

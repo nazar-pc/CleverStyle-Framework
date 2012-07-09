@@ -8,7 +8,7 @@
  */
 global $Config, $Index, $L, $Core;
 $a = &$Index;
-$rc = &$Config->routing['current'];
+$rc = $Config->routing['current'];
 $a->form = false;
 $plugins = get_list(PLUGINS, false, 'd');
 if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {

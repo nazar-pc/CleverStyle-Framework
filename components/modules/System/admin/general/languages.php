@@ -28,34 +28,11 @@ foreach ($translate_engines as $engine) {
 }
 unset($engine, $parameters, $paremeter, $description, $table);
 $a->content(
-	(FIXED_LANGUAGE ? h::{'p.ui-priority-primary.cs-state-messages'}(
-		$L->language_fixed_as.' '.$LANGUAGE
-	) : null).
-	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}([
-		h::td([
-			h::info('current_language'),
-			h::{'select#change_language.cs-form-element'}(
-				$Config->core['active_languages'],
-				[
-					'name'		=> 'core[language]',
-					'selected'	=> $Config->core['language'],
-					'size'		=> 5
-				]
-			)
-		]),
-		h::td([
-			h::info('active_languages'),
-			h::{'select#change_active_languages.cs-form-element'}(
-				$Config->core['languages'],
-				[
-					'name'		=> 'core[active_languages][]',
-					'selected'	=> $Config->core['active_languages'],
-					'size'		=> 5,
-					'multiple'
-				]
-			)
-		]),
-		h::td([
+	(FIXED_LANGUAGE ? h::{'p.ui-priority-primary.cs-state-messages'}($L->language_fixed_as.' '.$LANGUAGE) : '').
+	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}([
+		system_select_core($Config->core['active_languages'],	'language',			'change_language',	'current_language'),
+		system_select_core($Config->core['languages'],			'active_languages',	'change_language',	null, true),
+		[
 			h::info('multilanguage'),
 			h::{'input[type=radio]'}([
 					'name'			=> 'core[multilanguage]',
@@ -63,12 +40,12 @@ $a->content(
 					'value'			=> [0, 1],
 					'in'			=> [$L->off, $L->on],
 					'OnClick'		=> [
-						'$(\'.cs-multilanguage\').hide(); if (!$(\'#auto_translation :checked\').val()) $(\'.cs-auto-translation\').hide();',
-						'$(\'.cs-multilanguage\').show(); if (!$(\'#auto_translation :checked\').val()) $(\'.cs-auto-translation\').show();'
+						"$('.cs-multilanguage').hide(); $('.cs-auto-translation').hide();",
+						"$('.cs-multilanguage').show(); if ($('#auto_translation [value=1]').prop('checked')) $('.cs-auto-translation').show();"
 					]
 			])
-		]),
-		h::{'td#auto_translation.cs-multilanguage'}(
+		],
+		[
 			[
 				h::info('auto_translation'),
 				h::{'input[type=radio]'}([
@@ -76,14 +53,16 @@ $a->content(
 					'checked'		=> $Config->core['auto_translation'],
 					'value'			=> [0, 1],
 					'in'			=> [$L->off, $L->on],
-					'OnClick'		=> ['$(\'.cs-auto-translation\').hide();', '$(\'.cs-auto-translation\').show();']
+					'OnClick'		=> ["$('.cs-auto-translation').hide();", "$('.cs-auto-translation').show();"]
 				])
 			],
 			[
-				'style' => !$Config->core['multilanguage'] ? 'display: none; ' : ''
+				'style' => !$Config->core['multilanguage'] ? 'display: none; ' : '',
+				'id'	=> 'auto_translation',
+				'class'	=> 'cs-multilanguage'
 			]
-		),
-		h::{'td#auto_translation_engine.cs-auto-translation'}(
+		],
+		[
 			[
 				h::info('auto_translation_engine'),
 				h::{'select.cs-form-element'}(
@@ -97,20 +76,27 @@ $a->content(
 				)
 			],
 			[
-				'style' => !$Config->core['multilanguage'] || !$Config->core['auto_translation'] ? 'display: none; ' : ''
+				'style' => !$Config->core['multilanguage'] || !$Config->core['auto_translation'] ? 'display: none; ' : '',
+				'id'	=> 'auto_translation_engine',
+				'class'	=> 'cs-auto-translation'
 			]
-		),
-		h::{'td.cs-auto-translation'}(
-			$L->auto_translation_engine_settings,
+		],
+		[
 			[
-				'style' => !$Config->core['multilanguage'] || !$Config->core['auto_translation'] ? 'display: none; ' : ''
-			]
-		).
-		h::{'td#auto_translation_engine_settings.cs-auto-translation'}(
-			$current_engine_settings,
+				$L->auto_translation_engine_settings,
+				[
+					'style' => !$Config->core['multilanguage'] || !$Config->core['auto_translation'] ? 'display: none; ' : '',
+					'class'	=> 'cs-auto-translation cs-multilanguage'
+				]
+			],
 			[
-				'style' => !$Config->core['multilanguage'] || !$Config->core['auto_translation'] ? 'display: none; ' : ''
+				$current_engine_settings,
+				[
+					'style' => !$Config->core['multilanguage'] || !$Config->core['auto_translation'] ? 'display: none; ' : '',
+					'id'	=> 'auto_translation_engine_settings',
+					'class'	=> 'cs-auto-translation'
+				]
 			]
-		)
+		]
 	])
 );

@@ -1,75 +1,16 @@
 <?php
 global $L, $Config, $Index;
-
+$sa	= $Config->core['simple_admin_mode'];
 $Index->content(
-	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}([
-		h::td([
-			h::info('site_mode'),
-			h::{'input[type=radio]'}([
-				'name'			=> 'core[site_mode]',
-				'checked'		=> $Config->core['site_mode'],
-				'value'			=> [0, 1],
-				'in'			=> [$L->off, $L->on]
-			])
-		]),
-
-		h::td([
-			h::info('closed_title'),
-			h::{'input.cs-form-element'}([
-				'name'			=> 'core[closed_title]',
-				'value'			=> $Config->core['closed_title']
-			])
-		]),
-
-		h::td([
-			h::info('closed_text'),
-			h::{'textarea#closed_text.EDITORH.cs-form-element'}(
-				$Config->core['closed_text'],
-				[
-					'name'		=> 'core[closed_text]'
-				]
-			)
-		]),
-
-		h::td([
-			h::info('title_delimiter'),
-			h::{'input.cs-form-element'}([
-				'name'			=> 'core[title_delimiter]',
-				'value'			=> $Config->core['title_delimiter']
-			])
-		]),
-
-		h::td([
-			h::info('title_reverse'),
-			h::{'input[type=radio]'}([
-				'name'			=> 'core[title_reverse]',
-				'checked'		=> $Config->core['title_reverse'],
-				'value'			=> [0, 1],
-				'in'			=> [$L->off, $L->on]
-			])
-		]),
-
-		h::td([
-			$L->show_tooltips,
-			h::{'input[type=radio]'}([
-				'name'			=> 'core[show_tooltips]',
-				'checked'		=> $Config->core['show_tooltips'],
-				'value'			=> [0, 1],
-				'in'			=> [$L->off, $L->on]
-			])
-		]),
-
-		h::td([
-			h::info('simple_admin_mode'),
-			h::{'input[type=radio]'}([
-				'name'			=> 'core[simple_admin_mode]',
-				'checked'		=> $Config->core['simple_admin_mode'],
-				'value'			=> [0, 1],
-				'in'			=> [$L->off, $L->on]
-			])
-		]),
-
-		(!$Config->core['simple_admin_mode'] ? h::td([
+	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}([
+		system_input_core('site_mode', 'radio'),
+		system_input_core('closed_title'),
+		system_textarea_core('closed_text', false, 'EDITORH'),
+		system_input_core('title_delimiter'),
+		system_input_core('title_reverse', 'radio'),
+		system_input_core('show_tooltips', 'radio'),
+		system_input_core('simple_admin_mode', 'radio'),
+		!$sa ? [
 			h::info('debug'),
 				h::{'input[type=radio]'}([
 				'name'			=> 'core[debug]',
@@ -78,86 +19,67 @@ $Index->content(
 				'in'			=> [$L->off, $L->on],
 				'OnClick'		=> ['$(\'#debug_form\').hide();', '$(\'#debug_form\').show();']
 			])
-		]) : false),
-
-		(!$Config->core['simple_admin_mode'] ? h::td().
-		h::{'td#debug_form.cs-padding-left'}(
-			h::{'table tr'}([
-				h::td([
-					$L->show_objects_data,
-					h::{'input[type=radio]'}([
-						'name'			=> 'core[show_objects_data]',
-						'checked'		=> $Config->core['show_objects_data'],
-						'value'			=> [0, 1],
-						'in'			=> [$L->off, $L->on]
-					])
-				]),
-
-				h::td([
-					$L->show_db_queries,
-					h::{'input[type=radio]'}([
-						'name'			=> 'core[show_db_queries]',
-						'checked'		=> $Config->core['show_db_queries'],
-						'value'			=> [0, 1],
-						'in'			=> [$L->off, $L->on]
-					])
-				]),
-
-				h::td([
-					$L->show_cookies,
-					h::{'input[type=radio]'}([
-							'name'			=> 'core[show_cookies]',
-							'checked'		=> $Config->core['show_cookies'],
-							'value'			=> [0, 1],
-							'in'			=> [$L->off, $L->on]
-					])
-				])
-			]),
+		] : false,
+		!$sa ? [
+			'',
 			[
-				'style' => ($Config->core['debug'] == 0 ? 'display: none;' : '')
+				h::{'table tr| td'}([
+					system_input_core('show_objects_data', 'radio'),
+					system_input_core('show_db_queries', 'radio'),
+					system_input_core('show_cookies', 'radio'),
+				]),
+				[
+					'style' => ($Config->core['debug'] == 0 ? 'display: none;' : ''),
+					'id'	=> 'debug_form',
+					'class'	=> 'cs-padding-left'
+				]
 			]
-		) : false),
-
-		(!$Config->core['simple_admin_mode'] ? h::td([
+		] : false,
+		!$sa ? [
 			h::info('routing'),
-			h::{'table#system_config_routing tr'}([
-				h::{'td info'}('routing_in').
-				h::{'td info'}('routing_out'),
-
-				h::{'td textarea.cs-form-element.cs-wide-textarea'}(
-					$Config->routing['in'],
-					[
-						'name'				=> 'routing[in]'
-					]
-				).
-				h::{'td textarea.cs-form-element.cs-wide-textarea'}(
-					$Config->routing['out'],
-					[
-						'name'				=> 'routing[out]'
-					]
-				)
+			h::{'table#system_config_routing.cs-fullwidth-table tr| td'}([
+				[
+					h::info('routing_in'),
+					h::info('routing_out')
+				],
+				[
+					h::{'textarea.cs-form-element.cs-wide-textarea'}(
+						$Config->routing['in'],
+						[
+							'name'				=> 'routing[in]'
+						]
+					),
+					h::{'textarea.cs-form-element.cs-wide-textarea'}(
+						$Config->routing['out'],
+						[
+							'name'				=> 'routing[out]'
+						]
+					)
+				]
 			])
-		]) : false),
-
-		(!$Config->core['simple_admin_mode'] ? h::td([
+		] : false,
+		!$sa ? [
 			h::info('replace'),
-			h::{'table#system_config_replace tr'}([
-					h::{'td info'}('replace_in').
-					h::{'td info'}('replace_out'),
-
-					h::{'td textarea.cs-form-element.cs-wide-textarea'}(
+			h::{'table#system_config_replace.cs-full_width tr| td'}([
+				[
+					h::info('replace_in'),
+					h::info('replace_out')
+				],
+				[
+					h::{'textarea.cs-form-element.cs-wide-textarea'}(
 						$Config->replace['in'],
 						[
 							'name'			=> 'replace[in]'
 						]
-					).
-					h::{'td textarea.cs-form-element.cs-wide-textarea'}(
+					),
+					h::{'textarea.cs-form-element.cs-wide-textarea'}(
 						$Config->replace['out'],
 						[
 							'name'			=> 'replace[out]'
 						]
 					)
+				]
 			])
-		]) : false)
+		] : false
 	])
 );

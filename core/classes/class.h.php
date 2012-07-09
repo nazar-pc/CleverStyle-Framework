@@ -5,7 +5,7 @@
  * If defined constant "XHTML_TAGS_STYLE" - tags will be generated according to rules of xhtml
  */
 class h {//TODO full array of unpaired tags for general processing
-	protected static	$unit_atributes = [	//Одиночные атрибуты, которые не имеют значения
+	protected static	$unit_atributes = [	//Unit attributes, that have no value
 			'async',
 			'defer',
 			'formnovalidate',
@@ -18,13 +18,27 @@ class h {//TODO full array of unpaired tags for general processing
 			'multiple'
 		],
 		$unpaired_tags = [
+			'area',
+			'base',
+			'br',
+			'col',
+			'hr',
+			'img',
+			'input',
 			'link',
 			'meta',
-			'base',
-			'hr',
-			'img'
+			'param'
 		];
-	//Отступы строк yдля красивого исходного кода
+	/**
+	 * Line paddings for a structured source code
+	 *
+	 * @static
+	 *
+	 * @param     $in
+	 * @param int $level
+	 *
+	 * @return mixed
+	 */
 	static function level ($in, $level = 1) {
 		if ($level < 1) {
 			return $in;
@@ -107,7 +121,7 @@ class h {//TODO full array of unpaired tags for general processing
 	}
 
 	/**
-	 * Pair tags processing
+	 * Wrapper for paired tags rendering
 	 * @static
 	 *
 	 * @param string $in
@@ -149,7 +163,15 @@ class h {//TODO full array of unpaired tags for general processing
 				'</'.$tag.'>'.
 				($level ? "\n" : '');
 	}
-	//Wrapper for processing unpaired tags
+	//
+	/**
+	 * Wrapper for unpaired tags rendering
+	 * @static
+	 *
+	 * @param array $data
+	 *
+	 * @return bool|string
+	 */
 	protected static function u_wrap ($data = []) {
 		$data = (array)$data;
 		$in = $add = '';
@@ -164,8 +186,7 @@ class h {//TODO full array of unpaired tags for general processing
 		$return = '<'.$tag.$add.(defined('XHTML_TAGS_STYLE') ? ' /' : '').'>'.$in."\n";
 		return isset($data_title) ? self::label($return, ['data-title' => $data_title]) : $return;
 	}
-
-	static function form		($in = '', $data = []) {
+	static function form ($in = '', $data = []) {
 		global $User;
 		if (is_object($User)) {
 			$in .= self::input([
@@ -176,7 +197,7 @@ class h {//TODO full array of unpaired tags for general processing
 		}
 		return self::wrap($in, $data, __FUNCTION__);
 	}
-	static function input		($in = [], $data = []) {
+	static function input ($in = [], $data = []) {
 		if (!empty($data)) {
 			$in = array_merge(['in' => $in], $data);
 		}
@@ -251,10 +272,10 @@ class h {//TODO full array of unpaired tags for general processing
 				if (!isset($in['type'])) {
 					$in['type'] = 'text';
 				}
-				if (isset($in['min']) && isset($in['value']) && $in['min'] > $in['value']) {
+				if (isset($in['min'], $in['value']) && $in['min'] !== false && $in['min'] > $in['value']) {
 					$in['value'] = $in['min'];
 				}
-				if (isset($in['max']) && isset($in['value']) && $in['max'] < $in['value']) {
+				if (isset($in['max'], $in['value']) && $in['max'] !== false && $in['max'] < $in['value']) {
 					$in['value'] = $in['max'];
 				}
 				$in['tag'] = __FUNCTION__;
@@ -343,10 +364,10 @@ class h {//TODO full array of unpaired tags for general processing
 		unset($option);
 		return self::wrap(implode('', $options), $data, $function);
 	}
-	static function select		($in = '', $data = []) {
+	static function select ($in = '', $data = []) {
 		return self::template_1($in, $data, __FUNCTION__);
 	}
-	static function datalist	($in = '', $data = []) {
+	static function datalist ($in = '', $data = []) {
 		return self::template_1($in, $data, __FUNCTION__);
 	}
 	/**
@@ -375,16 +396,16 @@ class h {//TODO full array of unpaired tags for general processing
 		$data['level'] = false;
 		return self::wrap($in, $data, $function);
 	}
-	static function textarea	($in = '', $data = []) {
+	static function textarea ($in = '', $data = []) {
 		return self::template_2($in, $data, __FUNCTION__);
 	}
-	static function pre		($in = '', $data = []) {
+	static function pre ($in = '', $data = []) {
 		return self::template_2($in, $data, __FUNCTION__);
 	}
-	static function code		($in = '', $data = []) {
+	static function code ($in = '', $data = []) {
 		return self::template_2($in, $data, __FUNCTION__);
 	}
-	static function button		($in = '', $data = []) {
+	static function button ($in = '', $data = []) {
 		if (is_array($in)) {
 			if (!isset($in['type'])) {
 				$in['type'] = 'button';
@@ -396,7 +417,7 @@ class h {//TODO full array of unpaired tags for general processing
 		}
 		return self::wrap($in, $data, __FUNCTION__);
 	}
-	static function style		($in = '', $data = []) {
+	static function style ($in = '', $data = []) {
 		if (is_array($in)) {
 			if (!isset($in['type'])) {
 				$in['type'] = 'text/css';
@@ -408,12 +429,21 @@ class h {//TODO full array of unpaired tags for general processing
 		}
 		return self::wrap($in, $data, __FUNCTION__);
 	}
-	static function br			($repeat = 1) {
+	static function br ($repeat = 1) {
 		$in['tag'] = __FUNCTION__;
 		return str_repeat(self::u_wrap($in), $repeat);
 	}
-	//Псевдо-элементы
-	static function info		($in = '', $data = []) {
+	/**
+	 * Pseudo tag for labels with tooltips
+	 *
+	 * @static
+	 *
+	 * @param string $in
+	 * @param array  $data
+	 *
+	 * @return mixed
+	 */
+	static function info ($in = '', $data = []) {
 		global $Config, $L;
 		if (is_object($Config) && $Config->core['show_tooltips']) {
 			return self::label($L->$in, array_merge(['data-title' => $L->{$in.'_info'}], $data));
@@ -421,7 +451,17 @@ class h {//TODO full array of unpaired tags for general processing
 			return self::label($L->$in, $data);
 		}
 	}
-	static function icon		($class, $data = []) {
+	/**
+	 * Pseudo tag for inserting of icons
+	 *
+	 * @static
+	 *
+	 * @param       $class
+	 * @param array $data
+	 *
+	 * @return mixed
+	 */
+	static function icon ($class, $data = []) {
 		if (!isset($data['style'])) {
 			$data['style'] = 'display: inline-block;';
 		} else {
@@ -442,7 +482,7 @@ class h {//TODO full array of unpaired tags for general processing
 	 *
 	 * @return string
 	 */
-	static function __callStatic ($input, $data) {//if ($input == 'tr') {print_r(debug_backtrace());die;}
+	static function __callStatic ($input, $data) {
 		if ($data === false || (isset($data[0]) &&  $data[0] === false)) {
 			return '';
 		}
@@ -450,7 +490,7 @@ class h {//TODO full array of unpaired tags for general processing
 			$data		= [$data];
 		}
 		/**
- 		 * Analysis of called tag. If space found - nested tags presented.
+ 		 * Analysis of called tag. If space found - nested tags presented
 		 */
 		if (strpos($input, ' ') !== false) {
 			$input		= explode(' ', $input, 2);
@@ -468,11 +508,17 @@ class h {//TODO full array of unpaired tags for general processing
 				$output		= [];
 				foreach ($data[0] as &$d) {
 					if (isset($d[0]) && is_array_indexed($d[0])) {
-						$output[]	= [
-							self::__callStatic($input[1], $d[0]),
-							$d[1]
-						];
-
+						if (isset($d[1]) && is_array_indexed($d[1])) {
+							$output[]	= [
+								self::__callStatic($input[1], $d[0]).
+								self::__callStatic($input[1], $d[1])
+							];
+						} else {
+							$output[]	= [
+								self::__callStatic($input[1], $d[0]),
+								isset($d[1]) ? $d[1] : ''
+							];
+						}
 					} else {
 						$output[]	= self::__callStatic($input[1], $d);
 					}
@@ -491,6 +537,7 @@ class h {//TODO full array of unpaired tags for general processing
 					$input[1],
 					$data
 				);
+				$data[1]	= [];
 			}
 			return self::__callStatic(
 				$input[0],
@@ -509,11 +556,20 @@ class h {//TODO full array of unpaired tags for general processing
 		/**
 		 * If associative array given then for every element of array separate copy of current tag will be created
 		 */
-		if (is_array_indexed($data) && isset($data[0])) {
+		if (is_array_indexed($data)) {
+			if (count($data) > 2) {
+				$output	= '';
+				foreach ($data as &$d) {
+					$output			.= self::__callStatic(
+						$input,
+						$d
+					);
+				}
+				return $output;
 			/**
 			 * Second part of expression - fix for "select" and "datalist" tags bescause they accept arrays as values
 			 */
-			if (
+			} elseif (
 				is_array_indexed($data[0]) &&
 				(
 					(
@@ -522,27 +578,40 @@ class h {//TODO full array of unpaired tags for general processing
 					is_array_indexed($data[0][0])
 				)
 			) {
-				$output	= '';
+				$output	= $post_output = '';
 				/**
 				 * If array of attributes not found - create empty one.
 				 */
 				if (!isset($data[1])) {
-					$data[1]	= [];
+					$data[1]		= [];
+				} elseif (!is_array($data[1])) {
+					$post_output	= self::__callStatic(
+						$input,
+						$data[1]
+					);
+					$data[1]		= [];
 				}
 				foreach ($data[0] as &$d) {
 					if (!is_array($d)) {
 						$d	= [$d];
 					}
-					$output	.= self::__callStatic(
+					$output			.= self::__callStatic(
 						$input,
 						[
 							$d[0],
-							array_merge($data[1], isset($d[1]) ? $d[1] : [])
+							array_merge(is_array($data[1]) ? $data[1] : [], isset($d[1]) ? $d[1] : [])
 						]
 					);
 				}
-				return $output;
-			} elseif(!is_array($data[0]) && !in_array($data[0], self::$unit_atributes) && isset($data[1]) && !is_array($data[1])) {
+				return $output.$post_output;
+			} elseif(
+				!is_array($data[0]) &&
+				!in_array($data[0], self::$unit_atributes) &&
+				isset($data[1]) &&
+				(
+					!is_array($data[1]) || is_array_indexed($data[1])
+				)
+			) {
 				$output	= '';
 				/**
 				 * If array of attributes not found - create empty one.
@@ -551,7 +620,7 @@ class h {//TODO full array of unpaired tags for general processing
 					if (!is_array($d)) {
 						$d	= [$d];
 					}
-					$output	.= self::__callStatic(
+					$output			.= self::__callStatic(
 						$input,
 						[
 							$d[0],

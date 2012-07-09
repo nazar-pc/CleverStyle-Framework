@@ -1,7 +1,7 @@
 <?php
 global $Config, $Index, $L, $User, $Page;
 $a				= &$Index;
-$rc				= &$Config->routing['current'];
+$rc				= $Config->routing['current'];
 if (isset($rc[2])) {
 	switch ($rc[2]) {
 		case 'add':
@@ -12,19 +12,19 @@ if (isset($rc[2])) {
 				h::{'p.ui-priority-primary.cs-state-messages'}(
 					$L->adding_a_group
 				).
-				h::{'table.cs-fullwidth-table.cs-center-all'}(
-					h::{'tr th.ui-widget-header.ui-corner-all'}([
+				h::{'table.cs-fullwidth-table.cs-center-all tr'}(
+					h::{'th.ui-widget-header.ui-corner-all'}(
 						$L->group_title,
 						$L->description
-					]).
-					h::{'tr td.ui-widget-content.ui-corner-all'}([
+					),
+					h::{'td.ui-widget-content.ui-corner-all'}(
 						h::{'input.cs-form-element'}([
 							'name'		=> 'group[title]'
 						]),
 						h::{'input.cs-form-element'}([
 							'name'		=> 'group[description]'
 						])
-					])
+					)
 				)
 			);
 		break;
@@ -42,14 +42,14 @@ if (isset($rc[2])) {
 				h::{'p.ui-priority-primary.cs-state-messages'}(
 					$L->editing_a_group($group_data['title'])
 				).
-				h::{'table.cs-fullwidth-table.cs-center-all'}(
-					h::{'tr th.ui-widget-header.ui-corner-all'}([
+				h::{'table.cs-fullwidth-table.cs-center-all tr'}(
+					h::{'th.ui-widget-header.ui-corner-all'}(
 						'&nbsp;id&nbsp;',
 						$L->group_title,
 						$L->description,
 						'data'
-					]).
-					h::{'tr td.ui-widget-content.ui-corner-all'}([
+					),
+					h::{'td.ui-widget-content.ui-corner-all'}(
 						$rc[3],
 						h::{'input.cs-form-element'}([
 							'name'		=> 'group[title]',
@@ -65,7 +65,7 @@ if (isset($rc[2])) {
 								'name'		=> 'group[data]'
 							]
 						)
-					])
+					)
 				).
 				h::{'input[type=hidden]'}([
 					'name'	=> 'group[id]',
@@ -139,13 +139,13 @@ if (isset($rc[2])) {
 				for ($i = 0; $i < $count; $i += 2) {
 					$content_[]	= $content[$i].$content[$i+1];
 				}
-				$tabs_content .= h::{'div#permissions_group_'.strtr($group, '/', '_').' table.cs-fullwidth-table.cs-center-all'}(
-					h::{'tr td.cs-left-all[colspan=4]'}(
+				$tabs_content .= h::{'div#permissions_group_'.strtr($group, '/', '_').' table.cs-fullwidth-table.cs-center-all tr'}(
+					h::{'td.cs-left-all[colspan=4]'}(
 						h::{'button.cs-permissions-invert'}($L->invert).
 						h::{'button.cs-permissions-allow-all'}($L->allow_all).
 						h::{'button.cs-permissions-deny-all'}($L->deny_all)
-					).
-					h::tr($content_)
+					),
+					$content_
 				);
 			}
 			unset($content, $content_, $count, $i, $permissions, $group, $list, $label, $id, $blocks);
@@ -181,16 +181,16 @@ if (isset($rc[2])) {
 } else {
 	$a->buttons		= false;
 	$groups_ids		= $User->get_groups_list();
-	$groups_list	= h::{'tr th.ui-widget-header.ui-corner-all'}([
+	$groups_list	= [h::{'th.ui-widget-header.ui-corner-all'}(
 		$L->action,
 		'id',
 		$L->group_title,
 		$L->description
-	]);
+	)];
 	foreach ($groups_ids as $id) {
-		$id = $id['id'];
-		$group_data = $User->get_group_data($id);
-		$groups_list .= h::{'tr td.ui-widget-content.ui-corner-all'}([
+		$id				= $id['id'];
+		$group_data 	= $User->get_group_data($id);
+		$groups_list[]	= h::{'td.ui-widget-content.ui-corner-all'}(
 			h::a(
 				h::{'button.cs-button-compact'}(
 					h::icon('wrench'),
@@ -227,16 +227,16 @@ if (isset($rc[2])) {
 			$id,
 			$group_data['title'],
 			$group_data['description']
-		]);
+		);
 	}
 	unset($id, $group_data, $groups_ids);
 	$a->content(
-		h::{'table.cs-fullwidth-table.cs-center-all'}(
-			$groups_list.
-			h::{'tr td.cs-left-all[colspan=4] button'}(
+		h::{'table.cs-fullwidth-table.cs-center-all tr'}(
+			$groups_list,
+			h::{'td.cs-left-all[colspan=4] button'}(
 				$L->add_group,
 				[
-					'onMouseDown' => 'javasript: location.href= \'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add\';'
+				'onMouseDown' => 'javasript: location.href= \'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add\';'
 				]
 			)
 		)
