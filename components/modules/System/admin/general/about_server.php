@@ -2,13 +2,12 @@
 
 global $L, $DB_TYPE, $DB_HOST, $DB_NAME, $DB_PREFIX, $db, $Cache, $STORAGE_TYPE;
 global $$DB_TYPE, $Index, $PHP, $mcrypt;
-$a = &$Index;
-$a->form = false;
-$state = function ($state) {
+$Index->form	= false;
+$state			= function ($state) {
 	return ($state ? 'ui-state-highlight' : 'ui-state-error').' ui-corner-all';
 };
-$a->content(
-	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}([
+$Index->content(
+	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		[
 			h::{'div#system_readme.cs-dialog'}(
 				file_get_contents(DIR.'/readme.html'),
@@ -75,11 +74,11 @@ $a->content(
 		],
 		[
 			$L->components.' PHP:',
-			h::{'table.cs-left-odd.cs-php-components tr| td'}([
+			h::{'table.cs-left-odd.cs-php-components tr| td'}(
 				[
 					$L->mcrypt.':',
 					[
-						check_mcrypt() ? $L->on : $L->off.$a->sup('(!)', ['title'	=> $L->mcrypt_warning]),
+						check_mcrypt() ? $L->on : $L->off.h::sup('(!)', ['title'	=> $L->mcrypt_warning]),
 						[
 							'class' => $state(check_mcrypt())
 						]
@@ -115,7 +114,7 @@ $a->content(
 						]
 					]
 				]
-			])
+			)
 		],
 		[
 			$L->main_db.':',
@@ -123,7 +122,7 @@ $a->content(
 		],
 		[
 			$L->properties.' '.$DB_TYPE.':',
-			h::{'table.cs-left-odd.cs-sql-properties tr| td'}([
+			h::{'table.cs-left-odd.cs-sql-properties tr| td'}(
 				[
 					$L->host.':',
 					$DB_HOST
@@ -145,7 +144,7 @@ $a->content(
 					$L->prefix_of_db.':',
 					$DB_PREFIX
 				]
-			])
+			)
 		],
 		[
 			$L->main_storage.':',
@@ -153,7 +152,7 @@ $a->content(
 		],
 		function_exists('apache_get_version') ? [
 			$L->configs.' "php.ini":',
-			h::{'table.cs-left-odd.cs-php-ini-settings tr| td'}([
+			h::{'table.cs-left-odd.cs-php-ini-settings tr| td'}(
 				[
 					$L->allow_file_upload.':',
 					[
@@ -223,8 +222,8 @@ $a->content(
 							'class' => $state(!display_errors())
 						]
 					]
-				],
-			])
+				]
+			)
 		] : false
-	])
+	)
 );

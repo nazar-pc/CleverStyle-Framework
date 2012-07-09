@@ -303,14 +303,13 @@ function change_password (current_password, new_password) {
  * @param item
  */
 function block_switch_textarea (item) {
-	$('#html').hide();
-	$('#php').hide();
+	$('#block_content_html, #block_content_raw_html').hide();
 	switch ($(item).val()) {
 		case 'html':
-			$('#raw_html').show();
+			$('#block_content_html').show();
 		break;
-		case 'php':
-			$('#raw_html').show();
+		case 'raw_html':
+			$('#block_content_raw_html').show();
 		break;
 	}
 }

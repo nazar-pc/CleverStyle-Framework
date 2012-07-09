@@ -17,7 +17,7 @@
  *  ['name'	=> <i>module_name</i>]
  */
 global $Config, $Index, $User, $Core;
-$a = &$Index;
+$a			= $Index;
 $rc			= $Config->routing['current'];
 $update		= false;
 if (isset($_POST['update_modules_list'])) {

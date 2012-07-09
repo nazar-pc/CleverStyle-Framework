@@ -3,7 +3,7 @@ global $Config, $Index, $L;
 $timezones	= get_timezones_list();
 $sa			= $Config->core['simple_admin_mode'];
 $Index->content(
-	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}([
+	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		system_input_core('name', 'text', 'site_name'),
 		!$sa ? system_input_core('url') : false,
 		!$sa ? system_input_core('cookie_domain') : false,
@@ -11,7 +11,7 @@ $Index->content(
 		!$sa ? system_input_core('cookie_prefix') : false,
 		!$sa ? [
 			h::info('mirrors'),
-			h::{'table tr| td'}([
+			h::{'table tr| td'}(
 				[
 					h::info('mirrors_url'),
 					h::info('mirrors_cookie_domain'),
@@ -42,7 +42,7 @@ $Index->content(
 						'id'	=> 'site_info_config_mirrors'
 					]
 				]
-			])
+			)
 		] : false,
 		system_input_core('keywords'),
 		system_input_core('description'),
@@ -62,5 +62,5 @@ $Index->content(
 		],
 		system_input_core('admin_email', 'email'),
 		system_input_core('admin_phone', 'tel')
-	])
+	)
 );

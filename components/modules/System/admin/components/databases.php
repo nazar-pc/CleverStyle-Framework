@@ -1,6 +1,6 @@
 <?php
 global $Config, $Index, $L, $Page, $DB_HOST, $DB_TYPE, $DB_PREFIX, $DB_NAME, $DB_CHARSET;
-$a				= &$Index;
+$a				= $Index;
 $rc				= $Config->routing['current'];
 $test_dialog	= false;
 if (isset($rc[2])) {
@@ -52,18 +52,18 @@ if (isset($rc[2])) {
 				h::{'p.ui-priority-primary.cs-state-messages'}(
 					$rc[2] == 'edit' ? $L->editing_a_database($name) : $L->adding_a_database
 				).
-				h::{'table.cs-fullwidth-table.cs-center-all'}(
-					h::{'tr th.ui-widget-header.ui-corner-all'}([
-						$rc[2] == 'add' ? h::info('db_mirror') : false,
-						h::info('db_host'),
-						h::info('db_type'),
-						h::info('db_prefix'),
-						h::info('db_name'),
-						h::info('db_user'),
-						h::info('db_password'),
-						h::info('db_charset')
-					]).
-					h::{'tr td.ui-widget-content.ui-corner-all.cs-add-db'}([
+				h::{'table.cs-fullwidth-table.cs-center-all tr'}(
+					h::{'th.ui-widget-header.ui-corner-all| info'}(
+						$rc[2] == 'add' ? 'db_mirror' : false,
+						'db_host',
+						'db_type',
+						'db_prefix',
+						'db_name',
+						'db_user',
+						'db_password',
+						'db_charset'
+					),
+					h::{'td.ui-widget-content.ui-corner-all.cs-add-db'}(
 						($rc[2] == 'add' ?
 							h::{'select.cs-form-element'}(
 								[
@@ -123,7 +123,7 @@ if (isset($rc[2])) {
 							'name'		=> 'mirror',
 							'value'		=> $rc[4]
 						]) : '')
-					])
+					)
 				).
 				h::button(
 					$L->test_connection,
@@ -169,19 +169,19 @@ if (isset($rc[2])) {
 					h::{'p.ui-priority-primary.cs-state-messages'}(
 						$L->sure_to_delete.' '.$name.
 							h::{'input[type=hidden]'}([
-								'name'	=> 'mode',
-								'value'	=> 'delete'
+								[
+									'name'	=> 'mode',
+									'value'	=> $rc[2]
+								],
+								[
+									'name'	=> 'database',
+									'value'	=> $rc[3]
+								]
 							]).
-							h::{'input[type=hidden]'}([
-								'name'	=> 'database',
-								'value'	=> $rc[3]
-							]).
-							(isset($rc[4]) ?
-								h::{'input[type=hidden]'}([
-									'name'	=> 'mirror',
-									'value'	=> $rc[4]
-								])
-							: '')
+							(isset($rc[4]) ? h::{'input[type=hidden]'}([
+								'name'	=> 'mirror',
+								'value'	=> $rc[4]
+							]) : '')
 					).
 					h::{'button[type=submit]'}($L->yes)
 				);
@@ -214,7 +214,7 @@ if (isset($rc[2])) {
 	}
 } else {
 	$test_dialog = true;
-	$db_list = h::{'tr th.ui-widget-header.ui-corner-all'}([
+	$db_list = [h::{'th.ui-widget-header.ui-corner-all'}(
 		$L->action,
 		$L->db_host,
 		$L->db_type,
@@ -222,90 +222,88 @@ if (isset($rc[2])) {
 		$L->db_name,
 		$L->db_user,
 		$L->db_charset
-	]);
+	)];
 	foreach ($Config->db as $i => &$db_data) {
-		$db_list .=	h::tr(
-			h::td(
+		$db_list[]	= h::{'td.ui-corner-all.'.($i ? 'ui-widget-content' : 'ui-state-highlight')}(
+			[
 				h::{'a.cs-button.cs-button-compact'}(
-					h::icon('plus'),
 					[
-						'href'			=> $a->action.'/add/'.$i,
-						'data-title'	=> $L->add.' '.$L->mirror.' '.$L->of_db
-					]
-				).($i ? 
-				h::{'a.cs-button.cs-button-compact'}(
-					h::icon('wrench'),
+						h::icon('plus'),
+						[
+							'href'			=> $a->action.'/add/'.$i,
+							'data-title'	=> $L->add.' '.$L->mirror.' '.$L->of_db
+						]
+					],
+					$i ? [
+						h::icon('wrench'),
+						[
+							'href'			=> $a->action.'/edit/'.$i,
+							'data-title'	=> $L->edit.' '.$L->db
+						]
+					] : false,
+					$i ? [
+						h::icon('trash'),
+						[
+							'href'			=> $a->action.'/delete/'.$i,
+							'data-title'	=> $L->delete.' '.$L->db
+						]
+					] : false,
 					[
-						'href'			=> $a->action.'/edit/'.$i,
-						'data-title'	=> $L->edit.' '.$L->db
-					]
-				).
-				h::{'a.cs-button.cs-button-compact'}(
-					h::icon('trash'),
-					[
-						'href'			=> $a->action.'/delete/'.$i,
-						'data-title'	=> $L->delete.' '.$L->db
-					]
-				) : '').
-				h::{'a.cs-button.cs-button-compact'}(
-					h::icon('signal-diag'),
-					[
-						'onMouseDown'	=> 'db_test(\''.$a->action.'/test/'.$i.'\', true);',
-						'data-title'	=> $L->test_connection
+						h::icon('signal-diag'),
+						[
+							'onMouseDown'	=> 'db_test(\''.$a->action.'/test/'.$i.'\', true);',
+							'data-title'	=> $L->test_connection
+						]
 					]
 				),
 				[
-					'class'	=> 'ui-corner-all cs-db-config-buttons '.($i ? 'ui-widget-content' : 'ui-state-highlight')
+					'class'	=> 'cs-db-config-buttons'
 				]
-			).
-			h::td(
-				[
-					$i	? $db_data['host']		: $DB_HOST,
-					$i	? $db_data['type']		: $DB_TYPE,
-					$i	? $db_data['prefix']	: $DB_PREFIX,
-					$i	? $db_data['name']		: $DB_NAME,
-					$i	? $db_data['user']		: '*****',
-					$i	? $db_data['charset']	: $DB_CHARSET
-				],
-				[
-					'class'	=> 'ui-corner-all '.($i ? 'ui-widget-content' : 'ui-state-highlight')
-				]
-			)
+			],
+			$i	? $db_data['host']		: $DB_HOST,
+			$i	? $db_data['type']		: $DB_TYPE,
+			$i	? $db_data['prefix']	: $DB_PREFIX,
+			$i	? $db_data['name']		: $DB_NAME,
+			$i	? $db_data['user']		: '*****',
+			$i	? $db_data['charset']	: $DB_CHARSET
 		);
 		foreach ($Config->db[$i]['mirrors'] as $m => &$mirror) {
 			if (is_array($mirror) && !empty($mirror)) {
-				$db_list .=	h::tr(
-					h::{'td.ui-widget-content.ui-corner-all.cs-db-config-buttons-r'}(
+				$db_list[]	= h::{'td.ui-widget-content.ui-corner-all'}(
+					[
 						h::{'a.cs-button.cs-button-compact'}(
-							h::icon('wrench'),
 							[
-								'href'			=> 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/edit/'.$i.'/'.$m,
-								'data-title'	=> $L->edit.' '.$L->mirror.' '.$L->of_db
-							]
-						).
-						h::{'a.cs-button.cs-button-compact'}(
-							h::icon('trash'),
+								h::icon('wrench'),
+								[
+									'href'			=> 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/edit/'.$i.'/'.$m,
+									'data-title'	=> $L->edit.' '.$L->mirror.' '.$L->of_db
+								]
+							],
 							[
-								'href'			=> 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/delete/'.$i.'/'.$m,
-								'data-title'	=> $L->delete.' '.$L->mirror.' '.$L->of_db
-							]
-						).
-						h::{'a.cs-button.cs-button-compact'}(
-							h::icon('signal-diag'),
+								h::icon('trash'),
+								[
+									'href'			=> 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/delete/'.$i.'/'.$m,
+									'data-title'	=> $L->delete.' '.$L->mirror.' '.$L->of_db
+								]
+							],
 							[
-								'onMouseDown'	=> 'db_test(\''.$a->action.'/test/'.$i.'/'.$m.'\', true);',
-								'data-title'	=> $L->test_connection
+								h::icon('signal-diag'),
+								[
+									'onMouseDown'	=> 'db_test(\''.$a->action.'/test/'.$i.'/'.$m.'\', true);',
+									'data-title'	=> $L->test_connection
+								]
 							]
-						)
-					).
-					h::{'td.ui-widget-content.ui-corner-all'}([
-						$mirror['host'],
-						$mirror['type'],
-						$mirror['prefix'],
-						$mirror['name'],
-						$mirror['user'],
-						$mirror['charset']
-					])
+						),
+						[
+							'class'	=> 'cs-db-config-buttons-r'
+						]
+					],
+					$mirror['host'],
+					$mirror['type'],
+					$mirror['prefix'],
+					$mirror['name'],
+					$mirror['user'],
+					$mirror['charset']
 				);
 			}
 		}
@@ -313,35 +311,31 @@ if (isset($rc[2])) {
 	}
 	unset($i, $db_data);
 	$a->content(
-		h::{'table.cs-fullwidth-table'}(
-			$db_list.
-			h::{'tr td.cs-left-all[colspan=7]'}(
+		h::{'table.cs-fullwidth-table tr'}(
+			$db_list,
+			h::{'td.cs-left-all[colspan=7]'}(
 				h::button(
 					$L->add_database,
 					[
 						'onMouseDown' => 'javasript: location.href= \'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add\';'
 					]
-				).h::br()
-			).
-			h::tr(
-				h::{'td.cs-right-all[colspan=4] info'}('db_balance').
-				h::{'td.cs-left-all[colspan=3] input[type=radio]'}([
-					'name'			=> 'core[db_balance]',
-					'checked'		=> $Config->core['db_balance'],
-					'value'			=> array(0, 1),
-					'in'			=> array($L->off, $L->on)
-				])
-			).
-			h::tr(
-				h::{'td.cs-right-all[colspan=4] info'}('maindb_for_write').
-				h::{'td.cs-left-all[colspan=3] input[type=radio]'}([
-					'name'			=> 'core[maindb_for_write]',
-					'checked'		=> $Config->core['maindb_for_write'],
-					'value'			=> array(0, 1),
-					'class'			=> array('cs-form-element'),
-					'in'			=> array($L->off, $L->on)
-				])
-			)
+				).
+				h::br()
+			),
+			h::{'td.cs-right-all[colspan=4] info'}('db_balance').
+			h::{'td.cs-left-all[colspan=3] input[type=radio]'}([
+				'name'			=> 'core[db_balance]',
+				'checked'		=> $Config->core['db_balance'],
+				'value'			=> [0, 1],
+				'in'			=> [$L->off, $L->on]
+			]),
+			h::{'td.cs-right-all[colspan=4] info'}('maindb_for_write').
+			h::{'td.cs-left-all[colspan=3] input[type=radio]'}([
+				'name'			=> 'core[maindb_for_write]',
+				'checked'		=> $Config->core['maindb_for_write'],
+				'value'			=> [0, 1],
+				'in'			=> [$L->off, $L->on]
+			])
 		).
 		h::{'input[type=hidden]'}([
 			 'name'			=> 'mode',

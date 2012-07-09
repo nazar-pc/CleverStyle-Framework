@@ -1,6 +1,4 @@
 <?php
 global $Config, $Index, $L;
-$a = &$Index;
-$a->buttons = false;
-
-$a->content('Comming soon...');
+$Index->buttons = false;
+$Index->content('Comming soon...');

@@ -1,6 +1,6 @@
 <?php
 global $Config, $Index, $L, $User, $Page;
-$a				= &$Index;
+$a				= $Index;
 $rc				= $Config->routing['current'];
 if (isset($rc[2])) {
 	switch ($rc[2]) {

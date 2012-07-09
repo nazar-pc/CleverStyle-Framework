@@ -2,7 +2,7 @@
 global $L, $Config, $Index;
 $sa	= $Config->core['simple_admin_mode'];
 $Index->content(
-	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}([
+	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		system_input_core('site_mode', 'radio'),
 		system_input_core('closed_title'),
 		system_textarea_core('closed_text', false, 'EDITORH'),
@@ -23,11 +23,11 @@ $Index->content(
 		!$sa ? [
 			'',
 			[
-				h::{'table tr| td'}([
+				h::{'table tr| td'}(
 					system_input_core('show_objects_data', 'radio'),
 					system_input_core('show_db_queries', 'radio'),
-					system_input_core('show_cookies', 'radio'),
-				]),
+					system_input_core('show_cookies', 'radio')
+				),
 				[
 					'style' => ($Config->core['debug'] == 0 ? 'display: none;' : ''),
 					'id'	=> 'debug_form',
@@ -37,7 +37,7 @@ $Index->content(
 		] : false,
 		!$sa ? [
 			h::info('routing'),
-			h::{'table#system_config_routing.cs-fullwidth-table tr| td'}([
+			h::{'table#system_config_routing.cs-fullwidth-table tr| td'}(
 				[
 					h::info('routing_in'),
 					h::info('routing_out')
@@ -56,11 +56,11 @@ $Index->content(
 						]
 					)
 				]
-			])
+			)
 		] : false,
 		!$sa ? [
 			h::info('replace'),
-			h::{'table#system_config_replace.cs-full_width tr| td'}([
+			h::{'table#system_config_replace.cs-full_width tr| td'}(
 				[
 					h::info('replace_in'),
 					h::info('replace_out')
@@ -79,7 +79,7 @@ $Index->content(
 						]
 					)
 				]
-			])
+			)
 		] : false
-	])
+	)
 );

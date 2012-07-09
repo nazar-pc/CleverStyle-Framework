@@ -1,10 +1,11 @@
 <?php
 //Класс для отрисовки различных елементов HTML страницы в соответствии со стандартами HTML5, и с более понятным и функциональным синтаксисом
 /**
+ * Class for HTML code generating in accordance with the standards of HTML5, and with useful syntax extensions for simpler usage
  *
  * If defined constant "XHTML_TAGS_STYLE" - tags will be generated according to rules of xhtml
  */
-class h {//TODO full array of unpaired tags for general processing
+class h {
 	protected static	$unit_atributes = [	//Unit attributes, that have no value
 			'async',
 			'defer',
@@ -131,7 +132,7 @@ class h {//TODO full array of unpaired tags for general processing
 	 * @return bool|string
 	 */
 	protected static function wrap ($in = '', $data = [], $tag = 'div') {
-		$data	= array_merge(is_array($in) ? $in : ['in' => $in], is_array($data) ? $data : [], ['tag' => $tag]);
+		$data	= self::array_merge(is_array($in) ? $in : ['in' => $in], is_array($data) ? $data : [], ['tag' => $tag]);
 		$in		= $add = '';
 		$tag	= 'div';
 		$level	= 1;
@@ -173,7 +174,6 @@ class h {//TODO full array of unpaired tags for general processing
 	 * @return bool|string
 	 */
 	protected static function u_wrap ($data = []) {
-		$data = (array)$data;
 		$in = $add = '';
 		$tag = 'input';
 		if (!self::data_prepare($data, $in, $tag, $add)) {
@@ -187,6 +187,11 @@ class h {//TODO full array of unpaired tags for general processing
 		return isset($data_title) ? self::label($return, ['data-title' => $data_title]) : $return;
 	}
 	static function form ($in = '', $data = []) {
+		if ($in === false) {
+			return '';
+		} elseif (is_array($in)) {
+			return self::__callStatic(__FUNCTION__, [$in, $data]);
+		}
 		global $User;
 		if (is_object($User)) {
 			$in .= self::input([
@@ -198,10 +203,16 @@ class h {//TODO full array of unpaired tags for general processing
 		return self::wrap($in, $data, __FUNCTION__);
 	}
 	static function input ($in = [], $data = []) {
+		if ($in === false) {
+			return '';
+		}
 		if (!empty($data)) {
 			$in = array_merge(['in' => $in], $data);
 		}
 		if (isset($in['type']) && $in['type'] == 'radio') {
+			if (is_array_indexed($in) && is_array($in[0])) {
+				return self::__callStatic(__FUNCTION__, [$in, $data]);
+			}
 			if (is_array($in)) {
 				if (!isset($in['checked'])) {
 					$in['checked'] = $in['value'][0];
@@ -254,6 +265,9 @@ class h {//TODO full array of unpaired tags for general processing
 				return self::u_wrap($in);
 			}
 		} else {
+			if (is_array_indexed($in)) {
+				return self::__callStatic(__FUNCTION__, [$in, $data]);
+			}
 			if (
 				(
 					isset($in['name'])	&& is_array($in['name'])
@@ -298,6 +312,9 @@ class h {//TODO full array of unpaired tags for general processing
 	 * @return	bool|string
 	 */
 	protected static function template_1 ($in = '', $data = [], $function) {
+		if ($in === false) {
+			return '';
+		}
 		if (!is_array($in)) {
 			return self::wrap($in, $data, $function);
 		}
@@ -336,7 +353,10 @@ class h {//TODO full array of unpaired tags for general processing
 				unset($data[$attr]);
 			}
 		}
-		if (isset($data['selected']) && is_array($in['value'])) {
+		if (is_array($in['value'])) {
+			if (!isset($data['selected'])) {
+				$data['selected']	= $in['value'][0];
+			}
 			if (!is_array($data['selected'])) {
 				$data['selected']	= [$data['selected']];
 			}
@@ -379,6 +399,9 @@ class h {//TODO full array of unpaired tags for general processing
 	 * @return bool|string
 	 */
 	protected static function template_2 ($in = '', $data = [], $function) {
+		if ($in === false) {
+			return '';
+		}
 		global $Page;
 		$uniqid = uniqid('html_replace_');
 		if (is_array($in)) {
@@ -406,6 +429,11 @@ class h {//TODO full array of unpaired tags for general processing
 		return self::template_2($in, $data, __FUNCTION__);
 	}
 	static function button ($in = '', $data = []) {
+		if ($in === false) {
+			return '';
+		} elseif (is_array($in)) {
+			return self::__callStatic(__FUNCTION__, [$in, $data]);
+		}
 		if (is_array($in)) {
 			if (!isset($in['type'])) {
 				$in['type'] = 'button';
@@ -418,6 +446,11 @@ class h {//TODO full array of unpaired tags for general processing
 		return self::wrap($in, $data, __FUNCTION__);
 	}
 	static function style ($in = '', $data = []) {
+		if ($in === false) {
+			return '';
+		} elseif (is_array($in)) {
+			return self::__callStatic(__FUNCTION__, [$in, $data]);
+		}
 		if (is_array($in)) {
 			if (!isset($in['type'])) {
 				$in['type'] = 'text/css';
@@ -430,6 +463,9 @@ class h {//TODO full array of unpaired tags for general processing
 		return self::wrap($in, $data, __FUNCTION__);
 	}
 	static function br ($repeat = 1) {
+		if ($repeat === false) {
+			return false;
+		}
 		$in['tag'] = __FUNCTION__;
 		return str_repeat(self::u_wrap($in), $repeat);
 	}
@@ -444,6 +480,11 @@ class h {//TODO full array of unpaired tags for general processing
 	 * @return mixed
 	 */
 	static function info ($in = '', $data = []) {
+		if ($in === false) {
+			return '';
+		} elseif (is_array($in)) {
+			return self::__callStatic(__FUNCTION__, [$in, $data]);
+		}
 		global $Config, $L;
 		if (is_object($Config) && $Config->core['show_tooltips']) {
 			return self::label($L->$in, array_merge(['data-title' => $L->{$in.'_info'}], $data));
@@ -462,6 +503,9 @@ class h {//TODO full array of unpaired tags for general processing
 	 * @return mixed
 	 */
 	static function icon ($class, $data = []) {
+		if ($class === false) {
+			return '';
+		}
 		if (!isset($data['style'])) {
 			$data['style'] = 'display: inline-block;';
 		} else {
@@ -474,6 +518,28 @@ class h {//TODO full array of unpaired tags for general processing
 		}
 		return self::span($data);
 	}
+
+	/**
+	 * Marging of arrays, but joining all 'class' items
+	 * @static
+	 *
+	 * @param array    $array1
+	 * @param array    $array2
+	 * @param array    $array3
+	 *
+	 * @return array
+	 */
+	protected static function array_merge ($array1, $array2, $array3 = []) {
+		if (isset($array1['class'], $array2['class'])) {
+			$array1['class'] .= ' '.$array2['class'];
+			unset($array2['class']);
+		}
+		if (isset($array1['class'], $array3['class'])) {
+			$array1['class'] .= ' '.$array3['class'];
+			unset($array3['class']);
+		}
+		return array_merge($array1, $array2, $array3);
+	}
 	/**
 	 * @static
 	 *
@@ -483,8 +549,8 @@ class h {//TODO full array of unpaired tags for general processing
 	 * @return string
 	 */
 	static function __callStatic ($input, $data) {
-		if ($data === false || (isset($data[0]) &&  $data[0] === false)) {
-			return '';
+		if ($data === false) {
+			return false;
 		}
 		if (is_scalar($data)) {
 			$data		= [$data];
@@ -506,9 +572,27 @@ class h {//TODO full array of unpaired tags for general processing
 			if (strpos($input[0], '|') !== false) {
 				$input[0]	= substr($input[0], 0, -1);
 				$output		= [];
+				/**
+ 				 * When parameters are not taken in braces - make this operation, if it is necessary
+				 */
+				if (
+					count($data) > 2 ||
+					(
+						isset($data[1]) &&
+						is_array_indexed($data[1]) &&
+						(
+							!is_array($data[1][0]) || !in_array($data[1][0], self::$unit_atributes)
+						)
+					)
+				) {
+					$data	= [
+						$data,
+						[]
+					];
+				}
 				foreach ($data[0] as &$d) {
-					if (isset($d[0]) && is_array_indexed($d[0])) {
-						if (isset($d[1]) && is_array_indexed($d[1])) {
+					if (isset($d[0]) && is_array_indexed($d[0]) && !in_array($d[0][0], self::$unit_atributes)) {
+						if (isset($d[1]) && is_array_indexed($d[1]) && !in_array($d[1][0], self::$unit_atributes)) {
 							$output[]	= [
 								self::__callStatic($input[1], $d[0]).
 								self::__callStatic($input[1], $d[1])
@@ -575,7 +659,9 @@ class h {//TODO full array of unpaired tags for general processing
 					(
 						strpos($input, 'select') !== 0 && strpos($input, 'datalist') !== 0
 					) ||
-					is_array_indexed($data[0][0])
+					(
+						is_array_indexed($data[0][0]) && !in_array($data[0][0][0], self::$unit_atributes)
+					)
 				)
 			) {
 				$output	= $post_output = '';
@@ -592,16 +678,38 @@ class h {//TODO full array of unpaired tags for general processing
 					$data[1]		= [];
 				}
 				foreach ($data[0] as &$d) {
-					if (!is_array($d)) {
-						$d	= [$d];
+					if (!is_array($d) || !isset($d[1]) || !is_array($d[1])) {
+						$output			.= self::__callStatic(
+							$input,
+							[
+								$d,
+								$data[1]
+							]
+						);
+					} elseif (is_array_indexed($d[1]) && !in_array($d[1], self::$unit_atributes)) {
+						$output			.= self::__callStatic(
+							$input,
+							[
+								$d[0],
+								$data[1]
+							]
+						).
+						self::__callStatic(
+							$input,
+							[
+								$d[1],
+								$data[1]
+							]
+						);
+					} else {
+						$output			.= self::__callStatic(
+							$input,
+							[
+								$d[0],
+								self::array_merge($data[1], $d[1])
+							]
+						);
 					}
-					$output			.= self::__callStatic(
-						$input,
-						[
-							$d[0],
-							array_merge(is_array($data[1]) ? $data[1] : [], isset($d[1]) ? $d[1] : [])
-						]
-					);
 				}
 				return $output.$post_output;
 			} elseif(
@@ -609,23 +717,17 @@ class h {//TODO full array of unpaired tags for general processing
 				!in_array($data[0], self::$unit_atributes) &&
 				isset($data[1]) &&
 				(
-					!is_array($data[1]) || is_array_indexed($data[1])
+					!is_array($data[1]) ||
+					(
+						is_array_indexed($data[1])  && !in_array($data[1][0], self::$unit_atributes)
+					)
 				)
 			) {
 				$output	= '';
-				/**
-				 * If array of attributes not found - create empty one.
-				 */
 				foreach ($data as &$d) {
-					if (!is_array($d)) {
-						$d	= [$d];
-					}
 					$output			.= self::__callStatic(
 						$input,
-						[
-							$d[0],
-							isset($d[1]) ? $d[1] : []
-						]
+						$d
 					);
 				}
 				return $output;
@@ -651,7 +753,7 @@ class h {//TODO full array of unpaired tags for general processing
 			$data[0]	= ['in'	=> $data[0]];
 		}
 		if (isset($data[1])) {
-			$data		= array_merge($data[0], $data[1]);
+			$data		= self::array_merge($data[0], $data[1]);
 		} else {
 			$data		= $data[0];
 		}
@@ -673,7 +775,7 @@ class h {//TODO full array of unpaired tags for general processing
 		 */
 		if (($pos = strpos($input, '.')) !== false) {
 			if (!isset($attrs['class'])) {
-				$attrs['class'] = '';
+				$attrs['class']	= '';
 			}
 			$attrs['class']	= trim($attrs['class'].' '.str_replace('.', ' ', substr($input, $pos)));
 			$input			= substr($input, 0, $pos);
@@ -687,7 +789,7 @@ class h {//TODO full array of unpaired tags for general processing
 		if (isset($input[1])) {
 			$attrs['id'] = $input[1];
 		}
-		$attrs = array_merge($data, $attrs);
+		$attrs = self::array_merge($data, $attrs);
 		if ($tag == 'select' || $tag == 'datalist') {
 			if (isset($attrs['value'])) {
 				$in = [
@@ -716,10 +818,6 @@ class h {//TODO full array of unpaired tags for general processing
 		} else {
 			$in				= self::wrap($in, $attrs, $tag);
 		}
-		if (isset($in)) {
-			return $in;
-		} else {
-			return '';
-		}
+		return $in;
 	}
 }

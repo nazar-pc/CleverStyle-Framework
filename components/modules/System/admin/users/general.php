@@ -2,7 +2,7 @@
 global $Config, $Index, $L;
 
 $Index->content(
-	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}([
+	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		system_input_core('session_expire', 'number', null, false, 1, false, $L->seconds),
 		system_input_core('online_time', 'number', null, false, 1, false, $L->seconds),
 		[
@@ -73,5 +73,5 @@ $Index->content(
 			]
 		],
 		system_textarea_core('rules', false, 'EDITORH')
-	])
+	)
 );

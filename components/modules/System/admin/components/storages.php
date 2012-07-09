@@ -1,8 +1,8 @@
 <?php
 global $Config, $Index, $L, $Page;
-$a = &$Index;
-$rc = $Config->routing['current'];
-$test_dialog = true;
+$a				= $Index;
+$rc				= $Config->routing['current'];
+$test_dialog	= true;
 if (isset($rc[2])) {
 	$a->apply_button		= false;
 	$a->cancel_button_back	= true;

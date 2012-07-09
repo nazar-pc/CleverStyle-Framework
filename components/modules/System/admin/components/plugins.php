@@ -7,10 +7,10 @@
  *  ['name'	=> <i>plugin_name</i>]
  */
 global $Config, $Index, $L, $Core;
-$a = &$Index;
-$rc = $Config->routing['current'];
-$a->form = false;
-$plugins = get_list(PLUGINS, false, 'd');
+$a			= $Index;
+$rc			= $Config->routing['current'];
+$a->form	= false;
+$plugins	= get_list(PLUGINS, false, 'd');
 if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 	switch ($rc[2]) {
 		case 'enable':
@@ -46,15 +46,11 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 	}
 }
 unset($rc);
-$plugins_list = h::tr(
-	h::{'th.ui-widget-header.ui-corner-all'}(
-		[
-			$L->plugin_name,
-			$L->state,
-			$L->action
-		]
-	)
-);
+$plugins_list = [h::{'th.ui-widget-header.ui-corner-all'}(
+	$L->plugin_name,
+	$L->state,
+	$L->action
+)];
 foreach ($plugins as $plugin) {
 	$addition_state = $action = '';
 	//Information about plugin
@@ -119,21 +115,19 @@ foreach ($plugins as $plugin) {
 			'href'		=> $a->action.($state ? '/disable/' : '/enable/').$plugin
 		]
 	);
-	$plugins_list .= h::tr(
-		h::{'td.ui-widget-content.ui-corner-all'}($plugin).
-		h::{'td.ui-widget-content.ui-corner-all'}(
-			h::icon(
-				$state ? 'check' : 'minusthick',
-				[
-					'data-title'	=> $state ? $L->enabled : $L->disabled
-				]
-			).
-			$addition_state
+	$plugins_list[]	= h::{'td.ui-widget-content.ui-corner-all'}(
+		$plugin,
+		h::icon(
+			$state ? 'check' : 'minusthick',
+			[
+				'data-title'	=> $state ? $L->enabled : $L->disabled
+			]
 		).
-		h::{'td.ui-widget-content.ui-corner-all'}($action)
+		$addition_state,
+		$action
 	);
 }
 unset($plugins, $plugin, $state, $addition_state, $action);
 $a->content(
-	h::{'table.cs-fullwidth-table.cs-center-all'}($plugins_list)
+	h::{'table.cs-fullwidth-table.cs-center-all tr'}($plugins_list)
 );

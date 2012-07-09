@@ -1,6 +1,6 @@
 <?php
 global $Config, $Index, $L, $User, $Page;
-$a				= &$Index;
+$a				= $Index;
 $rc				= $Config->routing['current'];
 $search_columns	= $User->get_users_columns();
 if (isset($rc[2], $rc[3])) {
@@ -731,7 +731,7 @@ if (isset($rc[2], $rc[3])) {
 	unset($users_list_template, $id, $buttons, $user_data, $users_ids);
 	$a->content(
 		h::{'div#search_users_tabs'}(
-			h::{'ul li| a'}([
+			h::{'ul li| a'}(
 				[
 					$L->search,
 					[
@@ -744,7 +744,7 @@ if (isset($rc[2], $rc[3])) {
 						'href' => '#columns_settings'
 					]
 				]
-			]).
+			).
 			h::{'div#search_settings'}(
 				h::{'select.cs-form-element'}(
 					[

@@ -23,7 +23,7 @@
  *  ['name'	=> <i>module_name</i>]
  */
 global $Config, $Index, $L, $db, $Core, $Page;
-$a					= &$Index;
+$a					= $Index;
 $rc					= $Config->routing['current'];
 $a->buttons			= false;
 $display_modules	= true;
@@ -40,7 +40,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 			if ($Core->run_trigger(
 				'admin/System/components/modules/install/prepare',
 				[
-					'name' => $rc[3]
+					'name'	=> $rc[3]
 				]
 			)) {
 				$a->cancel_button_back = true;
@@ -91,7 +91,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 			if ($Core->run_trigger(
 				'admin/System/components/modules/uninstall/prepare',
 				[
-					'name' => $rc[3]
+					'name'	=> $rc[3]
 				]
 			)) {
 				$a->cancel_button_back = true;
@@ -111,7 +111,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 			if ($Core->run_trigger(
 				'admin/System/components/modules/default_module/prepare',
 				[
-					'name' => $rc[3]
+					'name'	=> $rc[3]
 				]
 			)) {
 				$a->cancel_button_back = true;
@@ -173,8 +173,8 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 						}
 						unset($db_json, $dbs, $database);
 						$a->content(
-							h::{'table.cs-fullwidth-table'}(
-								h::tr($db_list)
+							h::{'table.cs-fullwidth-table tr'}(
+								$db_list
 							)
 						);
 						unset($db_list);
@@ -199,7 +199,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 				if ($Core->run_trigger(
 					'admin/System/components/modules/storage/prepare',
 					[
-						'name' => $rc[3]
+						'name'	=> $rc[3]
 					]
 				)) {
 					$a->buttons				= true;
@@ -256,7 +256,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 			$Core->run_trigger(
 				'admin/System/components/modules/enable',
 				[
-					'name' => $rc[3]
+					'name'	=> $rc[3]
 				]
 			);
 		break;
@@ -266,7 +266,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 			$Core->run_trigger(
 				'admin/System/components/modules/disable',
 				[
-					'name' => $rc[3]
+					'name'	=> $rc[3]
 				]
 			);
 		break;
@@ -292,13 +292,11 @@ if ($display_modules) {
 	unset($rc);
 	global $User;
 	$db_users_items = $User->get_users_columns();
-	$modules_list = h::tr(
-		h::{'th.ui-widget-header.ui-corner-all'}([
-			$L->module_name,
-			$L->state,
-			$L->action
-		])
-	);
+	$modules_list = [h::{'th.ui-widget-header.ui-corner-all'}(
+		$L->module_name,
+		$L->state,
+		$L->action
+	)];
 	foreach ($Config->components['modules'] as $module => &$mdata) {
 		/**
 		 * If module if enabled or disabled
@@ -332,7 +330,7 @@ if ($display_modules) {
 					'link',
 					[
 						'data-title'	=> $L->api_exists.h::br().(file_exists($file) ? $L->click_to_view_details : ''),
-						'onClick'		=> '$(\'#'.$module.'_api\').dialog(\'open\');'
+						'onClick'		=> "$('#".$module."_api').dialog('open');"
 					]
 				);
 				unset($tag, $file);
@@ -359,7 +357,7 @@ if ($display_modules) {
 					'note',
 					[
 						'data-title'	=> $L->information_about_module.h::br().$L->click_to_view_details,
-						'onClick'		=> '$(\'#'.$module.'_readme\').dialog(\'open\');'
+						'onClick'		=> "$('#".$module."_readme').dialog('open');"
 					]
 				);
 			}
@@ -386,7 +384,7 @@ if ($display_modules) {
 					'info',
 					[
 						'data-title'	=> $L->license.h::br().$L->click_to_view_details,
-						'onClick'		=> '$(\'#'.$module.'_license\').dialog(\'open\');'
+						'onClick'		=> "$('#".$module."_license').dialog('open');"
 					]
 				);
 			}
@@ -472,30 +470,33 @@ if ($display_modules) {
 				]
 			);
 		}
-		$modules_list .= h::tr(
-			h::{'td.ui-widget-content.ui-corner-all'}($module).
-			h::{'td.ui-widget-content.ui-corner-all'}(
-				h::icon(
-					$mdata['active'] == 1 ? (
-						$module == $Config->core['default_module'] ? 'home' : 'check'
+		$modules_list[]	= h::{'td.ui-widget-content.ui-corner-all'}(
+			$module,
+			h::icon(
+				$mdata['active'] == 1 ? (
+					$module == $Config->core['default_module'] ? 'home' : 'check'
+				) : (
+					$mdata['active'] == 0 ? 'minusthick' : 'closethick'
+				),
+				[
+					'data-title'	=> $mdata['active'] == 1 ? (
+						$module == $Config->core['default_module'] ? $L->default_module : $L->enabled
 					) : (
-						$mdata['active'] == 0 ? 'minusthick' : 'closethick'
-					),
-					[
-						'data-title'	=> $mdata['active'] == 1 ? (
-							$module == $Config->core['default_module'] ? $L->default_module : $L->enabled
-						) : (
-							$mdata['active'] == 2 ? $L->disabled : $L->uninstalled.' ('.$L->not_installed.')'
-						)
-					]
-				).
-				$addition_state
+						$mdata['active'] == 2 ? $L->disabled : $L->uninstalled.' ('.$L->not_installed.')'
+					)
+				]
 			).
-			h::{'td.ui-widget-content.ui-corner-all.cs-modules-config-buttons'}($action)
+			$addition_state,
+			[
+				$action,
+				[
+					'class'	=> 'cs-modules-config-buttons'
+				]
+			]
 		);
 	}
 	$a->content(
-		h::{'table.cs-fullwidth-table.cs-center-all'}($modules_list).
+		h::{'table.cs-fullwidth-table.cs-center-all tr'}($modules_list).
 		h::{'button[type=submit]'}(
 			$L->update_modules_list,
 			[
