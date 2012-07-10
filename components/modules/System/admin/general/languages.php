@@ -1,5 +1,5 @@
 <?php
-global $Config, $Index, $L, $LANGUAGE;
+global $Config, $Index, $L, $Core;
 $Config->reload_languages();
 $translate_engines			= _mb_substr(get_list(ENGINES.'/translate', '/^[^_].*?\.php$/i', 'f'), 0, -4);
 $translate_engines_settings	= [];
@@ -27,7 +27,9 @@ foreach ($translate_engines as $engine) {
 }
 unset($engine, $parameters, $paremeter, $description, $table);
 $Index->content(
-	(FIXED_LANGUAGE ? h::{'p.ui-priority-primary.cs-state-messages'}($L->language_fixed_as.' '.$LANGUAGE) : '').
+	h::{'p.ui-priority-primary.cs-state-messages'}(
+		FIXED_LANGUAGE ? $L->language_fixed_as.' '.$Core->config('language') : false
+	).
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		system_select_core($Config->core['active_languages'],	'language',			'change_language',	'current_language'),
 		system_select_core($Config->core['languages'],			'active_languages',	'change_language',	null, true),

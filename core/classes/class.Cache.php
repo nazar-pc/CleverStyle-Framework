@@ -7,8 +7,8 @@ class Cache {
 	function __construct () {
 		$this->init();
 		if (!$this->init && $this->cache) {
-			global $CACHE_ENGINE;
-			$engine_class	= '\\cs\\cache\\'.$CACHE_ENGINE;
+			global $Core;
+			$engine_class	= '\\cs\\cache\\'.$Core->config('cache_engine');
 			$this->instance	= new $engine_class();
 		}
 	}

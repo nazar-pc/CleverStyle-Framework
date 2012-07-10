@@ -75,10 +75,14 @@ class Page {
 			$this->Content .= $add;
 		}
 	}
-	//Загрузка и обработка темы оформления, подготовка шаблона
-	protected function load() {
+	/**
+ 	 * Loading of theme template
+	 */
+	protected function get_template () {
 		global $Config, $L;
-		//Определение темы оформления
+		/**
+ 		 * Theme detection
+		 */
 		if (is_object($Config) && $Config->core['allow_change_theme']) {
 			$this->theme		= in_array($this->theme, $Config->core['active_themes']) ? $this->theme : $Config->core['theme'];
 			$theme				= _getcookie('theme');
@@ -86,8 +90,8 @@ class Page {
 				$this->theme = $theme;
 			}
 			unset($theme);
-			$this->theme	= in_array($this->theme, $Config->core['active_themes']) ? $this->theme : $Config->core['theme'];
-			$theme			= _getcookie('theme');
+			$this->theme		= in_array($this->theme, $Config->core['active_themes']) ? $this->theme : $Config->core['theme'];
+			$theme				= _getcookie('theme');
 			if ($theme && $theme !== $this->theme && in_array($theme, $Config->core['active_themes'])) {
 				$this->theme = $theme;
 			}
@@ -99,9 +103,13 @@ class Page {
 			}
 			unset($color_scheme);
 		}
-		//Задание названия файлов кеша
+		/**
+ 		 * Base name for cache files
+		 */
 		$this->pcache_basename = '_'.$this->theme.'_'.$this->color_scheme.'_'.$L->clang.'.';
-		//Загрузка шаблона
+		/**
+ 		 * Template loading
+		 */
 		if ($this->interface) {
 			ob_start();
 			if (
@@ -126,16 +134,26 @@ class Page {
 			$this->Html = ob_get_clean();
 		}
 	}
-	//Обработка шаблона и подготовка данных к выводу
+	/**
+ 	 * Processing of template, cubstituting of content, preparing for the output
+	 */
 	protected function prepare () {
 		global $copyright, $L, $Config;
-		//Загрузка настроек оформления и шаблона темы
-		$this->load();
-		//Загрузка стилей и скриптов
-		$this->load_includes();
-		//Загрузка данных о пользователе
+		/**
+ 		 * Loading of template
+		 */
+		$this->get_template();
+		/**
+ 		 * Loading of CSS and JavaScript
+		 */
+		$this->get_includes();
+		/**
+ 		 * Getting user information
+		 */
 		$this->get_header_info();
-		//Формирование заголовка
+		/**
+ 		 * Forming page title
+		 */
 		foreach ($this->Title as $i => $v) {
 			if (!trim($v)) {
 				unset($this->Title[$i]);
@@ -149,7 +167,9 @@ class Page {
 		} else {
 			$this->Title = $this->Title[0];
 		}
-		//Формирование содержимого <head>
+		/**
+		 * Forming <head> content
+		 */
 		if ($this->core_css[1]) {
 			$this->core_css[1] = h::style($this->core_css[1]);
 		}
@@ -163,79 +183,86 @@ class Page {
 			$this->js[1] = h::script($this->js[1]);
 		}
 		$this->Head =	h::title($this->Title).
-						h::meta([
-							'name'		=> 'keywords',
-							'content'	=> $this->Keywords
-						]).
-						h::meta([
-							'name'		=> 'description',
-							'content'	=> $this->Description
-						]).
-						h::meta([
-							'name'		=> 'generator',
-							'content'	=> $copyright[0]
-						]).
-						(ADMIN || API ? h::meta([
-							'name'		=> 'robots',
-							'content'	=> 'noindex,nofollow'
-						]) : '').
-						h::link([
-								'rel'		=> 'shortcut icon',
-								'href'		=> file_exists(THEMES.'/'.$this->theme.'/'.$this->color_scheme.'/'.'img/favicon.ico') ?
-												'themes/'.$this->theme.'/'.$this->color_scheme.'/img/favicon.ico' :
-												file_exists(THEMES.'/'.$this->theme.'/img/favicon.ico') ?
-												'themes/'.$this->theme.'/img/favicon.ico' :
-												'includes/img/favicon.ico'
-						]).
-						(
-							is_object($Config) ? h::base([
-								'href' => $Config->server['base_url']
-							]) : ''
-						).
-						$this->Head.
-						implode('', $this->core_css).
-						implode('', $this->css).
-						implode('', $this->core_js).
-						implode('', $this->js);
-		$this->Footer .= $this->footer();
-		//Подстановка контента в шаблон
-		$construct['in'] = [
-			'<!--html_lang-->',
-			'<!--head-->',
-			'<!--pre_Body-->',
-			'<!--header-->',
-			'<!--main-menu-->',
-			'<!--main-submenu-->',
-			'<!--menu-more-->',
-			'<!--user_avatar_image-->',
-			'<!--user_info-->',
-			'<!--left_blocks-->',
-			'<!--top_blocks-->',
-			'<!--content-->',
-			'<!--bottom_blocks-->',
-			'<!--right_blocks-->',
-			'<!--footer-->',
-			'<!--post_Body-->'
-		];
-		$construct['out'] = [
-			$L->clang,
-			h::level($this->Head, $this->level['Head']),
-			h::level($this->pre_Body, $this->level['pre_Body']),
-			h::level($this->Header, $this->level['Header']),
-			h::level($this->mainmenu, $this->level['mainmenu']),
-			h::level($this->mainsubmenu, $this->level['mainsubmenu']),
-			h::level($this->menumore, $this->level['menumore']),
-			$this->user_avatar_image,
-			h::level($this->user_info, $this->level['user_info']),
-			h::level($this->Left, $this->level['Left']),
-			h::level($this->Top, $this->level['Top']),
-			h::level($this->Content, $this->level['Content']),
-			h::level($this->Bottom, $this->level['Bottom']),
-			h::level($this->Right, $this->level['Right']),
-			h::level($this->Footer, $this->level['Footer']),
-			h::level($this->post_Body, $this->level['post_Body'])
-		 ];
-		$this->Html = str_replace($construct['in'], $construct['out'], $this->Html);
+			h::meta(
+				[
+					'name'		=> 'keywords',
+					'content'	=> $this->Keywords
+				],
+				[
+					'name'		=> 'description',
+					'content'	=> $this->Description
+				],
+				[
+					'name'		=> 'generator',
+					'content'	=> $copyright[0]
+				],
+				ADMIN || API ? [
+					'name'		=> 'robots',
+					'content'	=> 'noindex,nofollow'
+				] : false
+			).
+			h::link([
+					'rel'		=> 'shortcut icon',
+					'href'		=> file_exists(THEMES.'/'.$this->theme.'/'.$this->color_scheme.'/'.'img/favicon.ico') ?
+									'themes/'.$this->theme.'/'.$this->color_scheme.'/img/favicon.ico' :
+									file_exists(THEMES.'/'.$this->theme.'/img/favicon.ico') ?
+									'themes/'.$this->theme.'/img/favicon.ico' :
+									'includes/img/favicon.ico'
+			]).
+			h::base(is_object($Config) ? [
+				'href' => $Config->server['base_url']
+			] : false).
+			$this->Head.
+			implode('', $this->core_css).
+			implode('', $this->css).
+			implode('', $this->core_js).
+			implode('', $this->js);
+		/**
+ 		 * Getting footer information
+		 */
+		$this->Footer .= $this->get_footer();
+		/**
+ 		 * Substitution of information into template
+		 */
+		$this->Html = str_replace(
+			[
+				'<!--html_lang-->',
+				'<!--head-->',
+				'<!--pre_Body-->',
+				'<!--header-->',
+				'<!--main-menu-->',
+				'<!--main-submenu-->',
+				'<!--menu-more-->',
+				'<!--user_avatar_image-->',
+				'<!--user_info-->',
+				'<!--left_blocks-->',
+				'<!--top_blocks-->',
+				'<!--content-->',
+				'<!--bottom_blocks-->',
+				'<!--right_blocks-->',
+				'<!--footer-->',
+				'<!--post_Body-->'
+			],
+			[
+				$L->clang,
+				h::level($this->Head, $this->level['Head']),
+				h::level($this->pre_Body, $this->level['pre_Body']),
+				h::level($this->Header, $this->level['Header']),
+				h::level($this->mainmenu, $this->level['mainmenu']),
+				h::level($this->mainsubmenu, $this->level['mainsubmenu']),
+				h::level($this->menumore, $this->level['menumore']),
+				$this->user_avatar_image,
+				h::level($this->user_info, $this->level['user_info']),
+				h::level($this->Left, $this->level['Left']),
+				h::level($this->Top, $this->level['Top']),
+				h::level($this->Content, $this->level['Content']),
+				h::level($this->Bottom, $this->level['Bottom']),
+				h::level($this->Right, $this->level['Right']),
+				h::level($this->Footer, $this->level['Footer']),
+				h::level($this->post_Body, $this->level['post_Body'])
+			],
+			$this->Html
+		);
 	}
 	/**
 	 * Replacing anything in source code of filally genereted page
@@ -254,6 +281,13 @@ class Page {
 			$this->Replace[] = $replace;
 		}
 	}
+	/**
+	 * Processing of replacing in content
+	 *
+	 * @param string	$data
+	 *
+	 * @return string
+	 */
 	protected function process_replacing ($data) {
 		errors_off();
 		foreach ($this->Search as $i => $search) {
@@ -262,7 +296,12 @@ class Page {
 		errors_on();
 		return $data;
 	}
-	//Добавление ссылок на подключаемые JavaScript файлы
+	/**
+	 * Including of JavaScript
+	 * 
+	 * @param string|string[]	$add	Path to including file, or code
+	 * @param string			$mode	Can be <b>file</b> or <b>code</b>
+	 */
 	function js ($add, $mode = 'file') {
 		$this->js_internal($add, $mode);
 	}
@@ -295,7 +334,12 @@ class Page {
 			}
 		}
 	}
-	//Добавление ссылок на подключаемые CSS стили
+	/**
+	 * Including of CSS
+	 *
+	 * @param string|string[]	$add	Path to including file, or code
+	 * @param string			$mode	Can be <b>file</b> or <b>code</b>
+	 */
 	function css ($add, $mode = 'file') {
 		$this->css_internal($add, $mode);
 	}
@@ -328,18 +372,29 @@ class Page {
 			}
 		}
 	}
-	//Добавление данных в заголовок страницы (для избежания случайной перезаписи всего заголовка)
+	/**
+	 * Adding text to the title page
+	 * 
+	 * @param string	$add
+	 */
 	function title ($add) {
 		$this->Title[] = htmlentities($add, ENT_COMPAT, 'utf-8');
 	}
-	//Подключение JavaScript и CSS файлов
-	protected function load_includes () {
+	/**
+ 	 * Getting of CSS and JavaScript includes
+	 */
+	protected function get_includes () {
 		global $Config;
 		if (!is_object($Config)) {
 			return;
 		}
+		/**
+ 		 * If CSS and JavaScript compression enabled
+		 */
 		if ($Config->core['cache_compress_js_css']) {
-			//Проверка текущего кеша
+			/**
+ 			 * Current cache checking
+			 */
 			if (
 				!file_exists(PCACHE.'/'.$this->pcache_basename.'css') ||
 				!file_exists(PCACHE.'/'.$this->pcache_basename.'js') ||
@@ -348,7 +403,9 @@ class Page {
 				$this->rebuild_cache();
 			}
 			$key = file_get_contents(PCACHE.'/pcache_key');
-			//Подключение CSS стилей
+			/**
+ 			 * Including of CSS
+			 */
 			$css_list = get_list(PCACHE, '/^[^_](.*)\.css$/i', 'f', 'storage/pcache');
 			$css_list = array_merge(
 				['storage/pcache/'.$this->pcache_basename.'css'],
@@ -359,7 +416,9 @@ class Page {
 			}
 			unset($file);
 			$this->css_internal($css_list, 'file', true);
-			//Подключение JavaScript
+			/**
+			 * Including of JavaScript
+			 */
 			$js_list = get_list(PCACHE, '/^[^_](.*)\.js$/i', 'f', 'storage/pcache');
 			$js_list = array_merge(
 				['storage/pcache/'.$this->pcache_basename.'js'],
@@ -372,17 +431,23 @@ class Page {
 			$this->js_internal($js_list, 'file', true);
 		} else {
 			$this->get_includes_list();
-			//Подключение CSS стилей
+			/**
+			 * Including of CSS
+			 */
 			foreach ($this->includes['css'] as $file) {
 				$this->css_internal($file, 'file', true);
 			}
-			//Подключение JavaScript
+			/**
+			 * Including of JavaScript
+			 */
 			foreach ($this->includes['js'] as $file) {
 				$this->js_internal($file, 'file', true);
 			}
 		}
 	}
-	//Загрузка списка JavaScript и CSS файлов
+	/**
+	 * Getting of JavaScript and CSS files list to be included
+	 */
 	protected function get_includes_list ($for_cache = false) {
 		$theme_folder	= THEMES.'/'.$this->theme;
 		$scheme_folder	= $theme_folder.'/schemes/'.$this->color_scheme;
@@ -404,7 +469,9 @@ class Page {
 		sort($this->includes['css']);
 		sort($this->includes['js']);
 	}
-	//Перестройка кеша JavaScript и CSS
+	/**
+	 * Rebuilding of JavaScript and CSS cache
+	 */
 	function rebuild_cache () {
 		$this->get_includes_list(true);
 		$key = '';
@@ -414,8 +481,10 @@ class Page {
 				if (file_exists($file)) {
 					$current_cache = file_get_contents($file);
 					if ($extension == 'css') {
-						//Insert external elements into resulting css file
-						//It is needed, because those files will not be copied into new destination of resulting css file
+						/**
+						 * Insert external elements into resulting css file.
+						 * It is needed, because those files will not be copied into new destination of resulting css file.
+						 */
 						$this->css_includes_processing($current_cache, $file);
 					}
 					$temp_cache .= $current_cache;
@@ -427,7 +496,6 @@ class Page {
 		}
 		file_put_contents(PCACHE.'/pcache_key', mb_substr(md5($key), 0, 5), LOCK_EX|FILE_BINARY);
 	}
-
 	/**
 	 * Analyses file for images, fonts and css links and include they content into single resulting css file.<br>
 	 * Supports next file extensions for possible includes:<br>
@@ -439,10 +507,14 @@ class Page {
 	function css_includes_processing (&$data, $file) {
 		$cwd	= getcwd();
 		chdir(dirname($file));
-		//Simple minification, deletes comments, new lines, tabulations and unnecessary spaces
+		/**
+		 * Simple minification, removes comments, newlines, tabs and unnecessary spaces
+		 */
 		$data	= preg_replace('#(/\*.*?\*/)|\t|\n|\r#s', '', $data);
 		$data	= preg_replace('#\s*([,:;+>{}])\s*#s', '$1', $data);
-		//Includes processing
+		/**
+		 * Includes processing
+		 */
 		preg_replace_callback(
 			'/(url\((.*?)\))|(@import[\s\t\n\r]{0,1}[\'"](.*?)[\'"])/',
 			function ($link) use (&$data) {
@@ -480,7 +552,9 @@ class Page {
 					break;
 				}
 				$content	= file_get_contents(realpath($link));
-				//For recursing includes processing
+				/**
+				 * For recursing includes processing, if CSS file includes others CSS files
+				 */
 				if ($format == 'css') {
 					$this->css_includes_processing($content, realpath($link));
 				}
@@ -490,19 +564,23 @@ class Page {
 		);
 		chdir($cwd);
 	}
-	//Генерирование информации о процессе загрузки страницы
-	protected function footer () {
+	/**
+	 * Getting footer information
+	 *
+	 * @return string
+	 */
+	protected function get_footer () {
 		global $copyright, $L, $db;
 		if (!($copyright && is_array($copyright))) {
-			exit;
+			$this->Content	= '';
+			interface_off();
+			__finish();
 		}
 		return h::div(
 			$L->page_footer_info('<!--generate time-->', $db->queries, format_time(round($db->time, 5)), '<!--peak memory usage-->')
 		).
 		h::div(
-			$copyright[1].
-			h::br()
-			.$copyright[2],
+			$copyright[1].h::br().$copyright[2],
 			[
 				'id'	=> 'copyright'
 			]
@@ -785,33 +863,49 @@ class Page {
 	 * @final
 	 */
 	function __clone () {}
-	//Генерирование страницы
+	/**
+ 	 * Page generation
+	 */
 	function __finish () {
 		global $Config;
-		//Очистка вывода для избежания вывода нежелательных данных
+		/**
+ 		 * Cleaning of output
+		 */
 		if (OUT_CLEAN) {
 			ob_end_clean();
 		}
-		//Генерирование страницы в зависимости от ситуации
-		//Для AJAX и API запросов не выводится весь интерфейс страницы, только основное содержание
+		/**
+ 		 * For AJAX and API requests only content without page template
+		 */
 		if (!$this->interface) {
-			//Обработка замены контента
+			/**
+ 			 * Processing of replacing in content
+			 */
 			echo $this->process_replacing($this->Content);
 		} else {
 			global $Error, $L, $timeload, $User, $Core;
 			$Core->run_trigger('System/Page/pre_display');
 			$Error->display();
-			//Обработка шаблона, наполнение его содержимым
+			/**
+ 			 * Processing of template, cubstituting of content, preparing for the output
+			 */
 			$this->prepare();
-			//Обработка замены контента
+			/**
+			 * Processing of replacing in content
+			 */
 			$this->Html = $this->process_replacing($this->Html);
-			//Опеределение типа сжатия сжатия
+			/**
+ 			 * Detection of compression
+			 */
 			$ob = false;
 			if (is_object($Config) && !zlib_compression() && $Config->core['gzip_compression'] && (is_object($Error) && !$Error->num())) {
 				ob_start('ob_gzhandler');
 				$ob = true;
 			}
 			$timeload['end'] = microtime(true);
+			/**
+ 			 * Getting of debug information
+			 */
 			if (
 				is_object($User) && (
 					$User->is('admin') || (

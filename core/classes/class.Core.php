@@ -21,6 +21,7 @@ class Core {
 		'Error'
 	];
 	protected	$init				= false,	//For prohibition of re-initialization
+				$config				= [],
 				$List				= [],
 				$iv,
 				$td,
@@ -36,10 +37,19 @@ class Core {
 			return;
 		}
 		$this->init	= true;
-		if (!_require_once(CONFIG.'/main.php', false)) {
+		if (!file_exists(CONFIG.'/main.json')) {
 			error_header(404);
 			$this->__finish();
 		}
+		_include_once(CONFIG.'/main.php', false);
+		$this->config	= file(CONFIG.'/main.json', FILE_SKIP_EMPTY_LINES);
+		foreach ($this->config as $i => $line) {
+			if (substr(ltrim($line), 0, 2) == '//') {
+				unset($this->config[$i]);
+			}
+		}
+		$this->config	= _json_decode(implode('', $this->config));
+		define('DOMAIN', $this->config['domain']);
 		!is_dir(STORAGE)				&& @mkdir(STORAGE, 0777)	&& file_put_contents(
 			STORAGE.'/.htaccess',
 			'Allow From All'
@@ -55,11 +65,20 @@ class Core {
 			'Allow From All'
 		);
 		if ($this->encrypt_support = check_mcrypt()) {
-			global	$KEY, $IV;
-			$this->key	= $KEY;
-			$this->iv	= $IV;
-			unset($GLOBALS['KEY'], $GLOBALS['IV']);
+			$this->key	= $this->config['key'];
+			$this->iv	= $this->config['iv'];
 		}
+		unset($this->config['key'], $this->config['iv']);
+	}
+	/**
+	 * Getting of base configuration parameter
+	 *
+	 * @param string $item
+	 *
+	 * @return bool|string
+	 */
+	function config ($item) {
+		return isset($this->config[$item]) ? $this->config[$item] : false;
 	}
 	/**
 	 * Creating of global object on the base of class
@@ -386,7 +405,7 @@ class Core {
 		}
 		$return = true;
 		/**
-		 * @var Closure $trigger
+		 * @var Closure[] $triggers
 		 */
 		foreach ($triggers as $trigger) {
 			if ($trigger instanceof Closure) {

@@ -2,7 +2,7 @@
 /**
  * Class for HTML code generating in accordance with the standards of HTML5, and with useful syntax extensions for simpler usage
  *
- * If defined constant "XHTML_TAGS_STYLE" - tags will be generated according to rules of xhtml
+ * If constant "XHTML_TAGS_STYLE" is true - tags will be generated according to rules of xhtml
  */
 class h {
 	protected static	$unit_atributes = [	//Unit attributes, that have no value
@@ -93,7 +93,7 @@ class h {
 			if (is_int($key)) {
 				unset($data[$key]);
 				if (in_array($value, self::$unit_atributes)) {
-					$add .= ' '.$value.(defined('XHTML_TAGS_STYLE') ? '='.$q.$value.$q : '');
+					$add .= ' '.$value.(XHTML_TAGS_STYLE ? '='.$q.$value.$q : '');
 				}
 			} elseif ($value !== false) {
 				$add .= ' '.$key.'='.$q.$value.$q;
@@ -182,7 +182,7 @@ class h {
 			$data_title = $data['data-title'];
 			unset($data['data-title']);
 		}
-		$return = '<'.$tag.$add.(defined('XHTML_TAGS_STYLE') ? ' /' : '').'>'.$in."\n";
+		$return = '<'.$tag.$add.(XHTML_TAGS_STYLE ? ' /' : '').'>'.$in."\n";
 		return isset($data_title) ? self::label($return, ['data-title' => $data_title]) : $return;
 	}
 	static function form ($in = '', $data = []) {

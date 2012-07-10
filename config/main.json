@@ -1,0 +1,27 @@
+{
+//Domain of main mirror
+	"domain"			: "cscms.org",
+	"db_host"			: "localhost",
+	"db_type"			: "MySQLi",
+	"db_name"			: "CleverStyle",
+	"db_user"			: "CleverStyle",
+	"db_password"		: "1111",
+	"db_prefix"			: "prefix_",
+	"db_charset"		: "utf8",
+
+	"storage_type"		: "Local",
+	"storage_url"		: "",
+	"storage_host"		: "localhost",
+	"storage_user"		: "",
+	"storage_password"	: "",
+
+	"language"			: "Русский",
+
+	"cache_engine"		: "FileSystem",
+//Cache size in MB for FileSystem storage engine
+	"cache_size"		: "5",
+
+	"key"				: "f40fbea2ee5a24ce581fb53510883dfcf40fbea2ee5a24ce581fb535",
+	"iv"				: "f40fbea2ee5a24ce581fb53510883dfcf40fbea2ee5a24ce581fb535",
+	"public_key"		: "f40fbea2ee5a24ce58fasdkfdsk83dfcf40fbea2ee5a24ce581fb535"
+}

@@ -1,7 +1,12 @@
 <?php
-
-global $L, $DB_TYPE, $DB_HOST, $DB_NAME, $DB_PREFIX, $db, $Cache, $STORAGE_TYPE;
-global $$DB_TYPE, $Index, $PHP, $mcrypt;
+global $L, $Core, $Index, $db, $Cache, $PHP, $mcrypt, $Config;
+if (isset($Config->routing['current'][2]) && $Config->routing['current'][2] == 'phpinfo') {
+	interface_off();
+	ob_start();
+	phpinfo();
+	$Index->content(ob_get_clean());
+}
+global ${$Core->config('db_type')};
 $Index->form	= false;
 $state			= function ($state) {
 	return ($state ? 'ui-state-highlight' : 'ui-state-error').' ui-corner-all';
@@ -9,6 +14,12 @@ $state			= function ($state) {
 $Index->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		[
+			h::{'a.cs-button[target=_new]'}(
+				'phpinfo()',
+				[
+					'href'	=> $Index->action.'/phpinfo'
+				]
+			).
 			h::{'div#system_readme.cs-dialog'}(
 				file_get_contents(DIR.'/readme.html'),
 				[
@@ -118,19 +129,19 @@ $Index->content(
 		],
 		[
 			$L->main_db.':',
-			$DB_TYPE
+			$Core->config('db_type')
 		],
 		[
-			$L->properties.' '.$DB_TYPE.':',
+			$L->properties.' '.$Core->config('db_type').':',
 			h::{'table.cs-left-odd.cs-sql-properties tr| td'}(
 				[
 					$L->host.':',
-					$DB_HOST
+					$Core->config('db_host')
 				],
 				[
-					$L->version.' '.$DB_TYPE.':',
+					$L->version.' '.$Core->config('db_type').':',
 					[
-						$db->server().(!is_bool($check_db = check_db()) ? $check_db : (!$check_db ? ' ('.$L->required.' '.$$DB_TYPE.' '.$L->or_higher.')' : '')),
+						$db->server().(check_db() ? '' : ' ('.$L->required.' '.${$Core->config('db_type')}.' '.$L->or_higher.')'),
 						[
 							'class' => $state(check_db())
 						]
@@ -138,17 +149,17 @@ $Index->content(
 				],
 				[
 					$L->name_of_db.':',
-					$DB_NAME
+					$Core->config('db_name')
 				],
 				[
 					$L->prefix_of_db.':',
-					$DB_PREFIX
+					$Core->config('db_prefix')
 				]
 			)
 		],
 		[
 			$L->main_storage.':',
-			$STORAGE_TYPE
+			$Core->config('storage_type')
 		],
 		function_exists('apache_get_version') ? [
 			$L->configs.' "php.ini":',

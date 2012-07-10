@@ -1209,7 +1209,7 @@ class User {
 	 * 								<b>)</b>
 	 */
 	function registration ($email, $confirmation = true) {
-		global $Config;
+		global $Config, $Core;
 		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			return false;
 		}
@@ -1224,7 +1224,7 @@ class User {
 			return 'exists';
 		}
 		$password		= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
-		$password_hash	= hash('sha512', $password);
+		$password_hash	= hash('sha512', hash('sha512', $password).$Core->config('public_key'));
 		$reg_key		= md5($password.$this->ip);
 		if ($this->db_prime()->q([
 			"INSERT INTO `[prefix]users` (
@@ -1270,7 +1270,7 @@ class User {
 	 * @return array|bool
 	 */
 	function confirmation ($reg_key) {
-		global $Config;
+		global $Config, $Core;
 		if (!preg_match('/^[0-9a-z]{32}$/', $reg_key)) {
 			return false;
 		}
@@ -1290,7 +1290,7 @@ class User {
 		$password		= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
 		$this->set(
 			[
-				'password_hash'	=> hash('sha512', $password),
+				'password_hash'	=> hash('sha512', hash('sha512', $password).$Core->config('public_key')),
 				'status'		=> 1
 			],
 			null,

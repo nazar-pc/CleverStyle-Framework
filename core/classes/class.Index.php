@@ -344,11 +344,12 @@ class Index {
 	}
 	protected function js_vars () {
 		if (!$this->api) {
-			global $Config, $Page, $User, $L;
+			global $Config, $Page, $User, $L, $Core;
 			$Page->js(
 				'var continue_transfer = "'.$L->continue_transfer.'",'.
 					'base_url = "'.$Config->server['base_url'].'",'.
 					'current_base_url = "'.$Config->server['base_url'].'/'.($this->admin ? 'admin/' : '').MODULE.'",'.
+					'public_key = "'.$Core->config('public_key').'",'.
 					'yes = "'.$L->yes.'",'.
 					'no = "'.$L->no.'",'.
 					($User->is('guest') ?

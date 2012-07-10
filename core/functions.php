@@ -865,13 +865,13 @@
 	//Некоторые функции для определение состояния сервера
 	//Проверка версии БД
 	function check_db () {
-		global $DB_TYPE, $db, $L;
-		global $$DB_TYPE;
-		if (!$$DB_TYPE) {
-			return ' '.$L->unknown_db_type;
+		global $Core, $db, $L;
+		global ${$Core->config('db_type')};
+		if (!${$Core->config('db_type')}) {
+			return true;
 		}
 		preg_match('/[\.0-9]+/', $db->server(), $db_version);
-		return (bool)version_compare($db_version[0], $$DB_TYPE, '>=');
+		return (bool)version_compare($db_version[0], ${$Core->config('db_type')}, '>=');
 	}
 	//Проверка версии PHP
 	function check_php () {

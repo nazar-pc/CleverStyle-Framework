@@ -6,17 +6,7 @@ class DB {
 	protected	$connections			= [],
 				$successful_connections	= [],
 				$false_connections		= [],
-				$mirrors				= [],
-				$DB_USER,
-				$DB_PASSWORD;
-
-	function __construct () {
-		//For more security
-		global $DB_USER, $DB_PASSWORD;
-		$this->DB_USER = $DB_USER;
-		$this->DB_PASSWORD = $DB_PASSWORD;
-		unset($GLOBALS['DB_USER'], $GLOBALS['DB_PASSWORD']);
-	}
+				$mirrors				= [];
 	/**
 	 * @param	bool|null|string $status	<b>null</b>		- returns array of connections with objects<br>
 	 * 										<b>true|1</b>	- returns array of names of succesfull connections<br>
@@ -105,17 +95,16 @@ class DB {
 		if (isset($this->connections[$connection])) {
 			return $this->connections[$connection];
 		}
-		global $Config, $L, $DB_NAME;
+		global $Config, $Core, $L;
 		//Если подключается БД ядра
 		if ($connection == 0 && !is_array($mirror)) {
-			global $DB_HOST, $DB_TYPE, $DB_NAME, $DB_PREFIX, $DB_CHARSET;
-			$db['type']		= $DB_TYPE;
-			$db['name']		= $DB_NAME;
-			$db['user']		= $this->DB_USER;
-			$db['password']	= $this->DB_PASSWORD;
-			$db['host']		= $DB_HOST;
-			$db['charset']	= $DB_CHARSET;
-			$db['prefix']	= $DB_PREFIX;
+			$db['type']		= $Core->config('db_type');
+			$db['name']		= $Core->config('db_name');
+			$db['user']		= $Core->config('db_user');
+			$db['password']	= $Core->config('db_password');
+			$db['host']		= $Core->config('db_host');
+			$db['charset']	= $Core->config('db_charset');
+			$db['prefix']	= $Core->config('db_prefix');
 		} else {
 			//Если подключается зеркало БД
 			if (is_array($mirror)) {
@@ -136,7 +125,7 @@ class DB {
 		errors_on();
 		//В случае успешного подключения - заносим в общий список подключений, и возвращаем ссылку на подключение
 		if (is_object($this->connections[$connection]) && $this->connections[$connection]->connected) {
-			$this->successful_connections[] = ($connection == 0 ? $L->core_db.'('.$DB_NAME.')' : $connection).'/'.$db['host'].'/'.$db['type'];
+			$this->successful_connections[] = ($connection == 0 ? $L->core_db.'('.$Core->config('db_type').')' : $connection).'/'.$db['host'].'/'.$db['type'];
 			//Устанавливаем текущий префикс
 			$this->connections[$connection]->prefix = $db['prefix'];
 			unset($db);
@@ -147,7 +136,7 @@ class DB {
 		} else {
 			unset($this->$connection);
 			//Добавляем подключение в список неудачных
-			$this->false_connections[$connection] = ($connection == 0 ? $L->core_db.'('.$DB_NAME.')' : $connection).'/'.$db['host'].'/'.$db['type'];
+			$this->false_connections[$connection] = ($connection == 0 ? $L->core_db.'('.$Core->config('db_type').')' : $connection).'/'.$db['host'].'/'.$db['type'];
 			unset($db);
 			//Если допускается подключение к зеркалу БД, и зеркала доступны
 			if (
@@ -184,7 +173,7 @@ class DB {
 	}
 	//Тестовое подключение к БД
 	function test ($data = false) {
-		global $DB_HOST, $DB_CHARSET;
+		global $Core;
 		if (empty($data)) {
 			return false;
 		} elseif (is_array($data)) {
@@ -193,14 +182,13 @@ class DB {
 				$db = $Config->db[$data[0]]['mirrors'][$data[1]];
 			} elseif (isset($data[0])) {
 				if ($data[0] == 0) {
-					global $DB_TYPE, $DB_NAME;
 					$db = [
-						'type'		=> $DB_TYPE,
-						'host'		=> $DB_HOST,
-						'name'		=> $DB_NAME,
-						'user'		=> $this->DB_USER,
-						'password'	=> $this->DB_PASSWORD,
-						'charset'	=> $DB_CHARSET
+						'type'		=> $Core->config('db_type'),
+						'host'		=> $Core->config('db_host'),
+						'name'		=> $Core->config('db_type'),
+						'user'		=> $Core->config('db_user'),
+						'password'	=> $Core->config('db_password'),
+						'charset'	=> $Core->config('db_charset')
 					];
 				} else {
 					$db = $Config->db[$data[0]];
@@ -215,7 +203,13 @@ class DB {
 		if (is_array($db)) {
 			errors_off();
 			$engine_class	= '\\cs\\database\\'.$db['type'];
-			$test			= new $engine_class($db['name'], $db['user'], $db['password'], $db['host'] ?: $DB_HOST, $db['charset'] ?: $DB_CHARSET);
+			$test			= new $engine_class(
+				$db['name'],
+				$db['user'],
+				$db['password'],
+				$db['host'] ?: $Core->config('db_host'),
+				$db['charset'] ?: $Core->config('db_charset')
+			);
 			errors_on();
 			return $test->connected;
 		} else {

@@ -20,9 +20,9 @@ class Language {
 	 * Set basic language
 	 */
 	function __construct () {
-		global $LANGUAGE, $L;
+		global $Core, $L;
 		$L = $this;
-		$this->change($LANGUAGE);
+		$this->change($Core->config('language'));
 	}
 	/**
 	 * @param array  $active_languages
@@ -163,6 +163,7 @@ class Language {
 				}
 				unset($i, $line);
 				$this->translate = _json_decode(implode('', $data));
+				unset($data);
 				$this->translate['clanguage'] = $this->clanguage;
 				if(!isset($this->translate['clang'])) {
 					$this->translate['clang'] = mb_strtolower(mb_substr($this->clanguage, 0, 2));

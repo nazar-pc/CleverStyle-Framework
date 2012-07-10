@@ -138,7 +138,7 @@ if (isset($rc[2])) {
 			$L->storageuser
 		])
 	);
-	global $STORAGE_TYPE, $STORAGE_URL, $STORAGE_HOST, $STORAGE_USER;
+	global $Core;
 	foreach ($Config->storage as $i => &$storage_data) {
 		$storage_list .=	h::tr(
 			h::td(
@@ -170,10 +170,10 @@ if (isset($rc[2])) {
 			).
 			h::td(
 				[
-					$i	? $storage_data['url']			: $STORAGE_URL ?: url_by_source(STORAGE),
-					$i	? $storage_data['host']			: $STORAGE_HOST,
-					$i	? $storage_data['connection']	: $STORAGE_TYPE,
-					$i	? $storage_data['user']			: $STORAGE_USER ?: '-'
+					$i	? $storage_data['url']			: $Core->config('storage_url') ?: url_by_source(STORAGE),
+					$i	? $storage_data['host']			: $Core->config('storage_host'),
+					$i	? $storage_data['connection']	: $Core->config('storage_type'),
+					$i	? $storage_data['user']			: $Core->config('storage_user') ?: '-'
 				],
 				[
 					'class'	=> 'ui-corner-all '.($i ? 'ui-widget-content' : 'ui-state-highlight')

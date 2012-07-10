@@ -1,5 +1,5 @@
 <?php
-global $Config, $Index, $L, $Page, $DB_HOST, $DB_TYPE, $DB_PREFIX, $DB_NAME, $DB_CHARSET;
+global $Config, $Core, $Index, $L, $Page;
 $a				= $Index;
 $rc				= $Config->routing['current'];
 $test_dialog	= false;
@@ -64,22 +64,20 @@ if (isset($rc[2])) {
 						'db_charset'
 					),
 					h::{'td.ui-widget-content.ui-corner-all.cs-add-db'}(
-						($rc[2] == 'add' ?
-							h::{'select.cs-form-element'}(
-								[
-									'in'		=> $dbsname,
-									'value'		=> $dbs
-								],
-								[
-									'name'		=> 'db[mirror]',
-									'selected'	=> isset($rc[3]) ? $rc[3] : -1,
-									'size'		=> 5
-								]
-							)
-							: false),
+						($rc[2] == 'add' ? h::{'select.cs-form-element'}(
+							[
+								'in'		=> $dbsname,
+								'value'		=> $dbs
+							],
+							[
+								'name'		=> 'db[mirror]',
+								'selected'	=> isset($rc[3]) ? $rc[3] : -1,
+								'size'		=> 5
+							]
+						) : false),
 						h::{'input.cs-form-element'}([
 							'name'		=> 'db[host]',
-							'value'		=> $rc[2] == 'edit' ? $database['host'] : $DB_HOST
+							'value'		=> $rc[2] == 'edit' ? $database['host'] : $Core->config('db_host')
 						]),
 						h::{'select.cs-form-element'}(
 							[
@@ -87,13 +85,13 @@ if (isset($rc[2])) {
 							],
 							[
 								'name'		=> 'db[type]',
-								'selected'	=> $rc[2] == 'edit' ? $database['type'] : $DB_TYPE,
+								'selected'	=> $rc[2] == 'edit' ? $database['type'] : $Core->config('db_type'),
 								'size'		=> 5
 							]
 						),
 						h::{'input.cs-form-element'}([
 							'name'		=> 'db[prefix]',
-							'value'		=> $rc[2] == 'edit' ? $database['prefix'] : $DB_PREFIX
+							'value'		=> $rc[2] == 'edit' ? $database['prefix'] : $Core->config('db_prefix')
 						]),
 						h::{'input.cs-form-element'}([
 							'name'		=> 'db[name]',
@@ -109,7 +107,7 @@ if (isset($rc[2])) {
 						]),
 						h::{'input.cs-form-element'}([
 							'name'		=> 'db[charset]',
-							'value'		=> $rc[2] == 'edit' ? $database['charset'] : $DB_CHARSET
+							'value'		=> $rc[2] == 'edit' ? $database['charset'] : $Core->config('db_charset')
 						]).
 						h::{'input[type=hidden]'}([
 							'name'		=> 'mode',
@@ -260,12 +258,12 @@ if (isset($rc[2])) {
 					'class'	=> 'cs-db-config-buttons'
 				]
 			],
-			$i	? $db_data['host']		: $DB_HOST,
-			$i	? $db_data['type']		: $DB_TYPE,
-			$i	? $db_data['prefix']	: $DB_PREFIX,
-			$i	? $db_data['name']		: $DB_NAME,
+			$i	? $db_data['host']		: $Core->config('db_host'),
+			$i	? $db_data['type']		: $Core->config('db_type'),
+			$i	? $db_data['prefix']	: $Core->config('db_prefix'),
+			$i	? $db_data['name']		: $Core->config('db_name'),
 			$i	? $db_data['user']		: '*****',
-			$i	? $db_data['charset']	: $DB_CHARSET
+			$i	? $db_data['charset']	: $Core->config('db_charset')
 		);
 		foreach ($Config->db[$i]['mirrors'] as $m => &$mirror) {
 			if (is_array($mirror) && !empty($mirror)) {

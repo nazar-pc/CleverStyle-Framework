@@ -149,7 +149,7 @@ function login (login, password) {
 				if (random_hash.length == 56) {
 					data.auth_hash = hash(
 						'sha512',
-						hash('sha224', login)+hash('sha512', password)+navigator.userAgent+random_hash
+						hash('sha224', login)+hash('sha512', hash('sha512', password)+public_key)+navigator.userAgent+random_hash
 					);
 					$.ajax(
 						base_url+"/api/user/login",
@@ -272,8 +272,8 @@ function change_password (current_password, new_password) {
 		alert(current_new_password_equal);
 		return;
 	}
-	current_password	= hash('sha512', current_password);
-	new_password		= hash('sha512', new_password);
+	current_password	= hash('sha512', hash('sha512', current_password)+public_key);
+	new_password		= hash('sha512', hash('sha512', new_password)+public_key);
 	var data = {
 		verify_hash		: hash('sha224', current_password+session_id),
 		new_password	: xor_string(current_password, new_password)

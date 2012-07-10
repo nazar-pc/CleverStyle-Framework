@@ -58,12 +58,12 @@ class Storage {
 		}
 		//Если подключается локальное хранилище
 		if ($connection == 0) {
-			global $STORAGE_TYPE, $STORAGE_URL, $STORAGE_HOST, $STORAGE_USER, $STORAGE_PASSWORD;
-			$storage['connection']	= $STORAGE_TYPE;
-			$storage['url']			= $STORAGE_URL;
-			$storage['host']		= $STORAGE_HOST;
-			$storage['user']		= $STORAGE_USER;
-			$storage['password']	= $STORAGE_PASSWORD;
+			global $Core;
+			$storage['connection']	= $Core->config('storage_type');
+			$storage['url']			= $Core->config('storage_url');
+			$storage['host']		= $Core->config('storage_host');
+			$storage['user']		= $Core->config('storage_user');
+			$storage['password']	= $Core->config('storage_password');
 		} else {
 			//Загружаем настройки
 			$storage = &$Config->storage[$connection];

@@ -2,15 +2,15 @@
 namespace cs\cache;
 /**
  * Provides cache functionality based on file system structure.
- * Require configuration variable $CACHE_SIZE with maximum allowed cache size in MB, 0 means without limitation (is not recomended)
+ * Require base configuration option $Core->config('cache_size') with maximum allowed cache size in MB, 0 means without limitation (is not recomended)
  */
 class FileSystem extends _Abstract {
 	protected	$cache_size,
 				$size			= null;
 
 	function __construct () {
-		global $CACHE_SIZE;
-		$this->cache_size = $CACHE_SIZE*1048576;
+		global $Core;
+		$this->cache_size = $Core->config('cache_size')*1048576;
 	}
 	/**
 	 * @param string $item

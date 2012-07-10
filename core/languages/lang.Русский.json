@@ -219,7 +219,6 @@
 		"version"					: "Версия",
 		"name_of_db"				: "Название БД",
 		"prefix_of_db"				: "Префикс таблиц БД",
-		"unknown_db_type"			: "Неподдерживаемый тип БД",
 		"main_storage"				: "Главное хранилище",
 		"required"					: "требуется",
 		"properties"				: "Параметры",

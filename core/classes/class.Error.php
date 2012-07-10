@@ -31,7 +31,7 @@ class Error {
 			$file	= $debug_backtrace[1]['file'];
 			$line	= $debug_backtrace[1]['line'];
 		}
-		if ((is_object($Config) && $Config->core['on_error_globals_dump']) || (!is_object($Config) && defined('DEBUG'))) {
+		if ((is_object($Config) && $Config->core['on_error_globals_dump']) || (!is_object($Config) && defined('DEBUG') && DEBUG)) {
 			global $Core;
 			$objects_array		= [];
 			if (is_object($Core)) {
