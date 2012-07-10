@@ -1,6 +1,6 @@
 <?php
-namespace cs;
-use \h;
+namespace	cs;
+use			\h;
 /**
  * Provides next triggers:<br>
  *  System/Page/pre_display<code>
@@ -508,7 +508,9 @@ class Page {
 			]
 		);
 	}
-	//Сбор и отображение отладочных данных
+	/**
+ 	 * Getting of debug information
+	 */
 	protected function get_debug_info () {
 		global $Config, $L, $db;
 		$debug_tabs			= '';
@@ -517,7 +519,7 @@ class Page {
  		 * Objects
 		 */
 		if ($Config->core['show_objects_data']) {
-			global $Objects, $timeload, $loader_init_memory;
+			global $Core, $timeload, $loader_init_memory;
 			$debug_tabs[]			= [
 				$L->objects,
 				[
@@ -526,7 +528,7 @@ class Page {
 			];
 			$tmp				= '';
 			$last				= $timeload['loader_init'];
-			foreach ($Objects->Loaded as $object => $data) {
+			foreach ($Core->Loaded as $object => $data) {
 				$tmp .=	h::p(
 					$object
 				).
@@ -540,7 +542,7 @@ class Page {
 			unset($object, $data, $last);
 			$debug_tabs_content	.= h::{'div#debug_objects_tab'}(
 				h::p(
-					$L->total_list_of_objects.': '.implode(', ', array_keys($Objects->Loaded)),
+					$L->total_list_of_objects.': '.implode(', ', array_keys($Core->Loaded)),
 					$L->loader
 				).
 				h::{'p.cs-padding-left'}(

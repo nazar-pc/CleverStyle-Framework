@@ -1,6 +1,6 @@
 <?php
-namespace cs;
-use \h;
+namespace	cs;
+use			\h;
 class Mail extends \PHPMailer {
 	function __construct () {
 		global $Config;

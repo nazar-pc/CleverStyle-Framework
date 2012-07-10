@@ -1,6 +1,6 @@
 <?php
-namespace cs;
-use \Closure;
+namespace	cs;
+use			\Closure;
 /**
  * Provides next triggers:<br>
  *  admin/System/general/languages/load<code>

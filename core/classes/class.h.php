@@ -1,5 +1,4 @@
 <?php
-//Класс для отрисовки различных елементов HTML страницы в соответствии со стандартами HTML5, и с более понятным и функциональным синтаксисом
 /**
  * Class for HTML code generating in accordance with the standards of HTML5, and with useful syntax extensions for simpler usage
  *

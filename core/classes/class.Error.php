@@ -32,10 +32,10 @@ class Error {
 			$line	= $debug_backtrace[1]['line'];
 		}
 		if ((is_object($Config) && $Config->core['on_error_globals_dump']) || (!is_object($Config) && defined('DEBUG'))) {
-			global $Objects;
+			global $Core;
 			$objects_array		= [];
-			if (is_object($Objects)) {
-				foreach ($Objects->Loaded as $object => $data) {
+			if (is_object($Core)) {
+				foreach ($Core->Loaded as $object => $data) {
 					if (!isset($GLOBALS[$object])) {
 						continue;
 					}

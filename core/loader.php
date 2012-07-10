@@ -1,7 +1,7 @@
 <?php
 require_once CORE.'/functions.php';					//Including file with general system functions
 
-global $Objects, $timeload, $loader_init_memory, $interface;
+global $Core, $timeload, $loader_init_memory, $interface;
 
 $timeload['start'] = MICROTIME;
 $interface = true;
@@ -57,11 +57,13 @@ $loader_init_memory			= memory_get_usage();
  * WARNING: Disabling of creating the following objects or changing the order almost 100% will lead to a complete engine inoperable!
  * If necessary, change the logic of the primary objects of engine, use custom.php file for including own versions of classes,
  * and this versions will be used instead of system ones.
+ *
+ * Core object for loading of system configuration, creating of global objects, encryption, API requests sending, and triggers processing.
  */
-$Objects					= new \cs\Objects;		//Object of creating and destroying of other objects
-$Objects->load([
+$Core					= new \cs\Core;
+
+$Core->create([
 	'cs\\Error',									//Object of errors processing
-	'cs\\Core',										//Core object
 	'cs\\Cache',									//System cache object
 	'_cs\\Text',									//Object of multilingual content
 	['cs\\Language',	'L'],						//Object of multilingual interface
@@ -74,4 +76,4 @@ $Objects->load([
 	'cs\\User',										//Object of user
 	'cs\\Index'										//Object, that supports of components processing
 ]);
-$Objects->__finish();								//Unloading of objects, displaying of generated content and correct termination
+$Core->__finish();									//Destroying of objects, displaying of generated content and correct termination

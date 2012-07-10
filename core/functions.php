@@ -79,9 +79,9 @@
 	});
 	//Функция для корректной остановки выполнения из любого места движка
 	function __finish () {
-		global $Objects;
-		if (is_object($Objects)) {
-			$Objects->__finish();
+		global $Core;
+		if (is_object($Core)) {
+			$Core->__finish();
 		}
 		exit;
 	}

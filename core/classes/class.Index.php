@@ -1,7 +1,7 @@
 <?php
-namespace cs;
-use \h;
-use \Closure;
+namespace	cs;
+use			\Closure,
+\h;
 class Index {
 	public		$Content,
 

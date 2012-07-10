@@ -1,9 +1,8 @@
 <?php
 namespace cs;
 /**
- * For providing loaders for some "heavy" objects
- * Such objects will be initialized only at first usage, otherwise we can skip their initialization in order
- * to save resources
+ * For providing loaders for some "heavy" or/and rarely used objects.
+ * Such objects will be actually created only at first usage, otherwise we can skip their creation in order to save resources.
  */
 class Loader {
 	protected	$class,
@@ -17,18 +16,18 @@ class Loader {
 		$this->variable	= $variable;
 	}
 	function __get ($variable) {
-		global ${$this->variable}, $Objects;
-		${$this->variable} = $Objects->load($this->class);
+		global ${$this->variable}, $Core;
+		${$this->variable} = $Core->create($this->class);
 		return ${$this->variable}->$variable;
 	}
 	function __set ($variable, $value) {
-		global ${$this->variable}, $Objects;
-		${$this->variable} = $Objects->load($this->class);
+		global ${$this->variable}, $Core;
+		${$this->variable} = $Core->create($this->class);
 		return ${$this->variable}->$variable = $value;
 	}
 	function __call ($function, $arguments) {
-		global ${$this->variable}, $Objects;
-		${$this->variable} = $Objects->load($this->class);
+		global ${$this->variable}, $Core;
+		${$this->variable} = $Core->create($this->class);
 		return call_user_func_array(
 			[
 				${$this->variable},

@@ -1,19 +1,44 @@
 <?php
-namespace cs;
-use \Closure;
-//Класс ядра
+namespace	cs;
+use			\Closure,
+			\h;
+/**
+ * Core class.
+ * Provides loading of system configuration, creating of global objects, encryption, API requests sending, and triggers processing.
+ */
 class Core {
-	protected	$iv,
+	public	$Loaded			= [],				//Array with list of loaded objects, and information about amount of used memory and creation time
+		$destroy_priority	= [					//Order of global objects destroying
+		'Page',
+		'User',
+		'Config',
+		'Key',
+		'db',
+		'L',
+		'Text',
+		'Cache',
+		'Storage',
+		'Error'
+	];
+	protected	$init				= false,	//For prohibition of re-initialization
+				$List				= [],
+				$iv,
 				$td,
 				$key,
 				$encrypt_support	= false,
 				$triggers_init		= false,
 				$triggers;
-
+	/**
+ 	 * Loading of configuration, creating of missing directories
+	 */
 	function __construct() {
+		if ($this->init) {
+			return;
+		}
+		$this->init	= true;
 		if (!_require_once(CONFIG.'/main.php', false)) {
 			error_header(404);
-			__finish();
+			$this->__finish();
 		}
 		!is_dir(STORAGE)				&& @mkdir(STORAGE, 0777)	&& file_put_contents(
 			STORAGE.'/.htaccess',
@@ -34,6 +59,74 @@ class Core {
 			$this->key	= $KEY;
 			$this->iv	= $IV;
 			unset($GLOBALS['KEY'], $GLOBALS['IV']);
+		}
+	}
+	/**
+	 * Creating of global object on the base of class
+	 *
+	 * @param array|string|string[]	$class			Class name, on the base of which object will be created. May be string of class name,
+	 * 												or <b>array($class, $object_name)</b>, or indexed array of mentioned arrays
+	 * @param bool					$object_name	If this parameter is <b>null</b> - name of global object will be the same as class name, otherwise,
+	 * 												as name specified in this parameter
+	 *
+	 * @return bool|object							Created object on success or <b>false</b> on failure
+	 */
+	function create ($class, $object_name = null) {
+		if (empty($class)) {
+			return false;
+		} elseif (!defined('STOP') && !is_array($class)) {
+			$loader = false;
+			if (substr($class, 0, 1) == '_') {
+				$class	= substr($class, 1);
+				$loader	= true;
+			}
+			if ($loader || class_exists($class)) {
+				if ($object_name === null) {
+					$object_name = explode('\\', $class);
+					$object_name = array_pop($object_name);
+				}
+				global $$object_name;
+				if (!is_object($$object_name) || $$object_name instanceof Loader) {
+					if ($loader) {
+						$$object_name				= new Loader($class, $object_name);
+					} else {
+						$this->List[$object_name]	= $object_name;
+						$$object_name				= new $class();
+						$this->createed[$object_name]	= [microtime(true), memory_get_usage()];
+					}
+				}
+				return $$object_name;
+			} else {
+				trigger_error('Class '.h::b($class, ['level' => 0]).' not exists', E_USER_ERROR);
+				return false;
+			}
+		} elseif (!defined('STOP') && is_array($class)) {
+			foreach ($class as $c) {
+				if (is_array($c)) {
+					$this->create($c[0], isset($c[1]) ? $c[1] : false);
+				} else {
+					$this->create($c);
+				}
+			}
+		}
+		return false;
+	}
+	/**
+	 * Destroying of global object
+	 *
+	 * @param string|string[]     $object	Name of global object to be destroyed, or array of names
+	 */
+	function destroy ($object) {
+		if (is_array($object)) {
+			foreach ($object as $o) {
+				$this->destroy($o);
+			}
+		} else {
+			global $$object;
+			unset($this->List[$object]);
+			method_exists($$object, '__finish') && $$object->__finish();
+			$$object = null;
+			unset($GLOBALS[$object]);
 		}
 	}
 	/**
@@ -313,13 +406,30 @@ class Core {
 	 */
 	function __clone () {}
 	/**
-	 * Disabling encryption
+	 * Destroying of global objects, cleaning.<br>
+	 * Disabling encryption.<br>
+	 * Correct termination.
+	 *
 	 * @return mixed
 	 */
 	function __finish () {
+		if (isset($this->List['Index'])) {
+			$this->destroy('Index');
+		}
+		foreach ($this->List as $class) {
+			if (!in_array($class, $this->destroy_priority)) {
+				$this->destroy($class);
+			}
+		}
+		foreach ($this->destroy_priority as $class) {
+			if (isset($this->List[$class])) {
+				$this->destroy($class);
+			}
+		}
 		if (is_resource($this->td)) {
 			mcrypt_module_close($this->td);
 			unset($this->key, $this->iv, $this->td);
 		}
+		exit;
 	}
 }
