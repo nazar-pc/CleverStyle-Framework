@@ -4,7 +4,7 @@ $rc = $Config->routing['current'];
 if (
 	!isset($rc[3]) ||
 	!preg_match('/^[a-z0-9]{56}$/', $rc[3]) ||
-	!($data = $Key->get($db->{$Config->components['modules']['System']['db']['keys']}(), $rc[3], true))
+	!($data = $Key->get($db->{$Config->module('System')->db('keys')}(), $rc[3], true))
 ) {
 	$Page->content(0);
 	return;

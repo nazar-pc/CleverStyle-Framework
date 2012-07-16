@@ -27,7 +27,7 @@ if (isset($_POST['login']) && !empty($_POST['login']) && !isset($_POST['auth_has
 	}
 	$random_hash = hash('sha224', MICROTIME);
 	if ($Key->add(
-		$Config->components['modules']['System']['db']['keys'],
+		$Config->module('System')->db('keys'),
 		hash('sha224', $User->ip.$User->user_agent.$_POST['login']),
 		[
 			'random_hash'	=> $random_hash,
@@ -43,7 +43,7 @@ if (isset($_POST['login']) && !empty($_POST['login']) && !isset($_POST['auth_has
 //Второй шаг - проверка хеша аутентификации, и создание сессии
 } elseif (isset($_POST['auth_hash'])) {
 	$key_data = $Key->get(
-		$Config->components['modules']['System']['db']['keys'],
+		$Config->module('System')->db('keys'),
 		hash('sha224', $User->ip.$User->user_agent.$_POST['login']),
 		true
 	);

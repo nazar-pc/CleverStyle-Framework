@@ -280,7 +280,8 @@
 		"storage_settings_for_module"	: "Настройки хранилища для модуля %s",
 		"default_module"				: "Модуль по-умолчанию (отображается на главной странице сайта)",
 		"make_default_module"			: "Сделать модулем по-умолчанию",
-	//Blocks
+		"module_admin_page"				: "Страница администрирования модуля",
+		//Blocks
 		"blocks"								: "Блоки",
 		"block"									: "Блок",
 		"top_blocks"							: "Верхние блоки",
@@ -348,7 +349,7 @@
 		"adding_a_database"		: "Добавление БД",
 		"editing_a_database"	: "Редактирование %s",
 		"deleting_a_database"	: "Удаление %s",
-	//Storages
+		//Storages
 		"storages"					: "Хранилища",
 		"storage"					: "Хранилище",
 		"add_storage"				: "Добавить хранилище",
@@ -406,7 +407,7 @@
 		"registration_confirmation_time_info"		: "Если в течении указанного времени (в днях) аккаунт не будет подтвержден - он будет удален.",
 		"rules"										: "Правила сайта",
 		"rules_info"								: "Правила сайта, которые будут отображаться при регистрации",
-	//Users
+		//Users
 		"search"							: "Поиск",
 		"column"							: "Столбец",
 		"show_columns"						: "Показать столбцы",
@@ -427,6 +428,9 @@
 		"activate_bot"						: "Активировать бота",
 		"registration_date"					: "Дата регистрации",
 		"registration_ip"					: "IP регистрации",
+		"last_login"						: "Последний вход",
+		"last_ip"							: "IP последнего входа",
+		"last_online"						: "Последний раз был на сайте",
 		"username"							: "Имя пользователя",
 		"email"								: "Email",
 		"password_only_for_changing"		: "Пароль (вводить только если нужно изменить)",
@@ -487,7 +491,7 @@
 		"adding_a_bot"						: "Добавление бота",
 		"editing_data_of_user"				: "Редактировать данные пользователя %s",
 		"editing_raw_data_of_user"			: "Редактировать необработанные данные пользователя %s",
-	//Groups
+		//Groups
 		"groups"					: "Группы",
 		"group_title"				: "Название группы",
 		"edit_group_data"			: "Редактировать данные группы",
@@ -504,7 +508,7 @@
 		"adding_a_group"			: "Добавление группы",
 		"editing_a_group"			: "Редактирование группу %s",
 		"deleting_a_group"			: "Удаление группы %s",
-	//Permissios
+		//Permissios
 		"permissions"							: "Разрешения",
 		"label"									: "Метка",
 		"group"									: "Группа",
@@ -548,7 +552,7 @@
 		"birth_date_format"				: "j F Y",
 		"reg_date"						: "Дата регистрации",
 		"reg_date_format"				: "j F Y",
-	//Settings
+		//Settings
 		"my_profile"							: "Мой профиль",
 		"general_settings"						: "Общие настройки",
 		"change_password"						: "Сменить пароль",

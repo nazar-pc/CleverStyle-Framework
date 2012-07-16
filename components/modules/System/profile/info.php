@@ -19,7 +19,6 @@ $data	= $User->get(
 		'reg_date',
 		'status',
 		'block_until',
-		'last_login',
 		'gender',
 		'birthday',
 		'avatar',

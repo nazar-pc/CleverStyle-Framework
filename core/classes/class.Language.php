@@ -193,31 +193,25 @@ class Language {
 	 */
 	function time ($in, $type) {
 		if ($this->time instanceof Closure) {
-			$tmp = $this->time;
-			return $tmp($in, $type);
+			return $this->time->__invoke($in, $type);
 		} else {
 			global $L;
 			switch ($type) {
 				case 's':
 					return $in.' '.$L->seconds;
 				break;
-				
 				case 'm':
 					return $in.' '.$L->minutes;
 				break;
-				
 				case 'h':
 					return $in.' '.$L->hours;
 				break;
-				
 				case 'd':
 					return $in.' '.$L->days;
 				break;
-				
 				case 'M':
 					return $in.' '.$L->months;
 				break;
-				
 				case 'y':
 					return $in.' '.$L->years;
 				break;

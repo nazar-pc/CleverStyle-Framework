@@ -480,8 +480,8 @@ class Index {
 	/**
 	 * Adding functions for executing before initialization processing of modules
 	 *
-	 * @param Closure[] $closure
-	 * @param bool $remove_others	Allows to remove others closures for preload
+	 * @param Closure[]	$closure
+	 * @param bool		$remove_others	Allows to remove others closures for preload
 	 *
 	 * @return bool
 	 */
@@ -498,8 +498,8 @@ class Index {
 	/**
 	 * Adding functions for executing after generating processing of modules
 	 *
-	 * @param Closure[] $closure
-	 * @param bool $remove_others	Allows to remove others closures for postload
+	 * @param Closure[]	$closure
+	 * @param bool		$remove_others	Allows to remove others closures for postload
 	 *
 	 * @return bool
 	 */

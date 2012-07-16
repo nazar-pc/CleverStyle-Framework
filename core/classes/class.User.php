@@ -40,7 +40,7 @@ class User {
 			isset($rc[count($rc) - 1]) &&
 			(
 				$key_data = $Key->get(
-					$Config->components['modules']['System']['db']['keys'],
+					$Config->module('System')->db('keys'),
 					$key = $rc[count($rc) - 1],
 					true
 				)
@@ -205,9 +205,10 @@ class User {
 		$this->init = true;
 	}
 	/**
-	 * @param string|string[] $item
-	 * @param bool|int $user
-	 * @return bool|string|string[]
+	 * @param string|string[]		$item
+	 * @param bool|int 				$user
+	 *
+	 * @return bool|string|mixed[]
 	 */
 	function get ($item, $user = false) {
 		switch ($item) {
@@ -223,10 +224,11 @@ class User {
 		return $this->get_internal($item, $user);
 	}
 	/**
-	 * @param string|string[] $item
-	 * @param bool|int $user
-	 * @param bool $cache_only
-	 * @return bool|string|string[]
+	 * @param string|string[]		$item
+	 * @param bool|int 				$user
+	 * @param bool					$cache_only
+	 *
+	 * @return bool|string|mixed[]
 	 */
 	protected function get_internal ($item, $user = false, $cache_only = false) {
 		$user = (int)($user ?: $this->id);
@@ -234,12 +236,18 @@ class User {
 			return false;
 		}
 		global $Cache;
-		//Link for simplier use
+		/**
+		 * Reference for simpler usage
+		 */
 		$data = &$this->data[$user];
-		//Если получаем массив значений
+		/**
+		 * If get an array of values
+		 */
 		if (is_array($item)) {
 			$result = $new_items = [];
-			//Пытаемся достать значения с локального кеша, иначе составляем массив недостающих значений
+			/**
+			 * Trying to get value from the local cache, or make up an array of missing values
+			 */
 			foreach ($item as $i) {
 				if (in_array($i, $this->users_columns)) {
 					if (($res = $this->get($i, $user, true)) !== false) {
@@ -252,7 +260,9 @@ class User {
 			if (empty($new_items)) {
 				return $result;
 			}
-			//Если есть недостающие значения - достаем их из БД
+			/**
+			 * If there are missing values - get them from the database
+			 */
 			$new_items	= '`'.implode('`, `', $new_items).'`';
 			$res = $this->db()->qf("SELECT $new_items FROM `[prefix]users` WHERE `id` = '$user' LIMIT 1");
 			unset($new_items);
@@ -263,7 +273,9 @@ class User {
 				}
 				$data = array_merge((array)$data, $res);
 				$result = array_merge($result, $res);
-				//Пересортируем результирующий массив в том же порядке, что и входящий массив элементов
+				/**
+				 * Sorting the resulting array in the same manner as the input array
+				 */
 				$res = [];
 				foreach ($item as $i) {
 					$res[$i] = &$result[$i];
@@ -272,20 +284,32 @@ class User {
 			} else {
 				return false;
 			}
-			//Если получаем одно значение
+		/**
+		 * If get one value
+		 */
 		} elseif (in_array($item, $this->users_columns)) {
-			//Указатель начала получения данных
+			/**
+			 * Pointer to the beginning of getting the data
+			 */
 			get_data:
-			//Если данные в локальном кеше - возвращаем
+			/**
+			 * If data in local cache - return them
+			 */
 			if (isset($data[$item])) {
 				return $data[$item];
-				//Иначе если из кеша данные не доставали - пробуем достать
+			/**
+			 * Try to get data from the cache
+			 */
 			} elseif (!isset($new_data) && ($new_data = $Cache->{'users/'.$user}) !== false && is_array($new_data)) {
-				//Обновляем локальный кеш
+				/**
+				 * Update the local cache
+				 */
 				if (is_array($new_data)) {
 					$data = array_merge((array)$data, $new_data);
 				}
-				//Делаем новую попытку загрузки данных
+				/**
+				 * New attempt of getting the data
+				 */
 				goto get_data;
 			} elseif (!$cache_only) {
 				$new_data = $this->db()->qf("SELECT `$item` FROM `[prefix]users` WHERE `id` = '$user' LIMIT 1", $item);
@@ -301,9 +325,10 @@ class User {
 		return false;
 	}
 	/**
-	 * @param array|string $item
-	 * @param $value
-	 * @param bool|int $user
+	 * @param array|string	$item
+	 * @param mixed|null	$value
+	 * @param bool|int		$user
+	 *
 	 * @return bool
 	 */
 	function set ($item, $value = null, $user = false) {
@@ -337,7 +362,71 @@ class User {
 		$this->set($item, $value);
 	}
 	/**
+	 * Getting additional data item(s) for user
+	 *
+	 * @param string|string[]		$item
+	 * @param bool|int				$user
+	 *
+	 * @return bool|string|mixed[]
+	 */
+	function get_data ($item, $user = false) {
+		$data	= $this->get('data', $user);
+		if (is_array($item)) {
+			$return	= [];
+			foreach ($item as $i) {
+				$return[$i]	= isset($data[$i]) ? $data[$i] : false;
+			}
+			return $return;
+		} else {
+			return isset($return[$item]) ? $return[$item] : false;
+		}
+	}
+	/**
+	 * Setting additional data item(s) for user
+	 *
+	 * @param array|string	$item
+	 * @param mixed|null	$value
+	 * @param bool|int		$user
+	 *
+	 * @return bool
+	 */
+	function set_data ($item, $value = null, $user = false) {
+		$data	= $this->get('data', $user);
+		if (is_array($item)) {
+			foreach ($item as $i => $v) {
+				$data[$i]	= $v;
+			}
+			unset($i, $v);
+		} else {
+			$data[$item]	= $value;
+		}
+		$this->set('data', $data, $user);
+		return true;
+	}
+	/**
+	 * Deleting additional data item(s) for user
+	 *
+	 * @param string|string[]		$item
+	 * @param bool|int				$user
+	 *
+	 * @return bool|string|string[]
+	 */
+	function del_data ($item, $user = false) {
+		$data	= $this->get('data', $user);
+		if (is_array($item)) {
+			foreach ($item as $i) {
+				unset($data[$i]);
+			}
+			unset($i);
+		} else {
+			unset($data[$item]);
+		}
+		$this->set('data', $data, $user);
+		return true;
+	}
+	/**
 	 * Returns link to the object of db for reading (can be mirror)
+	 *
 	 * @return \cs\database\_Abstract
 	 */
 	function db () {
@@ -348,12 +437,15 @@ class User {
 			return $this->db = $this->db_prime;
 		}
 		global $Config, $db;
-		//Save link for faster access
-		$this->db = $db->{$Config->components['modules']['System']['db']['users']}();
+		/**
+		 * Save reference for faster access
+		 */
+		$this->db = $db->{$Config->module('System')->db('users')}();
 		return $this->db;
 	}
 	/**
 	 * Returns link to the object of db for writting (always main db)
+	 *
 	 * @return \cs\database\_Abstract
 	 */
 	function db_prime () {
@@ -361,13 +453,17 @@ class User {
 			return $this->db_prime;
 		}
 		global $Config, $db;
-		//Save link for faster access
-		$this->db_prime = $db->{$Config->components['modules']['System']['db']['users']}();
+		/**
+		 * Save reference for faster access
+		 */
+		$this->db_prime = $db->{$Config->module('System')->db('users')}();
 		return $this->db_prime;
 	}
 	/**
 	 * Who is current visitor
+	 *
 	 * @param string $mode admin|user|guest|bot|system
+	 *
 	 * @return bool
 	 */
 	function is ($mode) {
@@ -377,6 +473,7 @@ class User {
 	 * Returns user id by login or email hash (sha224)
 	 *
 	 * @param  string $login_hash	Login or email hash
+	 *
 	 * @return bool|int
 	 */
 	function get_id ($login_hash) {
@@ -399,6 +496,7 @@ class User {
 	 * Returns user name or login or email, depending on existed in DB information
 	 *
 	 * @param  bool|int $user
+	 *
 	 * @return bool|int
 	 */
 	function get_username ($user = false) {
@@ -467,6 +565,7 @@ class User {
 	 * Returns array of all permissions state for specified user
 	 *
 	 * @param bool|int $user
+	 *
 	 * @return array|bool
 	 */
 	function get_user_permissions ($user = false) {
@@ -479,6 +578,7 @@ class User {
 	/**
 	 * @param	array		$data
 	 * @param	bool|int	$user
+	 *
 	 * @return	bool
 	 */
 	function set_user_permissions ($data, $user = false) {
@@ -490,6 +590,7 @@ class User {
 	}
 	/**
 	 * @param	bool|int	$user
+	 *
 	 * @return	bool
 	 */
 	function del_user_permissions_all ($user = false) {
@@ -503,6 +604,7 @@ class User {
 	 * Get user groups
 	 *
 	 * @param	bool|int $user
+	 *
 	 * @return	array|bool
 	 */
 	function get_user_groups ($user = false) {
@@ -522,6 +624,7 @@ class User {
 	 *
 	 * @param	array	$data
 	 * @param	int		$user
+	 *
 	 * @return	bool
 	 */
 	function set_user_groups ($data, $user) {
@@ -574,6 +677,7 @@ class User {
 	 *
 	 * @param string $title
 	 * @param string $description
+	 *
 	 * @return bool|int
 	 */
 	function add_group ($title, $description) {
@@ -594,6 +698,7 @@ class User {
 	 * Delete group
 	 *
 	 * @param $group
+	 *
 	 * @return bool
 	 */
 	function del_group ($group) {
@@ -630,6 +735,7 @@ class User {
 	/**
 	 * @param int $group
 	 * @param bool|string $item
+	 *
 	 * @return array|bool
 	 */
 	function get_group_data ($group, $item = false) {
@@ -682,6 +788,7 @@ class User {
 	}
 	/**
 	 * @param int $group
+	 *
 	 * @return array
 	 */
 	function get_group_permissions ($group) {
@@ -698,6 +805,7 @@ class User {
 	 *
 	 * @param	int			$id
 	 * @param	string		$type
+	 *
 	 * @return	array|bool
 	 */
 	protected function get_any_permissions ($id, $type) {
@@ -738,6 +846,7 @@ class User {
 	 * @param	array	$data
 	 * @param	int		$id
 	 * @param	string	$type
+	 *
 	 * @return	bool
 	 */
 	protected function set_any_permissions ($data, $id, $type) {
@@ -814,6 +923,7 @@ class User {
 	 *
 	 * @param	int		$id
 	 * @param	string	$type
+	 *
 	 * @return	bool
 	 */
 	protected function del_any_permissions_all ($id, $type) {
@@ -879,10 +989,10 @@ class User {
 	 * @param int     $id
 	 * @param string  $group
 	 * @param string  $label
-	 * @param string  $condition and|or
+	 * @param string  $condition	and|or
 	 *
-	 * @return array|bool If only <b>$id</b> specified - result is array of permission data,
-	 * in other cases result will be array of arrays of corresponding permissions data.
+	 * @return array|bool			If only <b>$id</b> specified - result is array of permission data,
+	 * 								in other cases result will be array of arrays of corresponding permissions data.
 	 */
 	function get_permission ($id = null, $group = null, $label = null, $condition = 'and') {
 		switch ($condition) {
@@ -973,13 +1083,14 @@ class User {
 	 * Find the session by id, and return id of owner (user)
 	 *
 	 * @param string $session_id
+	 *
 	 * @return int User id
 	 */
 	function get_session_user ($session_id = '') {
 		$this->current['session'] = _getcookie('session');
 		$session_id = $session_id ?: $this->current['session'];
 		global $Cache, $Config;
-		$result = false;
+		$result	= false;
 		$time	= TIME;
 		if ($session_id && !($result = $Cache->{'sessions/'.$session_id})) {
 			$condition	= $Config->core['remember_user_ip'] ?
@@ -1002,23 +1113,51 @@ class User {
 			$this->add_session(1);
 			return 1;
 		}
-		$update = [];
-		if ($result['user'] != 0 && $this->get('last_login', $result['user']) < TIME - $Config->core['online_time']) {
-			$ip = ip2hex($this->ip);
-			$update[] = "UPDATE `[prefix]users` SET `last_login` = $time, `last_ip` = '$ip' WHERE `id` ='$result[user]'";
-			$this->set(
-				[
-					'last_login'	=> TIME,
-					'last_ip'		=> $ip
-				],
-				null,
-				$result['user']
-			);
-			unset($ip);
+		$update	= [];
+		/**
+		 * Updating last online time
+		 */
+		if ($result['user'] != 0 && $this->get('last_online', $result['user']) < TIME - $Config->core['online_time'] * $Config->core['update_ratio'] / 100) {
+			/**
+			 * Updating last login time and ip
+			 */
+			if ($this->get('last_online', $result['user']) < TIME - $Config->core['online_time']) {
+				$ip = ip2hex($this->ip);
+				$update[] = "
+					UPDATE `[prefix]users`
+					SET
+						`last_login`	= $time,
+						`last_ip`		= '$ip',
+						`last_online`	= $time
+					WHERE `id` ='$result[user]'";
+				$this->set(
+					[
+						'last_login'	=> TIME,
+						'last_ip'		=> $ip,
+						'last_online'	=> TIME
+					],
+					null,
+					$result['user']
+				);
+				unset($ip);
+			} else {
+				$update[] = "
+					UPDATE `[prefix]users`
+					SET `last_online` = $time
+					WHERE `id` ='$result[user]'";
+				$this->set(
+					'last_online',
+					TIME,
+					$result['user']
+				);
+			}
 		}
 		if ($result['expire'] - TIME < $Config->core['session_expire'] * $Config->core['update_ratio'] / 100) {
 			$result['expire']	= TIME + $Config->core['session_expire'];
-			$update[]			= "UPDATE `[prefix]sessions` SET `expire` = '$result[expire]' WHERE `id` = '$session_id'";
+			$update[]			= "
+				UPDATE `[prefix]sessions`
+				SET `expire` = '$result[expire]'
+				WHERE `id` = '$session_id'";
 			$Cache->{'sessions/'.$session_id} = $result;
 		}
 		if (!empty($update)) {
@@ -1030,6 +1169,7 @@ class User {
 	 * Create the session for the user with specified id
 	 *
 	 * @param int $id
+	 *
 	 * @return bool
 	 */
 	function add_session ($id) {
@@ -1041,7 +1181,9 @@ class User {
 			$this->del_session_internal(null, false);
 		}
 		global $Config;
-		//Generate hash in cycle, to obtain unique value
+		/**
+		 * Generate hash in cycle, to obtain unique value
+		 */
 		for ($i = 0; $hash = md5(MICROTIME + $i); ++$i) {
 			if ($this->db_prime()->qf("SELECT `id` FROM `[prefix]sessions` WHERE `id` = '$hash' LIMIT 1")) {
 				continue;
@@ -1062,7 +1204,7 @@ class User {
 			);
 			$time	= TIME;
 			if ($id != 1) {
-				$this->db_prime()->q("UPDATE `[prefix]users` SET `last_login` = $time, `last_ip` = '$ip.' WHERE `id` ='$id'");
+				$this->db_prime()->q("UPDATE `[prefix]users` SET `last_login` = $time, `last_online` = $time, `last_ip` = '$ip.' WHERE `id` ='$id'");
 			}
 			global $Cache;
 			$Cache->{'sessions/'.$hash} = $this->current['session'] = [
@@ -1083,7 +1225,7 @@ class User {
 		return false;
 	}
 	/**
-	 * Deletion of the session
+	 * Destroying of the session
 	 *
 	 * @param string $session_id
 	 *
@@ -1116,8 +1258,10 @@ class User {
 		return $result;
 	}
 	/**
-	 * Remove all user sessions
+	 * Destroying all user sessions
+	 *
 	 * @param bool|int $id
+	 *
 	 * @return bool
 	 */
 	function del_all_sessions ($id = false) {
@@ -1139,7 +1283,9 @@ class User {
 	}
 	/**
 	 * Check number of login attempts
+	 *
 	 * @param bool|string $login_hash
+	 *
 	 * @return int Number of attempts
 	 */
 	function login_attempts ($login_hash = false) {
@@ -1160,6 +1306,7 @@ class User {
 	}
 	/**
 	 * Process login result
+	 *
 	 * @param bool $result
 	 * @param bool|string $login_hash
 	 */
@@ -1266,7 +1413,9 @@ class User {
 	}
 	/**
 	 * Confirmation of registration process
+	 *
 	 * @param $reg_key
+	 *
 	 * @return array|bool
 	 */
 	function confirmation ($reg_key) {
@@ -1343,7 +1492,8 @@ class User {
 					`reg_date`		= 0,
 					`reg_ip`		= null,
 					`reg_key`		= null,
-					`status`		= '-1'
+					`status`		= '-1',
+					`data`			= ''
 				WHERE
 					`id` IN ($user)"
 			);
@@ -1422,7 +1572,9 @@ class User {
 	 */
 	function __finish () {
 		global $Cache;
-		//Update users data
+		/**
+		 * Updating users data
+		 */
 		$users_columns = $Cache->{'users/columns'};
 		if (is_array($this->data_set) && !empty($this->data_set)) {
 			$update = [];
@@ -1452,7 +1604,9 @@ class User {
 			}
 			unset($update);
 		}
-		//Update users cache
+		/**
+		 * Updating users cache
+		 */
 		foreach ($this->data as $id => &$data) {
 			if (isset($this->update_cache[$id]) && $this->update_cache[$id]) {
 				$data['id'] = $id;

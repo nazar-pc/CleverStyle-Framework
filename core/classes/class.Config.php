@@ -50,7 +50,9 @@ class Config {
 	function __construct () {
 		global $Cache, $Config;
 		$Config = $this;
-		//Reading settings from cache and defining missing data
+		/**
+		 * Reading settings from cache and defining missing data
+		 */
 		$config = $Cache->config;
 		if (is_array($config)) {
 			$query = false;
@@ -66,21 +68,29 @@ class Config {
 		} else {
 			$query = true;
 		}
-		//Cache rebuilding, if necessary
+		/**
+		 * Cache rebuilding, if necessary
+		 */
 		if ($query == true) {
 			$this->load();
 		} else {
-			//Engine initialization with current configuration
+			/**
+			 * Engine initialization with current configuration
+			 */
 			$this->init();
 		}
 		if (!file_exists(MODULES.'/'.$this->core['default_module'])) {
 			$this->core['default_module']	= 'System';
 			$this->save('core');
 		}
-		//Address routing
+		/**
+		 * Address routing
+		 */
 		$this->routing();
 	}
-	//Engine initialization (or reinitialization if necessary)
+	/**
+	 * Engine initialization (or reinitialization if necessary)
+	 */
 	protected function init() {
 		global $Cache, $L, $Page;
 		if ($this->core['debug'] && !defined('DEBUG')) {
@@ -98,7 +108,9 @@ class Config {
 				return;
 			}
 		}
-		//Setting system timezone
+		/**
+		 * Setting system timezone
+		 */
 		date_default_timezone_set($this->core['timezone']);
 	}
 	protected function check_ip ($ips) {
@@ -126,7 +138,9 @@ class Config {
 		}
 		return false;
 	}
-	//Analyzing and processing of current page address
+	/**
+	 * Analyzing and processing of current page address
+	 */
 	protected function routing () {
 		global $Core, $L, $Page;
 		$this->server['raw_relative_address']	= urldecode($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
@@ -135,8 +149,10 @@ class Config {
 		$this->server['protocol']				= isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http';
 		$core_url								= explode('://', $this->core['url'], 2);
 		$core_url[1]							= explode(';', $core_url[1]);
-		//$core_url = array(0 => protocol, 1 => array(list of domain and IP addresses))
-		//Check, whether it is main domain
+		/**
+		 * $core_url = array(0 => protocol, 1 => array(list of domain and IP addresses))
+		 * Check, whether it is main domain
+		 */
 		$current_domain = false;
 		if ($core_url[0] == $this->server['protocol']) {
 			foreach ($core_url[1] as $domain) {
@@ -149,13 +165,17 @@ class Config {
 		}
 		$this->server['mirrors'][$core_url[0]] = array_merge($this->server['mirrors'][$core_url[0]], $core_url[1]);
 		unset($core_url, $domain);
-		//If it  is not the main domain - try to find match in mirrors
+		/**
+		 * If it  is not the main domain - try to find match in mirrors
+		 */
 		if ($current_domain === false && !empty($this->core['mirrors_url'])) {
 			$mirrors_url = $this->core['mirrors_url'];
 			foreach ($mirrors_url as $i => $mirror_url) {
 				$mirror_url		= explode('://', $mirror_url, 2);
 				$mirror_url[1]	= explode(';', $mirror_url[1]);
-				//$mirror_url = array(0 => протокол, 1 => array(список из домена и IP адресов))
+				/**
+				 * $mirror_url = array(0 => protocol, 1 => array(list of domain and IP addresses))
+				 */
 				if ($mirror_url[0] == $this->server['protocol']) {
 					foreach ($mirror_url[1] as $url) {
 						if (mb_strpos($this->server['raw_relative_address'], $url) === 0) {
@@ -168,12 +188,16 @@ class Config {
 				}
 			}
 			unset($mirrors_url, $mirror_url, $url, $i);
-			//If match in mirrors was not found - mirror is not allowed!
+			/**
+			 * If match in mirrors was not found - mirror is not allowed!
+			 */
 			if ($this->server['mirror_index'] == -1) {
 				$this->server['base_url'] = '';
 				trigger_error($L->mirror_not_allowed, E_USER_ERROR);
 			}
-		//If match was not found - mirror is not allowed!
+		/**
+		 * If match was not found - mirror is not allowed!
+		 */
 		} elseif ($current_domain === false) {
 			$this->server['base_url'] = '';
 			trigger_error($L->mirror_not_allowed, E_USER_ERROR);
@@ -190,7 +214,9 @@ class Config {
 			$this->server['mirrors']['count'] = count($this->server['mirrors']['http'])+count($this->server['mirrors']['https']);
 			unset($mirrors_url, $mirror_url);
 		}
-		//Preparing page url without basic path
+		/**
+		 * Preparing page url without basic path
+		 */
 		$this->server['raw_relative_address'] = str_replace(
 			'//',
 			'/',
@@ -200,7 +226,9 @@ class Config {
 		$r			= &$this->routing;
 		$rc			= &$r['current'];
 		$rc			= $this->server['raw_relative_address'];
-		//Routing replacing
+		/**
+		 * Routing replacing
+		 */
 		if (!empty($r['in'])) {
 			errors_off();
 			foreach ($r['in'] as $i => $search) {
@@ -217,9 +245,13 @@ class Config {
 				}
 			]
 		);
-		//Obtaining page path in form of array
+		/**
+		 * Obtaining page path in form of array
+		 */
 		$rc = explode('/', $rc);
-		//If url looks like admin page
+		/**
+		 * If url looks like admin page
+		 */
 		if (isset($rc[0]) && mb_strtolower($rc[0]) == 'admin') {
 			if ($this->core['ip_admin_list_only'] && !$this->check_ip($this->core['ip_admin_list'])) {
 				define('ERROR_PAGE', 403);
@@ -230,7 +262,9 @@ class Config {
 				define('ADMIN', true);
 			}
 			array_shift($rc);
-		//If url looks like API page
+		/**
+		 * If url looks like API page
+		 */
 		} elseif (isset($rc[0]) && mb_strtolower($rc[0]) == 'api') {
 			if (!defined('API')) {
 				define('API', true);
@@ -243,7 +277,9 @@ class Config {
 		}
 		!defined('ADMIN')	&& define('ADMIN', false);
 		!defined('API')		&& define('API', false);
-		//Module detection
+		/**
+		 * Module detection
+		 */
 		if (
 			isset($rc[0]) &&
 			in_array(
@@ -266,7 +302,9 @@ class Config {
 			}
 		}
 		!defined('HOME')	&& define('HOME', false);
-		//Corrected full page address (recommended for usage)
+		/**
+		 * Corrected full page address (recommended for usage)
+		 */
 		$this->server['corrected_full_address'] = (ADMIN ? 'admin/' : '').MODULE.(API ? 'api/' : '').'/'.implode('/', $rc);
 		unset($rc, $r);
 		if (isset($_SERVER['HTTP_REFERER'])) {
@@ -282,7 +320,9 @@ class Config {
 		}
 		$this->server['ajax'] = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
 	}
-	//Updating information about set of available themes
+	/**
+	 * Updating information about set of available themes
+	 */
 	function reload_themes () {
 		$this->core['themes'] = get_list(THEMES, false, 'd');
 		asort($this->core['themes']);
@@ -292,7 +332,9 @@ class Config {
 			asort($this->core['color_schemes'][$theme]);
 		}
 	}
-	//Updating information about set of available languages
+	/**
+	 * Updating information about set of available languages
+	 */
 	function reload_languages () {
 		$this->core['languages'] = array_unique(
 			array_merge(
@@ -302,7 +344,9 @@ class Config {
 		);
 		asort($this->core['languages']);
 	}
-	//Reloading of settings cache
+	/**
+	 * Reloading of settings cache
+	 */
 	protected function load () {
 		global $db;
 		$query = [];
@@ -335,13 +379,17 @@ class Config {
 		$this->apply();
 		return true;
 	}
-	//Applying settings without saving changes into db
+	/**
+	 * Applying settings without saving changes into db
+	 */
 	function apply () {
 		return $this->apply_internal();
 	}
 	protected function apply_internal ($cache_not_saved_mark = true) {
 		global $Error, $Cache;
-		//If errors - cache updating must be stopped
+		/**
+		 * If errors - cache updating must be stopped
+		 */
 		if ($Error->num()) {
 			return false;
 		}
@@ -362,7 +410,9 @@ class Config {
 		$Cache->config = $Config;
 		return true;
 	}
-	//Saving settings
+	/**
+	 * Saving settings
+	 */
 	function save ($parts = null) {
 		global $db;
 		if ($parts === null || empty($parts)) {
@@ -452,9 +502,46 @@ class Config {
 		return $this->data[$item] = $data;
 	}
 	/**
+	 * Get module db and storage configuration
+	 *
+	 * @param string $module_name
+	 *
+	 * @return Config\Module_Properties_Object
+	 */
+	function module ($module_name) {
+		return (new Config\Module_Properties_Object($this->components['modules'][$module_name]));
+	}
+	/**
 	 * Cloning restriction
 	 *
 	 * @final
 	 */
 	function __clone () {}
+}
+namespace cs\Config;
+class Module_Properties_Object {
+	protected	$module_data	= [];
+	function __construct ($module_data) {
+		$this->module_data	= $module_data;
+	}
+	/**
+	 * Get db id by name
+	 *
+	 * @param string $db_name
+	 *
+	 * @return int
+	 */
+	function db ($db_name) {
+		return $this->module_data['db'][$db_name];
+	}
+	/**
+	 * Get storage id by name
+	 *
+	 * @param string $storage_name
+	 *
+	 * @return int
+	 */
+	function storage ($storage_name) {
+		return $this->module_data['storage'][$storage_name];
+	}
 }

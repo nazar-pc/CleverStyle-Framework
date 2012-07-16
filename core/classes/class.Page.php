@@ -138,7 +138,7 @@ class Page {
  	 * Processing of template, cubstituting of content, preparing for the output
 	 */
 	protected function prepare () {
-		global $copyright, $L, $Config;
+		global $L, $Config;
 		/**
  		 * Loading of template
 		 */
@@ -194,7 +194,7 @@ class Page {
 				],
 				[
 					'name'		=> 'generator',
-					'content'	=> $copyright[0]
+					'content'	=> base64_decode('Q2xldmVyU3R5bGUgQ01TIGJ5IE1va3J5bnNreWkgTmF6YXI=')
 				],
 				ADMIN || API ? [
 					'name'		=> 'robots',
@@ -570,20 +570,12 @@ class Page {
 	 * @return string
 	 */
 	protected function get_footer () {
-		global $copyright, $L, $db;
-		if (!($copyright && is_array($copyright))) {
-			$this->Content	= '';
-			interface_off();
-			__finish();
-		}
+		global $L, $db;
 		return h::div(
 			$L->page_footer_info('<!--generate time-->', $db->queries, format_time(round($db->time, 5)), '<!--peak memory usage-->')
 		).
-		h::div(
-			$copyright[1].h::br().$copyright[2],
-			[
-				'id'	=> 'copyright'
-			]
+		h::{'div#copyright'}(
+			base64_decode('wqkgUG93ZXJlZCBieSA8YSB0YXJnZXQ9Il9ibGFuayIgaHJlZj0iaHR0cDovL2NsZXZlcnN0eWxlLm9yZy9jbXMiIHRpdGxlPSJDbGV2ZXJTdHlsZSBDTVMiPkNsZXZlclN0eWxlIENNUzwvYT4=')
 		);
 	}
 	/**

@@ -390,14 +390,32 @@ if ($display_modules) {
 			}
 			unset($tag, $file);
 			/**
- 			 * Setting default module
+			 * Link to the module admin page
+			 */
+			if (
+				$mdata['active'] != -1 &&
+				$module != 'System' &&
+				(
+					file_exists(MODULES.'/'.$module.'/admin/index.php') || file_exists(MODULES.'/'.$module.'/admin/index.json')
+				)
+			) {
+				$action .= h::{'a.cs-button.cs-button-compact'}(
+					h::icon('home'),
+					[
+					'href'			=> '/admin/'.$module,
+					'data-title'	=> $L->module_admin_page
+					]
+				);
+			}
+			/**
+			 * Setting default module
 			 */
 			if ($mdata['active'] == 1 && $module != 'System' && $module != $Config->core['default_module']) {
 				$action .= h::{'a.cs-button.cs-button-compact'}(
 					h::icon('home'),
 					[
-						'href'			=> $a->action.'/default_module/'.$module,
-						'data-title'	=> $L->make_default_module
+					'href'			=> $a->action.'/default_module/'.$module,
+					'data-title'	=> $L->make_default_module
 					]
 				);
 			}

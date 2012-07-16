@@ -127,17 +127,16 @@ switch (isset($Config->routing['current'][2]) ? $Config->routing['current'][2] :
 			h::{'p.ui-priority-primary.cs-state-messages'}(
 				$L->general_settings
 			).
-			h::{'table#users_edit.cs-fullwidth-table.cs-center-all tr'}([
-				$row($L->old_password, h::{'input.cs-form-element'}([
+			h::{'table#users_edit.cs-fullwidth-table.cs-center-all tr'}(
+				$row($L->login, h::{'input.cs-form-element'}([
 					'name'		=> 'user[login]',
 					'value'		=> $user_data['login']
 				])),
 
-				$row($L->new_password, h::{'input.cs-form-element'}([
+				$row($L->username, h::{'input.cs-form-element'}([
 					'name'	=> 'user[username]',
 					'value'	=> $user_data['username']
 				])),
-
 				$row($L->language, h::{'select.cs-form-element'}(
 					[
 						'in'		=> array_merge([$L->system_default.' ('.$Config->core['language'].')'], $Config->core['active_languages']),
@@ -149,7 +148,6 @@ switch (isset($Config->routing['current'][2]) ? $Config->routing['current'][2] :
 						'size'		=> 5
 					]
 				)),
-
 				$row($L->theme, h::{'select.cs-form-element'}(
 					[
 						'in'		=> array_keys($themes),
@@ -161,7 +159,6 @@ switch (isset($Config->routing['current'][2]) ? $Config->routing['current'][2] :
 						'size'		=> 5
 					]
 				)),
-
 				$row($L->timezone, h::{'select.cs-form-element'}(
 					[
 						'in'		=> array_merge([$L->system_default.' ('.$Config->core['timezone'].')'], array_keys($timezones)),
@@ -173,46 +170,39 @@ switch (isset($Config->routing['current'][2]) ? $Config->routing['current'][2] :
 						'size'		=> 5
 					]
 				)),
-
 				$row($L->gender, h::{'input.cs-form-element[type=radio]'}([
 					'name'		=> 'user[gender]',
 					'checked'	=> $user_data['gender'],
 					'value'		=> [-1, 0, 1],
 					'in'		=> [$L->undefined, $L->male, $L->female]
 				])),
-
 				$row(h::info('birthday'), h::{'input.cs-form-element[type=date]'}([
 					'name'		=> 'user[birthday]',
 					'value'		=> date('Y-m-d', $user_data['birthday'] ?: TIME)
 				])),
-
 				$row($L->avatar, h::{'input.cs-form-element'}([
 					'name'		=> 'user[avatar]',
 					'value'		=> $user_data['avatar']
 				])),
-
 				$row($L->website, h::{'input.cs-form-element'}([
 					'name'		=> 'user[website]',
 					'value'		=> $user_data['website']
 				])),
-
 				$row($L->icq, h::{'input.cs-form-element'}([
 					'name'		=> 'user[icq]',
 					'value'		=> $user_data['icq'] ?: ''
 				])),
-
 				$row($L->skype, h::{'input.cs-form-element'}([
 					'name'		=> 'user[skype]',
 					'value'		=> $user_data['skype']
 				])),
-
 				$row($L->about_myself, h::{'textarea.cs-form-element'}(
 					$user_data['about'],
 					[
 						'name'		=> 'user[about]',
 					]
 				))
-			])
+			)
 		);
 	break;
 	case 'change_password':
@@ -224,7 +214,7 @@ switch (isset($Config->routing['current'][2]) ? $Config->routing['current'][2] :
 			h::{'p.ui-priority-primary.cs-state-messages'}(
 				$L->password_changing
 			).
-			h::{'table#users_edit.cs-fullwidth-table.cs-center-all tr'}([
+			h::{'table#users_edit.cs-fullwidth-table.cs-center-all tr'}(
 				h::{'th.ui-widget-header.ui-corner-all'}(
 					$L->current_password.h::{'icon#current_password'}('locked')
 				).
@@ -237,7 +227,7 @@ switch (isset($Config->routing['current'][2]) ? $Config->routing['current'][2] :
 				h::{'td.ui-widget-content.ui-corner-all'}(
 					h::{'input#new_user_password.cs-form-element[type=password]'}()
 				)
-			]).
+			).
 			h::{'button#change_password'}(
 				$L->change_password
 			)

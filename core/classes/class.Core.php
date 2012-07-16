@@ -262,7 +262,7 @@ class Core {
 		$url		= explode('/', $url, 2);
 		$host		= explode(':', $url[0]);
 		$url		= isset($url[1]) && !empty($url[1]) ? $url[1] : '';
-		$database	= $Config->components['modules']['System']['db']['keys'];
+		$database	= $Config->module('System')->db('keys');
 		$key		= $Key->generate($database);
 		$url		= $url ? $url.'/'.$key : $key;
 		$Key->add(
