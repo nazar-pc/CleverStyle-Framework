@@ -13,7 +13,7 @@ if (isset($rc[2])) {
 				$storage = &$Config->storage[$rc[3]];
 			}
 			/**
- 			 * @var array $storage
+			 * @var array $storage
 			 */
 			$a->action = 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
 			$Page->title($rc[2] == 'edit' ? $L->editing_a_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']) : $L->adding_a_storage);

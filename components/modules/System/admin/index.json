@@ -9,8 +9,8 @@
 	],
 	"components"	: [
 		"modules",
-		"blocks",
 		"plugins",
+		"blocks",
 		"databases",
 		"storages",
 		"security"

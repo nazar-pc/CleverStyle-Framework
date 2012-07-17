@@ -76,12 +76,12 @@ class Page {
 		}
 	}
 	/**
- 	 * Loading of theme template
+	 * Loading of theme template
 	 */
 	protected function get_template () {
-		global $Config, $L;
+		global $Config, $L, $User;
 		/**
- 		 * Theme detection
+		 * Theme detection
 		 */
 		if (is_object($Config) && $Config->core['allow_change_theme']) {
 			$this->theme		= in_array($this->theme, $Config->core['active_themes']) ? $this->theme : $Config->core['theme'];
@@ -104,55 +104,61 @@ class Page {
 			unset($color_scheme);
 		}
 		/**
- 		 * Base name for cache files
+		 * Base name for cache files
 		 */
 		$this->pcache_basename = '_'.$this->theme.'_'.$this->color_scheme.'_'.$L->clang.'.';
 		/**
- 		 * Template loading
+		 * Template loading
 		 */
 		if ($this->interface) {
 			ob_start();
 			if (
-				is_object($Config) && $Config->core['site_mode'] &&
-				(file_exists(THEMES.'/'.$this->theme.'/index.html') || file_exists(THEMES.'/'.$this->theme.'/index.php'))
+				!(
+					file_exists(THEMES.'/'.$this->theme.'/index.html') || file_exists(THEMES.'/'.$this->theme.'/index.php')
+				) ||
+				(
+					!(
+						is_object($Config) && $Config->core['site_mode']
+					) &&
+					!(
+						is_object($User) && $User->is('admin')
+					) &&
+					!(
+						_include_once(THEMES.'/'.$this->theme.'/closed.php', false) || _include_once(THEMES.'/'.$this->theme.'/closed.html', false)
+					)
+				)
 			) {
-				_include_once(THEMES.'/'.$this->theme.'/prepare.php', false);
-				if (!_include_once(THEMES.'/'.$this->theme.'/index.php', false)) {
-					_include_once(THEMES.'/'.$this->theme.'/index.html');
-				}
-			} elseif (!($Config->core['site_mode'] == 1 && _include_once(THEMES.'/'.$this->theme.'/closed.html'))) {
 				echo	"<!doctype html>\n".
-						"<html>\n".
-						"	<head>\n".
-						"<!--head-->\n".
-						"	</head>\n".
-						"	<body>\n".
-						"<!--content-->\n".
-						"	</body>\n".
-						"</html>";
+				h::html(
+					h::{'head title'}($Config->core['closed_title']).
+					h::body($Config->core['closed_text'])
+				);
+			} else {
+				_include_once(THEMES.'/'.$this->theme.'/index.php', false) || _include_once(THEMES.'/'.$this->theme.'/index.html');
 			}
+
 			$this->Html = ob_get_clean();
 		}
 	}
 	/**
- 	 * Processing of template, cubstituting of content, preparing for the output
+	 * Processing of template, cubstituting of content, preparing for the output
 	 */
 	protected function prepare () {
 		global $L, $Config;
 		/**
- 		 * Loading of template
+		 * Loading of template
 		 */
 		$this->get_template();
 		/**
- 		 * Loading of CSS and JavaScript
+		 * Loading of CSS and JavaScript
 		 */
 		$this->get_includes();
 		/**
- 		 * Getting user information
+		 * Getting user information
 		 */
 		$this->get_header_info();
 		/**
- 		 * Forming page title
+		 * Forming page title
 		 */
 		foreach ($this->Title as $i => $v) {
 			if (!trim($v)) {
@@ -218,11 +224,11 @@ class Page {
 			implode('', $this->core_js).
 			implode('', $this->js);
 		/**
- 		 * Getting footer information
+		 * Getting footer information
 		 */
 		$this->Footer .= $this->get_footer();
 		/**
- 		 * Substitution of information into template
+		 * Substitution of information into template
 		 */
 		$this->Html = str_replace(
 			[
@@ -381,7 +387,7 @@ class Page {
 		$this->Title[] = htmlentities($add, ENT_COMPAT, 'utf-8');
 	}
 	/**
- 	 * Getting of CSS and JavaScript includes
+	 * Getting of CSS and JavaScript includes
 	 */
 	protected function get_includes () {
 		global $Config;
@@ -389,11 +395,11 @@ class Page {
 			return;
 		}
 		/**
- 		 * If CSS and JavaScript compression enabled
+		 * If CSS and JavaScript compression enabled
 		 */
 		if ($Config->core['cache_compress_js_css']) {
 			/**
- 			 * Current cache checking
+			 * Current cache checking
 			 */
 			if (
 				!file_exists(PCACHE.'/'.$this->pcache_basename.'css') ||
@@ -404,7 +410,7 @@ class Page {
 			}
 			$key = file_get_contents(PCACHE.'/pcache_key');
 			/**
- 			 * Including of CSS
+			 * Including of CSS
 			 */
 			$css_list = get_list(PCACHE, '/^[^_](.*)\.css$/i', 'f', 'storage/pcache');
 			$css_list = array_merge(
@@ -579,14 +585,14 @@ class Page {
 		);
 	}
 	/**
- 	 * Getting of debug information
+	 * Getting of debug information
 	 */
 	protected function get_debug_info () {
 		global $Config, $L, $db;
 		$debug_tabs			= '';
 		$debug_tabs_content	= '';
 		/**
- 		 * Objects
+		 * Objects
 		 */
 		if ($Config->core['show_objects_data']) {
 			global $Core, $timeload, $loader_init_memory;
@@ -624,7 +630,7 @@ class Page {
 			unset($tmp);
 		}
 		/**
- 		 * DB queries
+		 * DB queries
 		 */
 		if ($Config->core['show_db_queries']) {
 			$debug_tabs[]		= [
@@ -670,7 +676,7 @@ class Page {
 		}
 		//TODO Storages information
 		/**
- 		 * Cookies
+		 * Cookies
 		 */
 		if ($Config->core['show_cookies']) {
 			$debug_tabs[]		= [
@@ -856,22 +862,22 @@ class Page {
 	 */
 	function __clone () {}
 	/**
- 	 * Page generation
+	 * Page generation
 	 */
 	function __finish () {
 		global $Config;
 		/**
- 		 * Cleaning of output
+		 * Cleaning of output
 		 */
 		if (OUT_CLEAN) {
 			ob_end_clean();
 		}
 		/**
- 		 * For AJAX and API requests only content without page template
+		 * For AJAX and API requests only content without page template
 		 */
 		if (!$this->interface) {
 			/**
- 			 * Processing of replacing in content
+			 * Processing of replacing in content
 			 */
 			echo $this->process_replacing($this->Content);
 		} else {
@@ -879,7 +885,7 @@ class Page {
 			$Core->run_trigger('System/Page/pre_display');
 			$Error->display();
 			/**
- 			 * Processing of template, cubstituting of content, preparing for the output
+			 * Processing of template, cubstituting of content, preparing for the output
 			 */
 			$this->prepare();
 			/**
@@ -887,7 +893,7 @@ class Page {
 			 */
 			$this->Html = $this->process_replacing($this->Html);
 			/**
- 			 * Detection of compression
+			 * Detection of compression
 			 */
 			$ob = false;
 			if (is_object($Config) && !zlib_compression() && $Config->core['gzip_compression'] && (is_object($Error) && !$Error->num())) {
@@ -896,7 +902,7 @@ class Page {
 			}
 			$timeload['end'] = microtime(true);
 			/**
- 			 * Getting of debug information
+			 * Getting of debug information
 			 */
 			if (
 				is_object($User) && (

@@ -53,7 +53,9 @@ $plugins_list = [h::{'th.ui-widget-header.ui-corner-all'}(
 )];
 foreach ($plugins as $plugin) {
 	$addition_state = $action = '';
-	//Information about plugin
+	/**
+	 * Information about plugin
+	 */
 	if (file_exists($file = PLUGINS.'/'.$plugin.'/readme.txt') || file_exists($file = PLUGINS.'/'.$plugin.'/readme.html')) {
 		if (substr($file, -3) == 'txt') {
 			$tag = 'pre';
@@ -70,15 +72,17 @@ foreach ($plugins as $plugin) {
 			]
 		).
 		h::{'icon.pointer'}(
-			'note',
+			'notice',
 			[
 				'data-title'	=> $L->information_about_plugin.h::br().$L->click_to_view_details,
-				'onClick'		=> '$(\'#'.$plugin.'_readme\').dialog(\'open\');'
+				'onClick'		=> "$('#".$plugin."_readme').dialog('open');"
 			]
 		);
 	}
 	unset($tag, $file);
-	//License
+	/**
+	 * License
+	 */
 	if (file_exists($file = PLUGINS.'/'.$plugin.'/license.txt') || file_exists($file = PLUGINS.'/'.$plugin.'/license.html')) {
 		if (substr($file, -3) == 'txt') {
 			$tag = 'pre';
@@ -95,10 +99,10 @@ foreach ($plugins as $plugin) {
 			]
 		).
 		h::{'icon.pointer'}(
-			'info',
+			'note',
 			[
 				'data-title'	=> $L->license.h::br().$L->click_to_view_details,
-				'onClick'		=> '$(\'#'.$plugin.'_license\').dialog(\'open\');'
+				'onClick'		=> "$('#".$plugin."_license').dialog('open');"
 			]
 		);
 	}
@@ -115,8 +119,29 @@ foreach ($plugins as $plugin) {
 			'href'		=> $a->action.($state ? '/disable/' : '/enable/').$plugin
 		]
 	);
+	$plugin_info	= false;
+	if (file_exists(PLUGINS.'/'.$plugin.'/meta.json')) {
+		$plugin_meta	= _json_decode(file_get_contents(PLUGINS.'/'.$plugin.'/meta.json'));
+		$plugin_info	= $L->plugin_info(
+			$plugin_meta['package'],
+			$plugin_meta['version'],
+			$plugin_meta['description'],
+			$plugin_meta['author'],
+			isset($plugin_meta['website']) ? $plugin_meta['website'] : $L->none,
+			$plugin_meta['license'],
+			isset($plugin_meta['provide']) ? implode(', ', $plugin_meta['provide']) : $L->none,
+			isset($plugin_meta['require']) ? implode(', ', $plugin_meta['require']) : $L->none,
+			isset($plugin_meta['conflict']) ? implode(', ', $plugin_meta['conflict']) : $L->none
+		);
+	}
+	unset($plugin_meta);
 	$plugins_list[]	= h::{'td.ui-widget-content.ui-corner-all'}(
-		$plugin,
+		[
+			$plugin,
+			[
+				'data-title'	=> $plugin_info
+			]
+		],
 		h::icon(
 			$state ? 'check' : 'minusthick',
 			[
@@ -126,6 +151,7 @@ foreach ($plugins as $plugin) {
 		$addition_state,
 		$action
 	);
+	unset($plugin_info);
 }
 unset($plugins, $plugin, $state, $addition_state, $action);
 $a->content(

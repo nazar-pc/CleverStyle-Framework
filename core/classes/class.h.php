@@ -555,24 +555,24 @@ class h {
 			$data		= [$data];
 		}
 		/**
- 		 * Analysis of called tag. If space found - nested tags presented
+		 * Analysis of called tag. If space found - nested tags presented
 		 */
 		if (strpos($input, ' ') !== false) {
 			$input		= explode(' ', $input, 2);
 			/**
- 			 * If array of attributes not found - create empty one.
+			 * If array of attributes not found - create empty one.
 			 */
 			if (!isset($data[1])) {
 				$data[1]	= [];
 			}
 			/**
- 			 * If tag name ends with pipe "|" symbol - for every element of array separate copy of current tag will be created
+			 * If tag name ends with pipe "|" symbol - for every element of array separate copy of current tag will be created
 			 */
 			if (strpos($input[0], '|') !== false) {
 				$input[0]	= substr($input[0], 0, -1);
 				$output		= [];
 				/**
- 				 * When parameters are not taken in braces - make this operation, if it is necessary
+				 * When parameters are not taken in braces - make this operation, if it is necessary
 				 */
 				if (
 					count($data) > 2 ||
@@ -738,7 +738,7 @@ class h {
 			$data[0]	=  '';
 		}
 		/**
- 		 * Second part of expression - fix for "select" and "datalist" tags bescause they accept array as values
+		 * Second part of expression - fix for "select" and "datalist" tags bescause they accept array as values
 		 */
 		if (
 			!is_array($data[0]) ||

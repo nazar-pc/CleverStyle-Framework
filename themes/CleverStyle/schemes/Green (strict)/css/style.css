@@ -10,19 +10,8 @@ td#main_content, #body > table {
 }
 a {
 	color: #000;
-	/*border-bottom: 1px dashed #000;*/
 }
 .cs-form-element, .cs-form-element:hover, .cs-form-element:focus {
 	background: #fff;
 	border-color: rgb(110, 188, 0);
-}
-.white, a:hover.white  {
-	border: none;
-	color: #fff;
-	text-decoration: none;
-}
-a.black, a:hover.black {
-	border: none;
-	color: #000;
-	text-decoration: none;
 }

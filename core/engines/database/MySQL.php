@@ -158,7 +158,7 @@ class MySQL extends _Abstract {
 		return mysql_get_server_info($this->id);
 	}
 	/**
- 	 * Disconnecting from DB
+	 * Disconnecting from DB
 	 */
 	function __destruct () {
 		if($this->connected && is_resource($this->id)) {

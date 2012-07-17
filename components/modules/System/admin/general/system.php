@@ -60,7 +60,7 @@ $Index->content(
 		] : false,
 		!$sa ? [
 			h::info('replace'),
-			h::{'table#system_config_replace.cs-full_width tr| td'}(
+			h::{'table#system_config_replace.cs-fullwidth-table tr| td'}(
 				[
 					h::info('replace_in'),
 					h::info('replace_out')

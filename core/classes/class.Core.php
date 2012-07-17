@@ -30,7 +30,7 @@ class Core {
 				$triggers_init		= false,
 				$triggers;
 	/**
- 	 * Loading of configuration, creating of missing directories
+	 * Loading of configuration, creating of missing directories
 	 */
 	function __construct() {
 		if ($this->init) {

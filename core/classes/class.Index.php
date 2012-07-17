@@ -1,7 +1,7 @@
 <?php
 namespace	cs;
 use			\Closure,
-\h;
+			\h;
 class Index {
 	public		$Content,
 
@@ -42,6 +42,20 @@ class Index {
 
 	function __construct () {
 		global $Config, $User, $Index;
+		/**
+		 * If site is closed, user is not admin, and it is not request for log in
+		 */
+		if (
+			!$Config->core['site_mode'] &&
+			!(
+				$User->is('admin') ||
+				(
+					API && $Config->routing['current'] === ['user', 'login']
+				)
+			)
+		) {
+			return;
+		}
 		$Index = $this;
 		$admin_path	= MODULES.'/'.MODULE.'/admin';
 		$api_path	= MODULES.'/'.MODULE.'/api';
@@ -82,7 +96,9 @@ class Index {
 			return;
 		}
 		unset($admin_path, $api_path);
-		//Plugins processing
+		/**
+		 * Plugins processing
+		 */
 		foreach ($Config->components['plugins'] as $plugin) {
 			_include_once(PLUGINS.'/'.$plugin.'/index.php', false);
 		}
@@ -156,8 +172,17 @@ class Index {
 					$Page->title($L->$rc[0]);
 				}
 			}
+			/**
+			 * Saving of changes
+			 */
 			if ($this->admin && !_include_once(MFOLDER.'/'.$rc[0].'/'.$this->savefile.'.php', false)) {
 				_include_once(MFOLDER.'/'.$this->savefile.'.php', false);
+			}
+			/**
+			 * Warning if site is closed
+			 */
+			if (!$Config->core['site_mode']) {
+				$Page->warning($Config->core['closed_title']);
 			}
 			_include_once(MFOLDER.'/'.$rc[0].'.php', false);
 			if ($this->stop) {
@@ -520,6 +545,21 @@ class Index {
 	 */
 	function __clone () {}
 	function __finish () {
+		global $Config, $User;
+		/**
+		 * If site is closed, user is not admin, and it is not request for log in
+		 */
+		if (
+			!$Config->core['site_mode'] &&
+			!(
+				$User->is('admin') ||
+				(
+					API && $Config->routing['current'] === ['user', 'login']
+				)
+			)
+		) {
+			return;
+		}
 		if (defined('ERROR_PAGE')) {
 			$this->form = false;
 			global $Page;

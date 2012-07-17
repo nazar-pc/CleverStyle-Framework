@@ -95,7 +95,7 @@ class Text {
 			$id = $database->id();
 			global $Config;
 			/**
- 			 * Clean up old texts
+			 * Clean up old texts
 			 */
 			if ($id && $id % $Config->core['inserts_limit'] == 0) {
 				$database->aq("DELETE FROM `[prefix]texts` WHERE `lang` = ''");

@@ -45,8 +45,8 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 			)) {
 				$a->cancel_button_back = true;
 				if ($Config->core['simple_admin_mode']) {
-					if (file_exists(MODULES.'/'.$rc[3].'/admin/db.json')) {
-						$db_json = _json_decode(file_get_contents(MODULES.'/'.$rc[3].'/admin/db.json'));
+					if (file_exists(MODULES.'/'.$rc[3].'/meta/db.json')) {
+						$db_json = _json_decode(file_get_contents(MODULES.'/'.$rc[3].'/meta/db.json'));
 						foreach ($db_json as $database) {
 							$a->content(
 								h::{'input[type=hidden]'}([
@@ -57,8 +57,8 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 						}
 						unset($db_json, $database);
 					}
-					if (file_exists(MODULES.'/'.$rc[3].'/admin/storage.json')) {
-						$storage_json = _json_decode(file_get_contents(MODULES.'/'.$rc[3].'/admin/storage.json'));
+					if (file_exists(MODULES.'/'.$rc[3].'/meta/storage.json')) {
+						$storage_json = _json_decode(file_get_contents(MODULES.'/'.$rc[3].'/meta/storage.json'));
 						foreach ($storage_json as $storage) {
 							$a->content(
 								h::{'input[type=hidden]'}([
@@ -141,7 +141,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					$a->apply_button		= false;
 					$a->cancel_button_back	= true;
 					module_db_settings:
-					if (file_exists(MODULES.'/'.$rc[3].'/admin/db.json')) {
+					if (file_exists(MODULES.'/'.$rc[3].'/meta/db.json')) {
 						$dbs					= [0 => $L->core_db];
 						foreach ($Config->db as $i => &$db_data) {
 							if ($i) {
@@ -153,7 +153,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 							h::info('db_purpose'),
 							h::info('system_db')
 						]);
-						$db_json = _json_decode(file_get_contents(MODULES.'/'.$rc[3].'/admin/db.json'));
+						$db_json = _json_decode(file_get_contents(MODULES.'/'.$rc[3].'/meta/db.json'));
 						foreach ($db_json as $database) {
 							$db_list[] = h::{'td.ui-widget-content.ui-corner-all'}([
 								$L->{$rc[3].'_db_'.$database},
@@ -206,7 +206,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					$a->apply_button		= false;
 					$a->cancel_button_back	= true;
 					module_storage_settings:
-					if (file_exists(MODULES.'/'.$rc[3].'/admin/storage.json')) {
+					if (file_exists(MODULES.'/'.$rc[3].'/meta/storage.json')) {
 						$storages				= [0 => $L->core_storage];
 						foreach ($Config->storage as $i => &$storage_data) {
 							if ($i) {
@@ -218,7 +218,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 							h::info('storage_purpose'),
 							h::info('system_storage')
 						]);
-						$storage_json = _json_decode(file_get_contents(MODULES.'/'.$rc[3].'/admin/storage.json'));
+						$storage_json = _json_decode(file_get_contents(MODULES.'/'.$rc[3].'/meta/storage.json'));
 						foreach ($storage_json as $storage) {
 							$storage_list[] = h::{'td.ui-widget-content.ui-corner-all'}([
 								$L->{$rc[3].'_storage_'.$storage},
@@ -302,7 +302,7 @@ if ($display_modules) {
 		 * If module if enabled or disabled
 		 */
 		$addition_state = $action = '';
-		if ($mdata['active'] == 1 || $mdata['active'] == 0) {
+		if ($mdata['active'] != -1) {
 			/**
 			 * Notice about API existence
 			 */
@@ -354,7 +354,7 @@ if ($display_modules) {
 					]
 				).
 				h::{'icon.pointer'}(
-					'note',
+					'notice',
 					[
 						'data-title'	=> $L->information_about_module.h::br().$L->click_to_view_details,
 						'onClick'		=> "$('#".$module."_readme').dialog('open');"
@@ -381,7 +381,7 @@ if ($display_modules) {
 					]
 				).
 				h::{'icon.pointer'}(
-					'info',
+					'note',
 					[
 						'data-title'	=> $L->license.h::br().$L->click_to_view_details,
 						'onClick'		=> "$('#".$module."_license').dialog('open');"
@@ -389,24 +389,6 @@ if ($display_modules) {
 				);
 			}
 			unset($tag, $file);
-			/**
-			 * Link to the module admin page
-			 */
-			if (
-				$mdata['active'] != -1 &&
-				$module != 'System' &&
-				(
-					file_exists(MODULES.'/'.$module.'/admin/index.php') || file_exists(MODULES.'/'.$module.'/admin/index.json')
-				)
-			) {
-				$action .= h::{'a.cs-button.cs-button-compact'}(
-					h::icon('home'),
-					[
-					'href'			=> '/admin/'.$module,
-					'data-title'	=> $L->module_admin_page
-					]
-				);
-			}
 			/**
 			 * Setting default module
 			 */
@@ -422,7 +404,7 @@ if ($display_modules) {
 			/**
 			 * DataBases settings
 			 */
-			if (!$Config->core['simple_admin_mode'] && file_exists(MODULES.'/'.$module.'/admin/db.json') && count($Config->db) > 1) {
+			if (!$Config->core['simple_admin_mode'] && file_exists(MODULES.'/'.$module.'/meta/db.json') && count($Config->db) > 1) {
 				$action .= h::{'a.cs-button.cs-button-compact'}(
 					h::icon('gear'),
 					[
@@ -434,7 +416,7 @@ if ($display_modules) {
 			/**
 			 * Storages settings
 			 */
-			if (!$Config->core['simple_admin_mode'] && file_exists(MODULES.'/'.$module.'/admin/storage.json') && count($Config->storage) > 1) {
+			if (!$Config->core['simple_admin_mode'] && file_exists(MODULES.'/'.$module.'/meta/storage.json') && count($Config->storage) > 1) {
 				$action .= h::{'a.cs-button.cs-button-compact'}(
 					h::icon('disk'),
 					[
@@ -443,19 +425,16 @@ if ($display_modules) {
 					]
 				);
 			}
-			if (mb_strtolower($module) != 'system') {
-				if (
-					is_dir(MODULES.'/'.$module.'/admin') &&
-					(
-						file_exists(MODULES.'/'.$module.'/admin/index.php') ||
-						file_exists(MODULES.'/'.$module.'/admin/index.json')
-					)
-				) {
+			if ($module != 'System') {
+				/**
+				 * Link to the module admin page
+				 */
+				if (file_exists(MODULES.'/'.$module.'/admin/index.php') || file_exists(MODULES.'/'.$module.'/admin/index.json')) {
 					$action .= h::{'a.cs-button.cs-button-compact'}(
 						h::icon('wrench'),
 						[
 							'href'			=> 'admin/'.$module,
-							'data-title'	=> $L->settings
+							'data-title'	=> $L->module_admin_page
 						]
 					);
 				}
@@ -488,8 +467,30 @@ if ($display_modules) {
 				]
 			);
 		}
+		$module_info	= false;
+		if (file_exists(MODULES.'/'.$module.'/meta.json')) {
+			$module_meta	= _json_decode(file_get_contents(MODULES.'/'.$module.'/meta.json'));
+			$module_info	= $L->module_info(
+				$module_meta['package'],
+				$module_meta['version'],
+				$module_meta['description'],
+				$module_meta['author'],
+				isset($module_meta['website']) ? $module_meta['website'] : $L->none,
+				$module_meta['license'],
+				isset($module_meta['db_support']) ? implode(', ', $module_meta['db_support']) : $L->none,
+				isset($module_meta['provide']) ? implode(', ', $module_meta['provide']) : $L->none,
+				isset($module_meta['require']) ? implode(', ', $module_meta['require']) : $L->none,
+				isset($module_meta['conflict']) ? implode(', ', $module_meta['conflict']) : $L->none
+			);
+		}
+		unset($module_meta);
 		$modules_list[]	= h::{'td.ui-widget-content.ui-corner-all'}(
-			$module,
+			[
+				$module,
+				[
+					'data-title'	=> $module_info
+				]
+			],
 			h::icon(
 				$mdata['active'] == 1 ? (
 					$module == $Config->core['default_module'] ? 'home' : 'check'
@@ -500,7 +501,7 @@ if ($display_modules) {
 					'data-title'	=> $mdata['active'] == 1 ? (
 						$module == $Config->core['default_module'] ? $L->default_module : $L->enabled
 					) : (
-						$mdata['active'] == 2 ? $L->disabled : $L->uninstalled.' ('.$L->not_installed.')'
+						$mdata['active'] == 0 ? $L->disabled : $L->uninstalled.' ('.$L->not_installed.')'
 					)
 				]
 			).
@@ -512,6 +513,7 @@ if ($display_modules) {
 				]
 			]
 		);
+		unset($module_info);
 	}
 	$a->content(
 		h::{'table.cs-fullwidth-table.cs-center-all tr'}($modules_list).

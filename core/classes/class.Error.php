@@ -84,7 +84,7 @@ class Error {
         return $this->num;
     }
 	/**
- 	 * Displaying errors
+	 * Displaying errors
 	 */
 	function display () {
 		global $User;
@@ -114,7 +114,7 @@ class Error {
 	 */
 	function __clone () {}
 	/**
- 	 * Writing occured errors to the log file
+	 * Writing occured errors to the log file
 	 */
 	function __finish () {
 		if (!empty($this->errors_list_all)) {

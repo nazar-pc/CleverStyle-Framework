@@ -69,6 +69,9 @@ if (isset($_POST['update_modules_list'])) {
 	$module_data = &$Config->components['modules'][$_POST['module']];
 	switch ($_POST['mode']) {
 		case 'install':
+			if ($module_data['active'] != -1) {
+				break;
+			}
 			if ($Core->run_trigger(
 				'admin/System/components/modules/install/process',
 				[
@@ -78,6 +81,17 @@ if (isset($_POST['update_modules_list'])) {
 				$module_data['active'] = 0;
 				if (isset($_POST['db']) && is_array($_POST['db'])) {
 					$module_data['db'] = $_POST['db'];
+					if (file_exists(MODULES.'/'.$_POST['module'].'/meta/install')) {
+						global $db;
+						foreach ($module_data['db'] as $db_name => $db_id) {
+							if (file_exists(MODULES.'/'.$_POST['module'].'/meta/install/'.$Config->db[$db_id]['type'].'/'.$db_name.'.sql')) {
+								$db->$db_id()->q(
+									file(MODULES.'/'.$_POST['module'].'/meta/install/'.$Config->db[$db_id]['type'].'/'.$db_name.'.sql')
+								);
+							}
+						}
+						unset($db_name, $db_id);
+					}
 				}
 				if (isset($_POST['storage']) && is_array($_POST['storage'])) {
 					$module_data['storage'] = $_POST['storage'];
@@ -126,12 +140,26 @@ if (isset($_POST['update_modules_list'])) {
 			}
 		break;
 		case 'uninstall':
+			if ($module_data['active'] != -1 || $_POST['module'] == 'System' || $_POST['module'] == $Config->core['default_module']) {
+				break;
+			}
 			if ($Core->run_trigger(
 				'admin/System/components/modules/uninstall/process',
 				[
 					'name' => $_POST['module']
 				]
 			)) {
+				if (file_exists(MODULES.'/'.$_POST['module'].'/meta/uninstall')) {
+					global $db;
+					foreach ($module_data['db'] as $db_name => $db_id) {
+						if (file_exists(MODULES.'/'.$_POST['module'].'/meta/uninstall/'.$Config->db[$db_id]['type'].'/'.$db_name.'.sql')) {
+							$db->$db_id()->q(
+								file(MODULES.'/'.$_POST['module'].'/meta/uninstall/'.$Config->db[$db_id]['type'].'/'.$db_name.'.sql')
+							);
+						}
+					}
+					unset($db_name, $db_id);
+				}
 				$module_data = ['active' => -1];
 				$permissions_ids = array_merge(
 					$User->get_permission(null, $_POST['module']),
@@ -147,16 +175,17 @@ if (isset($_POST['update_modules_list'])) {
 			}
 		break;
 		case 'default_module':
-			if ($module_data['active'] == 1 && $_POST['module'] != 'System' && $_POST['module'] != $Config->core['default_module']) {
-				if ($Core->run_trigger(
-					'admin/System/components/modules/default_module/process',
-					[
-						'name' => $_POST['module']
-					]
-				)) {
-					$Config->core['default_module'] = $_POST['module'];
-					$a->save('core');
-				}
+			if ($module_data['active'] != 1 || $_POST['module'] == 'System' || $_POST['module'] == $Config->core['default_module']) {
+				break;
+			}
+			if ($Core->run_trigger(
+				'admin/System/components/modules/default_module/process',
+				[
+					'name' => $_POST['module']
+				]
+			)) {
+				$Config->core['default_module'] = $_POST['module'];
+				$a->save('core');
 			}
 		break;
 		case 'db':

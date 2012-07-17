@@ -20,7 +20,7 @@ class MySQLi extends _Abstract {
 	function __construct ($database, $user = '', $password = '', $host = 'localhost', $charset = 'utf8') {
 		$this->connecting_time	= microtime(true);
 		/**
- 		 * Parsing of $host variable, detecting port and persistent connection
+		 * Parsing of $host variable, detecting port and persistent connection
 		 */
 		$host					= explode(':', $host);
 		$port					= ini_get("mysqli.default_port");
@@ -41,7 +41,7 @@ class MySQLi extends _Abstract {
 		if(is_object($this->instance)) {
 			$this->database = $database;
 			/**
- 			 * Changing DB charset
+			 * Changing DB charset
 			 */
 			if ($charset && $charset != $this->instance->get_charset()->charset) {
 				$this->instance->set_charset($charset);
