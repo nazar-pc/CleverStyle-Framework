@@ -1,51 +1,80 @@
 <?php
-/**
- * Provides next triggers:<br>
- *  admin/System/components/plugins/enable<br>
- *  ['name'	=> <i>plugin_name</i>]<br>
- *  admin/System/components/plugins/disable<br>
- *  ['name'	=> <i>plugin_name</i>]
- */
 global $Config, $Index, $L, $Core;
-$a			= $Index;
-$rc			= $Config->routing['current'];
-$a->form	= false;
-$plugins	= get_list(PLUGINS, false, 'd');
+$a				= $Index;
+$rc				= $Config->routing['current'];
+$plugins		= get_list(PLUGINS, false, 'd');
+$show_plugins	= true;
+$a->buttons		= false;
 if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
+	global $Page;
 	switch ($rc[2]) {
 		case 'enable':
 			if (!in_array($rc[3], $Config->components['plugins']) && in_array($rc[3], $plugins)) {
-				$Config->components['plugins'][] = $rc[3];
-				$a->save('components');
-				$Core->run_trigger(
-					'admin/System/components/plugins/enable',
-					[
-						'name' => $rc[3]
-					]
+				$Page->title($L->enabling_of_plugin($rc[3]));
+				$a->content(
+					h::{'p.ui-priority-primary.cs-state-messages'}(
+						$L->enabling_of_plugin($rc[3])
+					)
+				);
+				$show_plugins			= false;
+				$check_dependencies		= check_dependencies($rc[3], 'plugin');
+				if (!$check_dependencies && $Config->core['simple_admin_mode']) {
+					break;
+				}
+				$a->cancel_button_back	= true;
+				$a->content(
+					h::{'button[type=submit]'}(
+						$L->{$check_dependencies ? 'enable' : 'force_enable_not_recommended'}
+					).
+					h::{'input[type=hidden]'}([
+						'name'	=> 'mode',
+						'value'	=> $rc[2]
+					]).
+					h::{'input[type=hidden]'}([
+						'name'	=> 'plugin',
+						'value'	=> $rc[3]
+					])
+
 				);
 			}
 		break;
 		case 'disable':
 			if (in_array($rc[3], $Config->components['plugins'])) {
-				foreach ($Config->components['plugins'] as $i => $plugin) {
-					if ($plugin == $rc[3] || !in_array($rc[3], $plugins)) {
-						unset($Config->components['plugins'][$i], $i, $plugin);
-						break;
-					}
+				$Page->title($L->disabling_of_plugin($rc[3]));
+				$a->content(
+					h::{'p.ui-priority-primary.cs-state-messages'}(
+						$L->disabling_of_plugin($rc[3])
+					)
+				);
+				$show_plugins			= false;
+				$check_dependencies		= check_backward_dependencies($rc[3], 'plugin');
+				if (!$check_dependencies && $Config->core['simple_admin_mode']) {
+					break;
 				}
-				unset($i, $plugin);
-				$a->save('components');
-				$Core->run_trigger(
-					'admin/System/components/plugins/disable',
-					[
-						'name' => $rc[3]
-					]
+				$a->cancel_button_back	= true;
+				$a->content(
+					h::{'button[type=submit]'}(
+						$L->{$check_dependencies ? 'disable' : 'force_disable_not_recommended'}
+					).
+					h::{'input[type=hidden]'}([
+						'name'	=> 'mode',
+						'value'	=> $rc[2]
+					]).
+					h::{'input[type=hidden]'}([
+						'name'	=> 'plugin',
+						'value'	=> $rc[3]
+					])
+
 				);
 			}
 		break;
 	}
 }
 unset($rc);
+if (!$show_plugins) {
+	return;
+}
+$a->form		= false;
 $plugins_list = [h::{'th.ui-widget-header.ui-corner-all'}(
 	$L->plugin_name,
 	$L->state,

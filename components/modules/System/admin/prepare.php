@@ -59,6 +59,26 @@ function system_select_core ($items_array, $item, $id = null, $info_item = null,
 		)
 	];
 }
+/**
+ * Function for normalization of dependence structure
+ *
+ * @param array|string	$dependence_structure
+ *
+ * @return array
+ */
+function dep_normal ($dependence_structure) {
+	$return	= [];
+	foreach ($dependence_structure as $d) {
+		if (!is_array($d)) {
+			$d	= preg_match('/^([^<=>!]+)([<=>!]*)(.*)$/', $d);
+		}
+		$return[$d[0]]	= [
+			isset($d[1]) ? $d[1] : 0,
+			isset($d[2]) ? $d[2] : (isset($d[1]) ? '=' : '=>')
+		];
+	}
+	return $return;
+}
 function check_dependencies ($name, $type = 'module') {
 	switch ($type) {
 		case 'module':
@@ -99,40 +119,19 @@ function check_dependencies ($name, $type = 'module') {
 	if (isset($meta['provide'])) {
 		$provide	= (array)$meta['provide'];
 	}
-	/**
-	 * Function for normalization of dependence structure
-	 *
-	 * @param array	$dependence_structure
-	 */
-	$dep_normal = function ($dependence_structure) {
-		$return	= [];
-		foreach ($dependence_structure as $d) {//TODO reexp package name and version in require and conflict "somename=>1.0.5"
-			if (is_array($d)) {
-				$return[$d[0]]	= [
-					isset($d[1]) ? $d[1] : 0,
-					isset($d[2]) ? $d[2] : (isset($d[1]) ? '=' : '=>')
-				];
-			} else {
-				$return[$d]	= [
-					0,
-					'=>'
-				];
-			}
-		}
-	};
 	if (isset($meta['require']) && !empty($meta['require'])) {
-		$require	= $dep_normal((array)$meta['require']);
+		$require	= dep_normal((array)$meta['require']);
 	}
 	if (isset($meta['conflict']) && !empty($meta['conflict'])) {
-		$conflict	= $dep_normal((array)$meta['conflict']);
+		$conflict	= dep_normal((array)$meta['conflict']);
 	}
-	unset($meta, $dep_normal);
+	unset($meta);
 	/**
 	 * Checking for compatibility with modules
 	 */
-	foreach ($Config->components['modules'] as $module) {
+	foreach ($Config->components['modules'] as $module => $module_data) {
 		if (
-			$module['active'] == -1 ||
+			$module_data['active'] == -1 ||
 			(
 				$module == $name && $type == 'module'
 			) ||
@@ -221,13 +220,12 @@ function check_dependencies ($name, $type = 'module') {
 			}
 		}
 	}
-	unset($module, $module_meta);
+	unset($module, $module_data, $module_meta);
 	/**
 	 * Checking for compatibility with plugins
 	 */
 	foreach ($Config->components['plugins'] as $plugin) {
 		if (
-			$plugin['active'] == 0 ||
 			(
 				$plugin == $name && $type == 'plugin'
 			) ||
@@ -316,7 +314,7 @@ function check_dependencies ($name, $type = 'module') {
 			}
 		}
 	}
-	unset($plugin, $plugin_meta);
+	unset($plugin, $plugin_meta, $provide, $conflict);
 	/**
 	 * If some required packages missing
 	 */
@@ -331,6 +329,81 @@ function check_dependencies ($name, $type = 'module') {
 					$package.' '.$details[1].' '.$details[0]
 				)
 			);
+		}
+	}
+	return $return;
+}
+function check_backward_dependencies ($name, $type = 'module') {
+	switch ($type) {
+		case 'module':
+			$dir	= MODULES.'/'.$name;
+			break;
+		case 'plugin':
+			$dir	= PLUGINS.'/'.$name;
+			break;
+		default:
+			return false;
+	}
+	if (!file_exists($dir.'/meta.json')) {
+		return true;
+	}
+	$meta		= _json_decode(file_get_contents($dir.'/meta.json'));
+	$meta		= [
+		'package'	=> $meta['package'],
+		'version'	=> $meta['version']
+	];
+	$return		= true;
+	/**
+	 * Checking for backward dependencies of modules
+	 */
+	global $Config, $Page, $L;
+	foreach ($Config->components['modules'] as $module => $module_data) {
+		if (
+			$module_data['active'] == -1 ||
+			(
+				$module == $name && $type == 'module'
+			) ||
+			!file_exists(MODULES.'/'.$module.'/meta.json')
+		) {
+			continue;
+		}
+		$module_require	= _json_decode(file_get_contents(MODULES.'/'.$module.'/meta.json'));
+		if (!isset($module_require['require'])) {
+			continue;
+		}
+		$module_require	= dep_normal($module_require['require']);
+		if (isset($module_require[$meta['package']])) {
+			if ($return) {
+				$Page->warning($L->dependencies_not_satisfied);
+			}
+			$return	= false;
+			$Page->warning($L->this_package_is_used_by_module($module));
+		}
+	}
+	unset($module, $module_data, $module_require);
+	/**
+	 * Checking for backward dependencies of plugins
+	 */
+	foreach ($Config->components['plugins'] as $plugin) {
+		if (
+			(
+				$plugin == $name && $type == 'plugin'
+			) ||
+			!file_exists(PLUGINS.'/'.$plugin.'/meta.json')
+		) {
+			continue;
+		}
+		$plugin_require	= _json_decode(file_get_contents(PLUGINS.'/'.$plugin.'/meta.json'));
+		if (!isset($plugin_require['require'])) {
+			continue;
+		}
+		$plugin_require	= dep_normal($plugin_require['require']);
+		if (isset($plugin_require[$meta['package']])) {
+			if ($return) {
+				$Page->warning($L->dependencies_not_satisfied);
+			}
+			$return	= false;
+			$Page->warning($L->this_package_is_used_by_plugin($plugin));
 		}
 	}
 	return $return;

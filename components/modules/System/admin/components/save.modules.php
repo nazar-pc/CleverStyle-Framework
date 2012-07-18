@@ -19,7 +19,6 @@
 global $Config, $Index, $User, $Core;
 $a			= $Index;
 $rc			= $Config->routing['current'];
-$update		= false;
 if (isset($_POST['update_modules_list'])) {
 	/**
 	 * List of currently presented modules in file system
@@ -46,8 +45,8 @@ if (isset($_POST['update_modules_list'])) {
 			if (!isset($modules_list[$module])) {
 				$permissions_ids = array_merge(
 					$permissions_ids,
-					$User->get_permission(null, $module),
-					$User->get_permission(null, $module.'/admin')
+					(array)$User->get_permission(null, $module),
+					(array)$User->get_permission(null, $module.'/admin')
 				);
 			}
 		}
