@@ -4,11 +4,11 @@ class Storage {
 	public		$time					= 0;
 	protected	$connections			= [],
 				$successful_connections	= [],
-				$false_connections		= [];
+				$failed_connections		= [];
 
 	/**
 	 * @param	bool|null|string $status	<b>null</b>		- returns array of connections with objects<br>
-	 * 										<b>true|1</b>	- returns array of names of succesfull connections<br>
+	 * 										<b>true|1</b>	- returns array of names of successful connections<br>
 	 * 										<b>false|0</b>	- returns array of names of failed connections<br>
 	 * @return	array|null
 	 */
@@ -16,7 +16,7 @@ class Storage {
 		if ($status === null) {
 			return $this->connections;
 		} elseif ($status == 0) {
-			return $this->false_connections;
+			return $this->failed_connections;
 		} elseif ($status == 1) {
 			return $this->successful_connections;
 		}
@@ -44,7 +44,7 @@ class Storage {
 	//Обработка всех подключений к хранилищам
 	protected function connecting ($connection) {
 		//Если соединение есть в списке неудачных - выходим
-		if (isset($this->false_connections[$connection])) {
+		if (isset($this->failed_connections[$connection])) {
 			return false;
 		}
 		//Если подключение существует - возвращаем ссылку на подключение
@@ -81,11 +81,11 @@ class Storage {
 		} else {
 			unset($this->$connection);
 			//Добавляем подключение в список неудачных
-			$this->false_connections[$connection] = $connection.'/'.$storage['host'].'/'.$storage['connection'];
+			$this->failed_connections[$connection] = $connection.'/'.$storage['host'].'/'.$storage['connection'];
 			unset($storage);
 			//Выводим ошибку подключения к хранилищу
 			global $L;
-			trigger_error($L->error_storage.' '.$this->false_connections[$connection], E_USER_WARNING);
+			trigger_error($L->error_storage.' '.$this->failed_connections[$connection], E_USER_WARNING);
 			return false;
 		}
 	}
@@ -120,8 +120,6 @@ class Storage {
 	}
 	/**
 	 * Cloning restriction
-	 *
-	 * @final
 	 */
 	function __clone () {}
 }

@@ -67,7 +67,7 @@ class Language {
 		global $Cache;
 		if (($aliases = $Cache->{'languages/aliases'}) === false) {
 			$aliases		= [];
-			$aliases_list	= _strtolower(get_list(LANGUAGES.'/aliases'));
+			$aliases_list	= _strtolower(get_files_list(LANGUAGES.'/aliases'));
 			foreach ($aliases_list as $alias) {
 				$aliases[$alias] = file_get_contents(LANGUAGES.'/aliases/'.$alias);
 			}
@@ -310,8 +310,6 @@ class Language {
 	}
 	/**
 	 * Cloning restriction
-	 *
-	 * @final
 	 */
 	function __clone () {}
 }

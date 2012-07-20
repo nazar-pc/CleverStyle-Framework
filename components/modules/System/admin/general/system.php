@@ -1,4 +1,6 @@
 <?php
+namespace	cs\modules\System;
+use			\h;
 global $L, $Config, $Index;
 $sa	= $Config->core['simple_admin_mode'];
 $Index->content(
@@ -8,6 +10,8 @@ $Index->content(
 		system_textarea_core('closed_text', false, 'EDITORH'),
 		system_input_core('title_delimiter'),
 		system_input_core('title_reverse', 'radio'),
+		system_textarea_core('footer_text', false, 'EDITORH'),
+		system_input_core('show_footer_info', 'radio'),
 		system_input_core('show_tooltips', 'radio'),
 		system_input_core('simple_admin_mode', 'radio'),
 		!$sa ? [

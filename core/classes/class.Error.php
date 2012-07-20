@@ -5,6 +5,9 @@ class Error {
 	protected	$num					= 0,	//Number of occured errors
 				$errors_list_all		= [],	//Array of all errors
 				$errors_list_display	= [];	//Array of non-critical errors to show to user
+	/**
+	 * Setting error handler
+	 */
 	function __construct () {
 		global $Error;
 		$Error = $this;
@@ -109,8 +112,6 @@ class Error {
 	}
 	/**
 	 * Cloning restriction
-	 *
-	 * @final
 	 */
 	function __clone () {}
 	/**

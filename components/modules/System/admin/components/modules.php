@@ -22,7 +22,9 @@
  *  admin/System/components/modules/disable<br>
  *  ['name'	=> <i>module_name</i>]
  */
-global $Config, $Index, $L, $db, $Core;
+namespace	cs\modules\System;
+use			\h;
+global $Config, $Index, $L, $Core;
 $a					= $Index;
 $rc					= $Config->routing['current'];
 $a->buttons			= false;
@@ -310,8 +312,6 @@ unset($rc);
 if (!$show_modules) {
 	return;
 }
-global $User;
-$db_users_items = $User->get_users_columns();
 $modules_list = [h::{'th.ui-widget-header.ui-corner-all'}(
 	$L->module_name,
 	$L->state,

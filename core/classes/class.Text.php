@@ -164,8 +164,6 @@ class Text {
 	}
 	/**
 	 * Cloning restriction
-	 *
-	 * @final
 	 */
 	function __clone () {}
 }

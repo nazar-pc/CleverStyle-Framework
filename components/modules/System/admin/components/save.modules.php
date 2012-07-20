@@ -24,7 +24,7 @@ if (isset($_POST['update_modules_list'])) {
 	 * List of currently presented modules in file system
 	 */
 	$modules_list	= array_fill_keys(
-		$new_modules = get_list(MODULES, false, 'd'),
+		$new_modules = get_files_list(MODULES, false, 'd'),
 		[
 			'active'	=> -1,
 			'db'		=> [],

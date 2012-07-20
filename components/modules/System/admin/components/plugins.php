@@ -1,8 +1,10 @@
 <?php
-global $Config, $Index, $L, $Core;
+namespace	cs\modules\System;
+use			\h;
+global $Config, $Index, $L;
 $a				= $Index;
 $rc				= $Config->routing['current'];
-$plugins		= get_list(PLUGINS, false, 'd');
+$plugins		= get_files_list(PLUGINS, false, 'd');
 $show_plugins	= true;
 $a->buttons		= false;
 if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {

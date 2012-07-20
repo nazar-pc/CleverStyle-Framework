@@ -83,8 +83,6 @@ class Key {
 	}
 	/**
 	 * Cloning restriction
-	 *
-	 * @final
 	 */
 	function __clone () {}
 }

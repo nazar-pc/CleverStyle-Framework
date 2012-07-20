@@ -1,10 +1,10 @@
 <?php
-namespace cs\database;
-class MySQL extends _Abstract {
+namespace cs\DB;
+class MySQLi extends _Abstract {
 	/**
-	 * @var resource MySQL link identifier
+	 * @var \MySQLi Instance of DB connection
 	 */
-	protected	$id;
+	protected	$instance;
 
 	/**
 	 * Connecting to DB
@@ -15,21 +15,36 @@ class MySQL extends _Abstract {
 	 * @param string	$host
 	 * @param string	$charset
 	 *
-	 * @return bool|MySQL
+	 * @return bool|MySQLi
 	 */
 	function __construct ($database, $user = '', $password = '', $host = 'localhost', $charset = 'utf8') {
-		$this->connecting_time = microtime(true);
-		$this->id = mysql_connect($host, $user, $password);
-		if(is_resource($this->id)) {
-			if(!mysql_select_db($database, $this->id)) {
-				return false;
+		$this->connecting_time	= microtime(true);
+		/**
+		 * Parsing of $host variable, detecting port and persistent connection
+		 */
+		$host					= explode(':', $host);
+		$port					= ini_get("mysqli.default_port");
+		if (count($host) == 1) {
+			$host	= $host[0];
+		} elseif (count($host) == 2) {
+			if ($host[0] == 'p') {
+				$host	= $host[0].':'.$host[1];
+			} else {
+				$port	= $host[1];
+				$host	= $host[0];
 			}
+		} elseif (count($host) == 3) {
+			$port	= $host[2];
+			$host	= $host[0].':'.$host[1];
+		}
+		$this->instance = new \MySQLi($host, $user, $password, $database, $port);
+		if(is_object($this->instance)) {
 			$this->database = $database;
 			/**
 			 * Changing DB charset
 			 */
-			if ($charset && $charset != mysql_client_encoding($this->id)) {
-				mysql_set_charset($charset, $this->id);
+			if ($charset && $charset != $this->instance->get_charset()->charset) {
+				$this->instance->set_charset($charset);
 			}
 			$this->connected = true;
 		} else {
@@ -38,9 +53,10 @@ class MySQL extends _Abstract {
 		$this->connecting_time	= microtime(true) - $this->connecting_time;
 		global $db;
 		$db->time				+= $this->connecting_time;
-		$this->db_type			= 'mysql';
+		$this->db_type			= 'MySQLi';
 		return $this;
 	}
+
 	/**
 	 * SQL request into DB
 	 *
@@ -51,21 +67,25 @@ class MySQL extends _Abstract {
 	 * @return bool|object|resource
 	 */
 	protected function q_internal ($query) {
-		return @mysql_query($query, $this->id);
+		if ($this->async && defined('MYSQLI_ASYNC')) {
+			return @$this->instance->query($query, MYSQLI_ASYNC);
+		} else {
+			return @$this->instance->query($query);
+		}
 	}
 	/**
 	 * Getting number of selected rows
 	 *
-	 * @param bool|resource $query_result
+	 * @param bool|object $query_result
 	 *
-	 * @return bool|int
+	 * @return int|bool
 	 */
 	function n ($query_result = false) {
 		if($query_result === false) {
 			$query_result = $this->queries['result'][count($this->queries['result'])-1];
 		}
-		if(is_resource($query_result)) {
-			return mysql_num_rows($query_result);
+		if(is_object($query_result)) {
+			return $query_result->num_rows;
 		} else {
 			return (bool)$query_result;
 		}
@@ -73,7 +93,7 @@ class MySQL extends _Abstract {
 	/**
 	 * Fetch a result row as an associative array
 	 *
-	 * @param bool|resource $query_result
+	 * @param bool|object $query_result
 	 * @param bool|string   $one_column
 	 * @param bool $array
 	 *
@@ -83,23 +103,23 @@ class MySQL extends _Abstract {
 		if ($query_result === false) {
 			$query_result = $this->queries['result'][count($this->queries['result'])-1];
 		}
-		if (is_resource($query_result)) {
+		if (is_object($query_result)) {
 			if ($array) {
 				$result = [];
 				if ($one_column === false) {
-					while ($current = mysql_fetch_assoc($query_result)) {
+					while ($current = $query_result->fetch_assoc()) {
 						$result[] = $current;
 					}
 				} else {
 					$one_column = (string)$one_column;
-					while ($current = mysql_fetch_assoc($query_result)) {
+					while ($current = $query_result->fetch_assoc()) {
 						$result[] = $current[$one_column];
 					}
 				}
 				$this->free($query_result);
 				return $result;
 			} else {
-				$result	= mysql_fetch_assoc($query_result);
+				$result	= $query_result->fetch_assoc();
 				if ($one_column && is_array($result)) {
 					return $result[$one_column];
 				}
@@ -115,12 +135,12 @@ class MySQL extends _Abstract {
 	 * @return int
 	 */
 	function id () {
-		return mysql_insert_id($this->id);
+		return $this->instance->insert_id;
 	}
 	/**
 	 * Free result memory
 	 *
-	 * @param bool|resource $query_result
+	 * @param bool|object $query_result
 	 *
 	 * @return bool
 	 */
@@ -128,13 +148,12 @@ class MySQL extends _Abstract {
 		if($query_result === false) {
 			$query_result = $this->queries['result'][count($this->queries['result'])-1];
 		}
-		if(is_resource($query_result)) {
-			return mysql_free_result($query_result);
+		if(is_object($query_result)) {
+			return $query_result->free();
 		} else {
 			return (bool)$query_result;
 		}
 	}
-
 	/**
 	 * Preparing string for using in SQL query
 	 * SQL Injection Protection
@@ -144,8 +163,8 @@ class MySQL extends _Abstract {
 	 *
 	 * @return string
 	 */
-	protected function s_internal ($string, $single_quotes_around = true) {
-		$return	= mysql_real_escape_string($string, $this->id);
+	protected function s_internal ($string, $single_quotes_around) {
+		$return	= $this->instance->real_escape_string($string);
 		return $single_quotes_around ? "'$return'" : $return;
 		//return 'unhex(\''.bin2hex((string)$string).'\')';
 	}
@@ -155,22 +174,24 @@ class MySQL extends _Abstract {
 	 * @return string
 	 */
 	function server () {
-		return mysql_get_server_info($this->id);
+		return $this->instance->server_info;
 	}
 	/**
 	 * Disconnecting from DB
 	 */
 	function __destruct () {
-		if($this->connected && is_resource($this->id)) {
+		if($this->connected && is_object($this->instance)) {
 			if (is_array($this->queries['result'])) {
-				foreach ($this->queries['result'] as &$resource) {
-					if (is_resource($resource)) {
-						mysql_free_result($resource);
-						$resource = false;
+				errors_off();
+				foreach ($this->queries['result'] as $mysqli_result) {
+					if (is_object($mysqli_result)) {
+						$mysqli_result->free();
+						$mysqli_result = null;
 					}
 				}
+				errors_on();
 			}
-			mysql_close($this->id);
+			$this->instance->close();
 			$this->connected = false;
 		}
 	}

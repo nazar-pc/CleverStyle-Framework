@@ -1,5 +1,5 @@
 <?php
-namespace cs\cache;
+namespace cs\Cache;
 /**
  * Provides cache functionality based on file system structure.
  * Require base configuration option $Core->config('cache_size') with maximum allowed cache size in MB, 0 means without limitation (is not recomended)
@@ -13,9 +13,11 @@ class FileSystem extends _Abstract {
 		$this->cache_size = $Core->config('cache_size')*1048576;
 	}
 	/**
-	 * @param string $item
+	 * Get item from cache
 	 *
-	 * @return bool|mixed
+	 * @param string		$item	May contain "/" symbols for cache structure, for example users/<i>user_id</i>
+	 *
+	 * @return bool|mixed			Returns item on success of <b>false</b> on failure
 	 */
 	function get ($item) {
 		if (is_file(CACHE.'/'.$item) && is_readable(CACHE.'/'.$item) && $cache = file_get_contents(CACHE.'/'.$item, FILE_BINARY)) {
@@ -29,8 +31,10 @@ class FileSystem extends _Abstract {
 		return false;
 	}
 	/**
-	 * @param string $item
-	 * @param mixed  $data
+	 * Put or change data of cache item
+	 *
+	 * @param string	$item	May contain "/" symbols for cache structure, for example users/<i>user_id</i>
+	 * @param mixed		$data
 	 *
 	 * @return bool
 	 */
@@ -74,7 +78,7 @@ class FileSystem extends _Abstract {
 				unset($size);
 				$this->size += $dsize;
 				if ($this->size > $this->cache_size) {
-					$cache_list = get_list(CACHE, false, 'f', true, true, 'date|desc');
+					$cache_list = get_files_list(CACHE, false, 'f', true, true, 'date|desc');
 					foreach ($cache_list as $file) {
 						$this->size -= filesize($file);
 						unlink($file);
@@ -105,31 +109,16 @@ class FileSystem extends _Abstract {
 		}
 	}
 	/**
-	 * @param string $item
+	 * Delete item from cache
+	 *
+	 * @param string	$item	May contain "/" symbols for cache structure, for example users/<i>user_id</i>
 	 *
 	 * @return bool
 	 */
 	function del ($item) {
-		return $this->del_internal($item);
-	}
-	/**
-	 * @param string     $item
-	 * @param bool       $process_mirrors
-	 *
-	 * @return bool
-	 */
-	protected function del_internal ($item, $process_mirrors = true) {
-		if (empty($item) || $item == '/') {
-			return false;
-		}
-		global $User;
-		if ($process_mirrors && is_object($User) && !$User->is('system')) {
-			global $Core;
-			$Core->api_request('System/admin/cache/del', ['item' => $item]);
-		}
 		if (is_writable(CACHE.'/'.$item)) {
 			if (is_dir(CACHE.'/'.$item)) {
-				$files = get_list(CACHE.'/'.$item, false, 'fd');
+				$files = get_files_list(CACHE.'/'.$item, false, 'fd');
 				foreach ($files as $file) {
 					$this->del($item.'/'.$file, false);
 				}
@@ -162,11 +151,13 @@ class FileSystem extends _Abstract {
 		return true;
 	}
 	/**
+	 * Clean cache by deleting all items
+	 *
 	 * @return bool
 	 */
 	function clean () {
 		$ok = true;
-		$list = get_list(CACHE, false, 'fd', true, true, 'name|desc');
+		$list = get_files_list(CACHE, false, 'fd', true, true, 'name|desc');
 		foreach ($list as $item) {
 			if (is_writable($item)) {
 				is_dir($item) ? @rmdir($item) : @unlink($item);

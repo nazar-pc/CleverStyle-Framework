@@ -67,7 +67,7 @@ if (isset($rc[2])) {
 					),
 					h::{'td.ui-widget-content.ui-corner-all.cs-add-block'}(
 						h::{'select.cs-form-element'}(
-							array_merge(['html', 'raw_html'], _mb_substr(get_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4)),
+							array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4)),
 							[
 								'name'		=> 'block[type]',
 								'size'		=> 5,
@@ -83,7 +83,7 @@ if (isset($rc[2])) {
 							'in'		=> [$L->yes, $L->no]
 						]),
 						h::{'select.cs-form-element'}(
-							_mb_substr(get_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6),
+							_mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6),
 							[
 								'name'		=> 'block[template]',
 								'size'		=> 5
@@ -174,7 +174,7 @@ if (isset($rc[2])) {
 						]),
 						h::{'select.cs-form-element'}(
 							[
-								'in'		=> _mb_substr(get_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6)
+								'in'		=> _mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6)
 							],
 							[
 								'name'		=> 'block[template]',

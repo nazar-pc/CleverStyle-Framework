@@ -1,11 +1,11 @@
 <?php
 /**
- * Class for HTML code generating in accordance with the standards of HTML5, and with useful syntax extensions for simpler usage
+ * Class for HTML code rendering in accordance with the standards of HTML5, and with useful syntax extensions for simpler usage
  *
  * If constant "XHTML_TAGS_STYLE" is true - tags will be generated according to rules of xhtml
  */
 class h {
-	protected static	$unit_atributes = [	//Unit attributes, that have no value
+	protected static	$unit_atributes = [	//Unit attributes, that have no value, or have the same value as name in xhtml style
 			'async',
 			'defer',
 			'formnovalidate',
@@ -34,8 +34,8 @@ class h {
 	 *
 	 * @static
 	 *
-	 * @param     $in
-	 * @param int $level
+	 * @param string	$in
+	 * @param int		$level
 	 *
 	 * @return mixed
 	 */
@@ -46,11 +46,15 @@ class h {
 		return preg_replace('/^(.*)$/m', str_repeat("\t", $level).'$1', $in);
 	}
 	/**
+	 * Preparing data for processing in tags wrappers: tags, input string data detecting, unit attributes processing
+	 *
 	 * @static
-	 * @param array $data
-	 * @param string $in
-	 * @param string $tag
-	 * @param string $add
+	 *
+	 * @param array		$data
+	 * @param string	$in
+	 * @param string	$tag
+	 * @param string	$add
+	 *
 	 * @return bool
 	 */
 	protected static function data_prepare (&$data, &$in, &$tag, &$add) {
@@ -78,6 +82,9 @@ class h {
 			$add = ' '.$data['add'];
 			unset($data['add']);
 		}
+		/**
+		 * If quotes symbol specified - use it
+		 */
 		if (isset($data['quote'])) {
 			$q = $data['quote'];
 			unset($data['quote']);
@@ -105,8 +112,9 @@ class h {
 	 * Adds, if necessary, slash or domain at the beginning of the url, provides correct relative url
 	 *
 	 * @static
-	 * @param string $url
-	 * @param bool $absolute	Returns absolute url or relative
+	 * @param string	$url
+	 * @param bool		$absolute	Returns absolute url or relative
+	 *
 	 * @return string
 	 */
 	static function url ($url, $absolute = false) {
@@ -119,14 +127,14 @@ class h {
 		}
 		return $url;
 	}
-
 	/**
 	 * Wrapper for paired tags rendering
+	 *
 	 * @static
 	 *
-	 * @param string $in
-	 * @param array  $data
-	 * @param string $tag
+	 * @param string		$in
+	 * @param array			$data
+	 * @param string		$tag
 	 *
 	 * @return bool|string
 	 */
@@ -157,18 +165,18 @@ class h {
 				($level ? "\n" : '').
 				self::level(
 					$in ?
-						$in.($level ? "\n" : '') : 
+						$in.($level ? "\n" : '') :
 						($in === false ? '' : ($level ? "&nbsp;\n" : '')),
 				$level).
 				'</'.$tag.'>'.
 				($level ? "\n" : '');
 	}
-	//
 	/**
 	 * Wrapper for unpaired tags rendering
+	 *
 	 * @static
 	 *
-	 * @param array $data
+	 * @param array			$data
 	 *
 	 * @return bool|string
 	 */
@@ -185,6 +193,16 @@ class h {
 		$return = '<'.$tag.$add.(XHTML_TAGS_STYLE ? ' /' : '').'>'.$in."\n";
 		return isset($data_title) ? self::label($return, ['data-title' => $data_title]) : $return;
 	}
+	/**
+	 * Rendering of form tag, if form method is post - special session key in hidden input is added for security
+	 *
+	 * @static
+	 *
+	 * @param array|string	$in
+	 * @param array			$data
+	 *
+	 * @return bool|string
+	 */
 	static function form ($in = '', $data = []) {
 		if ($in === false) {
 			return '';
@@ -192,7 +210,7 @@ class h {
 			return self::__callStatic(__FUNCTION__, [$in, $data]);
 		}
 		global $User;
-		if (is_object($User)) {
+		if (isset($data['method']) && strtolower($data['method']) == 'post' && is_object($User)) {
 			$in .= self::input([
 				'type'	=> 'hidden',
 				'name'	=> $User->get_session(),
@@ -201,6 +219,17 @@ class h {
 		}
 		return self::wrap($in, $data, __FUNCTION__);
 	}
+	/**
+	 * Rendering of input tag with automatic adding labels for type=radio if necessary and autocorrection if min and/or max attributes are specified
+	 * and value is out of this scope
+	 *
+	 * @static
+	 *
+	 * @param array|string	$in
+	 * @param array			$data
+	 *
+	 * @return string
+	 */
 	static function input ($in = [], $data = []) {
 		if ($in === false) {
 			return '';
@@ -304,11 +333,11 @@ class h {
 	 *
 	 * @static
 	 *
-	 * @param	array|string $in
-	 * @param	array        $data
-	 * @param	string       $function
+	 * @param array|string	$in
+	 * @param array			$data
+	 * @param string			$function
 	 *
-	 * @return	bool|string
+	 * @return bool|string
 	 */
 	protected static function template_1 ($in = '', $data = [], $function) {
 		if ($in === false) {
@@ -383,9 +412,31 @@ class h {
 		unset($option);
 		return self::wrap(implode('', $options), $data, $function);
 	}
+	/**
+	 * Rendering of select tag with autosubstitution of selected attribute when value of option is equal to $data['selected'], $data['selected'] may be
+	 * array as well as string
+	 *
+	 * @static
+	 *
+	 * @param array|string	$in
+	 * @param array			$data
+	 *
+	 * @return bool|string
+	 */
 	static function select ($in = '', $data = []) {
 		return self::template_1($in, $data, __FUNCTION__);
 	}
+	/**
+	 * Rendering of datalist tag with autosubstitution of selected attribute when value of option is equal to $data['selected'], $data['selected'] may be
+	 * array as well as string
+	 *
+	 * @static
+	 *
+	 * @param array|string	$in
+	 * @param array			$data
+	 *
+	 * @return bool|string
+	 */
 	static function datalist ($in = '', $data = []) {
 		return self::template_1($in, $data, __FUNCTION__);
 	}
@@ -418,15 +469,55 @@ class h {
 		$data['level'] = false;
 		return self::wrap($in, $data, $function);
 	}
+	/**
+	 * Rendering of textarea tag with supporting multiline input data in the form of array
+	 *
+	 * @static
+	 *
+	 * @param array|string	$in
+	 * @param array			$data
+	 *
+	 * @return bool|string
+	 */
 	static function textarea ($in = '', $data = []) {
 		return self::template_2($in, $data, __FUNCTION__);
 	}
+	/**
+	 * Rendering of pre tag with supporting multiline input data in the form of array
+	 *
+	 * @static
+	 *
+	 * @param array|string	$in
+	 * @param array			$data
+	 *
+	 * @return bool|string
+	 */
 	static function pre ($in = '', $data = []) {
 		return self::template_2($in, $data, __FUNCTION__);
 	}
+	/**
+	 * Rendering of code tag with supporting multiline input data in the form of array
+	 *
+	 * @static
+	 *
+	 * @param array|string	$in
+	 * @param array			$data
+	 *
+	 * @return bool|string
+	 */
 	static function code ($in = '', $data = []) {
 		return self::template_2($in, $data, __FUNCTION__);
 	}
+	/**
+	 * Rendering of button tag, if button type is not specified - it will be button type
+	 *
+	 * @static
+	 *
+	 * @param array|string	$in
+	 * @param array			$data
+	 *
+	 * @return bool|string
+	 */
 	static function button ($in = '', $data = []) {
 		if ($in === false) {
 			return '';
@@ -444,6 +535,16 @@ class h {
 		}
 		return self::wrap($in, $data, __FUNCTION__);
 	}
+	/**
+	 * Rendering of style tag, if style type is not specified - it will be text/css type, that is used almost always
+	 *
+	 * @static
+	 *
+	 * @param array|string	$in
+	 * @param array			$data
+	 *
+	 * @return bool|string
+	 */
 	static function style ($in = '', $data = []) {
 		if ($in === false) {
 			return '';
@@ -461,6 +562,15 @@ class h {
 		}
 		return self::wrap($in, $data, __FUNCTION__);
 	}
+	/**
+	 * Rendering of br tag, very simple, only one parameter exists - number of br tags to be rendered, default is 1
+	 *
+	 * @static
+	 *
+	 * @param int $repeat
+	 *
+	 * @return bool|string
+	 */
 	static function br ($repeat = 1) {
 		if ($repeat === false) {
 			return false;
@@ -469,12 +579,13 @@ class h {
 		return str_repeat(self::u_wrap($in), $repeat);
 	}
 	/**
-	 * Pseudo tag for labels with tooltips
+	 * Pseudo tag for labels with tooltips, specified <i>input</i> is translation item of <b>$L</b> object,
+	 * <i>input</i>_into item of <b>$L</b> is content of tooltip
 	 *
 	 * @static
 	 *
-	 * @param string $in
-	 * @param array  $data
+	 * @param array|string	$in
+	 * @param array			$data
 	 *
 	 * @return mixed
 	 */
@@ -496,8 +607,8 @@ class h {
 	 *
 	 * @static
 	 *
-	 * @param       $class
-	 * @param array $data
+	 * @param string	$class	Icon name in jQuery UI CSS Framework, fow example, <b>gear</b>, <b>note</b>
+	 * @param array		$data
 	 *
 	 * @return mixed
 	 */
@@ -517,14 +628,14 @@ class h {
 		}
 		return self::span($data);
 	}
-
 	/**
-	 * Marging of arrays, but joining all 'class' items
+	 * Merging of arrays, but joining all 'class' items, supports 2-3 arrays for input
+	 *
 	 * @static
 	 *
-	 * @param array    $array1
-	 * @param array    $array2
-	 * @param array    $array3
+	 * @param array		$array1
+	 * @param array		$array2
+	 * @param array		$array3
 	 *
 	 * @return array
 	 */
@@ -540,10 +651,12 @@ class h {
 		return array_merge($array1, $array2, $array3);
 	}
 	/**
+	 * Processing of complicated rendering structures
+	 *
 	 * @static
 	 *
-	 * @param string	$input
-	 * @param mixed		$data
+	 * @param string			$input
+	 * @param array|bool|string	$data
 	 *
 	 * @return string
 	 */

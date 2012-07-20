@@ -25,8 +25,6 @@ abstract class _Abstract {
 	}
 	/**
 	 * Cloning restriction
-	 *
-	 * @final
 	 */
 	final function __clone () {}
 }

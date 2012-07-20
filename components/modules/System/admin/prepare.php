@@ -1,4 +1,6 @@
 <?php
+namespace	cs\modules\System;
+use			\h;
 function system_input_core ($item, $type = 'text', $info_item = null, $disabled = false, $min = false, $max = false, $post_text = '') {
 	global $Config;
 	if ($type != 'radio') {

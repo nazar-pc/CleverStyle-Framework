@@ -81,7 +81,7 @@ if (isset($rc[2])) {
 						]),
 						h::{'select.cs-form-element'}(
 							[
-								'in'		=> _mb_substr(get_list(ENGINES.'/database', '/^[^_].*?\.php$/i', 'f'), 0, -4)
+								'in'		=> _mb_substr(get_files_list(ENGINES.'/database', '/^[^_].*?\.php$/i', 'f'), 0, -4)
 							],
 							[
 								'name'		=> 'db[type]',

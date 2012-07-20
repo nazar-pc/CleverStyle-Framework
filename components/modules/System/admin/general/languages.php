@@ -1,7 +1,9 @@
 <?php
+namespace	cs\modules\System;
+use			\h;
 global $Config, $Index, $L, $Core;
 $Config->reload_languages();
-$translate_engines			= _mb_substr(get_list(ENGINES.'/translate', '/^[^_].*?\.php$/i', 'f'), 0, -4);
+$translate_engines			= _mb_substr(get_files_list(ENGINES.'/translate', '/^[^_].*?\.php$/i', 'f'), 0, -4);
 $translate_engines_settings	= [];
 $current_engine_settings	= '';
 foreach ($translate_engines as $engine) {

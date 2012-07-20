@@ -287,7 +287,7 @@ function change_password (current_password, new_password) {
 			data: data,
 			success: function(result) {
 				if (result == 'OK') {
-					alert(password_changed_succesfully);
+					alert(password_changed_successfully);
 				} else {
 					alert(result);
 				}

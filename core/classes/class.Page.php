@@ -304,7 +304,7 @@ class Page {
 	}
 	/**
 	 * Including of JavaScript
-	 * 
+	 *
 	 * @param string|string[]	$add	Path to including file, or code
 	 * @param string			$mode	Can be <b>file</b> or <b>code</b>
 	 */
@@ -380,7 +380,7 @@ class Page {
 	}
 	/**
 	 * Adding text to the title page
-	 * 
+	 *
 	 * @param string	$add
 	 */
 	function title ($add) {
@@ -412,7 +412,7 @@ class Page {
 			/**
 			 * Including of CSS
 			 */
-			$css_list = get_list(PCACHE, '/^[^_](.*)\.css$/i', 'f', 'storage/pcache');
+			$css_list = get_files_list(PCACHE, '/^[^_](.*)\.css$/i', 'f', 'storage/pcache');
 			$css_list = array_merge(
 				['storage/pcache/'.$this->pcache_basename.'css'],
 				$css_list
@@ -425,7 +425,7 @@ class Page {
 			/**
 			 * Including of JavaScript
 			 */
-			$js_list = get_list(PCACHE, '/^[^_](.*)\.js$/i', 'f', 'storage/pcache');
+			$js_list = get_files_list(PCACHE, '/^[^_](.*)\.js$/i', 'f', 'storage/pcache');
 			$js_list = array_merge(
 				['storage/pcache/'.$this->pcache_basename.'js'],
 				$js_list
@@ -461,14 +461,14 @@ class Page {
 		$scheme_pfolder	= $theme_pfolder.'/schemes/'.$this->color_scheme;
 		$this->includes = array(
 			'css' => array_merge(
-				(array)get_list(CSS,					'/(.*)\.css$/i',	'f', $for_cache ? true : 'includes/css',			true, false, '!include'),
-				(array)get_list($theme_folder.'/css',	'/(.*)\.css$/i',	'f', $for_cache ? true : $theme_pfolder.'/css',		true, false, '!include'),
-				(array)get_list($scheme_folder.'/css',	'/(.*)\.css$/i',	'f', $for_cache ? true : $scheme_pfolder.'/css',	true, false, '!include')
+				(array)get_files_list(CSS,					'/(.*)\.css$/i',	'f', $for_cache ? true : 'includes/css',			true, false, '!include'),
+				(array)get_files_list($theme_folder.'/css',	'/(.*)\.css$/i',	'f', $for_cache ? true : $theme_pfolder.'/css',		true, false, '!include'),
+				(array)get_files_list($scheme_folder.'/css',	'/(.*)\.css$/i',	'f', $for_cache ? true : $scheme_pfolder.'/css',	true, false, '!include')
 			),
 			'js' => array_merge(
-				(array)get_list(JS,						'/(.*)\.js$/i',		'f', $for_cache ? true : 'includes/js',				true, false, '!include'),
-				(array)get_list($theme_folder.'/js',	'/(.*)\.js$/i',		'f', $for_cache ? true : $theme_pfolder.'/js',		true, false, '!include'),
-				(array)get_list($scheme_folder.'/js',	'/(.*)\.js$/i',		'f', $for_cache ? true : $scheme_pfolder.'/js',		true, false, '!include')
+				(array)get_files_list(JS,						'/(.*)\.js$/i',		'f', $for_cache ? true : 'includes/js',				true, false, '!include'),
+				(array)get_files_list($theme_folder.'/js',	'/(.*)\.js$/i',		'f', $for_cache ? true : $theme_pfolder.'/js',		true, false, '!include'),
+				(array)get_files_list($scheme_folder.'/js',	'/(.*)\.js$/i',		'f', $for_cache ? true : $scheme_pfolder.'/js',		true, false, '!include')
 			)
 		);
 		unset($theme_folder, $scheme_folder, $theme_pfolder, $scheme_pfolder);
@@ -576,12 +576,15 @@ class Page {
 	 * @return string
 	 */
 	protected function get_footer () {
-		global $L, $db;
+		global $L, $db, $Config;
 		return h::div(
-			$L->page_footer_info('<!--generate time-->', $db->queries, format_time(round($db->time, 5)), '<!--peak memory usage-->')
-		).
-		h::{'div#copyright'}(
-			base64_decode('wqkgUG93ZXJlZCBieSA8YSB0YXJnZXQ9Il9ibGFuayIgaHJlZj0iaHR0cDovL2NsZXZlcnN0eWxlLm9yZy9jbXMiIHRpdGxlPSJDbGV2ZXJTdHlsZSBDTVMiPkNsZXZlclN0eWxlIENNUzwvYT4=')
+			$Config->core['footer_text'] ?: false,
+			$Config->core['show_footer_info'] ?
+				$L->page_footer_info('<!--generate time-->', $db->queries, format_time(round($db->time, 5)), '<!--peak memory usage-->') : false,
+			base64_decode(
+				'wqkgUG93ZXJlZCBieSA8YSB0YXJnZXQ9Il9ibGFuayIgaHJlZj0iaHR0cDovL2NsZXZlcnN0eW'
+				.'xlLm9yZy9jbXMiIHRpdGxlPSJDbGV2ZXJTdHlsZSBDTVMiPkNsZXZlclN0eWxlIENNUzwvYT4='
+			)
 		);
 	}
 	/**
@@ -665,7 +668,7 @@ class Page {
 			$debug_tabs_content	.= h::{'div#debug_db_queries_tab'}(
 				h::p(
 					$L->debug_db_total($db->queries, format_time(round($db->time, 5))),
-					$L->false_connections.': '.h::b(implode(', ', $db->get_connections_list(false)) ?: $L->no),
+					$L->failed_connections.': '.h::b(implode(', ', $db->get_connections_list(false)) ?: $L->no),
 					$L->successful_connections.': '.h::b(implode(', ', $db->get_connections_list(true)) ?: $L->no),
 					$L->mirrors_connections.': '.h::b(implode(', ', $db->get_connections_list('mirror')) ?: $L->no),
 					$L->active_connections.': '.(count($db->get_connections_list()) ? '' : h::b($L->no))
@@ -805,7 +808,7 @@ class Page {
 				).
 				h::{'select#register_list'}(
 					[
-						 'in'			=> array_merge([''], (array)_mb_substr(get_list(MODULES.'/System/registration', '/^.*?\.php$/i', 'f'), 0, -4))
+						 'in'			=> array_merge([''], (array)_mb_substr(get_files_list(MODULES.'/System/registration', '/^.*?\.php$/i', 'f'), 0, -4))
 					]
 				).
 				h::{'button#register_process.cs-button-compact[tabindex=2]'}(h::icon('pencil').$L->register).
@@ -830,7 +833,7 @@ class Page {
 					'placeholder'	=> $L->login_or_email_or
 				]).
 				h::{'select#login_list'}([
-					'in'			=> array_merge([''], (array)_mb_substr(get_list(MODULES.'/System/registration', '/^.*?\.php$/i', 'f'), 0, -4))
+					'in'			=> array_merge([''], (array)_mb_substr(get_files_list(MODULES.'/System/registration', '/^.*?\.php$/i', 'f'), 0, -4))
 				]).
 				h::{'input#user_password[type=password][tabindex=2]'}([
 					'placeholder'	=> $L->password
@@ -857,8 +860,6 @@ class Page {
 	}
 	/**
 	 * Cloning restriction
-	 *
-	 * @final
 	 */
 	function __clone () {}
 	/**

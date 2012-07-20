@@ -1,10 +1,10 @@
 <?php
-namespace cs\database;
-class MySQLi extends _Abstract {
+namespace cs\DB;
+class MySQL extends _Abstract {
 	/**
-	 * @var \MySQLi Instance of DB connection
+	 * @var resource MySQL link identifier
 	 */
-	protected	$instance;
+	protected	$id;
 
 	/**
 	 * Connecting to DB
@@ -15,36 +15,21 @@ class MySQLi extends _Abstract {
 	 * @param string	$host
 	 * @param string	$charset
 	 *
-	 * @return bool|MySQLi
+	 * @return bool|MySQL
 	 */
 	function __construct ($database, $user = '', $password = '', $host = 'localhost', $charset = 'utf8') {
-		$this->connecting_time	= microtime(true);
-		/**
-		 * Parsing of $host variable, detecting port and persistent connection
-		 */
-		$host					= explode(':', $host);
-		$port					= ini_get("mysqli.default_port");
-		if (count($host) == 1) {
-			$host	= $host[0];
-		} elseif (count($host) == 2) {
-			if ($host[0] == 'p') {
-				$host	= $host[0].':'.$host[1];
-			} else {
-				$port	= $host[1];
-				$host	= $host[0];
+		$this->connecting_time = microtime(true);
+		$this->id = mysql_connect($host, $user, $password);
+		if(is_resource($this->id)) {
+			if(!mysql_select_db($database, $this->id)) {
+				return false;
 			}
-		} elseif (count($host) == 3) {
-			$port	= $host[2];
-			$host	= $host[0].':'.$host[1];
-		}
-		$this->instance = new \MySQLi($host, $user, $password, $database, $port);
-		if(is_object($this->instance)) {
 			$this->database = $database;
 			/**
 			 * Changing DB charset
 			 */
-			if ($charset && $charset != $this->instance->get_charset()->charset) {
-				$this->instance->set_charset($charset);
+			if ($charset && $charset != mysql_client_encoding($this->id)) {
+				mysql_set_charset($charset, $this->id);
 			}
 			$this->connected = true;
 		} else {
@@ -53,10 +38,9 @@ class MySQLi extends _Abstract {
 		$this->connecting_time	= microtime(true) - $this->connecting_time;
 		global $db;
 		$db->time				+= $this->connecting_time;
-		$this->db_type			= 'MySQLi';
+		$this->db_type			= 'mysql';
 		return $this;
 	}
-
 	/**
 	 * SQL request into DB
 	 *
@@ -67,33 +51,29 @@ class MySQLi extends _Abstract {
 	 * @return bool|object|resource
 	 */
 	protected function q_internal ($query) {
-		if ($this->async && defined('MYSQLI_ASYNC')) {
-			return @$this->instance->query($query, MYSQLI_ASYNC);
-		} else {
-			return @$this->instance->query($query);
-		}
+		return @mysql_query($query, $this->id);
 	}
 	/**
 	 * Getting number of selected rows
 	 *
-	 * @param bool|object $query_result
+	 * @param bool|resource $query_result
 	 *
-	 * @return int|bool
+	 * @return bool|int
 	 */
 	function n ($query_result = false) {
 		if($query_result === false) {
 			$query_result = $this->queries['result'][count($this->queries['result'])-1];
 		}
-		if(is_object($query_result)) {
-			return $query_result->num_rows;
+		if(is_resource($query_result)) {
+			return mysql_num_rows($query_result);
 		} else {
 			return (bool)$query_result;
 		}
 	}
 	/**
 	 * Fetch a result row as an associative array
-	 * 
-	 * @param bool|object $query_result
+	 *
+	 * @param bool|resource $query_result
 	 * @param bool|string   $one_column
 	 * @param bool $array
 	 *
@@ -103,23 +83,23 @@ class MySQLi extends _Abstract {
 		if ($query_result === false) {
 			$query_result = $this->queries['result'][count($this->queries['result'])-1];
 		}
-		if (is_object($query_result)) {
+		if (is_resource($query_result)) {
 			if ($array) {
 				$result = [];
 				if ($one_column === false) {
-					while ($current = $query_result->fetch_assoc()) {
+					while ($current = mysql_fetch_assoc($query_result)) {
 						$result[] = $current;
 					}
 				} else {
 					$one_column = (string)$one_column;
-					while ($current = $query_result->fetch_assoc()) {
+					while ($current = mysql_fetch_assoc($query_result)) {
 						$result[] = $current[$one_column];
 					}
 				}
 				$this->free($query_result);
 				return $result;
 			} else {
-				$result	= $query_result->fetch_assoc();
+				$result	= mysql_fetch_assoc($query_result);
 				if ($one_column && is_array($result)) {
 					return $result[$one_column];
 				}
@@ -135,12 +115,12 @@ class MySQLi extends _Abstract {
 	 * @return int
 	 */
 	function id () {
-		return $this->instance->insert_id;
+		return mysql_insert_id($this->id);
 	}
 	/**
 	 * Free result memory
 	 *
-	 * @param bool|object $query_result
+	 * @param bool|resource $query_result
 	 *
 	 * @return bool
 	 */
@@ -148,8 +128,8 @@ class MySQLi extends _Abstract {
 		if($query_result === false) {
 			$query_result = $this->queries['result'][count($this->queries['result'])-1];
 		}
-		if(is_object($query_result)) {
-			return $query_result->free();
+		if(is_resource($query_result)) {
+			return mysql_free_result($query_result);
 		} else {
 			return (bool)$query_result;
 		}
@@ -163,8 +143,8 @@ class MySQLi extends _Abstract {
 	 *
 	 * @return string
 	 */
-	protected function s_internal ($string, $single_quotes_around = true) {
-		$return	= $this->instance->real_escape_string($string);
+	protected function s_internal ($string, $single_quotes_around) {
+		$return	= mysql_real_escape_string($string, $this->id);
 		return $single_quotes_around ? "'$return'" : $return;
 		//return 'unhex(\''.bin2hex((string)$string).'\')';
 	}
@@ -174,24 +154,22 @@ class MySQLi extends _Abstract {
 	 * @return string
 	 */
 	function server () {
-		return $this->instance->server_info;
+		return mysql_get_server_info($this->id);
 	}
 	/**
 	 * Disconnecting from DB
 	 */
 	function __destruct () {
-		if($this->connected && is_object($this->instance)) {
+		if($this->connected && is_resource($this->id)) {
 			if (is_array($this->queries['result'])) {
-				errors_off();
-				foreach ($this->queries['result'] as $mysqli_result) {
-					if (is_object($mysqli_result)) {
-						$mysqli_result->free();
-						$mysqli_result = null;
+				foreach ($this->queries['result'] as &$resource) {
+					if (is_resource($resource)) {
+						mysql_free_result($resource);
+						$resource = false;
 					}
 				}
-				errors_on();
 			}
-			$this->instance->close();
+			mysql_close($this->id);
 			$this->connected = false;
 		}
 	}

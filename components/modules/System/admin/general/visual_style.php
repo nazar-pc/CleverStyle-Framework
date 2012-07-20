@@ -1,5 +1,7 @@
 <?php
-global $Config, $Index, $L;
+namespace	cs\modules\System;
+use			\h;
+global $Config, $Index;
 $Config->reload_themes();
 $Index->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(

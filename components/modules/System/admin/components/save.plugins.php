@@ -8,7 +8,7 @@
  */
 global $Config, $Index, $Core;
 $rc			= $Config->routing['current'];
-$plugins	= get_list(PLUGINS, false, 'd');
+$plugins	= get_files_list(PLUGINS, false, 'd');
 if (isset($_POST['mode'], $_POST['plugin'])) {
 	switch ($_POST['mode']) {
 		case 'enable':

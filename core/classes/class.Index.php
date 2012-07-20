@@ -394,7 +394,7 @@ class Index {
 							'please_type_current_password = "'.$L->please_type_current_password.'",'.
 							'please_type_new_password = "'.$L->please_type_new_password.'",'.
 							'current_new_password_equal = "'.$L->current_new_password_equal.'",'.
-							'password_changed_succesfully = "'.$L->password_changed_succesfully.'",'.
+							'password_changed_successfully = "'.$L->password_changed_successfully.'",'.
 							'password_changing_error_connection = "'.$L->password_changing_error_connection.'",'
 						: ''
 					).
@@ -540,8 +540,6 @@ class Index {
 	}
 	/**
 	 * Cloning restriction
-	 *
-	 * @final
 	 */
 	function __clone () {}
 	function __finish () {

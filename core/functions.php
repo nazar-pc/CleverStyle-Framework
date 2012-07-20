@@ -147,7 +147,7 @@ function interface_off () {
  *
  * @return	array|bool
  */
-function get_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subfolders = false, $sort = false, $exclusion = false) {
+function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subfolders = false, $sort = false, $exclusion = false) {
 	if ($mode == 'df') {
 		$mode = 'fd';
 	}
@@ -207,7 +207,7 @@ function get_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subf
 		if ($subfolders && is_dir($dir.$file)) {
 			$list = array_merge(
 				$list,
-				get_list(
+				get_files_list(
 					$dir.$file,
 					$mask,
 					$mode,
@@ -280,7 +280,7 @@ function source_by_url ($url) {
  */
 function clean_pcache () {
 	$ok = true;
-	$list = get_list(PCACHE, false, 'fd', true, true, 'name|desc');
+	$list = get_files_list(PCACHE, false, 'fd', true, true, 'name|desc');
 	foreach ($list as $item) {
 		if (is_writable($item)) {
 			is_dir($item) ? @rmdir($item) : @unlink($item);

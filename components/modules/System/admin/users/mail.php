@@ -1,4 +1,6 @@
 <?php
+namespace	cs\modules\System;
+use			\h;
 global $Config, $Index, $L;
 $Index->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}([

@@ -1,5 +1,7 @@
 <?php
-global $Config, $Index, $L;
+namespace	cs\modules\System;
+use			\h;
+global $Config, $Index;
 $timezones	= get_timezones_list();
 $sa			= $Config->core['simple_admin_mode'];
 $Index->content(

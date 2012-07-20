@@ -46,7 +46,9 @@ class Config {
 					'can_be_admin'		=> true					//Alows to check ability to be admin user (can be limited by IP)
 				],
 				$init = false;
-
+	/**
+	 * Loading of configuration, initialization of $Config, $Cache, $L and Page objects, Routing processing
+	 */
 	function __construct () {
 		global $Cache, $Config;
 		$Config = $this;
@@ -113,6 +115,13 @@ class Config {
 		 */
 		date_default_timezone_set($this->core['timezone']);
 	}
+	/**
+	 * Check user's IP address matches with elements of given list
+	 *
+	 * @param string[]	$ips
+	 *
+	 * @return bool
+	 */
 	protected function check_ip ($ips) {
 		if (is_array($ips) && !empty($ips)) {
 			$REMOTE_ADDR			= $_SERVER['REMOTE_ADDR'];
@@ -324,11 +333,11 @@ class Config {
 	 * Updating information about set of available themes
 	 */
 	function reload_themes () {
-		$this->core['themes'] = get_list(THEMES, false, 'd');
+		$this->core['themes'] = get_files_list(THEMES, false, 'd');
 		asort($this->core['themes']);
 		foreach ($this->core['themes'] as $theme) {
 			$this->core['color_schemes'][$theme] = [];
-			$this->core['color_schemes'][$theme] = get_list(THEMES.'/'.$theme.'/schemes', false, 'd');
+			$this->core['color_schemes'][$theme] = get_files_list(THEMES.'/'.$theme.'/schemes', false, 'd');
 			asort($this->core['color_schemes'][$theme]);
 		}
 	}
@@ -338,8 +347,8 @@ class Config {
 	function reload_languages () {
 		$this->core['languages'] = array_unique(
 			array_merge(
-				_mb_substr(get_list(LANGUAGES, '/^lang\..*?\.php$/i', 'f'), 5, -4) ?: [],
-				_mb_substr(get_list(LANGUAGES, '/^lang\..*?\.json$/i', 'f'), 5, -5) ?: []
+				_mb_substr(get_files_list(LANGUAGES, '/^lang\..*?\.php$/i', 'f'), 5, -4) ?: [],
+				_mb_substr(get_files_list(LANGUAGES, '/^lang\..*?\.json$/i', 'f'), 5, -5) ?: []
 			)
 		);
 		asort($this->core['languages']);
@@ -385,6 +394,9 @@ class Config {
 	function apply () {
 		return $this->apply_internal();
 	}
+	/**
+	 * Applying settings without saving changes into db
+	 */
 	protected function apply_internal ($cache_not_saved_mark = true) {
 		global $Error, $Cache;
 		/**
@@ -449,6 +461,13 @@ class Config {
 		$this->load();
 		$this->apply_internal(false);
 	}
+	/**
+	 * Returns specified item with allowed access level (read only or read/write)
+	 *
+	 * @param string		$item
+	 *
+	 * @return array|bool
+	 */
 	function &__get ($item) {
 		if (isset($this->data[$item])) {
 			global $User;
@@ -478,6 +497,14 @@ class Config {
 		}
 		return false;
 	}
+	/**
+	 * Sets value of specified item if it is allowed
+	 *
+	 * @param string		$item
+	 * @param array|bool	$data
+	 *
+	 * @return array|bool
+	 */
 	function __set ($item, $data) {
 		global $User;
 		$debug_backtrace = debug_backtrace()[1];
@@ -502,7 +529,7 @@ class Config {
 		return $this->data[$item] = $data;
 	}
 	/**
-	 * Get module db and storage configuration
+	 * Get object for getting db and storage configuration of module
 	 *
 	 * @param string $module_name
 	 *
@@ -513,14 +540,20 @@ class Config {
 	}
 	/**
 	 * Cloning restriction
-	 *
-	 * @final
 	 */
 	function __clone () {}
 }
 namespace cs\Config;
+/**
+ * Class for getting of db and storage configuration of module
+ */
 class Module_Properties_Object {
 	protected	$module_data	= [];
+	/**
+	 * Creating of object and saving module data inside
+	 *
+	 * @param $module_data
+	 */
 	function __construct ($module_data) {
 		$this->module_data	= $module_data;
 	}

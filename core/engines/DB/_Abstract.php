@@ -1,5 +1,5 @@
 <?php
-namespace cs\database;
+namespace cs\DB;
 abstract class _Abstract {
 				/**
 				 * Is connection established
@@ -66,7 +66,6 @@ abstract class _Abstract {
 				 * @var bool
 				 */
 	protected	$async		= false;
-
 	/**
 	 * Connecting to DB
 	 *
@@ -301,7 +300,7 @@ abstract class _Abstract {
 	 * @param string|string[]	$string
 	 * @param bool				$single_quotes_around
 	 *
-	 * @return string
+	 * @return string|string[]
 	 */
 	function s ($string, $single_quotes_around = true) {
 		if (is_array($string)) {
@@ -330,8 +329,6 @@ abstract class _Abstract {
 	abstract function server ();
 	/**
 	 * Cloning restriction
-	 *
-	 * @final
 	 */
 	final function __clone () {}
 	/**

@@ -30,7 +30,7 @@ class Core {
 				$triggers_init		= false,
 				$triggers;
 	/**
-	 * Loading of configuration, creating of missing directories
+	 * Loading of base system configuration, creating of missing directories
 	 */
 	function __construct() {
 		if ($this->init) {
@@ -294,7 +294,6 @@ class Core {
 		fclose($socket);
 		return $return;
 	}
-
 	/**
 	 * Registration of triggers for actions
 	 *
@@ -380,7 +379,7 @@ class Core {
 				_include_once(MODULES.'/'.$module.'/trigger.php', false);
 			}
 			unset($modules, $module);
-			$plugins = get_list(PLUGINS, false, 'd');
+			$plugins = get_files_list(PLUGINS, false, 'd');
 			foreach ($plugins as $plugin) {
 				_include_once(PLUGINS.'/'.$plugin.'/trigger.php', false);
 			}
@@ -420,16 +419,12 @@ class Core {
 	}
 	/**
 	 * Cloning restriction
-	 *
-	 * @final
 	 */
 	function __clone () {}
 	/**
 	 * Destroying of global objects, cleaning.<br>
 	 * Disabling encryption.<br>
 	 * Correct termination.
-	 *
-	 * @return mixed
 	 */
 	function __finish () {
 		if (isset($this->List['Index'])) {

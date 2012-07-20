@@ -8,14 +8,14 @@ if ($Config->core['cache_compress_js_css']) {
 	if (file_exists(PCACHE.'/plugin.'.$plugin.'.js')) {
 		return;
 	}
-	$languages = _mb_substr(get_list(PLUGINS.'/'.$plugin.'/langs', false, 'f'), 0, -3);
+	$languages = _mb_substr(get_files_list(PLUGINS.'/'.$plugin.'/langs', false, 'f'), 0, -3);
 	$files[] = "tiny_mce";
 	$content = file_get_contents(PLUGINS.'/'.$plugin.'/tiny_mce.js');
 	foreach ($languages as $language) {
 		$files[] = 'langs/'.$language;
 		$content .= file_get_contents(PLUGINS.'/'.$plugin.'/langs/'.$language.'.js');
 	}
-	$plugins = get_list(PLUGINS.'/'.$plugin.'/plugins', false, 'd');
+	$plugins = get_files_list(PLUGINS.'/'.$plugin.'/plugins', false, 'd');
 	foreach ($plugins as $plugin_tiny) {
 		$files[] = 'plugins/'.$plugin_tiny.'/editor_plugin';
 		$content .= file_get_contents(PLUGINS.'/'.$plugin.'/plugins/'.$plugin_tiny.'/editor_plugin.js');
@@ -26,7 +26,7 @@ if ($Config->core['cache_compress_js_css']) {
 			}
 		}
 	}
-	$themes = get_list(PLUGINS.'/'.$plugin.'/themes', false, 'd');
+	$themes = get_files_list(PLUGINS.'/'.$plugin.'/themes', false, 'd');
 	foreach ($themes as $theme) {
 		$files[] = 'themes/'.$theme.'/editor_template';
 		$content .= file_get_contents(PLUGINS.'/'.$plugin.'/themes/'.$theme.'/editor_template.js');

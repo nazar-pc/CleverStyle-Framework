@@ -5,11 +5,13 @@ class DB {
 				$time					= 0;
 	protected	$connections			= [],
 				$successful_connections	= [],
-				$false_connections		= [],
+				$failed_connections		= [],
 				$mirrors				= [];
 	/**
-	 * @param	bool|null|string $status	<b>null</b>		- returns array of connections with objects<br>
-	 * 										<b>true|1</b>	- returns array of names of succesfull connections<br>
+	 * Get list of connections of specified type
+	 *
+	 * @param	bool|null|string	$status	<b>null</b>		- returns array of successful connections with corresponding objects as values of array<br>
+	 * 										<b>true|1</b>	- returns array of names of successful connections<br>
 	 * 										<b>false|0</b>	- returns array of names of failed connections<br>
 	 * 										<b>mirror</b>	- returns array of names of mirror connections
 	 * @return	array|null
@@ -18,7 +20,7 @@ class DB {
 		if ($status === null) {
 			return $this->connections;
 		} elseif ($status == 0) {
-			return $this->false_connections;
+			return $this->failed_connections;
 		} elseif ($status == 1) {
 			return $this->successful_connections;
 		} elseif ($status == 'mirror') {
@@ -26,25 +28,31 @@ class DB {
 		}
 		return null;
 	}
-	//Обработка запросов получения данных БД
-	//При соответствующей настройке срабатывает балансировка нагрузки на БД
 	/**
-	 * @param	int			$connection
+	 * Processing of requests for getting data from DB. Balancing of DB may be used with corresponding settings.
 	 *
-	 * @return	bool|database\_Abstract
+	 * @param	int						$connection
+	 *
+	 * @return	bool|DB\_Abstract
 	 */
 	function __get ($connection) {
 		if (!is_int($connection) && $connection != '0') {
 			return false;
 		}
 		global $Config;
-		//Ищем зеркало подключения
+		/**
+		 * Try to find existing mirror connection
+		 */
 		if (isset($this->mirrors[$connection])) {
 			return $this->mirrors[$connection];
-		//Ищем подключение
+		/**
+		 * Try to find existing connection
+		 */
 		} elseif (isset($this->connections[$connection])) {
 			return $this->connections[$connection];
-		//Проверяем, включена ли функция балансировки нагрузки и количество зеркал БД, подключаемся к БД
+		/**
+		 * If DB balancing enabled - try to connect to the mirror
+		 */
 		} elseif (is_object($Config) && !empty($Config->core) && $Config->core['db_balance'] && $mirrors = count($Config->db[$connection]['mirrors'])) {
 			$select = mt_rand(0, $Config->core['maindb_for_write'] ? $mirrors - 1 : $mirrors);
 			if ($select < $mirrors) {
@@ -60,43 +68,59 @@ class DB {
 			} else {
 				return $this->connecting($connection);
 			}
-		//Подключаемся к БД
+		/**
+		 * Connecting to the DB
+		 */
 		} else {
 			return $this->connecting($connection);
 		}
 	}
-	//Обработка запросов получения и изменения данных БД
 	/**
-	 * @param	int				$connection
-	 * @param	array			$mode
+	 * Processing of requests for changing data in DB.
 	 *
-	 * @return	bool|database\_Abstract
+	 * @param	int						$connection
+	 * @param	array					$mode
+	 *
+	 * @return	bool|DB\_Abstract
 	 */
 	function __call ($connection, $mode) {
 		if (is_int($connection) || $connection == '0') {
 			return $this->connecting($connection, isset($mode[0]) ? (bool)$mode[0] : false);
-		} elseif (method_exists('\\cs\\database\\_Abstract', $connection)) {
+		} elseif (method_exists('\\cs\\DB\\_Abstract', $connection)) {
 			return call_user_func_array([$this->{0}, $connection], $mode);
 		} else {
 			return false;
 		}
 	}
-	//Обработка всех подключений к БД
+	/**
+	 * @param int						$connection	Database id
+	 * @param array|bool				$mirror
+	 *
+	 * @return bool|DB\_Abstract
+	 */
 	protected function connecting ($connection, $mirror = true) {
-		//Если соединение есть в списке неудачных - выходим
-		if (isset($this->false_connections[$connection])) {
+		/**
+		 * If connection found in list of failed connections - return false
+		 */
+		if (isset($this->failed_connections[$connection])) {
 			return false;
 		}
-		//Если зеркало подключения существует - возвращаем ссылку на подключение
-		if (isset($this->mirrors[$connection]) && $mirror === true) {
+		/**
+		 * If we want to get data and connection with DB mirror already exists - return reference on the instance of engine DB object
+		 */
+		if ($mirror === true && isset($this->mirrors[$connection])) {
 			return $this->mirrors[$connection];
 		}
-		//Если подключение существует - возвращаем ссылку на подключение
+		/**
+		 * If connection already exists - return reference on the instance of engine DB object
+		 */
 		if (isset($this->connections[$connection])) {
 			return $this->connections[$connection];
 		}
 		global $Config, $Core, $L;
-		//Если подключается БД ядра
+		/**
+		 * If connection to the core DB and it is not connection to the mirror
+		 */
 		if ($connection == 0 && !is_array($mirror)) {
 			$db['type']		= $Core->config('db_type');
 			$db['name']		= $Core->config('db_name');
@@ -106,41 +130,46 @@ class DB {
 			$db['charset']	= $Core->config('db_charset');
 			$db['prefix']	= $Core->config('db_prefix');
 		} else {
-			//Если подключается зеркало БД
+			/**
+			 * If it is connection to the DB mirror
+			 */
 			if (is_array($mirror)) {
 				$db = &$mirror;
 			} else {
-				//Иначе ищем настройки подключения
 				if (!isset($Config->db[$connection]) || !is_array($Config->db[$connection])) {
 					return false;
 				}
-				//Загружаем настройки
 				$db = &$Config->db[$connection];
 			}
 		}
-		//Создаем новое подключение к БД
+		/**
+		 * Create new DB connection
+		 */
 		errors_off();
-		$engine_class					= '\\cs\\database\\'.$db['type'];
+		$engine_class					= '\\cs\\DB\\'.$db['type'];
 		$this->connections[$connection]	= new $engine_class($db['name'], $db['user'], $db['password'], $db['host'], $db['charset']);
 		errors_on();
-		//В случае успешного подключения - заносим в общий список подключений, и возвращаем ссылку на подключение
+		/**
+		 * If successfully - add connection to the list of success connections and return instance of engine DB object
+		 */
 		if (is_object($this->connections[$connection]) && $this->connections[$connection]->connected) {
 			$this->successful_connections[] = ($connection == 0 ? $L->core_db.'('.$Core->config('db_type').')' : $connection).'/'.$db['host'].'/'.$db['type'];
-			//Устанавливаем текущий префикс
+			/**
+			 * Set up tables prefix
+			 */
 			$this->connections[$connection]->prefix = $db['prefix'];
 			unset($db);
-			//Ускоряем повторную операцию доступа к этой БД
 			$this->$connection = $this->connections[$connection];
 			return $this->connections[$connection];
-		//Если подключение не удалось - разрушаем соединение и пытаемся подключится к зеркалу
+		/**
+		 * If failed - add connection to the list of failed connections and try to connect to the DB mirror if it is allowed
+		 */
 		} else {
 			unset($this->$connection);
-			//Добавляем подключение в список неудачных
-			$this->false_connections[$connection] = ($connection == 0 ? $L->core_db.'('.$Core->config('db_type').')' : $connection).'/'.$db['host'].'/'.$db['type'];
+			$this->failed_connections[$connection] = ($connection == 0 ? $L->core_db.'('.$Core->config('db_type').')' : $connection).'/'.$db['host'].'/'.$db['type'];
 			unset($db);
-			//Если допускается подключение к зеркалу БД, и зеркала доступны
 			if (
-				$mirror === true && 
+				$mirror === true &&
 				(
 					($connection == 0 && isset($Config->db[0]['mirrors']) && is_array($Config->db[0]['mirrors']) && count($Config->db[0]['mirrors'])) ||
 					(isset($Config->db[$connection]['mirrors']) && is_array($Config->db[$connection]['mirrors']) && count($Config->db[$connection]['mirrors']))
@@ -159,20 +188,28 @@ class DB {
 				}
 				unset($dbx, $i, $mirror_data, $mirror_connection);
 			}
-			//Если подключалось не зеркало - выводим ошибку подключения к БД
+			/**
+			 * If mirror connection is not allowec - display connection error
+			 */
 			if (!is_array($mirror)) {
 				global $L;
 				if ($connection == 0) {
 					trigger_error($L->error_core_db, E_USER_ERROR);
 				} else {
-					trigger_error($L->error_db.' '.$this->false_connections[$connection], E_USER_WARNING);
+					trigger_error($L->error_db.' '.$this->failed_connections[$connection], E_USER_WARNING);
 				}
 			}
 			return false;
 		}
 	}
-	//Тестовое подключение к БД
-	function test ($data = false) {
+	/**
+	 * Testing connection to the DB
+	 *
+	 * @param array|string $data	Array or tring in JSON format of connection parameters
+	 *
+	 * @return bool
+	 */
+	function test ($data) {
 		global $Core;
 		if (empty($data)) {
 			return false;
@@ -202,7 +239,7 @@ class DB {
 		unset($data);
 		if (is_array($db)) {
 			errors_off();
-			$engine_class	= '\\cs\\database\\'.$db['type'];
+			$engine_class	= '\\cs\\DB\\'.$db['type'];
 			$test			= new $engine_class(
 				$db['name'],
 				$db['user'],
@@ -218,8 +255,6 @@ class DB {
 	}
 	/**
 	 * Cloning restriction
-	 *
-	 * @final
 	 */
 	function __clone () {}
 }

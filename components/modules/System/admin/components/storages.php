@@ -43,7 +43,7 @@ if (isset($rc[2])) {
 							]),
 							h::{'select.cs-form-element'}(
 								[
-									'in'		=> _mb_substr(get_list(ENGINES.'/storage', '/^[^_].*?\.php$/i', 'f'), 0, -4)
+									'in'		=> _mb_substr(get_files_list(ENGINES.'/storage', '/^[^_].*?\.php$/i', 'f'), 0, -4)
 								],
 								[
 									'name'		=> 'storage[connection]',
@@ -142,7 +142,7 @@ if (isset($rc[2])) {
 	foreach ($Config->storage as $i => &$storage_data) {
 		$storage_list .=	h::tr(
 			h::td(
-				($i ? 
+				($i ?
 				h::{'a.cs-button.cs-button-compact'}(
 					h::icon('wrench'),
 					[
