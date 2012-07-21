@@ -39,7 +39,9 @@ class Index {
 				$admin				= false,
 				$module				= false,
 				$api				= false;
-
+	/**
+	 * Detecting module folder including of admin/api request type, including prepare file, including of plugins
+	 */
 	function __construct () {
 		global $Config, $User, $Index;
 		/**
@@ -104,6 +106,12 @@ class Index {
 		}
 		_include_once(MFOLDER.'/prepare.php', false);
 	}
+	/**
+	 * Adding of content on the page
+	 *
+	 * @param string	$add
+	 * @param bool|int	$level
+	 */
 	function content ($add, $level = false) {
 		if ($level !== false) {
 			$this->Content .= h::level($add, $level);
@@ -111,6 +119,9 @@ class Index {
 			$this->Content .= $add;
 		}
 	}
+	/**
+	 * Initialization: loading of module structure, including of necessary module files
+	 */
 	protected function init () {
 		global $Config, $L, $Page, $User;
 		$rc = &$Config->__get('routing')['current'];
@@ -221,6 +232,9 @@ class Index {
 			_include_once(MFOLDER.'/'.$this->savefile.'.php', false);
 		}
 	}
+	/**
+	 * Rendering of main menu
+	 */
 	protected function mainmenu () {
 		global $Config, $L, $Page, $User;
 		if ($User->is('admin') || ($Config->can_be_admin && $Config->core['ip_admin_list_only'])) {
@@ -249,6 +263,9 @@ class Index {
 			]
 		);
 	}
+	/**
+	 * Rendering of main submenu
+	 */
 	protected function mainsubmenu () {
 		if (!is_array($this->parts) || !$this->parts) {
 			return;
@@ -264,6 +281,9 @@ class Index {
 			);
 		}
 	}
+	/**
+	 * Rendering of additional menu
+	 */
 	protected function menumore () {
 		if (!is_array($this->subparts) || !$this->subparts) {
 			return;
@@ -279,6 +299,9 @@ class Index {
 			);
 		}
 	}
+	/**
+	 * Module page generation, menus rendering, blocks processing, adding of form with save/apply/cancel/reset and/or custom users buttons
+	 */
 	protected function generate () {
 		global $Page, $Config, $L, $Cache;
 		if ($this->api) {
@@ -367,28 +390,26 @@ class Index {
 			$Page->content($this->Content);
 		}
 	}
+	/**
+	 * Adds JavaScript variables with some system configuration information
+	 */
 	protected function js_vars () {
 		if (!$this->api) {
 			global $Config, $Page, $User, $L, $Core;
 			$Page->js(
-				'var continue_transfer = "'.$L->continue_transfer.'",'.
-					'base_url = "'.$Config->server['base_url'].'",'.
+				'var base_url = "'.$Config->server['base_url'].'",'.
 					'current_base_url = "'.$Config->server['base_url'].'/'.($this->admin ? 'admin/' : '').MODULE.'",'.
 					'public_key = "'.$Core->config('public_key').'",'.
 					'yes = "'.$L->yes.'",'.
 					'no = "'.$L->no.'",'.
 					($User->is('guest') ?
 							'auth_error_connection = "'.$L->auth_error_connection.'",'.
-							'reg_connection_error = "'.$L->reg_error_connection.'",'.
 							'please_type_your_email = "'.$L->please_type_your_email.'",'.
-							'please_type_correct_email = "'.$L->please_type_correct_email.'",'.
 							'reg_success = "'.$L->reg_success.'",'.
 							'reg_confirmation = "'.$L->reg_confirmation.'",'.
 							'reg_error_connection = "'.$L->reg_error_connection.'",'.
 							'rules_agree = "'.$L->rules_agree.'",'.
-							'rules_text = "'.$Config->core['rules'].'",'.
-							'reg_success = "'.$L->reg_success.'",'.
-							'reg_success_confirmation = "'.$L->reg_success_confirmation.'",'
+							'rules_text = "'.$Config->core['rules'].'",'
 						: '').
 					($User->is('user') ?
 							'please_type_current_password = "'.$L->please_type_current_password.'",'.
@@ -414,6 +435,9 @@ class Index {
 			);
 		}
 	}
+	/**
+	 * Blocks processing
+	 */
 	protected function blocks_processing () {
 		global $Page, $Config, $User, $Cache;
 		$blocks_array = [
@@ -472,6 +496,13 @@ class Index {
 		$Page->Right	.= $blocks_array['right'];
 		$Page->Bottom	.= $blocks_array['bottom'];
 	}
+	/**
+	 * Saving changes and/or showing resulting message of saving changes
+	 *
+	 * @param bool|null|string	$parts	If bool - result will be shown only, otherwise works similar to the $Config->save() and shows resulting message
+	 *
+	 * @return bool
+	 */
 	function save ($parts = null) {
 		global $L, $Page, $Config;
 		if ($parts === true || (($parts === null || is_array($parts) || in_array($parts, $Config->admin_parts)) && $Config->save($parts))) {
@@ -484,6 +515,13 @@ class Index {
 			return false;
 		}
 	}
+	/**
+	 * Applying changes and/or showing resulting message of applying changes
+	 *
+	 * @param bool|null|string	$parts	If bool - result will be shown only, otherwise works similar to the $Config->apply() and shows resulting message
+	 *
+	 * @return bool
+	 */
 	function apply ($parts = null) {
 		global $L, $Page, $Config;
 		if ($parts === true || ($parts === null && $Config->apply())) {
@@ -496,6 +534,11 @@ class Index {
 			return false;
 		}
 	}
+	/**
+	 * Changes canceling and/or showing result of canceling changes
+	 *
+	 * @param bool	$system	If <b>true,/b> - cancels changes of system configuration, otherwise shows message about successful canceling
+	 */
 	function cancel ($system = true) {
 		global $L, $Page, $Config;
 		$system && $Config->cancel();
@@ -540,8 +583,13 @@ class Index {
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
+	/**
+	 * Executes plugins processing, blocks and module page generation
+	 */
 	function __finish () {
 		global $Config, $User;
 		/**

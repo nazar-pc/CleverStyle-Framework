@@ -7,17 +7,18 @@ class MySQL extends _Abstract {
 	protected	$id;
 
 	/**
-	 * Connecting to DB
+	 * Connecting to the DB
 	 *
 	 * @param string	$database
 	 * @param string	$user
 	 * @param string	$password
 	 * @param string	$host
 	 * @param string	$charset
+	 * @param string	$prefix
 	 *
 	 * @return bool|MySQL
 	 */
-	function __construct ($database, $user = '', $password = '', $host = 'localhost', $charset = 'utf8') {
+	function __construct ($database, $user = '', $password = '', $host = 'localhost', $charset = 'utf8', $prefix = '') {
 		$this->connecting_time = microtime(true);
 		$this->id = mysql_connect($host, $user, $password);
 		if(is_resource($this->id)) {
@@ -39,6 +40,7 @@ class MySQL extends _Abstract {
 		global $db;
 		$db->time				+= $this->connecting_time;
 		$this->db_type			= 'mysql';
+		$this->prefix			= $prefix;
 		return $this;
 	}
 	/**

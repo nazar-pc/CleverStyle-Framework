@@ -1,7 +1,6 @@
 <?php
 header('Content-Type: text/html; charset=utf-8');
 header("Connection: close");
-chdir(__DIR__);
 require __DIR__.'/core/functions.php';
 $DOMAIN = str_replace(
 	['/', '\\'],
@@ -9,8 +8,8 @@ $DOMAIN = str_replace(
 	(string)$_POST['domain']
 );
 $DOMAIN = null_byte_filter($DOMAIN);
-define('STORAGE',	__DIR__.'/storage/public');						//For storage on the same server as site
-//define('STORAGE',	__DIR__);										//For storage on separate server
+define('STORAGE',	__DIR__.'/storage/public');
+chdir(STORAGE);
 if (
 	$_SERVER['HTTP_USER_AGENT'] == 'CleverStyle CMS' &&
 	file_exists(__DIR__.'/storage/config.php') &&
@@ -33,29 +32,31 @@ switch ($data['function']) {
 	default:
 		exit;
 	case 'get_list':
-		exit(_json_encode(get_files_list(STORAGE.'/'.$data['dir'], $data['mask'], $data['mode'], $data['with_path'], $data['subfolders'], $data['sort'], $data['exclusion'])));
+		exit(_json_encode(get_files_list($data['dir'], $data['mask'], $data['mode'], $data['prefix_path'], $data['subfolders'], $data['sort'], $data['exclusion'])));
+	case 'file':
+		exit(_json_encode(file($data['filename'], $data['flags'])));
 	case 'file_get_contents':
-		exit(file_get_contents(STORAGE.'/'.$data['filename'], $data['flags'], null, $data['offset'], $data['maxlen']));
+		exit(file_get_contents($data['filename'], $data['flags'], null, $data['offset'], $data['maxlen']));
 	case 'file_put_contents':
-		exit(file_put_contents(STORAGE.'/'.$data['filename'], $data['data'], $data['flags']));
+		exit(file_put_contents($data['filename'], $data['data'], $data['flags']));
 	case 'copy':
-		exit(copy($data['http'] ? $data['source'] : STORAGE.'/'.$data['source'], STORAGE.'/'.$data['dest']));
+		exit(copy($data['source'], $data['dest']));
 	case 'unlink':
-		exit(unlink(STORAGE.'/'.$data['filename']));
+		exit(unlink($data['filename']));
 	case 'file_exists':
-		exit(file_exists(STORAGE.'/'.$data['filename']));
+		exit(file_exists($data['filename']));
 	case 'move_uploaded_file':
-		exit(copy($data['filename'], STORAGE.'/'.$data['destination']));
+		exit(copy($data['filename'], $data['destination']));
 	case 'rename':
-		exit($data['http'] ? copy($data['oldname'], STORAGE.'/'.$data['newname']) : rename(STORAGE.'/'.$data['oldname'], STORAGE.'/'.$data['newname']));
+		exit(rename($data['oldname'], $data['newname']));
 	case 'mkdir':
-		exit(mkdir(STORAGE.'/'.$data['pathname']));
+		exit(mkdir($data['pathname']));
 	case 'rmdir':
-		exit(rmdir(STORAGE.'/'.$data['dirname']));
+		exit(rmdir($data['dirname']));
 	case 'is_file':
-		exit(is_file(STORAGE.'/'.$data['filename']));
+		exit(is_file($data['filename']));
 	case 'is_dir':
-		exit(is_dir(STORAGE.'/'.$data['filename']));
+		exit(is_dir($data['filename']));
 	case 'test':
 		exit('OK');
 }

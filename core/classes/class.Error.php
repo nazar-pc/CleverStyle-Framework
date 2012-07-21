@@ -112,6 +112,8 @@ class Error {
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
 	/**

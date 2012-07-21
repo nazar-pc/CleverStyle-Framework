@@ -21,9 +21,9 @@
  * @desc Delete a cookie by passing null as value. Keep in mind that you have to use the same path and domain
  *       used when the cookie was set.
  *
- * @param String name The name of the cookie.
- * @param String value The value of the cookie.
- * @param Object options An object literal containing key/value pairs to provide optional cookie attributes.
+ * @param name String The name of the cookie.
+ * @param value String The value of the cookie.
+ * @param options Object An object literal containing key/value pairs to provide optional cookie attributes.
  * @option Number|Date expires Either an integer specifying the expiration date from now on in days or a Date object.
  *                             If a negative value is specified (e.g. a date in the past), the cookie will be deleted.
  *                             If set to null or omitted, the cookie will be a session cookie and will not be retained
@@ -45,7 +45,7 @@
  * @example $.cookie('the_cookie');
  * @desc Get the value of a cookie.
  *
- * @param String name The name of the cookie.
+ * @param name String The name of the cookie.
  * @return The value of the cookie.
  * @type String
  *
@@ -79,6 +79,7 @@ jQuery.cookie = function(name, value, options) {
         var domain = options.domain ? '; domain=' + (options.domain) : '';
         var secure = options.secure ? '; secure' : '';
         document.cookie = [name, '=', encodeURIComponent(value), expires, path, domain, secure].join('');
+		return true;
     } else { // only name given, get cookie
         var cookieValue = null;
         if (document.cookie && document.cookie != '') {

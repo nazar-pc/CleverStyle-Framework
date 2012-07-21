@@ -40,4 +40,10 @@ abstract class _Abstract {
 	 * @return bool
 	 */
 	abstract function clean ();
+	/**
+	 * Cloning restriction
+	 *
+	 * @final
+	 */
+	final function __clone () {}
 }

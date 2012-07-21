@@ -22,7 +22,9 @@ class User {
 				$reg_id					= 0,		//User id after registration
 				$users_columns			= [],		//Copy of columns list of users table for internal needs without Cache usage
 				$permissions_table		= [];		//Array of all permissions for quick selecting
-
+	/**
+	 * Defining user id, type, session, personal settings
+	 */
 	function __construct () {
 		global $Cache, $Config, $Page, $L, $Key;
 		if (($this->users_columns = $Cache->{'users/columns'}) === false) {
@@ -205,6 +207,8 @@ class User {
 		$this->init = true;
 	}
 	/**
+	 * Get data item of specified user
+	 *
 	 * @param string|string[]		$item
 	 * @param bool|int 				$user
 	 *
@@ -224,6 +228,8 @@ class User {
 		return $this->get_internal($item, $user);
 	}
 	/**
+	 * Get data item of specified user
+	 *
 	 * @param string|string[]		$item
 	 * @param bool|int 				$user
 	 * @param bool					$cache_only
@@ -325,6 +331,8 @@ class User {
 		return false;
 	}
 	/**
+	 * Set data item of specified user
+	 *
 	 * @param array|string	$item
 	 * @param mixed|null	$value
 	 * @param bool|int		$user
@@ -355,14 +363,29 @@ class User {
 		}
 		return true;
 	}
+	/**
+	 * Get data item of current user
+	 *
+	 * @param string|string[]		$item
+	 *
+	 * @return array|bool|string
+	 */
 	function __get ($item) {
 		return $this->get($item);
 	}
-	function __set ($item, $value = '') {
-		$this->set($item, $value);
+	/**
+	 * Set data item of current user
+	 *
+	 * @param array|string	$item
+	 * @param mixed|null	$value
+	 *
+	 * @return bool
+	 */
+	function __set ($item, $value = null) {
+		return $this->set($item, $value);
 	}
 	/**
-	 * Getting additional data item(s) for user
+	 * Getting additional data item(s) of specified user
 	 *
 	 * @param string|string[]		$item
 	 * @param bool|int				$user
@@ -382,7 +405,7 @@ class User {
 		}
 	}
 	/**
-	 * Setting additional data item(s) for user
+	 * Setting additional data item(s) of specified user
 	 *
 	 * @param array|string	$item
 	 * @param mixed|null	$value
@@ -404,7 +427,7 @@ class User {
 		return true;
 	}
 	/**
-	 * Deleting additional data item(s) for user
+	 * Deletion of additional data item(s) of specified user
 	 *
 	 * @param string|string[]		$item
 	 * @param bool|int				$user
@@ -425,9 +448,9 @@ class User {
 		return true;
 	}
 	/**
-	 * Returns link to the object of db for reading (can be mirror)
+	 * Returns link to the object of db for reading (can be mirror DB)
 	 *
-	 * @return \cs\database\_Abstract
+	 * @return DB\_Abstract
 	 */
 	function db () {
 		if (is_object($this->db)) {
@@ -444,9 +467,9 @@ class User {
 		return $this->db;
 	}
 	/**
-	 * Returns link to the object of db for writting (always main db)
+	 * Returns link to the object of db for writting (always main DB)
 	 *
-	 * @return \cs\database\_Abstract
+	 * @return DB\_Abstract
 	 */
 	function db_prime () {
 		if (is_object($this->db_prime)) {
@@ -503,6 +526,13 @@ class User {
 		$user = (int)($user ?: $this->id);
 		return $this->get('username', $user) ?: ($this->get('login', $user) ?: $this->get('email', $user));
 	}
+	/**
+	 * Search keyword in login, username and email
+	 *
+	 * @param string		$search_phrase
+	 *
+	 * @return int[]|bool
+	 */
 	function search_users ($search_phrase) {
 		$search_phrase = trim($search_phrase, "%\n");
 		$found_users = $this->db()->qfa(
@@ -562,9 +592,9 @@ class User {
 		}
 	}
 	/**
-	 * Returns array of all permissions state for specified user
+	 * Get array of all permissions state for specified user
 	 *
-	 * @param bool|int $user
+	 * @param bool|int		$user
 	 *
 	 * @return array|bool
 	 */
@@ -576,10 +606,12 @@ class User {
 		return $this->get_any_permissions($user, 'user');
 	}
 	/**
-	 * @param	array		$data
-	 * @param	bool|int	$user
+	 * Set user's permissions according to the given array
 	 *
-	 * @return	bool
+	 * @param array		$data
+	 * @param bool|int	$user
+	 *
+	 * @return bool
 	 */
 	function set_user_permissions ($data, $user = false) {
 		$user = (int)($user ?: $this->id);
@@ -589,9 +621,11 @@ class User {
 		return $this->set_any_permissions($data, $user, 'user');
 	}
 	/**
-	 * @param	bool|int	$user
+	 * Delete all user's permissions
 	 *
-	 * @return	bool
+	 * @param bool|int	$user
+	 *
+	 * @return bool
 	 */
 	function del_user_permissions_all ($user = false) {
 		$user = (int)($user ?: $this->id);
@@ -603,9 +637,9 @@ class User {
 	/**
 	 * Get user groups
 	 *
-	 * @param	bool|int $user
+	 * @param bool|int		$user
 	 *
-	 * @return	array|bool
+	 * @return array|bool
 	 */
 	function get_user_groups ($user = false) {
 		$user = (int)($user ?: $this->id);
@@ -622,10 +656,10 @@ class User {
 	/**
 	 * Set user groups
 	 *
-	 * @param	array	$data
-	 * @param	int		$user
+	 * @param array	$data
+	 * @param int	$user
 	 *
-	 * @return	bool
+	 * @return bool
 	 */
 	function set_user_groups ($data, $user) {
 		$user		= (int)($user ?: $this->id);
@@ -697,7 +731,7 @@ class User {
 	/**
 	 * Delete group
 	 *
-	 * @param $group
+	 * @param int	$group
 	 *
 	 * @return bool
 	 */
@@ -723,7 +757,9 @@ class User {
 		}
 	}
 	/**
-	 * @return array|bool
+	 * Get list of all groups
+	 *
+	 * @return array|bool		Every item in form of array('id' => <i>id</i>, 'title' => <i>title</i>, 'description' => <i>description</i>)
 	 */
 	function get_groups_list () {
 		global $Cache;
@@ -733,10 +769,12 @@ class User {
 		return $groups_list;
 	}
 	/**
-	 * @param int $group
-	 * @param bool|string $item
+	 * Get group data
 	 *
-	 * @return array|bool
+	 * @param int					$group
+	 * @param bool|string			$item	If <b>false</b> - array will be returned, if title|description|data - corresponding item
+	 *
+	 * @return array|bool|string
 	 */
 	function get_group_data ($group, $item = false) {
 		global $Cache;
@@ -759,6 +797,14 @@ class User {
 			return $group_data;
 		}
 	}
+	/**
+	 * Set group data
+	 *
+	 * @param array	$data
+	 * @param int	$group
+	 *
+	 * @return bool
+	 */
 	function set_group_data ($data, $group) {
 		$group = (int)$group;
 		if (!$group) {
@@ -787,26 +833,43 @@ class User {
 		}
 	}
 	/**
-	 * @param int $group
+	 * Get group permissions
+	 *
+	 * @param int		$group
 	 *
 	 * @return array
 	 */
 	function get_group_permissions ($group) {
 		return $this->get_any_permissions($group, 'group');
 	}
+	/**
+	 * Set group permissions
+	 *
+	 * @param array	$data
+	 * @param int	$group
+	 *
+	 * @return bool
+	 */
 	function set_group_permissions ($data, $group) {
 		return $this->set_any_permissions($data, (int)$group, 'group');
 	}
+	/**
+	 * Delete all permissions of specified group
+	 *
+	 * @param int	$group
+	 *
+	 * @return bool
+	 */
 	function del_group_permissions_all ($group) {
 		return $this->del_any_permissions_all((int)$group, 'group');
 	}
 	/**
 	 * Common function for get_user_permissions() and get_group_permissions() because of their similarity
 	 *
-	 * @param	int			$id
-	 * @param	string		$type
+	 * @param int			$id
+	 * @param string		$type
 	 *
-	 * @return	array|bool
+	 * @return array|bool
 	 */
 	protected function get_any_permissions ($id, $type) {
 		if (!($id = (int)$id)) {
@@ -843,11 +906,11 @@ class User {
 	/**
 	 * Common function for set_user_permissions() and set_group_permissions() because of their similarity
 	 *
-	 * @param	array	$data
-	 * @param	int		$id
-	 * @param	string	$type
+	 * @param array	$data
+	 * @param int		$id
+	 * @param string	$type
 	 *
-	 * @return	bool
+	 * @return bool
 	 */
 	protected function set_any_permissions ($data, $id, $type) {
 		$id			= (int)$id;
@@ -921,10 +984,10 @@ class User {
 	/**
 	 * Common function for del_user_permissions_all() and del_group_permissions_all() because of their similarity
 	 *
-	 * @param	int		$id
-	 * @param	string	$type
+	 * @param int		$id
+	 * @param string	$type
 	 *
-	 * @return	bool
+	 * @return bool
 	 */
 	protected function del_any_permissions_all ($id, $type) {
 		$id			= (int)$id;
@@ -951,6 +1014,11 @@ class User {
 		}
 		return false;
 	}
+	/**
+	 * Returns array of all permissions grouped by permissions groups
+	 *
+	 * @return array	Format of array: ['group']['label'] = <i>permission_id</i>
+	 */
 	function get_permissions_table () {
 		if (empty($this->permissions_table)) {
 			global $Cache;
@@ -969,11 +1037,22 @@ class User {
 		}
 		return $this->permissions_table;
 	}
+	/**
+	 * Deletion of permission table (is used after adding, setting or deletion of permission)
+	 */
 	function del_permission_table () {
 		$this->permissions_table = [];
 		global $Cache;
 		unset($Cache->permissions_table);
 	}
+	/**
+	 * Add premission
+	 *
+	 * @param string	$group
+	 * @param string	$label
+	 *
+	 * @return bool|int			Group id or <b>false</b> on failure
+	 */
 	function add_permission ($group, $label) {
 		if ($this->db_prime()->q("INSERT INTO `[prefix]permissions` (`label`, `group`) VALUES ('%s', '%s')", xap($label), xap($group))) {
 			$this->del_permission_table();
@@ -1021,6 +1100,15 @@ class User {
 			return $this->db()->qf("SELECT `id`, `label`, `group` FROM `[prefix]permissions` WHERE `id` = '$id' LIMIT 1");
 		}
 	}
+	/**
+	 * Set permission
+	 *
+	 * @param int		$id
+	 * @param string	$group
+	 * @param string	$label
+	 *
+	 * @return bool
+	 */
 	function set_permission ($id, $group, $label) {
 		$id		= (int)$id;
 		if (!$id) {
@@ -1036,7 +1124,7 @@ class User {
 		}
 	}
 	/**
-	 * Deleting of permission or array of permissions
+	 * Deletion of permission or array of permissions
 	 *
 	 * @param array|int $id
 	 *
@@ -1466,14 +1554,16 @@ class User {
 	/**
 	 * Delete specified user or array of users
 	 *
-	 * @param $user	array|int User id or array of users ids
+	 * @param array|int	$user User id or array of users ids
 	 */
 	function del_user ($user) {
 		$this->del_user_internal($user);
 	}
 	/**
-	 * @param $user	array|int
-	 * @param $update
+	 * Delete specified user or array of users
+	 *
+	 * @param array|int	$user
+	 * @param bool		$update
 	 */
 	protected function del_user_internal ($user, $update = true) {
 		if (is_array($user)) {
@@ -1527,13 +1617,13 @@ class User {
 		}
 	}
 	/**
-	 * Bost addition
+	 * Bots addition
 	 *
-	 * @param string $name			//Bot name
-	 * @param string $user_agent	//User Agent string or regular expression
-	 * @param string $ip			//IP string or regular expression
+	 * @param string $name			Bot name
+	 * @param string $user_agent	User Agent string or regular expression
+	 * @param string $ip			IP string or regular expression
 	 *
-	 * @return bool|int				//Bot <b>id</b> in DB or <b>false</b> on error
+	 * @return bool|int				Bot <b>id</b> in DB or <b>false</b> on failure
 	 */
 	function add_boot ($name, $user_agent, $ip) {
 		if ($this->db_prime()->q(
@@ -1549,24 +1639,31 @@ class User {
 		}
 	}
 	/**
-	 * Delete specified bot or array of users
+	 * Delete specified bot or array of bots
 	 *
-	 * @param $bot	array|int Bot id or array of bots ids
+	 * @param array|int    $bot Bot id or array of bots ids
 	 */
 	function del_bot ($bot) {
 		$this->del_user($bot);
 		global $Cache;
 		unset($Cache->{'users/bots'});
 	}
+	/**
+	 * Returns array of users columns, available for getting of data
+	 *
+	 * @return array
+	 */
 	function get_users_columns () {
 		return $this->users_columns;
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
 	/**
-	 * Saving cache changing, and users data
+	 * Saving changes of cache and users data
 	 */
 	function __finish () {
 		global $Cache;

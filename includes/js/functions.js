@@ -1,98 +1,158 @@
+/**
+ * Adds method for symbol replacing at cpecified position
+ *
+ * @param index
+ * @param symbol
+ * @return string
+ */
 String.prototype.replaceAt=function(index, symbol) {
 	return this.substr(0, index)+symbol+this.substr(index+symbol.length);
 };
+/**
+ * Debug window opening
+ */
 function debug_window () {
 	$('#debug').dialog('open');
 }
+/**
+ * Cache cleanin
+ *
+ * @param element
+ * @param action
+ */
 function admin_cache (element, action) {
-	var cache_interval	= setInterval(function () {progress(element)}, 100);
-	$(element).html('').progressbar(
-		{value: 1}
-	).load(
-		action, function () {
-			clearInterval(cache_interval);
-			setTimeout(
-				function () {
-					$(element).progressbar('destroy');
-				},
-				100
-			);
-		}
+	var cache_interval	= setInterval(
+		function () {
+			progress_update(element);
+		},
+		100
 	);
+	$(element)
+		.html('')
+		.progressbar({
+			value	: 1
+		})
+		.load(
+			action,
+			function () {
+				clearInterval(cache_interval);
+				setTimeout(
+					function () {
+						$(element).progressbar('destroy');
+					},
+					100
+				);
+			}
+		);
 }
-function progress (element) {
-	$(element).progressbar('value', $(element).progressbar('value')+1);
+/**
+ * Updating of progress bar
+ *
+ * @param element
+ */
+function progress_update (element) {
+	$(element).progressbar(
+		'value',
+		$(element).progressbar('value')+1
+	);
 	if ($(element).progressbar('value') == 100) {
 		$(element).progressbar('value', 1);
 	}
 }
+/**
+ * Send request for db connection testing
+ *
+ * @param url
+ * @param added
+ */
 function db_test (url, added) {
 	$('#test_db').html('<div id="test_progress"></div>');
 	$($('#test_progress')).progressbar({value: 1});
 	$('#test_db').dialog('open');
-	var test_interval	= setInterval(function () {progress('#test_progress')}, 100);
+	var test_interval	= setInterval(
+		function () {
+			progress_update('#test_progress');
+		},
+		100
+	);
 	if (added) {
 		$.ajax({
-			url:		url,
-			type:		'POST',
-			success:	function(result) {
+			url		: url,
+			type	: 'POST',
+			success	: function(result) {
 				clearInterval(test_interval);
 				$('#test_db').html(result);
 			}
 		});
 	} else {
 		var db = json_encode({
-			type:		document.getElementsByName('db[type]').item(0).value,
-			name:		document.getElementsByName('db[name]').item(0).value,
-			user:		document.getElementsByName('db[user]').item(0).value,
-			password:	document.getElementsByName('db[password]').item(0).value,
-			host:		document.getElementsByName('db[host]').item(0).value,
-			charset:	document.getElementsByName('db[charset]').item(0).value
+			type		: document.getElementsByName('db[type]').item(0).value,
+			name		: document.getElementsByName('db[name]').item(0).value,
+			user		: document.getElementsByName('db[user]').item(0).value,
+			password	: document.getElementsByName('db[password]').item(0).value,
+			host		: document.getElementsByName('db[host]').item(0).value,
+			charset		: document.getElementsByName('db[charset]').item(0).value
 		});
 		$.ajax({
-			url:		url,
-			type:		'POST',
-			data:		'db=' + db,
-			success:	function(result) {
+			url		: url,
+			type	: 'POST',
+			data	: 'db=' + db,
+			success	: function(result) {
 				clearInterval(test_interval);
 				$('#test_db').html(result);
 			}
 		});
 	}
 }
+/**
+ * Send request for storage connection testing
+ *
+ * @param url
+ * @param added
+ */
 function storage_test (url, added) {
 	$('#test_storage').html('<div id="test_progress"></div>');
 	$($('#test_progress')).progressbar({value: 1});
 	$('#test_storage').dialog('open');
-	var test_interval	= setInterval(function () {progress('#test_progress')}, 100);
+	var test_interval	= setInterval(
+		function () {
+			progress_update('#test_progress');
+		},
+		100
+	);
 	if (added) {
 		$.ajax({
-			url:		url,
-			type:		'POST',
-			success:	function(result) {
+			url		: url,
+			type	: 'POST',
+			success	: function(result) {
 				clearInterval(test_interval);
 				$('#test_storage').html(result);
 			}
 		});
 	} else {
 		var storage = json_encode({
-			url:		document.getElementsByName('storage[url]').item(0).value,
-			host:		document.getElementsByName('storage[host]').item(0).value,
-			connection:	document.getElementsByName('storage[connection]').item(0).value,
-			user:		document.getElementsByName('storage[user]').item(0).value,
-			password:	document.getElementsByName('storage[password]').item(0).value
+			url			: document.getElementsByName('storage[url]').item(0).value,
+			host		: document.getElementsByName('storage[host]').item(0).value,
+			connection	: document.getElementsByName('storage[connection]').item(0).value,
+			user		: document.getElementsByName('storage[user]').item(0).value,
+			password	: document.getElementsByName('storage[password]').item(0).value
 		});
 		$.ajax({
-			url:		url,
-			type:		'POST',
-			data:		'storage=' + storage,
-			success:	function(result) {
+			url		: url,
+			type	: 'POST',
+			data	: 'storage=' + storage,
+			success	: function(result) {
 				clearInterval(test_interval);
 				$('#test_storage').html(result);
 			}
 		});
 	}
 }
+/**
+ * Toggling of blocks group in admin page
+ *
+ * @param position
+ */
 function blocks_toggle (position) {
 	if ($('#'+position+'_blocks_items').attr('data-mode') == 'open') {
 		$('#'+position+'_blocks_items > li:not(.ui-state-disabled)').slideUp('fast');
@@ -103,11 +163,20 @@ function blocks_toggle (position) {
 	}
 }
 /**
- * For convenience and simplicity - wrapper for JavaScript functions with names of similar to corresponding functions in PHP
+ * Returns the JSON representation of a value
+ *
+ * @param obj
+ * @return string
  */
 function json_encode (obj) {
 	return $.toJSON(obj);
 }
+/**
+ * Decodes a JSON string
+ *
+ * @param str
+ * @return {}
+ */
 function json_decode (str) {
 	return $.secureEvalJSON(str);
 }
@@ -119,12 +188,35 @@ function json_decode (str) {
  * @return string
  */
 function hash (algo, data) {
-	return (new jsSHA(data)).getHash(algo);
+	return (new jsSHA(data, 'ASCII')).getHash(algo, 'HEX');
 }
+/**
+ * Function for setting cookies taking into account cookies prefix
+ *
+ * @param name
+ * @param value
+ * @param expires
+ * @return bool
+ */
 function setcookie (name, value, expires) {
 	name = cookie_prefix+name;
-	return $.cookie(name, value, {expires: expires, path: cookie_path, domain: cookie_domain, secure: protocol == 'https'});
+	return $.cookie(
+		name,
+		value,
+		{
+			expires	: expires,
+			path	: cookie_path,
+			domain	: cookie_domain,
+			secure	: protocol == 'https'
+		}
+	);
 }
+/**
+ * Function for getting of cookies, taking into account cookies prefix
+ *
+ * @param name
+ * @return bool|string
+ */
 function getcookie (name) {
 	return $.cookie(name);
 }
@@ -142,10 +234,10 @@ function login (login, password) {
 	$.ajax(
 		base_url+'/api/System/user/login',
 		{
-			type: 'post',
-			cache: false,
-			data: data,
-			success: function(random_hash) {
+			type	: 'post',
+			cache	: false,
+			data	: data,
+			success	: function(random_hash) {
 				if (random_hash.length == 56) {
 					data.auth_hash = hash(
 						'sha512',
@@ -154,17 +246,17 @@ function login (login, password) {
 					$.ajax(
 						base_url+"/api/user/login",
 						{
-							type: 'post',
-							cache: false,
-							data: data,
-							success: function(result) {
+							type	: 'post',
+							cache	: false,
+							data	: data,
+							success	: function(result) {
 								if (result == 'reload') {
 									location.reload();
 								} else {
 									alert(result);
 								}
 							},
-							error: function() {
+							error	: function() {
 								alert(auth_error_connection);
 							}
 						}
@@ -175,7 +267,7 @@ function login (login, password) {
 					alert(random_hash);
 				}
 			},
-			error: function() {
+			error	: function() {
 				alert(auth_error_connection);
 			}
 		}
@@ -192,13 +284,13 @@ function logout () {
 	$.ajax(
 		base_url+'/api/System/user/logout',
 		{
-			type: 'post',
-			cache: false,
-			data: data,
-			success: function() {
+			type	: 'post',
+			cache	: false,
+			data	: data,
+			success	: function() {
 				location.reload();
 			},
-			error: function() {
+			error	: function() {
 				alert(auth_error_connection);
 			}
 		}
@@ -221,9 +313,9 @@ function registration (email) {
 	$.ajax(
 		base_url+'/api/System/user/registration',
 		{
-			type: 'post',
-			cache: false,
-			data: data,
+			type	: 'post',
+			cache	: false,
+			data	: data,
 			success: function(result) {
 				if (result == 'reg_confirmation') {
 					$('<div>'+reg_confirmation+'</div>')
@@ -282,17 +374,17 @@ function change_password (current_password, new_password) {
 	$.ajax(
 		base_url+'/api/System/user/change_password',
 		{
-			type: 'post',
-			cache: false,
-			data: data,
-			success: function(result) {
+			type	: 'post',
+			cache	: false,
+			data	: data,
+			success	: function(result) {
 				if (result == 'OK') {
 					alert(password_changed_successfully);
 				} else {
 					alert(result);
 				}
 			},
-			error: function() {
+			error	: function() {
 				alert(password_changing_error_connection);
 			}
 		}
@@ -300,6 +392,7 @@ function change_password (current_password, new_password) {
 }
 /**
  * For textarea in blocks editing
+ *
  * @param item
  */
 function block_switch_textarea (item) {
@@ -316,7 +409,6 @@ function block_switch_textarea (item) {
 function base64_encode (str) {
 	return window.btoa(str);
 }
-
 function base64_decode (str) {
 	return window.atob(str);
 }
@@ -332,8 +424,7 @@ function xor_string (string1, string2) {
 	var	len1	= string1.length,
 		len2	= string2.length;
 	if (len2 > len1) {
-		var tmp;
-		tmp		= string1;
+		var tmp	= string1;
 		string1	= string2;
 		string2	= tmp;
 		tmp		= len1;
@@ -341,8 +432,8 @@ function xor_string (string1, string2) {
 		len2	= tmp;
 	}
 	for (var i = 0; i < len1; ++i) {
-		var pos = i % len2;
-		string1 = string1.replaceAt(i, String.fromCharCode(string1.charCodeAt(i) ^ string2.charCodeAt(pos)));
+		var pos	= i % len2;
+		string1	= string1.replaceAt(i, String.fromCharCode(string1.charCodeAt(i) ^ string2.charCodeAt(pos)));
 	}
 	return string1;
 }

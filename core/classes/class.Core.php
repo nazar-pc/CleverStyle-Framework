@@ -274,7 +274,6 @@ class Core {
 		$socket	= fsockopen($host[0], isset($host[1]) ? $host[1] : $protocol == 'http' ? 80 : 443, $errno, $errstr);
 		if(!is_resource($socket)) {
 			trigger_error('#'.$errno.' '.$errstr, E_USER_WARNING);
-			$this->connected = false;
 			return false;
 		}
 		$data = 'data='.urlencode(json_encode($data));
@@ -419,6 +418,8 @@ class Core {
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
 	/**

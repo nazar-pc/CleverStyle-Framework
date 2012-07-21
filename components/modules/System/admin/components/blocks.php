@@ -29,7 +29,7 @@ if (isset($rc[2])) {
 			$a->buttons				= false;
 			$a->cancel_button_back	= true;
 			$a->action				= 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
-			$Page->title($L->deleting_a_block($Config->components['blocks'][$rc[3]]['title']));
+			$Page->title($L->deletion_of_block($Config->components['blocks'][$rc[3]]['title']));
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages'}(
 					$L->sure_to_delete_block($Config->components['blocks'][$rc[3]]['title']).

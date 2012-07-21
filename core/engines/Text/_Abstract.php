@@ -12,4 +12,10 @@ abstract class _Abstract {
 	 * @return bool|string Translated string of <b>false</b> if failed
 	 */
 	abstract static function translate ($text, $from, $to);
+	/**
+	 * Cloning restriction
+	 *
+	 * @final
+	 */
+	final function __clone () {}
 }

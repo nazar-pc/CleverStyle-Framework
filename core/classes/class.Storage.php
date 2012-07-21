@@ -5,8 +5,9 @@ class Storage {
 	protected	$connections			= [],
 				$successful_connections	= [],
 				$failed_connections		= [];
-
 	/**
+	 * Get list of connections of specified type
+	 *
 	 * @param	bool|null|string $status	<b>null</b>		- returns array of connections with objects<br>
 	 * 										<b>true|1</b>	- returns array of names of successful connections<br>
 	 * 										<b>false|0</b>	- returns array of names of failed connections<br>
@@ -22,10 +23,11 @@ class Storage {
 		}
 		return null;
 	}
-	//Обработка подключений к хранилищам
 	/**
-	 * @param	int			$connection
-	 * @return	bool|object
+	 * Processing of requests for getting data from DB. Balancing of DB may be used with corresponding settings.
+	 *
+	 * @param	int						$connection
+	 * @return	bool|Storage\_Abstract
 	 */
 	function __get ($connection) {
 		if (!is_int($connection) && $connection != '0') {
@@ -33,30 +35,30 @@ class Storage {
 		}
 		return $this->connecting($connection);
 	}
-	//Обработка запросов получения и изменения данных БД
-	function __call ($connection, $mode) {
-		if (method_exists('\\cs\\storage\\_Abstract', $connection)) {
-			return call_user_func_array([$this->{0}, $connection], $mode);
-		} else {
-			return false;
-		}
-	}
-	//Обработка всех подключений к хранилищам
+	/**
+	 * Processing of al storage requests
+	 *
+	 * @param int	$connection
+	 *
+	 * @return bool
+	 */
 	protected function connecting ($connection) {
-		//Если соединение есть в списке неудачных - выходим
+		/**
+		 * If connection found in list of failed connections - return false
+		 */
 		if (isset($this->failed_connections[$connection])) {
 			return false;
 		}
-		//Если подключение существует - возвращаем ссылку на подключение
+		/**
+		 * If connection already exists - return reference on the instance of Storage engine object
+		 */
 		if (isset($this->connections[$connection])) {
 			return $this->connections[$connection];
 		}
 		global $Config;
-		//Ищем настройки подключения
-		if (!isset($Config->storage[$connection]) || !is_array($Config->storage[$connection])) {
-			return false;
-		}
-		//Если подключается локальное хранилище
+		/**
+		 * If connection to the local storage
+		 */
 		if ($connection == 0) {
 			global $Core;
 			$storage['connection']	= $Core->config('storage_type');
@@ -64,35 +66,40 @@ class Storage {
 			$storage['host']		= $Core->config('storage_host');
 			$storage['user']		= $Core->config('storage_user');
 			$storage['password']	= $Core->config('storage_password');
-		} else {
-			//Загружаем настройки
+		} elseif (isset($Config->storage[$connection])) {
 			$storage = &$Config->storage[$connection];
+		} else {
+			return false;
 		}
-		//Создаем новое подключение к хранилищу
-		$engine_class					= '\\cs\\storage\\'.$storage['connection'];
+		/**
+		 * Create new Storage connection
+		 */
+		$engine_class					= '\\cs\\Storage\\'.$storage['connection'];
 		$this->connections[$connection]	= new $engine_class($storage['url'], $storage['host'], $storage['user'], $storage['password']);
-		//В случае успешного подключения - заносим в общий список подключений, и возвращаем ссылку на подключение
-		if (is_object($this->connections[$connection]) && $this->connections[$connection]->connected) {
+		/**
+		 * If successfully - add connection to the list of success connections and return instance of DB engine object
+		 */
+		if (is_object($this->connections[$connection]) && $this->connections[$connection]->connected()) {
 			$this->successful_connections[] = $connection.'/'.$storage['host'].'/'.$storage['connection'];
 			unset($storage);
 			$this->$connection = $this->connections[$connection];
 			return $this->connections[$connection];
-		//Если подключение не удалось - разрушаем соединение
+		/**
+		 * If failed - add connection to the list of failed connections and display connection error
+		 */
 		} else {
 			unset($this->$connection);
-			//Добавляем подключение в список неудачных
 			$this->failed_connections[$connection] = $connection.'/'.$storage['host'].'/'.$storage['connection'];
 			unset($storage);
-			//Выводим ошибку подключения к хранилищу
 			global $L;
 			trigger_error($L->error_storage.' '.$this->failed_connections[$connection], E_USER_WARNING);
 			return false;
 		}
 	}
-
 	/**
 	 * Test connection to the Storage
-	 * @param array|bool|string $data
+	 *
+	 * @param array|bool|string $data	Array or string in JSON format of connection parameters
 	 *
 	 * @return bool
 	 */
@@ -111,15 +118,17 @@ class Storage {
 		}
 		unset($data);
 		if (is_array($storage)) {
-			$connection_class	= '\\cs\\storage\\'.$storage['connection'];
+			$connection_class	= '\\cs\\Storage\\'.$storage['connection'];
 			$test				= new $connection_class($storage['url'], $storage['host'], $storage['user'], $storage['password']);
-			return $test->connected;
+			return $test->connected();
 		} else {
 			return false;
 		}
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
 }

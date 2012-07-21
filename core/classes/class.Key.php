@@ -1,6 +1,13 @@
 <?php
 namespace cs;
 class Key {
+	/**
+	 * Generates guaranteed unique key
+	 *
+	 * @param int			$database	Keys database
+	 *
+	 * @return string
+	 */
 	function generate ($database) {
 		global $db;
 		if (!is_object($database)) {
@@ -17,6 +24,16 @@ class Key {
 		}
 		return false;
 	}
+	/**
+	 * Adding key into specified database
+	 *
+	 * @param int			$database	Keys database
+	 * @param bool|string	$key		If <b>false</b> - key will be generated automatically, otherwise must contain 56 character [0-9a-z] key
+	 * @param null|mixed	$data		Data to be stored with key
+	 * @param int			$expire		Timestamp of key exiration, if not specified - default system value will be used
+	 *
+	 * @return bool
+	 */
 	function add ($database, $key = false, $data = null, $expire = 0) {
 		global $db, $Config;
 		if (!is_object($database)) {
@@ -30,7 +47,7 @@ class Key {
 			}
 		}
 		$expire = (int)$expire;
-		if ($expire == 0 && $expire < TIME) {
+		if ($expire == 0 || $expire < TIME) {
 			$expire = TIME + $Config->core['key_expire'];
 		}
 		$this->del($database, $key);
@@ -47,6 +64,15 @@ class Key {
 		}
 		return $id;
 	}
+	/**
+	 * Check key existence and/or getting of data stored with key
+	 *
+	 * @param int				$database	Keys database
+	 * @param int|string		$id_key		56 character [0-9a-z] key or id of record in daravase
+	 * @param bool $get_data				If <b>true</d> - stored data will be returned on success, otherwise boolean result of key existence will be returned
+	 *
+	 * @return bool|mixed
+	 */
 	function get ($database, $id_key, $get_data = false) {
 		if (!(is_int($id_key) || preg_match('/^[a-z0-9]{56}$/', $id_key))) {
 			return false;
@@ -68,6 +94,14 @@ class Key {
 			return true;
 		}
 	}
+	/**
+	 * Key deletion from database
+	 *
+	 * @param int			$database	Keys database
+	 * @param int|string	$id_key		56 character [0-9a-z] key or id of record in daravase
+	 *
+	 * @return bool
+	 */
 	function del ($database, $id_key) {
 		if (!(is_int($id_key) || preg_match('/^[a-z0-9]{56}$/', $id_key))) {
 			return false;
@@ -83,6 +117,8 @@ class Key {
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
 }

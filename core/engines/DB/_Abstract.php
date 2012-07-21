@@ -6,7 +6,7 @@ abstract class _Abstract {
 				 *
 				 * @var bool
 				 */
-	public		$connected	= false,
+	protected	$connected	= false,
 				/**
 				 * DB type, may be used for constructing requests, accounting particular features of current DB (lowercase name)
 				 *
@@ -59,23 +59,24 @@ abstract class _Abstract {
 				 *
 				 * @var int
 				 */
-				$connecting_time;
+				$connecting_time,
 				/**
 				 * Asynchronous request
 				 *
 				 * @var bool
 				 */
-	protected	$async		= false;
+				$async		= false;
 	/**
-	 * Connecting to DB
+	 * Connecting to the DB
 	 *
 	 * @param string	$database
 	 * @param string	$user
 	 * @param string	$password
 	 * @param string	$host
 	 * @param string	$charset
+	 * @param string	$prefix
 	 */
-	abstract function __construct ($database, $user = '', $password = '', $host = 'localhost', $charset = 'utf8');
+	abstract function __construct ($database, $user = '', $password = '', $host = 'localhost', $charset = 'utf8', $prefix = '');
 	/**
 	 * SQL request into DB
 	 *
@@ -328,7 +329,57 @@ abstract class _Abstract {
 	 */
 	abstract function server ();
 	/**
+	 * Connection state
+	 *
+	 * @return bool
+	 */
+	function connected () {
+		return $this->connected;
+	}
+	/**
+	 * Database type (lowercase, for example <i>mysql</i>)
+	 *
+	 * @return string
+	 */
+	function db_type () {
+		return $this->db_type;
+	}
+	/**
+	 * Database name
+	 *
+	 * @return string
+	 */
+	function database () {
+		return $this->database;
+	}
+	/**
+	 * Queries array
+	 *
+	 * @return array
+	 */
+	function queries () {
+		return $this->queries;
+	}
+	/**
+	 * Connecting time
+	 *
+	 * @return int
+	 */
+	function time () {
+		return $this->time;
+	}
+	/**
+	 * Working time
+	 *
+	 * @return int
+	 */
+	function connecting_time () {
+		return $this->connecting_time;
+	}
+	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	final function __clone () {}
 	/**

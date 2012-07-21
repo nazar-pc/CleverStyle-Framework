@@ -41,63 +41,53 @@ class FileSystem extends _Abstract {
 	function set ($item, $data) {
 		$data = @_json_encode($data);
 		if (strpos($item, '/') !== false) {
-			$subitems                       = explode('/', trim($item, "\n/"));
-			$subitems[count($subitems) - 1] = trim($subitems[count($subitems) - 1]);
-			$last = count($subitems) - 1;
-			$path = [];
-			foreach ($subitems as $i => $subitem) {
-				if ($i == $last) {
-					break;
-				}
-				$path[] = $subitem;
-				if (!is_dir(CACHE.'/'.implode('/', $path))) {
-					@mkdir(CACHE.'/'.implode('/', $path), 0770);
-				}
+			$path	= substr($item, 0, strrpos($item, '/'));
+			if (!is_dir(CACHE.'/'.$path)) {
+				@mkdir(CACHE.'/'.$path, 0770, true);
 			}
-			unset($subitems, $last, $path, $i, $subitem);
+			unset($path);
 		}
 		if (!file_exists(CACHE.'/'.$item) || is_writable(CACHE.'/'.$item)) {
 			if ($this->cache_size > 0) {
-				$dsize = strlen($data);
-				if (file_exists(CACHE.'/'.$item)) {
-					$dsize -= filesize(CACHE.'/'.$item);
-				}
+				$dsize				= strlen($data);
 				if ($dsize > $this->cache_size) {
 					return false;
 				}
-				if ($this->size === null && file_exists(CACHE.'/size')) {
-					$size = filesize(CACHE.'/size');
+				if (file_exists(CACHE.'/'.$item)) {
+					$dsize -= filesize(CACHE.'/'.$item);
 				}
-				$size_file = fopen(CACHE.'/size', 'c+b');
-				flock($size_file, LOCK_EX);
-				if (isset($size) && $this->size === null) {
-					$this->size = (int)fread($size_file, $size);
-				} elseif ($this->size === null) {
-					$this->size = 0;
+				$cache_size_file	= fopen(CACHE.'/size', 'c+b');
+				$time				= microtime(true);
+				while (!flock($cache_size_file, LOCK_EX)) {
+					if ($time < microtime() - .5) {
+						fclose($cache_size_file);
+						return false;
+					}
+					time_nanosleep(0, 1000000);
 				}
-				unset($size);
-				$this->size += $dsize;
-				if ($this->size > $this->cache_size) {
+				unset($time);
+				$cache_size	= (int)stream_get_contents($cache_size_file);
+				$cache_size	+= $dsize;
+				if ($cache_size > $this->cache_size) {
 					$cache_list = get_files_list(CACHE, false, 'f', true, true, 'date|desc');
+					global $Config;
 					foreach ($cache_list as $file) {
-						$this->size -= filesize($file);
+						$cache_size -= filesize($file);
 						unlink($file);
 						$disk_size = $this->cache_size * 2 / 3;
-						if ($this->size <= $disk_size) {
+						if ($cache_size <= $disk_size * $Config->core['update_ratio'] / 100) {
 							break;
 						}
 					}
 					unset($cache_list, $file);
 				}
 				if (($return = file_put_contents(CACHE.'/'.$item, $data, LOCK_EX | FILE_BINARY)) !== false) {
-					ftruncate($size_file, 0);
-					fseek($size_file, 0);
-					fwrite($size_file, $this->size > 0 ? $this->size : 0);
-				} else {
-					$this->size -= $dsize;
+					ftruncate($cache_size_file, 0);
+					fseek($cache_size_file, 0);
+					fwrite($cache_size_file, $cache_size > 0 ? $cache_size : 0);
 				}
-				flock($size_file, LOCK_UN);
-				fclose($size_file);
+				flock($cache_size_file, LOCK_UN);
+				fclose($cache_size_file);
 				return $return;
 			} else {
 				return file_put_contents(CACHE.'/'.$item, $data, LOCK_EX | FILE_BINARY);
@@ -126,22 +116,25 @@ class FileSystem extends _Abstract {
 				return rmdir(CACHE.'/'.$item);
 			}
 			if ($this->cache_size > 0) {
-				if ($this->size === null && file_exists(CACHE.'/size')) {
-					$size = filesize(CACHE.'/size');
+				$cache_size_file	= fopen(CACHE.'/size', 'c+b');
+				$time				= microtime(true);
+				while (!flock($cache_size_file, LOCK_EX)) {
+					if ($time < microtime() - .5) {
+						fclose($cache_size_file);
+						return false;
+					}
+					time_nanosleep(0, 1000000);
 				}
-				$size_file = fopen(CACHE.'/size', 'c+b');
-				flock($size_file, LOCK_EX);
-				if (isset($size) && $this->size === null) {
-					$this->size .= (int)fread($size_file, $size);
-				}
-				$this->size -= filesize(CACHE.'/'.$item);
+				unset($time);
+				$cache_size	= (int)stream_get_contents($cache_size_file);
+				$cache_size -= filesize(CACHE.'/'.$item);
 				if (unlink(CACHE.'/'.$item)) {
-					ftruncate($size_file, 0);
-					fseek($size_file, 0);
-					fwrite($size_file, $this->size > 0 ? $this->size : 0);
+					ftruncate($cache_size_file, 0);
+					fseek($cache_size_file, 0);
+					fwrite($cache_size_file, $cache_size > 0 ? $cache_size : 0);
 				}
-				flock($size_file, LOCK_UN);
-				fclose($size_file);
+				flock($cache_size_file, LOCK_UN);
+				fclose($cache_size_file);
 			} else {
 				unlink(CACHE.'/'.$item);
 			}

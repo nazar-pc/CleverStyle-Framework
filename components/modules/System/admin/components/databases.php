@@ -162,7 +162,7 @@ if (isset($rc[2])) {
 					$name	= $L->db.' '.$cdb['name'].' ('.$cdb['host'].'/'.$cdb['type'].')?';
 				}
 				unset($mirror, $cdb);
-				$Page->title($L->deleting_a_database($name));
+				$Page->title($L->deletion_of_database($name));
 				$a->content(
 					h::{'p.ui-priority-primary.cs-state-messages'}(
 						$L->sure_to_delete.' '.$name.

@@ -58,7 +58,7 @@ class DB {
 			if ($select < $mirrors) {
 				$mirror = $Config->db[$connection]['mirrors'][--$select];
 				$mirror_connection = $this->connecting($mirror['name'], $mirror);
-				if (is_object($mirror_connection) && $mirror_connection->connected) {
+				if (is_object($mirror_connection) && $mirror_connection->connected()) {
 					$this->mirrors[$connection] = $mirror_connection;
 					return $this->mirrors[$connection];
 				} else {
@@ -93,6 +93,8 @@ class DB {
 		}
 	}
 	/**
+	 * Processing of all DB request
+	 *
 	 * @param int						$connection	Database id
 	 * @param array|bool				$mirror
 	 *
@@ -106,13 +108,13 @@ class DB {
 			return false;
 		}
 		/**
-		 * If we want to get data and connection with DB mirror already exists - return reference on the instance of engine DB object
+		 * If we want to get data and connection with DB mirror already exists - return reference on the instance of DB engine object
 		 */
 		if ($mirror === true && isset($this->mirrors[$connection])) {
 			return $this->mirrors[$connection];
 		}
 		/**
-		 * If connection already exists - return reference on the instance of engine DB object
+		 * If connection already exists - return reference on the instance of DB engine object
 		 */
 		if (isset($this->connections[$connection])) {
 			return $this->connections[$connection];
@@ -145,19 +147,14 @@ class DB {
 		/**
 		 * Create new DB connection
 		 */
-		errors_off();
 		$engine_class					= '\\cs\\DB\\'.$db['type'];
-		$this->connections[$connection]	= new $engine_class($db['name'], $db['user'], $db['password'], $db['host'], $db['charset']);
-		errors_on();
+		$this->connections[$connection]	= new $engine_class($db['name'], $db['user'], $db['password'], $db['host'], $db['charset'], $db['prefix']);
+		unset($engine_class);
 		/**
-		 * If successfully - add connection to the list of success connections and return instance of engine DB object
+		 * If successfully - add connection to the list of success connections and return instance of DB engine object
 		 */
-		if (is_object($this->connections[$connection]) && $this->connections[$connection]->connected) {
+		if (is_object($this->connections[$connection]) && $this->connections[$connection]->connected()) {
 			$this->successful_connections[] = ($connection == 0 ? $L->core_db.'('.$Core->config('db_type').')' : $connection).'/'.$db['host'].'/'.$db['type'];
-			/**
-			 * Set up tables prefix
-			 */
-			$this->connections[$connection]->prefix = $db['prefix'];
 			unset($db);
 			$this->$connection = $this->connections[$connection];
 			return $this->connections[$connection];
@@ -178,21 +175,18 @@ class DB {
 				$dbx = ($connection == 0 ? $Config->db[0]['mirrors'] : $Config->db[$connection]['mirrors']);
 				foreach ($dbx as $i => &$mirror_data) {
 					$mirror_connection = $this->connecting($connection.' ('.$mirror_data['name'].')', $mirror_data);
-					if (is_object($mirror_connection) && $mirror_connection->connected) {
+					if (is_object($mirror_connection) && $mirror_connection->connected()) {
 						$this->mirrors[$connection] = $mirror_connection;
-						//Ускоряем повторную операцию доступа к этой БД
 						$this->$connection = $this->connections[$connection];
-						//Возвращаем ссылку на подключение
 						return $this->mirrors[$connection];
 					}
 				}
 				unset($dbx, $i, $mirror_data, $mirror_connection);
 			}
 			/**
-			 * If mirror connection is not allowec - display connection error
+			 * If mirror connection is not allowed - display connection error
 			 */
 			if (!is_array($mirror)) {
-				global $L;
 				if ($connection == 0) {
 					trigger_error($L->error_core_db, E_USER_ERROR);
 				} else {
@@ -203,9 +197,9 @@ class DB {
 		}
 	}
 	/**
-	 * Testing connection to the DB
+	 * Test connection to the DB
 	 *
-	 * @param array|string $data	Array or tring in JSON format of connection parameters
+	 * @param array|string $data	Array or string in JSON format of connection parameters
 	 *
 	 * @return bool
 	 */
@@ -248,13 +242,15 @@ class DB {
 				$db['charset'] ?: $Core->config('db_charset')
 			);
 			errors_on();
-			return $test->connected;
+			return $test->connected();
 		} else {
 			return false;
 		}
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
 }

@@ -25,8 +25,10 @@ class Language {
 		$this->change($Core->config('language'));
 	}
 	/**
-	 * @param array  $active_languages
-	 * @param string $language
+	 * Initialization: defining current language, loading translation
+	 *
+	 * @param array		$active_languages
+	 * @param string	$language
 	 *
 	 * @return void
 	 */
@@ -59,11 +61,16 @@ class Language {
 		}
 	}
 	/**
-	 * @param array $active_languages
+	 * Scanning of aliases for defining of current language
+	 *
+	 * @param array			$active_languages
 	 *
 	 * @return bool|string
 	 */
 	protected function scan_aliases ($active_languages) {
+		if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+			return false;
+		}
 		global $Cache;
 		if (($aliases = $Cache->{'languages/aliases'}) === false) {
 			$aliases		= [];
@@ -87,7 +94,7 @@ class Language {
 	/**
 	 * Get translation
 	 *
-	 * @param string $item
+	 * @param string	$item
 	 *
 	 * @return string
 	 */
@@ -97,8 +104,8 @@ class Language {
 	/**
 	 * Set translation
 	 *
-	 * @param array|string $item
-	 * @param null|string $value
+	 * @param array|string	$item
+	 * @param null|string	$value
 	 *
 	 * @return string
 	 */
@@ -114,7 +121,7 @@ class Language {
 	/**
 	 * Get translation
 	 *
-	 * @param string $item
+	 * @param string	$item
 	 *
 	 * @return string
 	 */
@@ -124,8 +131,8 @@ class Language {
 	/**
 	 * Set translation
 	 *
-	 * @param array|string $item
-	 * @param null|string $value
+	 * @param array|string	$item
+	 * @param null|string	$value
 	 *
 	 * @return string
 	 */
@@ -135,7 +142,7 @@ class Language {
 	/**
 	 * Change language
 	 *
-	 * @param string $language
+	 * @param string	$language
 	 *
 	 * @return bool
 	 */
@@ -223,8 +230,8 @@ class Language {
 	 * Allows to use formatted strings in translations
 	 *
 	 * @see format()
-	 * @param $name
-	 * @param $arguments
+	 * @param	$name
+	 * @param	$arguments
 	 *
 	 * @return string
 	 */
@@ -234,20 +241,19 @@ class Language {
 	/**
 	 * Allows to use formatted strings in translations
 	 *
-	 * @param $name
-	 * @param $arguments
+	 * @param	$name
+	 * @param	$arguments
 	 *
 	 * @return string
 	 */
 	function format ($name, $arguments) {
 		return vsprintf($this->get($name), $arguments);
 	}
-
 	/**
 	 * Formatting data according to language locale (translating months names, days of week, etc.)
 	 *
-	 * @param string|string[] $data
-	 * @param bool            $short_may	When in date() or similar functions "M" format option is used, third month "May"
+	 * @param string|string[]	$data
+	 * @param bool				$short_may	When in date() or similar functions "M" format option is used, third month "May"
 	 * 										have the same short textual representation as full, so, this option allows to
 	 * 										specify, which exactly form of representation do you want
 	 *
@@ -310,6 +316,8 @@ class Language {
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
 }

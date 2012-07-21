@@ -2,6 +2,9 @@
 namespace	cs;
 use			\h;
 class Mail extends \PHPMailer {
+	/**
+	 * Setting base mail sending parameters according to system configuration
+	 */
 	function __construct () {
 		global $Config;
 		if (is_object($Config)) {

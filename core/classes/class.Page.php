@@ -49,25 +49,52 @@ class Page {
 				$css		= [0 => '', 1 => ''],
 				$Search		= [],
 				$Replace	= [];
-
+	/**
+	 * Setting interface state on/off
+	 */
 	function __construct () {
 		global $interface;
 		$this->interface = (bool)$interface;
 		unset($GLOBALS['interface']);
 	}
-	function init ($name, $keywords, $description, $theme, $color_scheme) {
-		$this->Title[0] = htmlentities($name, ENT_COMPAT, 'utf-8');
+	/**
+	 * Initialization: setting of title, keywords, description, theme and color scheme according to specified parameters
+	 *
+	 * @param string	$title
+	 * @param string	$keywords
+	 * @param string	$description
+	 * @param string	$theme
+	 * @param string	$color_scheme
+	 */
+	function init ($title, $keywords, $description, $theme, $color_scheme) {
+		$this->Title[0] = htmlentities($title, ENT_COMPAT, 'utf-8');
 		$this->Keywords = $keywords;
 		$this->Description = $description;
 		$this->set_theme($theme);
 		$this->set_color_scheme($color_scheme);
 	}
+	/**
+	 * Theme changing
+	 *
+	 * @param string	$theme
+	 */
 	function set_theme ($theme) {
 		$this->theme = $theme;
 	}
+	/**
+	 * Colos scheme changing
+	 *
+	 * @param string	$color_scheme
+	 */
 	function set_color_scheme ($color_scheme) {
 		$this->color_scheme = $color_scheme;
 	}
+	/**
+	 * Adding of content on the page
+	 *
+	 * @param string	$add
+	 * @param bool|int	$level
+	 */
 	function content ($add, $level = false) {
 		if ($level !== false) {
 			$this->Content .= h::level($add, $level);
@@ -141,7 +168,7 @@ class Page {
 		}
 	}
 	/**
-	 * Processing of template, cubstituting of content, preparing for the output
+	 * Processing of template, substituting of content, preparing for the output
 	 */
 	protected function prepare () {
 		global $L, $Config;
@@ -226,7 +253,7 @@ class Page {
 		/**
 		 * Getting footer information
 		 */
-		$this->Footer .= $this->get_footer();
+		$this->get_footer();
 		/**
 		 * Substitution of information into template
 		 */
@@ -271,10 +298,10 @@ class Page {
 		);
 	}
 	/**
-	 * Replacing anything in source code of filally genereted page
+	 * Replacing anything in source code of finally genereted page
 	 *
-	 * @param string|string[] $search
-	 * @param string|string[] $replace
+	 * @param string|string[]	$search
+	 * @param string|string[]	$replace
 	 */
 	function replace ($search, $replace = '') {
 		if (is_array($search)) {
@@ -507,8 +534,8 @@ class Page {
 	 * Supports next file extensions for possible includes:<br>
 	 * jpeg, jpe, jpg, gif, png, ttf, ttc, svg, svgz, woff, eot, css
 	 *
-	 * @param $data	//Content of processed file
-	 * @param $file	//Path to file, that includes specified in previous parameter content
+	 * @param string	$data	Content of processed file
+	 * @param string	$file	Path to file, that includes specified in previous parameter content
 	 */
 	function css_includes_processing (&$data, $file) {
 		$cwd	= getcwd();
@@ -572,12 +599,10 @@ class Page {
 	}
 	/**
 	 * Getting footer information
-	 *
-	 * @return string
 	 */
 	protected function get_footer () {
 		global $L, $db, $Config;
-		return h::div(
+		$this->Footer .= h::div(
 			$Config->core['footer_text'] ?: false,
 			$Config->core['show_footer_info'] ?
 				$L->page_footer_info('<!--generate time-->', $db->queries, format_time(round($db->time, 5)), '<!--peak memory usage-->') : false,
@@ -644,22 +669,23 @@ class Page {
 			];
 			$tmp				= '';
 			foreach ($db->get_connections_list() as $name => $database) {
-				$tmp	.= h::{'p.cs-padding-left'}(
+				$queries	= $database->queries;
+				$tmp		.= h::{'p.cs-padding-left'}(
 					$L->debug_db_info(
-						$name != 0 ? $L->db.' '.$database->database : $L->core_db.' ('.$database->database.')',
-						format_time(round($database->connecting_time, 5)),
-						$database->queries['num'],
-						format_time(round($database->time, 5))
+						$name != 0 ? $L->db.' '.$database->database() : $L->core_db.' ('.$database->database().')',
+						format_time(round($database->connecting_time(), 5)),
+						$queries['num'],
+						format_time(round($database->time(), 5))
 					)
 				);
-				foreach ($database->queries['text'] as $i => $text) {
+				foreach ($queries['text'] as $i => $text) {
 					$tmp	.= h::code(
 						$text.
 						h::br(2).
-						'#'.h::i(format_time(round($database->queries['time'][$i], 5))).
-						($error = (stripos($text, 'select') === 0 && !$database->queries['result'][$i]) ? '('.$L->error.')' : ''),
+						'#'.h::i(format_time(round($queries['time'][$i], 5))).
+						($error = (stripos($text, 'select') === 0 && !$queries['result'][$i]) ? '('.$L->error.')' : ''),
 						[
-							'class' => ($database->queries['time'][$i] > 0.1 ? 'ui-state-highlight ' : '').($error ? 'ui-state-error ' : '').'cs-debug-code'
+							'class' => ($queries['time'][$i] > 0.1 ? 'ui-state-highlight ' : '').($error ? 'ui-state-error ' : '').'cs-debug-code'
 						]
 					);
 				}
@@ -713,21 +739,21 @@ class Page {
 	/**
 	 * Display notice
 	 *
-	 * @param string $text
+	 * @param string $notice_text
 	 */
-	function notice ($text) {
+	function notice ($notice_text) {
 		$this->Top .= h::{'div.ui-state-highlight.ui-corner-all.ui-priority-primary.cs-center.cs-state-messages'}(
-			$text
+			$notice_text
 		);
 	}
 	/**
 	 * Display warning
 	 *
-	 * @param string $text
+	 * @param string $warning_text
 	 */
-	function warning ($text) {
+	function warning ($warning_text) {
 		$this->Top .= h::{'div.ui-state-error.ui-corner-all.ui-priority-primary.cs-center.cs-state-messages'}(
-			$text
+			$warning_text
 		);
 	}
 	/**
@@ -860,6 +886,8 @@ class Page {
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
 	/**

@@ -2,7 +2,7 @@
 namespace cs;
 class Text {
 	/**
-	 * Gets text
+	 * Gets text on current language
 	 *
 	 * @param int        $database
 	 * @param string     $group
@@ -49,7 +49,7 @@ class Text {
 				}
 				global $Config;
 				if ($Config->core['auto_translation'] && $lang && $text){
-					$engine_class	= '\\cs\\translate\\'.$Config->core['auto_translation_engine']['name'];
+					$engine_class	= '\\cs\\Text\\'.$Config->core['auto_translation_engine']['name'];
 					$text			= $engine_class::translate($text, $lang, $L->lang) ?: $text;
 					$this->set($database, $group, $label, $text);
 				}
@@ -59,7 +59,7 @@ class Text {
 		return $text;
 	}
 	/**
-	 * Sets text
+	 * Sets text on current language
 	 *
 	 * @param int          $database
 	 * @param string       $group
@@ -74,7 +74,7 @@ class Text {
 		unset($Cache->{$index});
 		$database = $db->$database();
 		/**
-		 * @var \cs\database\_Abstract $database
+		 * @var \cs\DB\_Abstract $database
 		 */
 		if ($id = $database->qf(
 			[
@@ -108,6 +108,8 @@ class Text {
 		}
 	}
 	/**
+	 * Deletes text on all languages
+	 *
 	 * @param int        $database
 	 * @param string     $group
 	 * @param string     $label
@@ -131,14 +133,14 @@ class Text {
 		}
 		unset($ids, $id);
 		return $db->$database()->q(
-			"UPDATE `[prefix]texts` SET `label` = null, `group` = null, `text` = null, `lang` = null WHERE `group` = '%s' AND `label` = '%s' AND `lang` = '%s'",
+			"UPDATE `[prefix]texts` SET `label` = null, `group` = null, `text` = null, `lang` = null WHERE `group` = '%s' AND `label` = '%s'",
 			$group,
-			$label,
-			$L->clang
+			$label
 		);
 	}
-
 	/**
+	 * Process text, and replace {¶([0-9]*?)} on real text, is used before showing multilanguage information
+	 *
 	 * @param int					$database
 	 * @param string|string[]		$data
 	 *
@@ -164,6 +166,8 @@ class Text {
 	}
 	/**
 	 * Cloning restriction
+	 *
+	 * @final
 	 */
 	function __clone () {}
 }

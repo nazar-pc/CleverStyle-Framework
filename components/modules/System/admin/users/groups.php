@@ -81,7 +81,7 @@ if (isset($rc[2])) {
 			$a->cancel_button_back	= true;
 			$group					= $User->get_group_data($rc[3]);
 			$Page->title(
-				$L->deleting_a_group($group['title'])
+				$L->deletion_of_group($group['title'])
 			);
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages'}(

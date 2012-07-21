@@ -7,17 +7,18 @@ class MySQLi extends _Abstract {
 	protected	$instance;
 
 	/**
-	 * Connecting to DB
+	 * Connecting to the DB
 	 *
 	 * @param string	$database
 	 * @param string	$user
 	 * @param string	$password
 	 * @param string	$host
 	 * @param string	$charset
+	 * @param string	$prefix
 	 *
 	 * @return bool|MySQLi
 	 */
-	function __construct ($database, $user = '', $password = '', $host = 'localhost', $charset = 'utf8') {
+	function __construct ($database, $user = '', $password = '', $host = 'localhost', $charset = 'utf8', $prefix = '') {
 		$this->connecting_time	= microtime(true);
 		/**
 		 * Parsing of $host variable, detecting port and persistent connection
@@ -53,7 +54,8 @@ class MySQLi extends _Abstract {
 		$this->connecting_time	= microtime(true) - $this->connecting_time;
 		global $db;
 		$db->time				+= $this->connecting_time;
-		$this->db_type			= 'MySQLi';
+		$this->db_type			= 'mysql';
+		$this->prefix			= $prefix;
 		return $this;
 	}
 

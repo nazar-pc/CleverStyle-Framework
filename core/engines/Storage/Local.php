@@ -1,0 +1,213 @@
+<?php
+namespace cs\Storage;
+class Local extends _Abstract {
+	/**
+	 * Connecting to the Storage
+	 *
+	 * @param string	$base_url
+	 * @param string	$host
+	 * @param string	$user
+	 * @param string	$password
+	 */
+	function __construct ($base_url, $host, $user = '', $password = '') {
+		$this->base_url = url_by_source(STORAGE);
+		$this->connected = true;
+	}
+	/**
+	 * Function for getting content of a directory
+	 *
+	 * @see get_files_list()
+	 *
+	 * @param	string		$dir
+	 * @param	bool|string	$mask
+	 * @param	string		$mode
+	 * @param	bool|string	$prefix_path
+	 * @param	bool		$subfolders
+	 * @param	bool		$sort
+	 * @param	bool|string	$exclusion
+	 *
+	 * @return	array|bool
+	 */
+	function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subfolders = false, $sort = false, $exclusion = false) {
+		return call_user_func_array(__FUNCTION__, func_get_args());
+	}
+	/**
+	 * Reads entire file into an array
+	 *
+	 * @see file()
+	 *
+	 * @param string		$filename
+	 * @param int			$flags
+	 *
+	 * @return array|bool
+	 */
+	function file ($filename, $flags = null) {
+		return call_user_func_array(__FUNCTION__, func_get_args());
+	}
+	/**
+	 * Reads entire file into a string
+	 *
+	 * @see file_get_contents()
+	 *
+	 * @param string	$filename
+	 * @param int		$flags
+	 *
+	 * @return bool|string
+	 */
+	function file_get_contents ($filename, $flags = null) {
+		return call_user_func_array(__FUNCTION__, func_get_args());
+	}
+	/**
+	 * Write a string to a file
+	 *
+	 * @see file_put_contents()
+	 *
+	 * @param string	$filename
+	 * @param string	$data
+	 * @param int		$flags
+	 *
+	 * @return bool|int
+	 */
+	function file_put_contents ($filename, $data, $flags = null) {
+		return call_user_func_array(__FUNCTION__, func_get_args());
+	}
+	/**
+	 * Copies file
+	 *
+	 * @see copy()
+	 *
+	 * @param string	$source
+	 * @param string	$dest
+	 *
+	 * @return bool
+	 */
+	function copy ($source, $dest) {
+		return call_user_func_array(__FUNCTION__, func_get_args());
+	}
+	/**
+	 * Deletes a file
+	 *
+	 * @see unlink()
+	 *
+	 * @param string	$filename
+	 *
+	 * @return bool
+	 */
+	function unlink ($filename) {
+		return call_user_func_array(__FUNCTION__, func_get_args());
+	}
+	/**
+	 * Checks whether a file or directory exists
+	 *
+	 * @see file_exists()
+	 *
+	 * @param string	$filename
+	 *
+	 * @return bool
+	 */
+	function file_exists ($filename) {
+		return call_user_func_array(__FUNCTION__, func_get_args());
+	}
+	/**
+	 * Moves an uploaded file to a new location
+	 *
+	 * @abstract
+	 *
+	 * @see move_uploaded_file()
+	 *
+	 * @param string	$filename
+	 * @param string	$destination
+	 *
+	 * @return bool
+	 */
+	function move_uploaded_file ($filename, $destination) {
+		return call_user_func_array(__FUNCTION__, func_get_args());
+	}
+	/**
+	 * Renames a file or directory
+	 *
+	 * @see rename()
+	 *
+	 * @param string	$oldname
+	 * @param string	$newname
+	 *
+	 * @return bool
+	 */
+	function rename ($oldname, $newname) {
+		return call_user_func_array(__FUNCTION__, func_get_args());
+	}
+	/**
+	 * Attempts to create the directory specified by pathname.
+	 *
+	 * @see mkdir()
+	 *
+	 * @param string	$pathname
+	 * @param int		$mode
+	 * @param bool		$recursive
+	 *
+	 * @return bool
+	 */
+	function mkdir ($pathname, $mode = 0777, $recursive = false) {
+		return call_user_func_array(__FUNCTION__, func_get_args());
+	}
+	/**
+	 * Removes directory
+	 *
+	 * @see rmdir()
+	 *
+	 * @param string	$dirname
+	 *
+	 * @return bool
+	 */
+	function rmdir ($dirname) {
+		return call_user_func_array(__FUNCTION__, func_get_args());
+	}
+	/**
+	 * Tells whether the filename is a regular file
+	 *
+	 * @see is_file()
+	 *
+	 * @param string	$filename
+	 *
+	 * @return bool
+	 */
+	function is_file ($filename) {
+		return call_user_func_array(__FUNCTION__, func_get_args());
+	}
+	/**
+	 * Tells whether the filename is a directory
+	 *
+	 * @see is_dir()
+	 *
+	 * @param string	$filename
+	 *
+	 * @return bool
+	 */
+	function is_dir ($filename) {
+		return call_user_func_array(__FUNCTION__, func_get_args());
+	}
+	/**
+	 * Get file url by it's destination in file system
+	 *
+	 * @see url_by_source()
+	 *
+	 * @param string		$source
+	 *
+	 * @return bool|string
+	 */
+	function url_by_source ($source) {
+		return call_user_func_array(__FUNCTION__, func_get_args());
+	}
+	/**
+	 * Get file destination in file system by it's url
+	 *
+	 * @see source_by_url()
+	 *
+	 * @param string		$url
+	 *
+	 * @return bool|string
+	 */
+	function source_by_url ($url) {
+		return call_user_func_array(__FUNCTION__, func_get_args());
+	}
+}

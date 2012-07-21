@@ -97,7 +97,7 @@ if (isset($rc[2])) {
 				$Page->warning($L->storage_used_by_modules.': '.implode(', ', $modules));
 			} else {
 				$a->action = 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
-				$Page->title($L->deleting_a_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']));
+				$Page->title($L->deletion_of_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']));
 				$a->content(
 					h::{'p.ui-priority-primary.cs-state-messages'}(
 						$L->sure_to_delete.' '.$L->storage.' '.

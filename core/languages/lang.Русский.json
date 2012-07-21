@@ -341,7 +341,7 @@
 		"type_username_or_email_press_enter"	: "Введите имя пользователя или email, нажмите Enter",
 		"adding_a_block"						: "Добавление блока",
 		"editing_a_block"						: "Редактирование блока %s",
-		"deleting_a_block"						: "Удаление блока %s",
+		"deletion_of_block"						: "Удаление блока %s",
 		//Databases
 		"databases"				: "Базы данных",
 		"db"					: "БД",
@@ -374,7 +374,7 @@
 		"of_db"					: "БД",
 		"adding_a_database"		: "Добавление БД",
 		"editing_a_database"	: "Редактирование %s",
-		"deleting_a_database"	: "Удаление %s",
+		"deletion_of_database"	: "Удаление %s",
 		//Storages
 		"storages"					: "Хранилища",
 		"storage"					: "Хранилище",
@@ -405,7 +405,7 @@
 		"on_error_globals_dump_info"	: "Во время возникновения ошибки, в лог-файл ошибок будет записана дополнительная информация с распечаткой переменной $Core, которая содержит все глобальные объекты с их внутренним состоянием, а также распечатку отладочной информации о цепочке выполнения кода, с помощью функции debug_backtrace(). ВНИМАНИЕ: файлы логов могут быть ОЧЕНЬ большими, поэтому включайте опцию только в крайней необходимости при отладке.",
 		"adding_a_storage"				: "Добавление хранилища",
 		"editing_a_storage"				: "Редактирование хранилища %s",
-		"deleting_a_storage"			: "Удаление хранилища %s",
+		"deletion_of_storage"			: "Удаление хранилища %s",
 	//Users
 	"users"					: "Пользователи",
 		//General
@@ -533,7 +533,7 @@
 		"not_specified"				: "Не указано",
 		"adding_a_group"			: "Добавление группы",
 		"editing_a_group"			: "Редактирование группу %s",
-		"deleting_a_group"			: "Удаление группы %s",
+		"deletion_of_group"			: "Удаление группы %s",
 		//Permissios
 		"permissions"							: "Разрешения",
 		"label"									: "Метка",
@@ -545,7 +545,7 @@
 		"add_permission"						: "Добавить разрешение",
 		"adding_a_permission"					: "Добавление разрешения",
 		"editing_a_permission"					: "Редактирование разрешения %s",
-		"deleting_a_permission"					: "Удаление разрешения %s",
+		"deletion_of_permission"				: "Удаление разрешения %s",
 		//Statistic
 		"statistic"	: "Статистика",
 		//Mail

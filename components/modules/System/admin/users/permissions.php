@@ -76,7 +76,7 @@ if (isset($rc[2])) {
 			$a->cancel_button_back	= true;
 			$permission				= $User->get_permission($rc[3]);
 			$Page->title(
-				$L->deleting_a_permission($permission['group'].'/'.$permission['label'])
+				$L->deletion_of_permission($permission['group'].'/'.$permission['label'])
 			);
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages'}(
