@@ -1,6 +1,8 @@
 ﻿<?php
 global $Config, $Page, $User, $L;
-//Если AJAX запрос от локального реферала, пользователь зарегистрирован - меняем пароль, иначе выдаем ошибку
+/**
+ * If AJAX request from local referer, user is registered - change password, otherwise - show error
+ */
 if (
 	!$Config->server['referer']['local'] ||
 	!$Config->server['ajax'] ||

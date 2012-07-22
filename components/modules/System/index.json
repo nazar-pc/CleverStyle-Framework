@@ -3,6 +3,7 @@
 	"profile"	: [
 		"info",
 		"settings",
-		"confirmation"
+		"registration_confirmation",
+		"restore_password_confirmation"
 	]
 }

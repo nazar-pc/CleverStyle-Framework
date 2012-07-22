@@ -58,7 +58,7 @@ var loading_interval, loading_angle = 0;
 		} else {
 			header_visible = 'show';
 		}
-		$('#header_zone').mouseover(
+		$('.cs-header-zone').mouseover(
 			function () {
 				if (header_visible == 'hide' && header_move_allow) {
 					header_move_allow = false;
@@ -70,7 +70,7 @@ var loading_interval, loading_angle = 0;
 				}
 			}
 		);
-		$('#header_black').mouseout(
+		$('.cs-header-black').mouseout(
 			function () {
 				if (header_visible == 'show' && header_move_allow) {
 					header_move_allow = false;

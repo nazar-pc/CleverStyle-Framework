@@ -783,7 +783,7 @@ class Page {
 				$this->user_avatar_image = 'url(/includes/img/guest.gif)';
 			}
 			$this->user_info = h::b($L->hello.', '.$User->get_username().'!').
-			h::{'icon#logout_process'}(
+			h::{'icon.cs-header-logout-process'}(
 				'power',
 				[
 					'style'			=> 'cursor: pointer;',
@@ -813,66 +813,81 @@ class Page {
 			);
 		} else {
 			$this->user_avatar_image = 'url(/includes/img/guest.gif)';
-			$this->user_info = h::{'div#anonym_header_form'}(
+			$this->user_info = h::{'div.cs-header-anonym-form'}(
 				h::b($L->hello.', '.$L->guest.'!').
 				h::br().
-				h::{'button#login_slide.cs-button-compact'}(
+				h::{'button.cs-header-login-slide.cs-button-compact'}(
 					h::icon('check').$L->log_in
 				).
-				h::{'button#registration_slide.cs-button-compact'}(
+				h::{'button.cs-header-registration-slide.cs-button-compact'}(
 					h::icon('pencil').$L->register,
 					[
 						 'data-title'	=> $L->quick_registration_form
 					]
 				)
 			).
-			h::{'div#register_header_form'}(
-				h::{'input#register[tabindex=1]'}(
+			h::{'div.cs-header-restore-password-form'}(
+				h::{'input.cs-header-restore-password-email[tabindex=1]'}(
 					[
-						 'placeholder'	=> $L->email_or
+						'placeholder'	=> $L->email
 					]
 				).
-				h::{'select#register_list'}(
-					[
-						 'in'			=> array_merge([''], (array)_mb_substr(get_files_list(MODULES.'/System/registration', '/^.*?\.php$/i', 'f'), 0, -4))
-					]
+				h::{'button.cs-header-restore-password-process.cs-button-compact[tabindex=2]'}(
+					h::icon('help').$L->restore_password
 				).
-				h::{'button#register_process.cs-button-compact[tabindex=2]'}(h::icon('pencil').$L->register).
+				h::div().
 				h::{'button.cs-button-compact.cs-header-back[tabindex=3]'}(
 					h::icon('carat-1-s'),
 					[
-						 'data-title'	=> $L->back
-					]
-				).
-				h::{'button.cs-button-compact.cs-header-restore-password[tabindex=4]'}(
-					h::icon('help'),
-					[
-						 'data-title'	=> $L->restore_password
+						'data-title'	=> $L->back
 					]
 				),
 				[
-					 'style'	=> 'display: none;'
+					'style'	=> 'display: none;'
 				]
 			).
-			h::{'div#login_header_form'}(
-				h::{'input#user_login[tabindex=1]'}([
-					'placeholder'	=> $L->login_or_email_or
-				]).
-				h::{'select#login_list'}([
-					'in'			=> array_merge([''], (array)_mb_substr(get_files_list(MODULES.'/System/registration', '/^.*?\.php$/i', 'f'), 0, -4))
-				]).
-				h::{'input#user_password[type=password][tabindex=2]'}([
+			h::{'div.cs-header-register-form'}(
+				h::{'input.cs-header-registration-email[tabindex=1]'}(
+					[
+					'placeholder'	=> $L->email
+					]
+				).//TODO foreign login systems processing, open pop-up window instead of list
+				h::{'button.cs-header-register-process.cs-button-compact[tabindex=2]'}(
+					h::icon('pencil').$L->register
+				).
+				h::div().
+				h::{'button.cs-button-compact.cs-header-back[tabindex=3]'}(
+					h::icon('carat-1-s'),
+					[
+					'data-title'	=> $L->back
+					]
+				).
+				h::{'button.cs-button-compact.cs-header-restore-password-slide[tabindex=4]'}(
+					h::icon('help'),
+					[
+					'data-title'	=> $L->restore_password
+					]
+				),
+				[
+				'style'	=> 'display: none;'
+				]
+			).
+			h::{'div.cs-header-login-form'}(
+				h::{'input.cs-header-login-email[tabindex=1]'}([
+					'placeholder'	=> $L->login_or_email
+				]).//TODO foreign login systems processing, open pop-up window instead of list
+				h::{'input.cs-header-user-password[type=password][tabindex=2]'}([
 					'placeholder'	=> $L->password
 				]).
-				h::{'icon#show_password.pointer'}('locked').
-				h::{'button#login_process.cs-button-compact[tabindex=3]'}(h::icon('check').$L->log_in).
+				h::{'icon.cs-header-show-password.cs-pointer'}('locked').
+				h::{'button.cs-header-login-process.cs-button-compact[tabindex=3]'}(h::icon('check').$L->log_in).
 				h::{'button.cs-button-compact.cs-header-back[tabindex=5]'}(
 					h::icon('carat-1-s'),
 					[
 						'data-title'	=> $L->back
 					]
 				).
-				h::{'button.cs-button-compact.cs-header-restore-password[tabindex=4]'}(
+				h::{'button.cs-button-compact.cs-header-restore-password-slide[tabindex=4]'}(
 					h::icon('help'),
 					[
 						'data-title'	=> $L->restore_password

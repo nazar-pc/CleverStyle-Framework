@@ -346,7 +346,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 					]
 				);
 			}
-			$addition_state .= h::{'icon.pointer'}(
+			$addition_state .= h::{'icon.cs-pointer'}(
 				'link',
 				[
 					'data-title'	=> $L->api_exists.h::br().(file_exists($file) ? $L->click_to_view_details : ''),
@@ -373,7 +373,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 					'title'			=> $module.' -> '.$L->information_about_module
 				]
 			).
-			h::{'icon.pointer'}(
+			h::{'icon.cs-pointer'}(
 				'notice',
 				[
 					'data-title'	=> $L->information_about_module.h::br().$L->click_to_view_details,
@@ -400,7 +400,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 					'title'			=> $module.' -> '.$L->license
 				]
 			).
-			h::{'icon.pointer'}(
+			h::{'icon.cs-pointer'}(
 				'note',
 				[
 					'data-title'	=> $L->license.h::br().$L->click_to_view_details,

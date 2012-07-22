@@ -102,7 +102,7 @@ foreach ($plugins as $plugin) {
 				'title'			=> $plugin.' -> '.$L->information_about_plugin
 			]
 		).
-		h::{'icon.pointer'}(
+		h::{'icon.cs-pointer'}(
 			'notice',
 			[
 				'data-title'	=> $L->information_about_plugin.h::br().$L->click_to_view_details,
@@ -129,7 +129,7 @@ foreach ($plugins as $plugin) {
 				'title'			=> $plugin.' -> '.$L->license
 			]
 		).
-		h::{'icon.pointer'}(
+		h::{'icon.cs-pointer'}(
 			'note',
 			[
 				'data-title'	=> $L->license.h::br().$L->click_to_view_details,

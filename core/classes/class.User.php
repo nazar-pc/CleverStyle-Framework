@@ -30,8 +30,10 @@ class User {
 		if (($this->users_columns = $Cache->{'users/columns'}) === false) {
 			$this->users_columns = $Cache->{'users/columns'} = $this->db()->columns('[prefix]users');
 		}
-		//Detecting of current user
-		//Last part in page path - key
+		/**
+		 * Detecting of current user
+		 * Last part in page path - key
+		 */
 		$rc = $Config->routing['current'];
 		if (
 			$this->user_agent == 'CleverStyle CMS' &&
@@ -56,18 +58,28 @@ class User {
 				return;
 			} else {
 				$this->current['is']['guest'] = true;
-				//Иммитируем неудачный вход, чтобы при намеренной попытке взлома заблокировать доступ
+				/**
+				 * Simulate a bad sign in to block access by deliberate tampering
+				 */
 				$this->login_result(false, hash('sha224', 'system'));
 				unset($_POST['data']);
 				sleep(1);
 			}
 		}
 		unset($key_data, $key, $rc);
-		//If session exists
+		/**
+		 * If session exists
+		 */
 		if (_getcookie('session')) {
 			$this->id = $this->get_session_user();
-		} else {
-			//Loading bots list
+		/**
+		 * If user does not accept cookie
+		 */
+		} elseif (!_setcookie('test', 'test', 0, true, true)) {
+			$this->current['is']['bot']	= true;
+			/**
+			 * Loading bots list
+			 */
 			if (($bots = $Cache->{'users/bots'}) === false) {
 				$bots = $this->db()->qfa(
 					"SELECT `u`.`id`, `u`.`login`, `u`.`email`
@@ -85,13 +97,21 @@ class User {
 					$Cache->{'users/bots'} = 'null';
 				}
 			}
-			//For bots: login is user agent, email is IP
+			/**
+			 * For bots: login is user agent, email is IP
+			 */
 			$bot_hash	= hash('sha224', $this->user_agent.$this->ip);
-			//If list is not empty - try to find bot
+			/**
+			 * If list is not empty - try to find bot
+			 */
 			if (is_array($bots) && !empty($bots)) {
-				//Load data
+				/**
+				 * Load data
+				 */
 				if (($this->id = $Cache->{'users/'.$bot_hash}) === false) {
-					//If no data - try to find bot in list of known bots
+					/**
+					 * If no data - try to find bot in list of known bots
+					 */
 					foreach ($bots as &$bot) {
 						if (is_array($bot['login']) && !empty($bot['login'])) {
 							foreach ($bot['login'] as $login) {
@@ -111,49 +131,88 @@ class User {
 						}
 					}
 					unset($bots, $bot, $login, $email);
-					//If found id - this i bot
+					/**
+					 * If found id - this is bot
+					 */
 					if ($this->id) {
-						$Cache->{'users/'.$bot_hash} = $this->id;
-					//If bot not found - will be guest
+						$Cache->{'users/'.$bot_hash}	= $this->id;
+						/**
+						 * Searching for last bot session, if exists - load it, otherwise create new one
+						 */
+						$data							= $this->get('data');
+						if (!isset($data['last_session'])) {
+							$this->add_session($this->id);
+							$data['last_session']	= $this->get_session();
+							$this->set('data', $data);
+						} else {
+							$this->get_session_user($data['last_session']);
+							if ($data['last_session'] != $this->get_session()) {
+								$data['last_session']	= $this->get_session();
+								$this->set('data', $data);
+							}
+						}
+					/**
+					 * If bot not found - will be guest
+					 */
 					} else {
-						$Cache->{'users/'.$bot_hash} = $this->id = 1;
+						$Cache->{'users/'.$bot_hash}	= $this->id = 1;
 					}
 				}
-			//If bots list is empty - will be guest
+			/**
+			 * If bots list is empty - will be guest
+			 */
 			} else {
-				$Cache->{'users/'.$bot_hash} = $this->id = 1;
+				$Cache->{'users/'.$bot_hash}	= $this->id = 1;
 			}
 			unset($bots, $bot_hash);
-			$this->add_session($this->id);
+		} else {
+			_setcookie('test', '', 0, true, true);
+			$this->add_session($this->id = 1);
 		}
-		//Load user data
-		//Return point, runs if user is blocked, inactive, or disabled
+		/**
+		 * Load user data
+		 * Return point, runs if user is blocked, inactive, or disabled
+		 */
 		getting_user_data:
 		$data = $this->get(['login', 'username', 'language', 'timezone', 'status', 'block_until', 'avatar']);
 		if (is_array($data)) {
 			if ($data['status'] != 1) {
-				//If user is disabled
+				/**
+				 * If user is disabled
+				 */
 				if ($data['status'] == 0) {
 					$Page->warning($L->your_account_disabled);
-					//Mark user as guest, load data again
+					/**
+					 * Mark user as guest, load data again
+					 */
 					$this->del_session();
 					goto getting_user_data;
-				//If user is not active
+				/**
+				 * If user is not active
+				 */
 				} else {
 					$Page->warning($L->your_account_is_not_active);
-					//Mark user as guest, load data again
+					/**
+					 * Mark user as guest, load data again
+					 */
 					$this->del_session();
 					goto getting_user_data;
 				}
-			//If user if blocked
+			/**
+			 * If user if blocked
+			 */
 			} elseif ($data['block_until'] > TIME) {
 				$Page->warning($L->your_account_blocked_until.' '.date($L->_datetime, $data['block_until']));
-				//Mark user as guest, load data again
+				/**
+				 * Mark user as guest, load data again
+				 */
 				$this->del_session();
 				goto getting_user_data;
 			}
 		} elseif ($this->id != 1) {
-			//If data wasn't loaded - mark user as guest, load data again
+			/**
+			 * If data wasn't loaded - mark user as guest, load data again
+			 */
 			$this->del_session();
 			goto getting_user_data;
 		}
@@ -161,7 +220,9 @@ class User {
 		if ($this->id == 1) {
 			$this->current['is']['guest'] = true;
 		} else {
-			//Checking of user type
+			/**
+			 * Checking of user type
+			 */
 			$groups = $this->get_user_groups() ?: [];
 			if (in_array(1, $groups)) {
 				$this->current['is']['admin']	= $Config->can_be_admin;
@@ -174,7 +235,9 @@ class User {
 			}
 			unset($groups);
 		}
-		//If not guest - apply some individual settings
+		/**
+		 * If not guest - apply some individual settings
+		 */
 		if ($this->id != 1) {
 			if ($this->timezone) {
 				date_default_timezone_set($this->timezone);
@@ -199,9 +262,11 @@ class User {
 				}
 			}
 		}
-		//Security check for data, sended with POST method
+		/**
+		 * Security check for data, sended with POST method
+		 */
 		$session_id = $this->get_session();
-		if (!isset($_POST[$session_id]) || $_POST[$session_id] != $session_id) {
+		if (!$session_id || !isset($_POST[$session_id]) || $_POST[$session_id] != $session_id) {
 			$_POST = [];
 		}
 		$this->init = true;
@@ -1065,10 +1130,10 @@ class User {
 	 * Get permission data<br>
 	 * If <b>$group</b> or/and <b>$label</b> parameter is specified, <b>$id</b> is ignored.
 	 *
-	 * @param int     $id
-	 * @param string  $group
-	 * @param string  $label
-	 * @param string  $condition	and|or
+	 * @param int		$id
+	 * @param string	$group
+	 * @param string	$label
+	 * @param string	$condition	and|or
 	 *
 	 * @return array|bool			If only <b>$id</b> specified - result is array of permission data,
 	 * 								in other cases result will be array of arrays of corresponding permissions data.
@@ -1126,7 +1191,7 @@ class User {
 	/**
 	 * Deletion of permission or array of permissions
 	 *
-	 * @param array|int $id
+	 * @param array|int	$id
 	 *
 	 * @return bool
 	 */
@@ -1162,19 +1227,25 @@ class User {
 	/**
 	 * Returns current session id
 	 *
-	 * @return string
+	 * @return bool|string
 	 */
 	function get_session () {
+		if ($this->is('bot') && $this->id == 1) {
+			return '';
+		}
 		return $this->current['session'];
 	}
 	/**
-	 * Find the session by id, and return id of owner (user)
+	 * Find the session by id, and return id of owner (user), updates last_login, last_ip and last_online information
 	 *
-	 * @param string $session_id
+	 * @param string	$session_id
 	 *
-	 * @return int User id
+	 * @return int					User id
 	 */
 	function get_session_user ($session_id = '') {
+		if ($this->is('bot') && $this->id == 1) {
+			return 1;
+		}
 		$this->current['session'] = _getcookie('session');
 		$session_id = $session_id ?: $this->current['session'];
 		global $Cache, $Config;
@@ -1217,7 +1288,7 @@ class User {
 						`last_login`	= $time,
 						`last_ip`		= '$ip',
 						`last_online`	= $time
-					WHERE `id` ='$result[user]'";
+					WHERE `id` =$result[user]";
 				$this->set(
 					[
 						'last_login'	=> TIME,
@@ -1232,7 +1303,7 @@ class User {
 				$update[] = "
 					UPDATE `[prefix]users`
 					SET `last_online` = $time
-					WHERE `id` ='$result[user]'";
+					WHERE `id` = $result[user]";
 				$this->set(
 					'last_online',
 					TIME,
@@ -1244,7 +1315,7 @@ class User {
 			$result['expire']	= TIME + $Config->core['session_expire'];
 			$update[]			= "
 				UPDATE `[prefix]sessions`
-				SET `expire` = '$result[expire]'
+				SET `expire` = $result[expire]
 				WHERE `id` = '$session_id'";
 			$Cache->{'sessions/'.$session_id} = $result;
 		}
@@ -1256,11 +1327,14 @@ class User {
 	/**
 	 * Create the session for the user with specified id
 	 *
-	 * @param int $id
+	 * @param int	$id
 	 *
 	 * @return bool
 	 */
 	function add_session ($id) {
+		if ($this->is('bot') && $this->id == 1) {
+			return true;
+		}
 		$id = (int)$id;
 		if (!$id) {
 			$id = 1;
@@ -1295,7 +1369,8 @@ class User {
 				$this->db_prime()->q("UPDATE `[prefix]users` SET `last_login` = $time, `last_online` = $time, `last_ip` = '$ip.' WHERE `id` ='$id'");
 			}
 			global $Cache;
-			$Cache->{'sessions/'.$hash} = $this->current['session'] = [
+			$this->current['session']	= $hash;
+			$Cache->{'sessions/'.$hash}	= [
 				'user'			=> $id,
 				'expire'		=> TIME + $Config->core['session_expire'],
 				'user_agent'	=> $this->user_agent,
@@ -1315,22 +1390,25 @@ class User {
 	/**
 	 * Destroying of the session
 	 *
-	 * @param string $session_id
+	 * @param string	$session_id
 	 *
 	 * @return bool
 	 */
 	function del_session ($session_id = null) {
+		if ($this->is('bot') && $this->id == 1) {
+			return false;
+		}
 		return $this->del_session_internal($session_id);
 	}
 	/**
 	 * Deletion of the session
 	 *
-	 * @param string $session_id
-	 * @param bool   $create_guest_session
+	 * @param string	$session_id
+	 * @param bool		$create_guest_session
 	 *
 	 * @return bool
 	 */
-	function del_session_internal ($session_id = null, $create_guest_session = true) {
+	protected function del_session_internal ($session_id = null, $create_guest_session = true) {
 		$session_id = $session_id ?: $this->current['session'];
 		global $Cache;
 		$this->current['session'] = false;
@@ -1346,17 +1424,20 @@ class User {
 		return $result;
 	}
 	/**
-	 * Destroying all user sessions
+	 * Deletion of all user sessions
 	 *
-	 * @param bool|int $id
+	 * @param bool|int	$id
 	 *
 	 * @return bool
 	 */
 	function del_all_sessions ($id = false) {
+		if ($this->is('bot') && $this->id == 1) {
+			return false;
+		}
 		global $Cache;
 		$id = $id ?: $this->id;
 		_setcookie('session', '');
-		$sessions = $this->db_prime()->qfa("SELECT `id` FROM `[prefix]sessions` WHERE `user` = '$id'", 'id');
+		$sessions = $this->db_prime()->qfa("SELECT `id` FROM `[prefix]sessions` WHERE `user` = $id", 'id');
 		if (is_array($sessions)) {
 			$delete = [];
 			foreach ($sessions as $session) {
@@ -1365,16 +1446,16 @@ class User {
 			$Cache->del($delete);
 			unset($delete, $sessions, $session);
 		}
-		$result = $this->db_prime()->q("UPDATE `[prefix]sessions` SET `expire` = 0 WHERE `user` = '$id'");
+		$result = $this->db_prime()->q("UPDATE `[prefix]sessions` SET `expire` = 0 WHERE `user` = $id");
 		$this->add_session(1);
 		return $result;
 	}
 	/**
 	 * Check number of login attempts
 	 *
-	 * @param bool|string $login_hash
+	 * @param bool|string	$login_hash
 	 *
-	 * @return int Number of attempts
+	 * @return int						Number of attempts
 	 */
 	function login_attempts ($login_hash = false) {
 		$login_hash = $login_hash ?: hash('sha224', $_POST['login']);
@@ -1395,8 +1476,8 @@ class User {
 	/**
 	 * Process login result
 	 *
-	 * @param bool $result
-	 * @param bool|string $login_hash
+	 * @param bool			$result
+	 * @param bool|string	$login_hash
 	 */
 	function login_result ($result, $login_hash = false) {
 		$login_hash = $login_hash ?: hash('sha224', $_POST['login']);
@@ -1429,19 +1510,20 @@ class User {
 	/**
 	 * Processing of user registration
 	 *
-	 * @param string $email
-	 * @param bool $confirmation	If <b>true</b> - default system option is used, if <b>false</b> - registration will be
-	 *								finished without necessity of confirmation, independently from default system option
-	 *								(is used for manual registration).
+	 * @param string 				$email
+	 * @param bool					$confirmation	If <b>true</b> - default system option is used, if <b>false</b> - registration will be
+	 *												finished without necessity of confirmation, independently from default system option
+	 *												(is used for manual registration).
 	 *
-	 * @return array|bool|string	<b>exists</b>	- if user with such email is already registered<br>
-	 * 								<b>error</b>	- if error occured<br>
-	 * 								<b>false</b>	- if email is incorrect<br>
-	 * 								<b>array(<br>
-	 * 								&nbsp;'reg_key'		=> *,</b>	//Registration confirmation key, or <b>true</b> if confirmation is not required<br>
-	 * 								&nbsp;<b>'password'	=> *,</b>	//Automatically generated password<br>
-	 * 								&nbsp;<b>'id`		=> *</b>	//Id of registered user in DB<br>
-	 * 								<b>)</b>
+	 * @return array|bool|string					<b>exists</b>	- if user with such email is already registered<br>
+	 * 												<b>error</b>	- if error occured<br>
+	 * 												<b>false</b>	- if email is incorrect<br>
+	 * 												<b>array(<br>
+	 * 												&nbsp;'reg_key'		=> *,</b>	//Registration confirmation key, or <b>true</b>
+	 * 																					if confirmation is not required<br>
+	 * 												&nbsp;<b>'password'	=> *,</b>	//Automatically generated password<br>
+	 * 												&nbsp;<b>'id`		=> *</b>	//Id of registered user in DB<br>
+	 * 												<b>)</b>
 	 */
 	function registration ($email, $confirmation = true) {
 		global $Config, $Core;
@@ -1502,25 +1584,25 @@ class User {
 	/**
 	 * Confirmation of registration process
 	 *
-	 * @param $reg_key
+	 * @param string		$reg_key
 	 *
-	 * @return array|bool
+	 * @return array|bool				array('id' => <i>id</i>, 'email' => <i>email</i>, 'password' => <i>password</i>) or <b>fasle</b> on failure
 	 */
-	function confirmation ($reg_key) {
+	function registration_confirmation ($reg_key) {
 		global $Config, $Core;
 		if (!preg_match('/^[0-9a-z]{32}$/', $reg_key)) {
 			return false;
 		}
-		$reg_date		= TIME - $Config->core['registration_confirmation_time']*86400;	//1 day = 86400 seconds
+		$reg_date		= TIME - $Config->core['registration_confirmation_time'] * 86400;	//1 day = 86400 seconds
 		$ids			= $this->db_prime()->qfa(
 			"SELECT `id` FROM `[prefix]users` WHERE `last_login` = 0 AND `status` = '-1' AND `reg_date` < $reg_date",
 			'id'
 		);
 		$this->del_user($ids);
 		$data			= $this->db_prime()->qf(
-			"SELECT `id`, `email` FROM `[prefix]users` WHERE `reg_key` = '$reg_key' AND `status` = '-1' LIMIT 1"
+			"SELECT `id`, `login` FROM `[prefix]users` WHERE `reg_key` = '$reg_key' AND `status` = '-1' LIMIT 1"
 		);
-		if (!isset($data['email'])) {
+		if (!$data) {
 			return false;
 		}
 		$this->reg_id	= $data['id'];
@@ -1536,7 +1618,8 @@ class User {
 		$this->set_user_groups([2], $this->reg_id);
 		$this->add_session($this->reg_id);
 		return [
-			'email'		=> $data['email'],
+			'id'		=> $this->reg_id,
+			'email'		=> $data['login'],
 			'password'	=> $password
 		];
 	}
@@ -1552,9 +1635,73 @@ class User {
 		$this->reg_id = 0;
 	}
 	/**
+	 * Restoring of password
+	 *
+	 * @param int			$user
+	 *
+	 * @return bool|string			Key for confirmation or <b>false</b> on failure
+	 */
+	function restore_password ($user) {
+		if ($user && $user != 1) {
+			$reg_key		= md5(MICROTIME.$this->ip);
+			if ($this->set('reg_key', $reg_key, $user)) {
+				$data					= $this->get('data', $user);
+				global $Config;
+				$data['restore_until']	= TIME + $Config->core['registration_confirmation_time'] * 86400;
+				if ($this->set('data', $data, $user)) {
+					return $reg_key;
+				}
+			}
+		}
+		return false;
+	}
+	/**
+	 * Confirmation of password restoring process
+	 *
+	 * @param string		$key
+	 *
+	 * @return bool|string			array('id' => <i>id</i>, 'password' => <i>password</i>) or <b>fasle</b> on failure
+	 */
+	function restore_password_confirmation ($key) {
+		global $Config, $Core;
+		if (!preg_match('/^[0-9a-z]{32}$/', $key)) {
+			return false;
+		}
+		$id			= $this->db_prime()->qf(
+			"SELECT `id` FROM `[prefix]users` WHERE `reg_key` = '$key' AND `status` = '1' LIMIT 1",
+			'id'
+		);
+		if (!$id) {
+			return false;
+		}
+		$data		= $this->get('data', $id);
+		if (!isset($data['restore_until'])) {
+			return false;
+		} elseif ($data['restore_until'] < TIME) {
+			unset($data['restore_until']);
+			$this->set('data', $data, $id);
+			return false;
+		}
+		unset($data['restore_until']);
+		$password	= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
+		$this->set(
+			[
+				'password_hash'	=> hash('sha512', hash('sha512', $password).$Core->config('public_key')),
+				'data'			=> $data
+			],
+			null,
+			$id
+		);
+		$this->add_session($id);
+		return [
+			'id'		=> $id,
+			'password'	=> $password
+		];
+	}
+	/**
 	 * Delete specified user or array of users
 	 *
-	 * @param array|int	$user User id or array of users ids
+	 * @param array|int	$user	User id or array of users ids
 	 */
 	function del_user ($user) {
 		$this->del_user_internal($user);
@@ -1619,9 +1766,9 @@ class User {
 	/**
 	 * Bots addition
 	 *
-	 * @param string $name			Bot name
-	 * @param string $user_agent	User Agent string or regular expression
-	 * @param string $ip			IP string or regular expression
+	 * @param string	$name		Bot name
+	 * @param string	$user_agent	User Agent string or regular expression
+	 * @param string	$ip			IP string or regular expression
 	 *
 	 * @return bool|int				Bot <b>id</b> in DB or <b>false</b> on failure
 	 */
@@ -1641,7 +1788,7 @@ class User {
 	/**
 	 * Delete specified bot or array of bots
 	 *
-	 * @param array|int    $bot Bot id or array of bots ids
+	 * @param array|int	$bot	Bot id or array of bots ids
 	 */
 	function del_bot ($bot) {
 		$this->del_user($bot);

@@ -1,25 +1,25 @@
-#header_zone {
+.cs-header-zone {
 	height: 30px;
 	position: fixed;
 	top: 0;
 	width: 100%;
 }
-#header_green, #header_black {
+.cs-header-green, .cs-header-black {
 	border-radius: 0 0 10px 10px;
 	position: fixed;
 	right: 300px;
 	top: 0;
 	width: inherit;
 }
-#header_green {
+.cs-header-green {
 	height: 70px;
 	z-index: 2;
 }
-#header_black {
+.cs-header-black {
 	height: 115px;
 	z-index: 1;
 }
-#user_header {
+.cs-header-user {
 	border-radius: 7px;
 	height: 100px;
 	margin: 5px;
@@ -29,7 +29,7 @@
 	width: 280px;
 	z-index: 3;
 }
-#avatar_header {
+.cs-header-avatar {
 	background-size: 100%;
 	border-radius: 5px;
 	float: left;
@@ -41,31 +41,32 @@
 	width: 80px;
 	vertical-align: top;
 }
-#user_info_header {
+.cs-header-user-info {
 	float: right;
 	height: 90px;
 	margin: 12px 9px 9px 95px;
 	position: fixed;
 	width: 180px;
 }
-#user_info_header input[type=text], #user_info_header input[type=password], #user_info_header select {
+.cs-header-user-info input[type=text], .cs-header-user-info input[type=password], .cs-header-user-info select {
 	background: #ddd;
 	border: #fff solid 1px;
 	float: left;
 	margin: 0 0 5px 3px;
 	width: 170px;
 }
-#user_info_header #register, #user_info_header #user_login {
-	width: 155px;
+.cs-header-registration-email, .cs-header-login-email {
+	padding-left: 20px;
+	width: 150px !important;
 }
-#user_info_header select {
+.cs-header-user-info select {
 	margin-left: -5px;
 	width: 20px;
 }
-#login_header_form > .ui-icon {
+.cs-header-login-form > .ui-icon {
 	margin: 26px 0 0 -20px;
 }
-#user_info_header button {
+.cs-header-user-info button {
 	margin-left: 3px;
 	float: left;
 }

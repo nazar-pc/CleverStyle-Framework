@@ -4,6 +4,7 @@
 		"logout",
 		"registration",
 		"change_password",
+		"restore_password",
 		"setcookie"
 	],
 	"admin"		: [

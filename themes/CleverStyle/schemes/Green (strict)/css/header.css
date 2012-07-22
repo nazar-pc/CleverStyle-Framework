@@ -1,4 +1,4 @@
-#header_green {
+.cs-header-green {
 	background-color: rgb(110, 188, 0);
 	background-image: -ms-linear-gradient(top, rgb(203, 255, 129) 0%, rgb(110, 188, 0) 80%);
 	background-image: -moz-linear-gradient(top, rgb(203, 255, 129) 0%, rgb(110, 188, 0) 80%);
@@ -6,7 +6,7 @@
 	background-image: -webkit-linear-gradient(top, rgb(203, 255, 129) 0%, rgb(110, 188, 0) 80%);
 	background-image: linear-gradient(top, rgb(203, 255, 129) 0%, rgb(110, 188, 0) 80%);
 }
-#header_black {
+.cs-header-black {
 	background-color: rgb(0, 0, 0);
 	background-image: -ms-linear-gradient(top, rgb(125, 125, 125) 0%, rgb(0, 0, 0) 90%);
 	background-image: -moz-linear-gradient(top, rgb(125, 125, 125) 0%, rgb(0, 0, 0) 90%);
@@ -15,11 +15,11 @@
 	background-image: linear-gradient(top, rgb(125, 125, 125) 0%, rgb(0, 0, 0) 90%);
 	box-shadow: 0 0 20px #000;
 }
-#user_header {
+.cs-header-user {
 	background-color: rgba(255, 255, 255, 0.5);
 	border: 1px solid rgba(255, 255, 255, 0.6);
 }
-#avatar_header {
+.cs-header-avatar {
 	background-color: rgba(0, 0, 0, 0.15);
 	border: 1px solid rgba(0, 0, 0, 0.6);
 	color: #fff;

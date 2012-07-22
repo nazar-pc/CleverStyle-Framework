@@ -105,6 +105,7 @@ function check_dependencies ($name, $type = 'module') {
 				break;
 			}
 		}
+		unset($database);
 		if (!$return) {
 			$Page->warning(
 				$L->compatible_databases_not_found(
@@ -114,6 +115,24 @@ function check_dependencies ($name, $type = 'module') {
 		}
 	} else {
 		$return		= true;
+	}
+	if (isset($meta['storage_support']) && !empty($meta['storage_support'])) {
+		$return_s	= false;
+		foreach ($Config->storage as $storage) {
+			if (in_array($storage, $meta['storage_support'])) {
+				$return_s	= true;
+				break;
+			}
+		}
+		if (!$return_s) {
+			$Page->warning(
+				$L->compatible_storages_not_found(
+					implode('", "', $meta['storage_support'])
+				)
+			);
+		}
+		$return = $return && $return_s;
+		unset($storage, $return_s);
 	}
 	$provide	= [];
 	$require	= [];

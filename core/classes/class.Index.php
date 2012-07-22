@@ -409,7 +409,8 @@ class Index {
 							'reg_confirmation = "'.$L->reg_confirmation.'",'.
 							'reg_error_connection = "'.$L->reg_error_connection.'",'.
 							'rules_agree = "'.$L->rules_agree.'",'.
-							'rules_text = "'.$Config->core['rules'].'",'
+							'rules_text = "'.$Config->core['rules'].'",'.
+							'restore_password_confirmation = "'.$L->restore_password_confirmation.'",'
 						: '').
 					($User->is('user') ?
 							'please_type_current_password = "'.$L->please_type_current_password.'",'.

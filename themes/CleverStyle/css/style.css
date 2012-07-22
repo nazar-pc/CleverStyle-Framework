@@ -134,28 +134,36 @@ footer {
 #reset_settings,
 #system_readme_open,
 #system_license_open,
-#user_info_header button {
+.cs-header-user-info button {
 	cursor : pointer;
 }
 
-#user_info_header .actions {
+.cs-header-user-info .actions {
 	margin: 5px 0;
 }
 
-#login_slide,
-#registration_slide {
+.cs-header-login-slide,
+.cs-header-registration-slide {
 	float      : none !important;
 	margin-top : 4px !important;
 }
 
 .cs-header-back,
-.cs-header-restore-password {
+.cs-header-restore-password-slide {
 	float : right !important;
 }
 
-#register_header_form .cs-header-back,
-#register_header_form .cs-header-restore-password {
+.cs-header-register-form .cs-header-back,
+.cs-header-register-form .cs-header-restore-password-slide,
+.cs-header-restore-password-form .cs-header-back
+{
 	margin-top : 4px !important;
+}
+
+.cs-header-register-process+div,
+.cs-header-restore-password-process+div{
+	float  : right;
+	height : 27px;
 }
 
 .cs-center-odd > tbody > tr > td:nth-child(odd),
@@ -337,4 +345,7 @@ h2 {
 	height: 128px;
 	margin: 5px;
 	width: 128px;
+}
+.cs-pointer {
+	cursor: pointer;
 }

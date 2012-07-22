@@ -316,7 +316,7 @@ function registration (email) {
 			type	: 'post',
 			cache	: false,
 			data	: data,
-			success: function(result) {
+			success	: function(result) {
 				if (result == 'reg_confirmation') {
 					$('<div>'+reg_confirmation+'</div>')
 						.appendTo('body')
@@ -325,7 +325,9 @@ function registration (email) {
 							modal		: true,
 							draggable	: false,
 							resizable	: false,
-							close		: function () { $(this).remove(); }
+							close		: function () {
+								$(this).remove();
+							}
 						});
 				} else if (result == 'reg_success') {
 					$('<div>'+reg_success+'</div>')
@@ -335,13 +337,53 @@ function registration (email) {
 							modal		: true,
 							draggable	: false,
 							resizable	: false,
-							close		: function () { location.reload(); }
+							close		: function () {
+								location.reload();
+							}
 						});
 				} else {
 					alert(result);
 				}
 			},
-			error: function() {
+			error	: function() {
+				alert(reg_error_connection);
+			}
+		}
+	);
+}
+function restore_password (email) {
+	if (!email) {
+		alert(please_type_your_email);
+		return;
+	}
+	var data = {
+		email: hash('sha224', email)
+	};
+	data[session_id] = session_id;
+	$.ajax(
+		base_url+'/api/System/user/restore_password',
+		{
+			type	: 'post',
+			cache	: false,
+			data	: data,
+			success	: function(result) {
+				if (result == 'OK') {
+					$('<div>'+restore_password_confirmation+'</div>')
+						.appendTo('body')
+						.dialog({
+							autoOpen	: true,
+							modal		: true,
+							draggable	: false,
+							resizable	: false,
+							close		: function () {
+								$(this).remove();
+							}
+						});
+				} else {
+					alert(result);
+				}
+			},
+			error	: function() {
 				alert(reg_error_connection);
 			}
 		}

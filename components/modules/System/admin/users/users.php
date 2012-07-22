@@ -190,9 +190,8 @@ if (isset($rc[2], $rc[3])) {
 							'value'		=> $user_data['email']
 						])),
 						$row(
-							$L->password_only_for_changing.h::{'icon#show_password'}('locked'),
+							$L->password_only_for_changing.h::{'icon.cs-show-password.cs-pointer'}('locked'),
 							h::{'input.cs-form-element[type=password]'}([
-								'id'	=> 'user_password',
 								'name'	=> 'user[password]',
 								'value'	=> ''
 							])

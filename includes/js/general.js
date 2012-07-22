@@ -51,73 +51,75 @@ $(function() {
 			$(this).autoResize();
 		}
 	});
-	$('#login_slide').click(function () {
-		$('#anonym_header_form').slideUp();
-		$('#login_header_form').slideDown();
-		$('#user_login').focus();
+	$('.cs-header-login-slide').mousedown(function () {
+		$('.cs-header-anonym-form').slideUp();
+		$('.cs-header-login-form').slideDown();
+		$('.cs-header-login-email').focus();
 	});
-	$('#registration_slide').click(function () {
-		$('#anonym_header_form').slideUp();
-		$('#register_header_form').slideDown();
-		$('#register').focus();
+	$('.cs-header-registration-slide').mousedown(function () {
+		$('.cs-header-anonym-form').slideUp();
+		$('.cs-header-register-form').slideDown();
+		$('.cs-header-registration-email').focus();
 	});
-	$('#login_list').change(function() {
-		$('#user_login').val(this.value);
-		$('#user_login').focus();
-		if (this.value) {
-			$('#user_password, #show_password').hide();
-		} else {
-			$('#user_password, #show_password').show();
-		}
+	$('.cs-header-restore-password-slide').mousedown(function () {
+		$('.cs-header-login-form, .cs-header-register-form').slideUp();
+		$('.cs-header-restore-password-form').slideDown();
+		$('.cs-header-restore-password-email').focus();
 	});
-	$('#user_login, #user_password').keyup(function (event) {
+	$('.cs-header-login-email, .cs-header-user-password').keyup(function (event) {
 		if (event.which == 13) {
-			$('#login_process').mousedown();
+			$('.cs-header-login-process').mousedown();
 		}
 	});
-	$('#register').keyup(function (event) {
+	$('.cs-header-registration-email').keyup(function (event) {
 		if (event.which == 13) {
-			$('#register_process').mousedown();
+			$('.cs-header-register-process').mousedown();
 		}
 	});
-	$('#register_list').change(function() {
-		$('#register').val(this.value);
-		$('#register').focus();
+	$('.cs-header-login-process').mousedown(function() {
+		login($('.cs-header-login-email').val(), $('.cs-header-user-password').val());
 	});
-	$('#login_process').mousedown(function() {
-		login($('#user_login').val(), $('#user_password').val());
-	});
-	$('#logout_process').mousedown(function() {
+	$('.cs-header-logout-process').mousedown(function() {
 		logout();
 	});
-	$('#show_password').mousedown(function() {
-		if ($('#user_password').prop('type') == 'password') {
-			$('#user_password').prop('type', 'text');
+	$('.cs-header-show-password').mousedown(function() {
+		if ($('.cs-header-user-password').prop('type') == 'password') {
+			$('.cs-header-user-password').prop('type', 'text');
 			$(this).addClass('ui-icon-unlocked').removeClass('ui-icon-locked');
 		} else {
-			$('#user_password').prop('type', 'password');
+			$('.cs-header-user-password').prop('type', 'password');
+			$(this).addClass('ui-icon-locked').removeClass('ui-icon-unlocked');
+		}
+	});
+	$('.cs-show-password').mousedown(function() {
+		var pass_input = $(this).parent().next().children('input');
+		if (pass_input.prop('type') == 'password') {
+			pass_input.prop('type', 'text');
+			$(this).addClass('ui-icon-unlocked').removeClass('ui-icon-locked');
+		} else {
+			pass_input.prop('type', 'password');
 			$(this).addClass('ui-icon-locked').removeClass('ui-icon-unlocked');
 		}
 	});
 	$('#current_password').mousedown(function() {
-		if ($('#current_user_password').prop('type') == 'password') {
-			$('#current_user_password').prop('type', 'text');
+		if ($('.cs-profile-current-password').prop('type') == 'password') {
+			$('.cs-profile-current-password').prop('type', 'text');
 			$(this).addClass('ui-icon-unlocked').removeClass('ui-icon-locked');
 		} else {
-			$('#current_user_password').prop('type', 'password');
+			$('.cs-profile-current-password').prop('type', 'password');
 			$(this).addClass('ui-icon-locked').removeClass('ui-icon-unlocked');
 		}
 	});
 	$('#new_password').mousedown(function() {
-		if ($('#new_user_password').prop('type') == 'password') {
-			$('#new_user_password').prop('type', 'text');
+		if ($('.cs-profile-new-password').prop('type') == 'password') {
+			$('.cs-profile-new-password').prop('type', 'text');
 			$(this).addClass('ui-icon-unlocked').removeClass('ui-icon-locked');
 		} else {
-			$('#new_user_password').prop('type', 'password');
+			$('.cs-profile-new-password').prop('type', 'password');
 			$(this).addClass('ui-icon-locked').removeClass('ui-icon-unlocked');
 		}
 	});
-	$('#register_process').mousedown(function() {
+	$('.cs-header-register-process').mousedown(function() {
 		$('<div title="'+rules_agree+'">'+rules_text+'</div>')
 			.appendTo('body')
 			.dialog({
@@ -128,7 +130,7 @@ $(function() {
 						text	: yes,
 						click	: function () {
 							$(this).dialog('close');
-							registration($('#register').val());
+							registration($('.cs-header-registration-email').val());
 						}
 					},
 					{
@@ -140,15 +142,15 @@ $(function() {
 				]
 			});
 	});
-	$('#change_password').mousedown(function() {
-		change_password($('#current_user_password').val(), $('#new_user_password').val());
+	$('.cs-header-restore-password-process').mousedown(function() {
+		restore_password($('.cs-header-restore-password-email').val());
 	});
-	$('.cs-header-restore-password').mousedown(function() {
-		//TODO Restore password processing
+	$('.cs-profile-change-password').mousedown(function() {
+		change_password($('.cs-profile-current-password').val(), $('.cs-profile-new-password').val());
 	});
-	$('.cs-header-back').click(function() {
-		$('#anonym_header_form').slideDown();
-		$('#register_header_form, #login_header_form').slideUp();
+	$('.cs-header-back').mousedown(function() {
+		$('.cs-header-anonym-form').slideDown();
+		$('.cs-header-register-form, .cs-header-login-form, .cs-header-restore-password-form').slideUp();
 	});
 	$('#debug_window_tabs').tabs({
 		collapsible:	true

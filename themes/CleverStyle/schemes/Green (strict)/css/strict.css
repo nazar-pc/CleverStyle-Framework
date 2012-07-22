@@ -1,3 +1,3 @@
-#header_zone, #header_green, #header_black, #header_light_green, #user_header, #avatar_header, #user_info_header, #main-menu, #main-submenu, #menu-more {
+.cs-header-zone, .cs-header-green, .cs-header-black, .cs-header-light-green, .cs-header-user, .cs-header-avatar, .cs-header-user-info, #main-menu, #main-submenu, #menu-more {
 	position: absolute;
 }

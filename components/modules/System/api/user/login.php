@@ -1,7 +1,9 @@
 <?php
 global $Config, $Page, $User, $db, $Key, $L;
-//Если AJAX запрос от локального реферала, пользователь гость и количество попыток входа допустимо,
-//пользователь активен, и не блокиирован - выполняем операцию аутентификации, иначе выдаем ошибку
+/**
+ * If AJAX request from local referer, user is guest, login attempts count is satisfactory,
+ * user is active, not blocked - process authentification, otherwise - show error
+ */
 if (!$Config->server['referer']['local'] || !$Config->server['ajax']) {
 	sleep(1);
 	return;
@@ -14,8 +16,16 @@ if (!$Config->server['referer']['local'] || !$Config->server['ajax']) {
 	sleep(1);
 	return;
 }
-//Первый шаг - поиск пользователя по логину, создание случайного хеша для второго шага, и создание временного ключа
-if (isset($_POST['login']) && !empty($_POST['login']) && !isset($_POST['auth_hash']) && ($id = $User->get_id($_POST['login'])) && $id != 1) {
+/**
+ * First step - user searching by login, generation of random hash for second step, creating of temporary key
+ */
+if (
+	isset($_POST['login']) &&
+	!empty($_POST['login']) &&
+	!isset($_POST['auth_hash']) &&
+	($id = $User->get_id($_POST['login'])) &&
+	$id != 1
+) {
 	if ($User->get('status', $id) == -1) {
 		$Page->content($L->your_account_is_not_active);
 		sleep(1);
@@ -40,7 +50,9 @@ if (isset($_POST['login']) && !empty($_POST['login']) && !isset($_POST['auth_has
 		$Page->content($L->auth_error_server);
 	}
 	unset($random_hash);
-//Второй шаг - проверка хеша аутентификации, и создание сессии
+/**
+ * Second step - checking of authentification hash, session creating
+ */
 } elseif (isset($_POST['auth_hash'])) {
 	$key_data = $Key->get(
 		$Config->module('System')->db('keys'),
@@ -61,8 +73,11 @@ if (isset($_POST['login']) && !empty($_POST['login']) && !isset($_POST['auth_has
 	} else {
 		$User->login_result(false);
 		$Page->content($L->auth_error_login);
-		if ($Config->core['login_attempts_block_count'] && $User->login_attempts() >= floor($Config->core['login_attempts_block_count']*2/3)) {
-			$Page->content(' '.$L->login_attempts_left.' '.($Config->core['login_attempts_block_count']-$User->login_attempts()));
+		if (
+			$Config->core['login_attempts_block_count'] &&
+			$User->login_attempts() >= floor($Config->core['login_attempts_block_count'] * 2 / 3)
+		) {
+			$Page->content(' '.$L->login_attempts_left.' '.($Config->core['login_attempts_block_count'] - $User->login_attempts()));
 			sleep(1);
 		} elseif (!$Config->core['login_attempts_block_count']) {
 			sleep($User->login_attempts()*0.5);
@@ -72,8 +87,11 @@ if (isset($_POST['login']) && !empty($_POST['login']) && !isset($_POST['auth_has
 } else {
 	$User->login_result(false);
 	$Page->content($L->auth_error_login);
-	if ($Config->core['login_attempts_block_count'] && $User->login_attempts() >= $Config->core['login_attempts_block_count']*2/3) {
-		$Page->content(' '.$L->login_attempts_left.' '.($Config->core['login_attempts_block_count']-$User->login_attempts()));
+	if (
+		$Config->core['login_attempts_block_count'] &&
+		$User->login_attempts() >= $Config->core['login_attempts_block_count'] * 2 / 3
+	) {
+		$Page->content(' '.$L->login_attempts_left.' '.($Config->core['login_attempts_block_count'] - $User->login_attempts()));
 		sleep(1);
 	} elseif (!$Config->core['login_attempts_block_count'] && $User->login_attempts() > 3) {
 		sleep($User->login_attempts()*0.5);

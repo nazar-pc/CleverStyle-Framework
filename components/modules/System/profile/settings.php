@@ -219,16 +219,16 @@ switch (isset($Config->routing['current'][2]) ? $Config->routing['current'][2] :
 					$L->current_password.h::{'icon#current_password'}('locked')
 				).
 				h::{'td.ui-widget-content.ui-corner-all'}(
-					h::{'input#current_user_password.cs-form-element[type=password]'}()
+					h::{'input.cs-profile-current-password.cs-form-element[type=password]'}()
 				),
 				h::{'th.ui-widget-header.ui-corner-all'}(
 					$L->new_password.h::{'icon#new_password'}('locked')
 				).
 				h::{'td.ui-widget-content.ui-corner-all'}(
-					h::{'input#new_user_password.cs-form-element[type=password]'}()
+					h::{'input.cs-profile-new-password.cs-form-element[type=password]'}()
 				)
 			).
-			h::{'button#change_password'}(
+			h::{'button.cs-profile-change-password'}(
 				$L->change_password
 			)
 		);
