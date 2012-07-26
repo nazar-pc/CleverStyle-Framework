@@ -27,16 +27,19 @@ class Mail extends \PHPMailer {
 	}
 	/**
 	 * Sending of email
-	 * @param array|string $email				if adresses without names - string or 1-dimentional array(<i>email</i>)<br>
+	 *
+	 * @param array|string $email				if emails without names - string (may be several emails separated by comma) or
+	 * 												1-dimentional array(<i>email</i>)<br>
 	 * 											else - 2-dimentional array(<i>email</i>, <i>name</i>) must be given
 	 * @param string $subject					Mail subject
 	 * @param string $body						html body
 	 * @param string|null $body_text			plain text body
 	 * @param array|null|string $attachments	1- or 2-dimentional array of array(<i>path</i>, <i>name</i>) or simply string
 	 * 											with path to the file in file system
-	 * @param array|null|string $reply_to		Similar to $email
-	 * @param bool|string $signature			<b>true</b> - add system signature<br><b>false</b> - without signature<br>
-	 *											<b>string</b> - custom signature
+	 * @param array|null|string $reply_to		Similar to <b>$email</b>
+	 * @param bool|string $signature			<b>true</b> - add system signature<br>
+	 * 											<b>false</b> - without signature<br>
+	 * 											<b>string</b> - custom signature
 	 * @return bool
 	 */
 	function send_to ($email, $subject, $body, $body_text = null, $attachments = null, $reply_to = null, $signature = true) {
@@ -56,7 +59,11 @@ class Mail extends \PHPMailer {
 				}
 			}
 		} else {
-			$this->AddAddress($email);
+			$email	= _trim(explode(',', $email));
+			foreach ($email as $e) {
+				$this->AddAddress($e);
+			}
+			unset($e, $email);
 		}
 		$this->Subject = $subject;
 		global $Config;
@@ -74,14 +81,14 @@ class Mail extends \PHPMailer {
 		if (substr($body, 0, 5) != '<html') {
 			if (substr($body, 0, 5) != '<body') {
 				$body = h::body($body.$signature);
+			} else {
+				$body = str_replace('</body>', $signature.'</body>', $body);
 			}
 			$body = h::html(
-				h::head(
-					h::meta([
-						'content'		=> 'text/html; charset=utf-8',
-						'http-equiv'	=> 'Content-Type'
-					])
-				).
+				h::{'head meta'}([
+					'content'		=> 'text/html; charset=utf-8',
+					'http-equiv'	=> 'Content-Type'
+				]).
 				$body
 			);
 		} else {

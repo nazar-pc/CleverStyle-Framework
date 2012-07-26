@@ -63,7 +63,7 @@ $Index->content(
 			apache_get_version()
 		] : false,
 		[
-			$L->allow_ram.':',
+			$L->available_ram.':',
 			str_replace(
 				['K', 'M', 'G'],
 				[' '.$L->KB, ' '.$L->MB, ' '.$L->GB],
@@ -152,7 +152,7 @@ $Index->content(
 					$Core->config('db_name')
 				],
 				[
-					$L->prefix_of_db.':',
+					$L->prefix_for_db_tables.':',
 					$Core->config('db_prefix')
 				]
 			)
@@ -162,7 +162,7 @@ $Index->content(
 			$Core->config('storage_type')
 		],
 		function_exists('apache_get_version') ? [
-			$L->configs.' "php.ini":',
+			$L->php_ini_settings.' "php.ini":',
 			h::{'table.cs-left-odd.cs-php-ini-settings tr| td'}(
 				[
 					$L->allow_file_upload.':',

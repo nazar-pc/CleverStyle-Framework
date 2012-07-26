@@ -14,7 +14,7 @@ if (isset($rc[2])) {
 				).
 				h::{'table.cs-fullwidth-table.cs-center-all tr'}(
 					h::{'th.ui-widget-header.ui-corner-all'}(
-						$L->group_title,
+						$L->group_name,
 						$L->description
 					),
 					h::{'td.ui-widget-content.ui-corner-all'}(
@@ -36,16 +36,16 @@ if (isset($rc[2])) {
 			$a->cancel_button_back	= true;
 			$group_data				= $User->get_group_data($rc[3]);
 			$Page->title(
-				$L->editing_a_group($group_data['title'])
+				$L->editing_of_group($group_data['title'])
 			);
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages'}(
-					$L->editing_a_group($group_data['title'])
+					$L->editing_of_group($group_data['title'])
 				).
 				h::{'table.cs-fullwidth-table.cs-center-all tr'}(
 					h::{'th.ui-widget-header.ui-corner-all'}(
 						'&nbsp;id&nbsp;',
-						$L->group_title,
+						$L->group_name,
 						$L->description,
 						'data'
 					),
@@ -184,7 +184,7 @@ if (isset($rc[2])) {
 	$groups_list	= [h::{'th.ui-widget-header.ui-corner-all'}(
 		$L->action,
 		'id',
-		$L->group_title,
+		$L->group_name,
 		$L->description
 	)];
 	foreach ($groups_ids as $id) {
@@ -195,7 +195,7 @@ if (isset($rc[2])) {
 				h::{'button.cs-button-compact'}(
 					h::icon('wrench'),
 					[
-						'data-title'	=> $L->edit_group_data
+						'data-title'	=> $L->edit_group_information
 					]
 				),
 				[

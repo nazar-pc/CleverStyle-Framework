@@ -139,7 +139,7 @@ class Text {
 		);
 	}
 	/**
-	 * Process text, and replace {¶([0-9]*?)} on real text, is used before showing multilanguage information
+	 * Process text, and replace {¶([0-9]*?)} on real text, is used before showing multilingual information
 	 *
 	 * @param int					$database
 	 * @param string|string[]		$data

@@ -16,10 +16,10 @@ if (isset($rc[2])) {
 			 * @var array $storage
 			 */
 			$a->action = 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
-			$Page->title($rc[2] == 'edit' ? $L->editing_a_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']) : $L->adding_a_storage);
+			$Page->title($rc[2] == 'edit' ? $L->editing_of_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']) : $L->adding_of_storage);
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages'}(
-					$rc[2] == 'edit' ? $L->editing_a_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']) : $L->adding_a_storage
+					$rc[2] == 'edit' ? $L->editing_of_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']) : $L->adding_of_storage
 				).
 				h::{'table.cs-fullwidth-table.cs-center-all'}(
 					h::tr(

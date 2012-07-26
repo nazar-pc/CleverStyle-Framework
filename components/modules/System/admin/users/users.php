@@ -162,11 +162,11 @@ if (isset($rc[2], $rc[3])) {
 				}
 				unset($theme, $color_scheme);
 				$Page->title(
-					$L->editing_data_of_user($User->get_username($rc[3]))
+					$L->editing_of_user_information($User->get_username($rc[3]))
 				);
 				$a->content(
 					h::{'p.ui-priority-primary.cs-state-messages'}(
-						$L->editing_data_of_user(
+						$L->editing_of_user_information(
 							$User->get_username($rc[3])
 						)
 					).
@@ -265,7 +265,7 @@ if (isset($rc[2], $rc[3])) {
 							'name'		=> 'user[skype]',
 							'value'		=> $user_data['skype']
 						])),
-						$row($L->about_myself, h::{'textarea.cs-form-element'}(
+						$row($L->about_me, h::{'textarea.cs-form-element'}(
 							$user_data['about'],
 							[
 								'name'		=> 'user[about]',
@@ -287,11 +287,11 @@ if (isset($rc[2], $rc[3])) {
 					$rc[3]
 				);
 				$Page->title(
-					$L->edit_data_of_bot($bot_data['username'])
+					$L->editing_of_bot_information($bot_data['username'])
 				);
 				$a->content(
 					h::{'p.ui-priority-primary.cs-state-messages'}(
-						$L->edit_data_of_bot(
+						$L->editing_of_bot_information(
 							$bot_data['username']
 						)
 					).
@@ -627,18 +627,20 @@ if (isset($rc[2], $rc[3])) {
 					[
 						'href'		=> $a->action.'/edit_raw/'.$id
 					]
-				).
-				(!$Config->core['simple_admin_mode'] ? h::a(
+				) : ''
+			).
+			($id != 1 && $id != 2 && (!in_array(3, $groups) || !$Config->core['simple_admin_mode']) ?
+				h::a(
 					h::{'button.cs-button-compact'}(
 						h::icon('wrench'),
 						[
-							'data-title'	=> $L->{in_array(3, $groups) ? 'edit_bot_data' : 'edit_user_data'}
+							'data-title'	=> $L->{in_array(3, $groups) ? 'edit_bot_information' : 'edit_user_information'}
 						]
 					),
 					[
 						'href'		=> $a->action.'/edit/'.$id
 					]
-				) : false) : ''
+				) : ''
 			).
 			($id != 1 && $id != 2 ?
 				h::a(

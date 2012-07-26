@@ -3,11 +3,11 @@ namespace	cs\modules\System;
 use			\h;
 global $Config, $Index, $L, $Core;
 $Config->reload_languages();
-$translate_engines			= _mb_substr(get_files_list(ENGINES.'/translate', '/^[^_].*?\.php$/i', 'f'), 0, -4);
+$translate_engines			= _mb_substr(get_files_list(ENGINES.'/Text', '/^[^_].*?\.php$/i', 'f'), 0, -4);
 $translate_engines_settings	= [];
 $current_engine_settings	= '';
 foreach ($translate_engines as $engine) {
-	$parameters					= _json_decode(file_get_contents(ENGINES.'/translate/'.$engine.'.json'));
+	$parameters					= _json_decode(file_get_contents(ENGINES.'/Text/'.$engine.'.json'));
 	if (is_array($parameters) && !empty($parameters)) {
 		$table							= '';
 		foreach ($parameters as $paremeter => $description) {
@@ -36,15 +36,15 @@ $Index->content(
 		system_select_core($Config->core['active_languages'],	'language',			'change_language',	'current_language'),
 		system_select_core($Config->core['languages'],			'active_languages',	'change_language',	null, true),
 		[
-			h::info('multilanguage'),
+			h::info('multilingual'),
 			h::{'input[type=radio]'}([
-					'name'			=> 'core[multilanguage]',
-					'checked'		=> $Config->core['multilanguage'],
+					'name'			=> 'core[multilingual]',
+					'checked'		=> $Config->core['multilingual'],
 					'value'			=> [0, 1],
 					'in'			=> [$L->off, $L->on],
 					'OnClick'		=> [
-						"$('.cs-multilanguage').hide(); $('.cs-auto-translation').hide();",
-						"$('.cs-multilanguage').show(); if ($('#auto_translation [value=1]').prop('checked')) $('.cs-auto-translation').show();"
+						"$('.cs-multilingual').hide(); $('.cs-auto-translation').hide();",
+						"$('.cs-multilingual').show(); if ($('#auto_translation [value=1]').prop('checked')) $('.cs-auto-translation').show();"
 					]
 			])
 		],
@@ -60,9 +60,9 @@ $Index->content(
 				])
 			],
 			[
-				'style' => !$Config->core['multilanguage'] ? 'display: none; ' : '',
+				'style' => !$Config->core['multilingual'] ? 'display: none; ' : '',
 				'id'	=> 'auto_translation',
-				'class'	=> 'cs-multilanguage'
+				'class'	=> 'cs-multilingual'
 			]
 		],
 		[
@@ -79,7 +79,7 @@ $Index->content(
 				)
 			],
 			[
-				'style' => !$Config->core['multilanguage'] || !$Config->core['auto_translation'] ? 'display: none; ' : '',
+				'style' => !$Config->core['multilingual'] || !$Config->core['auto_translation'] ? 'display: none; ' : '',
 				'id'	=> 'auto_translation_engine',
 				'class'	=> 'cs-auto-translation'
 			]
@@ -88,14 +88,14 @@ $Index->content(
 			[
 				$L->auto_translation_engine_settings,
 				[
-					'style' => !$Config->core['multilanguage'] || !$Config->core['auto_translation'] ? 'display: none; ' : '',
-					'class'	=> 'cs-auto-translation cs-multilanguage'
+					'style' => !$Config->core['multilingual'] || !$Config->core['auto_translation'] ? 'display: none; ' : '',
+					'class'	=> 'cs-auto-translation cs-multilingual'
 				]
 			],
 			[
 				$current_engine_settings,
 				[
-					'style' => !$Config->core['multilanguage'] || !$Config->core['auto_translation'] ? 'display: none; ' : '',
+					'style' => !$Config->core['multilingual'] || !$Config->core['auto_translation'] ? 'display: none; ' : '',
 					'id'	=> 'auto_translation_engine_settings',
 					'class'	=> 'cs-auto-translation'
 				]

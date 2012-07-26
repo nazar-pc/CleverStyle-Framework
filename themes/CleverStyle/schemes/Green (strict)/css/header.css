@@ -25,24 +25,24 @@
 	color: #fff;
 	text-shadow:  0 0 20px #fff;
 }
-#main-menu, #main-menu > a, #main-submenu > a {
+.cs-header-main-menu, .cs-header-main-menu > a, .cs-header-main-submenu > a {
 	color: #fff;
 }
-#main-menu > a {
+.cs-header-main-menu > a {
 	text-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
 }
-#main-menu > a:hover, #main-submenu > a:hover, #main-submenu > a.active {
+.cs-header-main-menu > a:hover, .cs-header-main-submenu > a:hover, .cs-header-main-submenu > a.active {
 	color: #000;
 	text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
 }
-#menu-more {
+.cs-header-menu-more {
 	color: rgb(110, 188, 0);
 }
-#menu-more > a {
+.cs-header-menu-more > a {
 	border-top: 2px solid rgb(110, 188, 0);
 	color: rgb(110, 188, 0);
 }
-#menu-more > a:hover, #menu-more > a.active {
+.cs-header-menu-more > a:hover, .cs-header-menu-more > a.active {
 	border-top-color: #ddd;
 	color: #ddd;
 }

@@ -70,7 +70,7 @@
 	margin-left: 3px;
 	float: left;
 }
-#main-menu, #main-submenu, #menu-more {
+.cs-header-main-menu, .cs-header-main-submenu, .cs-header-menu-more {
 	height: 40px;
 	left: 0;
 	line-height: 32px;
@@ -79,17 +79,17 @@
 	top: 0;
 	z-index: 3;
 }
-#main-submenu {
+.cs-header-main-submenu {
 	line-height: 20px;
 	top: 40px;
 }
-#menu-more {
+.cs-header-menu-more {
 	font-size: 14px;
 	line-height: 20px;
 	right: 310px;
 	top: 70px;
 }
-#main-menu > a, #main-submenu > a, #menu-more > a {
+.cs-header-main-menu > a, .cs-header-main-submenu > a, .cs-header-menu-more > a {
 	border-bottom: none;
 	cursor: pointer;
 	transition: all 0.3s linear;
@@ -97,17 +97,17 @@
 	-moz-transition: all 0.3s linear;
 	-webkit-transition: all 0.3s linear;
 }
-#main-menu {
+.cs-header-main-menu {
 	font-size: 40px;
 	margin: 0;
 	padding: 5px 0 0 5px;
 }
-#main-submenu {
+.cs-header-main-submenu {
 	font-size: 24px;
 	margin: 0;
 	padding: 5px 0 0 5px;
 }
-#menu-more {
+.cs-header-menu-more {
 	margin: 0;
 	padding: 5px 0 0 10px;
 }

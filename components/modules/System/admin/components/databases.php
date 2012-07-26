@@ -47,10 +47,10 @@ if (isset($rc[2])) {
 			 * @var array $database
 			 * @var string $name
 			 */
-			$Page->title($rc[2] == 'edit' ? $L->editing_a_database($name) : $L->adding_a_database);
+			$Page->title($rc[2] == 'edit' ? $L->editing_the_database($name) : $L->addition_of_db);
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages'}(
-					$rc[2] == 'edit' ? $L->editing_a_database($name) : $L->adding_a_database
+					$rc[2] == 'edit' ? $L->editing_the_database($name) : $L->addition_of_db
 				).
 				h::{'table.cs-fullwidth-table.cs-center-all tr'}(
 					h::{'th.ui-widget-header.ui-corner-all| info'}(

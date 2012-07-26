@@ -170,7 +170,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					}
 					unset($i, $db_data);
 					$db_list[] = h::{'th.ui-widget-header.ui-corner-all'}([
-						h::info('db_purpose'),
+						h::info('appointment_of_db'),
 						h::info('system_db')
 					]);
 					$db_json = _json_decode(file_get_contents(MODULES.'/'.$rc[3].'/meta/db.json'));
@@ -236,7 +236,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					}
 					unset($i, $storage_data);
 					$storage_list[] = h::{'th.ui-widget-header.ui-corner-all'}([
-						h::info('storage_purpose'),
+						h::info('appointment_of_storage'),
 						h::info('system_storage')
 					]);
 					$storage_json = _json_decode(file_get_contents(MODULES.'/'.$rc[3].'/meta/storage.json'));
@@ -498,6 +498,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 			isset($module_meta['website']) ? $module_meta['website'] : $L->none,
 			$module_meta['license'],
 			isset($module_meta['db_support']) ? implode(', ', $module_meta['db_support']) : $L->none,
+			isset($module_meta['storage_support']) ? implode(', ', $module_meta['storage_support']) : $L->none,
 			isset($module_meta['provide']) ? implode(', ', $module_meta['provide']) : $L->none,
 			isset($module_meta['require']) ? implode(', ', $module_meta['require']) : $L->none,
 			isset($module_meta['conflict']) ? implode(', ', $module_meta['conflict']) : $L->none

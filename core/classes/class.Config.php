@@ -355,6 +355,8 @@ class Config {
 	}
 	/**
 	 * Reloading of settings cache
+	 *
+	 * @return bool
 	 */
 	protected function load () {
 		global $db;
@@ -390,22 +392,27 @@ class Config {
 	}
 	/**
 	 * Applying settings without saving changes into db
+	 *
+	 * @return bool
 	 */
 	function apply () {
 		return $this->apply_internal();
 	}
 	/**
 	 * Applying settings without saving changes into db
+	 *
+	 * @param bool $cache_not_saved_mark
+	 *
+	 * @return bool
 	 */
 	protected function apply_internal ($cache_not_saved_mark = true) {
-		global $Error, $Cache;
+		global $Error, $Cache, $L;
 		/**
 		 * If errors - cache updating must be stopped
 		 */
 		if ($Error->num()) {
 			return false;
 		}
-		$this->init();
 		$Config = [];
 		foreach ($this->admin_parts as $part) {
 			$Config[$part] = $this->$part;
@@ -420,6 +427,8 @@ class Config {
 			unset($Config['core']['cache_not_saved'], $this->core['cache_not_saved']);
 		}
 		$Cache->config = $Config;
+		$this->init();
+		$L->change($this->core['language']);
 		return true;
 	}
 	/**

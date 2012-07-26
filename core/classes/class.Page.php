@@ -787,7 +787,7 @@ class Page {
 				'power',
 				[
 					'style'			=> 'cursor: pointer;',
-					'data-title'	=> $L->logout
+					'data-title'	=> $L->log_out
 				]
 			).
 			h::{'p.actions'}(
@@ -820,7 +820,7 @@ class Page {
 					h::icon('check').$L->log_in
 				).
 				h::{'button.cs-header-registration-slide.cs-button-compact'}(
-					h::icon('pencil').$L->register,
+					h::icon('pencil').$L->registration,
 					[
 						 'data-title'	=> $L->quick_registration_form
 					]
@@ -853,7 +853,7 @@ class Page {
 					]
 				).//TODO foreign login systems processing, open pop-up window instead of list
 				h::{'button.cs-header-register-process.cs-button-compact[tabindex=2]'}(
-					h::icon('pencil').$L->register
+					h::icon('pencil').$L->registration
 				).
 				h::div().
 				h::{'button.cs-button-compact.cs-header-back[tabindex=3]'}(

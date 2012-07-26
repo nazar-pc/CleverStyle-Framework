@@ -154,7 +154,7 @@ class Language {
 			return true;
 		}
 		global $Config;
-		if (!is_object($Config) || ($Config->core['multilanguage'] && in_array($language, $Config->core['active_languages']))) {
+		if (!is_object($Config) || ($Config->core['multilingual'] && in_array($language, $Config->core['active_languages']))) {
 			global $Cache;
 			$this->clanguage = $language;
 			if ($translate = $Cache->{'languages/'.$this->clanguage}) {

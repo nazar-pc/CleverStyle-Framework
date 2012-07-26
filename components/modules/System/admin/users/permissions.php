@@ -7,10 +7,10 @@ if (isset($rc[2])) {
 		case 'add':
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
-			$Page->title($L->adding_a_permission);
+			$Page->title($L->adding_permission);
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages'}(
-					$L->adding_a_permission
+					$L->adding_permission
 				).
 				h::{'table.cs-fullwidth-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([
@@ -36,11 +36,11 @@ if (isset($rc[2])) {
 			$a->cancel_button_back	= true;
 			$permission				= $User->get_permission($rc[3]);
 			$Page->title(
-				$L->editing_a_permission($permission['group'].'/'.$permission['label'])
+				$L->editing_permission($permission['group'].'/'.$permission['label'])
 			);
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages'}(
-					$L->editing_a_permission($permission['group'].'/'.$permission['label'])
+					$L->editing_permission($permission['group'].'/'.$permission['label'])
 				).
 				h::{'table.cs-fullwidth-table.cs-center-all'}(
 					h::{'tr th.ui-widget-header.ui-corner-all'}([

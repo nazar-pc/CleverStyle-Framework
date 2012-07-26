@@ -98,7 +98,7 @@ $Page->content(
 			])  : false),
 
 			($data['about'] ? h::td([
-				h::h2($L->about_myself.':'),
+				h::h2($L->about_me.':'),
 				h::h2(str_replace("\n", h::br(), $data['about']))
 			]) : false)
 		])

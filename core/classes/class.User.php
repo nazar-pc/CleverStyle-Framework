@@ -1522,7 +1522,7 @@ class User {
 	 * 												&nbsp;'reg_key'		=> *,</b>	//Registration confirmation key, or <b>true</b>
 	 * 																					if confirmation is not required<br>
 	 * 												&nbsp;<b>'password'	=> *,</b>	//Automatically generated password<br>
-	 * 												&nbsp;<b>'id`		=> *</b>	//Id of registered user in DB<br>
+	 * 												&nbsp;<b>'id'		=> *</b>	//Id of registered user in DB<br>
 	 * 												<b>)</b>
 	 */
 	function registration ($email, $confirmation = true) {

@@ -196,7 +196,7 @@ switch (isset($Config->routing['current'][2]) ? $Config->routing['current'][2] :
 					'name'		=> 'user[skype]',
 					'value'		=> $user_data['skype']
 				])),
-				$row($L->about_myself, h::{'textarea.cs-form-element'}(
+				$row($L->about_me, h::{'textarea.cs-form-element'}(
 					$user_data['about'],
 					[
 						'name'		=> 'user[about]',
