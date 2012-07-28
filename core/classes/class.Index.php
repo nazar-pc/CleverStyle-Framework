@@ -160,10 +160,6 @@ class Index {
 		if ($this->stop) {
 			return;
 		}
-		$this->admin && $Page->title($L->administration);
-		if (!$this->api && $this->title_auto) {
-			$Page->title($L->{HOME ? 'home' : MODULE});
-		}
 		if ($this->parts) {
 			if (!isset($rc[0]) || $rc[0] == '') {
 				if (API) {
@@ -178,22 +174,26 @@ class Index {
 				$this->__finish();
 				return;
 			}
-			if (!$this->api) {
-				if (!HOME && $this->title_auto) {
-					$Page->title($L->$rc[0]);
-				}
-			}
 			/**
 			 * Saving of changes
 			 */
 			if ($this->admin && !_include_once(MFOLDER.'/'.$rc[0].'/'.$this->savefile.'.php', false)) {
 				_include_once(MFOLDER.'/'.$this->savefile.'.php', false);
 			}
+			$this->admin && $Page->title($L->administration);
+			if (!$this->api && $this->title_auto) {
+				$Page->title($L->{HOME ? 'home' : MODULE});
+			}
+			if (!$this->api) {
+				if (!HOME && $this->title_auto) {
+					$Page->title($L->$rc[0]);
+				}
+			}
 			/**
 			 * Warning if site is closed
 			 */
 			if (!$Config->core['site_mode']) {
-				$Page->warning($Config->core['closed_title']);
+				$Page->warning(get_core_ml_text('closed_title'));
 			}
 			_include_once(MFOLDER.'/'.$rc[0].'.php', false);
 			if ($this->stop) {
@@ -228,6 +228,10 @@ class Index {
 				$Page->title($this->post_title);
 			}
 		} elseif (!$this->api) {
+			$this->admin && $Page->title($L->administration);
+			if (!$this->api && $this->title_auto) {
+				$Page->title($L->{HOME ? 'home' : MODULE});
+			}
 			$this->action = $Config->server['corrected_full_address'];
 			_include_once(MFOLDER.'/'.$this->savefile.'.php', false);
 		}
@@ -409,7 +413,7 @@ class Index {
 							'reg_confirmation = "'.$L->reg_confirmation.'",'.
 							'reg_error_connection = "'.$L->reg_error_connection.'",'.
 							'rules_agree = "'.$L->rules_agree.'",'.
-							'rules_text = "'.$Config->core['rules'].'",'.
+							'rules_text = "'.get_core_ml_text('rules').'",'.
 							'restore_password_confirmation = "'.$L->restore_password_confirmation.'",'
 						: '').
 					($User->is('user') ?
@@ -440,7 +444,7 @@ class Index {
 	 * Blocks processing
 	 */
 	protected function blocks_processing () {
-		global $Page, $Config, $User, $Cache;
+		global $Page, $Config, $User, $Cache, $Text, $L;
 		$blocks_array = [
 			'top'		=> '',
 			'left'		=> '',
@@ -456,7 +460,7 @@ class Index {
 			) {
 				continue;
 			}
-			$block_cache = $Cache->{'blocks/'.$block['index']};
+			$block_cache = $Cache->{'blocks/'.$block['index'].'_'.$L->clang};
 			if (!is_array($block_cache) || (isset($block_cache['expire']) && $block_cache['expire'] < TIME - $block['update'])) {
 				$block_cache			= [];
 				switch ($block['type']) {
@@ -467,20 +471,28 @@ class Index {
 					break;
 					case 'html':
 					case 'raw_html':
-						$content = $block['data'];
+						$content = $Text->process($Config->module('System')->db('texts'), $block['content']);
 					break;
 				}
 				$template				= file_exists(TEMPLATES.'/blocks/block.'.$block['template']) ?
 														TEMPLATES.'/blocks/block.'.$block['template'] :
 														TEMPLATES.'/blocks/block.default.html';
 				$block_cache['content']	= str_replace(
-					['<!--id-->', '<!--title-->', '<!--content-->'],
-					[$block['index'], $block['title'], $content],
+					[
+						'<!--id-->',
+						'<!--title-->',
+						'<!--content-->'
+					],
+					[
+						$block['index'],
+						$Text->process($Config->module('System')->db('texts'), $block['title']),
+						$content
+					],
 					file_get_contents($template)
 				);
 				if ($block['update'] > 0) {
 					$block_cache['expire']				= TIME + $block['update'];
-					$Cache->{'blocks/'.$block['index']}	= $block_cache;
+					$Cache->{'blocks/'.$block['index'].'_'.$L->clang}	= $block_cache;
 				}
 			}
 			if ($block['position'] == 'floating') {

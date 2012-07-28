@@ -1,4 +1,10 @@
 <?php
+namespace	cs\modules\System\components\blocks;
+use			\h;
+function get_block_title ($id) {
+	global $Config, $Text;
+	return $Text->process($Config->module('System')->db('texts'), $Config->components['blocks'][$id]['title']);
+}
 global $Config, $Index, $L, $Page;
 $a		= $Index;
 $rc		= $Config->routing['current'];
@@ -29,10 +35,10 @@ if (isset($rc[2])) {
 			$a->buttons				= false;
 			$a->cancel_button_back	= true;
 			$a->action				= 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
-			$Page->title($L->deletion_of_block($Config->components['blocks'][$rc[3]]['title']));
+			$Page->title($L->deletion_of_block(get_block_title($rc[3])));
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages'}(
-					$L->sure_to_delete_block($Config->components['blocks'][$rc[3]]['title']).
+					$L->sure_to_delete_block(get_block_title($rc[3])).
 					h::{'input[type=hidden]'}([
 						'name'	=> 'mode',
 						'value'	=> 'delete'
@@ -147,10 +153,10 @@ if (isset($rc[2])) {
 			$a->cancel_button_back	= true;
 			$a->form_atributes[]	= 'formnovalidate';
 			$block = &$Config->components['blocks'][$rc[3]];
-			$Page->title($L->editing_a_block($block['title']));
+			$Page->title($L->editing_a_block(get_block_title($rc[3])));
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages'}(
-					$L->editing_a_block($block['title'])
+					$L->editing_a_block(get_block_title($rc[3]))
 				).
 				h::{'table.cs-fullwidth-table.cs-center-all tr'}(
 					h::{'th.ui-widget-header.ui-corner-all| info'}(
@@ -164,7 +170,7 @@ if (isset($rc[2])) {
 					h::{'td.ui-widget-content.ui-corner-all.cs-add-block'}(
 						h::{'input.cs-form-element'}([
 							'name'		=> 'block[title]',
-							'value'		=> $block['title']
+							'value'		=> get_block_title($rc[3])
 						]),
 						h::{'input[type=radio]'}([
 							'name'		=> 'block[active]',
@@ -238,8 +244,7 @@ if (isset($rc[2])) {
 			$form					= false;
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
-			$block					= $Config->components['blocks'][$rc[3]];
-			$permission				= $User->get_permission(null, 'Block', $block['index'])[0]['id'];
+			$permission				= $User->get_permission(null, 'Block', $Config->components['blocks'][$rc[3]]['index'])[0]['id'];
 			$groups					= $User->get_groups_list();
 			$groups_content			= [];
 			foreach ($groups as $group) {
@@ -292,10 +297,10 @@ if (isset($rc[2])) {
 					]);
 			}
 			unset($user, $value);
-			$Page->title($L->permissions_for_block($block['title']));
+			$Page->title($L->permissions_for_block(get_block_title($rc[3])));
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages'}(
-					$L->permissions_for_block($block['title'])
+					$L->permissions_for_block(get_block_title($rc[3]))
 				).
 				h::{'div#block_permissions_tabs'}(
 					h::{'ul li| a'}(
@@ -406,7 +411,7 @@ if ($form) {
 	];
 	foreach ($Config->components['blocks'] as $id => $block) {
 		$blocks_array[$block['position']] .= h::li(
-			h::{'div.cs-blocks-items-title'}('#'.$block['index'].' '.$block['title']).
+			h::{'div.cs-blocks-items-title'}('#'.$block['index'].' '.get_block_title($id)).
 			h::{'a'}(
 				[
 					h::{'div icon'}('wrench'),

@@ -123,7 +123,8 @@ class Page {
 				$this->theme = $theme;
 			}
 			unset($theme);
-			$this->color_scheme	= in_array($this->color_scheme, $Config->core['color_schemes'][$this->theme]) ? $this->color_scheme : $Config->core['color_schemes'][$this->theme][0];
+			$this->color_scheme	= in_array($this->color_scheme, $Config->core['color_schemes'][$this->theme]) ?
+									$this->color_scheme : $Config->core['color_schemes'][$this->theme][0];
 			$color_scheme		= _getcookie('color_scheme');
 			if ($color_scheme && $color_scheme !== $this->color_scheme && in_array($color_scheme, $Config->core['color_schemes'][$this->theme])) {
 				$this->color_scheme = $color_scheme;
@@ -157,8 +158,8 @@ class Page {
 			) {
 				echo	"<!doctype html>\n".
 				h::html(
-					h::{'head title'}($Config->core['closed_title']).
-					h::body($Config->core['closed_text'])
+					h::{'head title'}(get_core_ml_text('closed_title')).
+					h::body(get_core_ml_text('closed_text'))
 				);
 			} else {
 				_include_once(THEMES.'/'.$this->theme.'/index.php', false) || _include_once(THEMES.'/'.$this->theme.'/index.html');
@@ -603,7 +604,7 @@ class Page {
 	protected function get_footer () {
 		global $L, $db, $Config;
 		$this->Footer .= h::div(
-			$Config->core['footer_text'] ?: false,
+			get_core_ml_text('footer_text') ?: false,
 			$Config->core['show_footer_info'] ?
 				$L->page_footer_info('<!--generate time-->', $db->queries, format_time(round($db->time, 5)), '<!--peak memory usage-->') : false,
 			base64_decode(

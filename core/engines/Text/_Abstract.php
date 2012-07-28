@@ -1,5 +1,5 @@
 <?php
-namespace cs\translate;
+namespace cs\Text;
 abstract class _Abstract {
 	/**
 	 * @static
@@ -11,7 +11,9 @@ abstract class _Abstract {
 	 *
 	 * @return bool|string Translated string of <b>false</b> if failed
 	 */
-	abstract static function translate ($text, $from, $to);
+	static function translate ($text, $from, $to) {
+		return $text;
+	}
 	/**
 	 * Cloning restriction
 	 *

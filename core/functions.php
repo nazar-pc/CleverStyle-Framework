@@ -1292,3 +1292,17 @@ function array_flip_3d ($array) {
 	}
 	return $result;
 }
+/**
+ * Get multilingual value from $Config->core array
+ *
+ * @param string $item
+ *
+ * @return bool|string
+ */
+function get_core_ml_text ($item) {
+	global $Config, $Text;
+	if (!(is_object($Config) && is_object($Text))) {
+		return false;
+	}
+	return $Text->process($Config->module('System')->db('texts'), $Config->core[$item]);
+}

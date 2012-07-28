@@ -23,10 +23,10 @@ if (
 	($key = $User->restore_password($id)) &&
 	$Mail->send_to(
 		$User->get('email', $id),
-		$L->restore_password_confirmation_mail($Config->core['name']),
+		$L->restore_password_confirmation_mail(get_core_ml_text('name')),
 		$L->restore_password_confirmation_mail_body(
 			$User->get_username($id),
-			$Config->core['name'],
+			get_core_ml_text('name'),
 			$Config->core['url'].'/profile/restore_password_confirmation/'.$key,
 			$L->time($Config->core['registration_confirmation_time'], 'd')
 		)

@@ -22,14 +22,14 @@ if ($result === false) {
 }
 $body = $L->reg_success_mail_body(
 	strstr($result['email'], '@', true),
-	$Config->core['name'],
+	get_core_ml_text('name'),
 	$Config->core['url'].'/profile/'.$User->get('login', $result['id']),
 	$User->get('login', $result['id']),
 	$result['password']
 );
 if ($Mail->send_to(
 	$result['email'],
-	$L->reg_success_mail($Config->core['name']),
+	$L->reg_success_mail(get_core_ml_text('name')),
 	$body
 )) {
 	_setcookie('reg_confirm', 1);

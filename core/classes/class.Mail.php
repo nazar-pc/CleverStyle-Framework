@@ -21,7 +21,7 @@ class Mail extends \PHPMailer {
 			}
 		}
 		$this->From		= $Config->core['mail_from'];
-		$this->FromName	= $Config->core['mail_from_name'];
+		$this->FromName	= get_core_ml_text('mail_from_name');
 		$this->CharSet	= 'utf-8';
 		$this->IsHTML();
 	}
@@ -66,12 +66,9 @@ class Mail extends \PHPMailer {
 			unset($e, $email);
 		}
 		$this->Subject = $subject;
-		global $Config;
 		if ($signature === true) {
-			if ($Config->core['mail_signature']) {
-				$signature = $this->LE.'-- '.$this->LE.$Config->core['mail_signature'];
-			} else {
-				$signature = '';
+			if ($signature = get_core_ml_text('mail_signature')) {
+				$signature = $this->LE.'-- '.$this->LE.$signature;
 			}
 		} elseif ($signature) {
 			$signature = $this->LE.'-- '.$this->LE.xap($signature, true);

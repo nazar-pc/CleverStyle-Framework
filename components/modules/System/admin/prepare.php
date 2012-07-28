@@ -1,14 +1,29 @@
 <?php
 namespace	cs\modules\System;
 use			\h;
+function set_core_ml_text ($item, $text) {
+	global $Config, $Text;
+	return $Text->set($Config->module('System')->db('texts'), 'System/Config/core', $item, $text);
+}
 function system_input_core ($item, $type = 'text', $info_item = null, $disabled = false, $min = false, $max = false, $post_text = '') {
 	global $Config;
 	if ($type != 'radio') {
+		switch ($item) {
+			default:
+				$value	= $Config->core[$item];
+			break;
+			case 'name':
+			case 'keywords':
+			case 'description':
+			case 'closed_title':
+			case 'mail_from_name':
+				$value	= get_core_ml_text($item);
+		}
 		return [
 			h::info($info_item ?: $item),
 			h::input([
 				'name'		=> "core[$item]",
-				'value'		=> $Config->core[$item],
+				'value'		=> $value,
 				'class'		=> 'cs-form-element',
 				'min'		=> $min,
 				'max'		=> $max,
@@ -33,10 +48,20 @@ function system_input_core ($item, $type = 'text', $info_item = null, $disabled 
 }
 function system_textarea_core ($item, $wide = true, $editor = null, $info_item = null) {
 	global $Config;
+	switch ($item) {
+		default:
+			$content	= $Config->core[$item];
+			break;
+		case 'closed_text':
+		case 'footer_text':
+		case 'mail_signature':
+		case 'rules':
+			$content	= get_core_ml_text($item);
+	}
 	return [
 		h::info($info_item ?: $item),
 		h::textarea(
-			$Config->core[$item],
+			$content,
 			[
 				'name'	=> "core[$item]",
 				'class'	=> 'cs-form-element'.($wide ? ' cs-wide-textarea' : '').($editor ? ' '.$editor : '')

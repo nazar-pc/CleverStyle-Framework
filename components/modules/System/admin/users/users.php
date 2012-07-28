@@ -1,4 +1,10 @@
 <?php
+namespace	cs\modules\System\users\users;
+use			\h;
+function row ($col1, $col2) {
+	return	h::{'th.ui-widget-header.ui-corner-all'}($col1).
+			  h::{'td.ui-widget-content.ui-corner-all'}($col2);
+}
 global $Config, $Index, $L, $User, $Page;
 $a				= $Index;
 $rc				= $Config->routing['current'];
@@ -145,10 +151,6 @@ if (isset($rc[2], $rc[3])) {
 				$timezones				= get_timezones_list();
 				$reg_ip					= hex2ip($user_data['reg_ip'], 10);
 				$last_ip				= hex2ip($user_data['last_ip'], 10);
-				$row					= function ($col1, $col2) {
-					return	h::{'th.ui-widget-header.ui-corner-all'}($col1).
-							h::{'td.ui-widget-content.ui-corner-all'}($col2);
-				};
 				$themes					= [
 					$L->system_default.' ('.$Config->core['theme'].' - '.$Config->core['color_scheme'].')' => ''
 				];
@@ -171,32 +173,32 @@ if (isset($rc[2], $rc[3])) {
 						)
 					).
 					h::{'table#users_edit.cs-fullwidth-table.cs-center-all tr'}([
-						$row('id', $rc[3]),
-						$row($L->registration_date, $user_data['reg_date'] ? date($L->_date, $user_data['reg_date']) : $L->undefined),
-						$row($L->registration_ip, $reg_ip[0] ? $reg_ip[0].($reg_ip[1] ? h::br().$reg_ip[1] : '') : $L->undefined),
-						$row($L->last_login, $user_data['last_login'] ? date($L->_datetime, $user_data['last_login']) : $L->undefined),
-						$row($L->last_ip, $last_ip[0] ? $last_ip[0].($last_ip[1] ? h::br().$last_ip[1] : '') : $L->undefined),
-						$row($L->last_online, $user_data['last_online'] ? date($L->_datetime, $user_data['last_online']) : $L->undefined),
-						$row($L->login, h::{'input.cs-form-element'}([
+						row('id', $rc[3]),
+						row($L->registration_date, $user_data['reg_date'] ? date($L->_date, $user_data['reg_date']) : $L->undefined),
+						row($L->registration_ip, $reg_ip[0] ? $reg_ip[0].($reg_ip[1] ? h::br().$reg_ip[1] : '') : $L->undefined),
+						row($L->last_login, $user_data['last_login'] ? date($L->_datetime, $user_data['last_login']) : $L->undefined),
+						row($L->last_ip, $last_ip[0] ? $last_ip[0].($last_ip[1] ? h::br().$last_ip[1] : '') : $L->undefined),
+						row($L->last_online, $user_data['last_online'] ? date($L->_datetime, $user_data['last_online']) : $L->undefined),
+						row($L->login, h::{'input.cs-form-element'}([
 							'name'		=> 'user[login]',
 							'value'		=> $user_data['login']
 						])),
-						$row($L->username, h::{'input.cs-form-element'}([
+						row($L->username, h::{'input.cs-form-element'}([
 							'name'	=> 'user[username]',
 							'value'	=> $user_data['username']
 						])),
-						$row($L->email, h::{'input.cs-form-element'}([
+						row($L->email, h::{'input.cs-form-element'}([
 							'name'		=> 'user[email]',
 							'value'		=> $user_data['email']
 						])),
-						$row(
+						row(
 							$L->password_only_for_changing.h::{'icon.cs-show-password.cs-pointer'}('locked'),
 							h::{'input.cs-form-element[type=password]'}([
 								'name'	=> 'user[password]',
 								'value'	=> ''
 							])
 						),
-						$row($L->language, h::{'select.cs-form-element'}(
+						row($L->language, h::{'select.cs-form-element'}(
 							[
 								'in'		=> array_merge([$L->system_default.' ('.$Config->core['language'].')'], $Config->core['active_languages']),
 								'value'		=> array_merge([''], $Config->core['active_languages'])
@@ -207,7 +209,7 @@ if (isset($rc[2], $rc[3])) {
 								'size'		=> 5
 							]
 						)),
-						$row($L->theme, h::{'select.cs-form-element'}(
+						row($L->theme, h::{'select.cs-form-element'}(
 							[
 								'in'		=> array_keys($themes),
 								'value'		=> array_values($themes)
@@ -218,7 +220,7 @@ if (isset($rc[2], $rc[3])) {
 								'size'		=> 5
 							]
 						)),
-						$row($L->timezone, h::{'select.cs-form-element'}(
+						row($L->timezone, h::{'select.cs-form-element'}(
 							[
 								'in'		=> array_merge([$L->system_default.' ('.$Config->core['timezone'].')'], array_keys($timezones)),
 								'value'		=> array_merge([''], array_values($timezones))
@@ -229,43 +231,43 @@ if (isset($rc[2], $rc[3])) {
 								'size'		=> 5
 							]
 						)),
-						$row($L->status, h::{'input.cs-form-element[type=radio]'}([
+						row($L->status, h::{'input.cs-form-element[type=radio]'}([
 							'name'		=> 'user[status]',
 							'checked'	=> $user_data['status'],
 							'value'		=> [-1, 0, 1],
 							'in'		=> [$L->is_not_activated, $L->inactive, $L->active]
 						])),
-						$row(h::info('block_until'), h::{'input.cs-form-element[type=datetime-local]'}([
+						row(h::info('block_until'), h::{'input.cs-form-element[type=datetime-local]'}([
 							'name'		=> 'user[block_until]',
 							'value'		=> date('Y-m-d\TH:i', $user_data['block_until'] ?: TIME)
 						])),
-						$row($L->gender, h::{'input.cs-form-element[type=radio]'}([
+						row($L->gender, h::{'input.cs-form-element[type=radio]'}([
 							'name'		=> 'user[gender]',
 							'checked'	=> $user_data['gender'],
 							'value'		=> [-1, 0, 1],
 							'in'		=> [$L->undefined, $L->male, $L->female]
 						])),
-						$row(h::info('birthday'), h::{'input.cs-form-element[type=date]'}([
+						row(h::info('birthday'), h::{'input.cs-form-element[type=date]'}([
 							'name'		=> 'user[birthday]',
 							'value'		=> date('Y-m-d', $user_data['birthday'] ?: TIME)
 						])),
-						$row($L->avatar, h::{'input.cs-form-element'}([
+						row($L->avatar, h::{'input.cs-form-element'}([
 							'name'		=> 'user[avatar]',
 							'value'		=> $user_data['avatar']
 						])),
-						$row($L->website, h::{'input.cs-form-element'}([
+						row($L->website, h::{'input.cs-form-element'}([
 							'name'		=> 'user[website]',
 							'value'		=> $user_data['website']
 						])),
-						$row($L->icq, h::{'input.cs-form-element'}([
+						row($L->icq, h::{'input.cs-form-element'}([
 							'name'		=> 'user[icq]',
 							'value'		=> $user_data['icq'] ?: ''
 						])),
-						$row($L->skype, h::{'input.cs-form-element'}([
+						row($L->skype, h::{'input.cs-form-element'}([
 							'name'		=> 'user[skype]',
 							'value'		=> $user_data['skype']
 						])),
-						$row($L->about_me, h::{'textarea.cs-form-element'}(
+						row($L->about_me, h::{'textarea.cs-form-element'}(
 							$user_data['about'],
 							[
 								'name'		=> 'user[about]',

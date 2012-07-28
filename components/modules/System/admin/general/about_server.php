@@ -1,14 +1,16 @@
 <?php
-global $L, $Core, $Index, $db, $Cache, $PHP, $mcrypt, $Config;
+namespace	cs\modules\System\general\about_server;
+use			\h;
+global $L, $Core, $Index, $db, $PHP, $mcrypt, $Config;
+global ${$Core->config('db_type')};
 if (isset($Config->routing['current'][2]) && $Config->routing['current'][2] == 'phpinfo') {
 	interface_off();
 	ob_start();
 	phpinfo();
 	$Index->content(ob_get_clean());
 }
-global ${$Core->config('db_type')};
 $Index->form	= false;
-$state			= function ($state) {
+function state ($state) {
 	return ($state ? 'ui-state-highlight' : 'ui-state-error').' ui-corner-all';
 };
 $Index->content(
@@ -79,7 +81,7 @@ $Index->content(
 			[
 				PHP_VERSION.(!check_php() ? ' ('.$L->required.' '.$PHP.' '.$L->or_higher.')' : ''),
 				[
-					'class' => $state(check_php())
+					'class' => state(check_php())
 				]
 			]
 		],
@@ -91,7 +93,7 @@ $Index->content(
 					[
 						check_mcrypt() ? $L->on : $L->off.h::sup('(!)', ['title'	=> $L->mcrypt_warning]),
 						[
-							'class' => $state(check_mcrypt())
+							'class' => state(check_mcrypt())
 						]
 					]
 				],
@@ -100,7 +102,7 @@ $Index->content(
 					[
 						check_mcrypt().(!check_mcrypt(1) ? ' ('.$L->required.' '.$mcrypt.' '.$L->or_higher.')' : ''),
 						[
-							'class' => $state(check_mcrypt(1))
+							'class' => state(check_mcrypt(1))
 						]
 					]
 				] : false,
@@ -121,7 +123,7 @@ $Index->content(
 					[
 						$L->get(curl()),
 						[
-							'class' => $state(curl())
+							'class' => state(curl())
 						]
 					]
 				]
@@ -143,7 +145,7 @@ $Index->content(
 					[
 						$db->server().(check_db() ? '' : ' ('.$L->required.' '.${$Core->config('db_type')}.' '.$L->or_higher.')'),
 						[
-							'class' => $state(check_db())
+							'class' => state(check_db())
 						]
 					]
 				],
@@ -169,7 +171,7 @@ $Index->content(
 					[
 						$L->get(ini_get('file_uploads')),
 						[
-							'class' => $state(ini_get('file_uploads'))
+							'class' => state(ini_get('file_uploads'))
 						]
 					]
 				],
@@ -212,7 +214,7 @@ $Index->content(
 							$rewrite = function_exists('apache_get_modules') && in_array('mod_rewrite',apache_get_modules())
 						),
 						[
-							 'class' => $state($rewrite)
+							 'class' => state($rewrite)
 						]
 					]
 				],
@@ -221,7 +223,7 @@ $Index->content(
 					[
 						$L->get(ini_get('allow_url_fopen')),
 						[
-							'class' => $state(ini_get('allow_url_fopen'))
+							'class' => state(ini_get('allow_url_fopen'))
 						]
 					]
 				],
@@ -230,7 +232,7 @@ $Index->content(
 					[
 						$L->get(display_errors()),
 						[
-							'class' => $state(!display_errors())
+							'class' => state(!display_errors())
 						]
 					]
 				]

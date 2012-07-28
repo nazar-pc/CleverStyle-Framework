@@ -39,7 +39,7 @@ class MySQLi extends _Abstract {
 			$host	= $host[0].':'.$host[1];
 		}
 		$this->instance = new \MySQLi($host, $user, $password, $database, $port);
-		if(is_object($this->instance)) {
+		if(is_object($this->instance) && !$this->instance->connect_errno) {
 			$this->database = $database;
 			/**
 			 * Changing DB charset

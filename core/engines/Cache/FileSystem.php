@@ -58,12 +58,12 @@ class FileSystem extends _Abstract {
 				}
 				$cache_size_file	= fopen(CACHE.'/size', 'c+b');
 				$time				= microtime(true);
-				while (!flock($cache_size_file, LOCK_EX)) {
+				while (!flock($cache_size_file, LOCK_EX | LOCK_NB)) {
 					if ($time < microtime() - .5) {
 						fclose($cache_size_file);
 						return false;
 					}
-					time_nanosleep(0, 1000000);
+					usleep(1000);
 				}
 				unset($time);
 				$cache_size	= (int)stream_get_contents($cache_size_file);
@@ -118,17 +118,17 @@ class FileSystem extends _Abstract {
 			if ($this->cache_size > 0) {
 				$cache_size_file	= fopen(CACHE.'/size', 'c+b');
 				$time				= microtime(true);
-				while (!flock($cache_size_file, LOCK_EX)) {
+				while (!flock($cache_size_file, LOCK_EX | LOCK_NB)) {
 					if ($time < microtime() - .5) {
 						fclose($cache_size_file);
 						return false;
 					}
-					time_nanosleep(0, 1000000);
+					usleep(1000);
 				}
 				unset($time);
 				$cache_size	= (int)stream_get_contents($cache_size_file);
 				$cache_size -= filesize(CACHE.'/'.$item);
-				if (unlink(CACHE.'/'.$item)) {
+				if (@unlink(CACHE.'/'.$item)) {
 					ftruncate($cache_size_file, 0);
 					fseek($cache_size_file, 0);
 					fwrite($cache_size_file, $cache_size > 0 ? $cache_size : 0);

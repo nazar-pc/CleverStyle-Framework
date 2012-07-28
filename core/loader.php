@@ -65,7 +65,7 @@ $Core					= new \cs\Core;
 $Core->create([
 	'cs\\Error',									//Object of errors processing
 	'cs\\Cache',									//System cache object
-	'_cs\\Text',									//Object of multilingual content
+	'cs\\Text',										//Object of multilingual content
 	['cs\\Language',	'L'],						//Object of multilingual interface
 	'cs\\Page',										//Page generation object
 	['cs\\DB',			'db'],						//DataBase object

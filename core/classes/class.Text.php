@@ -11,52 +11,71 @@ class Text {
 	 *
 	 * @return bool|string
 	 */
-	function get ($database, $group, $label, $id = 0) {
-		global $Cache, $L, $db;
-		$index = 'texts/'.$database.'/'.md5($group).md5($label).'_'.$L->lang;
-		$id		= (int)$id;
-		if ($id != 0) {
-			if (($data = $Cache->{'texts/'.$database.'/'.$id}) === false) {
-				$data = $db->$database->qf("SELECT `group`, `label` FROM `[prefix]texts` WHERE `id` = $id");
-				if (is_array($data)) {
-					$Cache->{'texts/'.$database.'/'.$id} = _json_encode($data);
-				}
-			}
-			if (is_array($data)) {
-				list($group, $label) = $data;
-			}
-			unset($data);
+	function get ($database, $group, $label, $id = null) {
+		global $Cache, $L, $db, $Config;
+		$id					= (int)$id;
+		$cache_key			= 'texts/'.$database.'/'.($id ?: md5($group).md5($label)).'_'.$L->clang;
+		if (($text = $Cache->$cache_key) !== false) {
+			return $text;
 		}
-		if (($text = $Cache->{$index}) === false) {
-			$text = $db->$database->qf(
-				[
-					"SELECT `text` FROM `[prefix]texts` WHERE `group` = '%s' AND `label` = '%s' AND `lang` = '%s' LIMIT 1",
+		if ($id) {
+			$text = $db->$database->qf([
+				"SELECT `d`.`id`, `d`.`lang`, `d`.`text`
+				FROM `[prefix]texts` AS `t` LEFT OUTER JOIN `[prefix]texts_data` AS `d`
+				ON `t`.`id` = `d`.`id`
+				WHERE `t`.`id` = $id AND `d`.`lang` = '%s'
+				LIMIT 1",
+				$L->clang
+			]);
+			if (!$text) {
+				$text = $db->$database->qf([
+					"SELECT `d`.`id`, `d`.`lang`, `d`.`text`
+					FROM `[prefix]texts` AS `t` LEFT OUTER JOIN `[prefix]texts_data` AS `d`
+					ON `t`.`id` = `d`.`id`
+					WHERE `t`.`id` = $id
+					LIMIT 1",
+					$L->clang
+				]);
+			}
+		} else {
+			$text = $db->$database->qf([
+				"SELECT `t`.`id`, `d`.`lang`, `d`.`text`
+				FROM `[prefix]texts` AS `t` LEFT OUTER JOIN `[prefix]texts_data` AS `d`
+				ON (`d`.`id` = `d`.`id`)
+				WHERE `t`.`group` = '%s' AND `t`.`label` = '%s' AND `d`.`lang` = '%s'
+				LIMIT 1",
+				$group,
+				$label,
+				$L->clang
+			]);
+			if (!$text) {
+				$text = $db->$database->qf([
+					"SELECT `t`.`id`, `d`.`lang`, `d`.`text`
+					FROM `[prefix]texts` AS `t` LEFT OUTER JOIN `[prefix]texts_data` AS `d`
+					ON (`d`.`id` = `d`.`id`)
+					WHERE `t`.`group` = '%s' AND `t`.`label` = '%s'
+					LIMIT 1",
 					$group,
 					$label,
 					$L->clang
-				],
-				'text'
-			);
-			if (!is_array($text) || empty($text)) {
-				$text = $db->$database->qf([
-					"SELECT `text`, `lang` FROM `[prefix]texts` WHERE `group` = '%s' AND `label` = '%s' LIMIT 1",
-					$group,
-					$label
 				]);
-				$lang	= '';
-				if (is_array($text)) {
-					list($text, $lang) = $text;
-				}
-				global $Config;
-				if ($Config->core['auto_translation'] && $lang && $text){
-					$engine_class	= '\\cs\\Text\\'.$Config->core['auto_translation_engine']['name'];
-					$text			= $engine_class::translate($text, $lang, $L->lang) ?: $text;
-					$this->set($database, $group, $label, $text);
-				}
 			}
-			$Cache->{'texts/'.$database.'/'.$index} = $text;
 		}
-		return $text;
+		if (!$text) {
+			return false;
+		}
+		if ($text['lang'] != $L->clang && $Config->core['multilingual'] && $Config->core['auto_translation']) {
+			$engine_class	= '\\cs\\Text\\'.$Config->core['auto_translation_engine']['name'];
+			$text['text']	= $engine_class::translate($text['text'], $text['lang'], $L->clang);
+			$db->$database()->q(
+				"INSERT INTO `[prefix]texts_data` (`id`, `lang`, `text`) VALUES ('%s', '%s', '%s')",
+				$text['id'],
+				$L->clang,
+				$text['text']
+			);
+		}
+		$Cache->$cache_key	= $text['text'];
+		return $text['text'];
 	}
 	/**
 	 * Sets text on current language
@@ -66,45 +85,85 @@ class Text {
 	 * @param string       $label
 	 * @param string       $text
 	 *
-	 * @return bool|string
+	 * @return bool|string				If multilingual support enabled or was enabled and then disabled but translations remains - returns {¶<i>id</i>}<br>
+	 * 									otherwise returns original text
 	 */
 	function set ($database, $group, $label, $text) {
-		global $Cache, $L, $db;
-		$index = 'texts/'.$database.'/'.md5($group).md5($label).'_'.$L->lang;
-		unset($Cache->{$index});
-		$database = $db->$database();
+		global $Cache, $L, $db, $Config;
+		unset($Cache->{'texts/'.$database.'/'.md5($group).md5($label).'_'.$L->clang});
+		$db_object	= $db->$database();
 		/**
-		 * @var \cs\DB\_Abstract $database
+		 * @var \cs\DB\_Abstract $db_object
 		 */
-		if ($id = $database->qf(
+		$text		= str_replace('{¶', '{&para;', $text);
+		$id			= $db_object->qf(
 			[
-				"SELECT `id` FROM `[prefix]texts` WHERE `group` = '%s' AND `label` = '%s' AND `lang` = '%s' LIMIT 1",
-				$group,
+				"SELECT `id` FROM `[prefix]texts` WHERE `label` = '%s' AND `group` = '%s' LIMIT 1",
 				$label,
+				$group
+			],
+			'id'
+		);
+		if (!$id) {
+			if (!$Config->core['multilingual']) {
+				return false;
+			} else {
+				$db_object->q(
+					"INSERT INTO `[prefix]texts` (`label`, `group`) VALUES ('%s', '%s')",
+					$label,
+					$group
+				);
+				if (!($id = $db_object->id())) {
+					return false;
+				}
+			}
+		}
+		unset($Cache->{'texts/'.$database.'/'.$id.'_'.$L->clang});
+		if ($dat = $db_object->qf(
+			[
+				"SELECT `id` FROM `[prefix]texts_data` WHERE `id` = '%s' AND `lang` = '%s' LIMIT 1",
+				$id,
 				$L->clang
 			],
 			'id'
 		)) {
-			if ($database->q("UPDATE `[prefix]texts` SET `text` = '%s' WHERE `id` = '%s' LIMIT 1", $text, $id)) {
+			if ($db_object->q(
+				"UPDATE `[prefix]texts_data` SET `text` = '%s' WHERE `id` = '%s' AND `lang` = '%s' LIMIT 1",
+				$text,
+				$id,
+				$L->clang
+			)) {
 				return '{¶'.$id.'}';
 			} else {
 				return false;
 			}
-		} else {
-			$database->q("INSERT INTO `[prefix]texts` (`text`, `lang`) VALUES ('%s', '%s')", $text, $L->clang);
-			$id = $database->id();
+		} elseif ($Config->core['multilingual']) {
+			if (!$db_object->q(
+				"INSERT INTO `[prefix]texts_data` (`id`, `lang`, `text`) VALUES ('%s', '%s', '%s')",
+				$id,
+				$L->clang,
+				$text
+			)) {
+				$db_object->q("DELETE FROM `[prefix]texts` WHERE `id` = $id");
+				return false;
+			}
 			global $Config;
 			/**
 			 * Clean up old texts
 			 */
 			if ($id && $id % $Config->core['inserts_limit'] == 0) {
-				$database->aq("DELETE FROM `[prefix]texts` WHERE `lang` = ''");
+				$db_object->aq([
+					"DELETE FROM `[prefix]texts` WHERE `label` = '' AND `group` = ''",
+					"DELETE FROM `[prefix]texts_data` WHERE `lang` = ''"
+				]);
 			}
 			if ($id) {
 				return '{¶'.$id.'}';
 			} else {
 				return false;
 			}
+		} else {
+			return $text;
 		}
 	}
 	/**
@@ -118,9 +177,8 @@ class Text {
 	 */
 	function del ($database, $group, $label) {
 		global $Cache, $L, $db;
-		$index = 'texts/'.$database.'/'.md5($group).md5($label).'_'.$L->lang;
-		unset($Cache->{$index});
-		$ids = $db->$database()->qfa(
+		unset($Cache->{'texts/'.$database.'/'.md5($group).md5($label).'_'.$L->clang});
+		$id = $db->$database()->qf(
 			[
 				"SELECT `id` FROM `[prefix]texts` WHERE `group` = '%s' AND `label` = '%s'",
 				$group,
@@ -128,18 +186,21 @@ class Text {
 			],
 			'id'
 		);
-		foreach ($ids as $id) {
-			unset($Cache->{'texts/'.$database.'/'.$id});
+		if ($id) {
+			unset($Cache->{'texts/'.$database.'/'.$id.'_'.$L->clang});
+			return $db->$database()->q(
+				[
+					"UPDATE `[prefix]texts` SET `label` = '', `group` = '' WHERE `id` = '%s'",
+					"UPDATE `[prefix]texts_data` SET `lang` = '', `text` = '' WHERE `id` = '%s'"
+				],
+				$id
+			);
+		} else {
+			return true;
 		}
-		unset($ids, $id);
-		return $db->$database()->q(
-			"UPDATE `[prefix]texts` SET `label` = null, `group` = null, `text` = null, `lang` = null WHERE `group` = '%s' AND `label` = '%s'",
-			$group,
-			$label
-		);
 	}
 	/**
-	 * Process text, and replace {¶([0-9]*?)} on real text, is used before showing multilingual information
+	 * Process text, and replace {¶([0-9]+)} on real text, is used before showing multilingual information
 	 *
 	 * @param int					$database
 	 * @param string|string[]		$data
@@ -157,7 +218,7 @@ class Text {
 			return $data;
 		}
 		return preg_replace_callback(
-			'/\{¶([0-9]*?)\}/',
+			'/\{¶([0-9]+)\}/',
 			function ($input) use ($database) {
 				return $this->get($database, null, null, $input[1]);
 			},

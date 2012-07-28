@@ -1,5 +1,5 @@
 <?php
-namespace cs\translate;
+namespace cs\Text;
 use \Exception, \SoapClient;
 /**
  * Provides translation functionality based on Bing translator.
@@ -19,7 +19,7 @@ class BingTranslate extends _Abstract {
 	static function translate ($text, $from, $to) {
 		if (empty(self::$accessToken)) {
 			global $Config;
-			$settings =  $Config->core['auto_translation'];
+			$settings =  $Config->core['auto_translation_engine'];
 			if (!(
 				curl() &&
 				isset($settings['client_id'], $settings['client_secret']) &&
@@ -97,8 +97,7 @@ class BingTranslate extends _Abstract {
 			curl_close($ch);
 			//Decode the returned JSON string.
 			$objResponse = json_decode($strResponse);
-
-			if ($objResponse->error){
+			if (property_exists($objResponse, 'error') && $objResponse->error){
 				throw new Exception($objResponse->error_description);
 			}
 			return $objResponse->access_token;

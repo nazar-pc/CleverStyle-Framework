@@ -100,7 +100,13 @@ class Config {
 		}
 		$Cache->init();
 		$L->init($this->core['active_languages'], $this->core['language']);
-		$Page->init($this->core['name'], $this->core['keywords'], $this->core['description'], $this->core['theme'], $this->core['color_scheme']);
+		$Page->init(
+			get_core_ml_text('name'),
+			get_core_ml_text('keywords'),
+			get_core_ml_text('description'),
+			$this->core['theme'],
+			$this->core['color_scheme']
+		);
 		if (!$this->init) {
 			$Page->replace($this->replace['in'], $this->replace['out']);
 			$this->init = true;
@@ -413,22 +419,22 @@ class Config {
 		if ($Error->num()) {
 			return false;
 		}
-		$Config = [];
+		$config = [];
 		foreach ($this->admin_parts as $part) {
-			$Config[$part] = $this->$part;
+			$config[$part] = $this->$part;
 		}
 		unset($part);
-		if (isset($Config['routing']['current'])) {
-			unset($Config['routing']['current']);
+		if (isset($config['routing']['current'])) {
+			unset($config['routing']['current']);
 		}
 		if ($cache_not_saved_mark) {
-			$Config['core']['cache_not_saved'] = $this->core['cache_not_saved'] = true;
+			$config['core']['cache_not_saved'] = $this->core['cache_not_saved'] = true;
 		} else {
-			unset($Config['core']['cache_not_saved'], $this->core['cache_not_saved']);
+			unset($config['core']['cache_not_saved'], $this->core['cache_not_saved']);
 		}
-		$Cache->config = $Config;
-		$this->init();
+		$Cache->config = $config;
 		$L->change($this->core['language']);
+		$this->init();
 		return true;
 	}
 	/**

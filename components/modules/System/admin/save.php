@@ -1,4 +1,5 @@
 <?php
+namespace	cs\modules\System;
 /**
  * Provides next triggers:<br>
  *  admin/System/general/optimization/clean_pcache
@@ -6,7 +7,7 @@
 if (!isset($_POST['edit_settings'])) {
 	return;
 }
-global $Config, $L, $Index, $Cache, $Core;
+global $Config, $Index, $Cache, $Core;
 $debug = $Config->core['debug'];
 if ($_POST['edit_settings'] == 'apply' || $_POST['edit_settings'] == 'save') {
 	foreach ($Config->admin_parts as $part) {
@@ -14,13 +15,24 @@ if ($_POST['edit_settings'] == 'apply' || $_POST['edit_settings'] == 'save') {
 			$temp = &$Config->$part;
 			foreach ($_POST[$part] as $item => $value) {
 				switch ($item) {
+					case 'name':
+					case 'keywords':
+					case 'description':
+					case 'closed_title':
+					case 'closed_text':
+					case 'footer_text':
+					case 'mail_from_name':
+					case 'mail_signature':
+					case 'rules':
+						$value	= set_core_ml_text($item, $value);
+				}
+				switch ($item) {
 					case 'mirrors_url':
 					case 'mirrors_cookie_domain':
 					case 'mirrors_cookie_path':
 					case 'ip_black_list':
 					case 'ip_admin_list':
 						$value = explode("\n", $value);
-					break;
 				}
 				$temp[$item] = xap($value, true);
 			}

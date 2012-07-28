@@ -114,7 +114,13 @@ abstract class _Abstract {
 		}
 		if (is_array($query) && !empty($query)) {
 			$return = true;
-			foreach ($query as $q) {
+			foreach ($query as &$q) {
+				if (is_array($q)) {
+					if (count($q) > 1) {
+						$params	= array_slice($q, 1);
+					}
+					$q		= $q[0];
+				}
 				$return = $return && $this->q(empty($params) ? $q : vsprintf($q, $params));
 			}
 			return $return;
@@ -359,6 +365,14 @@ abstract class _Abstract {
 	 */
 	function queries () {
 		return $this->queries;
+	}
+	/**
+	 * Queries array
+	 *
+	 * @return array
+	 */
+	function query () {
+		return $this->query;
 	}
 	/**
 	 * Connecting time

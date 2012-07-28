@@ -1,7 +1,6 @@
 <?php
-global $Config, $Index;
+global $Config, $Index, $Text;
 $a	= $Index;
-$rc	= $Config->routing['current'];
 if (isset($_POST['mode'])) {
 	switch ($_POST['mode']) {
 		case 'add':
@@ -11,12 +10,17 @@ if (isset($_POST['mode'])) {
 				$block	= [
 					'position'	=> 'floating',
 					'type'		=> xap($block_new['type']),
-					'index'	=> substr(TIME, 3)
+					'index'		=> substr(TIME, 3)
 				];
 			} else {
 				$block	= &$Config->components['blocks'][$block_new['id']];
 			}
-			$block['title']		= $block_new['title'];
+			$block['title']		= $Text->set(
+				$Config->module('System')->db('texts'),
+				'System/Config/blocks/title',
+				$block['index'],
+				$block_new['title']
+			);
 			$block['active']	= $block_new['active'];
 			$block['template']	= $block_new['template'];
 			$block['start']		= $block_new['start'];
@@ -39,11 +43,21 @@ if (isset($_POST['mode'])) {
 			$block_new['update']	= explode(':', $block_new['update']);
 			$block['update']		= ($block_new['update'][0] * 60 + $block_new['update'][1]) * 60;
 			if ($block['type'] == 'html') {
-				$block['data'] = xap($block_new['html'], true);
+				$block['content'] = $Text->set(
+					$Config->module('System')->db('texts'),
+					'System/Config/blocks/content',
+					$block['index'],
+					xap($block_new['html'], true)
+				);
 			} elseif ($block['type'] == 'raw_html') {
-				$block['data'] = $block_new['raw_html'];
+				$block['content'] = $Text->set(
+					$Config->module('System')->db('texts'),
+					'System/Config/blocks/content',
+					$block['index'],
+					$block_new['raw_html']
+				);
 			} elseif ($_POST['mode'] == 'add') {
-				$block['data'] = '';
+				$block['content'] = '';
 			}
 			if ($_POST['mode'] == 'add') {
 				$Config->components['blocks'][] = $block;
@@ -66,6 +80,16 @@ if (isset($_POST['mode'])) {
 						'Block',
 						$block['index']
 					)[0]['id']
+				);
+				$Text->del(
+					$Config->module('System')->db('texts'),
+					'System/Config/blocks/title',
+					$block['index']
+				);
+				$Text->del(
+					$Config->module('System')->db('texts'),
+					'System/Config/blocks/content',
+					$block['index']
 				);
 				unset(
 					$Cache->{'blocks/'.$block['index']},

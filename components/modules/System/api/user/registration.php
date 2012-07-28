@@ -40,14 +40,14 @@ $confirm	= $Config->core['require_registration_confirmation'];
 if ($confirm) {
 	$body	= $L->reg_need_confirmation_mail_body(
 		strstr($_POST['email'], '@', true),
-		$Config->core['name'],
+		get_core_ml_text('name'),
 		$Config->core['url'].'/profile/registration_confirmation/'.$result['reg_key'],
 		$L->time($Config->core['registration_confirmation_time'], 'd')
 	);
 } else {
 	$body	= $L->reg_success_mail_body(
 		strstr($_POST['email'], '@', true),
-		$Config->core['name'],
+		get_core_ml_text('name'),
 		$Config->core['url'].'/profile/'.$User->get('login', $result['id']),
 		$User->get('login', $result['id']),
 		$result['password']
@@ -56,7 +56,7 @@ if ($confirm) {
 global $Mail;
 if ($Mail->send_to(
 	$_POST['email'],
-	$L->{$confirm ? 'reg_need_confirmation_mail' : 'reg_success_mail'}($Config->core['name']),
+	$L->{$confirm ? 'reg_need_confirmation_mail' : 'reg_success_mail'}(get_core_ml_text('name')),
 	$body
 )) {
 	$Page->content($confirm ? 'reg_confirmation' : 'reg_success');

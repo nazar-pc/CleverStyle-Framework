@@ -3,7 +3,7 @@ namespace	cs;
 use			\Closure;
 /**
  * Provides next triggers:<br>
- *  admin/System/general/languages/load<code>
+ *  System/general/languages/load<code>
  *  [
  *   'clanguage'	=> <i>clanguage</i><br>
  *   'clang'		=> <i>clang</i><br>
@@ -48,7 +48,7 @@ class Language {
 			global $Cache;
 			global $Core;
 			$Core->run_trigger(
-				'admin/System/general/languages/load',
+				'System/general/languages/load',
 				[
 					'clanguage'		=> $this->translate['clanguage'],
 					'clang'			=> $this->translate['clang'],
