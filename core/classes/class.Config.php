@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package		CleverStyle CMS
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
 namespace cs;
 /**
  * Provides next triggers:<br>
@@ -448,6 +454,9 @@ class Config {
 			$parts = [$parts];
 		}
 		$query = '';
+		if (isset($this->data['core']['cache_not_saved'])) {
+			unset($this->data['core']['cache_not_saved']);
+		}
 		foreach ($parts as $part) {
 			if (isset($this->data[$part])) {
 				if ($part == 'routing') {

@@ -1,4 +1,10 @@
 /**
+ * @package		CleverStyle CMS
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+/**
  * Adds method for symbol replacing at cpecified position
  *
  * @param index

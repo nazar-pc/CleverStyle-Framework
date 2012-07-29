@@ -1,4 +1,17 @@
 <?php
+/**
+ * @package		CleverStyle CMS
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+/**
+ * Redirection processing
+ */
+if (strpos($_SERVER['REQUEST_URI'], '/redirect/') === 0) {
+	header('Location: '.substr($_SERVER['REQUEST_URI'], 10));
+	die;
+}
 require_once CORE.'/functions.php';					//Including file with general system functions
 
 global $Core, $timeload, $loader_init_memory, $interface;
@@ -10,7 +23,7 @@ error_reporting(E_ALL);
 //error_reporting(0);
 
 header('Content-Type: text/html; charset=utf-8');
-header("Connection: close");
+header('Connection: close');
 mb_internal_encoding('utf-8');
 
 /**

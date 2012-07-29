@@ -1,6 +1,12 @@
 <?php
+/**
+ * @package		CleverStyle CMS
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
 header('Content-Type: text/html; charset=utf-8');
-header("Connection: close");
+header('Connection: close');
 require __DIR__.'/core/functions.php';
 $DOMAIN = str_replace(
 	['/', '\\'],

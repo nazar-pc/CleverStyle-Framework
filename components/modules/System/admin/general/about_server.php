@@ -1,4 +1,11 @@
 <?php
+/**
+ * @package		CleverStyle CMS
+ * @subpackage	System module
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
 namespace	cs\modules\System\general\about_server;
 use			\h;
 global $L, $Core, $Index, $db, $PHP, $mcrypt, $Config;
@@ -124,6 +131,15 @@ $Index->content(
 						$L->get(curl()),
 						[
 							'class' => state(curl())
+						]
+					]
+				],
+				[
+					$L->apc_mod.':',
+					[
+						$L->get(apc()),
+						[
+							'class' => state(apc())
 						]
 					]
 				]

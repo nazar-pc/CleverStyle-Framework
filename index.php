@@ -1,24 +1,32 @@
 <?php
-/****************************************************************************\
-| Minimal requirements for full-featured work:								*|
-|	1) Versions of server software:											*|
-|		* Apache Web Server				>= 2								*|
-|		* PHP							>= 5.4;								*|
-|			Presence of libraries PHP:										*|
-|			* mcrypt					>= 2.4								*|
-|			* iconv															*|
-|			* mbstring														*|
-|			* cURL															*|
-|		* MySQL							>= 5.0.7;							*|
-|	2) Browsers versions:													*|
-|		* Opera Internet Browser		>= 11.10;							*|
-|		* Microsoft Internet Explorer	>= 10;								*|
-|		* Google Chrome					>= 11;								*|
-|			(Webkit 534.24+)												*|
-|		* Safari						>= 5;								*|
-|			(Webkit 534.24+)												*|
-|		* Mozilla Firefox				>= 4;								*|
-\****************************************************************************/
+/**
+ * @package		CleverStyle CMS
+ * @version		$version$
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+
+/**
+ * Minimal requirements for full-featured work:
+ *	1) Versions of server software:
+ *		* Apache Web Server				>= 2
+ *		* PHP							>= 5.4;
+ *			Presence of PHP libraries:
+ *			* mcrypt					>= 2.4
+ *			* iconv
+ *			* mbstring
+ *			* cURL
+ *		* MySQL							>= 5.0.7;
+ *	2) Browsers versions:
+ *		* Opera Internet Browser		>= 11.10;
+ *		* Microsoft Internet Explorer	>= 10;
+ *		* Google Chrome					>= 11;
+ *			(Webkit 534.24+)
+ *		* Safari						>= 5;
+ *			(Webkit 534.24+)
+ *		* Mozilla Firefox				>= 4;
+ */
 
 /**
  * Time of start of execution, is used as current time

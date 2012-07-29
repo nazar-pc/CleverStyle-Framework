@@ -1,4 +1,11 @@
 <?php
+/**
+ * @package		CleverStyle CMS
+ * @subpackage	System module
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
 global $Config, $L, $User, $Page, $Mail;
 if (isset($_COOKIE['reg_confirm'])) {
 	_setcookie('reg_confirm', '');

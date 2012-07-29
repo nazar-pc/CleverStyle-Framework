@@ -1,3 +1,19 @@
-.cs-header-zone, .cs-header-green, .cs-header-black, .cs-header-light-green, .cs-header-user, .cs-header-avatar, .cs-header-user-info, .cs-header-main-menu, .cs-header-main-submenu, .cs-header-menu-more {
+/**
+ * @package		CleverStyle CMS
+ * @subpackage	CleverStyle theme
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+.cs-header-zone,
+.cs-header-green,
+.cs-header-black,
+.cs-header-light-green,
+.cs-header-user,
+.cs-header-avatar,
+.cs-header-user-info,
+.cs-header-main-menu,
+.cs-header-main-submenu,
+.cs-header-menu-more {
 	position: absolute;
 }

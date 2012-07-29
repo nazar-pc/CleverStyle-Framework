@@ -1,9 +1,16 @@
 <?php
 /**
+ * @package		CleverStyle CMS
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+/**
  * Class for HTML code rendering in accordance with the standards of HTML5, and with useful syntax extensions for simpler usage
  *
  * If constant "XHTML_TAGS_STYLE" is true - tags will be generated according to rules of xhtml
  */
+defined('XHTML_TAGS_STYLE') || define('XHTML_TAGS_STYLE', false);
 class h {
 	protected static	$unit_atributes = [	//Unit attributes, that have no value, or have the same value as name in xhtml style
 			'async',
@@ -63,7 +70,7 @@ class h {
 			if ($data['in'] === false) {
 				return false;
 			}
-			$in = $data['in'];
+			$in = trim($data['in']);
 			unset($data['in']);
 		}
 		if (isset($data['src'])) {
@@ -118,7 +125,7 @@ class h {
 	 * @return string
 	 */
 	static function url ($url, $absolute = false) {
-		if (substr($url, 0, 1) != '/' && substr($url, 0, 1) != '#' && substr($url, 0, 7) != 'http://' && substr($url, 0, 8) != 'https://') {
+		if (substr($url, 0, 5) != 'data:' && substr($url, 0, 1) != '/' && substr($url, 0, 1) != '#' && substr($url, 0, 7) != 'http://' && substr($url, 0, 8) != 'https://') {
 			global $Config;
 			if ($absolute && is_object($Config)) {
 				return $Config->server['base_url'].'/'.$url;

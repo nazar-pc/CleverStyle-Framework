@@ -5,16 +5,22 @@ IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
 RewriteEngine On
 RewriteBase /
 
-<Files license.txt> 
+<Files license.txt>
 	RewriteEngine Off
 </Files>
-<Files Storage.php> 
+<Files build.php>
 	RewriteEngine Off
 </Files>
-<Files readme.html> 
+<Files install.php>
 	RewriteEngine Off
 </Files>
-<Files favicon.ico> 
+#<Files Storage.php>
+#	RewriteEngine Off
+#</Files>
+<Files readme.html>
+	RewriteEngine Off
+</Files>
+<Files favicon.ico>
 	RewriteEngine Off
 </Files>
 

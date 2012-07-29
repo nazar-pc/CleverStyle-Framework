@@ -1,13 +1,17 @@
 <?php
+/**
+ * @package		CleverStyle CMS
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
 namespace cs\Cache;
 /**
  * Provides cache functionality based on file system structure.
  * Require base configuration option $Core->config('cache_size') with maximum allowed cache size in MB, 0 means without limitation (is not recomended)
  */
 class FileSystem extends _Abstract {
-	protected	$cache_size,
-				$size			= null;
-
+	protected	$cache_size;
 	function __construct () {
 		global $Core;
 		$this->cache_size = $Core->config('cache_size')*1048576;

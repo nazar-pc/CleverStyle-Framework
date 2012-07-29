@@ -1,4 +1,11 @@
 <?php
+/**
+ * @package		CleverStyle CMS
+ * @subpackage	System module
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
 global $Config, $Index, $L, $User, $Page;
 $a				= $Index;
 $rc				= $Config->routing['current'];
@@ -101,7 +108,7 @@ if (isset($rc[2])) {
 } else {
 	$a->buttons			= false;
 	global $Cache;
-	$permissions		= $User->get_permissions_table();//TODO Groups collapsing
+	$permissions		= $User->get_permissions_table();
 	$permissions_list	= [
 		h::{'th.ui-widget-header.ui-corner-all'}([$L->action, 'id', $L->group, $L->label]),
 		h::{'th.ui-widget-header.ui-corner-all'}([$L->action, 'id', $L->group, $L->label])

@@ -1,4 +1,11 @@
 <?php
+/**
+ * @package		CleverStyle CMS
+ * @subpackage	System module
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
 global $Config, $Core, $Index, $L, $Page;
 $a				= $Index;
 $rc				= $Config->routing['current'];
@@ -81,7 +88,7 @@ if (isset($rc[2])) {
 						]),
 						h::{'select.cs-form-element'}(
 							[
-								'in'		=> _mb_substr(get_files_list(ENGINES.'/database', '/^[^_].*?\.php$/i', 'f'), 0, -4)
+								'in'		=> _mb_substr(get_files_list(ENGINES.'/DB', '/^[^_].*?\.php$/i', 'f'), 0, -4)
 							],
 							[
 								'name'		=> 'db[type]',

@@ -1,3 +1,10 @@
+/**
+ * @package		CleverStyle CMS
+ * @subpackage	CleverStyle theme
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
 var loading_interval, loading_angle = 0;
 	function background() {
 		var height = document.body.clientHeight > window.innerHeight ? document.body.clientHeight : window.innerHeight;

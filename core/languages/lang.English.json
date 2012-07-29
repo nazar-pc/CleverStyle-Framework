@@ -266,6 +266,7 @@
 		"zlib_compression"			: "Zlib autocompression of pages",
 		"zlib_compression_level"	: "Zlib compression level",
 		"curl_lib"					: "cURL library",
+		"apc_mod"					: "APC (Alternative PHP Cache) module",
 	//Components
 	"components"			: "Components",
 		//Modules

@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package		CleverStyle CMS
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
 namespace	cs;
 use			\Closure,
 			\h;
@@ -7,19 +13,19 @@ use			\Closure,
  * Provides loading of system configuration, creating of global objects, encryption, API requests sending, and triggers processing.
  */
 class Core {
-	public	$Loaded			= [],				//Array with list of loaded objects, and information about amount of used memory and creation time
-		$destroy_priority	= [					//Order of global objects destroying
-		'Page',
-		'User',
-		'Config',
-		'Key',
-		'db',
-		'L',
-		'Text',
-		'Cache',
-		'Storage',
-		'Error'
-	];
+	public	$Loaded				= [],				//Array with list of loaded objects, and information about amount of used memory and creation time
+			$destroy_priority	= [					//Order of global objects destroying
+				'Page',
+				'User',
+				'Config',
+				'Key',
+				'db',
+				'L',
+				'Text',
+				'Cache',
+				'Storage',
+				'Error'
+			];
 	protected	$init				= false,	//For prohibition of re-initialization
 				$config				= [],
 				$List				= [],
@@ -50,17 +56,18 @@ class Core {
 		}
 		$this->config	= _json_decode(implode('', $this->config));
 		define('DOMAIN', $this->config['domain']);
-		!is_dir(STORAGE)				&& @mkdir(STORAGE, 0777)	&& file_put_contents(
+		date_default_timezone_set($this->config['timezone']);
+		!is_dir(STORAGE)				&& @mkdir(STORAGE, 0755)	&& file_put_contents(
 			STORAGE.'/.htaccess',
 			'Allow From All'
 		);
-		!is_dir(CACHE)					&& @mkdir(CACHE, 0770);
-		!is_dir(PCACHE)					&& @mkdir(PCACHE, 0777)		&& file_put_contents(
+		!is_dir(CACHE)					&& @mkdir(CACHE, 0700);
+		!is_dir(PCACHE)					&& @mkdir(PCACHE, 0755)		&& file_put_contents(
 			PCACHE.'/.htaccess',
 			"Allow From All\r\nAddEncoding gzip .js\r\nAddEncoding gzip .css"
 		);
-		!is_dir(LOGS)					&& @mkdir(LOGS, 0770);
-		!is_dir(TEMP)					&& @mkdir(TEMP, 0777)		&& file_put_contents(
+		!is_dir(LOGS)					&& @mkdir(LOGS, 0700);
+		!is_dir(TEMP)					&& @mkdir(TEMP, 0755)		&& file_put_contents(
 			TEMP.'/.htaccess',
 			'Allow From All'
 		);

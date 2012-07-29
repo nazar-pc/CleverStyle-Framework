@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package		CleverStyle CMS
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
 namespace cs\Text;
 use \Exception, \SoapClient;
 /**
@@ -17,6 +23,9 @@ class BingTranslate extends _Abstract {
 	 * @return bool|string Translated string of <b>false</b> if failed
 	 */
 	static function translate ($text, $from, $to) {
+		if (!curl()) {
+			return $text;
+		}
 		if (empty(self::$accessToken)) {
 			global $Config;
 			$settings =  $Config->core['auto_translation_engine'];

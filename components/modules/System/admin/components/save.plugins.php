@@ -1,5 +1,12 @@
 <?php
 /**
+ * @package		CleverStyle CMS
+ * @subpackage	System module
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+/**
  * Provides next triggers:<br>
  *  admin/System/components/plugins/enable<br>
  *  ['name'	=> <i>plugin_name</i>]<br>

@@ -6,50 +6,58 @@
  * @license		MIT License, see license.txt
  */
 namespace cs\Cache;
-abstract class _Abstract {
+/**
+ * Provides cache functionality based on APC (Alternative PHP Cache).
+ */
+class APC extends _Abstract {
+	function __construct () {
+		global $Core;
+		$this->cache_size = $Core->config('cache_size')*1048576;
+	}
 	/**
 	 * Get item from cache
-	 *
-	 * @abstract
 	 *
 	 * @param string		$item	May contain "/" symbols for cache structure, for example users/<i>user_id</i>
 	 *
 	 * @return bool|mixed			Returns item on success of <b>false</b> on failure
 	 */
-	abstract function get ($item);
+	function get ($item) {
+		return apc_fetch(DOMAIN.'/'.$item);
+	}
 	/**
 	 * Put or change data of cache item
-	 *
-	 * @abstract
 	 *
 	 * @param string	$item	May contain "/" symbols for cache structure, for example users/<i>user_id</i>
 	 * @param mixed		$data
 	 *
 	 * @return bool
 	 */
-	abstract function set ($item, $data);
+	function set ($item, $data) {
+		return apc_store(DOMAIN.'/'.$item, $data);
+	}
 	/**
 	 * Delete item from cache
-	 *
-	 * @abstract
 	 *
 	 * @param string	$item	May contain "/" symbols for cache structure, for example users/<i>user_id</i>
 	 *
 	 * @return bool
 	 */
-	abstract function del ($item);
+	function del ($item) {
+		$item	= DOMAIN.'/'.$item;
+		$return	= true;
+		foreach (new \APCIterator('user') as $element) {
+			if (strpos($element['key'], $item) === 0) {
+				$return	= apc_delete($element['key']) && $return;
+			}
+		}
+		return $return;
+	}
 	/**
 	 * Clean cache by deleting all items
 	 *
-	 * @abstract
-	 *
 	 * @return bool
 	 */
-	abstract function clean ();
-	/**
-	 * Cloning restriction
-	 *
-	 * @final
-	 */
-	final function __clone () {}
+	function clean () {
+		return apc_clear_cache('user');
+	}
 }
