@@ -37,8 +37,8 @@ if (
 switch ($data['function']) {
 	default:
 		exit;
-	case 'get_list':
-		exit(_json_encode(get_files_list($data['dir'], $data['mask'], $data['mode'], $data['prefix_path'], $data['subfolders'], $data['sort'], $data['exclusion'])));
+	case 'get_files_list':
+		exit(_json_encode(get_files_list($data['dir'], $data['mask'], $data['mode'], $data['prefix_path'], $data['subfolders'], $data['sort'], $data['exclusion'], $data['system_files'])));
 	case 'file':
 		exit(_json_encode(file($data['filename'], $data['flags'])));
 	case 'file_get_contents':

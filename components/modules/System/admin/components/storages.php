@@ -146,49 +146,51 @@ if (isset($rc[2])) {
 		])
 	);
 	global $Core;
-	foreach ($Config->storage as $i => &$storage_data) {
-		$storage_list .=	h::tr(
-			h::td(
-				($i ?
-				h::{'a.cs-button.cs-button-compact'}(
-					h::icon('wrench'),
+	if (!empty($Config->storage)) {
+		foreach ($Config->storage as $i => &$storage_data) {
+			$storage_list .=	h::tr(
+				h::td(
+					($i ?
+					h::{'a.cs-button.cs-button-compact'}(
+						h::icon('wrench'),
+						[
+							'href'			=> $a->action.'/edit/'.$i,
+							'data-title'	=> $L->edit.' '.$L->storage
+						]
+					).
+					h::{'a.cs-button.cs-button-compact'}(
+						h::icon('trash'),
+						[
+							'href'			=> $a->action.'/delete/'.$i,
+							'data-title'	=> $L->delete.' '.$L->storage
+						]
+					).
+					h::{'a.cs-button.cs-button-compact'}(
+						h::icon('signal-diag'),
+						[
+							'onMouseDown'	=> 'storage_test(\''.$a->action.'/test/'.$i.'\', true);',
+							'data-title'	=> $L->test_connection
+						]
+					) : '-'),
 					[
-						'href'			=> $a->action.'/edit/'.$i,
-						'data-title'	=> $L->edit.' '.$L->storage
+						'class'	=> 'ui-corner-all '.($i ? 'ui-widget-content' : 'ui-state-highlight')
 					]
 				).
-				h::{'a.cs-button.cs-button-compact'}(
-					h::icon('trash'),
+				h::td(
 					[
-						'href'			=> $a->action.'/delete/'.$i,
-						'data-title'	=> $L->delete.' '.$L->storage
-					]
-				).
-				h::{'a.cs-button.cs-button-compact'}(
-					h::icon('signal-diag'),
+						$i	? $storage_data['url']			: $Core->config('storage_url') ?: url_by_source(STORAGE),
+						$i	? $storage_data['host']			: $Core->config('storage_host'),
+						$i	? $storage_data['connection']	: $Core->config('storage_type'),
+						$i	? $storage_data['user']			: $Core->config('storage_user') ?: '-'
+					],
 					[
-						'onMouseDown'	=> 'storage_test(\''.$a->action.'/test/'.$i.'\', true);',
-						'data-title'	=> $L->test_connection
+						'class'	=> 'ui-corner-all '.($i ? 'ui-widget-content' : 'ui-state-highlight')
 					]
-				) : '-'),
-				[
-					'class'	=> 'ui-corner-all '.($i ? 'ui-widget-content' : 'ui-state-highlight')
-				]
-			).
-			h::td(
-				[
-					$i	? $storage_data['url']			: $Core->config('storage_url') ?: url_by_source(STORAGE),
-					$i	? $storage_data['host']			: $Core->config('storage_host'),
-					$i	? $storage_data['connection']	: $Core->config('storage_type'),
-					$i	? $storage_data['user']			: $Core->config('storage_user') ?: '-'
-				],
-				[
-					'class'	=> 'ui-corner-all '.($i ? 'ui-widget-content' : 'ui-state-highlight')
-				]
-			)
-		);
+				)
+			);
+		}
+		unset($i, $storage_data);
 	}
-	unset($i, $storage_data);
 	$a->content(
 		h::{'table.cs-fullwidth-table.cs-center-all'}(
 			$storage_list.

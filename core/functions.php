@@ -177,10 +177,11 @@ function interface_off () {
  * 										Possible values for mode: <b>name</b> (default), <b>date</b>, <b>size</b>
  * 										Possible values for mode: <b>asc</b> (default), <b>desc</b>
  * @param	bool|string	$exclusion		If specified file exists in scanned directory - it will be excluded from scanning
+ * @param	bool		$system_files	Show system files: .htaccess .htpasswd .gitignore
  *
  * @return	array|bool
  */
-function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subfolders = false, $sort = false, $exclusion = false) {
+function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subfolders = false, $sort = false, $exclusion = false, $system_files = false) {
 	if ($mode == 'df') {
 		$mode = 'fd';
 	}
@@ -221,8 +222,23 @@ function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false,
 	}
 	while (($file = readdir($dirc)) !== false) {
 		if (
-			($mask && !preg_match($mask, $file) && (!$subfolders || !is_dir($dir.$file))) ||
-			$file == '.' || $file == '..' || $file == '.htaccess' || $file == '.htpasswd' || $file == '.gitignore'
+			(
+				$mask &&
+				!preg_match($mask, $file)
+				&&
+				(
+					!$subfolders || !is_dir($dir.$file)
+				)
+			) ||
+			$file == '.' ||
+			$file == '..' ||
+			(!$system_files &&
+				(
+					$file == '.htaccess' ||
+					$file == '.htpasswd' ||
+					$file == '.gitignore'
+				)
+			)
 		) {
 			continue;
 		}

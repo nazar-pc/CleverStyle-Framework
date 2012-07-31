@@ -31,10 +31,11 @@ class Local extends _Abstract {
 	 * @param	bool		$subfolders
 	 * @param	bool		$sort
 	 * @param	bool|string	$exclusion
+	 * @param	bool		$system_files
 	 *
 	 * @return	array|bool
 	 */
-	function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subfolders = false, $sort = false, $exclusion = false) {
+	function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subfolders = false, $sort = false, $exclusion = false, $system_files = false) {
 		return call_user_func_array(__FUNCTION__, func_get_args());
 	}
 	/**

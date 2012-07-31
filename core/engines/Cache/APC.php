@@ -10,9 +10,9 @@ namespace cs\Cache;
  * Provides cache functionality based on APC (Alternative PHP Cache).
  */
 class APC extends _Abstract {
+	protected	$apc;
 	function __construct () {
-		global $Core;
-		$this->cache_size = $Core->config('cache_size')*1048576;
+		$this->apc	= apc();
 	}
 	/**
 	 * Get item from cache
@@ -22,6 +22,9 @@ class APC extends _Abstract {
 	 * @return bool|mixed			Returns item on success of <b>false</b> on failure
 	 */
 	function get ($item) {
+		if (!$this->apc) {
+			return false;
+		}
 		return apc_fetch(DOMAIN.'/'.$item);
 	}
 	/**
@@ -33,6 +36,9 @@ class APC extends _Abstract {
 	 * @return bool
 	 */
 	function set ($item, $data) {
+		if (!$this->apc) {
+			return false;
+		}
 		return apc_store(DOMAIN.'/'.$item, $data);
 	}
 	/**
@@ -43,10 +49,19 @@ class APC extends _Abstract {
 	 * @return bool
 	 */
 	function del ($item) {
+		if (!$this->apc) {
+			return false;
+		}
 		$item	= DOMAIN.'/'.$item;
 		$return	= true;
 		foreach (new \APCIterator('user') as $element) {
-			if (strpos($element['key'], $item) === 0) {
+			if (
+				$item == $element['key'] ||
+				(
+					strpos($element['key'], $item) === 0 &&
+					substr($element['key'], strlen($item), 1) == '/'
+				)
+			) {
 				$return	= apc_delete($element['key']) && $return;
 			}
 		}
@@ -58,6 +73,9 @@ class APC extends _Abstract {
 	 * @return bool
 	 */
 	function clean () {
+		if (!$this->apc) {
+			return false;
+		}
 		return apc_clear_cache('user');
 	}
 }

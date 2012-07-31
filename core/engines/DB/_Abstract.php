@@ -132,7 +132,7 @@ abstract class _Abstract {
 			return $return;
 		}
 		if(!$query) {
-			return false;
+			return true;
 		}
 		global $db;
 		$this->query['time']		= microtime(true);
@@ -142,9 +142,11 @@ abstract class _Abstract {
 		$this->query['time']		= round(microtime(true) - $this->query['time'], 6);
 		$this->time					+= $this->query['time'];
 		$this->queries['time'][]	= $this->query['time'];
-		$db->time					+= $this->query['time'];
 		++$this->queries['num'];
-		++$db->queries;
+		if (is_object($db)) {
+			$db->time					+= $this->query['time'];
+			++$db->queries;
+		}
 		return $result;
 	}
 	/**

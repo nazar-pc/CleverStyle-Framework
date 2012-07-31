@@ -44,7 +44,9 @@ class MySQL extends _Abstract {
 		}
 		$this->connecting_time	= microtime(true) - $this->connecting_time;
 		global $db;
-		$db->time				+= $this->connecting_time;
+		if (is_object($db)) {
+			$db->time				+= $this->connecting_time;
+		}
 		$this->db_type			= 'mysql';
 		$this->prefix			= $prefix;
 		return $this;

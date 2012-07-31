@@ -416,47 +416,49 @@ if ($form) {
 		'right'		=> '',
 		'bottom'	=> ''
 	];
-	foreach ($Config->components['blocks'] as $id => $block) {
-		$blocks_array[$block['position']] .= h::li(
-			h::{'div.cs-blocks-items-title'}('#'.$block['index'].' '.get_block_title($id)).
-			h::{'a'}(
-				[
-					h::{'div icon'}('wrench'),
+	if (!empty($Config->components['blocks'])) {
+		foreach ($Config->components['blocks'] as $id => $block) {
+			$blocks_array[$block['position']] .= h::li(
+				h::{'div.cs-blocks-items-title'}('#'.$block['index'].' '.get_block_title($id)).
+				h::{'a'}(
 					[
-						'href'			=> $a->action.'/edit/'.$id,
-						'data-title'	=> $L->edit
-					]
-				],
-				[
-					h::{'div icon'}('flag'),
+						h::{'div icon'}('wrench'),
+						[
+							'href'			=> $a->action.'/edit/'.$id,
+							'data-title'	=> $L->edit
+						]
+					],
 					[
-						'href'			=> $a->action.'/permissions/'.$id,
-						'data-title'	=> $L->edit_permissions
-					]
-				],
-				[
-					h::{'div icon'}($block['active'] ? 'minusthick' : 'check'),
+						h::{'div icon'}('flag'),
+						[
+							'href'			=> $a->action.'/permissions/'.$id,
+							'data-title'	=> $L->edit_permissions
+						]
+					],
 					[
-						'href'			=> $a->action.'/'.($block['active'] ? 'disable' : 'enable').'/'.$id,
-						'data-title'	=> $L->{$block['active'] ? 'disable' : 'enable'}
-					]
-				],
-				[
-					h::{'div icon'}('trash'),
+						h::{'div icon'}($block['active'] ? 'minusthick' : 'check'),
+						[
+							'href'			=> $a->action.'/'.($block['active'] ? 'disable' : 'enable').'/'.$id,
+							'data-title'	=> $L->{$block['active'] ? 'disable' : 'enable'}
+						]
+					],
 					[
-						'href'			=> $a->action.'/delete/'.$id,
-						'data-title'	=> $L->delete
+						h::{'div icon'}('trash'),
+						[
+							'href'			=> $a->action.'/delete/'.$id,
+							'data-title'	=> $L->delete
+						]
 					]
+				),
+				[
+					'id'	=> 'block'.$id,
+					'class'	=> ($block['active'] ? 'ui-widget-header' : 'ui-widget-content').' ui-corner-all'
 				]
-			),
-			[
-				'id'	=> 'block'.$id,
-				'class'	=> ($block['active'] ? 'ui-widget-header' : 'ui-widget-content').' ui-corner-all'
-			]
-		);
-		unset($block_data);
+			);
+			unset($block_data);
+		}
+		unset($id, $block);
 	}
-	unset($block);
 	foreach ($blocks_array as $position => &$content) {
 		$content = h::{'td.cs-blocks-items-groups ul.cs-blocks-items'}(
 			h::{'li.ui-state-disabled.ui-state-highlight.ui-corner-all'}(

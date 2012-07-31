@@ -92,7 +92,7 @@ if (isset($_POST['update_modules_list'])) {
 						foreach ($module_data['db'] as $db_name => $db_id) {
 							if (file_exists(MODULES.'/'.$_POST['module'].'/meta/install/'.$Config->db[$db_id]['type'].'/'.$db_name.'.sql')) {
 								$db->$db_id()->q(
-									file(MODULES.'/'.$_POST['module'].'/meta/install/'.$Config->db[$db_id]['type'].'/'.$db_name.'.sql')
+									explode(';', file_get_contents(MODULES.'/'.$_POST['module'].'/meta/install/'.$Config->db[$db_id]['type'].'/'.$db_name.'.sql'))
 								);
 							}
 						}
@@ -160,7 +160,7 @@ if (isset($_POST['update_modules_list'])) {
 					foreach ($module_data['db'] as $db_name => $db_id) {
 						if (file_exists(MODULES.'/'.$_POST['module'].'/meta/uninstall/'.$Config->db[$db_id]['type'].'/'.$db_name.'.sql')) {
 							$db->$db_id()->q(
-								file(MODULES.'/'.$_POST['module'].'/meta/uninstall/'.$Config->db[$db_id]['type'].'/'.$db_name.'.sql')
+								explode(';', file_get_contents(MODULES.'/'.$_POST['module'].'/meta/uninstall/'.$Config->db[$db_id]['type'].'/'.$db_name.'.sql'))
 							);
 						}
 					}

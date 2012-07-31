@@ -386,8 +386,10 @@ class Core {
 			}
 			unset($modules, $module);
 			$plugins = get_files_list(PLUGINS, false, 'd');
-			foreach ($plugins as $plugin) {
-				_include_once(PLUGINS.'/'.$plugin.'/trigger.php', false);
+			if (!empty($plugins)) {
+				foreach ($plugins as $plugin) {
+					_include_once(PLUGINS.'/'.$plugin.'/trigger.php', false);
+				}
 			}
 			unset($plugins, $plugin);
 			$this->triggers_init = true;

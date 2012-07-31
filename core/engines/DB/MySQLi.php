@@ -59,7 +59,9 @@ class MySQLi extends _Abstract {
 		}
 		$this->connecting_time	= microtime(true) - $this->connecting_time;
 		global $db;
-		$db->time				+= $this->connecting_time;
+		if (is_object($db)) {
+			$db->time				+= $this->connecting_time;
+		}
 		$this->db_type			= 'mysql';
 		$this->prefix			= $prefix;
 		return $this;
@@ -193,7 +195,7 @@ class MySQLi extends _Abstract {
 				errors_off();
 				foreach ($this->queries['result'] as $mysqli_result) {
 					if (is_object($mysqli_result)) {
-						$mysqli_result->free();
+						@$mysqli_result->free();
 						$mysqli_result = null;
 					}
 				}

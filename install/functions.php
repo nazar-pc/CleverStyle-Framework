@@ -1,95 +1,109 @@
 <?php
 /**
  * @package		CleverStyle CMS
+ * @subpackage	Installer
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
 function install_form () {
 	$timezones = get_timezones_list();
-	return h::section(
+	return h::{'form[method=post]'}(
 		h::nav(
 			h::{'input[type=radio]'}([
 				'name'		=> 'mode',
-				'value'		=> ['regular', 'expert'],
+				'value'		=> ['1', '0'],
 				'in'		=> ['Regular user', 'Expert'],
 				'onclick'	=> "var items = document.getElementsByClassName('expert');"
 								."for (var i = 0; i < items.length; i++) {"
-								."items.item(i).style.display = this.value == 'expert' ? 'table-row' : '';"
+								."items.item(i).style.display = this.value == '0' ? 'table-row' : '';"
 								."}"
 			])
 		).
-		h::{'form[method=post][action=install.php]'}(
-			h::table(
-				h::{'tr td'}(
-					'Site name:',
-					h::{'input[name=site_name]'}()
-				).
-				h::{'tr.expert td'}(
-					'Database engine:',
-					h::{'select[name=db_engine][size=3][selected=MySQLi]'}(
-						_mb_substr(get_files_list(DIR.'/core/engines/DB', '/^[^_].*?\.php$/i', 'f'), 0, -4)
-					)
-				).
-				h::{'tr.expert td'}(
-					'Database host:',
-					h::{'input[name=db_host][value=localhost]'}()
-				).
-				h::{'tr td'}(
-					'Database name:',
-					h::{'input[name=db_name]'}()
-				).
-				h::{'tr td'}(
-					'Database user:',
-					h::{'input[name=db_user]'}()
-				).
-				h::{'tr td'}(
-					'Database user password:',
-					h::{'input[name=db_password]'}()
-				).
-				h::{'tr.expert td'}(
-					'Database tables prefix:',
-					h::{'input[name=db_prefix]'}([
-						'value'	=> substr(md5(uniqid(microtime(true), true)), 0, 5).'_'
-					])
-				).
-				h::{'tr.expert td'}(
-					'Database charset:',
-					h::{'input[name=db_charset][value=utf8]'}()
-				).
-				h::{'tr td'}(
-					'Timezone:',
-					h::{'select[name=timezone][size=7][selected=UTC]'}([
-						'in'		=> array_keys($timezones),
-						'value'		=> array_values($timezones)
-					])
-				).
-				h::{'tr td'}(
-					'Language:',
-					h::{'select[name=language][size=3][selected=English]'}(
-						array_merge(
-							_mb_substr(get_files_list(DIR.'/core/languages', '/^lang\..*?\.php$/i', 'f'), 5, -4) ?: [],
-							_mb_substr(get_files_list(DIR.'/core/languages', '/^lang\..*?\.json$/i', 'f'), 5, -5) ?: []
-						)
-					)
-				).
-				h::{'tr td'}(
-					'Email of administrator:',
-					h::{'input[type=email][name=admin_email]'}()
-				).
-				h::{'tr td'}(
-					'Administrator password:',
-					h::{'input[type=password][name=db_user]'}()
+		h::table(
+			h::{'tr td'}(
+				'Site name:',
+				h::{'input[name=site_name]'}()
+			).
+			h::{'tr.expert td'}(
+				'Database engine:',
+				h::{'select[name=db_engine][size=3][selected=MySQLi]'}(
+					_json_decode(file_get_contents(DIR.'/db_engines.json'))
 				)
 			).
-			h::{'button[type=submit]'}(
-				'Install'
+			h::{'tr.expert td'}(
+				'Database host:',
+				h::{'input[name=db_host][value=localhost]'}()
+			).
+			h::{'tr td'}(
+				'Database name:',
+				h::{'input[name=db_name]'}()
+			).
+			h::{'tr td'}(
+				'Database user:',
+				h::{'input[name=db_user]'}()
+			).
+			h::{'tr td'}(
+				'Database user password:',
+				h::{'input[type=password][name=db_password]'}()
+			).
+			h::{'tr.expert td'}(
+				'Database tables prefix:',
+				h::{'input[name=db_prefix]'}([
+					'value'	=> substr(md5(uniqid(microtime(true), true)), 0, 5).'_'
+				])
+			).
+			h::{'tr.expert td'}(
+				'Database charset:',
+				h::{'input[name=db_charset][value=utf8]'}()
+			).
+			h::{'tr td'}(
+				'Timezone:',
+				h::{'select[name=timezone][size=7][selected=UTC]'}([
+					'in'		=> array_keys($timezones),
+					'value'		=> array_values($timezones)
+				])
+			).
+			h::{'tr td'}(
+				'Language:',
+				h::{'select[name=language][size=3][selected=English]'}(
+					_json_decode(file_get_contents(DIR.'/languages.json'))
+				)
+			).
+			h::{'tr td'}(
+				'Email of administrator:',
+				h::{'input[type=email][name=admin_email]'}()
+			).
+			h::{'tr td'}(
+				'Administrator password:',
+				h::{'input[type=password][name=admin_password]'}()
 			)
+		).
+		h::{'button[type=submit]'}(
+			'Install'
 		)
 	);
 }
 function install_process () {
-	$config						= _json_decode('{
+	global $system;
+	require_once DIR.'/system/'.$system['core/engines/DB/_Abstract.php'];
+	require_once DIR.'/system/'.$system['core/engines/DB/'.$_POST['db_engine'].'.php'];
+	/**
+	 * @var \cs\DB\_Abstract $cdb
+	 */
+	$cdb							= '\\cs\\DB\\'.$_POST['db_engine'];
+	$cdb							= new $cdb(
+		$_POST['db_name'],
+		$_POST['db_user'],
+		$_POST['db_password'],
+		$_POST['db_host'],
+		$_POST['db_charset'],
+		$_POST['db_prefix']
+	);
+	if (!(is_object($cdb) && $cdb->connected())) {
+		return 'Database connection failed! Installation aborted.';
+	}
+	$config							= _json_decode('{
   "name": "",
   "url": "",
   "keywords": "",
@@ -197,19 +211,180 @@ function install_process () {
   "footer_text": "",
   "show_footer_info": "1"
 }');
-	$config['name']				= $config['description']	= (string)$_POST['site_name'];
-	$config['keywords']			= implode(', ', _trim(explode(' ', $config['name']), ','));
-	$config['url']				= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-	$config['url']				= substr(
+	$config['name']					= $config['description']	= (string)$_POST['site_name'];
+	$config['keywords']				= implode(', ', _trim(explode(' ', $config['name']), ','));
+	$config['url']					= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+	$config['url']					= substr(
 		$config['url'],
 		0,
-		-strrpos($config['url'], '/')
+		strrpos($config['url'], '/', -13)
 	);
-	$config['admin_email']		= $_POST['admin_email'];
-	$config['cookie_domain']	= explode('/', explode('//', $config['url'])[1], 2);
-	$config['cookie_path']		= isset($config['cookie_domain'][1]) && $config['cookie_domain'][1] ? '/'.trim($config['cookie_domain'][1], '/').'/' : '/';
-	$config['cookie_domain']	= $config['cookie_domain'][0];
-	$config['timezone']			= $_POST['timezone'];
-	$config['mail_from_name']	= 'Administrator of '.$config['name'];
-	$config['mail_from']		= $_POST['admin_email'];
+	$config['admin_email']			= $_POST['admin_email'];
+	$config['language']				= $_POST['language'];
+	$config['cookie_domain']		= explode('/', explode('//', $config['url'])[1], 2);
+	$config['cookie_path']			= isset($config['cookie_domain'][1]) && $config['cookie_domain'][1] ? '/'.trim($config['cookie_domain'][1], '/').'/' : '/';
+	$config['cookie_domain']		= $config['cookie_domain'][0];
+	$config['timezone']				= $_POST['timezone'];
+	$config['mail_from_name']		= 'Administrator of '.$config['name'];
+	$config['mail_from']			= $_POST['admin_email'];
+	$config['simple_admin_mode']	= $_POST['mode'];
+	$extract						= array_product(
+		array_map(
+			function ($index, $file) {
+				if (
+					!file_exists(pathinfo(ROOT.'/'.$file, PATHINFO_DIRNAME)) &&
+					!mkdir(pathinfo(ROOT.'/'.$file, PATHINFO_DIRNAME), 0777, true)
+				) {
+					return 0;
+				}
+				return (int)copy(DIR.'/system/'.$index, ROOT.'/'.$file);
+			},
+			$system,
+			array_keys($system)
+		)
+	);
+	if (
+		!$extract ||
+		!mkdir(ROOT.'/storage') ||
+		!file_put_contents(ROOT.'/storage/.htaccess', "Deny from all\nRewriteEngine Off")
+	) {
+		return 'Can\'t extract system files from the archive! Installation aborted.';
+	}
+	$public_key = hash('sha512', uniqid(microtime(true), true));
+	$main_config					= file_exists(ROOT.'/config') && file_put_contents(
+		ROOT.'/config/main.json',
+		str_replace(
+			[
+				'@domain',
+				'@timezone',
+				'@db_host',
+				'@db_type',
+				'@db_name',
+				'@db_user',
+				'@db_password',
+				'@db_prefix',
+				'@db_charset',
+				'@language',
+				'@cache_engine',
+				'@key',
+				'@iv',
+				'@public_key'
+			],
+			[
+				$config['cookie_domain'],
+				$_POST['timezone'],
+				$_POST['db_host'],
+				$_POST['db_engine'],
+				$_POST['db_name'],
+				$_POST['db_user'],
+				str_replace('"', '\\"', $_POST['db_password']),
+				$_POST['db_prefix'],
+				$_POST['db_charset'],
+				$_POST['language'],
+				apc() ? 'APC' : 'FileSystem',
+				hash('sha224', uniqid(microtime(true), true)),
+				substr(md5(uniqid(microtime(true), true)), 0, 8),
+				$public_key
+			],
+		'{
+//Domain of main mirror
+	"domain"			: "@domain",
+//Base timezone
+	"timezone"			: "@timezone",
+//Settings of main DB
+	"db_host"			: "@db_host",
+	"db_type"			: "@db_type",
+	"db_name"			: "@db_name",
+	"db_user"			: "@db_user",
+	"db_password"		: "@db_password",
+	"db_prefix"			: "@db_prefix",
+	"db_charset"		: "@db_charset",
+//Settings of main Storage
+	"storage_type"		: "Local",
+	"storage_url"		: "",
+	"storage_host"		: "localhost",
+	"storage_user"		: "",
+	"storage_password"	: "",
+//Base language
+	"language"			: "@language",
+//Cache engine
+	"cache_engine"		: "@cache_engine",
+//Cache size in MB for FileSystem storage engine
+	"cache_size"		: "5",
+//Will be truncated to 56 symbols
+	"key"				: "@key",
+//Will be truncated to 8 symbols
+	"iv"				: "@iv",
+//Any length
+	"public_key"		: "@public_key"
+}'));
+	apc() && apc_clear_cache('user');
+	if (!$main_config) {
+		return 'Can\'t write base system configuration! Installation aborted.';
+	}
+	chmod(ROOT.'/config/main.json', 0600);
+	if (!file_exists(DIR.'/install/DB/'.$_POST['db_engine'].'.sql')) {
+		return 'Can\'t find system tables structure for selected database engine! Installation aborted.';
+	}
+	if (!$cdb->q(explode(';', file_get_contents(DIR.'/install/DB/'.$_POST['db_engine'].'.sql')))) {
+		return 'Can\'t import system tables structure for selected database engine! Installation aborted.';
+	}
+	if (!$cdb->q(
+		"INSERT INTO `[prefix]config` (
+			`domain`, `core`, `db`, `storage`, `components`, `replace`, `routing`
+		) VALUES (
+			'%1\$s', '%2\$s', '[]', '[]', '%3\$s', '%4\$s', '%4\$s'
+		)",
+		$config['cookie_domain'],
+		_json_encode($config),
+		'{"modules":{"System":{"active":1,"db":{"keys":"0","users":"0","texts":"0"}}},"plugins":[],"blocks":[]}',
+		'{"in":[],"out":[]}'
+	)) {
+		return 'Can\'t import system confuration into database! Installation aborted.';
+	}
+	$admin_login					= strstr($_POST['admin_email'], '@', true);
+	if (!$cdb->q(
+		"INSERT INTO `[prefix]users` (
+			`login`, `login_hash`, `password_hash`, `email`, `email_hash`, `reg_date`, `reg_ip`, `status`
+		) VALUES (
+			'%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s'
+		)",
+		$admin_login,
+		hash('sha224', $admin_login),
+		hash('sha512', hash('sha512', $_POST['admin_password']).$public_key),
+		$_POST['admin_email'],
+		hash('sha224', $_POST['admin_email']),
+		time(),
+		$_SERVER['REMOTE_ADDR'],
+		1
+	)) {
+		return 'Can\'t register administrator user! Installation aborted.';
+	}
+	$cdb->__destruct();
+	unlink(ROOT.'/'.pathinfo(DIR, PATHINFO_BASENAME));
+	return h::h3(
+		'Congratulations! CleverStyle CMS has been installed successfully!'
+	).
+	h::{'table tr| td'}(
+		[
+			'Your login information:',
+			[
+				'colspan'	=> 2
+			]
+		],
+		[
+			'Login:',
+			$admin_login
+		],
+		[
+			'Password:',
+			$_POST['admin_password']
+		]
+	).
+	h::button(
+		'Go to website',
+		[
+			'onclick'	=> "location.href = '".addslashes($config['url'])."'"
+		]
+	);
 }

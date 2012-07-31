@@ -74,10 +74,11 @@ class HTTP extends _Abstract {
 	 * @param	bool		$subfolders
 	 * @param	bool		$sort
 	 * @param	bool|string	$exclusion
+	 * @param	bool		$system_files
 	 *
 	 * @return	array|bool
 	 */
-	function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subfolders = false, $sort = false, $exclusion = false) {
+	function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subfolders = false, $sort = false, $exclusion = false, $system_files = false) {
 		return _json_decode(
 			$this->request([
 				'function'		=> __FUNCTION__,
@@ -87,7 +88,8 @@ class HTTP extends _Abstract {
 				'prefix_path'	=> $prefix_path,
 				'subfolders'	=> $subfolders,
 				'sort'			=> $sort,
-				'exclusion'		=> $exclusion
+				'exclusion'		=> $exclusion,
+				'system_files'	=> $system_files
 			])[1]
 		);
 	}

@@ -65,7 +65,7 @@ class Config {
 		if (is_array($config)) {
 			$query = false;
 			foreach ($this->admin_parts as $part) {
-				if (isset($config[$part]) && !empty($config[$part])) {
+				if (isset($config[$part])) {
 					$this->$part = $config[$part];
 				} else {
 					$query = true;

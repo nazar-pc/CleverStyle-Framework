@@ -8,10 +8,7 @@ RewriteBase /
 <Files license.txt>
 	RewriteEngine Off
 </Files>
-<Files build.php>
-	RewriteEngine Off
-</Files>
-<Files install.php>
+<Files *.php>
 	RewriteEngine Off
 </Files>
 #<Files Storage.php>

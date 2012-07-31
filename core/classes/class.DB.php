@@ -193,10 +193,11 @@ class DB {
 			 * If mirror connection is not allowed - display connection error
 			 */
 			if (!is_array($mirror)) {
+				error_header(500);
 				if ($connection == 0) {
 					trigger_error($L->error_core_db, E_USER_ERROR);
 				} else {
-					trigger_error($L->error_db.' '.$this->failed_connections[$connection], E_USER_WARNING);
+					trigger_error($L->error_db.' '.$this->failed_connections[$connection], E_USER_ERROR);
 				}
 			}
 			return false;

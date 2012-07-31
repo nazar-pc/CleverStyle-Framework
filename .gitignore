@@ -1,2 +1,4 @@
 #do not commit cache
 /.idea
+#do not commit installer builds
+CleverStyle CMS *.phar.php

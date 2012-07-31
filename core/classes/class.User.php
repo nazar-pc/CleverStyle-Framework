@@ -1549,7 +1549,7 @@ class User {
 		$password		= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
 		$password_hash	= hash('sha512', hash('sha512', $password).$Core->config('public_key'));
 		$reg_key		= md5($password.$this->ip);
-		if ($this->db_prime()->q([
+		if ($this->db_prime()->q(
 			"INSERT INTO `[prefix]users` (
 				`login`, `login_hash`, `password_hash`, `email`, `email_hash`, `reg_date`, `reg_ip`, `reg_key`, `status`
 			) VALUES (
@@ -1564,7 +1564,7 @@ class User {
 			ip2hex($this->ip),
 			$reg_key,
 			!$confirmation || !$Config->core['require_registration_confirmation'] ? 1 : -1
-		])) {
+		)) {
 			$this->reg_id = $this->db_prime()->id();
 			if (!$confirmation || !$Config->core['require_registration_confirmation']) {
 				$this->set_user_groups([2], $this->reg_id);

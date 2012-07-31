@@ -228,93 +228,95 @@ if (isset($rc[2])) {
 		$L->db_user,
 		$L->db_charset
 	)];
-	foreach ($Config->db as $i => &$db_data) {
-		$db_list[]	= h::{'td.ui-corner-all.'.($i ? 'ui-widget-content' : 'ui-state-highlight')}(
-			[
-				h::{'a.cs-button.cs-button-compact'}(
-					[
-						h::icon('plus'),
-						[
-							'href'			=> $a->action.'/add/'.$i,
-							'data-title'	=> $L->add.' '.$L->mirror.' '.$L->of_db
-						]
-					],
-					$i ? [
-						h::icon('wrench'),
-						[
-							'href'			=> $a->action.'/edit/'.$i,
-							'data-title'	=> $L->edit.' '.$L->db
-						]
-					] : false,
-					$i ? [
-						h::icon('trash'),
-						[
-							'href'			=> $a->action.'/delete/'.$i,
-							'data-title'	=> $L->delete.' '.$L->db
-						]
-					] : false,
-					[
-						h::icon('signal-diag'),
-						[
-							'onMouseDown'	=> 'db_test(\''.$a->action.'/test/'.$i.'\', true);',
-							'data-title'	=> $L->test_connection
-						]
-					]
-				),
+	if (!empty($Config->db)) {
+		foreach ($Config->db as $i => &$db_data) {
+			$db_list[]	= h::{'td.ui-corner-all.'.($i ? 'ui-widget-content' : 'ui-state-highlight')}(
 				[
-					'class'	=> 'cs-db-config-buttons'
-				]
-			],
-			$i	? $db_data['host']		: $Core->config('db_host'),
-			$i	? $db_data['type']		: $Core->config('db_type'),
-			$i	? $db_data['prefix']	: $Core->config('db_prefix'),
-			$i	? $db_data['name']		: $Core->config('db_name'),
-			$i	? $db_data['user']		: '*****',
-			$i	? $db_data['charset']	: $Core->config('db_charset')
-		);
-		foreach ($Config->db[$i]['mirrors'] as $m => &$mirror) {
-			if (is_array($mirror) && !empty($mirror)) {
-				$db_list[]	= h::{'td.ui-widget-content.ui-corner-all'}(
-					[
-						h::{'a.cs-button.cs-button-compact'}(
-							[
-								h::icon('wrench'),
-								[
-									'href'			=> 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/edit/'.$i.'/'.$m,
-									'data-title'	=> $L->edit.' '.$L->mirror.' '.$L->of_db
-								]
-							],
-							[
-								h::icon('trash'),
-								[
-									'href'			=> 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/delete/'.$i.'/'.$m,
-									'data-title'	=> $L->delete.' '.$L->mirror.' '.$L->of_db
-								]
-							],
-							[
-								h::icon('signal-diag'),
-								[
-									'onMouseDown'	=> 'db_test(\''.$a->action.'/test/'.$i.'/'.$m.'\', true);',
-									'data-title'	=> $L->test_connection
-								]
-							]
-						),
+					h::{'a.cs-button.cs-button-compact'}(
 						[
-							'class'	=> 'cs-db-config-buttons-r'
+							h::icon('plus'),
+							[
+								'href'			=> $a->action.'/add/'.$i,
+								'data-title'	=> $L->add.' '.$L->mirror.' '.$L->of_db
+							]
+						],
+						$i ? [
+							h::icon('wrench'),
+							[
+								'href'			=> $a->action.'/edit/'.$i,
+								'data-title'	=> $L->edit.' '.$L->db
+							]
+						] : false,
+						$i ? [
+							h::icon('trash'),
+							[
+								'href'			=> $a->action.'/delete/'.$i,
+								'data-title'	=> $L->delete.' '.$L->db
+							]
+						] : false,
+						[
+							h::icon('signal-diag'),
+							[
+								'onMouseDown'	=> 'db_test(\''.$a->action.'/test/'.$i.'\', true);',
+								'data-title'	=> $L->test_connection
+							]
 						]
-					],
-					$mirror['host'],
-					$mirror['type'],
-					$mirror['prefix'],
-					$mirror['name'],
-					$mirror['user'],
-					$mirror['charset']
-				);
+					),
+					[
+						'class'	=> 'cs-db-config-buttons'
+					]
+				],
+				$i	? $db_data['host']		: $Core->config('db_host'),
+				$i	? $db_data['type']		: $Core->config('db_type'),
+				$i	? $db_data['prefix']	: $Core->config('db_prefix'),
+				$i	? $db_data['name']		: $Core->config('db_name'),
+				$i	? $db_data['user']		: '*****',
+				$i	? $db_data['charset']	: $Core->config('db_charset')
+			);
+			foreach ($Config->db[$i]['mirrors'] as $m => &$mirror) {
+				if (is_array($mirror) && !empty($mirror)) {
+					$db_list[]	= h::{'td.ui-widget-content.ui-corner-all'}(
+						[
+							h::{'a.cs-button.cs-button-compact'}(
+								[
+									h::icon('wrench'),
+									[
+										'href'			=> 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/edit/'.$i.'/'.$m,
+										'data-title'	=> $L->edit.' '.$L->mirror.' '.$L->of_db
+									]
+								],
+								[
+									h::icon('trash'),
+									[
+										'href'			=> 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/delete/'.$i.'/'.$m,
+										'data-title'	=> $L->delete.' '.$L->mirror.' '.$L->of_db
+									]
+								],
+								[
+									h::icon('signal-diag'),
+									[
+										'onMouseDown'	=> 'db_test(\''.$a->action.'/test/'.$i.'/'.$m.'\', true);',
+										'data-title'	=> $L->test_connection
+									]
+								]
+							),
+							[
+								'class'	=> 'cs-db-config-buttons-r'
+							]
+						],
+						$mirror['host'],
+						$mirror['type'],
+						$mirror['prefix'],
+						$mirror['name'],
+						$mirror['user'],
+						$mirror['charset']
+					);
+				}
 			}
+			unset($m, $mirror);
 		}
-		unset($m, $mirror);
+		unset($i, $db_data);
 	}
-	unset($i, $db_data);
 	$a->content(
 		h::{'table.cs-fullwidth-table tr'}(
 			$db_list,

@@ -83,6 +83,9 @@ class h {
 		}
 		if (isset($data['tag'])) {
 			$tag = $data['tag'];
+			if ($tag == 'img' && !isset($data['alt'])) {
+				$data['alt']	= '';
+			}
 			unset($data['tag']);
 		}
 		if (isset($data['add'])) {
