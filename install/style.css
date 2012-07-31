@@ -7,31 +7,27 @@
  */
 * {
 	font-family : Arial, sans-serif;
-	font-size   : 18px;
+	font-size   : 16px;
 }
-
 body {
 	background-color : #b9b9b9;
 	margin           : 0;
 	padding          : 0;
 }
-
 header {
 	background-color : #d7d7d7;
 	border-bottom    : 5px #666 solid;
 	padding          : 10px;
 }
-
 header h1 {
 	display        : inline-block;
 	font-size      : 72px;
 	font-weight    : 100;
 	line-height    : 128px;
-	margin         : 0;
-	width          : 920px;
+	margin         : 0 -10px 0 0;
+	width          : 1112px;
 	vertical-align : top;
 }
-
 section {
 	background-color : #d7d7d7;
 	border           : 1px #666 solid;
@@ -40,7 +36,6 @@ section {
 	position         : relative;
 	width            : 520px;
 }
-
 section nav label {
 	background-color : #666;
 	color            : #aaa;
@@ -51,19 +46,15 @@ section nav label {
 	position         : relative;
 	padding          : 0 30px;
 }
-
 section nav :checked+label {
 	color : #ddd;
 }
-
 section nav input {
 	display : none;
 }
-
 section nav :nth-child(2) {
 	margin-right : -10px;
 }
-
 section nav :nth-child(4)::before {
 	background-color  : #d7d7d7;
 	content           : "";
@@ -75,11 +66,9 @@ section nav :nth-child(4)::before {
 	transform         : skewX(-20deg);
 	width             : 5px;
 }
-
 section table {
 	margin-top : 10px;
 }
-
 section table input,
 section table select {
 	border    : none;
@@ -87,11 +76,9 @@ section table select {
 	padding   : 3px;
 	width     : 300px;
 }
-
 section table select {
 	width : 306px;
 }
-
 section button {
 	background-color : #666;
 	border           : none;
@@ -100,9 +87,20 @@ section button {
 	cursor           : pointer;
 	padding          : 4px 20px;
 	position         : absolute;
-	right            : 12px;
 }
-
+section button.readme {
+	left : 12px;
+}
+section button.license {
+	left : 122px;
+}
+section button[type=submit] {
+	right : 12px;
+}
 .expert {
 	display : none;
+}
+footer {
+	padding    : 20px;
+	text-align : center;
 }

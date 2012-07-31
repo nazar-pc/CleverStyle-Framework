@@ -7,7 +7,7 @@
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-define('DIR',	__DIR__);												//Path to installer dir
+define('DIR',	__DIR__);													//Path to installer dir
 $ROOT	= pathinfo(__DIR__, PATHINFO_DIRNAME);
 define('ROOT',	strpos($ROOT, 'phar://') === 0 ? substr($ROOT, 7) : $ROOT);	//Path to site root
 unset($ROOT);
@@ -22,7 +22,7 @@ header('Connection: close');
 mb_internal_encoding('utf-8');
 echo h::html(
 	h::head(
-		h::title('CleverStyle CMS Installation').
+		h::title('CleverStyle CMS $version$ Installation').
 		h::style(file_get_contents(DIR.'/install/style.css'))
 	).
 	h::body(
@@ -30,10 +30,13 @@ echo h::html(
 			h::img([
 				'src'	=> 'data:image/png;charset=utf-8;base64,'.base64_encode(file_get_contents(DIR.'/install/logo.png'))
 			]).
-			h::h1('CleverStyle CMS Installation')
+			h::h1('CleverStyle CMS $version$ Installation')
 		).
 		h::section(
 			isset($_POST['site_name']) ? install_process() : install_form()
+		).
+		h::footer(
+			'Copyright (c) 2011-2012, Nazar Mokrynskyi'
 		)
 	)
 );

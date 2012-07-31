@@ -6,16 +6,14 @@
  * @license		MIT License, see license.txt
  */
 define('DIR',	__DIR__);
+require_once	DIR.'/core/classes/class.h.php';
 require_once	DIR.'/core/functions.php';
 require_once	'Archive/Tar.php';
 $version	= _json_decode(file_get_contents(DIR.'/components/modules/System/meta.json'))['version'];
 $tar		= new Archive_Tar(DIR.'/cscms.phar.tar');
 $tar->createModify(
 	array_merge(
-		get_files_list(DIR.'/install', false, 'f', true, true),
-		[
-			DIR.'/install.php'
-		]
+		get_files_list(DIR.'/install', false, 'f', true, true)
 	),
 	null,
 	DIR
@@ -31,7 +29,6 @@ $list		= array_merge(
 		DIR.'/custom.php',
 		DIR.'/favicon.ico',
 		DIR.'/license.txt',
-		DIR.'/readme.html',
 		DIR.'/Storage.php'
 	]
 );
@@ -79,6 +76,23 @@ $tar->addString(
 	'system/'.(count($list)-1),
 	str_replace('$version$', $version, file_get_contents(DIR.'/index.php'))
 );
+$list[]		= 'readme.html';
+$tar->addString(
+	'system/'.(count($list)-1),
+	str_replace(
+		[
+			'$version$',
+			'$image$'
+		],
+		[
+			$version,
+			h::img([
+				'src'	=> 'data:image/png;charset=utf-8;base64,'.base64_encode(file_get_contents(DIR.'/install/logo.png'))
+			])
+		],
+		file_get_contents(DIR.'/readme.html')
+	)
+);
 $tar->addString(
 	'languages.json',
 	_json_encode(
@@ -95,10 +109,51 @@ $tar->addString(
 	)
 );
 $tar->addString('system.json', _json_encode(array_flip($list)));
-unset($tar);
+$tar->addString(
+	'install.php',
+	str_replace('$version$', $version, file_get_contents(DIR.'/install.php'))
+);
+$tar->addString(
+	'readme.html',
+	str_replace(
+		[
+			'$version$',
+			'$image$'
+		],
+		[
+			$version,
+			h::img([
+				'src'	=> 'data:image/png;charset=utf-8;base64,'.base64_encode(file_get_contents(DIR.'/install/logo.png'))
+			])
+		],
+		file_get_contents(DIR.'/readme.html')
+	)
+);
+$tar->addString(
+	'license.txt',
+	file_get_contents(DIR.'/license.txt')
+);
+$themes							= get_files_list(DIR.'/themes', false, 'd');
+asort($themes);
+$color_schemes					= [];
+foreach ($themes as $theme) {
+	$color_schemes[$theme]	= [];
+	$color_schemes[$theme]	= get_files_list(DIR.'/themes/'.$theme.'/schemes', false, 'd');
+	asort($color_schemes[$theme]);
+}
+$tar->addString(
+	'themes.json',
+	_json_encode($themes)
+);
+$tar->addString(
+	'color_schemes.json',
+	_json_encode($color_schemes)
+);
+unset($themes, $theme, $color_schemes, $tar);
 $phar		= new Phar(DIR.'/cscms.phar.tar');
 $phar->convertToExecutable(Phar::TAR, Phar::BZ2, '.phar');
 unlink(DIR.'/cscms.phar.tar');
+unset($phar);
 $phar		= new Phar(DIR.'/cscms.phar');
 $phar->setStub("<?php Phar::webPhar(null, 'install.php'); __HALT_COMPILER();");
 $phar->setSignatureAlgorithm(PHAR::SHA512);

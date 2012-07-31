@@ -345,11 +345,12 @@ class Config {
 	 * Updating information about set of available themes
 	 */
 	function reload_themes () {
-		$this->core['themes'] = get_files_list(THEMES, false, 'd');
+		$this->core['themes']			= get_files_list(THEMES, false, 'd');
 		asort($this->core['themes']);
+		$this->core['color_schemes']	= [];
 		foreach ($this->core['themes'] as $theme) {
-			$this->core['color_schemes'][$theme] = [];
-			$this->core['color_schemes'][$theme] = get_files_list(THEMES.'/'.$theme.'/schemes', false, 'd');
+			$this->core['color_schemes'][$theme]	= [];
+			$this->core['color_schemes'][$theme]	= get_files_list(THEMES.'/'.$theme.'/schemes', false, 'd');
 			asort($this->core['color_schemes'][$theme]);
 		}
 	}
