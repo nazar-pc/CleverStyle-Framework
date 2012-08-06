@@ -105,6 +105,9 @@ class h {
 		if (isset($data['style']) && empty($data['style'])) {
 			unset($data['style']);
 		}
+		if (isset($data['value'])) {
+			$data['value'] = filter($data['value']);
+		}
 		ksort($data);
 		foreach ($data as $key => $value) {
 			if (is_int($key)) {
@@ -128,7 +131,13 @@ class h {
 	 * @return string
 	 */
 	static function url ($url, $absolute = false) {
-		if (substr($url, 0, 5) != 'data:' && substr($url, 0, 1) != '/' && substr($url, 0, 1) != '#' && substr($url, 0, 7) != 'http://' && substr($url, 0, 8) != 'https://') {
+		if (
+			substr($url, 0, 5) != 'data:' &&
+			substr($url, 0, 1) != '/' &&
+			substr($url, 0, 1) != '#' &&
+			substr($url, 0, 7) != 'http://' &&
+			substr($url, 0, 8) != 'https://'
+		) {
 			global $Config;
 			if ($absolute && is_object($Config)) {
 				return $Config->server['base_url'].'/'.$url;
@@ -174,9 +183,7 @@ class h {
 		return	'<'.$tag.$add.'>'.
 				($level ? "\n" : '').
 				self::level(
-					$in ?
-						$in.($level ? "\n" : '') :
-						($in === false ? '' : ($level ? "&nbsp;\n" : '')),
+					$in || $in === 0 || $in === '0' ? $in.($level ? "\n" : '') : ($in === false ? '' : ($level ? "&nbsp;\n" : '')),
 				$level).
 				'</'.$tag.'>'.
 				($level ? "\n" : '');
@@ -204,7 +211,7 @@ class h {
 		return isset($data_title) ? self::label($return, ['data-title' => $data_title]) : $return;
 	}
 	/**
-	 * Rendering of form tag, if form method is post - special session key in hidden input is added for security
+	 * Rendering of form tag, default method is post, if form method is post - special session key in hidden input is added for security.
 	 *
 	 * @static
 	 *
@@ -220,12 +227,24 @@ class h {
 			return self::__callStatic(__FUNCTION__, [$in, $data]);
 		}
 		global $User;
-		if (isset($data['method']) && strtolower($data['method']) == 'post' && is_object($User)) {
-			$in .= self::input([
+		if (isset($in['method'])) {
+			$data['method']	= $in['method'];
+		}
+		if (!isset($data['method'])) {
+			$data['method']	= 'post';
+		}
+		if (strtolower($data['method']) == 'post' && is_object($User)) {
+			$in_ = self::input([
 				'type'	=> 'hidden',
 				'name'	=> $User->get_session(),
 				'value'	=> $User->get_session()
 			]);
+			if (!is_array($in)) {
+				$in			.= $in_;
+			} else {
+				$in['in']	.= $in_;
+			}
+			unset($in_);
 		}
 		return self::wrap($in, $data, __FUNCTION__);
 	}
@@ -331,9 +350,6 @@ class h {
 					$in['value'] = $in['max'];
 				}
 				$in['tag'] = __FUNCTION__;
-				if (isset($in['value'])) {
-					$in['value'] = filter($in['value']);
-				}
 				return self::u_wrap($in);
 			}
 		}
@@ -392,6 +408,10 @@ class h {
 			}
 		}
 		if (is_array($in['value'])) {
+			if (isset($in['selected'])) {
+				$data['selected']	= array_merge($in['selected'], isset($data['selected']) ? $data['selected'] : []);
+				unset($in['selected']);
+			}
 			if (!isset($data['selected'])) {
 				$data['selected']	= $in['value'][0];
 			}
@@ -412,12 +432,16 @@ class h {
 		$options = array_flip_3d($in);
 		unset($in);
 		foreach ($options as &$option) {
-			$option			= [
-				$option['in'],
-				$option
-			];
-			unset($option[1]['in']);
-			$option			= self::option($option[0], $option[1]);
+			if (isset($option[1])) {
+				$option	= array_merge(
+					[
+						'in'	=> $option[0]
+					],
+					$option[1]
+				);
+			}
+			$option['in']	= str_replace('<', '&lt;', $option['in']);
+			$option			= self::option($option);
 		}
 		unset($option);
 		return self::wrap(implode('', $options), $data, $function);
@@ -607,9 +631,9 @@ class h {
 		}
 		global $Config, $L;
 		if (is_object($Config) && $Config->core['show_tooltips']) {
-			return self::label($L->$in, array_merge(['data-title' => $L->{$in.'_info'}], $data));
+			return self::span($L->$in, array_merge(['data-title' => $L->{$in.'_info'}], $data));
 		} else {
-			return self::label($L->$in, $data);
+			return self::span($L->$in, $data);
 		}
 	}
 	/**
@@ -712,9 +736,17 @@ class h {
 						[]
 					];
 				}
-				foreach ($data[0] as &$d) {
+				foreach ($data[0] as $d) {
 					if (isset($d[0]) && is_array_indexed($d[0]) && !in_array($d[0][0], self::$unit_atributes)) {
-						if (isset($d[1]) && is_array_indexed($d[1]) && !in_array($d[1][0], self::$unit_atributes)) {
+						if (
+							isset($d[1]) &&
+							(
+								!is_array($d[1]) ||
+								(
+									is_array_indexed($d[1]) && !in_array($d[1][0], self::$unit_atributes)
+								)
+							)
+						) {
 							$output[]	= [
 								self::__callStatic($input[1], $d[0]).
 								self::__callStatic($input[1], $d[1])
@@ -738,6 +770,7 @@ class h {
 						isset($data[1]) ? $data[1] : []
 					]
 				);
+				$data[1]	= [];
 			} else {
 				$output		= self::__callStatic(
 					$input[1],
@@ -765,8 +798,26 @@ class h {
 		if (is_array_indexed($data)) {
 			if (count($data) > 2) {
 				$output	= '';
-				foreach ($data as &$d) {
+				foreach ($data as $d) {
 					$output			.= self::__callStatic(
+						$input,
+						$d
+					);
+				}
+				return $output;
+			} elseif (
+				is_array_indexed($data[0]) &&
+				(
+					!isset($data[1]) ||
+					!is_array($data[1]) ||
+					(
+						is_array_indexed($data[1]) && !in_array($data[1][0], self::$unit_atributes)
+					)
+				)
+			) {
+				$output	= '';
+				foreach ($data as $d) {
+					$output				.= self::__callStatic(
 						$input,
 						$d
 					);
@@ -786,20 +837,8 @@ class h {
 					)
 				)
 			) {
-				$output	= $post_output = '';
-				/**
-				 * If array of attributes not found - create empty one.
-				 */
-				if (!isset($data[1])) {
-					$data[1]		= [];
-				} elseif (!is_array($data[1])) {
-					$post_output	= self::__callStatic(
-						$input,
-						$data[1]
-					);
-					$data[1]		= [];
-				}
-				foreach ($data[0] as &$d) {
+				$output = '';
+				foreach ($data[0] as $d) {
 					if (!is_array($d) || !isset($d[1]) || !is_array($d[1])) {
 						$output			.= self::__callStatic(
 							$input,
@@ -833,8 +872,8 @@ class h {
 						);
 					}
 				}
-				return $output.$post_output;
-			} elseif(
+				return $output;
+			} elseif (
 				!is_array($data[0]) &&
 				!in_array($data[0], self::$unit_atributes) &&
 				isset($data[1]) &&
@@ -846,7 +885,7 @@ class h {
 				)
 			) {
 				$output	= '';
-				foreach ($data as &$d) {
+				foreach ($data as $d) {
 					$output			.= self::__callStatic(
 						$input,
 						$d

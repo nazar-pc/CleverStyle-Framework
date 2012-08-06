@@ -2,6 +2,7 @@
 /**
  * @package		CleverStyle CMS
  * @subpackage	System module
+ * @category	modules
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -123,26 +124,18 @@ if (isset($rc[2])) {
 		foreach ($list as $label => $id) {
 			++$count;
 			$permissions_list[] = h::{'td.ui-widget-content.ui-corner-all.cs-left-all'}([
-				h::a(
-					h::{'button.cs-button-compact'}(
-						h::icon('wrench'),
-						[
-							'data-title'	=> $L->edit
-						]
-					),
+				h::{'a.cs-button.cs-button-compact'}(
+					h::icon('wrench'),
 					[
-						'href'	=> $a->action.'/edit/'.$id
+						'href'			=> $a->action.'/edit/'.$id,
+						'data-title'	=> $L->edit
 					]
 				).
-				h::a(
-					h::{'button.cs-button-compact'}(
-						h::icon('trash'),
-						[
-							'data-title'	=> $L->delete
-						]
-					),
+				h::{'a.cs-button.cs-button-compact'}(
+					h::icon('trash'),
 					[
-						'href'	=> $a->action.'/delete/'.$id
+						'href'			=> $a->action.'/delete/'.$id,
+						'data-title'	=> $L->delete
 					]
 				),
 				$id,
@@ -177,10 +170,10 @@ if (isset($rc[2])) {
 	$a->content(
 		h::{'table.cs-fullwidth-table.cs-center-all'}(
 			$permissions_list_.
-			h::{'tr td.cs-left-all[colspan=8] button'}(
+			h::{'tr td.cs-left-all[colspan=8] a.cs-button'}(
 				$L->add_permission,
 				[
-					'onMouseDown' => 'javasript: location.href= \'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add\';'
+					'href' => 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add'
 				]
 			)
 		)

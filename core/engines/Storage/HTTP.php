@@ -44,7 +44,7 @@ class HTTP extends _Abstract {
 		} else {
 			$data['key'] = md5(_json_encode($data).$this->user.$this->password);
 		}
-		$data = 'data='.urlencode(json_encode($data)).'&domain='.DOMAIN;
+		$data = 'data='.urlencode(json_encode($data));
 		time_limit_pause();
 		fwrite(
 			$socket,
@@ -53,8 +53,7 @@ class HTTP extends _Abstract {
 			"Content-type: application/x-www-form-urlencoded\r\n".
 			"Content-length:".strlen($data)."\r\n".
 			"Accept:*/*\r\n".
-			"User-agent: CleverStyle CMS".
-			/*'Authorization: Basic '.base64_encode($this->user.':'.$this->password).*/"\r\n\r\n".
+			"User-agent: CleverStyle CMS\r\n\r\n".
 			$data."\r\n\r\n"
 		);
 		$return = explode("\r\n\r\n", stream_get_contents($socket), 2);

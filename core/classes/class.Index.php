@@ -8,6 +8,11 @@
 namespace	cs;
 use			\Closure,
 			\h;
+/**
+ * Provides next triggers:<br>
+ *  System/Index/preload<br>
+ *  System/Index/postload
+ */
 class Index {
 	public		$Content,
 
@@ -34,10 +39,7 @@ class Index {
 				$title_auto			= true,
 				$stop				= false;	//Gives the ability to stop further processing
 
-	protected	$preload			= [],
-				$postload			= [],
-
-				$structure			= [],
+	protected	$structure			= [],
 				$parts				= [],
 				$subparts			= [],
 				$permission_group,
@@ -272,6 +274,25 @@ class Index {
 				 'title'	=> $L->home
 			]
 		);
+		foreach ($Config->components['modules'] as $module => $mdata) {
+			if (
+				$mdata['active'] == 1 &&
+				$module != $Config->core['default_module'] &&
+				$module != 'System' &&
+				$User->get_user_permission($module, 'index') &&
+				(
+					file_exists(MODULES.'/'.$module.'/index.php') || file_exists(MODULES.'/'.$module.'/index.html')
+				)
+			) {
+				$Page->mainmenu .= h::a(
+					$L->$module,
+					[
+						'href'	=> '/'.$module,
+						'title'	=> $L->$module
+					]
+				);
+			}
+		}
 	}
 	/**
 	 * Rendering of main submenu
@@ -326,13 +347,6 @@ class Index {
 			$Page->content(
 				h::form(
 					$this->Content.
-					(isset($Config->routing['current'][1]) ? h::input(
-						[
-							'type'	=> 'hidden',
-							'name'	=> 'subpart',
-							'value'	=> $Config->routing['current'][1]
-						]
-					) : '').
 					//Apply button
 					($this->apply_button && $this->buttons ?
 						h::button(
@@ -388,7 +402,6 @@ class Index {
 					: '').
 					$this->post_buttons,
 					[
-						'method'	=> 'post',
 						'enctype'	=> $this->file_upload ? 'multipart/form-data' : false,
 						'action'	=> $this->action,
 						'id'		=> 'admin_form',
@@ -565,42 +578,6 @@ class Index {
 		$Page->notice($L->changes_canceled);
 	}
 	/**
-	 * Adding functions for executing before initialization processing of modules
-	 *
-	 * @param Closure[]	$closure
-	 * @param bool		$remove_others	Allows to remove others closures for preload
-	 *
-	 * @return bool
-	 */
-	function preload ($closure, $remove_others = false) {
-		if ($remove_others) {
-			$this->preload = [];
-		}
-		if ($closure instanceof Closure) {
-			$this->preload[] = $closure;
-			return true;
-		}
-		return false;
-	}
-	/**
-	 * Adding functions for executing after generating processing of modules
-	 *
-	 * @param Closure[]	$closure
-	 * @param bool		$remove_others	Allows to remove others closures for postload
-	 *
-	 * @return bool
-	 */
-	function postload ($closure, $remove_others = false) {
-		if ($remove_others) {
-			$this->postload = [];
-		}
-		if ($closure instanceof Closure) {
-			$this->postload[] = $closure;
-			return true;
-		}
-		return false;
-	}
-	/**
 	 * Cloning restriction
 	 *
 	 * @final
@@ -610,7 +587,7 @@ class Index {
 	 * Executes plugins processing, blocks and module page generation
 	 */
 	function __finish () {
-		global $Config, $User;
+		global $Config, $User, $Core;
 		/**
 		 * If site is closed, user is not admin, and it is not request for log in
 		 */
@@ -631,7 +608,7 @@ class Index {
 			$this->js_vars();
 			$Page->error_page();
 		}
-		closure_process($this->preload);
+		$Core->run_trigger('System/Index/preload');
 		if (!$this->admin && !$this->api && file_exists(MFOLDER.'/index.html')) {
 			global $Page, $L;
 			ob_start();
@@ -650,6 +627,6 @@ class Index {
 			$this->js_vars();
 			$this->generate();
 		}
-		closure_process($this->postload);
+		$Core->run_trigger('System/Index/postload');
 	}
 }

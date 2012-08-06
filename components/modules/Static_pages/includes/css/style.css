@@ -1,0 +1,26 @@
+/**
+ * @package        Static Pages
+ * @category       modules
+ * @version        0.001
+ * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright      Copyright (c) 2011-2012 by Nazar Mokrynskyi
+ * @license        MIT License, see license.txt
+ */
+.cs-static-pages-padding-left-1 {
+	padding: 20px;
+}
+.cs-static-pages-padding-left-5 {
+	padding: 40px;
+}
+.cs-static-pages-padding-left-3 {
+	padding: 60px;
+}
+.cs-static-pages-padding-left-4 {
+	padding: 80px;
+}
+.cs-static-pages-padding-left-5 {
+	padding: 100px;
+}
+.cs-static-pages-count {
+	float: right;
+}

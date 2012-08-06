@@ -2,6 +2,7 @@
 /**
  * @package		CleverStyle CMS
  * @subpackage	System module
+ * @category	modules
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -41,7 +42,7 @@ $Index->content(
 	).
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		system_select_core($Config->core['active_languages'],	'language',			'change_language',	'current_language'),
-		system_select_core($Config->core['languages'],			'active_languages',	'change_language',	null, true),
+		system_select_core($Config->core['languages'],			'active_languages',	'cache_active_languages',	null, true),
 		[
 			h::info('multilingual'),
 			h::{'input[type=radio]'}([

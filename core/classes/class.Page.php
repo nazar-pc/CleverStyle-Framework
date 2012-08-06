@@ -30,21 +30,21 @@ class Page {
 					$Footer	= '',
 				$post_Body	= '',
 				$level		= [					//Number of tabs by default for margins the substitution
-					'Head'				=> 2,	//of values into template
-					'pre_Body'			=> 2,
-					'Header'			=> 4,
-					'mainmenu'			=> 3,
-					'mainsubmenu'		=> 3,
-					'menumore'			=> 3,
-					'user_info'			=> 5,
-					'debug_info'		=> 3,
-					'Left'				=> 7,
-					'Top'				=> 7,
-					'Content'			=> 8,
-					'Bottom'			=> 7,
-					'Right'				=> 7,
-					'Footer'			=> 4,
-					'post_Body'			=> 2
+					'Head'				=> 0,	//of values into template
+					'pre_Body'			=> 0,
+					'Header'			=> 2,
+					'mainmenu'			=> 1,
+					'mainsubmenu'		=> 1,
+					'menumore'			=> 1,
+					'user_info'			=> 3,
+					'debug_info'		=> 1,
+					'Left'				=> 5,
+					'Top'				=> 5,
+					'Content'			=> 6,
+					'Bottom'			=> 5,
+					'Right'				=> 5,
+					'Footer'			=> 2,
+					'post_Body'			=> 0
 				];
 
 	protected	$theme, $color_scheme, $pcache_basename, $includes,
@@ -178,7 +178,7 @@ class Page {
 	 * Processing of template, substituting of content, preparing for the output
 	 */
 	protected function prepare () {
-		global $L, $Config;
+		global $Config;
 		/**
 		 * Loading of template
 		 */
@@ -266,7 +266,6 @@ class Page {
 		 */
 		$this->Html = str_replace(
 			[
-				'<!--html_lang-->',
 				'<!--head-->',
 				'<!--pre_Body-->',
 				'<!--header-->',
@@ -284,7 +283,6 @@ class Page {
 				'<!--post_Body-->'
 			],
 			[
-				$L->clang,
 				h::level($this->Head, $this->level['Head']),
 				h::level($this->pre_Body, $this->level['pre_Body']),
 				h::level($this->Header, $this->level['Header']),

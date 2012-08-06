@@ -2,6 +2,7 @@
 /**
  * @package		CleverStyle CMS
  * @subpackage	System module
+ * @category	modules
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -420,7 +421,7 @@ if ($form) {
 		foreach ($Config->components['blocks'] as $id => $block) {
 			$blocks_array[$block['position']] .= h::li(
 				h::{'div.cs-blocks-items-title'}('#'.$block['index'].' '.get_block_title($id)).
-				h::{'a'}(
+				h::a(
 					[
 						h::{'div icon'}('wrench'),
 						[
@@ -483,10 +484,10 @@ if ($form) {
 
 			h::td().$blocks_array['bottom'].h::td(),
 
-			h::{'td.cs-left-all[colspan=3] button'}(
+			h::{'td.cs-left-all[colspan=3] a.cs-button'}(
 				$L->add.' '.$L->block,
 				[
-					'onMouseDown' => 'javasript: location.href= \'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add\';'
+					'href' => 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add'
 				]
 			)
 		]).

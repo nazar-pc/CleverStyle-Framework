@@ -117,13 +117,17 @@ footer {
 	display : none;
 }
 
-.cs-blocks-items, #users_groups_list, #users_groups_list_selected {
+.cs-blocks-items,
+#cs-users-groups-list,
+#cs-users-groups-list-selected {
 	list-style-type : none;
 	margin          : 0;
 	padding         : 5px;
 }
 
-.cs-blocks-items li, #users_groups_list li, #users_groups_list_selected li {
+.cs-blocks-items li,
+#cs-users-groups-list li,
+#cs-users-groups-list-selected li {
 	cursor  : move;
 	margin  : 0 5px 5px 5px;
 	padding : 5px;
@@ -139,7 +143,6 @@ footer {
 #save_settings,
 #cancel_settings,
 #reset_settings,
-#system_readme_open,
 #system_license_open,
 .cs-header-user-info button {
 	cursor : pointer;

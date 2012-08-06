@@ -10,7 +10,7 @@ namespace cs;
  * Provides next triggers:<br>
  *  System/Config/routing_replace<code>
  *  [
- *   'routing'	=> <i>Closure</i> //Closure return reference to current routing string, this string must be changed<br>
+ *   'routing'	=> &<i>Closure</i> //Closure return reference to current routing string, this string must be changed<br>
  *  ]</code>
  */
 class Config {

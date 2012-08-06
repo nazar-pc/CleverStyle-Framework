@@ -17,10 +17,7 @@ CREATE TABLE `[prefix]groups` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `[prefix]groups` (`title`, `description`) VALUES
-		('Administrators', 'Administrators'),
-				('Users', 'Users'),
-				('Bots', 'Bots');
+INSERT INTO `[prefix]groups` (`title`, `description`) VALUES ('Administrators', 'Administrators'), ('Users', 'Users'), ('Bots', 'Bots');
 
 CREATE TABLE `[prefix]groups_permissions` (
   `id` smallint(5) unsigned NOT NULL COMMENT 'Group id',
@@ -29,6 +26,8 @@ CREATE TABLE `[prefix]groups_permissions` (
   KEY `id` (`id`),
   KEY `permission` (`permission`,`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `[prefix]groups_permissions` (`id`, `permission`, `value`) VALUES (1, 2, 1), (2, 2, 0), (3, 2, 0);
 
 CREATE TABLE `[prefix]keys` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -58,8 +57,7 @@ CREATE TABLE `[prefix]permissions` (
   KEY `group` (`group`(255))
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `[prefix]permissions` (`label`, `group`) VALUES
-		('index', 'System/admin');
+INSERT INTO `[prefix]permissions` (`label`, `group`) VALUES ('index', 'System/admin'), ('index', 'System/api');
 
 CREATE TABLE `[prefix]sessions` (
   `id` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
@@ -112,7 +110,7 @@ CREATE TABLE `[prefix]users` (
   `birthday` bigint(20) unsigned NOT NULL DEFAULT '0',
   `avatar` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `website` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `icq` int(9) NOT NULL DEFAULT '0',
+  `icq` int(9) unsigned NOT NULL DEFAULT '0',
   `skype` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `about` text COLLATE utf8_unicode_ci NOT NULL,
   `data` longtext COLLATE utf8_unicode_ci NOT NULL COMMENT 'Field for addition data in JSON format',
@@ -130,8 +128,7 @@ CREATE TABLE `[prefix]users` (
   KEY `gender` (`gender`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `[prefix]users` (`login`, `login_hash`, `status`) VALUES
-		('guest', '5cf371cef0648f2656ddc13b773aa642251267dbd150597506e96c3a', '1');
+INSERT INTO `[prefix]users` (`login`, `login_hash`, `status`) VALUES ('guest', '5cf371cef0648f2656ddc13b773aa642251267dbd150597506e96c3a', '1');
 
 CREATE TABLE `[prefix]users_groups` (
   `id` int(10) unsigned NOT NULL COMMENT 'User id',
@@ -142,9 +139,7 @@ CREATE TABLE `[prefix]users_groups` (
   KEY `priority` (`priority`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `[prefix]users_groups` (`id`, `group`, `priority`) VALUES
-		(2, 1, 0),
-				(2, 2, 0);
+INSERT INTO `[prefix]users_groups` (`id`, `group`, `priority`) VALUES (2, 1, 0), (2, 2, 1);
 
 CREATE TABLE `[prefix]users_permissions` (
   `id` int(10) unsigned NOT NULL COMMENT 'User id',

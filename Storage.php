@@ -4,24 +4,20 @@
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
+ *
+ * Requires config.php file in current directory with specified global variables $STORAGE_USER and $STORAGE_PASSWORD
  */
 header('Content-Type: text/html; charset=utf-8');
 header('Connection: close');
 require __DIR__.'/core/functions.php';
-$DOMAIN = str_replace(
-	['/', '\\'],
-	'',
-	(string)$_POST['domain']
-);
-$DOMAIN = null_byte_filter($DOMAIN);
 define('STORAGE',	__DIR__.'/storage/public');
 chdir(STORAGE);
 if (
 	$_SERVER['HTTP_USER_AGENT'] == 'CleverStyle CMS' &&
-	file_exists(__DIR__.'/storage/config.php') &&
+	file_exists(__DIR__.'/config.php') &&
 	isset($_POST['data'])
 ) {
-	include __DIR__.'/storage/config.php';
+	include __DIR__.'/config.php';
 	global $STORAGE_USER, $STORAGE_PASSWORD;
 	$data = _json_decode(urldecode($_POST['data']));
 	$KEY = substr($data['key'], 0, 32);
@@ -29,7 +25,7 @@ if (
 	if (md5(_json_encode($data).$STORAGE_USER.$STORAGE_PASSWORD) !== $KEY) {
 		exit;
 	}
-	unset($GLOBALS['STORAGE_USER'], $GLOBALS['STORAGE_PASSWORD'], $KEY, $DOMAIN);
+	unset($GLOBALS['STORAGE_USER'], $GLOBALS['STORAGE_PASSWORD'], $KEY);
 } else {
 	exit;
 }

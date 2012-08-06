@@ -2,6 +2,7 @@
 /**
  * @package		CleverStyle CMS
  * @subpackage	System module
+ * @category	modules
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -218,8 +219,8 @@ if (isset($rc[2])) {
 			}
 	}
 } else {
-	$test_dialog = true;
-	$db_list = [h::{'th.ui-widget-header.ui-corner-all'}(
+	$test_dialog	= true;
+	$db_list		= [h::{'th.ui-widget-header.ui-corner-all'}(
 		$L->action,
 		$L->db_host,
 		$L->db_type,
@@ -228,8 +229,9 @@ if (isset($rc[2])) {
 		$L->db_user,
 		$L->db_charset
 	)];
-	if (!empty($Config->db)) {
-		foreach ($Config->db as $i => &$db_data) {
+	$databases		= $Config->db;
+	if (!empty($databases)) {
+		foreach ($databases as $i => &$db_data) {
 			$db_list[]	= h::{'td.ui-corner-all.'.($i ? 'ui-widget-content' : 'ui-state-highlight')}(
 				[
 					h::{'a.cs-button.cs-button-compact'}(
@@ -317,17 +319,15 @@ if (isset($rc[2])) {
 		}
 		unset($i, $db_data);
 	}
+	unset($databases);
 	$a->content(
 		h::{'table.cs-fullwidth-table tr'}(
 			$db_list,
-			h::{'td.cs-left-all[colspan=7]'}(
-				h::button(
-					$L->add_database,
-					[
-						'onMouseDown' => 'javasript: location.href= \'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add\';'
-					]
-				).
-				h::br()
+			h::{'td.cs-left-all[colspan=7] a.cs-button'}(
+				$L->add_database,
+				[
+					'href' => 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add'
+				]
 			),
 			h::{'td.cs-right-all[colspan=4] info'}('db_balance').
 			h::{'td.cs-left-all[colspan=3] input[type=radio]'}([

@@ -88,7 +88,7 @@ abstract class _Abstract {
 	 *
 	 * @abstract
 	 *
-	 * @param string|string[]		$query	SQL query string, may be a format string in accordance with the first parameter of sprintf() function
+	 * @param string|string[]		$query	SQL query string or array, may be a format string in accordance with the first parameter of sprintf() function
 	 * @param string|string[]		$params	May be array of arguments for formatting of <b>$query</b><br>
 	 * 										or string - in this case it will be first argument for formatting of <b>$query</b>
 	 * @param string				$param	if <b>$params</s> is string - this parameter will be second argument for formatting of <b>$query</b>.

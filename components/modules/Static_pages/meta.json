@@ -1,0 +1,16 @@
+{
+	"package"		: "Static Pages",
+	"category"		: "modules",
+	"version"		: "0.001",
+	"description"	: "Base system module of CleverStyle CMS",
+	"author"		: "Nazar Mokrynskyi",
+	"website"		: "cleverstyle.org/cms",
+	"license"		: "MIT License",
+	"db_support"	: [
+		"MySQL",
+		"MySQLi"
+	],
+	"provide"		: [
+		"static_pages"
+	]
+}

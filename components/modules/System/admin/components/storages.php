@@ -2,6 +2,7 @@
 /**
  * @package		CleverStyle CMS
  * @subpackage	System module
+ * @category	modules
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -146,8 +147,9 @@ if (isset($rc[2])) {
 		])
 	);
 	global $Core;
-	if (!empty($Config->storage)) {
-		foreach ($Config->storage as $i => &$storage_data) {
+	$storages		= $Config->storage;
+	if (!empty($storages)) {
+		foreach ($storages as $i => &$storage_data) {
 			$storage_list .=	h::tr(
 				h::td(
 					($i ?
@@ -191,18 +193,15 @@ if (isset($rc[2])) {
 		}
 		unset($i, $storage_data);
 	}
+	unset($storages);
 	$a->content(
 		h::{'table.cs-fullwidth-table.cs-center-all'}(
 			$storage_list.
-			h::tr(
-				h::{'td.cs-left-all[colspan=4]'}(
-					h::button(
-						$L->add_storage,
-						[
-							'onMouseDown' => 'javasript: location.href= \'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add\';'
-						]
-					).h::br()
-				)
+			h::{'tr td.cs-left-all[colspan=4] a.cs-button'}(
+				$L->add_storage,
+				[
+					'href' => 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add'
+				]
 			)
 		)
 	);

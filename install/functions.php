@@ -322,6 +322,9 @@ function install_process () {
 		return 'Can\'t write base system configuration! Installation aborted.';
 	}
 	chmod(ROOT.'/config/main.json', 0600);
+	unset($system[array_search('config/main.php', $system)]);
+	file_put_contents(ROOT.'/core/fs.json', _json_encode(array_keys($system)));
+	unset($system);
 	if (!file_exists(DIR.'/install/DB/'.$_POST['db_engine'].'.sql')) {
 		return 'Can\'t find system tables structure for selected database engine! Installation aborted.';
 	}

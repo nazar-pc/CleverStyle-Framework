@@ -174,9 +174,6 @@ $(function() {
 		$('#change_active_languages').change(function () {
 			$(this).find("option[value='"+$('#change_language').val()+"']").prop('selected', true);
 		});
-		$('#system_readme_open').mousedown(function () {
-			$('#system_readme').dialog('open');
-		});
 		$('#system_license_open').mousedown(function () {
 			$('#system_license').dialog('open');
 		});
@@ -262,17 +259,17 @@ $(function() {
 				);
 			}
 		}).disableSelection();
-		$('#users_groups_list, #users_groups_list_selected').sortable({
-			connectWith:	'#users_groups_list, #users_groups_list_selected',
+		$('#cs-users-groups-list, #cs-users-groups-list-selected').sortable({
+			connectWith:	'#cs-users-groups-list, #cs-users-groups-list-selected',
 			placeholder:	'ui-state-default',
 			items:			'li:not(.ui-state-disabled)',
 			cancel:			'.ui-state-disabled',
 			stop: function () {
-				$('#users_groups_list li').removeClass('ui-widget-header').addClass('ui-widget-content');
-				$('#users_groups_list_selected li').removeClass('ui-widget-content').addClass('ui-widget-header');
+				$('#cs-users-groups-list li').removeClass('ui-widget-header').addClass('ui-widget-content');
+				$('#cs-users-groups-list-selected li').removeClass('ui-widget-content').addClass('ui-widget-header');
 				$('#user_groups').val(
 					json_encode(
-						$('#users_groups_list_selected').sortable('toArray')
+						$('#cs-users-groups-list-selected').sortable('toArray')
 					)
 				);
 			}

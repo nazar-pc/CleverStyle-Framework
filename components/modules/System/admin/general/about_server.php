@@ -2,6 +2,7 @@
 /**
  * @package		CleverStyle CMS
  * @subpackage	System module
+ * @category	modules
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -23,23 +24,16 @@ function state ($state) {
 $Index->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		[
-			h::{'a.cs-button[target=_new]'}(
+			h::{'a.cs-button[target=_blank]'}(
 				'phpinfo()',
 				[
 					'href'	=> $Index->action.'/phpinfo'
 				]
 			).
-			h::{'div#system_readme.cs-dialog'}(
-				file_get_contents(DIR.'/readme.html'),
-				[
-					'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
-					'title'			=> $L->system.' -> '.$L->information_about_system
-				]
-			).
-			h::{'button#system_readme_open'}(
+			h::{'a.cs-button[target=_blank]'}(
 				$L->information_about_system,
 				[
-					'data-title'	=> $L->click_to_view_details
+				'href'	=> 'readme.html'
 				]
 			).
 			h::{'pre#system_license.cs-dialog'}(
@@ -180,7 +174,7 @@ $Index->content(
 			$Core->config('storage_type')
 		],
 		function_exists('apache_get_version') ? [
-			$L->php_ini_settings.' "php.ini":',
+			$L->php_ini_settings.':',
 			h::{'table.cs-left-odd.cs-php-ini-settings tr| td'}(
 				[
 					$L->allow_file_upload.':',

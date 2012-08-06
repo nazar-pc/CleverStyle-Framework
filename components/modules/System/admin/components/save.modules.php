@@ -2,6 +2,7 @@
 /**
  * @package		CleverStyle CMS
  * @subpackage	System module
+ * @category	modules
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -53,7 +54,8 @@ if (isset($_POST['update_modules_list'])) {
 				$permissions_ids = array_merge(
 					$permissions_ids,
 					(array)$User->get_permission(null, $module),
-					(array)$User->get_permission(null, $module.'/admin')
+					(array)$User->get_permission(null, $module.'/admin'),
+					(array)$User->get_permission(null, $module.'/api')
 				);
 			}
 		}
@@ -106,36 +108,43 @@ if (isset($_POST['update_modules_list'])) {
 				$permissions = [
 					$_POST['module'] => ['index']
 				];
+				/**
+				 * Adding module permissions
+				 */
 				if (file_exists(MODULES.'/'.$_POST['module'].'/index.json')) {
 					$structure = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/index.json'));
 					foreach ($structure as $item => $part) {
-						if (is_array($part)) {
-							$permissions[$_POST['module']][] = $item;
-							foreach ($part as $subpart) {
-								$permissions[$_POST['module']][] = $item.'/'.$subpart;
-							}
-						} else {
-							$permissions[$_POST['module']][] = $part;
-						}
+						$permissions[$_POST['module']][] = is_array($part) ? $item : $part;
 					}
-					unset($structure, $item, $part, $subpart);
+					unset($structure, $item, $part);
 				}
+				/**
+				 * Adding module admin permissions
+				 */
 				if (file_exists(MODULES.'/'.$_POST['module'].'/admin')) {
 					$permissions[$_POST['module'].'/admin'] = ['index'];
 					if (file_exists(MODULES.'/'.$_POST['module'].'/admin/index.json')) {
 						$structure = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/admin/index.json'));
 						foreach ($structure as $item => $part) {
-							if (is_array($part)) {
-								$permissions[$_POST['module'].'/admin'][] = $item;
-								foreach ($part as $subpart) {
-									$permissions[$_POST['module'].'/admin'][] = $item.'/'.$subpart;
-								}
-							} else {
-								$permissions[$_POST['module'].'/admin'][] = $part;
-							}
+							$permissions[$_POST['module'].'/admin'][] = is_array($part) ? $item : $part;
 						}
-						unset($structure, $item, $part, $subpart);
+						unset($structure, $item, $part);
 					}
+					$permissions[$_POST['module'].'/admin']	= array_unique($permissions[$_POST['module'].'/admin']);
+				}
+				/**
+				 * Adding module API permissions
+				 */
+				if (file_exists(MODULES.'/'.$_POST['module'].'/api')) {
+					$permissions[$_POST['module'].'/api'] = ['index'];
+					if (file_exists(MODULES.'/'.$_POST['module'].'/api/index.json')) {
+						$structure = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/api/index.json'));
+						foreach ($structure as $item => $part) {
+							$permissions[$_POST['module'].'/api'][] = is_array($part) ? $item : $part;
+						}
+						unset($structure, $item, $part);
+					}
+					$permissions[$_POST['module'].'/api']	= array_unique($permissions[$_POST['module'].'/api']);
 				}
 				foreach ($permissions as $group => $list) {
 					foreach ($list as $label) {
@@ -169,7 +178,8 @@ if (isset($_POST['update_modules_list'])) {
 				$module_data = ['active' => -1];
 				$permissions_ids = array_merge(
 					$User->get_permission(null, $_POST['module']),
-					$User->get_permission(null, $_POST['module'].'/admin')
+					$User->get_permission(null, $_POST['module'].'/admin'),
+					$User->get_permission(null, $_POST['module'].'/api')
 				);
 				if (!empty($permissions_ids)) {
 					foreach ($permissions_ids as &$id) {
@@ -181,7 +191,7 @@ if (isset($_POST['update_modules_list'])) {
 			}
 		break;
 		case 'default_module':
-			if ($module_data['active'] != 1 || $_POST['module'] == 'System' || $_POST['module'] == $Config->core['default_module']) {
+			if ($module_data['active'] != 1 || $_POST['module'] == $Config->core['default_module']) {
 				break;
 			}
 			if ($Core->run_trigger(

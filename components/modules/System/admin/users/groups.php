@@ -2,6 +2,7 @@
 /**
  * @package		CleverStyle CMS
  * @subpackage	System module
+ * @category	modules
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -198,37 +199,25 @@ if (isset($rc[2])) {
 		$id				= $id['id'];
 		$group_data 	= $User->get_group_data($id);
 		$groups_list[]	= h::{'td.ui-widget-content.ui-corner-all'}(
-			h::a(
-				h::{'button.cs-button-compact'}(
-					h::icon('wrench'),
-					[
-						'data-title'	=> $L->edit_group_information
-					]
-				),
+			h::{'a.cs-button.cs-button-compact'}(
+				h::icon('wrench'),
 				[
-					'href'	=> $a->action.'/edit/'.$id
+					'href'			=> $a->action.'/edit/'.$id,
+					'data-title'	=> $L->edit_group_information
 				]
 			).
-			($id != 1 && $id != 2 && $id != 3 ? h::a(
-				h::{'button.cs-button-compact'}(
-					h::icon('trash'),
-					[
-						'data-title'	=> $L->delete
-					]
-				),
+			($id != 1 && $id != 2 && $id != 3 ? h::{'a.cs-button.cs-button-compact'}(
+				h::icon('trash'),
 				[
-					'href'	=> $a->action.'/delete/'.$id
+					'href'			=> $a->action.'/delete/'.$id,
+					'data-title'	=> $L->delete
 				]
 			) : '').
-			h::a(
-				h::{'button.cs-button-compact'}(
-					h::icon('key'),
-					[
-						'data-title'	=> $L->edit_group_permissions
-					]
-				),
+			h::{'a.cs-button.cs-button-compact'}(
+				h::icon('key'),
 				[
-					'href'	=> $a->action.'/permissions/'.$id
+					'href'			=> $a->action.'/permissions/'.$id,
+					'data-title'	=> $L->edit_group_permissions
 				]
 			),
 			$id,
@@ -240,10 +229,10 @@ if (isset($rc[2])) {
 	$a->content(
 		h::{'table.cs-fullwidth-table.cs-center-all tr'}(
 			$groups_list,
-			h::{'td.cs-left-all[colspan=4] button'}(
+			h::{'td.cs-left-all[colspan=4] a.cs-button'}(
 				$L->add_group,
 				[
-				'onMouseDown' => 'javasript: location.href= \'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add\';'
+					'href' => 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add'
 				]
 			)
 		)

@@ -2,6 +2,7 @@
 /**
  * @package		CleverStyle CMS
  * @subpackage	System module
+ * @category	modules
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -466,7 +467,7 @@ if (isset($rc[2], $rc[3])) {
 				$L->other_groups
 			);
 			if (is_array($user_groups) && !empty($user_groups)) {
-				foreach ($user_groups as $i => $group) {
+				foreach ($user_groups as $group) {
 					$group				= ['id' => $group]+$User->get_group_data($group);
 					$groups_selected	.= h::{'li.ui-widget-header.ui-corner-all'}(
 						$group['title'],
@@ -478,7 +479,7 @@ if (isset($rc[2], $rc[3])) {
 				}
 			}
 			if (is_array($all_groups) && !empty($all_groups)) {
-				foreach ($all_groups as $i => $group) {
+				foreach ($all_groups as $group) {
 					if ($group['id'] == 3 || in_array($group['id'], $user_groups)) {
 						continue;
 					}
@@ -505,8 +506,8 @@ if (isset($rc[2], $rc[3])) {
 				).
 				h::{'table.cs-fullwidth-table tr td'}(
 					[
-						h::{'ul#users_groups_list_selected'}($groups_selected),
-						h::{'ul#users_groups_list'}($groups_list)
+						h::{'ul#cs-users-groups-list-selected'}($groups_selected),
+						h::{'ul#cs-users-groups-list'}($groups_list)
 					],
 					[
 						'style'	=> 'vertical-align: top;'
@@ -530,7 +531,7 @@ if (isset($rc[2], $rc[3])) {
 	);
 } else {
 	$a->buttons		= false;
-	$users_db			= $User->db();
+	$users_db		= $User->db();
 	$columns		= isset($_POST['columns']) && $_POST['columns'] ? explode(';', $_POST['columns']) : [
 		'id', 'login', 'username', 'email'
 	];
@@ -556,7 +557,9 @@ if (isset($rc[2], $rc[3])) {
 	unset($column);
 	$columns		= array_intersect($search_columns, $columns);
 	$search_column	= isset($_POST['search_column']) && in_array($_POST['search_column'], $search_columns) ? $_POST['search_column'] : '';
-	//Closures for constructing WHERE part of SQL query
+	/**
+	 * Closures for constructing WHERE part of SQL query
+	 */
 	if ($search_column) {
 		$where_func = function ($in) {
 			return str_replace('%%', $_POST['search_column'], $in);
@@ -570,7 +573,9 @@ if (isset($rc[2], $rc[3])) {
 			return implode(' OR ', $return);
 		};
 	}
-	//Applying (if necessary) filter
+	/**
+	 * Applying (if necessary) filter
+	 */
 	$where = 1;
 	if ($search_text && $search_mode) {
 		switch ($_POST['search_mode']) {
@@ -626,65 +631,45 @@ if (isset($rc[2], $rc[3])) {
 		foreach ($users_ids as $id) {
 			$groups			= (array)$User->get_user_groups($id);
 			$buttons		= ($id != 1 && $id != 2 && !in_array(3, $groups) ?
-				h::a(
-					h::{'button.cs-button-compact'}(
-						h::icon('pencil'),
-						[
-							'data-title'	=> $L->edit_raw_user_data
-						]
-					),
+				h::{'a.cs-button.cs-button-compact'}(
+					h::icon('pencil'),
 					[
-						'href'		=> $a->action.'/edit_raw/'.$id
+						'href'			=> $a->action.'/edit_raw/'.$id,
+						'data-title'	=> $L->edit_raw_user_data
 					]
 				) : ''
 			).
 			($id != 1 && $id != 2 && (!in_array(3, $groups) || !$Config->core['simple_admin_mode']) ?
-				h::a(
-					h::{'button.cs-button-compact'}(
-						h::icon('wrench'),
-						[
-							'data-title'	=> $L->{in_array(3, $groups) ? 'edit_bot_information' : 'edit_user_information'}
-						]
-					),
+				h::{'a.cs-button.cs-button-compact'}(
+					h::icon('wrench'),
 					[
-						'href'		=> $a->action.'/edit/'.$id
+						'href'			=> $a->action.'/edit/'.$id,
+						'data-title'	=> $L->{in_array(3, $groups) ? 'edit_bot_information' : 'edit_user_information'}
 					]
 				) : ''
 			).
 			($id != 1 && $id != 2 ?
-				h::a(
-					h::{'button.cs-button-compact'}(
-						h::icon($User->get('status', $id) == 1 ? 'minusthick' : 'check'),
-						[
-							'data-title'	=> $L->{($User->get('status', $id) == 1 ? 'de' : '').'activate_'.(in_array(3, $groups) ? 'bot' : 'user')}
-						]
-					),
+				h::{'a.cs-button.cs-button-compact'}(
+					h::icon($User->get('status', $id) == 1 ? 'minusthick' : 'check'),
 					[
-						'href'		=> $a->action.'/'.($User->get('status', $id) == 1 ? 'deactivate' : 'activate').'/'.$id
+						'href'			=> $a->action.'/'.($User->get('status', $id) == 1 ? 'deactivate' : 'activate').'/'.$id,
+						'data-title'	=> $L->{($User->get('status', $id) == 1 ? 'de' : '').'activate_'.(in_array(3, $groups) ? 'bot' : 'user')}
 					]
 				) : ''
 			).($id != 1 && $id != 2 && !in_array(3, $groups) ?
-				h::a(
-					h::{'button.cs-button-compact'}(
-						h::icon('person'),
-						[
-							'data-title'	=> $L->edit_user_groups
-						]
-					),
+				h::{'a.cs-button.cs-button-compact'}(
+					h::icon('person'),
 					[
-						'href'	=> $a->action.'/groups/'.$id
+						'href'			=> $a->action.'/groups/'.$id,
+						'data-title'	=> $L->edit_user_groups
 					]
 				) : ''
 			).($id != 2  ?
-				h::a(
-					h::{'button.cs-button-compact'}(
-						h::icon('key'),
-						[
-							'data-title'	=> $L->{in_array(3, $groups) ? 'edit_bot_permissions' : 'edit_user_permissions'}
-						]
-					),
+				h::{'a.cs-button.cs-button-compact'}(
+					h::icon('key'),
 					[
-						'href'	=> $a->action.'/permissions/'.$id
+						'href'			=> $a->action.'/permissions/'.$id,
+						'data-title'	=> $L->{in_array(3, $groups) ? 'edit_bot_permissions' : 'edit_user_permissions'}
 					]
 				) : '-'
 			);
@@ -741,7 +726,7 @@ if (isset($rc[2], $rc[3])) {
 				h::{'select.cs-form-element'}(
 					[
 						'in'		=> array_merge([$L->all_columns], $search_columns),
-						'values'	=> array_merge([''], $search_columns)
+						'value'		=> array_merge([''], $search_columns)
 					],
 					[
 						'selected'	=> $search_column ?: '',
@@ -768,7 +753,6 @@ if (isset($rc[2], $rc[3])) {
 					[
 						'value'	=> $start+1,
 						'min'	=> 1,
-						'size'	=> 4,
 						'name'	=> 'search_start'
 					]
 				).
@@ -777,7 +761,6 @@ if (isset($rc[2], $rc[3])) {
 					[
 						'value'	=> $limit,
 						'min'	=> 1,
-						'size'	=> 5,
 						'name'	=> 'search_limit'
 					]
 				),
@@ -805,16 +788,16 @@ if (isset($rc[2], $rc[3])) {
 		).
 		h::{'p.cs-left'}(
 			$L->founded_users($results_count).($results_count > $limit ? ' / '.$L->page_from($start+1, ceil($results_count/$limit)) : ''),
-			h::button(
+			h::{'a.cs-button'}(
 				$L->add_user,
 				[
-					'onMouseDown' => 'javasript: location.href= \'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add/0\';',
+					'href' => 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add/0',
 				]
 			).
-			h::button(
+			h::{'a.cs-button'}(
 				$L->add_bot,
 				[
-					'onMouseDown' => 'javasript: location.href= \'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add_bot/0\';',
+					'href' => 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add_bot/0',
 				]
 			)
 		)

@@ -2,6 +2,7 @@
 /**
  * @package		CleverStyle CMS
  * @subpackage	System module
+ * @category	modules
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -132,7 +133,7 @@ function check_dependencies ($name, $type = 'module') {
 	if (isset($meta['db_support']) && !empty($meta['db_support'])) {
 		$return		= false;
 		foreach ($Config->db as $database) {
-			if (in_array($database, $meta['db_support'])) {
+			if (isset($database['type']) && in_array($database['type'], $meta['db_support'])) {
 				$return	= true;
 				break;
 			}
@@ -144,6 +145,12 @@ function check_dependencies ($name, $type = 'module') {
 					implode('", "', $meta['db_support'])
 				)
 			);
+		} else {
+			$Page->notice(
+				$L->compatible_databases(
+					implode('", "', $meta['db_support'])
+				)
+			);
 		}
 	} else {
 		$return		= true;
@@ -151,7 +158,7 @@ function check_dependencies ($name, $type = 'module') {
 	if (isset($meta['storage_support']) && !empty($meta['storage_support'])) {
 		$return_s	= false;
 		foreach ($Config->storage as $storage) {
-			if (in_array($storage, $meta['storage_support'])) {
+			if (in_array($storage['connection'], $meta['storage_support'])) {
 				$return_s	= true;
 				break;
 			}
@@ -159,6 +166,12 @@ function check_dependencies ($name, $type = 'module') {
 		if (!$return_s) {
 			$Page->warning(
 				$L->compatible_storages_not_found(
+					implode('", "', $meta['storage_support'])
+				)
+			);
+		} else {
+			$Page->notice(
+				$L->compatible_storages(
 					implode('", "', $meta['storage_support'])
 				)
 			);

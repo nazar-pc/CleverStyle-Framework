@@ -2,6 +2,7 @@
 /**
  * @package		CleverStyle CMS
  * @subpackage	System module
+ * @category	modules
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -101,7 +102,7 @@ foreach ($plugins as $plugin) {
 			$tag = 'div';
 		}
 		$addition_state .= h::$tag(
-			file_get_contents($file),
+			$tag == 'pre' ? filter(file_get_contents($file)) : file_get_contents($file),
 			[
 				'id'			=> $plugin.'_readme',
 				'class'			=> 'cs-dialog',
@@ -128,7 +129,7 @@ foreach ($plugins as $plugin) {
 			$tag = 'div';
 		}
 		$addition_state .= h::$tag(
-			file_get_contents($file),
+			$tag == 'pre' ? filter(file_get_contents($file)) : file_get_contents($file),
 			[
 				'id'			=> $plugin.'_license',
 				'class'			=> 'cs-dialog',
@@ -146,15 +147,11 @@ foreach ($plugins as $plugin) {
 	}
 	unset($tag, $file);
 	$state = in_array($plugin, $Config->components['plugins']);
-	$action .= h::a(
-		h::{'button.cs-button-compact'}(
-			h::icon($state ? 'minusthick' : 'check'),
-			[
-				'data-title'	=> $state ? $L->disable : $L->enable
-			]
-		),
+	$action .= h::{'a.cs-button.cs-button-compact'}(
+		h::icon($state ? 'minusthick' : 'check'),
 		[
-			'href'		=> $a->action.($state ? '/disable/' : '/enable/').$plugin
+			'href'			=> $a->action.($state ? '/disable/' : '/enable/').$plugin,
+			'data-title'	=> $state ? $L->disable : $L->enable
 		]
 	);
 	$plugin_info	= false;

@@ -2,6 +2,8 @@
 /**
  * @package		CleverStyle CMS
  * @subpackage	System module
+ * @category	modules
+ * @category	modules
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -169,7 +171,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 				$a->cancel_button_back	= true;
 				module_db_settings:
 				if (file_exists(MODULES.'/'.$rc[3].'/meta/db.json')) {
-					$dbs					= [0 => $L->core_db];
+					$dbs					= [0 => $L->core_db.' ('.$Core->config('db_type').')'];
 					foreach ($Config->db as $i => &$db_data) {
 						if ($i) {
 							$dbs[$i] = $db_data['name'].' ('.$db_data['host'].' / '.$db_data['type'].')';
@@ -301,6 +303,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 	switch ($rc[2]) {
 		case 'install':
 		case 'uninstall':
+		case 'default_module':
 		case 'db':
 		case 'storage':
 			$a->content(
@@ -344,7 +347,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 					$tag = 'div';
 				}
 				$addition_state .= h::$tag(
-					file_get_contents($file),
+					$tag == 'pre' ? filter(file_get_contents($file)) : file_get_contents($file),
 					[
 						'id'			=> $module.'_api',
 						'class'			=> 'cs-dialog',
@@ -372,7 +375,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 				$tag = 'div';
 			}
 			$addition_state .= h::$tag(
-				file_get_contents($file),
+				$tag == 'pre' ? filter(file_get_contents($file)) : file_get_contents($file),
 				[
 					'id'			=> $module.'_readme',
 					'class'			=> 'cs-dialog',
@@ -419,7 +422,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 		/**
 		 * Setting default module
 		 */
-		if ($mdata['active'] == 1 && $module != 'System' && $module != $Config->core['default_module']) {
+		if ($mdata['active'] == 1 && $module != $Config->core['default_module']) {
 			$action .= h::{'a.cs-button.cs-button-compact'}(
 				h::icon('home'),
 				[

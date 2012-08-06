@@ -1,6 +1,7 @@
 <?php
 /**
  * @package		CleverStyle CMS
+ * @subpackage	Project builder
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -149,6 +150,10 @@ $tar->addString(
 	'color_schemes.json',
 	_json_encode($color_schemes)
 );
+$tar->addString(
+	'version',
+	$version
+);
 unset($themes, $theme, $color_schemes, $tar);
 $phar		= new Phar(DIR.'/cscms.phar.tar');
 $phar->convertToExecutable(Phar::TAR, Phar::BZ2, '.phar');
@@ -158,5 +163,5 @@ $phar		= new Phar(DIR.'/cscms.phar');
 $phar->setStub("<?php Phar::webPhar(null, 'install.php'); __HALT_COMPILER();");
 $phar->setSignatureAlgorithm(PHAR::SHA512);
 unset($phar);
-rename(DIR.'/cscms.phar', DIR.'/CleverStyle CMS '.$version.'.phar.php');
+rename(DIR.'/cscms.phar', DIR.'/CleverStyle_CMS_'.$version.'.phar.php');
 echo 'Done! Version: '.$version;

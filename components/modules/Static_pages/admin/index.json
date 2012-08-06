@@ -1,0 +1,8 @@
+{
+	"general"	: [
+		"browse_categories",
+		"add_category",
+		"add_page",
+		"add_page_live"
+	]
+}

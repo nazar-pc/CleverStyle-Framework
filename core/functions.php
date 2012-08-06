@@ -262,7 +262,8 @@ function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false,
 					$prefix_path === true || $prefix_path === false ? $prefix_path : $prefix_path.$file,
 					$subfolders,
 					$sort,
-					$exclusion
+					$exclusion,
+					$system_files
 				) ?: []
 			);
 		}
@@ -351,19 +352,6 @@ function clean_pcache () {
 	}
 	unset($list, $item);
 	return $ok;
-}
-/**
- * Closure processing
- *
- * @param Closure[] $functions
- */
-function closure_process (&$functions) {
-	$functions = (array)$functions;
-	foreach ($functions as &$function) {
-		if ($function instanceof Closure) {
-			$function();
-		}
-	}
 }
 /**
  * Formatting of time in seconds to human-readable form
@@ -488,7 +476,16 @@ function filter ($text, $mode = '', $data = null, $data2 = null, $data3 = null) 
 		case 'strtoupper':
 			return $mode($text);
 		default:
-			return str_replace(['&', '"', '\'', '<', '>'], ['&amp;', '&quot;', '&apos;', '&lt;', '&gt;'], trim($text));
+			return strtr(
+				trim($text),
+				[
+					'&'		=> '&amp;',
+					'"'		=> '&quot;',
+					'\''	=> '&apos;',
+					'<'		=> '&lt;',
+					'>'		=> '&gt;'
+				]
+			);
 	}
 }
 /**

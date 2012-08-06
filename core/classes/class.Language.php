@@ -184,6 +184,7 @@ class Language {
 				if(!isset($this->translate['clanguage_en'])) {
 					$this->translate['clanguage_en'] = $this->clanguage;
 				}
+				header('Content-language: '.$this->translate['clang']);
 				$this->need_to_rebuild_cache = true;
 				if ($this->init) {
 					$this->init($Config->core['active_languages'], $language);
