@@ -92,7 +92,7 @@ class MySQLi extends _Abstract {
 	 */
 	function n ($query_result = false) {
 		if($query_result === false) {
-			$query_result = $this->queries['result'][count($this->queries['result'])-1];
+			$query_result = array_slice($this->queries['result'], -1)[0];
 		}
 		if(is_object($query_result)) {
 			return $query_result->num_rows;
@@ -111,7 +111,7 @@ class MySQLi extends _Abstract {
 	 */
 	function f ($query_result = false, $one_column = false, $array = false) {
 		if ($query_result === false) {
-			$query_result = $this->queries['result'][count($this->queries['result'])-1];
+			$query_result = array_slice($this->queries['result'], -1)[0];
 		}
 		if (is_object($query_result)) {
 			if ($array) {
@@ -156,7 +156,7 @@ class MySQLi extends _Abstract {
 	 */
 	function free ($query_result = false) {
 		if($query_result === false) {
-			$query_result = $this->queries['result'][count($this->queries['result'])-1];
+			$query_result = array_slice($this->queries['result'], -1)[0];
 		}
 		if(is_object($query_result)) {
 			return $query_result->free();

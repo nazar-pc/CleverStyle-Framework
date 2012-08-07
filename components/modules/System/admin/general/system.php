@@ -13,15 +13,15 @@ global $L, $Config, $Index;
 $sa	= $Config->core['simple_admin_mode'];
 $Index->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
-		system_input_core('site_mode', 'radio'),
-		system_input_core('closed_title'),
-		system_textarea_core('closed_text', false, 'EDITORH'),
-		system_input_core('title_delimiter'),
-		system_input_core('title_reverse', 'radio'),
-		system_textarea_core('footer_text', false, 'EDITORH'),
-		system_input_core('show_footer_info', 'radio'),
-		system_input_core('show_tooltips', 'radio'),
-		system_input_core('simple_admin_mode', 'radio'),
+		core_input('site_mode', 'radio'),
+		core_input('closed_title'),
+		core_textarea('closed_text', false, 'EDITORH'),
+		core_input('title_delimiter'),
+		core_input('title_reverse', 'radio'),
+		core_textarea('footer_text', false, 'EDITORH'),
+		core_input('show_footer_info', 'radio'),
+		core_input('show_tooltips', 'radio'),
+		core_input('simple_admin_mode', 'radio'),
 		!$sa ? [
 			h::info('debug'),
 				h::{'input[type=radio]'}([
@@ -36,9 +36,9 @@ $Index->content(
 			'',
 			[
 				h::{'table tr| td'}(
-					system_input_core('show_objects_data', 'radio'),
-					system_input_core('show_db_queries', 'radio'),
-					system_input_core('show_cookies', 'radio')
+					core_input('show_objects_data', 'radio'),
+					core_input('show_db_queries', 'radio'),
+					core_input('show_cookies', 'radio')
 				),
 				[
 					'style' => ($Config->core['debug'] == 0 ? 'display: none;' : ''),

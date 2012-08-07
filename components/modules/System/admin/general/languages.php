@@ -32,7 +32,7 @@ foreach ($translate_engines as $engine) {
 		$translate_engines_settings[]	= base64_encode($parameters ?: $L->no_settings_found);
 	}
 	if ($engine == $Config->core['auto_translation_engine']['name']) {
-		$current_engine_settings		= base64_decode($translate_engines_settings[count($translate_engines_settings) - 1]);
+		$current_engine_settings		= base64_decode(array_slice($translate_engines_settings, -1)[0]);
 	}
 }
 unset($engine, $parameters, $paremeter, $description, $table);
@@ -41,8 +41,8 @@ $Index->content(
 		FIXED_LANGUAGE ? $L->language_fixed_as.' '.$Core->config('language') : false
 	).
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
-		system_select_core($Config->core['active_languages'],	'language',			'change_language',	'current_language'),
-		system_select_core($Config->core['languages'],			'active_languages',	'cache_active_languages',	null, true),
+		core_select($Config->core['active_languages'],	'language',			'change_language',	'current_language'),
+		core_select($Config->core['languages'],			'active_languages',	'cache_active_languages',	null, true),
 		[
 			h::info('multilingual'),
 			h::{'input[type=radio]'}([

@@ -24,7 +24,7 @@
  *  admin/System/components/modules/install/process<br>
  *  ['name'	=> <i>module_name</i>]
  */
-global $Config, $Index, $User, $Core;
+global $Config, $Index, $User, $Core, $Cache;
 $a			= $Index;
 $rc			= $Config->routing['current'];
 if (isset($_POST['update_modules_list'])) {
@@ -80,118 +80,144 @@ if (isset($_POST['update_modules_list'])) {
 			if ($module_data['active'] != -1) {
 				break;
 			}
-			if ($Core->run_trigger(
+			unset($Cache->languages);
+			if (!$Core->run_trigger(
 				'admin/System/components/modules/install/process',
 				[
 					'name' => $_POST['module']
 				]
 			)) {
-				$module_data['active'] = 0;
-				if (isset($_POST['db']) && is_array($_POST['db'])) {
-					$module_data['db'] = $_POST['db'];
-					if (file_exists(MODULES.'/'.$_POST['module'].'/meta/install')) {
-						global $db;
-						foreach ($module_data['db'] as $db_name => $db_id) {
-							if (file_exists(MODULES.'/'.$_POST['module'].'/meta/install/'.$Config->db[$db_id]['type'].'/'.$db_name.'.sql')) {
-								$db->$db_id()->q(
-									explode(';', file_get_contents(MODULES.'/'.$_POST['module'].'/meta/install/'.$Config->db[$db_id]['type'].'/'.$db_name.'.sql'))
-								);
-							}
-						}
-						unset($db_name, $db_id);
+				break;
+			}
+			$module_data['active'] = 0;
+			if (isset($_POST['db']) && is_array($_POST['db']) && file_exists(MODULES.'/'.$_POST['module'].'/meta/db.json')) {
+				$module_data['db'] = $_POST['db'];
+				$db_json = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/meta/db.json'));
+				global $db;
+				time_limit_pause();
+				foreach ($db_json as $database) {
+					if ($module_data['db'][$database] == 0) {
+						$db_type	= $Core->config('db_type');
+					} else {
+						$db_type	= $Config->db[$module_data['db'][$database]]['type'];
+					}
+					$sql_file	= MODULES.'/'.$_POST['module'].'/meta/install_db/'.$database.'/'.$db_type.'.sql';
+					if (file_exists($sql_file)) {
+						$db->{$module_data['db'][$database]}()->q(
+							explode(';', file_get_contents($sql_file))
+						);
 					}
 				}
-				if (isset($_POST['storage']) && is_array($_POST['storage'])) {
-					$module_data['storage'] = $_POST['storage'];
+				unset($db_json, $database, $db_type, $sql_file);
+				time_limit_pause(false);
+			}
+			if (isset($_POST['storage']) && is_array($_POST['storage'])) {
+				$module_data['storage'] = $_POST['storage'];
+			}
+			$permissions = [
+				$_POST['module'] => ['index']
+			];
+			/**
+			 * Adding module permissions
+			 */
+			if (file_exists(MODULES.'/'.$_POST['module'].'/index.json')) {
+				$structure = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/index.json'));
+				foreach ($structure as $item => $part) {
+					$permissions[$_POST['module']][] = is_array($part) ? $item : $part;
 				}
-				$a->save('components');
-				$permissions = [
-					$_POST['module'] => ['index']
-				];
-				/**
-				 * Adding module permissions
-				 */
-				if (file_exists(MODULES.'/'.$_POST['module'].'/index.json')) {
-					$structure = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/index.json'));
+				unset($structure, $item, $part);
+			}
+			/**
+			 * Adding module admin permissions
+			 */
+			if (file_exists(MODULES.'/'.$_POST['module'].'/admin')) {
+				$permissions[$_POST['module'].'/admin'] = ['index'];
+				if (file_exists(MODULES.'/'.$_POST['module'].'/admin/index.json')) {
+					$structure = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/admin/index.json'));
 					foreach ($structure as $item => $part) {
-						$permissions[$_POST['module']][] = is_array($part) ? $item : $part;
+						$permissions[$_POST['module'].'/admin'][] = is_array($part) ? $item : $part;
 					}
 					unset($structure, $item, $part);
 				}
-				/**
-				 * Adding module admin permissions
-				 */
-				if (file_exists(MODULES.'/'.$_POST['module'].'/admin')) {
-					$permissions[$_POST['module'].'/admin'] = ['index'];
-					if (file_exists(MODULES.'/'.$_POST['module'].'/admin/index.json')) {
-						$structure = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/admin/index.json'));
-						foreach ($structure as $item => $part) {
-							$permissions[$_POST['module'].'/admin'][] = is_array($part) ? $item : $part;
-						}
-						unset($structure, $item, $part);
-					}
-					$permissions[$_POST['module'].'/admin']	= array_unique($permissions[$_POST['module'].'/admin']);
-				}
-				/**
-				 * Adding module API permissions
-				 */
-				if (file_exists(MODULES.'/'.$_POST['module'].'/api')) {
-					$permissions[$_POST['module'].'/api'] = ['index'];
-					if (file_exists(MODULES.'/'.$_POST['module'].'/api/index.json')) {
-						$structure = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/api/index.json'));
-						foreach ($structure as $item => $part) {
-							$permissions[$_POST['module'].'/api'][] = is_array($part) ? $item : $part;
-						}
-						unset($structure, $item, $part);
-					}
-					$permissions[$_POST['module'].'/api']	= array_unique($permissions[$_POST['module'].'/api']);
-				}
-				foreach ($permissions as $group => $list) {
-					foreach ($list as $label) {
-						$User->add_permission($group, $label);
-					}
-				}
-				unset($permissions, $group, $list, $label);
+				$permissions[$_POST['module'].'/admin']	= array_unique($permissions[$_POST['module'].'/admin']);
 			}
+			/**
+			 * Adding module API permissions
+			 */
+			if (file_exists(MODULES.'/'.$_POST['module'].'/api')) {
+				$permissions[$_POST['module'].'/api'] = ['index'];
+				if (file_exists(MODULES.'/'.$_POST['module'].'/api/index.json')) {
+					$structure = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/api/index.json'));
+					foreach ($structure as $item => $part) {
+						$permissions[$_POST['module'].'/api'][] = is_array($part) ? $item : $part;
+					}
+					unset($structure, $item, $part);
+				}
+				$permissions[$_POST['module'].'/api']	= array_unique($permissions[$_POST['module'].'/api']);
+			}
+			foreach ($permissions as $group => $list) {
+				foreach ($list as $label) {
+					$User->add_permission($group, $label);
+				}
+			}
+			unset($permissions, $group, $list, $label);
+			$a->save('components');
 		break;
 		case 'uninstall':
-			if ($module_data['active'] != -1 || $_POST['module'] == 'System' || $_POST['module'] == $Config->core['default_module']) {
+			if ($module_data['active'] == -1 || $_POST['module'] == 'System' || $_POST['module'] == $Config->core['default_module']) {
 				break;
 			}
-			if ($Core->run_trigger(
+			unset($Cache->languages);
+			if (!$Core->run_trigger(
 				'admin/System/components/modules/uninstall/process',
 				[
 					'name' => $_POST['module']
 				]
 			)) {
-				if (file_exists(MODULES.'/'.$_POST['module'].'/meta/uninstall')) {
-					global $db;
-					foreach ($module_data['db'] as $db_name => $db_id) {
-						if (file_exists(MODULES.'/'.$_POST['module'].'/meta/uninstall/'.$Config->db[$db_id]['type'].'/'.$db_name.'.sql')) {
-							$db->$db_id()->q(
-								explode(';', file_get_contents(MODULES.'/'.$_POST['module'].'/meta/uninstall/'.$Config->db[$db_id]['type'].'/'.$db_name.'.sql'))
-							);
-						}
+				break;
+			}
+			$module_data = ['active' => -1];
+			$a->save('components');
+			if (file_exists(MODULES.'/'.$_POST['module'].'/meta/db.json')) {
+				$db_json = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/meta/db.json'));
+				global $db;
+				time_limit_pause();
+				foreach ($db_json as $database) {
+					if ($module_data['db'][$database] == 0) {
+						$db_type	= $Core->config('db_type');
+					} else {
+						$db_type	= $Config->db[$module_data['db'][$database]]['type'];
 					}
-					unset($db_name, $db_id);
-				}
-				$module_data = ['active' => -1];
-				$permissions_ids = array_merge(
-					$User->get_permission(null, $_POST['module']),
-					$User->get_permission(null, $_POST['module'].'/admin'),
-					$User->get_permission(null, $_POST['module'].'/api')
-				);
-				if (!empty($permissions_ids)) {
-					foreach ($permissions_ids as &$id) {
-						$id = $id['id'];
+					$sql_file	= MODULES.'/'.$_POST['module'].'/meta/uninstall_db/'.$database.'/'.$db_type.'.sql';
+					if (file_exists($sql_file)) {
+						$db->{$module_data['db'][$database]}()->q(
+							explode(';', file_get_contents($sql_file))
+						);
 					}
-					$User->del_permission($permissions_ids);
 				}
-				$a->save('components');
+				unset($db_json, $database, $db_type, $sql_file);
+				time_limit_pause(false);
+			}
+			$permissions_ids = array_merge(
+				$User->get_permission(null, $_POST['module']),
+				$User->get_permission(null, $_POST['module'].'/admin'),
+				$User->get_permission(null, $_POST['module'].'/api')
+			);
+			if (!empty($permissions_ids)) {
+				foreach ($permissions_ids as &$id) {
+					$id = $id['id'];
+				}
+				$User->del_permission($permissions_ids);
 			}
 		break;
 		case 'default_module':
-			if ($module_data['active'] != 1 || $_POST['module'] == $Config->core['default_module']) {
+			if (
+				$module_data['active'] != 1 ||
+				$_POST['module'] == $Config->core['default_module'] ||
+				!(
+					file_exists(MODULES.'/'.$_POST['module'].'/index.php') || file_exists(MODULES.'/'.$_POST['module'].'/index.html')
+				)
+			) {
 				break;
 			}
 			if ($Core->run_trigger(

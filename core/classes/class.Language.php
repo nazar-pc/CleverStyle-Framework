@@ -27,7 +27,7 @@ class Language {
 	 */
 	function __construct () {
 		global $Core, $L;
-		$L = $this;
+		$L	= $this;
 		$this->change($Core->config('language'));
 	}
 	/**
@@ -51,14 +51,35 @@ class Language {
 			);
 		}
 		if ($this->need_to_rebuild_cache) {
-			global $Cache;
-			global $Core;
+			global $Cache, $Config, $Core;
+			if (!empty($Config->components['modules'])) {
+				foreach ($Config->components['modules'] as $module => $mdata) {
+					if ($mdata['active'] != -1 && file_exists(MODULES.'/'.$module.'/languages/'.$this->clanguage.'.json')) {
+						$this->translate	= array_merge(
+							$this->translate,
+							_json_decode_nocomments(file_get_contents(MODULES.'/'.$module.'/languages/'.$this->clanguage.'.json')) ?: []
+						);
+					}
+				}
+				unset($module, $mdata);
+			}
+			if (!empty($Config->components['plugins'])) {
+				foreach ($Config->components['plugins'] as $plugin) {
+					if (file_exists(PLUGINS.'/'.$plugin.'/languages/'.$this->clanguage.'.json')) {
+						$this->translate	= array_merge(
+							$this->translate,
+							_json_decode_nocomments(file_get_contents(PLUGINS.'/'.$plugin.'/languages/'.$this->clanguage.'.json')) ?: []
+						);
+					}
+				}
+				unset($plugin);
+			}
 			$Core->run_trigger(
 				'System/general/languages/load',
 				[
-					'clanguage'		=> $this->translate['clanguage'],
-					'clang'			=> $this->translate['clang'],
-					'clanguage_en'	=> $this->translate['clanguage_en']
+					'clanguage'		=> $this->clanguage,
+					'clang'			=> $this->clang,
+					'clanguage_en'	=> $this->clanguage_en
 				]
 			);
 			$Cache->{'languages/'.$this->clanguage} = $this->translate;
@@ -165,32 +186,25 @@ class Language {
 			$this->clanguage = $language;
 			if ($translate = $Cache->{'languages/'.$this->clanguage}) {
 				$this->set($translate);
+				header('Content-language: '.$this->translate['clang']);
 				return true;
-			} elseif (file_exists(LANGUAGES.'/lang.'.$this->clanguage.'.json')) {
-				$data = file(LANGUAGES.'/lang.'.$this->clanguage.'.json', FILE_SKIP_EMPTY_LINES);
-				_include(LANGUAGES.'/lang.'.$this->clanguage.'.php', false, false);
-				foreach ($data as $i => $line) {
-					if (substr(ltrim($line), 0, 2) == '//') {
-						unset($data[$i]);
-					}
-				}
-				unset($i, $line);
-				$this->translate = _json_decode(implode('', $data));
-				unset($data);
-				$this->translate['clanguage'] = $this->clanguage;
+			} elseif (file_exists(LANGUAGES.'/'.$this->clanguage.'.json')) {
+				$this->translate				= _json_decode_nocomments(file_get_contents(LANGUAGES.'/'.$this->clanguage.'.json'));
+				$this->translate['clanguage']	= $this->clanguage;
 				if(!isset($this->translate['clang'])) {
-					$this->translate['clang'] = mb_strtolower(mb_substr($this->clanguage, 0, 2));
+					$this->translate['clang']		= mb_strtolower(mb_substr($this->clanguage, 0, 2));
 				}
 				if(!isset($this->translate['clanguage_en'])) {
-					$this->translate['clanguage_en'] = $this->clanguage;
+					$this->translate['clanguage_en']	= $this->clanguage;
 				}
 				header('Content-language: '.$this->translate['clang']);
-				$this->need_to_rebuild_cache = true;
+				$this->need_to_rebuild_cache	= true;
 				if ($this->init) {
 					$this->init($Config->core['active_languages'], $language);
 				}
 				return true;
-			} elseif (_include(LANGUAGES.'/lang.'.$this->clanguage.'.php', false, false)) {
+			} elseif (_include(LANGUAGES.'/'.$this->clanguage.'.php', false, false)) {
+				header('Content-language: '.$this->translate['clang']);
 				return true;
 			}
 		}

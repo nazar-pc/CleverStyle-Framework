@@ -12,8 +12,8 @@ use			\h;
 global $Config, $Index, $L;
 $Index->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
-		system_input_core('session_expire', 'number', null, false, 1, false, $L->seconds),
-		system_input_core('online_time', 'number', null, false, 1, false, $L->seconds),
+		core_input('session_expire', 'number', null, false, 1, false, $L->seconds),
+		core_input('online_time', 'number', null, false, 1, false, $L->seconds),
 		[
 			h::info('login_attempts_block_count'),
 			h::{'input.cs-form-element[type=number]'}([
@@ -25,15 +25,15 @@ $Index->content(
 			])
 		],
 		[
-			system_input_core('login_attempts_block_time', 'number', null, false, 1, false, $L->seconds),
+			core_input('login_attempts_block_time', 'number', null, false, 1, false, $L->seconds),
 			[
 				'style'	=> $Config->core['login_attempts_block_count'] == 0 ? 'display: none;' : '',
 				'class'	=> 'cs-login-attempts-block-count'
 			]
 		],
-		system_input_core('remember_user_ip', 'radio'),
-		system_input_core('password_min_length', 'number', null, false, 4),
-		system_input_core('password_min_strength', 'range', null, false, 0, 7),
+		core_input('remember_user_ip', 'radio'),
+		core_input('password_min_length', 'number', null, false, 4),
+		core_input('password_min_strength', 'range', null, false, 0, 7),
 		[
 			h::info('allow_user_registration'),
 			h::{'input[type=radio]'}([
@@ -68,19 +68,19 @@ $Index->content(
 			]
 		],
 		[
-			system_input_core('registration_confirmation_time', 'number', null, false, 1, false, $L->days),
+			core_input('registration_confirmation_time', 'number', null, false, 1, false, $L->days),
 			[
 				'style'	=>	$Config->core['allow_user_registration'] == 1 && $Config->core['require_registration_confirmation'] == 1 ? '' : 'display: none;',
 				'class'	=> 'cs-allow-user-registration cs-require-registration-confirmation'
 			]
 		],
 		[
-			system_input_core('autologin_after_registration', 'radio'),
+			core_input('autologin_after_registration', 'radio'),
 			[
 				'style'	=>	$Config->core['allow_user_registration'] == 1 && $Config->core['require_registration_confirmation'] == 1 ? '' : 'display: none;',
 				'class'	=> 'cs-allow-user-registration cs-require-registration-confirmation'
 			]
 		],
-		system_textarea_core('rules', false, 'EDITORH')
+		core_textarea('rules', false, 'EDITORH')
 	)
 );

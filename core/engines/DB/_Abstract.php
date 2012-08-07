@@ -144,7 +144,7 @@ abstract class _Abstract {
 		$this->queries['time'][]	= $this->query['time'];
 		++$this->queries['num'];
 		if (is_object($db)) {
-			$db->time					+= $this->query['time'];
+			$db->time		+= $this->query['time'];
 			++$db->queries;
 		}
 		return $result;
@@ -216,7 +216,7 @@ abstract class _Abstract {
 	/**
 	 * Combination of ::q() and ::f() methods
 	 *
-	 * @param array|string	$query		SQL query string, may be a format string in accordance with the first parameter of sprintf() function
+	 * @param array|string	$query		SQL query string, or you can put all parameters, that ::q() function can accept in form of array
 	 * @param bool|string   $one_column	This parameter may contain name of interested column,
 	 * 									and function will return not array with one element, but directly its value
 	 *
@@ -240,7 +240,7 @@ abstract class _Abstract {
 	/**
 	 * Combination of ::q() and ::fa() methods
 	 *
-	 * @param array|string	$query		SQL query string, may be a format string in accordance with the first parameter of sprintf() function
+	 * @param array|string	$query		SQL query string, or you can put all parameters, that ::q() function can accept in form of array
 	 * @param bool|string   $one_column	This parameter may contain name of interested column,
 	 * 									and function will return not array with one element, but directly its value
 	 *

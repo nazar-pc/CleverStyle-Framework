@@ -166,7 +166,9 @@ foreach ($plugins as $plugin) {
 			$plugin_meta['license'],
 			isset($plugin_meta['provide']) ? implode(', ', $plugin_meta['provide']) : $L->none,
 			isset($plugin_meta['require']) ? implode(', ', $plugin_meta['require']) : $L->none,
-			isset($plugin_meta['conflict']) ? implode(', ', $plugin_meta['conflict']) : $L->none
+			isset($plugin_meta['conflict']) ? implode(', ', $plugin_meta['conflict']) : $L->none,
+			isset($plugin_meta['multilingual']) && in_array('interface', $plugin_meta['multilingual']) ? $L->yes : $L->no,
+			isset($plugin_meta['multilingual']) && in_array('content', $plugin_meta['multilingual']) ? $L->yes : $L->no
 		);
 	}
 	unset($plugin_meta);

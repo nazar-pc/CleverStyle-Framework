@@ -6,7 +6,7 @@
  */
 $(function() {
 	if (
-		($.browser.msie && $.browser.version < 9) ||
+		($.browser.msie && $.browser.version < 10) ||
 		($.browser.opera && $.browser.version < 11.1) ||
 		($.browser.webkit && $.browser.version < 534.24) ||
 		($.browser.mozilla && $.browser.version < 4)

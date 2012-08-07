@@ -1,8 +1,8 @@
 {
 	"package"		: "Static Pages",
 	"category"		: "modules",
-	"version"		: "0.001",
-	"description"	: "Base system module of CleverStyle CMS",
+	"version"		: "0.002",
+	"description"	: "Creating of simple static pages with categories",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",
 	"license"		: "MIT License",
@@ -12,5 +12,9 @@
 	],
 	"provide"		: [
 		"static_pages"
+	],
+	"multilingual"	: [
+		"interface",
+		"content"
 	]
 }

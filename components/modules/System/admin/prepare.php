@@ -13,7 +13,7 @@ function set_core_ml_text ($item, $text) {
 	global $Config, $Text;
 	return $Text->set($Config->module('System')->db('texts'), 'System/Config/core', $item, $text);
 }
-function system_input_core ($item, $type = 'text', $info_item = null, $disabled = false, $min = false, $max = false, $post_text = '') {
+function core_input ($item, $type = 'text', $info_item = null, $disabled = false, $min = false, $max = false, $post_text = '') {
 	global $Config;
 	if ($type != 'radio') {
 		switch ($item) {
@@ -54,7 +54,7 @@ function system_input_core ($item, $type = 'text', $info_item = null, $disabled 
 		];
 	}
 }
-function system_textarea_core ($item, $wide = true, $editor = null, $info_item = null) {
+function core_textarea ($item, $wide = true, $editor = null, $info_item = null) {
 	global $Config;
 	switch ($item) {
 		default:
@@ -77,7 +77,7 @@ function system_textarea_core ($item, $wide = true, $editor = null, $info_item =
 		)
 	];
 }
-function system_select_core ($items_array, $item, $id = null, $info_item = null, $multiple = false, $size = 5) {
+function core_select ($items_array, $item, $id = null, $info_item = null, $multiple = false, $size = 5) {
 	global $Config;
 	return [
 		h::info($info_item ?: $item),

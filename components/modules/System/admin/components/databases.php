@@ -201,19 +201,19 @@ if (isset($rc[2])) {
 			if (isset($rc[4])) {
 				$Page->content(
 					h::{'p.cs-test-result'}(
-						$db->test([$rc[3], $rc[4]]) ? $L->success : $L->fail
+						$db->test([$rc[3], $rc[4]]) ? $L->success : $L->failed
 					)
 				);
 			} elseif (isset($rc[3])) {
 				$Page->content(
 					h::{'p.cs-test-result'}(
-						$db->test([$rc[3]]) ? $L->success : $L->fail
+						$db->test([$rc[3]]) ? $L->success : $L->failed
 					)
 				);
 			} else {
 				$Page->content(
 					h::{'p.cs-test-result'}(
-						$db->test($_POST['db']) ? $L->success : $L->fail
+						$db->test($_POST['db']) ? $L->success : $L->failed
 					)
 				);
 			}

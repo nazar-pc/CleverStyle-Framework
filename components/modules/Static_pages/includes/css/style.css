@@ -6,20 +6,28 @@
  * @copyright      Copyright (c) 2011-2012 by Nazar Mokrynskyi
  * @license        MIT License, see license.txt
  */
+.cs-static-pages-padding-left-0,
+.cs-static-pages-padding-left-1,
+.cs-static-pages-padding-left-2,
+.cs-static-pages-padding-left-3,
+.cs-static-pages-padding-left-4,
+.cs-static-pages-padding-left-5 {
+	padding: 8px !important;
+}
 .cs-static-pages-padding-left-1 {
-	padding: 20px;
+	padding-left: 20px !important;
 }
 .cs-static-pages-padding-left-5 {
-	padding: 40px;
+	padding-left: 40px !important;
 }
 .cs-static-pages-padding-left-3 {
-	padding: 60px;
+	padding-left: 60px !important;
 }
 .cs-static-pages-padding-left-4 {
-	padding: 80px;
+	padding-left: 80px !important;
 }
 .cs-static-pages-padding-left-5 {
-	padding: 100px;
+	padding-left: 100px !important;
 }
 .cs-static-pages-count {
 	float: right;

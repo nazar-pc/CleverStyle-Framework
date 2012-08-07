@@ -33,7 +33,7 @@
  */
 namespace	cs\modules\System;
 use			\h;
-global $Config, $Index, $L, $Core;
+global $Config, $Index, $L, $Core, $Cache;
 $a					= $Index;
 $rc					= $Config->routing['current'];
 $a->buttons			= false;
@@ -288,6 +288,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					'name'	=> $rc[3]
 				]
 			);
+			unset($Cache->languages);
 		break;
 		case 'disable':
 			$Config->components['modules'][$rc[3]]['active'] = 0;
@@ -298,6 +299,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					'name'	=> $rc[3]
 				]
 			);
+			unset($Cache->languages);
 		break;
 	}
 	switch ($rc[2]) {
@@ -422,7 +424,13 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 		/**
 		 * Setting default module
 		 */
-		if ($mdata['active'] == 1 && $module != $Config->core['default_module']) {
+		if (
+			$mdata['active'] == 1 &&
+			$module != $Config->core['default_module'] &&
+			(
+				file_exists(MODULES.'/'.$module.'/index.php') || file_exists(MODULES.'/'.$module.'/index.html')
+			)
+		) {
 			$action .= h::{'a.cs-button.cs-button-compact'}(
 				h::icon('home'),
 				[
@@ -511,7 +519,9 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 			isset($module_meta['storage_support']) ? implode(', ', $module_meta['storage_support']) : $L->none,
 			isset($module_meta['provide']) ? implode(', ', $module_meta['provide']) : $L->none,
 			isset($module_meta['require']) ? implode(', ', $module_meta['require']) : $L->none,
-			isset($module_meta['conflict']) ? implode(', ', $module_meta['conflict']) : $L->none
+			isset($module_meta['conflict']) ? implode(', ', $module_meta['conflict']) : $L->none,
+			isset($module_meta['multilingual']) && in_array('content', $module_meta['multilingual']) ? $L->yes : $L->no,
+			isset($module_meta['multilingual']) && in_array('content', $module_meta['multilingual']) ? $L->yes : $L->no
 		);
 	}
 	unset($module_meta);

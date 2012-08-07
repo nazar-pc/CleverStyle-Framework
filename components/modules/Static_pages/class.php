@@ -26,8 +26,8 @@ class Static_pages {
 	 */
 	function __construct () {
 		global $Config;
-		$this->pages	= $Config->module(MODULE)->db('pages');
-		$this->texts	= $Config->module(MODULE)->db('texts');
+		$this->pages	= $Config->module(basename(__DIR__))->db('pages');
+		$this->texts	= $Config->module(basename(__DIR__))->db('texts');
 	}
 	/**
 	 * Prepare string to use as path
@@ -54,18 +54,21 @@ class Static_pages {
 	 * @return array|bool
 	 */
 	function get ($id) {
-		global $db, $Cache;
+		global $db, $Cache, $L;
 		$id	= (int)$id;
-		if (($data = $Cache->{'Static_pages/pages/'.$id}) === false) {
+		if (($data = $Cache->{'Static_pages/pages_'.$L->clang.'/'.$id}) === false) {
 			$data	= $db->{$this->pages}->qf([
-				"SELECT `category`, `title`, `path`, `content`, `interface`
+				"SELECT `id`, `category`, `title`, `path`, `content`, `interface`
 				FROM `[prefix]static_pages`
 				WHERE `id` = '%s'
 				LIMIT 1",
 				$id
 			]);
 			if ($data) {
-				$Cache->{'Static_pages/pages/'.$id}	= $data;
+				$data['title']		= $this->ml_process($data['title']);
+				$data['path']		= $this->ml_process($data['path']);
+				$data['content']	= $this->ml_process($data['content']);
+				$Cache->{'Static_pages/pages_'.$L->clang.'/'.$id}	= $data;
 			}
 		}
 		return $data;
@@ -82,23 +85,22 @@ class Static_pages {
 	 * @return bool|int				Id of created page on success of <b>false</> on failure
 	 */
 	function add ($category, $title, $path, $content, $interface) {
-		global $db, $Cache;
+		global $db, $Cache, $L;
 		$category	= (int)$category;
 		$path		= $this->path(str_replace('/', ' ', $path ?: $title));
 		$interface	= (int)$interface;
 		if ($db->{$this->pages}()->q(
 			"INSERT INTO `[prefix]static_pages`
-				(`category`, `title`, `path`, `content`, `interface`)
+				(`category`, `interface`)
 			VALUES
-				('%s', '%s', '%s', '%s', '%s')",
+				('%s', '%s')",
 			$category,
-			$title,
-			$path,
-			$content,
 			$interface
 		)) {
-			unset($Cache->{'Static_pages/structure'});
-			return $db->{$this->pages}()->id();
+			$id	= $db->{$this->pages}()->id();
+			$this->set($id, $category, $title, $path, $content, $interface);
+			unset($Cache->Static_pages);
+			return $id;
 		} else {
 			return false;
 		}
@@ -116,8 +118,9 @@ class Static_pages {
 	 * @return bool
 	 */
 	function set ($id, $category, $title, $path, $content, $interface) {
-		global $db, $Cache;
+		global $db, $Cache, $L;
 		$category	= (int)$category;
+		$title		= trim($title);
 		$path		= $this->path(str_replace('/', ' ', $path ?: $title));
 		$interface	= (int)$interface;
 		$id			= (int)$id;
@@ -127,13 +130,16 @@ class Static_pages {
 			WHERE `id` = '%s'
 			LIMIT 1",
 			$category,
-			$title,
-			$path,
-			$content,
+			$this->ml_set('Static_pages/pages/title', $id, $title),
+			$this->ml_set('Static_pages/pages/path', $id, $path),
+			$this->ml_set('Static_pages/pages/content', $id, $content),
 			$interface,
 			$id
 		)) {
-			unset($Cache->{'Static_pages/structure'});
+			unset(
+				$Cache->{'Static_pages/structure_'.$L->clang},
+				$Cache->{'Static_pages/pages_'.$L->clang.'/'.$id}
+			);
 			return true;
 		} else {
 			return false;
@@ -147,17 +153,20 @@ class Static_pages {
 	 * @return bool
 	 */
 	function del ($id) {
-		global $db, $Cache;
+		global $db, $Cache, $L;
 		$id	= (int)$id;
 		if ($db->{$this->pages}()->q(
 			"DELETE FROM `[prefix]static_pages`
 			WHERE `id` = '%s'
 			LIMIT 1",
-			(int)$id
+			$id
 		)) {
+			$this->ml_del('Static_pages/pages/title', $id);
+			$this->ml_del('Static_pages/pages/path', $id);
+			$this->ml_del('Static_pages/pages/content', $id);
 			unset(
-				$Cache->{'Static_pages/structure'},
-				$Cache->{'Static_pages/pages/'.$id}
+				$Cache->{'Static_pages/structure_'.$L->clang},
+				$Cache->{'Static_pages/pages_'.$L->clang.'/'.$id}
 			);
 			return true;
 		} else {
@@ -170,11 +179,11 @@ class Static_pages {
 	 * @return array|bool
 	 */
 	function get_structure () {
-		global $Cache;
-		if (($data = $Cache->{'Static_pages/structure'}) === false) {
+		global $Cache, $L;
+		if (($data = $Cache->{'Static_pages/structure_'.$L->clang}) === false) {
 			$data	= $this->get_structure_internal();
 			if ($data) {
-				$Cache->{'Static_pages/structure'}	= $data;
+				$Cache->{'Static_pages/structure_'.$L->clang}	= $data;
 			}
 		}
 		return $data;
@@ -185,27 +194,24 @@ class Static_pages {
 		if ($parent != 0) {
 			$structure	= array_merge(
 				$structure,
-				$db->{$this->pages}->qf([
-					"SELECT `title`, `path`
-					FROM `[prefix]static_pages_categories`
-					WHERE `id` = '%s'
-					LIMIT 1",
-					$parent
-				])
+				$this->get_category($parent)
 			);
 		}
-		$pages						= $db->{$this->pages}->qfa([
-			"SELECT `id`, `path`
-			FROM `[prefix]static_pages`
-			WHERE `category` = '%s'",
-			$parent
-		]);
+		$pages						= $db->{$this->pages}->qfa(
+			[
+				"SELECT `id`
+				FROM `[prefix]static_pages`
+				WHERE `category` = '%s'",
+				$parent
+			],
+			'id'
+		);
 		$structure['pages']			= [];
 		if (!empty($pages)) {
-			foreach ($pages as $page) {
-				$structure['pages'][$page['path']]	= $page['id'];
+			foreach ($pages as $id) {
+				$structure['pages'][$this->get($id)['path']]	= $id;
 			}
-			unset($page);
+			unset($id);
 		}
 		unset($pages);
 		$categories					= $db->{$this->pages}->qfa([
@@ -229,14 +235,17 @@ class Static_pages {
 	 */
 	function get_category ($id) {
 		global $db;
-		$id	= (int)$id;
-		return $db->{$this->pages}->qf([
-			"SELECT `title`, `path`, `content`, `interface`
+		$id				= (int)$id;
+		$data			= $db->{$this->pages}->qf([
+			"SELECT `id`, `title`, `path`, `parent`
 			FROM `[prefix]static_pages_categories`
 			WHERE `id` = '%s'
 			LIMIT 1",
 			$id
 		]);
+		$data['title']	= $this->ml_process($data['title']);
+		$data['path']	= $this->ml_process($data['path']);
+		return $data;
 	}
 	/**
 	 * Add new category
@@ -248,20 +257,20 @@ class Static_pages {
 	 * @return bool|int			Id of created category on success of <b>false</> on failure
 	 */
 	function add_category ($parent, $title, $path) {
-		global $db, $Cache;
+		global $db, $Cache, $L;
 		$parent	= (int)$parent;
 		$path	= $this->path(str_replace('/', ' ', $path ?: $title));
 		if ($db->{$this->pages}()->q(
 			"INSERT INTO `[prefix]static_pages_categories`
-				(`parent`, `title`, `path`)
+				(`parent`)
 			VALUES
-				('%s', '%s', '%s')",
-			$parent,
-			$title,
-			$path
+				('%s')",
+			$parent
 		)) {
-			unset($Cache->{'Static_pages/structure'});
-			return $db->{$this->pages}()->id();
+			$id	= $db->{$this->pages}()->id();
+			$this->set_category($id, $parent, $title, $path);
+			unset($Cache->Static_pages);
+			return $id;
 		} else {
 			return false;
 		}
@@ -277,8 +286,9 @@ class Static_pages {
 	 * @return bool
 	 */
 	function set_category ($id, $parent, $title, $path) {
-		global $db, $Cache;
+		global $db, $Cache, $L;
 		$parent	= (int)$parent;
+		$title	= trim($title);
 		$path	= $this->path(str_replace('/', ' ', $path ?: $title));
 		$id		= (int)$id;
 		if ($db->{$this->pages}()->q(
@@ -287,11 +297,11 @@ class Static_pages {
 			WHERE `id` = '%s'
 			LIMIT 1",
 			$parent,
-			$title,
-			$path,
+			$this->ml_set('Static_pages/categories/title', $id, $title),
+			$this->ml_set('Static_pages/categories/path', $id, $path),
 			$id
 		)) {
-			unset($Cache->{'Static_pages/structure'});
+			unset($Cache->{'Static_pages/structure_'.$L->clang});
 			return true;
 		} else {
 			return false;
@@ -305,7 +315,7 @@ class Static_pages {
 	 * @return bool
 	 */
 	function del_category ($id) {
-		global $db, $Cache;
+		global $db, $Cache, $L;
 		$id	= (int)$id;
 		if ($db->{$this->pages}()->q(
 			[
@@ -315,10 +325,27 @@ class Static_pages {
 			],
 			$id
 		)) {
-			unset($Cache->{'Static_pages'});
+			$this->ml_del('Static_pages/categories/title', $id);
+			$this->ml_del('Static_pages/categories/path', $id);
+			unset($Cache->{'Static_pages_'.$L->clang});
 			return true;
 		} else {
 			return false;
 		}
+	}
+	private function ml_process ($text) {
+		global $Text;
+		return $Text->process($this->texts, $text);
+	}
+	private function ml_set ($group, $label, $text) {
+		global $Text;
+		if ($text === 'index') {
+			return $text;
+		}
+		return $Text->set($this->texts, $group, $label, $text);
+	}
+	private function ml_del ($group, $label) {
+		global $Text;
+		return $Text->del($this->texts, $group, $label);
 	}
 }

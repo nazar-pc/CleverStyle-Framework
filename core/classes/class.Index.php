@@ -25,7 +25,7 @@ class Index {
 				$form				= false,
 				$file_upload		= false,
 				$form_atributes		= [],
-				$action,
+				$action				= null,
 				$buttons			= true,
 				$save_button		= true,
 				$apply_button		= true,
@@ -142,6 +142,9 @@ class Index {
 			$this->structure	= _json_decode(file_get_contents(MFOLDER.'/'.$structure_file));
 			if (is_array($this->structure)) {
 				foreach ($this->structure as $item => $value) {
+					if (!is_array($value)) {
+						$item	= $value;
+					}
 					if ($User->get_user_permission($this->permission_group, $item)) {
 						$this->parts[] = $item;
 						if (isset($rc[0]) && $item == $rc[0] && is_array($value)) {
@@ -188,7 +191,7 @@ class Index {
 			if ($this->admin && !_include_once(MFOLDER.'/'.$rc[0].'/'.$this->savefile.'.php', false)) {
 				_include_once(MFOLDER.'/'.$this->savefile.'.php', false);
 			}
-			$this->admin && $Page->title($L->administration);
+			$this->admin && $this->title_auto && $Page->title($L->administration);
 			if (!$this->api && $this->title_auto) {
 				$Page->title($L->{HOME ? 'home' : MODULE});
 			}
@@ -222,13 +225,15 @@ class Index {
 					if (!HOME && $this->title_auto) {
 						$Page->title($L->$rc[1]);
 					}
-					$this->action = ($this->admin ? 'admin/' : '').MODULE.'/'.$rc[0].'/'.$rc[1];
+					if ($this->action === null) {
+						$this->action = ($this->admin ? 'admin/' : '').MODULE.'/'.$rc[0].'/'.$rc[1];
+					}
 				}
 				_include_once(MFOLDER.'/'.$rc[0].'/'.$rc[1].'.php', false);
 				if ($this->stop) {
 					return;
 				}
-			} elseif (!$this->api) {
+			} elseif (!$this->api && $this->action === null) {
 				$this->action = ($this->admin ? 'admin/' : '').MODULE.'/'.$rc[0];
 			}
 			unset($rc);
@@ -240,7 +245,9 @@ class Index {
 			if (!$this->api && $this->title_auto) {
 				$Page->title($L->{HOME ? 'home' : MODULE});
 			}
-			$this->action = $Config->server['corrected_full_address'];
+			if ($this->action === null) {
+				$this->action = $Config->server['corrected_full_address'];
+			}
 			_include_once(MFOLDER.'/'.$this->savefile.'.php', false);
 		}
 	}
@@ -281,7 +288,12 @@ class Index {
 				$module != 'System' &&
 				$User->get_user_permission($module, 'index') &&
 				(
-					file_exists(MODULES.'/'.$module.'/index.php') || file_exists(MODULES.'/'.$module.'/index.html')
+					(
+						file_exists(MODULES.'/'.$module.'/index.php') && filesize(MODULES.'/'.$module.'/index.php')
+					) ||
+					(
+						file_exists(MODULES.'/'.$module.'/index.html') && filesize(MODULES.'/'.$module.'/index.html')
+					)
 				)
 			) {
 				$Page->mainmenu .= h::a(

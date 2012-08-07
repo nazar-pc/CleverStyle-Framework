@@ -73,13 +73,21 @@ class h {
 			$in = trim($data['in']);
 			unset($data['in']);
 		}
+		if (array_search(false, $data, true) !== false) {
+			foreach ($data as $i => $item) {
+				if ($item === false) {
+					unset($data[$i]);
+				}
+			}
+			unset($i, $item);
+		}
 		if (isset($data['src'])) {
 			$data['src'] = str_replace(' ', '%20', $data['src']);
 			$data['src'] = self::url($data['src']);
 		}
 		if (isset($data['href'])) {
-			$data['href'] = str_replace(' ', '%20', $data['href']);
-			$data['href'] = self::url($data['href']);
+			$data['href']	= str_replace(' ', '%20', $data['href']);
+			$data['href']	= self::url($data['href']);
 		}
 		if (isset($data['tag'])) {
 			$tag = $data['tag'];
@@ -484,7 +492,7 @@ class h {
 	 */
 	protected static function template_2 ($in = '', $data = [], $function) {
 		if ($in === false) {
-			return '';
+			return false;
 		}
 		global $Page;
 		$uniqid = uniqid('html_replace_');
@@ -700,18 +708,14 @@ class h {
 		}
 		if (is_scalar($data)) {
 			$data		= [$data];
+		} elseif (isset($data[1]) && $data[1] === false && !isset($data[2])) {
+			unset($data[1]);
 		}
 		/**
 		 * Analysis of called tag. If space found - nested tags presented
 		 */
 		if (strpos($input, ' ') !== false) {
 			$input		= explode(' ', $input, 2);
-			/**
-			 * If array of attributes not found - create empty one.
-			 */
-			if (!isset($data[1])) {
-				$data[1]	= [];
-			}
 			/**
 			 * If tag name ends with pipe "|" symbol - for every element of array separate copy of current tag will be created
 			 */
@@ -732,8 +736,7 @@ class h {
 					)
 				) {
 					$data	= [
-						$data,
-						[]
+						$data
 					];
 				}
 				foreach ($data[0] as $d) {
@@ -767,7 +770,7 @@ class h {
 					$input[1],
 					[
 						isset($data[0]) ? $data[0] : '',
-						isset($data[1]) ? $data[1] : []
+						isset($data[1]) ? $data[1] : false
 					]
 				);
 				$data[1]	= [];
@@ -782,14 +785,14 @@ class h {
 				$input[0],
 				[
 					$output,
-					$data[1]
+					isset($data[1]) ? $data[1] : false
 				]
 			);
 		}
 		/**
 		 * Fix for textarea tag, which can accept array as content
 		 */
-		if (strpos($input, 'textarea') === 0 && is_array_indexed($data[0]) && !is_array($data[0][0])) {
+		if (strpos($input, 'textarea') === 0 && isset($data[0]) && is_array_indexed($data[0]) && !is_array($data[0][0])) {
 			$data[0]	= implode("\n", $data[0]);
 		}
 		/**

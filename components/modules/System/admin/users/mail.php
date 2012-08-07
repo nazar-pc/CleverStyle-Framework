@@ -27,10 +27,10 @@ $Index->content(
 				'',
 				h::{'table#smtp_form tr'}(
 					h::td(
-						system_input_core('smtp_host')
+						core_input('smtp_host')
 					),
 					h::td(
-						system_input_core('smtp_port')
+						core_input('smtp_port')
 					),
 					h::td([
 						h::info('smtp_secure'),
@@ -53,7 +53,7 @@ $Index->content(
 					]),
 					[
 						h::td(
-							system_input_core('smtp_user')
+							core_input('smtp_user')
 						),
 						[
 							'style' => (!$Config->core['smtp_auth'] ? 'display: none;' : '').' padding-left: 20px;',
@@ -62,7 +62,7 @@ $Index->content(
 					],
 					[
 						h::td(
-							system_input_core('smtp_password')
+							core_input('smtp_password')
 						),
 						[
 							'style' => !$Config->core['smtp_auth'] ? 'display: none;' : '',
@@ -75,8 +75,8 @@ $Index->content(
 				'style' => !$Config->core['smtp'] ? 'display: none; ' : ''
 			]
 		],
-		system_input_core('mail_from'),
-		system_input_core('mail_from_name'),
-		system_textarea_core('mail_signature', false, 'EDITORH')
+		core_input('mail_from'),
+		core_input('mail_from_name'),
+		core_textarea('mail_signature', false, 'EDITORH')
 	])
 );

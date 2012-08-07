@@ -72,7 +72,7 @@ class MySQL extends _Abstract {
 	 */
 	function n ($query_result = false) {
 		if($query_result === false) {
-			$query_result = $this->queries['result'][count($this->queries['result'])-1];
+			$query_result = array_slice($this->queries['result'], -1)[0];
 		}
 		if(is_resource($query_result)) {
 			return mysql_num_rows($query_result);
@@ -91,7 +91,7 @@ class MySQL extends _Abstract {
 	 */
 	function f ($query_result = false, $one_column = false, $array = false) {
 		if ($query_result === false) {
-			$query_result = $this->queries['result'][count($this->queries['result'])-1];
+			$query_result = array_slice($this->queries['result'], -1)[0];
 		}
 		if (is_resource($query_result)) {
 			if ($array) {
@@ -136,7 +136,7 @@ class MySQL extends _Abstract {
 	 */
 	function free ($query_result = false) {
 		if($query_result === false) {
-			$query_result = $this->queries['result'][count($this->queries['result'])-1];
+			$query_result = array_slice($this->queries['result'], -1)[0];
 		}
 		if(is_resource($query_result)) {
 			return mysql_free_result($query_result);

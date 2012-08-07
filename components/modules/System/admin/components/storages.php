@@ -130,9 +130,9 @@ if (isset($rc[2])) {
 			$a->generate_auto	= false;
 			global $Page, $Storage;
 			if (isset($rc[3])) {
-				$Page->Content = h::{'p.cs-test-result'}($Storage->test([$rc[3]]) ? $L->success : $L->fail);
+				$Page->Content = h::{'p.cs-test-result'}($Storage->test([$rc[3]]) ? $L->success : $L->failed);
 			} else {
-				$Page->Content = h::{'p.cs-test-result'}($Storage->test($_POST['storage']) ? $L->success : $L->fail);
+				$Page->Content = h::{'p.cs-test-result'}($Storage->test($_POST['storage']) ? $L->success : $L->failed);
 			}
 		break;
 	}

@@ -215,7 +215,7 @@ class Text {
 	 */
 	function process ($database, $data) {
 		if (empty($data)) {
-			return false;
+			return '';
 		}
 		if (is_array($data)) {
 			foreach ($data as &$d) {

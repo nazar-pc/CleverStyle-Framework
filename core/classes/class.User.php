@@ -47,11 +47,11 @@ class User {
 				($this->login_attempts(hash('sha224', 0)) < $Config->core['login_attempts_block_count']) ||
 				$Config->core['login_attempts_block_count'] == 0
 			) &&
-			isset($rc[count($rc) - 1]) &&
+			count($rc) > 1 &&
 			(
 				$key_data = $Key->get(
 					$Config->module('System')->db('keys'),
-					$key = $rc[count($rc) - 1],
+					$key = array_slice($rc, -1)[0],
 					true
 				)
 			) &&

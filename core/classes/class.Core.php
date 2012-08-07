@@ -48,13 +48,7 @@ class Core {
 			$this->__finish();
 		}
 		_include_once(CONFIG.'/main.php', false);
-		$this->config	= file(CONFIG.'/main.json', FILE_SKIP_EMPTY_LINES);
-		foreach ($this->config as $i => $line) {
-			if (substr(ltrim($line), 0, 2) == '//') {
-				unset($this->config[$i]);
-			}
-		}
-		$this->config	= _json_decode(implode('', $this->config));
+		$this->config	= _json_decode_nocomments(file_get_contents(CONFIG.'/main.json'));
 		define('DOMAIN', $this->config['domain']);
 		date_default_timezone_set($this->config['timezone']);
 		!is_dir(STORAGE)				&& @mkdir(STORAGE, 0755)	&& file_put_contents(

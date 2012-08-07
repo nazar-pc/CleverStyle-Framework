@@ -223,7 +223,7 @@ class DB {
 					$db = [
 						'type'		=> $Core->config('db_type'),
 						'host'		=> $Core->config('db_host'),
-						'name'		=> $Core->config('db_type'),
+						'name'		=> $Core->config('db_name'),
 						'user'		=> $Core->config('db_user'),
 						'password'	=> $Core->config('db_password'),
 						'charset'	=> $Core->config('db_charset')

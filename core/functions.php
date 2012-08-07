@@ -630,6 +630,26 @@ function _json_decode ($in, $depth = 512) {
 	return @json_decode($in, true, $depth);
 }
 /**
+ * Works similar to _json_decode(), but deletes specific comments
+ *
+ * @see _json_decode()
+ *
+ * @param string	$in
+ * @param int		$depth
+ *
+ * @return bool|mixed
+ */
+function _json_decode_nocomments ($in, $depth = 512) {
+	$in	= explode("\n", $in);
+	foreach ($in as $i => $string) {
+		if (substr(ltrim($string), 0, 2) == '//') {
+			unset($in[$i]);
+		}
+	}
+	unset($i, $string);
+	return @json_decode(implode('', $in), true, $depth);
+}
+/**
  * Function for setting cookies on all mirrors and taking into account cookies prefix. Parameters like in system function, but $path, $domain and $secure
  * are skipped, they are detected automatically, and $api parameter added in the end.
  *

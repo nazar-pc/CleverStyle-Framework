@@ -8,10 +8,8 @@
 namespace cs;
 /**
  * Provides next triggers:<br>
- *  System/Config/routing_replace<code>
- *  [
- *   'routing'	=> &<i>Closure</i> //Closure return reference to current routing string, this string must be changed<br>
- *  ]</code>
+ *  System/Config/routing_replace<br>
+ *  ['rc'	=> &$rc]		//Closure return reference to current routing string, this string can be changed<br>
  */
 class Config {
 	protected	$data = [
@@ -261,9 +259,7 @@ class Config {
 		$Core->run_trigger(
 			'System/Config/routing_replace',
 			[
-				'routing' => function &() use (&$rc) {//This allows to change protected current routing path string inside trigger function
-					return $rc;
-				}
+				'rc'	=> &$rc
 			]
 		);
 		/**

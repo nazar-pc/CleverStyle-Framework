@@ -14,11 +14,11 @@ $timezones	= get_timezones_list();
 $sa			= $Config->core['simple_admin_mode'];
 $Index->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
-		system_input_core('name', 'text', 'site_name'),
-		!$sa ? system_input_core('url') : false,
-		!$sa ? system_input_core('cookie_domain') : false,
-		!$sa ? system_input_core('cookie_path') : false,
-		!$sa ? system_input_core('cookie_prefix') : false,
+		core_input('name', 'text', 'site_name'),
+		!$sa ? core_input('url') : false,
+		!$sa ? core_input('cookie_domain') : false,
+		!$sa ? core_input('cookie_path') : false,
+		!$sa ? core_input('cookie_prefix') : false,
 		!$sa ? [
 			h::info('mirrors'),
 			h::{'table tr| td'}(
@@ -54,8 +54,8 @@ $Index->content(
 				]
 			)
 		] : false,
-		system_input_core('keywords'),
-		system_input_core('description'),
+		core_input('keywords'),
+		core_input('description'),
 		[
 			h::info('timezone'),
 			h::{'select.cs-form-element'}(
@@ -70,7 +70,7 @@ $Index->content(
 				]
 			)
 		],
-		system_input_core('admin_email', 'email'),
-		system_input_core('admin_phone', 'tel')
+		core_input('admin_email', 'email'),
+		core_input('admin_phone', 'tel')
 	)
 );

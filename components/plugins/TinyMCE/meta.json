@@ -1,5 +1,6 @@
 {
 	"package"		: "TinyMCE",
+	"category"		: "plugins",
 	"version"		: "3.4.3.2",
 	"description"	: "TinyMCE is a platform independent web based Javascript HTML WYSIWYG editor control released as Open Source under LGPL by Moxiecode Systems AB.",
 	"author"		: "Moxiecode Systems AB",
@@ -9,5 +10,9 @@
 		"editor",
 		"editorh",
 		"seditor"
+	],
+	"multilingual"	: [
+		"interface",
+		"content"
 	]
 }

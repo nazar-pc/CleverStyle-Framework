@@ -13,10 +13,10 @@ global $L, $Config, $Index, $Cache;
 $sa	= $Config->core['simple_admin_mode'];
 $Index->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
-		system_input_core('gzip_compression', 'radio', null, zlib_compression()),
-		system_input_core('cache_compress_js_css', 'radio'),
-		(!$sa ? system_input_core('inserts_limit', 'number', null, false, 1) : false),
-		(!$sa ? system_input_core('update_ratio', 'number', null, false, 0, 100) : false),
+		core_input('gzip_compression', 'radio', null, zlib_compression()),
+		core_input('cache_compress_js_css', 'radio'),
+		(!$sa ? core_input('inserts_limit', 'number', null, false, 1) : false),
+		(!$sa ? core_input('update_ratio', 'number', null, false, 0, 100) : false),
 		[
 			h::{'div#clean_cache'}(),
 			h::{'div#clean_pcache'}()
