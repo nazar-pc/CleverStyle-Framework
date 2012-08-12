@@ -28,16 +28,16 @@ $Index->content(
 			h::info('page_interface')
 		),
 		h::{'td.ui-widget-content.ui-corner-all'}(
-			h::{'select.cs-form-element[name=category][size=5]'}(
+			h::{'select[name=category][size=5]'}(
 				get_categories_list(),
 				[
 					'selected'	=> $data['category']
 				]
 			),
-			h::{'input.cs-form-element[name=title]'}([
+			h::{'input[name=title]'}([
 				'value'	=> $data['title']
 			]),
-			h::{'input.cs-form-element[name=path]'}([
+			h::{'input[name=path]'}([
 				'value'	=> $data['path']
 			]),
 			h::{'input[type=radio][name=interface]'}([

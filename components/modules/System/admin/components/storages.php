@@ -41,15 +41,15 @@ if (isset($rc[2])) {
 					).
 					h::tr(
 						h::{'td.ui-widget-content.ui-corner-all.cs-add-storage'}([
-							h::{'input.cs-form-element'}([
+							h::input([
 								'name'		=> 'storage[url]',
 								'value'		=> $rc[2] == 'edit' ? $storage['url'] : ''
 							]),
-							h::{'input.cs-form-element'}([
+							h::input([
 								'name'		=> 'storage[host]',
 								'value'		=> $rc[2] == 'edit' ? $storage['host'] : ''
 							]),
-							h::{'select.cs-form-element'}(
+							h::select(
 								[
 									'in'		=> _mb_substr(get_files_list(ENGINES.'/Storage', '/^[^_].*?\.php$/i', 'f'), 0, -4)
 								],
@@ -59,11 +59,11 @@ if (isset($rc[2])) {
 									'size'		=> 5
 								]
 							),
-							h::{'input.cs-form-element'}([
+							h::input([
 								'name'		=> 'storage[user]',
 								'value'		=> $rc[2] == 'edit' ? $storage['user'] : ''
 							]),
-							h::{'input.cs-form-element'}([
+							h::input([
 								'name'		=> 'storage[password]',
 								'value'		=> $rc[2] == 'edit' ? $storage['password'] : ''
 							]).

@@ -832,7 +832,7 @@ class Page {
 				)
 			).
 			h::{'div.cs-header-restore-password-form'}(
-				h::{'input.cs-header-restore-password-email[tabindex=1]'}(
+				h::{'input.cs-noui.cs-header-restore-password-email[tabindex=1]'}(
 					[
 						'placeholder'	=> $L->email
 					]
@@ -852,7 +852,7 @@ class Page {
 				]
 			).
 			h::{'div.cs-header-register-form'}(
-				h::{'input.cs-header-registration-email[tabindex=1]'}(
+				h::{'input.cs-noui.cs-header-registration-email[tabindex=1]'}(
 					[
 					'placeholder'	=> $L->email
 					]
@@ -878,10 +878,10 @@ class Page {
 				]
 			).
 			h::{'div.cs-header-login-form'}(
-				h::{'input.cs-header-login-email[tabindex=1]'}([
+				h::{'input.cs-noui.cs-header-login-email[tabindex=1]'}([
 					'placeholder'	=> $L->login_or_email
 				]).//TODO foreign login systems processing, open pop-up window instead of list
-				h::{'input.cs-header-user-password[type=password][tabindex=2]'}([
+				h::{'input.cs-noui.cs-header-user-password[type=password][tabindex=2]'}([
 					'placeholder'	=> $L->password
 				]).
 				h::{'icon.cs-header-show-password.cs-pointer'}('locked').

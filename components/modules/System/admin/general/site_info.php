@@ -29,19 +29,19 @@ $Index->content(
 				],
 				[
 					[
-						h::{'textarea.cs-form-element.cs-wide-textarea'}(
+						h::{'textarea.cs-wide-textarea'}(
 							$Config->core['mirrors_url'],
 							[
 							'name' => 'core[mirrors_url]'
 							]
 						),
-						h::{'textarea.cs-form-element.cs-wide-textarea'}(
+						h::{'textarea.cs-wide-textarea'}(
 							$Config->core['mirrors_cookie_domain'],
 							[
 							'name' => 'core[mirrors_cookie_domain]'
 							]
 						),
-						h::{'textarea.cs-form-element.cs-wide-textarea'}(
+						h::{'textarea.cs-wide-textarea'}(
 							$Config->core['mirrors_cookie_path'],
 							[
 							'name' => 'core[mirrors_cookie_path]'
@@ -58,7 +58,7 @@ $Index->content(
 		core_input('description'),
 		[
 			h::info('timezone'),
-			h::{'select.cs-form-element'}(
+			h::select(
 				[
 					'in'		=> array_keys($timezones),
 					'value'		=> array_values($timezones)

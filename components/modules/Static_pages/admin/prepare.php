@@ -13,7 +13,6 @@ global $Core, $Index, $Page, $L;
 $Index->title_auto	= false;
 $Page->title($L->administration);
 $Page->title($L->{MODULE});
-$Page->js('components/modules/'.MODULE.'/includes/js/script.js');
 $Page->css('components/modules/'.MODULE.'/includes/css/style.css');
 $Page->menumore		= h::a(
 	[

@@ -26,10 +26,10 @@ if (isset($rc[2])) {
 						$L->label
 					]).
 					h::{'tr td.ui-widget-content.ui-corner-all'}([
-						h::{'input.cs-form-element'}([
+						h::input([
 							'name'		=> 'permission[group]'
 						]),
-						h::{'input.cs-form-element'}([
+						h::input([
 							'name'		=> 'permission[label]'
 						])
 					])
@@ -58,11 +58,11 @@ if (isset($rc[2])) {
 					]).
 					h::{'tr td.ui-widget-content.ui-corner-all'}([
 						$rc[3],
-						h::{'input.cs-form-element'}([
+						h::input([
 							'name'		=> 'permission[group]',
 							'value'		=> $permission['group']
 						]),
-						h::{'input.cs-form-element'}([
+						h::input([
 							'name'		=> 'permission[label]',
 							'value'		=> $permission['label']
 						])

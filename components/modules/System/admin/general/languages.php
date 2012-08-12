@@ -21,7 +21,7 @@ foreach ($translate_engines as $engine) {
 		foreach ($parameters as $paremeter => $description) {
 			$table .= h::{'tr td'}([
 				$description,
-				h::{'input.cs-form-element'}([
+				h::input([
 					'name'	=> 'core[auto_translation_engine]['.$paremeter.']',
 					'value' => isset($Config->core['auto_translation_engine'][$paremeter]) ? $Config->core['auto_translation_engine'][$paremeter] : ''
 				])
@@ -76,7 +76,7 @@ $Index->content(
 		[
 			[
 				h::info('auto_translation_engine'),
-				h::{'select.cs-form-element'}(
+				h::select(
 					$translate_engines,
 					[
 						'name'			=> 'core[auto_translation_engine][name]',

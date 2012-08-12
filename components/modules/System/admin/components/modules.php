@@ -38,10 +38,91 @@ $a					= $Index;
 $rc					= $Config->routing['current'];
 $a->buttons			= false;
 $show_modules		= true;
-if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[2])) {
+if (
+	isset($rc[2], $rc[3]) &&
+	!empty($rc[2]) &&
+	(
+		isset($Config->components['modules'][$rc[3]]) ||
+		(
+			$rc[2] == 'install' && $rc[3] == 'upload'
+		)
+	)
+) {
 	global $Page;
 	switch ($rc[2]) {
 		case 'install':
+			if ($rc[3] == 'upload' && isset($_FILES['upload_module']) && $_FILES['upload_module']['tmp_name']) {
+				switch ($_FILES['upload_module']['error']) {
+					case UPLOAD_ERR_INI_SIZE:
+					case UPLOAD_ERR_FORM_SIZE:
+						$Page->warning($L->file_too_large);
+					break;
+					case UPLOAD_ERR_NO_TMP_DIR:
+						$Page->warning($L->temporary_folder_is_missing);
+					break;
+					case UPLOAD_ERR_CANT_WRITE:
+						$Page->warning($L->cant_write_file_to_disk);
+					break;
+					case UPLOAD_ERR_PARTIAL:
+					case UPLOAD_ERR_NO_FILE:
+					break;
+				}
+				move_uploaded_file(
+					$_FILES['upload_module']['tmp_name'],
+					$tmp_file = TEMP.'/'.md5($_FILES['upload_module']['tmp_name'].MICROTIME).'.phar.php'
+				);
+				$tmp_dir								= 'phar://'.$tmp_file;
+				if (!($rc[3]	= file_get_contents($tmp_dir.'/dir'))) {
+					unlink($tmp_file);
+					break;
+				}
+				if (_json_decode(file_get_contents($tmp_dir.'/meta.json'))['category'] != 'modules') {
+					$Page->warning($L->this_is_not_module_installer_file);
+					unlink($tmp_file);
+					break;
+				}
+				if (isset($Config->components['modules'][$rc[3]])) {
+					$Page->warning($L->cant_unpack_module_it_already_exists);
+					unlink($tmp_file);
+					break;
+				}
+				if (!file_exists(MODULES.'/'.$rc[3]) && !mkdir(MODULES.'/'.$rc[3], 0700)) {
+					$Page->warning($L->cant_unpack_module_no_write_permissions);
+					unlink($tmp_file);
+					break;
+				}
+				$Config->components['modules'][$rc[3]]	= [
+					'active'	=> -1,
+					'db'		=> [],
+					'storage'	=> []
+				];
+				$fs										= _json_decode(file_get_contents($tmp_dir.'/fs.json'));
+				$extract								= array_product(
+					array_map(
+						function ($index, $file) use ($tmp_dir, $rc) {
+							if (
+								!file_exists(pathinfo(MODULES.'/'.$rc[3].'/'.$file, PATHINFO_DIRNAME)) &&
+								!mkdir(pathinfo(MODULES.'/'.$rc[3].'/'.$file, PATHINFO_DIRNAME), 0700, true)
+							) {
+								return 0;
+							}
+							return (int)copy($tmp_dir.'/fs/'.$index, MODULES.'/'.$rc[3].'/'.$file);
+						},
+						$fs,
+						array_keys($fs)
+					)
+				);
+				file_put_contents(MODULES.'/'.$rc[3].'/fs.json', _json_encode(array_keys($fs)));
+				unlink($tmp_file);
+				unset($tmp_dir, $tmp_file);
+				if (!$extract) {
+					$Page->warning($L->module_files_unpacking_error);
+					break;
+				}
+				$Config->save('components');
+			} elseif ($rc[3] == 'upload') {
+				break;
+			}
 			$show_modules	= false;
 			$Page->title($L->installation_of_module($rc[3]));
 			$a->content(
@@ -186,7 +267,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					foreach ($db_json as $database) {
 						$db_list[] = h::{'td.ui-widget-content.ui-corner-all'}([
 							$L->{$rc[3].'_db_'.$database},
-							h::{'select.cs-form-element'}(
+							h::select(
 								[
 									'in'		=> array_values($dbs),
 									'value'		=> array_keys($dbs)
@@ -252,7 +333,7 @@ if (isset($rc[2], $rc[3], $Config->components['modules'][$rc[3]]) && !empty($rc[
 					foreach ($storage_json as $storage) {
 						$storage_list[] = h::{'td.ui-widget-content.ui-corner-all'}([
 							$L->{$rc[3].'_storage_'.$storage},
-							h::{'select.cs-form-element'}(
+							h::select(
 								[
 									'in'		=> array_values($storages),
 									'value'		=> array_keys($storages)
@@ -324,6 +405,7 @@ unset($rc);
 if (!$show_modules) {
 	return;
 }
+$a->file_upload		= true;
 $modules_list = [h::{'th.ui-widget-header.ui-corner-all'}(
 	$L->module_name,
 	$L->state,
@@ -521,7 +603,8 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 			isset($module_meta['require']) ? implode(', ', $module_meta['require']) : $L->none,
 			isset($module_meta['conflict']) ? implode(', ', $module_meta['conflict']) : $L->none,
 			isset($module_meta['multilingual']) && in_array('content', $module_meta['multilingual']) ? $L->yes : $L->no,
-			isset($module_meta['multilingual']) && in_array('content', $module_meta['multilingual']) ? $L->yes : $L->no
+			isset($module_meta['multilingual']) && in_array('content', $module_meta['multilingual']) ? $L->yes : $L->no,
+			isset($module_meta['languages']) ? implode(', ', $module_meta['languages']) : $L->none
 		);
 	}
 	unset($module_meta);
@@ -557,7 +640,20 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 	unset($module_info);
 }
 $a->content(
-	h::{'table.cs-fullwidth-table.cs-center-all tr'}($modules_list).
+	h::{'table.cs-fullwidth-table.cs-center-all tr'}(
+		$modules_list,
+		h::{'td.cs-left-all[colspan=3]'}(
+			h::{'input[type=file][name=upload_module]'}([
+				'style'	=> 'position: relative;'
+			]).
+			h::{'button[type=submit]'}(
+				$L->upload_and_install_module,
+				[
+					'formaction'	=>  $a->action.'/install/upload'
+				]
+			)
+		)
+	).
 	h::{'button[type=submit]'}(
 		$L->update_modules_list,
 		[

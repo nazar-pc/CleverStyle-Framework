@@ -1,9 +1,10 @@
 {
-	"blank"		: [],
-	"profile"	: [
+	"blank"			: [],
+	"profile"		: [
 		"info",
 		"settings",
 		"registration_confirmation",
 		"restore_password_confirmation"
-	]
+	],
+	"robots.txt"	: []
 }

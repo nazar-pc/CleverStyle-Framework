@@ -16,7 +16,7 @@ $Index->content(
 		core_input('online_time', 'number', null, false, 1, false, $L->seconds),
 		[
 			h::info('login_attempts_block_count'),
-			h::{'input.cs-form-element[type=number]'}([
+			h::{'input[type=number]'}([
 				'name'		=> 'core[login_attempts_block_count]',
 				'value'		=> $Config->core['login_attempts_block_count'],
 				'min'		=> 0,
@@ -81,6 +81,6 @@ $Index->content(
 				'class'	=> 'cs-allow-user-registration cs-require-registration-confirmation'
 			]
 		],
-		core_textarea('rules', false, 'EDITORH')
+		core_textarea('rules', 'EDITORH')
 	)
 );

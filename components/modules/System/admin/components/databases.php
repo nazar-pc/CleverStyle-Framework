@@ -72,7 +72,7 @@ if (isset($rc[2])) {
 						'db_charset'
 					),
 					h::{'td.ui-widget-content.ui-corner-all.cs-add-db'}(
-						($rc[2] == 'add' ? h::{'select.cs-form-element'}(
+						($rc[2] == 'add' ? h::select(
 							[
 								'in'		=> $dbsname,
 								'value'		=> $dbs
@@ -83,11 +83,11 @@ if (isset($rc[2])) {
 								'size'		=> 5
 							]
 						) : false),
-						h::{'input.cs-form-element'}([
+						h::input([
 							'name'		=> 'db[host]',
 							'value'		=> $rc[2] == 'edit' ? $database['host'] : $Core->config('db_host')
 						]),
-						h::{'select.cs-form-element'}(
+						h::select(
 							[
 								'in'		=> _mb_substr(get_files_list(ENGINES.'/DB', '/^[^_].*?\.php$/i', 'f'), 0, -4)
 							],
@@ -97,23 +97,23 @@ if (isset($rc[2])) {
 								'size'		=> 5
 							]
 						),
-						h::{'input.cs-form-element'}([
+						h::input([
 							'name'		=> 'db[prefix]',
 							'value'		=> $rc[2] == 'edit' ? $database['prefix'] : $Core->config('db_prefix')
 						]),
-						h::{'input.cs-form-element'}([
+						h::input([
 							'name'		=> 'db[name]',
 							'value'		=> $rc[2] == 'edit' ? $database['name'] : ''
 						]),
-						h::{'input.cs-form-element'}([
+						h::input([
 							'name'		=> 'db[user]',
 							'value'		=> $rc[2] == 'edit' ? $database['user'] : ''
 						]),
-						h::{'input.cs-form-element'}([
+						h::input([
 							'name'		=> 'db[password]',
 							'value'		=> $rc[2] == 'edit' ? $database['password'] : ''
 						]),
-						h::{'input.cs-form-element'}([
+						h::input([
 							'name'		=> 'db[charset]',
 							'value'		=> $rc[2] == 'edit' ? $database['charset'] : $Core->config('db_charset')
 						]).

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		CleverStyle CMS
- * @subpackage	Project builder
+ * @subpackage	Core builder
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -11,7 +11,7 @@ require_once	DIR.'/core/classes/class.h.php';
 require_once	DIR.'/core/functions.php';
 require_once	'Archive/Tar.php';
 $version	= _json_decode(file_get_contents(DIR.'/components/modules/System/meta.json'))['version'];
-$tar		= new Archive_Tar(DIR.'/cscms.phar.tar');
+$tar		= new Archive_Tar(DIR.'/build.phar.tar');
 $tar->createModify(
 	array_merge(
 		get_files_list(DIR.'/install', false, 'f', true, true)
@@ -36,7 +36,7 @@ $list		= array_merge(
 $length		= strlen(DIR.'/');
 $list		= array_map(
 	function ($index, $file) use ($tar, $length) {
-		$tar->addString('system/'.$index, file_get_contents($file));
+		$tar->addString('fs/'.$index, file_get_contents($file));
 		return substr($file, $length);
 	},
 	array_keys($list),
@@ -45,7 +45,7 @@ $list		= array_map(
 unset($length);
 $list[]		= '.htaccess';
 $tar->addString(
-	'system/'.(count($list)-1),
+	'fs/'.(count($list)-1),
 	'AddDefaultCharset utf-8
 Options -All -Multiviews +FollowSymLinks
 IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
@@ -74,12 +74,12 @@ RewriteRule .* index.php
 );
 $list[]		= 'index.php';
 $tar->addString(
-	'system/'.(count($list)-1),
+	'fs/'.(count($list)-1),
 	str_replace('$version$', $version, file_get_contents(DIR.'/index.php'))
 );
 $list[]		= 'readme.html';
 $tar->addString(
-	'system/'.(count($list)-1),
+	'fs/'.(count($list)-1),
 	str_replace(
 		[
 			'$version$',
@@ -98,8 +98,8 @@ $tar->addString(
 	'languages.json',
 	_json_encode(
 		array_merge(
-			_mb_substr(get_files_list(DIR.'/core/languages', '/^lang\..*?\.php$/i', 'f'), 5, -4) ?: [],
-			_mb_substr(get_files_list(DIR.'/core/languages', '/^lang\..*?\.json$/i', 'f'), 5, -5) ?: []
+			_mb_substr(get_files_list(DIR.'/core/languages', '/^.*?\.php$/i', 'f'), 0, -4) ?: [],
+			_mb_substr(get_files_list(DIR.'/core/languages', '/^.*?\.json$/i', 'f'), 0, -5) ?: []
 		)
 	)
 );
@@ -109,7 +109,8 @@ $tar->addString(
 		_mb_substr(get_files_list(DIR.'/core/engines/DB', '/^[^_].*?\.php$/i', 'f'), 0, -4)
 	)
 );
-$tar->addString('system.json', _json_encode(array_flip($list)));
+$tar->addString('fs.json', _json_encode(array_flip($list)));
+unset($list);
 $tar->addString(
 	'install.php',
 	str_replace('$version$', $version, file_get_contents(DIR.'/install.php'))
@@ -155,13 +156,13 @@ $tar->addString(
 	$version
 );
 unset($themes, $theme, $color_schemes, $tar);
-$phar		= new Phar(DIR.'/cscms.phar.tar');
+$phar		= new Phar(DIR.'/build.phar.tar');
 $phar->convertToExecutable(Phar::TAR, Phar::BZ2, '.phar');
-unlink(DIR.'/cscms.phar.tar');
+unlink(DIR.'/build.phar.tar');
 unset($phar);
-$phar		= new Phar(DIR.'/cscms.phar');
+$phar		= new Phar(DIR.'/build.phar');
 $phar->setStub("<?php Phar::webPhar(null, 'install.php'); __HALT_COMPILER();");
 $phar->setSignatureAlgorithm(PHAR::SHA512);
 unset($phar);
-rename(DIR.'/cscms.phar', DIR.'/CleverStyle_CMS_'.$version.'.phar.php');
-echo 'Done! Version: '.$version;
+rename(DIR.'/build.phar', DIR.'/CleverStyle_CMS_'.$version.'.phar.php');
+echo 'Done! Core CleverStyle CMS '.$version;

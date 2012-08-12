@@ -14,5 +14,10 @@
 	"multilingual"	: [
 		"interface",
 		"content"
+	],
+	"languages"		: [
+		"English",
+		"Русский",
+		"Українська"
 	]
 }

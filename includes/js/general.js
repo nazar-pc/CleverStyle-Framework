@@ -13,29 +13,28 @@ $(function() {
 	) {
 		alert('Go away with your old browser! And come back with newer version, than now:)');
 	}
-	$(':radio').each(function () {
-		if (!$(this).hasClass('noui')) {
+	var data = {};
+	data[session_id] = session_id;
+	$.ajaxSetup({
+		data	: data,
+		type	: 'post'
+	});
+	$('input:not(:radio, :checkbox, :submit, :image, :reset, :button, .cs-noui), select:not(.cs-noui)').addClass('cs-form-element');
+	$(':radio:not(.cs-noui)').each(function () {
+		$(this).parent().buttonset();
+	});
+	$(':checkbox:not(.cs-noui)').each(function () {
+		if ($(this).parent('label')) {
 			$(this).parent().buttonset();
-		}
-	});
-	$(':checkbox').each(function () {
-		if (!$(this).hasClass('noui')) {
-			if ($(this).parent('label')) {
-				$(this).parent().buttonset();
-			} else {
-				$(this).button();
-			}
-		}
-	});
-	$('select').each(function () {
-		if (!$(this).hasClass('noui')) {
-			//$(this).chosen(); //TODO Find some good replacement (or wait for jQuery UI 1.9)
-		}
-	});
-	$(':button, .cs-button').each(function () {
-		if (!$(this).hasClass('noui')) {
+		} else {
 			$(this).button();
 		}
+	});
+	$('select:not(.cs-noui)').each(function () {
+		//$(this).chosen(); //TODO Find some good replacement (or wait for jQuery UI 1.9)
+	});
+	$(':button:not(.cs-noui), .cs-button').each(function () {
+		$(this).button();
 	});
 	$('.ui-button').disableSelection();
 	$('#debug').dialog({
@@ -52,10 +51,8 @@ $(function() {
 			$(this).dialog();
 		}
 	});
-	$('textarea').each(function () {
-		if (!$(this).is('.EDITOR, .EDITORH, .SEDITOR, .noresize')) {
-			$(this).autoResize();
-		}
+	$('textarea:not(.cs-noui, .EDITOR, .EDITORH, .SEDITOR)').addClass('cs-form-element').not('.noresize').each(function () {
+		$(this).autoResize();
 	});
 	$('.cs-header-login-slide').mousedown(function () {
 		$('.cs-header-anonym-form').slideUp();
@@ -218,20 +215,16 @@ $(function() {
 					$('#block_users_search_found').val()+','+id.substring(6, id.length-1)
 				);
 			});
-			var data = {
-				found_users		: $('#block_users_search_found').val(),
-				permission		: $(this).attr('permission'),
-				search_phrase	: $(this).val()
-			};
-			data[session_id] = session_id;
 			$('#block_users_search_results').load(
 				current_base_url+'/'+routing[0]+'/'+routing[1]+'/search_users',
-				data,
+				{
+					found_users		: $('#block_users_search_found').val(),
+					permission		: $(this).attr('permission'),
+					search_phrase	: $(this).val()
+				},
 				function () {
 					$('#block_users_search_results :radio').each(function () {
-						if (!$(this).hasClass('noui')) {
-							$(this).parent().buttonset();
-						}
+						$(this).parent().buttonset();
 					}).change(function () {
 						$(this).parentsUntil('tr').parent().addClass('cs-block-users-changed');
 					});

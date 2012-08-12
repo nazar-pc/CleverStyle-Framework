@@ -80,7 +80,7 @@ if (isset($rc[2])) {
 						'block_update'
 					),
 					h::{'td.ui-widget-content.ui-corner-all.cs-add-block'}(
-						h::{'select.cs-form-element'}(
+						h::select(
 							array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4)),
 							[
 								'name'		=> 'block[type]',
@@ -88,7 +88,7 @@ if (isset($rc[2])) {
 								'onchange'	=> 'block_switch_textarea(this)'
 							]
 						),
-						h::{'input.cs-form-element'}([
+						h::input([
 							'name'		=> 'block[title]'
 						]),
 						h::{'input[type=radio]'}([
@@ -96,14 +96,14 @@ if (isset($rc[2])) {
 							'value'		=> [1, 0],
 							'in'		=> [$L->yes, $L->no]
 						]),
-						h::{'select.cs-form-element'}(
+						h::select(
 							_mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6),
 							[
 								'name'		=> 'block[template]',
 								'size'		=> 5
 							]
 						),
-						h::{'input.cs-form-element[type=datetime-local]'}([
+						h::{'input[type=datetime-local]'}([
 							'name'		=> 'block[start]',
 							'value'		=> date('Y-m-d\TH:i', TIME)
 						]),
@@ -113,17 +113,17 @@ if (isset($rc[2])) {
 							'in'		=> [$L->never, $L->as_specified]
 						]).
 						h::br(2).
-						h::{'input.cs-form-element[type=datetime-local]'}([
+						h::{'input[type=datetime-local]'}([
 							'name'		=> 'block[expire][date]',
 							'value'		=> date('Y-m-d\TH:i', TIME)
 						]),
-						h::{'input.cs-form-element[type=time]'}([
+						h::{'input[type=time]'}([
 							'name'		=> 'block[update]',
 							'value'		=> '01:00'
 						])
 					),
 					[
-						h::{'td.ui-widget-content.ui-corner-all[colspan=7] textarea.EDITOR.cs-form-element'}(
+						h::{'td.ui-widget-content.ui-corner-all[colspan=7] textarea.EDITOR'}(
 							'',
 							[
 								'name'	=> 'block[html]'
@@ -134,7 +134,7 @@ if (isset($rc[2])) {
 						]
 					],
 					[
-						h::{'td.ui-widget-content.ui-corner-all[colspan=7] textarea.cs-form-element.cs-wide-textarea'}(
+						h::{'td.ui-widget-content.ui-corner-all[colspan=7] textarea.cs-wide-textarea'}(
 							'',
 							[
 								'name'	=> 'block[raw_html]'
@@ -176,7 +176,7 @@ if (isset($rc[2])) {
 						'block_update'
 					),
 					h::{'td.ui-widget-content.ui-corner-all.cs-add-block'}(
-						h::{'input.cs-form-element'}([
+						h::input([
 							'name'		=> 'block[title]',
 							'value'		=> get_block_title($rc[3])
 						]),
@@ -186,7 +186,7 @@ if (isset($rc[2])) {
 							'value'		=> [1, 0],
 							'in'		=> [$L->yes, $L->no]
 						]),
-						h::{'select.cs-form-element'}(
+						h::select(
 							[
 								'in'		=> _mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6)
 							],
@@ -196,7 +196,7 @@ if (isset($rc[2])) {
 								'size'		=> 5
 							]
 						),
-						h::{'input.cs-form-element[type=datetime-local]'}([
+						h::{'input[type=datetime-local]'}([
 							'name'		=> 'block[start]',
 							'value'		=> date('Y-m-d\TH:i', $block['start'] ?: TIME)
 						]),
@@ -207,23 +207,23 @@ if (isset($rc[2])) {
 							'in'		=> [$L->never, $L->as_specified]
 						]).
 						h::br(2).
-						h::{'input.cs-form-element[type=datetime-local]'}([
+						h::{'input[type=datetime-local]'}([
 							'name'		=> 'block[expire][date]',
 							'value'		=> date('Y-m-d\TH:i', $block['expire'] ?: TIME)
 						]),
-						h::{'input.cs-form-element[type=time]'}([
+						h::{'input[type=time]'}([
 							'name'		=> 'block[update]',
 							'value'		=> str_pad(round($block['update'] / 3600), 2, 0, STR_PAD_LEFT).':'.
 								str_pad(round($block['update'] % 3600), 2, 0, STR_PAD_LEFT)
 						])
 					),
-					($block['type'] == 'html' ? h::{'td.ui-widget-content.ui-corner-all[colspan=6] textarea.EDITOR.cs-form-element'}(
+					($block['type'] == 'html' ? h::{'td.ui-widget-content.ui-corner-all[colspan=6] textarea.EDITOR'}(
 							$block['data'],
 							[
 								'name'	=> 'block[html]'
 							]
 						) : (
-							$block['type'] == 'raw_html' ? h::{'td.ui-widget-content.ui-corner-all[colspan=6] textarea.cs-form-element.cs-wide-textarea'}(
+							$block['type'] == 'raw_html' ? h::{'td.ui-widget-content.ui-corner-all[colspan=6] textarea.cs-wide-textarea'}(
 								$block['data'],
 								[
 									'name'	=> 'block[raw_html]'
@@ -343,7 +343,7 @@ if (isset($rc[2])) {
 							h::{'button.cs-permissions-deny-all'}($L->deny_all)
 						),
 						h::{'td table#block_users_changed_permissions.cs-fullwidth-table.cs-center-all tr'}($users_content),
-						h::{'td input#block_users_search.cs-form-element[type=search]'}([
+						h::{'td input#block_users_search[type=search]'}([
 							'autocomplete'	=> 'off',
 							'permission'	=> $permission,
 							'placeholder'	=> $L->type_username_or_email_press_enter,

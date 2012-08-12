@@ -26,10 +26,10 @@ if (isset($rc[2])) {
 						$L->description
 					),
 					h::{'td.ui-widget-content.ui-corner-all'}(
-						h::{'input.cs-form-element'}([
+						h::input([
 							'name'		=> 'group[title]'
 						]),
-						h::{'input.cs-form-element'}([
+						h::input([
 							'name'		=> 'group[description]'
 						])
 					)
@@ -59,15 +59,15 @@ if (isset($rc[2])) {
 					),
 					h::{'td.ui-widget-content.ui-corner-all'}(
 						$rc[3],
-						h::{'input.cs-form-element'}([
+						h::input([
 							'name'		=> 'group[title]',
 							'value'		=> $group_data['title']
 						]),
-						h::{'input.cs-form-element'}([
+						h::input([
 							'name'		=> 'group[description]',
 							'value'		=> $group_data['description']
 						]),
-						h::{'textarea.cs-form-element'}(
+						h::textarea(
 							$group_data['data'],
 							[
 								'name'		=> 'group[data]'

@@ -1,7 +1,7 @@
 {
 	"package"		: "Static Pages",
 	"category"		: "modules",
-	"version"		: "0.002",
+	"version"		: "0.003",
 	"description"	: "Creating of simple static pages with categories",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",
@@ -16,5 +16,9 @@
 	"multilingual"	: [
 		"interface",
 		"content"
+	],
+	"languages"		: [
+		"English",
+		"Русский"
 	]
 }

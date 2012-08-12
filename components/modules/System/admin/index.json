@@ -12,15 +12,14 @@
 		"plugins",
 		"blocks",
 		"databases",
-		"storages",
-		"security"
+		"storages"
 	],
 	"users"			: [
 		"general",
 		"users",
 		"groups",
 		"permissions",
-		"statistic",
+		"security",
 		"mail"
 	]
 }

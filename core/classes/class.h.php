@@ -808,6 +808,9 @@ class h {
 					);
 				}
 				return $output;
+			/**
+			 * Third part of expression - fix for "select" and "datalist" tags bescause they accept arrays as values
+			 */
 			} elseif (
 				is_array_indexed($data[0]) &&
 				(
@@ -816,6 +819,9 @@ class h {
 					(
 						is_array_indexed($data[1]) && !in_array($data[1][0], self::$unit_atributes)
 					)
+				) &&
+				(
+					strpos($input, 'select') !== 0 && strpos($input, 'datalist') !== 0
 				)
 			) {
 				$output	= '';

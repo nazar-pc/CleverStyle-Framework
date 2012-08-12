@@ -25,14 +25,14 @@ $Index->content(
 			h::info('category_path')
 		),
 		h::{'td.ui-widget-content.ui-corner-all'}(
-			h::{'select.cs-form-element[name=parent][size=5]'}(
+			h::{'select[name=parent][size=5]'}(
 				get_categories_list(),
 				[
 					'selected'	=> isset($Config->routing['current'][1]) ? (int)$Config->routing['current'][1] : 0
 				]
 			),
-			h::{'input.cs-form-element[name=title]'}(),
-			h::{'input.cs-form-element[name=path]'}()
+			h::{'input[name=title]'}(),
+			h::{'input[name=path]'}()
 		)
 	).
 	h::{'input[type=hidden][name=mode][value=add_category]'}()

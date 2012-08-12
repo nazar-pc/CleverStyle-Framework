@@ -11,10 +11,10 @@ define('DIR',	__DIR__);													//Path to installer dir
 $ROOT	= pathinfo(__DIR__, PATHINFO_DIRNAME);
 define('ROOT',	strpos($ROOT, 'phar://') === 0 ? substr($ROOT, 7) : $ROOT);	//Path to site root
 unset($ROOT);
-global $system;
-$system	= json_decode(file_get_contents(DIR.'/system.json'), true);
-require_once DIR.'/system/'.$system['core/functions.php'];
-require_once DIR.'/system/'.$system['core/classes/class.h.php'];
+global $fs;
+$fs	= json_decode(file_get_contents(DIR.'/fs.json'), true);
+require_once DIR.'/fs/'.$fs['core/functions.php'];
+require_once DIR.'/fs/'.$fs['core/classes/class.h.php'];
 require_once DIR.'/install/functions.php';
 date_default_timezone_set('UTC');
 header('Content-Type: text/html; charset=utf-8');

@@ -28,7 +28,7 @@ if (isset($rc[2], $rc[3])) {
 				h::{'p.ui-priority-primary.cs-state-messages'}(
 					$L->adding_a_user
 				).
-				h::{'p input.cs-form-element.cs-add-user'}([
+				h::{'p input.cs-add-user'}([
 					'name'			=> 'email',
 					'placeholder'	=> $L->email
 				])
@@ -46,7 +46,7 @@ if (isset($rc[2], $rc[3])) {
 					h::td(
 						[
 							$L->bot_name,
-							h::{'input.cs-form-element.cs-add-bot'}([
+							h::{'input.cs-add-bot'}([
 								'name'	=> 'name'
 							])
 						],
@@ -56,13 +56,13 @@ if (isset($rc[2], $rc[3])) {
 					),
 					h::td([
 							h::info('bot_user_agent'),
-							h::{'input.cs-form-element.cs-add-bot'}([
+							h::{'input.cs-add-bot'}([
 								'name'	=> 'user_agent'
 							])
 					]),
 					h::td([
 						h::info('bot_ip'),
-						h::{'input.cs-form-element.cs-add-bot'}([
+						h::{'input.cs-add-bot'}([
 							'name'	=> 'ip'
 						])
 					])
@@ -84,13 +84,13 @@ if (isset($rc[2], $rc[3])) {
 				).
 				h::{'td.ui-widget-content.ui-corner-all'}(
 					$column == 'data' || $column == 'about' ?
-						h::{'textarea.cs-form-element'}(
+						h::textarea(
 							$user_data[$column],
 							[
 								'name'		=> 'user['.$column.']'
 							]
 						) :
-						h::{'input.cs-form-element'}([
+						h::input([
 							'name'		=> 'user['.$column.']',
 							'value'		=> $user_data[$column],
 							$column == 'id' ? 'readonly' : false
@@ -187,26 +187,26 @@ if (isset($rc[2], $rc[3])) {
 						row($L->last_login, $user_data['last_login'] ? date($L->_datetime, $user_data['last_login']) : $L->undefined),
 						row($L->last_ip, $last_ip[0] ? $last_ip[0].($last_ip[1] ? h::br().$last_ip[1] : '') : $L->undefined),
 						row($L->last_online, $user_data['last_online'] ? date($L->_datetime, $user_data['last_online']) : $L->undefined),
-						row($L->login, h::{'input.cs-form-element'}([
+						row($L->login, h::input([
 							'name'		=> 'user[login]',
 							'value'		=> $user_data['login']
 						])),
-						row($L->username, h::{'input.cs-form-element'}([
+						row($L->username, h::input([
 							'name'	=> 'user[username]',
 							'value'	=> $user_data['username']
 						])),
-						row($L->email, h::{'input.cs-form-element'}([
+						row($L->email, h::input([
 							'name'		=> 'user[email]',
 							'value'		=> $user_data['email']
 						])),
 						row(
 							$L->password_only_for_changing.h::{'icon.cs-show-password.cs-pointer'}('locked'),
-							h::{'input.cs-form-element[type=password]'}([
+							h::{'input[type=password]'}([
 								'name'	=> 'user[password]',
 								'value'	=> ''
 							])
 						),
-						row($L->language, h::{'select.cs-form-element'}(
+						row($L->language, h::select(
 							[
 								'in'		=> array_merge([$L->system_default.' ('.$Config->core['language'].')'], $Config->core['active_languages']),
 								'value'		=> array_merge([''], $Config->core['active_languages'])
@@ -217,7 +217,7 @@ if (isset($rc[2], $rc[3])) {
 								'size'		=> 5
 							]
 						)),
-						row($L->theme, h::{'select.cs-form-element'}(
+						row($L->theme, h::select(
 							[
 								'in'		=> array_keys($themes),
 								'value'		=> array_values($themes)
@@ -228,7 +228,7 @@ if (isset($rc[2], $rc[3])) {
 								'size'		=> 5
 							]
 						)),
-						row($L->timezone, h::{'select.cs-form-element'}(
+						row($L->timezone, h::select(
 							[
 								'in'		=> array_merge([$L->system_default.' ('.$Config->core['timezone'].')'], array_keys($timezones)),
 								'value'		=> array_merge([''], array_values($timezones))
@@ -239,43 +239,43 @@ if (isset($rc[2], $rc[3])) {
 								'size'		=> 5
 							]
 						)),
-						row($L->status, h::{'input.cs-form-element[type=radio]'}([
+						row($L->status, h::{'input[type=radio]'}([
 							'name'		=> 'user[status]',
 							'checked'	=> $user_data['status'],
 							'value'		=> [-1, 0, 1],
 							'in'		=> [$L->is_not_activated, $L->inactive, $L->active]
 						])),
-						row(h::info('block_until'), h::{'input.cs-form-element[type=datetime-local]'}([
+						row(h::info('block_until'), h::{'input[type=datetime-local]'}([
 							'name'		=> 'user[block_until]',
 							'value'		=> date('Y-m-d\TH:i', $user_data['block_until'] ?: TIME)
 						])),
-						row($L->gender, h::{'input.cs-form-element[type=radio]'}([
+						row($L->gender, h::{'input[type=radio]'}([
 							'name'		=> 'user[gender]',
 							'checked'	=> $user_data['gender'],
 							'value'		=> [-1, 0, 1],
 							'in'		=> [$L->undefined, $L->male, $L->female]
 						])),
-						row(h::info('birthday'), h::{'input.cs-form-element[type=date]'}([
+						row(h::info('birthday'), h::{'input[type=date]'}([
 							'name'		=> 'user[birthday]',
 							'value'		=> date('Y-m-d', $user_data['birthday'] ?: TIME)
 						])),
-						row($L->avatar, h::{'input.cs-form-element'}([
+						row($L->avatar, h::input([
 							'name'		=> 'user[avatar]',
 							'value'		=> $user_data['avatar']
 						])),
-						row($L->website, h::{'input.cs-form-element'}([
+						row($L->website, h::input([
 							'name'		=> 'user[website]',
 							'value'		=> $user_data['website']
 						])),
-						row($L->icq, h::{'input.cs-form-element'}([
+						row($L->icq, h::input([
 							'name'		=> 'user[icq]',
 							'value'		=> $user_data['icq'] ?: ''
 						])),
-						row($L->skype, h::{'input.cs-form-element'}([
+						row($L->skype, h::input([
 							'name'		=> 'user[skype]',
 							'value'		=> $user_data['skype']
 						])),
-						row($L->about_me, h::{'textarea.cs-form-element'}(
+						row($L->about_me, h::textarea(
 							$user_data['about'],
 							[
 								'name'		=> 'user[about]',
@@ -309,7 +309,7 @@ if (isset($rc[2], $rc[3])) {
 						h::td(
 							[
 								$L->bot_name,
-								h::{'input.cs-form-element.cs-add-bot'}([
+								h::{'input.cs-add-bot'}([
 									'name'	=> 'bot[name]',
 									'value'	=> $bot_data['username']
 								])
@@ -320,14 +320,14 @@ if (isset($rc[2], $rc[3])) {
 						),
 						h::td([
 							h::info('bot_user_agent'),
-							h::{'input.cs-form-element.cs-add-bot'}([
+							h::{'input.cs-add-bot'}([
 								'name'	=> 'bot[user_agent]',
 								'value'	=> $bot_data['login']
 							])
 						]),
 						h::td([
 							h::info('bot_ip'),
-							h::{'input.cs-form-element.cs-add-bot'}([
+							h::{'input.cs-add-bot'}([
 								'name'	=> 'bot[ip]',
 								'value'	=> $bot_data['email']
 							])
@@ -723,7 +723,7 @@ if (isset($rc[2], $rc[3])) {
 				]
 			).
 			h::{'div#search_settings'}(
-				h::{'select.cs-form-element'}(
+				h::select(
 					[
 						'in'		=> array_merge([$L->all_columns], $search_columns),
 						'value'		=> array_merge([''], $search_columns)
@@ -734,14 +734,14 @@ if (isset($rc[2], $rc[3])) {
 					]
 				).
 				$L->search_mode.' '.
-				h::{'select.cs-form-element'}(
+				h::select(
 					$search_modes,
 					[
 						'selected'	=> $search_mode ?: 'LIKE',
 						'name'		=> 'search_mode'
 					]
 				).
-				h::{'input.cs-form-element'}(
+				h::input(
 					[
 						'value'			=> $search_text,
 						'name'			=> 'search_text',
@@ -749,7 +749,7 @@ if (isset($rc[2], $rc[3])) {
 					]
 				).
 				$L->page.' '.
-				h::{'input.cs-form-element[type=number]'}(
+				h::{'input[type=number]'}(
 					[
 						'value'	=> $start+1,
 						'min'	=> 1,
@@ -757,7 +757,7 @@ if (isset($rc[2], $rc[3])) {
 					]
 				).
 				$L->items.' '.
-				h::{'input.cs-form-element[type=number]'}(
+				h::{'input[type=number]'}(
 					[
 						'value'	=> $limit,
 						'min'	=> 1,

@@ -9,7 +9,7 @@ namespace cs;
 /**
  * Provides next triggers:<br>
  *  System/Config/routing_replace<br>
- *  ['rc'	=> &$rc]		//Closure return reference to current routing string, this string can be changed<br>
+ *  ['rc'	=> <i>&$rc</i>]		//Closure return reference to current routing string, this string can be changed<br>
  */
 class Config {
 	protected	$data = [
@@ -356,8 +356,8 @@ class Config {
 	function reload_languages () {
 		$this->core['languages'] = array_unique(
 			array_merge(
-				_mb_substr(get_files_list(LANGUAGES, '/^lang\..*?\.php$/i', 'f'), 5, -4) ?: [],
-				_mb_substr(get_files_list(LANGUAGES, '/^lang\..*?\.json$/i', 'f'), 5, -5) ?: []
+				_mb_substr(get_files_list(LANGUAGES, '/^.*?\.php$/i', 'f'), 0, -4) ?: [],
+				_mb_substr(get_files_list(LANGUAGES, '/^.*?\.json$/i', 'f'), 0, -5) ?: []
 			)
 		);
 		asort($this->core['languages']);

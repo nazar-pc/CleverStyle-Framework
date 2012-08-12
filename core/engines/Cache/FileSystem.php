@@ -47,7 +47,7 @@ class FileSystem extends _Abstract {
 		if (strpos($item, '/') !== false) {
 			$path	= substr($item, 0, strrpos($item, '/'));
 			if (!is_dir(CACHE.'/'.$path)) {
-				@mkdir(CACHE.'/'.$path, 0770, true);
+				@mkdir(CACHE.'/'.$path, 0700, true);
 			}
 			unset($path);
 		}

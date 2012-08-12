@@ -15,10 +15,10 @@ $Index->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		core_input('site_mode', 'radio'),
 		core_input('closed_title'),
-		core_textarea('closed_text', false, 'EDITORH'),
+		core_textarea('closed_text', 'EDITORH'),
 		core_input('title_delimiter'),
 		core_input('title_reverse', 'radio'),
-		core_textarea('footer_text', false, 'EDITORH'),
+		core_textarea('footer_text', 'EDITORH'),
 		core_input('show_footer_info', 'radio'),
 		core_input('show_tooltips', 'radio'),
 		core_input('simple_admin_mode', 'radio'),
@@ -55,13 +55,13 @@ $Index->content(
 					h::info('routing_out')
 				],
 				[
-					h::{'textarea.cs-form-element.cs-wide-textarea'}(
+					h::{'textarea.cs-wide-textarea'}(
 						$Config->routing['in'],
 						[
 							'name'				=> 'routing[in]'
 						]
 					),
-					h::{'textarea.cs-form-element.cs-wide-textarea'}(
+					h::{'textarea.cs-wide-textarea'}(
 						$Config->routing['out'],
 						[
 							'name'				=> 'routing[out]'
@@ -78,13 +78,13 @@ $Index->content(
 					h::info('replace_out')
 				],
 				[
-					h::{'textarea.cs-form-element.cs-wide-textarea'}(
+					h::{'textarea.cs-wide-textarea'}(
 						$Config->replace['in'],
 						[
 							'name'			=> 'replace[in]'
 						]
 					),
-					h::{'textarea.cs-form-element.cs-wide-textarea'}(
+					h::{'textarea.cs-wide-textarea'}(
 						$Config->replace['out'],
 						[
 							'name'			=> 'replace[out]'

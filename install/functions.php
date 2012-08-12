@@ -97,9 +97,9 @@ function install_form () {
 	);
 }
 function install_process () {
-	global $system;
-	require_once DIR.'/system/'.$system['core/engines/DB/_Abstract.php'];
-	require_once DIR.'/system/'.$system['core/engines/DB/'.$_POST['db_engine'].'.php'];
+	global $fs;
+	require_once DIR.'/fs/'.$fs['core/engines/DB/_Abstract.php'];
+	require_once DIR.'/fs/'.$fs['core/engines/DB/'.$_POST['db_engine'].'.php'];
 	/**
 	 * @var \cs\DB\_Abstract $cdb
 	 */
@@ -232,24 +232,26 @@ function install_process () {
 			function ($index, $file) {
 				if (
 					!file_exists(pathinfo(ROOT.'/'.$file, PATHINFO_DIRNAME)) &&
-					!mkdir(pathinfo(ROOT.'/'.$file, PATHINFO_DIRNAME), 0777, true)
+					!mkdir(pathinfo(ROOT.'/'.$file, PATHINFO_DIRNAME), 0700, true)
 				) {
 					return 0;
 				}
-				return (int)copy(DIR.'/system/'.$index, ROOT.'/'.$file);
+				return (int)copy(DIR.'/fs/'.$index, ROOT.'/'.$file);
 			},
-			$system,
-			array_keys($system)
+			$fs,
+			array_keys($fs)
 		)
 	);
 	if (
 		!$extract ||
-		!mkdir(ROOT.'/storage') ||
+		!(file_exists(ROOT.'/storage') || mkdir(ROOT.'/storage')) ||
+		!(file_exists(ROOT.'/components/plugins') || mkdir(ROOT.'/components/plugins')) ||
+		!(file_exists(ROOT.'/components/blocks') || mkdir(ROOT.'/components/blocks')) ||
 		!file_put_contents(ROOT.'/storage/.htaccess', "Deny from all\nRewriteEngine Off")
 	) {
 		return 'Can\'t extract system files from the archive! Installation aborted.';
 	}
-	$public_key = hash('sha512', uniqid(microtime(true), true));
+	$public_key						= hash('sha512', uniqid(microtime(true), true));
 	$main_config					= file_exists(ROOT.'/config') && file_put_contents(
 		ROOT.'/config/main.json',
 		str_replace(
@@ -322,9 +324,9 @@ function install_process () {
 		return 'Can\'t write base system configuration! Installation aborted.';
 	}
 	chmod(ROOT.'/config/main.json', 0600);
-	unset($system[array_search('config/main.php', $system)]);
-	file_put_contents(ROOT.'/core/fs.json', _json_encode(array_keys($system)));
-	unset($system);
+	unset($fs[array_search('config/main.php', $fs)]);
+	file_put_contents(ROOT.'/core/fs.json', _json_encode(array_keys($fs)));
+	unset($fs);
 	if (!file_exists(DIR.'/install/DB/'.$_POST['db_engine'].'.sql')) {
 		return 'Can\'t find system tables structure for selected database engine! Installation aborted.';
 	}

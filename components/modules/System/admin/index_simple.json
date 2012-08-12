@@ -10,15 +10,14 @@
 	"components"	: [
 		"modules",
 		"blocks",
-		"plugins",
-		"security"
+		"plugins"
 	],
 	"users"			: [
 		"general",
 		"users",
 		"groups",
 		"permissions",
-		"statistic",
+		"security",
 		"mail"
 	]
 }

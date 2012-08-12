@@ -32,7 +32,6 @@ function core_input ($item, $type = 'text', $info_item = null, $disabled = false
 			h::input([
 				'name'		=> "core[$item]",
 				'value'		=> $value,
-				'class'		=> 'cs-form-element',
 				'min'		=> $min,
 				'max'		=> $max,
 				'type'		=> $type,
@@ -54,7 +53,7 @@ function core_input ($item, $type = 'text', $info_item = null, $disabled = false
 		];
 	}
 }
-function core_textarea ($item, $wide = true, $editor = null, $info_item = null) {
+function core_textarea ($item, $editor = null, $info_item = null) {
 	global $Config;
 	switch ($item) {
 		default:
@@ -72,7 +71,7 @@ function core_textarea ($item, $wide = true, $editor = null, $info_item = null) 
 			$content,
 			[
 				'name'	=> "core[$item]",
-				'class'	=> 'cs-form-element'.($wide ? ' cs-wide-textarea' : '').($editor ? ' '.$editor : '')
+				'class'	=> ' cs-wide-textarea'.($editor ? ' '.$editor : '')
 			]
 		)
 	];
@@ -88,7 +87,6 @@ function core_select ($items_array, $item, $id = null, $info_item = null, $multi
 				'selected'	=> $Config->core[$item],
 				'size'		=> $size,
 				'id'		=> $id ?: false,
-				'class'		=> 'cs-form-element',
 				$multiple ? 'multiple' : false
 			]
 		)
@@ -129,23 +127,27 @@ function check_dependencies ($name, $type = 'module') {
 		return true;
 	}
 	$meta		= _json_decode(file_get_contents($dir.'/meta.json'));
-	global $Config, $Page, $L;
+	global $Config, $Page, $L, $Core;
 	if (isset($meta['db_support']) && !empty($meta['db_support'])) {
 		$return		= false;
-		foreach ($Config->db as $database) {
-			if (isset($database['type']) && in_array($database['type'], $meta['db_support'])) {
-				$return	= true;
-				break;
+		if (in_array($Core->config('db_type'), $meta['db_support'])) {
+			$return	= true;
+		} else {
+			foreach ($Config->db as $database) {
+				if (isset($database['type']) && in_array($database['type'], $meta['db_support'])) {
+					$return	= true;
+					break;
+				}
 			}
+			unset($database);
 		}
-		unset($database);
 		if (!$return) {
 			$Page->warning(
 				$L->compatible_databases_not_found(
 					implode('", "', $meta['db_support'])
 				)
 			);
-		} else {
+		} elseif (!$Config->core['simple_admin_mode']) {
 			$Page->notice(
 				$L->compatible_databases(
 					implode('", "', $meta['db_support'])
@@ -157,10 +159,14 @@ function check_dependencies ($name, $type = 'module') {
 	}
 	if (isset($meta['storage_support']) && !empty($meta['storage_support'])) {
 		$return_s	= false;
-		foreach ($Config->storage as $storage) {
-			if (in_array($storage['connection'], $meta['storage_support'])) {
-				$return_s	= true;
-				break;
+		if (in_array($Core->config('storage_type'), $meta['storage_support'])) {
+			$return_s	= true;
+		} else {
+			foreach ($Config->storage as $storage) {
+				if (in_array($storage['connection'], $meta['storage_support'])) {
+					$return_s	= true;
+					break;
+				}
 			}
 		}
 		if (!$return_s) {
@@ -169,7 +175,7 @@ function check_dependencies ($name, $type = 'module') {
 					implode('", "', $meta['storage_support'])
 				)
 			);
-		} else {
+		} elseif (!$Config->core['simple_admin_mode']) {
 			$Page->notice(
 				$L->compatible_storages(
 					implode('", "', $meta['storage_support'])

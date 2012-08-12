@@ -12,7 +12,7 @@ $Index->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}([
 		h::td([
 			h::info('key_expire'),
-			h::{'input.cs-form-element[type=number]'}([
+			h::{'input[type=number]'}([
 				'name'			=> 'core[key_expire]',
 				'value'			=> $Config->core['key_expire'],
 				'min'			=> 1
@@ -22,7 +22,7 @@ $Index->content(
 
 		h::td([
 			h::info('ip_black_list'),
-			h::{'textarea.cs-form-element.cs-wide-textarea'}(
+			h::{'textarea.cs-wide-textarea'}(
 				$Config->core['ip_black_list'],
 				[
 					'name' => 'core[ip_black_list]'
@@ -42,7 +42,7 @@ $Index->content(
 
 		h::td([
 			h::info('ip_admin_list'),
-			h::{'textarea.cs-form-element.cs-wide-textarea'}(
+			h::{'textarea.cs-wide-textarea'}(
 				$Config->core['ip_admin_list'],
 				[
 					'name' => 'core[ip_admin_list]'
