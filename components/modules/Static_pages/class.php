@@ -15,18 +15,11 @@ class Static_pages {
 	 */
 	private	$pages;
 	/**
-	 * Database index for texts
-	 *
-	 * @var int
-	 */
-	private	$texts;
-	/**
 	 * Saving indexes of used databases
 	 */
 	function __construct () {
 		global $Config;
 		$this->pages	= $Config->module(basename(__DIR__))->db('pages');
-		$this->texts	= $Config->module(basename(__DIR__))->db('texts');
 	}
 	/**
 	 * Prepare string to use as path
@@ -84,7 +77,7 @@ class Static_pages {
 	 * @return bool|int				Id of created page on success of <b>false</> on failure
 	 */
 	function add ($category, $title, $path, $content, $interface) {
-		global $db, $Cache, $L;
+		global $db, $Cache;
 		$category	= (int)$category;
 		$path		= $this->path(str_replace('/', ' ', $path ?: $title));
 		$interface	= (int)$interface;
@@ -256,7 +249,7 @@ class Static_pages {
 	 * @return bool|int			Id of created category on success of <b>false</> on failure
 	 */
 	function add_category ($parent, $title, $path) {
-		global $db, $Cache, $L;
+		global $db, $Cache;
 		$parent	= (int)$parent;
 		$path	= $this->path(str_replace('/', ' ', $path ?: $title));
 		if ($db->{$this->pages}()->q(
@@ -314,7 +307,7 @@ class Static_pages {
 	 * @return bool
 	 */
 	function del_category ($id) {
-		global $db, $Cache, $L;
+		global $db, $Cache;
 		$id	= (int)$id;
 		if ($db->{$this->pages}()->q(
 			[
@@ -326,7 +319,7 @@ class Static_pages {
 		)) {
 			$this->ml_del('Static_pages/categories/title', $id);
 			$this->ml_del('Static_pages/categories/path', $id);
-			unset($Cache->{'Static_pages_'.$L->clang});
+			unset($Cache->Static_pages);
 			return true;
 		} else {
 			return false;
@@ -334,17 +327,17 @@ class Static_pages {
 	}
 	private function ml_process ($text) {
 		global $Text;
-		return $Text->process($this->texts, $text);
+		return $Text->process($this->pages, $text);
 	}
 	private function ml_set ($group, $label, $text) {
 		global $Text;
 		if ($text === 'index') {
 			return $text;
 		}
-		return $Text->set($this->texts, $group, $label, $text);
+		return $Text->set($this->pages, $group, $label, $text);
 	}
 	private function ml_del ($group, $label) {
 		global $Text;
-		return $Text->del($this->texts, $group, $label);
+		return $Text->del($this->pages, $group, $label);
 	}
 }

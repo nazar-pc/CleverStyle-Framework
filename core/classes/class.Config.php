@@ -262,6 +262,7 @@ class Config {
 				'rc'	=> &$rc
 			]
 		);
+		if ($a = 3)
 		/**
 		 * Obtaining page path in form of array
 		 */

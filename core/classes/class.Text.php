@@ -112,7 +112,7 @@ class Text {
 		);
 		if (!$id) {
 			if (!$Config->core['multilingual']) {
-				return false;
+				return $text;
 			} else {
 				$db_object->q(
 					"INSERT INTO `[prefix]texts` (`label`, `group`) VALUES ('%s', '%s')",
@@ -120,7 +120,7 @@ class Text {
 					$group
 				);
 				if (!($id = $db_object->id())) {
-					return false;
+					return $text;
 				}
 			}
 		}
@@ -141,17 +141,18 @@ class Text {
 			)) {
 				return '{¶'.$id.'}';
 			} else {
-				return false;
+				return $text;
 			}
 		} elseif ($Config->core['multilingual']) {
 			if (!$db_object->q(
-				"INSERT INTO `[prefix]texts_data` (`id`, `lang`, `text`) VALUES ('%s', '%s', '%s')",
+				"INSERT INTO `[prefix]texts_data` (`id`, `id_`, `lang`, `text`) VALUES ('%s', '%s', '%s')",
 				$id,
+				'{¶'.$id.'}',
 				$L->clang,
 				$text
 			)) {
 				$db_object->q("DELETE FROM `[prefix]texts` WHERE `id` = $id");
-				return false;
+				return $text;
 			}
 			global $Config;
 			/**
@@ -166,7 +167,7 @@ class Text {
 			if ($id) {
 				return '{¶'.$id.'}';
 			} else {
-				return false;
+				return $text;
 			}
 		} else {
 			return $text;

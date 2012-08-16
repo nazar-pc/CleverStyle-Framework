@@ -218,13 +218,13 @@ if (isset($rc[2])) {
 						])
 					),
 					($block['type'] == 'html' ? h::{'td.ui-widget-content.ui-corner-all[colspan=6] textarea.EDITOR'}(
-							$block['data'],
+							$block['content'],
 							[
 								'name'	=> 'block[html]'
 							]
 						) : (
 							$block['type'] == 'raw_html' ? h::{'td.ui-widget-content.ui-corner-all[colspan=6] textarea.cs-wide-textarea'}(
-								$block['data'],
+								$block['content'],
 								[
 									'name'	=> 'block[raw_html]'
 								]

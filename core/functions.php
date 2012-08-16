@@ -1190,7 +1190,7 @@ function server_api () {
 	ob_start();
 	phpinfo(INFO_GENERAL);
 	$tmp = ob_get_clean();
-	preg_match('/Server API <\/td><td class=\"v\">(.*?) <\/td><\/tr>/', $tmp, $tmp);
+	preg_match('/Server API <\/td><td class="v">(.*?) <\/td><\/tr>/', $tmp, $tmp);
 	if ($tmp[1]) {
 		return $tmp[1];
 	} else {

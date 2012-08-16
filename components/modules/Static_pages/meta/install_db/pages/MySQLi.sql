@@ -6,7 +6,7 @@ CREATE TABLE `[prefix]static_pages` (
   `content` text NOT NULL,
   `interface` tinyint(1) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `path` (`path`),
+  KEY `path` (`path`),
   KEY `category` (`category`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
@@ -19,3 +19,20 @@ CREATE TABLE `[prefix]static_pages_categories` (
   UNIQUE KEY `path` (`path`),
   KEY `parent` (`parent`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `prefix_texts` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `label` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
+  `group` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `label` (`label`(255),`group`(255))
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `prefix_texts_data` (
+  `id` bigint(20) NOT NULL COMMENT 'id from texts table',
+  `id_` varchar(25) NOT NULL,
+  `lang` varchar(2) NOT NULL,
+  `text` text NOT NULL,
+  PRIMARY KEY (`id`,`lang`),
+  KEY `id_` (`id_`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

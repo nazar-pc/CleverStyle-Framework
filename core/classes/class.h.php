@@ -750,10 +750,12 @@ class h {
 								)
 							)
 						) {
-							$output[]	= [
-								self::__callStatic($input[1], $d[0]).
-								self::__callStatic($input[1], $d[1])
-							];
+							$output[]	= array_map(
+								function ($d) use ($input) {
+									return self::__callStatic($input[1], $d);
+								},
+								$d
+							);
 						} else {
 							$output[]	= [
 								self::__callStatic($input[1], $d[0]),
@@ -812,16 +814,21 @@ class h {
 			 * Third part of expression - fix for "select" and "datalist" tags bescause they accept arrays as values
 			 */
 			} elseif (
-				is_array_indexed($data[0]) &&
 				(
-					!isset($data[1]) ||
-					!is_array($data[1]) ||
+					is_array_indexed($data[0]) &&
 					(
-						is_array_indexed($data[1]) && !in_array($data[1][0], self::$unit_atributes)
+						!isset($data[1]) ||
+						!is_array($data[1]) ||
+						(
+							is_array_indexed($data[1]) && !in_array($data[1][0], self::$unit_atributes)
+						)
+					) &&
+					(
+						strpos($input, 'select') !== 0 && strpos($input, 'datalist') !== 0
 					)
-				) &&
+				) ||
 				(
-					strpos($input, 'select') !== 0 && strpos($input, 'datalist') !== 0
+					isset($data[1]) && is_array_assoc($data[0]) && is_array_assoc($data[1])
 				)
 			) {
 				$output	= '';

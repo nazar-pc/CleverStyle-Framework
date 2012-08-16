@@ -83,33 +83,35 @@ class MySQL extends _Abstract {
 	/**
 	 * Fetch a result row as an associative array
 	 *
-	 * @param bool|resource $query_result
-	 * @param bool|string   $one_column
+	 * @param bool|resource	$query_result
+	 * @param bool|string	$one_column
 	 * @param bool $array
+	 * @param bool			$indexed
 	 *
 	 * @return array|bool
 	 */
-	function f ($query_result = false, $one_column = false, $array = false) {
+	function f ($query_result = false, $one_column = false, $array = false, $indexed = false) {
 		if ($query_result === false) {
 			$query_result = array_slice($this->queries['result'], -1)[0];
 		}
+		$result_type	= $indexed ? MYSQL_NUM : MYSQL_ASSOC;
 		if (is_resource($query_result)) {
 			if ($array) {
 				$result = [];
 				if ($one_column === false) {
-					while ($current = mysql_fetch_assoc($query_result)) {
+					while ($current = mysql_fetch_array($query_result, $result_type)) {
 						$result[] = $current;
 					}
 				} else {
 					$one_column = (string)$one_column;
-					while ($current = mysql_fetch_assoc($query_result)) {
+					while ($current = mysql_fetch_assoc($query_result, $result_type)) {
 						$result[] = $current[$one_column];
 					}
 				}
 				$this->free($query_result);
 				return $result;
 			} else {
-				$result	= mysql_fetch_assoc($query_result);
+				$result	= mysql_fetch_assoc($query_result, $result_type);
 				if ($one_column && is_array($result)) {
 					return $result[$one_column];
 				}

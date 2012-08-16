@@ -8,10 +8,10 @@
 body {
 	background-color: #666;
 }
-td#main_content > section > article {
+#main_content > section > article {
 	background: rgba(255, 255, 255, 0.95);
 }
-td#main_content, #body > table {
+#main_content section, #body > table {
 	background: rgba(255, 255, 255, 0.15);
 	border: 1px solid rgba(255, 255, 255, 0.25);
 }

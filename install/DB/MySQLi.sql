@@ -82,9 +82,11 @@ CREATE TABLE `[prefix]texts` (
 
 CREATE TABLE `[prefix]texts_data` (
   `id` bigint(20) NOT NULL COMMENT 'id from texts table',
+  `id_` varchar(25) NOT NULL,
   `lang` varchar(2) NOT NULL,
   `text` text NOT NULL,
-  PRIMARY KEY (`id`,`lang`)
+  PRIMARY KEY (`id`,`lang`),
+  KEY `id_` (`id_`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `[prefix]users` (

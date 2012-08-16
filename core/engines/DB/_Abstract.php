@@ -198,31 +198,35 @@ abstract class _Abstract {
 	 * @param bool					$array			If <b>true</b> returns array of associative arrays of all fetched rows
 	 * @param bool|string			$one_column		This parameter may contain name of interested column,
 	 * 												and function will return not array with one element, but directly its value
+	 * @param bool					$indexed		If false - associative array will be returned
 	 *
 	 * @return array|bool
 	 */
-	abstract function f ($query_result = false, $one_column = false, $array = false);
+	abstract function f ($query_result = false, $one_column = false, $array = false, $indexed = false);
 	/**
 	 * Similar to ::f() method, with parameter <b>$array</b> = true
 	 *
-	 * @param bool|object|resource $query_result
-	 * @param bool|string   $one_column
+	 * @param bool|object|resource	$query_result
+	 * @param bool|string			$one_column	This parameter may contain name of interested column,
+	 * 											and function will return not array with one element, but directly its value
+	 * @param bool					$indexed	If false - associative array will be returned
 	 *
 	 * @return array|bool
 	 */
-	function fa ($query_result = false, $one_column = false) {
-		return $this->f($query_result, $one_column, true);
+	function fa ($query_result = false, $one_column = false, $indexed = false) {
+		return $this->f($query_result, $one_column, true, $indexed);
 	}
 	/**
 	 * Combination of ::q() and ::f() methods
 	 *
 	 * @param array|string	$query		SQL query string, or you can put all parameters, that ::q() function can accept in form of array
-	 * @param bool|string   $one_column	This parameter may contain name of interested column,
+	 * @param bool|string	$one_column	This parameter may contain name of interested column,
 	 * 									and function will return not array with one element, but directly its value
+	 * @param bool			$indexed	If false - associative array will be returned
 	 *
 	 * @return array|bool
 	 */
-	function qf ($query = '', $one_column = false) {
+	function qf ($query = '', $one_column = false, $indexed = false) {
 		$params	= [];
 		if (is_array($query) && !empty($query)) {
 			if (count($query) == 2) {
@@ -235,18 +239,19 @@ abstract class _Abstract {
 		if (!$query) {
 			return false;
 		}
-		return $this->f($this->q($query, $params), $one_column, false);
+		return $this->f($this->q($query, $params), $one_column, false, $indexed);
 	}
 	/**
 	 * Combination of ::q() and ::fa() methods
 	 *
 	 * @param array|string	$query		SQL query string, or you can put all parameters, that ::q() function can accept in form of array
-	 * @param bool|string   $one_column	This parameter may contain name of interested column,
+	 * @param bool|string	$one_column	This parameter may contain name of interested column,
 	 * 									and function will return not array with one element, but directly its value
+	 * @param bool			$indexed	If false - associative array will be returned
 	 *
 	 * @return array|bool
 	 */
-	function qfa ($query = '', $one_column = false) {
+	function qfa ($query = '', $one_column = false, $indexed = false) {
 		$params	= [];
 		if (is_array($query) && !empty($query)) {
 			if (count($query) == 2) {
@@ -259,7 +264,7 @@ abstract class _Abstract {
 		if (!$query) {
 			return false;
 		}
-		return $this->f($this->q($query, $params), $one_column, true);
+		return $this->f($this->q($query, $params), $one_column, true, $indexed);
 	}
 	/**
 	 * Get id of last inserted row

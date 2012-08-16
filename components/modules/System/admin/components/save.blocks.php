@@ -7,7 +7,7 @@
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Config, $Index, $Text;
+global $Config, $Index, $Text, $L;
 $a	= $Index;
 if (isset($_POST['mode'])) {
 	switch ($_POST['mode']) {
@@ -73,7 +73,7 @@ if (isset($_POST['mode'])) {
 				$User->add_permission('Block', $block['index']);
 			} else {
 				global $Cache;
-				unset($Cache->{'blocks/'.$block['index']});
+				unset($Cache->{'blocks/'.$block['index'].'_'.$L->clang});
 			}
 			unset($block, $block_new);
 			$a->save('components');
@@ -100,7 +100,7 @@ if (isset($_POST['mode'])) {
 					$block['index']
 				);
 				unset(
-					$Cache->{'blocks/'.$block['index']},
+					$Cache->{'blocks/'.$block['index'].'_'.$L->clang},
 					$block,
 					$Config->components['blocks'][$_POST['id']]
 				);
