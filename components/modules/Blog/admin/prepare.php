@@ -1,13 +1,13 @@
 <?php
 /**
- * @package		  Static Pages
- * @category		 modules
- * @version		  0.001
- * @author			Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright		Copyright (c) 2011-2012 by Nazar Mokrynskyi
- * @license		  MIT License, see license.txt
+ * @package		Blog
+ * @category	modules
+ * @version		0.001
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012 by Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
  */
-namespace	cs\modules\Static_pages;
+namespace	cs\modules\Blog;
 use			\h;
 global $Core, $Index, $Page, $L;
 $Index->title_auto	= false;
@@ -21,13 +21,13 @@ $Page->menumore		= h::a(
 	]
 );
 include_once MFOLDER.'/../class.php';
-$Core->create('cs\\modules\\Static_pages\\Static_pages');
+$Core->create('cs\\modules\\Blog\\Blog');
 function get_categories_rows ($structure = null, $level = 0, $parent_categories = []) {
 	global $L;
 	$root					= false;
 	if ($structure === null) {
-		global $Static_pages;
-		$structure			= $Static_pages->get_structure();
+		global $Blog;
+		$structure			= $Blog->get_structure();
 		$structure['title']	= $L->root_category;
 		$root				= true;
 	}
@@ -103,8 +103,8 @@ function get_categories_list ($current = null, $structure = null, $level = 0) {
 		'value'	=> []
 	];
 	if ($structure === null) {
-		global $Static_pages, $L;
-		$structure			= $Static_pages->get_structure();
+		global $Blog, $L;
+		$structure			= $Blog->get_structure();
 		$list['in'][]		= $L->root_category;
 		$list['value'][]	= 0;
 	} else {
@@ -124,13 +124,13 @@ function get_categories_list ($current = null, $structure = null, $level = 0) {
 	return $list;
 }
 function get_pages_rows () {
-	global $Config, $Static_pages, $L, $Page;
+	global $Config, $Blog, $L, $Page;
 	$categories	= array_slice($Config->routing['current'], 2);
-	$structure	= $Static_pages->get_structure();
+	$structure	= $Blog->get_structure();
 	$path		= [];
 	if (!empty($categories)) {
 		foreach ($categories as $category) {
-			$category	= $Static_pages->get_category($category)['path'];
+			$category	= $Blog->get_category($category)['path'];
 			if (isset($structure['categories'][$category])) {
 				$structure	= $structure['categories'][$category];
 				$path[]		= $structure['path'];
@@ -143,7 +143,7 @@ function get_pages_rows () {
 	$content	= [];
 	if (!empty($structure['pages'])) {
 		foreach ($structure['pages'] as &$page) {
-			$page			= $Static_pages->get($page);
+			$page			= $Blog->get($page);
 			$content[]		= [
 				[
 					h::a(

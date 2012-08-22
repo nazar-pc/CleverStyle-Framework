@@ -10,14 +10,16 @@ class Text {
 	/**
 	 * Gets text on current language
 	 *
-	 * @param int        $database
-	 * @param string     $group
-	 * @param string     $label
-	 * @param int        $id
+	 * @param int			$database
+	 * @param string		$group
+	 * @param string		$label
+	 * @param int			$id
+	 * @param bool			$auto_translation	If <b>false</b> - automatic translation will be disabled,
+	 * 											even in case, when it is enabled in system configuration
 	 *
 	 * @return bool|string
 	 */
-	function get ($database, $group, $label, $id = null) {
+	function get ($database, $group, $label, $id = null, $auto_translation = true) {
 		global $Cache, $L, $db, $Config;
 		$id					= (int)$id;
 		$cache_key			= 'texts/'.$database.'/'.($id ?: md5($group).md5($label)).'_'.$L->clang;
@@ -70,7 +72,7 @@ class Text {
 		if (!$text) {
 			return false;
 		}
-		if ($text['lang'] != $L->clang && $Config->core['multilingual'] && $Config->core['auto_translation']) {
+		if ($text['lang'] != $L->clang && $auto_translation && $Config->core['multilingual'] && $Config->core['auto_translation']) {
 			$engine_class	= '\\cs\\Text\\'.$Config->core['auto_translation_engine']['name'];
 			$text['text']	= $engine_class::translate($text['text'], $text['lang'], $L->clang);
 			$db->$database()->q(
@@ -86,10 +88,10 @@ class Text {
 	/**
 	 * Sets text on current language
 	 *
-	 * @param int          $database
-	 * @param string       $group
-	 * @param string       $label
-	 * @param string       $text
+	 * @param int			$database
+	 * @param string		$group
+	 * @param string		$label
+	 * @param string		$text
 	 *
 	 * @return bool|string				If multilingual support enabled or was enabled and then disabled but translations remains - returns {¶<i>id</i>}<br>
 	 * 									otherwise returns original text
@@ -108,7 +110,7 @@ class Text {
 				$label,
 				$group
 			],
-			'id'
+			true
 		);
 		if (!$id) {
 			if (!$Config->core['multilingual']) {
@@ -131,7 +133,7 @@ class Text {
 				$id,
 				$L->clang
 			],
-			'id'
+			true
 		)) {
 			if ($db_object->q(
 				"UPDATE `[prefix]texts_data` SET `text` = '%s' WHERE `id` = '%s' AND `lang` = '%s' LIMIT 1",
@@ -191,7 +193,7 @@ class Text {
 				$group,
 				$label
 			],
-			'id'
+			true
 		);
 		if ($id) {
 			unset($Cache->{'texts/'.$database.'/'.$id.'_'.$L->clang});

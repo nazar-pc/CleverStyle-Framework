@@ -48,9 +48,15 @@ class Static_pages {
 	function get ($id) {
 		global $db, $Cache, $L;
 		$id	= (int)$id;
-		if (($data = $Cache->{'Static_pages/pages_'.$L->clang.'/'.$id}) === false) {
+		if (($data = $Cache->{'Static_pages/pages/'.$id.'/'.$L->clang}) === false) {
 			$data	= $db->{$this->pages}->qf([
-				"SELECT `id`, `category`, `title`, `path`, `content`, `interface`
+				"SELECT
+					`id`,
+					`category`,
+					`title`,
+					`path`,
+					`content`,
+					`interface`
 				FROM `[prefix]static_pages`
 				WHERE `id` = '%s'
 				LIMIT 1",
@@ -60,7 +66,7 @@ class Static_pages {
 				$data['title']		= $this->ml_process($data['title']);
 				$data['path']		= $this->ml_process($data['path']);
 				$data['content']	= $this->ml_process($data['content']);
-				$Cache->{'Static_pages/pages_'.$L->clang.'/'.$id}	= $data;
+				$Cache->{'Static_pages/pages/'.$id.'/'.$L->clang}	= $data;
 			}
 		}
 		return $data;
@@ -118,7 +124,12 @@ class Static_pages {
 		$id			= (int)$id;
 		if ($db->{$this->pages}()->q(
 			"UPDATE `[prefix]static_pages`
-			SET `category` = '%s', `title` = '%s', `path` = '%s', `content` = '%s', `interface` = '%s'
+			SET
+				`category`	= '%s',
+				`title`		= '%s',
+				`path`		= '%s',
+				`content`	= '%s',
+				`interface`	= '%s'
 			WHERE `id` = '%s'
 			LIMIT 1",
 			$category,
@@ -129,8 +140,8 @@ class Static_pages {
 			$id
 		)) {
 			unset(
-				$Cache->{'Static_pages/structure_'.$L->clang},
-				$Cache->{'Static_pages/pages_'.$L->clang.'/'.$id}
+				$Cache->{'Static_pages/structure/'.$L->clang},
+				$Cache->{'Static_pages/pages/'.$id.'/'.$L->clang}
 			);
 			return true;
 		} else {
@@ -145,7 +156,7 @@ class Static_pages {
 	 * @return bool
 	 */
 	function del ($id) {
-		global $db, $Cache, $L;
+		global $db, $Cache;
 		$id	= (int)$id;
 		if ($db->{$this->pages}()->q(
 			"DELETE FROM `[prefix]static_pages`
@@ -157,8 +168,8 @@ class Static_pages {
 			$this->ml_del('Static_pages/pages/path', $id);
 			$this->ml_del('Static_pages/pages/content', $id);
 			unset(
-				$Cache->{'Static_pages/structure_'.$L->clang},
-				$Cache->{'Static_pages/pages_'.$L->clang.'/'.$id}
+				$Cache->{'Static_pages/structure'},
+				$Cache->{'Static_pages/pages/'.$id}
 			);
 			return true;
 		} else {
@@ -172,10 +183,10 @@ class Static_pages {
 	 */
 	function get_structure () {
 		global $Cache, $L;
-		if (($data = $Cache->{'Static_pages/structure_'.$L->clang}) === false) {
+		if (($data = $Cache->{'Static_pages/structure/'.$L->clang}) === false) {
 			$data	= $this->get_structure_internal();
 			if ($data) {
-				$Cache->{'Static_pages/structure_'.$L->clang}	= $data;
+				$Cache->{'Static_pages/structure/'.$L->clang}	= $data;
 			}
 		}
 		return $data;
@@ -196,7 +207,7 @@ class Static_pages {
 				WHERE `category` = '%s'",
 				$parent
 			],
-			'id'
+			true
 		);
 		$structure['pages']			= [];
 		if (!empty($pages)) {
@@ -207,7 +218,9 @@ class Static_pages {
 		}
 		unset($pages);
 		$categories					= $db->{$this->pages}->qfa([
-			"SELECT `id`, `path`
+			"SELECT
+				`id`,
+				`path`
 			FROM `[prefix]static_pages_categories`
 			WHERE `parent` = '%s'",
 			$parent
@@ -229,7 +242,11 @@ class Static_pages {
 		global $db;
 		$id				= (int)$id;
 		$data			= $db->{$this->pages}->qf([
-			"SELECT `id`, `title`, `path`, `parent`
+			"SELECT
+				`id`,
+				`title`,
+				`path`,
+				`parent`
 			FROM `[prefix]static_pages_categories`
 			WHERE `id` = '%s'
 			LIMIT 1",
@@ -261,7 +278,7 @@ class Static_pages {
 		)) {
 			$id	= $db->{$this->pages}()->id();
 			$this->set_category($id, $parent, $title, $path);
-			unset($Cache->Static_pages);
+			unset($Cache->{'Static_pages/structure'});
 			return $id;
 		} else {
 			return false;
@@ -285,7 +302,10 @@ class Static_pages {
 		$id		= (int)$id;
 		if ($db->{$this->pages}()->q(
 			"UPDATE `[prefix]static_pages_categories`
-			SET `parent` = '%s', `title` = '%s', `path` = '%s'
+			SET
+				`parent`	= '%s',
+				`title`		= '%s',
+				`path`		= '%s'
 			WHERE `id` = '%s'
 			LIMIT 1",
 			$parent,
@@ -293,7 +313,7 @@ class Static_pages {
 			$this->ml_set('Static_pages/categories/path', $id, $path),
 			$id
 		)) {
-			unset($Cache->{'Static_pages/structure_'.$L->clang});
+			unset($Cache->{'Static_pages/structure/'.$L->clang});
 			return true;
 		} else {
 			return false;
@@ -311,9 +331,15 @@ class Static_pages {
 		$id	= (int)$id;
 		if ($db->{$this->pages}()->q(
 			[
-				"DELETE FROM `[prefix]static_pages_categories` WHERE `id` = '%s' LIMIT 1",
-				"UPDATE `[prefix]static_pages_categories` SET `parent` = '0' WHERE `parent` = '%s'",
-				"UPDATE `[prefix]static_pages` SET `category` = '0' WHERE `category` = '%s'"
+				"UPDATE `[prefix]static_pages_categories`
+				SET `parent` = '0'
+				WHERE `parent` = '%s'",
+				"UPDATE `[prefix]static_pages`
+				SET `category` = '0'
+				WHERE `category` = '%s'",
+				"DELETE FROM `[prefix]static_pages_categories`
+				WHERE `id` = '%s'
+				LIMIT 1"
 			],
 			$id
 		)) {

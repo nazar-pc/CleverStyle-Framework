@@ -84,7 +84,7 @@ class MySQL extends _Abstract {
 	 * Fetch a result row as an associative array
 	 *
 	 * @param bool|resource	$query_result
-	 * @param bool|string	$one_column
+	 * @param bool			$one_column
 	 * @param bool $array
 	 * @param bool			$indexed
 	 *
@@ -94,7 +94,11 @@ class MySQL extends _Abstract {
 		if ($query_result === false) {
 			$query_result = array_slice($this->queries['result'], -1)[0];
 		}
-		$result_type	= $indexed ? MYSQL_NUM : MYSQL_ASSOC;
+		if ($one_column) {
+			$result_type	= MYSQL_NUM;
+		} else {
+			$result_type	= $indexed ? MYSQL_NUM : MYSQL_ASSOC;
+		}
 		if (is_resource($query_result)) {
 			if ($array) {
 				$result = [];
@@ -103,9 +107,8 @@ class MySQL extends _Abstract {
 						$result[] = $current;
 					}
 				} else {
-					$one_column = (string)$one_column;
 					while ($current = mysql_fetch_assoc($query_result, $result_type)) {
-						$result[] = $current[$one_column];
+						$result[] = $current[0];
 					}
 				}
 				$this->free($query_result);
@@ -113,7 +116,7 @@ class MySQL extends _Abstract {
 			} else {
 				$result	= mysql_fetch_assoc($query_result, $result_type);
 				if ($one_column && is_array($result)) {
-					return $result[$one_column];
+					return $result[0];
 				}
 				return $result;
 			}
@@ -158,7 +161,6 @@ class MySQL extends _Abstract {
 	protected function s_internal ($string, $single_quotes_around) {
 		$return	= mysql_real_escape_string($string, $this->id);
 		return $single_quotes_around ? "'$return'" : $return;
-		//return 'unhex(\''.bin2hex((string)$string).'\')';
 	}
 	/**
 	 * Get information about server

@@ -1,8 +1,8 @@
 {
-	"package"		: "Static Pages",
+	"package"		: "Blog",
 	"category"		: "modules",
-	"version"		: "0.004",
-	"description"	: "Creating of simple static pages with categories",
+	"version"		: "0.002",
+	"description"	: "Adds blogging functionality",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",
 	"license"		: "MIT License",
@@ -11,7 +11,7 @@
 		"MySQLi"
 	],
 	"provide"		: [
-		"static_pages"
+		"blog"
 	],
 	"multilingual"	: [
 		"interface",

@@ -7,11 +7,11 @@
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace	cs\modules\Static_pages;
+namespace	cs\modules\Blog;
 use			\h;
-global $Index, $L, $Page, $Static_pages, $Config;
+global $Index, $L, $Page, $Blog, $Config;
 $id							= (int)$Config->routing['current'][1];
-$data						= $Static_pages->get_category($id);
+$data						= $Blog->get_category($id);
 $Page->title($L->editing_of_page_category($data['title']));
 $Index->apply_button		= false;
 $Index->cancel_button_back	= true;

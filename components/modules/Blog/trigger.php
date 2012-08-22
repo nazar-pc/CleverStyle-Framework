@@ -1,6 +1,6 @@
 <?php
 /**
- * @package        Static Pages
+ * @package        Blog
  * @category       modules
  * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright      Copyright (c) 2011-2012 by Nazar Mokrynskyi
@@ -17,18 +17,18 @@ $Core->register_trigger(
 		}
 		time_limit_pause();
 		include_once MODULES.'/'.$module.'/class.php';
-		$Static_pages	= $Core->create('cs\\modules\\Static_pages\\Static_pages');
-		$structure		= $Static_pages->get_structure();
+		$Blog	= $Core->create('cs\\modules\\Blog\\Blog');
+		$structure		= $Blog->get_structure();
 		while (!empty($structure['categories'])) {
 			foreach ($structure['categories'] as $category) {
-				$Static_pages->del_category($category['id']);
+				$Blog->del_category($category['id']);
 			}
-			$structure	= $Static_pages->get_structure();
+			$structure	= $Blog->get_structure();
 		}
 		unset($category);
 		if (!empty($structure['pages'])) {
 			foreach ($structure['pages'] as $page) {
-				$Static_pages->del($page);
+				$Blog->del($page);
 			}
 		}
 		unset(
@@ -61,18 +61,18 @@ $Core->register_trigger(
 			case $module:
 				$rc = ['index'];
 		}
-		global $Core, $Static_pages;
+		global $Core, $Blog;
 		include_once MODULES.'/'.$module.'/class.php';
-		$Core->create('cs\\modules\\Static_pages\\Static_pages');
-		$structure				= $Static_pages->get_structure();
+		$Core->create('cs\\modules\\Blog\\Blog');
+		$structure				= $Blog->get_structure();
 		$categories				= array_slice($rc, 0, -1);
-		$Static_pages->title	= [];
+		$Blog->title	= [];
 		if (!empty($categories)) {
 			foreach ($categories as $category) {
 				if (isset($structure['categories'][$category])) {
 					$structure				= $structure['categories'][$category];
 					$path[]					= $structure['path'];
-					$Static_pages->title[]	= $structure['title'];
+					$Blog->title[]	= $structure['title'];
 				}
 			}
 			unset($category);

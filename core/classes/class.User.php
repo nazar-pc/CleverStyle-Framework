@@ -389,7 +389,7 @@ class User {
 				 */
 				goto get_data;
 			} elseif (!$cache_only) {
-				$new_data = $this->db()->qf("SELECT `$item` FROM `[prefix]users` WHERE `id` = '$user' LIMIT 1", $item);
+				$new_data = $this->db()->qf("SELECT `$item` FROM `[prefix]users` WHERE `id` = '$user' LIMIT 1", true);
 				if ($new_data !== false) {
 					$this->update_cache[$user] = true;
 					if ($item == 'data') {
@@ -581,7 +581,7 @@ class User {
 					"SELECT `id` FROM `[prefix]users` WHERE `login_hash` = '%1\$s' OR `email_hash` = '%1\$s' LIMIT 1",
 					$login_hash
 				],
-				'id'
+				true
 			);
 		}
 		return $id && $id != 1 ? $id : false;
@@ -611,7 +611,7 @@ class User {
 				"SELECT `id` FROM `[prefix]users` WHERE (`login` LIKE '%1\$s' OR `username` LIKE '%1\$s' OR `email` LIKE '%1\$s') AND `status` != '-1'",
 				$search_phrase
 			],
-			'id'
+			true
 		);
 		return $found_users;
 	}
@@ -719,7 +719,7 @@ class User {
 		}
 		global $Cache;
 		if (($groups = $Cache->{'users/groups/'.$user}) === false) {
-			$groups = $this->db()->qfa("SELECT `group` FROM `[prefix]users_groups` WHERE `id` = '$user' ORDER BY `priority` DESC", 'group');
+			$groups = $this->db()->qfa("SELECT `group` FROM `[prefix]users_groups` WHERE `id` = '$user' ORDER BY `priority` DESC", true);
 			return $Cache->{'users/groups/'.$user} = $groups;
 		}
 		return $groups;
@@ -1386,7 +1386,7 @@ class User {
 			];
 			_setcookie('session', $hash, TIME + $Config->core['session_expire'], true);
 			$this->get_session_user();
-			if (($this->db()->qf("SELECT COUNT(`id`) AS `count` FROM `[prefix]sessions`", 'count') % $Config->core['inserts_limit']) == 0) {
+			if (($this->db()->qf("SELECT COUNT(`id`) FROM `[prefix]sessions`", true) % $Config->core['inserts_limit']) == 0) {
 				$this->db_prime()->aq("DELETE FROM `[prefix]sessions` WHERE `expire` < $time");
 			}
 			return true;
@@ -1443,7 +1443,7 @@ class User {
 		global $Cache;
 		$id = $id ?: $this->id;
 		_setcookie('session', '');
-		$sessions = $this->db_prime()->qfa("SELECT `id` FROM `[prefix]sessions` WHERE `user` = $id", 'id');
+		$sessions = $this->db_prime()->qfa("SELECT `id` FROM `[prefix]sessions` WHERE `user` = $id", true);
 		if (is_array($sessions)) {
 			$delete = [];
 			foreach ($sessions as $session) {
@@ -1474,8 +1474,8 @@ class User {
 		$time	= TIME;
 		$ip		= ip2hex($this->ip);
 		$count	= $this->db()->qf(
-			"SELECT COUNT(`expire`) as `count` FROM `[prefix]logins` WHERE `expire` > $time AND (`login_hash` = '$login_hash' OR `ip` = '$ip')",
-			'count'
+			"SELECT COUNT(`expire`) FROM `[prefix]logins` WHERE `expire` > $time AND (`login_hash` = '$login_hash' OR `ip` = '$ip')",
+			true
 		);
 		return $count ? $this->cache['login_attempts'][$login_hash] = $count : 0;
 	}
@@ -1602,7 +1602,7 @@ class User {
 		$reg_date		= TIME - $Config->core['registration_confirmation_time'] * 86400;	//1 day = 86400 seconds
 		$ids			= $this->db_prime()->qfa(
 			"SELECT `id` FROM `[prefix]users` WHERE `last_login` = 0 AND `status` = '-1' AND `reg_date` < $reg_date",
-			'id'
+			true
 		);
 		$this->del_user($ids);
 		$data			= $this->db_prime()->qf(
@@ -1675,7 +1675,7 @@ class User {
 		}
 		$id			= $this->db_prime()->qf(
 			"SELECT `id` FROM `[prefix]users` WHERE `reg_key` = '$key' AND `status` = '1' LIMIT 1",
-			'id'
+			true
 		);
 		if (!$id) {
 			return false;
@@ -1719,6 +1719,7 @@ class User {
 	 * @param bool		$update
 	 */
 	protected function del_user_internal ($user, $update = true) {
+		global $Cache;
 		if (is_array($user)) {
 			foreach ($user as $id) {
 				$this->del_user_internal($id, false);
@@ -1740,6 +1741,7 @@ class User {
 				WHERE
 					`id` IN ($user)"
 			);
+			unset($Cache->users);
 			return;
 		}
 		$user = (int)$user;
@@ -1748,9 +1750,11 @@ class User {
 		}
 		$this->set_user_groups([], $user);
 		$this->del_user_permissions_all($user);
-		global $Cache;
-		unset($Cache->{'users/'.$user});
 		if ($update) {
+			unset(
+				$Cache->{'users/'.hash('sha224', $this->get('login'), $user)},
+				$Cache->{'users/'.$user}
+			);
 			$this->db_prime()->q(
 				"UPDATE `[prefix]users` SET
 					`login`			= null,

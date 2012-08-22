@@ -7,13 +7,13 @@
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace	cs\modules\Static_pages;
+namespace	cs\modules\Blog;
 use			\h;
-global $Core, $Index, $Config, $Static_pages;
+global $Core, $Index, $Config, $Blog;
 include_once MFOLDER.'/class.php';
-$Core->create('cs\\modules\\Static_pages\\Static_pages');
+$Core->create('cs\\modules\\Blog\\Blog');
 $Index->title_auto	= false;
-$data				= $Static_pages->get(HOME ? $Static_pages->get_structure()['pages']['index'] : $Config->routing['current'][0]);
+$data				= $Blog->get(HOME ? $Blog->get_structure()['pages']['index'] : $Config->routing['current'][0]);
 global $Page;
 if ($data['interface']) {
 	if (!HOME) {

@@ -262,7 +262,7 @@ if (isset($rc[2])) {
 						$group['id'],
 						$permission
 					],
-					'value'
+					true
 				);
 				$groups_content[] = h::{'th.ui-widget-header.ui-corner-all'}(
 					$group['title'],
@@ -385,7 +385,7 @@ if (isset($rc[2])) {
 						$user,
 						$permission
 					],
-					'value'
+					true
 				);
 				$content[]		= h::{'th.ui-widget-header.ui-corner-all'}($User->get_username($user)).
 					h::{'td input[type=radio]'}([

@@ -7,7 +7,7 @@
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace	cs\modules\Static_pages;
+namespace	cs\modules\Blog;
 use			\h;
 global $Index, $L, $Page, $Config;
 $Page->title($L->addition_of_page_category);

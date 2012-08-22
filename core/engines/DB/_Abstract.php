@@ -196,9 +196,8 @@ abstract class _Abstract {
 	 *
 	 * @param bool|object|resource	$query_result
 	 * @param bool					$array			If <b>true</b> returns array of associative arrays of all fetched rows
-	 * @param bool|string			$one_column		This parameter may contain name of interested column,
-	 * 												and function will return not array with one element, but directly its value
-	 * @param bool					$indexed		If false - associative array will be returned
+	 * @param bool					$one_column		If <b>true</b> function will return not array with one element, but directly its value
+	 * @param bool					$indexed		If <b>false</b> - associative array will be returned
 	 *
 	 * @return array|bool
 	 */
@@ -207,9 +206,8 @@ abstract class _Abstract {
 	 * Similar to ::f() method, with parameter <b>$array</b> = true
 	 *
 	 * @param bool|object|resource	$query_result
-	 * @param bool|string			$one_column	This parameter may contain name of interested column,
-	 * 											and function will return not array with one element, but directly its value
-	 * @param bool					$indexed	If false - associative array will be returned
+	 * @param bool					$one_column	If <b>true</b> function will return not array with one element, but directly its value
+	 * @param bool					$indexed	If <b>false</b> - associative array will be returned
 	 *
 	 * @return array|bool
 	 */
@@ -220,9 +218,8 @@ abstract class _Abstract {
 	 * Combination of ::q() and ::f() methods
 	 *
 	 * @param array|string	$query		SQL query string, or you can put all parameters, that ::q() function can accept in form of array
-	 * @param bool|string	$one_column	This parameter may contain name of interested column,
-	 * 									and function will return not array with one element, but directly its value
-	 * @param bool			$indexed	If false - associative array will be returned
+	 * @param bool			$one_column	If <b>true</b> function will return not array with one element, but directly its value
+	 * @param bool			$indexed	If <b>false</b> - associative array will be returned
 	 *
 	 * @return array|bool
 	 */
@@ -245,9 +242,8 @@ abstract class _Abstract {
 	 * Combination of ::q() and ::fa() methods
 	 *
 	 * @param array|string	$query		SQL query string, or you can put all parameters, that ::q() function can accept in form of array
-	 * @param bool|string	$one_column	This parameter may contain name of interested column,
-	 * 									and function will return not array with one element, but directly its value
-	 * @param bool			$indexed	If false - associative array will be returned
+	 * @param bool			$one_column	If <b>true</b> function will return not array with one element, but directly its value
+	 * @param bool			$indexed	If <b>false</b> - associative array will be returned
 	 *
 	 * @return array|bool
 	 */

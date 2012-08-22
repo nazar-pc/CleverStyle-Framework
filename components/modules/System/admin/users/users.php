@@ -610,14 +610,14 @@ if (isset($rc[2], $rc[3])) {
 		}
 	}
 	$results_count	= $users_db->qf(
-		"SELECT COUNT(`id`) AS `count` FROM `[prefix]users` WHERE ($where) AND `status` != '-1'",
-		'count'
+		"SELECT COUNT (`id`) FROM `[prefix]users` WHERE ($where) AND `status` != '-1'",
+		true
 	);
 	if ($results_count) {
 		$from		= $start*$limit;
 		$users_ids	= $users_db->qfa(
 			"SELECT `id` FROM `[prefix]users` WHERE ($where) AND `status` != '-1' ORDER BY `id` LIMIT $from, $limit",
-			'id'
+			true
 		);
 		unset($from);
 	}
