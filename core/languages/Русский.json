@@ -3,8 +3,9 @@
 	"clanguage_en"	: "russian",
 	"clang"			: "ru",
 //Regional parameters, syntaxis of PHP function date()
-	"_datetime"	: "d.m.Y H:i",
-	"_date"	: "d.m.Y",
+	"_datetime_long"	: "l, d F Y, H:i",
+	"_datetime"			: "d.m.Y H:i",
+	"_date"				: "d.m.Y",
 
 //Common
 	"home"						: "Главная",
@@ -267,6 +268,7 @@
 		"zlib_compression_level"	: "Уровень сжатия zlib",
 		"curl_lib"					: "Библиотека cURL",
 		"apc_mod"					: "Модуль APC (Alternative PHP Cache)",
+		"cache_engine"				: "Движок кэша",
 	//Components
 	"components"			: "Компоненты",
 		//Modules

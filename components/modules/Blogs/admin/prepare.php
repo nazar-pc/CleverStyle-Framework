@@ -1,13 +1,13 @@
 <?php
 /**
- * @package		Blog
+ * @package		Blogs
  * @category	modules
  * @version		0.002
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2012 by Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace	cs\modules\Blog;
+namespace	cs\modules\Blogs;
 use			\h;
 global $Core, $Index, $Page, $L;
 $Index->title_auto	= false;
@@ -29,34 +29,33 @@ $Page->menumore		= h::a(
 	]
 );
 include_once MFOLDER.'/../class.php';
-$Core->create('cs\\modules\\Blog\\Blog');
-function get_sections_rows ($structure = null, $level = 0, $parent_sections = []) {
+$Core->create('cs\\modules\\Blogs\\Blogs');
+function get_sections_rows ($structure = null, $level = 0, $module = null) {
 	global $L;
 	$root					= false;
 	if ($structure === null) {
-		global $Blog;
-		$structure			= $Blog->get_sections_structure();
+		global $Blogs;
+		$structure			= $Blogs->get_sections_structure();
 		$structure['title']	= $L->root_section;
 		$root				= true;
-	} else {
-		$parent_sections[]	= $structure['path'];
+		$module				= path($L->{MODULE});
 	}
 	$content				= [[
 		[
 			h::a(
 				$structure['title'].
-				h::{'span.ui-priority-primary.cs-blog-posts-count'}(
+				h::{'span.ui-priority-primary.cs-blogs-posts-count'}(
 					(empty($structure['sections']) ? ' '.$structure['posts'] : ''),
 					[
 						'data-title'	=> $L->posts_in_section
 					]
 				),
 				[
-					'href'	=> MODULE.($parent_sections ? '/'.implode('/', $parent_sections) : '')
+					'href'	=> $module.(isset($structure['full_path']) ? '/'.path($L->section).'/'.$structure['full_path'] : '')
 				]
 			),
 			[
-				'class'	=> 'cs-blog-padding-left-'.$level
+				'class'	=> 'cs-blogs-padding-left-'.$level
 			]
 		],
 		h::{'a.cs-button.cs-button-compact'}(
@@ -87,7 +86,7 @@ function get_sections_rows ($structure = null, $level = 0, $parent_sections = []
 	]];
 	if (!empty($structure['sections'])) {
 		foreach ($structure['sections'] as $section) {
-			$content	= array_merge($content, get_sections_rows($section, $level+1, $parent_sections));
+			$content	= array_merge($content, get_sections_rows($section, $level+1, $module));
 		}
 	}
 	return $content;
@@ -98,8 +97,8 @@ function get_sections_list ($current = null, $structure = null, $level = 0) {
 		'value'	=> []
 	];
 	if ($structure === null) {
-		global $Blog, $L;
-		$structure			= $Blog->get_sections_structure();
+		global $Blogs, $L;
+		$structure			= $Blogs->get_sections_structure();
 		$list['in'][]		= $L->root_section;
 		$list['value'][]	= 0;
 	} else {
@@ -119,33 +118,55 @@ function get_sections_list ($current = null, $structure = null, $level = 0) {
 	return $list;
 }
 function get_posts_rows ($page	= 1) {
-	global $db, $Config, $Blog;
+	global $db, $Config, $Blogs, $L;
+	$module		= path($L->{MODULE});
 	$page		= (int)$page ?: 1;
 	$from		= --$page*50;
 	$cdb		= $db->{$Config->module(basename(MODULE))->db('posts')};
 	$posts		= $cdb->qfa(
 		"SELECT `id`
-		FROM `[prefix]blog_posts`
+		FROM `[prefix]blogs_posts`
 		LIMIT $from, 50",
 		true
 	);
 	$content	= [];
 	if ($posts) {
 		foreach ($posts as $post) {
-			$post		= $Blog->get($post);
+			$post		= $Blogs->get($post);
 			foreach ($post['sections'] as &$section) {
-				$section	= $Blog->get_section($section)['title'];
+				$section	= $section ? $Blogs->get_section($section) : [
+					'title'	=> $L->root_section
+				];
+				$section	= h::a(
+					$section['title'],
+					[
+						'href'	=> $module.(isset($section['full_path']) ? '/'.path($L->section).'/'.$section['full_path'] : '')
+					]
+				);
 			}
 			unset($section);
-			$tags_list	= $Blog->get_tags_list();
-			foreach ($post['tags'] as &$tag) {
-				$tag		= $tags_list[$tag];
-			}
-			unset($tag);
 			$content[]	= [
-				$post['title'],
+				h::a(
+					$post['title'],
+					[
+						'href'	=> $module.'/'.$post['path'].':'.$post['id']
+					]
+				),
 				implode(', ', $post['sections']),
-				implode(', ', $post['tags']),
+				implode(
+					', ',
+					array_map(
+						function ($tag) use ($L, $module) {
+							return h::a(
+								$tag,
+								[
+									'href'	=> $module.'/'.path($L->tag).'/'.$tag
+								]
+							);
+						},
+						$Blogs->get_tag($post['tags'])
+					)
+				),
 				''
 			];
 		}

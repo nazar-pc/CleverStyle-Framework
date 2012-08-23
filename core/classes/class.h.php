@@ -22,7 +22,9 @@ class h {
 			'readonly',
 			'required',
 			'disabled',
-			'multiple'
+			'multiple',
+			'pubdate',
+			'noshade'
 		],
 		$unpaired_tags = [
 			'area',
@@ -82,29 +84,37 @@ class h {
 			unset($i, $item);
 		}
 		if (isset($data['src'])) {
-			$data['src'] = str_replace(' ', '%20', $data['src']);
-			$data['src'] = self::url($data['src']);
+			$data['src']		= str_replace(' ', '%20', $data['src']);
+			$data['src']		= self::url($data['src']);
 		}
 		if (isset($data['href'])) {
-			$data['href']	= str_replace(' ', '%20', $data['href']);
-			$data['href']	= self::url($data['href']);
+			$data['href']		= str_replace(' ', '%20', $data['href']);
+			$data['href']		= self::url($data['href']);
+		}
+		if (isset($data['action'])) {
+			$data['action']		= str_replace(' ', '%20', $data['action']);
+			$data['action']		= self::url($data['action']);
+		}
+		if (isset($data['formaction'])) {
+			$data['formaction']	= str_replace(' ', '%20', $data['formaction']);
+			$data['formaction']	= self::url($data['formaction']);
 		}
 		if (isset($data['tag'])) {
-			$tag = $data['tag'];
+			$tag				= $data['tag'];
 			if ($tag == 'img' && !isset($data['alt'])) {
 				$data['alt']	= '';
 			}
 			unset($data['tag']);
 		}
 		if (isset($data['add'])) {
-			$add = ' '.$data['add'];
+			$add				= ' '.$data['add'];
 			unset($data['add']);
 		}
 		/**
 		 * If quotes symbol specified - use it
 		 */
 		if (isset($data['quote'])) {
-			$q = $data['quote'];
+			$q					= $data['quote'];
 			unset($data['quote']);
 		}
 		if (isset($data['class']) && empty($data['class'])) {
@@ -114,17 +124,17 @@ class h {
 			unset($data['style']);
 		}
 		if (isset($data['value'])) {
-			$data['value'] = filter($data['value']);
+			$data['value']		= filter($data['value']);
 		}
 		ksort($data);
 		foreach ($data as $key => $value) {
 			if (is_int($key)) {
 				unset($data[$key]);
 				if (in_array($value, self::$unit_atributes)) {
-					$add .= ' '.$value.(XHTML_TAGS_STYLE ? '='.$q.$value.$q : '');
+					$add	.= ' '.$value.(XHTML_TAGS_STYLE ? '='.$q.$value.$q : '');
 				}
 			} elseif ($value !== false) {
-				$add .= ' '.$key.'='.$q.$value.$q;
+				$add			.= ' '.$key.'='.$q.$value.$q;
 			}
 		}
 		return true;
@@ -955,7 +965,11 @@ class h {
 			$input = mb_substr($input, 0, $pos);
 			foreach ($attrs_ as &$attr) {
 				$attr				= explode('=', $attr);
-				$attrs[$attr[0]]	= isset($attr[1]) ? $attr[1] : '';
+				if (isset($attr[1])) {
+					$attrs[$attr[0]]	= $attr[1];
+				} else {
+					$attrs[]			= $attr[0];
+				}
 			}
 			unset($attrs_, $attr);
 		}

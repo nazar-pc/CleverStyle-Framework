@@ -9,6 +9,8 @@ namespace	cs;
 use			\h;
 /**
  * Provides next triggers:<br>
+ *  System/Index/mainmenu<br>
+ *  ['module'	=> <i>&$path</i>]		//Reference to module path, can be changed by corresponding module<br>
  *  System/Index/preload<br>
  *  System/Index/postload
  */
@@ -167,7 +169,7 @@ class Index {
 			}
 		}
 		_include_once(MFOLDER.'/index.php', false);
-		if ($this->stop) {
+		if ($this->stop || defined('EROOR_PAGE')) {
 			return;
 		}
 		if ($this->parts) {
@@ -206,7 +208,7 @@ class Index {
 				$Page->warning(get_core_ml_text('closed_title'));
 			}
 			_include_once(MFOLDER.'/'.$rc[0].'.php', false);
-			if ($this->stop) {
+			if ($this->stop || defined('EROOR_PAGE')) {
 				return;
 			}
 			if ($this->subparts) {
@@ -229,7 +231,7 @@ class Index {
 					}
 				}
 				_include_once(MFOLDER.'/'.$rc[0].'/'.$rc[1].'.php', false);
-				if ($this->stop) {
+				if ($this->stop || defined('EROOR_PAGE')) {
 					return;
 				}
 			} elseif (!$this->api && $this->action === null) {
@@ -254,7 +256,7 @@ class Index {
 	 * Rendering of main menu
 	 */
 	protected function mainmenu () {
-		global $Config, $L, $Page, $User;
+		global $Config, $L, $Page, $User, $Core;
 		if ($User->is('admin') || ($Config->can_be_admin && $Config->core['ip_admin_list_only'])) {
 			if (defined('DEBUG') && DEBUG) {
 				$Page->mainmenu .= h::a(
@@ -292,13 +294,21 @@ class Index {
 					) ||
 					(
 						file_exists(MODULES.'/'.$module.'/index.html') && filesize(MODULES.'/'.$module.'/index.html')
-					)
+					) ||
+					file_exists(MODULES.'/'.$module.'/index.json')
 				)
 			) {
-				$Page->mainmenu .= h::a(
+				$path			= $module;
+				$Core->run_trigger(
+					'System/Index/mainmenu',
+					[
+						'module'	=> &$path
+					]
+				);
+				$Page->mainmenu	.= h::a(
 					$L->$module,
 					[
-						'href'	=> '/'.$module,
+						'href'	=> '/'.$path,
 						'title'	=> $L->$module
 					]
 				);
@@ -415,7 +425,6 @@ class Index {
 					[
 						'enctype'	=> $this->file_upload ? 'multipart/form-data' : false,
 						'action'	=> $this->action,
-						'id'		=> 'admin_form',
 						'class'		=> 'cs-fullwidth-form'
 					]+$this->form_atributes
 				)
@@ -598,7 +607,7 @@ class Index {
 	 * Executes plugins processing, blocks and module page generation
 	 */
 	function __finish () {
-		global $Config, $User, $Core;
+		global $Config, $User, $Core, $Page;
 		/**
 		 * If site is closed, user is not admin, and it is not request for log in
 		 */
@@ -614,14 +623,12 @@ class Index {
 			return;
 		}
 		if (defined('ERROR_PAGE')) {
-			$this->form = false;
-			global $Page;
 			$this->js_vars();
 			$Page->error_page();
 		}
 		$Core->run_trigger('System/Index/preload');
 		if (!$this->admin && !$this->api && file_exists(MFOLDER.'/index.html')) {
-			global $Page, $L;
+			global $L;
 			ob_start();
 			_include(MFOLDER.'/index.html', false, false);
 			$Page->content(ob_get_clean());
@@ -633,6 +640,9 @@ class Index {
 		}
 		if ($this->stop) {
 			return;
+		}
+		if (defined('ERROR_PAGE')) {
+			$Page->error_page();
 		}
 		if ($this->generate_auto) {
 			$this->js_vars();

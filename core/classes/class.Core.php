@@ -47,8 +47,8 @@ class Core {
 			error_header(404);
 			$this->__finish();
 		}
-		_include_once(CONFIG.'/main.php', false);
 		$this->config	= _json_decode_nocomments(file_get_contents(CONFIG.'/main.json'));
+		_include_once(CONFIG.'/main.php', false);
 		define('DOMAIN', $this->config['domain']);
 		date_default_timezone_set($this->config['timezone']);
 		!is_dir(STORAGE)				&& @mkdir(STORAGE, 0755)	&& file_put_contents(
@@ -74,12 +74,21 @@ class Core {
 	/**
 	 * Getting of base configuration parameter
 	 *
-	 * @param string $item
+	 * @param string		$item
 	 *
 	 * @return bool|string
 	 */
 	function config ($item) {
 		return isset($this->config[$item]) ? $this->config[$item] : false;
+	}
+	/**
+	 * Setting of base configuration parameter (only at object construction)
+	 *
+	 * @param string	$item
+	 * @param mixed		$value
+	 */
+	function config_set ($item, $value) {
+		$this->config[$item] = $value;
 	}
 	/**
 	 * Creating of global object on the base of class

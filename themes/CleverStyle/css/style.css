@@ -18,14 +18,14 @@ code {
 }
 
 #body {
-	margin : 7px;
-	padding-top         : 145px;
+	margin      : 7px;
+	padding-top : 145px;
 }
 
 #body > table {
-	border-radius      : 10px;
-	padding            : 5px 0;
-	width              : 100%;
+	border-radius : 10px;
+	padding       : 5px 0;
+	width         : 100%;
 }
 
 .cs-fullwidth-form {
@@ -43,16 +43,16 @@ code {
 }
 
 #main_content {
-	vertical-align: top;
-	border-radius      : 7px;
-	padding            : 10px;
-	vertical-align     : top;
+	vertical-align : top;
+	border-radius  : 7px;
+	padding        : 10px;
+	vertical-align : top;
 }
 
 #main_content > div {
-	border-radius      : 5px;
-	padding            : 10px;
-	height             : 100%;
+	border-radius : 5px;
+	padding       : 10px;
+	height        : 100%;
 }
 
 a {
@@ -62,10 +62,10 @@ a {
 .cs-form-element,
 .cs-form-element:hover,
 .cs-form-element:focus {
-	border             : solid 2px;
-	border-radius      : 5px;
-	border-spacing     : 0;
-	padding            : 3px;
+	border         : solid 2px;
+	border-radius  : 5px;
+	border-spacing : 0;
+	padding        : 3px;
 }
 
 input,
@@ -87,8 +87,8 @@ select {
 }
 
 #users_raw_edit textarea,
-#users_edit textarea{
-	width: 250px;
+#users_edit textarea {
+	width : 250px;
 }
 
 textarea {
@@ -109,8 +109,8 @@ body > footer {
 }
 
 .cs-state-messages {
-	padding    : 5px;
-	margin	   : 2px 0;
+	padding : 5px;
+	margin  : 2px 0;
 }
 
 .cs-dialog {
@@ -133,7 +133,7 @@ body > footer {
 	padding : 5px;
 }
 .cs-blocks-items li:nth-child(1) {
-	cursor: pointer !important;
+	cursor : pointer !important;
 }
 
 .cs-modules-config-buttons button,
@@ -149,7 +149,7 @@ body > footer {
 }
 
 .cs-header-user-info .actions {
-	margin: 5px 0;
+	margin : 5px 0;
 }
 
 .cs-header-login-slide,
@@ -165,13 +165,12 @@ body > footer {
 
 .cs-header-register-form .cs-header-back,
 .cs-header-register-form .cs-header-restore-password-slide,
-.cs-header-restore-password-form .cs-header-back
-{
+.cs-header-restore-password-form .cs-header-back {
 	margin-top : 4px !important;
 }
 
 .cs-header-register-process+div,
-.cs-header-restore-password-process+div{
+.cs-header-restore-password-process+div {
 	float  : right;
 	height : 27px;
 }
@@ -191,7 +190,7 @@ td.cs-center-all {
 }
 
 .cs-center {
-	text-align: center;
+	text-align : center;
 }
 
 .cs-right-odd > tbody > tr > td:nth-child(odd),
@@ -208,7 +207,7 @@ td.cs-right-all {
 	text-align : right !important;
 }
 .cs-right {
-	text-align: right;
+	text-align : right;
 }
 
 .cs-left-odd > tbody > tr > td:nth-child(odd),
@@ -226,15 +225,15 @@ td.cs-left-all {
 }
 
 .cs-left {
-	text-align: left;
+	text-align : left;
 }
 
 .cs-blocks-items-title {
 	float        : left;
-	height		 : 16px;
+	height       : 16px;
 	margin-right : -64px;
-	overflow	 : hidden;
-	text-align	 : left;
+	overflow     : hidden;
+	text-align   : left;
 	width        : 100%;
 }
 
@@ -319,19 +318,19 @@ textarea.cs-wide-textarea {
 }
 
 .cs-add-user {
-	width: 250px;
+	width : 250px;
 }
 
 .cs-add-bot {
-	width: 450px;
+	width : 450px;
 }
 
 #columns_settings li {
-	cursor: pointer;
+	cursor : pointer;
 }
 
 .cs-profile-table td {
-	vertical-align: top;
+	vertical-align : top;
 }
 
 h1,
@@ -340,45 +339,50 @@ h3,
 h4,
 h5,
 h6 {
-	font-weight: 100;
+	font-weight : 100;
 }
 
 h1 {
-	font-size: 20px;
+	font-size : 20px;
 }
 
 h2 {
-	font-size: 18px;
+	font-size : 18px;
 }
 
 h3 {
-	font-size: 16px;
+	font-size : 16px;
 }
 
 h4 {
-	font-size: 15px;
+	font-size : 15px;
 }
 
 h5 {
-	font-size: 14px;
+	font-size : 14px;
 }
 
 h6 {
-	font-size: 13px;
+	font-size : 13px;
 }
 .cs-profile-table h2 {
-	margin: 0 0 10px 0;
+	margin : 0 0 10px 0;
 }
 
 .cs-profile-avatar {
-	width: 138px;
+	width : 138px;
 }
 
 .cs-profile-avatar img {
-	height: 128px;
-	margin: 5px;
-	width: 128px;
+	height : 128px;
+	margin : 5px;
+	width  : 128px;
 }
 .cs-pointer {
-	cursor: pointer;
+	cursor : pointer;
+}
+hr {
+	border           : 0;
+	background-color : #9e9e9e;
+	height           : 1px;
 }

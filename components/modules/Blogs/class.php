@@ -1,13 +1,13 @@
 <?php
 /**
- * @package        Blog
- * @category       modules
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2011-2012 by Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package		Blogs
+ * @category	modules
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012 by Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
  */
-namespace cs\modules\Blog;
-class Blog {
+namespace cs\modules\Blogs;
+class Blogs {
 	/**
 	 * Database index for posts
 	 *
@@ -29,23 +29,6 @@ class Blog {
 		$this->comments	= $Config->module(basename(__DIR__))->db('comments');
 	}
 	/**
-	 * Prepare string to use as path
-	 *
-	 * @param string	$text
-	 *
-	 * @return string
-	 */
-	private function path ($text) {
-		return strtr(
-			$text,
-			[
-				' '		=> '_',
-				'/'		=> '_',
-				'\\'	=> '_'
-			]
-		);
-	}
-	/**
 	 * Get data of specified post
 	 *
 	 * @param int			$id
@@ -55,15 +38,16 @@ class Blog {
 	function get ($id) {
 		global $db, $Cache, $L;
 		$id	= (int)$id;
-		if (($data = $Cache->{'Blog/posts/'.$id.'/'.$L->clang}) === false) {
+		if (($data = $Cache->{'Blogs/posts/'.$id.'/'.$L->clang}) === false) {
 			$data	= $db->{$this->posts}->qf([
 				"SELECT
 					`id`,
 					`user`,
+					`date`,
 					`title`,
 					`path`,
 					`content`
-				FROM `[prefix]blog_posts`
+				FROM `[prefix]blogs_posts`
 				WHERE `id` = '%s'
 				LIMIT 1",
 				$id
@@ -74,17 +58,17 @@ class Blog {
 				$data['content']							= $this->ml_process($data['content']);
 				$data['sections']							= $db->{$this->posts}->qfa(
 					"SELECT `section`
-					FROM `[prefix]blog_posts_sections`
+					FROM `[prefix]blogs_posts_sections`
 					WHERE `id` = $id",
 					true
 				);
 				$data['tags']								= $db->{$this->posts}->qfa(
 					"SELECT `tag`
-					FROM `[prefix]blog_posts_tags`
+					FROM `[prefix]blogs_posts_tags`
 					WHERE `id` = $id",
 					true
 				);
-				$Cache->{'Blog/posts/'.$id.'/'.$L->clang}	= $data;
+				$Cache->{'Blogs/posts/'.$id.'/'.$L->clang}	= $data;
 			}
 		}
 		return $data;
@@ -102,7 +86,7 @@ class Blog {
 	 */
 	function add ($title, $path, $content, $sections, $tags) {
 		global $db, $User;
-		$path		= $this->path(str_replace('/', ' ', $path ?: $title));
+		$path		= path(str_replace('/', ' ', $path ?: $title));
 		$sections	= array_intersect(
 			array_keys($this->get_sections_list()),
 			$sections
@@ -111,7 +95,7 @@ class Blog {
 			return false;
 		}
 		if ($db->{$this->posts}()->q(
-			"INSERT INTO `[prefix]blog_posts`
+			"INSERT INTO `[prefix]blogs_posts`
 				(`user`, `date`)
 			VALUES
 				('%s', '%s')",
@@ -141,7 +125,7 @@ class Blog {
 		global $db, $Cache;
 		$id			= (int)$id;
 		$title		= trim(xap($title));
-		$path		= $this->path(str_replace('/', ' ', $path ?: $title));
+		$path		= path(str_replace('/', ' ', $path ?: $title));
 		$content	= xap($content, true);
 		$sections	= array_intersect(
 			array_keys($this->get_sections_list()),
@@ -170,34 +154,34 @@ class Blog {
 		);
 		if ($db->{$this->posts}()->q(
 			[
-				"DELETE FROM `[prefix]blog_posts_sections`
+				"DELETE FROM `[prefix]blogs_posts_sections`
 				WHERE `id` = '%1\$s'",
-				"INSERT INTO `[prefix]blog_posts_sections`
+				"INSERT INTO `[prefix]blogs_posts_sections`
 					(`id`, `section`)
 				VALUES
 					$sections",
-				"UPDATE `[prefix]blog_posts`
+				"UPDATE `[prefix]blogs_posts`
 				SET
 					`title` = '%s',
 					`path` = '%s',
 					`content` = '%s'
 				WHERE `id` = '%s'
 				LIMIT 1",
-				"DELETE FROM `[prefix]blog_posts_tags`
+				"DELETE FROM `[prefix]blogs_posts_tags`
 				WHERE `id` = '%1\$s'",
-				"INSERT INTO `[prefix]blog_posts_tags`
+				"INSERT INTO `[prefix]blogs_posts_tags`
 					(`id`, `tag`)
 				VALUES
 					$tags"
 			],
-			$this->ml_set('Blog/posts/title', $id, $title),
-			$this->ml_set('Blog/posts/path', $id, $path),
-			$this->ml_set('Blog/posts/content', $id, $content),
+			$this->ml_set('Blogs/posts/title', $id, $title),
+			$this->ml_set('Blogs/posts/path', $id, $path),
+			$this->ml_set('Blogs/posts/content', $id, $content),
 			$id
 		)) {
 			unset(
-				$Cache->{'Blog/posts/'.$id},
-				$Cache->{'Blog/sections'}
+				$Cache->{'Blogs/posts/'.$id},
+				$Cache->{'Blogs/sections'}
 			);
 			return true;
 		} else {
@@ -215,17 +199,17 @@ class Blog {
 		global $db, $Cache;
 		$id	= (int)$id;
 		if ($db->{$this->posts}()->q(
-			"DELETE FROM `[prefix]blog_posts`
+			"DELETE FROM `[prefix]blogs_posts`
 			WHERE `id` = '%s'
 			LIMIT 1",
 			$id
 		)) {
-			$this->ml_del('Blog/posts/title', $id);
-			$this->ml_del('Blog/posts/path', $id);
-			$this->ml_del('Blog/posts/content', $id);
+			$this->ml_del('Blogs/posts/title', $id);
+			$this->ml_del('Blogs/posts/path', $id);
+			$this->ml_del('Blogs/posts/content', $id);
 			unset(
-				$Cache->{'Blog/posts/'.$id},
-				$Cache->{'Blog/sections'}
+				$Cache->{'Blogs/posts/'.$id},
+				$Cache->{'Blogs/sections'}
 			);
 			return true;
 		} else {
@@ -239,10 +223,10 @@ class Blog {
 	 */
 	function get_total_count () {
 		global $Cache, $db;
-		if (($data = $Cache->{'Blog/count'}) === false) {
-			$Cache->{'Blog/count'}	= $data	= $db->{$this->posts}->qf(
+		if (($data = $Cache->{'Blogs/total_count'}) === false) {
+			$Cache->{'Blogs/total_count'}	= $data	= $db->{$this->posts}->qf(
 				"SELECT COUNT(`id`)
-				FROM `[prefix]blog_posts`",
+				FROM `[prefix]blogs_posts`",
 				true
 			);;
 		}
@@ -255,12 +239,12 @@ class Blog {
 	 */
 	function get_sections_list () {
 		global $Cache, $L;
-		if (($data = $Cache->{'Blog/sections/list/'.$L->clang}) === false) {
+		if (($data = $Cache->{'Blogs/sections/list/'.$L->clang}) === false) {
 			$data	= $this->get_sections_list_internal(
 				$this->get_sections_structure()
 			);
 			if ($data) {
-				$Cache->{'Blog/sections/list/'.$L->clang}	= $data;
+				$Cache->{'Blogs/sections/list/'.$L->clang}	= $data;
 			}
 		}
 		return $data;
@@ -286,10 +270,10 @@ class Blog {
 	 */
 	function get_sections_structure () {
 		global $Cache, $L;
-		if (($data = $Cache->{'Blog/sections/structure/'.$L->clang}) === false) {
+		if (($data = $Cache->{'Blogs/sections/structure/'.$L->clang}) === false) {
 			$data	= $this->get_sections_structure_internal();
 			if ($data) {
-				$Cache->{'Blog/sections/structure/'.$L->clang}	= $data;
+				$Cache->{'Blogs/sections/structure/'.$L->clang}	= $data;
 			}
 		}
 		return $data;
@@ -310,7 +294,7 @@ class Blog {
 			"SELECT
 				`id`,
 				`path`
-			FROM `[prefix]blog_sections`
+			FROM `[prefix]blogs_sections`
 			WHERE `parent` = '%s'",
 			$parent
 		]);
@@ -330,7 +314,7 @@ class Blog {
 	function get_section ($id) {
 		global $db, $Cache, $L;
 		$id	= (int)$id;
-		if (($data = $Cache->{'Blog/sections/'.$id.'/'.$L->clang}) === false) {
+		if (($data = $Cache->{'Blogs/sections/'.$id.'/'.$L->clang}) === false) {
 			$data											= $db->{$this->posts}->qf([
 				"SELECT
 					`id`,
@@ -339,10 +323,10 @@ class Blog {
 					`parent`,
 					(
 						SELECT COUNT(`id`)
-						FROM `[prefix]blog_posts_sections`
+						FROM `[prefix]blogs_posts_sections`
 						WHERE `section` = '%1\$s'
 					) AS `posts`
-				FROM `[prefix]blog_sections`
+				FROM `[prefix]blogs_sections`
 				WHERE `id` = '%1\$s'
 				LIMIT 1",
 				$id
@@ -357,7 +341,7 @@ class Blog {
 				$parent					= $section['parent'];
 			}
 			$data['full_path']								= implode('/', array_reverse($data['full_path']));
-			$Cache->{'Blog/sections/'.$id.'/'.$L->clang}	= $data;
+			$Cache->{'Blogs/sections/'.$id.'/'.$L->clang}	= $data;
 		}
 		return $data;
 	}
@@ -373,14 +357,14 @@ class Blog {
 	function add_section ($parent, $title, $path) {
 		global $db, $Cache;
 		$parent	= (int)$parent;
-		$path	= $this->path(str_replace('/', ' ', $path ?: $title));
+		$path	= path(str_replace('/', ' ', $path ?: $title));
 		$posts	= $db->{$this->posts}()->qfa(
 			"SELECT `id`
-			FROM `[prefix]blog_posts_sections`
+			FROM `[prefix]blogs_posts_sections`
 			WHERE `section` = $parent"
 		);
 		if ($db->{$this->posts}()->q(
-			"INSERT INTO `[prefix]blog_sections`
+			"INSERT INTO `[prefix]blogs_sections`
 				(`parent`)
 			VALUES
 				($parent)"
@@ -388,20 +372,20 @@ class Blog {
 			$id	= $db->{$this->posts}()->id();
 			if ($posts) {
 				$db->{$this->posts}()->q(
-					"UPDATE `[prefix]blog_posts_sections`
+					"UPDATE `[prefix]blogs_posts_sections`
 					SET `section` = $id
 					WHERE `section` = $parent"
 				);
 				foreach ($posts as $post) {
-					unset($Cache->{'Blog/posts/'.$post});
+					unset($Cache->{'Blogs/posts/'.$post});
 				}
 				unset($post);
 			}
 			unset($posts);
 			$this->set_section($id, $parent, $title, $path);
 			unset(
-				$Cache->{'Blog/sections/list'},
-				$Cache->{'Blog/sections/structure'}
+				$Cache->{'Blogs/sections/list'},
+				$Cache->{'Blogs/sections/structure'}
 			);
 			return $id;
 		} else {
@@ -419,13 +403,13 @@ class Blog {
 	 * @return bool
 	 */
 	function set_section ($id, $parent, $title, $path) {
-		global $db, $Cache, $L;
+		global $db, $Cache;
 		$parent	= (int)$parent;
 		$title	= trim($title);
-		$path	= $this->path(str_replace('/', ' ', $path ?: $title));
+		$path	= path(str_replace('/', ' ', $path ?: $title));
 		$id		= (int)$id;
 		if ($db->{$this->posts}()->q(
-			"UPDATE `[prefix]blog_sections`
+			"UPDATE `[prefix]blogs_sections`
 			SET
 				`parent`	= '%s',
 				`title`		= '%s',
@@ -433,14 +417,14 @@ class Blog {
 			WHERE `id` = '%s'
 			LIMIT 1",
 			$parent,
-			$this->ml_set('Blog/sections/title', $id, $title),
-			$this->ml_set('Blog/sections/path', $id, $path),
+			$this->ml_set('Blogs/sections/title', $id, $title),
+			$this->ml_set('Blogs/sections/path', $id, $path),
 			$id
 		)) {
 			unset(
-				$Cache->{'Blog/sections/'.$id},
-				$Cache->{'Blog/sections/list'},
-				$Cache->{'Blog/sections/structure'}
+				$Cache->{'Blogs/sections/'.$id},
+				$Cache->{'Blogs/sections/list'},
+				$Cache->{'Blogs/sections/structure'}
 			);
 			return true;
 		} else {
@@ -460,7 +444,7 @@ class Blog {
 		$parent_section		= $db->{$this->posts}()->qf(
 			[
 				"SELECT `parent`
-				FROM `[prefix]blog_sections`
+				FROM `[prefix]blogs_sections`
 				WHERE `id` = '%s'
 				LIMIT 1",
 				$id
@@ -470,7 +454,7 @@ class Blog {
 		$new_section_for_posts	= $db->{$this->posts}()->qf(
 			[
 				"SELECT `id`
-				FROM `[prefix]blog_sections`
+				FROM `[prefix]blogs_sections`
 				WHERE
 					`parent` = '%s' AND
 					`id` != '%s'
@@ -482,15 +466,15 @@ class Blog {
 		);
 		if ($db->{$this->posts}()->q(
 			[
-				"UPDATE `[prefix]blog_sections`
+				"UPDATE `[prefix]blogs_sections`
 				SET `parent` = '%2\$s'
 				WHERE `parent` = '%1\$s'",
-				"UPDATE IGNORE `[prefix]blog_posts_sections`
+				"UPDATE IGNORE `[prefix]blogs_posts_sections`
 				SET `section` = '%3\$s'
 				WHERE `section` = '%1\$s'",
-				"DELETE FROM `[prefix]blog_posts_sections`
+				"DELETE FROM `[prefix]blogs_posts_sections`
 				WHERE `section` = '%1\$s'",
-				"DELETE FROM `[prefix]blog_sections`
+				"DELETE FROM `[prefix]blogs_sections`
 				WHERE `id` = '%1\$s'
 				LIMIT 1"
 			],
@@ -498,9 +482,9 @@ class Blog {
 			$parent_section,
 			$new_section_for_posts ?: $parent_section
 		)) {
-			$this->ml_del('Blog/sections/title', $id);
-			$this->ml_del('Blog/sections/path', $id);
-			unset($Cache->Blog);
+			$this->ml_del('Blogs/sections/title', $id);
+			$this->ml_del('Blogs/sections/path', $id);
+			unset($Cache->Blogs);
 			return true;
 		} else {
 			return false;
@@ -520,12 +504,12 @@ class Blog {
 	}
 	function get_tags_list () {
 		global $db, $Cache, $L;
-		if (($data = $Cache->{'Blog/tags/'.$L->clang}) === false) {
+		if (($data = $Cache->{'Blogs/tags/'.$L->clang}) === false) {
 			$tags	= $db->{$this->posts}->qfa(
 				"SELECT
 					`id`,
 					`text`
-				FROM `[prefix]blog_tags`"
+				FROM `[prefix]blogs_tags`"
 			);
 			$data	= [];
 			if (is_array($tags) && !empty($tags)) {
@@ -535,31 +519,43 @@ class Blog {
 				unset($tag);
 			}
 			unset($tags);
-			$Cache->{'Blog/tags/'.$L->clang}	= $data;
+			$Cache->{'Blogs/tags/'.$L->clang}	= $data;
 		}
 		return $data;
+	}
+	function get_tag ($id) {
+		$tags	= $this->get_tags_list();
+		if (is_array($id)) {
+			return array_map(
+				function ($id) use ($tags) {
+					return $tags[$id];
+				},
+				$id
+			);
+		}
+		return $tags[$id];
 	}
 	function add_tag ($tag) {
 		$tag	= trim(xap($tag));
 		if (($id = array_search($tag, $this->get_tags_list())) === false) {
 			global $db, $Cache;
 			if ($db->{$this->posts}()->q(
-				"INSERT INTO `[prefix]blog_tags`
+				"INSERT INTO `[prefix]blogs_tags`
 					(`value`)
 				VALUES
 					('')"
 			)) {
 				$id	= $db->{$this->posts}()->id();
 				$db->{$this->posts}()->q(
-					"UPDATE `[prefix]blog_tags`
+					"UPDATE `[prefix]blogs_tags`
 					SET `value` = '%s'
 					WHERE `id` = $id
 					LIMIT 1",
-					$this->ml_set('Blog/tags', $id, $tag)
+					$this->ml_set('Blogs/tags', $id, $tag)
 				);
 				return $id;
 			}
-			unset($Cache->{'Blog/tags'});
+			unset($Cache->{'Blogs/tags'});
 			return false;
 		}
 		return $id;
@@ -569,15 +565,15 @@ class Blog {
 		$id	= (int)$id;
 		if ($db->{$this->posts}()->q(
 			[
-				"DELETE FROM `[prefix]blog_posts_tags`
+				"DELETE FROM `[prefix]blogs_posts_tags`
 				WHERE `tag` = '%s'",
-				"DELETE FROM `[prefix]blog_tags`
+				"DELETE FROM `[prefix]blogs_tags`
 				WHERE `id` = '%s'"
 			],
 			$id
 		)) {
-			$this->ml_del('Blog/tags', $id);
-			unset($Cache->{'Blog/tags'});
+			$this->ml_del('Blogs/tags', $id);
+			unset($Cache->{'Blogs/tags'});
 		}
 	}
 	private function process_tags ($tags) {

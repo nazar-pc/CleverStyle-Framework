@@ -9,11 +9,11 @@ namespace	cs;
 use			\h;
 /**
  * Provides next triggers:<br>
- *  System/Page/pre_display<code>
- *  System/Page/get_header_info<code>
- *  [
- *   'id'	=> <i>user_id</i><br>
- *  ]</code>
+ *  System/Page/pre_display
+ *  System/Page/get_header_info
+ *  ['id'	=> <i>user_id</i>]<br>
+ *  System/Page/rebuild_cache
+ *  ['key'	=> <i>&$key</i>]		//Reference to the key, that will be appended to all css and js files, can be changed to reflect JavaScript and CSS changes<br>
  */
 class Page {
 	public		$Content, $interface = true,
@@ -46,7 +46,6 @@ class Page {
 					'Footer'			=> 1,
 					'post_Body'			=> 0
 				];
-
 	protected	$theme, $color_scheme, $pcache_basename, $includes,
 				$user_avatar_image, $user_info,
 				$core_js	= [0 => '', 1 => ''],
@@ -164,10 +163,8 @@ class Page {
 				)
 			) {
 				echo	"<!doctype html>\n".
-				h::html(
-					h::{'head title'}(get_core_ml_text('closed_title')).
-					h::body(get_core_ml_text('closed_text'))
-				);
+				h::title(get_core_ml_text('closed_title')).
+				get_core_ml_text('closed_text');
 			} else {
 				_include_once(THEMES.'/'.$this->theme.'/index.php', false) || _include_once(THEMES.'/'.$this->theme.'/index.html');
 			}
@@ -225,6 +222,9 @@ class Page {
 		}
 		$this->Head =	h::title($this->Title).
 			h::meta(
+				[
+					'charset'	=> 'utf-8'
+				],
 				[
 					'name'		=> 'keywords',
 					'content'	=> $this->Keywords
@@ -494,14 +494,14 @@ class Page {
 		$scheme_pfolder	= $theme_pfolder.'/schemes/'.$this->color_scheme;
 		$this->includes = array(
 			'css' => array_merge(
-				(array)get_files_list(CSS,					'/(.*)\.css$/i',	'f', $for_cache ? true : 'includes/css',			true, false, '!include'),
-				(array)get_files_list($theme_folder.'/css',	'/(.*)\.css$/i',	'f', $for_cache ? true : $theme_pfolder.'/css',		true, false, '!include'),
+				(array)get_files_list(CSS,						'/(.*)\.css$/i',	'f', $for_cache ? true : 'includes/css',			true, false, '!include'),
+				(array)get_files_list($theme_folder.'/css',		'/(.*)\.css$/i',	'f', $for_cache ? true : $theme_pfolder.'/css',		true, false, '!include'),
 				(array)get_files_list($scheme_folder.'/css',	'/(.*)\.css$/i',	'f', $for_cache ? true : $scheme_pfolder.'/css',	true, false, '!include')
 			),
 			'js' => array_merge(
 				(array)get_files_list(JS,						'/(.*)\.js$/i',		'f', $for_cache ? true : 'includes/js',				true, false, '!include'),
-				(array)get_files_list($theme_folder.'/js',	'/(.*)\.js$/i',		'f', $for_cache ? true : $theme_pfolder.'/js',		true, false, '!include'),
-				(array)get_files_list($scheme_folder.'/js',	'/(.*)\.js$/i',		'f', $for_cache ? true : $scheme_pfolder.'/js',		true, false, '!include')
+				(array)get_files_list($theme_folder.'/js',		'/(.*)\.js$/i',		'f', $for_cache ? true : $theme_pfolder.'/js',		true, false, '!include'),
+				(array)get_files_list($scheme_folder.'/js',		'/(.*)\.js$/i',		'f', $for_cache ? true : $scheme_pfolder.'/js',		true, false, '!include')
 			)
 		);
 		unset($theme_folder, $scheme_folder, $theme_pfolder, $scheme_pfolder);
@@ -512,8 +512,15 @@ class Page {
 	 * Rebuilding of JavaScript and CSS cache
 	 */
 	function rebuild_cache () {
+		global $Core;
+		$key	= '';
+		$Core->run_trigger(
+			'System/Page/rebuild_cache',
+			[
+				'key'	=> &$key
+			]
+		);
 		$this->get_includes_list(true);
-		$key = '';
 		foreach ($this->includes as $extension => &$files) {
 			$temp_cache = '';
 			foreach ($files as $file) {

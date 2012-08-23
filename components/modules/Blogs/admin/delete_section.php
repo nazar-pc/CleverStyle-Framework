@@ -1,17 +1,17 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @subpackage	System module
+ * @package		Blogs
  * @category	modules
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @copyright	Copyright (c) 2011-2012 by Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace	cs\modules\Blog;
+
+namespace	cs\modules\Blogs;
 use			\h;
-global $Index, $L, $Page, $Blog, $Config;
+global $Index, $L, $Page, $Blogs, $Config;
 $id							= (int)$Config->routing['current'][1];
-$title						= $Blog->get_section($id)['title'];
+$title						= $Blogs->get_section($id)['title'];
 $Page->title($L->deletion_of_posts_section($title));
 $Index->buttons				= false;
 $Index->cancel_button_back	= true;

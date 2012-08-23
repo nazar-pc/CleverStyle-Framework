@@ -9,7 +9,7 @@ namespace cs;
 /**
  * Provides next triggers:<br>
  *  System/Config/routing_replace<br>
- *  ['rc'	=> <i>&$rc</i>]		//Closure return reference to current routing string, this string can be changed<br>
+ *  ['rc'	=> <i>&$rc</i>]		//Reference to current routing string, this string can be changed<br>
  */
 class Config {
 	protected	$data = [
@@ -236,15 +236,15 @@ class Config {
 		/**
 		 * Preparing page url without basic path
 		 */
-		$this->server['raw_relative_address'] = str_replace(
+		$this->server['raw_relative_address']	= str_replace(
 			'//',
 			'/',
 			trim(str_replace($current_domain, '', $this->server['raw_relative_address']), ' /\\')
 		);
 		unset($current_domain);
-		$r			= &$this->routing;
-		$rc			= &$r['current'];
-		$rc			= $this->server['raw_relative_address'];
+		$r										= &$this->routing;
+		$rc										= &$r['current'];
+		$rc										= $this->server['raw_relative_address'];
 		/**
 		 * Routing replacing
 		 */
@@ -262,11 +262,10 @@ class Config {
 				'rc'	=> &$rc
 			]
 		);
-		if ($a = 3)
 		/**
 		 * Obtaining page path in form of array
 		 */
-		$rc = explode('/', $rc);
+		$rc										= explode('/', $rc);
 		/**
 		 * If url looks like admin page
 		 */
@@ -323,7 +322,7 @@ class Config {
 		/**
 		 * Corrected full page address (recommended for usage)
 		 */
-		$this->server['corrected_full_address'] = (ADMIN ? 'admin/' : '').MODULE.(API ? 'api/' : '').'/'.implode('/', $rc);
+		$this->server['corrected_full_address']	= (ADMIN ? 'admin/' : '').MODULE.(API ? 'api/' : '').'/'.implode('/', $rc);
 		unset($rc, $r);
 		if (isset($_SERVER['HTTP_REFERER'])) {
 			$ref				= &$this->server['referer'];
@@ -336,7 +335,7 @@ class Config {
 			$ref['local']		= in_array($ref['host'], $this->server['mirrors'][$ref['protocol']]);
 			unset($ref);
 		}
-		$this->server['ajax'] = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
+		$this->server['ajax']					= isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
 	}
 	/**
 	 * Updating information about set of available themes

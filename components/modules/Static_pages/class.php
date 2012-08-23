@@ -1,10 +1,10 @@
 <?php
 /**
- * @package        Static Pages
- * @category       modules
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2011-2012 by Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package		Static Pages
+ * @category	modules
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012 by Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
  */
 namespace cs\modules\Static_pages;
 class Static_pages {
@@ -20,23 +20,6 @@ class Static_pages {
 	function __construct () {
 		global $Config;
 		$this->pages	= $Config->module(basename(__DIR__))->db('pages');
-	}
-	/**
-	 * Prepare string to use as path
-	 *
-	 * @param string	$text
-	 *
-	 * @return string
-	 */
-	private function path ($text) {
-		return strtr(
-			$text,
-			[
-				' '		=> '_',
-				'/'		=> '_',
-				'\\'	=> '_'
-			]
-		);
 	}
 	/**
 	 * Get data of specified page
@@ -85,7 +68,7 @@ class Static_pages {
 	function add ($category, $title, $path, $content, $interface) {
 		global $db, $Cache;
 		$category	= (int)$category;
-		$path		= $this->path(str_replace('/', ' ', $path ?: $title));
+		$path		= path(str_replace('/', ' ', $path ?: $title));
 		$interface	= (int)$interface;
 		if ($db->{$this->pages}()->q(
 			"INSERT INTO `[prefix]static_pages`
@@ -116,10 +99,10 @@ class Static_pages {
 	 * @return bool
 	 */
 	function set ($id, $category, $title, $path, $content, $interface) {
-		global $db, $Cache, $L;
+		global $db, $Cache;
 		$category	= (int)$category;
 		$title		= trim($title);
-		$path		= $this->path(str_replace('/', ' ', $path ?: $title));
+		$path		= path(str_replace('/', ' ', $path ?: $title));
 		$interface	= (int)$interface;
 		$id			= (int)$id;
 		if ($db->{$this->pages}()->q(
@@ -140,8 +123,8 @@ class Static_pages {
 			$id
 		)) {
 			unset(
-				$Cache->{'Static_pages/structure/'.$L->clang},
-				$Cache->{'Static_pages/pages/'.$id.'/'.$L->clang}
+				$Cache->{'Static_pages/structure'},
+				$Cache->{'Static_pages/pages/'.$id}
 			);
 			return true;
 		} else {
@@ -268,7 +251,7 @@ class Static_pages {
 	function add_category ($parent, $title, $path) {
 		global $db, $Cache;
 		$parent	= (int)$parent;
-		$path	= $this->path(str_replace('/', ' ', $path ?: $title));
+		$path	= path(str_replace('/', ' ', $path ?: $title));
 		if ($db->{$this->pages}()->q(
 			"INSERT INTO `[prefix]static_pages_categories`
 				(`parent`)
@@ -295,10 +278,10 @@ class Static_pages {
 	 * @return bool
 	 */
 	function set_category ($id, $parent, $title, $path) {
-		global $db, $Cache, $L;
+		global $db, $Cache;
 		$parent	= (int)$parent;
 		$title	= trim($title);
-		$path	= $this->path(str_replace('/', ' ', $path ?: $title));
+		$path	= path(str_replace('/', ' ', $path ?: $title));
 		$id		= (int)$id;
 		if ($db->{$this->pages}()->q(
 			"UPDATE `[prefix]static_pages_categories`
@@ -313,7 +296,7 @@ class Static_pages {
 			$this->ml_set('Static_pages/categories/path', $id, $path),
 			$id
 		)) {
-			unset($Cache->{'Static_pages/structure/'.$L->clang});
+			unset($Cache->{'Static_pages/structure'});
 			return true;
 		} else {
 			return false;

@@ -1,16 +1,16 @@
 <?php
 /**
- * @package        Static Pages
- * @category       modules
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2011-2012 by Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package		Static Pages
+ * @category	modules
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012 by Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
  */
 global $Core, $Config;
 $Core->register_trigger(
 	'admin/System/components/modules/uninstall/process',
-	function ($data) {
-		global $User, $Core, $Cache;
+	function ($data) use ($Core) {
+		global $User, $Cache;
 		$module			= basename(__DIR__);
 		if ($data['name'] != $module || !$User->is('admin')) {
 			return true;
@@ -43,7 +43,7 @@ $Core->register_trigger(
 if (isset($Config->components['modules'][basename(__DIR__)]) && $Config->components['modules'][basename(__DIR__)]['active'] == 1) {
 	$Core->register_trigger(
 		'System/Config/routing_replace',
-		function ($data) {
+		function ($data) use ($Core) {
 			if (empty($data['rc'])) {
 				return;
 			}
@@ -56,7 +56,7 @@ if (isset($Config->components['modules'][basename(__DIR__)]) && $Config->compone
 				case $module:
 					$rc = ['index'];
 			}
-			global $Core, $Static_pages;
+			global $Static_pages;
 			include_once MODULES.'/'.$module.'/class.php';
 			$Core->create('cs\\modules\\Static_pages\\Static_pages');
 			$structure				= $Static_pages->get_structure();

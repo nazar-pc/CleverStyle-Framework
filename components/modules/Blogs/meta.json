@@ -1,8 +1,8 @@
 {
-	"package"		: "Blog",
+	"package"		: "Blogs",
 	"category"		: "modules",
-	"version"		: "0.003",
-	"description"	: "Adds blogging functionality",
+	"version"		: "0.004",
+	"description"	: "Adds blogsging functionality",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",
 	"license"		: "MIT License",
@@ -11,7 +11,7 @@
 		"MySQLi"
 	],
 	"provide"		: [
-		"blog"
+		"blogs"
 	],
 	"multilingual"	: [
 		"interface",

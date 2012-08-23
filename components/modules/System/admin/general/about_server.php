@@ -173,6 +173,10 @@ $Index->content(
 			$L->main_storage.':',
 			$Core->config('storage_type')
 		],
+		[
+			$L->cache_engine.':',
+			$Core->config('cache_engine')
+		],
 		function_exists('apache_get_version') ? [
 			$L->php_ini_settings.':',
 			h::{'table.cs-left-odd.cs-php-ini-settings tr| td'}(
