@@ -125,7 +125,7 @@ function install_process () {
 		"closed_title": "Site closed",
 		"closed_text": "<p>Site closed for maintenance<\/p>",
 		"site_mode": "1",
-		"title_delimiter": "::",
+		"title_delimiter": "|",
 		"title_reverse": "0",
 		"debug": "0",
 		"show_db_queries": "1",
@@ -209,10 +209,10 @@ function install_process () {
 	$config['name']					= $config['description']	= (string)$_POST['site_name'];
 	$config['keywords']				= implode(', ', _trim(explode(' ', $config['name']), ','));
 	$config['url']					= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-	$config['url']					= substr(
+	$config['url']					= mb_substr(
 		$config['url'],
 		0,
-		strrpos($config['url'], '/', -13)
+		mb_strrpos($config['url'], '/', -13)
 	);
 	$config['admin_email']			= $_POST['admin_email'];
 	$config['language']				= $_POST['language'];

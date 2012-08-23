@@ -6,8 +6,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-use			\Closure,
-			\h;
+use			\h;
 /**
  * Provides next triggers:<br>
  *  System/Index/preload<br>

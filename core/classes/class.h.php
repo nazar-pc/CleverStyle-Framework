@@ -416,6 +416,10 @@ class h {
 			}
 		}
 		if (is_array($in['value'])) {
+			if (isset($in['disabled'])) {
+				$data['disabled']	= array_merge($in['disabled'], isset($data['disabled']) ? $data['disabled'] : []);
+				unset($in['disabled']);
+			}
 			if (isset($in['selected'])) {
 				$data['selected']	= array_merge($in['selected'], isset($data['selected']) ? $data['selected'] : []);
 				unset($in['selected']);
@@ -426,6 +430,11 @@ class h {
 			if (!is_array($data['selected'])) {
 				$data['selected']	= [$data['selected']];
 			}
+			if (isset($data['disabled'])) {
+				$data['selected']	= array_diff($data['selected'], $data['disabled']);
+			} else {
+				$data['disabled']	= [];
+			}
 			foreach ($in['value'] as $i => $v) {
 				if (in_array($v, $data['selected'])) {
 					if (!isset($in['add'][$i])) {
@@ -434,8 +443,15 @@ class h {
 						$in['add'][$i]	.= ' selected';
 					}
 				}
+				if (in_array($v, $data['disabled'])) {
+					if (!isset($in['add'][$i])) {
+						$in['add'][$i]	= ' disabled';
+					} else {
+						$in['add'][$i]	.= ' disabled';
+					}
+				}
 			}
-			unset($data['selected'], $i, $v);
+			unset($data['disabled'], $data['selected'], $i, $v);
 		}
 		$options = array_flip_3d($in);
 		unset($in);
@@ -750,12 +766,7 @@ class h {
 								)
 							)
 						) {
-							$output[]	= array_map(
-								function ($d) use ($input) {
-									return self::__callStatic($input[1], $d);
-								},
-								$d
-							);
+							$output[]	= self::__callStatic($input[1], $d);
 						} else {
 							$output[]	= [
 								self::__callStatic($input[1], $d[0]),
@@ -810,25 +821,26 @@ class h {
 					);
 				}
 				return $output;
-			/**
-			 * Third part of expression - fix for "select" and "datalist" tags bescause they accept arrays as values
-			 */
 			} elseif (
+				/**
+				 * Fix for "select" and "datalist" tags bescause they accept arrays as values
+				 */
+				strpos($input, 'select') !== 0 &&
+				strpos($input, 'datalist') !== 0 &&
 				(
-					is_array_indexed($data[0]) &&
 					(
-						!isset($data[1]) ||
-						!is_array($data[1]) ||
+						is_array_indexed($data[0]) &&
 						(
-							is_array_indexed($data[1]) && !in_array($data[1][0], self::$unit_atributes)
+							!isset($data[1]) ||
+							!is_array($data[1]) ||
+							(
+								is_array_indexed($data[1]) && !in_array($data[1][0], self::$unit_atributes)
+							)
 						)
-					) &&
+					) ||
 					(
-						strpos($input, 'select') !== 0 && strpos($input, 'datalist') !== 0
+						isset($data[1]) && is_array_assoc($data[0]) && is_array_assoc($data[1])
 					)
-				) ||
-				(
-					isset($data[1]) && is_array_assoc($data[0]) && is_array_assoc($data[1])
 				)
 			) {
 				$output	= '';
@@ -839,12 +851,12 @@ class h {
 					);
 				}
 				return $output;
-			/**
-			 * Second part of expression - fix for "select" and "datalist" tags bescause they accept arrays as values
-			 */
 			} elseif (
 				is_array_indexed($data[0]) &&
 				(
+					/**
+					 * Fix for "select" and "datalist" tags bescause they accept arrays as values
+					 */
 					(
 						strpos($input, 'select') !== 0 && strpos($input, 'datalist') !== 0
 					) ||
@@ -938,9 +950,9 @@ class h {
 		/**
 		 * Atributes processing
 		 */
-		if (($pos = strpos($input, '[')) !== false) {
-			$attrs_ = explode('][', substr($input, $pos+1, -1));
-			$input = substr($input, 0, $pos);
+		if (($pos = mb_strpos($input, '[')) !== false) {
+			$attrs_ = explode('][', mb_substr($input, $pos+1, -1));
+			$input = mb_substr($input, 0, $pos);
 			foreach ($attrs_ as &$attr) {
 				$attr				= explode('=', $attr);
 				$attrs[$attr[0]]	= isset($attr[1]) ? $attr[1] : '';
@@ -950,12 +962,12 @@ class h {
 		/**
 		 * Classes processing
 		 */
-		if (($pos = strpos($input, '.')) !== false) {
+		if (($pos = mb_strpos($input, '.')) !== false) {
 			if (!isset($attrs['class'])) {
 				$attrs['class']	= '';
 			}
-			$attrs['class']	= trim($attrs['class'].' '.str_replace('.', ' ', substr($input, $pos)));
-			$input			= substr($input, 0, $pos);
+			$attrs['class']	= trim($attrs['class'].' '.str_replace('.', ' ', mb_substr($input, $pos)));
+			$input			= mb_substr($input, 0, $pos);
 		}
 		unset($pos);
 		/**

@@ -9,29 +9,28 @@
  */
 namespace	cs\modules\Blog;
 use			\h;
-global $Index, $L, $Page, $Config, $Blog;
+global $Index, $L, $Page, $Blog, $Config;
 $id							= (int)$Config->routing['current'][1];
-$data						= $Blog->get($id);
-$Page->title($L->editing_of_page($data['title']));
+$data						= $Blog->get_section($id);
+$Page->title($L->editing_of_posts_section($data['title']));
 $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/'.MODULE;
 $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages'}(
-		$L->editing_of_page($data['title'])
+		$L->editing_of_posts_section($data['title'])
 	).
 	h::{'table.cs-fullwidth-table.cs-center-all tr'}(
 		h::{'th.ui-widget-header.ui-corner-all'}(
-			$L->category,
-			$L->page_title,
-			h::info('page_path'),
-			h::info('page_interface')
+			$L->parent_section,
+			$L->section_title,
+			h::info('section_path')
 		),
 		h::{'td.ui-widget-content.ui-corner-all'}(
-			h::{'select[name=category][size=5]'}(
-				get_categories_list(),
+			h::{'select[name=parent][size=5]'}(
+				get_sections_list($id),
 				[
-					'selected'	=> $data['category']
+					'selected'	=> $data['parent']
 				]
 			),
 			h::{'input[name=title]'}([
@@ -39,23 +38,9 @@ $Index->content(
 			]),
 			h::{'input[name=path]'}([
 				'value'	=> $data['path']
-			]),
-			h::{'input[type=radio][name=interface]'}([
-				'checked'	=> $data['interface'],
-				'value'		=> [0, 1],
-				'in'		=> [$L->off, $L->on]
 			])
-		),
-		h::{'th.ui-widget-header.ui-corner-all[colspan=4]'}(
-			$L->content
-		),
-		h::{'td.ui-widget-content.ui-corner-all[colspan=4] textarea.cs-wide-textarea[name=content]'}(
-			$data['content'],
-			[
-				'class'	=> $data['interface'] ? 'EDITOR' : ''
-			]
 		)
 	).
 	h::{"input[type=hidden][name=id][value=$id]"}().
-	h::{'input[type=hidden][name=mode][value=edit_page]'}()
+	h::{'input[type=hidden][name=mode][value=edit_section]'}()
 );

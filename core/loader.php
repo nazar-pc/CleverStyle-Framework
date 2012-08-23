@@ -8,7 +8,7 @@
 /**
  * Redirection processing
  */
-if (strpos($_SERVER['REQUEST_URI'], '/redirect/') === 0) {
+if (mb_strpos($_SERVER['REQUEST_URI'], '/redirect/') === 0) {
 	header('Location: '.substr($_SERVER['REQUEST_URI'], 10));
 	die;
 }

@@ -5,13 +5,16 @@
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-td#left_blocks, td#right_blocks {
+#left_blocks, #right_blocks {
 	max-width: 250px;
 	min-width: 150px;
 	padding: 0 5px;
 	vertical-align: top;
 	width: 15%;
 }
-footer > div#footer {
-	padding: 5px;
+body > footer > div:nth-child(1) {
+	padding: 5px 5px 0;
+}
+body > footer > div:nth-child(2) {
+	padding: 0 5px 5px;
 }

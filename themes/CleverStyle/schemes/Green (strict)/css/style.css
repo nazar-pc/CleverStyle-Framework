@@ -8,17 +8,20 @@
 body {
 	background-color: #666;
 }
-#main_content > section > article {
+#main_content > div {
 	background: rgba(255, 255, 255, 0.95);
 }
-#main_content section, #body > table {
+#main_content,
+#body > table {
 	background: rgba(255, 255, 255, 0.15);
 	border: 1px solid rgba(255, 255, 255, 0.25);
 }
 a {
 	color: #000;
 }
-.cs-form-element, .cs-form-element:hover, .cs-form-element:focus {
+.cs-form-element,
+.cs-form-element:hover,
+.cs-form-element:focus {
 	background: #fff;
 	border-color: rgb(110, 188, 0);
 }

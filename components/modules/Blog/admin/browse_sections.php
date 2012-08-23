@@ -9,13 +9,14 @@
  */
 namespace	cs\modules\Blog;
 use			\h;
-global $Index, $L;
+global $Index, $L, $Page;
 $Index->buttons	= false;
+$Page->title($L->browse_sections);
 $Index->content(
 	h::{'table.cs-left-all.cs-fullwidth-table'}(
 		h::{'tr th.ui-widget-header.ui-corner-all'}(
 			[
-				$L->pages_category,
+				$L->blogs_sections,
 				[
 					'style'	=> 'width: 80%'
 				]
@@ -23,28 +24,15 @@ $Index->content(
 			$L->action
 		).
 		h::{'tr| td.ui-widget-content.ui-corner-all'}(
-			get_categories_rows()
+			get_sections_rows()
 		).
 		h::{'tr td[colspan=2] a.cs-button'}(
 			[
-				$L->add_category,
+				$L->add_section,
 				[
-					'href'	=> 'admin/'.MODULE.'/add_category'
+					'href'	=> 'admin/'.MODULE.'/add_section'
 				]
-			],
-			[
-				$L->add_page,
-				[
-					'href'	=> 'admin/'.MODULE.'/add_page'
-				]
-			]/*,
-			[
-				$L->add_page_live,
-				[
-					'href'	=> 'admin/'.MODULE.'/add_page_live'
-				]
-			]*/
+			]
 		)
-	).
-	h::{'p.cs-left'}($L->index_page_path)
+	)
 );

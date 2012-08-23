@@ -9,24 +9,44 @@
  */
 namespace	cs\modules\Blog;
 use			\h;
-global $Core, $Index, $Config, $Blog;
+global $Core, $Index, $Config, $Blog, $Page;
 include_once MFOLDER.'/class.php';
 $Core->create('cs\\modules\\Blog\\Blog');
 $Index->title_auto	= false;
-$data				= $Blog->get(HOME ? $Blog->get_structure()['pages']['index'] : $Config->routing['current'][0]);
-global $Page;
-if ($data['interface']) {
-	if (!HOME) {
-		if (!empty($Index->title)) {
-			foreach ($Index->title as $title) {
-				$Page->title($title);
-			}
-			unset($title);
-		}
-		$Page->title($data['title']);
+$Index->init_auto	= false;
+$rc					= $Config->routing['current'];
+if (isset($rc[0]) && mb_strpos($rc[0], ':')) {
+	$post	= (int)mb_substr($rc[0], mb_strrpos($rc[0], ':')+1);
+	if (!$post) {
+		define('ERROR_PAGE', 404);
+		return;
 	}
-	$Page->content($data['content']);
-} else {
-	interface_off();
-	$Page->Content	= $data['content'];
+	$post	= $Blog->get($post);
+	if (!$post) {
+		define('ERROR_PAGE', 404);
+		return;
+	}
+	$Page->title($post['title']);
+	$Index->content(
+		h::{'section.cs-blog-post article'}(
+			h::header(
+				h::h2($post['title']).
+				h::{'p a'}(
+					array_map(
+						function ($section) use ($Blog) {
+							$section	= $Blog->get_section($section);
+							return [
+								$section['title'],
+								[
+									'href'	=> $section['full_path']
+								]
+							];
+						},
+						$post['sections']
+					)
+				)
+			).
+			h::article($post['content'])//TODO show tags, author and date. Tags will be links to searching by tag name
+		)
+	);
 }

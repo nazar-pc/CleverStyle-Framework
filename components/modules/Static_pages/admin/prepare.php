@@ -90,7 +90,7 @@ function get_categories_rows ($structure = null, $level = 0, $parent_categories 
 			]
 		) : false)
 	]];
-	if (count($structure['categories'])) {
+	if (!empty($structure['categories'])) {
 		foreach ($structure['categories'] as $category) {
 			$content	= array_merge($content, get_categories_rows($category, $level+1, $parent_categories));
 		}
@@ -114,7 +114,7 @@ function get_categories_list ($current = null, $structure = null, $level = 0) {
 		$list['in'][]		= str_repeat('&nbsp;', $level).$structure['title'];
 		$list['value'][]	= $structure['id'];
 	}
-	if (count($structure['categories'])) {
+	if (!empty($structure['categories'])) {
 		foreach ($structure['categories'] as $category) {
 			$tmp			= get_categories_list($current, $category, $level+1);
 			$list['in']		= array_merge($list['in'], $tmp['in']);

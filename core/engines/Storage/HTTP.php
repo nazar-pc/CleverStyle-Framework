@@ -330,7 +330,7 @@ class HTTP extends _Abstract {
 	 * @return bool|string
 	 */
 	function source_by_url ($url) {
-		if (strpos($url, $this->base_url) === 0) {
+		if (mb_strpos($url, $this->base_url) === 0) {
 			global $Config;
 			if (is_object($Config)) {
 				return str_replace($this->base_url.'/', '', $url);

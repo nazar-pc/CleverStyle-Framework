@@ -44,8 +44,8 @@ class FileSystem extends _Abstract {
 	 */
 	function set ($item, $data) {
 		$data = @_json_encode($data);
-		if (strpos($item, '/') !== false) {
-			$path	= substr($item, 0, strrpos($item, '/'));
+		if (mb_strpos($item, '/') !== false) {
+			$path	=mb_substr($item, 0, mb_strrpos($item, '/'));
 			if (!is_dir(CACHE.'/'.$path)) {
 				@mkdir(CACHE.'/'.$path, 0700, true);
 			}

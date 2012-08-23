@@ -9,36 +9,34 @@
  */
 namespace	cs\modules\Blog;
 use			\h;
-global $Index, $L, $Config;
-$rc				= $Config->routing['current'];
+global $Index, $L, $Page;
 $Index->buttons	= false;
+$Page->title($L->browse_posts);
 $Index->content(
 	h::{'table.cs-left-all.cs-fullwidth-table'}(
 		h::{'tr th.ui-widget-header.ui-corner-all'}(
 			[
-				$L->page_title,
+				$L->post_title,
 				[
-					'style'	=> 'width: 80%'
+					'style'	=> 'width: 30%'
+				]
+			],
+			[
+				$L->post_sections,
+				[
+					'style'	=> 'width: 25%'
+				]
+			],
+			[
+				$L->post_tags,
+				[
+					'style'	=> 'width: 25%'
 				]
 			],
 			$L->action
 		).
 		h::{'tr| td.ui-widget-content.ui-corner-all'}(
-			get_pages_rows()
-		).
-		h::{'tr td[colspan=2] a.cs-button'}(
-			[
-				$L->add_page,
-				[
-					'href'	=> 'admin/'.MODULE.'/add_page/'.array_slice($rc, -1)[0]
-				]
-			]/*,
-			[
-				$L->add_page_live,
-				[
-					'href'	=> 'admin/'.MODULE.'/add_page_live/'.array_slice($rc, -1)[0]
-				]
-			]*/
+			get_posts_rows(isset($_POST['page']) ? $_POST['page'] : 1)
 		)
 	)
 );

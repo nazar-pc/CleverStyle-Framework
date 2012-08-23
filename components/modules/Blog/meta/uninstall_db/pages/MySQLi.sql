@@ -1,1 +1,1 @@
-DROP TABLE `[prefix]static_pages`, `[prefix]static_pages_categories`;
+DROP TABLE `[prefix]static_pages`, `[prefix]static_pages_sections`;

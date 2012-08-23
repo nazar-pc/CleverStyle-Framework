@@ -7,7 +7,7 @@
  */
 body {
 	font-family : Tahoma, Verdana, sans-serif;
-	font-size   : 11px;
+	font-size   : 12px;
 	margin      : 0;
 	padding     : 0;
 	width       : 100%;
@@ -44,15 +44,12 @@ code {
 
 #main_content {
 	vertical-align: top;
-}
-
-#main_content section {
 	border-radius      : 7px;
 	padding            : 10px;
 	vertical-align     : top;
 }
 
-#main_content > section > article {
+#main_content > div {
 	border-radius      : 5px;
 	padding            : 10px;
 	height             : 100%;
@@ -104,12 +101,11 @@ textarea {
 	padding : 2px 3px !important;
 }
 
-header,
-footer {
+body > header,
+body > footer {
 	width      : 100%;
 	text-align : center;
 	margin     : 0;
-	padding    : 0;
 }
 
 .cs-state-messages {
@@ -338,14 +334,37 @@ textarea.cs-wide-textarea {
 	vertical-align: top;
 }
 
-h1 {
-	font-size: 18px;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
 	font-weight: 100;
 }
 
+h1 {
+	font-size: 20px;
+}
+
 h2 {
+	font-size: 18px;
+}
+
+h3 {
 	font-size: 16px;
-	font-weight: 100;
+}
+
+h4 {
+	font-size: 15px;
+}
+
+h5 {
+	font-size: 14px;
+}
+
+h6 {
+	font-size: 13px;
 }
 .cs-profile-table h2 {
 	margin: 0 0 10px 0;

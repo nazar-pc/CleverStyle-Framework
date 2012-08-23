@@ -11,16 +11,16 @@ namespace	cs\modules\Blog;
 use			\h;
 global $Index, $L, $Page, $Blog, $Config;
 $id							= (int)$Config->routing['current'][1];
-$title						= $Blog->get($id)['title'];
-$Page->title($L->deletion_of_page($title));
+$title						= $Blog->get_section($id)['title'];
+$Page->title($L->deletion_of_posts_section($title));
 $Index->buttons				= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/'.MODULE;
 $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages'}(
-		$L->sure_to_delete_page($title)
+		$L->sure_to_delete_posts_section($title)
 	).
 	h::{'button[type=submit]'}($L->yes).
 	h::{"input[type=hidden][name=id][value=$id]"}().
-	h::{'input[type=hidden][name=mode][value=delete_page]'}()
+	h::{'input[type=hidden][name=mode][value=delete_section]'}()
 );

@@ -9,7 +9,8 @@
  */
 define('DIR',	__DIR__);													//Path to installer dir
 $ROOT	= pathinfo(__DIR__, PATHINFO_DIRNAME);
-define('ROOT',	strpos($ROOT, 'phar://') === 0 ? substr($ROOT, 7) : $ROOT);	//Path to site root
+mb_internal_encoding('utf-8');
+define('ROOT',	mb_strpos($ROOT, 'phar://') === 0 ? substr($ROOT, 7) : $ROOT);	//Path to site root
 unset($ROOT);
 global $fs;
 $fs	= json_decode(file_get_contents(DIR.'/fs.json'), true);
@@ -19,7 +20,6 @@ require_once DIR.'/install/functions.php';
 date_default_timezone_set('UTC');
 header('Content-Type: text/html; charset=utf-8');
 header('Connection: close');
-mb_internal_encoding('utf-8');
 echo h::html(
 	h::head(
 		h::title('CleverStyle CMS $version$ Installation').

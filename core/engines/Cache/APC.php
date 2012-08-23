@@ -58,8 +58,8 @@ class APC extends _Abstract {
 			if (
 				$item == $element['key'] ||
 				(
-					strpos($element['key'], $item) === 0 &&
-					substr($element['key'], strlen($item), 1) == '/'
+					mb_strpos($element['key'], $item) === 0 &&
+					mb_substr($element['key'], mb_strlen($item), 1) == '/'
 				)
 			) {
 				$return	= apc_delete($element['key']) && $return;

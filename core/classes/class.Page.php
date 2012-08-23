@@ -40,10 +40,10 @@ class Page {
 					'debug_info'		=> 1,
 					'Left'				=> 5,
 					'Top'				=> 5,
-					'Content'			=> 6,
+					'Content'			=> 5,
 					'Bottom'			=> 5,
 					'Right'				=> 5,
-					'Footer'			=> 2,
+					'Footer'			=> 1,
 					'post_Body'			=> 0
 				];
 
@@ -157,6 +157,7 @@ class Page {
 					!(
 						is_object($User) && $User->is('admin')
 					) &&
+					error_header(503) &&
 					!(
 						_include_once(THEMES.'/'.$this->theme.'/closed.php', false) || _include_once(THEMES.'/'.$this->theme.'/closed.html', false)
 					)
@@ -557,7 +558,7 @@ class Page {
 			'/(url\((.*?)\))|(@import[\s\t\n\r]{0,1}[\'"](.*?)[\'"])/',
 			function ($link) use (&$data) {
 				$link		= trim(array_pop($link), '\'" ');
-				$format		= substr($link, strrpos($link, '.') + 1);
+				$format		= mb_substr($link, mb_strrpos($link, '.') + 1);
 				$mime_type	= 'text/html';
 				switch ($format) {
 					case 'jpeg':

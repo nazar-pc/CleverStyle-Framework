@@ -12,22 +12,13 @@ if (!isset($_POST['mode'])) {
 }
 global $Index, $Blog;
 switch ($_POST['mode']) {
-	case 'add_category':
-		$Index->save((bool)$Blog->add_category($_POST['parent'], $_POST['title'], $_POST['path']));
+	case 'add_section':
+		$Index->save((bool)$Blog->add_section($_POST['parent'], $_POST['title'], $_POST['path']));
 	break;
-	case 'edit_category':
-		$Index->save((bool)$Blog->set_category($_POST['id'], $_POST['parent'], $_POST['title'], $_POST['path']));
+	case 'edit_section':
+		$Index->save((bool)$Blog->set_section($_POST['id'], $_POST['parent'], $_POST['title'], $_POST['path']));
 	break;
-	case 'delete_category':
-		$Index->save((bool)$Blog->del_category($_POST['id']));
-	break;
-	case 'add_page':
-		$Index->save((bool)$Blog->add($_POST['category'], $_POST['title'], $_POST['path'], $_POST['content'], $_POST['interface']));
-	break;
-	case 'edit_page':
-		$Index->save((bool)$Blog->set($_POST['id'], $_POST['category'], $_POST['title'], $_POST['path'], $_POST['content'], $_POST['interface']));
-	break;
-	case 'delete_page':
-		$Index->save((bool)$Blog->del($_POST['id']));
+	case 'delete_section':
+		$Index->save((bool)$Blog->del_section($_POST['id']));
 	break;
 }

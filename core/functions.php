@@ -311,7 +311,7 @@ if (!function_exists('is_unicode')) {
  */
 function url_by_source ($source) {
 	$source = realpath($source);
-	if (strpos($source, DIR.'/') === 0) {
+	if (mb_strpos($source, DIR.'/') === 0) {
 		global $Config;
 		if (is_object($Config)) {
 			return str_replace(DIR, $Config->server['base_url'], $source);
@@ -328,7 +328,7 @@ function url_by_source ($source) {
  */
 function source_by_url ($url) {
 	global $Config;
-	if (strpos($url, $Config->server['base_url']) === 0) {
+	if (mb_strpos($url, $Config->server['base_url']) === 0) {
 		if (is_object($Config)) {
 			return str_replace($Config->server['base_url'], DIR, $url);
 		}
@@ -1243,16 +1243,19 @@ function error_header ($code) {
 	switch ($code) {
 		case 400:
 			$string_code = '400 Bad Request';
-			break;
+		break;
 		case 403:
 			$string_code = '403 Forbidden';
-			break;
+		break;
 		case 404:
 			$string_code = '404 Not Found';
-			break;
+		break;
 		case 500:
 			$string_code = '500 Internal Server Error';
-			break;
+		break;
+		case 503:
+			$string_code = '503 Service Unavailable';
+		break;
 	}
 	if ($string_code) {
 		header($_SERVER['SERVER_PROTOCOL'].' '.$string_code);

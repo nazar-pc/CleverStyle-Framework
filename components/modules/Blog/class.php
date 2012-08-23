@@ -57,22 +57,31 @@ class Blog {
 		$id	= (int)$id;
 		if (($data = $Cache->{'Blog/posts/'.$id.'/'.$L->clang}) === false) {
 			$data	= $db->{$this->posts}->qf([
-				"SELECT `id`, `user`, `title`, `path`, `content`
+				"SELECT
+					`id`,
+					`user`,
+					`title`,
+					`path`,
+					`content`
 				FROM `[prefix]blog_posts`
 				WHERE `id` = '%s'
 				LIMIT 1",
 				$id
 			]);
 			if ($data) {
-				$data['title']		= $this->ml_process($data['title']);
-				$data['path']		= $this->ml_process($data['path']);
-				$data['content']	= $this->ml_process($data['content']);
-				$data['categories']	= $db->{$this->posts}->qfa(
-					"SELECT `category` FROM `[prefix]blog_posts_categories` WHERE `id` = $id",
+				$data['title']								= $this->ml_process($data['title']);
+				$data['path']								= $this->ml_process($data['path']);
+				$data['content']							= $this->ml_process($data['content']);
+				$data['sections']							= $db->{$this->posts}->qfa(
+					"SELECT `section`
+					FROM `[prefix]blog_posts_sections`
+					WHERE `id` = $id",
 					true
 				);
-				$data['tags']		= $db->{$this->posts}->qfa(
-					"SELECT `tag` FROM `[prefix]blog_posts_tags` WHERE `id` = $id",
+				$data['tags']								= $db->{$this->posts}->qfa(
+					"SELECT `tag`
+					FROM `[prefix]blog_posts_tags`
+					WHERE `id` = $id",
 					true
 				);
 				$Cache->{'Blog/posts/'.$id.'/'.$L->clang}	= $data;
@@ -86,19 +95,19 @@ class Blog {
 	 * @param string	$title
 	 * @param string	$path
 	 * @param string	$content
-	 * @param int[]		$categories
+	 * @param int[]		$sections
 	 * @param string[]	$tags
 	 *
 	 * @return bool|int				Id of created post on success of <b>false</> on failure
 	 */
-	function add ($title, $path, $content, $categories, $tags) {
+	function add ($title, $path, $content, $sections, $tags) {
 		global $db, $User;
 		$path		= $this->path(str_replace('/', ' ', $path ?: $title));
-		$categories	= array_intersect(
-			array_keys($this->get_categories_list()),
-			$categories
+		$sections	= array_intersect(
+			array_keys($this->get_sections_list()),
+			$sections
 		);
-		if (empty($categories)) {
+		if (empty($sections)) {
 			return false;
 		}
 		if ($db->{$this->posts}()->q(
@@ -110,7 +119,7 @@ class Blog {
 			TIME
 		)) {
 			$id	= $db->{$this->posts}()->id();
-			$this->set($id, $title, $path, $content, $categories, $tags);
+			$this->set($id, $title, $path, $content, $sections, $tags);
 			return $id;
 		} else {
 			return false;
@@ -123,31 +132,31 @@ class Blog {
 	 * @param string	$title
 	 * @param string	$path
 	 * @param string	$content
-	 * @param int[]		$categories
+	 * @param int[]		$sections
 	 * @param string[]	$tags
 	 *
 	 * @return bool
 	 */
-	function set ($id, $title, $path, $content, $categories, $tags) {
-		global $db, $Cache, $L;
+	function set ($id, $title, $path, $content, $sections, $tags) {
+		global $db, $Cache;
 		$id			= (int)$id;
 		$title		= trim(xap($title));
 		$path		= $this->path(str_replace('/', ' ', $path ?: $title));
 		$content	= xap($content, true);
-		$categories	= array_intersect(
-			array_keys($this->get_categories_list()),
-			$categories
+		$sections	= array_intersect(
+			array_keys($this->get_sections_list()),
+			$sections
 		);
-		if (empty($categories)) {
+		if (empty($sections)) {
 			return false;
 		}
-		$categories	= implode(
+		$sections	= implode(
 			',',
 			array_map(
-				function ($category) use ($id) {
-					return "($id, $category)";
+				function ($section) use ($id) {
+					return "($id, $section)";
 				},
-				$categories
+				$sections
 			)
 		);
 		$tags		= implode(
@@ -161,10 +170,12 @@ class Blog {
 		);
 		if ($db->{$this->posts}()->q(
 			[
-				"INSERT INTO `[prefix]blog_posts_categories`
-					(`id`, `category`)
+				"DELETE FROM `[prefix]blog_posts_sections`
+				WHERE `id` = '%1\$s'",
+				"INSERT INTO `[prefix]blog_posts_sections`
+					(`id`, `section`)
 				VALUES
-					$categories",
+					$sections",
 				"UPDATE `[prefix]blog_posts`
 				SET
 					`title` = '%s',
@@ -172,6 +183,8 @@ class Blog {
 					`content` = '%s'
 				WHERE `id` = '%s'
 				LIMIT 1",
+				"DELETE FROM `[prefix]blog_posts_tags`
+				WHERE `id` = '%1\$s'",
 				"INSERT INTO `[prefix]blog_posts_tags`
 					(`id`, `tag`)
 				VALUES
@@ -182,7 +195,10 @@ class Blog {
 			$this->ml_set('Blog/posts/content', $id, $content),
 			$id
 		)) {
-			unset($Cache->{'Blog/posts/'.$id.'/'.$L->clang});
+			unset(
+				$Cache->{'Blog/posts/'.$id},
+				$Cache->{'Blog/sections'}
+			);
 			return true;
 		} else {
 			return false;
@@ -196,7 +212,7 @@ class Blog {
 	 * @return bool
 	 */
 	function del ($id) {
-		global $db, $Cache, $L;
+		global $db, $Cache;
 		$id	= (int)$id;
 		if ($db->{$this->posts}()->q(
 			"DELETE FROM `[prefix]blog_posts`
@@ -207,36 +223,55 @@ class Blog {
 			$this->ml_del('Blog/posts/title', $id);
 			$this->ml_del('Blog/posts/path', $id);
 			$this->ml_del('Blog/posts/content', $id);
-			unset($Cache->{'Blog/posts/'.$id.'/'.$L->clang});
+			unset(
+				$Cache->{'Blog/posts/'.$id},
+				$Cache->{'Blog/sections'}
+			);
 			return true;
 		} else {
 			return false;
 		}
 	}
 	/**
-	 * Get array of categories in form [<i>id</i> => <i>title</i>]
+	 * Get total count of posts
+	 *
+	 * @return int
+	 */
+	function get_total_count () {
+		global $Cache, $db;
+		if (($data = $Cache->{'Blog/count'}) === false) {
+			$Cache->{'Blog/count'}	= $data	= $db->{$this->posts}->qf(
+				"SELECT COUNT(`id`)
+				FROM `[prefix]blog_posts`",
+				true
+			);;
+		}
+		return $data;
+	}
+	/**
+	 * Get array of sections in form [<i>id</i> => <i>title</i>]
 	 *
 	 * @return array|bool
 	 */
-	function get_categories_list () {
+	function get_sections_list () {
 		global $Cache, $L;
-		if (($data = $Cache->{'Blog/categories_list/'.$L->clang}) === false) {
-			$data	= $this->get_categories_list_internal(
-				$this->get_categories_structure()
+		if (($data = $Cache->{'Blog/sections/list/'.$L->clang}) === false) {
+			$data	= $this->get_sections_list_internal(
+				$this->get_sections_structure()
 			);
 			if ($data) {
-				$Cache->{'Blog/categories_list/'.$L->clang}	= $data;
+				$Cache->{'Blog/sections/list/'.$L->clang}	= $data;
 			}
 		}
 		return $data;
 	}
-	private function get_categories_list_internal ($structure) {
-		if (!empty($structure['categories'])) {
+	private function get_sections_list_internal ($structure) {
+		if (!empty($structure['sections'])) {
 			$list	= [];
-			foreach ($structure['categories'] as $category) {
+			foreach ($structure['sections'] as $section) {
 				$list = array_merge(
 					$list,
-					$this->get_categories_list_internal($category)
+					$this->get_sections_list_internal($section)
 				);
 			}
 			return $list;
@@ -245,93 +280,128 @@ class Blog {
 		}
 	}
 	/**
-	 * Get array of categories structure
+	 * Get array of sections structure
 	 *
 	 * @return array|bool
 	 */
-	function get_categories_structure () {
+	function get_sections_structure () {
 		global $Cache, $L;
-		if (($data = $Cache->{'Blog/categories_structure/'.$L->clang}) === false) {
-			$data	= $this->get_categories_structure_internal();
+		if (($data = $Cache->{'Blog/sections/structure/'.$L->clang}) === false) {
+			$data	= $this->get_sections_structure_internal();
 			if ($data) {
-				$Cache->{'Blog/categories_structure/'.$L->clang}	= $data;
+				$Cache->{'Blog/sections/structure/'.$L->clang}	= $data;
 			}
 		}
 		return $data;
 	}
-	private function get_categories_structure_internal ($parent = 0) {
+	private function get_sections_structure_internal ($parent = 0) {
 		global $db;
-		$structure					= ['id'	=> $parent];
+		$structure					= [
+			'id'	=> $parent,
+			'posts'	=> 0
+		];
 		if ($parent != 0) {
 			$structure	= array_merge(
 				$structure,
-				$this->get_category($parent)
+				$this->get_section($parent)
 			);
 		}
-		$categories					= $db->{$this->posts}->qfa([
+		$sections					= $db->{$this->posts}->qfa([
 			"SELECT
 				`id`,
 				`path`
-			FROM `[prefix]blog_categories`
+			FROM `[prefix]blog_sections`
 			WHERE `parent` = '%s'",
 			$parent
 		]);
-		$structure['categories']	= [];
-		foreach ($categories as $category) {
-			$structure['categories'][$category['path']]	= $this->get_categories_structure_internal($category['id']);
+		$structure['sections']	= [];
+		foreach ($sections as $section) {
+			$structure['sections'][$section['path']]	= $this->get_sections_structure_internal($section['id']);
 		}
 		return $structure;
 	}
 	/**
-	 * Get data of specified category
+	 * Get data of specified section
 	 *
 	 * @param int			$id
 	 *
 	 * @return array|bool
 	 */
-	function get_category ($id) {
-		global $db;
-		$id				= (int)$id;
-		$data			= $db->{$this->posts}->qf([
-			"SELECT
-				`id`,
-				`title`,
-				`path`,
-				`parent`
-			FROM `[prefix]blog_categories`
-			WHERE `id` = '%s'
-			LIMIT 1",
-			$id
-		]);
-		$data['title']	= $this->ml_process($data['title']);
-		$data['path']	= $this->ml_process($data['path']);
+	function get_section ($id) {
+		global $db, $Cache, $L;
+		$id	= (int)$id;
+		if (($data = $Cache->{'Blog/sections/'.$id.'/'.$L->clang}) === false) {
+			$data											= $db->{$this->posts}->qf([
+				"SELECT
+					`id`,
+					`title`,
+					`path`,
+					`parent`,
+					(
+						SELECT COUNT(`id`)
+						FROM `[prefix]blog_posts_sections`
+						WHERE `section` = '%1\$s'
+					) AS `posts`
+				FROM `[prefix]blog_sections`
+				WHERE `id` = '%1\$s'
+				LIMIT 1",
+				$id
+			]);
+			$data['title']									= $this->ml_process($data['title']);
+			$data['path']									= $this->ml_process($data['path']);
+			$data['full_path']								= [$data['path']];
+			$parent											= $data['parent'];
+			while ($parent != 0) {
+				$section				= $this->get_section($parent);
+				$data['full_path'][]	= $section['path'];
+				$parent					= $section['parent'];
+			}
+			$data['full_path']								= implode('/', array_reverse($data['full_path']));
+			$Cache->{'Blog/sections/'.$id.'/'.$L->clang}	= $data;
+		}
 		return $data;
 	}
 	/**
-	 * Add new category
+	 * Add new section
 	 *
 	 * @param int		$parent
 	 * @param string	$title
 	 * @param string	$path
 	 *
-	 * @return bool|int			Id of created category on success of <b>false</> on failure
+	 * @return bool|int			Id of created section on success of <b>false</> on failure
 	 */
-	function add_category ($parent, $title, $path) {
+	function add_section ($parent, $title, $path) {
 		global $db, $Cache;
 		$parent	= (int)$parent;
 		$path	= $this->path(str_replace('/', ' ', $path ?: $title));
+		$posts	= $db->{$this->posts}()->qfa(
+			"SELECT `id`
+			FROM `[prefix]blog_posts_sections`
+			WHERE `section` = $parent"
+		);
 		if ($db->{$this->posts}()->q(
-			"INSERT INTO `[prefix]blog_categories`
+			"INSERT INTO `[prefix]blog_sections`
 				(`parent`)
 			VALUES
-				('%s')",
-			$parent
+				($parent)"
 		)) {
 			$id	= $db->{$this->posts}()->id();
-			$this->set_category($id, $parent, $title, $path);
+			if ($posts) {
+				$db->{$this->posts}()->q(
+					"UPDATE `[prefix]blog_posts_sections`
+					SET `section` = $id
+					WHERE `section` = $parent"
+				);
+				foreach ($posts as $post) {
+					unset($Cache->{'Blog/posts/'.$post});
+				}
+				unset($post);
+			}
+			unset($posts);
+			$this->set_section($id, $parent, $title, $path);
 			unset(
-				$Cache->{'Blog/categories_list'},
-				$Cache->{'Blog/categories_structure'}
+				$Cache->{'Blog/sections/list'},
+				$Cache->{'Blog/sections/structure'}
 			);
 			return $id;
 		} else {
@@ -339,7 +409,7 @@ class Blog {
 		}
 	}
 	/**
-	 * Set data of specified category
+	 * Set data of specified section
 	 *
 	 * @param int		$id
 	 * @param int		$parent
@@ -348,14 +418,14 @@ class Blog {
 	 *
 	 * @return bool
 	 */
-	function set_category ($id, $parent, $title, $path) {
+	function set_section ($id, $parent, $title, $path) {
 		global $db, $Cache, $L;
 		$parent	= (int)$parent;
 		$title	= trim($title);
 		$path	= $this->path(str_replace('/', ' ', $path ?: $title));
 		$id		= (int)$id;
 		if ($db->{$this->posts}()->q(
-			"UPDATE `[prefix]blog_categories`
+			"UPDATE `[prefix]blog_sections`
 			SET
 				`parent`	= '%s',
 				`title`		= '%s',
@@ -363,13 +433,14 @@ class Blog {
 			WHERE `id` = '%s'
 			LIMIT 1",
 			$parent,
-			$this->ml_set('Blog/categories/title', $id, $title),
-			$this->ml_set('Blog/categories/path', $id, $path),
+			$this->ml_set('Blog/sections/title', $id, $title),
+			$this->ml_set('Blog/sections/path', $id, $path),
 			$id
 		)) {
 			unset(
-				$Cache->{'Blog/categories_list/'.$L->clang},
-				$Cache->{'Blog/categories_structure/'.$L->clang}
+				$Cache->{'Blog/sections/'.$id},
+				$Cache->{'Blog/sections/list'},
+				$Cache->{'Blog/sections/structure'}
 			);
 			return true;
 		} else {
@@ -377,58 +448,58 @@ class Blog {
 		}
 	}
 	/**
-	 * Delete specified category
+	 * Delete specified section
 	 *
 	 * @param int	$id
 	 *
 	 * @return bool
 	 */
-	function del_category ($id) {
+	function del_section ($id) {
 		global $db, $Cache;
 		$id						= (int)$id;
-		$parent_category		= $db->{$this->posts}()->qf(
+		$parent_section		= $db->{$this->posts}()->qf(
 			[
 				"SELECT `parent`
-				FROM `[prefix]blog_categories`
+				FROM `[prefix]blog_sections`
 				WHERE `id` = '%s'
 				LIMIT 1",
 				$id
 			],
 			true
 		);
-		$new_category_for_posts	= $db->{$this->posts}()->qf(
+		$new_section_for_posts	= $db->{$this->posts}()->qf(
 			[
 				"SELECT `id`
-				FROM `[prefix]blog_categories`
+				FROM `[prefix]blog_sections`
 				WHERE
 					`parent` = '%s' AND
 					`id` != '%s'
 				LIMIT 1",
-				$parent_category,
+				$parent_section,
 				$id
 			],
 			true
 		);
 		if ($db->{$this->posts}()->q(
 			[
-				"UPDATE `[prefix]blog_categories`
+				"UPDATE `[prefix]blog_sections`
 				SET `parent` = '%2\$s'
 				WHERE `parent` = '%1\$s'",
-				"UPDATE IGNORE `[prefix]blog_posts_categories`
-				SET `category` = '%3\$s'
-				WHERE `category` = '%1\$s'",
-				"DELETE FROM `[prefix]blog_posts_categories`
-				WHERE `category` = '%1\$s'",
-				"DELETE FROM `[prefix]blog_categories`
+				"UPDATE IGNORE `[prefix]blog_posts_sections`
+				SET `section` = '%3\$s'
+				WHERE `section` = '%1\$s'",
+				"DELETE FROM `[prefix]blog_posts_sections`
+				WHERE `section` = '%1\$s'",
+				"DELETE FROM `[prefix]blog_sections`
 				WHERE `id` = '%1\$s'
 				LIMIT 1"
 			],
 			$id,
-			$parent_category,
-			$new_category_for_posts ?: $parent_category
+			$parent_section,
+			$new_section_for_posts ?: $parent_section
 		)) {
-			$this->ml_del('Blog/categories/title', $id);
-			$this->ml_del('Blog/categories/path', $id);
+			$this->ml_del('Blog/sections/title', $id);
+			$this->ml_del('Blog/sections/path', $id);
 			unset($Cache->Blog);
 			return true;
 		} else {

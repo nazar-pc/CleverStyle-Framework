@@ -1,11 +1,7 @@
 [
-	"browse_categories",
-	"add_category",
-	"edit_category",
-	"delete_category",
-	"browse_pages",
-	"add_page",
-	"add_page_live",
-	"edit_page",
-	"delete_page"
+	"browse_sections",
+	"add_section",
+	"edit_section",
+	"delete_section",
+	"browse_posts"
 ]

@@ -17,8 +17,8 @@ $data				= $Static_pages->get(HOME ? $Static_pages->get_structure()['pages']['in
 global $Page;
 if ($data['interface']) {
 	if (!HOME) {
-		if (!empty($Index->title)) {
-			foreach ($Index->title as $title) {
+		if (!empty($Static_pages->title)) {
+			foreach ($Static_pages->title as $title) {
 				$Page->title($title);
 			}
 			unset($title);

@@ -256,9 +256,9 @@ class Core {
 			return false;
 		}
 		$protocol	= 'http';
-		if (strpos($url, '://') !== false) {
-			$protocol	= substr($url, 0, strpos($url, '://'));
-			$url		= substr($url, strpos($url, '://')+3);
+		if (mb_strpos($url, '://') !== false) {
+			$protocol	= mb_substr($url, 0, mb_strpos($url, '://'));
+			$url		= mb_substr($url, mb_strpos($url, '://')+3);
 		}
 		$url		= explode('/', $url, 2);
 		$host		= explode(':', $url[0]);
