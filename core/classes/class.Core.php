@@ -120,7 +120,7 @@ class Core {
 						$$object_name				= new Loader($class, $object_name);
 					} else {
 						$this->List[$object_name]	= $object_name;
-						$$object_name				= new $class();
+						$$object_name				= new $class;
 						$this->createed[$object_name]	= [microtime(true), memory_get_usage()];
 					}
 				}
@@ -459,4 +459,11 @@ class Core {
 		}
 		exit;
 	}
+}
+/**
+ * For IDE
+ */
+if (false) {
+	global $Core;
+	$Core = new Core;
 }

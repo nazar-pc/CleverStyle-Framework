@@ -34,13 +34,13 @@ if ($Mail->send_to(
 	$L->restore_password_success_mail_body(
 		$User->get_username($result['id']),
 		get_core_ml_text('name'),
-		$Config->core['url'].'/profile/'.$User->get('login', $result['id']),
+		$Config->core['base_url'].'/profile/'.$User->get('login', $result['id']),
 		$User->get('login', $result['id']),
 		$result['password']
 	)
 )) {
 	_setcookie('restore_password_confirm', 1);
-	header('Location: '.MODULE.'/profile/restore_password_confirmation');
+	header('Location: '.$Config->server['base_url'].'/'.MODULE.'/profile/restore_password_confirmation');
 } else {
 	$Page->title($L->sending_reg_mail_error_title);
 	$Page->warning($L->sending_reg_mail_error);

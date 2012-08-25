@@ -33,7 +33,7 @@ $(function() {
 	$('select:not(.cs-noui)').each(function () {
 		//$(this).chosen(); //TODO Find some good replacement (or wait for jQuery UI 1.9)
 	});
-	$(':button:not(.cs-noui), .cs-button').each(function () {
+	$(':button:not(.cs-noui), .cs-button, .cs-button-compact').each(function () {
 		$(this).button();
 	});
 	$('.ui-button').disableSelection();

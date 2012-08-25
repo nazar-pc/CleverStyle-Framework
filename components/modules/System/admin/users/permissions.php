@@ -124,14 +124,14 @@ if (isset($rc[2])) {
 		foreach ($list as $label => $id) {
 			++$count;
 			$permissions_list[] = h::{'td.ui-widget-content.ui-corner-all.cs-left-all'}([
-				h::{'a.cs-button.cs-button-compact'}(
+				h::{'a.cs-button-compact'}(
 					h::icon('wrench'),
 					[
 						'href'			=> $a->action.'/edit/'.$id,
 						'data-title'	=> $L->edit
 					]
 				).
-				h::{'a.cs-button.cs-button-compact'}(
+				h::{'a.cs-button-compact'}(
 					h::icon('trash'),
 					[
 						'href'			=> $a->action.'/delete/'.$id,

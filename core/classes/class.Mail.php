@@ -138,3 +138,10 @@ class Mail extends \PHPMailer {
 		return $result;
 	}
 }
+/**
+ * For IDE
+ */
+if (false) {
+	global $Mail;
+	$Mail = new Mail;
+}

@@ -9,7 +9,7 @@
 namespace	cs\modules\Blogs;
 use			\h;
 global $Index, $Config, $Blogs, $Page, $L, $User;
-$rc		= &$Config->routing['current'];
+$rc		= $Config->routing['current'];
 $post	= (int)mb_substr($rc[1], mb_strrpos($rc[1], ':')+1);
 if (!$post) {
 	define('ERROR_PAGE', 404);
@@ -25,7 +25,16 @@ $Page->title($post['title']);
 $Index->content(
 	h::{'section.cs-blogs-post article'}(
 		h::header(
-			h::h2($post['title']).
+			h::h1(
+				$post['title'].
+				($User->id == $post['user'] ? ' '.h::{'a.cs-button-compact'}(
+					h::icon('wrench'),
+					[
+						'href'			=> $module.'/edit_post/'.$post['id'],
+						'data-title'	=> $L->edit
+					]
+				) : '')
+			).
 			h::p(
 				$L->sections.':'.
 				h::a(
@@ -44,7 +53,7 @@ $Index->content(
 				)
 			)
 		).
-		$post['content'].
+		$post['content']."\n".
 		h::footer(
 			h::p(
 				$L->tags.':'.

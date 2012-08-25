@@ -342,3 +342,10 @@ class Language {
 	 */
 	function __clone () {}
 }
+/**
+ * For IDE
+ */
+if (false) {
+	global $L;
+	$L = new Language;
+}

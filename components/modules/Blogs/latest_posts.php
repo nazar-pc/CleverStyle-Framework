@@ -16,7 +16,7 @@ if ($User->is('user')) {
 		h::{'a.cs-button'}(
 			$L->new_post,
 			[
-				'href'	=> $module.'/'.path($L->new_post)
+				'href'	=> $module.'/new_post'
 			]
 		).
 		h::br()
@@ -28,6 +28,7 @@ $cdb		= $db->{$Config->module(MODULE)->db('posts')};
 $posts		= $cdb->qfa(
 	"SELECT `id`
 		FROM `[prefix]blogs_posts`
+		ORDER BY `id` DESC
 		LIMIT $from, 10",
 	true
 );
@@ -36,7 +37,12 @@ foreach ($posts as $post) {
 	$Index->content(
 		h::{'section.cs-blogs-post-latest article'}(
 			h::header(
-				h::h2($post['title']).
+				h::{'h1 a'}(
+					$post['title'],
+					[
+						'href'	=> $module.'/'.$post['path'].':'.$post['id']
+					]
+				).
 				h::p(
 					$L->sections.':'.
 					h::a(
@@ -55,24 +61,31 @@ foreach ($posts as $post) {
 					)
 				)
 			).
-			$post['content'].
+			$post['content']."\n".
 			h::footer(
 				h::hr().
 				h::p(
 					h::time(
 						$L->to_locale(date($L->_datetime_long, $post['date'])),
 						[
-						'datetime'	=> date('c', $post['date']),
-						//'pubdate'//TODO wait while "pubdate" it will be standartized by W3C
+							'datetime'	=> date('c', $post['date']),
+							//'pubdate'//TODO wait while "pubdate" it will be standartized by W3C
 						]
 					).
 					' | '.
 					h::a(
 						$User->get_username($post['user']),
 						[
-						'href'	=> 'profile/'.$User->get('login', $post['user']),
-						'rel'	=> 'author',
-						'title'	=> $L->author
+							'href'	=> 'profile/'.$User->get('login', $post['user']),
+							'rel'	=> 'author',
+							'title'	=> $L->author
+						]
+					).
+					' | '.
+					h::a(
+						$L->read_more,
+						[
+							'href'	=> $module.'/'.$post['path'].':'.$post['id']
 						]
 					)
 				)

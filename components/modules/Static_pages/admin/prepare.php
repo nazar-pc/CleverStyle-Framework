@@ -50,7 +50,7 @@ function get_categories_rows ($structure = null, $level = 0, $parent_categories 
 				'class'	=> 'cs-static-pages-padding-left-'.$level
 			]
 		],
-		h::{'a.cs-button.cs-button-compact'}(
+		h::{'a.cs-button-compact'}(
 			[
 				h::icon('plus'),
 				[
@@ -73,7 +73,7 @@ function get_categories_rows ($structure = null, $level = 0, $parent_categories 
 				]
 			]*/
 		).
-		(!$root ? h::{'a.cs-button.cs-button-compact'}(
+		(!$root ? h::{'a.cs-button-compact'}(
 			[
 				h::icon('wrench'),
 				[
@@ -156,7 +156,7 @@ function get_pages_rows () {
 						'class'	=> 'cs-static-pages-padding-left-0'
 					]
 				],
-				h::{'a.cs-button.cs-button-compact'}(
+				h::{'a.cs-button-compact'}(
 					[
 						h::icon('document-b'),
 						[

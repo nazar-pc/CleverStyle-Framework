@@ -246,6 +246,13 @@ class Config {
 		$rc										= &$r['current'];
 		$rc										= $this->server['raw_relative_address'];
 		/**
+		 * Redirection processing
+		 */
+		if (mb_strpos($rc, '/redirect/') === 0) {
+			header('Location: '.substr($rc, 10));
+			__finish();
+		}
+		/**
 		 * Routing replacing
 		 */
 		if (!empty($r['in'])) {
@@ -554,10 +561,10 @@ class Config {
 	 *
 	 * @param string $module_name
 	 *
-	 * @return Config\Module_Properties_Object
+	 * @return Config\Module_Properties
 	 */
 	function module ($module_name) {
-		return (new Config\Module_Properties_Object($this->components['modules'][$module_name]));
+		return (new Config\Module_Properties($this->components['modules'][$module_name], $module_name));
 	}
 	/**
 	 * Cloning restriction
@@ -566,19 +573,29 @@ class Config {
 	 */
 	function __clone () {}
 }
+/**
+ * For IDE
+ */
+if (false) {
+	global $Config;
+	$Config = new Config;
+}
 namespace cs\Config;
 /**
  * Class for getting of db and storage configuration of module
  */
-class Module_Properties_Object {
-	protected	$module_data	= [];
+class Module_Properties {
+	protected	$module_data	= [],
+				$module;
 	/**
 	 * Creating of object and saving module data inside
 	 *
-	 * @param $module_data
+	 * @param array		$module_data
+	 * @param string	$module
 	 */
-	function __construct ($module_data) {
+	function __construct ($module_data, $module) {
 		$this->module_data	= $module_data;
+		$this->module		= $module;
 	}
 	/**
 	 * Get db id by name
@@ -599,5 +616,65 @@ class Module_Properties_Object {
 	 */
 	function storage ($storage_name) {
 		return $this->module_data['storage'][$storage_name];
+	}
+	/**
+	 * Get data item of module configuration
+	 *
+	 * @param string		$item
+	 *
+	 * @return bool|mixed
+	 */
+	function __get ($item) {
+		if (isset($this->module_data['data'], $this->module_data['data'][$item])) {
+			return $this->module_data['data'][$item];
+		} else {
+			return false;
+		}
+	}
+	/**
+	 * Set data item of module configuration (only for admin)
+	 *
+	 * @param string		$item
+	 * @param mixed			$value
+	 */
+	function __set ($item, $value) {
+		global $Config;
+		$module_data	= &$Config->components['modules'][$this->module];
+		if (!isset($module_data['data'])) {
+			$module_data['data']	= [];
+		}
+		$module_data['data'][$item]	= $value;
+	}
+	/**
+	 * Get data item (or array of items) of module configuration
+	 *
+	 * @param string|string[]	$item
+	 *
+	 * @return array|bool|mixed
+	 */
+	function get ($item) {
+		if (is_array($item)) {
+			$result	= [];
+			foreach ($item as $i) {
+				$result[$i]	= $this->__get($i);
+			}
+			return $result;
+		}
+		return $this->__get($item);
+	}
+	/**
+	 * Set data item (or array of items) of module configuration (only for admin)
+	 *
+	 * @param array|string	$item
+	 * @param mixed|null	$value
+	 */
+	function set ($item, $value = null) {
+		if (is_array($item)) {
+			foreach ($item as $i) {
+				$this->__set($i, $value);
+			}
+		} else {
+			$this->__set($item, $value);
+		}
 	}
 }

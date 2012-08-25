@@ -3,5 +3,6 @@
 	"section",
 	"post",
 	"tag",
-	"new_post"
+	"new_post",
+	"edit_post"
 ]

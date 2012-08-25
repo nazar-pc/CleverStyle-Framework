@@ -138,3 +138,10 @@ class Storage {
 	 */
 	function __clone () {}
 }
+/**
+ * For IDE
+ */
+if (false) {
+	global $Storage;
+	$Storage = new Storage;
+}

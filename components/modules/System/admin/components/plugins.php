@@ -214,7 +214,7 @@ if (!empty($plugins)) {
 		}
 		unset($tag, $file);
 		$state = in_array($plugin, $Config->components['plugins']);
-		$action .= h::{'a.cs-button.cs-button-compact'}(
+		$action .= h::{'a.cs-button-compact'}(
 			h::icon($state ? 'minusthick' : 'check'),
 			[
 				'href'			=> $a->action.($state ? '/disable/' : '/enable/').$plugin,

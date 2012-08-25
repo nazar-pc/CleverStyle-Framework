@@ -241,3 +241,10 @@ class Text {
 	 */
 	function __clone () {}
 }
+/**
+ * For IDE
+ */
+if (false) {
+	global $Text;
+	$Text = new Text;
+}

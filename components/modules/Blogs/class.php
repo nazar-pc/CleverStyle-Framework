@@ -85,8 +85,11 @@ class Blogs {
 	 * @return bool|int				Id of created post on success of <b>false</> on failure
 	 */
 	function add ($title, $path, $content, $sections, $tags) {
+		if (empty($tags) || empty($content)) {
+			return false;
+		}
 		global $db, $User;
-		$path		= path(str_replace('/', ' ', $path ?: $title));
+		$path		= path(str_replace(['/', '\\'], '_', $path ?: $title));
 		$sections	= array_intersect(
 			array_keys($this->get_sections_list()),
 			$sections
@@ -103,11 +106,25 @@ class Blogs {
 			TIME
 		)) {
 			$id	= $db->{$this->posts}()->id();
-			$this->set($id, $title, $path, $content, $sections, $tags);
-			return $id;
-		} else {
-			return false;
+			if ($this->set($id, $title, $path, $content, $sections, $tags)) {
+				return $id;
+			} else {
+				$db->{$this->posts}()->q(
+					"DELETE FROM `[prefix]blogs_posts`
+					WHERE `id` = $id
+					LIMIT 1"
+				);
+				$db->{$this->posts}()->q(
+					"DELETE FROM `[prefix]blogs_posts_sections`
+					WHERE `id` = $id"
+				);
+				$db->{$this->posts}()->q(
+					"DELETE FROM `[prefix]blogs_posts_tags`
+					WHERE `id` = $id"
+				);
+			}
 		}
+		return false;
 	}
 	/**
 	 * Set data of specified post
@@ -122,10 +139,13 @@ class Blogs {
 	 * @return bool
 	 */
 	function set ($id, $title, $path, $content, $sections, $tags) {
+		if (empty($tags) || empty($content)) {
+			return false;
+		}
 		global $db, $Cache;
 		$id			= (int)$id;
 		$title		= trim(xap($title));
-		$path		= path(str_replace('/', ' ', $path ?: $title));
+		$path		= path(str_replace(['/', '\\'], '_', $path ?: $title));
 		$content	= xap($content, true);
 		$sections	= array_intersect(
 			array_keys($this->get_sections_list()),
@@ -155,7 +175,7 @@ class Blogs {
 		if ($db->{$this->posts}()->q(
 			[
 				"DELETE FROM `[prefix]blogs_posts_sections`
-				WHERE `id` = '%1\$s'",
+				WHERE `id` = '%4\$s'",
 				"INSERT INTO `[prefix]blogs_posts_sections`
 					(`id`, `section`)
 				VALUES
@@ -168,7 +188,7 @@ class Blogs {
 				WHERE `id` = '%s'
 				LIMIT 1",
 				"DELETE FROM `[prefix]blogs_posts_tags`
-				WHERE `id` = '%1\$s'",
+				WHERE `id` = '%4\$s'",
 				"INSERT INTO `[prefix]blogs_posts_tags`
 					(`id`, `tag`)
 				VALUES
@@ -185,6 +205,9 @@ class Blogs {
 			);
 			return true;
 		} else {
+			$this->ml_del('Blogs/posts/title', $id);
+			$this->ml_del('Blogs/posts/path', $id);
+			$this->ml_del('Blogs/posts/content', $id);
 			return false;
 		}
 	}
@@ -200,9 +223,8 @@ class Blogs {
 		$id	= (int)$id;
 		if ($db->{$this->posts}()->q(
 			"DELETE FROM `[prefix]blogs_posts`
-			WHERE `id` = '%s'
-			LIMIT 1",
-			$id
+			WHERE `id` = $id
+			LIMIT 1"
 		)) {
 			$this->ml_del('Blogs/posts/title', $id);
 			$this->ml_del('Blogs/posts/path', $id);
@@ -253,10 +275,7 @@ class Blogs {
 		if (!empty($structure['sections'])) {
 			$list	= [];
 			foreach ($structure['sections'] as $section) {
-				$list = array_merge(
-					$list,
-					$this->get_sections_list_internal($section)
-				);
+				$list += $this->get_sections_list_internal($section);
 			}
 			return $list;
 		} else {
@@ -357,7 +376,7 @@ class Blogs {
 	function add_section ($parent, $title, $path) {
 		global $db, $Cache;
 		$parent	= (int)$parent;
-		$path	= path(str_replace('/', ' ', $path ?: $title));
+		$path	= path(str_replace(['/', '\\'], '_', $path ?: $title));
 		$posts	= $db->{$this->posts}()->qfa(
 			"SELECT `id`
 			FROM `[prefix]blogs_posts_sections`
@@ -406,7 +425,7 @@ class Blogs {
 		global $db, $Cache;
 		$parent	= (int)$parent;
 		$title	= trim($title);
-		$path	= path(str_replace('/', ' ', $path ?: $title));
+		$path	= path(str_replace(['/', '\\'], '_', $path ?: $title));
 		$id		= (int)$id;
 		if ($db->{$this->posts}()->q(
 			"UPDATE `[prefix]blogs_sections`
@@ -502,6 +521,11 @@ class Blogs {
 		global $Text;
 		return $Text->del($this->posts, $group, $label);
 	}
+	/**
+	 * Get array of tags list in form [<i>id</i> => <i>text</i>]
+	 *
+	 * @return array
+	 */
 	function get_tags_list () {
 		global $db, $Cache, $L;
 		if (($data = $Cache->{'Blogs/tags/'.$L->clang}) === false) {
@@ -523,6 +547,13 @@ class Blogs {
 		}
 		return $data;
 	}
+	/**
+	 * Get tag text
+	 *
+	 * @param int|int[]			$id
+	 *
+	 * @return string|string[]
+	 */
 	function get_tag ($id) {
 		$tags	= $this->get_tags_list();
 		if (is_array($id)) {
@@ -535,32 +566,53 @@ class Blogs {
 		}
 		return $tags[$id];
 	}
-	function add_tag ($tag) {
+	/**
+	 * Add tag, in most cases this function is not needed for usage, use ::process_tags() instead
+	 *
+	 * @param string		$tag
+	 *
+	 * @return bool|int
+	 */
+	private function add_tag ($tag) {
 		$tag	= trim(xap($tag));
 		if (($id = array_search($tag, $this->get_tags_list())) === false) {
 			global $db, $Cache;
 			if ($db->{$this->posts}()->q(
 				"INSERT INTO `[prefix]blogs_tags`
-					(`value`)
+					(`text`)
 				VALUES
 					('')"
 			)) {
-				$id	= $db->{$this->posts}()->id();
-				$db->{$this->posts}()->q(
+				$id	= $db->{$this->posts}()->id();define('x', 1);
+				if ($db->{$this->posts}()->q(
 					"UPDATE `[prefix]blogs_tags`
-					SET `value` = '%s'
+					SET `text` = '%s'
 					WHERE `id` = $id
 					LIMIT 1",
 					$this->ml_set('Blogs/tags', $id, $tag)
-				);
-				return $id;
+				)) {
+					unset($Cache->{'Blogs/tags'});
+					return $id;
+				} else {
+					$db->{$this->posts}()->q(
+						"DELETE FROM `[prefix]blogs_tags`
+						WHERE `id` = $id
+						LIMIT 1"
+					);
+				}
 			}
-			unset($Cache->{'Blogs/tags'});
 			return false;
 		}
 		return $id;
 	}
-	function del_tag ($id) {
+	/* *
+	 * Delete tag with specified id
+	 *
+	 * @param int	$id
+	 *
+	 * @return bool
+	 */
+	/*private function del_tag ($id) {
 		global $db, $Cache;
 		$id	= (int)$id;
 		if ($db->{$this->posts}()->q(
@@ -574,8 +626,17 @@ class Blogs {
 		)) {
 			$this->ml_del('Blogs/tags', $id);
 			unset($Cache->{'Blogs/tags'});
+			return true;
 		}
-	}
+		return false;
+	}*/
+	/**
+	 * Accepts array of string tags and returns corresponding array of id's of these tags, new tags will be added automatically
+	 *
+	 * @param string[]	$tags
+	 *
+	 * @return int[]
+	 */
 	private function process_tags ($tags) {
 		$tags_list	= $this->get_tags_list();
 		$exists		= array_keys($tags_list, $tags);
@@ -591,4 +652,11 @@ class Blogs {
 		}
 		return array_values(array_unique($tags));
 	}
+}
+/**
+ * For IDE
+ */
+if (false) {
+	global $Blogs;
+	$Blogs = new Blogs;
 }

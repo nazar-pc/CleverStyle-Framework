@@ -394,7 +394,8 @@ class Page {
 				if ($mode == 'file') {
 					$this->core_css[0] .= h::link([
 						'href'	=> $add,
-						'rel'	=> 'stylesheet'
+						'rel'	=> 'stylesheet',
+						'type'	=> 'text/css'
 					]);
 				} elseif ($mode == 'code') {
 					$this->core_css[1] = $add."\n";
@@ -403,7 +404,8 @@ class Page {
 				if ($mode == 'file') {
 					$this->css[0] .= h::link([
 						'href'	=> $add,
-						'rel'	=> 'stylesheet'
+						'rel'	=> 'stylesheet',
+						'type'	=> 'text/css'
 					]);
 				} elseif ($mode == 'code') {
 					$this->css[1] = $add."\n";
@@ -821,7 +823,7 @@ class Page {
 			$Core->run_trigger(
 				'System/Page/get_header_info',
 				[
-					'id'	=> $User->get('id')
+					'id'	=> $User->id
 				]
 			);
 		} else {
@@ -998,4 +1000,11 @@ class Page {
 			}
 		}
 	}
+}
+/**
+ * For IDE
+ */
+if (false) {
+	global $Page;
+	$Page = new Page;
 }

@@ -58,7 +58,7 @@ function get_sections_rows ($structure = null, $level = 0, $module = null) {
 				'class'	=> 'cs-blogs-padding-left-'.$level
 			]
 		],
-		h::{'a.cs-button.cs-button-compact'}(
+		h::{'a.cs-button-compact'}(
 			[
 				h::icon('plus'),
 				[
@@ -67,7 +67,7 @@ function get_sections_rows ($structure = null, $level = 0, $module = null) {
 				]
 			]
 		).
-		(!$root ? h::{'a.cs-button.cs-button-compact'}(
+		(!$root ? h::{'a.cs-button-compact'}(
 			[
 				h::icon('wrench'),
 				[
@@ -91,7 +91,34 @@ function get_sections_rows ($structure = null, $level = 0, $module = null) {
 	}
 	return $content;
 }
-function get_sections_list ($current = null, $structure = null, $level = 0) {
+function get_sections_select_post (&$disabled, $current = null, $structure = null, $level = 0) {
+	$list	= [
+		'in'	=> [],
+		'value'	=> []
+	];
+	if ($structure === null) {
+		global $Blogs, $L;
+		$structure			= $Blogs->get_sections_structure();
+		$list['in'][]		= $L->root_section;
+		$list['value'][]	= 0;
+	} else {
+		if ($structure['id'] == $current) {
+			return $list;
+		}
+		$list['in'][]		= str_repeat('&nbsp;', $level).$structure['title'];
+		$list['value'][]	= $structure['id'];
+	}
+	if (!empty($structure['sections'])) {
+		$disabled[]			= $structure['id'];
+		foreach ($structure['sections'] as $section) {
+			$tmp			= get_sections_select_post($disabled, $current, $section, $level+1);
+			$list['in']		= array_merge($list['in'], $tmp['in']);
+			$list['value']	= array_merge($list['value'], $tmp['value']);
+		}
+	}
+	return $list;
+}
+function get_sections_select_section ($current = null, $structure = null, $level = 0) {
 	$list	= [
 		'in'	=> [],
 		'value'	=> []
@@ -110,7 +137,7 @@ function get_sections_list ($current = null, $structure = null, $level = 0) {
 	}
 	if (!empty($structure['sections'])) {
 		foreach ($structure['sections'] as $section) {
-			$tmp			= get_sections_list($current, $section, $level+1);
+			$tmp			= get_sections_select_section($current, $section, $level+1);
 			$list['in']		= array_merge($list['in'], $tmp['in']);
 			$list['value']	= array_merge($list['value'], $tmp['value']);
 		}
@@ -126,6 +153,7 @@ function get_posts_rows ($page	= 1) {
 	$posts		= $cdb->qfa(
 		"SELECT `id`
 		FROM `[prefix]blogs_posts`
+		ORDER BY `id` DESC
 		LIMIT $from, 50",
 		true
 	);
@@ -167,7 +195,22 @@ function get_posts_rows ($page	= 1) {
 						$Blogs->get_tag($post['tags'])
 					)
 				),
-				''
+				h::{'a.cs-button-compact'}(
+					[
+						h::icon('wrench'),
+						[
+							'href'			=> 'admin/'.MODULE.'/edit_post/'.$post['id'],
+							'data-title'	=> $L->edit
+						]
+					],
+					[
+						h::icon('trash'),
+						[
+							'href'			=> 'admin/'.MODULE.'/delete_post/'.$post['id'],
+							'data-title'	=> $L->delete
+						]
+					]
+				)
 			];
 		}
 	}

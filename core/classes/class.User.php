@@ -1870,3 +1870,10 @@ class User {
 		$this->data_set = [];
 	}
 }
+/**
+ * For IDE
+ */
+if (false) {
+	global $User;
+	$User = new User;
+}

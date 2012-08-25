@@ -651,3 +651,10 @@ class Index {
 		$Core->run_trigger('System/Index/postload');
 	}
 }
+/**
+ * For IDE
+ */
+if (false) {
+	global $Index;
+	$Index = new Index;
+}

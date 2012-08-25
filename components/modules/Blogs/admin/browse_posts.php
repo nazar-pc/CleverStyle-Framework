@@ -18,13 +18,13 @@ $Index->content(
 			[
 				$L->post_title,
 				[
-					'style'	=> 'width: 30%'
+					'style'	=> 'width: 35%'
 				]
 			],
 			[
 				$L->post_sections,
 				[
-					'style'	=> 'width: 25%'
+					'style'	=> 'width: 30%'
 				]
 			],
 			[

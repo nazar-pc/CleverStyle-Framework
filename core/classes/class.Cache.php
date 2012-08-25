@@ -160,3 +160,10 @@ class Cache {
 	 */
 	function __clone () {}
 }
+/**
+ * For IDE
+ */
+if (false) {
+	global $Cache;
+	$Cache = new Cache;
+}

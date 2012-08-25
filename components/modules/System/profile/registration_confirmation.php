@@ -31,7 +31,7 @@ if ($result === false) {
 $body = $L->reg_success_mail_body(
 	strstr($result['email'], '@', true),
 	get_core_ml_text('name'),
-	$Config->core['url'].'/profile/'.$User->get('login', $result['id']),
+	$Config->core['base_url'].'/profile/'.$User->get('login', $result['id']),
 	$User->get('login', $result['id']),
 	$result['password']
 );
@@ -41,7 +41,7 @@ if ($Mail->send_to(
 	$body
 )) {
 	_setcookie('reg_confirm', 1);
-	header('Location: '.MODULE.'/profile/registration_confirmation');
+	header('Location: '.$Config->server['base_url'].'/'.MODULE.'/profile/registration_confirmation');
 } else {
 	$User->registration_cancel();
 	$Page->title($L->sending_reg_mail_error_title);

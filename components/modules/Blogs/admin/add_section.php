@@ -26,7 +26,7 @@ $Index->content(
 		),
 		h::{'td.ui-widget-content.ui-corner-all'}(
 			h::{'select[name=parent][size=5]'}(
-				get_sections_list(),
+				get_sections_select_section(),
 				[
 					'selected'	=> isset($Config->routing['current'][1]) ? (int)$Config->routing['current'][1] : 0
 				]

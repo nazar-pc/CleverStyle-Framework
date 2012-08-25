@@ -199,21 +199,21 @@ if (isset($rc[2])) {
 		$id				= $id['id'];
 		$group_data 	= $User->get_group_data($id);
 		$groups_list[]	= h::{'td.ui-widget-content.ui-corner-all'}(
-			h::{'a.cs-button.cs-button-compact'}(
+			h::{'a.cs-button-compact'}(
 				h::icon('wrench'),
 				[
 					'href'			=> $a->action.'/edit/'.$id,
 					'data-title'	=> $L->edit_group_information
 				]
 			).
-			($id != 1 && $id != 2 && $id != 3 ? h::{'a.cs-button.cs-button-compact'}(
+			($id != 1 && $id != 2 && $id != 3 ? h::{'a.cs-button-compact'}(
 				h::icon('trash'),
 				[
 					'href'			=> $a->action.'/delete/'.$id,
 					'data-title'	=> $L->delete
 				]
 			) : '').
-			h::{'a.cs-button.cs-button-compact'}(
+			h::{'a.cs-button-compact'}(
 				h::icon('key'),
 				[
 					'href'			=> $a->action.'/permissions/'.$id,

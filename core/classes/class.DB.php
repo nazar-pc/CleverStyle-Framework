@@ -261,3 +261,17 @@ class DB {
 	 */
 	function __clone () {}
 }
+/**
+ * For IDE
+ */
+if (false) {
+	global $db;
+	$db = new DB;
+}
+/**
+ * For IDE
+ */
+if (false) {
+	global $db;
+	$db = new DB\MySQLi('');
+}

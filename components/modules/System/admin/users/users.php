@@ -631,7 +631,7 @@ if (isset($rc[2], $rc[3])) {
 		foreach ($users_ids as $id) {
 			$groups			= (array)$User->get_user_groups($id);
 			$buttons		= ($id != 1 && $id != 2 && !in_array(3, $groups) ?
-				h::{'a.cs-button.cs-button-compact'}(
+				h::{'a.cs-button-compact'}(
 					h::icon('pencil'),
 					[
 						'href'			=> $a->action.'/edit_raw/'.$id,
@@ -640,7 +640,7 @@ if (isset($rc[2], $rc[3])) {
 				) : ''
 			).
 			($id != 1 && $id != 2 && (!in_array(3, $groups) || !$Config->core['simple_admin_mode']) ?
-				h::{'a.cs-button.cs-button-compact'}(
+				h::{'a.cs-button-compact'}(
 					h::icon('wrench'),
 					[
 						'href'			=> $a->action.'/edit/'.$id,
@@ -649,7 +649,7 @@ if (isset($rc[2], $rc[3])) {
 				) : ''
 			).
 			($id != 1 && $id != 2 ?
-				h::{'a.cs-button.cs-button-compact'}(
+				h::{'a.cs-button-compact'}(
 					h::icon($User->get('status', $id) == 1 ? 'minusthick' : 'check'),
 					[
 						'href'			=> $a->action.'/'.($User->get('status', $id) == 1 ? 'deactivate' : 'activate').'/'.$id,
@@ -657,7 +657,7 @@ if (isset($rc[2], $rc[3])) {
 					]
 				) : ''
 			).($id != 1 && $id != 2 && !in_array(3, $groups) ?
-				h::{'a.cs-button.cs-button-compact'}(
+				h::{'a.cs-button-compact'}(
 					h::icon('person'),
 					[
 						'href'			=> $a->action.'/groups/'.$id,
@@ -665,7 +665,7 @@ if (isset($rc[2], $rc[3])) {
 					]
 				) : ''
 			).($id != 2  ?
-				h::{'a.cs-button.cs-button-compact'}(
+				h::{'a.cs-button-compact'}(
 					h::icon('key'),
 					[
 						'href'			=> $a->action.'/permissions/'.$id,

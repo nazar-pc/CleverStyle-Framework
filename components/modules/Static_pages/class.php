@@ -68,7 +68,7 @@ class Static_pages {
 	function add ($category, $title, $path, $content, $interface) {
 		global $db, $Cache;
 		$category	= (int)$category;
-		$path		= path(str_replace('/', ' ', $path ?: $title));
+		$path		= path(str_replace(['/', '\\'], '_', $path ?: $title));
 		$interface	= (int)$interface;
 		if ($db->{$this->pages}()->q(
 			"INSERT INTO `[prefix]static_pages`
@@ -102,7 +102,7 @@ class Static_pages {
 		global $db, $Cache;
 		$category	= (int)$category;
 		$title		= trim($title);
-		$path		= path(str_replace('/', ' ', $path ?: $title));
+		$path		= path(str_replace(['/', '\\'], '_', $path ?: $title));
 		$interface	= (int)$interface;
 		$id			= (int)$id;
 		if ($db->{$this->pages}()->q(
@@ -251,7 +251,7 @@ class Static_pages {
 	function add_category ($parent, $title, $path) {
 		global $db, $Cache;
 		$parent	= (int)$parent;
-		$path	= path(str_replace('/', ' ', $path ?: $title));
+		$path	= path(str_replace(['/', '\\'], '_', $path ?: $title));
 		if ($db->{$this->pages}()->q(
 			"INSERT INTO `[prefix]static_pages_categories`
 				(`parent`)
@@ -281,7 +281,7 @@ class Static_pages {
 		global $db, $Cache;
 		$parent	= (int)$parent;
 		$title	= trim($title);
-		$path	= path(str_replace('/', ' ', $path ?: $title));
+		$path	= path(str_replace(['/', '\\'], '_', $path ?: $title));
 		$id		= (int)$id;
 		if ($db->{$this->pages}()->q(
 			"UPDATE `[prefix]static_pages_categories`
@@ -349,4 +349,11 @@ class Static_pages {
 		global $Text;
 		return $Text->del($this->pages, $group, $label);
 	}
+}
+/**
+ * For IDE
+ */
+if (false) {
+	global $Static_pages;
+	$Static_pages = new Static_pages;
 }

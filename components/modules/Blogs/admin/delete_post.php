@@ -9,18 +9,18 @@
 namespace	cs\modules\Blogs;
 use			\h;
 global $Index, $L, $Page, $Blogs, $Config;
-$section					= $Blogs->get_section($Config->routing['current'][1]);
-$Page->title($L->deletion_of_posts_section($section['title']));
+$post						= $Blogs->get($Config->routing['current'][1]);
+$Page->title($L->deletion_of_post($post['title']));
 $Index->buttons				= false;
 $Index->cancel_button_back	= true;
-$Index->action				= 'admin/'.MODULE;
+$Index->action				= 'admin/'.MODULE.'/browse_posts';
 $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages'}(
-		$L->sure_to_delete_posts_section($section['title'])
+		$L->sure_to_delete_post($post['title'])
 	).
 	h::{'button[type=submit]'}($L->yes).
 	h::{'input[type=hidden][name=id]'}([
-		'value'	=> $section['id']
+		'value'	=> $post['id']
 	]).
-	h::{'input[type=hidden][name=mode][value=delete_section]'}()
+	h::{'input[type=hidden][name=mode][value=delete_post]'}()
 );

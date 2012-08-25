@@ -153,21 +153,21 @@ if (isset($rc[2])) {
 			$storage_list .=	h::tr(
 				h::td(
 					($i ?
-					h::{'a.cs-button.cs-button-compact'}(
+					h::{'a.cs-button-compact'}(
 						h::icon('wrench'),
 						[
 							'href'			=> $a->action.'/edit/'.$i,
 							'data-title'	=> $L->edit.' '.$L->storage
 						]
 					).
-					h::{'a.cs-button.cs-button-compact'}(
+					h::{'a.cs-button-compact'}(
 						h::icon('trash'),
 						[
 							'href'			=> $a->action.'/delete/'.$i,
 							'data-title'	=> $L->delete.' '.$L->storage
 						]
 					).
-					h::{'a.cs-button.cs-button-compact'}(
+					h::{'a.cs-button-compact'}(
 						h::icon('signal-diag'),
 						[
 							'onMouseDown'	=> 'storage_test(\''.$a->action.'/test/'.$i.'\', true);',

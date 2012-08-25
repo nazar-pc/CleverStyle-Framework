@@ -234,7 +234,7 @@ if (isset($rc[2])) {
 		foreach ($databases as $i => &$db_data) {
 			$db_list[]	= h::{'td.ui-corner-all.'.($i ? 'ui-widget-content' : 'ui-state-highlight')}(
 				[
-					h::{'a.cs-button.cs-button-compact'}(
+					h::{'a.cs-button-compact'}(
 						[
 							h::icon('plus'),
 							[
@@ -279,7 +279,7 @@ if (isset($rc[2])) {
 				if (is_array($mirror) && !empty($mirror)) {
 					$db_list[]	= h::{'td.ui-widget-content.ui-corner-all'}(
 						[
-							h::{'a.cs-button.cs-button-compact'}(
+							h::{'a.cs-button-compact'}(
 								[
 									h::icon('wrench'),
 									[

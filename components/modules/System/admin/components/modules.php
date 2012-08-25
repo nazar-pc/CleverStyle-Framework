@@ -513,7 +513,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 				file_exists(MODULES.'/'.$module.'/index.php') || file_exists(MODULES.'/'.$module.'/index.html')
 			)
 		) {
-			$action .= h::{'a.cs-button.cs-button-compact'}(
+			$action .= h::{'a.cs-button-compact'}(
 				h::icon('home'),
 				[
 				'href'			=> $a->action.'/default_module/'.$module,
@@ -525,7 +525,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 		 * DataBases settings
 		 */
 		if (!$Config->core['simple_admin_mode'] && file_exists(MODULES.'/'.$module.'/meta/db.json') && count($Config->db) > 1) {
-			$action .= h::{'a.cs-button.cs-button-compact'}(
+			$action .= h::{'a.cs-button-compact'}(
 				h::icon('gear'),
 				[
 					'href'			=> $a->action.'/db/'.$module,
@@ -537,7 +537,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 		 * Storages settings
 		 */
 		if (!$Config->core['simple_admin_mode'] && file_exists(MODULES.'/'.$module.'/meta/storage.json') && count($Config->storage) > 1) {
-			$action .= h::{'a.cs-button.cs-button-compact'}(
+			$action .= h::{'a.cs-button-compact'}(
 				h::icon('disk'),
 				[
 					'href'			=> $a->action.'/storage/'.$module,
@@ -550,7 +550,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 			 * Link to the module admin page
 			 */
 			if (file_exists(MODULES.'/'.$module.'/admin/index.php') || file_exists(MODULES.'/'.$module.'/admin/index.json')) {
-				$action .= h::{'a.cs-button.cs-button-compact'}(
+				$action .= h::{'a.cs-button-compact'}(
 					h::icon('wrench'),
 					[
 						'href'			=> 'admin/'.$module,
@@ -559,14 +559,14 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 				);
 			}
 			if ($module != $Config->core['default_module']) {
-				$action .= h::{'a.cs-button.cs-button-compact'}(
+				$action .= h::{'a.cs-button-compact'}(
 					h::icon($mdata['active'] == 1 ? 'minusthick' : 'check'),
 					[
 						'href'			=> $a->action.($mdata['active'] == 1 ? '/disable/' : '/enable/').$module,
 						'data-title'	=> $mdata['active'] == 1 ? $L->disable : $L->enable
 					]
 				).
-				h::{'a.cs-button.cs-button-compact'}(
+				h::{'a.cs-button-compact'}(
 					h::icon('trash'),
 					[
 						'href'			=> $a->action.'/uninstall/'.$module,
@@ -579,7 +579,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 	 * If module uninstalled or not installed yet
 	 */
 	} else {
-		$action .= h::{'a.cs-button.cs-button-compact'}(
+		$action .= h::{'a.cs-button-compact'}(
 			h::icon('arrowthickstop-1-s'),
 			[
 				'href'			=> $a->action.'/install/'.$module,

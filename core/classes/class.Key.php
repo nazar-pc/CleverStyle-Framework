@@ -128,3 +128,10 @@ class Key {
 	 */
 	function __clone () {}
 }
+/**
+ * For IDE
+ */
+if (false) {
+	global $Key;
+	$Key = new Key;
+}

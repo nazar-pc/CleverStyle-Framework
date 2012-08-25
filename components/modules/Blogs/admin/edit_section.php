@@ -28,7 +28,7 @@ $Index->content(
 		),
 		h::{'td.ui-widget-content.ui-corner-all'}(
 			h::{'select[name=parent][size=5]'}(
-				get_sections_list($id),
+				get_sections_select_section($id),
 				[
 					'selected'	=> $data['parent']
 				]

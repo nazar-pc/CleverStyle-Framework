@@ -16,8 +16,8 @@ require_once CORE.'/functions.php';					//Including file with general system fun
 
 global $Core, $timeload, $loader_init_memory, $interface;
 
-$timeload['start'] = MICROTIME;
-$interface = true;
+$timeload['start']			= MICROTIME;
+$interface					= true;
 
 error_reporting(E_ALL);
 //error_reporting(0);
@@ -73,7 +73,7 @@ $loader_init_memory			= memory_get_usage();
  *
  * Core object for loading of system configuration, creating of global objects, encryption, API requests sending, and triggers processing.
  */
-$Core					= new \cs\Core;
+$Core						= new \cs\Core;
 
 $Core->create([
 	'cs\\Error',									//Object of errors processing

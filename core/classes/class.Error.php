@@ -133,3 +133,10 @@ class Error {
 		}
 	}
 }
+/**
+ * For IDE
+ */
+if (false) {
+	global $Error;
+	$Error = new Error;
+}

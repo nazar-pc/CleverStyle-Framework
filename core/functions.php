@@ -491,7 +491,7 @@ function filter ($text, $mode = '', $data = null, $data2 = null, $data3 = null) 
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string			$str
+ * @param string|string[]	$str
  *
  * @return string|string[]
  */
@@ -501,7 +501,7 @@ function _stripslashes ($str) {
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string			$str
+ * @param string|string[]	$str
  *
  * @return string|string[]
  */
@@ -511,7 +511,7 @@ function _addslashes ($str) {
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string			$str
+ * @param string|string[]	$str
  * @param string			$charlist
  *
  * @return string|string[]
@@ -522,7 +522,7 @@ function _trim ($str, $charlist = null) {
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string			$str
+ * @param string|string[]	$str
  * @param string			$charlist
  *
  * @return string|string[]
@@ -533,7 +533,7 @@ function _ltrim ($str, $charlist = null) {
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string			$str
+ * @param string|string[]	$str
  * @param string			$charlist
  *
  * @return string|string[]
@@ -544,7 +544,7 @@ function _rtrim ($str, $charlist = null) {
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string			$string
+ * @param string|string[]	$string
  * @param int				$start
  * @param int				$length
  *
@@ -556,7 +556,7 @@ function _substr ($string, $start, $length = null) {
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string			$string
+ * @param string|string[]	$string
  * @param int				$start
  * @param int				$length
  * @param string			$encoding
@@ -569,7 +569,7 @@ function _mb_substr ($string, $start, $length = null, $encoding = null) {
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string			$string
+ * @param string|string[]	$string
  *
  * @return string|string[]
  */
@@ -579,7 +579,7 @@ function _strtolower ($string) {
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string			$string
+ * @param string|string[]	$string
  *
  * @return string|string[]
  */
@@ -589,7 +589,7 @@ function _strtoupper ($string) {
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string			$string
+ * @param string|string[]	$string
  * @param string			$encoding
  *
  * @return string|string[]
@@ -600,7 +600,7 @@ function _mb_strtolower ($string, $encoding = null) {
 /**
  * Like system function, but accept arrays of strings
  *
- * @param string			$string
+ * @param string|string[]	$string
  * @param string			$encoding
  *
  * @return string|string[]
