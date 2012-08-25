@@ -559,10 +559,10 @@
 		"group"									: "Группа",
 		"sure_delete_permission"				: "Вы действительно хотите удалить разрешение <b>%s</b>?",
 		"permissions_group_System"				: "Система",
-		"permissions_group_System/admin"		: "Система/Администрирование",
+		"permissions_group_admin/System"		: "Система/Администрирование",
 		"permissions_group_Block"				: "Блоки",
 		"add_permission"						: "Добавить разрешение",
-		"adding_permission"					: "Добавление разрешения",
+		"adding_permission"						: "Добавление разрешения",
 		"editing_permission"					: "Редактирование разрешения %s",
 		"deletion_of_permission"				: "Удаление разрешения %s",
 		//Security

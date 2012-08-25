@@ -27,15 +27,36 @@ $Index->content(
 		h::header(
 			h::h1(
 				$post['title'].
-				($User->id == $post['user'] ? ' '.h::{'a.cs-button-compact'}(
-					h::icon('wrench'),
-					[
-						'href'			=> $module.'/edit_post/'.$post['id'],
-						'data-title'	=> $L->edit
-					]
-				) : '')
+				(
+					$User->is('admin') &&
+					$User->get_user_permission('admin/'.MODULE, 'index') &&
+					$User->get_user_permission('admin/'.MODULE, 'edit_post') ? ' '.h::{'a.cs-button-compact'}(
+						[
+							h::icon('wrench'),
+							[
+								'href'			=> 'admin/'.MODULE.'/edit_post/'.$post['id'],
+								'data-title'	=> $L->edit
+							]
+						],
+						[
+							h::icon('trash'),
+							[
+								'href'			=> 'admin/'.MODULE.'/delete_post/'.$post['id'],
+								'data-title'	=> $L->delete
+							]
+						]
+					) : (
+						$User->id == $post['user'] ? ' '.h::{'a.cs-button-compact'}(
+							h::icon('wrench'),
+							[
+								'href'			=> $module.'/edit_post/'.$post['id'],
+								'data-title'	=> $L->edit
+							]
+						) : ''
+					)
+				)
 			).
-			h::p(
+			($post['sections'] != [0] ? h::p(
 				$L->sections.':'.
 				h::a(
 					array_map(
@@ -51,7 +72,7 @@ $Index->content(
 						$post['sections']
 					)
 				)
-			)
+			) : '')
 		).
 		$post['content']."\n".
 		h::footer(

@@ -54,8 +54,8 @@ if (isset($_POST['update_modules_list'])) {
 				$permissions_ids = array_merge(
 					$permissions_ids,
 					(array)$User->get_permission(null, $module),
-					(array)$User->get_permission(null, $module.'/admin'),
-					(array)$User->get_permission(null, $module.'/api')
+					(array)$User->get_permission(null, 'admin/'.$module),
+					(array)$User->get_permission(null, 'api/'.$module)
 				);
 			}
 		}
@@ -131,29 +131,29 @@ if (isset($_POST['update_modules_list'])) {
 			 * Adding module admin permissions
 			 */
 			if (file_exists(MODULES.'/'.$_POST['module'].'/admin')) {
-				$permissions[$_POST['module'].'/admin'] = ['index'];
+				$permissions['admin/'.$_POST['module']] = ['index'];
 				if (file_exists(MODULES.'/'.$_POST['module'].'/admin/index.json')) {
 					$structure = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/admin/index.json'));
 					foreach ($structure as $item => $part) {
-						$permissions[$_POST['module'].'/admin'][] = is_array($part) ? $item : $part;
+						$permissions['admin/'.$_POST['module']][] = is_array($part) ? $item : $part;
 					}
 					unset($structure, $item, $part);
 				}
-				$permissions[$_POST['module'].'/admin']	= array_unique($permissions[$_POST['module'].'/admin']);
+				$permissions['admin/'.$_POST['module']]	= array_unique($permissions[$_POST['module'].'/admin']);
 			}
 			/**
 			 * Adding module API permissions
 			 */
 			if (file_exists(MODULES.'/'.$_POST['module'].'/api')) {
-				$permissions[$_POST['module'].'/api'] = ['index'];
+				$permissions['api/'.$_POST['module']] = ['index'];
 				if (file_exists(MODULES.'/'.$_POST['module'].'/api/index.json')) {
 					$structure = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/api/index.json'));
 					foreach ($structure as $item => $part) {
-						$permissions[$_POST['module'].'/api'][] = is_array($part) ? $item : $part;
+						$permissions['api/'.$_POST['module']][] = is_array($part) ? $item : $part;
 					}
 					unset($structure, $item, $part);
 				}
-				$permissions[$_POST['module'].'/api']	= array_unique($permissions[$_POST['module'].'/api']);
+				$permissions['api/'.$_POST['module']]	= array_unique($permissions[$_POST['module'].'/api']);
 			}
 			foreach ($permissions as $group => $list) {
 				foreach ($list as $label) {

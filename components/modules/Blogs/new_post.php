@@ -8,7 +8,7 @@
  */
 namespace	cs\modules\Blogs;
 use			\h;
-global $Page, $Index, $L, $User;
+global $Page, $Index, $L, $User, $Config;
 $Page->title($L->new_post);
 if (!$User->is('user')) {
 	if ($User->is('bot')) {
@@ -41,7 +41,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 				$save	= false;
 			}
 			if ($save) {
-				global $Blogs, $Config;
+				global $Blogs;
 				$id	= $Blogs->add($_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])));
 				if ($id) {
 					interface_off();
@@ -58,6 +58,8 @@ $Index->form				= true;
 $Index->action				= $module.'/new_post';
 $Index->buttons				= false;
 $Index->cancel_button_back	= true;
+$disabled					= [];
+$max_sections				= $Config->module(MODULE)->get('max_sections');
 $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages'}(
 		$L->new_post
@@ -80,10 +82,11 @@ $Index->content(
 					'size'		=> 7,
 					'disabled'	=> $disabled,
 					'selected'	=> isset($_POST['sections']) ? $_POST['sections'] : [],
-					'multiple',
+					$max_sections < 1 ? 'multiple' : false,
 					'required'
 				]
-			)
+			).
+			($max_sections > 1 ? h::br().$L->select_sections_num($max_sections) : '')
 		],
 		[
 			$L->post_content,

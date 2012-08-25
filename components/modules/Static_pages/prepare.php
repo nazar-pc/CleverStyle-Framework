@@ -24,7 +24,9 @@ if ($data['interface']) {
 		}
 		$Page->title($data['title']);
 	}
-	$Page->content($data['content']);
+	$Page->content(
+		h::section($data['content'])
+	);
 } else {
 	interface_off();
 	$Page->Content	= $data['content'];

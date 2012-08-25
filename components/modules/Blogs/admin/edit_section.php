@@ -41,6 +41,8 @@ $Index->content(
 			])
 		)
 	).
-	h::{"input[type=hidden][name=id][value=$id]"}().
+	h::{'input[type=hidden][name=id]'}([
+		'value'	=> $id
+	]).
 	h::{'input[type=hidden][name=mode][value=edit_section]'}()
 );

@@ -57,7 +57,7 @@ CREATE TABLE `[prefix]permissions` (
   KEY `group` (`group`(255))
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `[prefix]permissions` (`label`, `group`) VALUES ('index', 'System/admin'), ('index', 'System/api');
+INSERT INTO `[prefix]permissions` (`label`, `group`) VALUES ('index', 'admin/System'), ('index', 'api/System');
 
 CREATE TABLE `[prefix]sessions` (
   `id` varchar(32) COLLATE utf8_unicode_ci NOT NULL,

@@ -8,7 +8,7 @@
  */
 namespace	cs\modules\Blogs;
 use			\h;
-global $Core, $Index, $Config, $L;
+global $Core, $Index, $Config, $L, $Page;
 $Index->title_auto	= false;
 $rc					= &$Config->__get('routing')['current'];
 if (!isset($rc[0])) {
@@ -41,6 +41,7 @@ switch ($rc[0]) {
 	case 'new_post':
 	case 'edit_post':
 }
+$Page->title($L->{MODULE});
 include_once MFOLDER.'/class.php';
 $Core->create('cs\\modules\\Blogs\\Blogs');
 function get_sections_select_post (&$disabled, $current = null, $structure = null, $level = 0) {

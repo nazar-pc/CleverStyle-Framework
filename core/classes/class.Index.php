@@ -74,7 +74,7 @@ class Index {
 			ADMIN &&
 			file_exists($admin_path) && (file_exists($admin_path.'/index.php') || file_exists($admin_path.'/index.json'))
 		) {
-			if (!($User->is('admin') && $User->get_user_permission($this->permission_group = MODULE.'/admin', 'index'))) {
+			if (!($User->is('admin') && $User->get_user_permission($this->permission_group = 'admin/'.MODULE, 'index'))) {
 				define('ERROR_PAGE', 403);
 				$this->__finish();
 				return;
@@ -86,7 +86,7 @@ class Index {
 			API
 			&& file_exists($api_path) && (file_exists($api_path.'/index.php') || file_exists($api_path.'/index.json'))
 		) {
-			if (!$User->get_user_permission($this->permission_group = MODULE.'/api', 'index')) {
+			if (!$User->get_user_permission($this->permission_group = 'api/'.MODULE, 'index')) {
 				define('ERROR_PAGE', 403);
 				$this->__finish();
 				return;
@@ -440,41 +440,40 @@ class Index {
 		if (!$this->api) {
 			global $Config, $Page, $User, $L, $Core;
 			$Page->js(
-				'var base_url = "'.$Config->server['base_url'].'",'.
-					'current_base_url = "'.$Config->server['base_url'].'/'.($this->admin ? 'admin/' : '').MODULE.'",'.
-					'public_key = "'.$Core->config('public_key').'",'.
-					'yes = "'.$L->yes.'",'.
-					'no = "'.$L->no.'",'.
-					($User->is('guest') ?
-							'auth_error_connection = "'.$L->auth_error_connection.'",'.
-							'please_type_your_email = "'.$L->please_type_your_email.'",'.
-							'reg_success = "'.$L->reg_success.'",'.
-							'reg_confirmation = "'.$L->reg_confirmation.'",'.
-							'reg_error_connection = "'.$L->reg_error_connection.'",'.
-							'rules_agree = "'.$L->rules_agree.'",'.
-							'rules_text = "'.get_core_ml_text('rules').'",'.
-							'restore_password_confirmation = "'.$L->restore_password_confirmation.'",'
-						: '').
-					($User->is('user') ?
-							'please_type_current_password = "'.$L->please_type_current_password.'",'.
-							'please_type_new_password = "'.$L->please_type_new_password.'",'.
-							'current_new_password_equal = "'.$L->current_new_password_equal.'",'.
-							'password_changed_successfully = "'.$L->password_changed_successfully.'",'.
-							'password_changing_error_connection = "'.$L->password_changing_error_connection.'",'
-						: ''
-					).
-					'language = "'.$L->clanguage.'",'.
-					'language_en = "'.$L->clanguage_en.'",'.
-					'lang = "'.$L->clang.'",'.
-					'module = "'.MODULE.'",'.
-					'in_admin = '.(int)$this->admin.','.
-					'debug = '.(int)(defined('DEBUG') && DEBUG).','.
-					'session_id = "'.$User->get_session().'",'.
-					'cookie_prefix = "'.$Config->core['cookie_prefix'].'",'.
-					'cookie_domain = "'.$Config->core['cookie_domain'].'",'.
-					'cookie_path = "'.$Config->core['cookie_path'].'",'.
-					'protocol = "'.$Config->server['protocol'].'",'.
-					'routing = '._json_encode($Config->routing['current']).';',
+				'var	base_url = "'.$Config->server['base_url']."\",\n".
+				'	current_base_url = "'.$Config->server['base_url'].'/'.($this->admin ? 'admin/' : '').MODULE."\",\n".
+				'	public_key = "'.$Core->config('public_key')."\",\n".
+				'	yes = "'.$L->yes."\",\n".
+				'	no = "'.$L->no."\",\n".
+				($User->is('guest') ?
+					'	auth_error_connection = "'.$L->auth_error_connection."\",\n".
+					'	please_type_your_email = "'.$L->please_type_your_email."\",\n".
+					'	reg_success = "'.$L->reg_success."\",\n".
+					'	reg_confirmation = "'.$L->reg_confirmation."\",\n".
+					'	reg_error_connection = "'.$L->reg_error_connection."\",\n".
+					'	rules_agree = "'.$L->rules_agree."\",\n".
+					'	rules_text = "'.get_core_ml_text('rules')."\",\n".
+					'	restore_password_confirmation = "'.$L->restore_password_confirmation."\",\n"
+				: '').
+				($User->is('user') ?
+					'	please_type_current_password = "'.$L->please_type_current_password."\",\n".
+					'	please_type_new_password = "'.$L->please_type_new_password."\",\n".
+					'	current_new_password_equal = "'.$L->current_new_password_equal."\",\n".
+					'	password_changed_successfully = "'.$L->password_changed_successfully."\",\n".
+					'	password_changing_error_connection = "'.$L->password_changing_error_connection."\",\n"
+				: '').
+				'	language = "'.$L->clanguage."\",\n".
+				'	language_en = "'.$L->clanguage_en."\",\n".
+				'	lang = "'.$L->clang."\",\n".
+				'	module = "'.MODULE."\",\n".
+				'	in_admin = '.(int)$this->admin.','.
+				'	debug = '.(int)(defined('DEBUG') && DEBUG).','.
+				'	session_id = "'.$User->get_session()."\",\n".
+				'	cookie_prefix = "'.$Config->core['cookie_prefix']."\",\n".
+				'	cookie_domain = "'.$Config->core['cookie_domain']."\",\n".
+				'	cookie_path = "'.$Config->core['cookie_path']."\",\n".
+				'	protocol = "'.$Config->server['protocol']."\",\n".
+				'	routing = '._json_encode($Config->routing['current']).';',
 				'code'
 			);
 		}
@@ -513,9 +512,9 @@ class Index {
 						$content = $Text->process($Config->module('System')->db('texts'), $block['content']);
 					break;
 				}
-				$template				= file_exists(TEMPLATES.'/blocks/block.'.$block['template']) ?
-														TEMPLATES.'/blocks/block.'.$block['template'] :
-														TEMPLATES.'/blocks/block.default.html';
+				$template				= TEMPLATES.'/blocks/block.'.(
+					file_exists(TEMPLATES.'/blocks/block.'.$block['template']) ? $block['template'] : 'default.html'
+				);
 				$block_cache['content']	= str_replace(
 					[
 						'<!--id-->',

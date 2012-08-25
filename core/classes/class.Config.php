@@ -634,16 +634,13 @@ class Module_Properties {
 	/**
 	 * Set data item of module configuration (only for admin)
 	 *
-	 * @param string		$item
-	 * @param mixed			$value
+	 * @param string	$item
+	 * @param mixed		$value
+	 *
+	 * @return bool
 	 */
 	function __set ($item, $value) {
-		global $Config;
-		$module_data	= &$Config->components['modules'][$this->module];
-		if (!isset($module_data['data'])) {
-			$module_data['data']	= [];
-		}
-		$module_data['data'][$item]	= $value;
+		return $this->set_internal($item, $value);
 	}
 	/**
 	 * Get data item (or array of items) of module configuration
@@ -667,14 +664,30 @@ class Module_Properties {
 	 *
 	 * @param array|string	$item
 	 * @param mixed|null	$value
+	 *
+	 * @return bool
 	 */
 	function set ($item, $value = null) {
 		if (is_array($item)) {
-			foreach ($item as $i) {
-				$this->__set($i, $value);
+			foreach ($item as $i => $value) {
+				$this->set_internal($i, $value, false);
 			}
+			global $Config;
+			return $Config->save('components');
 		} else {
-			$this->__set($item, $value);
+			return $this->set_internal($item, $value);
 		}
+	}
+	protected function set_internal ($item, $value, $save = true) {
+		global $Config;
+		$module_data	= &$Config->components['modules'][$this->module];
+		if (!isset($module_data['data'])) {
+			$module_data['data']	= [];
+		}
+		$module_data['data'][$item]	= $value;
+		if ($save) {
+			return $Config->save('components');
+		}
+		return true;
 	}
 }

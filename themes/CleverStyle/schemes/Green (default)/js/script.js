@@ -23,11 +23,11 @@ function background() {
 			}
 		}
 		var bokehColour = temp1+','+temp2+','+temp3;
-		var element = $("<div>").addClass(
+		var element = $('<div>').addClass(
 			"cs-background"
 		).css({
-				'left': Math.floor(Math.random()*(window.innerWidth-size))+'px',
-				'top': Math.floor(Math.random()*(height-size))+'px',
+				'left'			: Math.floor(Math.random()*(window.innerWidth-size))+'px',
+				'top'			: Math.floor(Math.random()*(height-size))+'px',
 				'width': size+'px',
 				'height': size+'px',
 				'border-radius': Math.floor(size/2)+'px',
@@ -51,13 +51,25 @@ function background() {
 				'background': '-webkit-radial-gradient(contain, rgba('+bokehColour+', 0.7), rgba('+bokehColour+',0.3))'
 			});
 		}
-		element.appendTo("#background");
-
+		element.appendTo('.cs-background');
 	}
 }
 $(function(){
+	$('body').append([
+		$('<div class="cs-loading"></div>').append([
+			'<div class="cs-n1"></div>',
+			'<div class="cs-n2"></div>',
+			'<div class="cs-n3"></div>',
+			'<div class="cs-n4"></div>',
+			'<div class="cs-n5"></div>',
+			'<div class="cs-n6></div>',
+			'<div class="cs-n7"></div>'
+		]),
+		'<div class="cs-header-zone"></div>',
+		'<div class="cs-background"></div>']
+	);
 	var header_visible		= getcookie('header_visible'),
-		header_elements		= $('header > *'),
+		header_elements		= $('body > header > *'),
 		body				= $('#body'),
 		header_move_allow	= true,
 		header_offset		= 125,
@@ -101,35 +113,14 @@ $(function(){
 			}
 		}
 	);
-	if ($.browser.msie) {
-		$('#loading').attr('style', '-ms-transform: rotate('+(++loading_angle)+'deg)');
-		loading_interval = setInterval(function () {$('#loading').attr('style', '-ms-transform: rotate('+(loading_angle += 3)+'deg)');}, 50);
-	} else {
-		$('#loading').css(
-			{
-				"-ms-transform" : 'rotate('+(++loading_angle)+'deg)',
-				"-moz-transform" : 'rotate('+(++loading_angle)+'deg)',
-				"-o-transform" : 'rotate('+(++loading_angle)+'deg)',
-				"-webkit-transform" : 'rotate('+(++loading_angle)+'deg)',
-				"transform" : 'rotate('+(++loading_angle)+'deg)'
-			}
-		);
-		loading_interval = setInterval(function () {$('#loading').css({"-moz-transform" : 'rotate('+(++loading_angle)+'deg)', "-o-transform" : 'rotate('+(++loading_angle)+'deg)', "-webkit-transform" : 'rotate('+(++loading_angle)+'deg)', "transform" : 'rotate('+(++loading_angle)+'deg)'});}, 50);
-	}
-	$('#loading > div').css('opacity', 1);
-	background();
+	$('.cs-loading > div').css('opacity', 1);
+	//background();
 });
 $(window).load(
 	function(){
 		setTimeout(
 			function(){
-				$('#loading > div').css('opacity', 0);
-				setTimeout(
-					function(){
-						clearInterval(loading_interval);
-					},
-					1000
-				);
+				$('.cs-loading > div').css('opacity', 0);
 			},
 			1000
 		);

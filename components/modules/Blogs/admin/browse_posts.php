@@ -13,7 +13,7 @@ global $Index, $L, $Page;
 $Index->buttons	= false;
 $Page->title($L->browse_posts);
 $Index->content(
-	h::{'table.cs-left-all.cs-fullwidth-table'}(
+	h::{'table.cs-center-all.cs-fullwidth-table'}(
 		h::{'tr th.ui-widget-header.ui-corner-all'}(
 			[
 				$L->post_title,

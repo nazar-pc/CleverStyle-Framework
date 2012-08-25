@@ -88,13 +88,13 @@ class Blogs {
 		if (empty($tags) || empty($content)) {
 			return false;
 		}
-		global $db, $User;
+		global $db, $User, $Config;
 		$path		= path(str_replace(['/', '\\'], '_', $path ?: $title));
 		$sections	= array_intersect(
 			array_keys($this->get_sections_list()),
 			$sections
 		);
-		if (empty($sections)) {
+		if (empty($sections) || count($sections) > $Config->module(MODULE)->get('max_sections')) {
 			return false;
 		}
 		if ($db->{$this->posts}()->q(
@@ -142,7 +142,7 @@ class Blogs {
 		if (empty($tags) || empty($content)) {
 			return false;
 		}
-		global $db, $Cache;
+		global $db, $Cache, $Config;
 		$id			= (int)$id;
 		$title		= trim(xap($title));
 		$path		= path(str_replace(['/', '\\'], '_', $path ?: $title));
@@ -151,7 +151,7 @@ class Blogs {
 			array_keys($this->get_sections_list()),
 			$sections
 		);
-		if (empty($sections)) {
+		if (empty($sections) || count($sections) > $Config->module(MODULE)->get('max_sections')) {
 			return false;
 		}
 		$sections	= implode(
@@ -570,10 +570,11 @@ class Blogs {
 	 * Add tag, in most cases this function is not needed for usage, use ::process_tags() instead
 	 *
 	 * @param string		$tag
+	 * @param bool			$clean_cache
 	 *
 	 * @return bool|int
 	 */
-	private function add_tag ($tag) {
+	private function add_tag ($tag, $clean_cache = true) {
 		$tag	= trim(xap($tag));
 		if (($id = array_search($tag, $this->get_tags_list())) === false) {
 			global $db, $Cache;
@@ -591,7 +592,9 @@ class Blogs {
 					LIMIT 1",
 					$this->ml_set('Blogs/tags', $id, $tag)
 				)) {
-					unset($Cache->{'Blogs/tags'});
+					if ($clean_cache) {
+						unset($Cache->{'Blogs/tags'});
+					}
 					return $id;
 				} else {
 					$db->{$this->posts}()->q(
@@ -645,10 +648,16 @@ class Blogs {
 			$tags[$tags_list[$tag]]	= $tag;
 		}
 		unset($exists);
+		$added		= false;
 		foreach ($tags as $tag => &$id) {
 			if ($id === null) {
-				$id	= $this->add_tag($tag);
+				$id		= $this->add_tag($tag, false);
+				$added	= true;
 			}
+		}
+		if ($added) {
+			global $Cache;
+			unset($Cache->{'Blogs/tags'});
 		}
 		return array_values(array_unique($tags));
 	}

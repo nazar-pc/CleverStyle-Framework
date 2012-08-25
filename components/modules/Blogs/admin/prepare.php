@@ -9,22 +9,32 @@
  */
 namespace	cs\modules\Blogs;
 use			\h;
-global $Core, $Index, $Page, $L;
+global $Core, $Index, $Page, $L, $Config;
 $Index->title_auto	= false;
 $Page->title($L->administration);
 $Page->title($L->{MODULE});
 $Page->css('components/modules/'.MODULE.'/includes/css/style.css');
+$rc					= $Config->routing['current'];
 $Page->menumore		= h::a(
+	[
+		$L->general,
+		[
+			'href'	=> 'admin/'.MODULE,
+			'class'	=> !isset($rc[0]) || $rc[0] == 'general' ? 'active' : false
+		]
+	],
 	[
 		$L->blogs_sections,
 		[
-			'href'	=> 'admin/'.MODULE
+			'href'	=> 'admin/'.MODULE.'/browse_sections',
+			'class'	=> isset($rc[0]) && $rc[0] == 'browse_sections' ? 'active' : false
 		]
 	],
 	[
 		$L->blogs_posts,
 		[
-			'href'	=> 'admin/'.MODULE.'/browse_posts'
+			'href'	=> 'admin/'.MODULE.'/browse_posts',
+			'class'	=> isset($rc[0]) && $rc[0] == 'browse_posts' ? 'active' : false
 		]
 	]
 );
@@ -148,13 +158,14 @@ function get_posts_rows ($page	= 1) {
 	global $db, $Config, $Blogs, $L;
 	$module		= path($L->{MODULE});
 	$page		= (int)$page ?: 1;
-	$from		= --$page*50;
+	$num		= $Config->module(MODULE)->get('posts_per_page');
+	$from		= --$page*$num;
 	$cdb		= $db->{$Config->module(basename(MODULE))->db('posts')};
 	$posts		= $cdb->qfa(
 		"SELECT `id`
 		FROM `[prefix]blogs_posts`
 		ORDER BY `id` DESC
-		LIMIT $from, 50",
+		LIMIT $from, $num",
 		true
 	);
 	$content	= [];

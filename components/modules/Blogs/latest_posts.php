@@ -12,24 +12,37 @@ global $Index, $Blogs, $Page, $L, $User, $db, $Config;
 $Page->title($L->latest_posts);
 $module		= path($L->{MODULE});
 if ($User->is('user')) {
+	if ($User->is('admin') && $User->get_user_permission('admin/'.MODULE, 'index')) {
+		$Index->content(
+			h::{'a.cs-button-compact'}(
+				h::icon('wrench'),
+				[
+				'href'			=> 'admin/'.MODULE,
+				'data-title'	=> $L->administration
+				]
+			)
+		);
+	}
 	$Index->content(
-		h::{'a.cs-button'}(
-			$L->new_post,
+		h::{'a.cs-button-compact'}(
+			h::icon('document'),
 			[
-				'href'	=> $module.'/new_post'
+				'href'			=> $module.'/new_post',
+				'data-title'	=> $L->new_post
 			]
 		).
 		h::br()
 	);
 }
 $page		= isset($Config->routing['current'][1]) ? (int)$Config->routing['current'][1] : 1;
-$from		= --$page*50;
+$num		= $Config->module(MODULE)->get('posts_per_page');
+$from		= --$page*$num;
 $cdb		= $db->{$Config->module(MODULE)->db('posts')};
 $posts		= $cdb->qfa(
 	"SELECT `id`
 		FROM `[prefix]blogs_posts`
 		ORDER BY `id` DESC
-		LIMIT $from, 10",
+		LIMIT $from, $num",
 	true
 );
 foreach ($posts as $post) {
@@ -43,7 +56,7 @@ foreach ($posts as $post) {
 						'href'	=> $module.'/'.$post['path'].':'.$post['id']
 					]
 				).
-				h::p(
+				($post['sections'] != [0] ? h::p(
 					$L->sections.':'.
 					h::a(
 						array_map(
@@ -59,7 +72,7 @@ foreach ($posts as $post) {
 							$post['sections']
 						)
 					)
-				)
+				) : '')
 			).
 			$post['content']."\n".
 			h::footer(

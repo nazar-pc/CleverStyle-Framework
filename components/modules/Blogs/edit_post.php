@@ -78,6 +78,7 @@ $Index->action				= $module.'/edit_post/'.$post['id'];
 $Index->buttons				= false;
 $Index->cancel_button_back	= true;
 $disabled					= [];
+$max_sections				= $Config->module(MODULE)->get('max_sections');
 $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages'}(
 		$L->editing_of_post($post['title'])
@@ -100,10 +101,11 @@ $Index->content(
 					'size'		=> 7,
 					'disabled'	=> $disabled,
 					'selected'	=> isset($_POST['sections']) ? $_POST['sections'] : $post['sections'],
-					'multiple',
+					$max_sections < 1 ? 'multiple' : false,
 					'required'
 				]
-			)
+			).
+			($max_sections > 1 ? h::br().$L->select_sections_num($max_sections) : '')
 		],
 		[
 			$L->post_content,

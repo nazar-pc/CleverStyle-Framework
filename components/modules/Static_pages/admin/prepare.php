@@ -9,7 +9,7 @@
  */
 namespace	cs\modules\Static_pages;
 use			\h;
-global $Core, $Index, $Page, $L;
+global $Core, $Index, $Page, $L, $Config;
 $Index->title_auto	= false;
 $Page->title($L->administration);
 $Page->title($L->{MODULE});
@@ -17,7 +17,8 @@ $Page->css('components/modules/'.MODULE.'/includes/css/style.css');
 $Page->menumore		= h::a(
 	$L->browse_page_categories,
 	[
-		'href'	=> 'admin/'.MODULE
+		'href'	=> 'admin/'.MODULE,
+		'class'	=> !isset($Config->routing['current'][0]) || $Config->routing['current'][0] == 'browse_sections' ? 'active' : false
 	]
 );
 include_once MFOLDER.'/../class.php';

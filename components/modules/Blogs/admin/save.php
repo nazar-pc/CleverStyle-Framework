@@ -49,4 +49,8 @@ switch ($_POST['mode']) {
 	case 'delete_post':
 		$Index->save((bool)$Blogs->del($_POST['id']));
 	break;
+	case 'general':
+		global $Config;
+		$Index->save($Config->module(MODULE)->set($_POST['general']));
+	break;
 }
