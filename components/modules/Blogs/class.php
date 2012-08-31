@@ -187,8 +187,6 @@ class Blogs {
 					`content` = '%s'
 				WHERE `id` = '%s'
 				LIMIT 1",
-				"DELETE FROM `[prefix]blogs_posts_tags`
-				WHERE `id` = '%4\$s'",
 				"INSERT INTO `[prefix]blogs_posts_tags`
 					(`id`, `tag`)
 				VALUES
@@ -221,11 +219,15 @@ class Blogs {
 	function del ($id) {
 		global $db, $Cache;
 		$id	= (int)$id;
-		if ($db->{$this->posts}()->q(
+		if ($db->{$this->posts}()->q([
 			"DELETE FROM `[prefix]blogs_posts`
 			WHERE `id` = $id
-			LIMIT 1"
-		)) {
+			LIMIT 1",
+			"DELETE FROM `[prefix]blogs_posts_sections`
+			WHERE `id` = $id",
+			"DELETE FROM `[prefix]blogs_posts_tags`
+			WHERE `id` = $id"
+		])) {
 			$this->ml_del('Blogs/posts/title', $id);
 			$this->ml_del('Blogs/posts/path', $id);
 			$this->ml_del('Blogs/posts/content', $id);
@@ -396,7 +398,7 @@ class Blogs {
 					WHERE `section` = $parent"
 				);
 				foreach ($posts as $post) {
-					unset($Cache->{'Blogs/posts/'.$post});
+					unset($Cache->{'Blogs/posts/'.$post['id']});
 				}
 				unset($post);
 			}
@@ -441,9 +443,7 @@ class Blogs {
 			$id
 		)) {
 			unset(
-				$Cache->{'Blogs/sections/'.$id},
-				$Cache->{'Blogs/sections/list'},
-				$Cache->{'Blogs/sections/structure'}
+				$Cache->{'Blogs/sections'}
 			);
 			return true;
 		} else {

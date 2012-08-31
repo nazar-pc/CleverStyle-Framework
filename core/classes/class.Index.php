@@ -422,11 +422,14 @@ class Index {
 						)
 					: '').
 					$this->post_buttons,
-					[
-						'enctype'	=> $this->file_upload ? 'multipart/form-data' : false,
-						'action'	=> $this->action,
-						'class'		=> 'cs-fullwidth-form'
-					]+$this->form_atributes
+					array_merge(
+						[
+							'enctype'	=> $this->file_upload ? 'multipart/form-data' : false,
+							'action'	=> $this->action,
+							'class'		=> 'cs-fullwidth-form'
+						],
+						$this->form_atributes
+					)
 				)
 			);
 		} elseif ($this->Content) {

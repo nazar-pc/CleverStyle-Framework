@@ -15,7 +15,7 @@ $data						= $Blogs->get_section($id);
 $Page->title($L->editing_of_posts_section($data['title']));
 $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
-$Index->action				= 'admin/'.MODULE;
+$Index->action				= 'admin/'.MODULE.'/browse_sections';
 $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages'}(
 		$L->editing_of_posts_section($data['title'])

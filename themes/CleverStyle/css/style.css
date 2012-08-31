@@ -17,17 +17,6 @@ code {
 	font-family : "DejaVu Sans Mono", "Courier New", monospace;
 }
 
-#body {
-	margin      : 7px;
-	padding-top : 145px;
-}
-
-#body > table {
-	border-radius : 10px;
-	padding       : 5px 0;
-	width         : 100%;
-}
-
 .cs-fullwidth-form {
 	text-align : center;
 	width      : 100%;
@@ -40,19 +29,6 @@ code {
 
 .cs-fullwidth-table > tbody > tr > .ui-widget-shadow {
 	opacity : 1;
-}
-
-#main_content {
-	vertical-align : top;
-	border-radius  : 7px;
-	padding        : 10px;
-	vertical-align : top;
-}
-
-#main_content > div {
-	border-radius : 5px;
-	padding       : 10px;
-	height        : 100%;
 }
 
 a {
@@ -385,4 +361,48 @@ hr {
 	border           : 0;
 	background-color : #9e9e9e;
 	height           : 1px;
+}
+
+#body {
+	border-radius : 10px;
+	box-sizing    : border-box;
+	display       : "abc" "adc" "aec" 15% * 15%;
+	margin        : 145px 7px 7px;
+	padding       : 5px 0;
+}
+#left_blocks {
+	position : a;
+}
+#top_blocks {
+	position : b;
+}
+#right_blocks {
+	position : c;
+}
+#main_content {
+	vertical-align : top;
+	border-radius  : 7px;
+	margin-top     : 3px;
+	padding        : 10px;
+	position       : d;
+	vertical-align : top;
+}
+#main_content > div {
+	border-radius : 5px;
+	padding       : 10px;
+	height        : 100%;
+}
+#bottom_blocks {
+	position : e;
+}
+#left_blocks, #right_blocks {
+	padding        : 0 5px;
+	vertical-align : top;
+}
+
+body > footer > div:nth-child(1) {
+	padding : 5px 5px 0;
+}
+body > footer > div:nth-child(2) {
+	padding : 0 5px 5px;
 }

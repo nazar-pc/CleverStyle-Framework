@@ -13,7 +13,7 @@ global $Index, $L, $Page, $Config;
 $Page->title($L->addition_of_posts_section);
 $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
-$Index->action				= 'admin/'.MODULE;
+$Index->action				= 'admin/'.MODULE.'/browse_sections';
 $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages'}(
 		$L->addition_of_posts_section

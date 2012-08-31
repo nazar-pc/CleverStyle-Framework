@@ -81,7 +81,7 @@ $Index->content(
 					'name'		=> 'sections[]',
 					'size'		=> 7,
 					'disabled'	=> $disabled,
-					'selected'	=> isset($_POST['sections']) ? $_POST['sections'] : [],
+					'selected'	=> isset($_POST['sections']) ? $_POST['sections'] : (isset($Config->routing['current'][1]) ? $Config->routing['current'][1] : []),
 					$max_sections < 1 ? 'multiple' : false,
 					'required'
 				]
@@ -96,7 +96,9 @@ $Index->content(
 					'name'	=> 'content',
 					'class'	=> 'cs-wide-textarea EDITOR'
 				]
-			)
+			).
+			h::br().
+			$L->use_pagebreak
 		],
 		[
 			$L->post_tags,

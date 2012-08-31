@@ -624,12 +624,8 @@ class Module_Properties {
 	 *
 	 * @return bool|mixed
 	 */
-	function __get ($item) {
-		if (isset($this->module_data['data'], $this->module_data['data'][$item])) {
-			return $this->module_data['data'][$item];
-		} else {
-			return false;
-		}
+	function &__get ($item) {
+		return $this->get($item);
 	}
 	/**
 	 * Set data item of module configuration (only for admin)
@@ -649,15 +645,18 @@ class Module_Properties {
 	 *
 	 * @return array|bool|mixed
 	 */
-	function get ($item) {
+	function &get ($item) {
 		if (is_array($item)) {
 			$result	= [];
 			foreach ($item as $i) {
-				$result[$i]	= $this->__get($i);
+				$result[$i]	= &$this->get($i);
 			}
 			return $result;
+		} elseif (isset($this->module_data['data'], $this->module_data['data'][$item])) {
+			return $this->module_data['data'][$item];
+		} else {
+			return false;
 		}
-		return $this->__get($item);
 	}
 	/**
 	 * Set data item (or array of items) of module configuration (only for admin)

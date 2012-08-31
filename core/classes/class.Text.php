@@ -49,7 +49,7 @@ class Text {
 			$text = $db->$database->qf([
 				"SELECT `t`.`id`, `d`.`lang`, `d`.`text`
 				FROM `[prefix]texts` AS `t` LEFT OUTER JOIN `[prefix]texts_data` AS `d`
-				ON (`d`.`id` = `d`.`id`)
+				ON `t`.`id` = `d`.`id`
 				WHERE `t`.`group` = '%s' AND `t`.`label` = '%s' AND `d`.`lang` = '%s'
 				LIMIT 1",
 				$group,
@@ -60,7 +60,7 @@ class Text {
 				$text = $db->$database->qf([
 					"SELECT `t`.`id`, `d`.`lang`, `d`.`text`
 					FROM `[prefix]texts` AS `t` LEFT OUTER JOIN `[prefix]texts_data` AS `d`
-					ON (`d`.`id` = `d`.`id`)
+					ON `t`.`id` = `d`.`id`
 					WHERE `t`.`group` = '%s' AND `t`.`label` = '%s'
 					LIMIT 1",
 					$group,

@@ -12,7 +12,7 @@ body {
 	background: rgba(255, 255, 255, 0.95);
 }
 #main_content,
-#body > table {
+#body {
 	background: rgba(255, 255, 255, 0.15);
 	border: 1px solid rgba(255, 255, 255, 0.25);
 }
@@ -28,4 +28,11 @@ a {
 .cs-background {
 	position : absolute;
 	z-index  : -100;
+}
+body > footer {
+	background: rgba(255, 255, 255, 0.3);
+	color: #fff;
+}
+body > footer > div > a {
+	color: #fff;
 }

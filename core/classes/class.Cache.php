@@ -9,6 +9,7 @@ namespace cs;
 class Cache {
 	protected	$cache,					//Cache state
 				$init		= false,	//Initialization state
+				$engine,
 				/**
 				 * Instance of cache engine object
 				 *
@@ -22,7 +23,7 @@ class Cache {
 		$this->init();
 		if (!$this->init && $this->cache) {
 			global $Core;
-			$engine_class	= '\\cs\\Cache\\'.$Core->config('cache_engine');
+			$engine_class	= '\\cs\\Cache\\'.($this->engine = $Core->config('cache_engine'));
 			$this->instance	= new $engine_class();
 		}
 	}
@@ -55,7 +56,7 @@ class Cache {
 	 * @return bool
 	 */
 	function set ($item, $data) {
-		if (is_object($this->instance)){
+		if ($this->engine != 'BlackHole' && is_object($this->instance)){
 			$this->instance->del($item);
 		}
 		if (!$this->cache) {

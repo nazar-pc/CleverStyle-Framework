@@ -1370,7 +1370,7 @@ function get_core_ml_text ($item) {
  * @param bool		$considerHtml	If <b>true</b>, HTML tags would be handled correctly
  * @return string					Trimmed string
  */
-function truncate ($text, $length = 100, $ending = '...', $exact = false, $considerHtml = true) {
+function truncate ($text, $length = 1024, $ending = '...', $exact = false, $considerHtml = true) {
 	$open_tags = [];
 	if ($considerHtml) {
 		// if the plain text is shorter than the maximum length, return the whole text
@@ -1475,4 +1475,184 @@ function path ($text) {
 			'\\'	=> '_'
 		]
 	);
+}
+/**
+ * Prepare string to use in keywords meta tag
+ *
+ * @param string	$text
+ *
+ * @return string
+ */
+function keywords ($text) {
+	return implode(
+		', ',
+		_trim(
+			explode(
+				' ',
+				str_replace([',', '.', '!', '?', '-', '–', '&'], '', $text)
+			)
+		)
+	);
+}
+/**
+ * Prepare string to use in description meta tag
+ *
+ * @param string	$text
+ *
+ * @return string
+ */
+function description ($text) {
+	return truncate(
+		strip_tags(
+			explode(
+				'<!-- pagebreak -->',
+				$text
+			)[0]
+		),
+		512,
+		'...',
+		false,
+		false
+	);
+}
+/**
+ *
+ * @param int					$page	Current page
+ * @param int					$total	Total pages number
+ * @param bool|Closure|string	$url	Adds <i>formaction</i> parameter to every button<br>
+ * 										if <b>false</b> - only form parameter <i>page</i> will we added<br>
+ * 										if string - it will be formatted with sprintf with one parameter - page number<br>
+ * 										if Closure - one parameter will be given, Closure should return url string
+ *
+ * @return bool|string					<b>false</b> if single page, otherwise string, set of navigation buttons
+ */
+function pages ($page, $total, $url = false) {
+	if ($total == 1) {
+		return false;
+	}
+	$output	= [];
+	if ($total <= 11) {
+		for ($i = 1; $i <= $total; ++$i) {
+			$output[]	= [
+				$i,
+				[
+					'formaction'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
+					'value'			=> $i,
+					'type'			=> $i == $page ? 'button' : 'submit',
+					'class'			=> $i == $page ? 'ui-selected' : false,
+					'rel'			=> $i == ($page - 1) ? 'prev' : ($i == ($page + 1) ? 'next' : false)
+				]
+			];
+		}
+	} else {
+		if ($page <= 5) {
+			for ($i = 1; $i <= 7; ++$i) {
+				$output[]	= [
+					$i,
+					[
+						'formaction'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
+						'value'			=> $i == $page ? false : $i,
+						'type'			=> $i == $page ? 'button' : 'submit',
+						'class'			=> $i == $page ? 'ui-selected' : false,
+						'rel'			=> $i == ($page - 1) ? 'prev' : ($i == ($page + 1) ? 'next' : false)
+					]
+				];
+			}
+			$output[]	= [
+				'...',
+				[
+					'type'			=> 'button',
+					'disabled'
+				]
+			];
+			for ($i = $total - 2; $i <= $total; ++$i) {
+				$output[]	= [
+					$i,
+					[
+						'formaction'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'value'			=> $i,
+						'type'			=> 'submit'
+					]
+				];
+			}
+		} elseif ($page >= $total - 4) {
+			for ($i = 1; $i <= 3; ++$i) {
+				$output[]	= [
+					$i,
+					[
+						'formaction'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'value'			=> $i,
+						'type'			=> 'submit'
+					]
+				];
+			}
+			$output[]	= [
+				'...',
+				[
+					'type'			=> 'button',
+					'disabled'
+				]
+			];
+			for ($i = $total - 6; $i <= $total; ++$i) {
+				$output[]	= [
+					$i,
+					[
+						'formaction'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
+						'value'			=> $i == $page ? false : $i,
+						'type'			=> $i == $page ? 'button' : 'submit',
+						'class'			=> $i == $page ? 'ui-selected' : false,
+						'rel'			=> $i == ($page - 1) ? 'prev' : ($i == ($page + 1) ? 'next' : false)
+					]
+				];
+			}
+		} else {
+			for ($i = 1; $i <= 2; ++$i) {
+				$output[]	= [
+					$i,
+					[
+						'formaction'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'value'			=> $i,
+						'type'			=> 'submit'
+					]
+				];
+			}
+			$output[]	= [
+				'...',
+				[
+					'type'			=> 'button',
+					'disabled'
+				]
+			];
+			for ($i = $page - 1; $i <= $page + 3; ++$i) {
+				$output[]	= [
+					$i,
+					[
+						'formaction'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
+						'value'			=> $i == $page ? false : $i,
+						'type'			=> $i == $page ? 'button' : 'submit',
+						'class'			=> $i == $page ? 'ui-selected' : false,
+						'rel'			=> $i == ($page - 1) ? 'prev' : ($i == ($page + 1) ? 'next' : false)
+					]
+				];
+			}
+			$output[]	= [
+				'...',
+				[
+					'type'			=> 'button',
+					'disabled'
+				]
+			];
+			for ($i = $total - 1; $i <= $total; ++$i) {
+				$output[]	= [
+					$i,
+					[
+						'formaction'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'value'			=> $i,
+						'type'			=> 'submit'
+					]
+				];
+			}
+		}
+	}
+	return h::{'button[name=page]'}($output);
 }

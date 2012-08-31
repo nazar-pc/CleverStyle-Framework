@@ -115,7 +115,9 @@ $Index->content(
 					'name'	=> 'content',
 					'class'	=> 'cs-wide-textarea EDITOR'
 				]
-			)
+			).
+			h::br().
+			$L->use_pagebreak
 		],
 		[
 			$L->post_tags,

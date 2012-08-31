@@ -9,19 +9,21 @@
 namespace	cs\modules\Blogs;
 use			\h;
 global $Index, $Config, $Blogs, $Page, $L, $User;
-$rc		= $Config->routing['current'];
-$post	= (int)mb_substr($rc[1], mb_strrpos($rc[1], ':')+1);
+$rc					= $Config->routing['current'];
+$post				= (int)mb_substr($rc[1], mb_strrpos($rc[1], ':')+1);
 if (!$post) {
 	define('ERROR_PAGE', 404);
 	return;
 }
-$post	= $Blogs->get($post);
+$post				= $Blogs->get($post);
 if (!$post || $post['path'] != mb_substr($rc[1], 0, mb_strrpos($rc[1], ':'))) {
 	define('ERROR_PAGE', 404);
 	return;
 }
-$module	= path($L->{MODULE});
+$module				= path($L->{MODULE});
 $Page->title($post['title']);
+$Page->Keywords		= keywords($post['title']).'. '.$Page->Keywords;
+$Page->Description	= description($post['content']);
 $Index->content(
 	h::{'section.cs-blogs-post article'}(
 		h::header(

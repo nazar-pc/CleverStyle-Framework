@@ -154,12 +154,13 @@ function get_sections_select_section ($current = null, $structure = null, $level
 	}
 	return $list;
 }
-function get_posts_rows ($page	= 1) {
-	global $db, $Config, $Blogs, $L;
+function get_posts_rows ($page = 1) {
+	global $db, $Config, $Blogs, $L, $User;
 	$module		= path($L->{MODULE});
 	$page		= (int)$page ?: 1;
+	$page		= $page > 0 ? $page : 1;
 	$num		= $Config->module(MODULE)->get('posts_per_page');
-	$from		= --$page*$num;
+	$from		= ($page - 1) * $num;
 	$cdb		= $db->{$Config->module(basename(MODULE))->db('posts')};
 	$posts		= $cdb->qfa(
 		"SELECT `id`
@@ -206,6 +207,14 @@ function get_posts_rows ($page	= 1) {
 						$Blogs->get_tag($post['tags'])
 					)
 				),
+				h::a(
+					$User->get_username($post['user']),
+					[
+						'href'	=> 'profile/'.$User->get('login', $post['user'])
+					]
+				).
+				h::br().
+				date($L->_datetime, $post['date']),
 				h::{'a.cs-button-compact'}(
 					[
 						h::icon('wrench'),

@@ -33,16 +33,16 @@ class Page {
 					'Head'				=> 0,	//of values into template
 					'pre_Body'			=> 0,
 					'Header'			=> 2,
-					'mainmenu'			=> 1,
-					'mainsubmenu'		=> 1,
-					'menumore'			=> 1,
+					'mainmenu'			=> 2,
+					'mainsubmenu'		=> 2,
+					'menumore'			=> 2,
 					'user_info'			=> 3,
 					'debug_info'		=> 1,
-					'Left'				=> 5,
-					'Top'				=> 5,
-					'Content'			=> 5,
-					'Bottom'			=> 5,
-					'Right'				=> 5,
+					'Left'				=> 3,
+					'Top'				=> 3,
+					'Content'			=> 3,
+					'Bottom'			=> 3,
+					'Right'				=> 3,
 					'Footer'			=> 1,
 					'post_Body'			=> 0
 				];
@@ -776,12 +776,15 @@ class Page {
 	 */
 	function error_page () {
 		interface_off();
+		$error_text	= error_header(ERROR_PAGE);
 		ob_start();
 		if (
 			!_include_once(THEMES.'/'.$this->theme.'/error.html', false) &&
 			!_include_once(THEMES.'/'.$this->theme.'/error.php', false)
 		) {
-			echo "<!doctype html>\n".(error_header(ERROR_PAGE) ?: ERROR_PAGE);
+			echo "<!doctype html>\n".
+				h::title($error_text ?: ERROR_PAGE).
+				 ($error_text ?: ERROR_PAGE);
 		}
 		$this->Content = ob_get_clean();
 		__finish();

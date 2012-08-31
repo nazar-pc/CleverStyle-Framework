@@ -5,6 +5,10 @@
  * @license		MIT License, see license.txt
  */
 $(function() {
+	$.setTemplateLayout();
+	$('link[type="text/css"]').each(function () {
+		$.setTemplateLayout($(this).attr('href'));
+	});
 	if (
 		($.browser.msie && $.browser.version < 10) ||
 		($.browser.opera && $.browser.version < 11.1) ||
@@ -231,9 +235,7 @@ $(function() {
 				}
 			);
 		}).keydown(function () {
-			if (event.which == 13) {
-				return false;
-			}
+			return event.which != 13;
 		});
 		$('#top_blocks_items, #left_blocks_items, #floating_blocks_items, #right_blocks_items, #bottom_blocks_items').sortable({
 			connectWith:	'.cs-blocks-items',

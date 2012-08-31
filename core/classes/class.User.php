@@ -249,7 +249,7 @@ class User {
 				date_default_timezone_set($this->timezone);
 			}
 			if ($this->language) {
-				if ($this->language != _getcookie('language')) {
+				if (!_getcookie('language')) {
 					_setcookie('language', $this->language);
 				}
 				$L->change($this->language);
@@ -260,8 +260,8 @@ class User {
 					!is_array($theme) &&
 					$theme['theme'] &&
 					$theme['color_scheme'] &&
-					$theme['theme'] != _getcookie('theme') &&
-					$theme['color_scheme'] != _getcookie('color_scheme')
+					!_getcookie('theme') &&
+					!_getcookie('color_scheme')
 				) {
 					_setcookie('theme', $theme['theme']);
 					_setcookie('color_scheme', $theme['color_scheme']);
@@ -425,6 +425,11 @@ class User {
 			if ($item == 'login') {
 				global $Cache;
 				unset($Cache->{'users/'.hash('sha224', $this->$item)});
+			} elseif ($item == 'language') {
+				global $L;
+				$L->change($value);
+				$value	= $L->clanguage;
+				_setcookie('language', $value);
 			}
 			$this->update_cache[$user] = true;
 			$this->data[$user][$item] = $value;

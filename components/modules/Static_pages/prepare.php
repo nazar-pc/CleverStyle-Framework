@@ -12,7 +12,9 @@ global $Core, $Index, $Config, $Static_pages;
 include_once MFOLDER.'/class.php';
 $Core->create('cs\\modules\\Static_pages\\Static_pages');
 $Index->title_auto	= false;
-$data				= $Static_pages->get(HOME ? $Static_pages->get_structure()['pages']['index'] : $Config->routing['current'][0]);
+$data				= $Static_pages->get(
+	HOME ? $Static_pages->get_structure()['pages']['index'] : $Config->routing['current'][0]
+);
 global $Page;
 if ($data['interface']) {
 	if (!HOME) {
@@ -24,6 +26,8 @@ if ($data['interface']) {
 		}
 		$Page->title($data['title']);
 	}
+	$Page->Keywords		= keywords($data['title']);
+	$Page->Description	= description($data['content']);
 	$Page->content(
 		h::section($data['content'])
 	);

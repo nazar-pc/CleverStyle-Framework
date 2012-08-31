@@ -420,9 +420,9 @@ class Core {
 		foreach ($triggers as $trigger) {
 			if ($trigger instanceof Closure) {
 				if ($data === null) {
-					$return = $return && $trigger();
+					$return = $return && ($trigger() === false ? false : true);
 				} else {
-					$return = $return && $trigger($data);
+					$return = $return && ($trigger($data) === false ? false : true);
 				}
 			}
 		}

@@ -9,9 +9,30 @@
 namespace	cs\modules\Blogs;
 use			\h;
 global $Index, $Blogs, $Page, $L, $User, $db, $Config;
+$rc						= array_slice($Config->routing['current'], 1);
+$structure				= $Blogs->get_sections_structure();
+$section				= 0;
+$keywords				= [];
+$description			= [];
+foreach ($rc as $path) {
+	if ($structure['posts']	== 0 && isset($structure['sections'][$path])) {
+		array_shift($rc);
+		$structure		= $structure['sections'][$path];
+		$Page->title($structure['title']);
+		$keywords[]		= $structure['title'];
+		$description[]	= $structure['title'];
+	} else {
+		break;
+	}
+}
+if (isset($structure['id'])) {
+	$section	= $structure['id'];
+} else {
+	define('ERROR_PAGE', 404);
+}
 $Page->title($L->latest_posts);
-$Page->Keywords			= keywords($L->{MODULE}.' '.$L->latest_posts).', '.$Page->Keywords;
-$Page->Description		= description($L->{MODULE}.' - '.$L->latest_posts.'. '.$Page->Description);
+$Page->Keywords			= keywords($L->{MODULE}.' '.implode(' ', $keywords).' '.$L->latest_posts).', '.$Page->Keywords;
+$Page->Description		= description($L->{MODULE}.' - '.implode(' - ', $description).' - '.$L->latest_posts.'. '.$Page->Description);
 $module					= path($L->{MODULE});
 if ($User->is('user')) {
 	if ($User->is('admin') && $User->get_user_permission('admin/'.MODULE, 'index')) {
@@ -19,8 +40,8 @@ if ($User->is('user')) {
 			h::{'a.cs-button-compact'}(
 				h::icon('wrench'),
 				[
-				'href'			=> 'admin/'.MODULE,
-				'data-title'	=> $L->administration
+					'href'			=> 'admin/'.MODULE,
+					'data-title'	=> $L->administration
 				]
 			)
 		);
@@ -29,7 +50,7 @@ if ($User->is('user')) {
 		h::{'a.cs-button-compact'}(
 			h::icon('document'),
 			[
-				'href'			=> $module.'/new_post',
+				'href'			=> $module.'/new_post/'.$section,
 				'data-title'	=> $L->new_post
 			]
 		).
@@ -39,7 +60,7 @@ if ($User->is('user')) {
 $Index->form			= true;
 $Index->buttons			= false;
 $Index->form_atributes	= ['class'	=> ''];
-$page					= isset($Config->routing['current'][1]) ? (int)$Config->routing['current'][1] : 1;
+$page					= isset($rc[0]) ? (int)$rc[0] : 1;
 $page					= $page > 0 ? $page : 1;
 if ($page > 1) {
 	$Page->title($L->blog_nav_page($page));
@@ -49,13 +70,17 @@ $from					= ($page - 1) * $num;
 $cdb					= $db->{$Config->module(MODULE)->db('posts')};
 $posts					= $cdb->qfa(
 	"SELECT `id`
-		FROM `[prefix]blogs_posts`
+		FROM `[prefix]blogs_posts_sections`
+		WHERE `section` = $section
 		ORDER BY `id` DESC
 		LIMIT $from, $num",
 	true
 );
+if (empty($posts)) {
+	return;
+}
 foreach ($posts as $post) {
-	$post	= $Blogs->get($post);
+	$post		= $Blogs->get($post);
 	$Index->content(
 		h::{'section.cs-blogs-post-latest article'}(
 			h::header(
@@ -119,7 +144,7 @@ $Index->content(
 	$posts ? h::{'nav.cs-center'}(
 		pages(
 			$page,
-			ceil($Blogs->get_total_count()/$num),
+			ceil($structure['posts']/$num),
 			function ($page) use ($module, $L) {
 				return $page == 1 ? $module.'/'.path($L->latest_posts) : $module.'/'.path($L->latest_posts).'/'.$page;
 			}
