@@ -17,7 +17,7 @@ if (!$User->is('user')) {
 	$Page->error_page();
 	return;
 }
-$columns = [
+$columns		= [
 	'login',
 	'username',
 	'language',
@@ -89,24 +89,25 @@ if (isset($_POST['user']) && $_POST['edit_settings'] == 'save') {
 }
 $Page->title($L->my_profile);
 $Page->title($L->settings);
+$Index->action	= path($L->profile).'/'.path($L->settings);
 switch (isset($Config->routing['current'][2]) ? $Config->routing['current'][2] : '') {
 	default:
-		$Page->content(
+		$Index->content(
 			h::{'a.cs-button'}(
 				$L->general,
 				[
-					'href'	=> $Index->action.'/general'
+					'href'	=> $Index->action.'/'.path($L->general)
 				]
 			).
 			h::{'a.cs-button'}(
 				$L->change_password,
 				[
-					'href'	=> $Index->action.'/change_password'
+					'href'	=> $Index->action.'/'.path($L->change_password)
 				]
 			)
 		);
 		$Core->run_trigger('System/profile/settings');
-		break;
+	break;
 	case 'general':
 		$user_data					= $User->get($columns);
 		unset($columns);

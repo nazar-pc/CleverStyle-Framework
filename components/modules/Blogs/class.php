@@ -56,6 +56,7 @@ class Blogs {
 				$data['title']								= $this->ml_process($data['title']);
 				$data['path']								= $this->ml_process($data['path']);
 				$data['content']							= $this->ml_process($data['content']);
+				$data['short_content']						= truncate(explode('<!-- pagebreak -->', $data['content'])[0]);
 				$data['sections']							= $db->{$this->posts}->qfa(
 					"SELECT `section`
 					FROM `[prefix]blogs_posts_sections`
@@ -68,10 +69,52 @@ class Blogs {
 					WHERE `id` = $id",
 					true
 				);
+				$data['comments_count']						= 0;
+				$data['comments']							= $this->get_comments($id, $data['comments_count']);
+				if (!$data['comments']) {
+					unset($data['comments']);
+				}
 				$Cache->{'Blogs/posts/'.$id.'/'.$L->clang}	= $data;
 			}
 		}
 		return $data;
+	}
+	/**
+	 * @param int			$id
+	 * @param int			&$count
+	 * @param int			$parent
+	 *
+	 * @return bool|array
+	 */
+	protected function get_comments ($id, &$count, $parent = 0) {
+		global $db;
+		$id			= (int)$id;
+		$parent		= (int)$parent;
+		$comments	= $db->{$this->comments}->qfa(
+			"SELECT
+				`id`,
+				`user`,
+				`date`,
+				`text`,
+				`lang`
+			FROM `[prefix]blogs_comments`
+			WHERE `parent` = $parent AND `post` = $id"
+		);
+		if (!$comments) {
+			return false;
+		}
+		foreach ($comments as &$comment) {
+			$count++;
+			$comment['text']			= $this->ml_process($comment['text']);
+			$comment['comments_count']	= 0;
+			$comment['comments']		= $this->get_comments($id, $comment['comments_count'], $comment['id']);
+			$count						+= $comment['comments_count'];
+			if (!$comment['comments']) {
+				unset($comment['comments']);
+			}
+		}
+		unset($comment);
+		return $comments;
 	}
 	/**
 	 * Add new post
@@ -226,7 +269,9 @@ class Blogs {
 			"DELETE FROM `[prefix]blogs_posts_sections`
 			WHERE `id` = $id",
 			"DELETE FROM `[prefix]blogs_posts_tags`
-			WHERE `id` = $id"
+			WHERE `id` = $id",
+			"DELETE FROM `[prefix]blogs_comments`
+			WHERE `post` = $id"
 		])) {
 			$this->ml_del('Blogs/posts/title', $id);
 			$this->ml_del('Blogs/posts/path', $id);
@@ -509,9 +554,9 @@ class Blogs {
 			return false;
 		}
 	}
-	private function ml_process ($text) {
+	private function ml_process ($text, $auto_translation = true) {
 		global $Text;
-		return $Text->process($this->posts, $text);
+		return $Text->process($this->posts, $text, $auto_translation);
 	}
 	private function ml_set ($group, $label, $text) {
 		global $Text;

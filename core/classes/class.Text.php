@@ -213,10 +213,11 @@ class Text {
 	 *
 	 * @param int					$database
 	 * @param string|string[]		$data
+	 * @param bool					$auto_translation
 	 *
 	 * @return bool|string|string[]
 	 */
-	function process ($database, $data) {
+	function process ($database, $data, $auto_translation = true) {
 		if (empty($data)) {
 			return '';
 		}
@@ -228,8 +229,8 @@ class Text {
 		}
 		return preg_replace_callback(
 			'/\{¶([0-9]+)\}/',
-			function ($input) use ($database) {
-				return $this->get($database, null, null, $input[1]);
+			function ($input) use ($database, $auto_translation) {
+				return $this->get($database, null, null, $input[1], $auto_translation);
 			},
 			$data
 		);

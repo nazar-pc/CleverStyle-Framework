@@ -5,7 +5,6 @@
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-var loading_interval, loading_angle = 0;
 function background() {
 	var height = document.body.clientHeight > window.innerHeight ? document.body.clientHeight : window.innerHeight,
 		num = Math.round(height/30);
@@ -23,9 +22,7 @@ function background() {
 			}
 		}
 		var bokehColour = temp1+','+temp2+','+temp3;
-		var element = $('<div>').addClass(
-			"cs-background"
-		).css({
+		var element = $('<div class="cs-background">').css({
 				'left'			: Math.floor(Math.random()*(window.innerWidth-size))+'px',
 				'top'			: Math.floor(Math.random()*(height-size))+'px',
 				'width': size+'px',
@@ -51,7 +48,7 @@ function background() {
 				'background': '-webkit-radial-gradient(contain, rgba('+bokehColour+', 0.7), rgba('+bokehColour+',0.3))'
 			});
 		}
-		element.appendTo('.cs-background');
+		element.appendTo('body');
 	}
 }
 $(function(){
@@ -65,9 +62,8 @@ $(function(){
 			'<div class="cs-n6></div>',
 			'<div class="cs-n7"></div>'
 		]),
-		'<div class="cs-header-zone"></div>',
-		'<div class="cs-background"></div>']
-	);
+		'<div class="cs-header-zone"></div>'
+	]);
 	var header_visible		= getcookie('header_visible'),
 		header_elements		= $('body > header > *'),
 		body				= $('#body'),
@@ -77,7 +73,7 @@ $(function(){
 		allow_enter			= false;
 	if (getcookie('header_visible') == 'hide') {
 		header_elements.css('margin-top', '-='+header_offset+'px');
-		body.css('padding-top', '20px');
+		body.css('margin-top', '-='+header_offset+'px');
 	} else {
 		header_visible = 'show';
 	}
@@ -96,7 +92,7 @@ $(function(){
 					setcookie('header_visible', header_visible);
 					header_move_allow = true;
 				});
-				body.animate({'paddingTop': '+='+header_offset+'px'}, header_delay);
+				body.animate({'marginTop': '+='+header_offset+'px'}, header_delay);
 			}
 		}
 	);
@@ -109,12 +105,12 @@ $(function(){
 					setcookie('header_visible', header_visible);
 					header_move_allow = true;
 				});
-				body.animate({'paddingTop': '-='+header_offset+'px'}, header_delay);
+				body.animate({'marginTop': '-='+header_offset+'px'}, header_delay);
 			}
 		}
 	);
 	$('.cs-loading > div').css('opacity', 1);
-	//background();
+	background();
 });
 $(window).load(
 	function(){

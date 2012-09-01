@@ -1504,10 +1504,7 @@ function keywords ($text) {
 function description ($text) {
 	return truncate(
 		strip_tags(
-			explode(
-				'<!-- pagebreak -->',
-				$text
-			)[0]
+			$text
 		),
 		512,
 		'...',

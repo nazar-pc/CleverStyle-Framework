@@ -9,6 +9,7 @@ body {
 	font-family : Tahoma, Verdana, sans-serif;
 	font-size   : 12px;
 	margin      : 0;
+	opacity    : .001;
 	padding     : 0;
 	width       : 100%;
 }

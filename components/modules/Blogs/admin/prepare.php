@@ -13,7 +13,7 @@ global $Core, $Index, $Page, $L, $Config;
 $Index->title_auto	= false;
 $Page->title($L->administration);
 $Page->title($L->{MODULE});
-$Page->css('components/modules/'.MODULE.'/includes/css/style.css');
+$Page->css('components/modules/'.MODULE.'/includes/css/admin.css');
 $rc					= $Config->routing['current'];
 $Page->menumore		= h::a(
 	[

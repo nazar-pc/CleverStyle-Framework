@@ -6,6 +6,7 @@
 	"_datetime_long"	: "l, d F Y, H:i",
 	"_datetime"			: "m.d.Y h:i a",
 	"_date"				: "m.d.Y",
+	"_time"				: "h:i a",
 
 //Common
 	"home"						: "Home",

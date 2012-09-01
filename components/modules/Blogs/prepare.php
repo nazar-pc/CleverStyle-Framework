@@ -10,6 +10,7 @@ namespace	cs\modules\Blogs;
 use			\h;
 global $Core, $Index, $Config, $L, $Page;
 $Index->title_auto	= false;
+$Page->css('components/modules/'.MODULE.'/includes/css/style.css');
 $rc					= &$Config->__get('routing')['current'];
 if (!isset($rc[0])) {
 	$rc[0]	= 'latest_posts';
@@ -70,4 +71,117 @@ function get_sections_select_post (&$disabled, $current = null, $structure = nul
 		}
 	}
 	return $list;
+}
+function get_posts_list ($posts, $module) {
+	global $Blogs, $L, $User;
+	$content	= [];
+	foreach ($posts as $post) {
+		$post		= $Blogs->get($post);
+		$content[]	= h::header(
+			h::{'h1 a'}(
+				$post['title'],
+				[
+					'href'	=> $module.'/'.$post['path'].':'.$post['id']
+				]
+			).
+			($post['sections'] != [0] ? h::p(
+				$L->sections.':'.
+				h::a(
+					array_map(
+						function ($section) use ($Blogs, $L, $module) {
+							$section	= $Blogs->get_section($section);
+							return [
+								$section['title'],
+								[
+									'href'	=> $module.'/'.path($L->section).'/'.$section['full_path']
+								]
+							];
+						},
+						$post['sections']
+					)
+				)
+			) : '')
+		).
+		$post['short_content']."\n".
+		h::footer(
+			h::hr().
+			h::p(
+				h::time(
+					$L->to_locale(date($L->_datetime_long, $post['date'])),
+					[
+						'datetime'		=> date('c', $post['date']),
+						//'pubdate'//TODO wait while "pubdate" it will be standartized by W3C
+					]
+				).
+				' | '.
+				h::a(
+					$User->get_username($post['user']),
+					[
+						'href'			=> path($L->profile).'/'.$User->get('login', $post['user']),
+						'rel'			=> 'author',
+						'data-title'	=> $L->author
+					]
+				).
+				' | '.
+				h::a(
+					h::icon('comment').$post['comments_count'],
+					[
+						'href'			=> $module.'/'.$post['path'].':'.$post['id'].'#comments',
+						'data-title'	=> $L->comments
+					]
+				).
+				' | '.
+				h::a(
+					$L->read_more,
+					[
+						'href'			=> $module.'/'.$post['path'].':'.$post['id']
+					]
+				)
+			)
+		);
+	}
+	return h::article($content);
+}
+function get_comments_tree ($comments, $post, $module) {
+	global	$User, $L;
+	$content	= '';
+	foreach ($comments as $comment) {
+		$content	.= h::{'article.cs-blogs-comment'}(
+			h::{'img.cs-blogs-comment-avatar'}([
+				'src'	=> $User->avatar ? h::url($User->avatar, true) : 'includes/img/guest.gif',
+				'alt'	=> $User->get_username($comment['user']),
+				'title'	=> $User->get_username($comment['user'])
+			]).
+			h::{'a.cs-blogs-comment-author'}(
+				$User->get_username($comment['user']),
+				[
+					'href'			=> path($L->profile).'/'.$User->get('login', $comment['user']),
+					'rel'			=> 'author'
+				]
+			).
+			h::{'time.cs-blogs-comment-date'}(
+				date('dmY', TIME) == date('dmY', $comment['date']) ? date($L->_time, $comment['date']) : $L->to_locale(date($L->_datetime, $comment['date'])),
+				[
+					'datetime'		=> date('c', $comment['date']),
+					//'pubdate'//TODO wait while "pubdate" it will be standartized by W3C
+				]
+			).
+			h::{'a.cs-blogs-comment-hash'}(
+				'#',
+				[
+					'href'	=> $module.'/'.$post['path'].':'.$post['id'].'#comment_'.$comment['id']
+				]
+			).
+			h::{'div.cs-blogs-comment-text'}(
+				$comment['text']
+			).
+			(
+				$comment['comments_count'] ? get_comments_tree($comment['comments'], $post, $module) : ''
+			),
+			[
+				'id'	=> '#comment_'.$comment['id']
+			]
+		);
+	}
+	return $content;
 }

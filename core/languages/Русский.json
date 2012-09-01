@@ -6,6 +6,7 @@
 	"_datetime_long"	: "l, d F Y, H:i",
 	"_datetime"			: "d.m.Y H:i",
 	"_date"				: "d.m.Y",
+	"_time"				: "H:i",
 
 //Common
 	"home"						: "Главная",

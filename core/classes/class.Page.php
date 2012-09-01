@@ -176,7 +176,7 @@ class Page {
 	 * Processing of template, substituting of content, preparing for the output
 	 */
 	protected function prepare () {
-		global $Config;
+		global $Config, $L;
 		/**
 		 * Loading of template
 		 */
@@ -224,6 +224,10 @@ class Page {
 			h::meta(
 				[
 					'charset'	=> 'utf-8'
+				],
+				[
+					'name'		=> 'Content-language',
+					'content'	=> $L->clang
 				],
 				[
 					'name'		=> 'keywords',
@@ -812,14 +816,14 @@ class Page {
 				h::a(
 					$L->profile,
 					[
-						'href'	=> '/profile/'.$User->login
+						'href'	=> '/'.path($L->profile).'/'.$User->login
 					]
 				).
 				'|'.
 				h::a(
 					$L->settings,
 					[
-						'href'	=> '/profile/settings'
+						'href'	=> '/'.path($L->profile).'/'.path($L->settings)
 					]
 				)
 			);

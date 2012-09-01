@@ -23,7 +23,7 @@ if (!$post || $post['path'] != mb_substr($rc[1], 0, mb_strrpos($rc[1], ':'))) {
 $module				= path($L->{MODULE});
 $Page->title($post['title']);
 $Page->Keywords		= keywords($post['title']).'. '.$Page->Keywords;
-$Page->Description	= description($post['content']);
+$Page->Description	= description($post['short_content']);
 $Index->content(
 	h::{'section.cs-blogs-post article'}(
 		h::header(
@@ -100,7 +100,7 @@ $Index->content(
 				h::time(
 					$L->to_locale(date($L->_datetime_long, $post['date'])),
 					[
-						'datetime'	=> date('c', $post['date']),
+						'datetime'		=> date('c', $post['date']),
 						//'pubdate'//TODO wait while "pubdate" it will be standartized by W3C
 					]
 				).
@@ -108,12 +108,23 @@ $Index->content(
 				h::a(
 					$User->get_username($post['user']),
 					[
-						'href'	=> 'profile/'.$User->get('login', $post['user']),
-						'rel'	=> 'author',
-						'title'	=> $L->author
+						'href'			=> path($L->profile).'/'.$User->get('login', $post['user']),
+						'rel'			=> 'author',
+						'data-title'	=> $L->author
 					]
-				)
+				).
+				' | '.
+				h::icon('comment').$post['comments_count']
 			)
+		)
+	).
+	h::{'section#comments.cs-blogs-comments'}(
+		$L->comments.':'.
+		H::br(2).
+		(
+			!$post['comments_count'] ? h::article(
+				$L->no_comments_yet
+			) : get_comments_tree($post['comments'], $post, $module)
 		)
 	)
 );

@@ -5,10 +5,21 @@
  * @license		MIT License, see license.txt
  */
 $(function() {
-	$.setTemplateLayout();
-	$('link[type="text/css"]').each(function () {
+	$.each($('link[type="text/css"]'), function () {
 		$.setTemplateLayout($(this).attr('href'));
 	});
+	setTimeout(
+		function () {
+			$('body').animate(
+				{
+					'opacity'	: 1
+				},
+				50,
+				'linear'
+			);
+		},
+		100
+	);
 	if (
 		($.browser.msie && $.browser.version < 10) ||
 		($.browser.opera && $.browser.version < 11.1) ||
