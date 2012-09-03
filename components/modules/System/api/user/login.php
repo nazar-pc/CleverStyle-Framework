@@ -55,7 +55,7 @@ if (
 	)) {
 		$Page->content($random_hash);
 	} else {
-		$Page->content($L->auth_error_server);
+		$Page->content($L->auth_server_error);
 	}
 	unset($random_hash);
 /**

@@ -159,12 +159,14 @@ function storage_test (url, added) {
  * @param position
  */
 function blocks_toggle (position) {
-	if ($('#'+position+'_blocks_items').attr('data-mode') == 'open') {
-		$('#'+position+'_blocks_items > li:not(.ui-state-disabled)').slideUp('fast');
-		$('#'+position+'_blocks_items').attr('data-mode', 'close');
+	var	items		= $('#'+position+'_blocks_items'),
+		disabled	= $('#'+position+'_blocks_items > li:not(.ui-state-disabled)');
+	if (items.attr('data-mode') == 'open') {
+		disabled.slideUp('fast');
+		items.attr('data-mode', 'close');
 	} else {
-		$('#'+position+'_blocks_items > li:not(.ui-state-disabled)').slideDown('fast');
-		$('#'+position+'_blocks_items').attr('data-mode', 'open');
+		disabled.slideDown('fast');
+		items.attr('data-mode', 'open');
 	}
 }
 /**
@@ -260,7 +262,7 @@ function login (login, password) {
 								}
 							},
 							error	: function() {
-								alert(auth_error_connection);
+								alert(L.auth_connection_error);
 							}
 						}
 					);
@@ -271,7 +273,7 @@ function login (login, password) {
 				}
 			},
 			error	: function() {
-				alert(auth_error_connection);
+				alert(L.auth_connection_error);
 			}
 		}
 	);
@@ -291,7 +293,7 @@ function logout () {
 				location.reload();
 			},
 			error	: function() {
-				alert(auth_error_connection);
+				alert(L.auth_connection_error);
 			}
 		}
 	);
@@ -303,7 +305,7 @@ function logout () {
  */
 function registration (email) {
 	if (!email) {
-		alert(please_type_your_email);
+		alert(L.please_type_your_email);
 		return;
 	}
 	$.ajax(
@@ -315,7 +317,7 @@ function registration (email) {
 			},
 			success	: function(result) {
 				if (result == 'reg_confirmation') {
-					$('<div>'+reg_confirmation+'</div>')
+					$('<div>'+L.reg_confirmation+'</div>')
 						.appendTo('body')
 						.dialog({
 							autoOpen	: true,
@@ -327,7 +329,7 @@ function registration (email) {
 							}
 						});
 				} else if (result == 'reg_success') {
-					$('<div>'+reg_success+'</div>')
+					$('<div>'+L.reg_success+'</div>')
 						.appendTo('body')
 						.dialog({
 							autoOpen	: true,
@@ -343,14 +345,14 @@ function registration (email) {
 				}
 			},
 			error	: function() {
-				alert(reg_error_connection);
+				alert(L.reg_connection_error);
 			}
 		}
 	);
 }
 function restore_password (email) {
 	if (!email) {
-		alert(please_type_your_email);
+		alert(L.please_type_your_email);
 		return;
 	}
 	$.ajax(
@@ -362,7 +364,7 @@ function restore_password (email) {
 			},
 			success	: function(result) {
 				if (result == 'OK') {
-					$('<div>'+restore_password_confirmation+'</div>')
+					$('<div>'+L.restore_password_confirmation+'</div>')
 						.appendTo('body')
 						.dialog({
 							autoOpen	: true,
@@ -378,7 +380,7 @@ function restore_password (email) {
 				}
 			},
 			error	: function() {
-				alert(reg_error_connection);
+				alert(L.reg_connection_error);
 			}
 		}
 	);
@@ -391,13 +393,13 @@ function restore_password (email) {
  */
 function change_password (current_password, new_password) {
 	if (!current_password) {
-		alert(please_type_current_password);
+		alert(L.please_type_current_password);
 		return;
 	} else if (!new_password) {
-		alert(please_type_new_password);
+		alert(L.please_type_new_password);
 		return;
 	} else if (current_password == new_password) {
-		alert(current_new_password_equal);
+		alert(L.current_new_password_equal);
 		return;
 	}
 	current_password	= hash('sha512', hash('sha512', current_password)+public_key);
@@ -412,13 +414,13 @@ function change_password (current_password, new_password) {
 			},
 			success	: function(result) {
 				if (result == 'OK') {
-					alert(password_changed_successfully);
+					alert(L.password_changed_successfully);
 				} else {
 					alert(result);
 				}
 			},
 			error	: function() {
-				alert(password_changing_error_connection);
+				alert(L.password_changing_connection_error);
 			}
 		}
 	);

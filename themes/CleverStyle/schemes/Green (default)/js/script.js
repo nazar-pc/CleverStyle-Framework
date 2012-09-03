@@ -31,7 +31,7 @@ function background() {
 				'border': '1px solid rgba('+bokehColour+', 0.5)',
 				'overflow': 'hidden'
 		});
-		if ($.browser.msie) {//TODO new gradient rules CSS3
+		if ($.browser.msie) {
 			element.css({
 				'background': '-ms-radial-gradient(contain, rgba('+bokehColour+', 0.7), rgba('+bokehColour+',0.3))'
 			});

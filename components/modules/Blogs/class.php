@@ -32,10 +32,11 @@ class Blogs {
 	 * Get data of specified post
 	 *
 	 * @param int			$id
+	 * @param bool			$comments	Get comments structure, or not. Comments count will be returned anyway
 	 *
 	 * @return array|bool
 	 */
-	function get ($id) {
+	function get ($id, $comments = false) {
 		global $db, $Cache, $L;
 		$id	= (int)$id;
 		if (($data = $Cache->{'Blogs/posts/'.$id.'/'.$L->clang}) === false) {
@@ -69,52 +70,24 @@ class Blogs {
 					WHERE `id` = $id",
 					true
 				);
-				$data['comments_count']						= 0;
-				$data['comments']							= $this->get_comments($id, $data['comments_count']);
-				if (!$data['comments']) {
-					unset($data['comments']);
-				}
+				$data['comments_count']						= (int)$db->{$this->comments}->qf(
+					[
+						"SELECT COUNT(`id`)
+						FROM `[prefix]blogs_comments`
+						WHERE
+							`post`	= $id AND
+							`lang`	= '%s'",
+						$L->clang
+					],
+					true
+				);
 				$Cache->{'Blogs/posts/'.$id.'/'.$L->clang}	= $data;
 			}
 		}
+		if ($comments) {
+			$data['comments']	= $this->get_comments($id);
+		}
 		return $data;
-	}
-	/**
-	 * @param int			$id
-	 * @param int			&$count
-	 * @param int			$parent
-	 *
-	 * @return bool|array
-	 */
-	protected function get_comments ($id, &$count, $parent = 0) {
-		global $db;
-		$id			= (int)$id;
-		$parent		= (int)$parent;
-		$comments	= $db->{$this->comments}->qfa(
-			"SELECT
-				`id`,
-				`user`,
-				`date`,
-				`text`,
-				`lang`
-			FROM `[prefix]blogs_comments`
-			WHERE `parent` = $parent AND `post` = $id"
-		);
-		if (!$comments) {
-			return false;
-		}
-		foreach ($comments as &$comment) {
-			$count++;
-			$comment['text']			= $this->ml_process($comment['text']);
-			$comment['comments_count']	= 0;
-			$comment['comments']		= $this->get_comments($id, $comment['comments_count'], $comment['id']);
-			$count						+= $comment['comments_count'];
-			if (!$comment['comments']) {
-				unset($comment['comments']);
-			}
-		}
-		unset($comment);
-		return $comments;
 	}
 	/**
 	 * Add new post
@@ -629,7 +602,7 @@ class Blogs {
 				VALUES
 					('')"
 			)) {
-				$id	= $db->{$this->posts}()->id();define('x', 1);
+				$id	= $db->{$this->posts}()->id();
 				if ($db->{$this->posts}()->q(
 					"UPDATE `[prefix]blogs_tags`
 					SET `text` = '%s'
@@ -659,8 +632,8 @@ class Blogs {
 	 * @param int	$id
 	 *
 	 * @return bool
-	 */
-	/*private function del_tag ($id) {
+	 * /
+	private function del_tag ($id) {
 		global $db, $Cache;
 		$id	= (int)$id;
 		if ($db->{$this->posts}()->q(
@@ -705,6 +678,199 @@ class Blogs {
 			unset($Cache->{'Blogs/tags'});
 		}
 		return array_values(array_unique($tags));
+	}
+	/**
+	 * Get comments of specified post
+	 *
+	 * @param int			$id		Post id
+	 * @param int			$parent
+	 *
+	 * @return bool|array
+	 */
+	protected function get_comments ($id, $parent = 0) {
+		global $db, $Cache, $L;
+		if ($parent != 0 || ($comments = $Cache->{'Blogs/posts/'.$id.'/comments/'.$L->clang}) === false) {
+			$id											= (int)$id;
+			$parent										= (int)$parent;
+			$comments									= $db->{$this->comments}->qfa([
+				"SELECT
+					`id`,
+					`parent`,
+					`user`,
+					`date`,
+					`text`,
+					`lang`
+				FROM `[prefix]blogs_comments`
+				WHERE
+					`parent`	= $parent AND
+					`post`		= $id AND
+					`lang`		= '%s'",
+				$L->clang
+			]);
+			if ($comments) {
+				foreach ($comments as &$comment) {
+					$comment['comments']	= $this->get_comments($id, $comment['id']);
+				}
+				unset($comment);
+			}
+			if ($parent == 0) {
+				$Cache->{'Blogs/posts/'.$id.'/comments/'.$L->clang}	= $comments;
+			}
+		}
+		return $comments;
+	}
+	/**
+	 * Get comment data
+	 *
+	 * @param int			$id Comment id
+	 *
+	 * @return array|bool		Array of comment data on success or <b>false</b> on failure
+	 */
+	function get_comment ($id) {
+		global $db;
+		$id	= (int)$id;
+		return $db->{$this->comments}->qf(
+			"SELECT
+				`id`,
+				`parent`,
+				`post`,
+				`user`,
+				`date`,
+				`text`,
+				`lang`
+			FROM `[prefix]blogs_comments`
+			WHERE `id` = $id
+			LIMIT 1"
+		);
+	}
+	/**
+	 * Add new comment
+	 *
+	 * @param int			$post	Post id
+	 * @param string		$text	Comment text
+	 * @param int			$parent	Parent comment id
+	 *
+	 * @return array|bool			Array of comment data on success or <b>false</b> on failure
+	 */
+	function add_comment ($post, $text, $parent = 0) {
+		global $db, $Cache, $L, $User;
+		$text	= xap($text, true);
+		if (!$text) {
+			return false;
+		}
+		$post	= (int)$post;
+		$parent	= (int)$parent;
+		if (
+			$parent != 0 &&
+			$db->{$this->comments}()->qf(
+				"SELECT `post`
+				FROM `[prefix]blogs_comments`
+				WHERE `id` = $parent
+				LIMIT 1",
+				true
+			) != $post
+		) {
+			return false;
+		}
+		if ($db->{$this->comments}()->q(
+			"INSERT INTO `[prefix]blogs_comments`
+				(`parent`, `post`, `user`, `date`, `text`, `lang`)
+			VALUES
+				('%s', '%s', '%s', '%s', '%s', '%s')",
+			$parent,
+			$post,
+			$User->id,
+			TIME,
+			$text,
+			$L->clang
+		)) {
+			unset($Cache->{'Blogs/posts/'.$post.'/comments'});
+			return [
+				'id'		=> $db->{$this->comments}()->id(),
+				'parent'	=> $parent,
+				'post'		=> $post,
+				'user'		=> $User->id,
+				'date'		=> TIME,
+				'text'		=> $text,
+				'lang'		=> $L->clang
+			];
+		}
+		return false;
+	}
+	/**
+	 * Set comment text
+	 *
+	 * @param int			$id		Comment id
+	 * @param string		$text	New comment text
+	 *
+	 * @return array|bool			Array of comment data on success or <b>false</b> on failure
+	 */
+	function set_comment ($id, $text) {
+		global $db, $Cache;
+		$text	= xap($text, true);
+		if (!$text) {
+			return false;
+		}
+		$id				= (int)$id;
+		$comment		= $db->{$this->comments}()->qf(
+			"SELECT
+				`id`,
+				`parent`,
+				`post`,
+				`user`,
+				`date`,
+				`lang`
+			FROM `[prefix]blogs_comments`
+			WHERE `id` = $id
+			LIMIT 1"
+		);
+		if (!$comment) {
+			return false;
+		}
+		if ($db->{$this->comments}()->q(
+			"UPDATE `[prefix]blogs_comments`
+			SET `text` = '%s'
+			WHERE `id` = $id
+			LIMIT 1",
+			$text
+		)) {
+			unset($Cache->{'Blogs/posts/'.$comment['post'].'/comments'});
+			$comment['text']	= $text;
+			return $comment;
+		}
+		return false;
+	}
+	/**
+	 * Delete comment
+	 *
+	 * @param int	$id	Comment id
+	 *
+	 * @return bool
+	 */
+	function del_comment ($id) {
+		global $db, $Cache;
+		$id				= (int)$id;
+		$comment		= $db->{$this->comments}()->qf(
+			"SELECT `p`.`post`, COUNT(`c`.`id`) AS `count`
+			FROM `[prefix]blogs_comments` AS `p` LEFT OUTER JOIN `[prefix]blogs_comments` AS `c`
+			ON `p`.`id` = `c`.`parent`
+			WHERE `p`.`id` = $id
+			LIMIT 1",
+			true
+		);
+		if (!$comment || $comment['count']) {
+			return false;
+		}
+		if ($db->{$this->comments}()->qf(
+			"DELETE FROM `[prefix]blogs_comments`
+			WHERE `id` = $id
+			LIMIT 1",
+			true
+		)) {
+			unset($Cache->{'Blogs/posts/'.$comment['post']});
+			return true;
+		}
+		return false;
 	}
 }
 /**

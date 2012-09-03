@@ -52,6 +52,7 @@ class Page {
 				$core_css	= [0 => '', 1 => ''],
 				$js			= [0 => '', 1 => ''],
 				$css		= [0 => '', 1 => ''],
+				$link		= [],
 				$Search		= [],
 				$Replace	= [];
 	/**
@@ -156,7 +157,7 @@ class Page {
 					!(
 						is_object($User) && $User->is('admin')
 					) &&
-					error_header(503) &&
+					code_header(503) &&
 					!(
 						_include_once(THEMES.'/'.$this->theme.'/closed.php', false) || _include_once(THEMES.'/'.$this->theme.'/closed.html', false)
 					)
@@ -223,41 +224,42 @@ class Page {
 		$this->Head =	h::title($this->Title).
 			h::meta(
 				[
-					'charset'	=> 'utf-8'
+					'charset'		=> 'utf-8'
 				],
 				[
-					'name'		=> 'Content-language',
-					'content'	=> $L->clang
+					'name'			=> 'keywords',
+					'content'		=> $this->Keywords
 				],
 				[
-					'name'		=> 'keywords',
-					'content'	=> $this->Keywords
+					'name'			=> 'description',
+					'content'		=> $this->Description
 				],
 				[
-					'name'		=> 'description',
-					'content'	=> $this->Description
-				],
-				[
-					'name'		=> 'generator',
-					'content'	=> base64_decode('Q2xldmVyU3R5bGUgQ01TIGJ5IE1va3J5bnNreWkgTmF6YXI=')
+					'name'			=> 'generator',
+					'content'		=> base64_decode('Q2xldmVyU3R5bGUgQ01TIGJ5IE1va3J5bnNreWkgTmF6YXI=')
 				],
 				ADMIN || API ? [
-					'name'		=> 'robots',
-					'content'	=> 'noindex,nofollow'
+					'name'			=> 'robots',
+					'content'		=> 'noindex,nofollow'
 				] : false
 			).
-			h::link([
-					'rel'		=> 'shortcut icon',
-					'href'		=> file_exists(THEMES.'/'.$this->theme.'/'.$this->color_scheme.'/'.'img/favicon.ico') ?
-									'themes/'.$this->theme.'/'.$this->color_scheme.'/img/favicon.ico' :
-									file_exists(THEMES.'/'.$this->theme.'/img/favicon.ico') ?
-									'themes/'.$this->theme.'/img/favicon.ico' :
-									'includes/img/favicon.ico'
-			]).
 			h::base(is_object($Config) ? [
 				'href' => $Config->server['base_url']
 			] : false).
 			$this->Head.
+			h::link(
+				[
+					[
+						'rel'		=> 'shortcut icon',
+						'href'		=> file_exists(THEMES.'/'.$this->theme.'/'.$this->color_scheme.'/'.'img/favicon.ico') ?
+										'themes/'.$this->theme.'/'.$this->color_scheme.'/img/favicon.ico' :
+										file_exists(THEMES.'/'.$this->theme.'/img/favicon.ico') ?
+										'themes/'.$this->theme.'/img/favicon.ico' :
+										'includes/img/favicon.ico'
+					]
+				],
+				$this->link ?: false
+			).
 			implode('', $this->core_css).
 			implode('', $this->css).
 			implode('', $this->core_js).
@@ -418,6 +420,16 @@ class Page {
 		}
 	}
 	/**
+	 * Adding links
+	 *
+	 * @param array|bool	$data	According to h class syntax
+	 */
+	function link ($data) {
+		if ($data !== false) {
+			$this->link[]	= $data;
+		}
+	}
+	/**
 	 * Adding text to the title page
 	 *
 	 * @param string	$add
@@ -517,8 +529,8 @@ class Page {
 	/**
 	 * Rebuilding of JavaScript and CSS cache
 	 */
-	function rebuild_cache () {
-		global $Core;
+	protected function rebuild_cache () {
+		global $Core, $L;
 		$key	= '';
 		$Core->run_trigger(
 			'System/Page/rebuild_cache',
@@ -542,6 +554,9 @@ class Page {
 					$temp_cache .= $current_cache;
 					unset($current_cache);
 				}
+			}
+			if ($extension == 'js') {
+				$temp_cache	.= 'var L='.$L->get_json();
 			}
 			file_put_contents(PCACHE.'/'.$this->pcache_basename.$extension, gzencode($temp_cache, 9), LOCK_EX|FILE_BINARY);
 			$key .= md5($temp_cache);
@@ -780,7 +795,7 @@ class Page {
 	 */
 	function error_page () {
 		interface_off();
-		$error_text	= error_header(ERROR_PAGE);
+		$error_text	= code_header(ERROR_PAGE);
 		ob_start();
 		if (
 			!_include_once(THEMES.'/'.$this->theme.'/error.html', false) &&

@@ -42,5 +42,5 @@ if (
 ) {
 	$Page->content('OK');
 } else {
-	$Page->content($L->restore_password_error_server);
+	$Page->content($L->restore_password_server_error);
 }

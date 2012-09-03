@@ -685,9 +685,9 @@ class h {
 			return '';
 		}
 		if (!isset($data['style'])) {
-			$data['style'] = 'display: inline-block;';
+			$data['style'] = 'display: inline-block; margin-bottom: -2px;';
 		} else {
-			$data['style'] .= ' display: inline-block;';
+			$data['style'] .= ' display: inline-block; margin-bottom: -2px;';
 		}
 		if (!isset($data['class'])) {
 			$data['class'] = 'ui-icon ui-icon-'.$class;

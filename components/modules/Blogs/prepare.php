@@ -8,180 +8,199 @@
  */
 namespace	cs\modules\Blogs;
 use			\h;
-global $Core, $Index, $Config, $L, $Page;
-$Index->title_auto	= false;
-$Page->css('components/modules/'.MODULE.'/includes/css/style.css');
-$rc					= &$Config->__get('routing')['current'];
-if (!isset($rc[0])) {
-	$rc[0]	= 'latest_posts';
-}
-switch ($rc[0]) {
-	case path($L->latest_posts):
+if (!API) {
+	global $Core, $Index, $Config, $L, $Page;
+	$Index->title_auto	= false;
+	$Page->css('components/modules/'.MODULE.'/includes/css/general.css');
+	$Page->js([
+		'components/modules/'.MODULE.'/includes/js/general.js',
+		'components/modules/'.MODULE.'/includes/js/functions.js'
+	]);
+	$rc					= &$Config->__get('routing')['current'];
+	if (!isset($rc[0])) {
 		$rc[0]	= 'latest_posts';
-	break;
-	case path($L->section):
-		$rc[0]	= 'section';
-	break;
-	case path($L->tag):
-		$rc[0]	= 'tag';
-	break;
-	case path($L->new_post):
-		$rc[0]	= 'new_post';
-	break;
-	default:
-		if (mb_strpos($rc[0], ':')) {
-			array_unshift($rc, 'post');
+	}
+	switch ($rc[0]) {
+		case path($L->latest_posts):
+			$rc[0]	= 'latest_posts';
+		break;
+		case path($L->section):
+			$rc[0]	= 'section';
+		break;
+		case path($L->tag):
+			$rc[0]	= 'tag';
+		break;
+		case path($L->new_post):
+			$rc[0]	= 'new_post';
+		break;
+		default:
+			if (mb_strpos($rc[0], ':')) {
+				array_unshift($rc, 'post');
+			} else {
+				define('ERROR_PAGE', 404);
+				return;
+			}
+		break;
+		case 'latest_posts':
+		case 'section':
+		case 'tag':
+		case 'new_post':
+		case 'edit_post':
+	}
+	$Page->title($L->{MODULE});
+	include_once MFOLDER.'/class.php';
+	$Core->create('cs\\modules\\Blogs\\Blogs');
+	function get_sections_select_post (&$disabled, $current = null, $structure = null, $level = 0) {
+		$list	= [
+			'in'	=> [],
+			'value'	=> []
+		];
+		if ($structure === null) {
+			global $Blogs, $L;
+			$structure			= $Blogs->get_sections_structure();
+			$list['in'][]		= $L->root_section;
+			$list['value'][]	= 0;
 		} else {
-			define('ERROR_PAGE', 404);
-			return;
+			if ($structure['id'] == $current) {
+				return $list;
+			}
+			$list['in'][]		= str_repeat('&nbsp;', $level).$structure['title'];
+			$list['value'][]	= $structure['id'];
 		}
-	break;
-	case 'latest_posts':
-	case 'section':
-	case 'tag':
-	case 'new_post':
-	case 'edit_post':
-}
-$Page->title($L->{MODULE});
-include_once MFOLDER.'/class.php';
-$Core->create('cs\\modules\\Blogs\\Blogs');
-function get_sections_select_post (&$disabled, $current = null, $structure = null, $level = 0) {
-	$list	= [
-		'in'	=> [],
-		'value'	=> []
-	];
-	if ($structure === null) {
-		global $Blogs, $L;
-		$structure			= $Blogs->get_sections_structure();
-		$list['in'][]		= $L->root_section;
-		$list['value'][]	= 0;
-	} else {
-		if ($structure['id'] == $current) {
-			return $list;
+		if (!empty($structure['sections'])) {
+			$disabled[]			= $structure['id'];
+			foreach ($structure['sections'] as $section) {
+				$tmp			= get_sections_select_post($disabled, $current, $section, $level+1);
+				$list['in']		= array_merge($list['in'], $tmp['in']);
+				$list['value']	= array_merge($list['value'], $tmp['value']);
+			}
 		}
-		$list['in'][]		= str_repeat('&nbsp;', $level).$structure['title'];
-		$list['value'][]	= $structure['id'];
+		return $list;
 	}
-	if (!empty($structure['sections'])) {
-		$disabled[]			= $structure['id'];
-		foreach ($structure['sections'] as $section) {
-			$tmp			= get_sections_select_post($disabled, $current, $section, $level+1);
-			$list['in']		= array_merge($list['in'], $tmp['in']);
-			$list['value']	= array_merge($list['value'], $tmp['value']);
-		}
-	}
-	return $list;
-}
-function get_posts_list ($posts, $module) {
-	global $Blogs, $L, $User;
-	$content	= [];
-	foreach ($posts as $post) {
-		$post		= $Blogs->get($post);
-		$content[]	= h::header(
-			h::{'h1 a'}(
-				$post['title'],
-				[
-					'href'	=> $module.'/'.$post['path'].':'.$post['id']
-				]
+	function get_posts_list ($posts, $module) {
+		global $Blogs, $L, $User;
+		$content	= [];
+		foreach ($posts as $post) {
+			$post		= $Blogs->get($post);
+			$content[]	= h::header(
+				h::{'h1 a'}(
+					$post['title'],
+					[
+						'href'	=> $module.'/'.$post['path'].':'.$post['id']
+					]
+				).
+				($post['sections'] != [0] ? h::p(
+					h::icon('suitcase').
+					implode(', ', array_map(
+							function ($section) use ($Blogs, $L, $module) {
+								$section	= $Blogs->get_section($section);
+								return h::a(
+									$section['title'],
+									[
+										'href'	=> $module.'/'.path($L->section).'/'.$section['full_path']
+									]
+								);
+							},
+							$post['sections']
+						)
+					)
+				) : '')
 			).
-			($post['sections'] != [0] ? h::p(
-				$L->sections.':'.
-				h::a(
-					array_map(
-						function ($section) use ($Blogs, $L, $module) {
-							$section	= $Blogs->get_section($section);
-							return [
-								$section['title'],
-								[
-									'href'	=> $module.'/'.path($L->section).'/'.$section['full_path']
-								]
-							];
-						},
-						$post['sections']
+			$post['short_content']."\n".
+			h::footer(
+				h::hr().
+				h::p(
+					h::time(
+						$L->to_locale(date($L->_datetime_long, $post['date'])),
+						[
+							'datetime'		=> date('c', $post['date']),
+							//'pubdate'//TODO wait while "pubdate" it will be standartized by W3C
+						]
+					).
+					h::a(
+						h::icon('person').$User->get_username($post['user']),
+						[
+							'href'			=> path($L->profile).'/'.$User->get('login', $post['user']),
+							'rel'			=> 'author'
+						]
+					).
+					h::a(
+						h::icon('comment').$post['comments_count'],
+						[
+							'href'			=> $module.'/'.$post['path'].':'.$post['id'].'#comments'
+						]
+					).
+					h::a(
+						h::icon('note').$L->read_more,
+						[
+							'href'			=> $module.'/'.$post['path'].':'.$post['id']
+						]
 					)
 				)
-			) : '')
-		).
-		$post['short_content']."\n".
-		h::footer(
-			h::hr().
-			h::p(
-				h::time(
-					$L->to_locale(date($L->_datetime_long, $post['date'])),
+			);
+		}
+		return h::article($content);
+	}
+}
+function get_comments_tree ($comments, $post, $module = null) {
+	global	$User, $L;
+	if ($module === null) {
+		$module	= path($L->{MODULE});
+	}
+	$content	= '';
+	if (is_array($comments) && !empty($comments)) {
+		foreach ($comments as $comment) {
+			$content	.= h::{'article.cs-blogs-comment'}(
+				h::a(
+					h::{'img.cs-blogs-comment-avatar'}([
+						'src'	=> $User->avatar ? h::url($User->avatar, true) : 'includes/img/guest.gif',
+						'alt'	=> $User->get_username($comment['user']),
+						'title'	=> $User->get_username($comment['user'])
+					]),
 					[
-						'datetime'		=> date('c', $post['date']),
+						'href'			=> path($L->profile).'/'.$User->get('login', $comment['user']),
+						'rel'			=> 'author'
+					]
+				).
+				h::{'a.cs-blogs-comment-author'}(
+					$User->get_username($comment['user']),
+					[
+						'href'			=> path($L->profile).'/'.$User->get('login', $comment['user']),
+						'rel'			=> 'author'
+					]
+				).
+				h::{'time.cs-blogs-comment-date'}(
+					date('dmY', TIME) == date('dmY', $comment['date']) ? date($L->_time, $comment['date']) : $L->to_locale(date($L->_datetime, $comment['date'])),
+					[
+						'datetime'		=> date('c', $comment['date']),
 						//'pubdate'//TODO wait while "pubdate" it will be standartized by W3C
 					]
 				).
-				' | '.
-				h::a(
-					$User->get_username($post['user']),
+				h::{'a.cs-blogs-comment-link'}(
+					h::icon('link'),
 					[
-						'href'			=> path($L->profile).'/'.$User->get('login', $post['user']),
-						'rel'			=> 'author',
-						'data-title'	=> $L->author
+						'href'	=> $module.'/'.$post['path'].':'.$post['id'].'#comment_'.$comment['id']
 					]
 				).
-				' | '.
-				h::a(
-					h::icon('comment').$post['comments_count'],
-					[
-						'href'			=> $module.'/'.$post['path'].':'.$post['id'].'#comments',
-						'data-title'	=> $L->comments
-					]
+				(
+					$comment['parent'] ? h::{'a.cs-blogs-comment-parent'}(
+						h::icon('arrowreturnthick-1-n'),
+						[
+							'href'	=> $module.'/'.$post['path'].':'.$post['id'].'#comment_'.$comment['parent']
+						]
+					) : ''
 				).
-				' | '.
-				h::a(
-					$L->read_more,
-					[
-						'href'			=> $module.'/'.$post['path'].':'.$post['id']
-					]
-				)
-			)
-		);
-	}
-	return h::article($content);
-}
-function get_comments_tree ($comments, $post, $module) {
-	global	$User, $L;
-	$content	= '';
-	foreach ($comments as $comment) {
-		$content	.= h::{'article.cs-blogs-comment'}(
-			h::{'img.cs-blogs-comment-avatar'}([
-				'src'	=> $User->avatar ? h::url($User->avatar, true) : 'includes/img/guest.gif',
-				'alt'	=> $User->get_username($comment['user']),
-				'title'	=> $User->get_username($comment['user'])
-			]).
-			h::{'a.cs-blogs-comment-author'}(
-				$User->get_username($comment['user']),
+				h::{'div.cs-blogs-comment-text'}(
+					$comment['text']
+				).
+				(
+					$comment['comments'] ? get_comments_tree($comment['comments'], $post, $module) : ''
+				),
 				[
-					'href'			=> path($L->profile).'/'.$User->get('login', $comment['user']),
-					'rel'			=> 'author'
+					'id'	=> 'comment_'.$comment['id']
 				]
-			).
-			h::{'time.cs-blogs-comment-date'}(
-				date('dmY', TIME) == date('dmY', $comment['date']) ? date($L->_time, $comment['date']) : $L->to_locale(date($L->_datetime, $comment['date'])),
-				[
-					'datetime'		=> date('c', $comment['date']),
-					//'pubdate'//TODO wait while "pubdate" it will be standartized by W3C
-				]
-			).
-			h::{'a.cs-blogs-comment-hash'}(
-				'#',
-				[
-					'href'	=> $module.'/'.$post['path'].':'.$post['id'].'#comment_'.$comment['id']
-				]
-			).
-			h::{'div.cs-blogs-comment-text'}(
-				$comment['text']
-			).
-			(
-				$comment['comments_count'] ? get_comments_tree($comment['comments'], $post, $module) : ''
-			),
-			[
-				'id'	=> '#comment_'.$comment['id']
-			]
-		);
+			);
+		}
 	}
 	return $content;
 }

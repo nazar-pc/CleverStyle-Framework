@@ -44,7 +44,7 @@ class Core {
 		}
 		$this->init	= true;
 		if (!file_exists(CONFIG.'/main.json')) {
-			error_header(404);
+			code_header(404);
 			$this->__finish();
 		}
 		$this->config	= _json_decode_nocomments(file_get_contents(CONFIG.'/main.json'));

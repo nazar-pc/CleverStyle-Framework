@@ -403,7 +403,7 @@ class Config {
 		}
 		$this->reload_themes();
 		$this->reload_languages();
-		$this->apply();
+		$this->apply_internal(false);
 		return true;
 	}
 	/**

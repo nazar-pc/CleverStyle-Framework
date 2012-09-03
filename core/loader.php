@@ -23,6 +23,7 @@ error_reporting(E_ALL);
 //error_reporting(0);
 
 header('Content-Type: text/html; charset=utf-8');
+header('Vary: Content-Language,User-Agent,Cookie');
 header('Connection: close');
 mb_internal_encoding('utf-8');
 

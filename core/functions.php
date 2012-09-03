@@ -1232,29 +1232,38 @@ function post_request ($host, $path, $data) {
 	return $return;
 }
 /**
- * Sends header with string representation of error code, for example "404 Not Found" for corresponding server protocol
+ * Sends header with string representation of http status code, for example "404 Not Found" for corresponding server protocol
  *
- * @param int $code Error code number
+ * @param int $code Status code number
  *
- * @return null|string String representation of error code
+ * @return null|string String representation of status code code
  */
-function error_header ($code) {
+function code_header ($code) {
 	$string_code = null;
 	switch ($code) {
+		case 301:
+			$string_code	= '301 Moved Permanently';
+		break;
+		case 302:
+			$string_code	= '302 Moved Temporarily';
+		break;
+		case 303:
+			$string_code	= '303 See Other';
+		break;
 		case 400:
-			$string_code = '400 Bad Request';
+			$string_code	= '400 Bad Request';
 		break;
 		case 403:
-			$string_code = '403 Forbidden';
+			$string_code	= '403 Forbidden';
 		break;
 		case 404:
-			$string_code = '404 Not Found';
+			$string_code	= '404 Not Found';
 		break;
 		case 500:
-			$string_code = '500 Internal Server Error';
+			$string_code	= '500 Internal Server Error';
 		break;
 		case 503:
-			$string_code = '503 Service Unavailable';
+			$string_code	= '503 Service Unavailable';
 		break;
 	}
 	if ($string_code) {
@@ -1520,13 +1529,15 @@ function description ($text) {
  * 										if <b>false</b> - only form parameter <i>page</i> will we added<br>
  * 										if string - it will be formatted with sprintf with one parameter - page number<br>
  * 										if Closure - one parameter will be given, Closure should return url string
+ * @param bool					$links	If <b>true</b> - links with rel="prev" and rel="next" will be added
  *
  * @return bool|string					<b>false</b> if single page, otherwise string, set of navigation buttons
  */
-function pages ($page, $total, $url = false) {
+function pages ($page, $total, $url = false, $links = false) {
 	if ($total == 1) {
 		return false;
 	}
+	global $Page;
 	$output	= [];
 	if ($total <= 11) {
 		for ($i = 1; $i <= $total; ++$i) {
@@ -1536,10 +1547,15 @@ function pages ($page, $total, $url = false) {
 					'formaction'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
 					'value'			=> $i,
 					'type'			=> $i == $page ? 'button' : 'submit',
-					'class'			=> $i == $page ? 'ui-selected' : false,
-					'rel'			=> $i == ($page - 1) ? 'prev' : ($i == ($page + 1) ? 'next' : false)
+					'class'			=> $i == $page ? 'ui-selected' : false
 				]
 			];
+			if ($links && $url !== false && ($i == $page - 1 || $i == $page + 1)) {
+				$Page->link([
+					'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+					'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
+				]);
+			}
 		}
 	} else {
 		if ($page <= 5) {
@@ -1550,10 +1566,15 @@ function pages ($page, $total, $url = false) {
 						'formaction'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
 						'value'			=> $i == $page ? false : $i,
 						'type'			=> $i == $page ? 'button' : 'submit',
-						'class'			=> $i == $page ? 'ui-selected' : false,
-						'rel'			=> $i == ($page - 1) ? 'prev' : ($i == ($page + 1) ? 'next' : false)
+						'class'			=> $i == $page ? 'ui-selected' : false
 					]
 				];
+				if ($links && $url !== false && ($i == $page - 1 || $i == $page + 1)) {
+					$Page->link([
+						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
+					]);
+				}
 			}
 			$output[]	= [
 				'...',
@@ -1597,10 +1618,15 @@ function pages ($page, $total, $url = false) {
 						'formaction'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
 						'value'			=> $i == $page ? false : $i,
 						'type'			=> $i == $page ? 'button' : 'submit',
-						'class'			=> $i == $page ? 'ui-selected' : false,
-						'rel'			=> $i == ($page - 1) ? 'prev' : ($i == ($page + 1) ? 'next' : false)
+						'class'			=> $i == $page ? 'ui-selected' : false
 					]
 				];
+				if ($links && $url !== false && ($i == $page - 1 || $i == $page + 1)) {
+					$Page->link([
+						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
+					]);
+				}
 			}
 		} else {
 			for ($i = 1; $i <= 2; ++$i) {
@@ -1627,10 +1653,15 @@ function pages ($page, $total, $url = false) {
 						'formaction'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
 						'value'			=> $i == $page ? false : $i,
 						'type'			=> $i == $page ? 'button' : 'submit',
-						'class'			=> $i == $page ? 'ui-selected' : false,
-						'rel'			=> $i == ($page - 1) ? 'prev' : ($i == ($page + 1) ? 'next' : false)
+						'class'			=> $i == $page ? 'ui-selected' : false
 					]
 				];
+				if ($links && $url !== false && ($i == $page - 1 || $i == $page + 1)) {
+					$Page->link([
+						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
+					]);
+				}
 			}
 			$output[]	= [
 				'...',

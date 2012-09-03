@@ -38,7 +38,7 @@ if ($result === false) {
 	sleep(1);
 	return;
 } elseif ($result == 'error') {
-	$Page->content($L->reg_error_server);
+	$Page->content($L->reg_server_error);
 	return;
 } elseif ($result == 'exists') {
 	$Page->content($L->reg_error_exists);

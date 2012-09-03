@@ -446,31 +446,12 @@ class Index {
 				'var	base_url = "'.$Config->server['base_url']."\",\n".
 				'	current_base_url = "'.$Config->server['base_url'].'/'.($this->admin ? 'admin/' : '').MODULE."\",\n".
 				'	public_key = "'.$Core->config('public_key')."\",\n".
-				'	yes = "'.$L->yes."\",\n".
-				'	no = "'.$L->no."\",\n".
 				($User->is('guest') ?
-					'	auth_error_connection = "'.$L->auth_error_connection."\",\n".
-					'	please_type_your_email = "'.$L->please_type_your_email."\",\n".
-					'	reg_success = "'.$L->reg_success."\",\n".
-					'	reg_confirmation = "'.$L->reg_confirmation."\",\n".
-					'	reg_error_connection = "'.$L->reg_error_connection."\",\n".
-					'	rules_agree = "'.$L->rules_agree."\",\n".
-					'	rules_text = "'.get_core_ml_text('rules')."\",\n".
-					'	restore_password_confirmation = "'.$L->restore_password_confirmation."\",\n"
+					'	rules_text = "'.get_core_ml_text('rules')."\",\n"
 				: '').
-				($User->is('user') ?
-					'	please_type_current_password = "'.$L->please_type_current_password."\",\n".
-					'	please_type_new_password = "'.$L->please_type_new_password."\",\n".
-					'	current_new_password_equal = "'.$L->current_new_password_equal."\",\n".
-					'	password_changed_successfully = "'.$L->password_changed_successfully."\",\n".
-					'	password_changing_error_connection = "'.$L->password_changing_error_connection."\",\n"
-				: '').
-				'	language = "'.$L->clanguage."\",\n".
-				'	language_en = "'.$L->clanguage_en."\",\n".
-				'	lang = "'.$L->clang."\",\n".
 				'	module = "'.MODULE."\",\n".
-				'	in_admin = '.(int)$this->admin.','.
-				'	debug = '.(int)(defined('DEBUG') && DEBUG).','.
+				'	in_admin = '.(int)$this->admin.",\n".
+				'	debug = '.(int)(defined('DEBUG') && DEBUG).",\n".
 				'	session_id = "'.$User->get_session()."\",\n".
 				'	cookie_prefix = "'.$Config->core['cookie_prefix']."\",\n".
 				'	cookie_domain = "'.$Config->core['cookie_domain']."\",\n".

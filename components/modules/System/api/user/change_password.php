@@ -33,5 +33,5 @@ if (
 if ($User->set('password_hash', $new_password)) {
 	$Page->content('OK');
 } else {
-	$Page->content($L->change_password_error_server);
+	$Page->content($L->change_password_server_error);
 }

@@ -11,9 +11,10 @@ use			\Closure;
  * Provides next triggers:<br>
  *  System/general/languages/load<code>
  *  [
- *   'clanguage'	=> <i>clanguage</i><br>
- *   'clang'		=> <i>clang</i><br>
- *   'clanguage_en'	=> <i>clanguage_en</i><br>
+ *   'clanguage'		=> <i>clanguage</i><br>
+ *   'clang'			=> <i>clang</i><br>
+ *   'clanguage_en'		=> <i>clanguage_en</i><br>
+ *   'content_language'	=> <i>content_language</i><br>
  *  ]</code>
  */
 class Language {
@@ -77,9 +78,10 @@ class Language {
 			$Core->run_trigger(
 				'System/general/languages/load',
 				[
-					'clanguage'		=> $this->clanguage,
-					'clang'			=> $this->clang,
-					'clanguage_en'	=> $this->clanguage_en
+					'clanguage'			=> $this->clanguage,
+					'clang'				=> $this->clang,
+					'clanguage_en'		=> $this->clanguage_en,
+					'content_language'	=> $this->content_language
 				]
 			);
 			$Cache->{'languages/'.$this->clanguage} = $this->translate;
@@ -186,7 +188,7 @@ class Language {
 			$this->clanguage = $language;
 			if ($translate = $Cache->{'languages/'.$this->clanguage}) {
 				$this->set($translate);
-				header('Content-language: '.$this->translate['clang']);
+				header('Content-Language: '.$this->translate['content_language']);
 				return true;
 			} elseif (file_exists(LANGUAGES.'/'.$this->clanguage.'.json')) {
 				$this->translate				= _json_decode_nocomments(file_get_contents(LANGUAGES.'/'.$this->clanguage.'.json'));
@@ -197,7 +199,7 @@ class Language {
 				if(!isset($this->translate['clanguage_en'])) {
 					$this->translate['clanguage_en']	= $this->clanguage;
 				}
-				header('Content-language: '.$this->translate['clang']);
+				header('Content-Language: '.$this->translate['content_language']);
 				$this->need_to_rebuild_cache	= true;
 				if ($this->init) {
 					$this->init($Config->core['active_languages'], $language);
@@ -334,6 +336,14 @@ class Language {
 			$data = str_replace($f, $this->get('l_'.$f), $data);
 		}
 		return $data;
+	}
+	/**
+	 * Get all translations in JSON format
+	 *
+	 * @return string
+	 */
+	function get_json () {
+		return _json_encode($this->translate);
 	}
 	/**
 	 * Cloning restriction

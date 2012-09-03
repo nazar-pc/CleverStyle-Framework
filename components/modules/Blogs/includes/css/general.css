@@ -1,0 +1,35 @@
+/**
+ * @package		Blogs
+ * @category	modules
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012 by Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+.cs-blogs-comment {
+	padding : 5px 5px 0 20px;
+}
+.cs-blogs-comment-avatar {
+	float  : left;
+	height : 36px;
+	margin : 0 5px 5px 0;
+	width  : 36px;
+}
+.cs-blogs-comment-link,
+.cs-blogs-comment-parent {
+	font-size : 0;
+	width     : 16px;
+}
+.cs-blogs-comment-text {
+	cursor: pointer;
+	min-height   : 24px;
+	padding-left : 41px;
+}
+.cs-blogs-comment-text > p:first-of-type {
+	margin-top : 5px;
+}
+.cs-blogs-comment-text > p:last-of-type {
+	margin-bottom : 0;
+}
+.cs-blogs-comment-write-text {
+	height : 200px;
+}

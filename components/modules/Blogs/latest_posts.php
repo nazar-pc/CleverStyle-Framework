@@ -19,8 +19,8 @@ if ($User->is('user')) {
 			h::{'a.cs-button-compact'}(
 				h::icon('wrench'),
 				[
-				'href'			=> 'admin/'.MODULE,
-				'data-title'	=> $L->administration
+					'href'			=> 'admin/'.MODULE,
+					'data-title'	=> $L->administration
 				]
 			)
 		);
@@ -70,7 +70,8 @@ $Index->content(
 				ceil($Blogs->get_total_count()/$num),
 				function ($page) use ($module, $L) {
 					return $page == 1 ? $module.'/'.path($L->latest_posts) : $module.'/'.path($L->latest_posts).'/'.$page;
-				}
+				},
+				true
 			)
 		) : ''
 	)

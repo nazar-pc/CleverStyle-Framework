@@ -15,12 +15,17 @@ if (!$post) {
 	define('ERROR_PAGE', 404);
 	return;
 }
-$post				= $Blogs->get($post);
-if (!$post || $post['path'] != mb_substr($rc[1], 0, mb_strrpos($rc[1], ':'))) {
+$post				= $Blogs->get($post, true);
+if (!$post) {
 	define('ERROR_PAGE', 404);
 	return;
 }
 $module				= path($L->{MODULE});
+if ($post['path'] != mb_substr($rc[1], 0, mb_strrpos($rc[1], ':'))) {
+	code_header(303);
+	header('Location: '.$Config->server['base_url'].'/'.$module.'/'.$post['path'].':'.$post['id']);
+	return;
+}
 $Page->title($post['title']);
 $Page->Keywords		= keywords($post['title']).'. '.$Page->Keywords;
 $Page->Description	= description($post['short_content']);
@@ -59,17 +64,16 @@ $Index->content(
 				)
 			).
 			($post['sections'] != [0] ? h::p(
-				$L->sections.':'.
-				h::a(
-					array_map(
+				h::icon('suitcase').
+				implode(', ', array_map(
 						function ($section) use ($Blogs, $L, $module) {
 							$section	= $Blogs->get_section($section);
-							return [
+							return h::a(
 								$section['title'],
 								[
 									'href'	=> $module.'/'.path($L->section).'/'.$section['full_path']
 								]
-							];
+							);
 						},
 						$post['sections']
 					)
@@ -79,17 +83,18 @@ $Index->content(
 		$post['content']."\n".
 		h::footer(
 			h::p(
-				$L->tags.':'.
-				h::a(
-					array_map(
+				h::icon(
+					'tag'
+				).
+				implode(', ', array_map(
 						function ($tag) use ($L, $module) {
-							return [
+							return h::a(
 								$tag,
 								[
 									'href'	=> $module.'/'.path($L->tag).'/'.$tag,
 									'rel'	=> 'tag'
 								]
-							];
+							);
 						},
 						$Blogs->get_tag($post['tags'])
 					)
@@ -104,27 +109,45 @@ $Index->content(
 						//'pubdate'//TODO wait while "pubdate" it will be standartized by W3C
 					]
 				).
-				' | '.
 				h::a(
-					$User->get_username($post['user']),
+					h::icon('person').$User->get_username($post['user']),
 					[
 						'href'			=> path($L->profile).'/'.$User->get('login', $post['user']),
-						'rel'			=> 'author',
-						'data-title'	=> $L->author
+						'rel'			=> 'author'
 					]
 				).
-				' | '.
 				h::icon('comment').$post['comments_count']
 			)
 		)
 	).
 	h::{'section#comments.cs-blogs-comments'}(
 		$L->comments.':'.
-		H::br(2).
 		(
-			!$post['comments_count'] ? h::article(
+			!$post['comments_count'] ? h::{'article.cs-blogs-no-comments'}(
 				$L->no_comments_yet
-			) : get_comments_tree($post['comments'], $post, $module)
+			) : get_comments_tree($post['comments'], $post)
 		)
+	).
+	h::p($L->add_comment.':').
+	(
+		$User->is('user') ? h::{'section.cs-blogs-comment-write'}(
+			h::{'textarea.cs-blogs-comment-write-text.SEDITOR'}(
+				'',
+				[
+					'data-post'		=> $post['id'],
+					'data-parent'	=> 0
+				]
+			).
+			h::br().
+			h::{'button.cs-blogs-comment-write-send'}(
+				$L->send_comment
+			).
+			h::{'button.cs-blogs-comment-write-cancel'}(
+				$L->cancel,
+				[
+					'style'	=>	'display: none'
+				]
+			)
+		) : h::p($L->register_for_comments_sending)
 	)
 );

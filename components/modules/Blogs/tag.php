@@ -123,7 +123,8 @@ $Index->content(
 				ceil($posts_count/$num),
 				function ($page) use ($module, $L) {
 					return $page == 1 ? $module.'/'.path($L->latest_posts) : $module.'/'.path($L->latest_posts).'/'.$page;
-				}
+				},
+				true
 			)
 		) : ''
 	)

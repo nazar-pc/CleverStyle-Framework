@@ -101,11 +101,12 @@ $(function() {
 		logout();
 	});
 	$('.cs-header-show-password').mousedown(function() {
-		if ($('.cs-header-user-password').prop('type') == 'password') {
-			$('.cs-header-user-password').prop('type', 'text');
+		var	password	= $('.cs-header-user-password');
+		if (password.prop('type') == 'password') {
+			password.prop('type', 'text');
 			$(this).addClass('ui-icon-unlocked').removeClass('ui-icon-locked');
 		} else {
-			$('.cs-header-user-password').prop('type', 'password');
+			password.prop('type', 'password');
 			$(this).addClass('ui-icon-locked').removeClass('ui-icon-unlocked');
 		}
 	});
@@ -120,39 +121,41 @@ $(function() {
 		}
 	});
 	$('#current_password').mousedown(function() {
-		if ($('.cs-profile-current-password').prop('type') == 'password') {
-			$('.cs-profile-current-password').prop('type', 'text');
+		var	password	= $('.cs-profile-current-password');
+		if (password.prop('type') == 'password') {
+			password.prop('type', 'text');
 			$(this).addClass('ui-icon-unlocked').removeClass('ui-icon-locked');
 		} else {
-			$('.cs-profile-current-password').prop('type', 'password');
+			password.prop('type', 'password');
 			$(this).addClass('ui-icon-locked').removeClass('ui-icon-unlocked');
 		}
 	});
 	$('#new_password').mousedown(function() {
-		if ($('.cs-profile-new-password').prop('type') == 'password') {
-			$('.cs-profile-new-password').prop('type', 'text');
+		var	password	= $('.cs-profile-new-password');
+		if (password.prop('type') == 'password') {
+			password.prop('type', 'text');
 			$(this).addClass('ui-icon-unlocked').removeClass('ui-icon-locked');
 		} else {
-			$('.cs-profile-new-password').prop('type', 'password');
+			password.prop('type', 'password');
 			$(this).addClass('ui-icon-locked').removeClass('ui-icon-unlocked');
 		}
 	});
 	$('.cs-header-register-process').mousedown(function() {
-		$('<div title="'+rules_agree+'">'+rules_text+'</div>')
+		$('<div title="'+L.rules_agree+'">'+rules_text+'</div>')
 			.appendTo('body')
 			.dialog({
 				autoOpen	: true,
 				modal		: true,
 				buttons		: [
 					{
-						text	: yes,
+						text	: L.yes,
 						click	: function () {
 							$(this).dialog('close');
 							registration($('.cs-header-registration-email').val());
 						}
 					},
 					{
-						text	: no,
+						text	: L.no,
 						click	: function () {
 							$(this).dialog('close');
 						}
@@ -225,9 +228,10 @@ $(function() {
 				return;
 			}
 			$('.cs-block-users-changed').removeClass('cs-block-users-changed').appendTo('#block_users_changed_permissions').each(function () {
-				var id = $(this).find(':radio:first').attr('name');
-				$('#block_users_search_found').val(
-					$('#block_users_search_found').val()+','+id.substring(6, id.length-1)
+				var	id		= $(this).find(':radio:first').attr('name'),
+					found	= $('#block_users_search_found');
+				found.val(
+					found.val()+','+id.substring(6, id.length-1)
 				);
 			});
 			$('#block_users_search_results').load(
