@@ -460,6 +460,12 @@ class Index {
 				'	routing = '._json_encode($Config->routing['current']).';',
 				'code'
 			);
+			if (!$Config->core['cache_compress_js_css']) {
+				$Page->js(
+					'var	L = '.$L->get_json().';',
+					'code'
+				);
+			}
 		}
 	}
 	/**

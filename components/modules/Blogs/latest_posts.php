@@ -50,7 +50,7 @@ $cdb					= $db->{$Config->module(MODULE)->db('posts')};
 $posts					= $cdb->qfa(
 	"SELECT `id`
 		FROM `[prefix]blogs_posts`
-		ORDER BY `id` DESC
+		ORDER BY `date` DESC
 		LIMIT $from, $num",
 	true
 );

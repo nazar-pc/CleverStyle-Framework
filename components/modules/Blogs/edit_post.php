@@ -16,23 +16,22 @@ if (
 	define('ERROR_PAGE', 404);
 	return;
 }
-if ($post['user'] != $User->id) {
+if (
+	$post['user'] != $User->id &&
+	!(
+		$User->is('admin') &&
+		$User->get_user_permission('admin/'.MODULE, 'index') &&
+		$User->get_user_permission('admin/'.MODULE, 'edit_post')
+	)
+) {
 	define('ERROR_PAGE', 403);
 	return;
 }
 $Page->title(
 	$L->editing_of_post($post['title'])
 );
-if (!$User->is('user')) {
-	$Page->warning($L->for_reistered_users_only);
-	return;
-}
 $module						= path($L->{MODULE});
-if (isset($_POST['id'], $_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags'], $_POST['mode'])) {
-	if ($Blogs->get($_POST['id'])['user'] != $User->id) {
-		define('ERROR_PAGE', 403);
-		return;
-	}
+if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags'], $_POST['mode'])) {
 	switch ($_POST['mode']) {
 		case 'save':
 			$save	= true;
@@ -53,9 +52,9 @@ if (isset($_POST['id'], $_POST['title'], $_POST['sections'], $_POST['content'], 
 				$save	= false;
 			}
 			if ($save) {
-				if ($Blogs->set($_POST['id'], $_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])))) {
+				if ($Blogs->set($post['id'], $_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])))) {
 					interface_off();
-					header('Location: '.$Config->server['base_url'].'/'.$L->{MODULE}.'/'.$Blogs->get($_POST['id'])['path'].':'.$_POST['id']);
+					header('Location: '.$Config->server['base_url'].'/'.$L->{MODULE}.'/'.$post['path'].':'.$post['id']);
 					return;
 				} else {
 					$Page->warning($L->post_saving_error);
@@ -63,7 +62,7 @@ if (isset($_POST['id'], $_POST['title'], $_POST['sections'], $_POST['content'], 
 			}
 		break;
 		case 'delete':
-			if ($Blogs->del($_POST['id'])) {
+			if ($Blogs->del($post['id'])) {
 				interface_off();
 				header('Location: '.$Config->server['base_url'].'/'.$L->{MODULE});
 				return;
@@ -128,9 +127,6 @@ $Index->content(
 			])
 		]
 	).
-	h::{'input[type=hidden][name=id]'}([
-		'value'	=> $post['id']
-	]).
 	h::{'button#cs-new-post-preview'}(//TODO make this button workable
 		$L->preview
 	).

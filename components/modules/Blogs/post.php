@@ -41,7 +41,7 @@ $Index->content(
 						[
 							h::icon('wrench'),
 							[
-								'href'			=> 'admin/'.MODULE.'/edit_post/'.$post['id'],
+								'href'			=> $module.'/edit_post/'.$post['id'],
 								'data-title'	=> $L->edit
 							]
 						],
@@ -135,12 +135,19 @@ $Index->content(
 				'',
 				[
 					'data-post'		=> $post['id'],
-					'data-parent'	=> 0
+					'data-parent'	=> 0,
+					'data-id'		=> 0
 				]
 			).
 			h::br().
 			h::{'button.cs-blogs-comment-write-send'}(
 				$L->send_comment
+			).
+			h::{'button.cs-blogs-comment-write-edit'}(
+				$L->save,
+				[
+					'style'	=>	'display: none'
+				]
 			).
 			h::{'button.cs-blogs-comment-write-cancel'}(
 				$L->cancel,

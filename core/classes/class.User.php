@@ -628,7 +628,8 @@ class User {
 	 * @param string $label		Permission label
 	 * @param bool|int $user
 	 *
-	 * @return bool				If permission exists - returns its state for specified user, otherwise returns true
+	 * @return bool				If permission exists - returns its state for specified user, otherwise for admin permissions returns <b>false</b> and for
+	 * 							others <b>true</b>
 	 */
 	function get_user_permission ($group, $label, $user = false) {
 		$user = (int)($user ?: $this->id);
@@ -661,7 +662,7 @@ class User {
 			if (isset($this->data[$user]['permissions'][$permission])) {
 				return (bool)$this->data[$user]['permissions'][$permission];
 			} else {
-				return true;
+				return $this->is('admin') ? true : strpos($group, 'admin/') !== 0;
 			}
 		} else {
 			return true;

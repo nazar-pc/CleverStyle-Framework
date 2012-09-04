@@ -8,6 +8,9 @@
 .cs-blogs-comment {
 	padding : 5px 5px 0 20px;
 }
+.cs-blogs-comment > .cs-blogs-comment {
+	border-left: 2px solid rgba(0, 0, 0, .05);
+}
 .cs-blogs-comment-avatar {
 	float  : left;
 	height : 36px;

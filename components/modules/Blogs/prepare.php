@@ -190,6 +190,25 @@ function get_comments_tree ($comments, $post, $module = null) {
 						]
 					) : ''
 				).
+				(
+					$User->id == $comment['user'] ||
+					(
+						$User->is('admin') &&
+						$User->get_user_permission('admin/'.MODULE, 'index') &&
+						$User->get_user_permission('admin/'.MODULE, 'edit_comment')
+					) ? h::{'icon.cs-blogs-comment-edit.cs-pointer'}('pencil') : ''
+				).
+				(
+					!$comment['comments'] &&
+					(
+						$User->id == $comment['user'] ||
+						(
+							$User->is('admin') &&
+							$User->get_user_permission('admin/'.MODULE, 'index') &&
+							$User->get_user_permission('admin/'.MODULE, 'delete_comment')
+						)
+					) ? h::{'icon.cs-blogs-comment-delete.cs-pointer'}('trash') : ''
+				).
 				h::{'div.cs-blogs-comment-text'}(
 					$comment['text']
 				).

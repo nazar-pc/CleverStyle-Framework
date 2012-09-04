@@ -9,8 +9,8 @@ body {
 	font-family : Tahoma, Verdana, sans-serif;
 	font-size   : 12px;
 	margin      : 0;
-	opacity    : .001;
-	padding     : 0;
+	overflow: hidden;
+	padding     : 100% 0 0 100%;
 	width       : 100%;
 }
 
@@ -396,7 +396,8 @@ hr {
 #bottom_blocks {
 	position : e;
 }
-#left_blocks, #right_blocks {
+#left_blocks,
+#right_blocks {
 	padding        : 0 5px;
 	vertical-align : top;
 }

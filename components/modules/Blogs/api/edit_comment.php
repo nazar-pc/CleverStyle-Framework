@@ -23,13 +23,26 @@ if (!$_POST['text'] || !strip_tags($_POST['text'])) {
 		])
 	);
 }
-$result	= $Blogs->add_comment($_POST['post'], $_POST['text'], $_POST['parent']);
-$ressult['comments']	= false;
+if (
+	!($Blogs->get($_POST['id'])['user'] == $User->id) &&
+	!(
+		$User->is('admin') &&
+		$User->get_user_permission('admin/'.MODULE, 'index') &&
+		$User->get_user_permission('admin/'.MODULE, 'edit_comment')
+	)
+) {
+	$Page->content(
+		_json_encode([
+			'status'	=> $L->access_denied
+		])
+	);
+}
+$result	= $Blogs->set_comment($_POST['id'], $_POST['text']);
 $Page->content(
 	_json_encode($result ? [
 		'status'	=> 'OK',
-		'content'	=> get_comments_tree([$result], $Blogs->get($result['post']))
+		'content'	=> $result['text']
 	] : [
-		'status'	=> $L->comment_sending_server_error
+		'status'	=> $L->comment_editing_server_error
 	])
 );

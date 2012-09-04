@@ -172,20 +172,24 @@ class Blogs {
 		}
 		$sections	= implode(
 			',',
-			array_map(
-				function ($section) use ($id) {
-					return "($id, $section)";
-				},
-				$sections
+			array_unique(
+				array_map(
+					function ($section) use ($id) {
+						return "($id, $section)";
+					},
+					$sections
+				)
 			)
 		);
 		$tags		= implode(
 			',',
-			array_map(
-				function ($tag) use ($id) {
-					return "($id, $tag)";
-				},
-				$this->process_tags($tags)
+			array_unique(
+				array_map(
+					function ($tag) use ($id) {
+						return "($id, $tag)";
+					},
+					$this->process_tags($tags)
+				)
 			)
 		);
 		if ($db->{$this->posts}()->q(
@@ -203,6 +207,8 @@ class Blogs {
 					`content` = '%s'
 				WHERE `id` = '%s'
 				LIMIT 1",
+				"DELETE FROM `[prefix]blogs_posts_tags`
+				WHERE `id` = '%4\$s'",
 				"INSERT INTO `[prefix]blogs_posts_tags`
 					(`id`, `tag`)
 				VALUES
@@ -669,8 +675,12 @@ class Blogs {
 		$added		= false;
 		foreach ($tags as $tag => &$id) {
 			if ($id === null) {
-				$id		= $this->add_tag($tag, false);
-				$added	= true;
+				if (trim($tag)) {
+					$id		= $this->add_tag(trim($tag), false);
+					$added	= true;
+				} else {
+					unset($tags[$tag]);
+				}
 			}
 		}
 		if ($added) {
@@ -855,8 +865,7 @@ class Blogs {
 			FROM `[prefix]blogs_comments` AS `p` LEFT OUTER JOIN `[prefix]blogs_comments` AS `c`
 			ON `p`.`id` = `c`.`parent`
 			WHERE `p`.`id` = $id
-			LIMIT 1",
-			true
+			LIMIT 1"
 		);
 		if (!$comment || $comment['count']) {
 			return false;

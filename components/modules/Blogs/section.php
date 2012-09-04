@@ -72,7 +72,7 @@ $posts					= $cdb->qfa(
 	"SELECT `id`
 	FROM `[prefix]blogs_posts_sections`
 	WHERE `section` = $section
-	ORDER BY `id` DESC
+	ORDER BY `date` DESC
 	LIMIT $from, $num",
 	true
 );

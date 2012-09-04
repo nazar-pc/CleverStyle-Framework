@@ -556,7 +556,7 @@ class Page {
 				}
 			}
 			if ($extension == 'js') {
-				$temp_cache	.= 'var L='.$L->get_json();
+				$temp_cache	.= 'var L='.$L->get_json().';';
 			}
 			file_put_contents(PCACHE.'/'.$this->pcache_basename.$extension, gzencode($temp_cache, 9), LOCK_EX|FILE_BINARY);
 			$key .= md5($temp_cache);

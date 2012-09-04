@@ -1,3 +1,5 @@
 [
-	"add_comment"
+	"add_comment",
+	"edit_comment",
+	"delete_comment"
 ]

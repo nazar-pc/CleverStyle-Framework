@@ -101,7 +101,7 @@ $posts					= $cdb->qfa(
 		"SELECT `id`
 			FROM `[prefix]blogs_posts_tags`
 			WHERE `tag` = '%s'
-			ORDER BY `id` DESC
+			ORDER BY `date` DESC
 			LIMIT $from, $num",
 		$tag['id'],
 	],
