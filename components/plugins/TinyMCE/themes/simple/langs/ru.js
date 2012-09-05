@@ -1,1 +1,0 @@
-tinyMCE.addI18n('ru.simple',{"cleanup_desc":"Очистить лишний код","redo_desc":"Вернуть (Ctrl+Y)","undo_desc":"Отменить (Ctrl+Z)","numlist_desc":"Нумерованный список","bullist_desc":"Маркированный список","striketrough_desc":"Зачеркнутый","underline_desc":"Подчеркнутый (Ctrl+U)","italic_desc":"Курсив (Ctrl+I)","bold_desc":"Полужирный (Ctrl+B)"});

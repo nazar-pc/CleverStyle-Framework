@@ -17,15 +17,24 @@ $Index->content(
 		[
 			h::info('posts_per_page'),
 			h::{'input[type=number][min=1]'}([
-				'name'	=> 'general[posts_per_page]',
-				'value'	=> $module_configuration->get('posts_per_page')
+				'name'		=> 'general[posts_per_page]',
+				'value'		=> $module_configuration->posts_per_page
 			])
 		],
 		[
 			h::info('maximum_number_of_sections_for_post'),
 			h::{'input[type=number][min=1]'}([
-				'name'	=> 'general[max_sections]',
-				'value'	=> $module_configuration->get('max_sections')
+				'name'		=> 'general[max_sections]',
+				'value'		=> $module_configuration->max_sections
+			])
+		],
+		[
+			h::info('enable_comments'),
+			h::{'input[type=radio]'}([
+				'name'		=> 'general[enable_comments]',
+				'value'		=> [0, 1],
+				'in'		=> [$L->no, $L->yes],
+				'checked'	=> $module_configuration->enable_comments
 			])
 		]
 	).

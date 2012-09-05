@@ -27,7 +27,9 @@ if ($post['path'] != mb_substr($rc[1], 0, mb_strrpos($rc[1], ':'))) {
 	return;
 }
 $Page->title($post['title']);
-$Page->Keywords		= keywords($post['title']).'. '.$Page->Keywords;
+$tags				= $Blogs->get_tag($post['tags']);
+$Page->Keywords		= keywords(
+	$post['title'].' '.implode(' ', $tags)).'. '.$Page->Keywords;
 $Page->Description	= description($post['short_content']);
 $Index->content(
 	h::{'section.cs-blogs-post article'}(
@@ -96,7 +98,7 @@ $Index->content(
 								]
 							);
 						},
-						$Blogs->get_tag($post['tags'])
+						$tags
 					)
 				)
 			).
@@ -116,45 +118,49 @@ $Index->content(
 						'rel'			=> 'author'
 					]
 				).
-				h::icon('comment').$post['comments_count']
+				(
+					$Config->module(MODULE)->enable_comments ? h::icon('comment').$post['comments_count'] : ''
+				)
 			)
 		)
 	).
-	h::{'section#comments.cs-blogs-comments'}(
-		$L->comments.':'.
-		(
-			!$post['comments_count'] ? h::{'article.cs-blogs-no-comments'}(
-				$L->no_comments_yet
-			) : get_comments_tree($post['comments'], $post)
-		)
-	).
-	h::p($L->add_comment.':').
 	(
-		$User->is('user') ? h::{'section.cs-blogs-comment-write'}(
-			h::{'textarea.cs-blogs-comment-write-text.SEDITOR'}(
-				'',
-				[
-					'data-post'		=> $post['id'],
-					'data-parent'	=> 0,
-					'data-id'		=> 0
-				]
-			).
-			h::br().
-			h::{'button.cs-blogs-comment-write-send'}(
-				$L->send_comment
-			).
-			h::{'button.cs-blogs-comment-write-edit'}(
-				$L->save,
-				[
-					'style'	=>	'display: none'
-				]
-			).
-			h::{'button.cs-blogs-comment-write-cancel'}(
-				$L->cancel,
-				[
-					'style'	=>	'display: none'
-				]
+		$Config->module(MODULE)->enable_comments ? h::{'section#comments.cs-blogs-comments'}(
+			$L->comments.':'.
+			(
+				!$post['comments_count'] ? h::{'article.cs-blogs-no-comments'}(
+					$L->no_comments_yet
+				) : get_comments_tree($post['comments'], $post)
 			)
-		) : h::p($L->register_for_comments_sending)
+		).
+		h::p($L->add_comment.':').
+		(
+			$User->is('user') ? h::{'section.cs-blogs-comment-write'}(
+				h::{'textarea.cs-blogs-comment-write-text.SEDITOR'}(
+					'',
+					[
+						'data-post'		=> $post['id'],
+						'data-parent'	=> 0,
+						'data-id'		=> 0
+					]
+				).
+				h::br().
+				h::{'button.cs-blogs-comment-write-send'}(
+					$L->send_comment
+				).
+				h::{'button.cs-blogs-comment-write-edit'}(
+					$L->save,
+					[
+						'style'	=>	'display: none'
+					]
+				).
+				h::{'button.cs-blogs-comment-write-cancel'}(
+					$L->cancel,
+					[
+						'style'	=>	'display: none'
+					]
+				)
+			) : h::p($L->register_for_comments_sending)
+		) : ''
 	)
 );

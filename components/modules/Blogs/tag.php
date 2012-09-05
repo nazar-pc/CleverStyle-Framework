@@ -12,6 +12,7 @@ global $Index, $Blogs, $Page, $L, $User, $db, $Config;
 $rc						= array_slice($Config->routing['current'], 1);
 if (!isset($rc[0])) {
 	define('ERROR_PAGE', 404);
+	return;
 }
 $module					= path($L->{MODULE});
 if ($User->is('user')) {
@@ -43,9 +44,9 @@ $Index->form_atributes	= ['class'	=> ''];
 $page					= isset($rc[1]) ? (int)$rc[1] : 1;
 $page					= $page > 0 ? $page : 1;
 if ($page > 1) {
-	$Page->title($L->blog_nav_page($page));
+	$Page->title($L->blogs_nav_page($page));
 }
-$num					= $Config->module(MODULE)->get('posts_per_page');
+$num					= $Config->module(MODULE)->posts_per_page;
 $from					= ($page - 1) * $num;
 $cdb					= $db->{$Config->module(MODULE)->db('posts')};
 $tag					= $cdb->qf(
@@ -78,6 +79,7 @@ if (!$tag) {
 }
 if (!$tag) {
 	define('ERROR_PAGE', 404);
+	return;
 }
 $tag					= [
 	'id'	=> $tag,
@@ -98,11 +100,12 @@ $posts_count			= $cdb->qf(
 );
 $posts					= $cdb->qfa(
 	[
-		"SELECT `id`
-			FROM `[prefix]blogs_posts_tags`
-			WHERE `tag` = '%s'
-			ORDER BY `date` DESC
-			LIMIT $from, $num",
+		"SELECT `t`.`id`
+		FROM `[prefix]blogs_posts_tags` AS `t` LEFT OUTER JOIN `[prefix]blogs_posts` AS `p`
+		ON `t`.`id` = `p`.`id`
+		WHERE `t`.`tag` = '%s'
+		ORDER BY `p`.`date` DESC
+		LIMIT $from, $num",
 		$tag['id'],
 	],
 	true
@@ -111,6 +114,7 @@ if (empty($posts)) {
 	$Index->content(
 		h::{'p.cs-center'}($L->no_posts_yet)
 	);
+	return;
 }
 $Index->content(
 	h::{'section.cs-blogs-post-latest'}(

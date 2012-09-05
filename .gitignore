@@ -1,4 +1,4 @@
-#do not commit cache
+#do not commit IDE settings
 /.idea
 #do not commit installer builds
 *.phar.php

@@ -7,6 +7,53 @@
  * @license		MIT License, see license.txt
  */
 global $Core, $Config;
+$clean_pcache = function ($data = null) {
+	$module	= basename(__DIR__);
+	if ($data['name'] == $module || $data === null) {
+		if (file_exists(PCACHE.'/module.'.$module.'.js')) {
+			unlink(PCACHE.'/module.'.$module.'.js');
+		}
+		if (file_exists(PCACHE.'/module.'.$module.'.css')) {
+			unlink(PCACHE.'/module.'.$module.'.css');
+		}
+	}
+};
+$Core->register_trigger(
+	'admin/System/components/modules/disable',
+	$clean_pcache
+);
+$Core->register_trigger(
+	'admin/System/general/optimization/clean_pcache',
+	$clean_pcache
+);
+$Core->register_trigger(
+	'System/Page/rebuild_cache',
+	function ($data) {
+		$module	= basename(__DIR__);
+		if (file_exists(PCACHE.'/module.'.$module.'.js') && file_exists(PCACHE.'/module.'.$module.'.css')) {
+			return;
+		}
+		file_put_contents(
+			PCACHE.'/module.'.$module.'.js',
+			$key	= gzencode(
+				file_get_contents(MODULES.'/'.$module.'/includes/js/functions.js').
+				file_get_contents(MODULES.'/'.$module.'/includes/js/general.js'),
+				9
+			),
+			LOCK_EX | FILE_BINARY
+		);
+		$data['key']	.= md5($key);
+		file_put_contents(
+			PCACHE.'/module.'.$module.'.css',
+			$key	= gzencode(
+				file_get_contents(MODULES.'/'.$module.'/includes/css/general.css'),
+				9
+			),
+			LOCK_EX | FILE_BINARY
+		);
+		$data['key']	.= md5($key);
+	}
+);
 $Core->register_trigger(
 	'admin/System/components/modules/uninstall/process',
 	function ($data) use ($Core) {

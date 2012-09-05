@@ -11,11 +11,13 @@ use			\h;
 if (!API) {
 	global $Core, $Index, $Config, $L, $Page;
 	$Index->title_auto	= false;
-	$Page->css('components/modules/'.MODULE.'/includes/css/general.css');
-	$Page->js([
-		'components/modules/'.MODULE.'/includes/js/general.js',
-		'components/modules/'.MODULE.'/includes/js/functions.js'
-	]);
+	if (!$Config->core['cache_compress_js_css']) {
+		$Page->css('components/modules/'.MODULE.'/includes/css/general.css');
+		$Page->js([
+			'components/modules/'.MODULE.'/includes/js/general.js',
+			'components/modules/'.MODULE.'/includes/js/functions.js'
+		]);
+	}
 	$rc					= &$Config->__get('routing')['current'];
 	if (!isset($rc[0])) {
 		$rc[0]	= 'latest_posts';
@@ -78,7 +80,7 @@ if (!API) {
 		return $list;
 	}
 	function get_posts_list ($posts, $module) {
-		global $Blogs, $L, $User;
+		global $Blogs, $L, $User, $Config;
 		$content	= [];
 		foreach ($posts as $post) {
 			$post		= $Blogs->get($post);
@@ -124,11 +126,13 @@ if (!API) {
 							'rel'			=> 'author'
 						]
 					).
-					h::a(
-						h::icon('comment').$post['comments_count'],
-						[
-							'href'			=> $module.'/'.$post['path'].':'.$post['id'].'#comments'
-						]
+					(
+						$Config->module(MODULE)->enable_comments ? h::a(
+							h::icon('comment').$post['comments_count'],
+							[
+								'href'			=> $module.'/'.$post['path'].':'.$post['id'].'#comments'
+							]
+						) : ''
 					).
 					h::a(
 						h::icon('note').$L->read_more,

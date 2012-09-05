@@ -110,7 +110,7 @@ class Blogs {
 			array_keys($this->get_sections_list()),
 			$sections
 		);
-		if (empty($sections) || count($sections) > $Config->module(MODULE)->get('max_sections')) {
+		if (empty($sections) || count($sections) > $Config->module(MODULE)->max_sections) {
 			return false;
 		}
 		if ($db->{$this->posts}()->q(
@@ -167,7 +167,7 @@ class Blogs {
 			array_keys($this->get_sections_list()),
 			$sections
 		);
-		if (empty($sections) || count($sections) > $Config->module(MODULE)->get('max_sections')) {
+		if (empty($sections) || count($sections) > $Config->module(MODULE)->max_sections) {
 			return false;
 		}
 		$sections	= implode(

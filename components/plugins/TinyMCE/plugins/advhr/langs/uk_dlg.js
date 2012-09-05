@@ -1,1 +1,1 @@
-tinyMCE.addI18n('uk.advhr_dlg',{size:"Висота",noshade:"Без тіні",width:"Ширина"});
+tinyMCE.addI18n('uk.advhr_dlg',{size:"Висота",noshade:"Без тіні",width:"Ширина",normal:"Нормальний",widthunits:"Одиниці виміру"});

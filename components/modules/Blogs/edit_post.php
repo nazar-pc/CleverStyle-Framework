@@ -77,7 +77,7 @@ $Index->action				= $module.'/edit_post/'.$post['id'];
 $Index->buttons				= false;
 $Index->cancel_button_back	= true;
 $disabled					= [];
-$max_sections				= $Config->module(MODULE)->get('max_sections');
+$max_sections				= $Config->module(MODULE)->max_sections;
 $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages'}(
 		$L->editing_of_post($post['title'])
@@ -116,7 +116,7 @@ $Index->content(
 				]
 			).
 			h::br().
-			$L->use_pagebreak
+			$L->post_use_pagebreak
 		],
 		[
 			$L->post_tags,

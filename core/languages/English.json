@@ -11,7 +11,7 @@
 
 //Common
 	"home"						: "Home",
-	"page_footer_info"			: "Страница сгенерирована за %s, %s запрос(ов) в БД за %s, максимальное потребление памяти %s",
+	"page_footer_info"			: "Page generated in %s, %s query(s) in DB in %s, maximal memory consumption %s",
 	"file"						: "File",
 	"not_writable"				: "not available for writing",
 	"hidden"					: "Hidden",

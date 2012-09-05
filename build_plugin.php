@@ -1,13 +1,13 @@
 <?php
 /**
  * @package		CleverStyle CMS
- * @subpackage	Modules builder
+ * @subpackage	Plugins builder
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
 if (empty($_SERVER['QUERY_STRING'])) {
-	echo 'Please, specify module name';
+	echo 'Please, specify plugin name';
 	return;
 } elseif (!file_exists($pdir = __DIR__.'/components/plugins/'.$_SERVER['QUERY_STRING'])) {
 	echo 'Can\'t build plugin, plugin directory not found';

@@ -558,10 +558,10 @@ class Page {
 			if ($extension == 'js') {
 				$temp_cache	.= 'var L='.$L->get_json().';';
 			}
-			file_put_contents(PCACHE.'/'.$this->pcache_basename.$extension, gzencode($temp_cache, 9), LOCK_EX|FILE_BINARY);
+			file_put_contents(PCACHE.'/'.$this->pcache_basename.$extension, gzencode($temp_cache, 9), LOCK_EX | FILE_BINARY);
 			$key .= md5($temp_cache);
 		}
-		file_put_contents(PCACHE.'/pcache_key', mb_substr(md5($key), 0, 5), LOCK_EX|FILE_BINARY);
+		file_put_contents(PCACHE.'/pcache_key', mb_substr(md5($key), 0, 5), LOCK_EX | FILE_BINARY);
 	}
 	/**
 	 * Analyses file for images, fonts and css links and include they content into single resulting css file.<br>

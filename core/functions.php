@@ -775,7 +775,7 @@ function xap ($in, $html = 'text') {
 			$in
 		);
 		$in = preg_replace(
-			'/(onblur|onchange|onclick|ondblclick|onfocus|onkeydown|onkeypress|onkeyup|onload|onmousedown|'.
+			'/(onblur|onchange|onclick|ondblclick|onerror|onfocus|onkeydown|onkeypress|onkeyup|onload|onmousedown|'.
 				'onmousemove|onmouseout|onmouseover|onmouseup|onreset|onselect|onsubmit|onunload)=?/i',
 			'',
 			$in

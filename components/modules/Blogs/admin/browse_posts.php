@@ -52,7 +52,7 @@ $Index->content(
 		$total ? h::{'nav.cs-center'}(
 			pages(
 				$page,
-				ceil($total/$Config->module(MODULE)->get('posts_per_page')),
+				ceil($total/$Config->module(MODULE)->posts_per_page),
 				function ($page) {
 					return $page == 1 ? 'admin/'.MODULE.'/browse_posts' : 'admin/'.MODULE.'/browse_posts/'.$page;
 				}

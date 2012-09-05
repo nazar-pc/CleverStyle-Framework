@@ -21,7 +21,7 @@ $(function() {
 			{
 				'opacity'	: 1
 			},
-			200
+			100
 		);
 	};
 	$(document).on('DOMNodeInserted', 'iframe', function() {

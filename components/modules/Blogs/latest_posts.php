@@ -42,9 +42,9 @@ $Index->form_atributes	= ['class'	=> ''];
 $page					= isset($Config->routing['current'][1]) ? (int)$Config->routing['current'][1] : 1;
 $page					= $page > 0 ? $page : 1;
 if ($page > 1) {
-	$Page->title($L->blog_nav_page($page));
+	$Page->title($L->blogs_nav_page($page));
 }
-$num					= $Config->module(MODULE)->get('posts_per_page');
+$num					= $Config->module(MODULE)->posts_per_page;
 $from					= ($page - 1) * $num;
 $cdb					= $db->{$Config->module(MODULE)->db('posts')};
 $posts					= $cdb->qfa(

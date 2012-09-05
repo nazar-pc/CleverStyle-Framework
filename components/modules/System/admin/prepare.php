@@ -14,7 +14,7 @@ function set_core_ml_text ($item, $text) {
 	return $Text->set($Config->module('System')->db('texts'), 'System/Config/core', $item, $text);
 }
 function core_input ($item, $type = 'text', $info_item = null, $disabled = false, $min = false, $max = false, $post_text = '') {
-	global $Config;
+	global $Config, $L;
 	if ($type != 'radio') {
 		switch ($item) {
 			default:
@@ -28,7 +28,7 @@ function core_input ($item, $type = 'text', $info_item = null, $disabled = false
 				$value	= get_core_ml_text($item);
 		}
 		return [
-			h::info($info_item ?: $item),
+			$info_item !== false ? h::info($info_item ?: $item) : $L->$item,
 			h::input([
 				'name'		=> "core[$item]",
 				'value'		=> $value,
@@ -42,7 +42,7 @@ function core_input ($item, $type = 'text', $info_item = null, $disabled = false
 	} else {
 		global $L;
 		return [
-			h::info($info_item ?: $item),
+			$info_item !== false ? h::info($info_item ?: $item) : $L->$item,
 			h::input([
 				'name'		=> "core[$item]",
 				'checked'	=> $Config->core[$item],

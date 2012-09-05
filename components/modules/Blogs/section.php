@@ -11,7 +11,6 @@ use			\h;
 global $Index, $Blogs, $Page, $L, $User, $db, $Config;
 $rc						= array_slice($Config->routing['current'], 1);
 $structure				= $Blogs->get_sections_structure();
-$section				= 0;
 $keywords				= [];
 $description			= [];
 foreach ($rc as $path) {
@@ -29,6 +28,7 @@ if (isset($structure['id'])) {
 	$section	= $structure['id'];
 } else {
 	define('ERROR_PAGE', 404);
+	return;
 }
 $Page->title($L->latest_posts);
 $Page->Keywords			= keywords($L->{MODULE}.' '.implode(' ', $keywords).' '.$L->latest_posts).', '.$Page->Keywords;
@@ -63,16 +63,17 @@ $Index->form_atributes	= ['class'	=> ''];
 $page					= isset($rc[0]) ? (int)$rc[0] : 1;
 $page					= $page > 0 ? $page : 1;
 if ($page > 1) {
-	$Page->title($L->blog_nav_page($page));
+	$Page->title($L->blogs_nav_page($page));
 }
-$num					= $Config->module(MODULE)->get('posts_per_page');
+$num					= $Config->module(MODULE)->posts_per_page;
 $from					= ($page - 1) * $num;
 $cdb					= $db->{$Config->module(MODULE)->db('posts')};
 $posts					= $cdb->qfa(
-	"SELECT `id`
-	FROM `[prefix]blogs_posts_sections`
-	WHERE `section` = $section
-	ORDER BY `date` DESC
+	"SELECT `s`.`id`
+	FROM `[prefix]blogs_posts_sections` AS `s` LEFT OUTER JOIN `[prefix]blogs_posts` AS `p`
+	ON `s`.`id` = `p`.`id`
+	WHERE `s`.`section` = $section
+	ORDER BY `p`.`date` DESC
 	LIMIT $from, $num",
 	true
 );
@@ -80,6 +81,7 @@ if (empty($posts)) {
 	$Index->content(
 		h::{'p.cs-center'}($L->no_posts_yet)
 	);
+	return;
 }
 $Index->content(
 	h::{'section.cs-blogs-post-latest'}(
