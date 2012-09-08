@@ -30,9 +30,9 @@ $Core->register_trigger(
 			foreach ($structure['pages'] as $page) {
 				$Static_pages->del($page);
 			}
+			unset($page);
 		}
 		unset(
-			$page,
 			$structure,
 			$Cache->$module
 		);

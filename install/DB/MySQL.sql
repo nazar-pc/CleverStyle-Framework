@@ -7,7 +7,7 @@ CREATE TABLE `[prefix]config` (
   `replace` mediumtext COLLATE utf8_unicode_ci NOT NULL,
   `routing` mediumtext COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`domain`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Settings';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Settings';
 
 CREATE TABLE `[prefix]groups` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT COMMENT 'WARNING: Never delete first 3 groups!',
@@ -15,7 +15,7 @@ CREATE TABLE `[prefix]groups` (
   `description` text COLLATE utf8_unicode_ci NOT NULL,
   `data` longtext COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `[prefix]groups` (`title`, `description`) VALUES ('Administrators', 'Administrators'), ('Users', 'Users'), ('Bots', 'Bots');
 
@@ -37,7 +37,7 @@ CREATE TABLE `[prefix]keys` (
   PRIMARY KEY (`id`),
   KEY `key` (`key`(32)),
   KEY `expire` (`expire`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Temporary keys';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Temporary keys';
 
 CREATE TABLE `[prefix]logins` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -55,7 +55,7 @@ CREATE TABLE `[prefix]permissions` (
   PRIMARY KEY (`id`),
   KEY `label` (`label`(255)),
   KEY `group` (`group`(255))
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `[prefix]permissions` (`label`, `group`) VALUES ('index', 'admin/System'), ('index', 'api/System');
 
@@ -70,7 +70,7 @@ CREATE TABLE `[prefix]sessions` (
   `client_ip` varchar(32) COLLATE utf8_unicode_ci NOT NULL COMMENT 'hex value, obtained by function ip2hex()',
   PRIMARY KEY (`id`,`expire`,`user_agent`,`ip`,`forwarded_for`,`client_ip`),
   KEY `user` (`user`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `[prefix]texts` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -78,7 +78,7 @@ CREATE TABLE `[prefix]texts` (
   `group` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `label` (`label`(255),`group`(255))
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `[prefix]texts_data` (
   `id` bigint(20) NOT NULL COMMENT 'id from texts table',
@@ -128,7 +128,7 @@ CREATE TABLE `[prefix]users` (
   KEY `last_login` (`last_login`),
   KEY `last_online` (`last_online`),
   KEY `gender` (`gender`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `[prefix]users` (`login`, `login_hash`, `status`) VALUES ('guest', '5cf371cef0648f2656ddc13b773aa642251267dbd150597506e96c3a', '1');
 

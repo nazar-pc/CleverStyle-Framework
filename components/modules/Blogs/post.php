@@ -136,7 +136,7 @@ $Index->content(
 		h::p($L->add_comment.':').
 		(
 			$User->is('user') ? h::{'section.cs-blogs-comment-write'}(
-				h::{'textarea.cs-blogs-comment-write-text.SEDITOR'}(
+				h::{'textarea.cs-blogs-comment-write-text.cs-wide-textarea.SEDITOR'}(
 					'',
 					[
 						'data-post'		=> $post['id'],

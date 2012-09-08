@@ -20,15 +20,15 @@ CREATE TABLE `[prefix]static_pages_categories` (
   KEY `parent` (`parent`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `prefix_texts` (
+CREATE TABLE IF NOT EXISTS `[prefix]texts` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `label` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
   `group` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `label` (`label`(255),`group`(255))
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `prefix_texts_data` (
+CREATE TABLE IF NOT EXISTS `[prefix]texts_data` (
   `id` bigint(20) NOT NULL COMMENT 'id from texts table',
   `id_` varchar(25) NOT NULL,
   `lang` varchar(2) NOT NULL,

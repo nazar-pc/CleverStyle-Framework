@@ -127,9 +127,9 @@ $Index->content(
 			])
 		]
 	).
-	h::{'button#cs-new-post-preview'}(//TODO make this button workable
+	/*h::{'button#cs-new-post-preview'}(//TODO make this button workable
 		$L->preview
-	).
+	).*/
 	h::{'button[type=submit][name=mode][value=save]'}(
 		$L->save
 	).

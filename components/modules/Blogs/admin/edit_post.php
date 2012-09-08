@@ -72,9 +72,9 @@ $Index->content(
 	h::{'input[type=hidden][name=id]'}([
 		'value'	=> $post['id']
 	]).
-	h::{'button#cs-new-post-preview'}(//TODO make this button workable
+	/*h::{'button#cs-new-post-preview'}(//TODO make this button workable
 		$L->preview
-	).
+	).*/
 	h::{'button[type=submit][name=mode][value=edit_post]'}(
 		$L->save
 	)

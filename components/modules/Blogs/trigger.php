@@ -55,9 +55,29 @@ $Core->register_trigger(
 	}
 );
 $Core->register_trigger(
+	'admin/System/components/modules/install/process',
+	function ($data) use ($Core) {
+		global $User, $Config;
+		$module		= basename(__DIR__);
+		if ($data['name'] != $module || !$User->is('admin')) {
+			return true;
+		}
+		time_limit_pause();
+		$Config->module($module)->set(
+			[
+				'posts_per_page'	=> 10,
+				'max_sections'		=> 3,
+				'enable_comments'	=> 1
+			]
+		);
+		time_limit_pause(false);
+		return true;
+	}
+);
+$Core->register_trigger(
 	'admin/System/components/modules/uninstall/process',
 	function ($data) use ($Core) {
-		global $User, $Cache;
+		global $User, $Cache, $Config, $db;
 		$module		= basename(__DIR__);
 		if ($data['name'] != $module || !$User->is('admin')) {
 			return true;
@@ -65,24 +85,26 @@ $Core->register_trigger(
 		time_limit_pause();
 		include_once MODULES.'/'.$module.'/class.php';
 		$Blogs		= $Core->create('cs\\modules\\Blogs\\Blogs');
-		$structure	= $Blogs->get_sections_structure();
-		while (!empty($structure['sections'])) {
-			foreach ($structure['sections'] as $section) {
-				$Blogs->del_section($section['id']);
+		$sections	= array_keys($Blogs->get_sections_list());
+		if (!empty($sections)) {
+			foreach ($sections as $section) {
+				$Blogs->del_section($section);
 			}
-			$structure	= $Blogs->get_sections_structure();
+			unset($section);
 		}
-		unset($section);
-		if (!empty($structure['pages'])) {
-			foreach ($structure['pages'] as $page) {
-				$Blogs->del($page);
-			}
-		}
-		unset(
-			$page,
-			$structure,
-			$Cache->$module
+		unset($sections);
+		$posts		= $db->{$Config->module($module)->db('posts')}->qfa(
+			"SELECT `id` FROM `[prefix]blogs_posts`",
+			true
 		);
+		if (!empty($posts)) {
+			foreach ($posts as $post) {
+				$Blogs->del($post);
+			}
+			unset($post);
+		}
+		unset($posts);
+		unset($Cache->$module);
 		time_limit_pause(false);
 		return true;
 	}

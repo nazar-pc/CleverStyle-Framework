@@ -325,17 +325,29 @@ class Blogs {
 	}
 	private function get_sections_structure_internal ($parent = 0) {
 		global $db;
-		$structure					= [
+		$structure				= [
 			'id'	=> $parent,
 			'posts'	=> 0
 		];
 		if ($parent != 0) {
-			$structure	= array_merge(
+			$structure			= array_merge(
 				$structure,
 				$this->get_section($parent)
 			);
+		} else {
+			global $L;
+			$structure['title']	= $L->root_section;
+			$structure['posts']	= $db->{$this->posts}->qf(
+				[
+					"SELECT COUNT(`id`)
+					FROM `[prefix]blogs_posts_sections`
+					WHERE `section` = '%s'",
+					$structure['id']
+				],
+				true
+			);
 		}
-		$sections					= $db->{$this->posts}->qfa([
+		$sections				= $db->{$this->posts}->qfa([
 			"SELECT
 				`id`,
 				`path`
@@ -344,8 +356,10 @@ class Blogs {
 			$parent
 		]);
 		$structure['sections']	= [];
-		foreach ($sections as $section) {
-			$structure['sections'][$section['path']]	= $this->get_sections_structure_internal($section['id']);
+		if (!empty($sections)) {
+			foreach ($sections as $section) {
+				$structure['sections'][$section['path']]	= $this->get_sections_structure_internal($section['id']);
+			}
 		}
 		return $structure;
 	}

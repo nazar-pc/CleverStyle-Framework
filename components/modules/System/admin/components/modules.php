@@ -644,7 +644,7 @@ $a->content(
 		$modules_list,
 		h::{'td.cs-left-all[colspan=3]'}(
 			h::{'input[type=file][name=upload_module]'}([
-				'style'	=> 'position: relative;'
+				'style'		=> 'position: relative;'
 			]).
 			h::{'button[type=submit]'}(
 				$L->upload_and_install_module,

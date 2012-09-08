@@ -1,4 +1,13 @@
 <?php
+/**
+ * @package		TinyMCE
+ * @category	plugins
+ * @author		Moxiecode Systems AB
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com> (integration into CleverStyle CMS)
+ * @copyright	Moxiecode Systems AB
+ * @license		GNU Lesser General Public License 2.1, see license.txt
+ */
+namespace cs\plugins\TinyMCE;
 global $Page, $Config;
 if (!$Page->interface) {
 	return;
@@ -10,4 +19,6 @@ if (!$Config->core['cache_compress_js_css']) {
 		'components/plugins/'.$plugin.'/tiny_mce.js',
 		'components/plugins/'.$plugin.'/TinyMCE.js'
 	]);
+} elseif (!file_exists(PCACHE.'/plugin.'.$plugin.'.js')) {
+	rebuild_cache();
 }

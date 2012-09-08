@@ -792,23 +792,6 @@ function xap ($in, $html = 'text') {
 		return htmlspecialchars($in, ENT_QUOTES | ENT_HTML5 | ENT_DISALLOWED | ENT_SUBSTITUTE);
 	}
 }
-if (!function_exists('hex2bin')) {
-	/**
-	 * Function, reverse to bin2hex()
-	 *
-	 * @param string	$str
-	 *
-	 * @return string
-	 */
-	function hex2bin ($str){
-		$len	= strlen($str);
-		$res	= '';
-		for ($i = 0; $i < $len; $i += 2) {
-			$res .= pack("H", $str[$i]) | pack("h", $str[$i + 1]);
-		}
-		return $res;
-	}
-}
 /**
  * Function for convertion of Ipv4 and Ipv6 into hex values to store in db
  *
@@ -1363,7 +1346,7 @@ function get_core_ml_text ($item) {
 	if (!(is_object($Config) && is_object($Text))) {
 		return false;
 	}
-	return $Text->process($Config->module('System')->db('texts'), $Config->core[$item]);
+	return $Text->process($Config->module('System')->db('texts'), $Config->core[$item], true, true);
 }
 /**
  * Truncates text

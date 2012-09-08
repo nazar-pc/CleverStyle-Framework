@@ -82,6 +82,9 @@ if (!API) {
 	function get_posts_list ($posts, $module) {
 		global $Blogs, $L, $User, $Config;
 		$content	= [];
+		if (empty($posts)) {
+			return '';
+		}
 		foreach ($posts as $post) {
 			$post		= $Blogs->get($post);
 			$content[]	= h::header(

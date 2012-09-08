@@ -139,7 +139,7 @@ if (isset($_POST['update_modules_list'])) {
 					}
 					unset($structure, $item, $part);
 				}
-				$permissions['admin/'.$_POST['module']]	= array_unique($permissions[$_POST['module'].'/admin']);
+				$permissions['admin/'.$_POST['module']]	= array_unique($permissions['admin/'.$_POST['module']]);
 			}
 			/**
 			 * Adding module API permissions
@@ -153,7 +153,7 @@ if (isset($_POST['update_modules_list'])) {
 					}
 					unset($structure, $item, $part);
 				}
-				$permissions['api/'.$_POST['module']]	= array_unique($permissions[$_POST['module'].'/api']);
+				$permissions['api/'.$_POST['module']]	= array_unique($permissions['api/'.$_POST['module']]);
 			}
 			foreach ($permissions as $group => $list) {
 				foreach ($list as $label) {
@@ -176,9 +176,9 @@ if (isset($_POST['update_modules_list'])) {
 			)) {
 				break;
 			}
-			$module_data = ['active' => -1];
-			$a->save('components');
-			if (file_exists(MODULES.'/'.$_POST['module'].'/meta/db.json')) {
+			$module_data['active']	= -1;
+			$Config->save('components');
+			if (isset($module_data['db']) && file_exists(MODULES.'/'.$_POST['module'].'/meta/db.json')) {
 				$db_json = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/meta/db.json'));
 				global $db;
 				time_limit_pause();
@@ -198,7 +198,7 @@ if (isset($_POST['update_modules_list'])) {
 				unset($db_json, $database, $db_type, $sql_file);
 				time_limit_pause(false);
 			}
-			$permissions_ids = array_merge(
+			$permissions_ids		= array_merge(
 				$User->get_permission(null, $_POST['module']),
 				$User->get_permission(null, $_POST['module'].'/admin'),
 				$User->get_permission(null, $_POST['module'].'/api')
@@ -209,6 +209,8 @@ if (isset($_POST['update_modules_list'])) {
 				}
 				$User->del_permission($permissions_ids);
 			}
+			$module_data			= ['active' => -1];
+			$a->save('components');
 		break;
 		case 'default_module':
 			if (

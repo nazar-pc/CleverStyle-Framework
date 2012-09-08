@@ -1,3 +1,11 @@
+/**
+ * @package		TinyMCE
+ * @category	plugins
+ * @author		Moxiecode Systems AB
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com> (integration into CleverStyle CMS)
+ * @copyright	Moxiecode Systems AB
+ * @license		GNU Lesser General Public License 2.1, see license.txt
+ */
 $(
 	function () {
 		$(

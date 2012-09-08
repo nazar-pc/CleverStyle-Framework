@@ -16,14 +16,15 @@ class Text {
 	 * @param int			$id
 	 * @param bool			$auto_translation	If <b>false</b> - automatic translation will be disabled,
 	 * 											even in case, when it is enabled in system configuration
+	 * @param bool			$store_in_cache		If <b>true</b> - text will be stored in cache
 	 *
 	 * @return bool|string
 	 */
-	function get ($database, $group, $label, $id = null, $auto_translation = true) {
+	function get ($database, $group, $label, $id = null, $auto_translation = true, $store_in_cache = false) {
 		global $Cache, $L, $db, $Config;
 		$id					= (int)$id;
 		$cache_key			= 'texts/'.$database.'/'.($id ?: md5($group).md5($label)).'_'.$L->clang;
-		if (($text = $Cache->$cache_key) !== false) {
+		if ($store_in_cache && ($text = $Cache->$cache_key) !== false) {
 			return $text;
 		}
 		if ($id) {
@@ -82,7 +83,9 @@ class Text {
 				$text['text']
 			);
 		}
-		$Cache->$cache_key	= $text['text'];
+		if ($store_in_cache) {
+			$Cache->$cache_key	= $text['text'];
+		}
 		return $text['text'];
 	}
 	/**
@@ -213,11 +216,13 @@ class Text {
 	 *
 	 * @param int					$database
 	 * @param string|string[]		$data
-	 * @param bool					$auto_translation
+	 * @param bool					$auto_translation	If <b>false</b> - automatic translation will be disabled,
+	 * 													even in case, when it is enabled in system configuration
+	 * @param bool					$store_in_cache		If <b>true</b> - text will be stored in cache
 	 *
 	 * @return bool|string|string[]
 	 */
-	function process ($database, $data, $auto_translation = true) {
+	function process ($database, $data, $auto_translation = true, $store_in_cache = false) {
 		if (empty($data)) {
 			return '';
 		}
@@ -229,8 +234,8 @@ class Text {
 		}
 		return preg_replace_callback(
 			'/\{¶([0-9]+)\}/',
-			function ($input) use ($database, $auto_translation) {
-				return $this->get($database, null, null, $input[1], $auto_translation);
+			function ($input) use ($database, $auto_translation, $store_in_cache) {
+				return $this->get($database, null, null, $input[1], $auto_translation, $store_in_cache);
 			},
 			$data
 		);

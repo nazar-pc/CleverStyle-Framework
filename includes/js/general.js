@@ -74,7 +74,7 @@ $(function() {
 			$(this).dialog();
 		}
 	});
-	$('textarea:not(.cs-noui, .EDITOR, .EDITORH, .SEDITOR)').addClass('cs-form-element').not('.noresize').each(function () {
+	$('textarea:not(.cs-noui)').addClass('cs-form-element').not('.noresize, .EDITOR, .EDITORH, .SEDITOR').each(function () {
 		$(this).autoResize();
 	});
 	$('.cs-header-login-slide').mousedown(function () {
