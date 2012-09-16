@@ -29,7 +29,7 @@ switch ($_POST['mode']) {
 			$save	= false;
 		}
 		if (empty($_POST['sections'])) {
-			$Page->warning($L->no_post_sections_selected);
+			$Page->warning($L->no_post_sections_specified);
 			$save	= false;
 		}
 		if (empty($_POST['content'])) {

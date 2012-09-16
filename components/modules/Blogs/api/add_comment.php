@@ -23,7 +23,7 @@ if (!$_POST['text'] || !strip_tags($_POST['text'])) {
 		])
 	);
 }
-$result	= $Blogs->add_comment($_POST['post'], $_POST['text'], $_POST['parent']);
+$result					= $Blogs->add_comment($_POST['post'], $_POST['text'], $_POST['parent']);
 $ressult['comments']	= false;
 $Page->content(
 	_json_encode($result ? [

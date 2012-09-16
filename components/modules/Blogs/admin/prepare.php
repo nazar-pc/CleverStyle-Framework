@@ -13,7 +13,14 @@ global $Core, $Index, $Page, $L, $Config;
 $Index->title_auto	= false;
 $Page->title($L->administration);
 $Page->title($L->{MODULE});
-$Page->css('components/modules/'.MODULE.'/includes/css/admin.css');
+$Page->css([
+	'components/modules/'.MODULE.'/includes/css/admin.css',
+	'components/modules/'.MODULE.'/includes/css/general.css'
+]);
+$Page->js([
+	'components/modules/'.MODULE.'/includes/js/general.js',
+	'components/modules/'.MODULE.'/includes/js/functions.js'
+]);
 $rc					= $Config->routing['current'];
 $Page->menumore		= h::a(
 	[
@@ -24,14 +31,14 @@ $Page->menumore		= h::a(
 		]
 	],
 	[
-		$L->blogs_sections,
+		$L->browse_sections,
 		[
 			'href'	=> 'admin/'.MODULE.'/browse_sections',
 			'class'	=> isset($rc[0]) && $rc[0] == 'browse_sections' ? 'active' : false
 		]
 	],
 	[
-		$L->blogs_posts,
+		$L->browse_posts,
 		[
 			'href'	=> 'admin/'.MODULE.'/browse_posts',
 			'class'	=> isset($rc[0]) && $rc[0] == 'browse_posts' ? 'active' : false

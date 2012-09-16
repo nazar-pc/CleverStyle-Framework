@@ -29,7 +29,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 				$save	= false;
 			}
 			if (empty($_POST['sections'])) {
-				$Page->warning($L->no_post_sections_selected);
+				$Page->warning($L->no_post_sections_specified);
 				$save	= false;
 			}
 			if (empty($_POST['content'])) {
@@ -42,7 +42,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 			}
 			if ($save) {
 				global $Blogs;
-				$id	= $Blogs->add($_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])));
+				$id		= $Blogs->add($_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])));
 				if ($id) {
 					interface_off();
 					header('Location: '.$Config->server['base_url'].'/'.$module.'/'.$Blogs->get($id)['path'].':'.$id);
@@ -64,54 +64,45 @@ $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages'}(
 		$L->new_post
 	).
+	h::{'div.cs-blogs-post-preview-content'}().
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		[
 			$L->post_title,
-			h::input([
-				'name'		=> 'title',
-				'value'		=> isset($_POST['title']) ? $_POST['title'] : false,
-				'required'
+			h::{'input.cs-blogs-new-post-title[name=title][required]'}([
+				'value'		=> isset($_POST['title']) ? $_POST['title'] : false
 			])
 		],
 		[
 			$L->post_section,
-			h::select(
+			h::{'select.cs-blogs-new-post-sections[size=7][required]'}(
 				get_sections_select_post($disabled),
 				[
 					'name'		=> 'sections[]',
-					'size'		=> 7,
 					'disabled'	=> $disabled,
 					'selected'	=> isset($_POST['sections']) ? $_POST['sections'] : (isset($Config->routing['current'][1]) ? $Config->routing['current'][1] : []),
-					$max_sections < 1 ? 'multiple' : false,
-					'required'
+					$max_sections < 1 ? 'multiple' : false
 				]
 			).
 			($max_sections > 1 ? h::br().$L->select_sections_num($max_sections) : '')
 		],
 		[
 			$L->post_content,
-			h::textarea(
-				isset($_POST['content']) ? $_POST['content'] : '',
-				[
-					'name'	=> 'content',
-					'class'	=> 'cs-wide-textarea EDITOR'
-				]
+			h::{'textarea.cs-blogs-new-post-content.cs-wide-textarea.EDITOR[name=content][required]'}(
+				isset($_POST['content']) ? $_POST['content'] : ''
 			).
 			h::br().
 			$L->post_use_pagebreak
 		],
 		[
 			$L->post_tags,
-			h::input([
-				'name'		=> 'tags',
-				'value'		=> isset($_POST['tags']) ? $_POST['tags'] : false,
-				'required'
+			h::{'input.cs-blogs-new-post-tags[name=tags][required]'}([
+				'value'		=> isset($_POST['tags']) ? $_POST['tags'] : false
 			])
 		]
 	).
-	/*h::{'button#cs-new-post-preview'}(//TODO make this button workable
+	h::{'button.cs-blogs-post-preview'}(
 		$L->preview
-	).*/
+	).
 	h::{'button[type=submit][name=mode][value=publish]'}(
 		$L->publish
 	)

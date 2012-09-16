@@ -24,57 +24,51 @@ $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages'}(
 		$L->editing_of_post($post['title'])
 	).
+	h::{'div.cs-blogs-post-preview-content'}().
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		[
 			$L->post_title,
-			h::input([
-				'name'		=> 'title',
-				'value'		=> isset($_POST['title']) ? $_POST['title'] : $post['title'],
-				'required'
+			h::{'input.cs-blogs-new-post-title[name=title][required]'}([
+				'value'		=> isset($_POST['title']) ? $_POST['title'] : $post['title']
 			])
 		],
 		[
 			$L->post_section,
-			h::select(
+			h::{'select.cs-blogs-new-post-sections[size=7][required]'}(
 				get_sections_select_post($disabled),
 				[
 					'name'		=> 'sections[]',
-					'size'		=> 7,
 					'disabled'	=> $disabled,
 					'selected'	=> isset($_POST['sections']) ? $_POST['sections'] : $post['sections'],
-					$max_sections < 1 ? 'multiple' : false,
-					'required'
+					$max_sections < 1 ? 'multiple' : false
 				]
 			).
 			($max_sections > 1 ? h::br().$L->select_sections_num($max_sections) : '')
 		],
 		[
 			$L->post_content,
-			h::textarea(
-				isset($_POST['content']) ? $_POST['content'] : $post['content'],
-				[
-					'name'	=> 'content',
-					'class'	=> 'cs-wide-textarea EDITOR'
-				]
+			h::{'textarea.cs-blogs-new-post-content.cs-wide-textarea.EDITOR[name=content][required]'}(
+				isset($_POST['content']) ? $_POST['content'] : $post['content']
 			).
 			h::br().
 			$L->post_use_pagebreak
 		],
 		[
 			$L->post_tags,
-			h::input([
-				'name'		=> 'tags',
-				'value'		=> isset($_POST['tags']) ? $_POST['tags'] : implode(', ', $Blogs->get_tag($post['tags'])),
-				'required'
+			h::{'input.cs-blogs-new-post-tags[name=tags][required]'}([
+				'value'		=> isset($_POST['tags']) ? $_POST['tags'] : implode(', ', $Blogs->get_tag($post['tags']))
 			])
 		]
 	).
 	h::{'input[type=hidden][name=id]'}([
 		'value'	=> $post['id']
 	]).
-	/*h::{'button#cs-new-post-preview'}(//TODO make this button workable
-		$L->preview
-	).*/
+	h::{'button.cs-blogs-post-preview'}(
+		$L->preview,
+		[
+			'data-id'	=> $post['id']
+		]
+	).
 	h::{'button[type=submit][name=mode][value=edit_post]'}(
 		$L->save
 	)

@@ -3,6 +3,7 @@
 	"editing_of_post"							: "Editing of post %s",
 	"post_title_empty"							: "Post title is empty",
 	"no_post_sections_specified"				: "No post sections specified",
+	"no_post_tags_specified"					: "No post tags specified",
 	"post_content_empty"						: "Post content is empty",
 	"post_saving_error"							: "An error occured during post saving",
 	"post_deleting_error"						: "An error occured during post deleting",
@@ -58,5 +59,6 @@
 	"maximum_number_of_sections_for_post"		: "Maximum number of sections for post",
 	"maximum_number_of_sections_for_post_info"	: "Every post can be associated with several sections. This parameter specifies the maximum number of such sections.",
 	"enable_comments"							: "Enable comments",
-	"enable_comments_info"						: "Allows to enable or disable posts comments"
+	"enable_comments_info"						: "Allows to enable or disable posts comments",
+	"post_preview_connection_error"				: "Preview error: connection to the server failed. Check your internet connection and try again."
 }

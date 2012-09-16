@@ -31,6 +31,10 @@ $tags				= $Blogs->get_tag($post['tags']);
 $Page->Keywords		= keywords(
 	$post['title'].' '.implode(' ', $tags)).'. '.$Page->Keywords;
 $Page->Description	= description($post['short_content']);
+$Page->link([
+	'href'	=> $Config->server['base_url'].'/'.$module.'/'.$post['path'].':'.$post['id'],
+	'rel'	=> 'canonical'
+]);
 $Index->content(
 	h::{'section.cs-blogs-post article'}(
 		h::header(
@@ -67,7 +71,9 @@ $Index->content(
 			).
 			($post['sections'] != [0] ? h::p(
 				h::icon('suitcase').
-				implode(', ', array_map(
+				implode(
+					', ',
+					array_map(
 						function ($section) use ($Blogs, $L, $module) {
 							$section	= $Blogs->get_section($section);
 							return h::a(
@@ -88,7 +94,9 @@ $Index->content(
 				h::icon(
 					'tag'
 				).
-				implode(', ', array_map(
+				implode(
+					', ',
+					array_map(
 						function ($tag) use ($L, $module) {
 							return h::a(
 								$tag,

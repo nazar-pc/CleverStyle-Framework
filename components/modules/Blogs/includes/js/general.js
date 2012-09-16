@@ -55,4 +55,7 @@ $(function () {
 		$('.cs-blogs-comment-write-send').hide();
 	});
 	$(document).on('click', '.cs-blogs-comment-delete', blogs_delete_comment);
+	$('.cs-blogs-post-preview').mousedown(function () {
+		blogs_post_preview($(this).data('id'))
+	});
 });

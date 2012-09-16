@@ -13,7 +13,7 @@ $Core->register_trigger(
 	'admin/System/components/plugins/enable',
 	function ($data) {
 		if ($data['name'] == basename(__DIR__)) {
-			rebuild_cache();
+			rebuild_pcache();
 		}
 
 	}
@@ -26,14 +26,14 @@ $Core->register_trigger(
 );
 $Core->register_trigger(
 	'admin/System/general/optimization/clean_pcache',
-	function ($data) {
-		clean_pcache($data);
+	function () {
+		clean_pcache();
 	}
 );
 $Core->register_trigger(
 	'System/Page/rebuild_cache',
-	function ($data) {
-		rebuild_cache($data);
+	function () {
+		rebuild_pcache();
 	}
 );
 function clean_pcache ($data = null) {
@@ -48,7 +48,7 @@ function clean_pcache ($data = null) {
 		unlink(PCACHE.'/plugin.'.$plugin.'.js');
 	}
 };
-function rebuild_cache (&$data = null) {
+function rebuild_pcache (&$data = null) {
 	global $Config;
 	$plugin			= basename(__DIR__);
 	if (($data !== null && !isset($Config->components['plugins'][$plugin])) || file_exists(PCACHE.'/plugin.'.$plugin.'.js')) {
