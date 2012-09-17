@@ -13,7 +13,7 @@ $(function() {
 		'padding'	: 0,
 		'overflow'	: 'visible'
 	});
-	$('link[type="text/css"]').each(function () {
+	$('link[rel="stylesheet"]').each(function () {
 		$.setTemplateLayout($(this).attr('href'));
 	});
 	$.showPage	= function () {

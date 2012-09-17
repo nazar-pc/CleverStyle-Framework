@@ -1,28 +1,24 @@
 <?php
 /**
  * @package		CleverStyle CMS
- * @subpackage	Modules builder
+ * @subpackage	Builder
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-if (empty($_SERVER['QUERY_STRING'])) {
-	echo 'Please, specify module name';
+if (!isset($_POST['modules'][0])) {
+	echo h::p('Please, specify module name');
 	return;
-} elseif ($_SERVER['QUERY_STRING'] == 'System') {
-	echo 'Can\'t build module, System module is a part of core, it is not necessary to build it as separate module';
+} elseif ($_POST['modules'][0] == 'System') {
+	echo h::p('Can\'t build module, System module is a part of core, it is not necessary to build it as separate module');
 	return;
-} elseif (!file_exists($mdir = __DIR__.'/components/modules/'.$_SERVER['QUERY_STRING'])) {
-	echo 'Can\'t build module, module directory not found';
+} elseif (!file_exists($mdir = DIR.'/components/modules/'.$_POST['modules'][0])) {
+	echo h::p('Can\'t build module, module directory not found');
 	return;
 } elseif (!file_exists($mdir.'/meta.json')) {
-	echo 'Can\'t build module, meta information (meta.json) not found';
+	echo h::p('Can\'t build module, meta information (meta.json) not found');
 	return;
 }
-define('DIR',	__DIR__);
-require_once	DIR.'/core/classes/class.h.php';
-require_once	DIR.'/core/functions.php';
-require_once	'Archive/Tar.php';
 $version	= _json_decode(file_get_contents($mdir.'/meta.json'))['version'];
 $tar		= new Archive_Tar(DIR.'/build.phar.tar');
 $tar->addString('meta.json', file_get_contents($mdir.'/meta.json'));
@@ -48,7 +44,7 @@ $list		= array_map(
 );
 unset($length);
 $tar->addString('fs.json', _json_encode(array_flip($list)));
-$tar->addString('dir', $_SERVER['QUERY_STRING']);
+$tar->addString('dir', $_POST['modules'][0]);
 unset($list, $tar);
 $phar		= new Phar(DIR.'/build.phar.tar');
 $phar->convertToExecutable(Phar::TAR, Phar::BZ2, '.phar');
@@ -65,5 +61,5 @@ if ($set_stub) {
 }
 $phar->setSignatureAlgorithm(PHAR::SHA512);
 unset($phar);
-rename(DIR.'/build.phar', DIR.'/'.str_replace(' ', '_', $_SERVER['QUERY_STRING']).'_'.$version.'.phar.php');
-echo 'Done! Module '.$_SERVER['QUERY_STRING'].' '.$version;
+rename(DIR.'/build.phar', DIR.'/'.str_replace(' ', '_', $_POST['modules'][0]).'_'.$version.'.phar.php');
+echo h::p('Done! Module '.$_POST['modules'][0].' '.$version);

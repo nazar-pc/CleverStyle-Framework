@@ -63,8 +63,10 @@
 	width: 170px;
 }
 .cs-header-registration-email, .cs-header-login-email {
-	padding-left: 20px;
 	width: 150px !important;
+}
+.cs-header-login-email {
+	padding-left: 20px;
 }
 .cs-header-user-info select {
 	margin-left: -5px;

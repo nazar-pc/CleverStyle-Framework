@@ -400,8 +400,7 @@ class Page {
 				if ($mode == 'file') {
 					$this->core_css[0] .= h::link([
 						'href'	=> $add,
-						'rel'	=> 'stylesheet',
-						'type'	=> 'text/css'
+						'rel'	=> 'stylesheet'
 					]);
 				} elseif ($mode == 'code') {
 					$this->core_css[1] = $add."\n";
@@ -410,8 +409,7 @@ class Page {
 				if ($mode == 'file') {
 					$this->css[0] .= h::link([
 						'href'	=> $add,
-						'rel'	=> 'stylesheet',
-						'type'	=> 'text/css'
+						'rel'	=> 'stylesheet'
 					]);
 				} elseif ($mode == 'code') {
 					$this->css[1] = $add."\n";
@@ -886,9 +884,9 @@ class Page {
 			h::{'div.cs-header-register-form'}(
 				h::{'input.cs-noui.cs-header-registration-email[tabindex=1]'}(
 					[
-					'placeholder'	=> $L->email
+						'placeholder'	=> $L->email
 					]
-				).//TODO foreign login systems processing, open pop-up window instead of list
+				).
 				h::{'button.cs-header-register-process.cs-button-compact[tabindex=2]'}(
 					h::icon('pencil').$L->registration
 				).
@@ -896,17 +894,17 @@ class Page {
 				h::{'button.cs-button-compact.cs-header-back[tabindex=3]'}(
 					h::icon('carat-1-s'),
 					[
-					'data-title'	=> $L->back
+						'data-title'	=> $L->back
 					]
 				).
 				h::{'button.cs-button-compact.cs-header-restore-password-slide[tabindex=4]'}(
 					h::icon('help'),
 					[
-					'data-title'	=> $L->restore_password
+						'data-title'	=> $L->restore_password
 					]
 				),
 				[
-				'style'	=> 'display: none;'
+					'style'	=> 'display: none;'
 				]
 			).
 			h::{'div.cs-header-login-form'}(

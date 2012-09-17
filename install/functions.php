@@ -10,8 +10,7 @@ function install_form () {
 	$timezones = get_timezones_list();
 	return h::{'form[method=post]'}(
 		h::nav(
-			h::{'input[type=radio]'}([
-				'name'		=> 'mode',
+			h::{'input[name=mode][type=radio]'}([
 				'value'		=> ['1', '0'],
 				'in'		=> ['Regular user', 'Expert'],
 				'onclick'	=> "var items = document.getElementsByClassName('expert');"
