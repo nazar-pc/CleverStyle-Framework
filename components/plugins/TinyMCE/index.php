@@ -20,5 +20,5 @@ if (!$Config->core['cache_compress_js_css']) {
 		'components/plugins/'.$plugin.'/TinyMCE.js'
 	]);
 } elseif (!file_exists(PCACHE.'/plugin.'.$plugin.'.js')) {
-	rebuild_cache();
+	rebuild_pcache();
 }

@@ -400,8 +400,7 @@ class Page {
 				if ($mode == 'file') {
 					$this->core_css[0] .= h::link([
 						'href'	=> $add,
-						'rel'	=> 'stylesheet',
-						'type'	=> 'text/css'
+						'rel'	=> 'stylesheet'
 					]);
 				} elseif ($mode == 'code') {
 					$this->core_css[1] = $add."\n";
@@ -410,8 +409,7 @@ class Page {
 				if ($mode == 'file') {
 					$this->css[0] .= h::link([
 						'href'	=> $add,
-						'rel'	=> 'stylesheet',
-						'type'	=> 'text/css'
+						'rel'	=> 'stylesheet'
 					]);
 				} elseif ($mode == 'code') {
 					$this->css[1] = $add."\n";

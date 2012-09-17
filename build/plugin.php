@@ -1,25 +1,21 @@
 <?php
 /**
  * @package		CleverStyle CMS
- * @subpackage	Plugins builder
+ * @subpackage	Builder
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-if (empty($_SERVER['QUERY_STRING'])) {
-	echo 'Please, specify plugin name';
+if (!isset($_POST['plugins'][0])) {
+	echo h::p('Please, specify plugin name');
 	return;
-} elseif (!file_exists($pdir = __DIR__.'/components/plugins/'.$_SERVER['QUERY_STRING'])) {
-	echo 'Can\'t build plugin, plugin directory not found';
+} elseif (!file_exists($pdir = DIR.'/components/plugins/'.$_POST['plugins'][0])) {
+	echo h::p('Can\'t build plugin, plugin directory not found');
 	return;
 } elseif (!file_exists($pdir.'/meta.json')) {
-	echo 'Can\'t build plugin, meta information (meta.json) not found';
+	echo h::p('Can\'t build plugin, meta information (meta.json) not found');
 	return;
 }
-define('DIR',	__DIR__);
-require_once	DIR.'/core/classes/class.h.php';
-require_once	DIR.'/core/functions.php';
-require_once	'Archive/Tar.php';
 $version	= _json_decode(file_get_contents($pdir.'/meta.json'))['version'];
 $tar		= new Archive_Tar(DIR.'/build.phar.tar');
 $tar->addString('meta.json', file_get_contents($pdir.'/meta.json'));
@@ -45,7 +41,7 @@ $list		= array_map(
 );
 unset($length);
 $tar->addString('fs.json', _json_encode(array_flip($list)));
-$tar->addString('dir', $_SERVER['QUERY_STRING']);
+$tar->addString('dir', $_POST['plugins'][0]);
 unset($list, $tar);
 $phar		= new Phar(DIR.'/build.phar.tar');
 $phar->convertToExecutable(Phar::TAR, Phar::BZ2, '.phar');
@@ -62,5 +58,5 @@ if ($set_stub) {
 }
 $phar->setSignatureAlgorithm(PHAR::SHA512);
 unset($phar);
-rename(DIR.'/build.phar', DIR.'/'.str_replace(' ', '_', $_SERVER['QUERY_STRING']).'_'.$version.'.phar.php');
-echo 'Done! Plugin '.$_SERVER['QUERY_STRING'].' '.$version;
+rename(DIR.'/build.phar', DIR.'/'.str_replace(' ', '_', $_POST['plugins'][0]).'_'.$version.'.phar.php');
+echo h::p('Done! Plugin '.$_POST['plugins'][0].' '.$version);

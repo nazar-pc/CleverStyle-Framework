@@ -1667,3 +1667,15 @@ function pages ($page, $total, $url = false, $links = false) {
 	}
 	return h::{'button[name=page]'}($output);
 }
+/**
+ * Returns of direct output of given function
+ *
+ * @param Closure	$closure
+ *
+ * @return string
+ */
+function ob_wrapper ($closure) {
+	ob_start();
+	$closure();
+	return ob_get_clean();
+}
