@@ -10,8 +10,8 @@ namespace	cs\modules\Blogs;
 use			\h;
 global $Page, $Index, $L, $User, $Config;
 $Page->title($L->new_post);
-if (!$User->is('user')) {
-	if ($User->is('bot')) {
+if (!$User->user()) {
+	if ($User->bot()) {
 		define('ERROR_PAGE', 403);
 		return;
 	} else {

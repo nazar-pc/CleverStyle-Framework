@@ -21,7 +21,7 @@
  *  admin/System/components/modules/db/process<br>
  *  ['name'	=> <i>module_name</i>]<br>
  *
- *  admin/System/components/modules/install/process<br>
+ *  admin/System/components/modules/storage/process<br>
  *  ['name'	=> <i>module_name</i>]
  */
 global $Config, $Index, $User, $Core, $Cache;
@@ -177,6 +177,12 @@ if (isset($_POST['update_modules_list'])) {
 				break;
 			}
 			$module_data['active']	= -1;
+			$Core->run_trigger(
+				'admin/System/components/modules/disable',
+				[
+					'name'	=> $_POST['module']
+				]
+			);
 			$Config->save('components');
 			if (isset($module_data['db']) && file_exists(MODULES.'/'.$_POST['module'].'/meta/db.json')) {
 				$db_json = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/meta/db.json'));
@@ -247,7 +253,7 @@ if (isset($_POST['update_modules_list'])) {
 		break;
 		case 'storage':
 			if ($Core->run_trigger(
-				'admin/System/components/modules/install/process',
+				'admin/System/components/modules/storage/process',
 				[
 					'name' => $_POST['module']
 				]

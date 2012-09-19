@@ -429,7 +429,7 @@ class Config {
 		if ($Error->num()) {
 			return false;
 		}
-		$config = [];
+		$config			= [];
 		foreach ($this->admin_parts as $part) {
 			$config[$part] = $this->$part;
 		}
@@ -442,7 +442,7 @@ class Config {
 		} else {
 			unset($config['core']['cache_not_saved'], $this->core['cache_not_saved']);
 		}
-		$Cache->config = $config;
+		$Cache->config	= $config;
 		$L->change($this->core['language']);
 		$this->init();
 		return true;
@@ -457,7 +457,7 @@ class Config {
 		} elseif (is_scalar($parts)) {
 			$parts = [$parts];
 		}
-		$query = '';
+		$query	= '';
 		if (isset($this->data['core']['cache_not_saved'])) {
 			unset($this->data['core']['cache_not_saved']);
 		}
@@ -510,7 +510,7 @@ class Config {
 			 */
 			if (
 				(
-					is_object($User) && $User->is('admin')
+					is_object($User) && $User->admin()
 				) ||
 				$debug_backtrace['class'] == __CLASS__
 			) {
@@ -547,7 +547,7 @@ class Config {
 			!isset($this->data[$item]) ||
 			(
 				(
-					is_object($User) && !$User->is('admin')
+					is_object($User) && !$User->admin()
 				) &&
 				$debug_backtrace['class'] != __CLASS__
 			)

@@ -9,7 +9,7 @@ body {
 	font-family : Tahoma, Verdana, sans-serif;
 	font-size   : 12px;
 	margin      : 0;
-	overflow: hidden;
+	overflow    : hidden;
 	padding     : 100% 0 0 100%;
 	width       : 100%;
 }
@@ -131,25 +131,38 @@ body > footer {
 
 .cs-header-login-slide,
 .cs-header-registration-slide {
-	float      : none !important;
-	margin-top : 4px !important;
+	margin-top : 4px;
 }
 
 .cs-header-back,
-.cs-header-restore-password-slide {
-	float : right !important;
+.cs-header-restore-password-slide,
+.cs-header-login-process,
+.cs-header-register-process,
+.cs-header-restore-password-process {
+	bottom   : 0;
+	position : absolute;
+	right    : 0;
 }
 
-.cs-header-register-form .cs-header-back,
-.cs-header-register-form .cs-header-restore-password-slide,
+.cs-header-restore-password-slide {
+	right : 26px;
+}
+
+.cs-header-register-process,
+.cs-header-restore-password-process {
+	bottom : auto;
+	top    : 25px;
+}
+
+.cs-header-login-process,
+.cs-header-register-process,
+.cs-header-restore-password-process {
+	left  : 0;
+	right : auto;
+}
+
 .cs-header-restore-password-form .cs-header-back {
 	margin-top : 4px !important;
-}
-
-.cs-header-register-process+div,
-.cs-header-restore-password-process+div {
-	float  : right;
-	height : 27px;
 }
 
 .cs-center-odd > tbody > tr > td:nth-child(odd),

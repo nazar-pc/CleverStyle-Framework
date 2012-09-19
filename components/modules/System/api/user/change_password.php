@@ -18,7 +18,7 @@ if (
 ) {
 	sleep(1);
 	return;
-} elseif (!$User->is('user')) {
+} elseif (!$User->user()) {
 	return;
 } elseif (!$_POST['new_password']) {
 	$Page->content($L->please_type_new_password);

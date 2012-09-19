@@ -34,8 +34,8 @@ $Page->title($L->latest_posts);
 $Page->Keywords			= keywords($L->{MODULE}.' '.implode(' ', $keywords).' '.$L->latest_posts).', '.$Page->Keywords;
 $Page->Description		= description($L->{MODULE}.' - '.implode(' - ', $description).' - '.$L->latest_posts.'. '.$Page->Description);
 $module					= path($L->{MODULE});
-if ($User->is('user')) {
-	if ($User->is('admin') && $User->get_user_permission('admin/'.MODULE, 'index')) {
+if ($User->user()) {
+	if ($User->admin() && $User->get_user_permission('admin/'.MODULE, 'index')) {
 		$Index->content(
 			h::{'a.cs-button-compact'}(
 				h::icon('wrench'),
@@ -85,7 +85,7 @@ if (empty($posts)) {
 }
 $Index->content(
 	h::{'section.cs-blogs-post-latest'}(
-		get_posts_list($posts, $module)
+		get_posts_list($posts)
 	).
 	(
 		$posts ? h::{'nav.cs-center'}(

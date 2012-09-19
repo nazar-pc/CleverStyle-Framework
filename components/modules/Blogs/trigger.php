@@ -6,8 +6,34 @@
  * @copyright	Copyright (c) 2011-2012 by Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Core, $Config;
-$clean_pcache = function ($data = null) {
+namespace	cs\modules\Blogs;
+use			\h;
+global $Core;
+$Core->register_trigger(
+	'admin/System/components/modules/disable',
+	function ($data) {
+		if ($data['name'] == basename(__DIR__)) {
+			clean_pcache();
+		}
+	}
+);
+$Core->register_trigger(
+	'admin/System/general/optimization/clean_pcache',
+	function () {
+		clean_pcache();
+	}
+);
+$Core->register_trigger(
+	'System/Page/rebuild_cache',
+	function () {
+		$module	= basename(__DIR__);
+		if (file_exists(PCACHE.'/module.'.$module.'.js') && file_exists(PCACHE.'/module.'.$module.'.css')) {
+			return;
+		}
+		rebuild_pcache();
+	}
+);
+function clean_pcache ($data = null) {
 	$module	= basename(__DIR__);
 	if ($data['name'] == $module || $data === null) {
 		if (file_exists(PCACHE.'/module.'.$module.'.js')) {
@@ -17,52 +43,38 @@ $clean_pcache = function ($data = null) {
 			unlink(PCACHE.'/module.'.$module.'.css');
 		}
 	}
-};
-$Core->register_trigger(
-	'admin/System/components/modules/disable',
-	$clean_pcache
-);
-$Core->register_trigger(
-	'admin/System/general/optimization/clean_pcache',
-	$clean_pcache
-);
-$Core->register_trigger(
-	'System/Page/rebuild_cache',
-	function ($data) {
-		$module	= basename(__DIR__);
-		if (file_exists(PCACHE.'/module.'.$module.'.js') && file_exists(PCACHE.'/module.'.$module.'.css')) {
-			return;
-		}
-		file_put_contents(
-			PCACHE.'/module.'.$module.'.js',
-			$key	= gzencode(
-				file_get_contents(MODULES.'/'.$module.'/includes/js/functions.js').
-				file_get_contents(MODULES.'/'.$module.'/includes/js/general.js'),
-				9
-			),
-			LOCK_EX | FILE_BINARY
-		);
-		$data['key']	.= md5($key);
-		file_put_contents(
-			PCACHE.'/module.'.$module.'.css',
-			$key	= gzencode(
-				file_get_contents(MODULES.'/'.$module.'/includes/css/general.css'),
-				9
-			),
-			LOCK_EX | FILE_BINARY
-		);
+}
+function rebuild_pcache (&$data = null) {
+	$module	= basename(__DIR__);
+	file_put_contents(
+		PCACHE.'/module.'.$module.'.js',
+		$key	= gzencode(
+			file_get_contents(MODULES.'/'.$module.'/includes/js/functions.js').
+			file_get_contents(MODULES.'/'.$module.'/includes/js/general.js'),
+			9
+		),
+		LOCK_EX | FILE_BINARY
+	);
+	file_put_contents(
+		PCACHE.'/module.'.$module.'.css',
+		$key	.= gzencode(
+			file_get_contents(MODULES.'/'.$module.'/includes/css/general.css'),
+			9
+		),
+		LOCK_EX | FILE_BINARY
+	);
+	if ($data !== null) {
 		$data['key']	.= md5($key);
 	}
-);
+}
 $Core->register_trigger(
 	'admin/System/components/modules/install/process',
 	function ($data) use ($Core) {
 		global $User, $Config;
 		$module		= basename(__DIR__);
-		if ($data['name'] != $module || !$User->is('admin')) {
+		if ($data['name'] != $module || !$User->admin()) {
 			return true;
 		}
-		time_limit_pause();
 		$Config->module($module)->set(
 			[
 				'posts_per_page'	=> 10,
@@ -70,7 +82,6 @@ $Core->register_trigger(
 				'enable_comments'	=> 1
 			]
 		);
-		time_limit_pause(false);
 		return true;
 	}
 );
@@ -79,7 +90,7 @@ $Core->register_trigger(
 	function ($data) use ($Core) {
 		global $User, $Cache, $Config, $db;
 		$module		= basename(__DIR__);
-		if ($data['name'] != $module || !$User->is('admin')) {
+		if ($data['name'] != $module || !$User->admin()) {
 			return true;
 		}
 		time_limit_pause();
@@ -103,8 +114,11 @@ $Core->register_trigger(
 			}
 			unset($post);
 		}
-		unset($posts);
-		unset($Cache->$module);
+		unset(
+			$posts,
+			$Cache->$module
+		);
+		clean_pcache();
 		time_limit_pause(false);
 		return true;
 	}

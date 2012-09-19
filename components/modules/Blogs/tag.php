@@ -15,8 +15,8 @@ if (!isset($rc[0])) {
 	return;
 }
 $module					= path($L->{MODULE});
-if ($User->is('user')) {
-	if ($User->is('admin') && $User->get_user_permission('admin/'.MODULE, 'index')) {
+if ($User->user()) {
+	if ($User->admin() && $User->get_user_permission('admin/'.MODULE, 'index')) {
 		$Index->content(
 			h::{'a.cs-button-compact'}(
 				h::icon('wrench'),
@@ -118,7 +118,7 @@ if (empty($posts)) {
 }
 $Index->content(
 	h::{'section.cs-blogs-post-latest'}(
-		get_posts_list($posts, $module)
+		get_posts_list($posts)
 	).
 	(
 		$posts ? h::{'nav.cs-center'}(

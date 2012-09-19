@@ -1,8 +1,8 @@
 {
 	"package"		: "Blogs",
 	"category"		: "modules",
-	"version"		: "0.013",
-	"description"	: "Adds blogsging functionality",
+	"version"		: "0.014",
+	"description"	: "Adds blogging functionality",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",
 	"license"		: "MIT License",

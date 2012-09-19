@@ -59,7 +59,7 @@ class Index {
 		if (
 			!$Config->core['site_mode'] &&
 			!(
-				$User->is('admin') ||
+				$User->admin() ||
 				(
 					API && $Config->routing['current'] === ['user', 'login']
 				)
@@ -74,7 +74,7 @@ class Index {
 			ADMIN &&
 			file_exists($admin_path) && (file_exists($admin_path.'/index.php') || file_exists($admin_path.'/index.json'))
 		) {
-			if (!($User->is('admin') && $User->get_user_permission($this->permission_group = 'admin/'.MODULE, 'index'))) {
+			if (!($User->admin() && $User->get_user_permission($this->permission_group = 'admin/'.MODULE, 'index'))) {
 				define('ERROR_PAGE', 403);
 				$this->__finish();
 				return;
@@ -257,7 +257,7 @@ class Index {
 	 */
 	protected function mainmenu () {
 		global $Config, $L, $Page, $User, $Core;
-		if ($User->is('admin') || ($Config->can_be_admin && $Config->core['ip_admin_list_only'])) {
+		if ($User->admin() || ($Config->can_be_admin && $Config->core['ip_admin_list_only'])) {
 			if (defined('DEBUG') && DEBUG) {
 				$Page->mainmenu .= h::a(
 					mb_substr($L->debug, 0, 1),
@@ -446,7 +446,7 @@ class Index {
 				'var	base_url = "'.$Config->server['base_url']."\",\n".
 				'	current_base_url = "'.$Config->server['base_url'].'/'.($this->admin ? 'admin/' : '').MODULE."\",\n".
 				'	public_key = "'.$Core->config('public_key')."\",\n".
-				($User->is('guest') ?
+				($User->guest() ?
 					'	rules_text = "'.get_core_ml_text('rules')."\",\n"
 				: '').
 				'	module = "'.MODULE."\",\n".
@@ -603,7 +603,7 @@ class Index {
 		if (
 			!$Config->core['site_mode'] &&
 			!(
-				$User->is('admin') ||
+				$User->admin() ||
 				(
 					API && $Config->routing['current'] === ['user', 'login']
 				)

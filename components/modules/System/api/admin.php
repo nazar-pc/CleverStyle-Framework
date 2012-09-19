@@ -8,4 +8,4 @@
  * @license		MIT License, see license.txt
  */
 global $User, $Index;
-$Index->stop = !$User->is('admin');
+$Index->stop = !$User->admin();

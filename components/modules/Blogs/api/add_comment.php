@@ -12,7 +12,7 @@ include_once MFOLDER.'/../prepare.php';
 /**
  * If AJAX request from local referer, user is not guest
  */
-if (!$Config->server['referer']['local'] || !$Config->server['ajax'] || !$User->is('user')) {
+if (!$Config->server['referer']['local'] || !$Config->server['ajax'] || !$User->user()) {
 	sleep(1);
 	return;
 }

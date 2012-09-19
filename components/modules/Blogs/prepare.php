@@ -17,6 +17,10 @@ if (!API) {
 			'components/modules/'.MODULE.'/includes/js/general.js',
 			'components/modules/'.MODULE.'/includes/js/functions.js'
 		]);
+	} elseif (!(
+		file_exists(PCACHE.'/module.'.MODULE.'.js') && file_exists(PCACHE.'/module.'.MODULE.'.css')
+	)) {
+		rebuild_pcache();
 	}
 	$rc					= &$Config->__get('routing')['current'];
 	if (!isset($rc[0])) {
@@ -79,8 +83,9 @@ if (!API) {
 		}
 		return $list;
 	}
-	function get_posts_list ($posts, $module) {
+	function get_posts_list ($posts) {
 		global $Blogs, $L, $User, $Config;
+		$module		= path($L->{MODULE});
 		$content	= [];
 		if (empty($posts)) {
 			return '';
@@ -149,11 +154,9 @@ if (!API) {
 		return h::article($content);
 	}
 }
-function get_comments_tree ($comments, $post, $module = null) {
+function get_comments_tree ($comments, $post) {
 	global	$User, $L;
-	if ($module === null) {
-		$module	= path($L->{MODULE});
-	}
+	$module		= path($L->{MODULE});
 	$content	= '';
 	if (is_array($comments) && !empty($comments)) {
 		foreach ($comments as $comment) {
@@ -200,7 +203,7 @@ function get_comments_tree ($comments, $post, $module = null) {
 				(
 					$User->id == $comment['user'] ||
 					(
-						$User->is('admin') &&
+						$User->admin() &&
 						$User->get_user_permission('admin/'.MODULE, 'index') &&
 						$User->get_user_permission('admin/'.MODULE, 'edit_comment')
 					) ? h::{'icon.cs-blogs-comment-edit.cs-pointer'}('pencil') : ''
@@ -210,7 +213,7 @@ function get_comments_tree ($comments, $post, $module = null) {
 					(
 						$User->id == $comment['user'] ||
 						(
-							$User->is('admin') &&
+							$User->admin() &&
 							$User->get_user_permission('admin/'.MODULE, 'index') &&
 							$User->get_user_permission('admin/'.MODULE, 'delete_comment')
 						)
@@ -220,7 +223,7 @@ function get_comments_tree ($comments, $post, $module = null) {
 					$comment['text']
 				).
 				(
-					$comment['comments'] ? get_comments_tree($comment['comments'], $post, $module) : ''
+					$comment['comments'] ? get_comments_tree($comment['comments'], $post) : ''
 				),
 				[
 					'id'	=> 'comment_'.$comment['id']

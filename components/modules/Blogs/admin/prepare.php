@@ -47,17 +47,18 @@ $Page->menumore		= h::a(
 );
 include_once MFOLDER.'/../class.php';
 $Core->create('cs\\modules\\Blogs\\Blogs');
-function get_sections_rows ($structure = null, $level = 0, $module = null) {
+function get_sections_rows ($structure = null, $level = 0, &$content = null) {
 	global $L;
-	$root					= false;
+	$root		= false;
+	$module		= path($L->{MODULE});
 	if ($structure === null) {
 		global $Blogs;
 		$structure			= $Blogs->get_sections_structure();
 		$structure['title']	= $L->root_section;
 		$root				= true;
-		$module				= path($L->{MODULE});
+		$content			= [];
 	}
-	$content				= [[
+	$content[]	= [
 		[
 			h::a(
 				$structure['title'].
@@ -100,13 +101,13 @@ function get_sections_rows ($structure = null, $level = 0, $module = null) {
 				]
 			]
 		) : false)
-	]];
+	];
 	if (!empty($structure['sections'])) {
 		foreach ($structure['sections'] as $section) {
-			$content	= array_merge($content, get_sections_rows($section, $level+1, $module));
+			get_sections_rows($section, $level+1, $content);
 		}
 	}
-	return $content;
+	return [$content];
 }
 function get_sections_select_post (&$disabled, $current = null, $structure = null, $level = 0) {
 	$list	= [

@@ -87,7 +87,7 @@ class Cache {
 			return false;
 		}
 		global $User;
-		if ($process_mirrors && is_object($User) && !$User->is('system')) {
+		if ($process_mirrors && is_object($User) && !$User->system()) {
 			global $Core;
 			$Core->api_request('System/admin/cache/del', ['item' => $item]);
 		}

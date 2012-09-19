@@ -12,7 +12,7 @@
  *  System/profile/settings
  */
 global $Core, $Config, $L, $User, $Page, $Index;
-if (!$User->is('user')) {
+if (!$User->user()) {
 	define('ERROR_PAGE', 403);
 	$Page->error_page();
 	return;

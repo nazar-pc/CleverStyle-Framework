@@ -19,7 +19,7 @@ if (
 if (
 	$post['user'] != $User->id &&
 	!(
-		$User->is('admin') &&
+		$User->admin() &&
 		$User->get_user_permission('admin/'.MODULE, 'index') &&
 		$User->get_user_permission('admin/'.MODULE, 'edit_post')
 	)

@@ -97,7 +97,7 @@ class Error {
 	 */
 	function display () {
 		global $User;
-		if ($User->is('admin')) {
+		if ($User->admin()) {
 			if (!empty($this->errors_list_all)) {
 				$this->errors_list_all		= str_replace('%time%', date('H:i:s', TIME), $this->errors_list_all);
 				global $Page;

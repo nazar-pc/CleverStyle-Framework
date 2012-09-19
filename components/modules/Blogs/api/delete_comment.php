@@ -13,14 +13,14 @@ include_once MFOLDER.'/../prepare.php';
 /**
  * If AJAX request from local referer, user is not guest
  */
-if (!$Config->server['referer']['local'] || !$Config->server['ajax'] || !$User->is('user')) {
+if (!$Config->server['referer']['local'] || !$Config->server['ajax'] || !$User->user()) {
 	sleep(1);
 	return;
 }
 if (
 	!($Blogs->get($_POST['id'])['user'] == $User->id) &&
 	!(
-		$User->is('admin') &&
+		$User->admin() &&
 		$User->get_user_permission('admin/'.MODULE, 'index') &&
 		$User->get_user_permission('admin/'.MODULE, 'delete_comment')
 	)
@@ -39,7 +39,7 @@ $Page->content(
 		'content'	=> !$comment['comments'] && (
 		   $User->id == $comment['user'] ||
 		   (
-			   $User->is('admin') &&
+			   $User->admin() &&
 			   $User->get_user_permission('admin/'.MODULE, 'index') &&
 			   $User->get_user_permission('admin/'.MODULE, 'delete_comment')
 		   )

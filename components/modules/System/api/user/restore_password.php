@@ -18,7 +18,7 @@ if (
 ) {
 	sleep(1);
 	return;
-} elseif (!$User->is('guest')) {
+} elseif (!$User->guest()) {
 	return;
 } elseif (!$_POST['email']) {
 	$Page->content($L->please_type_your_email);

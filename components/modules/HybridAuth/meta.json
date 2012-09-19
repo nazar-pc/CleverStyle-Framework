@@ -1,0 +1,20 @@
+{
+	"package"		: "HybridAuth",
+	"category"		: "modules",
+	"version"		: "2.1.0-cs1",
+	"description"	: "Module for intergation with social networks. Includes HybridAuth 2.1.0 core and additional providers 1.7",
+	"author"		: "HybridAuth authors",
+	"website"		: "hybridauth.sourceforge.net",
+	"license"		: "MIT License",
+	"provide"		: [
+		"social_integration"
+	],
+	"multilingual"	: [
+		"interface",
+		"content"
+	],
+	"languages"		: [
+		"English",
+		"Русский"
+	]
+}

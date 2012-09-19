@@ -13,7 +13,7 @@ $ajax	= $Config->server['ajax'];
 if (isset($rc[2])) {
 	switch ($rc[2]) {
 		case 'del':
-			if ($User->is('system')) {
+			if ($User->system()) {
 				unset($Cache->$_POST['data']['item']);
 			}
 		break;

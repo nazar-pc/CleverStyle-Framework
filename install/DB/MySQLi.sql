@@ -115,7 +115,6 @@ CREATE TABLE `[prefix]users` (
   `icq` int(9) unsigned NOT NULL DEFAULT '0',
   `skype` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `about` text COLLATE utf8_unicode_ci NOT NULL,
-  `data` longtext COLLATE utf8_unicode_ci NOT NULL COMMENT 'Field for addition data in JSON format',
   PRIMARY KEY (`id`),
   KEY `login` (`login`(5),`username`(5),`email`(5)),
   KEY `login_hash` (`login_hash`(5)),
@@ -131,6 +130,14 @@ CREATE TABLE `[prefix]users` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `[prefix]users` (`login`, `login_hash`, `status`) VALUES ('guest', '5cf371cef0648f2656ddc13b773aa642251267dbd150597506e96c3a', '1');
+
+CREATE TABLE IF NOT EXISTS `[prefix]users_data` (
+  `id` bigint(20) unsigned NOT NULL COMMENT 'User id',
+  `item` varchar(1024) NOT NULL,
+  `value` longtext NOT NULL,
+  PRIMARY KEY (`id`,`item`(255)),
+  KEY `item` (`item`(255))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `[prefix]users_groups` (
   `id` int(10) unsigned NOT NULL COMMENT 'User id',

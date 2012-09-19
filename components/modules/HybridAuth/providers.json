@@ -1,0 +1,26 @@
+{
+	"Facebook"	: {
+		"keys"	: [
+			"id",
+			"secret"
+		]
+	},
+	"Twitter"	: {
+		"keys"	: [
+			"key",
+			"secret"
+		]
+	},
+	"Vkontakte"	: {
+		"keys"	: [
+			"id",
+			"secret"
+		]
+	},
+	"Odnoklassniki"	: {
+		"keys"	: [
+			"id",
+			"secret"
+		]
+	}
+}

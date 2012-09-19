@@ -755,15 +755,10 @@ class h {
 					count($data) > 2 ||
 					(
 						isset($data[1]) &&
-						is_array_indexed($data[1]) &&
-						(
-							!is_array($data[1][0]) || !in_array($data[1][0], self::$unit_atributes)
-						)
+						is_array_indexed($data[1])
 					)
 				) {
-					$data	= [
-						$data
-					];
+					$data	= [$data];
 				}
 				foreach ($data[0] as $d) {
 					if (isset($d[0]) && is_array_indexed($d[0]) && !in_array($d[0][0], self::$unit_atributes)) {
@@ -776,7 +771,12 @@ class h {
 								)
 							)
 						) {
-							$output[]	= self::__callStatic($input[1], $d);
+							$output_	= [];
+							foreach ($d as $d_) {
+								$output_[]	= self::__callStatic($input[1], $d_);
+							}
+							$output[]	= $output_;
+							unset($output_);
 						} else {
 							$output[]	= [
 								self::__callStatic($input[1], $d[0]),

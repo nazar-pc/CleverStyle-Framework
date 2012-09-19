@@ -12,7 +12,7 @@ $Core->register_trigger(
 	function ($data) use ($Core) {
 		global $User, $Cache;
 		$module			= basename(__DIR__);
-		if ($data['name'] != $module || !$User->is('admin')) {
+		if ($data['name'] != $module || !$User->admin()) {
 			return true;
 		}
 		time_limit_pause();

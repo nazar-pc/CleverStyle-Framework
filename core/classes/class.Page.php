@@ -14,6 +14,8 @@ use			\h;
  *  ['id'	=> <i>user_id</i>]<br>
  *  System/Page/rebuild_cache
  *  ['key'	=> <i>&$key</i>]		//Reference to the key, that will be appended to all css and js files, can be changed to reflect JavaScript and CSS changes<br>
+ *  System/Page/external_login_list
+ *  ['list'	=> <i>&$list</i>]		//Reference to the list of external login systems
  */
 class Page {
 	public		$Content, $interface = true,
@@ -155,7 +157,7 @@ class Page {
 						is_object($Config) && $Config->core['site_mode']
 					) &&
 					!(
-						is_object($User) && $User->is('admin')
+						is_object($User) && $User->admin()
 					) &&
 					code_header(503) &&
 					!(
@@ -177,7 +179,7 @@ class Page {
 	 * Processing of template, substituting of content, preparing for the output
 	 */
 	protected function prepare () {
-		global $Config, $L;
+		global $Config;
 		/**
 		 * Loading of template
 		 */
@@ -811,7 +813,7 @@ class Page {
 	 */
 	protected function get_header_info () {
 		global $User, $L, $Core;
-		if (is_object ($User) && $User->is('user')) {
+		if (is_object ($User) && $User->user()) {
 			if ($User->avatar) {
 				$this->user_avatar_image = 'url('.h::url($User->avatar, true).')';
 			} else {
@@ -847,8 +849,15 @@ class Page {
 				]
 			);
 		} else {
-			$this->user_avatar_image = 'url(/includes/img/guest.gif)';
-			$this->user_info = h::{'div.cs-header-anonym-form'}(
+			$external_systems_list		= '';
+			$Core->run_trigger(
+				'System/Page/external_login_list',
+				[
+					'list'	=> &$external_systems_list
+				]
+			);
+			$this->user_avatar_image	= 'url(/includes/img/guest.gif)';
+			$this->user_info			= h::{'div.cs-header-anonym-form'}(
 				h::b($L->hello.', '.$L->guest.'!').
 				h::br().
 				h::{'button.cs-header-login-slide.cs-button-compact'}(
@@ -864,7 +873,7 @@ class Page {
 			h::{'div.cs-header-restore-password-form'}(
 				h::{'input.cs-noui.cs-header-restore-password-email[tabindex=1]'}(
 					[
-						'placeholder'	=> $L->email
+						'placeholder'	=> $L->login_or_email
 					]
 				).
 				h::{'button.cs-header-restore-password-process.cs-button-compact[tabindex=2]'}(
@@ -891,13 +900,13 @@ class Page {
 					h::icon('pencil').$L->registration
 				).
 				h::div().
-				h::{'button.cs-button-compact.cs-header-back[tabindex=3]'}(
+				h::{'button.cs-button-compact.cs-header-back[tabindex=4]'}(
 					h::icon('carat-1-s'),
 					[
 						'data-title'	=> $L->back
 					]
 				).
-				h::{'button.cs-button-compact.cs-header-restore-password-slide[tabindex=4]'}(
+				h::{'button.cs-button-compact.cs-header-restore-password-slide[tabindex=3]'}(
 					h::icon('help'),
 					[
 						'data-title'	=> $L->restore_password
@@ -910,7 +919,7 @@ class Page {
 			h::{'div.cs-header-login-form'}(
 				h::{'input.cs-noui.cs-header-login-email[tabindex=1]'}([
 					'placeholder'	=> $L->login_or_email
-				]).//TODO foreign login systems processing, open pop-up window instead of list
+				]).
 				h::{'input.cs-noui.cs-header-user-password[type=password][tabindex=2]'}([
 					'placeholder'	=> $L->password
 				]).
@@ -931,7 +940,8 @@ class Page {
 				[
 					'style'	=> 'display: none;'
 				]
-			);
+			).
+			$external_systems_list;
 		}
 	}
 	/**
@@ -985,7 +995,7 @@ class Page {
 			 */
 			if (
 				is_object($User) && (
-					$User->is('admin') || (
+					$User->admin() || (
 						$Config->can_be_admin && $Config->core['ip_admin_list_only']
 					)
 				) && defined('DEBUG') && DEBUG

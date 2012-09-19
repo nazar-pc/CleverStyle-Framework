@@ -3,7 +3,7 @@
  * @package		TinyMCE
  * @category	plugins
  * @author		Moxiecode Systems AB
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com> (integration into CleverStyle CMS)
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com> (integration with CleverStyle CMS)
  * @copyright	Moxiecode Systems AB
  * @license		GNU Lesser General Public License 2.1, see license.txt
  */
@@ -15,13 +15,14 @@ $Core->register_trigger(
 		if ($data['name'] == basename(__DIR__)) {
 			rebuild_pcache();
 		}
-
 	}
 );
 $Core->register_trigger(
 	'admin/System/components/plugins/disable',
 	function ($data) {
-		clean_pcache($data);
+		if ($data['name'] == basename(__DIR__)) {
+			clean_pcache($data);
+		}
 	}
 );
 $Core->register_trigger(
@@ -51,7 +52,13 @@ function clean_pcache ($data = null) {
 function rebuild_pcache (&$data = null) {
 	global $Config;
 	$plugin			= basename(__DIR__);
-	if (($data !== null && !isset($Config->components['plugins'][$plugin])) || file_exists(PCACHE.'/plugin.'.$plugin.'.js')) {
+	if (
+		!$Config->core['cache_compress_js_css'] ||
+		(
+			$data !== null && !isset($Config->components['plugins'][$plugin])
+		) ||
+		file_exists(PCACHE.'/plugin.'.$plugin.'.js')
+	) {
 		return;
 	}
 	$files[]		= 'tiny_mce';

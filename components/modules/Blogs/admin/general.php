@@ -13,7 +13,7 @@ $module_configuration	= $Config->module(MODULE);
 $Index->apply_button	= false;
 $Page->title($L->general);
 $Index->content(
-	h::{'table.cs-left-all.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
+	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		[
 			h::info('posts_per_page'),
 			h::{'input[type=number][min=1]'}([

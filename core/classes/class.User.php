@@ -345,9 +345,6 @@ class User {
 			unset($new_items);
 			if (is_array($res)) {
 				$this->update_cache[$user] = true;
-				if (isset($res['data'])) {
-					$res['data'] = _json_decode($res['data']);
-				}
 				$data = array_merge((array)$data, $res);
 				$result = array_merge($result, $res);
 				/**
@@ -392,9 +389,6 @@ class User {
 				$new_data = $this->db()->qf("SELECT `$item` FROM `[prefix]users` WHERE `id` = '$user' LIMIT 1", true);
 				if ($new_data !== false) {
 					$this->update_cache[$user] = true;
-					if ($item == 'data') {
-						$new_data = _json_decode($new_data);
-					}
 					return $data[$item] = $new_data;
 				}
 			}
@@ -469,16 +463,29 @@ class User {
 	 * @return bool|string|mixed[]
 	 */
 	function get_data ($item, $user = false) {
-		$data	= $this->get('data', $user);
-		if (is_array($item)) {
-			$return	= [];
-			foreach ($item as $i) {
-				$return[$i]	= isset($data[$i]) ? $data[$i] : false;
-			}
-			return $return;
-		} else {
-			return isset($return[$item]) ? $return[$item] : false;
+		$user	= (int)($user ?: $this->id);
+		if (!$user) {
+			return false;
 		}
+		global $Cache;
+		if (($data = $Cache->{'users/data/'.$user}) === false || !isset($data[$item])) {
+			if (!$data) {
+				$data	= [];
+			}
+			$data[$item]					= $this->db()->qf(
+				[
+					"SELECT `value`
+					FROM `[prefix]users_data`
+					WHERE
+						`id`	= '$user' AND
+						`item`	= '%s'",
+					$item
+				],
+				true
+			);
+			unset($Cache->{'users/data/'.$user});
+		}
+		return $data[$item];
 	}
 	/**
 	 * Setting additional data item(s) of specified user
@@ -490,17 +497,28 @@ class User {
 	 * @return bool
 	 */
 	function set_data ($item, $value = null, $user = false) {
-		$data	= $this->get('data', $user);
-		if (is_array($item)) {
-			foreach ($item as $i => $v) {
-				$data[$i]	= $v;
-			}
-			unset($i, $v);
-		} else {
-			$data[$item]	= $value;
+		$user	= (int)($user ?: $this->id);
+		if (!$user) {
+			return false;
 		}
-		$this->set('data', $data, $user);
-		return true;
+		global $Cache;
+		$result	= $this->db()->q(
+			"INSERT INTO `[prefix]users_data`
+				(
+					`id`,
+					`item`,
+					`value`
+				) VALUES (
+					'%1\$s',
+					'%2\$s',
+					'%3\$s'
+				)
+			ON DUPLICATE KEY UPDATE `value` = '%3\$s'",
+			$item,
+			$value
+		);
+		unset($Cache->{'users/data/'.$user});
+		return $result;
 	}
 	/**
 	 * Deletion of additional data item(s) of specified user
@@ -511,17 +529,20 @@ class User {
 	 * @return bool|string|string[]
 	 */
 	function del_data ($item, $user = false) {
-		$data	= $this->get('data', $user);
-		if (is_array($item)) {
-			foreach ($item as $i) {
-				unset($data[$i]);
-			}
-			unset($i);
-		} else {
-			unset($data[$item]);
+		$user	= (int)($user ?: $this->id);
+		if (!$user) {
+			return false;
 		}
-		$this->set('data', $data, $user);
-		return true;
+		global $Cache;
+		$result	= $this->db()->q(
+			"DELETE FROM `[prefix]users_data`
+			WHERE
+				`id`	= '$user' AND
+				`item`	= '%s'",
+			$item
+		);
+		unset($Cache->{'users/data/'.$user});
+		return $result;
 	}
 	/**
 	 * Returns link to the object of db for reading (can be mirror DB)
@@ -559,14 +580,44 @@ class User {
 		return $this->db_prime;
 	}
 	/**
-	 * Who is current visitor
-	 *
-	 * @param string $mode admin|user|guest|bot|system
+	 * Is admin
 	 *
 	 * @return bool
 	 */
-	function is ($mode) {
-		return isset($this->current['is'][$mode]) && $this->current['is'][$mode];
+	function admin () {
+		return $this->current['is']['admin'];
+	}
+	/**
+	 * Is user
+	 *
+	 * @return bool
+	 */
+	function user () {
+		return $this->current['is']['user'];
+	}
+	/**
+	 * Is guest
+	 *
+	 * @return bool
+	 */
+	function guest () {
+		return $this->current['is']['guest'];
+	}
+	/**
+	 * Is bot
+	 *
+	 * @return bool
+	 */
+	function bot () {
+		return $this->current['is']['bot'];
+	}
+	/**
+	 * Is system
+	 *
+	 * @return bool
+	 */
+	function system () {
+		return $this->current['is']['system'];
 	}
 	/**
 	 * Returns user id by login or email hash (sha224)
@@ -633,7 +684,7 @@ class User {
 	 */
 	function get_user_permission ($group, $label, $user = false) {
 		$user = (int)($user ?: $this->id);
-		if ($this->is('system') || $user == 2) {
+		if ($this->system() || $user == 2) {
 			return true;
 		}
 		if (!$user) {
@@ -662,7 +713,7 @@ class User {
 			if (isset($this->data[$user]['permissions'][$permission])) {
 				return (bool)$this->data[$user]['permissions'][$permission];
 			} else {
-				return $this->is('admin') ? true : strpos($group, 'admin/') !== 0;
+				return $this->admin() ? true : strpos($group, 'admin/') !== 0;
 			}
 		} else {
 			return true;
@@ -1242,7 +1293,7 @@ class User {
 	 * @return bool|string
 	 */
 	function get_session () {
-		if ($this->is('bot') && $this->id == 1) {
+		if ($this->bot() && $this->id == 1) {
 			return '';
 		}
 		return $this->current['session'];
@@ -1255,7 +1306,7 @@ class User {
 	 * @return int					User id
 	 */
 	function get_session_user ($session_id = '') {
-		if ($this->is('bot') && $this->id == 1) {
+		if ($this->bot() && $this->id == 1) {
 			return 1;
 		}
 		$this->current['session'] = _getcookie('session');
@@ -1344,7 +1395,7 @@ class User {
 	 * @return bool
 	 */
 	function add_session ($id) {
-		if ($this->is('bot') && $this->id == 1) {
+		if ($this->bot() && $this->id == 1) {
 			return true;
 		}
 		$id = (int)$id;
@@ -1407,7 +1458,7 @@ class User {
 	 * @return bool
 	 */
 	function del_session ($session_id = null) {
-		if ($this->is('bot') && $this->id == 1) {
+		if ($this->bot() && $this->id == 1) {
 			return false;
 		}
 		return $this->del_session_internal($session_id);
@@ -1429,7 +1480,7 @@ class User {
 			return false;
 		}
 		unset($Cache->{'sessions/'.$session_id});
-		$result = $session_id ? $this->db_prime()->q("UPDATE `[prefix]sessions` SET `expire` = 0 WHERE `id` = '$session_id'") : false;
+		$result = $session_id ? $this->db_prime()->q("UPDATE `[prefix]sessions` SET `expire` = 0 WHERE `id` = '%s'", $session_id) : false;
 		if ($create_guest_session) {
 			return $this->add_session(1);
 		}
@@ -1443,7 +1494,7 @@ class User {
 	 * @return bool
 	 */
 	function del_all_sessions ($id = false) {
-		if ($this->is('bot') && $this->id == 1) {
+		if ($this->bot() && $this->id == 1) {
 			return false;
 		}
 		global $Cache;
@@ -1480,7 +1531,17 @@ class User {
 		$time	= TIME;
 		$ip		= ip2hex($this->ip);
 		$count	= $this->db()->qf(
-			"SELECT COUNT(`expire`) FROM `[prefix]logins` WHERE `expire` > $time AND (`login_hash` = '$login_hash' OR `ip` = '$ip')",
+			[
+				"SELECT COUNT(`expire`)
+				FROM `[prefix]logins`
+				WHERE
+					`expire` > $time AND
+					(
+						`login_hash` = '%s' OR `ip` = '%s'
+					)",
+				$login_hash,
+				$ip
+			],
 			true
 		);
 		return $count ? $this->cache['login_attempts'][$login_hash] = $count : 0;
@@ -1500,12 +1561,29 @@ class User {
 		$time	= TIME;
 		if ($result) {
 			$this->db_prime()->q(
-				"UPDATE `[prefix]logins` SET `expire` = 0 WHERE `expire` > $time AND (`login_hash` = '$login_hash' OR `ip` = '$ip')"
+				"UPDATE `[prefix]logins`
+				SET `expire` = 0
+				WHERE
+					`expire` > $time AND
+					(
+						`login_hash` = '%s' OR `ip` = '%s'
+					)",
+				$login_hash,
+				$ip
 			);
 		} else {
 			global $Config;
 			$this->db_prime()->q(
-				"INSERT INTO `[prefix]logins` (`expire`, `login_hash`, `ip`) VALUES ('%s', '%s', '%s')",
+				"INSERT INTO `[prefix]logins`
+					(
+						`expire`,
+						`login_hash`,
+						`ip`
+					) VALUES (
+						'%s',
+						'%s',
+						'%s'
+					)",
 				TIME + $Config->core['login_attempts_block_time'],
 				$login_hash,
 				$ip
@@ -1549,7 +1627,13 @@ class User {
 			$login		= $email;
 			$login_hash	= $email_hash;
 		}
-		if (!$this->db_prime()->q("SELECT `id` FROM `[prefix]users` WHERE `email_hash` = '$email_hash' LIMIT 1")) {
+		if (!$this->db_prime()->q(
+			"SELECT `id`
+			FROM `[prefix]users`
+			WHERE `email_hash` = '%s'
+			LIMIT 1",
+			$email_hash
+		)) {
 			return 'exists';
 		}
 		$password		= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
@@ -1557,9 +1641,25 @@ class User {
 		$reg_key		= md5($password.$this->ip);
 		if ($this->db_prime()->q(
 			"INSERT INTO `[prefix]users` (
-				`login`, `login_hash`, `password_hash`, `email`, `email_hash`, `reg_date`, `reg_ip`, `reg_key`, `status`
+				`login`,
+				`login_hash`,
+				`password_hash`,
+				`email`,
+				`email_hash`,
+				`reg_date`,
+				`reg_ip`,
+				`reg_key`,
+				`status`
 			) VALUES (
-				'%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s'
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+				'%s'
 			)",
 			$login,
 			$login_hash,
@@ -1581,7 +1681,13 @@ class User {
 			if ($this->reg_id % $Config->core['inserts_limit'] == 0) {
 				$this->db_prime()->aq(
 					"DELETE FROM `[prefix]users`
-					WHERE `login_hash` = '' AND `email_hash` = '' AND `password_hash` = '' AND `status` = '-1' AND `id` != 1 AND `id` != 2"
+					WHERE
+						`login_hash`	= '' AND
+						`email_hash`	= '' AND
+						`password_hash`	= '' AND
+						`status`		= '-1' AND
+						`id`			!= 1 AND
+						`id`			!= 2"
 				);
 			}
 			return [
@@ -1607,12 +1713,24 @@ class User {
 		}
 		$reg_date		= TIME - $Config->core['registration_confirmation_time'] * 86400;	//1 day = 86400 seconds
 		$ids			= $this->db_prime()->qfa(
-			"SELECT `id` FROM `[prefix]users` WHERE `last_login` = 0 AND `status` = '-1' AND `reg_date` < $reg_date",
+			"SELECT `id`
+			FROM `[prefix]users`
+			WHERE
+				`last_login`	= 0 AND
+				`status`		= '-1' AND
+				`reg_date`		< $reg_date",
 			true
 		);
 		$this->del_user($ids);
 		$data			= $this->db_prime()->qf(
-			"SELECT `id`, `login` FROM `[prefix]users` WHERE `reg_key` = '$reg_key' AND `status` = '-1' LIMIT 1"
+			"SELECT
+				`id`,
+				`login`
+			FROM `[prefix]users`
+			WHERE
+				`reg_key`	= '$reg_key' AND
+				`status`	= '-1'
+			LIMIT 1"
 		);
 		if (!$data) {
 			return false;
@@ -1680,7 +1798,15 @@ class User {
 			return false;
 		}
 		$id			= $this->db_prime()->qf(
-			"SELECT `id` FROM `[prefix]users` WHERE `reg_key` = '$key' AND `status` = '1' LIMIT 1",
+			[
+				"SELECT `id`
+				FROM `[prefix]users`
+				WHERE
+					`reg_key`	= '%s' AND
+					`status`	= '1'
+				LIMIT 1",
+				$key
+			],
 			true
 		);
 		if (!$id) {
@@ -1732,7 +1858,8 @@ class User {
 			}
 			$user = implode(',', $user);
 			$this->db_prime()->q(
-				"UPDATE `[prefix]users` SET
+				"UPDATE `[prefix]users`
+				SET
 					`login`			= null,
 					`login_hash`	= null,
 					`username`		= 'deleted',
@@ -1744,8 +1871,7 @@ class User {
 					`reg_key`		= null,
 					`status`		= '-1',
 					`data`			= ''
-				WHERE
-					`id` IN ($user)"
+				WHERE `id` IN ($user)"
 			);
 			unset($Cache->users);
 			return;
@@ -1762,7 +1888,8 @@ class User {
 				$Cache->{'users/'.$user}
 			);
 			$this->db_prime()->q(
-				"UPDATE `[prefix]users` SET
+				"UPDATE `[prefix]users`
+				SET
 					`login`			= null,
 					`login_hash`	= null,
 					`username`		= 'deleted',
@@ -1773,8 +1900,7 @@ class User {
 					`reg_ip`		= null,
 					`reg_key`		= null,
 					`status`		= '-1'
-				WHERE
-					`id` = $user
+				WHERE `id` = $user
 				LIMIT 1"
 			);
 		}
@@ -1790,7 +1916,18 @@ class User {
 	 */
 	function add_boot ($name, $user_agent, $ip) {
 		if ($this->db_prime()->q(
-			"INSERT INTO `[prefix]users` (`username`, `login`, `email`, `status`) VALUES ('%s', '%s', '%s', 1)",
+			"INSERT INTO `[prefix]users`
+				(
+					`username`,
+					`login`,
+					`email`,
+					`status`
+				) VALUES (
+					'%s',
+					'%s',
+					'%s',
+					1
+				)",
 			xap($name),
 			xap($user_agent),
 			xap($ip)
@@ -1840,10 +1977,7 @@ class User {
 				$data = [];
 				foreach ($data_set as $i => &$val) {
 					if (in_array($i, $users_columns) && $i != 'id') {
-						if ($i == 'data') {
-							$data[] = '`'.$i.'` = '.$this->db_prime()->s(_json_encode($val));
-							continue;
-						} elseif ($i == 'text') {
+						if ($i == 'about') {
 							$val = xap($val, true);
 						} else {
 							$val = xap($val, false);
@@ -1862,6 +1996,7 @@ class User {
 			}
 			unset($update);
 		}
+		unset($users_columns);
 		/**
 		 * Updating users cache
 		 */

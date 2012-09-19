@@ -12,7 +12,7 @@ $rc			= &$Config->__get('routing')['current'];
 $subparts	= _json_decode(file_get_contents(MFOLDER.'/index.json'))[$rc[0]];
 if (
 	(
-		!isset($rc[1]) && $User->is('user')
+		!isset($rc[1]) && $User->user()
 	) ||
 	(
 		isset($rc[1]) && !in_array($rc[1], $subparts)

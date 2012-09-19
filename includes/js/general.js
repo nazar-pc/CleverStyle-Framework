@@ -4,7 +4,7 @@
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-$(function() {document.getElementById('modules').setAttribute('multiple', '');
+$(function() {
 	var	body = $('#body');
 	body.css(
 		'opacity',
@@ -77,38 +77,38 @@ $(function() {document.getElementById('modules').setAttribute('multiple', '');
 	$('textarea:not(.cs-noui)').addClass('cs-form-element').not('.noresize, .EDITOR, .EDITORH, .SEDITOR').each(function () {
 		$(this).autoResize();
 	});
-	$('.cs-header-login-slide').mousedown(function () {
+	$('.cs-header-login-slide').click(function () {
 		$('.cs-header-anonym-form').slideUp();
 		$('.cs-header-login-form').slideDown();
 		$('.cs-header-login-email').focus();
 	});
-	$('.cs-header-registration-slide').mousedown(function () {
+	$('.cs-header-registration-slide').click(function () {
 		$('.cs-header-anonym-form').slideUp();
 		$('.cs-header-register-form').slideDown();
 		$('.cs-header-registration-email').focus();
 	});
-	$('.cs-header-restore-password-slide').mousedown(function () {
+	$('.cs-header-restore-password-slide').click(function () {
 		$('.cs-header-login-form, .cs-header-register-form').slideUp();
 		$('.cs-header-restore-password-form').slideDown();
 		$('.cs-header-restore-password-email').focus();
 	});
 	$('.cs-header-login-email, .cs-header-user-password').keyup(function (event) {
 		if (event.which == 13) {
-			$('.cs-header-login-process').mousedown();
+			$('.cs-header-login-process').click();
 		}
 	});
 	$('.cs-header-registration-email').keyup(function (event) {
 		if (event.which == 13) {
-			$('.cs-header-register-process').mousedown();
+			$('.cs-header-register-process').click();
 		}
 	});
-	$('.cs-header-login-process').mousedown(function() {
+	$('.cs-header-login-process').click(function() {
 		login($('.cs-header-login-email').val(), $('.cs-header-user-password').val());
 	});
-	$('.cs-header-logout-process').mousedown(function() {
+	$('.cs-header-logout-process').click(function() {
 		logout();
 	});
-	$('.cs-header-show-password').mousedown(function() {
+	$('.cs-header-show-password').click(function() {
 		var	password	= $('.cs-header-user-password');
 		if (password.prop('type') == 'password') {
 			password.prop('type', 'text');
@@ -118,7 +118,7 @@ $(function() {document.getElementById('modules').setAttribute('multiple', '');
 			$(this).addClass('ui-icon-locked').removeClass('ui-icon-unlocked');
 		}
 	});
-	$('.cs-show-password').mousedown(function() {
+	$('.cs-show-password').click(function() {
 		var pass_input = $(this).parent().next().children('input');
 		if (pass_input.prop('type') == 'password') {
 			pass_input.prop('type', 'text');
@@ -128,7 +128,7 @@ $(function() {document.getElementById('modules').setAttribute('multiple', '');
 			$(this).addClass('ui-icon-locked').removeClass('ui-icon-unlocked');
 		}
 	});
-	$('#current_password').mousedown(function() {
+	$('#current_password').click(function() {
 		var	password	= $('.cs-profile-current-password');
 		if (password.prop('type') == 'password') {
 			password.prop('type', 'text');
@@ -138,7 +138,7 @@ $(function() {document.getElementById('modules').setAttribute('multiple', '');
 			$(this).addClass('ui-icon-locked').removeClass('ui-icon-unlocked');
 		}
 	});
-	$('#new_password').mousedown(function() {
+	$('#new_password').click(function() {
 		var	password	= $('.cs-profile-new-password');
 		if (password.prop('type') == 'password') {
 			password.prop('type', 'text');
@@ -148,7 +148,7 @@ $(function() {document.getElementById('modules').setAttribute('multiple', '');
 			$(this).addClass('ui-icon-locked').removeClass('ui-icon-unlocked');
 		}
 	});
-	$('.cs-header-register-process').mousedown(function() {
+	$('.cs-header-register-process').click(function() {
 		$('<div title="'+L.rules_agree+'">'+rules_text+'</div>')
 			.appendTo('body')
 			.dialog({
@@ -171,13 +171,13 @@ $(function() {document.getElementById('modules').setAttribute('multiple', '');
 				]
 			});
 	});
-	$('.cs-header-restore-password-process').mousedown(function() {
+	$('.cs-header-restore-password-process').click(function() {
 		restore_password($('.cs-header-restore-password-email').val());
 	});
-	$('.cs-profile-change-password').mousedown(function() {
+	$('.cs-profile-change-password').click(function() {
 		change_password($('.cs-profile-current-password').val(), $('.cs-profile-new-password').val());
 	});
-	$('.cs-header-back').mousedown(function() {
+	$('.cs-header-back').click(function() {
 		$('.cs-header-anonym-form').slideDown();
 		$('.cs-header-register-form, .cs-header-login-form, .cs-header-restore-password-form').slideUp();
 	});
@@ -197,7 +197,7 @@ $(function() {document.getElementById('modules').setAttribute('multiple', '');
 		$('#change_active_languages').change(function () {
 			$(this).find("option[value='"+$('#change_language').val()+"']").prop('selected', true);
 		});
-		$('#system_license_open').mousedown(function () {
+		$('#system_license_open').click(function () {
 			$('#system_license').dialog('open');
 		});
 		$('#search_users_tabs').tabs({
@@ -205,13 +205,13 @@ $(function() {document.getElementById('modules').setAttribute('multiple', '');
 			cookie:			{}
 		});
 		$('#group_permissions_tabs, #user_permissions_tabs, #block_permissions_tabs').tabs();
-		$('button.cs-permissions-invert').mousedown(function () {
+		$('button.cs-permissions-invert').click(function () {
 			$(this).parentsUntil('div').find(':radio:not(:checked)[value!=-1]').prop('checked', true).button('refresh');
 		});
-		$('button.cs-permissions-allow-all').mousedown(function () {
+		$('button.cs-permissions-allow-all').click(function () {
 			$(this).parentsUntil('div').find(':radio:[value=1]').prop('checked', true).button('refresh');
 		});
-		$('button.cs-permissions-deny-all').mousedown(function () {
+		$('button.cs-permissions-deny-all').click(function () {
 			$(this).parentsUntil('div').find(':radio:[value=0]').prop('checked', true).button('refresh');
 		});
 		$('#columns_settings ul').css({

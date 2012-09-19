@@ -15,7 +15,7 @@ global $Config, $Page, $User, $db, $Key, $L;
 if (!$Config->server['referer']['local'] || !$Config->server['ajax']) {
 	sleep(1);
 	return;
-} elseif (!$User->is('guest')) {
+} elseif (!$User->guest()) {
 	$Page->content('reload');
 	return;
 } elseif ($Config->core['login_attempts_block_count'] && $User->login_attempts() >= $Config->core['login_attempts_block_count']) {

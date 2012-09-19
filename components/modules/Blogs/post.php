@@ -41,7 +41,7 @@ $Index->content(
 			h::h1(
 				$post['title'].
 				(
-					$User->is('admin') &&
+					$User->admin() &&
 					$User->get_user_permission('admin/'.MODULE, 'index') &&
 					$User->get_user_permission('admin/'.MODULE, 'edit_post') ? ' '.h::{'a.cs-button-compact'}(
 						[
@@ -143,7 +143,7 @@ $Index->content(
 		).
 		h::p($L->add_comment.':').
 		(
-			$User->is('user') ? h::{'section.cs-blogs-comment-write'}(
+			$User->user() ? h::{'section.cs-blogs-comment-write'}(
 				h::{'textarea.cs-blogs-comment-write-text.cs-wide-textarea.SEDITOR'}(
 					'',
 					[

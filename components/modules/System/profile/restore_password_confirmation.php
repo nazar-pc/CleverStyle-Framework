@@ -13,7 +13,7 @@ if (isset($_COOKIE['restore_password_confirm'])) {
 	$Page->title($L->restore_password_success_title);
 	$Page->notice($L->restore_password_success);
 	return;
-} elseif (!$User->is('guest')) {
+} elseif (!$User->guest()) {
 	$Page->title($L->you_are_already_registered_title);
 	$Page->warning($L->you_are_already_registered);
 	return;

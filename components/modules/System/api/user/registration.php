@@ -18,7 +18,7 @@ if (
 ) {
 	sleep(1);
 	return;
-} elseif (!$User->is('guest')) {
+} elseif (!$User->guest()) {
 	$Page->content('reload');
 	return;
 } elseif (!$Config->core['allow_user_registration']) {
