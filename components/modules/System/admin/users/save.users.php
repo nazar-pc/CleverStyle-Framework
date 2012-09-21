@@ -14,9 +14,11 @@ global $Config, $Page, $Index, $User, $L;
 switch ($_POST['mode']) {
 	case 'add':
 		if ($_POST['email']) {
-			$result = $User->registration($_POST['email'], false);
+			$result = $User->registration($_POST['email'], false, false);
 			if ($Index->save(is_array($result))) {
 				$Page->notice($L->user_was_added($User->get('login', $result['id']), $result['password']));
+			} else {
+				$Page->warning($L->user_alredy_exists);
 			}
 		}
 	break;

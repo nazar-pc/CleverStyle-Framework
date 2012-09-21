@@ -537,6 +537,7 @@
 		"editing_of_user_information"		: "Editing information of user %s",
 		"editing_raw_data_of_user"			: "Editing raw data of user %s",
 		"editing_of_bot_information"		: "Editing information of bot %s",
+		"user_alredy_exists"				: "User with such email already exists",
 		//Groups
 		"groups"					: "Groups",
 		"group_name"				: "Group name",

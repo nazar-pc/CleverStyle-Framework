@@ -850,7 +850,7 @@ class User {
 		if (!empty($insert)) {
 			$q		= [];
 			foreach ($insert as $group) {
-				$q[] = $user.', '.$group;
+				$q[] = $user."', '".$group;
 			}
 			unset($group, $insert);
 			$q		= implode('), (', $q);
@@ -1411,7 +1411,14 @@ class User {
 				$Cache->{'sessions/'.$session_id} = $result;
 			}
 		}
-		if (!$session_id || !is_array($result)) {
+		if (!(
+			$session_id &&
+			is_array($result) &&
+			(
+				$Cache->{'users/'.$result['user']} ||
+				$this->get('id', $result['user'])
+			)
+		)) {
 			$this->add_session(1);
 			return 1;
 		}
@@ -1661,22 +1668,32 @@ class User {
 			return false;
 		}
 		global $Cache;
-		if ($data = $this->get_session_data($item, $session_id)) {
-			$data[$item]	= $value;
-			if ($this->db()->q(
+		$data			= _json_decode(
+			$this->db()->qf(
 				[
-					"UPDATE `[prefix]sessions`
-					SET `data` = '%s'
+					"SELECT `data`
+					FROM `[prefix]sessions`
 					WHERE `id` = '%s'
 					LIMIT 1",
-					_json_encode($data),
 					$session_id
 				],
 				true
-			)) {
-				unset($Cache->{'sessions/data/'.$session_id});
-				return true;
-			}
+			)
+		);
+		if (!$data) {
+			$data	= [];
+		}
+		$data[$item]	= $value;
+		if ($this->db()->q(
+			"UPDATE `[prefix]sessions`
+			SET `data` = '%s'
+			WHERE `id` = '%s'
+			LIMIT 1",
+			_json_encode($data),
+			$session_id
+		)) {
+			unset($Cache->{'sessions/data/'.$session_id});
+			return true;
 		}
 		return false;
 	}
@@ -1808,6 +1825,7 @@ class User {
 	 * @param bool					$confirmation	If <b>true</b> - default system option is used, if <b>false</b> - registration will be
 	 *												finished without necessity of confirmation, independently from default system option
 	 *												(is used for manual registration).
+	 * @param bool					$autologin		If <b>false</b> - no autologin, if <b>true</b> - according to system configuration
 	 *
 	 * @return array|bool|string					<b>exists</b>	- if user with such email is already registered<br>
 	 * 												<b>error</b>	- if error occured<br>
@@ -1819,7 +1837,7 @@ class User {
 	 * 												&nbsp;<b>'id'		=> *</b>	//Id of registered user in DB<br>
 	 * 												<b>)</b>
 	 */
-	function registration ($email, $confirmation = true) {
+	function registration ($email, $confirmation = true, $autologin = true) {
 		global $Config, $Core;
 		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			return false;
@@ -1839,18 +1857,19 @@ class User {
 			$login		= $email;
 			$login_hash	= $email_hash;
 		}
-		if (!$this->db_prime()->q(
+		if ($this->db_prime()->qf([
 			"SELECT `id`
 			FROM `[prefix]users`
 			WHERE `email_hash` = '%s'
 			LIMIT 1",
 			$email_hash
-		)) {
+		])) {
 			return 'exists';
 		}
 		$password		= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
 		$password_hash	= hash('sha512', hash('sha512', $password).$Core->config('public_key'));
 		$reg_key		= md5($password.$this->ip);
+		$confirmation	= $confirmation && $Config->core['require_registration_confirmation'];
 		if ($this->db_prime()->q(
 			"INSERT INTO `[prefix]users` (
 				`login`,
@@ -1881,13 +1900,13 @@ class User {
 			TIME,
 			ip2hex($this->ip),
 			$reg_key,
-			!$confirmation || !$Config->core['require_registration_confirmation'] ? 1 : -1
+			!$confirmation ? 1 : -1
 		)) {
 			$this->reg_id = $this->db_prime()->id();
-			if (!$confirmation || !$Config->core['require_registration_confirmation']) {
+			if (!$confirmation) {
 				$this->set_user_groups([2], $this->reg_id);
 			}
-			if ($Config->core['autologin_after_registration']) {
+			if ($autologin && $Config->core['autologin_after_registration']) {
 				$this->add_session($this->reg_id);
 			}
 			if ($this->reg_id % $Config->core['inserts_limit'] == 0) {
@@ -1911,8 +1930,11 @@ class User {
 				$this->registration_cancel();
 				return false;
 			}
+			if (!$confirmation) {
+				$this->set_user_groups([2], $this->reg_id);
+			}
 			return [
-				'reg_key'	=> !$confirmation || !$Config->core['require_registration_confirmation'] ? true : $reg_key,
+				'reg_key'	=> !$confirmation ? true : $reg_key,
 				'password'	=> $password,
 				'id'		=> $this->reg_id
 			];

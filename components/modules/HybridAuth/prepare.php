@@ -9,7 +9,7 @@
  */
 global $Config, $User, $L, $Mail, $Page, $Index, $db;
 $rc			= $Config->routing['current'];
-if (
+/*if (
 	$User->user() ||
 	!(
 		isset($rc[0], $Config->module(MODULE)->providers[$rc[0]]) &&
@@ -23,7 +23,7 @@ if (
 	code_header(301);
 	interface_off();
 	return;
-}
+}*/
 if (!$Config->core['allow_user_registration']) {
 	$Page->title($L->registration_prohibited);
 	$Page->warning($L->registration_prohibited);
@@ -38,10 +38,13 @@ if (!isset($rc[1]) && $_SERVER['HTTP_REFERER']) {
 	}
 }
 require_once __DIR__.'/Hybrid/Auth.php';
-if (!$User->get_session_data('HybridAuth')) {
+if (isset($rc[1]) && $rc[1] == 'endpoint') {
+	require_once __DIR__.'/Hybrid/Endpoint.php';
+	Hybrid_Endpoint::process();
+} elseif (!isset($_POST['email'])) {
 	try {
 		$HybridAuth		= new Hybrid_Auth([
-			'base_url'	=> $Config->server['base_url'].'/'.MODULE.'/'.$rc[0].'/'.$User->get_session(),
+			'base_url'	=> $Config->server['base_url'].'/'.MODULE.'/'.$rc[0].'/endpoint/'.$User->get_session(),
 			'providers'	=> [
 				$rc[0]	=> $Config->module(MODULE)->providers[$rc[0]]
 			]
@@ -73,13 +76,22 @@ if (!$User->get_session_data('HybridAuth')) {
 			header('Location: '._getcookie('HybridAuth_referer'));
 			_setcookie('HybridAuth_referer', '');
 			code_header(301);
+			return;
 		}
 		if (!$profile_info['username']) {
 			unset($profile_info['username']);
 		}
 		$email			= $profile->emailVerified ?: $profile->email;
+		$User->set_session_data(
+			'HybridAuth',
+			[
+				'profile_info'	=> $profile_info,
+				'provider'		=> $rc[0],
+				'identifier'	=> $profile->identifier
+			]
+		);
 		if ($email) {
-			if ($result		= $User->registration($email, false)) {
+			if ($result		= $User->registration($email, false, false)) {
 				if ($result == 'error') {
 					$Page->content($L->reg_server_error);
 					return;
@@ -91,36 +103,29 @@ if (!$User->get_session_data('HybridAuth')) {
 				$body	= $L->reg_success_mail_body(
 					isset($profile_info['username']) ? $profile_info['username'] : strstr($result['email'], '@', true),
 					get_core_ml_text('name'),
-					$Config->core['base_url'].'/profile/'.$User->get('login', $result['id']),
+					$Config->server['base_url'].'/profile/'.$User->get('login', $result['id']),
 					$User->get('login', $result['id']),
 					$result['password']
 				);
-				if ($Mail->send_to(
-					$result['email'],
+				/*if ($Mail->send_to(
+					$email,
 					$L->reg_success_mail(get_core_ml_text('name')),
 					$body
-				)) {
+				)) {*/
 					$User->set($profile_info, null, $result['id']);
+					$User->add_session($result['id']);
 					header('Location: '.(_getcookie('HybridAuth_referer') ?: $Config->server['base_url']));
 					code_header(301);
-				} else {
+				/*} else {
 					$User->registration_cancel();
 					$Page->title($L->sending_reg_mail_error_title);
 					$Page->warning($L->sending_reg_mail_error);
-				}
+				}*/
 			} else {
 				$Page->title($L->reg_server_error);
 				$Page->warning($L->reg_server_error);
 			}
 		} else {
-			$User->set_session_data(
-				'HybridAuth',
-				[
-					'profile_info'	=> $profile_info,
-					'provider'		=> $rc[0],
-					'identifier'	=> $profile->identifier
-				]
-			);
 			email_form:
 			$Index->form			= true;
 			$Index->buttons			= false;
@@ -178,7 +183,7 @@ if (!$User->get_session_data('HybridAuth')) {
 			$Page->warning($L->sending_reg_mail_error);
 		}
 	} else {
-		$Index->title($L->reg_server_error);
+		$Page->title($L->reg_server_error);
 		$Index->content($L->reg_server_error);
 	}
 }

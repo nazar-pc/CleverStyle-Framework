@@ -91,7 +91,7 @@ $Core->register_trigger(
 		if (!(
 			isset($Config->components['modules'][$module]) &&
 			$Config->components['modules'][$module]['active'] == 1 &&
-			$data = $User->get_session_data('HybridAuth')
+			$session_data = $User->get_session_data('HybridAuth')
 		)) {
 			return;
 		}
@@ -107,10 +107,9 @@ $Core->register_trigger(
 					'%s'
 				)",
 			$data['id'],
-			$data['provider'],
-			$data['identifier']
+			$session_data['provider'],
+			$session_data['identifier']
 		);
-		$User->del_session_data('HybridAuth');
 	}
 );
 $Core->register_trigger(
