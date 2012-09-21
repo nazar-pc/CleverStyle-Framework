@@ -5,6 +5,38 @@
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
+/**
+ * Provides next triggers:<br>
+ *  System/User/registration/before<br>
+ *  ['email'	=> <i>email</i>]<br>
+ *
+ *  System/User/registration/after<br>
+ *  ['id'	=> <i>user_id</i>]<br>
+ *
+ *  System/User/registration/confirmation/before<br>
+ *  ['reg_key'	=> <i>reg_key</i>]<br>
+ *
+ *  System/User/registration/confirmation/after<br>
+ *  ['id'	=> <i>user_id</i>]<br>
+ *
+ *  System/User/del_user/before<br>
+ *  ['id'	=> <i>user_id</i>]<br>
+ *
+ *  System/User/del_user/after<br>
+ *  ['id'	=> <i>user_id</i>]<br>
+ *
+ *  System/User/add_bot<br>
+ *  ['id'	=> <i>bot_id</i>]<br>
+ *
+ *  System/User/add_group<br>
+ *  ['id'	=> <i>group_id</i>]
+ *
+ *  System/User/del_group/before<br>
+ *  ['id'	=> <i>group_id</i>]
+ *
+ *  System/User/del_group/after<br>
+ *  ['id'	=> <i>group_id</i>]
+ */
 namespace cs;
 class User {
 	protected	$current				= [
@@ -417,6 +449,9 @@ class User {
 			}
 		} elseif (in_array($item, $this->users_columns) && $item != 'id') {
 			if ($item == 'login') {
+				if ($this->get_id(hash('sha224', $value)) !== false) {
+					return false;
+				}
 				global $Cache;
 				unset($Cache->{'users/'.hash('sha224', $this->$item)});
 			} elseif ($item == 'language') {
@@ -848,10 +883,28 @@ class User {
 		if (!$title || !$description) {
 			return false;
 		}
-		if ($this->db_prime()->q("INSERT INTO `[prefix]groups` (`title`, `description`) VALUES ('%s', '%s')", $title, $description)) {
-			global $Cache;
+		if ($this->db_prime()->q(
+			"INSERT INTO `[prefix]groups`
+				(
+					`title`,
+					`description`
+				) VALUES (
+					'%s',
+					'%s'
+				)",
+			$title,
+			$description
+		)) {
+			global $Cache, $Core;
 			unset($Cache->{'groups/list'});
-			return $this->db_prime()->id();
+			$id	= $this->db_prime()->id();
+			$Core->run_trigger(
+				'System/User/add_group',
+				[
+					'id'	=> $id
+				]
+			);
+			return $id;
 		} else {
 			return false;
 		}
@@ -864,7 +917,14 @@ class User {
 	 * @return bool
 	 */
 	function del_group ($group) {
+		global $Core;
 		$group = (int)$group;
+		$Core->run_trigger(
+			'System/User/del_group/before',
+			[
+				'id'	=> $group
+			]
+		);
 		if ($group != 1 && $group != 2 && $group != 3) {
 			$return = $this->db_prime()->q([
 				"DELETE FROM `[prefix]groups` WHERE `id` = $group",
@@ -878,6 +938,12 @@ class User {
 				$Cache->{'groups/'.$group},
 				$Cache->{'groups/permissions/'.$group},
 				$Cache->{'groups/list'}
+			);
+			$Core->run_trigger(
+				'System/User/del_group/after',
+				[
+					'id'	=> $group
+				]
 			);
 			return (bool)$return;
 		} else {
@@ -1316,12 +1382,26 @@ class User {
 		$time	= TIME;
 		if ($session_id && !($result = $Cache->{'sessions/'.$session_id})) {
 			$condition	= $Config->core['remember_user_ip'] ?
-				" AND `ip` = '".ip2hex($this->ip)."' AND `forwarded_for` = '".ip2hex($this->forwarded_for)."' AND `client_ip` = '".ip2hex($this->client_ip)."'"
+				"AND
+				`ip`			= '".ip2hex($this->ip)."' AND
+				`forwarded_for`	= '".ip2hex($this->forwarded_for)."' AND
+				`client_ip`		= '".ip2hex($this->client_ip)."'"
 				: ''
 			;
 			$result	= $this->db()->qf([
-				"SELECT `user`, `expire`, `user_agent`, `ip`, `forwarded_for`, `client_ip` FROM `[prefix]sessions`
-				WHERE `id` = '%s' AND `expire` > $time AND `user_agent` = '%s' $condition
+				"SELECT
+					`user`,
+					`expire`,
+					`user_agent`,
+					`ip`,
+					`forwarded_for`,
+					`client_ip`
+				FROM `[prefix]sessions`
+				WHERE
+					`id`			= '%s' AND
+					`expire`		> $time AND
+					`user_agent`	= '%s'
+					$condition
 				LIMIT 1",
 				$session_id,
 				$this->user_agent
@@ -1379,7 +1459,8 @@ class User {
 			$update[]			= "
 				UPDATE `[prefix]sessions`
 				SET `expire` = $result[expire]
-				WHERE `id` = '$session_id'";
+				WHERE `id` = '$session_id'
+				LIMIT 1";
 			$Cache->{'sessions/'.$session_id} = $result;
 		}
 		if (!empty($update)) {
@@ -1390,17 +1471,17 @@ class User {
 	/**
 	 * Create the session for the user with specified id
 	 *
-	 * @param int	$id
+	 * @param int	$user
 	 *
 	 * @return bool
 	 */
-	function add_session ($id) {
+	function add_session ($user) {
 		if ($this->bot() && $this->id == 1) {
 			return true;
 		}
-		$id = (int)$id;
-		if (!$id) {
-			$id = 1;
+		$user = (int)$user;
+		if (!$user) {
+			$user = 1;
 		}
 		if (preg_match('/^[0-9a-z]{32}$/', $this->current['session'])) {
 			$this->del_session_internal(null, false);
@@ -1419,7 +1500,7 @@ class User {
 						VALUES
 					('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
 				$hash,
-				$id,
+				$user,
 				TIME,
 				TIME + $Config->core['session_expire'],
 				$this->user_agent,
@@ -1428,13 +1509,13 @@ class User {
 				$client_ip		= ip2hex($this->client_ip)
 			);
 			$time	= TIME;
-			if ($id != 1) {
-				$this->db_prime()->q("UPDATE `[prefix]users` SET `last_login` = $time, `last_online` = $time, `last_ip` = '$ip.' WHERE `id` ='$id'");
+			if ($user != 1) {
+				$this->db_prime()->q("UPDATE `[prefix]users` SET `last_login` = $time, `last_online` = $time, `last_ip` = '$ip.' WHERE `id` ='$user'");
 			}
 			global $Cache;
 			$this->current['session']	= $hash;
 			$Cache->{'sessions/'.$hash}	= [
-				'user'			=> $id,
+				'user'			=> $user,
 				'expire'		=> TIME + $Config->core['session_expire'],
 				'user_agent'	=> $this->user_agent,
 				'ip'			=> $ip,
@@ -1480,7 +1561,15 @@ class User {
 			return false;
 		}
 		unset($Cache->{'sessions/'.$session_id});
-		$result = $session_id ? $this->db_prime()->q("UPDATE `[prefix]sessions` SET `expire` = 0 WHERE `id` = '%s'", $session_id) : false;
+		$result = $session_id ? $this->db_prime()->q(
+			"UPDATE `[prefix]sessions`
+			SET
+				`expire`	= 0,
+				`data`		= ''
+			WHERE `id` = '%s'
+			LIMIT 1",
+			$session_id
+		) : false;
 		if ($create_guest_session) {
 			return $this->add_session(1);
 		}
@@ -1489,18 +1578,23 @@ class User {
 	/**
 	 * Deletion of all user sessions
 	 *
-	 * @param bool|int	$id
+	 * @param bool|int	$user
 	 *
 	 * @return bool
 	 */
-	function del_all_sessions ($id = false) {
+	function del_all_sessions ($user = false) {
 		if ($this->bot() && $this->id == 1) {
 			return false;
 		}
 		global $Cache;
-		$id = $id ?: $this->id;
+		$user = $user ?: $this->id;
 		_setcookie('session', '');
-		$sessions = $this->db_prime()->qfa("SELECT `id` FROM `[prefix]sessions` WHERE `user` = $id", true);
+		$sessions = $this->db_prime()->qfa(
+			"SELECT `id`
+			FROM `[prefix]sessions`
+			WHERE `user` = '$user'",
+			true
+		);
 		if (is_array($sessions)) {
 			$delete = [];
 			foreach ($sessions as $session) {
@@ -1509,9 +1603,119 @@ class User {
 			$Cache->del($delete);
 			unset($delete, $sessions, $session);
 		}
-		$result = $this->db_prime()->q("UPDATE `[prefix]sessions` SET `expire` = 0 WHERE `user` = $id");
+		$result = $this->db_prime()->q(
+			"UPDATE `[prefix]sessions`
+			SET
+				`expire`	= 0,
+				`data`		= ''
+			WHERE `user` = '$user'"
+		);
 		$this->add_session(1);
 		return $result;
+	}
+	/**
+	 * Get data, stored with session
+	 *
+	 * @param string	$item
+	 * @param string	$session_id
+	 *
+	 * @return bool|mixed
+	 *
+	 */
+	function get_session_data ($item, $session_id = null) {
+		$session_id	= $session_id ?: $this->current['session'];
+		if (!preg_match('/^[0-9a-z]{32}$/', $session_id)) {
+			return false;
+		}
+		global $Cache;
+		if (!($data = $Cache->{'sessions/data/'.$session_id})) {
+			$data									= _json_decode(
+				$this->db()->qf(
+					[
+						"SELECT `data`
+						FROM `[prefix]sessions`
+						WHERE `id` = '%s'
+						LIMIT 1",
+						$session_id
+					],
+					true
+				)
+			);
+			$Cache->{'sessions/data/'.$session_id}	= $data;
+		}
+		return isset($data[$item]) ? $data[$item] : false;
+	}
+	/**
+	 * Store data with session
+	 *
+	 * @param string	$item
+	 * @param mixed		$value
+	 * @param string	$session_id
+	 *
+	 * @return bool
+	 *
+	 */
+	function set_session_data ($item, $value, $session_id = null) {
+		$session_id	= $session_id ?: $this->current['session'];
+		if (!preg_match('/^[0-9a-z]{32}$/', $session_id)) {
+			return false;
+		}
+		global $Cache;
+		if ($data = $this->get_session_data($item, $session_id)) {
+			$data[$item]	= $value;
+			if ($this->db()->q(
+				[
+					"UPDATE `[prefix]sessions`
+					SET `data` = '%s'
+					WHERE `id` = '%s'
+					LIMIT 1",
+					_json_encode($data),
+					$session_id
+				],
+				true
+			)) {
+				unset($Cache->{'sessions/data/'.$session_id});
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * Delete data, stored with session
+	 *
+	 * @param string	$item
+	 * @param string	$session_id
+	 *
+	 * @return bool
+	 *
+	 */
+	function del_session_data ($item, $session_id = null) {
+		$session_id	= $session_id ?: $this->current['session'];
+		if (!preg_match('/^[0-9a-z]{32}$/', $session_id)) {
+			return false;
+		}
+		global $Cache;
+		if ($data = $this->get_session_data($item, $session_id)) {
+			if (!isset($data[$item])) {
+				return true;
+			}
+			unset($data[$item]);
+			if ($this->db()->q(
+				[
+					"UPDATE `[prefix]sessions`
+					SET `data` = '%s'
+					WHERE `id` = '%s'
+					LIMIT 1",
+					_json_encode($data),
+					$session_id
+				],
+				true
+			)) {
+				unset($Cache->{'sessions/data/'.$session_id});
+				return true;
+			}
+		}
+		return false;
 	}
 	/**
 	 * Check number of login attempts
@@ -1620,6 +1824,14 @@ class User {
 		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			return false;
 		}
+		if (!$Core->run_trigger(
+			'System/User/registration/before',
+			[
+				'email'	=> $email
+			]
+		)) {
+			return false;
+		}
 		$email_hash		= hash('sha224', $email);
 		$login			= strstr($email, '@', true);
 		$login_hash		= hash('sha224', $login);
@@ -1690,6 +1902,15 @@ class User {
 						`id`			!= 2"
 				);
 			}
+			if (!$Core->run_trigger(
+				'System/User/registration/after',
+				[
+					'id'	=> $this->reg_id
+				]
+			)) {
+				$this->registration_cancel();
+				return false;
+			}
 			return [
 				'reg_key'	=> !$confirmation || !$Config->core['require_registration_confirmation'] ? true : $reg_key,
 				'password'	=> $password,
@@ -1709,6 +1930,15 @@ class User {
 	function registration_confirmation ($reg_key) {
 		global $Config, $Core;
 		if (!preg_match('/^[0-9a-z]{32}$/', $reg_key)) {
+			return false;
+		}
+		if (!$Core->run_trigger(
+			'System/User/registration/confirmation/before',
+			[
+				'reg_key'	=> $reg_key
+			]
+		)) {
+			$this->registration_cancel();
 			return false;
 		}
 		$reg_date		= TIME - $Config->core['registration_confirmation_time'] * 86400;	//1 day = 86400 seconds
@@ -1747,6 +1977,15 @@ class User {
 		);
 		$this->set_user_groups([2], $this->reg_id);
 		$this->add_session($this->reg_id);
+		if (!$Core->run_trigger(
+			'System/User/registration/confirmation/after',
+			[
+				'id'	=> $this->reg_id
+			]
+		)) {
+			$this->registration_cancel();
+			return false;
+		}
 		return [
 			'id'		=> $this->reg_id,
 			'email'		=> $data['login'],
@@ -1851,7 +2090,13 @@ class User {
 	 * @param bool		$update
 	 */
 	protected function del_user_internal ($user, $update = true) {
-		global $Cache;
+		global $Cache, $Core;
+		$Core->run_trigger(
+			'System/User/del_user/before',
+			[
+				'id'	=> $user
+			]
+		);
 		if (is_array($user)) {
 			foreach ($user as $id) {
 				$this->del_user_internal($id, false);
@@ -1903,6 +2148,12 @@ class User {
 				WHERE `id` = $user
 				LIMIT 1"
 			);
+			$Core->run_trigger(
+				'System/User/del_user/after',
+				[
+					'id'	=> $user
+				]
+			);
 		}
 	}
 	/**
@@ -1914,7 +2165,7 @@ class User {
 	 *
 	 * @return bool|int				Bot <b>id</b> in DB or <b>false</b> on failure
 	 */
-	function add_boot ($name, $user_agent, $ip) {
+	function add_bot ($name, $user_agent, $ip) {
 		if ($this->db_prime()->q(
 			"INSERT INTO `[prefix]users`
 				(
@@ -1932,8 +2183,16 @@ class User {
 			xap($user_agent),
 			xap($ip)
 		)) {
-			$this->set_user_groups([3], $this->db_prime()->id());
-			return $this->db_prime()->id();
+			$id	= $this->db_prime()->id();
+			$this->set_user_groups([3], $id);
+			global $Core;
+			$Core->run_trigger(
+				'System/User/add_bot',
+				[
+					'id'	=> $id
+				]
+			);
+			return $id;
 		} else {
 			return false;
 		}

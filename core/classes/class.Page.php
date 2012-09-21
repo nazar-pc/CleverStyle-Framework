@@ -570,6 +570,8 @@ class Page {
 	 *
 	 * @param string	$data	Content of processed file
 	 * @param string	$file	Path to file, that includes specified in previous parameter content
+	 *
+	 * @return	string			$data
 	 */
 	function css_includes_processing (&$data, $file) {
 		$cwd	= getcwd();
@@ -630,6 +632,7 @@ class Page {
 			$data
 		);
 		chdir($cwd);
+		return $data;
 	}
 	/**
 	 * Getting footer information

@@ -16,6 +16,7 @@ $Core->register_trigger(
 		global $Config, $User, $Page, $L;
 		$module			= basename(__DIR__);
 		if (!(
+			$Config->core['allow_user_registration'] &&
 			$Page->interface &&
 			isset($Config->components['modules'][$module]) &&
 			$Config->components['modules'][$module]['active'] == 1 &&
@@ -24,12 +25,19 @@ $Core->register_trigger(
 		)) {
 			return;
 		}
+		$providers		= $Config->module($module)->get('providers');
+		foreach ($providers as $provider => $pdata) {
+			if (!$pdata['enabled']) {
+				unset($providers[$provider]);
+			}
+		}
+		unset($provider, $pdata);
+		if (!count($providers)) {
+			return;
+		}
 		if (!$Config->core['cache_compress_js_css']) {
 			$Page->css('components/modules/'.$module.'/includes/css/general.css');
-			$Page->js([
-				'components/modules/'.$module.'/includes/js/general.js',
-				'components/modules/'.$module.'/includes/js/functions.js'
-			]);
+			$Page->js('components/modules/'.$module.'/includes/js/general.js');
 		} elseif (!(
 			file_exists(PCACHE.'/module.'.$module.'.js') && file_exists(PCACHE.'/module.'.$module.'.css')
 		)) {
@@ -53,8 +61,73 @@ $Core->register_trigger(
 						]
 					];
 				},
-				_substr(get_files_list(__DIR__.'/Hybrid/Providers'), 0, -4)
+				array_keys($providers)
 			)
+		);
+	}
+);
+$Core->register_trigger(
+	'System/User/registration/confirmation/after',
+	function ($data) {
+		global $Config;
+		$module			= basename(__DIR__);
+		if (!(
+			isset($Config->components['modules'][$module]) &&
+			$Config->components['modules'][$module]['active'] == 1
+		)) {
+			return;
+		}
+		if ($referer = _getcookie('HybridAuth_referer')) {
+			header('Refresh: 5; url='.$referer);
+			_setcookie('HybridAuth_referer', '');
+		}
+	}
+);
+$Core->register_trigger(
+	'System/User/registration/after',
+	function ($data) {
+		global $Config, $User, $db;
+		$module			= basename(__DIR__);
+		if (!(
+			isset($Config->components['modules'][$module]) &&
+			$Config->components['modules'][$module]['active'] == 1 &&
+			$data = $User->get_session_data('HybridAuth')
+		)) {
+			return;
+		}
+		$db->{$Config->module($module)->db('integration')}()->q(
+			"INSERT INTO `[prefix]users_social_integration`
+				(
+					`id`,
+					`provider`,
+					`identifier`
+				) VALUES (
+					'%s',
+					'%s',
+					'%s'
+				)",
+			$data['id'],
+			$data['provider'],
+			$data['identifier']
+		);
+		$User->del_session_data('HybridAuth');
+	}
+);
+$Core->register_trigger(
+	'System/User/del_user/after',
+	function ($data) {
+		global $Config, $db;
+		$module			= basename(__DIR__);
+		if (!(
+			isset($Config->components['modules'][$module]) &&
+			$Config->components['modules'][$module]['active'] == 1
+		)) {
+			return;
+		}
+		$db->{$Config->module($module)->db('integration')}()->q(
+			"DELETE FROM `[prefix]users_social_integration`
+			WHERE `id` = '%s'",
+			$data['id']
 		);
 	}
 );
@@ -115,25 +188,30 @@ function clean_pcache ($data = null) {
 	}
 }
 function rebuild_pcache (&$data = null) {
+	global $Page;
 	$module	= basename(__DIR__);
+	$key	= [];
 	file_put_contents(
 		PCACHE.'/module.'.$module.'.js',
-		$key	= gzencode(
-			file_get_contents(MODULES.'/'.$module.'/includes/js/functions.js').
+		$key[]	= gzencode(
 			file_get_contents(MODULES.'/'.$module.'/includes/js/general.js'),
 			9
 		),
 		LOCK_EX | FILE_BINARY
 	);
+	$css	= file_get_contents(MODULES.'/'.$module.'/includes/css/general.css');
 	file_put_contents(
 		PCACHE.'/module.'.$module.'.css',
-		$key	.= gzencode(
-			file_get_contents(MODULES.'/'.$module.'/includes/css/general.css'),
+		$key[]	= gzencode(
+			$Page->css_includes_processing(
+				$css,
+				MODULES.'/'.$module.'/includes/css/general.css'
+			),
 			9
 		),
 		LOCK_EX | FILE_BINARY
 	);
 	if ($data !== null) {
-		$data['key']	.= md5($key);
+		$data['key']	.= md5(implode('', $key));
 	}
 }

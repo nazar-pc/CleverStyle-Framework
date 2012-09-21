@@ -22,7 +22,7 @@ switch ($_POST['mode']) {
 	break;
 	case 'add_bot':
 		if ($_POST['name'] && ($_POST['user_agent'] || $_POST['ip'])) {
-			$Index->save((bool)$User->add_boot($_POST['name'], $_POST['user_agent'], $_POST['ip']));
+			$Index->save((bool)$User->add_bot($_POST['name'], $_POST['user_agent'], $_POST['ip']));
 		}
 	break;
 	case 'edit_raw':

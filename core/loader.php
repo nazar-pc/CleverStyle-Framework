@@ -28,12 +28,6 @@ header('Connection: close');
 mb_internal_encoding('utf-8');
 
 /**
- * Cleaning unsecure global variables. Use $_POST instead of $_GET
- */
-$_GET						= [];
-$_REQUEST					= [];
-
-/**
  * Setting of basic constants with paths to system directories
  */
 define('CONFIG',	DIR.'/config');					//Directory for configuration

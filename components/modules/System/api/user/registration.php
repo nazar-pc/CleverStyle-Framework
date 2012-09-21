@@ -44,7 +44,7 @@ if ($result === false) {
 	$Page->content($L->reg_error_exists);
 	return;
 }
-$confirm	= $Config->core['require_registration_confirmation'];
+$confirm	= $result['reg_key'] !== true;
 if ($confirm) {
 	$body	= $L->reg_need_confirmation_mail_body(
 		strstr($_POST['email'], '@', true),
