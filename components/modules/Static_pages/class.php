@@ -183,15 +183,12 @@ class Static_pages {
 				$this->get_category($parent)
 			);
 		}
-		$pages						= $db->{$this->pages}->qfa(
-			[
-				"SELECT `id`
-				FROM `[prefix]static_pages`
-				WHERE `category` = '%s'",
-				$parent
-			],
-			true
-		);
+		$pages						= $db->{$this->pages}->qfas([
+			"SELECT `id`
+			FROM `[prefix]static_pages`
+			WHERE `category` = '%s'",
+			$parent
+		]);
 		$structure['pages']			= [];
 		if (!empty($pages)) {
 			foreach ($pages as $id) {

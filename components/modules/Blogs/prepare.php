@@ -163,7 +163,7 @@ function get_comments_tree ($comments, $post) {
 			$content	.= h::{'article.cs-blogs-comment'}(
 				h::a(
 					h::{'img.cs-blogs-comment-avatar'}([
-						'src'	=> $User->avatar ? h::url($User->avatar, true) : 'includes/img/guest.gif',
+						'src'	=> $User->get('avatar', $comment['user']) ? h::url($User->get('avatar', $comment['user']), true) : 'includes/img/guest.gif',
 						'alt'	=> $User->get_username($comment['user']),
 						'title'	=> $User->get_username($comment['user'])
 					]),

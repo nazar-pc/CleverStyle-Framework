@@ -150,7 +150,6 @@ if (isset($rc[2], $rc[3])) {
 						'birthday',
 						'avatar',
 						'website',
-						'icq',
 						'skype',
 						'about'
 					],
@@ -266,10 +265,6 @@ if (isset($rc[2], $rc[3])) {
 						row($L->website, h::input([
 							'name'		=> 'user[website]',
 							'value'		=> $user_data['website']
-						])),
-						row($L->icq, h::input([
-							'name'		=> 'user[icq]',
-							'value'		=> $user_data['icq'] ?: ''
 						])),
 						row($L->skype, h::input([
 							'name'		=> 'user[skype]',
@@ -609,15 +604,27 @@ if (isset($rc[2], $rc[3])) {
 				break;
 		}
 	}
-	$results_count	= $users_db->qf(
-		"SELECT COUNT(`id`) FROM `[prefix]users` WHERE ($where) AND `status` != '-1'",
-		true
+	$results_count	= $users_db->qfs(
+		"SELECT COUNT(`id`)
+		FROM `[prefix]users`
+		WHERE
+			(
+				$where
+			) AND
+			`status` != '-1'"
 	);
 	if ($results_count) {
 		$from		= $start*$limit;
-		$users_ids	= $users_db->qfa(
-			"SELECT `id` FROM `[prefix]users` WHERE ($where) AND `status` != '-1' ORDER BY `id` LIMIT $from, $limit",
-			true
+		$users_ids	= $users_db->qfas(
+			"SELECT `id`
+			FROM `[prefix]users`
+			WHERE
+				(
+					$where
+				) AND
+				`status` != '-1'
+			ORDER BY `id`
+			LIMIT $from, $limit"
 		);
 		unset($from);
 	}

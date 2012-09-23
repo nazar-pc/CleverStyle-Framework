@@ -47,12 +47,11 @@ if ($page > 1) {
 $num					= $Config->module(MODULE)->posts_per_page;
 $from					= ($page - 1) * $num;
 $cdb					= $db->{$Config->module(MODULE)->db('posts')};
-$posts					= $cdb->qfa(
+$posts					= $cdb->qfas(
 	"SELECT `id`
-		FROM `[prefix]blogs_posts`
-		ORDER BY `date` DESC
-		LIMIT $from, $num",
-	true
+	FROM `[prefix]blogs_posts`
+	ORDER BY `date` DESC
+	LIMIT $from, $num"
 );
 if (empty($posts)) {
 	$Index->content(

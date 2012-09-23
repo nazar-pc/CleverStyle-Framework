@@ -26,7 +26,7 @@ $(function() {
 	};
 	$(document).on('DOMNodeInserted', 'iframe', function() {
 		setTimeout($.redoTemplateLayout, 100);
-	});//TODO make this button workable
+	});
 	setInterval($.redoTemplateLayout, 1000);
 	if (
 		($.browser.msie && $.browser.version < 10) ||

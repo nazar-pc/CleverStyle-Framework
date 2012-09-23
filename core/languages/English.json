@@ -494,7 +494,6 @@
 		"birthday_info"						: "If you specify the current date or future - birthday is unspecified",
 		"avatar"							: "Avatar",
 		"website"							: "Web-site",
-		"icq"								: "ICQ",
 		"skype"								: "Skype",
 		"about_me"							: "About Me",
 		"password_too_easy"					: "Password too simple, so it was not changed",

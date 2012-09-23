@@ -61,7 +61,6 @@ switch ($_POST['mode']) {
 				'birthday',
 				'avatar',
 				'website',
-				'icq',
 				'skype',
 				'about'
 			);

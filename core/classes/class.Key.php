@@ -10,7 +10,7 @@ class Key {
 	/**
 	 * Generates guaranteed unique key
 	 *
-	 * @param int			$database	Keys database
+	 * @param int|object	$database	Keys database
 	 *
 	 * @return string
 	 */
@@ -22,8 +22,13 @@ class Key {
 		while (true) {
 			$key	= hash('sha224', microtime(true));
 			$time	= TIME;
-			if (!$database->qf(
-				"SELECT `id` FROM `[prefix]keys` WHERE `key` = '$key' AND `expire` >= $time LIMIT 1"
+			if (!$database->qfs(
+				"SELECT `id`
+				FROM `[prefix]keys`
+				WHERE
+					`key`		= '$key' AND
+					`expire`	>= $time
+				LIMIT 1"
 			)) {
 				return $key;
 			}
@@ -33,7 +38,7 @@ class Key {
 	/**
 	 * Adding key into specified database
 	 *
-	 * @param int			$database	Keys database
+	 * @param int|object	$database	Keys database
 	 * @param bool|string	$key		If <b>false</b> - key will be generated automatically, otherwise must contain 56 character [0-9a-z] key
 	 * @param null|mixed	$data		Data to be stored with key
 	 * @param int			$expire		Timestamp of key exiration, if not specified - default system value will be used
@@ -58,7 +63,19 @@ class Key {
 		}
 		$this->del($database, $key);
 		$database->q(
-			"INSERT INTO `[prefix]keys` (`key`, `expire`, `data`) VALUES ('%s', '%s', '%s')", $key, $expire, _json_encode($data)
+			"INSERT INTO `[prefix]keys`
+				(
+					`key`,
+					`expire`,
+					`data`
+				) VALUES (
+					'%s',
+					'%s',
+					'%s'
+				)",
+			$key,
+			$expire,
+			_json_encode($data)
 		);
 		$id = $database->id();
 		/**
@@ -66,7 +83,10 @@ class Key {
 		 */
 		if ($id && ($id % $Config->core['inserts_limit']) == 0) {
 			$time	= TIME;
-			$database->aq("DELETE FROM `[prefix]keys` WHERE `expire` < $time");
+			$database->aq(
+				"DELETE FROM `[prefix]keys`
+				WHERE `expire` < $time"
+			);
 		}
 		return $id;
 	}
@@ -89,7 +109,18 @@ class Key {
 		}
 		$time	= TIME;
 		$result	= $database->qf([
-			"SELECT `id`, `data` FROM `[prefix]keys` WHERE (`id` = '$id_key' OR `key` = '$id_key') AND `expire` >= $time ORDER BY `id` DESC LIMIT 1"
+			"SELECT
+				`id`,
+				`data`
+			FROM `[prefix]keys`
+			WHERE
+				(
+					`id`	= '$id_key' OR
+					`key`	= '$id_key'
+				) AND
+				`expire` >= $time
+			ORDER BY `id` DESC
+			LIMIT 1"
 		]);
 		$this->del($database, $id_key);
 		if (!$result || !is_array($result) || empty($result)) {
@@ -103,7 +134,7 @@ class Key {
 	/**
 	 * Key deletion from database
 	 *
-	 * @param int			$database	Keys database
+	 * @param int|object	$database	Keys database
 	 * @param int|string	$id_key		56 character [0-9a-z] key or id of record in daravase
 	 *
 	 * @return bool
@@ -118,7 +149,16 @@ class Key {
 		}
 		$id_key = $database->s($id_key);
 		return $database->q(
-			"UPDATE `[prefix]keys` SET `expire` = 0, `data` = null, key=null WHERE (`id` = '$id_key' OR `key` = '$id_key')"
+			"UPDATE `[prefix]keys`
+			SET
+				`expire`	= 0,
+				`data`		= null,
+				`key`		= null
+			WHERE
+				(
+					`id`	= '$id_key' OR
+					`key`	= '$id_key'
+				)"
 		);
 	}
 	/**

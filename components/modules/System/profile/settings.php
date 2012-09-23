@@ -27,7 +27,6 @@ $columns		= [
 	'birthday',
 	'avatar',
 	'website',
-	'icq',
 	'skype',
 	'about'
 ];
@@ -196,10 +195,6 @@ switch (isset($Config->routing['current'][2]) ? $Config->routing['current'][2] :
 				$row($L->website, h::input([
 					'name'		=> 'user[website]',
 					'value'		=> $user_data['website']
-				])),
-				$row($L->icq, h::input([
-					'name'		=> 'user[icq]',
-					'value'		=> $user_data['icq'] ?: ''
 				])),
 				$row($L->skype, h::input([
 					'name'		=> 'user[skype]',

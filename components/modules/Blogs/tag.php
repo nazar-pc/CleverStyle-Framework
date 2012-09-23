@@ -49,33 +49,27 @@ if ($page > 1) {
 $num					= $Config->module(MODULE)->posts_per_page;
 $from					= ($page - 1) * $num;
 $cdb					= $db->{$Config->module(MODULE)->db('posts')};
-$tag					= $cdb->qf(
-	[
-		"SELECT `id`
-		FROM `[prefix]blogs_tags`
-		WHERE `text` = '%s'
-		LIMIT 1",
-		$rc[0]
-	],
-	true
-);
+$tag					= $cdb->qfs([
+	"SELECT `id`
+	FROM `[prefix]blogs_tags`
+	WHERE `text` = '%s'
+	LIMIT 1",
+	$rc[0]
+]);
 if (!$tag) {
-	$tag					= $cdb->qf(
-		[
-			"SELECT `t`.`id`
-			FROM `[prefix]blogs_tags` AS `t` RIGHT OUTER JOIN `[prefix]texts_data` AS `d`
-			ON `t`.`text` = `d`.`id_`
-			WHERE
-				`t`.`text` = '%1\$s' OR
-				(
-					`d`.`text` = '%1\$s' AND `d`.`lang` = '%2\$s'
-				)
-			LIMIT 1",
-			$rc[0],
-			$L->clang
-		],
-		true
-	);
+	$tag					= $cdb->qfs([
+		"SELECT `t`.`id`
+		FROM `[prefix]blogs_tags` AS `t` RIGHT OUTER JOIN `[prefix]texts_data` AS `d`
+		ON `t`.`text` = `d`.`id_`
+		WHERE
+			`t`.`text` = '%1\$s' OR
+			(
+				`d`.`text` = '%1\$s' AND `d`.`lang` = '%2\$s'
+			)
+		LIMIT 1",
+		$rc[0],
+		$L->clang
+	]);
 }
 if (!$tag) {
 	define('ERROR_PAGE', 404);
@@ -89,27 +83,22 @@ $Page->title($tag['text']);
 $Page->title($L->latest_posts);
 $Page->Keywords			= keywords($L->{MODULE}.' '.$tag['text'].' '.$L->latest_posts).', '.$Page->Keywords;
 $Page->Description		= description($L->{MODULE}.' - '.$tag['text'].' - '.$L->latest_posts.'. '.$Page->Description);
-$posts_count			= $cdb->qf(
-	[
-		"SELECT COUNT(`id`)
-		FROM `[prefix]blogs_posts_tags`
-		WHERE `tag` = '%s'",
-		$tag['id'],
-	],
-	true
-);
-$posts					= $cdb->qfa(
-	[
-		"SELECT `t`.`id`
-		FROM `[prefix]blogs_posts_tags` AS `t` LEFT OUTER JOIN `[prefix]blogs_posts` AS `p`
-		ON `t`.`id` = `p`.`id`
-		WHERE `t`.`tag` = '%s'
-		ORDER BY `p`.`date` DESC
-		LIMIT $from, $num",
-		$tag['id'],
-	],
-	true
-);
+$posts_count			= $cdb->qfs([
+	"SELECT COUNT(`id`)
+	FROM `[prefix]blogs_posts_tags`
+	WHERE `tag` = '%s'",
+	$tag['id'],
+]);
+$posts					= $cdb->qfas([
+	"SELECT `t`.`id`
+	FROM `[prefix]blogs_posts_tags` AS `t`
+		LEFT OUTER JOIN `[prefix]blogs_posts` AS `p`
+	ON `t`.`id` = `p`.`id`
+	WHERE `t`.`tag` = '%s'
+	ORDER BY `p`.`date` DESC
+	LIMIT $from, $num",
+	$tag['id'],
+]);
 if (empty($posts)) {
 	$Index->content(
 		h::{'p.cs-center'}($L->no_posts_yet)

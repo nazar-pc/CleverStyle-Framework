@@ -29,17 +29,27 @@ class Text {
 		}
 		if ($id) {
 			$text = $db->$database->qf([
-				"SELECT `d`.`id`, `d`.`lang`, `d`.`text`
-				FROM `[prefix]texts` AS `t` LEFT OUTER JOIN `[prefix]texts_data` AS `d`
+				"SELECT
+					`d`.`id`,
+					`d`.`lang`,
+					`d`.`text`
+				FROM `[prefix]texts` AS `t`
+					LEFT OUTER JOIN `[prefix]texts_data` AS `d`
 				ON `t`.`id` = `d`.`id`
-				WHERE `t`.`id` = $id AND `d`.`lang` = '%s'
+				WHERE
+					`t`.`id`	= $id AND
+					`d`.`lang`	= '%s'
 				LIMIT 1",
 				$L->clang
 			]);
 			if (!$text) {
 				$text = $db->$database->qf([
-					"SELECT `d`.`id`, `d`.`lang`, `d`.`text`
-					FROM `[prefix]texts` AS `t` LEFT OUTER JOIN `[prefix]texts_data` AS `d`
+					"SELECT
+						`d`.`id`,
+						`d`.`lang`,
+						`d`.`text`
+					FROM `[prefix]texts` AS `t`
+						LEFT OUTER JOIN `[prefix]texts_data` AS `d`
 					ON `t`.`id` = `d`.`id`
 					WHERE `t`.`id` = $id
 					LIMIT 1",
@@ -48,10 +58,17 @@ class Text {
 			}
 		} else {
 			$text = $db->$database->qf([
-				"SELECT `t`.`id`, `d`.`lang`, `d`.`text`
-				FROM `[prefix]texts` AS `t` LEFT OUTER JOIN `[prefix]texts_data` AS `d`
+				"SELECT
+					`t`.`id`,
+					`d`.`lang`,
+					`d`.`text`
+				FROM `[prefix]texts` AS `t`
+					LEFT OUTER JOIN `[prefix]texts_data` AS `d`
 				ON `t`.`id` = `d`.`id`
-				WHERE `t`.`group` = '%s' AND `t`.`label` = '%s' AND `d`.`lang` = '%s'
+				WHERE
+					`t`.`group`	= '%s' AND
+					`t`.`label`	= '%s' AND
+					`d`.`lang`	= '%s'
 				LIMIT 1",
 				$group,
 				$label,
@@ -59,10 +76,16 @@ class Text {
 			]);
 			if (!$text) {
 				$text = $db->$database->qf([
-					"SELECT `t`.`id`, `d`.`lang`, `d`.`text`
-					FROM `[prefix]texts` AS `t` LEFT OUTER JOIN `[prefix]texts_data` AS `d`
+					"SELECT
+						`t`.`id`,
+						`d`.`lang`,
+						`d`.`text`
+					FROM `[prefix]texts` AS `t`
+						LEFT OUTER JOIN `[prefix]texts_data` AS `d`
 					ON `t`.`id` = `d`.`id`
-					WHERE `t`.`group` = '%s' AND `t`.`label` = '%s'
+					WHERE
+						`t`.`group`	= '%s' AND
+						`t`.`label`	= '%s'
 					LIMIT 1",
 					$group,
 					$label,
@@ -77,7 +100,16 @@ class Text {
 			$engine_class	= '\\cs\\Text\\'.$Config->core['auto_translation_engine']['name'];
 			$text['text']	= $engine_class::translate($text['text'], $text['lang'], $L->clang);
 			$db->$database()->q(
-				"INSERT INTO `[prefix]texts_data` (`id`, `lang`, `text`) VALUES ('%s', '%s', '%s')",
+				"INSERT INTO `[prefix]texts_data`
+					(
+						`id`,
+						`lang`,
+						`text`
+					) VALUES (
+						'%s',
+						'%s',
+						'%s'
+					)",
 				$text['id'],
 				$L->clang,
 				$text['text']
@@ -107,20 +139,29 @@ class Text {
 		 * @var \cs\DB\_Abstract $db_object
 		 */
 		$text		= str_replace('{¶', '{&para;', $text);
-		$id			= $db_object->qf(
-			[
-				"SELECT `id` FROM `[prefix]texts` WHERE `label` = '%s' AND `group` = '%s' LIMIT 1",
-				$label,
-				$group
-			],
-			true
-		);
+		$id			= $db_object->qfs([
+			"SELECT `id`
+			FROM `[prefix]texts`
+			WHERE
+				`label`	= '%s' AND
+				`group`	= '%s'
+			LIMIT 1",
+			$label,
+			$group
+		]);
 		if (!$id) {
 			if (!$Config->core['multilingual']) {
 				return $text;
 			} else {
 				$db_object->q(
-					"INSERT INTO `[prefix]texts` (`label`, `group`) VALUES ('%s', '%s')",
+					"INSERT INTO `[prefix]texts`
+						(
+							`label`,
+							`group`
+						) VALUES (
+							'%s',
+							'%s'
+						)",
 					$label,
 					$group
 				);
@@ -130,16 +171,23 @@ class Text {
 			}
 		}
 		unset($Cache->{'texts/'.$database.'/'.$id.'_'.$L->clang});
-		if ($dat = $db_object->qf(
-			[
-				"SELECT `id` FROM `[prefix]texts_data` WHERE `id` = '%s' AND `lang` = '%s' LIMIT 1",
-				$id,
-				$L->clang
-			],
-			true
-		)) {
+		if ($dat = $db_object->qfs([
+			"SELECT `id`
+			FROM `[prefix]texts_data`
+			WHERE
+				`id`	= '%s' AND
+				`lang`	= '%s'
+			LIMIT 1",
+			$id,
+			$L->clang
+		])) {
 			if ($db_object->q(
-				"UPDATE `[prefix]texts_data` SET `text` = '%s' WHERE `id` = '%s' AND `lang` = '%s' LIMIT 1",
+				"UPDATE `[prefix]texts_data`
+				SET `text` = '%s'
+				WHERE
+					`id` = '%s' AND
+					`lang` = '%s'
+				LIMIT 1",
 				$text,
 				$id,
 				$L->clang
@@ -150,13 +198,26 @@ class Text {
 			}
 		} elseif ($Config->core['multilingual']) {
 			if (!$db_object->q(
-				"INSERT INTO `[prefix]texts_data` (`id`, `id_`, `lang`, `text`) VALUES ('%s', '%s', '%s')",
+				"INSERT INTO `[prefix]texts_data`
+					(
+						`id`,
+						`id_`,
+						`lang`,
+						`text`
+					) VALUES (
+						'%s',
+						'%s',
+						'%s'
+					)",
 				$id,
 				'{¶'.$id.'}',
 				$L->clang,
 				$text
 			)) {
-				$db_object->q("DELETE FROM `[prefix]texts` WHERE `id` = $id");
+				$db_object->q(
+					"DELETE FROM `[prefix]texts`
+					WHERE `id` = $id"
+				);
 				return $text;
 			}
 			global $Config;
@@ -165,8 +226,12 @@ class Text {
 			 */
 			if ($id && $id % $Config->core['inserts_limit'] == 0) {
 				$db_object->aq([
-					"DELETE FROM `[prefix]texts` WHERE `label` = '' AND `group` = ''",
-					"DELETE FROM `[prefix]texts_data` WHERE `lang` = ''"
+					"DELETE FROM `[prefix]texts`
+					WHERE
+						`label`	= '' AND
+						`group`	= ''",
+					"DELETE FROM `[prefix]texts_data`
+					WHERE `lang` = ''"
 				]);
 			}
 			if ($id) {
@@ -190,20 +255,29 @@ class Text {
 	function del ($database, $group, $label) {
 		global $Cache, $L, $db;
 		unset($Cache->{'texts/'.$database.'/'.md5($group).md5($label).'_'.$L->clang});
-		$id = $db->$database()->qf(
-			[
-				"SELECT `id` FROM `[prefix]texts` WHERE `group` = '%s' AND `label` = '%s'",
-				$group,
-				$label
-			],
-			true
-		);
+		$id = $db->$database()->qfs([
+			"SELECT `id`
+			FROM `[prefix]texts`
+			WHERE
+				`group`	= '%s' AND
+				`label`	= '%s'",
+			$group,
+			$label
+		]);
 		if ($id) {
 			unset($Cache->{'texts/'.$database.'/'.$id.'_'.$L->clang});
 			return $db->$database()->q(
 				[
-					"UPDATE `[prefix]texts` SET `label` = '', `group` = '' WHERE `id` = '%s'",
-					"UPDATE `[prefix]texts_data` SET `lang` = '', `text` = '' WHERE `id` = '%s'"
+					"UPDATE `[prefix]texts`
+					SET
+						`label`	= '',
+						`group`	= ''
+					WHERE `id` = '%s'",
+					"UPDATE `[prefix]texts_data`
+					SET
+						`lang`	= '',
+						`text`	= ''
+					WHERE `id` = '%s'"
 				],
 				$id
 			);

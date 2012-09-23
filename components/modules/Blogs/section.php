@@ -68,14 +68,14 @@ if ($page > 1) {
 $num					= $Config->module(MODULE)->posts_per_page;
 $from					= ($page - 1) * $num;
 $cdb					= $db->{$Config->module(MODULE)->db('posts')};
-$posts					= $cdb->qfa(
+$posts					= $cdb->qfas(
 	"SELECT `s`.`id`
-	FROM `[prefix]blogs_posts_sections` AS `s` LEFT OUTER JOIN `[prefix]blogs_posts` AS `p`
+	FROM `[prefix]blogs_posts_sections` AS `s`
+		LEFT OUTER JOIN `[prefix]blogs_posts` AS `p`
 	ON `s`.`id` = `p`.`id`
 	WHERE `s`.`section` = $section
 	ORDER BY `p`.`date` DESC
-	LIMIT $from, $num",
-	true
+	LIMIT $from, $num"
 );
 if (empty($posts)) {
 	$Index->content(

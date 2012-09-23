@@ -256,14 +256,15 @@ if (isset($rc[2])) {
 			$groups					= $User->get_groups_list();
 			$groups_content			= [];
 			foreach ($groups as $group) {
-				$group_permission = $User->db()->qf(
-					[
-						"SELECT `value` FROM `[prefix]groups_permissions` WHERE `id` = '%s' AND `permission` = '%s'",
-						$group['id'],
-						$permission
-					],
-					true
-				);
+				$group_permission = $User->db()->qfs([
+					"SELECT `value`
+					FROM `[prefix]groups_permissions`
+					WHERE
+						`id`			= '%s' AND
+						`permission`	= '%s'",
+					$group['id'],
+					$permission
+				]);
 				$groups_content[] = h::{'th.ui-widget-header.ui-corner-all'}(
 					$group['title'],
 					[
@@ -289,7 +290,11 @@ if (isset($rc[2])) {
 			$groups_content	= $content_;
 			unset($count, $content_);
 			$users_list		= $User->db()->qfa([
-				"SELECT `id`, `value` FROM `[prefix]users_permissions` WHERE `permission` = '%s'",
+				"SELECT
+					`id`,
+					`value`
+				FROM `[prefix]users_permissions`
+				WHERE `permission` = '%s'",
 				$permission
 			]);
 			$users_content	= [];
@@ -379,14 +384,15 @@ if (isset($rc[2])) {
 					continue;
 				}
 				$found_users[]	= $user;
-				$value			= $User->db()->qf(
-					[
-						"SELECT `value` FROM `[prefix]users_permissions` WHERE `id` = '%s' AND `permission` = '%s'",
-						$user,
-						$permission
-					],
-					true
-				);
+				$value			= $User->db()->qfs([
+					"SELECT `value`
+					FROM `[prefix]users_permissions`
+					WHERE
+						`id`			= '%s' AND
+						`permission`	= '%s'",
+					$user,
+					$permission
+				]);
 				$content[]		= h::{'th.ui-widget-header.ui-corner-all'}($User->get_username($user)).
 					h::{'td input[type=radio]'}([
 						'name'			=> 'users['.$user.']',

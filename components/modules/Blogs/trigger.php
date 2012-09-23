@@ -46,9 +46,10 @@ function clean_pcache ($data = null) {
 }
 function rebuild_pcache (&$data = null) {
 	$module	= basename(__DIR__);
+	$key	= [];
 	file_put_contents(
 		PCACHE.'/module.'.$module.'.js',
-		$key	= gzencode(
+		$key[]	= gzencode(
 			file_get_contents(MODULES.'/'.$module.'/includes/js/functions.js').
 			file_get_contents(MODULES.'/'.$module.'/includes/js/general.js'),
 			9
@@ -57,14 +58,14 @@ function rebuild_pcache (&$data = null) {
 	);
 	file_put_contents(
 		PCACHE.'/module.'.$module.'.css',
-		$key	.= gzencode(
+		$key[]	= gzencode(
 			file_get_contents(MODULES.'/'.$module.'/includes/css/general.css'),
 			9
 		),
 		LOCK_EX | FILE_BINARY
 	);
 	if ($data !== null) {
-		$data['key']	.= md5($key);
+		$data['key']	.= md5(implode('', $key));
 	}
 }
 $Core->register_trigger(
@@ -104,9 +105,9 @@ $Core->register_trigger(
 			unset($section);
 		}
 		unset($sections);
-		$posts		= $db->{$Config->module($module)->db('posts')}->qfa(
-			"SELECT `id` FROM `[prefix]blogs_posts`",
-			true
+		$posts		= $db->{$Config->module($module)->db('posts')}->qfas(
+			"SELECT `id`
+			FROM `[prefix]blogs_posts`"
 		);
 		if (!empty($posts)) {
 			foreach ($posts as $post) {

@@ -84,6 +84,8 @@ class MySQLi extends _Abstract {
 		}
 	}
 	/**
+	 * Number
+	 *
 	 * Getting number of selected rows
 	 *
 	 * @param bool|object $query_result
@@ -101,20 +103,22 @@ class MySQLi extends _Abstract {
 		}
 	}
 	/**
+	 * Fetch
+	 *
 	 * Fetch a result row as an associative array
 	 *
 	 * @param bool|object	$query_result
-	 * @param bool			$one_column
+	 * @param bool			$single_column
 	 * @param bool $array
 	 * @param bool			$indexed
 	 *
 	 * @return array|bool
 	 */
-	function f ($query_result = false, $one_column = false, $array = false, $indexed = false) {
+	function f ($query_result = false, $single_column = false, $array = false, $indexed = false) {
 		if ($query_result === false) {
 			$query_result = array_slice($this->queries['result'], -1)[0];
 		}
-		if ($one_column) {
+		if ($single_column) {
 			$result_type	= MYSQLI_NUM;
 		} else {
 			$result_type	= $indexed ? MYSQLI_NUM : MYSQLI_ASSOC;
@@ -122,7 +126,7 @@ class MySQLi extends _Abstract {
 		if (is_object($query_result)) {
 			if ($array) {
 				$result = [];
-				if ($one_column === false) {
+				if ($single_column === false) {
 					while ($current = $query_result->fetch_array($result_type)) {
 						$result[] = $current;
 					}
@@ -135,7 +139,7 @@ class MySQLi extends _Abstract {
 				return $result;
 			} else {
 				$result	= $query_result->fetch_array($result_type);
-				if ($one_column && is_array($result)) {
+				if ($single_column && is_array($result)) {
 					return $result[0];
 				}
 				return $result;
@@ -145,6 +149,8 @@ class MySQLi extends _Abstract {
 		}
 	}
 	/**
+	 * Id
+	 *
 	 * Get id of last inserted row
 	 *
 	 * @return int

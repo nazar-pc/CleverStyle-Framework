@@ -9,7 +9,7 @@
  */
 if (!isset($_POST['edit_settings'])) {
 	return;
-}echo "d";
+}
 global $Index, $Blogs;
 switch ($_POST['edit_settings']) {
 	case 'save':

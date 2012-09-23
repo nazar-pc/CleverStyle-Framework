@@ -58,29 +58,24 @@ class Blogs {
 				$data['path']								= $this->ml_process($data['path']);
 				$data['content']							= $this->ml_process($data['content']);
 				$data['short_content']						= truncate(explode('<!-- pagebreak -->', $data['content'])[0]);
-				$data['sections']							= $db->{$this->posts}->qfa(
+				$data['sections']							= $db->{$this->posts}->qfas(
 					"SELECT `section`
 					FROM `[prefix]blogs_posts_sections`
-					WHERE `id` = $id",
-					true
+					WHERE `id` = $id"
 				);
-				$data['tags']								= $db->{$this->posts}->qfa(
+				$data['tags']								= $db->{$this->posts}->qfas(
 					"SELECT `tag`
 					FROM `[prefix]blogs_posts_tags`
-					WHERE `id` = $id",
-					true
+					WHERE `id` = $id"
 				);
-				$data['comments_count']						= (int)$db->{$this->comments}->qf(
-					[
-						"SELECT COUNT(`id`)
-						FROM `[prefix]blogs_comments`
-						WHERE
-							`post`	= $id AND
-							`lang`	= '%s'",
-						$L->clang
-					],
-					true
-				);
+				$data['comments_count']						= (int)$db->{$this->comments}->qfs([
+					"SELECT COUNT(`id`)
+					FROM `[prefix]blogs_comments`
+					WHERE
+						`post`	= $id AND
+						`lang`	= '%s'",
+					$L->clang
+				]);
 				$Cache->{'Blogs/posts/'.$id.'/'.$L->clang}	= $data;
 			}
 		}
@@ -272,11 +267,10 @@ class Blogs {
 	function get_total_count () {
 		global $Cache, $db;
 		if (($data = $Cache->{'Blogs/total_count'}) === false) {
-			$Cache->{'Blogs/total_count'}	= $data	= $db->{$this->posts}->qf(
+			$Cache->{'Blogs/total_count'}	= $data	= $db->{$this->posts}->qfs(
 				"SELECT COUNT(`id`)
-				FROM `[prefix]blogs_posts`",
-				true
-			);;
+				FROM `[prefix]blogs_posts`"
+			);
 		}
 		return $data;
 	}
@@ -337,15 +331,12 @@ class Blogs {
 		} else {
 			global $L;
 			$structure['title']	= $L->root_section;
-			$structure['posts']	= $db->{$this->posts}->qf(
-				[
-					"SELECT COUNT(`id`)
-					FROM `[prefix]blogs_posts_sections`
-					WHERE `section` = '%s'",
-					$structure['id']
-				],
-				true
-			);
+			$structure['posts']	= $db->{$this->posts}->qfs([
+				"SELECT COUNT(`id`)
+				FROM `[prefix]blogs_posts_sections`
+				WHERE `section` = '%s'",
+				$structure['id']
+			]);
 		}
 		$sections				= $db->{$this->posts}->qfa([
 			"SELECT
@@ -498,29 +489,23 @@ class Blogs {
 	function del_section ($id) {
 		global $db, $Cache;
 		$id						= (int)$id;
-		$parent_section		= $db->{$this->posts}()->qf(
-			[
-				"SELECT `parent`
-				FROM `[prefix]blogs_sections`
-				WHERE `id` = '%s'
-				LIMIT 1",
-				$id
-			],
-			true
-		);
-		$new_section_for_posts	= $db->{$this->posts}()->qf(
-			[
-				"SELECT `id`
-				FROM `[prefix]blogs_sections`
-				WHERE
-					`parent` = '%s' AND
-					`id` != '%s'
-				LIMIT 1",
-				$parent_section,
-				$id
-			],
-			true
-		);
+		$parent_section		= $db->{$this->posts}()->qfs([
+			"SELECT `parent`
+			FROM `[prefix]blogs_sections`
+			WHERE `id` = '%s'
+			LIMIT 1",
+			$id
+		]);
+		$new_section_for_posts	= $db->{$this->posts}()->qfs([
+			"SELECT `id`
+			FROM `[prefix]blogs_sections`
+			WHERE
+				`parent` = '%s' AND
+				`id` != '%s'
+			LIMIT 1",
+			$parent_section,
+			$id
+		]);
 		if ($db->{$this->posts}()->q(
 			[
 				"UPDATE `[prefix]blogs_sections`
@@ -786,12 +771,11 @@ class Blogs {
 		$parent	= (int)$parent;
 		if (
 			$parent != 0 &&
-			$db->{$this->comments}()->qf(
+			$db->{$this->comments}()->qfs(
 				"SELECT `post`
 				FROM `[prefix]blogs_comments`
 				WHERE `id` = $parent
-				LIMIT 1",
-				true
+				LIMIT 1"
 			) != $post
 		) {
 			return false;
@@ -884,11 +868,10 @@ class Blogs {
 		if (!$comment || $comment['count']) {
 			return false;
 		}
-		if ($db->{$this->comments}()->qf(
+		if ($db->{$this->comments}()->q(
 			"DELETE FROM `[prefix]blogs_comments`
 			WHERE `id` = $id
-			LIMIT 1",
-			true
+			LIMIT 1"
 		)) {
 			unset($Cache->{'Blogs/posts/'.$comment['post']});
 			return true;

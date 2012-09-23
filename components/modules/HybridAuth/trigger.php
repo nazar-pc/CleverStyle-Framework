@@ -51,10 +51,10 @@ $Core->register_trigger(
 				]
 			],
 			array_map(
-				function ($provider) {
+				function ($provider) use ($L) {
 					return [
 						h::div().
-						$provider,
+						$L->$provider,
 						[
 							'data-provider'	=> $provider,
 							'class'			=> 'ui-widget-content cs-hybrid-auth-'.$provider
@@ -100,15 +100,18 @@ $Core->register_trigger(
 				(
 					`id`,
 					`provider`,
-					`identifier`
+					`identifier`,
+					`profile`
 				) VALUES (
+					'%s',
 					'%s',
 					'%s',
 					'%s'
 				)",
 			$data['id'],
 			$session_data['provider'],
-			$session_data['identifier']
+			$session_data['identifier'],
+			$session_data['profile']
 		);
 	}
 );

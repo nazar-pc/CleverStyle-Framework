@@ -170,12 +170,11 @@ function get_posts_rows ($page = 1) {
 	$num		= $Config->module(MODULE)->posts_per_page;
 	$from		= ($page - 1) * $num;
 	$cdb		= $db->{$Config->module(basename(MODULE))->db('posts')};
-	$posts		= $cdb->qfa(
+	$posts		= $cdb->qfas(
 		"SELECT `id`
 		FROM `[prefix]blogs_posts`
 		ORDER BY `id` DESC
-		LIMIT $from, $num",
-		true
+		LIMIT $from, $num"
 	);
 	$content	= [];
 	if ($posts) {

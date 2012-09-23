@@ -31,7 +31,6 @@ $data	= $User->get(
 		'birthday',
 		'avatar',
 		'website',
-		'icq',
 		'skype',
 		'about'
 	],
@@ -83,11 +82,6 @@ $Page->content(
 						'href'	=> (substr($data['website'], 0, 4) != 'http' ? 'http://' : '').$data['website']
 					]
 				)
-			]) : false),
-
-			($data['icq'] ? h::td([
-				h::h2($L->icq.':'),
-				h::h2($data['icq'])
 			]) : false),
 
 			($data['skype'] ? h::td([
