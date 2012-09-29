@@ -30,21 +30,38 @@ $Index->content(
 		]).
 		h::{'tr| td.ui-widget-content.ui-corner-all'}(
 			array_map(
-				function ($provider, $pdata) use ($L, $povs_config) {
+				function ($provider, $pdata) use ($L, $povs_config, $Config) {
 					$content	= '';
-					foreach ($pdata['keys'] as $key) {
-						$content	.= h::{'tr td'}([
-							ucfirst($key),
-							h::input([
-								'name'	=> 'providers['.$provider.'][keys]['.$key.']',
-								'value'	=> isset($povs_config[$provider], $povs_config[$provider]['keys'][$key]) ? $povs_config[$provider]['keys'][$key] : ''
-							])
-						]);
+					if (isset($pdata['keys'])) {
+						foreach ($pdata['keys'] as $key) {
+							$content	.= h::{'tr td'}([
+								ucfirst($key),
+								h::input([
+									'name'	=> 'providers['.$provider.'][keys]['.$key.']',
+									'value'	=> isset($povs_config[$provider], $povs_config[$provider]['keys'][$key]) ? $povs_config[$provider]['keys'][$key] : ''
+								])
+							]);
+						}
 					}
 					return [
 						$L->$provider,
 						h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd'}(
-							$content
+							$content.
+							h::{'tr td.cs-left-all[colspan=2]'}(
+								isset($pdata['info']) ? str_replace(
+									[
+										'{base_url}',
+										'{module}',
+										'{provider}'
+									],
+									[
+										$Config->server['base_url'],
+										MODULE,
+										$provider
+									],
+									$pdata['info']
+								) : false
+							)
 						),
 						h::{'input[type=radio]'}([
 							'name'		=> 'providers['.$provider.'][enabled]',

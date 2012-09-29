@@ -1,23 +1,176 @@
 {
-	"Facebook"	: {
+	"OpenID"		: {},
+	"Google"		: {
+		"keys"	: [
+			"id",
+			"secret"
+		],
+		"info"	: "Authorized Redirect URIs: {base_url}/{module}/{provider}?auth.done={provider}"
+	},
+	"Facebook"		: {
 		"keys"	: [
 			"id",
 			"secret"
 		]
 	},
-	"Twitter"	: {
+	"Twitter"		: {
 		"keys"	: [
 			"key",
 			"secret"
-		]
+		],
+		"info"	: "Callback URL: {base_url}/{module}/{provider}?auth.done={provider}"
 	},
-	"Vkontakte"	: {
+	"Vkontakte"		: {
 		"keys"	: [
 			"id",
 			"secret"
 		]
 	},
 	"Odnoklassniki"	: {
+		"keys"	: [
+			"id",
+			"secret"
+		]
+	},
+	"Yahoo"			: {},
+	"MySpace"	: {
+		"keys"	: [
+			"key",
+			"secret"
+		]
+	},
+	"Live"			: {
+		"keys"	: [
+			"key",
+			"secret"
+		],
+		"info"	: "Redirect Domain: {base_url}"
+	},
+	"LinkedIn"		: {
+		"keys"	: [
+			"id",
+			"secret"
+		]
+	},
+	"Foursquare"	: {
+		"keys"	: [
+			"id",
+			"secret"
+		],
+		"info"	: "Callback URL: {base_url}/{module}/{provider}?auth.done={provider}"
+	},
+	"AOL"			: {},
+	"GitHub"	: {
+		"keys"	: [
+			"id",
+			"secret"
+		]
+	},
+	"Gowalla"		: {
+		"keys"	: [
+			"key",
+			"secret"
+		],
+		"info"	: "OAuth callback URL: {base_url}/{module}/{provider}?auth.done={provider}"
+	},
+	"LastFM"		: {
+		"keys"	: [
+			"id",
+			"secret"
+		]
+	},
+	"Vimeo"			: {
+		"keys"	: [
+			"key",
+			"secret"
+		],
+		"info"	: "Application Callback URL: {base_url}/{module}/{provider}?auth.done={provider}"
+	},
+	"Viadeo"		: {
+		"keys"	: [
+			"key",
+			"secret"
+		]
+	},
+	"Identica"		: {
+		"keys"	: [
+			"key",
+			"secret"
+		]
+	},
+	"Tumblr"		: {
+		"keys"	: [
+			"key",
+			"secret"
+		]
+	},
+	"Goodreads"		: {
+		"keys"	: [
+			"key",
+			"secret"
+		]
+	},
+	"QQ"			: {
+		"keys"	: [
+			"key",
+			"secret"
+		]
+	},
+	"Sina"			: {
+		"keys"	: [
+			"key",
+			"secret"
+		]
+	},
+	"Murmur"		: {
+		"keys"	: [
+			"key",
+			"secret"
+		]
+	},
+	"Pixnet"		: {
+		"keys"	: [
+			"key",
+			"secret"
+		]
+	},
+	"Plurk"			: {
+		"keys"	: [
+			"key",
+			"secret"
+		]
+	},
+	"Skyrock"		: {
+		"keys"	: [
+			"key",
+			"secret"
+		]
+	},
+	"px500"			: {
+		"keys"	: [
+			"key",
+			"secret"
+		]
+	},
+	"Mailru"		: {
+		"keys"	: [
+			"id",
+			"secret"
+		]
+	},
+	"Yandex"		: {
+		"keys"	: [
+			"id",
+			"secret"
+		]
+	},
+	"Instagram"		: {
+		"keys"	: [
+			"id",
+			"secret"
+		]
+	},
+	"Disqus"		: {
 		"keys"	: [
 			"id",
 			"secret"

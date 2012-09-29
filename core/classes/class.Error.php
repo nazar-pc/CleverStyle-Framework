@@ -62,8 +62,7 @@ class Error {
 			case E_USER_ERROR:
 			case E_ERROR:
 				++$this->num;
-				$this->errors_list_all[]		=	'E %time% ['.MICROTIME.'] '.$string.
-													' Occured: '.$file.':'.$line.' Dump: '.$dump."\n";
+				$this->errors_list_all[]		= 'E {time} ['.MICROTIME.'] '.$string.' Occured: '.$file.':'.$line.' Dump: '.$dump."\n";
 				define('ERROR_PAGE', 500);
 				if (is_object($Index)) {
 					$Index->__finish();
@@ -74,12 +73,10 @@ class Error {
 			case E_USER_WARNING:
 			case E_WARNING:
 				++$this->num;
-				$this->errors_list_all[]		=	'W %time% ['.MICROTIME.'] '.$string.
-													' Occured: '.$file.':'.$line.' Dump: '.$dump."\n";
+				$this->errors_list_all[]		= 'W {time} ['.MICROTIME.'] '.$string.' Occured: '.$file.':'.$line.' Dump: '.$dump."\n";
 			break;
 			default:
-				$this->errors_list_all[]		=	'N %time% ['.MICROTIME.'] '.$string.
-													' Occured: '.$file.':'.$line.' Dump: '.$dump."\n";
+				$this->errors_list_all[]		= 'N {time} ['.MICROTIME.'] '.$string.' Occured: '.$file.':'.$line.' Dump: '.$dump."\n";
 				$this->errors_list_display[]	= $string;
 			break;
 		}
@@ -99,7 +96,7 @@ class Error {
 		global $User;
 		if ($User->admin()) {
 			if (!empty($this->errors_list_all)) {
-				$this->errors_list_all		= str_replace('%time%', date('H:i:s', TIME), $this->errors_list_all);
+				$this->errors_list_all		= str_replace('{time}', date('H:i:s', TIME), $this->errors_list_all);
 				global $Page;
 				foreach ($this->errors_list_all as $error) {
 					$Page->warning($error);
@@ -107,7 +104,7 @@ class Error {
 			}
 		} else {
 			if (!empty($this->errors_list_display)) {
-				$this->errors_list_display	= str_replace('%time%', date('H:i:s', TIME), $this->errors_list_display);
+				$this->errors_list_display	= str_replace('{time}', date('H:i:s', TIME), $this->errors_list_display);
 				global $Page;
 				foreach ($this->errors_list_display as $error) {
 					$Page->warning($error);
@@ -127,7 +124,7 @@ class Error {
 	 */
 	function __finish () {
 		if (!empty($this->errors_list_all)) {
-			$this->errors_list_all		= str_replace('%time%', date('H:i:s', TIME), $this->errors_list_all);
+			$this->errors_list_all		= str_replace('{time}', date('H:i:s', TIME), $this->errors_list_all);
 			file_put_contents(LOGS.'/'.date('d-m-Y', TIME).'_'.strtr(date_default_timezone_get(), '/', '_'), implode("\n", $this->errors_list_all)."\n", LOCK_EX | FILE_APPEND);
 			$this->errors_list_all = [];
 		}

@@ -15,7 +15,7 @@ $rc			= $Config->routing['current'];
 if (
 	$User->user() ||
 	!(
-		isset($rc[0], $rc[1], $Config->module(MODULE)->providers[$rc[0]]) &&
+		isset($rc[0], $Config->module(MODULE)->providers[$rc[0]]) &&
 		$Config->module(MODULE)->providers[$rc[0]]['enabled']
 	) ||
 	(
@@ -30,7 +30,7 @@ if (
 /**
  * Merging confirmation
  */
-if ($rc[1] == 'merge_confirmation') {
+if (isset($rc[1]) && $rc[1] == 'merge_confirmation') {
 	/**
 	 * If confirmation key is valid - make merging
 	 */
@@ -234,20 +234,19 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 			$Index->form			= true;
 			$Index->buttons			= false;
 			$Index->post_buttons	= h::{'button[type=submit]'}($L->submit);
-			$Index->{'p.cs-center'}(
-				$L->please_type_your_email.':'.
-				h::{'input[name=email]'}(
-					isset($_POST['email']) ? $_POST['email'] : ''
+			$Index->content(
+				h::{'p.cs-center'}(
+					$L->please_type_your_email.':'.
+					h::{'input[name=email]'}(
+						isset($_POST['email']) ? $_POST['email'] : ''
+					)
 				)
 			);
 		}
 	} catch (Exception $e) {
-		$Index->content(//TODO normal errors processing
-			h::p(
-				'Error: please try again!',
-				'Original error message: '.$e->getMessage()
-			)
-		);
+		trigger_error($e->getMessage());
+		header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->server['base_url']));
+		_setcookie('HybridAuth_referer', '');
 	}
 /**
  * If user specified email
