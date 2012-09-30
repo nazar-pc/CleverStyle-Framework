@@ -97,6 +97,9 @@ function install_form () {
 }
 function install_process () {
 	global $fs;
+	/**
+	 * Connecting to the DataBase
+	 */
 	require_once DIR.'/fs/'.$fs['core/engines/DB/_Abstract.php'];
 	require_once DIR.'/fs/'.$fs['core/engines/DB/'.$_POST['db_engine'].'.php'];
 	/**
@@ -114,6 +117,9 @@ function install_process () {
 	if (!(is_object($cdb) && $cdb->connected())) {
 		return 'Database connection failed! Installation aborted.';
 	}
+	/**
+	 * General system configuration
+	 */
 	$config							= _json_decode('{
 		"name": "",
 		"url": "",
@@ -226,6 +232,9 @@ function install_process () {
 	$config['mail_from_name']		= 'Administrator of '.$config['name'];
 	$config['mail_from']			= $_POST['admin_email'];
 	$config['simple_admin_mode']	= $_POST['mode'];
+	/**
+	 * Extracting of engine's files
+	 */
 	$extract						= array_product(
 		array_map(
 			function ($index, $file) {
@@ -250,6 +259,9 @@ function install_process () {
 	) {
 		return 'Can\'t extract system files from the archive! Installation aborted.';
 	}
+	/**
+	 * Basic system configuration
+	 */
 	$public_key						= hash('sha512', uniqid(microtime(true), true));
 	$main_config					= file_exists(ROOT.'/config') && file_put_contents(
 		ROOT.'/config/main.json',
@@ -326,11 +338,37 @@ function install_process () {
 	unset($fs[array_search('config/main.php', $fs)]);
 	file_put_contents(ROOT.'/core/fs.json', _json_encode(array_keys($fs)));
 	unset($fs);
+	/**
+	 * DataBase structure import
+	 */
 	if (!file_exists(DIR.'/install/DB/'.$_POST['db_engine'].'.sql')) {
 		return 'Can\'t find system tables structure for selected database engine! Installation aborted.';
 	}
 	if (!$cdb->q(explode(';', file_get_contents(DIR.'/install/DB/'.$_POST['db_engine'].'.sql')))) {
 		return 'Can\'t import system tables structure for selected database engine! Installation aborted.';
+	}
+	/**
+	 * General configuration import
+	 */
+	$modules						= [
+		'System'	=> [
+			'active'	=> 1,
+			'db'		=> [
+				'keys'	=> 0,
+				'users'	=> 0,
+				'texts'	=> 0
+			]
+		]
+	];
+	if (file_exists(DIR.'/modules.json')) {
+		foreach (_json_decode(file_get_contents(DIR.'/modules.json')) as $module) {
+			$modules[$module]	= [
+				'active'	=> -1,
+				'db'		=> [],
+				'storage'	=> []
+			];
+		}
+		unset($module);
 	}
 	if (!$cdb->q(
 		"INSERT INTO `[prefix]config` (
@@ -340,11 +378,15 @@ function install_process () {
 		)",
 		$config['cookie_domain'],
 		_json_encode($config),
-		'{"modules":{"System":{"active":1,"db":{"keys":"0","users":"0","texts":"0"}}},"plugins":[],"blocks":[]}',
+		'{"modules":'._json_encode($modules).',"plugins":[],"blocks":[]}',
 		'{"in":[],"out":[]}'
 	)) {
 		return 'Can\'t import system confuration into database! Installation aborted.';
 	}
+	unset($modules);
+	/**
+	 * Administrator registration
+	 */
 	$admin_login					= strstr($_POST['admin_email'], '@', true);
 	if (!$cdb->q(
 		"INSERT INTO `[prefix]users` (
@@ -363,6 +405,9 @@ function install_process () {
 	)) {
 		return 'Can\'t register administrator user! Installation aborted.';
 	}
+	/**
+	 * Disconnecting from the DataBase, removing of installer file
+	 */
 	$cdb->__destruct();
 	unlink(ROOT.'/'.pathinfo(DIR, PATHINFO_BASENAME));
 	return h::h3(

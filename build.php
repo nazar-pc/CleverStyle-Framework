@@ -10,7 +10,6 @@
 define('DIR',	__DIR__);
 require_once    DIR.'/core/classes/class.h.php';
 require_once    DIR.'/core/functions.php';
-require_once	'Archive/Tar.php';
 date_default_timezone_set('UTC');
 header('Content-Type: text/html; charset=utf-8');
 header('Connection: close');

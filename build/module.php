@@ -6,6 +6,7 @@
  * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
+time_limit_pause();
 if (!isset($_POST['modules'][0])) {
 	echo h::p('Please, specify module name');
 	return;
@@ -20,14 +21,17 @@ if (!isset($_POST['modules'][0])) {
 	return;
 }
 $version	= _json_decode(file_get_contents($mdir.'/meta.json'))['version'];
-$tar		= new Archive_Tar(DIR.'/build.phar.tar');
-$tar->addString('meta.json', file_get_contents($mdir.'/meta.json'));
+if (file_exists(DIR.'/build.phar')) {
+	unlink(DIR.'/build.phar');
+}
+$phar		= new Phar(DIR.'/build.phar');
+$phar->addFromString('meta.json', file_get_contents($mdir.'/meta.json'));
 $set_stub	= false;
 if (file_exists($mdir.'/readme.html')) {
-	$tar->addString('readme.html', file_get_contents($mdir.'/readme.html'));
+	$phar->addFromString('readme.html', file_get_contents($mdir.'/readme.html'));
 	$set_stub	= 'readme.html';
 } elseif (file_exists($mdir.'/readme.txt')) {
-	$tar->addString('readme.txt', file_get_contents($mdir.'/readme.txt'));
+	$phar->addFromString('readme.txt', file_get_contents($mdir.'/readme.txt'));
 	$set_stub	= 'readme.txt';
 }
 $list		= array_merge(
@@ -35,22 +39,19 @@ $list		= array_merge(
 );
 $length		= strlen($mdir.'/');
 $list		= array_map(
-	function ($index, $file) use ($tar, $length) {
-		$tar->addString('fs/'.$index, file_get_contents($file));
+	function ($index, $file) use ($phar, $length) {
+		$phar->addFromString('fs/'.$index, file_get_contents($file));
 		return substr($file, $length);
 	},
 	array_keys($list),
 	$list
 );
 unset($length);
-$tar->addString('fs.json', _json_encode(array_flip($list)));
-$tar->addString('dir', $_POST['modules'][0]);
-unset($list, $tar);
-$phar		= new Phar(DIR.'/build.phar.tar');
-$phar->convertToExecutable(Phar::TAR, Phar::BZ2, '.phar');
-unlink(DIR.'/build.phar.tar');
-unset($phar);
-$phar		= new Phar(DIR.'/build.phar');
+$phar->addFromString('fs.json', _json_encode(array_flip($list)));
+$phar->addFromString('dir', $_POST['modules'][0]);
+unset($list);
+$phar		= $phar->convertToExecutable(Phar::TAR, Phar::BZ2, '.phar.tar');
+unlink(DIR.'/build.phar');
 if ($set_stub) {
 	$phar->setStub("<?php Phar::webPhar(null, '$set_stub'); __HALT_COMPILER();");
 } else {
@@ -61,5 +62,5 @@ if ($set_stub) {
 }
 $phar->setSignatureAlgorithm(PHAR::SHA512);
 unset($phar);
-rename(DIR.'/build.phar', DIR.'/'.str_replace(' ', '_', $_POST['modules'][0]).'_'.$version.'.phar.php');
+rename(DIR.'/build.phar.tar', DIR.'/'.str_replace(' ', '_', $_POST['modules'][0]).'_'.$version.'.phar.php');
 echo h::p('Done! Module '.$_POST['modules'][0].' '.$version);
