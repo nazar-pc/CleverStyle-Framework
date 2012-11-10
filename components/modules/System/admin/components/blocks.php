@@ -45,7 +45,7 @@ if (isset($rc[2])) {
 			$a->action				= 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
 			$Page->title($L->deletion_of_block(get_block_title($rc[3])));
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages'}(
+				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$L->sure_to_delete_block(get_block_title($rc[3])).
 					h::{'input[type=hidden]'}([
 						'name'	=> 'mode',
@@ -66,7 +66,7 @@ if (isset($rc[2])) {
 			$a->form_atributes[]	= 'formnovalidate';
 			$Page->title($L->adding_a_block);
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages'}(
+				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$L->adding_a_block
 				).
 				h::{'table.cs-fullwidth-table.cs-center-all tr'}(
@@ -163,7 +163,7 @@ if (isset($rc[2])) {
 			$block = &$Config->components['blocks'][$rc[3]];
 			$Page->title($L->editing_a_block(get_block_title($rc[3])));
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages'}(
+				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$L->editing_a_block(get_block_title($rc[3]))
 				).
 				h::{'table.cs-fullwidth-table.cs-center-all tr'}(
@@ -312,7 +312,7 @@ if (isset($rc[2])) {
 			unset($user, $value);
 			$Page->title($L->permissions_for_block(get_block_title($rc[3])));
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages'}(
+				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$L->permissions_for_block(get_block_title($rc[3]))
 				).
 				h::{'div#block_permissions_tabs'}(

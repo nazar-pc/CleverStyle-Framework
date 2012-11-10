@@ -1,21 +1,16 @@
 {
-	"package"		: "System",
+	"package"		: "Cron",
 	"category"		: "modules",
-	"version"		: "0.159",
-	"description"	: "Base system module of CleverStyle CMS",
+	"version"		: "0.001",
+	"description"	: "Module for tasks scheduling with the help of crontab. Module uses shell_exec() function, it should be allowed for execution.",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",
 	"license"		: "MIT License",
-	"db_support"	: [
-		"MySQL",
-		"MySQLi"
-	],
 	"provide"		: [
-		"system"
+		"scheduled_tasks"
 	],
 	"multilingual"	: [
-		"interface",
-		"content"
+		"interface"
 	],
 	"languages"		: [
 		"English",

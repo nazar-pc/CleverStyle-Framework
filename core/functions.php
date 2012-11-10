@@ -1371,7 +1371,7 @@ function truncate ($text, $length = 1024, $ending = '...', $exact = false, $cons
 		}
 		// splits all html-tags to scanable lines
 		preg_match_all('/(<.+?>)?([^<>]*)/s', $text, $lines, PREG_SET_ORDER);
-		$total_length = strlen($ending);
+		$total_length = mb_strlen($ending);
 		$truncate = '';
 		foreach ($lines as $line_matchings) {
 			// if there is any html-tag in this line, handle it and add it (uncounted) to the output
@@ -1389,13 +1389,13 @@ function truncate ($text, $length = 1024, $ending = '...', $exact = false, $cons
 					// if tag is an opening tag (f.e. <b>)
 				} else if (preg_match('/^<\s*([^\s>!]+).*?>$/s', $line_matchings[1], $tag_matchings)) {
 					// add tag to the beginning of $open_tags list
-					array_unshift($open_tags, strtolower($tag_matchings[1]));
+					array_unshift($open_tags, mb_strtolower($tag_matchings[1]));
 				}
 				// add html-tag to $truncate'd text
 				$truncate .= $line_matchings[1];
 			}
 			// calculate the length of the plain text part of the line; handle entities as one character
-			$content_length = strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i', ' ', $line_matchings[2]));
+			$content_length = mb_strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i', ' ', $line_matchings[2]));
 			if ($total_length+$content_length> $length) {
 				// the number of characters which are left
 				$left = $length - $total_length;
@@ -1406,14 +1406,14 @@ function truncate ($text, $length = 1024, $ending = '...', $exact = false, $cons
 					foreach ($entities[0] as $entity) {
 						if ($entity[1]+1-$entities_length <= $left) {
 							$left--;
-							$entities_length += strlen($entity[0]);
+							$entities_length += mb_strlen($entity[0]);
 						} else {
 							// no more characters left
 							break;
 						}
 					}
 				}
-				$truncate .= substr($line_matchings[2], 0, $left+$entities_length);
+				$truncate .= mb_substr($line_matchings[2], 0, $left+$entities_length);
 				// maximum lenght is reached, so get off the loop
 				break;
 			} else {
@@ -1426,19 +1426,19 @@ function truncate ($text, $length = 1024, $ending = '...', $exact = false, $cons
 			}
 		}
 	} else {
-		if (strlen($text) <= $length) {
+		if (mb_strlen($text) <= $length) {
 			return $text;
 		} else {
-			$truncate = substr($text, 0, $length - strlen($ending));
+			$truncate = mb_substr($text, 0, $length - mb_strlen($ending));
 		}
 	}
 	// if the words shouldn't be cut in the middle...
 	if (!$exact) {
 		// ...search the last occurance of a space...
-		$spacepos = strrpos($truncate, ' ');
+		$spacepos = mb_strrpos($truncate, ' ');
 		if (isset($spacepos)) {
 			// ...and cut the text in this position
-			$truncate = substr($truncate, 0, $spacepos);
+			$truncate = mb_substr($truncate, 0, $spacepos);
 		}
 	}
 	// add the defined ending to the text
@@ -1505,18 +1505,166 @@ function description ($text) {
 	);
 }
 /**
+ * Pages navigation based on links
  *
- * @param int					$page	Current page
- * @param int					$total	Total pages number
- * @param bool|Closure|string	$url	Adds <i>formaction</i> parameter to every button<br>
- * 										if <b>false</b> - only form parameter <i>page</i> will we added<br>
- * 										if string - it will be formatted with sprintf with one parameter - page number<br>
- * 										if Closure - one parameter will be given, Closure should return url string
- * @param bool					$links	If <b>true</b> - links with rel="prev" and rel="next" will be added
+ * @param int					$page		Current page
+ * @param int					$total		Total pages number
+ * @param bool|Closure|string	$url		Adds <i>formaction</i> parameter to every button<br>
+ * 											if <b>false</b> - only form parameter <i>page</i> will we added<br>
+ * 											if string - it will be formatted with sprintf with one parameter - page number<br>
+ * 											if Closure - one parameter will be given, Closure should return url string
+ * @param bool					$head_links	If <b>true</b> - links with rel="prev" and rel="next" will be added
  *
- * @return bool|string					<b>false</b> if single page, otherwise string, set of navigation buttons
+ * @return bool|string						<b>false</b> if single page, otherwise string, set of navigation links
  */
-function pages ($page, $total, $url = false, $links = false) {
+function pages ($page, $total, $url = false, $head_links = false) {
+	if ($total == 1) {
+		return false;
+	}
+	global $Page;
+	$output	= [];
+	if ($total <= 11) {
+		for ($i = 1; $i <= $total; ++$i) {
+			$output[]	= [
+				$i,
+				[
+					'href'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
+					'class'	=> $i == $page ? 'cs-button ui-selected' : 'cs-button'
+				]
+			];
+			if ($head_links && $url !== false && ($i == $page - 1 || $i == $page + 1)) {
+				$Page->link([
+					'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+					'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
+				]);
+			}
+		}
+	} else {
+		if ($page <= 5) {
+			for ($i = 1; $i <= 7; ++$i) {
+				$output[]	= [
+					$i,
+					[
+						'href'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
+						'class'	=> $i == $page ? 'cs-button ui-selected' : 'cs-button'
+					]
+				];
+				if ($head_links && $url !== false && ($i == $page - 1 || $i == $page + 1)) {
+					$Page->link([
+						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
+					]);
+				}
+			}
+			$output[]	= [
+				'...',
+				[
+					'class'	=> 'cs-button ui-state-disabled'
+				]
+			];
+			for ($i = $total - 2; $i <= $total; ++$i) {
+				$output[]	= [
+					$i,
+					[
+						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'class'	=> 'cs-button'
+					]
+				];
+			}
+		} elseif ($page >= $total - 4) {
+			for ($i = 1; $i <= 3; ++$i) {
+				$output[]	= [
+					$i,
+					[
+						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'class'	=> 'cs-button'
+					]
+				];
+			}
+			$output[]	= [
+				'...',
+				[
+					'class'	=> 'cs-button ui-state-disabled'
+				]
+			];
+			for ($i = $total - 6; $i <= $total; ++$i) {
+				$output[]	= [
+					$i,
+					[
+						'href'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
+						'class'	=> $i == $page ? 'cs-button ui-selected' : 'cs-button'
+					]
+				];
+				if ($head_links && $url !== false && ($i == $page - 1 || $i == $page + 1)) {
+					$Page->link([
+						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
+					]);
+				}
+			}
+		} else {
+			for ($i = 1; $i <= 2; ++$i) {
+				$output[]	= [
+					$i,
+					[
+						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'class'	=> 'cs-button'
+					]
+				];
+			}
+			$output[]	= [
+				'...',
+				[
+					'class'	=> 'cs-button ui-state-disabled'
+				]
+			];
+			for ($i = $page - 1; $i <= $page + 3; ++$i) {
+				$output[]	= [
+					$i,
+					[
+						'href'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
+						'class'	=> $i == $page ? 'cs-button ui-selected' : 'cs-button'
+					]
+				];
+				if ($head_links && $url !== false && ($i == $page - 1 || $i == $page + 1)) {
+					$Page->link([
+						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
+					]);
+				}
+			}
+			$output[]	= [
+				'...',
+				[
+					'class'	=> 'cs-button ui-state-disabled'
+				]
+			];
+			for ($i = $total - 1; $i <= $total; ++$i) {
+				$output[]	= [
+					$i,
+					[
+						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'class'	=> 'cs-button'
+					]
+				];
+			}
+		}
+	}
+	return h::{'a'}($output);
+}
+/**
+ * Pages navigation based on buttons (for search forms, etc.)
+ *
+ * @param int					$page		Current page
+ * @param int					$total		Total pages number
+ * @param bool|Closure|string	$url		Adds <i>formaction</i> parameter to every button<br>
+ * 											if <b>false</b> - only form parameter <i>page</i> will we added<br>
+ * 											if string - it will be formatted with sprintf with one parameter - page number<br>
+ * 											if Closure - one parameter will be given, Closure should return url string
+ *
+ * @return bool|string						<b>false</b> if single page, otherwise string, set of navigation buttons
+ */
+function pages_buttons ($page, $total, $url = false) {
 	if ($total == 1) {
 		return false;
 	}
@@ -1533,12 +1681,6 @@ function pages ($page, $total, $url = false, $links = false) {
 					'class'			=> $i == $page ? 'ui-selected' : false
 				]
 			];
-			if ($links && $url !== false && ($i == $page - 1 || $i == $page + 1)) {
-				$Page->link([
-					'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
-					'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
-				]);
-			}
 		}
 	} else {
 		if ($page <= 5) {
@@ -1552,12 +1694,6 @@ function pages ($page, $total, $url = false, $links = false) {
 						'class'			=> $i == $page ? 'ui-selected' : false
 					]
 				];
-				if ($links && $url !== false && ($i == $page - 1 || $i == $page + 1)) {
-					$Page->link([
-						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
-						'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
-					]);
-				}
 			}
 			$output[]	= [
 				'...',
@@ -1604,12 +1740,6 @@ function pages ($page, $total, $url = false, $links = false) {
 						'class'			=> $i == $page ? 'ui-selected' : false
 					]
 				];
-				if ($links && $url !== false && ($i == $page - 1 || $i == $page + 1)) {
-					$Page->link([
-						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
-						'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
-					]);
-				}
 			}
 		} else {
 			for ($i = 1; $i <= 2; ++$i) {
@@ -1639,12 +1769,6 @@ function pages ($page, $total, $url = false, $links = false) {
 						'class'			=> $i == $page ? 'ui-selected' : false
 					]
 				];
-				if ($links && $url !== false && ($i == $page - 1 || $i == $page + 1)) {
-					$Page->link([
-						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
-						'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
-					]);
-				}
 			}
 			$output[]	= [
 				'...',
@@ -1678,4 +1802,16 @@ function ob_wrapper ($closure) {
 	ob_start();
 	$closure();
 	return ob_get_clean();
+}
+/**
+ * Uppercase the first character of each word in a string.
+ *
+ * Works with utf8, before processing string will be transformed to lowercase, and then to ucwords.
+ *
+ * @param string	$str
+ *
+ * @return string
+ */
+function mb_ucwords ($str) {
+	return mb_convert_case($str, MB_CASE_TITLE);
 }

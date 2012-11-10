@@ -534,7 +534,7 @@ class User {
 			]);
 			unset($Cache->{'users/data/'.$user});
 		}
-		return $data[$item];
+		return _json_decode($data[$item]);
 	}
 	/**
 	 * Setting additional data item(s) of specified user
@@ -558,13 +558,13 @@ class User {
 					`item`,
 					`value`
 				) VALUES (
-					'%1\$s',
-					'%2\$s',
-					'%3\$s'
+					'$user',
+					'%s',
+					'%s'
 				)
-			ON DUPLICATE KEY UPDATE `value` = '%3\$s'",
+			ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)",
 			$item,
-			$value
+			_json_encode($value)
 		);
 		unset($Cache->{'users/data/'.$user});
 		return $result;
@@ -1935,7 +1935,7 @@ class User {
 	 * 												<b>)</b>
 	 */
 	function registration ($email, $confirmation = true, $autologin = true) {
-		global $Config, $Core;
+		global $Config, $Core, $Cache;
 		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			return false;
 		}
@@ -1950,7 +1950,7 @@ class User {
 		$email_hash		= hash('sha224', $email);
 		$login			= strstr($email, '@', true);
 		$login_hash		= hash('sha224', $login);
-		if ($this->get_id($login_hash) !== false) {
+		if (in_array($login, _json_decode(file_get_contents(MODULES.'/System/index.json'))['profile']) || $this->get_id($login_hash) !== false) {
 			$login		= $email;
 			$login_hash	= $email_hash;
 		}
@@ -2030,6 +2030,7 @@ class User {
 			if (!$confirmation) {
 				$this->set_user_groups([2], $this->reg_id);
 			}
+			unset($Cache->{'users/'.$login_hash});
 			return [
 				'reg_key'	=> !$confirmation ? true : $reg_key,
 				'password'	=> $password,
@@ -2047,7 +2048,7 @@ class User {
 	 * @return array|bool				array('id' => <i>id</i>, 'email' => <i>email</i>, 'password' => <i>password</i>) or <b>fasle</b> on failure
 	 */
 	function registration_confirmation ($reg_key) {
-		global $Config, $Core;
+		global $Config, $Core, $Cache;
 		if (!preg_match('/^[0-9a-z]{32}$/', $reg_key)) {
 			return false;
 		}
@@ -2073,7 +2074,8 @@ class User {
 		$data			= $this->db_prime()->qf(
 			"SELECT
 				`id`,
-				`login`
+				`login_hash`,
+				`email`
 			FROM `[prefix]users`
 			WHERE
 				`reg_key`	= '$reg_key' AND
@@ -2104,9 +2106,10 @@ class User {
 			$this->registration_cancel();
 			return false;
 		}
+		unset($Cache->{'users/'.$data['login_hash']});
 		return [
 			'id'		=> $this->reg_id,
-			'email'		=> $data['login'],
+			'email'		=> $data['email'],
 			'password'	=> $password
 		];
 	}
@@ -2344,13 +2347,12 @@ class User {
 		/**
 		 * Updating users data
 		 */
-		$users_columns = $Cache->{'users/columns'};
 		if (is_array($this->data_set) && !empty($this->data_set)) {
 			$update = [];
 			foreach ($this->data_set as $id => &$data_set) {
 				$data = [];
 				foreach ($data_set as $i => &$val) {
-					if (in_array($i, $users_columns) && $i != 'id') {
+					if (in_array($i, $this->users_columns) && $i != 'id') {
 						if ($i == 'about') {
 							$val = xap($val, true);
 						} else {
@@ -2361,18 +2363,19 @@ class User {
 						unset($data_set[$i]);
 					}
 				}
-				$data		= implode(', ', $data);
-				$update[]	= "UPDATE `[prefix]users`
-					SET $data
-					WHERE `id` = '$id'";
-				unset($i, $val, $data);
+				if (!empty($data)) {
+					$data		= implode(', ', $data);
+					$update[]	= "UPDATE `[prefix]users`
+						SET $data
+						WHERE `id` = '$id'";
+					unset($i, $val, $data);
+				}
 			}
 			if (!empty($update)) {
 				$this->db_prime()->q($update);
 			}
 			unset($update);
 		}
-		unset($users_columns);
 		/**
 		 * Updating users cache
 		 */

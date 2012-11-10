@@ -17,7 +17,7 @@ if (isset($rc[2])) {
 			$a->cancel_button_back	= true;
 			$Page->title($L->adding_permission);
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages'}(
+				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$L->adding_permission
 				).
 				h::{'table.cs-fullwidth-table.cs-center-all'}(
@@ -47,7 +47,7 @@ if (isset($rc[2])) {
 				$L->editing_permission($permission['group'].'/'.$permission['label'])
 			);
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages'}(
+				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$L->editing_permission($permission['group'].'/'.$permission['label'])
 				).
 				h::{'table.cs-fullwidth-table.cs-center-all'}(
@@ -87,7 +87,7 @@ if (isset($rc[2])) {
 				$L->deletion_of_permission($permission['group'].'/'.$permission['label'])
 			);
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages'}(
+				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$L->sure_delete_permission($permission['group'].'/'.$permission['label'])
 				).
 				h::{'input[type=hidden]'}([

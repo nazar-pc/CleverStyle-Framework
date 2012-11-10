@@ -17,7 +17,7 @@ $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/'.MODULE.'/browse_sections';
 $Index->content(
-	h::{'p.ui-priority-primary.cs-state-messages'}(
+	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 		$L->editing_of_posts_section($data['title'])
 	).
 	h::{'table.cs-fullwidth-table.cs-center-all tr'}(

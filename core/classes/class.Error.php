@@ -48,7 +48,7 @@ class Error {
 					if (!isset($GLOBALS[$object])) {
 						continue;
 					}
-					$objects_array[$object] = print_r($GLOBALS[$object], true);
+					$objects_array[$object] = @print_r($GLOBALS[$object], true);
 				}
 				unset($object, $data);
 			}

@@ -15,7 +15,7 @@ $Index->buttons				= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/'.MODULE.'/browse_sections';
 $Index->content(
-	h::{'p.ui-priority-primary.cs-state-messages'}(
+	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 		$L->sure_to_delete_posts_section($section['title'])
 	).
 	h::{'button[type=submit]'}($L->yes).

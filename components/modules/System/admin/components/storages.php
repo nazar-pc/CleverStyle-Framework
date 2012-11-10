@@ -26,7 +26,7 @@ if (isset($rc[2])) {
 			$a->action = 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
 			$Page->title($rc[2] == 'edit' ? $L->editing_of_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']) : $L->adding_of_storage);
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages'}(
+				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$rc[2] == 'edit' ? $L->editing_of_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']) : $L->adding_of_storage
 				).
 				h::{'table.cs-fullwidth-table.cs-center-all'}(
@@ -107,7 +107,7 @@ if (isset($rc[2])) {
 				$a->action = 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
 				$Page->title($L->deletion_of_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']));
 				$a->content(
-					h::{'p.ui-priority-primary.cs-state-messages'}(
+					h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 						$L->sure_to_delete.' '.$L->storage.' '.
 							$Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection'].'?'.
 							h::{'input[type=hidden]'}([

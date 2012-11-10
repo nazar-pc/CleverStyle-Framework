@@ -34,7 +34,7 @@ if ($Mail->send_to(
 	$L->restore_password_success_mail_body(
 		$User->get_username($result['id']),
 		get_core_ml_text('name'),
-		$Config->core['base_url'].'/profile/'.$User->get('login', $result['id']),
+		$Config->core['url'].'/profile/'.$User->get('login', $result['id']),
 		$User->get('login', $result['id']),
 		$result['password']
 	)

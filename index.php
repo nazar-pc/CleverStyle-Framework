@@ -14,7 +14,6 @@
  *		* PHP							>= 5.4;
  *			Presence of PHP libraries:
  *			* mcrypt					>= 2.4
- *			* iconv
  *			* mbstring
  *			* cURL
  *		* MySQL							>= 5.0.7;

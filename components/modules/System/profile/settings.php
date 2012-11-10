@@ -132,7 +132,7 @@ switch (isset($Config->routing['current'][2]) ? $Config->routing['current'][2] :
 		$Index->cancel_button_back	= true;
 		$Page->title($L->general);
 		$Index->content(
-			h::{'p.ui-priority-primary.cs-state-messages'}(
+			h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 				$L->general_settings
 			).
 			h::{'table#users_edit.cs-fullwidth-table.cs-center-all tr'}(
@@ -215,7 +215,7 @@ switch (isset($Config->routing['current'][2]) ? $Config->routing['current'][2] :
 		$Index->cancel_button_back	= true;
 		$Page->title($L->password_changing);
 		$Index->content(
-			h::{'p.ui-priority-primary.cs-state-messages'}(
+			h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 				$L->password_changing
 			).
 			h::{'table#users_edit.cs-fullwidth-table.cs-center-all tr'}(

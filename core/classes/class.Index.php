@@ -451,6 +451,9 @@ class Index {
 				: '').
 				'	module = "'.MODULE."\",\n".
 				'	in_admin = '.(int)$this->admin.",\n".
+				'	is_admin = '.(int)$User->admin().",\n".
+				'	is_user = '.(int)$User->user().",\n".
+				'	is_guest = '.(int)$User->guest().",\n".
 				'	debug = '.(int)(defined('DEBUG') && DEBUG).",\n".
 				'	session_id = "'.$User->get_session()."\",\n".
 				'	cookie_prefix = "'.$Config->core['cookie_prefix']."\",\n".

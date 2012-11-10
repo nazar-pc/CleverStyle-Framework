@@ -329,7 +329,10 @@ class Config {
 		/**
 		 * Corrected full page address (recommended for usage)
 		 */
-		$this->server['corrected_full_address']	= (ADMIN ? 'admin/' : '').MODULE.(API ? 'api/' : '').'/'.implode('/', $rc);
+		$this->server['corrected_full_address']	= trim(
+			(ADMIN ? 'admin/' : '').MODULE.(API ? 'api/' : '').'/'.implode('/', $rc),
+			'/'
+		);
 		unset($rc, $r);
 		if (isset($_SERVER['HTTP_REFERER'])) {
 			$ref				= &$this->server['referer'];
@@ -655,7 +658,8 @@ class Module_Properties {
 		} elseif (isset($this->module_data['data'], $this->module_data['data'][$item])) {
 			return $this->module_data['data'][$item];
 		} else {
-			return false;
+			$false = false;
+			return $false;
 		}
 	}
 	/**

@@ -24,7 +24,10 @@ class h {
 			'disabled',
 			'multiple',
 			'pubdate',
-			'noshade'
+			'noshade',
+			'autoplay',
+			'controls',
+			'loop'
 		],
 		$unpaired_tags = [
 			'area',
@@ -225,8 +228,28 @@ class h {
 			$data_title = $data['data-title'];
 			unset($data['data-title']);
 		}
-		$return = '<'.$tag.$add.(XHTML_TAGS_STYLE ? ' /' : '').'>'.$in."\n";
-		return isset($data_title) ? self::label($return, ['data-title' => $data_title]) : $return;
+		if (isset($data['type']) && $data['type'] == 'checkbox') {
+			$return = '<'.$tag.$add.(XHTML_TAGS_STYLE ? ' /' : '').'>'.self::label(
+				$in,
+				[
+					'for'	=> $data['id']
+				]
+			)."\n";
+			return self::span(
+				$return,
+				[
+					'data-title' => isset($data_title) ? $data_title : false
+				]
+			);
+		} else {
+			$return = '<'.$tag.$add.(XHTML_TAGS_STYLE ? ' /' : '').'>'.$in."\n";
+			return isset($data_title) ? self::label(
+				$return,
+				[
+					'data-title' => $data_title
+				]
+			) : $return;
+		}
 	}
 	/**
 	 * Rendering of form tag, default method is post, if form method is post - special session key in hidden input is added for security.
@@ -351,8 +374,8 @@ class h {
 					isset($in['id'])	&& is_array($in['id'])
 				)
 			) {
-				$items = array_flip_3d($in);
-				$return = '';
+				$items	= array_flip_3d($in);
+				$return	= '';
 				foreach ($items as $item) {
 					$return .= self::input($item);
 				}
@@ -360,6 +383,8 @@ class h {
 			} else {
 				if (!isset($in['type'])) {
 					$in['type'] = 'text';
+				} elseif ($in['type'] == 'checkbox' && !isset($in['id'])) {
+					$in['id'] = uniqid('input_');
 				}
 				if (isset($in['min'], $in['value']) && $in['min'] !== false && $in['min'] > $in['value']) {
 					$in['value'] = $in['min'];
@@ -425,21 +450,20 @@ class h {
 				unset($data[$attr]);
 			}
 		}
+
 		if (is_array($in['value'])) {
 			if (isset($in['disabled'])) {
-				$data['disabled']	= array_merge($in['disabled'], isset($data['disabled']) ? $data['disabled'] : []);
+				$data['disabled']	= array_merge((array)$in['disabled'], isset($data['disabled']) ? $data['disabled'] : []);
 				unset($in['disabled']);
 			}
 			if (isset($in['selected'])) {
-				$data['selected']	= array_merge($in['selected'], isset($data['selected']) ? $data['selected'] : []);
+				$data['selected']	= array_merge((array)$in['selected'], isset($data['selected']) ? $data['selected'] : []);
 				unset($in['selected']);
 			}
 			if (!isset($data['selected'])) {
 				$data['selected']	= $in['value'][0];
 			}
-			if (!is_array($data['selected'])) {
-				$data['selected']	= [$data['selected']];
-			}
+			$data['selected']	= (array)$data['selected'];
 			if (isset($data['disabled'])) {
 				$data['selected']	= array_diff($data['selected'], $data['disabled']);
 			} else {

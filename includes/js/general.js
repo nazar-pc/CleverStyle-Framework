@@ -57,7 +57,11 @@ $(function() {
 		//$(this).chosen(); //TODO Find some good replacement (or wait for jQuery UI 1.9)
 	});
 	$(':button:not(.cs-noui), .cs-button, .cs-button-compact').each(function () {
-		$(this).button();
+		$(this).button(
+			$(this).hasClass('ui-state-disabled') ? {
+				disabled	: true
+			} : {}
+		);
 	});
 	$('.ui-button').disableSelection();
 	$('#debug').dialog({

@@ -69,7 +69,6 @@ class Core {
 			$this->key	= $this->config['key'];
 			$this->iv	= $this->config['iv'];
 		}
-		unset($this->config['key'], $this->config['iv']);
 	}
 	/**
 	 * Getting of base configuration parameter
@@ -121,7 +120,7 @@ class Core {
 					} else {
 						$this->List[$object_name]	= $object_name;
 						$$object_name				= new $class;
-						$this->createed[$object_name]	= [microtime(true), memory_get_usage()];
+						$this->Loaded[$object_name]	= [microtime(true), memory_get_usage()];
 					}
 				}
 				return $$object_name;

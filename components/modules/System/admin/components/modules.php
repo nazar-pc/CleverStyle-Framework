@@ -126,7 +126,7 @@ if (
 			$show_modules	= false;
 			$Page->title($L->installation_of_module($rc[3]));
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages'}(
+				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$L->installation_of_module($rc[3])
 				)
 			);
@@ -184,7 +184,7 @@ if (
 			$show_modules	= false;
 			$Page->title($L->uninstallation_of_module($rc[3]));
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages'}(
+				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$L->uninstallation_of_module($rc[3])
 				)
 			);
@@ -211,7 +211,7 @@ if (
 			$show_modules	= false;
 			$Page->title($L->setting_default_module($rc[3]));
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages'}(
+				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$L->setting_default_module($rc[3])
 				)
 			);
@@ -235,7 +235,7 @@ if (
 				$Page->warning($L->changing_settings_warning);
 				$Page->title($L->db_settings_for_module($rc[3]));
 				$a->content(
-					h::{'p.ui-priority-primary.cs-state-messages'}(
+					h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 						$L->db_settings_for_module($rc[3])
 					)
 				);
@@ -301,7 +301,7 @@ if (
 				$Page->warning($L->changing_settings_warning);
 				$Page->title($L->storage_settings_for_module($rc[3]));
 				$a->content(
-					h::{'p.ui-priority-primary.cs-state-messages'}(
+					h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 						$L->storage_settings_for_module($rc[3])
 					)
 				);
@@ -510,14 +510,16 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 			$mdata['active'] == 1 &&
 			$module != $Config->core['default_module'] &&
 			(
-				file_exists(MODULES.'/'.$module.'/index.php') || file_exists(MODULES.'/'.$module.'/index.html')
+				file_exists(MODULES.'/'.$module.'/index.php') ||
+				file_exists(MODULES.'/'.$module.'/index.html') ||
+				file_exists(MODULES.'/'.$module.'/index.json')
 			)
 		) {
 			$action .= h::{'a.cs-button-compact'}(
 				h::icon('home'),
 				[
-				'href'			=> $a->action.'/default_module/'.$module,
-				'data-title'	=> $L->make_default_module
+					'href'			=> $a->action.'/default_module/'.$module,
+					'data-title'	=> $L->make_default_module
 				]
 			);
 		}
@@ -602,7 +604,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 			isset($module_meta['provide']) ? implode(', ', $module_meta['provide']) : $L->none,
 			isset($module_meta['require']) ? implode(', ', $module_meta['require']) : $L->none,
 			isset($module_meta['conflict']) ? implode(', ', $module_meta['conflict']) : $L->none,
-			isset($module_meta['multilingual']) && in_array('content', $module_meta['multilingual']) ? $L->yes : $L->no,
+			isset($module_meta['multilingual']) && in_array('interface', $module_meta['multilingual']) ? $L->yes : $L->no,
 			isset($module_meta['multilingual']) && in_array('content', $module_meta['multilingual']) ? $L->yes : $L->no,
 			isset($module_meta['languages']) ? implode(', ', $module_meta['languages']) : $L->none
 		);

@@ -11,7 +11,6 @@ use			\h;
  * Provides next triggers:<br>
  *  System/Page/pre_display
  *  System/Page/get_header_info
- *  ['id'	=> <i>user_id</i>]<br>
  *  System/Page/rebuild_cache
  *  ['key'	=> <i>&$key</i>]		//Reference to the key, that will be appended to all css and js files, can be changed to reflect JavaScript and CSS changes<br>
  *  System/Page/external_login_list
@@ -38,7 +37,7 @@ class Page {
 					'mainmenu'			=> 2,
 					'mainsubmenu'		=> 2,
 					'menumore'			=> 2,
-					'user_info'			=> 3,
+					'header_info'		=> 3,
 					'debug_info'		=> 1,
 					'Left'				=> 3,
 					'Top'				=> 3,
@@ -47,9 +46,10 @@ class Page {
 					'Right'				=> 3,
 					'Footer'			=> 1,
 					'post_Body'			=> 0
-				];
+				],
+				$user_avatar_image,
+				$header_info;
 	protected	$theme, $color_scheme, $pcache_basename, $includes,
-				$user_avatar_image, $user_info,
 				$core_js	= [0 => '', 1 => ''],
 				$core_css	= [0 => '', 1 => ''],
 				$js			= [0 => '', 1 => ''],
@@ -282,7 +282,7 @@ class Page {
 				'<!--main-submenu-->',
 				'<!--menu-more-->',
 				'<!--user_avatar_image-->',
-				'<!--user_info-->',
+				'<!--header_info-->',
 				'<!--left_blocks-->',
 				'<!--top_blocks-->',
 				'<!--content-->',
@@ -299,7 +299,7 @@ class Page {
 				h::level($this->mainsubmenu, $this->level['mainsubmenu']),
 				h::level($this->menumore, $this->level['menumore']),
 				$this->user_avatar_image,
-				h::level($this->user_info, $this->level['user_info']),
+				h::level($this->header_info, $this->level['header_info']),
 				h::level($this->Left, $this->level['Left']),
 				h::level($this->Top, $this->level['Top']),
 				h::level($this->Content, $this->level['Content']),
@@ -706,7 +706,7 @@ class Page {
 			];
 			$tmp				= '';
 			foreach ($db->get_connections_list() as $name => $database) {
-				$queries	= $database->queries;
+				$queries	= $database->queries();
 				$tmp		.= h::{'p.cs-padding-left'}(
 					$L->debug_db_info(
 						$name != 0 ? $L->db.' '.$database->database() : $L->core_db.' ('.$database->database().')',
@@ -822,7 +822,7 @@ class Page {
 			} else {
 				$this->user_avatar_image = 'url(/includes/img/guest.gif)';
 			}
-			$this->user_info = h::b($L->hello.', '.$User->get_username().'!').
+			$this->header_info = h::b($L->hello.', '.$User->get_username().'!').
 			h::{'icon.cs-header-logout-process'}(
 				'power',
 				[
@@ -834,23 +834,19 @@ class Page {
 				h::a(
 					$L->profile,
 					[
-						'href'	=> '/'.path($L->profile).'/'.$User->login
+						'href'	=> path($L->profile).'/'.$User->login
 					]
 				).
 				'|'.
 				h::a(
 					$L->settings,
 					[
-						'href'	=> '/'.path($L->profile).'/'.path($L->settings)
+						'href'	=> path($L->profile).'/'.path($L->settings)
 					]
 				)
-			);
-			$Core->run_trigger(
-				'System/Page/get_header_info',
-				[
-					'id'	=> $User->id
-				]
-			);
+			).
+			$this->header_info;
+			$Core->run_trigger('System/Page/get_header_info');
 		} else {
 			$external_systems_list		= '';
 			$Core->run_trigger(
@@ -860,7 +856,7 @@ class Page {
 				]
 			);
 			$this->user_avatar_image	= 'url(/includes/img/guest.gif)';
-			$this->user_info			= h::{'div.cs-header-anonym-form'}(
+			$this->header_info			= h::{'div.cs-header-anonym-form'}(
 				h::b($L->hello.', '.$L->guest.'!').
 				h::br().
 				h::{'button.cs-header-login-slide.cs-button-compact'}(

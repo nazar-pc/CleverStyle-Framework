@@ -9,7 +9,6 @@ body {
 	font-family : Tahoma, Verdana, sans-serif;
 	font-size   : 12px;
 	margin      : 0;
-	overflow    : hidden;
 	padding     : 100% 0 0 100%;
 	width       : 100%;
 }
@@ -21,6 +20,10 @@ code {
 .cs-fullwidth-form {
 	text-align : center;
 	width      : 100%;
+}
+
+.cs-fullwidth-form > * {
+	text-align : left;
 }
 
 .cs-fullwidth-table {

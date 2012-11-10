@@ -17,7 +17,7 @@ if (isset($rc[2])) {
 			$a->cancel_button_back	= true;
 			$Page->title($L->adding_a_group);
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages'}(
+				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$L->adding_a_group
 				).
 				h::{'table.cs-fullwidth-table.cs-center-all tr'}(
@@ -47,7 +47,7 @@ if (isset($rc[2])) {
 				$L->editing_of_group($group_data['title'])
 			);
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages'}(
+				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$L->editing_of_group($group_data['title'])
 				).
 				h::{'table.cs-fullwidth-table.cs-center-all tr'}(
@@ -92,7 +92,7 @@ if (isset($rc[2])) {
 				$L->deletion_of_group($group['title'])
 			);
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages'}(
+				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$L->sure_delete_group($group['title'])
 				).
 				h::{'input[type=hidden]'}([
@@ -163,7 +163,7 @@ if (isset($rc[2])) {
 				)
 			);
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages'}(
+				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$L->permissions_for_group(
 						$User->get_group_data($rc[3], 'title')
 					)

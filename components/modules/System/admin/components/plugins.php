@@ -87,7 +87,7 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 			if (!in_array($rc[3], $Config->components['plugins']) && in_array($rc[3], $plugins)) {
 				$Page->title($L->enabling_of_plugin($rc[3]));
 				$a->content(
-					h::{'p.ui-priority-primary.cs-state-messages'}(
+					h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 						$L->enabling_of_plugin($rc[3])
 					)
 				);
@@ -117,7 +117,7 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 			if (in_array($rc[3], $Config->components['plugins'])) {
 				$Page->title($L->disabling_of_plugin($rc[3]));
 				$a->content(
-					h::{'p.ui-priority-primary.cs-state-messages'}(
+					h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 						$L->disabling_of_plugin($rc[3])
 					)
 				);

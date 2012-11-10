@@ -16,7 +16,7 @@ $Index->buttons				= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/'.MODULE;
 $Index->content(
-	h::{'p.ui-priority-primary.cs-state-messages'}(
+	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 		$L->sure_to_delete_page_category($title)
 	).
 	h::{'button[type=submit]'}($L->yes).

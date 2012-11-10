@@ -2,38 +2,38 @@
 /*!
 * HybridAuth
 * http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
-* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html
+* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html 
 */
 
-/**
+/** 
  * Windows Live OAuth2 Class
- *
- * @package             HybridAuth providers package
+ * 
+ * @package             HybridAuth providers package 
  * @author              Lukasz Koprowski <azram19@gmail.com>
  * @version             0.2
  * @license             BSD License
- */
+ */ 
 
 /**
  * Hybrid_Providers_Live - Windows Live provider adapter based on OAuth2 protocol
  */
 class Hybrid_Providers_Live extends Hybrid_Provider_Model_OAuth2
 {
-	// default permissions
+	// default permissions 
 	public $scope = "wl.basic wl.emails wl.signin wl.share wl.birthday";
 
-
+	
 	/**
-	* IDp wrappers initializer
+	* IDp wrappers initializer 
 	*/
-	function initialize()
+	function initialize() 
 	{
 		parent::initialize();
 
 		// Provider api end-points
 		$this->api->api_base_url  = "https://apis.live.net/v5.0/";
-		$this->api->authorize_url = "https://login.live.com/oauth20_authorize.srf";
-		$this->api->token_url     = 'https://login.live.com/oauth20_token.srf';
+		$this->api->authorize_url = "https://oauth.live.com/authorize";
+		$this->api->token_url     = 'https://oauth.live.com/token';
 
 		$this->api->curl_authenticate_method  = "GET";
 	}
@@ -43,7 +43,7 @@ class Hybrid_Providers_Live extends Hybrid_Provider_Model_OAuth2
 	*/
 	function getUserProfile()
 	{
-		$data = $this->api->get( "me" );
+		$data = $this->api->get( "me" ); 
 
 		if ( ! isset( $data->id ) ){
 			throw new Exception( "User profile request failed! {$this->providerId} returned an invalide response.", 6 );
@@ -72,11 +72,11 @@ class Hybrid_Providers_Live extends Hybrid_Provider_Model_OAuth2
 
 
 	/**
-	* load the current logged in user contacts list from the IDp api client
+	* load the current logged in user contacts list from the IDp api client  
 	*/
 
 	/* Windows Live api does not support retrieval of email addresses (only hashes :/) */
-	function getUserContacts()
+	function getUserContacts() 
 	{
 		$response = $this->api->get( 'me/contacts' );
 
@@ -89,7 +89,7 @@ class Hybrid_Providers_Live extends Hybrid_Provider_Model_OAuth2
 		{
 			return array();
 		}
-
+		
 		$contacts = array();
 
 		foreach( $response->data as $item ) {
@@ -100,7 +100,7 @@ class Hybrid_Providers_Live extends Hybrid_Provider_Model_OAuth2
 
 			$contacts[] = $uc;
 		}
-
+		
 		return $contacts;
 	}
 }

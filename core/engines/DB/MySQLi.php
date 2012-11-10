@@ -99,7 +99,7 @@ class MySQLi extends _Abstract {
 		if(is_object($query_result)) {
 			return $query_result->num_rows;
 		} else {
-			return (bool)$query_result;
+			return false;
 		}
 	}
 	/**
@@ -145,7 +145,7 @@ class MySQLi extends _Abstract {
 				return $result;
 			}
 		} else {
-			return (bool)$query_result;
+			return false;
 		}
 	}
 	/**
@@ -157,6 +157,16 @@ class MySQLi extends _Abstract {
 	 */
 	function id () {
 		return $this->instance->insert_id;
+	}
+	/**
+	 * Affected
+	 *
+	 * Get number of affected rows during last query
+	 *
+	 * @return int
+	 */
+	function affected () {
+		return $this->instance->affected_rows;
 	}
 	/**
 	 * Free result memory
@@ -172,7 +182,7 @@ class MySQLi extends _Abstract {
 		if(is_object($query_result)) {
 			return $query_result->free();
 		} else {
-			return (bool)$query_result;
+			return false;
 		}
 	}
 	/**

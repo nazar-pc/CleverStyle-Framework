@@ -57,7 +57,7 @@ if (isset($rc[2])) {
 			 */
 			$Page->title($rc[2] == 'edit' ? $L->editing_the_database($name) : $L->addition_of_db);
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages'}(
+				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$rc[2] == 'edit' ? $L->editing_the_database($name) : $L->addition_of_db
 				).
 				h::{'table.cs-fullwidth-table.cs-center-all tr'}(
@@ -172,7 +172,7 @@ if (isset($rc[2])) {
 				unset($mirror, $cdb);
 				$Page->title($L->deletion_of_database($name));
 				$a->content(
-					h::{'p.ui-priority-primary.cs-state-messages'}(
+					h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 						$L->sure_to_delete.' '.$name.
 							h::{'input[type=hidden]'}([
 								[

@@ -138,12 +138,17 @@ abstract class _Abstract {
 		}
 		global $db;
 		$this->query['time']		= microtime(true);
-		$this->queries['text'][]	= $this->query['text']				= empty($params) ? $query : vsprintf($query, $params);
+		$this->query['text']		= empty($params) ? $query : vsprintf($query, $params);
+		if (defined('DEBUG') && DEBUG) {
+			$this->queries['text'][]	= $this->query['text'];
+		}
 		$result						= $this->q_internal($this->query['text']);
 		$this->queries['result'][]	= $result;
 		$this->query['time']		= round(microtime(true) - $this->query['time'], 6);
 		$this->time					+= $this->query['time'];
-		$this->queries['time'][]	= $this->query['time'];
+		if (defined('DEBUG') && DEBUG) {
+			$this->queries['time'][]	= $this->query['time'];
+		}
 		++$this->queries['num'];
 		if (is_object($db)) {
 			$db->time		+= $this->query['time'];
@@ -356,6 +361,16 @@ abstract class _Abstract {
 	 */
 	abstract function id ();
 	/**
+	 * Affected
+	 *
+	 * Get number of affected rows during last query
+	 *
+	 * @abstract
+	 *
+	 * @return int
+	 */
+	abstract function affected ();
+	/**
 	 * Free result memory
 	 *
 	 * @abstract
@@ -463,7 +478,7 @@ abstract class _Abstract {
 		return $this->queries;
 	}
 	/**
-	 * Queries array
+	 * Last query
 	 *
 	 * @return array
 	 */

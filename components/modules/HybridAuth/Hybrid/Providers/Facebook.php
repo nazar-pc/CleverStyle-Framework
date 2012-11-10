@@ -2,14 +2,14 @@
 /*!
 * HybridAuth
 * http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
-* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html
+* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html 
 */
 
 /**
  * Hybrid_Providers_Facebook provider adapter based on OAuth2 protocol
- *
+ * 
  * Hybrid_Providers_Facebook use the Facebook PHP SDK created by Facebook
- *
+ * 
  * http://hybridauth.sourceforge.net/userguide/IDProvider_info_Facebook.html
  */
 class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
@@ -18,9 +18,9 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 	public $scope = "email, user_about_me, user_birthday, user_hometown, user_website, read_stream, offline_access, publish_stream, read_friendlists";
 
 	/**
-	* IDp wrappers initializer
+	* IDp wrappers initializer 
 	*/
-	function initialize()
+	function initialize() 
 	{
 		if ( ! $this->config["keys"]["id"] || ! $this->config["keys"]["secret"] ){
 			throw new Exception( "Your application id and secret are required in order to connect to {$this->providerId}.", 4 );
@@ -31,9 +31,9 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 			require_once Hybrid_Auth::$config["path_libraries"] . "Facebook/facebook.php";
 		}
 
-		$this->api = new Facebook( ARRAY( 'appId' => $this->config["keys"]["id"], 'secret' => $this->config["keys"]["secret"] ) );
+		$this->api = new Facebook( ARRAY( 'appId' => $this->config["keys"]["id"], 'secret' => $this->config["keys"]["secret"] ) ); 
 
-		if ( $this->token("access_token") ) {
+		if ( $this->token("access_token") ) { 
 			$access_token = $this->api->extendedAccessToken( $this->token("access_token") );
 
 			if( $access_token ){
@@ -49,8 +49,8 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 
 	/**
 	* begin login step
-	*
-	* simply call Facebook::require_login().
+	* 
+	* simply call Facebook::require_login(). 
 	*/
 	function loginBegin()
 	{
@@ -63,7 +63,7 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 			}
 		}
 
-		// get the login url
+		// get the login url 
 		$url = $this->api->getLoginUrl( $parameters );
 
 		// redirect to facebook
@@ -71,16 +71,16 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 	}
 
 	/**
-	* finish login step
+	* finish login step 
 	*/
 	function loginFinish()
-	{
+	{ 
 		// in case we get error_reason=user_denied&error=access_denied
-		if ( isset( $_REQUEST['error'] ) && $_REQUEST['error'] == "access_denied" ){
+		if ( isset( $_REQUEST['error'] ) && $_REQUEST['error'] == "access_denied" ){ 
 			throw new Exception( "Authentification failed! The user denied your request.", 5 );
 		}
 
-		// try to get the UID of the connected user from fb, should be > 0
+		// try to get the UID of the connected user from fb, should be > 0 
 		if ( ! $this->api->getUser() ){
 			throw new Exception( "Authentification failed! {$this->providerId} returned an invalide user id.", 5 );
 		}
@@ -88,7 +88,7 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 		// set user as logged in
 		$this->setUserConnected();
 
-		// store facebook access token
+		// store facebook access token 
 		$this->token( "access_token", $this->api->getAccessToken() );
 	}
 
@@ -96,7 +96,7 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 	* logout
 	*/
 	function logout()
-	{
+	{ 
 		$this->api->destroySession();
 
 		parent::logout();
@@ -108,15 +108,15 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 	function getUserProfile()
 	{
 		// request user profile from fb api
-		try{
-			$data = $this->api->api('/me');
+		try{ 
+			$data = $this->api->api('/me'); 
 		}
 		catch( FacebookApiException $e ){
 			throw new Exception( "User profile request failed! {$this->providerId} returned an error: $e", 6 );
-		}
+		} 
 
 		// if the provider identifier is not recived, we assume the auth has failed
-		if ( ! isset( $data["id"] ) ){
+		if ( ! isset( $data["id"] ) ){ 
 			throw new Exception( "User profile request failed! {$this->providerId} api returned an invalid response.", 6 );
 		}
 
@@ -126,8 +126,8 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 		$this->user->profile->firstName     = (array_key_exists('first_name',$data))?$data['first_name']:"";
 		$this->user->profile->lastName      = (array_key_exists('last_name',$data))?$data['last_name']:"";
 		$this->user->profile->photoURL      = "https://graph.facebook.com/" . $this->user->profile->identifier . "/picture?type=square";
-		$this->user->profile->profileURL    = (array_key_exists('link',$data))?$data['link']:"";
-		$this->user->profile->webSiteURL    = (array_key_exists('website',$data))?$data['website']:"";
+		$this->user->profile->profileURL    = (array_key_exists('link',$data))?$data['link']:""; 
+		$this->user->profile->webSiteURL    = (array_key_exists('website',$data))?$data['website']:""; 
 		$this->user->profile->gender        = (array_key_exists('gender',$data))?$data['gender']:"";
 		$this->user->profile->description   = (array_key_exists('bio',$data))?$data['bio']:"";
 		$this->user->profile->email         = (array_key_exists('email',$data))?$data['email']:"";
@@ -150,26 +150,26 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 	*/
 	function getUserContacts()
 	{
-		try{
-			$response = $this->api->api('/me/friends');
+		try{ 
+			$response = $this->api->api('/me/friends'); 
 		}
 		catch( FacebookApiException $e ){
 			throw new Exception( "User contacts request failed! {$this->providerId} returned an error: $e" );
-		}
-
+		} 
+ 
 		if( ! $response || ! count( $response["data"] ) ){
 			return ARRAY();
 		}
 
 		$contacts = ARRAY();
-
+ 
 		foreach( $response["data"] as $item ){
 			$uc = new Hybrid_User_Contact();
 
 			$uc->identifier  = (array_key_exists("id",$item))?$item["id"]:"";
 			$uc->displayName = (array_key_exists("name",$item))?$item["name"]:"";
 			$uc->profileURL  = "https://www.facebook.com/profile.php?id=" . $uc->identifier;
-			$uc->photoURL    = "https://graph.facebook.com/" . $uc->identifier . "/picture?type=square";
+			$uc->photoURL    = "https://graph.facebook.com/" . $uc->identifier . "/picture?type=square"; 
 
 			$contacts[] = $uc;
 		}
@@ -188,10 +188,10 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
 			$parameters = $status;
 		}
 		else{
-			$parameters["message"] = $status;
+			$parameters["message"] = $status; 
 		}
 
-		try{
+		try{ 
 			$response = $this->api->api( "/me/feed", "post", $parameters );
 		}
 		catch( FacebookApiException $e ){
@@ -200,23 +200,23 @@ class Hybrid_Providers_Facebook extends Hybrid_Provider_Model
  	}
 
 	/**
-	* load the user latest activity
+	* load the user latest activity  
 	*    - timeline : all the stream
-	*    - me       : the user activity only
+	*    - me       : the user activity only  
 	*/
 	function getUserActivity( $stream )
 	{
 		try{
 			if( $stream == "me" ){
-				$response = $this->api->api( '/me/feed' );
+				$response = $this->api->api( '/me/feed' ); 
 			}
 			else{
-				$response = $this->api->api('/me/home');
+				$response = $this->api->api('/me/home'); 
 			}
 		}
 		catch( FacebookApiException $e ){
 			throw new Exception( "User activity stream request failed! {$this->providerId} returned an error: $e" );
-		}
+		} 
 
 		if( ! $response || ! count(  $response['data'] ) ){
 			return ARRAY();

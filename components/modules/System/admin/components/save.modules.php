@@ -122,8 +122,10 @@ if (isset($_POST['update_modules_list'])) {
 			 */
 			if (file_exists(MODULES.'/'.$_POST['module'].'/index.json')) {
 				$structure = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/index.json'));
-				foreach ($structure as $item => $part) {
-					$permissions[$_POST['module']][] = is_array($part) ? $item : $part;
+				if (is_array($structure) && !empty($structure)) {
+					foreach ($structure as $item => $part) {
+						$permissions[$_POST['module']][] = is_array($part) ? $item : $part;
+					}
 				}
 				unset($structure, $item, $part);
 			}
@@ -134,8 +136,10 @@ if (isset($_POST['update_modules_list'])) {
 				$permissions['admin/'.$_POST['module']] = ['index'];
 				if (file_exists(MODULES.'/'.$_POST['module'].'/admin/index.json')) {
 					$structure = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/admin/index.json'));
-					foreach ($structure as $item => $part) {
-						$permissions['admin/'.$_POST['module']][] = is_array($part) ? $item : $part;
+					if (is_array($structure) && !empty($structure)) {
+						foreach ($structure as $item => $part) {
+							$permissions['admin/'.$_POST['module']][] = is_array($part) ? $item : $part;
+						}
 					}
 					unset($structure, $item, $part);
 				}
@@ -148,8 +152,10 @@ if (isset($_POST['update_modules_list'])) {
 				$permissions['api/'.$_POST['module']] = ['index'];
 				if (file_exists(MODULES.'/'.$_POST['module'].'/api/index.json')) {
 					$structure = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/api/index.json'));
-					foreach ($structure as $item => $part) {
-						$permissions['api/'.$_POST['module']][] = is_array($part) ? $item : $part;
+					if (is_array($structure) && !empty($structure)) {
+						foreach ($structure as $item => $part) {
+							$permissions['api/'.$_POST['module']][] = is_array($part) ? $item : $part;
+						}
 					}
 					unset($structure, $item, $part);
 				}
@@ -223,7 +229,9 @@ if (isset($_POST['update_modules_list'])) {
 				$module_data['active'] != 1 ||
 				$_POST['module'] == $Config->core['default_module'] ||
 				!(
-					file_exists(MODULES.'/'.$_POST['module'].'/index.php') || file_exists(MODULES.'/'.$_POST['module'].'/index.html')
+					file_exists(MODULES.'/'.$_POST['module'].'/index.php') ||
+					file_exists(MODULES.'/'.$_POST['module'].'/index.html') ||
+					file_exists(MODULES.'/'.$_POST['module'].'/index.json')
 				)
 			) {
 				break;

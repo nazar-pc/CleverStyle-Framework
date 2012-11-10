@@ -16,7 +16,7 @@
  */
 global $Core, $Config, $L, $User, $Page;
 if (!isset($Config->routing['current'][1], $Config->routing['current'][2]) || !($id = $User->get_id(hash('sha224', $Config->routing['current'][2])))) {
-	define('ERROR_PAGE', 404);print_r(hash('sha224', $Config->routing['current'][2]));
+	define('ERROR_PAGE', 404);
 	$Page->error_page();
 	return;
 }

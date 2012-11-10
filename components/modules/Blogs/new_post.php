@@ -61,7 +61,7 @@ $Index->cancel_button_back	= true;
 $disabled					= [];
 $max_sections				= $Config->module(MODULE)->max_sections;
 $Index->content(
-	h::{'p.ui-priority-primary.cs-state-messages'}(
+	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 		$L->new_post
 	).
 	h::{'div.cs-blogs-post-preview-content'}().

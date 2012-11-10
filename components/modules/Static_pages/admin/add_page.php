@@ -14,7 +14,7 @@ $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/'.MODULE;
 $Index->content(
-	h::{'p.ui-priority-primary.cs-state-messages'}(
+	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 		$L->adding_of_page
 	).
 	h::{'table.cs-fullwidth-table.cs-center-all tr'}(
@@ -33,7 +33,7 @@ $Index->content(
 			),
 			h::{'input[name=title]'}(),
 			h::{'input[name=path]'}(),
-			h::{'input[type=radio][name=interface]'}([
+			h::{'div input[type=radio][name=interface]'}([
 				'checked'	=> 1,
 				'value'		=> [0, 1],
 				'in'		=> [$L->off, $L->on]

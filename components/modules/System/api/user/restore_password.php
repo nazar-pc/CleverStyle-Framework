@@ -35,7 +35,7 @@ if (
 		$L->restore_password_confirmation_mail_body(
 			$User->get_username($id),
 			get_core_ml_text('name'),
-			$Config->core['base_url'].'/profile/restore_password_confirmation/'.$key,
+			$Config->core['url'].'/profile/restore_password_confirmation/'.$key,
 			$L->time($Config->core['registration_confirmation_time'], 'd')
 		)
 	)

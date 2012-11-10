@@ -37,7 +37,7 @@ foreach ($translate_engines as $engine) {
 }
 unset($engine, $parameters, $paremeter, $description, $table);
 $Index->content(
-	h::{'p.ui-priority-primary.cs-state-messages'}(
+	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 		FIXED_LANGUAGE ? $L->language_fixed_as.' '.$Core->config('language') : false
 	).
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(

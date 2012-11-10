@@ -96,7 +96,7 @@ function get_categories_rows ($structure = null, $level = 0, $parent_categories 
 			$content	= array_merge($content, get_categories_rows($category, $level+1, $parent_categories));
 		}
 	}
-	return $content;
+	return [$content];
 }
 function get_categories_list ($current = null, $structure = null, $level = 0) {
 	$list	= [
@@ -183,5 +183,5 @@ function get_pages_rows () {
 			];
 		}
 	}
-	return $content;
+	return [$content];
 }

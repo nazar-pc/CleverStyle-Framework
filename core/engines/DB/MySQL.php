@@ -79,7 +79,7 @@ class MySQL extends _Abstract {
 		if(is_resource($query_result)) {
 			return mysql_num_rows($query_result);
 		} else {
-			return (bool)$query_result;
+			return false;
 		}
 	}
 	/**
@@ -125,7 +125,7 @@ class MySQL extends _Abstract {
 				return $result;
 			}
 		} else {
-			return (bool)$query_result;
+			return false;
 		}
 	}
 	/**
@@ -137,6 +137,16 @@ class MySQL extends _Abstract {
 	 */
 	function id () {
 		return mysql_insert_id($this->id);
+	}
+	/**
+	 * Affected
+	 *
+	 * Get number of affected rows during last query
+	 *
+	 * @return int
+	 */
+	function affected () {
+		return mysql_affected_rows($this->id);
 	}
 	/**
 	 * Free result memory
@@ -152,7 +162,7 @@ class MySQL extends _Abstract {
 		if(is_resource($query_result)) {
 			return mysql_free_result($query_result);
 		} else {
-			return (bool)$query_result;
+			return false;
 		}
 	}
 	/**

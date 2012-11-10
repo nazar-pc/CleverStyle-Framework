@@ -111,7 +111,7 @@
 //Administration
 	"administration"		: "Administration",
 	"apply"					: "Apply",
-	"apply_info"			: "Apply changes without saving, in the case of failure all changes can be undone. В случае полного отказа движка нужно будет вручную очистить кэш.",
+	"apply_info"			: "Apply changes without saving, in the case of failure all changes can be undone. In case of total engine failure you should manually clear the cache.",
 	"save"					: "Save",
 	"save_info"				: "Save changes",
 	"cancel"				: "Cancel",

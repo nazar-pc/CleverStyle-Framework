@@ -32,7 +32,12 @@
 			"secret"
 		]
 	},
-	"Yahoo"			: {},
+	"Yahoo"			: {
+		"keys"	: [
+			"key",
+			"secret"
+		]
+	},
 	"MySpace"	: {
 		"keys"	: [
 			"key",
