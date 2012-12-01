@@ -19,7 +19,7 @@ $Index->content(
 				'checked'		=> $Config->core['smtp'],
 				'value'			=> [0, 1],
 				'in'			=> [$L->off, $L->on],
-				'OnClick'		=> ['$(\'#smtp_form\').hide();', '$(\'#smtp_form\').show();']
+				'OnClick'		=> ['$(\'#smtp_form\').parent().parent().hide();', '$(\'#smtp_form\').parent().parent().show();']
 			])
 		],
 		[

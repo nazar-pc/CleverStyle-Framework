@@ -11,7 +11,7 @@
  */
 
 /**
- * Special function for files including, strongly recommended for usage instead of system constructions
+ * Special function for files includin
  *
  * @param string		$file
  * @param bool			$once
@@ -35,7 +35,7 @@ function _require ($file, $once = false, $show_errors = true) {
 	return false;
 }
 /**
- * Special function for files including, strongly recommended for usage instead of system constructions
+ * Special function for files including
  *
  * @param string		$file
  * @param bool			$once
@@ -59,7 +59,7 @@ function _include ($file, $once = false, $show_errors = true) {
 	return false;
 }
 /**
- * Special function for files including, strongly recommended for usage instead of system constructions
+ * Special function for files including
  *
  * @param string		$file
  * @param bool|Closure	$show_errors	If bool error will be processed, if Closure - only Closure will be called
@@ -70,7 +70,7 @@ function _require_once ($file, $show_errors = true) {
 	return _require($file, true, $show_errors);
 }
 /**
- * Special function for files including, strongly recommended for usage instead of system constructions
+ * Special function for files including
  *
  * @param string		$file
  * @param bool|Closure	$show_errors	If bool error will be processed, if Closure - only Closure will be called
@@ -1008,16 +1008,17 @@ function password_check ($password) {
  * Generates passwords till 5th level of strength, 6-7 - only for humans:)
  *
  * @param	int		$length
- * @param	int		$strength In range [1..5], but it must be smaller, than $length<br><br>
- * 					<b>1</b> - numbers<br>
- * 					<b>2</b> - numbers + letters<br>
- * 					<b>3</b> - numbers + letters in different registers<br>
- * 					<b>4</b> - numbers + letters in different registers + special symbol<br>
- * 					<b>5</b> - numbers + letters in different registers + special symbols (more than one)
+ * @param	int		$strength	In range [1..5], but it must be smaller, than $length<br><br>
+ * 								<b>1</b> - numbers<br>
+ * 								<b>2</b> - numbers + letters<br>
+ * 								<b>3</b> - numbers + letters in different registers<br>
+ * 								<b>4</b> - numbers + letters in different registers + special symbol<br>
+ * 								<b>5</b> - numbers + letters in different registers + special symbols (more than one)
+ * @param	int		$count		Limits cycles for password generation, protects from looping
  *
  * @return	string
  */
-function password_generate ($length = 10, $strength = 5) {
+function password_generate ($length = 10, $strength = 5, $count = 10000) {
 	static $special = [
 		'~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_',
 		'=', '+', '|', '\\', '/', ';', ':', ',', '.', '?', '[', ']', '{', '}'
@@ -1054,8 +1055,8 @@ function password_generate ($length = 10, $strength = 5) {
 	if ($strength > 1) {
 		$symbols = array_merge($symbols, $small);
 	}
-	$size = count($symbols)-1;
-	while (true) {
+	$size	= count($symbols)-1;
+	while ($count--) {
 		for ($i = 0; $i < $length; ++$i) {
 			$password[] = $symbols[rand(0, $size)];
 		}
@@ -1668,7 +1669,6 @@ function pages_buttons ($page, $total, $url = false) {
 	if ($total == 1) {
 		return false;
 	}
-	global $Page;
 	$output	= [];
 	if ($total <= 11) {
 		for ($i = 1; $i <= $total; ++$i) {
@@ -1814,4 +1814,95 @@ function ob_wrapper ($closure) {
  */
 function mb_ucwords ($str) {
 	return mb_convert_case($str, MB_CASE_TITLE);
+}
+/**
+ * Convert input to int type. Accepts arrays.
+ *
+ * @param mixed|mixed[]	$in
+ *
+ * @return int|int[]
+ */
+function _int ($in) {
+	if (is_array($in)) {
+		return array_map(
+			function ($in) {
+				return (int)$in;
+			},
+			$in
+		);
+	}
+	return (int)$in;
+}
+/**
+ * Convert input to float type. Accepts arrays.
+ *
+ * @param mixed|mixed[]	$in
+ *
+ * @return float|float[]
+ */
+function _float ($in) {
+	if (is_array($in)) {
+		return array_map(
+			function ($in) {
+				return (float)$in;
+			},
+			$in
+		);
+	}
+	return (float)$in;
+}
+/**
+ * Convert input to string type. Accepts arrays.
+ *
+ * @param mixed|mixed[]	$in
+ *
+ * @return string|string[]
+ */
+function _string ($in) {
+	if (is_array($in)) {
+		return array_map(
+			function ($in) {
+				return (string)$in;
+			},
+			$in
+		);
+	}
+	return (string)$in;
+}
+/**
+ * Convert input to array type. Accepts arrays.
+ *
+ * @param mixed|mixed[]	$in
+ *
+ * @return array|array[]
+ */
+function _array ($in) {
+	if (is_array($in)) {
+		return array_map(
+			function ($in) {
+				return (array)$in;
+			},
+			$in
+		);
+	}
+	return (array)$in;
+}
+/**
+ * Accepts array of arrays and returns array of specified elements of each array.
+ *
+ * @param array[]	$in		Array of arrays
+ * @param mixed		$row	Which item of each array should be returned
+ *
+ * @return mixed[]
+ */
+function array_row ($in, $row) {
+	if (!is_array($in)) {
+		return false;
+	}
+	return array_map(
+		function ($in) use ($row) {
+			return is_array($in) && isset($in[$row]) ? $in[$row] : false;
+		},
+		$in
+	);
 }
