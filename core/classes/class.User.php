@@ -516,12 +516,12 @@ class User {
 	 */
 	function get_data ($item, $user = false) {
 		$user	= (int)($user ?: $this->id);
-		if (!$user) {
+		if (!$user || $user == 1) {
 			return false;
 		}
 		global $Cache;
 		if (($data = $Cache->{'users/data/'.$user}) === false || !isset($data[$item])) {
-			if (!$data) {
+			if (!is_array($data)) {
 				$data	= [];
 			}
 			$data[$item]					= $this->db()->qfs([
@@ -532,7 +532,7 @@ class User {
 					`item`	= '%s'",
 				$item
 			]);
-			unset($Cache->{'users/data/'.$user});
+			$Cache->{'users/data/'.$user}	= $data[$item];
 		}
 		return _json_decode($data[$item]);
 	}
@@ -547,7 +547,7 @@ class User {
 	 */
 	function set_data ($item, $value = null, $user = false) {
 		$user	= (int)($user ?: $this->id);
-		if (!$user) {
+		if (!$user || $user == 1) {
 			return false;
 		}
 		global $Cache;
@@ -579,7 +579,7 @@ class User {
 	 */
 	function del_data ($item, $user = false) {
 		$user	= (int)($user ?: $this->id);
-		if (!$user) {
+		if (!$user || $user == 1) {
 			return false;
 		}
 		global $Cache;
@@ -1453,8 +1453,15 @@ class User {
 		if ($this->bot() && $this->id == 1) {
 			return 1;
 		}
-		$this->current['session'] = _getcookie('session');
-		$session_id = $session_id ?: $this->current['session'];
+		if (!$session_id) {
+			if (!$this->current['session']) {
+				$this->current['session'] = _getcookie('session');
+			}
+			$session_id = $session_id ?: $this->current['session'];
+		}
+		if (!preg_match('/^[0-9a-z]{32}$/', $session_id)) {
+			return false;
+		}
 		global $Cache, $Config;
 		$result	= false;
 		$time	= TIME;
@@ -1614,7 +1621,7 @@ class User {
 				$forwarded_for	= ip2hex($this->forwarded_for),
 				$client_ip		= ip2hex($this->client_ip)
 			);
-			$time	= TIME;
+			$time						= TIME;
 			if ($user != 1) {
 				$this->db_prime()->q("UPDATE `[prefix]users` SET `last_login` = $time, `last_online` = $time, `last_ip` = '$ip.' WHERE `id` ='$user'");
 			}
@@ -1629,7 +1636,7 @@ class User {
 				'client_ip'		=> $client_ip
 			];
 			_setcookie('session', $hash, TIME + $Config->core['session_expire'], true);
-			$this->get_session_user();
+			$this->id					= $this->get_session_user();
 			if (
 				($this->db()->qfs(
 					 "SELECT COUNT(`id`)
@@ -1669,13 +1676,13 @@ class User {
 	protected function del_session_internal ($session_id = null, $create_guest_session = true) {
 		$session_id = $session_id ?: $this->current['session'];
 		global $Cache;
-		$this->current['session'] = false;
-		_setcookie('session', '');
 		if (!preg_match('/^[0-9a-z]{32}$/', $session_id)) {
 			return false;
 		}
 		unset($Cache->{'sessions/'.$session_id});
-		$result = $session_id ? $this->db_prime()->q(
+		$this->current['session'] = false;
+		_setcookie('session', '');
+		$result =  $this->db_prime()->q(
 			"UPDATE `[prefix]sessions`
 			SET
 				`expire`	= 0,
@@ -1683,7 +1690,7 @@ class User {
 			WHERE `id` = '%s'
 			LIMIT 1",
 			$session_id
-		) : false;
+		);
 		if ($create_guest_session) {
 			return $this->add_session(1);
 		}
@@ -2003,7 +2010,7 @@ class User {
 			if (!$confirmation) {
 				$this->set_user_groups([2], $this->reg_id);
 			}
-			if ($autologin && $Config->core['autologin_after_registration']) {
+			if (!$confirmation && $autologin && $Config->core['autologin_after_registration']) {
 				$this->add_session($this->reg_id);
 			}
 			if ($this->reg_id % $Config->core['inserts_limit'] == 0) {

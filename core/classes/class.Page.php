@@ -338,7 +338,7 @@ class Page {
 	protected function process_replacing ($data) {
 		errors_off();
 		foreach ($this->Search as $i => $search) {
-			$data = preg_replace($search, $this->Replace[$i], $data) ?: str_replace($search, $this->Replace[$i], $data);
+			$data = @preg_replace($search, $this->Replace[$i], $data) ?: str_replace($search, $this->Replace[$i], $data);
 		}
 		errors_on();
 		return $data;
