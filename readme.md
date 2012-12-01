@@ -52,9 +52,9 @@ Requirements:
 
 * Unix-like operating system
 * Apache2 web server
-* PHP 5.4
+* PHP 5.4+
  * Mcrypt library (recommended for encryption)
  * cUrl library (recommended for autotranslation)
  * APC (Alternative PHP cache) module (recommended for system speed up)
 * MySQL Database server
- * System may be extended to supporting of other databases
+ * System may be extended to support other databases
