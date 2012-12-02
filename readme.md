@@ -6,16 +6,21 @@ CleverStyle CMS is simple, scalable, and fast content management system.
 System core contains only basic functionality, so, it looks more like CMF (content management framework) rather than CMS.
 
 But in parallel with core some components are developed:
+
 #### modules
 
  * **Blogs** (simpple blogging functionality)
  * **Cron** (provides GUI for crontab)
  * **HybridAuth** (integration of [HybridAuth](https://github.com/hybridauth/hybridauth) library for integration with social networks and other services)
  * **Static pages** (allows to create static pages like About page or pages without interface, for example for site owner verification)
+
 #### plugins
+
  * **TinyMCE** (integration of [TinyMCE](https://github.com/tinymce/tinymce) WYSIWYG Editor for providing simpler content editing)
 
-System is free, Open Source and is distributed under MIT license, see [license.txt](license.txt)
+System is free, Open Source and is distributed under MIT license, see [license.txt](https://github.com/nazar-pc/CleverStyle-CMS/blob/master/license.txt)
+
+Installation builds of core and components can be found in [downloads](https://github.com/nazar-pc/CleverStyle-CMS/downloads) area.
 
 Author – Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
@@ -52,9 +57,9 @@ Requirements:
 
 * Unix-like operating system
 * Apache2 web server
-* PHP 5.4
+* PHP 5.4+
  * Mcrypt library (recommended for encryption)
  * cUrl library (recommended for autotranslation)
  * APC (Alternative PHP cache) module (recommended for system speed up)
 * MySQL Database server
- * System may be extended to supporting of other databases
+ * System may be extended to support other databases
