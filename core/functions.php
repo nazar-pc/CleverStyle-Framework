@@ -1014,57 +1014,59 @@ function password_check ($password) {
  * 								<b>3</b> - numbers + letters in different registers<br>
  * 								<b>4</b> - numbers + letters in different registers + special symbol<br>
  * 								<b>5</b> - numbers + letters in different registers + special symbols (more than one)
- * @param	int		$count		Limits cycles for password generation, protects from looping
  *
  * @return	string
  */
-function password_generate ($length = 10, $strength = 5, $count = 10000) {
+function password_generate ($length = 10, $strength = 5) {
 	static $special = [
 		'~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_',
 		'=', '+', '|', '\\', '/', ';', ':', ',', '.', '?', '[', ']', '{', '}'
 	];
 	static $small, $capital;
 	if ($length < 4) {
-		$length = 4;
+		$length		= 4;
 	}
 	if ($strength < 1) {
-		$strength = 1;
+		$strength	= 1;
 	} elseif ($strength > $length) {
-		$strength = $length;
+		$strength	= $length;
+	}
+	if ($strength > 5) {
+		$strength	= 5;
 	}
 	if (!isset($small)) {
-		$small = range('a', 'z');
+		$small		= range('a', 'z');
 	}
 	if (!isset($capital)) {
-		$capital = range('A', 'Z');
+		$capital	= range('A', 'Z');
 	}
-	$password = [];
-	$symbols = range(0, 9);
+	$password	= [];
+	$symbols	= range(0, 9);
 	if ($strength > 5) {
-		$strength = 5;
+		$strength	= 5;
 	}
 	if ($strength > $length) {
-		$strength = $length;
+		$strength	= $length;
 	}
 	if ($strength > 3) {
-		$symbols = array_merge($symbols, $special);
+		$symbols	= array_merge($symbols, $special);
 	}
 	if ($strength > 2) {
-		$symbols = array_merge($symbols, $capital);
+		$symbols	= array_merge($symbols, $capital);
 	}
 	if ($strength > 1) {
-		$symbols = array_merge($symbols, $small);
+		$symbols	= array_merge($symbols, $small);
 	}
-	$size	= count($symbols)-1;
-	while ($count--) {
+	$size		= count($symbols)-1;
+	while (true) {
 		for ($i = 0; $i < $length; ++$i) {
-			$password[] = $symbols[rand(0, $size)];
+			$password[]	= $symbols[rand(0, $size)];
 		}
 		shuffle($password);
 		if (password_check(implode('', $password)) == $strength) {
 			return implode('', $password);
 		}
-		$password = [];
+		$password	= [];
 	}
 	return '';
 }

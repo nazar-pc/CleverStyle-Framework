@@ -175,14 +175,14 @@ if (isset($rc[2])) {
 					h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 						$L->sure_to_delete.' '.$name.
 							h::{'input[type=hidden]'}([
-								[
+								[[
 									'name'	=> 'mode',
 									'value'	=> $rc[2]
-								],
-								[
+								]],
+								[[
 									'name'	=> 'database',
 									'value'	=> $rc[3]
-								]
+								]]
 							]).
 							(isset($rc[4]) ? h::{'input[type=hidden]'}([
 								'name'	=> 'mirror',

@@ -120,6 +120,8 @@ class Index {
 	 *
 	 * @param string	$add
 	 * @param bool|int	$level
+	 *
+	 * @return Index
 	 */
 	function content ($add, $level = false) {
 		if ($level !== false) {
@@ -127,6 +129,7 @@ class Index {
 		} else {
 			$this->Content .= $add;
 		}
+		return $this;
 	}
 	/**
 	 * Initialization: loading of module structure, including of necessary module files
@@ -438,6 +441,8 @@ class Index {
 	}
 	/**
 	 * Adds JavaScript variables with some system configuration information
+	 *
+	 * @return Index
 	 */
 	protected function js_vars () {
 		if (!$this->api) {
@@ -470,6 +475,7 @@ class Index {
 				);
 			}
 		}
+		return $this;
 	}
 	/**
 	 * Blocks processing
@@ -637,8 +643,7 @@ class Index {
 			$Page->error_page();
 		}
 		if ($this->generate_auto) {
-			$this->js_vars();
-			$this->generate();
+			$this->js_vars()->generate();
 		}
 		$Core->run_trigger('System/Index/postload');
 	}

@@ -33,16 +33,18 @@ if ($_POST['edit_settings'] == 'apply' || $_POST['edit_settings'] == 'save') {
 					case 'mail_signature':
 					case 'rules':
 						$value	= set_core_ml_text($item, $value);
-				}
-				switch ($item) {
+					break;
 					case 'mirrors_url':
 					case 'mirrors_cookie_domain':
 					case 'mirrors_cookie_path':
 					case 'ip_black_list':
 					case 'ip_admin_list':
-						$value = explode("\n", $value);
+						$value	= explode("\n", $value);
 				}
 				$temp[$item] = xap($value, true);
+				if ($item == 'theme') {
+					$temp['color_scheme']	= $Config->core['color_schemes'][$temp['theme']][0];
+				}
 			}
 			unset($item, $value);
 			if ($part == 'routing' || $part == 'replace') {

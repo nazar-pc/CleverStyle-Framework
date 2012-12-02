@@ -73,6 +73,8 @@ class Page {
 	 * @param string	$description
 	 * @param string	$theme
 	 * @param string	$color_scheme
+	 *
+	 * @return Page
 	 */
 	function init ($title, $keywords, $description, $theme, $color_scheme) {
 		$this->Title[0] = htmlentities($title, ENT_COMPAT, 'utf-8');
@@ -80,28 +82,37 @@ class Page {
 		$this->Description = $description;
 		$this->set_theme($theme);
 		$this->set_color_scheme($color_scheme);
+		return $this;
 	}
 	/**
 	 * Theme changing
 	 *
 	 * @param string	$theme
+	 *
+	 * @return Page
 	 */
 	function set_theme ($theme) {
 		$this->theme = $theme;
+		return $this;
 	}
 	/**
 	 * Colos scheme changing
 	 *
 	 * @param string	$color_scheme
+	 *
+	 * @return Page
 	 */
 	function set_color_scheme ($color_scheme) {
 		$this->color_scheme = $color_scheme;
+		return $this;
 	}
 	/**
 	 * Adding of content on the page
 	 *
 	 * @param string	$add
 	 * @param bool|int	$level
+	 *
+	 * @return Page
 	 */
 	function content ($add, $level = false) {
 		if ($level !== false) {
@@ -109,9 +120,12 @@ class Page {
 		} else {
 			$this->Content .= $add;
 		}
+		return $this;
 	}
 	/**
 	 * Loading of theme template
+	 *
+	 * @return Page
 	 */
 	protected function get_template () {
 		global $Config, $L, $User;
@@ -174,24 +188,21 @@ class Page {
 
 			$this->Html = ob_get_clean();
 		}
+		return $this;
 	}
 	/**
 	 * Processing of template, substituting of content, preparing for the output
+	 *
+	 * @return Page
 	 */
 	protected function prepare () {
 		global $Config;
 		/**
 		 * Loading of template
-		 */
-		$this->get_template();
-		/**
 		 * Loading of CSS and JavaScript
-		 */
-		$this->get_includes();
-		/**
 		 * Getting user information
 		 */
-		$this->get_header_info();
+		$this->get_template()->get_includes()->get_header_info();
 		/**
 		 * Forming page title
 		 */
@@ -310,12 +321,15 @@ class Page {
 			],
 			$this->Html
 		);
+		return $this;
 	}
 	/**
 	 * Replacing anything in source code of finally genereted page
 	 *
 	 * @param string|string[]	$search
 	 * @param string|string[]	$replace
+	 *
+	 * @return Page
 	 */
 	function replace ($search, $replace = '') {
 		if (is_array($search)) {
@@ -327,6 +341,7 @@ class Page {
 			$this->Search[] = $search;
 			$this->Replace[] = $replace;
 		}
+		return $this;
 	}
 	/**
 	 * Processing of replacing in content
@@ -348,10 +363,19 @@ class Page {
 	 *
 	 * @param string|string[]	$add	Path to including file, or code
 	 * @param string			$mode	Can be <b>file</b> or <b>code</b>
+	 *
+	 * @return Page
 	 */
 	function js ($add, $mode = 'file') {
-		$this->js_internal($add, $mode);
+		return $this->js_internal($add, $mode);
 	}
+	/**
+	 * @param string	$add
+	 * @param string	$mode
+	 * @param bool		$core
+	 *
+	 * @return Page
+	 */
 	protected function js_internal ($add, $mode = 'file', $core = false) {
 		if (is_array($add)) {
 			foreach ($add as $script) {
@@ -380,16 +404,26 @@ class Page {
 				}
 			}
 		}
+		return $this;
 	}
 	/**
 	 * Including of CSS
 	 *
 	 * @param string|string[]	$add	Path to including file, or code
 	 * @param string			$mode	Can be <b>file</b> or <b>code</b>
+	 *
+	 * @return Page
 	 */
 	function css ($add, $mode = 'file') {
-		$this->css_internal($add, $mode);
+		return $this->css_internal($add, $mode);
 	}
+	/**
+	 * @param string	$add
+	 * @param string	$mode
+	 * @param bool		$core
+	 *
+	 * @return Page
+	 */
 	protected function css_internal ($add, $mode = 'file', $core = false) {
 		if (is_array($add)) {
 			foreach ($add as $style) {
@@ -418,32 +452,41 @@ class Page {
 				}
 			}
 		}
+		return $this;
 	}
 	/**
 	 * Adding links
 	 *
 	 * @param array|bool	$data	According to h class syntax
+	 *
+	 * @return Page
 	 */
 	function link ($data) {
 		if ($data !== false) {
 			$this->link[]	= $data;
 		}
+		return $this;
 	}
 	/**
 	 * Adding text to the title page
 	 *
 	 * @param string	$add
+	 *
+	 * @return Page
 	 */
 	function title ($add) {
 		$this->Title[] = htmlentities($add, ENT_COMPAT, 'utf-8');
+		return $this;
 	}
 	/**
 	 * Getting of CSS and JavaScript includes
+	 *
+	 * @return Page
 	 */
 	protected function get_includes () {
 		global $Config;
 		if (!is_object($Config)) {
-			return;
+			return $this;
 		}
 		/**
 		 * If CSS and JavaScript compression enabled
@@ -501,16 +544,19 @@ class Page {
 				$this->js_internal($file, 'file', true);
 			}
 		}
+		return $this;
 	}
 	/**
 	 * Getting of JavaScript and CSS files list to be included
+	 *
+	 * @return Page
 	 */
 	protected function get_includes_list ($for_cache = false) {
 		$theme_folder	= THEMES.'/'.$this->theme;
 		$scheme_folder	= $theme_folder.'/schemes/'.$this->color_scheme;
 		$theme_pfolder	= 'themes/'.$this->theme;
 		$scheme_pfolder	= $theme_pfolder.'/schemes/'.$this->color_scheme;
-		$this->includes = array(
+		$this->includes = [
 			'css' => array_merge(
 				(array)get_files_list(CSS,						'/(.*)\.css$/i',	'f', $for_cache ? true : 'includes/css',			true, false, '!include'),
 				(array)get_files_list($theme_folder.'/css',		'/(.*)\.css$/i',	'f', $for_cache ? true : $theme_pfolder.'/css',		true, false, '!include'),
@@ -521,13 +567,16 @@ class Page {
 				(array)get_files_list($theme_folder.'/js',		'/(.*)\.js$/i',		'f', $for_cache ? true : $theme_pfolder.'/js',		true, false, '!include'),
 				(array)get_files_list($scheme_folder.'/js',		'/(.*)\.js$/i',		'f', $for_cache ? true : $scheme_pfolder.'/js',		true, false, '!include')
 			)
-		);
+		];
 		unset($theme_folder, $scheme_folder, $theme_pfolder, $scheme_pfolder);
 		sort($this->includes['css']);
 		sort($this->includes['js']);
+		return $this;
 	}
 	/**
 	 * Rebuilding of JavaScript and CSS cache
+	 *
+	 * @return Page
 	 */
 	protected function rebuild_cache () {
 		global $Core, $L;
@@ -562,6 +611,7 @@ class Page {
 			$key .= md5($temp_cache);
 		}
 		file_put_contents(PCACHE.'/pcache_key', mb_substr(md5($key), 0, 5), LOCK_EX | FILE_BINARY);
+		return $this;
 	}
 	/**
 	 * Analyses file for images, fonts and css links and include they content into single resulting css file.<br>
@@ -636,6 +686,8 @@ class Page {
 	}
 	/**
 	 * Getting footer information
+	 *
+	 * @return Page
 	 */
 	protected function get_footer () {
 		global $L, $db, $Config;
@@ -648,9 +700,12 @@ class Page {
 				.'xlLm9yZy9jbXMiIHRpdGxlPSJDbGV2ZXJTdHlsZSBDTVMiPkNsZXZlclN0eWxlIENNUzwvYT4='
 			)
 		);
+		return $this;
 	}
 	/**
 	 * Getting of debug information
+	 *
+	 * @return Page
 	 */
 	protected function get_debug_info () {
 		global $Config, $L, $db;
@@ -772,26 +827,33 @@ class Page {
 				$debug_tabs_content
 			)
 		);
+		return $this;
 	}
 	/**
 	 * Display notice
 	 *
 	 * @param string $notice_text
+	 *
+	 * @return Page
 	 */
 	function notice ($notice_text) {
 		$this->Top .= h::{'div.ui-state-highlight.ui-corner-all.ui-priority-primary.cs-center.cs-state-messages'}(
 			$notice_text
 		);
+		return $this;
 	}
 	/**
 	 * Display warning
 	 *
 	 * @param string $warning_text
+	 *
+	 * @return Page
 	 */
 	function warning ($warning_text) {
 		$this->Top .= h::{'div.ui-state-error.ui-corner-all.ui-priority-primary.cs-center.cs-state-messages'}(
 			$warning_text
 		);
+		return $this;
 	}
 	/**
 	 * Error pages processing
@@ -813,6 +875,8 @@ class Page {
 	}
 	/**
 	 * Substitutes header information about user, login/registration forms, etc.
+	 *
+	 * @return Page
 	 */
 	protected function get_header_info () {
 		global $User, $L, $Core;
@@ -942,6 +1006,7 @@ class Page {
 			).
 			$external_systems_list;
 		}
+		return $this;
 	}
 	/**
 	 * Cloning restriction

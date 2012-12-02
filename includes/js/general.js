@@ -5,29 +5,34 @@
  * @license		MIT License, see license.txt
  */
 $(function() {
-	var	body = $('#body');
-	body.css(
-		'opacity',
-		.0001
-	).parent().css({
-		'padding'	: 0,
-		'overflow'	: 'visible'
-	});
-	$('link[rel="stylesheet"]').each(function () {
-		$.setTemplateLayout($(this).attr('href'));
-	});
-	$.showPage	= function () {
-		body.animate(
-			{
-				'opacity'	: 1
-			},
-			100
-		);
-	};
-	$(document).on('DOMNodeInserted', 'iframe', function() {
-		setTimeout($.redoTemplateLayout, 100);
-	});
-	setInterval($.redoTemplateLayout, 1000);
+	setTimeout(
+		function () {
+			var	body = $('#body');
+			body.css(
+				'opacity',
+				.0001
+			).parent().css({
+				'padding'	: 0,
+				'overflow'	: 'visible'
+			});
+			$('link[rel="stylesheet"]').each(function () {
+				$.setTemplateLayout($(this).attr('href'));
+			});
+			$.showPage	= function () {
+				body.animate(
+					{
+						'opacity'	: 1
+					},
+					100
+				);
+			};
+			$(document).on('DOMNodeInserted', 'iframe', function() {
+				setTimeout($.redoTemplateLayout, 100);
+			});
+			setInterval($.redoTemplateLayout, 1000);
+		},
+		0
+	);
 	if (
 		($.browser.msie && $.browser.version < 10) ||
 		($.browser.opera && $.browser.version < 11.1) ||

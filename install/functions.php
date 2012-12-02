@@ -354,9 +354,9 @@ function install_process () {
 		'System'	=> [
 			'active'	=> 1,
 			'db'		=> [
-				'keys'	=> 0,
-				'users'	=> 0,
-				'texts'	=> 0
+				'keys'	=> '0',
+				'users'	=> '0',
+				'texts'	=> '0'
 			]
 		]
 	];

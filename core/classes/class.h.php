@@ -870,10 +870,7 @@ class h {
 								is_array_indexed($data[1]) && !in_array($data[1][0], self::$unit_atributes)
 							)
 						)
-					)/* ||//TODO does it works correct without this?
-					(
-						isset($data[1]) && is_array_assoc($data[0]) && is_array_assoc($data[1])
-					)*/
+					)
 				)
 			) {
 				$output	= '';

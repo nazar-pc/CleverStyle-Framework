@@ -91,7 +91,7 @@ if (isset($rc[2])) {
 						h::input([
 							'name'		=> 'block[title]'
 						]),
-						h::{'input[type=radio]'}([
+						h::{'div input[type=radio]'}([
 							'name'		=> 'block[active]',
 							'value'		=> [1, 0],
 							'in'		=> [$L->yes, $L->no]
@@ -180,7 +180,7 @@ if (isset($rc[2])) {
 							'name'		=> 'block[title]',
 							'value'		=> get_block_title($rc[3])
 						]),
-						h::{'input[type=radio]'}([
+						h::{'div input[type=radio]'}([
 							'name'		=> 'block[active]',
 							'checked'	=> $block['active'],
 							'value'		=> [1, 0],
@@ -233,14 +233,14 @@ if (isset($rc[2])) {
 					)
 				).
 				h::{'input[type=hidden]'}([
-					[
+					[[
 						'name'	=> 'block[id]',
 						'value'	=> $rc[3]
-					],
-					[
+					]],
+					[[
 						'name'	=> 'mode',
 						'value'	=> $rc[2]
-					]
+					]]
 				])
 			);
 		break;
@@ -359,14 +359,14 @@ if (isset($rc[2])) {
 				).
 				h::br().
 				h::{'input[type=hidden]'}([
-					[
+					[[
 						'name'	=> 'block[id]',
 						'value'	=> $rc[3]
-					],
-					[
+					]],
+					[[
 						'name'	=> 'mode',
 						'value'	=> $rc[2]
-					]
+					]]
 				])
 			);
 		break;
