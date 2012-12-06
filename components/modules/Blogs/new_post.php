@@ -21,7 +21,10 @@ if (!$User->user()) {
 }
 $module						= path($L->{MODULE});
 if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags'], $_POST['mode'])) {
+	$draft	= false;
 	switch ($_POST['mode']) {
+		case 'draft':
+			$draft	= true;
 		case 'publish':
 			$save	= true;
 			if (empty($_POST['title'])) {
@@ -42,7 +45,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 			}
 			if ($save) {
 				global $Blogs;
-				$id		= $Blogs->add($_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])));
+				$id		= $Blogs->add($_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])), $draft);
 				if ($id) {
 					interface_off();
 					header('Location: '.$Config->server['base_url'].'/'.$module.'/'.$Blogs->get($id)['path'].':'.$id);
@@ -105,5 +108,8 @@ $Index->content(
 	).
 	h::{'button[type=submit][name=mode][value=publish]'}(
 		$L->publish
+	).
+	h::{'button[type=submit][name=mode][value=draft]'}(
+		$L->to_drafts
 	)
 );

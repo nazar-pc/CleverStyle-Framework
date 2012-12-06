@@ -98,7 +98,7 @@ $Page->content(
 					$L->to_locale(date($L->_datetime_long, $post['date'])),
 					[
 						'datetime'		=> date('c', $post['date']),
-						//'pubdate'//TODO wait while "pubdate" it will be standartized by W3C
+						//'pubdate'//TODO wait while "pubdate" it will be standardized by W3C
 					]
 				).
 				h::a(

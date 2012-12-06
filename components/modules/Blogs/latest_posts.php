@@ -33,6 +33,14 @@ if ($User->user()) {
 				'data-title'	=> $L->new_post
 			]
 		).
+		h::{'a.cs-button'}(
+			$L->drafts,
+			[
+				'href'			=> $module.'/'.path($L->drafts),
+				'data-title'	=> $L->drafts,
+				'style'			=> 'vertical-align: top;'
+			]
+		).
 		h::br()
 	);
 }
@@ -50,6 +58,7 @@ $cdb					= $db->{$Config->module(MODULE)->db('posts')};
 $posts					= $cdb->qfas(
 	"SELECT `id`
 	FROM `[prefix]blogs_posts`
+	WHERE `draft` = 0
 	ORDER BY `date` DESC
 	LIMIT $from, $num"
 );
@@ -66,7 +75,7 @@ $Index->content(
 		$posts ? h::{'nav.cs-center'}(
 			pages(
 				$page,
-				ceil($Blogs->get_total_count()/$num),
+				ceil($Blogs->get_total_count() / $num),
 				function ($page) use ($module, $L) {
 					return $page == 1 ? $module.'/'.path($L->latest_posts) : $module.'/'.path($L->latest_posts).'/'.$page;
 				},

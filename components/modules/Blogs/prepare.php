@@ -39,6 +39,9 @@ if (!API) {
 		case path($L->new_post):
 			$rc[0]	= 'new_post';
 		break;
+		case path($L->drafts):
+			$rc[0]	= 'drafts';
+		break;
 		default:
 			if (mb_strpos($rc[0], ':')) {
 				array_unshift($rc, 'post');
@@ -52,6 +55,7 @@ if (!API) {
 		case 'tag':
 		case 'new_post':
 		case 'edit_post':
+		case 'drafts':
 	}
 	$Page->title($L->{MODULE});
 	include_once MFOLDER.'/class.php';
@@ -124,7 +128,7 @@ if (!API) {
 						$L->to_locale(date($L->_datetime_long, $post['date'])),
 						[
 							'datetime'		=> date('c', $post['date']),
-							//'pubdate'//TODO wait while "pubdate" it will be standartized by W3C
+							//'pubdate'//TODO wait while "pubdate" it will be standardized by W3C
 						]
 					).
 					h::a(
@@ -183,7 +187,7 @@ function get_comments_tree ($comments, $post) {
 					date('dmY', TIME) == date('dmY', $comment['date']) ? date($L->_time, $comment['date']) : $L->to_locale(date($L->_datetime, $comment['date'])),
 					[
 						'datetime'		=> date('c', $comment['date']),
-						//'pubdate'//TODO wait while "pubdate" it will be standartized by W3C
+						//'pubdate'//TODO wait while "pubdate" it will be standardized by W3C
 					]
 				).
 				h::{'a.cs-blogs-comment-link'}(

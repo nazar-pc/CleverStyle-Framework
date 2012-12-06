@@ -5,8 +5,8 @@
 	"no_post_sections_specified"				: "No post sections specified",
 	"no_post_tags_specified"					: "No post tags specified",
 	"post_content_empty"						: "Post content is empty",
-	"post_saving_error"							: "An error occured during post saving",
-	"post_deleting_error"						: "An error occured during post deleting",
+	"post_saving_error"							: "An error occurred during post saving",
+	"post_deleting_error"						: "An error occurred during post deleting",
 	"post_title"								: "Title",
 	"post_section"								: "Section",
 	"select_sections_num"						: "You can select up to %s sections",
@@ -16,7 +16,7 @@
 	"preview"									: "Preview",
 	"blogs_nav_page"							: "Page %s",
 	"for_registered_users_only"					: "For registered users only",
-	"post_adding_error"							: "An error occured during post adding",
+	"post_adding_error"							: "An error occurred during post adding",
 	"publish"									: "Publish",
 	"section"									: "Section",
 	"tag"										: "Tag",
@@ -60,5 +60,8 @@
 	"maximum_number_of_sections_for_post_info"	: "Every post can be associated with several sections. This parameter specifies the maximum number of such sections.",
 	"enable_comments"							: "Enable comments",
 	"enable_comments_info"						: "Allows to enable or disable posts comments",
-	"post_preview_connection_error"				: "Preview error: connection to the server failed. Check your internet connection and try again."
+	"post_preview_connection_error"				: "Preview error: connection to the server failed. Check your internet connection and try again.",
+	"to_drafts"									: "To drafts",
+	"drafts"									: "Drafts",
+	"draft"										: "draft"
 }

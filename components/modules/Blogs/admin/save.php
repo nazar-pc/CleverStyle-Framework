@@ -11,6 +11,7 @@ if (!isset($_POST['mode'])) {
 	return;
 }
 global $Index, $Blogs;
+$draft	= false;
 switch ($_POST['mode']) {
 	case 'add_section':
 		$Index->save((bool)$Blogs->add_section($_POST['parent'], $_POST['title'], $_POST['path']));
@@ -21,6 +22,8 @@ switch ($_POST['mode']) {
 	case 'delete_section':
 		$Index->save((bool)$Blogs->del_section($_POST['id']));
 	break;
+	case 'edit_post_draft':
+		$draft	= true;
 	case 'edit_post':
 		global $Page, $Config, $L;
 		$save	= true;
@@ -42,7 +45,7 @@ switch ($_POST['mode']) {
 		}
 		if ($save) {
 			$Index->save(
-				(bool)$Blogs->set($_POST['id'], $_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])))
+				(bool)$Blogs->set($_POST['id'], $_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])), $draft)
 			);
 		}
 	break;

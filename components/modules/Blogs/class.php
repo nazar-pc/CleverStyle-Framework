@@ -37,7 +37,7 @@ class Blogs {
 	 * @return array|bool
 	 */
 	function get ($id, $comments = false) {
-		global $db, $Cache, $L;
+		global $db, $Cache, $L, $User;
 		$id	= (int)$id;
 		if (($data = $Cache->{'Blogs/posts/'.$id.'/'.$L->clang}) === false) {
 			$data	= $db->{$this->posts}->qf([
@@ -47,11 +47,18 @@ class Blogs {
 					`date`,
 					`title`,
 					`path`,
-					`content`
+					`content`,
+					`draft`
 				FROM `[prefix]blogs_posts`
-				WHERE `id` = '%s'
+				WHERE
+					`id` = '%s' AND
+					(
+						`user`	= '%s' OR
+						`draft`	= 0
+					)
 				LIMIT 1",
-				$id
+				$id,
+				$User->id
 			]);
 			if ($data) {
 				$data['title']								= $this->ml_process($data['title']);
@@ -92,10 +99,11 @@ class Blogs {
 	 * @param string	$content
 	 * @param int[]		$sections
 	 * @param string[]	$tags
+	 * @param bool		$draft
 	 *
 	 * @return bool|int				Id of created post on success of <b>false</> on failure
 	 */
-	function add ($title, $path, $content, $sections, $tags) {
+	function add ($title, $path, $content, $sections, $tags, $draft) {
 		if (empty($tags) || empty($content)) {
 			return false;
 		}
@@ -110,14 +118,23 @@ class Blogs {
 		}
 		if ($db->{$this->posts}()->q(
 			"INSERT INTO `[prefix]blogs_posts`
-				(`user`, `date`)
+				(
+					`user`,
+					`date`,
+					`draft`
+				)
 			VALUES
-				('%s', '%s')",
+				(
+					'%s',
+					'%s',
+					'%s'
+				)",
 			$User->id,
-			TIME
+			$draft ? 0 : TIME,
+			(int)(bool)$draft
 		)) {
 			$id	= $db->{$this->posts}()->id();
-			if ($this->set($id, $title, $path, $content, $sections, $tags)) {
+			if ($this->set($id, $title, $path, $content, $sections, $tags, $draft)) {
 				return $id;
 			} else {
 				$db->{$this->posts}()->q(
@@ -146,10 +163,11 @@ class Blogs {
 	 * @param string	$content
 	 * @param int[]		$sections
 	 * @param string[]	$tags
+	 * @param bool		$draft
 	 *
 	 * @return bool
 	 */
-	function set ($id, $title, $path, $content, $sections, $tags) {
+	function set ($id, $title, $path, $content, $sections, $tags, $draft) {
 		if (empty($tags) || empty($content)) {
 			return false;
 		}
@@ -187,23 +205,25 @@ class Blogs {
 				)
 			)
 		);
+		$data		= $this->get($id);
 		if ($db->{$this->posts}()->q(
 			[
 				"DELETE FROM `[prefix]blogs_posts_sections`
-				WHERE `id` = '%4\$s'",
+				WHERE `id` = '%5\$s'",
 				"INSERT INTO `[prefix]blogs_posts_sections`
 					(`id`, `section`)
 				VALUES
 					$sections",
 				"UPDATE `[prefix]blogs_posts`
 				SET
-					`title` = '%s',
-					`path` = '%s',
-					`content` = '%s'
+					`title`		= '%s',
+					`path`		= '%s',
+					`content`	= '%s',
+					`draft`		= '%s'
 				WHERE `id` = '%s'
 				LIMIT 1",
 				"DELETE FROM `[prefix]blogs_posts_tags`
-				WHERE `id` = '%4\$s'",
+				WHERE `id` = '%5\$s'",
 				"INSERT INTO `[prefix]blogs_posts_tags`
 					(`id`, `tag`)
 				VALUES
@@ -212,11 +232,23 @@ class Blogs {
 			$this->ml_set('Blogs/posts/title', $id, $title),
 			$this->ml_set('Blogs/posts/path', $id, $path),
 			$this->ml_set('Blogs/posts/content', $id, $content),
+			(int)(bool)$draft,
 			$id
 		)) {
+			if ($data['draft'] == 1 && !$draft && $data['date'] == 0) {
+				$db->{$this->posts}()->q(
+					"UPDATE `[prefix]blogs_posts`
+					SET `date` = '%s'
+					WHERE `id` = '%s'
+					LIMIT 1",
+					TIME,
+					$id
+				);
+			}
 			unset(
 				$Cache->{'Blogs/posts/'.$id},
-				$Cache->{'Blogs/sections'}
+				$Cache->{'Blogs/sections'},
+				$Cache->{'Blogs/total_count'}
 			);
 			return true;
 		} else {
@@ -252,7 +284,8 @@ class Blogs {
 			$this->ml_del('Blogs/posts/content', $id);
 			unset(
 				$Cache->{'Blogs/posts/'.$id},
-				$Cache->{'Blogs/sections'}
+				$Cache->{'Blogs/sections'},
+				$Cache->{'Blogs/total_count'}
 			);
 			return true;
 		} else {
@@ -269,7 +302,8 @@ class Blogs {
 		if (($data = $Cache->{'Blogs/total_count'}) === false) {
 			$Cache->{'Blogs/total_count'}	= $data	= $db->{$this->posts}->qfs(
 				"SELECT COUNT(`id`)
-				FROM `[prefix]blogs_posts`"
+				FROM `[prefix]blogs_posts`
+				WHERE `draft` = 0"
 			);
 		}
 		return $data;
@@ -332,9 +366,13 @@ class Blogs {
 			global $L;
 			$structure['title']	= $L->root_section;
 			$structure['posts']	= $db->{$this->posts}->qfs([
-				"SELECT COUNT(`id`)
-				FROM `[prefix]blogs_posts_sections`
-				WHERE `section` = '%s'",
+				"SELECT COUNT(`s`.`id`)
+				FROM `[prefix]blogs_posts_sections` AS `s`
+					LEFT OUTER JOIN `[prefix]blogs_posts` AS `p`
+				ON `s`.`id` = `p`.`id`
+				WHERE
+					`s`.`section`	= '%s' AND
+					`p`.`draft`		= 0",
 				$structure['id']
 			]);
 		}
@@ -372,9 +410,13 @@ class Blogs {
 					`path`,
 					`parent`,
 					(
-						SELECT COUNT(`id`)
-						FROM `[prefix]blogs_posts_sections`
-						WHERE `section` = '%1\$s'
+						SELECT COUNT(`s`.`id`)
+						FROM `[prefix]blogs_posts_sections` AS `s`
+							LEFT OUTER JOIN `[prefix]blogs_posts` AS `p`
+						ON `s`.`id` = `p`.`id`
+						WHERE
+							`s`.`section`	= '%1\$s' AND
+							`p`.`draft`		= 0
 					) AS `posts`
 				FROM `[prefix]blogs_sections`
 				WHERE `id` = '%1\$s'
@@ -782,9 +824,23 @@ class Blogs {
 		}
 		if ($db->{$this->comments}()->q(
 			"INSERT INTO `[prefix]blogs_comments`
-				(`parent`, `post`, `user`, `date`, `text`, `lang`)
+				(
+					`parent`,
+					`post`,
+					`user`,
+					`date`,
+					`text`,
+					`lang`
+				)
 			VALUES
-				('%s', '%s', '%s', '%s', '%s', '%s')",
+				(
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s'
+				)",
 			$parent,
 			$post,
 			$User->id,

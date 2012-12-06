@@ -18,10 +18,12 @@ CREATE TABLE `[prefix]blogs_posts` (
   `title` varchar(1024) NOT NULL,
   `path` varchar(255) NOT NULL,
   `content` mediumtext NOT NULL,
+	`draft` tinyint(1) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user` (`user`),
   KEY `date` (`date`),
-  KEY `path` (`path`)
+  KEY `path` (`path`),
+	KEY `draft` (`draft`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `[prefix]blogs_posts_sections` (

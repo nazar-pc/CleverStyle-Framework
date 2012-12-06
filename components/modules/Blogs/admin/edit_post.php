@@ -71,5 +71,8 @@ $Index->content(
 	).
 	h::{'button[type=submit][name=mode][value=edit_post]'}(
 		$L->save
+	).
+	h::{'button[type=submit][name=mode][value=edit_post_draft]'}(
+		$L->to_drafts
 	)
 );

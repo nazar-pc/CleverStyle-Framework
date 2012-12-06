@@ -13,17 +13,21 @@ $rc						= array_slice($Config->routing['current'], 1);
 $structure				= $Blogs->get_sections_structure();
 $keywords				= [];
 $description			= [];
-foreach ($rc as $path) {
-	if ($structure['posts']	== 0 && isset($structure['sections'][$path])) {
+$path					= [];
+foreach ($rc as $path_) {
+	if ($structure['posts']	== 0 && isset($structure['sections'][$path_])) {
 		array_shift($rc);
-		$structure		= $structure['sections'][$path];
+		$structure		= $structure['sections'][$path_];
 		$Page->title($structure['title']);
 		$keywords[]		= $structure['title'];
 		$description[]	= $structure['title'];
+		$path[]			= $path_;
 	} else {
 		break;
 	}
 }
+unset($path_);
+$path					= implode('/', $path);
 if (isset($structure['id'])) {
 	$section	= $structure['id'];
 } else {
@@ -54,6 +58,14 @@ if ($User->user()) {
 				'data-title'	=> $L->new_post
 			]
 		).
+		h::{'a.cs-button'}(
+			$L->drafts,
+			[
+				'href'			=> $module.'/'.path($L->drafts),
+				'data-title'	=> $L->drafts,
+				'style'			=> 'vertical-align: top;'
+			]
+		).
 		h::br()
 	);
 }
@@ -73,7 +85,9 @@ $posts					= $cdb->qfas(
 	FROM `[prefix]blogs_posts_sections` AS `s`
 		LEFT OUTER JOIN `[prefix]blogs_posts` AS `p`
 	ON `s`.`id` = `p`.`id`
-	WHERE `s`.`section` = $section
+	WHERE
+		`s`.`section`	= $section AND
+		`p`.`draft`		= 0
 	ORDER BY `p`.`date` DESC
 	LIMIT $from, $num"
 );
@@ -91,9 +105,9 @@ $Index->content(
 		$posts ? h::{'nav.cs-center'}(
 			pages(
 				$page,
-				ceil($structure['posts']/$num),
-				function ($page) use ($module, $L) {
-					return $page == 1 ? $module.'/'.path($L->latest_posts) : $module.'/'.path($L->latest_posts).'/'.$page;
+				ceil($structure['posts'] / $num),
+				function ($page) use ($module, $L, $path) {
+					return $page == 1 ? $module.'/'.path($L->section).'/'.$path : $module.'/'.path($L->section).'/'.$path.'/'.$page;
 				},
 				true
 			)

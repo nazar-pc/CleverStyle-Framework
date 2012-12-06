@@ -4,5 +4,6 @@
 	"post",
 	"tag",
 	"new_post",
-	"edit_post"
+	"edit_post",
+	"drafts"
 ]

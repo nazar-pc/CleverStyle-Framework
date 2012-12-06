@@ -32,7 +32,10 @@ $Page->title(
 );
 $module						= path($L->{MODULE});
 if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags'], $_POST['mode'])) {
+	$draft	= false;
 	switch ($_POST['mode']) {
+		case 'draft':
+			$draft	= true;
 		case 'save':
 			$save	= true;
 			if (empty($_POST['title'])) {
@@ -52,7 +55,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 				$save	= false;
 			}
 			if ($save) {
-				if ($Blogs->set($post['id'], $_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])))) {
+				if ($Blogs->set($post['id'], $_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])), $draft)) {
 					interface_off();
 					header('Location: '.$Config->server['base_url'].'/'.$L->{MODULE}.'/'.$post['path'].':'.$post['id']);
 					return;
@@ -125,7 +128,10 @@ $Index->content(
 		]
 	).
 	h::{'button[type=submit][name=mode][value=save]'}(
-		$L->save
+		$L->publish
+	).
+	h::{'button[type=submit][name=mode][value=draft]'}(
+		$L->to_drafts
 	).
 	h::{'button[type=submit][name=mode][value=delete]'}(
 		$L->delete

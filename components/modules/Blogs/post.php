@@ -41,6 +41,9 @@ $Index->content(
 			h::h1(
 				$post['title'].
 				(
+					$post['draft'] ? h::sup($L->draft) : ''
+				).
+				(
 					$User->admin() &&
 					$User->get_user_permission('admin/'.MODULE, 'index') &&
 					$User->get_user_permission('admin/'.MODULE, 'edit_post') ? ' '.h::{'a.cs-button-compact'}(
@@ -116,7 +119,7 @@ $Index->content(
 					$L->to_locale(date($L->_datetime_long, $post['date'])),
 					[
 						'datetime'		=> date('c', $post['date']),
-						//'pubdate'//TODO wait while "pubdate" it will be standartized by W3C
+						//'pubdate'//TODO wait while "pubdate" it will be standardized by W3C
 					]
 				).
 				h::a(

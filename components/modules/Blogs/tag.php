@@ -35,6 +35,14 @@ if ($User->user()) {
 				'data-title'	=> $L->new_post
 			]
 		).
+		h::{'a.cs-button'}(
+			$L->drafts,
+			[
+				'href'			=> $module.'/'.path($L->drafts),
+				'data-title'	=> $L->drafts,
+				'style'			=> 'vertical-align: top;'
+			]
+		).
 		h::br()
 	);
 }
@@ -59,7 +67,8 @@ $tag					= $cdb->qfs([
 if (!$tag) {
 	$tag					= $cdb->qfs([
 		"SELECT `t`.`id`
-		FROM `[prefix]blogs_tags` AS `t` RIGHT OUTER JOIN `[prefix]texts_data` AS `d`
+		FROM `[prefix]blogs_tags` AS `t`
+			RIGHT OUTER JOIN `[prefix]texts_data` AS `d`
 		ON `t`.`text` = `d`.`id_`
 		WHERE
 			`t`.`text` = '%1\$s' OR
@@ -84,9 +93,13 @@ $Page->title($L->latest_posts);
 $Page->Keywords			= keywords($L->{MODULE}.' '.$tag['text'].' '.$L->latest_posts).', '.$Page->Keywords;
 $Page->Description		= description($L->{MODULE}.' - '.$tag['text'].' - '.$L->latest_posts.'. '.$Page->Description);
 $posts_count			= $cdb->qfs([
-	"SELECT COUNT(`id`)
-	FROM `[prefix]blogs_posts_tags`
-	WHERE `tag` = '%s'",
+	"SELECT COUNT(`t`.`id`)
+	FROM `[prefix]blogs_posts_tags` AS `t`
+		LEFT OUTER JOIN `[prefix]blogs_posts` AS `p`
+	ON `t`.`id` = `p`.`id`
+	WHERE
+		`t`.`tag`	= '%s' AND
+		`p`.`draft`	= 0",
 	$tag['id'],
 ]);
 $posts					= $cdb->qfas([
@@ -94,7 +107,9 @@ $posts					= $cdb->qfas([
 	FROM `[prefix]blogs_posts_tags` AS `t`
 		LEFT OUTER JOIN `[prefix]blogs_posts` AS `p`
 	ON `t`.`id` = `p`.`id`
-	WHERE `t`.`tag` = '%s'
+	WHERE
+		`t`.`tag`	= '%s' AND
+		`p`.`draft`	= 0
 	ORDER BY `p`.`date` DESC
 	LIMIT $from, $num",
 	$tag['id'],
@@ -113,9 +128,9 @@ $Index->content(
 		$posts ? h::{'nav.cs-center'}(
 			pages(
 				$page,
-				ceil($posts_count/$num),
-				function ($page) use ($module, $L) {
-					return $page == 1 ? $module.'/'.path($L->latest_posts) : $module.'/'.path($L->latest_posts).'/'.$page;
+				ceil($posts_count / $num),
+				function ($page) use ($module, $L, $rc) {
+					return $page == 1 ? $module.'/'.path($L->tag).'/'.$rc[0] : $module.'/'.path($L->tag).'/'.$rc[0].'/'.$page;
 				},
 				true
 			)
