@@ -3,6 +3,8 @@ What is this?
 
 CleverStyle CMS is simple, scalable, and fast content management system.
 
+Current version is Alpha.
+
 System core contains only basic functionality, so, it looks more like CMF (content management framework) rather than CMS.
 
 But in parallel with core some components are developed:
