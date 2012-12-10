@@ -12,7 +12,7 @@ But in parallel with core some components are developed:
 #### modules
 
  * **Blogs** (simpple blogging functionality)
- * **Cron** (provides GUI for crontab)
+ * **Cron** (provides GUI for crontab, scheduled tasks)
  * **HybridAuth** (integration of [HybridAuth](https://github.com/hybridauth/hybridauth) library for integration with social networks and other services)
  * **Static pages** (allows to create static pages like About page or pages without interface, for example for site owner verification)
 
