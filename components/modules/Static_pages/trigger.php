@@ -46,7 +46,7 @@ $Core->register_trigger(
 		global $Config;
 		if (
 			!isset($Config->components['modules'][basename(__DIR__)]) ||
-			!$Config->components['modules'][basename(__DIR__)]['active'] == 1 ||
+			$Config->components['modules'][basename(__DIR__)]['active'] != 1 ||
 			empty($data['rc'])
 		) {
 			return;
