@@ -7,17 +7,17 @@
  * @license		MIT License, see license.txt
  */
 time_limit_pause();
-$version		= _json_decode(file_get_contents(DIR.'/components/modules/System/meta.json'))['version'];
+$version			= _json_decode(file_get_contents(DIR.'/components/modules/System/meta.json'))['version'];
 if (file_exists(DIR.'/build.phar')) {
 	unlink(DIR.'/build.phar');
 }
-$phar			= new Phar(DIR.'/build.phar');
-$length			= strlen(DIR.'/');
+$phar				= new Phar(DIR.'/build.phar');
+$length				= strlen(DIR.'/');
 foreach (get_files_list(DIR.'/install', false, 'f', true, true) as $file) {
 	$phar->addFile($file, substr($file, $length));
 }
 unset($file);
-$list			= array_merge(
+$list				= array_merge(
 	get_files_list(DIR.'/components/modules/System', false, 'f', true, true, false, false, true),
 	get_files_list(DIR.'/core', '/^[^(ide)]/', 'f', true, true, false, false, true),
 	get_files_list(DIR.'/includes', false, 'f', true, true, false, false, true),
@@ -31,30 +31,67 @@ $list			= array_merge(
 		DIR.'/Storage.php'
 	]
 );
+$components_list	= [];
 if (!empty($_POST['modules'])) {
-	foreach ($_POST['modules'] as $module) {
-		if (is_dir(DIR.'/components/modules/'.$module)) {
-			$list		= array_merge(
-				$list,
-				get_files_list(DIR.'/components/modules/'.$module, false, 'f', true, true, false, false, true)
+	foreach ($_POST['modules'] as $i => $module) {
+		if (is_dir(DIR.'/components/modules/'.$module) && file_exists(DIR.'/components/modules/'.$module.'/meta.json')) {
+			unlink(DIR.'/components/modules/'.$module.'fs.json');
+			$list_				= get_files_list(DIR.'/components/modules/'.$module, false, 'f', true, true, false, false, true);
+			file_put_contents(
+				DIR.'/components/modules/'.$module.'/fs.json',
+				_json_encode(
+					array_values(
+						_substr(
+							$list_,
+							strlen(DIR.'/components/modules/'.$module.'/')
+						)
+					)
+				)
 			);
+			$list_[]			= DIR.'/components/modules/'.$module.'/fs.json';
+			$components_list	= array_merge(
+				$components_list,
+				$list_
+			);
+			unset($list_);
+		} else {
+			unset($_POST['modules'][$i]);
 		}
 	}
-	unset($module);
+	unset($i, $module);
 	$phar->addFromString('modules.json', _json_encode($_POST['modules']));
 }
 if (!empty($_POST['plugins'])) {
 	foreach ($_POST['plugins'] as $plugin) {
-		if (is_dir(DIR.'/components/plugins/'.$plugin)) {
-			$list		= array_merge(
-				$list,
-				get_files_list(DIR.'/components/plugins/'.$plugin, false, 'f', true, true, false, false, true)
+		if (is_dir(DIR.'/components/plugins/'.$plugin) && file_exists(DIR.'/components/plugins/'.$plugin.'/meta.json')) {
+			unlink(DIR.'/components/plugins/'.$plugin.'fs.json');
+			$list_				= get_files_list(DIR.'/components/plugins/'.$plugin, false, 'f', true, true, false, false, true);
+			file_put_contents(
+				DIR.'/components/plugins/'.$plugin.'/fs.json',
+				_json_encode(
+					array_values(
+						_substr(
+							$list_,
+							strlen(DIR.'/components/plugins/'.$plugin.'/')
+						)
+					)
+				)
 			);
+			$list_[]			= DIR.'/components/plugins/'.$plugin.'/fs.json';
+			$components_list	= array_merge(
+				$components_list,
+				$list_
+			);
+			unset($list_);
 		}
 	}
 	unset($plugin);
 }
-$list			= array_map(
+$list				= array_merge(
+	$list,
+	$components_list
+);
+$list				= array_map(
 	function ($index, $file) use ($phar, $length) {
 		$phar->addFromString('fs/'.$index, file_get_contents($file));
 		return substr($file, $length);
@@ -62,8 +99,7 @@ $list			= array_map(
 	array_keys($list),
 	$list
 );
-unset($length);
-$list[]			= '.htaccess';
+$list[]				= '.htaccess';
 $phar->addFromString(
 	'fs/'.(count($list)-1),
 	'AddDefaultCharset utf-8
@@ -92,12 +128,12 @@ RewriteRule .* index.php
 
 '
 );
-$list[]			= 'index.php';
+$list[]				= 'index.php';
 $phar->addFromString(
 	'fs/'.(count($list)-1),
 	str_replace('$version$', $version, file_get_contents(DIR.'/index.php'))
 );
-$list[]			= 'readme.html';
+$list[]				= 'readme.html';
 $phar->addFromString(
 	'fs/'.(count($list)-1),
 	str_replace(
@@ -129,6 +165,14 @@ $phar->addFromString(
 		_mb_substr(get_files_list(DIR.'/core/engines/DB', '/^[^_].*?\.php$/i', 'f'), 0, -4)
 	)
 );
+$list[]				= 'core/fs.json';
+$phar->addFromString(
+	'fs/'.(count($list)-1),
+	_json_encode(
+		array_diff(array_slice($list, 0, -1), _substr($components_list, $length))
+	)
+);
+unset($components_list, $length);
 $phar->addFromString('fs.json', _json_encode(array_flip($list)));
 unset($list);
 $phar->addFromString(
@@ -155,9 +199,9 @@ $phar->addFromString(
 	'license.txt',
 	file_get_contents(DIR.'/license.txt')
 );
-$themes			= get_files_list(DIR.'/themes', false, 'd');
+$themes				= get_files_list(DIR.'/themes', false, 'd');
 asort($themes);
-$color_schemes	= [];
+$color_schemes		= [];
 foreach ($themes as $theme) {
 	$color_schemes[$theme]	= [];
 	$color_schemes[$theme]	= get_files_list(DIR.'/themes/'.$theme.'/schemes', false, 'd');
@@ -176,7 +220,7 @@ $phar->addFromString(
 	$version
 );
 unset($themes, $theme, $color_schemes);
-$phar		= $phar->convertToExecutable(Phar::TAR, Phar::BZ2, '.phar.tar');
+$phar				= $phar->convertToExecutable(Phar::TAR, Phar::BZ2, '.phar.tar');
 unlink(DIR.'/build.phar');
 $phar->setStub("<?php Phar::webPhar(null, 'install.php'); __HALT_COMPILER();");
 $phar->setSignatureAlgorithm(PHAR::SHA512);

@@ -364,8 +364,6 @@
 		"block_start_info"						: "If you want to start block displaying from some time - select that time, otherwise left current time, or time before now",
 		"block_expire"							: "Block expires",
 		"block_expire_info"						: "If you want to stop block displaying at some time - select that time and set switcher to the position \"As specified\", when time expires, block displaying will be stopped. If limitation is not needed - set switcher to the position \"Never\"",
-		"block_update"							: "Block update",
-		"block_update_info"						: "Time after which the contents of the block will be generated again. For static blocks can be set to \"00:00\" - then once generated content will not be updated, it will reduce workload and increase speed of page generation.",
 		"as_specified"							: "As specified",
 		"never"									: "Never",
 		"sure_to_delete_block"					: "Are you sure you want to remove block %s?",

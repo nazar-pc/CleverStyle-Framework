@@ -11,7 +11,7 @@
  */
 
 /**
- * Special function for files includin
+ * Special function for files including
  *
  * @param string		$file
  * @param bool			$once

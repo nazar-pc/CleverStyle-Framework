@@ -76,8 +76,7 @@ if (isset($rc[2])) {
 						'block_active',
 						'block_template',
 						'block_start',
-						'block_expire',
-						'block_update'
+						'block_expire'
 					),
 					h::{'td.ui-widget-content.ui-corner-all.cs-add-block'}(
 						h::select(
@@ -116,14 +115,10 @@ if (isset($rc[2])) {
 						h::{'input[type=datetime-local]'}([
 							'name'		=> 'block[expire][date]',
 							'value'		=> date('Y-m-d\TH:i', TIME)
-						]),
-						h::{'input[type=time]'}([
-							'name'		=> 'block[update]',
-							'value'		=> '01:00'
 						])
 					),
 					[
-						h::{'td.ui-widget-content.ui-corner-all[colspan=7] textarea.EDITOR'}(
+						h::{'td.ui-widget-content.ui-corner-all[colspan=6] textarea.EDITOR'}(
 							'',
 							[
 								'name'	=> 'block[html]'
@@ -134,7 +129,7 @@ if (isset($rc[2])) {
 						]
 					],
 					[
-						h::{'td.ui-widget-content.ui-corner-all[colspan=7] textarea.cs-wide-textarea'}(
+						h::{'td.ui-widget-content.ui-corner-all[colspan=6] textarea.cs-wide-textarea'}(
 							'',
 							[
 								'name'	=> 'block[raw_html]'
@@ -172,8 +167,7 @@ if (isset($rc[2])) {
 						'block_active',
 						'block_template',
 						'block_start',
-						'block_expire',
-						'block_update'
+						'block_expire'
 					),
 					h::{'td.ui-widget-content.ui-corner-all.cs-add-block'}(
 						h::input([
@@ -210,20 +204,15 @@ if (isset($rc[2])) {
 						h::{'input[type=datetime-local]'}([
 							'name'		=> 'block[expire][date]',
 							'value'		=> date('Y-m-d\TH:i', $block['expire'] ?: TIME)
-						]),
-						h::{'input[type=time]'}([
-							'name'		=> 'block[update]',
-							'value'		=> str_pad(round($block['update'] / 3600), 2, 0, STR_PAD_LEFT).':'.
-								str_pad(round($block['update'] % 3600), 2, 0, STR_PAD_LEFT)
 						])
 					),
-					($block['type'] == 'html' ? h::{'td.ui-widget-content.ui-corner-all[colspan=6] textarea.EDITOR'}(
+					($block['type'] == 'html' ? h::{'td.ui-widget-content.ui-corner-all[colspan=5] textarea.EDITOR'}(
 							$block['content'],
 							[
 								'name'	=> 'block[html]'
 							]
 						) : (
-							$block['type'] == 'raw_html' ? h::{'td.ui-widget-content.ui-corner-all[colspan=6] textarea.cs-wide-textarea'}(
+							$block['type'] == 'raw_html' ? h::{'td.ui-widget-content.ui-corner-all[colspan=5] textarea.cs-wide-textarea'}(
 								$block['content'],
 								[
 									'name'	=> 'block[raw_html]'

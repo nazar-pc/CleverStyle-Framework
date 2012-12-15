@@ -50,10 +50,10 @@ class Page {
 				$user_avatar_image,
 				$header_info;
 	protected	$theme, $color_scheme, $pcache_basename, $includes,
-				$core_js	= [0 => '', 1 => ''],
-				$core_css	= [0 => '', 1 => ''],
-				$js			= [0 => '', 1 => ''],
-				$css		= [0 => '', 1 => ''],
+				$core_js	= [0 => [], 1 => []],
+				$core_css	= [0 => [], 1 => []],
+				$js			= [0 => [], 1 => []],
+				$css		= [0 => [], 1 => []],
 				$link		= [],
 				$Search		= [],
 				$Replace	= [];
@@ -222,19 +222,27 @@ class Page {
 		/**
 		 * Forming <head> content
 		 */
+		$this->core_css[0]	= implode('', array_unique($this->core_css[0]));
+		$this->core_css[1]	= implode('', array_unique($this->core_css[1]));
+		$this->css[0]		= implode('', array_unique($this->css[0]));
+		$this->css[1]		= implode('', array_unique($this->css[1]));
+		$this->core_js[0]	= implode('', array_unique($this->core_js[0]));
+		$this->core_js[1]	= implode('', array_unique($this->core_js[1]));
+		$this->js[0]		= implode('', array_unique($this->js[0]));
+		$this->js[1]		= implode('', array_unique($this->js[1]));
 		if ($this->core_css[1]) {
-			$this->core_css[1] = h::style($this->core_css[1]);
+			$this->core_css[1]	= h::style($this->core_css[1]);
 		}
 		if ($this->css[1]) {
-			$this->css[1] = h::style($this->css[1]);
+			$this->css[1]		= h::style($this->css[1]);
 		}
 		if ($this->core_js[1]) {
-			$this->core_js[1] = h::script($this->core_js[1]);
+			$this->core_js[1]	= h::script($this->core_js[1]);
 		}
 		if ($this->js[1]) {
-			$this->js[1] = h::script($this->js[1]);
+			$this->js[1]		= h::script($this->js[1]);
 		}
-		$this->Head =	h::title($this->Title).
+		$this->Head			=	h::title($this->Title).
 			h::meta(
 				[
 					'charset'		=> 'utf-8'
@@ -284,7 +292,7 @@ class Page {
 		/**
 		 * Substitution of information into template
 		 */
-		$this->Html = str_replace(
+		$this->Html			= str_replace(
 			[
 				'<!--head-->',
 				'<!--pre_Body-->',
@@ -386,21 +394,21 @@ class Page {
 		} elseif ($add) {
 			if ($core) {
 				if ($mode == 'file') {
-					$this->core_js[0] .= h::script([
+					$this->core_js[0][]	= h::script([
 						'src'	=> $add,
 						'level'	=> false
 					])."\n";
 				} elseif ($mode == 'code') {
-					$this->core_js[1] .= $add."\n";
+					$this->core_js[1][]	= $add."\n";
 				}
 			} else {
 				if ($mode == 'file') {
-					$this->js[0] .= h::script([
+					$this->js[0][]		= h::script([
 						'src'	=> $add,
 						'level'	=> false
 					])."\n";
 				} elseif ($mode == 'code') {
-					$this->js[1] .= $add."\n";
+					$this->js[1][]		= $add."\n";
 				}
 			}
 		}
@@ -434,21 +442,21 @@ class Page {
 		} elseif ($add) {
 			if ($core) {
 				if ($mode == 'file') {
-					$this->core_css[0] .= h::link([
+					$this->core_css[0][]	= h::link([
 						'href'	=> $add,
 						'rel'	=> 'stylesheet'
 					]);
 				} elseif ($mode == 'code') {
-					$this->core_css[1] = $add."\n";
+					$this->core_css[1][]	 = $add."\n";
 				}
 			} else {
 				if ($mode == 'file') {
-					$this->css[0] .= h::link([
+					$this->css[0][]			= h::link([
 						'href'	=> $add,
 						'rel'	=> 'stylesheet'
 					]);
 				} elseif ($mode == 'code') {
-					$this->css[1] = $add."\n";
+					$this->css[1][]			 = $add."\n";
 				}
 			}
 		}
@@ -549,6 +557,8 @@ class Page {
 	/**
 	 * Getting of JavaScript and CSS files list to be included
 	 *
+	 * @param bool	$for_cache
+	 *
 	 * @return Page
 	 */
 	protected function get_includes_list ($for_cache = false) {
@@ -636,8 +646,17 @@ class Page {
 		 */
 		preg_replace_callback(
 			'/(url\((.*?)\))|(@import[\s\t\n\r]{0,1}[\'"](.*?)[\'"])/',
-			function ($link) use (&$data) {
-				$link		= trim(array_pop($link), '\'" ');
+			function ($match) use (&$data) {
+				$link		= trim(array_pop($match), '\'" ');
+				if (
+					mb_strpos($link, 'http://') === 0 ||
+					mb_strpos($link, 'https://') === 0 ||
+					mb_strpos($link, 'ftp://') === 0 ||
+					mb_strpos($link, '/') === 0 ||
+					!file_exists(realpath($link))
+				) {
+					return $match[0];
+				}
 				$format		= mb_substr($link, mb_strrpos($link, '.') + 1);
 				$mime_type	= 'text/html';
 				switch ($format) {
@@ -672,12 +691,12 @@ class Page {
 				}
 				$content	= file_get_contents(realpath($link));
 				/**
-				 * For recursing includes processing, if CSS file includes others CSS files
+				 * For recursive includes processing, if CSS file includes others CSS files
 				 */
 				if ($format == 'css') {
 					$this->css_includes_processing($content, realpath($link));
 				}
-				$data = str_replace($link, 'data:'.$mime_type.';charset=utf-8;base64,'.base64_encode($content), $data);
+				return str_replace(array_pop($match), 'data:'.$mime_type.';charset=utf-8;base64,'.base64_encode($content), $match[0]);
 			},
 			$data
 		);

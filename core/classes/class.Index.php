@@ -9,8 +9,13 @@ namespace	cs;
 use			\h;
 /**
  * Provides next triggers:<br>
+ *  System/Index/block_render<br>
+ *  [
+ * 		'index'			=> <i>$index</i>,			//Block index<br>
+ *  	'blocks_array'	=> <i>&$blocks_array</i>	//Reference to array in form ['top' => '', 'left' => '', 'right' => '', 'bottom' => '']
+ *  ]
  *  System/Index/mainmenu<br>
- *  ['module'	=> <i>&$path</i>]		//Reference to module path, can be changed by corresponding module<br>
+ *  ['module'	=> <i>&$path</i>]					//Reference to module path, can be changed by corresponding module<br>
  *  System/Index/preload<br>
  *  System/Index/postload
  */
@@ -481,7 +486,7 @@ class Index {
 	 * Blocks processing
 	 */
 	protected function blocks_processing () {
-		global $Page, $Config, $User, $Cache, $Text, $L;
+		global $Page, $Config, $User, $Text, $Core;
 		$blocks_array = [
 			'top'		=> '',
 			'left'		=> '',
@@ -497,9 +502,13 @@ class Index {
 			) {
 				continue;
 			}
-			$block_cache = $Cache->{'blocks/'.$block['index'].'_'.$L->clang};
-			if (!is_array($block_cache) || (isset($block_cache['expire']) && $block_cache['expire'] < TIME - $block['update'])) {
-				$block_cache			= [];
+			if ($Core->run_trigger(
+				'System/Index/block_render',
+				[
+					'block'			=> $block['index'],
+					'blocks_array'	=> &$blocks_array
+				]
+			)) {
 				switch ($block['type']) {
 					default:
 						ob_start();
@@ -514,7 +523,7 @@ class Index {
 				$template				= TEMPLATES.'/blocks/block.'.(
 					file_exists(TEMPLATES.'/blocks/block.'.$block['template']) ? $block['template'] : 'default.html'
 				);
-				$block_cache['content']	= str_replace(
+				$content	= str_replace(
 					[
 						'<!--id-->',
 						'<!--title-->',
@@ -527,18 +536,14 @@ class Index {
 					],
 					file_get_contents($template)
 				);
-				if ($block['update'] > 0) {
-					$block_cache['expire']				= TIME + $block['update'];
-					$Cache->{'blocks/'.$block['index'].'_'.$L->clang}	= $block_cache;
+				if ($block['position'] == 'floating') {
+					$Page->replace(
+						'<!--block#'.$block['index'].'-->',
+						$content
+					);
+				} else {
+					$blocks_array[$block['position']] .= $content;
 				}
-			}
-			if ($block['position'] == 'floating') {
-				$Page->replace(
-					'<!--block#'.$block['index'].'-->',
-					$block_cache['content']
-				);
-			} else {
-				$blocks_array[$block['position']] .= $block_cache['content'];
 			}
 		}
 		$Page->Top		.= $blocks_array['top'];

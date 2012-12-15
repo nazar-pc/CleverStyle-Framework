@@ -250,6 +250,7 @@ function install_process () {
 			array_keys($fs)
 		)
 	);
+	unset($fs);
 	if (
 		!$extract ||
 		!(file_exists(ROOT.'/storage') || mkdir(ROOT.'/storage')) ||
@@ -335,9 +336,6 @@ function install_process () {
 		return 'Can\'t write base system configuration! Installation aborted.';
 	}
 	chmod(ROOT.'/config/main.json', 0600);
-	unset($fs[array_search('config/main.php', $fs)]);
-	file_put_contents(ROOT.'/core/fs.json', _json_encode(array_keys($fs)));
-	unset($fs);
 	/**
 	 * DataBase structure import
 	 */
@@ -381,7 +379,7 @@ function install_process () {
 		'{"modules":'._json_encode($modules).',"plugins":[],"blocks":[]}',
 		'{"in":[],"out":[]}'
 	)) {
-		return 'Can\'t import system confuration into database! Installation aborted.';
+		return 'Can\'t import system configuration into database! Installation aborted.';
 	}
 	unset($modules);
 	/**

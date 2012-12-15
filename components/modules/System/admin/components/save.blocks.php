@@ -48,8 +48,6 @@ if (isset($_POST['mode'])) {
 			} else {
 				$block['expire']	= 0;
 			}
-			$block_new['update']	= explode(':', $block_new['update']);
-			$block['update']		= ($block_new['update'][0] * 60 + $block_new['update'][1]) * 60;
 			if ($block['type'] == 'html') {
 				$block['content'] = $Text->set(
 					$Config->module('System')->db('texts'),
