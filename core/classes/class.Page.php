@@ -644,10 +644,10 @@ class Page {
 		/**
 		 * Includes processing
 		 */
-		preg_replace_callback(
+		$data	= preg_replace_callback(
 			'/(url\((.*?)\))|(@import[\s\t\n\r]{0,1}[\'"](.*?)[\'"])/',
 			function ($match) use (&$data) {
-				$link		= trim(array_pop($match), '\'" ');
+				$link		= trim($match[count($match) - 1], '\'" ');
 				if (
 					mb_strpos($link, 'http://') === 0 ||
 					mb_strpos($link, 'https://') === 0 ||
@@ -696,7 +696,7 @@ class Page {
 				if ($format == 'css') {
 					$this->css_includes_processing($content, realpath($link));
 				}
-				return str_replace(array_pop($match), 'data:'.$mime_type.';charset=utf-8;base64,'.base64_encode($content), $match[0]);
+				return str_replace($match[count($match) - 1], 'data:'.$mime_type.';charset=utf-8;base64,'.base64_encode($content), $match[0]);
 			},
 			$data
 		);
