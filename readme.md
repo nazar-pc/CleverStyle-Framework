@@ -22,7 +22,7 @@ But in parallel with core some components are developed:
 
 System is free, Open Source and is distributed under MIT license, see [license.txt](https://github.com/nazar-pc/CleverStyle-CMS/blob/master/license.txt)
 
-Installation builds of core and components can be found in [downloads](https://github.com/nazar-pc/CleverStyle-CMS/downloads) area.
+Installation builds of core and components can be found on [downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages).
 
 Author – Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
