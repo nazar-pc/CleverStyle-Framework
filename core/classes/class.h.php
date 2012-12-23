@@ -27,7 +27,8 @@ class h {
 			'noshade',
 			'autoplay',
 			'controls',
-			'loop'
+			'loop',
+			'no-label'
 		],
 		$unpaired_tags = [
 			'area',
@@ -66,10 +67,11 @@ class h {
 	 * @param string	$in
 	 * @param string	$tag
 	 * @param string	$add
+	 * @param null		$label
 	 *
 	 * @return bool
 	 */
-	protected static function data_prepare (&$data, &$in, &$tag, &$add) {
+	protected static function data_prepare (&$data, &$in, &$tag, &$add, &$label = null) {
 		$q = '"';
 		if (isset($data['in'])) {
 			if ($data['in'] === false) {
@@ -85,6 +87,12 @@ class h {
 				}
 			}
 			unset($i, $item);
+		}
+		if (in_array('no-label', $data)) {
+			$label				= false;
+			unset($data[array_search('no-label', $data)]);
+		} else {
+			$label				= true;
 		}
 		if (isset($data['src'])) {
 			$data['src']		= str_replace(' ', '%20', $data['src']);
@@ -221,14 +229,14 @@ class h {
 	protected static function u_wrap ($data = []) {
 		$in = $add = '';
 		$tag = 'input';
-		if (!self::data_prepare($data, $in, $tag, $add)) {
+		if (!self::data_prepare($data, $in, $tag, $add, $label)) {
 			return false;
 		}
 		if (isset($data['data-title']) && $data['data-title']) {
 			$data_title = $data['data-title'];
 			unset($data['data-title']);
 		}
-		if (isset($data['type']) && $data['type'] == 'checkbox') {
+		if (isset($data['type']) && $data['type'] == 'checkbox' && $label) {
 			$return = '<'.$tag.$add.(XHTML_TAGS_STYLE ? ' /' : '').'>'.self::label(
 				$in,
 				[

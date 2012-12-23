@@ -511,9 +511,9 @@ class Index {
 			)) {
 				switch ($block['type']) {
 					default:
-						ob_start();
-						_include(BLOCKS.'/block.'.$block['type'].'.php', false, false);
-						$content = ob_get_clean();
+						$content = ob_wrapper(function () use ($block) {
+							_include(BLOCKS.'/block.'.$block['type'].'.php', false, false);
+						});
 					break;
 					case 'html':
 					case 'raw_html':
@@ -534,7 +534,9 @@ class Index {
 						$Text->process($Config->module('System')->db('texts'), $block['title']),
 						$content
 					],
-					file_get_contents($template)
+					ob_wrapper(function () use ($template) {
+						_include($template);
+					})
 				);
 				if ($block['position'] == 'floating') {
 					$Page->replace(
