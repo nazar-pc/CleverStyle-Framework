@@ -6,116 +6,102 @@
  * @license		MIT License, see license.txt
  */
 body {
-	font-family : Tahoma, Verdana, sans-serif;
-	font-size   : 12px;
-	margin      : 0;
-	padding     : 100% 0 0 100%;
-	width       : 100%;
+  font-family: Tahoma, Verdana, sans-serif;
+  font-size: 12px;
+  margin: 0;
+  padding: 0;
+  width: 100%;
 }
-
+body > header,
+body > footer {
+  width: 100%;
+  text-align: center;
+  margin: 0;
+}
+body > footer div:nth-child(1) {
+  padding: 5px 5px 0;
+}
+body > footer div:nth-child(2) {
+  padding: 0 5px 5px;
+}
 code {
-	font-family : "DejaVu Sans Mono", "Courier New", monospace;
+  font-family: "DejaVu Sans Mono", "Courier New", monospace;
 }
-
 .cs-fullwidth-form {
-	text-align : center;
-	width      : 100%;
+  text-align: center;
+  width: 100%;
 }
-
 .cs-fullwidth-form > * {
-	text-align : left;
+  text-align: left;
 }
-
 .cs-fullwidth-table {
-	margin : auto auto 15px;
-	width  : 100%;
+  margin: auto auto 15px;
+  width: 100%;
 }
-
 .cs-fullwidth-table > tbody > tr > .ui-widget-shadow {
-	opacity : 1;
+  opacity: 1;
 }
-
 a {
-	text-decoration : none;
+  text-decoration: none;
 }
-
 .cs-form-element,
 .cs-form-element:hover,
 .cs-form-element:focus {
-	border         : solid 2px;
-	border-radius  : 5px;
-	border-spacing : 0;
-	padding        : 3px;
+  border: solid 2px;
+  border-radius: 5px;
+  border-spacing: 0;
+  padding: 3px;
 }
-
 input,
 textarea,
 select {
-	outline : none;
+  outline: none;
 }
-
-.cs-fullwidth-table input[type=number],
-.cs-fullwidth-table input[type=range] {
-	width : 90px;
+.cs-fullwidth-table [type=number],
+.cs-fullwidth-table [type=range] {
+  width: 90px;
 }
-
-.cs-fullwidth-table input[type=text],
-.cs-fullwidth-table input[type=password],
-.cs-fullwidth-table input[type=email],
-.cs-fullwidth-table input[type=tel] {
-	width : 250px;
+.cs-fullwidth-table [type=text],
+.cs-fullwidth-table [type=password],
+.cs-fullwidth-table [type=email],
+.cs-fullwidth-table [type=tel] {
+  width: 250px;
 }
-
+textarea {
+  overflow-x: auto;
+  height: 5em;
+  white-space: nowrap;
+}
+textarea.cs-wide-textarea {
+  width: 90%;
+}
 #users_raw_edit textarea,
 #users_edit textarea {
-	width : 250px;
+  width: 250px;
 }
-
-textarea {
-	overflow-x  : auto;
-	height      : 5em;
-	white-space : nowrap;
-}
-
 .cs-button-compact > span {
-	padding : 2px 3px !important;
+  padding: 2px 3px !important;
 }
-
-body > header,
-body > footer {
-	width      : 100%;
-	text-align : center;
-	margin     : 0;
-}
-
 .cs-state-messages {
-	padding : 5px;
-	margin  : 2px 0;
+  padding: 5px;
+  margin: 2px 0;
 }
-
 .cs-dialog {
-	display : none;
+  display: none;
 }
-
-.cs-blocks-items,
 #cs-users-groups-list,
 #cs-users-groups-list-selected {
-	list-style-type : none;
-	margin          : 0;
-	padding         : 5px;
+  list-style-type: none;
+  margin: 0;
+  padding: 5px;
 }
-
 .cs-blocks-items li,
 #cs-users-groups-list li,
 #cs-users-groups-list-selected li {
-	cursor  : move;
-	margin  : 0 5px 5px 5px;
-	padding : 5px;
+  cursor: move;
+  margin: 0 5px 5px 5px;
+  padding: 5px;
 }
-.cs-blocks-items li:nth-child(1) {
-	cursor : pointer !important;
-}
-
 .cs-modules-config-buttons button,
 .cs-db-config-buttons button,
 .cs-db-config-buttons-r button,
@@ -123,304 +109,397 @@ body > footer {
 #save_settings,
 #cancel_settings,
 #reset_settings,
-#system_license_open,
+#system_license_open {
+  cursor: pointer;
+}
+.cs-input-style {
+  background: #ddd;
+  border: #fff solid 1px;
+  float: left;
+  margin: 0 0 5px 0;
+  width: 170px;
+}
+.cs-header-user-info {
+  float: right;
+  height: 90px;
+  margin: 12px 9px 9px 95px;
+  position: fixed;
+  width: 180px;
+}
 .cs-header-user-info button {
-	cursor : pointer;
+  cursor: pointer;
 }
-
+.cs-header-user-info [type=text],
+.cs-header-user-info [type=password] {
+  background: #ddd;
+  border: #fff solid 1px;
+  float: left;
+  margin: 0 0 5px 0;
+  width: 170px;
+}
+.cs-header-user-info select {
+  background: #ddd;
+  border: #fff solid 1px;
+  float: left;
+  margin: 0 0 5px 0;
+  width: 170px;
+  margin-left: -5px;
+  width: 20px;
+}
 .cs-header-user-info .actions {
-	margin : 5px 0;
+  margin: 5px 0;
 }
-
 .cs-header-login-slide,
 .cs-header-registration-slide {
-	margin-top : 4px;
+  margin-top: 4px;
 }
-
 .cs-header-back,
 .cs-header-restore-password-slide,
 .cs-header-login-process,
 .cs-header-register-process,
 .cs-header-restore-password-process {
-	bottom   : 0;
-	position : absolute;
-	right    : 0;
+  bottom: 0;
+  position: absolute;
+  right: 0;
 }
-
 .cs-header-restore-password-slide {
-	right : 26px;
+  right: 26px;
 }
-
 .cs-header-register-process,
 .cs-header-restore-password-process {
-	bottom : auto;
-	top    : 25px;
+  bottom: auto;
+  top: 25px;
 }
-
 .cs-header-login-process,
 .cs-header-register-process,
 .cs-header-restore-password-process {
-	left  : 0;
-	right : auto;
+  left: 0;
+  right: auto;
 }
-
 .cs-header-restore-password-form .cs-header-back {
-	margin-top : 4px !important;
+  margin-top: 4px !important;
 }
-
+.cs-header-zone {
+  height: 30px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+.cs-header-green,
+.cs-header-black {
+  border-radius: 0 0 10px 10px;
+  position: fixed;
+  right: 300px;
+  top: 0;
+  width: inherit;
+}
+.cs-header-green {
+  height: 70px;
+  z-index: 2;
+}
+.cs-header-black {
+  height: 115px;
+  z-index: 1;
+}
+.cs-header-user {
+  border-radius: 7px;
+  height: 100px;
+  margin: 5px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 280px;
+  z-index: 3;
+}
+.cs-header-avatar {
+  background-size: 100%;
+  border-radius: 5px;
+  float: left;
+  font-size: 80px;
+  height: 80px;
+  line-height: 80px;
+  margin: 9px;
+  position: fixed;
+  width: 80px;
+  vertical-align: top;
+}
+.cs-header-login-form,
+.cs-header-register-form,
+.cs-header-restore-password-form {
+  height: 79px;
+  margin-left: 2px;
+  position: relative;
+  width: 175px;
+}
+.cs-header-login-form > .ui-icon {
+  margin: 26px 0 0 -20px;
+}
+.cs-header-main-menu,
+.cs-header-main-submenu,
+.cs-header-menu-more {
+  height: 40px;
+  left: 0;
+  line-height: 32px;
+  position: fixed;
+  text-align: left;
+  top: 0;
+  z-index: 3;
+}
+.cs-header-main-submenu {
+  line-height: 20px;
+  top: 40px;
+}
+.cs-header-menu-more {
+  font-size: 14px;
+  line-height: 20px;
+  right: 310px;
+  top: 70px;
+}
+.cs-header-main-menu > a,
+.cs-header-main-submenu > a,
+.cs-header-menu-more > a {
+  border-bottom: none;
+  cursor: pointer;
+  transition: all 0.3s linear;
+  -moz-transition: all 0.3s linear;
+  -o-transition: all 0.3s linear;
+  -webkit-transition: all 0.3s linear;
+}
+.cs-header-main-menu {
+  font-size: 40px;
+  margin: 0;
+  padding: 5px 0 0 5px;
+}
+.cs-header-main-submenu {
+  font-size: 24px;
+  margin: 0;
+  padding: 5px 0 0 5px;
+}
+.cs-header-menu-more {
+  margin: 0;
+  padding: 5px 0 0 10px;
+}
 .cs-center-odd > tbody > tr > td:nth-child(odd),
 .cs-center-even > tbody > tr > td:nth-child(even),
 .cs-center-all > tbody > tr > td,
 tr.cs-center-all > td,
 td.cs-center-all {
-	text-align     : center;
-	vertical-align : middle;
-	padding        : 2px;
+  text-align: center;
+  vertical-align: middle;
+  padding: 2px;
 }
-
 td.cs-center-all {
-	text-align : center !important;
+  text-align: center !important;
 }
-
 .cs-center {
-	text-align : center;
+  text-align: center;
 }
-
 .cs-right-odd > tbody > tr > td:nth-child(odd),
 .cs-right-even > tbody > tr > td:nth-child(even),
 .cs-right-all > tbody > tr > td,
 tr.cs-right-all > td,
 td.cs-right-all {
-	text-align     : right;
-	vertical-align : top;
-	padding        : 2px;
+  text-align: right;
+  vertical-align: middle;
+  padding: 2px;
 }
-
 td.cs-right-all {
-	text-align : right !important;
+  text-align: right !important;
 }
 .cs-right {
-	text-align : right;
+  text-align: right;
 }
-
 .cs-left-odd > tbody > tr > td:nth-child(odd),
 .cs-left-even > tbody > tr > td:nth-child(even),
 .cs-left-all > tbody > tr > td,
 tr.cs-left-all > td,
 td.cs-left-all {
-	text-align     : left;
-	vertical-align : top;
-	padding        : 2px;
+  text-align: left;
+  vertical-align: middle;
+  padding: 2px;
 }
-
 td.cs-left-all {
-	text-align : left !important;
+  text-align: left !important;
 }
-
 .cs-left {
-	text-align : left;
+  text-align: left;
 }
-
+.cs-blocks-items {
+  list-style-type: none;
+  margin: 0;
+  padding: 5px;
+}
+.cs-blocks-items li:nth-child(1) {
+  cursor: pointer !important;
+}
 .cs-blocks-items-title {
-	float        : left;
-	height       : 16px;
-	margin-right : -64px;
-	overflow     : hidden;
-	text-align   : left;
-	width        : 100%;
+  float: left;
+  height: 16px;
+  margin-right: -64px;
+  overflow: hidden;
+  text-align: left;
+  width: 100%;
 }
-
-.cs-blocks-items-title+a,
-.cs-blocks-items-title+a+a,
-.cs-blocks-items-title+a+a+a,
-.cs-blocks-items-title+a+a+a+a {
-	cursor  : pointer;
-	display : inline-block;
-	margin  : 0 -2px;
+.cs-blocks-items-title ~ a {
+  cursor: pointer;
+  display: inline-block;
+  margin: 0 -2px;
 }
-
 .cs-blocks-items-groups {
-	width : 33%;
+  width: 33%;
 }
-
 .cs-modules-config-buttons,
 .cs-db-config-buttons {
-	text-align : left !important;
+  text-align: left !important;
 }
-
 .cs-db-config-buttons-r {
-	text-align : right !important;
+  text-align: right !important;
 }
-
 .cs-test-result {
-	text-align     : center;
-	text-transform : capitalize;
+  text-align: center;
+  text-transform: capitalize;
 }
-
 .cs-add-db input,
 .cs-add-block input[type=text],
 .cs-add-storage input {
-	width : auto !important;
+  width: auto !important;
 }
-
 .cs-php-components,
 .cs-sql-properties,
 .cs-php-ini-settings {
-	width : 100%;
+  width: 100%;
 }
-
 .cs-padding-left {
-	padding-left : 20px;
+  padding-left: 20px;
 }
-
 #system_config_routing td,
 #system_config_replace td {
-	width : 50%;
+  width: 50%;
 }
-
 #site_info_config_mirrors td:nth-child(1) {
-	width : 40%;
+  width: 40%;
 }
-
 #site_info_config_mirrors td:nth-child(2) {
-	width : 30%;
+  width: 30%;
 }
-
 #site_info_config_mirrors td:nth-child(3) {
-	width : 20%;
+  width: 20%;
 }
-
-textarea.cs-wide-textarea {
-	width : 90%;
-}
-
 #test_progress {
-	width : 100%;
+  width: 100%;
 }
-
 .cs-debug-code {
-	border-left  : 1px solid;
-	display      : block;
-	margin       : 10px 5px 10px 20px;
-	padding-left : 10px;
-	text-align   : left;
+  border-left: 1px solid;
+  display: block;
+  margin: 10px 5px 10px 20px;
+  padding-left: 10px;
+  text-align: left;
 }
-
-#debug_queries {
-	word-wrap : break-word;
+.cs-debug-code {
+  word-wrap: break-word;
 }
-
 .cs-add-user {
-	width : 250px;
+  width: 250px;
 }
-
 .cs-add-bot {
-	width : 450px;
+  width: 450px;
 }
-
-#columns_settings li {
-	cursor : pointer;
+#cs-columns-settings li {
+  cursor: pointer;
 }
-
 .cs-profile-table td {
-	vertical-align : top;
+  vertical-align: top;
 }
-
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-	font-weight : 100;
+  font-weight: 100;
 }
-
 h1 {
-	font-size : 20px;
+  font-size: 20px;
 }
-
 h2 {
-	font-size : 18px;
+  font-size: 18px;
 }
-
 h3 {
-	font-size : 16px;
+  font-size: 16px;
 }
-
 h4 {
-	font-size : 15px;
+  font-size: 15px;
 }
-
 h5 {
-	font-size : 14px;
+  font-size: 14px;
 }
-
 h6 {
-	font-size : 13px;
+  font-size: 13px;
 }
 .cs-profile-table h2 {
-	margin : 0 0 10px 0;
+  margin: 0 0 10px 0;
 }
-
 .cs-profile-avatar {
-	width : 138px;
+  width: 138px;
 }
-
 .cs-profile-avatar img {
-	height : 128px;
-	margin : 5px;
-	width  : 128px;
+  height: 128px;
+  margin: 5px;
+  width: 128px;
 }
 .cs-pointer {
-	cursor : pointer;
+  cursor: pointer;
 }
 hr {
-	border           : 0;
-	background-color : #9e9e9e;
-	height           : 1px;
+  border: 0;
+  background-color: #9e9e9e;
+  height: 1px;
 }
-
 #body {
-	border-radius : 10px;
-	box-sizing    : border-box;
-	display       : "abc" "adc" "aec" 15% * 15%;
-	margin        : 145px 7px 7px;
-	padding       : 5px 0;
+  border-radius: 10px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 145px 7px 7px;
+  padding: 5px 0;
+}
+#body:after {
+  content: '';
+  clear: both;
+  display: block;
 }
 #left_blocks {
-	position : a;
-}
-#top_blocks {
-	position : b;
+  float: left;
 }
 #right_blocks {
-	position : c;
-}
-#main_content {
-	vertical-align : top;
-	border-radius  : 7px;
-	margin-top     : 3px;
-	padding        : 10px;
-	position       : d;
-	vertical-align : top;
-}
-#main_content > div {
-	border-radius : 5px;
-	padding       : 10px;
-	height        : 100%;
-}
-#bottom_blocks {
-	position : e;
+  float: right;
 }
 #left_blocks,
 #right_blocks {
-	padding        : 0 5px;
-	vertical-align : top;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 0 5px;
+  vertical-align: top;
+  width: 15%;
 }
-
-body > footer > div:nth-child(1) {
-	padding : 5px 5px 0;
+#main_content {
+  border-radius: 7px;
+  margin-top: 3px;
+  padding: 10px;
+  vertical-align: top;
 }
-body > footer > div:nth-child(2) {
-	padding : 0 5px 5px;
+#main_content div {
+  border-radius: 5px;
+  padding: 10px;
+  height: 100%;
+}
+#top_blocks,
+#bottom_blocks,
+#main_content {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  margin-left: 15%;
+  margin-right: 15%;
 }

@@ -725,7 +725,7 @@ if (isset($rc[2], $rc[3])) {
 				[
 					h::info('show_columns'),
 					[
-						'href' => '#columns_settings'
+						'href' => '#cs-columns-settings'
 					]
 				]
 			).
@@ -775,7 +775,7 @@ if (isset($rc[2], $rc[3])) {
 					'style'	=> 'text-align: left;'
 				]
 			).
-			h::{'div#columns_settings'}(
+			h::{'div#cs-columns-settings'}(
 				h::ul(
 					$columns_list
 				).

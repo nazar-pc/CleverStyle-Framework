@@ -1,0 +1,582 @@
+/**
+ * @package		CleverStyle CMS
+ * @subpackage	CleverStyle theme
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+
+//Left and right columns width
+@side-columns: 15%;
+//Crossbrowser box-sizing
+.box-sizing (@mode) {
+	-webkit-box-sizing: @mode;
+	-moz-box-sizing: @mode;
+	box-sizing: @mode;
+}
+
+body {
+	font-family : Tahoma, Verdana, sans-serif;
+	font-size   : 12px;
+	margin      : 0;
+	padding     : 0;
+	width       : 100%;
+	> header,
+	> footer {
+		width      : 100%;
+		text-align : center;
+		margin     : 0;
+	}
+	> footer {
+		div:nth-child(1) {
+			padding : 5px 5px 0;
+		}
+
+		div:nth-child(2) {
+			padding : 0 5px 5px;
+		}
+	}
+}
+
+code {
+	font-family : "DejaVu Sans Mono", "Courier New", monospace;
+}
+
+.cs-fullwidth-form {
+	text-align : center;
+	width      : 100%;
+	> * {
+		text-align : left;
+	}
+}
+
+.cs-fullwidth-table {
+	margin : auto auto 15px;
+	width  : 100%;
+	> tbody > tr > .ui-widget-shadow {
+		opacity : 1;
+	}
+}
+
+a {
+	text-decoration : none;
+}
+
+.cs-form-element {
+	&,
+	&:hover,
+	&:focus {
+		border         : solid 2px;
+		border-radius  : 5px;
+		border-spacing : 0;
+		padding        : 3px;
+	}
+}
+
+input,
+textarea,
+select {
+	outline : none;
+}
+
+.cs-fullwidth-table {
+	[type=number],
+	[type=range] {
+		width : 90px;
+	}
+	[type=text],
+	[type=password],
+	[type=email],
+	[type=tel] {
+		width : 250px;
+	}
+}
+
+textarea {
+	overflow-x  : auto;
+	height      : 5em;
+	white-space : nowrap;
+
+	&.cs-wide-textarea {
+		width : 90%;
+	}
+
+	#users_raw_edit &,
+	#users_edit & {
+		width : 250px;
+	}
+}
+
+.cs-button-compact > span {
+	padding : 2px 3px !important;
+}
+
+.cs-state-messages {
+	padding : 5px;
+	margin  : 2px 0;
+}
+
+.cs-dialog {
+	display : none;
+}
+
+#cs-users-groups-list,
+#cs-users-groups-list-selected {
+	list-style-type : none;
+	margin          : 0;
+	padding         : 5px;
+}
+
+li {
+	.cs-blocks-items &,
+	#cs-users-groups-list &,
+	#cs-users-groups-list-selected & {
+		cursor  : move;
+		margin  : 0 5px 5px 5px;
+		padding : 5px;
+	}
+}
+
+.cs-modules-config-buttons button,
+.cs-db-config-buttons button,
+.cs-db-config-buttons-r button,
+#apply_settings,
+#save_settings,
+#cancel_settings,
+#reset_settings,
+#system_license_open {
+	.cs-pointer;
+}
+
+.cs-input-style {
+	background : #ddd;
+	border     : #fff solid 1px;
+	float      : left;
+	margin     : 0 0 5px 0;
+	width      : 170px;
+}
+
+.cs-header- {
+	&user-info {
+		float    : right;
+		height   : 90px;
+		margin   : 12px 9px 9px 95px;
+		position : fixed;
+		width    : 180px;
+
+		button {
+			.cs-pointer;
+		}
+
+		[type=text],
+		[type=password] {
+			.cs-input-style;
+		}
+
+		select {
+			.cs-input-style;
+
+			margin-left : -5px;
+			width       : 20px;
+		}
+
+		.actions {
+			margin : 5px 0;
+		}
+	}
+
+	&login-slide,
+	&registration-slide {
+		margin-top : 4px;
+	}
+
+	&back,
+	&restore-password-slide,
+	&login-process,
+	&register-process,
+	&restore-password-process {
+		bottom   : 0;
+		position : absolute;
+		right    : 0;
+	}
+
+	&restore-password-slide {
+		right : 26px;
+	}
+
+	&register-process,
+	&restore-password-process {
+		bottom : auto;
+		top    : 25px;
+	}
+
+	&login-process,
+	&register-process,
+	&restore-password-process {
+		left  : 0;
+		right : auto;
+	}
+
+	&restore-password-form &back {
+		margin-top : 4px !important;
+	}
+
+	&zone {
+		height   : 30px;
+		position : fixed;
+		top      : 0;
+		width    : 100%;
+	}
+	&green,
+	&black {
+		border-radius : 0 0 10px 10px;
+		position      : fixed;
+		right         : 300px;
+		top           : 0;
+		width         : inherit;
+	}
+	&green {
+		height  : 70px;
+		z-index : 2;
+	}
+	&black {
+		height  : 115px;
+		z-index : 1;
+	}
+	&user {
+		border-radius : 7px;
+		height        : 100px;
+		margin        : 5px;
+		position      : fixed;
+		right         : 0;
+		top           : 0;
+		width         : 280px;
+		z-index       : 3;
+	}
+	&avatar {
+		background-size : 100%;
+		border-radius   : 5px;
+		float           : left;
+		font-size       : 80px;
+		height          : 80px;
+		line-height     : 80px;
+		margin          : 9px;
+		position        : fixed;
+		width           : 80px;
+		vertical-align  : top;
+	}
+	&login-form,
+	&register-form,
+	&restore-password-form {
+		height      : 79px;
+		margin-left : 2px;
+		position    : relative;
+		width       : 175px;
+	}
+	&login-form > .ui-icon {
+		margin : 26px 0 0 -20px;
+	}
+	&main-menu,
+	&main-submenu,
+	&menu-more {
+		height      : 40px;
+		left        : 0;
+		line-height : 32px;
+		position    : fixed;
+		text-align  : left;
+		top         : 0;
+		z-index     : 3;
+	}
+	&main-submenu {
+		line-height : 20px;
+		top         : 40px;
+	}
+	&menu-more {
+		font-size   : 14px;
+		line-height : 20px;
+		right       : 310px;
+		top         : 70px;
+	}
+	&main-menu > a,
+	&main-submenu > a,
+	&menu-more > a {
+		border-bottom      : none;
+		cursor             : pointer;
+		transition         : all 0.3s linear;
+		-moz-transition    : all 0.3s linear;
+		-o-transition      : all 0.3s linear;
+		-webkit-transition : all 0.3s linear;
+	}
+	&main-menu {
+		font-size : 40px;
+		margin    : 0;
+		padding   : 5px 0 0 5px;
+	}
+	&main-submenu {
+		font-size : 24px;
+		margin    : 0;
+		padding   : 5px 0 0 5px;
+	}
+	&menu-more {
+		margin  : 0;
+		padding : 5px 0 0 10px;
+	}
+}
+
+.cs-align (@side) {
+	text-align     : @side;
+	vertical-align : middle;
+	padding        : 2px;
+}
+
+.cs-center-odd > tbody > tr > td:nth-child(odd),
+.cs-center-even > tbody > tr > td:nth-child(even),
+.cs-center-all > tbody > tr > td,
+tr.cs-center-all > td,
+td.cs-center-all {
+	.cs-align(center);
+}
+
+td.cs-center-all {
+	text-align : center !important;
+}
+
+.cs-center {
+	text-align : center;
+}
+
+.cs-right-odd > tbody > tr > td:nth-child(odd),
+.cs-right-even > tbody > tr > td:nth-child(even),
+.cs-right-all > tbody > tr > td,
+tr.cs-right-all > td,
+td.cs-right-all {
+	.cs-align(right);
+}
+
+td.cs-right-all {
+	text-align : right !important;
+}
+.cs-right {
+	text-align : right;
+}
+
+.cs-left-odd > tbody > tr > td:nth-child(odd),
+.cs-left-even > tbody > tr > td:nth-child(even),
+.cs-left-all > tbody > tr > td,
+tr.cs-left-all > td,
+td.cs-left-all {
+	.cs-align(left);
+}
+
+td.cs-left-all {
+	text-align : left !important;
+}
+
+.cs-left {
+	text-align : left;
+}
+
+.cs-blocks-items {
+	#cs-users-groups-list;
+
+	li:nth-child(1) {
+		cursor : pointer !important;
+	}
+	&-title {
+		float        : left;
+		height       : 16px;
+		margin-right : -64px;
+		overflow     : hidden;
+		text-align   : left;
+		width        : 100%;
+
+		&~a {
+			cursor  : pointer;
+			display : inline-block;
+			margin  : 0 -2px;
+		}
+	}
+
+	&-groups {
+		width : 33%;
+	}
+}
+
+.cs-modules-config-buttons,
+.cs-db-config-buttons {
+	text-align : left !important;
+}
+
+.cs-db-config-buttons-r {
+	text-align : right !important;
+}
+
+.cs-test-result {
+	text-align     : center;
+	text-transform : capitalize;
+}
+
+.cs-add-db input,
+.cs-add-block input[type=text],
+.cs-add-storage input {
+	width : auto !important;
+}
+
+.cs-php-components,
+.cs-sql-properties,
+.cs-php-ini-settings {
+	width : 100%;
+}
+
+.cs-padding-left {
+	padding-left : 20px;
+}
+
+#system_config_routing td,
+#system_config_replace td {
+	width : 50%;
+}
+
+#site_info_config_mirrors {
+	td:nth-child(1) {
+		width : 40%;
+	}
+
+	td:nth-child(2) {
+		width : 30%;
+	}
+
+	td:nth-child(3) {
+		width : 20%;
+	}
+}
+
+#test_progress {
+	width : 100%;
+}
+
+.cs-debug-code {
+	border-left  : 1px solid;
+	display      : block;
+	margin       : 10px 5px 10px 20px;
+	padding-left : 10px;
+	text-align   : left;
+}
+
+.cs-debug-code {
+	word-wrap : break-word;
+}
+
+.cs-add-user {
+	width : 250px;
+}
+
+.cs-add-bot {
+	width : 450px;
+}
+
+#cs-columns-settings li {
+	cursor : pointer;
+}
+
+.cs-profile-table td {
+	vertical-align : top;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight : 100;
+}
+
+h1 {
+	font-size : 20px;
+}
+
+h2 {
+	font-size : 18px;
+}
+
+h3 {
+	font-size : 16px;
+}
+
+h4 {
+	font-size : 15px;
+}
+
+h5 {
+	font-size : 14px;
+}
+
+h6 {
+	font-size : 13px;
+}
+
+.cs-profile- {
+	&table h2 {
+		margin : 0 0 10px 0;
+	}
+
+	&avatar {
+		width : 138px;
+
+		img {
+			height : 128px;
+			margin : 5px;
+			width  : 128px;
+		}
+	}
+}
+.cs-pointer {
+	cursor : pointer;
+}
+hr {
+	border           : 0;
+	background-color : #9e9e9e;
+	height           : 1px;
+}
+
+#body {
+	border-radius : 10px;
+	.box-sizing(border-box);
+	margin        : 145px 7px 7px;
+	padding       : 5px 0;
+
+	&:after {
+		content : '';
+		clear   : both;
+		display : block;
+	}
+}
+#left_blocks {
+	float : left;
+}
+#right_blocks {
+	float : right;
+}
+#left_blocks,
+#right_blocks {
+	.box-sizing(border-box);
+	padding        : 0 5px;
+	vertical-align : top;
+	width          : @side-columns;
+}
+#main_content {
+	vertical-align : top;
+	border-radius  : 7px;
+	margin-top     : 3px;
+	padding        : 10px;
+	vertical-align : top;
+
+	div {
+		border-radius : 5px;
+		padding       : 10px;
+		height        : 100%;
+	}
+}
+#top_blocks,
+#bottom_blocks,
+#main_content {
+	.box-sizing(border-box);
+	margin-left  : @side-columns;
+	margin-right : @side-columns;
+}

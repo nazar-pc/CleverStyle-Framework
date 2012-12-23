@@ -5,34 +5,6 @@
  * @license		MIT License, see license.txt
  */
 $(function() {
-	setTimeout(
-		function () {
-			var	body = $('#body');
-			body.css(
-				'opacity',
-				.0001
-			).parent().css({
-				'padding'	: 0,
-				'overflow'	: 'visible'
-			});
-			$('link[rel="stylesheet"]').each(function () {
-				$.setTemplateLayout($(this).attr('href'));
-			});
-			$.showPage	= function () {
-				body.animate(
-					{
-						'opacity'	: 1
-					},
-					100
-				);
-			};
-			$(document).on('DOMNodeInserted', 'iframe', function() {
-				setTimeout($.redoTemplateLayout, 100);
-			});
-			setInterval($.redoTemplateLayout, 1000);
-		},
-		0
-	);
 	if (
 		($.browser.msie && $.browser.version < 10) ||
 		($.browser.opera && $.browser.version < 11.1) ||
@@ -223,7 +195,7 @@ $(function() {
 		$('button.cs-permissions-deny-all').click(function () {
 			$(this).parentsUntil('div').find(':radio:[value=0]').prop('checked', true).button('refresh');
 		});
-		$('#columns_settings ul').css({
+		$('#cs-columns-settings ul').css({
 			'list-style-type'	: 'none',
 			'margin'			: 0,
 			'padding'			: 0
