@@ -41,12 +41,14 @@ a {
 }
 .cs-header-green {
   background-color: #6ebc00;
-  background-image: linear-gradient(to top, #cbff81 0%, #6ebc00 80%);
+  background-image: linear-gradient(to bottom, #cbff81 0%, #6ebc00 80%);
+  background-image: -webkit-linear-gradient(top, #cbff81 0%, #6ebc00 80%);
 }
 .cs-header-black {
   background-color: #7d7d7d;
-  background-image: linear-gradient(to top, #7d7d7d 0%, #000000 90%);
-  box-shadow: 0 0 20px #7d7d7d;
+  background-image: linear-gradient(to bottom, #7d7d7d 0%, #000000 90%);
+  background-image: -webkit-linear-gradient(top, #7d7d7d 0%, #000000 90%);
+  box-shadow: 0 0 20px #000000;
 }
 .cs-header-user {
   background-color: rgba(255, 255, 255, 0.5);

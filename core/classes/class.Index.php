@@ -177,7 +177,7 @@ class Index {
 			}
 		}
 		_include_once(MFOLDER.'/index.php', false);
-		if ($this->stop || defined('EROOR_PAGE')) {
+		if ($this->stop || defined('ERROR_PAGE')) {
 			return;
 		}
 		if ($this->parts) {
@@ -216,7 +216,7 @@ class Index {
 				$Page->warning(get_core_ml_text('closed_title'));
 			}
 			_include_once(MFOLDER.'/'.$rc[0].'.php', false);
-			if ($this->stop || defined('EROOR_PAGE')) {
+			if ($this->stop || defined('ERROR_PAGE')) {
 				return;
 			}
 			if ($this->subparts) {
@@ -239,7 +239,7 @@ class Index {
 					}
 				}
 				_include_once(MFOLDER.'/'.$rc[0].'/'.$rc[1].'.php', false);
-				if ($this->stop || defined('EROOR_PAGE')) {
+				if ($this->stop || defined('ERROR_PAGE')) {
 					return;
 				}
 			} elseif (!$this->api && $this->action === null) {

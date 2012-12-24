@@ -62,12 +62,15 @@ a {
 .cs-header-{
 	&green {
 		background-color: rgb(110, 188, 0);
-		background-image: linear-gradient(to top, @green-gradient-from 0%, @green-gradient-to 80%);
+		background-image: linear-gradient(to bottom, @green-gradient-from 0%, @green-gradient-to 80%);
+		background-image: linear-gradient(to bottom, @green-gradient-from 0%, @green-gradient-to 80%);
+		background-image: -webkit-linear-gradient(top, @green-gradient-from 0%, @green-gradient-to 80%);
 	}
 	&black {
 		background-color: @black-gradient-from;
-		background-image: linear-gradient(to top, @black-gradient-from 0%, @black-gradient-to 90%);
-		box-shadow: 0 0 20px @black-gradient-from;
+		background-image: linear-gradient(to bottom, @black-gradient-from 0%, @black-gradient-to 90%);
+		background-image: -webkit-linear-gradient(top, @black-gradient-from 0%, @black-gradient-to 90%);
+		box-shadow: 0 0 20px @black-gradient-to;
 	}
 	&user {
 		background-color: fade(@base-bg, 50%);
