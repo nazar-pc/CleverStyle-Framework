@@ -25,13 +25,13 @@ $Index->content(
 			h::button(
 				$L->clean_settings_cache,
 				$Cache->cache_state() ? [
-					'onMouseDown'	=> "admin_cache('#clean_cache', '".$Config->server['base_url']."/api/".MODULE."/admin/cache/clean_cache');"
+					'onMouseDown'	=> "admin_cache('#clean_cache', '".$Config->base_url()."/api/".MODULE."/admin/cache/clean_cache');"
 				] : ['disabled']
 			),
 			h::button(
 				$L->clean_scripts_styles_cache,
 				$Config->core['cache_compress_js_css'] ? [
-					'onMouseDown'	=> "admin_cache('#clean_pcache', '".$Config->server['base_url']."/api/".MODULE."/admin/cache/clean_pcache');"
+					'onMouseDown'	=> "admin_cache('#clean_pcache', '".$Config->base_url()."/api/".MODULE."/admin/cache/clean_pcache');"
 				] : ['disabled']
 			)
 		]

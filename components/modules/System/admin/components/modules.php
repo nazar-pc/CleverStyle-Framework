@@ -33,7 +33,7 @@
  */
 namespace	cs\modules\System;
 use			\h;
-global $Config, $Index, $L, $Core, $Cache;
+global $Config, $Index, $L, $Core, $Cache, $Page;
 $a					= $Index;
 $rc					= $Config->routing['current'];
 $a->buttons			= false;
@@ -48,7 +48,6 @@ if (
 		)
 	)
 ) {
-	global $Page;
 	switch ($rc[2]) {
 		case 'install':
 			if ($rc[3] == 'upload' && isset($_FILES['upload_module']) && $_FILES['upload_module']['tmp_name']) {
@@ -72,53 +71,77 @@ if (
 					$tmp_file = TEMP.'/'.md5($_FILES['upload_module']['tmp_name'].MICROTIME).'.phar.php'
 				);
 				$tmp_dir								= 'phar://'.$tmp_file;
-				if (!($rc[3]	= file_get_contents($tmp_dir.'/dir'))) {
+				if (!($module = file_get_contents($tmp_dir.'/dir'))) {
 					unlink($tmp_file);
 					break;
 				}
+				$rc[3]									= $module;
 				if (_json_decode(file_get_contents($tmp_dir.'/meta.json'))['category'] != 'modules') {
 					$Page->warning($L->this_is_not_module_installer_file);
 					unlink($tmp_file);
 					break;
 				}
-				if (isset($Config->components['modules'][$rc[3]])) {
+				if (isset($Config->components['modules'][$module])) {
 					$Page->warning($L->cant_unpack_module_it_already_exists);
 					unlink($tmp_file);
 					break;
 				}
-				if (!file_exists(MODULES.'/'.$rc[3]) && !mkdir(MODULES.'/'.$rc[3], 0700)) {
+				if (!file_exists(MODULES.'/'.$module) && !mkdir(MODULES.'/'.$module, 0700)) {
 					$Page->warning($L->cant_unpack_module_no_write_permissions);
 					unlink($tmp_file);
 					break;
 				}
-				$Config->components['modules'][$rc[3]]	= [
-					'active'	=> -1,
-					'db'		=> [],
-					'storage'	=> []
-				];
 				$fs										= _json_decode(file_get_contents($tmp_dir.'/fs.json'));
 				$extract								= array_product(
 					array_map(
-						function ($index, $file) use ($tmp_dir, $rc) {
+						function ($index, $file) use ($tmp_dir, $module) {
 							if (
-								!file_exists(pathinfo(MODULES.'/'.$rc[3].'/'.$file, PATHINFO_DIRNAME)) &&
-								!mkdir(pathinfo(MODULES.'/'.$rc[3].'/'.$file, PATHINFO_DIRNAME), 0700, true)
+								!file_exists(pathinfo(MODULES.'/'.$module.'/'.$file, PATHINFO_DIRNAME)) &&
+								!mkdir(pathinfo(MODULES.'/'.$module.'/'.$file, PATHINFO_DIRNAME), 0700, true)
 							) {
 								return 0;
 							}
-							return (int)copy($tmp_dir.'/fs/'.$index, MODULES.'/'.$rc[3].'/'.$file);
+							return (int)copy($tmp_dir.'/fs/'.$index, MODULES.'/'.$module.'/'.$file);
 						},
 						$fs,
 						array_keys($fs)
 					)
 				);
-				file_put_contents(MODULES.'/'.$rc[3].'/fs.json', _json_encode(array_keys($fs)));
-				unlink($tmp_file);
-				unset($tmp_dir, $tmp_file);
+				file_put_contents(MODULES.'/'.$module.'/fs.json', _json_encode(array_keys($fs)));
+				unset($tmp_dir);
 				if (!$extract) {
 					$Page->warning($L->module_files_unpacking_error);
 					break;
 				}
+				rename($tmp_file, mb_substr($tmp_file, 0, -9));
+				$api_request							= $Core->api_request(
+					MODULE.'/admin/upload_module',
+					[
+						'package'	=> str_replace(DIR, $Config->base_url(), mb_substr($tmp_file, 0, -9))
+					]
+				);
+				if (!empty($api_request)) {
+					$success	= true;
+					foreach ($api_request as $mirror => $result) {
+						if ($result != '0') {
+							$success	= false;
+							$Page->warning($L->cant_unpack_module_on_mirror($mirror));
+						}
+					}
+					if (!$success) {
+						$Page->warning($L->module_files_unpacking_error);
+						break;
+					}
+					unset($success, $mirror, $result);
+				}
+				unset($api_request);
+				unlink($tmp_file);
+				$Config->components['modules'][$module]	= [
+					'active'	=> -1,
+					'db'		=> [],
+					'storage'	=> []
+				];
+				unset($tmp_file, $module);
 				$Config->save('components');
 			} elseif ($rc[3] == 'upload') {
 				break;
@@ -181,7 +204,7 @@ if (
 			);
 		break;
 		case 'uninstall':
-			$show_modules	= false;
+			$show_modules			= false;
 			$Page->title($L->uninstallation_of_module($rc[3]));
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
@@ -208,7 +231,7 @@ if (
 			);
 		break;
 		case 'default_module':
-			$show_modules	= false;
+			$show_modules			= false;
 			$Page->title($L->setting_default_module($rc[3]));
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
@@ -223,15 +246,14 @@ if (
 			)) {
 				break;
 			}
-			$a->cancel_button_back = true;
+			$a->cancel_button_back	= true;
 			$a->content(
 				h::{'button[type=submit]'}($L->uninstall)
 			);
 		break;
 		case 'db':
-			$show_modules	= false;
+			$show_modules			= false;
 			if (count($Config->db) > 1) {
-				global $Page;
 				$Page->warning($L->changing_settings_warning);
 				$Page->title($L->db_settings_for_module($rc[3]));
 				$a->content(
@@ -297,7 +319,6 @@ if (
 		case 'storage':
 			$show_modules	= false;
 			if (count($Config->storage) > 1) {
-				global $Page;
 				$Page->warning($L->changing_settings_warning);
 				$Page->title($L->storage_settings_for_module($rc[3]));
 				$a->content(

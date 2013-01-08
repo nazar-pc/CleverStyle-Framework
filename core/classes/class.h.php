@@ -169,7 +169,7 @@ class h {
 		) {
 			global $Config;
 			if ($absolute && is_object($Config)) {
-				return $Config->server['base_url'].'/'.$url;
+				return $Config->base_url().'/'.$url;
 			}
 			return '/'.$url;
 		}

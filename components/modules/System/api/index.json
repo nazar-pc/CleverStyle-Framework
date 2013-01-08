@@ -8,6 +8,8 @@
 		"setcookie"
 	],
 	"admin"		: [
-		"cache"
+		"cache",
+		"upload_module",
+		"upload_plugin"
 	]
 }

@@ -22,7 +22,7 @@ if (
 		isset($rc[2]) && strpos($rc[2], $User->get_session()) !== 0
 	)
 ) {
-	header('Location: '.$Config->server['base_url']);
+	header('Location: '.$Config->base_url());
 	code_header(301);
 	interface_off();
 	return;
@@ -62,7 +62,7 @@ if (isset($rc[1]) && $rc[1] == 'merge_confirmation') {
 		}
 		unset($existing_data, $item, $value);
 		$User->add_session($data['id']);
-		header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->server['base_url']));
+		header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
 		_setcookie('HybridAuth_referer', '');
 		$Index->content(
 			$L->hybridauth_merging_confirmed_successfully($L->{$data['provider']})
@@ -85,8 +85,8 @@ if (!$Config->core['allow_user_registration']) {
 if (
 	!$User->get_session_data('HybridAuth') &&
 	isset($_SERVER['HTTP_REFERER']) &&
-	strpos($_SERVER['HTTP_REFERER'], $Config->server['base_url'].'/'.MODULE) === false &&
-	strpos($_SERVER['HTTP_REFERER'], $Config->server['base_url']) === 0
+	strpos($_SERVER['HTTP_REFERER'], $Config->base_url().'/'.MODULE) === false &&
+	strpos($_SERVER['HTTP_REFERER'], $Config->base_url()) === 0
 ) {
 	_setcookie('HybridAuth_referer', $_SERVER['HTTP_REFERER']);
 }
@@ -104,7 +104,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 } elseif (!isset($_POST['email'])) {
 	try {
 		$HybridAuth		= new Hybrid_Auth([
-			'base_url'	=> $Config->server['base_url'].'/'.MODULE.'/'.$rc[0].'/endpoint/'.$User->get_session(),
+			'base_url'	=> $Config->base_url().'/'.MODULE.'/'.$rc[0].'/endpoint/'.$User->get_session(),
 			'providers'	=> [
 				$rc[0]	=> $Config->module(MODULE)->providers[$rc[0]]
 			]
@@ -185,7 +185,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 						$profile->profileURL
 					);
 					$User->add_session($result['id']);
-					header('Location: '.(_getcookie('HybridAuth_referer') ?: $Config->server['base_url']));
+					header('Location: '.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
 					code_header(301);
 					return;
 				}
@@ -196,7 +196,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 				$body	= $L->reg_success_mail_body(
 					isset($profile_info['username']) ? $profile_info['username'] : strstr($result['email'], '@', true),
 					get_core_ml_text('name'),
-					$Config->server['base_url'].'/profile/'.$User->get('login', $result['id']),
+					$Config->base_url().'/profile/'.$User->get('login', $result['id']),
 					$User->get('login', $result['id']),
 					$result['password']
 				);
@@ -210,20 +210,20 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 				)) {
 					$User->set($profile_info, null, $result['id']);
 					$User->add_session($result['id']);
-					header('Location: '.(_getcookie('HybridAuth_referer') ?: $Config->server['base_url']));
+					header('Location: '.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
 					_setcookie('HybridAuth_referer', '');
 					code_header(301);
 				} else {
 					$User->registration_cancel();
 					$Page->title($L->sending_reg_mail_error_title);
 					$Page->warning($L->sending_reg_mail_error);
-					header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->server['base_url']));
+					header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
 					_setcookie('HybridAuth_referer', '');
 				}
 			} else {
 				$Page->title($L->reg_server_error);
 				$Page->warning($L->reg_server_error);
-				header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->server['base_url']));
+				header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
 				_setcookie('HybridAuth_referer', '');
 			}
 		/**
@@ -245,7 +245,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 		}
 	} catch (Exception $e) {
 		trigger_error($e->getMessage());
-		header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->server['base_url']));
+		header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
 		_setcookie('HybridAuth_referer', '');
 	}
 /**
@@ -264,7 +264,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 		} elseif ($result == 'error') {
 			$Page->title($L->reg_server_error);
 			$Page->warning($L->reg_server_error);
-			header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->server['base_url']));
+			header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
 			_setcookie('HybridAuth_referer', '');
 			return;
 		/**
@@ -303,7 +303,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 			} else {
 				$id							= $User->get_id(hash('sha224', $_POST['email']));
 				$HybridAuth_data['id']		= $id;
-				$HybridAuth_data['referer']	= _getcookie('HybridAuth_referer') ?: $Config->server['base_url'];
+				$HybridAuth_data['referer']	= _getcookie('HybridAuth_referer') ?: $Config->base_url();
 				_setcookie('HybridAuth_referer', '');
 				$confirm_key				= $Key->add(
 					$db_id,
@@ -358,13 +358,13 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 			$User->registration_cancel();
 			$Page->title($L->sending_reg_mail_error_title);
 			$Page->warning($L->sending_reg_mail_error);
-			header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->server['base_url']));
+			header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
 			_setcookie('HybridAuth_referer', '');
 		}
 	} else {
 		$Page->title($L->reg_server_error);
 		$Index->content($L->reg_server_error);
-		header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->server['base_url']));
+		header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
 		_setcookie('HybridAuth_referer', '');
 	}
 }

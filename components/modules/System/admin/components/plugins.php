@@ -40,49 +40,74 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 					$tmp_file = TEMP.'/'.md5($_FILES['upload_plugin']['tmp_name'].MICROTIME).'.phar.php'
 				);
 				$tmp_dir								= 'phar://'.$tmp_file;
-				if (!($rc[3]	= file_get_contents($tmp_dir.'/dir'))) {
+				if (!($plugin	= file_get_contents($tmp_dir.'/dir'))) {
 					unlink($tmp_file);
 					break;
 				}
+				$rc[3]		= $plugin;
 				if (_json_decode(file_get_contents($tmp_dir.'/meta.json'))['category'] != 'plugins') {
 					$Page->warning($L->this_is_not_plugin_installer_file);
 					unlink($tmp_file);
 					break;
 				}
-				if (in_array($rc[3], $Config->components['plugins'])) {
+				if (in_array($plugin, $Config->components['plugins'])) {
 					$Page->warning($L->cant_unpack_plugin_it_already_exists);
 					unlink($tmp_file);
 					break;
 				}
-				if (!file_exists(PLUGINS.'/'.$rc[3]) && !mkdir(PLUGINS.'/'.$rc[3], 0700)) {
+				if (!file_exists(PLUGINS.'/'.$plugin) && !mkdir(PLUGINS.'/'.$plugin, 0700)) {
 					$Page->warning($L->cant_unpack_plugin_no_write_permissions);
 					unlink($tmp_file);
 					break;
 				}
-				$plugins[]								= $rc[3];
-				$fs										= _json_decode(file_get_contents($tmp_dir.'/fs.json'));
-				$extract								= array_product(
+				$fs				= _json_decode(file_get_contents($tmp_dir.'/fs.json'));
+				$extract		= array_product(
 					array_map(
-						function ($index, $file) use ($tmp_dir, $rc) {
+						function ($index, $file) use ($tmp_dir, $plugin) {
 							if (
-								!file_exists(pathinfo(PLUGINS.'/'.$rc[3].'/'.$file, PATHINFO_DIRNAME)) &&
-								!mkdir(pathinfo(PLUGINS.'/'.$rc[3].'/'.$file, PATHINFO_DIRNAME), 0700, true)
+								!file_exists(pathinfo(PLUGINS.'/'.$plugin.'/'.$file, PATHINFO_DIRNAME)) &&
+								!mkdir(pathinfo(PLUGINS.'/'.$plugin.'/'.$file, PATHINFO_DIRNAME), 0700, true)
 							) {
 								return 0;
 							}
-							return (int)copy($tmp_dir.'/fs/'.$index, PLUGINS.'/'.$rc[3].'/'.$file);
+							return (int)copy($tmp_dir.'/fs/'.$index, PLUGINS.'/'.$plugin.'/'.$file);
 						},
 						$fs,
 						array_keys($fs)
 					)
 				);
-				file_put_contents(PLUGINS.'/'.$rc[3].'/fs.json', _json_encode(array_keys($fs)));
-				unlink($tmp_file);
-				unset($tmp_dir, $tmp_file);
+				file_put_contents(PLUGINS.'/'.$plugin.'/fs.json', _json_encode(array_keys($fs)));
+				unset($tmp_dir);
 				if (!$extract) {
 					$Page->warning($L->plugin_files_unpacking_error);
 					break;
 				}
+				rename($tmp_file, mb_substr($tmp_file, 0, -9));
+				global $Core;
+				$api_request	= $Core->api_request(
+					MODULE.'/admin/upload_plugin',
+					[
+						'package'	=> str_replace(DIR, $Config->base_url(), mb_substr($tmp_file, 0, -9))
+					]
+				);
+				if (!empty($api_request)) {
+					$success	= true;
+					foreach ($api_request as $mirror => $result) {
+						if ($result != '0') {
+							$success	= false;
+							$Page->warning($L->cant_unpack_plugin_on_mirror($mirror));
+						}
+					}
+					if (!$success) {
+						$Page->warning($L->plugin_files_unpacking_error);
+						break;
+					}
+					unset($success, $mirror, $result);
+				}
+				unset($api_request);
+				unlink($tmp_file);
+				$plugins[]		= $plugin;
+				unset($tmp_file, $plugin);
 			}
 			if (!in_array($rc[3], $Config->components['plugins']) && in_array($rc[3], $plugins)) {
 				$Page->title($L->enabling_of_plugin($rc[3]));

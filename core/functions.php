@@ -314,7 +314,7 @@ function url_by_source ($source) {
 	if (mb_strpos($source, DIR.'/') === 0) {
 		global $Config;
 		if (is_object($Config)) {
-			return str_replace(DIR, $Config->server['base_url'], $source);
+			return str_replace(DIR, $Config->base_url(), $source);
 		}
 	}
 	return false;
@@ -328,9 +328,9 @@ function url_by_source ($source) {
  */
 function source_by_url ($url) {
 	global $Config;
-	if (mb_strpos($url, $Config->server['base_url']) === 0) {
+	if (mb_strpos($url, $Config->base_url()) === 0) {
 		if (is_object($Config)) {
-			return str_replace($Config->server['base_url'], DIR, $url);
+			return str_replace($Config->base_url(), DIR, $url);
 		}
 	}
 	return false;
@@ -695,7 +695,7 @@ function _setcookie ($name, $value, $expire = 0, $httponly = false, $api = false
 					$js						= '';
 					foreach ($mirrors_cookie_domain as $i => $domain) {
 						$mirrors_url[$i] = explode(';', $mirrors_url[$i], 2)[0];
-						if ($domain && ($mirrors_url[$i] != $Config->server['base_url'])) {
+						if ($domain && ($mirrors_url[$i] != $Config->base_url())) {
 							if ($Key->add($database, $key = $Key->generate($database), $data)) {
 								$js .= '$.get(\'http://'.$mirrors_url[$i].'/api/System/user/setcookie/'.$key.'\');';
 							}

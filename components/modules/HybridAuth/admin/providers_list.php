@@ -55,7 +55,7 @@ $Index->content(
 										'{provider}'
 									],
 									[
-										$Config->server['base_url'],
+										$Config->base_url(),
 										MODULE,
 										$provider
 									],

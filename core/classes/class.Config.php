@@ -19,7 +19,7 @@ class Config {
 					'components'	=> [],
 					'replace'		=> [],
 					'routing'		=> [],
-					'admin_parts'	=> [						//Conumns in DB table of engine configuration
+					'admin_parts'	=> [						//Columns in DB table of engine configuration
 						'core',
 						'db',
 						'storage',
@@ -35,7 +35,7 @@ class Config {
 						'base_url'					=> '',		//Address of the main page of current mirror, including prefix (http/https)
 						'mirrors'					=> [		//Array of all domains, which allowed to access the site
 							'count'		=> 0,					//Total count
-							'http'		=> [],					//Unsecure (http) domains
+							'http'		=> [],					//Insecure (http) domains
 							'https'		=> []					//Secure (https) domains
 						],
 						'referer'					=> [
@@ -558,6 +558,14 @@ class Config {
 			return false;
 		}
 		return $this->data[$item] = $data;
+	}
+	/**
+	 * Get base url of current mirror
+	 *
+	 * @return string
+	 */
+	function base_url () {
+		return $this->server['base_url'];
 	}
 	/**
 	 * Get object for getting db and storage configuration of module

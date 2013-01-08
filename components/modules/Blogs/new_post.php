@@ -48,7 +48,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 				$id		= $Blogs->add($_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])), $draft);
 				if ($id) {
 					interface_off();
-					header('Location: '.$Config->server['base_url'].'/'.$module.'/'.$Blogs->get($id)['path'].':'.$id);
+					header('Location: '.$Config->base_url().'/'.$module.'/'.$Blogs->get($id)['path'].':'.$id);
 					return;
 				} else {
 					$Page->warning($L->post_adding_error);

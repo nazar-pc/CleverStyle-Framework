@@ -220,7 +220,7 @@ class HTTP extends _Abstract {
 		global $Config;
 		return $this->request([
 			'function'		=> __FUNCTION__,
-			'filename'		=> $Config->server['base_url'].'/'.$temp,
+			'filename'		=> $Config->base_url().'/'.$temp,
 			'destination'	=> $destination
 		])[1] && unlink(TEMP.'/'.$temp);
 	}

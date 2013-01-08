@@ -7,12 +7,12 @@
  */
 
 //Left and right columns width
-@side-columns: 15%;
+@side-columns : 15%;
 //Crossbrowser box-sizing
 .box-sizing (@mode) {
-	-webkit-box-sizing: @mode;
-	-moz-box-sizing: @mode;
-	box-sizing: @mode;
+	-webkit-box-sizing : @mode;
+	-moz-box-sizing    : @mode;
+	box-sizing         : @mode;
 }
 
 body {
@@ -149,11 +149,8 @@ li {
 }
 
 .cs-input-style {
-	background : #ddd;
-	border     : #fff solid 1px;
-	float      : left;
-	margin     : 0 0 5px 0;
-	width      : 170px;
+	float  : left;
+	margin : 0 0 5px 0;
 }
 
 .cs-header- {
@@ -171,11 +168,17 @@ li {
 		[type=text],
 		[type=password] {
 			.cs-input-style;
+
+			background : #ddd;
+			border     : #fff solid 1px;
+			width      : 170px;
 		}
 
 		select {
 			.cs-input-style;
 
+			background  : #ddd;
+			border      : #fff solid 1px;
 			margin-left : -5px;
 			width       : 20px;
 		}

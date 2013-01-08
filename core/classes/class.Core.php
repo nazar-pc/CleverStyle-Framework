@@ -51,20 +51,33 @@ class Core {
 		_include_once(CONFIG.'/main.php', false);
 		define('DOMAIN', $this->config['domain']);
 		date_default_timezone_set($this->config['timezone']);
-		!is_dir(STORAGE)				&& @mkdir(STORAGE, 0755)	&& file_put_contents(
-			STORAGE.'/.htaccess',
-			'Allow From All'
-		);
-		!is_dir(CACHE)					&& @mkdir(CACHE, 0700);
-		!is_dir(PCACHE)					&& @mkdir(PCACHE, 0755)		&& file_put_contents(
-			PCACHE.'/.htaccess',
-			"Allow From All\r\nAddEncoding gzip .js\r\nAddEncoding gzip .css"
-		);
-		!is_dir(LOGS)					&& @mkdir(LOGS, 0700);
-		!is_dir(TEMP)					&& @mkdir(TEMP, 0755)		&& file_put_contents(
-			TEMP.'/.htaccess',
-			'Allow From All'
-		);
+		if (!is_dir(STORAGE)) {
+			@mkdir(STORAGE, 0755);
+			file_put_contents(
+				STORAGE.'/.htaccess',
+				'Allow From All'
+			);
+		}
+		if (!is_dir(CACHE)) {
+			@mkdir(CACHE, 0700);
+		}
+		if (!is_dir(PCACHE)) {
+			@mkdir(PCACHE, 0755);
+			file_put_contents(
+				PCACHE.'/.htaccess',
+				"Allow From All\r\nAddEncoding gzip .js\r\nAddEncoding gzip .css"
+			);
+		}
+		if (!is_dir(LOGS)) {
+			@mkdir(LOGS, 0700);
+		}
+		if (!is_dir(TEMP)) {
+			@mkdir(TEMP, 0755);
+			file_put_contents(
+				TEMP.'/.htaccess',
+				'Allow From All'
+			);
+		}
 		if ($this->encrypt_support = check_mcrypt()) {
 			$this->key	= $this->config['key'];
 			$this->iv	= $this->config['iv'];
@@ -227,9 +240,9 @@ class Core {
 	/**
 	 * Sending system api request to all mirrors
 	 *
-	 * @param string $path	Path for api request, for example <b>System/admin/setcookie<b>, where
-	 * <b>System</b> - module name, <b>admin/setcookie</b> - path to action file in current module api structure
-	 * @param mixed  $data	$data Any type of data, will be accessible through <b>$_POST['data']</b>
+	 * @param string	$path	Path for api request, for example <b>System/admin/setcookie<b>, where
+	 * 							<b>System</b> - module name, <b>admin/setcookie</b> - path to action file in current module api structure
+	 * @param mixed		$data	Any type of data, will be accessible through <b>$_POST['data']</b>
 	 *
 	 * @return array
 	 */
@@ -253,10 +266,10 @@ class Core {
 	/**
 	 * Sending of api request to the specified host
 	 *
-	 * @param string $url With prefix <b>https://</b> (<b>http://</b> can be missed), and (if necessary) with port address
-	 * @param mixed $data Any type of data, will be accessible through <b>$_POST['data']</b>
+	 * @param string	$url	With prefix <b>https://</b> (<b>http://</b> can be missed), and (if necessary) with port address
+	 * @param mixed		$data	Any type of data, will be accessible through <b>$_POST['data']</b>
 	 *
-	 * @return array|bool Array <b>[0 => headers, 1 => body]</b> in case of successful connection, <b>false</b> on failure
+	 * @return array|bool		Array <b>[0 => headers, 1 => body]</b> in case of successful connection, <b>false</b> on failure
 	 */
 	protected function send ($url, $data) {
 		global $Key, $Config;
@@ -305,7 +318,7 @@ class Core {
 	/**
 	 * Registration of triggers for actions
 	 *
-	 * @param array|string $trigger	For example it can be array like <code>[
+	 * @param array|string	$trigger	For example it can be array like <code>[
 	 *   'admin' => [
 	 *     'System' => [
 	 *       'components' => [
@@ -321,7 +334,7 @@ class Core {
 	 * </code>
 	 * or string<br>
 	 * 'admin/System/components/plugins/disable'
-	 * @param Closure|null $closure if <b>$trigger</b> is string - this parameter must containg Closure [optional]
+	 * @param Closure|null	$closure	If <b>$trigger</b> is string - this parameter must containg Closure [optional]
 	 *
 	 * @return bool
 	 */
@@ -346,8 +359,8 @@ class Core {
 	/**
 	 * Registration of triggers for actions
 	 *
-	 * @param array $trigger
-	 * @param array|null $triggers Is used for nested structure
+	 * @param array			$trigger
+	 * @param array|null	$triggers	Is used for nested structure
 	 *
 	 * @return bool
 	 */
@@ -372,7 +385,7 @@ class Core {
 		return $return;
 	}
 	/**
-	 * Running trigers for some actions
+	 * Running triggers for some actions
 	 *
 	 * @param string $action	For example <i>admin/System/components/plugins/disable</i>
 	 * @param mixed $data		For example ['name'	=> <i>plugin_name</i>]

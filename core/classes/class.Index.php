@@ -453,8 +453,8 @@ class Index {
 		if (!$this->api) {
 			global $Config, $Page, $User, $L, $Core;
 			$Page->js(
-				'var	base_url = "'.$Config->server['base_url']."\",\n".
-				'	current_base_url = "'.$Config->server['base_url'].'/'.($this->admin ? 'admin/' : '').MODULE."\",\n".
+				'var	base_url = "'.$Config->base_url()."\",\n".
+				'	current_base_url = "'.$Config->base_url().'/'.($this->admin ? 'admin/' : '').MODULE."\",\n".
 				'	public_key = "'.$Core->config('public_key')."\",\n".
 				($User->guest() ?
 					'	rules_text = "'.get_core_ml_text('rules')."\",\n"
@@ -512,7 +512,7 @@ class Index {
 				switch ($block['type']) {
 					default:
 						$content = ob_wrapper(function () use ($block) {
-							_include(BLOCKS.'/block.'.$block['type'].'.php', false, false);
+							include BLOCKS.'/block.'.$block['type'].'.php';
 						});
 					break;
 					case 'html':
@@ -520,7 +520,7 @@ class Index {
 						$content = $Text->process($Config->module('System')->db('texts'), $block['content']);
 					break;
 				}
-				$template				= TEMPLATES.'/blocks/block.'.(
+				$template	= TEMPLATES.'/blocks/block.'.(
 					file_exists(TEMPLATES.'/blocks/block.'.$block['template']) ? $block['template'] : 'default.html'
 				);
 				$content	= str_replace(

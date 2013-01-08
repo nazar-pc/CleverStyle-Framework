@@ -2341,6 +2341,14 @@ class User {
 		return $this->users_columns;
 	}
 	/**
+	 * Do not track checking
+	 *
+	 * @return bool	<b>true</b> if tracking is not desired, <b>false</b> otherwise
+	 */
+	function dnt () {
+		return isset($_SERVER['HTTP_DNT']) && $_SERVER['HTTP_DNT'] == 1;
+	}
+	/**
 	 * Cloning restriction
 	 *
 	 * @final

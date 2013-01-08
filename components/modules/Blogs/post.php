@@ -23,7 +23,7 @@ if (!$post) {
 $module				= path($L->{MODULE});
 if ($post['path'] != mb_substr($rc[1], 0, mb_strrpos($rc[1], ':'))) {
 	code_header(303);
-	header('Location: '.$Config->server['base_url'].'/'.$module.'/'.$post['path'].':'.$post['id']);
+	header('Location: '.$Config->base_url().'/'.$module.'/'.$post['path'].':'.$post['id']);
 	return;
 }
 $Page->title($post['title']);
@@ -32,7 +32,7 @@ $Page->Keywords		= keywords(
 	$post['title'].' '.implode(' ', $tags)).'. '.$Page->Keywords;
 $Page->Description	= description($post['short_content']);
 $Page->link([
-	'href'	=> $Config->server['base_url'].'/'.$module.'/'.$post['path'].':'.$post['id'],
+	'href'	=> $Config->base_url().'/'.$module.'/'.$post['path'].':'.$post['id'],
 	'rel'	=> 'canonical'
 ]);
 $Index->content(

@@ -132,26 +132,24 @@ class Page {
 		/**
 		 * Theme detection
 		 */
-		if (is_object($Config) && $Config->core['allow_change_theme']) {
+		if (is_object($Config)) {
 			$this->theme		= in_array($this->theme, $Config->core['active_themes']) ? $this->theme : $Config->core['theme'];
-			$theme				= _getcookie('theme');
-			if ($theme && $theme !== $this->theme && in_array($theme, $Config->core['active_themes'])) {
-				$this->theme = $theme;
+			if ($Config->core['allow_change_theme']) {
+				$theme				= _getcookie('theme');
+				if ($theme && $theme !== $this->theme && in_array($theme, $Config->core['active_themes'])) {
+					$this->theme = $theme;
+				}
+				unset($theme);
 			}
-			unset($theme);
-			$this->theme		= in_array($this->theme, $Config->core['active_themes']) ? $this->theme : $Config->core['theme'];
-			$theme				= _getcookie('theme');
-			if ($theme && $theme !== $this->theme && in_array($theme, $Config->core['active_themes'])) {
-				$this->theme = $theme;
-			}
-			unset($theme);
 			$this->color_scheme	= in_array($this->color_scheme, $Config->core['color_schemes'][$this->theme]) ?
 									$this->color_scheme : $Config->core['color_schemes'][$this->theme][0];
-			$color_scheme		= _getcookie('color_scheme');
-			if ($color_scheme && $color_scheme !== $this->color_scheme && in_array($color_scheme, $Config->core['color_schemes'][$this->theme])) {
-				$this->color_scheme = $color_scheme;
+			if ($Config->core['allow_change_theme']) {
+				$color_scheme		= _getcookie('color_scheme');
+				if ($color_scheme && $color_scheme !== $this->color_scheme && in_array($color_scheme, $Config->core['color_schemes'][$this->theme])) {
+					$this->color_scheme = $color_scheme;
+				}
+				unset($color_scheme);
 			}
-			unset($color_scheme);
 		}
 		/**
 		 * Base name for cache files
@@ -265,7 +263,7 @@ class Page {
 				] : false
 			).
 			h::base(is_object($Config) ? [
-				'href' => $Config->server['base_url']
+				'href' => $Config->base_url()
 			] : false).
 			$this->Head.
 			h::link(
@@ -1057,7 +1055,7 @@ class Page {
 			$Core->run_trigger('System/Page/pre_display');
 			$Error->display();
 			/**
-			 * Processing of template, cubstituting of content, preparing for the output
+			 * Processing of template, substituting of content, preparing for the output
 			 */
 			$this->prepare();
 			/**

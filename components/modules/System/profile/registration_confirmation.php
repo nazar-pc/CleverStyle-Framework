@@ -41,7 +41,7 @@ if ($Mail->send_to(
 	$body
 )) {
 	_setcookie('reg_confirm', 1);
-	header('Location: '.$Config->server['base_url'].'/'.MODULE.'/profile/registration_confirmation');
+	header('Location: '.$Config->base_url().'/'.MODULE.'/profile/registration_confirmation');
 } else {
 	$User->registration_cancel();
 	$Page->title($L->sending_reg_mail_error_title);
