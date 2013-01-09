@@ -485,7 +485,7 @@ hr {
   padding: 10px;
   vertical-align: top;
 }
-#main_content div {
+#main_content > div {
   border-radius: 5px;
   padding: 10px;
   height: 100%;
