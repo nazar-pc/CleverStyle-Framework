@@ -9,22 +9,14 @@
 
 /**
  * Minimal requirements for full-featured work:
- *	1) Versions of server software:
- *		* Apache Web Server				>= 2
- *		* PHP							>= 5.4;
- *			Presence of PHP libraries:
- *			* mcrypt					>= 2.4
- *			* mbstring
- *			* cURL
- *		* MySQL							>= 5.0.7;
- *	2) Browsers versions:
- *		* Opera Internet Browser		>= 11.10;
- *		* Microsoft Internet Explorer	>= 10;
- *		* Google Chrome					>= 11;
- *			(Webkit 534.24+)
- *		* Safari						>= 5;
- *			(Webkit 534.24+)
- *		* Mozilla Firefox				>= 4;
+ * Versions of server software:
+ * * Apache Web Server				>= 2
+ *  * PHP							>= 5.4;
+ *   Presence of PHP libraries:
+ *   * mcrypt					>= 2.4
+ *   * mbstring
+ *   * cURL
+ *  * MySQL							>= 5.0.7;
  */
 
 /**
