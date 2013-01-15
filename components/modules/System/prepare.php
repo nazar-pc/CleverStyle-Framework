@@ -9,7 +9,7 @@
  */
 global $Index, $Config, $L;
 $Index->title_auto = false;
-$rc					= &$Config->__get('routing')['current'];
+$rc					= &$Config->route;
 if (!isset($rc[0])) {
 	return;
 }

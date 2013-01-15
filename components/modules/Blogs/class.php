@@ -15,18 +15,11 @@ class Blogs {
 	 */
 	private	$posts;
 	/**
-	 * Database index for comments
-	 *
-	 * @var int
-	 */
-	private	$comments;
-	/**
 	 * Saving indexes of used databases
 	 */
 	function __construct () {
 		global $Config;
 		$this->posts	= $Config->module(basename(__DIR__))->db('posts');
-		$this->comments	= $Config->module(basename(__DIR__))->db('comments');
 	}
 	/**
 	 * Get data of specified post
@@ -75,7 +68,7 @@ class Blogs {
 					FROM `[prefix]blogs_posts_tags`
 					WHERE `id` = $id"
 				);
-				$data['comments_count']						= (int)$db->{$this->comments}->qfs([
+				$data['comments_count']						= (int)$db->{$this->posts}->qfs([
 					"SELECT COUNT(`id`)
 					FROM `[prefix]blogs_comments`
 					WHERE
@@ -743,7 +736,7 @@ class Blogs {
 		if ($parent != 0 || ($comments = $Cache->{'Blogs/posts/'.$id.'/comments/'.$L->clang}) === false) {
 			$id											= (int)$id;
 			$parent										= (int)$parent;
-			$comments									= $db->{$this->comments}->qfa([
+			$comments									= $db->{$this->posts}->qfa([
 				"SELECT
 					`id`,
 					`parent`,
@@ -780,7 +773,7 @@ class Blogs {
 	function get_comment ($id) {
 		global $db;
 		$id	= (int)$id;
-		return $db->{$this->comments}->qf(
+		return $db->{$this->posts}->qf(
 			"SELECT
 				`id`,
 				`parent`,
@@ -813,7 +806,7 @@ class Blogs {
 		$parent	= (int)$parent;
 		if (
 			$parent != 0 &&
-			$db->{$this->comments}()->qfs(
+			$db->{$this->posts}()->qfs(
 				"SELECT `post`
 				FROM `[prefix]blogs_comments`
 				WHERE `id` = $parent
@@ -822,7 +815,7 @@ class Blogs {
 		) {
 			return false;
 		}
-		if ($db->{$this->comments}()->q(
+		if ($db->{$this->posts}()->q(
 			"INSERT INTO `[prefix]blogs_comments`
 				(
 					`parent`,
@@ -850,7 +843,7 @@ class Blogs {
 		)) {
 			unset($Cache->{'Blogs/posts/'.$post.'/comments'});
 			return [
-				'id'		=> $db->{$this->comments}()->id(),
+				'id'		=> $db->{$this->posts}()->id(),
 				'parent'	=> $parent,
 				'post'		=> $post,
 				'user'		=> $User->id,
@@ -876,7 +869,7 @@ class Blogs {
 			return false;
 		}
 		$id				= (int)$id;
-		$comment		= $db->{$this->comments}()->qf(
+		$comment		= $db->{$this->posts}()->qf(
 			"SELECT
 				`id`,
 				`parent`,
@@ -891,7 +884,7 @@ class Blogs {
 		if (!$comment) {
 			return false;
 		}
-		if ($db->{$this->comments}()->q(
+		if ($db->{$this->posts}()->q(
 			"UPDATE `[prefix]blogs_comments`
 			SET `text` = '%s'
 			WHERE `id` = $id
@@ -914,7 +907,7 @@ class Blogs {
 	function del_comment ($id) {
 		global $db, $Cache;
 		$id				= (int)$id;
-		$comment		= $db->{$this->comments}()->qf(
+		$comment		= $db->{$this->posts}()->qf(
 			"SELECT `p`.`post`, COUNT(`c`.`id`) AS `count`
 			FROM `[prefix]blogs_comments` AS `p` LEFT OUTER JOIN `[prefix]blogs_comments` AS `c`
 			ON `p`.`id` = `c`.`parent`
@@ -924,7 +917,7 @@ class Blogs {
 		if (!$comment || $comment['count']) {
 			return false;
 		}
-		if ($db->{$this->comments}()->q(
+		if ($db->{$this->posts}()->q(
 			"DELETE FROM `[prefix]blogs_comments`
 			WHERE `id` = $id
 			LIMIT 1"

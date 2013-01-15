@@ -10,8 +10,8 @@ namespace	cs\modules\Blogs;
 use			\h;
 global $Page, $Index, $L, $User, $Blogs, $Config;
 if (
-	!isset($Config->routing['current'][1]) ||
-	!($post = $Blogs->get($Config->routing['current'][1]))
+	!isset($Config->route[1]) ||
+	!($post = $Blogs->get($Config->route[1]))
 ) {
 	define('ERROR_PAGE', 404);
 	return;

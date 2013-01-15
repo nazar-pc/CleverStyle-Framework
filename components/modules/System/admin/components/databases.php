@@ -9,7 +9,7 @@
  */
 global $Config, $Core, $Index, $L, $Page;
 $a				= $Index;
-$rc				= $Config->routing['current'];
+$rc				= $Config->route;
 $test_dialog	= false;
 if (isset($rc[2])) {
 	$a->apply_button		= false;

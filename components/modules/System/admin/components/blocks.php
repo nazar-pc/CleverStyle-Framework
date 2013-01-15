@@ -15,7 +15,7 @@ function get_block_title ($id) {
 }
 global $Config, $Index, $L, $Page;
 $a		= $Index;
-$rc		= $Config->routing['current'];
+$rc		= $Config->route;
 $form	= true;
 if (isset($rc[2])) {
 	switch ($rc[2]) {

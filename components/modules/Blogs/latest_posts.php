@@ -47,7 +47,7 @@ if ($User->user()) {
 $Index->form			= true;
 $Index->buttons			= false;
 $Index->form_atributes	= ['class'	=> ''];
-$page					= isset($Config->routing['current'][1]) ? (int)$Config->routing['current'][1] : 1;
+$page					= isset($Config->route[1]) ? (int)$Config->route[1] : 1;
 $page					= $page > 0 ? $page : 1;
 if ($page > 1) {
 	$Page->title($L->blogs_nav_page($page));

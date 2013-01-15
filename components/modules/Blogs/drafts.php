@@ -8,13 +8,13 @@
  */
 namespace	cs\modules\Blogs;
 use			\h;
-global $Index, $Blogs, $Page, $L, $User, $db, $Config;
+global $Index, $Page, $L, $User, $db, $Config;
 $Page->title($L->drafts);
 $module					= path($L->{MODULE});
 $Index->form			= true;
 $Index->buttons			= false;
 $Index->form_atributes	= ['class'	=> ''];
-$page					= isset($Config->routing['current'][1]) ? (int)$Config->routing['current'][1] : 1;
+$page					= isset($Config->route[1]) ? (int)$Config->route[1] : 1;
 $page					= $page > 0 ? $page : 1;
 if ($page > 1) {
 	$Page->title($L->blogs_nav_page($page));

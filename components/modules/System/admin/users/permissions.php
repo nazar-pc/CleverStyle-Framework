@@ -9,7 +9,7 @@
  */
 global $Config, $Index, $L, $User, $Page;
 $a				= $Index;
-$rc				= $Config->routing['current'];
+$rc				= $Config->route;
 if (isset($rc[2])) {
 	switch ($rc[2]) {
 		case 'add':

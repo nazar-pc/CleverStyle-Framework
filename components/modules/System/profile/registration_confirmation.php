@@ -17,12 +17,12 @@ if (isset($_COOKIE['reg_confirm'])) {
 	$Page->title($L->you_are_already_registered_title);
 	$Page->warning($L->you_are_already_registered);
 	return;
-} elseif (!isset($Config->routing['current'][2])) {
+} elseif (!isset($Config->route[2])) {
 	$Page->title($L->invalid_confirmation_code);
 	$Page->warning($L->invalid_confirmation_code);
 	return;
 }
-$result = $User->registration_confirmation($Config->routing['current'][2]);
+$result = $User->registration_confirmation($Config->route[2]);
 if ($result === false) {
 	$Page->title($L->invalid_confirmation_code);
 	$Page->warning($L->invalid_confirmation_code);

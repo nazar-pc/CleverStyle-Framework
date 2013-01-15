@@ -12,7 +12,7 @@ namespace cs;
  *  ['rc'	=> <i>&$rc</i>]		//Reference to current routing string, this string can be changed<br>
  */
 class Config {
-	protected	$data = [
+	protected	$data	= [
 					'core'			=> [],
 					'db'			=> [],
 					'storage'		=> [],
@@ -47,9 +47,15 @@ class Config {
 						'ajax'						=> false,	//Is this page request via AJAX
 						'mirror_index'				=> -1		//Index of current domain in mirrors list ('-1' - main domain, not mirror)
 					],
-					'can_be_admin'		=> true					//Alows to check ability to be admin user (can be limited by IP)
+					'can_be_admin'		=> true					//Allows to check ability to be admin user (can be limited by IP)
 				],
-				$init = false;
+				$init	= false;
+	/**
+	 * Contains parsed route of current page url in form of array without module name and prefixes <i>admin</i>/<i>api</i>
+	 *
+	 * @var array
+	 */
+	public		$route	= [];
 	/**
 	 * Loading of configuration, initialization of $Config, $Cache, $L and Page objects, Routing processing
 	 */
@@ -243,7 +249,7 @@ class Config {
 		);
 		unset($current_domain);
 		$r										= &$this->routing;
-		$rc										= &$r['current'];
+		$rc										= &$this->route;
 		$rc										= $this->server['raw_relative_address'];
 		/**
 		 * Redirection processing
@@ -351,19 +357,25 @@ class Config {
 	 * Updating information about set of available themes
 	 */
 	function reload_themes () {
+		$themes							= $this->core['themes'];
 		$this->core['themes']			= get_files_list(THEMES, false, 'd');
 		asort($this->core['themes']);
+		$color_schemes					= $this->core['color_schemes'];
 		$this->core['color_schemes']	= [];
 		foreach ($this->core['themes'] as $theme) {
 			$this->core['color_schemes'][$theme]	= [];
 			$this->core['color_schemes'][$theme]	= get_files_list(THEMES.'/'.$theme.'/schemes', false, 'd');
 			asort($this->core['color_schemes'][$theme]);
 		}
+		if ($themes != $this->core['themes'] || $color_schemes != $this->core['color_schemes']) {
+			$this->save('core');
+		}
 	}
 	/**
 	 * Updating information about set of available languages
 	 */
 	function reload_languages () {
+		$languages	= $this->core['languages'];
 		$this->core['languages'] = array_unique(
 			array_merge(
 				_mb_substr(get_files_list(LANGUAGES, '/^.*?\.php$/i', 'f'), 0, -4) ?: [],
@@ -371,6 +383,9 @@ class Config {
 			)
 		);
 		asort($this->core['languages']);
+		if ($languages != $this->core['languages']) {
+			$this->save('core');
+		}
 	}
 	/**
 	 * Reloading of settings cache
@@ -389,9 +404,6 @@ class Config {
 			"SELECT $query FROM `[prefix]config` WHERE `domain` = '%s' LIMIT 1",
 			DOMAIN
 		]);
-		if (isset($this->routing['current'])) {
-			$current_routing = $this->routing['current'];
-		}
 		if (is_array($result)) {
 			foreach ($this->admin_parts as $part) {
 				$this->$part = _json_decode($result[$part]);
@@ -399,10 +411,6 @@ class Config {
 			unset($part);
 		} else {
 			return false;
-		}
-		if (isset($current_routing)) {
-			$this->routing['current'] = $current_routing;
-			unset($current_routing);
 		}
 		$this->reload_themes();
 		$this->reload_languages();
@@ -437,9 +445,6 @@ class Config {
 			$config[$part] = $this->$part;
 		}
 		unset($part);
-		if (isset($config['routing']['current'])) {
-			unset($config['routing']['current']);
-		}
 		if ($cache_not_saved_mark) {
 			$config['core']['cache_not_saved'] = $this->core['cache_not_saved'] = true;
 		} else {
@@ -466,12 +471,6 @@ class Config {
 		}
 		foreach ($parts as $part) {
 			if (isset($this->data[$part])) {
-				if ($part == 'routing') {
-					$temp = $this->routing;
-					unset($temp['current']);
-					$query[] = '`'.$part.'` = '.$db->{0}->s(_json_encode($temp));
-					continue;
-				}
 				$query[] = '`'.$part.'` = '.$db->{0}->s(_json_encode($this->$part));
 			}
 		}
@@ -508,8 +507,7 @@ class Config {
 				'function'	=> isset($debug_backtrace['function']) ? $debug_backtrace['function'] : ''
 			];
 			/**
-			 * Allow to modify only $this->data['route']['current'].
-			 * Other modifications only for administrators or requests from methods of Config class
+			 * Modifications only for administrators or requests from methods of Config class
 			 */
 			if (
 				(
@@ -520,9 +518,6 @@ class Config {
 				$return = &$this->data[$item];
 			} else {
 				$return = $this->data[$item];
-				if ($item == 'routing') {
-					$return['current']	= &$this->data['routing']['current'];
-				}
 			}
 			return $return;
 		}

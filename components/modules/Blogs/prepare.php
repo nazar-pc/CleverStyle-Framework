@@ -22,7 +22,7 @@ if (!API) {
 	)) {
 		rebuild_pcache();
 	}
-	$rc					= &$Config->__get('routing')['current'];
+	$rc					= &$Config->route;
 	if (!isset($rc[0])) {
 		$rc[0]	= 'latest_posts';
 	}

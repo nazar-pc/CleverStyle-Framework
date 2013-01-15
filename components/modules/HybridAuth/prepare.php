@@ -8,7 +8,7 @@
  * @license		MIT License, see license.txt
  */
 global $Config, $User, $L, $Mail, $Page, $Index, $db, $Key;
-$rc			= $Config->routing['current'];
+$rc			= $Config->route;
 /**
  * If user is registered, provider not found or this is request for final authentication and session does not corresponds - return user to the base url
  */

@@ -66,7 +66,7 @@ class Index {
 			!(
 				$User->admin() ||
 				(
-					API && $Config->routing['current'] === ['user', 'login']
+					API && $Config->route === ['user', 'login']
 				)
 			)
 		) {
@@ -141,7 +141,7 @@ class Index {
 	 */
 	protected function init () {
 		global $Config, $L, $Page, $User;
-		$rc = &$Config->__get('routing')['current'];
+		$rc = &$Config->route;
 		if ($Config->core['simple_admin_mode'] && file_exists(MFOLDER.'/index_simple.json')) {
 			$structure_file	= 'index_simple.json';
 		} else {
@@ -336,7 +336,7 @@ class Index {
 				$L->$part,
 				[
 					'href'		=> ($this->admin ? 'admin/' : '').MODULE.'/'.$part,
-					'class'		=> isset($Config->routing['current'][0]) && $Config->routing['current'][0] == $part ? 'active' : ''
+					'class'		=> isset($Config->route[0]) && $Config->route[0] == $part ? 'active' : ''
 				]
 			);
 		}
@@ -353,8 +353,8 @@ class Index {
 			$Page->menumore .= h::a(
 				$L->$subpart,
 				[
-					'href'		=> ($this->admin ? 'admin/' : '').MODULE.'/'.$Config->routing['current'][0].'/'.$subpart,
-					'class'		=> $Config->routing['current'][1] == $subpart ? 'active' : ''
+					'href'		=> ($this->admin ? 'admin/' : '').MODULE.'/'.$Config->route[0].'/'.$subpart,
+					'class'		=> $Config->route[1] == $subpart ? 'active' : ''
 				]
 			);
 		}
@@ -470,7 +470,7 @@ class Index {
 				'	cookie_domain = "'.$Config->core['cookie_domain']."\",\n".
 				'	cookie_path = "'.$Config->core['cookie_path']."\",\n".
 				'	protocol = "'.$Config->server['protocol']."\",\n".
-				'	routing = '._json_encode($Config->routing['current']).';',
+				'	routing = '._json_encode($Config->route).';',
 				'code'
 			);
 			if (!$Config->core['cache_compress_js_css']) {
@@ -621,7 +621,7 @@ class Index {
 			!(
 				$User->admin() ||
 				(
-					API && $Config->routing['current'] === ['user', 'login']
+					API && $Config->route === ['user', 'login']
 				)
 			)
 		) {

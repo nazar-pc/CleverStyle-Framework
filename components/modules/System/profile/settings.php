@@ -89,7 +89,7 @@ if (isset($_POST['user']) && $_POST['edit_settings'] == 'save') {
 $Page->title($L->my_profile);
 $Page->title($L->settings);
 $Index->action	= path($L->profile).'/'.path($L->settings);
-switch (isset($Config->routing['current'][2]) ? $Config->routing['current'][2] : '') {
+switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 	default:
 		$Index->content(
 			h::{'a.cs-button'}(

@@ -9,7 +9,7 @@
 namespace	cs\modules\Blogs;
 use			\h;
 global $Index, $L, $Page, $Blogs, $Config;
-$section					= $Blogs->get_section($Config->routing['current'][1]);
+$section					= $Blogs->get_section($Config->route[1]);
 $Page->title($L->deletion_of_posts_section($section['title']));
 $Index->buttons				= false;
 $Index->cancel_button_back	= true;

@@ -9,7 +9,7 @@
 namespace	cs\modules\Blogs;
 use			\h;
 global $Index, $Blogs, $Page, $L, $User, $db, $Config;
-$rc						= array_slice($Config->routing['current'], 1);
+$rc						= array_slice($Config->route, 1);
 if (!isset($rc[0])) {
 	define('ERROR_PAGE', 404);
 	return;

@@ -10,7 +10,7 @@
 namespace	cs\modules\Blogs;
 use			\h;
 global $Index, $L, $Page, $Blogs, $Config;
-$id							= (int)$Config->routing['current'][1];
+$id							= (int)$Config->route[1];
 $data						= $Blogs->get_section($id);
 $Page->title($L->editing_of_posts_section($data['title']));
 $Index->apply_button		= false;

@@ -35,7 +35,7 @@ namespace	cs\modules\System;
 use			\h;
 global $Config, $Index, $L, $Core, $Cache, $Page;
 $a					= $Index;
-$rc					= $Config->routing['current'];
+$rc					= $Config->route;
 $a->buttons			= false;
 $show_modules		= true;
 if (

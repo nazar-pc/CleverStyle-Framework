@@ -8,7 +8,7 @@
  * @license		MIT License, see license.txt
  */
 global $Config, $Index, $User;
-$rc			= &$Config->__get('routing')['current'];
+$rc			= &$Config->route;
 $subparts	= _json_decode(file_get_contents(MFOLDER.'/index.json'))[$rc[0]];
 if (
 	(

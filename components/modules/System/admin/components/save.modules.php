@@ -26,7 +26,7 @@
  */
 global $Config, $Index, $User, $Core, $Cache;
 $a			= $Index;
-$rc			= $Config->routing['current'];
+$rc			= $Config->route;
 if (isset($_POST['update_modules_list'])) {
 	/**
 	 * List of currently presented modules in file system

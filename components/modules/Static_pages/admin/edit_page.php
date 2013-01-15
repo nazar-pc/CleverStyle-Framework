@@ -9,7 +9,7 @@
 namespace	cs\modules\Static_pages;
 use			\h;
 global $Index, $L, $Page, $Config, $Static_pages;
-$id							= (int)$Config->routing['current'][1];
+$id							= (int)$Config->route[1];
 $data						= $Static_pages->get($id);
 $Page->title($L->editing_of_page($data['title']));
 $Index->apply_button		= false;

@@ -27,7 +27,7 @@ $Index->content(
 			h::{'select[name=parent][size=5]'}(
 				get_categories_list(),
 				[
-					'selected'	=> isset($Config->routing['current'][1]) ? (int)$Config->routing['current'][1] : 0
+					'selected'	=> isset($Config->route[1]) ? (int)$Config->route[1] : 0
 				]
 			),
 			h::{'input[name=title]'}(),

@@ -82,7 +82,7 @@ $Index->content(
 				[
 					'name'		=> 'sections[]',
 					'disabled'	=> $disabled,
-					'selected'	=> isset($_POST['sections']) ? $_POST['sections'] : (isset($Config->routing['current'][1]) ? $Config->routing['current'][1] : []),
+					'selected'	=> isset($_POST['sections']) ? $_POST['sections'] : (isset($Config->route[1]) ? $Config->route[1] : []),
 					$max_sections < 1 ? 'multiple' : false
 				]
 			).

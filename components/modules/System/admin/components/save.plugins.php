@@ -15,7 +15,7 @@
  *  ['name'	=> <i>plugin_name</i>]
  */
 global $Config, $Index, $Core;
-$rc			= $Config->routing['current'];
+$rc			= $Config->route;
 $plugins	= get_files_list(PLUGINS, false, 'd');
 if (isset($_POST['mode'], $_POST['plugin'])) {
 	switch ($_POST['mode']) {

@@ -11,7 +11,7 @@ namespace	cs\modules\System\general\about_server;
 use			\h;
 global $L, $Core, $Index, $db, $PHP, $mcrypt, $Config;
 global ${$Core->config('db_type')};
-if (isset($Config->routing['current'][2]) && $Config->routing['current'][2] == 'phpinfo') {
+if (isset($Config->route[2]) && $Config->route[2] == 'phpinfo') {
 	interface_off();
 	ob_start();
 	phpinfo();

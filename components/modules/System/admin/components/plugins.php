@@ -11,7 +11,7 @@ namespace	cs\modules\System;
 use			\h;
 global $Config, $Index, $L;
 $a				= $Index;
-$rc				= $Config->routing['current'];
+$rc				= $Config->route;
 $plugins		= get_files_list(PLUGINS, false, 'd');
 $show_plugins	= true;
 $a->buttons		= false;

@@ -21,7 +21,7 @@ $Page->js([
 	'components/modules/'.MODULE.'/includes/js/general.js',
 	'components/modules/'.MODULE.'/includes/js/functions.js'
 ]);
-$rc					= $Config->routing['current'];
+$rc					= $Config->route;
 $Page->menumore		= h::a(
 	[
 		$L->general,

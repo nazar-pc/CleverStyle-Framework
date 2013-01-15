@@ -9,7 +9,7 @@
 namespace	cs\modules\Blogs;
 use			\h;
 global $Page, $Index, $L, $Blogs, $Config;
-$post = $Blogs->get($Config->routing['current'][1]);
+$post = $Blogs->get($Config->route[1]);
 $Page->title(
 	$L->editing_of_post($post['title'])
 );

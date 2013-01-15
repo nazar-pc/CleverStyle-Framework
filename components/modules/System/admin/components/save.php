@@ -8,7 +8,7 @@
  * @license		MIT License, see license.txt
  */
 global $Config;
-$rc = $Config->routing['current'];
+$rc = $Config->route;
 if (isset($rc[1])) {
 	_include_once(MFOLDER.'/'.$rc[0].'/save.'.$rc[1].'.php', false);
 }

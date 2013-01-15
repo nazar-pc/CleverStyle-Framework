@@ -9,7 +9,7 @@
 namespace	cs\modules\Static_pages;
 use			\h;
 global $Index, $L, $Config;
-$rc				= $Config->routing['current'];
+$rc				= $Config->route;
 $Index->buttons	= false;
 $Index->content(
 	h::{'table.cs-left-all.cs-fullwidth-table'}(

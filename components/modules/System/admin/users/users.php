@@ -15,7 +15,7 @@ function row ($col1, $col2) {
 }
 global $Config, $Index, $L, $User, $Page;
 $a				= $Index;
-$rc				= $Config->routing['current'];
+$rc				= $Config->route;
 $search_columns	= $User->get_users_columns();
 if (isset($rc[2], $rc[3])) {
 	$is_bot = in_array(3, (array)$User->get_user_groups($rc[3]));

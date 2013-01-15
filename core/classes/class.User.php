@@ -72,7 +72,7 @@ class User {
 		 * Detecting of current user
 		 * Last part in page path - key
 		 */
-		$rc = $Config->routing['current'];
+		$rc = $Config->route;
 		if (
 			$this->user_agent == 'CleverStyle CMS' &&
 			(

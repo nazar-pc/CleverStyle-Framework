@@ -18,7 +18,7 @@ $Page->menumore		= h::a(
 	$L->browse_page_categories,
 	[
 		'href'	=> 'admin/'.MODULE,
-		'class'	=> !isset($Config->routing['current'][0]) || $Config->routing['current'][0] == 'browse_sections' ? 'active' : false
+		'class'	=> !isset($Config->route[0]) || $Config->route[0] == 'browse_sections' ? 'active' : false
 	]
 );
 include_once MFOLDER.'/../class.php';
@@ -126,7 +126,7 @@ function get_categories_list ($current = null, $structure = null, $level = 0) {
 }
 function get_pages_rows () {
 	global $Config, $Static_pages, $L, $Page;
-	$categories	= array_slice($Config->routing['current'], 2);
+	$categories	= array_slice($Config->route, 2);
 	$structure	= $Static_pages->get_structure();
 	$path		= [];
 	if (!empty($categories)) {
