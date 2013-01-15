@@ -65,3 +65,8 @@ Requirements:
  * APC (Alternative PHP cache) module (recommended for system speed up)
 * MySQL Database server
  * System may be extended to support other databases
+
+How to install?
+=
+
+[Read simple instructions in our wiki](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)
