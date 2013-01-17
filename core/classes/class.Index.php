@@ -556,13 +556,13 @@ class Index {
 	/**
 	 * Saving changes and/or showing resulting message of saving changes
 	 *
-	 * @param bool|null|string	$parts	If bool - result will be shown only, otherwise works similar to the $Config->save() and shows resulting message
+	 * @param bool|null	$result	If bool - result will be shown only, otherwise works similar to the $Config->save() and shows resulting message
 	 *
 	 * @return bool
 	 */
-	function save ($parts = null) {
+	function save ($result = null) {
 		global $L, $Page, $Config;
-		if ($parts === true || (($parts === null || is_array($parts) || in_array($parts, $Config->admin_parts)) && $Config->save($parts))) {
+		if ($result === true || ($result === null && $Config->save())) {
 			$this->post_title = $L->changes_saved;
 			$Page->notice($L->changes_saved);
 			return true;
@@ -575,13 +575,13 @@ class Index {
 	/**
 	 * Applying changes and/or showing resulting message of applying changes
 	 *
-	 * @param bool|null|string	$parts	If bool - result will be shown only, otherwise works similar to the $Config->apply() and shows resulting message
+	 * @param bool|null|string	$result	If bool - result will be shown only, otherwise works similar to the $Config->apply() and shows resulting message
 	 *
 	 * @return bool
 	 */
-	function apply ($parts = null) {
+	function apply ($result = null) {
 		global $L, $Page, $Config;
-		if ($parts === true || ($parts === null && $Config->apply())) {
+		if ($result === true || ($result === null && $Config->apply())) {
 			$this->post_title = $L->changes_applied;
 			$Page->notice($L->changes_applied.$L->check_applied);
 			return true;
@@ -598,7 +598,9 @@ class Index {
 	 */
 	function cancel ($system = true) {
 		global $L, $Page, $Config;
-		$system && $Config->cancel();
+		if ($system) {
+			$Config->cancel();
+		}
 		$this->post_title = $L->changes_canceled;
 		$Page->notice($L->changes_canceled);
 	}

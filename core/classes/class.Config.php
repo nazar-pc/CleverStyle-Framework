@@ -12,7 +12,7 @@ namespace cs;
  *  ['rc'	=> <i>&$rc</i>]		//Reference to current routing string, this string can be changed<br>
  */
 class Config {
-	protected	$data	= [
+	protected	$data			= [
 					'core'			=> [],
 					'db'			=> [],
 					'storage'		=> [],
@@ -93,7 +93,7 @@ class Config {
 		}
 		if (!file_exists(MODULES.'/'.$this->core['default_module'])) {
 			$this->core['default_module']	= 'System';
-			$this->save('core');
+			$this->save();
 		}
 		/**
 		 * Address routing
@@ -264,7 +264,7 @@ class Config {
 		if (!empty($r['in'])) {
 			errors_off();
 			foreach ($r['in'] as $i => $search) {
-				$rc = preg_replace($search, $r['out'][$i], $rc) ?: str_replace($search, $r['out'], $rc);
+				$rc = preg_replace($search, $r['out'], $rc) ?: str_replace($search, $r['out'][$i], $rc);
 			}
 			errors_on();
 			unset($i, $search);
@@ -368,7 +368,7 @@ class Config {
 			asort($this->core['color_schemes'][$theme]);
 		}
 		if ($themes != $this->core['themes'] || $color_schemes != $this->core['color_schemes']) {
-			$this->save('core');
+			$this->save();
 		}
 	}
 	/**
@@ -384,7 +384,7 @@ class Config {
 		);
 		asort($this->core['languages']);
 		if ($languages != $this->core['languages']) {
-			$this->save('core');
+			$this->save();
 		}
 	}
 	/**
@@ -457,24 +457,21 @@ class Config {
 	}
 	/**
 	 * Saving settings
+	 *
+	 * @return bool
 	 */
-	function save ($parts = null) {
+	function save () {
 		global $db;
-		if ($parts === null || empty($parts)) {
-			$parts = $this->admin_parts;
-		} elseif (is_scalar($parts)) {
-			$parts = [$parts];
-		}
 		$query	= '';
 		if (isset($this->data['core']['cache_not_saved'])) {
 			unset($this->data['core']['cache_not_saved']);
 		}
-		foreach ($parts as $part) {
+		foreach ($this->admin_parts as $part) {
 			if (isset($this->data[$part])) {
 				$query[] = '`'.$part.'` = '.$db->{0}->s(_json_encode($this->$part));
 			}
 		}
-		unset($parts, $part, $temp);
+		unset($part, $temp);
 		$query	= implode(', ', $query);
 		if ($db->{0}->q("UPDATE `[prefix]config` SET $query WHERE `domain` = '%s' LIMIT 1", DOMAIN)) {
 			$this->apply_internal(false);
@@ -521,7 +518,8 @@ class Config {
 			}
 			return $return;
 		}
-		return false;
+		$return	= false;
+		return $return;
 	}
 	/**
 	 * Sets value of specified item if it is allowed
@@ -630,7 +628,7 @@ class Module_Properties {
 	 *
 	 * @return bool|mixed
 	 */
-	function &__get ($item) {
+	function __get ($item) {
 		return $this->get($item);
 	}
 	/**
@@ -649,13 +647,13 @@ class Module_Properties {
 	 *
 	 * @param string|string[]	$item
 	 *
-	 * @return array|bool|mixed
+	 * @return bool|mixed|mixed[]
 	 */
-	function &get ($item) {
+	function get ($item) {
 		if (is_array($item)) {
 			$result	= [];
 			foreach ($item as $i) {
-				$result[$i]	= &$this->get($i);
+				$result[$i]	= $this->get($i);
 			}
 			return $result;
 		} elseif (isset($this->module_data['data'], $this->module_data['data'][$item])) {
@@ -679,7 +677,7 @@ class Module_Properties {
 				$this->set_internal($i, $value, false);
 			}
 			global $Config;
-			return $Config->save('components');
+			return $Config->save();
 		} else {
 			return $this->set_internal($item, $value);
 		}
@@ -692,7 +690,7 @@ class Module_Properties {
 		}
 		$module_data['data'][$item]	= $value;
 		if ($save) {
-			return $Config->save('components');
+			return $Config->save();
 		}
 		return true;
 	}

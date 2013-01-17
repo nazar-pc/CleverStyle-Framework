@@ -142,7 +142,7 @@ if (
 					'storage'	=> []
 				];
 				unset($tmp_file, $module);
-				$Config->save('components');
+				$Config->save();
 			} elseif ($rc[3] == 'upload') {
 				break;
 			}

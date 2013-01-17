@@ -25,7 +25,7 @@ $Core->register_trigger(
 		)) {
 			return;
 		}
-		$providers		= $Config->module($module)->get('providers');
+		$providers		= $Config->module($module)->providers;
 		foreach ($providers as $provider => $pdata) {
 			if (!$pdata['enabled']) {
 				unset($providers[$provider]);

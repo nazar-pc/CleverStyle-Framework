@@ -189,7 +189,7 @@ if (isset($_POST['update_modules_list'])) {
 					'name'	=> $_POST['module']
 				]
 			);
-			$Config->save('components');
+			$Config->save();
 			if (isset($module_data['db']) && file_exists(MODULES.'/'.$_POST['module'].'/meta/db.json')) {
 				$db_json = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/meta/db.json'));
 				global $db;

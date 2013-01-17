@@ -39,7 +39,10 @@ if ($_POST['edit_settings'] == 'apply' || $_POST['edit_settings'] == 'save') {
 					case 'mirrors_cookie_path':
 					case 'ip_black_list':
 					case 'ip_admin_list':
-						$value	= explode("\n", $value);
+						$value	= _trim(explode("\n", $value));
+						if ($value[0] == '') {
+							$value	= [];
+						}
 				}
 				$temp[$item] = xap($value, true);
 				if ($item == 'theme') {
