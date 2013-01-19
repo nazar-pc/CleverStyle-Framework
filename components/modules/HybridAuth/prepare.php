@@ -323,7 +323,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					$body
 				)) {
 					_setcookie('HybridAuth_referer', '');
-					$Index->content($L->hybridauth_merge_confirmation($L->{$rc[0]}));
+					$Index->content($L->hybridauth_merge_confirmation());
 				} else {
 					$User->registration_cancel();
 					$Page->title($L->sending_reg_mail_error_title);
