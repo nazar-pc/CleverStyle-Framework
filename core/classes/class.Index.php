@@ -470,7 +470,7 @@ class Index {
 				'	cookie_domain = "'.$Config->core['cookie_domain']."\",\n".
 				'	cookie_path = "'.$Config->core['cookie_path']."\",\n".
 				'	protocol = "'.$Config->server['protocol']."\",\n".
-				'	routing = '._json_encode($Config->route).';',
+				'	route = '._json_encode($Config->route).';',
 				'code'
 			);
 			if (!$Config->core['cache_compress_js_css']) {
