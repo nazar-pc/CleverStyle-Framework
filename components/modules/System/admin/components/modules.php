@@ -383,7 +383,7 @@ if (
 		break;
 		case 'enable':
 			$Config->components['modules'][$rc[3]]['active'] = 1;
-			$a->save('components');
+			$a->save();
 			$Core->run_trigger(
 				'admin/System/components/modules/enable',
 				[
@@ -394,7 +394,7 @@ if (
 		break;
 		case 'disable':
 			$Config->components['modules'][$rc[3]]['active'] = 0;
-			$a->save('components');
+			$a->save();
 			$Core->run_trigger(
 				'admin/System/components/modules/disable',
 				[

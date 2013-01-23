@@ -72,7 +72,7 @@ if (isset($_POST['update_modules_list'])) {
 	unset($new_modules, $old_modules);
 	$modules			= array_merge($modules_list, array_intersect_key($modules, $modules_list));
 	ksort($modules);
-	$a->save('components');
+	$a->save();
 } elseif (isset($_POST['mode'], $_POST['module'], $Config->components['modules'][$_POST['module']])) {
 	$module_data = &$Config->components['modules'][$_POST['module']];
 	switch ($_POST['mode']) {
@@ -167,7 +167,7 @@ if (isset($_POST['update_modules_list'])) {
 				}
 			}
 			unset($permissions, $group, $list, $label);
-			$a->save('components');
+			$a->save();
 		break;
 		case 'uninstall':
 			if ($module_data['active'] == -1 || $_POST['module'] == 'System' || $_POST['module'] == $Config->core['default_module']) {
@@ -222,7 +222,7 @@ if (isset($_POST['update_modules_list'])) {
 				$User->del_permission($permissions_ids);
 			}
 			$module_data			= ['active' => -1];
-			$a->save('components');
+			$a->save();
 		break;
 		case 'default_module':
 			if (
@@ -243,7 +243,7 @@ if (isset($_POST['update_modules_list'])) {
 				]
 			)) {
 				$Config->core['default_module'] = $_POST['module'];
-				$a->save('core');
+				$a->save();
 			}
 		break;
 		case 'db':
@@ -255,7 +255,7 @@ if (isset($_POST['update_modules_list'])) {
 			)) {
 				if (isset($_POST['db']) && is_array($_POST['db']) && count($Config->db) > 1) {
 					$module_data['db'] = xap($_POST['db']);
-					$a->save('components');
+					$a->save();
 				}
 			}
 		break;
@@ -268,7 +268,7 @@ if (isset($_POST['update_modules_list'])) {
 			)) {
 				if(isset($_POST['storage']) && is_array($_POST['storage']) && count($Config->storage) > 1) {
 					$module_data['storage'] = xap($_POST['storage']);
-					$a->save('components');
+					$a->save();
 				}
 			}
 		break;

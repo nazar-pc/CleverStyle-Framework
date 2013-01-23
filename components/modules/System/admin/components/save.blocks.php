@@ -74,7 +74,7 @@ if (isset($_POST['mode'])) {
 				unset($Cache->{'blocks/'.$block['index'].'_'.$L->clang});
 			}
 			unset($block, $block_new);
-			$a->save('components');
+			$a->save();
 		break;
 		case 'delete':
 			if (isset($_POST['id'], $Config->components['blocks'][$_POST['id']])) {
@@ -102,7 +102,7 @@ if (isset($_POST['mode'])) {
 					$block,
 					$Config->components['blocks'][$_POST['id']]
 				);
-				$a->save('components');
+				$a->save();
 			}
 		break;
 		case 'permissions':
@@ -157,7 +157,7 @@ if (isset($_POST['mode'])) {
 				$Config->components['blocks']	= $blocks_array;
 				unset($blocks_array, $position, $items, $item);
 				if ($_POST['edit_settings'] == 'save') {
-					$a->save('components');
+					$a->save();
 				} else {
 					$a->apply();
 				}

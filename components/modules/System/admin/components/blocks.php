@@ -24,14 +24,14 @@ if (isset($rc[2])) {
 				break;
 			}
 			$Config->components['blocks'][$rc[3]]['active'] = 1;
-			$a->save('components');
+			$a->save();
 		break;
 		case 'disable':
 			if (!isset($rc[3], $Config->components['blocks'][$rc[3]])) {
 				break;
 			}
 			$Config->components['blocks'][$rc[3]]['active'] = 0;
-			$a->save('components');
+			$a->save();
 			global $Cache;
 			unset($Cache->{'blocks/'.$Config->components['blocks'][$rc[3]]['index']});
 		break;
