@@ -215,7 +215,7 @@ class Language {
 	/**
 	 * Time formatting according to the current language (adding correct endings)
 	 *
-	 * @param int $in		time in seconds
+	 * @param int $in		time (number)
 	 * @param string $type	Type of formatting<br>
 	 * 						s - seconds<br>m - minutes<br>h - hours<br>d - days<br>M - months<br>y - years
 	 *

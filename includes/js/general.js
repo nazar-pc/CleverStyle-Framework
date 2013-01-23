@@ -224,7 +224,7 @@ $(function() {
 				);
 			});
 			$('#block_users_search_results').load(
-				current_base_url+'/'+routing[0]+'/'+routing[1]+'/search_users',
+				current_base_url+'/'+route[0]+'/'+route[1]+'/search_users',
 				{
 					found_users		: $('#block_users_search_found').val(),
 					permission		: $(this).attr('permission'),

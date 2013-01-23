@@ -8,15 +8,24 @@
  * @license		MIT License, see license.txt
  */
 global $Config, $User, $L, $Mail, $Page, $Index, $db, $Key;
-$rc			= $Config->route;
+$rc			= $Config->routing['current'];
 /**
  * If user is registered, provider not found or this is request for final authentication and session does not corresponds - return user to the base url
  */
 if (
 	$User->user() ||
 	!(
-		isset($rc[0], $Config->module(MODULE)->providers[$rc[0]]) &&
-		$Config->module(MODULE)->providers[$rc[0]]['enabled']
+		isset($rc[0]) &&
+		(
+			(
+				$Config->module(MODULE)->providers[$rc[0]] &&
+				$Config->module(MODULE)->providers[$rc[0]]['enabled']
+			) ||
+			(
+				$rc[0] == 'merge_confirmation' &&
+				isset($rc[1])
+			)
+		)
 	) ||
 	(
 		isset($rc[2]) && strpos($rc[2], $User->get_session()) !== 0
@@ -30,11 +39,12 @@ if (
 /**
  * Merging confirmation
  */
-if (isset($rc[1]) && $rc[1] == 'merge_confirmation') {
+$db_id	= $Config->module(MODULE)->db('integration');
+if (isset($rc[1]) && $rc[0] == 'merge_confirmation') {
 	/**
 	 * If confirmation key is valid - make merging
 	 */
-	if ($data = $Key->get($db_id, $rc[1])) {
+	if ($data = $Key->get($db_id, $rc[1], true)) {
 		$db->$db_id()->q(
 			"INSERT INTO `[prefix]users_social_integration`
 				(
@@ -91,7 +101,6 @@ if (
 	_setcookie('HybridAuth_referer', $_SERVER['HTTP_REFERER']);
 }
 require_once __DIR__.'/Hybrid/Auth.php';
-$db_id	= $Config->module(MODULE)->db('integration');
 /**
  * Authentication endpoint
  */
@@ -308,7 +317,8 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 				$confirm_key				= $Key->add(
 					$db_id,
 					false,
-					$HybridAuth_data
+					$HybridAuth_data,
+					TIME + $Config->core['registration_confirmation_time'] * 86400
 				);
 				$body						= $L->hybridauth_merge_confirmation_mail_body(
 					$User->get_username($id) ?: strstr($_POST['email'], '@', true),
@@ -323,7 +333,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					$body
 				)) {
 					_setcookie('HybridAuth_referer', '');
-					$Index->content($L->hybridauth_merge_confirmation());
+					$Index->content($L->hybridauth_merge_confirmation($L->{$rc[0]}));
 				} else {
 					$User->registration_cancel();
 					$Page->title($L->sending_reg_mail_error_title);

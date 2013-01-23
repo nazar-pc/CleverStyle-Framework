@@ -768,6 +768,7 @@ class h {
 		} elseif (isset($data[1]) && $data[1] === false && !isset($data[2])) {
 			unset($data[1]);
 		}
+		$input	= trim($input);
 		/**
 		 * Analysis of called tag. If space found - nested tags presented
 		 */

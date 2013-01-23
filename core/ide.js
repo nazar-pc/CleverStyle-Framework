@@ -21,7 +21,7 @@ var L = {},
 	cookie_domain = '',
 	cookie_path = '',
 	protocol = '',
-	routing = [];
+	route = [];
 debug_window();
 admin_cache();
 db_test();

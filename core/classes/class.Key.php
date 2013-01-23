@@ -45,7 +45,7 @@ class Key {
 	 *
 	 * @return bool
 	 */
-	function add ($database, $key = false, $data = null, $expire = 0) {
+	function add ($database, $key, $data = null, $expire = 0) {
 		global $db, $Config;
 		if (!is_object($database)) {
 			$database = $db->$database();
@@ -88,19 +88,19 @@ class Key {
 				WHERE `expire` < $time"
 			);
 		}
-		return $id;
+		return $key;
 	}
 	/**
 	 * Check key existence and/or getting of data stored with key
 	 *
 	 * @param int				$database	Keys database
-	 * @param int|string		$id_key		56 character [0-9a-z] key or id of record in daravase
+	 * @param string			$key		56 character [0-9a-z] key
 	 * @param bool $get_data				If <b>true</d> - stored data will be returned on success, otherwise boolean result of key existence will be returned
 	 *
 	 * @return bool|mixed
 	 */
-	function get ($database, $id_key, $get_data = false) {
-		if (!(is_int($id_key) || preg_match('/^[a-z0-9]{56}$/', $id_key))) {
+	function get ($database, $key, $get_data = false) {
+		if (!preg_match('/^[a-z0-9]{56}$/', $key)) {
 			return false;
 		}
 		global $db;
@@ -115,14 +115,13 @@ class Key {
 			FROM `[prefix]keys`
 			WHERE
 				(
-					`id`	= '$id_key' OR
-					`key`	= '$id_key'
+					`key`	= '$key'
 				) AND
 				`expire` >= $time
 			ORDER BY `id` DESC
 			LIMIT 1"
 		]);
-		$this->del($database, $id_key);
+		$this->del($database, $key);
 		if (!$result || !is_array($result) || empty($result)) {
 			return false;
 		} elseif ($get_data) {
@@ -135,19 +134,19 @@ class Key {
 	 * Key deletion from database
 	 *
 	 * @param int|object	$database	Keys database
-	 * @param int|string	$id_key		56 character [0-9a-z] key or id of record in daravase
+	 * @param string		$key		56 character [0-9a-z] key
 	 *
 	 * @return bool
 	 */
-	function del ($database, $id_key) {
-		if (!(is_int($id_key) || preg_match('/^[a-z0-9]{56}$/', $id_key))) {
+	function del ($database, $key) {
+		if (!preg_match('/^[a-z0-9]{56}$/', $key)) {
 			return false;
 		}
 		global $db;
 		if (!is_object($database)) {
 			$database = $db->$database();
 		}
-		$id_key = $database->s($id_key);
+		$key = $database->s($key);
 		return $database->q(
 			"UPDATE `[prefix]keys`
 			SET
@@ -156,8 +155,8 @@ class Key {
 				`key`		= null
 			WHERE
 				(
-					`id`	= '$id_key' OR
-					`key`	= '$id_key'
+					`id`	= '$key' OR
+					`key`	= '$key'
 				)"
 		);
 	}

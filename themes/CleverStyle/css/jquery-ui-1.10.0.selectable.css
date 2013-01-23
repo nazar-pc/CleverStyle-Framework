@@ -1,0 +1,14 @@
+/*ui-state-hover*/
+.ui-selecting {
+	border: 1px solid #333333;
+	background: #555555 url(images/ui-bg_highlight-soft_40_555555_1x100.png) 50% 50% repeat-x;
+	font-weight: bold;
+	color: #ffffff;
+}
+/*ui-state-active*/
+.ui-selected {
+	border: 1px solid #333333;
+	background: #6ebc00 url(images/ui-bg_highlight-soft_80_6ebc00_1x100.png) 50% 50% repeat-x;
+	font-weight: bold;
+	color: #222222;
+}
