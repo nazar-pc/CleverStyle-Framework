@@ -4,7 +4,7 @@
  * @package		CleverStyle CMS
  * @subpackage	Installer
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
 define('DIR',	__DIR__);													//Path to installer dir
@@ -35,5 +35,5 @@ echo	h::title('CleverStyle CMS $version$ Installation').
 			isset($_POST['site_name']) ? install_process() : install_form()
 		).
 		h::footer(
-			'Copyright (c) 2011-2012, Nazar Mokrynskyi'
+			'Copyright (c) 2011-2013, Nazar Mokrynskyi'
 		);

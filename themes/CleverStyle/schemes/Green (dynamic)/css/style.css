@@ -2,7 +2,7 @@
  * @package		CleverStyle CMS
  * @subpackage	CleverStyle theme
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
 body {
@@ -19,12 +19,9 @@ body > footer > div > a {
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.25);
 }
-#main_content {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-}
 #main_content > div {
   background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 11px rgba(255, 255, 255, 0.25), 0 0 0 10px rgba(0, 0, 0, 0.15);
 }
 a {
   color: #000;
@@ -42,11 +39,13 @@ a {
 .cs-header-green {
   background-color: #6ebc00;
   background-image: linear-gradient(to bottom, #cbff81 0%, #6ebc00 80%);
+  background-image: -webkit-linear-gradient(top, #cbff81 0%, #6ebc00 80%);
 }
 .cs-header-black {
   background-color: #7d7d7d;
   background-image: linear-gradient(to bottom, #7d7d7d 0%, #000000 90%);
-  box-shadow: 0 0 20px #7d7d7d;
+  background-image: -webkit-linear-gradient(top, #7d7d7d 0%, #000000 90%);
+  box-shadow: 0 0 20px #000000;
 }
 .cs-header-user {
   background-color: rgba(255, 255, 255, 0.5);

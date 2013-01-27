@@ -131,16 +131,20 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 		/**
 		 * Check whether this account was already registered in system. If registered - make login
 		 */
-		if ($id	= $db->$db_id->qfs([
-			"SELECT `id`
-			FROM `[prefix]users_social_integration`
-			WHERE
-				`provider`		= '%s' AND
-				`identifier`	= '%s'
-			LIMIT 1",
-			$rc[0],
-			$profile->identifier
-		])) {
+		if (
+			(
+				$id	= $db->$db_id->qfs([
+					"SELECT `id`
+					FROM `[prefix]users_social_integration`
+					WHERE
+						`provider`		= '%s' AND
+						`identifier`	= '%s'
+					LIMIT 1",
+					$rc[0],
+					$profile->identifier
+				])
+			) && $User->get('status', $id) == '1'
+		) {
 			$User->add_session($id);
 			header('Location: '._getcookie('HybridAuth_referer'));
 			_setcookie('HybridAuth_referer', '');

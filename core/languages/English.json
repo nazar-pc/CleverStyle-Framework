@@ -78,7 +78,7 @@
 	"registration_prohibited"					: "Registration is prohibited",
 	"please_type_your_email"					: "Please, type your email",
 	"please_type_correct_email"					: "Please, type correct email",
-	"reg_error_exists"							: "Registration error: user with this email address already exists, try remember, maybe you are registered, and if you forgot your password - it can be restored.",
+	"reg_error_exists"							: "Registration error: user with such email address already exists, try to remember, maybe you are registered (if you forgot your password - it can be restored)",
 	"reg_server_error"							: "Registration error: fault on the server. Wait for several minutes, please, and try again.",
 	"reg_connection_error"						: "Registration error: connection to the server failed. Check your internet connection and try again.",
 	"rules_agree"								: "Do you agree with the terms of the site?",

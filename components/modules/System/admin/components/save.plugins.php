@@ -4,7 +4,7 @@
  * @subpackage	System module
  * @category	modules
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
 /**
@@ -22,7 +22,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 		case 'enable':
 			if (!in_array($_POST['plugin'], $Config->components['plugins']) && in_array($_POST['plugin'], $plugins)) {
 				$Config->components['plugins'][] = $_POST['plugin'];
-				$Index->save('components');
+				$Index->save();
 				$Core->run_trigger(
 					'admin/System/components/plugins/enable',
 					[
@@ -40,7 +40,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 					}
 				}
 				unset($i, $plugin);
-				$Index->save('components');
+				$Index->save();
 				$Core->run_trigger(
 					'admin/System/components/plugins/disable',
 					[

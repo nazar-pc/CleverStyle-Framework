@@ -2,7 +2,7 @@
 /**
  * @package		CleverStyle CMS
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
 /**
@@ -1946,6 +1946,7 @@ class User {
 		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			return false;
 		}
+		$this->delete_unconfirmed_users();
 		if (!$Core->run_trigger(
 			'System/User/registration/before',
 			[
@@ -2068,16 +2069,7 @@ class User {
 			$this->registration_cancel();
 			return false;
 		}
-		$reg_date		= TIME - $Config->core['registration_confirmation_time'] * 86400;	//1 day = 86400 seconds
-		$ids			= $this->db_prime()->qfas(
-			"SELECT `id`
-			FROM `[prefix]users`
-			WHERE
-				`last_login`	= 0 AND
-				`status`		= '-1' AND
-				`reg_date`		< $reg_date"
-		);
-		$this->del_user($ids);
+		$this->delete_unconfirmed_users();
 		$data			= $this->db_prime()->qf(
 			"SELECT
 				`id`,
@@ -2130,6 +2122,23 @@ class User {
 		$this->add_session(1);
 		$this->del_user($this->reg_id);
 		$this->reg_id = 0;
+	}
+	/**
+	 * Checks for unconfirmed registrations and deletes expired
+	 */
+	protected function delete_unconfirmed_users () {
+		global $Config;
+		$reg_date		= TIME - $Config->core['registration_confirmation_time'] * 86400;	//1 day = 86400 seconds
+		$ids			= $this->db_prime()->qfas(
+			"SELECT `id`
+			FROM `[prefix]users`
+			WHERE
+				`last_login`	= 0 AND
+				`status`		= '-1' AND
+				`reg_date`		< $reg_date"
+		);
+		$this->del_user($ids);
+
 	}
 	/**
 	 * Restoring of password

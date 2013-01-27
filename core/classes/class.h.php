@@ -2,7 +2,7 @@
 /**
  * @package		CleverStyle CMS
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
 /**
@@ -160,10 +160,14 @@ class h {
 	 * @return string
 	 */
 	static function url ($url, $absolute = false) {
-		if (
+		if (substr($url, 0, 1) == '#') {
+			global $Config;
+			if (is_object($Config)) {
+				return $Config->base_url().'/'.$Config->server['raw_relative_address'].$url;
+			}
+		} elseif (
 			substr($url, 0, 5) != 'data:' &&
 			substr($url, 0, 1) != '/' &&
-			substr($url, 0, 1) != '#' &&
 			substr($url, 0, 7) != 'http://' &&
 			substr($url, 0, 8) != 'https://'
 		) {

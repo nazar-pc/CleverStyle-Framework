@@ -4,7 +4,7 @@
  * @subpackage	System module
  * @category	modules
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
 if (!isset($_POST['mode'])) {
@@ -47,6 +47,6 @@ if ($_POST['mode'] == 'add') {
 	_include_once(MFOLDER.'/'.$Index->savefile.'.php', false);
 }
 if ($update) {
-	$Index->save('db');
+	$Index->save();
 }
 unset($update);

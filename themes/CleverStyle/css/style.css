@@ -2,7 +2,7 @@
  * @package		CleverStyle CMS
  * @subpackage	CleverStyle theme
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
 body {
@@ -78,6 +78,9 @@ textarea.cs-wide-textarea {
 #users_raw_edit textarea,
 #users_edit textarea {
   width: 250px;
+}
+.cs-pointer {
+  cursor: pointer;
 }
 .cs-button-compact > span {
   padding: 2px 3px !important;
@@ -443,9 +446,6 @@ h6 {
   margin: 5px;
   width: 128px;
 }
-.cs-pointer {
-  cursor: pointer;
-}
 hr {
   border: 0;
   background-color: #9e9e9e;
@@ -489,6 +489,18 @@ hr {
   border-radius: 5px;
   padding: 10px;
   height: 100%;
+}
+#main_content > div {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  float: left;
+  width: 100%;
+}
+#main_content:after {
+  content: '';
+  clear: both;
+  display: block;
 }
 #top_blocks,
 #bottom_blocks,

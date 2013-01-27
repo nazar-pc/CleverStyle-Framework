@@ -2,7 +2,7 @@
  * @package		CleverStyle CMS
  * @subpackage	CleverStyle theme
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
 
@@ -35,9 +35,10 @@ body {
 }
 
 #main_content {
-	#body;
 	> div {
 		background : fade(@base-bg, 95%);
+		box-shadow : 0 0 0 11px fade(@base-bg, 25%),
+					 0 0 0 10px fade(#000, 15%);
 	}
 }
 

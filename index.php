@@ -3,13 +3,12 @@
  * @package		CleverStyle CMS
  * @version		$version$
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
 
 /**
- * Minimal requirements for full-featured work:
- * Versions of server software:
+ * Requirements of server software versions for full-featured work:
  * * Apache Web Server				>= 2
  *  * PHP							>= 5.4;
  *   Presence of PHP libraries:

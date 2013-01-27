@@ -26,7 +26,7 @@ Installation builds of core and components can be found on [downloads page](http
 
 Author – Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
-Copyright (c) 2011-2012, Nazar Mokrynskyi
+Copyright (c) 2011-2013, Nazar Mokrynskyi
 
 Main features
 =

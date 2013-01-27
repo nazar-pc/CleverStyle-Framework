@@ -1,18 +1,10 @@
 /**
  * @package		CleverStyle CMS
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2012, Nazar Mokrynskyi
+ * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
 $(function() {
-	if (
-		($.browser.msie && $.browser.version < 10) ||
-		($.browser.opera && $.browser.version < 11.1) ||
-		($.browser.webkit && $.browser.version < 534.24) ||
-		($.browser.mozilla && $.browser.version < 4)
-	) {
-		alert('Go away with your old browser! And come back with newer version, than now:)');
-	}
 	var data = {};
 	data[session_id] = session_id;
 	$.ajaxSetup({
