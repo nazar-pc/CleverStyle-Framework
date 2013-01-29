@@ -8,7 +8,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\System;
-use			\h;
+use			h;
 global $Config, $Index;
 $Config->reload_themes();
 $Index->content(

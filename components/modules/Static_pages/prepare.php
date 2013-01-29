@@ -7,7 +7,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Static_pages;
-use			\h;
+use			h;
 global $Core, $Index, $Config, $Static_pages;
 include_once MFOLDER.'/class.php';
 $Core->create('cs\\modules\\Static_pages\\Static_pages');
@@ -28,6 +28,7 @@ if ($data['interface']) {
 	}
 	$Page->Keywords		= keywords($data['title']);
 	$Page->Description	= description($data['content']);
+	$Page->og('type', 'article');
 	$Page->content(
 		h::section($data['content'])
 	);

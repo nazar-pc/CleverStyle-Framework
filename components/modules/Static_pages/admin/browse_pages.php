@@ -7,7 +7,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Static_pages;
-use			\h;
+use			h;
 global $Index, $L, $Config;
 $rc				= $Config->route;
 $Index->buttons	= false;

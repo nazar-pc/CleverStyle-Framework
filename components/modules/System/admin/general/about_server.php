@@ -8,7 +8,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\System\general\about_server;
-use			\h;
+use			h;
 global $L, $Core, $Index, $db, $PHP, $mcrypt, $Config;
 global ${$Core->config('db_type')};
 if (isset($Config->route[2]) && $Config->route[2] == 'phpinfo') {

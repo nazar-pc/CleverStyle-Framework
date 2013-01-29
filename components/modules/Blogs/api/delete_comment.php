@@ -7,7 +7,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			\h;
+use			h;
 global $Config, $User, $Page, $Blogs, $L;
 include_once MFOLDER.'/../prepare.php';
 /**

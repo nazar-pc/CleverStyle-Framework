@@ -7,7 +7,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			\h;
+use			h;
 global $Page, $Index, $L, $User, $Config;
 $Page->title($L->new_post);
 if (!$User->user()) {

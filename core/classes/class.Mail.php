@@ -6,7 +6,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-use			\h;
+use			h;
 class Mail extends \PHPMailer {
 	/**
 	 * Setting base mail sending parameters according to system configuration

@@ -8,7 +8,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\System;
-use			\h;
+use			h;
 global $Config, $Index, $L, $Core;
 $Config->reload_languages();
 $translate_engines			= _mb_substr(get_files_list(ENGINES.'/Text', '/^[^_].*?\.php$/i', 'f'), 0, -4);

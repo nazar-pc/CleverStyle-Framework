@@ -15,6 +15,7 @@ use			\Closure;
  *   'clang'			=> <i>clang</i><br>
  *   'clanguage_en'		=> <i>clanguage_en</i><br>
  *   'content_language'	=> <i>content_language</i><br>
+ *   'locale'			=> <i>locale</i><br>
  *  ]</code>
  */
 class Language {
@@ -81,7 +82,8 @@ class Language {
 					'clanguage'			=> $this->clanguage,
 					'clang'				=> $this->clang,
 					'clanguage_en'		=> $this->clanguage_en,
-					'content_language'	=> $this->content_language
+					'content_language'	=> $this->content_language,
+					'locale'			=> $this->locale
 				]
 			);
 			$Cache->{'languages/'.$this->clanguage} = $this->translate;
@@ -110,9 +112,19 @@ class Language {
 			unset($aliases_list, $alias);
 			$Cache->{'languages/aliases'} = $aliases;
 		}
-		$accept_languages = explode(',', strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']));
+		$accept_languages = str_replace(
+			'-',
+			'_',
+			explode(',', strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']))
+		);
+		foreach (_strtolower($_SERVER) as $i => $v) {
+			if (preg_match('/.*locale/i', $i)) {
+				$accept_languages[]	= strtolower($v);
+			}
+		}
+		unset($i, $v);
 		foreach ($accept_languages as $index => $language) {
-			$index = substr($index, 0, strpos($index, ';'));
+			$index = explode(';', $index, 2)[0];
 			if (in_array($index, $aliases) && in_array($index, $active_languages)) {
 				_setcookie('language', $language);
 				return $language;
@@ -123,12 +135,25 @@ class Language {
 	/**
 	 * Get translation
 	 *
-	 * @param string	$item
+	 * @param string		$item
+	 * @param bool|string	$language	If specified - translation for specified language will be returned, otherwise for current
 	 *
 	 * @return string
 	 */
-	function get ($item) {
-		return isset($this->translate[$item]) ? $this->translate[$item] : ucfirst(str_replace('_', ' ', $item));
+	function get ($item, $language = false) {
+		if (!$language) {
+			return isset($this->translate[$item]) ? $this->translate[$item] : ucfirst(str_replace('_', ' ', $item));
+		}
+		global $Cache;
+		if ($translate = $Cache->{'languages/'.$language}) {
+			return isset($translate[$item]) ? $translate[$item] : ucfirst(str_replace('_', ' ', $item));
+		}
+		unset($translate);
+		$current_language	= $this->clanguage;
+		$this->change($language);
+		$return				= isset($this->translate[$item]) ? $this->translate[$item] : ucfirst(str_replace('_', ' ', $item));
+		$this->change($current_language);
+		return $return;
 	}
 	/**
 	 * Set translation
@@ -193,11 +218,14 @@ class Language {
 			} elseif (file_exists(LANGUAGES.'/'.$this->clanguage.'.json')) {
 				$this->translate				= _json_decode_nocomments(file_get_contents(LANGUAGES.'/'.$this->clanguage.'.json'));
 				$this->translate['clanguage']	= $this->clanguage;
-				if(!isset($this->translate['clang'])) {
+				if (!isset($this->translate['clang'])) {
 					$this->translate['clang']		= mb_strtolower(mb_substr($this->clanguage, 0, 2));
 				}
-				if(!isset($this->translate['clanguage_en'])) {
+				if (!isset($this->translate['clanguage_en'])) {
 					$this->translate['clanguage_en']	= $this->clanguage;
+				}
+				if (!isset($this->translate['locale'])) {
+					$this->translate['locale']			= $this->clang.'_'.strtoupper($this->clang);
 				}
 				header('Content-Language: '.$this->translate['content_language']);
 				$this->need_to_rebuild_cache	= true;

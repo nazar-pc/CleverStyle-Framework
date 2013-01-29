@@ -3,6 +3,7 @@
 	"clanguage_en"		: "russian",
 	"clang"				: "ru",
 	"content_language"	: "ru",
+	"locale"			: "ru_RU",
 //Regional parameters, syntaxis of PHP function date()
 	"_datetime_long"	: "l, d F Y, H:i",
 	"_datetime"			: "d.m.Y H:i",
@@ -174,6 +175,8 @@
 		"show_footer_info"			: "Показывать информацию внизу",
 		"show_footer_info_info"		: "Отображение информации о времени генерации страницы сервером, количестве запросов в БД и объеме потребляемой памяти",
 		"show_tooltips"				: "Показывать подсказки",
+		"og_support"				: "Поддержка Open Graph protocol",
+		"og_support_info"			: "Включает функциональность ядра и компонентов для легкого обеспечения поддержки Open Graph protocol",
 		"simple_admin_mode"			: "Простой режим администрирования",
 		"simple_admin_mode_info"	: "Некоторый функционал может быть слишком сложным в настройке, и даже избыточным для начинающего администратора. Эта опция позволяет скрыть некоторые настройки, сделав управление системой проще и понятнее.",
 		"debug"						: "Отладка",

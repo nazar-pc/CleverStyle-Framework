@@ -8,7 +8,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\System\users\users;
-use			\h;
+use			h;
 function row ($col1, $col2) {
 	return	h::{'th.ui-widget-header.ui-corner-all'}($col1).
 			  h::{'td.ui-widget-content.ui-corner-all'}($col2);

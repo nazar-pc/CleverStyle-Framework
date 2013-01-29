@@ -7,7 +7,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Static_pages;
-use			\h;
+use			h;
 global $Index, $L, $Page, $Config;
 $Page->title($L->adding_of_page);
 $Index->apply_button		= false;

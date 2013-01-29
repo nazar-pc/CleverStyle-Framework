@@ -43,7 +43,7 @@ class h {
 			'param'
 		];
 	/**
-	 * Line paddings for a structured source code
+	 * Line padding for a structured source code
 	 *
 	 * @static
 	 *
@@ -88,7 +88,7 @@ class h {
 			}
 			unset($i, $item);
 		}
-		if (in_array('no-label', $data)) {
+		if (in_array('no-label', $data, true)) {
 			$label				= false;
 			unset($data[array_search('no-label', $data)]);
 		} else {

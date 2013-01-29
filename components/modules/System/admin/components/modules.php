@@ -32,7 +32,7 @@
  *  ['name'	=> <i>module_name</i>]
  */
 namespace	cs\modules\System;
-use			\h;
+use			h;
 global $Config, $Index, $L, $Core, $Cache, $Page;
 $a					= $Index;
 $rc					= $Config->route;

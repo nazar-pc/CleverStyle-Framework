@@ -7,7 +7,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			\h;
+use			h;
 global $Index, $L, $Page, $Config;
 $module_configuration	= $Config->module(MODULE);
 $Index->apply_button	= false;

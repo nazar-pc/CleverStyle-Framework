@@ -6,8 +6,8 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-use			\Closure,
-			\h;
+use			Closure,
+			h;
 /**
  * Core class.
  * Provides loading of system configuration, creating of global objects, encryption, API requests sending, and triggers processing.

@@ -7,7 +7,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Scheduled_tasks;
-use			\h;
+use			h;
 global $Index, $L;
 $Index->apply_button	= false;
 $Index->content(

@@ -8,7 +8,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\System;
-use			\h;
+use			h;
 function set_core_ml_text ($item, $text) {
 	global $Config, $Text;
 	return $Text->set($Config->module('System')->db('texts'), 'System/Config/core', $item, $text);

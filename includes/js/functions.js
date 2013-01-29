@@ -73,9 +73,10 @@ function progress_update (element) {
  * @param added
  */
 function db_test (url, added) {
-	$('#test_db').html('<div id="test_progress"></div>');
+	var test_db	= $('#test_db');
+	test_db.html('<div id="test_progress"></div>');
 	$($('#test_progress')).progressbar({value: 1});
-	$('#test_db').dialog('open');
+	test_db.dialog('open');
 	var test_interval	= setInterval(
 		function () {
 			progress_update('#test_progress');
@@ -118,9 +119,10 @@ function db_test (url, added) {
  * @param added
  */
 function storage_test (url, added) {
-	$('#test_storage').html('<div id="test_progress"></div>');
+	var test_storage	= $('#test_storage');
+	test_storage.html('<div id="test_progress"></div>');
 	$($('#test_progress')).progressbar({value: 1});
-	$('#test_storage').dialog('open');
+	test_storage.dialog('open');
 	var test_interval	= setInterval(
 		function () {
 			progress_update('#test_progress');
@@ -471,4 +473,11 @@ function xor_string (string1, string2) {
 		string1	= string1.replaceAt(i, String.fromCharCode(string1.charCodeAt(i) ^ string2.charCodeAt(pos)));
 	}
 	return string1;
+}
+function async_call (functions, timeout) {
+	timeout	= timeout || 0;
+	var i;
+	for (i in functions) {
+		setTimeout(functions[i], timeout);
+	}
 }

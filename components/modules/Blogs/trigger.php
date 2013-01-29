@@ -7,7 +7,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			\h;
+use			h;
 global $Core;
 $Core->register_trigger(
 	'admin/System/components/modules/disable',

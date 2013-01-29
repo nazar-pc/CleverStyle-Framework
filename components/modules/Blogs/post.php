@@ -7,7 +7,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			\h;
+use			h;
 global $Index, $Config, $Blogs, $Page, $L, $User;
 $rc					= $Config->route;
 $post				= (int)mb_substr($rc[1], mb_strrpos($rc[1], ':')+1);
@@ -28,13 +28,30 @@ if ($post['path'] != mb_substr($rc[1], 0, mb_strrpos($rc[1], ':'))) {
 }
 $Page->title($post['title']);
 $tags				= $Blogs->get_tag($post['tags']);
-$Page->Keywords		= keywords(
-	$post['title'].' '.implode(' ', $tags)).'. '.$Page->Keywords;
-$Page->Description	= description($post['short_content']);
-$Page->link([
-	'href'	=> $Config->base_url().'/'.$module.'/'.$post['path'].':'.$post['id'],
-	'rel'	=> 'canonical'
-]);
+$Page->Keywords		= keywords($post['title'].' '.implode(' ', $tags)).'. '.$Page->Keywords;
+$Page->Description	= description($post['short_content']);//TODO og type, description and keywords
+$Page->canonical_url(
+	$Config->base_url().'/'.$module.'/'.$post['path'].':'.$post['id']
+)->og(
+	'type',
+	'article'
+)->og(
+	'published_time',
+	date('Y-m-d', $post['date']),
+	'article:'
+)->og(
+	'author',
+	$Config->base_url().'/'.path($L->profile).'/'.$User->get('login', $post['user']),
+	'article:'
+)->og(
+	'section',
+	$post['sections'] == [0] ? false : $Blogs->get_section($post['sections'][0])['title'],
+	'article:'
+)->og(
+	'tag',
+	$tags,
+	'article:'
+);
 $Index->content(
 	h::{'section.cs-blogs-post article'}(
 		h::header(
@@ -118,8 +135,7 @@ $Index->content(
 				h::time(
 					$L->to_locale(date($L->_datetime_long, $post['date'])),
 					[
-						'datetime'		=> date('c', $post['date']),
-						//'pubdate'//TODO wait while "pubdate" it will be standardized by W3C
+						'datetime'		=> date('c', $post['date'])
 					]
 				).
 				h::a(

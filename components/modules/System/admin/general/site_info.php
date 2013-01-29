@@ -8,7 +8,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\System;
-use			\h;
+use			h;
 global $Config, $Index;
 $timezones	= get_timezones_list();
 $sa			= $Config->core['simple_admin_mode'];

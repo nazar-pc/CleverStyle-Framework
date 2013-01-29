@@ -8,7 +8,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\System\components\blocks;
-use			\h;
+use			h;
 function get_block_title ($id) {
 	global $Config, $Text;
 	return $Text->process($Config->module('System')->db('texts'), $Config->components['blocks'][$id]['title']);

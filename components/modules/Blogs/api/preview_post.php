@@ -7,7 +7,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			\h;
+use			h;
 global $Config, $User, $Page, $Blogs, $L;
 include_once MFOLDER.'/../prepare.php';
 /**
@@ -97,8 +97,7 @@ $Page->content(
 				h::time(
 					$L->to_locale(date($L->_datetime_long, $post['date'])),
 					[
-						'datetime'		=> date('c', $post['date']),
-						//'pubdate'//TODO wait while "pubdate" it will be standardized by W3C
+						'datetime'		=> date('c', $post['date'])
 					]
 				).
 				h::a(

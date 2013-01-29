@@ -7,7 +7,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			\h;
+use			h;
 global $Index, $L, $Page, $Blogs, $Config;
 $section					= $Blogs->get_section($Config->route[1]);
 $Page->title($L->deletion_of_posts_section($section['title']));

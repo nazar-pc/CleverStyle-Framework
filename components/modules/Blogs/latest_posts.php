@@ -7,11 +7,11 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			\h;
+use			h;
 global $Index, $Blogs, $Page, $L, $User, $db, $Config;
 $Page->title($L->latest_posts);
 $Page->Keywords			= keywords($L->{MODULE}.' '.$L->latest_posts).', '.$Page->Keywords;
-$Page->Description		= description($L->{MODULE}.' - '.$L->latest_posts.'. '.$Page->Description);
+$Page->Description		= description($L->{MODULE}.' - '.$L->latest_posts.'. '.$Page->Description);//TODO og type, description and keywords
 $module					= path($L->{MODULE});
 if ($User->user()) {
 	if ($User->admin() && $User->get_user_permission('admin/'.MODULE, 'index')) {
@@ -49,6 +49,8 @@ $Index->buttons			= false;
 $Index->form_atributes	= ['class'	=> ''];
 $page					= isset($Config->route[1]) ? (int)$Config->route[1] : 1;
 $page					= $page > 0 ? $page : 1;
+$Page->canonical_url($Config->base_url().'/'.$module.'/'.path($L->latest_posts).($page > 1 ? '/'.$page : ''));
+$Page->og('type', 'blog');
 if ($page > 1) {
 	$Page->title($L->blogs_nav_page($page));
 }

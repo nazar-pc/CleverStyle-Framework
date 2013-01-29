@@ -8,7 +8,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\HybridAuth;
-use			\h;
+use			h;
 global $Core;
 $Core->register_trigger(
 	'System/Page/external_login_list',

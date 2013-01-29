@@ -7,7 +7,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			\h;
+use			h;
 global $Index, $Blogs, $Page, $L, $User, $db, $Config;
 $rc						= array_slice($Config->route, 1);
 if (!isset($rc[0])) {
@@ -51,6 +51,8 @@ $Index->buttons			= false;
 $Index->form_atributes	= ['class'	=> ''];
 $page					= isset($rc[1]) ? (int)$rc[1] : 1;
 $page					= $page > 0 ? $page : 1;
+$Page->canonical_url($Config->base_url().'/'.$module.'/'.path($L->tag).'/'.$rc[0]($page > 1 ? '/'.$page : ''));
+$Page->og('type', 'blog');
 if ($page > 1) {
 	$Page->title($L->blogs_nav_page($page));
 }
@@ -91,7 +93,7 @@ $tag					= [
 $Page->title($tag['text']);
 $Page->title($L->latest_posts);
 $Page->Keywords			= keywords($L->{MODULE}.' '.$tag['text'].' '.$L->latest_posts).', '.$Page->Keywords;
-$Page->Description		= description($L->{MODULE}.' - '.$tag['text'].' - '.$L->latest_posts.'. '.$Page->Description);
+$Page->Description		= description($L->{MODULE}.' - '.$tag['text'].' - '.$L->latest_posts.'. '.$Page->Description);//TODO og type, description and keywords
 $posts_count			= $cdb->qfs([
 	"SELECT COUNT(`t`.`id`)
 	FROM `[prefix]blogs_posts_tags` AS `t`

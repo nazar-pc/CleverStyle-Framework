@@ -8,7 +8,7 @@
  */
 
 namespace	cs\modules\Blogs;
-use			\h;
+use			h;
 global $Index, $L, $Page;
 $Index->buttons	= false;
 $Page->title($L->browse_sections);

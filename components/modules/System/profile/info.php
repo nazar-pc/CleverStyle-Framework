@@ -52,6 +52,17 @@ if ($data['status'] == -1) {
 }
 $name	= $data['username'] ? $data['username'].($data['username'] != $data['login'] ? ' aka '.$data['login'] : '') : $data['login'];
 $Page->title($L->profile_of_user($name));
+$Page->og(
+	'type',
+	'profile'
+)->og(
+	'username',
+	$User->get_username(),
+	'profile:'
+)->og(
+	'gender',
+	$User->gender == 0 ? 'male' : ($User->gender == 1 ? 'female' : false)
+);
 $Page->content(
 	h::{'table.cs-fullwidth-table.cs-profile-table tr'}([
 		h::{'td.cs-profile-avatar[rowspan=2] img'}([

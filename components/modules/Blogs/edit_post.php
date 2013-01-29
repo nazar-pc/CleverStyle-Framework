@@ -7,7 +7,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			\h;
+use			h;
 global $Page, $Index, $L, $User, $Blogs, $Config;
 if (
 	!isset($Config->route[1]) ||

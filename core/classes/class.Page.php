@@ -6,7 +6,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-use			\h;
+use			h;
 /**
  * Provides next triggers:<br>
  *  System/Page/pre_display
@@ -17,20 +17,28 @@ use			\h;
  *  ['list'	=> <i>&$list</i>]		//Reference to the list of external login systems
  */
 class Page {
-	public		$Content, $interface = true,
-				$Html = '', $Keywords = '', $Description = '', $Title = [],
-				$debug_info = '',
-				$Head		= '',
-				$pre_Body	= '',
-					$Header	= '',
-						$mainmenu = '', $mainsubmenu = '', $menumore = '',
-					$Left	= '',
-					$Top	= '',
-					$Right	= '',
-					$Bottom	= '',
-					$Footer	= '',
-				$post_Body	= '',
-				$level		= [					//Number of tabs by default for margins the substitution
+	public		$Content,
+				$interface		= true,
+				$pre_Html		= '',
+				$Html 			= '',
+					$Keywords		= '',
+					$Description	= '',
+					$Title			= [],
+				$debug_info		= '',
+				$Head			= '',
+				$pre_Body		= '',
+					$Header		= '',
+						$mainmenu		= '',
+						$mainsubmenu	= '',
+						$menumore		= '',
+					$Left		= '',
+					$Top		= '',
+					$Right		= '',
+					$Bottom		= '',
+					$Footer		= '',
+				$post_Body		= '',
+				$post_Html		= '',
+				$level			= [				//Number of tabs by default for margins the substitution
 					'Head'				=> 0,	//of values into template
 					'pre_Body'			=> 0,
 					'Header'			=> 2,
@@ -48,15 +56,20 @@ class Page {
 					'post_Body'			=> 0
 				],
 				$user_avatar_image,
-				$header_info;
+				$header_info,
+				$no_html_tag	= false,
+				$head_prefix	= '';			//Is used as <head prefix="$head_prefix">
 	protected	$theme, $color_scheme, $pcache_basename, $includes,
-				$core_js	= [0 => [], 1 => []],
-				$core_css	= [0 => [], 1 => []],
-				$js			= [0 => [], 1 => []],
-				$css		= [0 => [], 1 => []],
-				$link		= [],
-				$Search		= [],
-				$Replace	= [];
+				$core_js		= [0 => [], 1 => []],
+				$core_css		= [0 => [], 1 => []],
+				$js				= [0 => [], 1 => []],
+				$css			= [0 => [], 1 => []],
+				$link			= [],
+				$Search			= [],
+				$Replace		= [],
+				$og_data		= [],
+				$og_type		= '',
+				$canonical_url	= false;
 	/**
 	 * Setting interface state on/off
 	 */
@@ -284,6 +297,10 @@ class Page {
 			implode('', $this->core_js).
 			implode('', $this->js);
 		/**
+		 * Generation of Open Graph protocol information
+		 */
+		$this->og_generation();
+		/**
 		 * Getting footer information
 		 */
 		$this->get_footer();
@@ -292,6 +309,7 @@ class Page {
 		 */
 		$this->Html			= str_replace(
 			[
+				'<!--pre_Html-->',
 				'<!--head-->',
 				'<!--pre_Body-->',
 				'<!--header-->',
@@ -306,9 +324,11 @@ class Page {
 				'<!--bottom_blocks-->',
 				'<!--right_blocks-->',
 				'<!--footer-->',
-				'<!--post_Body-->'
+				'<!--post_Body-->',
+				'<!--post_Html-->'
 			],
 			[
+				$this->pre_Html,
 				h::level($this->Head, $this->level['Head']),
 				h::level($this->pre_Body, $this->level['pre_Body']),
 				h::level($this->Header, $this->level['Header']),
@@ -323,7 +343,8 @@ class Page {
 				h::level($this->Bottom, $this->level['Bottom']),
 				h::level($this->Right, $this->level['Right']),
 				h::level($this->Footer, $this->level['Footer']),
-				h::level($this->post_Body, $this->level['post_Body'])
+				h::level($this->post_Body, $this->level['post_Body']),
+				$this->post_Html
 			],
 			$this->Html
 		);
@@ -469,9 +490,166 @@ class Page {
 	 */
 	function link ($data) {
 		if ($data !== false) {
-			$this->link[]	= $data;
+			$this->link[]	= [$data];
 		}
 		return $this;
+	}
+	/**
+	 * Simple wrapper of $Page->link() for inserting Atom feed on page
+	 *
+	 * @param string    $href
+	 * @param string    $title
+	 *
+	 * @return Page
+	 */
+	function atom ($href, $title = 'Atom Feed') {
+		return $this->link([
+			'href'	=> $href,
+			'title'	=> $title,
+			'rel'	=> 'alternate',
+			'type'	=> 'application/atom+xml'
+		]);
+	}
+	/**
+	 * Simple wrapper of $Page->link() for inserting RSS feed on page
+	 *
+	 * @param string	$href
+	 * @param string	$title
+	 *
+	 * @return Page
+	 */
+	function rss ($href, $title = 'RSS Feed') {
+		return $this->link([
+			'href'	=> $href,
+			'title'	=> $title,
+			'rel'	=> 'alternate',
+			'type'	=> 'application/rss+xml'
+		]);
+	}
+	/**
+	 * Specify canonical url of current page
+	 *
+	 * @param string	$url
+	 *
+	 * @return Page
+	 */
+	function canonical_url ($url) {
+		global $Config;
+		$this->canonical_url	= HOME ? $Config->base_url() : $url;
+		return $this->link([
+			'href'	=> $this->canonical_url,
+			'rel'	=> 'canonical'
+		]);
+	}
+	/**
+	 * Open Graph protocol support
+	 *
+	 * Provides automatic addition of <html prefix="og: http://ogp.me/ns#">, and is used for simplification of Open Graph protocol support
+	 *
+	 * @param string			$property		Property name, but without <i>og:</i> prefix. For example, <i>title</i>
+	 * @param string|string[]	$content		Content, may be an array
+	 * @param string			$custom_prefix	If prefix should differ from <i>og:</i>, for example, <i>article:</i> - specify it here
+	 *
+	 * @return Page
+	 */
+	function og ($property, $content, $custom_prefix = 'og:') {
+		if (empty($property) || empty($content)) {
+			return $this;
+		}
+		global $Config;
+		if (!$Config->core['og_support']) {
+			return $this;
+		}
+		if (is_array($content)) {
+			foreach ($content as $c) {
+				$this->og($property, $c);
+			}
+			return $this;
+		}
+		if (!isset($this->og_data[$property])) {
+			$this->og_data[$property]	= '';
+		}
+		if ($property == 'type') {
+			$this->og_type	= $content;
+		}
+		$this->og_data[$property]	.= h::meta([
+			'property'	=> $custom_prefix.$property,
+			'content'	=> $content
+		]);
+		return $this;
+	}
+	/**
+	 * Generates Open Graph protocol information, and puts it into HTML
+	 */
+	protected function og_generation () {
+		/**
+		 * Automatic generation of some information
+		 */
+		global $Config;
+		if (!$Config->core['og_support']) {
+			return;
+		}
+		$og	= &$this->og_data;
+		if (!isset($og['title']) || empty($og['title'])) {
+			$this->og('title', $this->Title);
+		}
+		if (!isset($og['description']) || empty($og['description'])) {
+			$this->og('description', $this->Description);
+		}
+		if (!isset($og['url']) || empty($og['url'])) {
+			$this->og('url', HOME ? $Config->base_url() : ($this->canonical_url ?: $Config->base_url().'/'.$Config->server['relative_address']));
+		}
+		if (!isset($og['site_name']) || empty($og['site_name'])) {
+			$this->og('site_name', $Config->core['name']);
+		}
+		if (!isset($og['type']) || empty($og['type'])) {
+			$this->og('type', 'website');
+		}
+		if ($Config->core['multilingual']) {
+			global $L;
+			if (!isset($og['locale']) || empty($og['locale'])) {
+				$this->og('locale', $L->locale);
+			}
+			if (
+				(
+					!isset($og['locale:alternate']) || empty($og['locale:alternate'])
+				) && count($Config->core['active_languages']) > 1
+			) {
+				foreach ($Config->core['active_languages'] as $lang) {
+					if ($lang != $Config->core['language']) {
+						$this->og('locale:alternate', $L->get('locale', $lang));
+					}
+				}
+			}
+		}
+		$prefix	= 'og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#';
+		switch (explode('.', $this->og_type, 2)[0]) {
+			case 'article':
+				$prefix	.= ' article: http://ogp.me/ns/article#';
+			break;
+			case 'blog':
+				$prefix	.= ' blog: http://ogp.me/ns/blog#';
+			break;
+			case 'book':
+				$prefix	.= ' book: http://ogp.me/ns/book#';
+			break;
+			case 'profile':
+				$prefix	.= ' profile: http://ogp.me/ns/profile#';
+			break;
+			case 'video':
+				$prefix	.= ' video: http://ogp.me/ns/video#';
+			break;
+			case 'website':
+				$prefix	.= ' website: http://ogp.me/ns/website#';
+			break;
+		}
+		$this->Head	= h::head(
+			$this->Head.
+			implode('', $og),
+			[
+				'prefix'	=> $prefix
+			]
+		);
 	}
 	/**
 	 * Adding text to the title page
@@ -812,7 +990,6 @@ class Page {
 			);
 			unset($tmp);
 		}
-		//TODO Storages information
 		/**
 		 * Cookies
 		 */

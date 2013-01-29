@@ -1253,7 +1253,7 @@ function code_header ($code) {
 		break;
 	}
 	if ($string_code) {
-		header($_SERVER['SERVER_PROTOCOL'].' '.$string_code);
+		header($_SERVER['SERVER_PROTOCOL'].' '.$string_code, true, $code);
 	}
 	return $string_code;
 }

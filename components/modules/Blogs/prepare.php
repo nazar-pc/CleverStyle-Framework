@@ -7,7 +7,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			\h;
+use			h;
 if (!API) {
 	global $Core, $Index, $Config, $L, $Page;
 	$Index->title_auto	= false;
@@ -127,8 +127,7 @@ if (!API) {
 					h::time(
 						$L->to_locale(date($L->_datetime_long, $post['date'])),
 						[
-							'datetime'		=> date('c', $post['date']),
-							//'pubdate'//TODO wait while "pubdate" it will be standardized by W3C
+							'datetime'		=> date('c', $post['date'])
 						]
 					).
 					h::a(
@@ -186,8 +185,7 @@ function get_comments_tree ($comments, $post) {
 				h::{'time.cs-blogs-comment-date'}(
 					date('dmY', TIME) == date('dmY', $comment['date']) ? date($L->_time, $comment['date']) : $L->to_locale(date($L->_datetime, $comment['date'])),
 					[
-						'datetime'		=> date('c', $comment['date']),
-						//'pubdate'//TODO wait while "pubdate" it will be standardized by W3C
+						'datetime'		=> date('c', $comment['date'])
 					]
 				).
 				h::{'a.cs-blogs-comment-link'}(

@@ -8,7 +8,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\System;
-use			\h;
+use			h;
 global $L, $Config, $Index, $Cache;
 $sa	= $Config->core['simple_admin_mode'];
 $Index->content(

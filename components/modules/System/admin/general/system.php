@@ -8,7 +8,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\System;
-use			\h;
+use			h;
 global $L, $Config, $Index;
 $sa	= $Config->core['simple_admin_mode'];
 $Index->content(
@@ -21,6 +21,7 @@ $Index->content(
 		core_textarea('footer_text', 'EDITORH'),
 		core_input('show_footer_info', 'radio'),
 		core_input('show_tooltips', 'radio'),
+		core_input('og_support', 'radio'),
 		core_input('simple_admin_mode', 'radio'),
 		!$sa ? [
 			h::info('debug'),

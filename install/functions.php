@@ -209,7 +209,8 @@ function install_process () {
 		},
 		"default_module": "System",
 		"footer_text": "",
-		"show_footer_info": "1"
+		"show_footer_info": "1",
+		"og_support": "1"
 	}');
 	$config['name']					= $config['description']	= (string)$_POST['site_name'];
 	$config['keywords']				= implode(', ', _trim(explode(' ', $config['name']), ','));

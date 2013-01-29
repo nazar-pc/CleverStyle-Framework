@@ -7,7 +7,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			\h;
+use			h;
 global $Index, $Page, $L, $User, $db, $Config;
 $Page->title($L->drafts);
 $module					= path($L->{MODULE});

@@ -8,7 +8,7 @@
  */
 
 namespace	cs\modules\Blogs;
-use			\h;
+use			h;
 global $Index, $L, $Page, $Blogs, $Config;
 $id							= (int)$Config->route[1];
 $data						= $Blogs->get_section($id);

@@ -6,7 +6,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-use			\h;
+use			h;
 /**
  * Provides next triggers:<br>
  *  System/Index/block_render<br>
@@ -255,7 +255,7 @@ class Index {
 				$Page->title($L->{HOME ? 'home' : MODULE});
 			}
 			if ($this->action === null) {
-				$this->action = $Config->server['corrected_full_address'];
+				$this->action = $Config->server['relative_address'];
 			}
 			_include_once(MFOLDER.'/'.$this->savefile.'.php', false);
 		}

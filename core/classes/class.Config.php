@@ -9,7 +9,7 @@ namespace cs;
 /**
  * Provides next triggers:<br>
  *  System/Config/routing_replace<br>
- *  ['rc'	=> <i>&$rc</i>]		//Reference to current routing string, this string can be changed<br>
+ *  ['rc'	=> <i>&$rc</i>]		//Reference to string with current route, this string can be changed<br>
  */
 class Config {
 	protected	$data			= [
@@ -30,7 +30,7 @@ class Config {
 					'server'		=> [						//Array of some address data about mirrors and current address properties
 						'raw_relative_address'		=> '',		//Raw page url (in browser's address bar)
 						'host'						=> '',		//Current domain
-						'corrected_full_address'	=> '',		//Corrected full page address (recommended for usage)
+						'relative_address'			=> '',		//Corrected full page address (recommended for usage)
 						'protocol'					=> '',		//Page protocol (http/https)
 						'base_url'					=> '',		//Address of the main page of current mirror, including prefix (http/https)
 						'mirrors'					=> [		//Array of all domains, which allowed to access the site
@@ -335,7 +335,7 @@ class Config {
 		/**
 		 * Corrected full page address (recommended for usage)
 		 */
-		$this->server['corrected_full_address']	= trim(
+		$this->server['relative_address']		= trim(
 			(ADMIN ? 'admin/' : '').MODULE.(API ? 'api/' : '').'/'.implode('/', $rc),
 			'/'
 		);

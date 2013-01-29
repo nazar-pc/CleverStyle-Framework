@@ -7,7 +7,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Static_pages;
-use			\h;
+use			h;
 global $Index, $L, $Page, $Static_pages, $Config;
 $id							= (int)$Config->route[1];
 $data						= $Static_pages->get_category($id);

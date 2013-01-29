@@ -8,7 +8,7 @@
  */
 
 namespace	cs\modules\Blogs;
-use			\h;
+use			h;
 global $Index, $L, $Page, $Config;
 $Page->title($L->addition_of_posts_section);
 $Index->apply_button		= false;
