@@ -57,11 +57,14 @@ $Page->og(
 	'profile'
 )->og(
 	'username',
-	$User->get_username(),
+	$name,
 	'profile:'
 )->og(
 	'gender',
-	$User->gender == 0 ? 'male' : ($User->gender == 1 ? 'female' : false)
+	$data['gender'] == 0 ? 'male' : ($data['gender'] == 1 ? 'female' : false)
+)->og(
+	'description',
+	$data['about'] ?: false
 );
 $Page->content(
 	h::{'table.cs-fullwidth-table.cs-profile-table tr'}([
