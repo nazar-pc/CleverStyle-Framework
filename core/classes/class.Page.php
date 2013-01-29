@@ -57,7 +57,6 @@ class Page {
 				],
 				$user_avatar_image,
 				$header_info,
-				$no_html_tag	= false,
 				$head_prefix	= '';			//Is used as <head prefix="$head_prefix">
 	protected	$theme, $color_scheme, $pcache_basename, $includes,
 				$core_js		= [0 => [], 1 => []],
@@ -647,7 +646,7 @@ class Page {
 			$this->Head.
 			implode('', $og),
 			[
-				'prefix'	=> $prefix
+				'prefix'	=> $prefix.$this->head_prefix
 			]
 		);
 	}
