@@ -10,9 +10,9 @@
 global $Config, $Page, $Key, $User, $db;
 $rc = $Config->route;
 if (
-	!isset($rc[3]) ||
-	!preg_match('/^[a-z0-9]{56}$/', $rc[3]) ||
-	!($data = $Key->get($db->{$Config->module('System')->db('keys')}(), $rc[3], true))
+	!isset($rc[2]) ||
+	!preg_match('/^[a-z0-9]{56}$/', $rc[2]) ||
+	!($data = $Key->get($db->{$Config->module('System')->db('keys')}(), $rc[2], true))
 ) {
 	$Page->content(0);
 	return;
@@ -24,4 +24,5 @@ if (
 		return;
 	}
 }
+print_r($data);
 $Page->content((int)_setcookie($data['name'], $data['value'], $data['expire'], $data['httponly'], true));

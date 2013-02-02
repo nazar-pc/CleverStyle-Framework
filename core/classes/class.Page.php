@@ -57,7 +57,8 @@ class Page {
 				],
 				$user_avatar_image,
 				$header_info,
-				$head_prefix	= '';			//Is used as <head prefix="$head_prefix">
+				$head_prefix	= '',			//Is used as <head prefix="$head_prefix">
+				$no_head		= false;
 	protected	$theme, $color_scheme, $pcache_basename, $includes,
 				$core_js		= [0 => [], 1 => []],
 				$core_css		= [0 => [], 1 => []],
@@ -642,13 +643,15 @@ class Page {
 				$prefix	.= ' website: http://ogp.me/ns/website#';
 			break;
 		}
-		$this->Head	= h::head(
-			$this->Head.
-			implode('', $og),
-			[
-				'prefix'	=> $prefix.$this->head_prefix
-			]
-		);
+		$this->Head	= $this->Head.implode('', $og);
+		if (!$this->no_head) {
+			$this->Head	= h::head(
+				$this->Head,
+				[
+					'prefix'	=> $prefix.$this->head_prefix
+				]
+			);
+		}
 	}
 	/**
 	 * Adding text to the title page
@@ -1161,12 +1164,6 @@ class Page {
 					[
 						'data-title'	=> $L->back
 					]
-				).
-				h::{'button.cs-button-compact.cs-header-restore-password-slide[tabindex=3]'}(
-					h::icon('help'),
-					[
-						'data-title'	=> $L->restore_password
-					]
 				),
 				[
 					'style'	=> 'display: none;'
@@ -1179,7 +1176,6 @@ class Page {
 				h::{'input.cs-noui.cs-header-user-password[type=password][tabindex=2]'}([
 					'placeholder'	=> $L->password
 				]).
-				h::{'icon.cs-header-show-password.cs-pointer'}('locked').
 				h::{'button.cs-header-login-process.cs-button-compact[tabindex=3]'}(h::icon('check').$L->log_in).
 				h::{'button.cs-button-compact.cs-header-back[tabindex=5]'}(
 					h::icon('carat-1-s'),

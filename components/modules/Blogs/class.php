@@ -361,7 +361,7 @@ class Blogs {
 			$structure['posts']	= $db->{$this->posts}->qfs([
 				"SELECT COUNT(`s`.`id`)
 				FROM `[prefix]blogs_posts_sections` AS `s`
-					LEFT OUTER JOIN `[prefix]blogs_posts` AS `p`
+					LEFT JOIN `[prefix]blogs_posts` AS `p`
 				ON `s`.`id` = `p`.`id`
 				WHERE
 					`s`.`section`	= '%s' AND
@@ -405,7 +405,7 @@ class Blogs {
 					(
 						SELECT COUNT(`s`.`id`)
 						FROM `[prefix]blogs_posts_sections` AS `s`
-							LEFT OUTER JOIN `[prefix]blogs_posts` AS `p`
+							LEFT JOIN `[prefix]blogs_posts` AS `p`
 						ON `s`.`id` = `p`.`id`
 						WHERE
 							`s`.`section`	= '%1\$s' AND
@@ -909,7 +909,7 @@ class Blogs {
 		$id				= (int)$id;
 		$comment		= $db->{$this->posts}()->qf(
 			"SELECT `p`.`post`, COUNT(`c`.`id`) AS `count`
-			FROM `[prefix]blogs_comments` AS `p` LEFT OUTER JOIN `[prefix]blogs_comments` AS `c`
+			FROM `[prefix]blogs_comments` AS `p` LEFT JOIN `[prefix]blogs_comments` AS `c`
 			ON `p`.`id` = `c`.`parent`
 			WHERE `p`.`id` = $id
 			LIMIT 1"

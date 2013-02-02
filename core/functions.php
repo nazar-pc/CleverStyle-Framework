@@ -675,6 +675,9 @@ function _setcookie ($name, $value, $expire = 0, $httponly = false, $api = false
 			$path	= $Config->core['mirrors_cookie_path'][$Config->server['mirror_index']];
 		}
 	}
+	if (!isset($prefix)) {
+		$prefix	= '';
+	}
 	$_COOKIE[$prefix.$name] = $value;
 	if (!$api && is_object($Core)) {
 		$data = [
@@ -684,31 +687,40 @@ function _setcookie ($name, $value, $expire = 0, $httponly = false, $api = false
 			'httponly'	=> $httponly
 		];
 		$Core->register_trigger(
-			'System/Page/pre_display',
-			function () use ($data) {
-				global $Config, $Key, $Page, $User, $db;
-				if ($Config->server['mirrors']['count'] > 1) {
+			'System/Index/preload',
+			function () use ($prefix, $data, $domain) {
+				global $Config, $Key, $User, $db;
+				if (count($Config->core['mirrors_cookie_domain'])) {
 					$mirrors_url			= $Config->core['mirrors_url'];
 					$mirrors_cookie_domain	= $Config->core['mirrors_cookie_domain'];
 					$database				= $db->{$Config->module('System')->db('keys')}();
 					$data['check']			= md5($User->ip.$User->forwarded_for.$User->client_ip.$User->user_agent._json_encode($data));
-					$js						= '';
-					foreach ($mirrors_cookie_domain as $i => $domain) {
+					$urls					= [];
+					if ($Config->server['mirror_index'] != -1 && $domain != $Config->core['cookie_domain']) {
+						$url	= explode(';', $Config->core['url'], 2)[0];
+						if ($Key->add($database, $key = $Key->generate($database), $data)) {
+							$urls[] = $url.'/api/System/user/setcookie/'.$key;
+						}
+						unset($url);
+					}
+					foreach ($mirrors_cookie_domain as $i => $d) {
 						$mirrors_url[$i] = explode(';', $mirrors_url[$i], 2)[0];
-						if ($domain && ($mirrors_url[$i] != $Config->base_url())) {
+						if ($d && $d != $domain) {
 							if ($Key->add($database, $key = $Key->generate($database), $data)) {
-								$js .= '$.get(\'http://'.$mirrors_url[$i].'/api/System/user/setcookie/'.$key.'\');';
+								$urls[]	= $mirrors_url[$i].'/api/System/user/setcookie/'.$key;
 							}
 						}
 					}
-					if ($js) {
-						$Page->post_Body .= h::script('$(function {'.$js.'});');
+					if (!empty($urls)) {
+						$setcookie	= isset($_COOKIE[$prefix.'setcookie']) ? (_json_decode($_COOKIE[$prefix.'setcookie']) ?: []) : [];
+						$setcookie	= array_merge($setcookie, $urls);
+						setcookie($prefix.'setcookie', $_COOKIE[$prefix.'setcookie'] = _json_encode($setcookie));
 					}
 				}
 			}
 		);
 	}
-	if (isset($prefix)) {
+	if (isset($domain)) {
 		return setcookie(
 			$prefix.$name,
 			$value,

@@ -85,7 +85,7 @@ $cdb					= $db->{$Config->module(MODULE)->db('posts')};
 $posts					= $cdb->qfas(
 	"SELECT `s`.`id`
 	FROM `[prefix]blogs_posts_sections` AS `s`
-		LEFT OUTER JOIN `[prefix]blogs_posts` AS `p`
+		LEFT JOIN `[prefix]blogs_posts` AS `p`
 	ON `s`.`id` = `p`.`id`
 	WHERE
 		`s`.`section`	= $section AND

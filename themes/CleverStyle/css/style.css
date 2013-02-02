@@ -6,6 +6,7 @@
  * @license		MIT License, see license.txt
  */
 body {
+  color: #000000;
   font-family: Tahoma, Verdana, sans-serif;
   font-size: 12px;
   margin: 0;
@@ -18,14 +19,14 @@ body > footer {
   text-align: center;
   margin: 0;
 }
-body > footer div:nth-child(1) {
-  padding: 5px 5px 0;
+body > footer div:first-child {
+  padding: .5em .5em 0;
 }
-body > footer div:nth-child(2) {
-  padding: 0 5px 5px;
+body > footer div:last-child {
+  padding: 0 .5em .5em;
 }
 code {
-  font-family: "DejaVu Sans Mono", "Courier New", monospace;
+  font-family: "DejaVu Sans Mono", "Monaco", "Courier New", monospace;
 }
 .cs-fullwidth-form {
   text-align: center;
@@ -35,7 +36,7 @@ code {
   text-align: left;
 }
 .cs-fullwidth-table {
-  margin: auto auto 15px;
+  margin: 0 auto;
   width: 100%;
 }
 .cs-fullwidth-table > tbody > tr > .ui-widget-shadow {
@@ -47,25 +48,26 @@ a {
 .cs-form-element,
 .cs-form-element:hover,
 .cs-form-element:focus {
-  border: solid 2px;
-  border-radius: 5px;
+  border: solid .2em;
+  border-radius: .3em;
   border-spacing: 0;
-  padding: 3px;
+  padding: .3em;
 }
 input,
 textarea,
 select {
+  font-size: 12px;
   outline: none;
 }
 .cs-fullwidth-table [type=number],
 .cs-fullwidth-table [type=range] {
-  width: 90px;
+  width: 7.5em;
 }
 .cs-fullwidth-table [type=text],
 .cs-fullwidth-table [type=password],
 .cs-fullwidth-table [type=email],
 .cs-fullwidth-table [type=tel] {
-  width: 250px;
+  width: 20.5em;
 }
 textarea {
   overflow-x: auto;
@@ -77,17 +79,17 @@ textarea.cs-wide-textarea {
 }
 #users_raw_edit textarea,
 #users_edit textarea {
-  width: 250px;
+  width: 20.5em;
 }
 .cs-pointer {
   cursor: pointer;
 }
 .cs-button-compact > span {
-  padding: 2px 3px !important;
+  padding: .2em .3em !important;
 }
 .cs-state-messages {
-  padding: 5px;
-  margin: 2px 0;
+  padding: .5em;
+  margin: .2em 0;
 }
 .cs-dialog {
   display: none;
@@ -96,14 +98,14 @@ textarea.cs-wide-textarea {
 #cs-users-groups-list-selected {
   list-style-type: none;
   margin: 0;
-  padding: 5px;
+  padding: .5em;
 }
 .cs-blocks-items li,
 #cs-users-groups-list li,
 #cs-users-groups-list-selected li {
   cursor: move;
-  margin: 0 5px 5px 5px;
-  padding: 5px;
+  margin: 0 .5em .5em .5em;
+  padding: .5em;
 }
 .cs-modules-config-buttons button,
 .cs-db-config-buttons button,
@@ -117,14 +119,14 @@ textarea.cs-wide-textarea {
 }
 .cs-input-style {
   float: left;
-  margin: 0 0 5px 0;
+  margin: 0 0 .5em 0;
 }
 .cs-header-user-info {
   float: right;
-  height: 90px;
-  margin: 12px 9px 9px 95px;
+  height: 6.5em;
+  margin: 1em .75em .75em 8em;
   position: fixed;
-  width: 180px;
+  width: 15em;
 }
 .cs-header-user-info button {
   cursor: pointer;
@@ -132,25 +134,18 @@ textarea.cs-wide-textarea {
 .cs-header-user-info [type=text],
 .cs-header-user-info [type=password] {
   float: left;
-  margin: 0 0 5px 0;
+  margin: 0 0 .5em 0;
   background: #ddd;
-  border: #fff solid 1px;
-  width: 170px;
-}
-.cs-header-user-info select {
-  float: left;
-  margin: 0 0 5px 0;
-  background: #ddd;
-  border: #fff solid 1px;
-  margin-left: -5px;
-  width: 20px;
+  border: #fff solid .1em;
+  padding: .3em;
+  width: 14em;
 }
 .cs-header-user-info .actions {
-  margin: 5px 0;
+  margin: .5em 0;
 }
 .cs-header-login-slide,
 .cs-header-registration-slide {
-  margin-top: 4px;
+  margin-top: .5em;
 }
 .cs-header-back,
 .cs-header-restore-password-slide,
@@ -158,16 +153,12 @@ textarea.cs-wide-textarea {
 .cs-header-register-process,
 .cs-header-restore-password-process {
   bottom: 0;
-  position: absolute;
+  position: absolute !important;
   right: 0;
 }
 .cs-header-restore-password-slide {
-  right: 26px;
-}
-.cs-header-register-process,
-.cs-header-restore-password-process {
-  bottom: auto;
-  top: 25px;
+  margin-right: 16px !important;
+  right: 1em;
 }
 .cs-header-login-process,
 .cs-header-register-process,
@@ -176,62 +167,55 @@ textarea.cs-wide-textarea {
   right: auto;
 }
 .cs-header-restore-password-form .cs-header-back {
-  margin-top: 4px !important;
+  margin-top: .3em !important;
 }
 .cs-header-zone {
-  height: 30px;
+  height: 2.5em;
   position: fixed;
   top: 0;
   width: 100%;
 }
 .cs-header-green,
 .cs-header-black {
-  border-radius: 0 0 10px 10px;
+  border-radius: 0 0 .8em .8em;
   position: fixed;
-  right: 300px;
+  right: 26em;
   top: 0;
   width: inherit;
 }
 .cs-header-green {
-  height: 70px;
+  height: 6em;
   z-index: 2;
 }
 .cs-header-black {
-  height: 115px;
+  height: 9em;
   z-index: 1;
 }
 .cs-header-user {
-  border-radius: 7px;
-  height: 100px;
-  margin: 5px;
+  border-radius: .6em;
+  height: 8em;
+  margin: .5em;
   position: fixed;
   right: 0;
   top: 0;
-  width: 280px;
+  width: 24em;
   z-index: 3;
 }
 .cs-header-avatar {
   background-size: 100%;
-  border-radius: 5px;
+  border-radius: .5em;
   float: left;
-  font-size: 80px;
-  height: 80px;
-  line-height: 80px;
-  margin: 9px;
+  height: 6.5em;
+  margin: .75em;
   position: fixed;
-  width: 80px;
+  width: 6.5em;
   vertical-align: top;
 }
 .cs-header-login-form,
 .cs-header-register-form,
 .cs-header-restore-password-form {
-  height: 79px;
-  margin-left: 2px;
+  height: 6.5em;
   position: relative;
-  width: 175px;
-}
-.cs-header-login-form > .ui-icon {
-  margin: 26px 0 0 -20px;
 }
 .cs-header-main-menu,
 .cs-header-main-submenu,
@@ -326,7 +310,7 @@ td.cs-left-all {
 .cs-blocks-items {
   list-style-type: none;
   margin: 0;
-  padding: 5px;
+  padding: .5em;
 }
 .cs-blocks-items li:nth-child(1) {
   cursor: pointer !important;

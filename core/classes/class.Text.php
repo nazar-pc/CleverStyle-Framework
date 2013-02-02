@@ -34,7 +34,7 @@ class Text {
 					`d`.`lang`,
 					`d`.`text`
 				FROM `[prefix]texts` AS `t`
-					LEFT OUTER JOIN `[prefix]texts_data` AS `d`
+					LEFT JOIN `[prefix]texts_data` AS `d`
 				ON `t`.`id` = `d`.`id`
 				WHERE
 					`t`.`id`	= $id AND
@@ -49,7 +49,7 @@ class Text {
 						`d`.`lang`,
 						`d`.`text`
 					FROM `[prefix]texts` AS `t`
-						LEFT OUTER JOIN `[prefix]texts_data` AS `d`
+						LEFT JOIN `[prefix]texts_data` AS `d`
 					ON `t`.`id` = `d`.`id`
 					WHERE `t`.`id` = $id
 					LIMIT 1",
@@ -63,7 +63,7 @@ class Text {
 					`d`.`lang`,
 					`d`.`text`
 				FROM `[prefix]texts` AS `t`
-					LEFT OUTER JOIN `[prefix]texts_data` AS `d`
+					LEFT JOIN `[prefix]texts_data` AS `d`
 				ON `t`.`id` = `d`.`id`
 				WHERE
 					`t`.`group`	= '%s' AND
@@ -81,7 +81,7 @@ class Text {
 						`d`.`lang`,
 						`d`.`text`
 					FROM `[prefix]texts` AS `t`
-						LEFT OUTER JOIN `[prefix]texts_data` AS `d`
+						LEFT JOIN `[prefix]texts_data` AS `d`
 					ON `t`.`id` = `d`.`id`
 					WHERE
 						`t`.`group`	= '%s' AND
@@ -205,6 +205,7 @@ class Text {
 						`lang`,
 						`text`
 					) VALUES (
+						'%s',
 						'%s',
 						'%s',
 						'%s'

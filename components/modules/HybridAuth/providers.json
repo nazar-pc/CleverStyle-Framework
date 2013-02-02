@@ -11,7 +11,8 @@
 		"keys"	: [
 			"id",
 			"secret"
-		]
+		],
+		"scope"	: "email, user_about_me, user_birthday, user_website"
 	},
 	"Twitter"		: {
 		"keys"	: [
@@ -69,14 +70,8 @@
 		"keys"	: [
 			"id",
 			"secret"
-		]
-	},
-	"Gowalla"		: {
-		"keys"	: [
-			"key",
-			"secret"
 		],
-		"info"	: "OAuth callback URL: {base_url}/{module}/{provider}?auth.done={provider}"
+		"info"	: "Callback URL: {base_url}/{module}/{provider}?auth.done={provider}"
 	},
 	"LastFM"		: {
 		"keys"	: [
@@ -180,5 +175,13 @@
 			"id",
 			"secret"
 		]
-	}
+	},
+	"TwitchTV"	: {
+		"keys"	: [
+			"id",
+			"secret"
+		],
+		"info"	: "Callback URL: {base_url}/{module}/{provider}?auth.done={provider}"
+	},
+	"Steam"			: {}
 }

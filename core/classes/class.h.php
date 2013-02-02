@@ -732,7 +732,7 @@ class h {
 		return self::span($data);
 	}
 	/**
-	 * Merging of arrays, but joining all 'class' items, supports 2-3 arrays for input
+	 * Merging of arrays, but joining all 'class' and 'style' items, supports 2-3 arrays for input
 	 *
 	 * @static
 	 *
@@ -749,6 +749,14 @@ class h {
 		}
 		if (isset($array1['class'], $array3['class'])) {
 			$array1['class'] .= ' '.$array3['class'];
+			unset($array3['class']);
+		}
+		if (isset($array1['style'], $array2['style'])) {
+			$array1['style'] .= $array2['style'];
+			unset($array2['style']);
+		}
+		if (isset($array1['style'], $array3['style'])) {
+			$array1['style'] .= $array3['style'];
 			unset($array3['class']);
 		}
 		return array_merge($array1, $array2, $array3);
@@ -1025,7 +1033,7 @@ class h {
 		if (isset($input[1])) {
 			$attrs['id'] = $input[1];
 		}
-		$attrs = self::array_merge($data, $attrs);
+		$attrs = self::array_merge($attrs, $data);
 		if ($tag == 'select' || $tag == 'datalist') {
 			if (isset($attrs['value'])) {
 				$in = [

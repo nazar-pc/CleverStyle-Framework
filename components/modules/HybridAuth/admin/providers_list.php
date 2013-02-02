@@ -47,6 +47,15 @@ $Index->content(
 						$L->$provider,
 						h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd'}(
 							$content.
+							(
+								isset($pdata['scope']) ? h::{'tr td'}([
+									'Scope',
+									h::input([
+										'name'	=> 'providers['.$provider.'][scope]',
+										'value'	=> isset($povs_config[$provider], $povs_config[$provider]['scope']) ? $povs_config[$provider]['scope'] : $pdata['scope']
+									])
+								]) : ''
+							).
 							h::{'tr td.cs-left-all[colspan=2]'}(
 								isset($pdata['info']) ? str_replace(
 									[

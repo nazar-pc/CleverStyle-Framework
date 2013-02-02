@@ -69,8 +69,8 @@ $tag					= $cdb->qfs([
 if (!$tag) {
 	$tag					= $cdb->qfs([
 		"SELECT `t`.`id`
-		FROM `[prefix]blogs_tags` AS `t`
-			RIGHT OUTER JOIN `[prefix]texts_data` AS `d`
+		FROM `[prefix]texts_data` AS `d`
+			LEFT JOIN `[prefix]blogs_tags` AS `t`
 		ON `t`.`text` = `d`.`id_`
 		WHERE
 			`t`.`text` = '%1\$s' OR
@@ -97,7 +97,7 @@ $Page->Description		= description($L->{MODULE}.' - '.$tag['text'].' - '.$L->late
 $posts_count			= $cdb->qfs([
 	"SELECT COUNT(`t`.`id`)
 	FROM `[prefix]blogs_posts_tags` AS `t`
-		LEFT OUTER JOIN `[prefix]blogs_posts` AS `p`
+		LEFT JOIN `[prefix]blogs_posts` AS `p`
 	ON `t`.`id` = `p`.`id`
 	WHERE
 		`t`.`tag`	= '%s' AND
@@ -107,7 +107,7 @@ $posts_count			= $cdb->qfs([
 $posts					= $cdb->qfas([
 	"SELECT `t`.`id`
 	FROM `[prefix]blogs_posts_tags` AS `t`
-		LEFT OUTER JOIN `[prefix]blogs_posts` AS `p`
+		LEFT JOIN `[prefix]blogs_posts` AS `p`
 	ON `t`.`id` = `p`.`id`
 	WHERE
 		`t`.`tag`	= '%s' AND
