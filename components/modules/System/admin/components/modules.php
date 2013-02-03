@@ -656,7 +656,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 		[
 			$action,
 			[
-				'class'	=> 'cs-modules-config-buttons'
+				'class'	=> 'cs-pointer cs-left-all'
 			]
 		]
 	);

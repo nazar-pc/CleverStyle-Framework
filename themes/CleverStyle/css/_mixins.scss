@@ -1,0 +1,41 @@
+/**
+ * @package		CleverStyle CMS
+ * @subpackage	CleverStyle theme
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+
+//Cross-browser box-sizing
+@mixin box-sizing($mode) {
+	box-sizing         : $mode;
+	-moz-box-sizing    : $mode;
+	-webkit-box-sizing : $mode;
+}
+//Cross-browser transition
+@mixin transition($params) {
+	transition         : $params;
+	-o-transition      : $params;
+	-moz-transition    : $params;
+	-webkit-transition : $params;
+}
+//Alignment mixin
+@mixin cs-align($side) {
+	.cs-#{$side}-odd > tbody > tr > td:nth-child(odd),
+	.cs-#{$side}-even > tbody > tr > td:nth-child(even),
+	.cs-#{$side}-all > tbody > tr > td,
+	tr.cs-#{$side}-all > td,
+	td.cs-#{$side}-all {
+		text-align     : $side;
+		vertical-align : middle;
+		padding        : 2px;
+	}
+
+	td.cs-#{$side}-all {
+		text-align : $side !important;
+	}
+
+	.cs-#{$side} {
+		text-align : $side;
+	}
+}

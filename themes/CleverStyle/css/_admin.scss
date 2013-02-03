@@ -1,0 +1,89 @@
+/**
+ * @package		CleverStyle CMS
+ * @subpackage	CleverStyle theme
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+@import "mixins";
+
+//Page of blocks moving
+.cs-blocks-items {
+	list-style-type : none;
+	margin          : 0;
+	padding         : .5em;
+
+	li {
+		cursor  : move;
+		margin  : 0 .5em .5em .5em;
+		padding : .5em;
+
+		&:nth-child(1) {
+			cursor : pointer !important;
+		}
+	}
+}
+//Titles of blocks
+.cs-blocks-items-title {
+	float        : left;
+	height       : 16px;
+	margin-right : -64px;
+	overflow     : hidden;
+	text-align   : left;
+	width        : 100%;
+
+	& ~a {
+		cursor  : pointer;
+		display : inline-block;
+		margin  : 0 -2px;
+	}
+}
+//Controls on blocks titles
+.cs-blocks-items-groups {
+	width : 33%;
+}
+//Page with users editing, size of textareas
+#users_raw_edit,
+#users_edit {
+	textarea {
+		width : 20.5em;
+	}
+}
+//Page with editing of users groups, selects
+#cs-users-groups-list,
+#cs-users-groups-list-selected {
+	cursor          : move;
+	list-style-type : none;
+	margin          : 0;
+	padding         : .5em;
+}
+//Size of progress bar of connection testing for DataBases and Storages
+#test_progress {
+	width : 100%;
+}
+//Result of connection testing for DataBases and Storages
+.cs-test-result {
+	text-align     : center;
+	text-transform : capitalize;
+}
+//Widths of columns with mirrors information
+#site_info_config_mirrors td {
+	&:nth-child(1) {
+		width : 40%;
+	}
+	&:nth-child(2) {
+		width : 30%;
+	}
+	&:nth-child(3) {
+		width : 20%;
+	}
+}
+//Style for code in debug window
+.cs-debug-code {
+	border-left  : 1px solid;
+	display      : block;
+	margin       : 10px 5px 10px 20px;
+	padding-left : 10px;
+	text-align   : left;
+	word-wrap    : break-word;
+}

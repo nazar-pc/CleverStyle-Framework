@@ -78,7 +78,7 @@ if (isset($rc[2])) {
 						'block_start',
 						'block_expire'
 					),
-					h::{'td.ui-widget-content.ui-corner-all.cs-add-block'}(
+					h::{'td.ui-widget-content.ui-corner-all'}(
 						h::select(
 							array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4)),
 							[
@@ -169,7 +169,7 @@ if (isset($rc[2])) {
 						'block_start',
 						'block_expire'
 					),
-					h::{'td.ui-widget-content.ui-corner-all.cs-add-block'}(
+					h::{'td.ui-widget-content.ui-corner-all'}(
 						h::input([
 							'name'		=> 'block[title]',
 							'value'		=> get_block_title($rc[3])

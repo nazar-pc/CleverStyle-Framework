@@ -87,11 +87,11 @@ $(function() {
 			});
 			$('.cs-header-registration-slide').click(function () {
 				$('.cs-header-anonym-form').slideUp();
-				$('.cs-header-register-form').slideDown();
+				$('.cs-header-registration-form').slideDown();
 				$('.cs-header-registration-email').focus();
 			});
 			$('.cs-header-restore-password-slide').click(function () {
-				$('.cs-header-login-form, .cs-header-register-form').slideUp();
+				$('.cs-header-login-form, .cs-header-registration-form').slideUp();
 				$('.cs-header-restore-password-form').slideDown();
 				$('.cs-header-restore-password-email').focus();
 			});
@@ -102,7 +102,7 @@ $(function() {
 			});
 			$('.cs-header-registration-email').keyup(function (event) {
 				if (event.which == 13) {
-					$('.cs-header-register-process').click();
+					$('.cs-header-registration-process').click();
 				}
 			});
 			$('.cs-header-login-process').click(function() {
@@ -141,7 +141,7 @@ $(function() {
 					$(this).addClass('ui-icon-locked').removeClass('ui-icon-unlocked');
 				}
 			});
-			$('.cs-header-register-process').click(function() {
+			$('.cs-header-registration-process').click(function() {
 				$('<div title="'+L.rules_agree+'">'+rules_text+'</div>')
 					.appendTo('body')
 					.dialog({
@@ -172,7 +172,7 @@ $(function() {
 			});
 			$('.cs-header-back').click(function() {
 				$('.cs-header-anonym-form').slideDown();
-				$('.cs-header-register-form, .cs-header-login-form, .cs-header-restore-password-form').slideUp();
+				$('.cs-header-registration-form, .cs-header-login-form, .cs-header-restore-password-form').slideUp();
 			});
 			$('#debug_window_tabs').tabs({
 				collapsible:	true

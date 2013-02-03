@@ -7,27 +7,24 @@
  * @license		MIT License, see license.txt
  */
 .cs-hybrid-auth-providers-list {
-	display    : none;
-	float      : left;
-	list-style : none;
-	left       : 2px;
-	margin     : 0;
-	max-height : 500px;
-	opacity    : .95;
-	overflow-x : hidden;
-	overflow-y : auto;
-	padding    : 0;
-	position   : absolute;
-	text-align : left;
-	top        : 20px;
-	width      : 172px;
-	z-index    : 2;
+	display            : none;
+	float              : left;
+	list-style         : none;
+	margin             : 0;
+	max-height         : 500px;
+	opacity            : .95;
+	overflow-x         : hidden;
+	overflow-y         : auto;
+	padding            : 0;
+	position           : absolute;
+	text-align         : left;
+	top                : 20px;
+	z-index            : 2;
 }
 .cs-hybrid-auth-providers-list > li {
-	cursor        : pointer;
-	margin-bottom : 0;
-	padding       : 5px 3px 1px;
-	width         : 164px;
+	cursor  : pointer;
+	padding : 5px 3px .5em;
+	width : 14.75em;
 }
 .cs-hybrid-auth-providers-list > li:first-child {
 	padding : 3px;
@@ -38,6 +35,7 @@
 	float      : left;
 	height     : 24px;
 	margin-top : -4px;
+	margin-right : -.2px;
 	width      : 24px;
 }
 .cs-hybrid-auth-Vkontakte > div {

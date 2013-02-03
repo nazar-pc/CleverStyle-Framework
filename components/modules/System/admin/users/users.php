@@ -28,7 +28,7 @@ if (isset($rc[2], $rc[3])) {
 				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$L->adding_a_user
 				).
-				h::{'p input.cs-add-user'}([
+				h::{'p.cs-center input.cs-wide-input'}([
 					'name'			=> 'email',
 					'placeholder'	=> $L->email
 				])
@@ -42,30 +42,19 @@ if (isset($rc[2], $rc[3])) {
 				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$L->adding_a_bot
 				).
-				h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}([
-					h::td(
-						[
-							$L->bot_name,
-							h::{'input.cs-add-bot'}([
-								'name'	=> 'name'
-							])
-						],
-						[
-							'style'	=> 'width: 50%'
-						]
-					),
-					h::td([
-							h::info('bot_user_agent'),
-							h::{'input.cs-add-bot'}([
-								'name'	=> 'user_agent'
-							])
-					]),
-					h::td([
+				h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}([
+					[
+						$L->bot_name,
+						h::{'input[name=name]'}()
+					],
+					[
+						h::info('bot_user_agent'),
+						h::{'input[name=user_agent]'}()
+					],
+					[
 						h::info('bot_ip'),
-						h::{'input.cs-add-bot'}([
-							'name'	=> 'ip'
-						])
-					])
+						h::{'input[name=ip]'}()
+					]
 				])
 			);
 		break;
@@ -300,33 +289,28 @@ if (isset($rc[2], $rc[3])) {
 							$bot_data['username']
 						)
 					).
-					h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}([
-						h::td(
-							[
-								$L->bot_name,
-								h::{'input.cs-add-bot'}([
-									'name'	=> 'bot[name]',
-									'value'	=> $bot_data['username']
-								])
-							],
-							[
-								'style'	=> 'width: 50%'
-							]
-						),
-						h::td([
+					h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}([
+						[
+							$L->bot_name,
+							h::input([
+								'name'	=> 'bot[name]',
+								'value'	=> $bot_data['username']
+							])
+						],
+						[
 							h::info('bot_user_agent'),
-							h::{'input.cs-add-bot'}([
+							h::input([
 								'name'	=> 'bot[user_agent]',
 								'value'	=> $bot_data['login']
 							])
-						]),
-						h::td([
+						],
+						[
 							h::info('bot_ip'),
-							h::{'input.cs-add-bot'}([
+							h::input([
 								'name'	=> 'bot[ip]',
 								'value'	=> $bot_data['email']
 							])
-						])
+						]
 					]).
 					h::{'input[type=hidden]'}([
 						'name'	=> 'bot[id]',
@@ -541,7 +525,7 @@ if (isset($rc[2], $rc[3])) {
 	];
 	$search_mode	= isset($_POST['search_mode']) && in_array($_POST['search_mode'], $search_modes) ? $_POST['search_mode'] : '';
 	foreach ($search_columns as $column) {
-		$columns_list .= h::li(
+		$columns_list .= h::{'li.cs-pointer'}(
 			$column,
 			[
 				'style'	=> 'display: inline-block;',

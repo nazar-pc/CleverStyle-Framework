@@ -1,0 +1,154 @@
+/**
+ * @package		CleverStyle CMS
+ * @subpackage	CleverStyle theme
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+
+@import "config";
+@import "mixins";
+
+//Header active zone
+.cs-header-zone {
+	height   : 2.5em;
+	position : fixed;
+	top      : 0;
+	width    : 100%;
+}
+//Header panel
+.cs-header-black {
+	border-radius : 0 0 .8em .8em;
+	height        : 10em;
+	position      : fixed;
+	right         : 26.5em;
+	top           : 0;
+	width         : inherit;
+	z-index       : 1;
+}
+.cs-header-green {
+	@extend .cs-header-black;
+
+	height  : 6em;
+	z-index : 2;
+}
+//Menu
+.cs-header-main-menu,
+.cs-header-main-submenu,
+.cs-header-menu-more {
+	font-size   : 40px;
+	height      : 40px;
+	left        : 0;
+	line-height : 32px;
+	margin      : 0;
+	padding     : 5px 0 0 5px;
+	position    : fixed;
+	text-align  : left;
+	top         : 0;
+	z-index     : 3;
+	a {
+		border-bottom : none;
+		cursor        : pointer;
+		@include transition(all 0.3s linear);
+	}
+}
+.cs-header-main-submenu {
+	font-size   : 24px;
+	line-height : 20px;
+	top         : 40px;
+}
+.cs-header-menu-more {
+	font-size    : 14px;
+	line-height  : 20px;
+	padding-left : 10px;
+	right        : 27em;
+	top          : 70px;
+}
+//User block container
+.cs-header-user {
+	border-radius : .6em;
+	height        : 9em;
+	margin        : .5em;
+	position      : fixed;
+	right         : 0;
+	top           : 0;
+	width         : 25em;
+	z-index       : 3;
+}
+.cs-header-avatar {
+	background-size : 100%;
+	border-radius   : .5em;
+	float           : left;
+	height          : 7.5em;
+	margin          : .75em;
+	position        : fixed;
+	width           : 7.5em;
+	vertical-align  : top;
+}
+.cs-header-user-info {
+	float    : right;
+	height   : 7.5em;
+	margin   : 1em .75em .75em 9em;
+	position : fixed;
+	width    : 15.5em;
+
+	[type=text],
+	[type=password] {
+		background : #ddd;
+		border     : #fff solid .1em;
+		color      : $base-color;
+		float      : left;
+		margin     : 0 0 .5em 0;
+		padding    : .3em;
+		width      : 14.75em;
+	}
+
+	.actions {
+		margin : .5em 0;
+	}
+}
+//Login form
+.cs-header-login-slide {
+	margin-top : .5em;
+}
+.cs-header-login-form {
+	height   : 6.5em;
+	position : relative;
+}
+.cs-header-login-process {
+	bottom   : 0;
+	left     : 0;
+	position : absolute !important;
+	right    : auto;
+}
+//Registration form
+.cs-header-registration-slide {
+	@extend .cs-header-login-slide;
+}
+.cs-header-registration-process {
+	@extend .cs-header-login-process;
+}
+.cs-header-registration-form {
+	@extend .cs-header-login-form;
+}
+//Password restoration
+.cs-header-restore-password-slide {
+	@extend .cs-header-login-process;
+
+	left         : auto;
+	margin-right : 16px !important;
+	right        : 1em;
+}
+.cs-header-restore-password-process {
+	@extend .cs-header-login-process;
+}
+.cs-header-restore-password-form {
+	@extend .cs-header-login-form;
+}
+//Back button
+.cs-header-back {
+	@extend .cs-header-login-process;
+
+	left  : auto;
+	right : 0;
+}

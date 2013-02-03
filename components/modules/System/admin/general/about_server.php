@@ -88,7 +88,7 @@ $Index->content(
 		],
 		[
 			$L->components.' PHP:',
-			h::{'table.cs-left-odd.cs-php-components tr| td'}(
+			h::{'table.cs-left-odd.cs-fullwidth-table tr| td'}(
 				[
 					$L->mcrypt.':',
 					[
@@ -145,7 +145,7 @@ $Index->content(
 		],
 		[
 			$L->properties.' '.$Core->config('db_type').':',
-			h::{'table.cs-left-odd.cs-sql-properties tr| td'}(
+			h::{'table.cs-left-odd.cs-fullwidth-table tr| td'}(
 				[
 					$L->host.':',
 					$Core->config('db_host')
@@ -179,7 +179,7 @@ $Index->content(
 		],
 		function_exists('apache_get_version') ? [
 			$L->php_ini_settings.':',
-			h::{'table.cs-left-odd.cs-php-ini-settings tr| td'}(
+			h::{'table.cs-left-odd.cs-fullwidth-table tr| td'}(
 				[
 					$L->allow_file_upload.':',
 					[

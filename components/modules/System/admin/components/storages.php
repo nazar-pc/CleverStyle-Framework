@@ -40,7 +40,7 @@ if (isset($rc[2])) {
 						])
 					).
 					h::tr(
-						h::{'td.ui-widget-content.ui-corner-all.cs-add-storage'}([
+						h::{'td.ui-widget-content.ui-corner-all'}([
 							h::input([
 								'name'		=> 'storage[url]',
 								'value'		=> $rc[2] == 'edit' ? $storage['url'] : ''

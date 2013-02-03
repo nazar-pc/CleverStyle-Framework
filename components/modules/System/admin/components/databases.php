@@ -71,7 +71,7 @@ if (isset($rc[2])) {
 						'db_password',
 						'db_charset'
 					),
-					h::{'td.ui-widget-content.ui-corner-all.cs-add-db'}(
+					h::{'td.ui-widget-content.ui-corner-all'}(
 						($rc[2] == 'add' ? h::select(
 							[
 								'in'		=> $dbsname,
@@ -265,7 +265,7 @@ if (isset($rc[2])) {
 						]
 					),
 					[
-						'class'	=> 'cs-db-config-buttons'
+						'class'	=> 'cs-left-all'
 					]
 				],
 				$i	? $db_data['host']		: $Core->config('db_host'),
@@ -303,7 +303,7 @@ if (isset($rc[2])) {
 								]
 							),
 							[
-								'class'	=> 'cs-db-config-buttons-r'
+								'class'	=> 'cs-right-all'
 							]
 						],
 						$mirror['host'],

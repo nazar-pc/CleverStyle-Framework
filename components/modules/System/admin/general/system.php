@@ -50,7 +50,7 @@ $Index->content(
 		] : false,
 		!$sa ? [
 			h::info('routing'),
-			h::{'table#system_config_routing.cs-fullwidth-table tr| td'}(
+			h::{'table#.cs-fullwidth-table tr| td'}(
 				[
 					h::info('routing_in'),
 					h::info('routing_out')
@@ -73,7 +73,7 @@ $Index->content(
 		] : false,
 		!$sa ? [
 			h::info('replace'),
-			h::{'table#system_config_replace.cs-fullwidth-table tr| td'}(
+			h::{'table#.cs-fullwidth-table tr| td'}(
 				[
 					h::info('replace_in'),
 					h::info('replace_out')

@@ -1,0 +1,98 @@
+/**
+ * @package		CleverStyle CMS
+ * @subpackage	CleverStyle theme
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+
+@import "config";
+@import "mixins";
+
+//Whole body
+body {
+	color   : $base-color;
+	font       : {
+		family : $base-font-family;
+		size   : $base-font-size;
+	}
+	margin  : 0;
+	padding : 0;
+	width   : 100%;
+	>    {
+		header {
+			width      : 100%;
+			text-align : center;
+			margin     : 0;
+		}
+		footer {
+			@extend header;
+			div {
+				&:first-child {
+					padding : .5em .5em 0;
+				}
+				&:last-child {
+					padding : 0 .5em .5em;
+				}
+			}
+		}
+	}
+}
+//Inner body with content
+#body {
+	border-radius : 10px;
+	@include box-sizing(border-box);
+	margin        : 145px 7px 7px;
+	padding       : 5px 0;
+
+	&:after {
+		content : '';
+		clear   : both;
+		display : block;
+	}
+}
+//Left and right blocks
+#left_blocks {
+	@include box-sizing(border-box);
+	float          : left;
+	padding        : 0 5px;
+	vertical-align : top;
+	width          : $left-column;
+}
+#right_blocks {
+	@extend #left_blocks;
+
+	float : right;
+	width : $right-column;
+}
+//Top, bottom blocks
+#top_blocks,
+#bottom_blocks {
+	@include box-sizing(border-box);
+	margin-left  : $left-column;
+	margin-right : $right-column;
+}
+
+#main_content {
+	@extend #top_blocks;
+
+	border-radius  : 7px;
+	margin-top     : 3px;
+	padding        : 10px;
+	vertical-align : top;
+
+	> div {
+		@include box-sizing(border-box);
+		border-radius : 5px;
+		float         : left;
+		padding       : 10px;
+		height        : 100%;
+		width         : 100%;
+	}
+
+	&:after {
+		content : '';
+		clear   : both;
+		display : block;
+	}
+}

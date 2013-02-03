@@ -782,7 +782,7 @@ function xap ($in, $html = 'text') {
 			$in
 		);
 		$in = preg_replace(
-			'/(script:)|(data:)|(expression\()/i',
+			'/(script:)|(data:)|(vbscript:)|(expression\()/i',
 			'\\1<!---->',
 			$in
 		);

@@ -1,0 +1,64 @@
+/**
+ * @package		CleverStyle CMS
+ * @subpackage	CleverStyle theme
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+
+@import "config";
+
+code {
+	font-family : $code-font-family;
+}
+
+a {
+	text-decoration : none;
+}
+
+input,
+textarea,
+select {
+	font       : {
+		size   : $base-font-size;
+		family : $base-font-family;
+	}
+	outline : none;
+}
+
+textarea {
+	overflow-x  : auto;
+	height      : 5em;
+	white-space : nowrap;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-size   : 1.7em;
+	font-weight : 100;
+}
+
+h2 {
+	font-size : 1.6em;
+}
+
+h3 {
+	font-size : 1.5em;
+}
+
+h4 {
+	font-size : 1.3em;
+}
+
+h5 {
+	font-size : 1.2em;
+}
+
+h6 {
+	font-size : 1.1em;
+}
+
+hr {
+	border           : 0;
+	background-color : #9e9e9e;
+	height           : 1px;
+}

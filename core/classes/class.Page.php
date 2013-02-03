@@ -819,6 +819,7 @@ class Page {
 		 */
 		$data	= preg_replace('#(/\*.*?\*/)|\t|\n|\r#s', '', $data);
 		$data	= preg_replace('#\s*([,:;+>{}])\s*#s', '$1', $data);
+		$data	= str_replace(';}', '}', $data);
 		/**
 		 * Includes processing
 		 */
@@ -1149,13 +1150,13 @@ class Page {
 					'style'	=> 'display: none;'
 				]
 			).
-			h::{'div.cs-header-register-form'}(
+			h::{'div.cs-header-registration-form'}(
 				h::{'input.cs-noui.cs-header-registration-email[tabindex=1]'}(
 					[
 						'placeholder'	=> $L->email
 					]
 				).
-				h::{'button.cs-header-register-process.cs-button-compact[tabindex=2]'}(
+				h::{'button.cs-header-registration-process.cs-button-compact[tabindex=2]'}(
 					h::icon('pencil').$L->registration
 				).
 				h::div().

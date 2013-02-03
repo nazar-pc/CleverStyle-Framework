@@ -43,7 +43,7 @@ $Core->register_trigger(
 		)) {
 			rebuild_pcache();
 		}
-		$data['list']	= h::{'ul.cs-hybrid-auth-providers-list li.cs-input-style'}(
+		$data['list']	= h::{'ul.cs-hybrid-auth-providers-list li'}(
 			[
 				$L->or_login_with,
 				[
