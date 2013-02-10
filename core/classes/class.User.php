@@ -160,7 +160,7 @@ class User {
 					foreach ($bots as &$bot) {
 						if (is_array($bot['login']) && !empty($bot['login'])) {
 							foreach ($bot['login'] as $login) {
-								if ($this->user_agent == $login || preg_match($login, $this->user_agent)) {
+								if (strpos($this->user_agent, $login) !== false || preg_match($login, $this->user_agent)) {
 									$this->id = $bot['id'];
 									break 2;
 								}

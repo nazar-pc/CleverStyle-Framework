@@ -523,7 +523,7 @@
 		"user_was_added"					: "User was successfully added! Login information:<br>Login: %s<br>Password: %s",
 		"bot_name"							: "Bot name",
 		"bot_user_agent"					: "User Agent of bot",
-		"bot_user_agent_info"				: "You can specify the bot User Agent as a string or regular expression (for example, if the bot can have different User Agent's)",
+		"bot_user_agent_info"				: "You can specify the bot User Agent (or part of it) as a string or regular expression (for example, if the bot can have different User Agent's)",
 		"bot_ip"							: "Bot IP",
 		"bot_ip_info"						: "You can specify the IP address of the bot as a string or regular expression (for example, if the bot can have different IP addresses)",
 		"edit_user_groups"					: "Edit the user's groups",
