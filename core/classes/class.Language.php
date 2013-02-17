@@ -44,7 +44,6 @@ class Language {
 		if ($this->init) {
 			return;
 		}
-		$this->init = true;
 		global $Cache, $Config, $Core;
 		if (!FIXED_LANGUAGE) {
 			$language	= $this->scan_aliases($active_languages) ?: $language;
@@ -52,6 +51,7 @@ class Language {
 				$language	= _getcookie('language') && in_array(_getcookie('language'), $active_languages) ? _getcookie('language') : $language;
 			}
 			$this->change($language);
+			unset($language);
 		}
 		if ($this->need_to_rebuild_cache) {
 			if (!empty($Config->components['modules'])) {
@@ -88,8 +88,8 @@ class Language {
 			);
 			$Cache->{'languages/'.$this->clanguage} = $this->translate;
 			$this->need_to_rebuild_cache = false;
-			$this->init = true;
 		}
+		$this->init = true;
 	}
 	/**
 	 * Scanning of aliases for defining of current language
@@ -207,8 +207,20 @@ class Language {
 		if ($language == $this->clanguage) {
 			return true;
 		}
-		global $Config;
-		if (!is_object($Config) || ($Config->core['multilingual'] && in_array($language, $Config->core['active_languages']))) {
+		global $Config, $User;
+		if (
+			!is_object($Config) ||
+			(
+				(
+					$Config->core['multilingual'] ||
+					!$this->init ||
+					(
+						is_object($User) && $User->admin()
+					)
+				) &&
+				in_array($language, $Config->core['active_languages'])
+			)
+		) {
 			global $Cache;
 			$this->clanguage = $language;
 			if ($translate = $Cache->{'languages/'.$this->clanguage}) {
