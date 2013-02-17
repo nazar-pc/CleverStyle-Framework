@@ -57,8 +57,7 @@ abstract class _Abstract {
 				$queries	= [
 					'num'		=> '',
 					'time'		=> [],
-					'text'		=> [],
-					'result'	=> []
+					'text'		=> []
 				],
 				/**
 				 * Connection time
@@ -143,7 +142,6 @@ abstract class _Abstract {
 			$this->queries['text'][]	= $this->query['text'];
 		}
 		$result						= $this->q_internal($this->query['text']);
-		$this->queries['result'][]	= $result;
 		$this->query['time']		= round(microtime(true) - $this->query['time'], 6);
 		$this->time					+= $this->query['time'];
 		if (defined('DEBUG') && DEBUG) {
@@ -195,11 +193,11 @@ abstract class _Abstract {
 	 *
 	 * @abstract
 	 *
-	 * @param bool|object|resource $query_result
+	 * @param object|resource $query_result
 	 *
 	 * @return int|bool
 	 */
-	abstract function n ($query_result = false);
+	abstract function n ($query_result);
 	/**
 	 * Fetch
 	 *
@@ -207,26 +205,26 @@ abstract class _Abstract {
 	 *
 	 * @abstract
 	 *
-	 * @param bool|object|resource	$query_result
-	 * @param bool					$single_column	If <b>true</b> function will return not array with one element, but directly its value
-	 * @param bool					$array			If <b>true</b> returns array of associative arrays of all fetched rows
-	 * @param bool					$indexed		If <b>false</b> - associative array will be returned
+	 * @param object|resource	$query_result
+	 * @param bool				$single_column	If <b>true</b> function will return not array with one element, but directly its value
+	 * @param bool				$array			If <b>true</b> returns array of associative arrays of all fetched rows
+	 * @param bool				$indexed		If <b>false</b> - associative array will be returned
 	 *
 	 * @return array|bool
 	 */
-	abstract function f ($query_result = false, $single_column = false, $array = false, $indexed = false);
+	abstract function f ($query_result, $single_column = false, $array = false, $indexed = false);
 	/**
 	 * Fetch, Array
 	 *
 	 * Similar to ::f() method, with parameter <b>$array</b> = true
 	 *
-	 * @param bool|object|resource	$query_result
-	 * @param bool					$single_column	If <b>true</b> function will return not array with one element, but directly its value
-	 * @param bool					$indexed		If <b>false</b> - associative array will be returned
+	 * @param object|resource	$query_result
+	 * @param bool				$single_column	If <b>true</b> function will return not array with one element, but directly its value
+	 * @param bool				$indexed		If <b>false</b> - associative array will be returned
 	 *
 	 * @return array|bool
 	 */
-	function fa ($query_result = false, $single_column = false, $indexed = false) {
+	function fa ($query_result, $single_column = false, $indexed = false) {
 		return $this->f($query_result, $single_column, true, $indexed);
 	}
 	/**
@@ -234,13 +232,13 @@ abstract class _Abstract {
 	 *
 	 * Similar to ::f() method, with parameter <b>$single_column</b> = true
 	 *
-	 * @param bool|object|resource	$query_result
-	 * @param bool					$array			If <b>true</b> returns array of associative arrays of all fetched rows
-	 * @param bool					$indexed		If <b>false</b> - associative array will be returned
+	 * @param object|resource	$query_result
+	 * @param bool				$array			If <b>true</b> returns array of associative arrays of all fetched rows
+	 * @param bool				$indexed		If <b>false</b> - associative array will be returned
 	 *
 	 * @return array|bool
 	 */
-	function fs ($query_result = false, $array = false, $indexed = false) {
+	function fs ($query_result, $array = false, $indexed = false) {
 		return $this->f($query_result, true, $array, $indexed);
 	}
 	/**
@@ -248,12 +246,12 @@ abstract class _Abstract {
 	 *
 	 * Combination of ::fa() and ::fs() methods
 	 *
-	 * @param bool|object|resource	$query_result
-	 * @param bool					$indexed		If <b>false</b> - associative array will be returned
+	 * @param object|resource	$query_result
+	 * @param bool				$indexed		If <b>false</b> - associative array will be returned
 	 *
 	 * @return array|bool
 	 */
-	function fas ($query_result = false, $indexed = false) {
+	function fas ($query_result, $indexed = false) {
 		return $this->fa($query_result, true, $indexed);
 	}
 	/**
@@ -375,11 +373,11 @@ abstract class _Abstract {
 	 *
 	 * @abstract
 	 *
-	 * @param bool|object|resource $query_result
+	 * @param object|resource $query_result
 	 *
 	 * @return bool
 	 */
-	abstract function free ($query_result = false);
+	abstract function free ($query_result);
 	/**
 	 * Get columns list of table
 	 *

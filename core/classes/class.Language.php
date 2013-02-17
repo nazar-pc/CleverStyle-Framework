@@ -45,15 +45,15 @@ class Language {
 			return;
 		}
 		$this->init = true;
+		global $Cache, $Config, $Core;
 		if (!FIXED_LANGUAGE) {
-			$this->change(
-				_getcookie('language') && in_array(_getcookie('language'), $active_languages) ? _getcookie('language') : (
-					$this->scan_aliases($active_languages) ?: $language
-				)
-			);
+			$language	= $this->scan_aliases($active_languages) ?: $language;
+			if ($Config->core['multilingual']) {
+				$language	= _getcookie('language') && in_array(_getcookie('language'), $active_languages) ? _getcookie('language') : $language;
+			}
+			$this->change($language);
 		}
 		if ($this->need_to_rebuild_cache) {
-			global $Cache, $Config, $Core;
 			if (!empty($Config->components['modules'])) {
 				foreach ($Config->components['modules'] as $module => $mdata) {
 					if ($mdata['active'] != -1 && file_exists(MODULES.'/'.$module.'/languages/'.$this->clanguage.'.json')) {

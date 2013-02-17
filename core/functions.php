@@ -697,7 +697,7 @@ function _setcookie ($name, $value, $expire = 0, $httponly = false, $api = false
 					$data['check']			= md5($User->ip.$User->forwarded_for.$User->client_ip.$User->user_agent._json_encode($data));
 					$urls					= [];
 					if ($Config->server['mirror_index'] != -1 && $domain != $Config->core['cookie_domain']) {
-						$url	= explode(';', $Config->core['url'], 2)[0];
+						$url	= $Config->core_url();
 						if ($Key->add($database, $key = $Key->generate($database), $data)) {
 							$urls[] = $url.'/api/System/user/setcookie/'.$key;
 						}

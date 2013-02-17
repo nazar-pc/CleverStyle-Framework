@@ -88,14 +88,11 @@ class MySQLi extends _Abstract {
 	 *
 	 * Getting number of selected rows
 	 *
-	 * @param bool|object $query_result
+	 * @param object 	$query_result
 	 *
 	 * @return int|bool
 	 */
-	function n ($query_result = false) {
-		if($query_result === false) {
-			$query_result = array_slice($this->queries['result'], -1)[0];
-		}
+	function n ($query_result) {
 		if(is_object($query_result)) {
 			return $query_result->num_rows;
 		} else {
@@ -107,17 +104,14 @@ class MySQLi extends _Abstract {
 	 *
 	 * Fetch a result row as an associative array
 	 *
-	 * @param bool|object	$query_result
+	 * @param object		$query_result
 	 * @param bool			$single_column
 	 * @param bool $array
 	 * @param bool			$indexed
 	 *
 	 * @return array|bool
 	 */
-	function f ($query_result = false, $single_column = false, $array = false, $indexed = false) {
-		if ($query_result === false) {
-			$query_result = array_slice($this->queries['result'], -1)[0];
-		}
+	function f ($query_result, $single_column = false, $array = false, $indexed = false) {
 		if ($single_column) {
 			$result_type	= MYSQLI_NUM;
 		} else {
@@ -171,14 +165,11 @@ class MySQLi extends _Abstract {
 	/**
 	 * Free result memory
 	 *
-	 * @param bool|object $query_result
+	 * @param object	$query_result
 	 *
 	 * @return bool
 	 */
-	function free ($query_result = false) {
-		if($query_result === false) {
-			$query_result = array_slice($this->queries['result'], -1)[0];
-		}
+	function free ($query_result) {
 		if(is_object($query_result)) {
 			return $query_result->free();
 		} else {
@@ -211,16 +202,6 @@ class MySQLi extends _Abstract {
 	 */
 	function __destruct () {
 		if($this->connected && is_object($this->instance)) {
-			if (is_array($this->queries['result'])) {
-				errors_off();
-				foreach ($this->queries['result'] as $mysqli_result) {
-					if (is_object($mysqli_result)) {
-						@$mysqli_result->free();
-						$mysqli_result = null;
-					}
-				}
-				errors_on();
-			}
 			$this->instance->close();
 			$this->connected = false;
 		}

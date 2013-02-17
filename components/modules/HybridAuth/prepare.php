@@ -328,7 +328,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					$User->get_username($id) ?: strstr($_POST['email'], '@', true),
 					get_core_ml_text('name'),
 					$L->{$rc[0]},
-					$Config->core['url'].'/'.MODULE.'/merge_confirmation/'.$confirm_key,
+					$Config->core_url().'/'.MODULE.'/merge_confirmation/'.$confirm_key,
 					$L->time($Config->core['registration_confirmation_time'], 'd')
 				);
 				if ($Mail->send_to(
@@ -358,7 +358,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 		$body	= $L->reg_need_confirmation_mail_body(
 			isset($profile_info['username']) ? $profile_info['username'] : strstr($result['email'], '@', true),
 			get_core_ml_text('name'),
-			$Config->core['url'].'/profile/registration_confirmation/'.$result['reg_key'],
+			$Config->core_url().'/profile/registration_confirmation/'.$result['reg_key'],
 			$L->time($Config->core['registration_confirmation_time'], 'd')
 		);
 		if ($Mail->send_to(

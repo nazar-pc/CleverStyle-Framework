@@ -68,14 +68,11 @@ class MySQL extends _Abstract {
 	 *
 	 * Getting number of selected rows
 	 *
-	 * @param bool|resource $query_result
+	 * @param resource $query_result
 	 *
 	 * @return bool|int
 	 */
-	function n ($query_result = false) {
-		if($query_result === false) {
-			$query_result = array_slice($this->queries['result'], -1)[0];
-		}
+	function n ($query_result) {
 		if(is_resource($query_result)) {
 			return mysql_num_rows($query_result);
 		} else {
@@ -87,17 +84,14 @@ class MySQL extends _Abstract {
 	 *
 	 * Fetch a result row as an associative array
 	 *
-	 * @param bool|resource	$query_result
+	 * @param resource		$query_result
 	 * @param bool			$single_column
 	 * @param bool $array
 	 * @param bool			$indexed
 	 *
 	 * @return array|bool
 	 */
-	function f ($query_result = false, $single_column = false, $array = false, $indexed = false) {
-		if ($query_result === false) {
-			$query_result = array_slice($this->queries['result'], -1)[0];
-		}
+	function f ($query_result, $single_column = false, $array = false, $indexed = false) {
 		if ($single_column) {
 			$result_type	= MYSQL_NUM;
 		} else {
@@ -151,14 +145,11 @@ class MySQL extends _Abstract {
 	/**
 	 * Free result memory
 	 *
-	 * @param bool|resource $query_result
+	 * @param resource $query_result
 	 *
 	 * @return bool
 	 */
-	function free ($query_result = false) {
-		if($query_result === false) {
-			$query_result = array_slice($this->queries['result'], -1)[0];
-		}
+	function free ($query_result) {
 		if(is_resource($query_result)) {
 			return mysql_free_result($query_result);
 		} else {
@@ -191,14 +182,6 @@ class MySQL extends _Abstract {
 	 */
 	function __destruct () {
 		if($this->connected && is_resource($this->id)) {
-			if (is_array($this->queries['result'])) {
-				foreach ($this->queries['result'] as &$resource) {
-					if (is_resource($resource)) {
-						mysql_free_result($resource);
-						$resource = false;
-					}
-				}
-			}
 			mysql_close($this->id);
 			$this->connected = false;
 		}

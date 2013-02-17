@@ -1,3 +1,5 @@
+//Translation provided by Dmitry Kirsanov
+//https://vk.com/id171826775
 {
 //Service information
 	"clanguage_en"		: "ukrainian",
@@ -277,9 +279,9 @@
 	//Components
 	"components"			: "Компоненти",
 		//Modules
-		"modules"										: "Модулы",
+		"modules"										: "Модулі",
 		"module"										: "Модуль",
-		"update_modules_list"							: "Оновити список модулыв",
+		"update_modules_list"							: "Оновити список модулів",
 		"update_modules_list_info"						: "УВАГА! Відсутні модулі будуть вилучені зі списку з усіма параметрами!",
 		"module_name"									: "Назва модуля",
 		"installation_of_module"						: "Встановлення модуля %s",

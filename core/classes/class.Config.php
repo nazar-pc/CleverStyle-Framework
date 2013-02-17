@@ -561,6 +561,14 @@ class Config {
 		return $this->server['base_url'];
 	}
 	/**
+	 * Get base url of main domain
+	 *
+	 * @return string
+	 */
+	function core_url () {
+		return explode(';', $this->core['url'], 2)[0];
+	}
+	/**
 	 * Get object for getting db and storage configuration of module
 	 *
 	 * @param string $module_name

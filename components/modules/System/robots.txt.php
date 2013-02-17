@@ -24,6 +24,7 @@ $Core->run_trigger(
 );
 $text			.= 'Host: '.explode(
 	'/',
-	explode('//', $Config->core['url'])[1]
+	explode('//', $Config->core_url(), 2)[1],
+	2
 )[0];
 $Page->Content	= $text;

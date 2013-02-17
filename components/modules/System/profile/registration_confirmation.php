@@ -31,7 +31,7 @@ if ($result === false) {
 $body = $L->reg_success_mail_body(
 	strstr($result['email'], '@', true),
 	get_core_ml_text('name'),
-	$Config->core['url'].'/profile/'.$User->get('login', $result['id']),
+	$Config->core_url().'/profile/'.$User->get('login', $result['id']),
 	$User->get('login', $result['id']),
 	$result['password']
 );
