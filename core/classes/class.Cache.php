@@ -31,7 +31,7 @@ class Cache {
 	 * Cache (re)initialization
 	 */
 	function init () {
-		$this->cache = !DEBUG;
+		$this->cache = !(defined('DEBUG') && DEBUG);
 	}
 	/**
 	 * Get item from cache
