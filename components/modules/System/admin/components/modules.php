@@ -120,10 +120,10 @@ if (
 						'package'	=> str_replace(DIR, $Config->base_url(), mb_substr($tmp_file, 0, -9))
 					]
 				);
-				if (!empty($api_request)) {
+				if ($api_request) {
 					$success	= true;
 					foreach ($api_request as $mirror => $result) {
-						if ($result != '0') {
+						if ($result == 1) {
 							$success	= false;
 							$Page->warning($L->cant_unpack_module_on_mirror($mirror));
 						}

@@ -266,7 +266,7 @@ class Index {
 	protected function mainmenu () {
 		global $Config, $L, $Page, $User, $Core;
 		if ($User->admin() || ($Config->can_be_admin && $Config->core['ip_admin_list_only'])) {
-			if (defined('DEBUG') && DEBUG) {
+			if (DEBUG) {
 				$Page->mainmenu .= h::a(
 					mb_substr($L->debug, 0, 1),
 					[
@@ -464,7 +464,7 @@ class Index {
 				'	is_admin = '.(int)$User->admin().",\n".
 				'	is_user = '.(int)$User->user().",\n".
 				'	is_guest = '.(int)$User->guest().",\n".
-				'	debug = '.(int)(defined('DEBUG') && DEBUG).",\n".
+				'	debug = '.(int)DEBUG.",\n".
 				'	session_id = "'.$User->get_session()."\",\n".
 				'	cookie_prefix = "'.$Config->core['cookie_prefix']."\",\n".
 				'	cookie_domain = "'.$Config->core['cookie_domain']."\",\n".

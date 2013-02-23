@@ -9,7 +9,7 @@
 $(function () {
 	async_call([
 		function () {
-			$('textarea.EDITOR').tinymce(
+			$('textarea.EDITOR').prop('required', false).tinymce(
 				{
 					doctype                           : '<!doctype html>',
 					theme                             : window.tinymce_theme !== undefined ? tinymce_theme : "advanced",
@@ -31,7 +31,7 @@ $(function () {
 			);
 		},
 		function () {
-			$('textarea.EDITORH').tinymce(
+			$('textarea.EDITORH').prop('required', false).tinymce(
 				{
 					doctype                           : '<!doctype html>',
 					theme                             : window.tinymce_theme !== undefined ? tinymce_theme : "advanced",
@@ -53,7 +53,7 @@ $(function () {
 			);
 		},
 		function () {
-			$('textarea.SEDITOR').tinymce(
+			$('textarea.SEDITOR').prop('required', false).tinymce(
 				{
 					doctype                           : '<!doctype html>',
 					theme                             : window.tinymce_theme !== undefined ? tinymce_theme : "advanced",

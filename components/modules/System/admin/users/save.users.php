@@ -40,13 +40,13 @@ switch ($_POST['mode']) {
 		}
 	break;
 	case 'edit':
-		$id = (int)$_POST['user']['id'];
-		if (!in_array(3, (array)$User->get_user_groups($id))) {
+		if (isset($_POST['user'])) {
+			$id			= (int)$_POST['user']['id'];
 			if ($id == 1 || $id == 2) {
 				break;
 			}
-			$user_data = &$_POST['user'];
-			$columns = array(
+			$user_data	= &$_POST['user'];
+			$columns	= array(
 				'id',
 				'login',
 				'username',
@@ -138,11 +138,13 @@ switch ($_POST['mode']) {
 			} else {
 				unset($user_data['login']);
 			}
-			$User->set($user_data, '', $id);
+			$result		= $User->set($user_data, '', $id);
 			$User->__finish();
-			$Index->save(true);
+			$Index->save($result);
 		} elseif (isset($_POST['bot'])) {
-
+			$result		= $User->set_bot($_POST['bot']['id'], $_POST['bot']['name'], $_POST['bot']['user_agent'], $_POST['bot']['ip']);
+			$User->__finish();
+			$Index->save($result);
 		}
 	break;
 	case 'deactivate':

@@ -380,7 +380,7 @@ class Page {
 	protected function process_replacing ($data) {
 		errors_off();
 		foreach ($this->Search as $i => $search) {
-			$data = @preg_replace($search, $this->Replace[$i], $data) ?: str_replace($search, $this->Replace[$i], $data);
+			$data = _preg_replace($search, $this->Replace[$i], $data) ?: str_replace($search, $this->Replace[$i], $data);
 		}
 		errors_on();
 		return $data;
@@ -972,10 +972,9 @@ class Page {
 					$tmp	.= h::code(
 						$text.
 						h::br(2).
-						'#'.h::i(format_time(round($queries['time'][$i], 5))).
-						($error = (stripos($text, 'select') === 0 && !$queries['result'][$i]) ? '('.$L->error.')' : ''),
+						'#'.h::i(format_time(round($queries['time'][$i], 5))),
 						[
-							'class' => ($queries['time'][$i] > 0.1 ? 'ui-state-highlight ' : '').($error ? 'ui-state-error ' : '').'cs-debug-code'
+							'class' => ($queries['time'][$i] > .1 ? 'ui-state-highlight ' : '').'cs-debug-code'
 						]
 					);
 				}
@@ -1252,7 +1251,7 @@ class Page {
 					$User->admin() || (
 						$Config->can_be_admin && $Config->core['ip_admin_list_only']
 					)
-				) && defined('DEBUG') && DEBUG
+				) && DEBUG
 			) {
 				$this->get_debug_info();
 			}

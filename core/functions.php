@@ -649,6 +649,42 @@ function _json_decode_nocomments ($in, $depth = 512) {
 	unset($i, $string);
 	return @json_decode(implode('', $in), true, $depth);
 }
+
+/**
+ * Similar to system function, but make simple check, whether regexp is correct (actually checks if first symbol is / or #)
+ *
+ * @param string		$pattern
+ * @param string		$subject
+ * @param null|mixed	$matches
+ * @param int			$flags
+ * @param int			$offset
+ *
+ * @return bool|int
+ */
+function _preg_match ($pattern, $subject, &$matches = null, $flags = 0, $offset = 0) {
+	if (strpos('/', $pattern) === 0 || strpos('#', $pattern) === 0) {
+		return false;
+	}
+	return preg_match($pattern, $subject, $matches, $flags, $offset);
+}
+
+/**
+ * Similar to system function, but make simple check, whether regexp is correct (actually checks if first symbol is / or #)
+ *
+ * @param string	$pattern
+ * @param string	$replacement
+ * @param string	$subject
+ * @param int		$limit
+ * @param null		$count
+ *
+ * @return bool|mixed
+ */
+function _preg_replace ($pattern, $replacement, $subject, $limit = -1, &$count = null) {
+	if (strpos('/', $pattern) === 0 || strpos('#', $pattern) === 0) {
+		return false;
+	}
+	return preg_replace($pattern, $replacement, $subject, $limit, $count);
+}
 /**
  * Function for setting cookies on all mirrors and taking into account cookies prefix. Parameters like in system function, but $path, $domain and $secure
  * are skipped, they are detected automatically, and $api parameter added in the end.

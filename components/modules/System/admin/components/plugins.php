@@ -90,10 +90,10 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 						'package'	=> str_replace(DIR, $Config->base_url(), mb_substr($tmp_file, 0, -9))
 					]
 				);
-				if (!empty($api_request)) {
+				if ($api_request) {
 					$success	= true;
 					foreach ($api_request as $mirror => $result) {
-						if ($result != '0') {
+						if ($result == 1) {
 							$success	= false;
 							$Page->warning($L->cant_unpack_plugin_on_mirror($mirror));
 						}
@@ -295,7 +295,7 @@ $a->content(
 			h::{'button[type=submit]'}(
 				$L->upload_and_install_plugin,
 				[
-				'formaction'	=>  $a->action.'/enable/upload'
+					'formaction'	=>  $a->action.'/enable/upload'
 				]
 			)
 		)

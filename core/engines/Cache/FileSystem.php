@@ -63,7 +63,7 @@ class FileSystem extends _Abstract {
 				$cache_size_file	= fopen(CACHE.'/size', 'c+b');
 				$time				= microtime(true);
 				while (!flock($cache_size_file, LOCK_EX | LOCK_NB)) {
-					if ($time < microtime() - .5) {
+					if ($time < microtime(true) - .5) {
 						fclose($cache_size_file);
 						return false;
 					}
@@ -123,7 +123,7 @@ class FileSystem extends _Abstract {
 				$cache_size_file	= fopen(CACHE.'/size', 'c+b');
 				$time				= microtime(true);
 				while (!flock($cache_size_file, LOCK_EX | LOCK_NB)) {
-					if ($time < microtime() - .5) {
+					if ($time < microtime(true) - .5) {
 						fclose($cache_size_file);
 						return false;
 					}
@@ -153,16 +153,20 @@ class FileSystem extends _Abstract {
 	 * @return bool
 	 */
 	function clean () {
-		$ok = true;
-		$list = get_files_list(CACHE, false, 'fd', true, true, 'name|desc');
-		foreach ($list as $item) {
+		$ok				= true;
+		$cache_old		= explode('/', CACHE);
+		$cache_old[]	= array_pop($cache_old).'_old';
+		$cache_old		= implode('/', $cache_old);
+		rename(CACHE, $cache_old);
+		foreach (get_files_list($cache_old, false, 'fd', true, true, 'name|desc', false, true) as $item) {
 			if (is_writable($item)) {
 				is_dir($item) ? @rmdir($item) : @unlink($item);
 			} else {
 				$ok = false;
 			}
 		}
-		unset($list, $item);
+		unset($item);
+		rmdir($cache_old);
 		return $ok;
 	}
 }

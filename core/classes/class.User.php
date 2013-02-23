@@ -72,7 +72,7 @@ class User {
 		 * Detecting of current user
 		 * Last part in page path - key
 		 */
-		$rc = $Config->route;
+		$rc			= $Config->route;
 		if (
 			$this->user_agent == 'CleverStyle CMS' &&
 			(
@@ -89,7 +89,7 @@ class User {
 			) &&
 			is_array($key_data)
 		) {
-			if ($this->current['is']['system'] = $key_data['url'] == $Config->server['host'].'/'.$Config->server['raw_relative_address']) {
+			if ($this->current['is']['system'] = ($key_data['url'] == $Config->server['host'].'/'.$Config->server['raw_relative_address'])) {
 				$this->current['is']['admin'] = true;
 				interface_off();
 				$_POST['data'] = _json_decode($_POST['data']);
@@ -97,7 +97,7 @@ class User {
 			} else {
 				$this->current['is']['guest'] = true;
 				/**
-				 * Simulate a bad sign in to block access by deliberate tampering
+				 * Simulate a bad sign in to block access
 				 */
 				$this->login_result(false, hash('sha224', 'system'));
 				unset($_POST['data']);
@@ -111,10 +111,9 @@ class User {
 		if (_getcookie('session')) {
 			$this->id = $this->get_session_user();
 		/**
-		 * If user does not accept cookie
+		 * Try to detect bot
 		 */
-		} elseif (!_setcookie('test', 'test', 0, true, true)) {
-			$this->current['is']['bot']	= true;
+		} else {
 			/**
 			 * Loading bots list
 			 */
@@ -132,14 +131,9 @@ class User {
 						`u`.`status`	= 1"
 				);
 				if (is_array($bots) && !empty($bots)) {
-					foreach ($bots as &$bot) {
-						$bot['login'] = _json_decode($bot['login']);
-						$bot['email'] = _json_decode($bot['email']);
-					}
-					unset($bot);
 					$Cache->{'users/bots'} = $bots;
 				} else {
-					$Cache->{'users/bots'} = 'null';
+					$Cache->{'users/bots'} = [];
 				}
 			}
 			/**
@@ -157,22 +151,26 @@ class User {
 					/**
 					 * If no data - try to find bot in list of known bots
 					 */
-					foreach ($bots as &$bot) {
-						if (is_array($bot['login']) && !empty($bot['login'])) {
-							foreach ($bot['login'] as $login) {
-								if (strpos($this->user_agent, $login) !== false || preg_match($login, $this->user_agent)) {
-									$this->id = $bot['id'];
-									break 2;
-								}
-							}
+					foreach ($bots as $bot) {
+						if (
+							$bot['login'] &&
+							(
+								strpos($this->user_agent, $bot['login']) !== false ||
+								_preg_match($bot['login'], $this->user_agent)
+							)
+						) {
+							$this->id	= $bot['id'];
+							break;
 						}
-						if (is_array($bot['email']) && !empty($bot['email'])) {
-							foreach ($bot['email'] as $email) {
-								if ($this->ip == $email || preg_match($email, $this->ip)) {
-									$this->id = $bot['id'];
-									break 2;
-								}
-							}
+						if (
+							$bot['email'] &&
+							(
+								$this->ip == $bot['email'] ||
+								_preg_match($bot['email'], $this->ip)
+							)
+						) {
+							$this->id	= $bot['id'];
+							break;
 						}
 					}
 					unset($bots, $bot, $login, $email);
@@ -184,34 +182,22 @@ class User {
 						/**
 						 * Searching for last bot session, if exists - load it, otherwise create new one
 						 */
-						$data							= $this->get('data');
-						if (!isset($data['last_session'])) {
-							$this->add_session($this->id);
-							$data['last_session']	= $this->get_session();
-							$this->set('data', $data);
-						} else {
-							$this->get_session_user($data['last_session']);
-							if ($data['last_session'] != $this->get_session()) {
-								$data['last_session']	= $this->get_session();
-								$this->set('data', $data);
-							}
+						$last_session					= $this->get_data('last_session');
+						$id								= $this->id;
+						if ($last_session) {
+							$this->get_session_user($last_session);
 						}
-					/**
-					 * If bot not found - will be guest
-					 */
-					} else {
-						$Cache->{'users/'.$bot_hash}	= $this->id = 1;
+						if (!$last_session || $this->id == 1) {
+							$this->add_session($id);
+							$this->set_data('last_session', $this->get_session());
+						}
+						unset($id, $last_session);
 					}
 				}
-			/**
-			 * If bots list is empty - will be guest
-			 */
-			} else {
-				$Cache->{'users/'.$bot_hash}	= $this->id = 1;
 			}
 			unset($bots, $bot_hash);
-		} else {
-			_setcookie('test', '', 0, true, true);
+		}
+		if (!$this->id) {
 			$this->add_session($this->id = 1);
 		}
 		/**
@@ -219,7 +205,7 @@ class User {
 		 * Return point, runs if user is blocked, inactive, or disabled
 		 */
 		getting_user_data:
-		$data = $this->get(['login', 'username', 'language', 'timezone', 'status', 'block_until', 'avatar']);
+		$data		= $this->get(['login', 'username', 'language', 'timezone', 'status', 'block_until', 'avatar']);
 		if (is_array($data)) {
 			if ($data['status'] != 1) {
 				/**
@@ -256,7 +242,7 @@ class User {
 			}
 		} elseif ($this->id != 1) {
 			/**
-			 * If data wasn't loaded - mark user as guest, load data again
+			 * If data was not loaded - mark user as guest, load data again
 			 */
 			$this->del_session();
 			goto getting_user_data;
@@ -308,13 +294,13 @@ class User {
 			}
 		}
 		/**
-		 * Security check for data, sended with POST method
+		 * Security check for data, sent with POST method
 		 */
-		$session_id = $this->get_session();
+		$session_id	= $this->get_session();
 		if (!$session_id || !isset($_POST[$session_id]) || $_POST[$session_id] != $session_id) {
 			$_POST = [];
 		}
-		$this->init = true;
+		$this->init	= true;
 	}
 	/**
 	 * Get data item of specified user
@@ -1464,7 +1450,6 @@ class User {
 		}
 		global $Cache, $Config;
 		$result	= false;
-		$time	= TIME;
 		if ($session_id && !($result = $Cache->{'sessions/'.$session_id})) {
 			$condition	= $Config->core['remember_user_ip'] ?
 				"AND
@@ -1484,11 +1469,12 @@ class User {
 				FROM `[prefix]sessions`
 				WHERE
 					`id`			= '%s' AND
-					`expire`		> $time AND
+					`expire`		> '%s' AND
 					`user_agent`	= '%s'
 					$condition
 				LIMIT 1",
 				$session_id,
+				TIME,
 				$this->user_agent
 			]);
 			unset($condition);
@@ -1499,6 +1485,7 @@ class User {
 		if (!(
 			$session_id &&
 			is_array($result) &&
+			$result['expire'] > TIME &&
 			(
 				$Cache->{'users/'.$result['user']} ||
 				$this->get('id', $result['user'])
@@ -1515,9 +1502,10 @@ class User {
 			/**
 			 * Updating last login time and ip
 			 */
+			$time	= TIME;
 			if ($this->get('last_online', $result['user']) < TIME - $Config->core['online_time']) {
-				$ip = ip2hex($this->ip);
-				$update[] = "
+				$ip			= ip2hex($this->ip);
+				$update[]	= "
 					UPDATE `[prefix]users`
 					SET
 						`last_login`	= $time,
@@ -1535,7 +1523,7 @@ class User {
 				);
 				unset($ip);
 			} else {
-				$update[] = "
+				$update[]	= "
 					UPDATE `[prefix]users`
 					SET `last_online` = $time
 					WHERE `id` = $result[user]";
@@ -1545,6 +1533,7 @@ class User {
 					$result['user']
 				);
 			}
+			unset($time);
 		}
 		if ($result['expire'] - TIME < $Config->core['session_expire'] * $Config->core['update_ratio'] / 100) {
 			$result['expire']	= TIME + $Config->core['session_expire'];
@@ -2338,6 +2327,30 @@ class User {
 		} else {
 			return false;
 		}
+	}
+	/**
+	 * Bots editing
+	 *
+	 * @param int		$id			Bot it
+	 * @param string	$name		Bot name
+	 * @param string	$user_agent	User Agent string or regular expression
+	 * @param string	$ip			IP string or regular expression
+	 *
+	 * @return bool|int				Bot <b>id</b> in DB or <b>false</b> on failure
+	 */
+	function set_bot ($id, $name, $user_agent, $ip) {
+		$result	= $this->set(
+			[
+				'username'	=> $name,
+				'login'		=> $user_agent,
+				'email'		=> $ip
+			],
+			'',
+			$id
+		);
+		global $Cache;
+		unset($Cache->{'users/bots'});
+		return $result;
 	}
 	/**
 	 * Delete specified bot or array of bots

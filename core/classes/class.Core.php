@@ -60,12 +60,25 @@ class Core {
 		}
 		if (!is_dir(CACHE)) {
 			@mkdir(CACHE, 0700);
+			file_put_contents(
+				CACHE.'/.gitignore',
+				"#do not commit cache\n".
+				"/*\n".
+				"!/.htaccess"
+			);
 		}
 		if (!is_dir(PCACHE)) {
 			@mkdir(PCACHE, 0755);
 			file_put_contents(
 				PCACHE.'/.htaccess',
-				"Allow From All\r\nAddEncoding gzip .js\r\nAddEncoding gzip .css"
+				"Allow From All\r\nAddEncoding gzip .js\n".
+				"AddEncoding gzip .css"
+			);
+			file_put_contents(
+				PCACHE.'/.gitignore',
+				"#do not commit public cache\n".
+				"/*\n".
+				"!/.htaccess"
 			);
 		}
 		if (!is_dir(LOGS)) {
@@ -76,6 +89,12 @@ class Core {
 			file_put_contents(
 				TEMP.'/.htaccess',
 				'Allow From All'
+			);
+			file_put_contents(
+				TEMP.'/.gitignore',
+				"#do not commit temp files\n".
+				"/*\n".
+				"!/.htaccess"
 			);
 		}
 		if ($this->encrypt_support = check_mcrypt()) {
@@ -106,11 +125,11 @@ class Core {
 	 * Creating of global object on the base of class
 	 *
 	 * @param array|string|string[]	$class			Class name, on the base of which object will be created. May be string of class name,
-	 * 												or <b>array($class, $object_name)</b>, or indexed array of mentioned arrays
-	 * @param bool					$object_name	If this parameter is <b>null</b> - name of global object will be the same as class name, otherwise,
+	 * 												or <i>array($class, $object_name)</b>, or indexed array of mentioned arrays
+	 * @param bool					$object_name	If this parameter is <i>null</b> - name of global object will be the same as class name, otherwise,
 	 * 												as name specified in this parameter
 	 *
-	 * @return bool|object							Created object on success or <b>false</b> on failure
+	 * @return bool|object							Created object on success or <i>false</b> on failure
 	 */
 	function create ($class, $object_name = null) {
 		if (empty($class)) {
@@ -240,11 +259,11 @@ class Core {
 	/**
 	 * Sending system api request to all mirrors
 	 *
-	 * @param string	$path	Path for api request, for example <b>System/admin/setcookie<b>, where
-	 * 							<b>System</b> - module name, <b>admin/setcookie</b> - path to action file in current module api structure
-	 * @param mixed		$data	Any type of data, will be accessible through <b>$_POST['data']</b>
+	 * @param string	$path	Path for api request, for example <i>System/admin/setcookie<i>, where
+	 * 							<i>System</b> - module name, <i>admin/setcookie</b> - path to action file in current module api structure
+	 * @param mixed		$data	Any type of data, will be accessible through <i>$_POST['data']</b>
 	 *
-	 * @return array
+	 * @return array	Array <i>[mirror_url => result]</b> in case of successful connection, <i>false</b> on failure
 	 */
 	function api_request ($path, $data = '') {
 		global $Config;
@@ -266,34 +285,35 @@ class Core {
 	/**
 	 * Sending of api request to the specified host
 	 *
-	 * @param string	$url	With prefix <b>https://</b> (<b>http://</b> can be missed), and (if necessary) with port address
-	 * @param mixed		$data	Any type of data, will be accessible through <b>$_POST['data']</b>
+	 * @param string	$url	With prefix <i>https://</b> (<i>http://</b> can be missed), and (if necessary) with port address
+	 * @param mixed		$data	Any type of data, will be accessible through <i>$_POST['data']</b>
 	 *
-	 * @return array|bool		Array <b>[0 => headers, 1 => body]</b> in case of successful connection, <b>false</b> on failure
+	 * @return string|bool		Result or <i>false</i> at error
 	 */
 	protected function send ($url, $data) {
 		global $Key, $Config;
 		if (!(is_object($Key) && is_object($Config))) {
 			return false;
 		}
-		$protocol	= 'http';
+		$protocol			= 'http';
 		if (mb_strpos($url, '://') !== false) {
-			$protocol	= mb_substr($url, 0, mb_strpos($url, '://'));
-			$url		= mb_substr($url, mb_strpos($url, '://')+3);
+			list($protocol,	$url) = explode('://', $url);
 		}
-		$url		= explode('/', $url, 2);
-		$host		= explode(':', $url[0]);
-		$url		= isset($url[1]) && !empty($url[1]) ? $url[1] : '';
-		$database	= $Config->module('System')->db('keys');
-		$key		= $Key->generate($database);
-		$url		= $url ? $url.'/'.$key : $key;
+		$database			= $Config->module('System')->db('keys');
+		$key				= $Key->generate($database);
+		$url				= $url.'/'.$key;
 		$Key->add(
 			$database,
 			$key,
-			['url' => implode(':', $host).'/'.$url],
+			[
+				'url' => $url
+			],
 			time()+30
 		);
-		$socket	= fsockopen($host[0], isset($host[1]) ? $host[1] : $protocol == 'http' ? 80 : 443, $errno, $errstr);
+		list($host, $url)	= explode('/', $url, 2);
+		$host				= explode(':', $host);
+		$socket				= fsockopen($host[0], isset($host[1]) ? $host[1] : $protocol == 'http' ? 80 : 443, $errno, $errstr);
+		$host				= implode(':', $host);
 		if(!is_resource($socket)) {
 			trigger_error('#'.$errno.' '.$errstr, E_USER_WARNING);
 			return false;
@@ -302,8 +322,8 @@ class Core {
 		time_limit_pause();
 		fwrite(
 			$socket,
-			'POST /'.$url." HTTP/1.1\r\n".
-			'Host: '.implode(':', $host)."\r\n".
+			"POST /$url HTTP/1.1\r\n".
+			"Host: $host\r\n".
 			"Content-type: application/x-www-form-urlencoded\r\n".
 			"Content-length:".strlen($data)."\r\n".
 			"Accept:*/*\r\n".
@@ -313,47 +333,31 @@ class Core {
 		$return = explode("\r\n\r\n", stream_get_contents($socket), 2);
 		time_limit_pause(false);
 		fclose($socket);
-		return $return;
+		return $return[1];
 	}
 	/**
 	 * Registration of triggers for actions
 	 *
-	 * @param array|string	$trigger	For example it can be array like <code>[
-	 *   'admin' => [
-	 *     'System' => [
-	 *       'components' => [
-	 *         'plugins' => [
-	 *           'enable' => [
-	 *             function () {{ }
-	 *           ]
-	 *         ]
-	 *       ]
-	 *     ]
-	 *   ]
-	 * ]
-	 * </code>
-	 * or string<br>
+	 * @param string	$trigger	Trigger name<ir>
 	 * 'admin/System/components/plugins/disable'
-	 * @param Closure|null	$closure	If <b>$trigger</b> is string - this parameter must containg Closure [optional]
+	 * @param Closure	$closure	function, that will be called at trigger running
 	 *
 	 * @return bool
 	 */
-	function register_trigger ($trigger, $closure = null) {
-		if (is_string($trigger) && $closure instanceof Closure) {
-			$trigger		= explode('/', $trigger);
-			$new_trigger	= [];
-			$tmp			= &$new_trigger;
-			foreach ($trigger as $item) {
-				$tmp[$item] = [];
-				$tmp		= &$tmp[$item];
-			}
-			$tmp			= $closure;
-			$trigger		= $new_trigger;
-			unset($new_trigger, $tmp, $item);
+	function register_trigger ($trigger, $closure) {
+		if (!(is_string($trigger) && $closure instanceof Closure)) {
+			return true;
 		}
-		if (!is_array($trigger)) {
-			return false;
+		$trigger		= explode('/', $trigger);
+		$new_trigger	= [];
+		$tmp			= &$new_trigger;
+		foreach ($trigger as $item) {
+			$tmp[$item] = [];
+			$tmp		= &$tmp[$item];
 		}
+		$tmp			= $closure;
+		$trigger		= $new_trigger;
+		unset($new_trigger, $tmp, $item);
 		return $this->register_trigger_internal($trigger);
 	}
 	/**
@@ -387,12 +391,12 @@ class Core {
 	/**
 	 * Running triggers for some actions
 	 *
-	 * @param string $action	For example <i>admin/System/components/plugins/disable</i>
-	 * @param mixed $data		For example ['name'	=> <i>plugin_name</i>]
+	 * @param string	$trigger	For example <i>admin/System/components/plugins/disable</i>
+	 * @param mixed		$data		For example ['name'	=> <i>plugin_name</i>]
 	 *
 	 * @return bool
 	 */
-	function run_trigger ($action, $data = null) {
+	function run_trigger ($trigger, $data = null) {
 		if (!$this->triggers_init) {
 			global $Config;
 			$modules = array_keys($Config->components['modules']);
@@ -409,19 +413,19 @@ class Core {
 			unset($plugins, $plugin);
 			$this->triggers_init = true;
 		}
-		$action = explode('/', $action);
-		if (!is_array($action) || empty($action)) {
+		$trigger = explode('/', $trigger);
+		if (!is_array($trigger) || empty($trigger)) {
 			return false;
 		}
 		$triggers = $this->triggers;
-		foreach ($action as $item) {
+		foreach ($trigger as $item) {
 			if (is_array($triggers) && isset($triggers[$item])) {
 				$triggers = $triggers[$item];
 			} else {
 				return true;
 			}
 		}
-		unset($action, $item);
+		unset($trigger, $item);
 		if (!is_array($triggers) || empty($triggers)) {
 			return false;
 		}
@@ -447,8 +451,8 @@ class Core {
 	 */
 	function __clone () {}
 	/**
-	 * Destroying of global objects, cleaning.<br>
-	 * Disabling encryption.<br>
+	 * Destroying of global objects, cleaning.<ir>
+	 * Disabling encryption.<ir>
 	 * Correct termination.
 	 */
 	function __finish () {
