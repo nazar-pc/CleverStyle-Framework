@@ -1778,15 +1778,17 @@ class User {
 			return false;
 		}
 		global $Cache;
-		$data			= _json_decode(
-			$this->db()->qfs([
-				"SELECT `data`
-				FROM `[prefix]sessions`
-				WHERE `id` = '%s'
-				LIMIT 1",
-				$session_id
-			])
-		);
+		if (!($data = $Cache->{'sessions/data/'.$session_id})) {
+			$data									= _json_decode(
+				$this->db()->qfs([
+					"SELECT `data`
+					FROM `[prefix]sessions`
+					WHERE `id` = '%s'
+					LIMIT 1",
+					$session_id
+				])
+			);
+		}
 		if (!$data) {
 			$data	= [];
 		}
@@ -1819,25 +1821,31 @@ class User {
 			return false;
 		}
 		global $Cache;
-		if ($data = $this->get_session_data($item, $session_id)) {
-			if (!isset($data[$item])) {
-				return true;
-			}
-			unset($data[$item]);
-			if ($this->db()->q(
-				[
-					"UPDATE `[prefix]sessions`
-					SET `data` = '%s'
+		if (!($data = $Cache->{'sessions/data/'.$session_id})) {
+			$data									= _json_decode(
+				$this->db()->qfs([
+					"SELECT `data`
+					FROM `[prefix]sessions`
 					WHERE `id` = '%s'
 					LIMIT 1",
-					_json_encode($data),
 					$session_id
-				],
-				true
-			)) {
-				unset($Cache->{'sessions/data/'.$session_id});
-				return true;
-			}
+				])
+			);
+		}
+		if (!isset($data[$item])) {
+			return true;
+		}
+		unset($data[$item]);
+		if ($this->db()->q(
+			"UPDATE `[prefix]sessions`
+			SET `data` = '%s'
+			WHERE `id` = '%s'
+			LIMIT 1",
+			_json_encode($data),
+			$session_id
+		)) {
+			unset($Cache->{'sessions/data/'.$session_id});
+			return true;
 		}
 		return false;
 	}
