@@ -201,7 +201,7 @@ function install_process () {
 		"ip_admin_list": [
 		""
 		],
-		"on_error_globals_dump": "1",
+		"on_error_globals_dump": "0",
 		"simple_admin_mode": "0",
 		"auto_translation": "0",
 		"auto_translation_engine": {
