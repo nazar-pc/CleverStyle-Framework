@@ -140,7 +140,7 @@ class FileSystem extends _Abstract {
 				flock($cache_size_file, LOCK_UN);
 				fclose($cache_size_file);
 			} else {
-				unlink(CACHE.'/'.$item);
+				@unlink(CACHE.'/'.$item);
 			}
 		} elseif (file_exists(CACHE.'/'.$item)) {
 			return false;

@@ -597,8 +597,14 @@ namespace cs\Config;
  * Class for getting of db and storage configuration of module
  */
 class Module_Properties {
-	protected	$module_data	= [],
-				$module;
+	/**
+	 * @var array
+	 */
+	protected	$module_data	= [];
+	/**
+	 * @var string
+	 */
+	protected	$module;
 	/**
 	 * Creating of object and saving module data inside
 	 *

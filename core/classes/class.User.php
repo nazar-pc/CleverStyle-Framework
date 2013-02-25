@@ -305,12 +305,15 @@ class User {
 	/**
 	 * Get data item of specified user
 	 *
-	 * @param string|string[]		$item
-	 * @param bool|int 				$user
+	 * @param string|string[]						$item
+	 * @param bool|int 								$user
 	 *
-	 * @return bool|string|mixed[]
+	 * @return bool|string|mixed[]|User_Properties	If <i>$item</i> is integer - User_Properties object will be returned
 	 */
 	function get ($item, $user = false) {
+		if (is_int($item)) {
+			return new User_Properties($item);
+		}
 		switch ($item) {
 			case 'user_agent':
 				return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
@@ -2441,4 +2444,101 @@ class User {
 if (false) {
 	global $User;
 	$User = new User;
+}
+/**
+ * Class for getting of user information
+ */
+class User_Properties {
+	/**
+	 * @var int
+	 */
+	protected	$id;
+	/**
+	 * Creating of object and saving user id inside
+	 *
+	 * @param int $user
+	 */
+	function __construct ($user) {
+		$this->id	= $user;
+	}
+	/**
+	 * Get data item of user
+	 *
+	 * @param string|string[]		$item
+	 *
+	 * @return bool|string|mixed[]
+	 */
+	function get ($item) {
+		global $User;
+		return $User->get($item, $this->id);
+	}
+	/**
+	 * Set data item of specified user
+	 *
+	 * @param array|string	$item
+	 * @param mixed|null	$value
+	 *
+	 * @return bool
+	 */
+	function set ($item, $value = null) {
+		global $User;
+		return $User->set($item, $value, $this->id);
+	}
+	/**
+	 * Get data item of user
+	 *
+	 * @param string|string[]		$item
+	 *
+	 * @return array|bool|string
+	 */
+	function __get ($item) {
+		global $User;
+		return $User->get($item, $this->id);
+	}
+	/**
+	 * Set data item of user
+	 *
+	 * @param array|string	$item
+	 * @param mixed|null	$value
+	 *
+	 * @return bool
+	 */
+	function __set ($item, $value = null) {
+		global $User;
+		return $User->set($item, $value, $this->id);
+	}
+	/**
+	 * Getting additional data item(s) of specified user
+	 *
+	 * @param string|string[]		$item
+	 *
+	 * @return bool|string|mixed[]
+	 */
+	function get_data ($item) {
+		global $User;
+		return $User->get_data($item, $this->id);
+	}
+	/**
+	 * Setting additional data item(s) of specified user
+	 *
+	 * @param array|string	$item
+	 * @param mixed|null	$value
+	 *
+	 * @return bool
+	 */
+	function set_data ($item, $value = null) {
+		global $User;
+		return $User->set_data($item, $value, $this->id);
+	}
+	/**
+	 * Deletion of additional data item(s) of specified user
+	 *
+	 * @param string|string[]		$item
+	 *
+	 * @return bool|string|string[]
+	 */
+	function del_data ($item) {
+		global $User;
+		return $User->del_data($item, $this->id);
+	}
 }
