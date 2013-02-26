@@ -22,6 +22,15 @@ $Page->menumore		= h::a(
 );
 $Index->apply_button	= false;
 $Index->content(
+	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr td'}(
+		h::info('enable_contacts_detection'),
+		h::{'input[type=radio][min=1]'}([
+			'name'		=> 'general[enable_contacts_detection]',
+			'checked'	=> $Config->module(MODULE)->enable_contacts_detection,
+			'value'		=> [0, 1],
+			'in'		=> [$L->off, $L->on]
+		])
+	).
 	h::{'table.cs-hybrid-auth-providers-table.cs-fullwidth-table.cs-center-all'}(
 		h::{'tr th.ui-widget-header.ui-corner-all'}([
 			$L->provider,

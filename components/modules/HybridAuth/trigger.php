@@ -84,38 +84,6 @@ $Core->register_trigger(
 	}
 );
 $Core->register_trigger(
-	'System/User/registration/after',
-	function ($data) {
-		global $Config, $User, $db;
-		$module			= basename(__DIR__);
-		if (!(
-			isset($Config->components['modules'][$module]) &&
-			$Config->components['modules'][$module]['active'] == 1 &&
-			$session_data = $User->get_session_data('HybridAuth')
-		)) {
-			return;
-		}
-		$db->{$Config->module($module)->db('integration')}()->q(
-			"INSERT INTO `[prefix]users_social_integration`
-				(
-					`id`,
-					`provider`,
-					`identifier`,
-					`profile`
-				) VALUES (
-					'%s',
-					'%s',
-					'%s',
-					'%s'
-				)",
-			$data['id'],
-			$session_data['provider'],
-			$session_data['identifier'],
-			$session_data['profile']
-		);
-	}
-);
-$Core->register_trigger(
 	'System/User/del_user/after',
 	function ($data) {
 		global $Config, $db;
@@ -126,9 +94,17 @@ $Core->register_trigger(
 		)) {
 			return;
 		}
-		$db->{$Config->module($module)->db('integration')}()->q(
-			"DELETE FROM `[prefix]users_social_integration`
-			WHERE `id` = '%s'",
+		/**
+		 *	@var \cs\DB\_Abstract $cdb
+		 */
+		$cdb			= $db->{$Config->module($module)->db('integration')}();
+		$cdb->q(
+			[
+				"DELETE FROM `[prefix]users_social_integration`
+				WHERE `id` = '%s'",
+				"DELETE FROM `[prefix]users_social_integration_contacts`
+				WHERE `id`		= '%s'"
+			],
 			$data['id']
 		);
 	}
@@ -178,6 +154,15 @@ $Core->register_trigger(
 		rebuild_pcache();
 	}
 );
+$Core->register_trigger(
+	'System/User/get_contacts',
+	function ($data) {
+		$data['contacts']	= array_unique(array_merge(
+			$data['contacts'],
+			get_user_contacts($data['user'])
+		));
+	}
+);
 function clean_pcache ($data = null) {
 	$module	= basename(__DIR__);
 	if ($data['name'] == $module || $data === null) {
@@ -216,4 +201,86 @@ function rebuild_pcache (&$data = null) {
 	if ($data !== null) {
 		$data['key']	.= md5(implode('', $key));
 	}
+}
+/**
+ * Returns array of user id, that are contacts of specified user
+ *
+ * @param int		$user
+ *
+ * @return int[]
+ */
+function get_user_contacts ($user) {
+	global $Config, $db, $Cache;
+	$user	= (int)$user;
+	$module	= basename(__DIR__);
+	if (
+		!$user ||
+		$user == 1 ||
+		!$Config->module($module)->enable_contacts_detection
+	) {
+		return [];
+	}
+	if (!($data = $Cache->{'HybridAuth/contacts/'.$user})) {
+		/**
+		 *	@var \cs\DB\_Abstract $cdb
+		 */
+		$cdb									= $db->{$Config->module($module)->db('integration')};
+		$data									= $cdb->qfas([
+			"SELECT `u`.`id`
+			FROM `[prefix]users_social_integration` AS `u`
+			INNER JOIN `[prefix]users_social_integration_contacts` AS `c`
+			ON
+				`u`.`identifier`	= `c`.`identifier` AND
+				`u`.`provider`		= `c`.`provider`
+			WHERE `c`.`id`	= '%s'
+			GROUP BY `u`.`id`",
+			$user
+		]) ?: [];
+		$Cache->{'HybridAuth/contacts/'.$user}	= $data;
+	}
+	return $data;
+}
+/**
+ * Updates user contacts for specified provider
+ *
+ * @param \Hybrid_User_Contact[]	$contacts
+ * @param string					$provider
+ */
+function update_user_contacts ($contacts, $provider) {
+	global $Config, $db, $User, $Cache;
+	$module	= basename(__DIR__);
+	$id		= $User->id;
+	/**
+	 *	@var \cs\DB\_Abstract $cdb
+	 */
+	$cdb	= $db->{$Config->module($module)->db('integration')}();
+	$cdb->q(
+		"DELETE FROM `[prefix]users_social_integration_contacts`
+		WHERE
+			`id`		= '%s' AND
+			`provider`	= '%s'",
+		$id,
+		$provider
+	);
+	if (!empty($contacts)) {
+		$insert	= [];
+		$params	= [];
+		foreach ($contacts as $contact) {
+			$insert[]	= "('%s', '%s', '%s')";
+			$params[]	= $id;
+			$params[]	= $provider;
+			$params[]	= $contact->identifier;
+		}
+		$insert	= implode(',', $insert);
+		$cdb->q(
+			"INSERT INTO `[prefix]users_social_integration_contacts`
+			(
+				`id`,
+				`provider`,
+				`identifier`
+			) VALUES $insert",
+			$params
+		);
+	}
+	unset($Cache->{'HybridAuth/contacts/'.$id});
 }

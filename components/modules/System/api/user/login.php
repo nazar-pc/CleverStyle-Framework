@@ -10,7 +10,7 @@
 global $Config, $Page, $User, $db, $Key, $L;
 /**
  * If AJAX request from local referer, user is guest, login attempts count is satisfactory,
- * user is active, not blocked - process authentification, otherwise - show error
+ * user is active, not blocked - process authentication, otherwise - show error
  */
 if (!$Config->server['referer']['local'] || !$Config->server['ajax']) {
 	sleep(1);
@@ -59,7 +59,7 @@ if (
 	}
 	unset($random_hash);
 /**
- * Second step - checking of authentification hash, session creating
+ * Second step - checking of authentication hash, session creating
  */
 } elseif (isset($_POST['auth_hash'])) {
 	$key_data = $Key->get(

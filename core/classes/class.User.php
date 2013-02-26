@@ -36,6 +36,12 @@
  *
  *  System/User/del_group/after<br>
  *  ['id'	=> <i>group_id</i>]
+ *
+ *  System/User/get_contacts<br>
+ *  [
+ * 		'id'		=> <i>user_id</i>,
+ * 		'contacts'	=> <i>&$contacts</i>	//Array of user id
+ *  ]
  */
 namespace cs;
 class User {
@@ -64,7 +70,7 @@ class User {
 	 * Defining user id, type, session, personal settings
 	 */
 	function __construct () {
-		global $Cache, $Config, $Page, $L, $Key;
+		global $Cache, $Config, $Key;
 		if (($this->users_columns = $Cache->{'users/columns'}) === false) {
 			$this->users_columns = $Cache->{'users/columns'} = $this->db()->columns('[prefix]users');
 		}
@@ -200,54 +206,6 @@ class User {
 		if (!$this->id) {
 			$this->add_session($this->id = 1);
 		}
-		/**
-		 * Load user data
-		 * Return point, runs if user is blocked, inactive, or disabled
-		 */
-		getting_user_data:
-		$data		= $this->get(['login', 'username', 'language', 'timezone', 'status', 'block_until', 'avatar']);
-		if (is_array($data)) {
-			if ($data['status'] != 1) {
-				/**
-				 * If user is disabled
-				 */
-				if ($data['status'] == 0) {
-					$Page->warning($L->your_account_disabled);
-					/**
-					 * Mark user as guest, load data again
-					 */
-					$this->del_session();
-					goto getting_user_data;
-				/**
-				 * If user is not active
-				 */
-				} else {
-					$Page->warning($L->your_account_is_not_active);
-					/**
-					 * Mark user as guest, load data again
-					 */
-					$this->del_session();
-					goto getting_user_data;
-				}
-			/**
-			 * If user if blocked
-			 */
-			} elseif ($data['block_until'] > TIME) {
-				$Page->warning($L->your_account_blocked_until.' '.date($L->_datetime, $data['block_until']));
-				/**
-				 * Mark user as guest, load data again
-				 */
-				$this->del_session();
-				goto getting_user_data;
-			}
-		} elseif ($this->id != 1) {
-			/**
-			 * If data was not loaded - mark user as guest, load data again
-			 */
-			$this->del_session();
-			goto getting_user_data;
-		}
-		unset($data);
 		if ($this->id == 1) {
 			$this->current['is']['guest'] = true;
 		} else {
@@ -277,6 +235,7 @@ class User {
 				if (!_getcookie('language')) {
 					_setcookie('language', $this->language);
 				}
+				global $L;
 				$L->change($this->language);
 			}
 			if ($this->theme) {
@@ -306,9 +265,9 @@ class User {
 	 * Get data item of specified user
 	 *
 	 * @param string|string[]						$item
-	 * @param bool|int 								$user
+	 * @param bool|int 								$user	If not specified - current user assumed
 	 *
-	 * @return bool|string|mixed[]|User_Properties	If <i>$item</i> is integer - User_Properties object will be returned
+	 * @return bool|string|mixed[]|User_Properties			If <i>$item</i> is integer - User_Properties object will be returned
 	 */
 	function get ($item, $user = false) {
 		if (is_int($item)) {
@@ -330,7 +289,7 @@ class User {
 	 * Get data item of specified user
 	 *
 	 * @param string|string[]		$item
-	 * @param bool|int 				$user
+	 * @param bool|int 				$user		If not specified - current user assumed
 	 * @param bool					$cache_only
 	 *
 	 * @return bool|string|mixed[]
@@ -438,7 +397,7 @@ class User {
 	 *
 	 * @param array|string	$item
 	 * @param mixed|null	$value
-	 * @param bool|int		$user
+	 * @param bool|int		$user	If not specified - current user assumed
 	 *
 	 * @return bool
 	 */
@@ -499,7 +458,7 @@ class User {
 	 * Getting additional data item(s) of specified user
 	 *
 	 * @param string|string[]		$item
-	 * @param bool|int				$user
+	 * @param bool|int				$user	If not specified - current user assumed
 	 *
 	 * @return bool|string|mixed[]
 	 */
@@ -530,7 +489,7 @@ class User {
 	 *
 	 * @param array|string	$item
 	 * @param mixed|null	$value
-	 * @param bool|int		$user
+	 * @param bool|int		$user	If not specified - current user assumed
 	 *
 	 * @return bool
 	 */
@@ -562,7 +521,7 @@ class User {
 	 * Deletion of additional data item(s) of specified user
 	 *
 	 * @param string|string[]		$item
-	 * @param bool|int				$user
+	 * @param bool|int				$user	If not specified - current user assumed
 	 *
 	 * @return bool|string|string[]
 	 */
@@ -680,7 +639,7 @@ class User {
 	/**
 	 * Returns user name or login or email, depending on existed in DB information
 	 *
-	 * @param  bool|int $user
+	 * @param  bool|int $user	If not specified - current user assumed
 	 *
 	 * @return bool|int
 	 */
@@ -715,9 +674,9 @@ class User {
 	 * Returns permission state for specified user.<br>
 	 * Rules: if not denied - allowed
 	 *
-	 * @param int $group		Permission group
-	 * @param string $label		Permission label
-	 * @param bool|int $user
+	 * @param int		$group	Permission group
+	 * @param string	$label	Permission label
+	 * @param bool|int	$user	If not specified - current user assumed
 	 *
 	 * @return bool				If permission exists - returns its state for specified user, otherwise for admin permissions returns <b>false</b> and for
 	 * 							others <b>true</b>
@@ -762,7 +721,7 @@ class User {
 	/**
 	 * Get array of all permissions state for specified user
 	 *
-	 * @param bool|int		$user
+	 * @param bool|int		$user	If not specified - current user assumed
 	 *
 	 * @return array|bool
 	 */
@@ -777,7 +736,7 @@ class User {
 	 * Set user's permissions according to the given array
 	 *
 	 * @param array		$data
-	 * @param bool|int	$user
+	 * @param bool|int	$user	If not specified - current user assumed
 	 *
 	 * @return bool
 	 */
@@ -791,7 +750,7 @@ class User {
 	/**
 	 * Delete all user's permissions
 	 *
-	 * @param bool|int	$user
+	 * @param bool|int	$user	If not specified - current user assumed
 	 *
 	 * @return bool
 	 */
@@ -805,7 +764,7 @@ class User {
 	/**
 	 * Get user groups
 	 *
-	 * @param bool|int		$user
+	 * @param bool|int		$user	If not specified - current user assumed
 	 *
 	 * @return array|bool
 	 */
@@ -1276,7 +1235,7 @@ class User {
 		unset($Cache->permissions_table);
 	}
 	/**
-	 * Add premission
+	 * Add permission
 	 *
 	 * @param string	$group
 	 * @param string	$label
@@ -1560,9 +1519,6 @@ class User {
 	 * @return bool
 	 */
 	function add_session ($user) {
-		if ($this->bot() && $this->id == 1) {
-			return true;
-		}
 		$user = (int)$user;
 		if (!$user) {
 			$user = 1;
@@ -1570,6 +1526,66 @@ class User {
 		if (preg_match('/^[0-9a-z]{32}$/', $this->current['session'])) {
 			$this->del_session_internal(null, false);
 		}
+		/**
+		 * Load user data
+		 * Return point, runs if user is blocked, inactive, or disabled
+		 */
+		getting_user_data:
+		$data		= $this->get(
+			[
+				'login',
+				'username',
+				'language',
+				'timezone',
+				'status',
+				'block_until',
+				'avatar'
+			],
+			$user
+		);
+		if (is_array($data)) {
+			global $Page, $L;
+			if ($data['status'] != 1) {
+				/**
+				 * If user is disabled
+				 */
+				if ($data['status'] == 0) {
+					$Page->warning($L->your_account_disabled);
+					/**
+					 * Mark user as guest, load data again
+					 */
+					$this->del_session(null, false);
+					goto getting_user_data;
+				/**
+				 * If user is not active
+				 */
+				} else {
+					$Page->warning($L->your_account_is_not_active);
+					/**
+					 * Mark user as guest, load data again
+					 */
+					$this->del_session(null, false);
+					goto getting_user_data;
+				}
+			/**
+			 * If user if blocked
+			 */
+			} elseif ($data['block_until'] > TIME) {
+				$Page->warning($L->your_account_blocked_until.' '.date($L->_datetime, $data['block_until']));
+				/**
+				 * Mark user as guest, load data again
+				 */
+				$this->del_session(null, false);
+				goto getting_user_data;
+			}
+		} elseif ($this->id != 1) {
+			/**
+			 * If data was not loaded - mark user as guest, load data again
+			 */
+			$this->del_session(null, false);
+			goto getting_user_data;
+		}
+		unset($data);
 		global $Config;
 		/**
 		 * Generate hash in cycle, to obtain unique value
@@ -1652,9 +1668,6 @@ class User {
 	 * @return bool
 	 */
 	function del_session ($session_id = null) {
-		if ($this->bot() && $this->id == 1) {
-			return false;
-		}
 		return $this->del_session_internal($session_id);
 	}
 	/**
@@ -1691,7 +1704,7 @@ class User {
 	/**
 	 * Deletion of all user sessions
 	 *
-	 * @param bool|int	$user
+	 * @param bool|int	$user	If not specified - current user assumed
 	 *
 	 * @return bool
 	 */
@@ -2380,6 +2393,29 @@ class User {
 	 */
 	function dnt () {
 		return isset($_SERVER['HTTP_DNT']) && $_SERVER['HTTP_DNT'] == 1;
+	}
+	/**
+	 * Returns array of user id, that are associated as contacts by other modules
+	 *
+	 * @param	bool|int	$user	If not specified - current user assumed
+	 *
+	 * @return	int[]				Array of user id
+	 */
+	function get_contacts ($user) {
+		$user = (int)($user ?: $this->id);
+		if (!$user || $user == 1) {
+			return [];
+		}
+		global $Core;
+		$contacts	= [];
+		$Core->run_trigger(
+			'System/User/get_contacts',
+			[
+				'id'		=> $user,
+				'contacts'	=> &$contacts
+			]
+		);
+		return array_unique($contacts);
 	}
 	/**
 	 * Cloning restriction

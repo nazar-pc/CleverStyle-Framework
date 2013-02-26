@@ -7,6 +7,11 @@
  * @copyright	HybridAuth authors
  * @license		MIT License, see license.txt
  */
+namespace	cs\modules\HybridAuth;
+use			Exception,
+			h,
+			Hybrid_Endpoint,
+			Hybrid_Auth;
 global $Config, $User, $L, $Mail, $Page, $Index, $db, $Key;
 $rc			= $Config->route;
 /**
@@ -64,19 +69,23 @@ if (isset($rc[1]) && $rc[0] == 'merge_confirmation') {
 			$data['profile']
 		);
 		$User->del_session_data('HybridAuth');
-		$existing_data	= $User->get(array_keys($data['profile_info']), $data['id']);
-		foreach ($data['profile_info'] as $item => $value) {
-			if (!$existing_data[$item]) {
-				$User->set($item, $value, $data['id']);
-			}
-		}
-		unset($existing_data, $item, $value);
 		$User->add_session($data['id']);
+		if ($User->id != 1) {
+			$existing_data	= $User->get(array_keys($data['profile_info']), $data['id']);
+			foreach ($data['profile_info'] as $item => $value) {
+				if (!$existing_data[$item] || $existing_data[$item] != $value) {
+					$User->set($item, $value, $data['id']);
+				}
+			}
+			unset($existing_data, $item, $value);
+			update_user_contacts($data['contacts'], $data['provider']);
+		}
 		header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
 		_setcookie('HybridAuth_referer', '');
 		$Index->content(
 			$L->hybridauth_merging_confirmed_successfully($L->{$data['provider']})
 		);
+		unset($data);
 	} else {
 		$Index->content($L->hybridauth_merge_confirm_code_invalid);
 	}
@@ -119,6 +128,9 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 			]
 		]);
 		$adapter		= $HybridAuth->authenticate($rc[0]);
+		/**
+		 * @var \Hybrid_User_Profile $profile
+		 */
 		$profile		= $adapter->getUserProfile();
 		$profile_info	= [
 			'username'	=> $profile->displayName,
@@ -128,6 +140,15 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 			'gender'	=> $profile->gender == 'male' ? 0 : ($profile->gender == 'female' ? 1 : -1),
 			'birthday'	=> $profile->birthMonth ? strtotime($profile->birthMonth.'/'.$profile->birthDay.'/'.$profile->birthYear) : 0
 		];
+		/**
+		 * Remove empty fields
+		 */
+		foreach ($profile_info as $item => $value) {
+			if (!$value) {
+				unset($profile_info[$item]);
+			}
+		}
+		unset($item, $value);
 		/**
 		 * Check whether this account was already registered in system. If registered - make login
 		 */
@@ -146,24 +167,37 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 			) && $User->get('status', $id) == '1'
 		) {
 			$User->add_session($id);
+			if ($User->id != 1 && $Config->module(MODULE)->enable_contacts_detection) {
+				$existing_data	= $User->get(array_keys($profile_info), $id);
+				foreach ($profile_info as $item => $value) {
+					if (!$existing_data[$item] || $existing_data[$item] != $value) {
+						$User->set($item, $value, $id);
+					}
+				}
+				unset($existing_data, $item, $value);
+				try {
+					update_user_contacts($adapter->getUserContacts(), $rc[0]);
+				} catch (Exception $e) {
+					unset($e);
+				}
+			}
 			header('Location: '._getcookie('HybridAuth_referer'));
 			_setcookie('HybridAuth_referer', '');
 			code_header(301);
 			return;
 		}
-		if (!$profile_info['username']) {
-			unset($profile_info['username']);
-		}
 		$email			= $profile->emailVerified ?: $profile->email;
-		$User->set_session_data(
-			'HybridAuth',
-			[
-				'profile_info'	=> $profile_info,
-				'provider'		=> $rc[0],
-				'identifier'	=> $profile->identifier,
-				'profile'		=> $profile->profileURL
-			]
-		);
+		/**
+		 * @var \Hybrid_User_Contact[] $contacts
+		 */
+		$contacts		= [];
+		if ($Config->module(MODULE)->enable_contacts_detection) {
+			try {
+				$contacts	= $adapter->getUserContacts();
+			} catch (Exception $e) {
+				unset($e);
+			}
+		}
 		/**
 		 * If integrated service returns email
 		 */
@@ -198,6 +232,16 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 						$profile->profileURL
 					);
 					$User->add_session($result['id']);
+					if ($User->id != 1) {
+						$existing_data	= $User->get(array_keys($profile_info), $id);
+						foreach ($profile_info as $item => $value) {
+							if (!$existing_data[$item] || $existing_data[$item] != $value) {
+								$User->set($item, $value, $id);
+							}
+						}
+						unset($existing_data, $item, $value);
+						update_user_contacts($contacts, $rc[0]);
+					}
 					header('Location: '.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
 					code_header(301);
 					return;
@@ -221,8 +265,17 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					$L->reg_success_mail(get_core_ml_text('name')),
 					$body
 				)) {
-					$User->set($profile_info, null, $result['id']);
 					$User->add_session($result['id']);
+					if ($User->id != 1) {
+						$existing_data	= $User->get(array_keys($profile_info), $id);
+						foreach ($profile_info as $item => $value) {
+							if (!$existing_data[$item] || $existing_data[$item] != $value) {
+								$User->set($item, $value, $id);
+							}
+						}
+						unset($existing_data, $item, $value);
+						update_user_contacts($contacts, $rc[0]);
+					}
 					header('Location: '.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
 					_setcookie('HybridAuth_referer', '');
 					code_header(301);
@@ -240,9 +293,19 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 				_setcookie('HybridAuth_referer', '');
 			}
 		/**
-		 * If integrated service doesn't returns email - ask user for email
+		 * If integrated service does not returns email - ask user for email
 		 */
 		} else {
+			$User->set_session_data(
+				'HybridAuth',
+				[
+					'profile_info'	=> $profile_info,
+					'contacts'		=> $contacts,
+					'provider'		=> $rc[0],
+					'identifier'	=> $profile->identifier,
+					'profile'		=> $profile->profileURL
+				]
+			);
 			email_form:
 			$Index->form			= true;
 			$Index->buttons			= false;
@@ -308,6 +371,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 				);
 				$User->del_session_data('HybridAuth');
 				$profile_info				= $HybridAuth_data['profile_info'];
+				$contacts					= $HybridAuth_data['contacts'];
 				$email						= $_POST['email'];
 				goto success_registration;
 			/**
@@ -352,6 +416,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 		} elseif ($result['reg_key'] === true) {
 			$User->del_session_data('HybridAuth');
 			$profile_info				= $HybridAuth_data['profile_info'];
+			$contacts					= $HybridAuth_data['contacts'];
 			$email						= $_POST['email'];
 			goto success_registration;
 		}

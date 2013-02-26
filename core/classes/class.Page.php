@@ -172,6 +172,7 @@ class Page {
 		 * Template loading
 		 */
 		if ($this->interface) {
+			_include_once(THEMES.'/'.$this->theme.'/prepare.php', false);
 			ob_start();
 			if (
 				!(
