@@ -2401,7 +2401,7 @@ class User {
 	 *
 	 * @return	int[]				Array of user id
 	 */
-	function get_contacts ($user) {
+	function get_contacts ($user = false) {
 		$user = (int)($user ?: $this->id);
 		if (!$user || $user == 1) {
 			return [];
