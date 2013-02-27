@@ -270,7 +270,7 @@ class User {
 	 * @return bool|string|mixed[]|User_Properties			If <i>$item</i> is integer - User_Properties object will be returned
 	 */
 	function get ($item, $user = false) {
-		if (is_int($item)) {
+		if (preg_match('/^[0-9]+$/', $item)) {
 			return new User_Properties($item);
 		}
 		switch ($item) {
@@ -1862,7 +1862,7 @@ class User {
 	 * @return int						Number of attempts
 	 */
 	function login_attempts ($login_hash = false) {
-		$login_hash = $login_hash ?: hash('sha224', $_POST['login']);
+		$login_hash = $login_hash ?: (isset($_POST['login']) ? $_POST['login'] : false);
 		if (!preg_match('/^[0-9a-z]{56}$/', $login_hash)) {
 			return false;
 		}
@@ -1891,7 +1891,7 @@ class User {
 	 * @param bool|string	$login_hash
 	 */
 	function login_result ($result, $login_hash = false) {
-		$login_hash = $login_hash ?: hash('sha224', $_POST['login']);
+		$login_hash = $login_hash ?: (isset($_POST['login']) ? $_POST['login'] : false);
 		if (!preg_match('/^[0-9a-z]{56}$/', $login_hash)) {
 			return;
 		}

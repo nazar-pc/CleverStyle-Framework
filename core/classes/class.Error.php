@@ -59,7 +59,7 @@ class Error {
 		}
 		unset($debug_backtrace);
 		$log_file			= LOGS.'/'.date('d-m-Y').'_'.strtr(date_default_timezone_get(), '/', '_');
-		$time				= time().' ['.microtime(true).']';
+		$time				= date('d-m-Y h:i:s').' ['.microtime(true).']';
 		switch ($level) {
 			case E_USER_ERROR:
 			case E_ERROR:
