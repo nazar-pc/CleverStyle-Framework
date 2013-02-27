@@ -159,7 +159,7 @@ $Core->register_trigger(
 	function ($data) {
 		$data['contacts']	= array_unique(array_merge(
 			$data['contacts'],
-			get_user_contacts($data['user'])
+			get_user_contacts($data['id'])
 		));
 	}
 );
