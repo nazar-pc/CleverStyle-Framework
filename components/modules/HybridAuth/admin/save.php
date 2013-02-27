@@ -14,6 +14,9 @@ global $Index, $Blogs;
 switch ($_POST['edit_settings']) {
 	case 'save':
 		global $Config;
-		$Index->save($Config->module(MODULE)->set('providers', $_POST['providers']));
+		$Index->save($Config->module(MODULE)->set([
+			'providers'					=> $_POST['providers'],
+			'enable_contacts_detection'	=> $_POST['enable_contacts_detection']
+		]));
 	break;
 }
