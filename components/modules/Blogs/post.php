@@ -139,7 +139,7 @@ $Index->content(
 					]
 				).
 				h::a(
-					h::icon('person').$User->get_username($post['user']),
+					h::icon('person').$User->username($post['user']),
 					[
 						'href'			=> path($L->profile).'/'.$User->get('login', $post['user']),
 						'rel'			=> 'author'

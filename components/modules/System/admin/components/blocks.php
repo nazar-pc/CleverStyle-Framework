@@ -290,7 +290,7 @@ if (isset($rc[2])) {
 			foreach ($users_list as &$user) {
 				$value				= $user['value'];
 				$user				= $user['id'];
-				$users_content[]	= h::{'th.ui-widget-header.ui-corner-all'}($User->get_username($user)).
+				$users_content[]	= h::{'th.ui-widget-header.ui-corner-all'}($User->username($user)).
 					h::{'td input[type=radio]'}([
 						'name'			=> 'users['.$user.']',
 						'checked'		=> $value,
@@ -382,7 +382,7 @@ if (isset($rc[2])) {
 					$user,
 					$permission
 				]);
-				$content[]		= h::{'th.ui-widget-header.ui-corner-all'}($User->get_username($user)).
+				$content[]		= h::{'th.ui-widget-header.ui-corner-all'}($User->username($user)).
 					h::{'td input[type=radio]'}([
 						'name'			=> 'users['.$user.']',
 						'checked'		=> $value !== false ? $value : -1,

@@ -389,7 +389,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					TIME + $Config->core['registration_confirmation_time'] * 86400
 				);
 				$body						= $L->hybridauth_merge_confirmation_mail_body(
-					$User->get_username($id) ?: strstr($_POST['email'], '@', true),
+					$User->username($id) ?: strstr($_POST['email'], '@', true),
 					get_core_ml_text('name'),
 					$L->{$rc[0]},
 					$Config->core_url().'/'.MODULE.'/merge_confirmation/'.$confirm_key,

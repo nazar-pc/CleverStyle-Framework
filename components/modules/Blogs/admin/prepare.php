@@ -215,7 +215,7 @@ function get_posts_rows ($page = 1) {
 					)
 				),
 				h::a(
-					$User->get_username($post['user']),
+					$User->username($post['user']),
 					[
 						'href'	=> 'profile/'.$User->get('login', $post['user'])
 					]

@@ -643,7 +643,7 @@ class User {
 	 *
 	 * @return bool|int
 	 */
-	function get_username ($user = false) {
+	function username ($user = false) {
 		$user = (int)($user ?: $this->id);
 		return $this->get('username', $user) ?: ($this->get('login', $user) ?: $this->get('email', $user));
 	}
@@ -2530,6 +2530,14 @@ class User_Properties {
 	function __get ($item) {
 		global $User;
 		return $User->get($item, $this->id);
+	}
+	/**
+	 * Returns user name or login or email, depending on existed in DB information
+	 *
+	 * @return bool|int
+	 */
+	function username () {
+		return $this->get('username') ?: ($this->get('login') ?: $this->get('email'));
 	}
 	/**
 	 * Set data item of user

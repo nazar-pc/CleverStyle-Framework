@@ -102,12 +102,12 @@ if (isset($rc[2], $rc[3])) {
 			}
 			unset($i, $column, $content_);
 			$Page->title(
-				$L->editing_raw_data_of_user($User->get_username($rc[3]))
+				$L->editing_raw_data_of_user($User->username($rc[3]))
 			);
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$L->editing_raw_data_of_user(
-						$User->get_username($rc[3])
+						$User->username($rc[3])
 					)
 				).
 				h::{'table#users_raw_edit.cs-fullwidth-table.cs-center-all'}($content)
@@ -160,12 +160,12 @@ if (isset($rc[2], $rc[3])) {
 				}
 				unset($theme, $color_scheme);
 				$Page->title(
-					$L->editing_of_user_information($User->get_username($rc[3]))
+					$L->editing_of_user_information($User->username($rc[3]))
 				);
 				$a->content(
 					h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 						$L->editing_of_user_information(
-							$User->get_username($rc[3])
+							$User->username($rc[3])
 						)
 					).
 					h::{'table#users_edit.cs-fullwidth-table.cs-center-all tr'}([
@@ -412,12 +412,12 @@ if (isset($rc[2], $rc[3])) {
 			}
 			unset($content, $content_, $count, $i, $permissions, $group, $list, $label, $id, $blocks);
 			$Page->title($L->{$is_bot ? 'permissions_for_bot' : 'permissions_for_user'}(
-				$User->get_username($rc[3])
+				$User->username($rc[3])
 			));
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$L->{$is_bot ? 'permissions_for_bot' : 'permissions_for_user'}(
-						$User->get_username($rc[3])
+						$User->username($rc[3])
 					)
 				).
 				h::{'div#user_permissions_tabs'}(
@@ -472,12 +472,12 @@ if (isset($rc[2], $rc[3])) {
 				}
 			}
 			$Page->title(
-				$L->user_groups($User->get_username($rc[3]))
+				$L->user_groups($User->username($rc[3]))
 			);
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$L->user_groups(
-						$User->get_username($rc[3])
+						$User->username($rc[3])
 					),
 					[
 						'data-title'	=> $L->user_groups_info

@@ -1083,7 +1083,7 @@ class Page {
 			} else {
 				$this->user_avatar_image = 'url(/includes/img/guest.gif)';
 			}
-			$this->header_info = h::b($L->hello.', '.$User->get_username().'!').
+			$this->header_info = h::b($L->hello.', '.$User->username().'!').
 			h::{'icon.cs-header-logout-process'}(
 				'power',
 				[

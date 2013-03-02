@@ -131,7 +131,7 @@ if (!API) {
 						]
 					).
 					h::a(
-						h::icon('person').$User->get_username($post['user']),
+						h::icon('person').$User->username($post['user']),
 						[
 							'href'			=> path($L->profile).'/'.$User->get('login', $post['user']),
 							'rel'			=> 'author'
@@ -167,8 +167,8 @@ function get_comments_tree ($comments, $post) {
 				h::a(
 					h::{'img.cs-blogs-comment-avatar'}([
 						'src'	=> $User->get('avatar', $comment['user']) ? h::url($User->get('avatar', $comment['user']), true) : 'includes/img/guest.gif',
-						'alt'	=> $User->get_username($comment['user']),
-						'title'	=> $User->get_username($comment['user'])
+						'alt'	=> $User->username($comment['user']),
+						'title'	=> $User->username($comment['user'])
 					]),
 					[
 						'href'			=> path($L->profile).'/'.$User->get('login', $comment['user']),
@@ -176,7 +176,7 @@ function get_comments_tree ($comments, $post) {
 					]
 				).
 				h::{'a.cs-blogs-comment-author'}(
-					$User->get_username($comment['user']),
+					$User->username($comment['user']),
 					[
 						'href'			=> path($L->profile).'/'.$User->get('login', $comment['user']),
 						'rel'			=> 'author'

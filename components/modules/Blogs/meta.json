@@ -1,7 +1,7 @@
 {
 	"package"		: "Blogs",
 	"category"		: "modules",
-	"version"		: "0.023",
+	"version"		: "0.024",
 	"description"	: "Adds blogging functionality",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",

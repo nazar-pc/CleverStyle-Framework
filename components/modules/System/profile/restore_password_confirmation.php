@@ -32,7 +32,7 @@ if ($Mail->send_to(
 	$User->get('email', $result['id']),
 	$L->restore_password_success_mail(get_core_ml_text('name')),
 	$L->restore_password_success_mail_body(
-		$User->get_username($result['id']),
+		$User->username($result['id']),
 		get_core_ml_text('name'),
 		$Config->core_url().'/profile/'.$User->get('login', $result['id']),
 		$User->get('login', $result['id']),
