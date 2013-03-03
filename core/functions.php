@@ -828,11 +828,9 @@ function xap ($in, $html = 'text') {
 			'',
 			$in
 		);
-		$in = preg_replace_callback(
+		$in = preg_replace(
 			'/(href=["\'])((?:http|https|ftp)\:\/\/.*?["\'])/i',
-			function ($match) {
-				return $match[1].'redirect/'.urlencode($match[2]);
-			},
+			'\\1redirect/\\2',
 			$in
 		);
 		return $in;

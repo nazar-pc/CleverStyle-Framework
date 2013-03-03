@@ -13,6 +13,10 @@ function get_block_title ($id) {
 	global $Config, $Text;
 	return $Text->process($Config->module('System')->db('texts'), $Config->components['blocks'][$id]['title']);
 }
+function get_block_content ($id) {
+	global $Config, $Text;
+	return $Text->process($Config->module('System')->db('texts'), $Config->components['blocks'][$id]['content']);
+}
 global $Config, $Index, $L, $Page;
 $a		= $Index;
 $rc		= $Config->route;
@@ -207,13 +211,13 @@ if (isset($rc[2])) {
 						])
 					),
 					($block['type'] == 'html' ? h::{'td.ui-widget-content.ui-corner-all[colspan=5] textarea.EDITOR'}(
-							$block['content'],
+							get_block_content($rc[3]),
 							[
 								'name'	=> 'block[html]'
 							]
 						) : (
 							$block['type'] == 'raw_html' ? h::{'td.ui-widget-content.ui-corner-all[colspan=5] textarea.cs-wide-textarea'}(
-								$block['content'],
+								get_block_content($rc[3]),
 								[
 									'name'	=> 'block[raw_html]'
 								]

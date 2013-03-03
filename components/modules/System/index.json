@@ -1,6 +1,5 @@
 {
 	"blank"			: [],
-	"redirect"		: [],
 	"profile"		: [
 		"info",
 		"settings",

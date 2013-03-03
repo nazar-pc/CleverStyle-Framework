@@ -5,13 +5,6 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-/**
- * Redirection processing
- */
-if (mb_strpos($_SERVER['REQUEST_URI'], '/redirect/') === 0) {
-	header('Location: '.substr($_SERVER['REQUEST_URI'], 10));
-	die;
-}
 require_once CORE.'/functions.php';					//Including file with general system functions
 
 global $Core, $timeload, $loader_init_memory, $interface;

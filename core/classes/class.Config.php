@@ -242,21 +242,34 @@ class Config {
 		/**
 		 * Preparing page url without basic path
 		 */
-		$this->server['raw_relative_address']	= str_replace(
-			'//',
-			'/',
-			trim(str_replace($current_domain, '', $this->server['raw_relative_address']), ' /\\')
-		);
+		$this->server['raw_relative_address']	= trim(str_replace($current_domain, '', $this->server['raw_relative_address']), ' /\\');
 		unset($current_domain);
 		$r										= &$this->routing;
 		$rc										= &$this->route;
 		$rc										= $this->server['raw_relative_address'];
+		if (isset($_SERVER['HTTP_REFERER'])) {
+			$ref				= &$this->server['referer'];
+			$referer			= explode('://', $ref['url'] = $_SERVER['HTTP_REFERER']);
+			$referer[1]			= explode('/', $referer[1]);
+			$referer[1]			= $referer[1][0];
+			$ref['protocol']	= $referer[0];
+			$ref['host']		= $referer[1];
+			unset($referer);
+			$ref['local']		= in_array($ref['host'], $this->server['mirrors'][$ref['protocol']]);
+			unset($ref);
+		}
 		/**
 		 * Redirection processing
 		 */
-		if (mb_strpos($rc, '/redirect/') === 0) {
-			header('Location: '.substr($rc, 10));
-			__finish();
+		if (mb_strpos($rc, 'redirect/') === 0) {
+			if ($this->server['referer']['local']) {
+				header('Location: '.substr($rc, 9));
+				__finish();
+			} else {
+				define('ERROR_PAGE', 404);
+				$Page->error_page();
+				__finish();
+			}
 		}
 		/**
 		 * Routing replacing
@@ -340,17 +353,6 @@ class Config {
 			'/'
 		);
 		unset($rc, $r);
-		if (isset($_SERVER['HTTP_REFERER'])) {
-			$ref				= &$this->server['referer'];
-			$referer			= explode('://', $ref['url'] = $_SERVER['HTTP_REFERER']);
-			$referer[1]			= explode('/', $referer[1]);
-			$referer[1]			= $referer[1][0];
-			$ref['protocol']	= $referer[0];
-			$ref['host']		= $referer[1];
-			unset($referer);
-			$ref['local']		= in_array($ref['host'], $this->server['mirrors'][$ref['protocol']]);
-			unset($ref);
-		}
 		$this->server['ajax']					= isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
 	}
 	/**

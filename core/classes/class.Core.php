@@ -132,14 +132,19 @@ class Core {
 	 * @return bool|object							Created object on success or <i>false</b> on failure
 	 */
 	function create ($class, $object_name = null) {
-		if (empty($class)) {
+		if (empty($class) || defined('STOP')) {
 			return false;
-		} elseif (!defined('STOP') && !is_array($class)) {
+		} elseif (!is_array($class)) {
 			$loader = false;
 			if (substr($class, 0, 1) == '_') {
 				$class	= substr($class, 1);
 				$loader	= true;
 			}
+			$prefix	= explode('\\', $class, 2)[0];
+			if ($prefix == 'cs' && class_exists('cs\\custom\\'.substr($class, 2), false)) {
+				$class	= 'cs\\custom\\'.substr($class, 2);
+			}
+			unset($prefix);
 			if ($loader || class_exists($class)) {
 				if ($object_name === null) {
 					$object_name = explode('\\', $class);
@@ -160,7 +165,7 @@ class Core {
 				trigger_error('Class '.h::b($class, ['level' => 0]).' not exists', E_USER_ERROR);
 				return false;
 			}
-		} elseif (!defined('STOP') && is_array($class)) {
+		} else {
 			foreach ($class as $c) {
 				if (is_array($c)) {
 					$this->create($c[0], isset($c[1]) ? $c[1] : false);
@@ -169,7 +174,7 @@ class Core {
 				}
 			}
 		}
-		return false;
+		return true;
 	}
 	/**
 	 * Destroying of global object
