@@ -680,7 +680,7 @@ function _preg_match ($pattern, $subject, &$matches = null, $flags = 0, $offset 
  * @return bool|mixed
  */
 function _preg_replace ($pattern, $replacement, $subject, $limit = -1, &$count = null) {
-	if (strpos('/', $pattern) === 0 || strpos('#', $pattern) === 0) {
+	if (strpos('/', $pattern) === false && strpos('#', $pattern) === false) {
 		return false;
 	}
 	return preg_replace($pattern, $replacement, $subject, $limit, $count);

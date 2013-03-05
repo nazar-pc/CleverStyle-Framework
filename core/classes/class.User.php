@@ -270,7 +270,7 @@ class User {
 	 * @return bool|string|mixed[]|User_Properties			If <i>$item</i> is integer - User_Properties object will be returned
 	 */
 	function get ($item, $user = false) {
-		if (preg_match('/^[0-9]+$/', $item)) {
+		if (is_scalar($item) && preg_match('/^[0-9]+$/', $item)) {
 			return new User_Properties($item);
 		}
 		switch ($item) {
