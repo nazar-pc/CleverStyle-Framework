@@ -437,6 +437,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 	 * If module if enabled or disabled
 	 */
 	$addition_state = $action = '';
+	$admin_link		= false;
 	if ($mdata['active'] != -1) {
 		/**
 		 * Notice about API existence
@@ -573,16 +574,17 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 			 * Link to the module admin page
 			 */
 			if (file_exists(MODULES.'/'.$module.'/admin/index.php') || file_exists(MODULES.'/'.$module.'/admin/index.json')) {
-				$action .= h::{'a.cs-button-compact'}(
+				$action		.= h::{'a.cs-button-compact'}(
 					h::icon('wrench'),
 					[
 						'href'			=> 'admin/'.$module,
 						'data-title'	=> $L->module_admin_page
 					]
 				);
+				$admin_link	= true;
 			}
 			if ($module != $Config->core['default_module']) {
-				$action .= h::{'a.cs-button-compact'}(
+				$action		.= h::{'a.cs-button-compact'}(
 					h::icon($mdata['active'] == 1 ? 'minusthick' : 'check'),
 					[
 						'href'			=> $a->action.($mdata['active'] == 1 ? '/disable/' : '/enable/').$module,
@@ -633,7 +635,12 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 	unset($module_meta);
 	$modules_list[]	= h::{'td.ui-widget-content.ui-corner-all'}(
 		[
-			$module,
+			h::a(
+				$module,
+				[
+					'href'	=> $admin_link ? 'admin/'.$module : false
+				]
+			),
 			[
 				'data-title'	=> $module_info
 			]
