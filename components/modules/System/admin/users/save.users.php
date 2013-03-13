@@ -107,7 +107,7 @@ switch ($_POST['mode']) {
 			if ($user_data['password']) {
 				if (strlen($user_data['password']) < $Config->core['password_min_length']) {
 					$Page->warning($L->password_too_short);
-				} elseif (password_check($user_data['password']) < $Config->core['password_min_strength']) {
+				} elseif (password_check($user_data['password'], $Config->core['password_min_length']) < $Config->core['password_min_strength']) {
 					$Page->warning($L->password_too_easy);
 				} else {
 					global $Core;

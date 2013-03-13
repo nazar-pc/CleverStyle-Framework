@@ -35,6 +35,7 @@ class h {
 			'base',
 			'br',
 			'col',
+			'frame',
 			'hr',
 			'img',
 			'input',

@@ -517,7 +517,7 @@ class Index {
 					break;
 					case 'html':
 					case 'raw_html':
-						$content = $Text->process($Config->module('System')->db('texts'), $block['content']);
+						$content = $Text->process($Config->module('System')->db('texts'), $block['content'], true, true);
 					break;
 				}
 				$template	= TEMPLATES.'/blocks/block.'.(
@@ -531,7 +531,7 @@ class Index {
 					],
 					[
 						$block['index'],
-						$Text->process($Config->module('System')->db('texts'), $block['title']),
+						$Text->process($Config->module('System')->db('texts'), $block['title'], true, true),
 						$content
 					],
 					ob_wrapper(function () use ($template) {
