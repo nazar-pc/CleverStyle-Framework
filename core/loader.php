@@ -5,7 +5,8 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-require_once CORE.'/functions.php';					//Including file with general system functions
+require CORE.'/upf.php';						//Including UPF
+require CORE.'/functions.php';					//Including general system functions
 
 global $Core, $timeload, $loader_init_memory, $interface;
 

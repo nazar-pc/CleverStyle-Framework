@@ -14,6 +14,7 @@ define('ROOT',	mb_strpos($ROOT, 'phar://') === 0 ? substr($ROOT, 7) : $ROOT);	//
 unset($ROOT);
 global $fs;
 $fs		= json_decode(file_get_contents(DIR.'/fs.json'), true);
+require_once DIR.'/fs/'.$fs['core/upf.php'];
 require_once DIR.'/fs/'.$fs['core/functions.php'];
 require_once DIR.'/fs/'.$fs['core/classes/class.h.php'];
 require_once DIR.'/install/functions.php';

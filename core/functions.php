@@ -10,7 +10,6 @@
  * otherwise system workability may be broken
  */
 
-require CORE.'/upf.php';
 /**
  * Auto Loading of classes
  */
