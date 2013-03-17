@@ -138,32 +138,28 @@ function install_process () {
 		"show_objects_data": "1",
 		"gzip_compression": "1",
 		"cache_compress_js_css": "1",
-		"theme": "CleverStyle",
+		"theme": "",
 		"allow_change_theme": "0",
-		"themes": [
-		"CleverStyle"
-		],
-		"color_schemes": {},
-		"color_scheme": "Green (strict)",
+		"themes": [],
+		"color_schemes": [],
+		"color_scheme": "",
 		"language": "",
 		"allow_change_language": "0",
 		"multilingual": "0",
 		"db_balance": "0",
 		"maindb_for_write": "0",
-		"active_themes": [
-		"CleverStyle"
-		],
+		"active_themes": [],
 		"active_languages": [],
 		"cookie_domain": "",
 		"cookie_path": "\/",
 		"mirrors_url": [
-		""
+			""
 		],
 		"mirrors_cookie_domain": [
-		""
+			""
 		],
 		"mirrors_cookie_path": [
-		""
+			""
 		],
 		"languages": [],
 		"inserts_limit": "1000",
@@ -195,17 +191,18 @@ function install_process () {
 		"online_time": "300",
 		"remember_user_ip": "0",
 		"ip_black_list": [
-		""
+			""
 		],
 		"ip_admin_list_only": "0",
 		"ip_admin_list": [
-		""
+			""
 		],
 		"on_error_globals_dump": "0",
 		"simple_admin_mode": "0",
+		"cache_sync": "0",
 		"auto_translation": "0",
 		"auto_translation_engine": {
-		"name": ""
+			"name": ""
 		},
 		"default_module": "System",
 		"footer_text": "",
@@ -225,7 +222,10 @@ function install_process () {
 	$config['languages']			= _json_decode(file_get_contents(DIR.'/languages.json'));
 	$config['active_languages']		= $config['languages'];
 	$config['themes']				= _json_decode(file_get_contents(DIR.'/themes.json'));
+	$config['active_themes']		= $config['themes'];
+	$config['theme']				= $config['themes'][0];
 	$config['color_schemes']		= _json_decode(file_get_contents(DIR.'/color_schemes.json'));
+	$config['color_scheme']			= $config['color_schemes'][0];
 	$config['cookie_domain']		= explode('/', explode('//', $config['url'])[1], 2);
 	$config['cookie_path']			= isset($config['cookie_domain'][1]) && $config['cookie_domain'][1] ? '/'.trim($config['cookie_domain'][1], '/').'/' : '/';
 	$config['cookie_domain']		= $config['cookie_domain'][0];

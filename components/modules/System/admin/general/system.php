@@ -23,9 +23,10 @@ $Index->content(
 		core_input('show_tooltips', 'radio'),
 		core_input('og_support', 'radio'),
 		core_input('simple_admin_mode', 'radio'),
+		!$sa ? core_input('cache_sync', 'radio') : false,
 		!$sa ? [
 			h::info('debug'),
-				h::{'input[type=radio]'}([
+			h::{'input[type=radio]'}([
 				'name'			=> 'core[debug]',
 				'checked'		=> $Config->core['debug'],
 				'value'			=> [0, 1],

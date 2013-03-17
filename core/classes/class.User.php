@@ -1985,7 +1985,7 @@ class User {
 			return 'exists';
 		}
 		$password		= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
-		$password_hash	= hash('sha512', hash('sha512', $password).$Core->config('public_key'));
+		$password_hash	= hash('sha512', hash('sha512', $password).$Core->public_key);
 		$reg_key		= md5($password.$this->ip);
 		$confirmation	= $confirmation && $Config->core['require_registration_confirmation'];
 		if ($this->db_prime()->q(
@@ -2101,7 +2101,7 @@ class User {
 		$password		= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
 		$this->set(
 			[
-				'password_hash'	=> hash('sha512', hash('sha512', $password).$Core->config('public_key')),
+				'password_hash'	=> hash('sha512', hash('sha512', $password).$Core->public_key),
 				'status'		=> 1
 			],
 			null,
@@ -2210,7 +2210,7 @@ class User {
 		$password	= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
 		$this->set(
 			[
-				'password_hash'	=> hash('sha512', hash('sha512', $password).$Core->config('public_key')),
+				'password_hash'	=> hash('sha512', hash('sha512', $password).$Core->public_key),
 				'data'			=> $data
 			],
 			null,

@@ -30,7 +30,7 @@ class Language {
 	function __construct () {
 		global $Core, $L;
 		$L	= $this;
-		$this->change($Core->config('language'));
+		$this->change($Core->language);
 	}
 	/**
 	 * Initialization: defining current language, loading translation

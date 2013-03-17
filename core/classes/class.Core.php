@@ -10,7 +10,7 @@ use			Closure,
 			h;
 /**
  * Core class.
- * Provides loading of system configuration, creating of global objects, encryption, API requests sending, and triggers processing.
+ * Provides loading of base system configuration, creating of global objects, encryption, API requests sending, and triggers processing.
  */
 class Core {
 	public	$Loaded				= [],				//Array with list of loaded objects, and information about amount of used memory and creation time
@@ -27,6 +27,7 @@ class Core {
 				'Error'
 			];
 	protected	$init				= false,	//For prohibition of re-initialization
+				$constructed		= false,	//Is object constructed
 				$config				= [],
 				$List				= [],
 				$iv,
@@ -47,7 +48,7 @@ class Core {
 			code_header(404);
 			$this->__finish();
 		}
-		$this->config	= _json_decode_nocomments(file_get_contents(CONFIG.'/main.json'));
+		$this->config		= _json_decode_nocomments(file_get_contents(CONFIG.'/main.json'));
 		_include_once(CONFIG.'/main.php', false);
 		define('DOMAIN', $this->config['domain']);
 		date_default_timezone_set($this->config['timezone']);
@@ -101,6 +102,7 @@ class Core {
 			$this->key	= $this->config['key'];
 			$this->iv	= $this->config['iv'];
 		}
+		$this->constructed	= true;
 	}
 	/**
 	 * Getting of base configuration parameter
@@ -109,27 +111,48 @@ class Core {
 	 *
 	 * @return bool|string
 	 */
-	function config ($item) {
+	function get ($item) {
 		return isset($this->config[$item]) ? $this->config[$item] : false;
 	}
 	/**
-	 * Setting of base configuration parameter (only at object construction)
+	 * Setting of base configuration parameter (available only at object construction)
 	 *
 	 * @param string	$item
 	 * @param mixed		$value
 	 */
-	function config_set ($item, $value) {
-		$this->config[$item] = $value;
+	function set ($item, $value) {
+		if (!$this->constructed) {
+			$this->config[$item] = $value;
+		}
+	}
+	/**
+	 * Getting of base configuration parameter
+	 *
+	 * @param string		$item
+	 *
+	 * @return bool|string
+	 */
+	function __get ($item) {
+		return $this->get($item);
+	}
+	/**
+	 * Setting of base configuration parameter (available only at object construction)
+	 *
+	 * @param string	$item
+	 * @param mixed		$value
+	 */
+	function __set ($item, $value) {
+		$this->set($item, $value);
 	}
 	/**
 	 * Creating of global object on the base of class
 	 *
 	 * @param array|string|string[]	$class			Class name, on the base of which object will be created. May be string of class name,
 	 * 												or <i>array($class, $object_name)</b>, or indexed array of mentioned arrays
-	 * @param bool					$object_name	If this parameter is <i>null</b> - name of global object will be the same as class name, otherwise,
+	 * @param bool|null				$object_name	If this parameter is <i>null</b> - name of global object will be the same as class name, otherwise,
 	 * 												as name specified in this parameter
 	 *
-	 * @return bool|object							Created object on success or <i>false</b> on failure
+	 * @return bool|object							Created object on success or <i>false</i> on failure, <i>true</i> if <i>$class</i> is array
 	 */
 	function create ($class, $object_name = null) {
 		if (empty($class) || defined('STOP')) {
@@ -293,7 +316,7 @@ class Core {
 	 * @param string	$url	With prefix <i>https://</b> (<i>http://</b> can be missed), and (if necessary) with port address
 	 * @param mixed		$data	Any type of data, will be accessible through <i>$_POST['data']</b>
 	 *
-	 * @return string|bool		Result or <i>false</i> at error
+	 * @return bool|string		Result or <i>false</i> at error
 	 */
 	protected function send ($url, $data) {
 		global $Key, $Config;

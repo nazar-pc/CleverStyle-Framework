@@ -97,7 +97,7 @@ if (isset($_POST['update_modules_list'])) {
 				time_limit_pause();
 				foreach ($db_json as $database) {
 					if ($module_data['db'][$database] == 0) {
-						$db_type	= $Core->config('db_type');
+						$db_type	= $Core->db_type;
 					} else {
 						$db_type	= $Config->db[$module_data['db'][$database]]['type'];
 					}
@@ -196,7 +196,7 @@ if (isset($_POST['update_modules_list'])) {
 				time_limit_pause();
 				foreach ($db_json as $database) {
 					if ($module_data['db'][$database] == 0) {
-						$db_type	= $Core->config('db_type');
+						$db_type	= $Core->db_type;
 					} else {
 						$db_type	= $Config->db[$module_data['db'][$database]]['type'];
 					}

@@ -74,53 +74,65 @@ if (isset($rc[2])) {
 					$L->adding_a_block
 				).
 				h::{'table.cs-fullwidth-table.cs-center-all tr'}(
-					h::{'th.ui-widget-header.ui-corner-all| info'}(
-						'block_type',
-						'block_title',
-						'block_active',
-						'block_template',
-						'block_start',
-						'block_expire'
-					),
-					h::{'td.ui-widget-content.ui-corner-all'}(
-						h::select(
-							array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4)),
+					\cs\modules\System\form_rows_to_cols([
+						array_map(
+							function ($in) {
+								return h::{'th.ui-widget-header.ui-corner-all info'}($in);
+							},
 							[
-								'name'		=> 'block[type]',
-								'size'		=> 5,
-								'onchange'	=> 'block_switch_textarea(this)'
+								'block_type',
+								'block_title',
+								'block_active',
+								'block_template',
+								'block_start',
+								'block_expire'
 							]
 						),
-						h::input([
-							'name'		=> 'block[title]'
-						]),
-						h::{'div input[type=radio]'}([
-							'name'		=> 'block[active]',
-							'value'		=> [1, 0],
-							'in'		=> [$L->yes, $L->no]
-						]),
-						h::select(
-							_mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6),
+						array_map(
+							function ($in) {
+								return h::{'td.ui-widget-content.ui-corner-all'}($in);
+							},
 							[
-								'name'		=> 'block[template]',
-								'size'		=> 5
+								h::select(
+									array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4)),
+									[
+										'name'		=> 'block[type]',
+										'size'		=> 5,
+										'onchange'	=> 'block_switch_textarea(this)'
+									]
+								),
+								h::input([
+									'name'		=> 'block[title]'
+								]),
+								h::{'div input[type=radio]'}([
+									'name'		=> 'block[active]',
+									'value'		=> [1, 0],
+									'in'		=> [$L->yes, $L->no]
+								]),
+								h::select(
+									_mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6),
+									[
+										'name'		=> 'block[template]',
+										'size'		=> 5
+									]
+								),
+								h::{'input[type=datetime-local]'}([
+									'name'		=> 'block[start]',
+									'value'		=> date('Y-m-d\TH:i', TIME)
+								]),
+								h::{'input[type=radio]'}([
+									'name'		=> 'block[expire][state]',
+									'value'		=> [0, 1],
+									'in'		=> [$L->never, $L->as_specified]
+								]).
+								h::br(2).
+								h::{'input[type=datetime-local]'}([
+									'name'		=> 'block[expire][date]',
+									'value'		=> date('Y-m-d\TH:i', TIME)
+								])
 							]
-						),
-						h::{'input[type=datetime-local]'}([
-							'name'		=> 'block[start]',
-							'value'		=> date('Y-m-d\TH:i', TIME)
-						]),
-						h::{'input[type=radio]'}([
-							'name'		=> 'block[expire][state]',
-							'value'		=> [0, 1],
-							'in'		=> [$L->never, $L->as_specified]
-						]).
-						h::br(2).
-						h::{'input[type=datetime-local]'}([
-							'name'		=> 'block[expire][date]',
-							'value'		=> date('Y-m-d\TH:i', TIME)
-						])
-					),
+						)
+					]),
 					[
 						h::{'td.ui-widget-content.ui-corner-all[colspan=6] textarea.EDITOR'}(
 							'',
@@ -166,50 +178,62 @@ if (isset($rc[2])) {
 					$L->editing_a_block(get_block_title($rc[3]))
 				).
 				h::{'table.cs-fullwidth-table.cs-center-all tr'}(
-					h::{'th.ui-widget-header.ui-corner-all| info'}(
-						'block_title',
-						'block_active',
-						'block_template',
-						'block_start',
-						'block_expire'
-					),
-					h::{'td.ui-widget-content.ui-corner-all'}(
-						h::input([
-							'name'		=> 'block[title]',
-							'value'		=> get_block_title($rc[3])
-						]),
-						h::{'div input[type=radio]'}([
-							'name'		=> 'block[active]',
-							'checked'	=> $block['active'],
-							'value'		=> [1, 0],
-							'in'		=> [$L->yes, $L->no]
-						]),
-						h::select(
+					\cs\modules\System\form_rows_to_cols([
+						array_map(
+							function ($in) {
+								return h::{'th.ui-widget-header.ui-corner-all info'}($in);
+							},
 							[
-								'in'		=> _mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6)
-							],
-							[
-								'name'		=> 'block[template]',
-								'selected'	=> $block['template'],
-								'size'		=> 5
+								'block_title',
+								'block_active',
+								'block_template',
+								'block_start',
+								'block_expire'
 							]
 						),
-						h::{'input[type=datetime-local]'}([
-							'name'		=> 'block[start]',
-							'value'		=> date('Y-m-d\TH:i', $block['start'] ?: TIME)
-						]),
-						h::{'input[type=radio]'}([
-							'name'		=> 'block[expire][state]',
-							'checked'	=> $block['expire'] != 0,
-							'value'		=> [0, 1],
-							'in'		=> [$L->never, $L->as_specified]
-						]).
-						h::br(2).
-						h::{'input[type=datetime-local]'}([
-							'name'		=> 'block[expire][date]',
-							'value'		=> date('Y-m-d\TH:i', $block['expire'] ?: TIME)
-						])
-					),
+						array_map(
+							function ($in) {
+								return h::{'td.ui-widget-content.ui-corner-all'}($in);
+							},
+							[
+								h::input([
+									'name'		=> 'block[title]',
+									'value'		=> get_block_title($rc[3])
+								]),
+								h::{'div input[type=radio]'}([
+									'name'		=> 'block[active]',
+									'checked'	=> $block['active'],
+									'value'		=> [1, 0],
+									'in'		=> [$L->yes, $L->no]
+								]),
+								h::select(
+									[
+										'in'		=> _mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6)
+									],
+									[
+										'name'		=> 'block[template]',
+										'selected'	=> $block['template'],
+										'size'		=> 5
+									]
+								),
+								h::{'input[type=datetime-local]'}([
+									'name'		=> 'block[start]',
+									'value'		=> date('Y-m-d\TH:i', $block['start'] ?: TIME)
+								]),
+								h::{'input[type=radio]'}([
+									'name'		=> 'block[expire][state]',
+									'checked'	=> $block['expire'] != 0,
+									'value'		=> [0, 1],
+									'in'		=> [$L->never, $L->as_specified]
+								]).
+								h::br(2).
+								h::{'input[type=datetime-local]'}([
+									'name'		=> 'block[expire][date]',
+									'value'		=> date('Y-m-d\TH:i', $block['expire'] ?: TIME)
+								])
+							]
+						)
+					]),
 					($block['type'] == 'html' ? h::{'td.ui-widget-content.ui-corner-all[colspan=5] textarea.EDITOR'}(
 							get_block_content($rc[3]),
 							[

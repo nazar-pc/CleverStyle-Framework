@@ -274,7 +274,7 @@ if (
 				$a->cancel_button_back	= true;
 				module_db_settings:
 				if (file_exists(MODULES.'/'.$rc[3].'/meta/db.json')) {
-					$dbs					= [0 => $L->core_db.' ('.$Core->config('db_type').')'];
+					$dbs					= [0 => $L->core_db.' ('.$Core->db_type.')'];
 					foreach ($Config->db as $i => &$db_data) {
 						if ($i) {
 							$dbs[$i] = $db_data['name'].' ('.$db_data['host'].' / '.$db_data['type'].')';

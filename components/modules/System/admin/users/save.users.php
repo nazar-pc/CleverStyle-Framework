@@ -111,7 +111,7 @@ switch ($_POST['mode']) {
 					$Page->warning($L->password_too_easy);
 				} else {
 					global $Core;
-					$user_data['password_hash'] = hash('sha512', hash('sha512', $user_data['password']).$Core->config('public_key'));
+					$user_data['password_hash'] = hash('sha512', hash('sha512', $user_data['password']).$Core->public_key);
 				}
 			}
 			unset($user_data['password']);

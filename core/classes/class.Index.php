@@ -455,7 +455,7 @@ class Index {
 			$Page->js(
 				'var	base_url = "'.$Config->base_url()."\",\n".
 				'	current_base_url = "'.$Config->base_url().'/'.($this->admin ? 'admin/' : '').MODULE."\",\n".
-				'	public_key = "'.$Core->config('public_key')."\",\n".
+				'	public_key = "'.$Core->public_key."\",\n".
 				($User->guest() ?
 					'	rules_text = "'.get_core_ml_text('rules')."\",\n"
 				: '').

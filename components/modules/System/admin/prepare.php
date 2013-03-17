@@ -130,7 +130,7 @@ function check_dependencies ($name, $type = 'module') {
 	global $Config, $Page, $L, $Core;
 	if (isset($meta['db_support']) && !empty($meta['db_support'])) {
 		$return		= false;
-		if (in_array($Core->config('db_type'), $meta['db_support'])) {
+		if (in_array($Core->db_type, $meta['db_support'])) {
 			$return	= true;
 		} else {
 			foreach ($Config->db as $database) {
@@ -159,7 +159,7 @@ function check_dependencies ($name, $type = 'module') {
 	}
 	if (isset($meta['storage_support']) && !empty($meta['storage_support'])) {
 		$return_s	= false;
-		if (in_array($Core->config('storage_type'), $meta['storage_support'])) {
+		if (in_array($Core->storage_type, $meta['storage_support'])) {
 			$return_s	= true;
 		} else {
 			foreach ($Config->storage as $storage) {
@@ -477,6 +477,34 @@ function check_backward_dependencies ($name, $type = 'module') {
 			$return	= false;
 			$Page->warning($L->this_package_is_used_by_plugin($plugin));
 		}
+	}
+	return $return;
+}
+/**
+ * @param array[]	$rows
+ * @param int	$cols
+ *
+ * @return array
+ */
+function form_rows_to_cols ($rows, $cols = 2) {
+	foreach ($rows[0] as $i => &$r) {
+		$r	.= $rows[1][$i];
+	}
+	unset($i, $r);
+	$rows	= $rows[0];
+	$return	= [];
+	$row	= 0;
+	foreach ($rows as $i => $r) {
+		if (!isset($return[$row])) {
+			$return[$row]	= '';
+		}
+		$return[$row]	.= $r;
+		if (++$i % $cols === 0) {
+			++$row;
+		}
+	}
+	if (isset($i) && ($i % $cols != 0)) {
+		$return[$row]	.= str_repeat(h::th().h::td(), $cols - ($i % $cols));
 	}
 	return $return;
 }

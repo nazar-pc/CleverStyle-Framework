@@ -67,11 +67,11 @@ class Storage {
 		 */
 		if ($connection == 0) {
 			global $Core;
-			$storage['connection']	= $Core->config('storage_type');
-			$storage['url']			= $Core->config('storage_url');
-			$storage['host']		= $Core->config('storage_host');
-			$storage['user']		= $Core->config('storage_user');
-			$storage['password']	= $Core->config('storage_password');
+			$storage['connection']	= $Core->storage_type;
+			$storage['url']			= $Core->storage_url;
+			$storage['host']		= $Core->storage_host;
+			$storage['user']		= $Core->storage_user;
+			$storage['password']	= $Core->storage_password;
 		} elseif (isset($Config->storage[$connection])) {
 			$storage = &$Config->storage[$connection];
 		} else {

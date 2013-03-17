@@ -10,7 +10,7 @@
 namespace	cs\modules\System\general\about_server;
 use			h;
 global $L, $Core, $Index, $db, $PHP, $mcrypt, $Config;
-global ${$Core->config('db_type')};
+global ${$Core->db_type};
 if (isset($Config->route[2]) && $Config->route[2] == 'phpinfo') {
 	interface_off();
 	ob_start();
@@ -141,19 +141,19 @@ $Index->content(
 		],
 		[
 			$L->main_db.':',
-			$Core->config('db_type')
+			$Core->db_type
 		],
 		[
-			$L->properties.' '.$Core->config('db_type').':',
+			$L->properties.' '.$Core->db_type.':',
 			h::{'table.cs-left-odd.cs-fullwidth-table tr| td'}(
 				[
 					$L->host.':',
-					$Core->config('db_host')
+					$Core->db_host
 				],
 				[
-					$L->version.' '.$Core->config('db_type').':',
+					$L->version.' '.$Core->db_type.':',
 					[
-						$db->server().(check_db() ? '' : ' ('.$L->required.' '.${$Core->config('db_type')}.' '.$L->or_higher.')'),
+						$db->server().(check_db() ? '' : ' ('.$L->required.' '.${$Core->db_type}.' '.$L->or_higher.')'),
 						[
 							'class' => state(check_db())
 						]
@@ -161,21 +161,21 @@ $Index->content(
 				],
 				[
 					$L->name_of_db.':',
-					$Core->config('db_name')
+					$Core->db_name
 				],
 				[
 					$L->prefix_for_db_tables.':',
-					$Core->config('db_prefix')
+					$Core->db_prefix
 				]
 			)
 		],
 		[
 			$L->main_storage.':',
-			$Core->config('storage_type')
+			$Core->storage_type
 		],
 		[
 			$L->cache_engine.':',
-			$Core->config('cache_engine')
+			$Core->cache_engine
 		],
 		function_exists('apache_get_version') ? [
 			$L->php_ini_settings.':',

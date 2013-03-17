@@ -61,75 +61,87 @@ if (isset($rc[2])) {
 					$rc[2] == 'edit' ? $L->editing_the_database($name) : $L->addition_of_db
 				).
 				h::{'table.cs-fullwidth-table.cs-center-all tr'}(
-					h::{'th.ui-widget-header.ui-corner-all| info'}(
-						$rc[2] == 'add' ? 'db_mirror' : false,
-						'db_host',
-						'db_type',
-						'db_prefix',
-						'db_name',
-						'db_user',
-						'db_password',
-						'db_charset'
-					),
-					h::{'td.ui-widget-content.ui-corner-all'}(
-						($rc[2] == 'add' ? h::select(
+					\cs\modules\System\form_rows_to_cols([
+						array_map(
+							function ($in) {
+								return h::{'th.ui-widget-header.ui-corner-all info'}($in);
+							},
 							[
-								'in'		=> $dbsname,
-								'value'		=> $dbs
-							],
-							[
-								'name'		=> 'db[mirror]',
-								'selected'	=> isset($rc[3]) ? $rc[3] : -1,
-								'size'		=> 5
-							]
-						) : false),
-						h::input([
-							'name'		=> 'db[host]',
-							'value'		=> $rc[2] == 'edit' ? $database['host'] : $Core->config('db_host')
-						]),
-						h::select(
-							[
-								'in'		=> _mb_substr(get_files_list(ENGINES.'/DB', '/^[^_].*?\.php$/i', 'f'), 0, -4)
-							],
-							[
-								'name'		=> 'db[type]',
-								'selected'	=> $rc[2] == 'edit' ? $database['type'] : $Core->config('db_type'),
-								'size'		=> 5
+								$rc[2] == 'add' ? 'db_mirror' : false,
+								'db_host',
+								'db_type',
+								'db_prefix',
+								'db_name',
+								'db_user',
+								'db_password',
+								'db_charset'
 							]
 						),
-						h::input([
-							'name'		=> 'db[prefix]',
-							'value'		=> $rc[2] == 'edit' ? $database['prefix'] : $Core->config('db_prefix')
-						]),
-						h::input([
-							'name'		=> 'db[name]',
-							'value'		=> $rc[2] == 'edit' ? $database['name'] : ''
-						]),
-						h::input([
-							'name'		=> 'db[user]',
-							'value'		=> $rc[2] == 'edit' ? $database['user'] : ''
-						]),
-						h::input([
-							'name'		=> 'db[password]',
-							'value'		=> $rc[2] == 'edit' ? $database['password'] : ''
-						]),
-						h::input([
-							'name'		=> 'db[charset]',
-							'value'		=> $rc[2] == 'edit' ? $database['charset'] : $Core->config('db_charset')
-						]).
-						h::{'input[type=hidden]'}([
-							'name'		=> 'mode',
-							'value'		=> $rc[2] == 'edit' ? 'edit' : 'add'
-						]).
-						(isset($rc[3]) ? h::{'input[type=hidden]'}([
-							'name'		=> 'database',
-							'value'		=> $rc[3]
-						]) : '').
-						(isset($rc[4]) ? h::{'input[type=hidden]'}([
-							'name'		=> 'mirror',
-							'value'		=> $rc[4]
-						]) : '')
-					)
+						array_map(
+							function ($in) {
+								return h::{'td.ui-widget-content.ui-corner-all'}($in);
+							},
+							[
+								($rc[2] == 'add' ? h::select(
+									[
+										'in'		=> $dbsname,
+										'value'		=> $dbs
+									],
+									[
+										'name'		=> 'db[mirror]',
+										'selected'	=> isset($rc[3]) ? $rc[3] : -1,
+										'size'		=> 5
+									]
+								) : false),
+								h::input([
+									'name'		=> 'db[host]',
+									'value'		=> $rc[2] == 'edit' ? $database['host'] : $Core->db_host
+								]),
+								h::select(
+									[
+										'in'		=> _mb_substr(get_files_list(ENGINES.'/DB', '/^[^_].*?\.php$/i', 'f'), 0, -4)
+									],
+									[
+										'name'		=> 'db[type]',
+										'selected'	=> $rc[2] == 'edit' ? $database['type'] : $Core->db_type,
+										'size'		=> 5
+									]
+								),
+								h::input([
+									'name'		=> 'db[prefix]',
+									'value'		=> $rc[2] == 'edit' ? $database['prefix'] : $Core->db_prefix
+								]),
+								h::input([
+									'name'		=> 'db[name]',
+									'value'		=> $rc[2] == 'edit' ? $database['name'] : ''
+								]),
+								h::input([
+									'name'		=> 'db[user]',
+									'value'		=> $rc[2] == 'edit' ? $database['user'] : ''
+								]),
+								h::input([
+									'name'		=> 'db[password]',
+									'value'		=> $rc[2] == 'edit' ? $database['password'] : ''
+								]),
+								h::input([
+									'name'		=> 'db[charset]',
+									'value'		=> $rc[2] == 'edit' ? $database['charset'] : $Core->db_charset
+								]).
+								h::{'input[type=hidden]'}([
+									'name'		=> 'mode',
+									'value'		=> $rc[2] == 'edit' ? 'edit' : 'add'
+								]).
+								(isset($rc[3]) ? h::{'input[type=hidden]'}([
+									'name'		=> 'database',
+									'value'		=> $rc[3]
+								]) : '').
+								(isset($rc[4]) ? h::{'input[type=hidden]'}([
+									'name'		=> 'mirror',
+									'value'		=> $rc[4]
+								]) : '')
+							]
+						)
+					])
 				).
 				h::button(
 					$L->test_connection,
@@ -268,12 +280,12 @@ if (isset($rc[2])) {
 						'class'	=> 'cs-left-all'
 					]
 				],
-				$i	? $db_data['host']		: $Core->config('db_host'),
-				$i	? $db_data['type']		: $Core->config('db_type'),
-				$i	? $db_data['prefix']	: $Core->config('db_prefix'),
-				$i	? $db_data['name']		: $Core->config('db_name'),
+				$i	? $db_data['host']		: $Core->db_host,
+				$i	? $db_data['type']		: $Core->db_type,
+				$i	? $db_data['prefix']	: $Core->db_prefix,
+				$i	? $db_data['name']		: $Core->db_name,
 				$i	? $db_data['user']		: '*****',
-				$i	? $db_data['charset']	: $Core->config('db_charset')
+				$i	? $db_data['charset']	: $Core->db_charset
 			);
 			foreach ($Config->db[$i]['mirrors'] as $m => &$mirror) {
 				if (is_array($mirror) && !empty($mirror)) {

@@ -23,7 +23,7 @@ class Cache {
 		$this->init();
 		if (!$this->init && $this->cache) {
 			global $Core;
-			$engine_class	= '\\cs\\Cache\\'.($this->engine = $Core->config('cache_engine'));
+			$engine_class	= '\\cs\\Cache\\'.($this->engine = $Core->cache_engine);
 			$this->instance	= new $engine_class();
 		}
 	}
@@ -86,8 +86,8 @@ class Cache {
 		if (empty($item) || $item == '/') {
 			return false;
 		}
-		global $User;
-		if ($process_mirrors && is_object($User) && !$User->system()) {
+		global $User, $Config;
+		if ($process_mirrors && isset($Config->core['cache_sync']) && $Config->core['cache_sync'] && is_object($User) && !$User->system()) {
 			global $Core;
 			$Core->api_request('System/admin/cache/del', ['item' => $item]);
 		}

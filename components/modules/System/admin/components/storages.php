@@ -29,54 +29,62 @@ if (isset($rc[2])) {
 				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$rc[2] == 'edit' ? $L->editing_of_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']) : $L->adding_of_storage
 				).
-				h::{'table.cs-fullwidth-table.cs-center-all'}(
-					h::tr(
-						h::{'th.ui-widget-header.ui-corner-all'}([
-							h::info('storageurl'),
-							h::info('storagehost'),
-							h::info('storageconnection'),
-							h::info('storageuser'),
-							h::info('storagepass')
-						])
-					).
-					h::tr(
-						h::{'td.ui-widget-content.ui-corner-all'}([
-							h::input([
-								'name'		=> 'storage[url]',
-								'value'		=> $rc[2] == 'edit' ? $storage['url'] : ''
-							]),
-							h::input([
-								'name'		=> 'storage[host]',
-								'value'		=> $rc[2] == 'edit' ? $storage['host'] : ''
-							]),
-							h::select(
-								[
-									'in'		=> _mb_substr(get_files_list(ENGINES.'/Storage', '/^[^_].*?\.php$/i', 'f'), 0, -4)
-								],
-								[
-									'name'		=> 'storage[connection]',
-									'selected'	=> $rc[2] == 'edit' ? $storage['connection'] : '',
-									'size'		=> 5
-								]
-							),
-							h::input([
-								'name'		=> 'storage[user]',
-								'value'		=> $rc[2] == 'edit' ? $storage['user'] : ''
-							]),
-							h::input([
-								'name'		=> 'storage[password]',
-								'value'		=> $rc[2] == 'edit' ? $storage['password'] : ''
-							]).
-							h::{'input[type=hidden]'}([
-								'name'		=> 'mode',
-								'value'		=> $rc[2] == 'edit' ? 'edit' : 'add'
-							]).
-							(isset($rc[3]) ? h::{'input[type=hidden]'}([
-								'name'	=> 'storage_id',
-								'value'	=> $rc[3]
-							]) : '')
-						])
-					)
+				h::{'table.cs-fullwidth-table.cs-center-all tr'}(
+					\cs\modules\System\form_rows_to_cols([
+						array_map(
+							function ($in) {
+								return h::{'th.ui-widget-header.ui-corner-all info'}($in);
+							},
+							[
+								h::info('storageurl'),
+								h::info('storagehost'),
+								h::info('storageconnection'),
+								h::info('storageuser'),
+								h::info('storagepass')
+							]
+						),
+						array_map(
+							function ($in) {
+								return h::{'td.ui-widget-content.ui-corner-all'}($in);
+							},
+							[
+								h::input([
+									'name'		=> 'storage[url]',
+									'value'		=> $rc[2] == 'edit' ? $storage['url'] : ''
+								]),
+								h::input([
+									'name'		=> 'storage[host]',
+									'value'		=> $rc[2] == 'edit' ? $storage['host'] : ''
+								]),
+								h::select(
+									[
+										'in'		=> _mb_substr(get_files_list(ENGINES.'/Storage', '/^[^_].*?\.php$/i', 'f'), 0, -4)
+									],
+									[
+										'name'		=> 'storage[connection]',
+										'selected'	=> $rc[2] == 'edit' ? $storage['connection'] : '',
+										'size'		=> 5
+									]
+								),
+								h::input([
+									'name'		=> 'storage[user]',
+									'value'		=> $rc[2] == 'edit' ? $storage['user'] : ''
+								]),
+								h::input([
+									'name'		=> 'storage[password]',
+									'value'		=> $rc[2] == 'edit' ? $storage['password'] : ''
+								]).
+								h::{'input[type=hidden]'}([
+									'name'		=> 'mode',
+									'value'		=> $rc[2] == 'edit' ? 'edit' : 'add'
+								]).
+								(isset($rc[3]) ? h::{'input[type=hidden]'}([
+									'name'	=> 'storage_id',
+									'value'	=> $rc[3]
+								]) : '')
+							]
+						)
+					])
 				).
 				h::button(
 					$L->test_connection,
@@ -180,10 +188,10 @@ if (isset($rc[2])) {
 				).
 				h::td(
 					[
-						$i	? $storage_data['url']			: $Core->config('storage_url') ?: url_by_source(STORAGE),
-						$i	? $storage_data['host']			: $Core->config('storage_host'),
-						$i	? $storage_data['connection']	: $Core->config('storage_type'),
-						$i	? $storage_data['user']			: $Core->config('storage_user') ?: '-'
+						$i	? $storage_data['url']			: $Core->storage_url ?: url_by_source(STORAGE),
+						$i	? $storage_data['host']			: $Core->storage_host,
+						$i	? $storage_data['connection']	: $Core->storage_type,
+						$i	? $storage_data['user']			: $Core->storage_user ?: '-'
 					],
 					[
 						'class'	=> 'ui-corner-all '.($i ? 'ui-widget-content' : 'ui-state-highlight')

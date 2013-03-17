@@ -218,6 +218,7 @@ class Config {
 			 */
 			if ($this->server['mirror_index'] == -1) {
 				$this->server['base_url'] = '';
+				code_header(400);
 				trigger_error($L->mirror_not_allowed, E_USER_ERROR);
 			}
 		/**
@@ -225,6 +226,7 @@ class Config {
 		 */
 		} elseif ($current_domain === false) {
 			$this->server['base_url'] = '';
+			code_header(400);
 			trigger_error($L->mirror_not_allowed, E_USER_ERROR);
 		}
 		if (!empty($this->core['mirrors_url'])) {

@@ -342,12 +342,12 @@ function get_timezones_list () {
  */
 function check_db () {
 	global $Core, $db;
-	global ${$Core->config('db_type')};
-	if (!${$Core->config('db_type')}) {
+	global ${$Core->db_type};
+	if (!${$Core->db_type}) {
 		return true;
 	}
 	preg_match('/[\.0-9]+/', $db->server(), $db_version);
-	return (bool)version_compare($db_version[0], ${$Core->config('db_type')}, '>=');
+	return (bool)version_compare($db_version[0], ${$Core->db_type}, '>=');
 }
 /**
  * Check PHP version

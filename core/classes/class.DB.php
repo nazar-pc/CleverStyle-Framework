@@ -130,13 +130,13 @@ class DB {
 		 * If connection to the core DB and it is not connection to the mirror
 		 */
 		if ($connection == 0 && !is_array($mirror)) {
-			$db['type']		= $Core->config('db_type');
-			$db['name']		= $Core->config('db_name');
-			$db['user']		= $Core->config('db_user');
-			$db['password']	= $Core->config('db_password');
-			$db['host']		= $Core->config('db_host');
-			$db['charset']	= $Core->config('db_charset');
-			$db['prefix']	= $Core->config('db_prefix');
+			$db['type']		= $Core->db_type;
+			$db['name']		= $Core->db_name;
+			$db['user']		= $Core->db_user;
+			$db['password']	= $Core->db_password;
+			$db['host']		= $Core->db_host;
+			$db['charset']	= $Core->db_charset;
+			$db['prefix']	= $Core->db_prefix;
 		} else {
 			/**
 			 * If it is connection to the DB mirror
@@ -160,7 +160,7 @@ class DB {
 		 * If successfully - add connection to the list of success connections and return instance of DB engine object
 		 */
 		if (is_object($this->connections[$connection]) && $this->connections[$connection]->connected()) {
-			$this->successful_connections[] = ($connection == 0 ? $L->core_db.'('.$Core->config('db_type').')' : $connection).'/'.$db['host'].'/'.$db['type'];
+			$this->successful_connections[] = ($connection == 0 ? $L->core_db.'('.$Core->db_type.')' : $connection).'/'.$db['host'].'/'.$db['type'];
 			unset($db);
 			$this->$connection = $this->connections[$connection];
 			return $this->connections[$connection];
@@ -169,7 +169,7 @@ class DB {
 		 */
 		} else {
 			unset($this->$connection);
-			$this->failed_connections[$connection] = ($connection == 0 ? $L->core_db.'('.$Core->config('db_type').')' : $connection).'/'.$db['host'].'/'.$db['type'];
+			$this->failed_connections[$connection] = ($connection == 0 ? $L->core_db.'('.$Core->db_type.')' : $connection).'/'.$db['host'].'/'.$db['type'];
 			unset($db);
 			if (
 				$mirror === true &&
@@ -221,12 +221,12 @@ class DB {
 			} elseif (isset($data[0])) {
 				if ($data[0] == 0) {
 					$db = [
-						'type'		=> $Core->config('db_type'),
-						'host'		=> $Core->config('db_host'),
-						'name'		=> $Core->config('db_name'),
-						'user'		=> $Core->config('db_user'),
-						'password'	=> $Core->config('db_password'),
-						'charset'	=> $Core->config('db_charset')
+						'type'		=> $Core->db_type,
+						'host'		=> $Core->db_host,
+						'name'		=> $Core->db_name,
+						'user'		=> $Core->db_user,
+						'password'	=> $Core->db_password,
+						'charset'	=> $Core->db_charset
 					];
 				} else {
 					$db = $Config->db[$data[0]];
@@ -245,8 +245,8 @@ class DB {
 				$db['name'],
 				$db['user'],
 				$db['password'],
-				$db['host'] ?: $Core->config('db_host'),
-				$db['charset'] ?: $Core->config('db_charset')
+				$db['host'] ?: $Core->db_host,
+				$db['charset'] ?: $Core->db_charset
 			);
 			errors_on();
 			return $test->connected();
