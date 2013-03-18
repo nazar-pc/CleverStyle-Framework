@@ -22,7 +22,7 @@ spl_autoload_register(function ($class) {
 		'namespace'	=> count($class) > 1 ? implode('/', array_slice($class, 0, -1)).'/' : '',
 		'name'		=> array_pop($class)
 	];
-	_require_once(CLASSES.'/'.$class['namespace'].'class.'.$class['name'].'.php', false) ||
+	_require_once(CLASSES.'/'.$class['namespace'].$class['name'].'.php', false) ||
 	_require_once(ENGINES.'/'.$class['namespace'].$class['name'].'.php', false);
 });
 /**
