@@ -43,8 +43,9 @@
  * 		'contacts'	=> <i>&$contacts</i>	//Array of user id
  *  ]
  */
-namespace cs;
-class User {
+namespace	cs;
+use			cs\DB\Accessor;
+class User extends Accessor {
 	protected	$current				= [
 					'session'		=> false,
 					'is'			=> [
@@ -59,8 +60,6 @@ class User {
 				$update_cache			= [],		//Do we need to update users cache
 				$data					= [],		//Local cache of users data
 				$data_set				= [],		//Changed users data, at the finish, data in db must be replaced by this data
-				$db						= false,	//Link to db object
-				$db_prime				= false,	//Link to primary db object
 				$cache					= [],		//Cache with some temporary data
 				$init					= false,	//Current state of initialization
 				$reg_id					= 0,		//User id after registration
@@ -542,39 +541,13 @@ class User {
 		return $result;
 	}
 	/**
-	 * Returns link to the object of db for reading (can be mirror DB)
+	 * Returns database index
 	 *
-	 * @return DB\_Abstract
+	 * @return int
 	 */
-	function db () {
-		if (is_object($this->db)) {
-			return $this->db;
-		}
-		if (is_object($this->db_prime)) {
-			return $this->db = $this->db_prime;
-		}
-		global $Config, $db;
-		/**
-		 * Save reference for faster access
-		 */
-		$this->db = $db->{$Config->module('System')->db('users')}();
-		return $this->db;
-	}
-	/**
-	 * Returns link to the object of db for writting (always main DB)
-	 *
-	 * @return DB\_Abstract
-	 */
-	function db_prime () {
-		if (is_object($this->db_prime)) {
-			return $this->db_prime;
-		}
-		global $Config, $db;
-		/**
-		 * Save reference for faster access
-		 */
-		$this->db_prime = $db->{$Config->module('System')->db('users')}();
-		return $this->db_prime;
+	protected function cdb () {
+		global $Config;
+		return $Config->module('System')->db('users');
 	}
 	/**
 	 * Is admin

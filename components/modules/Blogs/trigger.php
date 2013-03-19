@@ -33,15 +33,13 @@ $Core->register_trigger(
 		rebuild_pcache();
 	}
 );
-function clean_pcache ($data = null) {
+function clean_pcache () {
 	$module	= basename(__DIR__);
-	if ($data['name'] == $module || $data === null) {
-		if (file_exists(PCACHE.'/module.'.$module.'.js')) {
-			unlink(PCACHE.'/module.'.$module.'.js');
-		}
-		if (file_exists(PCACHE.'/module.'.$module.'.css')) {
-			unlink(PCACHE.'/module.'.$module.'.css');
-		}
+	if (file_exists(PCACHE.'/module.'.$module.'.js')) {
+		unlink(PCACHE.'/module.'.$module.'.js');
+	}
+	if (file_exists(PCACHE.'/module.'.$module.'.css')) {
+		unlink(PCACHE.'/module.'.$module.'.css');
 	}
 }
 function rebuild_pcache (&$data = null) {
@@ -74,7 +72,7 @@ $Core->register_trigger(
 		global $User, $Config;
 		$module		= basename(__DIR__);
 		if ($data['name'] != $module || !$User->admin()) {
-			return true;
+			return;
 		}
 		$Config->module($module)->set(
 			[
@@ -83,20 +81,18 @@ $Core->register_trigger(
 				'enable_comments'	=> 1
 			]
 		);
-		return true;
+		return;
 	}
 );
 $Core->register_trigger(
 	'admin/System/components/modules/uninstall/process',
 	function ($data) use ($Core) {
-		global $User, $Cache, $Config, $db;
+		global $User, $Cache, $Config, $db, $Blogs;
 		$module		= basename(__DIR__);
 		if ($data['name'] != $module || !$User->admin()) {
-			return true;
+			return;
 		}
 		time_limit_pause();
-		include_once MODULES.'/'.$module.'/class.php';
-		$Blogs		= $Core->create('cs\\modules\\Blogs\\Blogs');
 		$sections	= array_keys($Blogs->get_sections_list());
 		if (!empty($sections)) {
 			foreach ($sections as $section) {
@@ -121,7 +117,6 @@ $Core->register_trigger(
 		);
 		clean_pcache();
 		time_limit_pause(false);
-		return true;
 	}
 );
 $Core->register_trigger(
@@ -137,8 +132,14 @@ $Core->register_trigger(
 $Core->register_trigger(
 	'System/Config/routing_replace',
 	function ($data) {
-		global $L;
+		global $L, $Config;
 		$module	= basename(__DIR__);
+		if (!$Config->module($module)->active() && !ADMIN) {
+			return;
+		}
+		global $Core;
+		require_once __DIR__.'/Blogs.php';
+		$Core->create('_cs\\modules\\Blogs\\Blogs');
 		$rc		= explode('/', $data['rc']);
 		if ($rc[0] == $L->$module) {
 			$rc[0]		= $module;

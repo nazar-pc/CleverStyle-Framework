@@ -562,7 +562,7 @@ class Index {
 	 */
 	function save ($result = null) {
 		global $L, $Page, $Config;
-		if ($result === true || ($result === null && $Config->save())) {
+		if ($result || ($result === null && $Config->save())) {
 			$this->post_title = $L->changes_saved;
 			$Page->notice($L->changes_saved);
 			return true;
@@ -581,7 +581,7 @@ class Index {
 	 */
 	function apply ($result = null) {
 		global $L, $Page, $Config;
-		if ($result === true || ($result === null && $Config->apply())) {
+		if ($result || ($result === null && $Config->apply())) {
 			$this->post_title = $L->changes_applied;
 			$Page->notice($L->changes_applied.$L->check_applied);
 			return true;

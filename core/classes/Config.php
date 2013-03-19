@@ -620,6 +620,14 @@ class Module_Properties {
 		$this->module		= $module;
 	}
 	/**
+	 * Checks, whether module is active or not
+	 *
+	 * @return bool
+	 */
+	function active () {
+		return (int)$this->module_data['active'];
+	}
+	/**
 	 * Get db id by name
 	 *
 	 * @param string $db_name

@@ -6,20 +6,17 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace cs\modules\Static_pages;
-class Static_pages {
+namespace	cs\modules\Static_pages;
+use			cs\DB\Accessor;
+class Static_pages extends Accessor {
 	/**
-	 * Database index for pages
+	 * Returns database index
 	 *
-	 * @var int
+	 * @return int
 	 */
-	private	$pages;
-	/**
-	 * Saving indexes of used databases
-	 */
-	function __construct () {
+	protected function cdb () {
 		global $Config;
-		$this->pages	= $Config->module(basename(__DIR__))->db('pages');
+		return $Config->module(basename(__DIR__))->db('pages');
 	}
 	/**
 	 * Get data of specified page
@@ -29,10 +26,10 @@ class Static_pages {
 	 * @return array|bool
 	 */
 	function get ($id) {
-		global $db, $Cache, $L;
+		global $Cache, $L;
 		$id	= (int)$id;
 		if (($data = $Cache->{'Static_pages/pages/'.$id.'/'.$L->clang}) === false) {
-			$data	= $db->{$this->pages}->qf([
+			$data	= $this->db()->qf([
 				"SELECT
 					`id`,
 					`category`,
@@ -66,11 +63,11 @@ class Static_pages {
 	 * @return bool|int				Id of created page on success of <b>false</> on failure
 	 */
 	function add ($category, $title, $path, $content, $interface) {
-		global $db, $Cache;
+		global $Cache;
 		$category	= (int)$category;
 		$path		= path(str_replace(['/', '\\'], '_', $path ?: $title));
 		$interface	= (int)$interface;
-		if ($db->{$this->pages}()->q(
+		if ($this->db_prime()->q(
 			"INSERT INTO `[prefix]static_pages`
 				(`category`, `interface`)
 			VALUES
@@ -78,7 +75,7 @@ class Static_pages {
 			$category,
 			$interface
 		)) {
-			$id	= $db->{$this->pages}()->id();
+			$id	= $this->db_prime()->id();
 			$this->set($id, $category, $title, $path, $content, $interface);
 			unset($Cache->Static_pages);
 			return $id;
@@ -99,13 +96,13 @@ class Static_pages {
 	 * @return bool
 	 */
 	function set ($id, $category, $title, $path, $content, $interface) {
-		global $db, $Cache;
+		global $Cache;
 		$category	= (int)$category;
 		$title		= trim($title);
 		$path		= path(str_replace(['/', '\\'], '_', $path ?: $title));
 		$interface	= (int)$interface;
 		$id			= (int)$id;
-		if ($db->{$this->pages}()->q(
+		if ($this->db_prime()->q(
 			"UPDATE `[prefix]static_pages`
 			SET
 				`category`	= '%s',
@@ -139,9 +136,9 @@ class Static_pages {
 	 * @return bool
 	 */
 	function del ($id) {
-		global $db, $Cache;
+		global $Cache;
 		$id	= (int)$id;
-		if ($db->{$this->pages}()->q(
+		if ($this->db_prime()->q(
 			"DELETE FROM `[prefix]static_pages`
 			WHERE `id` = '%s'
 			LIMIT 1",
@@ -175,7 +172,6 @@ class Static_pages {
 		return $data;
 	}
 	private function get_structure_internal ($parent = 0) {
-		global $db;
 		$structure					= ['id'	=> $parent];
 		if ($parent != 0) {
 			$structure	= array_merge(
@@ -183,7 +179,7 @@ class Static_pages {
 				$this->get_category($parent)
 			);
 		}
-		$pages						= $db->{$this->pages}->qfas([
+		$pages						= $this->db()->qfas([
 			"SELECT `id`
 			FROM `[prefix]static_pages`
 			WHERE `category` = '%s'",
@@ -197,7 +193,7 @@ class Static_pages {
 			unset($id);
 		}
 		unset($pages);
-		$categories					= $db->{$this->pages}->qfa([
+		$categories					= $this->db()->qfa([
 			"SELECT
 				`id`,
 				`path`
@@ -219,9 +215,8 @@ class Static_pages {
 	 * @return array|bool
 	 */
 	function get_category ($id) {
-		global $db;
 		$id				= (int)$id;
-		$data			= $db->{$this->pages}->qf([
+		$data			= $this->db()->qf([
 			"SELECT
 				`id`,
 				`title`,
@@ -246,17 +241,17 @@ class Static_pages {
 	 * @return bool|int			Id of created category on success of <b>false</> on failure
 	 */
 	function add_category ($parent, $title, $path) {
-		global $db, $Cache;
+		global $Cache;
 		$parent	= (int)$parent;
 		$path	= path(str_replace(['/', '\\'], '_', $path ?: $title));
-		if ($db->{$this->pages}()->q(
+		if ($this->db_prime()->q(
 			"INSERT INTO `[prefix]static_pages_categories`
 				(`parent`)
 			VALUES
 				('%s')",
 			$parent
 		)) {
-			$id	= $db->{$this->pages}()->id();
+			$id	= $this->db_prime()->id();
 			$this->set_category($id, $parent, $title, $path);
 			unset($Cache->{'Static_pages/structure'});
 			return $id;
@@ -275,12 +270,12 @@ class Static_pages {
 	 * @return bool
 	 */
 	function set_category ($id, $parent, $title, $path) {
-		global $db, $Cache;
+		global $Cache;
 		$parent	= (int)$parent;
 		$title	= trim($title);
 		$path	= path(str_replace(['/', '\\'], '_', $path ?: $title));
 		$id		= (int)$id;
-		if ($db->{$this->pages}()->q(
+		if ($this->db_prime()->q(
 			"UPDATE `[prefix]static_pages_categories`
 			SET
 				`parent`	= '%s',
@@ -307,9 +302,9 @@ class Static_pages {
 	 * @return bool
 	 */
 	function del_category ($id) {
-		global $db, $Cache;
+		global $Cache;
 		$id	= (int)$id;
-		if ($db->{$this->pages}()->q(
+		if ($this->db_prime()->q(
 			[
 				"UPDATE `[prefix]static_pages_categories`
 				SET `parent` = '0'
@@ -333,18 +328,18 @@ class Static_pages {
 	}
 	private function ml_process ($text) {
 		global $Text;
-		return $Text->process($this->pages, $text);
+		return $Text->process($this->cdb(), $text);
 	}
 	private function ml_set ($group, $label, $text) {
 		global $Text;
 		if ($text === 'index') {
 			return $text;
 		}
-		return $Text->set($this->pages, $group, $label, $text);
+		return $Text->set($this->cdb(), $group, $label, $text);
 	}
 	private function ml_del ($group, $label) {
 		global $Text;
-		return $Text->del($this->pages, $group, $label);
+		return $Text->del($this->cdb(), $group, $label);
 	}
 }
 /**

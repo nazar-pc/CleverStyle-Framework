@@ -275,3 +275,49 @@ if (false) {
 	global $db;
 	$db = new DB\MySQLi('');
 }
+namespace cs\DB;
+abstract class Accessor {
+	protected	$db			= false,	//Link to db object
+				$db_prime	= false;	//Link to primary db object
+	/**
+	 * Returns link to the object of db for reading (can be mirror DB)
+	 *
+	 * @return \cs\DB\_Abstract
+	 */
+	protected function db () {
+		if (is_object($this->db)) {
+			return $this->db;
+		}
+		if (is_object($this->db_prime)) {
+			return $this->db = $this->db_prime;
+		}
+		global $db;
+		/**
+		 * Save reference for faster access
+		 */
+		$this->db = $db->{$this->cdb()}();
+		return $this->db;
+	}
+	/**
+	 * Returns link to the object of db for writing (always main DB)
+	 *
+	 * @return \cs\DB\_Abstract
+	 */
+	protected function db_prime () {
+		if (is_object($this->db_prime)) {
+			return $this->db_prime;
+		}
+		global $db;
+		/**
+		 * Save reference for faster access
+		 */
+		$this->db_prime = $db->{$this->cdb()}();
+		return $this->db_prime;
+	}
+	/**
+	 * Returns database index
+	 *
+	 * @return int
+	 */
+	abstract protected function cdb ();
+}

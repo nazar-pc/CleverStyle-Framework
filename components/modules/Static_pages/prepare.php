@@ -8,9 +8,7 @@
  */
 namespace	cs\modules\Static_pages;
 use			h;
-global $Core, $Index, $Config, $Static_pages;
-include_once MFOLDER.'/class.php';
-$Core->create('cs\\modules\\Static_pages\\Static_pages');
+global $Index, $Config, $Static_pages;
 $Index->title_auto	= false;
 $data				= $Static_pages->get(
 	HOME ? $Static_pages->get_structure()['pages']['index'] : $Config->route[0]

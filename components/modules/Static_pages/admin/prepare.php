@@ -9,7 +9,7 @@
  */
 namespace	cs\modules\Static_pages;
 use			h;
-global $Core, $Index, $Page, $L, $Config;
+global $Index, $Page, $L, $Config;
 $Index->title_auto	= false;
 $Page->title($L->administration);
 $Page->title($L->{MODULE});
@@ -21,8 +21,6 @@ $Page->menumore		= h::a(
 		'class'	=> !isset($Config->route[0]) || $Config->route[0] == 'browse_sections' ? 'active' : false
 	]
 );
-include_once MFOLDER.'/../class.php';
-$Core->create('cs\\modules\\Static_pages\\Static_pages');
 function get_categories_rows ($structure = null, $level = 0, $parent_categories = []) {
 	global $L;
 	$root					= false;

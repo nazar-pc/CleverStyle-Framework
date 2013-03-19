@@ -9,7 +9,7 @@
 namespace	cs\modules\Blogs;
 use			h;
 if (!API) {
-	global $Core, $Index, $Config, $L, $Page;
+	global $Index, $Config, $L, $Page;
 	$Index->title_auto	= false;
 	if (!$Config->core['cache_compress_js_css']) {
 		$Page->css('components/modules/'.MODULE.'/includes/css/general.css');
@@ -58,8 +58,6 @@ if (!API) {
 		case 'drafts':
 	}
 	$Page->title($L->{MODULE});
-	include_once MFOLDER.'/class.php';
-	$Core->create('cs\\modules\\Blogs\\Blogs');
 	function get_sections_select_post (&$disabled, $current = null, $structure = null, $level = 0) {
 		$list	= [
 			'in'	=> [],

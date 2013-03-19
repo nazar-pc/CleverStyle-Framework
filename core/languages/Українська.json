@@ -254,7 +254,7 @@
 		"prefix_for_db_tables"		: "Префікс таблицб БД",
 		"main_storage"				: "Головне сховище",
 		"required"					: "потребує",
-		"properties"				: "необхідно",
+		"properties"				: "Параметри",
 		"available_ram"				: "Доступна оперативна пам'ять",
 		"free_disk_space"			: "Вільний дисковий простір",
 		"upload_limit"				: "Обмеження розміру файлу для завантаження",

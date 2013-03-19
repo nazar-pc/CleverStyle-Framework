@@ -10,14 +10,12 @@ global $Core;
 $Core->register_trigger(
 	'admin/System/components/modules/uninstall/process',
 	function ($data) use ($Core) {
-		global $User, $Cache;
+		global $User, $Cache, $Static_pages;
 		$module			= basename(__DIR__);
 		if ($data['name'] != $module || !$User->admin()) {
 			return true;
 		}
 		time_limit_pause();
-		include_once MODULES.'/'.$module.'/class.php';
-		$Static_pages	= $Core->create('cs\\modules\\Static_pages\\Static_pages');
 		$structure		= $Static_pages->get_structure();
 		while (!empty($structure['categories'])) {
 			foreach ($structure['categories'] as $category) {
@@ -44,15 +42,14 @@ $Core->register_trigger(
 	'System/Config/routing_replace',
 	function ($data) use ($Core) {
 		global $Config;
-		if (
-			!isset($Config->components['modules'][basename(__DIR__)]) ||
-			$Config->components['modules'][basename(__DIR__)]['active'] != 1 ||
-			empty($data['rc'])
-		) {
+		$module					= basename(__DIR__);
+		if (!$Config->module($module)->active() && !ADMIN) {
 			return;
 		}
 		$rc						= explode('/', $data['rc']);
-		$module					= basename(__DIR__);
+		global $Static_pages;
+		require_once MODULES.'/'.$module.'/Static_pages.php';
+		$Core->create('cs\\modules\\Static_pages\\Static_pages');
 		switch ($rc[0]) {
 			case 'admin':
 			case 'api':
@@ -60,9 +57,6 @@ $Core->register_trigger(
 			case $module:
 				$rc = ['index'];
 		}
-		global $Static_pages;
-		include_once MODULES.'/'.$module.'/class.php';
-		$Core->create('cs\\modules\\Static_pages\\Static_pages');
 		$structure				= $Static_pages->get_structure();
 		$categories				= array_slice($rc, 0, -1);
 		$Static_pages->title	= [];

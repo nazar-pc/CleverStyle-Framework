@@ -6,20 +6,18 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace cs\modules\Blogs;
-class Blogs {
+namespace	cs\modules\Blogs;
+use			cs\DB\Accessor;
+
+class Blogs extends Accessor {
 	/**
-	 * Database index for posts
+	 * Returns database index
 	 *
-	 * @var int
+	 * @return int
 	 */
-	private	$posts;
-	/**
-	 * Saving indexes of used databases
-	 */
-	function __construct () {
+	protected function cdb () {
 		global $Config;
-		$this->posts	= $Config->module(basename(__DIR__))->db('posts');
+		return $Config->module(basename(__DIR__))->db('posts');
 	}
 	/**
 	 * Get data of specified post
@@ -30,10 +28,10 @@ class Blogs {
 	 * @return array|bool
 	 */
 	function get ($id, $comments = false) {
-		global $db, $Cache, $L, $User;
+		global $Cache, $L, $User;
 		$id	= (int)$id;
 		if (($data = $Cache->{'Blogs/posts/'.$id.'/'.$L->clang}) === false) {
-			$data	= $db->{$this->posts}->qf([
+			$data	= $this->db()->qf([
 				"SELECT
 					`id`,
 					`user`,
@@ -58,17 +56,17 @@ class Blogs {
 				$data['path']								= $this->ml_process($data['path']);
 				$data['content']							= $this->ml_process($data['content']);
 				$data['short_content']						= truncate(explode('<!-- pagebreak -->', $data['content'])[0]);
-				$data['sections']							= $db->{$this->posts}->qfas(
+				$data['sections']							= $this->db()->qfas(
 					"SELECT `section`
 					FROM `[prefix]blogs_posts_sections`
 					WHERE `id` = $id"
 				);
-				$data['tags']								= $db->{$this->posts}->qfas(
+				$data['tags']								= $this->db()->qfas(
 					"SELECT `tag`
 					FROM `[prefix]blogs_posts_tags`
 					WHERE `id` = $id"
 				);
-				$data['comments_count']						= (int)$db->{$this->posts}->qfs([
+				$data['comments_count']						= (int)$this->db()->qfs([
 					"SELECT COUNT(`id`)
 					FROM `[prefix]blogs_comments`
 					WHERE
@@ -100,7 +98,7 @@ class Blogs {
 		if (empty($tags) || empty($content)) {
 			return false;
 		}
-		global $db, $User, $Config;
+		global $User, $Config;
 		$path		= path(str_replace(['/', '\\'], '_', $path ?: $title));
 		$sections	= array_intersect(
 			array_keys($this->get_sections_list()),
@@ -109,7 +107,7 @@ class Blogs {
 		if (empty($sections) || count($sections) > $Config->module(MODULE)->max_sections) {
 			return false;
 		}
-		if ($db->{$this->posts}()->q(
+		if ($this->db_prime()->q(
 			"INSERT INTO `[prefix]blogs_posts`
 				(
 					`user`,
@@ -126,20 +124,20 @@ class Blogs {
 			$draft ? 0 : TIME,
 			(int)(bool)$draft
 		)) {
-			$id	= $db->{$this->posts}()->id();
+			$id	= $this->db_prime()->id();
 			if ($this->set($id, $title, $path, $content, $sections, $tags, $draft)) {
 				return $id;
 			} else {
-				$db->{$this->posts}()->q(
+				$this->db_prime()->q(
 					"DELETE FROM `[prefix]blogs_posts`
 					WHERE `id` = $id
 					LIMIT 1"
 				);
-				$db->{$this->posts}()->q(
+				$this->db_prime()->q(
 					"DELETE FROM `[prefix]blogs_posts_sections`
 					WHERE `id` = $id"
 				);
-				$db->{$this->posts}()->q(
+				$this->db_prime()->q(
 					"DELETE FROM `[prefix]blogs_posts_tags`
 					WHERE `id` = $id"
 				);
@@ -164,7 +162,7 @@ class Blogs {
 		if (empty($tags) || empty($content)) {
 			return false;
 		}
-		global $db, $Cache, $Config;
+		global $Cache, $Config;
 		$id			= (int)$id;
 		$title		= trim(xap($title));
 		$path		= path(str_replace(['/', '\\'], '_', $path ?: $title));
@@ -199,7 +197,7 @@ class Blogs {
 			)
 		);
 		$data		= $this->get($id);
-		if ($db->{$this->posts}()->q(
+		if ($this->db_prime()->q(
 			[
 				"DELETE FROM `[prefix]blogs_posts_sections`
 				WHERE `id` = '%5\$s'",
@@ -229,7 +227,7 @@ class Blogs {
 			$id
 		)) {
 			if ($data['draft'] == 1 && !$draft && $data['date'] == 0) {
-				$db->{$this->posts}()->q(
+				$this->db_prime()->q(
 					"UPDATE `[prefix]blogs_posts`
 					SET `date` = '%s'
 					WHERE `id` = '%s'
@@ -259,9 +257,9 @@ class Blogs {
 	 * @return bool
 	 */
 	function del ($id) {
-		global $db, $Cache;
+		global $Cache;
 		$id	= (int)$id;
-		if ($db->{$this->posts}()->q([
+		if ($this->db_prime()->q([
 			"DELETE FROM `[prefix]blogs_posts`
 			WHERE `id` = $id
 			LIMIT 1",
@@ -291,9 +289,9 @@ class Blogs {
 	 * @return int
 	 */
 	function get_total_count () {
-		global $Cache, $db;
+		global $Cache;
 		if (($data = $Cache->{'Blogs/total_count'}) === false) {
-			$Cache->{'Blogs/total_count'}	= $data	= $db->{$this->posts}->qfs(
+			$Cache->{'Blogs/total_count'}	= $data	= $this->db()->qfs(
 				"SELECT COUNT(`id`)
 				FROM `[prefix]blogs_posts`
 				WHERE `draft` = 0"
@@ -345,7 +343,6 @@ class Blogs {
 		return $data;
 	}
 	private function get_sections_structure_internal ($parent = 0) {
-		global $db;
 		$structure				= [
 			'id'	=> $parent,
 			'posts'	=> 0
@@ -358,7 +355,7 @@ class Blogs {
 		} else {
 			global $L;
 			$structure['title']	= $L->root_section;
-			$structure['posts']	= $db->{$this->posts}->qfs([
+			$structure['posts']	= $this->db()->qfs([
 				"SELECT COUNT(`s`.`id`)
 				FROM `[prefix]blogs_posts_sections` AS `s`
 					LEFT JOIN `[prefix]blogs_posts` AS `p`
@@ -369,7 +366,7 @@ class Blogs {
 				$structure['id']
 			]);
 		}
-		$sections				= $db->{$this->posts}->qfa([
+		$sections				= $this->db()->qfa([
 			"SELECT
 				`id`,
 				`path`
@@ -393,10 +390,10 @@ class Blogs {
 	 * @return array|bool
 	 */
 	function get_section ($id) {
-		global $db, $Cache, $L;
+		global $Cache, $L;
 		$id	= (int)$id;
 		if (($data = $Cache->{'Blogs/sections/'.$id.'/'.$L->clang}) === false) {
-			$data											= $db->{$this->posts}->qf([
+			$data											= $this->db()->qf([
 				"SELECT
 					`id`,
 					`title`,
@@ -440,23 +437,23 @@ class Blogs {
 	 * @return bool|int			Id of created section on success of <b>false</> on failure
 	 */
 	function add_section ($parent, $title, $path) {
-		global $db, $Cache;
+		global $Cache;
 		$parent	= (int)$parent;
 		$path	= path(str_replace(['/', '\\'], '_', $path ?: $title));
-		$posts	= $db->{$this->posts}()->qfa(
+		$posts	= $this->db_prime()->qfa(
 			"SELECT `id`
 			FROM `[prefix]blogs_posts_sections`
 			WHERE `section` = $parent"
 		);
-		if ($db->{$this->posts}()->q(
+		if ($this->db_prime()->q(
 			"INSERT INTO `[prefix]blogs_sections`
 				(`parent`)
 			VALUES
 				($parent)"
 		)) {
-			$id	= $db->{$this->posts}()->id();
+			$id	= $this->db_prime()->id();
 			if ($posts) {
-				$db->{$this->posts}()->q(
+				$this->db_prime()->q(
 					"UPDATE `[prefix]blogs_posts_sections`
 					SET `section` = $id
 					WHERE `section` = $parent"
@@ -488,12 +485,12 @@ class Blogs {
 	 * @return bool
 	 */
 	function set_section ($id, $parent, $title, $path) {
-		global $db, $Cache;
+		global $Cache;
 		$parent	= (int)$parent;
 		$title	= trim($title);
 		$path	= path(str_replace(['/', '\\'], '_', $path ?: $title));
 		$id		= (int)$id;
-		if ($db->{$this->posts}()->q(
+		if ($this->db_prime()->q(
 			"UPDATE `[prefix]blogs_sections`
 			SET
 				`parent`	= '%s',
@@ -522,16 +519,16 @@ class Blogs {
 	 * @return bool
 	 */
 	function del_section ($id) {
-		global $db, $Cache;
+		global $Cache;
 		$id						= (int)$id;
-		$parent_section		= $db->{$this->posts}()->qfs([
+		$parent_section		= $this->db_prime()->qfs([
 			"SELECT `parent`
 			FROM `[prefix]blogs_sections`
 			WHERE `id` = '%s'
 			LIMIT 1",
 			$id
 		]);
-		$new_section_for_posts	= $db->{$this->posts}()->qfs([
+		$new_section_for_posts	= $this->db_prime()->qfs([
 			"SELECT `id`
 			FROM `[prefix]blogs_sections`
 			WHERE
@@ -541,7 +538,7 @@ class Blogs {
 			$parent_section,
 			$id
 		]);
-		if ($db->{$this->posts}()->q(
+		if ($this->db_prime()->q(
 			[
 				"UPDATE `[prefix]blogs_sections`
 				SET `parent` = '%2\$s'
@@ -569,15 +566,15 @@ class Blogs {
 	}
 	private function ml_process ($text, $auto_translation = true) {
 		global $Text;
-		return $Text->process($this->posts, $text, $auto_translation);
+		return $Text->process($this->cdb, $text, $auto_translation);
 	}
 	private function ml_set ($group, $label, $text) {
 		global $Text;
-		return $Text->set($this->posts, $group, $label, $text);
+		return $Text->set($this->cdb, $group, $label, $text);
 	}
 	private function ml_del ($group, $label) {
 		global $Text;
-		return $Text->del($this->posts, $group, $label);
+		return $Text->del($this->cdb, $group, $label);
 	}
 	/**
 	 * Get array of tags list in form [<i>id</i> => <i>text</i>]
@@ -585,9 +582,9 @@ class Blogs {
 	 * @return array
 	 */
 	function get_tags_list () {
-		global $db, $Cache, $L;
+		global $Cache, $L;
 		if (($data = $Cache->{'Blogs/tags/'.$L->clang}) === false) {
-			$tags	= $db->{$this->posts}->qfa(
+			$tags	= $this->db()->qfa(
 				"SELECT
 					`id`,
 					`text`
@@ -635,15 +632,15 @@ class Blogs {
 	private function add_tag ($tag, $clean_cache = true) {
 		$tag	= trim(xap($tag));
 		if (($id = array_search($tag, $this->get_tags_list())) === false) {
-			global $db, $Cache;
-			if ($db->{$this->posts}()->q(
+			global $Cache;
+			if ($this->db_prime()->q(
 				"INSERT INTO `[prefix]blogs_tags`
 					(`text`)
 				VALUES
 					('')"
 			)) {
-				$id	= $db->{$this->posts}()->id();
-				if ($db->{$this->posts}()->q(
+				$id	= $this->db_prime()->id();
+				if ($this->db_prime()->q(
 					"UPDATE `[prefix]blogs_tags`
 					SET `text` = '%s'
 					WHERE `id` = $id
@@ -655,7 +652,7 @@ class Blogs {
 					}
 					return $id;
 				} else {
-					$db->{$this->posts}()->q(
+					$this->db_prime()->q(
 						"DELETE FROM `[prefix]blogs_tags`
 						WHERE `id` = $id
 						LIMIT 1"
@@ -732,11 +729,11 @@ class Blogs {
 	 * @return bool|array
 	 */
 	protected function get_comments ($id, $parent = 0) {
-		global $db, $Cache, $L;
+		global $Cache, $L;
 		if ($parent != 0 || ($comments = $Cache->{'Blogs/posts/'.$id.'/comments/'.$L->clang}) === false) {
 			$id											= (int)$id;
 			$parent										= (int)$parent;
-			$comments									= $db->{$this->posts}->qfa([
+			$comments									= $this->db()->qfa([
 				"SELECT
 					`id`,
 					`parent`,
@@ -771,9 +768,8 @@ class Blogs {
 	 * @return array|bool		Array of comment data on success or <b>false</b> on failure
 	 */
 	function get_comment ($id) {
-		global $db;
 		$id	= (int)$id;
-		return $db->{$this->posts}->qf(
+		return $this->db()->qf(
 			"SELECT
 				`id`,
 				`parent`,
@@ -797,7 +793,7 @@ class Blogs {
 	 * @return array|bool			Array of comment data on success or <b>false</b> on failure
 	 */
 	function add_comment ($post, $text, $parent = 0) {
-		global $db, $Cache, $L, $User;
+		global $Cache, $L, $User;
 		$text	= xap($text, true);
 		if (!$text) {
 			return false;
@@ -806,7 +802,7 @@ class Blogs {
 		$parent	= (int)$parent;
 		if (
 			$parent != 0 &&
-			$db->{$this->posts}()->qfs(
+			$this->db_prime()->qfs(
 				"SELECT `post`
 				FROM `[prefix]blogs_comments`
 				WHERE `id` = $parent
@@ -815,7 +811,7 @@ class Blogs {
 		) {
 			return false;
 		}
-		if ($db->{$this->posts}()->q(
+		if ($this->db_prime()->q(
 			"INSERT INTO `[prefix]blogs_comments`
 				(
 					`parent`,
@@ -843,7 +839,7 @@ class Blogs {
 		)) {
 			unset($Cache->{'Blogs/posts/'.$post.'/comments'});
 			return [
-				'id'		=> $db->{$this->posts}()->id(),
+				'id'		=> $this->db_prime()->id(),
 				'parent'	=> $parent,
 				'post'		=> $post,
 				'user'		=> $User->id,
@@ -863,13 +859,13 @@ class Blogs {
 	 * @return array|bool			Array of comment data on success or <b>false</b> on failure
 	 */
 	function set_comment ($id, $text) {
-		global $db, $Cache;
+		global $Cache;
 		$text	= xap($text, true);
 		if (!$text) {
 			return false;
 		}
 		$id				= (int)$id;
-		$comment		= $db->{$this->posts}()->qf(
+		$comment		= $this->db_prime()->qf(
 			"SELECT
 				`id`,
 				`parent`,
@@ -884,7 +880,7 @@ class Blogs {
 		if (!$comment) {
 			return false;
 		}
-		if ($db->{$this->posts}()->q(
+		if ($this->db_prime()->q(
 			"UPDATE `[prefix]blogs_comments`
 			SET `text` = '%s'
 			WHERE `id` = $id
@@ -905,9 +901,9 @@ class Blogs {
 	 * @return bool
 	 */
 	function del_comment ($id) {
-		global $db, $Cache;
+		global $Cache;
 		$id				= (int)$id;
-		$comment		= $db->{$this->posts}()->qf(
+		$comment		= $this->db_prime()->qf(
 			"SELECT `p`.`post`, COUNT(`c`.`id`) AS `count`
 			FROM `[prefix]blogs_comments` AS `p` LEFT JOIN `[prefix]blogs_comments` AS `c`
 			ON `p`.`id` = `c`.`parent`
@@ -917,7 +913,7 @@ class Blogs {
 		if (!$comment || $comment['count']) {
 			return false;
 		}
-		if ($db->{$this->posts}()->q(
+		if ($this->db_prime()->q(
 			"DELETE FROM `[prefix]blogs_comments`
 			WHERE `id` = $id
 			LIMIT 1"

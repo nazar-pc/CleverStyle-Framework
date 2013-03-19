@@ -26,13 +26,11 @@ $Index->content(
 		h::{'tr| td.ui-widget-content.ui-corner-all'}(
 			get_sections_rows()
 		).
-		h::{'tr td[colspan=2] a.cs-button'}(
+		h::{'tr td[colspan=2] a.cs-button'}([
+			$L->add_section,
 			[
-				$L->add_section,
-				[
-					'href'	=> 'admin/'.MODULE.'/add_section'
-				]
+				'href'	=> 'admin/'.MODULE.'/add_section'
 			]
-		)
+		])
 	)
 );

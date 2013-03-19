@@ -1,21 +1,16 @@
 {
-	"package"		: "Blogs",
+	"package"		: "OAuth2",
 	"category"		: "modules",
-	"version"		: "0.025",
-	"description"	: "Adds blogging functionality",
+	"version"		: "0.001",
+	"description"	: "Module provides realization of OAuth 2 authorization protocol (server side).",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",
 	"license"		: "MIT License",
-	"db_support"	: [
-		"MySQL",
-		"MySQLi"
-	],
 	"provide"		: [
-		"blogs"
+		"oauth2"
 	],
 	"multilingual"	: [
-		"interface",
-		"content"
+		"interface"
 	],
 	"languages"		: [
 		"English",

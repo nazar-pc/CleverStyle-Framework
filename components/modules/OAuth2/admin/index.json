@@ -1,0 +1,8 @@
+{
+	"clients"	: [
+		"list",
+		"add",
+		"edit",
+		"delete"
+	]
+}

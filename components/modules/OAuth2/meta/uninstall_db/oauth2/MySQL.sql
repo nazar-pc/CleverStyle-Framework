@@ -1,0 +1,1 @@
+DROP TABLE `[prefix]oauth2_clients`, `[prefix]oauth2_clients_sessions`;
