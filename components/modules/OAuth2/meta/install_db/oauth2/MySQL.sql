@@ -5,18 +5,28 @@ CREATE TABLE IF NOT EXISTS `[prefix]oauth2_clients` (
 	`domain` varchar(255) NOT NULL,
 	`active` tinyint(1) unsigned NOT NULL DEFAULT '0',
 	PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `[prefix]oauth2_clients_grant_access` (
+	`id` int(10) unsigned NOT NULL,
+	`user` int(10) unsigned NOT NULL COMMENT 'User id',
+	PRIMARY KEY (`id`,`user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `[prefix]oauth2_clients_sessions` (
-	`client` int(10) unsigned NOT NULL COMMENT 'Client id',
+	`id` int(10) unsigned NOT NULL COMMENT 'Client id',
 	`user` int(10) unsigned NOT NULL COMMENT 'User id',
+	`session` varchar(32) NOT NULL,
 	`created` bigint(20) unsigned NOT NULL,
 	`expire` bigint(20) unsigned NOT NULL,
 	`access_token` varchar(32) NOT NULL,
 	`refresh_token` varchar(32) NOT NULL,
+	`type` set('code','token') NOT NULL DEFAULT 'code',
+	`redirect_uri` varchar(32) NOT NULL,
 	UNIQUE KEY `access_token` (`access_token`),
 	UNIQUE KEY `refresh_token` (`refresh_token`),
-	KEY `client` (`client`),
+	KEY `id` (`id`),
 	KEY `user` (`user`),
-	KEY `expire` (`expire`)
+	KEY `expire` (`expire`),
+	KEY `session` (`session`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

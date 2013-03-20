@@ -284,7 +284,7 @@ abstract class Accessor {
 	 *
 	 * @return \cs\DB\_Abstract
 	 */
-	protected function db () {
+	function db () {
 		if (is_object($this->db)) {
 			return $this->db;
 		}
@@ -303,7 +303,7 @@ abstract class Accessor {
 	 *
 	 * @return \cs\DB\_Abstract
 	 */
-	protected function db_prime () {
+	function db_prime () {
 		if (is_object($this->db_prime)) {
 			return $this->db_prime;
 		}

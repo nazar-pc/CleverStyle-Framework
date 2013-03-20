@@ -134,7 +134,7 @@ $Core->register_trigger(
 	function ($data) {
 		global $L, $Config;
 		$module	= basename(__DIR__);
-		if (!$Config->module($module)->active() && !ADMIN) {
+		if (!$Config->module($module)->active() && substr($data['rc'], 0, 5) == 'admin') {
 			return;
 		}
 		global $Core;

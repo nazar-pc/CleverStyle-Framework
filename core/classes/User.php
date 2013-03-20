@@ -7,6 +7,13 @@
  */
 /**
  * Provides next triggers:<br>
+ *  System/User/construct/before<br>
+ *
+ *  System/User/construct/after<br>
+ *
+ *  System/User/del_all_sessions<br>
+ *  ['id'	=> <i>user_id</i>]<br>
+ *
  *  System/User/registration/before<br>
  *  ['email'	=> <i>email</i>]<br>
  *
@@ -69,7 +76,8 @@ class User extends Accessor {
 	 * Defining user id, type, session, personal settings
 	 */
 	function __construct () {
-		global $Cache, $Config, $Key;
+		global $Cache, $Config, $Key, $Core;
+		$Core->run_trigger('System/User/construct/before');
 		if (($this->users_columns = $Cache->{'users/columns'}) === false) {
 			$this->users_columns = $Cache->{'users/columns'} = $this->db()->columns('[prefix]users');
 		}
@@ -98,6 +106,7 @@ class User extends Accessor {
 				$this->current['is']['admin'] = true;
 				interface_off();
 				$_POST['data'] = _json_decode($_POST['data']);
+				$Core->run_trigger('System/User/construct/after');
 				return;
 			} else {
 				$this->current['is']['guest'] = true;
@@ -259,6 +268,7 @@ class User extends Accessor {
 			$_POST = [];
 		}
 		$this->init	= true;
+		$Core->run_trigger('System/User/construct/after');
 	}
 	/**
 	 * Get data item of specified user
@@ -416,8 +426,6 @@ class User extends Accessor {
 				if ($this->get_id(hash('sha224', $value)) !== false) {
 					return false;
 				}
-				global $Cache;
-				unset($Cache->{'users/'.hash('sha224', $this->$item)});
 			} elseif ($item == 'language') {
 				global $L;
 				$L->change($value);
@@ -428,6 +436,12 @@ class User extends Accessor {
 			$this->data[$user][$item] = $value;
 			if ($this->init) {
 				$this->data_set[$user][$item] = $this->data[$user][$item];
+			}
+			if ($item == 'login') {
+				global $Cache;
+				unset($Cache->{'users/'.hash('sha224', $this->$item)});
+			} elseif ($item == 'password_hash') {
+				$this->del_all_sessions($user);
 			}
 		}
 		return true;
@@ -1391,8 +1405,7 @@ class User extends Accessor {
 				`ip`			= '".ip2hex($this->ip)."' AND
 				`forwarded_for`	= '".ip2hex($this->forwarded_for)."' AND
 				`client_ip`		= '".ip2hex($this->client_ip)."'"
-				: ''
-			;
+				: '';
 			$result	= $this->db()->qf([
 				"SELECT
 					`user`,
@@ -1563,7 +1576,7 @@ class User extends Accessor {
 		/**
 		 * Generate hash in cycle, to obtain unique value
 		 */
-		for ($i = 0; $hash = md5(MICROTIME + $i); ++$i) {
+		for ($i = 0; $hash = md5(MICROTIME.uniqid($i, true)); ++$i) {
 			if ($this->db_prime()->qf(
 				"SELECT `id`
 				FROM `[prefix]sessions`
@@ -1682,10 +1695,13 @@ class User extends Accessor {
 	 * @return bool
 	 */
 	function del_all_sessions ($user = false) {
-		if ($this->bot() && $this->id == 1) {
-			return false;
-		}
-		global $Cache;
+		global $Cache, $Core;
+		$Core->run_trigger(
+			'System/User/del_all_sessions',
+			[
+				'id'	=> $user
+			]
+		);
 		$user = $user ?: $this->id;
 		_setcookie('session', '');
 		$sessions = $this->db_prime()->qfas(

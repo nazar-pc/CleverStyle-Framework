@@ -32,7 +32,6 @@ if (
 }
 if ($User->set('password_hash', $new_password)) {
 	$id	= $User->id;
-	$User->del_all_sessions();
 	$User->add_session($id);
 	$Page->content('OK');
 } else {
