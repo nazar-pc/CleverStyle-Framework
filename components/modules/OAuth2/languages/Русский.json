@@ -1,0 +1,19 @@
+{
+	"client_id_parameter_required"		: "Параметр client_id обязателен",
+	"client_id_not_found"				: "Id клиента не найден",
+	"inactive_client_id"				: "Неактивный id клиента",
+	"redirect_uri_parameter_required"	: "Параметр redirect_uri обязателен",
+	"redirect_uri_parameter_invalid"	: "Параметр redirect_uri неверный",
+	"you_are_not_logged_in"				: "Вы не вошли. Войдите, пожалуйста, для продолжения",
+	"client_want_access_your_account"	: "Клиент \"%s\" хочет получить доступ к вашему аккаунту",
+	"addition_of_client"				: "Добавление клиента",
+	"add_client"						: "Добавить клиента",
+	"client_name"						: "Имя клиента",
+	"client_domain"						: "Домен клиента",
+	"editing_of_client"					: "Редактирование клиента %s",
+	"deletion_of_client"				: "Удаление клиента %s",
+	"sure_to_delete_client"				: "Вы уверены, что хотите удалить клиента %s?",
+	"list_of_client"					: "Список клиентов",
+	"allow_guest_tokens"				: "Разрешить гостевые токены",
+	"allow_guest_tokens_info"			: "Гостевые токены используются для анонимного доступа к API"
+}

@@ -19,9 +19,9 @@ $Index->content(
 		$L->addition_of_client
 	).
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}(
-		h::{'th.ui-widget-header.ui-corner-all'}($L->name).
+		h::{'th.ui-widget-header.ui-corner-all'}($L->client_name).
 		h::{'td.ui-widget-content.ui-corner-all input[name=name]'}(),
-		h::{'th.ui-widget-header.ui-corner-all'}($L->domain).
+		h::{'th.ui-widget-header.ui-corner-all'}($L->client_domain).
 		h::{'td.ui-widget-content.ui-corner-all input[name=domain]'}(),
 		h::{'th.ui-widget-header.ui-corner-all'}($L->active).
 		h::{'td.ui-widget-content.ui-corner-all input[type=radio][name=active][checked=1]'}([

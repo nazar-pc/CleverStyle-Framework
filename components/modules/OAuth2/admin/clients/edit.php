@@ -10,17 +10,17 @@
 namespace	cs\modules\Blogs;
 use			h;
 global $Index, $L, $Page, $OAuth2, $Config;
-$Page->title($L->editing_of_client);
+$client						= $OAuth2->get_client($Config->route[2]);
+$Page->title($L->editing_of_client($client['name']));
 $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/'.MODULE.'/clients/list';
-$client						= $OAuth2->get_client($Config->route[2]);
 $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
-		$L->editing_of_client
+		$L->editing_of_client($client['name'])
 	).
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}(
-		h::{'th.ui-widget-header.ui-corner-all'}($L->name).
+		h::{'th.ui-widget-header.ui-corner-all'}($L->client_name).
 		h::{'td.ui-widget-content.ui-corner-all input[name=name]'}([
 			'value'	=> $client['name']
 		]),
@@ -28,7 +28,7 @@ $Index->content(
 		h::{'td.ui-widget-content.ui-corner-all input[name=secret]'}([
 			'value'	=> $client['secret']
 		]),
-		h::{'th.ui-widget-header.ui-corner-all'}($L->domain).
+		h::{'th.ui-widget-header.ui-corner-all'}($L->client_domain).
 		h::{'td.ui-widget-content.ui-corner-all input[name=domain]'}([
 			'value'	=> $client['domain']
 		]),

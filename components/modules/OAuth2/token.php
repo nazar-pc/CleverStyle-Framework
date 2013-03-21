@@ -34,11 +34,38 @@ if (!isset($_GET['client_id'])) {
 	$Index->stop	= true;
 	return;
 }
+if (!isset($_GET['client_secret'])) {
+	code_header(400);
+	$Page->Content	= _json_encode([
+		'error'				=> 'invalid_request',
+		'error_description'	=> 'client_secret parameter required'
+	]);
+	$Index->stop	= true;
+	return;
+}
 if (!($client = $OAuth2->get_client($_GET['client_id']))) {
 	code_header(400);
 	$Page->Content	= _json_encode([
 		'error'				=> 'access_denied',
-		'error_description'	=> 'Client id not found'
+		'error_description'	=> 'Invalid client id'
+	]);
+	$Index->stop	= true;
+	return;
+} elseif (!$client['active']) {
+	code_header(403);
+	header('Content-type: application/json');
+	$Page->Content	= _json_encode([
+		'error'				=> 'access_denied',
+		'error_description'	=> 'Inactive client id'
+	]);
+	$Index->stop	= true;
+	return;
+}
+if ($_GET['client_secret'] != $client['secret']) {
+	code_header(400);
+	$Page->Content	= _json_encode([
+		'error'				=> 'access_denied',
+		'error_description'	=> 'client_secret do not corresponds client_id'
 	]);
 	$Index->stop	= true;
 	return;
@@ -69,7 +96,7 @@ if (!isset($_GET['redirect_uri'])) {
 	]);
 	$Index->stop	= true;
 	return;
-} elseif (!preg_match("/^[^\/]+:\/\/$client[domain]/", $_GET['redirect_uri'])) {
+} elseif (!preg_match("/^[^\/]+:\/\/$client[domain]/", urldecode($_GET['redirect_uri']))) {
 	code_header(400);
 	$Page->Content	= _json_encode([
 		'error'				=> 'invalid_request',
@@ -78,7 +105,7 @@ if (!isset($_GET['redirect_uri'])) {
 	$Index->stop	= true;
 	return;
 }
-if (!in_array($_GET['grant_type'], ['authorization_code', 'refresh_token'])) {
+if (!in_array($_GET['grant_type'], ['authorization_code', 'refresh_token', 'guest_token'])) {
 	code_header(400);
 	$Page->Content	= _json_encode([
 		'error'				=> 'unsupported_grant_type',
@@ -101,7 +128,7 @@ switch ($_GET['grant_type']) {
 			$Index->stop	= true;
 			return;
 		}
-		$token_data	= $OAuth2->get_code($_GET['code'], $client['id'], $client['secret']);
+		$token_data	= $OAuth2->get_code($_GET['code'], $client['id'], $client['secret'], urldecode($_GET['redirect_uri']));
 		if (!$token_data) {
 			code_header(403);
 			$Page->Content	= _json_encode([
@@ -111,7 +138,7 @@ switch ($_GET['grant_type']) {
 			$Index->stop	= true;
 			return;
 		}
-		if ($token_data['expire'] < 0) {
+		if ($token_data['expires_in'] < 0) {
 			code_header(403);
 			$Page->Content	= _json_encode([
 				'error'				=> 'access_denied',
@@ -147,4 +174,47 @@ switch ($_GET['grant_type']) {
 		$Page->Content	= _json_encode($token_data);
 		$Index->stop	= true;
 		return;
+	case 'guest_token':
+		global $User, $Config;
+		if ($User->user()) {
+			code_header(403);
+			$Page->Content	= _json_encode([
+				'error'				=> 'access_denied',
+				'error_description'	=> 'Only guests, not user allowed to access this grant_type'
+			]);
+			$Index->stop	= true;
+			return;
+		}
+		if (!$Config->module('OAuth2')->guest_tokens) {
+			code_header(403);
+			$Page->Content	= _json_encode([
+				'error'				=> 'access_denied',
+				'error_description'	=> 'Guest tokens disabled'
+			]);
+			$Index->stop	= true;
+		}
+		$code	= $OAuth2->add_code($client['id'], 'code', urldecode($_GET['redirect_uri']));
+		if (!$code) {
+			code_header(500);
+			$Page->Content	= _json_encode([
+				'error'				=> 'server_error',
+				'error_description'	=> 'Server can\'t generate code, try later'
+			]);
+			$Index->stop	= true;
+			return;
+		}
+		$token_data	= $OAuth2->get_code($code, $client['id'], $client['secret'], urldecode($_GET['redirect_uri']));
+		if ($token_data) {
+			$Page->Content	= _json_encode($token_data);
+			$Index->stop	= true;
+			return;
+		} else {
+			code_header(500);
+			$Page->Content	= _json_encode([
+				'error'				=> 'server_error',
+				'error_description'	=> 'Server can\'t get token data, try later'
+			]);
+			$Index->stop	= true;
+			return;
+		}
 }

@@ -9,19 +9,19 @@
 
 namespace	cs\modules\Blogs;
 use			h;
-global $Index, $L, $Page, $OAuth2;
+global $Index, $L, $Page, $OAuth2, $Config;
 $Page->title($L->list_of_client);
-$Index->buttons		= false;
+$Index->apply_button	= false;
 $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 		$L->list_of_clients
 	).
 	h::{'table.cs-fullwidth-table.cs-center-all'}(
 		h::{'th.ui-widget-header.ui-corner-all'}([
-												 $L->name,
+												 $L->client_name,
 			'client_id',
 			'client_secret',
-			$L->actions
+			$L->action
 		]).
 		h::tr(array_map(
 			function ($client) use ($L) {
@@ -33,14 +33,14 @@ $Index->content(
 						h::{'a.cs-button-compact'}([
 							h::icon('wrench'),
 							[
-								'href'			=> 'admin/'.MODULE.'/clients/edit/'.$client['id'],
+								'href'			=> 'admin/OAuth2/clients/edit/'.$client['id'],
 								'data-title'	=> $L->edit
 							]
 						]).
 						h::{'a.cs-button-compact'}([
 							h::icon('trash'),
 							[
-								'href'			=> 'admin/'.MODULE.'/clients/delete/'.$client['id'],
+								'href'			=> 'admin/OAuth2/clients/delete/'.$client['id'],
 								'data-title'	=> $L->delete
 							]
 						])
@@ -56,7 +56,17 @@ $Index->content(
 	h::{'p.cs-left a.cs-button'}([
 		$L->add_client,
 		[
-			'href'	=> 'admin/'.MODULE.'/clients/add'
+			'href'	=> 'admin/OAuth2/clients/add'
 		]
-	])
+	]).
+	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr td'}(
+		h::info('allow_guest_tokens'),
+		h::{'input[type=radio]'}([
+			'name'		=> 'guest_tokens',
+			'checked'	=> $Config->module('OAuth2')->guest_tokens,
+			'value'		=> [0, 1],
+			'in'		=> [$L->off, $L->on]
+		])
+	).
+	h::{'input[type=hidden][name=mode][value=general]'}()
 );

@@ -1056,6 +1056,9 @@ class Page {
 	 * Error pages processing
 	 */
 	function error_page () {
+		if (!defined('ERROR_PAGE')) {
+			define('ERROR_PAGE', 500);
+		}
 		interface_off();
 		$error_text	= code_header(ERROR_PAGE);
 		ob_start();

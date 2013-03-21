@@ -45,8 +45,6 @@ $Page->menumore		= h::a(
 		]
 	]
 );
-include_once MFOLDER.'/../class.php';
-$Core->create('cs\\modules\\Blogs\\Blogs');
 function get_sections_rows ($structure = null, $level = 0, &$content = null) {
 	global $L;
 	$root		= false;

@@ -9,6 +9,11 @@
 namespace	cs\modules\OAuth2;
 use			cs\DB\Accessor;
 class OAuth2 extends Accessor {
+	protected	$guest_tokens;
+	function __construct () {
+		global $Config;
+		$this->guest_tokens	= $Config->module('OAuth2')->guest_tokens;
+	}
 	/**
 	 * Returns database index
 	 *
@@ -172,7 +177,7 @@ class OAuth2 extends Accessor {
 		if (!$User->user() || !$this->get_client($client)) {
 			return false;
 		}
-		$result	= $this->db_prime()->q([
+		$result	= $this->db_prime()->q(
 			"INSERT IGNORE INTO `[prefix]oauth2_clients_grant_access`
 				(
 					`id`,
@@ -183,7 +188,7 @@ class OAuth2 extends Accessor {
 				)",
 			$client,
 			$User->id
-		]);
+		);
 		global $Cache;
 		unset($Cache->{'OAuth2/grant_access/'.$User->id});
 		return $result;
@@ -201,7 +206,7 @@ class OAuth2 extends Accessor {
 		$user	= $user ?: $User->id;
 		$client	= (int)$client;
 		if ($user == 1) {
-			return false;
+			return $this->guest_tokens;
 		}
 		global $Cache;
 		if (($data = $Cache->{'OAuth2/grant_access/'.$User->id}) === false) {
@@ -263,17 +268,19 @@ class OAuth2 extends Accessor {
 	 */
 	function add_code ($client, $response_type, $redirect_uri = '') {
 		global $User;
-		$client	= (int)$client;
+		$client	= $this->get_client((int)$client);
 		if (
-			!$User->user() ||
-			!$this->get_client($client) ||
-			!$this->get_access($client)
+			(
+				!$this->guest_tokens && !$User->user()
+			) ||
+			!$client ||
+			!$this->get_access($client['id'])
 		) {
 			return false;
 		}
 		$user_agent					= $User->user_agent;
 		$current_session			= $User->get_session();
-		$_SERVER['HTTP_USER_AGENT']	= 'OAuth2';
+		$_SERVER['HTTP_USER_AGENT']	= "OAuth2-$client[name]-$client[id]";
 		$new_session				= $User->add_session($User->id);
 		$_SERVER['HTTP_USER_AGENT']	= $user_agent;
 		$User->get_session($current_session);
@@ -296,7 +303,7 @@ class OAuth2 extends Accessor {
 			)) {
 				continue;
 			}
-			$this->db_prime()->q(
+			$result	= $this->db_prime()->q(
 				"INSERT INTO `[prefix]oauth2_clients_sessions`
 					(
 						`id`,
@@ -321,7 +328,7 @@ class OAuth2 extends Accessor {
 						'%s',
 						'%s'
 					)",
-				$client,
+				$client['id'],
 				$User->id,
 				$new_session,
 				TIME,
@@ -332,7 +339,7 @@ class OAuth2 extends Accessor {
 				$response_type,
 				md5($redirect_uri)
 			);
-			return $code;
+			return $result ? $code : false;
 		}
 		return false;
 	}
@@ -357,7 +364,8 @@ class OAuth2 extends Accessor {
 			"SELECT
 				`access_token`,
 				`refresh_token`,
-				`expire`
+				`expire`,
+				`user`
 			FROM `[prefix]oauth2_clients_sessions`
 			WHERE
 				`id`			= '%s' AND
@@ -371,11 +379,24 @@ class OAuth2 extends Accessor {
 		if (!$data) {
 			return false;
 		}
+		$this->db()->q(
+			"UPDATE `[prefix]oauth2_clients_sessions`
+			SET `code` = ''
+			WHERE
+				`id`			= '%s' AND
+				`code`			= '%s' AND
+				`redirect_uri`	= '%s'
+			LIMIT 1",
+			$client['id'],
+			$code,
+			md5($redirect_uri)
+		);
 		return [
 			'access_token'	=> $data['access_token'],
 			'refresh_token'	=> $data['refresh_token'],
 			'expires_in'	=> $data['expire'] - TIME,
-			'token_type'	=> 'bearer'
+			'token_type'	=> 'bearer',
+			'user_id'		=> $data['user']
 		];
 	}
 	/**
@@ -442,6 +463,7 @@ class OAuth2 extends Accessor {
 		}
 		$data	= $this->db_prime()->qf([
 			"SELECT
+				`user`,
 				`access_token`,
 				`session`
 			FROM `[prefix]oauth2_clients_sessions`
@@ -462,13 +484,13 @@ class OAuth2 extends Accessor {
 			$client['id'],
 			$refresh_token
 		);
-		unset($Cache->{'OAuth2/tokens/'.$data['access_token']});
 		if (!$data) {
 			return false;
 		}
+		unset($Cache->{'OAuth2/tokens/'.$data['access_token']});
 		global $User;
-		$id	= $User->get_session_user($data['session']);
-		if ($id == 1) {
+		$id		= $User->get_session_user($data['session']);
+		if ($id != $data['user']) {
 			return false;
 		}
 		$User->add_session($id);

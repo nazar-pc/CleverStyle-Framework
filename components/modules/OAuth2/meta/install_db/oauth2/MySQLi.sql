@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]oauth2_clients_sessions` (
 	`expire` bigint(20) unsigned NOT NULL,
 	`access_token` varchar(32) NOT NULL,
 	`refresh_token` varchar(32) NOT NULL,
+	`code` varchar(32) NOT NULL,
 	`type` set('code','token') NOT NULL DEFAULT 'code',
 	`redirect_uri` varchar(32) NOT NULL,
 	UNIQUE KEY `access_token` (`access_token`),
@@ -28,5 +29,6 @@ CREATE TABLE IF NOT EXISTS `[prefix]oauth2_clients_sessions` (
 	KEY `id` (`id`),
 	KEY `user` (`user`),
 	KEY `expire` (`expire`),
-	KEY `session` (`session`)
+	KEY `session` (`session`),
+	KEY `code` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -465,7 +465,6 @@ class Index {
 				'	is_user = '.(int)$User->user().",\n".
 				'	is_guest = '.(int)$User->guest().",\n".
 				'	debug = '.(int)DEBUG.",\n".
-				'	session_id = "'.$User->get_session()."\",\n".
 				'	cookie_prefix = "'.$Config->core['cookie_prefix']."\",\n".
 				'	cookie_domain = "'.$Config->core['cookie_domain']."\",\n".
 				'	cookie_path = "'.$Config->core['cookie_path']."\",\n".

@@ -264,7 +264,17 @@ class User extends Accessor {
 		 * Security check for data, sent with POST method
 		 */
 		$session_id	= $this->get_session();
-		if (!$session_id || !isset($_POST[$session_id]) || $_POST[$session_id] != $session_id) {
+		if (!$session_id || !isset($_POST['session']) || $_POST['session'] != $session_id) {
+			if (API) {
+				global $Page;
+				code_header(403);
+				$Page->Content	= _json_encode([
+					'error'				=> 'access_denied',
+					'error_description'	=> 'Invalid user session'
+				]);
+				interface_off();
+				__finish();
+			}
 			$_POST = [];
 		}
 		$this->init	= true;
@@ -1629,7 +1639,7 @@ class User extends Accessor {
 				'forwarded_for'	=> $forwarded_for,
 				'client_ip'		=> $client_ip
 			];
-			_setcookie('session', $hash, TIME + $Config->core['session_expire'], true);
+			_setcookie('session', $hash, TIME + $Config->core['session_expire']);
 			$this->id					= $this->get_session_user();
 			if (
 				($this->db()->qfs(

@@ -288,9 +288,7 @@ class h {
 			$data['method']	= 'post';
 		}
 		if (strtolower($data['method']) == 'post' && is_object($User)) {
-			$in_ = self::input([
-				'type'	=> 'hidden',
-				'name'	=> $User->get_session(),
+			$in_ = self::{'input[type=hidden][name=session]'}([
 				'value'	=> $User->get_session()
 			]);
 			if (!is_array($in)) {

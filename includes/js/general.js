@@ -7,10 +7,11 @@
 $(function() {
 	async_call([
 		function () {
-			var data = {};
-			data[session_id] = session_id;
+			window.session_id	= getcookie('session');
 			$.ajaxSetup({
-				data	: data,
+				data	: {
+					session	: session_id
+				},
 				type	: 'post'
 			});
 		},
@@ -237,21 +238,21 @@ $(function() {
 							found.val()+','+id.substring(6, id.length-1)
 						);
 					});
-					$('#block_users_search_results').load(
-						current_base_url+'/'+route[0]+'/'+route[1]+'/search_users',
-						{
+					$.ajax({
+						url		: current_base_url+'/'+route[0]+'/'+route[1]+'/search_users',
+						data	: {
 							found_users		: $('#block_users_search_found').val(),
 							permission		: $(this).attr('permission'),
 							search_phrase	: $(this).val()
 						},
-						function () {
-							$('#block_users_search_results').find(':radio').each(function () {
+						success	: function (result) {
+							$('#block_users_search_results').html(result).find(':radio').each(function () {
 								$(this).parent().buttonset();
 							}).change(function () {
 								$(this).parentsUntil('tr').parent().addClass('cs-block-users-changed');
 							});
 						}
-					);
+					});
 				}).keydown(function () {
 					return event.which != 13;
 				});
@@ -298,7 +299,7 @@ $(function() {
 				cookie;
 			if (cookie = getcookie('setcookie')) {
 				for (i in cookie) {
-					$.get(cookie[i]);
+					$.post(cookie[i]);
 				}
 				setcookie('setcookie', '');
 			}

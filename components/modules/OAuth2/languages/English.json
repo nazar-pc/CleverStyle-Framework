@@ -1,0 +1,19 @@
+{
+	"client_id_parameter_required"		: "client_id parameter required",
+	"client_id_not_found"				: "Client id not found",
+	"inactive_client_id"				: "Inactive client id",
+	"redirect_uri_parameter_required"	: "redirect_uri parameter required",
+	"redirect_uri_parameter_invalid"	: "redirect_uri parameter invalid",
+	"you_are_not_logged_in"				: "You are not logged in. Make login, please, to continue",
+	"client_want_access_your_account"	: "Client \"%s\" want access your account",
+	"addition_of_client"				: "Addition of client",
+	"add_client"						: "Add client",
+	"client_name"						: "Client name",
+	"client_domain"						: "Client domain",
+	"editing_of_client"					: "Editing of client %s",
+	"deletion_of_client"				: "Deletion of client %s",
+	"sure_to_delete_client"				: "Are you sure want to delete client %s?",
+	"list_of_client"					: "List of clients",
+	"allow_guest_tokens"				: "Allow guest tokens",
+	"allow_guest_tokens_info"			: "Guest tokens are used for anonymous access to API"
+}

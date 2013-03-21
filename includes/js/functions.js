@@ -5,13 +5,13 @@
  * @license		MIT License, see license.txt
  */
 /**
- * Adds method for symbol replacing at cpecified position
+ * Adds method for symbol replacing at specified position
  *
  * @param index
  * @param symbol
  * @return string
  */
-String.prototype.replaceAt=function(index, symbol) {
+String.prototype.replaceAt = function (index, symbol) {
 	return this.substr(0, index)+symbol+this.substr(index+symbol.length);
 };
 /**
@@ -21,7 +21,7 @@ function debug_window () {
 	$('#debug').dialog('open');
 }
 /**
- * Cache cleanin
+ * Cache cleaning
  *
  * @param element
  * @param action
@@ -33,24 +33,19 @@ function admin_cache (element, action) {
 		},
 		100
 	);
-	$(element)
-		.html('')
-		.progressbar({
-			value	: 1
-		})
-		.load(
-			action,
-			null,
-			function () {
-				clearInterval(cache_interval);
-				setTimeout(
-					function () {
-						$(element).progressbar('destroy');
-					},
-					100
-				);
-			}
-		);
+	$(element).html('').progressbar({value : 1});
+	$.ajax({
+		url		: action,
+		success	: function (result) {
+			clearInterval(cache_interval);
+			setTimeout(
+				function () {
+					$(element).progressbar('destroy').html(result);
+				},
+				100
+			);
+		}
+	});
 }
 /**
  * Updating of progress bar
@@ -60,7 +55,7 @@ function admin_cache (element, action) {
 function progress_update (element) {
 	$(element).progressbar(
 		'value',
-		$(element).progressbar('value')+1
+		$(element).progressbar('value') + 1
 	);
 	if ($(element).progressbar('value') == 100) {
 		$(element).progressbar('value', 1);
@@ -86,7 +81,7 @@ function db_test (url, added) {
 	if (added) {
 		$.ajax({
 			url		: url,
-			success	: function(result) {
+			success	: function (result) {
 				clearInterval(test_interval);
 				$('#test_db').html(result);
 			}
@@ -105,7 +100,7 @@ function db_test (url, added) {
 			data	: {
 				db	: db
 			},
-			success	: function(result) {
+			success	: function (result) {
 				clearInterval(test_interval);
 				$('#test_db').html(result);
 			}
@@ -132,7 +127,7 @@ function storage_test (url, added) {
 	if (added) {
 		$.ajax({
 			url		: url,
-			success	: function(result) {
+			success	: function (result) {
 				clearInterval(test_interval);
 				$('#test_storage').html(result);
 			}
@@ -148,7 +143,7 @@ function storage_test (url, added) {
 		$.ajax({
 			url		: url,
 			data	: 'storage=' + storage,
-			success	: function(result) {
+			success	: function (result) {
 				clearInterval(test_interval);
 				$('#test_storage').html(result);
 			}
@@ -243,7 +238,7 @@ function login (login, password) {
 			data	: {
 				login: hash('sha224', login)
 			},
-			success	: function(random_hash) {
+			success	: function (random_hash) {
 				if (random_hash.length == 56) {
 					$.ajax(
 						base_url+"/api/user/login",
@@ -256,14 +251,14 @@ function login (login, password) {
 									hash('sha224', login)+hash('sha512', hash('sha512', password)+public_key)+navigator.userAgent+random_hash
 								)
 							},
-							success	: function(result) {
+							success	: function (result) {
 								if (result == 'reload') {
 									location.reload();
 								} else {
 									alert(result);
 								}
 							},
-							error	: function() {
+							error	: function () {
 								alert(L.auth_connection_error);
 							}
 						}
@@ -274,7 +269,7 @@ function login (login, password) {
 					alert(random_hash);
 				}
 			},
-			error	: function() {
+			error	: function () {
 				alert(L.auth_connection_error);
 			}
 		}
@@ -291,10 +286,10 @@ function logout () {
 			data	: {
 				logout: true
 			},
-			success	: function() {
+			success	: function () {
 				location.reload();
 			},
-			error	: function() {
+			error	: function () {
 				alert(L.auth_connection_error);
 			}
 		}
@@ -317,7 +312,7 @@ function registration (email) {
 			data	: {
 				email: email
 			},
-			success	: function(result) {
+			success	: function (result) {
 				if (result == 'reg_confirmation') {
 					$('<div>'+L.reg_confirmation+'</div>')
 						.appendTo('body')
@@ -346,7 +341,7 @@ function registration (email) {
 					alert(result);
 				}
 			},
-			error	: function() {
+			error	: function () {
 				alert(L.reg_connection_error);
 			}
 		}
@@ -364,7 +359,7 @@ function restore_password (email) {
 			data	: {
 				email: hash('sha224', email)
 			},
-			success	: function(result) {
+			success	: function (result) {
 				if (result == 'OK') {
 					$('<div>'+L.restore_password_confirmation+'</div>')
 						.appendTo('body')
@@ -381,7 +376,7 @@ function restore_password (email) {
 					alert(result);
 				}
 			},
-			error	: function() {
+			error	: function () {
 				alert(L.reg_connection_error);
 			}
 		}
@@ -414,14 +409,14 @@ function change_password (current_password, new_password) {
 				verify_hash		: hash('sha224', current_password+session_id),
 				new_password	: xor_string(current_password, new_password)
 			},
-			success	: function(result) {
+			success	: function (result) {
 				if (result == 'OK') {
 					alert(L.password_changed_successfully);
 				} else {
 					alert(result);
 				}
 			},
-			error	: function() {
+			error	: function () {
 				alert(L.password_changing_connection_error);
 			}
 		}
