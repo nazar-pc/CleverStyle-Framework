@@ -1202,22 +1202,46 @@ function _array ($in) {
 	}
 	return (array)$in;
 }
-/**
- * Accepts array of arrays and returns array of specified elements of each array.
- *
- * @param array[]	$in		Array of arrays
- * @param mixed		$row	Which item of each array should be returned
- *
- * @return mixed[]
- */
-function array_row ($in, $row) {
-	if (!is_array($in)) {
-		return false;
+if (!function_exists('array_column')) {
+	/**
+	 * Returns the values from a single column of the input array, identified by the columnKey.
+	 *
+	 * Optionally, you may provide an indexKey to index the values in the returned array by the values from the indexKey column in the input array.
+	 *
+	 * @param array[]		$input		A multi-dimensional array (record set) from which to pull a column of values.
+	 * @param int|string	$columnKey	The column of values to return. This value may be the integer key of the column you wish to retrieve,
+	 * 									or it may be the string key name for an associative array.
+	 * @param int|string	$indexKey	The column to use as the index/keys for the returned array.
+	 * 									This value may be the integer key of the column, or it may be the string key name.
+	 *
+	 * @return mixed[]
+	 */
+	function array_column ($input, $columnKey, $indexKey = null) {
+		if (!is_array($input)) {
+			return false;
+		}
+		if ($indexKey === null) {
+			foreach ($input as $i => &$in) {
+				if (is_array($in) && isset($in[$columnKey])) {
+					$in	= $in[$columnKey];
+				} else {
+					unset($input[$i]);
+				}
+			}
+		} else {
+			$result	= [];
+			foreach ($input as $i => $in) {
+				if (is_array($in) && isset($in[$columnKey])) {
+					if (isset($in[$indexKey])) {
+						$result[$in[$indexKey]]	= $in[$columnKey];
+					} else {
+						$result[]	= $in[$columnKey];
+					}
+					unset($input[$i]);
+				}
+			}
+			$input	= &$result;
+		}
+		return $input;
 	}
-	return array_map(
-		function ($in) use ($row) {
-			return is_array($in) && isset($in[$row]) ? $in[$row] : false;
-		},
-		$in
-	);
 }
