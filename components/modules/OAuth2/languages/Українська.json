@@ -13,7 +13,7 @@
 	"editing_of_client"					: "Редагування клієнта %s",
 	"deletion_of_client"				: "Видалення клієнта %s",
 	"sure_to_delete_client"				: "Ви впевнені, що хочете видалити клієнта %s?",
-	"list_of_client"					: "Список клієнтів",
+	"list_of_clients"					: "Список клієнтів",
 	"allow_guest_tokens"				: "Дозволити гостьові токени",
 	"allow_guest_tokens_info"			: "Гостьові токени використовуються для анонімного доступу до API"
 }

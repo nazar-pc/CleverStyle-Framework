@@ -13,7 +13,7 @@
 	"editing_of_client"					: "Editing of client %s",
 	"deletion_of_client"				: "Deletion of client %s",
 	"sure_to_delete_client"				: "Are you sure want to delete client %s?",
-	"list_of_client"					: "List of clients",
+	"list_of_clients"					: "List of clients",
 	"allow_guest_tokens"				: "Allow guest tokens",
 	"allow_guest_tokens_info"			: "Guest tokens are used for anonymous access to API"
 }
