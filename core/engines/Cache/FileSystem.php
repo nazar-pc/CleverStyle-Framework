@@ -8,7 +8,7 @@
 namespace cs\Cache;
 /**
  * Provides cache functionality based on file system structure.
- * Require base configuration option $Core->config('cache_size') with maximum allowed cache size in MB, 0 means without limitation (is not recomended)
+ * Require base configuration option $Core->cache_size with maximum allowed cache size in MB, 0 means without limitation (is not recommended)
  */
 class FileSystem extends _Abstract {
 	protected	$cache_size;
