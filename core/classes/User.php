@@ -265,7 +265,12 @@ class User extends Accessor {
 		 */
 		$session_id	= $this->get_session();
 		if (!$session_id || !isset($_POST['session']) || $_POST['session'] != $session_id) {
-			if (API) {
+			if (
+				API &&
+				!(
+					defined('API_GET_ACCESS') && API_GET_ACCESS
+				)
+			) {
 				global $Page;
 				code_header(403);
 				$Page->Content	= _json_encode([
