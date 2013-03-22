@@ -88,7 +88,7 @@ if (!$client['domain']) {
 	$Index->stop	= true;
 	return;
 }
-if (!isset($_GET['redirect_uri'])) {
+if ($_GET['grant_type'] != 'guest_token' && !isset($_GET['redirect_uri'])) {
 	code_header(400);
 	$Page->Content	= _json_encode([
 		'error'				=> 'invalid_request',
@@ -96,7 +96,7 @@ if (!isset($_GET['redirect_uri'])) {
 	]);
 	$Index->stop	= true;
 	return;
-} elseif (!preg_match("/^[^\/]+:\/\/$client[domain]/", urldecode($_GET['redirect_uri']))) {
+} elseif ($_GET['grant_type'] != 'guest_token' && !preg_match("/^[^\/]+:\/\/$client[domain]/", urldecode($_GET['redirect_uri']))) {
 	code_header(400);
 	$Page->Content	= _json_encode([
 		'error'				=> 'invalid_request',
@@ -193,7 +193,7 @@ switch ($_GET['grant_type']) {
 			]);
 			$Index->stop	= true;
 		}
-		$code	= $OAuth2->add_code($client['id'], 'code', urldecode($_GET['redirect_uri']));
+		$code	= $OAuth2->add_code($client['id'], 'code', '');
 		if (!$code) {
 			code_header(500);
 			$Page->Content	= _json_encode([
@@ -203,7 +203,7 @@ switch ($_GET['grant_type']) {
 			$Index->stop	= true;
 			return;
 		}
-		$token_data	= $OAuth2->get_code($code, $client['id'], $client['secret'], urldecode($_GET['redirect_uri']));
+		$token_data	= $OAuth2->get_code($code, $client['id'], $client['secret'], '');
 		if ($token_data) {
 			$Page->Content	= _json_encode($token_data);
 			$Index->stop	= true;

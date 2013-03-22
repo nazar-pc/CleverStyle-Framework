@@ -264,81 +264,35 @@ if (!$OAuth2->get_access($client['id'])) {
 		case 'guest_token':
 			if ($User->user()) {
 				code_header(403);
-				header(
-					'Location: '.uri_for_token(
-						http_build_url(
-							urldecode($redirect_uri),
-							[
-								'error'				=> 'access_denied',
-								'error_description'	=> 'Only guests, not user allowed to access this response_type',
-								'state'				=> isset($_GET['state']) ? $_GET['state'] : false
-							]
-						)
-					),
-					true,
-					302
-				);
-				$Page->Content	= '';
+				$Page->Content	= _json_encode([
+					'error'				=> 'access_denied',
+					'error_description'	=> 'Only guests, not user allowed to access this response_type'
+				]);
 				$Index->stop	= true;
 				return;
 			}
-			$code	= $OAuth2->add_code($client['id'], 'code', urldecode($_GET['redirect_uri']));
+			$code	= $OAuth2->add_code($client['id'], 'token', urldecode($_GET['redirect_uri']));
 			if (!$code) {
 				code_header(500);
-				header(
-					'Location: '.uri_for_token(
-						http_build_url(
-							urldecode($redirect_uri),
-							[
-								'error'				=> 'server_error',
-								'error_description'	=> 'Server can\'t generate code, try later',
-								'state'				=> isset($_GET['state']) ? $_GET['state'] : false
-							]
-						)
-					),
-					true,
-					302
-				);
-				$Page->Content	= '';
+				$Page->Content	= _json_encode([
+					'error'				=> 'server_error',
+					'error_description'	=> 'Server can\'t generate code, try later'
+				]);
 				$Index->stop	= true;
 				return;
 			}
 			$token_data	= $OAuth2->get_code($code, $client['id'], $client['secret'], urldecode($_GET['redirect_uri']));
 			if ($token_data) {
 				unset($token_data['refresh_token']);
-				header(
-					'Location: '.uri_for_token(
-						http_build_url(
-							urldecode($redirect_uri),
-							array_merge(
-								$token_data,
-								[
-									'state'	=> isset($_GET['state']) ? $_GET['state'] : false
-								]
-							)
-						)
-					),
-					true,
-					302
-				);
+				$Page->Content	= _json_encode($token_data);
 				$Index->stop	= true;
 				return;
 			} else {
 				code_header(500);
-				header(
-					'Location: '.uri_for_token(
-						http_build_url(
-							urldecode($redirect_uri),
-							[
-								'error'				=> 'server_error',
-								'error_description'	=> 'Server can\'t get token data, try later',
-								'state'				=> isset($_GET['state']) ? $_GET['state'] : false
-							]
-						)
-					),
-					true,
-					302
-				);
+				$Page->Content	= _json_encode([
+					'error'				=> 'server_error',
+					'error_description'	=> 'Server can\'t get token data, try later'
+				]);
 				$Page->Content	= '';
 				$Index->stop	= true;
 				return;
