@@ -34,9 +34,9 @@ Main features
 =
 
 * Components support
-* Modules support (for displaying main page content)
-* Plugins support (are loaded on every page and provides additional functionality)
-* Blocks support (are placed on around the page for displaying additional information)
+ * Modules support (for displaying main page content)
+ * Plugins support (are loaded on every page and provides additional functionality)
+ * Blocks support (are placed on around the page for displaying additional information)
 * Human readable addresses support
 * Secure login on http protocol
 * Users groups and types support
