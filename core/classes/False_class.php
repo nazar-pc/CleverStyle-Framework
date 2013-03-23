@@ -30,4 +30,10 @@ class False_class {
 	function __call () {
 		return $this;
 	}
+	/**
+	 * @return string
+	 */
+	function __toString () {
+		return '0';
+	}
 }
