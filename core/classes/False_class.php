@@ -17,17 +17,22 @@ class False_class {
 	/**
 	 * Getting any property
 	 *
+	 * @param string		$item
+	 *
 	 * @return False_class
 	 */
-	function __get () {
+	function __get ($item) {
 		return $this;
 	}
 	/**
 	 * Calling of any method
 	 *
+	 * @param string	$method
+	 * @param mixed[]	$params
+	 *
 	 * @return False_class
 	 */
-	function __call () {
+	function __call ($method, $params) {
 		return $this;
 	}
 	/**
