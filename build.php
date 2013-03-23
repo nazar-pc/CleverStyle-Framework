@@ -8,7 +8,7 @@
  * @license		MIT License, see license.txt
  */
 define('DIR',	__DIR__);
-require_once    DIR.'/core/classes/class.h.php';
+require_once    DIR.'/core/classes/h.php';
 require_once    DIR.'/core/upf.php';
 require_once    DIR.'/core/functions.php';
 date_default_timezone_set('UTC');

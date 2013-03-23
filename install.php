@@ -16,7 +16,7 @@ global $fs;
 $fs		= json_decode(file_get_contents(DIR.'/fs.json'), true);
 require_once DIR.'/fs/'.$fs['core/upf.php'];
 require_once DIR.'/fs/'.$fs['core/functions.php'];
-require_once DIR.'/fs/'.$fs['core/classes/class.h.php'];
+require_once DIR.'/fs/'.$fs['core/classes/h.php'];
 require_once DIR.'/install/functions.php';
 date_default_timezone_set('UTC');
 header('Content-Type: text/html; charset=utf-8');
