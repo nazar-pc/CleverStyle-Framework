@@ -214,24 +214,7 @@ class User extends Accessor {
 		if (!$this->id) {
 			$this->add_session($this->id = 1);
 		}
-		if ($this->id == 1) {
-			$this->current['is']['guest'] = true;
-		} else {
-			/**
-			 * Checking of user type
-			 */
-			$groups = $this->get_user_groups() ?: [];
-			if (in_array(1, $groups)) {
-				$this->current['is']['admin']	= $Config->can_be_admin;
-				$this->current['is']['user']	= true;
-			} elseif (in_array(2, $groups)) {
-				$this->current['is']['user']	= true;
-			} elseif (in_array(3, $groups)) {
-				$this->current['is']['guest']	= true;
-				$this->current['is']['bot']		= true;
-			}
-			unset($groups);
-		}
+		$this->update_user_is();
 		/**
 		 * If not guest - apply some individual settings
 		 */
@@ -284,6 +267,35 @@ class User extends Accessor {
 		}
 		$this->init	= true;
 		$Core->run_trigger('System/User/construct/after');
+	}
+	/**
+	 * Updates information about who is user accessed by methods ::guest() ::bot() ::user() admin() ::system()
+	 */
+	protected function update_user_is () {
+		$this->current['is']['guest']	= false;
+		$this->current['is']['bot']		= false;
+		$this->current['is']['user']	= false;
+		$this->current['is']['admin']	= false;
+		$this->current['is']['system']	= false;
+		if ($this->id == 1) {
+			$this->current['is']['guest'] = true;
+		} else {
+			global $Config;
+			/**
+			 * Checking of user type
+			 */
+			$groups = $this->get_user_groups() ?: [];
+			if (in_array(1, $groups)) {
+				$this->current['is']['admin']	= $Config->can_be_admin;
+				$this->current['is']['user']	= true;
+			} elseif (in_array(2, $groups)) {
+				$this->current['is']['user']	= true;
+			} elseif (in_array(3, $groups)) {
+				$this->current['is']['guest']	= true;
+				$this->current['is']['bot']		= true;
+			}
+			unset($groups);
+		}
 	}
 	/**
 	 * Get data item of specified user
@@ -1455,6 +1467,7 @@ class User extends Accessor {
 			)
 		)) {
 			$this->add_session(1);
+			$this->update_user_is();
 			return 1;
 		}
 		$update	= [];
@@ -1510,6 +1523,7 @@ class User extends Accessor {
 		if (!empty($update)) {
 			$this->db_prime()->q($update);
 		}
+		$this->update_user_is();
 		return $result['user'];
 	}
 	/**

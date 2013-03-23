@@ -645,10 +645,23 @@ class Index {
 			$this->init_auto	&& $this->init();
 		}
 		if ($this->stop) {
+			if (!(
+				API &&
+				MODULE == 'System' &&
+				$Config->route == ['user', 'logout']
+			)) {
+				_setcookie('logout', '');
+			}
 			return;
 		}
 		if (defined('ERROR_PAGE')) {
 			$Page->error_page();
+		} elseif (!(
+			API &&
+			MODULE == 'System' &&
+			$Config->route == ['user', 'logout']
+		)) {
+			_setcookie('logout', '');
 		}
 		if ($this->generate_auto) {
 			$this->js_vars()->generate();

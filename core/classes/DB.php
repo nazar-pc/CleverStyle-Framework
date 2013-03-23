@@ -37,13 +37,13 @@ class DB {
 	/**
 	 * Processing of requests for getting data from DB. Balancing of DB may be used with corresponding settings.
 	 *
-	 * @param	int						$connection
+	 * @param	int								$connection
 	 *
-	 * @return	bool|DB\_Abstract
+	 * @return	bool|DB\_Abstract|False_class
 	 */
 	function __get ($connection) {
 		if (!is_int($connection) && $connection != '0') {
-			return false;
+			return new False_class;
 		}
 		global $Config;
 		/**
@@ -84,10 +84,10 @@ class DB {
 	/**
 	 * Processing of requests for changing data in DB.
 	 *
-	 * @param	int						$connection
-	 * @param	array					$mode
+	 * @param	int								$connection
+	 * @param	array							$mode
 	 *
-	 * @return	bool|DB\_Abstract
+	 * @return	bool|DB\_Abstract|False_class
 	 */
 	function __call ($connection, $mode) {
 		if (is_int($connection) || $connection == '0') {
@@ -95,23 +95,23 @@ class DB {
 		} elseif (method_exists('\\cs\\DB\\_Abstract', $connection)) {
 			return call_user_func_array([$this->{0}, $connection], $mode);
 		} else {
-			return false;
+			return new False_class;
 		}
 	}
 	/**
 	 * Processing of all DB request
 	 *
-	 * @param int						$connection	Database id
-	 * @param array|bool				$mirror
+	 * @param int								$connection	Database id
+	 * @param array|bool						$mirror
 	 *
-	 * @return bool|DB\_Abstract
+	 * @return bool|DB\_Abstract|False_class
 	 */
 	protected function connecting ($connection, $mirror = true) {
 		/**
-		 * If connection found in list of failed connections - return false
+		 * If connection found in list of failed connections - return instance of False_class
 		 */
 		if (isset($this->failed_connections[$connection])) {
-			return false;
+			return new False_class;
 		}
 		/**
 		 * If we want to get data and connection with DB mirror already exists - return reference on the instance of DB engine object
@@ -145,7 +145,7 @@ class DB {
 				$db = &$mirror;
 			} else {
 				if (!isset($Config->db[$connection]) || !is_array($Config->db[$connection])) {
-					return false;
+					return new False_class;
 				}
 				$db = &$Config->db[$connection];
 			}
@@ -200,7 +200,7 @@ class DB {
 					trigger_error($L->error_db.' '.$this->failed_connections[$connection], E_USER_ERROR);
 				}
 			}
-			return false;
+			return new False_class;
 		}
 	}
 	/**

@@ -625,7 +625,7 @@ class Module_Properties {
 	 * @return bool
 	 */
 	function active () {
-		return (int)$this->module_data['active'];
+		return (bool)$this->module_data['active'];
 	}
 	/**
 	 * Get db id by name

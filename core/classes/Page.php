@@ -1059,6 +1059,12 @@ class Page {
 		if (!defined('ERROR_PAGE')) {
 			define('ERROR_PAGE', 500);
 		}
+		if (ERROR_PAGE == 403 && _getcookie('logout')) {
+			global $Config;
+			header('Location: '.$Config->base_url(), true, 302);
+			$this->Content	= '';
+			__finish();
+		}
 		interface_off();
 		$error_text	= code_header(ERROR_PAGE);
 		ob_start();

@@ -566,15 +566,15 @@ class Blogs extends Accessor {
 	}
 	private function ml_process ($text, $auto_translation = true) {
 		global $Text;
-		return $Text->process($this->cdb, $text, $auto_translation);
+		return $Text->process($this->cdb(), $text, $auto_translation);
 	}
 	private function ml_set ($group, $label, $text) {
 		global $Text;
-		return $Text->set($this->cdb, $group, $label, $text);
+		return $Text->set($this->cdb(), $group, $label, $text);
 	}
 	private function ml_del ($group, $label) {
 		global $Text;
-		return $Text->del($this->cdb, $group, $label);
+		return $Text->del($this->cdb(), $group, $label);
 	}
 	/**
 	 * Get array of tags list in form [<i>id</i> => <i>text</i>]

@@ -102,6 +102,9 @@ class Core {
 			$this->key	= $this->config['key'];
 			$this->iv	= $this->config['iv'];
 		}
+		if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == 'application/json') {
+			$_POST	= _json_decode(@file_get_contents('php://input')) ?: [];
+		}
 		$this->constructed	= true;
 	}
 	/**

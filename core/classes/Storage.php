@@ -32,28 +32,28 @@ class Storage {
 	/**
 	 * Processing of requests for getting data from DB. Balancing of DB may be used with corresponding settings.
 	 *
-	 * @param	int						$connection
-	 * @return	bool|Storage\_Abstract
+	 * @param	int									$connection
+	 * @return	bool|Storage\_Abstract|False_class
 	 */
 	function __get ($connection) {
 		if (!is_int($connection) && $connection != '0') {
-			return false;
+			return new False_class;
 		}
 		return $this->connecting($connection);
 	}
 	/**
 	 * Processing of al storage requests
 	 *
-	 * @param int	$connection
+	 * @param int									$connection
 	 *
-	 * @return bool
+	 * @return bool|Storage\_Abstract|False_class
 	 */
 	protected function connecting ($connection) {
 		/**
-		 * If connection found in list of failed connections - return false
+		 * If connection found in list of failed connections - return instance of False_class
 		 */
 		if (isset($this->failed_connections[$connection])) {
-			return false;
+			return new False_class;
 		}
 		/**
 		 * If connection already exists - return reference on the instance of Storage engine object
@@ -75,7 +75,7 @@ class Storage {
 		} elseif (isset($Config->storage[$connection])) {
 			$storage = &$Config->storage[$connection];
 		} else {
-			return false;
+			return new False_class;
 		}
 		/**
 		 * Create new Storage connection
@@ -99,7 +99,7 @@ class Storage {
 			unset($storage);
 			global $L;
 			trigger_error($L->error_storage.' '.$this->failed_connections[$connection], E_USER_WARNING);
-			return false;
+			return new False_class;
 		}
 	}
 	/**

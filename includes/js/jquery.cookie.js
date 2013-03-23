@@ -46,7 +46,9 @@
  * @desc Get the value of a cookie.
  *
  * @param name String The name of the cookie.
- * @return The value of the cookie.
+ * @param value
+ * @param options
+ * @return bool|String The value of the cookie.
  * @type String
  *
  * @name $.cookie
