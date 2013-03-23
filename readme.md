@@ -19,7 +19,7 @@ But in parallel with core some components are developed:
 
 #### plugins
 
- * **Admin_default_theme** (Forces default CleverStyle theme in all administration pages, that is helpful, because there is no need to adopt custom theme for admin panel)
+ * **Admin_default_theme** (Forces default CleverStyle theme in all administration pages, that is helpful, because there is no need to adapt custom theme for admin panel)
  * **TinyMCE** (integration of [TinyMCE](https://github.com/tinymce/tinymce) WYSIWYG Editor for providing simpler content editing)
 
 System is free, Open Source and is distributed under MIT license, see [license.txt](https://github.com/nazar-pc/CleverStyle-CMS/blob/master/license.txt)
