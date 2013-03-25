@@ -644,6 +644,9 @@ class Index {
 		} else {
 			$this->init_auto	&& $this->init();
 		}
+		if ($this->generate_auto) {
+			$this->js_vars()->generate();
+		}
 		if ($this->stop) {
 			if (!(
 				API &&
@@ -662,9 +665,6 @@ class Index {
 			$Config->route == ['user', 'logout']
 		)) {
 			_setcookie('logout', '');
-		}
-		if ($this->generate_auto) {
-			$this->js_vars()->generate();
 		}
 		$Core->run_trigger('System/Index/postload');
 	}
