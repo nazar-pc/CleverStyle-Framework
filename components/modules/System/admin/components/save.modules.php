@@ -272,5 +272,27 @@ if (isset($_POST['update_modules_list'])) {
 				}
 			}
 		break;
+		case 'enable':
+			$Config->components['modules'][$_POST['module']]['active'] = 1;
+			$a->save();
+			$Core->run_trigger(
+				'admin/System/components/modules/enable',
+				[
+					'name'	=> $_POST['module']
+				]
+			);
+			unset($Cache->languages);
+		break;
+		case 'disable':
+			$Config->components['modules'][$_POST['module']]['active'] = 0;
+			$a->save();
+			$Core->run_trigger(
+				'admin/System/components/modules/disable',
+				[
+					'name'	=> $_POST['module']
+				]
+			);
+			unset($Cache->languages);
+		break;
 	}
 }

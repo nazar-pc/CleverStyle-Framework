@@ -33,7 +33,7 @@
  */
 namespace	cs\modules\System;
 use			h;
-global $Config, $Index, $L, $Core, $Cache, $Page;
+global $Config, $Index, $L, $Core, $Page;
 $a					= $Index;
 $rc					= $Config->route;
 $a->buttons			= false;
@@ -248,7 +248,7 @@ if (
 			}
 			$a->cancel_button_back	= true;
 			$a->content(
-				h::{'button[type=submit]'}($L->uninstall)
+				h::{'button[type=submit]'}($L->yes)
 			);
 		break;
 		case 'db':
@@ -382,26 +382,30 @@ if (
 			}
 		break;
 		case 'enable':
-			$Config->components['modules'][$rc[3]]['active'] = 1;
-			$a->save();
-			$Core->run_trigger(
-				'admin/System/components/modules/enable',
-				[
-					'name'	=> $rc[3]
-				]
+			$show_modules			= false;
+			$Page->title($L->enabling_of_module($rc[3]));
+			$a->content(
+				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+					$L->enable_module($rc[3])
+				)
 			);
-			unset($Cache->languages);
+			$a->cancel_button_back	= true;
+			$a->content(
+				h::{'button[type=submit]'}($L->yes)
+			);
 		break;
 		case 'disable':
-			$Config->components['modules'][$rc[3]]['active'] = 0;
-			$a->save();
-			$Core->run_trigger(
-				'admin/System/components/modules/disable',
-				[
-					'name'	=> $rc[3]
-				]
+			$show_modules			= false;
+			$Page->title($L->disabling_of_module($rc[3]));
+			$a->content(
+				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+					$L->disable_module($rc[3])
+				)
 			);
-			unset($Cache->languages);
+			$a->cancel_button_back	= true;
+			$a->content(
+				h::{'button[type=submit]'}($L->yes)
+			);
 		break;
 	}
 	switch ($rc[2]) {
@@ -410,6 +414,8 @@ if (
 		case 'default_module':
 		case 'db':
 		case 'storage':
+		case 'enable':
+		case 'disable':
 			$a->content(
 				h::{'input[type=hidden]'}([
 					'name'	=> 'mode',
