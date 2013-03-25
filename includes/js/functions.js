@@ -192,6 +192,23 @@ function json_decode (str) {
  * @return string
  */
 function hash (algo, data) {
+	switch (algo) {
+		case 'sha1':
+			algo	= 'SHA-1';
+		break;
+		case 'sha224':
+			algo	= 'SHA-224';
+		break;
+		case 'sha256':
+			algo	= 'SHA-256';
+		break;
+		case 'sha384':
+			algo	= 'SHA-384';
+		break;
+		case 'sha512':
+			algo	= 'SHA-512';
+		break;
+	}
 	return (new jsSHA(data, 'ASCII')).getHash(algo, 'HEX');
 }
 /**
