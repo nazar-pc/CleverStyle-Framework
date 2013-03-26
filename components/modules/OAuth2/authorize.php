@@ -27,7 +27,7 @@ if (!($client = $OAuth2->get_client($_GET['client_id']))) {
 	return;
 }
 if (!$client['active']) {
-	if ($client['domain']) {
+	if ($client['domain'] && $_GET['response_type'] != 'guest_token') {
 		if (!isset($_GET['redirect_uri'])) {
 			code_header(400);
 			$Page->Content	= '';
@@ -72,7 +72,7 @@ if (!$client['active']) {
 		return;
 	}
 }
-if ($client['domain']) {
+if ($client['domain'] && $_GET['response_type'] != 'guest_token') {
 	if (!isset($_GET['redirect_uri'])) {
 		code_header(400);
 		$Page->Content	= '';
@@ -262,6 +262,10 @@ if (!$OAuth2->get_access($client['id'])) {
 				return;
 			}
 		case 'guest_token':
+			header('Content-type: application/json');
+			header('Cache-Control: no-store');
+			header('Pragma: no-cache');
+			interface_off();
 			if ($User->user()) {
 				code_header(403);
 				$Page->Content	= _json_encode([

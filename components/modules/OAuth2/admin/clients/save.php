@@ -18,7 +18,8 @@ if (isset($_POST['mode'])) {
 		case 'delete':
 			$Index->save($OAuth2->del_client($_POST['id']));
 	}
-} elseif (isset($_POST['edit_settings']) && $_POST['edit_settings'] == 'save') {
+}
+if (isset($_POST['edit_settings'], $_POST['guest_tokens']) && $_POST['edit_settings'] == 'save') {
 	$Config->module('OAuth2')->guest_tokens	= $_POST['guest_tokens'];
 	$Index->save(true);
 }

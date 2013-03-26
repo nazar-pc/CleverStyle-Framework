@@ -67,6 +67,5 @@ $Index->content(
 			'value'		=> [0, 1],
 			'in'		=> [$L->off, $L->on]
 		])
-	).
-	h::{'input[type=hidden][name=mode][value=general]'}()
+	)
 );
