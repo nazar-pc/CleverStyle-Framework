@@ -76,7 +76,8 @@ class User extends Accessor {
 	 * Defining user id, type, session, personal settings
 	 */
 	function __construct () {
-		global $Cache, $Config, $Key, $Core;
+		global $Cache, $Config, $Key, $Core, $User;
+		$User		= $this;
 		$Core->run_trigger('System/User/construct/before');
 		if (($this->users_columns = $Cache->{'users/columns'}) === false) {
 			$this->users_columns = $Cache->{'users/columns'} = $this->db()->columns('[prefix]users');
@@ -255,12 +256,8 @@ class User extends Accessor {
 				)
 			) {
 				global $Page;
-				code_header(403);
-				$Page->Content	= _json_encode([
-					'error'				=> 'access_denied',
-					'error_description'	=> 'Invalid user session'
-				]);
-				interface_off();
+				define('ERROR_CODE', 403);
+				$Page->error('Invalid user session');
 				__finish();
 			}
 			$_POST = [];

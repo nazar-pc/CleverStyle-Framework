@@ -26,9 +26,9 @@ if (isset($rc[2])) {
 					time_limit_pause(false);
 				}
 				$Cache->disable();
-				$Page->content($ajax ? h::{'p.ui-state-highlight.ui-corner-all.cs-state-messages'}($L->done) : 1);
+				$Page->content($ajax ? _json_encode(h::{'p.ui-state-highlight.ui-corner-all.cs-state-messages'}($L->done)) : 1);
 			} else {
-				$Page->content($ajax ? h::{'p.ui-state-error.ui-corner-all.cs-state-messages'}($L->error) : 0);
+				$Page->content($ajax ? _json_encode(h::{'p.ui-state-error.ui-corner-all.cs-state-messages'}($L->error)) : 0);
 			}
 		break;
 		case 'clean_pcache':
@@ -39,12 +39,12 @@ if (isset($rc[2])) {
 					$Core->api_request(MODULE.'/admin/cache/clean_pcache/api');
 					time_limit_pause(false);
 				}
-				$Page->content($ajax ? h::{'p.ui-state-highlight.ui-corner-all.cs-state-messages'}($L->done) : 1);
+				$Page->content($ajax ? _json_encode(h::{'p.ui-state-highlight.ui-corner-all.cs-state-messages'}($L->done)) : 1);
 			} else {
-				$Page->content($ajax ? h::{'p.ui-state-error.ui-corner-all.cs-state-messages'}($L->error) : 0);
+				$Page->content($ajax ? _json_encode(h::{'p.ui-state-error.ui-corner-all.cs-state-messages'}($L->error)) : 0);
 			}
 		break;
 	}
 } else {
-	$Page->content($ajax ? h::{'p.ui-state-error.ui-corner-all.cs-state-messages'}($L->error) : 0);
+	$Page->content($ajax ? _json_encode(h::{'p.ui-state-error.ui-corner-all.cs-state-messages'}($L->error)) : 0);
 }

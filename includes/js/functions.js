@@ -185,7 +185,7 @@ function json_decode (str) {
 	return $.secureEvalJSON(str);
 }
 /**
- * Supports algorithms sha224, sha256, sha384, sha512
+ * Supports algorithms sha1, sha224, sha256, sha384, sha512
  *
  * @param {string} algo Choosen algorithm
  * @param {string} data String to be hashed
@@ -271,23 +271,27 @@ function login (login, password) {
 							success	: function (result) {
 								if (result == 'reload') {
 									location.reload();
-								} else {
-									alert(result);
 								}
 							},
-							error	: function () {
-								alert(L.auth_connection_error);
+							error	: function (xhr) {
+								if (xhr.responseText) {
+									alert(json_decode(xhr.responseText).error_description);
+								} else {
+									alert(L.auth_connection_error);
+								}
 							}
 						}
 					);
 				} else if (random_hash == 'reload') {
 					location.reload();
-				} else {
-					alert(random_hash);
 				}
 			},
-			error	: function () {
-				alert(L.auth_connection_error);
+			error	: function (xhr) {
+				if (xhr.responseText) {
+					alert(json_decode(xhr.responseText).error_description);
+				} else {
+					alert(L.auth_connection_error);
+				}
 			}
 		}
 	);
@@ -306,8 +310,12 @@ function logout () {
 			success	: function () {
 				location.reload();
 			},
-			error	: function () {
-				alert(L.auth_connection_error);
+			error	: function (xhr) {
+				if (xhr.responseText) {
+					alert(json_decode(xhr.responseText).error_description);
+				} else {
+					alert(L.auth_connection_error);
+				}
 			}
 		}
 	);
@@ -354,12 +362,14 @@ function registration (email) {
 								location.reload();
 							}
 						});
-				} else {
-					alert(result);
 				}
 			},
-			error	: function () {
-				alert(L.reg_connection_error);
+			error	: function (xhr) {
+				if (xhr.responseText) {
+					alert(json_decode(xhr.responseText).error_description);
+				} else {
+					alert(L.reg_connection_error);
+				}
 			}
 		}
 	);
@@ -389,12 +399,14 @@ function restore_password (email) {
 								$(this).remove();
 							}
 						});
-				} else {
-					alert(result);
 				}
 			},
-			error	: function () {
-				alert(L.reg_connection_error);
+			error	: function (xhr) {
+				if (xhr.responseText) {
+					alert(json_decode(xhr.responseText).error_description);
+				} else {
+					alert(L.reg_connection_error);
+				}
 			}
 		}
 	);
@@ -406,7 +418,7 @@ function restore_password (email) {
  * @param {string} new_password
  */
 function change_password (current_password, new_password) {
-	if (!current_password) {
+	/*if (!current_password) {
 		alert(L.please_type_current_password);
 		return;
 	} else if (!new_password) {
@@ -415,7 +427,7 @@ function change_password (current_password, new_password) {
 	} else if (current_password == new_password) {
 		alert(L.current_new_password_equal);
 		return;
-	}
+	}*/
 	current_password	= hash('sha512', hash('sha512', current_password)+public_key);
 	new_password		= hash('sha512', hash('sha512', new_password)+public_key);
 	$.ajax(
@@ -433,8 +445,12 @@ function change_password (current_password, new_password) {
 					alert(result);
 				}
 			},
-			error	: function () {
-				alert(L.password_changing_connection_error);
+			error	: function (xhr) {
+				if (xhr.responseText) {
+					alert(json_decode(xhr.responseText).error_description);
+				} else {
+					alert(L.password_changing_connection_error);
+				}
 			}
 		}
 	);

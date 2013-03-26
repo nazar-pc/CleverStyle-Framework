@@ -11,5 +11,8 @@
 		"cache",
 		"upload_module",
 		"upload_plugin"
+	],
+	"profile"	: [
+		"get"
 	]
 }

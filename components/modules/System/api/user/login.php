@@ -14,13 +14,15 @@ global $Config, $Page, $User, $db, $Key, $L;
  */
 if (!$Config->server['referer']['local'] || !$Config->server['ajax']) {
 	sleep(1);
+	define('ERROR_CODE', 403);
 	return;
 } elseif (!$User->guest()) {
-	$Page->content('reload');
+	$Page->json('reload');
 	return;
 } elseif ($Config->core['login_attempts_block_count'] && $User->login_attempts() >= $Config->core['login_attempts_block_count']) {
 	$User->login_result(false);
-	$Page->content($L->login_attempts_ends_try_after.' '.format_time($Config->core['login_attempts_block_time']));
+	define('ERROR_CODE', 403);
+	$Page->error($L->login_attempts_ends_try_after.' '.format_time($Config->core['login_attempts_block_time']));
 	sleep(1);
 	return;
 }
@@ -35,11 +37,13 @@ if (
 	$id != 1
 ) {
 	if ($User->get('status', $id) == -1) {
-		$Page->content($L->your_account_is_not_active);
+		define('ERROR_CODE', 403);
+		$Page->error($L->your_account_is_not_active);
 		sleep(1);
 		return;
 	} elseif ($User->get('status', $id) == 0) {
-		$Page->content($L->your_account_disabled);
+		define('ERROR_CODE', 403);
+		$Page->error($L->your_account_disabled);
 		sleep(1);
 		return;
 	}
@@ -53,9 +57,10 @@ if (
 			'id'			=> $id
 		]
 	)) {
-		$Page->content($random_hash);
+		$Page->json($random_hash);
 	} else {
-		$Page->content($L->auth_server_error);
+		define('ERROR_CODE', 500);
+		$Page->json($L->auth_server_error);
 	}
 	unset($random_hash);
 /**
@@ -77,31 +82,37 @@ if (
 	if ($_POST['auth_hash'] == $auth_hash) {
 		$User->add_session($key_data['id']);
 		$User->login_result(true);
-		$Page->content('reload');
+		$Page->json('reload');
 	} else {
 		$User->login_result(false);
-		$Page->content($L->auth_error_login);
+		define('ERROR_CODE', 400);
+		$content	= $L->auth_error_login;
 		if (
 			$Config->core['login_attempts_block_count'] &&
 			$User->login_attempts() >= floor($Config->core['login_attempts_block_count'] * 2 / 3)
 		) {
-			$Page->content(' '.$L->login_attempts_left.' '.($Config->core['login_attempts_block_count'] - $User->login_attempts()));
+			$content	.= ' '.$L->login_attempts_left.' '.($Config->core['login_attempts_block_count'] - $User->login_attempts());
 			sleep(1);
 		} elseif (!$Config->core['login_attempts_block_count']) {
 			sleep($User->login_attempts()*0.5);
 		}
+		$Page->error($content);
+		unset($content);
 	}
 	unset($key_data, $auth_hash);
 } else {
 	$User->login_result(false);
-	$Page->content($L->auth_error_login);
+	define('ERROR_CODE', 400);
+	$content	= $L->auth_error_login;
 	if (
 		$Config->core['login_attempts_block_count'] &&
 		$User->login_attempts() >= $Config->core['login_attempts_block_count'] * 2 / 3
 	) {
-		$Page->content(' '.$L->login_attempts_left.' '.($Config->core['login_attempts_block_count'] - $User->login_attempts()));
+		$content	.= ' '.$L->login_attempts_left.' '.($Config->core['login_attempts_block_count'] - $User->login_attempts());
 		sleep(1);
 	} elseif (!$Config->core['login_attempts_block_count'] && $User->login_attempts() > 3) {
 		sleep($User->login_attempts()*0.5);
 	}
+	$Page->error($content);
+	unset($content);
 }

@@ -31,7 +31,7 @@ $path					= implode('/', $path);
 if (isset($structure['id'])) {
 	$section	= $structure['id'];
 } else {
-	define('ERROR_PAGE', 404);
+	define('ERROR_CODE', 404);
 	return;
 }
 $Page->title($L->latest_posts);

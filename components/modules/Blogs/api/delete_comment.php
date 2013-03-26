@@ -15,6 +15,7 @@ include_once MFOLDER.'/../prepare.php';
  */
 if (!$Config->server['referer']['local'] || !$Config->server['ajax'] || !$User->user()) {
 	sleep(1);
+	define('ERROR_CODE', 403);
 	return;
 }
 if (
@@ -25,26 +26,23 @@ if (
 		$User->get_user_permission('admin/'.MODULE, 'delete_comment')
 	)
 ) {
-	$Page->content(
-		_json_encode([
-			'status'	=> $L->access_denied
-		])
-	);
+	define('ERROR_CODE', 403);
+	$Page->error($L->access_denied);
+	return;
 }
 $comment	= $Blogs->get_comment($_POST['id']);
-$result		= $Blogs->del_comment($_POST['id']);
-$Page->content(
-	_json_encode($result ? [
-		'status'	=> 'OK',
-		'content'	=> !$comment['comments'] && (
-		   $User->id == $comment['user'] ||
-		   (
-			   $User->admin() &&
-			   $User->get_user_permission('admin/'.MODULE, 'index') &&
-			   $User->get_user_permission('admin/'.MODULE, 'delete_comment')
-		   )
-		  ) ? h::{'icon.cs-blogs-comment-delete.cs-pointer'}('trash') : ''
-	] : [
-		'status'	=> $L->comment_deleting_server_error
-	])
-);
+if ($comment && ($result = $Blogs->del_comment($_POST['id']))) {
+	$Page->json(
+		!$comment['comments'] && (
+			$User->id == $comment['user'] ||
+			(
+				$User->admin() &&
+				$User->get_user_permission('admin/'.MODULE, 'index') &&
+				$User->get_user_permission('admin/'.MODULE, 'delete_comment')
+			)
+		) ? h::{'icon.cs-blogs-comment-delete.cs-pointer'}('trash') : ''
+	);
+} else {
+	define('ERROR_CODE', 500);
+	$Page->error($L->comment_deleting_server_error);
+}

@@ -12,7 +12,7 @@ global $Page, $Index, $L, $User, $Config;
 $Page->title($L->new_post);
 if (!$User->user()) {
 	if ($User->bot()) {
-		define('ERROR_PAGE', 403);
+		define('ERROR_CODE', 403);
 		return;
 	} else {
 		$Page->warning($L->for_reistered_users_only);

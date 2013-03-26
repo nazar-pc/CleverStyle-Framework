@@ -16,8 +16,8 @@
  */
 global $Core, $Config, $L, $User, $Page;
 if (!isset($Config->route[1], $Config->route[2]) || !($id = $User->get_id(hash('sha224', $Config->route[2])))) {
-	define('ERROR_PAGE', 404);
-	$Page->error_page();
+	define('ERROR_CODE', 404);
+	$Page->error();
 	return;
 }
 $data	= $User->get(
@@ -38,8 +38,8 @@ $data	= $User->get(
 );
 $state	= '';
 if ($data['status'] == -1) {
-	define('ERROR_PAGE', 404);
-	$Page->error_page();
+	define('ERROR_CODE', 404);
+	$Page->error();
 	return;
 } elseif ($data['status'] == 0) {
 	$state	= h::tr([

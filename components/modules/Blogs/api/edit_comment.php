@@ -14,14 +14,13 @@ include_once MFOLDER.'/../prepare.php';
  */
 if (!$Config->server['referer']['local'] || !$Config->server['ajax'] || !$User->user()) {
 	sleep(1);
+	define('ERROR_CODE', 403);
 	return;
 }
 if (!$_POST['text'] || !strip_tags($_POST['text'])) {
-	$Page->content(
-		_json_encode([
-			'status'	=> $L->comment_cant_be_empty
-		])
-	);
+	define('ERROR_CODE', 400);
+	$Page->error($L->comment_cant_be_empty);
+	return;
 }
 if (
 	!($Blogs->get($_POST['id'])['user'] == $User->id) &&
@@ -31,18 +30,14 @@ if (
 		$User->get_user_permission('admin/'.MODULE, 'edit_comment')
 	)
 ) {
-	$Page->content(
-		_json_encode([
-			'status'	=> $L->access_denied
-		])
-	);
+	define('ERROR_CODE', 403);
+	$Page->error($L->access_denied);
+	return;
 }
 $result	= $Blogs->set_comment($_POST['id'], $_POST['text']);
-$Page->content(
-	_json_encode($result ? [
-		'status'	=> 'OK',
-		'content'	=> $result['text']
-	] : [
-		'status'	=> $L->comment_editing_server_error
-	])
-);
+if ($result) {
+	$Page->json($result['text']);
+} else {
+	define('ERROR_CODE', 500);
+	$Page->error($L->comment_editing_server_error);
+}

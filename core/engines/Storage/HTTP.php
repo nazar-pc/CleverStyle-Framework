@@ -50,7 +50,7 @@ class HTTP extends _Abstract {
 			$socket,
 			"POST /Storage.php HTTP/1.1\r\n".
 			'Host: '.implode(':', $this->host)."\r\n".
-			"Content-type: application/x-www-form-urlencoded\r\n".
+			"Content-Type: application/x-www-form-urlencoded\r\n".
 			"Content-length:".strlen($data)."\r\n".
 			"Accept:*/*\r\n".
 			"User-agent: CleverStyle CMS\r\n\r\n".

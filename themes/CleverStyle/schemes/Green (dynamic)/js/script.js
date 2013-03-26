@@ -5,7 +5,7 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-$(function(){
+$(function (){
 	$('body').append([
 		$('<div class="cs-loading"></div>').append([
 			'<div class="cs-n1"></div>',
@@ -66,9 +66,9 @@ $(function(){
 	$('.cs-loading > div').css('opacity', 1);
 });
 $(window).load(
-	function(){
+	function (){
 		setTimeout(
-			function(){
+			function (){
 				$('.cs-loading > div').css('opacity', 0);
 			},
 			1000

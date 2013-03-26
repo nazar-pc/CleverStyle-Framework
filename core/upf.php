@@ -817,7 +817,7 @@ function post_request ($host, $path, $data) {
 		$socket,
 		"POST $path HTTP/1.1\r\n".
 		'Host: '.implode(':', $host)."\r\n".
-		"Content-type: text/plain\r\n".
+		"Content-Type: application/x-www-form-urlencoded\r\n".
 		"Content-length:".strlen($data)."\r\n".
 		"Accept:*/*\r\n".
 		"User-agent: CleverStyle CMS\r\n\r\n".

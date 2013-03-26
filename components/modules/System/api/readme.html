@@ -1,0 +1,61 @@
+<h3 style="text-align: center;">General information about API in CleverStyle CMS</h3>
+<ul>
+	<li>almost all requests are performed with POST method</li>
+	<li>JSON input data are accepted if <b>Content-Type: application/json</b> header exists</li>
+	<li>
+		local requests requires <b>session</b> input parameter, which should contain current user session
+		<ul>
+			<li>jQuery is initialized with this parameter by default, so there is no need to specify it for $.ajax() method</li>
+		</ul>
+	</li>
+	<li>External API access may be provided by specific protocol with additional modules</li>
+	<li>All responses are accompanied with header <b>Content-Type: application/json</b> and, of course, in JSON format if this is not redefined by module
+		API
+	</li>
+	<li>
+		Error responses looks like:<br>
+		<code>{"error":"404","error_description":"404 Not Found"}</code><br>
+		Usually, <b>error</b> property contains numeric http error code, but also it may be alphanumeric string, that satisfies regexp <b>[a-z0-9_]+</b>,
+		like:<br>
+		<code>{"error":"access_denied","error_description":"Invalid user session"}</code>
+	</li>
+</ul>
+<h3 style="text-align: center;">Public API of System module</h3>
+<h4>GET /api/System/profile/get:</h4>
+<p>Returns profile information of current user. List of fields, that will be returned:</p>
+<ul>
+	<li>id</li>
+	<li>login</li>
+	<li>username</li>
+	<li>language</li>
+	<li>timezone</li>
+	<li>gender</li>
+	<li>birthday</li>
+	<li>avatar</li>
+	<li>website</li>
+	<li>skype</li>
+	<li>about</li>
+</ul>
+<p>Explanation of some non-obvious values of properties:</p>
+<dl>
+	<dt>gender</dt>
+	<dd>
+		<b>0</b> - male<br>
+		<b>1</b> - female<br>
+		<b>-1</b> - undefined
+	</dd>
+</dl>
+<h4>GET /api/System/profile/get/{id}:</h4>
+<p>Similar to <b>/System/profile/get</b>, returns profile information of specified user <b>{id}</b>, which SHOULD BE in contacts list of current user.</p>
+<h4>POST /api/System/profile/get:</h4>
+<p>Parameters:</p>
+<dl>
+	<dt>id</dt>
+	<dd>array of id</dd>
+</dl>
+<p>Similar to <b>/System/profile/get/{id}</b>, but allows to get array of profiles at one request. Ids, that are not contacts of current user may be
+	ignored.</p>
+<p>Returns array of profiles information.</p>
+<h4>GET /api/System/profile/contacts:</h4>
+<p>Returns array of id of current user contacts.</p>
+<br><br>

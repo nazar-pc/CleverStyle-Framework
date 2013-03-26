@@ -13,8 +13,8 @@
  */
 global $Core, $Config, $L, $User, $Page, $Index;
 if (!$User->user()) {
-	define('ERROR_PAGE', 403);
-	$Page->error_page();
+	define('ERROR_CODE', 403);
+	$Page->error();
 	return;
 }
 $columns		= [

@@ -12,12 +12,12 @@ global $Index, $Config, $Blogs, $Page, $L, $User;
 $rc					= $Config->route;
 $post				= (int)mb_substr($rc[1], mb_strrpos($rc[1], ':')+1);
 if (!$post) {
-	define('ERROR_PAGE', 404);
+	define('ERROR_CODE', 404);
 	return;
 }
 $post				= $Blogs->get($post, true);
 if (!$post) {
-	define('ERROR_PAGE', 404);
+	define('ERROR_CODE', 404);
 	return;
 }
 $module				= path($L->{MODULE});

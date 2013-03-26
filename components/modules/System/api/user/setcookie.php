@@ -14,15 +14,14 @@ if (
 	!preg_match('/^[a-z0-9]{56}$/', $rc[2]) ||
 	!($data = $Key->get($db->{$Config->module('System')->db('keys')}(), $rc[2], true))
 ) {
-	$Page->content(0);
+	$Page->json(0);
 	return;
 } else {
 	$check = $data['check'];
 	unset($data['check']);
 	if (!($check == md5($User->ip.$User->forwarded_for.$User->client_ip.$User->user_agent._json_encode($data)))) {
-		$Page->content(0);
+		$Page->json(0);
 		return;
 	}
 }
-print_r($data);
-$Page->content((int)_setcookie($data['name'], $data['value'], $data['expire'], $data['httponly'], true));
+$Page->json((int)_setcookie($data['name'], $data['value'], $data['expire'], $data['httponly'], true));

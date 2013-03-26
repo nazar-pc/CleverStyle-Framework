@@ -226,14 +226,18 @@ function get_user_contacts ($user) {
 		 */
 		$cdb									= $db->{$Config->module($module)->db('integration')};
 		$data									= $cdb->qfas([
-			"SELECT `u`.`id`
-			FROM `[prefix]users_social_integration` AS `u`
+			"SELECT `i`.`id`
+			FROM `[prefix]users_social_integration` AS `i`
 			INNER JOIN `[prefix]users_social_integration_contacts` AS `c`
 			ON
-				`u`.`identifier`	= `c`.`identifier` AND
-				`u`.`provider`		= `c`.`provider`
+				`i`.`identifier`	= `c`.`identifier` AND
+				`i`.`provider`		= `c`.`provider`
+			INNER JOIN `[prefix]users` AS `u`
+			ON
+				`i`.`id`		= `u`.`id` AND
+				`u`.`status`	= '1'
 			WHERE `c`.`id`	= '%s'
-			GROUP BY `u`.`id`",
+			GROUP BY `i`.`id`",
 			$user
 		]) ?: [];
 		$Cache->{'HybridAuth/contacts/'.$user}	= $data;

@@ -80,7 +80,7 @@ class Index {
 			file_exists($admin_path) && (file_exists($admin_path.'/index.php') || file_exists($admin_path.'/index.json'))
 		) {
 			if (!($User->admin() && $User->get_user_permission($this->permission_group = 'admin/'.MODULE, 'index'))) {
-				define('ERROR_PAGE', 403);
+				define('ERROR_CODE', 403);
 				$this->__finish();
 				return;
 			}
@@ -92,7 +92,7 @@ class Index {
 			&& file_exists($api_path) && (file_exists($api_path.'/index.php') || file_exists($api_path.'/index.json'))
 		) {
 			if (!$User->get_user_permission($this->permission_group = 'api/'.MODULE, 'index')) {
-				define('ERROR_PAGE', 403);
+				define('ERROR_CODE', 403);
 				$this->__finish();
 				return;
 			}
@@ -100,14 +100,14 @@ class Index {
 			$this->api		= true;
 		} elseif (file_exists(MODULES.'/'.MODULE)) {
 			if (!$User->get_user_permission($this->permission_group = MODULE, 'index')) {
-				define('ERROR_PAGE', 403);
+				define('ERROR_CODE', 403);
 				$this->__finish();
 				return;
 			}
 			define('MFOLDER', MODULES.'/'.MODULE);
 			$this->module	= true;
 		} else {
-			define('ERROR_PAGE', 404);
+			define('ERROR_CODE', 404);
 			$this->__finish();
 			return;
 		}
@@ -161,14 +161,14 @@ class Index {
 								if ($User->get_user_permission($this->permission_group, $item.'/'.$subpart)) {
 									$this->subparts[] = $subpart;
 								} elseif (isset($rc[1]) && $rc[1] == $subpart) {
-									define('ERROR_PAGE', 403);
+									define('ERROR_CODE', 403);
 									$this->__finish();
 									return;
 								}
 							}
 						}
 					} elseif ($rc[0] == $item) {
-						define('ERROR_PAGE', 403);
+						define('ERROR_CODE', 403);
 						$this->__finish();
 						return;
 					}
@@ -177,7 +177,7 @@ class Index {
 			}
 		}
 		_include_once(MFOLDER.'/index.php', false);
-		if ($this->stop || defined('ERROR_PAGE')) {
+		if ($this->stop || defined('ERROR_CODE')) {
 			return;
 		}
 		if ($this->parts) {
@@ -190,7 +190,7 @@ class Index {
 					$this->subparts = $this->structure[$rc[0]];
 				}
 			} elseif ($rc[0] != '' && !empty($this->parts) && !in_array($rc[0], $this->parts)) {
-				define('ERROR_PAGE', 404);
+				define('ERROR_CODE', 404);
 				$this->__finish();
 				return;
 			}
@@ -216,7 +216,7 @@ class Index {
 				$Page->warning(get_core_ml_text('closed_title'));
 			}
 			_include_once(MFOLDER.'/'.$rc[0].'.php', false);
-			if ($this->stop || defined('ERROR_PAGE')) {
+			if ($this->stop || defined('ERROR_CODE')) {
 				return;
 			}
 			if ($this->subparts) {
@@ -226,7 +226,7 @@ class Index {
 					}
 					$rc[1] = $this->subparts[0];
 				} elseif ($rc[1] != '' && !empty($this->subparts) && !in_array($rc[1], $this->subparts)) {
-					define('ERROR_PAGE', 404);
+					define('ERROR_CODE', 404);
 					$this->__finish();
 					return;
 				}
@@ -239,7 +239,7 @@ class Index {
 					}
 				}
 				_include_once(MFOLDER.'/'.$rc[0].'/'.$rc[1].'.php', false);
-				if ($this->stop || defined('ERROR_PAGE')) {
+				if ($this->stop || defined('ERROR_CODE')) {
 					return;
 				}
 			} elseif (!$this->api && $this->action === null) {
@@ -628,9 +628,9 @@ class Index {
 		) {
 			return;
 		}
-		if (defined('ERROR_PAGE')) {
+		if (defined('ERROR_CODE')) {
 			$this->js_vars();
-			$Page->error_page();
+			$Page->error();
 		}
 		$Core->run_trigger('System/Index/preload');
 		if (!$this->admin && !$this->api && file_exists(MFOLDER.'/index.html')) {
@@ -651,17 +651,19 @@ class Index {
 			if (!(
 				API &&
 				MODULE == 'System' &&
+				_getcookie('logout') &&
 				$Config->route == ['user', 'logout']
 			)) {
 				_setcookie('logout', '');
 			}
 			return;
 		}
-		if (defined('ERROR_PAGE')) {
-			$Page->error_page();
+		if (defined('ERROR_CODE')) {
+			$Page->error();
 		} elseif (!(
 			API &&
 			MODULE == 'System' &&
+			_getcookie('logout') &&
 			$Config->route == ['user', 'logout']
 		)) {
 			_setcookie('logout', '');

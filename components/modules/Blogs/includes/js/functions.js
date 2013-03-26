@@ -17,20 +17,20 @@ function blogs_add_comment () {
 				text	: textarea.val()
 			},
 			dataType	: 'json',
-			success	: function(result) {
-				if (result.status == 'OK') {
-					if (textarea.data('parent') == 0) {
-						$('.cs-blogs-comments').append(result.content);
-					} else {
-						$('#comment_'+textarea.data('parent')).append(result.content);
-					}
-					blogs_comment_cancel();
+			success		: function (result) {
+				if (textarea.data('parent') == 0) {
+					$('.cs-blogs-comments').append(result);
 				} else {
-					alert(result.status);
+					$('#comment_'+textarea.data('parent')).append(result);
 				}
+				blogs_comment_cancel();
 			},
-			error	: function() {
-				alert(L.comment_sending_connection_error);
+			error	: function (xhr) {
+				if (xhr.responseText) {
+					alert(json_decode(xhr.responseText).error_description);
+				} else {
+					alert(L.comment_sending_connection_error);
+				}
 			}
 		}
 	);
@@ -46,16 +46,16 @@ function blogs_edit_comment () {
 				text	: textarea.val()
 			},
 			dataType	: 'json',
-			success	: function(result) {
-				if (result.status == 'OK') {
-					$('#comment_'+textarea.data('id')).children('.cs-blogs-comment-text').html(result.content);
-					blogs_comment_cancel();
-				} else {
-					alert(result.status);
-				}
+			success	: function (result) {
+				$('#comment_'+textarea.data('id')).children('.cs-blogs-comment-text').html(result);
+				blogs_comment_cancel();
 			},
-			error	: function() {
-				alert(L.comment_editing_connection_error);
+			error	: function (xhr) {
+				if (xhr.responseText) {
+					alert(json_decode(xhr.responseText).error_description);
+				} else {
+					alert(L.comment_editing_connection_error);
+				}
 			}
 		}
 	);
@@ -71,19 +71,19 @@ function blogs_delete_comment () {
 				id		: id
 			},
 			dataType	: 'json',
-			success	: function(result) {
-				if (result.status == 'OK') {
-					if (result.content && parent.parent('article').find('.cs-blogs-comment').length == 1) {
-						parent.parent('article').children('.cs-blogs-comment-edit').after(result.content);
-					}
-					$('#comment_'+id).remove();
-					blogs_comment_cancel();
-				} else {
-					alert(result.status);
+			success	: function (result) {
+				if (result && parent.parent('article').find('.cs-blogs-comment').length == 1) {
+					parent.parent('article').children('.cs-blogs-comment-edit').after(result);
 				}
+				$('#comment_'+id).remove();
+				blogs_comment_cancel();
 			},
-			error	: function() {
-				alert(L.comment_deleting_connection_error);
+			error	: function (xhr) {
+				if (xhr.responseText) {
+					alert(json_decode(xhr.responseText).error_description);
+				} else {
+					alert(L.comment_deleting_connection_error);
+				}
 			}
 		}
 	);
@@ -125,13 +125,22 @@ function blogs_post_preview (id) {
 		{
 			cache		: false,
 			data		: data,
-			success	: function(result) {
+			success	: function (result) {
 				var	preview	= $('.cs-blogs-post-preview-content');
 				preview.html(result);
-				$('html, body').stop().animate( { scrollTop: preview.offset().top }, 500 );
+				$('html, body').stop().animate(
+					{
+						scrollTop	: preview.offset().top
+					},
+					500
+				);
 			},
-			error	: function() {
-				alert(L.post_preview_connection_error);
+			error	: function (xhr) {
+				if (xhr.responseText) {
+					alert(json_decode(xhr.responseText).error_description);
+				} else {
+					alert(L.post_preview_connection_error);
+				}
 			}
 		}
 	);

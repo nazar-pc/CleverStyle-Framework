@@ -11,7 +11,7 @@ use			h;
 global $Index, $Blogs, $Page, $L, $User, $db, $Config;
 $rc						= array_slice($Config->route, 1);
 if (!isset($rc[0])) {
-	define('ERROR_PAGE', 404);
+	define('ERROR_CODE', 404);
 	return;
 }
 $module					= path($L->{MODULE});
@@ -83,7 +83,7 @@ if (!$tag) {
 	]);
 }
 if (!$tag) {
-	define('ERROR_PAGE', 404);
+	define('ERROR_CODE', 404);
 	return;
 }
 $tag					= [

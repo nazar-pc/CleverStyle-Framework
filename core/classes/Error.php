@@ -69,7 +69,7 @@ class Error {
 				file_put_contents($log_file, "E $time $string Occurred: $file:$line Dump: $dump\n", LOCK_EX | FILE_APPEND);
 				unset($dump);
 				$this->errors_list[]	= "E $time $string Occurred: $file:$line";
-				define('ERROR_PAGE', 500);
+				define('ERROR_CODE', 500);
 				if (is_object($Index)) {
 					$Index->__finish();
 				} elseif (is_object($Page)) {

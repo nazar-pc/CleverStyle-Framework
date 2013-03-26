@@ -136,6 +136,21 @@ class Page {
 		return $this;
 	}
 	/**
+	 * Sets body with content, that is transformed into JSON format
+	 *
+	 * @param mixed	$add
+	 *
+	 * @return Page
+	 */
+	function json ($add) {
+		if (!API) {
+			header('Content-Type: application/json', true);
+			interface_off();
+		}
+		$this->Content	= _json_encode($add);
+		return $this;
+	}
+	/**
 	 * Loading of theme template
 	 *
 	 * @return Page
@@ -1054,30 +1069,50 @@ class Page {
 	}
 	/**
 	 * Error pages processing
+	 *
+	 * @param null|string	$custom_text	Custom error text instead of text like "404 Not Found"
+	 * @param bool			$json			Force JSON return format
 	 */
-	function error_page () {
-		if (!defined('ERROR_PAGE')) {
-			define('ERROR_PAGE', 500);
+	function error ($custom_text = null, $json = false) {
+		static $error_showed = false;
+		if ($error_showed) {
+			return;
 		}
-		if (ERROR_PAGE == 403 && _getcookie('logout')) {
+		$error_showed	= true;
+		if (!defined('ERROR_CODE')) {
+			define('ERROR_CODE', 500);
+		}
+		if (!API && ERROR_CODE == 403 && _getcookie('logout')) {
 			global $Config;
 			header('Location: '.$Config->base_url(), true, 302);
 			$this->Content	= '';
 			__finish();
 		}
 		interface_off();
-		$error_text	= code_header(ERROR_PAGE);
-		ob_start();
-		if (
-			!_include_once(THEMES.'/'.$this->theme.'/error.html', false) &&
-			!_include_once(THEMES.'/'.$this->theme.'/error.php', false)
-		) {
-			echo "<!doctype html>\n".
-				h::title($error_text ?: ERROR_PAGE).
-				 ($error_text ?: ERROR_PAGE);
+		$error_text	= code_header(ERROR_CODE);
+		$error_text	= $custom_text ?: $error_text;
+		if (API || $json) {
+			if ($json) {
+				header('Content-Type: application/json', true);
+				interface_off();
+			}
+			$this->json([
+				'error'				=> ERROR_CODE,
+				'error_description'	=> $error_text
+			]);
+		} else {
+			ob_start();
+			if (
+				!_include_once(THEMES.'/'.$this->theme.'/error.html', false) &&
+				!_include_once(THEMES.'/'.$this->theme.'/error.php', false)
+			) {
+				echo "<!doctype html>\n".
+					h::title($error_text ?: ERROR_CODE).
+					 ($error_text ?: ERROR_CODE);
+			}
+			$this->Content	= ob_get_clean();
+			__finish();
 		}
-		$this->Content = ob_get_clean();
-		__finish();
 	}
 	/**
 	 * Substitutes header information about user, login/registration forms, etc.

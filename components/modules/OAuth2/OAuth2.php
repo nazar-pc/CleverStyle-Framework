@@ -281,7 +281,8 @@ class OAuth2 extends Accessor {
 		$user_agent					= $User->user_agent;
 		$current_session			= $User->get_session();
 		$_SERVER['HTTP_USER_AGENT']	= "OAuth2-$client[name]-$client[id]";
-		$new_session				= $User->add_session($User->id);
+		$User->add_session($User->id);
+		$new_session				= $User->get_session();
 		$_SERVER['HTTP_USER_AGENT']	= $user_agent;
 		$User->get_session($current_session);
 		unset($user_agent, $current_session);

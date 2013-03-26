@@ -46,7 +46,7 @@ if (!API) {
 			if (mb_strpos($rc[0], ':')) {
 				array_unshift($rc, 'post');
 			} else {
-				define('ERROR_PAGE', 404);
+				define('ERROR_CODE', 404);
 				return;
 			}
 		break;

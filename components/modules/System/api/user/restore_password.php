@@ -14,17 +14,19 @@ global $Config, $Page, $User, $L, $Mail;
 if (
 	!$Config->server['referer']['local'] ||
 	!$Config->server['ajax'] ||
-	!isset($_POST['email'])
+	!isset($_POST['email']) ||
+	!$User->guest()
 ) {
 	sleep(1);
-	return;
-} elseif (!$User->guest()) {
+	define('ERROR_CODE', 403);
 	return;
 } elseif (!$_POST['email']) {
-	$Page->content($L->please_type_your_email);
+	define('ERROR_CODE', 400);
+	$Page->error($L->please_type_your_email);
 	return;
 } elseif (!($id = $User->get_id($_POST['email']))) {
-	$Page->content($L->user_with_such_login_email_not_found);
+	define('ERROR_CODE', 400);
+	$Page->error($L->user_with_such_login_email_not_found);
 	return;
 }
 if (
@@ -40,7 +42,8 @@ if (
 		)
 	)
 ) {
-	$Page->content('OK');
+	$Page->json('OK');
 } else {
-	$Page->content($L->restore_password_server_error);
+	define('ERROR_CODE', 500);
+	$Page->error($L->restore_password_server_error);
 }

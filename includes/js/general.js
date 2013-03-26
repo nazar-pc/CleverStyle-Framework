@@ -4,7 +4,7 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-$(function() {
+$(function () {
 	async_call([
 		function () {
 			window.session_id	= getcookie('session');
@@ -106,13 +106,13 @@ $(function() {
 					$('.cs-header-registration-process').click();
 				}
 			});
-			$('.cs-header-login-process').click(function() {
+			$('.cs-header-login-process').click(function () {
 				login($('.cs-header-login-email').val(), $('.cs-header-user-password').val());
 			});
-			$('.cs-header-logout-process').click(function() {
+			$('.cs-header-logout-process').click(function () {
 				logout();
 			});
-			$('.cs-show-password').click(function() {
+			$('.cs-show-password').click(function () {
 				var pass_input = $(this).parent().next().children('input');
 				if (pass_input.prop('type') == 'password') {
 					pass_input.prop('type', 'text');
@@ -122,7 +122,7 @@ $(function() {
 					$(this).addClass('ui-icon-locked').removeClass('ui-icon-unlocked');
 				}
 			});
-			$('#current_password').click(function() {
+			$('#current_password').click(function () {
 				var	password	= $('.cs-profile-current-password');
 				if (password.prop('type') == 'password') {
 					password.prop('type', 'text');
@@ -132,7 +132,7 @@ $(function() {
 					$(this).addClass('ui-icon-locked').removeClass('ui-icon-unlocked');
 				}
 			});
-			$('#new_password').click(function() {
+			$('#new_password').click(function () {
 				var	password	= $('.cs-profile-new-password');
 				if (password.prop('type') == 'password') {
 					password.prop('type', 'text');
@@ -142,7 +142,7 @@ $(function() {
 					$(this).addClass('ui-icon-locked').removeClass('ui-icon-unlocked');
 				}
 			});
-			$('.cs-header-registration-process').click(function() {
+			$('.cs-header-registration-process').click(function () {
 				$('<div title="'+L.rules_agree+'">'+rules_text+'</div>')
 					.appendTo('body')
 					.dialog({
@@ -165,13 +165,13 @@ $(function() {
 						]
 					});
 			});
-			$('.cs-header-restore-password-process').click(function() {
+			$('.cs-header-restore-password-process').click(function () {
 				restore_password($('.cs-header-restore-password-email').val());
 			});
-			$('.cs-profile-change-password').click(function() {
+			$('.cs-profile-change-password').click(function () {
 				change_password($('.cs-profile-current-password').val(), $('.cs-profile-new-password').val());
 			});
-			$('.cs-header-back').click(function() {
+			$('.cs-header-back').click(function () {
 				$('.cs-header-anonym-form').slideDown();
 				$('.cs-header-registration-form, .cs-header-login-form, .cs-header-restore-password-form').slideUp();
 			});
@@ -215,9 +215,9 @@ $(function() {
 					'margin'			: 0,
 					'padding'			: 0
 				}).selectable({
-					stop: function() {
+					stop: function () {
 						var result = [];
-						$(".ui-selected", this).each(function() {
+						$(".ui-selected", this).each(function () {
 							result.push($(this).text().trim());
 						});
 						$("#columns").val(result.join(';'));

@@ -15,26 +15,27 @@ include_once MFOLDER.'/../prepare.php';
  */
 if (!$Config->server['referer']['local'] || !$Config->server['ajax'] || !$User->user()) {
 	sleep(1);
+	define('ERROR_CODE', 403);
 	return;
 }
 if (empty($_POST['title'])) {
 	$Page->warning($L->post_title_empty);
-	$Page->content($Page->Top);
+	$Page->json($Page->Top);
 	return;
 }
 if (empty($_POST['sections'])) {
 	$Page->warning($L->no_post_sections_specified);
-	$Page->content($Page->Top);
+	$Page->json($Page->Top);
 	return;
 }
 if (empty($_POST['content'])) {
 	$Page->warning($L->post_content_empty);
-	$Page->content($Page->Top);
+	$Page->json($Page->Top);
 	return;
 }
 if (empty($_POST['tags'])) {
 	$Page->warning($L->no_post_tags_specified);
-	$Page->content($Page->Top);
+	$Page->json($Page->Top);
 	return;
 }
 if (isset($_POST['id'])) {
@@ -47,7 +48,7 @@ if (isset($_POST['id'])) {
 	];
 }
 $module	= path($L->{'MODULE'});
-$Page->content(
+$Page->json(
 	h::{'section.cs-blogs-post article'}(
 		h::header(
 			h::h1(xap($_POST['title'])).

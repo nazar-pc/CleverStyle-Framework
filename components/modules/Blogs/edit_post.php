@@ -13,7 +13,7 @@ if (
 	!isset($Config->route[1]) ||
 	!($post = $Blogs->get($Config->route[1]))
 ) {
-	define('ERROR_PAGE', 404);
+	define('ERROR_CODE', 404);
 	return;
 }
 if (
@@ -24,7 +24,7 @@ if (
 		$User->get_user_permission('admin/'.MODULE, 'edit_post')
 	)
 ) {
-	define('ERROR_PAGE', 403);
+	define('ERROR_CODE', 403);
 	return;
 }
 $Page->title(

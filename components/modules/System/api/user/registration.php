@@ -17,28 +17,34 @@ if (
 	!isset($_POST['email'])
 ) {
 	sleep(1);
+	define('ERROR_CODE', 403);
 	return;
 } elseif (!$User->guest()) {
-	$Page->content('reload');
+	$Page->json('reload');
 	return;
 } elseif (!$Config->core['allow_user_registration']) {
-	$Page->content($L->registration_prohibited);
+	define('ERROR_CODE', 403);
+	$Page->error($L->registration_prohibited);
 	return;
 } elseif (empty($_POST['email'])) {
-	$Page->content($L->please_type_your_email);
+	define('ERROR_CODE', 400);
+	$Page->error($L->please_type_your_email);
 	sleep(1);
 	return;
 }
 $result		= $User->registration($_POST['email']);
 if ($result === false) {
-	$Page->content($L->please_type_correct_email);
+	define('ERROR_CODE', 400);
+	$Page->error($L->please_type_correct_email);
 	sleep(1);
 	return;
 } elseif ($result == 'error') {
-	$Page->content($L->reg_server_error);
+	define('ERROR_CODE', 500);
+	$Page->error($L->reg_server_error);
 	return;
 } elseif ($result == 'exists') {
-	$Page->content($L->reg_error_exists);
+	define('ERROR_CODE', 400);
+	$Page->error($L->reg_error_exists);
 	return;
 }
 $confirm	= $result['reg_key'] !== true;
@@ -64,8 +70,9 @@ if ($Mail->send_to(
 	$L->{$confirm ? 'reg_need_confirmation_mail' : 'reg_success_mail'}(get_core_ml_text('name')),
 	$body
 )) {
-	$Page->content($confirm ? 'reg_confirmation' : 'reg_success');
+	$Page->json($confirm ? 'reg_confirmation' : 'reg_success');
 } else {
 	$User->registration_cancel();
-	$Page->content($L->sending_reg_mail_error);
+	define('ERROR_CODE', 500);
+	$Page->error($L->sending_reg_mail_error);
 }

@@ -18,7 +18,6 @@ error_reporting(E_ALL);
 
 header('Content-Type: text/html; charset=utf-8');
 header('Vary: Content-Language,User-Agent,Cookie');
-header('Connection: close');
 mb_internal_encoding('utf-8');
 
 /**
@@ -29,7 +28,7 @@ define('CLASSES',	CORE.'/classes');				//Directory for main core classes
 define('ENGINES',	CORE.'/engines');				//Directory for cache, DB, storage and translation engines
 define('LANGUAGES',	CORE.'/languages');				//Languages directory
 define('CSS',		DIR.'/includes/css');			//Directory with CSS files
-define('IMG',		DIR.'/includes/img');			//Directody with images
+define('IMG',		DIR.'/includes/img');			//Directory with images
 define('JS',		DIR.'/includes/js');			//Directory for JavaScript files
 define('TEMPLATES',	DIR.'/templates');				//Templates directory
 define('BLOCKS',	DIR.'/components/blocks');		//Blocks directory

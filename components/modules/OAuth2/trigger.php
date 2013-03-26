@@ -13,7 +13,7 @@ $Core->register_trigger(
 	function ($data) {
 		global $Config;
 		$module	= basename(__DIR__);
-		if (!$Config->module($module)->active() && substr($data['rc'], 0, 5) == 'admin') {
+		if (!$Config->module($module)->active() && substr($data['rc'], 0, 5) != 'admin') {
 			return;
 		}
 		global $Core;
@@ -43,8 +43,8 @@ $Core->register_trigger(
 		if (API && isset($_POST['client_id'], $_POST['access_token'])) {
 			header('Cache-Control: no-store');
 			header('Pragma: no-cache');
-			global $OAuth2, $Page, $Core;
-			if (!($client = $OAuth2->get_client($_GET['client_id']))) {
+			global $OAuth2, $Page, $Core, $Config;
+			if (!($client = $OAuth2->get_client($_POST['client_id']))) {
 				code_header(400);
 				$Page->Content	= _json_encode([
 					'error'				=> 'access_denied',
@@ -54,7 +54,6 @@ $Core->register_trigger(
 				__finish();
 			} elseif (!$client['active']) {
 				code_header(403);
-				header('Content-type: application/json');
 				$Page->Content	= _json_encode([
 					'error'				=> 'access_denied',
 					'error_description'	=> 'Inactive client id'
@@ -64,7 +63,7 @@ $Core->register_trigger(
 			}
 			$_SERVER['HTTP_USER_AGENT']	= "OAuth2-$client[name]-$client[id]";
 			if (isset($_POST['client_secret'])) {
-				if ($_GET['client_secret'] != $client['secret']) {
+				if ($_POST['client_secret'] != $client['secret']) {
 					code_header(400);
 					$Page->Content	= _json_encode([
 						'error'				=> 'access_denied',
@@ -78,7 +77,6 @@ $Core->register_trigger(
 				$token_data	= $OAuth2->get_token($_POST['access_token'], $_POST['client_id'], $client['secret']);
 				if ($token_data['type']	== 'code') {
 					code_header(403);
-					header('Content-type: application/json');
 					$Page->Content	= _json_encode([
 						'error'				=> 'invalid_request',
 						'error_description'	=> 'This access_token can\'t be used without client_secret'
@@ -87,9 +85,8 @@ $Core->register_trigger(
 					__finish();
 				}
 			}
-			if ($token_data['expire_in'] < TIME) {
+			if ($token_data['expire_in'] < 0) {
 				code_header(403);
-				header('Content-type: application/json');
 				$Page->Content	= _json_encode([
 					'error'				=> 'access_denied',
 					'error_description'	=> 'access_token expired'
@@ -98,23 +95,24 @@ $Core->register_trigger(
 				__finish();
 			}
 			$_POST['session']	= $token_data['session'];
-			$Core->register_trigger(
-				'System/User/construct/after',
-				function () {
-					global $User;
-					if (!$User->user()) {
-						global $Page;
-						code_header(403);
-						header('Content-type: application/json');
-						$Page->Content	= _json_encode([
-							'error'				=> 'access_denied',
-							'error_description'	=> 'User session invalid'
-						]);
-						interface_off();
-						__finish();
+			if (!$Config->module('OAuth2')->guest_tokens) {
+				$Core->register_trigger(
+					'System/User/construct/after',
+					function () {
+						global $User;
+						if (!$User->user()) {
+							global $Page;
+							code_header(403);
+							$Page->Content	= _json_encode([
+								'error'				=> 'access_denied',
+								'error_description'	=> 'Guest tokens disabled'
+							]);
+							interface_off();
+							__finish();
+						}
 					}
-				}
-			);
+				);
+			}
 		}
 	}
 );

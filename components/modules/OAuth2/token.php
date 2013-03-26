@@ -9,7 +9,7 @@
 namespace	cs\modules\OAuth2;
 use			h;
 global $Page, $OAuth2, $Index;
-header('Content-type: application/json');
+header('Content-Type: application/json', true);
 header('Cache-Control: no-store');
 header('Pragma: no-cache');
 interface_off();
@@ -53,7 +53,6 @@ if (!($client = $OAuth2->get_client($_GET['client_id']))) {
 	return;
 } elseif (!$client['active']) {
 	code_header(403);
-	header('Content-type: application/json');
 	$Page->Content	= _json_encode([
 		'error'				=> 'access_denied',
 		'error_description'	=> 'Inactive client id'
@@ -163,7 +162,6 @@ switch ($_GET['grant_type']) {
 		$token_data	= $OAuth2->refresh_token($_GET['refresh_token'], $client['id'], $client['secret']);
 		if (!$token_data) {
 			code_header(403);
-			header('Content-type: application/json');
 			$Page->Content	= _json_encode([
 				'error'				=> 'access_denied',
 				'error_description'	=> 'User session invalid'

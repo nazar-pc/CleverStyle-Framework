@@ -6,6 +6,10 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
+/**
+ * Provides next triggers:<br>
+ *  OAuth2/custom_login_page
+ */
 namespace	cs\modules\OAuth2;
 use			h;
 global $Page, $OAuth2, $L, $Index, $Config, $User;
@@ -127,9 +131,12 @@ if (!in_array($_GET['response_type'], ['code', 'token', 'guest_token'])) {
 }
 if (!$User->user()) {
 	if ($_GET['response_type'] != 'guest_token') {
+		global $Core;
 		code_header(403);
-		$Page->Content	= '';
-		$Page->warning($L->you_are_not_logged_in);
+		if ($Core->run_trigger('OAuth2/custom_login_page')) {
+			$Page->Content	= '';
+			$Page->warning($L->you_are_not_logged_in);
+		}
 		$Index->stop	= true;
 		return;
 	} elseif (!$Config->module('OAuth2')->guest_tokens) {
@@ -262,7 +269,7 @@ if (!$OAuth2->get_access($client['id'])) {
 				return;
 			}
 		case 'guest_token':
-			header('Content-type: application/json');
+			header('Content-Type: application/json', true);
 			header('Cache-Control: no-store');
 			header('Pragma: no-cache');
 			interface_off();
