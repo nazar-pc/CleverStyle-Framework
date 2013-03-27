@@ -73,7 +73,7 @@ class Error {
 				if (is_object($Index)) {
 					$Index->__finish();
 				} elseif (is_object($Page)) {
-					$Page->error_page();
+					$Page->page();
 				} else {
 					__finish();
 				}
@@ -95,7 +95,7 @@ class Error {
 			if (is_object($Index)) {
 				$Index->__finish();
 			} elseif (is_object($Page)) {
-				$Page->error_page();
+				$Page->page();
 			} else {
 				__finish();
 			}
