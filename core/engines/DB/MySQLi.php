@@ -90,7 +90,7 @@ class MySQLi extends _Abstract {
 	 *
 	 * @param object 	$query_result
 	 *
-	 * @return int|bool
+	 * @return bool|int
 	 */
 	function n ($query_result) {
 		if(is_object($query_result)) {
@@ -104,12 +104,12 @@ class MySQLi extends _Abstract {
 	 *
 	 * Fetch a result row as an associative array
 	 *
-	 * @param object		$query_result
-	 * @param bool			$single_column
-	 * @param bool $array
-	 * @param bool			$indexed
+	 * @param object				$query_result
+	 * @param bool					$single_column
+	 * @param bool					$array
+	 * @param bool					$indexed
 	 *
-	 * @return array|bool
+	 * @return array|bool|string
 	 */
 	function f ($query_result, $single_column = false, $array = false, $indexed = false) {
 		if ($single_column) {

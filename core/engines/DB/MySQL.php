@@ -84,12 +84,12 @@ class MySQL extends _Abstract {
 	 *
 	 * Fetch a result row as an associative array
 	 *
-	 * @param resource		$query_result
-	 * @param bool			$single_column
+	 * @param resource				$query_result
+	 * @param bool					$single_column
 	 * @param bool $array
-	 * @param bool			$indexed
+	 * @param bool					$indexed
 	 *
-	 * @return array|bool
+	 * @return array|bool|string
 	 */
 	function f ($query_result, $single_column = false, $array = false, $indexed = false) {
 		if ($single_column) {

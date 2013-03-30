@@ -560,7 +560,7 @@ class Page {
 	/**
 	 * Open Graph protocol support
 	 *
-	 * Provides automatic addition of <html prefix="og: http://ogp.me/ns#">, and is used for simplification of Open Graph protocol support
+	 * Provides automatic addition of &lt;html prefix="og: http://ogp.me/ns#"&gt;, and is used for simplification of Open Graph protocol support
 	 *
 	 * @param string			$property		Property name, but without <i>og:</i> prefix. For example, <i>title</i>
 	 * @param string|string[]	$content		Content, may be an array
@@ -569,7 +569,7 @@ class Page {
 	 * @return Page
 	 */
 	function og ($property, $content, $custom_prefix = 'og:') {
-		if (empty($property) || empty($content)) {
+		if (!$property || !($content || $content === 0)) {
 			return $this;
 		}
 		global $Config;
@@ -578,7 +578,7 @@ class Page {
 		}
 		if (is_array($content)) {
 			foreach ($content as $c) {
-				$this->og($property, $c);
+				$this->og($property, $c, $custom_prefix);
 			}
 			return $this;
 		}
@@ -673,11 +673,16 @@ class Page {
 	 * Adding text to the title page
 	 *
 	 * @param string	$add
+	 * @param bool		$replace	Replace whole title by this
 	 *
 	 * @return Page
 	 */
-	function title ($add) {
-		$this->Title[] = htmlentities($add, ENT_COMPAT, 'utf-8');
+	function title ($add, $replace = false) {
+		if ($replace) {
+			$this->Title	= [htmlentities($add, ENT_COMPAT, 'utf-8')];
+		} else {
+			$this->Title[]	= htmlentities($add, ENT_COMPAT, 'utf-8');
+		}
 		return $this;
 	}
 	/**

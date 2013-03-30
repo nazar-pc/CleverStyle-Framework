@@ -43,11 +43,8 @@ abstract class _Abstract {
 				 * @var array
 				 */
 				$query		= [
-					'start'		=> '',
-					'end'		=> '',
 					'time'		=> '',
-					'text'		=> '',
-					'id'		=> ''
+					'text'		=> ''
 				],
 				/**
 				 * Array for storing data of all executed requests
@@ -195,7 +192,7 @@ abstract class _Abstract {
 	 *
 	 * @param object|resource $query_result
 	 *
-	 * @return int|bool
+	 * @return bool|int
 	 */
 	abstract function n ($query_result);
 	/**
@@ -205,12 +202,12 @@ abstract class _Abstract {
 	 *
 	 * @abstract
 	 *
-	 * @param object|resource	$query_result
-	 * @param bool				$single_column	If <b>true</b> function will return not array with one element, but directly its value
-	 * @param bool				$array			If <b>true</b> returns array of associative arrays of all fetched rows
-	 * @param bool				$indexed		If <b>false</b> - associative array will be returned
+	 * @param object|resource		$query_result
+	 * @param bool					$single_column	If <b>true</b> function will return not array with one element, but directly its value
+	 * @param bool					$array			If <b>true</b> returns array of associative arrays of all fetched rows
+	 * @param bool					$indexed		If <b>false</b> - associative array will be returned
 	 *
-	 * @return array|bool
+	 * @return array|bool|string
 	 */
 	abstract function f ($query_result, $single_column = false, $array = false, $indexed = false);
 	/**
@@ -218,11 +215,11 @@ abstract class _Abstract {
 	 *
 	 * Similar to ::f() method, with parameter <b>$array</b> = true
 	 *
-	 * @param object|resource	$query_result
-	 * @param bool				$single_column	If <b>true</b> function will return not array with one element, but directly its value
-	 * @param bool				$indexed		If <b>false</b> - associative array will be returned
+	 * @param object|resource		$query_result
+	 * @param bool					$single_column	If <b>true</b> function will return not array with one element, but directly its value
+	 * @param bool					$indexed		If <b>false</b> - associative array will be returned
 	 *
-	 * @return array|bool
+	 * @return array|bool|string
 	 */
 	function fa ($query_result, $single_column = false, $indexed = false) {
 		return $this->f($query_result, $single_column, true, $indexed);
@@ -259,12 +256,12 @@ abstract class _Abstract {
 	 *
 	 * Combination of ::q() and ::f() methods
 	 *
-	 * @param array|string	$query			SQL query string, or you can put all parameters, that ::q() function can accept in form of array
-	 * @param bool			$single_column	If <b>true</b> function will return not array with one element, but directly its value
-	 * @param bool			$array			If <b>true</b> returns array of associative arrays of all fetched rows
-	 * @param bool			$indexed		If <b>false</b> - associative array will be returned
+	 * @param array|string			$query			SQL query string, or you can put all parameters, that ::q() function can accept in form of array
+	 * @param bool					$single_column	If <b>true</b> function will return not array with one element, but directly its value
+	 * @param bool					$array			If <b>true</b> returns array of associative arrays of all fetched rows
+	 * @param bool					$indexed		If <b>false</b> - associative array will be returned
 	 *
-	 * @return array|bool
+	 * @return array|bool|string
 	 */
 	function qf ($query = '', $single_column = false, $array = false, $indexed = false) {
 		list($query, $params)	= $this->q_prepare($query);
@@ -278,11 +275,11 @@ abstract class _Abstract {
 	 *
 	 * Combination of ::q() and ::fa() methods
 	 *
-	 * @param array|string	$query			SQL query string, or you can put all parameters, that ::q() function can accept in form of array
-	 * @param bool			$single_column	If <b>true</b> function will return not array with one element, but directly its value
-	 * @param bool			$indexed		If <b>false</b> - associative array will be returned
+	 * @param array|string			$query			SQL query string, or you can put all parameters, that ::q() function can accept in form of array
+	 * @param bool					$single_column	If <b>true</b> function will return not array with one element, but directly its value
+	 * @param bool					$indexed		If <b>false</b> - associative array will be returned
 	 *
-	 * @return array|bool
+	 * @return array|bool|string
 	 */
 	function qfa ($query = '', $single_column = false, $indexed = false) {
 		list($query, $params)	= $this->q_prepare($query);
@@ -400,11 +397,18 @@ abstract class _Abstract {
 		}
 		return $columns;
 	}
+	/**
+	 * Get tables list
+	 *
+	 * @param bool $like
+	 *
+	 * @return array|bool
+	 */
 	function tables ($like = false) {
 		if ($like) {
 			return $this->qfa('SHOW TABLES FROM `'.$this->database.'` LIKE \''.$like.'\'');
 		} else {
-			return $this->qfa('SHOW TEBLES FROM `'.$this->database.'`');
+			return $this->qfa('SHOW TABLES FROM `'.$this->database.'`');
 		}
 	}
 	/**
@@ -468,7 +472,10 @@ abstract class _Abstract {
 		return $this->database;
 	}
 	/**
-	 * Queries array
+	 * Queries array, has 3 properties:<ul>
+	 * <li>num - total number of performed queries
+	 * <li>time - array with time of each query execution
+	 * <li>text - array with text text of each query
 	 *
 	 * @return array
 	 */
@@ -476,7 +483,9 @@ abstract class _Abstract {
 		return $this->queries;
 	}
 	/**
-	 * Last query
+	 * Last query information, has 2 properties:<ul>
+	 * <li>time - execution time
+	 * <li>text - query text
 	 *
 	 * @return array
 	 */
@@ -484,7 +493,7 @@ abstract class _Abstract {
 		return $this->query;
 	}
 	/**
-	 * Connecting time
+	 * Total working time (including connection, queries execution and other delays)
 	 *
 	 * @return int
 	 */
@@ -492,7 +501,7 @@ abstract class _Abstract {
 		return $this->time;
 	}
 	/**
-	 * Working time
+	 * Connecting time
 	 *
 	 * @return int
 	 */

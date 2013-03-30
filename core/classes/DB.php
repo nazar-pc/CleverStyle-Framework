@@ -39,9 +39,9 @@ class DB {
 	 *
 	 * @param	int								$connection
 	 *
-	 * @return	bool|DB\_Abstract|False_class
+	 * @return	DB\_Abstract|False_class					Returns instance of False_class on failure
 	 */
-	function __get ($connection) {
+	function db ($connection) {
 		if (!is_int($connection) && $connection != '0') {
 			return new False_class;
 		}
@@ -82,12 +82,35 @@ class DB {
 		}
 	}
 	/**
+	 * Processing of requests for getting data from DB. Balancing of DB may be used with corresponding settings.
+	 *
+	 * @param	int								$connection
+	 *
+	 * @return	DB\_Abstract|False_class					Returns instance of False_class on failure
+	 */
+	function __get ($connection) {
+		return $this->db($connection);
+	}
+	/**
 	 * Processing of requests for changing data in DB.
+	 *
+	 * @param	int								$connection
+	 *
+	 * @return	DB\_Abstract|False_class					Returns instance of False_class on failure
+	 */
+	function db_prime ($connection) {
+		if (!is_int($connection) && $connection != '0') {
+			return new False_class;
+		}
+		return $this->connecting($connection, false);
+	}
+	/**
+	 * Processing of requests for changing data in DB, and direct queries to database.
 	 *
 	 * @param	int								$connection
 	 * @param	array							$mode
 	 *
-	 * @return	bool|DB\_Abstract|False_class
+	 * @return	DB\_Abstract|False_class					Returns instance of False_class on failure
 	 */
 	function __call ($connection, $mode) {
 		if (is_int($connection) || $connection == '0') {
@@ -104,7 +127,7 @@ class DB {
 	 * @param int								$connection	Database id
 	 * @param array|bool						$mirror
 	 *
-	 * @return bool|DB\_Abstract|False_class
+	 * @return DB\_Abstract|False_class
 	 */
 	protected function connecting ($connection, $mirror = true) {
 		/**
