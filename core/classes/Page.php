@@ -1275,7 +1275,7 @@ class Page {
 		} else {
 			global $Error, $L, $timeload, $User, $Core;
 			$Core->run_trigger('System/Page/pre_display');
-			$Error->display();
+			is_object($Error) && $Error->display();
 			/**
 			 * Processing of template, substituting of content, preparing for the output
 			 */

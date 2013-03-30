@@ -16,9 +16,7 @@ class Error {
 	function __construct () {
 		global $Error;
 		$Error = $this;
-		if (defined('CS_ERROR_HANDLER')) {
-			set_error_handler([$Error, 'trigger']);
-		}
+		set_error_handler([$Error, 'trigger']);
 	}
 	/**
 	 * Is used as error handler

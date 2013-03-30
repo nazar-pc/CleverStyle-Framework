@@ -64,17 +64,17 @@ $loader_init_memory			= memory_get_usage();
 $Core						= new \cs\Core;
 
 $Core->create([
-	'cs\\Error',									//Object of errors processing
-	'cs\\Cache',									//System cache object
-	'cs\\Text',										//Object of multilingual content
-	['cs\\Language',	'L'],						//Object of multilingual interface
-	'cs\\Page',										//Page generation object
-	['cs\\DB',			'db'],						//DataBase object
-	'_cs\\Storage',									//Storage object
-	'cs\\Config',									//Configuration object
-	'_cs\\Mail',									//Object for sending of emails
-	'_cs\\Key',										//Objects of temporary keys
-	'cs\\User',										//Object of user
-	'cs\\Index'										//Object, that supports of components processing
+	defined('CS_ERROR_HANDLER') && CS_ERROR_HANDLER ? 'cs\\Error' : false,	//Object of errors processing
+	'cs\\Cache',															//System cache object
+	'cs\\Text',																//Object of multilingual content
+	['cs\\Language',	'L'],												//Object of multilingual interface
+	'cs\\Page',																//Page generation object
+	['cs\\DB',			'db'],												//DataBase object
+	'_cs\\Storage',															//Storage object
+	'cs\\Config',															//Configuration object
+	'_cs\\Mail',															//Object for sending of emails
+	'_cs\\Key',																//Objects of temporary keys
+	'cs\\User',																//Object of user
+	'cs\\Index'																//Object, that supports of components processing
 ]);
-$Core->__finish();									//Destroying of objects, displaying of generated content and correct termination
+$Core->__finish();															//Destroying of objects, displaying of generated content and correct termination
