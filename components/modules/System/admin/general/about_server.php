@@ -16,6 +16,8 @@ if (isset($Config->route[2]) && $Config->route[2] == 'phpinfo') {
 	ob_start();
 	phpinfo();
 	$Index->content(ob_get_clean());
+	$Index->stop;
+	return;
 }
 $Index->form	= false;
 function state ($state) {
@@ -129,11 +131,20 @@ $Index->content(
 					]
 				],
 				[
-					$L->apc_mod.':',
+					$L->apc_module.':',
 					[
 						$L->get(apc()),
 						[
 							'class' => state(apc())
+						]
+					]
+				],
+				[
+					$L->memcached_module.':',
+					[
+						$L->get(memcached()),
+						[
+							'class' => state(memcached())
 						]
 					]
 				]

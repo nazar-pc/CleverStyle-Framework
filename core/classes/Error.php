@@ -21,8 +21,8 @@ class Error {
 	/**
 	 * Is used as error handler
 	 *
-	 * @param      $level	Error level
-	 * @param null $string	Error message
+	 * @param int			$level	Error level
+	 * @param null|string	$string	Error message
 	 */
 	function trigger ($level, $string = null) {
 		if (!$this->error) {
@@ -108,7 +108,7 @@ class Error {
         return $this->num;
     }
 	/**
-	 * Displaying errors
+	 * Displaying of errors
 	 */
 	function display () {
 		global $User;

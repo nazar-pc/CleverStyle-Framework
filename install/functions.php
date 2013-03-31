@@ -295,7 +295,7 @@ function install_process () {
 				$_POST['db_prefix'],
 				$_POST['db_charset'],
 				$_POST['language'],
-				apc() ? 'APC' : 'FileSystem',
+				memcached() ? 'Memcached' : (apc() ? 'APC' : 'FileSystem'),
 				hash('sha224', uniqid(microtime(true), true)),
 				substr(md5(uniqid(microtime(true), true)), 0, 8),
 				$public_key
@@ -324,7 +324,10 @@ function install_process () {
 //Cache engine
 	"cache_engine"		: "@cache_engine",
 //Cache size in MB for FileSystem storage engine
-	"cache_size"		: "5",
+	"cache_size"		: "100",
+//Settings of Memcached cache engine
+	"memcache_host"		: "127.0.0.1",
+	"memcache_port"		: "11211",
 //Will be truncated to 56 symbols
 	"key"				: "@key",
 //Will be truncated to 8 symbols

@@ -424,6 +424,14 @@ function apc () {
 	return extension_loaded('apc');
 }
 /**
+ * Check existence of memcache module
+ *
+ * @return bool
+ */
+function memcached () {
+	return extension_loaded('memcached');
+}
+/**
  * Check of "display_errors" configuration of php.ini
  *
  * @return bool

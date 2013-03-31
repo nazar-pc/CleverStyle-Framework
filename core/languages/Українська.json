@@ -281,7 +281,8 @@
 		"zlib_compression"			: "Автоматичне стискання сторінок zlib",
 		"zlib_compression_level"	: "Рівень стискання zlib",
 		"curl_lib"					: "Бібліотека cURL",
-		"apc_mod"					: "Модуль APC (Alternative PHP Cache)",
+		"apc_module"				: "Модуль APC (Alternative PHP Cache)",
+		"memcached_module"			: "Memcached модуль",
 		"cache_engine"				: "Двигун кешу",
 	//Components
 	"components"			: "Компоненти",
