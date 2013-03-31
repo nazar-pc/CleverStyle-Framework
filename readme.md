@@ -65,6 +65,7 @@ Requirements:
  * Mcrypt library (recommended for encryption)
  * cUrl library (recommended for autotranslation)
  * APC (Alternative PHP cache) module (recommended for system speed up)
+ * Memcached module (recommended for caching)
 * MySQL Database server
  * System may be extended to support other databases
 
