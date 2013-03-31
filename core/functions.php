@@ -222,7 +222,7 @@ function _setcookie ($name, $value, $expire = 0, $httponly = false, $api = false
 		$prefix	= '';
 	}
 	$_COOKIE[$prefix.$name] = $value;
-	if (!$api && is_object($Core)) {
+	if (!$api && is_object($Core) && is_object($Config) && isset($Config->core['cookie_sync']) && $Config->core['cookie_sync']) {
 		$data = [
 			'name'		=> $name,
 			'value'		=> $value,

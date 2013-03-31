@@ -181,6 +181,8 @@
 		"simple_admin_mode_info"		: "Some functionality may be too complicated to set up, and even excessive for a beginner administrator. This option allows you to hide some of the settings, making system management easier and more intuitive.",
 		"cache_sync"					: "Cache sync",
 		"cache_sync_info"				: "In case of several physical mirrors of site you may need cache synchronization on system level, but sometimes this functionality is realized on cache engine level.",
+		"cookie_sync"					: "Cookie sync",
+		"cookie_sync_info"				: "In case of several mirrors of site you may need cookie synchronization, for example, to be authorized on all mirrors.",
 		"debug"							: "Debugging",
 		"debug_info"					: "Display more information about the work of the engine and its components",
 		"show_db_queries"				: "Show DB queries",

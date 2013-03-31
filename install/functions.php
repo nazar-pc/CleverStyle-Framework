@@ -200,6 +200,7 @@ function install_process () {
 		"on_error_globals_dump": "0",
 		"simple_admin_mode": "0",
 		"cache_sync": "0",
+		"cookie_sync": "0",
 		"auto_translation": "0",
 		"auto_translation_engine": {
 			"name": ""

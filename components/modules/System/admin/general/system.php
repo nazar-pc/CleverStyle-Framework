@@ -24,6 +24,7 @@ $Index->content(
 		core_input('og_support', 'radio'),
 		core_input('simple_admin_mode', 'radio'),
 		!$sa ? core_input('cache_sync', 'radio') : false,
+		!$sa ? core_input('cookie_sync', 'radio') : false,
 		!$sa ? [
 			h::info('debug'),
 			h::{'input[type=radio]'}([

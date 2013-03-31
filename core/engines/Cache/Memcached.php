@@ -59,7 +59,11 @@ class Memcached extends _Abstract {
 			return false;
 		}
 		$return	= true;
-		foreach ($this->memcached->getAllKeys() as $element) {
+		$keys	=  $this->memcached->getAllKeys();
+		if (!$keys) {
+			return false;
+		}
+		foreach ($keys as $element) {
 			if (
 				$item == $element ||
 				(

@@ -346,6 +346,36 @@ abstract class _Abstract {
 		];
 	}
 	/**
+	 * Method for simplified inserting of several rows
+	 *
+	 * @param string	$query
+	 * @param array[]	$params	Array of array of parameters for inserting
+	 * @param bool		$join	If true - inserting of several rows will be combined in one query. For this, be sure, that your query has keyword <i>VALUES</i>
+	 * 							in uppercase. Part of query after this keyword will be multiplied with coma separator.
+	 *
+	 * @return bool
+	 */
+	function insert ($query, $params, $join = true) {
+		if (!$query || !$params) {
+			return false;
+		}
+		if ($join) {
+			$query		= explode('VALUES', $query, 2);
+			if (!isset($query[1]) || !$query[1]) {
+				return false;
+			}
+			$query[1]	.= str_repeat(','.$query[1], count($params) - 1);
+			$query		= implode('VALUES', $query);
+			return (bool)$this->q($query, $params);
+		} else {
+			$result	= true;
+			foreach ($params as $p) {
+				$result	= $result && (bool)$this->q($query, $p);
+			}
+			return $result;
+		}
+	}
+	/**
 	 * Id
 	 *
 	 * Get id of last inserted row
