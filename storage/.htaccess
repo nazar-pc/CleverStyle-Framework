@@ -1,2 +1,5 @@
 Deny from all
 RewriteEngine Off
+php_flag engine 0
+RemoveHandler .php
+AddType "text/html" .php .cgi .pl .fcgi .fpl .phtml .shtml .php2 .php3 .php4 .php5 .asp .jsp
