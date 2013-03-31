@@ -1,11 +1,14 @@
 {
 	"package"		: "HybridAuth",
 	"category"		: "modules",
-	"version"		: "2.1.1-cs8",
+	"version"		: "2.1.1-cs9",
 	"description"	: "Module for integration with social networks. Includes HybridAuth 2.1.1 core and additional providers 1.7",
 	"author"		: "HybridAuth authors",
 	"website"		: "hybridauth.sourceforge.net",
 	"license"		: "MIT License",
+	"db_support"	: [
+		"MySQLi"
+	],
 	"provide"		: [
 		"social_integration"
 	],

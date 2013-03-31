@@ -32,7 +32,7 @@ if ($User->system()) {
 		)
 	);
 	file_put_contents(PLUGINS.'/'.$plugin.'/fs.json', _json_encode(array_keys($fs)));
-	$Page->content((int)!$extract);
+	$Page->content((int)(bool)$extract);
 } else {
 	$Page->content(0);
 }

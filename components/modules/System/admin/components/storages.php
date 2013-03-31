@@ -23,7 +23,7 @@ if (isset($rc[2])) {
 			/**
 			 * @var array $storage
 			 */
-			$a->action = 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
+			$a->action = 'admin/System/'.$rc[0].'/'.$rc[1];
 			$Page->title($rc[2] == 'edit' ? $L->editing_of_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']) : $L->adding_of_storage);
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
@@ -112,7 +112,7 @@ if (isset($rc[2])) {
 				global $Page;
 				$Page->warning($L->storage_used_by_modules.': '.implode(', ', $modules));
 			} else {
-				$a->action = 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
+				$a->action = 'admin/System/'.$rc[0].'/'.$rc[1];
 				$Page->title($L->deletion_of_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']));
 				$a->content(
 					h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
@@ -208,7 +208,7 @@ if (isset($rc[2])) {
 			h::{'tr td.cs-left-all[colspan=4] a.cs-button'}(
 				$L->add_storage,
 				[
-					'href' => 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add'
+					'href' => 'admin/System/'.$rc[0].'/'.$rc[1].'/add'
 				]
 			)
 		)

@@ -9,7 +9,7 @@
  */
 namespace	cs\modules\System;
 use			h;
-global $Config, $Index, $L;
+global $Config, $Index, $L, $User;
 $a				= $Index;
 $rc				= $Config->route;
 $plugins		= get_files_list(PLUGINS, false, 'd');
@@ -45,14 +45,40 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 					break;
 				}
 				$rc[3]		= $plugin;
-				if (_json_decode(file_get_contents($tmp_dir.'/meta.json'))['category'] != 'plugins') {
+				if (!file_exists($tmp_dir.'/meta.json') || _json_decode(file_get_contents($tmp_dir.'/meta.json'))['category'] != 'plugins') {
 					$Page->warning($L->this_is_not_plugin_installer_file);
 					unlink($tmp_file);
 					break;
 				}
 				if (in_array($plugin, $Config->components['plugins'])) {
-					$Page->warning($L->cant_unpack_plugin_it_already_exists);
-					unlink($tmp_file);
+					$current_version		= _json_decode(file_get_contents(PLUGINS.'/'.$plugin.'/meta.json'))['version'];
+					$new_version			= _json_decode(file_get_contents($tmp_dir.'/meta.json'))['version'];
+					if (version_compare($current_version, $new_version, '<')) {
+						$Page->warning($L->update_plugin_impossible_older_version($plugin));
+						unlink($tmp_file);
+						break;
+					}
+					$check_dependencies		= check_dependencies($plugin, 'plugin', $tmp_dir);
+					if (!$check_dependencies && $Config->core['simple_admin_mode']) {
+						break;
+					}
+					$rc[3]					= 'update';
+					$show_plugins			= false;
+					$Page->title($L->updating_of_plugin($plugin));
+					rename($tmp_file, $tmp_file = TEMP.'/'.$User->get_session().'_plugin_update.phar.php');
+					$a->content(
+						h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+							$L->update_plugin(
+								$plugin,
+								$current_version,
+								$new_version
+							)
+						)
+					);
+					$a->cancel_button_back	= true;
+					$a->content(
+						h::{'button[type=submit]'}($L->{$check_dependencies ? $L->yes : 'force_update_not_recommended'})
+					);
 					break;
 				}
 				if (!file_exists(PLUGINS.'/'.$plugin) && !mkdir(PLUGINS.'/'.$plugin, 0700)) {
@@ -293,7 +319,7 @@ $a->content(
 				'style'	=> 'position: relative;'
 			]).
 			h::{'button[type=submit]'}(
-				$L->upload_and_install_plugin,
+				$L->upload_and_install_update_plugin,
 				[
 					'formaction'	=>  $a->action.'/enable/upload'
 				]

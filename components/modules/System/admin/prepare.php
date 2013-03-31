@@ -112,16 +112,18 @@ function dep_normal ($dependence_structure) {
 	}
 	return $return;
 }
-function check_dependencies ($name, $type = 'module') {
-	switch ($type) {
-		case 'module':
-			$dir	= MODULES.'/'.$name;
-		break;
-		case 'plugin':
-			$dir	= PLUGINS.'/'.$name;
-		break;
-		default:
-			return false;
+function check_dependencies ($name, $type = 'module', $dir = false) {
+	if (!$dir) {
+		switch ($type) {
+			case 'module':
+				$dir	= MODULES.'/'.$name;
+			break;
+			case 'plugin':
+				$dir	= PLUGINS.'/'.$name;
+			break;
+			default:
+				return false;
+		}
 	}
 	if (!file_exists($dir.'/meta.json')) {
 		return true;

@@ -9,7 +9,9 @@
 	],
 	"admin"		: [
 		"cache",
+		"update_module",
 		"upload_module",
+		"update_plugin",
 		"upload_plugin"
 	],
 	"profile"	: [

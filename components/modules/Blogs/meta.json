@@ -1,13 +1,12 @@
 {
 	"package"		: "Blogs",
 	"category"		: "modules",
-	"version"		: "0.029",
+	"version"		: "0.030",
 	"description"	: "Adds blogging functionality",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",
 	"license"		: "MIT License",
 	"db_support"	: [
-		"MySQL",
 		"MySQLi"
 	],
 	"provide"		: [

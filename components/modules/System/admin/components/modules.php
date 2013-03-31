@@ -33,7 +33,7 @@
  */
 namespace	cs\modules\System;
 use			h;
-global $Config, $Index, $L, $Core, $Page;
+global $Config, $Index, $L, $Core, $Page, $User;
 $a					= $Index;
 $rc					= $Config->route;
 $a->buttons			= false;
@@ -76,14 +76,40 @@ if (
 					break;
 				}
 				$rc[3]									= $module;
-				if (_json_decode(file_get_contents($tmp_dir.'/meta.json'))['category'] != 'modules') {
+				if (!file_exists($tmp_dir.'/meta.json') || _json_decode(file_get_contents($tmp_dir.'/meta.json'))['category'] != 'modules') {
 					$Page->warning($L->this_is_not_module_installer_file);
 					unlink($tmp_file);
 					break;
 				}
 				if (isset($Config->components['modules'][$module])) {
-					$Page->warning($L->cant_unpack_module_it_already_exists);
-					unlink($tmp_file);
+					$current_version		= _json_decode(file_get_contents(MODULES.'/'.$module.'/meta.json'))['version'];
+					$new_version			= _json_decode(file_get_contents($tmp_dir.'/meta.json'))['version'];
+					if (version_compare($current_version, $new_version, '<')) {
+						$Page->warning($L->update_module_impossible_older_version($module));
+						unlink($tmp_file);
+						break;
+					}
+					$check_dependencies		= check_dependencies($module, 'module', $tmp_dir);
+					if (!$check_dependencies && $Config->core['simple_admin_mode']) {
+						break;
+					}
+					$rc[3]					= 'update';
+					$show_modules			= false;
+					$Page->title($L->updating_of_module($module));
+					rename($tmp_file, $tmp_file = TEMP.'/'.$User->get_session().'_module_update.phar.php');
+					$a->content(
+						h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+							$L->update_module(
+								$module,
+								$current_version,
+								$new_version
+							)
+						)
+					);
+					$a->cancel_button_back	= true;
+					$a->content(
+						h::{'button[type=submit]'}($L->{$check_dependencies ? $L->yes : 'force_update_not_recommended'})
+					);
 					break;
 				}
 				if (!file_exists(MODULES.'/'.$module) && !mkdir(MODULES.'/'.$module, 0700)) {
@@ -113,11 +139,11 @@ if (
 					$Page->warning($L->module_files_unpacking_error);
 					break;
 				}
-				rename($tmp_file, mb_substr($tmp_file, 0, -9));
+				rename($tmp_file, $tmp_file = mb_substr($tmp_file, 0, -9));
 				$api_request							= $Core->api_request(
-					MODULE.'/admin/upload_module',
+					'System/admin/upload_module',
 					[
-						'package'	=> str_replace(DIR, $Config->base_url(), mb_substr($tmp_file, 0, -9))
+						'package'	=> str_replace(DIR, $Config->base_url(), $tmp_file)
 					]
 				);
 				if ($api_request) {
@@ -411,6 +437,7 @@ if (
 	switch ($rc[2]) {
 		case 'install':
 		case 'uninstall':
+		case 'update':
 		case 'default_module':
 		case 'db':
 		case 'storage':
@@ -683,7 +710,7 @@ $a->content(
 				'style'		=> 'position: relative;'
 			]).
 			h::{'button[type=submit]'}(
-				$L->upload_and_install_module,
+				$L->upload_and_install_update_module,
 				[
 					'formaction'	=>  $a->action.'/install/upload'
 				]

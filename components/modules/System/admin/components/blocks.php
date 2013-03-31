@@ -46,7 +46,7 @@ if (isset($rc[2])) {
 			$form					= false;
 			$a->buttons				= false;
 			$a->cancel_button_back	= true;
-			$a->action				= 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
+			$a->action				= 'admin/System/'.$rc[0].'/'.$rc[1];
 			$Page->title($L->deletion_of_block(get_block_title($rc[3])));
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
@@ -510,7 +510,7 @@ if ($form) {
 			h::{'td.cs-left-all[colspan=3] a.cs-button'}(
 				$L->add.' '.$L->block,
 				[
-					'href' => 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add'
+					'href' => 'admin/System/'.$rc[0].'/'.$rc[1].'/add'
 				]
 			)
 		]).

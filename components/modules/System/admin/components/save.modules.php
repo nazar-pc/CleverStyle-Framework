@@ -24,7 +24,7 @@
  *  admin/System/components/modules/storage/process<br>
  *  ['name'	=> <i>module_name</i>]
  */
-global $Config, $Index, $User, $Core, $Cache;
+global $Config, $Index, $User, $Core, $Cache, $Page, $L, $db;
 $a			= $Index;
 $rc			= $Config->route;
 if (isset($_POST['update_modules_list'])) {
@@ -74,7 +74,8 @@ if (isset($_POST['update_modules_list'])) {
 	ksort($modules);
 	$a->save();
 } elseif (isset($_POST['mode'], $_POST['module'], $Config->components['modules'][$_POST['module']])) {
-	$module_data = &$Config->components['modules'][$_POST['module']];
+	$module					= $_POST['module'];
+	$module_data = &$Config->components['modules'][$module];
 	switch ($_POST['mode']) {
 		case 'install':
 			if ($module_data['active'] != -1) {
@@ -84,16 +85,15 @@ if (isset($_POST['update_modules_list'])) {
 			if (!$Core->run_trigger(
 				'admin/System/components/modules/install/process',
 				[
-					'name' => $_POST['module']
+					'name' => $module
 				]
 			)) {
 				break;
 			}
 			$module_data['active'] = 0;
-			if (isset($_POST['db']) && is_array($_POST['db']) && file_exists(MODULES.'/'.$_POST['module'].'/meta/db.json')) {
+			if (isset($_POST['db']) && is_array($_POST['db']) && file_exists(MODULES.'/'.$module.'/meta/db.json')) {
 				$module_data['db'] = $_POST['db'];
-				$db_json = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/meta/db.json'));
-				global $db;
+				$db_json = _json_decode(file_get_contents(MODULES.'/'.$module.'/meta/db.json'));
 				time_limit_pause();
 				foreach ($db_json as $database) {
 					if ($module_data['db'][$database] == 0) {
@@ -101,7 +101,7 @@ if (isset($_POST['update_modules_list'])) {
 					} else {
 						$db_type	= $Config->db[$module_data['db'][$database]]['type'];
 					}
-					$sql_file	= MODULES.'/'.$_POST['module'].'/meta/install_db/'.$database.'/'.$db_type.'.sql';
+					$sql_file	= MODULES.'/'.$module.'/meta/install_db/'.$database.'/'.$db_type.'.sql';
 					if (file_exists($sql_file)) {
 						$db->{$module_data['db'][$database]}()->q(
 							explode(';', file_get_contents($sql_file))
@@ -115,16 +115,16 @@ if (isset($_POST['update_modules_list'])) {
 				$module_data['storage'] = $_POST['storage'];
 			}
 			$permissions = [
-				$_POST['module'] => ['index']
+				$module => ['index']
 			];
 			/**
 			 * Adding module permissions
 			 */
-			if (file_exists(MODULES.'/'.$_POST['module'].'/index.json')) {
-				$structure = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/index.json'));
+			if (file_exists(MODULES.'/'.$module.'/index.json')) {
+				$structure = _json_decode(file_get_contents(MODULES.'/'.$module.'/index.json'));
 				if (is_array($structure) && !empty($structure)) {
 					foreach ($structure as $item => $part) {
-						$permissions[$_POST['module']][] = is_array($part) ? $item : $part;
+						$permissions[$module][] = is_array($part) ? $item : $part;
 					}
 				}
 				unset($structure, $item, $part);
@@ -132,34 +132,34 @@ if (isset($_POST['update_modules_list'])) {
 			/**
 			 * Adding module admin permissions
 			 */
-			if (file_exists(MODULES.'/'.$_POST['module'].'/admin')) {
-				$permissions['admin/'.$_POST['module']] = ['index'];
-				if (file_exists(MODULES.'/'.$_POST['module'].'/admin/index.json')) {
-					$structure = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/admin/index.json'));
+			if (file_exists(MODULES.'/'.$module.'/admin')) {
+				$permissions['admin/'.$module] = ['index'];
+				if (file_exists(MODULES.'/'.$module.'/admin/index.json')) {
+					$structure = _json_decode(file_get_contents(MODULES.'/'.$module.'/admin/index.json'));
 					if (is_array($structure) && !empty($structure)) {
 						foreach ($structure as $item => $part) {
-							$permissions['admin/'.$_POST['module']][] = is_array($part) ? $item : $part;
+							$permissions['admin/'.$module][] = is_array($part) ? $item : $part;
 						}
 					}
 					unset($structure, $item, $part);
 				}
-				$permissions['admin/'.$_POST['module']]	= array_unique($permissions['admin/'.$_POST['module']]);
+				$permissions['admin/'.$module]	= array_unique($permissions['admin/'.$module]);
 			}
 			/**
 			 * Adding module API permissions
 			 */
-			if (file_exists(MODULES.'/'.$_POST['module'].'/api')) {
-				$permissions['api/'.$_POST['module']] = ['index'];
-				if (file_exists(MODULES.'/'.$_POST['module'].'/api/index.json')) {
-					$structure = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/api/index.json'));
+			if (file_exists(MODULES.'/'.$module.'/api')) {
+				$permissions['api/'.$module] = ['index'];
+				if (file_exists(MODULES.'/'.$module.'/api/index.json')) {
+					$structure = _json_decode(file_get_contents(MODULES.'/'.$module.'/api/index.json'));
 					if (is_array($structure) && !empty($structure)) {
 						foreach ($structure as $item => $part) {
-							$permissions['api/'.$_POST['module']][] = is_array($part) ? $item : $part;
+							$permissions['api/'.$module][] = is_array($part) ? $item : $part;
 						}
 					}
 					unset($structure, $item, $part);
 				}
-				$permissions['api/'.$_POST['module']]	= array_unique($permissions['api/'.$_POST['module']]);
+				$permissions['api/'.$module]	= array_unique($permissions['api/'.$module]);
 			}
 			foreach ($permissions as $group => $list) {
 				foreach ($list as $label) {
@@ -170,14 +170,14 @@ if (isset($_POST['update_modules_list'])) {
 			$a->save();
 		break;
 		case 'uninstall':
-			if ($module_data['active'] == -1 || $_POST['module'] == 'System' || $_POST['module'] == $Config->core['default_module']) {
+			if ($module_data['active'] == -1 || $module == 'System' || $module == $Config->core['default_module']) {
 				break;
 			}
 			unset($Cache->languages);
 			if (!$Core->run_trigger(
 				'admin/System/components/modules/uninstall/process',
 				[
-					'name' => $_POST['module']
+					'name' => $module
 				]
 			)) {
 				break;
@@ -186,13 +186,12 @@ if (isset($_POST['update_modules_list'])) {
 			$Core->run_trigger(
 				'admin/System/components/modules/disable',
 				[
-					'name'	=> $_POST['module']
+					'name'	=> $module
 				]
 			);
 			$Config->save();
-			if (isset($module_data['db']) && file_exists(MODULES.'/'.$_POST['module'].'/meta/db.json')) {
-				$db_json = _json_decode(file_get_contents(MODULES.'/'.$_POST['module'].'/meta/db.json'));
-				global $db;
+			if (isset($module_data['db']) && file_exists(MODULES.'/'.$module.'/meta/db.json')) {
+				$db_json = _json_decode(file_get_contents(MODULES.'/'.$module.'/meta/db.json'));
 				time_limit_pause();
 				foreach ($db_json as $database) {
 					if ($module_data['db'][$database] == 0) {
@@ -200,7 +199,7 @@ if (isset($_POST['update_modules_list'])) {
 					} else {
 						$db_type	= $Config->db[$module_data['db'][$database]]['type'];
 					}
-					$sql_file	= MODULES.'/'.$_POST['module'].'/meta/uninstall_db/'.$database.'/'.$db_type.'.sql';
+					$sql_file	= MODULES.'/'.$module.'/meta/uninstall_db/'.$database.'/'.$db_type.'.sql';
 					if (file_exists($sql_file)) {
 						$db->{$module_data['db'][$database]}()->q(
 							explode(';', file_get_contents($sql_file))
@@ -211,9 +210,9 @@ if (isset($_POST['update_modules_list'])) {
 				time_limit_pause(false);
 			}
 			$permissions_ids		= array_merge(
-				$User->get_permission(null, $_POST['module']),
-				$User->get_permission(null, $_POST['module'].'/admin'),
-				$User->get_permission(null, $_POST['module'].'/api')
+				$User->get_permission(null, $module),
+				$User->get_permission(null, $module.'/admin'),
+				$User->get_permission(null, $module.'/api')
 			);
 			if (!empty($permissions_ids)) {
 				foreach ($permissions_ids as &$id) {
@@ -224,14 +223,152 @@ if (isset($_POST['update_modules_list'])) {
 			$module_data			= ['active' => -1];
 			$a->save();
 		break;
+		case 'update':
+			/**
+			 * Temporary disable module
+			 */
+			$active					= $module_data['active'];
+			if ($active) {
+				$module_data['active']	= 0;
+				$Config->save();
+				$Core->run_trigger(
+					'admin/System/components/modules/disable',
+					[
+						'name'	=> $module
+					]
+				);
+			}
+			$module_dir				= MODULES."/$module";
+			/**
+			 * Backing up some necessary information about current version
+			 */
+			copy("$module_dir/fs.json",		"$module_dir/fs_old.json");
+			copy("$module_dir/meta.json",	"$module_dir/meta_old.json");
+			/**
+			 * Extracting new versions of files
+			 */
+			$tmp_dir	= 'phar://'.TEMP.'/'.$User->get_session().'_module_update.phar.php';
+			$fs			= _json_decode(file_get_contents("$tmp_dir/fs.json"));
+			$extract	= array_product(
+				array_map(
+					function ($index, $file) use ($tmp_dir, $module, $module_dir) {
+						if (
+							!file_exists(pathinfo("$module_dir/$file", PATHINFO_DIRNAME)) &&
+							!mkdir(pathinfo("$module_dir/$file", PATHINFO_DIRNAME), 0700, true)
+						) {
+							return 0;
+						}
+						return (int)copy($tmp_dir.'/fs/'.$index, "$module_dir/$file");
+					},
+					$fs,
+					array_keys($fs)
+				)
+			);
+			if (!$extract) {
+				$Page->warning($L->module_files_unpacking_error);
+				break;
+			}
+			unset($extract);
+			$tmp_file	= TEMP.'/'.$User->get_session().'_module_update.phar.php';
+			rename($tmp_file, $tmp_file = mb_substr($tmp_file, 0, -9));
+			$api_request							= $Core->api_request(
+				'System/admin/update_module',
+				[
+					'package'	=> str_replace(DIR, $Config->base_url(), $tmp_file)
+				]
+			);
+			if ($api_request) {
+				$success	= true;
+				foreach ($api_request as $mirror => $result) {
+					if ($result == 1) {
+						$success	= false;
+						$Page->warning($L->cant_unpack_module_on_mirror($mirror));
+					}
+				}
+				if (!$success) {
+					$Page->warning($L->module_files_unpacking_error);
+					break;
+				}
+				unset($success, $mirror, $result);
+			}
+			unlink($tmp_file);
+			unset($api_request, $tmp_file);
+			file_put_contents($module_dir.'/fs.json', _json_encode($fs = array_keys($fs)));
+			/**
+			 * Removing of old unnecessary files and directories
+			 */
+			foreach (array_diff(_json_encode($module_dir.'/fs_old.json'), $fs) as $file) {
+				if (file_exists("$module_dir/$file") && is_writable("$module_dir/$file")) {
+					unlink($file);
+					if (!get_files_list($dir = pathinfo("$module_dir/$file", PATHINFO_DIRNAME))) {
+						rmdir($dir);
+					}
+				}
+			}
+			unset($fs, $file, $dir);
+			/**
+			 * Updating of module
+			 */
+			if (file_exists($module_dir.'/versions.json')) {
+				$old_version	= _json_decode($module_dir.'/meta_old.json')['version'];
+				$versions		= [];
+				foreach (_json_decode($module_dir.'/versions.json') as $version) {
+					if (version_compare($old_version, $version, '<')) {
+						/**
+						 * PHP update script
+						 */
+						_include($module_dir.'/meta/update/'.$version.'.php', true, false);
+						/**
+						 * Database update
+						 */
+						if (isset($module_data['db']) && file_exists($module_dir.'/meta/db.json')) {
+							$db_json = _json_decode(file_get_contents($module_dir.'/meta/db.json'));
+							time_limit_pause();
+							foreach ($db_json as $database) {
+								if ($module_data['db'][$database] == 0) {
+									$db_type	= $Core->db_type;
+								} else {
+									$db_type	= $Config->db[$module_data['db'][$database]]['type'];
+								}
+								$sql_file	= $module_dir.'/meta/update_db/'.$database.'/'.$version.'/'.$db_type.'.sql';
+								if (file_exists($sql_file)) {
+									$db->{$module_data['db'][$database]}()->q(
+										explode(';', file_get_contents($sql_file))
+									);
+								}
+							}
+							unset($db_json, $database, $db_type, $sql_file);
+							time_limit_pause(false);
+						}
+					}
+				}
+			}
+			unlink($module_dir.'/fs_old.json');
+			unlink($module_dir.'/meta_old.json');
+			/**
+			 * Restore previous module state
+			 */
+			if ($active) {
+				$module_data['active']	= 1;
+				$Config->save();
+				$Core->run_trigger(
+					'admin/System/components/modules/enable',
+					[
+						'name'	=> $module
+					]
+				);
+				unset($Cache->languages);
+			}
+			$a->save();
+		break;
 		case 'default_module':
 			if (
 				$module_data['active'] != 1 ||
-				$_POST['module'] == $Config->core['default_module'] ||
+				$module == $Config->core['default_module'] ||
 				!(
-					file_exists(MODULES.'/'.$_POST['module'].'/index.php') ||
-					file_exists(MODULES.'/'.$_POST['module'].'/index.html') ||
-					file_exists(MODULES.'/'.$_POST['module'].'/index.json')
+					file_exists(MODULES.'/'.$module.'/index.php') ||
+					file_exists(MODULES.'/'.$module.'/index.html') ||
+					file_exists(MODULES.'/'.$module.'/index.json')
 				)
 			) {
 				break;
@@ -239,10 +376,10 @@ if (isset($_POST['update_modules_list'])) {
 			if ($Core->run_trigger(
 				'admin/System/components/modules/default_module/process',
 				[
-					'name' => $_POST['module']
+					'name' => $module
 				]
 			)) {
-				$Config->core['default_module'] = $_POST['module'];
+				$Config->core['default_module'] = $module;
 				$a->save();
 			}
 		break;
@@ -250,7 +387,7 @@ if (isset($_POST['update_modules_list'])) {
 			if ($Core->run_trigger(
 				'admin/System/components/modules/db/process',
 				[
-					'name' => $_POST['module']
+					'name' => $module
 				]
 			)) {
 				if (isset($_POST['db']) && is_array($_POST['db']) && count($Config->db) > 1) {
@@ -263,7 +400,7 @@ if (isset($_POST['update_modules_list'])) {
 			if ($Core->run_trigger(
 				'admin/System/components/modules/storage/process',
 				[
-					'name' => $_POST['module']
+					'name' => $module
 				]
 			)) {
 				if(isset($_POST['storage']) && is_array($_POST['storage']) && count($Config->storage) > 1) {
@@ -273,23 +410,23 @@ if (isset($_POST['update_modules_list'])) {
 			}
 		break;
 		case 'enable':
-			$Config->components['modules'][$_POST['module']]['active'] = 1;
+			$module_data['active'] = 1;
 			$a->save();
 			$Core->run_trigger(
 				'admin/System/components/modules/enable',
 				[
-					'name'	=> $_POST['module']
+					'name'	=> $module
 				]
 			);
 			unset($Cache->languages);
 		break;
 		case 'disable':
-			$Config->components['modules'][$_POST['module']]['active'] = 0;
+			$module_data['active'] = 0;
 			$a->save();
 			$Core->run_trigger(
 				'admin/System/components/modules/disable',
 				[
-					'name'	=> $_POST['module']
+					'name'	=> $module
 				]
 			);
 			unset($Cache->languages);

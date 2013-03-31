@@ -48,7 +48,7 @@ if (isset($rc[2])) {
 				}
 				unset($i, $db);
 			}
-			$a->action = 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
+			$a->action = 'admin/System/'.$rc[0].'/'.$rc[1];
 			/**
 			 * @var array $dbsname
 			 * @var array $dbs
@@ -171,7 +171,7 @@ if (isset($rc[2])) {
 				global $Page;
 				$Page->warning($L->db_used_by_modules.': '.implode(', ', $content));
 			} else {
-				$a->action	= 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1];
+				$a->action	= 'admin/System/'.$rc[0].'/'.$rc[1];
 				$mirror		= isset($rc[4]);
 				$cdb		= $Config->db[$rc[3]];
 				if ($mirror) {
@@ -295,14 +295,14 @@ if (isset($rc[2])) {
 								[
 									h::icon('wrench'),
 									[
-										'href'			=> 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/edit/'.$i.'/'.$m,
+										'href'			=> 'admin/System/'.$rc[0].'/'.$rc[1].'/edit/'.$i.'/'.$m,
 										'data-title'	=> $L->edit.' '.$L->mirror.' '.$L->of_db
 									]
 								],
 								[
 									h::icon('trash'),
 									[
-										'href'			=> 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/delete/'.$i.'/'.$m,
+										'href'			=> 'admin/System/'.$rc[0].'/'.$rc[1].'/delete/'.$i.'/'.$m,
 										'data-title'	=> $L->delete.' '.$L->mirror.' '.$L->of_db
 									]
 								],
@@ -338,7 +338,7 @@ if (isset($rc[2])) {
 			h::{'td.cs-left-all[colspan=7] a.cs-button'}(
 				$L->add_database,
 				[
-					'href' => 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add'
+					'href' => 'admin/System/'.$rc[0].'/'.$rc[1].'/add'
 				]
 			),
 			h::{'td.cs-right-all[colspan=4] info'}('db_balance').

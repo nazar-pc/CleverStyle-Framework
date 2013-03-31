@@ -1,1 +1,3 @@
 Allow From All
+RemoveHandler .php
+AddType text/plain .php
