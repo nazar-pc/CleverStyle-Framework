@@ -858,8 +858,8 @@ class User extends Accessor {
 	 * @return bool|int
 	 */
 	function add_group ($title, $description) {
-		$title			= $this->db_prime()->s(xap($title, false));
-		$description	= $this->db_prime()->s(xap($description, false));
+		$title			= xap($title, false);
+		$description	= xap($description, false);
 		if (!$title || !$description) {
 			return false;
 		}
@@ -1345,9 +1345,16 @@ class User extends Accessor {
 		if (!$id) {
 			return false;
 		}
-		$group	= $this->db_prime()->s(xap($group));
-		$label	= $this->db_prime()->s(xap($label));
-		if ($this->db_prime()->q("UPDATE `[prefix]permissions` SET `label` = '%s', `group` = '%s' WHERE `id` = '$id' LIMIT 1", $label, $group)) {
+		if ($this->db_prime()->q(
+			"UPDATE `[prefix]permissions`
+			SET
+				`label` = '%s',
+				`group` = '%s'
+			WHERE `id` = '$id'
+			LIMIT 1",
+			xap($label),
+			xap($group)
+		)) {
 			$this->del_permission_table();
 			return true;
 		} else {
