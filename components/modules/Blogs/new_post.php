@@ -19,7 +19,7 @@ if (!$User->user()) {
 		return;
 	}
 }
-$module						= path($L->{MODULE});
+$module						= path($L->Blogs);
 if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags'], $_POST['mode'])) {
 	$draft	= false;
 	switch ($_POST['mode']) {
@@ -62,7 +62,7 @@ $Index->action				= $module.'/new_post';
 $Index->buttons				= false;
 $Index->cancel_button_back	= true;
 $disabled					= [];
-$max_sections				= $Config->module(MODULE)->max_sections;
+$max_sections				= $Config->module('Blogs')->max_sections;
 $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 		$L->new_post

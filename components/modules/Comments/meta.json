@@ -1,8 +1,8 @@
 {
-	"package"		: "Blogs",
+	"package"		: "Comments",
 	"category"		: "modules",
-	"version"		: "0.031",
-	"description"	: "Adds blogging functionality",
+	"version"		: "0.001",
+	"description"	: "Adds comments functionality to other modules",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",
 	"license"		: "MIT License",
@@ -10,7 +10,7 @@
 		"MySQLi"
 	],
 	"provide"		: [
-		"blogs"
+		"comments"
 	],
 	"multilingual"	: [
 		"interface",

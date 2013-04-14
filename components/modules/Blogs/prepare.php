@@ -12,13 +12,13 @@ if (!API) {
 	global $Index, $Config, $L, $Page;
 	$Index->title_auto	= false;
 	if (!$Config->core['cache_compress_js_css']) {
-		$Page->css('components/modules/'.MODULE.'/includes/css/general.css');
+		$Page->css('components/modules/Blogs/includes/css/general.css');
 		$Page->js([
-			'components/modules/'.MODULE.'/includes/js/general.js',
-			'components/modules/'.MODULE.'/includes/js/functions.js'
+			'components/modules/Blogs/includes/js/general.js',
+			'components/modules/Blogs/includes/js/functions.js'
 		]);
 	} elseif (!(
-		file_exists(PCACHE.'/module.'.MODULE.'.js') && file_exists(PCACHE.'/module.'.MODULE.'.css')
+		file_exists(PCACHE.'/module.Blogs.js') && file_exists(PCACHE.'/module.Blogs.css')
 	)) {
 		rebuild_pcache();
 	}
@@ -57,7 +57,7 @@ if (!API) {
 		case 'edit_post':
 		case 'drafts':
 	}
-	$Page->title($L->{MODULE});
+	$Page->title($L->Blogs);
 	function get_sections_select_post (&$disabled, $current = null, $structure = null, $level = 0) {
 		$list	= [
 			'in'	=> [],
@@ -87,7 +87,7 @@ if (!API) {
 	}
 	function get_posts_list ($posts) {
 		global $Blogs, $L, $User, $Config;
-		$module		= path($L->{MODULE});
+		$module		= path($L->Blogs);
 		$content	= [];
 		if (empty($posts)) {
 			return '';
@@ -136,7 +136,7 @@ if (!API) {
 						]
 					).
 					(
-						$Config->module(MODULE)->enable_comments ? h::a(
+						$Config->module('Blogs')->enable_comments ? h::a(
 							h::icon('comment').$post['comments_count'],
 							[
 								'href'			=> $module.'/'.$post['path'].':'.$post['id'].'#comments'
@@ -154,82 +154,4 @@ if (!API) {
 		}
 		return h::article($content);
 	}
-}
-function get_comments_tree ($comments, $post) {
-	global	$User, $L;
-	$module		= path($L->{MODULE});
-	$content	= '';
-	if (is_array($comments) && !empty($comments)) {
-		foreach ($comments as $comment) {
-			$content	.= h::{'article.cs-blogs-comment'}(
-				h::a(
-					h::{'img.cs-blogs-comment-avatar'}([
-						'src'	=> $User->get('avatar', $comment['user']) ? h::url($User->get('avatar', $comment['user']), true) : 'includes/img/guest.gif',
-						'alt'	=> $User->username($comment['user']),
-						'title'	=> $User->username($comment['user'])
-					]),
-					[
-						'href'			=> path($L->profile).'/'.$User->get('login', $comment['user']),
-						'rel'			=> 'author'
-					]
-				).
-				h::{'a.cs-blogs-comment-author'}(
-					$User->username($comment['user']),
-					[
-						'href'			=> path($L->profile).'/'.$User->get('login', $comment['user']),
-						'rel'			=> 'author'
-					]
-				).
-				h::{'time.cs-blogs-comment-date'}(
-					date('dmY', TIME) == date('dmY', $comment['date']) ? date($L->_time, $comment['date']) : $L->to_locale(date($L->_datetime, $comment['date'])),
-					[
-						'datetime'		=> date('c', $comment['date'])
-					]
-				).
-				h::{'a.cs-blogs-comment-link'}(
-					h::icon('link'),
-					[
-						'href'	=> $module.'/'.$post['path'].':'.$post['id'].'#comment_'.$comment['id']
-					]
-				).
-				(
-					$comment['parent'] ? h::{'a.cs-blogs-comment-parent'}(
-						h::icon('arrowreturnthick-1-n'),
-						[
-							'href'	=> $module.'/'.$post['path'].':'.$post['id'].'#comment_'.$comment['parent']
-						]
-					) : ''
-				).
-				(
-					$User->id == $comment['user'] ||
-					(
-						$User->admin() &&
-						$User->get_user_permission('admin/'.MODULE, 'index') &&
-						$User->get_user_permission('admin/'.MODULE, 'edit_comment')
-					) ? h::{'icon.cs-blogs-comment-edit.cs-pointer'}('pencil') : ''
-				).
-				(
-					!$comment['comments'] &&
-					(
-						$User->id == $comment['user'] ||
-						(
-							$User->admin() &&
-							$User->get_user_permission('admin/'.MODULE, 'index') &&
-							$User->get_user_permission('admin/'.MODULE, 'delete_comment')
-						)
-					) ? h::{'icon.cs-blogs-comment-delete.cs-pointer'}('trash') : ''
-				).
-				h::{'div.cs-blogs-comment-text'}(
-					$comment['text']
-				).
-				(
-					$comment['comments'] ? get_comments_tree($comment['comments'], $post) : ''
-				),
-				[
-					'id'	=> 'comment_'.$comment['id']
-				]
-			);
-		}
-	}
-	return $content;
 }

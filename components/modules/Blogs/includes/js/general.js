@@ -6,75 +6,42 @@
  * @license		MIT License, see license.txt
  */
 $(function () {
-	$(document).on(
-		'click',
-		'.cs-blogs-comment-write-send',
-		blogs_add_comment
-	).on(
-		'click',
-		'.cs-blogs-comment-write-edit',
-		blogs_edit_comment
-	).on(
-		'click',
-		'.cs-blogs-comment-write-cancel',
-		blogs_comment_cancel
-	).on(
-		'click',
-		'.cs-blogs-comment-text',
-		function () {
-			blogs_comment_cancel();
-			var textarea	= $('.cs-blogs-comment-write-text');
-			textarea.data(
-				'parent',
-				$(this).parent('article').prop('id').replace('comment_', '')
-			).val('');
-			typeof window.editor_deinitialization === 'function' && editor_deinitialization(
-				textarea.prop('id')
-			);
-			$(this).after(
-				$('.cs-blogs-comment-write')
-			);
-			typeof window.editor_reinitialization === 'function' && editor_reinitialization(
-				textarea.prop('id')
-			);
-			typeof window.editor_focus === 'function' && editor_focus(
-				textarea.prop('id')
-			);
-			$('.cs-blogs-comment-write-cancel').show();
-		}
-	).on(
-		'click',
-		'.cs-blogs-comment-edit',
-		function () {
-			blogs_comment_cancel();
-			var textarea	= $('.cs-blogs-comment-write-text'),
-				parent		= $(this).parent('article'),
-				text		= parent.children('.cs-blogs-comment-text');
-			textarea.data(
-				'id',
-				parent.prop('id').replace('comment_', '')
-			).val(text.html());
-			typeof window.editor_deinitialization === 'function' && editor_deinitialization(
-				textarea.prop('id')
-			);
-			text.hide().after(
-				$('.cs-blogs-comment-write')
-			);
-			typeof window.editor_reinitialization === 'function' && editor_reinitialization(
-				textarea.prop('id')
-			);
-			typeof window.editor_focus === 'function' && editor_focus(
-				textarea.prop('id')
-			);
-			$('.cs-blogs-comment-write-edit, .cs-blogs-comment-write-cancel').show();
-			$('.cs-blogs-comment-write-send').hide();
-		}
-	).on(
-		'click',
-		'.cs-blogs-comment-delete',
-		blogs_delete_comment
-	);
 	$('.cs-blogs-post-preview').mousedown(function () {
 		blogs_post_preview($(this).data('id'))
 	});
+	function blogs_post_preview (id) {
+		var data	= {
+			'title'		: $('.cs-blogs-new-post-title').val(),
+			'sections'	: $('.cs-blogs-new-post-sections').val(),
+			'content'	: $('.cs-blogs-new-post-content').val(),
+			'tags'		: $('.cs-blogs-new-post-tags').val()
+		};
+		if (id) {
+			data.id	= id;
+		}
+		$.ajax(
+			base_url+'/api/Blogs/preview_post',
+			{
+				cache		: false,
+				data		: data,
+				success	: function (result) {
+					var	preview	= $('.cs-blogs-post-preview-content');
+					preview.html(result);
+					$('html, body').stop().animate(
+						{
+							scrollTop	: preview.offset().top
+						},
+						500
+					);
+				},
+				error	: function (xhr) {
+					if (xhr.responseText) {
+						alert(json_decode(xhr.responseText).error_description);
+					} else {
+						alert(L.post_preview_connection_error);
+					}
+				}
+			}
+		);
+	}
 });

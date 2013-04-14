@@ -588,6 +588,9 @@ class Config {
 	 * @return Config\Module_Properties
 	 */
 	function module ($module_name) {
+		if (!isset($this->components['modules'][$module_name])) {
+			return false;
+		}
 		return (new Config\Module_Properties($this->components['modules'][$module_name], $module_name));
 	}
 	/**

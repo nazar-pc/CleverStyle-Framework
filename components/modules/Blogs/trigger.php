@@ -12,7 +12,7 @@ global $Core;
 $Core->register_trigger(
 	'admin/System/components/modules/disable',
 	function ($data) {
-		if ($data['name'] == basename(__DIR__)) {
+		if ($data['name'] == 'Blogs') {
 			clean_pcache();
 		}
 	}
@@ -26,38 +26,34 @@ $Core->register_trigger(
 $Core->register_trigger(
 	'System/Page/rebuild_cache',
 	function () {
-		$module	= basename(__DIR__);
-		if (file_exists(PCACHE.'/module.'.$module.'.js') && file_exists(PCACHE.'/module.'.$module.'.css')) {
+		if (file_exists(PCACHE.'/module.Blogs.js') && file_exists(PCACHE.'/module.Blogs.css')) {
 			return;
 		}
 		rebuild_pcache();
 	}
 );
 function clean_pcache () {
-	$module	= basename(__DIR__);
-	if (file_exists(PCACHE.'/module.'.$module.'.js')) {
-		unlink(PCACHE.'/module.'.$module.'.js');
+	if (file_exists(PCACHE.'/module.Blogs.js')) {
+		unlink(PCACHE.'/module.Blogs.js');
 	}
-	if (file_exists(PCACHE.'/module.'.$module.'.css')) {
-		unlink(PCACHE.'/module.'.$module.'.css');
+	if (file_exists(PCACHE.'/module.Blogs.css')) {
+		unlink(PCACHE.'/module.Blogs.css');
 	}
 }
 function rebuild_pcache (&$data = null) {
-	$module	= basename(__DIR__);
 	$key	= [];
 	file_put_contents(
-		PCACHE.'/module.'.$module.'.js',
+		PCACHE.'/module.Blogs.js',
 		$key[]	= gzencode(
-			file_get_contents(MODULES.'/'.$module.'/includes/js/functions.js').
-			file_get_contents(MODULES.'/'.$module.'/includes/js/general.js'),
+			file_get_contents(MODULES.'/Blogs/includes/js/general.js'),
 			9
 		),
 		LOCK_EX | FILE_BINARY
 	);
 	file_put_contents(
-		PCACHE.'/module.'.$module.'.css',
+		PCACHE.'/module.Blogs.css',
 		$key[]	= gzencode(
-			file_get_contents(MODULES.'/'.$module.'/includes/css/general.css'),
+			file_get_contents(MODULES.'/Blogs/includes/css/general.css'),
 			9
 		),
 		LOCK_EX | FILE_BINARY
@@ -70,11 +66,10 @@ $Core->register_trigger(
 	'admin/System/components/modules/install/process',
 	function ($data) use ($Core) {
 		global $User, $Config;
-		$module		= basename(__DIR__);
-		if ($data['name'] != $module || !$User->admin()) {
+		if ($data['name'] != 'Blogs' || !$User->admin()) {
 			return;
 		}
-		$Config->module($module)->set(
+		$Config->module('Blogs')->set(
 			[
 				'posts_per_page'	=> 10,
 				'max_sections'		=> 3,
@@ -88,8 +83,7 @@ $Core->register_trigger(
 	'admin/System/components/modules/uninstall/process',
 	function ($data) use ($Core) {
 		global $User, $Cache, $Config, $db, $Blogs;
-		$module		= basename(__DIR__);
-		if ($data['name'] != $module || !$User->admin()) {
+		if ($data['name'] != 'Blogs' || !$User->admin()) {
 			return;
 		}
 		time_limit_pause();
@@ -101,7 +95,7 @@ $Core->register_trigger(
 			unset($section);
 		}
 		unset($sections);
-		$posts		= $db->{$Config->module($module)->db('posts')}->qfas(
+		$posts		= $db->{$Config->module('Blogs')->db('posts')}->qfas(
 			"SELECT `id`
 			FROM `[prefix]blogs_posts`"
 		);
@@ -113,7 +107,7 @@ $Core->register_trigger(
 		}
 		unset(
 			$posts,
-			$Cache->$module
+			$Cache->Blogs
 		);
 		clean_pcache();
 		time_limit_pause(false);
@@ -123,9 +117,8 @@ $Core->register_trigger(
 	'System/Index/mainmenu',
 	function ($data) {
 		global $L;
-		$module	= basename(__DIR__);
-		if ($data['module'] == $module) {
-			$data['module']	= path($L->$module);
+		if ($data['module'] == 'Blogs') {
+			$data['module']	= path($L->Blogs);
 		}
 	}
 );
@@ -133,16 +126,15 @@ $Core->register_trigger(
 	'System/Config/routing_replace',
 	function ($data) {
 		global $L, $Config;
-		$module	= basename(__DIR__);
-		if (!$Config->module($module)->active() && substr($data['rc'], 0, 5) != 'admin') {
+		if (!$Config->module('Blogs')->active() && substr($data['rc'], 0, 5) != 'admin') {
 			return;
 		}
 		global $Core;
 		require_once __DIR__.'/Blogs.php';
 		$Core->create('_cs\\modules\\Blogs\\Blogs');
 		$rc		= explode('/', $data['rc']);
-		if ($rc[0] == $L->$module) {
-			$rc[0]		= $module;
+		if ($rc[0] == $L->Blogs || $rc[0] == 'Blogs') {
+			$rc[0]		= 'Blogs';
 			$data['rc']	= implode('/', $rc);
 		}
 	}

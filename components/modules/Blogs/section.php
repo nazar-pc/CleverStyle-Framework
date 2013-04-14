@@ -35,17 +35,17 @@ if (isset($structure['id'])) {
 	return;
 }
 $Page->title($L->latest_posts);
-$Page->Keywords			= keywords($L->{MODULE}.' '.implode(' ', $keywords).' '.$L->latest_posts).', '.$Page->Keywords;
-$Page->Description		= description($L->{MODULE}.' - '.implode(' - ', $description).' - '.$L->latest_posts.'. '.$Page->Description);
+$Page->Keywords			= keywords($L->Blogs.' '.implode(' ', $keywords).' '.$L->latest_posts).', '.$Page->Keywords;
+$Page->Description		= description($L->Blogs.' - '.implode(' - ', $description).' - '.$L->latest_posts.'. '.$Page->Description);
 $Page->og('type', 'blog');
-$module					= path($L->{MODULE});
+$module					= path($L->Blogs);
 if ($User->user()) {
-	if ($User->admin() && $User->get_user_permission('admin/'.MODULE, 'index')) {
+	if ($User->admin() && $User->get_user_permission('admin/Blogs', 'index')) {
 		$Index->content(
 			h::{'a.cs-button-compact'}(
 				h::icon('wrench'),
 				[
-					'href'			=> 'admin/'.MODULE,
+					'href'			=> 'admin/Blogs',
 					'data-title'	=> $L->administration
 				]
 			)
@@ -79,9 +79,9 @@ $Page->canonical_url($Config->base_url().'/'.$module.'/'.path($L->section).'/'.$
 if ($page > 1) {
 	$Page->title($L->blogs_nav_page($page));
 }
-$num					= $Config->module(MODULE)->posts_per_page;
+$num					= $Config->module('Blogs')->posts_per_page;
 $from					= ($page - 1) * $num;
-$cdb					= $db->{$Config->module(MODULE)->db('posts')};
+$cdb					= $db->{$Config->module('Blogs')->db('posts')};
 $posts					= $cdb->qfas(
 	"SELECT `s`.`id`
 	FROM `[prefix]blogs_posts_sections` AS `s`

@@ -9,7 +9,7 @@
  */
 namespace	cs\modules\Blogs;
 use			h;
-global $Core, $Index, $Page, $L, $Config;
+global $Index, $Page, $L, $Config;
 $Index->title_auto	= false;
 $Page->title($L->administration);
 $Page->title($L->{MODULE});
@@ -18,8 +18,7 @@ $Page->css([
 	'components/modules/'.MODULE.'/includes/css/general.css'
 ]);
 $Page->js([
-	'components/modules/'.MODULE.'/includes/js/general.js',
-	'components/modules/'.MODULE.'/includes/js/functions.js'
+	'components/modules/'.MODULE.'/includes/js/general.js'
 ]);
 $rc					= $Config->route;
 $Page->menumore		= h::a(

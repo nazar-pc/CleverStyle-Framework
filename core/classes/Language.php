@@ -6,7 +6,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-use			\Closure;
+use			Closure;
 /**
  * Provides next triggers:<br>
  *  System/general/languages/load<code>

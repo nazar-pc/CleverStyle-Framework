@@ -1,4 +1,4 @@
-CREATE TABLE `[prefix]static_pages` (
+CREATE TABLE IF NOT EXISTS `[prefix]static_pages` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `category` smallint(4) unsigned NOT NULL,
   `title` varchar(1024) NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE `[prefix]static_pages` (
   KEY `category` (`category`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `[prefix]static_pages_categories` (
+CREATE TABLE IF NOT EXISTS `[prefix]static_pages_categories` (
   `id` smallint(4) unsigned NOT NULL AUTO_INCREMENT,
   `parent` smallint(4) unsigned NOT NULL DEFAULT '0',
   `title` varchar(1024) NOT NULL,

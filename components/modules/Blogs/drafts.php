@@ -10,7 +10,7 @@ namespace	cs\modules\Blogs;
 use			h;
 global $Index, $Page, $L, $User, $db, $Config;
 $Page->title($L->drafts);
-$module					= path($L->{MODULE});
+$module					= path($L->Blogs);
 $Index->form			= true;
 $Index->buttons			= false;
 $Index->form_atributes	= ['class'	=> ''];
@@ -19,9 +19,9 @@ $page					= $page > 0 ? $page : 1;
 if ($page > 1) {
 	$Page->title($L->blogs_nav_page($page));
 }
-$num					= $Config->module(MODULE)->posts_per_page;
+$num					= $Config->module('Blogs')->posts_per_page;
 $from					= ($page - 1) * $num;
-$cdb					= $db->{$Config->module(MODULE)->db('posts')};
+$cdb					= $db->{$Config->module('Blogs')->db('posts')};
 $posts_count			= $cdb->qfs([
 	"SELECT COUNT(`id`)
 	FROM `[prefix]blogs_posts`

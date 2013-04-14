@@ -17,18 +17,17 @@ class Blogs extends Accessor {
 	 */
 	protected function cdb () {
 		global $Config;
-		return $Config->module(basename(__DIR__))->db('posts');
+		return $Config->module('Blogs')->db('posts');
 	}
 	/**
 	 * Get data of specified post
 	 *
 	 * @param int			$id
-	 * @param bool			$comments	Get comments structure, or not. Comments count will be returned anyway
 	 *
 	 * @return array|bool
 	 */
-	function get ($id, $comments = false) {
-		global $Cache, $L, $User;
+	function get ($id) {
+		global $Cache, $L, $User, $Config, $Comments;
 		$id	= (int)$id;
 		if (($data = $Cache->{'Blogs/posts/'.$id.'/'.$L->clang}) === false) {
 			$data	= $this->db()->qf([
@@ -66,19 +65,9 @@ class Blogs extends Accessor {
 					FROM `[prefix]blogs_posts_tags`
 					WHERE `id` = $id"
 				);
-				$data['comments_count']						= (int)$this->db()->qfs([
-					"SELECT COUNT(`id`)
-					FROM `[prefix]blogs_comments`
-					WHERE
-						`post`	= $id AND
-						`lang`	= '%s'",
-					$L->clang
-				]);
+				$data['comments_count']						= $Config->module('Blogs')->enable_comments && is_object($Comments) ? $Comments->count($data['id']) : 0;
 				$Cache->{'Blogs/posts/'.$id.'/'.$L->clang}	= $data;
 			}
-		}
-		if ($comments) {
-			$data['comments']	= $this->get_comments($id);
 		}
 		return $data;
 	}
@@ -257,7 +246,7 @@ class Blogs extends Accessor {
 	 * @return bool
 	 */
 	function del ($id) {
-		global $Cache;
+		global $Cache, $Comments;
 		$id	= (int)$id;
 		if ($this->db_prime()->q([
 			"DELETE FROM `[prefix]blogs_posts`
@@ -266,13 +255,14 @@ class Blogs extends Accessor {
 			"DELETE FROM `[prefix]blogs_posts_sections`
 			WHERE `id` = $id",
 			"DELETE FROM `[prefix]blogs_posts_tags`
-			WHERE `id` = $id",
-			"DELETE FROM `[prefix]blogs_comments`
-			WHERE `post` = $id"
+			WHERE `id` = $id"
 		])) {
 			$this->ml_del('Blogs/posts/title', $id);
 			$this->ml_del('Blogs/posts/path', $id);
 			$this->ml_del('Blogs/posts/content', $id);
+			if (is_object($Comments)) {
+				$Comments->del_all($id);
+			}
 			unset(
 				$Cache->{'Blogs/posts/'.$id},
 				$Cache->{'Blogs/sections'},
@@ -719,209 +709,6 @@ class Blogs extends Accessor {
 			unset($Cache->{'Blogs/tags'});
 		}
 		return array_values(array_unique($tags));
-	}
-	/**
-	 * Get comments of specified post
-	 *
-	 * @param int			$id		Post id
-	 * @param int			$parent
-	 *
-	 * @return bool|array
-	 */
-	protected function get_comments ($id, $parent = 0) {
-		global $Cache, $L;
-		if ($parent != 0 || ($comments = $Cache->{'Blogs/posts/'.$id.'/comments/'.$L->clang}) === false) {
-			$id											= (int)$id;
-			$parent										= (int)$parent;
-			$comments									= $this->db()->qfa([
-				"SELECT
-					`id`,
-					`parent`,
-					`user`,
-					`date`,
-					`text`,
-					`lang`
-				FROM `[prefix]blogs_comments`
-				WHERE
-					`parent`	= $parent AND
-					`post`		= $id AND
-					`lang`		= '%s'",
-				$L->clang
-			]);
-			if ($comments) {
-				foreach ($comments as &$comment) {
-					$comment['comments']	= $this->get_comments($id, $comment['id']);
-				}
-				unset($comment);
-			}
-			if ($parent == 0) {
-				$Cache->{'Blogs/posts/'.$id.'/comments/'.$L->clang}	= $comments;
-			}
-		}
-		return $comments;
-	}
-	/**
-	 * Get comment data
-	 *
-	 * @param int			$id Comment id
-	 *
-	 * @return array|bool		Array of comment data on success or <b>false</b> on failure
-	 */
-	function get_comment ($id) {
-		$id	= (int)$id;
-		return $this->db()->qf(
-			"SELECT
-				`id`,
-				`parent`,
-				`post`,
-				`user`,
-				`date`,
-				`text`,
-				`lang`
-			FROM `[prefix]blogs_comments`
-			WHERE `id` = $id
-			LIMIT 1"
-		);
-	}
-	/**
-	 * Add new comment
-	 *
-	 * @param int			$post	Post id
-	 * @param string		$text	Comment text
-	 * @param int			$parent	Parent comment id
-	 *
-	 * @return array|bool			Array of comment data on success or <b>false</b> on failure
-	 */
-	function add_comment ($post, $text, $parent = 0) {
-		global $Cache, $L, $User;
-		$text	= xap($text, true);
-		if (!$text) {
-			return false;
-		}
-		$post	= (int)$post;
-		$parent	= (int)$parent;
-		if (
-			$parent != 0 &&
-			$this->db_prime()->qfs(
-				"SELECT `post`
-				FROM `[prefix]blogs_comments`
-				WHERE `id` = $parent
-				LIMIT 1"
-			) != $post
-		) {
-			return false;
-		}
-		if ($this->db_prime()->q(
-			"INSERT INTO `[prefix]blogs_comments`
-				(
-					`parent`,
-					`post`,
-					`user`,
-					`date`,
-					`text`,
-					`lang`
-				)
-			VALUES
-				(
-					'%s',
-					'%s',
-					'%s',
-					'%s',
-					'%s',
-					'%s'
-				)",
-			$parent,
-			$post,
-			$User->id,
-			TIME,
-			$text,
-			$L->clang
-		)) {
-			unset($Cache->{'Blogs/posts/'.$post.'/comments'});
-			return [
-				'id'		=> $this->db_prime()->id(),
-				'parent'	=> $parent,
-				'post'		=> $post,
-				'user'		=> $User->id,
-				'date'		=> TIME,
-				'text'		=> $text,
-				'lang'		=> $L->clang
-			];
-		}
-		return false;
-	}
-	/**
-	 * Set comment text
-	 *
-	 * @param int			$id		Comment id
-	 * @param string		$text	New comment text
-	 *
-	 * @return array|bool			Array of comment data on success or <b>false</b> on failure
-	 */
-	function set_comment ($id, $text) {
-		global $Cache;
-		$text	= xap($text, true);
-		if (!$text) {
-			return false;
-		}
-		$id				= (int)$id;
-		$comment		= $this->db_prime()->qf(
-			"SELECT
-				`id`,
-				`parent`,
-				`post`,
-				`user`,
-				`date`,
-				`lang`
-			FROM `[prefix]blogs_comments`
-			WHERE `id` = $id
-			LIMIT 1"
-		);
-		if (!$comment) {
-			return false;
-		}
-		if ($this->db_prime()->q(
-			"UPDATE `[prefix]blogs_comments`
-			SET `text` = '%s'
-			WHERE `id` = $id
-			LIMIT 1",
-			$text
-		)) {
-			unset($Cache->{'Blogs/posts/'.$comment['post'].'/comments'});
-			$comment['text']	= $text;
-			return $comment;
-		}
-		return false;
-	}
-	/**
-	 * Delete comment
-	 *
-	 * @param int	$id	Comment id
-	 *
-	 * @return bool
-	 */
-	function del_comment ($id) {
-		global $Cache;
-		$id				= (int)$id;
-		$comment		= $this->db_prime()->qf(
-			"SELECT `p`.`post`, COUNT(`c`.`id`) AS `count`
-			FROM `[prefix]blogs_comments` AS `p` LEFT JOIN `[prefix]blogs_comments` AS `c`
-			ON `p`.`id` = `c`.`parent`
-			WHERE `p`.`id` = $id
-			LIMIT 1"
-		);
-		if (!$comment || $comment['count']) {
-			return false;
-		}
-		if ($this->db_prime()->q(
-			"DELETE FROM `[prefix]blogs_comments`
-			WHERE `id` = $id
-			LIMIT 1"
-		)) {
-			unset($Cache->{'Blogs/posts/'.$comment['post']});
-			return true;
-		}
-		return false;
 	}
 }
 /**

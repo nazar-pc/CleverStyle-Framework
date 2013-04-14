@@ -8,7 +8,7 @@
  */
 namespace	cs\modules\Blogs;
 use			h;
-global $Index, $Config, $Blogs, $Page, $L, $User;
+global $Index, $Config, $Blogs, $Page, $L, $User, $Comments;
 $rc					= $Config->route;
 $post				= (int)mb_substr($rc[1], mb_strrpos($rc[1], ':')+1);
 if (!$post) {
@@ -20,7 +20,7 @@ if (!$post) {
 	define('ERROR_CODE', 404);
 	return;
 }
-$module				= path($L->{MODULE});
+$module				= path($L->Blogs);
 if ($post['path'] != mb_substr($rc[1], 0, mb_strrpos($rc[1], ':'))) {
 	code_header(303);
 	header('Location: '.$Config->base_url().'/'.$module.'/'.$post['path'].':'.$post['id']);
@@ -62,8 +62,8 @@ $Index->content(
 				).
 				(
 					$User->admin() &&
-					$User->get_user_permission('admin/'.MODULE, 'index') &&
-					$User->get_user_permission('admin/'.MODULE, 'edit_post') ? ' '.h::{'a.cs-button-compact'}(
+					$User->get_user_permission('admin/Blogs', 'index') &&
+					$User->get_user_permission('admin/Blogs', 'edit_post') ? ' '.h::{'a.cs-button-compact'}(
 						[
 							h::icon('wrench'),
 							[
@@ -74,7 +74,7 @@ $Index->content(
 						[
 							h::icon('trash'),
 							[
-								'href'			=> 'admin/'.MODULE.'/delete_post/'.$post['id'],
+								'href'			=> 'admin/Blogs/delete_post/'.$post['id'],
 								'data-title'	=> $L->delete
 							]
 						]
@@ -146,48 +146,12 @@ $Index->content(
 					]
 				).
 				(
-					$Config->module(MODULE)->enable_comments ? h::icon('comment').$post['comments_count'] : ''
+					$Config->module('Blogs')->enable_comments ? h::icon('comment').$post['comments_count'] : ''
 				)
 			)
 		)
 	).
 	(
-		$Config->module(MODULE)->enable_comments ? h::{'section#comments.cs-blogs-comments'}(
-			$L->comments.':'.
-			(
-				!$post['comments_count'] ? h::{'article.cs-blogs-no-comments'}(
-					$L->no_comments_yet
-				) : get_comments_tree($post['comments'], $post)
-			)
-		).
-		h::p($L->add_comment.':').
-		(
-			$User->user() ? h::{'section.cs-blogs-comment-write'}(
-				h::{'textarea.cs-blogs-comment-write-text.cs-wide-textarea.SEDITOR'}(
-					'',
-					[
-						'data-post'		=> $post['id'],
-						'data-parent'	=> 0,
-						'data-id'		=> 0
-					]
-				).
-				h::br().
-				h::{'button.cs-blogs-comment-write-send'}(
-					$L->send_comment
-				).
-				h::{'button.cs-blogs-comment-write-edit'}(
-					$L->save,
-					[
-						'style'	=>	'display: none'
-					]
-				).
-				h::{'button.cs-blogs-comment-write-cancel'}(
-					$L->cancel,
-					[
-						'style'	=>	'display: none'
-					]
-				)
-			) : h::p($L->register_for_comments_sending)
-		) : ''
+		$Config->module('Blogs')->enable_comments && is_object($Comments) ? $Comments->block($post['id']) : ''
 	)
 );

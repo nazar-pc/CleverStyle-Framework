@@ -1,17 +1,4 @@
-CREATE TABLE `[prefix]blogs_comments` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `parent` bigint(20) NOT NULL DEFAULT '0',
-  `post` bigint(20) NOT NULL,
-  `user` bigint(20) NOT NULL,
-  `date` bigint(20) NOT NULL,
-  `text` text NOT NULL,
-  `lang` varchar(2) NOT NULL COMMENT 'Language of original message',
-  PRIMARY KEY (`id`),
-  KEY `parent` (`parent`),
-  KEY `post` (`post`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE `[prefix]blogs_posts` (
+CREATE TABLE IF NOT EXISTS `[prefix]blogs_posts` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user` bigint(20) unsigned NOT NULL,
   `date` bigint(20) unsigned NOT NULL,
@@ -26,21 +13,21 @@ CREATE TABLE `[prefix]blogs_posts` (
 	KEY `draft` (`draft`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `[prefix]blogs_posts_sections` (
+CREATE TABLE IF NOT EXISTS `[prefix]blogs_posts_sections` (
   `id` int(11) NOT NULL COMMENT 'Post id',
   `section` int(11) NOT NULL COMMENT 'Category id',
   KEY `id` (`id`),
   KEY `section` (`section`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `[prefix]blogs_posts_tags` (
+CREATE TABLE IF NOT EXISTS `[prefix]blogs_posts_tags` (
   `id` bigint(20) NOT NULL COMMENT 'Post id',
   `tag` bigint(20) NOT NULL COMMENT 'Tag id',
   KEY `id` (`id`),
   KEY `tag` (`tag`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `[prefix]blogs_sections` (
+CREATE TABLE IF NOT EXISTS `[prefix]blogs_sections` (
   `id` smallint(4) unsigned NOT NULL AUTO_INCREMENT,
   `parent` smallint(4) unsigned NOT NULL DEFAULT '0',
   `title` varchar(1024) NOT NULL,
@@ -50,7 +37,7 @@ CREATE TABLE `[prefix]blogs_sections` (
   KEY `path` (`path`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `[prefix]blogs_tags` (
+CREATE TABLE IF NOT EXISTS `[prefix]blogs_tags` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `text` varchar(1024) NOT NULL,
   PRIMARY KEY (`id`),

@@ -14,14 +14,14 @@ if (!isset($rc[0])) {
 	define('ERROR_CODE', 404);
 	return;
 }
-$module					= path($L->{MODULE});
+$module					= path($L->Blogs);
 if ($User->user()) {
-	if ($User->admin() && $User->get_user_permission('admin/'.MODULE, 'index')) {
+	if ($User->admin() && $User->get_user_permission('admin/Blogs', 'index')) {
 		$Index->content(
 			h::{'a.cs-button-compact'}(
 				h::icon('wrench'),
 				[
-					'href'			=> 'admin/'.MODULE,
+					'href'			=> 'admin/Blogs',
 					'data-title'	=> $L->administration
 				]
 			)
@@ -56,9 +56,9 @@ $Page->og('type', 'blog');
 if ($page > 1) {
 	$Page->title($L->blogs_nav_page($page));
 }
-$num					= $Config->module(MODULE)->posts_per_page;
+$num					= $Config->module('Blogs')->posts_per_page;
 $from					= ($page - 1) * $num;
-$cdb					= $db->{$Config->module(MODULE)->db('posts')};
+$cdb					= $db->{$Config->module('Blogs')->db('posts')};
 $tag					= $cdb->qfs([
 	"SELECT `id`
 	FROM `[prefix]blogs_tags`
@@ -92,8 +92,8 @@ $tag					= [
 ];;
 $Page->title($tag['text']);
 $Page->title($L->latest_posts);
-$Page->Keywords			= keywords($L->{MODULE}.' '.$tag['text'].' '.$L->latest_posts).', '.$Page->Keywords;
-$Page->Description		= description($L->{MODULE}.' - '.$tag['text'].' - '.$L->latest_posts.'. '.$Page->Description);//TODO og type, description and keywords
+$Page->Keywords			= keywords($L->Blogs.' '.$tag['text'].' '.$L->latest_posts).', '.$Page->Keywords;
+$Page->Description		= description($L->Blogs.' - '.$tag['text'].' - '.$L->latest_posts.'. '.$Page->Description);//TODO og type, description and keywords
 $posts_count			= $cdb->qfs([
 	"SELECT COUNT(`t`.`id`)
 	FROM `[prefix]blogs_posts_tags` AS `t`

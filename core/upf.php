@@ -146,7 +146,7 @@ function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false,
 			$list[filesize($link)] = $tmp;
 		};
 	} else {
-		$prepare = function (&$list, $tmp, $link) {
+		$prepare = function (&$list, $tmp) {
 			$list[] = $tmp;
 		};
 	}

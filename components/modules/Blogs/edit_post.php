@@ -20,8 +20,8 @@ if (
 	$post['user'] != $User->id &&
 	!(
 		$User->admin() &&
-		$User->get_user_permission('admin/'.MODULE, 'index') &&
-		$User->get_user_permission('admin/'.MODULE, 'edit_post')
+		$User->get_user_permission('admin/Blogs', 'index') &&
+		$User->get_user_permission('admin/Blogs', 'edit_post')
 	)
 ) {
 	define('ERROR_CODE', 403);
@@ -30,7 +30,7 @@ if (
 $Page->title(
 	$L->editing_of_post($post['title'])
 );
-$module						= path($L->{MODULE});
+$module						= path($L->Blogs);
 if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags'], $_POST['mode'])) {
 	$draft	= false;
 	switch ($_POST['mode']) {
@@ -57,7 +57,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 			if ($save) {
 				if ($Blogs->set($post['id'], $_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])), $draft)) {
 					interface_off();
-					header('Location: '.$Config->base_url().'/'.$L->{MODULE}.'/'.$post['path'].':'.$post['id']);
+					header('Location: '.$Config->base_url().'/'.$L->Blogs.'/'.$post['path'].':'.$post['id']);
 					return;
 				} else {
 					$Page->warning($L->post_saving_error);
@@ -67,7 +67,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 		case 'delete':
 			if ($Blogs->del($post['id'])) {
 				interface_off();
-				header('Location: '.$Config->base_url().'/'.$L->{MODULE});
+				header('Location: '.$Config->base_url().'/'.$L->Blogs);
 				return;
 			} else {
 				$Page->warning($L->post_deleting_error);
@@ -80,7 +80,7 @@ $Index->action				= $module.'/edit_post/'.$post['id'];
 $Index->buttons				= false;
 $Index->cancel_button_back	= true;
 $disabled					= [];
-$max_sections				= $Config->module(MODULE)->max_sections;
+$max_sections				= $Config->module('Blogs')->max_sections;
 $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 		$L->editing_of_post($post['title'])
