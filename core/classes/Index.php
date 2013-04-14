@@ -266,7 +266,7 @@ class Index {
 	protected function mainmenu () {
 		global $Config, $L, $Page, $User, $Core;
 		if ($User->admin() || ($Config->can_be_admin && $Config->core['ip_admin_list_only'])) {
-			if (DEBUG) {
+			if (defined('DEBUG') && DEBUG) {
 				$Page->mainmenu .= h::a(
 					mb_substr($L->debug, 0, 1),
 					[

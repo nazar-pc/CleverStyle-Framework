@@ -87,12 +87,11 @@ class Config {
 		 */
 		if ($query == true) {
 			$this->load();
-		} else {
-			/**
-			 * Engine initialization with current configuration
-			 */
-			$this->init();
 		}
+		/**
+		 * Engine initialization with current configuration
+		 */
+		$this->init();
 		if (!file_exists(MODULES.'/'.$this->core['default_module'])) {
 			$this->core['default_module']	= 'System';
 			$this->save();
@@ -450,7 +449,7 @@ class Config {
 		/**
 		 * If errors - cache updating must be stopped
 		 */
-		if ($Error->num()) {
+		if (is_object($Error) && $Error->num()) {
 			return false;
 		}
 		$config			= [];

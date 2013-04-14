@@ -167,8 +167,8 @@ class Core {
 				$loader	= true;
 			}
 			$prefix	= explode('\\', $class, 2)[0];
-			if ($prefix == 'cs' && class_exists('cs\\custom\\'.substr($class, 2), false)) {
-				$class	= 'cs\\custom\\'.substr($class, 2);
+			if ($prefix == 'cs' && class_exists('cs\\custom'.substr($class, 2), false)) {
+				$class	= 'cs\\custom'.substr($class, 2);
 			}
 			unset($prefix);
 			if ($loader || class_exists($class)) {

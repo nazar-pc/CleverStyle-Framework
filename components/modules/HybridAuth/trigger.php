@@ -14,18 +14,16 @@ $Core->register_trigger(
 	'System/Page/external_login_list',
 	function ($data) {
 		global $Config, $User, $Page, $L;
-		$module			= basename(__DIR__);
 		if (!(
 			$Config->core['allow_user_registration'] &&
 			$Page->interface &&
-			isset($Config->components['modules'][$module]) &&
-			$Config->components['modules'][$module]['active'] == 1 &&
+			$Config->module('HybridAuth')->active() &&
 			$User->guest() &&
 			!$User->bot()
 		)) {
 			return;
 		}
-		$providers		= $Config->module($module)->providers;
+		$providers		= $Config->module('HybridAuth')->providers;
 		foreach ($providers as $provider => $pdata) {
 			if (!$pdata['enabled']) {
 				unset($providers[$provider]);
@@ -36,10 +34,10 @@ $Core->register_trigger(
 			return;
 		}
 		if (!$Config->core['cache_compress_js_css']) {
-			$Page->css('components/modules/'.$module.'/includes/css/general.css');
-			$Page->js('components/modules/'.$module.'/includes/js/general.js');
+			$Page->css('components/modules/HybridAuth/includes/css/general.css');
+			$Page->js('components/modules/HybridAuth/includes/js/general.js');
 		} elseif (!(
-			file_exists(PCACHE.'/module.'.$module.'.js') && file_exists(PCACHE.'/module.'.$module.'.css')
+			file_exists(PCACHE.'/module.HybridAuth.js') && file_exists(PCACHE.'/module.HybridAuth.css')
 		)) {
 			rebuild_pcache();
 		}
@@ -70,11 +68,7 @@ $Core->register_trigger(
 	'System/User/registration/confirmation/after',
 	function ($data) {
 		global $Config;
-		$module			= basename(__DIR__);
-		if (!(
-			isset($Config->components['modules'][$module]) &&
-			$Config->components['modules'][$module]['active'] == 1
-		)) {
+		if (!$Config->module('HybridAuth')->active()) {
 			return;
 		}
 		if ($referer = _getcookie('HybridAuth_referer')) {
@@ -87,17 +81,13 @@ $Core->register_trigger(
 	'System/User/del_user/after',
 	function ($data) {
 		global $Config, $db;
-		$module			= basename(__DIR__);
-		if (!(
-			isset($Config->components['modules'][$module]) &&
-			$Config->components['modules'][$module]['active'] == 1
-		)) {
+		if (!$Config->module('HybridAuth')->active()) {
 			return;
 		}
 		/**
 		 *	@var \cs\DB\_Abstract $cdb
 		 */
-		$cdb			= $db->{$Config->module($module)->db('integration')}();
+		$cdb			= $db->{$Config->module('HybridAuth')->db('integration')}();
 		$cdb->q(
 			[
 				"DELETE FROM `[prefix]users_social_integration`
@@ -113,11 +103,10 @@ $Core->register_trigger(
 	'admin/System/components/modules/install/process',
 	function ($data) {
 		global $User, $Config;
-		$module	= basename(__DIR__);
-		if ($data['name'] != $module || !$User->admin()) {
+		if ($data['name'] != 'HybridAuth' || !$User->admin()) {
 			return;
 		}
-		$Config->module($module)->set(
+		$Config->module('HybridAuth')->set(
 			[
 				'providers'	=> []
 			]
@@ -128,7 +117,7 @@ $Core->register_trigger(
 $Core->register_trigger(
 	'admin/System/components/modules/enable',
 	function ($data) {
-		if ($data['name'] == basename(__DIR__)) {
+		if ($data['name'] == 'HybridAuth') {
 			rebuild_pcache();
 		}
 
@@ -137,7 +126,7 @@ $Core->register_trigger(
 $Core->register_trigger(
 	'admin/System/components/modules/disable',
 	function ($data) {
-		if ($data['name'] == basename(__DIR__)) {
+		if ($data['name'] == 'HybridAuth') {
 			clean_pcache($data);
 		}
 	}
@@ -157,6 +146,10 @@ $Core->register_trigger(
 $Core->register_trigger(
 	'System/User/get_contacts',
 	function ($data) {
+		global $Config;
+		if (!$Config->module('HybridAuth')->active()) {
+			return;
+		}
 		$data['contacts']	= array_unique(array_merge(
 			$data['contacts'],
 			get_user_contacts($data['id'])
@@ -164,35 +157,33 @@ $Core->register_trigger(
 	}
 );
 function clean_pcache ($data = null) {
-	$module	= basename(__DIR__);
-	if ($data['name'] == $module || $data === null) {
-		if (file_exists(PCACHE.'/module.'.$module.'.js')) {
-			unlink(PCACHE.'/module.'.$module.'.js');
+	if ($data['name'] == 'HybridAuth' || $data === null) {
+		if (file_exists(PCACHE.'/module.HybridAuth.js')) {
+			unlink(PCACHE.'/module.HybridAuth.js');
 		}
-		if (file_exists(PCACHE.'/module.'.$module.'.css')) {
-			unlink(PCACHE.'/module.'.$module.'.css');
+		if (file_exists(PCACHE.'/module.HybridAuth.css')) {
+			unlink(PCACHE.'/module.HybridAuth.css');
 		}
 	}
 }
 function rebuild_pcache (&$data = null) {
 	global $Page;
-	$module	= basename(__DIR__);
 	$key	= [];
 	file_put_contents(
-		PCACHE.'/module.'.$module.'.js',
+		PCACHE.'/module.HybridAuth.js',
 		$key[]	= gzencode(
-			file_get_contents(MODULES.'/'.$module.'/includes/js/general.js'),
+			file_get_contents(MODULES.'/HybridAuth/includes/js/general.js'),
 			9
 		),
 		LOCK_EX | FILE_BINARY
 	);
-	$css	= file_get_contents(MODULES.'/'.$module.'/includes/css/general.css');
+	$css	= file_get_contents(MODULES.'/HybridAuth/includes/css/general.css');
 	file_put_contents(
-		PCACHE.'/module.'.$module.'.css',
+		PCACHE.'/module.HybridAuth.css',
 		$key[]	= gzencode(
 			$Page->css_includes_processing(
 				$css,
-				MODULES.'/'.$module.'/includes/css/general.css'
+				MODULES.'/HybridAuth/includes/css/general.css'
 			),
 			9
 		),
@@ -212,11 +203,10 @@ function rebuild_pcache (&$data = null) {
 function get_user_contacts ($user) {
 	global $Config, $db, $Cache;
 	$user	= (int)$user;
-	$module	= basename(__DIR__);
 	if (
 		!$user ||
 		$user == 1 ||
-		!$Config->module($module)->enable_contacts_detection
+		!$Config->module('HybridAuth')->enable_contacts_detection
 	) {
 		return [];
 	}
@@ -224,7 +214,7 @@ function get_user_contacts ($user) {
 		/**
 		 *	@var \cs\DB\_Abstract $cdb
 		 */
-		$cdb									= $db->{$Config->module($module)->db('integration')};
+		$cdb									= $db->{$Config->module('HybridAuth')->db('integration')};
 		$data									= $cdb->qfas([
 			"SELECT `i`.`id`
 			FROM `[prefix]users_social_integration` AS `i`
@@ -252,12 +242,11 @@ function get_user_contacts ($user) {
  */
 function update_user_contacts ($contacts, $provider) {
 	global $Config, $db, $User, $Cache;
-	$module	= basename(__DIR__);
 	$id		= $User->id;
 	/**
 	 *	@var \cs\DB\_Abstract $cdb
 	 */
-	$cdb	= $db->{$Config->module($module)->db('integration')}();
+	$cdb	= $db->{$Config->module('HybridAuth')->db('integration')}();
 	$cdb->q(
 		"DELETE FROM `[prefix]users_social_integration_contacts`
 		WHERE
