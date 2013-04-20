@@ -616,7 +616,7 @@ class Page {
 			$this->og('url', HOME ? $Config->base_url() : ($this->canonical_url ?: $Config->base_url().'/'.$Config->server['relative_address']));
 		}
 		if (!isset($og['site_name']) || empty($og['site_name'])) {
-			$this->og('site_name', $Config->core['name']);
+			$this->og('site_name', get_core_ml_text('name'));
 		}
 		if (!isset($og['type']) || empty($og['type'])) {
 			$this->og('type', 'website');

@@ -24,7 +24,7 @@ if (
 	define('ERROR_CODE', 400);
 	$Page->error($L->please_type_your_email);
 	return;
-} elseif (!($id = $User->get_id($_POST['email']))) {
+} elseif (!($id = $User->get_id(mb_strtolower($_POST['email'])))) {
 	define('ERROR_CODE', 400);
 	$Page->error($L->user_with_such_login_email_not_found);
 	return;

@@ -5,5 +5,10 @@
  * @license		MIT License, see license.txt
  */
 .ui-button {
-	overflow: visible !important;
+	overflow : visible !important;
+}
+.cs-textarea-autosize {
+	transition         : height 0.1s;
+	-webkit-transition : height 0.1s;
+	-moz-transition    : height 0.1s;
 }

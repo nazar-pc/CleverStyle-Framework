@@ -221,7 +221,12 @@ function hash (algo, data) {
  */
 function setcookie (name, value, expires) {
 	name = cookie_prefix+name;
-	return $.cookie(
+	if (expires) {
+		var	date = new Date();
+		date.setTime(expires * 1000);
+		expires	= date;
+	}
+	return !!$.cookie(
 		name,
 		value,
 		{
@@ -248,6 +253,7 @@ function getcookie (name) {
  * @param {string} password
  */
 function login (login, password) {
+	login	= login.toLowerCase();
 	$.ajax(
 		base_url+'/api/System/user/login',
 		{
@@ -330,6 +336,7 @@ function registration (email) {
 		alert(L.please_type_your_email);
 		return;
 	}
+	email	= email.toLowerCase();
 	$.ajax(
 		base_url+'/api/System/user/registration',
 		{
@@ -379,6 +386,7 @@ function restore_password (email) {
 		alert(L.please_type_your_email);
 		return;
 	}
+	email	= email.toLowerCase();
 	$.ajax(
 		base_url+'/api/System/user/restore_password',
 		{

@@ -312,7 +312,7 @@ class User extends Accessor {
 			case 'ip':
 				return $_SERVER['REMOTE_ADDR'];
 			case 'forwarded_for':
-				return isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : false;
+				return isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? array_pop(explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])) : false;
 			case 'client_ip':
 				return isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : false;
 		}
@@ -446,7 +446,11 @@ class User extends Accessor {
 				}
 			}
 		} elseif (in_array($item, $this->users_columns) && $item != 'id') {
-			if ($item == 'login') {
+			if (in_array($item, ['login_hash', 'email_hash'])) {
+				return true;
+			}
+			if ($item == 'login' || $item == 'email') {
+				$value	= mb_strtolower($value);
 				if ($this->get_id(hash('sha224', $value)) !== false) {
 					return false;
 				}
@@ -461,7 +465,11 @@ class User extends Accessor {
 			if ($this->init) {
 				$this->data_set[$user][$item] = $this->data[$user][$item];
 			}
-			if ($item == 'login') {
+			if ($item == 'login' || $item == 'email') {
+				$this->data[$user][$item.'_hash'] = $value;
+				if ($this->init) {
+					$this->data_set[$user][$item.'_hash'] = $this->data[$user][$item];
+				}
 				global $Cache;
 				unset($Cache->{'users/'.hash('sha224', $this->$item)});
 			} elseif ($item == 'password_hash') {
@@ -628,7 +636,7 @@ class User extends Accessor {
 		return $this->current['is']['system'];
 	}
 	/**
-	 * Returns user id by login or email hash (sha224)
+	 * Returns user id by login or email hash (sha224) (hash from lowercase string)
 	 *
 	 * @param  string $login_hash	Login or email hash
 	 *
@@ -1736,7 +1744,6 @@ class User extends Accessor {
 			]
 		);
 		$user = $user ?: $this->id;
-		_setcookie('session', '');
 		$sessions = $this->db_prime()->qfas(
 			"SELECT `id`
 			FROM `[prefix]sessions`
@@ -1757,7 +1764,6 @@ class User extends Accessor {
 				`data`		= ''
 			WHERE `user` = '$user'"
 		);
-		$this->add_session(1);
 		return $result;
 	}
 	/**
@@ -1879,7 +1885,7 @@ class User extends Accessor {
 	/**
 	 * Check number of login attempts
 	 *
-	 * @param bool|string	$login_hash
+	 * @param bool|string	$login_hash	Hash (sha224) from login (hash from lowercase string)
 	 *
 	 * @return int						Number of attempts
 	 */
@@ -1910,7 +1916,7 @@ class User extends Accessor {
 	 * Process login result
 	 *
 	 * @param bool			$result
-	 * @param bool|string	$login_hash
+	 * @param bool|string	$login_hash	Hash (sha224) from login (hash from lowercase string)
 	 */
 	function login_result ($result, $login_hash = false) {
 		$login_hash = $login_hash ?: (isset($_POST['login']) ? $_POST['login'] : false);
@@ -1964,10 +1970,10 @@ class User extends Accessor {
 	 * @param bool					$confirmation	If <b>true</b> - default system option is used, if <b>false</b> - registration will be
 	 *												finished without necessity of confirmation, independently from default system option
 	 *												(is used for manual registration).
-	 * @param bool					$autologin		If <b>false</b> - no autologin, if <b>true</b> - according to system configuration
+	 * @param bool					$autologin		If <b>false</b> - no auto login, if <b>true</b> - according to system configuration
 	 *
 	 * @return array|bool|string					<b>exists</b>	- if user with such email is already registered<br>
-	 * 												<b>error</b>	- if error occured<br>
+	 * 												<b>error</b>	- if error occurred<br>
 	 * 												<b>false</b>	- if email is incorrect<br>
 	 * 												<b>array(<br>
 	 * 												&nbsp;'reg_key'		=> *,</b>	//Registration confirmation key, or <b>true</b>
@@ -1977,6 +1983,7 @@ class User extends Accessor {
 	 * 												<b>)</b>
 	 */
 	function registration ($email, $confirmation = true, $autologin = true) {
+		$email			= mb_strtolower($email);
 		global $Config, $Core, $Cache;
 		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			return false;

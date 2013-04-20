@@ -36,6 +36,7 @@ if (
 	($id = $User->get_id($_POST['login'])) &&
 	$id != 1
 ) {
+	$_POST['login']	= mb_strtolower($_POST['login']);
 	if ($User->get('status', $id) == -1) {
 		define('ERROR_CODE', 403);
 		$Page->error($L->your_account_is_not_active);
@@ -47,7 +48,7 @@ if (
 		sleep(1);
 		return;
 	}
-	$random_hash = hash('sha224', MICROTIME);
+	$random_hash	= hash('sha224', MICROTIME);
 	if ($Key->add(
 		$Config->module('System')->db('keys'),
 		hash('sha224', $User->ip.$User->user_agent.$_POST['login']),
@@ -66,13 +67,14 @@ if (
 /**
  * Second step - checking of authentication hash, session creating
  */
-} elseif (isset($_POST['auth_hash'])) {
+} elseif (isset($_POST['login'], $_POST['auth_hash'])) {
+	$_POST['login']	= mb_strtolower($_POST['login']);
 	$key_data = $Key->get(
 		$Config->module('System')->db('keys'),
 		hash('sha224', $User->ip.$User->user_agent.$_POST['login']),
 		true
 	);
-	$auth_hash = hash(
+	$auth_hash		= hash(
 		'sha512',
 		$key_data['login'].
 		$User->get('password_hash', $key_data['id']).

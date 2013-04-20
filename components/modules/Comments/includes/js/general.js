@@ -41,6 +41,7 @@ $(function () {
 				textarea.prop('id')
 			);
 			$('.cs-comments-comment-write-cancel').show();
+			$('.cs-comments-add-comment').hide();
 		}
 	).on(
 		'click',
@@ -184,6 +185,7 @@ $(function () {
 			textarea.prop('id')
 		);
 		$('.cs-comments-comment-write-send').show();
-		$('.cs-comments-comment-write-edit, .cs-comments-comment-write-cancel').hide()
+		$('.cs-comments-comment-write-edit, .cs-comments-comment-write-cancel').hide();
+		$('.cs-comments-add-comment').show();
 	}
 });

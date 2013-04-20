@@ -77,7 +77,7 @@ $(function () {
 		},
 		function () {
 			$('textarea:not(.cs-noui)').addClass('cs-form-element').not('.noresize, .EDITOR, .EDITORH, .SEDITOR').each(function () {
-				$(this).autoResize();
+				$(this).addClass('cs-textarea-autosize').autosize({append: "\n"});
 			});
 		},
 		function () {

@@ -53,7 +53,11 @@ if (isset($_POST['user']) && $_POST['edit_settings'] == 'save') {
 	} else {
 		$user_data['block_until']	= 0;
 	}
-	if (
+	if (isset($user_data['login'])) {
+		$user_data['login']	= mb_strtolower($user_data['login']);
+	}
+	if (!(
+		isset($user_data['login']) &&
 		$user_data['login'] &&
 		$user_data['login'] != $User->get('login') &&
 		(
@@ -63,9 +67,7 @@ if (isset($_POST['user']) && $_POST['edit_settings'] == 'save') {
 			) ||
 			$user_data['login'] == $User->get('email')
 		)
-	) {
-		$user_data['login_hash'] = hash('sha224', $user_data['login']);
-	} else {
+	)) {
 		if ($user_data['login'] != $User->get('login')) {
 			$Page->warning($L->login_occupied_or_is_not_valid);
 		}

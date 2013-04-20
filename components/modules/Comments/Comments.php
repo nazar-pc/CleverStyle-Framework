@@ -236,6 +236,34 @@ class Comments extends Accessor {
 		return false;
 	}
 	/**
+	 * Count of comments
+	 *
+	 * @param int	$item	Item id
+	 *
+	 * @return int
+	 */
+	function count ($item) {
+		global $Cache, $L;
+		$count														= $Cache->{'Comments/'.$this->module.'/'.$item.'/'.$L->clang};
+		if ($count !== false) {
+			return $count;
+		}
+		$data														= $this->tree_data($item);
+		$count														= $this->count_internal($data) ?: 0;
+		$Cache->{'Comments/'.$this->module.'/'.$item.'/'.$L->clang}	= $count;
+		return $count;
+	}
+	protected function count_internal ($data) {
+		if (!is_array($data)) {
+			return 0;
+		}
+		$count	= 0;
+		foreach ($data as &$d) {
+			$count	= $this->count_internal($d['comments'], $count) + 1;
+		}
+		return $count;
+	}
+	/**
 	 * Get comments tree in html format for specified item (look at ::block() method before usage)
 	 *
 	 * @param int	$item	Item id
@@ -277,7 +305,7 @@ class Comments extends Accessor {
 			]);
 			if ($comments) {
 				foreach ($comments as &$comment) {
-					$comment['comments']	= $this->get($item, $comment['id']);
+					$comment['comments']	= $this->tree_data($item, $comment['id']);
 				}
 				unset($comment);
 			}
@@ -387,7 +415,7 @@ class Comments extends Accessor {
 				$this->tree($item) ?: h::{'article.cs-blogs-no-comments'}($L->no_comments_yet)
 			)
 		).
-		h::p($L->add_comment.':').
+		h::{'p.cs-comments-add-comment'}($L->add_comment.':').
 		(
 			$User->user() ? h::{'section.cs-comments-comment-write'}(
 				h::{'textarea.cs-comments-comment-write-text.cs-wide-textarea.SEDITOR'}(

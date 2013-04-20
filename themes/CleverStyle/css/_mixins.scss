@@ -15,7 +15,6 @@
 //Cross-browser transition
 @mixin transition($params) {
 	transition         : $params;
-	-o-transition      : $params;
 	-moz-transition    : $params;
 	-webkit-transition : $params;
 }

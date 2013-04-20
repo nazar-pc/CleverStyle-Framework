@@ -32,7 +32,8 @@ if (
 	sleep(1);
 	return;
 }
-$result		= $User->registration($_POST['email']);
+$_POST['email']	= mb_strtolower($_POST['email']);
+$result			= $User->registration($_POST['email']);
 if ($result === false) {
 	define('ERROR_CODE', 400);
 	$Page->error($L->please_type_correct_email);
@@ -47,7 +48,7 @@ if ($result === false) {
 	$Page->error($L->reg_error_exists);
 	return;
 }
-$confirm	= $result['reg_key'] !== true;
+$confirm		= $result['reg_key'] !== true;
 if ($confirm) {
 	$body	= $L->reg_need_confirmation_mail_body(
 		strstr($_POST['email'], '@', true),

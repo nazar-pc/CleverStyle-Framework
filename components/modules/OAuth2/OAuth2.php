@@ -9,7 +9,8 @@
 namespace	cs\modules\OAuth2;
 use			cs\DB\Accessor;
 class OAuth2 extends Accessor {
-	protected	$guest_tokens;
+	protected	$guest_tokens,
+				$expire			= 3600;
 	function __construct () {
 		global $Config;
 		$this->guest_tokens	= $Config->module('OAuth2')->guest_tokens;
@@ -52,7 +53,7 @@ class OAuth2 extends Accessor {
 					'%s',
 					'%s'
 				)",
-			md5(MICROTIME+uniqid('oauth2', true)),
+			md5(MICROTIME.uniqid('oauth2', true)),
 			xap($name),
 			xap($domain),
 			(int)(bool)$active
@@ -333,7 +334,7 @@ class OAuth2 extends Accessor {
 				$User->id,
 				$new_session,
 				TIME,
-				TIME + 3600,
+				TIME + $this->expire,
 				$access_token,
 				$refresh_token,
 				$code,
