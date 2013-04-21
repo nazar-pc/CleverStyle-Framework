@@ -35,6 +35,9 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 					case UPLOAD_ERR_NO_FILE:
 						break;
 				}
+				if ($_FILES['upload_module']['error'] != UPLOAD_ERR_OK) {
+					break;
+				}
 				move_uploaded_file(
 					$_FILES['upload_plugin']['tmp_name'],
 					$tmp_file = TEMP.'/'.md5($_FILES['upload_plugin']['tmp_name'].MICROTIME).'.phar.php'
@@ -62,7 +65,7 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 					if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 						break;
 					}
-					$rc[3]					= 'update';
+					$rc[2]					= 'update';
 					$show_plugins			= false;
 					$Page->title($L->updating_of_plugin($plugin));
 					rename($tmp_file, $tmp_file = TEMP.'/'.$User->get_session().'_plugin_update.phar.php');

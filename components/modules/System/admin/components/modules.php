@@ -66,6 +66,9 @@ if (
 					case UPLOAD_ERR_NO_FILE:
 					break;
 				}
+				if ($_FILES['upload_module']['error'] != UPLOAD_ERR_OK) {
+					break;
+				}
 				move_uploaded_file(
 					$_FILES['upload_module']['tmp_name'],
 					$tmp_file = TEMP.'/'.md5($_FILES['upload_module']['tmp_name'].MICROTIME).'.phar.php'
@@ -93,7 +96,7 @@ if (
 					if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 						break;
 					}
-					$rc[3]					= 'update';
+					$rc[2]					= 'update';
 					$show_modules			= false;
 					$Page->title($L->updating_of_module($module));
 					rename($tmp_file, $tmp_file = TEMP.'/'.$User->get_session().'_module_update.phar.php');
@@ -255,6 +258,60 @@ if (
 					$L->{$check_dependencies ? 'uninstall' : 'force_uninstall_not_recommended'}
 				)
 			);
+		break;
+		case 'update_system':
+			if (!isset($_FILES['upload_system']) || !$_FILES['upload_system']['tmp_name']) {
+				break;
+			}
+			switch ($_FILES['upload_system']['error']) {
+				case UPLOAD_ERR_INI_SIZE:
+				case UPLOAD_ERR_FORM_SIZE:
+					$Page->warning($L->file_too_large);
+				break;
+				case UPLOAD_ERR_NO_TMP_DIR:
+					$Page->warning($L->temporary_folder_is_missing);
+				break;
+				case UPLOAD_ERR_CANT_WRITE:
+					$Page->warning($L->cant_write_file_to_disk);
+				break;
+				case UPLOAD_ERR_PARTIAL:
+				case UPLOAD_ERR_NO_FILE:
+				break;
+			}
+			if ($_FILES['upload_system']['error'] != UPLOAD_ERR_OK) {
+				break;
+			}
+			move_uploaded_file(
+				$_FILES['upload_system']['tmp_name'],
+				$tmp_file = TEMP.'/'.md5($_FILES['upload_system']['tmp_name'].MICROTIME).'.phar.php'
+			);
+			$tmp_dir								= 'phar://'.$tmp_file;
+			if (!file_exists($tmp_dir.'/version') || !file_exists($tmp_dir.'/themes.json')) {
+				$Page->warning($L->this_is_not_system_installer_file);
+				unlink($tmp_file);
+				break;
+			}
+			$current_version		= _json_decode(file_get_contents(MODULES.'/System/meta.json'))['version'];
+			$new_version			= _json_decode(file_get_contents($tmp_dir.'/version'));
+			if (version_compare($current_version, $new_version, '<')) {
+				$Page->warning($L->update_system_impossible_older_version);
+				unlink($tmp_file);
+				break;
+			}
+			$rc[2]					= 'update_system';
+			$show_modules			= false;
+			$Page->title($L->updating_of_system);
+			rename($tmp_file, $tmp_file = TEMP.'/'.$User->get_session().'_update_system.phar.php');
+			$a->content(
+				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+					$L->update_system(
+						$current_version,
+						$new_version
+					)
+				)
+			);
+			$a->cancel_button_back	= true;
+			break;
 		break;
 		case 'default_module':
 			$show_modules			= false;
@@ -438,6 +495,7 @@ if (
 		case 'install':
 		case 'uninstall':
 		case 'update':
+		case 'update_system':
 		case 'default_module':
 		case 'db':
 		case 'storage':
@@ -713,6 +771,17 @@ $a->content(
 				$L->upload_and_install_update_module,
 				[
 					'formaction'	=>  $a->action.'/install/upload'
+				]
+			)
+		),
+		h::{'td.cs-left-all[colspan=3]'}(
+			h::{'input[type=file][name=upload_system]'}([
+				'style'		=> 'position: relative;'
+			]).
+			h::{'button[type=submit]'}(
+				$L->upload_and_update_system,
+				[
+					'formaction'	=>  $a->action.'/update_system'
 				]
 			)
 		)

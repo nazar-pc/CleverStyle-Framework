@@ -26,14 +26,14 @@ if ($User->system()) {
 	$fs			= _json_decode(file_get_contents("$tmp_dir/fs.json"));
 	$extract	= array_product(
 		array_map(
-			function ($index, $file) use ($tmp_dir, $plugin, $plugin_dir) {
+			function ($index, $file) use ($tmp_dir, $plugin_dir) {
 				if (
 					!file_exists(pathinfo("$plugin_dir/$file", PATHINFO_DIRNAME)) &&
 					!mkdir(pathinfo("$plugin_dir/$file", PATHINFO_DIRNAME), 0700, true)
 				) {
 					return 0;
 				}
-				return (int)copy($tmp_dir.'/fs/'.$index, PLUGINS.'/'.$plugin.'/'.$file);
+				return (int)copy("$tmp_dir/fs/$index", "$plugin_dir/$file");
 			},
 			$fs,
 			array_keys($fs)
@@ -43,10 +43,11 @@ if ($User->system()) {
 	/**
 	 * Removing of old unnecessary files and directories
 	 */
-	foreach (array_diff(_json_encode("$plugin_dir/fs_old.json"), $fs) as $file) {
-		if (file_exists("$plugin_dir/$file") && is_writable("$plugin_dir/$file")) {
+	foreach (array_diff(_json_encode($plugin_dir.'/fs_old.json'), $fs) as $file) {
+		$file	= "$plugin_dir/$file";
+		if (file_exists($file) && is_writable($file)) {
 			unlink($file);
-			if (!get_files_list($dir = pathinfo("$plugin_dir/$file", PATHINFO_DIRNAME))) {
+			if (!get_files_list($dir = pathinfo($file, PATHINFO_DIRNAME))) {
 				rmdir($dir);
 			}
 		}

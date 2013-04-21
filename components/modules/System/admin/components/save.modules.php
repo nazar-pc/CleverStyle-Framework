@@ -251,14 +251,14 @@ if (isset($_POST['update_modules_list'])) {
 			$fs			= _json_decode(file_get_contents("$tmp_dir/fs.json"));
 			$extract	= array_product(
 				array_map(
-					function ($index, $file) use ($tmp_dir, $module, $module_dir) {
+					function ($index, $file) use ($tmp_dir, $module_dir) {
 						if (
 							!file_exists(pathinfo("$module_dir/$file", PATHINFO_DIRNAME)) &&
 							!mkdir(pathinfo("$module_dir/$file", PATHINFO_DIRNAME), 0700, true)
 						) {
 							return 0;
 						}
-						return (int)copy($tmp_dir.'/fs/'.$index, "$module_dir/$file");
+						return (int)copy("$tmp_dir/fs/$index", "$module_dir/$file");
 					},
 					$fs,
 					array_keys($fs)
@@ -298,9 +298,10 @@ if (isset($_POST['update_modules_list'])) {
 			 * Removing of old unnecessary files and directories
 			 */
 			foreach (array_diff(_json_encode($module_dir.'/fs_old.json'), $fs) as $file) {
-				if (file_exists("$module_dir/$file") && is_writable("$module_dir/$file")) {
+				$file	= "$module_dir/$file";
+				if (file_exists($file) && is_writable($file)) {
 					unlink($file);
-					if (!get_files_list($dir = pathinfo("$module_dir/$file", PATHINFO_DIRNAME))) {
+					if (!get_files_list($dir = pathinfo($file, PATHINFO_DIRNAME))) {
 						rmdir($dir);
 					}
 				}
@@ -358,6 +359,132 @@ if (isset($_POST['update_modules_list'])) {
 					]
 				);
 				unset($Cache->languages);
+			}
+			$a->save();
+		break;
+		case 'update_system':
+			/**
+			 * Temporary close site
+			 */
+			$site_mode				= $Config->core['site_mode'];
+			if ($site_mode) {
+				$Config->core['site_mode']	= 0;
+				$Config->save();
+			}
+			$module_dir				= MODULES.'/System';
+			/**
+			 * Backing up some necessary information about current version
+			 */
+			copy(DIR.'/core/fs.json',		DIR.'/core/fs_old.json');
+			copy("$module_dir/meta.json",	"$module_dir/meta_old.json");
+			/**
+			 * Extracting new versions of files
+			 */
+			$tmp_dir	= 'phar://'.TEMP.'/'.$User->get_session().'_update_system.phar.php';
+			$fs			= _json_decode(file_get_contents("$tmp_dir/fs.json"))['core/fs.json'];
+			$fs			= _json_decode(file_get_contents("$tmp_dir/fs/$fs"));
+			$extract	= array_product(
+				array_map(
+					function ($index, $file) use ($tmp_dir, $module_dir) {
+						if (
+							!file_exists(pathinfo(DIR."/$file", PATHINFO_DIRNAME)) &&
+							!mkdir(pathinfo(DIR."/$file", PATHINFO_DIRNAME), 0700, true)
+						) {
+							return 0;
+						}
+						return (int)copy("$tmp_dir/fs/$index", DIR."/$file");
+					},
+					$fs,
+					array_keys($fs)
+				)
+			);
+			if (!$extract) {
+				$Page->warning($L->system_files_unpacking_error);
+				break;
+			}
+			unset($extract);
+			$tmp_file	= TEMP.'/'.$User->get_session().'_update_system.phar.php';
+			rename($tmp_file, $tmp_file = mb_substr($tmp_file, 0, -9));
+			$api_request							= $Core->api_request(
+				'System/admin/update_system',
+				[
+					'package'	=> str_replace(DIR, $Config->base_url(), $tmp_file)
+				]
+			);
+			if ($api_request) {
+				$success	= true;
+				foreach ($api_request as $mirror => $result) {
+					if ($result == 1) {
+						$success	= false;
+						$Page->warning($L->cant_unpack_system_on_mirror($mirror));
+					}
+				}
+				if (!$success) {
+					$Page->warning($L->system_files_unpacking_error);
+					break;
+				}
+				unset($success, $mirror, $result);
+			}
+			unlink($tmp_file);
+			unset($api_request, $tmp_file);
+			file_put_contents(DIR.'/core/fs.json', _json_encode($fs = array_keys($fs)));
+			/**
+			 * Removing of old unnecessary files and directories
+			 */
+			foreach (array_diff(_json_encode(DIR.'/core/fs_old.json'), $fs) as $file) {
+				$file	= DIR."/$file";
+				if (file_exists($file) && is_writable($file)) {
+					unlink($file);
+					if (!get_files_list($dir = pathinfo($file, PATHINFO_DIRNAME))) {
+						rmdir($dir);
+					}
+				}
+			}
+			unset($fs, $file, $dir);
+			/**
+			 * Updating of System
+			 */
+			if (file_exists($module_dir.'/versions.json')) {
+				$old_version	= _json_decode($module_dir.'/meta_old.json')['version'];
+				$versions		= [];
+				foreach (_json_decode($module_dir.'/versions.json') as $version) {
+					if (version_compare($old_version, $version, '<')) {
+						/**
+						 * PHP update script
+						 */
+						_include($module_dir.'/meta/update/'.$version.'.php', true, false);
+						/**
+						 * Database update
+						 */
+						if (isset($module_data['db']) && file_exists($module_dir.'/meta/db.json')) {
+							$db_json = _json_decode(file_get_contents($module_dir.'/meta/db.json'));
+							time_limit_pause();
+							foreach ($db_json as $database) {
+								if ($module_data['db'][$database] == 0) {
+									$db_type	= $Core->db_type;
+								} else {
+									$db_type	= $Config->db[$module_data['db'][$database]]['type'];
+								}
+								$sql_file	= $module_dir.'/meta/update_db/'.$database.'/'.$version.'/'.$db_type.'.sql';
+								if (file_exists($sql_file)) {
+									$db->{$module_data['db'][$database]}()->q(
+										explode(';', file_get_contents($sql_file))
+									);
+								}
+							}
+							unset($db_json, $database, $db_type, $sql_file);
+							time_limit_pause(false);
+						}
+					}
+				}
+			}
+			unlink(DIR.'/core/fs_old.json');
+			unlink($module_dir.'/meta_old.json');
+			/**
+			 * Restore previous site mode
+			 */
+			if ($site_mode) {
+				$Config->core['site_mode']	= 1;
 			}
 			$a->save();
 		break;

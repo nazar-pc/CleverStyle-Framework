@@ -12,7 +12,8 @@
 		"update_module",
 		"upload_module",
 		"update_plugin",
-		"upload_plugin"
+		"upload_plugin",
+		"update_system"
 	],
 	"profile"	: [
 		"get"

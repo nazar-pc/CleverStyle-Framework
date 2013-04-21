@@ -17,34 +17,34 @@ if ($User->system()) {
 		$tmp_file = TEMP.'/'.md5($_POST['package'].MICROTIME).'.phar.php'
 	);
 	$tmp_dir	= "phar://$tmp_file";
-	$module		= file_get_contents("$tmp_dir/dir");
-	$module_dir	= MODULES."/$module";
+	$module_dir	= MODULES.'/System';
 	if (file_exists("$module_dir/fs_old.json")) {
 		$Page->content(1);
 	}
-	copy("$module_dir/fs.json",		"$module_dir/fs_old.json");
-	$fs			= _json_decode(file_get_contents("$tmp_dir/fs.json"));
+	copy(DIR.'/core/fs.json',		DIR.'/core/fs_old.json');
+	$fs			= _json_decode(file_get_contents("$tmp_dir/fs.json"))['core/fs.json'];
+	$fs			= _json_decode(file_get_contents("$tmp_dir/fs/$fs"));
 	$extract	= array_product(
 		array_map(
 			function ($index, $file) use ($tmp_dir, $module_dir) {
 				if (
-					!file_exists(pathinfo("$module_dir/$file", PATHINFO_DIRNAME)) &&
-					!mkdir(pathinfo("$module_dir/$file", PATHINFO_DIRNAME), 0700, true)
+					!file_exists(pathinfo(DIR."/$file", PATHINFO_DIRNAME)) &&
+					!mkdir(pathinfo(DIR."/$file", PATHINFO_DIRNAME), 0700, true)
 				) {
 					return 0;
 				}
-				return (int)copy("$tmp_dir/fs/$index", "$module_dir/$file");
+				return (int)copy("$tmp_dir/fs/$index", DIR."/$file");
 			},
 			$fs,
 			array_keys($fs)
 		)
 	);
-	file_put_contents(MODULES.'/'.$module.'/fs.json', _json_encode($fs = array_keys($fs)));
+	file_put_contents(DIR.'/core/fs.json', _json_encode($fs = array_keys($fs)));
 	/**
 	 * Removing of old unnecessary files and directories
 	 */
-	foreach (array_diff(_json_encode($module_dir.'/fs_old.json'), $fs) as $file) {
-		$file	= "$module_dir/$file";
+	foreach (array_diff(_json_encode(DIR.'/core/fs_old.json'), $fs) as $file) {
+		$file	= DIR."/$file";
 		if (file_exists($file) && is_writable($file)) {
 			unlink($file);
 			if (!get_files_list($dir = pathinfo($file, PATHINFO_DIRNAME))) {
