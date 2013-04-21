@@ -137,23 +137,24 @@ $(function () {
 		);
 	}
 	function blogs_delete_comment () {
-		var parent 	= $(this).parent('article'),
-			id		= parent.prop('id').replace('comment_', '');
+		var comment = $(this).parent('article'),
+			id		= comment.prop('id').replace('comment_', '');
 		$.ajax(
 			base_url+'/api/Comments/delete',
 			{
 				cache		: false,
 				data		: {
 					id		: id,
-					module	: textarea.data('module')
+					module	: $('.cs-comments-comment-write-text').data('module')
 				},
 				dataType	: 'json',
 				success	: function (result) {
-					if (result && parent.parent('article').find('.cs-comments-comment').length == 1 && !parent.parent('div').find('.cs-comments-comment-delete')) {
-						parent.parent('article').children('.cs-comments-comment-edit').after(result);
-					}
-					$('#comment_'+id).remove();
+					var	parent	= comment.parent();
+					comment.remove();
 					blogs_comment_cancel();
+					if (result && !parent.find('.cs-comments-comment').length && !parent.find('.cs-comments-comment-delete').length) {
+						parent.find('.cs-comments-comment-edit').after(result);
+					}
 				},
 				error	: function (xhr) {
 					if (xhr.responseText) {

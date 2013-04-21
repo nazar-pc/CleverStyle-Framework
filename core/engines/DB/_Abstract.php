@@ -361,12 +361,23 @@ abstract class _Abstract {
 		}
 		if ($join) {
 			$query		= explode('VALUES', $query, 2);
+			$query[1]	= explode(')', $query[1]);
+			$query		= [
+				$query[0],
+				$query[1][0].')',
+				$query[1][1]
+			];
 			if (!isset($query[1]) || !$query[1]) {
 				return false;
 			}
 			$query[1]	.= str_repeat(','.$query[1], count($params) - 1);
-			$query		= implode('VALUES', $query);
-			return (bool)$this->q($query, $params);
+			$query		= $query[0].'VALUES'.$query[1].$query[2];
+			$params_	= [];
+			foreach ($params as $p) {
+				$params_	= array_merge($params_, $p);
+			}
+			unset($params, $p);
+			return (bool)$this->q($query, $params_);
 		} else {
 			$result	= true;
 			foreach ($params as $p) {

@@ -25,10 +25,9 @@
 .cs-comments-comment > .cs-comments-comment-parent,
 .cs-comments-comment > .cs-comments-comment-edit,
 .cs-comments-comment > .cs-comments-comment-delete {
-	transition         : opacity 0.3s linear;
-	-moz-transition    : opacity 0.3s linear;
-	-o-transition      : opacity 0.3s linear;
-	-webkit-transition : opacity 0.3s linear;
+	transition         : opacity 0.1s linear;
+	-moz-transition    : opacity 0.1s linear;
+	-webkit-transition : opacity 0.1s linear;
 }
 .cs-comments-comment > .cs-comments-comment {
 	border-left : 2px solid rgba(0, 0, 0, .05);

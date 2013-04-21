@@ -86,7 +86,7 @@ class Comments extends Accessor {
 				FROM `[prefix]comments`
 				WHERE
 					`id`		= '%s' AND
-					`modules`	= '%s'
+					`module`	= '%s'
 				LIMIT 1",
 				$parent,
 				$this->module
@@ -236,7 +236,7 @@ class Comments extends Accessor {
 		return false;
 	}
 	/**
-	 * Count of comments
+	 * Count of comments for specified item
 	 *
 	 * @param int	$item	Item id
 	 *
@@ -244,13 +244,13 @@ class Comments extends Accessor {
 	 */
 	function count ($item) {
 		global $Cache, $L;
-		$count														= $Cache->{'Comments/'.$this->module.'/'.$item.'/'.$L->clang};
+		$count																= $Cache->{'Comments/'.$this->module.'/'.$item.'/count/'.$L->clang};
 		if ($count !== false) {
 			return $count;
 		}
-		$data														= $this->tree_data($item);
-		$count														= $this->count_internal($data) ?: 0;
-		$Cache->{'Comments/'.$this->module.'/'.$item.'/'.$L->clang}	= $count;
+		$data																= $this->tree_data($item);
+		$count																= $this->count_internal($data) ?: 0;
+		$Cache->{'Comments/'.$this->module.'/'.$item.'/count/'.$L->clang}	= $count;
 		return $count;
 	}
 	protected function count_internal ($data) {
@@ -259,7 +259,7 @@ class Comments extends Accessor {
 		}
 		$count	= 0;
 		foreach ($data as &$d) {
-			$count	= $this->count_internal($d['comments'], $count) + 1;
+			$count	+= $this->count_internal($d['comments'], $count) + 1;
 		}
 		return $count;
 	}
@@ -368,29 +368,19 @@ class Comments extends Accessor {
 						) : ''
 					).
 					(
-						$User->id == $comment['user'] ||
-						(
-							$User->admin() &&
-							$User->get_user_permission('admin/'.MODULE, 'index') &&
-							$User->get_user_permission('admin/'.MODULE, 'edit_comment')
-						) ? h::{'icon.cs-comments-comment-edit.cs-pointer'}('pencil') : ''
+						$User->id == $comment['user'] || $User->admin() ? h::{'icon.cs-comments-comment-edit.cs-pointer'}('pencil') : ''
 					).
 					(
 						!$comment['comments'] &&
 						(
-							$User->id == $comment['user'] ||
-							(
-								$User->admin() &&
-								$User->get_user_permission('admin/'.MODULE, 'index') &&
-								$User->get_user_permission('admin/'.MODULE, 'delete_comment')
-							)
+							$User->id == $comment['user'] || $User->admin()
 						) ? h::{'icon.cs-comments-comment-delete.cs-pointer'}('trash') : ''
 					).
 					h::{'div.cs-comments-comment-text'}(
 						$comment['text']
 					).
 					(
-						$comment['comments'] ? $this->tree_internal($comment['comments']) : ''
+						$comment['comments'] ? $this->tree_html($comment['comments']) : ''
 					),
 					[
 						'id'	=> 'comment_'.$comment['id']
@@ -421,7 +411,7 @@ class Comments extends Accessor {
 				h::{'textarea.cs-comments-comment-write-text.cs-wide-textarea.SEDITOR'}(
 					'',
 					[
-						'data-item'		=> $item['id'],
+						'data-item'		=> $item,
 						'data-parent'	=> 0,
 						'data-id'		=> 0,
 						'data-module'	=> $this->module

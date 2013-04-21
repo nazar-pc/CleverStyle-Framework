@@ -7,7 +7,8 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h;
+use			h,
+			cs\modules\Comments\Comments;
 global $Core;
 $Core->register_trigger(
 	'admin/System/components/modules/disable',
@@ -137,5 +138,80 @@ $Core->register_trigger(
 			$rc[0]		= 'Blogs';
 			$data['rc']	= implode('/', $rc);
 		}
+	}
+);
+$Core->register_trigger(
+	'api/Comments/add',
+	function ($data) {
+		global $Config, $User;
+		if (!(
+			$data['module'] == 'Blogs' &&
+			$Config->module('Blogs')->active() &&
+			$Config->module('Blogs')->enable_comments &&
+			$User->user() &&
+			class_exists('\\cs\\modules\\Comments\\Comments')
+		)) {
+			return true;
+		}
+		global $Blogs;
+		if ($Blogs->get($data['item'])) {
+			$data['Comments']	= new Comments;
+			$data['Comments']->set_module('Blogs');
+		}
+		return false;
+	}
+);
+$Core->register_trigger(
+	'api/Comments/edit',
+	function ($data) {
+		global $Config, $User;
+		if (!(
+			$data['module'] == 'Blogs' &&
+			$Config->module('Blogs')->active() &&
+			$Config->module('Blogs')->enable_comments &&
+			$User->user() &&
+			class_exists('\\cs\\modules\\Comments\\Comments')
+		)) {
+			return true;
+		}
+		$Comments			= new Comments;
+		$Comments->set_module('Blogs');
+		$comment			= $Comments->get($data['id']);
+		if ($comment && ($comment['user'] == $User->id || $User->admin())) {
+			$data['Comments']	= $Comments;
+		}
+		return false;
+	}
+);
+$Core->register_trigger(
+	'api/Comments/delete',
+	function ($data) {
+		global $Config, $User;
+		if (!(
+			$data['module'] == 'Blogs' &&
+			$Config->module('Blogs')->active() &&
+			$Config->module('Blogs')->enable_comments &&
+			$User->user() &&
+			class_exists('\\cs\\modules\\Comments\\Comments')
+		)) {
+			return true;
+		}
+		$Comments			= new Comments;
+		$Comments->set_module('Blogs');
+		$comment			= $Comments->get($data['id']);
+		if ($comment && ($comment['user'] == $User->id || $User->admin())) {
+			$data['Comments']	= $Comments;
+			if (
+				$comment['parent'] &&
+				(
+					$comment = $Comments->get($comment['parent'])
+				) && (
+					$comment['user']  == $User->id || $User->admin()
+				)
+			) {
+				$data['delete_parent']	= true;
+			}
+		}
+		return false;
 	}
 );

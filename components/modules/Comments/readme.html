@@ -1,0 +1,166 @@
+<h3 style="text-align: center;">Comments module, adds comments functionality to other modules</h3>
+<h4>Integration of comments displaying:</h4>
+<pre>global $Comments, $Page;
+$Page->content(
+	is_object($Comments) ? $Comments->block($id) : ''
+);</pre>
+<p>Where <i>$id</i> is integer identifier of article, page or anything else, that will be commented. <i>$Comments</i> - is global object created by module, but you can use own object of class, which inherits <i>cs\modules\Comments\Comments</i> class.</p>
+<h4>Integration of comments adding, editing, and deleting.</h4>
+<p>For this module should support next triggers on comments module:</p>
+<ul>
+	<li>
+		<h4>api/Comments/add</h4>
+		<pre>[
+	'Comments'	=> <i>&$Comments</i>
+	'item'		=> <i>item</i>
+	'module'	=> <i>module</i>
+]</pre>
+		<dl>
+			<dt>Comments</dt>
+			<dd>Comments object should be returned in this parameter (after access checking)</dd>
+			<dt>item</dt>
+			<dd>Item id</dd>
+			<dt>module</dt>
+			<dd>Module</dd>
+		</dl>
+		<p>Module should register this trigger, and if <i>module</i> parameter is equal to name of this module - check, whether user have access to add comments</p>
+		<h4>If user have access</h4>
+		<p>Assign to <i>Comments</i> parameter object of <i>cs\modules\Comments\Comments</i> class or class, that inherits it, set module to current module, return <i>false</i> from closure.</p>
+		<h4>If user have no access</h4>
+		<p>But other conditions holds true - return <i>false</i> from closure</p>
+		<p>Example (Blogs module):</p>
+		<pre>global $Core;
+$Core->register_trigger(
+	'api/Comments/add',
+	function ($data) {
+		global $Config, $User;
+		if (!(
+			$data['module'] == 'Blogs' &&
+			$Config->module('Blogs')->active() &&
+			$Config->module('Blogs')->enable_comments &&
+			$User->user() &&
+			class_exists('\\cs\\modules\\Comments\\Comments')
+		)) {
+			return true;
+		}
+		global $Blogs;
+		if ($Blogs->get($data['item'])) {
+			$data['Comments']	= new cs\modules\Comments\Comments;
+			$data['Comments']->set_module('Blogs');
+		}
+		return false;
+	}
+);</pre>
+	</li>
+	<li>
+		<h4>api/Comments/edit</h4>
+		<pre>[
+	'Comments'	=> <i>&$Comments</i>
+	'id'		=> <i>id</i>
+	'module'	=> <i>module</i>
+]</pre>
+		<dl>
+			<dt>Comments</dt>
+			<dd>Comments object should be returned in this parameter (after access checking)</dd>
+			<dt>id</dt>
+			<dd>Comment id</dd>
+			<dt>module</dt>
+			<dd>Module</dd>
+		</dl>
+		<p>Module should register this trigger, and if <i>module</i> parameter is equal to name of this module - check, whether user have access to edit comment</p>
+		<h4>If user have access</h4>
+		<p>Assign to <i>Comments</i> parameter object of <i>cs\modules\Comments\Comments</i> class or class, that inherits it, set module to current module, return <i>false</i> from closure.</p>
+		<h4>If user have no access</h4>
+		<p>But other conditions holds true - return <i>false</i> from closure</p>
+		<p>Example (Blogs module):</p>
+		<pre>global $Core;
+$Core->register_trigger(
+	'api/Comments/edit',
+	function ($data) {
+		global $Config, $User;
+		if (!(
+			$data['module'] == 'Blogs' &&
+			$Config->module('Blogs')->active() &&
+			$Config->module('Blogs')->enable_comments &&
+			$User->user() &&
+			class_exists('\\cs\\modules\\Comments\\Comments')
+		)) {
+			return true;
+		}
+		$Comments			= new cs\modules\Comments\Comments;
+		$Comments->set_module('Blogs');
+		$comment			= $Comments->get($data['id']);
+		if ($comment && ($comment['user'] == $User->id || $User->admin())) {
+			$data['Comments']	= $Comments;
+		}
+		return false;
+	}
+);</pre>
+	</li>
+	<li>
+		<h4>api/Comments/delete</h4>
+		<pre>[
+	'Comments'		=> <i>&$Comments</i>
+	'id'			=> <i>id</i>
+	'delete_parent'		=> <i>&$delete_parent</i>
+	'module'		=> <i>module</i>
+]</pre>
+		<dl>
+			<dt>Comments</dt>
+			<dd>Comments object should be returned in this parameter (after access checking)</dd>
+			<dt>id</dt>
+			<dd>Comment id</dd>
+			<dt>delete_parent</dt>
+			<dd>If user have access to delete parent comment - this parameter should be set to <i>true</i></dd>
+			<dt>module</dt>
+			<dd>Module</dd>
+		</dl>
+		<p>Module should register this trigger, and if <i>module</i> parameter is equal to name of this module - check, whether user have access to delete comment</p>
+		<h4>If user have access</h4>
+		<p>Assign to <i>Comments</i> parameter object of <i>cs\modules\Comments\Comments</i> class or class, that inherits it, set module to current module, return <i>false</i> from closure.</p>
+		<h4>If user have no access</h4>
+		<p>But other conditions holds true - return <i>false</i> from closure</p>
+		<p>Example (Blogs module):</p>
+		<pre>global $Core;
+$Core->register_trigger(
+	'api/Comments/delete',
+	function ($data) {
+		global $Config, $User;
+		if (!(
+			$data['module'] == 'Blogs' &&
+			$Config->module('Blogs')->active() &&
+			$Config->module('Blogs')->enable_comments &&
+			$User->user() &&
+			class_exists('\\cs\\modules\\Comments\\Comments')
+		)) {
+			return true;
+		}
+		$Comments			= new cs\modules\Comments\Comments;
+		$Comments->set_module('Blogs');
+		$comment			= $Comments->get($data['id']);
+		if ($comment && ($comment['user'] == $User->id || $User->admin())) {
+			$data['Comments']	= $Comments;
+			if (
+				$comment['parent'] &&
+				(
+					$comment = $Comments->get($comment['parent'])
+				) && (
+					$comment['user']  == $User->id || $User->admin()
+				)
+			) {
+				$data['delete_parent']	= true;
+			}
+		}
+		return false;
+	}
+);</pre>
+	</li>
+</ul>
+<h4>Other methods of Comments class:</h4>
+<ul>
+	<li>
+		int Comments::count($item : int)
+		<p>Returns count of comments for specified item</p>
+	</li>
+</ul>
+<p>There are several other methods, but they are used directly not so frequent, so, you can find them with description in source code and IDE suggestions.</p>

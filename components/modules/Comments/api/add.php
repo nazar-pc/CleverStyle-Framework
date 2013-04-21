@@ -60,7 +60,7 @@ if (!is_object($Comments)) {
 $result		= $Comments->add($_POST['item'], $_POST['text'], $_POST['parent']);
 if ($result) {
 	$result['comments']	= false;
-	$Page->json($Comments->tree_html($result));
+	$Page->json($Comments->tree_html([$result]));
 } else {
 	define('ERROR_CODE', 500);
 	$Page->error($L->comment_sending_server_error);

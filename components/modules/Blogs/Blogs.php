@@ -65,10 +65,10 @@ class Blogs extends Accessor {
 					FROM `[prefix]blogs_posts_tags`
 					WHERE `id` = $id"
 				);
-				$data['comments_count']						= $Config->module('Blogs')->enable_comments && is_object($Comments) ? $Comments->count($data['id']) : 0;
 				$Cache->{'Blogs/posts/'.$id.'/'.$L->clang}	= $data;
 			}
 		}
+		$data['comments_count']	= $Config->module('Blogs')->enable_comments && is_object($Comments) ? $Comments->count($data['id']) : 0;
 		return $data;
 	}
 	/**
