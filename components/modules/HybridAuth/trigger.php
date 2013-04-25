@@ -8,7 +8,9 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\HybridAuth;
-use			h;
+use			h,
+			Exception,
+			Hybrid_Auth;
 global $Core;
 $Core->register_trigger(
 	'System/Page/external_login_list',
@@ -66,7 +68,7 @@ $Core->register_trigger(
 );
 $Core->register_trigger(
 	'System/User/registration/confirmation/after',
-	function ($data) {
+	function () {
 		global $Config;
 		if (!$Config->module('HybridAuth')->active()) {
 			return;
@@ -277,3 +279,16 @@ function update_user_contacts ($contacts, $provider) {
 	}
 	unset($Cache->{'HybridAuth/contacts/'.$id});
 }
+$Core->register_trigger(
+	'System/User/del_session/before',
+	function () {
+		global $Config;
+		try {
+			$HybridAuth		= new Hybrid_Auth([
+				'base_url'	=> $Config->base_url(),
+				'providers'	=> $Config->module('HybridAuth')->providers
+			]);
+			$HybridAuth->logoutAllProviders();
+		} catch (Exception $e) {}
+	}
+);
