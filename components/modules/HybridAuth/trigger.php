@@ -284,6 +284,7 @@ $Core->register_trigger(
 	function () {
 		global $Config;
 		try {
+			require_once __DIR__.'/Hybrid/Auth.php';
 			$HybridAuth		= new Hybrid_Auth([
 				'base_url'	=> $Config->base_url(),
 				'providers'	=> $Config->module('HybridAuth')->providers

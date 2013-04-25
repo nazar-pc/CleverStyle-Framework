@@ -1585,7 +1585,7 @@ class User extends Accessor {
 					/**
 					 * Mark user as guest, load data again
 					 */
-					$this->del_session(null, false);
+					$user	= 1;
 					goto getting_user_data;
 				/**
 				 * If user is not active
@@ -1595,7 +1595,7 @@ class User extends Accessor {
 					/**
 					 * Mark user as guest, load data again
 					 */
-					$this->del_session(null, false);
+					$user	= 1;
 					goto getting_user_data;
 				}
 			/**
@@ -1606,14 +1606,14 @@ class User extends Accessor {
 				/**
 				 * Mark user as guest, load data again
 				 */
-				$this->del_session(null, false);
+				$user	= 1;
 				goto getting_user_data;
 			}
 		} elseif ($this->id != 1) {
 			/**
 			 * If data was not loaded - mark user as guest, load data again
 			 */
-			$this->del_session(null, false);
+			$user	= 1;
 			goto getting_user_data;
 		}
 		unset($data);
@@ -1676,6 +1676,7 @@ class User extends Accessor {
 			];
 			_setcookie('session', $hash, TIME + $Config->core['session_expire']);
 			$this->id					= $this->get_session_user();
+			$this->update_user_is();
 			if (
 				($this->db()->qfs(
 					 "SELECT COUNT(`id`)
@@ -1982,7 +1983,7 @@ class User extends Accessor {
 	 * @param bool					$confirmation	If <b>true</b> - default system option is used, if <b>false</b> - registration will be
 	 *												finished without necessity of confirmation, independently from default system option
 	 *												(is used for manual registration).
-	 * @param bool					$autologin		If <b>false</b> - no auto login, if <b>true</b> - according to system configuration
+	 * @param bool					$autologin		If <b>false</b> - no autologin, if <b>true</b> - according to system configuration
 	 *
 	 * @return array|bool|string					<b>exists</b>	- if user with such email is already registered<br>
 	 * 												<b>error</b>	- if error occurred<br>
