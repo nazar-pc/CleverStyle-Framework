@@ -7,48 +7,52 @@
  */
 /**
  * Provides next triggers:<br>
- *  System/User/construct/before<br>
+ *  System/User/construct/before
  *
- *  System/User/construct/after<br>
+ *  System/User/construct/after
  *
- *  System/User/del_all_sessions<br>
- *  ['id'	=> <i>user_id</i>]<br>
+ *  System/User/del_all_sessions
+ *  ['id'	=> <i>user_id</i>]
  *
- *  System/User/registration/before<br>
- *  ['email'	=> <i>email</i>]<br>
+ *  System/User/registration/before
+ *  ['email'	=> <i>email</i>]
  *
- *  System/User/registration/after<br>
- *  ['id'	=> <i>user_id</i>]<br>
+ *  System/User/registration/after
+ *  ['id'	=> <i>user_id</i>]
  *
- *  System/User/registration/confirmation/before<br>
- *  ['reg_key'	=> <i>reg_key</i>]<br>
+ *  System/User/registration/confirmation/before
+ *  ['reg_key'	=> <i>reg_key</i>]
  *
- *  System/User/registration/confirmation/after<br>
- *  ['id'	=> <i>user_id</i>]<br>
+ *  System/User/registration/confirmation/after
+ *  ['id'	=> <i>user_id</i>]
  *
- *  System/User/del_user/before<br>
- *  ['id'	=> <i>user_id</i>]<br>
+ *  System/User/del_user/before
+ *  ['id'	=> <i>user_id</i>]
  *
- *  System/User/del_user/after<br>
- *  ['id'	=> <i>user_id</i>]<br>
+ *  System/User/del_user/after
+ *  ['id'	=> <i>user_id</i>]
  *
- *  System/User/add_bot<br>
- *  ['id'	=> <i>bot_id</i>]<br>
+ *  System/User/add_bot
+ *  ['id'	=> <i>bot_id</i>]
  *
- *  System/User/add_group<br>
+ *  System/User/add_group
  *  ['id'	=> <i>group_id</i>]
  *
- *  System/User/del_group/before<br>
+ *  System/User/del_group/before
  *  ['id'	=> <i>group_id</i>]
  *
- *  System/User/del_group/after<br>
+ *  System/User/del_group/after
  *  ['id'	=> <i>group_id</i>]
  *
- *  System/User/get_contacts<br>
+ *  System/User/get_contacts
  *  [
  * 		'id'		=> <i>user_id</i>,
  * 		'contacts'	=> <i>&$contacts</i>	//Array of user id
  *  ]
+ *
+ *  System/User/del_session/before
+ *
+ *  System/User/del_session/after
  */
 namespace	cs;
 use			cs\DB\Accessor;
@@ -1695,7 +1699,15 @@ class User extends Accessor {
 	 * @return bool
 	 */
 	function del_session ($session_id = null) {
-		return $this->del_session_internal($session_id);
+		global $Core;
+		$Core->run_trigger(
+			'System/User/del_session/before'
+		);
+		$result	= $this->del_session_internal($session_id);
+		$Core->run_trigger(
+			'System/User/del_session/after'
+		);
+		return $result;
 	}
 	/**
 	 * Deletion of the session

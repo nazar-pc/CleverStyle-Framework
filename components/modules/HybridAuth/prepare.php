@@ -12,7 +12,20 @@ use			Exception,
 			h,
 			Hybrid_Endpoint,
 			Hybrid_Auth;
-global $Config, $User, $L, $Mail, $Page, $Index, $db, $Key;
+/**
+ * Provides next triggers:<br>
+ *  HybridAuth/add_session/before<code>
+ *  [
+ *   'adapter'	=> <i>$Adapter</i>		//instance of Hybrid_Provider_Adapter<br>
+ *   'provider'	=> <i>provider</i>		//Provider name<br>
+ *  ]</code><br>
+ *  HybridAuth/add_session/after<code>
+ *  [
+ *   'adapter'	=> <i>$Adapter</i>		//instance of Hybrid_Provider_Adapter<br>
+ *   'provider'	=> <i>provider</i>		//Provider name<br>
+ *  ]</code>
+ */
+global $Config, $User, $L, $Mail, $Page, $Index, $db, $Key, $Core;
 $rc			= $Config->route;
 /**
  * If user is registered, provider not found or this is request for final authentication and session does not corresponds - return user to the base url
@@ -23,8 +36,8 @@ if (
 		isset($rc[0]) &&
 		(
 			(
-				$Config->module(MODULE)->providers[$rc[0]] &&
-				$Config->module(MODULE)->providers[$rc[0]]['enabled']
+				$Config->module('HybridAuth')->providers[$rc[0]] &&
+				$Config->module('HybridAuth')->providers[$rc[0]]['enabled']
 			) ||
 			(
 				$rc[0] == 'merge_confirmation' &&
@@ -44,7 +57,7 @@ if (
 /**
  * Merging confirmation
  */
-$db_id	= $Config->module(MODULE)->db('integration');
+$db_id	= $Config->module('HybridAuth')->db('integration');
 if (isset($rc[1]) && $rc[0] == 'merge_confirmation') {
 	/**
 	 * If confirmation key is valid - make merging
@@ -69,7 +82,27 @@ if (isset($rc[1]) && $rc[0] == 'merge_confirmation') {
 			$data['profile']
 		);
 		$User->del_session_data('HybridAuth');
+		$HybridAuth		= new Hybrid_Auth([
+			'base_url'	=> $Config->base_url().'/HybridAuth/'.$data['provider'].'/endpoint/'.$User->get_session(),
+			'providers'	=> $Config->module('HybridAuth')->providers
+		]);
+		$adapter		= $HybridAuth->getAdapter($data['provider']);
+		$Core->run_trigger(
+			'HybridAuth/add_session/before',
+			[
+				'adapter'	=> $adapter,
+				'provider'	=> $data['provider']
+			]
+		);
 		$User->add_session($data['id']);
+		$Core->run_trigger(
+			'HybridAuth/add_session/after',
+			[
+				'adapter'	=> $adapter,
+				'provider'	=> $data['provider']
+			]
+		);
+		unset($HybridAuth, $adapter);
 		if ($User->id != 1) {
 			$existing_data	= $User->get(array_keys($data['profile_info']), $data['id']);
 			foreach ($data['profile_info'] as $item => $value) {
@@ -104,7 +137,7 @@ if (!$Config->core['allow_user_registration']) {
 if (
 	!$User->get_session_data('HybridAuth') &&
 	isset($_SERVER['HTTP_REFERER']) &&
-	strpos($_SERVER['HTTP_REFERER'], $Config->base_url().'/'.MODULE) === false &&
+	strpos($_SERVER['HTTP_REFERER'], $Config->base_url().'/'.'HybridAuth') === false &&
 	strpos($_SERVER['HTTP_REFERER'], $Config->base_url()) === 0
 ) {
 	_setcookie('HybridAuth_referer', $_SERVER['HTTP_REFERER']);
@@ -122,10 +155,8 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 } elseif (!isset($_POST['email'])) {
 	try {
 		$HybridAuth		= new Hybrid_Auth([
-			'base_url'	=> $Config->base_url().'/'.MODULE.'/'.$rc[0].'/endpoint/'.$User->get_session(),
-			'providers'	=> [
-				$rc[0]	=> $Config->module(MODULE)->providers[$rc[0]]
-			]
+			'base_url'	=> $Config->base_url().'/HybridAuth/'.$rc[0].'/endpoint/'.$User->get_session(),
+			'providers'	=> $Config->module('HybridAuth')->providers
 		]);
 		$adapter		= $HybridAuth->authenticate($rc[0]);
 		/**
@@ -166,8 +197,22 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 				])
 			) && $User->get('status', $id) == '1'
 		) {
+			$Core->run_trigger(
+				'HybridAuth/add_session/before',
+				[
+					'adapter'	=> $adapter,
+					'provider'	=> $rc[0]
+				]
+			);
 			$User->add_session($id);
-			if ($User->id != 1 && $Config->module(MODULE)->enable_contacts_detection) {
+			$Core->run_trigger(
+				'HybridAuth/add_session/after',
+				[
+					'adapter'	=> $adapter,
+					'provider'	=> $rc[0]
+				]
+			);
+			if ($User->id != 1 && $Config->module('HybridAuth')->enable_contacts_detection) {
 				$existing_data	= $User->get(array_keys($profile_info), $id);
 				foreach ($profile_info as $item => $value) {
 					if (!$existing_data[$item] || $existing_data[$item] != $value) {
@@ -191,7 +236,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 		 * @var \Hybrid_User_Contact[] $contacts
 		 */
 		$contacts		= [];
-		if ($Config->module(MODULE)->enable_contacts_detection) {
+		if ($Config->module('HybridAuth')->enable_contacts_detection) {
 			try {
 				$contacts	= $adapter->getUserContacts();
 			} catch (Exception $e) {
@@ -231,7 +276,23 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 						$profile->identifier,
 						$profile->profileURL
 					);
+					$adapter		= $HybridAuth->getAdapter($rc[0]);
+					$Core->run_trigger(
+						'HybridAuth/add_session/before',
+						[
+							'adapter'	=> $adapter,
+							'provider'	=> $rc[0]
+						]
+					);
 					$User->add_session($result['id']);
+					$Core->run_trigger(
+						'HybridAuth/add_session/after',
+						[
+							'adapter'	=> $adapter,
+							'provider'	=> $rc[0]
+						]
+					);
+					unset($adapter);
 					if ($User->id != 1) {
 						$existing_data	= $User->get(array_keys($profile_info), $id);
 						foreach ($profile_info as $item => $value) {
@@ -265,7 +326,23 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					$L->reg_success_mail(get_core_ml_text('name')),
 					$body
 				)) {
+					$adapter		= $HybridAuth->getAdapter($rc[0]);
+					$Core->run_trigger(
+						'HybridAuth/add_session/before',
+						[
+							'adapter'	=> $adapter,
+							'provider'	=> $rc[0]
+						]
+					);
 					$User->add_session($result['id']);
+					$Core->run_trigger(
+						'HybridAuth/add_session/after',
+						[
+							'adapter'	=> $adapter,
+							'provider'	=> $rc[0]
+						]
+					);
+					unset($adapter);
 					if ($User->id != 1) {
 						$existing_data	= $User->get(array_keys($profile_info), $id);
 						foreach ($profile_info as $item => $value) {
@@ -392,7 +469,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					$User->username($id) ?: strstr($_POST['email'], '@', true),
 					get_core_ml_text('name'),
 					$L->{$rc[0]},
-					$Config->core_url().'/'.MODULE.'/merge_confirmation/'.$confirm_key,
+					$Config->core_url().'/HybridAuth/merge_confirmation/'.$confirm_key,
 					$L->time($Config->core['registration_confirmation_time'], 'd')
 				);
 				if ($Mail->send_to(
