@@ -13,17 +13,26 @@ use			Exception,
 			Hybrid_Endpoint,
 			Hybrid_Auth;
 /**
- * Provides next triggers:<br>
- *  HybridAuth/add_session/before<code>
+ * Provides next triggers:
+ *  HybridAuth/registration/before
  *  [
- *   'adapter'	=> <i>$Adapter</i>		//instance of Hybrid_Provider_Adapter<br>
- *   'provider'	=> <i>provider</i>		//Provider name<br>
- *  ]</code><br>
- *  HybridAuth/add_session/after<code>
+ *   'provider'		=> provider		//Provider name
+ *   'email'		=> email		//Email
+ *   'identifier'	=> identifier	//Identifier given by provider
+ *   'profile'		=> profile		//Profile url
+ *  ]
+ *
+ *  HybridAuth/add_session/before
  *  [
- *   'adapter'	=> <i>$Adapter</i>		//instance of Hybrid_Provider_Adapter<br>
- *   'provider'	=> <i>provider</i>		//Provider name<br>
- *  ]</code>
+ *   'adapter'	=> $Adapter		//instance of Hybrid_Provider_Adapter
+ *   'provider'	=> provider		//Provider name
+ *  ]
+ *
+ *  HybridAuth/add_session/after
+ *  [
+ *   'adapter'	=> $Adapter		//instance of Hybrid_Provider_Adapter
+ *   'provider'	=> provider		//Provider name
+ *  ]
  */
 global $Config, $User, $L, $Mail, $Page, $Index, $db, $Key, $Core;
 $rc			= $Config->route;
@@ -250,6 +259,18 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 			/**
 			 * Try to register user
 			 */
+			$adapter		= $HybridAuth->getAdapter($rc[0]);
+			if (!$Core->run_trigger(
+				'HybridAuth/registration/before',
+				[
+					'provider'		=> $rc[0],
+					'email'			=> $email,
+					'identifier'	=> $profile->identifier,
+					'profile'		=> $profile->profileURL
+				]
+			)) {
+				return;
+			}
 			if ($result		= $User->registration($email, false, false)) {
 				if ($result == 'error') {
 					$Index->content($L->reg_server_error);
@@ -276,7 +297,6 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 						$profile->identifier,
 						$profile->profileURL
 					);
-					$adapter		= $HybridAuth->getAdapter($rc[0]);
 					$Core->run_trigger(
 						'HybridAuth/add_session/before',
 						[
@@ -292,7 +312,6 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 							'provider'	=> $rc[0]
 						]
 					);
-					unset($adapter);
 					if ($User->id != 1) {
 						$existing_data	= $User->get(array_keys($profile_info), $id);
 						foreach ($profile_info as $item => $value) {
@@ -326,7 +345,6 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					$L->reg_success_mail(get_core_ml_text('name')),
 					$body
 				)) {
-					$adapter		= $HybridAuth->getAdapter($rc[0]);
 					$Core->run_trigger(
 						'HybridAuth/add_session/before',
 						[
@@ -342,7 +360,6 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 							'provider'	=> $rc[0]
 						]
 					);
-					unset($adapter);
 					if ($User->id != 1) {
 						$existing_data	= $User->get(array_keys($profile_info), $id);
 						foreach ($profile_info as $item => $value) {
@@ -369,6 +386,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 				header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
 				_setcookie('HybridAuth_referer', '');
 			}
+			unset($adapter);
 		/**
 		 * If integrated service does not returns email - ask user for email
 		 */
@@ -408,6 +426,17 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 	/**
 	 * Try to register user
 	 */
+	if (!$Core->run_trigger(
+		'HybridAuth/registration/before',
+		[
+			'provider'		=> $rc[0],
+			'email'			=> $_POST['email'],
+			'identifier'	=> $HybridAuth_data['identifier'],
+			'profile'		=> $HybridAuth_data['profile']
+		]
+	)) {
+		return;
+	}
 	if ($result		= $User->registration($_POST['email'])) {
 		if ($result === false) {
 			$Page->title($L->please_type_correct_email);

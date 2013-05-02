@@ -481,7 +481,7 @@ function _json_decode_nocomments ($in, $depth = 512) {
  * @return bool|int
  */
 function _preg_match ($pattern, $subject, &$matches = null, $flags = 0, $offset = 0) {
-	if (strpos('/', $pattern) === 0 || strpos('#', $pattern) === 0) {
+	if (strpos('/', $pattern) === false && strpos('#', $pattern) === false) {
 		return false;
 	}
 	return preg_match($pattern, $subject, $matches, $flags, $offset);
