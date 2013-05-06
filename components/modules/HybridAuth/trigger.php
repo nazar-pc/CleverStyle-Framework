@@ -9,7 +9,6 @@
  */
 namespace	cs\modules\HybridAuth;
 use			h,
-			Exception,
 			Hybrid_Auth;
 global $Core;
 $Core->register_trigger(

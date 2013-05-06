@@ -10,8 +10,7 @@
 namespace	cs\modules\HybridAuth;
 use			Exception,
 			h,
-			Hybrid_Endpoint,
-			Hybrid_Auth;
+			Hybrid_Endpoint;
 /**
  * Provides next triggers:
  *  HybridAuth/registration/before
