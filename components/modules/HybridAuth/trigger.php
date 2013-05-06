@@ -279,17 +279,20 @@ function update_user_contacts ($contacts, $provider) {
 	}
 	unset($Cache->{'HybridAuth/contacts/'.$id});
 }
-$Core->register_trigger(
-	'System/User/del_session/before',
-	function () {
-		global $Config;
-		try {
-			require_once __DIR__.'/Hybrid/Auth.php';
-			$HybridAuth		= new Hybrid_Auth([
-				'base_url'	=> $Config->base_url(),
-				'providers'	=> $Config->module('HybridAuth')->providers
-			]);
-			$HybridAuth->logoutAllProviders();
-		} catch (Exception $e) {}
-	}
-);
+/**
+ * Get HybridAuth instance with current configuration. Strongly recommended for usage
+ *
+ * @param null|string	$provider
+ * @param null|string	$base_url
+ *
+ * @return Hybrid_Auth
+ */
+function get_hybridauth_instance ($provider = null, $base_url = null) {
+	global $Config, $User;
+	$HybridAuth		= new Hybrid_Auth([
+		'base_url'	=> $base_url ?: $Config->base_url().'/HybridAuth/'.$provider.'/endpoint/'.$User->get_session(),
+		'providers'	=> $Config->module('HybridAuth')->providers
+	]);
+	$HybridAuth->restoreSessionData($User->user() ? serialize($User->get_data('HybridAuth_session')) : null);
+	return $HybridAuth;
+}

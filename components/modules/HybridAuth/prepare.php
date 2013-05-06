@@ -91,11 +91,15 @@ if (isset($rc[1]) && $rc[0] == 'merge_confirmation') {
 			$data['profile']
 		);
 		$User->del_session_data('HybridAuth');
-		$HybridAuth		= new Hybrid_Auth([
-			'base_url'	=> $Config->base_url().'/HybridAuth/'.$data['provider'].'/endpoint/'.$User->get_session(),
-			'providers'	=> $Config->module('HybridAuth')->providers
-		]);
+		$HybridAuth		= get_hybridauth_instance($data['provider']);
 		$adapter		= $HybridAuth->getAdapter($data['provider']);
+		$User->set_data(
+			'HybridAuth_session',
+			array_merge(
+				$User->get_data('HybridAuth_session') ?: [],
+				unserialize($HybridAuth->getSessionData())
+			)
+		);
 		$Core->run_trigger(
 			'HybridAuth/add_session/before',
 			[
@@ -163,11 +167,15 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
  */
 } elseif (!isset($_POST['email'])) {
 	try {
-		$HybridAuth		= new Hybrid_Auth([
-			'base_url'	=> $Config->base_url().'/HybridAuth/'.$rc[0].'/endpoint/'.$User->get_session(),
-			'providers'	=> $Config->module('HybridAuth')->providers
-		]);
+		$HybridAuth		= get_hybridauth_instance($rc[0]);
 		$adapter		= $HybridAuth->authenticate($rc[0]);
+		$User->set_data(
+			'HybridAuth_session',
+			array_merge(
+				$User->get_data('HybridAuth_session') ?: [],
+				unserialize($HybridAuth->getSessionData())
+			)
+		);
 		/**
 		 * @var \Hybrid_User_Profile $profile
 		 */
