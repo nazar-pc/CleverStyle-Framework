@@ -288,10 +288,13 @@ function update_user_contacts ($contacts, $provider) {
  */
 function get_hybridauth_instance ($provider = null, $base_url = null) {
 	global $Config, $User;
+	require_once __DIR__.'/Hybrid/Auth.php';
 	$HybridAuth		= new Hybrid_Auth([
 		'base_url'	=> $base_url ?: $Config->base_url().'/HybridAuth/'.$provider.'/endpoint/'.$User->get_session(),
 		'providers'	=> $Config->module('HybridAuth')->providers
 	]);
-	$HybridAuth->restoreSessionData($User->user() ? serialize($User->get_data('HybridAuth_session')) : null);
+	if ($User->user()) {
+		$HybridAuth->restoreSessionData(serialize($User->get_data('HybridAuth_session')));
+	}
 	return $HybridAuth;
 }
