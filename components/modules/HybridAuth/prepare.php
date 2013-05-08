@@ -107,6 +107,7 @@ if (isset($rc[1]) && $rc[0] == 'merge_confirmation') {
 			]
 		);
 		$User->add_session($data['id']);
+		add_session_after();
 		$Core->run_trigger(
 			'HybridAuth/add_session/after',
 			[
@@ -168,13 +169,6 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 	try {
 		$HybridAuth		= get_hybridauth_instance($rc[0]);
 		$adapter		= $HybridAuth->authenticate($rc[0]);
-		$User->set_data(
-			'HybridAuth_session',
-			array_merge(
-				$User->get_data('HybridAuth_session') ?: [],
-				unserialize($HybridAuth->getSessionData())
-			)
-		);
 		/**
 		 * @var \Hybrid_User_Profile $profile
 		 */
@@ -221,6 +215,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 				]
 			);
 			$User->add_session($id);
+			add_session_after();
 			$Core->run_trigger(
 				'HybridAuth/add_session/after',
 				[
@@ -312,6 +307,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 						]
 					);
 					$User->add_session($result['id']);
+					add_session_after();
 					$Core->run_trigger(
 						'HybridAuth/add_session/after',
 						[
@@ -360,6 +356,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 						]
 					);
 					$User->add_session($result['id']);
+					add_session_after();
 					$Core->run_trigger(
 						'HybridAuth/add_session/after',
 						[

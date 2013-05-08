@@ -278,6 +278,16 @@ function update_user_contacts ($contacts, $provider) {
 	}
 	unset($Cache->{'HybridAuth/contacts/'.$id});
 }
+function add_session_after () {
+	global $User;
+	$User->set_data(
+		'HybridAuth_session',
+		array_merge(
+			$User->get_data('HybridAuth_session') ?: [],
+			unserialize(get_hybridauth_instance()->getSessionData())
+		)
+	);
+}
 /**
  * Get HybridAuth instance with current configuration. Strongly recommended for usage
  *
@@ -293,7 +303,7 @@ function get_hybridauth_instance ($provider = null, $base_url = null) {
 		'base_url'	=> $base_url ?: $Config->base_url().'/HybridAuth/'.$provider.'/endpoint/'.$User->get_session(),
 		'providers'	=> $Config->module('HybridAuth')->providers
 	]);
-	if ($User->user()) {
+	if ($User->user() && MODULE != 'HybridAuth') {
 		$HybridAuth->restoreSessionData(serialize($User->get_data('HybridAuth_session')));
 	}
 	return $HybridAuth;
