@@ -8,15 +8,22 @@
 namespace	cs;
 use			h;
 /**
- * Provides next triggers:<br>
- *  System/Index/block_render<br>
+ * Provides next triggers:
+ *  System/Index/block_render
  *  [
- * 		'index'			=> <i>$index</i>,			//Block index<br>
- *  	'blocks_array'	=> <i>&$blocks_array</i>	//Reference to array in form ['top' => '', 'left' => '', 'right' => '', 'bottom' => '']
+ * 		'index'			=> $index,			//Block index
+ *  	'blocks_array'	=> &$blocks_array	//Reference to array in form ['top' => '', 'left' => '', 'right' => '', 'bottom' => '']
  *  ]
- *  System/Index/mainmenu<br>
- *  ['module'	=> <i>&$path</i>]					//Reference to module path, can be changed by corresponding module<br>
- *  System/Index/preload<br>
+ *
+ *  System/Index/mainmenu
+ *  [
+ *  	'path'	=> &$path,					//Reference to module path, can be changed by corresponding module
+ *  	'title'	=> &title,					//Reference to module title, can be changed by corresponding module
+ *  	'hide'	=> &$hide					//Reference to hide property, if set this to true (false by default) - menu element will not be displayed
+ *  ]
+ *
+ *  System/Index/preload
+ *
  *  System/Index/postload
  */
 class Index {
@@ -27,7 +34,6 @@ class Index {
 				$menumore_auto		= false,
 
 				$savefile			= 'save',
-				$post_title			= '',
 				$form				= false,
 				$file_upload		= false,
 				$form_atributes		= [],
@@ -45,7 +51,8 @@ class Index {
 				$title_auto			= true,
 				$stop				= false;	//Gives the ability to stop further processing
 
-	protected	$structure			= [],
+	protected	$post_title			= '',		//Appends to the end of title
+				$structure			= [],
 				$parts				= [],
 				$subparts			= [],
 				$permission_group,
@@ -137,7 +144,7 @@ class Index {
 		return $this;
 	}
 	/**
-	 * Initialization: loading of module structure, including of necessary module files
+	 * Initialization: loading of module structure, including of necessary module files, inclusion of save file
 	 */
 	protected function init () {
 		global $Config, $L, $Page, $User;
@@ -307,17 +314,24 @@ class Index {
 				)
 			) {
 				$path			= $module;
+				$title			= $L->$module;
+				$hide			= false;
 				$Core->run_trigger(
 					'System/Index/mainmenu',
 					[
-						'module'	=> &$path
+						'path'	=> &$path,
+						'title'	=> &$title,
+						'hide'	=> &$hide
 					]
 				);
+				if ($hide) {
+					continue;
+				}
 				$Page->mainmenu	.= h::a(
 					$L->$module,
 					[
 						'href'	=> '/'.$path,
-						'title'	=> $L->$module
+						'title'	=> $title
 					]
 				);
 			}

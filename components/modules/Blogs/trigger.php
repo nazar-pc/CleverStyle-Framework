@@ -118,8 +118,8 @@ $Core->register_trigger(
 	'System/Index/mainmenu',
 	function ($data) {
 		global $L;
-		if ($data['module'] == 'Blogs') {
-			$data['module']	= path($L->Blogs);
+		if ($data['path'] == 'Blogs') {
+			$data['path']	= path($L->Blogs);
 		}
 	}
 );
