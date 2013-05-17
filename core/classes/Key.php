@@ -41,7 +41,7 @@ class Key {
 	 * @param int|object	$database	Keys database
 	 * @param bool|string	$key		If <b>false</b> - key will be generated automatically, otherwise must contain 56 character [0-9a-z] key
 	 * @param null|mixed	$data		Data to be stored with key
-	 * @param int			$expire		Timestamp of key exiration, if not specified - default system value will be used
+	 * @param int			$expire		Timestamp of key expiration, if not specified - default system value will be used
 	 *
 	 * @return bool
 	 */

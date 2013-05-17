@@ -1,0 +1,67 @@
+<h3 style="text-align: center;">HybridAuth module, adds functionality for integration with external services for login and more</h3>
+<p>Module is based on HybridAuth library, so, refer to <a href="http://hybridauth.sourceforge.net">hybridauth.sourceforge.net</a> for specific details of this library.</p>
+<h4>To get instance of \Hybrid_Auth class with current configuration \cs\modules\HybridAuth\get_hybridauth_instance() function is used.</h4>
+<h4>Example of getting Mark Zuckerberg profile on facebook:</h4>
+<pre>$HybridAuth		= \cs\modules\HybridAuth\get_hybridauth_instance();
+try {
+	if (
+		$HybridAuth->isConnectedWith('Facebook') &&
+		($api = $HybridAuth->getAdapter('Facebook')->api())
+	) {
+		$mark_profile	= $api->api('zuck');
+	}
+} catch (Exception $e) {}</pre>
+<h4>Also this module have several triggers:</h4>
+<ul>
+	<li>
+		<h4>HybridAuth/registration/before</h4>
+		<p>Executes before registration of new user by this module</p>
+		<pre>[
+	'provider'	=> <i>provider</i>
+	'email'		=> <i>email</i>
+	'identifier'	=> <i>identifier</i>
+	'profile'	=> <i>profile</i>
+]</pre>
+		<dl>
+			<dt>provider</dt>
+			<dd>Provider name</dd>
+			<dt>email</dt>
+			<dd>Email</dd>
+			<dt>identifier</dt>
+			<dd>Identifier given by provider</dd>
+			<dt>profile</dt>
+			<dd>Profile url</dd>
+		</dl>
+		<p>Third-party component may register trigger to know, when new user is registered by HybridAuth module</p>
+	</li>
+	<li>
+		<h4>HybridAuth/add_session/before</h4>
+		<p>Executes before creation of new session by this module</p>
+		<pre>[
+	'adapter'	=> <i>$Adapter</i>
+	'provider'	=> <i>provider</i>
+]</pre>
+		<dl>
+			<dt>$Adapter</dt>
+			<dd>instance of Hybrid_Provider_Adapter</dd>
+			<dt>provider</dt>
+			<dd>Provider name</dd>
+		</dl>
+		<p>Third-party component may register trigger to know, when new user session created by HybridAuth module</p>
+	</li>
+	<li>
+		<h4>HybridAuth/add_session/after</h4>
+		<p>Executes after creation of new session by this module</p>
+		<pre>[
+	'adapter'	=> <i>$Adapter</i>
+	'provider'	=> <i>provider</i>
+]</pre>
+		<dl>
+			<dt>$Adapter</dt>
+			<dd>instance of Hybrid_Provider_Adapter</dd>
+			<dt>provider</dt>
+			<dd>Provider name</dd>
+		</dl>
+		<p>Third-party component may register trigger to know, when new user session created by HybridAuth module</p>
+	</li>
+</ul>
