@@ -226,7 +226,6 @@ if (!empty($plugins)) {
 				$tag == 'pre' ? filter(file_get_contents($file)) : file_get_contents($file),
 				[
 					'id'			=> $plugin.'_readme',
-					'class'			=> 'cs-dialog',
 					'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
 					'title'			=> $plugin.' -> '.$L->information_about_plugin
 				]
@@ -253,7 +252,6 @@ if (!empty($plugins)) {
 				$tag == 'pre' ? filter(file_get_contents($file)) : file_get_contents($file),
 				[
 					'id'			=> $plugin.'_license',
-					'class'			=> 'cs-dialog',
 					'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
 					'title'			=> $plugin.' -> '.$L->license
 				]

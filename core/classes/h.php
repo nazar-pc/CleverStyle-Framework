@@ -44,14 +44,14 @@ class h {
 			'param'
 		];
 	/**
-	 * Line padding for a structured source code
+	 * Line padding for a structured source code (adds tabs)
 	 *
 	 * @static
 	 *
 	 * @param string	$in
 	 * @param int		$level
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	static function level ($in, $level = 1) {
 		if ($level < 1) {
@@ -152,7 +152,7 @@ class h {
 		return true;
 	}
 	/**
-	 * Adds, if necessary, slash or domain at the beginning of the url, provides correct relative url
+	 * Adds, if necessary, slash or domain at the beginning of the url, provides correct absolute/relative url
 	 *
 	 * @static
 	 * @param string	$url
@@ -206,6 +206,11 @@ class h {
 		}
 		if (isset($data['data-dialog'])) {
 			$data['data-dialog'] = filter($data['data-dialog']);
+			if (isset($data['class'])) {
+				$data['class'] .= ' cs-dialog';
+			} else {
+				$data['class'] = 'cs-dialog';
+			}
 		}
 		if (isset($data['level'])) {
 			$level = $data['level'];
@@ -397,6 +402,10 @@ class h {
 				} elseif ($in['type'] == 'checkbox' && !isset($in['id'])) {
 					$in['id'] = uniqid('input_');
 				}
+				if ($in['type'] == 'checkbox' && isset($in['value'], $in['checked']) && $in['value'] == $in['checked']) {
+					$in[]	= 'checked';
+				}
+				unset($in['checked']);
 				if (isset($in['min'], $in['value']) && $in['min'] !== false && $in['min'] > $in['value']) {
 					$in['value'] = $in['min'];
 				}
@@ -572,7 +581,7 @@ class h {
 		return self::wrap($in, $data, $function);
 	}
 	/**
-	 * Rendering of textarea tag with supporting multiline input data in the form of array
+	 * Rendering of textarea tag with supporting multiple input data in the form of array of strings
 	 *
 	 * @static
 	 *
@@ -585,7 +594,7 @@ class h {
 		return self::template_2($in, $data, __FUNCTION__);
 	}
 	/**
-	 * Rendering of pre tag with supporting multiline input data in the form of array
+	 * Rendering of pre tag with supporting multiple input data in the form of array of strings
 	 *
 	 * @static
 	 *
@@ -598,7 +607,7 @@ class h {
 		return self::template_2($in, $data, __FUNCTION__);
 	}
 	/**
-	 * Rendering of code tag with supporting multiline input data in the form of array
+	 * Rendering of code tag with supporting multiple input data in the form of array of strings
 	 *
 	 * @static
 	 *
@@ -880,6 +889,7 @@ class h {
 				 */
 				strpos($input, 'select') !== 0 &&
 				strpos($input, 'datalist') !== 0 &&
+				strpos($input, 'input') !== 0 &&
 				(
 					(
 						is_array_indexed($data[0]) &&
@@ -998,7 +1008,7 @@ class h {
 		}
 		$attrs	= [];
 		/**
-		 * Atributes processing
+		 * Attributes processing
 		 */
 		if (($pos = mb_strpos($input, '[')) !== false) {
 			$attrs_ = explode('][', mb_substr($input, $pos+1, -1));

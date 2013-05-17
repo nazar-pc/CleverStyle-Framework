@@ -38,7 +38,7 @@ $Index->content(
 				'href'	=> 'readme.html'
 				]
 			).
-			h::{'pre#system_license.cs-dialog'}(
+			h::{'pre#system_license'}(
 				file_get_contents(DIR.'/license.txt'),
 				[
 					'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',

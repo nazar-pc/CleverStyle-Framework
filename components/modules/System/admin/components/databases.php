@@ -363,7 +363,7 @@ if (isset($rc[2])) {
 	);
 }
 $test_dialog && $a->content(
-	h::{'div#test_db.cs-dialog'}([
+	h::{'div#test_db'}([
 		'data-dialog'	=> '{"autoOpen":false,"height":"75","hide":"puff","modal":true,"show":"scale","width":"250"}',
 		'title'			=> $L->test_connection
 	])

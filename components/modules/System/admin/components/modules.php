@@ -547,7 +547,6 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 					$tag == 'pre' ? filter(file_get_contents($file)) : file_get_contents($file),
 					[
 						'id'			=> $module.'_api',
-						'class'			=> 'cs-dialog',
 						'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
 						'title'			=> $module.' -> '.$L->api
 					]
@@ -575,7 +574,6 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 				$tag == 'pre' ? filter(file_get_contents($file)) : file_get_contents($file),
 				[
 					'id'			=> $module.'_readme',
-					'class'			=> 'cs-dialog',
 					'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
 					'title'			=> $module.' -> '.$L->information_about_module
 				]
@@ -602,7 +600,6 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 				file_get_contents($file),
 				[
 					'id'			=> $module.'_license',
-					'class'			=> 'cs-dialog',
 					'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
 					'title'			=> $module.' -> '.$L->license
 				]
