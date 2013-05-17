@@ -43,7 +43,7 @@ class Key {
 	 * @param null|mixed	$data		Data to be stored with key
 	 * @param int			$expire		Timestamp of key expiration, if not specified - default system value will be used
 	 *
-	 * @return bool
+	 * @return bool|string
 	 */
 	function add ($database, $key, $data = null, $expire = 0) {
 		global $db, $Config;
@@ -91,7 +91,7 @@ class Key {
 		return $key;
 	}
 	/**
-	 * Check key existence and/or getting of data stored with key
+	 * Check key existence and/or getting of data stored with key. After this key will be deleted automatically.
 	 *
 	 * @param int				$database	Keys database
 	 * @param string			$key		56 character [0-9a-z] key
