@@ -112,7 +112,9 @@ class h {
 			$data['formaction']	= self::url($data['formaction']);
 		}
 		if (isset($data['tag'])) {
-			$tag				= $data['tag'];
+			if ($data['tag']) {
+				$tag				= $data['tag'];
+			}
 			if ($tag == 'img' && !isset($data['alt'])) {
 				$data['alt']	= '';
 			}
