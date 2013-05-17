@@ -242,7 +242,7 @@ class Page {
 		}
 		if (is_object($Config)) {
 			$this->Title = $Config->core['title_reverse'] ? array_reverse($this->Title) : $this->Title;
-			$this->Title = implode(' '.trim($Config->core['title_delimiter']).' ', $this->Title);
+			$this->Title = implode($Config->core['title_delimiter'], $this->Title);
 		} else {
 			$this->Title = $this->Title[0];
 		}
