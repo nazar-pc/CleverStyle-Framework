@@ -8,19 +8,20 @@
 namespace	cs;
 use			Closure;
 /**
- * Provides next triggers:<br>
- *  System/general/languages/load<code>
+ * Provides next triggers:
+ *  System/general/languages/load
  *  [
- *   'clanguage'		=> <i>clanguage</i><br>
- *   'clang'			=> <i>clang</i><br>
- *   'clanguage_en'		=> <i>clanguage_en</i><br>
- *   'content_language'	=> <i>content_language</i><br>
- *   'locale'			=> <i>locale</i><br>
- *  ]</code>
+ *   'clanguage'		=> clanguage
+ *   'clang'			=> clang
+ *   'clanguage_en'		=> clanguage_en
+ *   'content_language'	=> content_language
+ *   'locale'			=> locale
+ *  ]
  */
+defined('FIXED_LANGUAGE') || define('FIXED_LANGUAGE', false);
 class Language {
 	public		$clanguage,								//Current language
-				$time = '';								//Closure for time processing
+				$time = null;							//Closure for time processing
 	protected	$init = false,							//For single initialization
 				$translate = [],						//Local cache of translations
 				$need_to_rebuild_cache = false;			//Necessity for cache rebuilding
@@ -35,7 +36,7 @@ class Language {
 	/**
 	 * Initialization: defining current language, loading translation
 	 *
-	 * @param array		$active_languages
+	 * @param string[]	$active_languages
 	 * @param string	$language
 	 *
 	 * @return void
@@ -158,10 +159,10 @@ class Language {
 	/**
 	 * Set translation
 	 *
-	 * @param array|string	$item
+	 * @param array|string	$item	Item string, or key-value array
 	 * @param null|string	$value
 	 *
-	 * @return string
+	 * @return void
 	 */
 	function set ($item, $value = null) {
 		if (is_array($item)) {
@@ -255,9 +256,9 @@ class Language {
 	/**
 	 * Time formatting according to the current language (adding correct endings)
 	 *
-	 * @param int $in		time (number)
-	 * @param string $type	Type of formatting<br>
-	 * 						s - seconds<br>m - minutes<br>h - hours<br>d - days<br>M - months<br>y - years
+	 * @param int		$in		time (number)
+	 * @param string	$type	Type of formatting<br>
+	 * 							s - seconds<br>m - minutes<br>h - hours<br>d - days<br>M - months<br>y - years
 	 *
 	 * @return string
 	 */
@@ -293,8 +294,8 @@ class Language {
 	 * Allows to use formatted strings in translations
 	 *
 	 * @see format()
-	 * @param	$name
-	 * @param	$arguments
+	 * @param string	$name
+	 * @param array		$arguments
 	 *
 	 * @return string
 	 */
@@ -304,8 +305,8 @@ class Language {
 	/**
 	 * Allows to use formatted strings in translations
 	 *
-	 * @param	$name
-	 * @param	$arguments
+	 * @param string	$name
+	 * @param array		$arguments
 	 *
 	 * @return string
 	 */
