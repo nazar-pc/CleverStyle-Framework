@@ -130,7 +130,7 @@ function install_process () {
 		"closed_title": "Site closed",
 		"closed_text": "<p>Site closed for maintenance<\/p>",
 		"site_mode": "1",
-		"title_delimiter": "|",
+		"title_delimiter": " | ",
 		"title_reverse": "0",
 		"debug": "0",
 		"show_db_queries": "1",
