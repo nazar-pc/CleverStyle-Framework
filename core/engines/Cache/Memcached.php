@@ -31,7 +31,7 @@ class Memcached extends _Abstract {
 		if (!$this->memcached) {
 			return false;
 		}
-		return $this->memcached->get($item);
+		return $this->memcached->get(DOMAIN."/$item");
 	}
 	/**
 	 * Put or change data of cache item
@@ -45,7 +45,7 @@ class Memcached extends _Abstract {
 		if (!$this->memcached) {
 			return false;
 		}
-		return $this->memcached->set($item, $data);
+		return $this->memcached->set(DOMAIN."/$item", $data);
 	}
 	/**
 	 * Delete item from cache
@@ -63,6 +63,7 @@ class Memcached extends _Abstract {
 		if (!$keys) {
 			return false;
 		}
+		$item	= DOMAIN."/$item";
 		foreach ($keys as $element) {
 			if (
 				$item == $element ||
