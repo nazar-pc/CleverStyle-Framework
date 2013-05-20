@@ -26,6 +26,10 @@ $Core->register_trigger(
 $Core->register_trigger(
 	'System/Page/rebuild_cache',
 	function () {
+		global $Config;
+		if (!$Config->module('Comments')->active()) {
+			return;
+		}
 		if (file_exists(PCACHE.'/module.Comments.js') && file_exists(PCACHE.'/module.Comments.css')) {
 			return;
 		}
@@ -108,6 +112,9 @@ $Core->register_trigger(
 	'System/Page/pre_display',
 	function () {
 		global $Config, $Page;
+		if (!$Config->module('Comments')->active()) {
+			return;
+		}
 		if (!$Config->core['cache_compress_js_css']) {
 			$Page->css('components/modules/Comments/includes/css/general.css');
 			$Page->js([
