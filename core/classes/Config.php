@@ -463,7 +463,7 @@ class Config {
 			unset($config['core']['cache_not_saved'], $this->core['cache_not_saved']);
 		}
 		$Cache->config	= $config;
-		$L->change($this->core['language']);
+		$L->change(_getcookie('language') ?: $this->core['language']);
 		$this->init();
 		return true;
 	}
