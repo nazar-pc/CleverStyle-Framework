@@ -39,12 +39,15 @@ $rc					= $Config->route;
 $a->buttons			= false;
 $show_modules		= true;
 if (
-	isset($rc[2], $rc[3]) &&
+	isset($rc[2]) &&
 	!empty($rc[2]) &&
 	(
-		isset($Config->components['modules'][$rc[3]]) ||
+		$rc[2] == 'update_system' ||
 		(
-			$rc[2] == 'install' && $rc[3] == 'upload'
+			isset($rc[3], $Config->components['modules'][$rc[3]]) ||
+			(
+				isset($rc[3]) && $rc[2] == 'install' && $rc[3] == 'upload'
+			)
 		)
 	)
 ) {
@@ -132,11 +135,11 @@ if (
 							}
 							return (int)copy($tmp_dir.'/fs/'.$index, MODULES.'/'.$module.'/'.$file);
 						},
-						$fs,
-						array_keys($fs)
+						array_keys($fs),
+						$fs
 					)
 				);
-				file_put_contents(MODULES.'/'.$module.'/fs.json', _json_encode(array_keys($fs)));
+				file_put_contents(MODULES.'/'.$module.'/fs.json', _json_encode(array_values($fs)));
 				unset($tmp_dir);
 				if (!$extract) {
 					$Page->warning($L->module_files_unpacking_error);
@@ -293,7 +296,7 @@ if (
 			}
 			$current_version		= _json_decode(file_get_contents(MODULES.'/System/meta.json'))['version'];
 			$new_version			= _json_decode(file_get_contents($tmp_dir.'/version'));
-			if (version_compare($current_version, $new_version, '<')) {
+			if (!version_compare($current_version, $new_version, '<')) {
 				$Page->warning($L->update_system_impossible_older_version);
 				unlink($tmp_file);
 				break;
@@ -308,8 +311,10 @@ if (
 						$current_version,
 						$new_version
 					)
-				)
+				).
+				h::{'button[type=submit]'}($L->yes)
 			);
+			$rc[3]					= 'System';
 			$a->cancel_button_back	= true;
 			break;
 		break;

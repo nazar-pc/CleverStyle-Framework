@@ -101,11 +101,11 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 							}
 							return (int)copy($tmp_dir.'/fs/'.$index, PLUGINS.'/'.$plugin.'/'.$file);
 						},
-						$fs,
-						array_keys($fs)
+						array_keys($fs),
+						$fs
 					)
 				);
-				file_put_contents(PLUGINS.'/'.$plugin.'/fs.json', _json_encode(array_keys($fs)));
+				file_put_contents(PLUGINS.'/'.$plugin.'/fs.json', _json_encode(array_values($fs)));
 				unset($tmp_dir);
 				if (!$extract) {
 					$Page->warning($L->plugin_files_unpacking_error);

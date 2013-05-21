@@ -81,8 +81,8 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 						}
 						return (int)copy("$tmp_dir/fs/$index", "$plugin_dir/$file");
 					},
-					$fs,
-					array_keys($fs)
+					array_keys($fs),
+					$fs
 				)
 			);
 			if (!$extract) {
@@ -114,7 +114,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			}
 			unlink($tmp_file);
 			unset($api_request, $tmp_file);
-			file_put_contents($plugin_dir.'/fs.json', _json_encode($fs = array_keys($fs)));
+			file_put_contents($plugin_dir.'/fs.json', _json_encode($fs = array_values($fs)));
 			/**
 			 * Removing of old unnecessary files and directories
 			 */

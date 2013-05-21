@@ -260,8 +260,8 @@ if (isset($_POST['update_modules_list'])) {
 						}
 						return (int)copy("$tmp_dir/fs/$index", "$module_dir/$file");
 					},
-					$fs,
-					array_keys($fs)
+					array_keys($fs),
+					$fs
 				)
 			);
 			if (!$extract) {
@@ -293,7 +293,7 @@ if (isset($_POST['update_modules_list'])) {
 			}
 			unlink($tmp_file);
 			unset($api_request, $tmp_file);
-			file_put_contents($module_dir.'/fs.json', _json_encode($fs = array_keys($fs)));
+			file_put_contents($module_dir.'/fs.json', _json_encode($fs = array_values($fs)));
 			/**
 			 * Removing of old unnecessary files and directories
 			 */
@@ -394,8 +394,8 @@ if (isset($_POST['update_modules_list'])) {
 						}
 						return (int)copy("$tmp_dir/fs/$index", DIR."/$file");
 					},
-					$fs,
-					array_keys($fs)
+					array_keys($fs),
+					$fs
 				)
 			);
 			if (!$extract) {
@@ -427,7 +427,7 @@ if (isset($_POST['update_modules_list'])) {
 			}
 			unlink($tmp_file);
 			unset($api_request, $tmp_file);
-			file_put_contents(DIR.'/core/fs.json', _json_encode($fs = array_keys($fs)));
+			file_put_contents(DIR.'/core/fs.json', _json_encode($fs = array_values($fs)));
 			/**
 			 * Removing of old unnecessary files and directories
 			 */

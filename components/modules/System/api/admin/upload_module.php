@@ -27,11 +27,11 @@ if ($User->system()) {
 				}
 				return (int)copy($tmp_dir.'/fs/'.$index, MODULES.'/'.$module.'/'.$file);
 			},
-			$fs,
-			array_keys($fs)
+			array_keys($fs),
+			$fs
 		)
 	);
-	file_put_contents(MODULES.'/'.$module.'/fs.json', _json_encode(array_keys($fs)));
+	file_put_contents(MODULES.'/'.$module.'/fs.json', _json_encode(array_values($fs)));
 	$Page->content((int)(bool)$extract);
 } else {
 	$Page->content(0);
