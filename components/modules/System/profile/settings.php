@@ -186,9 +186,10 @@ switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 					'value'		=> [-1, 0, 1],
 					'in'		=> [$L->undefined, $L->male, $L->female]
 				])),
-				$row(h::info('birthday'), h::{'input[type=date]'}([
-					'name'		=> 'user[birthday]',
-					'value'		=> date('Y-m-d', $user_data['birthday'] ?: TIME)
+				$row(h::info('birthday'), h::{'input'}([
+					'name'			=> 'user[birthday]',
+					'value'			=> $user_data['birthday'] ? date('Y-m-d', $user_data['birthday'] ?: TIME) : '',
+					'placeholder'	=>'YYYY-MM-DD'
 				])),
 				$row($L->avatar, h::input([
 					'name'		=> 'user[avatar]',
