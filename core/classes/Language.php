@@ -124,11 +124,11 @@ class Language {
 			}
 		}
 		unset($i, $v);
-		foreach ($accept_languages as $index => $language) {
-			$index = explode(';', $index, 2)[0];
-			if (in_array($index, $aliases) && in_array($index, $active_languages)) {
-				_setcookie('language', $language);
-				return $language;
+		foreach ($accept_languages as $language) {
+			$language = explode(';', $language, 2)[0];
+			if (isset($aliases[$language]) && in_array($aliases[$language], $active_languages)) {
+				_setcookie('language', $aliases[$language]);
+				return $aliases[$language];
 			}
 		}
 		return false;
