@@ -23,7 +23,7 @@ if (empty($_POST['title'])) {
 	$Page->json($Page->Top);
 	return;
 }
-if (empty($_POST['sections'])) {
+if (empty($_POST['sections']) && $_POST['sections'] !== '0') {
 	$Page->warning($L->no_post_sections_specified);
 	$Page->json($Page->Top);
 	return;

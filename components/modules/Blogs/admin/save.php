@@ -31,7 +31,7 @@ switch ($_POST['mode']) {
 			$Page->warning($L->post_title_empty);
 			$save	= false;
 		}
-		if (empty($_POST['sections'])) {
+		if (empty($_POST['sections']) && $_POST['sections'] !== '0') {
 			$Page->warning($L->no_post_sections_specified);
 			$save	= false;
 		}

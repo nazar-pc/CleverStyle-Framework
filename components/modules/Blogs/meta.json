@@ -1,7 +1,7 @@
 {
 	"package"		: "Blogs",
 	"category"		: "modules",
-	"version"		: "0.034",
+	"version"		: "0.035",
 	"description"	: "Adds blogging functionality. Comments module is required for comments functionality.",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",
