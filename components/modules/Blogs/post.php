@@ -37,7 +37,7 @@ $Page->canonical_url(
 	'article'
 )->og(
 	'published_time',
-	date('Y-m-d', $post['date']),
+	date('Y-m-d', $post['date'] ?: TIME),
 	'article:'
 )->og(
 	'author',
@@ -133,9 +133,9 @@ $Index->content(
 			h::hr().
 			h::p(
 				h::time(
-					$L->to_locale(date($L->_datetime_long, $post['date'])),
+					$L->to_locale(date($L->_datetime_long, $post['date'] ?: TIME)),
 					[
-						'datetime'		=> date('c', $post['date'])
+						'datetime'		=> date('c', $post['date'] ?: TIME)
 					]
 				).
 				h::a(

@@ -123,9 +123,9 @@ if (!API) {
 				h::hr().
 				h::p(
 					h::time(
-						$L->to_locale(date($L->_datetime_long, $post['date'])),
+						$L->to_locale(date($L->_datetime_long, $post['date'] ?: TIME)),
 						[
-							'datetime'		=> date('c', $post['date'])
+							'datetime'		=> date('c', $post['date'] ?: TIME)
 						]
 					).
 					h::a(
