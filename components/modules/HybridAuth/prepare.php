@@ -99,6 +99,9 @@ if (isset($rc[1]) && $rc[0] == 'merge_confirmation') {
 				unserialize($HybridAuth->getSessionData())
 			)
 		);
+		if ($User->get('status', $data['id']) == '-1') {
+			$User->set('status', 1, $data['id']);
+		}
 		$Core->run_trigger(
 			'HybridAuth/add_session/before',
 			[
@@ -163,7 +166,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 	require_once __DIR__.'/Hybrid/Endpoint.php';
 	Hybrid_Endpoint::process();
 /**
- * If user specified specify email
+ * If user did not specified email
  */
 } elseif (!isset($_POST['email'])) {
 	try {
@@ -281,6 +284,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 				 * If email is already registered - make merge of accounts and login
 				 */
 				} elseif ($result == 'exists') {
+					$user	= $User->get_id(hash('sha224', $email));
 					$db->$db_id()->q(
 						"INSERT INTO `[prefix]users_social_integration`
 							(
@@ -294,11 +298,15 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 								'%s',
 								'%s'
 							)",
-						$User->get_id(hash('sha224', $email)),
+						$user,
 						$rc[0],
 						$profile->identifier,
 						$profile->profileURL
 					);
+					if ($User->get('status', $user) == '-1') {
+						$User->set('status', 1, $user);
+					}
+					unset($user);
 					$Core->run_trigger(
 						'HybridAuth/add_session/before',
 						[
@@ -461,6 +469,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 			 * If registration confirmation is not required - make merge of accounts and login
 			 */
 			if (!$Config->core['require_registration_confirmation']) {
+				$user	= $User->get_id(hash('sha224', $_POST['email']));
 				$db->$db_id()->q(
 					"INSERT INTO `[prefix]users_social_integration`
 						(
@@ -474,11 +483,15 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 							'%s',
 							'%s'
 						)",
-					$User->get_id(hash('sha224', $_POST['email'])),
+					$user,
 					$rc[0],
 					$HybridAuth_data['identifier'],
 					$HybridAuth_data['profile']
 				);
+				if ($User->get('status', $user) == '-1') {
+					$User->set('status', 1, $user);
+				}
+				unset($user);
 				$User->del_session_data('HybridAuth');
 				$profile_info				= $HybridAuth_data['profile_info'];
 				$contacts					= $HybridAuth_data['contacts'];
