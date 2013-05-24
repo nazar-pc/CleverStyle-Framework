@@ -19,11 +19,17 @@ spl_autoload_register(function ($class) {
 	}
 	$class	= explode('\\', $class);
 	$class	= [
-		'namespace'	=> count($class) > 1 ? implode('/', array_slice($class, 0, -1)).'/' : '',
+		'namespace'	=> count($class) > 1 ? implode('/', array_slice($class, 0, -1)) : '',
 		'name'		=> array_pop($class)
 	];
-	_require_once(CLASSES.'/'.$class['namespace'].$class['name'].'.php', false) ||
-	_require_once(ENGINES.'/'.$class['namespace'].$class['name'].'.php', false);
+	_require_once(CLASSES.'/'.$class['namespace'].'/'.$class['name'].'.php', false) ||
+	_require_once(ENGINES.'/'.$class['namespace'].'/'.$class['name'].'.php', false) ||
+	(
+		$class['namespace'] == "modules/$class[name]" && _require_once(MODULES.'/'.$class['name'].'/'.$class['name'].'.php', false)
+	) ||
+	(
+		$class['namespace'] == "plugins/$class[name]" && _require_once(PLUGINS.'/'.$class['name'].'/'.$class['name'].'.php', false)
+	);
 });
 /**
  * Correct termination from any place of engine

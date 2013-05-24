@@ -17,7 +17,6 @@ $Core->register_trigger(
 			return;
 		}
 		global $Core;
-		require_once __DIR__.'/OAuth2.php';
 		$Core->create('_cs\\modules\\OAuth2\\OAuth2');
 		$rc		= explode('/', $data['rc']);
 		if (isset($rc[0]) && $rc[0] == $module) {
@@ -114,5 +113,15 @@ $Core->register_trigger(
 				);
 			}
 		}
+	}
+);
+$Core->register_trigger(
+	'System/Index/mainmenu',
+	function ($data) {
+		if ($data['path'] == 'OAuth2') {
+			$data['hide']	= true;
+			return false;
+		}
+		return true;
 	}
 );

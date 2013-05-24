@@ -48,7 +48,6 @@ $Core->register_trigger(
 		}
 		$rc						= explode('/', $data['rc']);
 		global $Static_pages;
-		require_once MODULES.'/'.$module.'/Static_pages.php';
 		$Core->create('cs\\modules\\Static_pages\\Static_pages');
 		switch ($rc[0]) {
 			case 'admin':

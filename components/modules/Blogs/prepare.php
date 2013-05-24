@@ -14,8 +14,7 @@ if (!API) {
 	if (!$Config->core['cache_compress_js_css']) {
 		$Page->css('components/modules/Blogs/includes/css/general.css');
 		$Page->js([
-			'components/modules/Blogs/includes/js/general.js',
-			'components/modules/Blogs/includes/js/functions.js'
+			'components/modules/Blogs/includes/js/general.js'
 		]);
 	} elseif (!(
 		file_exists(PCACHE.'/module.Blogs.js') && file_exists(PCACHE.'/module.Blogs.css')

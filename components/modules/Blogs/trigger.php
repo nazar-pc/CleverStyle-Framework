@@ -131,7 +131,6 @@ $Core->register_trigger(
 			return;
 		}
 		global $Core;
-		require_once __DIR__.'/Blogs.php';
 		$Core->create('_cs\\modules\\Blogs\\Blogs');
 		$rc		= explode('/', $data['rc']);
 		if ($rc[0] == $L->Blogs || $rc[0] == 'Blogs') {
@@ -155,8 +154,9 @@ $Core->register_trigger(
 		}
 		global $Blogs;
 		if ($Blogs->get($data['item'])) {
-			$data['Comments']	= new Comments;
-			$data['Comments']->set_module('Blogs');
+			global $Comments;
+			$Comments->set_module('Blogs');
+			$data['Comments']	= $Comments;
 		}
 		return false;
 	}
@@ -174,7 +174,7 @@ $Core->register_trigger(
 		)) {
 			return true;
 		}
-		$Comments			= new Comments;
+		global $Comments;
 		$Comments->set_module('Blogs');
 		$comment			= $Comments->get($data['id']);
 		if ($comment && ($comment['user'] == $User->id || $User->admin())) {
@@ -196,7 +196,7 @@ $Core->register_trigger(
 		)) {
 			return true;
 		}
-		$Comments			= new Comments;
+		global $Comments;
 		$Comments->set_module('Blogs');
 		$comment			= $Comments->get($data['id']);
 		if ($comment && ($comment['user'] == $User->id || $User->admin())) {

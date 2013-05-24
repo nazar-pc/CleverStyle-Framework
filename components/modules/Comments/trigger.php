@@ -104,7 +104,6 @@ $Core->register_trigger(
 			return;
 		}
 		global $Core;
-		require_once __DIR__.'/Comments.php';
 		$Core->create('_cs\\modules\\Comments\\Comments');
 	}
 );
