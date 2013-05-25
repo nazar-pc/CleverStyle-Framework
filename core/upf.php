@@ -296,7 +296,7 @@ function filter ($text, $mode = '', $data = null, $data2 = null, $data3 = null) 
 			return $mode($text);
 		default:
 			return strtr(
-				trim($text),
+				$text,
 				[
 					'&'		=> '&amp;',
 					'"'		=> '&quot;',
