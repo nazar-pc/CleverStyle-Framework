@@ -43,6 +43,8 @@ class Core {
 		if ($this->init) {
 			return;
 		}
+		global $Core;
+		$Core	= $this;
 		$this->init	= true;
 		if (!file_exists(CONFIG.'/main.json')) {
 			code_header(404);

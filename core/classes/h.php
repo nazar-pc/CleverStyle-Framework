@@ -95,22 +95,6 @@ class h {
 		} else {
 			$label				= true;
 		}
-		if (isset($data['src'])) {
-			$data['src']		= str_replace(' ', '%20', $data['src']);
-			$data['src']		= self::url($data['src']);
-		}
-		if (isset($data['href'])) {
-			$data['href']		= str_replace(' ', '%20', $data['href']);
-			$data['href']		= self::url($data['href']);
-		}
-		if (isset($data['action'])) {
-			$data['action']		= str_replace(' ', '%20', $data['action']);
-			$data['action']		= self::url($data['action']);
-		}
-		if (isset($data['formaction'])) {
-			$data['formaction']	= str_replace(' ', '%20', $data['formaction']);
-			$data['formaction']	= self::url($data['formaction']);
-		}
 		if (isset($data['tag'])) {
 			if ($data['tag']) {
 				$tag				= $data['tag'];
@@ -119,6 +103,22 @@ class h {
 				$data['alt']	= '';
 			}
 			unset($data['tag']);
+		}
+		if (isset($data['src'])) {
+			$data['src']		= str_replace(' ', '%20', $data['src']);
+			$data['src']		= self::url($data['src']);
+		}
+		if (isset($data['href'])) {
+			$data['href']		= str_replace(' ', '%20', $data['href']);
+			if ($tag != 'a') {
+				$data['href']		= self::url($data['href']);
+			}
+		}
+		if (isset($data['action'])) {
+			$data['action']		= str_replace(' ', '%20', $data['action']);
+		}
+		if (isset($data['formaction'])) {
+			$data['formaction']	= str_replace(' ', '%20', $data['formaction']);
 		}
 		if (isset($data['add'])) {
 			$add				= ' '.$data['add'];

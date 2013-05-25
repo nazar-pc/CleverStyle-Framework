@@ -459,10 +459,12 @@ class User extends Accessor {
 					return false;
 				}
 			} elseif ($item == 'language') {
-				global $L;
-				$L->change($value);
-				$value	= $L->clanguage;
-				_setcookie('language', $value);
+				global $L, $Config;
+				if ($user == $this->id) {
+					$L->change($value ?: $Config->core['language']);
+					$value	= $value ? $L->clanguage : '';
+					_setcookie('language', $value);
+				}
 			}
 			$this->update_cache[$user] = true;
 			$this->data[$user][$item] = $value;

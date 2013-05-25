@@ -179,22 +179,22 @@ class Config {
 		 * $core_url = array(0 => protocol, 1 => array(list of domain and IP addresses))
 		 * Check, whether it is main domain
 		 */
-		$current_domain = false;
+		$current_mirror = false;
 		if ($core_url[0] == $this->server['protocol']) {
-			foreach ($core_url[1] as $domain) {
-				if (mb_strpos($this->server['raw_relative_address'], $domain) === 0) {
-					$this->server['base_url']	= $this->server['protocol'].'://'.$domain;
-					$current_domain				= $domain;
+			foreach ($core_url[1] as $url) {
+				if (mb_strpos($this->server['raw_relative_address'], $url) === 0) {
+					$this->server['base_url']	= $this->server['protocol'].'://'.$url;
+					$current_mirror				= $url;
 					break;
 				}
 			}
 		}
 		$this->server['mirrors'][$core_url[0]] = array_merge($this->server['mirrors'][$core_url[0]], $core_url[1]);
-		unset($core_url, $domain);
+		unset($core_url, $url);
 		/**
 		 * If it  is not the main domain - try to find match in mirrors
 		 */
-		if ($current_domain === false && !empty($this->core['mirrors_url'])) {
+		if ($current_mirror === false && !empty($this->core['mirrors_url'])) {
 			$mirrors_url = $this->core['mirrors_url'];
 			foreach ($mirrors_url as $i => $mirror_url) {
 				$mirror_url		= explode('://', $mirror_url, 2);
@@ -206,7 +206,7 @@ class Config {
 					foreach ($mirror_url[1] as $url) {
 						if (mb_strpos($this->server['raw_relative_address'], $url) === 0) {
 							$this->server['base_url']		= $this->server['protocol'].'://'.$url;
-							$current_domain					= $url;
+							$current_mirror					= $url;
 							$this->server['mirror_index']	= $i;
 							break 2;
 						}
@@ -225,7 +225,7 @@ class Config {
 		/**
 		 * If match was not found - mirror is not allowed!
 		 */
-		} elseif ($current_domain === false) {
+		} elseif ($current_mirror === false) {
 			$this->server['base_url'] = '';
 			code_header(400);
 			trigger_error($L->mirror_not_allowed, E_USER_ERROR);
@@ -245,8 +245,8 @@ class Config {
 		/**
 		 * Preparing page url without basic path
 		 */
-		$this->server['raw_relative_address']	= trim(str_replace($current_domain, '', $this->server['raw_relative_address']), ' /\\');
-		unset($current_domain);
+		$this->server['raw_relative_address']	= trim(str_replace($current_mirror, '', $this->server['raw_relative_address']), ' /\\');
+		unset($current_mirror);
 		$r										= &$this->routing;
 		$rc										= &$this->route;
 		$rc										= $this->server['raw_relative_address'];

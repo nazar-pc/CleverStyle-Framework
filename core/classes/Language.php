@@ -202,6 +202,11 @@ class Language {
 	 * @return bool
 	 */
 	function change ($language) {
+		static $changed_once = false;
+		if (FIXED_LANGUAGE && $changed_once) {
+			return false;
+		}
+		$changed_once	= true;;
 		if (empty($language)) {
 			return false;
 		}

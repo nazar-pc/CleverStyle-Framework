@@ -303,7 +303,7 @@ class Page {
 				] : false
 			).
 			h::base(is_object($Config) ? [
-				'href' => $Config->base_url()
+				'href' => $Config->base_url().'/'
 			] : false).
 			$this->Head.
 			h::link(
