@@ -9,7 +9,7 @@ System core contains only basic functionality, so, it looks more like CMF (conte
 
 But in parallel with core some components are developed:
 
-#### modules
+#### Modules
 
  * **Blogs** (simple blogging functionality)
  * **Comments** (adds comments functionality to other modules)
@@ -18,9 +18,9 @@ But in parallel with core some components are developed:
  * **OAuth2** (provides realization of OAuth 2 authorization protocol (server side))
  * **Static pages** (allows to create static pages like About page or pages without interface, for example for site owner verification)
 
-#### plugins
+#### Plugins
 
- * **Admin_default_theme** (Forces default CleverStyle theme in all administration pages, that is helpful, because there is no need to adapt custom theme for admin panel)
+ * **Admin default theme** (Forces default CleverStyle theme in all administration pages, that is helpful, because there is no need to adapt custom theme for admin panel)
  * **TinyMCE** (integration of [TinyMCE](https://github.com/tinymce/tinymce) WYSIWYG Editor for providing simpler content editing)
 
 System is free, Open Source and is distributed under MIT license, see [license.txt](https://github.com/nazar-pc/CleverStyle-CMS/blob/master/license.txt)
