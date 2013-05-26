@@ -85,7 +85,7 @@ if (!API) {
 		return $list;
 	}
 	function get_posts_list ($posts) {
-		global $Blogs, $L, $User, $Config;
+		global $Blogs, $L, $User, $Config, $Comments;
 		$module		= path($L->Blogs);
 		$content	= [];
 		if (empty($posts)) {
@@ -135,7 +135,7 @@ if (!API) {
 						]
 					).
 					(
-						$Config->module('Blogs')->enable_comments ? h::a(
+						$Config->module('Blogs')->enable_comments && is_object($Comments) ? h::a(
 							h::icon('comment').$post['comments_count'],
 							[
 								'href'			=> $module.'/'.$post['path'].':'.$post['id'].'#comments'

@@ -146,7 +146,7 @@ $Index->content(
 					]
 				).
 				(
-					$Config->module('Blogs')->enable_comments ? h::icon('comment').$post['comments_count'] : ''
+					$Config->module('Blogs')->enable_comments && is_object($Comments) ? h::icon('comment').$post['comments_count'] : ''
 				)
 			)
 		)
