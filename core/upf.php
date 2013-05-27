@@ -820,6 +820,7 @@ function post_request ($host, $path, $data) {
 		"Content-Type: application/x-www-form-urlencoded\r\n".
 		"Content-length:".strlen($data)."\r\n".
 		"Accept:*/*\r\n".
+		"Connection: Close\r\n".
 		"User-agent: CleverStyle CMS\r\n\r\n".
 		$data."\r\n\r\n"
 	);
