@@ -557,8 +557,7 @@ class Page {
 	 * @return Page
 	 */
 	function canonical_url ($url) {
-		global $Config;
-		$this->canonical_url	= HOME ? $Config->base_url() : $url;
+		$this->canonical_url	= $url;
 		return $this->link([
 			'href'	=> $this->canonical_url,
 			'rel'	=> 'canonical'

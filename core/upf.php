@@ -812,7 +812,7 @@ function post_request ($host, $path, $data) {
 	if(!is_resource($socket)) {
 		return false;
 	}
-	$data = http_build_query($data, null, null, PHP_QUERY_RFC3986);
+	$data = http_build_query($data);
 	fwrite(
 		$socket,
 		"POST $path HTTP/1.1\r\n".
