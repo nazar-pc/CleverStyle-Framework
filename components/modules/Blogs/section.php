@@ -59,12 +59,11 @@ if ($User->user()) {
 				'data-title'	=> $L->new_post
 			]
 		).
-		h::{'a.cs-button'}(
+		h::{'a.cs-button-compact'}(
 			$L->drafts,
 			[
 				'href'			=> $module.'/'.path($L->drafts),
-				'data-title'	=> $L->drafts,
-				'style'			=> 'vertical-align: top;'
+				'data-title'	=> $L->drafts
 			]
 		).
 		h::br()

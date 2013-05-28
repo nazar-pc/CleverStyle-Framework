@@ -35,12 +35,11 @@ if ($User->user()) {
 				'data-title'	=> $L->new_post
 			]
 		).
-		h::{'a.cs-button'}(
+		h::{'a.cs-button-compact'}(
 			$L->drafts,
 			[
 				'href'			=> $module.'/'.path($L->drafts),
-				'data-title'	=> $L->drafts,
-				'style'			=> 'vertical-align: top;'
+				'data-title'	=> $L->drafts
 			]
 		).
 		h::br()
@@ -51,7 +50,7 @@ $Index->buttons			= false;
 $Index->form_atributes	= ['class'	=> ''];
 $page					= isset($rc[1]) ? (int)$rc[1] : 1;
 $page					= $page > 0 ? $page : 1;
-$Page->canonical_url($Config->base_url().'/'.$module.'/'.path($L->tag).'/'.$rc[0]($page > 1 ? '/'.$page : ''));
+$Page->canonical_url($Config->base_url().'/'.$module.'/'.path($L->tag).'/'.$rc[0].($page > 1 ? '/'.$page : ''));
 $Page->og('type', 'blog');
 if ($page > 1) {
 	$Page->title($L->blogs_nav_page($page));
@@ -68,14 +67,19 @@ $tag					= $cdb->qfs([
 ]);
 if (!$tag) {
 	$tag					= $cdb->qfs([
-		"SELECT `t`.`id`
-		FROM `[prefix]texts_data` AS `d`
-			LEFT JOIN `[prefix]blogs_tags` AS `t`
-		ON `t`.`text` = `d`.`id_`
+		"SELECT `tags`.`id`
+		FROM `[prefix]texts_data` AS `data`
+			INNER JOIN `[prefix]texts` AS `texts`
+		ON
+			`data`.`id`		= `texts`.`id` AND
+			`texts`.`group`	= 'Blogs/tags'
+			LEFT JOIN `[prefix]blogs_tags` AS `tags`
+		ON `tags`.`text` = `data`.`id_`
 		WHERE
-			`t`.`text` = '%1\$s' OR
+			`tags`.`text` = '%1\$s' OR
 			(
-				`d`.`text` = '%1\$s' AND `d`.`lang` = '%2\$s'
+				`data`.`text` = '%1\$s' AND
+				`data`.`lang` = '%2\$s'
 			)
 		LIMIT 1",
 		$rc[0],
