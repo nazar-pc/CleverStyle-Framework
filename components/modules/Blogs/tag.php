@@ -60,32 +60,14 @@ $from					= ($page - 1) * $num;
 $cdb					= $db->{$Config->module('Blogs')->db('posts')};
 $tag					= $cdb->qfs([
 	"SELECT `id`
-	FROM `[prefix]blogs_tags`
-	WHERE `text` = '%s'
+	FROM  `[prefix]blogs_tags`
+	WHERE
+		`text`	= '%s' AND
+		`lang`	= '%s'
 	LIMIT 1",
-	$rc[0]
+	$rc[0],
+	$L->clang
 ]);
-if (!$tag) {
-	$tag					= $cdb->qfs([
-		"SELECT `tags`.`id`
-		FROM `[prefix]texts_data` AS `data`
-			INNER JOIN `[prefix]texts` AS `texts`
-		ON
-			`data`.`id`		= `texts`.`id` AND
-			`texts`.`group`	= 'Blogs/tags'
-			LEFT JOIN `[prefix]blogs_tags` AS `tags`
-		ON `tags`.`text` = `data`.`id_`
-		WHERE
-			`tags`.`text` = '%1\$s' OR
-			(
-				`data`.`text` = '%1\$s' AND
-				`data`.`lang` = '%2\$s'
-			)
-		LIMIT 1",
-		$rc[0],
-		$L->clang
-	]);
-}
 if (!$tag) {
 	define('ERROR_CODE', 404);
 	return;

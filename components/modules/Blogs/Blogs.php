@@ -60,11 +60,30 @@ class Blogs extends Accessor {
 					FROM `[prefix]blogs_posts_sections`
 					WHERE `id` = $id"
 				);
-				$data['tags']								= $this->db()->qfas(
+				$data['tags']								= $this->db()->qfas([
 					"SELECT `tag`
 					FROM `[prefix]blogs_posts_tags`
-					WHERE `id` = $id"
-				);
+					WHERE
+						`id`	= $id AND
+						`lang`	= '%s'",
+					$L->cang
+				]);
+				if (!$data['tags']) {
+					$l				= $this->db()->qfs(
+						"SELECT `lang`
+						FROM `[prefix]blogs_posts_tags`
+						WHERE `id` = $id
+						LIMIT 1"
+					);
+					$data['tags']	= $this->db()->qfas(
+						"SELECT `tag`
+						FROM `[prefix]blogs_posts_tags`
+						WHERE
+							`id`	= $id AND
+							`lang`	= '$l'"
+					);
+					unset($l);
+				}
 				$Cache->{'Blogs/posts/'.$id.'/'.$L->clang}	= $data;
 			}
 		}
@@ -151,7 +170,7 @@ class Blogs extends Accessor {
 		if (empty($tags) || empty($content)) {
 			return false;
 		}
-		global $Cache, $Config;
+		global $Cache, $Config, $L;
 		$id			= (int)$id;
 		$title		= trim(xap($title));
 		$path		= path(str_replace(['/', '\\'], '_', $path ?: $title));
@@ -178,8 +197,8 @@ class Blogs extends Accessor {
 			',',
 			array_unique(
 				array_map(
-					function ($tag) use ($id) {
-						return "($id, $tag)";
+					function ($tag) use ($id, $L) {
+						return "($id, $tag, '{$L->clang}')";
 					},
 					$this->process_tags($tags)
 				)
@@ -203,9 +222,11 @@ class Blogs extends Accessor {
 				WHERE `id` = '%s'
 				LIMIT 1",
 				"DELETE FROM `[prefix]blogs_posts_tags`
-				WHERE `id` = '%5\$s'",
+				WHERE
+					`id`	= '%5\$s' AND
+					`lang`	= '{$L->clang}'",
 				"INSERT INTO `[prefix]blogs_posts_tags`
-					(`id`, `tag`)
+					(`id`, `tag`, `lang`)
 				VALUES
 					$tags"
 			],
@@ -623,31 +644,18 @@ class Blogs extends Accessor {
 		$tag	= trim(xap($tag));
 		if (($id = array_search($tag, $this->get_tags_list())) === false) {
 			global $Cache;
-			if ($this->db_prime()->q(
+			if ($this->db_prime()->q([
 				"INSERT INTO `[prefix]blogs_tags`
 					(`text`)
 				VALUES
-					('')"
-			)) {
+					('%s')",
+				$tag
+			])) {
 				$id	= $this->db_prime()->id();
-				if ($this->db_prime()->q(
-					"UPDATE `[prefix]blogs_tags`
-					SET `text` = '%s'
-					WHERE `id` = $id
-					LIMIT 1",
-					$this->ml_set('Blogs/tags', $id, $tag)
-				)) {
-					if ($clean_cache) {
-						unset($Cache->{'Blogs/tags'});
-					}
-					return $id;
-				} else {
-					$this->db_prime()->q(
-						"DELETE FROM `[prefix]blogs_tags`
-						WHERE `id` = $id
-						LIMIT 1"
-					);
+				if ($clean_cache) {
+					unset($Cache->{'Blogs/tags'});
 				}
+				return $id;
 			}
 			return false;
 		}

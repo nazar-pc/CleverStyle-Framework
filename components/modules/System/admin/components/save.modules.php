@@ -311,9 +311,8 @@ if (isset($_POST['update_modules_list'])) {
 			 * Updating of module
 			 */
 			if (file_exists($module_dir.'/versions.json')) {
-				$old_version	= _json_decode($module_dir.'/meta_old.json')['version'];
-				$versions		= [];
-				foreach (_json_decode($module_dir.'/versions.json') as $version) {
+				$old_version	= _json_decode(file_get_contents($module_dir.'/meta_old.json'))['version'];
+				foreach (_json_decode(file_get_contents($module_dir.'/versions.json')) as $version) {
 					if (version_compare($old_version, $version, '<')) {
 						/**
 						 * PHP update script
@@ -445,9 +444,8 @@ if (isset($_POST['update_modules_list'])) {
 			 * Updating of System
 			 */
 			if (file_exists($module_dir.'/versions.json')) {
-				$old_version	= _json_decode($module_dir.'/meta_old.json')['version'];
-				$versions		= [];
-				foreach (_json_decode($module_dir.'/versions.json') as $version) {
+				$old_version	= _json_decode(file_get_contents($module_dir.'/meta_old.json'))['version'];
+				foreach (_json_decode(file_get_contents($module_dir.'/versions.json')) as $version) {
 					if (version_compare($old_version, $version, '<')) {
 						/**
 						 * PHP update script

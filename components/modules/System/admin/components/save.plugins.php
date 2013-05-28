@@ -132,9 +132,8 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			 * Updating of plugin
 			 */
 			if (file_exists($plugin_dir.'/versions.json')) {
-				$old_version	= _json_decode($plugin_dir.'/meta_old.json')['version'];
-				$versions		= [];
-				foreach (_json_decode($plugin_dir.'/versions.json') as $version) {
+				$old_version	= _json_decode(file_get_contents($plugin_dir.'/meta_old.json'))['version'];
+				foreach (_json_decode(file_get_contents($plugin_dir.'/versions.json')) as $version) {
 					if (version_compare($old_version, $version, '<')) {
 						/**
 						 * PHP update script

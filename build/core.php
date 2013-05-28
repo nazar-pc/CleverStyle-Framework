@@ -24,7 +24,6 @@ $list				= array_merge(
 	get_files_list(DIR.'/templates', false, 'f', true, true, false, false, true),
 	get_files_list(DIR.'/themes', false, 'f', true, true, false, false, true),
 	[
-		DIR.'/config/main.php',
 		DIR.'/custom.php',
 		DIR.'/favicon.ico',
 		DIR.'/license.txt',
@@ -173,6 +172,11 @@ $phar->addFromString(
 	)
 );
 unset($components_list, $length);
+$list[]				= 'config/main.php';
+$phar->addFromString(
+	'fs/'.(count($list)-1),
+	file_get_contents(DIR.'/config/main.php')
+);
 /**
  * Flip array to have direct access to files by name during extracting and installation
  */
