@@ -638,7 +638,7 @@ class Page {
 				) && count($Config->core['active_languages']) > 1
 			) {
 				foreach ($Config->core['active_languages'] as $lang) {
-					if ($lang != $Config->core['language']) {
+					if ($lang != $L->clanguage) {
 						$this->og('locale:alternate', $L->get('locale', $lang));
 					}
 				}
