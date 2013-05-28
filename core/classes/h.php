@@ -112,6 +112,11 @@ class h {
 			$data['href']		= str_replace(' ', '%20', $data['href']);
 			if ($tag != 'a') {
 				$data['href']		= self::url($data['href']);
+			} elseif (substr($data['href'], 0, 1) == '#') {
+				global $Config;
+				if (is_object($Config)) {
+					$data['href']	= $Config->base_url().'/'.$Config->server['raw_relative_address'].$data['href'];
+				}
 			}
 		}
 		if (isset($data['action'])) {
