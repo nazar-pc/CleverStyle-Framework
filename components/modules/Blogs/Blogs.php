@@ -256,7 +256,7 @@ class Blogs extends Accessor {
 			if ($add) {
 				foreach ($Config->core['active_languages'] as $lang) {
 					if ($lang != $L->clanguage) {
-						$lang	= $L->get('locale', $lang);
+						$lang	= $L->get('clang', $lang);
 						$this->db_prime()->q(
 							"INSERT INTO `[prefix]blogs_posts_tags`
 								(`id`, `tag`, `lang`)
