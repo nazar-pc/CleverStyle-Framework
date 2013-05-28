@@ -56,7 +56,7 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 				if (in_array($plugin, $Config->components['plugins'])) {
 					$current_version		= _json_decode(file_get_contents(PLUGINS.'/'.$plugin.'/meta.json'))['version'];
 					$new_version			= _json_decode(file_get_contents($tmp_dir.'/meta.json'))['version'];
-					if (version_compare($current_version, $new_version, '<')) {
+					if (!version_compare($current_version, $new_version, '<')) {
 						$Page->warning($L->update_plugin_impossible_older_version($plugin));
 						unlink($tmp_file);
 						break;
@@ -101,11 +101,11 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 							}
 							return (int)copy($tmp_dir.'/fs/'.$index, PLUGINS.'/'.$plugin.'/'.$file);
 						},
-						array_keys($fs),
-						$fs
+						$fs,
+						array_keys($fs)
 					)
 				);
-				file_put_contents(PLUGINS.'/'.$plugin.'/fs.json', _json_encode(array_values($fs)));
+				file_put_contents(PLUGINS.'/'.$plugin.'/fs.json', _json_encode(array_keys($fs)));
 				unset($tmp_dir);
 				if (!$extract) {
 					$Page->warning($L->plugin_files_unpacking_error);

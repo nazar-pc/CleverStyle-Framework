@@ -169,10 +169,13 @@ $list[]				= 'core/fs.json';
 $phar->addFromString(
 	'fs/'.(count($list)-1),
 	_json_encode(
-		array_diff(array_slice($list, 0, -1), _substr($components_list, $length))
+		array_flip(array_diff(array_slice($list, 0, -1), _substr($components_list, $length)))
 	)
 );
 unset($components_list, $length);
+/**
+ * Flip array to have direct access to files by name during extracting and installation
+ */
 $phar->addFromString('fs.json', _json_encode(array_flip($list)));
 unset($list);
 $phar->addFromString(

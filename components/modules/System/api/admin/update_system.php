@@ -35,11 +35,11 @@ if ($User->system()) {
 				}
 				return (int)copy("$tmp_dir/fs/$index", DIR."/$file");
 			},
-			array_keys($fs),
-			$fs
+			$fs,
+			array_keys($fs)
 		)
 	);
-	file_put_contents(DIR.'/core/fs.json', _json_encode($fs = array_values($fs)));
+	file_put_contents(DIR.'/core/fs.json', _json_encode($fs = array_keys($fs)));
 	/**
 	 * Removing of old unnecessary files and directories
 	 */

@@ -44,6 +44,9 @@ $list		= array_map(
 	$list
 );
 unset($length);
+/**
+ * Flip array to have direct access to files by name during extracting and installation
+ */
 $phar->addFromString('fs.json', _json_encode(array_flip($list)));
 $phar->addFromString('dir', $_POST['plugins'][0]);
 unset($list);

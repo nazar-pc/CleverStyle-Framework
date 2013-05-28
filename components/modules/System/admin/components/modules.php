@@ -90,7 +90,7 @@ if (
 				if (isset($Config->components['modules'][$module])) {
 					$current_version		= _json_decode(file_get_contents(MODULES.'/'.$module.'/meta.json'))['version'];
 					$new_version			= _json_decode(file_get_contents($tmp_dir.'/meta.json'))['version'];
-					if (version_compare($current_version, $new_version, '<')) {
+					if (!version_compare($current_version, $new_version, '<')) {
 						$Page->warning($L->update_module_impossible_older_version($module));
 						unlink($tmp_file);
 						break;
@@ -135,11 +135,11 @@ if (
 							}
 							return (int)copy($tmp_dir.'/fs/'.$index, MODULES.'/'.$module.'/'.$file);
 						},
-						array_keys($fs),
-						$fs
+						$fs,
+						array_keys($fs)
 					)
 				);
-				file_put_contents(MODULES.'/'.$module.'/fs.json', _json_encode(array_values($fs)));
+				file_put_contents(MODULES.'/'.$module.'/fs.json', _json_encode(array_keys($fs)));
 				unset($tmp_dir);
 				if (!$extract) {
 					$Page->warning($L->module_files_unpacking_error);
