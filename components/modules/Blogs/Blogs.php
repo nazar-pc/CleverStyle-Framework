@@ -133,7 +133,7 @@ class Blogs extends Accessor {
 			(int)(bool)$draft
 		)) {
 			$id	= $this->db_prime()->id();
-			if ($this->set($id, $title, $path, $content, $sections, $tags, $draft)) {
+			if ($this->set_internal($id, $title, $path, $content, $sections, $tags, $draft, true)) {
 				return $id;
 			} else {
 				$this->db_prime()->q(
@@ -167,6 +167,23 @@ class Blogs extends Accessor {
 	 * @return bool
 	 */
 	function set ($id, $title, $path, $content, $sections, $tags, $draft) {
+		return $this->set_internal($id, $title, $path, $content, $sections, $tags, $draft);
+	}
+	/**
+	 * Set data of specified post
+	 *
+	 * @param int		$id
+	 * @param string	$title
+	 * @param string	$path
+	 * @param string	$content
+	 * @param int[]		$sections
+	 * @param string[]	$tags
+	 * @param bool		$draft
+	 * @param bool		$add
+	 *
+	 * @return bool
+	 */
+	function set_internal ($id, $title, $path, $content, $sections, $tags, $draft, $add = false) {
 		if (empty($tags) || empty($content)) {
 			return false;
 		}
@@ -236,6 +253,21 @@ class Blogs extends Accessor {
 			(int)(bool)$draft,
 			$id
 		)) {
+			if ($add) {
+				foreach ($Config->core['active_languages'] as $lang) {
+					if ($lang != $L->clanguage) {
+						$lang	= $L->get('locale', $lang);
+						$this->db_prime()->q(
+							"INSERT INTO `[prefix]blogs_posts_tags`
+								(`id`, `tag`, `lang`)
+							SELECT `id`, `tag`, '$lang'
+							FROM `[prefix]blogs_posts_tags`
+							WHERE `id` = $id"
+						);
+					}
+				}
+				unset($lang);
+			}
 			if ($data['draft'] == 1 && !$draft && $data['date'] == 0) {
 				$this->db_prime()->q(
 					"UPDATE `[prefix]blogs_posts`

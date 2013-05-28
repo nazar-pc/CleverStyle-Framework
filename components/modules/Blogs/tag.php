@@ -61,12 +61,9 @@ $cdb					= $db->{$Config->module('Blogs')->db('posts')};
 $tag					= $cdb->qfs([
 	"SELECT `id`
 	FROM  `[prefix]blogs_tags`
-	WHERE
-		`text`	= '%s' AND
-		`lang`	= '%s'
+	WHERE `text` = '%s'
 	LIMIT 1",
-	$rc[0],
-	$L->clang
+	$rc[0]
 ]);
 if (!$tag) {
 	define('ERROR_CODE', 404);
@@ -87,8 +84,10 @@ $posts_count			= $cdb->qfs([
 	ON `t`.`id` = `p`.`id`
 	WHERE
 		`t`.`tag`	= '%s' AND
-		`p`.`draft`	= 0",
+		`p`.`draft`	= 0 AND
+		`t`.`lang`	= '%s'",
 	$tag['id'],
+	$L->clang
 ]);
 $posts					= $cdb->qfas([
 	"SELECT `t`.`id`
@@ -97,10 +96,12 @@ $posts					= $cdb->qfas([
 	ON `t`.`id` = `p`.`id`
 	WHERE
 		`t`.`tag`	= '%s' AND
-		`p`.`draft`	= 0
+		`p`.`draft`	= 0 AND
+		`t`.`lang`	= '%s'
 	ORDER BY `p`.`date` DESC
 	LIMIT $from, $num",
 	$tag['id'],
+	$L->clang
 ]);
 if (empty($posts)) {
 	$Index->content(
