@@ -224,7 +224,7 @@ $phar->addFromString(
 );
 $phar->addFromString(
 	'version',
-	$version
+	'"'.$version.'"'
 );
 unset($themes, $theme, $color_schemes);
 $phar				= $phar->convertToExecutable(Phar::TAR, Phar::BZ2, '.phar.tar');
