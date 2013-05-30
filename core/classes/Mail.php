@@ -34,18 +34,18 @@ class Mail extends \PHPMailer {
 	/**
 	 * Sending of email
 	 *
-	 * @param array|string $email				if emails without names - string (may be several emails separated by comma) or
-	 * 												1-dimentional array(<i>email</i>)<br>
-	 * 											else - 2-dimentional array(<i>email</i>, <i>name</i>) must be given
-	 * @param string $subject					Mail subject
-	 * @param string $body						html body
-	 * @param string|null $body_text			plain text body
-	 * @param array|null|string $attachments	1- or 2-dimentional array of array(<i>path</i>, <i>name</i>) or simply string
-	 * 											with path to the file in file system
-	 * @param array|null|string $reply_to		Similar to <b>$email</b>
-	 * @param bool|string $signature			<b>true</b> - add system signature<br>
-	 * 											<b>false</b> - without signature<br>
-	 * 											<b>string</b> - custom signature
+	 * @param array|string|string[]			$email			if emails without names - string (may be several emails separated by comma) or
+	 * 														1-dimensional array(<i>email</i>)<br>
+	 * 														else - 2-dimensional array(<i>email</i>, <i>name</i>) must be given
+	 * @param string						$subject		Mail subject
+	 * @param string						$body			html body
+	 * @param string|null					$body_text		plain text body
+	 * @param array|null|string				$attachments	1- or 2-dimensional array of array(<i>path</i>, <i>name</i>) or simply string
+	 * 														with path to the file in file system
+	 * @param array|null|string|string[]	$reply_to		Similar to <b>$email</b>
+	 * @param bool|string					$signature		<b>true</b> - add system signature<br>
+	 * 														<b>false</b> - without signature<br>
+	 * 														<b>string</b> - custom signature
 	 * @return bool
 	 */
 	function send_to ($email, $subject, $body, $body_text = null, $attachments = null, $reply_to = null, $signature = true) {
