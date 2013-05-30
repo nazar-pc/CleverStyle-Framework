@@ -328,7 +328,7 @@ class Index {
 					continue;
 				}
 				$Page->mainmenu	.= h::a(
-					$L->$module,
+					$title,
 					[
 						'href'	=> $path,
 						'title'	=> $title

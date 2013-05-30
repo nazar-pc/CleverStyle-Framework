@@ -71,7 +71,7 @@ if (isset($_POST['update_modules_list'])) {
 	}
 	unset($new_modules, $old_modules);
 	$modules			= array_merge($modules_list, array_intersect_key($modules, $modules_list));
-	ksort($modules);
+	ksort($modules, SORT_STRING | SORT_FLAG_CASE);
 	$a->save();
 } elseif (isset($_POST['mode'], $_POST['module'], $Config->components['modules'][$_POST['module']])) {
 	$module					= $_POST['module'];

@@ -316,7 +316,7 @@ class User extends Accessor {
 			case 'ip':
 				return $_SERVER['REMOTE_ADDR'];
 			case 'forwarded_for':
-				return isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? array_pop(explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])) : false;
+				return isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? array_pop($tmp = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])) : false;
 			case 'client_ip':
 				return isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : false;
 		}

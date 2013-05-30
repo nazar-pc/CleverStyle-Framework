@@ -934,6 +934,7 @@ class h {
 			) {
 				$output = '';
 				foreach ($data[0] as $d) {
+					$data[1]	= isset($data[1]) ? $data[1] : [];
 					if (!is_array($d) || !isset($d[1]) || !is_array($d[1])) {
 						$output			.= self::__callStatic(
 							$input,

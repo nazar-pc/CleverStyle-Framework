@@ -250,7 +250,7 @@ class Config {
 		$r										= &$this->routing;
 		$rc										= &$this->route;
 		$rc										= $this->server['raw_relative_address'];
-		if (isset($_SERVER['HTTP_REFERER'])) {
+		if (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], '://') !== false) {
 			$ref				= &$this->server['referer'];
 			$referer			= explode('://', $ref['url'] = $_SERVER['HTTP_REFERER']);
 			$referer[1]			= explode('/', $referer[1]);
