@@ -118,7 +118,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			/**
 			 * Removing of old unnecessary files and directories
 			 */
-			foreach (array_diff(_json_encode($plugin_dir.'/fs_old.json'), $fs) as $file) {
+			foreach (array_diff(_json_decode(file_get_contents($plugin_dir.'/fs_old.json')), $fs) as $file) {
 				$file	= "$plugin_dir/$file";
 				if (file_exists($file) && is_writable($file)) {
 					unlink($file);
