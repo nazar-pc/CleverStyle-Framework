@@ -216,7 +216,13 @@ function _setcookie ($name, $value, $expire = 0, $httponly = false, $api = false
 	if (!isset($prefix) && is_object($Config)) {
 		$prefix		= $Config->core['cookie_prefix'];
 		$secure		= $Config->server['protocol'] == 'https';
-		if ($Config->server['mirror_index'] == -1) {
+		if (
+			$Config->server['mirror_index'] == -1 ||
+			!isset(
+				$Config->core['mirrors_cookie_domain'][$Config->server['mirror_index']],
+				$Config->core['mirrors_cookie_path'][$Config->server['mirror_index']]
+			)
+		) {
 			$domain	= $Config->core['cookie_domain'];
 			$path	= $Config->core['cookie_path'];
 		} else {

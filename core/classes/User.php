@@ -1423,7 +1423,7 @@ class User extends Accessor {
 		return $this->current['session'];
 	}
 	/**
-	 * Find the session by id, and return id of owner (user), updates last_login, last_ip and last_online information
+	 * Find the session by id as applies it, and return id of owner (user), updates last_login, last_ip and last_online information
 	 *
 	 * @param string	$session_id
 	 *
@@ -1542,21 +1542,22 @@ class User extends Accessor {
 			$this->db_prime()->q($update);
 		}
 		$this->update_user_is();
-		return $result['user'];
+		return $this->id = $result['user'];
 	}
 	/**
 	 * Create the session for the user with specified id
 	 *
 	 * @param int	$user
+	 * @param bool	$delete_current_session
 	 *
 	 * @return bool
 	 */
-	function add_session ($user) {
+	function add_session ($user, $delete_current_session = true) {
 		$user = (int)$user;
 		if (!$user) {
 			$user = 1;
 		}
-		if (preg_match('/^[0-9a-z]{32}$/', $this->current['session'])) {
+		if ($delete_current_session && preg_match('/^[0-9a-z]{32}$/', $this->current['session'])) {
 			$this->del_session_internal(null, false);
 		}
 		/**
