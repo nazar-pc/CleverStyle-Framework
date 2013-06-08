@@ -112,12 +112,32 @@ class FileSystem extends _Abstract {
 	function del ($item) {
 		if (is_writable(CACHE.'/'.$item)) {
 			if (is_dir(CACHE.'/'.$item)) {
+				/**
+				 * Speed-up of files deletion
+				 */
+				if (!($this->cache_size > 0)) {
+					get_files_list(
+						CACHE.'/'.$item,
+						false,
+						'f',
+						true,
+						true,
+						false,
+						true,
+						false,
+						function ($file) {
+							if (is_writable($file)) {
+								@unlink($file);
+							}
+						}
+					);
+				}
 				$files = get_files_list(CACHE.'/'.$item, false, 'fd');
 				foreach ($files as $file) {
 					$this->del($item.'/'.$file, false);
 				}
 				unset($files, $file);
-				return rmdir(CACHE.'/'.$item);
+				return @rmdir(CACHE.'/'.$item);
 			}
 			if ($this->cache_size > 0) {
 				$cache_size_file	= fopen(CACHE.'/size', 'c+b');
@@ -153,18 +173,26 @@ class FileSystem extends _Abstract {
 	 * @return bool
 	 */
 	function clean () {
-		$ok				= true;
-		$cache_old		= explode('/', CACHE);
-		$cache_old[]	= array_pop($cache_old).'_old';
-		$cache_old		= implode('/', $cache_old);
+		$ok			= true;
+		$cache_old	= CACHE.'_old';
 		rename(CACHE, $cache_old);
-		foreach (get_files_list($cache_old, false, 'fd', true, true, 'name|desc', false, true) as $item) {
-			if (is_writable($item)) {
-				is_dir($item) ? @rmdir($item) : @unlink($item);
-			} else {
-				$ok = false;
+		get_files_list(
+			$cache_old,
+			false,
+			'fd',
+			true,
+			true,
+			false,
+			false,
+			true,
+			function ($item) use (&$ok) {
+				if (is_writable($item)) {
+					is_dir($item) ? @rmdir($item) : @unlink($item);
+				} else {
+					$ok = false;
+				}
 			}
-		}
+		);
 		unset($item);
 		rmdir($cache_old);
 		return $ok;

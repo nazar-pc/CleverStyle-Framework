@@ -312,13 +312,13 @@ class User extends Accessor {
 		}
 		switch ($item) {
 			case 'user_agent':
-				return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+				return isset($_SERVER['HTTP_USER_AGENT']) ? preg_replace('/[^a-f0-9\.:]/i', '', $_SERVER['HTTP_USER_AGENT']) : '';
 			case 'ip':
 				return $_SERVER['REMOTE_ADDR'];
 			case 'forwarded_for':
-				return isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? array_pop($tmp = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])) : false;
+				return isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? preg_replace('/[^a-f0-9\.:]/i', '', array_pop($tmp = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']))) : false;
 			case 'client_ip':
-				return isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : false;
+				return isset($_SERVER['HTTP_CLIENT_IP']) ? preg_replace('/[^a-f0-9\.:]/i', '', $_SERVER['HTTP_CLIENT_IP']) : false;
 		}
 		return $this->get_internal($item, $user);
 	}
