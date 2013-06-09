@@ -12,33 +12,33 @@ use			h;
  *  System/Page/pre_display
  *  System/Page/get_header_info
  *  System/Page/rebuild_cache
- *  ['key'	=> <i>&$key</i>]		//Reference to the key, that will be appended to all css and js files, can be changed to reflect JavaScript and CSS changes<br>
+ *  ['key'	=> &$key]		//Reference to the key, that will be appended to all css and js files, can be changed to reflect JavaScript and CSS changes
  *  System/Page/external_login_list
- *  ['list'	=> <i>&$list</i>]		//Reference to the list of external login systems
+ *  ['list'	=> &$list]		//Reference to the list of external login systems
  */
 class Page {
 	public		$Content,
-				$interface		= true,
-				$pre_Html		= '',
-				$Html 			= '',
-					$Keywords		= '',
-					$Description	= '',
-					$Title			= [],
-				$debug_info		= '',
-				$Head			= '',
-				$pre_Body		= '',
-					$Header		= '',
-						$mainmenu		= '',
-						$mainsubmenu	= '',
-						$menumore		= '',
-					$Left		= '',
-					$Top		= '',
-					$Right		= '',
-					$Bottom		= '',
-					$Footer		= '',
-				$post_Body		= '',
-				$post_Html		= '',
-				$level			= [				//Number of tabs by default for margins the substitution
+				$interface			= true,
+				$pre_Html			= '',
+				$Html 				= '',
+					$Keywords			= '',
+					$Description		= '',
+					$Title				= [],
+				$debug_info			= '',
+				$Head				= '',
+				$pre_Body			= '',
+					$Header			= '',
+						$mainmenu			= '',
+						$mainsubmenu		= '',
+						$menumore			= '',
+					$Left			= '',
+					$Top			= '',
+					$Right			= '',
+					$Bottom			= '',
+					$Footer			= '',
+				$post_Body			= '',
+				$post_Html			= '',
+				$level				= [				//Number of tabs by default for margins the substitution
 					'Head'				=> 0,	//of values into template
 					'pre_Body'			=> 0,
 					'Header'			=> 2,
@@ -57,19 +57,19 @@ class Page {
 				],
 				$user_avatar_image,
 				$header_info,
-				$head_prefix	= '',			//Is used as <head prefix="$head_prefix">
-				$no_head		= false;
+				$head_prefix		= '',			//Is used as <head prefix="$head_prefix">
+				$no_head			= false;
 	protected	$theme, $color_scheme, $pcache_basename, $includes,
-				$core_js		= [0 => [], 1 => []],
-				$core_css		= [0 => [], 1 => []],
-				$js				= [0 => [], 1 => []],
-				$css			= [0 => [], 1 => []],
-				$link			= [],
-				$Search			= [],
-				$Replace		= [],
-				$og_data		= [],
-				$og_type		= '',
-				$canonical_url	= false;
+				$core_js			= [0 => [], 1 => []],
+				$core_css			= [0 => [], 1 => []],
+				$js					= [0 => [], 1 => []],
+				$css				= [0 => [], 1 => []],
+				$link				= [],
+				$Search				= [],
+				$Replace			= [],
+				$og_data			= [],
+				$og_type			= '',
+				$canonical_url		= false;
 	/**
 	 * Setting interface state on/off
 	 */
@@ -109,7 +109,7 @@ class Page {
 		return $this;
 	}
 	/**
-	 * Colos scheme changing
+	 * Color scheme changing
 	 *
 	 * @param string	$color_scheme
 	 *
@@ -374,7 +374,9 @@ class Page {
 		return $this;
 	}
 	/**
-	 * Replacing anything in source code of finally genereted page
+	 * Replacing anything in source code of finally generated page
+	 *
+	 * Parameters may be both simply strings for str_replace() and regular expressions for preg_replace()
 	 *
 	 * @param string|string[]	$search
 	 * @param string|string[]	$replace
@@ -507,7 +509,7 @@ class Page {
 	/**
 	 * Adding links
 	 *
-	 * @param array|bool	$data	According to h class syntax
+	 * @param array	$data	According to h class syntax
 	 *
 	 * @return Page
 	 */
