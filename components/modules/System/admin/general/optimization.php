@@ -15,6 +15,7 @@ $Index->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		core_input('gzip_compression', 'radio', null, zlib_compression()),
 		core_input('cache_compress_js_css', 'radio'),
+		core_input('put_js_after_body', 'radio'),
 		(!$sa ? core_input('inserts_limit', 'number', null, false, 1) : false),
 		(!$sa ? core_input('update_ratio', 'number', null, false, 0, 100) : false),
 		[

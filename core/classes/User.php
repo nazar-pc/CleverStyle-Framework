@@ -312,7 +312,7 @@ class User extends Accessor {
 		}
 		switch ($item) {
 			case 'user_agent':
-				return isset($_SERVER['HTTP_USER_AGENT']) ? preg_replace('/[^a-f0-9\.:]/i', '', $_SERVER['HTTP_USER_AGENT']) : '';
+				return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 			case 'ip':
 				return $_SERVER['REMOTE_ADDR'];
 			case 'forwarded_for':
