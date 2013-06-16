@@ -6,90 +6,77 @@
  * @copyright	Moxiecode Systems AB
  * @license		GNU Lesser General Public License 2.1, see license.txt
  */
+window.tinymce.baseURL	= '/components/plugins/TinyMCE';
 $(function () {
+	var base_config	= {
+		doctype				: '<!doctype html>',
+		theme				: window.tinymce_theme !== undefined ? tinymce_theme : "modern",
+		skin				: window.tinymce_skin !== undefined ? tinymce_skin : "'lightgray'",
+		language			: window.L.clang !== undefined ? L.clang : 'en',
+		menubar				: false,
+		plugins				: "advlist,anchor,charmap,code,contextmenu,emoticons,fullscreen,hr,image,link,lists,media,nonbreaking,noneditable,pagebreak,paste,preview,searchreplace,tabfocus,table,visualblocks,visualchars,wordcount,textcolor",
+		resize				: 'both',
+		toolbar_items_size	: 'small',
+		width				: '100%',
+		convert_urls		: false,
+		remove_script_host	: false,
+		relative_urls		: false/*,
+		file_browser_callback : EditorCallback !== undefined ? 'EditorCallback' : ''*/
+	};
 	async_call([
 		function () {
-			$('textarea.EDITOR').prop('required', false).tinymce(
+			/**
+			 * Full editor
+			 */
+			var local_config	= {};
+			$.extend(
+				local_config,
+				base_config,
 				{
-					doctype								: '<!doctype html>',
-					theme								: window.tinymce_theme !== undefined ? tinymce_theme : "advanced",
-					skin								: window.tinymce_skin !== undefined ? tinymce_skin : "o2k7",
-					skin_variant						: window.tinymce_skin_variant !== undefined ? tinymce_skin_variant : '',
-					language							: window.L.clang !== undefined ? L.clang : 'en',
-					plugins								: "advhr,advimage,advlink,advlist,autolink,autosave,contextmenu,directionality,emotions,fullscreen,insertdatetime,media,nonbreaking,noneditable,pagebreak,paste,preview,save,searchreplace,style,table,visualchars,xhtmlxtras",
-					theme_advanced_buttons1				: "bold,italic,underline,strikethrough,sub,sup,|,justifyleft,justifycenter,justifyright,justifyfull,|,forecolor,backcolor,|,bullist,numlist,|,link,unlink,anchor,image,media,emotions,charmap,code",
-					theme_advanced_buttons2				: "save,newdocument,|,copy,cut,paste,pastetext,pasteword,|,undo,redo,|,search,replace,|,tablecontrols",
-					theme_advanced_buttons3				: "advhr,cleanup,removeformat,visualaid,|,ltr,rtl,|,outdent,indent,|,blockquote,cite,abbr,acronym,del,ins,insertdate,inserttime,attribs,|,preview,fullscreen",
-					theme_advanced_buttons4				: "styleselect,styleprops,formatselect,fontselect,fontsizeselect,|,visualchars,nonbreaking,pagebreak,restoredraft,|,help",
-					theme_advanced_toolbar_location		: "top",
-					theme_advanced_toolbar_align		: "center",
-					theme_advanced_statusbar_location	: "bottom",
-					theme_advanced_resizing				: true,
-					width								: '100%',
-					convert_urls						: false,
-					remove_script_host					: false,
-					relative_urls						: false/*,
-					file_browser_callback : EditorCallback !== undefined ? 'EditorCallback' : ''*/
+					toolbar1	: "styleselect fontselect fontsizeselect | alignleft aligncenter alignright alignjustify | bold italic underline strikethrough superscript subscript | forecolor backcolor",
+					toolbar2	: "insertfile undo redo | bullist numlist outdent indent blockquote | link unlink anchor image media emoticons charmap hr nonbreaking pagebreak | visualchars visualblocks | searchreplace | fullscreen preview code"
 				}
 			);
+			$('textarea.EDITOR').prop('required', false).tinymce(local_config);
 		},
 		function () {
-			$('textarea.EDITORH').prop('required', false).tinymce(
+			/**
+			 * Simple editor
+			 */
+			var local_config	= {};
+			$.extend(
+				local_config,
+				base_config,
 				{
-					doctype								: '<!doctype html>',
-					theme								: window.tinymce_theme !== undefined ? tinymce_theme : "advanced",
-					skin								: window.tinymce_skin !== undefined ? tinymce_skin : "o2k7",
-					skin_variant						: window.tinymce_skin_variant !== undefined ? tinymce_skin_variant : '',
-					language							: window.L.clang !== undefined ? L.clang : 'en',
-					plugins								: "advhr,advimage,advlink,advlist,autolink,autosave,contextmenu,directionality,emotions,fullscreen,insertdatetime,media,nonbreaking,noneditable,pagebreak,paste,preview,save,searchreplace,style,table,visualchars,xhtmlxtras",
-					theme_advanced_buttons1				: "bold,italic,underline,strikethrough,sub,sup,|,justifyleft,justifycenter,justifyright,justifyfull,|,forecolor,backcolor,|,bullist,numlist,|,link,unlink,anchor,image,media,emotions,charmap,code",
-					theme_advanced_buttons2				: "save,newdocument,|,copy,cut,paste,pastetext,pasteword,|,undo,redo,|,search,replace,|,tablecontrols",
-					theme_advanced_buttons3				: "advhr,cleanup,removeformat,visualaid,|,ltr,rtl,|,outdent,indent,|,blockquote,cite,abbr,acronym,del,ins,insertdate,inserttime,attribs,|,preview,fullscreen",
-					theme_advanced_buttons4				: "styleselect,styleprops,formatselect,fontselect,fontsizeselect,|,visualchars,nonbreaking,pagebreak,restoredraft,|,help",
-					theme_advanced_toolbar_location		: "external",
-					theme_advanced_toolbar_align		: "center",
-					theme_advanced_statusbar_location	: "bottom",
-					theme_advanced_resizing				: true,
-					width								: '100%',
-					convert_urls						: false,
-					remove_script_host					: false,
-					relative_urls						: false/*,
-					file_browser_callback : EditorCallback !== undefined ? 'EditorCallback' : ''*/
+					toolbar	: "insertfile undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | link image media emoticons | code"
 				}
 			);
+			$('textarea.SEDITOR').prop('required', false).tinymce(local_config);
 		},
 		function () {
-			$('textarea.SEDITOR').prop('required', false).tinymce(
+			/**
+			 * Inline editor
+			 */
+			var local_config	= {};
+			$.extend(
+				local_config,
+				base_config,
 				{
-					doctype								: '<!doctype html>',
-					theme								: window.tinymce_theme !== undefined ? tinymce_theme : "advanced",
-					skin								: window.tinymce_skin !== undefined ? tinymce_skin : "o2k7",
-					skin_variant						: window.tinymce_skin_variant !== undefined ? tinymce_skin_variant : '',
-					language							: window.L.clang !== undefined ? L.clang : 'en',
-					plugins								: "advhr,advimage,advlink,advlist,autolink,autosave,contextmenu,directionality,emotions,fullscreen,insertdatetime,media,nonbreaking,noneditable,pagebreak,paste,preview,save,searchreplace,style,table,visualchars,xhtmlxtras",
-					theme_advanced_buttons1				: "bold,italic,underline,strikethrough,sub,sup,|,justifyleft,justifycenter,justifyright,justifyfull,|,forecolor,backcolor,|,link,unlink,anchor,image,media,emotions,charmap,|,visualchars,nonbreaking,|,code",
-					theme_advanced_buttons2				: "bullist,numlist,|,ltr,rtl,|,outdent,indent,|,tablecontrols",
-					theme_advanced_buttons3				: "blockquote,cite,abbr,acronym,|,styleprops,formatselect,fontselect,fontsizeselect,|,fullscreen",
-					theme_advanced_buttons4				: "",
-					theme_advanced_toolbar_location		: "top",
-					theme_advanced_toolbar_align		: "center",
-					theme_advanced_resizing				: false,
-					width								: '100%',
-					convert_urls						: false,
-					remove_script_host					: false,
-					relative_urls						: false/*,
-					file_browser_callback : EditorCallback !== undefined ? 'EditorCallback' : ''*/
+					inline	: true,
+					menubar	: false,
+					toolbar	: "insertfile undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | link image media emoticons | code"
 				}
 			);
+			$('.IEDITOR').prop('required', false).tinymce(local_config);
 		}
 	]);
 });
 function editor_deinitialization (id) {
-	tinyMCE.execCommand('mceRemoveControl', false, id);
+	$('#'+id).tinymce().destroy();
 }
 function editor_reinitialization (id) {
-	tinyMCE.execCommand('mceAddControl', false, id);
+	$('#'+id).tinymce({});
 }
-function editor_focus (id) {
-	tinyMCE.execCommand('mceFocus', false, id);
+function editor_focus (id) {console.log('f/'+id);
+	$('#'+id).tinymce().execCommand('mceFocus');
 }

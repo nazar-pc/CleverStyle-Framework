@@ -15,10 +15,10 @@ $Index->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		core_input('site_mode', 'radio'),
 		core_input('closed_title'),
-		core_textarea('closed_text', 'EDITORH'),
+		core_textarea('closed_text', 'SEDITOR'),
 		core_input('title_delimiter'),
 		core_input('title_reverse', 'radio'),
-		core_textarea('footer_text', 'EDITORH'),
+		core_textarea('footer_text', 'SEDITOR'),
 		core_input('show_footer_info', 'radio'),
 		core_input('show_tooltips', 'radio'),
 		core_input('og_support', 'radio'),

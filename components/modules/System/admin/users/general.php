@@ -81,6 +81,6 @@ $Index->content(
 				'class'	=> 'cs-allow-user-registration cs-require-registration-confirmation'
 			]
 		],
-		core_textarea('rules', 'EDITORH')
+		core_textarea('rules', 'SEDITOR')
 	)
 );

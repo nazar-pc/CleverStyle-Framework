@@ -76,7 +76,7 @@ $(function () {
 			});
 		},
 		function () {
-			$('textarea:not(.cs-noui)').addClass('cs-form-element').not('.noresize, .EDITOR, .EDITORH, .SEDITOR').each(function () {
+			$('textarea:not(.cs-noui)').addClass('cs-form-element').not('.noresize, .EDITOR, .SEDITOR').each(function () {
 				$(this).addClass('cs-textarea-autosize').autosize({append: "\n"});
 			});
 		},

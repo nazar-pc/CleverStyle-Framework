@@ -116,26 +116,11 @@ $Core->register_trigger(
 		}
 		if (!$Config->core['cache_compress_js_css']) {
 			$Page->css('components/modules/Comments/includes/css/general.css');
-			$Page->js([
-				'components/modules/Comments/includes/js/general.js',
-				'components/modules/Comments/includes/js/functions.js'
-			]);
+			$Page->js('components/modules/Comments/includes/js/general.js');
 		} elseif (!(
 			file_exists(PCACHE.'/module.Comments.js') && file_exists(PCACHE.'/module.Comments.css')
 		)) {
 			rebuild_pcache();
 		}
-		if (!$Config->core['cache_compress_js_css']) {
-			$Page->css('components/modules/Comments/includes/css/general.css');
-			$Page->js([
-				'components/modules/Comments/includes/js/general.js',
-				'components/modules/Comments/includes/js/functions.js'
-			]);
-		} elseif (!(
-			file_exists(PCACHE.'/module.Comments.js') && file_exists(PCACHE.'/module.Comments.css')
-		)) {
-			rebuild_pcache();
-		}
-
 	}
 );

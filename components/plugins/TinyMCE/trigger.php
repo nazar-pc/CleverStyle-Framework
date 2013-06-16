@@ -51,7 +51,7 @@ function clean_pcache ($data = null) {
 };
 function rebuild_pcache (&$data = null) {
 	global $Config;
-	$plugin			= basename(__DIR__);
+	$plugin		= basename(__DIR__);
 	if (
 		!$Config->core['cache_compress_js_css'] ||
 		(
@@ -61,50 +61,21 @@ function rebuild_pcache (&$data = null) {
 	) {
 		return;
 	}
-	$files[]		= 'tiny_mce';
-	$content		= file_get_contents(PLUGINS.'/'.$plugin.'/tiny_mce.js');
-	$languages		= _mb_substr(get_files_list(PLUGINS.'/'.$plugin.'/langs', false, 'f'), 0, -3);
+	$files		= [];
+	$content	= '';
 	array_map(
 		function ($language) use (&$files, &$content, $plugin) {
 			$files[]	= 'langs/'.$language;
 			$content	.= file_get_contents(PLUGINS.'/'.$plugin.'/langs/'.$language.'.js');
 		},
-		$languages
+		_mb_substr(get_files_list(PLUGINS.'/'.$plugin.'/langs', false, 'f'), 0, -3)
 	);
-	array_map(
-		function ($plugin_tiny) use (&$files, &$content, $plugin, $languages) {
-			$files[]	= 'plugins/'.$plugin_tiny.'/editor_plugin';
-			$content	.= file_get_contents(PLUGINS.'/'.$plugin.'/plugins/'.$plugin_tiny.'/editor_plugin.js');
-			foreach ($languages as $language) {
-				if (file_exists($file = PLUGINS.'/'.$plugin.'/plugins/'.$plugin_tiny.'/langs/'.$language.'.js')) {
-					$files[]	= 'plugins/'.$plugin_tiny.'/langs/'.$language;
-					$content	.= file_get_contents($file);
-				}
-			}
-		},
-		get_files_list(PLUGINS.'/'.$plugin.'/plugins', false, 'd')
-	);
-	array_map(
-		function ($theme) use (&$files, &$content, $plugin, $languages) {
-			$files[]	= 'themes/'.$theme.'/editor_template';
-			$content	.= file_get_contents(PLUGINS.'/'.$plugin.'/themes/'.$theme.'/editor_template.js');
-			foreach ($languages as $language) {
-				if (file_exists($file = PLUGINS.'/'.$plugin.'/themes/'.$theme.'/langs/'.$language.'.js')) {
-					$files[]	= 'themes/'.$theme.'/langs/'.$language;
-					$content	.= file_get_contents($file);
-				}
-			}
-		},
-		get_files_list(PLUGINS.'/'.$plugin.'/themes', false, 'd')
-	);
-	unset($languages);
 	file_put_contents(
 		PCACHE.'/plugin.'.$plugin.'.js',
 		$key	= gzencode(
-			'var tinyMCEPreInit={base:\'/components/plugins/'.$plugin.'\',suffix:\'\'};'.
+			file_get_contents(PLUGINS.'/'.$plugin.'/tinymce.min.js').
 			$content.
 			'tinymce.each("' . implode(',', $files) . '".split(","),function(f){tinymce.ScriptLoader.markDone(tinyMCE.baseURL+"/"+f+".js");});'.
-			file_get_contents(PLUGINS.'/'.$plugin.'/jquery.tinymce.js').
 			file_get_contents(PLUGINS.'/'.$plugin.'/TinyMCE.js'),
 			9
 		),

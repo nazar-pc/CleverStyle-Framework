@@ -1,1 +1,0 @@
-tinyMCE.addI18n('uk.simple',{"cleanup_desc":"Видалити зайвий код","redo_desc":"Повернути (Ctrl+Y)","undo_desc":"Відмінити (Ctrl+Z)","numlist_desc":"Нумерований список","bullist_desc":"Ненумерований список","striketrough_desc":"Закреслений","underline_desc":"Підкреслений (Ctrl+U)","italic_desc":"Курсив (Ctrl+I)","bold_desc":"Жирний (Ctrl+B)"});

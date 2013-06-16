@@ -77,6 +77,6 @@ $Index->content(
 		],
 		core_input('mail_from'),
 		core_input('mail_from_name'),
-		core_textarea('mail_signature', 'EDITORH')
+		core_textarea('mail_signature', 'SEDITOR')
 	])
 );

@@ -22,7 +22,6 @@ $(function () {
 		'click',
 		'.cs-comments-comment-text',
 		function () {
-			blogs_comment_cancel();
 			var textarea	= $('.cs-comments-comment-write-text');
 			textarea.data(
 				'parent',
@@ -47,23 +46,23 @@ $(function () {
 		'click',
 		'.cs-comments-comment-edit',
 		function () {
-			blogs_comment_cancel();
 			var textarea	= $('.cs-comments-comment-write-text'),
 				parent		= $(this).parent('article'),
 				text		= parent.children('.cs-comments-comment-text');
 			textarea.data(
 				'id',
 				parent.prop('id').replace('comment_', '')
-			).val(text.html());
+			);
 			typeof window.editor_deinitialization === 'function' && editor_deinitialization(
 				textarea.prop('id')
 			);
-			text.hide().after(
+			text.after(
 				$('.cs-comments-comment-write')
 			);
 			typeof window.editor_reinitialization === 'function' && editor_reinitialization(
 				textarea.prop('id')
 			);
+			textarea.val(text.html());
 			typeof window.editor_focus === 'function' && editor_focus(
 				textarea.prop('id')
 			);

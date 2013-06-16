@@ -1,1 +1,0 @@
-tinyMCE.addI18n('ru.advhr_dlg',{size:"Высота",noshade:"Без тени",width:"Ширина",normal:"Обычная",widthunits:"Единицы измерения"});
