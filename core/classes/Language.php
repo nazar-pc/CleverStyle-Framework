@@ -127,7 +127,6 @@ class Language {
 		foreach ($accept_languages as $language) {
 			$language = explode(';', $language, 2)[0];
 			if (isset($aliases[$language]) && in_array($aliases[$language], $active_languages)) {
-				_setcookie('language', $aliases[$language]);
 				return $aliases[$language];
 			}
 		}
@@ -207,13 +206,16 @@ class Language {
 			return false;
 		}
 		$changed_once	= true;;
-		if (empty($language)) {
-			return false;
-		}
+		global $Config, $User;
 		if ($language == $this->clanguage) {
 			return true;
 		}
-		global $Config, $User;
+		if (empty($language)) {
+			$language	= $this->scan_aliases($Config->core['active_languages']) ?: $language;
+			if ($Config->core['multilingual']) {
+				$language	= _getcookie('language') && in_array(_getcookie('language'), $Config->core['active_languages']) ? _getcookie('language') : $language;
+			}
+		}
 		if (
 			!is_object($Config) ||
 			(
@@ -228,11 +230,11 @@ class Language {
 			)
 		) {
 			global $Cache;
-			$this->clanguage = $language;
+			$this->clanguage	= $language;
+			$return 			= false;
 			if ($translate = $Cache->{'languages/'.$this->clanguage}) {
 				$this->set($translate);
-				header('Content-Language: '.$this->translate['content_language']);
-				return true;
+				$return							= true;
 			} elseif (file_exists(LANGUAGES.'/'.$this->clanguage.'.json')) {
 				$this->translate				= _json_decode_nocomments(file_get_contents(LANGUAGES.'/'.$this->clanguage.'.json'));
 				$this->translate['clanguage']	= $this->clanguage;
@@ -245,16 +247,18 @@ class Language {
 				if (!isset($this->translate['locale'])) {
 					$this->translate['locale']			= $this->clang.'_'.strtoupper($this->clang);
 				}
-				header('Content-Language: '.$this->translate['content_language']);
 				$this->need_to_rebuild_cache	= true;
 				if ($this->init) {
 					$this->init($Config->core['active_languages'], $language);
 				}
-				return true;
-			} elseif (_include(LANGUAGES.'/'.$this->clanguage.'.php', false, false)) {
-				header('Content-language: '.$this->translate['clang']);
-				return true;
+				$return							= true;
 			}
+			if (_include(LANGUAGES.'/'.$this->clanguage.'.php', false, false)) {
+				$return							= true;
+			}
+			header('Content-Language: '.$this->translate['content_language']);
+			_setcookie('language', $this->clanguage);
+			return $return;
 		}
 		return false;
 	}

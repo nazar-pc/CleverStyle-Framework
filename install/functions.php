@@ -138,6 +138,7 @@ function install_process () {
 		"show_objects_data": "1",
 		"gzip_compression": "1",
 		"cache_compress_js_css": "1",
+		"put_js_after_body": "1",
 		"theme": "",
 		"allow_change_theme": "0",
 		"themes": [],

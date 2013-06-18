@@ -459,9 +459,9 @@ class User extends Accessor {
 					return false;
 				}
 			} elseif ($item == 'language') {
-				global $L, $Config;
+				global $L;
 				if ($user == $this->id) {
-					$L->change($value ?: $Config->core['language']);
+					$L->change($value);
 					$value	= $value ? $L->clanguage : '';
 					_setcookie('language', $value);
 				}

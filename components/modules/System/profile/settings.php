@@ -118,7 +118,7 @@ switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 				h::{'td.ui-widget-content.ui-corner-all'}($col2);
 		};
 		$themes						= [
-			$L->system_default.' ('.$Config->core['theme'].' - '.$Config->core['color_scheme'].')' => ''
+			$L->system_default.' ('.$Config->core['theme'].' - '.($Config->core['color_scheme'] ?: $Config->core['color_schemes'][$Config->core['theme']][0]).')' => ''
 		];
 		foreach ($Config->core['active_themes'] as $theme) {
 			foreach ($Config->core['color_schemes'][$theme] as $color_scheme) {
@@ -149,7 +149,7 @@ switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 				])),
 				$row($L->language, h::select(
 					[
-						'in'		=> array_merge([$L->system_default.' ('.$Config->core['language'].')'], $Config->core['active_languages']),
+						'in'		=> array_merge([$L->system_default], $Config->core['active_languages']),
 						'value'		=> array_merge([''], $Config->core['active_languages'])
 					],
 					[
