@@ -41,8 +41,8 @@ $Index->content(
 		FIXED_LANGUAGE ? $L->language_fixed_as.' '.$Core->language : false
 	).
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
-		core_select($Config->core['active_languages'],	'language',			'change_language',	'current_language'),
-		core_select($Config->core['languages'],			'active_languages',	'cache_active_languages',	null, true),
+		core_select($Config->core['active_languages'],	'language',			'change_language',			'current_language'),
+		core_select($Config->core['languages'],			'active_languages',	'change_active_languages',	null,				true),
 		[
 			h::info('multilingual'),
 			h::{'input[type=radio]'}([

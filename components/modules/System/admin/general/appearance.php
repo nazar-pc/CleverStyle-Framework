@@ -14,7 +14,7 @@ $Config->reload_themes();
 $Index->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		core_select($Config->core['active_themes'],							'theme',			'change_theme',			'current_theme'),
-		core_select($Config->core['themes'],									'active_themes',	'change_active_themes',	null, true),
+		core_select($Config->core['themes'],								'active_themes',	'change_active_themes',	null,			true),
 		core_select($Config->core['color_schemes'][$Config->core['theme']],	'color_scheme',		'change_color_scheme'),
 		core_input('allow_change_theme', 'radio')
 	)
