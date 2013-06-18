@@ -25,7 +25,8 @@
 		"keys"	: [
 			"id",
 			"secret"
-		]
+		],
+		"scope"	: ""
 	},
 	"Odnoklassniki"	: {
 		"keys"	: [

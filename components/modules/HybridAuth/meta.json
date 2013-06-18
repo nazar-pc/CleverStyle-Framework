@@ -1,7 +1,7 @@
 {
 	"package"		: "HybridAuth",
 	"category"		: "modules",
-	"version"		: "2.1.1-cs18",
+	"version"		: "2.1.1-cs19",
 	"description"	: "Module for integration with social networks. Includes HybridAuth 2.1.1 core and additional providers 1.7",
 	"author"		: "HybridAuth authors",
 	"website"		: "hybridauth.sourceforge.net",
