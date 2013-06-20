@@ -13,7 +13,7 @@ class Text {
 	 * @param int			$database
 	 * @param string		$group
 	 * @param string		$label
-	 * @param int			$id
+	 * @param int|null		$id					Getting may be done with group and label or with id
 	 * @param bool			$auto_translation	If <b>false</b> - automatic translation will be disabled,
 	 * 											even in case, when it is enabled in system configuration
 	 * @param bool			$store_in_cache		If <b>true</b> - text will be stored in cache
