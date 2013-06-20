@@ -32,11 +32,17 @@ class Local extends _Abstract {
 	 * @param	bool		$sort
 	 * @param	bool|string	$exclusion
 	 * @param	bool		$system_files
+	 * @param	\Closure	$apply
+	 * @param	int|null	$limit
 	 *
 	 * @return	array|bool
 	 */
-	function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subfolders = false, $sort = false, $exclusion = false, $system_files = false) {
-		return call_user_func_array(__FUNCTION__, func_get_args());
+	function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subfolders = false, $sort = false, $exclusion = false, $system_files = false, $apply = null, $limit = null) {
+		$cwd	= getcwd();
+		chdir(STORAGE);
+		$return = call_user_func_array(__FUNCTION__, func_get_args());
+		chdir($cwd);
+		return $return;
 	}
 	/**
 	 * Reads entire file into an array
@@ -49,7 +55,11 @@ class Local extends _Abstract {
 	 * @return array|bool
 	 */
 	function file ($filename, $flags = null) {
-		return call_user_func_array(__FUNCTION__, func_get_args());
+		$cwd	= getcwd();
+		chdir(STORAGE);
+		$return = call_user_func_array(__FUNCTION__, func_get_args());
+		chdir($cwd);
+		return $return;
 	}
 	/**
 	 * Reads entire file into a string
@@ -62,7 +72,11 @@ class Local extends _Abstract {
 	 * @return bool|string
 	 */
 	function file_get_contents ($filename, $flags = null) {
-		return call_user_func_array(__FUNCTION__, func_get_args());
+		$cwd	= getcwd();
+		chdir(STORAGE);
+		$return = call_user_func_array(__FUNCTION__, func_get_args());
+		chdir($cwd);
+		return $return;
 	}
 	/**
 	 * Write a string to a file
@@ -76,7 +90,11 @@ class Local extends _Abstract {
 	 * @return bool|int
 	 */
 	function file_put_contents ($filename, $data, $flags = null) {
-		return call_user_func_array(__FUNCTION__, func_get_args());
+		$cwd	= getcwd();
+		chdir(STORAGE);
+		$return = call_user_func_array(__FUNCTION__, func_get_args());
+		chdir($cwd);
+		return $return;
 	}
 	/**
 	 * Copies file
@@ -89,7 +107,11 @@ class Local extends _Abstract {
 	 * @return bool
 	 */
 	function copy ($source, $dest) {
-		return call_user_func_array(__FUNCTION__, func_get_args());
+		$cwd	= getcwd();
+		chdir(STORAGE);
+		$return = call_user_func_array(__FUNCTION__, func_get_args());
+		chdir($cwd);
+		return $return;
 	}
 	/**
 	 * Deletes a file
@@ -101,7 +123,11 @@ class Local extends _Abstract {
 	 * @return bool
 	 */
 	function unlink ($filename) {
-		return call_user_func_array(__FUNCTION__, func_get_args());
+		$cwd	= getcwd();
+		chdir(STORAGE);
+		$return = call_user_func_array(__FUNCTION__, func_get_args());
+		chdir($cwd);
+		return $return;
 	}
 	/**
 	 * Checks whether a file or directory exists
@@ -113,7 +139,11 @@ class Local extends _Abstract {
 	 * @return bool
 	 */
 	function file_exists ($filename) {
-		return call_user_func_array(__FUNCTION__, func_get_args());
+		$cwd	= getcwd();
+		chdir(STORAGE);
+		$return = call_user_func_array(__FUNCTION__, func_get_args());
+		chdir($cwd);
+		return $return;
 	}
 	/**
 	 * Moves an uploaded file to a new location
@@ -128,7 +158,11 @@ class Local extends _Abstract {
 	 * @return bool
 	 */
 	function move_uploaded_file ($filename, $destination) {
-		return call_user_func_array(__FUNCTION__, func_get_args());
+		$cwd	= getcwd();
+		chdir(STORAGE);
+		$return = call_user_func_array(__FUNCTION__, func_get_args());
+		chdir($cwd);
+		return $return;
 	}
 	/**
 	 * Renames a file or directory
@@ -141,7 +175,11 @@ class Local extends _Abstract {
 	 * @return bool
 	 */
 	function rename ($oldname, $newname) {
-		return call_user_func_array(__FUNCTION__, func_get_args());
+		$cwd	= getcwd();
+		chdir(STORAGE);
+		$return = call_user_func_array(__FUNCTION__, func_get_args());
+		chdir($cwd);
+		return $return;
 	}
 	/**
 	 * Attempts to create the directory specified by pathname.
@@ -155,7 +193,11 @@ class Local extends _Abstract {
 	 * @return bool
 	 */
 	function mkdir ($pathname, $mode = 0777, $recursive = false) {
-		return call_user_func_array(__FUNCTION__, func_get_args());
+		$cwd	= getcwd();
+		chdir(STORAGE);
+		$return = call_user_func_array(__FUNCTION__, func_get_args());
+		chdir($cwd);
+		return $return;
 	}
 	/**
 	 * Removes directory
@@ -167,7 +209,11 @@ class Local extends _Abstract {
 	 * @return bool
 	 */
 	function rmdir ($dirname) {
-		return call_user_func_array(__FUNCTION__, func_get_args());
+		$cwd	= getcwd();
+		chdir(STORAGE);
+		$return = call_user_func_array(__FUNCTION__, func_get_args());
+		chdir($cwd);
+		return $return;
 	}
 	/**
 	 * Tells whether the filename is a regular file
@@ -179,7 +225,11 @@ class Local extends _Abstract {
 	 * @return bool
 	 */
 	function is_file ($filename) {
-		return call_user_func_array(__FUNCTION__, func_get_args());
+		$cwd	= getcwd();
+		chdir(STORAGE);
+		$return = call_user_func_array(__FUNCTION__, func_get_args());
+		chdir($cwd);
+		return $return;
 	}
 	/**
 	 * Tells whether the filename is a directory
@@ -191,7 +241,11 @@ class Local extends _Abstract {
 	 * @return bool
 	 */
 	function is_dir ($filename) {
-		return call_user_func_array(__FUNCTION__, func_get_args());
+		$cwd	= getcwd();
+		chdir(STORAGE);
+		$return = call_user_func_array(__FUNCTION__, func_get_args());
+		chdir($cwd);
+		return $return;
 	}
 	/**
 	 * Get file url by it's destination in file system
@@ -203,7 +257,11 @@ class Local extends _Abstract {
 	 * @return bool|string
 	 */
 	function url_by_source ($source) {
-		return call_user_func_array(__FUNCTION__, func_get_args());
+		$cwd	= getcwd();
+		chdir(STORAGE);
+		$return = call_user_func_array(__FUNCTION__, func_get_args());
+		chdir($cwd);
+		return $return;
 	}
 	/**
 	 * Get file destination in file system by it's url
@@ -215,6 +273,10 @@ class Local extends _Abstract {
 	 * @return bool|string
 	 */
 	function source_by_url ($url) {
-		return call_user_func_array(__FUNCTION__, func_get_args());
+		$cwd	= getcwd();
+		chdir(STORAGE);
+		$return = call_user_func_array(__FUNCTION__, func_get_args());
+		chdir($cwd);
+		return $return;
 	}
 }

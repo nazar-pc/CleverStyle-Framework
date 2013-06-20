@@ -7,7 +7,6 @@
  */
 namespace cs;
 class Storage {
-	public		$time					= 0;
 	protected	$connections			= [],
 				$successful_connections	= [],
 				$failed_connections		= [];
@@ -35,11 +34,20 @@ class Storage {
 	 * @param	int									$connection
 	 * @return	bool|Storage\_Abstract|False_class
 	 */
-	function __get ($connection) {
+	function storage ($connection) {
 		if (!is_int($connection) && $connection != '0') {
 			return new False_class;
 		}
 		return $this->connecting($connection);
+	}
+	/**
+	 * Processing of requests for getting data from DB. Balancing of DB may be used with corresponding settings.
+	 *
+	 * @param	int									$connection
+	 * @return	bool|Storage\_Abstract|False_class
+	 */
+	function __get ($connection) {
+		return $this->storage($connection);
 	}
 	/**
 	 * Processing of al storage requests

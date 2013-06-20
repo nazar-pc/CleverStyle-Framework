@@ -74,11 +74,13 @@ class HTTP extends _Abstract {
 	 * @param	bool		$sort
 	 * @param	bool|string	$exclusion
 	 * @param	bool		$system_files
+	 * @param	\Closure	$apply
+	 * @param	int|null	$limit
 	 *
 	 * @return	array|bool
 	 */
-	function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subfolders = false, $sort = false, $exclusion = false, $system_files = false) {
-		return _json_decode(
+	function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subfolders = false, $sort = false, $exclusion = false, $system_files = false, $apply = null, $limit = null) {
+		$return = _json_decode(
 			$this->request([
 				'function'		=> __FUNCTION__,
 				'dir'			=> $dir,
@@ -88,9 +90,18 @@ class HTTP extends _Abstract {
 				'subfolders'	=> $subfolders,
 				'sort'			=> $sort,
 				'exclusion'		=> $exclusion,
-				'system_files'	=> $system_files
+				'system_files'	=> $system_files,
+				'limit'			=> $limit
 			])[1]
 		);
+		if ($apply instanceof \Closure && $return) {
+			foreach ($return as $r) {
+				$apply($r);
+			}
+			return [];
+		} else {
+			return $return;
+		}
 	}
 	/**
 	 * Reads entire file into an array

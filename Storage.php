@@ -10,7 +10,7 @@
  */
 header('Content-Type: text/html; charset=utf-8');
 header('Connection: close');
-require __DIR__.'/core/functions.php';
+require __DIR__.'/core/upf.php';
 define('STORAGE',	__DIR__.'/storage/public');
 chdir(STORAGE);
 if (
@@ -35,7 +35,7 @@ switch ($data['function']) {
 	default:
 		exit;
 	case 'get_files_list':
-		exit(_json_encode(get_files_list($data['dir'], $data['mask'], $data['mode'], $data['prefix_path'], $data['subfolders'], $data['sort'], $data['exclusion'], $data['system_files'])));
+		exit(_json_encode(get_files_list($data['dir'], $data['mask'], $data['mode'], $data['prefix_path'], $data['subfolders'], $data['sort'], $data['exclusion'], $data['system_files'], null, $data['limit'])));
 	case 'file':
 		exit(_json_encode(file($data['filename'], $data['flags'])));
 	case 'file_get_contents':

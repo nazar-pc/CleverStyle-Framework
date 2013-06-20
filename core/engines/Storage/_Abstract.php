@@ -33,11 +33,12 @@ abstract class _Abstract {
 	 * @param	bool		$sort
 	 * @param	bool|string	$exclusion
 	 * @param	bool		$system_files
-	 * @param	bool		$system_files
+	 * @param	\Closure	$apply
+	 * @param	int|null	$limit
 	 *
 	 * @return	array|bool
 	 */
-	abstract function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subfolders = false, $sort = false, $exclusion = false, $system_files = false);
+	abstract function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subfolders = false, $sort = false, $exclusion = false, $system_files = false, $apply = null, $limit = null);
 	/**
 	 * Reads entire file into an array
 	 *
