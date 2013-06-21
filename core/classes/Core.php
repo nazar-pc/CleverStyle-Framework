@@ -34,8 +34,7 @@ class Core {
 				$td,
 				$key,
 				$encrypt_support	= false,
-				$triggers_init		= false,
-				$triggers;
+				$triggers			= [];
 	/**
 	 * Loading of base system configuration, creating of missing directories
 	 */
@@ -371,55 +370,20 @@ class Core {
 	/**
 	 * Registration of triggers for actions
 	 *
-	 * @param string	$trigger	Trigger name<ir>
-	 * 'admin/System/components/plugins/disable'
-	 * @param Closure	$closure	function, that will be called at trigger running
+	 * @param string	$trigger	For example <i>admin/System/components/plugins/disable</i>
+	 * @param Closure	$closure	Closure, that will be called at trigger running
 	 *
 	 * @return bool
 	 */
 	function register_trigger ($trigger, $closure) {
-		if (!(is_string($trigger) && $closure instanceof Closure)) {
-			return true;
-		}
-		$trigger		= explode('/', $trigger);
-		$new_trigger	= [];
-		$tmp			= &$new_trigger;
-		foreach ($trigger as $item) {
-			$tmp[$item] = [];
-			$tmp		= &$tmp[$item];
-		}
-		$tmp			= $closure;
-		$trigger		= $new_trigger;
-		unset($new_trigger, $tmp, $item);
-		return $this->register_trigger_internal($trigger);
-	}
-	/**
-	 * Registration of triggers for actions
-	 *
-	 * @param array			$trigger
-	 * @param array|null	$triggers	Is used for nested structure
-	 *
-	 * @return bool
-	 */
-	protected function register_trigger_internal ($trigger, &$triggers = null) {
-		if ((!is_array($trigger) || empty($trigger)) && !($trigger instanceof Closure)) {
+		if (!is_string($trigger) || !($closure instanceof Closure)) {
 			return false;
 		}
-		if ($triggers === null) {
-			$triggers = &$this->triggers;
+		if (!isset($this->triggers[$trigger])) {
+			$this->triggers[$trigger]	= [];
 		}
-		if ($trigger instanceof Closure) {
-			$triggers[] = $trigger;
-			return true;
-		}
-		$return = true;
-		foreach ($trigger as $item => $function) {
-			if (!isset($triggers[$item])) {
-				$triggers[$item] = [];
-			}
-			$return = $return && $this->register_trigger_internal($function, $triggers[$item]);
-		}
-		return $return;
+		$this->triggers[$trigger][]	= $closure;
+		return true;
 	}
 	/**
 	 * Running triggers for some actions
@@ -430,7 +394,11 @@ class Core {
 	 * @return bool
 	 */
 	function run_trigger ($trigger, $data = null) {
-		if (!$this->triggers_init) {
+		static $triggers_initialized = false;
+		if (!is_string($trigger)) {
+			return true;
+		}
+		if (!$triggers_initialized) {
 			global $Config;
 			$modules = array_keys($Config->components['modules']);
 			foreach ($modules as $module) {
@@ -444,35 +412,20 @@ class Core {
 				}
 			}
 			unset($plugins, $plugin);
-			$this->triggers_init = true;
+			$triggers_initialized = true;
 		}
-		$trigger = explode('/', $trigger);
-		if (!is_array($trigger) || empty($trigger)) {
-			return false;
+		if (!isset($this->triggers[$trigger]) || empty($this->triggers[$trigger])) {
+			return true;
 		}
-		$triggers = $this->triggers;
-		foreach ($trigger as $item) {
-			if (is_array($triggers) && isset($triggers[$item])) {
-				$triggers = $triggers[$item];
-			} else {
-				return true;
-			}
-		}
-		unset($trigger, $item);
-		if (!is_array($triggers) || empty($triggers)) {
-			return false;
-		}
-		$return = true;
+		$return	= true;
 		/**
-		 * @var Closure[] $triggers
+		 * @var Closure[] $this->triggers
 		 */
-		foreach ($triggers as $trigger) {
-			if ($trigger instanceof Closure) {
-				if ($data === null) {
-					$return = $return && ($trigger() === false ? false : true);
-				} else {
-					$return = $return && ($trigger($data) === false ? false : true);
-				}
+		foreach ($this->triggers[$trigger] as $closure) {
+			if ($data === null) {
+				$return = $return && ($closure() === false ? false : true);
+			} else {
+				$return = $return && ($closure($data) === false ? false : true);
 			}
 		}
 		return $return;
