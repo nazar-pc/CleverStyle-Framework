@@ -68,11 +68,12 @@ class h {
 	 * @param string	$in
 	 * @param string	$tag
 	 * @param string	$add
+	 * @param null		$insert
 	 * @param null		$label
 	 *
 	 * @return bool
 	 */
-	protected static function data_prepare (&$data, &$in, &$tag, &$add, &$label = null) {
+	protected static function data_prepare (&$data, &$in, &$tag, &$add, &$insert = null, &$label = null) {
 		$q = '"';
 		if (isset($data['in'])) {
 			if ($data['in'] === false) {
@@ -126,8 +127,12 @@ class h {
 			$data['formaction']	= str_replace(' ', '%20', $data['formaction']);
 		}
 		if (isset($data['add'])) {
-			$add				= ' '.$data['add'];
+			$add				= ' '.trim($data['add']);
 			unset($data['add']);
+		}
+		if (isset($data['insert'])) {
+			$insert	= $data['insert'];
+			unset($data['insert']);
 		}
 		/**
 		 * If quotes symbol specified - use it
@@ -223,16 +228,17 @@ class h {
 			$level = $data['level'];
 			unset($data['level']);
 		}
-		if (!self::data_prepare($data, $in, $tag, $add)) {
+		if (!self::data_prepare($data, $in, $tag, $add, $insert)) {
 			return false;
 		}
-		return	'<'.$tag.$add.'>'.
-				($level ? "\n" : '').
-				self::level(
-					$in || $in === 0 || $in === '0' ? $in.($level ? "\n" : '') : ($in === false ? '' : ($level ? "&nbsp;\n" : '')),
-				$level).
-				'</'.$tag.'>'.
-				($level ? "\n" : '');
+		$html	=	'<'.$tag.$add.'>'.
+					($level ? "\n" : '').
+					self::level(
+						$in || $in === 0 || $in === '0' ? $in.($level ? "\n" : '') : ($in === false ? '' : ($level ? "&nbsp;\n" : '')),
+					$level).
+					'</'.$tag.'>'.
+					($level ? "\n" : '');
+		return self::insert_processing($html, $insert);
 	}
 	/**
 	 * Wrapper for unpaired tags rendering
@@ -246,7 +252,7 @@ class h {
 	protected static function u_wrap ($data = []) {
 		$in = $add = '';
 		$tag = 'input';
-		if (!self::data_prepare($data, $in, $tag, $add, $label)) {
+		if (!self::data_prepare($data, $in, $tag, $add, $insert, $label)) {
 			return false;
 		}
 		if (isset($data['data-title']) && $data['data-title']) {
@@ -254,27 +260,51 @@ class h {
 			unset($data['data-title']);
 		}
 		if (isset($data['type']) && $data['type'] == 'checkbox' && $label) {
-			$return = '<'.$tag.$add.(XHTML_TAGS_STYLE ? ' /' : '').'>'.self::label(
+			$html	= '<'.$tag.$add.(XHTML_TAGS_STYLE ? ' /' : '').'>'.self::label(
 				$in,
 				[
 					'for'	=> $data['id']
 				]
 			)."\n";
-			return self::span(
-				$return,
+			$html	= self::span(
+				$html,
 				[
 					'data-title' => isset($data_title) ? $data_title : false
 				]
 			);
 		} else {
-			$return = '<'.$tag.$add.(XHTML_TAGS_STYLE ? ' /' : '').'>'.$in."\n";
-			return isset($data_title) ? self::label(
-				$return,
+			$html	= '<'.$tag.$add.(XHTML_TAGS_STYLE ? ' /' : '').'>'.$in."\n";
+			$html	= isset($data_title) ? self::label(
+				$html,
 				[
 					'data-title' => $data_title
 				]
-			) : $return;
+			) : $html;
 		}
+		return self::insert_processing($html, $insert);
+	}
+	protected static function insert_processing ($html, $insert) {
+		if (!$insert) {
+			return $html;
+		}
+		if (is_array_indexed($insert) && is_array($insert[0])) {
+			$result	= '';
+			foreach ($insert as $ins) {
+				$tmp	= $html;
+				foreach ($ins as $i => $d) {
+					$tmp	= str_replace("\$i[$i]", $d, $tmp);
+				}
+				$result	.= $tmp;
+			}
+			$html	= $result;
+			unset($ins, $i, $d, $tmp, $result);
+		} else {
+			foreach ($insert as $i => $d) {
+				$tmp	= str_replace("\$i[$i]", $d, $html);
+			}
+			unset($ins, $i, $d, $tmp);
+		}
+		return $html;
 	}
 	/**
 	 * Rendering of form tag, default method is post, if form method is post - special session key in hidden input is added for security.
@@ -892,7 +922,7 @@ class h {
 				return $output;
 			} elseif (
 				/**
-				 * Fix for "select" and "datalist" tags bescause they accept arrays as values
+				 * Fix for "select" and "datalist" tags because they accept arrays as values
 				 */
 				strpos($input, 'select') !== 0 &&
 				strpos($input, 'datalist') !== 0 &&
@@ -922,7 +952,7 @@ class h {
 				is_array_indexed($data[0]) &&
 				(
 					/**
-					 * Fix for "select" and "datalist" tags bescause they accept arrays as values
+					 * Fix for "select" and "datalist" tags because they accept arrays as values
 					 */
 					(
 						strpos($input, 'select') !== 0 && strpos($input, 'datalist') !== 0
@@ -933,7 +963,7 @@ class h {
 				)
 			) {
 				$output = '';
-				foreach ($data[0] as $d) {
+				foreach ((array)$data[0] as $d) {
 					$data[1]	= isset($data[1]) ? $data[1] : [];
 					if (!is_array($d) || !isset($d[1]) || !is_array($d[1])) {
 						$output			.= self::__callStatic(
@@ -996,7 +1026,7 @@ class h {
 			$data[0]	=  '';
 		}
 		/**
-		 * Second part of expression - fix for "select" and "datalist" tags bescause they accept array as values
+		 * Second part of expression - fix for "select" and "datalist" tags because they accept array as values
 		 */
 		if (
 			!is_array($data[0]) ||

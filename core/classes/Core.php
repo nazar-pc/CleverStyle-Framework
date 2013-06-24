@@ -13,8 +13,8 @@ use			Closure,
  * Provides loading of base system configuration, creating of global objects, encryption, API requests sending, and triggers processing.
  */
 class Core {
-	public	$Loaded				= [],				//Array with list of loaded objects, and information about amount of used memory and creation time
-			$destroy_priority	= [					//Order of global objects destroying
+	public	$Loaded				= [],			//Array with list of loaded objects, and information about amount of used memory and creation time
+			$destroy_priority	= [				//Order of global objects destroying
 				'Page',
 				'User',
 				'Config',
@@ -437,8 +437,8 @@ class Core {
 	 */
 	function __clone () {}
 	/**
-	 * Destroying of global objects, cleaning.<ir>
-	 * Disabling encryption.<ir>
+	 * Destroying of global objects, cleaning.<br>
+	 * Disabling encryption.<br>
 	 * Correct termination.
 	 */
 	function __finish () {
