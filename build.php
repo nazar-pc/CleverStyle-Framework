@@ -8,6 +8,7 @@
  * @license		MIT License, see license.txt
  */
 define('DIR',	__DIR__);
+require_once    DIR.'/core/classes/h_internal.php';
 require_once    DIR.'/core/classes/h.php';
 require_once    DIR.'/core/upf.php';
 require_once    DIR.'/core/functions.php';
