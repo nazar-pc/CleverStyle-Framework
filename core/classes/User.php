@@ -56,6 +56,34 @@
  */
 namespace	cs;
 use			cs\DB\Accessor;
+/**
+ * Class for users/groups/permissions manipulating
+ *
+ * @property	int		$id
+ * @property	string	$login
+ * @property	string	$login_hash		sha224 hash
+ * @property	string	$username
+ * @property	string	$password_hash	sha512 hash
+ * @property	string	$email
+ * @property	string	$email_hash		sha224 hash
+ * @property	string	$language
+ * @property	string	$theme
+ * @property	string	$timezone
+ * @property	int		$reg_date		unix timestamp
+ * @property	string	$reg_ip			hex value, obtained by function ip2hex()
+ * @property	string	$reg_key		random md5 hash, generated during registration
+ * @property	int		$status			'-1' - not activated (for example after registration), 0 - inactive, 1 - active
+ * @property	int		$block_until	unix timestamp
+ * @property	int		$last_login		unix timestamp
+ * @property	string	$last_ip		hex value, obtained by function ip2hex()
+ * @property	int		$last_online	unix timestamp
+ * @property	int		$gender			0 - male, 1 - female, -1 - undefined
+ * @property	int		$birthday		unix timestamp
+ * @property	string	$avatar
+ * @property	string	$website
+ * @property	string	$skype
+ * @property	string	$about
+ */
 class User extends Accessor {
 	protected	$current				= [
 					'session'		=> false,
@@ -304,11 +332,11 @@ class User extends Accessor {
 	 * @param string|string[]						$item
 	 * @param bool|int 								$user	If not specified - current user assumed
 	 *
-	 * @return bool|string|mixed[]|User_Properties			If <i>$item</i> is integer - User_Properties object will be returned
+	 * @return bool|string|mixed[]|User\Properties			If <i>$item</i> is integer - User\Properties object will be returned
 	 */
 	function get ($item, $user = false) {
 		if (is_scalar($item) && preg_match('/^[0-9]+$/', $item)) {
-			return new User_Properties($item);
+			return new User\Properties($item);
 		}
 		switch ($item) {
 			case 'user_agent':
@@ -2526,10 +2554,36 @@ if (false) {
 	global $User;
 	$User = new User;
 }
+namespace cs\User;
 /**
  * Class for getting of user information
+ *
+ * @property	int		$id
+ * @property	string	$login
+ * @property	string	$login_hash		sha224 hash
+ * @property	string	$username
+ * @property	string	$password_hash	sha512 hash
+ * @property	string	$email
+ * @property	string	$email_hash		sha224 hash
+ * @property	string	$language
+ * @property	string	$theme
+ * @property	string	$timezone
+ * @property	int		$reg_date		unix timestamp
+ * @property	string	$reg_ip			hex value, obtained by function ip2hex()
+ * @property	string	$reg_key		random md5 hash, generated during registration
+ * @property	int		$status			'-1' - not activated (for example after registration), 0 - inactive, 1 - active
+ * @property	int		$block_until	unix timestamp
+ * @property	int		$last_login		unix timestamp
+ * @property	string	$last_ip		hex value, obtained by function ip2hex()
+ * @property	int		$last_online	unix timestamp
+ * @property	int		$gender			0 - male, 1 - female, -1 - undefined
+ * @property	int		$birthday		unix timestamp
+ * @property	string	$avatar
+ * @property	string	$website
+ * @property	string	$skype
+ * @property	string	$about
  */
-class User_Properties {
+class Properties {
 	/**
 	 * @var int
 	 */
