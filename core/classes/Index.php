@@ -640,6 +640,7 @@ class Index {
 				)
 			)
 		) {
+			code_header(503);
 			return;
 		}
 		if (defined('ERROR_CODE')) {

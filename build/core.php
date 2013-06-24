@@ -24,7 +24,6 @@ $list				= array_merge(
 	get_files_list(DIR.'/templates', false, 'f', true, true, false, false, true),
 	get_files_list(DIR.'/themes', false, 'f', true, true, false, false, true),
 	[
-		DIR.'/custom.php',
 		DIR.'/favicon.ico',
 		DIR.'/license.txt',
 		DIR.'/Storage.php'
@@ -98,35 +97,6 @@ $list				= array_map(
 	array_keys($list),
 	$list
 );
-$list[]				= '.htaccess';
-$phar->addFromString(
-	'fs/'.(count($list)-1),
-	'AddDefaultCharset utf-8
-Options -All -Multiviews +FollowSymLinks
-IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
-
-RewriteEngine On
-RewriteBase /
-
-<Files license.txt>
-	RewriteEngine Off
-</Files>
-#<Files Storage.php>
-#	RewriteEngine Off
-#</Files>
-<Files readme.html>
-	RewriteEngine Off
-</Files>
-<Files favicon.ico>
-	RewriteEngine Off
-</Files>
-
-php_value zlib.output_compression off
-
-RewriteRule .* index.php
-
-'
-);
 $list[]				= 'index.php';
 $phar->addFromString(
 	'fs/'.(count($list)-1),
@@ -172,10 +142,52 @@ $phar->addFromString(
 	)
 );
 unset($components_list, $length);
+/**
+ * Add files, that are needed only at installation
+ */
+$list[]				= '.htaccess';
+$phar->addFromString(
+	'fs/'.(count($list)-1),
+	'AddDefaultCharset utf-8
+Options -All -Multiviews +FollowSymLinks
+IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
+
+RewriteEngine On
+RewriteBase /
+
+<Files license.txt>
+	RewriteEngine Off
+</Files>
+#<Files Storage.php>
+#	RewriteEngine Off
+#</Files>
+<Files readme.html>
+	RewriteEngine Off
+</Files>
+<Files favicon.ico>
+	RewriteEngine Off
+</Files>
+
+php_value zlib.output_compression off
+
+RewriteRule .* index.php
+
+'
+);
 $list[]				= 'config/main.php';
 $phar->addFromString(
 	'fs/'.(count($list)-1),
 	file_get_contents(DIR.'/config/main.php')
+);
+$list[]				= '.gitignore';
+$phar->addFromString(
+	'fs/'.(count($list)-1),
+	file_get_contents(DIR.'/.gitignore')
+);
+$list[]				= 'custom.php';
+$phar->addFromString(
+	'fs/'.(count($list)-1),
+	file_get_contents(DIR.'/custom.php')
 );
 /**
  * Flip array to have direct access to files by name during extracting and installation

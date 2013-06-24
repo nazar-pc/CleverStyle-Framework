@@ -282,6 +282,9 @@ class Config {
 				'rc'	=> &$rc
 			]
 		);
+		if (strpos('api/', $rc) === 0) {
+			$rc	= explode('?', $rc, 2)[0];
+		}
 		if (!empty($r['in'])) {
 			errors_off();
 			foreach ($r['in'] as $i => $search) {

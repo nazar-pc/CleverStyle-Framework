@@ -52,4 +52,4 @@ $Index->content(
 			$L->current_ip.': '.h::b($User->ip)
 		])
 	])
-);//TODO logs reader
+);
