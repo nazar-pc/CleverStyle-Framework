@@ -11,9 +11,6 @@
  *
  *  System/User/construct/after
  *
- *  System/User/del_all_sessions
- *  ['id'	=> <i>user_id</i>]
- *
  *  System/User/registration/before
  *  ['email'	=> <i>email</i>]
  *
@@ -53,6 +50,9 @@
  *  System/User/del_session/before
  *
  *  System/User/del_session/after
+ *
+ *  System/User/del_all_sessions
+ *  ['id'	=> <i>user_id</i>]
  */
 namespace	cs;
 use			cs\DB\Accessor;
@@ -83,6 +83,10 @@ use			cs\DB\Accessor;
  * @property	string	$website
  * @property	string	$skype
  * @property	string	$about
+ * @property	string	$user_agent
+ * @property	string	$ip
+ * @property	string	$forwarded_for
+ * @property	string	$client_ip
  */
 class User extends Accessor {
 	protected	$current				= [
@@ -460,7 +464,7 @@ class User extends Accessor {
 	/**
 	 * Set data item of specified user
 	 *
-	 * @param array|string	$item
+	 * @param array|string	$item	Item-value array may be specified for setting several items at once
 	 * @param mixed|null	$value
 	 * @param bool|int		$user	If not specified - current user assumed
 	 *
@@ -525,7 +529,7 @@ class User extends Accessor {
 	/**
 	 * Set data item of current user
 	 *
-	 * @param array|string	$item
+	 * @param array|string	$item	Item-value array may be specified for setting several items at once
 	 * @param mixed|null	$value
 	 *
 	 * @return bool
@@ -566,7 +570,7 @@ class User extends Accessor {
 	/**
 	 * Setting additional data item(s) of specified user
 	 *
-	 * @param array|string	$item
+	 * @param array|string	$item	Item-value array may be specified for setting several items at once
 	 * @param mixed|null	$value
 	 * @param bool|int		$user	If not specified - current user assumed
 	 *
@@ -602,7 +606,7 @@ class User extends Accessor {
 	 * @param string|string[]		$item
 	 * @param bool|int				$user	If not specified - current user assumed
 	 *
-	 * @return bool|string|string[]
+	 * @return bool
 	 */
 	function del_data ($item, $user = false) {
 		$user	= (int)($user ?: $this->id);
@@ -670,7 +674,7 @@ class User extends Accessor {
 		return $this->current['is']['system'];
 	}
 	/**
-	 * Returns user id by login or email hash (sha224) (hash from lowercase string)
+	 * Get user id by login or email hash (sha224) (hash from lowercase string)
 	 *
 	 * @param  string $login_hash	Login or email hash
 	 *
@@ -690,11 +694,11 @@ class User extends Accessor {
 		return $id && $id != 1 ? $id : false;
 	}
 	/**
-	 * Returns user name or login or email, depending on existed in DB information
+	 * Get user name or login or email, depending on existing information
 	 *
 	 * @param  bool|int $user	If not specified - current user assumed
 	 *
-	 * @return bool|int
+	 * @return string
 	 */
 	function username ($user = false) {
 		$user = (int)($user ?: $this->id);
@@ -724,10 +728,11 @@ class User extends Accessor {
 		return $found_users;
 	}
 	/**
-	 * Returns permission state for specified user.<br>
-	 * Rules: if not denied - allowed
+	 * Get permission state for specified user
 	 *
-	 * @param int		$group	Permission group
+	 * Rule: if not denied - allowed (users), if not allowed - denied (admins)
+	 *
+	 * @param string	$group	Permission group
 	 * @param string	$label	Permission label
 	 * @param bool|int	$user	If not specified - current user assumed
 	 *
@@ -772,7 +777,7 @@ class User extends Accessor {
 		}
 	}
 	/**
-	 * Get array of all permissions state for specified user
+	 * Get array of all permissions states for specified user
 	 *
 	 * @param bool|int		$user	If not specified - current user assumed
 	 *
@@ -841,12 +846,12 @@ class User extends Accessor {
 	/**
 	 * Set user groups
 	 *
-	 * @param array	$data
-	 * @param int	$user
+	 * @param array		$data
+	 * @param bool|int	$user
 	 *
 	 * @return bool
 	 */
-	function set_user_groups ($data, $user) {
+	function set_user_groups ($data, $user = false) {
 		$user		= (int)($user ?: $this->id);
 		if (!$user) {
 			return false;
@@ -932,6 +937,78 @@ class User extends Accessor {
 		}
 	}
 	/**
+	 * Get group data
+	 *
+	 * @param int					$group
+	 * @param bool|string			$item	If <b>false</b> - array will be returned, if title|description|data - corresponding item
+	 *
+	 * @return array|bool|mixed
+	 */
+	function get_group ($group, $item = false) {
+		global $Cache;
+		$group = (int)$group;
+		if (!$group) {
+			return false;
+		}
+		if (($group_data = $Cache->{'groups/'.$group}) === false) {
+			$group_data = $this->db()->qf(
+				"SELECT
+					`title`,
+					`description`,
+					`data`
+				FROM `[prefix]groups`
+				WHERE `id` = '$group'
+				LIMIT 1"
+			);
+			$group_data['data'] = _json_decode($group_data['data']);
+			$Cache->{'groups/'.$group} = $group_data;
+		}
+		if ($item !== false) {
+			if (isset($group_data[$item])) {
+				return $group_data[$item];
+			} else {
+				return false;
+			}
+		} else {
+			return $group_data;
+		}
+	}
+	/**
+	 * Set group data
+	 *
+	 * @param array	$data	May contain items title|description|data
+	 * @param int	$group
+	 *
+	 * @return bool
+	 */
+	function set_group ($data, $group) {
+		$group = (int)$group;
+		if (!$group) {
+			return false;
+		}
+		$update = [];
+		if (isset($data['title'])) {
+			$update[] = '`title` = '.$this->db_prime()->s(xap($data['title'], false));
+		}
+		if (isset($data['description'])) {
+			$update[] = '`description` = '.$this->db_prime()->s(xap($data['description'], false));
+		}
+		if (isset($data['data'])) {
+			$update[] = '`data` = '.$this->db_prime()->s(_json_encode($data['data']));
+		}
+		$update	= implode(', ', $update);
+		if (!empty($update) && $this->db_prime()->q("UPDATE `[prefix]groups` SET $update WHERE `id` = '$group' LIMIT 1")) {
+			global $Cache;
+			unset(
+				$Cache->{'groups/'.$group},
+				$Cache->{'groups/list'}
+			);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	/**
 	 * Delete group
 	 *
 	 * @param int	$group
@@ -989,78 +1066,6 @@ class User extends Accessor {
 			);
 		}
 		return $groups_list;
-	}
-	/**
-	 * Get group data
-	 *
-	 * @param int					$group
-	 * @param bool|string			$item	If <b>false</b> - array will be returned, if title|description|data - corresponding item
-	 *
-	 * @return array|bool|string
-	 */
-	function get_group_data ($group, $item = false) {
-		global $Cache;
-		$group = (int)$group;
-		if (!$group) {
-			return false;
-		}
-		if (($group_data = $Cache->{'groups/'.$group}) === false) {
-			$group_data = $this->db()->qf(
-				"SELECT
-					`title`,
-					`description`,
-					`data`
-				FROM `[prefix]groups`
-				WHERE `id` = '$group'
-				LIMIT 1"
-			);
-			$group_data['data'] = _json_decode($group_data['data']);
-			$Cache->{'groups/'.$group} = $group_data;
-		}
-		if ($item !== false) {
-			if (isset($group_data[$item])) {
-				return $group_data[$item];
-			} else {
-				return false;
-			}
-		} else {
-			return $group_data;
-		}
-	}
-	/**
-	 * Set group data
-	 *
-	 * @param array	$data
-	 * @param int	$group
-	 *
-	 * @return bool
-	 */
-	function set_group_data ($data, $group) {
-		$group = (int)$group;
-		if (!$group) {
-			return false;
-		}
-		$update = [];
-		if (isset($data['title'])) {
-			$update[] = '`title` = '.$this->db_prime()->s(xap($data['title'], false));
-		}
-		if (isset($data['description'])) {
-			$update[] = '`description` = '.$this->db_prime()->s(xap($data['description'], false));
-		}
-		if (isset($data['data'])) {
-			$update[] = '`data` = '.$this->db_prime()->s(_json_encode($data['data']));
-		}
-		$update	= implode(', ', $update);
-		if (!empty($update) && $this->db_prime()->q("UPDATE `[prefix]groups` SET $update WHERE `id` = '$group' LIMIT 1")) {
-			global $Cache;
-			unset(
-				$Cache->{'groups/'.$group},
-				$Cache->{'groups/list'}
-			);
-			return true;
-		} else {
-			return false;
-		}
 	}
 	/**
 	 * Get group permissions
@@ -1282,7 +1287,7 @@ class User extends Accessor {
 	/**
 	 * Deletion of permission table (is used after adding, setting or deletion of permission)
 	 */
-	function del_permission_table () {
+	protected function del_permission_table () {
 		$this->permissions_table = [];
 		global $Cache;
 		unset($Cache->permissions_table);
@@ -1307,10 +1312,10 @@ class User extends Accessor {
 	 * Get permission data<br>
 	 * If <b>$group</b> or/and <b>$label</b> parameter is specified, <b>$id</b> is ignored.
 	 *
-	 * @param int		$id
-	 * @param string	$group
-	 * @param string	$label
-	 * @param string	$condition	and|or
+	 * @param int|null		$id
+	 * @param null|string	$group
+	 * @param null|string	$label
+	 * @param string		$condition	and|or
 	 *
 	 * @return array|bool			If only <b>$id</b> specified - result is array of permission data,
 	 * 								in other cases result will be array of arrays of corresponding permissions data.
@@ -1406,7 +1411,7 @@ class User extends Accessor {
 	/**
 	 * Deletion of permission or array of permissions
 	 *
-	 * @param array|int	$id
+	 * @param int|int[]	$id
 	 *
 	 * @return bool
 	 */
@@ -1453,11 +1458,11 @@ class User extends Accessor {
 	/**
 	 * Find the session by id as applies it, and return id of owner (user), updates last_login, last_ip and last_online information
 	 *
-	 * @param string	$session_id
+	 * @param null|string	$session_id
 	 *
-	 * @return int					User id
+	 * @return int						User id
 	 */
-	function get_session_user ($session_id = '') {
+	function get_session_user ($session_id = null) {
 		if ($this->bot() && $this->id == 1) {
 			return 1;
 		}
@@ -1726,7 +1731,7 @@ class User extends Accessor {
 	/**
 	 * Destroying of the session
 	 *
-	 * @param string	$session_id
+	 * @param null|string	$session_id
 	 *
 	 * @return bool
 	 */
@@ -1813,8 +1818,8 @@ class User extends Accessor {
 	/**
 	 * Get data, stored with session
 	 *
-	 * @param string	$item
-	 * @param string	$session_id
+	 * @param string		$item
+	 * @param null|string	$session_id
 	 *
 	 * @return bool|mixed
 	 *
@@ -1842,9 +1847,9 @@ class User extends Accessor {
 	/**
 	 * Store data with session
 	 *
-	 * @param string	$item
-	 * @param mixed		$value
-	 * @param string	$session_id
+	 * @param string		$item
+	 * @param mixed			$value
+	 * @param null|string	$session_id
 	 *
 	 * @return bool
 	 *
@@ -1886,8 +1891,8 @@ class User extends Accessor {
 	/**
 	 * Delete data, stored with session
 	 *
-	 * @param string	$item
-	 * @param string	$session_id
+	 * @param string		$item
+	 * @param null|string	$session_id
 	 *
 	 * @return bool
 	 *
@@ -1927,7 +1932,7 @@ class User extends Accessor {
 		return false;
 	}
 	/**
-	 * Check number of login attempts
+	 * Check number of login attempts (is used by system)
 	 *
 	 * @param bool|string	$login_hash	Hash (sha224) from login (hash from lowercase string)
 	 *
@@ -1957,7 +1962,7 @@ class User extends Accessor {
 		return $count ? $this->cache['login_attempts'][$login_hash] = $count : 0;
 	}
 	/**
-	 * Process login result
+	 * Process login result (is used by system)
 	 *
 	 * @param bool			$result
 	 * @param bool|string	$login_hash	Hash (sha224) from login (hash from lowercase string)
@@ -2008,7 +2013,7 @@ class User extends Accessor {
 		}
 	}
 	/**
-	 * Processing of user registration
+	 * User registration
 	 *
 	 * @param string 				$email
 	 * @param bool					$confirmation	If <b>true</b> - default system option is used, if <b>false</b> - registration will be
@@ -2139,7 +2144,7 @@ class User extends Accessor {
 	 *
 	 * @param string		$reg_key
 	 *
-	 * @return array|bool				array('id' => <i>id</i>, 'email' => <i>email</i>, 'password' => <i>password</i>) or <b>fasle</b> on failure
+	 * @return array|bool				array('id' => <i>id</i>, 'email' => <i>email</i>, 'password' => <i>password</i>) or <b>false</b> on failure
 	 */
 	function registration_confirmation ($reg_key) {
 		global $Config, $Core, $Cache;
@@ -2199,7 +2204,7 @@ class User extends Accessor {
 		];
 	}
 	/**
-	 * Canceling of bad registration
+	 * Canceling of bad/failed registration
 	 */
 	function registration_cancel () {
 		if ($this->reg_id == 0) {
@@ -2252,7 +2257,7 @@ class User extends Accessor {
 	 *
 	 * @param string		$key
 	 *
-	 * @return bool|string			array('id' => <i>id</i>, 'password' => <i>password</i>) or <b>fasle</b> on failure
+	 * @return array|bool			array('id' => <i>id</i>, 'password' => <i>password</i>) or <b>false</b> on failure
 	 */
 	function restore_password_confirmation ($key) {
 		global $Config, $Core;
@@ -2298,7 +2303,7 @@ class User extends Accessor {
 	/**
 	 * Delete specified user or array of users
 	 *
-	 * @param array|int	$user	User id or array of users ids
+	 * @param int|int[]	$user	User id or array of users ids
 	 */
 	function del_user ($user) {
 		$this->del_user_internal($user);
@@ -2306,7 +2311,7 @@ class User extends Accessor {
 	/**
 	 * Delete specified user or array of users
 	 *
-	 * @param array|int	$user
+	 * @param int|int[]	$user
 	 * @param bool		$update
 	 */
 	protected function del_user_internal ($user, $update = true) {
@@ -2349,7 +2354,7 @@ class User extends Accessor {
 		$this->del_user_permissions_all($user);
 		if ($update) {
 			unset(
-				$Cache->{'users/'.hash('sha224', $this->get('login'), $user)},
+				$Cache->{'users/'.hash('sha224', $this->get('login', $user))},
 				$Cache->{'users/'.$user}
 			);
 			$this->db_prime()->q(
@@ -2377,7 +2382,7 @@ class User extends Accessor {
 		}
 	}
 	/**
-	 * Bots addition
+	 * Add bot
 	 *
 	 * @param string	$name		Bot name
 	 * @param string	$user_agent	User Agent string or regular expression
@@ -2418,14 +2423,14 @@ class User extends Accessor {
 		}
 	}
 	/**
-	 * Bots editing
+	 * Set bot
 	 *
-	 * @param int		$id			Bot it
+	 * @param int		$id			Bot id
 	 * @param string	$name		Bot name
 	 * @param string	$user_agent	User Agent string or regular expression
 	 * @param string	$ip			IP string or regular expression
 	 *
-	 * @return bool|int				Bot <b>id</b> in DB or <b>false</b> on failure
+	 * @return bool
 	 */
 	function set_bot ($id, $name, $user_agent, $ip) {
 		$result	= $this->set(
@@ -2444,7 +2449,7 @@ class User extends Accessor {
 	/**
 	 * Delete specified bot or array of bots
 	 *
-	 * @param array|int	$bot	Bot id or array of bots ids
+	 * @param int|int[]	$bot	Bot id or array of bots ids
 	 */
 	function del_bot ($bot) {
 		$this->del_user($bot);
@@ -2468,7 +2473,7 @@ class User extends Accessor {
 		return isset($_SERVER['HTTP_DNT']) && $_SERVER['HTTP_DNT'] == 1;
 	}
 	/**
-	 * Returns array of user id, that are associated as contacts by other modules
+	 * Returns array of user id, that are associated as contacts
 	 *
 	 * @param	bool|int	$user	If not specified - current user assumed
 	 *
@@ -2582,6 +2587,10 @@ namespace cs\User;
  * @property	string	$website
  * @property	string	$skype
  * @property	string	$about
+ * @property	string	$user_agent
+ * @property	string	$ip
+ * @property	string	$forwarded_for
+ * @property	string	$client_ip
  */
 class Properties {
 	/**
@@ -2631,9 +2640,9 @@ class Properties {
 		return $User->get($item, $this->id);
 	}
 	/**
-	 * Returns user name or login or email, depending on existed in DB information
+	 * Get user name or login or email, depending on existing information
 	 *
-	 * @return bool|int
+	 * @return string
 	 */
 	function username () {
 		return $this->get('username') ?: ($this->get('login') ?: $this->get('email'));

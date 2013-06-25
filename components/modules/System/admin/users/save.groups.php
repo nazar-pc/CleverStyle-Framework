@@ -20,7 +20,7 @@ if (isset($_POST['mode'])) {
 		break;
 		case 'edit':
 			$Index->save(
-				$User->set_group_data($_POST['group'], $_POST['group']['id'])
+				$User->set_group($_POST['group'], $_POST['group']['id'])
 			);
 		break;
 		case 'delete':

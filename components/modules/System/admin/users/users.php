@@ -447,7 +447,7 @@ if (isset($rc[2], $rc[3])) {
 			);
 			if (is_array($user_groups) && !empty($user_groups)) {
 				foreach ($user_groups as $group) {
-					$group				= ['id' => $group]+$User->get_group_data($group);
+					$group				= ['id' => $group]+$User->get_group($group);
 					$groups_selected	.= h::{'li.ui-widget-header.ui-corner-all'}(
 						$group['title'],
 						[

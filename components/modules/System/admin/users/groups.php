@@ -42,7 +42,7 @@ if (isset($rc[2])) {
 			}
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
-			$group_data				= $User->get_group_data($rc[3]);
+			$group_data				= $User->get_group($rc[3]);
 			$Page->title(
 				$L->editing_of_group($group_data['title'])
 			);
@@ -87,7 +87,7 @@ if (isset($rc[2])) {
 			}
 			$a->buttons				= false;
 			$a->cancel_button_back	= true;
-			$group					= $User->get_group_data($rc[3]);
+			$group					= $User->get_group($rc[3]);
 			$Page->title(
 				$L->deletion_of_group($group['title'])
 			);
@@ -159,13 +159,13 @@ if (isset($rc[2])) {
 			unset($content, $content_, $count, $i, $permissions, $group, $list, $label, $id, $blocks);
 			$Page->title(
 				$L->permissions_for_group(
-					$User->get_group_data($rc[3], 'title')
+					$User->get_group($rc[3], 'title')
 				)
 			);
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 					$L->permissions_for_group(
-						$User->get_group_data($rc[3], 'title')
+						$User->get_group($rc[3], 'title')
 					)
 				).
 				h::{'div#group_permissions_tabs'}(
@@ -197,7 +197,7 @@ if (isset($rc[2])) {
 	)];
 	foreach ($groups_ids as $id) {
 		$id				= $id['id'];
-		$group_data 	= $User->get_group_data($id);
+		$group_data 	= $User->get_group($id);
 		$groups_list[]	= h::{'td.ui-widget-content.ui-corner-all'}(
 			h::{'a.cs-button-compact'}(
 				h::icon('wrench'),
