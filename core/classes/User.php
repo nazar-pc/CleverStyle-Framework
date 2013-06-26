@@ -777,7 +777,7 @@ class User extends Accessor {
 		}
 	}
 	/**
-	 * Set user permission
+	 * Set permission state for specified user
 	 *
 	 * @param string	$group	Permission group
 	 * @param string	$label	Permission label
@@ -798,7 +798,7 @@ class User extends Accessor {
 		return false;
 	}
 	/**
-	 * Delete user permission
+	 * Delete permission state for specified user
 	 *
 	 * @param string	$group	Permission group
 	 * @param string	$label	Permission label
