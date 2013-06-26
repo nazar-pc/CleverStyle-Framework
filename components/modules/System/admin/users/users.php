@@ -362,7 +362,7 @@ if (isset($rc[2], $rc[3])) {
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
 			$permissions			= $User->get_permissions_table();;
-			$permission				= $User->get_user_permissions($rc[3]);
+			$user_permissions				= $User->get_user_permissions($rc[3]);
 			$tabs					= [];
 			$tabs_content			= '';
 			$blocks					= [];
@@ -384,10 +384,10 @@ if (isset($rc[2], $rc[3])) {
 					).
 					h::{'td input[type=radio]'}([
 						'name'			=> 'permission['.$id.']',
-						'checked'		=> isset($permission[$id]) ? $permission[$id] : -1,
+						'checked'		=> isset($user_permissions[$id]) ? $user_permissions[$id] : -1,
 						'value'			=> [-1, 0, 1],
 						'in'			=> [
-							$L->inherited.' ('.(isset($permission[$id]) && !$permission[$id] ? '-' : '+').')',
+							$L->inherited.' ('.(isset($user_permissions[$id]) && !$user_permissions[$id] ? '-' : '+').')',
 							$L->deny,
 							$L->allow
 						]

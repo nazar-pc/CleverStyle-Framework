@@ -777,6 +777,39 @@ class User extends Accessor {
 		}
 	}
 	/**
+	 * Set user permission
+	 *
+	 * @param string	$group	Permission group
+	 * @param string	$label	Permission label
+	 * @param int		$value	1 - allow, 0 - deny, -1 - undefined (remove permission, and use default value)
+	 * @param bool|int	$user	If not specified - current user assumed
+	 *
+	 * @return bool
+	 */
+	function set_user_permission ($group, $label, $value, $user = false) {
+		if ($permission = $this->get_permission(null, $group, $label)) {
+			return $this->set_user_permissions(
+				[
+					$permission['id']	=> $value
+				],
+				$user
+			);
+		}
+		return false;
+	}
+	/**
+	 * Delete user permission
+	 *
+	 * @param string	$group	Permission group
+	 * @param string	$label	Permission label
+	 * @param bool|int	$user	If not specified - current user assumed
+	 *
+	 * @return bool
+	 */
+	function del_user_permission ($group, $label, $user = false) {
+		return $this->set_user_permission($group, $label, -1, $user);
+	}
+	/**
 	 * Get array of all permissions states for specified user
 	 *
 	 * @param bool|int		$user	If not specified - current user assumed
@@ -1690,7 +1723,8 @@ class User extends Accessor {
 				$hash,
 				$user,
 				TIME,
-				TIME + $Config->core['session_expire'],
+				TIME + ($user != 1 || $Config->core['session_expire'] < 300 ? $Config->core['session_expire'] : 300),	//Many guests open only one page, so
+																														//create session only for 5 min
 				$this->user_agent,
 				$ip				= ip2hex($this->ip),
 				$forwarded_for	= ip2hex($this->forwarded_for),
