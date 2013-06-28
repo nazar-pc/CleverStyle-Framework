@@ -201,11 +201,11 @@ class Language {
 		}
 		$changed_once	= true;;
 		global $Config, $User;
-		if ($language == $this->clanguage) {
+		if ($this->init && $language == $this->clanguage) {
 			return true;
 		}
-		if (empty($language)) {
-			if ($Config->core['multilingual']) {
+		if (!$this->init || empty($language)) {
+			if (!is_object($Config) || $Config->core['multilingual']) {
 				$language	= $this->scan_aliases($Config->core['active_languages']) ?: $language;
 			}
 		}
