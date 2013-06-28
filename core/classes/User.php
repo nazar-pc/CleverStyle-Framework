@@ -112,7 +112,7 @@ class User extends Accessor {
 	 * Defining user id, type, session, personal settings
 	 */
 	function __construct () {
-		global $Cache, $Config, $Key, $Core, $User;
+		global $Cache, $Config, $Key, $Core, $User, $L;
 		$User		= $this;
 		$Core->run_trigger('System/User/construct/before');
 		if (($this->users_columns = $Cache->{'users/columns'}) === false) {
@@ -259,13 +259,7 @@ class User extends Accessor {
 			if ($this->timezone) {
 				date_default_timezone_set($this->timezone);
 			}
-			if ($this->language) {
-				if (!_getcookie('language')) {
-					_setcookie('language', $this->language);
-				}
-				global $L;
-				$L->change($this->language);
-			}
+			$L->change($this->language);
 			if ($this->theme) {
 				$theme = _json_decode($this->theme);
 				if (
@@ -495,7 +489,6 @@ class User extends Accessor {
 				if ($user == $this->id) {
 					$L->change($value);
 					$value	= $value ? $L->clanguage : '';
-					_setcookie('language', $value);
 				}
 			}
 			$this->update_cache[$user] = true;

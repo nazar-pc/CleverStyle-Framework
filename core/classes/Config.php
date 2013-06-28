@@ -110,7 +110,7 @@ class Config {
 			define('DEBUG', $this->core['debug'] ? true : false);
 		}
 		$Cache->init();
-		$L->init($this->core['active_languages'], $this->core['language']);
+		$L->init($this->core['language']);
 		$Page->init(
 			get_core_ml_text('name'),
 			get_core_ml_text('keywords'),
@@ -447,7 +447,7 @@ class Config {
 	 * @return bool
 	 */
 	protected function apply_internal ($cache_not_saved_mark = true) {
-		global $Error, $Cache, $L;
+		global $Error, $Cache, $L, $User;
 		/**
 		 * If errors - cache updating must be stopped
 		 */
@@ -465,7 +465,10 @@ class Config {
 			unset($config['core']['cache_not_saved'], $this->core['cache_not_saved']);
 		}
 		$Cache->config	= $config;
-		$L->change(_getcookie('language') ?: $this->core['language']);
+		$L->change($this->core['language']);
+		if (is_object($User)) {
+			$L->change($User->language);
+		}
 		$this->init();
 		return true;
 	}

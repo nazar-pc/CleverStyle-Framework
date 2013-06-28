@@ -36,23 +36,17 @@ class Language {
 	/**
 	 * Initialization: defining current language, loading translation
 	 *
-	 * @param string[]	$active_languages
 	 * @param string	$language
 	 *
 	 * @return void
 	 */
-	function init ($active_languages, $language) {
+	function init ($language) {
 		if ($this->init) {
 			return;
 		}
 		global $Cache, $Config, $Core;
 		if (!FIXED_LANGUAGE) {
-			$language	= $this->scan_aliases($active_languages) ?: $language;
-			if ($Config->core['multilingual']) {
-				$language	= _getcookie('language') && in_array(_getcookie('language'), $active_languages) ? _getcookie('language') : $language;
-			}
 			$this->change($language);
-			unset($language);
 		}
 		if ($this->need_to_rebuild_cache) {
 			if (!empty($Config->components['modules'])) {
@@ -211,9 +205,8 @@ class Language {
 			return true;
 		}
 		if (empty($language)) {
-			$language	= $this->scan_aliases($Config->core['active_languages']) ?: $language;
 			if ($Config->core['multilingual']) {
-				$language	= _getcookie('language') && in_array(_getcookie('language'), $Config->core['active_languages']) ? _getcookie('language') : $language;
+				$language	= $this->scan_aliases($Config->core['active_languages']) ?: $language;
 			}
 		}
 		if (
@@ -257,7 +250,6 @@ class Language {
 				$return							= true;
 			}
 			header('Content-Language: '.$this->translate['content_language']);
-			_setcookie('language', $this->clanguage);
 			return $return;
 		}
 		return false;
