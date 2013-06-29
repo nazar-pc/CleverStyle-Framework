@@ -47,7 +47,7 @@ if (isset($_POST['id'])) {
 		'comments_count'	=> 0
 	];
 }
-$module	= path($L->{'MODULE'});
+$module	= path($L->{MODULE});
 $Page->json(
 	h::{'section.cs-blogs-post article'}(
 		h::header(
