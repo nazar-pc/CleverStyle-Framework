@@ -76,7 +76,15 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 								$current_version,
 								$new_version
 							)
-						)
+						).
+						h::{'input[type=hidden]'}([
+							'name'	=> 'mode',
+							'value'	=> $rc[2]
+						]).
+						h::{'input[type=hidden]'}([
+							'name'	=> 'plugin',
+							'value'	=> $rc[3]
+						])
 					);
 					$a->cancel_button_back	= true;
 					$a->content(
