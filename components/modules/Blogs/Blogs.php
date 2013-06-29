@@ -676,13 +676,13 @@ class Blogs extends Accessor {
 		$tag	= trim(xap($tag));
 		if (($id = array_search($tag, $this->get_tags_list())) === false) {
 			global $Cache;
-			if ($this->db_prime()->q([
+			if ($this->db_prime()->q(
 				"INSERT INTO `[prefix]blogs_tags`
 					(`text`)
 				VALUES
 					('%s')",
 				$tag
-			])) {
+			)) {
 				$id	= $this->db_prime()->id();
 				if ($clean_cache) {
 					unset($Cache->{'Blogs/tags'});
