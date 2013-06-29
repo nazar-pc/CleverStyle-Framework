@@ -244,7 +244,7 @@ class Config {
 		/**
 		 * Preparing page url without basic path
 		 */
-		$this->server['raw_relative_address']	= trim(str_replace($current_mirror, '', $this->server['raw_relative_address']), ' /\\');
+		$this->server['raw_relative_address']	= trim(mb_substr($this->server['raw_relative_address'], mb_strlen($current_mirror)), ' /\\');
 		unset($current_mirror);
 		$r										= &$this->routing;
 		$rc										= &$this->route;
