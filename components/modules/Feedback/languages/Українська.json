@@ -1,0 +1,10 @@
+{
+	"Feedback"						: "Зворотній зв'язок",
+	"feedback_name"					: "Ім'я",
+	"feedback_email"				: "Email",
+	"feedback_text"					: "Текст",
+	"feedback_send"					: "Надіслати",
+	"feedback_email_from"			: "Зворотній зв'язок від %s, %s",
+	"feedback_sent_successfully"	: "Надіслано успішно",
+	"feedback_sending_error"		: "Помилка надсилання зворотнього зв'язку"
+}

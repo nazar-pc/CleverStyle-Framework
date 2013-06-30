@@ -1,0 +1,10 @@
+{
+	"Feedback"						: "Feedback",
+	"feedback_name"					: "Name",
+	"feedback_email"				: "Email",
+	"feedback_text"					: "Text",
+	"feedback_send"					: "Send",
+	"feedback_email_from"			: "Feedback from %s, %s",
+	"feedback_sent_successfully"	: "Sent successfully",
+	"feedback_sending_error"		: "Feedback sending error"
+}

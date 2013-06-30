@@ -1,0 +1,10 @@
+{
+	"Feedback"						: "Обратная связь",
+	"feedback_name"					: "Имя",
+	"feedback_email"				: "Email",
+	"feedback_text"					: "Текст",
+	"feedback_send"					: "Отправить",
+	"feedback_email_from"			: "Обратная связь от %s, %s",
+	"feedback_sent_successfully"	: "Отправлено успешно",
+	"feedback_sending_error"		: "Ошибка отправки обратной связи"
+}
