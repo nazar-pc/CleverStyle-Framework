@@ -514,7 +514,7 @@ if (isset($rc[2], $rc[3])) {
 	$columns		= isset($_POST['columns']) && $_POST['columns'] ? explode(';', $_POST['columns']) : [
 		'id', 'login', 'username', 'email'
 	];
-	$limit			= isset($_POST['search_limit'])	? (int)$_POST['search_limit']	: 100;
+	$limit			= isset($_POST['search_limit'])	? (int)$_POST['search_limit']	: 20;
 	$start			= isset($_POST['search_start'])	? (int)$_POST['search_start']-1	: 0;
 	$search_text	= isset($_POST['search_text'])	? $_POST['search_text']			: '';
 	$columns_list	= '';
@@ -703,7 +703,7 @@ if (isset($rc[2], $rc[3])) {
 				[
 					$L->search,
 					[
-						'href' => '#search_settings'
+						'href' => '#cs-search-settings'
 					]
 				],
 				[
@@ -713,7 +713,7 @@ if (isset($rc[2], $rc[3])) {
 					]
 				]
 			).
-			h::{'div#search_settings'}(
+			h::{'div#cs-search-settings'}(
 				h::select(
 					[
 						'in'		=> array_merge([$L->all_columns], $search_columns),
@@ -732,63 +732,51 @@ if (isset($rc[2], $rc[3])) {
 						'name'		=> 'search_mode'
 					]
 				).
-				h::input(
-					[
-						'value'			=> $search_text,
-						'name'			=> 'search_text',
-						'placeholder'	=> $L->search_text
-					]
-				).
+				h::input([
+					'value'			=> $search_text,
+					'name'			=> 'search_text',
+					'placeholder'	=> $L->search_text
+				]).
 				$L->page.' '.
-				h::{'input[type=number]'}(
-					[
-						'value'	=> $start+1,
-						'min'	=> 1,
-						'name'	=> 'search_start'
-					]
-				).
+				h::{'input[type=number]'}([
+					'value'	=> $start+1,
+					'min'	=> 1,
+					'name'	=> 'search_start'
+				]).
 				$L->items.' '.
-				h::{'input[type=number]'}(
-					[
-						'value'	=> $limit,
-						'min'	=> 1,
-						'name'	=> 'search_limit'
-					]
-				),
+				h::{'input[type=number]'}([
+					'value'	=> $limit,
+					'min'	=> 1,
+					'name'	=> 'search_limit'
+				]),
 				[
 					'style'	=> 'text-align: left;'
 				]
 			).
 			h::{'div#cs-columns-settings'}(
-				h::ul(
-					$columns_list
-				).
+				h::ul($columns_list).
 				h::{'input#columns[type=hidden]'}([
 					'name'	=> 'columns'
 				])
 			)
 		).
 		h::{'p.cs-left'}(
-			h::{'button[type=submit]'}(
-				$L->search
-			),
-			$L->founded_users($results_count).($results_count > $limit ? ' / '.$L->page_from($start+1, ceil($results_count/$limit)) : '')
+			h::{'button[type=submit]'}($L->search),
+			$L->found_users($results_count).($results_count > $limit ? ' / '.$L->page_from($start+1, ceil($results_count/$limit)) : '')
 		).
-		h::{'table.cs-fullwidth-table.cs-center-all'}(
-			$users_list
-		).
+		h::{'table.cs-fullwidth-table.cs-center-all'}($users_list).
 		h::{'p.cs-left'}(
-			$L->founded_users($results_count).($results_count > $limit ? ' / '.$L->page_from($start+1, ceil($results_count/$limit)) : ''),
+			$L->found_users($results_count).($results_count > $limit ? ' / '.$L->page_from($start+1, ceil($results_count/$limit)) : ''),
 			h::{'a.cs-button'}(
 				$L->add_user,
 				[
-					'href' => 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add/0',
+					'href' => 'admin/System/users/users/add/0',
 				]
 			).
 			h::{'a.cs-button'}(
 				$L->add_bot,
 				[
-					'href' => 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add_bot/0',
+					'href' => 'admin/System/users/users/add_bot/0',
 				]
 			)
 		)

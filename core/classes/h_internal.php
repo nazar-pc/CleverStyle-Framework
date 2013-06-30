@@ -804,6 +804,34 @@ class h_internal {
 		return array_merge($array1, $array2, $array3);
 	}
 	/**
+	 * Analyze CSS selector for nester tags
+	 *
+	 * @param string	$in
+	 * @param int		$offset
+	 *
+	 * @return bool			Returns <i>true</i> and changes <i>&$in</i> to array if nested tags detected
+	 */
+	protected static function analyze_selector (&$in, $offset = 0) {
+		$space_position	= mb_strpos($in, ' ', $offset);
+		if ($space_position === false) {
+			return false;
+		}
+		$next_space		= mb_strpos($in, ' ', $space_position);
+		$attr_close		= mb_strpos($in, ']', $space_position);
+		if (
+			$next_space === false ||
+			$attr_close === false ||
+			$next_space > $attr_close
+		) {
+			$in	= [
+				mb_substr($in, 0, $space_position),
+				mb_substr($in, $space_position + 1)
+			];
+			return true;
+		}
+		return self::analyze_selector($in, $space_position + 1);
+	}
+	/**
 	 * Processing of complicated rendering structures
 	 *
 	 * @static
@@ -824,10 +852,9 @@ class h_internal {
 		}
 		$input	= trim($input);
 		/**
-		 * Analysis of called tag. If space found - nested tags presented
+		 * Analysis of called tag. If nested tags presented
 		 */
-		if (strpos($input, ' ') !== false) {
-			$input		= explode(' ', $input, 2);
+		if (self::analyze_selector($input)) {
 			/**
 			 * If tag name ends with pipe "|" symbol - for every element of array separate copy of current tag will be created
 			 */

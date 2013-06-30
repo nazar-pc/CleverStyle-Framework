@@ -494,7 +494,7 @@
 		"page"								: "Page",
 		"items"								: "Items",
 		"all_columns"						: "All columns",
-		"founded_users"						: "%d users found",
+		"found_users"						: "%d users found",
 		"page_from"							: "Page %d of %d",
 		"edit_raw_user_data"				: "Edit raw user data",
 		"edit_user_information"				: "Edit user information",
