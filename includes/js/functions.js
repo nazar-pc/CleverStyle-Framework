@@ -187,7 +187,7 @@ function json_decode (str) {
 /**
  * Supports algorithms sha1, sha224, sha256, sha384, sha512
  *
- * @param {string} algo Choosen algorithm
+ * @param {string} algo Chosen algorithm
  * @param {string} data String to be hashed
  * @return string
  */
@@ -426,7 +426,7 @@ function restore_password (email) {
  * @param {string} new_password
  */
 function change_password (current_password, new_password) {
-	/*if (!current_password) {
+	if (!current_password) {
 		alert(L.please_type_current_password);
 		return;
 	} else if (!new_password) {
@@ -435,7 +435,7 @@ function change_password (current_password, new_password) {
 	} else if (current_password == new_password) {
 		alert(L.current_new_password_equal);
 		return;
-	}*/
+	}
 	current_password	= hash('sha512', hash('sha512', current_password)+public_key);
 	new_password		= hash('sha512', hash('sha512', new_password)+public_key);
 	$.ajax(
