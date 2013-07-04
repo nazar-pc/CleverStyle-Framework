@@ -205,7 +205,7 @@ class Language {
 			return true;
 		}
 		if (!$this->init || empty($language)) {
-			if (!is_object($Config) || $Config->core['multilingual']) {
+			if (is_object($Config) && $Config->core['multilingual']) {
 				$language	= $this->scan_aliases($Config->core['active_languages']) ?: $language;
 			}
 		}

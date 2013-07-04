@@ -310,7 +310,7 @@ if (isset($_POST['update_modules_list'])) {
 			/**
 			 * Updating of module
 			 */
-			if (file_exists($module_dir.'/versions.json')) {
+			if ($active && file_exists($module_dir.'/versions.json')) {
 				$old_version	= _json_decode(file_get_contents($module_dir.'/meta_old.json'))['version'];
 				foreach (_json_decode(file_get_contents($module_dir.'/versions.json')) as $version) {
 					if (version_compare($old_version, $version, '<')) {

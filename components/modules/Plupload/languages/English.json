@@ -1,0 +1,4 @@
+{
+	"plupload_confirmation_time"		: "File confirmation time",
+	"plupload_confirmation_time_info"	: "After uploading file should be confirmed by any module, for example, Blogs module confirms all images used in article after saving. If time expires - file will be deleted."
+}

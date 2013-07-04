@@ -12,12 +12,11 @@ global $Page, $Config;
 if (!$Page->interface) {
 	return;
 }
-$plugin = basename(__DIR__);
 if (!$Config->core['cache_compress_js_css']) {
 	$Page->js([
-		'components/plugins/'.$plugin.'/tinymce.min.js',
-		'components/plugins/'.$plugin.'/TinyMCE.js'
+		'components/plugins/TinyMCE/tinymce.min.js',
+		'components/plugins/TinyMCE/TinyMCE.js'
 	]);
-} elseif (!file_exists(PCACHE.'/plugin.'.$plugin.'.js')) {
+} elseif (!file_exists(PCACHE.'/plugin.TinyMCE.js')) {
 	rebuild_pcache();
 }

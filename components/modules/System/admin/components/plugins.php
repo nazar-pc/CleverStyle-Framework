@@ -9,7 +9,7 @@
  */
 namespace	cs\modules\System;
 use			h;
-global $Config, $Index, $L, $User;
+global $Config, $Index, $L, $User, $Page;
 $a				= $Index;
 $rc				= $Config->route;
 $plugins		= get_files_list(PLUGINS, false, 'd');
@@ -226,12 +226,14 @@ if (!empty($plugins)) {
 		 */
 		if (file_exists($file = PLUGINS.'/'.$plugin.'/readme.txt') || file_exists($file = PLUGINS.'/'.$plugin.'/readme.html')) {
 			if (substr($file, -3) == 'txt') {
-				$tag = 'pre';
+				$tag		= 'pre';
 			} else {
 				$tag = 'div';
 			}
+			$uniqid			= uniqid('module_info_');
+			$Page->replace($uniqid, $tag == 'pre' ? filter(file_get_contents($file)) : file_get_contents($file));
 			$addition_state .= h::$tag(
-				$tag == 'pre' ? filter(file_get_contents($file)) : file_get_contents($file),
+					$uniqid,
 				[
 					'id'			=> $plugin.'_readme',
 					'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',

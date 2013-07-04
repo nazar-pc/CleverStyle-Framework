@@ -12,7 +12,7 @@ global $Core;
 $Core->register_trigger(
 	'admin/System/components/plugins/enable',
 	function ($data) {
-		if ($data['name'] == basename(__DIR__)) {
+		if ($data['name'] == 'TinyMCE') {
 			rebuild_pcache();
 		}
 	}
@@ -20,8 +20,8 @@ $Core->register_trigger(
 $Core->register_trigger(
 	'admin/System/components/plugins/disable',
 	function ($data) {
-		if ($data['name'] == basename(__DIR__)) {
-			clean_pcache($data);
+		if ($data['name'] == 'TinyMCE') {
+			clean_pcache();
 		}
 	}
 );
@@ -33,50 +33,42 @@ $Core->register_trigger(
 );
 $Core->register_trigger(
 	'System/Page/rebuild_cache',
-	function () {
-		rebuild_pcache();
+	function ($data) {
+		rebuild_pcache($data);
 	}
 );
-function clean_pcache ($data = null) {
-	$plugin	= basename(__DIR__);
-	if (
-		(
-			$data['name'] == $plugin ||
-			$data === null
-		) &&
-		file_exists(PCACHE.'/plugin.'.$plugin.'.js')
-	) {
-		unlink(PCACHE.'/plugin.'.$plugin.'.js');
+function clean_pcache () {
+	if (file_exists(PCACHE.'/plugin.TinyMCE.js')) {
+		unlink(PCACHE.'/plugin.TinyMCE.js');
 	}
 };
 function rebuild_pcache (&$data = null) {
 	global $Config;
-	$plugin		= basename(__DIR__);
 	if (
 		!$Config->core['cache_compress_js_css'] ||
 		(
-			$data !== null && !isset($Config->components['plugins'][$plugin])
+			$data !== null && !isset($Config->components['plugins']['TinyMCE'])
 		) ||
-		file_exists(PCACHE.'/plugin.'.$plugin.'.js')
+		file_exists(PCACHE.'/plugin.TinyMCE.js')
 	) {
 		return;
 	}
 	$files		= [];
 	$content	= '';
 	array_map(
-		function ($language) use (&$files, &$content, $plugin) {
-			$files[]	= 'langs/'.$language;
-			$content	.= file_get_contents(PLUGINS.'/'.$plugin.'/langs/'.$language.'.js');
+		function ($language) use (&$files, &$content) {
+			$files[]	= "langs/$language";
+			$content	.= file_get_contents(PLUGINS."/TinyMCE/langs/$language.js");
 		},
-		_mb_substr(get_files_list(PLUGINS.'/'.$plugin.'/langs', false, 'f'), 0, -3)
+		_mb_substr(get_files_list(PLUGINS.'/TinyMCE/langs', false, 'f'), 0, -3)
 	);
 	file_put_contents(
-		PCACHE.'/plugin.'.$plugin.'.js',
+		PCACHE.'/plugin.TinyMCE.js',
 		$key	= gzencode(
-			file_get_contents(PLUGINS.'/'.$plugin.'/tinymce.min.js').
+			file_get_contents(PLUGINS.'/TinyMCE/tinymce.min.js').
 			$content.
 			'tinymce.each("' . implode(',', $files) . '".split(","),function(f){tinymce.ScriptLoader.markDone(tinyMCE.baseURL+"/"+f+".js");});'.
-			file_get_contents(PLUGINS.'/'.$plugin.'/TinyMCE.js'),
+			file_get_contents(PLUGINS.'/TinyMCE/TinyMCE.js'),
 			9
 		),
 		LOCK_EX | FILE_BINARY

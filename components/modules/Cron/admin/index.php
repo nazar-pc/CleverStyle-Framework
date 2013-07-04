@@ -6,8 +6,6 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace	cs\modules\Scheduled_tasks;
-use			h;
 global $Index, $L;
 $Index->apply_button	= false;
 $Index->content(

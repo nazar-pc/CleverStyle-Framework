@@ -128,7 +128,7 @@ $Core->register_trigger(
 	'admin/System/components/modules/disable',
 	function ($data) {
 		if ($data['name'] == 'HybridAuth') {
-			clean_pcache($data);
+			clean_pcache();
 		}
 	}
 );
@@ -140,8 +140,8 @@ $Core->register_trigger(
 );
 $Core->register_trigger(
 	'System/Page/rebuild_cache',
-	function () {
-		rebuild_pcache();
+	function ($data) {
+		rebuild_pcache($data);
 	}
 );
 $Core->register_trigger(
@@ -157,14 +157,12 @@ $Core->register_trigger(
 		));
 	}
 );
-function clean_pcache ($data = null) {
-	if ($data['name'] == 'HybridAuth' || $data === null) {
-		if (file_exists(PCACHE.'/module.HybridAuth.js')) {
-			unlink(PCACHE.'/module.HybridAuth.js');
-		}
-		if (file_exists(PCACHE.'/module.HybridAuth.css')) {
-			unlink(PCACHE.'/module.HybridAuth.css');
-		}
+function clean_pcache () {
+	if (file_exists(PCACHE.'/module.HybridAuth.js')) {
+		unlink(PCACHE.'/module.HybridAuth.js');
+	}
+	if (file_exists(PCACHE.'/module.HybridAuth.css')) {
+		unlink(PCACHE.'/module.HybridAuth.css');
 	}
 }
 function rebuild_pcache (&$data = null) {

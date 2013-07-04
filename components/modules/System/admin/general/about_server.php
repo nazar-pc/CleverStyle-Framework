@@ -42,7 +42,7 @@ $Index->content(
 				file_get_contents(DIR.'/license.txt'),
 				[
 					'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
-					'title'			=> $L->system.' -> '.$L->license
+					'title'			=> $L->system.' » '.$L->license
 				]
 			).
 			h::{'button#system_license_open'}(

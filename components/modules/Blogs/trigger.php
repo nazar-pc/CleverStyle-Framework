@@ -7,8 +7,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h,
-			cs\modules\Comments\Comments;
+use			cs\modules\Comments\Comments;
 global $Core;
 $Core->register_trigger(
 	'admin/System/components/modules/disable',

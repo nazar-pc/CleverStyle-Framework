@@ -553,7 +553,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 					[
 						'id'			=> $module.'_api',
 						'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
-						'title'			=> $module.' -> '.$L->api
+						'title'			=> $module.' » '.$L->api
 					]
 				);
 			}
@@ -571,16 +571,18 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 		 */
 		if (file_exists($file = MODULES.'/'.$module.'/readme.txt') || file_exists($file = MODULES.'/'.$module.'/readme.html')) {
 			if (substr($file, -3) == 'txt') {
-				$tag = 'pre';
+				$tag		= 'pre';
 			} else {
 				$tag = 'div';
 			}
+			$uniqid			= uniqid('module_info_');
+			$Page->replace($uniqid, $tag == 'pre' ? filter(file_get_contents($file)) : file_get_contents($file));
 			$addition_state .= h::$tag(
-				$tag == 'pre' ? filter(file_get_contents($file)) : file_get_contents($file),
+				$uniqid,
 				[
 					'id'			=> $module.'_readme',
 					'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
-					'title'			=> $module.' -> '.$L->information_about_module
+					'title'			=> $module.' » '.$L->information_about_module
 				]
 			).
 			h::{'icon.cs-pointer'}(
@@ -606,7 +608,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 				[
 					'id'			=> $module.'_license',
 					'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
-					'title'			=> $module.' -> '.$L->license
+					'title'			=> $module.' » '.$L->license
 				]
 			).
 			h::{'icon.cs-pointer'}(

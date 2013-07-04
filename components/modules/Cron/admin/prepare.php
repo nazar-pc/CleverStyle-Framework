@@ -6,17 +6,16 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace	cs\modules\Scheduled_tasks;
 global $Index, $Page;
-if (isset($_POST['edit_settings']) && $_POST['edit_settings'] == 'save') {
+if (
+	isset($_POST['edit_settings'], $_POST['tasks']) &&
+	$_POST['edit_settings'] == 'save'
+) {
 	$filename	= TEMP.'/'.uniqid('cron');
-	$tasks		= $_POST['tasks'];
-	if (!is_array($tasks)) {
-		$tasks	= _trim(explode("\n", trim($tasks)));
-	}
-	$tasks		= implode("\n", $tasks)."\n";
-	file_put_contents($filename, trim($tasks)."\n");
-	exec('crontab '.$filename, $result, $result);
+	$tasks		= _trim(explode("\n", trim($_POST['tasks'])));
+	$tasks		= implode("\n", $tasks);
+	file_put_contents($filename, "$tasks\n");
+	exec("crontab $filename", $result, $result);
 	unlink($filename);
 	$Index->save($result === 0);
 }
@@ -24,7 +23,7 @@ $Page->menumore		= \h::a(
 	[
 		'Crontab',
 		[
-			'href'	=> 'admin/'.MODULE,
+			'href'	=> 'admin/Plupload',
 			'class'	=> 'active'
 		]
 	]

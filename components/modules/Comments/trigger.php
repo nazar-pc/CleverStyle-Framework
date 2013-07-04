@@ -7,7 +7,6 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Comments;
-use			h;
 global $Core;
 $Core->register_trigger(
 	'admin/System/components/modules/disable',
@@ -25,7 +24,7 @@ $Core->register_trigger(
 );
 $Core->register_trigger(
 	'System/Page/rebuild_cache',
-	function () {
+	function ($data) {
 		global $Config;
 		if (!$Config->module('Comments')->active()) {
 			return;
@@ -33,7 +32,7 @@ $Core->register_trigger(
 		if (file_exists(PCACHE.'/module.Comments.js') && file_exists(PCACHE.'/module.Comments.css')) {
 			return;
 		}
-		rebuild_pcache();
+		rebuild_pcache($data);
 	}
 );
 function clean_pcache () {
@@ -66,23 +65,6 @@ function rebuild_pcache (&$data = null) {
 		$data['key']	.= md5(implode('', $key));
 	}
 }
-/*$Core->register_trigger(
-	'admin/System/components/modules/install/process',
-	function ($data) use ($Core) {
-		global $User, $Config;
-		if ($data['name'] != 'Comments' || !$User->admin()) {
-			return;
-		}
-		$Config->module('Comments')->set(
-			[
-				'posts_per_page'	=> 10,
-				'max_sections'		=> 3,
-				'enable_comments'	=> 1
-			]
-		);
-		return;
-	}
-);*/
 $Core->register_trigger(
 	'admin/System/components/modules/uninstall/process',
 	function ($data) use ($Core) {

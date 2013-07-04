@@ -187,7 +187,7 @@ class Blogs extends Accessor {
 		if (empty($tags) || empty($content)) {
 			return false;
 		}
-		global $Cache, $Config, $L;
+		global $Cache, $Config, $L, $Core;
 		$id			= (int)$id;
 		$title		= trim(xap($title));
 		$path		= path(str_replace(['/', '\\'], '_', $path ?: $title));
@@ -268,6 +268,33 @@ class Blogs extends Accessor {
 				}
 				unset($lang);
 			}
+			preg_match_all('/"(http[s]?:\/\/.*)"/Uims', $data['content'], $old_files);
+			preg_match_all('/"(http[s]?:\/\/.*)"/Uims', $content, $new_files);
+			$old_files	= isset($old_files[1]) ? $old_files[1] : [];
+			$new_files	= isset($new_files[1]) ? $new_files[1] : [];
+			if ($old_files || $new_files) {
+				foreach (array_diff($old_files, $new_files) as $file) {
+					$Core->run_trigger(
+						'System/upload_files/del_tag',
+						[
+							'tag'	=> "Blogs/posts/$id/$L->clang",
+							'url'	=> $file
+						]
+					);
+				}
+				unset($file);
+				foreach (array_diff($new_files, $old_files) as $file) {
+					$Core->run_trigger(
+						'System/upload_files/add_tag',
+						[
+							'tag'	=> "Blogs/posts/$id/$L->clang",
+							'url'	=> $file
+						]
+					);
+				}
+				unset($file);
+			}
+			unset($old_files, $new_files);
 			if ($data['draft'] == 1 && !$draft && $data['date'] == 0) {
 				$this->db_prime()->q(
 					"UPDATE `[prefix]blogs_posts`
@@ -299,7 +326,7 @@ class Blogs extends Accessor {
 	 * @return bool
 	 */
 	function del ($id) {
-		global $Cache, $Comments;
+		global $Cache, $Comments, $Core;
 		$id	= (int)$id;
 		if ($this->db_prime()->q([
 			"DELETE FROM `[prefix]blogs_posts`
@@ -313,6 +340,12 @@ class Blogs extends Accessor {
 			$this->ml_del('Blogs/posts/title', $id);
 			$this->ml_del('Blogs/posts/path', $id);
 			$this->ml_del('Blogs/posts/content', $id);
+			$Core->run_trigger(
+				'System/upload_files/del_tag',
+				[
+					'tag'	=> "Blogs/posts/$id%"
+				]
+			);
 			if (is_object($Comments)) {
 				$Comments->del_all($id);
 			}
