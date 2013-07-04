@@ -592,6 +592,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 					'onClick'		=> "$('#".$module."_readme').dialog('open');"
 				]
 			);
+			unset($uniqid);
 		}
 		unset($tag, $file);
 		/**

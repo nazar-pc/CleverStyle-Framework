@@ -66,6 +66,7 @@ class Core {
 				CACHE.'/.gitignore',
 				"#do not commit cache\n".
 				"/*\n".
+				"!/.gitignore".
 				"!/.htaccess"
 			);
 		}
@@ -80,11 +81,19 @@ class Core {
 				PCACHE.'/.gitignore',
 				"#do not commit public cache\n".
 				"/*\n".
+				"!/.gitignore".
 				"!/.htaccess"
 			);
 		}
 		if (!is_dir(LOGS)) {
 			@mkdir(LOGS, 0700);
+			file_put_contents(
+				PCACHE.'/.gitignore',
+				"#do not commit logs\n".
+				"/*\n".
+				"!/.gitignore".
+				"!/.htaccess"
+			);
 		}
 		if (!is_dir(TEMP)) {
 			@mkdir(TEMP, 0755);
@@ -96,6 +105,7 @@ class Core {
 				TEMP.'/.gitignore',
 				"#do not commit temp files\n".
 				"/*\n".
+				"!/.gitignore".
 				"!/.htaccess"
 			);
 		}

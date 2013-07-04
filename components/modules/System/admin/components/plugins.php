@@ -247,6 +247,7 @@ if (!empty($plugins)) {
 					'onClick'		=> "$('#".$plugin."_readme').dialog('open');"
 				]
 			);
+			unset($uniqid);
 		}
 		unset($tag, $file);
 		/**
