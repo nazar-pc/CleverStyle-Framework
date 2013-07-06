@@ -51,7 +51,7 @@ function rebuild_pcache (&$data = null) {
 	if (
 		!$Config->core['cache_compress_js_css'] ||
 		(
-			$data !== null && !isset($Config->components['plugins']['TinyMCE'])
+			$data !== null && !in_array('TinyMCE', $Config->components['plugins'])
 		) ||
 		file_exists(PCACHE.'/plugin.TinyMCE.js')
 	) {

@@ -59,16 +59,16 @@ function rebuild_pcache (&$data = null) {
 	$content	= '';
 	array_map(
 		function ($language) use (&$content) {
-			$content	.= "if (lang == '$language') ".file_get_contents(MFOLDER."/includes/js/i18n/$language.js");
+			$content	.= "if (lang == '$language') ".file_get_contents(MODULES."/Plupload/includes/js/i18n/$language.js");
 		},
-		_mb_substr(get_files_list(MFOLDER.'/includes/js/i18n', false, 'f'), 0, -3)
+		_mb_substr(get_files_list(MODULES.'/Plupload/includes/js/i18n', false, 'f'), 0, -3)
 	);
 	file_put_contents(
 		PCACHE.'/module.Plupload.js',
 		$key	= gzencode(
-			file_get_contents(MFOLDER.'/includes/js/plupload.js').
-			file_get_contents(MFOLDER.'/includes/js/plupload.html5.js').
-			file_get_contents(MFOLDER.'/includes/js/integration.js').
+			file_get_contents(MODULES.'/Plupload/includes/js/plupload.js').
+			file_get_contents(MODULES.'/Plupload/includes/js/plupload.html5.js').
+			file_get_contents(MODULES.'/Plupload/includes/js/integration.js').
 			$content,
 			9
 		),
