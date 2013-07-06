@@ -121,13 +121,13 @@ class Index {
 			return;
 		}
 		unset($admin_path, $api_path);
+		$Core->run_trigger('System/Index/construct');
 		/**
 		 * Plugins processing
 		 */
 		foreach ($Config->components['plugins'] as $plugin) {
 			_include_once(PLUGINS.'/'.$plugin.'/index.php', false);
 		}
-		$Core->run_trigger('System/Index/construct');
 		_include_once(MFOLDER.'/prepare.php', false);
 	}
 	/**
