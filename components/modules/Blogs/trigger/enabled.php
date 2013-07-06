@@ -9,6 +9,7 @@
 namespace	cs\modules\Blogs;
 use			cs\modules\Comments\Comments;
 global $Core;
+$Core->create('_cs\\modules\\Blogs\\Blogs');
 $Core->register_trigger(
 	'admin/System/components/modules/disable',
 	function ($data) {
@@ -72,28 +73,11 @@ $Core->register_trigger(
 	}
 );
 $Core->register_trigger(
-	'System/Config/routing_replace',
-	function ($data) {
-		global $L, $Config;
-		if (!$Config->module('Blogs')->active() && substr($data['rc'], 0, 5) != 'admin') {
-			return;
-		}
-		global $Core;
-		$Core->create('_cs\\modules\\Blogs\\Blogs');
-		$rc		= explode('/', $data['rc']);
-		if ($rc[0] == $L->Blogs || $rc[0] == 'Blogs') {
-			$rc[0]		= 'Blogs';
-			$data['rc']	= implode('/', $rc);
-		}
-	}
-);
-$Core->register_trigger(
 	'api/Comments/add',
 	function ($data) {
 		global $Config, $User;
 		if (!(
 			$data['module'] == 'Blogs' &&
-			$Config->module('Blogs')->active() &&
 			$Config->module('Blogs')->enable_comments &&
 			$User->user() &&
 			class_exists('\\cs\\modules\\Comments\\Comments')
@@ -115,7 +99,6 @@ $Core->register_trigger(
 		global $Config, $User;
 		if (!(
 			$data['module'] == 'Blogs' &&
-			$Config->module('Blogs')->active() &&
 			$Config->module('Blogs')->enable_comments &&
 			$User->user() &&
 			class_exists('\\cs\\modules\\Comments\\Comments')
@@ -137,7 +120,6 @@ $Core->register_trigger(
 		global $Config, $User;
 		if (!(
 			$data['module'] == 'Blogs' &&
-			$Config->module('Blogs')->active() &&
 			$Config->module('Blogs')->enable_comments &&
 			$User->user() &&
 			class_exists('\\cs\\modules\\Comments\\Comments')

@@ -18,7 +18,6 @@ $Core->register_trigger(
 		if (!(
 			$Config->core['allow_user_registration'] &&
 			$Page->interface &&
-			$Config->module('HybridAuth')->active() &&
 			$User->guest() &&
 			!$User->bot()
 		)) {
@@ -68,10 +67,6 @@ $Core->register_trigger(
 $Core->register_trigger(
 	'System/User/registration/confirmation/after',
 	function () {
-		global $Config;
-		if (!$Config->module('HybridAuth')->active()) {
-			return;
-		}
 		if ($referer = _getcookie('HybridAuth_referer')) {
 			header('Refresh: 5; url='.$referer);
 			_setcookie('HybridAuth_referer', '');
@@ -82,9 +77,6 @@ $Core->register_trigger(
 	'System/User/del_user/after',
 	function ($data) {
 		global $Config, $db;
-		if (!$Config->module('HybridAuth')->active()) {
-			return;
-		}
 		/**
 		 *	@var \cs\DB\_Abstract $cdb
 		 */
@@ -123,10 +115,6 @@ $Core->register_trigger(
 $Core->register_trigger(
 	'System/User/get_contacts',
 	function ($data) {
-		global $Config;
-		if (!$Config->module('HybridAuth')->active()) {
-			return;
-		}
 		$data['contacts']	= array_unique(array_merge(
 			$data['contacts'],
 			get_user_contacts($data['id'])

@@ -52,9 +52,6 @@ function rebuild_pcache (&$data = null) {
 	global $Config;
 	if (
 		!$Config->core['cache_compress_js_css'] ||
-		(
-			$data !== null && !$Config->module('Plupload')->active()
-		) ||
 		file_exists(PCACHE.'/module.Plupload.js')
 	) {
 		return;
@@ -85,9 +82,6 @@ $Core->register_trigger(
 	'System/Page/pre_display',
 	function () {
 		global $Config, $Page;
-		if (!$Config->module('Plupload')->active()) {
-			return;
-		}
 		if (!$Config->core['cache_compress_js_css']) {
 			$Page->js([
 				'components/modules/Plupload/includes/js/plupload.js',

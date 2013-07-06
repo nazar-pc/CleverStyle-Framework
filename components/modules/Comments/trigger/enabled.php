@@ -8,6 +8,7 @@
  */
 namespace	cs\modules\Comments;
 global $Core;
+$Core->create('_cs\\modules\\Comments\\Comments');
 $Core->register_trigger(
 	'admin/System/components/modules/disable',
 	function ($data) {
@@ -25,10 +26,6 @@ $Core->register_trigger(
 $Core->register_trigger(
 	'System/Page/rebuild_cache',
 	function ($data) {
-		global $Config;
-		if (!$Config->module('Comments')->active()) {
-			return;
-		}
 		if (file_exists(PCACHE.'/module.Comments.js') && file_exists(PCACHE.'/module.Comments.css')) {
 			return;
 		}
@@ -66,23 +63,9 @@ function rebuild_pcache (&$data = null) {
 	}
 }
 $Core->register_trigger(
-	'System/Config/routing_replace',
-	function () {
-		global $Config;
-		if (!$Config->module('Comments')->active()) {
-			return;
-		}
-		global $Core;
-		$Core->create('_cs\\modules\\Comments\\Comments');
-	}
-);
-$Core->register_trigger(
 	'System/Page/pre_display',
-	function ($data) {
+	function () {
 		global $Config, $Page;
-		if (!$Config->module('Comments')->active() && substr($data['rc'], 0, 5) != 'admin') {
-			return;
-		}
 		if (!$Config->core['cache_compress_js_css']) {
 			$Page->css('components/modules/Comments/includes/css/general.css');
 			$Page->js('components/modules/Comments/includes/js/general.js');

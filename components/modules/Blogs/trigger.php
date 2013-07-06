@@ -8,28 +8,36 @@
  */
 global $Core;
 $Core->register_trigger(
-	'System/Config/pre_routing_replace',
-	function () {
-		global $Config;
-		switch ($Config->components['modules']['Blogs']['active']) {
-			case 1:
-				require __DIR__.'/trigger/enabled.php';
+	'System/Config/routing_replace',
+	function ($data) {
+		global $L, $Config;
+		if (!$Config->module('Blogs')->active() && substr($data['rc'], 0, 5) != 'admin') {
+			return;
+		}
+		$rc		= explode('/', $data['rc']);
+		if ($rc[0] == $L->Blogs || $rc[0] == 'Blogs') {
+			$rc[0]		= 'Blogs';
+			$data['rc']	= implode('/', $rc);
 		}
 	}
 );
 $Core->register_trigger(
 	'System/Index/construct',
 	function () {
-		if (!ADMIN) {
-			return;
-		}
 		global $Config;
 		switch ($Config->components['modules']['Blogs']['active']) {
 			case -1:
+				if (!ADMIN) {
+					return;
+				}
 				require __DIR__.'/trigger/uninstalled.php';
 			break;
-			case 0:
 			case 1:
+				require __DIR__.'/trigger/enabled.php';
+			default:
+				if (!ADMIN) {
+					return;
+				}
 				require __DIR__.'/trigger/installed.php';
 		}
 	}

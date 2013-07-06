@@ -7,26 +7,7 @@
  * @license		MIT License, see license.txt
  */
 global $Core;
-$Core->register_trigger(
-	'System/Config/routing_replace',
-	function ($data) {
-		global $Config;
-		if (!$Config->module('OAuth2')->active() && substr($data['rc'], 0, 5) != 'admin') {
-			return;
-		}
-		global $Core;
-		$Core->create('_cs\\modules\\OAuth2\\OAuth2');
-		$rc		= explode('/', $data['rc']);
-		if (isset($rc[0]) && $rc[0] == 'OAuth2') {
-			if (isset($rc[1])) {
-				$rc[1]	= explode('?', $rc[1], 2)[0];
-			}
-			$data['rc']	= implode('/', $rc);
-			header('Cache-Control: no-store');
-    		header('Pragma: no-cache');
-		}
-	}
-);
+$Core->create('_cs\\modules\\OAuth2\\OAuth2');
 $Core->register_trigger(
 	'System/User/del_all_sessions',
 	function ($data) {
