@@ -282,7 +282,7 @@ class Config {
 				'rc'	=> &$rc
 			]
 		);
-		if (strpos('api/', $rc) === 0) {
+		if ($rc && strpos('api/', $rc) === 0) {
 			$rc	= explode('?', $rc, 2)[0];
 		}
 		if (!empty($r['in'])) {

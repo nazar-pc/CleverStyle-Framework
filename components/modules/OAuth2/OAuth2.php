@@ -22,7 +22,7 @@ class OAuth2 extends Accessor {
 	 */
 	protected function cdb () {
 		global $Config;
-		return $Config->module(basename(__DIR__))->db('oauth2');
+		return $Config->module('OAuth2')->db('oauth2');
 	}
 	/**
 	 * Add new client

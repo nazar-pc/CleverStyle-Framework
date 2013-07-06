@@ -330,7 +330,7 @@ class Comments extends Accessor {
 				$content	.= h::{'article.cs-comments-comment'}(
 					h::a(
 						h::{'img.cs-comments-comment-avatar'}([
-							'src'	=> $User->get('avatar', $comment['user']) ? h::url($User->get('avatar', $comment['user']), true) : 'includes/img/guest.gif',
+							'src'	=> $User->get('avatar', $comment['user']) ? h::prepare_url($User->get('avatar', $comment['user']), true) : 'includes/img/guest.gif',
 							'alt'	=> $User->username($comment['user']),
 							'title'	=> $User->username($comment['user'])
 						]),

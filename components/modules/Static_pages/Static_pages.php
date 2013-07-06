@@ -16,7 +16,7 @@ class Static_pages extends Accessor {
 	 */
 	protected function cdb () {
 		global $Config;
-		return $Config->module(basename(__DIR__))->db('pages');
+		return $Config->module('Static_pages')->db('pages');
 	}
 	/**
 	 * Get data of specified page
