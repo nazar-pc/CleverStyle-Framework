@@ -17,6 +17,7 @@ But in parallel with core some components are developed:
  * **Feedback** (simple feedback module, sends message to admin's email)
  * **HybridAuth** (integration of [HybridAuth](https://github.com/hybridauth/hybridauth) library for integration with social networks and other services)
  * **OAuth2** (provides realization of OAuth 2 authorization protocol (server side))
+ * **Plupload** (integration of Plupload for files uploading, adds files uploading functionality to other modules)
  * **Static pages** (allows to create static pages like About page or pages without interface, for example for site owner verification)
 
 #### Plugins
