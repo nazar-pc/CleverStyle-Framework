@@ -65,12 +65,11 @@ class h_internal {
 	 * @param string	$in
 	 * @param string	$tag
 	 * @param string	$add
-	 * @param null		$insert
 	 * @param null		$label
 	 *
 	 * @return bool
 	 */
-	protected static function data_prepare (&$data, &$in, &$tag, &$add, &$insert = null, &$label = null) {
+	protected static function data_prepare (&$data, &$in, &$tag, &$add, &$label = null) {
 		$q = '"';
 		if (isset($data['in'])) {
 			if ($data['in'] === false) {
@@ -104,12 +103,12 @@ class h_internal {
 		}
 		if (isset($data['src'])) {
 			$data['src']		= str_replace(' ', '%20', $data['src']);
-			$data['src']		= self::url($data['src']);
+			$data['src']		= self::prepare_url($data['src']);
 		}
 		if (isset($data['href'])) {
 			$data['href']		= str_replace(' ', '%20', $data['href']);
 			if ($tag != 'a') {
-				$data['href']		= self::url($data['href']);
+				$data['href']		= self::prepare_url($data['href']);
 			} elseif (substr($data['href'], 0, 1) == '#') {
 				global $Config;
 				if (is_object($Config)) {
@@ -126,10 +125,6 @@ class h_internal {
 		if (isset($data['add'])) {
 			$add				= ' '.trim($data['add']);
 			unset($data['add']);
-		}
-		if (isset($data['insert'])) {
-			$insert	= $data['insert'];
-			unset($data['insert']);
 		}
 		/**
 		 * If quotes symbol specified - use it
@@ -169,7 +164,7 @@ class h_internal {
 	 *
 	 * @return string
 	 */
-	static function url ($url, $absolute = false) {
+	static function prepare_url ($url, $absolute = false) {
 		if (substr($url, 0, 1) == '#') {
 			global $Config;
 			if (is_object($Config)) {
@@ -225,7 +220,7 @@ class h_internal {
 			$level = $data['level'];
 			unset($data['level']);
 		}
-		if (!self::data_prepare($data, $in, $tag, $add, $insert)) {
+		if (!self::data_prepare($data, $in, $tag, $add)) {
 			return false;
 		}
 		$html	=	'<'.$tag.$add.'>'.
@@ -235,7 +230,7 @@ class h_internal {
 					$level).
 					'</'.$tag.'>'.
 					($level ? "\n" : '');
-		return self::insert_processing($html, $insert);
+		return $html;
 	}
 	/**
 	 * Wrapper for unpaired tags rendering
@@ -249,7 +244,7 @@ class h_internal {
 	protected static function u_wrap ($data = []) {
 		$in = $add = '';
 		$tag = 'input';
-		if (!self::data_prepare($data, $in, $tag, $add, $insert, $label)) {
+		if (!self::data_prepare($data, $in, $tag, $add, $label)) {
 			return false;
 		}
 		if (isset($data['data-title']) && $data['data-title']) {
@@ -278,29 +273,6 @@ class h_internal {
 				]
 			) : $html;
 		}
-		return self::insert_processing($html, $insert);
-	}
-	protected static function insert_processing ($html, $insert) {
-		if (!$insert) {
-			return $html;
-		}
-		if (is_array_indexed($insert) && is_array($insert[0])) {
-			$result	= '';
-			foreach ($insert as $ins) {
-				$tmp	= $html;
-				foreach ($ins as $i => $d) {
-					$tmp	= str_replace("\$i[$i]", $d, $tmp);
-				}
-				$result	.= $tmp;
-			}
-			$html	= $result;
-			unset($ins, $i, $d, $tmp, $result);
-		} else {
-			foreach ($insert as $i => $d) {
-				$tmp	= str_replace("\$i[$i]", $d, $html);
-			}
-			unset($ins, $i, $d, $tmp);
-		}
 		return $html;
 	}
 	/**
@@ -314,6 +286,9 @@ class h_internal {
 	 * @return bool|string
 	 */
 	static function form ($in = '', $data = []) {
+		if (isset($in['insert']) || isset($data['insert'])) {
+			return self::__callStatic(__FUNCTION__, func_get_args());
+		}
 		if ($in === false) {
 			return '';
 		} elseif (is_array($in)) {
@@ -340,7 +315,7 @@ class h_internal {
 		return self::wrap($in, $data, __FUNCTION__);
 	}
 	/**
-	 * Rendering of input tag with automatic adding labels for type=radio if necessary and autocorrection if min and/or max attributes are specified
+	 * Rendering of input tag with automatic adding labels for type=radio if necessary and automatic correction if min and/or max attributes are specified
 	 * and value is out of this scope
 	 *
 	 * @static
@@ -351,6 +326,9 @@ class h_internal {
 	 * @return string
 	 */
 	static function input ($in = [], $data = []) {
+		if (isset($in['insert']) || isset($data['insert'])) {
+			return self::__callStatic(__FUNCTION__, func_get_args());
+		}
 		if ($in === false) {
 			return '';
 		}
@@ -569,6 +547,9 @@ class h_internal {
 	 * @return bool|string
 	 */
 	static function select ($in = '', $data = []) {
+		if (isset($in['insert']) || isset($data['insert'])) {
+			return self::__callStatic(__FUNCTION__, func_get_args());
+		}
 		return self::template_1($in, $data, __FUNCTION__);
 	}
 	/**
@@ -583,6 +564,9 @@ class h_internal {
 	 * @return bool|string
 	 */
 	static function datalist ($in = '', $data = []) {
+		if (isset($in['insert']) || isset($data['insert'])) {
+			return self::__callStatic(__FUNCTION__, func_get_args());
+		}
 		return self::template_1($in, $data, __FUNCTION__);
 	}
 	/**
@@ -625,6 +609,9 @@ class h_internal {
 	 * @return bool|string
 	 */
 	static function textarea ($in = '', $data = []) {
+		if (isset($in['insert']) || isset($data['insert'])) {
+			return self::__callStatic(__FUNCTION__, func_get_args());
+		}
 		return self::template_2($in, $data, __FUNCTION__);
 	}
 	/**
@@ -638,6 +625,9 @@ class h_internal {
 	 * @return bool|string
 	 */
 	static function pre ($in = '', $data = []) {
+		if (isset($in['insert']) || isset($data['insert'])) {
+			return self::__callStatic(__FUNCTION__, func_get_args());
+		}
 		return self::template_2($in, $data, __FUNCTION__);
 	}
 	/**
@@ -651,6 +641,9 @@ class h_internal {
 	 * @return bool|string
 	 */
 	static function code ($in = '', $data = []) {
+		if (isset($in['insert']) || isset($data['insert'])) {
+			return self::__callStatic(__FUNCTION__, func_get_args());
+		}
 		return self::template_2($in, $data, __FUNCTION__);
 	}
 	/**
@@ -664,6 +657,9 @@ class h_internal {
 	 * @return bool|string
 	 */
 	static function button ($in = '', $data = []) {
+		if (isset($in['insert']) || isset($data['insert'])) {
+			return self::__callStatic(__FUNCTION__, func_get_args());
+		}
 		if ($in === false) {
 			return '';
 		} elseif (is_array($in)) {
@@ -691,6 +687,9 @@ class h_internal {
 	 * @return bool|string
 	 */
 	static function style ($in = '', $data = []) {
+		if (isset($in['insert']) || isset($data['insert'])) {
+			return self::__callStatic(__FUNCTION__, func_get_args());
+		}
 		if ($in === false) {
 			return '';
 		} elseif (is_array($in)) {
@@ -735,6 +734,9 @@ class h_internal {
 	 * @return mixed
 	 */
 	static function info ($in = '', $data = []) {
+		if (isset($in['insert']) || isset($data['insert'])) {
+			return self::__callStatic(__FUNCTION__, func_get_args());
+		}
 		if ($in === false) {
 			return '';
 		} elseif (is_array($in)) {
@@ -758,6 +760,9 @@ class h_internal {
 	 * @return mixed
 	 */
 	static function icon ($class, $data = []) {
+		if (isset($in['insert']) || isset($data['insert'])) {
+			return self::__callStatic(__FUNCTION__, func_get_args());
+		}
 		if ($class === false) {
 			return '';
 		}
@@ -830,6 +835,40 @@ class h_internal {
 			return true;
 		}
 		return self::analyze_selector($in, $space_position + 1);
+	}
+	/**
+	 * @param array[]|string|string[]	$data
+	 * @param string[]					$insert
+	 */
+	protected static function inserts_replacing_recursive (&$data, &$insert) {
+		if (is_array($data)) {
+			foreach ($data as &$d) {
+				self::inserts_replacing_recursive($d, $insert);
+			}
+		} else {
+			foreach ($insert as $i => $d) {
+				$data	= str_replace("\$i[$i]", $d, $data);
+			}
+		}
+	}
+	/**
+	 * @param array|array[]		$data
+	 * @param array[]|string[]	$insert
+	 */
+	protected static function inserts_processing (&$data, &$insert) {
+		if (!$insert) {
+			return;
+		}
+		if (is_array_indexed($insert) && is_array($insert[0])) {
+			$new_data	= [];
+			foreach ($insert as $i) {
+				$new_data[] = $data;
+				self::inserts_replacing_recursive($new_data[count($new_data) - 1], $i);
+			}
+			$data		= $new_data;
+		} else {
+			 self::inserts_replacing_recursive($data, $insert);
+		}
 	}
 	/**
 	 * Processing of complicated rendering structures
@@ -1105,6 +1144,7 @@ class h_internal {
 			$attrs['id'] = $input[1];
 		}
 		$attrs = self::array_merge($attrs, $data);
+		unset($data);
 		if ($tag == 'select' || $tag == 'datalist') {
 			if (isset($attrs['value'])) {
 				$in = [
@@ -1123,6 +1163,25 @@ class h_internal {
 			unset($attrs['in']);
 		} else {
 			$in = '';
+		}
+		if (isset($attrs['insert'])) {
+			$insert	= $attrs['insert'];
+			unset($attrs['insert']);
+			$data	= [$in, $attrs];
+			self::inserts_processing($data, $insert);
+			$html	= '';
+			foreach ($data as $d) {
+				if (method_exists('h', $tag)) {
+					$html			.= self::$tag($d[0], $d[1]);
+				} elseif (in_array($tag, self::$unpaired_tags)) {
+					$d[1]['tag']	= $tag;
+					$d[1]['in']		= $d[0];
+					$html			.= self::u_wrap($d[1]);
+				} else {
+					$html			.= self::wrap($d[0], $d[1], $tag);
+				}
+			}
+			return $html;
 		}
 		if (method_exists('h', $tag)) {
 			$in				= self::$tag($in, $attrs);

@@ -69,7 +69,7 @@ $Page->og(
 $Page->content(
 	h::{'table.cs-fullwidth-table.cs-profile-table tr'}([
 		h::{'td.cs-profile-avatar[rowspan=2] img'}([
-			'src'	=> $data['avatar'] ? h::url($data['avatar']) : '/includes/img/guest.gif',
+			'src'	=> $data['avatar'] ? h::prepare_url($data['avatar']) : '/includes/img/guest.gif',
 			'alt'	=> $name,
 			'title'	=> $name
 		]).

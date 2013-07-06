@@ -278,7 +278,7 @@ class Page {
 		} elseif (file_exists(THEMES.'/'.$this->theme.'/img/favicon.ico')) {
 			$favicon	= 'themes/'.$this->theme.'/img/favicon.ico';
 		} else {
-			$favicon	= 'includes/img/favicon.ico';
+			$favicon	= 'favicon.ico';
 		}
 		$this->Head			=	h::title($this->Title).
 			h::meta(
@@ -1141,7 +1141,7 @@ class Page {
 		global $User, $L, $Core;
 		if (is_object ($User) && $User->user()) {
 			if ($User->avatar) {
-				$this->user_avatar_image = 'url('.h::url($User->avatar, true).')';
+				$this->user_avatar_image = 'url('.h::prepare_url($User->avatar, true).')';
 			} else {
 				$this->user_avatar_image = 'url(/includes/img/guest.gif)';
 			}
