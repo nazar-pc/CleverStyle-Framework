@@ -66,7 +66,7 @@ class Core {
 				CACHE.'/.gitignore',
 				"#do not commit cache\n".
 				"/*\n".
-				"!/.gitignore".
+				"!/.gitignore\n".
 				"!/.htaccess"
 			);
 		}
@@ -81,7 +81,7 @@ class Core {
 				PCACHE.'/.gitignore',
 				"#do not commit public cache\n".
 				"/*\n".
-				"!/.gitignore".
+				"!/.gitignore\n".
 				"!/.htaccess"
 			);
 		}
@@ -91,7 +91,7 @@ class Core {
 				PCACHE.'/.gitignore',
 				"#do not commit logs\n".
 				"/*\n".
-				"!/.gitignore".
+				"!/.gitignore\n".
 				"!/.htaccess"
 			);
 		}
@@ -105,7 +105,7 @@ class Core {
 				TEMP.'/.gitignore',
 				"#do not commit temp files\n".
 				"/*\n".
-				"!/.gitignore".
+				"!/.gitignore\n".
 				"!/.htaccess"
 			);
 		}
