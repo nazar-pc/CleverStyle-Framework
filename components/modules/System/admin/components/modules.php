@@ -95,7 +95,7 @@ if (
 						unlink($tmp_file);
 						break;
 					}
-					$check_dependencies		= check_dependencies($module, 'module', $tmp_dir);
+					$check_dependencies		= check_dependencies($module, 'module', $tmp_dir, 'update');
 					if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 						break;
 					}
@@ -193,7 +193,7 @@ if (
 			)) {
 				break;
 			}
-			$check_dependencies		= check_dependencies($rc[3], 'module');
+			$check_dependencies		= check_dependencies($rc[3], 'module', null, 'install');
 			if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 				break;
 			}
@@ -251,7 +251,7 @@ if (
 			)) {
 				break;
 			}
-			$check_dependencies		= check_backward_dependencies($rc[3], 'module');
+			$check_dependencies		= check_backward_dependencies($rc[3], 'module', 'uninstall');
 			if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 				break;
 			}
@@ -301,6 +301,15 @@ if (
 				unlink($tmp_file);
 				break;
 			}
+			$new_meta				= _json_decode(file_get_contents($tmp_dir.'/fs.json'))['components/modules/System/meta.json'];
+			if (isset($new_meta['update_from_version']) && !version_compare($new_meta['update_from_version'], $current_version, '>')) {
+				$Page->warning(
+					$L->update_system_impossible_from_version_to($current_version, $new_version, $new_meta['update_from_version'])
+				);
+				unlink($tmp_file);
+				break;
+			}
+			unset($new_meta);
 			$rc[2]					= 'update_system';
 			$show_modules			= false;
 			$Page->title($L->updating_of_system);
