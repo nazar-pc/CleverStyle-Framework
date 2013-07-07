@@ -263,7 +263,7 @@ abstract class _Abstract {
 	 *
 	 * @return array|bool|string
 	 */
-	function qf ($query = '', $single_column = false, $array = false, $indexed = false) {
+	function qf ($query, $single_column = false, $array = false, $indexed = false) {
 		list($query, $params)	= $this->q_prepare($query);
 		if (!$query) {
 			return false;
@@ -281,7 +281,7 @@ abstract class _Abstract {
 	 *
 	 * @return array|bool|string
 	 */
-	function qfa ($query = '', $single_column = false, $indexed = false) {
+	function qfa ($query, $single_column = false, $indexed = false) {
 		list($query, $params)	= $this->q_prepare($query);
 		if (!$query) {
 			return false;
@@ -299,7 +299,7 @@ abstract class _Abstract {
 	 *
 	 * @return array|bool
 	 */
-	function qfs ($query = '', $array = false, $indexed = false) {
+	function qfs ($query, $array = false, $indexed = false) {
 		list($query, $params)	= $this->q_prepare($query);
 		if (!$query) {
 			return false;
@@ -316,7 +316,7 @@ abstract class _Abstract {
 	 *
 	 * @return array|bool
 	 */
-	function qfas ($query = '', $indexed = false) {
+	function qfas ($query, $indexed = false) {
 		list($query, $params)	= $this->q_prepare($query);
 		if (!$query) {
 			return false;
