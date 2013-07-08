@@ -242,13 +242,8 @@ class Config {
 			unset($mirrors_url, $mirror_url);
 		}
 		/**
-		 * Preparing page url without basic path
+		 * Referer detection
 		 */
-		$this->server['raw_relative_address']	= trim(mb_substr($this->server['raw_relative_address'], mb_strlen($current_mirror)), ' /\\');
-		unset($current_mirror);
-		$r										= &$this->routing;
-		$rc										= &$this->route;
-		$rc										= $this->server['raw_relative_address'];
 		if (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], '://') !== false) {
 			$ref				= &$this->server['referer'];
 			$referer			= explode('://', $ref['url'] = $_SERVER['HTTP_REFERER']);
@@ -260,6 +255,14 @@ class Config {
 			$ref['local']		= in_array($ref['host'], $this->server['mirrors'][$ref['protocol']]);
 			unset($ref);
 		}
+		/**
+		 * Preparing page url without basic path
+		 */
+		$this->server['raw_relative_address']	= trim(mb_substr($this->server['raw_relative_address'], mb_strlen($current_mirror)), ' /\\');
+		unset($current_mirror);
+		$r										= &$this->routing;
+		$rc										= &$this->route;
+		$rc										= trim($this->server['raw_relative_address'], '/');
 		/**
 		 * Redirection processing
 		 */
@@ -302,7 +305,7 @@ class Config {
 		/**
 		 * Obtaining page path in form of array
 		 */
-		$rc										= explode('/', $rc);
+		$rc										= $rc ? explode('/', $rc) : [];
 		/**
 		 * If url looks like admin page
 		 */
