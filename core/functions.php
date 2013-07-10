@@ -485,17 +485,15 @@ function get_core_ml_text ($item) {
 /**
  * Pages navigation based on links
  *
- * @param int					$page		Current page
- * @param int					$total		Total pages number
- * @param bool|Closure|string	$url		Adds <i>formaction</i> parameter to every button<br>
- * 											if <b>false</b> - only form parameter <i>page</i> will we added<br>
- * 											if string - it will be formatted with sprintf with one parameter - page number<br>
- * 											if Closure - one parameter will be given, Closure should return url string
- * @param bool					$head_links	If <b>true</b> - links with rel="prev" and rel="next" will be added
+ * @param int				$page		Current page
+ * @param int				$total		Total pages number
+ * @param Closure|string	$url		if string - it will be formatted with sprintf with one parameter - page number<br>
+ * 										if Closure - one parameter will be given, Closure should return url string
+ * @param bool				$head_links	If <b>true</b> - links with rel="prev" and rel="next" will be added
  *
- * @return bool|string						<b>false</b> if single page, otherwise string, set of navigation links
+ * @return bool|string					<b>false</b> if single page, otherwise string, set of navigation links
  */
-function pages ($page, $total, $url = false, $head_links = false) {
+function pages ($page, $total, $url, $head_links = false) {
 	if ($total == 1) {
 		return false;
 	}
@@ -506,11 +504,11 @@ function pages ($page, $total, $url = false, $head_links = false) {
 			$output[]	= [
 				$i,
 				[
-					'href'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
+					'href'	=> $i == $page ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
 					'class'	=> $i == $page ? 'cs-button ui-selected' : 'cs-button'
 				]
 			];
-			if ($head_links && $url !== false && ($i == $page - 1 || $i == $page + 1)) {
+			if ($head_links && ($i == $page - 1 || $i == $page + 1)) {
 				$Page->link([
 					'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
 					'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
@@ -523,11 +521,11 @@ function pages ($page, $total, $url = false, $head_links = false) {
 				$output[]	= [
 					$i,
 					[
-						'href'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
+						'href'	=> $i == $page ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
 						'class'	=> $i == $page ? 'cs-button ui-selected' : 'cs-button'
 					]
 				];
-				if ($head_links && $url !== false && ($i == $page - 1 || $i == $page + 1)) {
+				if ($head_links&& ($i == $page - 1 || $i == $page + 1)) {
 					$Page->link([
 						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
 						'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
@@ -569,11 +567,11 @@ function pages ($page, $total, $url = false, $head_links = false) {
 				$output[]	= [
 					$i,
 					[
-						'href'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
+						'href'	=> $i == $page ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
 						'class'	=> $i == $page ? 'cs-button ui-selected' : 'cs-button'
 					]
 				];
-				if ($head_links && $url !== false && ($i == $page - 1 || $i == $page + 1)) {
+				if ($head_links && ($i == $page - 1 || $i == $page + 1)) {
 					$Page->link([
 						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
 						'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
@@ -600,11 +598,11 @@ function pages ($page, $total, $url = false, $head_links = false) {
 				$output[]	= [
 					$i,
 					[
-						'href'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
+						'href'	=> $i == $page ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
 						'class'	=> $i == $page ? 'cs-button ui-selected' : 'cs-button'
 					]
 				];
-				if ($head_links && $url !== false && ($i == $page - 1 || $i == $page + 1)) {
+				if ($head_links && ($i == $page - 1 || $i == $page + 1)) {
 					$Page->link([
 						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
 						'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
