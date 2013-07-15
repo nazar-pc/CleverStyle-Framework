@@ -26,17 +26,7 @@ $Index->content(
 		!$sa ? core_input('cache_sync', 'radio') : false,
 		!$sa ? core_input('cookie_sync', 'radio') : false,
 		!$sa ? [
-			h::info('debug'),
-			h::{'input[type=radio]'}([
-				'name'			=> 'core[debug]',
-				'checked'		=> $Config->core['debug'],
-				'value'			=> [0, 1],
-				'in'			=> [$L->off, $L->on],
-				'OnClick'		=> ['$(\'#debug_form\').hide();', '$(\'#debug_form\').show();']
-			])
-		] : false,
-		!$sa ? [
-			'',
+			$L->debug,
 			[
 				h::{'table tr| td'}(
 					core_input('show_objects_data', 'radio'),
@@ -44,8 +34,6 @@ $Index->content(
 					core_input('show_cookies', 'radio')
 				),
 				[
-					'style' => ($Config->core['debug'] == 0 ? 'display: none;' : ''),
-					'id'	=> 'debug_form',
 					'class'	=> 'cs-padding-left'
 				]
 			]

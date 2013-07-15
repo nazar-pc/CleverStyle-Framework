@@ -184,7 +184,6 @@
 		"cookie_sync"					: "Cookie sync",
 		"cookie_sync_info"				: "In case of several mirrors of site you may need cookie synchronization, for example, to be authorized on all mirrors.",
 		"debug"							: "Debugging",
-		"debug_info"					: "Display more information about the work of the engine and its components",
 		"show_db_queries"				: "Show DB queries",
 		"show_db_queries_info"			: "Show DB queries in debug window",
 		"show_cookies"					: "Show Cookies",

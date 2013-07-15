@@ -135,13 +135,13 @@ abstract class _Abstract {
 		global $db;
 		$this->query['time']		= microtime(true);
 		$this->query['text']		= empty($params) ? $query : vsprintf($query, $params);
-		if (defined('DEBUG') && DEBUG) {
+		if (DEBUG) {
 			$this->queries['text'][]	= $this->query['text'];
 		}
 		$result						= $this->q_internal($this->query['text']);
 		$this->query['time']		= round(microtime(true) - $this->query['time'], 6);
 		$this->time					+= $this->query['time'];
-		if (defined('DEBUG') && DEBUG) {
+		if (DEBUG) {
 			$this->queries['time'][]	= $this->query['time'];
 		}
 		++$this->queries['num'];

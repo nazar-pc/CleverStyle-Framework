@@ -106,9 +106,6 @@ class Config {
 	 */
 	protected function init() {
 		global $Cache, $L, $Page;
-		if (!defined('DEBUG')) {
-			define('DEBUG', $this->core['debug'] ? true : false);
-		}
 		$Cache->init();
 		$L->init($this->core['language']);
 		$Page->init(

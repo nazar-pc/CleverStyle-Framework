@@ -16,7 +16,6 @@ if (!isset($_POST['edit_settings'])) {
 	return;
 }
 global $Config, $Index, $Cache, $Core;
-$debug = $Config->core['debug'];
 if ($_POST['edit_settings'] == 'apply' || $_POST['edit_settings'] == 'save') {
 	foreach ($Config->admin_parts as $part) {
 		if (isset($_POST[$part])) {
@@ -75,9 +74,6 @@ if ($_POST['edit_settings'] == 'apply' && $Cache->cache_state()) {
 	if ($save && !$Config->core['cache_compress_js_css']) {
 		clean_pcache();
 		$Core->run_trigger('admin/System/general/optimization/clean_pcache');
-	}
-	if ($save && ($Config->core['debug'] != $debug) && $Config->core['debug']) {
-		$Cache->clean();
 	}
 } elseif ($_POST['edit_settings'] == 'cancel' && $Cache->cache_state()) {
 	$Index->cancel();

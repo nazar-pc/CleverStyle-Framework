@@ -12,6 +12,7 @@ use			Closure,
  * Core class.
  * Provides loading of base system configuration, creating of global objects, encryption, API requests sending, and triggers processing.
  */
+!defined('DEBUG') && define('DEBUG', false);
 class Core {
 	public	$Loaded				= [],			//Array with list of loaded objects, and information about amount of used memory and creation time
 			$destroy_priority	= [				//Order of global objects destroying
