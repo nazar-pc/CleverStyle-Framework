@@ -202,37 +202,45 @@ function get_files_list (
 				continue;
 			}
 			if (
-				(is_file($dir.$file) && ($mode == 'f' || $mode == 'fd')) ||
-				(is_dir($dir.$file) && ($mode == 'd' || $mode == 'fd'))
+				$mode == 'fd' ||
+				(
+					is_file($dir.$file) && $mode == 'f'
+				) ||
+				(
+					is_dir($dir.$file) && $mode == 'd'
+				)
 			) {
 				--$limit;
 				$item	= $prefix_path === true ? $dir.$file : ($prefix_path ? $prefix_path.$file : $file);
-				if ($apply instanceof Closure) {
-					$apply($item);
-				} else {
+				if (!($apply instanceof Closure)) {
 					$prepare($list, $item, $dir.$file);
 				}
-				unset($item);
 			}
+			if ($limit >= 0) {
+				if ($subfolders && is_dir($dir.$file)) {
+					$list = array_merge(
+						$list,
+						get_files_list(
+							$dir.$file,
+							$mask,
+							$mode,
+							$prefix_path === true || $prefix_path === false ? $prefix_path : $prefix_path.$file,
+							$subfolders,
+							$sort,
+							$exclusion,
+							$system_files,
+							$apply,
+							$limit
+						) ?: []
+					);
+				}
+			}
+			if (isset($item) && $apply instanceof Closure) {
+				$apply($item);
+			}
+			unset($item);
 			if ($limit < 0) {
 				break;
-			}
-			if ($subfolders && is_dir($dir.$file)) {
-				$list = array_merge(
-					$list,
-					get_files_list(
-						$dir.$file,
-						$mask,
-						$mode,
-						$prefix_path === true || $prefix_path === false ? $prefix_path : $prefix_path.$file,
-						$subfolders,
-						$sort,
-						$exclusion,
-						$system_files,
-						$apply,
-						$limit
-					) ?: []
-				);
 			}
 		}
 		closedir($dirc);

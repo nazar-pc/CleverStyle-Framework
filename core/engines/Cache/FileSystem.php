@@ -193,8 +193,6 @@ class FileSystem extends _Abstract {
 				}
 			}
 		);
-		unset($item);
-		rmdir($cache_old);
-		return $ok;
+		return $ok && @rmdir($cache_old);
 	}
 }
