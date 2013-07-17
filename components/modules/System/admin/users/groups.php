@@ -7,9 +7,14 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Config, $Index, $L, $User, $Page;
-$a				= $Index;
-$rc				= $Config->route;
+namespace	cs;
+use			h;
+$Config	= Config::instance();
+$L		= Language::instance();
+$Page	= Page::instance();
+$User	= User::instance();
+$a		= Index::instance();
+$rc		= $Config->route;
 if (isset($rc[2])) {
 	switch ($rc[2]) {
 		case 'add':
@@ -101,7 +106,6 @@ if (isset($rc[2])) {
 				]).
 				h::{'button[type=submit]'}($L->yes)
 			);
-			global $Page;
 			$Page->warning($L->changing_settings_warning);
 		break;
 		case 'permissions':
@@ -110,7 +114,6 @@ if (isset($rc[2])) {
 			}
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
-			global $Cache;
 			$permissions			= $User->get_permissions_table();
 			$permission				= $User->get_group_permissions($rc[3]);
 			$tabs					= [];
@@ -232,7 +235,7 @@ if (isset($rc[2])) {
 			h::{'td.cs-left-all[colspan=4] a.cs-button'}(
 				$L->add_group,
 				[
-					'href' => 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add'
+					'href' => "admin/System/$rc[0]/$rc[1]/add"
 				]
 			)
 		)

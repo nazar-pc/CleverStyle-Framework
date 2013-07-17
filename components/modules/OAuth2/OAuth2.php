@@ -7,13 +7,18 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\OAuth2;
-use			cs\DB\Accessor;
+use			cs\Cache,
+			cs\Config,
+			cs\User,
+			cs\DB\Accessor,
+			cs\Singleton;
 class OAuth2 extends Accessor {
+	use	Singleton;
+
 	protected	$guest_tokens,
 				$expire			= 3600;
-	function __construct () {
-		global $Config;
-		$this->guest_tokens	= $Config->module('OAuth2')->guest_tokens;
+	function construct () {
+		$this->guest_tokens	= Config::instance()->module('OAuth2')->guest_tokens;
 	}
 	/**
 	 * Returns database index
@@ -21,8 +26,7 @@ class OAuth2 extends Accessor {
 	 * @return int
 	 */
 	protected function cdb () {
-		global $Config;
-		return $Config->module('OAuth2')->db('oauth2');
+		return Config::instance()->module('OAuth2')->db('oauth2');
 	}
 	/**
 	 * Add new client
@@ -59,8 +63,7 @@ class OAuth2 extends Accessor {
 			(int)(bool)$active
 		);
 		$id	= $this->db_prime()->id();
-		global $Cache;
-		unset($Cache->{'OAuth2/'.$id});
+		unset(Cache::instance()->{"OAuth2/$id"});
 		return $id;
 	}
 	/**
@@ -71,19 +74,19 @@ class OAuth2 extends Accessor {
 	 * @return array|bool
 	 */
 	function get_client ($id) {
-		$id	= (int)$id;
+		$id		= (int)$id;
 		if (!$id) {
 			return false;
 		}
-		global $Cache;
-		if (($data = $Cache->{'OAuth2/'.$id}) === false) {
+		$Cache	= Cache::instance();
+		if (($data = $Cache->{"OAuth2/$id"}) === false) {
 			$data	= $this->db()->qf(
 				"SELECT *
 				FROM `[prefix]oauth2_clients`
 				WHERE `id`	= $id
 				LIMIT 1"
 			);
-			$Cache->{'OAuth2/'.$id}	= $data;
+			$Cache->{"OAuth2/$id"}	= $data;
 		}
 		return $data;
 	}
@@ -125,8 +128,7 @@ class OAuth2 extends Accessor {
 			(int)(bool)$active,
 			$id
 		);
-		global $Cache;
-		unset($Cache->{'OAuth2/'.$id});
+		unset(Cache::instance()->{"OAuth2/$id"});
 		return $result;
 	}
 	/**
@@ -150,8 +152,7 @@ class OAuth2 extends Accessor {
 			"DELETE FROM `[prefix]oauth2_clients_sessions`
 			WHERE `id`	= $id"
 		]);
-		global $Cache;
-		unset($Cache->OAuth2);
+		unset(Cache::instance()->OAuth2);
 		return $result;
 	}
 	/**
@@ -173,7 +174,7 @@ class OAuth2 extends Accessor {
 	 * @return bool
 	 */
 	function add_access ($client) {
-		global $User;
+		$User	= User::instance();
 		$client	= (int)$client;
 		if (!$User->user() || !$this->get_client($client)) {
 			return false;
@@ -190,8 +191,7 @@ class OAuth2 extends Accessor {
 			$client,
 			$User->id
 		);
-		global $Cache;
-		unset($Cache->{'OAuth2/grant_access/'.$User->id});
+		unset(Cache::instance()->{"OAuth2/grant_access/$User->id"});
 		return $result;
 	}
 	/**
@@ -203,21 +203,20 @@ class OAuth2 extends Accessor {
 	 * @return bool
 	 */
 	function get_access ($client, $user = false) {
-		global $User;
-		$user	= $user ?: $User->id;
+		$user	= $user ?: User::instance()->id;
 		$client	= (int)$client;
 		if ($user == 1) {
 			return $this->guest_tokens;
 		}
-		global $Cache;
-		if (($data = $Cache->{'OAuth2/grant_access/'.$User->id}) === false) {
+		$Cache	= Cache::instance();
+		if (($data = $Cache->{"OAuth2/grant_access/$user"}) === false) {
 			$data	= $this->db()->qfas([
 				"SELECT `id`
 				FROM `[prefix]oauth2_clients_grant_access`
 				WHERE `user`	= '%s'",
-				$User->id
+				$user
 			]);
-			$Cache->{'OAuth2/grant_access/'.$User->id}	= $data;
+			$Cache->{"OAuth2/grant_access/$user"}	= $data;
 		}
 		return $data ? in_array($client, $data) : false;
 	}
@@ -230,13 +229,11 @@ class OAuth2 extends Accessor {
 	 * @return bool
 	 */
 	function del_access ($client = 0, $user = false) {
-		global $User;
-		$user	= $user ?: $User->id;
+		$user	= $user ?: User::instance()->id;
 		$client	= (int)$client;
 		if ($user == 1) {
 			return false;
 		}
-		global $Cache;
 		$result	= $client ? $this->db_prime()->q([
 			"DELETE FROM `[prefix]oauth2_clients_grant_access`
 			WHERE
@@ -255,7 +252,7 @@ class OAuth2 extends Accessor {
 			WHERE
 				`user`	= $user"
 		]);
-		unset($Cache->{'OAuth2/grant_access/'.$user});
+		unset(Cache::instance()->{"OAuth2/grant_access/$user"});
 		return $result;
 	}
 	/**
@@ -268,7 +265,7 @@ class OAuth2 extends Accessor {
 	 * @return bool|string					<i>false</i> on failure or code for token access otherwise
 	 */
 	function add_code ($client, $response_type, $redirect_uri = '') {
-		global $User;
+		$User	= User::instance();
 		$client	= $this->get_client((int)$client);
 		if (
 			(
@@ -415,7 +412,7 @@ class OAuth2 extends Accessor {
 		if (!preg_match('/^[0-9a-z]{32}$/', $access_token) || !$client || $client['secret'] != $secret) {
 			return false;
 		}
-		global $Cache;
+		$Cache	= Cache::instance();
 		if (($data = $Cache->{'OAuth2/tokens/'.$access_token}) === false) {
 			$data	= $this->db()->qf([
 				"SELECT
@@ -476,7 +473,6 @@ class OAuth2 extends Accessor {
 			$client['id'],
 			$refresh_token
 		]);
-		global $Cache;
 		$this->db_prime()->q(
 			"DELETE FROM `[prefix]oauth2_clients_sessions`
 			WHERE
@@ -489,8 +485,8 @@ class OAuth2 extends Accessor {
 		if (!$data) {
 			return false;
 		}
-		unset($Cache->{'OAuth2/tokens/'.$data['access_token']});
-		global $User;
+		unset(Cache::instance()->{"OAuth2/tokens/$data[access_token]"});
+		$User	= User::instance();
 		$id		= $User->get_session_user($data['session']);
 		if ($id != $data['user']) {
 			return false;
@@ -500,8 +496,4 @@ class OAuth2 extends Accessor {
 		$User->del_session();
 		return $result;
 	}
-}
-if (false) {
-	global $OAuth2;
-	$OAuth2	= new OAuth2;
 }

@@ -6,24 +6,25 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-use			h;
-class Mail extends \PHPMailer {
+use			h,
+			PHPMailer;
+class Mail extends PHPMailer {
+	use Singleton;
+
 	/**
 	 * Setting base mail sending parameters according to system configuration
 	 */
-	function __construct () {
-		global $Config;
-		if (is_object($Config)) {
-			if ($Config->core['smtp']) {
-				$this->Mailer		= 'smtp';
-				$this->Host			= $Config->core['smtp_host'];
-				$this->Port			= $Config->core['smtp_port'] ?: $Config->core['smtp_secure'] ? 465 : 25;
-				$this->SMTPSecure	= $Config->core['smtp_secure'];
-				if ($Config->core['smtp_auth']) {
-					$this->SMTPAuth	= true;
-					$this->Username	= $Config->core['smtp_user'];
-					$this->Password	= $Config->core['smtp_password'];
-				}
+	function construct () {
+		$Config			= Config::instance();
+		if ($Config->core['smtp']) {
+			$this->Mailer		= 'smtp';
+			$this->Host			= $Config->core['smtp_host'];
+			$this->Port			= $Config->core['smtp_port'] ?: $Config->core['smtp_secure'] ? 465 : 25;
+			$this->SMTPSecure	= $Config->core['smtp_secure'];
+			if ($Config->core['smtp_auth']) {
+				$this->SMTPAuth	= true;
+				$this->Username	= $Config->core['smtp_user'];
+				$this->Password	= $Config->core['smtp_password'];
 			}
 		}
 		$this->From		= $Config->core['mail_from'];
@@ -137,11 +138,4 @@ class Mail extends \PHPMailer {
 		$this->ClearReplyTos();
 		return $result;
 	}
-}
-/**
- * For IDE
- */
-if (false) {
-	global $Mail;
-	$Mail = new Mail;
 }

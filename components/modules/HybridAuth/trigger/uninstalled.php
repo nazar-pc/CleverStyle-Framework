@@ -7,16 +7,13 @@
  * @copyright	HybridAuth authors
  * @license		MIT License, see license.txt
  */
-namespace	cs\modules\HybridAuth;
-global $Core;
-$Core->register_trigger(
+namespace	cs;
+Trigger::instance()->register(
 	'admin/System/components/modules/install/process',
 	function ($data) {
 		if ($data['name'] != 'HybridAuth') {
 			return;
 		}
-		global $Config;
-		$Config->module('HybridAuth')->providers	= [];
-
+		Config::instance()->module('HybridAuth')->providers	= [];
 	}
 );

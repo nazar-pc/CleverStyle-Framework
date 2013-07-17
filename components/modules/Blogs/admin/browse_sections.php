@@ -8,10 +8,14 @@
  */
 
 namespace	cs\modules\Blogs;
-use			h;
-global $Index, $L, $Page;
+use			h,
+			cs\Index,
+			cs\Language,
+			cs\Page;
+$Index			= Index::instance();
+$L				= Language::instance();
 $Index->buttons	= false;
-$Page->title($L->browse_sections);
+Page::instance()->title($L->browse_sections);
 $Index->content(
 	h::{'table.cs-left-all.cs-fullwidth-table'}(
 		h::{'tr th.ui-widget-header.ui-corner-all'}(
@@ -29,7 +33,7 @@ $Index->content(
 		h::{'tr td[colspan=2] a.cs-button'}([
 			$L->add_section,
 			[
-				'href'	=> 'admin/'.MODULE.'/add_section'
+				'href'	=> 'admin/Blogs/add_section'
 			]
 		])
 	)

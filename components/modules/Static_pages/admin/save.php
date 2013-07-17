@@ -6,10 +6,13 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
+namespace	cs\modules\Static_pages;
+use			cs\Index;
 if (!isset($_POST['mode'])) {
 	return;
 }
-global $Index, $Static_pages;
+$Index			= Index::instance();
+$Static_pages	= Static_pages::instance();
 switch ($_POST['mode']) {
 	case 'add_category':
 		$Index->save($Static_pages->add_category($_POST['parent'], $_POST['title'], $_POST['path']));

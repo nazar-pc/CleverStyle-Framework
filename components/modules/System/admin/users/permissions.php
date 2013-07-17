@@ -7,8 +7,13 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Config, $Index, $L, $User, $Page;
-$a				= $Index;
+namespace	cs;
+use			h;
+$Config			= Config::instance();
+$L				= Language::instance();
+$Page			= Page::instance();
+$User			= User::instance();
+$a				= Index::instance();
 $rc				= $Config->route;
 if (isset($rc[2])) {
 	switch ($rc[2]) {
@@ -73,7 +78,6 @@ if (isset($rc[2])) {
 					'value'	=> $rc[3]
 				])
 			);
-			global $Page;
 			$Page->warning($L->changing_settings_warning);
 		break;
 		case 'delete':
@@ -96,7 +100,6 @@ if (isset($rc[2])) {
 				]).
 				h::{'button[type=submit]'}($L->yes)
 			);
-			global $Page;
 			$Page->warning($L->changing_settings_warning);
 		break;
 	}
@@ -108,7 +111,6 @@ if (isset($rc[2])) {
 	);
 } else {
 	$a->buttons			= false;
-	global $Cache;
 	$permissions		= $User->get_permissions_table();
 	$permissions_list	= [
 		h::{'th.ui-widget-header.ui-corner-all'}([$L->action, 'id', $L->group, $L->label]),
@@ -173,7 +175,7 @@ if (isset($rc[2])) {
 			h::{'tr td.cs-left-all[colspan=8] a.cs-button'}(
 				$L->add_permission,
 				[
-					'href' => 'admin/'.MODULE.'/'.$rc[0].'/'.$rc[1].'/add'
+					'href' => "admin/System/$rc[0]/$rc[1]/add"
 				]
 			)
 		)

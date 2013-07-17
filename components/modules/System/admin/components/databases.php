@@ -7,8 +7,13 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Config, $Core, $Index, $L, $Page;
-$a				= $Index;
+namespace	cs;
+use			h;
+$Config			= Config::instance();
+$Core			= Core::instance();
+$L				= Language::instance();
+$Page			= Page::instance();
+$a				= Index::instance();
 $rc				= $Config->route;
 $test_dialog	= false;
 if (isset($rc[2])) {
@@ -168,7 +173,6 @@ if (isset($rc[2])) {
 				unset($module, $mdata, $db_name);
 			}
 			if (!empty($content)) {
-				global $Page;
 				$Page->warning($L->db_used_by_modules.': '.implode(', ', $content));
 			} else {
 				$a->action	= 'admin/System/'.$rc[0].'/'.$rc[1];
@@ -209,7 +213,7 @@ if (isset($rc[2])) {
 			interface_off();
 			$a->form			= false;
 			$a->generate_auto	= false;
-			global $Page, $db;
+			$db					= DB::instance();
 			if (isset($rc[4])) {
 				$Page->content(
 					h::{'p.cs-test-result'}(
@@ -244,48 +248,53 @@ if (isset($rc[2])) {
 	$databases		= $Config->db;
 	if (!empty($databases)) {
 		foreach ($databases as $i => &$db_data) {
-			$db_list[]	= h::{'td.ui-corner-all.'.($i ? 'ui-widget-content' : 'ui-state-highlight')}(
+			$db_list[]	= h::{'td.ui-corner-all'}(
 				[
-					h::{'a.cs-button-compact'}(
-						[
-							h::icon('plus'),
-							[
-								'href'			=> $a->action.'/add/'.$i,
-								'data-title'	=> $L->add.' '.$L->mirror.' '.$L->of_db
-							]
-						],
-						$i ? [
-							h::icon('wrench'),
-							[
-								'href'			=> $a->action.'/edit/'.$i,
-								'data-title'	=> $L->edit.' '.$L->db
-							]
-						] : false,
-						$i ? [
-							h::icon('trash'),
-							[
-								'href'			=> $a->action.'/delete/'.$i,
-								'data-title'	=> $L->delete.' '.$L->db
-							]
-						] : false,
-						[
-							h::icon('signal-diag'),
-							[
-								'onMouseDown'	=> 'db_test(\''.$a->action.'/test/'.$i.'\', true);',
-								'data-title'	=> $L->test_connection
-							]
-						]
-					),
 					[
-						'class'	=> 'cs-left-all'
-					]
+						h::{'a.cs-button-compact'}(
+							[
+								h::icon('plus'),
+								[
+									'href'			=> $a->action.'/add/'.$i,
+									'data-title'	=> $L->add.' '.$L->mirror.' '.$L->of_db
+								]
+							],
+							$i ? [
+								h::icon('wrench'),
+								[
+									'href'			=> $a->action.'/edit/'.$i,
+									'data-title'	=> $L->edit.' '.$L->db
+								]
+							] : false,
+							$i ? [
+								h::icon('trash'),
+								[
+									'href'			=> $a->action.'/delete/'.$i,
+									'data-title'	=> $L->delete.' '.$L->db
+								]
+							] : false,
+							[
+								h::icon('signal-diag'),
+								[
+									'onMouseDown'	=> 'db_test(\''.$a->action.'/test/'.$i.'\', true);',
+									'data-title'	=> $L->test_connection
+								]
+							]
+						),
+						[
+							'class'	=> 'cs-left-all'
+						]
+					],
+					$i	? $db_data['host']		: $Core->db_host,
+					$i	? $db_data['type']		: $Core->db_type,
+					$i	? $db_data['prefix']	: $Core->db_prefix,
+					$i	? $db_data['name']		: $Core->db_name,
+					$i	? $db_data['user']		: '*****',
+					$i	? $db_data['charset']	: $Core->db_charset
 				],
-				$i	? $db_data['host']		: $Core->db_host,
-				$i	? $db_data['type']		: $Core->db_type,
-				$i	? $db_data['prefix']	: $Core->db_prefix,
-				$i	? $db_data['name']		: $Core->db_name,
-				$i	? $db_data['user']		: '*****',
-				$i	? $db_data['charset']	: $Core->db_charset
+				[
+					'class'	=> $i ? 'ui-widget-content' : 'ui-state-highlight'
+				]
 			);
 			foreach ($Config->db[$i]['mirrors'] as $m => &$mirror) {
 				if (is_array($mirror) && !empty($mirror)) {

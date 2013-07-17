@@ -6,14 +6,12 @@
  * @copyright      Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license        MIT License, see license.txt
  */
-global $Core;
-$Core->register_trigger(
+namespace	cs;
+Trigger::instance()->register(
 	'System/Page/pre_display',
 	function () {
-		global $Page, $Config;
-		if (ADMIN && in_array('Admin_default_theme', $Config->components['plugins'])) {
-			$Page->set_theme('CleverStyle');
-			$Page->set_color_scheme('Green');
+		if (ADMIN && in_array('Admin_default_theme', Config::instance()->components['plugins'])) {
+			Page::instance()->set_theme('CleverStyle')->set_color_scheme('Green');
 		}
 	}
 );

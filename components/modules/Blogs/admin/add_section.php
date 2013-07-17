@@ -8,12 +8,18 @@
  */
 
 namespace	cs\modules\Blogs;
-use			h;
-global $Index, $L, $Page, $Config;
-$Page->title($L->addition_of_posts_section);
+use			h,
+			cs\Config,
+			cs\Index,
+			cs\Language,
+			cs\Page;
+$Config						= Config::instance();
+$Index						= Index::instance();
+$L							= Language::instance();
+Page::instance()->title($L->addition_of_posts_section);
 $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
-$Index->action				= 'admin/'.MODULE.'/browse_sections';
+$Index->action				= 'admin/Blogs/browse_sections';
 $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 		$L->addition_of_posts_section

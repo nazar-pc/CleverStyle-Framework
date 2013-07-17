@@ -7,8 +7,9 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Config, $Cache, $User, $Page, $L;
-if ($User->system()) {
+namespace	cs;
+$Page	= Page::instance();
+if (User::instance()->system()) {
 	copy(
 		$_POST['package'],
 		$tmp_file = TEMP.'/'.md5($_POST['package'].MICROTIME).'.phar.php'

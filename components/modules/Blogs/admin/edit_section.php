@@ -8,14 +8,19 @@
  */
 
 namespace	cs\modules\Blogs;
-use			h;
-global $Index, $L, $Page, $Blogs, $Config;
-$id							= (int)$Config->route[1];
-$data						= $Blogs->get_section($id);
-$Page->title($L->editing_of_posts_section($data['title']));
+use			h,
+			cs\Config,
+			cs\Index,
+			cs\Language,
+			cs\Page;
+$id							= (int)Config::instance()->route[1];
+$data						= Blogs::instance()->get_section($id);
+$Index						= Index::instance();
+$L							= Language::instance();
+Page::instance()->title($L->editing_of_posts_section($data['title']));
 $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
-$Index->action				= 'admin/'.MODULE.'/browse_sections';
+$Index->action				= 'admin/Blogs/browse_sections';
 $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 		$L->editing_of_posts_section($data['title'])

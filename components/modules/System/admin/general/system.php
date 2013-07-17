@@ -8,10 +8,14 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\System;
-use			h;
-global $L, $Config, $Index;
-$sa	= $Config->core['simple_admin_mode'];
-$Index->content(
+use			h,
+			cs\Config,
+			cs\Index,
+			cs\Language;
+$Config	= Config::instance();
+$L		= Language::instance();
+$sa		= $Config->core['simple_admin_mode'];
+Index::instance()->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		core_input('site_mode', 'radio'),
 		core_input('closed_title'),
@@ -20,16 +24,14 @@ $Index->content(
 		core_input('title_reverse', 'radio'),
 		core_textarea('footer_text', 'SEDITOR'),
 		core_input('show_footer_info', 'radio'),
-		core_input('show_tooltips', 'radio'),
+		core_input('show_tooltips', 'radio', false),
 		core_input('og_support', 'radio'),
 		core_input('simple_admin_mode', 'radio'),
-		!$sa ? core_input('cache_sync', 'radio') : false,
 		!$sa ? core_input('cookie_sync', 'radio') : false,
 		!$sa ? [
 			$L->debug,
 			[
 				h::{'table tr| td'}(
-					core_input('show_objects_data', 'radio'),
 					core_input('show_db_queries', 'radio'),
 					core_input('show_cookies', 'radio')
 				),

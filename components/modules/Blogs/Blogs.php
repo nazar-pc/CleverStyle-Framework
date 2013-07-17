@@ -7,17 +7,25 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			cs\DB\Accessor;
+use			cs\Trigger,
+			cs\Cache,
+			cs\Config,
+			cs\Language,
+			cs\Text,
+			cs\User,
+			cs\DB\Accessor,
+			cs\Singleton;
 
 class Blogs extends Accessor {
+	use Singleton;
+
 	/**
 	 * Returns database index
 	 *
 	 * @return int
 	 */
 	protected function cdb () {
-		global $Config;
-		return $Config->module('Blogs')->db('posts');
+		return Config::instance()->module('Blogs')->db('posts');
 	}
 	/**
 	 * Get data of specified post
@@ -27,8 +35,9 @@ class Blogs extends Accessor {
 	 * @return array|bool
 	 */
 	function get ($id) {
-		global $Cache, $L, $User, $Config, $Comments;
-		$id	= (int)$id;
+		$Cache		= Cache::instance();
+		$L			= Language::instance();
+		$id			= (int)$id;
 		if (($data = $Cache->{'Blogs/posts/'.$id.'/'.$L->clang}) === false) {
 			$data	= $this->db()->qf([
 				"SELECT
@@ -48,7 +57,7 @@ class Blogs extends Accessor {
 					)
 				LIMIT 1",
 				$id,
-				$User->id
+				User::instance()->id
 			]);
 			if ($data) {
 				$data['title']								= $this->ml_process($data['title']);
@@ -87,7 +96,17 @@ class Blogs extends Accessor {
 				$Cache->{'Blogs/posts/'.$id.'/'.$L->clang}	= $data;
 			}
 		}
-		$data['comments_count']	= $Config->module('Blogs')->enable_comments && is_object($Comments) ? $Comments->count($data['id']) : 0;
+		$Comments	= null;
+		Trigger::instance()->run(
+			'Comments/instance',
+			[
+				'data'	=> &$Comments
+			]
+		);
+		/**
+		 * @var \cs\modules\Comments\Comments $Comments
+		 */
+		$data['comments_count']	= Config::instance()->module('Blogs')->enable_comments && $Comments ? $Comments->count($data['id']) : 0;
 		return $data;
 	}
 	/**
@@ -106,13 +125,12 @@ class Blogs extends Accessor {
 		if (empty($tags) || empty($content)) {
 			return false;
 		}
-		global $User, $Config;
 		$path		= path(str_replace(['/', '\\'], '_', $path ?: $title));
 		$sections	= array_intersect(
 			array_keys($this->get_sections_list()),
 			$sections
 		);
-		if (empty($sections) || count($sections) > $Config->module(MODULE)->max_sections) {
+		if (empty($sections) || count($sections) > Config::instance()->module('Blogs')->max_sections) {
 			return false;
 		}
 		if ($this->db_prime()->q(
@@ -128,7 +146,7 @@ class Blogs extends Accessor {
 					'%s',
 					'%s'
 				)",
-			$User->id,
+			User::instance()->id,
 			$draft ? 0 : TIME,
 			(int)(bool)$draft
 		)) {
@@ -187,7 +205,9 @@ class Blogs extends Accessor {
 		if (empty($tags) || empty($content)) {
 			return false;
 		}
-		global $Cache, $Config, $L, $Core;
+		$Cache		= Cache::instance();
+		$Config		= Config::instance();
+		$L			= Language::instance();
 		$id			= (int)$id;
 		$title		= trim(xap($title));
 		$path		= path(str_replace(['/', '\\'], '_', $path ?: $title));
@@ -196,7 +216,7 @@ class Blogs extends Accessor {
 			array_keys($this->get_sections_list()),
 			$sections
 		);
-		if (empty($sections) || count($sections) > $Config->module(MODULE)->max_sections) {
+		if (empty($sections) || count($sections) > $Config->module('Blogs')->max_sections) {
 			return false;
 		}
 		$sections	= implode(
@@ -274,7 +294,7 @@ class Blogs extends Accessor {
 			$new_files	= isset($new_files[1]) ? $new_files[1] : [];
 			if ($old_files || $new_files) {
 				foreach (array_diff($old_files, $new_files) as $file) {
-					$Core->run_trigger(
+					Trigger::instance()->run(
 						'System/upload_files/del_tag',
 						[
 							'tag'	=> "Blogs/posts/$id/$L->clang",
@@ -284,7 +304,7 @@ class Blogs extends Accessor {
 				}
 				unset($file);
 				foreach (array_diff($new_files, $old_files) as $file) {
-					$Core->run_trigger(
+					Trigger::instance()->run(
 						'System/upload_files/add_tag',
 						[
 							'tag'	=> "Blogs/posts/$id/$L->clang",
@@ -326,8 +346,8 @@ class Blogs extends Accessor {
 	 * @return bool
 	 */
 	function del ($id) {
-		global $Cache, $Comments, $Core;
-		$id	= (int)$id;
+		$Cache	= Cache::instance();
+		$id		= (int)$id;
 		if ($this->db_prime()->q([
 			"DELETE FROM `[prefix]blogs_posts`
 			WHERE `id` = $id
@@ -340,13 +360,23 @@ class Blogs extends Accessor {
 			$this->ml_del('Blogs/posts/title', $id);
 			$this->ml_del('Blogs/posts/path', $id);
 			$this->ml_del('Blogs/posts/content', $id);
-			$Core->run_trigger(
+			Trigger::instance()->run(
 				'System/upload_files/del_tag',
 				[
 					'tag'	=> "Blogs/posts/$id%"
 				]
 			);
-			if (is_object($Comments)) {
+			$Comments	= null;
+			Trigger::instance()->run(
+				'Comments/instance',
+				[
+					'data'	=> &$Comments
+				]
+			);
+			/**
+			 * @var \cs\modules\Comments\Comments $Comments
+			 */
+			if ($Comments) {
 				$Comments->del_all($id);
 			}
 			unset(
@@ -365,7 +395,7 @@ class Blogs extends Accessor {
 	 * @return int
 	 */
 	function get_total_count () {
-		global $Cache;
+		$Cache	= Cache::instance();
 		if (($data = $Cache->{'Blogs/total_count'}) === false) {
 			$Cache->{'Blogs/total_count'}	= $data	= $this->db()->qfs(
 				"SELECT COUNT(`id`)
@@ -381,7 +411,8 @@ class Blogs extends Accessor {
 	 * @return array|bool
 	 */
 	function get_sections_list () {
-		global $Cache, $L;
+		$Cache	= Cache::instance();
+		$L		= Language::instance();
 		if (($data = $Cache->{'Blogs/sections/list/'.$L->clang}) === false) {
 			$data	= $this->get_sections_list_internal(
 				$this->get_sections_structure()
@@ -409,7 +440,8 @@ class Blogs extends Accessor {
 	 * @return array|bool
 	 */
 	function get_sections_structure () {
-		global $Cache, $L;
+		$Cache	= Cache::instance();
+		$L		= Language::instance();
 		if (($data = $Cache->{'Blogs/sections/structure/'.$L->clang}) === false) {
 			$data	= $this->get_sections_structure_internal();
 			if ($data) {
@@ -429,8 +461,7 @@ class Blogs extends Accessor {
 				$this->get_section($parent)
 			);
 		} else {
-			global $L;
-			$structure['title']	= $L->root_section;
+			$structure['title']	= Language::instance()->root_section;
 			$structure['posts']	= $this->db()->qfs([
 				"SELECT COUNT(`s`.`id`)
 				FROM `[prefix]blogs_posts_sections` AS `s`
@@ -466,8 +497,9 @@ class Blogs extends Accessor {
 	 * @return array|bool
 	 */
 	function get_section ($id) {
-		global $Cache, $L;
-		$id	= (int)$id;
+		$Cache	= Cache::instance();
+		$L		= Language::instance();
+		$id		= (int)$id;
 		if (($data = $Cache->{'Blogs/sections/'.$id.'/'.$L->clang}) === false) {
 			$data											= $this->db()->qf([
 				"SELECT
@@ -513,7 +545,7 @@ class Blogs extends Accessor {
 	 * @return bool|int			Id of created section on success of <b>false</> on failure
 	 */
 	function add_section ($parent, $title, $path) {
-		global $Cache;
+		$Cache	= Cache::instance();
 		$parent	= (int)$parent;
 		$path	= path(str_replace(['/', '\\'], '_', $path ?: $title));
 		$posts	= $this->db_prime()->qfa(
@@ -561,7 +593,7 @@ class Blogs extends Accessor {
 	 * @return bool
 	 */
 	function set_section ($id, $parent, $title, $path) {
-		global $Cache;
+		$Cache	= Cache::instance();
 		$parent	= (int)$parent;
 		$title	= trim($title);
 		$path	= path(str_replace(['/', '\\'], '_', $path ?: $title));
@@ -595,9 +627,8 @@ class Blogs extends Accessor {
 	 * @return bool
 	 */
 	function del_section ($id) {
-		global $Cache;
 		$id						= (int)$id;
-		$parent_section		= $this->db_prime()->qfs([
+		$parent_section			= $this->db_prime()->qfs([
 			"SELECT `parent`
 			FROM `[prefix]blogs_sections`
 			WHERE `id` = '%s'
@@ -634,23 +665,20 @@ class Blogs extends Accessor {
 		)) {
 			$this->ml_del('Blogs/sections/title', $id);
 			$this->ml_del('Blogs/sections/path', $id);
-			unset($Cache->Blogs);
+			unset(Cache::instance()->Blogs);
 			return true;
 		} else {
 			return false;
 		}
 	}
 	private function ml_process ($text, $auto_translation = true) {
-		global $Text;
-		return $Text->process($this->cdb(), $text, $auto_translation);
+		return Text::instance()->process($this->cdb(), $text, $auto_translation);
 	}
 	private function ml_set ($group, $label, $text) {
-		global $Text;
-		return $Text->set($this->cdb(), $group, $label, $text);
+		return Text::instance()->set($this->cdb(), $group, $label, $text);
 	}
 	private function ml_del ($group, $label) {
-		global $Text;
-		return $Text->del($this->cdb(), $group, $label);
+		return Text::instance()->del($this->cdb(), $group, $label);
 	}
 	/**
 	 * Get array of tags list in form [<i>id</i> => <i>text</i>]
@@ -658,7 +686,8 @@ class Blogs extends Accessor {
 	 * @return array
 	 */
 	function get_tags_list () {
-		global $Cache, $L;
+		$Cache	= Cache::instance();
+		$L		= Language::instance();
 		if (($data = $Cache->{'Blogs/tags/'.$L->clang}) === false) {
 			$tags	= $this->db()->qfa(
 				"SELECT
@@ -708,7 +737,6 @@ class Blogs extends Accessor {
 	private function add_tag ($tag, $clean_cache = true) {
 		$tag	= trim(xap($tag));
 		if (($id = array_search($tag, $this->get_tags_list())) === false) {
-			global $Cache;
 			if ($this->db_prime()->q(
 				"INSERT INTO `[prefix]blogs_tags`
 					(`text`)
@@ -718,7 +746,7 @@ class Blogs extends Accessor {
 			)) {
 				$id	= $this->db_prime()->id();
 				if ($clean_cache) {
-					unset($Cache->{'Blogs/tags'});
+					unset(Cache::instance()->{'Blogs/tags'});
 				}
 				return $id;
 			}
@@ -778,16 +806,8 @@ class Blogs extends Accessor {
 			}
 		}
 		if ($added) {
-			global $Cache;
-			unset($Cache->{'Blogs/tags'});
+			unset(Cache::instance()->{'Blogs/tags'});
 		}
 		return array_values(array_unique($tags));
 	}
-}
-/**
- * For IDE
- */
-if (false) {
-	global $Blogs;
-	$Blogs = new Blogs;
 }

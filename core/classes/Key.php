@@ -7,6 +7,8 @@
  */
 namespace cs;
 class Key {
+	use	Singleton;
+
 	/**
 	 * Generates guaranteed unique key
 	 *
@@ -15,9 +17,8 @@ class Key {
 	 * @return string
 	 */
 	function generate ($database) {
-		global $db;
 		if (!is_object($database)) {
-			$database = $db->$database();
+			$database = DB::instance()->$database();
 		}
 		while (true) {
 			$key	= hash('sha224', microtime(true));
@@ -46,9 +47,8 @@ class Key {
 	 * @return bool|string
 	 */
 	function add ($database, $key, $data = null, $expire = 0) {
-		global $db, $Config;
 		if (!is_object($database)) {
-			$database = $db->$database();
+			$database = DB::instance()->$database();
 		}
 		if (!preg_match('/^[a-z0-9]{56}$/', $key)) {
 			if ($key === false) {
@@ -58,6 +58,7 @@ class Key {
 			}
 		}
 		$expire = (int)$expire;
+		$Config	= Config::instance();
 		if ($expire == 0 || $expire < TIME) {
 			$expire = TIME + $Config->core['key_expire'];
 		}
@@ -103,9 +104,8 @@ class Key {
 		if (!preg_match('/^[a-z0-9]{56}$/', $key)) {
 			return false;
 		}
-		global $db;
 		if (!is_object($database)) {
-			$database = $db->$database();
+			$database = DB::instance()->$database();
 		}
 		$time	= TIME;
 		$result	= $database->qf([
@@ -142,9 +142,8 @@ class Key {
 		if (!preg_match('/^[a-z0-9]{56}$/', $key)) {
 			return false;
 		}
-		global $db;
 		if (!is_object($database)) {
-			$database = $db->$database();
+			$database = DB::instance()->$database();
 		}
 		$key = $database->s($key);
 		return $database->q(
@@ -160,17 +159,4 @@ class Key {
 				)"
 		);
 	}
-	/**
-	 * Cloning restriction
-	 *
-	 * @final
-	 */
-	function __clone () {}
-}
-/**
- * For IDE
- */
-if (false) {
-	global $Key;
-	$Key = new Key;
 }

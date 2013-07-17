@@ -7,10 +7,15 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
+namespace	cs;
 if (!isset($_POST['mode'])) {
 	return;
 }
-global $Config, $Page, $Index, $User, $L;
+$Config	= Config::instance();
+$Index	= Index::instance();
+$L		= Language::instance();
+$Page	= Page::instance();
+$User	= User::instance();
 switch ($_POST['mode']) {
 	case 'add':
 		if ($_POST['email']) {
@@ -110,8 +115,7 @@ switch ($_POST['mode']) {
 				} elseif (password_check($user_data['password'], $Config->core['password_min_length']) < $Config->core['password_min_strength']) {
 					$Page->warning($L->password_too_easy);
 				} else {
-					global $Core;
-					$user_data['password_hash'] = hash('sha512', hash('sha512', $user_data['password']).$Core->public_key);
+					$user_data['password_hash'] = hash('sha512', hash('sha512', $user_data['password']).Core::instance()->public_key);
 				}
 			}
 			unset($user_data['password']);

@@ -6,12 +6,11 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Core;
-$Core->register_trigger(
+namespace	cs;
+Trigger::instance()->register(
 	'System/Config/routing_replace',
 	function ($data) {
-		global $Config;
-		if (!$Config->module('OAuth2')->active() && substr($data['rc'], 0, 5) != 'admin') {
+		if (!Config::instance()->module('OAuth2')->active() && substr($data['rc'], 0, 5) != 'admin') {
 			return;
 		}
 		$rc		= explode('/', $data['rc']);
@@ -25,11 +24,10 @@ $Core->register_trigger(
 		}
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'System/Index/construct',
 	function () {
-		global $Config;
-		switch ($Config->components['modules']['OAuth2']['active']) {
+		switch (Config::instance()->components['modules']['OAuth2']['active']) {
 			case 1:
 				require __DIR__.'/trigger/enabled.php';
 		}

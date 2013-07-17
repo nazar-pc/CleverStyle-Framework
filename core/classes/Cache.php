@@ -7,6 +7,8 @@
  */
 namespace cs;
 class Cache {
+	use Singleton;
+
 	protected	$cache,					//Cache state
 				$init		= false,	//Initialization state
 				$engine,
@@ -15,23 +17,16 @@ class Cache {
 				 *
 				 * @var Cache\_Abstract
 				 */
-				$instance;
+				$engine_instance;
 	/**
 	 * Initialization, creating cache engine instance
 	 */
-	function __construct () {
-		$this->init();
-		if (!$this->init && $this->cache) {
-			global $Core;
-			$engine_class	= '\\cs\\Cache\\'.($this->engine = $Core->cache_engine);
-			$this->instance	= new $engine_class();
-		}
-	}
-	/**
-	 * Cache (re)initialization
-	 */
-	function init () {
+	protected function construct () {
 		$this->cache = !DEBUG;
+		if (!$this->init && $this->cache) {
+			$engine_class	= '\\cs\\Cache\\'.($this->engine = Core::instance()->cache_engine);
+			$this->engine_instance	= new $engine_class();
+		}
 	}
 	/**
 	 * Get item from cache
@@ -44,7 +39,7 @@ class Cache {
 		if (!$this->cache) {
 			return false;
 		}
-		return $this->instance->get($item);
+		return $this->engine_instance->get($item);
 	}
 
 	/**
@@ -56,13 +51,13 @@ class Cache {
 	 * @return bool
 	 */
 	function set ($item, $data) {
-		if ($this->engine != 'BlackHole' && is_object($this->instance)){
-			$this->instance->del($item);
+		if ($this->engine != 'BlackHole' && is_object($this->engine_instance)){
+			$this->engine_instance->del($item);
 		}
 		if (!$this->cache) {
 			return true;
 		}
-		return $this->instance->set($item, $data);
+		return $this->engine_instance->set($item, $data);
 	}
 	/**
 	 * Delete item from cache
@@ -72,27 +67,11 @@ class Cache {
 	 * @return bool
 	 */
 	function del ($item) {
-		$this->del_internal($item);
-	}
-	/**
-	 * Delete item from cache
-	 *
-	 * @param string	$item				May contain "/" symbols for cache structure, for example users/<i>user_id</i>
-	 * @param bool		$process_mirrors
-	 *
-	 * @return bool
-	 */
-	protected function del_internal ($item, $process_mirrors = true) {
 		if (empty($item) || $item == '/') {
 			return false;
 		}
-		global $User, $Config;
-		if ($process_mirrors && isset($Config->core['cache_sync']) && $Config->core['cache_sync'] && is_object($User) && !$User->system()) {
-			global $Core;
-			$Core->api_request('System/admin/cache/del', ['item' => $item]);
-		}
-		if (is_object($this->instance)){
-			return $this->instance->del($item);
+		if (is_object($this->engine_instance)){
+			return $this->engine_instance->del($item);
 		} else {
 			return false;
 		}
@@ -103,8 +82,8 @@ class Cache {
 	 * @return bool
 	 */
 	function clean () {
-		if (is_object($this->instance)){
-			return $this->instance->clean();
+		if (is_object($this->engine_instance)){
+			return $this->engine_instance->clean();
 		} else {
 			return false;
 		}
@@ -154,17 +133,4 @@ class Cache {
 	function __unset ($item) {
 		return $this->del($item);
 	}
-	/**
-	 * Cloning restriction
-	 *
-	 * @final
-	 */
-	function __clone () {}
-}
-/**
- * For IDE
- */
-if (false) {
-	global $Cache;
-	$Cache = new Cache;
 }

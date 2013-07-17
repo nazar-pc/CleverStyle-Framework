@@ -5,7 +5,8 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace cs\DB;
+namespace	cs\DB;
+use			cs\DB;
 abstract class _Abstract {
 				/**
 				 * Is connection established
@@ -132,7 +133,6 @@ abstract class _Abstract {
 		if(!$query) {
 			return true;
 		}
-		global $db;
 		$this->query['time']		= microtime(true);
 		$this->query['text']		= empty($params) ? $query : vsprintf($query, $params);
 		if (DEBUG) {
@@ -145,10 +145,9 @@ abstract class _Abstract {
 			$this->queries['time'][]	= $this->query['time'];
 		}
 		++$this->queries['num'];
-		if (is_object($db)) {
-			$db->time		+= $this->query['time'];
-			++$db->queries;
-		}
+		$db							= DB::instance();
+		$db->time					+= $this->query['time'];
+		++$db->queries;
 		return $result;
 	}
 	/**

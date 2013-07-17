@@ -5,7 +5,7 @@
 			"id",
 			"secret"
 		],
-		"info"	: "Authorized Redirect URIs: {base_url}/{module}/{provider}?auth.done={provider}"
+		"info"	: "Authorized Redirect URIs: {base_url}/HybridAuth/{provider}?auth.done={provider}"
 	},
 	"Facebook"		: {
 		"keys"	: [
@@ -19,7 +19,7 @@
 			"key",
 			"secret"
 		],
-		"info"	: "Callback URL: {base_url}/{module}/{provider}?auth.done={provider}"
+		"info"	: "Callback URL: {base_url}/HybridAuth/{provider}?auth.done={provider}"
 	},
 	"Vkontakte"		: {
 		"keys"	: [
@@ -64,7 +64,7 @@
 			"id",
 			"secret"
 		],
-		"info"	: "Callback URL: {base_url}/{module}/{provider}?auth.done={provider}"
+		"info"	: "Callback URL: {base_url}/HybridAuth/{provider}?auth.done={provider}"
 	},
 	"AOL"			: {},
 	"GitHub"	: {
@@ -72,7 +72,7 @@
 			"id",
 			"secret"
 		],
-		"info"	: "Callback URL: {base_url}/{module}/{provider}?auth.done={provider}"
+		"info"	: "Callback URL: {base_url}/HybridAuth/{provider}?auth.done={provider}"
 	},
 	"LastFM"		: {
 		"keys"	: [
@@ -85,7 +85,7 @@
 			"key",
 			"secret"
 		],
-		"info"	: "Application Callback URL: {base_url}/{module}/{provider}?auth.done={provider}"
+		"info"	: "Application Callback URL: {base_url}/HybridAuth/{provider}?auth.done={provider}"
 	},
 	"Viadeo"		: {
 		"keys"	: [
@@ -182,7 +182,7 @@
 			"id",
 			"secret"
 		],
-		"info"	: "Callback URL: {base_url}/{module}/{provider}?auth.done={provider}"
+		"info"	: "Callback URL: {base_url}/HybridAuth/{provider}?auth.done={provider}"
 	},
 	"Steam"			: {}
 }

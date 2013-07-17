@@ -6,22 +6,25 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Core;
-$Core->create('_cs\\modules\\OAuth2\\OAuth2');
-$Core->register_trigger(
+namespace	cs\modules\OAuth2;
+use			cs\Config,
+			cs\Page,
+			cs\Trigger,
+			cs\User;
+Trigger::instance()->register(
 	'System/User/del_all_sessions',
 	function ($data) {
-		global $OAuth2;
-		$OAuth2->del_access(0, $data['id']);
+		OAuth2::instance()->del_access(0, $data['id']);
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'System/User/construct/before',
 	function () {
 		if (API && isset($_POST['client_id'], $_POST['access_token'])) {
 			header('Cache-Control: no-store');
 			header('Pragma: no-cache');
-			global $OAuth2, $Page, $Core, $Config;
+			$OAuth2						= OAuth2::instance();
+			$Page						= Page::instance();
 			if (!($client = $OAuth2->get_client($_POST['client_id']))) {
 				code_header(400);
 				$Page->Content	= _json_encode([
@@ -73,15 +76,13 @@ $Core->register_trigger(
 				__finish();
 			}
 			$_POST['session']	= $token_data['session'];
-			if (!$Config->module('OAuth2')->guest_tokens) {
-				$Core->register_trigger(
+			if (!Config::instance()->module('OAuth2')->guest_tokens) {
+				Trigger::instance()->register(
 					'System/User/construct/after',
 					function () {
-						global $User;
-						if (!$User->user()) {
-							global $Page;
+						if (!User::instance()->user()) {
 							code_header(403);
-							$Page->Content	= _json_encode([
+							Page::instance()->Content	= _json_encode([
 								'error'				=> 'access_denied',
 								'error_description'	=> 'Guest tokens disabled'
 							]);
@@ -94,7 +95,7 @@ $Core->register_trigger(
 		}
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'System/Index/mainmenu',
 	function ($data) {
 		if ($data['path'] == 'OAuth2') {

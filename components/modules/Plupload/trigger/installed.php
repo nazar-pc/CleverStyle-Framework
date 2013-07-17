@@ -7,18 +7,20 @@
  * @copyright	Moxiecode Systems AB
  * @license		GNU GPL v2, see license.txt
  */
-namespace cs\modules\Plupload;
-global $Core;
-$Core->register_trigger(
+namespace	cs\modules\Plupload;
+use			cs\Config,
+			cs\DB,
+			cs\Storage,
+			cs\Trigger;
+Trigger::instance()->register(
 	'admin/System/components/modules/uninstall/process',
 	function ($data) {
 		if ($data['name'] != 'Plupload') {
 			return;
 		}
-		global $Config, $Storage, $db;
-		$module_data	= $Config->module('Plupload');
-		$storage		= $Storage->{$module_data->storage('files')};
-		$cdb			= $db->{$module_data->db('files')};
+		$module_data	= Config::instance()->module('Plupload');
+		$storage		= Storage::instance()->{$module_data->storage('files')};
+		$cdb			= DB::instance()->{$module_data->db('files')};
 		unset($module_data);
 		if (!$storage || !$cdb) {
 			return;

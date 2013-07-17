@@ -7,6 +7,8 @@
  */
 namespace cs;
 class Storage {
+	use	Singleton;
+
 	protected	$connections			= [],
 				$successful_connections	= [],
 				$failed_connections		= [];
@@ -69,12 +71,12 @@ class Storage {
 		if (isset($this->connections[$connection])) {
 			return $this->connections[$connection];
 		}
-		global $Config;
+		$Config							= Config::instance();
 		/**
 		 * If connection to the local storage
 		 */
 		if ($connection == 0) {
-			global $Core;
+			$Core					= Core::instance();
 			$storage['connection']	= $Core->storage_type;
 			$storage['url']			= $Core->storage_url;
 			$storage['host']		= $Core->storage_host;
@@ -105,8 +107,7 @@ class Storage {
 			unset($this->$connection);
 			$this->failed_connections[$connection] = $connection.'/'.$storage['host'].'/'.$storage['connection'];
 			unset($storage);
-			global $L;
-			trigger_error($L->error_storage.' '.$this->failed_connections[$connection], E_USER_WARNING);
+			trigger_error(Language::instance()->error_storage.' '.$this->failed_connections[$connection], E_USER_WARNING);
 			return new False_class;
 		}
 	}
@@ -121,9 +122,8 @@ class Storage {
 		if (empty($data)) {
 			return false;
 		} elseif (is_array($data)) {
-			global $Config;
 			if (isset($data[0])) {
-				$storage = $Config->storage[$data[0]];
+				$storage = Config::instance()->storage[$data[0]];
 			} else {
 				return false;
 			}
@@ -139,17 +139,4 @@ class Storage {
 			return false;
 		}
 	}
-	/**
-	 * Cloning restriction
-	 *
-	 * @final
-	 */
-	function __clone () {}
-}
-/**
- * For IDE
- */
-if (false) {
-	global $Storage;
-	$Storage = new Storage;
 }

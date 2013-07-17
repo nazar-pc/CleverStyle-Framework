@@ -7,7 +7,11 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Config, $Page, $User, $L, $Mail;
+namespace	cs;
+$Config	= Config::instance();
+$L		= Language::instance();
+$Page	= Page::instance();
+$User	= User::instance();
 /**
  * If AJAX request from local referer, user is guest - send request for password restore, otherwise - show error
  */
@@ -31,7 +35,7 @@ if (
 }
 if (
 	($key = $User->restore_password($id)) &&
-	$Mail->send_to(
+	Mail::instance()->send_to(
 		$User->get('email', $id),
 		$L->restore_password_confirmation_mail(get_core_ml_text('name')),
 		$L->restore_password_confirmation_mail_body(

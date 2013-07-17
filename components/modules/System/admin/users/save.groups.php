@@ -7,10 +7,12 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
+namespace	cs;
 if (!isset($_POST['mode'])) {
 	return;
 }
-global $Config, $Page, $Index, $User, $L;
+$Index	= Index::instance();
+$User	= User::instance();
 if (isset($_POST['mode'])) {
 	switch ($_POST['mode']) {
 		case 'add':

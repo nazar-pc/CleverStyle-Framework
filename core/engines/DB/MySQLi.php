@@ -5,7 +5,8 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace cs\DB;
+namespace	cs\DB;
+use			cs\DB;
 class MySQLi extends _Abstract {
 	/**
 	 * @var \MySQLi Instance of DB connection
@@ -58,10 +59,8 @@ class MySQLi extends _Abstract {
 			return false;
 		}
 		$this->connecting_time	= microtime(true) - $this->connecting_time;
-		global $db;
-		if (is_object($db)) {
-			$db->time				+= $this->connecting_time;
-		}
+		$db						= DB::instance();
+		$db->time				+= $this->connecting_time;
 		$this->db_type			= 'mysql';
 		$this->prefix			= $prefix;
 		return $this;

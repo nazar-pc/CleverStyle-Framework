@@ -7,19 +7,26 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Static_pages;
-use			h;
-global $Index, $L, $Page, $Static_pages, $Config;
-$id							= (int)$Config->route[1];
-$title						= $Static_pages->get($id)['title'];
-$Page->title($L->deletion_of_page($title));
+use			h,
+			cs\Config,
+			cs\Index,
+			cs\Language,
+			cs\Page;
+$Index						= Index::instance();
+$L							= Language::instance();
+$id							= (int)Config::instance()->route[1];
+$title						= Static_pages::instance()->get($id)['title'];
+Page::instance()->title($L->deletion_of_page($title));
 $Index->buttons				= false;
 $Index->cancel_button_back	= true;
-$Index->action				= 'admin/'.MODULE;
+$Index->action				= 'admin/OAuth2';
 $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 		$L->sure_to_delete_page($title)
 	).
 	h::{'button[type=submit]'}($L->yes).
-	h::{"input[type=hidden][name=id][value=$id]"}().
+	h::{'input[type=hidden][name=id]'}([
+		'value'	=> $id
+	]).
 	h::{'input[type=hidden][name=mode][value=delete_page]'}()
 );

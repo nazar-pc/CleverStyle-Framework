@@ -7,9 +7,10 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Index, $Config, $L;
-$Index->title_auto = false;
-$rc					= &$Config->route;
+namespace	cs;
+$L								= Language::instance();
+Index::instance()->title_auto	= false;
+$rc								= &Config::instance()->route;
 if (!isset($rc[0])) {
 	return;
 }

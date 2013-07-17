@@ -7,7 +7,9 @@
  * @copyright	Moxiecode Systems AB
  * @license		GNU GPL v2, see license.txt
  */
-global $Core, $Config, $Page, $User, $Storage, $db;
+namespace	cs;
+$Page				= Page::instance();
+$User				= User::instance();
 interface_off();
 /**
  * Only registered users allowed
@@ -26,7 +28,7 @@ if (!isset($_FILES['file'])) {
 /**
  * Getting Plupload module configuration
  */
-$module_data		= $Config->module('Plupload');
+$module_data		= Config::instance()->module('Plupload');
 $max_file_size		= trim(strtolower($module_data->max_file_size), 'b');
 switch (substr($max_file_size, -1)) {
 	case 'k':
@@ -78,8 +80,8 @@ if (!$User->user()) {
 /**
  * Getting instances of storage and database
  */
-$storage			= $Storage->{$module_data->storage('files')};
-$cdb				= $db->{$module_data->db('files')}();
+$storage			= Storage::instance()->{$module_data->storage('files')};
+$cdb				= DB::instance()->{$module_data->db('files')}();
 $destination_file	= 'Plupload/'.$User->id.'_'.microtime(true).'_'.uniqid();
 if (!$storage || !$cdb) {
 	$Page->json([
@@ -90,7 +92,6 @@ if (!$storage || !$cdb) {
 		],
 		'id'		=> 'id'
 	]);
-	unlink($tmp_file);
 	return;
 }
 /**
@@ -100,7 +101,6 @@ if (!$module_data->directory_created) {
 	$storage->mkdir('Plupload');
 	$module_data->directory_created	= 1;
 }
-unset($module_data);
 if (!$storage->copy($_FILES['file']['tmp_name'], $destination_file)) {
 	$Page->json([
 		'jsonrpc'	=> '2.0',
@@ -110,10 +110,8 @@ if (!$storage->copy($_FILES['file']['tmp_name'], $destination_file)) {
 		],
 		'id'		=> 'id'
 	]);
-	unlink($tmp_file);
 	return;
 }
-unlink($tmp_file);
 /**
  * Registering file in database
  */
@@ -149,7 +147,7 @@ if ($cdb->id() % 100 === 0) {
 			`t`.`id` IS NULL
 		ORDER BY `f`.`id` ASC
 		LIMIT 100",
-		time() - $Config->module('Plupload')->confirmation_time
+		time() - $module_data->confirmation_time
 	]);
 	if ($files_for_deletion) {
 		$ids	= implode(',', array_column($files_for_deletion, 'id'));

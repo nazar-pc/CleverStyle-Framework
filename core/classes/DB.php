@@ -7,6 +7,8 @@
  */
 namespace cs;
 class DB {
+	use	Singleton;
+
 	public		$queries				= 0,
 				$time					= 0;
 	protected	$connections			= [],
@@ -45,7 +47,7 @@ class DB {
 		if (!is_int($connection) && $connection != '0') {
 			return new False_class;
 		}
-		global $Config;
+		$Config	= Config::instance(true) ? Config::instance() : null;
 		/**
 		 * Try to find existing mirror connection
 		 */
@@ -148,7 +150,9 @@ class DB {
 		if (isset($this->connections[$connection])) {
 			return $this->connections[$connection];
 		}
-		global $Config, $Core, $L;
+		$Config							= Config::instance();
+		$Core							= Core::instance();
+		$L								= Language::instance();
 		/**
 		 * If connection to the core DB and it is not connection to the mirror
 		 */
@@ -234,11 +238,11 @@ class DB {
 	 * @return bool
 	 */
 	function test ($data) {
-		global $Core;
+		$Core	= Core::instance();
 		if (empty($data)) {
 			return false;
 		} elseif (is_array($data)) {
-			global $Config;
+			$Config	= Config::instance();
 			if (isset($data[1])) {
 				$db = $Config->db[$data[0]]['mirrors'][$data[1]];
 			} elseif (isset($data[0])) {
@@ -277,70 +281,4 @@ class DB {
 			return false;
 		}
 	}
-	/**
-	 * Cloning restriction
-	 *
-	 * @final
-	 */
-	function __clone () {}
-}
-/**
- * For IDE
- */
-if (false) {
-	global $db;
-	$db = new DB;
-}
-/**
- * For IDE
- */
-if (false) {
-	global $db;
-	$db = new DB\MySQLi('');
-}
-namespace cs\DB;
-abstract class Accessor {
-	protected	$db			= false,	//Link to db object
-				$db_prime	= false;	//Link to primary db object
-	/**
-	 * Returns link to the object of db for reading (can be mirror DB)
-	 *
-	 * @return \cs\DB\_Abstract
-	 */
-	function db () {
-		if (is_object($this->db)) {
-			return $this->db;
-		}
-		if (is_object($this->db_prime)) {
-			return $this->db = $this->db_prime;
-		}
-		global $db;
-		/**
-		 * Save reference for faster access
-		 */
-		$this->db = $db->{$this->cdb()}();
-		return $this->db;
-	}
-	/**
-	 * Returns link to the object of db for writing (always main DB)
-	 *
-	 * @return \cs\DB\_Abstract
-	 */
-	function db_prime () {
-		if (is_object($this->db_prime)) {
-			return $this->db_prime;
-		}
-		global $db;
-		/**
-		 * Save reference for faster access
-		 */
-		$this->db_prime = $db->{$this->cdb()}();
-		return $this->db_prime;
-	}
-	/**
-	 * Returns database index
-	 *
-	 * @return int
-	 */
-	abstract protected function cdb ();
 }

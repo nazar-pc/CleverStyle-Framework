@@ -7,5 +7,6 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Index;
-$Index->submenu_auto = $Index->menumore_auto = true;
+namespace	cs;
+$Index					= Index::instance();
+$Index->submenu_auto	= $Index->menumore_auto = true;

@@ -1,12 +1,16 @@
 <?php
 /**
- * @package		Blogs
+ * @package		OAuth2
  * @category	modules
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Index, $OAuth2, $Config;
+namespace	cs\modules\OAuth2;
+use			cs\Config,
+			cs\Index;
+$OAuth2	= OAuth2::instance();
+$Index	= Index::instance();
 if (isset($_POST['mode'])) {
 	switch ($_POST['mode']) {
 		case 'add':
@@ -20,6 +24,6 @@ if (isset($_POST['mode'])) {
 	}
 }
 if (isset($_POST['edit_settings'], $_POST['guest_tokens']) && $_POST['edit_settings'] == 'save') {
-	$Config->module('OAuth2')->guest_tokens	= $_POST['guest_tokens'];
+	Config::instance()->module('OAuth2')->guest_tokens	= $_POST['guest_tokens'];
 	$Index->save(true);
 }

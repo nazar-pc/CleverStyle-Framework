@@ -7,12 +7,16 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-global $Core;
-$Core->register_trigger(
+use			cs\Cache,
+			cs\Config,
+			cs\DB,
+			cs\Trigger,
+			cs\User;
+Trigger::instance()->register(
 	'admin/System/components/modules/uninstall/process',
-	function ($data) use ($Core) {
-		global $User, $Cache, $Config, $db, $Blogs;
-		if ($data['name'] != 'Blogs' || !$User->admin()) {
+	function ($data) {
+		$Blogs		= Blogs::instance();
+		if ($data['name'] != 'Blogs' || !User::instance()->admin()) {
 			return;
 		}
 		time_limit_pause();
@@ -24,7 +28,7 @@ $Core->register_trigger(
 			unset($section);
 		}
 		unset($sections);
-		$posts		= $db->{$Config->module('Blogs')->db('posts')}->qfas(
+		$posts		= DB::instance()->{Config::instance()->module('Blogs')->db('posts')}->qfas(
 			"SELECT `id`
 			FROM `[prefix]blogs_posts`"
 		);
@@ -36,7 +40,7 @@ $Core->register_trigger(
 		}
 		unset(
 			$posts,
-			$Cache->Blogs
+			Cache::instance()->Blogs
 		);
 		clean_pcache();
 		time_limit_pause(false);

@@ -7,8 +7,17 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h;
-global $Page, $Index, $L, $User, $Blogs, $Config;
+use			h,
+			cs\Config,
+			cs\Index,
+			cs\Language,
+			cs\Page,
+			cs\User;
+$Blogs						= Blogs::instance();
+$Config						= Config::instance();
+$L							= Language::instance();
+$Page						= Page::instance();
+$User						= User::instance();
 if (
 	!isset($Config->route[1]) ||
 	!($post = $Blogs->get($Config->route[1]))
@@ -75,6 +84,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 		break;
 	}
 }
+$Index						= Index::instance();
 $Index->form				= true;
 $Index->action				= $module.'/edit_post/'.$post['id'];
 $Index->buttons				= false;

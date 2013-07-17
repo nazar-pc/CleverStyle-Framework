@@ -7,12 +7,15 @@
  * @copyright	Moxiecode Systems AB
  * @license		GNU Lesser General Public License 2.1, see license.txt
  */
-namespace cs\plugins\TinyMCE;
-global $Core, $Page, $Config;
+namespace	cs\plugins\TinyMCE;
+use			cs\Config,
+			cs\Page,
+			cs\Trigger;
+$Page	= Page::instance();
 if (!$Page->interface) {
 	return;
 }
-if (!$Config->core['cache_compress_js_css']) {
+if (!Config::instance()->core['cache_compress_js_css']) {
 	$Page->js([
 		'components/plugins/TinyMCE/tinymce.min.js',
 		'components/plugins/TinyMCE/TinyMCE.js'
@@ -21,7 +24,7 @@ if (!$Config->core['cache_compress_js_css']) {
 	rebuild_pcache();
 }
 
-$Core->register_trigger(
+Trigger::instance()->register(
 	'admin/System/components/plugins/disable',
 	function ($data) {
 		if ($data['name'] == 'TinyMCE') {
@@ -29,13 +32,13 @@ $Core->register_trigger(
 		}
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'admin/System/general/optimization/clean_pcache',
 	function () {
 		clean_pcache();
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'System/Page/rebuild_cache',
 	function ($data) {
 		rebuild_pcache($data);
@@ -47,7 +50,7 @@ function clean_pcache () {
 	}
 }
 function rebuild_pcache (&$data = null) {
-	global $Config;
+	$Config		= Config::instance();
 	if (
 		!$Config->core['cache_compress_js_css'] ||
 		(

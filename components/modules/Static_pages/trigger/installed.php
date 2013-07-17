@@ -6,15 +6,18 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Core;
-$Core->register_trigger(
+namespace	cs\modules\Static_pages;
+use			cs\Cache,
+			cs\User,
+			cs\Trigger;
+Trigger::instance()->register(
 	'admin/System/components/modules/uninstall/process',
-	function ($data) use ($Core) {
-		global $User, $Cache, $Static_pages;
-		if ($data['name'] != 'Static_pages' || !$User->admin()) {
+	function ($data) {
+		if ($data['name'] != 'Static_pages' || !User::instance()->admin()) {
 			return true;
 		}
 		time_limit_pause();
+		$Static_pages	= Static_pages::instance();
 		$structure		= $Static_pages->get_structure();
 		while (!empty($structure['categories'])) {
 			foreach ($structure['categories'] as $category) {
@@ -31,7 +34,7 @@ $Core->register_trigger(
 		}
 		unset(
 			$structure,
-			$Cache->Static_pages
+			Cache::instance()->Static_pages
 		);
 		time_limit_pause(false);
 		return true;

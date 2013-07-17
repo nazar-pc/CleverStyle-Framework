@@ -7,12 +7,12 @@
  * @copyright	Moxiecode Systems AB
  * @license		GNU GPL v2, see license.txt
  */
-global $Core;
-$Core->register_trigger(
+namespace	cs;
+Trigger::instance()->register(
 	'admin/System/components/modules/install/process',
 	function ($data) {
 		if ($data['name'] == 'Plupload') {
-			global $Config;
+			$Config											= Config::instance();
 			$Config->module('Plupload')->max_file_size		= '5mb';
 			$Config->module('Plupload')->confirmation_time	= '900';
 		}

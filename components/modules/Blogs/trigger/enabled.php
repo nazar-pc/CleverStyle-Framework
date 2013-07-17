@@ -7,10 +7,11 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			cs\modules\Comments\Comments;
-global $Core;
-$Core->create('_cs\\modules\\Blogs\\Blogs');
-$Core->register_trigger(
+use			cs\Config,
+			cs\Language,
+			cs\Trigger,
+			cs\User;
+Trigger::instance()->register(
 	'admin/System/components/modules/disable',
 	function ($data) {
 		if ($data['name'] == 'Blogs') {
@@ -18,13 +19,13 @@ $Core->register_trigger(
 		}
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'admin/System/general/optimization/clean_pcache',
 	function () {
 		clean_pcache();
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'System/Page/rebuild_cache',
 	function () {
 		if (file_exists(PCACHE.'/module.Blogs.js') && file_exists(PCACHE.'/module.Blogs.css')) {
@@ -63,72 +64,96 @@ function rebuild_pcache (&$data = null) {
 		$data['key']	.= md5(implode('', $key));
 	}
 }
-$Core->register_trigger(
+Trigger::instance()->register(
 	'System/Index/mainmenu',
 	function ($data) {
-		global $L;
 		if ($data['path'] == 'Blogs') {
-			$data['path']	= path($L->Blogs);
+			$data['path']	= path(Language::instance()->Blogs);
 		}
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'api/Comments/add',
 	function ($data) {
-		global $Config, $User;
+		$Comments	= null;
+		Trigger::instance()->run(
+			'Comments/instance',
+			[
+				'data'	=> &$Comments
+			]
+		);
+		/**
+		 * @var \cs\modules\Comments\Comments $Comments
+		 */
 		if (!(
 			$data['module'] == 'Blogs' &&
-			$Config->module('Blogs')->enable_comments &&
-			$User->user() &&
-			class_exists('\\cs\\modules\\Comments\\Comments')
+			Config::instance()->module('Blogs')->enable_comments &&
+			User::instance()->user() &&
+			$Comments
 		)) {
 			return true;
 		}
-		global $Blogs;
-		if ($Blogs->get($data['item'])) {
-			global $Comments;
+		if (Blogs::instance()->get($data['item'])) {
 			$Comments->set_module('Blogs');
 			$data['Comments']	= $Comments;
 		}
 		return false;
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'api/Comments/edit',
 	function ($data) {
-		global $Config, $User;
+		$Comments	= null;
+		Trigger::instance()->run(
+			'Comments/instance',
+			[
+				'data'	=> &$Comments
+			]
+		);
+		/**
+		 * @var \cs\modules\Comments\Comments $Comments
+		 */
+		$User		= User::instance();
 		if (!(
 			$data['module'] == 'Blogs' &&
-			$Config->module('Blogs')->enable_comments &&
+			Config::instance()->module('Blogs')->enable_comments &&
 			$User->user() &&
-			class_exists('\\cs\\modules\\Comments\\Comments')
+			$Comments
 		)) {
 			return true;
 		}
-		global $Comments;
 		$Comments->set_module('Blogs');
-		$comment			= $Comments->get($data['id']);
+		$comment	= $Comments->get($data['id']);
 		if ($comment && ($comment['user'] == $User->id || $User->admin())) {
 			$data['Comments']	= $Comments;
 		}
 		return false;
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'api/Comments/delete',
 	function ($data) {
-		global $Config, $User;
+		$Comments	= null;
+		Trigger::instance()->run(
+			'Comments/instance',
+			[
+				'data'	=> &$Comments
+			]
+		);
+		/**
+		 * @var \cs\modules\Comments\Comments $Comments
+		 */
+		$User		= User::instance();
 		if (!(
 			$data['module'] == 'Blogs' &&
-			$Config->module('Blogs')->enable_comments &&
+			Config::instance()->module('Blogs')->enable_comments &&
 			$User->user() &&
-			class_exists('\\cs\\modules\\Comments\\Comments')
+			$Comments
 		)) {
 			return true;
 		}
-		global $Comments;
 		$Comments->set_module('Blogs');
-		$comment			= $Comments->get($data['id']);
+		$comment	= $Comments->get($data['id']);
 		if ($comment && ($comment['user'] == $User->id || $User->admin())) {
 			$data['Comments']	= $Comments;
 			if (

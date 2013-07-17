@@ -7,8 +7,13 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Config, $Index, $Text, $L;
-$a	= $Index;
+namespace	cs;
+$Cache	= Cache::instance();
+$Config	= Config::instance();
+$L		= Language::instance();
+$Text	= Text::instance();
+$User	= User::instance();
+$a		= Index::instance();
 if (isset($_POST['mode'])) {
 	switch ($_POST['mode']) {
 		case 'add':
@@ -67,10 +72,8 @@ if (isset($_POST['mode'])) {
 			}
 			if ($_POST['mode'] == 'add') {
 				$Config->components['blocks'][] = $block;
-				global $User;
 				$User->add_permission('Block', $block['index']);
 			} else {
-				global $Cache;
 				unset($Cache->{'blocks/'.$block['index'].'_'.$L->clang});
 			}
 			unset($block, $block_new);
@@ -79,7 +82,6 @@ if (isset($_POST['mode'])) {
 		case 'delete':
 			if (isset($_POST['id'], $Config->components['blocks'][$_POST['id']])) {
 				$block = &$Config->components['blocks'][$_POST['id']];
-				global $User, $Cache;
 				$User->del_permission(
 					$User->get_permission(
 						null,
@@ -107,7 +109,6 @@ if (isset($_POST['mode'])) {
 		break;
 		case 'permissions':
 			if (isset($_POST['block'], $_POST['block']['id'], $Config->components['blocks'][$_POST['block']['id']])) {
-				global $User;
 				$permission = $User->get_permission(
 					null,
 					'Block',

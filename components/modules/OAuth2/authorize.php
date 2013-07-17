@@ -11,8 +11,18 @@
  *  OAuth2/custom_login_page
  */
 namespace	cs\modules\OAuth2;
-use			h;
-global $Page, $OAuth2, $L, $Index, $Config, $User;
+use			h,
+			cs\Config,
+			cs\Index,
+			cs\Language,
+			cs\Page,
+			cs\Trigger,
+			cs\User;
+$OAuth2			= OAuth2::instance();
+$Config			= Config::instance();
+$Index			= Index::instance();
+$L				= Language::instance();
+$Page			= Page::instance();
 /**
  * Errors processing
  */
@@ -41,7 +51,7 @@ if (!$client['active']) {
 			return;
 		} else {
 			if (
-				urldecode($_GET['redirect_uri']) != $Config->base_url().'/'.MODULE.'/blank/' &&
+				urldecode($_GET['redirect_uri']) != $Config->base_url().'/OAuth2/blank/' &&
 				!preg_match("/^[^\/]+:\/\/$client[domain]/", urldecode($_GET['redirect_uri']))
 			) {
 				header(
@@ -84,7 +94,7 @@ if ($client['domain'] && $_GET['response_type'] != 'guest_token') {
 		$Index->stop	= true;
 		return;
 	} elseif (
-		urldecode($_GET['redirect_uri']) != $Config->base_url().'/'.MODULE.'/blank/' &&
+		urldecode($_GET['redirect_uri']) != $Config->base_url().'/OAuth2/blank/' &&
 		!preg_match("/^[^\/]+:\/\/$client[domain]/", urldecode($_GET['redirect_uri']))
 	) {
 		code_header(400);
@@ -94,7 +104,7 @@ if ($client['domain'] && $_GET['response_type'] != 'guest_token') {
 		return;
 	}
 }
-$redirect_uri	= isset($_GET['redirect_uri']) ? urldecode($_GET['redirect_uri']) : $Config->base_url().'/'.MODULE.'/blank/';
+$redirect_uri	= isset($_GET['redirect_uri']) ? urldecode($_GET['redirect_uri']) : $Config->base_url().'/OAuth2/blank/';
 if (!isset($_GET['response_type'])) {
 	header(
 		'Location: '.http_build_url(
@@ -129,11 +139,11 @@ if (!in_array($_GET['response_type'], ['code', 'token', 'guest_token'])) {
 	$Index->stop	= true;
 	return;
 }
+$User			= User::instance();
 if (!$User->user()) {
 	if ($_GET['response_type'] != 'guest_token') {
-		global $Core;
 		code_header(403);
-		if ($Core->run_trigger('OAuth2/custom_login_page')) {
+		if (Trigger::instance()->run('OAuth2/custom_login_page')) {
 			$Page->Content	= '';
 			$Page->warning($L->you_are_not_logged_in);
 		}

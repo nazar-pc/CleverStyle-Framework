@@ -7,14 +7,13 @@
  * @copyright	HybridAuth authors
  * @license		MIT License, see license.txt
  */
+namespace	cs;
 if (!isset($_POST['edit_settings'])) {
 	return;
 }
-global $Index, $Blogs;
 switch ($_POST['edit_settings']) {
 	case 'save':
-		global $Config;
-		$Index->save($Config->module(MODULE)->set([
+		Index::instance()->save(Config::instance()->module('HybridAuth')->set([
 			'providers'					=> $_POST['providers'],
 			'enable_contacts_detection'	=> $_POST['enable_contacts_detection']
 		]));

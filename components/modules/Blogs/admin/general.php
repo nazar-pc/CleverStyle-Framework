@@ -7,11 +7,16 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h;
-global $Index, $L, $Page, $Config;
-$module_configuration	= $Config->module(MODULE);
+use			h,
+			cs\Config,
+			cs\Index,
+			cs\Language,
+			cs\Page;
+$module_configuration	= Config::instance()->module('Blogs');
+$Index					= Index::instance();
 $Index->apply_button	= false;
-$Page->title($L->general);
+$L						= Language::instance();
+Page::instance()->title($L->general);
 $Index->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		[

@@ -7,7 +7,11 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Config, $Page, $User, $L, $Core;
+namespace	cs;
+$Config	= Config::instance();
+$L		= Language::instance();
+$Page	= Page::instance();
+$User	= User::instance();
 /**
  * If AJAX request from local referer, user is registered - change password, otherwise - show error
  */
@@ -33,7 +37,7 @@ if (
 	$Page->error($L->current_new_password_equal);
 	return;
 }
-if ($new_password == hash('sha512', hash('sha512', '').$Core->public_key)) {
+if ($new_password == hash('sha512', hash('sha512', '').Core::instance()->public_key)) {
 	define('ERROR_CODE', 400);
 	$Page->error($L->please_type_new_password);
 	return;

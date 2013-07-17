@@ -7,8 +7,18 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h;
-global $Index, $Blogs, $Page, $L, $User, $db, $Config;
+use			h,
+			cs\Config,
+			cs\DB,
+			cs\Index,
+			cs\Language,
+			cs\Page,
+			cs\User;
+$Config					= Config::instance();
+$Index					= Index::instance();
+$L						= Language::instance();
+$Page					= Page::instance();
+$User					= User::instance();
 $Page->title($L->latest_posts);
 $Page->Keywords			= keywords($L->Blogs.' '.$L->latest_posts).', '.$Page->Keywords;
 $Page->Description		= description($L->Blogs.' - '.$L->latest_posts.'. '.$Page->Description);//TODO og type, description and keywords
@@ -55,7 +65,7 @@ if ($page > 1) {
 }
 $num					= $Config->module('Blogs')->posts_per_page;
 $from					= ($page - 1) * $num;
-$cdb					= $db->{$Config->module('Blogs')->db('posts')};
+$cdb					= DB::instance()->{$Config->module('Blogs')->db('posts')};
 $posts					= $cdb->qfas(
 	"SELECT `id`
 	FROM `[prefix]blogs_posts`
@@ -76,7 +86,7 @@ $Index->content(
 		$posts ? h::{'nav.cs-center'}(
 			pages(
 				$page,
-				ceil($Blogs->get_total_count() / $num),
+				ceil(Blogs::instance()->get_total_count() / $num),
 				function ($page) use ($module, $L) {
 					return $page == 1 ? $module.'/'.path($L->latest_posts) : $module.'/'.path($L->latest_posts).'/'.$page;
 				},

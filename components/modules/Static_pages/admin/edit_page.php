@@ -7,14 +7,19 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Static_pages;
-use			h;
-global $Index, $L, $Page, $Config, $Static_pages;
-$id							= (int)$Config->route[1];
-$data						= $Static_pages->get($id);
-$Page->title($L->editing_of_page($data['title']));
+use			h,
+			cs\Config,
+			cs\Index,
+			cs\Language,
+			cs\Page;
+$Index						= Index::instance();
+$L							= Language::instance();
+$id							= (int)Config::instance()->route[1];
+$data						= Static_pages::instance()->get($id);
+Page::instance()->title($L->editing_of_page($data['title']));
 $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
-$Index->action				= 'admin/'.MODULE;
+$Index->action				= 'admin/OAuth2';
 $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 		$L->editing_of_page($data['title'])
@@ -55,6 +60,8 @@ $Index->content(
 			]
 		)
 	).
-	h::{"input[type=hidden][name=id][value=$id]"}().
+	h::{'input[type=hidden][name=id]'}([
+		'value'	=> $id
+	]).
 	h::{'input[type=hidden][name=mode][value=edit_page]'}()
 );

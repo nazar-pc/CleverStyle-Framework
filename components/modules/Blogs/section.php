@@ -7,10 +7,19 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h;
-global $Index, $Blogs, $Page, $L, $User, $db, $Config;
+use			h,
+			cs\Config,
+			cs\DB,
+			cs\Index,
+			cs\Language,
+			cs\Page,
+			cs\User;
+$Config					= Config::instance();
+$Index					= Index::instance();
+$Page					= Page::instance();
+$User					= User::instance();
 $rc						= array_slice($Config->route, 1);
-$structure				= $Blogs->get_sections_structure();
+$structure				= Blogs::instance()->get_sections_structure();
 $keywords				= [];
 $description			= [];
 $path					= [];
@@ -34,6 +43,7 @@ if (isset($structure['id'])) {
 	define('ERROR_CODE', 404);
 	return;
 }
+$L						= Language::instance();
 $Page->title($L->latest_posts);
 $Page->Keywords			= keywords($L->Blogs.' '.implode(' ', $keywords).' '.$L->latest_posts).', '.$Page->Keywords;
 $Page->Description		= description($L->Blogs.' - '.implode(' - ', $description).' - '.$L->latest_posts.'. '.$Page->Description);
@@ -80,7 +90,7 @@ if ($page > 1) {
 }
 $num					= $Config->module('Blogs')->posts_per_page;
 $from					= ($page - 1) * $num;
-$cdb					= $db->{$Config->module('Blogs')->db('posts')};
+$cdb					= DB::instance()->{$Config->module('Blogs')->db('posts')};
 $posts					= $cdb->qfas(
 	"SELECT `s`.`id`
 	FROM `[prefix]blogs_posts_sections` AS `s`

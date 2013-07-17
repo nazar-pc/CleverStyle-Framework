@@ -1,16 +1,21 @@
 <?php
 /**
- * @package		Blogs
+ * @package		OAuth2
  * @category	modules
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
 
-namespace	cs\modules\Blogs;
-use			h;
-global $Index, $L, $Page, $OAuth2, $Config;
-$Page->title($L->list_of_client);
+namespace	cs\modules\OAuth2;
+use			h,
+			cs\Config,
+			cs\Index,
+			cs\Language,
+			cs\Page;
+$Index					= Index::instance();
+$L						= Language::instance();
+Page::instance()->title($L->list_of_client);
 $Index->apply_button	= false;
 $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
@@ -50,7 +55,7 @@ $Index->content(
 					]
 				);
 			},
-			$OAuth2->clients_list()
+			OAuth2::instance()->clients_list()
 		))
 	).
 	h::{'p.cs-left a.cs-button'}([
@@ -63,7 +68,7 @@ $Index->content(
 		h::info('allow_guest_tokens'),
 		h::{'input[type=radio]'}([
 			'name'		=> 'guest_tokens',
-			'checked'	=> $Config->module('OAuth2')->guest_tokens,
+			'checked'	=> Config::instance()->module('OAuth2')->guest_tokens,
 			'value'		=> [0, 1],
 			'in'		=> [$L->off, $L->on]
 		])

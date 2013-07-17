@@ -6,10 +6,12 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Index, $L;
+namespace	cs;
+use			h;
+$Index					= Index::instance();
 $Index->apply_button	= false;
 $Index->content(
-	h::{'p.cs-center'}($L->crontab_content).
+	h::{'p.cs-center'}(Language::instance()->crontab_content).
 	h::{'textarea.cs-wide-textarea[name=tasks]'}(
 		isset($_POST['tasks']) ? $_POST['tasks'] : shell_exec('crontab -l')
 	).

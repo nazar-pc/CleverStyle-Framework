@@ -8,17 +8,27 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\System\components\blocks;
-use			h;
+use			h,
+			cs\Cache,
+			cs\Config,
+			cs\Index,
+			cs\Language,
+			cs\Page,
+			cs\Text,
+			cs\User;
 function get_block_title ($id) {
-	global $Config, $Text;
-	return $Text->process($Config->module('System')->db('texts'), $Config->components['blocks'][$id]['title']);
+	$Config	= Config::instance();
+	return Text::instance()->process($Config->module('System')->db('texts'), $Config->components['blocks'][$id]['title']);
 }
 function get_block_content ($id) {
-	global $Config, $Text;
-	return $Text->process($Config->module('System')->db('texts'), $Config->components['blocks'][$id]['content']);
+	$Config	= Config::instance();
+	return Text::instance()->process($Config->module('System')->db('texts'), $Config->components['blocks'][$id]['content']);
 }
-global $Config, $Index, $L, $Page;
-$a		= $Index;
+$Config	= Config::instance();
+$L		= Language::instance();
+$Page	= Page::instance();
+$User	= User::instance();
+$a		= Index::instance();
 $rc		= $Config->route;
 $form	= true;
 if (isset($rc[2])) {
@@ -36,8 +46,7 @@ if (isset($rc[2])) {
 			}
 			$Config->components['blocks'][$rc[3]]['active'] = 0;
 			$a->save();
-			global $Cache;
-			unset($Cache->{'blocks/'.$Config->components['blocks'][$rc[3]]['index']});
+			unset(Cache::instance()->{'blocks/'.$Config->components['blocks'][$rc[3]]['index']});
 		break;
 		case 'delete':
 			if (!isset($rc[3], $Config->components['blocks'][$rc[3]])) {
@@ -265,7 +274,6 @@ if (isset($rc[2])) {
 			if (!isset($rc[3], $Config->components['blocks'][$rc[3]])) {
 				break;
 			}
-			global $User;
 			$form					= false;
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
@@ -391,7 +399,6 @@ if (isset($rc[2])) {
 			$form				= false;
 			$a->generate_auto	= false;
 			interface_off();
-			global $User;
 			$users_list		= $User->search_users($_POST['search_phrase']);
 			$found_users	= explode(',', $_POST['found_users']);
 			$permission		= (int)$_POST['permission'];

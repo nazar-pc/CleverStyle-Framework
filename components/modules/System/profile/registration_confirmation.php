@@ -7,7 +7,11 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Config, $L, $User, $Page, $Mail;
+namespace	cs;
+$Config	= Config::instance();
+$L		= Language::instance();
+$Page	= Page::instance();
+$User	= User::instance();
 if (isset($_COOKIE['reg_confirm'])) {
 	_setcookie('reg_confirm', '');
 	$Page->title($L->reg_success_title);
@@ -35,13 +39,13 @@ $body = $L->reg_success_mail_body(
 	$User->get('login', $result['id']),
 	$result['password']
 );
-if ($Mail->send_to(
+if (Mail::instance()->send_to(
 	$result['email'],
 	$L->reg_success_mail(get_core_ml_text('name')),
 	$body
 )) {
 	_setcookie('reg_confirm', 1);
-	header('Location: '.$Config->base_url().'/'.MODULE.'/profile/registration_confirmation');
+	header("Location: {$Config->base_url()}/System/profile/registration_confirmation");
 } else {
 	$User->registration_cancel();
 	$Page->title($L->sending_reg_mail_error_title);

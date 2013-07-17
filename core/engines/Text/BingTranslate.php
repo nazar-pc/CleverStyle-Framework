@@ -5,8 +5,10 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace cs\Text;
-use \Exception, \SoapClient;
+namespace	cs\Text;
+use			cs\Config,
+			Exception,
+			SoapClient;
 /**
  * Provides translation functionality based on Bing translator.
  */
@@ -27,8 +29,7 @@ class BingTranslate extends _Abstract {
 			return $text;
 		}
 		if (empty(self::$accessToken)) {
-			global $Config;
-			$settings =  $Config->core['auto_translation_engine'];
+			$settings =  Config::instance()->core['auto_translation_engine'];
 			if (!(
 				curl() &&
 				isset($settings['client_id'], $settings['client_secret']) &&

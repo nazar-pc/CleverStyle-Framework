@@ -8,11 +8,13 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\System;
-use			h;
-global $Config, $Index;
+use			h,
+			cs\Config,
+			cs\Index;
+$Config		= Config::instance();
 $timezones	= get_timezones_list();
 $sa			= $Config->core['simple_admin_mode'];
-$Index->content(
+Index::instance()->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		core_input('name', 'text', 'site_name'),
 		!$sa ? core_input('url') : false,

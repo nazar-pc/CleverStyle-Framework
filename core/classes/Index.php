@@ -29,6 +29,8 @@ use			h;
  *  System/Index/postload
  */
 class Index {
+	use	Singleton;
+
 	public		$Content,
 
 				$menu_auto			= true,
@@ -65,8 +67,9 @@ class Index {
 	/**
 	 * Detecting module folder including of admin/api request type, including prepare file, including of plugins
 	 */
-	function __construct () {
-		global $Config, $User, $Index, $Core;
+	function construct () {
+		$Config		= Config::instance();
+		$User		= User::instance();
 		/**
 		 * If site is closed, user is not admin, and it is not request for log in
 		 */
@@ -81,7 +84,6 @@ class Index {
 		) {
 			return;
 		}
-		$Index = $this;
 		$admin_path	= MODULES.'/'.MODULE.'/admin';
 		$api_path	= MODULES.'/'.MODULE.'/api';
 		if (
@@ -121,7 +123,7 @@ class Index {
 			return;
 		}
 		unset($admin_path, $api_path);
-		$Core->run_trigger('System/Index/construct');
+		Trigger::instance()->run('System/Index/construct');
 		/**
 		 * Plugins processing
 		 */
@@ -150,8 +152,11 @@ class Index {
 	 * Initialization: loading of module structure, including of necessary module files, inclusion of save file
 	 */
 	protected function init () {
-		global $Config, $L, $Page, $User;
-		$rc = &$Config->route;
+		$Config	= Config::instance();
+		$L		= Language::instance();
+		$Page	= Page::instance();
+		$User	= User::instance();
+		$rc		= &$Config->route;
 		if ($Config->core['simple_admin_mode'] && file_exists(MFOLDER.'/index_simple.json')) {
 			$structure_file	= 'index_simple.json';
 		} else {
@@ -274,7 +279,10 @@ class Index {
 	 * Rendering of main menu
 	 */
 	protected function mainmenu () {
-		global $Config, $L, $Page, $User, $Core;
+		$Config			= Config::instance();
+		$L				= Language::instance();
+		$Page			= Page::instance();
+		$User			= User::instance();
 		if ($User->admin() || ($Config->can_be_admin && $Config->core['ip_admin_list_only'])) {
 			if (DEBUG) {
 				$Page->mainmenu .= h::a(
@@ -319,7 +327,7 @@ class Index {
 				$path			= $module;
 				$title			= $L->$module;
 				$hide			= false;
-				$Core->run_trigger(
+				Trigger::instance()->run(
 					'System/Index/mainmenu',
 					[
 						'path'	=> &$path,
@@ -347,10 +355,10 @@ class Index {
 		if (!is_array($this->parts) || !$this->parts) {
 			return;
 		}
-		global $Config, $L, $Page;
+		$Config	= Config::instance();
 		foreach ($this->parts as $part) {
-			$Page->mainsubmenu .= h::a(
-				$L->$part,
+			Page::instance()->mainsubmenu .= h::a(
+				Language::instance()->$part,
 				[
 					'href'		=> ($this->admin ? 'admin/' : '').MODULE.'/'.$part,
 					'class'		=> isset($Config->route[0]) && $Config->route[0] == $part ? 'active' : ''
@@ -365,10 +373,10 @@ class Index {
 		if (!is_array($this->subparts) || !$this->subparts) {
 			return;
 		}
-		global $Config, $L, $Page;
+		$Config	= Config::instance();
 		foreach ($this->subparts as $subpart) {
-			$Page->menumore .= h::a(
-				$L->$subpart,
+			Page::instance()->menumore .= h::a(
+				Language::instance()->$subpart,
 				[
 					'href'		=> ($this->admin ? 'admin/' : '').MODULE.'/'.$Config->route[0].'/'.$subpart,
 					'class'		=> $Config->route[1] == $subpart ? 'active' : ''
@@ -380,7 +388,9 @@ class Index {
 	 * Module page generation, menus rendering, blocks processing, adding of form with save/apply/cancel/reset and/or custom users buttons
 	 */
 	protected function generate () {
-		global $Page, $Config, $L, $Cache;
+		$Config	= Config::instance();
+		$L		= Language::instance();
+		$Page	= Page::instance();
 		if ($this->api) {
 			$Page->content($this->Content);
 			return;
@@ -403,7 +413,7 @@ class Index {
 								'id'			=> 'apply_settings',
 								'type'			=> 'submit',
 								'value'			=> 'apply',
-								'add'			=> $Cache->cache_state() ? '' : ' disabled'
+								'add'			=> Cache::instance()->cache_state() ? '' : ' disabled'
 							]
 						)
 					: '').
@@ -468,11 +478,13 @@ class Index {
 	 */
 	protected function js_vars () {
 		if (!$this->api) {
-			global $Config, $Page, $User, $L, $Core;
+			$Config	= Config::instance();
+			$Page	= Page::instance();
+			$User	= User::instance();
 			$Page->js(
 				'var	base_url = "'.$Config->base_url()."\",\n".
 				'	current_base_url = "'.$Config->base_url().'/'.($this->admin ? 'admin/' : '').MODULE."\",\n".
-				'	public_key = "'.$Core->public_key."\",\n".
+				'	public_key = "'.Core::instance()->public_key."\",\n".
 				($User->guest() ?
 					'	rules_text = "'.get_core_ml_text('rules')."\",\n"
 				: '').
@@ -491,7 +503,7 @@ class Index {
 			);
 			if (!$Config->core['cache_compress_js_css']) {
 				$Page->js(
-					'var	L = '.$L->get_json().';',
+					'var	L = '.Language::instance()->get_json().';',
 					'code'
 				);
 			}
@@ -502,8 +514,11 @@ class Index {
 	 * Blocks processing
 	 */
 	protected function blocks_processing () {
-		global $Page, $Config, $User, $Text, $Core;
-		$blocks_array = [
+		$Config			= Config::instance();
+		$Page			= Page::instance();
+		$Text			= Text::instance();
+		$User			= User::instance();
+		$blocks_array	= [
 			'top'		=> '',
 			'left'		=> '',
 			'right'		=> '',
@@ -518,7 +533,7 @@ class Index {
 			) {
 				continue;
 			}
-			if ($Core->run_trigger(
+			if (Trigger::instance()->run(
 				'System/Index/block_render',
 				[
 					'block'			=> $block['index'],
@@ -577,8 +592,9 @@ class Index {
 	 * @return bool
 	 */
 	function save ($result = null) {
-		global $L, $Page, $Config;
-		if ($result || ($result === null && $Config->save())) {
+		$L		= Language::instance();
+		$Page	= Page::instance();
+		if ($result || ($result === null && Config::instance()->save())) {
 			$this->post_title = $L->changes_saved;
 			$Page->notice($L->changes_saved);
 			return true;
@@ -596,8 +612,9 @@ class Index {
 	 * @return bool
 	 */
 	function apply ($result = null) {
-		global $L, $Page, $Config;
-		if ($result || ($result === null && $Config->apply())) {
+		$L		= Language::instance();
+		$Page	= Page::instance();
+		if ($result || ($result === null && Config::instance()->apply())) {
 			$this->post_title = $L->changes_applied;
 			$Page->notice($L->changes_applied.$L->check_applied);
 			return true;
@@ -613,31 +630,26 @@ class Index {
 	 * @param bool	$system	If <b>true,/b> - cancels changes of system configuration, otherwise shows message about successful canceling
 	 */
 	function cancel ($system = true) {
-		global $L, $Page, $Config;
 		if ($system) {
-			$Config->cancel();
+			Config::instance()->cancel();
 		}
-		$this->post_title = $L->changes_canceled;
-		$Page->notice($L->changes_canceled);
+		$L					= Language::instance();
+		$this->post_title	= $L->changes_canceled;
+		Page::instance()->notice($L->changes_canceled);
 	}
-	/**
-	 * Cloning restriction
-	 *
-	 * @final
-	 */
-	function __clone () {}
 	/**
 	 * Executes plugins processing, blocks and module page generation
 	 */
 	function __finish () {
-		global $Config, $User, $Core, $Page;
+		$Config	= Config::instance();
+		$Page	= Page::instance();
 		/**
 		 * If site is closed, user is not admin, and it is not request for log in
 		 */
 		if (
 			!$Config->core['site_mode'] &&
 			!(
-				$User->admin() ||
+				User::instance()->admin() ||
 				(
 					API && $Config->route === ['user', 'login']
 				)
@@ -650,14 +662,13 @@ class Index {
 			$this->js_vars();
 			$Page->error();
 		}
-		$Core->run_trigger('System/Index/preload');
+		Trigger::instance()->run('System/Index/preload');
 		if (!$this->admin && !$this->api && file_exists(MFOLDER.'/index.html')) {
-			global $L;
 			ob_start();
 			_include(MFOLDER.'/index.html', false, false);
 			$Page->content(ob_get_clean());
 			if ($this->title_auto) {
-				$Page->title($L->{HOME ? 'home' : MODULE});
+				$Page->title(Language::instance()->{HOME ? 'home' : MODULE});
 			}
 		} else {
 			$this->init_auto	&& $this->init();
@@ -686,13 +697,6 @@ class Index {
 		)) {
 			_setcookie('logout', '');
 		}
-		$Core->run_trigger('System/Index/postload');
+		Trigger::instance()->run('System/Index/postload');
 	}
-}
-/**
- * For IDE
- */
-if (false) {
-	global $Index;
-	$Index = new Index;
 }

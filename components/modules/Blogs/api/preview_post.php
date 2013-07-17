@@ -7,9 +7,14 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h;
-global $Config, $User, $Page, $Blogs, $L;
+use			h,
+			cs\Config,
+			cs\Language,
+			cs\Page,
+			cs\User;
 include_once MFOLDER.'/../prepare.php';
+$Config	= Config::instance();
+$User	= User::instance();
 /**
  * If AJAX request from local referer, user is not guest
  */
@@ -18,6 +23,8 @@ if (!$Config->server['referer']['local'] || !$Config->server['ajax'] || !$User->
 	define('ERROR_CODE', 403);
 	return;
 }
+$L		= Language::instance();
+$Page	= Page::instance();
 if (empty($_POST['title'])) {
 	$Page->warning($L->post_title_empty);
 	$Page->json($Page->Top);
@@ -38,6 +45,7 @@ if (empty($_POST['tags'])) {
 	$Page->json($Page->Top);
 	return;
 }
+$Blogs	= Blogs::instance();
 if (isset($_POST['id'])) {
 	$post	= $Blogs->get($_POST['id']);
 } else {
@@ -47,7 +55,7 @@ if (isset($_POST['id'])) {
 		'comments_count'	=> 0
 	];
 }
-$module	= path($L->{MODULE});
+$module	= path($L->Blogs);
 $Page->json(
 	h::{'section.cs-blogs-post article'}(
 		h::header(
@@ -109,7 +117,7 @@ $Page->json(
 					]
 				).
 				(
-					$Config->module(MODULE)->enable_comments ? h::icon('comment').$post['comments_count'] : ''
+					$Config->module('Blogs')->enable_comments ? h::icon('comment').$post['comments_count'] : ''
 				)
 			)
 		)

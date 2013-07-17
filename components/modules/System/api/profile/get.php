@@ -7,7 +7,8 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $User, $Page, $Config;
+namespace	cs;
+$User	= User::instance();
 if ($User->guest()) {
 	define('ERROR_CODE', 403);
 	return;
@@ -25,6 +26,7 @@ $fields	= [
 	'skype',
 	'about'
 ];
+$Page	= Page::instance();
 if (isset($_POST['id'])) {
 	$Page->json(array_map(
 		function ($id) use ($fields, $User) {
@@ -36,7 +38,8 @@ if (isset($_POST['id'])) {
 		)
 	));
 } else {
-	$id	= $User->id;
+	$Config	= Config::instance();
+	$id		= $User->id;
 	if (isset($Config->route[2])) {
 		$id	= (int)$Config->route[2];
 		if (!in_array($id, $User->get_contacts())) {

@@ -14,8 +14,13 @@
  *  admin/System/components/plugins/disable<br>
  *  ['name'	=> <i>plugin_name</i>]
  */
-global $Config, $Index, $Core, $Page, $L, $User;
-$rc			= $Config->route;
+namespace	cs;
+$Config		= Config::instance();
+$Core		= Core::instance();
+$Index		= Index::instance();
+$L			= Language::instance();
+$Page		= Page::instance();
+$User		= User::instance();
 $plugins	= get_files_list(PLUGINS, false, 'd');
 if (isset($_POST['mode'], $_POST['plugin'])) {
 	$plugin	= $_POST['plugin'];
@@ -24,7 +29,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			if (!in_array($plugin, $Config->components['plugins']) && in_array($plugin, $plugins)) {
 				$Config->components['plugins'][] = $plugin;
 				$Index->save();
-				$Core->run_trigger(
+				Trigger::instance()->run(
 					'admin/System/components/plugins/enable',
 					[
 						'name' => $plugin
@@ -36,7 +41,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			if (in_array($plugin, $Config->components['plugins'])) {
 				unset($Config->components['plugins'][array_search($plugin, $Config->components['plugins'])]);
 				$Index->save();
-				$Core->run_trigger(
+				Trigger::instance()->run(
 					'admin/System/components/plugins/disable',
 					[
 						'name' => $plugin
@@ -52,7 +57,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			if ($active) {
 				unset($Config->components['plugins'][array_search($plugin, $Config->components['plugins'])]);
 				$Config->save();
-				$Core->run_trigger(
+				Trigger::instance()->run(
 					'admin/System/components/plugins/disable',
 					[
 						'name' => $plugin
@@ -150,7 +155,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			if ($active) {
 				$Config->components['plugins'][]	= $plugin;
 				$Config->save();
-				$Core->run_trigger(
+				Trigger::instance()->run(
 					'admin/System/components/plugins/enable',
 					[
 						'name' => $plugin

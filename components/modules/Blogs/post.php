@@ -7,8 +7,28 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h;
-global $Index, $Config, $Blogs, $Page, $L, $User, $Comments;
+use			h,
+			cs\Config,
+			cs\Index,
+			cs\Language,
+			cs\Page,
+			cs\Trigger,
+			cs\User;
+$Config				= Config::instance();
+$L					= Language::instance();
+$Page				= Page::instance();
+$User				= User::instance();
+$Comments	= null;
+Trigger::instance()->run(
+	'Comments/instance',
+	[
+	'data'	=> &$Comments
+	]
+);
+/**
+ * @var \cs\modules\Comments\Comments $Comments
+ */
+$Blogs				= Blogs::instance();
 $rc					= $Config->route;
 $post				= (int)mb_substr($rc[1], mb_strrpos($rc[1], ':')+1);
 if (!$post) {
@@ -52,7 +72,7 @@ $Page->canonical_url(
 	$tags,
 	'article:'
 );
-$Index->content(
+Index::instance()->content(
 	h::{'section.cs-blogs-post article'}(
 		h::header(
 			h::h1(
@@ -146,12 +166,12 @@ $Index->content(
 					]
 				).
 				(
-					$Config->module('Blogs')->enable_comments && is_object($Comments) ? h::icon('comment').$post['comments_count'] : ''
+					$Config->module('Blogs')->enable_comments && $Comments ? h::icon('comment').$post['comments_count'] : ''
 				)
 			)
 		)
 	).
 	(
-		$Config->module('Blogs')->enable_comments && is_object($Comments) ? $Comments->block($post['id']) : ''
+		$Config->module('Blogs')->enable_comments && $Comments ? $Comments->block($post['id']) : ''
 	)
 );

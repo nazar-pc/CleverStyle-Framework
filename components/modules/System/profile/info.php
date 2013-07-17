@@ -14,8 +14,13 @@
  *   'id'	=> <i>user_id</i><br>
  *  ]</code>
  */
-global $Core, $Config, $L, $User, $Page;
-if (!isset($Config->route[1], $Config->route[2]) || !($id = $User->get_id(hash('sha224', $Config->route[2])))) {
+namespace	cs;
+use			h;
+$L		= Language::instance();
+$Page	= Page::instance();
+$User	= User::instance();
+$rc		= Config::instance()->route;
+if (!isset($rc[1], $rc[2]) || !($id = $User->get_id(hash('sha224', $rc[2])))) {
 	define('ERROR_CODE', 404);
 	$Page->error();
 	return;
@@ -36,19 +41,23 @@ $data	= $User->get(
 	],
 	$id
 );
-$state	= '';
 if ($data['status'] == -1) {
 	define('ERROR_CODE', 404);
 	$Page->error();
 	return;
 } elseif ($data['status'] == 0) {
-	$state	= h::tr([
-		$L->account_disabled
-	]);
+	$Page->warning(
+		h::tr([
+			$L->account_disabled
+		])
+	);
+	return;
 } elseif ($data['block_until'] > TIME) {
-	$state	= h::tr([
-		$L->account_temporarily_blocked
-	]);
+	$Page->warning(
+		h::tr([
+			$L->account_temporarily_blocked
+		])
+	);
 }
 $name	= $data['username'] ? $data['username'].($data['username'] != $data['login'] ? ' aka '.$data['login'] : '') : $data['login'];
 $Page->title($L->profile_of_user($name));
@@ -120,7 +129,7 @@ $Page->content(
 		])
 	])
 );
-$Core->run_trigger(
+Trigger::instance()->run(
 	'System/profile/info',
 	[
 		'id'	=> $id

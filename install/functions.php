@@ -132,10 +132,8 @@ function install_process () {
 		"site_mode": "1",
 		"title_delimiter": " | ",
 		"title_reverse": "0",
-		"debug": "0",
 		"show_db_queries": "1",
 		"show_cookies": "1",
-		"show_objects_data": "1",
 		"gzip_compression": "1",
 		"cache_compress_js_css": "1",
 		"put_js_after_body": "1",
@@ -200,7 +198,6 @@ function install_process () {
 		],
 		"on_error_globals_dump": "0",
 		"simple_admin_mode": "0",
-		"cache_sync": "0",
 		"cookie_sync": "0",
 		"auto_translation": "0",
 		"auto_translation_engine": {

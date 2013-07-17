@@ -7,8 +7,12 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Config, $Index, $L, $Page;
-$a				= $Index;
+namespace	cs;
+use			h;
+$Config			= Config::instance();
+$L				= Language::instance();
+$Page			= Page::instance();
+$a				= Index::instance();
 $rc				= $Config->route;
 $test_dialog	= true;
 if (isset($rc[2])) {
@@ -109,7 +113,6 @@ if (isset($rc[2])) {
 			}
 			unset($module, $mdata, $storage_name);
 			if (!empty($modules)) {
-				global $Page;
 				$Page->warning($L->storage_used_by_modules.': '.implode(', ', $modules));
 			} else {
 				$a->action = 'admin/System/'.$rc[0].'/'.$rc[1];
@@ -136,7 +139,7 @@ if (isset($rc[2])) {
 			$test_dialog		= false;
 			$a->form			= false;
 			$a->generate_auto	= false;
-			global $Page, $Storage;
+			$Storage			= Storage::instance();
 			if (isset($rc[3])) {
 				$Page->Content = h::{'p.cs-test-result'}($Storage->test([$rc[3]]) ? $L->success : $L->failed);
 			} else {
@@ -154,7 +157,7 @@ if (isset($rc[2])) {
 			$L->storageuser
 		])
 	);
-	global $Core;
+	$Core			= Core::instance();
 	$storages		= $Config->storage;
 	if (!empty($storages)) {
 		foreach ($storages as $i => &$storage_data) {

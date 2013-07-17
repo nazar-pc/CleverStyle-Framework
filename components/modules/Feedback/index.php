@@ -6,9 +6,15 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Config, $Index, $Page, $L, $User, $Mail;
+namespace	cs;
+use			h;
+$Index			= Index::instance();
 $Index->form	= true;
 $Index->buttons	= false;
+$Config			= Config::instance();
+$L				= Language::instance();
+$Page			= Page::instance();
+$User			= User::instance();
 $Page->css('components/modules/Feedback/includes/css/general.css');
 $Index->content(
 	h::{'section.cs-feedback-form article'}(
@@ -35,7 +41,7 @@ if (isset($_POST['name'], $_POST['email'], $_POST['text'])) {
 		$Page->warning($L->feedback_fill_all_fields);
 		return;
 	}
-	if ($Mail->send_to(
+	if (Mail::instance()->send_to(
 		$Config->core['admin_email'],
 		$L->feedback_email_from(xap($_POST['name']), $Config->core['name']),
 		xap($_POST['text']),

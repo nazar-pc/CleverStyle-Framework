@@ -7,19 +7,26 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h;
-global $Page, $Index, $L, $Blogs, $Config;
-$post = $Blogs->get($Config->route[1]);
-$Page->title(
+use			h,
+			cs\Config,
+			cs\Index,
+			cs\Language,
+			cs\Page;
+$Blogs						= Blogs::instance();
+$Config						= Config::instance();
+$Index						= Index::instance();
+$L							= Language::instance();
+$post						= $Blogs->get($Config->route[1]);
+Page::instance()->title(
 	$L->editing_of_post($post['title'])
 );
 $Index->form				= true;
-$Index->action				= 'admin/'.MODULE.'/browse_posts';
+$Index->action				= 'admin/Blogs/browse_posts';
 $Index->buttons				= false;
 $Index->cancel_button_back	= true;
 $Index->reset_button		= true;
 $disabled					= [];
-$max_sections				= $Config->module(MODULE)->max_sections;
+$max_sections				= $Config->module('Blogs')->max_sections;
 $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 		$L->editing_of_post($post['title'])

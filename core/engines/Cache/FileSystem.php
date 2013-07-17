@@ -5,16 +5,18 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace cs\Cache;
+namespace	cs\Cache;
+use			cs\Config,
+			cs\Core,
+			cs\Language;
 /**
  * Provides cache functionality based on file system structure.
- * Require base configuration option $Core->cache_size with maximum allowed cache size in MB, 0 means without limitation (is not recommended)
+ * Require base configuration option Core::instance()->cache_size with maximum allowed cache size in MB, 0 means without limitation (is not recommended)
  */
 class FileSystem extends _Abstract {
 	protected	$cache_size;
 	function __construct () {
-		global $Core;
-		$this->cache_size = $Core->cache_size*1048576;
+		$this->cache_size = Core::instance()->cache_size * 1048576;
 	}
 	/**
 	 * Get item from cache
@@ -74,12 +76,11 @@ class FileSystem extends _Abstract {
 				$cache_size	+= $dsize;
 				if ($cache_size > $this->cache_size) {
 					$cache_list = get_files_list(CACHE, false, 'f', true, true, 'date|desc');
-					global $Config;
 					foreach ($cache_list as $file) {
 						$cache_size -= filesize($file);
 						unlink($file);
 						$disk_size = $this->cache_size * 2 / 3;
-						if ($cache_size <= $disk_size * $Config->core['update_ratio'] / 100) {
+						if ($cache_size <= $disk_size * Config::instance()->core['update_ratio'] / 100) {
 							break;
 						}
 					}
@@ -97,7 +98,7 @@ class FileSystem extends _Abstract {
 				return file_put_contents(CACHE.'/'.$item, $data, LOCK_EX | FILE_BINARY);
 			}
 		} else {
-			global $L;
+			$L	= Language::instance();
 			trigger_error($L->file.' '.CACHE.'/'.$item.' '.$L->not_writable, E_USER_WARNING);
 			return false;
 		}

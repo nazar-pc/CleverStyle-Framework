@@ -7,8 +7,16 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h;
-global $Page, $Index, $L, $User, $Config;
+use			h,
+			cs\Config,
+			cs\Index,
+			cs\Language,
+			cs\Page,
+			cs\User;
+$Config						= Config::instance();
+$L							= Language::instance();
+$Page						= Page::instance();
+$User						= User::instance();
 $Page->title($L->new_post);
 if (!$User->user()) {
 	if ($User->bot()) {
@@ -44,7 +52,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 				$save	= false;
 			}
 			if ($save) {
-				global $Blogs;
+				$Blogs	= Blogs::instance();
 				$id		= $Blogs->add($_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])), $draft);
 				if ($id) {
 					interface_off();
@@ -57,6 +65,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 		break;
 	}
 }
+$Index						= Index::instance();
 $Index->form				= true;
 $Index->action				= $module.'/new_post';
 $Index->buttons				= false;

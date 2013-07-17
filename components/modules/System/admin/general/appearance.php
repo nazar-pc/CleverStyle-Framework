@@ -8,10 +8,12 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\System;
-use			h;
-global $Config, $Index;
+use			h,
+			cs\Config,
+			cs\Index;
+$Config	= Config::instance();
 $Config->reload_themes();
-$Index->content(
+Index::instance()->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		core_select($Config->core['active_themes'],							'theme',			'change_theme',			'current_theme'),
 		core_select($Config->core['themes'],								'active_themes',	'change_active_themes',	null,			true),

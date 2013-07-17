@@ -8,13 +8,21 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\System\users\users;
-use			h;
+use			h,
+			cs\Config,
+			cs\Index,
+			cs\Language,
+			cs\Page,
+			cs\User;
 function row ($col1, $col2) {
 	return	h::{'th.ui-widget-header.ui-corner-all'}($col1).
 			  h::{'td.ui-widget-content.ui-corner-all'}($col2);
 }
-global $Config, $Index, $L, $User, $Page;
-$a				= $Index;
+$Config			= Config::instance();
+$L				= Language::instance();
+$Page			= Page::instance();
+$User			= User::instance();
+$a				= Index::instance();
 $rc				= $Config->route;
 $search_columns	= $User->get_users_columns();
 if (isset($rc[2], $rc[3])) {

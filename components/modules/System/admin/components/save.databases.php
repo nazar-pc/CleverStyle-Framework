@@ -7,10 +7,12 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
+namespace	cs;
 if (!isset($_POST['mode'])) {
 	return;
 }
-global $Config, $Index;
+$Index	= Index::instance();
+$Config	= Config::instance();
 $update = false;
 if ($_POST['mode'] == 'add') {
 	foreach ($_POST['db'] as $item => $value) {

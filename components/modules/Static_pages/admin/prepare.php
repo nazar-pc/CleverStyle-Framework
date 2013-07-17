@@ -8,25 +8,30 @@
  * @license		  MIT License, see license.txt
  */
 namespace	cs\modules\Static_pages;
-use			h;
-global $Index, $Page, $L, $Config;
-$Index->title_auto	= false;
+use			h,
+			cs\Config,
+			cs\Index,
+			cs\Language,
+			cs\Page;
+$Config							= Config::instance();
+$L								= Language::instance();
+$Page							= Page::instance();
+Index::instance()->title_auto	= false;
 $Page->title($L->administration);
-$Page->title($L->{MODULE});
-$Page->css('components/modules/'.MODULE.'/includes/css/style.css');
-$Page->menumore		= h::a(
+$Page->title($L->Static_pages);
+$Page->css('components/modules/Static_pages/includes/css/style.css');
+$Page->menumore					= h::a(
 	$L->browse_page_categories,
 	[
-		'href'	=> 'admin/'.MODULE,
+		'href'	=> 'admin/Static_pages',
 		'class'	=> !isset($Config->route[0]) || $Config->route[0] == 'browse_sections' ? 'active' : false
 	]
 );
 function get_categories_rows ($structure = null, $level = 0, $parent_categories = []) {
-	global $L;
+	$L						= Language::instance();
 	$root					= false;
 	if ($structure === null) {
-		global $Static_pages;
-		$structure			= $Static_pages->get_structure();
+		$structure			= Static_pages::instance()->get_structure();
 		$structure['title']	= $L->root_category;
 		$root				= true;
 	}
@@ -42,32 +47,32 @@ function get_categories_rows ($structure = null, $level = 0, $parent_categories 
 					]
 				),
 				[
-					'href'	=> 'admin/'.MODULE.'/browse_pages/'.implode('/', $parent_categories)
+					'href'	=> 'admin/Static_pages/browse_pages/'.implode('/', $parent_categories)
 				]
 			),
 			[
-				'class'	=> 'cs-static-pages-padding-left-'.$level
+				'class'	=> "cs-static-pages-padding-left-$level"
 			]
 		],
 		h::{'a.cs-button-compact'}(
 			[
 				h::icon('plus'),
 				[
-					'href'			=> 'admin/'.MODULE.'/add_category/'.$structure['id'],
+					'href'			=> "admin/Static_pages/add_category/$structure[id]",
 					'data-title'	=> $L->add_subcategory
 				]
 			],
 			[
 				h::icon('document-b'),
 				[
-					'href'			=> 'admin/'.MODULE.'/add_page/'.$structure['id'],
+					'href'			=> "admin/Static_pages/add_page/$structure[id]",
 					'data-title'	=> $L->add_page
 				]
 			]/*,
 			[
 				h::icon('document'),
 				[
-					'href'			=> 'admin/'.MODULE.'/add_page_live/'.$structure['id'],
+					'href'			=> "admin/Static_pages/add_page_live/$structure[id]",
 					'data-title'	=> $L->add_page_live
 				]
 			]*/
@@ -76,14 +81,14 @@ function get_categories_rows ($structure = null, $level = 0, $parent_categories 
 			[
 				h::icon('wrench'),
 				[
-					'href'			=> 'admin/'.MODULE.'/edit_category/'.$structure['id'],
+					'href'			=> "admin/Static_pages/edit_category/$structure[id]",
 					'data-title'	=> $L->edit
 				]
 			],
 			[
 				h::icon('trash'),
 				[
-					'href'			=> 'admin/'.MODULE.'/delete_category/'.$structure['id'],
+					'href'			=> "admin/Static_pages/delete_category/$structure[id]",
 					'data-title'	=> $L->delete
 				]
 			]
@@ -102,9 +107,8 @@ function get_categories_list ($current = null, $structure = null, $level = 0) {
 		'value'	=> []
 	];
 	if ($structure === null) {
-		global $Static_pages, $L;
-		$structure			= $Static_pages->get_structure();
-		$list['in'][]		= $L->root_category;
+		$structure			= Static_pages::instance()->get_structure();
+		$list['in'][]		= Language::instance()->root_category;
 		$list['value'][]	= 0;
 	} else {
 		if ($structure['id'] == $current) {
@@ -123,10 +127,11 @@ function get_categories_list ($current = null, $structure = null, $level = 0) {
 	return $list;
 }
 function get_pages_rows () {
-	global $Config, $Static_pages, $L, $Page;
-	$categories	= array_slice($Config->route, 2);
-	$structure	= $Static_pages->get_structure();
-	$path		= [];
+	$L				= Language::instance();
+	$Static_pages	= Static_pages::instance();
+	$categories		= array_slice(Config::instance()->route, 2);
+	$structure		= $Static_pages->get_structure();
+	$path			= [];
 	if (!empty($categories)) {
 		foreach ($categories as $category) {
 			$category	= $Static_pages->get_category($category)['path'];
@@ -137,9 +142,9 @@ function get_pages_rows () {
 		}
 		unset($category);
 	}
-	$Page->title($structure['id'] == 0 ? $L->root_category : $structure['title']);
-	$path		= !empty($path) ? implode('/', $path).'/' : '';
-	$content	= [];
+	Page::instance()->title($structure['id'] == 0 ? $L->root_category : $structure['title']);
+	$path			= !empty($path) ? implode('/', $path).'/' : '';
+	$content		= [];
 	if (!empty($structure['pages'])) {
 		foreach ($structure['pages'] as &$page) {
 			$page			= $Static_pages->get($page);
@@ -159,21 +164,21 @@ function get_pages_rows () {
 					[
 						h::icon('document-b'),
 						[
-							'href'			=> 'admin/'.MODULE.'/edit_page/'.$page['id'],
+							'href'			=> "admin/Static_pages/edit_page/$page[id]",
 							'data-title'	=> $L->edit
 						]
 					]/*,
 					$page['interface'] ? [
 						h::icon('document'),
 						[
-							'href'			=> 'admin/'.MODULE.'/edit_page_live/'.$page['id'],
+							'href'			=> "admin/Static_pages/edit_page_live/$page[id]",
 							'data-title'	=> $L->edit_page_live
 						]
 					] : false*/,
 					[
 						h::icon('trash'),
 						[
-							'href'			=> 'admin/'.MODULE.'/delete_page/'.$page['id'],
+							'href'			=> "admin/Static_pages/delete_page/$page[id]",
 							'data-title'	=> $L->delete
 						]
 					]

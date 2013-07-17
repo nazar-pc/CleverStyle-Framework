@@ -8,15 +8,22 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\System;
-use			h;
-global $Config, $Index, $L, $User, $Page;
-$a				= $Index;
+use			h,
+			cs\Config,
+			cs\Core,
+			cs\Index,
+			cs\Language,
+			cs\Page,
+			cs\User;
+$Config			= Config::instance();
+$L				= Language::instance();
+$Page			= Page::instance();
+$a				= Index::instance();
 $rc				= $Config->route;
 $plugins		= get_files_list(PLUGINS, false, 'd');
 $show_plugins	= true;
 $a->buttons		= false;
 if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
-	global $Page;
 	switch ($rc[2]) {
 		case 'enable':
 			if ($rc[3] == 'upload' && isset($_FILES['upload_plugin']) && $_FILES['upload_plugin']['tmp_name']) {
@@ -68,7 +75,7 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 					$rc[2]					= 'update';
 					$show_plugins			= false;
 					$Page->title($L->updating_of_plugin($plugin));
-					rename($tmp_file, $tmp_file = TEMP.'/'.$User->get_session().'_plugin_update.phar.php');
+					rename($tmp_file, $tmp_file = TEMP.'/'.User::instance()->get_session().'_plugin_update.phar.php');
 					$a->content(
 						h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 							$L->update_plugin(
@@ -120,9 +127,9 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 					break;
 				}
 				rename($tmp_file, mb_substr($tmp_file, 0, -9));
-				global $Core;
+				$Core			= Core::instance();
 				$api_request	= $Core->api_request(
-					MODULE.'/admin/upload_plugin',
+					'System/admin/upload_plugin',
 					[
 						'package'	=> str_replace(DIR, $Config->base_url(), mb_substr($tmp_file, 0, -9))
 					]
@@ -294,9 +301,9 @@ if (!empty($plugins)) {
 				$plugin_meta['author'],
 				isset($plugin_meta['website']) ? $plugin_meta['website'] : $L->none,
 				$plugin_meta['license'],
-				isset($plugin_meta['provide']) ? implode(', ', $plugin_meta['provide']) : $L->none,
-				isset($plugin_meta['require']) ? implode(', ', $plugin_meta['require']) : $L->none,
-				isset($plugin_meta['conflict']) ? implode(', ', $plugin_meta['conflict']) : $L->none,
+				isset($plugin_meta['provide']) ? implode(', ', (array)$plugin_meta['provide']) : $L->none,
+				isset($plugin_meta['require']) ? implode(', ', (array)$plugin_meta['require']) : $L->none,
+				isset($plugin_meta['conflict']) ? implode(', ', (array)$plugin_meta['conflict']) : $L->none,
 				isset($plugin_meta['multilingual']) && in_array('interface', $plugin_meta['multilingual']) ? $L->yes : $L->no,
 				isset($plugin_meta['multilingual']) && in_array('content', $plugin_meta['multilingual']) ? $L->yes : $L->no,
 				isset($plugin_meta['languages']) ? implode(', ', $plugin_meta['languages']) : $L->none

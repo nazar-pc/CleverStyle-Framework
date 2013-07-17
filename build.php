@@ -7,11 +7,11 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-define('DIR',	__DIR__);
-require_once    DIR.'/core/classes/h_internal.php';
-require_once    DIR.'/core/classes/h.php';
-require_once    DIR.'/core/upf.php';
-require_once    DIR.'/core/functions.php';
+define('DIR', __DIR__);
+require_once DIR.'/core/classes/h/_Abstract.php';
+require_once DIR.'/core/classes/h.php';
+require_once DIR.'/core/upf.php';
+require_once DIR.'/core/functions.php';
 date_default_timezone_set('UTC');
 header('Content-Type: text/html; charset=utf-8');
 header('Connection: close');
@@ -35,16 +35,13 @@ echo	h::title('CleverStyle CMS Builder').
 		])."\n".
 		h::header(
 			h::img([
-				'src'	=> (isset($_SERVER['HTTPS']) ? 'https' : 'http').'://'.
-							$_SERVER['HTTP_HOST'].
-							'/'.trim(str_replace('install.php', '', $_SERVER['REQUEST_URI']), '/').
-							'/install/logo.png'
+				'src'	=> 'install/logo.png'
 			]).
 			h::h1('CleverStyle CMS Builder')
 		).
 		h::section(
 			ob_wrapper(function () use ($mode) {
-				include_once DIR.'/build/'.$mode.'.php';
+				include_once DIR."/build/$mode.php";
 			})
 		).
 		h::footer(

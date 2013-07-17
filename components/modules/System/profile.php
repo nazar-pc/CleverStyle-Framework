@@ -7,9 +7,10 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Config, $Index, $User;
-$rc			= &$Config->route;
+namespace	cs;
+$rc			= &Config::instance()->route;
 $subparts	= _json_decode(file_get_contents(MFOLDER.'/index.json'))[$rc[0]];
+$User		= User::instance();
 if (
 	(
 		!isset($rc[1]) && $User->user()

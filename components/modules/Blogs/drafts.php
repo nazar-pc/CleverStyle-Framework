@@ -7,8 +7,18 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h;
-global $Index, $Page, $L, $User, $db, $Config;
+use			h,
+			cs\Config,
+			cs\DB,
+			cs\Index,
+			cs\Language,
+			cs\Page,
+			cs\User;
+$Config					= Config::instance();
+$Index					= Index::instance();
+$L						= Language::instance();
+$Page					= Page::instance();
+$User					= User::instance();
 $Page->title($L->drafts);
 $module					= path($L->Blogs);
 $Index->form			= true;
@@ -21,7 +31,7 @@ if ($page > 1) {
 }
 $num					= $Config->module('Blogs')->posts_per_page;
 $from					= ($page - 1) * $num;
-$cdb					= $db->{$Config->module('Blogs')->db('posts')};
+$cdb					= DB::instance()->{$Config->module('Blogs')->db('posts')};
 $posts_count			= $cdb->qfs([
 	"SELECT COUNT(`id`)
 	FROM `[prefix]blogs_posts`

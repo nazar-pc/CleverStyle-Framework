@@ -89,6 +89,8 @@ use			cs\DB\Accessor;
  * @property	string	$client_ip
  */
 class User extends Accessor {
+	use	Singleton;
+
 	protected	$current				= [
 					'session'		=> false,
 					'is'			=> [
@@ -111,10 +113,10 @@ class User extends Accessor {
 	/**
 	 * Defining user id, type, session, personal settings
 	 */
-	function __construct () {
-		global $Cache, $Config, $Key, $Core, $User, $L;
-		$User		= $this;
-		$Core->run_trigger('System/User/construct/before');
+	function construct () {
+		$Cache		= Cache::instance();
+		$Config		= Config::instance();
+		Trigger::instance()->run('System/User/construct/before');
 		if (($this->users_columns = $Cache->{'users/columns'}) === false) {
 			$this->users_columns = $Cache->{'users/columns'} = $this->db()->columns('[prefix]users');
 		}
@@ -131,7 +133,7 @@ class User extends Accessor {
 			) &&
 			count($rc) > 1 &&
 			(
-				$key_data = $Key->get(
+				$key_data = Key::instance()->get(
 					$Config->module('System')->db('keys'),
 					$key = array_slice($rc, -1)[0],
 					true
@@ -143,7 +145,7 @@ class User extends Accessor {
 				$this->current['is']['admin'] = true;
 				interface_off();
 				$_POST['data'] = _json_decode($_POST['data']);
-				$Core->run_trigger('System/User/construct/after');
+				Trigger::instance()->run('System/User/construct/after');
 				return;
 			} else {
 				$this->current['is']['guest'] = true;
@@ -198,7 +200,7 @@ class User extends Accessor {
 				/**
 				 * Load data
 				 */
-				if (($this->id = $Cache->{'users/'.$bot_hash}) === false) {
+				if (($this->id = $Cache->{"users/$bot_hash"}) === false) {
 					/**
 					 * If no data - try to find bot in list of known bots
 					 */
@@ -229,7 +231,7 @@ class User extends Accessor {
 					 * If found id - this is bot
 					 */
 					if ($this->id) {
-						$Cache->{'users/'.$bot_hash}	= $this->id;
+						$Cache->{"users/$bot_hash"}	= $this->id;
 						/**
 						 * Searching for last bot session, if exists - load it, otherwise create new one
 						 */
@@ -259,7 +261,7 @@ class User extends Accessor {
 			if ($this->timezone) {
 				date_default_timezone_set($this->timezone);
 			}
-			$L->change($this->language);
+			Language::instance()->change($this->language);
 			if ($this->theme) {
 				$theme = _json_decode($this->theme);
 				if (
@@ -285,15 +287,14 @@ class User extends Accessor {
 					defined('API_GET_ACCESS') && API_GET_ACCESS
 				)
 			) {
-				global $Page;
 				define('ERROR_CODE', 403);
-				$Page->error('Invalid user session');
+				Page::instance()->error('Invalid user session');
 				__finish();
 			}
 			$_POST = [];
 		}
 		$this->init	= true;
-		$Core->run_trigger('System/User/construct/after');
+		Trigger::instance()->run('System/User/construct/after');
 	}
 	/**
 	 * Updates information about who is user accessed by methods ::guest() ::bot() ::user() admin() ::system()
@@ -307,13 +308,12 @@ class User extends Accessor {
 		if ($this->id == 1) {
 			$this->current['is']['guest'] = true;
 		} else {
-			global $Config;
 			/**
 			 * Checking of user type
 			 */
 			$groups = $this->get_user_groups() ?: [];
 			if (in_array(1, $groups)) {
-				$this->current['is']['admin']	= $Config->can_be_admin;
+				$this->current['is']['admin']	= Config::instance()->can_be_admin;
 				$this->current['is']['user']	= true;
 			} elseif (in_array(2, $groups)) {
 				$this->current['is']['user']	= true;
@@ -362,7 +362,6 @@ class User extends Accessor {
 		if (!$user) {
 			return false;
 		}
-		global $Cache;
 		/**
 		 * Reference for simpler usage
 		 */
@@ -429,7 +428,7 @@ class User extends Accessor {
 			/**
 			 * Try to get data from the cache
 			 */
-			} elseif (!isset($new_data) && ($new_data = $Cache->{'users/'.$user}) !== false && is_array($new_data)) {
+			} elseif (!isset($new_data) && ($new_data = Cache::instance()->{"users/$user"}) !== false && is_array($new_data)) {
 				/**
 				 * Update the local cache
 				 */
@@ -485,7 +484,7 @@ class User extends Accessor {
 					return false;
 				}
 			} elseif ($item == 'language') {
-				global $L;
+				$L	= Language::instance();
 				if ($user == $this->id) {
 					$L->change($value);
 					$value	= $value ? $L->clanguage : '';
@@ -501,8 +500,7 @@ class User extends Accessor {
 				if ($this->init) {
 					$this->data_set[$user][$item.'_hash'] = $this->data[$user][$item];
 				}
-				global $Cache;
-				unset($Cache->{'users/'.hash('sha224', $this->$item)});
+				unset(Cache::instance()->{'users/'.hash('sha224', $this->$item)});
 			} elseif ($item == 'password_hash') {
 				$this->del_all_sessions($user);
 			}
@@ -543,7 +541,7 @@ class User extends Accessor {
 		if (!$user || $user == 1) {
 			return false;
 		}
-		global $Cache;
+		$Cache	= Cache::instance();
 		if (($data = $Cache->{'users/data/'.$user}) === false || !isset($data[$item])) {
 			if (!is_array($data)) {
 				$data	= [];
@@ -574,7 +572,6 @@ class User extends Accessor {
 		if (!$user || $user == 1) {
 			return false;
 		}
-		global $Cache;
 		$result	= $this->db()->q(
 			"INSERT INTO `[prefix]users_data`
 				(
@@ -590,7 +587,7 @@ class User extends Accessor {
 			$item,
 			_json_encode($value)
 		);
-		unset($Cache->{'users/data/'.$user});
+		unset(Cache::instance()->{'users/data/'.$user});
 		return $result;
 	}
 	/**
@@ -606,7 +603,6 @@ class User extends Accessor {
 		if (!$user || $user == 1) {
 			return false;
 		}
-		global $Cache;
 		$result	= $this->db()->q(
 			"DELETE FROM `[prefix]users_data`
 			WHERE
@@ -614,7 +610,7 @@ class User extends Accessor {
 				`item`	= '%s'",
 			$item
 		);
-		unset($Cache->{'users/data/'.$user});
+		unset(Cache::instance()->{'users/data/'.$user});
 		return $result;
 	}
 	/**
@@ -623,8 +619,7 @@ class User extends Accessor {
 	 * @return int
 	 */
 	protected function cdb () {
-		global $Config;
-		return $Config->module('System')->db('users');
+		return Config::instance()->module('System')->db('users');
 	}
 	/**
 	 * Is admin
@@ -677,7 +672,7 @@ class User extends Accessor {
 		if (!preg_match('/^[0-9a-z]{56}$/', $login_hash)) {
 			return false;
 		}
-		global $Cache;
+		$Cache	= Cache::instance();
 		if (($id = $Cache->{'users/'.$login_hash}) === false) {
 			$Cache->{'users/'.$login_hash} = $id = $this->db()->qfs([
 				"SELECT `id` FROM `[prefix]users` WHERE `login_hash` = '%1\$s' OR `email_hash` = '%1\$s' LIMIT 1",
@@ -853,11 +848,11 @@ class User extends Accessor {
 	 * @return array|bool
 	 */
 	function get_user_groups ($user = false) {
-		$user = (int)($user ?: $this->id);
+		$user	= (int)($user ?: $this->id);
 		if (!$user || $user == 1) {
 			return false;
 		}
-		global $Cache;
+		$Cache	= Cache::instance();
 		if (($groups = $Cache->{'users/groups/'.$user}) === false) {
 			$groups = $this->db()->qfas(
 				"SELECT `group`
@@ -915,7 +910,7 @@ class User extends Accessor {
 			$update[] = "UPDATE `[prefix]users_groups` SET `priority` = '$i' WHERE `id` = '$user.' AND `group` = '$group' LIMIT 1";
 		}
 		$return		= $return && $this->db_prime()->q($update);
-		global $Cache;
+		$Cache		= Cache::instance();
 		unset(
 			$Cache->{'users/groups/'.$user},
 			$Cache->{'users/permissions/'.$user}
@@ -948,10 +943,9 @@ class User extends Accessor {
 			$title,
 			$description
 		)) {
-			global $Cache, $Core;
-			unset($Cache->{'groups/list'});
+			unset(Cache::instance()->{'groups/list'});
 			$id	= $this->db_prime()->id();
-			$Core->run_trigger(
+			Trigger::instance()->run(
 				'System/User/add_group',
 				[
 					'id'	=> $id
@@ -971,12 +965,12 @@ class User extends Accessor {
 	 * @return array|bool|mixed
 	 */
 	function get_group ($group, $item = false) {
-		global $Cache;
-		$group = (int)$group;
+		$Cache	= Cache::instance();
+		$group	= (int)$group;
 		if (!$group) {
 			return false;
 		}
-		if (($group_data = $Cache->{'groups/'.$group}) === false) {
+		if (($group_data = $Cache->{"groups/$group"}) === false) {
 			$group_data = $this->db()->qf(
 				"SELECT
 					`title`,
@@ -987,7 +981,7 @@ class User extends Accessor {
 				LIMIT 1"
 			);
 			$group_data['data'] = _json_decode($group_data['data']);
-			$Cache->{'groups/'.$group} = $group_data;
+			$Cache->{"groups/$group"} = $group_data;
 		}
 		if ($item !== false) {
 			if (isset($group_data[$item])) {
@@ -1024,9 +1018,9 @@ class User extends Accessor {
 		}
 		$update	= implode(', ', $update);
 		if (!empty($update) && $this->db_prime()->q("UPDATE `[prefix]groups` SET $update WHERE `id` = '$group' LIMIT 1")) {
-			global $Cache;
+			$Cache	= Cache::instance();
 			unset(
-				$Cache->{'groups/'.$group},
+				$Cache->{"groups/$group"},
 				$Cache->{'groups/list'}
 			);
 			return true;
@@ -1042,29 +1036,28 @@ class User extends Accessor {
 	 * @return bool
 	 */
 	function del_group ($group) {
-		global $Core;
 		$group = (int)$group;
-		$Core->run_trigger(
+		Trigger::instance()->run(
 			'System/User/del_group/before',
 			[
 				'id'	=> $group
 			]
 		);
 		if ($group != 1 && $group != 2 && $group != 3) {
-			$return = $this->db_prime()->q([
+			$return	= $this->db_prime()->q([
 				"DELETE FROM `[prefix]groups` WHERE `id` = $group",
 				"DELETE FROM `[prefix]users_groups` WHERE `group` = $group",
 				"DELETE FROM `[prefix]groups_permissions` WHERE `id` = $group"
 			]);
-			global $Cache;
+			$Cache	= Cache::instance();
 			unset(
-				$Cache->{'users/groups/'.$group},
+				$Cache->{"users/groups/$group"},
 				$Cache->{'users/permissions'},
-				$Cache->{'groups/'.$group},
-				$Cache->{'groups/permissions/'.$group},
+				$Cache->{"groups/$group"},
+				$Cache->{"groups/permissions/$group"},
 				$Cache->{'groups/list'}
 			);
-			$Core->run_trigger(
+			Trigger::instance()->run(
 				'System/User/del_group/after',
 				[
 					'id'	=> $group
@@ -1081,7 +1074,7 @@ class User extends Accessor {
 	 * @return array|bool		Every item in form of array('id' => <i>id</i>, 'title' => <i>title</i>, 'description' => <i>description</i>)
 	 */
 	function get_groups_list () {
-		global $Cache;
+		$Cache	= Cache::instance();
 		if (($groups_list = $Cache->{'groups/list'}) === false) {
 			$Cache->{'groups/list'} = $groups_list = $this->db()->qfa(
 				"SELECT
@@ -1148,7 +1141,7 @@ class User extends Accessor {
 			default:
 				return false;
 		}
-		global $Cache;
+		$Cache	= Cache::instance();
 		if (($permissions = $Cache->{$path.$id}) === false) {
 			$permissions_array = $this->db()->qfa(
 				"SELECT
@@ -1180,7 +1173,7 @@ class User extends Accessor {
 	 * @return bool
 	 */
 	protected function set_any_permissions ($data, $id, $type) {
-		$id			= (int)$id;
+		$id		= (int)$id;
 		if (!is_array($data) || empty($data) || !$id) {
 			return false;
 		}
@@ -1196,7 +1189,7 @@ class User extends Accessor {
 			default:
 				return false;
 		}
-		$delete = [];
+		$delete	= [];
 		foreach ($data as $i => $val) {
 			if ($val == -1) {
 				$delete[] = (int)$i;
@@ -1204,7 +1197,7 @@ class User extends Accessor {
 			}
 		}
 		unset($i, $val);
-		$return = true;
+		$return	= true;
 		if (!empty($delete)) {
 			$delete	= implode(', ', $delete);
 			$return	= $this->db_prime()->q(
@@ -1237,11 +1230,12 @@ class User extends Accessor {
 				unset($data, $permission, $value);
 				if (!empty($insert)) {
 					$insert	= implode('), (', $insert);
-					$return	= $return && $this->db_prime()->q("INSERT INTO `$table` (`id`, `permission`, `value`) VALUES ($insert)");
+					$return	= $return && $this->db_prime()->q(
+						"INSERT INTO `$table` (`id`, `permission`, `value`) VALUES ($insert)");
 				}
 			}
 		}
-		global $Cache;
+		$Cache	= Cache::instance();
 		unset($Cache->{$path.$id});
 		if ($type == 'group') {
 			unset($Cache->{'users/permissions'});
@@ -1288,7 +1282,7 @@ class User extends Accessor {
 	 */
 	function get_permissions_table () {
 		if (empty($this->permissions_table)) {
-			global $Cache;
+			$Cache	= Cache::instance();
 			if (($this->permissions_table = $Cache->permissions_table) === false) {
 				$this->permissions_table	= [];
 				$data						= $this->db()->qfa(
@@ -1315,8 +1309,7 @@ class User extends Accessor {
 	 */
 	protected function del_permission_table () {
 		$this->permissions_table = [];
-		global $Cache;
-		unset($Cache->permissions_table);
+		unset(Cache::instance()->permissions_table);
 	}
 	/**
 	 * Add permission
@@ -1462,8 +1455,11 @@ class User extends Accessor {
 			"DELETE FROM `[prefix]users_permissions` WHERE `permission` = '$id'",
 			"DELETE FROM `[prefix]groups_permissions` WHERE `permission` = '$id'"
 		])) {
-			global $Cache;
-			unset($Cache->{'users/permissions'}, $Cache->{'groups/permissions'});
+			$Cache	= Cache::instance();
+			unset(
+				$Cache->{'users/permissions'},
+				$Cache->{'groups/permissions'}
+			);
 			$this->del_permission_table();
 			return true;
 		} else {
@@ -1501,7 +1497,8 @@ class User extends Accessor {
 		if (!preg_match('/^[0-9a-z]{32}$/', $session_id)) {
 			return false;
 		}
-		global $Cache, $Config;
+		$Cache	= Cache::instance();
+		$Config	= Config::instance();
 		$result	= false;
 		if ($session_id && !($result = $Cache->{'sessions/'.$session_id})) {
 			$condition	= $Config->core['remember_user_ip'] ?
@@ -1637,7 +1634,8 @@ class User extends Accessor {
 			$user
 		);
 		if (is_array($data)) {
-			global $Page, $L;
+			$L		= Language::instance();
+			$Page	= Page::instance();
 			if ($data['status'] != 1) {
 				/**
 				 * If user is disabled
@@ -1679,7 +1677,7 @@ class User extends Accessor {
 			goto getting_user_data;
 		}
 		unset($data);
-		global $Config;
+		$Config	= Config::instance();
 		/**
 		 * Generate hash in cycle, to obtain unique value
 		 */
@@ -1723,13 +1721,12 @@ class User extends Accessor {
 				$forwarded_for	= ip2hex($this->forwarded_for),
 				$client_ip		= ip2hex($this->client_ip)
 			);
-			$time						= TIME;
+			$time									= TIME;
 			if ($user != 1) {
 				$this->db_prime()->q("UPDATE `[prefix]users` SET `last_login` = $time, `last_online` = $time, `last_ip` = '$ip.' WHERE `id` ='$user'");
 			}
-			global $Cache;
-			$this->current['session']	= $hash;
-			$Cache->{'sessions/'.$hash}	= [
+			$this->current['session']				= $hash;
+			Cache::instance()->{"sessions/$hash"}	= [
 				'user'			=> $user,
 				'expire'		=> TIME + $Config->core['session_expire'],
 				'user_agent'	=> $this->user_agent,
@@ -1738,7 +1735,7 @@ class User extends Accessor {
 				'client_ip'		=> $client_ip
 			];
 			_setcookie('session', $hash, TIME + $Config->core['session_expire']);
-			$this->id					= $this->get_session_user();
+			$this->id								= $this->get_session_user();
 			$this->update_user_is();
 			if (
 				($this->db()->qfs(
@@ -1763,12 +1760,11 @@ class User extends Accessor {
 	 * @return bool
 	 */
 	function del_session ($session_id = null) {
-		global $Core;
-		$Core->run_trigger(
+		Trigger::instance()->run(
 			'System/User/del_session/before'
 		);
 		$result	= $this->del_session_internal($session_id);
-		$Core->run_trigger(
+		Trigger::instance()->run(
 			'System/User/del_session/after'
 		);
 		return $result;
@@ -1783,11 +1779,10 @@ class User extends Accessor {
 	 */
 	protected function del_session_internal ($session_id = null, $create_guest_session = true) {
 		$session_id = $session_id ?: $this->current['session'];
-		global $Cache;
 		if (!preg_match('/^[0-9a-z]{32}$/', $session_id)) {
 			return false;
 		}
-		unset($Cache->{'sessions/'.$session_id});
+		unset(Cache::instance()->{"sessions/$session_id"});
 		$this->current['session'] = false;
 		_setcookie('session', '');
 		$result =  $this->db_prime()->q(
@@ -1812,15 +1807,14 @@ class User extends Accessor {
 	 * @return bool
 	 */
 	function del_all_sessions ($user = false) {
-		global $Cache, $Core;
-		$Core->run_trigger(
+		Trigger::instance()->run(
 			'System/User/del_all_sessions',
 			[
 				'id'	=> $user
 			]
 		);
-		$user = $user ?: $this->id;
-		$sessions = $this->db_prime()->qfas(
+		$user		= $user ?: $this->id;
+		$sessions	= $this->db_prime()->qfas(
 			"SELECT `id`
 			FROM `[prefix]sessions`
 			WHERE `user` = '$user'"
@@ -1830,10 +1824,10 @@ class User extends Accessor {
 			foreach ($sessions as $session) {
 				$delete[] = 'sessions/'.$session;
 			}
-			$Cache->del($delete);
+			Cache::instance()->del($delete);
 			unset($delete, $sessions, $session);
 		}
-		$result = $this->db_prime()->q(
+		$result		= $this->db_prime()->q(
 			"UPDATE `[prefix]sessions`
 			SET
 				`expire`	= 0,
@@ -1856,7 +1850,7 @@ class User extends Accessor {
 		if (!preg_match('/^[0-9a-z]{32}$/', $session_id)) {
 			return false;
 		}
-		global $Cache;
+		$Cache		= Cache::instance();
 		if (!($data = $Cache->{'sessions/data/'.$session_id})) {
 			$data									= _json_decode(
 				$this->db()->qfs([
@@ -1886,7 +1880,7 @@ class User extends Accessor {
 		if (!preg_match('/^[0-9a-z]{32}$/', $session_id)) {
 			return false;
 		}
-		global $Cache;
+		$Cache		= Cache::instance();
 		if (!($data = $Cache->{'sessions/data/'.$session_id})) {
 			$data									= _json_decode(
 				$this->db()->qfs([
@@ -1929,7 +1923,7 @@ class User extends Accessor {
 		if (!preg_match('/^[0-9a-z]{32}$/', $session_id)) {
 			return false;
 		}
-		global $Cache;
+		$Cache		= Cache::instance();
 		if (!($data = $Cache->{'sessions/data/'.$session_id})) {
 			$data									= _json_decode(
 				$this->db()->qfs([
@@ -2014,7 +2008,7 @@ class User extends Accessor {
 				$ip
 			);
 		} else {
-			global $Config;
+			$Config	= Config::instance();
 			$this->db_prime()->q(
 				"INSERT INTO `[prefix]logins`
 					(
@@ -2033,7 +2027,6 @@ class User extends Accessor {
 			if (isset($this->cache['login_attempts'][$login_hash])) {
 				++$this->cache['login_attempts'][$login_hash];
 			}
-			global $Config;
 			if ($this->db_prime()->id() % $Config->core['inserts_limit'] == 0) {
 				$this->db_prime()->aq("DELETE FROM `[prefix]logins` WHERE `expire` < $time");
 			}
@@ -2060,12 +2053,11 @@ class User extends Accessor {
 	 */
 	function registration ($email, $confirmation = true, $autologin = true) {
 		$email			= mb_strtolower($email);
-		global $Config, $Core, $Cache;
 		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			return false;
 		}
 		$this->delete_unconfirmed_users();
-		if (!$Core->run_trigger(
+		if (!Trigger::instance()->run(
 			'System/User/registration/before',
 			[
 				'email'	=> $email
@@ -2089,8 +2081,9 @@ class User extends Accessor {
 		])) {
 			return 'exists';
 		}
+		$Config			= Config::instance();
 		$password		= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
-		$password_hash	= hash('sha512', hash('sha512', $password).$Core->public_key);
+		$password_hash	= hash('sha512', hash('sha512', $password).Core::instance()->public_key);
 		$reg_key		= md5($password.$this->ip);
 		$confirmation	= $confirmation && $Config->core['require_registration_confirmation'];
 		if ($this->db_prime()->q(
@@ -2144,7 +2137,7 @@ class User extends Accessor {
 						`id`			!= 2"
 				);
 			}
-			if (!$Core->run_trigger(
+			if (!Trigger::instance()->run(
 				'System/User/registration/after',
 				[
 					'id'	=> $this->reg_id
@@ -2156,7 +2149,7 @@ class User extends Accessor {
 			if (!$confirmation) {
 				$this->set_user_groups([2], $this->reg_id);
 			}
-			unset($Cache->{'users/'.$login_hash});
+			unset(Cache::instance()->{"users/$login_hash"});
 			return [
 				'reg_key'	=> !$confirmation ? true : $reg_key,
 				'password'	=> $password,
@@ -2174,11 +2167,10 @@ class User extends Accessor {
 	 * @return array|bool				array('id' => <i>id</i>, 'email' => <i>email</i>, 'password' => <i>password</i>) or <b>false</b> on failure
 	 */
 	function registration_confirmation ($reg_key) {
-		global $Config, $Core, $Cache;
 		if (!preg_match('/^[0-9a-z]{32}$/', $reg_key)) {
 			return false;
 		}
-		if (!$Core->run_trigger(
+		if (!Trigger::instance()->run(
 			'System/User/registration/confirmation/before',
 			[
 				'reg_key'	=> $reg_key
@@ -2203,10 +2195,11 @@ class User extends Accessor {
 			return false;
 		}
 		$this->reg_id	= $data['id'];
+		$Config			= Config::instance();
 		$password		= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
 		$this->set(
 			[
-				'password_hash'	=> hash('sha512', hash('sha512', $password).$Core->public_key),
+				'password_hash'	=> hash('sha512', hash('sha512', $password).Core::instance()->public_key),
 				'status'		=> 1
 			],
 			null,
@@ -2214,7 +2207,7 @@ class User extends Accessor {
 		);
 		$this->set_user_groups([2], $this->reg_id);
 		$this->add_session($this->reg_id);
-		if (!$Core->run_trigger(
+		if (!Trigger::instance()->run(
 			'System/User/registration/confirmation/after',
 			[
 				'id'	=> $this->reg_id
@@ -2223,7 +2216,7 @@ class User extends Accessor {
 			$this->registration_cancel();
 			return false;
 		}
-		unset($Cache->{'users/'.$data['login_hash']});
+		unset(Cache::instance()->{"users/$data[login_hash]"});
 		return [
 			'id'		=> $this->reg_id,
 			'email'		=> $data['email'],
@@ -2245,8 +2238,7 @@ class User extends Accessor {
 	 * Checks for unconfirmed registrations and deletes expired
 	 */
 	protected function delete_unconfirmed_users () {
-		global $Config;
-		$reg_date		= TIME - $Config->core['registration_confirmation_time'] * 86400;	//1 day = 86400 seconds
+		$reg_date		= TIME - Config::instance()->core['registration_confirmation_time'] * 86400;	//1 day = 86400 seconds
 		$ids			= $this->db_prime()->qfas(
 			"SELECT `id`
 			FROM `[prefix]users`
@@ -2270,8 +2262,7 @@ class User extends Accessor {
 			$reg_key		= md5(MICROTIME.$this->ip);
 			if ($this->set('reg_key', $reg_key, $user)) {
 				$data					= $this->get('data', $user);
-				global $Config;
-				$data['restore_until']	= TIME + $Config->core['registration_confirmation_time'] * 86400;
+				$data['restore_until']	= TIME + Config::instance()->core['registration_confirmation_time'] * 86400;
 				if ($this->set('data', $data, $user)) {
 					return $reg_key;
 				}
@@ -2287,7 +2278,6 @@ class User extends Accessor {
 	 * @return array|bool			array('id' => <i>id</i>, 'password' => <i>password</i>) or <b>false</b> on failure
 	 */
 	function restore_password_confirmation ($key) {
-		global $Config, $Core;
 		if (!preg_match('/^[0-9a-z]{32}$/', $key)) {
 			return false;
 		}
@@ -2312,10 +2302,11 @@ class User extends Accessor {
 			return false;
 		}
 		unset($data['restore_until']);
+		$Config		= Config::instance();
 		$password	= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
 		$this->set(
 			[
-				'password_hash'	=> hash('sha512', hash('sha512', $password).$Core->public_key),
+				'password_hash'	=> hash('sha512', hash('sha512', $password).Core::instance()->public_key),
 				'data'			=> $data
 			],
 			null,
@@ -2342,8 +2333,8 @@ class User extends Accessor {
 	 * @param bool		$update
 	 */
 	protected function del_user_internal ($user, $update = true) {
-		global $Cache, $Core;
-		$Core->run_trigger(
+		$Cache	= Cache::instance();
+		Trigger::instance()->run(
 			'System/User/del_user/before',
 			[
 				'id'	=> $user
@@ -2382,7 +2373,7 @@ class User extends Accessor {
 		if ($update) {
 			unset(
 				$Cache->{'users/'.hash('sha224', $this->get('login', $user))},
-				$Cache->{'users/'.$user}
+				$Cache->{"users/$user"}
 			);
 			$this->db_prime()->q(
 				"UPDATE `[prefix]users`
@@ -2400,7 +2391,7 @@ class User extends Accessor {
 				WHERE `id` = $user
 				LIMIT 1"
 			);
-			$Core->run_trigger(
+			Trigger::instance()->run(
 				'System/User/del_user/after',
 				[
 					'id'	=> $user
@@ -2437,8 +2428,7 @@ class User extends Accessor {
 		)) {
 			$id	= $this->db_prime()->id();
 			$this->set_user_groups([3], $id);
-			global $Core;
-			$Core->run_trigger(
+			Trigger::instance()->run(
 				'System/User/add_bot',
 				[
 					'id'	=> $id
@@ -2469,8 +2459,7 @@ class User extends Accessor {
 			'',
 			$id
 		);
-		global $Cache;
-		unset($Cache->{'users/bots'});
+		unset(Cache::instance()->{'users/bots'});
 		return $result;
 	}
 	/**
@@ -2480,8 +2469,7 @@ class User extends Accessor {
 	 */
 	function del_bot ($bot) {
 		$this->del_user($bot);
-		global $Cache;
-		unset($Cache->{'users/bots'});
+		unset(Cache::instance()->{'users/bots'});
 	}
 	/**
 	 * Returns array of users columns, available for getting of data
@@ -2511,9 +2499,8 @@ class User extends Accessor {
 		if (!$user || $user == 1) {
 			return [];
 		}
-		global $Core;
 		$contacts	= [];
-		$Core->run_trigger(
+		Trigger::instance()->run(
 			'System/User/get_contacts',
 			[
 				'id'		=> $user,
@@ -2523,16 +2510,9 @@ class User extends Accessor {
 		return array_unique($contacts);
 	}
 	/**
-	 * Cloning restriction
-	 *
-	 * @final
-	 */
-	function __clone () {}
-	/**
 	 * Saving changes of cache and users data
 	 */
 	function __finish () {
-		global $Cache;
 		/**
 		 * Updating users data
 		 */
@@ -2571,153 +2551,11 @@ class User extends Accessor {
 		foreach ($this->data as $id => &$data) {
 			if (isset($this->update_cache[$id]) && $this->update_cache[$id]) {
 				$data['id'] = $id;
-				$Cache->{'users/'.$id} = $data;
+				Cache::instance()->{"users/$id"} = $data;
 			}
 		}
 		$this->update_cache = [];
 		unset($id, $data);
 		$this->data_set = [];
-	}
-}
-/**
- * For IDE
- */
-if (false) {
-	global $User;
-	$User = new User;
-}
-namespace cs\User;
-/**
- * Class for getting of user information
- *
- * @property	int		$id
- * @property	string	$login
- * @property	string	$login_hash		sha224 hash
- * @property	string	$username
- * @property	string	$password_hash	sha512 hash
- * @property	string	$email
- * @property	string	$email_hash		sha224 hash
- * @property	string	$language
- * @property	string	$theme
- * @property	string	$timezone
- * @property	int		$reg_date		unix timestamp
- * @property	string	$reg_ip			hex value, obtained by function ip2hex()
- * @property	string	$reg_key		random md5 hash, generated during registration
- * @property	int		$status			'-1' - not activated (for example after registration), 0 - inactive, 1 - active
- * @property	int		$block_until	unix timestamp
- * @property	int		$last_login		unix timestamp
- * @property	string	$last_ip		hex value, obtained by function ip2hex()
- * @property	int		$last_online	unix timestamp
- * @property	int		$gender			0 - male, 1 - female, -1 - undefined
- * @property	int		$birthday		unix timestamp
- * @property	string	$avatar
- * @property	string	$website
- * @property	string	$skype
- * @property	string	$about
- * @property	string	$user_agent
- * @property	string	$ip
- * @property	string	$forwarded_for
- * @property	string	$client_ip
- */
-class Properties {
-	/**
-	 * @var int
-	 */
-	protected	$id;
-	/**
-	 * Creating of object and saving user id inside
-	 *
-	 * @param int $user
-	 */
-	function __construct ($user) {
-		$this->id	= $user;
-	}
-	/**
-	 * Get data item of user
-	 *
-	 * @param string|string[]		$item
-	 *
-	 * @return bool|string|mixed[]
-	 */
-	function get ($item) {
-		global $User;
-		return $User->get($item, $this->id);
-	}
-	/**
-	 * Set data item of specified user
-	 *
-	 * @param array|string	$item
-	 * @param mixed|null	$value
-	 *
-	 * @return bool
-	 */
-	function set ($item, $value = null) {
-		global $User;
-		return $User->set($item, $value, $this->id);
-	}
-	/**
-	 * Get data item of user
-	 *
-	 * @param string|string[]		$item
-	 *
-	 * @return array|bool|string
-	 */
-	function __get ($item) {
-		global $User;
-		return $User->get($item, $this->id);
-	}
-	/**
-	 * Get user name or login or email, depending on existing information
-	 *
-	 * @return string
-	 */
-	function username () {
-		return $this->get('username') ?: ($this->get('login') ?: $this->get('email'));
-	}
-	/**
-	 * Set data item of user
-	 *
-	 * @param array|string	$item
-	 * @param mixed|null	$value
-	 *
-	 * @return bool
-	 */
-	function __set ($item, $value = null) {
-		global $User;
-		return $User->set($item, $value, $this->id);
-	}
-	/**
-	 * Getting additional data item(s) of specified user
-	 *
-	 * @param string|string[]		$item
-	 *
-	 * @return bool|string|mixed[]
-	 */
-	function get_data ($item) {
-		global $User;
-		return $User->get_data($item, $this->id);
-	}
-	/**
-	 * Setting additional data item(s) of specified user
-	 *
-	 * @param array|string	$item
-	 * @param mixed|null	$value
-	 *
-	 * @return bool
-	 */
-	function set_data ($item, $value = null) {
-		global $User;
-		return $User->set_data($item, $value, $this->id);
-	}
-	/**
-	 * Deletion of additional data item(s) of specified user
-	 *
-	 * @param string|string[]		$item
-	 *
-	 * @return bool|string|string[]
-	 */
-	function del_data ($item) {
-		global $User;
-		return $User->del_data($item, $this->id);
 	}
 }

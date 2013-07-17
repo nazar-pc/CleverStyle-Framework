@@ -5,10 +5,15 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
+namespace	h;
+use		cs\Config,
+		cs\Language,
+		cs\Page,
+		cs\User;
 /**
  * Class for HTML code rendering in accordance with the standards of HTML5, and with useful syntax extensions for simpler usage
  */
-class h_internal {
+abstract class _Abstract {
 	protected static	$unit_atributes = [	//Unit attributes, that have no value, or have the same value as name in xhtml style
 			'async',
 			'defer',
@@ -110,7 +115,7 @@ class h_internal {
 			if ($tag != 'a') {
 				$data['href']		= self::prepare_url($data['href']);
 			} elseif (substr($data['href'], 0, 1) == '#') {
-				global $Config;
+				$Config	= Config::instance(true) ? Config::instance() : null;
 				if (is_object($Config)) {
 					$data['href']	= $Config->base_url().'/'.$Config->server['raw_relative_address'].$data['href'];
 				}
@@ -166,7 +171,7 @@ class h_internal {
 	 */
 	static function prepare_url ($url, $absolute = false) {
 		if (substr($url, 0, 1) == '#') {
-			global $Config;
+			$Config	= Config::instance(true) ? Config::instance() : null;
 			if (is_object($Config)) {
 				return $Config->base_url().'/'.$Config->server['raw_relative_address'].$url;
 			}
@@ -176,11 +181,10 @@ class h_internal {
 			substr($url, 0, 7) != 'http://' &&
 			substr($url, 0, 8) != 'https://'
 		) {
-			global $Config;
-			if ($absolute && is_object($Config)) {
-				return $Config->base_url().'/'.$url;
+			if ($absolute && Config::instance(true)) {
+				return Config::instance()->base_url()."/$url";
 			}
-			return '/'.$url;
+			return "/$url";
 		}
 		return $url;
 	}
@@ -294,16 +298,15 @@ class h_internal {
 		} elseif (is_array($in)) {
 			return self::__callStatic(__FUNCTION__, [$in, $data]);
 		}
-		global $User;
 		if (isset($in['method'])) {
 			$data['method']	= $in['method'];
 		}
 		if (!isset($data['method'])) {
 			$data['method']	= 'post';
 		}
-		if (strtolower($data['method']) == 'post' && is_object($User)) {
+		if (strtolower($data['method']) == 'post' && class_exists('\\cs\\User', false) && User::instance(true)) {
 			$in_ = self::{'input[type=hidden][name=session]'}([
-				'value'	=> $User->get_session()
+				'value'	=> User::instance()->get_session()
 			]);
 			if (!is_array($in)) {
 				$in			.= $in_;
@@ -581,8 +584,8 @@ class h_internal {
 		if ($in === false) {
 			return false;
 		}
-		global $Page;
-		$uniqid = uniqid('html_replace_');
+		$uniqid	= uniqid('html_replace_');
+		$Page	= Page::instance();
 		if (is_array($in)) {
 			if (isset($in['in'])) {
 				$Page->replace($uniqid, is_array($in['in']) ? implode("\n", $in['in']) : $in['in']);
@@ -742,8 +745,8 @@ class h_internal {
 		} elseif (is_array($in)) {
 			return self::__callStatic(__FUNCTION__, [$in, $data]);
 		}
-		global $Config, $L;
-		if (is_object($Config) && $Config->core['show_tooltips']) {
+		$L		= Language::instance();
+		if (Config::instance(true) && Config::instance()->core['show_tooltips']) {
 			return self::span($L->$in, array_merge(['data-title' => $L->{$in.'_info'}], $data));
 		} else {
 			return self::span($L->$in, $data);

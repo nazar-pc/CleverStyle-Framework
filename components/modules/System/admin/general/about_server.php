@@ -8,8 +8,17 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\System\general\about_server;
-use			h;
-global $L, $Core, $Index, $db, $PHP, $mcrypt, $Config;
+use			h,
+			cs\Config,
+			cs\Core,
+			cs\DB,
+			cs\Index,
+			cs\Language;
+global $PHP, $mcrypt;
+$Config			= Config::instance();
+$Core			= Core::instance();
+$Index			= Index::instance();
+$L				= Language::instance();
 global ${$Core->db_type};
 if (isset($Config->route[2]) && $Config->route[2] == 'phpinfo') {
 	interface_off();
@@ -164,7 +173,7 @@ $Index->content(
 				[
 					$L->version.' '.$Core->db_type.':',
 					[
-						$db->server().(check_db() ? '' : ' ('.$L->required.' '.${$Core->db_type}.' '.$L->or_higher.')'),
+						DB::instance()->server().(check_db() ? '' : ' ('.$L->required.' '.${$Core->db_type}.' '.$L->or_higher.')'),
 						[
 							'class' => state(check_db())
 						]

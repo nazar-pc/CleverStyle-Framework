@@ -17,6 +17,8 @@ use			h;
  *  ['list'	=> &$list]		//Reference to the list of external login systems
  */
 class Page {
+	use	Singleton;
+
 	public		$Content,
 				$interface			= true,
 				$pre_Html			= '',
@@ -73,7 +75,7 @@ class Page {
 	/**
 	 * Setting interface state on/off
 	 */
-	function __construct () {
+	protected function construct () {
 		global $interface;
 		$this->interface = (bool)$interface;
 		unset($GLOBALS['interface']);
@@ -156,7 +158,7 @@ class Page {
 	 * @return Page
 	 */
 	protected function get_template () {
-		global $Config, $L, $User;
+		$Config					= Config::instance();
 		/**
 		 * Theme detection
 		 */
@@ -182,7 +184,7 @@ class Page {
 		/**
 		 * Base name for cache files
 		 */
-		$this->pcache_basename = '_'.$this->theme.'_'.$this->color_scheme.'_'.$L->clang.'.';
+		$this->pcache_basename	= '_'.$this->theme.'_'.$this->color_scheme.'_'.Language::instance()->clang.'.';
 		/**
 		 * Template loading
 		 */
@@ -198,7 +200,7 @@ class Page {
 						is_object($Config) && $Config->core['site_mode']
 					) &&
 					!(
-						is_object($User) && $User->admin()
+						User::instance(true) && User::instance()->admin()
 					) &&
 					code_header(503) &&
 					!(
@@ -212,7 +214,6 @@ class Page {
 			} else {
 				_include_once(THEMES.'/'.$this->theme.'/index.php', false) || _include_once(THEMES.'/'.$this->theme.'/index.html');
 			}
-
 			$this->Html = ob_get_clean();
 		}
 		return $this;
@@ -223,7 +224,7 @@ class Page {
 	 * @return Page
 	 */
 	protected function prepare () {
-		global $Config;
+		$Config				= Config::instance(true) ? Config::instance() : null;
 		/**
 		 * Loading of template
 		 * Loading of CSS and JavaScript
@@ -585,8 +586,7 @@ class Page {
 		if (!$property || !($content || $content === 0)) {
 			return $this;
 		}
-		global $Config;
-		if (!$Config->core['og_support']) {
+		if (!Config::instance()->core['og_support']) {
 			return $this;
 		}
 		if (is_array($content)) {
@@ -614,11 +614,11 @@ class Page {
 		/**
 		 * Automatic generation of some information
 		 */
-		global $Config;
+		$Config		= Config::instance();
 		if (!$Config->core['og_support']) {
 			return;
 		}
-		$og	= &$this->og_data;
+		$og			= &$this->og_data;
 		if (!isset($og['title']) || empty($og['title'])) {
 			$this->og('title', $this->Title);
 		}
@@ -635,7 +635,7 @@ class Page {
 			$this->og('type', 'website');
 		}
 		if ($Config->core['multilingual']) {
-			global $L;
+			$L	= Language::instance();
 			if (!isset($og['locale']) || empty($og['locale'])) {
 				$this->og('locale', $L->locale);
 			}
@@ -651,7 +651,7 @@ class Page {
 				}
 			}
 		}
-		$prefix	= 'og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#';
+		$prefix		= 'og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#';
 		switch (explode('.', $this->og_type, 2)[0]) {
 			case 'article':
 				$prefix	.= ' article: http://ogp.me/ns/article#';
@@ -704,14 +704,13 @@ class Page {
 	 * @return Page
 	 */
 	protected function get_includes () {
-		global $Config;
-		if (!is_object($Config)) {
+		if (!Config::instance(true)) {
 			return $this;
 		}
 		/**
 		 * If CSS and JavaScript compression enabled
 		 */
-		if ($Config->core['cache_compress_js_css']) {
+		if (Config::instance()->core['cache_compress_js_css']) {
 			/**
 			 * Current cache checking
 			 */
@@ -801,9 +800,8 @@ class Page {
 	 * @return Page
 	 */
 	protected function rebuild_cache () {
-		global $Core, $L;
 		$key	= '';
-		$Core->run_trigger(
+		Trigger::instance()->run(
 			'System/Page/rebuild_cache',
 			[
 				'key'	=> &$key
@@ -827,7 +825,7 @@ class Page {
 				}
 			}
 			if ($extension == 'js') {
-				$temp_cache	.= 'var L='.$L->get_json().';';
+				$temp_cache	.= 'var L='.Language::instance()->get_json().';';
 			}
 			file_put_contents(PCACHE.'/'.$this->pcache_basename.$extension, gzencode($temp_cache, 9), LOCK_EX | FILE_BINARY);
 			$key .= md5($temp_cache);
@@ -922,14 +920,14 @@ class Page {
 	 * @return Page
 	 */
 	protected function get_footer () {
-		global $L, $db, $Config;
-		$this->Footer .= h::div(
+		$db				= DB::instance();
+		$this->Footer	.= h::div(
 			get_core_ml_text('footer_text') ?: false,
-			$Config->core['show_footer_info'] ?
-				$L->page_footer_info('<!--generate time-->', $db->queries, format_time(round($db->time, 5)), '<!--peak memory usage-->') : false,
+			Config::instance()->core['show_footer_info'] ?
+				Language::instance()->page_footer_info('<!--generate time-->', $db->queries, format_time(round($db->time, 5)), '<!--peak memory usage-->') : false,
 			base64_decode(
-				'wqkgUG93ZXJlZCBieSA8YSB0YXJnZXQ9Il9ibGFuayIgaHJlZj0iaHR0cDovL2NsZXZlcnN0eW'
-				.'xlLm9yZy9jbXMiIHRpdGxlPSJDbGV2ZXJTdHlsZSBDTVMiPkNsZXZlclN0eWxlIENNUzwvYT4='
+				'wqkgUG93ZXJlZCBieSA8YSB0YXJnZXQ9Il9ibGFuayIgaHJlZj0iaHR0cDovL2NsZXZlcnN0eW'.
+				'xlLm9yZy9jbXMiIHRpdGxlPSJDbGV2ZXJTdHlsZSBDTVMiPkNsZXZlclN0eWxlIENNUzwvYT4='
 			)
 		);
 		return $this;
@@ -940,47 +938,11 @@ class Page {
 	 * @return Page
 	 */
 	protected function get_debug_info () {
-		global $Config, $L, $db;
+		$Config				= Config::instance();
+		$db					= DB::instance();
+		$L					= Language::instance();
 		$debug_tabs			= '';
 		$debug_tabs_content	= '';
-		/**
-		 * Objects
-		 */
-		if ($Config->core['show_objects_data']) {
-			global $Core, $timeload, $loader_init_memory;
-			$debug_tabs[]			= [
-				$L->objects,
-				[
-					'href'	=> '#debug_objects_tab'
-				]
-			];
-			$tmp				= '';
-			$last				= $timeload['loader_init'];
-			foreach ($Core->Loaded as $object => $data) {
-				$tmp .=	h::p(
-					$object
-				).
-				h::{'p.cs-padding-left'}(
-					$L->creation_duration.': '.format_time(round($data[0] - $last, 5)),
-					$L->time_from_start_execution.': '.format_time(round($data[0] - $timeload['start'], 5)),
-					$L->memory_usage.': '.format_filesize($data[1], 5)
-				);
-				$last = $data[0];
-			}
-			unset($object, $data, $last);
-			$debug_tabs_content	.= h::{'div#debug_objects_tab'}(
-				h::p(
-					$L->total_list_of_objects.': '.implode(', ', array_keys($Core->Loaded)),
-					$L->loader
-				).
-				h::{'p.cs-padding-left'}(
-					$L->creation_duration.': '.format_time(round($timeload['loader_init'] - $timeload['start'], 5)),
-					$L->memory_usage.': '.format_filesize($loader_init_memory, 5)
-				).
-				$tmp
-			);
-			unset($tmp);
-		}
 		/**
 		 * DB queries
 		 */
@@ -1101,8 +1063,7 @@ class Page {
 			define('ERROR_CODE', 500);
 		}
 		if (!API && ERROR_CODE == 403 && _getcookie('logout')) {
-			global $Config;
-			header('Location: '.$Config->base_url(), true, 302);
+			header('Location: '.Config::instance()->base_url(), true, 302);
 			$this->Content	= '';
 			__finish();
 		}
@@ -1138,7 +1099,8 @@ class Page {
 	 * @return Page
 	 */
 	protected function get_header_info () {
-		global $User, $L, $Core;
+		$L		= Language::instance();
+		$User	= User::instance(true) ? User::instance() : null;
 		if (is_object ($User) && $User->user()) {
 			if ($User->avatar) {
 				$this->user_avatar_image = 'url('.h::prepare_url($User->avatar, true).')';
@@ -1169,10 +1131,10 @@ class Page {
 				)
 			).
 			$this->header_info;
-			$Core->run_trigger('System/Page/get_header_info');
+			Trigger::instance()->run('System/Page/get_header_info');
 		} else {
 			$external_systems_list		= '';
-			$Core->run_trigger(
+			Trigger::instance()->run(
 				'System/Page/external_login_list',
 				[
 					'list'	=> &$external_systems_list
@@ -1261,16 +1223,9 @@ class Page {
 		return $this;
 	}
 	/**
-	 * Cloning restriction
-	 *
-	 * @final
-	 */
-	function __clone () {}
-	/**
 	 * Page generation
 	 */
 	function __finish () {
-		global $Config;
 		/**
 		 * Cleaning of output
 		 */
@@ -1286,8 +1241,8 @@ class Page {
 			 */
 			echo $this->process_replacing($this->Content);
 		} else {
-			global $Error, $L, $timeload, $User, $Core;
-			$Core->run_trigger('System/Page/pre_display');
+			global $Error, $timeload;
+			Trigger::instance()->run('System/Page/pre_display');
 			is_object($Error) && $Error->display();
 			/**
 			 * Processing of template, substituting of content, preparing for the output
@@ -1296,22 +1251,23 @@ class Page {
 			/**
 			 * Processing of replacing in content
 			 */
-			$this->Html = $this->process_replacing($this->Html);
+			$this->Html			= $this->process_replacing($this->Html);
 			/**
 			 * Detection of compression
 			 */
-			$ob = false;
+			$ob					= false;
+			$Config				= Config::instance(true) ? Config::instance() : null;
 			if (is_object($Config) && !zlib_compression() && $Config->core['gzip_compression'] && (is_object($Error) && !$Error->num())) {
 				ob_start('ob_gzhandler');
 				$ob = true;
 			}
-			$timeload['end'] = microtime(true);
+			$timeload['end']	= microtime(true);
 			/**
 			 * Getting of debug information
 			 */
 			if (
-				is_object($User) && (
-					$User->admin() || (
+				User::instance(true) && (
+					User::instance()->admin() || (
 						$Config->can_be_admin && $Config->core['ip_admin_list_only']
 					)
 				) && DEBUG
@@ -1330,7 +1286,7 @@ class Page {
 							h::level($this->debug_info),
 							[
 								'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
-								'title'			=> $L->debug,
+								'title'			=> Language::instance()->debug,
 								'style'			=> 'display: none;'
 							]
 						),
@@ -1346,11 +1302,4 @@ class Page {
 			}
 		}
 	}
-}
-/**
- * For IDE
- */
-if (false) {
-	global $Page;
-	$Page = new Page;
 }

@@ -7,8 +7,9 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Config, $Cache, $User, $Page, $L;
-if ($User->system()) {
+namespace	cs;
+$Page	= Page::instance();
+if (User::instance()->system()) {
 	/**
 	 * Extracting new versions of files
 	 */

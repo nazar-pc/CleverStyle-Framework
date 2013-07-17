@@ -7,13 +7,23 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h;
-global $Index, $Blogs, $Page, $L, $User, $db, $Config;
+use			h,
+			cs\Config,
+			cs\DB,
+			cs\Index,
+			cs\Language,
+			cs\Page,
+			cs\User;
+$Config					= Config::instance();
+$Index					= Index::instance();
+$Page					= Page::instance();
+$User					= User::instance();
 $rc						= array_slice($Config->route, 1);
 if (!isset($rc[0])) {
 	define('ERROR_CODE', 404);
 	return;
 }
+$L						= Language::instance();
 $module					= path($L->Blogs);
 if ($User->user()) {
 	if ($User->admin() && $User->get_user_permission('admin/Blogs', 'index')) {
@@ -57,7 +67,7 @@ if ($page > 1) {
 }
 $num					= $Config->module('Blogs')->posts_per_page;
 $from					= ($page - 1) * $num;
-$cdb					= $db->{$Config->module('Blogs')->db('posts')};
+$cdb					= DB::instance()->{$Config->module('Blogs')->db('posts')};
 $tag					= $cdb->qfs([
 	"SELECT `id`
 	FROM  `[prefix]blogs_tags`
@@ -71,7 +81,7 @@ if (!$tag) {
 }
 $tag					= [
 	'id'	=> $tag,
-	'text'	=> $Blogs->get_tag($tag)
+	'text'	=> Blogs::instance()->get_tag($tag)
 ];;
 $Page->title($tag['text']);
 $Page->title($L->latest_posts);

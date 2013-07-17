@@ -21,9 +21,13 @@
  *   'tag'		=> tag	//Optional ("%" symbol may be used at the end of string to delete all files, that starts from specified string)
  *  ]
  */
-namespace cs\modules\Plupload;
-global $Core;
-$Core->register_trigger(
+namespace	cs\modules\Plupload;
+use			cs\Config,
+			cs\DB,
+			cs\Page,
+			cs\Storage,
+			cs\Trigger;
+Trigger::instance()->register(
 	'admin/System/components/modules/disable',
 	function ($data) {
 		if ($data['name'] == 'Plupload') {
@@ -31,13 +35,13 @@ $Core->register_trigger(
 		}
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'admin/System/general/optimization/clean_pcache',
 	function () {
 		clean_pcache();
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'System/Page/rebuild_cache',
 	function ($data) {
 		rebuild_pcache($data);
@@ -49,9 +53,8 @@ function clean_pcache () {
 	}
 }
 function rebuild_pcache (&$data = null) {
-	global $Config;
 	if (
-		!$Config->core['cache_compress_js_css'] ||
+		!Config::instance()->core['cache_compress_js_css'] ||
 		file_exists(PCACHE.'/module.Plupload.js')
 	) {
 		return;
@@ -78,10 +81,11 @@ function rebuild_pcache (&$data = null) {
 		$data['key']	.= md5($key);
 	}
 }
-$Core->register_trigger(
+Trigger::instance()->register(
 	'System/Page/pre_display',
 	function () {
-		global $Config, $Page;
+		$Config	= Config::instance();
+		$Page	= Page::instance();
 		if (!$Config->core['cache_compress_js_css']) {
 			$Page->js([
 				'components/modules/Plupload/includes/js/plupload.js',
@@ -97,7 +101,7 @@ $Core->register_trigger(
 		);
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'System/Index/mainmenu',
 	function ($data) {
 		if ($data['path'] == 'Plupload') {
@@ -107,19 +111,18 @@ $Core->register_trigger(
 		return true;
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'System/upload_files/add_tag',
 	function ($data) {
 		if (!isset($data['url'], $data['tag'])) {
 			return false;
 		}
-		global $Config, $db, $Storage;
-		$module_data		= $Config->module('Plupload');
-		$storage			= $Storage->{$module_data->storage('files')};
+		$module_data		= Config::instance()->module('Plupload');
+		$storage			= Storage::instance()->{$module_data->storage('files')};
 		if (mb_strpos($data['url'], $storage->base_url()) !== 0) {
 			return false;
 		}
-		$cdb				= $db->{$module_data->db('files')}();
+		$cdb				= DB::instance()->{$module_data->db('files')}();
 		$id		= $cdb->qfs([
 			"SELECT `id`
 			FROM `[prefix]plupload_files`
@@ -140,19 +143,18 @@ $Core->register_trigger(
 		);
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'System/upload_files/del_tag',
 	function ($data) {
 		if (!isset($data['url']) && !isset($data['tag'])) {
 			return false;
 		}
-		global $Config, $db, $Storage;
-		$module_data		= $Config->module('Plupload');
-		$storage			= $Storage->{$module_data->storage('files')};
+		$module_data		= Config::instance()->module('Plupload');
+		$storage			= Storage::instance()->{$module_data->storage('files')};
 		if (isset($data['url']) && mb_strpos($data['url'], $storage->base_url()) !== 0) {
 			return false;
 		}
-		$cdb				= $db->{$module_data->db('files')}();
+		$cdb				= DB::instance()->{$module_data->db('files')}();
 		if (isset($data['url']) && !isset($data['tag'])) {
 			return $cdb->q(
 				"DELETE FROM `[prefix]plupload_files_tags`

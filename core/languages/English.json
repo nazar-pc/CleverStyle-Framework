@@ -179,8 +179,6 @@
 		"og_support_info"				: "Enables functionality of system core and components for easy providing of Open Graph protocol support",
 		"simple_admin_mode"				: "Simple mode of administration",
 		"simple_admin_mode_info"		: "Some functionality may be too complicated to set up, and even excessive for a beginner administrator. This option allows you to hide some of the settings, making system management easier and more intuitive.",
-		"cache_sync"					: "Cache sync",
-		"cache_sync_info"				: "In case of several physical mirrors of site you may need cache synchronization on system level, but sometimes this functionality is realized on cache engine level.",
 		"cookie_sync"					: "Cookie sync",
 		"cookie_sync_info"				: "In case of several mirrors of site you may need cookie synchronization, for example, to be authorized on all mirrors.",
 		"debug"							: "Debugging",
@@ -188,8 +186,6 @@
 		"show_db_queries_info"			: "Show DB queries in debug window",
 		"show_cookies"					: "Show Cookies",
 		"show_cookies_info"				: "Show Cookies in debug window",
-		"show_objects_data"				: "Show loaded objects",
-		"show_objects_data_info"		: "Show loaded objects in debug window",
 		"on_error_globals_dump"			: "Dump the state when an error occurs",
 		"on_error_globals_dump_info"	: "When the error occurred, in the error log file will be written additional information with listing of all global objects with their internal state, as well as printing of debug information about the chain of the code, using the debug_backtrace() function. ATTENTION: log files can be VERY LARGE, so enable this option only in extreme necessity when debugging.",
 		"from"							: "from",
@@ -696,7 +692,6 @@
 
 //Debug
 	"objects"							: "Objects",
-	"loader"							: "Loader",
 	"creation_duration"					: "Creation duration",
 	"memory_usage"						: "Memory usage",
 	"time_from_start_execution"			: "Time from start of execution",

@@ -8,13 +8,23 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\System;
-use			h;
+use			h,
+			cs\Config,
+			cs\Core,
+			cs\Language,
+			cs\Page,
+			cs\Text;
 function set_core_ml_text ($item, $text) {
-	global $Config, $Text;
-	return $Text->set($Config->module('System')->db('texts'), 'System/Config/core', $item, $text);
+	return Text::instance()->set(
+		Config::instance()->module('System')->db('texts'),
+		'System/Config/core',
+		$item,
+		$text
+	);
 }
 function core_input ($item, $type = 'text', $info_item = null, $disabled = false, $min = false, $max = false, $post_text = '') {
-	global $Config, $L;
+	$Config	= Config::instance();
+	$L		= Language::instance();
 	if ($type != 'radio') {
 		switch ($item) {
 			default:
@@ -40,7 +50,6 @@ function core_input ($item, $type = 'text', $info_item = null, $disabled = false
 			$post_text
 		];
 	} else {
-		global $L;
 		return [
 			$info_item !== false ? h::info($info_item ?: $item) : $L->$item,
 			h::input([
@@ -54,10 +63,9 @@ function core_input ($item, $type = 'text', $info_item = null, $disabled = false
 	}
 }
 function core_textarea ($item, $editor = null, $info_item = null) {
-	global $Config;
 	switch ($item) {
 		default:
-			$content	= $Config->core[$item];
+			$content	= Config::instance()->core[$item];
 			break;
 		case 'closed_text':
 		case 'footer_text':
@@ -77,14 +85,13 @@ function core_textarea ($item, $editor = null, $info_item = null) {
 	];
 }
 function core_select ($items_array, $item, $id = null, $info_item = null, $multiple = false, $size = 5) {
-	global $Config;
 	return [
 		h::info($info_item ?: $item),
 		h::select(
 			$items_array,
 			[
 				'name'		=> "core[$item]".($multiple ? '[]' : ''),
-				'selected'	=> $Config->core[$item],
+				'selected'	=> Config::instance()->core[$item],
 				'size'		=> $size,
 				'id'		=> $id ?: false,
 				$multiple ? 'multiple' : false
@@ -139,7 +146,10 @@ function check_dependencies ($name, $type, $dir = null, $mode = 'enable') {
 		return true;
 	}
 	$meta		= _json_decode(file_get_contents("$dir/meta.json"));
-	global $Config, $Page, $L, $Core;
+	$Config		= Config::instance();
+	$Core		= Core::instance();
+	$L			= Language::instance();
+	$Page		= Page::instance();
 	if (isset($meta['db_support']) && !empty($meta['db_support'])) {
 		$return		= false;
 		if (in_array($Core->db_type, $meta['db_support'])) {
@@ -468,7 +478,9 @@ function check_backward_dependencies ($name, $type = 'module', $mode = 'disable'
 		'version'	=> $meta['version']
 	];
 	$return		= true;
-	global $Config, $Page, $L;
+	$Config		= Config::instance();
+	$L			= Language::instance();
+	$Page		= Page::instance();
 	/**
 	 * Checking for backward dependencies of modules
 	 */

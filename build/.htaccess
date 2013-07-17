@@ -1,1 +1,6 @@
-RewriteEngine Off
+<Files functions.js>
+	RewriteEngine Off
+</Files>
+<Files style.css>
+	RewriteEngine Off
+</Files>

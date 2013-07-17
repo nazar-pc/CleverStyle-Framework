@@ -32,9 +32,20 @@
  *  ['name'	=> <i>module_name</i>]
  */
 namespace	cs\modules\System;
-use			h;
-global $Config, $Index, $L, $Core, $Page, $User;
-$a					= $Index;
+use			h,
+			cs\Config,
+			cs\Core,
+			cs\Index,
+			cs\Language,
+			cs\Page,
+			cs\Trigger,
+			cs\User;
+$Config				= Config::instance();
+$Core				= Core::instance();
+$L					= Language::instance();
+$Page				= Page::instance();
+$User				= User::instance();
+$a					= Index::instance();
 $rc					= $Config->route;
 $a->buttons			= false;
 $show_modules		= true;
@@ -185,7 +196,7 @@ if (
 					$L->installation_of_module($rc[3])
 				)
 			);
-			if (!$Core->run_trigger(
+			if (!Trigger::instance()->run(
 				'admin/System/components/modules/install/prepare',
 				[
 					'name'	=> $rc[3]
@@ -243,7 +254,7 @@ if (
 					$L->uninstallation_of_module($rc[3])
 				)
 			);
-			if (!$Core->run_trigger(
+			if (!Trigger::instance()->run(
 				'admin/System/components/modules/uninstall/prepare',
 				[
 					'name'	=> $rc[3]
@@ -335,7 +346,7 @@ if (
 					$L->setting_default_module($rc[3])
 				)
 			);
-			if (!$Core->run_trigger(
+			if (!Trigger::instance()->run(
 				'admin/System/components/modules/default_module/prepare',
 				[
 					'name'	=> $rc[3]
@@ -358,7 +369,7 @@ if (
 						$L->db_settings_for_module($rc[3])
 					)
 				);
-				if (!$Core->run_trigger(
+				if (!Trigger::instance()->run(
 					'admin/System/components/modules/db/prepare',
 					[
 						'name' => $rc[3]
@@ -423,7 +434,7 @@ if (
 						$L->storage_settings_for_module($rc[3])
 					)
 				);
-				if (!$Core->run_trigger(
+				if (!Trigger::instance()->run(
 					'admin/System/components/modules/storage/prepare',
 					[
 						'name'	=> $rc[3]
@@ -729,9 +740,9 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 			$module_meta['license'],
 			isset($module_meta['db_support']) ? implode(', ', $module_meta['db_support']) : $L->none,
 			isset($module_meta['storage_support']) ? implode(', ', $module_meta['storage_support']) : $L->none,
-			isset($module_meta['provide']) ? implode(', ', $module_meta['provide']) : $L->none,
-			isset($module_meta['require']) ? implode(', ', $module_meta['require']) : $L->none,
-			isset($module_meta['conflict']) ? implode(', ', $module_meta['conflict']) : $L->none,
+			isset($module_meta['provide']) ? implode(', ', (array)$module_meta['provide']) : $L->none,
+			isset($module_meta['require']) ? implode(', ', (array)$module_meta['require']) : $L->none,
+			isset($module_meta['conflict']) ? implode(', ', (array)$module_meta['conflict']) : $L->none,
 			isset($module_meta['multilingual']) && in_array('interface', $module_meta['multilingual']) ? $L->yes : $L->no,
 			isset($module_meta['multilingual']) && in_array('content', $module_meta['multilingual']) ? $L->yes : $L->no,
 			isset($module_meta['languages']) ? implode(', ', $module_meta['languages']) : $L->none

@@ -7,8 +7,10 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\OAuth2;
-use			h;
-global $Page, $OAuth2, $Index;
+use			cs\Config,
+			cs\Index,
+			cs\Page,
+			cs\User;
 header('Content-Type: application/json', true);
 header('Cache-Control: no-store');
 header('Pragma: no-cache');
@@ -16,6 +18,8 @@ interface_off();
 /**
  * Errors processing
  */
+$Index	= Index::instance();
+$Page	= Page::instance();
 if (!isset($_GET['grant_type'])) {
 	code_header(400);
 	$Page->Content	= _json_encode([
@@ -43,6 +47,7 @@ if (!isset($_GET['client_secret'])) {
 	$Index->stop	= true;
 	return;
 }
+$OAuth2	= OAuth2::instance();
 if (!($client = $OAuth2->get_client($_GET['client_id']))) {
 	code_header(400);
 	$Page->Content	= _json_encode([
@@ -173,8 +178,7 @@ switch ($_GET['grant_type']) {
 		$Index->stop	= true;
 		return;
 	case 'guest_token':
-		global $User, $Config;
-		if ($User->user()) {
+		if (User::instance()->user()) {
 			code_header(403);
 			$Page->Content	= _json_encode([
 				'error'				=> 'access_denied',
@@ -183,7 +187,7 @@ switch ($_GET['grant_type']) {
 			$Index->stop	= true;
 			return;
 		}
-		if (!$Config->module('OAuth2')->guest_tokens) {
+		if (!Config::instance()->module('OAuth2')->guest_tokens) {
 			code_header(403);
 			$Page->Content	= _json_encode([
 				'error'				=> 'access_denied',

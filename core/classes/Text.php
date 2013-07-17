@@ -7,6 +7,8 @@
  */
 namespace cs;
 class Text {
+	use Singleton;
+
 	/**
 	 * Gets text on current language
 	 *
@@ -21,9 +23,12 @@ class Text {
 	 * @return bool|string
 	 */
 	function get ($database, $group, $label, $id = null, $auto_translation = true, $store_in_cache = false) {
-		global $Cache, $L, $db, $Config;
-		$id					= (int)$id;
-		$cache_key			= 'texts/'.$database.'/'.($id ?: md5($group).md5($label)).'_'.$L->clang;
+		$Cache		= Cache::instance();
+		$Config		= Config::instance();
+		$db			= DB::instance();
+		$L			= Language::instance();
+		$id			= (int)$id;
+		$cache_key	= 'texts/'.$database.'/'.($id ?: md5($group).md5($label)).'_'.$L->clang;
 		if ($store_in_cache && ($text = $Cache->$cache_key) !== false) {
 			return $text;
 		}
@@ -132,9 +137,11 @@ class Text {
 	 * 									otherwise returns original text
 	 */
 	function set ($database, $group, $label, $text) {
-		global $Cache, $L, $db, $Config;
+		$Cache		= Cache::instance();
+		$Config		= Config::instance();
+		$L			= Language::instance();
 		unset($Cache->{'texts/'.$database.'/'.md5($group).md5($label).'_'.$L->clang});
-		$db_object	= $db->$database();
+		$db_object	= DB::instance()->$database();
 		/**
 		 * @var \cs\DB\_Abstract $db_object
 		 */
@@ -221,11 +228,10 @@ class Text {
 				);
 				return $text;
 			}
-			global $Config;
 			/**
 			 * Clean up old texts
 			 */
-			if ($id && $id % $Config->core['inserts_limit'] == 0) {
+			if ($id && $id % Config::instance()->core['inserts_limit'] == 0) {
 				$db_object->aq([
 					"DELETE FROM `[prefix]texts`
 					WHERE
@@ -254,9 +260,11 @@ class Text {
 	 * @return bool
 	 */
 	function del ($database, $group, $label) {
-		global $Cache, $L, $db;
+		$Cache	= Cache::instance();
+		$db		= DB::instance();
+		$L		= Language::instance();
 		unset($Cache->{'texts/'.$database.'/'.md5($group).md5($label).'_'.$L->clang});
-		$id = $db->$database()->qfs([
+		$id		= $db->$database()->qfs([
 			"SELECT `id`
 			FROM `[prefix]texts`
 			WHERE
@@ -315,17 +323,4 @@ class Text {
 			$data
 		);
 	}
-	/**
-	 * Cloning restriction
-	 *
-	 * @final
-	 */
-	function __clone () {}
-}
-/**
- * For IDE
- */
-if (false) {
-	global $Text;
-	$Text = new Text;
 }

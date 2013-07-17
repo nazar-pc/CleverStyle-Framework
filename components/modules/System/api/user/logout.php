@@ -7,7 +7,8 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $User, $Page;
+namespace	cs;
+$User	= User::instance();
 if ($User->guest()) {
 	define('ERROR_CODE', 403);
 	return;
@@ -15,5 +16,5 @@ if ($User->guest()) {
 if (isset($_POST['logout'])) {
 	$User->del_session();
 	_setcookie('logout', '1', 0, true, true);
-	$Page->json(1);
+	Page::instance()->json(1);
 }

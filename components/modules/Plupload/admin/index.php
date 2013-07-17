@@ -7,8 +7,12 @@
  * @copyright	Moxiecode Systems AB
  * @license		GNU GPL v2, see license.txt
  */
-global $Index, $L, $Config;
+namespace	cs;
+use			h;
+$Index					= Index::instance();
 $Index->apply_button	= false;
+$Config					= Config::instance();
+$L						= Language::instance();
 $Index->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		[

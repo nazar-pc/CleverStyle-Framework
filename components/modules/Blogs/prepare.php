@@ -7,10 +7,18 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h;
+use			h,
+			cs\Config,
+			cs\Index,
+			cs\Language,
+			cs\Page,
+			cs\Trigger,
+			cs\User;
 if (!API) {
-	global $Index, $Config, $L, $Page;
-	$Index->title_auto	= false;
+	$Config				= Config::instance();
+	$Page				= Page::instance();
+	$L					= Language::instance();
+	Index::instance()->title_auto	= false;
 	if (!$Config->core['cache_compress_js_css']) {
 		$Page->css('components/modules/Blogs/includes/css/general.css');
 		$Page->js([
@@ -63,9 +71,8 @@ if (!API) {
 			'value'	=> []
 		];
 		if ($structure === null) {
-			global $Blogs, $L;
-			$structure			= $Blogs->get_sections_structure();
-			$list['in'][]		= $L->root_section;
+			$structure			= Blogs::instance()->get_sections_structure();
+			$list['in'][]		= Language::instance()->root_section;
 			$list['value'][]	= 0;
 		} else {
 			if ($structure['id'] == $current) {
@@ -85,7 +92,19 @@ if (!API) {
 		return $list;
 	}
 	function get_posts_list ($posts) {
-		global $Blogs, $L, $User, $Config, $Comments;
+		$Comments	= null;
+		Trigger::instance()->run(
+			'Comments/instance',
+			[
+			'data'	=> &$Comments
+			]
+		);
+		/**
+		 * @var \cs\modules\Comments\Comments $Comments
+		 */
+		$Blogs		= Blogs::instance();
+		$L			= Language::instance();
+		$User		= User::instance();
 		$module		= path($L->Blogs);
 		$content	= [];
 		if (empty($posts)) {
@@ -135,7 +154,7 @@ if (!API) {
 						]
 					).
 					(
-						$Config->module('Blogs')->enable_comments && is_object($Comments) ? h::a(
+						Config::instance()->module('Blogs')->enable_comments && $Comments ? h::a(
 							h::icon('comment').$post['comments_count'],
 							[
 								'href'			=> $module.'/'.$post['path'].':'.$post['id'].'#comments'

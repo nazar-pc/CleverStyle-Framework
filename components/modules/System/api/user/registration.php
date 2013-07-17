@@ -7,7 +7,11 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Config, $Page, $User, $L;
+namespace	cs;
+$Config			= Config::instance();
+$L				= Language::instance();
+$Page			= Page::instance();
+$User			= User::instance();
 /**
  * If AJAX request from local referer, user is guest, registration is allowed - process registration, otherwise - show error
  */
@@ -65,8 +69,7 @@ if ($confirm) {
 		$result['password']
 	);
 }
-global $Mail;
-if ($Mail->send_to(
+if (Mail::instance()->send_to(
 	$_POST['email'],
 	$L->{$confirm ? 'reg_need_confirmation_mail' : 'reg_success_mail'}(get_core_ml_text('name')),
 	$body

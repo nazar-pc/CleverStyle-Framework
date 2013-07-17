@@ -20,6 +20,8 @@ use			Closure;
  */
 defined('FIXED_LANGUAGE') || define('FIXED_LANGUAGE', false);
 class Language {
+	use Singleton;
+
 	public		$clanguage,								//Current language
 				$time = null;							//Closure for time processing
 	protected	$init = false,							//For single initialization
@@ -28,10 +30,8 @@ class Language {
 	/**
 	 * Set basic language
 	 */
-	function __construct () {
-		global $Core, $L;
-		$L	= $this;
-		$this->change($Core->language);
+	protected function construct () {
+		$this->change(Core::instance()->language);
 	}
 	/**
 	 * Initialization: defining current language, loading translation
@@ -44,10 +44,10 @@ class Language {
 		if ($this->init) {
 			return;
 		}
-		global $Cache, $Config, $Core;
 		if (!FIXED_LANGUAGE) {
 			$this->change($language);
 		}
+		$Config	= Config::instance();
 		if ($this->need_to_rebuild_cache) {
 			if (!empty($Config->components['modules'])) {
 				foreach ($Config->components['modules'] as $module => $mdata) {
@@ -71,7 +71,7 @@ class Language {
 				}
 				unset($plugin);
 			}
-			$Core->run_trigger(
+			Trigger::instance()->run(
 				'System/general/languages/load',
 				[
 					'clanguage'			=> $this->clanguage,
@@ -81,7 +81,7 @@ class Language {
 					'locale'			=> $this->locale
 				]
 			);
-			$Cache->{'languages/'.$this->clanguage} = $this->translate;
+			Cache::instance()->{"languages/$this->clanguage"} = $this->translate;
 			$this->need_to_rebuild_cache = false;
 		}
 		$this->init = true;
@@ -97,7 +97,7 @@ class Language {
 		if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
 			return false;
 		}
-		global $Cache;
+		$Cache				= Cache::instance();
 		if (($aliases = $Cache->{'languages/aliases'}) === false) {
 			$aliases		= [];
 			$aliases_list	= _strtolower(get_files_list(LANGUAGES.'/aliases'));
@@ -107,7 +107,7 @@ class Language {
 			unset($aliases_list, $alias);
 			$Cache->{'languages/aliases'} = $aliases;
 		}
-		$accept_languages = str_replace(
+		$accept_languages	= str_replace(
 			'-',
 			'_',
 			explode(',', strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']))
@@ -138,8 +138,7 @@ class Language {
 		if (!$language) {
 			return isset($this->translate[$item]) ? $this->translate[$item] : ucfirst(str_replace('_', ' ', $item));
 		}
-		global $Cache;
-		if ($translate = $Cache->{'languages/'.$language}) {
+		if ($translate = Cache::instance()->{"languages/$language"}) {
 			return isset($translate[$item]) ? $translate[$item] : ucfirst(str_replace('_', ' ', $item));
 		}
 		unset($translate);
@@ -200,10 +199,10 @@ class Language {
 			return false;
 		}
 		$changed_once	= true;;
-		global $Config, $User;
 		if ($this->init && $language == $this->clanguage) {
 			return true;
 		}
+		$Config			= Config::instance();
 		if (!$this->init || empty($language)) {
 			if (is_object($Config) && $Config->core['multilingual']) {
 				$language	= $this->scan_aliases($Config->core['active_languages']) ?: $language;
@@ -216,16 +215,15 @@ class Language {
 					$Config->core['multilingual'] ||
 					!$this->init ||
 					(
-						is_object($User) && $User->admin()
+						User::instance(true) && User::instance()->admin()
 					)
 				) &&
 				in_array($language, $Config->core['active_languages'])
 			)
 		) {
-			global $Cache;
 			$this->clanguage	= $language;
 			$return 			= false;
-			if ($translate = $Cache->{'languages/'.$this->clanguage}) {
+			if ($translate = Cache::instance()->{"languages/$this->clanguage"}) {
 				$this->set($translate);
 				$return							= true;
 			} elseif (file_exists(LANGUAGES.'/'.$this->clanguage.'.json')) {
@@ -267,25 +265,24 @@ class Language {
 		if ($this->time instanceof Closure) {
 			return $this->time->__invoke($in, $type);
 		} else {
-			global $L;
 			switch ($type) {
 				case 's':
-					return $in.' '.$L->seconds;
+					return $in.' '.$this->seconds;
 				break;
 				case 'm':
-					return $in.' '.$L->minutes;
+					return $in.' '.$this->minutes;
 				break;
 				case 'h':
-					return $in.' '.$L->hours;
+					return $in.' '.$this->hours;
 				break;
 				case 'd':
-					return $in.' '.$L->days;
+					return $in.' '.$this->days;
 				break;
 				case 'M':
-					return $in.' '.$L->months;
+					return $in.' '.$this->months;
 				break;
 				case 'y':
-					return $in.' '.$L->years;
+					return $in.' '.$this->years;
 				break;
 			}
 		}
@@ -387,17 +384,4 @@ class Language {
 	function get_json () {
 		return _json_encode($this->translate);
 	}
-	/**
-	 * Cloning restriction
-	 *
-	 * @final
-	 */
-	function __clone () {}
-}
-/**
- * For IDE
- */
-if (false) {
-	global $L;
-	$L = new Language;
 }

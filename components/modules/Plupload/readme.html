@@ -74,7 +74,7 @@ $old_files	= isset($old_files[1]) ? $old_files[1] : [];
 $new_files	= isset($new_files[1]) ? $new_files[1] : [];
 if ($old_files || $new_files) {
 	foreach (array_diff($old_files, $new_files) as $file) {
-		$Core->run_trigger(
+		\cs\Trigger::instance()->run(
 			'System/upload_files/del_tag',
 			[
 				'tag'	=> "Blogs/posts/$id/$L->clang",
@@ -84,7 +84,7 @@ if ($old_files || $new_files) {
 	}
 	unset($file);
 	foreach (array_diff($new_files, $old_files) as $file) {
-		$Core->run_trigger(
+		\cs\Trigger::instance()->run(
 			'System/upload_files/add_tag',
 			[
 				'tag'	=> "Blogs/posts/$id/$L->clang",
@@ -111,7 +111,7 @@ unset($old_files, $new_files);</pre>
 			<dd>Tag of item, which will be associated with this file, "%" symbol may be used at the end of string to delete all files, that starts from specified string</dd>
 		</dl>
 		<p>Example (Blogs module):</p>
-		<pre>$Core->run_trigger(
+		<pre>\cs\Trigger::instance()->run(
 	'System/upload_files/del_tag',
 	[
 		'tag'	=> "Blogs/posts/$id%"

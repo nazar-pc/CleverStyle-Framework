@@ -7,12 +7,18 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Static_pages;
-use			h;
-global $Index, $L, $Page, $Config;
-$Page->title($L->adding_of_page);
+use			h,
+			cs\Config,
+			cs\Index,
+			cs\Language,
+			cs\Page;
+$Config						= Config::instance();
+$Index						= Index::instance();
+$L							= Language::instance();
+Page::instance()->title($L->adding_of_page);
 $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
-$Index->action				= 'admin/'.MODULE;
+$Index->action				= 'admin/OAuth2';
 $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 		$L->adding_of_page

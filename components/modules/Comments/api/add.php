@@ -7,6 +7,11 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Comments;
+use			cs\Config,
+			cs\Language,
+			cs\Page,
+			cs\Trigger,
+			cs\User;
 /**
  * Provides next triggers:<br>
  *  api/Comments/add<code>
@@ -16,15 +21,15 @@ namespace	cs\modules\Comments;
  *   'module'	=> <i>module</i>		//Module<br>
  *  ]</code>
  */
-global $Config, $User, $Page, $L, $Core;
+$Config		= Config::instance();
 if (!$Config->module('Comments')->active()) {
 	define('ERROR_CODE', 404);
 	return;
 }
 /**
- * If AJAX request from local referer, user is not guest
+ * If AJAX request from local referer, user is not guest - allow
  */
-if (!$Config->server['referer']['local'] || !$Config->server['ajax'] || !$User->user()) {
+if (!$Config->server['referer']['local'] || !$Config->server['ajax'] || !User::instance()->user()) {
 	sleep(1);
 	define('ERROR_CODE', 403);
 	return;
@@ -33,13 +38,15 @@ if (!isset($_POST['item'], $_POST['text'], $_POST['parent'], $_POST['module'])) 
 	define('ERROR_CODE', 400);
 	return;
 }
+$L			= Language::instance();
+$Page		= Page::instance();
 if (!$_POST['text'] || !strip_tags($_POST['text'])) {
 	define('ERROR_CODE', 400);
 	$Page->error($L->comment_cant_be_empty);
 	return;
 }
 $Comments	= false;
-$Core->run_trigger(
+Trigger::instance()->run(
 	'api/Comments/add',
 	[
 		'Comments'	=> &$Comments,

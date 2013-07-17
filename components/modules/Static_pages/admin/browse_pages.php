@@ -7,9 +7,13 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Static_pages;
-use			h;
-global $Index, $L, $Config;
-$rc				= $Config->route;
+use			h,
+			cs\Config,
+			cs\Index,
+			cs\Language;
+$Index			= Index::instance();
+$L				= Language::instance();
+$rc				= Config::instance()->route;
 $Index->buttons	= false;
 $Index->content(
 	h::{'table.cs-left-all.cs-fullwidth-table'}(
@@ -29,13 +33,13 @@ $Index->content(
 			[
 				$L->add_page,
 				[
-					'href'	=> 'admin/'.MODULE.'/add_page/'.array_slice($rc, -1)[0]
+					'href'	=> 'admin/OAuth2/add_page/'.array_slice($rc, -1)[0]
 				]
 			]/*,
 			[
 				$L->add_page_live,
 				[
-					'href'	=> 'admin/'.MODULE.'/add_page_live/'.array_slice($rc, -1)[0]
+					'href'	=> 'admin/OAuth2/add_page_live/'.array_slice($rc, -1)[0]
 				]
 			]*/
 		)

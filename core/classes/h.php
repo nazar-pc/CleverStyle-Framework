@@ -10,5 +10,6 @@
  *
  * If constant "XHTML_TAGS_STYLE" is true - tags will be generated according to rules of xhtml
  */
+use	h\_Abstract;
 defined('XHTML_TAGS_STYLE') || define('XHTML_TAGS_STYLE', false);
-class h extends h_internal {}
+class h extends _Abstract {}

@@ -7,10 +7,12 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
+namespace	cs;
 if (!isset($_POST['mode'])) {
 	return;
 }
-global $Index, $User, $Cache;
+$Index	= Index::instance();
+$User	= User::instance();
 switch ($_POST['mode']) {
 	case 'add':
 		$Index->save(

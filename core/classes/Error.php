@@ -7,16 +7,16 @@
  */
 namespace cs;
 class Error {
+	use	Singleton;
+
 	public		$error			= true;	//Process errors
 	protected	$num			= 0,	//Number of occurred errors
 				$errors_list	= [];	//Array of errors for displaying
 	/**
 	 * Setting error handler
 	 */
-	function __construct () {
-		global $Error;
-		$Error = $this;
-		set_error_handler([$Error, 'trigger']);
+	function construct () {
+		set_error_handler([$this, 'trigger']);
 	}
 	/**
 	 * Is used as error handler
@@ -29,7 +29,6 @@ class Error {
 			return;
 		}
 		$string				= xap($string);
-		global $Config, $Index, $Page;
 		$dump				= 'null';
 		$debug_backtrace	= debug_backtrace();
 		if (isset($debug_backtrace[0]['file'], $debug_backtrace[0]['file'])) {
@@ -39,23 +38,8 @@ class Error {
 			$file	= $debug_backtrace[1]['file'];
 			$line	= $debug_backtrace[1]['line'];
 		}
-		if ((is_object($Config) && $Config->core['on_error_globals_dump']) || (!is_object($Config) && DEBUG)) {
-			global $Core;
-			$objects_array		= [];
-			if (is_object($Core)) {
-				foreach ($Core->Loaded as $object => $data) {
-					if (!isset($GLOBALS[$object])) {
-						continue;
-					}
-					$objects_array[$object] = print_r($GLOBALS[$object], true);
-				}
-				unset($object, $data);
-			}
-			$dump				= _json_encode([
-				'Objects'			=> $objects_array,
-				'debug_backtrace'	=> $debug_backtrace
-			]);
-			unset($objects_array);
+		if (DEBUG) {
+			$dump	= _json_encode($debug_backtrace);
 		}
 		unset($debug_backtrace);
 		$log_file			= LOGS.'/'.date('d-m-Y').'_'.strtr(date_default_timezone_get(), '/', '_');
@@ -68,10 +52,10 @@ class Error {
 				unset($dump);
 				$this->errors_list[]	= "E $time $string Occurred: $file:$line";
 				define('ERROR_CODE', 500);
-				if (is_object($Index)) {
-					$Index->__finish();
-				} elseif (is_object($Page)) {
-					$Page->page();
+				if (Index::instance(true)) {
+					Index::instance()->__finish();
+				} elseif (Page::instance(true)) {
+					Page::instance()->error();
 				} else {
 					__finish();
 				}
@@ -90,10 +74,10 @@ class Error {
 			break;
 		}
 		if ($this->num >= 100) {
-			if (is_object($Index)) {
-				$Index->__finish();
-			} elseif (is_object($Page)) {
-				$Page->page();
+			if (Index::instance(true)) {
+				Index::instance()->__finish();
+			} elseif (Page::instance(true)) {
+				Page::instance()->error();
 			} else {
 				__finish();
 			}
@@ -111,27 +95,12 @@ class Error {
 	 * Displaying of errors
 	 */
 	function display () {
-		global $User;
-		if ($User->admin() || DEBUG) {
+		if (User::instance()->admin() || DEBUG) {
 			if (!empty($this->errors_list_all)) {
-				global $Page;
 				foreach ($this->errors_list as $error) {
-					$Page->warning($error);
+					Page::instance()->warning($error);
 				}
 			}
 		}
 	}
-	/**
-	 * Cloning restriction
-	 *
-	 * @final
-	 */
-	function __clone () {}
-}
-/**
- * For IDE
- */
-if (false) {
-	global $Error;
-	$Error = new Error;
 }

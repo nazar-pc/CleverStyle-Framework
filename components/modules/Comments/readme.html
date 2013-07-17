@@ -1,10 +1,34 @@
 <h3 style="text-align: center;">Comments module, adds comments functionality to other modules</h3>
 <h4>Integration of comments displaying:</h4>
-<pre>global $Comments, $Page;
+<pre>$Page	= Page::instance();
+$Comments	= null;
+\cs\Trigger::instance()->run(
+	'Comments/instance',
+	[
+		'data'	=> &$Comments
+	]
+);
+/**
+ * @var \cs\modules\Comments\Comments $Comments
+ */
 $Page->content(
-	is_object($Comments) ? $Comments->block($id) : ''
+	$Comments ? $Comments->block($id) : ''
 );</pre>
-<p>Where <i>$id</i> is integer identifier of article, page or anything else, that will be commented. <i>$Comments</i> - is global object created by module, but you can use own object of class, which inherits <i>cs\modules\Comments\Comments</i> class.</p>
+<p>Where <i>$id</i> is integer identifier of article, page or anything else, that will be commented. <i>$Comments</i> - is object created by module, but you can use own object of class, which inherits <i>cs\modules\Comments\Comments</i> class.</p>
+<h4>Trigger for getting instance of Comments class:</h4>
+<pre>$Comments	= null;
+\cs\Trigger::instance()->run(
+	'Comments\instance',
+	[
+		'data'	=> &$Comments
+	]
+);
+/**
+ * @var \cs\modules\Comments\Comments $Comments
+ */
+if ($Comments) {
+	//Some work here
+}</pre>
 <h4>Integration of comments adding, editing, and deleting.</h4>
 <p>For this module should support next triggers on comments module:</p>
 <ul>
@@ -29,23 +53,29 @@ $Page->content(
 		<h4>If user have no access</h4>
 		<p>But other conditions holds true - return <i>false</i> from closure</p>
 		<p>Example (Blogs module):</p>
-		<pre>global $Core;
-$Core->register_trigger(
+		<pre>\cs\Trigger::instance()->register(
 	'api/Comments/add',
 	function ($data) {
-		global $Config, $User;
+		$Comments	= null;
+		\cs\Trigger::instance()->run(
+			'Comments\instance',
+			[
+				'data'	=> &$Comments
+			]
+		);
+		/**
+		 * @var \cs\modules\Comments\Comments $Comments
+		 */
+		$User		= \cs\User::instance();
 		if (!(
 			$data['module'] == 'Blogs' &&
-			$Config->module('Blogs')->active() &&
-			$Config->module('Blogs')->enable_comments &&
+			\cs\Config::instance()->module('Blogs')->enable_comments &&
 			$User->user() &&
-			class_exists('\\cs\\modules\\Comments\\Comments')
+			$Comments
 		)) {
 			return true;
 		}
-		global $Blogs;
-		if ($Blogs->get($data['item'])) {
-			$data['Comments']	= new cs\modules\Comments\Comments;
+		if (\cs\modules\Blogs\Blogs::instance()->get($data['item'])) {
 			$data['Comments']->set_module('Blogs');
 		}
 		return false;
@@ -73,22 +103,29 @@ $Core->register_trigger(
 		<h4>If user have no access</h4>
 		<p>But other conditions holds true - return <i>false</i> from closure</p>
 		<p>Example (Blogs module):</p>
-		<pre>global $Core;
-$Core->register_trigger(
+		<pre>\cs\Trigger::instance()->register(
 	'api/Comments/edit',
 	function ($data) {
-		global $Config, $User;
+		$Comments	= null;
+		\cs\Trigger::instance()->run(
+			'Comments\instance',
+			[
+				'data'	=> &$Comments
+			]
+		);
+		/**
+		 * @var \cs\modules\Comments\Comments $Comments
+		 */
+		$Comments->set_module('Blogs');
+		$User		= \cs\User::instance();
 		if (!(
 			$data['module'] == 'Blogs' &&
-			$Config->module('Blogs')->active() &&
-			$Config->module('Blogs')->enable_comments &&
+			\cs\Config::instance()->module('Blogs')->enable_comments &&
 			$User->user() &&
-			class_exists('\\cs\\modules\\Comments\\Comments')
+			$Comments
 		)) {
 			return true;
 		}
-		$Comments			= new cs\modules\Comments\Comments;
-		$Comments->set_module('Blogs');
 		$comment			= $Comments->get($data['id']);
 		if ($comment && ($comment['user'] == $User->id || $User->admin())) {
 			$data['Comments']	= $Comments;
@@ -121,21 +158,28 @@ $Core->register_trigger(
 		<h4>If user have no access</h4>
 		<p>But other conditions holds true - return <i>false</i> from closure</p>
 		<p>Example (Blogs module):</p>
-		<pre>global $Core;
-$Core->register_trigger(
+		<pre>\cs\Trigger::instance()->register(
 	'api/Comments/delete',
 	function ($data) {
-		global $Config, $User;
+		$Comments	= null;
+		\cs\Trigger::instance()->run(
+			'Comments\instance',
+			[
+				'data'	=> &$Comments
+			]
+		);
+		/**
+		 * @var \cs\modules\Comments\Comments $Comments
+		 */
+		$User		= \cs\User::instance();
 		if (!(
 			$data['module'] == 'Blogs' &&
-			$Config->module('Blogs')->active() &&
-			$Config->module('Blogs')->enable_comments &&
+			\cs\Config::instance()->module('Blogs')->enable_comments &&
 			$User->user() &&
-			class_exists('\\cs\\modules\\Comments\\Comments')
+			$Comments
 		)) {
 			return true;
 		}
-		$Comments			= new cs\modules\Comments\Comments;
 		$Comments->set_module('Blogs');
 		$comment			= $Comments->get($data['id']);
 		if ($comment && ($comment['user'] == $User->id || $User->admin())) {

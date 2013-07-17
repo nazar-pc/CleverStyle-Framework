@@ -14,6 +14,8 @@ namespace cs;
  *  ['rc'	=> <i>&$rc</i>]		//Reference to string with current route, this string can be changed<br>
  */
 class Config {
+	use	Singleton;
+
 	protected	$data			= [
 					'core'			=> [],
 					'db'			=> [],
@@ -61,13 +63,11 @@ class Config {
 	/**
 	 * Loading of configuration, initialization of $Config, $Cache, $L and Page objects, Routing processing
 	 */
-	function __construct () {
-		global $Cache, $Config;
-		$Config = $this;
+	function construct () {
 		/**
 		 * Reading settings from cache and defining missing data
 		 */
-		$config = $Cache->config;
+		$config = Cache::instance()->config;
 		if (is_array($config)) {
 			$query = false;
 			foreach ($this->admin_parts as $part) {
@@ -105,9 +105,8 @@ class Config {
 	 * Engine initialization (or reinitialization if necessary)
 	 */
 	protected function init() {
-		global $Cache, $L, $Page;
-		$Cache->init();
-		$L->init($this->core['language']);
+		Language::instance()->init($this->core['language']);
+		$Page	= Page::instance();
 		$Page->init(
 			get_core_ml_text('name'),
 			get_core_ml_text('keywords'),
@@ -164,7 +163,7 @@ class Config {
 	 * Analyzing and processing of current page address
 	 */
 	protected function routing () {
-		global $Core, $L, $Page;
+		$L										= Language::instance();
 		$this->server['raw_relative_address']	= urldecode($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
 		$this->server['raw_relative_address']	= null_byte_filter($this->server['raw_relative_address']);
 		$this->server['host']					= $_SERVER['HTTP_HOST'];
@@ -269,14 +268,14 @@ class Config {
 				__finish();
 			} else {
 				define('ERROR_CODE', 404);
-				$Page->error();
+				Page::instance()->error();
 				__finish();
 			}
 		}
 		/**
 		 * Routing replacing
 		 */
-		$Core->run_trigger(
+		Trigger::instance()->run(
 			'System/Config/pre_routing_replace',
 			[
 				'rc'	=> &$rc
@@ -293,7 +292,7 @@ class Config {
 			errors_on();
 			unset($i, $search);
 		}
-		$Core->run_trigger(
+		Trigger::instance()->run(
 			'System/Config/routing_replace',
 			[
 				'rc'	=> &$rc
@@ -309,7 +308,7 @@ class Config {
 		if (isset($rc[0]) && mb_strtolower($rc[0]) == 'admin') {
 			if ($this->core['ip_admin_list_only'] && !$this->check_ip($this->core['ip_admin_list'])) {
 				define('ERROR_CODE', 403);
-				$Page->error();
+				Page::instance()->error();
 				return;
 			}
 			if (!defined('ADMIN')) {
@@ -350,7 +349,7 @@ class Config {
 			}
 		} else {
 			if (!defined('MODULE')) {
-				define('MODULE', ADMIN || API || $rc[0] ? 'System' : $this->core['default_module']);
+				define('MODULE', ADMIN || API || isset($rc[0]) ? 'System' : $this->core['default_module']);
 				if (!ADMIN && !API && !isset($rc[1])) {
 					define('HOME', true);
 				}
@@ -407,14 +406,13 @@ class Config {
 	 * @return bool
 	 */
 	protected function load () {
-		global $db;
 		$query = [];
 		foreach ($this->admin_parts as $part) {
 			$query[] = '`'.$part.'`';
 		}
 		unset($part);
 		$query	= implode(', ', $query);
-		$result = $db->qf([
+		$result = DB::instance()->qf([
 			"SELECT $query FROM `[prefix]config` WHERE `domain` = '%s' LIMIT 1",
 			DOMAIN
 		]);
@@ -447,14 +445,15 @@ class Config {
 	 * @return bool
 	 */
 	protected function apply_internal ($cache_not_saved_mark = true) {
-		global $Error, $Cache, $L, $User;
+		global $Error;
+		$L							= Language::instance();
 		/**
 		 * If errors - cache updating must be stopped
 		 */
 		if (is_object($Error) && $Error->num()) {
 			return false;
 		}
-		$config			= [];
+		$config						= [];
 		foreach ($this->admin_parts as $part) {
 			$config[$part] = $this->$part;
 		}
@@ -464,10 +463,10 @@ class Config {
 		} else {
 			unset($config['core']['cache_not_saved'], $this->core['cache_not_saved']);
 		}
-		$Cache->config	= $config;
+		Cache::instance()->config	= $config;
 		$L->change($this->core['language']);
-		if (is_object($User)) {
-			$L->change($User->language);
+		if (User::instance(true)) {
+			$L->change(User::instance()->language);
 		}
 		$this->init();
 		return true;
@@ -478,7 +477,7 @@ class Config {
 	 * @return bool
 	 */
 	function save () {
-		global $db;
+		$db		= DB::instance();
 		$query	= '';
 		if (isset($this->data['core']['cache_not_saved'])) {
 			unset($this->data['core']['cache_not_saved']);
@@ -500,8 +499,7 @@ class Config {
 	 * Canceling of applied settings
 	 */
 	function cancel () {
-		global $Cache;
-		unset($Cache->config);
+		unset(Cache::instance()->config);
 		$this->load();
 		$this->apply_internal(false);
 	}
@@ -514,7 +512,6 @@ class Config {
 	 */
 	function &__get ($item) {
 		if (isset($this->data[$item])) {
-			global $User;
 			$debug_backtrace = debug_backtrace()[1];
 			$debug_backtrace = [
 				'class'		=> isset($debug_backtrace['class']) ? $debug_backtrace['class'] : '',
@@ -525,7 +522,7 @@ class Config {
 			 */
 			if (
 				(
-					is_object($User) && $User->admin()
+					User::instance(true) && User::instance()->admin()
 				) ||
 				$debug_backtrace['class'] == __CLASS__
 			) {
@@ -547,7 +544,6 @@ class Config {
 	 * @return array|bool
 	 */
 	function __set ($item, $data) {
-		global $User;
 		$debug_backtrace = debug_backtrace()[1];
 		$debug_backtrace = [
 			'class'		=> $debug_backtrace['class'],
@@ -560,7 +556,7 @@ class Config {
 			!isset($this->data[$item]) ||
 			(
 				(
-					is_object($User) && !$User->admin()
+					User::instance(true) && !User::instance()->admin()
 				) &&
 				$debug_backtrace['class'] != __CLASS__
 			)
@@ -597,143 +593,5 @@ class Config {
 			return false;
 		}
 		return (new Config\Module_Properties($this->components['modules'][$module_name], $module_name));
-	}
-	/**
-	 * Cloning restriction
-	 *
-	 * @final
-	 */
-	function __clone () {}
-}
-/**
- * For IDE
- */
-if (false) {
-	global $Config;
-	$Config = new Config;
-}
-namespace cs\Config;
-/**
- * Class for getting of db and storage configuration of module
- */
-class Module_Properties {
-	/**
-	 * @var array
-	 */
-	protected	$module_data	= [];
-	/**
-	 * @var string
-	 */
-	protected	$module;
-	/**
-	 * Creating of object and saving module data inside
-	 *
-	 * @param array		$module_data
-	 * @param string	$module
-	 */
-	function __construct ($module_data, $module) {
-		$this->module_data	= $module_data;
-		$this->module		= $module;
-	}
-	/**
-	 * Checks, whether module is active or not
-	 *
-	 * @return bool
-	 */
-	function active () {
-		return $this->module_data['active'] == 1;
-	}
-	/**
-	 * Get db id by name
-	 *
-	 * @param string $db_name
-	 *
-	 * @return int
-	 */
-	function db ($db_name) {
-		return (string)$this->module_data['db'][$db_name];
-	}
-	/**
-	 * Get storage id by name
-	 *
-	 * @param string $storage_name
-	 *
-	 * @return int
-	 */
-	function storage ($storage_name) {
-		return $this->module_data['storage'][$storage_name];
-	}
-	/**
-	 * Get data item of module configuration
-	 *
-	 * @param string		$item
-	 *
-	 * @return bool|mixed
-	 */
-	function __get ($item) {
-		return $this->get($item);
-	}
-	/**
-	 * Set data item of module configuration (only for admin)
-	 *
-	 * @param string	$item
-	 * @param mixed		$value
-	 *
-	 * @return bool
-	 */
-	function __set ($item, $value) {
-		return $this->set_internal($item, $value);
-	}
-	/**
-	 * Get data item (or array of items) of module configuration
-	 *
-	 * @param string|string[]	$item
-	 *
-	 * @return bool|mixed|mixed[]
-	 */
-	function get ($item) {
-		if (is_array($item)) {
-			$result	= [];
-			foreach ($item as $i) {
-				$result[$i]	= $this->get($i);
-			}
-			return $result;
-		} elseif (isset($this->module_data['data'], $this->module_data['data'][$item])) {
-			return $this->module_data['data'][$item];
-		} else {
-			$false = false;
-			return $false;
-		}
-	}
-	/**
-	 * Set data item (or array of items) of module configuration (only for admin)
-	 *
-	 * @param array|string	$item
-	 * @param mixed|null	$value
-	 *
-	 * @return bool
-	 */
-	function set ($item, $value = null) {
-		if (is_array($item)) {
-			foreach ($item as $i => $value) {
-				$this->set_internal($i, $value, false);
-			}
-			global $Config;
-			return $Config->save();
-		} else {
-			return $this->set_internal($item, $value);
-		}
-	}
-	protected function set_internal ($item, $value, $save = true) {
-		global $Config;
-		$module_data	= &$Config->components['modules'][$this->module];
-		if (!isset($module_data['data'])) {
-			$module_data['data']	= [];
-		}
-		$module_data['data'][$item]	= $value;
-		if ($save) {
-			return $Config->save();
-		}
-		return true;
 	}
 }

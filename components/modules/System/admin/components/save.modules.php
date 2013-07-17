@@ -24,9 +24,15 @@
  *  admin/System/components/modules/storage/process<br>
  *  ['name'	=> <i>module_name</i>]
  */
-global $Config, $Index, $User, $Core, $Cache, $Page, $L, $db;
-$a			= $Index;
-$rc			= $Config->route;
+namespace	cs;
+$Cache		= Cache::instance();
+$Config		= Config::instance();
+$Core		= Core::instance();
+$db			= DB::instance();
+$L			= Language::instance();
+$Page		= Page::instance();
+$User		= User::instance();
+$a			= Index::instance();
 if (isset($_POST['update_modules_list'])) {
 	/**
 	 * List of currently presented modules in file system
@@ -82,7 +88,7 @@ if (isset($_POST['update_modules_list'])) {
 				break;
 			}
 			unset($Cache->languages);
-			if (!$Core->run_trigger(
+			if (!Trigger::instance()->run(
 				'admin/System/components/modules/install/process',
 				[
 					'name' => $module
@@ -174,7 +180,7 @@ if (isset($_POST['update_modules_list'])) {
 				break;
 			}
 			unset($Cache->languages);
-			if (!$Core->run_trigger(
+			if (!Trigger::instance()->run(
 				'admin/System/components/modules/uninstall/process',
 				[
 					'name' => $module
@@ -183,7 +189,7 @@ if (isset($_POST['update_modules_list'])) {
 				break;
 			}
 			$module_data['active']	= -1;
-			$Core->run_trigger(
+			Trigger::instance()->run(
 				'admin/System/components/modules/disable',
 				[
 					'name'	=> $module
@@ -231,7 +237,7 @@ if (isset($_POST['update_modules_list'])) {
 			if ($active) {
 				$module_data['active']	= 0;
 				$Config->save();
-				$Core->run_trigger(
+				Trigger::instance()->run(
 					'admin/System/components/modules/disable',
 					[
 						'name'	=> $module
@@ -351,7 +357,7 @@ if (isset($_POST['update_modules_list'])) {
 			if ($active) {
 				$module_data['active']	= 1;
 				$Config->save();
-				$Core->run_trigger(
+				Trigger::instance()->run(
 					'admin/System/components/modules/enable',
 					[
 						'name'	=> $module
@@ -498,7 +504,7 @@ if (isset($_POST['update_modules_list'])) {
 			) {
 				break;
 			}
-			if ($Core->run_trigger(
+			if (Trigger::instance()->run(
 				'admin/System/components/modules/default_module/process',
 				[
 					'name' => $module
@@ -509,7 +515,7 @@ if (isset($_POST['update_modules_list'])) {
 			}
 		break;
 		case 'db':
-			if ($Core->run_trigger(
+			if (Trigger::instance()->run(
 				'admin/System/components/modules/db/process',
 				[
 					'name' => $module
@@ -522,7 +528,7 @@ if (isset($_POST['update_modules_list'])) {
 			}
 		break;
 		case 'storage':
-			if ($Core->run_trigger(
+			if (Trigger::instance()->run(
 				'admin/System/components/modules/storage/process',
 				[
 					'name' => $module
@@ -537,7 +543,7 @@ if (isset($_POST['update_modules_list'])) {
 		case 'enable':
 			$module_data['active'] = 1;
 			$a->save();
-			$Core->run_trigger(
+			Trigger::instance()->run(
 				'admin/System/components/modules/enable',
 				[
 					'name'	=> $module
@@ -548,7 +554,7 @@ if (isset($_POST['update_modules_list'])) {
 		case 'disable':
 			$module_data['active'] = 0;
 			$a->save();
-			$Core->run_trigger(
+			Trigger::instance()->run(
 				'admin/System/components/modules/disable',
 				[
 					'name'	=> $module

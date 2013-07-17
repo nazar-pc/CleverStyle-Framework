@@ -7,16 +7,17 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Comments;
-global $Core;
-$Core->register_trigger(
+use			cs\Cache,
+			cs\User,
+			cs\Trigger;
+Trigger::instance()->register(
 	'admin/System/components/modules/uninstall/process',
-	function ($data) use ($Core) {
-		global $User, $Cache;
-		if ($data['name'] != 'Comments' || !$User->admin()) {
+	function ($data) {
+		if ($data['name'] != 'Comments' || !User::instance()->admin()) {
 			return;
 		}
 		time_limit_pause();
-		unset($Cache->Comments);
+		unset(Cache::instance()->Comments);
 		clean_pcache();
 		time_limit_pause(false);
 	}

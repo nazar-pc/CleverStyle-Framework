@@ -8,8 +8,13 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\System;
-use			h;
-global $Config, $Index, $L, $Core;
+use			h,
+			cs\Config,
+			cs\Core,
+			cs\Index,
+			cs\Language;
+$Config						= Config::instance();
+$L							= Language::instance();
 $Config->reload_languages();
 $translate_engines			= _mb_substr(get_files_list(ENGINES.'/Text', '/^[^_].*?\.php$/i', 'f'), 0, -4);
 $translate_engines_settings	= [];
@@ -36,9 +41,9 @@ foreach ($translate_engines as $engine) {
 	}
 }
 unset($engine, $parameters, $paremeter, $description, $table);
-$Index->content(
+Index::instance()->content(
 	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
-		FIXED_LANGUAGE ? $L->language_fixed_as.' '.$Core->language : false
+		FIXED_LANGUAGE ? $L->language_fixed_as.' '.Core::instance()->language : false
 	).
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		core_select($Config->core['active_languages'],	'language',			'change_language',			'current_language'),

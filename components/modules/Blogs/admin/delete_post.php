@@ -7,13 +7,18 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h;
-global $Index, $L, $Page, $Blogs, $Config;
-$post						= $Blogs->get($Config->route[1]);
-$Page->title($L->deletion_of_post($post['title']));
+use			h,
+			cs\Config,
+			cs\Index,
+			cs\Language,
+			cs\Page;
+$post						= Blogs::instance()->get(Config::instance()->route[1]);
+$Index						= Index::instance();
+$L							= Language::instance();
+Page::instance()->title($L->deletion_of_post($post['title']));
 $Index->buttons				= false;
 $Index->cancel_button_back	= true;
-$Index->action				= 'admin/'.MODULE.'/browse_posts';
+$Index->action				= 'admin/Blogs/browse_posts';
 $Index->content(
 	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
 		$L->sure_to_delete_post($post['title'])

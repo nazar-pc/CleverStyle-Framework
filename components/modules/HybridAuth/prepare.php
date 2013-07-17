@@ -10,7 +10,16 @@
 namespace	cs\modules\HybridAuth;
 use			Exception,
 			h,
-			Hybrid_Endpoint;
+			Hybrid_Endpoint,
+			cs\Config,
+			cs\Index,
+			cs\Key,
+			cs\DB,
+			cs\Language,
+			cs\Mail,
+			cs\Page,
+			cs\Trigger,
+			cs\User;
 /**
  * Provides next triggers:
  *  HybridAuth/registration/before
@@ -33,7 +42,9 @@ use			Exception,
  *   'provider'	=> provider		//Provider name
  *  ]
  */
-global $Config, $User, $L, $Mail, $Page, $Index, $db, $Key, $Core;
+$Config		= Config::instance();
+$Index		= Index::instance();
+$User		= User::instance();
 $rc			= $Config->route;
 /**
  * If user is registered, provider not found or this is request for final authentication and session does not corresponds - return user to the base url
@@ -65,7 +76,10 @@ if (
 /**
  * Merging confirmation
  */
-$db_id	= $Config->module('HybridAuth')->db('integration');
+$db_id		= $Config->module('HybridAuth')->db('integration');
+$db			= DB::instance();
+$Key		= Key::instance();
+$L			= Language::instance();
 if (isset($rc[1]) && $rc[0] == 'merge_confirmation') {
 	/**
 	 * If confirmation key is valid - make merging
@@ -102,7 +116,7 @@ if (isset($rc[1]) && $rc[0] == 'merge_confirmation') {
 		if ($User->get('status', $data['id']) == '-1') {
 			$User->set('status', 1, $data['id']);
 		}
-		$Core->run_trigger(
+		Trigger::instance()->run(
 			'HybridAuth/add_session/before',
 			[
 				'adapter'	=> $adapter,
@@ -111,7 +125,7 @@ if (isset($rc[1]) && $rc[0] == 'merge_confirmation') {
 		);
 		$User->add_session($data['id']);
 		add_session_after();
-		$Core->run_trigger(
+		Trigger::instance()->run(
 			'HybridAuth/add_session/after',
 			[
 				'adapter'	=> $adapter,
@@ -142,6 +156,7 @@ if (isset($rc[1]) && $rc[0] == 'merge_confirmation') {
 /**
  * If registration is not allowed - show corresponding error
  */
+$Page		= Page::instance();
 if (!$Config->core['allow_user_registration']) {
 	$Page->title($L->registration_prohibited);
 	$Page->warning($L->registration_prohibited);
@@ -159,6 +174,7 @@ if (
 	_setcookie('HybridAuth_referer', $_SERVER['HTTP_REFERER']);
 }
 require_once __DIR__.'/Hybrid/Auth.php';
+$Mail		= Mail::instance();
 /**
  * Authentication endpoint
  */
@@ -210,7 +226,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 				])
 			) && $User->get('status', $id) == '1'
 		) {
-			$Core->run_trigger(
+			Trigger::instance()->run(
 				'HybridAuth/add_session/before',
 				[
 					'adapter'	=> $adapter,
@@ -219,7 +235,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 			);
 			$User->add_session($id);
 			add_session_after();
-			$Core->run_trigger(
+			Trigger::instance()->run(
 				'HybridAuth/add_session/after',
 				[
 					'adapter'	=> $adapter,
@@ -265,7 +281,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 			 * Try to register user
 			 */
 			$adapter		= $HybridAuth->getAdapter($rc[0]);
-			if (!$Core->run_trigger(
+			if (!Trigger::instance()->run(
 				'HybridAuth/registration/before',
 				[
 					'provider'		=> $rc[0],
@@ -307,7 +323,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 						$User->set('status', 1, $user);
 					}
 					unset($user);
-					$Core->run_trigger(
+					Trigger::instance()->run(
 						'HybridAuth/add_session/before',
 						[
 							'adapter'	=> $adapter,
@@ -316,7 +332,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					);
 					$User->add_session($result['id']);
 					add_session_after();
-					$Core->run_trigger(
+					Trigger::instance()->run(
 						'HybridAuth/add_session/after',
 						[
 							'adapter'	=> $adapter,
@@ -356,7 +372,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					$L->reg_success_mail(get_core_ml_text('name')),
 					$body
 				)) {
-					$Core->run_trigger(
+					Trigger::instance()->run(
 						'HybridAuth/add_session/before',
 						[
 							'adapter'	=> $adapter,
@@ -365,7 +381,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					);
 					$User->add_session($result['id']);
 					add_session_after();
-					$Core->run_trigger(
+					Trigger::instance()->run(
 						'HybridAuth/add_session/after',
 						[
 							'adapter'	=> $adapter,
@@ -438,7 +454,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 	/**
 	 * Try to register user
 	 */
-	if (!$Core->run_trigger(
+	if (!Trigger::instance()->run(
 		'HybridAuth/registration/before',
 		[
 			'provider'		=> $rc[0],

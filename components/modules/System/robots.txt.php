@@ -12,19 +12,19 @@
  *  System/robots.txt<br>
  *  ['text'	=> <i>&$text</i>]<br>
  */
-global $Core, $Config, $Index, $Page;
-$Index->stop	= true;
+namespace	cs;
+Index::instance()->stop		= true;
 interface_off();
-$text			= file_get_contents(MFOLDER.'/robots.txt');
-$Core->run_trigger(
+$text						= file_get_contents(MFOLDER.'/robots.txt');
+Trigger::instance()->run(
 	'System/robots.txt',
 	[
 		'text'	=> &$text
 	]
 );
-$text			.= 'Host: '.explode(
+$text						.= 'Host: '.explode(
 	'/',
-	explode('//', $Config->core_url(), 2)[1],
+	explode('//', Config::instance()->core_url(), 2)[1],
 	2
 )[0];
-$Page->Content	= $text;
+Page::instance()->Content	= $text;

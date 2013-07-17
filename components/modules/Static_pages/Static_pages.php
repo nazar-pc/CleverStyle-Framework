@@ -7,16 +7,22 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Static_pages;
-use			cs\DB\Accessor;
+use			cs\DB\Accessor,
+			cs\Singleton,
+			cs\Cache,
+			cs\Config,
+			cs\Language,
+			cs\Text;
 class Static_pages extends Accessor {
+	use	Singleton;
+
 	/**
 	 * Returns database index
 	 *
 	 * @return int
 	 */
 	protected function cdb () {
-		global $Config;
-		return $Config->module('Static_pages')->db('pages');
+		return Config::instance()->module('Static_pages')->db('pages');
 	}
 	/**
 	 * Get data of specified page
@@ -26,8 +32,9 @@ class Static_pages extends Accessor {
 	 * @return array|bool
 	 */
 	function get ($id) {
-		global $Cache, $L;
-		$id	= (int)$id;
+		$Cache	= Cache::instance();
+		$L		= Language::instance();
+		$id		= (int)$id;
 		if (($data = $Cache->{'Static_pages/pages/'.$id.'/'.$L->clang}) === false) {
 			$data	= $this->db()->qf([
 				"SELECT
@@ -63,7 +70,6 @@ class Static_pages extends Accessor {
 	 * @return bool|int				Id of created page on success of <b>false</> on failure
 	 */
 	function add ($category, $title, $path, $content, $interface) {
-		global $Cache;
 		$category	= (int)$category;
 		$path		= path(str_replace(['/', '\\'], '_', $path ?: $title));
 		$interface	= (int)$interface;
@@ -77,7 +83,7 @@ class Static_pages extends Accessor {
 		)) {
 			$id	= $this->db_prime()->id();
 			$this->set($id, $category, $title, $path, $content, $interface);
-			unset($Cache->Static_pages);
+			unset(Cache::instance()->Static_pages);
 			return $id;
 		} else {
 			return false;
@@ -96,7 +102,7 @@ class Static_pages extends Accessor {
 	 * @return bool
 	 */
 	function set ($id, $category, $title, $path, $content, $interface) {
-		global $Cache;
+		$Cache		= Cache::instance();
 		$category	= (int)$category;
 		$title		= trim($title);
 		$path		= path(str_replace(['/', '\\'], '_', $path ?: $title));
@@ -136,8 +142,8 @@ class Static_pages extends Accessor {
 	 * @return bool
 	 */
 	function del ($id) {
-		global $Cache;
-		$id	= (int)$id;
+		$Cache	= Cache::instance();
+		$id		= (int)$id;
 		if ($this->db_prime()->q(
 			"DELETE FROM `[prefix]static_pages`
 			WHERE `id` = '%s'
@@ -162,7 +168,8 @@ class Static_pages extends Accessor {
 	 * @return array|bool
 	 */
 	function get_structure () {
-		global $Cache, $L;
+		$Cache	= Cache::instance();
+		$L		= Language::instance();
 		if (($data = $Cache->{'Static_pages/structure/'.$L->clang}) === false) {
 			$data	= $this->get_structure_internal();
 			if ($data) {
@@ -241,7 +248,6 @@ class Static_pages extends Accessor {
 	 * @return bool|int			Id of created category on success of <b>false</> on failure
 	 */
 	function add_category ($parent, $title, $path) {
-		global $Cache;
 		$parent	= (int)$parent;
 		$path	= path(str_replace(['/', '\\'], '_', $path ?: $title));
 		if ($this->db_prime()->q(
@@ -253,7 +259,7 @@ class Static_pages extends Accessor {
 		)) {
 			$id	= $this->db_prime()->id();
 			$this->set_category($id, $parent, $title, $path);
-			unset($Cache->{'Static_pages/structure'});
+			unset(Cache::instance()->{'Static_pages/structure'});
 			return $id;
 		} else {
 			return false;
@@ -270,7 +276,6 @@ class Static_pages extends Accessor {
 	 * @return bool
 	 */
 	function set_category ($id, $parent, $title, $path) {
-		global $Cache;
 		$parent	= (int)$parent;
 		$title	= trim($title);
 		$path	= path(str_replace(['/', '\\'], '_', $path ?: $title));
@@ -288,7 +293,7 @@ class Static_pages extends Accessor {
 			$this->ml_set('Static_pages/categories/path', $id, $path),
 			$id
 		)) {
-			unset($Cache->{'Static_pages/structure'});
+			unset(Cache::instance()->{'Static_pages/structure'});
 			return true;
 		} else {
 			return false;
@@ -302,7 +307,6 @@ class Static_pages extends Accessor {
 	 * @return bool
 	 */
 	function del_category ($id) {
-		global $Cache;
 		$id	= (int)$id;
 		if ($this->db_prime()->q(
 			[
@@ -320,32 +324,22 @@ class Static_pages extends Accessor {
 		)) {
 			$this->ml_del('Static_pages/categories/title', $id);
 			$this->ml_del('Static_pages/categories/path', $id);
-			unset($Cache->Static_pages);
+			unset(Cache::instance()->Static_pages);
 			return true;
 		} else {
 			return false;
 		}
 	}
 	private function ml_process ($text) {
-		global $Text;
-		return $Text->process($this->cdb(), $text);
+		return Text::instance()->process($this->cdb(), $text);
 	}
 	private function ml_set ($group, $label, $text) {
-		global $Text;
 		if ($text === 'index') {
 			return $text;
 		}
-		return $Text->set($this->cdb(), $group, $label, $text);
+		return Text::instance()->set($this->cdb(), $group, $label, $text);
 	}
 	private function ml_del ($group, $label) {
-		global $Text;
-		return $Text->del($this->cdb(), $group, $label);
+		return Text::instance()->del($this->cdb(), $group, $label);
 	}
-}
-/**
- * For IDE
- */
-if (false) {
-	global $Static_pages;
-	$Static_pages = new Static_pages;
 }

@@ -8,10 +8,15 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\System;
-use			h;
-global $L, $Config, $Index, $Cache;
-$sa	= $Config->core['simple_admin_mode'];
-$Index->content(
+use			h,
+			cs\Config,
+			cs\Cache,
+			cs\Index,
+			cs\Language;
+$Config	= Config::instance();
+$L		= Language::instance();
+$sa		= $Config->core['simple_admin_mode'];
+Index::instance()->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		core_input('gzip_compression', 'radio', null, zlib_compression()),
 		core_input('cache_compress_js_css', 'radio'),
@@ -25,14 +30,14 @@ $Index->content(
 		[
 			h::button(
 				$L->clean_settings_cache,
-				$Cache->cache_state() ? [
-					'onMouseDown'	=> "admin_cache('#clean_cache', '".$Config->base_url()."/api/".MODULE."/admin/cache/clean_cache');"
+				Cache::instance()->cache_state() ? [
+					'onMouseDown'	=> "admin_cache('#clean_cache', '{$Config->base_url()}/api/System/admin/cache/clean_cache');"
 				] : ['disabled']
 			),
 			h::button(
 				$L->clean_scripts_styles_cache,
 				$Config->core['cache_compress_js_css'] ? [
-					'onMouseDown'	=> "admin_cache('#clean_pcache', '".$Config->base_url()."/api/".MODULE."/admin/cache/clean_pcache');"
+					'onMouseDown'	=> "admin_cache('#clean_pcache', '{$Config->base_url()}/api/System/admin/cache/clean_pcache');"
 				] : ['disabled']
 			)
 		]

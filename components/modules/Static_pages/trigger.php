@@ -6,17 +6,16 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Core;
-$Core->register_trigger(
+namespace	cs\modules\Static_pages;
+use			cs\Config,
+			cs\Trigger;
+Trigger::instance()->register(
 	'System/Config/routing_replace',
 	function ($data) {
-		global $Config;
-		if (!$Config->module('Static_pages')->active() && substr($data['rc'], 0, 5) != 'admin') {
+		if (!Config::instance()->module('Static_pages')->active() && substr($data['rc'], 0, 5) != 'admin') {
 			return;
 		}
 		$rc						= explode('/', $data['rc']);
-		global $Core, $Static_pages;
-		$Core->create('cs\\modules\\Static_pages\\Static_pages');
 		switch ($rc[0]) {
 			case 'admin':
 			case 'api':
@@ -24,6 +23,7 @@ $Core->register_trigger(
 			case 'Static_pages':
 				$rc = ['index'];
 		}
+		$Static_pages			= Static_pages::instance();
 		$structure				= $Static_pages->get_structure();
 		$categories				= array_slice($rc, 0, -1);
 		$Static_pages->title	= [];
@@ -43,14 +43,13 @@ $Core->register_trigger(
 		}
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'System/Index/construct',
 	function () {
 		if (!ADMIN) {
 			return;
 		}
-		global $Config;
-		switch ($Config->components['modules']['Blogs']['active']) {
+		switch (Config::instance()->components['modules']['Blogs']['active']) {
 			case 0:
 			case 1:
 				require __DIR__.'/trigger/installed.php';

@@ -11,7 +11,13 @@
  * Provides next triggers:<br>
  *  System/profile/settings
  */
-global $Core, $Config, $L, $User, $Page, $Index;
+namespace	cs;
+use			h;
+$Config			= Config::instance();
+$Index			= Index::instance();
+$L				= Language::instance();
+$Page			= Page::instance();
+$User			= User::instance();
 if (!$User->user()) {
 	define('ERROR_CODE', 403);
 	$Page->error();
@@ -107,7 +113,7 @@ switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 				]
 			)
 		);
-		$Core->run_trigger('System/profile/settings');
+		Trigger::instance()->run('System/profile/settings');
 	break;
 	case 'general':
 		$user_data					= $User->get($columns);

@@ -7,11 +7,12 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
+namespace	cs;
 if (!isset($_POST['mode'])) {
 	return;
 }
-global $Config, $Index;
-$update = false;
+$Config	= Config::instance();
+$update	= false;
 if ($_POST['mode'] == 'add') {
 	foreach ($_POST['storage'] as $item => $value) {
 		$_POST['storage'][$item] = $value;
@@ -31,6 +32,6 @@ if ($_POST['mode'] == 'add') {
 	$update = true;
 }
 if ($update) {
-	$Index->save();
+	Index::instance()->save();
 }
 unset($update);

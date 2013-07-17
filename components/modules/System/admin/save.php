@@ -7,15 +7,20 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace	cs\modules\System;
 /**
  * Provides next triggers:<br>
  *  admin/System/general/optimization/clean_pcache
  */
+namespace	cs\modules\System;
+use			cs\Cache,
+			cs\Config,
+			cs\Index,
+			cs\Trigger;
 if (!isset($_POST['edit_settings'])) {
 	return;
 }
-global $Config, $Index, $Cache, $Core;
+$Index	= Index::instance();
+$Config	= Config::instance();
 if ($_POST['edit_settings'] == 'apply' || $_POST['edit_settings'] == 'save') {
 	foreach ($Config->admin_parts as $part) {
 		if (isset($_POST[$part])) {
@@ -64,16 +69,17 @@ if ($_POST['edit_settings'] == 'apply' || $_POST['edit_settings'] == 'save') {
 	}
 	unset($part);
 }
+$Cache	= Cache::instance();
 if ($_POST['edit_settings'] == 'apply' && $Cache->cache_state()) {
 	if ($Index->apply() && !$Config->core['cache_compress_js_css']) {
 		clean_pcache();
-		$Core->run_trigger('admin/System/general/optimization/clean_pcache');
+		Trigger::instance()->run('admin/System/general/optimization/clean_pcache');
 	}
 } elseif ($_POST['edit_settings'] == 'save') {
 	$save = $Index->save();
 	if ($save && !$Config->core['cache_compress_js_css']) {
 		clean_pcache();
-		$Core->run_trigger('admin/System/general/optimization/clean_pcache');
+		Trigger::instance()->run('admin/System/general/optimization/clean_pcache');
 	}
 } elseif ($_POST['edit_settings'] == 'cancel' && $Cache->cache_state()) {
 	$Index->cancel();

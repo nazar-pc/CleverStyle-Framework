@@ -6,20 +6,19 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Index, $Config, $Static_pages;
-$Index->title_auto	= false;
+namespace	cs\modules\Static_pages;
+use			h,
+			cs\Config,
+			cs\Index,
+			cs\Page;
+$Static_pages		= Static_pages::instance();
 $data				= $Static_pages->get(
-	HOME ? $Static_pages->get_structure()['pages']['index'] : $Config->route[0]
+	HOME ? $Static_pages->get_structure()['pages']['index'] : Config::instance()->route[0]
 );
-global $Page;
+$Page				= Page::instance();
 if ($data['interface']) {
 	if (!HOME) {
-		if (!empty($Static_pages->title)) {
-			foreach ($Static_pages->title as $title) {
-				$Page->title($title);
-			}
-			unset($title);
-		}
+		Index::instance()->title_auto	= false;
 		$Page->title($data['title']);
 	}
 	$Page->Keywords		= keywords($data['title']);

@@ -7,7 +7,11 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Config, $Page, $User, $db, $Key, $L;
+namespace	cs;
+$Config	= Config::instance();
+$L		= Language::instance();
+$Page	= Page::instance();
+$User	= User::instance();
 /**
  * If AJAX request from local referer, user is guest, login attempts count is satisfactory,
  * user is active, not blocked - process authentication, otherwise - show error
@@ -29,6 +33,7 @@ if (!$Config->server['referer']['local'] || !$Config->server['ajax']) {
 /**
  * First step - user searching by login, generation of random hash for second step, creating of temporary key
  */
+$Key	= Key::instance();
 if (
 	isset($_POST['login']) &&
 	!empty($_POST['login']) &&

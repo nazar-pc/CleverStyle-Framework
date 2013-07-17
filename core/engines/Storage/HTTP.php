@@ -5,7 +5,8 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace cs\Storage;
+namespace	cs\Storage;
+use			cs\Config;
 class HTTP extends _Abstract {
 	protected	$host,
 				$user,
@@ -228,10 +229,9 @@ class HTTP extends _Abstract {
 			return false;
 		}
 		time_limit_pause(false);
-		global $Config;
 		return $this->request([
 			'function'		=> __FUNCTION__,
-			'filename'		=> $Config->base_url().'/'.$temp,
+			'filename'		=> Config::instance()->base_url()."/$temp",
 			'destination'	=> $destination
 		])[1] && unlink(TEMP.'/'.$temp);
 	}
@@ -342,10 +342,7 @@ class HTTP extends _Abstract {
 	 */
 	function source_by_url ($url) {
 		if (mb_strpos($url, $this->base_url) === 0) {
-			global $Config;
-			if (is_object($Config)) {
-				return str_replace($this->base_url.'/', '', $url);
-			}
+			return str_replace($this->base_url.'/', '', $url);
 		}
 		return false;
 	}

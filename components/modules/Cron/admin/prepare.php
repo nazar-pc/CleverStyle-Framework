@@ -6,7 +6,7 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Index, $Page;
+namespace	cs;
 if (
 	isset($_POST['edit_settings'], $_POST['tasks']) &&
 	$_POST['edit_settings'] == 'save'
@@ -17,9 +17,9 @@ if (
 	file_put_contents($filename, "$tasks\n");
 	exec("crontab $filename", $result, $result);
 	unlink($filename);
-	$Index->save($result === 0);
+	Index::instance()->save($result === 0);
 }
-$Page->menumore		= \h::a(
+Page::instance()->menumore		= h::a(
 	[
 		'Crontab',
 		[

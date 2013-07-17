@@ -7,7 +7,12 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Comments;
-use			h;
+use			h,
+			cs\Config,
+			cs\Language,
+			cs\Page,
+			cs\Trigger,
+			cs\User;
 /**
  * Provides next triggers:<br>
  *  api/Comments/delete<code>
@@ -18,15 +23,15 @@ use			h;
  *   'module'			=> <i>module</i>			//Module<br>
  *  ]</code>
  */
-global $Config, $User, $Page, $L, $Core;
+$Config			= Config::instance();
 if (!$Config->module('Comments')->active()) {
 	define('ERROR_CODE', 404);
 	return;
 }
 /**
- * If AJAX request from local referer, user is not guest
+ * If AJAX request from local referer, user is not guest - allow
  */
-if (!$Config->server['referer']['local'] || !$Config->server['ajax'] || !$User->user()) {
+if (!$Config->server['referer']['local'] || !$Config->server['ajax'] || !User::instance()->user()) {
 	sleep(1);
 	define('ERROR_CODE', 403);
 	return;
@@ -37,7 +42,7 @@ if (!isset($_POST['id'], $_POST['module'])) {
 }
 $Comments		= false;
 $delete_parent	= false;
-$Core->run_trigger(
+Trigger::instance()->run(
 	'api/Comments/delete',
 	[
 		'Comments'		=> &$Comments,
@@ -46,6 +51,8 @@ $Core->run_trigger(
 		'module'		=> $_POST['module']
 	]
 );
+$L				= Language::instance();
+$Page			= Page::instance();
 if (!is_object($Comments)) {
 	if (!defined('ERROR_CODE')) {
 		define('ERROR_CODE', 500);

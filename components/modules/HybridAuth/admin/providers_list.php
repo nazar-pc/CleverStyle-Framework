@@ -7,15 +7,20 @@
  * @copyright	HybridAuth authors
  * @license		MIT License, see license.txt
  */
-global $Config, $Index, $L, $Page;
-$povs_config			= $Config->module(MODULE)->providers;
+namespace	cs;
+use			h;
+$Config					= Config::instance();
+$Index					= Index::instance();
+$L						= Language::instance();
+$Page					= Page::instance();
+$providers_config		= $Config->module('HybridAuth')->providers;
 $providers				= _json_decode(file_get_contents(MFOLDER.'/../providers.json'));
-$Page->css('components/modules/'.MODULE.'/includes/css/admin.css');
-$Page->menumore		= h::a(
+$Page->css('components/modules/HybridAuth/includes/css/admin.css');
+$Page->menumore			= h::a(
 	[
 		$L->providers_list,
 		[
-			'href'	=> 'admin/'.MODULE,
+			'href'	=> 'admin/HybridAuth',
 			'class'	=> !isset($rc[0]) || $rc[0] == 'providers_list' ? 'active' : false
 		]
 	]
@@ -26,7 +31,7 @@ $Index->content(
 		h::info('enable_contacts_detection'),
 		h::{'input[type=radio]'}([
 			'name'		=> 'enable_contacts_detection',
-			'checked'	=> $Config->module(MODULE)->enable_contacts_detection,
+			'checked'	=> $Config->module('HybridAuth')->enable_contacts_detection,
 			'value'		=> [0, 1],
 			'in'		=> [$L->off, $L->on]
 		])
@@ -39,7 +44,7 @@ $Index->content(
 		]).
 		h::{'tr| td.ui-widget-content.ui-corner-all'}(
 			array_map(
-				function ($provider, $pdata) use ($L, $povs_config, $Config) {
+				function ($provider, $pdata) use ($L, $providers_config, $Config) {
 					$content	= '';
 					if (isset($pdata['keys'])) {
 						foreach ($pdata['keys'] as $key) {
@@ -47,7 +52,7 @@ $Index->content(
 								ucfirst($key),
 								h::input([
 									'name'	=> 'providers['.$provider.'][keys]['.$key.']',
-									'value'	=> isset($povs_config[$provider], $povs_config[$provider]['keys'][$key]) ? $povs_config[$provider]['keys'][$key] : ''
+									'value'	=> isset($providers_config[$provider], $providers_config[$provider]['keys'][$key]) ? $providers_config[$provider]['keys'][$key] : ''
 								])
 							]);
 						}
@@ -61,7 +66,7 @@ $Index->content(
 									'Scope',
 									h::input([
 										'name'	=> 'providers['.$provider.'][scope]',
-										'value'	=> isset($povs_config[$provider], $povs_config[$provider]['scope']) ? $povs_config[$provider]['scope'] : $pdata['scope']
+										'value'	=> isset($providers_config[$provider], $providers_config[$provider]['scope']) ? $providers_config[$provider]['scope'] : $pdata['scope']
 									])
 								]) : ''
 							).
@@ -69,12 +74,10 @@ $Index->content(
 								isset($pdata['info']) ? str_replace(
 									[
 										'{base_url}',
-										'{module}',
 										'{provider}'
 									],
 									[
 										$Config->base_url(),
-										MODULE,
 										$provider
 									],
 									$pdata['info']
@@ -83,7 +86,7 @@ $Index->content(
 						),
 						h::{'input[type=radio]'}([
 							'name'		=> 'providers['.$provider.'][enabled]',
-							'checked'	=> isset($povs_config[$provider], $povs_config[$provider]['enabled']) ? $povs_config[$provider]['enabled'] : 0,
+							'checked'	=> isset($providers_config[$provider], $providers_config[$provider]['enabled']) ? $providers_config[$provider]['enabled'] : 0,
 							'value'		=> [0, 1],
 							'in'		=> [$L->off, $L->on]
 						])

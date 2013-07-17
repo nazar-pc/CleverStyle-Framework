@@ -8,49 +8,56 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h;
-global $Index, $Page, $L, $Config;
+use			h,
+			cs\Config,
+			cs\DB,
+			cs\Index,
+			cs\Language,
+			cs\Page,
+			cs\User;
+$Index				= Index::instance();
 $Index->title_auto	= false;
+$L					= Language::instance();
+$Page				= Page::instance();
 $Page->title($L->administration);
-$Page->title($L->{MODULE});
+$Page->title($L->Blogs);
 $Page->css([
-	'components/modules/'.MODULE.'/includes/css/admin.css',
-	'components/modules/'.MODULE.'/includes/css/general.css'
+	'components/modules/Blogs/includes/css/admin.css',
+	'components/modules/Blogs/includes/css/general.css'
 ]);
 $Page->js([
-	'components/modules/'.MODULE.'/includes/js/general.js'
+	'components/modules/Blogs/includes/js/general.js'
 ]);
-$rc					= $Config->route;
+$rc					= Config::instance()->route;
 $Page->menumore		= h::a(
 	[
 		$L->general,
 		[
-			'href'	=> 'admin/'.MODULE,
+			'href'	=> 'admin/Blogs',
 			'class'	=> !isset($rc[0]) || $rc[0] == 'general' ? 'active' : false
 		]
 	],
 	[
 		$L->browse_sections,
 		[
-			'href'	=> 'admin/'.MODULE.'/browse_sections',
+			'href'	=> 'admin/Blogs/browse_sections',
 			'class'	=> isset($rc[0]) && $rc[0] == 'browse_sections' ? 'active' : false
 		]
 	],
 	[
 		$L->browse_posts,
 		[
-			'href'	=> 'admin/'.MODULE.'/browse_posts',
+			'href'	=> 'admin/Blogs/browse_posts',
 			'class'	=> isset($rc[0]) && $rc[0] == 'browse_posts' ? 'active' : false
 		]
 	]
 );
 function get_sections_rows ($structure = null, $level = 0, &$content = null) {
-	global $L;
+	$L			= Language::instance();
 	$root		= false;
-	$module		= path($L->{MODULE});
+	$module		= path($L->Blogs);
 	if ($structure === null) {
-		global $Blogs;
-		$structure			= $Blogs->get_sections_structure();
+		$structure			= Blogs::instance()->get_sections_structure();
 		$structure['title']	= $L->root_section;
 		$root				= true;
 		$content			= [];
@@ -77,7 +84,7 @@ function get_sections_rows ($structure = null, $level = 0, &$content = null) {
 			[
 				h::icon('plus'),
 				[
-					'href'			=> 'admin/'.MODULE.'/add_section/'.$structure['id'],
+					'href'			=> "admin/Blogs/add_section/$structure[id]",
 					'data-title'	=> $L->add_subsection
 				]
 			]
@@ -86,14 +93,14 @@ function get_sections_rows ($structure = null, $level = 0, &$content = null) {
 			[
 				h::icon('wrench'),
 				[
-					'href'			=> 'admin/'.MODULE.'/edit_section/'.$structure['id'],
+					'href'			=> "admin/Blogs/edit_section/$structure[id]",
 					'data-title'	=> $L->edit
 				]
 			],
 			[
 				h::icon('trash'),
 				[
-					'href'			=> 'admin/'.MODULE.'/delete_section/'.$structure['id'],
+					'href'			=> "admin/Blogs/delete_section/$structure[id]",
 					'data-title'	=> $L->delete
 				]
 			]
@@ -112,9 +119,8 @@ function get_sections_select_post (&$disabled, $current = null, $structure = nul
 		'value'	=> []
 	];
 	if ($structure === null) {
-		global $Blogs, $L;
-		$structure			= $Blogs->get_sections_structure();
-		$list['in'][]		= $L->root_section;
+		$structure			= Blogs::instance()->get_sections_structure();
+		$list['in'][]		= Language::instance()->root_section;
 		$list['value'][]	= 0;
 	} else {
 		if ($structure['id'] == $current) {
@@ -139,9 +145,8 @@ function get_sections_select_section ($current = null, $structure = null, $level
 		'value'	=> []
 	];
 	if ($structure === null) {
-		global $Blogs, $L;
-		$structure			= $Blogs->get_sections_structure();
-		$list['in'][]		= $L->root_section;
+		$structure			= Blogs::instance()->get_sections_structure();
+		$list['in'][]		= Language::instance()->root_section;
 		$list['value'][]	= 0;
 	} else {
 		if ($structure['id'] == $current) {
@@ -160,13 +165,16 @@ function get_sections_select_section ($current = null, $structure = null, $level
 	return $list;
 }
 function get_posts_rows ($page = 1) {
-	global $db, $Config, $Blogs, $L, $User;
-	$module		= path($L->{MODULE});
+	$Blogs		= Blogs::instance();
+	$Config		= Config::instance();
+	$L			= Language::instance();
+	$User		= User::instance();
+	$module		= path($L->Blogs);
 	$page		= (int)$page ?: 1;
 	$page		= $page > 0 ? $page : 1;
-	$num		= $Config->module(MODULE)->posts_per_page;
+	$num		= $Config->module('Blogs')->posts_per_page;
 	$from		= ($page - 1) * $num;
-	$cdb		= $db->{$Config->module(basename(MODULE))->db('posts')};
+	$cdb		= DB::instance()->{$Config->module('Blogs')->db('posts')};
 	$posts		= $cdb->qfas(
 		"SELECT `id`
 		FROM `[prefix]blogs_posts`
@@ -223,14 +231,14 @@ function get_posts_rows ($page = 1) {
 					[
 						h::icon('wrench'),
 						[
-							'href'			=> 'admin/'.MODULE.'/edit_post/'.$post['id'],
+							'href'			=> "admin/Blogs/edit_post/$post[id]",
 							'data-title'	=> $L->edit
 						]
 					],
 					[
 						h::icon('trash'),
 						[
-							'href'			=> 'admin/'.MODULE.'/delete_post/'.$post['id'],
+							'href'			=> "admin/Blogs/delete_post/$post[id]",
 							'data-title'	=> $L->delete
 						]
 					]

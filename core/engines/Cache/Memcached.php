@@ -5,19 +5,20 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace cs\Cache;
+namespace	cs\Cache;
+use			cs\Core;
 /**
  * Provides cache functionality based on Memcached.
- * Support optionally base configuration option $Core->memcached_host and $Core->memcached_port
+ * Support optionally base configuration option Core::instance()->memcached_host and Core::instance()->memcached_port
  */
 class Memcached extends _Abstract {
 	protected	$memcached	= false;
 	function __construct () {
-		global $Core;
 		if (!memcached()) {
 			return;
 		}
 		$this->memcached	= new \Memcached(DOMAIN);
+		$Core				= Core::instance();
 		$this->memcached->addServer($Core->memcached_host ?: '127.0.0.1', $Core->memcached_port ?: 11211);
 	}
 	/**

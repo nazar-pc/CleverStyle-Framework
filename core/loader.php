@@ -5,10 +5,11 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-require CORE.'/upf.php';						//Including UPF
-require CORE.'/functions.php';					//Including general system functions
+namespace	cs;
+require CORE.'/upf.php';						//Inclusion of UPF
+require CORE.'/functions.php';					//Inclusion of general system functions
 
-global $Core, $timeload, $loader_init_memory, $interface;
+global $timeload, $loader_init_memory, $interface;
 
 $timeload['start']			= MICROTIME;
 $interface					= true;
@@ -24,23 +25,78 @@ header('Connection: close');
 /**
  * Setting of basic constants with paths to system directories
  */
-define('CONFIG',	DIR.'/config');					//Directory for configuration
-define('CLASSES',	CORE.'/classes');				//Directory for main core classes
-define('ENGINES',	CORE.'/engines');				//Directory for cache, DB, storage and translation engines
-define('LANGUAGES',	CORE.'/languages');				//Languages directory
-define('CSS',		DIR.'/includes/css');			//Directory with CSS files
-define('IMG',		DIR.'/includes/img');			//Directory with images
-define('JS',		DIR.'/includes/js');			//Directory for JavaScript files
-define('TEMPLATES',	DIR.'/templates');				//Templates directory
-define('BLOCKS',	DIR.'/components/blocks');		//Blocks directory
-define('MODULES',	DIR.'/components/modules');		//Modules directory
-define('PLUGINS',	DIR.'/components/plugins');		//Plugins directory
-define('STORAGE',	DIR.'/storage/public');			//Local public storage for current domain
-define('CACHE',		DIR.'/storage/cache');			//Cache directory for current domain
-define('LOGS',		DIR.'/storage/logs');			//Log directory for current domain
-define('TEMP',		DIR.'/storage/temp');			//Temp directory for current domain
-define('PCACHE',	DIR.'/storage/pcache');			//Directory with public cache (available from the outside)
-define('THEMES',	DIR.'/themes');					//themes dir
+/**
+ * Directory for configuration
+ */
+define('CONFIG',	DIR.'/config');
+/**
+ * Directory for main core classes
+ */
+define('CLASSES',	CORE.'/classes');
+/**
+ * Directory for main core traits
+ */
+define('TRAITS',	CORE.'/traits');
+/**
+ * Directory for cache, DB, storage and translation engines
+ */
+define('ENGINES',	CORE.'/engines');
+/**
+ * Languages directory
+ */
+define('LANGUAGES',	CORE.'/languages');
+/**
+ * Directory for CSS files
+ */
+define('CSS',		DIR.'/includes/css');
+/**
+ * Directory for images
+ */
+define('IMG',		DIR.'/includes/img');
+/**
+ * Directory for JavaScript files
+ */
+define('JS',		DIR.'/includes/js');
+/**
+ * Templates directory
+ */
+define('TEMPLATES',	DIR.'/templates');
+/**
+ * Blocks directory
+ */
+define('BLOCKS',	DIR.'/components/blocks');
+/**
+ * Modules directory
+ */
+define('MODULES',	DIR.'/components/modules');
+/**
+ * Plugins directory
+ */
+define('PLUGINS',	DIR.'/components/plugins');
+/**
+ * Local public storage for current domain
+ */
+define('STORAGE',	DIR.'/storage/public');
+/**
+ * Cache directory for current domain
+ */
+define('CACHE',		DIR.'/storage/cache');
+/**
+ * Log directory for current domain
+ */
+define('LOGS',		DIR.'/storage/logs');
+/**
+ * Temp directory for current domain
+ */
+define('TEMP',		DIR.'/storage/temp');
+/**
+ * Directory with public cache (available from the outside)
+ */
+define('PCACHE',	DIR.'/storage/pcache');
+/**
+ * Themes dir
+ */
+define('THEMES',	DIR.'/themes');
 
 /**
  * Load information about minimal needed Software versions
@@ -52,30 +108,12 @@ require_once CORE.'/required_verions.php';
 _include_once(DIR.'/custom.php', false);
 
 $timeload['loader_init']	= microtime(true);
-$loader_init_memory			= memory_get_usage();
-
+$loader_init_memory			= memory_get_usage();CONFIG;
 /**
- * Loading of core and primary system classes, creating of necessary objects.
- * WARNING: Disabling of creating the following objects or changing the order almost 100% will lead to a complete engine inoperable!
- * If necessary, change the logic of the primary objects of engine, use custom.php file for including own versions of classes,
- * and this versions will be used instead of system ones.
- *
- * Core object for loading of system configuration, creating of global objects, encryption, API requests sending, and triggers processing.
+ * System starting
  */
-$Core						= new \cs\Core;
-
-$Core->create([
-	defined('CS_ERROR_HANDLER') && CS_ERROR_HANDLER ? 'cs\\Error' : false,	//Object of errors processing
-	'cs\\Cache',															//System cache object
-	'cs\\Text',																//Object of multilingual content
-	['cs\\Language',	'L'],												//Object of multilingual interface
-	'cs\\Page',																//Page generation object
-	['cs\\DB',			'db'],												//DataBase object
-	'_cs\\Storage',															//Storage object
-	'cs\\Config',															//Configuration object
-	'_cs\\Mail',															//Object for sending of emails
-	'_cs\\Key',																//Objects of temporary keys
-	'cs\\User',																//Object of user
-	'cs\\Index'																//Object, that supports of components processing
-]);
-$Core->__finish();															//Destroying of objects, displaying of generated content and correct termination
+Core::instance();
+defined('CS_ERROR_HANDLER') && CS_ERROR_HANDLER && Error::instance();
+Index::instance()->__finish();
+Page::instance()->__finish();
+User::instance()->__finish();

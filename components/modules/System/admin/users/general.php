@@ -8,9 +8,13 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\System;
-use			h;
-global $Config, $Index, $L;
-$Index->content(
+use			h,
+			cs\Config,
+			cs\Index,
+			cs\Language;
+$Config	= Config::instance();
+$L		= Language::instance();
+Index::instance()->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		core_input('session_expire', 'number', null, false, 1, false, $L->seconds),
 		core_input('online_time', 'number', null, false, 1, false, $L->seconds),

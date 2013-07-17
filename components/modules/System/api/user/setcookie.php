@@ -7,12 +7,15 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Config, $Page, $Key, $User, $db;
-$rc = $Config->route;
+namespace	cs;
+$Config	= Config::instance();
+$Page	= Page::instance();
+$User	= User::instance();
+$rc		= $Config->route;
 if (
 	!isset($rc[2]) ||
 	!preg_match('/^[a-z0-9]{56}$/', $rc[2]) ||
-	!($data = $Key->get($db->{$Config->module('System')->db('keys')}(), $rc[2], true))
+	!($data = Key::instance()->get(DB::instance()->{$Config->module('System')->db('keys')}(), $rc[2], true))
 ) {
 	$Page->json(0);
 	return;

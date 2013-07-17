@@ -6,11 +6,16 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-
+namespace	cs\modules\Blogs;
+use			cs\Config,
+			cs\Index,
+			cs\Language,
+			cs\Page;
 if (!isset($_POST['mode'])) {
 	return;
 }
-global $Index, $Blogs;
+$Index	= Index::instance();
+$Blogs	= Blogs::instance();
 $draft	= false;
 switch ($_POST['mode']) {
 	case 'add_section':
@@ -25,7 +30,8 @@ switch ($_POST['mode']) {
 	case 'edit_post_draft':
 		$draft	= true;
 	case 'edit_post':
-		global $Page, $Config, $L;
+		$L		= Language::instance();
+		$Page	= Page::instance();
 		$save	= true;
 		if (empty($_POST['title'])) {
 			$Page->warning($L->post_title_empty);
@@ -53,7 +59,6 @@ switch ($_POST['mode']) {
 		$Index->save($Blogs->del($_POST['id']));
 	break;
 	case 'general':
-		global $Config;
-		$Index->save($Config->module(MODULE)->set($_POST['general']));
+		$Index->save(Config::instance()->module('Blogs')->set($_POST['general']));
 	break;
 }

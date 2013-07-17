@@ -9,12 +9,20 @@
  */
 namespace	cs\modules\HybridAuth;
 use			h,
-			Hybrid_Auth;
-global $Core;
-$Core->register_trigger(
+			Hybrid_Auth,
+			cs\Cache,
+			cs\Config,
+			cs\DB,
+			cs\Language,
+			cs\Page,
+			cs\Trigger,
+			cs\User;
+Trigger::instance()->register(
 	'System/Page/external_login_list',
 	function ($data) {
-		global $Config, $User, $Page, $L;
+		$Config			= Config::instance();
+		$Page			= Page::instance();
+		$User			= User::instance();
 		if (!(
 			$Config->core['allow_user_registration'] &&
 			$Page->interface &&
@@ -41,6 +49,7 @@ $Core->register_trigger(
 		)) {
 			rebuild_pcache();
 		}
+		$L				= Language::instance();
 		$data['list']	= h::{'ul.cs-hybrid-auth-providers-list li'}(
 			[
 				$L->or_login_with,
@@ -64,7 +73,7 @@ $Core->register_trigger(
 		);
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'System/User/registration/confirmation/after',
 	function () {
 		if ($referer = _getcookie('HybridAuth_referer')) {
@@ -73,14 +82,13 @@ $Core->register_trigger(
 		}
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'System/User/del_user/after',
 	function ($data) {
-		global $Config, $db;
 		/**
 		 *	@var \cs\DB\_Abstract $cdb
 		 */
-		$cdb			= $db->{$Config->module('HybridAuth')->db('integration')}();
+		$cdb			= DB::instance()->{Config::instance()->module('HybridAuth')->db('integration')}();
 		$cdb->q(
 			[
 				"DELETE FROM `[prefix]users_social_integration`
@@ -92,7 +100,7 @@ $Core->register_trigger(
 		);
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'admin/System/components/modules/disable',
 	function ($data) {
 		if ($data['name'] == 'HybridAuth') {
@@ -100,19 +108,19 @@ $Core->register_trigger(
 		}
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'admin/System/general/optimization/clean_pcache',
 	function () {
 		clean_pcache();
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'System/Page/rebuild_cache',
 	function ($data) {
 		rebuild_pcache($data);
 	}
 );
-$Core->register_trigger(
+Trigger::instance()->register(
 	'System/User/get_contacts',
 	function ($data) {
 		$data['contacts']	= array_unique(array_merge(
@@ -130,7 +138,6 @@ function clean_pcache () {
 	}
 }
 function rebuild_pcache (&$data = null) {
-	global $Page;
 	$key	= [];
 	file_put_contents(
 		PCACHE.'/module.HybridAuth.js',
@@ -144,7 +151,7 @@ function rebuild_pcache (&$data = null) {
 	file_put_contents(
 		PCACHE.'/module.HybridAuth.css',
 		$key[]	= gzencode(
-			$Page->css_includes_processing(
+			Page::instance()->css_includes_processing(
 				$css,
 				MODULES.'/HybridAuth/includes/css/general.css'
 			),
@@ -164,7 +171,8 @@ function rebuild_pcache (&$data = null) {
  * @return int[]
  */
 function get_user_contacts ($user) {
-	global $Config, $db, $Cache;
+	$Cache	= Cache::instance();
+	$Config	= Config::instance();
 	$user	= (int)$user;
 	if (
 		!$user ||
@@ -177,7 +185,7 @@ function get_user_contacts ($user) {
 		/**
 		 *	@var \cs\DB\_Abstract $cdb
 		 */
-		$cdb									= $db->{$Config->module('HybridAuth')->db('integration')};
+		$cdb									= DB::instance()->{$Config->module('HybridAuth')->db('integration')};
 		$data									= $cdb->qfas([
 			"SELECT `i`.`id`
 			FROM `[prefix]users_social_integration` AS `i`
@@ -204,12 +212,12 @@ function get_user_contacts ($user) {
  * @param string					$provider
  */
 function update_user_contacts ($contacts, $provider) {
-	global $Config, $db, $User, $Cache;
-	$id		= $User->id;
+	$Cache	= Cache::instance();
+	$id		= User::instance()->id;
 	/**
 	 *	@var \cs\DB\_Abstract $cdb
 	 */
-	$cdb	= $db->{$Config->module('HybridAuth')->db('integration')}();
+	$cdb	= DB::instance()->{Config::instance()->module('HybridAuth')->db('integration')}();
 	$cdb->q(
 		"DELETE FROM `[prefix]users_social_integration_contacts`
 		WHERE
@@ -241,7 +249,7 @@ function update_user_contacts ($contacts, $provider) {
 	unset($Cache->{'HybridAuth/contacts/'.$id});
 }
 function add_session_after () {
-	global $User;
+	$User	= User::instance();
 	$User->set_data(
 		'HybridAuth_session',
 		array_merge(
@@ -259,8 +267,9 @@ function add_session_after () {
  * @return Hybrid_Auth
  */
 function get_hybridauth_instance ($provider = null, $base_url = null) {
-	global $Config, $User;
 	require_once __DIR__.'/Hybrid/Auth.php';
+	$Config			= Config::instance();
+	$User			= User::instance();
 	$HybridAuth		= new Hybrid_Auth([
 		'base_url'	=> $base_url ?: $Config->base_url().'/HybridAuth/'.$provider.'/endpoint/'.$User->get_session(),
 		'providers'	=> $Config->module('HybridAuth')->providers

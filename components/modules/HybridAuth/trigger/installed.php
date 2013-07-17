@@ -8,8 +8,8 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\HybridAuth;
-global $Core;
-$Core->register_trigger(
+use			cs\Trigger;
+Trigger::instance()->register(
 	'admin/System/components/modules/uninstall/process',
 	function ($data) {
 		if ($data['name'] != 'HybridAuth') {

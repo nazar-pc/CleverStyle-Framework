@@ -8,14 +8,20 @@
  */
 namespace	cs\modules\Comments;
 use			cs\DB\Accessor,
-			h;
-
+			h,
+			cs\Cache,
+			cs\Config,
+			cs\Language,
+			cs\User,
+			cs\Singleton;
 class Comments extends Accessor {
+	use	Singleton;
+
 	/**
 	 * @var string
 	 */
 	protected $module;
-	function __construct () {
+	protected function construct () {
 		$this->module	= MODULE;
 	}
 	/**
@@ -32,8 +38,7 @@ class Comments extends Accessor {
 	 * @return int
 	 */
 	protected function cdb () {
-		global $Config;
-		return $Config->module('Comments')->db('comments');
+		return Config::instance()->module('Comments')->db('comments');
 	}
 	/**
 	 * Get comment data
@@ -72,7 +77,8 @@ class Comments extends Accessor {
 	 * @return array|bool			Array of comment data on success or <b>false</b> on failure
 	 */
 	function add ($item, $text, $parent = 0) {
-		global $Cache, $L, $User;
+		$L		= Language::instance();
+		$User	= User::instance();
 		$text	= xap($text, true);
 		if (!$text) {
 			return false;
@@ -123,7 +129,7 @@ class Comments extends Accessor {
 			$text,
 			$L->clang
 		)) {
-			unset($Cache->{'Comments/'.$this->module.'/'.$item});
+			unset(Cache::instance()->{'Comments/'.$this->module.'/'.$item});
 			return [
 				'id'		=> $this->db_prime()->id(),
 				'parent'	=> $parent,
@@ -146,7 +152,6 @@ class Comments extends Accessor {
 	 * @return array|bool			Array of comment data on success or <b>false</b> on failure
 	 */
 	function set ($id, $text) {
-		global $Cache;
 		$text	= xap($text, true);
 		if (!$text) {
 			return false;
@@ -167,7 +172,7 @@ class Comments extends Accessor {
 			$id,
 			$this->module
 		)) {
-			unset($Cache->{'Comments/'.$this->module.'/'.$comment['item']});
+			unset(Cache::instance()->{'Comments/'.$this->module.'/'.$comment['item']});
 			$comment['text']	= $text;
 			return $comment;
 		}
@@ -181,7 +186,6 @@ class Comments extends Accessor {
 	 * @return bool
 	 */
 	function del ($id) {
-		global $Cache;
 		$id				= (int)$id;
 		$comment		= $this->db_prime()->qf([
 			"SELECT `p`.`item`, COUNT(`c`.`id`) AS `count`
@@ -207,7 +211,7 @@ class Comments extends Accessor {
 			$id,
 			$this->module
 		)) {
-			unset($Cache->{'Comments/'.$this->module.'/'.$comment['item']});
+			unset(Cache::instance()->{'Comments/'.$this->module.'/'.$comment['item']});
 			return true;
 		}
 		return false;
@@ -220,7 +224,6 @@ class Comments extends Accessor {
 	 * @return bool
 	 */
 	function del_all ($item) {
-		global $Cache;
 		$item			= (int)$item;
 		if ($this->db_prime()->q(
 			"DELETE FROM `[prefix]comments`
@@ -230,7 +233,7 @@ class Comments extends Accessor {
 			$this->module,
 			$item
 		)) {
-			unset($Cache->{'Comments/'.$this->module.'/'.$item});
+			unset(Cache::instance()->{'Comments/'.$this->module.'/'.$item});
 			return true;
 		}
 		return false;
@@ -243,14 +246,15 @@ class Comments extends Accessor {
 	 * @return int
 	 */
 	function count ($item) {
-		global $Cache, $L;
-		$count																= $Cache->{'Comments/'.$this->module.'/'.$item.'/count/'.$L->clang};
+		$Cache														= Cache::instance();
+		$L															= Language::instance();
+		$count														= $Cache->{'Comments/'.$this->module.'/'.$item.'/count/'.$L->clang};
 		if ($count !== false) {
 			return $count;
 		}
-		$data																= $this->tree_data($item);
-		$count																= $this->count_internal($data) ?: 0;
-		$Cache->{'Comments/'.$this->module.'/'.$item.'/count/'.$L->clang}	= $count;
+		$data														= $this->tree_data($item);
+		$count														= $this->count_internal($data) ?: 0;
+		$Cache->{"Comments/$this->module/$item/count/$L->clang"}	= $count;
 		return $count;
 	}
 	protected function count_internal ($data) {
@@ -282,7 +286,8 @@ class Comments extends Accessor {
 	 * @return bool|array
 	 */
 	function tree_data ($item, $parent = 0) {
-		global $Cache, $L;
+		$Cache	= Cache::instance();
+		$L		= Language::instance();
 		if ($parent != 0 || ($comments = $Cache->{'Comments/'.$this->module.'/'.$item.'/'.$L->clang}) === false) {
 			$item		= (int)$item;
 			$parent		= (int)$parent;
@@ -323,7 +328,8 @@ class Comments extends Accessor {
 	 * @return string
 	 */
 	function tree_html ($comments) {
-		global	$User, $L;
+		$L			= Language::instance();
+		$User		= User::instance();
 		$content	= '';
 		if (is_array($comments) && !empty($comments)) {
 			foreach ($comments as $comment) {
@@ -398,7 +404,7 @@ class Comments extends Accessor {
 	 * @return string
 	 */
 	function block ($item) {
-		global $L, $User;
+		$L	= Language::instance();
 		return h::{'section#comments.cs-comments-comments'}(
 			$L->comments.':'.
 			(
@@ -407,7 +413,7 @@ class Comments extends Accessor {
 		).
 		h::{'p.cs-comments-add-comment'}($L->add_comment.':').
 		(
-			$User->user() ? h::{'section.cs-comments-comment-write'}(
+			User::instance()->user() ? h::{'section.cs-comments-comment-write'}(
 				h::{'textarea.cs-comments-comment-write-text.cs-wide-textarea.SEDITOR'}(
 					'',
 					[
@@ -436,11 +442,4 @@ class Comments extends Accessor {
 			) : h::p($L->register_for_comments_sending)
 		);
 	}
-}
-/**
- * For IDE
- */
-if (false) {
-	global $Comments;
-	$Comments = new Comments;
 }

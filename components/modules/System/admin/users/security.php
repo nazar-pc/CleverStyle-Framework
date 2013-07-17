@@ -7,8 +7,11 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-global $Config, $Index, $L, $User;
-$Index->content(
+namespace	cs;
+use			h;
+$Config	= Config::instance();
+$L		= Language::instance();
+Index::instance()->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}([
 		h::td([
 			h::info('key_expire'),
@@ -49,7 +52,7 @@ $Index->content(
 				]
 			).
 			h::br().
-			$L->current_ip.': '.h::b($User->ip)
+			$L->current_ip.': '.h::b(User::instance()->ip)
 		])
 	])
 );
