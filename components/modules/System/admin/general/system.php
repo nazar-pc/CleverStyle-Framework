@@ -40,7 +40,6 @@ Index::instance()->content(
 				]
 			]
 		] : false,
-		core_input('on_error_globals_dump', 'radio'),
 		!$sa ? [
 			h::info('routing'),
 			h::{'table#.cs-fullwidth-table tr| td'}(

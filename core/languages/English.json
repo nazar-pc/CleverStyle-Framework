@@ -186,8 +186,6 @@
 		"show_db_queries_info"			: "Show DB queries in debug window",
 		"show_cookies"					: "Show Cookies",
 		"show_cookies_info"				: "Show Cookies in debug window",
-		"on_error_globals_dump"			: "Dump the state when an error occurs",
-		"on_error_globals_dump_info"	: "When the error occurred, in the error log file will be written additional information with listing of all global objects with their internal state, as well as printing of debug information about the chain of the code, using the debug_backtrace() function. ATTENTION: log files can be VERY LARGE, so enable this option only in extreme necessity when debugging.",
 		"from"							: "from",
 		"to"							: "to",
 		"routing"						: "Routing",
