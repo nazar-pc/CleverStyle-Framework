@@ -10,7 +10,7 @@ use			Closure,
 			h;
 /**
  * Core class.
- * Provides loading of base system configuration, creating of global objects, encryption, API requests sending
+ * Provides loading of base system configuration, encryption, API requests sending
  */
 class Core {
 	use Singleton;
