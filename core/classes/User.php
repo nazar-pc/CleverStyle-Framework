@@ -1269,8 +1269,7 @@ class User extends Accessor {
 		}
 		$return = $this->db_prime()->q("DELETE FROM `$table` WHERE `id` = '$id'");
 		if ($return) {
-			global $Cache;
-			unset($Cache->{$path.$id});
+			unset(Cache::instance()->{$path.$id});
 			return true;
 		}
 		return false;

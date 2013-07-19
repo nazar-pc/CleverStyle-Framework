@@ -27,27 +27,6 @@ trait Singleton {
 		if ($check) {
 			return (bool)self::$instance;
 		}
-		/**
-		 * Transition compatibility fix
-		 */
-		if (!self::$instance) {
-			$class	= explode('\\', __CLASS__);
-			$class	= array_pop($class);
-			switch ($class) {
-				case 'Language':
-					global $L;
-					$L = self::$instance	= new self;
-					break;
-				case 'DB':
-					global $db;
-					$db = self::$instance	= new self;
-					break;
-				default:
-					global $$class;
-					$$class = self::$instance	= new self;
-			}
-			self::$instance->construct();
-		}
 		if (self::$instance) {
 			return self::$instance;
 		}

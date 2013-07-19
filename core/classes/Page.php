@@ -73,14 +73,6 @@ class Page {
 				$og_type			= '',
 				$canonical_url		= false;
 	/**
-	 * Setting interface state on/off
-	 */
-	protected function construct () {
-		global $interface;
-		$this->interface = (bool)$interface;
-		unset($GLOBALS['interface']);
-	}
-	/**
 	 * Initialization: setting of title, keywords, description, theme and color scheme according to specified parameters
 	 *
 	 * @param string	$title
@@ -920,11 +912,11 @@ class Page {
 	 * @return Page
 	 */
 	protected function get_footer () {
-		$db				= DB::instance();
+		$db				= class_exists('cs\\DB', false) ? DB::instance() : null;
 		$this->Footer	.= h::div(
 			get_core_ml_text('footer_text') ?: false,
 			Config::instance()->core['show_footer_info'] ?
-				Language::instance()->page_footer_info('<!--generate time-->', $db->queries, format_time(round($db->time, 5)), '<!--peak memory usage-->') : false,
+				Language::instance()->page_footer_info('<!--generate time-->', $db ? $db->queries : 0, format_time(round($db ? $db->time : 0, 5)), '<!--peak memory usage-->') : false,
 			base64_decode(
 				'wqkgUG93ZXJlZCBieSA8YSB0YXJnZXQ9Il9ibGFuayIgaHJlZj0iaHR0cDovL2NsZXZlcnN0eW'.
 				'xlLm9yZy9jbXMiIHRpdGxlPSJDbGV2ZXJTdHlsZSBDTVMiPkNsZXZlclN0eWxlIENNUzwvYT4='
@@ -1241,9 +1233,9 @@ class Page {
 			 */
 			echo $this->process_replacing($this->Content);
 		} else {
-			global $Error, $timeload;
+			global $timeload;
 			Trigger::instance()->run('System/Page/pre_display');
-			is_object($Error) && $Error->display();
+			class_exists('\\cs\\Error', false) && Error::instance(true) && Error::instance()->display();
 			/**
 			 * Processing of template, substituting of content, preparing for the output
 			 */
@@ -1257,7 +1249,7 @@ class Page {
 			 */
 			$ob					= false;
 			$Config				= Config::instance(true) ? Config::instance() : null;
-			if (is_object($Config) && !zlib_compression() && $Config->core['gzip_compression'] && (is_object($Error) && !$Error->num())) {
+			if (is_object($Config) && !zlib_compression() && $Config->core['gzip_compression']) {
 				ob_start('ob_gzhandler');
 				$ob = true;
 			}

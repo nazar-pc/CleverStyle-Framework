@@ -445,12 +445,10 @@ class Config {
 	 * @return bool
 	 */
 	protected function apply_internal ($cache_not_saved_mark = true) {
-		global $Error;
-		$L							= Language::instance();
 		/**
 		 * If errors - cache updating must be stopped
 		 */
-		if (is_object($Error) && $Error->num()) {
+		if (class_exists('\\cs\\Error', false) && Error::instance(true) && Error::instance()->num()) {
 			return false;
 		}
 		$config						= [];
@@ -464,6 +462,7 @@ class Config {
 			unset($config['core']['cache_not_saved'], $this->core['cache_not_saved']);
 		}
 		Cache::instance()->config	= $config;
+		$L							= Language::instance();
 		$L->change($this->core['language']);
 		if (User::instance(true)) {
 			$L->change(User::instance()->language);

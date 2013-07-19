@@ -6,16 +6,15 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-require CORE.'/upf.php';						//Inclusion of UPF
-require CORE.'/functions.php';					//Inclusion of general system functions
+require CORE.'/upf.php';							//Inclusion of UPF
+require CORE.'/functions.php';						//Inclusion of general system functions
+_require_once(DIR.'/vendor/autoload.php', false);	//Inclusion of composer's autoloader.php if exists
 
-global $timeload, $loader_init_memory, $interface;
+global $timeload, $loader_init_memory;
 
 $timeload['start']			= MICROTIME;
-$interface					= true;
 
 error_reporting(E_ALL);
-//error_reporting(0);
 
 header('Content-Type: text/html; charset=utf-8');
 header('Vary: Content-Language,User-Agent,Cookie');

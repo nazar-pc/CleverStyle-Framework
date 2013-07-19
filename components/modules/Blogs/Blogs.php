@@ -754,31 +754,6 @@ class Blogs extends Accessor {
 		}
 		return $id;
 	}
-	/* *
-	 * Delete tag with specified id
-	 *
-	 * @param int	$id
-	 *
-	 * @return bool
-	 * /
-	private function del_tag ($id) {
-		global $db, $Cache;
-		$id	= (int)$id;
-		if ($db->{$this->posts}()->q(
-			[
-				"DELETE FROM `[prefix]blogs_posts_tags`
-				WHERE `tag` = '%s'",
-				"DELETE FROM `[prefix]blogs_tags`
-				WHERE `id` = '%s'"
-			],
-			$id
-		)) {
-			$this->ml_del('Blogs/tags', $id);
-			unset($Cache->{'Blogs/tags'});
-			return true;
-		}
-		return false;
-	}*/
 	/**
 	 * Accepts array of string tags and returns corresponding array of id's of these tags, new tags will be added automatically
 	 *

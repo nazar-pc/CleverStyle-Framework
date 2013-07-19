@@ -17,6 +17,9 @@ foreach (get_files_list(DIR.'/install', false, 'f', true, true) as $file) {
 	$phar->addFile($file, substr($file, $length));
 }
 unset($file);
+/**
+ * Files to be included into installation package
+ */
 $list				= array_merge(
 	get_files_list(DIR.'/components/modules/System', false, 'f', true, true, false, false, true),
 	get_files_list(DIR.'/core', '/^[^(ide)]/', 'f', true, true, false, false, true),
@@ -28,6 +31,15 @@ $list				= array_merge(
 		DIR.'/Storage.php'
 	]
 );
+/**
+ * If composer.json exists - include it into installation build
+ */
+if (file_exists(DIR.'/composer.json')) {
+	$list[]	= DIR.'/composer.json';
+}
+/**
+ * Add selected modules that should be built-in into package
+ */
 $components_list	= [];
 if (!empty($_POST['modules'])) {
 	foreach ($_POST['modules'] as $i => $module) {
@@ -58,6 +70,9 @@ if (!empty($_POST['modules'])) {
 	unset($i, $module);
 	$phar->addFromString('modules.json', _json_encode($_POST['modules']));
 }
+/**
+ * Add selected plugins that should be built-in into package
+ */
 if (!empty($_POST['plugins'])) {
 	foreach ($_POST['plugins'] as $plugin) {
 		if (is_dir(DIR.'/components/plugins/'.$plugin) && file_exists(DIR.'/components/plugins/'.$plugin.'/meta.json')) {
@@ -84,10 +99,16 @@ if (!empty($_POST['plugins'])) {
 	}
 	unset($plugin);
 }
+/**
+ * Joining system and components files list
+ */
 $list				= array_merge(
 	$list,
 	$components_list
 );
+/**
+ * Addition files content into package
+ */
 $list				= array_map(
 	function ($index, $file) use ($phar, $length) {
 		$phar->addFromString('fs/'.$index, file_get_contents($file));
@@ -96,6 +117,9 @@ $list				= array_map(
 	array_keys($list),
 	$list
 );
+/**
+ * Addition of separate files into package
+ */
 $list[]				= 'index.php';
 $phar->addFromString(
 	'fs/'.(count($list)-1),
@@ -133,6 +157,9 @@ $phar->addFromString(
 		_mb_substr(get_files_list(DIR.'/core/engines/DB', '/^[^_].*?\.php$/i', 'f'), 0, -4)
 	)
 );
+/**
+ * Fixing of system files list (without components files and core/fs.json file itself), it is needed for future system updating
+ */
 $list[]				= 'core/fs.json';
 $phar->addFromString(
 	'fs/'.(count($list)-1),
@@ -142,7 +169,7 @@ $phar->addFromString(
 );
 unset($components_list, $length);
 /**
- * Add files, that are needed only at installation
+ * Addition of files, that are needed only for installation
  */
 $list[]				= '.htaccess';
 $phar->addFromString(
@@ -194,10 +221,14 @@ $phar->addFromString(
 	file_get_contents(DIR.'/custom.php')
 );
 /**
- * Flip array to have direct access to files by name during extracting and installation
+ * Flip array to have direct access to files by name during extracting and installation, and fixing of files list for installation
  */
 $phar->addFromString('fs.json', _json_encode(array_flip($list)));
 unset($list);
+/**
+ * Addition of supplementary files, that are needed directly for installation process: installer with GUI interface, readme, license, some additional
+ * information about available languages, themes, current version of system
+ */
 $phar->addFromString(
 	'install.php',
 	str_replace('$version$', $version, file_get_contents(DIR.'/install.php'))

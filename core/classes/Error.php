@@ -54,10 +54,8 @@ class Error {
 				define('ERROR_CODE', 500);
 				if (Index::instance(true)) {
 					Index::instance()->__finish();
-				} elseif (Page::instance(true)) {
-					Page::instance()->error();
 				} else {
-					__finish();
+					Page::instance()->error();
 				}
 			break;
 			case E_USER_WARNING:
@@ -76,10 +74,8 @@ class Error {
 		if ($this->num >= 100) {
 			if (Index::instance(true)) {
 				Index::instance()->__finish();
-			} elseif (Page::instance(true)) {
-				Page::instance()->error();
 			} else {
-				__finish();
+				Page::instance()->error();
 			}
 		}
 	}

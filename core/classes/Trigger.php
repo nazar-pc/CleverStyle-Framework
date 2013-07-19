@@ -9,7 +9,7 @@ namespace	cs;
 use			Closure;
 /**
  * Core class.
- * Provides loading of base system configuration, creating of global objects, encryption, API requests sending, and triggers processing.
+ * Provides loading of base system configuration, encryption, API requests sending.
  */
 class Trigger {
 	use Singleton;

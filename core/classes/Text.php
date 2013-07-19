@@ -25,13 +25,13 @@ class Text {
 	function get ($database, $group, $label, $id = null, $auto_translation = true, $store_in_cache = false) {
 		$Cache		= Cache::instance();
 		$Config		= Config::instance();
-		$db			= DB::instance();
 		$L			= Language::instance();
 		$id			= (int)$id;
 		$cache_key	= 'texts/'.$database.'/'.($id ?: md5($group).md5($label)).'_'.$L->clang;
 		if ($store_in_cache && ($text = $Cache->$cache_key) !== false) {
 			return $text;
 		}
+		$db			= DB::instance();
 		if ($id) {
 			$text = $db->$database->qf([
 				"SELECT

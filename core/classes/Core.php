@@ -6,8 +6,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-use			Closure,
-			h;
+use			h;
 /**
  * Core class.
  * Provides loading of base system configuration, encryption, API requests sending
@@ -15,10 +14,8 @@ use			Closure,
 class Core {
 	use Singleton;
 
-	public				$Loaded				= [];
 	protected			$constructed		= false,	//Is object constructed
 						$config				= [],
-						$List				= [],
 						$iv,
 						$td,
 						$key,
@@ -140,63 +137,6 @@ class Core {
 	 */
 	function __set ($item, $value) {
 		$this->set($item, $value);
-	}
-	/**
-	 * @deprecated
-	 *
-	 * Creating of global object on the base of class
-	 *
-	 * @param array|string|string[]	$class			Class name, on the base of which object will be created. May be string of class name,
-	 * 												or <i>array($class, $object_name)</b>, or indexed array of mentioned arrays
-	 * @param bool|null				$object_name	If this parameter is <i>null</b> - name of global object will be the same as class name, otherwise,
-	 * 												as name specified in this parameter
-	 *
-	 * @return bool|object							Created object on success or <i>false</i> on failure, <i>true</i> if <i>$class</i> is array
-	 */
-	function create ($class, $object_name = null) {
-		if (empty($class) || defined('STOP')) {
-			return false;
-		} elseif (!is_array($class)) {
-			$loader = false;
-			if (substr($class, 0, 1) == '_') {
-				$class	= substr($class, 1);
-				$loader	= true;
-			}
-			$prefix	= explode('\\', $class, 2)[0];
-			if (!$loader && $prefix == 'cs' && class_exists('cs\\custom'.substr($class, 2), false)) {
-				$class	= 'cs\\custom'.substr($class, 2);
-			}
-			unset($prefix);
-			if ($loader || class_exists($class)) {
-				if ($object_name === null) {
-					$object_name = explode('\\', $class);
-					$object_name = array_pop($object_name);
-				}
-				global $$object_name;
-				if (!is_object($$object_name) || $$object_name instanceof Loader) {
-					if ($loader) {
-						$$object_name				= new Loader($class, $object_name);
-					} else {
-						$this->List[$object_name]	= $object_name;
-						$$object_name				= new $class;
-						$this->Loaded[$object_name]	= [microtime(true), memory_get_usage()];
-					}
-				}
-				return $$object_name;
-			} else {
-				trigger_error('Class '.h::b($class, ['level' => 0]).' not exists', E_USER_ERROR);
-				return false;
-			}
-		} else {
-			foreach ($class as $c) {
-				if (is_array($c)) {
-					$this->create($c[0], isset($c[1]) ? $c[1] : false);
-				} else {
-					$this->create($c);
-				}
-			}
-		}
-		return true;
 	}
 	/**
 	 * Encryption of data
@@ -343,32 +283,6 @@ class Core {
 		time_limit_pause(false);
 		fclose($socket);
 		return $return[1];
-	}
-	/**
-	 * @deprecated
-	 *
-	 * Registration of triggers for actions
-	 *
-	 * @param string	$trigger	For example <i>admin/System/components/plugins/disable</i>
-	 * @param Closure	$closure	Closure, that will be called at trigger running
-	 *
-	 * @return bool
-	 */
-	function register_trigger ($trigger, $closure) {
-		return (bool)Trigger::instance()->register($trigger, $closure);
-	}
-	/**
-	 * @deprecated
-	 *
-	 * Running triggers for some actions
-	 *
-	 * @param string	$trigger	For example <i>admin/System/components/plugins/disable</i>
-	 * @param mixed		$data		For example ['name'	=> <i>plugin_name</i>]
-	 *
-	 * @return bool
-	 */
-	function run_trigger ($trigger, $data = null) {
-		return (bool)Trigger::instance()->run($trigger, $data);
 	}
 	/**
 	 * Disabling encryption.<br>

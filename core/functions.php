@@ -73,23 +73,13 @@ function errors_off () {
  * Enabling of page interface
  */
 function interface_on () {
-	if (Page::instance(true)) {
-		Page::instance()->interface	= true;
-	} else {
-		global $interface;
-		$interface					= true;
-	}
+	Page::instance()->interface	= true;
 }
 /**
  * Disabling of page interface
  */
 function interface_off () {
-	if (Page::instance(true)) {
-		Page::instance()->interface	= false;
-	} else {
-		global $interface;
-		$interface					= false;
-	}
+	Page::instance()->interface	= false;
 }
 /**
  * Get file url by it's destination in file system
