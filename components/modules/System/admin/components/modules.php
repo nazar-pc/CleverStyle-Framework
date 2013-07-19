@@ -3,7 +3,6 @@
  * @package		CleverStyle CMS
  * @subpackage	System module
  * @category	modules
- * @category	modules
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -312,7 +311,8 @@ if (
 				unlink($tmp_file);
 				break;
 			}
-			$new_meta				= _json_decode(file_get_contents($tmp_dir.'/fs.json'))['components/modules/System/meta.json'];
+			$new_meta				= _json_decode(file_get_contents("$tmp_dir/fs.json"))['components/modules/System/meta.json'];
+			$new_meta				= _json_decode(file_get_contents("$tmp_dir/fs/$new_meta"));
 			if (isset($new_meta['update_from_version']) && !version_compare($new_meta['update_from_version'], $current_version, '>')) {
 				$Page->warning(
 					$L->update_system_impossible_from_version_to($current_version, $new_version, $new_meta['update_from_version'])
