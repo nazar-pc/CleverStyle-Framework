@@ -144,17 +144,14 @@ $Index->content(
 					[
 						$L->get(apc()),
 						[
-							'class' => state(apc())
+							'class' => version_compare(PHP_VERSION, '5.5', '>=') ? false : state(apc())
 						]
 					]
 				],
 				[
 					$L->memcached_module.':',
 					[
-						$L->get(memcached()),
-						[
-							'class' => state(memcached())
-						]
+						$L->get(memcached())
 					]
 				]
 			)

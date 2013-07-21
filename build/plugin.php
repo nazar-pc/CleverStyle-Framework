@@ -17,27 +17,27 @@ if (!isset($_POST['plugins'][0])) {
 	echo h::p('Can\'t build plugin, meta information (meta.json) not found');
 	return;
 }
-$version	= _json_decode(file_get_contents($pdir.'/meta.json'))['version'];
+$version	= _json_decode(file_get_contents("$pdir/meta.json"))['version'];
 if (file_exists(DIR.'/build.phar')) {
 	unlink(DIR.'/build.phar');
 }
 $phar		= new Phar(DIR.'/build.phar');
-$phar->addFromString('meta.json', file_get_contents($pdir.'/meta.json'));
+$phar->addFromString('meta.json', file_get_contents("$pdir/meta.json"));
 $set_stub	= false;
-if (file_exists($pdir.'/readme.html')) {
-	$phar->addFromString('readme.html', file_get_contents($pdir.'/readme.html'));
+if (file_exists("$pdir/readme.html")) {
+	$phar->addFromString('readme.html', file_get_contents("$pdir/readme.html"));
 	$set_stub	= 'readme.html';
-} elseif (file_exists($pdir.'/readme.txt')) {
-	$phar->addFromString('readme.txt', file_get_contents($pdir.'/readme.txt'));
+} elseif (file_exists("$pdir/readme.txt")) {
+	$phar->addFromString('readme.txt', file_get_contents("$pdir/readme.txt"));
 	$set_stub	= 'readme.txt';
 }
 $list		= array_merge(
 	get_files_list($pdir, false, 'f', true, true, false, false, true)
 );
-$length		= strlen($pdir.'/');
+$length		= strlen("$pdir/");
 $list		= array_map(
 	function ($index, $file) use ($phar, $length) {
-		$phar->addFromString('fs/'.$index, file_get_contents($file));
+		$phar->addFromString("fs/$index", file_get_contents($file));
 		return substr($file, $length);
 	},
 	array_keys($list),
@@ -55,12 +55,12 @@ unlink(DIR.'/build.phar');
 if ($set_stub) {
 	$phar->setStub("<?php Phar::webPhar(null, '$set_stub'); __HALT_COMPILER();");
 } else {
-	$meta	= _json_decode(file_get_contents($pdir.'/meta.json'));
+	$meta	= _json_decode(file_get_contents("$pdir/meta.json"));
 	$phar->addFromString('index.html', isset($meta['description']) ? $meta['description'] : $meta['title']);
 	unset($meta);
 	$phar->setStub("<?php Phar::webPhar(null, 'index.html'); __HALT_COMPILER();");
 }
 $phar->setSignatureAlgorithm(PHAR::SHA512);
 unset($phar);
-rename(DIR.'/build.phar.tar', DIR.'/'.str_replace(' ', '_', $_POST['plugins'][0]).'_'.$version.'.phar.php');
-echo h::p('Done! Plugin '.$_POST['plugins'][0].' '.$version);
+rename(DIR.'/build.phar.tar', DIR.'/'.str_replace(' ', '_', $_POST['plugins'][0])."_$version.phar.php");
+echo h::p("Done! Plugin {$_POST['plugins'][0]} $version");

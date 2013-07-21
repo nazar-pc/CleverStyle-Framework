@@ -43,21 +43,21 @@ if (file_exists(DIR.'/composer.json')) {
 $components_list	= [];
 if (!empty($_POST['modules'])) {
 	foreach ($_POST['modules'] as $i => $module) {
-		if (is_dir(DIR.'/components/modules/'.$module) && file_exists(DIR.'/components/modules/'.$module.'/meta.json')) {
-			unlink(DIR.'/components/modules/'.$module.'fs.json');
-			$list_				= get_files_list(DIR.'/components/modules/'.$module, false, 'f', true, true, false, false, true);
+		if (is_dir(DIR."/components/modules/$module") && file_exists(DIR."/components/modules/$module/meta.json")) {
+			unlink(DIR."/components/modules/$module/fs.json");
+			$list_				= get_files_list(DIR."/components/modules/$module", false, 'f', true, true, false, false, true);
 			file_put_contents(
-				DIR.'/components/modules/'.$module.'/fs.json',
+				DIR."/components/modules/$module/fs.json",
 				_json_encode(
 					array_values(
 						_substr(
 							$list_,
-							strlen(DIR.'/components/modules/'.$module.'/')
+							strlen(DIR."/components/modules/$module/")
 						)
 					)
 				)
 			);
-			$list_[]			= DIR.'/components/modules/'.$module.'/fs.json';
+			$list_[]			= DIR."/components/modules/$module/fs.json";
 			$components_list	= array_merge(
 				$components_list,
 				$list_
@@ -75,21 +75,21 @@ if (!empty($_POST['modules'])) {
  */
 if (!empty($_POST['plugins'])) {
 	foreach ($_POST['plugins'] as $plugin) {
-		if (is_dir(DIR.'/components/plugins/'.$plugin) && file_exists(DIR.'/components/plugins/'.$plugin.'/meta.json')) {
-			unlink(DIR.'/components/plugins/'.$plugin.'fs.json');
-			$list_				= get_files_list(DIR.'/components/plugins/'.$plugin, false, 'f', true, true, false, false, true);
+		if (is_dir(DIR."/components/plugins/$plugin") && file_exists(DIR."/components/plugins/$plugin/meta.json")) {
+			unlink(DIR."/components/plugins/$plugin/fs.json");
+			$list_				= get_files_list(DIR."/components/plugins/$plugin", false, 'f', true, true, false, false, true);
 			file_put_contents(
-				DIR.'/components/plugins/'.$plugin.'/fs.json',
+				DIR."/components/plugins/$plugin/fs.json",
 				_json_encode(
 					array_values(
 						_substr(
 							$list_,
-							strlen(DIR.'/components/plugins/'.$plugin.'/')
+							strlen(DIR."/components/plugins/$plugin/")
 						)
 					)
 				)
 			);
-			$list_[]			= DIR.'/components/plugins/'.$plugin.'/fs.json';
+			$list_[]			= DIR."/components/plugins/$plugin/fs.json";
 			$components_list	= array_merge(
 				$components_list,
 				$list_
@@ -175,7 +175,6 @@ $list[]				= '.htaccess';
 $phar->addFromString(
 	'fs/'.(count($list)-1),
 	'AddDefaultCharset utf-8
-Options -All -Multiviews +FollowSymLinks
 IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
 
 RewriteEngine On
@@ -258,7 +257,7 @@ asort($themes);
 $color_schemes		= [];
 foreach ($themes as $theme) {
 	$color_schemes[$theme]	= [];
-	$color_schemes[$theme]	= get_files_list(DIR.'/themes/'.$theme.'/schemes', false, 'd');
+	$color_schemes[$theme]	= get_files_list(DIR."/themes/$theme/schemes", false, 'd');
 	asort($color_schemes[$theme]);
 }
 $phar->addFromString(
@@ -279,5 +278,5 @@ unlink(DIR.'/build.phar');
 $phar->setStub("<?php Phar::webPhar(null, 'install.php'); __HALT_COMPILER();");
 $phar->setSignatureAlgorithm(PHAR::SHA512);
 unset($phar);
-rename(DIR.'/build.phar.tar', DIR.'/CleverStyle_CMS_'.$version.'.phar.php');
-echo 'Done! CleverStyle CMS '.$version;
+rename(DIR.'/build.phar.tar', DIR."/CleverStyle_CMS_$version.phar.php");
+echo "Done! CleverStyle CMS $version";

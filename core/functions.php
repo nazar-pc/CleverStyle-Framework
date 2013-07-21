@@ -384,9 +384,9 @@ function check_php () {
 function check_mcrypt ($mode = 0) {
 	static $mcrypt_data;
 	if (!isset($mcrypt_data)) {
-		ob_start();
-		@phpinfo(INFO_MODULES);
-		$mcrypt_version = ob_get_clean();
+		$mcrypt_version = ob_wrapper(function () {
+			phpinfo(INFO_MODULES);
+		});
 		preg_match(
 			'#mcrypt support.*?(enabled|disabled)(.|\n)*?Version.?</td><td class="v">(.*?)[\n]?</td></tr>#',
 			$mcrypt_version,
@@ -460,9 +460,9 @@ function display_errors () {
  * @return string
  */
 function server_api () {
-	ob_start();
-	phpinfo(INFO_GENERAL);
-	$tmp = ob_get_clean();
+	$tmp = ob_wrapper(function () {
+		phpinfo(INFO_GENERAL);
+	});
 	preg_match('/Server API <\/td><td class="v">(.*?) <\/td><\/tr>/', $tmp, $tmp);
 	if ($tmp[1]) {
 		return $tmp[1];
