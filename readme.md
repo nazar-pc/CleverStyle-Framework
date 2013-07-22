@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/nazar-pc/CleverStyle-CMS.png?branch=master)](https://travis-ci.org/nazar-pc/CleverStyle-CMS)
 What is this?
 =
 
