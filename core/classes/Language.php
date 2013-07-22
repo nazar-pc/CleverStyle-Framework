@@ -198,11 +198,11 @@ class Language {
 		if (FIXED_LANGUAGE && $changed_once) {
 			return false;
 		}
-		$changed_once	= true;;
+		$changed_once	= true;
 		if ($this->init && $language == $this->clanguage) {
 			return true;
 		}
-		$Config			= Config::instance();
+		$Config			= Config::instance(true) ? Config::instance() : null;
 		if (!$this->init || empty($language)) {
 			if (is_object($Config) && $Config->core['multilingual']) {
 				$language	= $this->scan_aliases($Config->core['active_languages']) ?: $language;

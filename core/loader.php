@@ -112,6 +112,7 @@ $loader_init_memory			= memory_get_usage();CONFIG;
  * System starting
  */
 Core::instance();
+Language::instance();
 defined('CS_ERROR_HANDLER') && CS_ERROR_HANDLER && Error::instance();
 Index::instance()->__finish();
 Page::instance()->__finish();

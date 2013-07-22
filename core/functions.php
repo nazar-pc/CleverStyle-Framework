@@ -14,6 +14,7 @@ use	cs\Cache,
 	cs\Core,
 	cs\DB,
 	cs\Error,
+	cs\Index,
 	cs\Key,
 	cs\Language,
 	cs\Page,
@@ -46,9 +47,9 @@ spl_autoload_register(function ($class) {
  * Correct termination from any place of engine
  */
 function __finish () {
-	if (Core::instance(true)) {
-		Core::instance()->__finish();
-	}
+	Index::instance(true) && Index::instance()->__finish();
+	Page::instance(true) && Page::instance()->__finish();
+	User::instance(true) && User::instance()->__finish();
 	exit;
 }
 /**
