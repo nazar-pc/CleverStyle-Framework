@@ -121,7 +121,6 @@ unset($suite, $suite_data, $local_success, $local_failed);
 /**
  * Clear temp directory after all tests
  */
-$test			= urlencode($test);
 get_files_list(
 	TEMP,
 	false,
