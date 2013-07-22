@@ -12,10 +12,10 @@ define('SUITES',	TEST.'/suites');
 require_once DIR.'/core/upf.php';
 require_once DIR.'/core/functions.php';
 date_default_timezone_set('UTC');
-ini_set('error_log', TEST.'/log');
+ini_set('error_log', TEST.'/error.log');
 if (isset($_GET['suite'], $_GET['test'], $_GET['key'])) {
 	if (@file_get_contents(TEST.'/key' != $_GET['key'])) {
-		exit('0');
+		exit('Wrong key');
 	}
 	exit((string)require SUITES."/$_GET[suite]/$_GET[test]");
 }
@@ -61,10 +61,12 @@ foreach (get_files_list(SUITES, false, 'd') ?: [] as $suite) {
 	if (!file_exists(SUITES."/$suite/suite.json")) {
 		continue;
 	}
-	$suite	= _json_decode(file_get_contents(SUITES."/$suite/suite.json"));
-	$tf->test($suite['title'], function (Testify $tf) use ($base_url, $suite, $key) {
-		foreach ($suite['tests'] as $test => $title) {
-			$tf->assert(file_get_contents("$base_url/test.php?suite=$suite&test=$test&key=$key") === '1', $title);
+	$suite_data	= _json_decode(file_get_contents(SUITES."/$suite/suite.json"));
+	$suite		= urlencode($suite);
+	$tf->test($suite_data['title'], function (Testify $tf) use ($base_url, $suite, $suite_data, $key) {
+		foreach ($suite_data['tests'] as $test => $title) {
+			$test	= urlencode($test);
+			$tf->assert(file_get_contents("$base_url/test.php?suite=$suite&test=$test&key=$key") === '0', $title);
 		}
 	});
 }
