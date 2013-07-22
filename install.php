@@ -23,6 +23,9 @@ date_default_timezone_set('UTC');
 header('Content-Type: text/html; charset=utf-8');
 header('Connection: close');
 echo	h::title('CleverStyle CMS $version$ Installation').
+		h::meta([
+			'charset'	=> 'utf-8'
+		]).
 		h::style(file_get_contents(DIR.'/install/style.css')).
 		h::header(
 			h::img([

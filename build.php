@@ -25,17 +25,20 @@ if (isset($_POST['mode'])) {
 	}
 }
 echo	h::title('CleverStyle CMS Builder').
+		h::meta([
+			'charset'	=> 'utf-8'
+		]).
 		h::link([
-			'href'	=> 'build/style.css',
+			'href'	=> 'build/includes/style.css',
 			'rel'	=> 'stylesheet'
 		]).
 		h::script([
-			'src'	=> 'build/functions.js',
+			'src'	=> 'build/includes/functions.js',
 			'level'	=> false
 		])."\n".
 		h::header(
 			h::img([
-				'src'	=> 'install/logo.png'
+				'src'	=> 'build/includes/logo.png'
 			]).
 			h::h1('CleverStyle CMS Builder')
 		).

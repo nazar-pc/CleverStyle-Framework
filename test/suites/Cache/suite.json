@@ -1,0 +1,6 @@
+{
+	"title"	: "Cache class",
+	"tests"	: {
+		"construct"	: "Constructor"
+	}
+}

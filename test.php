@@ -9,15 +9,18 @@
 define('DIR',		__DIR__);
 define('TEST',		DIR.'/test');
 define('SUITES',	TEST.'/suites');
+define('CLI',		PHP_SAPI == 'cli');
+require_once DIR.'/core/classes/h/_Abstract.php';
+require_once DIR.'/core/classes/h.php';
 require_once DIR.'/core/upf.php';
-require_once DIR.'/core/functions.php';
 date_default_timezone_set('UTC');
 ini_set('error_log', TEST.'/error.log');
 if (isset($_GET['suite'], $_GET['test'], $_GET['key'])) {
 	if (@file_get_contents(TEST.'/key' != $_GET['key'])) {
 		exit('Wrong key');
 	}
-	exit((string)require SUITES."/$_GET[suite]/$_GET[test]");
+	_require_once(SUITES."/$_GET[suite]/prepare.php", false);
+	exit((string)require SUITES."/$_GET[suite]/$_GET[test].php");
 }
 /**
  * Ignore time limit
@@ -33,11 +36,11 @@ file_put_contents(
 /**
  * If executed from command line
  */
-if (PHP_SAPI == 'cli') {
+if (CLI) {
 	/**
 	 * Start embedded php web-server in current directory
 	 */
-	$web_server_pid = exec('php -S localhost:8001 >/dev/null & echo $!');
+	$web_server_pid = exec('php -S localhost:8001 >/dev/null 2>/dev/null & echo $!');
 	/**
 	 * Wait 500 ms for web server starting
 	 */
@@ -46,11 +49,9 @@ if (PHP_SAPI == 'cli') {
 } else {
 	$base_url	= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http')."://$_SERVER[HTTP_HOST]";
 }
-/**
- * Include testify library
- */
-require_once TEST.'/testify/testify.class.php';
-$tf			= new Testify('CleverStyle CMS Test Suite');
+$test_suites	= [];
+$tests_success	= 0;
+$tests_failed	= 0;
 /**
  * Look through all suites, and run all tests of each suite
  */
@@ -61,27 +62,57 @@ foreach (get_files_list(SUITES, false, 'd') ?: [] as $suite) {
 	if (!file_exists(SUITES."/$suite/suite.json")) {
 		continue;
 	}
-	$suite_data	= _json_decode(file_get_contents(SUITES."/$suite/suite.json"));
-	$suite		= urlencode($suite);
-	$tf->test($suite_data['title'], function (Testify $tf) use ($base_url, $suite, $suite_data, $key) {
-		foreach ($suite_data['tests'] as $test => $title) {
-			$test	= urlencode($test);
-			$tf->assert(file_get_contents("$base_url/test.php?suite=$suite&test=$test&key=$key") === '0', $title);
-		}
-	});
+	$suite_data		= _json_decode(file_get_contents(SUITES."/$suite/suite.json"));
+	$suite			= urlencode($suite);
+	$local_success	= 0;
+	$local_failed	= 0;
+	$test_suites[]	= [
+		'title'		=> $suite_data['title'],
+		'tests'		=> array_map(
+			function ($test, $title) use ($base_url, $suite, $key, &$tests_success, &$tests_failed, &$local_success, &$local_failed) {
+				$test			= urlencode($test);
+				/**
+				 * Run single test
+				 */
+				$result			= file_get_contents("$base_url/test.php?suite=$suite&test=$test&key=$key");
+				if ($result === '0') {
+					++$tests_success;
+					++$local_success;
+				} else {
+					++$tests_failed;
+					++$local_failed;
+				}
+				return	[
+					'title'			=> $title,
+					'result'		=> $result === '0',
+					'result_text'	=> $result
+				];
+			},
+			array_keys($suite_data['tests']),
+			$suite_data['tests']
+		),
+		'success'	=> $local_success,
+		'failed'	=> $local_failed
+	];
 }
+unset($suite, $suite_data, $local_success, $local_failed);
 /**
- * Run testing
+ * Stop embedded php web server
  */
-$tf->run();
 if (isset($web_server_pid)) {
-	/**
-	 * Stop embedded php web server
-	 */
 	exec("kill $web_server_pid");
+}
+unset($web_server_pid);
+/**
+ * Show results
+ */
+if (CLI) {
+	require TEST.'/result/cli.php';
+} else {
+	require TEST.'/result/html.php';
 }
 /**
  * Delete key
  */
 @unlink(TEST.'/key');
-exit(0);
+exit($tests_failed);
