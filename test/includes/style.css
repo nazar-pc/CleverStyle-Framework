@@ -58,7 +58,7 @@ section article h3 ~ p {
 section article h3 ~ p.failed {
 	color : #e93c3c;
 }
-section article h3 ~ p.failed + p {
+section article h3 ~ p.failed + p[class=''] {
 	padding-left: 40px;
 }
 footer {
