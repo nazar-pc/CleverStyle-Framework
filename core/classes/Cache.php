@@ -91,7 +91,7 @@ class Cache {
 	/**
 	 * Cache state enabled/disabled
 	 *
-	 * @return mixed
+	 * @return bool
 	 */
 	function cache_state() {
 		return $this->cache;

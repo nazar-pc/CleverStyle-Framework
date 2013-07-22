@@ -16,7 +16,7 @@ use			cs\Config,
 class FileSystem extends _Abstract {
 	protected	$cache_size;
 	function __construct () {
-		$this->cache_size = Core::instance()->cache_size * 1048576;
+		$this->cache_size = Core::instance()->cache_size * 1024 * 1024;
 	}
 	/**
 	 * Get item from cache

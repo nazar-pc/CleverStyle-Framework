@@ -9,7 +9,7 @@
  */
 $tests_total	= $tests_success + $tests_failed;
 header('Content-Type: text/html; charset=utf-8');
-echo	h::title("Test results $tests_success/$tests_total ".round($tests_total / $tests_success * 100, 2).'%').
+echo	h::title("Test results $tests_success/$tests_total ".round($tests_success / $tests_total * 100, 2).'%').
 		h::meta([
 			'charset'	=> 'utf-8'
 		]).
@@ -24,12 +24,12 @@ echo	h::title("Test results $tests_success/$tests_total ".round($tests_total / $
 			h::h1('CleverStyle CMS Tester')
 		).
 		h::section(
-			h::h2("Test results $tests_success/$tests_total ".round($tests_total / $tests_success * 100, 2).'%').
+			h::h2("Test results $tests_success/$tests_total ".round($tests_success / $tests_total * 100, 2).'%').
 			h::article(array_map(
 				function ($suite) {
 					$tests_total	= $suite['success'] + $suite['failed'];
-					return	h::h3("$suite[title] $suite[success]/$tests_total ".round($tests_total / $suite['success'] * 100, 2).'%').
-							h::p(array_map(
+					return	h::h3("$suite[title] $suite[success]/$tests_total ".round($suite['success'] / $tests_total * 100, 2).'%').
+							h::{'p.more'}(array_map(
 								function ($test) {
 									return [
 										[

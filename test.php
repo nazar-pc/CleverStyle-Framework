@@ -8,6 +8,7 @@
  */
 define('DIR',		__DIR__);
 define('TEST',		DIR.'/test');
+define('TEMP',		TEST.'/temp');
 define('SUITES',	TEST.'/suites');
 define('CLI',		PHP_SAPI == 'cli');
 require_once DIR.'/core/classes/h/_Abstract.php';
@@ -15,6 +16,9 @@ require_once DIR.'/core/classes/h.php';
 require_once DIR.'/core/upf.php';
 date_default_timezone_set('UTC');
 ini_set('error_log', TEST.'/error.log');
+if (!is_dir(TEMP)) {
+	mkdir(TEMP);
+}
 if (isset($_GET['suite'], $_GET['test'], $_GET['key'])) {
 	if (@file_get_contents(TEST.'/key' != $_GET['key'])) {
 		exit('Wrong key');
@@ -70,7 +74,25 @@ foreach (get_files_list(SUITES, false, 'd') ?: [] as $suite) {
 		'title'		=> $suite_data['title'],
 		'tests'		=> array_map(
 			function ($test, $title) use ($base_url, $suite, $key, &$tests_success, &$tests_failed, &$local_success, &$local_failed) {
+				/**
+				 * Clear temp directory before every test
+				 */
 				$test			= urlencode($test);
+				get_files_list(
+					TEMP,
+					false,
+					'fd',
+					true,
+					true,
+					false,
+					false,
+					true,
+					function ($item) {
+						if (is_writable($item)) {
+							is_dir($item) ? @rmdir($item) : @unlink($item);
+						}
+					}
+				);
 				/**
 				 * Run single test
 				 */
@@ -96,6 +118,25 @@ foreach (get_files_list(SUITES, false, 'd') ?: [] as $suite) {
 	];
 }
 unset($suite, $suite_data, $local_success, $local_failed);
+/**
+ * Clear temp directory after all tests
+ */
+$test			= urlencode($test);
+get_files_list(
+	TEMP,
+	false,
+	'fd',
+	true,
+	true,
+	false,
+	false,
+	true,
+	function ($item) {
+		if (is_writable($item)) {
+			is_dir($item) ? @rmdir($item) : @unlink($item);
+		}
+	}
+);
 /**
  * Stop embedded php web server
  */
