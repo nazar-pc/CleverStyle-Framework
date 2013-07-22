@@ -244,7 +244,7 @@ function check_dependencies ($name, $type, $dir = null, $mode = 'enable') {
 			 */
 			if (
 				$module == $name && $type == 'module' && $mode == 'update' &&
-				isset($meta['update_from']) && version_compare($meta['update_from_version'], $module_meta['version'], '<')
+				isset($meta['update_from']) && version_compare($meta['update_from_version'], $module_meta['version'], '>=')
 			) {
 				if ($return_m) {
 					$Page->warning($L->dependencies_not_satisfied);
