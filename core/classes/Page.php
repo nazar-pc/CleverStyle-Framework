@@ -1149,7 +1149,9 @@ class Page {
 			h::{'div.cs-header-restore-password-form'}(
 				h::{'input.cs-noui.cs-header-restore-password-email[tabindex=1]'}(
 					[
-						'placeholder'	=> $L->login_or_email
+						'placeholder'		=> $L->login_or_email,
+						'autocapitalize'	=> 'off',
+						'autocorrect'		=> 'off'
 					]
 				).
 				h::{'button.cs-header-restore-password-process.cs-button-compact[tabindex=2]'}(
@@ -1167,9 +1169,11 @@ class Page {
 				]
 			).
 			h::{'div.cs-header-registration-form'}(
-				h::{'input.cs-noui.cs-header-registration-email[tabindex=1]'}(
+				h::{'input.cs-noui.cs-header-registration-email[type=email][tabindex=1]'}(
 					[
-						'placeholder'	=> $L->email
+						'placeholder'		=> $L->email,
+						'autocapitalize'	=> 'off',
+						'autocorrect'		=> 'off'
 					]
 				).
 				h::{'button.cs-header-registration-process.cs-button-compact[tabindex=2]'}(
@@ -1188,7 +1192,9 @@ class Page {
 			).
 			h::{'div.cs-header-login-form'}(
 				h::{'input.cs-noui.cs-header-login-email[tabindex=1]'}([
-					'placeholder'	=> $L->login_or_email
+					'placeholder'		=> $L->login_or_email,
+					'autocapitalize'	=> 'off',
+					'autocorrect'		=> 'off'
 				]).
 				h::{'input.cs-noui.cs-header-user-password[type=password][tabindex=2]'}([
 					'placeholder'	=> $L->password
