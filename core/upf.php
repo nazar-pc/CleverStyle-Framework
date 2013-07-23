@@ -1136,15 +1136,17 @@ function keywords ($text) {
  * @return string
  */
 function description ($text) {
-	return truncate(
-		strip_tags(
-			$text
-		),
-		512,
-		'...',
-		false,
-		false
-	);
+	return trim(str_replace(
+		["\r\n", "\n", "\r", "&nbsp;"],
+		' ',
+		truncate(
+			strip_tags($text),
+			512,
+			'...',
+			false,
+			false
+		)
+	));
 }
 /**
  * Returns of direct output of given function

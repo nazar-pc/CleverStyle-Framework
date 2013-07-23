@@ -200,10 +200,10 @@ abstract class _Abstract {
 	 * @return bool|string
 	 */
 	protected static function wrap ($in = '', $data = [], $tag = 'div') {
-		$data	= self::array_merge(is_array($in) ? $in : ['in' => $in], is_array($data) ? $data : [], ['tag' => $tag]);
-		$in		= $add = '';
-		$tag	= 'div';
-		$level	= 1;
+		$data		= self::array_merge(is_array($in) ? $in : ['in' => $in], is_array($data) ? $data : [], ['tag' => $tag]);
+		$in			= $add = '';
+		$tag		= 'div';
+		$level		= 1;
 		if (isset($data['data-title']) && $data['data-title']) {
 			$data['data-title'] = filter($data['data-title']);
 			if (isset($data['class'])) {
@@ -221,20 +221,30 @@ abstract class _Abstract {
 			}
 		}
 		if (isset($data['level'])) {
-			$level = $data['level'];
+			$level	= $data['level'];
 			unset($data['level']);
 		}
 		if (!self::data_prepare($data, $in, $tag, $add)) {
 			return false;
 		}
-		$html	=	'<'.$tag.$add.'>'.
-					($level ? "\n" : '').
-					self::level(
-						$in || $in === 0 || $in === '0' ? $in.($level ? "\n" : '') : ($in === false ? '' : ($level ? "&nbsp;\n" : '')),
-					$level).
-					'</'.$tag.'>'.
-					($level ? "\n" : '');
-		return $html;
+		if (!(
+			$in ||
+			$in === 0 ||
+			$in === '0'
+		)) {
+			$in		= $in === false || !$level ? '' : '&nbsp;';
+		}
+		if (
+			$in &&
+			(
+				strpos($in, "\n") !== false ||
+				strpos($in, "<") !== false
+			) &&
+			$level
+		) {
+			$in		= $level ? self::level("\n$in\n", $level) : "\n$in\n";
+;		}
+		return "<$tag$add>$in</$tag>".($level ? "\n" : '');
 	}
 	/**
 	 * Wrapper for unpaired tags rendering
@@ -246,8 +256,8 @@ abstract class _Abstract {
 	 * @return bool|string
 	 */
 	protected static function u_wrap ($data = []) {
-		$in = $add = '';
-		$tag = 'input';
+		$in		= $add		= '';
+		$tag	= 'input';
 		if (!self::data_prepare($data, $in, $tag, $add, $label)) {
 			return false;
 		}
@@ -255,21 +265,21 @@ abstract class _Abstract {
 			$data_title = $data['data-title'];
 			unset($data['data-title']);
 		}
+		$add	.= XHTML_TAGS_STYLE ? ' /' : '';
 		if (isset($data['type']) && $data['type'] == 'checkbox' && $label) {
-			$html	= '<'.$tag.$add.(XHTML_TAGS_STYLE ? ' /' : '').'>'.self::label(
-				$in,
-				[
-					'for'	=> $data['id']
-				]
-			)."\n";
 			$html	= self::span(
-				$html,
+				"<$tag$add>".self::label(
+					$in,
+					[
+						'for'	=> $data['id']
+					]
+				)."\n",
 				[
 					'data-title' => isset($data_title) ? $data_title : false
 				]
 			);
 		} else {
-			$html	= '<'.$tag.$add.(XHTML_TAGS_STYLE ? ' /' : '').'>'.$in."\n";
+			$html	= "<$tag$add>$in\n";
 			$html	= isset($data_title) ? self::label(
 				$html,
 				[
