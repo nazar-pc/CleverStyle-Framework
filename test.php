@@ -6,6 +6,9 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
+if (version_compare(PHP_VERSION, '5.4', '<')) {
+	exit('CleverStyle CMS require PHP 5.4 or higher');
+}
 define('DIR',		__DIR__);
 define('TEST',		DIR.'/test');
 define('TEMP',		TEST.'/temp');

@@ -6,7 +6,6 @@
  * @license		MIT License, see license.txt
  */
 //Minimal required versions of the software
-global $PHP, $MySQLi, $mcrypt;
-$PHP	= '5.4';	//Required
+global $MySQLi, $mcrypt;
 $MySQLi	= '5.0.7';	//Required
 $mcrypt	= '2.4';	//Optional, for encrypting functionality

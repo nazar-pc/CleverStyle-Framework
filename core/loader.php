@@ -6,13 +6,10 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
+
 require CORE.'/upf.php';							//Inclusion of UPF
 require CORE.'/functions.php';						//Inclusion of general system functions
 _require_once(DIR.'/vendor/autoload.php', false);	//Inclusion of composer's autoloader.php if exists
-
-global $timeload, $loader_init_memory;
-
-$timeload['start']			= MICROTIME;
 
 error_reporting(E_ALL);
 
@@ -105,9 +102,6 @@ require_once CORE.'/required_verions.php';
  * Including of custom user file
  */
 _include_once(DIR.'/custom.php', false);
-
-$timeload['loader_init']	= microtime(true);
-$loader_init_memory			= memory_get_usage();CONFIG;
 /**
  * System starting
  */

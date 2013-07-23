@@ -7,6 +7,12 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
+if (version_compare(PHP_VERSION, '5.4', '<')) {
+	exit('CleverStyle CMS require PHP 5.4 or higher');
+}
+if (!Phar::canWrite()) {
+	exit('CleverStyle CMS Builder can\'t work, set, please, <b>phar.readonly=off</b> option in <b>php.ini</b>');
+}
 define('DIR', __DIR__);
 require_once DIR.'/core/classes/h/_Abstract.php';
 require_once DIR.'/core/classes/h.php';

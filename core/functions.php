@@ -371,7 +371,6 @@ function check_db () {
  * @return bool	If version unsatisfactory - returns <b>false</b>
  */
 function check_php () {
-	global $PHP;
 	return (bool)version_compare(PHP_VERSION, $PHP, '>=');
 }
 /**
@@ -393,9 +392,9 @@ function check_mcrypt ($mode = 0) {
 			$mcrypt_version,
 			$mcrypt_version
 		);
-		$mcrypt_data[0] = $mcrypt_version[1] == 'enabled' ? trim($mcrypt_version[3]) : false;
+		$mcrypt_data[0] = isset($mcrypt_version[1]) && $mcrypt_version[1] == 'enabled' ? trim($mcrypt_version[3]) : false;
 		global $mcrypt;
-		$mcrypt_data[1] = $mcrypt_data[0] ? (bool)version_compare($mcrypt_data[0], $mcrypt, '>=') : false;
+		$mcrypt_data[1] = isset($mcrypt_version[0]) && $mcrypt_data[0] ? (bool)version_compare($mcrypt_data[0], $mcrypt, '>=') : false;
 	}
 	return $mcrypt_data[$mode];
 }

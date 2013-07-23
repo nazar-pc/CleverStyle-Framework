@@ -17,12 +17,14 @@
  *   * cURL
  *  * MySQL							>= 5.0.7;
  */
-
+if (version_compare(PHP_VERSION, '5.4', '<')) {
+	exit('CleverStyle CMS require PHP 5.4 or higher');
+}
 /**
  * Time of start of execution, is used as current time
  */
 define('MICROTIME',	microtime(true));	//Time in seconds (float)
-define('TIME',		round(MICROTIME));	//Time in seconds (integer)
+define('TIME',		floor(MICROTIME));	//Time in seconds (integer)
 define('OUT_CLEAN',	false);				//Enable output grabbing and cleaning (for security)
 OUT_CLEAN && ob_start();
 define('DIR',		__DIR__);			//Root directory

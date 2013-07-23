@@ -90,12 +90,7 @@ $Index->content(
 		],
 		[
 			$L->version.' PHP:',
-			[
-				PHP_VERSION.(!check_php() ? ' ('.$L->required.' '.$PHP.' '.$L->or_higher.')' : ''),
-				[
-					'class' => state(check_php())
-				]
-			]
+			PHP_VERSION
 		],
 		[
 			$L->components.' PHP:',

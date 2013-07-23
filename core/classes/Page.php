@@ -1233,7 +1233,6 @@ class Page {
 			 */
 			echo $this->process_replacing($this->Content);
 		} else {
-			global $timeload;
 			Trigger::instance()->run('System/Page/pre_display');
 			class_exists('\\cs\\Error', false) && Error::instance(true) && Error::instance()->display();
 			/**
@@ -1253,7 +1252,6 @@ class Page {
 				ob_start('ob_gzhandler');
 				$ob = true;
 			}
-			$timeload['end']	= microtime(true);
 			/**
 			 * Getting of debug information
 			 */
@@ -1284,8 +1282,8 @@ class Page {
 						),
 						$this->level['debug_info']
 					) : '',
-					format_time(round($timeload['end'] - $timeload['start'], 5)),
-					format_filesize(memory_get_peak_usage(), 5)
+					format_time(round(microtime(true) - MICROTIME, 5)),
+					format_filesize(memory_get_usage(), 5).h::sup(format_filesize(memory_get_peak_usage(), 5))
 				],
 				$this->Html
 			);
