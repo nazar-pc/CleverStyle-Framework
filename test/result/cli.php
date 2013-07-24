@@ -6,8 +6,9 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
+$title			= _json_decode(file_get_contents(TEST.'/test.json'))['title'];
 $tests_total	= $tests_success + $tests_failed;
-echo	"\e[1mCleverStyle CMS Tester\e[21m\n".
+echo	"\e[1m$title\e[21m\n".
 		"----------------------\n".
 		"Test results $tests_success/$tests_total ".round($tests_success / $tests_total * 100, 2)."%\n".
 		implode(

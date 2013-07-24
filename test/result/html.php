@@ -7,6 +7,7 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
+$title			= _json_decode(file_get_contents(TEST.'/test.json'))['title'];
 $tests_total	= $tests_success + $tests_failed;
 header('Content-Type: text/html; charset=utf-8');
 echo	h::title("Test results $tests_success/$tests_total ".round($tests_success / $tests_total * 100, 2).'%').
@@ -21,7 +22,7 @@ echo	h::title("Test results $tests_success/$tests_total ".round($tests_success /
 			h::img([
 				'src'	=> 'test/includes/logo.png'
 			]).
-			h::h1('CleverStyle CMS Tester')
+			h::h1($title)
 		).
 		h::section(
 			h::h2("Test results $tests_success/$tests_total ".round($tests_success / $tests_total * 100, 2).'%').
