@@ -448,7 +448,7 @@ class Config {
 		/**
 		 * If errors - cache updating must be stopped
 		 */
-		if (class_exists('\\cs\\Error', false) && Error::instance(true) && Error::instance()->num()) {
+		if (class_exists('\\cs\\Error', false) && Error::instance(true)->num()) {
 			return false;
 		}
 		$config						= [];
@@ -520,9 +520,7 @@ class Config {
 			 * Modifications only for administrators or requests from methods of Config class
 			 */
 			if (
-				(
-					User::instance(true) && User::instance()->admin()
-				) ||
+				User::instance(true)->admin() ||
 				$debug_backtrace['class'] == __CLASS__
 			) {
 				$return = &$this->data[$item];
@@ -554,9 +552,7 @@ class Config {
 		if (
 			!isset($this->data[$item]) ||
 			(
-				(
-					User::instance(true) && !User::instance()->admin()
-				) &&
+				User::instance(true)->admin() &&
 				$debug_backtrace['class'] != __CLASS__
 			)
 		) {

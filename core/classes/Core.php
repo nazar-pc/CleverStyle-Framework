@@ -215,9 +215,9 @@ class Core {
 	 * @return array	Array <i>[mirror_url => result]</b> in case of successful connection, <i>false</b> on failure
 	 */
 	function api_request ($path, $data = '') {
-		$Config	= Config::instance(true) ? Config::instance() : null;
+		$Config	= Config::instance(true);
 		$result	= [];
-		if (is_object($Config) && $Config->server['mirrors']['count'] > 1) {
+		if ($Config && $Config->server['mirrors']['count'] > 1) {
 			foreach ($Config->server['mirrors']['http'] as $domain) {
 				if (!($domain == $Config->server['host'] && $Config->server['protocol'] == 'http')) {
 					$result['http://'.$domain] = $this->send('http://'.$domain.'/api/'.$path, $data);

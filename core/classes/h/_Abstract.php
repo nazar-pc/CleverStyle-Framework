@@ -113,12 +113,12 @@ abstract class _Abstract {
 		if (isset($data['href'])) {
 			$data['href']		= str_replace(' ', '%20', $data['href']);
 			if ($tag != 'a') {
-				$data['href']		= self::prepare_url($data['href']);
-			} elseif (substr($data['href'], 0, 1) == '#') {
-				$Config	= Config::instance(true) ? Config::instance() : null;
-				if (is_object($Config)) {
-					$data['href']	= $Config->base_url().'/'.$Config->server['raw_relative_address'].$data['href'];
-				}
+				$data['href']	= self::prepare_url($data['href']);
+			} elseif (
+				substr($data['href'], 0, 1) == '#' &&
+				$Config = Config::instance(true)
+			) {
+				$data['href']	= $Config->base_url().'/'.$Config->server['raw_relative_address'].$data['href'];
 			}
 		}
 		if (isset($data['action'])) {
@@ -171,8 +171,7 @@ abstract class _Abstract {
 	 */
 	static function prepare_url ($url, $absolute = false) {
 		if (substr($url, 0, 1) == '#') {
-			$Config	= Config::instance(true) ? Config::instance() : null;
-			if (is_object($Config)) {
+			if ($Config = Config::instance(true)) {
 				return $Config->base_url().'/'.$Config->server['raw_relative_address'].$url;
 			}
 		} elseif (
@@ -181,8 +180,11 @@ abstract class _Abstract {
 			substr($url, 0, 7) != 'http://' &&
 			substr($url, 0, 8) != 'https://'
 		) {
-			if ($absolute && Config::instance(true)) {
-				return Config::instance()->base_url()."/$url";
+			if (
+				$absolute &&
+				$Config = Config::instance(true)
+			) {
+				return $Config->base_url()."/$url";
 			}
 			return "/$url";
 		}
@@ -314,9 +316,13 @@ abstract class _Abstract {
 		if (!isset($data['method'])) {
 			$data['method']	= 'post';
 		}
-		if (strtolower($data['method']) == 'post' && class_exists('\\cs\\User', false) && User::instance(true)) {
+		if (
+			strtolower($data['method']) == 'post' &&
+			class_exists('\\cs\\User', false) &&
+			$User = User::instance(true)
+		) {
 			$in_ = self::{'input[type=hidden][name=session]'}([
-				'value'	=> User::instance()->get_session()
+				'value'	=> $User->get_session()
 			]);
 			if (!is_array($in)) {
 				$in			.= $in_;
@@ -756,7 +762,7 @@ abstract class _Abstract {
 			return self::__callStatic(__FUNCTION__, [$in, $data]);
 		}
 		$L		= Language::instance();
-		if (Config::instance(true) && Config::instance()->core['show_tooltips']) {
+		if (Config::instance(true)->core['show_tooltips']) {
 			return self::span($L->$in, array_merge(['data-title' => $L->{$in.'_info'}], $data));
 		} else {
 			return self::span($L->$in, $data);

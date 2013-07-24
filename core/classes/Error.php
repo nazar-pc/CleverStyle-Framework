@@ -52,11 +52,11 @@ class Error {
 				unset($dump);
 				$this->errors_list[]	= "E $time $string Occurred: $file:$line";
 				define('ERROR_CODE', 500);
-				if (Index::instance(true)) {
-					Index::instance()->__finish();
-				} else {
-					Page::instance()->error();
-				}
+				/**
+				 * If Index instance exists - execution will be stopped there, otherwise in Page instance
+				 */
+				Index::instance(true)->__finish();
+				Page::instance()->error();
 			break;
 			case E_USER_WARNING:
 			case E_WARNING:
@@ -71,12 +71,15 @@ class Error {
 				$this->errors_list[]	= "N $time $string Occurred: $file:$line";
 			break;
 		}
+		/**
+		 * If too many non-critical errors - also stop execution
+		 */
 		if ($this->num >= 100) {
-			if (Index::instance(true)) {
-				Index::instance()->__finish();
-			} else {
-				Page::instance()->error();
-			}
+			/**
+			 * If Index instance exists - execution will be stopped there, otherwise in Page instance
+			 */
+			Index::instance(true)->__finish();
+			Page::instance()->error();
 		}
 	}
 	/**

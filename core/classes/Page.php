@@ -191,9 +191,7 @@ class Page {
 					!(
 						is_object($Config) && $Config->core['site_mode']
 					) &&
-					!(
-						User::instance(true) && User::instance()->admin()
-					) &&
+					!User::instance(true)->admin() &&
 					code_header(503) &&
 					!(
 						_include_once(THEMES.'/'.$this->theme.'/closed.php', false) || _include_once(THEMES.'/'.$this->theme.'/closed.html', false)
@@ -216,7 +214,7 @@ class Page {
 	 * @return Page
 	 */
 	protected function prepare () {
-		$Config				= Config::instance(true) ? Config::instance() : null;
+		$Config				= Config::instance(true);
 		/**
 		 * Loading of template
 		 * Loading of CSS and JavaScript
@@ -233,7 +231,7 @@ class Page {
 				$this->Title[$i] = trim($v);
 			}
 		}
-		if (is_object($Config)) {
+		if ($Config) {
 			$this->Title = $Config->core['title_reverse'] ? array_reverse($this->Title) : $this->Title;
 			$this->Title = implode($Config->core['title_delimiter'], $this->Title);
 		} else {
@@ -295,7 +293,7 @@ class Page {
 					'content'		=> 'noindex,nofollow'
 				] : false
 			).
-			h::base(is_object($Config) ? [
+			h::base($Config ? [
 				'href' => $Config->base_url().'/'
 			] : false).
 			$this->Head.
@@ -696,13 +694,13 @@ class Page {
 	 * @return Page
 	 */
 	protected function get_includes () {
-		if (!Config::instance(true)) {
+		if (!($Config = Config::instance(true))) {
 			return $this;
 		}
 		/**
 		 * If CSS and JavaScript compression enabled
 		 */
-		if (Config::instance()->core['cache_compress_js_css']) {
+		if ($Config->core['cache_compress_js_css']) {
 			/**
 			 * Current cache checking
 			 */
@@ -1092,8 +1090,8 @@ class Page {
 	 */
 	protected function get_header_info () {
 		$L		= Language::instance();
-		$User	= User::instance(true) ? User::instance() : null;
-		if (is_object ($User) && $User->user()) {
+		$User	= User::instance(true);
+		if ($User->user()) {
 			if ($User->avatar) {
 				$this->user_avatar_image = 'url('.h::prepare_url($User->avatar, true).')';
 			} else {
@@ -1240,7 +1238,7 @@ class Page {
 			echo $this->process_replacing($this->Content);
 		} else {
 			Trigger::instance()->run('System/Page/pre_display');
-			class_exists('\\cs\\Error', false) && Error::instance(true) && Error::instance()->display();
+			class_exists('\\cs\\Error', false) && Error::instance(true)->display();
 			/**
 			 * Processing of template, substituting of content, preparing for the output
 			 */
@@ -1253,8 +1251,8 @@ class Page {
 			 * Detection of compression
 			 */
 			$ob					= false;
-			$Config				= Config::instance(true) ? Config::instance() : null;
-			if (is_object($Config) && !zlib_compression() && $Config->core['gzip_compression']) {
+			$Config				= Config::instance(true);
+			if ($Config && !zlib_compression() && $Config->core['gzip_compression']) {
 				ob_start('ob_gzhandler');
 				$ob = true;
 			}
@@ -1262,9 +1260,11 @@ class Page {
 			 * Getting of debug information
 			 */
 			if (
-				User::instance(true) && (
-					User::instance()->admin() || (
-						$Config->can_be_admin && $Config->core['ip_admin_list_only']
+				(
+					User::instance(true)->admin() ||
+					(
+						$Config->can_be_admin &&
+						$Config->core['ip_admin_list_only']
 					)
 				) && DEBUG
 			) {

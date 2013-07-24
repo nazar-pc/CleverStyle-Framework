@@ -47,7 +47,7 @@ class DB {
 		if (!is_int($connection) && $connection != '0') {
 			return new False_class;
 		}
-		$Config	= Config::instance(true) ? Config::instance() : null;
+		$Config	= Config::instance(true);
 		/**
 		 * Try to find existing mirror connection
 		 */
@@ -61,7 +61,7 @@ class DB {
 		/**
 		 * If DB balancing enabled - try to connect to the mirror
 		 */
-		} elseif (is_object($Config) && !empty($Config->core) && $Config->core['db_balance'] && $mirrors = count($Config->db[$connection]['mirrors'])) {
+		} elseif ($Config && !empty($Config->core) && $Config->core['db_balance'] && $mirrors = count($Config->db[$connection]['mirrors'])) {
 			$select = mt_rand(0, $Config->core['maindb_for_write'] ? $mirrors - 1 : $mirrors);
 			if ($select < $mirrors) {
 				$mirror = $Config->db[$connection]['mirrors'][--$select];

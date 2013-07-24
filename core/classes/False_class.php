@@ -5,15 +5,17 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace cs;
+namespace	cs;
+use			ArrayAccess;
 /**
  * False_class is used for chained calling, when some method may return false.
- *
+
  * Usage of class is simple, just return his instance instead of real boolean <i>false</i>.
  * On every call of any method or getting of any property instance of the same class will be returned.
- * Also object may be converted to string '0' because of __toString() method.
+ * Also object may be converted to string '0' because of __toString() method,
+ * and may be used as array - every item will not exist, but in case of access trial - again instance of this class will be returned.
  */
-class False_class {
+class False_class implements ArrayAccess {
 	/**
 	 * Getting any property
 	 *
@@ -41,4 +43,24 @@ class False_class {
 	function __toString () {
 		return '0';
 	}
+	/**
+	 * If item exists
+	 */
+	function offsetExists ($offset) {
+		return false;
+	}
+	/**
+	 * Get item
+	 */
+	function offsetGet ($offset) {
+		return $this;
+	}
+	/**
+	 * Set item
+	 */
+	public function offsetSet ($offset, $value) {}
+	/**
+	 * Delete item
+	 */
+	public function offsetUnset ($offset) {}
 }
