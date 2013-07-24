@@ -2,3 +2,5 @@
 /.idea
 #do not commit installer builds
 *.phar.php
+#Do not commit fs.json files of components
+components/*/*/fs.json
