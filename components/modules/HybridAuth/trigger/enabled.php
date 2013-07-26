@@ -41,14 +41,6 @@ Trigger::instance()->register(
 		if (!count($providers)) {
 			return;
 		}
-		if (!$Config->core['cache_compress_js_css']) {
-			$Page->css('components/modules/HybridAuth/includes/css/general.css');
-			$Page->js('components/modules/HybridAuth/includes/js/general.js');
-		} elseif (!(
-			file_exists(PCACHE.'/module.HybridAuth.js') && file_exists(PCACHE.'/module.HybridAuth.css')
-		)) {
-			rebuild_pcache();
-		}
 		$L				= Language::instance();
 		$data['list']	= h::{'ul.cs-hybrid-auth-providers-list li'}(
 			[
@@ -101,26 +93,6 @@ Trigger::instance()->register(
 	}
 );
 Trigger::instance()->register(
-	'admin/System/components/modules/disable',
-	function ($data) {
-		if ($data['name'] == 'HybridAuth') {
-			clean_pcache();
-		}
-	}
-);
-Trigger::instance()->register(
-	'admin/System/general/optimization/clean_pcache',
-	function () {
-		clean_pcache();
-	}
-);
-Trigger::instance()->register(
-	'System/Page/rebuild_cache',
-	function ($data) {
-		rebuild_pcache($data);
-	}
-);
-Trigger::instance()->register(
 	'System/User/get_contacts',
 	function ($data) {
 		$data['contacts']	= array_unique(array_merge(
@@ -129,40 +101,6 @@ Trigger::instance()->register(
 		));
 	}
 );
-function clean_pcache () {
-	if (file_exists(PCACHE.'/module.HybridAuth.js')) {
-		unlink(PCACHE.'/module.HybridAuth.js');
-	}
-	if (file_exists(PCACHE.'/module.HybridAuth.css')) {
-		unlink(PCACHE.'/module.HybridAuth.css');
-	}
-}
-function rebuild_pcache (&$data = null) {
-	$key	= [];
-	file_put_contents(
-		PCACHE.'/module.HybridAuth.js',
-		$key[]	= gzencode(
-			file_get_contents(MODULES.'/HybridAuth/includes/js/general.js'),
-			9
-		),
-		LOCK_EX | FILE_BINARY
-	);
-	$css	= file_get_contents(MODULES.'/HybridAuth/includes/css/general.css');
-	file_put_contents(
-		PCACHE.'/module.HybridAuth.css',
-		$key[]	= gzencode(
-			Page::instance()->css_includes_processing(
-				$css,
-				MODULES.'/HybridAuth/includes/css/general.css'
-			),
-			9
-		),
-		LOCK_EX | FILE_BINARY
-	);
-	if ($data !== null) {
-		$data['key']	.= md5(implode('', $key));
-	}
-}
 /**
  * Returns array of user id, that are contacts of specified user
  *

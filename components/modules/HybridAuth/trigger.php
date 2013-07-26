@@ -27,9 +27,6 @@ Trigger::instance()->register(
 			case -1:
 				require __DIR__.'/trigger/uninstalled.php';
 			break;
-			case 0:
-			case 1:
-				require __DIR__.'/trigger/installed.php';
 		}
 	}
 );

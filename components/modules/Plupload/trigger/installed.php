@@ -33,13 +33,5 @@ Trigger::instance()->register(
 			$storage->unlink($f);
 		}
 		$storage->rmdir('Plupload');
-		clean_pcache();
 	}
 );
-if (!function_exists(__NAMESPACE__.'\\clean_pcache')) {
-	function clean_pcache () {
-		if (file_exists(PCACHE.'/module.Plupload.js')) {
-			unlink(PCACHE.'/module.Plupload.js');
-		}
-	}
-}

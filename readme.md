@@ -67,7 +67,7 @@ Requirements:
 * PHP 5.4+
  * Mcrypt library (recommended for encryption)
  * cUrl library (recommended for autotranslation)
- * APC (Alternative PHP cache) module (recommended for system speed up)
+ * APC (Alternative PHP cache) module (recommended for system speed up with PHP 5.4)
 * MySQL Database server (MariaDB will work as well)
  * System may be extended to support other databases
 

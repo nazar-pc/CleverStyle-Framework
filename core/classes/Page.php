@@ -758,30 +758,87 @@ class Page {
 	/**
 	 * Getting of JavaScript and CSS files list to be included
 	 *
-	 * @param bool	$for_cache
+	 * @param bool	$for_cache	If <i>true</i> - absolute paths to files will be returned
 	 *
 	 * @return Page
 	 */
 	protected function get_includes_list ($for_cache = false) {
-		$theme_folder	= THEMES.'/'.$this->theme;
-		$scheme_folder	= $theme_folder.'/schemes/'.$this->color_scheme;
-		$theme_pfolder	= 'themes/'.$this->theme;
-		$scheme_pfolder	= $theme_pfolder.'/schemes/'.$this->color_scheme;
+		$theme_dir		= THEMES."/$this->theme";
+		$scheme_dir		= "$theme_dir/schemes/$this->color_scheme";
+		$theme_pdir		= 'themes/'.$this->theme;
+		$scheme_pdir	= "$theme_pdir/schemes/$this->color_scheme";
+		/**
+		 * Get includes of system and theme + color scheme
+		 */
 		$this->includes = [
 			'css' => array_merge(
-				(array)get_files_list(CSS,						'/(.*)\.css$/i',	'f', $for_cache ? true : 'includes/css',			true, false, '!include'),
-				(array)get_files_list($theme_folder.'/css',		'/(.*)\.css$/i',	'f', $for_cache ? true : $theme_pfolder.'/css',		true, false, '!include'),
-				(array)get_files_list($scheme_folder.'/css',	'/(.*)\.css$/i',	'f', $for_cache ? true : $scheme_pfolder.'/css',	true, false, '!include')
+				get_files_list(CSS,					'/(.*)\.css$/i',	'f', $for_cache ? true : 'includes/css',		true, false, '!include') ?: [],
+				get_files_list($theme_dir.'/css',	'/(.*)\.css$/i',	'f', $for_cache ? true : $theme_pdir.'/css',	true, false, '!include') ?: [],
+				get_files_list($scheme_dir.'/css',	'/(.*)\.css$/i',	'f', $for_cache ? true : $scheme_pdir.'/css',	true, false, '!include') ?: []
 			),
 			'js' => array_merge(
-				(array)get_files_list(JS,						'/(.*)\.js$/i',		'f', $for_cache ? true : 'includes/js',				true, false, '!include'),
-				(array)get_files_list($theme_folder.'/js',		'/(.*)\.js$/i',		'f', $for_cache ? true : $theme_pfolder.'/js',		true, false, '!include'),
-				(array)get_files_list($scheme_folder.'/js',		'/(.*)\.js$/i',		'f', $for_cache ? true : $scheme_pfolder.'/js',		true, false, '!include')
+				get_files_list(JS,					'/(.*)\.js$/i',		'f', $for_cache ? true : 'includes/js',			true, false, '!include') ?: [],
+				get_files_list($theme_dir.'/js',	'/(.*)\.js$/i',		'f', $for_cache ? true : $theme_pdir.'/js',		true, false, '!include') ?: [],
+				get_files_list($scheme_dir.'/js',	'/(.*)\.js$/i',		'f', $for_cache ? true : $scheme_pdir.'/js',	true, false, '!include') ?: []
 			)
 		];
-		unset($theme_folder, $scheme_folder, $theme_pfolder, $scheme_pfolder);
+		unset($theme_dir, $scheme_dir, $theme_pdir, $scheme_pdir);
 		sort($this->includes['css']);
 		sort($this->includes['js']);
+		$Config			= Config::instance();
+		foreach ($Config->components['modules'] as $module => $mdata) {
+			if (!$mdata['active'] == '1') {
+				continue;
+			}
+			$css	= get_files_list(
+				MODULES."/$module/includes/css",
+				'/(.*)\.css$/i',
+				'f',
+				$for_cache ? true : "components/modules/$module/includes/css",
+				true,
+				false,
+				'!include'
+			) ?: [];
+			sort($css);
+			$this->includes['css']	= array_merge($this->includes['css'], $css);
+			$js		= get_files_list(
+				MODULES."/$module/includes/js",
+				'/(.*)\.js/i',
+				'f',
+				$for_cache ? true : "components/modules/$module/includes/js",
+				true,
+				false,
+				'!include'
+			) ?: [];
+			sort($js);
+			$this->includes['js']	= array_merge($this->includes['js'], $js);
+		}
+		unset($module, $mdata, $css, $js);
+		foreach ($Config->components['plugins'] as $plugin) {
+			$css	= get_files_list(
+				PLUGINS."/$plugin/includes/css",
+				'/(.*)\.css$/i',
+				'f',
+				$for_cache ? true : "components/plugins/$plugin/includes/css",
+				true,
+				false,
+				'!include'
+			) ?: [];
+			sort($css);
+			$this->includes['css']	= array_merge($this->includes['css'], $css);
+			$js		= get_files_list(
+				PLUGINS."/$plugin/includes/js",
+				'/(.*)\.js/i',
+				'f',
+				$for_cache ? true : "components/plugins/$plugin/includes/js",
+				true,
+				false,
+				'!include'
+			) ?: [];
+			sort($js);
+			$this->includes['js']	= array_merge($this->includes['js'], $js);
+		}
+		unset($plugin, $css, $js);
 		return $this;
 	}
 	/**
@@ -815,7 +872,7 @@ class Page {
 				}
 			}
 			if ($extension == 'js') {
-				$temp_cache	.= 'var L='.Language::instance()->get_json().';';
+				$temp_cache	= "window.L=".Language::instance()->get_json().";$temp_cache";
 			}
 			file_put_contents(PCACHE.'/'.$this->pcache_basename.$extension, gzencode($temp_cache, 9), LOCK_EX | FILE_BINARY);
 			$key .= md5($temp_cache);
@@ -897,7 +954,8 @@ class Page {
 				if ($format == 'css') {
 					$this->css_includes_processing($content, realpath($link));
 				}
-				return str_replace($match[count($match) - 1], 'data:'.$mime_type.';charset=utf-8;base64,'.base64_encode($content), $match[0]);
+				$content	= base64_encode($content);
+				return str_replace($match[count($match) - 1], "data:$mime_type;charset=utf-8;base64,$content", $match[0]);
 			},
 			$data
 		);
@@ -913,8 +971,12 @@ class Page {
 		$db				= class_exists('cs\\DB', false) ? DB::instance() : null;
 		$this->Footer	.= h::div(
 			get_core_ml_text('footer_text') ?: false,
-			Config::instance()->core['show_footer_info'] ?
-				Language::instance()->page_footer_info('<!--generate time-->', $db ? $db->queries : 0, format_time(round($db ? $db->time : 0, 5)), '<!--peak memory usage-->') : false,
+			Config::instance()->core['show_footer_info'] ? Language::instance()->page_footer_info(
+				'<!--generate time-->',
+				$db ? $db->queries : 0,
+				format_time(round($db ? $db->time : 0, 5)),
+				'<!--peak memory usage-->'
+			) : false,
 			base64_decode(
 				'wqkgUG93ZXJlZCBieSA8YSB0YXJnZXQ9Il9ibGFuayIgaHJlZj0iaHR0cDovL2NsZXZlcnN0eW'.
 				'xlLm9yZy9jbXMiIHRpdGxlPSJDbGV2ZXJTdHlsZSBDTVMiPkNsZXZlclN0eWxlIENNUzwvYT4='

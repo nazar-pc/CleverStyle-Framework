@@ -19,16 +19,6 @@ if (!API) {
 	$Page				= Page::instance();
 	$L					= Language::instance();
 	Index::instance()->title_auto	= false;
-	if (!$Config->core['cache_compress_js_css']) {
-		$Page->css('components/modules/Blogs/includes/css/general.css');
-		$Page->js([
-			'components/modules/Blogs/includes/js/general.js'
-		]);
-	} elseif (!(
-		file_exists(PCACHE.'/module.Blogs.js') && file_exists(PCACHE.'/module.Blogs.css')
-	)) {
-		rebuild_pcache();
-	}
 	$rc					= &$Config->route;
 	if (!isset($rc[0])) {
 		$rc[0]	= 'latest_posts';

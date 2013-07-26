@@ -28,73 +28,10 @@ use			cs\Config,
 			cs\Storage,
 			cs\Trigger;
 Trigger::instance()->register(
-	'admin/System/components/modules/disable',
-	function ($data) {
-		if ($data['name'] == 'Plupload') {
-			clean_pcache();
-		}
-	}
-);
-Trigger::instance()->register(
-	'admin/System/general/optimization/clean_pcache',
-	function () {
-		clean_pcache();
-	}
-);
-Trigger::instance()->register(
-	'System/Page/rebuild_cache',
-	function ($data) {
-		rebuild_pcache($data);
-	}
-);
-function clean_pcache () {
-	if (file_exists(PCACHE.'/module.Plupload.js')) {
-		unlink(PCACHE.'/module.Plupload.js');
-	}
-}
-function rebuild_pcache (&$data = null) {
-	if (
-		!Config::instance()->core['cache_compress_js_css'] ||
-		file_exists(PCACHE.'/module.Plupload.js')
-	) {
-		return;
-	}
-	$content	= '';
-	array_map(
-		function ($language) use (&$content) {
-			$content	.= "if (lang == '$language') ".file_get_contents(MODULES."/Plupload/includes/js/i18n/$language.js");
-		},
-		_mb_substr(get_files_list(MODULES.'/Plupload/includes/js/i18n', false, 'f'), 0, -3)
-	);
-	file_put_contents(
-		PCACHE.'/module.Plupload.js',
-		$key	= gzencode(
-			file_get_contents(MODULES.'/Plupload/includes/js/plupload.js').
-			file_get_contents(MODULES.'/Plupload/includes/js/plupload.html5.js').
-			file_get_contents(MODULES.'/Plupload/includes/js/integration.js').
-			$content,
-			9
-		),
-		LOCK_EX | FILE_BINARY
-	);
-	if ($data !== null) {
-		$data['key']	.= md5($key);
-	}
-}
-Trigger::instance()->register(
 	'System/Page/pre_display',
 	function () {
 		$Config	= Config::instance();
 		$Page	= Page::instance();
-		if (!$Config->core['cache_compress_js_css']) {
-			$Page->js([
-				'components/modules/Plupload/includes/js/plupload.js',
-				'components/modules/Plupload/includes/js/plupload.html5.js',
-				'components/modules/Plupload/includes/js/integration.js'
-			]);
-		} elseif (!file_exists(PCACHE.'/module.Plupload.js')) {
-			rebuild_pcache();
-		}
 		$Page->js(
 			'var	plupload_max_file_size = '._json_encode($Config->module('Plupload')->max_file_size).';',
 			'code'

@@ -42,17 +42,6 @@ Trigger::instance()->register(
 			$posts,
 			Cache::instance()->Blogs
 		);
-		clean_pcache();
 		time_limit_pause(false);
 	}
 );
-if (!function_exists(__NAMESPACE__.'\\clean_pcache')) {
-	function clean_pcache () {
-		if (file_exists(PCACHE.'/module.Blogs.js')) {
-			unlink(PCACHE.'/module.Blogs.js');
-		}
-		if (file_exists(PCACHE.'/module.Blogs.css')) {
-			unlink(PCACHE.'/module.Blogs.css');
-		}
-	}
-}

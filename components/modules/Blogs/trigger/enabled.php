@@ -12,59 +12,6 @@ use			cs\Config,
 			cs\Trigger,
 			cs\User;
 Trigger::instance()->register(
-	'admin/System/components/modules/disable',
-	function ($data) {
-		if ($data['name'] == 'Blogs') {
-			clean_pcache();
-		}
-	}
-);
-Trigger::instance()->register(
-	'admin/System/general/optimization/clean_pcache',
-	function () {
-		clean_pcache();
-	}
-);
-Trigger::instance()->register(
-	'System/Page/rebuild_cache',
-	function () {
-		if (file_exists(PCACHE.'/module.Blogs.js') && file_exists(PCACHE.'/module.Blogs.css')) {
-			return;
-		}
-		rebuild_pcache();
-	}
-);
-function clean_pcache () {
-	if (file_exists(PCACHE.'/module.Blogs.js')) {
-		unlink(PCACHE.'/module.Blogs.js');
-	}
-	if (file_exists(PCACHE.'/module.Blogs.css')) {
-		unlink(PCACHE.'/module.Blogs.css');
-	}
-}
-function rebuild_pcache (&$data = null) {
-	$key	= [];
-	file_put_contents(
-		PCACHE.'/module.Blogs.js',
-		$key[]	= gzencode(
-			file_get_contents(MODULES.'/Blogs/includes/js/general.js'),
-			9
-		),
-		LOCK_EX | FILE_BINARY
-	);
-	file_put_contents(
-		PCACHE.'/module.Blogs.css',
-		$key[]	= gzencode(
-			file_get_contents(MODULES.'/Blogs/includes/css/general.css'),
-			9
-		),
-		LOCK_EX | FILE_BINARY
-	);
-	if ($data !== null) {
-		$data['key']	.= md5(implode('', $key));
-	}
-}
-Trigger::instance()->register(
 	'System/Index/mainmenu',
 	function ($data) {
 		if ($data['path'] == 'Blogs') {

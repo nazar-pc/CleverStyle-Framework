@@ -1,0 +1,10 @@
+{
+	"package"		: "Fotorama",
+	"category"		: "plugins",
+	"version"		: "4.2.1-cs1",
+	"description"	: "A simple, stunning, powerful jQuery gallery. Integration into CleverStyle CMS.",
+	"author"		: "Artem Polikarpov",
+	"website"		: "fotorama.io",
+	"license"		: "MIT License",
+	"provide"		: "fotorama"
+}

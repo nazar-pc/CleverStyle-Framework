@@ -30,7 +30,7 @@
 	padding : 3px;
 }
 .cs-hybrid-auth-providers-list > li > div {
-	background : url(icons.png) 24px 24px no-repeat;
+	background : url(../img/icons.png) 24px 24px no-repeat;
 	display    : inline-block;
 	float      : left;
 	height     : 24px;

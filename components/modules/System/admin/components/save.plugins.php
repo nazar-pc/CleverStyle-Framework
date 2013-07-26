@@ -29,6 +29,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			if (!in_array($plugin, $Config->components['plugins']) && in_array($plugin, $plugins)) {
 				$Config->components['plugins'][] = $plugin;
 				$Index->save();
+				clean_pcache();
 				Trigger::instance()->run(
 					'admin/System/components/plugins/enable',
 					[
@@ -41,6 +42,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			if (in_array($plugin, $Config->components['plugins'])) {
 				unset($Config->components['plugins'][array_search($plugin, $Config->components['plugins'])]);
 				$Index->save();
+				clean_pcache();
 				Trigger::instance()->run(
 					'admin/System/components/plugins/disable',
 					[
@@ -155,6 +157,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			if ($active) {
 				$Config->components['plugins'][]	= $plugin;
 				$Config->save();
+				clean_pcache();
 				Trigger::instance()->run(
 					'admin/System/components/plugins/enable',
 					[

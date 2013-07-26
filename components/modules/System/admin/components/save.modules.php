@@ -174,6 +174,7 @@ if (isset($_POST['update_modules_list'])) {
 			}
 			unset($permissions, $group, $list, $label);
 			$a->save();
+			clean_pcache();
 		break;
 		case 'uninstall':
 			if ($module_data['active'] == -1 || $module == 'System' || $module == $Config->core['default_module']) {
@@ -228,6 +229,7 @@ if (isset($_POST['update_modules_list'])) {
 			}
 			$module_data			= ['active' => -1];
 			$a->save();
+			clean_pcache();
 		break;
 		case 'update':
 			/**
@@ -357,6 +359,7 @@ if (isset($_POST['update_modules_list'])) {
 			if ($active) {
 				$module_data['active']	= 1;
 				$Config->save();
+				clean_pcache();
 				Trigger::instance()->run(
 					'admin/System/components/modules/enable',
 					[
@@ -491,6 +494,7 @@ if (isset($_POST['update_modules_list'])) {
 				$Config->core['site_mode']	= 1;
 			}
 			$a->save();
+			clean_pcache();
 		break;
 		case 'default_module':
 			if (
@@ -543,6 +547,7 @@ if (isset($_POST['update_modules_list'])) {
 		case 'enable':
 			$module_data['active'] = 1;
 			$a->save();
+			clean_pcache();
 			Trigger::instance()->run(
 				'admin/System/components/modules/enable',
 				[
@@ -554,6 +559,7 @@ if (isset($_POST['update_modules_list'])) {
 		case 'disable':
 			$module_data['active'] = 0;
 			$a->save();
+			clean_pcache();
 			Trigger::instance()->run(
 				'admin/System/components/modules/disable',
 				[
