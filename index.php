@@ -10,6 +10,7 @@
 /**
  * Requirements of server software versions for full-featured work:
  * * Apache Web Server				>= 2
+ * * Nginx Web Server				>= 2
  *  * PHP							>= 5.4;
  *   Presence of PHP libraries:
  *   * mcrypt					>= 2.4

@@ -38,7 +38,7 @@ class Storage {
 	 */
 	function storage ($connection) {
 		if (!is_int($connection) && $connection != '0') {
-			return new False_class;
+			return False_class::instance();
 		}
 		return $this->connecting($connection);
 	}
@@ -63,7 +63,7 @@ class Storage {
 		 * If connection found in list of failed connections - return instance of False_class
 		 */
 		if (isset($this->failed_connections[$connection])) {
-			return new False_class;
+			return False_class::instance();
 		}
 		/**
 		 * If connection already exists - return reference on the instance of Storage engine object
@@ -85,7 +85,7 @@ class Storage {
 		} elseif (isset($Config->storage[$connection])) {
 			$storage = &$Config->storage[$connection];
 		} else {
-			return new False_class;
+			return False_class::instance();
 		}
 		/**
 		 * Create new Storage connection
@@ -108,7 +108,7 @@ class Storage {
 			$this->failed_connections[$connection] = $connection.'/'.$storage['host'].'/'.$storage['connection'];
 			unset($storage);
 			trigger_error(Language::instance()->error_storage.' '.$this->failed_connections[$connection], E_USER_WARNING);
-			return new False_class;
+			return False_class::instance();
 		}
 	}
 	/**

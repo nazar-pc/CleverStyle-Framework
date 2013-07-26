@@ -63,12 +63,12 @@ Requirements:
 =
 
 * Unix-like operating system
-* Apache2 web server
+* Apache2 or Nginx web server [Nginx config sample](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Nginx-config-sample)
 * PHP 5.4+
  * Mcrypt library (recommended for encryption)
  * cUrl library (recommended for autotranslation)
  * APC (Alternative PHP cache) module (recommended for system speed up)
-* MySQL Database server
+* MySQL Database server (MariaDB will work as well)
  * System may be extended to support other databases
 
 How to install?

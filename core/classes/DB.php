@@ -45,7 +45,7 @@ class DB {
 	 */
 	function db ($connection) {
 		if (!is_int($connection) && $connection != '0') {
-			return new False_class;
+			return False_class::instance();
 		}
 		$Config	= Config::instance(true);
 		/**
@@ -102,7 +102,7 @@ class DB {
 	 */
 	function db_prime ($connection) {
 		if (!is_int($connection) && $connection != '0') {
-			return new False_class;
+			return False_class::instance();
 		}
 		return $this->connecting($connection, false);
 	}
@@ -120,7 +120,7 @@ class DB {
 		} elseif (method_exists('\\cs\\DB\\_Abstract', $connection)) {
 			return call_user_func_array([$this->{0}, $connection], $mode);
 		} else {
-			return new False_class;
+			return False_class::instance();
 		}
 	}
 	/**
@@ -136,7 +136,7 @@ class DB {
 		 * If connection found in list of failed connections - return instance of False_class
 		 */
 		if (isset($this->failed_connections[$connection])) {
-			return new False_class;
+			return False_class::instance();
 		}
 		/**
 		 * If we want to get data and connection with DB mirror already exists - return reference on the instance of DB engine object
@@ -172,7 +172,7 @@ class DB {
 				$db = &$mirror;
 			} else {
 				if (!isset($Config->db[$connection]) || !is_array($Config->db[$connection])) {
-					return new False_class;
+					return False_class::instance();
 				}
 				$db = &$Config->db[$connection];
 			}
@@ -227,7 +227,7 @@ class DB {
 					trigger_error($L->error_db.' '.$this->failed_connections[$connection], E_USER_ERROR);
 				}
 			}
-			return new False_class;
+			return False_class::instance();
 		}
 	}
 	/**

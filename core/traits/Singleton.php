@@ -24,10 +24,10 @@ trait Singleton {
 	static function instance ($check = false) {
 		static $instance;
 		if (defined('STOP')) {
-			return new False_class;
+			return False_class::instance();
 		}
 		if ($check) {
-			return isset($instance) ? $instance : new False_class;
+			return isset($instance) ? $instance : False_class::instance();
 		}
 		if (isset($instance)) {
 			return $instance;

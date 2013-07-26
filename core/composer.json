@@ -1,0 +1,5 @@
+{
+    "require": {
+        "nazar-pc/cstester": "*"
+    }
+}
