@@ -26,7 +26,9 @@ class CSTester {
 		/**
 		 * Detect file, where tester was called
 		 */
-		$this->test_file		= array_pop(debug_backtrace())['file'];
+		$debug_backtrace		= debug_backtrace();
+		$this->test_file		= array_pop($debug_backtrace)['file'];
+		unset($debug_backtrace);
 		if ($_SERVER['DOCUMENT_ROOT']) {
 			$this->test_file	= str_replace(rtrim($_SERVER['DOCUMENT_ROOT'], '/').'/', '', $this->test_file);
 		} else {

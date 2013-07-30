@@ -1,23 +1,23 @@
 [
     {
         "name": "nazar-pc/cstester",
-        "version": "0.1.5",
-        "version_normalized": "0.1.5.0",
+        "version": "0.1.6",
+        "version_normalized": "0.1.6.0",
         "source": {
             "type": "git",
             "url": "https://github.com/nazar-pc/CSTester.git",
-            "reference": "0.1.5"
+            "reference": "0.1.6"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/nazar-pc/CSTester/zipball/0.1.5",
-            "reference": "0.1.5",
+            "url": "https://api.github.com/repos/nazar-pc/CSTester/zipball/0.1.6",
+            "reference": "0.1.6",
             "shasum": ""
         },
         "require": {
             "php": ">=5.4"
         },
-        "time": "2013-07-27 20:39:49",
+        "time": "2013-07-30 10:41:37",
         "type": "library",
         "installation-source": "dist",
         "autoload": {

@@ -1,6 +1,6 @@
 {
 	"name"        : "nazar-pc/cstester",
-	"version"     : "0.1.5",
+	"version"     : "0.1.6",
 	"description" : "CleverStyle Tester is simple tool to test your PHP applications",
 	"keywords"    : ["test", "testing"],
 	"homepage"    : "https://github.com/nazar-pc/CSTester",
