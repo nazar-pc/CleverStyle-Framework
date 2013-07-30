@@ -18,6 +18,7 @@ But in parallel with core some components are developed:
  * **Feedback** (simple feedback module, sends message to admin's email)
  * **HybridAuth** (integration of [HybridAuth](https://github.com/hybridauth/hybridauth) library for integration with social networks and other services)
  * **OAuth2** (provides realization of OAuth 2 authorization protocol (server side))
+ * **Photo gallery** (simple photo gallery module, powered by Fotorama, Plupload and SimpleImage components)
  * **Plupload** (integration of [Plupload](https://github.com/moxiecode/plupload) for files uploading, adds files uploading functionality to other modules)
  * **Static pages** (allows to create static pages like About page or pages without interface, for example for site owner verification)
 
@@ -25,6 +26,7 @@ But in parallel with core some components are developed:
 
  * **Admin default theme** (forces default CleverStyle theme in all administration pages, that is helpful, because there is no need to adapt custom theme for admin panel)
  * **Fotorama** (integration of [Fotorama](https://github.com/artpolikarpov/fotorama) jQuery gallery into CleverStyle CMS)
+ * **SimpleImage** (integration of [SimpleImage](https://github.com/claviska/SimpleImage) class into CleverStyle CMS)
  * **TinyMCE** (integration of [TinyMCE](https://github.com/tinymce/tinymce) WYSIWYG Editor for providing simpler content editing)
 
 System is free, Open Source and is distributed under MIT license, see [license.txt](https://github.com/nazar-pc/CleverStyle-CMS/blob/master/license.txt)
