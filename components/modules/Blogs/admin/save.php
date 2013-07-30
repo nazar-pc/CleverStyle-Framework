@@ -19,10 +19,10 @@ $Blogs	= Blogs::instance();
 $draft	= false;
 switch ($_POST['mode']) {
 	case 'add_section':
-		$Index->save($Blogs->add_section($_POST['parent'], $_POST['title'], $_POST['path']));
+		$Index->save($Blogs->add_section($_POST['parent'], $_POST['title'], isset($_POST['path']) ? $_POST['path'] : null));
 	break;
 	case 'edit_section':
-		$Index->save($Blogs->set_section($_POST['id'], $_POST['parent'], $_POST['title'], $_POST['path']));
+		$Index->save($Blogs->set_section($_POST['id'], $_POST['parent'], $_POST['title'], isset($_POST['path']) ? $_POST['path'] : null));
 	break;
 	case 'delete_section':
 		$Index->save($Blogs->del_section($_POST['id']));

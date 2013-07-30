@@ -27,6 +27,8 @@ use			h;
  *  System/Index/preload
  *
  *  System/Index/postload
+ *
+ * @method static \cs\Index instance($check = false)
  */
 class Index {
 	use	Singleton;
@@ -641,8 +643,13 @@ class Index {
 	 * Executes plugins processing, blocks and module page generation
 	 */
 	function __finish () {
-		$Config	= Config::instance();
-		$Page	= Page::instance();
+		static $finished = false;
+		if ($finished) {
+			return;
+		}
+		$finished	= true;
+		$Config		= Config::instance();
+		$Page		= Page::instance();
 		/**
 		 * If site is closed, user is not admin, and it is not request for log in
 		 */

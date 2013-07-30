@@ -8,8 +8,11 @@
 namespace	cs;
 use			Closure;
 /**
- * Core class.
- * Provides loading of base system configuration, encryption, API requests sending.
+ * Trigger class
+ *
+ * Provides triggers registering and running.
+ *
+ * @method static \cs\Trigger instance($check = false)
  */
 class Trigger {
 	use Singleton;
@@ -24,14 +27,11 @@ class Trigger {
 	protected	$initialized	= false;
 	/**
 	 * Registration of triggers for actions
-
-	 *
-*@param string	$trigger	For example <i>admin/System/components/plugins/disable</i>
+	 * @param string	$trigger	For example <i>admin/System/components/plugins/disable</i>
 	 * @param Closure	$closure	Closure, that will be called at trigger running
 	 * @param bool		$replace	If <i>true</i> - existing closures for this trigger will be removed and replaced with specified one
-
 	 *
-*@return Trigger
+	 * @return Trigger
 	 */
 	function register ($trigger, $closure, $replace = false) {
 		if (!is_string($trigger) || !($closure instanceof Closure)) {

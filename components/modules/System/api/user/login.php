@@ -16,7 +16,10 @@ $User	= User::instance();
  * If AJAX request from local referer, user is guest, login attempts count is satisfactory,
  * user is active, not blocked - process authentication, otherwise - show error
  */
-if (!$Config->server['referer']['local'] || !$Config->server['ajax']) {
+if (!(
+	$Config->server['referer']['local'] &&
+	$Config->server['ajax']
+)) {
 	sleep(1);
 	define('ERROR_CODE', 403);
 	return;

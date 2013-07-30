@@ -5,7 +5,7 @@ $Comments	= null;
 \cs\Trigger::instance()->run(
 	'Comments/instance',
 	[
-		'data'	=> &$Comments
+		'Comments'	=> &$Comments
 	]
 );
 /**
@@ -20,7 +20,7 @@ $Page->content(
 \cs\Trigger::instance()->run(
 	'Comments\instance',
 	[
-		'data'	=> &$Comments
+		'Comments'	=> &$Comments
 	]
 );
 /**
@@ -60,7 +60,7 @@ if ($Comments) {
 		\cs\Trigger::instance()->run(
 			'Comments\instance',
 			[
-				'data'	=> &$Comments
+				'Comments'	=> &$Comments
 			]
 		);
 		/**
@@ -110,7 +110,7 @@ if ($Comments) {
 		\cs\Trigger::instance()->run(
 			'Comments\instance',
 			[
-				'data'	=> &$Comments
+				'Comments'	=> &$Comments
 			]
 		);
 		/**
@@ -165,7 +165,7 @@ if ($Comments) {
 		\cs\Trigger::instance()->run(
 			'Comments\instance',
 			[
-				'data'	=> &$Comments
+				'Comments'	=> &$Comments
 			]
 		);
 		/**

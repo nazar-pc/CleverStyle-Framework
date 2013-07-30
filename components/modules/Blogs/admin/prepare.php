@@ -2,7 +2,6 @@
 /**
  * @package		Blogs
  * @category	modules
- * @version		0.002
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -19,15 +18,7 @@ $Index				= Index::instance();
 $Index->title_auto	= false;
 $L					= Language::instance();
 $Page				= Page::instance();
-$Page->title($L->administration);
-$Page->title($L->Blogs);
-$Page->css([
-	'components/modules/Blogs/includes/css/admin.css',
-	'components/modules/Blogs/includes/css/general.css'
-]);
-$Page->js([
-	'components/modules/Blogs/includes/js/general.js'
-]);
+$Page->title($L->administration)->title($L->Blogs);
 $rc					= Config::instance()->route;
 $Page->menumore		= h::a(
 	[

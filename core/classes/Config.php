@@ -12,6 +12,8 @@ namespace cs;
  *  ['rc'	=> <i>&$rc</i>]		//Reference to string with current route, this string can be changed<br>
  *  System/Config/routing_replace<br>
  *  ['rc'	=> <i>&$rc</i>]		//Reference to string with current route, this string can be changed<br>
+ *
+ * @method static \cs\Config instance($check = false)
  */
 class Config {
 	use	Singleton;

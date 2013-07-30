@@ -7,6 +7,7 @@
  */
 namespace	cs;
 use			Closure;
+defined('FIXED_LANGUAGE') || define('FIXED_LANGUAGE', false);
 /**
  * Provides next triggers:
  *  System/general/languages/load
@@ -17,8 +18,9 @@ use			Closure;
  *   'content_language'	=> content_language
  *   'locale'			=> locale
  *  ]
+ *
+ * @method static \cs\Language instance($check = false)
  */
-defined('FIXED_LANGUAGE') || define('FIXED_LANGUAGE', false);
 class Language {
 	use Singleton;
 
@@ -26,7 +28,7 @@ class Language {
 				$time = null;							//Closure for time processing
 	protected	$init = false,							//For single initialization
 				$translate = [],						//Local cache of translations
-				$need_to_rebuild_cache = false;			//Necessity for cache rebuilding
+				$need_to_rebuild_cache = null;			//Necessity for cache rebuilding
 	/**
 	 * Set basic language
 	 */
@@ -44,11 +46,10 @@ class Language {
 		if ($this->init) {
 			return;
 		}
-		if (!FIXED_LANGUAGE) {
-			$this->change($language);
-		}
+		$this->init = true;
 		$Config	= Config::instance();
 		if ($this->need_to_rebuild_cache) {
+			$this->change($this->need_to_rebuild_cache);
 			if (!empty($Config->components['modules'])) {
 				foreach ($Config->components['modules'] as $module => $mdata) {
 					if ($mdata['active'] != -1 && file_exists(MODULES.'/'.$module.'/languages/'.$this->clanguage.'.json')) {
@@ -82,9 +83,12 @@ class Language {
 				]
 			);
 			Cache::instance()->{"languages/$this->clanguage"} = $this->translate;
-			$this->need_to_rebuild_cache = false;
+			$this->need_to_rebuild_cache = null;
+			$this->change($language);
 		}
-		$this->init = true;
+		if (!FIXED_LANGUAGE) {
+			$this->change($language);
+		}
 	}
 	/**
 	 * Scanning of aliases for defining of current language
@@ -236,8 +240,9 @@ class Language {
 				if (!isset($this->translate['locale'])) {
 					$this->translate['locale']			= $this->clang.'_'.strtoupper($this->clang);
 				}
-				$this->need_to_rebuild_cache	= true;
+				$this->need_to_rebuild_cache	= $this->clanguage;
 				if ($this->init) {
+					$this->init	= false;
 					$this->init($Config->core['active_languages'], $language);
 				}
 				$return							= true;

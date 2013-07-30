@@ -33,14 +33,14 @@ spl_autoload_register(function ($class) {
 		'namespace'	=> count($class) > 1 ? implode('/', array_slice($class, 0, -1)) : '',
 		'name'		=> array_pop($class)
 	];
-	_require_once(CLASSES.'/'.$class['namespace'].'/'.$class['name'].'.php', false) ||
-	_require_once(TRAITS.'/'.$class['namespace'].'/'.$class['name'].'.php', false) ||
-	_require_once(ENGINES.'/'.$class['namespace'].'/'.$class['name'].'.php', false) ||
+	_require_once(CLASSES."/$class[namespace]/$class[name].php", false) ||
+	_require_once(TRAITS."/$class[namespace]/$class[name].php", false) ||
+	_require_once(ENGINES."/$class[namespace]/$class[name].php", false) ||
 	(
-		$class['namespace'] == "modules/$class[name]" && _require_once(MODULES.'/'.$class['name'].'/'.$class['name'].'.php', false)
+		mb_strpos($class['namespace'], "modules/") === 0 && _require_once(MODULES."/../$class[namespace]/$class[name].php", false)
 	) ||
 	(
-		$class['namespace'] == "plugins/$class[name]" && _require_once(PLUGINS.'/'.$class['name'].'/'.$class['name'].'.php', false)
+		mb_strpos($class['namespace'], "plugins/") === 0 && _require_once(PLUGINS."/../$class[namespace]/$class[name].php", false)
 	);
 });
 /**
@@ -90,11 +90,13 @@ function interface_off () {
  * @return bool|string
  */
 function url_by_source ($source) {
+	$Config	= Config::instance(true);
+	if (!$Config) {
+		return false;
+	}
 	$source = realpath($source);
-	if (mb_strpos($source, DIR.'/') === 0) {
-		if ($Config = Config::instance(true)) {
-			return str_replace(DIR, $Config->base_url(), $source);
-		}
+	if (mb_strpos($source, DIR) === 0) {
+		return $Config->base_url().mb_substr($source, mb_strlen(DIR));
 	}
 	return false;
 }
@@ -106,12 +108,12 @@ function url_by_source ($source) {
  * @return bool|string
  */
 function source_by_url ($url) {
-	$Config	= Config::instance();
+	$Config	= Config::instance(true);
 	if (!$Config) {
 		return false;
 	}
 	if (mb_strpos($url, $Config->base_url()) === 0) {
-		return str_replace($Config->base_url(), DIR, $url);
+		return DIR.mb_substr($url, mb_strlen($Config->base_url()));
 	}
 	return false;
 }

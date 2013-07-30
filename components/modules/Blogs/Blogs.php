@@ -15,7 +15,9 @@ use			cs\Trigger,
 			cs\User,
 			cs\DB\Accessor,
 			cs\Singleton;
-
+/**
+ * @method static \cs\modules\Blogs\Blogs instance($check = false)
+ */
 class Blogs extends Accessor {
 	use Singleton;
 
@@ -100,7 +102,7 @@ class Blogs extends Accessor {
 		Trigger::instance()->run(
 			'Comments/instance',
 			[
-				'data'	=> &$Comments
+				'Comments'	=> &$Comments
 			]
 		);
 		/**
@@ -125,7 +127,7 @@ class Blogs extends Accessor {
 		if (empty($tags) || empty($content)) {
 			return false;
 		}
-		$path		= path(str_replace(['/', '\\'], '_', $path ?: $title));
+		$path		= path($path ?: $title);
 		$sections	= array_intersect(
 			array_keys($this->get_sections_list()),
 			$sections
@@ -209,8 +211,8 @@ class Blogs extends Accessor {
 		$Config		= Config::instance();
 		$L			= Language::instance();
 		$id			= (int)$id;
-		$title		= trim(xap($title));
-		$path		= path(str_replace(['/', '\\'], '_', $path ?: $title));
+		$title		= xap(trim($title));
+		$path		= path($path ?: $title);
 		$content	= xap($content, true);
 		$sections	= array_intersect(
 			array_keys($this->get_sections_list()),
@@ -242,7 +244,7 @@ class Blogs extends Accessor {
 			)
 		);
 		$data		= $this->get($id);
-		if ($this->db_prime()->q(
+		if (!$this->db_prime()->q(
 			[
 				"DELETE FROM `[prefix]blogs_posts_sections`
 				WHERE `id` = '%5\$s'",
@@ -273,70 +275,66 @@ class Blogs extends Accessor {
 			(int)(bool)$draft,
 			$id
 		)) {
-			if ($add) {
-				foreach ($Config->core['active_languages'] as $lang) {
-					if ($lang != $L->clanguage) {
-						$lang	= $L->get('clang', $lang);
-						$this->db_prime()->q(
-							"INSERT INTO `[prefix]blogs_posts_tags`
-								(`id`, `tag`, `lang`)
-							SELECT `id`, `tag`, '$lang'
-							FROM `[prefix]blogs_posts_tags`
-							WHERE `id` = $id"
-						);
-					}
-				}
-				unset($lang);
-			}
-			preg_match_all('/"(http[s]?:\/\/.*)"/Uims', $data['content'], $old_files);
-			preg_match_all('/"(http[s]?:\/\/.*)"/Uims', $content, $new_files);
-			$old_files	= isset($old_files[1]) ? $old_files[1] : [];
-			$new_files	= isset($new_files[1]) ? $new_files[1] : [];
-			if ($old_files || $new_files) {
-				foreach (array_diff($old_files, $new_files) as $file) {
-					Trigger::instance()->run(
-						'System/upload_files/del_tag',
-						[
-							'tag'	=> "Blogs/posts/$id/$L->clang",
-							'url'	=> $file
-						]
-					);
-				}
-				unset($file);
-				foreach (array_diff($new_files, $old_files) as $file) {
-					Trigger::instance()->run(
-						'System/upload_files/add_tag',
-						[
-							'tag'	=> "Blogs/posts/$id/$L->clang",
-							'url'	=> $file
-						]
-					);
-				}
-				unset($file);
-			}
-			unset($old_files, $new_files);
-			if ($data['draft'] == 1 && !$draft && $data['date'] == 0) {
-				$this->db_prime()->q(
-					"UPDATE `[prefix]blogs_posts`
-					SET `date` = '%s'
-					WHERE `id` = '%s'
-					LIMIT 1",
-					TIME,
-					$id
-				);
-			}
-			unset(
-				$Cache->{'Blogs/posts/'.$id},
-				$Cache->{'Blogs/sections'},
-				$Cache->{'Blogs/total_count'}
-			);
-			return true;
-		} else {
-			$this->ml_del('Blogs/posts/title', $id);
-			$this->ml_del('Blogs/posts/path', $id);
-			$this->ml_del('Blogs/posts/content', $id);
 			return false;
 		}
+		if ($add) {
+			foreach ($Config->core['active_languages'] as $lang) {
+				if ($lang != $L->clanguage) {
+					$lang	= $L->get('clang', $lang);
+					$this->db_prime()->q(
+						"INSERT INTO `[prefix]blogs_posts_tags`
+							(`id`, `tag`, `lang`)
+						SELECT `id`, `tag`, '$lang'
+						FROM `[prefix]blogs_posts_tags`
+						WHERE `id` = $id"
+					);
+				}
+			}
+			unset($lang);
+		}
+		preg_match_all('/"(http[s]?:\/\/.*)"/Uims', $data['content'], $old_files);
+		preg_match_all('/"(http[s]?:\/\/.*)"/Uims', $content, $new_files);
+		$old_files	= isset($old_files[1]) ? $old_files[1] : [];
+		$new_files	= isset($new_files[1]) ? $new_files[1] : [];
+		if ($old_files || $new_files) {
+			foreach (array_diff($old_files, $new_files) as $file) {
+				Trigger::instance()->run(
+					'System/upload_files/del_tag',
+					[
+						'tag'	=> "Blogs/posts/$id/$L->clang",
+						'url'	=> $file
+					]
+				);
+			}
+			unset($file);
+			foreach (array_diff($new_files, $old_files) as $file) {
+				Trigger::instance()->run(
+					'System/upload_files/add_tag',
+					[
+						'tag'	=> "Blogs/posts/$id/$L->clang",
+						'url'	=> $file
+					]
+				);
+			}
+			unset($file);
+		}
+		unset($old_files, $new_files);
+		if ($data['draft'] == 1 && !$draft && $data['date'] == 0) {
+			$this->db_prime()->q(
+				"UPDATE `[prefix]blogs_posts`
+				SET `date` = '%s'
+				WHERE `id` = '%s'
+				LIMIT 1",
+				TIME,
+				$id
+			);
+		}
+		unset(
+			$Cache->{'Blogs/posts/'.$id},
+			$Cache->{'Blogs/sections'},
+			$Cache->{'Blogs/total_count'}
+		);
+		return true;
 	}
 	/**
 	 * Delete specified post
@@ -348,7 +346,7 @@ class Blogs extends Accessor {
 	function del ($id) {
 		$Cache	= Cache::instance();
 		$id		= (int)$id;
-		if ($this->db_prime()->q([
+		if (!$this->db_prime()->q([
 			"DELETE FROM `[prefix]blogs_posts`
 			WHERE `id` = $id
 			LIMIT 1",
@@ -357,37 +355,36 @@ class Blogs extends Accessor {
 			"DELETE FROM `[prefix]blogs_posts_tags`
 			WHERE `id` = $id"
 		])) {
-			$this->ml_del('Blogs/posts/title', $id);
-			$this->ml_del('Blogs/posts/path', $id);
-			$this->ml_del('Blogs/posts/content', $id);
-			Trigger::instance()->run(
-				'System/upload_files/del_tag',
-				[
-					'tag'	=> "Blogs/posts/$id%"
-				]
-			);
-			$Comments	= null;
-			Trigger::instance()->run(
-				'Comments/instance',
-				[
-					'data'	=> &$Comments
-				]
-			);
-			/**
-			 * @var \cs\modules\Comments\Comments $Comments
-			 */
-			if ($Comments) {
-				$Comments->del_all($id);
-			}
-			unset(
-				$Cache->{'Blogs/posts/'.$id},
-				$Cache->{'Blogs/sections'},
-				$Cache->{'Blogs/total_count'}
-			);
-			return true;
-		} else {
 			return false;
 		}
+		$this->ml_del('Blogs/posts/title', $id);
+		$this->ml_del('Blogs/posts/path', $id);
+		$this->ml_del('Blogs/posts/content', $id);
+		Trigger::instance()->run(
+			'System/upload_files/del_tag',
+			[
+				'tag'	=> "Blogs/posts/$id%"
+			]
+		);
+		$Comments	= null;
+		Trigger::instance()->run(
+			'Comments/instance',
+			[
+				'Comments'	=> &$Comments
+			]
+		);
+		/**
+		 * @var \cs\modules\Comments\Comments $Comments
+		 */
+		if ($Comments) {
+			$Comments->del_all($id);
+		}
+		unset(
+			$Cache->{'Blogs/posts/'.$id},
+			$Cache->{'Blogs/sections'},
+			$Cache->{'Blogs/total_count'}
+		);
+		return true;
 	}
 	/**
 	 * Get total count of posts
@@ -547,7 +544,6 @@ class Blogs extends Accessor {
 	function add_section ($parent, $title, $path) {
 		$Cache	= Cache::instance();
 		$parent	= (int)$parent;
-		$path	= path(str_replace(['/', '\\'], '_', $path ?: $title));
 		$posts	= $this->db_prime()->qfa(
 			"SELECT `id`
 			FROM `[prefix]blogs_posts_sections`
@@ -595,8 +591,8 @@ class Blogs extends Accessor {
 	function set_section ($id, $parent, $title, $path) {
 		$Cache	= Cache::instance();
 		$parent	= (int)$parent;
-		$title	= trim($title);
-		$path	= path(str_replace(['/', '\\'], '_', $path ?: $title));
+		$title	= xap(trim($title));
+		$path	= path($path ?: $title);
 		$id		= (int)$id;
 		if ($this->db_prime()->q(
 			"UPDATE `[prefix]blogs_sections`

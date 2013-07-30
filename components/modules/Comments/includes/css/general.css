@@ -12,7 +12,9 @@
 .cs-comments-comment > .cs-comments-comment-parent,
 .cs-comments-comment > .cs-comments-comment-edit,
 .cs-comments-comment > .cs-comments-comment-delete {
-	opacity : 0;
+	opacity            : 0;
+	-webkit-transition : opacity .3s;
+	transition         : opacity .3s;
 }
 .cs-comments-comment:hover > .cs-comments-comment-link,
 .cs-comments-comment:hover > .cs-comments-comment-parent,

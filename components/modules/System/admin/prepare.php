@@ -113,8 +113,8 @@ function dep_normal ($dependence_structure) {
 			preg_match('/^([^<=>!]+)([<=>!]*)(.*)$/', $d, $d);
 		}
 		$return[$d[1]]	= [
-			isset($d[2]) ? str_replace('=>', '>=', $d[2]) : (isset($d[3]) ? '=' : '>='),
-			isset($d[3]) ? $d[3] : 0
+			isset($d[2]) && $d[2] ? str_replace('=>', '>=', $d[2]) : (isset($d[3]) && $d[3] ? '=' : '>='),
+			isset($d[3]) && $d[3] ? $d[3] : 0
 		];
 	}
 	return $return;
@@ -260,9 +260,8 @@ function check_dependencies ($name, $type, $dir = null, $mode = 'enable') {
 		if (
 			!empty($provide) &&
 			isset($module_meta['provide']) &&
-			is_array($module_meta['provide']) &&
 			!empty($module_meta['provide']) &&
-			$intersect = array_intersect($provide, $module_meta['provide'])
+			$intersect = array_intersect($provide, (array)$module_meta['provide'])
 		) {
 			if ($return_m) {
 				$Page->warning($L->dependencies_not_satisfied);
@@ -279,7 +278,7 @@ function check_dependencies ($name, $type, $dir = null, $mode = 'enable') {
 		/**
 		 * Checking for required packages
 		 */
-		if (isset($require[$module_meta['package']])) {
+		if (!empty($require) && isset($require[$module_meta['package']])) {
 			if (
 				version_compare(
 					$module_meta['version'],
@@ -303,9 +302,26 @@ function check_dependencies ($name, $type, $dir = null, $mode = 'enable') {
 			}
 		}
 		/**
+		 * Checking for required functionality
+		 */
+		if (
+			!empty($require) &&
+			isset($module_meta['provide']) &&
+			!empty($module_meta['provide'])
+		) {
+			foreach ((array)$module_meta['provide'] as $p) {
+				unset($require[$p]);
+			}
+			unset($p);
+		}
+		/**
 		 * Checking for conflict packages
 		 */
-		if (isset($module_meta['conflict']) && is_array($module_meta['conflict']) && !empty($module_meta['conflict'])) {
+		if (
+			!empty($conflict) &&
+			isset($module_meta['conflict']) &&
+			!empty($module_meta['conflict'])
+		) {
 			if (
 				version_compare(
 					$module_meta['version'],
@@ -398,6 +414,19 @@ function check_dependencies ($name, $type, $dir = null, $mode = 'enable') {
 			}
 		}
 		/**
+		 * Checking for required functionality
+		 */
+		if (
+			!empty($require) &&
+			isset($plugin_meta['provide']) &&
+			!empty($plugin_meta['provide'])
+		) {
+			foreach ((array)$plugin_meta['provide'] as $p) {
+				unset($require[$p]);
+			}
+			unset($p);
+		}
+		/**
 		 * Checking for conflict packages
 		 */
 		if (isset($plugin_meta['conflict']) && is_array($plugin_meta['conflict']) && !empty($plugin_meta['conflict'])) {
@@ -438,7 +467,7 @@ function check_dependencies ($name, $type, $dir = null, $mode = 'enable') {
 			}
 			$return_r	= false;
 			$Page->warning(
-				$L->package_not_found("$package $details[1] $details[0]")
+				$L->package_or_functionality_not_found($details[1] ? "$package $details[0] $details[1]" : $package)
 			);
 		}
 	}
@@ -468,10 +497,6 @@ function check_backward_dependencies ($name, $type = 'module', $mode = 'disable'
 		return true;
 	}
 	$meta		= _json_decode(file_get_contents("$dir/meta.json"));
-	$meta		= [
-		'package'	=> $meta['package'],
-		'version'	=> $meta['version']
-	];
 	$return		= true;
 	$Config		= Config::instance();
 	$L			= Language::instance();
@@ -482,7 +507,7 @@ function check_backward_dependencies ($name, $type = 'module', $mode = 'disable'
 	$return_m	= true;
 	foreach ($Config->components['modules'] as $module => $module_data) {
 		/**
-		 * If module uninstalled, disabled (in disable check mode), module name is the same as checked or meta.json file absent
+		 * If module uninstalled, disabled (in disable check mode), module name is the same as checking or meta.json file does not exists
 		 * Then skip this module
 		 */
 		if (
@@ -500,7 +525,12 @@ function check_backward_dependencies ($name, $type = 'module', $mode = 'disable'
 			continue;
 		}
 		$module_require	= dep_normal($module_require['require']);
-		if (isset($module_require[$meta['package']])) {
+		if (
+			isset($module_require[$meta['package']]) ||
+			(
+				isset($meta['provide']) && array_intersect(array_keys($module_require), (array)$meta['provide'])
+			)
+		) {
 			if ($return_m) {
 				$Page->warning($L->dependencies_not_satisfied);
 			}
@@ -528,7 +558,12 @@ function check_backward_dependencies ($name, $type = 'module', $mode = 'disable'
 			continue;
 		}
 		$plugin_require	= dep_normal($plugin_require['require']);
-		if (isset($plugin_require[$meta['package']])) {
+		if (
+			isset($plugin_require[$meta['package']]) ||
+			(
+				isset($meta['provide']) && array_intersect(array_keys($plugin_require), (array)$meta['provide'])
+			)
+		) {
 			if ($return_p) {
 				$Page->warning($L->dependencies_not_satisfied);
 			}

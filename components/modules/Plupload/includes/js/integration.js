@@ -28,12 +28,8 @@
   window.file_upload = function(button, success, error, progress, multi) {
     var file_element, files, uploader;
     files = [];
-    if (!button.attr('id')) {
-      button.attr('id', 'plupload_' + String((new Date).getTime()).replace('.', ''));
-    }
     uploader = new plupload.Uploader({
       runtimes: 'html5',
-      browse_button: button.attr('id'),
       max_file_size: window.plupload_max_file_size ? plupload_max_file_size : null,
       url: '/Plupload',
       multi_selection: multi,
@@ -41,6 +37,11 @@
     });
     uploader.init();
     file_element = $('#' + uploader.id + '_html5');
+    if (button) {
+      button.click(function() {
+        return file_element.click();
+      });
+    }
     if (!file_element.attr('accept')) {
       file_element.removeAttr('accept');
     }

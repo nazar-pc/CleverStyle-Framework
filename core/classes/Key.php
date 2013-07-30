@@ -6,6 +6,9 @@
  * @license		MIT License, see license.txt
  */
 namespace cs;
+/**
+ * @method static \cs\Key instance($check = false)
+ */
 class Key {
 	use	Singleton;
 

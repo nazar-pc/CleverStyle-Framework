@@ -28,7 +28,7 @@ $Index->content(
 		h::{'th.ui-widget-header.ui-corner-all'}(
 			$L->parent_section,
 			$L->section_title,
-			h::info('section_path')
+			($Config->core['simple_admin_mode'] ? false : h::info('section_path'))
 		),
 		h::{'td.ui-widget-content.ui-corner-all'}(
 			h::{'select[name=parent][size=5]'}(
@@ -38,7 +38,7 @@ $Index->content(
 				]
 			),
 			h::{'input[name=title]'}(),
-			h::{'input[name=path]'}()
+			($Config->core['simple_admin_mode'] ? false : h::{'input[name=path]'}())
 		)
 	).
 	h::{'input[type=hidden][name=mode][value=add_section]'}()

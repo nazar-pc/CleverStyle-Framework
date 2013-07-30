@@ -43,7 +43,7 @@ switch (substr($max_file_size, -1)) {
 	default:
 		$max_file_size	= substr($max_file_size, 0, -1);
 }
-if ($_FILES['file']['error'] & (UPLOAD_ERR_INI_SIZE | UPLOAD_ERR_FORM_SIZE) || $_FILES['userfile']['size'] > $max_file_size) {
+if ($_FILES['file']['error'] & (UPLOAD_ERR_INI_SIZE | UPLOAD_ERR_FORM_SIZE) || $_FILES['file']['size'] > $max_file_size) {
 	$Page->json([
 		'jsonrpc'	=> '2.0',
 		'error'		=> [
@@ -82,7 +82,6 @@ if (!$User->user()) {
  */
 $storage			= Storage::instance()->{$module_data->storage('files')};
 $cdb				= DB::instance()->{$module_data->db('files')}();
-$destination_file	= 'Plupload/'.$User->id.'_'.microtime(true).'_'.uniqid();
 if (!$storage || !$cdb) {
 	$Page->json([
 		'jsonrpc'	=> '2.0',
@@ -101,6 +100,15 @@ if (!$module_data->directory_created) {
 	$storage->mkdir('Plupload');
 	$module_data->directory_created	= 1;
 }
+$destination_file	= 'Plupload/'.date('Y-m-d');
+if (!$storage->file_exists($destination_file)) {
+	$storage->mkdir($destination_file);
+}
+$destination_file	.= date('/H');
+if (!$storage->file_exists($destination_file)) {
+	$storage->mkdir($destination_file);
+}
+$destination_file	.= '/'.$User->id.date('_i:s_').uniqid();
 if (!$storage->copy($_FILES['file']['tmp_name'], $destination_file)) {
 	$Page->json([
 		'jsonrpc'	=> '2.0',

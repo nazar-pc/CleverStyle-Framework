@@ -6,6 +6,9 @@
  * @license		MIT License, see license.txt
  */
 namespace cs;
+/**
+ * @method static \cs\Cache instance($check = false)
+ */
 class Cache {
 	use Singleton;
 

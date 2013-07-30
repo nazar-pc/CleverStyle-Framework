@@ -1,0 +1,10 @@
+{
+	"package"		: "SimpleImage",
+	"category"		: "plugins",
+	"version"		: "2.3-cs1",
+	"description"	: "A PHP class that simplifies working with images. Integration into CleverStyle CMS.",
+	"author"		: "Cory LaViska",
+	"website"		: "www.abeautifulsite.net",
+	"license"		: "MIT License",
+	"provide"		: "simpleimage"
+}

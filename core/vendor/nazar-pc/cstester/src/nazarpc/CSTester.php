@@ -11,17 +11,27 @@ namespace	nazarpc;
  */
 class CSTester {
 	protected	$tests_directory,
+				$test_file,
 				$cli,
 				$port				= 8001,
 				$title;
 	/**
-	 * @param string $tests_directory Absolute path to tests directory
+	 * @param string $tests_directory	Absolute path to tests directory
 	 */
 	function __construct ($tests_directory) {
 		$this->tests_directory	= $tests_directory;
 		$this->cli				= PHP_SAPI == 'cli';
 		@ini_set('error_log', "$tests_directory/error.log");
 		$this->title			= json_decode(file_get_contents("$this->tests_directory/tests.json"), true)['title'];
+		/**
+		 * Detect file, where tester was called
+		 */
+		$this->test_file		= array_pop(debug_backtrace())['file'];
+		if ($_SERVER['DOCUMENT_ROOT']) {
+			$this->test_file	= str_replace(rtrim($_SERVER['DOCUMENT_ROOT'], '/').'/', '', $this->test_file);
+		} else {
+			$this->test_file	= array_pop(explode('/', $this->test_file));
+		}
 	}
 	/**
 	 * Set port number (for CLI mode only)
@@ -164,7 +174,7 @@ class CSTester {
 				 * Run single test
 				 */
 				$test				= urlencode($test);
-				$result				= file_get_contents("$base_url/test.php?suite=$suite&test=$test&key=$key");
+				$result				= file_get_contents("$base_url/$this->test_file?suite=$suite&test=$test&key=$key");
 				if ($result === '0') {
 					++$total_success;
 					++$local_success;
@@ -239,8 +249,8 @@ class CSTester {
 		 */
 		} else {
 			echo	"\e[1m$title\e[21m\n".
-					str_repeat('-', strlen($title))."\n".
-					"Test in progress 0%...\n";
+					str_repeat('-', strlen($title))."\n\n";
+			echo	"\e[1ATest in progress 0%...\n";
 		}
 	}
 	/**
@@ -285,7 +295,6 @@ class CSTester {
 		 * HTML presentation
 		 */
 		if (!$this->cli) {
-			header('Content-Type: text/html; charset=utf-8');
 			$css		= explode('*/', file_get_contents(__DIR__.'/includes/style.css'), 2)[1];
 			$img		= base64_encode(file_get_contents(__DIR__.'/includes/logo.png'));
 			$content	=	"<!doctype html>\n".

@@ -18,18 +18,17 @@
  * @return {function}
 ###
 window.file_upload	= (button, success, error, progress, multi) ->
-	files			= [];
-	if !button.attr 'id'
-		button.attr 'id', 'plupload_' + String((new Date).getTime()).replace('.', '')
-	uploader		= new plupload.Uploader
+	files				= [];
+	uploader			= new plupload.Uploader
 		runtimes		: 'html5'
-		browse_button	: button.attr('id')
 		max_file_size	: if window.plupload_max_file_size then plupload_max_file_size else null
 		url				: '/Plupload'
 		multi_selection	: multi
 		multipart		: true
 	uploader.init()
-	file_element	= $('#' + uploader.id + '_html5');
+	file_element		= $('#' + uploader.id + '_html5');
+	if button
+		button.click -> file_element.click()
 	if !file_element.attr('accept')
 		file_element.removeAttr('accept')
 	uploader.bind 'FilesAdded', ->

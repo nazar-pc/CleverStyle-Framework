@@ -36,10 +36,10 @@ if (isset($rc[2])) {
 				$cdb		= $Config->db[$rc[3]];
 				if ($mirror) {
 					$cdbm	= $Config->db[$rc[3]]['mirrors'][$rc[4]];
-					$name	= $L->mirror.' '.($rc[3] ? $L->db.' '.$cdb['name'] : $L->core_db).', '.$cdbm['name'].' ('.$cdbm['host'].'/'.$cdbm['type'].')?';
+					$name	= "$L->mirror ".($rc[3] ? "$L->db $cdb[name]" : $L->core_db).", $cdbm[name] ($cdbm[host]/$cdbm[type])?";
 					unset($cdbm);
 				} else {
-					$name	= $L->db.' '.$cdb['name'].' ('.$cdb['host'].'/'.$cdb['type'].')?';
+					$name	= "$L->db $cdb[name] ($cdb[host]/$cdb[type])?";
 				}
 				unset($mirror, $cdb);
 			} elseif ($rc[2] == 'add') {
@@ -53,7 +53,7 @@ if (isset($rc[2])) {
 				}
 				unset($i, $db);
 			}
-			$a->action = 'admin/System/'.$rc[0].'/'.$rc[1];
+			$a->action = "admin/System/$rc[0]/$rc[1]";
 			/**
 			 * @var array $dbsname
 			 * @var array $dbs
@@ -151,7 +151,7 @@ if (isset($rc[2])) {
 				h::button(
 					$L->test_connection,
 					[
-						'onMouseDown'	=> 'db_test(\''.$a->action.'/test\');'
+						'onMouseDown'	=> "db_test('$a->action/test');"
 					]
 				)
 			);
@@ -180,10 +180,10 @@ if (isset($rc[2])) {
 				$cdb		= $Config->db[$rc[3]];
 				if ($mirror) {
 					$cdbm	= $Config->db[$rc[3]]['mirrors'][$rc[4]];
-					$name	= $L->mirror.' '.($rc[3] ? $L->db.' '.$cdb['name'] : $L->core_db).', '.$cdbm['name'].' ('.$cdbm['host'].'/'.$cdbm['type'].')?';
+					$name	= "$L->mirror ".($rc[3] ? "$L->db $cdb[name]" : $L->core_db).", $cdbm[name] ($cdbm[host]/$cdbm[type])?";
 					unset($cdbm);
 				} else {
-					$name	= $L->db.' '.$cdb['name'].' ('.$cdb['host'].'/'.$cdb['type'].')?';
+					$name	= "$L->db $cdb[name] ($cdb[host]/$cdb[type])?";
 				}
 				unset($mirror, $cdb);
 				$Page->title($L->deletion_of_database($name));
@@ -255,28 +255,28 @@ if (isset($rc[2])) {
 							[
 								h::icon('plus'),
 								[
-									'href'			=> $a->action.'/add/'.$i,
-									'data-title'	=> $L->add.' '.$L->mirror.' '.$L->of_db
+									'href'			=> "$a->action/add/$i",
+									'data-title'	=> "$L->add $L->mirror $L->of_db"
 								]
 							],
 							$i ? [
 								h::icon('wrench'),
 								[
-									'href'			=> $a->action.'/edit/'.$i,
-									'data-title'	=> $L->edit.' '.$L->db
+									'href'			=> "$a->action/edit/$i",
+									'data-title'	=> "$L->edit $L->db"
 								]
 							] : false,
 							$i ? [
 								h::icon('trash'),
 								[
-									'href'			=> $a->action.'/delete/'.$i,
+									'href'			=> "$a->action/delete/$i",
 									'data-title'	=> $L->delete.' '.$L->db
 								]
 							] : false,
 							[
 								h::icon('signal-diag'),
 								[
-									'onMouseDown'	=> 'db_test(\''.$a->action.'/test/'.$i.'\', true);',
+									'onMouseDown'	=> "db_test('$a->action/test/$i', true);",
 									'data-title'	=> $L->test_connection
 								]
 							]
@@ -304,21 +304,21 @@ if (isset($rc[2])) {
 								[
 									h::icon('wrench'),
 									[
-										'href'			=> 'admin/System/'.$rc[0].'/'.$rc[1].'/edit/'.$i.'/'.$m,
-										'data-title'	=> $L->edit.' '.$L->mirror.' '.$L->of_db
+										'href'			=> "admin/System/$rc[0]/$rc[1]/edit/$i/$m",
+										'data-title'	=> "$L->edit $L->mirror $L->of_db"
 									]
 								],
 								[
 									h::icon('trash'),
 									[
-										'href'			=> 'admin/System/'.$rc[0].'/'.$rc[1].'/delete/'.$i.'/'.$m,
-										'data-title'	=> $L->delete.' '.$L->mirror.' '.$L->of_db
+										'href'			=> "admin/System/$rc[0]/$rc[1]/delete/$i/$m",
+										'data-title'	=> "$L->delete $L->mirror $L->of_db"
 									]
 								],
 								[
 									h::icon('signal-diag'),
 									[
-										'onMouseDown'	=> 'db_test(\''.$a->action.'/test/'.$i.'/'.$m.'\', true);',
+										'onMouseDown'	=> "db_test('$a->action/test/$i/$m', true);",
 										'data-title'	=> $L->test_connection
 									]
 								]
@@ -347,7 +347,7 @@ if (isset($rc[2])) {
 			h::{'td.cs-left-all[colspan=7] a.cs-button'}(
 				$L->add_database,
 				[
-					'href' => 'admin/System/'.$rc[0].'/'.$rc[1].'/add'
+					'href' => "admin/System/$rc[0]/$rc[1]/add"
 				]
 			),
 			h::{'td.cs-right-all[colspan=4] info'}('db_balance').

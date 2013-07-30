@@ -8,6 +8,9 @@
 namespace	cs;
 use			h,
 			PHPMailer;
+/**
+ * @method static \cs\Mail instance($check = false)
+ */
 class Mail extends PHPMailer {
 	use Singleton;
 

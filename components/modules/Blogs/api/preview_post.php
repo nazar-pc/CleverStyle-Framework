@@ -12,13 +12,16 @@ use			h,
 			cs\Language,
 			cs\Page,
 			cs\User;
-include_once MFOLDER.'/../prepare.php';
 $Config	= Config::instance();
 $User	= User::instance();
 /**
- * If AJAX request from local referer, user is not guest
+ * If AJAX request from local referer, user is not guest - allow
  */
-if (!$Config->server['referer']['local'] || !$Config->server['ajax'] || !$User->user()) {
+if (!(
+	$Config->server['referer']['local'] &&
+	$Config->server['ajax'] &&
+	$User->user()
+)) {
 	sleep(1);
 	define('ERROR_CODE', 403);
 	return;

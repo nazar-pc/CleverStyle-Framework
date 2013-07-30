@@ -32,6 +32,8 @@ Trigger::instance()->register(
 		while ($f = $cdb->fs($files)) {
 			$storage->unlink($f);
 		}
-		$storage->rmdir('Plupload');
+		if ($storage->is_dir('Plupload')) {
+			$storage->rmdir('Plupload');
+		}
 	}
 );

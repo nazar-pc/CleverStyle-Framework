@@ -22,30 +22,28 @@ $(function () {
 		remove_script_host		: false,
 		relative_urls			: false,
 		file_browser_callback	: window.file_upload ? function (field_name) {
-			if (!tinymce.plupload) {
-				tinymce.plupload			= {};
-				tinymce.plupload.dialog		= $('<div title="Uploading..." class="cs-center"></div>').dialog({
+			if (!tinymce.uploader_dialog) {
+				tinymce.uploader_dialog		= $('<div title="Uploading..." class="cs-center"></div>').dialog({
 					autoOpen	: false
 				});
-				tinymce.plupload.dialog.parent().css('z-index', 100000);
-				tinymce.plupload.uploader	= file_upload(
-					$('<button></button>'),
-					function (files) {
-						tinymce.plupload.dialog.dialog('close');
-						if (files.length) {
-							$('#' + field_name).val(files[0]);
-						}
-					},
-					function (error) {
-						tinymce.plupload.dialog.dialog('close');
-						alert(error);
-					},
-					function (file) {
-						tinymce.plupload.dialog.html(file.percent + '%').dialog('open');
-					}
-				);
+				tinymce.uploader_dialog.parent().css('z-index', 100000);
 			}
-			tinymce.plupload.uploader.browse();
+			file_upload(
+				null,
+				function (files) {
+					tinymce.uploader_dialog.dialog('close');
+					if (files.length) {
+						$('#' + field_name).val(files[0]);
+					}
+				},
+				function (error) {
+					tinymce.uploader_dialog.dialog('close');
+					alert(error);
+				},
+				function (file) {
+					tinymce.uploader_dialog.html(file.percent + '%').dialog('open');
+				}
+			).browse();
 		} : null
 	};
 	async_call([

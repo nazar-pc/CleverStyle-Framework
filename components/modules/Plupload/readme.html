@@ -9,8 +9,8 @@
 		<dl>
 			<dt>button</dt>
 			<dd>
-				Element, which should be clicked for files selection (may be element in DOM theee, on created on-fly: <code>$('&lt;button&gt;&lt;/button&gt;')</code><br>
-				Required
+				Element, which should be clicked for files selection (may any element in DOM thee, on created on-fly: <code>$('&lt;button&gt;&lt;/button&gt;')</code> that may be clicked<br>
+				Optional
 			</dd>
 			<dt>success</dt>
 			<dd>Function, will be called after successful uploading of all files, accepts one argument <code>files</code> with array of absolute urls of all uploaded files</dd>
@@ -30,7 +30,7 @@
 		});
 		tinymce.plupload.dialog.parent().css('z-index', 100000);
 		tinymce.plupload.uploader	= file_upload(
-			$('&lt;button&gt;&lt;/button&gt;'),
+			null,
 			function (files) {
 				tinymce.plupload.dialog.dialog('close');
 				if (files.length) {

@@ -18,11 +18,11 @@ $Config				= Config::instance();
 $L					= Language::instance();
 $Page				= Page::instance();
 $User				= User::instance();
-$Comments	= null;
+$Comments			= null;
 Trigger::instance()->run(
 	'Comments/instance',
 	[
-	'data'	=> &$Comments
+		'Comments'	=> &$Comments
 	]
 );
 /**
@@ -43,15 +43,15 @@ if (!$post) {
 $module				= path($L->Blogs);
 if ($post['path'] != mb_substr($rc[1], 0, mb_strrpos($rc[1], ':'))) {
 	code_header(303);
-	header('Location: '.$Config->base_url().'/'.$module.'/'.$post['path'].':'.$post['id']);
+	header("Location: {$Config->base_url()}/$module/$post[path]:$post[id]");
 	return;
 }
 $Page->title($post['title']);
 $tags				= $Blogs->get_tag($post['tags']);
-$Page->Keywords		= keywords($post['title'].' '.implode(' ', $tags)).'. '.$Page->Keywords;
-$Page->Description	= description($post['short_content']);//TODO og type, description and keywords
+$Page->Keywords		= keywords($post['title'].' '.implode(' ', $tags));
+$Page->Description	= description($post['short_content']);
 $Page->canonical_url(
-	$Config->base_url().'/'.$module.'/'.$post['path'].':'.$post['id']
+	"{$Config->base_url()}/$module/$post[path]:$post[id]"
 )->og(
 	'type',
 	'article'
@@ -87,14 +87,14 @@ Index::instance()->content(
 						[
 							h::icon('wrench'),
 							[
-								'href'			=> $module.'/edit_post/'.$post['id'],
+								'href'			=> "$module/edit_post/$post[id]",
 								'data-title'	=> $L->edit
 							]
 						],
 						[
 							h::icon('trash'),
 							[
-								'href'			=> 'admin/Blogs/delete_post/'.$post['id'],
+								'href'			=> "admin/Blogs/delete_post/$post[id]",
 								'data-title'	=> $L->delete
 							]
 						]
@@ -102,7 +102,7 @@ Index::instance()->content(
 						$User->id == $post['user'] ? ' '.h::{'a.cs-button-compact'}(
 							h::icon('wrench'),
 							[
-								'href'			=> $module.'/edit_post/'.$post['id'],
+								'href'			=> "$module/edit_post/$post[id]",
 								'data-title'	=> $L->edit
 							]
 						) : ''

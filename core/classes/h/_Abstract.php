@@ -840,7 +840,7 @@ abstract class _Abstract {
 		if ($space_position === false) {
 			return false;
 		}
-		$next_space		= mb_strpos($in, ' ', $space_position);
+		$next_space		= mb_strpos($in, ' ', $space_position + 1);
 		$attr_close		= mb_strpos($in, ']', $space_position);
 		if (
 			$next_space === false ||

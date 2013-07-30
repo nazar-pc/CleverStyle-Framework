@@ -6,6 +6,9 @@
  * @license		MIT License, see license.txt
  */
 namespace cs;
+/**
+ * @method static \cs\Storage instance($check = false)
+ */
 class Storage {
 	use	Singleton;
 
@@ -31,10 +34,10 @@ class Storage {
 		return null;
 	}
 	/**
-	 * Processing of requests for getting data from DB. Balancing of DB may be used with corresponding settings.
+	 * Processing of getting storage instance
 	 *
-	 * @param	int									$connection
-	 * @return	bool|Storage\_Abstract|False_class
+	 * @param	int								$connection
+	 * @return	Storage\_Abstract|False_class
 	 */
 	function storage ($connection) {
 		if (!is_int($connection) && $connection != '0') {
@@ -43,20 +46,20 @@ class Storage {
 		return $this->connecting($connection);
 	}
 	/**
-	 * Processing of requests for getting data from DB. Balancing of DB may be used with corresponding settings.
+	 * Processing of getting storage instance
 	 *
-	 * @param	int									$connection
-	 * @return	bool|Storage\_Abstract|False_class
+	 * @param	int								$connection
+	 * @return	Storage\_Abstract|False_class
 	 */
 	function __get ($connection) {
 		return $this->storage($connection);
 	}
 	/**
-	 * Processing of al storage requests
+	 * Processing of all storage requests
 	 *
-	 * @param int									$connection
+	 * @param int								$connection
 	 *
-	 * @return bool|Storage\_Abstract|False_class
+	 * @return Storage\_Abstract|False_class
 	 */
 	protected function connecting ($connection) {
 		/**

@@ -1,0 +1,40 @@
+<?php
+/**
+ * @package		Photo gallery
+ * @category	modules
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2013, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+namespace	cs\modules\Photo_gallery;
+use			h,
+			cs\Config,
+			cs\Page,
+			cs\User;
+$Config	= Config::instance();
+/**
+ * If AJAX request from local referer, user is not guest - allow
+ */
+if (!(
+	$Config->server['referer']['local'] &&
+	$Config->server['ajax'] &&
+	User::instance()->user()
+)) {
+	sleep(1);
+	define('ERROR_CODE', 403);
+	return;
+}
+if (!isset($_POST['files'], $_POST['gallery']) || empty($_POST['files'])) {
+	define('ERROR_CODE', 400);
+	return;
+}
+$Photo_gallery	= Photo_gallery::instance();
+$files			= $_POST['files'];
+foreach ($files as $i => &$file) {
+	$file	= $Photo_gallery->add($file, $_POST['gallery']);
+	if (!$file) {
+		unset($files[$i]);
+	}
+}
+unset($i, $file);
+Page::instance()->json($files);

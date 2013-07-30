@@ -14,13 +14,12 @@ Trigger::instance()->register(
 			return;
 		}
 		$rc		= explode('/', $data['rc']);
-		if ($rc[0] == Language::instance()->Blogs || $rc[0] == 'Blogs') {
+		if ($rc[0] == path(Language::instance()->Blogs) || $rc[0] == 'Blogs') {
 			$rc[0]		= 'Blogs';
 			$data['rc']	= implode('/', $rc);
 		}
 	}
-);
-Trigger::instance()->register(
+)->register(
 	'System/Index/construct',
 	function () {
 		switch (Config::instance()->components['modules']['Blogs']['active']) {

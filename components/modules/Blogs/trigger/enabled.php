@@ -26,7 +26,7 @@ Trigger::instance()->register(
 		Trigger::instance()->run(
 			'Comments/instance',
 			[
-				'data'	=> &$Comments
+				'Comments'	=> &$Comments
 			]
 		);
 		/**
@@ -54,7 +54,7 @@ Trigger::instance()->register(
 		Trigger::instance()->run(
 			'Comments/instance',
 			[
-				'data'	=> &$Comments
+				'Comments'	=> &$Comments
 			]
 		);
 		/**
@@ -84,7 +84,7 @@ Trigger::instance()->register(
 		Trigger::instance()->run(
 			'Comments/instance',
 			[
-				'data'	=> &$Comments
+				'Comments'	=> &$Comments
 			]
 		);
 		/**

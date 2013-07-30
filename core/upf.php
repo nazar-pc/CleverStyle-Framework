@@ -1102,7 +1102,7 @@ function truncate ($text, $length = 1024, $ending = '...', $exact = false, $cons
  */
 function path ($text) {
 	return strtr(
-		$text,
+		xap(trim($text)),
 		[
 			' '		=> '_',
 			'/'		=> '_',

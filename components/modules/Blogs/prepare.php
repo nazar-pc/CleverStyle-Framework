@@ -15,11 +15,11 @@ use			h,
 			cs\Trigger,
 			cs\User;
 if (!API) {
-	$Config				= Config::instance();
-	$Page				= Page::instance();
-	$L					= Language::instance();
+	$Config							= Config::instance();
+	$Page							= Page::instance();
+	$L								= Language::instance();
 	Index::instance()->title_auto	= false;
-	$rc					= &$Config->route;
+	$rc								= &$Config->route;
 	if (!isset($rc[0])) {
 		$rc[0]	= 'latest_posts';
 	}
@@ -39,6 +39,13 @@ if (!API) {
 		case path($L->drafts):
 			$rc[0]	= 'drafts';
 		break;
+		case 'latest_posts':
+		case 'section':
+		case 'tag':
+		case 'new_post':
+		case 'edit_post':
+		case 'drafts':
+		break;
 		default:
 			if (mb_strpos($rc[0], ':')) {
 				array_unshift($rc, 'post');
@@ -47,12 +54,6 @@ if (!API) {
 				return;
 			}
 		break;
-		case 'latest_posts':
-		case 'section':
-		case 'tag':
-		case 'new_post':
-		case 'edit_post':
-		case 'drafts':
 	}
 	$Page->title($L->Blogs);
 	function get_sections_select_post (&$disabled, $current = null, $structure = null, $level = 0) {
@@ -86,7 +87,7 @@ if (!API) {
 		Trigger::instance()->run(
 			'Comments/instance',
 			[
-			'data'	=> &$Comments
+				'Comments'	=> &$Comments
 			]
 		);
 		/**

@@ -15,6 +15,8 @@ use			h;
  *  ['key'	=> &$key]		//Reference to the key, that will be appended to all css and js files, can be changed to reflect JavaScript and CSS changes
  *  System/Page/external_login_list
  *  ['list'	=> &$list]		//Reference to the list of external login systems
+ *
+ * @method static \cs\Page instance($check = false)
  */
 class Page {
 	use	Singleton;
@@ -758,11 +760,11 @@ class Page {
 	/**
 	 * Getting of JavaScript and CSS files list to be included
 	 *
-	 * @param bool	$for_cache	If <i>true</i> - absolute paths to files will be returned
+	 * @param bool $absolute    If <i>true</i> - absolute paths to files will be returned
 	 *
 	 * @return Page
 	 */
-	protected function get_includes_list ($for_cache = false) {
+	protected function get_includes_list ($absolute = false) {
 		$theme_dir		= THEMES."/$this->theme";
 		$scheme_dir		= "$theme_dir/schemes/$this->color_scheme";
 		$theme_pdir		= 'themes/'.$this->theme;
@@ -772,14 +774,14 @@ class Page {
 		 */
 		$this->includes = [
 			'css' => array_merge(
-				get_files_list(CSS,					'/(.*)\.css$/i',	'f', $for_cache ? true : 'includes/css',		true, false, '!include') ?: [],
-				get_files_list($theme_dir.'/css',	'/(.*)\.css$/i',	'f', $for_cache ? true : $theme_pdir.'/css',	true, false, '!include') ?: [],
-				get_files_list($scheme_dir.'/css',	'/(.*)\.css$/i',	'f', $for_cache ? true : $scheme_pdir.'/css',	true, false, '!include') ?: []
+				get_files_list(CSS,					'/(.*)\.css$/i',	'f', $absolute ? true : 'includes/css',			true, false, '!include') ?: [],
+				get_files_list($theme_dir.'/css',	'/(.*)\.css$/i',	'f', $absolute ? true : $theme_pdir.'/css',		true, false, '!include') ?: [],
+				get_files_list($scheme_dir.'/css',	'/(.*)\.css$/i',	'f', $absolute ? true : $scheme_pdir.'/css',	true, false, '!include') ?: []
 			),
 			'js' => array_merge(
-				get_files_list(JS,					'/(.*)\.js$/i',		'f', $for_cache ? true : 'includes/js',			true, false, '!include') ?: [],
-				get_files_list($theme_dir.'/js',	'/(.*)\.js$/i',		'f', $for_cache ? true : $theme_pdir.'/js',		true, false, '!include') ?: [],
-				get_files_list($scheme_dir.'/js',	'/(.*)\.js$/i',		'f', $for_cache ? true : $scheme_pdir.'/js',	true, false, '!include') ?: []
+				get_files_list(JS,					'/(.*)\.js$/i',		'f', $absolute ? true : 'includes/js',			true, false, '!include') ?: [],
+				get_files_list($theme_dir.'/js',	'/(.*)\.js$/i',		'f', $absolute ? true : $theme_pdir.'/js',		true, false, '!include') ?: [],
+				get_files_list($scheme_dir.'/js',	'/(.*)\.js$/i',		'f', $absolute ? true : $scheme_pdir.'/js',		true, false, '!include') ?: []
 			)
 		];
 		unset($theme_dir, $scheme_dir, $theme_pdir, $scheme_pdir);
@@ -794,7 +796,7 @@ class Page {
 				MODULES."/$module/includes/css",
 				'/(.*)\.css$/i',
 				'f',
-				$for_cache ? true : "components/modules/$module/includes/css",
+				$absolute ? true : "components/modules/$module/includes/css",
 				true,
 				false,
 				'!include'
@@ -805,7 +807,7 @@ class Page {
 				MODULES."/$module/includes/js",
 				'/(.*)\.js/i',
 				'f',
-				$for_cache ? true : "components/modules/$module/includes/js",
+				$absolute ? true : "components/modules/$module/includes/js",
 				true,
 				false,
 				'!include'
@@ -819,7 +821,7 @@ class Page {
 				PLUGINS."/$plugin/includes/css",
 				'/(.*)\.css$/i',
 				'f',
-				$for_cache ? true : "components/plugins/$plugin/includes/css",
+				$absolute ? true : "components/plugins/$plugin/includes/css",
 				true,
 				false,
 				'!include'
@@ -830,7 +832,7 @@ class Page {
 				PLUGINS."/$plugin/includes/js",
 				'/(.*)\.js/i',
 				'f',
-				$for_cache ? true : "components/plugins/$plugin/includes/js",
+				$absolute ? true : "components/plugins/$plugin/includes/js",
 				true,
 				false,
 				'!include'
@@ -1142,8 +1144,8 @@ class Page {
 					 ($error_text ?: ERROR_CODE);
 			}
 			$this->Content	= ob_get_clean();
-			__finish();
 		}
+		__finish();
 	}
 	/**
 	 * Substitutes header information about user, login/registration forms, etc.

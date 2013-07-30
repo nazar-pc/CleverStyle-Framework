@@ -71,7 +71,6 @@ class Static_pages extends Accessor {
 	 */
 	function add ($category, $title, $path, $content, $interface) {
 		$category	= (int)$category;
-		$path		= path(str_replace(['/', '\\'], '_', $path ?: $title));
 		$interface	= (int)$interface;
 		if ($this->db_prime()->q(
 			"INSERT INTO `[prefix]static_pages`
@@ -105,7 +104,7 @@ class Static_pages extends Accessor {
 		$Cache		= Cache::instance();
 		$category	= (int)$category;
 		$title		= trim($title);
-		$path		= path(str_replace(['/', '\\'], '_', $path ?: $title));
+		$path		= path($path ?: $title);
 		$interface	= (int)$interface;
 		$id			= (int)$id;
 		if ($this->db_prime()->q(
@@ -249,7 +248,6 @@ class Static_pages extends Accessor {
 	 */
 	function add_category ($parent, $title, $path) {
 		$parent	= (int)$parent;
-		$path	= path(str_replace(['/', '\\'], '_', $path ?: $title));
 		if ($this->db_prime()->q(
 			"INSERT INTO `[prefix]static_pages_categories`
 				(`parent`)
@@ -278,7 +276,7 @@ class Static_pages extends Accessor {
 	function set_category ($id, $parent, $title, $path) {
 		$parent	= (int)$parent;
 		$title	= trim($title);
-		$path	= path(str_replace(['/', '\\'], '_', $path ?: $title));
+		$path	= path($path ?: $title);
 		$id		= (int)$id;
 		if ($this->db_prime()->q(
 			"UPDATE `[prefix]static_pages_categories`
