@@ -46,7 +46,6 @@ class Language {
 		if ($this->init) {
 			return;
 		}
-		$this->init = true;
 		$Config	= Config::instance();
 		if ($this->need_to_rebuild_cache) {
 			$this->change($this->need_to_rebuild_cache);
@@ -89,6 +88,7 @@ class Language {
 		if (!FIXED_LANGUAGE) {
 			$this->change($language);
 		}
+		$this->init = true;
 	}
 	/**
 	 * Scanning of aliases for defining of current language
