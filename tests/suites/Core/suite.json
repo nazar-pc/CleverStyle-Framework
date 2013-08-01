@@ -1,0 +1,7 @@
+{
+	"title"	: "Core class",
+	"tests"	: {
+		"construct"				: "Constructor",
+		"set_configuration"		: "Setting of configuration through main.php"
+	}
+}

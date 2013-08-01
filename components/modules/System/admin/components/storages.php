@@ -27,7 +27,7 @@ if (isset($rc[2])) {
 			/**
 			 * @var array $storage
 			 */
-			$a->action = 'admin/System/'.$rc[0].'/'.$rc[1];
+			$a->action = "admin/System/$rc[0]/$rc[1]";
 			$Page->title($rc[2] == 'edit' ? $L->editing_of_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']) : $L->adding_of_storage);
 			$a->content(
 				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
@@ -40,11 +40,11 @@ if (isset($rc[2])) {
 								return h::{'th.ui-widget-header.ui-corner-all info'}($in);
 							},
 							[
-								h::info('storageurl'),
-								h::info('storagehost'),
-								h::info('storageconnection'),
-								h::info('storageuser'),
-								h::info('storagepass')
+								'storage_url',
+								'storage_host',
+								'storage_connection',
+								'storage_user',
+								'storage_pass'
 							]
 						),
 						array_map(
@@ -115,7 +115,7 @@ if (isset($rc[2])) {
 			if (!empty($modules)) {
 				$Page->warning($L->storage_used_by_modules.': '.implode(', ', $modules));
 			} else {
-				$a->action = 'admin/System/'.$rc[0].'/'.$rc[1];
+				$a->action = "admin/System/$rc[0]/$rc[1]";
 				$Page->title($L->deletion_of_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']));
 				$a->content(
 					h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
@@ -151,10 +151,10 @@ if (isset($rc[2])) {
 	$storage_list = h::tr(
 		h::{'th.ui-widget-header.ui-corner-all'}([
 			$L->action,
-			$L->storageurl,
-			$L->storagehost,
-			$L->storageconnection,
-			$L->storageuser
+			$L->storage_url,
+			$L->storage_host,
+			$L->storage_connection,
+			$L->storage_user
 		])
 	);
 	$Core			= Core::instance();
@@ -167,21 +167,21 @@ if (isset($rc[2])) {
 					h::{'a.cs-button-compact'}(
 						h::icon('wrench'),
 						[
-							'href'			=> $a->action.'/edit/'.$i,
+							'href'			=> "$a->action/edit/$i",
 							'data-title'	=> $L->edit.' '.$L->storage
 						]
 					).
 					h::{'a.cs-button-compact'}(
 						h::icon('trash'),
 						[
-							'href'			=> $a->action.'/delete/'.$i,
+							'href'			=> "$a->action/delete/$i",
 							'data-title'	=> $L->delete.' '.$L->storage
 						]
 					).
 					h::{'a.cs-button-compact'}(
 						h::icon('signal-diag'),
 						[
-							'onMouseDown'	=> 'storage_test(\''.$a->action.'/test/'.$i.'\', true);',
+							'onMouseDown'	=> "storage_test('$a->action/test/$i', true);",
 							'data-title'	=> $L->test_connection
 						]
 					) : '-'),
@@ -211,7 +211,7 @@ if (isset($rc[2])) {
 			h::{'tr td.cs-left-all[colspan=4] a.cs-button'}(
 				$L->add_storage,
 				[
-					'href' => 'admin/System/'.$rc[0].'/'.$rc[1].'/add'
+					'href' => "admin/System/$rc[0]/$rc[1]/add"
 				]
 			)
 		)

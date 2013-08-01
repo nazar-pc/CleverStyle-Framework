@@ -12,8 +12,11 @@ define('DEBUG', false);
  * @var Cache $Cache
  */
 $Cache	= Cache::instance();
-$result	= $Cache->set('test', 5);
+if (!$Cache->set('test', 5)) {
+	return '::set() failed';
+}
 $Cache->disable();
-$result	= $result && $Cache->cache_state() === false;
-$result	= $result && $Cache->test === false;
-return $result ? 0 : 'Failed';
+if ($Cache->cache_state() !== false) {
+	return '::disable() method does not work';
+}
+return $Cache->test === false ? 0 : 'Value still exists';

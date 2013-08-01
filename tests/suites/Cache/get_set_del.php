@@ -13,8 +13,13 @@ define('DEBUG', false);
  */
 $Cache	= Cache::instance();
 $value	= uniqid('cache', true);
-$result	= $Cache->set('test', $value);
-$result	= $result && $Cache->get('test') === $value;
-$result	= $result && $Cache->del('test');
-$result	= $result && $Cache->get('test') === false;
-return $result ? 0 : 'Failed';
+if (!$Cache->set('test', $value)) {
+	return '::set() failed';
+}
+if (!$Cache->get('test') === $value) {
+	return '::get() failed';
+}
+if (!$Cache->del('test')) {
+	return '::del() failed';
+}
+return $Cache->get('test') === false ? 0 : 'Value still exists';

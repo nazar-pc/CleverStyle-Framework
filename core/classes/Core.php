@@ -9,7 +9,7 @@ namespace	cs;
 use			h;
 /**
  * Core class.
- * Provides loading of base system configuration, encryption, API requests sending
+ * Provides loading of base system configuration, API requests sending
  *
  * @method static \cs\Core instance($check = false)
  */
@@ -17,11 +17,7 @@ class Core {
 	use Singleton;
 
 	protected			$constructed		= false,	//Is object constructed
-						$config				= [],
-						$iv,
-						$td,
-						$key,
-						$encrypt_support	= false;
+						$config				= [];
 	/**
 	 * Loading of base system configuration, creating of missing directories
 	 */
@@ -91,10 +87,6 @@ class Core {
 				"!/.htaccess"
 			);
 		}
-		if ($this->encrypt_support = check_mcrypt()) {
-			$this->key	= $this->config['key'];
-			$this->iv	= $this->config['iv'];
-		}
 		if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == 'application/json') {
 			$_POST	= _json_decode(@file_get_contents('php://input')) ?: [];
 		}
@@ -139,73 +131,6 @@ class Core {
 	 */
 	function __set ($item, $value) {
 		$this->set($item, $value);
-	}
-	/**
-	 * Encryption of data
-	 *
-	 * @param string      $data	Data to be encrypted
-	 * @param bool|string $key	Key, if not specified - system key will be used
-	 *
-	 * @return bool|string
-	 */
-	function encrypt ($data, $key = false) {
-		if (!$this->encrypt_support) {
-			return $data;
-		}
-		if (!is_resource($this->td)) {
-			$this->td	= mcrypt_module_open(MCRYPT_BLOWFISH,'','cbc','');
-			$this->key	= mb_substr($this->key, 0, mcrypt_enc_get_key_size($this->td));
-			$this->iv	= mb_substr(md5($this->iv), 0, mcrypt_enc_get_iv_size($this->td));
-		}
-		if ($key === false) {
-			$key		= $this->key;
-		} else {
-			$key		= mb_substr(md5($this->key).md5($key), 0, mcrypt_enc_get_key_size($this->td));
-		}
-		mcrypt_generic_init($this->td, $key, $this->iv);
-		$encrypted = mcrypt_generic($this->td, @serialize([
-			'key'	=> $key,
-			'data'	=> $data
-		]));
-		mcrypt_generic_deinit($this->td);
-		if ($encrypted) {
-			return $encrypted;
-		} else {
-			return false;
-		}
-	}
-	/**
-	 * Decryption of data
-	 *
-	 * @param string      $data	Data to be decrypted
-	 * @param bool|string $key	Key, if not specified - system key will be used
-	 *
-	 * @return bool|mixed
-	 */
-	function decrypt ($data, $key = false) {
-		if (!$this->encrypt_support) {
-			return $data;
-		}
-		if (!is_resource($this->td)) {
-			$this->td	= mcrypt_module_open(MCRYPT_BLOWFISH,'','cbc','');
-			$this->key	= mb_substr($this->key, 0, mcrypt_enc_get_key_size($this->td));
-			$this->iv	= mb_substr(md5($this->iv), 0, mcrypt_enc_get_iv_size($this->td));
-		}
-		if ($key === false) {
-			$key		= $this->key;
-		} else {
-			$key		= mb_substr(md5($this->key).md5($key), 0, mcrypt_enc_get_key_size($this->td));
-		}
-		mcrypt_generic_init($this->td, $key, $this->iv);
-		errors_off();
-		$decrypted = @unserialize(mdecrypt_generic($this->td, $data));
-		errors_on();
-		mcrypt_generic_deinit($this->td);
-		if (is_array($decrypted) && $decrypted['key'] == $key) {
-			return $decrypted['data'];
-		} else {
-			return false;
-		}
 	}
 	/**
 	 * Sending system api request to all mirrors
@@ -285,16 +210,5 @@ class Core {
 		time_limit_pause(false);
 		fclose($socket);
 		return $return[1];
-	}
-	/**
-	 * Disabling encryption.<br>
-	 * Correct termination.
-	 */
-	function __destruct () {
-		if (is_resource($this->td)) {
-			mcrypt_module_close($this->td);
-			unset($this->key, $this->iv, $this->td);
-		}
-		exit;
 	}
 }

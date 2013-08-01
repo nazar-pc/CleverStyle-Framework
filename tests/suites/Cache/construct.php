@@ -8,6 +8,4 @@
  */
 namespace	cs;
 define('DEBUG', false);
-if (Cache::instance()->cache_state()) {
-	return 0;
-}
+return Cache::instance()->cache_state() ? 0 : 'Cache does not work';

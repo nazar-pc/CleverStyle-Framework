@@ -16,7 +16,10 @@ Core::instance()->cache_size = 5 / 1024 / 1024;
  * @var Cache $Cache
  */
 $Cache	= Cache::instance();
-$result	= $Cache->set('test', 5);
-$result	= $result && $Cache->set('test', '111');
-$result	= $result && $Cache->set('test', '111111') === false;
-return $result ? 0 : 'Failed';
+if (!$Cache->set('test', 5)) {
+	return '::set() failed';
+}
+if (!$Cache->set('test', '111')) {
+	return 'second ::set() method does not work';
+}
+return $Cache->set('test', '111111') === false ? 0 : 'Size limit does not works';
