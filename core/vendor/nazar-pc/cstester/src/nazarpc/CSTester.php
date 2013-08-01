@@ -32,7 +32,8 @@ class CSTester {
 		if ($_SERVER['DOCUMENT_ROOT']) {
 			$this->test_file	= str_replace(rtrim($_SERVER['DOCUMENT_ROOT'], '/').'/', '', $this->test_file);
 		} else {
-			$this->test_file	= array_pop(explode('/', $this->test_file));
+			$this->test_file	= explode('/', $this->test_file);
+			$this->test_file	= array_pop($this->test_file);
 		}
 	}
 	/**
