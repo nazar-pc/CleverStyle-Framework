@@ -43,7 +43,7 @@ $images_titles		= array_filter(array_column(array_slice($images, 0, 10), 'title'
 $Page				= Page::instance();
 $Page->title($gallery['title']);
 if ($images_titles) {
-	$Page->Description	= implode('. ', $images_titles);
+	$Page->Description	= $gallery['description'];
 	$Page->Keywords		= implode(', ', $images_titles);
 }
 unset($images_titles);

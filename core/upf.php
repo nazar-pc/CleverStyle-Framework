@@ -882,10 +882,13 @@ function code_header ($code) {
 			$string_code	= '301 Moved Permanently';
 		break;
 		case 302:
-			$string_code	= '302 Moved Temporarily';
+			$string_code	= '302 Found';
 		break;
 		case 303:
 			$string_code	= '303 See Other';
+		break;
+		case 307:
+			$string_code	= '307 Temporary Redirect';
 		break;
 		case 400:
 			$string_code	= '400 Bad Request';

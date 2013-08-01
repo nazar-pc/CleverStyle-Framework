@@ -72,7 +72,7 @@ if (count($galleries) > 1) {
 	interface_off();
 	$Config	= Config::instance();
 	$path	= array_keys($galleries)[0];
-	header("Location: {$Config->base_url()}/$module/$path", true, 301);
+	header("Location: {$Config->base_url()}/$module/$path", true, 307);
 } else {
 	$Index->content(
 		$L->photo_gallery_no_galleries_yet
