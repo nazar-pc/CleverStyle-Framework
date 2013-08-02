@@ -106,3 +106,4 @@ _include_once(DIR.'/custom.php', false);
 Core::instance();
 Language::instance();
 defined('CS_ERROR_HANDLER') && CS_ERROR_HANDLER && Error::instance();
+Index::instance();

@@ -47,9 +47,12 @@ spl_autoload_register(function ($class) {
  * Correct termination
  */
 register_shutdown_function(function () {
-	Index::instance()->__finish();
+	if (!class_exists('\\cs\\Core', false)) {
+		return;
+	}
+	Index::instance(true)->__finish();
 	Page::instance()->__finish();
-	User::instance()->__finish();
+	User::instance(true)->__finish();
 });
 /**
  * Enable of errors processing
