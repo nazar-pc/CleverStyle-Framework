@@ -32,7 +32,7 @@ Trigger::instance()->register(
 					'error_description'	=> 'Invalid client id'
 				]);
 				interface_off();
-				__finish();
+				exit;
 			} elseif (!$client['active']) {
 				code_header(403);
 				$Page->Content	= _json_encode([
@@ -40,7 +40,7 @@ Trigger::instance()->register(
 					'error_description'	=> 'Inactive client id'
 				]);
 				interface_off();
-				__finish();
+				exit;
 			}
 			$_SERVER['HTTP_USER_AGENT']	= "OAuth2-$client[name]-$client[id]";
 			if (isset($_POST['client_secret'])) {
@@ -51,7 +51,7 @@ Trigger::instance()->register(
 						'error_description'	=> 'client_secret do not corresponds client_id'
 					]);
 					interface_off();
-					__finish();
+					exit;
 				}
 				$token_data	= $OAuth2->get_token($_POST['access_token'], $_POST['client_id'], $client['secret']);
 			} else {
@@ -63,7 +63,7 @@ Trigger::instance()->register(
 						'error_description'	=> 'This access_token can\'t be used without client_secret'
 					]);
 					interface_off();
-					__finish();
+					exit;
 				}
 			}
 			if ($token_data['expire_in'] < 0) {
@@ -73,7 +73,7 @@ Trigger::instance()->register(
 					'error_description'	=> 'access_token expired'
 				]);
 				interface_off();
-				__finish();
+				exit;
 			}
 			$_POST['session']	= $token_data['session'];
 			if (!Config::instance()->module('OAuth2')->guest_tokens) {
@@ -87,7 +87,7 @@ Trigger::instance()->register(
 								'error_description'	=> 'Guest tokens disabled'
 							]);
 							interface_off();
-							__finish();
+							exit;
 						}
 					}
 				);

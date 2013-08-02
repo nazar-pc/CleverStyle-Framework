@@ -1119,7 +1119,7 @@ class Page {
 		if (!API && ERROR_CODE == 403 && _getcookie('logout')) {
 			header('Location: '.Config::instance()->base_url(), true, 302);
 			$this->Content	= '';
-			__finish();
+			exit;
 		}
 		interface_off();
 		$error_text	= code_header(ERROR_CODE);
@@ -1145,7 +1145,7 @@ class Page {
 			}
 			$this->Content	= ob_get_clean();
 		}
-		__finish();
+		exit;
 	}
 	/**
 	 * Substitutes header information about user, login/registration forms, etc.

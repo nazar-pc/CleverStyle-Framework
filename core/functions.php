@@ -44,14 +44,13 @@ spl_autoload_register(function ($class) {
 	);
 });
 /**
- * Correct termination from any place of engine
+ * Correct termination
  */
-function __finish () {
+register_shutdown_function(function () {
 	Index::instance()->__finish();
 	Page::instance()->__finish();
 	User::instance()->__finish();
-	exit;
-}
+});
 /**
  * Enable of errors processing
  */

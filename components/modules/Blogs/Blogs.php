@@ -127,7 +127,6 @@ class Blogs extends Accessor {
 		if (empty($tags) || empty($content)) {
 			return false;
 		}
-		$path		= path($path ?: $title);
 		$sections	= array_intersect(
 			array_keys($this->get_sections_list()),
 			$sections
@@ -211,8 +210,8 @@ class Blogs extends Accessor {
 		$Config		= Config::instance();
 		$L			= Language::instance();
 		$id			= (int)$id;
-		$title		= xap(trim($title));
 		$path		= path($path ?: $title);
+		$title		= xap(trim($title));
 		$content	= xap($content, true);
 		$sections	= array_intersect(
 			array_keys($this->get_sections_list()),
@@ -591,8 +590,8 @@ class Blogs extends Accessor {
 	function set_section ($id, $parent, $title, $path) {
 		$Cache	= Cache::instance();
 		$parent	= (int)$parent;
-		$title	= xap(trim($title));
 		$path	= path($path ?: $title);
+		$title	= xap(trim($title));
 		$id		= (int)$id;
 		if ($this->db_prime()->q(
 			"UPDATE `[prefix]blogs_sections`

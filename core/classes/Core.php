@@ -24,7 +24,7 @@ class Core {
 	protected function construct () {
 		if (!file_exists(CONFIG.'/main.json')) {
 			code_header(404);
-			__finish();
+			exit;
 		}
 		$this->config		= _json_decode_nocomments(file_get_contents(CONFIG.'/main.json'));
 		_include_once(CONFIG.'/main.php', false);
@@ -147,12 +147,12 @@ class Core {
 		if ($Config && $Config->server['mirrors']['count'] > 1) {
 			foreach ($Config->server['mirrors']['http'] as $domain) {
 				if (!($domain == $Config->server['host'] && $Config->server['protocol'] == 'http')) {
-					$result['http://'.$domain] = $this->send('http://'.$domain.'/api/'.$path, $data);
+					$result["http://$domain"] = $this->send("http://$domain/api/$path", $data);
 				}
 			}
 			foreach ($Config->server['mirrors']['https'] as $domain) {
 				if (!($domain != $Config->server['host'] && $Config->server['protocol'] == 'https')) {
-					$result['https://'.$domain] = $this->send('https://'.$domain.'/api/'.$path, $data);
+					$result["https://$domain"] = $this->send("https://$domain/api/$path", $data);
 				}
 			}
 		}
@@ -177,7 +177,7 @@ class Core {
 		}
 		$database			= Config::instance()->module('System')->db('keys');
 		$key				= $Key->generate($database);
-		$url				= $url.'/'.$key;
+		$url				.= "/$key";
 		$Key->add(
 			$database,
 			$key,
@@ -191,7 +191,7 @@ class Core {
 		$socket				= fsockopen($host[0], isset($host[1]) ? $host[1] : $protocol == 'http' ? 80 : 443, $errno, $errstr);
 		$host				= implode(':', $host);
 		if(!is_resource($socket)) {
-			trigger_error('#'.$errno.' '.$errstr, E_USER_WARNING);
+			trigger_error("#$errno $errstr", E_USER_WARNING);
 			return false;
 		}
 		$data = 'data='.urlencode(json_encode($data));
@@ -204,7 +204,7 @@ class Core {
 			"Content-length:".strlen($data)."\r\n".
 			"Accept:*/*\r\n".
 			"User-agent: CleverStyle CMS\r\n\r\n".
-			$data."\r\n\r\n"
+			"$data\r\n\r\n"
 		);
 		$return = explode("\r\n\r\n", stream_get_contents($socket), 2);
 		time_limit_pause(false);

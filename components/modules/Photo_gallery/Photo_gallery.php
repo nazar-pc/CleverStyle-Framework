@@ -369,8 +369,8 @@ class Photo_gallery extends Accessor {
 	 * @return bool
 	 */
 	function set_gallery ($id, $title, $path, $description, $active, $preview_image) {
-		$title			= xap(trim($title));
 		$path			= path($path ?: $title);
+		$title			= xap(trim($title));
 		$description	= xap(trim($description));
 		$id				= (int)$id;
 		if ($this->db_prime()->q(

@@ -200,7 +200,7 @@ class Index {
 		if ($this->parts) {
 			if (!isset($rc[0]) || $rc[0] == '') {
 				if (API) {
-					__finish();
+					exit;
 				}
 				$rc[0] = $this->parts[0];
 				if (isset($this->structure[$rc[0]]) && is_array($this->structure[$rc[0]])) {
@@ -239,7 +239,7 @@ class Index {
 			if ($this->subparts) {
 				if (!isset($rc[1]) || ($rc[1] == '' && !empty($this->subparts))) {
 					if (API) {
-						__finish();
+						exit;
 					}
 					$rc[1] = $this->subparts[0];
 				} elseif ($rc[1] != '' && !empty($this->subparts) && !in_array($rc[1], $this->subparts)) {

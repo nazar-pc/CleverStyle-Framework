@@ -291,7 +291,7 @@ class User extends Accessor {
 			) {
 				define('ERROR_CODE', 403);
 				Page::instance()->error('Invalid user session');
-				__finish();
+				exit;
 			}
 			$_POST = [];
 		}

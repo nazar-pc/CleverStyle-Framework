@@ -267,12 +267,11 @@ class Config {
 		if (mb_strpos($rc, 'redirect/') === 0) {
 			if ($this->server['referer']['local']) {
 				header('Location: '.substr($rc, 9));
-				__finish();
 			} else {
 				define('ERROR_CODE', 404);
 				Page::instance()->error();
-				__finish();
 			}
+			exit;
 		}
 		/**
 		 * Routing replacing
