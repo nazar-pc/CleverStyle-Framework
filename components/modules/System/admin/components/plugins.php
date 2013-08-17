@@ -165,6 +165,17 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 				if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 					break;
 				}
+				if (file_exists(PLUGINS."/$rc[3]/meta.json")) {
+					$meta	= _json_decode(file_get_contents(PLUGINS."/$rc[3]/meta.json"));
+					if (isset($meta['optional'])) {
+						$Page->notice(
+							$L->for_complete_feature_set(
+								implode(', ', (array)$meta['optional'])
+							)
+						);
+					}
+					unset($meta);
+				}
 				$a->cancel_button_back	= true;
 				$a->content(
 					h::{'button[type=submit]'}(
@@ -304,6 +315,7 @@ if (!empty($plugins)) {
 				isset($plugin_meta['provide']) ? implode(', ', (array)$plugin_meta['provide']) : $L->none,
 				isset($plugin_meta['require']) ? implode(', ', (array)$plugin_meta['require']) : $L->none,
 				isset($plugin_meta['conflict']) ? implode(', ', (array)$plugin_meta['conflict']) : $L->none,
+				isset($plugin_meta['optional']) ? implode(', ', (array)$plugin_meta['optional']) : $L->none,
 				isset($plugin_meta['multilingual']) && in_array('interface', $plugin_meta['multilingual']) ? $L->yes : $L->no,
 				isset($plugin_meta['multilingual']) && in_array('content', $plugin_meta['multilingual']) ? $L->yes : $L->no,
 				isset($plugin_meta['languages']) ? implode(', ', $plugin_meta['languages']) : $L->none

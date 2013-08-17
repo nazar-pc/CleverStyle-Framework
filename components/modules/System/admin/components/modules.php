@@ -207,26 +207,37 @@ if (
 			if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 				break;
 			}
+			if (file_exists(MODULES."/$rc[3]/meta.json")) {
+				$meta	= _json_decode(file_get_contents(MODULES."/$rc[3]/meta.json"));
+				if (isset($meta['optional'])) {
+					$Page->notice(
+						$L->for_complete_feature_set(
+							implode(', ', (array)$meta['optional'])
+						)
+					);
+				}
+				unset($meta);
+			}
 			$a->cancel_button_back	= true;
 			if ($Config->core['simple_admin_mode']) {
-				if (file_exists(MODULES.'/'.$rc[3].'/meta/db.json')) {
-					$db_json = _json_decode(file_get_contents(MODULES.'/'.$rc[3].'/meta/db.json'));
+				if (file_exists(MODULES."/$rc[3]/meta/db.json")) {
+					$db_json = _json_decode(file_get_contents(MODULES."/$rc[3]/meta/db.json"));
 					foreach ($db_json as $database) {
 						$a->content(
 							h::{'input[type=hidden]'}([
-								'name'		=> 'db['.$database.']',
+								'name'		=> "db[$database]",
 								'value'		=> 0
 							])
 						);
 					}
 					unset($db_json, $database);
 				}
-				if (file_exists(MODULES.'/'.$rc[3].'/meta/storage.json')) {
-					$storage_json = _json_decode(file_get_contents(MODULES.'/'.$rc[3].'/meta/storage.json'));
+				if (file_exists(MODULES."/$rc[3]/meta/storage.json")) {
+					$storage_json = _json_decode(file_get_contents(MODULES."/$rc[3]/meta/storage.json"));
 					foreach ($storage_json as $storage) {
 						$a->content(
 							h::{'input[type=hidden]'}([
-								'name'		=> 'storage['.$storage.']',
+								'name'		=> "storage[$storage]",
 								'value'		=> 0
 							])
 						);
@@ -743,6 +754,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 			isset($module_meta['provide']) ? implode(', ', (array)$module_meta['provide']) : $L->none,
 			isset($module_meta['require']) ? implode(', ', (array)$module_meta['require']) : $L->none,
 			isset($module_meta['conflict']) ? implode(', ', (array)$module_meta['conflict']) : $L->none,
+			isset($module_meta['optional']) ? implode(', ', (array)$module_meta['optional']) : $L->none,
 			isset($module_meta['multilingual']) && in_array('interface', $module_meta['multilingual']) ? $L->yes : $L->no,
 			isset($module_meta['multilingual']) && in_array('content', $module_meta['multilingual']) ? $L->yes : $L->no,
 			isset($module_meta['languages']) ? implode(', ', $module_meta['languages']) : $L->none
