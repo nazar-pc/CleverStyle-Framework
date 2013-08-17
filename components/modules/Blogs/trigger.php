@@ -8,18 +8,6 @@
  */
 namespace	cs;
 Trigger::instance()->register(
-	'System/Config/routing_replace',
-	function ($data) {
-		if (!Config::instance()->module('Blogs')->active() && substr($data['rc'], 0, 5) != 'admin') {
-			return;
-		}
-		$rc		= explode('/', $data['rc']);
-		if ($rc[0] == path(Language::instance()->Blogs) || $rc[0] == 'Blogs') {
-			$rc[0]		= 'Blogs';
-			$data['rc']	= implode('/', $rc);
-		}
-	}
-)->register(
 	'System/Index/construct',
 	function () {
 		switch (Config::instance()->components['modules']['Blogs']['active']) {

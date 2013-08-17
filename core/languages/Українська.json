@@ -280,7 +280,7 @@
 		"curl_lib"					: "Бібліотека cURL",
 		"apc_module"				: "Модуль APC (Alternative PHP Cache)",
 		"memcached_module"			: "Memcached модуль",
-		"cache_engine"				: "Двигун кешу",
+		"cache_engine"				: "Рушій кешу",
 	//Components
 	"components"			: "Компоненти",
 		//Modules

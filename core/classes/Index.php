@@ -318,16 +318,16 @@ class Index {
 				$User->get_user_permission($module, 'index') &&
 				(
 					(
-						file_exists(MODULES.'/'.$module.'/index.php') && filesize(MODULES.'/'.$module.'/index.php')
+						file_exists(MODULES."/$module/index.php") && filesize(MODULES."/$module/index.php")
 					) ||
 					(
-						file_exists(MODULES.'/'.$module.'/index.html') && filesize(MODULES.'/'.$module.'/index.html')
+						file_exists(MODULES."/$module/index.html") && filesize(MODULES."/$module/index.html")
 					) ||
-					file_exists(MODULES.'/'.$module.'/index.json')
+					file_exists(MODULES."/$module/index.json")
 				)
 			) {
-				$path			= $module;
 				$title			= $L->$module;
+				$path			= $title;
 				$hide			= false;
 				Trigger::instance()->run(
 					'System/Index/mainmenu',

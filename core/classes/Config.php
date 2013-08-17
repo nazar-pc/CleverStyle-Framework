@@ -335,21 +335,27 @@ class Config {
 		/**
 		 * Module detection
 		 */
-		if (
-			isset($rc[0]) &&
-			in_array(
-				mb_strtolower($rc[0]),
-				_mb_strtolower(array_keys($this->components['modules']))
-			) &&
-			(
-				ADMIN || $this->components['modules'][$rc[0]]['active'] == 1
-			)
-		) {
-			if (!defined('MODULE')) {
-				define('MODULE', array_shift($rc));
+		$modules								= array_keys(array_filter(
+			$this->components['modules'],
+			function ($module_data) {
+			   return ADMIN || $module_data['active'] == 1;
 			}
-		} else {
-			if (!defined('MODULE')) {
+		));
+		$modules								= array_combine(
+			array_map(
+				function ($module) use ($L) {
+					return $L->get($module);
+				},
+				$modules
+			),
+			$modules
+		);
+		if (!defined('MODULE')) {
+			if (isset($rc[0]) && in_array($rc[0], array_values($modules))) {
+				define('MODULE', array_shift($rc));
+			} elseif (isset($rc[0]) && isset($modules[$rc[0]])) {
+				define('MODULE', $modules[array_shift($rc)]);
+			} else {
 				define('MODULE', ADMIN || API || isset($rc[0]) ? 'System' : $this->core['default_module']);
 				if (!ADMIN && !API && !isset($rc[1])) {
 					define('HOME', true);
@@ -378,7 +384,7 @@ class Config {
 		$this->core['color_schemes']	= [];
 		foreach ($this->core['themes'] as $theme) {
 			$this->core['color_schemes'][$theme]	= [];
-			$this->core['color_schemes'][$theme]	= get_files_list(THEMES.'/'.$theme.'/schemes', false, 'd') ?: [];
+			$this->core['color_schemes'][$theme]	= get_files_list(THEMES."/$theme/schemes", false, 'd') ?: [];
 			asort($this->core['color_schemes'][$theme]);
 		}
 		if ($themes != $this->core['themes'] || $color_schemes != $this->core['color_schemes']) {

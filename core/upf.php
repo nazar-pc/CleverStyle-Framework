@@ -563,23 +563,27 @@ function xap ($in, $html = 'text') {
 	 */
 	} elseif ($html === true) {
 		$in = preg_replace(
-			'/(<(link|script|iframe|object|applet|embed).*?>[^<]*(<\/(link|script|iframe).*?>)?)/i',
+			'/<[^>]*(link|script|iframe|object|applet|embed)[^>]*>?(.*<\/[^>]*\\1[^>]*>)?/ims',
 			'',
 			$in
 		);
 		$in = preg_replace(
-			'/(script:)|(data:)|(vbscript:)|(expression\()/i',
-			'\\1<!---->',
+			'/(script|data|vbscript):/i',
+			'\\1&#58;',
 			$in
 		);
 		$in = preg_replace(
-			'/(onblur|onchange|onclick|ondblclick|onerror|onfocus|onkeydown|onkeypress|onkeyup|onload|onmousedown|'.
-				'onmousemove|onmouseout|onmouseover|onmouseup|onreset|onselect|onsubmit|onunload)=?/i',
+			'/(expression[\s\t\r\n]*)\(/i',
+			'\\1&#40;',
+			$in
+		);
+		$in = preg_replace(
+			'/<[^>]*(on[a-z]+|dynsrc|lowsrc)[^>]*>?/ims',
 			'',
 			$in
 		);
 		$in = preg_replace(
-			'/(href=["\'])((?:http|https|ftp)\:\/\/.*?["\'])/i',
+			'/(href[\s\t\r\n]*=[\s\t\r\n]*["\'])((?:http|https|ftp)\:\/\/.*?["\'])/ims',
 			'\\1redirect/\\2',
 			$in
 		);

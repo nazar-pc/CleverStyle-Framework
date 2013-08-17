@@ -8,17 +8,8 @@
  */
 namespace	cs\modules\Blogs;
 use			cs\Config,
-			cs\Language,
 			cs\Trigger,
 			cs\User;
-Trigger::instance()->register(
-	'System/Index/mainmenu',
-	function ($data) {
-		if ($data['path'] == 'Blogs') {
-			$data['path']	= path(Language::instance()->Blogs);
-		}
-	}
-);
 Trigger::instance()->register(
 	'api/Comments/add',
 	function ($data) {
