@@ -27,39 +27,13 @@ function debug_window () {
  * @param action
  */
 function admin_cache (element, action) {
-	var cache_interval	= setInterval(
-		function () {
-			progress_update(element);
-		},
-		100
-	);
-	$(element).html('').progressbar({value : 1});
+	$(element).html('').progressbar({value : false});
 	$.ajax({
 		url		: action,
 		success	: function (result) {
-			clearInterval(cache_interval);
-			setTimeout(
-				function () {
-					$(element).progressbar('destroy').html(result);
-				},
-				100
-			);
+			$(element).progressbar('destroy').html(result);
 		}
 	});
-}
-/**
- * Updating of progress bar
- *
- * @param element
- */
-function progress_update (element) {
-	$(element).progressbar(
-		'value',
-		$(element).progressbar('value') + 1
-	);
-	if ($(element).progressbar('value') == 100) {
-		$(element).progressbar('value', 1);
-	}
 }
 /**
  * Send request for db connection testing
@@ -70,20 +44,16 @@ function progress_update (element) {
 function db_test (url, added) {
 	var test_db	= $('#test_db');
 	test_db.html('<div id="test_progress"></div>');
-	$($('#test_progress')).progressbar({value: 1});
+	$('#test_progress').progressbar({value: false});
 	test_db.dialog('open');
-	var test_interval	= setInterval(
-		function () {
-			progress_update('#test_progress');
-		},
-		100
-	);
 	if (added) {
 		$.ajax({
 			url		: url,
 			success	: function (result) {
-				clearInterval(test_interval);
 				$('#test_db').html(result);
+			},
+			error	: function () {
+				$('#test_db').html('<p class="cs-test-result">' + L.failed + '</p>');
 			}
 		});
 	} else {
@@ -101,8 +71,10 @@ function db_test (url, added) {
 				db	: db
 			},
 			success	: function (result) {
-				clearInterval(test_interval);
 				$('#test_db').html(result);
+			},
+			error	: function () {
+				$('#test_db').html('<p class="cs-test-result">' + L.failed + '</p>');
 			}
 		});
 	}
@@ -116,20 +88,16 @@ function db_test (url, added) {
 function storage_test (url, added) {
 	var test_storage	= $('#test_storage');
 	test_storage.html('<div id="test_progress"></div>');
-	$($('#test_progress')).progressbar({value: 1});
+	$('#test_progress').progressbar({value: false});
 	test_storage.dialog('open');
-	var test_interval	= setInterval(
-		function () {
-			progress_update('#test_progress');
-		},
-		100
-	);
 	if (added) {
 		$.ajax({
 			url		: url,
 			success	: function (result) {
-				clearInterval(test_interval);
 				$('#test_storage').html(result);
+			},
+			error	: function () {
+				$('#test_storage').html('<p class="cs-test-result">' + L.failed + '</p>');
 			}
 		});
 	} else {
@@ -144,8 +112,10 @@ function storage_test (url, added) {
 			url		: url,
 			data	: 'storage=' + storage,
 			success	: function (result) {
-				clearInterval(test_interval);
 				$('#test_storage').html(result);
+			},
+			error	: function () {
+				$('#test_storage').html('<p class="cs-test-result">' + L.failed + '</p>');
 			}
 		});
 	}

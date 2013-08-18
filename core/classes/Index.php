@@ -673,9 +673,9 @@ class Index {
 			$Page->error();
 		}
 		Trigger::instance()->run('System/Index/preload');
-		if (!$this->admin && !$this->api && file_exists(MFOLDER.'/index.html')) {
+		if (!$this->admin && !$this->api && file_exists(MODULES.'/'.MODULE.'/index.html')) {
 			ob_start();
-			_include(MFOLDER.'/index.html', false, false);
+			_include(MODULES.'/'.MODULE.'/index.html', false, false);
 			$Page->content(ob_get_clean());
 			if ($this->title_auto) {
 				$Page->title(Language::instance()->{HOME ? 'home' : MODULE});
