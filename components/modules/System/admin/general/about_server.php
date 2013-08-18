@@ -14,7 +14,7 @@ use			h,
 			cs\DB,
 			cs\Index,
 			cs\Language;
-global $PHP, $mcrypt;
+global $mcrypt;
 $Config			= Config::instance();
 $Core			= Core::instance();
 $Index			= Index::instance();
@@ -72,9 +72,13 @@ $Index->content(
 			$L->server_type.':',
 			server_api()
 		],
-		function_exists('apache_get_version') ? [
-			$L->version.' Apache:',
-			apache_get_version()
+		preg_match('/apache/i', $_SERVER['SERVER_SOFTWARE']) ? [
+			$L->version_of('Apache').':',
+			$_SERVER['SERVER_SOFTWARE']
+		] : false,
+		preg_match('/nginx/i', $_SERVER['SERVER_SOFTWARE']) ? [
+			$L->version_of('Nginx').':',
+			$_SERVER['SERVER_SOFTWARE']
 		] : false,
 		[
 			$L->available_ram.':',
@@ -89,11 +93,11 @@ $Index->content(
 			format_filesize(disk_free_space('./'), 2)
 		],
 		[
-			$L->version.' PHP:',
+			$L->version_of('PHP').':',
 			PHP_VERSION
 		],
 		[
-			$L->components.' PHP:',
+			$L->php_components.':',
 			h::{'table.cs-left-odd.cs-fullwidth-table tr| td'}(
 				[
 					$L->mcrypt.':',
@@ -105,7 +109,7 @@ $Index->content(
 					]
 				],
 				check_mcrypt() ? [
-					$L->version.' mcrypt:',
+					$L->version_of('mcrypt').':',
 					[
 						check_mcrypt().(!check_mcrypt(1) ? ' ('.$L->required.' '.$mcrypt.' '.$L->or_higher.')' : ''),
 						[
@@ -163,7 +167,7 @@ $Index->content(
 					$Core->db_host
 				],
 				[
-					$L->version.' '.$Core->db_type.':',
+					$L->version_of($Core->db_type).':',
 					[
 						DB::instance()->server().(check_db() ? '' : ' ('.$L->required.' '.${$Core->db_type}.' '.$L->or_higher.')'),
 						[
@@ -189,7 +193,7 @@ $Index->content(
 			$L->cache_engine.':',
 			$Core->cache_engine
 		],
-		function_exists('apache_get_version') ? [
+		[
 			$L->php_ini_settings.':',
 			h::{'table.cs-left-odd.cs-fullwidth-table tr| td'}(
 				[
@@ -234,17 +238,6 @@ $Index->content(
 					format_time(ini_get('default_socket_timeout'))
 				],
 				[
-					$L->module.' mod_rewrite:',
-					[
-						$L->get(
-							$rewrite = function_exists('apache_get_modules') && in_array('mod_rewrite',apache_get_modules())
-						),
-						[
-							 'class' => state($rewrite)
-						]
-					]
-				],
-				[
 					$L->allow_url_fopen.':',
 					[
 						$L->get(ini_get('allow_url_fopen')),
@@ -263,6 +256,6 @@ $Index->content(
 					]
 				]
 			)
-		] : false
+		]
 	)
 );
