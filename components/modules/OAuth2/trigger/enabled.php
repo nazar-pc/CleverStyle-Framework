@@ -20,12 +20,12 @@ Trigger::instance()->register(
 Trigger::instance()->register(
 	'System/User/construct/before',
 	function () {
-		if (API && isset($_POST['client_id'], $_POST['access_token'])) {
+		if (API && isset($_REQUEST['client_id'], $_REQUEST['access_token'])) {
 			header('Cache-Control: no-store');
 			header('Pragma: no-cache');
 			$OAuth2						= OAuth2::instance();
 			$Page						= Page::instance();
-			if (!($client = $OAuth2->get_client($_POST['client_id']))) {
+			if (!($client = $OAuth2->get_client($_REQUEST['client_id']))) {
 				code_header(400);
 				$Page->Content	= _json_encode([
 					'error'				=> 'access_denied',
@@ -43,8 +43,8 @@ Trigger::instance()->register(
 				exit;
 			}
 			$_SERVER['HTTP_USER_AGENT']	= "OAuth2-$client[name]-$client[id]";
-			if (isset($_POST['client_secret'])) {
-				if ($_POST['client_secret'] != $client['secret']) {
+			if (isset($_REQUEST['client_secret'])) {
+				if ($_REQUEST['client_secret'] != $client['secret']) {
 					code_header(400);
 					$Page->Content	= _json_encode([
 						'error'				=> 'access_denied',
@@ -53,9 +53,9 @@ Trigger::instance()->register(
 					interface_off();
 					exit;
 				}
-				$token_data	= $OAuth2->get_token($_POST['access_token'], $_POST['client_id'], $client['secret']);
+				$token_data	= $OAuth2->get_token($_REQUEST['access_token'], $_REQUEST['client_id'], $client['secret']);
 			} else {
-				$token_data	= $OAuth2->get_token($_POST['access_token'], $_POST['client_id'], $client['secret']);
+				$token_data	= $OAuth2->get_token($_REQUEST['access_token'], $_REQUEST['client_id'], $client['secret']);
 				if ($token_data['type']	== 'code') {
 					code_header(403);
 					$Page->Content	= _json_encode([
@@ -75,7 +75,7 @@ Trigger::instance()->register(
 				interface_off();
 				exit;
 			}
-			$_POST['session']	= $token_data['session'];
+			$_POST['session']	= $_REQUEST['session']	= $token_data['session'];
 			if (!Config::instance()->module('OAuth2')->guest_tokens) {
 				Trigger::instance()->register(
 					'System/User/construct/after',

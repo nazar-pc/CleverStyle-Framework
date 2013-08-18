@@ -95,8 +95,7 @@ class Index {
 		) {
 			if (!($User->admin() && $User->get_user_permission($this->permission_group = 'admin/'.MODULE, 'index'))) {
 				define('ERROR_CODE', 403);
-				$this->__finish();
-				return;
+				exit;
 			}
 			define('MFOLDER', $admin_path);
 			$this->form		= true;
@@ -104,23 +103,20 @@ class Index {
 		} elseif (API && file_exists($api_path)) {
 			if (!$User->get_user_permission($this->permission_group = 'api/'.MODULE, 'index')) {
 				define('ERROR_CODE', 403);
-				$this->__finish();
-				return;
+				exit;
 			}
 			define('MFOLDER', $api_path);
 			$this->api		= true;
 		} elseif (file_exists(MODULES.'/'.MODULE)) {
 			if (!$User->get_user_permission($this->permission_group = MODULE, 'index')) {
 				define('ERROR_CODE', 403);
-				$this->__finish();
-				return;
+				exit;
 			}
 			define('MFOLDER', MODULES.'/'.MODULE);
 			$this->module	= true;
 		} else {
 			define('ERROR_CODE', 404);
-			$this->__finish();
-			return;
+			exit;
 		}
 		unset($admin_path, $api_path);
 		Trigger::instance()->run('System/Index/construct');
@@ -180,14 +176,12 @@ class Index {
 									$this->subparts[] = $subpart;
 								} elseif (isset($rc[1]) && $rc[1] == $subpart) {
 									define('ERROR_CODE', 403);
-									$this->__finish();
 									return;
 								}
 							}
 						}
 					} elseif ($rc[0] == $item) {
 						define('ERROR_CODE', 403);
-						$this->__finish();
 						return;
 					}
 				}
@@ -205,7 +199,7 @@ class Index {
 		if ($this->parts) {
 			if (!isset($rc[0]) || $rc[0] == '') {
 				if (API) {
-					exit;
+					return;
 				}
 				$rc[0] = $this->parts[0];
 				if (isset($this->structure[$rc[0]]) && is_array($this->structure[$rc[0]])) {
@@ -213,7 +207,6 @@ class Index {
 				}
 			} elseif ($rc[0] != '' && !empty($this->parts) && !in_array($rc[0], $this->parts)) {
 				define('ERROR_CODE', 404);
-				$this->__finish();
 				return;
 			}
 			/**
@@ -247,12 +240,11 @@ class Index {
 			if ($this->subparts) {
 				if (!isset($rc[1]) || ($rc[1] == '' && !empty($this->subparts))) {
 					if (API) {
-						exit;
+						return;
 					}
 					$rc[1] = $this->subparts[0];
 				} elseif ($rc[1] != '' && !empty($this->subparts) && !in_array($rc[1], $this->subparts)) {
 					define('ERROR_CODE', 404);
-					$this->__finish();
 					return;
 				}
 				if (!$this->api) {

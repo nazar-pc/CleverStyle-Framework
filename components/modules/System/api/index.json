@@ -16,6 +16,8 @@
 		"update_system"
 	],
 	"profile"	: [
-		"get"
-	]
+		"blank",
+		"contacts"
+	],
+	"profiles"	: []
 }

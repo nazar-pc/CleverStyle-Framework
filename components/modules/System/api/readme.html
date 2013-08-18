@@ -1,14 +1,14 @@
 <h3 style="text-align: center;">General information about API in CleverStyle CMS</h3>
 <ul>
 	<li>almost all requests are performed with POST method</li>
-	<li>JSON input data are accepted if <b>Content-Type: application/json</b> header exists</li>
+	<li>JSON request data are accepted if <b>Content-Type: application/json</b> header exists</li>
 	<li>
-		local requests requires <b>session</b> input parameter, which should contain current user session
+		Local requests requires <b>session</b> input parameter, which should contain current user session (either in query string or in body)
 		<ul>
 			<li>jQuery is initialized with this parameter by default, so there is no need to specify it for $.ajax() method</li>
 		</ul>
 	</li>
-	<li>External API access may be provided by specific protocol with additional modules</li>
+	<li>External API access may be provided by specific protocol with additional modules (for instance, OAuth2 module provides corresponding protocol)</li>
 	<li>All responses are accompanied with header <b>Content-Type: application/json</b> and, of course, in JSON format if this is not redefined by module
 		API
 	</li>
@@ -21,7 +21,7 @@
 	</li>
 </ul>
 <h3 style="text-align: center;">Public API of System module</h3>
-<h4>GET /api/System/profile/get:</h4>
+<h4>GET /api/System/profile:</h4>
 <p>Returns profile information of current user. List of fields, that will be returned:</p>
 <ul>
 	<li>id</li>
@@ -49,16 +49,10 @@
 		unix time
 	</dd>
 </dl>
-<h4>GET /api/System/profile/get/{id}:</h4>
-<p>Similar to <b>/System/profile/get</b>, returns profile information of specified user <b>{id}</b>, which SHOULD BE in contacts list of current user.</p>
-<h4>POST /api/System/profile/get:</h4>
-<p>Parameters:</p>
-<dl>
-	<dt>id</dt>
-	<dd>array of id</dd>
-</dl>
-<p>Similar to <b>/System/profile/get/{id}</b>, but allows to get array of profiles at one request. Ids, that are not contacts of current user may be
-	ignored.</p>
+<h4>GET /api/System/profiles/{id}:</h4>
+<p>Similar to <b>/System/profile</b>, returns profile information of specified user <b>{id}</b>, which SHOULD BE in contacts list of current user.</p>
+<h4>GET /api/System/profiles/{id},{id}:</h4>
+<p>Similar to <b>/System/profiles/{id}</b>, but allows to get several profiles by coma separated ids at one request. Ids, that are not contacts of current user may be ignored.</p>
 <p>Returns array of profiles information.</p>
 <h4>GET /api/System/profile/contacts:</h4>
 <p>Returns array of id of current user contacts.</p>
