@@ -109,9 +109,7 @@ function core_select ($items_array, $item, $id = null, $info_item = null, $multi
 function dep_normal ($dependence_structure) {
 	$return	= [];
 	foreach ((array)$dependence_structure as $d) {
-		if (!is_array($d)) {
-			preg_match('/^([^<=>!]+)([<=>!]*)(.*)$/', $d, $d);
-		}
+		preg_match('/^([^<=>!]+)([<=>!]*)(.*)$/', $d, $d);
 		$return[$d[1]]	= [
 			isset($d[2]) && $d[2] ? str_replace('=>', '>=', $d[2]) : (isset($d[3]) && $d[3] ? '=' : '>='),
 			isset($d[3]) && $d[3] ? $d[3] : 0
