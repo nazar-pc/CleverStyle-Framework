@@ -360,20 +360,6 @@ function get_timezones_list () {
 	return $timezones;
 }
 /**
- * Check version of core DB
- *
- * @return bool	If version unsatisfactory - returns <b>false</b>
- */
-function check_db () {
-	$db_type	= Core::instance()->db_type;
-	global $$db_type;
-	if (!$$db_type) {
-		return true;
-	}
-	preg_match('/[\.0-9]+/', DB::instance()->server(), $db_version);
-	return (bool)version_compare($db_version[0], $$db_type, '>=');
-}
-/**
  * Check existence and version of mcrypt
  *
  * @param int		$mode	<b>0</b> - existence of library (if exists, current version will be returned)<br>
@@ -415,14 +401,6 @@ function zlib_compression () {
 	return zlib() && strtolower(ini_get('zlib.output_compression')) != 'off';
 }
 /**
- * Returns autocompression level of zlib library
- *
- * @return bool
- */
-function zlib_compression_level () {
-	return ini_get('zlib.output_compression_level');
-}
-/**
  * Check existence of curl library
  *
  * @return bool
@@ -445,30 +423,6 @@ function apc () {
  */
 function memcached () {
 	return extension_loaded('memcached');
-}
-/**
- * Check of "display_errors" configuration of php.ini
- *
- * @return bool
- */
-function display_errors () {
-	return (bool)ini_get('display_errors');
-}
-/**
- * Returns server type
- *
- * @return string
- */
-function server_api () {
-	$tmp = ob_wrapper(function () {
-		phpinfo(INFO_GENERAL);
-	});
-	preg_match('/Server API <\/td><td class="v">(.*?) <\/td><\/tr>/', $tmp, $tmp);
-	if ($tmp[1]) {
-		return $tmp[1];
-	} else {
-		return Language::instance()->indefinite;
-	}
 }
 /**
  * Get multilingual value from $Config->core array

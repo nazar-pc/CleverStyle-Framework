@@ -29,9 +29,6 @@ if (isset($Config->route[2]) && $Config->route[2] == 'phpinfo') {
 	return;
 }
 $Index->form	= false;
-function state ($state) {
-	return ($state ? 'ui-state-highlight' : 'ui-state-error').' ui-corner-all';
-};
 $Index->content(
 	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
 		[
@@ -259,3 +256,52 @@ $Index->content(
 		]
 	)
 );
+function state ($state) {
+	return ($state ? 'ui-state-highlight' : 'ui-state-error').' ui-corner-all';
+}
+/**
+ * Returns server type
+ *
+ * @return string
+ */
+function server_api () {
+	$tmp = ob_wrapper(function () {
+		phpinfo(INFO_GENERAL);
+	});
+	preg_match('/Server API <\/td><td class="v">(.*?) <\/td><\/tr>/', $tmp, $tmp);
+	if ($tmp[1]) {
+		return $tmp[1];
+	} else {
+		return Language::instance()->indefinite;
+	}
+}
+/**
+ * Check version of core DB
+ *
+ * @return bool	If version unsatisfactory - returns <b>false</b>
+ */
+function check_db () {
+	$db_type	= Core::instance()->db_type;
+	global $$db_type;
+	if (!$$db_type) {
+		return true;
+	}
+	preg_match('/[\.0-9]+/', DB::instance()->server(), $db_version);
+	return (bool)version_compare($db_version[0], $$db_type, '>=');
+}
+/**
+ * Returns autocompression level of zlib library
+ *
+ * @return bool
+ */
+function zlib_compression_level () {
+	return ini_get('zlib.output_compression_level');
+}
+/**
+ * Check of "display_errors" configuration of php.ini
+ *
+ * @return bool
+ */
+function display_errors () {
+	return (bool)ini_get('display_errors');
+}
