@@ -882,6 +882,12 @@ function post_request ($host, $path, $data) {
 function code_header ($code) {
 	$string_code = null;
 	switch ($code) {
+		case 201:
+			$string_code	= '201 Created';
+		break;
+		case 202:
+			$string_code	= '202 Accepted';
+		break;
 		case 301:
 			$string_code	= '301 Moved Permanently';
 		break;
@@ -903,8 +909,20 @@ function code_header ($code) {
 		case 404:
 			$string_code	= '404 Not Found';
 		break;
+		case 405:
+			$string_code	= '405 Method Not Allowed';
+		break;
+		case 409:
+			$string_code	= '409 Conflict';
+		break;
+		case 429:
+			$string_code	= '429 Too Many Requests';
+		break;
 		case 500:
 			$string_code	= '500 Internal Server Error';
+		break;
+		case 501:
+			$string_code	= '501 Not Implemented';
 		break;
 		case 503:
 			$string_code	= '503 Service Unavailable';

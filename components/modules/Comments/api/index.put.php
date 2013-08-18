@@ -38,7 +38,7 @@ if (!(
 	define('ERROR_CODE', 403);
 	return;
 }
-if (!isset($_POST['id'], $_POST['text'], $_POST['module'])) {
+if (!isset($Config->route[0], $_POST['text'], $_POST['module'])) {
 	define('ERROR_CODE', 400);
 	return;
 }
@@ -54,7 +54,7 @@ Trigger::instance()->run(
 	'api/Comments/edit',
 	[
 		'Comments'	=> &$Comments,
-		'id'		=> $_POST['id'],
+		'id'		=> $Config->route[0],
 		'module'	=> $_POST['module']
 	]
 );
@@ -68,7 +68,7 @@ if (!is_object($Comments)) {
 /**
  * @var Comments $Comments
  */
-$result	= $Comments->set($_POST['id'], $_POST['text']);
+$result	= $Comments->set($Config->route[0], $_POST['text']);
 if ($result) {
 	$Page->json($result['text']);
 } else {

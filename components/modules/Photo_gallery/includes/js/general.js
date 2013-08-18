@@ -16,12 +16,13 @@
     add_button = $('.cs-photo-gallery-add-images');
     if (add_button.length) {
       window.uploader = file_upload(add_button, function(files) {
-        return $.ajax(base_url + '/api/Photo_gallery/add_images', {
+        return $.ajax(base_url + '/api/Photo_gallery/images', {
           cache: false,
           data: {
             files: files,
             gallery: add_button.data('gallery')
           },
+          type: 'post',
           success: function(result) {
             if (!result.length || !result) {
               alert(L.photo_gallery_images_not_supported);
@@ -48,16 +49,14 @@
         return location.href = location.href + '/' + $(this).data('image');
       }).on('click', '.cs-photo-gallery-image-delete', function() {
         if (confirm(L.photo_gallery_sure_to_delete_image)) {
-          return $.ajax(base_url + '/api/Photo_gallery/delete_image', {
+          return $.ajax(base_url + '/api/Photo_gallery/images/' + $(this).data('image'), {
             cache: false,
-            data: {
-              image: $(this).data('image')
-            },
+            type: 'delete',
             success: function() {
               return location.reload();
             },
             error: function(xhr) {
-              return alert(xhr.responseText ? json_decode(xhr.responseText).error_description : L.photo_gallery_images_deletion_connection_error);
+              return alert(xhr.responseText ? json_decode(xhr.responseText).error_description : L.photo_gallery_image_deletion_connection_error);
             }
           });
         }

@@ -255,25 +255,27 @@ function getcookie (name) {
 function login (login, password) {
 	login	= login.toLowerCase();
 	$.ajax(
-		base_url+'/api/System/user/login',
+		base_url + '/api/System/user/login',
 		{
 			cache	: false,
 			data	: {
 				login: hash('sha224', login)
 			},
+			type	: 'post',
 			success	: function (random_hash) {
 				if (random_hash.length == 56) {
 					$.ajax(
-						base_url+"/api/user/login",
+						base_url + "/api/user/login",
 						{
 							cache	: false,
 							data	: {
 								login		: hash('sha224', login),
 								auth_hash	: hash(
 									'sha512',
-									hash('sha224', login)+hash('sha512', hash('sha512', password)+public_key)+navigator.userAgent+random_hash
+									hash('sha224', login) + hash('sha512', hash('sha512', password) + public_key) + navigator.userAgent + random_hash
 								)
 							},
+							type	: 'post',
 							success	: function (result) {
 								if (result == 'reload') {
 									location.reload();
@@ -307,12 +309,13 @@ function login (login, password) {
  */
 function logout () {
 	$.ajax(
-		base_url+'/api/System/user/logout',
+		base_url + '/api/System/user/logout',
 		{
 			cache	: false,
 			data	: {
 				logout: true
 			},
+			type	: 'post',
 			success	: function () {
 				location.reload();
 			},
@@ -338,12 +341,13 @@ function registration (email) {
 	}
 	email	= email.toLowerCase();
 	$.ajax(
-		base_url+'/api/System/user/registration',
+		base_url + '/api/System/user/registration',
 		{
 			cache	: false,
 			data	: {
 				email: email
 			},
+			type	: 'post',
 			success	: function (result) {
 				if (result == 'reg_confirmation') {
 					$('<div>'+L.reg_confirmation+'</div>')
@@ -388,12 +392,13 @@ function restore_password (email) {
 	}
 	email	= email.toLowerCase();
 	$.ajax(
-		base_url+'/api/System/user/restore_password',
+		base_url + '/api/System/user/restore_password',
 		{
 			cache	: false,
 			data	: {
 				email: hash('sha224', email)
 			},
+			type	: 'post',
 			success	: function (result) {
 				if (result == 'OK') {
 					$('<div>'+L.restore_password_confirmation+'</div>')
@@ -439,13 +444,14 @@ function change_password (current_password, new_password) {
 	current_password	= hash('sha512', hash('sha512', current_password)+public_key);
 	new_password		= hash('sha512', hash('sha512', new_password)+public_key);
 	$.ajax(
-		base_url+'/api/System/user/change_password',
+		base_url + '/api/System/user/change_password',
 		{
 			cache	: false,
 			data	: {
 				verify_hash		: hash('sha224', current_password+session_id),
 				new_password	: xor_string(current_password, new_password)
 			},
+			type	: 'post',
 			success	: function (result) {
 				if (result == 'OK') {
 					alert(L.password_changed_successfully);

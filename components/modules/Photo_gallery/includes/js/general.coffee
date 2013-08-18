@@ -12,11 +12,12 @@ $ ->
 			add_button
 			(files) ->
 				$.ajax(
-					base_url + '/api/Photo_gallery/add_images',
+					base_url + '/api/Photo_gallery/images',
 					cache	: false
 					data	:
 						files	: files
-						gallery	: add_button.data 'gallery'
+						gallery	: add_button.data('gallery')
+					type	: 'post'
 					success	: (result) ->
 						if !result.length || !result
 							alert L.photo_gallery_images_not_supported
@@ -46,14 +47,13 @@ $ ->
 			->
 				if confirm L.photo_gallery_sure_to_delete_image
 					$.ajax(
-						base_url + '/api/Photo_gallery/delete_image',
+						base_url + '/api/Photo_gallery/images/' + $(this).data('image'),
 						cache	: false
-						data	:
-							image	: $(this).data 'image'
+						type	: 'delete'
 						success	: () ->
 							location.reload()
 						error	: (xhr) ->
-							alert if xhr.responseText then json_decode(xhr.responseText).error_description else L.photo_gallery_images_deletion_connection_error
+							alert if xhr.responseText then json_decode(xhr.responseText).error_description else L.photo_gallery_image_deletion_connection_error
 					)
 		)
 	$('.cs-photo-gallery-delete-image-checkbox').change ->

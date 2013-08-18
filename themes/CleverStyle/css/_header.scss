@@ -98,7 +98,8 @@
 	width    : 15.5em;
 
 	[type=text],
-	[type=password] {
+	[type=password],
+	[type=email] {
 		background : #ddd;
 		border     : #fff solid .1em;
 		color      : $base-color;
@@ -117,7 +118,7 @@
 	margin-top : .5em;
 }
 .cs-header-login-form {
-	height   : 6.5em;
+	height   : 7em;
 	position : relative;
 }
 .cs-header-login-process {

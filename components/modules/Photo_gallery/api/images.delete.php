@@ -11,8 +11,8 @@ use			h,
 			cs\Config,
 			cs\Page,
 			cs\User;
-$Config	= Config::instance();
-$User	= User::instance();
+$Config			= Config::instance();
+$User			= User::instance();
 /**
  * If AJAX request from local referer, user is not guest - allow
  */
@@ -25,12 +25,12 @@ if (!(
 	define('ERROR_CODE', 403);
 	return;
 }
-if (!isset($_POST['image'])) {
+if (!isset($Config->route[1])) {
 	define('ERROR_CODE', 400);
 	return;
 }
 $Photo_gallery	= Photo_gallery::instance();
-$image			= $Photo_gallery->get($_POST['image']);
+$image			= $Photo_gallery->get($Config->route[1]);
 if (!$image) {
 	define('ERROR_CODE', 404);
 	return;

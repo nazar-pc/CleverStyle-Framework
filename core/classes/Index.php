@@ -65,7 +65,8 @@ class Index {
 
 				$admin				= false,
 				$module				= false,
-				$api				= false;
+				$api				= false,
+				$request_method		= null;
 	/**
 	 * Detecting module folder including of admin/api request type, including prepare file, including of plugins
 	 */
@@ -90,7 +91,7 @@ class Index {
 		$api_path	= MODULES.'/'.MODULE.'/api';
 		if (
 			ADMIN &&
-			file_exists($admin_path) && (file_exists($admin_path.'/index.php') || file_exists($admin_path.'/index.json'))
+			file_exists($admin_path) && (file_exists("$admin_path/index.php") || file_exists("$admin_path/index.json"))
 		) {
 			if (!($User->admin() && $User->get_user_permission($this->permission_group = 'admin/'.MODULE, 'index'))) {
 				define('ERROR_CODE', 403);
@@ -100,10 +101,7 @@ class Index {
 			define('MFOLDER', $admin_path);
 			$this->form		= true;
 			$this->admin	= true;
-		} elseif (
-			API
-			&& file_exists($api_path) && (file_exists($api_path.'/index.php') || file_exists($api_path.'/index.json'))
-		) {
+		} elseif (API && file_exists($api_path)) {
 			if (!$User->get_user_permission($this->permission_group = 'api/'.MODULE, 'index')) {
 				define('ERROR_CODE', 403);
 				$this->__finish();
@@ -130,9 +128,12 @@ class Index {
 		 * Plugins processing
 		 */
 		foreach ($Config->components['plugins'] as $plugin) {
-			_include_once(PLUGINS.'/'.$plugin.'/index.php', false);
+			_include_once(PLUGINS."/$plugin/index.php", false);
 		}
 		_include_once(MFOLDER.'/prepare.php', false);
+		if (preg_match('/[a-z_\-]+/i', $_SERVER['REQUEST_METHOD'])) {
+			$this->request_method	= strtolower($_SERVER['REQUEST_METHOD']);
+		}
 	}
 	/**
 	 * Adding of content on the page
@@ -164,8 +165,8 @@ class Index {
 		} else {
 			$structure_file	= 'index.json';
 		}
-		if (file_exists(MFOLDER.'/'.$structure_file)) {
-			$this->structure	= _json_decode(file_get_contents(MFOLDER.'/'.$structure_file));
+		if (file_exists(MFOLDER."/$structure_file")) {
+			$this->structure	= _json_decode(file_get_contents(MFOLDER."/$structure_file"));
 			if (is_array($this->structure)) {
 				foreach ($this->structure as $item => $value) {
 					if (!is_array($value)) {
@@ -175,7 +176,7 @@ class Index {
 						$this->parts[] = $item;
 						if (isset($rc[0]) && $item == $rc[0] && is_array($value)) {
 							foreach ($value as $subpart) {
-								if ($User->get_user_permission($this->permission_group, $item.'/'.$subpart)) {
+								if ($User->get_user_permission($this->permission_group, "$item/$subpart")) {
 									$this->subparts[] = $subpart;
 								} elseif (isset($rc[1]) && $rc[1] == $subpart) {
 									define('ERROR_CODE', 403);
@@ -193,7 +194,11 @@ class Index {
 				unset($item, $value, $subpart);
 			}
 		}
+		unset($structure_file);
 		_include_once(MFOLDER.'/index.php', false);
+		if (API && $this->request_method) {
+			_include_once(MFOLDER."/index.$this->request_method.php", false);
+		}
 		if ($this->stop || defined('ERROR_CODE')) {
 			return;
 		}
@@ -214,8 +219,8 @@ class Index {
 			/**
 			 * Saving of changes
 			 */
-			if ($this->admin && !_include_once(MFOLDER.'/'.$rc[0].'/'.$this->savefile.'.php', false)) {
-				_include_once(MFOLDER.'/'.$this->savefile.'.php', false);
+			if ($this->admin && !_include_once(MFOLDER."/$rc[0]/$this->savefile.php", false)) {
+				_include_once(MFOLDER."/$this->savefile.php", false);
 			}
 			$this->admin && $this->title_auto && $Page->title($L->administration);
 			if (!$this->api && $this->title_auto) {
@@ -232,7 +237,10 @@ class Index {
 			if (!$Config->core['site_mode']) {
 				$Page->warning(get_core_ml_text('closed_title'));
 			}
-			_include_once(MFOLDER.'/'.$rc[0].'.php', false);
+			_include_once(MFOLDER."/$rc[0].php", false);
+			if (API && $this->request_method) {
+				_include_once(MFOLDER."/$rc[0].$this->request_method.php", false);
+			}
 			if ($this->stop || defined('ERROR_CODE')) {
 				return;
 			}
@@ -252,15 +260,18 @@ class Index {
 						$Page->title($L->$rc[1]);
 					}
 					if ($this->action === null) {
-						$this->action = ($this->admin ? 'admin/' : '').MODULE.'/'.$rc[0].'/'.$rc[1];
+						$this->action = ($this->admin ? 'admin/' : '').MODULE."/$rc[0]/$rc[1]";
 					}
 				}
-				_include_once(MFOLDER.'/'.$rc[0].'/'.$rc[1].'.php', false);
+				_include_once(MFOLDER."/$rc[0]/$rc[1].php", false);
+				if (API && $this->request_method) {
+					_include_once(MFOLDER."/$rc[0]/$rc[1].$this->request_method.php", false);
+				}
 				if ($this->stop || defined('ERROR_CODE')) {
 					return;
 				}
 			} elseif (!$this->api && $this->action === null) {
-				$this->action = ($this->admin ? 'admin/' : '').MODULE.'/'.$rc[0];
+				$this->action = ($this->admin ? 'admin/' : '').MODULE."/$rc[0]";
 			}
 			unset($rc);
 			if ($this->post_title && $this->title_auto) {
@@ -274,7 +285,7 @@ class Index {
 			if ($this->action === null) {
 				$this->action = $Config->server['relative_address'];
 			}
-			_include_once(MFOLDER.'/'.$this->savefile.'.php', false);
+			_include_once(MFOLDER."/$this->savefile.php", false);
 		}
 	}
 	/**
@@ -362,7 +373,7 @@ class Index {
 			Page::instance()->mainsubmenu .= h::a(
 				Language::instance()->$part,
 				[
-					'href'		=> ($this->admin ? 'admin/' : '').MODULE.'/'.$part,
+					'href'		=> ($this->admin ? 'admin/' : '').MODULE."/$part",
 					'class'		=> isset($Config->route[0]) && $Config->route[0] == $part ? 'active' : ''
 				]
 			);
@@ -375,13 +386,13 @@ class Index {
 		if (!is_array($this->subparts) || !$this->subparts) {
 			return;
 		}
-		$Config	= Config::instance();
+		$rc	= Config::instance()->route;
 		foreach ($this->subparts as $subpart) {
 			Page::instance()->menumore .= h::a(
 				Language::instance()->$subpart,
 				[
-					'href'		=> ($this->admin ? 'admin/' : '').MODULE.'/'.$Config->route[0].'/'.$subpart,
-					'class'		=> $Config->route[1] == $subpart ? 'active' : ''
+					'href'		=> ($this->admin ? 'admin/' : '').MODULE."/$rc[0]/$subpart",
+					'class'		=> $rc[1] == $subpart ? 'active' : ''
 				]
 			);
 		}
@@ -545,7 +556,7 @@ class Index {
 				switch ($block['type']) {
 					default:
 						$content = ob_wrapper(function () use ($block) {
-							include BLOCKS.'/block.'.$block['type'].'.php';
+							include BLOCKS."/block.$block[type].php";
 						});
 					break;
 					case 'html':
@@ -554,7 +565,7 @@ class Index {
 					break;
 				}
 				$template	= TEMPLATES.'/blocks/block.'.(
-					file_exists(TEMPLATES.'/blocks/block.'.$block['template']) ? $block['template'] : 'default.html'
+					file_exists(TEMPLATES."/blocks/block.$block[template]") ? $block['template'] : 'default.html'
 				);
 				$content	= str_replace(
 					[

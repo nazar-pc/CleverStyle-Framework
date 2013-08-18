@@ -20,10 +20,11 @@ $(function () {
 			data.id	= id;
 		}
 		$.ajax(
-			base_url+'/api/Blogs/preview_post',
+			base_url + '/api/Blogs/posts/preview',
 			{
-				cache		: false,
-				data		: data,
+				cache	: false,
+				data	: data,
+				type	: 'post',
 				success	: function (result) {
 					var	preview	= $('.cs-blogs-post-preview-content');
 					preview.html(result);

@@ -40,7 +40,7 @@ if (!(
 	define('ERROR_CODE', 403);
 	return;
 }
-if (!isset($_POST['id'], $_POST['module'])) {
+if (!isset($Config->route[0], $_POST['module'])) {
 	define('ERROR_CODE', 400);
 	return;
 }
@@ -51,7 +51,7 @@ Trigger::instance()->run(
 	[
 		'Comments'		=> &$Comments,
 		'delete_parent'	=> &$delete_parent,
-		'id'			=> $_POST['id'],
+		'id'			=> $Config->route[0],
 		'module'		=> $_POST['module']
 	]
 );
@@ -67,7 +67,7 @@ if (!is_object($Comments)) {
 /**
  * @var Comments $Comments
  */
-if ($result = $Comments->del($_POST['id'])) {
+if ($result = $Comments->del($Config->route[0])) {
 	$Page->json($delete_parent ? h::{'icon.cs-comments-comment-delete.cs-pointer'}('trash') : '');
 } else {
 	define('ERROR_CODE', 500);
