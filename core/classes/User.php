@@ -43,8 +43,8 @@
  *
  *  System/User/get_contacts
  *  [
- * 		'id'		=> <i>user_id</i>,
- * 		'contacts'	=> <i>&$contacts</i>	//Array of user id
+ *  	'id'		=> <i>user_id</i>,
+ *  	'contacts'	=> <i>&$contacts</i>	//Array of user id
  *  ]
  *
  *  System/User/del_session/before

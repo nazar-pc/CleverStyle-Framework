@@ -50,10 +50,10 @@ function db_test (url, added) {
 		$.ajax({
 			url		: url,
 			success	: function (result) {
-				$('#test_db').html(result);
+				test_db.html(result);
 			},
 			error	: function () {
-				$('#test_db').html('<p class="cs-test-result">' + L.failed + '</p>');
+				test_db.html('<p class="cs-test-result">' + L.failed + '</p>');
 			}
 		});
 	} else {
@@ -71,10 +71,10 @@ function db_test (url, added) {
 				db	: db
 			},
 			success	: function (result) {
-				$('#test_db').html(result);
+				test_db.html(result);
 			},
 			error	: function () {
-				$('#test_db').html('<p class="cs-test-result">' + L.failed + '</p>');
+				test_db.html('<p class="cs-test-result">' + L.failed + '</p>');
 			}
 		});
 	}
@@ -94,10 +94,10 @@ function storage_test (url, added) {
 		$.ajax({
 			url		: url,
 			success	: function (result) {
-				$('#test_storage').html(result);
+				test_storage.html(result);
 			},
 			error	: function () {
-				$('#test_storage').html('<p class="cs-test-result">' + L.failed + '</p>');
+				test_storage.html('<p class="cs-test-result">' + L.failed + '</p>');
 			}
 		});
 	} else {
@@ -112,10 +112,10 @@ function storage_test (url, added) {
 			url		: url,
 			data	: 'storage=' + storage,
 			success	: function (result) {
-				$('#test_storage').html(result);
+				test_storage.html(result);
 			},
 			error	: function () {
-				$('#test_storage').html('<p class="cs-test-result">' + L.failed + '</p>');
+				test_storage.html('<p class="cs-test-result">' + L.failed + '</p>');
 			}
 		});
 	}
