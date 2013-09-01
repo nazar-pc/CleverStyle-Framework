@@ -57,7 +57,7 @@ $Index->content(
 					(
 						$User->admin() || $image['user'] == $User->id ? h::{'a.cs-photo-gallery-image-control'}(
 							[
-								h::icon('wrench'),
+								'&nbsp;'.h::icon('edit'),
 								[
 									'title'			=> $L->edit,
 									'class'			=> 'cs-photo-gallery-image-edit',
@@ -65,7 +65,7 @@ $Index->content(
 								]
 							],
 							[
-								h::icon('trash'),
+								'&nbsp;'.h::icon('trash'),
 								[
 									'title'			=> $L->delete,
 									'class'			=> 'cs-photo-gallery-image-delete',

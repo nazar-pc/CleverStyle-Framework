@@ -46,7 +46,7 @@ Trigger::instance()->register(
 			[
 				$L->or_login_with,
 				[
-					'class'	=> 'ui-widget-header'
+					'class'	=> 'uk-button-primary'
 				]
 			],
 			array_map(
@@ -56,7 +56,7 @@ Trigger::instance()->register(
 						$L->$provider,
 						[
 							'data-provider'	=> $provider,
-							'class'			=> 'ui-widget-content cs-hybrid-auth-'.$provider
+							'class'			=> "uk-button-default cs-hybrid-auth-$provider"
 						]
 					];
 				},
@@ -69,7 +69,7 @@ Trigger::instance()->register(
 	'System/User/registration/confirmation/after',
 	function () {
 		if ($referer = _getcookie('HybridAuth_referer')) {
-			header('Refresh: 5; url='.$referer);
+			header("Refresh: 5; url=$referer");
 			_setcookie('HybridAuth_referer', '');
 		}
 	}
@@ -119,7 +119,7 @@ function get_user_contacts ($user) {
 	) {
 		return [];
 	}
-	if (!($data = $Cache->{'HybridAuth/contacts/'.$user})) {
+	if (!($data = $Cache->{"HybridAuth/contacts/$user"})) {
 		/**
 		 *	@var \cs\DB\_Abstract $cdb
 		 */
@@ -139,7 +139,7 @@ function get_user_contacts ($user) {
 			GROUP BY `i`.`id`",
 			$user
 		]) ?: [];
-		$Cache->{'HybridAuth/contacts/'.$user}	= $data;
+		$Cache->{"HybridAuth/contacts/$user"}	= $data;
 	}
 	return $data;
 }
@@ -184,7 +184,7 @@ function update_user_contacts ($contacts, $provider) {
 			$params
 		);
 	}
-	unset($Cache->{'HybridAuth/contacts/'.$id});
+	unset($Cache->{"HybridAuth/contacts/$id"});
 }
 function add_session_after () {
 	$User	= User::instance();
@@ -205,11 +205,11 @@ function add_session_after () {
  * @return Hybrid_Auth
  */
 function get_hybridauth_instance ($provider = null, $base_url = null) {
-	require_once __DIR__.'/Hybrid/Auth.php';
+	require_once __DIR__.'/../Hybrid/Auth.php';
 	$Config			= Config::instance();
 	$User			= User::instance();
 	$HybridAuth		= new Hybrid_Auth([
-		'base_url'	=> $base_url ?: $Config->base_url().'/HybridAuth/'.$provider.'/endpoint/'.$User->get_session(),
+		'base_url'	=> $base_url ?: $Config->base_url()."/HybridAuth/$provider/endpoint/".$User->get_session(),
 		'providers'	=> $Config->module('HybridAuth')->providers
 	]);
 	if ($User->user() && MODULE != 'HybridAuth') {

@@ -21,8 +21,8 @@ $page		= isset($_POST['page']) ? (int)$_POST['page'] : 1;
 $page		= $page > 0 ? $page : 1;
 $total		= Blogs::instance()->get_total_count();
 $Index->content(
-	h::{'table.cs-center-all.cs-fullwidth-table'}(
-		h::{'tr th.ui-widget-header.ui-corner-all'}(
+	h::{'table.cs-center-all.cs-table'}(
+		h::{'thead tr th'}(
 			[
 				$L->post_title,
 				[
@@ -49,7 +49,7 @@ $Index->content(
 			],
 			$L->action
 		).
-		h::{'tr| td.ui-widget-content.ui-corner-all'}(
+		h::{'tbody tr| td'}(
 			get_posts_rows($page)
 		)
 	).

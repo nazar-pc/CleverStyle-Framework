@@ -18,25 +18,25 @@ $L						= Language::instance();
 Page::instance()->title($L->list_of_client);
 $Index->apply_button	= false;
 $Index->content(
-	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+	h::{'p.lead.cs-center'}(
 		$L->list_of_clients
 	).
-	h::{'table.cs-fullwidth-table.cs-center-all'}(
-		h::{'th.ui-widget-header.ui-corner-all'}([
-												 $L->client_name,
+	h::{'table.cs-table.cs-center-all'}(
+		h::{'thead tr th'}([
+			$L->client_name,
 			'client_id',
 			'client_secret',
 			$L->action
 		]).
-		h::tr(array_map(
+		h::{'tbody tr'}(array_map(
 			function ($client) use ($L) {
-				return h::{'td.ui-widget-content.ui-corner-all'}(
+				return h::td(
 					[
 						$client['name'],
 						h::{'input{disabled]'}($client['id']),
 						h::{'input{disabled]'}($client['secret']),
 						h::{'a.cs-button-compact'}([
-							h::icon('wrench'),
+							h::icon('edit'),
 							[
 								'href'			=> 'admin/OAuth2/clients/edit/'.$client['id'],
 								'data-title'	=> $L->edit
@@ -51,20 +51,14 @@ $Index->content(
 						])
 					],
 					[
-						'class'	=> $client['active'] ? false : 'ui-state-disabled'
+						'class'	=> $client['active'] ? false : 'text-muted'
 					]
 				);
 			},
 			OAuth2::instance()->clients_list()
 		))
 	).
-	h::{'p.cs-left a.cs-button'}([
-		$L->add_client,
-		[
-			'href'	=> 'admin/OAuth2/clients/add'
-		]
-	]).
-	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr td'}(
+	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr td'}(
 		h::info('allow_guest_tokens'),
 		h::{'input[type=radio]'}([
 			'name'		=> 'guest_tokens',
@@ -72,5 +66,11 @@ $Index->content(
 			'value'		=> [0, 1],
 			'in'		=> [$L->off, $L->on]
 		])
-	)
+	).
+	h::{'p.cs-left a.cs-button'}([
+		$L->add_client,
+		[
+			'href'	=> 'admin/OAuth2/clients/add'
+		]
+	])
 );

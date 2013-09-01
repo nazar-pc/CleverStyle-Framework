@@ -111,7 +111,7 @@ if (!API) {
 					]
 				).
 				($post['sections'] != [0] ? h::p(
-					h::icon('suitcase').
+					h::icon('bookmark').
 					implode(', ', array_map(
 							function ($section) use ($Blogs, $L, $module) {
 								$section	= $Blogs->get_section($section);
@@ -138,7 +138,7 @@ if (!API) {
 						]
 					).
 					h::a(
-						h::icon('person').$User->username($post['user']),
+						h::icon('user').$User->username($post['user']),
 						[
 							'href'			=> path($L->profile).'/'.$User->get('login', $post['user']),
 							'rel'			=> 'author'
@@ -146,14 +146,14 @@ if (!API) {
 					).
 					(
 						Config::instance()->module('Blogs')->enable_comments && $Comments ? h::a(
-							h::icon('comment').$post['comments_count'],
+							h::icon('comments').$post['comments_count'],
 							[
 								'href'			=> $module.'/'.$post['path'].':'.$post['id'].'#comments'
 							]
 						) : ''
 					).
 					h::a(
-						h::icon('note').$L->read_more,
+						h::icon('double-angle-right').$L->read_more,
 						[
 							'href'			=> $module.'/'.$post['path'].':'.$post['id']
 						]

@@ -86,20 +86,20 @@ if (
 					$_FILES['upload_module']['tmp_name'],
 					$tmp_file = TEMP.'/'.md5($_FILES['upload_module']['tmp_name'].MICROTIME).'.phar.php'
 				);
-				$tmp_dir								= 'phar://'.$tmp_file;
-				if (!($module = file_get_contents($tmp_dir.'/dir'))) {
+				$tmp_dir								= "phar://$tmp_file";
+				if (!($module = file_get_contents("$tmp_dir/dir"))) {
 					unlink($tmp_file);
 					break;
 				}
 				$rc[3]									= $module;
-				if (!file_exists($tmp_dir.'/meta.json') || _json_decode(file_get_contents($tmp_dir.'/meta.json'))['category'] != 'modules') {
+				if (!file_exists("$tmp_dir/meta.json") || _json_decode(file_get_contents("$tmp_dir/meta.json"))['category'] != 'modules') {
 					$Page->warning($L->this_is_not_module_installer_file);
 					unlink($tmp_file);
 					break;
 				}
 				if (isset($Config->components['modules'][$module])) {
-					$current_version		= _json_decode(file_get_contents(MODULES.'/'.$module.'/meta.json'))['version'];
-					$new_version			= _json_decode(file_get_contents($tmp_dir.'/meta.json'))['version'];
+					$current_version		= _json_decode(file_get_contents(MODULES."/$module/meta.json"))['version'];
+					$new_version			= _json_decode(file_get_contents("$tmp_dir/meta.json"))['version'];
 					if (!version_compare($current_version, $new_version, '<')) {
 						$Page->warning($L->update_module_impossible_older_version($module));
 						unlink($tmp_file);
@@ -114,7 +114,7 @@ if (
 					$Page->title($L->updating_of_module($module));
 					rename($tmp_file, $tmp_file = TEMP.'/'.$User->get_session().'_module_update.phar.php');
 					$a->content(
-						h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+						h::{'p.lead.cs-center'}(
 							$L->update_module(
 								$module,
 								$current_version,
@@ -128,28 +128,28 @@ if (
 					);
 					break;
 				}
-				if (!file_exists(MODULES.'/'.$module) && !mkdir(MODULES.'/'.$module, 0700)) {
+				if (!file_exists(MODULES."/$module") && !mkdir(MODULES."/$module", 0700)) {
 					$Page->warning($L->cant_unpack_module_no_write_permissions);
 					unlink($tmp_file);
 					break;
 				}
-				$fs										= _json_decode(file_get_contents($tmp_dir.'/fs.json'));
+				$fs										= _json_decode(file_get_contents("$tmp_dir/fs.json"));
 				$extract								= array_product(
 					array_map(
 						function ($index, $file) use ($tmp_dir, $module) {
 							if (
-								!file_exists(pathinfo(MODULES.'/'.$module.'/'.$file, PATHINFO_DIRNAME)) &&
-								!mkdir(pathinfo(MODULES.'/'.$module.'/'.$file, PATHINFO_DIRNAME), 0700, true)
+								!file_exists(pathinfo(MODULES."/$module/$file", PATHINFO_DIRNAME)) &&
+								!mkdir(pathinfo(MODULES."/$module/$file", PATHINFO_DIRNAME), 0700, true)
 							) {
 								return 0;
 							}
-							return (int)copy($tmp_dir.'/fs/'.$index, MODULES.'/'.$module.'/'.$file);
+							return (int)copy("$tmp_dir/fs/$index", MODULES."/$module/$file");
 						},
 						$fs,
 						array_keys($fs)
 					)
 				);
-				file_put_contents(MODULES.'/'.$module.'/fs.json', _json_encode(array_keys($fs)));
+				file_put_contents(MODULES."/$module/fs.json", _json_encode(array_keys($fs)));
 				unset($tmp_dir);
 				if (!$extract) {
 					$Page->warning($L->module_files_unpacking_error);
@@ -191,7 +191,7 @@ if (
 			$show_modules	= false;
 			$Page->title($L->installation_of_module($rc[3]));
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+				h::{'p.lead.cs-center'}(
 					$L->installation_of_module($rc[3])
 				)
 			);
@@ -260,7 +260,7 @@ if (
 			$show_modules			= false;
 			$Page->title($L->uninstallation_of_module($rc[3]));
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+				h::{'p.lead.cs-center'}(
 					$L->uninstallation_of_module($rc[3])
 				)
 			);
@@ -309,14 +309,14 @@ if (
 				$_FILES['upload_system']['tmp_name'],
 				$tmp_file = TEMP.'/'.md5($_FILES['upload_system']['tmp_name'].MICROTIME).'.phar.php'
 			);
-			$tmp_dir								= 'phar://'.$tmp_file;
-			if (!file_exists($tmp_dir.'/version') || !file_exists($tmp_dir.'/themes.json')) {
+			$tmp_dir								= "phar://$tmp_file";
+			if (!file_exists("$tmp_dir/version") || !file_exists($tmp_dir.'/themes.json')) {
 				$Page->warning($L->this_is_not_system_installer_file);
 				unlink($tmp_file);
 				break;
 			}
 			$current_version		= _json_decode(file_get_contents(MODULES.'/System/meta.json'))['version'];
-			$new_version			= _json_decode(file_get_contents($tmp_dir.'/version'));
+			$new_version			= _json_decode(file_get_contents("$tmp_dir/version"));
 			if (!version_compare($current_version, $new_version, '<')) {
 				$Page->warning($L->update_system_impossible_older_version);
 				unlink($tmp_file);
@@ -337,7 +337,7 @@ if (
 			$Page->title($L->updating_of_system);
 			rename($tmp_file, $tmp_file = TEMP.'/'.$User->get_session().'_update_system.phar.php');
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+				h::{'p.lead.cs-center'}(
 					$L->update_system(
 						$current_version,
 						$new_version
@@ -353,7 +353,7 @@ if (
 			$show_modules			= false;
 			$Page->title($L->setting_default_module($rc[3]));
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+				h::{'p.lead.cs-center'}(
 					$L->setting_default_module($rc[3])
 				)
 			);
@@ -376,7 +376,7 @@ if (
 				$Page->warning($L->changing_settings_warning);
 				$Page->title($L->db_settings_for_module($rc[3]));
 				$a->content(
-					h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+					h::{'p.lead.cs-center'}(
 						$L->db_settings_for_module($rc[3])
 					)
 				);
@@ -392,40 +392,41 @@ if (
 				$a->apply_button		= false;
 				$a->cancel_button_back	= true;
 				module_db_settings:
-				if (file_exists(MODULES.'/'.$rc[3].'/meta/db.json')) {
-					$dbs					= [0 => $L->core_db.' ('.$Core->db_type.')'];
+				if (file_exists(MODULES."/$rc[3]/meta/db.json")) {
+					$dbs					= [0 => "$L->core_db ($Core->db_type)"];
 					foreach ($Config->db as $i => &$db_data) {
 						if ($i) {
-							$dbs[$i] = $db_data['name'].' ('.$db_data['host'].' / '.$db_data['type'].')';
+							$dbs[$i] = "$db_data[name] ($db_data[host] / $db_data[type])";
 						}
 					}
 					unset($i, $db_data);
-					$db_list[] = h::{'th.ui-widget-header.ui-corner-all'}([
-						h::info('appointment_of_db'),
-						h::info('system_db')
-					]);
-					$db_json = _json_decode(file_get_contents(MODULES.'/'.$rc[3].'/meta/db.json'));
+					$db_list				= [];
+					$db_json				= _json_decode(file_get_contents(MODULES."/$rc[3]/meta/db.json"));
 					foreach ($db_json as $database) {
-						$db_list[] = h::{'td.ui-widget-content.ui-corner-all'}([
-							$L->{$rc[3].'_db_'.$database},
+						$db_list[] = [
+							$L->{"$rc[3]_db_$database"},
 							h::select(
 								[
 									'in'		=> array_values($dbs),
 									'value'		=> array_keys($dbs)
 								],
 								[
-									'name'		=> 'db['.$database.']',
+									'name'		=> "db[$database]",
 									'selected'	=> isset($Config->components['modules'][$rc[3]]['db'][$database]) ?
 										$Config->components['modules'][$rc[3]]['db'][$database] : 0,
 									'size'		=> 5
 								]
 							)
-						]);
+						];
 					}
 					unset($db_json, $dbs, $database);
 					$a->content(
-						h::{'table.cs-fullwidth-table tr'}(
-							$db_list
+						h::{'table.cs-table'}(
+							h::{'thead tr th'}([
+								h::info('appointment_of_db'),
+								h::info('system_db')
+							]).
+							h::{'tbody tr| td'}($db_list)
 						)
 					);
 					unset($db_list);
@@ -441,7 +442,7 @@ if (
 				$Page->warning($L->changing_settings_warning);
 				$Page->title($L->storage_settings_for_module($rc[3]));
 				$a->content(
-					h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+					h::{'p.lead.cs-center'}(
 						$L->storage_settings_for_module($rc[3])
 					)
 				);
@@ -457,40 +458,41 @@ if (
 				$a->apply_button		= false;
 				$a->cancel_button_back	= true;
 				module_storage_settings:
-				if (file_exists(MODULES.'/'.$rc[3].'/meta/storage.json')) {
+				if (file_exists(MODULES."/$rc[3]/meta/storage.json")) {
 					$storages				= [0 => $L->core_storage];
 					foreach ($Config->storage as $i => &$storage_data) {
 						if ($i) {
-							$storages[$i] = $storage_data['host'].'('.$storage_data['connection'].')';
+							$storages[$i] = "$storage_data[host] ($storage_data[connection])";
 						}
 					}
 					unset($i, $storage_data);
-					$storage_list[] = h::{'th.ui-widget-header.ui-corner-all'}([
-						h::info('appointment_of_storage'),
-						h::info('system_storage')
-					]);
-					$storage_json = _json_decode(file_get_contents(MODULES.'/'.$rc[3].'/meta/storage.json'));
+					$storage_list			= [];
+					$storage_json			= _json_decode(file_get_contents(MODULES."/$rc[3]/meta/storage.json"));
 					foreach ($storage_json as $storage) {
-						$storage_list[] = h::{'td.ui-widget-content.ui-corner-all'}([
-							$L->{$rc[3].'_storage_'.$storage},
+						$storage_list[] = [
+							$L->{"$rc[3]_storage_$storage"},
 							h::select(
 								[
 									'in'		=> array_values($storages),
 									'value'		=> array_keys($storages)
 								],
 								[
-									'name'		=> 'storage['.$storage.']',
+									'name'		=> "storage[$storage]",
 									'selected'	=> isset($Config->components['modules'][$rc[3]]['storage'][$storage]) ?
 										$Config->components['modules'][$rc[3]]['storage'][$storage] : 0,
 									'size'		=> 5
 								]
 							)
-						]);
+						];
 					}
 					unset($storage_json, $storages, $storage);
 					$a->content(
-						h::{'table.cs-fullwidth-table'}(
-							h::tr($storage_list)
+						h::{'table.cs-table'}(
+							h::{'thead tr th'}([
+								h::info('appointment_of_storage'),
+								h::info('system_storage')
+							]).
+							h::{'tbody tr| td'}($storage_list)
 						)
 					);
 					unset($storage_list);
@@ -504,7 +506,7 @@ if (
 			$show_modules			= false;
 			$Page->title($L->enabling_of_module($rc[3]));
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+				h::{'p.lead.cs-center'}(
 					$L->enable_module($rc[3])
 				)
 			);
@@ -517,7 +519,7 @@ if (
 			$show_modules			= false;
 			$Page->title($L->disabling_of_module($rc[3]));
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+				h::{'p.lead.cs-center'}(
 					$L->disable_module($rc[3])
 				)
 			);
@@ -554,11 +556,7 @@ if (!$show_modules) {
 	return;
 }
 $a->file_upload		= true;
-$modules_list = [h::{'th.ui-widget-header.ui-corner-all'}(
-	$L->module_name,
-	$L->state,
-	$L->action
-)];
+$modules_list = [];
 foreach ($Config->components['modules'] as $module => &$mdata) {
 	/**
 	 * If module if enabled or disabled
@@ -569,22 +567,21 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 		/**
 		 * Notice about API existence
 		 */
-		if (is_dir(MODULES.'/'.$module.'/api')) {
+		if (is_dir(MODULES."/$module/api")) {
 			if (
-				file_exists($file = MODULES.'/'.$module.'/api/readme.txt') ||
-				file_exists($file = MODULES.'/'.$module.'/api/readme.html')
+				file_exists($file = MODULES."/$module/api/readme.txt") ||
+				file_exists($file = MODULES."/$module/api/readme.html")
 			) {
 				if (substr($file, -3) == 'txt') {
 					$tag = 'pre';
 				} else {
 					$tag = 'div';
 				}
-				$addition_state .= h::$tag(
-					$tag == 'pre' ? filter(file_get_contents($file)) : file_get_contents($file),
+				$addition_state .= h::{'div.cs-dialog'}(
+					h::$tag($tag == 'pre' ? filter(file_get_contents($file)) : file_get_contents($file)),
 					[
-						'id'			=> $module.'_api',
-						'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
-						'title'			=> $module.' » '.$L->api
+						'id'			=> "{$module}_api",
+						'title'			=> "$module » $L->api"
 					]
 				);
 			}
@@ -592,7 +589,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 				'link',
 				[
 					'data-title'	=> $L->api_exists.h::br().(file_exists($file) ? $L->click_to_view_details : ''),
-					'onClick'		=> "$('#".$module."_api').dialog('open');"
+					'onClick'		=> "$('#{$module}_api').cs_modal('show');"
 				]
 			);
 			unset($tag, $file);
@@ -600,7 +597,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 		/**
 		 * Information about module
 		 */
-		if (file_exists($file = MODULES.'/'.$module.'/readme.txt') || file_exists($file = MODULES.'/'.$module.'/readme.html')) {
+		if (file_exists($file = MODULES."/$module/readme.txt") || file_exists($file = MODULES."/$module/readme.html")) {
 			if (substr($file, -3) == 'txt') {
 				$tag		= 'pre';
 			} else {
@@ -608,19 +605,18 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 			}
 			$uniqid			= uniqid('module_info_');
 			$Page->replace($uniqid, $tag == 'pre' ? filter(file_get_contents($file)) : file_get_contents($file));
-			$addition_state .= h::$tag(
-				$uniqid,
+			$addition_state .= h::{'div.cs-dialog'}(
+				h::$tag($uniqid),
 				[
-					'id'			=> $module.'_readme',
-					'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
-					'title'			=> $module.' » '.$L->information_about_module
+					'id'			=> "{$module}_readme",
+					'title'			=> "$module » $L->information_about_module"
 				]
 			).
 			h::{'icon.cs-pointer'}(
-				'notice',
+				'exclamation',
 				[
 					'data-title'	=> $L->information_about_module.h::br().$L->click_to_view_details,
-					'onClick'		=> "$('#".$module."_readme').dialog('open');"
+					'onClick'		=> "$('#{$module}_readme').cs_modal('show');"
 				]
 			);
 			unset($uniqid);
@@ -629,25 +625,24 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 		/**
 		 * License
 		 */
-		if (file_exists($file = MODULES.'/'.$module.'/license.txt') || file_exists($file = MODULES.'/'.$module.'/license.html')) {
+		if (file_exists($file = MODULES."/$module/license.txt") || file_exists($file = MODULES."/$module/license.html")) {
 			if (substr($file, -3) == 'txt') {
 				$tag = 'pre';
 			} else {
 				$tag = 'div';
 			}
-			$addition_state .= h::$tag(
-				file_get_contents($file),
+			$addition_state .= h::{'div.cs-dialog'}(
+				h::$tag(file_get_contents($file)),
 				[
-					'id'			=> $module.'_license',
-					'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
-					'title'			=> $module.' » '.$L->license
+					'id'			=> "{$module}_license",
+					'title'			=> "$module » $L->license"
 				]
 			).
 			h::{'icon.cs-pointer'}(
-				'note',
+				'legal',
 				[
 					'data-title'	=> $L->license.h::br().$L->click_to_view_details,
-					'onClick'		=> "$('#".$module."_license').dialog('open');"
+					'onClick'		=> "$('#{$module}_license').cs_modal('show');"
 				]
 			);
 		}
@@ -659,15 +654,15 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 			$mdata['active'] == 1 &&
 			$module != $Config->core['default_module'] &&
 			(
-				file_exists(MODULES.'/'.$module.'/index.php') ||
-				file_exists(MODULES.'/'.$module.'/index.html') ||
-				file_exists(MODULES.'/'.$module.'/index.json')
+				file_exists(MODULES."/$module/index.php") ||
+				file_exists(MODULES."/$module/index.html") ||
+				file_exists(MODULES."/$module/index.json")
 			)
 		) {
 			$action .= h::{'a.cs-button-compact'}(
 				h::icon('home'),
 				[
-					'href'			=> $a->action.'/default_module/'.$module,
+					'href'			=> "$a->action/default_module/$module",
 					'data-title'	=> $L->make_default_module
 				]
 			);
@@ -675,11 +670,11 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 		/**
 		 * DataBases settings
 		 */
-		if (!$Config->core['simple_admin_mode'] && file_exists(MODULES.'/'.$module.'/meta/db.json') && count($Config->db) > 1) {
+		if (!$Config->core['simple_admin_mode'] && file_exists(MODULES."/$module/meta/db.json") && count($Config->db) > 1) {
 			$action .= h::{'a.cs-button-compact'}(
-				h::icon('gear'),
+				h::icon('gears'),
 				[
-					'href'			=> $a->action.'/db/'.$module,
+					'href'			=> "$a->action/db/$module",
 					'data-title'	=> $L->databases
 				]
 			);
@@ -687,11 +682,11 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 		/**
 		 * Storages settings
 		 */
-		if (!$Config->core['simple_admin_mode'] && file_exists(MODULES.'/'.$module.'/meta/storage.json') && count($Config->storage) > 1) {
+		if (!$Config->core['simple_admin_mode'] && file_exists(MODULES."/$module/meta/storage.json") && count($Config->storage) > 1) {
 			$action .= h::{'a.cs-button-compact'}(
-				h::icon('disk'),
+				h::icon('hdd'),
 				[
-					'href'			=> $a->action.'/storage/'.$module,
+					'href'			=> "$a->action/storage/$module",
 					'data-title'	=> $L->storages
 				]
 			);
@@ -700,11 +695,11 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 			/**
 			 * Link to the module admin page
 			 */
-			if (file_exists(MODULES.'/'.$module.'/admin/index.php') || file_exists(MODULES.'/'.$module.'/admin/index.json')) {
+			if (file_exists(MODULES."/$module/admin/index.php") || file_exists(MODULES."/$module/admin/index.json")) {
 				$action		.= h::{'a.cs-button-compact'}(
 					h::icon('wrench'),
 					[
-						'href'			=> 'admin/'.$module,
+						'href'			=> "admin/$module",
 						'data-title'	=> $L->module_admin_page
 					]
 				);
@@ -712,7 +707,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 			}
 			if ($module != $Config->core['default_module']) {
 				$action		.= h::{'a.cs-button-compact'}(
-					h::icon($mdata['active'] == 1 ? 'minusthick' : 'check'),
+					h::icon($mdata['active'] == 1 ? 'check-minus' : 'check'),
 					[
 						'href'			=> $a->action.($mdata['active'] == 1 ? '/disable/' : '/enable/').$module,
 						'data-title'	=> $mdata['active'] == 1 ? $L->disable : $L->enable
@@ -721,7 +716,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 				h::{'a.cs-button-compact'}(
 					h::icon('trash'),
 					[
-						'href'			=> $a->action.'/uninstall/'.$module,
+						'href'			=> "$a->action/uninstall/$module",
 						'data-title'	=> $L->uninstall
 					]
 				);
@@ -732,16 +727,16 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 	 */
 	} else {
 		$action .= h::{'a.cs-button-compact'}(
-			h::icon('arrowthickstop-1-s'),
+			h::icon('download-alt'),
 			[
-				'href'			=> $a->action.'/install/'.$module,
+				'href'			=> "$a->action/install/$module",
 				'data-title'	=> $L->install
 			]
 		);
 	}
 	$module_info	= false;
-	if (file_exists(MODULES.'/'.$module.'/meta.json')) {
-		$module_meta	= _json_decode(file_get_contents(MODULES.'/'.$module.'/meta.json'));
+	if (file_exists(MODULES."/$module/meta.json")) {
+		$module_meta	= _json_decode(file_get_contents(MODULES."/$module/meta.json"));
 		$module_info	= $L->module_info(
 			$module_meta['package'],
 			$module_meta['version'],
@@ -761,29 +756,25 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 		);
 	}
 	unset($module_meta);
-	$modules_list[]	= h::{'td.ui-widget-content.ui-corner-all'}(
-		[
-			h::a(
-				$module,
-				[
-					'href'	=> $admin_link ? 'admin/'.$module : false
-				]
-			),
+	$modules_list[]	= [
+		h::a(
+			$module,
 			[
+				'href'	=> $admin_link ? "admin/$module" : false,
 				'data-title'	=> $module_info
 			]
-		],
+		),
 		h::icon(
 			$mdata['active'] == 1 ? (
-				$module == $Config->core['default_module'] ? 'home' : 'check'
+				$module == $Config->core['default_module'] ? 'home' : 'ok'
 			) : (
-				$mdata['active'] == 0 ? 'minusthick' : 'closethick'
+				$mdata['active'] == 0 ? 'minus' : 'remove'
 			),
 			[
 				'data-title'	=> $mdata['active'] == 1 ? (
 					$module == $Config->core['default_module'] ? $L->default_module : $L->enabled
 				) : (
-					$mdata['active'] == 0 ? $L->disabled : $L->uninstalled.' ('.$L->not_installed.')'
+					$mdata['active'] == 0 ? $L->disabled : "$L->uninstalled ($L->not_installed)"
 				)
 			]
 		).
@@ -791,36 +782,37 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 		[
 			$action,
 			[
-				'class'	=> 'cs-pointer cs-left-all'
+				'class'	=> 'cs-left-all'
 			]
 		]
-	);
+	];
 	unset($module_info);
 }
 $a->content(
-	h::{'table.cs-fullwidth-table.cs-center-all tr'}(
-		$modules_list,
-		h::{'td.cs-left-all[colspan=3]'}(
-			h::{'input[type=file][name=upload_module]'}([
-				'style'		=> 'position: relative;'
-			]).
-			h::{'button[type=submit]'}(
-				$L->upload_and_install_update_module,
-				[
-					'formaction'	=>  $a->action.'/install/upload'
-				]
-			)
-		),
-		h::{'td.cs-left-all[colspan=3]'}(
-			h::{'input[type=file][name=upload_system]'}([
-				'style'		=> 'position: relative;'
-			]).
-			h::{'button[type=submit]'}(
-				$L->upload_and_update_system,
-				[
-					'formaction'	=>  $a->action.'/update_system'
-				]
-			)
+	h::{'table.cs-table.cs-center-all'}(
+		h::{'thead tr th'}(
+			$L->module_name,
+			$L->state,
+			$L->action
+		).
+		h::{'tbody tr| td'}([$modules_list])
+	).
+	h::p(
+		h::{'input[type=file][name=upload_module]'}().
+		h::{'button[type=submit]'}(
+			$L->upload_and_install_update_module,
+			[
+				'formaction'	=>  "$a->action/install/upload"
+			]
+		)
+	).
+	h::p(
+		h::{'input[type=file][name=upload_system]'}().
+		h::{'button[type=submit]'}(
+			$L->upload_and_update_system,
+			[
+				'formaction'	=>  "$a->action/update_system"
+			]
 		)
 	).
 	h::{'button[type=submit]'}(

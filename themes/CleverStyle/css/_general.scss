@@ -13,36 +13,20 @@ button,
 	cursor : pointer;
 }
 
-.cs-fullwidth-form {
+form {
 	text-align : center;
-	width      : 100%;
+
 	> * {
 		text-align : left;
 	}
 }
 
-.cs-fullwidth-table {
+.cs-table-borderless {
 	margin : 0 auto;
 	width  : 100%;
 
-	> tbody > tr >  {
-		td:first-child {
-			width : 40%;
-		}
-		.ui-widget-shadow {
-			opacity : 1;
-		}
-	}
-
-	[type=number],
-	[type=range] {
-		width : 7.5em;
-	}
-	[type=text],
-	[type=password],
-	[type=email],
-	[type=tel] {
-		width : 20.5em;
+	> tbody > tr > td:first-child {
+		width : 40%;
 	}
 }
 
@@ -57,26 +41,13 @@ button,
 	}
 }
 
-.cs-button-compact > span {
-	font-size: 12px;
+.cs-button-compact {
 	padding : .2em .3em !important;
-}
-
-.cs-state-messages {
-	padding : .5em;
-	margin  : .2em 0;
 }
 
 .cs-dialog {
 	display : none;
-}
-
-.cs-wide-input {
-	width : 250px;
-}
-
-.cs-wide-textarea {
-	width : 90%;
+	text-align: left;
 }
 
 @include cs-align(left);

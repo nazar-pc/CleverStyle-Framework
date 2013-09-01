@@ -20,17 +20,17 @@ $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/OAuth2';
 $Index->content(
-	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+	h::{'p.lead.cs-center'}(
 		$L->adding_of_page
 	).
-	h::{'table.cs-fullwidth-table.cs-center-all tr'}(
-		h::{'th.ui-widget-header.ui-corner-all'}(
+	h::{'table.cs-table-borderless.cs-center-all'}(
+		h::{'thead tr th'}(
 			$L->category,
 			$L->page_title,
 			h::info('page_path'),
 			h::info('page_interface')
 		),
-		h::{'td.ui-widget-content.ui-corner-all'}(
+		h::{'tbody tr td'}(
 			h::{'select[name=category][size=5]'}(
 				get_categories_list(),
 				[
@@ -44,11 +44,13 @@ $Index->content(
 				'value'		=> [0, 1],
 				'in'		=> [$L->off, $L->on]
 			])
-		),
-		h::{'th.ui-widget-header.ui-corner-all[colspan=4]'}(
+		)
+	).
+	h::{'table.cs-table-borderless.cs-center-all'}(
+		h::{'thead tr th'}(
 			$L->content
 		),
-		h::{'td.ui-widget-content.ui-corner-all[colspan=4] textarea.cs-wide-textarea.EDITOR[name=content]'}()
+		h::{'tbody tr td textarea.EDITOR[name=content]'}()
 	).
 	h::{'input[type=hidden][name=mode][value=add_page]'}()
 );

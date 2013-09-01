@@ -58,7 +58,7 @@ if (isset($rc[2])) {
 			$a->action				= 'admin/System/'.$rc[0].'/'.$rc[1];
 			$Page->title($L->deletion_of_block(get_block_title($rc[3])));
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+				h::{'p.lead.cs-center'}(
 					$L->sure_to_delete_block(get_block_title($rc[3])).
 					h::{'input[type=hidden]'}([
 						'name'	=> 'mode',
@@ -79,14 +79,14 @@ if (isset($rc[2])) {
 			$a->form_atributes[]	= 'formnovalidate';
 			$Page->title($L->adding_a_block);
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+				h::{'p.lead.cs-center'}(
 					$L->adding_a_block
 				).
-				h::{'table.cs-fullwidth-table.cs-center-all tr'}(
+				h::{'table.cs-table-borderless.cs-center-all tr'}(
 					\cs\modules\System\form_rows_to_cols([
 						array_map(
 							function ($in) {
-								return h::{'th.ui-widget-header.ui-corner-all info'}($in);
+								return h::{'th info'}($in);
 							},
 							[
 								'block_type',
@@ -99,7 +99,7 @@ if (isset($rc[2])) {
 						),
 						array_map(
 							function ($in) {
-								return h::{'td.ui-widget-content.ui-corner-all'}($in);
+								return h::td($in);
 							},
 							[
 								h::select(
@@ -143,18 +143,18 @@ if (isset($rc[2])) {
 						)
 					]),
 					[
-						h::{'td.ui-widget-content.ui-corner-all[colspan=6] textarea.EDITOR'}(
+						h::{'td[colspan=6] textarea.EDITOR'}(
 							'',
 							[
 								'name'	=> 'block[html]'
 							]
 						),
 						[
-							'id'	=> 'block_content_html'
+							'id'	=> 'cs-block-content-html'
 						]
 					],
 					[
-						h::{'td.ui-widget-content.ui-corner-all[colspan=6] textarea.cs-wide-textarea'}(
+						h::{'td[colspan=6] textarea'}(
 							'',
 							[
 								'name'	=> 'block[raw_html]'
@@ -162,7 +162,7 @@ if (isset($rc[2])) {
 						),
 						[
 							'style'	=> 'display: none;',
-							'id'	=> 'block_content_raw_html'
+							'id'	=> 'cs-block-content-raw-html'
 						]
 					]
 				).
@@ -183,14 +183,14 @@ if (isset($rc[2])) {
 			$block = &$Config->components['blocks'][$rc[3]];
 			$Page->title($L->editing_a_block(get_block_title($rc[3])));
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+				h::{'p.lead.cs-center'}(
 					$L->editing_a_block(get_block_title($rc[3]))
 				).
-				h::{'table.cs-fullwidth-table.cs-center-all tr'}(
+				h::{'table.cs-table-borderless.cs-center-all tr'}(
 					\cs\modules\System\form_rows_to_cols([
 						array_map(
 							function ($in) {
-								return h::{'th.ui-widget-header.ui-corner-all info'}($in);
+								return h::{'th info'}($in);
 							},
 							[
 								'block_title',
@@ -202,7 +202,7 @@ if (isset($rc[2])) {
 						),
 						array_map(
 							function ($in) {
-								return h::{'td.ui-widget-content.ui-corner-all'}($in);
+								return h::td($in);
 							},
 							[
 								h::input([
@@ -243,13 +243,13 @@ if (isset($rc[2])) {
 							]
 						)
 					]),
-					($block['type'] == 'html' ? h::{'td.ui-widget-content.ui-corner-all[colspan=5] textarea.EDITOR'}(
+					($block['type'] == 'html' ? h::{'td[colspan=5] textarea.EDITOR'}(
 							get_block_content($rc[3]),
 							[
 								'name'	=> 'block[html]'
 							]
 						) : (
-							$block['type'] == 'raw_html' ? h::{'td.ui-widget-content.ui-corner-all[colspan=5] textarea.cs-wide-textarea'}(
+							$block['type'] == 'raw_html' ? h::{'td[colspan=5] textarea'}(
 								get_block_content($rc[3]),
 								[
 									'name'	=> 'block[raw_html]'
@@ -290,14 +290,14 @@ if (isset($rc[2])) {
 					$group['id'],
 					$permission
 				]);
-				$groups_content[] = h::{'th.ui-widget-header.ui-corner-all'}(
+				$groups_content[] = h::th(
 					$group['title'],
 					[
 						'data-title'	=> $group['description']
 					]
 				).
 				h::{'td input[type=radio]'}([
-					'name'			=> 'groups['.$group['id'].']',
+					'name'			=> "groups[$group[id]]",
 					'checked'		=> $group_permission === false ? -1 : $group_permission,
 					'value'			=> [-1, 0, 1],
 					'in'			=> [$L->inherited, $L->deny, $L->allow]
@@ -326,7 +326,7 @@ if (isset($rc[2])) {
 			foreach ($users_list as &$user) {
 				$value				= $user['value'];
 				$user				= $user['id'];
-				$users_content[]	= h::{'th.ui-widget-header.ui-corner-all'}($User->username($user)).
+				$users_content[]	= h::th($User->username($user)).
 					h::{'td input[type=radio]'}([
 						'name'			=> 'users['.$user.']',
 						'checked'		=> $value,
@@ -337,25 +337,15 @@ if (isset($rc[2])) {
 			unset($user, $value);
 			$Page->title($L->permissions_for_block(get_block_title($rc[3])));
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+				h::{'p.lead.cs-center'}(
 					$L->permissions_for_block(get_block_title($rc[3]))
 				).
-				h::{'div#block_permissions_tabs'}(
-					h::{'ul li| a'}(
-						[
-							$L->groups,
-							[
-								'href'	=> '#block_groups_permissions'
-							]
-						],
-						[
-							$L->users,
-							[
-								'href'	=> '#block_users_permissions'
-							]
-						]
-					).
-					h::{'div#block_groups_permissions table.cs-fullwidth-table.cs-center-all tr'}(
+				h::{'ul.cs-tabs li'}(
+					$L->groups,
+					$L->users
+				).
+				h::div(
+					h::{'table.cs-table-borderless.cs-center-all tr'}(
 						h::{'td.cs-left-all[colspan=4]'}(
 							h::{'button.cs-permissions-invert'}($L->invert).
 							h::{'button.cs-permissions-allow-all'}($L->allow_all).
@@ -363,16 +353,13 @@ if (isset($rc[2])) {
 						),
 						$groups_content
 					).
-					h::{'input#block_users_search_found[type=hidden]'}([
-						'value'	=> implode(',', $users_list)
-					]).
-					h::{'div#block_users_permissions table.cs-fullwidth-table.cs-center-all tr'}([
+					h::{'table.cs-table-borderless.cs-center-all tr'}([
 						h::{'td.cs-left-all'}(
 							h::{'button.cs-permissions-invert'}($L->invert).
 							h::{'button.cs-permissions-allow-all'}($L->allow_all).
 							h::{'button.cs-permissions-deny-all'}($L->deny_all)
 						),
-						h::{'td table#block_users_changed_permissions.cs-fullwidth-table.cs-center-all tr'}($users_content),
+						h::{'td table#cs-block-users-changed-permissions.cs-table-borderless.cs-center-all tr'}($users_content),
 						h::{'td input#block_users_search[type=search]'}([
 							'autocomplete'	=> 'off',
 							'permission'	=> $permission,
@@ -382,6 +369,9 @@ if (isset($rc[2])) {
 						h::{'td#block_users_search_results'}()
 					])
 				).
+				h::{'input#cs-block-users-search-found[type=hidden]'}([
+					'value'	=> implode(',', $users_list)
+				]).
 				h::br().
 				h::{'input[type=hidden]'}([
 					[[
@@ -417,7 +407,7 @@ if (isset($rc[2])) {
 					$user,
 					$permission
 				]);
-				$content[]		= h::{'th.ui-widget-header.ui-corner-all'}($User->username($user)).
+				$content[]		= h::th($User->username($user)).
 					h::{'td input[type=radio]'}([
 						'name'			=> 'users['.$user.']',
 						'checked'		=> $value !== false ? $value : -1,
@@ -430,7 +420,7 @@ if (isset($rc[2])) {
 					]);
 			}
 			$Page->content(
-				h::{'table.cs-fullwidth-table.cs-center-all tr'}($content)
+				h::{'table.cs-table-borderless.cs-center-all tr'}($content)
 			);
 		break;
 	}
@@ -450,40 +440,40 @@ if ($form) {
 	if (!empty($Config->components['blocks'])) {
 		foreach ($Config->components['blocks'] as $id => $block) {
 			$blocks_array[$block['position']] .= h::li(
-				h::{'div.cs-blocks-items-title'}('#'.$block['index'].' '.get_block_title($id)).
+				h::{'div.cs-blocks-items-title'}("#$block[index] ".get_block_title($id)).
 				h::a(
 					[
-						h::{'div icon'}('wrench'),
+						h::{'div icon'}('edit'),
 						[
-							'href'			=> $a->action.'/edit/'.$id,
+							'href'			=> "$a->action/edit/$id",
 							'data-title'	=> $L->edit
 						]
 					],
 					[
-						h::{'div icon'}('flag'),
+						h::{'div icon'}('key'),
 						[
-							'href'			=> $a->action.'/permissions/'.$id,
+							'href'			=> "$a->action/permissions/$id",
 							'data-title'	=> $L->edit_permissions
 						]
 					],
 					[
-						h::{'div icon'}($block['active'] ? 'minusthick' : 'check'),
+						h::{'div icon'}($block['active'] ? 'check-minus' : 'check'),
 						[
-							'href'			=> $a->action.'/'.($block['active'] ? 'disable' : 'enable').'/'.$id,
+							'href'			=> "$a->action/".($block['active'] ? 'disable' : 'enable')."/$id",
 							'data-title'	=> $L->{$block['active'] ? 'disable' : 'enable'}
 						]
 					],
 					[
 						h::{'div icon'}('trash'),
 						[
-							'href'			=> $a->action.'/delete/'.$id,
+							'href'			=> "$a->action/delete/$id",
 							'data-title'	=> $L->delete
 						]
 					]
 				),
 				[
-					'id'	=> 'block'.$id,
-					'class'	=> ($block['active'] ? 'ui-widget-header' : 'ui-widget-content').' ui-corner-all'
+					'id'	=> "block$id",
+					'class'	=> $block['active'] ? 'uk-button-success' : 'uk-button-default'
 				]
 			);
 			unset($block_data);
@@ -492,35 +482,34 @@ if ($form) {
 	}
 	foreach ($blocks_array as $position => &$content) {
 		$content = h::{'td.cs-blocks-items-groups ul.cs-blocks-items'}(
-			h::{'li.ui-state-disabled.ui-state-highlight.ui-corner-all'}(
-				$L->{$position.'_blocks'},
+			h::{'li.uk-button-primary'}(
+				$L->{"{$position}_blocks"},
 				[
-					'onClick'	=> 'blocks_toggle(\''.$position.'\');'
+					'onClick'	=> "blocks_toggle('$position');"
 				]
 			).
 			$content,
 			[
 				'data-mode'	=> 'open',
-				'id'		=> $position.'_blocks_items'
+				'id'		=> "cs-{$position}-blocks-items"
 			]
 		);
 	}
 	unset($position, $content);
 	$a->content(
-		h::{'table.cs-fullwidth-table tr'}([
+		h::{'table.cs-table-borderless tr'}([
 			h::td().$blocks_array['top'].h::td(),
 
-			$blocks_array['left'].$blocks_array['floating'].$blocks_array['right'],
+			"$blocks_array[left]$blocks_array[floating]$blocks_array[right]",
 
-			h::td().$blocks_array['bottom'].h::td(),
-
-			h::{'td.cs-left-all[colspan=3] a.cs-button'}(
-				$L->add.' '.$L->block,
-				[
-					'href' => 'admin/System/'.$rc[0].'/'.$rc[1].'/add'
-				]
-			)
+			h::td().$blocks_array['bottom'].h::td()
 		]).
-		h::{'input#position[type=hidden][name=position]'}()
+		h::{'p.cs-left a.cs-button'}(
+			"$L->add $L->block",
+			[
+			'href' => "admin/System/$rc[0]/$rc[1]/add"
+			]
+		).
+		h::{'input#cs-blocks-position[type=hidden][name=position]'}()
 	);
 }

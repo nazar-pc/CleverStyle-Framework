@@ -15,7 +15,7 @@ use			h,
 $Config	= Config::instance();
 $L		= Language::instance();
 Index::instance()->content(
-	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}([
+	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}([
 		[
 			h::info('smtp'),
 			h::{'input[type=radio]'}([
@@ -23,7 +23,7 @@ Index::instance()->content(
 				'checked'		=> $Config->core['smtp'],
 				'value'			=> [0, 1],
 				'in'			=> [$L->off, $L->on],
-				'OnClick'		=> ['$(\'#smtp_form\').parent().parent().hide();', '$(\'#smtp_form\').parent().parent().show();']
+				'OnClick'		=> ["$('#smtp_form').parent().parent().hide();", "$('#smtp_form').parent().parent().show();"]
 			])
 		],
 		[
@@ -81,6 +81,6 @@ Index::instance()->content(
 		],
 		core_input('mail_from'),
 		core_input('mail_from_name'),
-		core_textarea('mail_signature', 'SEDITOR')
+		core_textarea('mail_signature', 'SIMPLE_EDITOR')
 	])
 );

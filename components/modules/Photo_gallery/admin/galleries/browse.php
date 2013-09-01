@@ -18,8 +18,8 @@ Page::instance()->title($L->photo_gallery_browse_galleries);
 $Photo_gallery	= Photo_gallery::instance();
 $module			= path($L->Photo_gallery);
 $Index->content(
-	h::{'table.cs-left-all.cs-fullwidth-table'}(
-		h::{'tr th.ui-widget-header.ui-corner-all'}(
+	h::{'table.cs-left-all.cs-table-borderless'}(
+		h::{'thead tr th'}(
 			[
 				$L->photo_gallery_galleries,
 				[
@@ -28,7 +28,7 @@ $Index->content(
 			],
 			$L->action
 		).
-		h::{'tr| td.ui-widget-content.ui-corner-all'}(array_map(
+		h::{'tbody tr| td'}(array_map(
 			function ($gallery) use ($Photo_gallery, $L, $module) {
 				$gallery	= $Photo_gallery->get_gallery($gallery);
 				return [
@@ -40,7 +40,7 @@ $Index->content(
 					),
 					h::{'a.cs-button-compact'}(
 						[
-							h::icon('wrench'),
+							h::icon('edit'),
 							[
 								'href'			=> "admin/Photo_gallery/galleries/edit/$gallery[id]",
 								'data-title'	=> $L->edit
@@ -57,12 +57,12 @@ $Index->content(
 				];
 			},
 			array_values($Photo_gallery->get_galleries_list())
-		)).
-		h::{'tr td[colspan=2] a.cs-button'}(
-			$L->photo_gallery_add_gallery,
-			[
-				'href'	=> 'admin/Photo_gallery/galleries/add'
-			]
-		)
+		))
+	).
+	h::{'p.cs-left a.cs-button'}(
+		$L->photo_gallery_add_gallery,
+		[
+			'href'	=> 'admin/Photo_gallery/galleries/add'
+		]
 	)
 );

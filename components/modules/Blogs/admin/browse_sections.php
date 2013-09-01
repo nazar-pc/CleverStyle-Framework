@@ -17,8 +17,8 @@ $L				= Language::instance();
 $Index->buttons	= false;
 Page::instance()->title($L->browse_sections);
 $Index->content(
-	h::{'table.cs-left-all.cs-fullwidth-table'}(
-		h::{'tr th.ui-widget-header.ui-corner-all'}(
+	h::{'table.cs-left-all.cs-table-borderless'}(
+		h::{'thead tr th'}(
 			[
 				$L->blogs_sections,
 				[
@@ -27,14 +27,14 @@ $Index->content(
 			],
 			$L->action
 		).
-		h::{'tr| td.ui-widget-content.ui-corner-all'}(
+		h::{'tbody tr| td'}(
 			get_sections_rows()
-		).
-		h::{'tr td[colspan=2] a.cs-button'}(
-			$L->add_section,
-			[
-				'href'	=> 'admin/Blogs/add_section'
-			]
 		)
+	).
+	h::{'p.cs-left a.cs-button'}(
+		$L->add_section,
+		[
+			'href'	=> 'admin/Blogs/add_section'
+		]
 	)
 );

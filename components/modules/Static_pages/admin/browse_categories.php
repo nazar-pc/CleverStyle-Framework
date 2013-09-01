@@ -14,8 +14,8 @@ $Index			= Index::instance();
 $L				= Language::instance();
 $Index->buttons	= false;
 $Index->content(
-	h::{'table.cs-left-all.cs-fullwidth-table'}(
-		h::{'tr th.ui-widget-header.ui-corner-all'}(
+	h::{'table.cs-left-all.cs-table'}(
+		h::{'thead tr th'}(
 			[
 				$L->pages_category,
 				[
@@ -24,29 +24,29 @@ $Index->content(
 			],
 			$L->action
 		).
-		h::{'tr| td.ui-widget-content.ui-corner-all'}(
+		h::{'tbody tr| td'}(
 			get_categories_rows()
-		).
-		h::{'tr td[colspan=2] a.cs-button'}(
-			[
-				$L->add_category,
-				[
-					'href'	=> 'admin/OAuth2/add_category'
-				]
-			],
-			[
-				$L->add_page,
-				[
-					'href'	=> 'admin/OAuth2/add_page'
-				]
-			]/*,
-			[
-				$L->add_page_live,
-				[
-					'href'	=> 'admin/OAuth2/add_page_live'
-				]
-			]*/
 		)
 	).
-	h::{'p.cs-left'}($L->index_page_path)
+	h::{'p.cs-left'}($L->index_page_path).
+	h::{'p.cs-left a.cs-button'}(
+		[
+			$L->add_category,
+			[
+				'href'	=> 'admin/OAuth2/add_category'
+			]
+		],
+		[
+			$L->add_page,
+			[
+				'href'	=> 'admin/OAuth2/add_page'
+			]
+		]/*,
+		[
+			$L->add_page_live,
+			[
+				'href'	=> 'admin/OAuth2/add_page_live'
+			]
+		]*/
+	)
 );

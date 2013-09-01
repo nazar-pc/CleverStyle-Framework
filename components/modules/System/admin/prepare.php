@@ -79,7 +79,7 @@ function core_textarea ($item, $editor = null, $info_item = null) {
 			$content,
 			[
 				'name'	=> "core[$item]",
-				'class'	=> 'cs-wide-textarea'.($editor ? ' '.$editor : '')
+				'class'	=> $editor ? " $editor" : ''
 			]
 		)
 	];

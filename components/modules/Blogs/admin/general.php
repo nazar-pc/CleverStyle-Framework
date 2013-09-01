@@ -18,7 +18,7 @@ $Index->apply_button	= false;
 $L						= Language::instance();
 Page::instance()->title($L->general);
 $Index->content(
-	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
+	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}(
 		[
 			h::info('posts_per_page'),
 			h::{'input[type=number][min=1]'}([

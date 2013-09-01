@@ -20,9 +20,9 @@ if (isset($rc[2])) {
 		case 'clean_cache':
 			if ($Cache->clean()) {
 				$Cache->disable();
-				$Page->content($ajax ? _json_encode(h::{'p.ui-state-highlight.ui-corner-all.cs-state-messages'}($L->done)) : 1);
+				$Page->content($ajax ? _json_encode(h::{'p.uk-alert.uk-alert-success'}($L->done)) : 1);
 			} else {
-				$Page->content($ajax ? _json_encode(h::{'p.ui-state-error.ui-corner-all.cs-state-messages'}($L->error)) : 0);
+				$Page->content($ajax ? _json_encode(h::{'p.uk-alert.uk-alert-danger'}($L->error)) : 0);
 			}
 		break;
 		case 'clean_pcache':
@@ -32,12 +32,12 @@ if (isset($rc[2])) {
 					Core::instance()->api_request('System/admin/cache/clean_pcache/api');
 					time_limit_pause(false);
 				}
-				$Page->content($ajax ? _json_encode(h::{'p.ui-state-highlight.ui-corner-all.cs-state-messages'}($L->done)) : 1);
+				$Page->content($ajax ? _json_encode(h::{'puk-alert.uk-alert-success'}($L->done)) : 1);
 			} else {
-				$Page->content($ajax ? _json_encode(h::{'p.ui-state-error.ui-corner-all.cs-state-messages'}($L->error)) : 0);
+				$Page->content($ajax ? _json_encode(h::{'p.uk-alert.uk-alert-danger'}($L->error)) : 0);
 			}
 		break;
 	}
 } else {
-	$Page->content($ajax ? _json_encode(h::{'p.ui-state-error.ui-corner-all.cs-state-messages'}($L->error)) : 0);
+	$Page->content($ajax ? _json_encode(h::{'p.uk-alert.uk-alert-danger'}($L->error)) : 0);
 }

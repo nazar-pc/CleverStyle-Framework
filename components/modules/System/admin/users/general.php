@@ -15,7 +15,7 @@ use			h,
 $Config	= Config::instance();
 $L		= Language::instance();
 Index::instance()->content(
-	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
+	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}(
 		core_input('session_expire', 'number', null, false, 1, false, $L->seconds),
 		core_input('online_time', 'number', null, false, 1, false, $L->seconds),
 		[
@@ -85,6 +85,6 @@ Index::instance()->content(
 				'class'	=> 'cs-allow-user-registration cs-require-registration-confirmation'
 			]
 		],
-		core_textarea('rules', 'SEDITOR')
+		core_textarea('rules', 'SIMPLE_EDITOR')
 	)
 );

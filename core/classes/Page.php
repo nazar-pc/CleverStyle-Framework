@@ -767,21 +767,21 @@ class Page {
 	protected function get_includes_list ($absolute = false) {
 		$theme_dir		= THEMES."/$this->theme";
 		$scheme_dir		= "$theme_dir/schemes/$this->color_scheme";
-		$theme_pdir		= 'themes/'.$this->theme;
+		$theme_pdir		= "themes/$this->theme";
 		$scheme_pdir	= "$theme_pdir/schemes/$this->color_scheme";
 		/**
 		 * Get includes of system and theme + color scheme
 		 */
 		$this->includes = [
 			'css' => array_merge(
-				get_files_list(CSS,					'/(.*)\.css$/i',	'f', $absolute ? true : 'includes/css',			true, false, '!include') ?: [],
-				get_files_list($theme_dir.'/css',	'/(.*)\.css$/i',	'f', $absolute ? true : $theme_pdir.'/css',		true, false, '!include') ?: [],
-				get_files_list($scheme_dir.'/css',	'/(.*)\.css$/i',	'f', $absolute ? true : $scheme_pdir.'/css',	true, false, '!include') ?: []
+				get_files_list(CSS,					'/(.*)\.css$/i',	'f', $absolute ? true : 'includes/css',		true, false, '!include') ?: [],
+				get_files_list("$theme_dir/css",	'/(.*)\.css$/i',	'f', $absolute ? true : "$theme_pdir/css",	true, false, '!include') ?: [],
+				get_files_list("$scheme_dir/css",	'/(.*)\.css$/i',	'f', $absolute ? true : "$scheme_pdir/css",	true, false, '!include') ?: []
 			),
 			'js' => array_merge(
-				get_files_list(JS,					'/(.*)\.js$/i',		'f', $absolute ? true : 'includes/js',			true, false, '!include') ?: [],
-				get_files_list($theme_dir.'/js',	'/(.*)\.js$/i',		'f', $absolute ? true : $theme_pdir.'/js',		true, false, '!include') ?: [],
-				get_files_list($scheme_dir.'/js',	'/(.*)\.js$/i',		'f', $absolute ? true : $scheme_pdir.'/js',		true, false, '!include') ?: []
+				get_files_list(JS,					'/(.*)\.js$/i',		'f', $absolute ? true : 'includes/js',		true, false, '!include') ?: [],
+				get_files_list("$theme_dir/js",		'/(.*)\.js$/i',		'f', $absolute ? true : "$theme_pdir/js",	true, false, '!include') ?: [],
+				get_files_list("$scheme_dir/js",	'/(.*)\.js$/i',		'f', $absolute ? true : "$scheme_pdir/js",	true, false, '!include') ?: []
 			)
 		];
 		unset($theme_dir, $scheme_dir, $theme_pdir, $scheme_pdir);
@@ -869,6 +869,9 @@ class Page {
 						 */
 						$this->css_includes_processing($current_cache, $file);
 					}
+					if ($extension == 'js') {
+						$current_cache .= ';';
+					}
 					$temp_cache .= $current_cache;
 					unset($current_cache);
 				}
@@ -876,7 +879,7 @@ class Page {
 			if ($extension == 'js') {
 				$temp_cache	= "window.L=".Language::instance()->get_json().";$temp_cache";
 			}
-			file_put_contents(PCACHE.'/'.$this->pcache_basename.$extension, gzencode($temp_cache, 9), LOCK_EX | FILE_BINARY);
+			file_put_contents(PCACHE."/$this->pcache_basename$extension", gzencode($temp_cache, 9), LOCK_EX | FILE_BINARY);
 			$key .= md5($temp_cache);
 		}
 		file_put_contents(PCACHE.'/pcache_key', mb_substr(md5($key), 0, 5), LOCK_EX | FILE_BINARY);
@@ -995,18 +998,13 @@ class Page {
 		$Config				= Config::instance();
 		$db					= DB::instance();
 		$L					= Language::instance();
-		$debug_tabs			= '';
+		$debug_tabs			= [];
 		$debug_tabs_content	= '';
 		/**
 		 * DB queries
 		 */
 		if ($Config->core['show_db_queries']) {
-			$debug_tabs[]		= [
-				$L->db_queries,
-				[
-					'href'	=> '#debug_db_queries_tab'
-				]
-			];
+			$debug_tabs[]		= $L->db_queries;
 			$tmp				= '';
 			foreach ($db->get_connections_list() as $name => $database) {
 				$queries	= $database->queries();
@@ -1024,13 +1022,13 @@ class Page {
 						h::br(2).
 						'#'.h::i(format_time(round($queries['time'][$i], 5))),
 						[
-							'class' => ($queries['time'][$i] > .1 ? 'ui-state-highlight ' : '').'cs-debug-code'
+							'class' => ($queries['time'][$i] > .1 ? 'uk-alert-danger ' : '').'uk-alert'
 						]
 					);
 				}
 			}
 			unset($error, $name, $database, $i, $text);
-			$debug_tabs_content	.= h::{'div#debug_db_queries_tab'}(
+			$debug_tabs_content	.= h::div(
 				h::p(
 					$L->debug_db_total($db->queries, format_time(round($db->time, 5))),
 					$L->failed_connections.': '.h::b(implode(', ', $db->get_connections_list(false)) ?: $L->no),
@@ -1046,32 +1044,18 @@ class Page {
 		 * Cookies
 		 */
 		if ($Config->core['show_cookies']) {
-			$debug_tabs[]		= [
-				$L->cookies,
-				[
-					'href'	=> '#debug_cookies_tab'
-				]
-			];
+			$debug_tabs[]		= $L->cookies;
 			$tmp				= [h::td($L->key.':', ['style' => 'width: 20%;']).h::td($L->value)];
 			foreach ($_COOKIE as $i => $v) {
 				$tmp[]	= h::td($i.':', ['style' => 'width: 20%;']).h::td(xap($v));
 			}
 			unset($i, $v);
-			$debug_tabs_content	.= h::{'div#debug_cookies_tab'}(
-				h::{'table.cs-padding-left'}(
-					h::tr($tmp),
-					[
-						'style' => 'width: 100%'
-					]
-				)
-			);
+			$debug_tabs_content	.= h::{'table.cs-padding-left tr'}($tmp);
 			unset($tmp);
 		}
 		$this->debug_info = $this->process_replacing(
-			h::{'div#debug_window_tabs'}(
-				h::{'ul li| a'}($debug_tabs).
-				$debug_tabs_content
-			)
+			h::{'ul.cs-tabs li'}($debug_tabs).
+			h::div($debug_tabs_content)
 		);
 		return $this;
 	}
@@ -1083,7 +1067,7 @@ class Page {
 	 * @return Page
 	 */
 	function notice ($notice_text) {
-		$this->Top .= h::{'div.ui-state-highlight.ui-corner-all.ui-priority-primary.cs-center.cs-state-messages'}(
+		$this->Top .= h::{'div.uk-alert.uk-alert-success.uk-lead.cs-center'}(
 			$notice_text
 		);
 		return $this;
@@ -1096,7 +1080,7 @@ class Page {
 	 * @return Page
 	 */
 	function warning ($warning_text) {
-		$this->Top .= h::{'div.ui-state-error.ui-corner-all.ui-priority-primary.cs-center.cs-state-messages'}(
+		$this->Top .= h::{'div.uk-alert.uk-alert-danger.cs-center'}(
 			$warning_text
 		);
 		return $this;
@@ -1163,7 +1147,7 @@ class Page {
 			}
 			$this->header_info = h::b($L->hello.', '.$User->username().'!').
 			h::{'icon.cs-header-logout-process'}(
-				'power',
+				'power-off',
 				[
 					'style'			=> 'cursor: pointer;',
 					'data-title'	=> $L->log_out
@@ -1176,7 +1160,7 @@ class Page {
 						'href'	=> path($L->profile).'/'.$User->login
 					]
 				).
-				'|'.
+				' | '.
 				h::a(
 					$L->settings,
 					[
@@ -1195,11 +1179,11 @@ class Page {
 				]
 			);
 			$this->user_avatar_image	= 'url(/includes/img/guest.gif)';
-			$this->header_info			= h::{'div.cs-header-anonym-form'}(
+			$this->header_info			= h::{'div.cs-header-guest-form'}(
 				h::b($L->hello.', '.$L->guest.'!').
 				h::br().
 				h::{'button.cs-header-login-slide.cs-button-compact'}(
-					h::icon('check').$L->log_in
+					h::icon('signin').$L->log_in
 				).
 				h::{'button.cs-header-registration-slide.cs-button-compact'}(
 					h::icon('pencil').$L->registration,
@@ -1209,7 +1193,7 @@ class Page {
 				)
 			).
 			h::{'div.cs-header-restore-password-form'}(
-				h::{'input.cs-noui.cs-header-restore-password-email[tabindex=1]'}(
+				h::{'input.cs-no-ui.cs-header-restore-password-email[tabindex=1]'}(
 					[
 						'placeholder'		=> $L->login_or_email,
 						'autocapitalize'	=> 'off',
@@ -1217,11 +1201,11 @@ class Page {
 					]
 				).
 				h::{'button.cs-header-restore-password-process.cs-button-compact[tabindex=2]'}(
-					h::icon('help').$L->restore_password
+					h::icon('question').$L->restore_password
 				).
 				h::div().
 				h::{'button.cs-button-compact.cs-header-back[tabindex=3]'}(
-					h::icon('carat-1-s'),
+					h::icon('chevron-down'),
 					[
 						'data-title'	=> $L->back
 					]
@@ -1231,7 +1215,7 @@ class Page {
 				]
 			).
 			h::{'div.cs-header-registration-form'}(
-				h::{'input.cs-noui.cs-header-registration-email[type=email][tabindex=1]'}(
+				h::{'input.cs-no-ui.cs-header-registration-email[type=email][tabindex=1]'}(
 					[
 						'placeholder'		=> $L->email,
 						'autocapitalize'	=> 'off',
@@ -1243,7 +1227,7 @@ class Page {
 				).
 				h::div().
 				h::{'button.cs-button-compact.cs-header-back[tabindex=4]'}(
-					h::icon('carat-1-s'),
+					h::icon('chevron-down'),
 					[
 						'data-title'	=> $L->back
 					]
@@ -1253,23 +1237,23 @@ class Page {
 				]
 			).
 			h::{'div.cs-header-login-form'}(
-				h::{'input.cs-noui.cs-header-login-email[tabindex=1]'}([
+				h::{'input.cs-no-ui.cs-header-login-email[tabindex=1]'}([
 					'placeholder'		=> $L->login_or_email,
 					'autocapitalize'	=> 'off',
 					'autocorrect'		=> 'off'
 				]).
-				h::{'input.cs-noui.cs-header-user-password[type=password][tabindex=2]'}([
+				h::{'input.cs-no-ui.cs-header-user-password[type=password][tabindex=2]'}([
 					'placeholder'	=> $L->password
 				]).
-				h::{'button.cs-header-login-process.cs-button-compact[tabindex=3]'}(h::icon('check').$L->log_in).
+				h::{'button.cs-header-login-process.cs-button-compact[tabindex=3]'}(h::icon('signin').$L->log_in).
 				h::{'button.cs-button-compact.cs-header-back[tabindex=5]'}(
-					h::icon('carat-1-s'),
+					h::icon('chevron-down'),
 					[
 						'data-title'	=> $L->back
 					]
 				).
 				h::{'button.cs-button-compact.cs-header-restore-password-slide[tabindex=4]'}(
-					h::icon('help'),
+					h::icon('question'),
 					[
 						'data-title'	=> $L->restore_password
 					]
@@ -1342,12 +1326,11 @@ class Page {
 				],
 				[
 					$this->debug_info ? h::level(
-						h::{'div#debug'}(
+						h::{'div#cs-debug.cs-dialog div'}(
 							h::level($this->debug_info),
 							[
-								'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
 								'title'			=> Language::instance()->debug,
-								'style'			=> 'display: none;'
+								'style'			=> 'margin-left: -45%; width: 90%;'
 							]
 						),
 						$this->level['debug_info']

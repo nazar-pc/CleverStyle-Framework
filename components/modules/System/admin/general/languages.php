@@ -42,10 +42,10 @@ foreach ($translate_engines as $engine) {
 }
 unset($engine, $parameters, $paremeter, $description, $table);
 Index::instance()->content(
-	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+	h::{'p.lead.cs-center'}(
 		FIXED_LANGUAGE ? $L->language_fixed_as.' '.Core::instance()->language : false
 	).
-	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
+	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}(
 		core_select($Config->core['active_languages'],	'language',			'change_language',			'current_language'),
 		core_select($Config->core['languages'],			'active_languages',	'change_active_languages',	null,				true),
 		[

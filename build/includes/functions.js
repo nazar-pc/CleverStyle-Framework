@@ -5,7 +5,14 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-function change_mode (value) {
+function change_mode (value, item) {
+	[].forEach.call(
+		document.getElementsByClassName('build-mode'),
+		function (item) {
+			item.parentNode.className	= '';
+		}
+	);
+	item.parentNode.className	= 'active';
 	var	modules	= document.getElementById('modules'),
 		plugins	= document.getElementById('plugins');
 	switch (value) {
@@ -29,3 +36,6 @@ function change_mode (value) {
 		break;
 	}
 }
+window.onload	= function () {
+	document.getElementsByClassName('build-mode')[0].parentNode.className	= 'active';
+};

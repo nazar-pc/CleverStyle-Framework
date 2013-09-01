@@ -29,7 +29,7 @@ if ($User->user()) {
 	if ($User->admin() && $User->get_user_permission('admin/Blogs', 'index')) {
 		$Index->content(
 			h::{'a.cs-button-compact'}(
-				h::icon('wrench'),
+				h::icon('gears'),
 				[
 					'href'			=> 'admin/Blogs',
 					'data-title'	=> $L->administration
@@ -39,16 +39,16 @@ if ($User->user()) {
 	}
 	$Index->content(
 		h::{'a.cs-button-compact'}(
-			h::icon('document'),
+			h::icon('pencil').$L->new_post,
 			[
-				'href'			=> $module.'/new_post',
+				'href'			=> "$module/new_post",
 				'data-title'	=> $L->new_post
 			]
 		).
 		h::{'a.cs-button-compact'}(
-			$L->drafts,
+			h::icon('archive').$L->drafts,
 			[
-				'href'			=> $module.'/'.path($L->drafts),
+				'href'			=> "$module/".path($L->drafts),
 				'data-title'	=> $L->drafts
 			]
 		).
@@ -60,7 +60,7 @@ $Index->buttons			= false;
 $Index->form_atributes	= ['class'	=> ''];
 $page					= isset($rc[1]) ? (int)$rc[1] : 1;
 $page					= $page > 0 ? $page : 1;
-$Page->canonical_url($Config->base_url().'/'.$module.'/'.path($L->tag).'/'.$rc[0].($page > 1 ? '/'.$page : ''));
+$Page->canonical_url($Config->base_url()."/$module/".path($L->tag)."/$rc[0]".($page > 1 ? "/$page" : ''));
 $Page->og('type', 'blog');
 if ($page > 1) {
 	$Page->title($L->blogs_nav_page($page));
@@ -85,8 +85,8 @@ $tag					= [
 ];;
 $Page->title($tag['text']);
 $Page->title($L->latest_posts);
-$Page->Keywords			= keywords($L->Blogs.' '.$tag['text'].' '.$L->latest_posts).', '.$Page->Keywords;
-$Page->Description		= description($L->Blogs.' - '.$tag['text'].' - '.$L->latest_posts.'. '.$Page->Description);//TODO og type, description and keywords
+$Page->Keywords			= keywords("$L->Blogs $tag[text] $L->latest_posts").", $Page->Keywords";
+$Page->Description		= description("$L->Blogs - $tag[text] - $L->latest_posts. $Page->Description");//TODO og type, description and keywords
 $posts_count			= $cdb->qfs([
 	"SELECT COUNT(`t`.`id`)
 	FROM `[prefix]blogs_posts_tags` AS `t`
@@ -129,7 +129,7 @@ $Index->content(
 				$page,
 				ceil($posts_count / $num),
 				function ($page) use ($module, $L, $rc) {
-					return $page == 1 ? $module.'/'.path($L->tag).'/'.$rc[0] : $module.'/'.path($L->tag).'/'.$rc[0].'/'.$page;
+					return $page == 1 ? "$module/".path($L->tag)."/$rc[0]" : "$module/".path($L->tag)."/$rc[0]/$page";
 				},
 				true
 			)

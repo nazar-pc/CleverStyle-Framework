@@ -35,11 +35,7 @@ $(function () {
 				auth_list.fadeOut('fast');
 			}
 		});
-		list_items.mouseenter(function () {
-			$(this).removeClass('ui-widget-content').addClass('ui-state-highlight');
-		}).mouseleave(function () {
-			$(this).removeClass('ui-state-highlight').addClass('ui-widget-content');
-		}).click(function () {
+		list_items.click(function () {
 			location.href = base_url+'/HybridAuth/'+$(this).data(('provider'));
 		});
 		$(document).mousemove(function (e) {

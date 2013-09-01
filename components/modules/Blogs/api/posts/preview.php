@@ -64,7 +64,7 @@ $Page->json(
 		h::header(
 			h::h1(xap($_POST['title'])).
 			((array)$_POST['sections'] != [0] ? h::p(
-				h::icon('suitcase').
+				h::icon('bookmark').
 				implode(
 					', ',
 					array_map(
@@ -73,7 +73,7 @@ $Page->json(
 						return h::a(
 							$section['title'],
 							[
-								'href'	=> $module.'/'.path($L->section).'/'.$section['full_path']
+								'href'	=> "$module/".path($L->section)."/$section[full_path]"
 							]
 						);
 					},
@@ -82,12 +82,10 @@ $Page->json(
 				)
 			) : '')
 		).
-		$_POST['content']."\n".
+		"$_POST[content]\n".
 		h::footer(
 			h::p(
-				h::icon(
-					'tag'
-				).
+				h::icon('tags').
 				implode(
 					', ',
 					array_map(
@@ -95,7 +93,7 @@ $Page->json(
 							return h::a(
 								$tag,
 								[
-									'href'	=> $module.'/'.path($L->tag).'/'.$tag,
+									'href'	=> "$module/".path($L->tag)."/$tag",
 									'rel'	=> 'tag'
 								]
 							);
@@ -113,14 +111,14 @@ $Page->json(
 					]
 				).
 				h::a(
-					h::icon('person').$User->username($post['user']),
+					h::icon('user').$User->username($post['user']),
 					[
 						'href'			=> path($L->profile).'/'.$User->get('login', $post['user']),
 						'rel'			=> 'author'
 					]
 				).
 				(
-					$Config->module('Blogs')->enable_comments ? h::icon('comment').$post['comments_count'] : ''
+					$Config->module('Blogs')->enable_comments ? h::icon('comments').$post['comments_count'] : ''
 				)
 			)
 		)

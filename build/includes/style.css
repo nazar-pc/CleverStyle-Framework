@@ -45,18 +45,18 @@ section nav label {
 	position         : relative;
 	padding          : 0 30px;
 }
-section nav :checked+label {
+section nav .active {
 	color : #ddd;
 }
 section nav input {
 	display : none;
 }
-section nav :nth-child(2),
-section nav :nth-child(4) {
+section nav :nth-child(1),
+section nav :nth-child(2) {
 	margin-right : -10px;
 }
-section nav :nth-child(4)::before,
-section nav :nth-child(6)::before {
+section nav :nth-child(2)::before,
+section nav :nth-child(3)::before {
 	background-color  : #d7d7d7;
 	content           : "";
 	height            : 30px;

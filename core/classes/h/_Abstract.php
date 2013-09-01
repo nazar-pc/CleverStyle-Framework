@@ -214,14 +214,6 @@ abstract class _Abstract {
 				$data['class'] = 'cs-info';
 			}
 		}
-		if (isset($data['data-dialog'])) {
-			$data['data-dialog'] = filter($data['data-dialog']);
-			if (isset($data['class'])) {
-				$data['class'] .= ' cs-dialog';
-			} else {
-				$data['class'] = 'cs-dialog';
-			}
-		}
 		if (isset($data['level'])) {
 			$level	= $data['level'];
 			unset($data['level']);
@@ -270,8 +262,8 @@ abstract class _Abstract {
 		$add	.= XHTML_TAGS_STYLE ? ' /' : '';
 		if (isset($data['type']) && $data['type'] == 'checkbox' && $label) {
 			$html	= self::span(
-				"<$tag$add>".self::label(
-					$in,
+				self::label(
+					"<$tag$add> $in",
 					[
 						'for'	=> $data['id']
 					]
@@ -281,7 +273,7 @@ abstract class _Abstract {
 				]
 			);
 		} else {
-			$html	= "<$tag$add>$in\n";
+			$html	= "<$tag$add> $in\n";
 			$html	= isset($data_title) ? self::label(
 				$html,
 				[
@@ -388,26 +380,22 @@ abstract class _Abstract {
 					if (!isset($item['id'])) {
 						$item['id'] = uniqid('input_');
 					}
-					if (isset($item['in'])) {
-						$item['in'] = self::label($item['in'], ['for' => $item['id']]);
-					}
 					$item['tag'] = __FUNCTION__;
 					if (isset($item['value'])) {
 						$item['value'] = filter($item['value']);
 					}
-					$temp .= self::u_wrap($item);
+					$temp .= self::label(self::u_wrap($item), ['for' => $item['id']]);
 				}
-				return $temp;
+				return self::span($temp);
 			} else {
 				if (!isset($in['id'])) {
 					$in['id'] = uniqid('input_');
 				}
-				$in['in'] = self::label($in['in'], ['for' => $in['id']]);
 				$in['tag'] = __FUNCTION__;
 				if (isset($in['value'])) {
 					$in['value'] = filter($in['value']);
 				}
-				return self::u_wrap($in);
+				return self::label(self::u_wrap($in), ['for' => $in['id']]);
 			}
 		} else {
 			if (is_array_indexed($in)) {
@@ -785,17 +773,13 @@ abstract class _Abstract {
 		if ($class === false) {
 			return '';
 		}
-		if (!isset($data['style'])) {
-			$data['style'] = 'display: inline-block; margin-bottom: -2px;';
-		} else {
-			$data['style'] .= ' display: inline-block; margin-bottom: -2px;';
-		}
 		if (!isset($data['class'])) {
-			$data['class'] = 'ui-icon ui-icon-'.$class;
+			$data['class'] = "uk-icon uk-icon-$class";
 		} else {
-			$data['class'] .= ' ui-icon ui-icon-'.$class;
+			$data['class'] .= " uk-icon uk-icon-$class";
 		}
-		return self::span($data);
+		$data['level']	= 0;
+		return self::span($data).' ';
 	}
 	/**
 	 * Merging of arrays, but joining all 'class' and 'style' items, supports 2-3 arrays for input

@@ -360,21 +360,21 @@ class Comments extends Accessor {
 						]
 					).
 					h::{'a.cs-comments-comment-link'}(
-						h::icon('link'),
+						h::icon('anchor'),
 						[
-							'href'	=> '#comment_'.$comment['id']
+							'href'	=> "#comment_$comment[id]"
 						]
 					).
 					(
 						$comment['parent'] ? h::{'a.cs-comments-comment-parent'}(
-							h::icon('arrowreturnthick-1-n'),
+							h::icon('level-up'),
 							[
-								'href'	=> '#comment_'.$comment['parent']
+								'href'	=> "#comment_$comment[parent]"
 							]
 						) : ''
 					).
 					(
-						$User->id == $comment['user'] || $User->admin() ? h::{'icon.cs-comments-comment-edit.cs-pointer'}('pencil') : ''
+						$User->id == $comment['user'] || $User->admin() ? h::{'icon.cs-comments-comment-edit.cs-pointer'}('edit') : ''
 					).
 					(
 						!$comment['comments'] &&
@@ -389,7 +389,7 @@ class Comments extends Accessor {
 						$comment['comments'] ? $this->tree_html($comment['comments']) : ''
 					),
 					[
-						'id'	=> 'comment_'.$comment['id']
+						'id'	=> "comment_$comment[id]"
 					]
 				);
 			}
@@ -411,10 +411,10 @@ class Comments extends Accessor {
 				$this->tree($item) ?: h::{'article.cs-blogs-no-comments'}($L->no_comments_yet)
 			)
 		).
-		h::{'p.cs-comments-add-comment'}($L->add_comment.':').
+		h::{'p.cs-comments-add-comment'}("$L->add_comment:").
 		(
 			User::instance()->user() ? h::{'section.cs-comments-comment-write'}(
-				h::{'textarea.cs-comments-comment-write-text.cs-wide-textarea.SEDITOR'}(
+				h::{'textarea.cs-comments-comment-write-text.SIMPLE_EDITOR'}(
 					'',
 					[
 						'data-item'		=> $item,

@@ -16,13 +16,13 @@ $Config	= Config::instance();
 $L		= Language::instance();
 $sa		= $Config->core['simple_admin_mode'];
 Index::instance()->content(
-	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
+	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}(
 		core_input('site_mode', 'radio'),
 		core_input('closed_title'),
-		core_textarea('closed_text', 'SEDITOR'),
+		core_textarea('closed_text', 'SIMPLE_EDITOR'),
 		core_input('title_delimiter'),
 		core_input('title_reverse', 'radio'),
-		core_textarea('footer_text', 'SEDITOR'),
+		core_textarea('footer_text', 'SIMPLE_EDITOR'),
 		core_input('show_footer_info', 'radio'),
 		core_input('show_tooltips', 'radio', false),
 		core_input('og_support', 'radio'),
@@ -42,19 +42,19 @@ Index::instance()->content(
 		] : false,
 		!$sa ? [
 			h::info('routing'),
-			h::{'table#.cs-fullwidth-table tr| td'}(
+			h::{'table.cs-table-borderless tr| td'}(
 				[
 					h::info('routing_in'),
 					h::info('routing_out')
 				],
 				[
-					h::{'textarea.cs-wide-textarea'}(
+					h::textarea(
 						$Config->routing['in'],
 						[
 							'name'				=> 'routing[in]'
 						]
 					),
-					h::{'textarea.cs-wide-textarea'}(
+					h::textarea(
 						$Config->routing['out'],
 						[
 							'name'				=> 'routing[out]'
@@ -65,19 +65,19 @@ Index::instance()->content(
 		] : false,
 		!$sa ? [
 			h::info('replace'),
-			h::{'table#.cs-fullwidth-table tr| td'}(
+			h::{'table.cs-table-borderless tr| td'}(
 				[
 					h::info('replace_in'),
 					h::info('replace_out')
 				],
 				[
-					h::{'textarea.cs-wide-textarea'}(
+					h::textarea(
 						$Config->replace['in'],
 						[
 							'name'			=> 'replace[in]'
 						]
 					),
-					h::{'textarea.cs-wide-textarea'}(
+					h::textarea(
 						$Config->replace['out'],
 						[
 							'name'			=> 'replace[out]'

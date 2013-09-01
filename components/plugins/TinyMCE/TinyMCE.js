@@ -23,25 +23,27 @@ $(function () {
 		relative_urls			: false,
 		file_browser_callback	: window.file_upload ? function (field_name) {
 			if (!tinymce.uploader_dialog) {
-				tinymce.uploader_dialog		= $('<div title="Uploading..." class="cs-center"></div>').dialog({
-					autoOpen	: false
-				});
-				tinymce.uploader_dialog.parent().css('z-index', 100000);
+				tinymce.uploader_dialog		= $('<div title="Uploading..." class="cs-center"></div>')
+					.html('<div style="margin-left: -10%; width: 20%;"><div class="uk-progress uk-progress-striped uk-active"><div class="uk-progress-bar"></div></div></div>')
+					.appendTo('body')
+					.cs_modal()
+					.css('z-index', 100000);
 			}
 			file_upload(
 				null,
 				function (files) {
-					tinymce.uploader_dialog.dialog('close');
+					tinymce.uploader_dialog.cs_modal('hide');
 					if (files.length) {
 						$('#' + field_name).val(files[0]);
 					}
 				},
 				function (error) {
-					tinymce.uploader_dialog.dialog('close');
+					tinymce.uploader_dialog.cs_modal('hide');
 					alert(error);
 				},
 				function (file) {
-					tinymce.uploader_dialog.html(file.percent + '%').dialog('open');
+					tinymce.uploader_dialog.find('.uk-progress-bar').width((file.percent ? file.percent : 1) + '%');
+					tinymce.uploader_dialog.cs_modal('show');
 				}
 			).browse();
 		} : null
@@ -53,13 +55,13 @@ $(function () {
 		},
 		base_config
 	);
-	tinymce.seditor_config	= $.extend(
+	tinymce.simple_editor_config	= $.extend(
 		{
 			toolbar	: "insertfile undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | link image media emoticons | code"
 		},
 		base_config
 	);
-	tinymce.ieditor_config	= $.extend(
+	tinymce.inline_editor_config	= $.extend(
 		{
 			inline	: true,
 			menubar	: false,
@@ -78,13 +80,13 @@ $(function () {
 			/**
 			 * Simple editor
 			 */
-			$('.SEDITOR').prop('required', false).tinymce(tinymce.seditor_config);
+			$('.SIMPLE_EDITOR').prop('required', false).tinymce(tinymce.simple_editor_config);
 		},
 		function () {
 			/**
 			 * Inline editor
 			 */
-			$('.IEDITOR').prop('required', false).tinymce(tinymce.ieditor_config);
+			$('.INLINE_EDITOR').prop('required', false).tinymce(tinymce.inline_editor_config);
 		}
 	]);
 });
@@ -95,10 +97,10 @@ function editor_reinitialization (id) {
 	var	textarea	= $('#' + id);
 	if (textarea.hasClass('EDITOR')) {
 		textarea.tinymce(tinymce.editor_config).load();
-	} else if (textarea.hasClass('SEDITOR')) {
-		textarea.tinymce(tinymce.seditor_config).load();
-	} else if (textarea.hasClass('IEDITOR')) {
-		textarea.tinymce(tinymce.ieditor_config).load();
+	} else if (textarea.hasClass('SIMPLE_EDITOR')) {
+		textarea.tinymce(tinymce.simple_editor_config).load();
+	} else if (textarea.hasClass('INLINE_EDITOR')) {
+		textarea.tinymce(tinymce.inline_editor_config).load();
 	}
 }
 function editor_focus (id) {

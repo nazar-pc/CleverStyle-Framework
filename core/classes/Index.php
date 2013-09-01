@@ -465,8 +465,7 @@ class Index {
 					array_merge(
 						[
 							'enctype'	=> $this->file_upload ? 'multipart/form-data' : false,
-							'action'	=> $this->action,
-							'class'		=> 'cs-fullwidth-form'
+							'action'	=> $this->action
 						],
 						$this->form_atributes
 					)

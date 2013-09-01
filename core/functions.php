@@ -461,7 +461,7 @@ function pages ($page, $total, $url, $head_links = false) {
 				$i,
 				[
 					'href'	=> $i == $page ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
-					'class'	=> $i == $page ? 'cs-button ui-selected' : 'cs-button'
+					'class'	=> $i == $page ? 'cs-button uk-button-primary disabled' : 'cs-button'
 				]
 			];
 			if ($head_links && ($i == $page - 1 || $i == $page + 1)) {
@@ -478,7 +478,7 @@ function pages ($page, $total, $url, $head_links = false) {
 					$i,
 					[
 						'href'	=> $i == $page ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
-						'class'	=> $i == $page ? 'cs-button ui-selected' : 'cs-button'
+						'class'	=> $i == $page ? 'cs-button uk-button-primary disabled' : 'cs-button'
 					]
 				];
 				if ($head_links&& ($i == $page - 1 || $i == $page + 1)) {
@@ -491,7 +491,7 @@ function pages ($page, $total, $url, $head_links = false) {
 			$output[]	= [
 				'...',
 				[
-					'class'	=> 'cs-button ui-state-disabled'
+					'class'	=> 'cs-button disabled'
 				]
 			];
 			for ($i = $total - 2; $i <= $total; ++$i) {
@@ -516,7 +516,7 @@ function pages ($page, $total, $url, $head_links = false) {
 			$output[]	= [
 				'...',
 				[
-					'class'	=> 'cs-button ui-state-disabled'
+					'class'	=> 'cs-button disabled'
 				]
 			];
 			for ($i = $total - 6; $i <= $total; ++$i) {
@@ -524,7 +524,7 @@ function pages ($page, $total, $url, $head_links = false) {
 					$i,
 					[
 						'href'	=> $i == $page ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
-						'class'	=> $i == $page ? 'cs-button ui-selected' : 'cs-button'
+						'class'	=> $i == $page ? 'cs-button uk-button-primary disabled' : 'cs-button'
 					]
 				];
 				if ($head_links && ($i == $page - 1 || $i == $page + 1)) {
@@ -547,7 +547,7 @@ function pages ($page, $total, $url, $head_links = false) {
 			$output[]	= [
 				'...',
 				[
-					'class'	=> 'cs-button ui-state-disabled'
+					'class'	=> 'cs-button disabled'
 				]
 			];
 			for ($i = $page - 1; $i <= $page + 3; ++$i) {
@@ -555,7 +555,7 @@ function pages ($page, $total, $url, $head_links = false) {
 					$i,
 					[
 						'href'	=> $i == $page ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
-						'class'	=> $i == $page ? 'cs-button ui-selected' : 'cs-button'
+						'class'	=> $i == $page ? 'cs-button uk-button-primary disabled' : 'cs-button'
 					]
 				];
 				if ($head_links && ($i == $page - 1 || $i == $page + 1)) {
@@ -568,7 +568,7 @@ function pages ($page, $total, $url, $head_links = false) {
 			$output[]	= [
 				'...',
 				[
-					'class'	=> 'cs-button ui-state-disabled'
+					'class'	=> 'cs-button disabled'
 				]
 			];
 			for ($i = $total - 1; $i <= $total; ++$i) {
@@ -609,7 +609,7 @@ function pages_buttons ($page, $total, $url = false) {
 					'formaction'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
 					'value'			=> $i,
 					'type'			=> $i == $page ? 'button' : 'submit',
-					'class'			=> $i == $page ? 'ui-selected' : false
+					'class'			=> $i == $page ? 'uk-button-primary disabled' : false
 				]
 			];
 		}
@@ -622,7 +622,7 @@ function pages_buttons ($page, $total, $url = false) {
 						'formaction'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
 						'value'			=> $i == $page ? false : $i,
 						'type'			=> $i == $page ? 'button' : 'submit',
-						'class'			=> $i == $page ? 'ui-selected' : false
+						'class'			=> $i == $page ? 'uk-button-primary disabled' : false
 					]
 				];
 			}
@@ -668,7 +668,7 @@ function pages_buttons ($page, $total, $url = false) {
 						'formaction'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
 						'value'			=> $i == $page ? false : $i,
 						'type'			=> $i == $page ? 'button' : 'submit',
-						'class'			=> $i == $page ? 'ui-selected' : false
+						'class'			=> $i == $page ? 'uk-button-primary disabled' : false
 					]
 				];
 			}
@@ -697,7 +697,7 @@ function pages_buttons ($page, $total, $url = false) {
 						'formaction'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
 						'value'			=> $i == $page ? false : $i,
 						'type'			=> $i == $page ? 'button' : 'submit',
-						'class'			=> $i == $page ? 'ui-selected' : false
+						'class'			=> $i == $page ? 'uk-button-primary disabled' : false
 					]
 				];
 			}

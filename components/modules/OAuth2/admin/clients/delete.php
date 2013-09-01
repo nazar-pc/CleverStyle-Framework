@@ -20,7 +20,7 @@ $Index->buttons				= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/OAuth2/clients/list';
 $Index->content(
-	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+	h::{'p.lead.cs-center'}(
 		$L->sure_to_delete_client($client['name'])
 	).
 	h::{'button[type=submit]'}($L->yes).

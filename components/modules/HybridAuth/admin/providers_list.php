@@ -27,22 +27,22 @@ $Page->menumore			= h::a(
 );
 $Index->apply_button	= false;
 $Index->content(
-	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr td'}(
-		h::info('enable_contacts_detection'),
-		h::{'input[type=radio]'}([
+	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr'}(
+		h::{'th info'}('enable_contacts_detection').
+		h::{'td input[type=radio]'}([
 			'name'		=> 'enable_contacts_detection',
 			'checked'	=> $Config->module('HybridAuth')->enable_contacts_detection,
 			'value'		=> [0, 1],
 			'in'		=> [$L->off, $L->on]
 		])
 	).
-	h::{'table.cs-hybrid-auth-providers-table.cs-fullwidth-table.cs-center-all'}(
-		h::{'tr th.ui-widget-header.ui-corner-all'}([
+	h::{'table.cs-hybrid-auth-providers-table.cs-table.cs-center-all'}(
+		h::{'thead tr th'}([
 			$L->provider,
 			$L->settings,
 			$L->state
 		]).
-		h::{'tr| td.ui-widget-content.ui-corner-all'}(
+		h::{'tbody tr| td'}(
 			array_map(
 				function ($provider, $pdata) use ($L, $providers_config, $Config) {
 					$content	= '';
@@ -59,7 +59,7 @@ $Index->content(
 					}
 					return [
 						$L->$provider,
-						h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd'}(
+						h::{'table.cs-table-borderless.cs-left-even.cs-right-odd'}(
 							$content.
 							(
 								isset($pdata['scope']) ? h::{'tr td'}([

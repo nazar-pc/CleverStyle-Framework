@@ -7,4 +7,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-Page::instance()->content('Demo module');
+use h;
+Page::instance()->content(
+	h::{'div.cs-dialog'}('Modal')
+);

@@ -20,16 +20,16 @@ $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/OAuth2';
 $Index->content(
-	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+	h::{'p.lead.cs-center'}(
 		$L->addition_of_page_category
 	).
-	h::{'table.cs-fullwidth-table.cs-center-all tr'}(
-		h::{'th.ui-widget-header.ui-corner-all'}(
+	h::{'table.cs-table-borderless.cs-center-all'}(
+		h::{'thead tr th'}(
 			$L->parent_category,
 			$L->category_title,
 			h::info('category_path')
 		),
-		h::{'td.ui-widget-content.ui-corner-all'}(
+		h::{'tbody tr td'}(
 			h::{'select[name=parent][size=5]'}(
 				get_categories_list(),
 				[

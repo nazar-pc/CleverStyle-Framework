@@ -19,16 +19,16 @@ $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/OAuth2/clients/list';
 $Index->content(
-	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+	h::{'p.lead.cs-center'}(
 		$L->addition_of_client
 	).
-	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}(
-		h::{'th.ui-widget-header.ui-corner-all'}($L->client_name).
-		h::{'td.ui-widget-content.ui-corner-all input[name=name]'}(),
-		h::{'th.ui-widget-header.ui-corner-all'}($L->client_domain).
-		h::{'td.ui-widget-content.ui-corner-all input[name=domain]'}(),
-		h::{'th.ui-widget-header.ui-corner-all'}($L->active).
-		h::{'td.ui-widget-content.ui-corner-all input[type=radio][name=active][checked=1]'}([
+	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr'}(
+		h::th($L->client_name).
+		h::{'td input[name=name]'}(),
+		h::th($L->client_domain).
+		h::{'td input[name=domain]'}(),
+		h::th($L->active).
+		h::{'td input[type=radio][name=active][checked=1]'}([
 			'value'		=> [0, 1],
 			'in'		=> [$L->no, $L->yes]
 		])

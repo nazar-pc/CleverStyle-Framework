@@ -9,10 +9,10 @@
 echo	h::{'form[method=post]'}(
 	h::nav(
 		'Build: '.
-		h::{'input[name=mode][type=radio]'}([
+		h::{'input.build-mode[name=mode][type=radio]'}([
 			'value'		=> ['core', 'module', 'plugin'],
 			'in'		=> ['Core', 'Module', 'Plugin'],
-			'onclick'	=> 'change_mode(this.value);'
+			'onclick'	=> 'change_mode(this.value, this);'
 		])
 	).
 	h::{'table tr| td'}(

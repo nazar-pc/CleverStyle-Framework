@@ -22,21 +22,17 @@ if (isset($rc[2])) {
 			$a->cancel_button_back	= true;
 			$Page->title($L->adding_permission);
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+				h::{'p.lead.cs-center'}(
 					$L->adding_permission
 				).
-				h::{'table.cs-fullwidth-table.cs-center-all'}(
-					h::{'tr th.ui-widget-header.ui-corner-all'}([
+				h::{'table.cs-table-borderless.cs-center-all'}(
+					h::{'thead tr th'}([
 						$L->group,
 						$L->label
 					]).
-					h::{'tr td.ui-widget-content.ui-corner-all'}([
-						h::input([
-							'name'		=> 'permission[group]'
-						]),
-						h::input([
-							'name'		=> 'permission[label]'
-						])
+					h::{'tbody tr td'}([
+						h::{'input[name=permission[group]]'}(),
+						h::{'input[name=permission[label]]'}()
 					])
 				)
 			);
@@ -49,19 +45,19 @@ if (isset($rc[2])) {
 			$a->cancel_button_back	= true;
 			$permission				= $User->get_permission($rc[3]);
 			$Page->title(
-				$L->editing_permission($permission['group'].'/'.$permission['label'])
+				$L->editing_permission("$permission[group]/$permission[label]")
 			);
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
-					$L->editing_permission($permission['group'].'/'.$permission['label'])
+				h::{'p.lead.cs-center'}(
+					$L->editing_permission("$permission[group]/$permission[label]")
 				).
-				h::{'table.cs-fullwidth-table.cs-center-all'}(
-					h::{'tr th.ui-widget-header.ui-corner-all'}([
+				h::{'table.cs-table-borderless.cs-center-all'}(
+					h::{'thead tr th'}([
 						'&nbsp;id&nbsp;',
 						$L->group,
 						$L->label
 					]).
-					h::{'tr td.ui-widget-content.ui-corner-all'}([
+					h::{'tbody tr td'}([
 						$rc[3],
 						h::input([
 							'name'		=> 'permission[group]',
@@ -88,11 +84,11 @@ if (isset($rc[2])) {
 			$a->cancel_button_back	= true;
 			$permission				= $User->get_permission($rc[3]);
 			$Page->title(
-				$L->deletion_of_permission($permission['group'].'/'.$permission['label'])
+				$L->deletion_of_permission("$permission[group]/$permission[label]")
 			);
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
-					$L->sure_delete_permission($permission['group'].'/'.$permission['label'])
+				h::{'p.lead.cs-center'}(
+					$L->sure_delete_permission("$permission[group]/$permission[label]")
 				).
 				h::{'input[type=hidden]'}([
 					'name'	=> 'id',
@@ -113,8 +109,8 @@ if (isset($rc[2])) {
 	$a->buttons			= false;
 	$permissions		= $User->get_permissions_table();
 	$permissions_list	= [
-		h::{'th.ui-widget-header.ui-corner-all'}([$L->action, 'id', $L->group, $L->label]),
-		h::{'th.ui-widget-header.ui-corner-all'}([$L->action, 'id', $L->group, $L->label])
+		h::th([$L->action, 'id', $L->group, $L->label]),
+		h::th([$L->action, 'id', $L->group, $L->label])
 	];
 	$count = 0;
 	$blocks					= [];
@@ -125,18 +121,18 @@ if (isset($rc[2])) {
 	foreach ($permissions as $group => $list) {
 		foreach ($list as $label => $id) {
 			++$count;
-			$permissions_list[] = h::{'td.ui-widget-content.ui-corner-all.cs-left-all'}([
+			$permissions_list[] = h::{'td.cs-left-all'}([
 				h::{'a.cs-button-compact'}(
-					h::icon('wrench'),
+					h::icon('edit'),
 					[
-						'href'			=> $a->action.'/edit/'.$id,
+						'href'			=> "$a->action/edit/$id",
 						'data-title'	=> $L->edit
 					]
 				).
 				h::{'a.cs-button-compact'}(
 					h::icon('trash'),
 					[
-						'href'			=> $a->action.'/delete/'.$id,
+						'href'			=> "$a->action/delete/$id",
 						'data-title'	=> $L->delete
 					]
 				),
@@ -144,13 +140,13 @@ if (isset($rc[2])) {
 				h::span(
 					$group,
 					[
-						'data-title'	=> $L->{'permissions_group_'.$group}
+						'data-title'	=> $L->{"permissions_group_$group"}
 					]
 				),
 				h::span(
 					$label,
 					[
-						'data-title'	=> $group != 'Block' ? $L->{'permission_label_'.$label} : $blocks[$label]
+						'data-title'	=> $group != 'Block' ? $L->{"permission_label_$label"} : $blocks[$label]
 					]
 				)
 			]);
@@ -170,14 +166,14 @@ if (isset($rc[2])) {
 	}
 	unset($permissions_list);
 	$a->content(
-		h::{'table.cs-fullwidth-table.cs-center-all'}(
-			$permissions_list_.
-			h::{'tr td.cs-left-all[colspan=8] a.cs-button'}(
-				$L->add_permission,
-				[
-					'href' => "admin/System/$rc[0]/$rc[1]/add"
-				]
-			)
+		h::{'table.cs-table.cs-center-all'}(
+			$permissions_list_
+		).
+		h::{'p.cs-left a.cs-button'}(
+			$L->add_permission,
+			[
+				'href' => "admin/System/$rc[0]/$rc[1]/add"
+			]
 		)
 	);
 }

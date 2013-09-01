@@ -49,20 +49,20 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 					$_FILES['upload_plugin']['tmp_name'],
 					$tmp_file = TEMP.'/'.md5($_FILES['upload_plugin']['tmp_name'].MICROTIME).'.phar.php'
 				);
-				$tmp_dir								= 'phar://'.$tmp_file;
-				if (!($plugin	= file_get_contents($tmp_dir.'/dir'))) {
+				$tmp_dir								= "phar://$tmp_file";
+				if (!($plugin	= file_get_contents("$tmp_dir/dir"))) {
 					unlink($tmp_file);
 					break;
 				}
 				$rc[3]		= $plugin;
-				if (!file_exists($tmp_dir.'/meta.json') || _json_decode(file_get_contents($tmp_dir.'/meta.json'))['category'] != 'plugins') {
+				if (!file_exists("$tmp_dir/meta.json") || _json_decode(file_get_contents("$tmp_dir/meta.json"))['category'] != 'plugins') {
 					$Page->warning($L->this_is_not_plugin_installer_file);
 					unlink($tmp_file);
 					break;
 				}
 				if (in_array($plugin, $Config->components['plugins'])) {
-					$current_version		= _json_decode(file_get_contents(PLUGINS.'/'.$plugin.'/meta.json'))['version'];
-					$new_version			= _json_decode(file_get_contents($tmp_dir.'/meta.json'))['version'];
+					$current_version		= _json_decode(file_get_contents(PLUGINS."/$plugin/meta.json"))['version'];
+					$new_version			= _json_decode(file_get_contents("$tmp_dir/meta.json"))['version'];
 					if (!version_compare($current_version, $new_version, '<')) {
 						$Page->warning($L->update_plugin_impossible_older_version($plugin));
 						unlink($tmp_file);
@@ -77,7 +77,7 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 					$Page->title($L->updating_of_plugin($plugin));
 					rename($tmp_file, $tmp_file = TEMP.'/'.User::instance()->get_session().'_plugin_update.phar.php');
 					$a->content(
-						h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+						h::{'p.lead.cs-center'}(
 							$L->update_plugin(
 								$plugin,
 								$current_version,
@@ -99,28 +99,28 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 					);
 					break;
 				}
-				if (!file_exists(PLUGINS.'/'.$plugin) && !mkdir(PLUGINS.'/'.$plugin, 0700)) {
+				if (!file_exists(PLUGINS."/$plugin") && !mkdir(PLUGINS."/$plugin", 0700)) {
 					$Page->warning($L->cant_unpack_plugin_no_write_permissions);
 					unlink($tmp_file);
 					break;
 				}
-				$fs				= _json_decode(file_get_contents($tmp_dir.'/fs.json'));
+				$fs				= _json_decode(file_get_contents("$tmp_dir/fs.json"));
 				$extract		= array_product(
 					array_map(
 						function ($index, $file) use ($tmp_dir, $plugin) {
 							if (
-								!file_exists(pathinfo(PLUGINS.'/'.$plugin.'/'.$file, PATHINFO_DIRNAME)) &&
-								!mkdir(pathinfo(PLUGINS.'/'.$plugin.'/'.$file, PATHINFO_DIRNAME), 0700, true)
+								!file_exists(pathinfo(PLUGINS."/$plugin/$file", PATHINFO_DIRNAME)) &&
+								!mkdir(pathinfo(PLUGINS."/$plugin/$file", PATHINFO_DIRNAME), 0700, true)
 							) {
 								return 0;
 							}
-							return (int)copy($tmp_dir.'/fs/'.$index, PLUGINS.'/'.$plugin.'/'.$file);
+							return (int)copy("$tmp_dir/fs/$index", PLUGINS."/$plugin/$file");
 						},
 						$fs,
 						array_keys($fs)
 					)
 				);
-				file_put_contents(PLUGINS.'/'.$plugin.'/fs.json', _json_encode(array_keys($fs)));
+				file_put_contents(PLUGINS."/$plugin/fs.json", _json_encode(array_keys($fs)));
 				unset($tmp_dir);
 				if (!$extract) {
 					$Page->warning($L->plugin_files_unpacking_error);
@@ -156,7 +156,7 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 			if (!in_array($rc[3], $Config->components['plugins']) && in_array($rc[3], $plugins)) {
 				$Page->title($L->enabling_of_plugin($rc[3]));
 				$a->content(
-					h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+					h::{'p.lead.cs-center'}(
 						$L->enabling_of_plugin($rc[3])
 					)
 				);
@@ -197,7 +197,7 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 			if (in_array($rc[3], $Config->components['plugins'])) {
 				$Page->title($L->disabling_of_plugin($rc[3]));
 				$a->content(
-					h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+					h::{'p.lead.cs-center'}(
 						$L->disabling_of_plugin($rc[3])
 					)
 				);
@@ -231,18 +231,14 @@ if (!$show_plugins) {
 }
 $a->buttons		= false;
 $a->file_upload	= true;
-$plugins_list	= [h::{'th.ui-widget-header.ui-corner-all'}(
-	$L->plugin_name,
-	$L->state,
-	$L->action
-)];
+$plugins_list	= [];
 if (!empty($plugins)) {
 	foreach ($plugins as $plugin) {
 		$addition_state = $action = '';
 		/**
 		 * Information about plugin
 		 */
-		if (file_exists($file = PLUGINS.'/'.$plugin.'/readme.txt') || file_exists($file = PLUGINS.'/'.$plugin.'/readme.html')) {
+		if (file_exists($file = PLUGINS."/$plugin/readme.txt") || file_exists($file = PLUGINS."/$plugin/readme.html")) {
 			if (substr($file, -3) == 'txt') {
 				$tag		= 'pre';
 			} else {
@@ -250,19 +246,18 @@ if (!empty($plugins)) {
 			}
 			$uniqid			= uniqid('module_info_');
 			$Page->replace($uniqid, $tag == 'pre' ? filter(file_get_contents($file)) : file_get_contents($file));
-			$addition_state .= h::$tag(
-					$uniqid,
+			$addition_state .= h::{'div.cs-dialog'}(
+				h::$tag($uniqid),
 				[
-					'id'			=> $plugin.'_readme',
-					'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
-					'title'			=> $plugin.' -> '.$L->information_about_plugin
+					'id'			=> "{$plugin}_readme",
+					'title'			=> "$plugin -> $L->information_about_plugin"
 				]
 			).
 			h::{'icon.cs-pointer'}(
-				'notice',
+				'exclamation',
 				[
 					'data-title'	=> $L->information_about_plugin.h::br().$L->click_to_view_details,
-					'onClick'		=> "$('#".$plugin."_readme').dialog('open');"
+					'onClick'		=> "$('#{$plugin}_readme').cs_modal('show');"
 				]
 			);
 			unset($uniqid);
@@ -271,40 +266,39 @@ if (!empty($plugins)) {
 		/**
 		 * License
 		 */
-		if (file_exists($file = PLUGINS.'/'.$plugin.'/license.txt') || file_exists($file = PLUGINS.'/'.$plugin.'/license.html')) {
+		if (file_exists($file = PLUGINS."/$plugin/license.txt") || file_exists($file = PLUGINS."/$plugin/license.html")) {
 			if (substr($file, -3) == 'txt') {
 				$tag = 'pre';
 			} else {
 				$tag = 'div';
 			}
-			$addition_state .= h::$tag(
-				$tag == 'pre' ? filter(file_get_contents($file)) : file_get_contents($file),
+			$addition_state .= h::{'div.cs-dialog'}(
+				h::$tag($tag == 'pre' ? filter(file_get_contents($file)) : file_get_contents($file)),
 				[
-					'id'			=> $plugin.'_license',
-					'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
-					'title'			=> $plugin.' -> '.$L->license
+					'id'			=> "{$plugin}_license",
+					'title'			=> "$plugin -> $L->license"
 				]
 			).
 			h::{'icon.cs-pointer'}(
-				'note',
+				'legal',
 				[
 					'data-title'	=> $L->license.h::br().$L->click_to_view_details,
-					'onClick'		=> "$('#".$plugin."_license').dialog('open');"
+					'onClick'		=> "$('#{$plugin}_license').cs_modal('show');"
 				]
 			);
 		}
 		unset($tag, $file);
 		$state = in_array($plugin, $Config->components['plugins']);
 		$action .= h::{'a.cs-button-compact'}(
-			h::icon($state ? 'minusthick' : 'check'),
+			h::icon($state ? 'check-minus' : 'check'),
 			[
 				'href'			=> $a->action.($state ? '/disable/' : '/enable/').$plugin,
 				'data-title'	=> $state ? $L->disable : $L->enable
 			]
 		);
 		$plugin_info	= false;
-		if (file_exists(PLUGINS.'/'.$plugin.'/meta.json')) {
-			$plugin_meta	= _json_decode(file_get_contents(PLUGINS.'/'.$plugin.'/meta.json'));
+		if (file_exists(PLUGINS."/$plugin/meta.json")) {
+			$plugin_meta	= _json_decode(file_get_contents(PLUGINS."/$plugin/meta.json"));
 			$plugin_info	= $L->plugin_info(
 				$plugin_meta['package'],
 				$plugin_meta['version'],
@@ -322,39 +316,44 @@ if (!empty($plugins)) {
 			);
 		}
 		unset($plugin_meta);
-		$plugins_list[]	= h::{'td.ui-widget-content.ui-corner-all'}(
-			[
+		$plugins_list[]	= [
+			h::span(
 				$plugin,
 				[
 					'data-title'	=> $plugin_info
 				]
-			],
+			),
 			h::icon(
-				$state ? 'check' : 'minusthick',
+				$state ? 'ok' : 'minus',
 				[
 					'data-title'	=> $state ? $L->enabled : $L->disabled
 				]
 			).
 			$addition_state,
 			$action
-		);
+		];
 		unset($plugin_info);
 	}
 	unset($plugins, $plugin, $state, $addition_state, $action);
 }
 $a->content(
-	h::{'table.cs-fullwidth-table.cs-center-all tr'}(
-		$plugins_list,
-		h::{'td.cs-left-all[colspan=3]'}(
-			h::{'input[type=file][name=upload_plugin]'}([
-				'style'	=> 'position: relative;'
-			]).
-			h::{'button[type=submit]'}(
-				$L->upload_and_install_update_plugin,
-				[
-					'formaction'	=>  $a->action.'/enable/upload'
-				]
-			)
+	h::{'table.cs-table.cs-center-all'}(
+		h::{'thead tr th'}(
+			$L->plugin_name,
+			$L->state,
+			$L->action
+		).
+		h::{'tbody tr| td'}([$plugins_list])
+	).
+	h::p(
+		h::{'input[type=file][name=upload_plugin]'}([
+			'style'	=> 'position: relative;'
+		]).
+		h::{'button[type=submit]'}(
+			$L->upload_and_install_update_plugin,
+			[
+				'formaction'	=>  "$a->action/enable/upload"
+			]
 		)
 	)
 );

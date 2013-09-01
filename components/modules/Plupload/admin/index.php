@@ -14,7 +14,7 @@ $Index->apply_button	= false;
 $Config					= Config::instance();
 $L						= Language::instance();
 $Index->content(
-	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
+	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}(
 		[
 			$L->upload_limit.' (b, kb, mb, gb)',
 			h::{'input[name=max_file_size]'}([

@@ -20,7 +20,7 @@ $Index->buttons				= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/Blogs/browse_posts';
 $Index->content(
-	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+	h::{'p.lead.cs-center'}(
 		$L->sure_to_delete_post($post['title'])
 	).
 	h::{'button[type=submit]'}($L->yes).

@@ -120,8 +120,8 @@ switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 		unset($columns);
 		$timezones					= get_timezones_list();
 		$row						= function ($col1, $col2) {
-			return	h::{'th.ui-widget-header.ui-corner-all'}($col1).
-				h::{'td.ui-widget-content.ui-corner-all'}($col2);
+			return	h::th($col1).
+				h::td($col2);
 		};
 		$themes						= [
 			$L->system_default.' ('.$Config->core['theme'].' - '.($Config->core['color_scheme'] ?: $Config->core['color_schemes'][$Config->core['theme']][0]).')' => ''
@@ -140,10 +140,10 @@ switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 		$Index->cancel_button_back	= true;
 		$Page->title($L->general);
 		$Index->content(
-			h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+			h::{'p.lead.cs-center'}(
 				$L->general_settings
 			).
-			h::{'table#users_edit.cs-fullwidth-table.cs-center-all tr'}(
+			h::{'table#users_edit.cs-table-borderless.cs-center-all tr'}(
 				$row($L->login, h::input([
 					'name'		=> 'user[login]',
 					'value'		=> $user_data['login']
@@ -224,20 +224,20 @@ switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 		$Index->cancel_button_back	= true;
 		$Page->title($L->password_changing);
 		$Index->content(
-			h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+			h::{'p.lead.cs-center'}(
 				$L->password_changing
 			).
-			h::{'table#users_edit.cs-fullwidth-table.cs-center-all tr'}(
-				h::{'th.ui-widget-header.ui-corner-all'}(
-					$L->current_password.h::{'icon#current_password'}('locked')
+			h::{'table#users_edit.cs-table-borderless.cs-center-all tr'}(
+				h::th(
+					"$L->current_password ".h::{'icon#current_password'}('lock')
 				).
-				h::{'td.ui-widget-content.ui-corner-all'}(
+				h::td(
 					h::{'input.cs-profile-current-password[type=password]'}()
 				),
-				h::{'th.ui-widget-header.ui-corner-all'}(
-					$L->new_password.h::{'icon#new_password'}('locked')
+				h::th(
+					"$L->new_password ".h::{'icon#new_password'}('lock')
 				).
-				h::{'td.ui-widget-content.ui-corner-all'}(
+				h::td(
 					h::{'input.cs-profile-new-password[type=password]'}()
 				)
 			).

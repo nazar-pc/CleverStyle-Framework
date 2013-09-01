@@ -73,11 +73,11 @@ $Index->cancel_button_back	= true;
 $disabled					= [];
 $max_sections				= $Config->module('Blogs')->max_sections;
 $Index->content(
-	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+	h::{'p.lead.cs-center'}(
 		$L->new_post
 	).
 	h::{'div.cs-blogs-post-preview-content'}().
-	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
+	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}(
 		[
 			$L->post_title,
 			h::{'input.cs-blogs-new-post-title[name=title][required]'}([
@@ -99,7 +99,7 @@ $Index->content(
 		],
 		[
 			$L->post_content,
-			h::{'textarea.cs-blogs-new-post-content.cs-wide-textarea.EDITOR[name=content][required]'}(
+			h::{'textarea.cs-blogs-new-post-content.EDITOR[name=content][required]'}(
 				isset($_POST['content']) ? $_POST['content'] : ''
 			).
 			h::br().

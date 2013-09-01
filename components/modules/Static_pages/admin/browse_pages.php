@@ -16,8 +16,8 @@ $L				= Language::instance();
 $rc				= Config::instance()->route;
 $Index->buttons	= false;
 $Index->content(
-	h::{'table.cs-left-all.cs-fullwidth-table'}(
-		h::{'tr th.ui-widget-header.ui-corner-all'}(
+	h::{'table.cs-left-all.cs-table'}(
+		h::{'thead tr th'}(
 			[
 				$L->page_title,
 				[
@@ -26,22 +26,22 @@ $Index->content(
 			],
 			$L->action
 		).
-		h::{'tr| td.ui-widget-content.ui-corner-all'}(
+		h::{'tbody tr| td'}(
 			get_pages_rows()
-		).
-		h::{'tr td[colspan=2] a.cs-button'}(
+		)
+	).
+	h::{'p.cs-left a.cs-button'}(
+		[
+			$L->add_page,
 			[
-				$L->add_page,
-				[
-					'href'	=> 'admin/OAuth2/add_page/'.array_slice($rc, -1)[0]
-				]
-			]/*,
+				'href'	=> 'admin/OAuth2/add_page/'.array_slice($rc, -1)[0]
+			]
+		]/*,
 			[
 				$L->add_page_live,
 				[
 					'href'	=> 'admin/OAuth2/add_page_live/'.array_slice($rc, -1)[0]
 				]
 			]*/
-		)
 	)
 );

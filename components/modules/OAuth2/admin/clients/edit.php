@@ -21,24 +21,24 @@ $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/OAuth2/clients/list';
 $Index->content(
-	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+	h::{'p.lead.cs-center'}(
 		$L->editing_of_client($client['name'])
 	).
-	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr'}(
-		h::{'th.ui-widget-header.ui-corner-all'}($L->client_name).
-		h::{'td.ui-widget-content.ui-corner-all input[name=name]'}([
+	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr'}(
+		h::th($L->client_name).
+		h::{'td input[name=name]'}([
 			'value'	=> $client['name']
 		]),
-		h::{'th.ui-widget-header.ui-corner-all'}('client_secret').
-		h::{'td.ui-widget-content.ui-corner-all input[name=secret]'}([
+		h::th('client_secret').
+		h::{'td input[name=secret]'}([
 			'value'	=> $client['secret']
 		]),
-		h::{'th.ui-widget-header.ui-corner-all'}($L->client_domain).
-		h::{'td.ui-widget-content.ui-corner-all input[name=domain]'}([
+		h::th($L->client_domain).
+		h::{'td input[name=domain]'}([
 			'value'	=> $client['domain']
 		]),
-		h::{'th.ui-widget-header.ui-corner-all'}($L->active).
-		h::{'td.ui-widget-content.ui-corner-all input[type=radio][name=active]'}([
+		h::th($L->active).
+		h::{'td input[type=radio][name=active]'}([
 			'checked'	=> $client['active'],
 			'value'		=> [0, 1],
 			'in'		=> [$L->no, $L->yes]

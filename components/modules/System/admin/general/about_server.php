@@ -30,12 +30,12 @@ if (isset($Config->route[2]) && $Config->route[2] == 'phpinfo') {
 }
 $Index->form	= false;
 $Index->content(
-	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
+	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}(
 		[
 			h::{'a.cs-button[target=_blank]'}(
 				'phpinfo()',
 				[
-					'href'	=> $Index->action.'/phpinfo'
+					'href'	=> "$Index->action/phpinfo"
 				]
 			).
 			h::{'a.cs-button[target=_blank]'}(
@@ -44,14 +44,13 @@ $Index->content(
 				'href'	=> 'readme.html'
 				]
 			).
-			h::{'pre#system_license'}(
+			h::{'div#cs-system-license.cs-dialog pre'}(
 				file_get_contents(DIR.'/license.txt'),
 				[
-					'data-dialog'	=> '{"autoOpen": false, "height": "400", "hide": "puff", "show": "scale", "width": "700"}',
-					'title'			=> $L->system.' » '.$L->license
+					'title'			=> "$L->system » $L->license"
 				]
 			).
-			h::{'button#system_license_open'}(
+			h::{'button#cs-system-license-open'}(
 				$L->license,
 				[
 					'data-title'	=> $L->click_to_view_details
@@ -62,11 +61,11 @@ $Index->content(
 			]
 		],
 		[
-			$L->operation_system.':',
+			"$L->operation_system:",
 			php_uname('s').' '.php_uname('r').' '.php_uname('v')
 		],
 		[
-			$L->server_type.':',
+			"$L->server_type:",
 			server_api()
 		],
 		preg_match('/apache/i', $_SERVER['SERVER_SOFTWARE']) ? [
@@ -78,15 +77,15 @@ $Index->content(
 			$_SERVER['SERVER_SOFTWARE']
 		] : false,
 		[
-			$L->available_ram.':',
+			"$L->available_ram:",
 			str_replace(
 				['K', 'M', 'G'],
-				[' '.$L->KB, ' '.$L->MB, ' '.$L->GB],
+				[" $L->KB", " $L->MB", " $L->GB"],
 				ini_get('memory_limit')
 			)
 		],
 		[
-			$L->free_disk_space.':',
+			"$L->free_disk_space:",
 			format_filesize(disk_free_space('./'), 2)
 		],
 		[
@@ -94,10 +93,10 @@ $Index->content(
 			PHP_VERSION
 		],
 		[
-			$L->php_components.':',
-			h::{'table.cs-left-odd.cs-fullwidth-table tr| td'}(
+			"$L->php_components:",
+			h::{'table.cs-left-odd.cs-table-borderless tr| td'}(
 				[
-					$L->mcrypt.':',
+					"$L->mcrypt:",
 					[
 						check_mcrypt() ? $L->on : $L->off.h::sup('(!)', ['title'	=> $L->mcrypt_warning]),
 						[
@@ -115,19 +114,19 @@ $Index->content(
 					]
 				] : false,
 				[
-					$L->zlib.':',
+					"$L->zlib:",
 					$L->get(zlib())
 				],
 				zlib() ? [
-					$L->zlib_compression.':',
+					"$L->zlib_compression:",
 					$L->get(zlib_compression())
 				] : false,
 				zlib_compression() ? [
-					$L->zlib_compression_level.':',
+					"$L->zlib_compression_level:",
 					zlib_compression_level()
 				] : false,
 				[
-					$L->curl_lib.':',
+					"$L->curl_lib:",
 					[
 						$L->get(curl()),
 						[
@@ -136,7 +135,7 @@ $Index->content(
 					]
 				],
 				[
-					$L->apc_module.':',
+					"$L->apc_module:",
 					[
 						$L->get(apc()),
 						[
@@ -145,7 +144,7 @@ $Index->content(
 					]
 				],
 				[
-					$L->memcached_module.':',
+					"$L->memcached_module:",
 					[
 						$L->get(memcached())
 					]
@@ -153,14 +152,14 @@ $Index->content(
 			)
 		],
 		[
-			$L->main_db.':',
+			"$L->main_db:",
 			$Core->db_type
 		],
 		[
-			$L->properties.' '.$Core->db_type.':',
-			h::{'table.cs-left-odd.cs-fullwidth-table tr| td'}(
+			"$L->properties $Core->db_type:",
+			h::{'table.cs-left-odd.cs-table-borderless tr| td'}(
 				[
-					$L->host.':',
+					"$L->host:",
 					$Core->db_host
 				],
 				[
@@ -173,28 +172,28 @@ $Index->content(
 					]
 				],
 				[
-					$L->name_of_db.':',
+					"$L->name_of_db:",
 					$Core->db_name
 				],
 				[
-					$L->prefix_for_db_tables.':',
+					"$L->prefix_for_db_tables:",
 					$Core->db_prefix
 				]
 			)
 		],
 		[
-			$L->main_storage.':',
+			"$L->main_storage:",
 			$Core->storage_type
 		],
 		[
-			$L->cache_engine.':',
+			"$L->cache_engine:",
 			$Core->cache_engine
 		],
 		[
-			$L->php_ini_settings.':',
-			h::{'table.cs-left-odd.cs-fullwidth-table tr| td'}(
+			"$L->php_ini_settings:",
+			h::{'table.cs-left-odd.cs-table-borderless tr| td'}(
 				[
-					$L->allow_file_upload.':',
+					"$L->allow_file_upload:",
 					[
 						$L->get(ini_get('file_uploads')),
 						[
@@ -203,39 +202,39 @@ $Index->content(
 					]
 				],
 				[
-					$L->max_file_uploads.':',
+					"$L->max_file_uploads:",
 					ini_get('max_file_uploads')
 				],
 				[
-					$L->upload_limit.':',
+					"$L->upload_limit:",
 					str_replace(
 						['K', 'M', 'G'],
-						[' '.$L->KB, ' '.$L->MB, ' '.$L->GB],
+						[" $L->KB", " $L->MB", " $L->GB"],
 						ini_get('upload_max_filesize')
 					)
 				],
 				[
-					$L->post_max_size.':',
+					"$L->post_max_size:",
 					str_replace(
 						['K', 'M', 'G'],
-						[' '.$L->KB, ' '.$L->MB, ' '.$L->GB],
+						[" $L->KB", " $L->MB", " $L->GB"],
 						ini_get('post_max_size')
 					)
 				],
 				[
-					$L->max_execution_time.':',
+					"$L->max_execution_time:",
 					format_time(ini_get('max_execution_time'))
 				],
 				[
-					$L->max_input_time.':',
+					"$L->max_input_time:",
 					format_time(ini_get('max_input_time'))
 				],
 				[
-					$L->default_socket_timeout.':',
+					"$L->default_socket_timeout:",
 					format_time(ini_get('default_socket_timeout'))
 				],
 				[
-					$L->allow_url_fopen.':',
+					"$L->allow_url_fopen:",
 					[
 						$L->get(ini_get('allow_url_fopen')),
 						[
@@ -244,7 +243,7 @@ $Index->content(
 					]
 				],
 				[
-					$L->display_errors.':',
+					"$L->display_errors:",
 					[
 						$L->get(display_errors()),
 						[
@@ -257,7 +256,7 @@ $Index->content(
 	)
 );
 function state ($state) {
-	return ($state ? 'ui-state-highlight' : 'ui-state-error').' ui-corner-all';
+	return $state ? 'uk-alert-success' : 'uk-alert-danger';
 }
 /**
  * Returns server type

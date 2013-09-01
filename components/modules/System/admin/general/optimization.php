@@ -17,7 +17,7 @@ $Config	= Config::instance();
 $L		= Language::instance();
 $sa		= $Config->core['simple_admin_mode'];
 Index::instance()->content(
-	h::{'table.cs-fullwidth-table.cs-left-even.cs-right-odd tr| td'}(
+	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}(
 		core_input('gzip_compression', 'radio', null, zlib_compression()),
 		core_input('cache_compress_js_css', 'radio'),
 		core_input('put_js_after_body', 'radio'),

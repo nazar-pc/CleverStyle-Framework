@@ -62,14 +62,14 @@ if (isset($rc[2])) {
 			 */
 			$Page->title($rc[2] == 'edit' ? $L->editing_the_database($name) : $L->addition_of_db);
 			$a->content(
-				h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+				h::{'p.lead.cs-center'}(
 					$rc[2] == 'edit' ? $L->editing_the_database($name) : $L->addition_of_db
 				).
-				h::{'table.cs-fullwidth-table.cs-center-all tr'}(
+				h::{'table.cs-table.cs-center-all tr'}(
 					\cs\modules\System\form_rows_to_cols([
 						array_map(
 							function ($in) {
-								return h::{'th.ui-widget-header.ui-corner-all info'}($in);
+								return h::{'th info'}($in);
 							},
 							[
 								$rc[2] == 'add' ? 'db_mirror' : false,
@@ -84,7 +84,7 @@ if (isset($rc[2])) {
 						),
 						array_map(
 							function ($in) {
-								return h::{'td.ui-widget-content.ui-corner-all'}($in);
+								return h::td($in);
 							},
 							[
 								($rc[2] == 'add' ? h::select(
@@ -148,7 +148,7 @@ if (isset($rc[2])) {
 						)
 					])
 				).
-				h::button(
+				h::{'p button'}(
 					$L->test_connection,
 					[
 						'onMouseDown'	=> "db_test('$a->action/test');"
@@ -188,7 +188,7 @@ if (isset($rc[2])) {
 				unset($mirror, $cdb);
 				$Page->title($L->deletion_of_database($name));
 				$a->content(
-					h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+					h::{'p.lead.cs-center'}(
 						$L->sure_to_delete.' '.$name.
 							h::{'input[type=hidden]'}([
 								[[
@@ -236,19 +236,11 @@ if (isset($rc[2])) {
 	}
 } else {
 	$test_dialog	= true;
-	$db_list		= [h::{'th.ui-widget-header.ui-corner-all'}(
-		$L->action,
-		$L->db_host,
-		$L->db_type,
-		$L->db_prefix,
-		$L->db_name,
-		$L->db_user,
-		$L->db_charset
-	)];
+	$db_list		= [];
 	$databases		= $Config->db;
 	if (!empty($databases)) {
 		foreach ($databases as $i => &$db_data) {
-			$db_list[]	= h::{'td.ui-corner-all'}(
+			$db_list[]	= [
 				[
 					[
 						h::{'a.cs-button-compact'}(
@@ -260,7 +252,7 @@ if (isset($rc[2])) {
 								]
 							],
 							$i ? [
-								h::icon('wrench'),
+								h::icon('edit'),
 								[
 									'href'			=> "$a->action/edit/$i",
 									'data-title'	=> "$L->edit $L->db"
@@ -274,7 +266,7 @@ if (isset($rc[2])) {
 								]
 							] : false,
 							[
-								h::icon('signal-diag'),
+								h::icon('signal'),
 								[
 									'onMouseDown'	=> "db_test('$a->action/test/$i', true);",
 									'data-title'	=> $L->test_connection
@@ -293,16 +285,16 @@ if (isset($rc[2])) {
 					$i	? $db_data['charset']	: $Core->db_charset
 				],
 				[
-					'class'	=> $i ? 'ui-widget-content' : 'ui-state-highlight'
+					'class'	=> $i ? '' : 'text-primary'
 				]
-			);
+			];
 			foreach ($Config->db[$i]['mirrors'] as $m => &$mirror) {
 				if (is_array($mirror) && !empty($mirror)) {
-					$db_list[]	= h::{'td.ui-widget-content.ui-corner-all'}(
+					$db_list[]	= [
 						[
 							h::{'a.cs-button-compact'}(
 								[
-									h::icon('wrench'),
+									h::icon('edit'),
 									[
 										'href'			=> "admin/System/$rc[0]/$rc[1]/edit/$i/$m",
 										'data-title'	=> "$L->edit $L->mirror $L->of_db"
@@ -316,7 +308,7 @@ if (isset($rc[2])) {
 									]
 								],
 								[
-									h::icon('signal-diag'),
+									h::icon('signal'),
 									[
 										'onMouseDown'	=> "db_test('$a->action/test/$i/$m', true);",
 										'data-title'	=> $L->test_connection
@@ -333,7 +325,7 @@ if (isset($rc[2])) {
 						$mirror['name'],
 						$mirror['user'],
 						$mirror['charset']
-					);
+					];
 				}
 			}
 			unset($m, $mirror);
@@ -342,28 +334,45 @@ if (isset($rc[2])) {
 	}
 	unset($databases);
 	$a->content(
-		h::{'table.cs-fullwidth-table tr'}(
-			$db_list,
-			h::{'td.cs-left-all[colspan=7] a.cs-button'}(
-				$L->add_database,
-				[
-					'href' => "admin/System/$rc[0]/$rc[1]/add"
-				]
-			),
-			h::{'td.cs-right-all[colspan=4] info'}('db_balance').
-			h::{'td.cs-left-all[colspan=3] input[type=radio]'}([
-				'name'			=> 'core[db_balance]',
-				'checked'		=> $Config->core['db_balance'],
-				'value'			=> [0, 1],
-				'in'			=> [$L->off, $L->on]
-			]),
-			h::{'td.cs-right-all[colspan=4] info'}('maindb_for_write').
-			h::{'td.cs-left-all[colspan=3] input[type=radio]'}([
-				'name'			=> 'core[maindb_for_write]',
-				'checked'		=> $Config->core['maindb_for_write'],
-				'value'			=> [0, 1],
-				'in'			=> [$L->off, $L->on]
-			])
+		h::{'table.cs-table'}(
+			h::{'thead tr th'}(
+				$L->action,
+				$L->db_host,
+				$L->db_type,
+				$L->db_prefix,
+				$L->db_name,
+				$L->db_user,
+				$L->db_charset
+			).
+			h::tbody(
+				h::{'tr| td'}([$db_list])
+			)
+		).
+		h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}([
+			[
+				h::info('db_balance'),
+				h::{'input[type=radio]'}([
+					'name'			=> 'core[db_balance]',
+					'checked'		=> $Config->core['db_balance'],
+					'value'			=> [0, 1],
+					'in'			=> [$L->off, $L->on]
+				])
+			],
+			[
+				h::info('maindb_for_write'),
+				h::{'input[type=radio]'}([
+					'name'			=> 'core[maindb_for_write]',
+					'checked'		=> $Config->core['maindb_for_write'],
+					'value'			=> [0, 1],
+					'in'			=> [$L->off, $L->on]
+				])
+			]
+		]).
+		h::{'p a.cs-button'}(
+			$L->add_database,
+			[
+				'href' => "admin/System/$rc[0]/$rc[1]/add"
+			]
 		).
 		h::{'input[type=hidden]'}([
 			 'name'			=> 'mode',
@@ -372,8 +381,8 @@ if (isset($rc[2])) {
 	);
 }
 $test_dialog && $a->content(
-	h::{'div#test_db'}([
-		'data-dialog'	=> '{"autoOpen":false,"height":"75","hide":"puff","modal":true,"show":"scale","width":"250"}',
-		'title'			=> $L->test_connection
-	])
+	h::{'div#cs-db-test.cs-dialog div'}(
+		h::h3($L->test_connection).
+		h::div()
+	)
 );

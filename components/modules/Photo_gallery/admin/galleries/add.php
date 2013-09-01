@@ -21,18 +21,18 @@ $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/Photo_gallery/galleries/browse';
 $Index->content(
-	h::{'p.ui-priority-primary.cs-state-messages.cs-center'}(
+	h::{'p.lead.cs-center'}(
 		$L->photo_gallery_addition_of_gallery
 	).
-	h::{'table.cs-fullwidth-table.cs-center-all tr'}(
-		h::{'th.ui-widget-header.ui-corner-all'}(
+	h::{'table.cs-table-borderless.cs-center-all'}(
+		h::{'thead tr th'}(
 			$L->photo_gallery_gallery_title,
 			($Config->core['simple_admin_mode'] ? false : h::info('photo_gallery_gallery_path')),
 			$L->photo_gallery_gallery_description,
 			$L->state,
 			$L->photo_gallery_gallery_preview_image
 		),
-		h::{'td.ui-widget-content.ui-corner-all'}(
+		h::{'tbody tr td'}(
 			h::{'input[name=add[title]]'}(),
 			($Config->core['simple_admin_mode'] ? false : h::{'input[name=add[path]]'}()),
 			h::{'textarea[name=add[description]]'}(),

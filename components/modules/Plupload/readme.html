@@ -23,30 +23,26 @@
 		</dl>
 		<p>Example (TinyMCE plugin):</p>
 		<pre>file_browser_callback	: window.file_upload ? function (field_name) {
-	if (!tinymce.plupload) {
-		tinymce.plupload			= {};
-		tinymce.plupload.dialog		= $('&lt;div title="Uploading..." class="cs-center"&gt;&lt;/div&gt;').dialog({
-			autoOpen	: false
-		});
-		tinymce.plupload.dialog.parent().css('z-index', 100000);
-		tinymce.plupload.uploader	= file_upload(
-			null,
-			function (files) {
-				tinymce.plupload.dialog.dialog('close');
-				if (files.length) {
-					$('#' + field_name).val(files[0]);
-				}
-			},
-			function (error) {
-				tinymce.plupload.dialog.dialog('close');
-				alert(error);
-			},
-			function (file) {
-				tinymce.plupload.dialog.html(file.percent + '%').dialog('open');
-			}
-		);
+	if (!tinymce.uploader_dialog) {
+		tinymce.uploader_dialog		= $('&lt;div title="Uploading..." class="cs-center"&gt;&lt;/div&gt;').cs_modal();
+		tinymce.uploader_dialog.parent().css('z-index', 100000);
 	}
-	tinymce.plupload.uploader.browse();
+	file_upload(
+		null,
+		function (files) {
+			tinymce.uploader_dialog.cs_modal('hide');
+			if (files.length) {
+				$('#' + field_name).val(files[0]);
+			}
+		},
+		function (error) {
+			tinymce.uploader_dialog.cs_modal('hide');
+			alert(error);
+		},
+		function (file) {
+			tinymce.uploader_dialog.html(file.percent + '%').cs_modal('show');
+		}
+	).browse();
 } : null</pre>
 	</li>
 </ul>
