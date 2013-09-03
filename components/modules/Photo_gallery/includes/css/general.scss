@@ -70,6 +70,13 @@
 .cs-photo-gallery-images {
 	background : rgba(0, 0, 0, .2);
 
+	/**
+	 * Fotorama fx
+	 */
+	.fotorama__stage {
+		width:  100% !important;
+	}
+
 	.cs-photo-gallery-image-control {
 		background : rgba(0, 0, 0, .3);
 		color      : #fff;
