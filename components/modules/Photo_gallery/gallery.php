@@ -59,7 +59,7 @@ $Index->content(
 							[
 								'&nbsp;'.h::icon('edit'),
 								[
-									'title'			=> $L->edit,
+									'data-title'	=> $L->edit,
 									'class'			=> 'cs-photo-gallery-image-edit',
 									'data-image'	=> $image['id']
 								]
@@ -67,7 +67,7 @@ $Index->content(
 							[
 								'&nbsp;'.h::icon('trash'),
 								[
-									'title'			=> $L->delete,
+									'data-title'	=> $L->delete,
 									'class'			=> 'cs-photo-gallery-image-delete',
 									'data-image'	=> $image['id']
 								]

@@ -26,7 +26,7 @@ $module					= path($L->Blogs);
 if ($User->user()) {
 	if ($User->admin() && $User->get_user_permission('admin/Blogs', 'index')) {
 		$Index->content(
-			h::{'a.cs-button-compact'}(
+			h::{'a.cs-button'}(
 				h::icon('gears'),
 				[
 					'href'			=> 'admin/Blogs',
@@ -36,14 +36,14 @@ if ($User->user()) {
 		);
 	}
 	$Index->content(
-		h::{'a.cs-button-compact'}(
+		h::{'a.cs-button'}(
 			h::icon('pencil').$L->new_post,
 			[
 				'href'			=> "$module/new_post",
 				'data-title'	=> $L->new_post
 			]
 		).
-		h::{'a.cs-button-compact'}(
+		h::{'a.cs-button'}(
 			h::icon('archive').$L->drafts,
 			[
 				'href'			=> "$module/".path($L->drafts),

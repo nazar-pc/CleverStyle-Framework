@@ -23,9 +23,17 @@
 		}
 	}
 }
+
+.cs-admin-page form {
+	text-align : center;
+
+	> * {
+		text-align : left;
+	}
+}
+
 //Titles of blocks
 .cs-blocks-items-title {
-	box-sizing    : border-box;
 	float         : left;
 	height        : 16px;
 	margin-right  : -64px;
@@ -41,10 +49,12 @@
 		display : inline-block;
 	}
 }
+
 //Controls on blocks titles
 .cs-blocks-items-groups {
 	width : 33%;
 }
+
 //Page with editing of users groups, selects
 #cs-users-groups-list,
 #cs-users-groups-list-selected {
@@ -57,6 +67,7 @@
 		padding : .5rem;
 	}
 }
+
 //Result of connection testing for DataBases and Storages
 .cs-test-result {
 	text-align     : center;
@@ -75,6 +86,7 @@
 		width : 30%;
 	}
 }
+
 //Style for code in debug window
 #cs-debug code {
 	display      : block;

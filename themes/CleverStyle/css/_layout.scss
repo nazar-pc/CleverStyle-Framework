@@ -5,13 +5,14 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-
 @import "config";
 @import "mixins";
 
+* {
+	box-sizing : border-box;
+}
 //Whole body
 body {
-	color   : $base-color;
 	font       : {
 		family : $base-font-family;
 		size   : $base-font-size;
@@ -19,14 +20,16 @@ body {
 	margin  : 0;
 	padding : 0;
 	width   : 100%;
-	>    {
+	> {
 		header {
-			width      : 100%;
-			text-align : center;
 			margin     : 0;
+			text-align : center;
+			width      : 100%;
 		}
 		footer {
 			@extend header;
+			text-decoration : underline;
+
 			div {
 				&:first-child {
 					padding : .5em .5em 0;
@@ -41,7 +44,6 @@ body {
 //Inner body with content
 #body {
 	border-radius : 10px;
-	@include box-sizing(border-box);
 	margin        : 145px 7px 7px;
 	padding       : 5px 0;
 
@@ -53,7 +55,6 @@ body {
 }
 //Left and right blocks
 #left_blocks {
-	@include box-sizing(border-box);
 	float          : left;
 	padding        : 0 5px;
 	vertical-align : top;
@@ -68,7 +69,6 @@ body {
 //Top, bottom blocks
 #top_blocks,
 #bottom_blocks {
-	@include box-sizing(border-box);
 	margin-left  : $left-column;
 	margin-right : $right-column;
 }
@@ -82,7 +82,6 @@ body {
 	vertical-align : top;
 
 	> div {
-		@include box-sizing(border-box);
 		border-radius : 5px;
 		float         : left;
 		padding       : 10px;

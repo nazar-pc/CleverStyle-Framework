@@ -6,12 +6,6 @@
  * @license		MIT License, see license.txt
  */
 
-//Cross-browser box-sizing
-@mixin box-sizing($mode) {
-	box-sizing         : $mode;
-	-moz-box-sizing    : $mode;
-	-webkit-box-sizing : $mode;
-}
 //Cross-browser transition
 @mixin transition($params) {
 	transition         : $params;

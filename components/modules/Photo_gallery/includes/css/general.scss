@@ -27,8 +27,6 @@
 			p {
 				background         : rgba(0, 0, 0, .5);
 				bottom             : 0;
-				-moz-box-sizing    : border-box;
-				box-sizing         : border-box;
 				color              : #fff;
 				margin             : 0;
 				opacity            : 0;
@@ -63,8 +61,7 @@
 
 		footer {
 			background : rgba(0, 0, 0, .6);
-			box-sizing : border-box;
-			color              : #fff;
+			color      : #fff;
 			padding    : 5px;
 			width      : 256px;
 		}
@@ -75,6 +72,7 @@
 
 	.cs-photo-gallery-image-control {
 		background : rgba(0, 0, 0, .3);
+		color      : #fff;
 		cursor     : pointer;
 		display    : block;
 		left       : 48px;

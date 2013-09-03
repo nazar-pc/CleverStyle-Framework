@@ -6,25 +6,13 @@
  * @license		MIT License, see license.txt
  */
 
-a {
-	&:focus {
-		outline : none;
-	}
-
-	&:hover {
-		text-decoration : none;
-	}
-}
-
-button, input, select, textarea {
-	box-sizing  : border-box;
-	font-family : inherit;
-	font-size   : 100%;
-	margin      : 0px 0px 0px 1px;
-}
-
-code {
-	white-space: normal;
+* + h1,
+* + h2,
+* + h3,
+* + h4,
+* + h5,
+* + h6 {
+	margin-top : auto;
 }
 
 .uk-alert-default {

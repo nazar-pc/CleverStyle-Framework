@@ -75,38 +75,38 @@ $Page->canonical_url(
 Index::instance()->content(
 	h::{'section.cs-blogs-post article'}(
 		h::header(
+			(
+				$User->admin() &&
+				$User->get_user_permission('admin/Blogs', 'index') &&
+				$User->get_user_permission('admin/Blogs', 'edit_post') ? ' '.h::{'a.cs-button'}(
+					[
+						h::icon('edit'),
+						[
+							'href'			=> "$module/edit_post/$post[id]",
+							'data-title'	=> $L->edit
+						]
+					],
+					[
+						h::icon('trash'),
+						[
+							'href'			=> "admin/Blogs/delete_post/$post[id]",
+							'data-title'	=> $L->delete
+						]
+					]
+				) : (
+					$User->id == $post['user'] ? ' '.h::{'a.cs-button-compact'}(
+						h::icon('edit'),
+						[
+							'href'			=> "$module/edit_post/$post[id]",
+							'data-title'	=> $L->edit
+						]
+					) : ''
+				)
+			).
 			h::h1(
 				$post['title'].
 				(
 					$post['draft'] ? h::sup($L->draft) : ''
-				).
-				(
-					$User->admin() &&
-					$User->get_user_permission('admin/Blogs', 'index') &&
-					$User->get_user_permission('admin/Blogs', 'edit_post') ? ' '.h::{'a.cs-button-compact'}(
-						[
-							h::icon('edit'),
-							[
-								'href'			=> "$module/edit_post/$post[id]",
-								'data-title'	=> $L->edit
-							]
-						],
-						[
-							h::icon('trash'),
-							[
-								'href'			=> "admin/Blogs/delete_post/$post[id]",
-								'data-title'	=> $L->delete
-							]
-						]
-					) : (
-						$User->id == $post['user'] ? ' '.h::{'a.cs-button-compact'}(
-							h::icon('edit'),
-							[
-								'href'			=> "$module/edit_post/$post[id]",
-								'data-title'	=> $L->edit
-							]
-						) : ''
-					)
 				)
 			).
 			($post['sections'] != [0] ? h::p(

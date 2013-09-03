@@ -5,40 +5,47 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-
+@import "config";
 @import "mixins";
+
+code {
+	font-family : $code-font-family;
+	white-space : normal;
+}
+
+a {
+	color  : inherit;
+	cursor : pointer;
+
+	&:hover {
+		color : inherit;
+	}
+}
 
 button,
 .cs-pointer {
 	cursor : pointer;
 }
 
-form {
-	text-align : center;
-
-	> * {
-		text-align : left;
+a {
+	&:focus {
+		outline : none;
 	}
+
+	&:hover {
+		text-decoration : none;
+	}
+}
+
+button, input, select, textarea {
+	color     : inherit;
+	font-size : 100%;
+	margin    : 0 0 1px;
 }
 
 .cs-table-borderless {
 	margin : 0 auto;
 	width  : 100%;
-
-	> tbody > tr > td:first-child {
-		width : 40%;
-	}
-}
-
-.cs-form-element {
-	&,
-	&:hover,
-	&:focus {
-		border         : solid .2em;
-		border-radius  : .3em;
-		border-spacing : 0;
-		padding        : .3em;
-	}
 }
 
 .cs-button-compact {
@@ -46,8 +53,8 @@ form {
 }
 
 .cs-dialog {
-	display : none;
-	text-align: left;
+	display    : none;
+	text-align : left;
 }
 
 @include cs-align(left);
