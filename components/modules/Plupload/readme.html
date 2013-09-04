@@ -22,25 +22,25 @@
 			<dd>If specified and <code>true</code> - selection of several files will be possible</dd>
 		</dl>
 		<p>Example (TinyMCE plugin):</p>
-		<pre>file_browser_callback	: window.file_upload ? function (field_name) {
+		<pre>file_browser_callback	: cs.file_upload ? function (field_name) {
 	if (!tinymce.uploader_dialog) {
-		tinymce.uploader_dialog		= $('&lt;div title="Uploading..." class="cs-center"&gt;&lt;/div&gt;').cs_modal();
+		tinymce.uploader_dialog		= $('&lt;div title="Uploading..." class="cs-center"&gt;&lt;/div&gt;').cs().modal();
 		tinymce.uploader_dialog.parent().css('z-index', 100000);
 	}
-	file_upload(
+	cs.file_upload(
 		null,
 		function (files) {
-			tinymce.uploader_dialog.cs_modal('hide');
+			tinymce.uploader_dialog.cs().modal('hide');
 			if (files.length) {
 				$('#' + field_name).val(files[0]);
 			}
 		},
 		function (error) {
-			tinymce.uploader_dialog.cs_modal('hide');
+			tinymce.uploader_dialog.cs().modal('hide');
 			alert(error);
 		},
 		function (file) {
-			tinymce.uploader_dialog.html(file.percent + '%').cs_modal('show');
+			tinymce.uploader_dialog.html(file.percent + '%').cs().modal('show');
 		}
 	).browse();
 } : null</pre>

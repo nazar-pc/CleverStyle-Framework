@@ -180,7 +180,7 @@ class Config {
 		if ($core_url[0] == $this->server['protocol']) {
 			foreach ($core_url[1] as $url) {
 				if (mb_strpos($this->server['raw_relative_address'], $url) === 0) {
-					$this->server['base_url']	= $this->server['protocol'].'://'.$url;
+					$this->server['base_url']	= $this->server['protocol']."://$url";
 					$current_mirror				= $url;
 					break;
 				}
@@ -202,7 +202,7 @@ class Config {
 				if ($mirror_url[0] == $this->server['protocol']) {
 					foreach ($mirror_url[1] as $url) {
 						if (mb_strpos($this->server['raw_relative_address'], $url) === 0) {
-							$this->server['base_url']		= $this->server['protocol'].'://'.$url;
+							$this->server['base_url']		= $this->server['protocol']."://$url";
 							$current_mirror					= $url;
 							$this->server['mirror_index']	= $i;
 							break 2;

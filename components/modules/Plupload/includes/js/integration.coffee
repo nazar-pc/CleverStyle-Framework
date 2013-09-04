@@ -17,37 +17,52 @@
  *
  * @return {function}
 ###
-window.file_upload	= (button, success, error, progress, multi) ->
-	files				= [];
+cs.file_upload	= (button, success, error, progress, multi) ->
+	files				= []
 	uploader			= new plupload.Uploader
 		runtimes		: 'html5'
-		max_file_size	: if window.plupload_max_file_size then plupload_max_file_size else null
+		max_file_size	: cs.plupload.max_file_size ? null
 		url				: '/Plupload'
 		multi_selection	: multi
 		multipart		: true
 	uploader.init()
-	file_element		= $('#' + uploader.id + '_html5');
+	file_element		= $('#' + uploader.id + '_html5')
 	if button
-		button.click -> file_element.click()
+		button.click ->
+			file_element.click()
 	if !file_element.attr('accept')
 		file_element.removeAttr('accept')
 	uploader.bind 'FilesAdded', ->
 		uploader.refresh()
 		uploader.start()
 	if progress
-		uploader.bind 'UploadProgress', (uploader, file) -> progress(file.percent, file.size, file.loaded, file.name)
+		uploader.bind(
+			'UploadProgress'
+			(uploader, file) ->
+				progress(file.percent, file.size, file.loaded, file.name)
+		)
 	if success
-		uploader.bind 'FileUploaded', (uploader, files_, res) ->
-			response	= $.parseJSON(res.response)
-			if !response.error
-				files.push(response.result)
-			else
-				alert response.error.message
-		uploader.bind 'UploadComplete', ->
-			success(files)
-			files	= [];
+		uploader.bind(
+			'FileUploaded'
+			(uploader, files_, res) ->
+				response	= $.parseJSON(res.response)
+				if !response.error
+					files.push(response.result)
+				else
+					alert response.error.message
+		)
+		uploader.bind(
+			'UploadComplete'
+			->
+				success(files)
+				files	= []
+		)
 	if error
-		uploader.bind 'Error', (uploader, error) -> error(error)
+		uploader.bind(
+			'Error'
+			(uploader, error) ->
+				error(error)
+		)
 	this.stop		= ->
 		uploader.stop()
 	this.destroy	= ->

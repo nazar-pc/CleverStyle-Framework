@@ -36,7 +36,7 @@ $(function () {
 			}
 		});
 		list_items.click(function () {
-			location.href = base_url+'/HybridAuth/'+$(this).data(('provider'));
+			location.href = cs.base_url+'/HybridAuth/'+$(this).data(('provider'));
 		});
 		$(document).mousemove(function (e) {
 			coordinates = {

@@ -12,9 +12,9 @@
   var __hasProp = {}.hasOwnProperty;
 
   $(function() {
-    async_call([
+    cs.async_call([
       function() {
-        window.session_id = getcookie('session');
+        window.session_id = cs.getcookie('session');
         return $.ajaxSetup({
           type: 'post',
           data: {
@@ -24,23 +24,23 @@
       }, function() {
         return $('form:not(.cs-no-ui)').addClass('uk-form');
       }, function() {
-        return $(':radio:not(.cs-no-ui)').cs_radio();
+        return $('input:radio:not(.cs-no-ui)').cs().radio();
       }, function() {
-        return $(':checkbox:not(.cs-no-ui)').cs_checkbox();
+        return $('input:checkbox:not(.cs-no-ui)').cs().checkbox();
       }, function() {
         return $('.cs-table').addClass('uk-table uk-table-condensed uk-table-hover');
       }, function() {
         return $(':button:not(.cs-no-ui), .cs-button, .cs-button-compact').addClass('uk-button').disableSelection();
       }, function() {
-        return $('.cs-dialog').cs_modal();
+        return $('.cs-dialog').cs().modal();
       }, function() {
         return $('textarea:not(.cs-no-ui)').not('.cs-no-resize, .EDITOR, .SIMPLE_EDITOR').addClass('cs-textarea-autosize').autosize({
           append: "\n"
         });
       }, function() {
-        return $(".cs-info").cs_tooltip();
+        return $('.cs-info').cs().tooltip();
       }, function() {
-        return $('.cs-tabs').cs_tabs();
+        return $('.cs-tabs').cs().tabs();
       }, function() {
         $('.cs-header-login-slide').click(function() {
           $('.cs-header-guest-form').slideUp();
@@ -68,10 +68,10 @@
           }
         });
         $('.cs-header-login-process').click(function() {
-          return login($('.cs-header-login-email').val(), $('.cs-header-user-password').val());
+          return cs.login($('.cs-header-login-email').val(), $('.cs-header-user-password').val());
         });
         $('.cs-header-logout-process').click(function() {
-          return logout();
+          return cs.logout();
         });
         $('.cs-show-password').click(function() {
           var $this, pass_input;
@@ -110,27 +110,28 @@
           }
         });
         $('.cs-header-registration-process').click(function() {
-          var modal;
-          modal = $('<div title="' + L.rules_agree + '"><div>' + rules_text + '<p class="cs-right"><button class="cs-registration-continue uk-button uk-button-primary">' + L.yes + '</button></p></div></div>').appendTo('body').cs_modal('show').on('uk.modal.hide', function() {
+          var L, modal;
+          L = cs.Language;
+          modal = $('<div title="' + L.rules_agree + '"><div>' + rules_text + '<p class="cs-right"><button class="cs-registration-continue uk-button uk-button-primary">' + L.yes + '</button></p></div></div>').appendTo('body').cs().modal('show').on('uk.modal.hide', function() {
             return $(this).remove();
           });
           return modal.find('.cs-registration-continue').click(function() {
-            modal.cs_modal('close').remove();
-            return registration($('.cs-header-registration-email').val());
+            modal.cs().modal('close').remove();
+            return cs.registration($('.cs-header-registration-email').val());
           });
         });
         $('.cs-header-restore-password-process').click(function() {
-          return restore_password($('.cs-header-restore-password-email').val());
+          return cs.restore_password($('.cs-header-restore-password-email').val());
         });
         $('.cs-profile-change-password').click(function() {
-          return change_password($('.cs-profile-current-password').val(), $('.cs-profile-new-password').val());
+          return cs.change_password($('.cs-profile-current-password').val(), $('.cs-profile-new-password').val());
         });
         return $('.cs-header-back').click(function() {
           $('.cs-header-guest-form').slideDown();
           return $('.cs-header-registration-form, .cs-header-login-form, .cs-header-restore-password-form').slideUp();
         });
       }, function() {
-        if (in_admin) {
+        if (cs.in_admin) {
           $('.cs-reload-button').click(function() {
             return location.reload();
           });
@@ -144,7 +145,7 @@
             return $(this).find("option[value='" + $('#change_language').val() + "']").prop('selected', true);
           });
           $('#cs-system-license-open').click(function() {
-            return $('#cs-system-license').cs_modal('show');
+            return $('#cs-system-license').cs().modal('show');
           });
           $('.cs-permissions-invert').click(function() {
             return $(this).parentsUntil('div').find(':radio:not(:checked)[value!=-1]').prop('checked', true).change();
@@ -178,14 +179,14 @@
               return found.val(found.val() + ',' + id.substring(6, id.length - 1));
             });
             return $.ajax({
-              url: current_base_url + '/' + route[0] + '/' + route[1] + '/search_users',
+              url: cs.current_base_url + '/' + cs.route[0] + '/' + cs.route[1] + '/search_users',
               data: {
                 found_users: $('#cs-block-users-search-found').val(),
                 permission: $(this).attr('permission'),
                 search_phrase: $(this).val()
               },
               success: function(result) {
-                return $('#block_users_search_results').html(result).find(':radio').cs_radio().change(function() {
+                return $('#block_users_search_results').html(result).find(':radio').cs().radio().change(function() {
                   return $(this).parentsUntil('tr').parent().addClass('cs-block-users-changed');
                 });
               }
@@ -198,7 +199,7 @@
             items: 'li:not(:first)',
             cancel: ':first',
             stop: function() {
-              return $('#cs-blocks-position').val(json_encode({
+              return $('#cs-blocks-position').val(cs.json_encode({
                 top: $('#cs-top-blocks-items').sortable('toArray'),
                 left: $('#cs-left-blocks-items').sortable('toArray'),
                 floating: $('#cs-floating-blocks-items').sortable('toArray'),
@@ -216,21 +217,21 @@
               $('#cs-users-groups-list').find('.uk-alert-success').removeClass('uk-alert-success').addClass('uk-alert-warning');
               selected = $('#cs-users-groups-list-selected');
               selected.find('.uk-alert-warning').removeClass('uk-alert-warning').addClass('uk-alert-success');
-              return $('#cs-user-groups').val(json_encode(selected.sortable('toArray')));
+              return $('#cs-user-groups').val(cs.json_encode(selected.sortable('toArray')));
             }
           });
           return $('#auto_translation_engine').find('select').change(function() {
-            return $('#auto_translation_engine_settings').html(base64_decode($(this).children(':selected').data('settings')));
+            return $('#auto_translation_engine_settings').html(cs.base64_decode($(this).children(':selected').data('settings')));
           });
         }
       }, function() {
         var cookie, i;
-        if (cookie = getcookie('setcookie')) {
+        if (cookie = cs.getcookie('setcookie')) {
           for (i in cookie) {
             if (!__hasProp.call(cookie, i)) continue;
             $.post(cookie[i]);
           }
-          return setcookie('setcookie', '');
+          return cs.setcookie('setcookie', '');
         }
       }
     ]);

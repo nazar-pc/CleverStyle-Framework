@@ -4,7 +4,7 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
 ###
-w							= window
+L							= cs.Language
 ###*
  * Get value by name
  *
@@ -27,14 +27,14 @@ String.prototype.replaceAt	= (index, symbol) ->
 ###*
  * Debug window opening
 ###
-w.debug_window				= -> $('#cs-debug').cs_modal('show')
+cs.debug_window				= -> $('#cs-debug').cs().modal('show')
 ###*
  * Cache cleaning
  *
  * @param 			element
  * @param {string}	action
 ###
-w.admin_cache				= (element, action) ->
+cs.admin_cache				= (element, action) ->
 	$(element).html('<div class="uk-progress uk-progress-striped uk-active"><div class="uk-progress-bar" style="width:100%"></div></div>')
 	$.ajax
 		url		: action,
@@ -47,10 +47,10 @@ w.admin_cache				= (element, action) ->
  * @param {string}	url
  * @param {bool}	added
 ###
-w.db_test					= (url, added) ->
+cs.db_test					= (url, added) ->
 	db_test	= $('#cs-db-test')
 	db_test.find('h3 + *').replaceWith('<div class="uk-progress uk-progress-striped uk-active"><div class="uk-progress-bar" style="width:100%"></div></div>')
-	db_test.cs_modal('show')
+	db_test.cs().modal('show')
 	if added
 		$.ajax({
 			url		: url,
@@ -60,7 +60,7 @@ w.db_test					= (url, added) ->
 				db_test.find('h3 + *').replaceWith('<p class="cs-test-result">' + L.failed + '</p>')
 		})
 	else
-		db = json_encode(
+		db = cs.json_encode(
 			type		: value_by_name('db[type]')
 			name		: value_by_name('db[name]')
 			user		: value_by_name('db[user]')
@@ -87,12 +87,12 @@ w.db_test					= (url, added) ->
  * @param {string}	url
  * @param {bool}	added
 ###
-w.storage_test				= (url, added) ->
+cs.storage_test				= (url, added) ->
 	storage_test	= $('#cs-storage-test')
 	storage_test
 		.find('h3 + *')
 		.replaceWith('<div class="uk-progress uk-progress-striped uk-active"><div class="uk-progress-bar" style="width:100%"></div></div>')
-	storage_test.cs_modal('show')
+	storage_test.cs().modal('show')
 	if added
 		$.ajax(
 			url		: url
@@ -106,7 +106,7 @@ w.storage_test				= (url, added) ->
 					.replaceWith('<p class="cs-test-result">' + L.failed + '</p>')
 		)
 	else
-		storage = json_encode(
+		storage = cs.json_encode(
 			url			: value_by_name('storage[url]')
 			host		: value_by_name('storage[host]')
 			connection	: value_by_name('storage[connection]')
@@ -131,7 +131,7 @@ w.storage_test				= (url, added) ->
  *
  * @param {string}	position
 ###
-w.blocks_toggle				= (position) ->
+cs.blocks_toggle				= (position) ->
 	container	= $("#cs-#{position}-blocks-items")
 	items		= container.children('li:not(:first)')
 	if container.data('mode') == 'open'
@@ -148,14 +148,14 @@ w.blocks_toggle				= (position) ->
  *
  * @return {string}
 ###
-w.json_encode				= (obj) -> $.toJSON(obj)
+cs.json_encode				= (obj) -> $.toJSON(obj)
 ###*
  * Decodes a JSON string
  *
  * @param {string}	str
  * @return {object}
 ###
-w.json_decode				= (str) -> $.secureEvalJSON(str)
+cs.json_decode				= (str) -> $.secureEvalJSON(str)
 ###*
  * Supports algorithms sha1, sha224, sha256, sha384, sha512
  *
@@ -163,7 +163,7 @@ w.json_decode				= (str) -> $.secureEvalJSON(str)
  * @param {string} data String to be hashed
  * @return {string}
 ###
-w.hash						= (algo, data) ->
+cs.hash						= (algo, data) ->
 	algo = switch algo
 		when 'sha1' then 'SHA-1'
 		when 'sha224' then 'SHA-224'
@@ -181,8 +181,8 @@ w.hash						= (algo, data) ->
  *
  * @return {bool}
 ###
-w.setcookie					= (name, value, expires) ->
-	name	= cookie_prefix + name;
+cs.setcookie					= (name, value, expires) ->
+	name	= cs.cookie_prefix + name
 	if expires
 		date	= new Date()
 		date.setTime(expires * 1000)
@@ -190,9 +190,9 @@ w.setcookie					= (name, value, expires) ->
 	!!$.cookie(
 		name
 		value
-			path	: cookie_path
-			domain	: cookie_domain
-			secure	: protocol == 'https'
+			path	: cs.cookie_path
+			domain	: cs.cookie_domain
+			secure	: cs.protocol == 'https'
 	)
 ###*
  * Function for getting of cookies, taking into account cookies prefix
@@ -201,31 +201,33 @@ w.setcookie					= (name, value, expires) ->
  *
  * @return {bool|string}
 ###
-w.getcookie					= (name) -> $.cookie(name)
+cs.getcookie					= (name) ->
+	name	= cs.cookie_prefix + name
+	$.cookie(name)
 ###*
  * Login into system
  *
  * @param {string} login
  * @param {string} password
 ###
-w.login						= (login, password) ->
+cs.login						= (login, password) ->
 	login	= login.toLowerCase()
 	$.ajax(
-		base_url + '/api/System/user/login'
+		cs.base_url + '/api/System/user/login'
 			cache	: false
 			data	:
-				login: hash('sha224', login)
+				login: cs.hash('sha224', login)
 			type	: 'post'
 			success	: (random_hash) ->
 				if random_hash.length == 56
 					$.ajax(
-						base_url + '/api/user/login'
+						cs.base_url + '/api/user/login'
 							cache	: false
 							data	:
-								login		: hash('sha224', login)
-								auth_hash	: hash(
+								login		: cs.hash('sha224', login)
+								auth_hash	: cs.hash(
 									'sha512',
-									hash('sha224', login) + hash('sha512', hash('sha512', password) + public_key) + navigator.userAgent + random_hash
+									cs.hash('sha224', login) + cs.hash('sha512', cs.hash('sha512', password) + cs.public_key) + navigator.userAgent + random_hash
 								)
 							type	: 'post'
 							success	: (result) ->
@@ -233,7 +235,7 @@ w.login						= (login, password) ->
 									location.reload()
 							error	: (xhr) ->
 								if xhr.responseText
-									alert(json_decode(xhr.responseText).error_description)
+									alert(cs.json_decode(xhr.responseText).error_description)
 								else
 									alert(L.auth_connection_error)
 					)
@@ -241,16 +243,16 @@ w.login						= (login, password) ->
 					location.reload()
 			error	: (xhr) ->
 				if xhr.responseText
-					alert(json_decode(xhr.responseText).error_description)
+					alert(cs.json_decode(xhr.responseText).error_description)
 				else
 					alert(L.auth_connection_error)
 	)
 ###*
  * Logout
 ###
-w.logout					= ->
+cs.logout					= ->
 	$.ajax(
-		base_url + '/api/System/user/logout'
+		cs.base_url + '/api/System/user/logout'
 			cache	: false
 			data	:
 				logout: true
@@ -259,7 +261,7 @@ w.logout					= ->
 				location.reload()
 			error	: (xhr) ->
 				if xhr.responseText
-					alert(json_decode(xhr.responseText).error_description)
+					alert(cs.json_decode(xhr.responseText).error_description)
 				else
 					alert(L.auth_connection_error)
 	)
@@ -268,13 +270,13 @@ w.logout					= ->
  *
  * @param {string} email
 ###
-w.registration				= (email) ->
+cs.registration				= (email) ->
 	if !email
 		alert(L.please_type_your_email)
 		return
 	email	= email.toLowerCase()
 	$.ajax(
-		base_url + '/api/System/user/registration'
+		cs.base_url + '/api/System/user/registration'
 			cache	: false
 			data	:
 				email: email
@@ -283,7 +285,7 @@ w.registration				= (email) ->
 				if result == 'reg_confirmation'
 					$('<div>' + L.reg_confirmation + '</div>')
 						.appendTo('body')
-						.cs_modal('show')
+						.cs().modal('show')
 						.on(
 							'uk.modal.hide'
 							->
@@ -292,7 +294,7 @@ w.registration				= (email) ->
 				else if result == 'reg_success'
 					$('<div>' + L.reg_success + '</div>')
 						.appendTo('body')
-						.cs_modal('show')
+						.cs().modal('show')
 						.on(
 							'uk.modal.hide'
 							->
@@ -300,7 +302,7 @@ w.registration				= (email) ->
 						)
 			error	: (xhr) ->
 				if xhr.responseText
-					alert(json_decode(xhr.responseText).error_description)
+					alert(cs.json_decode(xhr.responseText).error_description)
 				else
 					alert(L.reg_connection_error)
 	)
@@ -309,24 +311,24 @@ w.registration				= (email) ->
  *
  * @param {string} email
 ###
-w.restore_password			= (email) ->
+cs.restore_password			= (email) ->
 	if !email
 		alert(L.please_type_your_email)
 		return
 	email	= email.toLowerCase()
 	$.ajax(
-		base_url + '/api/System/user/restore_password',
+		cs.base_url + '/api/System/user/restore_password',
 		{
 			cache	: false,
 			data	: {
-				email: hash('sha224', email)
+				email: cs.hash('sha224', email)
 			},
 			type	: 'post',
 			success	: (result) ->
 				if result == 'OK'
 					$('<div>' + L.restore_password_confirmation + '</div>')
 						.appendTo('body')
-						.cs_modal('show')
+						.cs().modal('show')
 						.on(
 							'uk.modal.hide'
 							->
@@ -334,7 +336,7 @@ w.restore_password			= (email) ->
 						)
 			error	: (xhr) ->
 				if xhr.responseText
-					alert(json_decode(xhr.responseText).error_description)
+					alert(cs.json_decode(xhr.responseText).error_description)
 				else
 					alert(L.reg_connection_error)
 		}
@@ -345,7 +347,7 @@ w.restore_password			= (email) ->
  * @param {string} current_password
  * @param {string} new_password
 ###
-w.change_password			= (current_password, new_password) ->
+cs.change_password			= (current_password, new_password) ->
 	if !current_password
 		alert(L.please_type_current_password)
 		return
@@ -355,15 +357,15 @@ w.change_password			= (current_password, new_password) ->
 	else if current_password == new_password
 		alert(L.current_new_password_equal)
 		return
-	current_password	= hash('sha512', hash('sha512', current_password) + public_key)
-	new_password		= hash('sha512', hash('sha512', new_password) + public_key)
+	current_password	= cs.hash('sha512', cs.hash('sha512', current_password) + cs.public_key)
+	new_password		= cs.hash('sha512', cs.hash('sha512', new_password) + cs.public_key)
 	$.ajax(
-		base_url + '/api/System/user/change_password',
+		cs.base_url + '/api/System/user/change_password',
 		{
 			cache	: false,
 			data	: {
-				verify_hash		: hash('sha224', current_password + session_id),
-				new_password	: xor_string(current_password, new_password)
+				verify_hash		: cs.hash('sha224', current_password + session_id),
+				new_password	: cs.xor_string(current_password, new_password)
 			},
 			type	: 'post',
 			success	: (result) ->
@@ -373,7 +375,7 @@ w.change_password			= (current_password, new_password) ->
 					alert(result)
 			error	: (xhr) ->
 				if xhr.responseText
-					alert(json_decode(xhr.responseText).error_description)
+					alert(cs.json_decode(xhr.responseText).error_description)
 				else
 					alert(L.password_changing_connection_error)
 		}
@@ -383,7 +385,7 @@ w.change_password			= (current_password, new_password) ->
  *
  * @param item
 ###
-w.block_switch_textarea		= (item) ->
+cs.block_switch_textarea		= (item) ->
 	$('#cs-block-content-html, #cs-block-content-raw-html').hide()
 	switch $(item).val()
 		when 'html' then $('#cs-block-content-html').show()
@@ -394,13 +396,13 @@ w.block_switch_textarea		= (item) ->
  *
  * @param {string} str
 ###
-w.base64_encode				= (str) -> window.btoa(str)
+cs.base64_encode				= (str) -> window.btoa(str)
 ###*
  * Encodes data with MIME base64
  *
  * @param {string} str
 ###
-w.base64_decode				= (str) -> window.atob(str)
+cs.base64_decode				= (str) -> window.atob(str)
 ###*
  * Bitwise XOR operation for 2 strings
  *
@@ -409,7 +411,7 @@ w.base64_decode				= (str) -> window.atob(str)
  *
  * @return {string}
 ###
-w.xor_string				= (string1, string2) ->
+cs.xor_string				= (string1, string2) ->
 	len1	= string1.length
 	len2	= string2.length
 	if len2 > len1
@@ -424,8 +426,8 @@ w.xor_string				= (string1, string2) ->
  * @param {function[]}	functions
  * @param {int}			timeout
 ###
-w.async_call				= (functions, timeout) ->
-	timeout	= timeout || 0;
+cs.async_call				= (functions, timeout) ->
+	timeout	= timeout || 0
 	for own i of functions
 		setTimeout functions[i], timeout
 	return

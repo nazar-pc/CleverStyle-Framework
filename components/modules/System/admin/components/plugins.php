@@ -257,7 +257,7 @@ if (!empty($plugins)) {
 				'exclamation',
 				[
 					'data-title'	=> $L->information_about_plugin.h::br().$L->click_to_view_details,
-					'onClick'		=> "$('#{$plugin}_readme').cs_modal('show');"
+					'onClick'		=> "$('#{$plugin}_readme').cs().modal('show');"
 				]
 			);
 			unset($uniqid);
@@ -283,7 +283,7 @@ if (!empty($plugins)) {
 				'legal',
 				[
 					'data-title'	=> $L->license.h::br().$L->click_to_view_details,
-					'onClick'		=> "$('#{$plugin}_license').cs_modal('show');"
+					'onClick'		=> "$('#{$plugin}_license').cs().modal('show');"
 				]
 			);
 		}

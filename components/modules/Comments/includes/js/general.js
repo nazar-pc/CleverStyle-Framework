@@ -6,6 +6,7 @@
  * @license		MIT License, see license.txt
  */
 $(function () {
+	var	L	= cs.Language;
 	$(document).on(
 		'click',
 		'.cs-comments-comment-write-send',
@@ -76,7 +77,7 @@ $(function () {
 	function blogs_add_comment () {
 		var textarea	= $('.cs-comments-comment-write-text');
 		$.ajax(
-			base_url + '/api/Comments',
+			cs.base_url + '/api/Comments',
 			{
 				cache		: false,
 				data		: {
@@ -101,7 +102,7 @@ $(function () {
 				},
 				error		: function (xhr) {
 					if (xhr.responseText) {
-						alert(json_decode(xhr.responseText).error_description);
+						alert(cs.json_decode(xhr.responseText).error_description);
 					} else {
 						alert(L.comment_sending_connection_error);
 					}
@@ -113,7 +114,7 @@ $(function () {
 		var textarea	= $('.cs-comments-comment-write-text'),
 			id			= textarea.data('id');
 		$.ajax(
-			base_url + '/api/Comments/' + id,
+			cs.base_url + '/api/Comments/' + id,
 			{
 				cache		: false,
 				data		: {
@@ -128,7 +129,7 @@ $(function () {
 				},
 				error		: function (xhr) {
 					if (xhr.responseText) {
-						alert(json_decode(xhr.responseText).error_description);
+						alert(cs.json_decode(xhr.responseText).error_description);
 					} else {
 						alert(L.comment_editing_connection_error);
 					}
@@ -140,7 +141,7 @@ $(function () {
 		var comment = $(this).parent('article'),
 			id		= comment.prop('id').replace('comment_', '');
 		$.ajax(
-			base_url + '/api/Comments/' + id,
+			cs.base_url + '/api/Comments/' + id,
 			{
 				cache		: false,
 				data		: {
@@ -158,7 +159,7 @@ $(function () {
 				},
 				error	: function (xhr) {
 					if (xhr.responseText) {
-						alert(json_decode(xhr.responseText).error_description);
+						alert(cs.json_decode(xhr.responseText).error_description);
 					} else {
 						alert(L.comment_deleting_connection_error);
 					}

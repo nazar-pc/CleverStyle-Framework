@@ -34,19 +34,19 @@ Index::instance()->content(
 						h::textarea(
 							$Config->core['mirrors_url'],
 							[
-							'name' => 'core[mirrors_url]'
+								'name' => 'core[mirrors_url]'
 							]
 						),
 						h::textarea(
 							$Config->core['mirrors_cookie_domain'],
 							[
-							'name' => 'core[mirrors_cookie_domain]'
+								'name' => 'core[mirrors_cookie_domain]'
 							]
 						),
 						h::textarea(
 							$Config->core['mirrors_cookie_path'],
 							[
-							'name' => 'core[mirrors_cookie_path]'
+								'name' => 'core[mirrors_cookie_path]'
 							]
 						)
 					],

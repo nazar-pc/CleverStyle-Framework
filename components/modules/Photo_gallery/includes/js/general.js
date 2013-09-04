@@ -12,11 +12,12 @@
 (function() {
 
   $(function() {
-    var add_button, images_section;
+    var L, add_button, images_section;
+    L = cs.Language;
     add_button = $('.cs-photo-gallery-add-images');
     if (add_button.length) {
-      window.uploader = file_upload(add_button, function(files) {
-        return $.ajax(base_url + '/api/Photo_gallery/images', {
+      cs.file_upload(add_button, function(files) {
+        return $.ajax(cs.base_url + '/api/Photo_gallery/images', {
           cache: false,
           data: {
             files: files,
@@ -33,7 +34,7 @@
             return location.href = location.href + '/' + result.join(',');
           },
           error: function(xhr) {
-            return alert(xhr.responseText ? json_decode(xhr.responseText).error_description : L.photo_gallery_images_addition_connection_error);
+            return alert(xhr.responseText ? cs.json_decode(xhr.responseText).error_description : L.photo_gallery_images_addition_connection_error);
           }
         });
       }, function(error) {
@@ -49,14 +50,14 @@
         return location.href = location.href + '/' + $(this).data('image');
       }).on('click', '.cs-photo-gallery-image-delete', function() {
         if (confirm(L.photo_gallery_sure_to_delete_image)) {
-          return $.ajax(base_url + '/api/Photo_gallery/images/' + $(this).data('image'), {
+          return $.ajax(cs.base_url + '/api/Photo_gallery/images/' + $(this).data('image'), {
             cache: false,
             type: 'delete',
             success: function() {
               return location.reload();
             },
             error: function(xhr) {
-              return alert(xhr.responseText ? json_decode(xhr.responseText).error_description : L.photo_gallery_image_deletion_connection_error);
+              return alert(xhr.responseText ? cs.json_decode(xhr.responseText).error_description : L.photo_gallery_image_deletion_connection_error);
             }
           });
         }

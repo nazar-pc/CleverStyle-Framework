@@ -293,7 +293,7 @@ class Index {
 				$Page->mainmenu .= h::a(
 					mb_substr($L->debug, 0, 1),
 					[
-						 'onClick'	=> 'debug_window();',
+						 'onClick'	=> 'cs.debug_window();',
 						 'title'	=> $L->debug
 					]
 				);
@@ -486,28 +486,33 @@ class Index {
 			$Page	= Page::instance();
 			$User	= User::instance();
 			$Page->js(
-				'var	base_url = "'.$Config->base_url()."\",\n".
-				'	current_base_url = "'.$Config->base_url().'/'.($this->admin ? 'admin/' : '').MODULE."\",\n".
-				'	public_key = "'.Core::instance()->public_key."\",\n".
-				($User->guest() ?
-					'	rules_text = "'.get_core_ml_text('rules')."\",\n"
-				: '').
-				'	module = "'.MODULE."\",\n".
-				'	in_admin = '.(int)$this->admin.",\n".
-				'	is_admin = '.(int)$User->admin().",\n".
-				'	is_user = '.(int)$User->user().",\n".
-				'	is_guest = '.(int)$User->guest().",\n".
-				'	debug = '.(int)DEBUG.",\n".
-				'	cookie_prefix = "'.$Config->core['cookie_prefix']."\",\n".
-				'	cookie_domain = "'.$Config->core['cookie_domain']."\",\n".
-				'	cookie_path = "'.$Config->core['cookie_path']."\",\n".
-				'	protocol = "'.$Config->server['protocol']."\",\n".
-				'	route = '._json_encode($Config->route).';',
+				'window.cs	= '._json_encode([
+					'base_url'			=> $Config->base_url(),
+					'current_base_url'	=> $Config->base_url().'/'.($this->admin ? 'admin/' : '').MODULE,
+					'public_key'		=> Core::instance()->public_key,
+					'module'			=> MODULE,
+					'in_admin'			=> (int)$this->admin,
+					'is_admin'			=> (int)$User->admin(),
+					'is_user'			=> (int)$User->user(),
+					'is_guest'			=> (int)$User->guest(),
+					'debug'				=> (int)$User->guest(),
+					'cookie_prefix'		=> $Config->core['cookie_prefix'],
+					'cookie_domain'		=> $Config->core['cookie_domain'],
+					'cookie_path'		=> $Config->core['cookie_path'],
+					'protocol'			=> $Config->server['protocol'],
+					'route'				=> $Config->route
+				]).';',
 				'code'
 			);
+			if ($User->guest()) {
+				$Page->js(
+					'cs.rules_text = '._json_encode(get_core_ml_text('rules')).';',
+					'code'
+				);
+			}
 			if (!$Config->core['cache_compress_js_css']) {
 				$Page->js(
-					'var	L = '.Language::instance()->get_json().';',
+					'cs.Language = '.Language::instance()->get_json().';',
 					'code'
 				);
 			}

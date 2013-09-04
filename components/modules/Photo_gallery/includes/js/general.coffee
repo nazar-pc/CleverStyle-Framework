@@ -6,13 +6,14 @@
  * @license		MIT License, see license.txt
 ###
 $ ->
+	L				= cs.Language
 	add_button		= $('.cs-photo-gallery-add-images')
 	if add_button.length
-		window.uploader		= file_upload(
+		cs.file_upload(
 			add_button
 			(files) ->
 				$.ajax(
-					base_url + '/api/Photo_gallery/images',
+					cs.base_url + '/api/Photo_gallery/images',
 					cache	: false
 					data	:
 						files	: files
@@ -25,7 +26,7 @@ $ ->
 							alert L.photo_gallery_some_images_not_supported
 						location.href	= location.href + '/' + result.join(',')
 					error	: (xhr) ->
-						alert if xhr.responseText then json_decode(xhr.responseText).error_description else L.photo_gallery_images_addition_connection_error
+						alert if xhr.responseText then cs.json_decode(xhr.responseText).error_description else L.photo_gallery_images_addition_connection_error
 				)
 			(error) ->
 				alert error
@@ -47,13 +48,13 @@ $ ->
 			->
 				if confirm L.photo_gallery_sure_to_delete_image
 					$.ajax(
-						base_url + '/api/Photo_gallery/images/' + $(this).data('image'),
+						cs.base_url + '/api/Photo_gallery/images/' + $(this).data('image'),
 						cache	: false
 						type	: 'delete'
 						success	: () ->
 							location.reload()
 						error	: (xhr) ->
-							alert if xhr.responseText then json_decode(xhr.responseText).error_description else L.photo_gallery_image_deletion_connection_error
+							alert if xhr.responseText then cs.json_decode(xhr.responseText).error_description else L.photo_gallery_image_deletion_connection_error
 					)
 		)
 	$('.cs-photo-gallery-delete-image-checkbox').change ->

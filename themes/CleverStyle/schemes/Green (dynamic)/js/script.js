@@ -6,7 +6,7 @@
  * @license		MIT License, see license.txt
  */
 $(function (){
-	$('body').append([
+	$('body').append(
 		$('<div class="cs-loading"></div>').append([
 			'<div class="cs-n1"></div>',
 			'<div class="cs-n2"></div>',
@@ -17,15 +17,15 @@ $(function (){
 			'<div class="cs-n7"></div>'
 		]),
 		'<div class="cs-header-zone"></div>'
-	]);
-	var header_visible		= getcookie('header_visible'),
+	);
+	var header_visible		= cs.getcookie('header_visible'),
 		header_elements		= $('body > header > *'),
 		body				= $('#body'),
 		header_move_allow	= true,
 		header_offset		= 125,
 		header_delay		= 250,
 		allow_enter			= false;
-	if (getcookie('header_visible') == 'hide') {
+	if (cs.getcookie('header_visible') == 'hide') {
 		header_elements.css('margin-top', '-='+header_offset+'px');
 		body.css('margin-top', '-='+header_offset+'px');
 	} else {
@@ -43,7 +43,7 @@ $(function (){
 				header_move_allow = false;
 				header_elements.animate({'marginTop': '+='+header_offset+'px'}, header_delay, 'swing', function () {
 					header_visible = 'show';
-					setcookie('header_visible', header_visible);
+					cs.setcookie('header_visible', header_visible);
 					header_move_allow = true;
 				});
 				body.animate({'marginTop': '+='+header_offset+'px'}, header_delay);
@@ -56,7 +56,7 @@ $(function (){
 				header_move_allow = false;
 				header_elements.animate({'marginTop': '-='+header_offset+'px'}, header_delay, 'swing', function () {
 					header_visible = 'hide';
-					setcookie('header_visible', header_visible);
+					cs.setcookie('header_visible', header_visible);
 					header_move_allow = true;
 				});
 				body.animate({'marginTop': '-='+header_offset+'px'}, header_delay);

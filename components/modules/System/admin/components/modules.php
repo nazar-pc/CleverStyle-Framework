@@ -589,7 +589,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 				'link',
 				[
 					'data-title'	=> $L->api_exists.h::br().(file_exists($file) ? $L->click_to_view_details : ''),
-					'onClick'		=> "$('#{$module}_api').cs_modal('show');"
+					'onClick'		=> "$('#{$module}_api').cs().modal('show');"
 				]
 			);
 			unset($tag, $file);
@@ -616,7 +616,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 				'exclamation',
 				[
 					'data-title'	=> $L->information_about_module.h::br().$L->click_to_view_details,
-					'onClick'		=> "$('#{$module}_readme').cs_modal('show');"
+					'onClick'		=> "$('#{$module}_readme').cs().modal('show');"
 				]
 			);
 			unset($uniqid);
@@ -642,7 +642,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 				'legal',
 				[
 					'data-title'	=> $L->license.h::br().$L->click_to_view_details,
-					'onClick'		=> "$('#{$module}_license').cs_modal('show');"
+					'onClick'		=> "$('#{$module}_license').cs().modal('show');"
 				]
 			);
 		}

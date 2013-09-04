@@ -5,9 +5,9 @@
  * @license		MIT License, see license.txt
 ###
 $ ->
-	async_call [
+	cs.async_call [
 		->
-			window.session_id	= getcookie('session')
+			window.session_id	= cs.getcookie('session')
 			$.ajaxSetup
 				type	: 'post'
 				data	:
@@ -15,9 +15,9 @@ $ ->
 		->
 			$('form:not(.cs-no-ui)').addClass('uk-form')
 		->
-			$(':radio:not(.cs-no-ui)').cs_radio()
+			$('input:radio:not(.cs-no-ui)').cs().radio()
 		->
-			$(':checkbox:not(.cs-no-ui)').cs_checkbox()
+			$('input:checkbox:not(.cs-no-ui)').cs().checkbox()
 		->
 			$('.cs-table').addClass('uk-table uk-table-condensed uk-table-hover')
 		->
@@ -25,7 +25,7 @@ $ ->
 				.addClass('uk-button')
 				.disableSelection()
 		->
-			$('.cs-dialog').cs_modal()
+			$('.cs-dialog').cs().modal()
 		->
 			$('textarea:not(.cs-no-ui)')
 				.not('.cs-no-resize, .EDITOR, .SIMPLE_EDITOR')
@@ -33,9 +33,9 @@ $ ->
 				.autosize
 					append	: "\n"
 		->
-			$(".cs-info").cs_tooltip()
+			$('.cs-info').cs().tooltip()
 		->
-			$('.cs-tabs').cs_tabs()
+			$('.cs-tabs').cs().tabs()
 		->
 			$('.cs-header-login-slide').click ->
 				$('.cs-header-guest-form').slideUp()
@@ -56,40 +56,56 @@ $ ->
 				if event.which == 13
 					$('.cs-header-registration-process').click()
 			$('.cs-header-login-process').click ->
-				login($('.cs-header-login-email').val(), $('.cs-header-user-password').val())
+				cs.login($('.cs-header-login-email').val(), $('.cs-header-user-password').val())
 			$('.cs-header-logout-process').click ->
-				logout()
+				cs.logout()
 			$('.cs-show-password').click ->
 				$this	= $(this)
-				pass_input = $this.parent().next().children('input')
+				pass_input = $this
+					.parent()
+						.next()
+							.children('input')
 				if pass_input.prop('type') == 'password'
 					pass_input.prop('type', 'text')
-					$this.addClass('uk-icon-unlock').removeClass('uk-icon-lock')
+					$this
+						.addClass('uk-icon-unlock')
+						.removeClass('uk-icon-lock')
 				else
 					pass_input.prop('type', 'password')
-					$this.addClass('uk-icon-lock').removeClass('uk-icon-unlock')
+					$this
+						.addClass('uk-icon-lock')
+						.removeClass('uk-icon-unlock')
 			$('#current_password').click ->
 				$this		= $(this)
 				password	= $('.cs-profile-current-password')
 				if password.prop('type') == 'password'
 					password.prop('type', 'text')
-					$this.addClass('uk-icon-unlock').removeClass('uk-icon-lock')
+					$this
+						.addClass('uk-icon-unlock')
+						.removeClass('uk-icon-lock')
 				else
 					password.prop('type', 'password')
-					$this.addClass('uk-icon-lock').removeClass('uk-icon-unlock')
+					$this
+						.addClass('uk-icon-lock')
+						.removeClass('uk-icon-unlock')
 			$('#new_password').click ->
 				$this		= $(this)
 				password	= $('.cs-profile-new-password')
 				if password.prop('type') == 'password'
 					password.prop('type', 'text')
-					$this.addClass('uk-icon-unlock').removeClass('uk-icon-lock')
+					$this
+						.addClass('uk-icon-unlock')
+						.removeClass('uk-icon-lock')
 				else
 					password.prop('type', 'password')
-					$this.addClass('uk-icon-lock').removeClass('uk-icon-unlock')
+					$this
+						.addClass('uk-icon-lock')
+						.removeClass('uk-icon-unlock')
 			$('.cs-header-registration-process').click ->
+				L		= cs.Language
 				modal	= $('<div title="' + L.rules_agree + '"><div>' + rules_text + '<p class="cs-right"><button class="cs-registration-continue uk-button uk-button-primary">' + L.yes + '</button></p></div></div>')
 					.appendTo('body')
-					.cs_modal('show')
+					.cs().modal('show')
 					.on(
 						'uk.modal.hide'
 						->
@@ -98,17 +114,17 @@ $ ->
 				modal
 					.find('.cs-registration-continue')
 					.click ->
-						modal.cs_modal('close').remove()
-						registration $('.cs-header-registration-email').val()
+						modal.cs().modal('close').remove()
+						cs.registration $('.cs-header-registration-email').val()
 			$('.cs-header-restore-password-process').click ->
-				restore_password $('.cs-header-restore-password-email').val()
+				cs.restore_password $('.cs-header-restore-password-email').val()
 			$('.cs-profile-change-password').click ->
-				change_password $('.cs-profile-current-password').val(), $('.cs-profile-new-password').val()
+				cs.change_password $('.cs-profile-current-password').val(), $('.cs-profile-new-password').val()
 			$('.cs-header-back').click ->
 				$('.cs-header-guest-form').slideDown()
 				$('.cs-header-registration-form, .cs-header-login-form, .cs-header-restore-password-form').slideUp()
 		->
-			if in_admin
+			if cs.in_admin
 				$('.cs-reload-button').click ->
 					location.reload()
 				$('#change_theme, #change_color_scheme, #change_language').click ->
@@ -122,7 +138,7 @@ $ ->
 						.find("option[value='" + $('#change_language').val() + "']")
 						.prop('selected', true)
 				$('#cs-system-license-open').click ->
-					$('#cs-system-license').cs_modal('show')
+					$('#cs-system-license').cs().modal('show')
 				$('.cs-permissions-invert').click ->
 					$(this)
 						.parentsUntil('div')
@@ -168,7 +184,7 @@ $ ->
 									found.val() + ',' + id.substring(6, id.length-1)
 								)
 						$.ajax
-							url		: current_base_url + '/' + route[0] + '/' + route[1] + '/search_users'
+							url		: cs.current_base_url + '/' + cs.route[0] + '/' + cs.route[1] + '/search_users'
 							data	:
 								found_users		: $('#cs-block-users-search-found').val(),
 								permission		: $(this).attr('permission'),
@@ -178,7 +194,7 @@ $ ->
 								$('#block_users_search_results')
 									.html(result)
 									.find(':radio')
-									.cs_radio()
+									.cs().radio()
 									.change ->
 										$(this)
 											.parentsUntil('tr')
@@ -194,7 +210,7 @@ $ ->
 						cancel		: ':first'
 						stop		: ->
 							$('#cs-blocks-position').val(
-								json_encode(
+								cs.json_encode(
 									top			: $('#cs-top-blocks-items').sortable('toArray')
 									left		: $('#cs-left-blocks-items').sortable('toArray')
 									floating	: $('#cs-floating-blocks-items').sortable('toArray')
@@ -219,7 +235,7 @@ $ ->
 								.removeClass('uk-alert-warning')
 								.addClass('uk-alert-success')
 							$('#cs-user-groups').val(
-								json_encode(
+								cs.json_encode(
 									selected.sortable('toArray')
 								)
 							)
@@ -227,14 +243,14 @@ $ ->
 					.find('select')
 					.change ->
 						$('#auto_translation_engine_settings').html(
-							base64_decode(
+							cs.base64_decode(
 								$(this).children(':selected').data('settings')
 							)
 						)
 		->
-			if cookie = getcookie('setcookie')
+			if cookie = cs.getcookie('setcookie')
 				for own i of cookie
 					$.post(cookie[i])
-				setcookie('setcookie', '')
+				cs.setcookie('setcookie', '')
 	]
 	return

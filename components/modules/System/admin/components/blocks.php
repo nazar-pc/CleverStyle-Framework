@@ -107,7 +107,7 @@ if (isset($rc[2])) {
 									[
 										'name'		=> 'block[type]',
 										'size'		=> 5,
-										'onchange'	=> 'block_switch_textarea(this)'
+										'onchange'	=> 'cs.block_switch_textarea(this)'
 									]
 								),
 								h::input([
@@ -485,7 +485,7 @@ if ($form) {
 			h::{'li.uk-button-primary'}(
 				$L->{"{$position}_blocks"},
 				[
-					'onClick'	=> "blocks_toggle('$position');"
+					'onClick'	=> "cs.blocks_toggle('$position');"
 				]
 			).
 			$content,

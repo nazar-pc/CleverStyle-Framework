@@ -9,10 +9,10 @@
 
 
 (function() {
-  var value_by_name, w,
+  var L, value_by_name,
     __hasProp = {}.hasOwnProperty;
 
-  w = window;
+  L = cs.Language;
 
   /**
    * Get value by name
@@ -46,8 +46,8 @@
   */
 
 
-  w.debug_window = function() {
-    return $('#cs-debug').cs_modal('show');
+  cs.debug_window = function() {
+    return $('#cs-debug').cs().modal('show');
   };
 
   /**
@@ -58,7 +58,7 @@
   */
 
 
-  w.admin_cache = function(element, action) {
+  cs.admin_cache = function(element, action) {
     $(element).html('<div class="uk-progress uk-progress-striped uk-active"><div class="uk-progress-bar" style="width:100%"></div></div>');
     $.ajax({
       url: action,
@@ -76,11 +76,11 @@
   */
 
 
-  w.db_test = function(url, added) {
+  cs.db_test = function(url, added) {
     var db, db_test;
     db_test = $('#cs-db-test');
     db_test.find('h3 + *').replaceWith('<div class="uk-progress uk-progress-striped uk-active"><div class="uk-progress-bar" style="width:100%"></div></div>');
-    db_test.cs_modal('show');
+    db_test.cs().modal('show');
     if (added) {
       return $.ajax({
         url: url,
@@ -92,7 +92,7 @@
         }
       });
     } else {
-      db = json_encode({
+      db = cs.json_encode({
         type: value_by_name('db[type]'),
         name: value_by_name('db[name]'),
         user: value_by_name('db[user]'),
@@ -123,11 +123,11 @@
   */
 
 
-  w.storage_test = function(url, added) {
+  cs.storage_test = function(url, added) {
     var storage, storage_test;
     storage_test = $('#cs-storage-test');
     storage_test.find('h3 + *').replaceWith('<div class="uk-progress uk-progress-striped uk-active"><div class="uk-progress-bar" style="width:100%"></div></div>');
-    storage_test.cs_modal('show');
+    storage_test.cs().modal('show');
     if (added) {
       return $.ajax({
         url: url,
@@ -139,7 +139,7 @@
         }
       });
     } else {
-      storage = json_encode({
+      storage = cs.json_encode({
         url: value_by_name('storage[url]'),
         host: value_by_name('storage[host]'),
         connection: value_by_name('storage[connection]'),
@@ -168,7 +168,7 @@
   */
 
 
-  w.blocks_toggle = function(position) {
+  cs.blocks_toggle = function(position) {
     var container, items;
     container = $("#cs-" + position + "-blocks-items");
     items = container.children('li:not(:first)');
@@ -190,7 +190,7 @@
   */
 
 
-  w.json_encode = function(obj) {
+  cs.json_encode = function(obj) {
     return $.toJSON(obj);
   };
 
@@ -202,7 +202,7 @@
   */
 
 
-  w.json_decode = function(str) {
+  cs.json_decode = function(str) {
     return $.secureEvalJSON(str);
   };
 
@@ -215,7 +215,7 @@
   */
 
 
-  w.hash = function(algo, data) {
+  cs.hash = function(algo, data) {
     algo = (function() {
       switch (algo) {
         case 'sha1':
@@ -246,18 +246,18 @@
   */
 
 
-  w.setcookie = function(name, value, expires) {
+  cs.setcookie = function(name, value, expires) {
     var date;
-    name = cookie_prefix + name;
+    name = cs.cookie_prefix + name;
     if (expires) {
       date = new Date();
       date.setTime(expires * 1000);
       expires = date;
     }
     return !!$.cookie(name, value({
-      path: cookie_path,
-      domain: cookie_domain,
-      secure: protocol === 'https'
+      path: cs.cookie_path,
+      domain: cs.cookie_domain,
+      secure: cs.protocol === 'https'
     }));
   };
 
@@ -270,7 +270,8 @@
   */
 
 
-  w.getcookie = function(name) {
+  cs.getcookie = function(name) {
+    name = cs.cookie_prefix + name;
     return $.cookie(name);
   };
 
@@ -282,21 +283,21 @@
   */
 
 
-  w.login = function(login, password) {
+  cs.login = function(login, password) {
     login = login.toLowerCase();
-    return $.ajax(base_url + '/api/System/user/login', {
+    return $.ajax(cs.base_url + '/api/System/user/login', {
       cache: false,
       data: {
-        login: hash('sha224', login)
+        login: cs.hash('sha224', login)
       },
       type: 'post',
       success: function(random_hash) {
         if (random_hash.length === 56) {
-          return $.ajax(base_url + '/api/user/login', {
+          return $.ajax(cs.base_url + '/api/user/login', {
             cache: false,
             data: {
-              login: hash('sha224', login),
-              auth_hash: hash('sha512', hash('sha224', login) + hash('sha512', hash('sha512', password) + public_key) + navigator.userAgent + random_hash)
+              login: cs.hash('sha224', login),
+              auth_hash: cs.hash('sha512', cs.hash('sha224', login) + cs.hash('sha512', cs.hash('sha512', password) + cs.public_key) + navigator.userAgent + random_hash)
             },
             type: 'post',
             success: function(result) {
@@ -306,7 +307,7 @@
             },
             error: function(xhr) {
               if (xhr.responseText) {
-                return alert(json_decode(xhr.responseText).error_description);
+                return alert(cs.json_decode(xhr.responseText).error_description);
               } else {
                 return alert(L.auth_connection_error);
               }
@@ -318,7 +319,7 @@
       },
       error: function(xhr) {
         if (xhr.responseText) {
-          return alert(json_decode(xhr.responseText).error_description);
+          return alert(cs.json_decode(xhr.responseText).error_description);
         } else {
           return alert(L.auth_connection_error);
         }
@@ -331,8 +332,8 @@
   */
 
 
-  w.logout = function() {
-    return $.ajax(base_url + '/api/System/user/logout', {
+  cs.logout = function() {
+    return $.ajax(cs.base_url + '/api/System/user/logout', {
       cache: false,
       data: {
         logout: true
@@ -343,7 +344,7 @@
       },
       error: function(xhr) {
         if (xhr.responseText) {
-          return alert(json_decode(xhr.responseText).error_description);
+          return alert(cs.json_decode(xhr.responseText).error_description);
         } else {
           return alert(L.auth_connection_error);
         }
@@ -358,13 +359,13 @@
   */
 
 
-  w.registration = function(email) {
+  cs.registration = function(email) {
     if (!email) {
       alert(L.please_type_your_email);
       return;
     }
     email = email.toLowerCase();
-    return $.ajax(base_url + '/api/System/user/registration', {
+    return $.ajax(cs.base_url + '/api/System/user/registration', {
       cache: false,
       data: {
         email: email
@@ -372,18 +373,18 @@
       type: 'post',
       success: function(result) {
         if (result === 'reg_confirmation') {
-          return $('<div>' + L.reg_confirmation + '</div>').appendTo('body').cs_modal('show').on('uk.modal.hide', function() {
+          return $('<div>' + L.reg_confirmation + '</div>').appendTo('body').cs().modal('show').on('uk.modal.hide', function() {
             return $(this).remove();
           });
         } else if (result === 'reg_success') {
-          return $('<div>' + L.reg_success + '</div>').appendTo('body').cs_modal('show').on('uk.modal.hide', function() {
+          return $('<div>' + L.reg_success + '</div>').appendTo('body').cs().modal('show').on('uk.modal.hide', function() {
             return location.reload();
           });
         }
       },
       error: function(xhr) {
         if (xhr.responseText) {
-          return alert(json_decode(xhr.responseText).error_description);
+          return alert(cs.json_decode(xhr.responseText).error_description);
         } else {
           return alert(L.reg_connection_error);
         }
@@ -398,28 +399,28 @@
   */
 
 
-  w.restore_password = function(email) {
+  cs.restore_password = function(email) {
     if (!email) {
       alert(L.please_type_your_email);
       return;
     }
     email = email.toLowerCase();
-    return $.ajax(base_url + '/api/System/user/restore_password', {
+    return $.ajax(cs.base_url + '/api/System/user/restore_password', {
       cache: false,
       data: {
-        email: hash('sha224', email)
+        email: cs.hash('sha224', email)
       },
       type: 'post',
       success: function(result) {
         if (result === 'OK') {
-          return $('<div>' + L.restore_password_confirmation + '</div>').appendTo('body').cs_modal('show').on('uk.modal.hide', function() {
+          return $('<div>' + L.restore_password_confirmation + '</div>').appendTo('body').cs().modal('show').on('uk.modal.hide', function() {
             return $(this).remove();
           });
         }
       },
       error: function(xhr) {
         if (xhr.responseText) {
-          return alert(json_decode(xhr.responseText).error_description);
+          return alert(cs.json_decode(xhr.responseText).error_description);
         } else {
           return alert(L.reg_connection_error);
         }
@@ -435,7 +436,7 @@
   */
 
 
-  w.change_password = function(current_password, new_password) {
+  cs.change_password = function(current_password, new_password) {
     if (!current_password) {
       alert(L.please_type_current_password);
       return;
@@ -446,13 +447,13 @@
       alert(L.current_new_password_equal);
       return;
     }
-    current_password = hash('sha512', hash('sha512', current_password) + public_key);
-    new_password = hash('sha512', hash('sha512', new_password) + public_key);
-    return $.ajax(base_url + '/api/System/user/change_password', {
+    current_password = cs.hash('sha512', cs.hash('sha512', current_password) + cs.public_key);
+    new_password = cs.hash('sha512', cs.hash('sha512', new_password) + cs.public_key);
+    return $.ajax(cs.base_url + '/api/System/user/change_password', {
       cache: false,
       data: {
-        verify_hash: hash('sha224', current_password + session_id),
-        new_password: xor_string(current_password, new_password)
+        verify_hash: cs.hash('sha224', current_password + session_id),
+        new_password: cs.xor_string(current_password, new_password)
       },
       type: 'post',
       success: function(result) {
@@ -464,7 +465,7 @@
       },
       error: function(xhr) {
         if (xhr.responseText) {
-          return alert(json_decode(xhr.responseText).error_description);
+          return alert(cs.json_decode(xhr.responseText).error_description);
         } else {
           return alert(L.password_changing_connection_error);
         }
@@ -479,7 +480,7 @@
   */
 
 
-  w.block_switch_textarea = function(item) {
+  cs.block_switch_textarea = function(item) {
     $('#cs-block-content-html, #cs-block-content-raw-html').hide();
     switch ($(item).val()) {
       case 'html':
@@ -497,7 +498,7 @@
   */
 
 
-  w.base64_encode = function(str) {
+  cs.base64_encode = function(str) {
     return window.btoa(str);
   };
 
@@ -508,7 +509,7 @@
   */
 
 
-  w.base64_decode = function(str) {
+  cs.base64_decode = function(str) {
     return window.atob(str);
   };
 
@@ -522,7 +523,7 @@
   */
 
 
-  w.xor_string = function(string1, string2) {
+  cs.xor_string = function(string1, string2) {
     var j, len1, len2, pos, _i, _ref;
     len1 = string1.length;
     len2 = string2.length;
@@ -544,7 +545,7 @@
   */
 
 
-  w.async_call = function(functions, timeout) {
+  cs.async_call = function(functions, timeout) {
     var i;
     timeout = timeout || 0;
     for (i in functions) {

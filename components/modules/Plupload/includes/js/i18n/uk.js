@@ -1,5 +1,5 @@
 // Russian
-window.L.clang == 'uk' && plupload.addI18n({
+cs.Language.clang == 'uk' && plupload.addI18n({
     'Select files' : 'Оберіть файли',
     'Add files to the upload queue and click the start button.' : 'Додайте файли в чергу і натисніть "Завантажити файли".',
     'Filename' : 'Назва файлу',

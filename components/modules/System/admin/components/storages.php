@@ -93,7 +93,7 @@ if (isset($rc[2])) {
 				h::button(
 					$L->test_connection,
 					[
-						'onMouseDown'	=> "storage_test('$a->action/test');"
+						'onMouseDown'	=> "cs.storage_test('$a->action/test');"
 					]
 				)
 			);
@@ -173,7 +173,7 @@ if (isset($rc[2])) {
 					h::{'a.cs-button-compact'}(
 						h::icon('signal'),
 						[
-							'onMouseDown'	=> "storage_test('$a->action/test/$i', true);",
+							'onMouseDown'	=> "cs.storage_test('$a->action/test/$i', true);",
 							'data-title'	=> $L->test_connection
 						]
 					) : '-'),

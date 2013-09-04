@@ -22,11 +22,11 @@ var L = {},
 	cookie_path = '',
 	protocol = '',
 	route = [];
-debug_window();
-admin_cache();
-db_test();
-storage_test();
-blocks_toggle('');
-json_decode();
-block_switch_textarea('');
-base64_encode();
+cs.debug_window();
+cs.admin_cache();
+cs.db_test();
+cs.storage_test();
+cs.blocks_toggle('');
+cs.json_decode();
+cs.block_switch_textarea('');
+cs.base64_encode();

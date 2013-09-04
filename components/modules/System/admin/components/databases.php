@@ -151,7 +151,7 @@ if (isset($rc[2])) {
 				h::{'p button'}(
 					$L->test_connection,
 					[
-						'onMouseDown'	=> "db_test('$a->action/test');"
+						'onMouseDown'	=> "cs.db_test('$a->action/test');"
 					]
 				)
 			);
@@ -268,7 +268,7 @@ if (isset($rc[2])) {
 							[
 								h::icon('signal'),
 								[
-									'onMouseDown'	=> "db_test('$a->action/test/$i', true);",
+									'onMouseDown'	=> "cs.db_test('$a->action/test/$i', true);",
 									'data-title'	=> $L->test_connection
 								]
 							]
@@ -310,7 +310,7 @@ if (isset($rc[2])) {
 								[
 									h::icon('signal'),
 									[
-										'onMouseDown'	=> "db_test('$a->action/test/$i/$m', true);",
+										'onMouseDown'	=> "cs.db_test('$a->action/test/$i/$m', true);",
 										'data-title'	=> $L->test_connection
 									]
 								]
