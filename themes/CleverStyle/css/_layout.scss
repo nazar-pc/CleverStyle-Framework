@@ -28,7 +28,9 @@ body {
 		}
 		footer {
 			@extend header;
-			text-decoration : underline;
+			a {
+				text-decoration : underline;
+			}
 
 			div {
 				&:first-child {
