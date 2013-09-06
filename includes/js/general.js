@@ -22,6 +22,29 @@
           }
         });
       }, function() {
+        var L, key, translation;
+        L = cs.Language;
+        for (key in L) {
+          if (!__hasProp.call(L, key)) continue;
+          translation = L[key];
+          L[key] = (function(translation) {
+            var result;
+            result = function() {
+              return vsprintf(translation, Array.prototype.slice.call(arguments));
+            };
+            result.toString = function() {
+              return translation;
+            };
+            return result;
+          })(translation);
+        }
+        L.get = function(key) {
+          return L[key].toString();
+        };
+        L.format = function(key) {
+          return L[key](arguments[1]);
+        };
+      }, function() {
         return $('form:not(.cs-no-ui)').addClass('uk-form');
       }, function() {
         return $('input:radio:not(.cs-no-ui)').cs().radio();
@@ -112,9 +135,9 @@
         $('.cs-header-registration-process').click(function() {
           var L, modal;
           L = cs.Language;
-          modal = $('<div title="' + L.rules_agree + '"><div>' + rules_text + '<p class="cs-right"><button class="cs-registration-continue uk-button uk-button-primary">' + L.yes + '</button></p></div></div>').appendTo('body').cs().modal('show').on('uk.modal.hide', function() {
+          modal = $(("<div title=\"" + L.rules_agree + "\">\n	<div>\n		" + cs.rules_text + "\n		<p class=\"cs-right\">\n			<button class=\"cs-registration-continue uk-button uk-button-primary\">" + L.yes + "</button>\n		</p>\n	</div>\n</div>").appendTo('body').cs().modal('show').on('uk.modal.hide', function() {
             return $(this).remove();
-          });
+          }));
           return modal.find('.cs-registration-continue').click(function() {
             modal.cs().modal('close').remove();
             return cs.registration($('.cs-header-registration-email').val());
@@ -179,7 +202,7 @@
               return found.val(found.val() + ',' + id.substring(6, id.length - 1));
             });
             return $.ajax({
-              url: cs.current_base_url + '/' + cs.route[0] + '/' + cs.route[1] + '/search_users',
+              url: "" + cs.current_base_url + "/" + cs.route[0] + "/" + cs.route[1] + "/search_users",
               data: {
                 found_users: $('#cs-block-users-search-found').val(),
                 permission: $(this).attr('permission'),

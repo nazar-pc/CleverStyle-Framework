@@ -17,7 +17,7 @@
     add_button = $('.cs-photo-gallery-add-images');
     if (add_button.length) {
       cs.file_upload(add_button, function(files) {
-        return $.ajax(cs.base_url + '/api/Photo_gallery/images', {
+        return $.ajax("" + cs.base_url + "/api/Photo_gallery/images", {
           cache: false,
           data: {
             files: files,

@@ -21,7 +21,7 @@ cs.file_upload	= (button, success, error, progress, multi) ->
 	files				= []
 	uploader			= new plupload.Uploader
 		runtimes		: 'html5'
-		max_file_size	: cs.plupload.max_file_size ? null
+		max_file_size	: cs.plupload?.max_file_size ? null
 		url				: '/Plupload'
 		multi_selection	: multi
 		multipart		: true

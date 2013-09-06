@@ -13,7 +13,7 @@ $ ->
 			add_button
 			(files) ->
 				$.ajax(
-					cs.base_url + '/api/Photo_gallery/images',
+					"#{cs.base_url}/api/Photo_gallery/images",
 					cache	: false
 					data	:
 						files	: files
@@ -41,7 +41,7 @@ $ ->
 			'click',
 			'.cs-photo-gallery-image-edit'
 			->
-				location.href	= location.href + '/' + $(this).data 'image'
+				location.href	= location.href + '/' + $(this).data('image')
 		).on(
 			'click',
 			'.cs-photo-gallery-image-delete'

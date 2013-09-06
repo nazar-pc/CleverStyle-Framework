@@ -307,7 +307,7 @@ class Language {
 	 * Allows to use formatted strings in translations
 	 *
 	 * @param string	$name
-	 * @param array		$arguments
+	 * @param string[]	$arguments
 	 *
 	 * @return string
 	 */

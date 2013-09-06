@@ -22,7 +22,7 @@ value_by_name				= (name) ->
  *
  * @return {string}
 ###
-String.prototype.replaceAt	= (index, symbol) ->
+String::replaceAt			= (index, symbol) ->
 	this.substr(0, index) + symbol + this.substr(index + symbol.length)
 ###*
  * Debug window opening
@@ -35,7 +35,11 @@ cs.debug_window				= -> $('#cs-debug').cs().modal('show')
  * @param {string}	action
 ###
 cs.admin_cache				= (element, action) ->
-	$(element).html('<div class="uk-progress uk-progress-striped uk-active"><div class="uk-progress-bar" style="width:100%"></div></div>')
+	$(element).html """
+		<div class="uk-progress uk-progress-striped uk-active">
+			<div class="uk-progress-bar" style="width:100%"></div>
+		</div>
+	"""
 	$.ajax
 		url		: action,
 		success	: (result) ->
@@ -49,7 +53,11 @@ cs.admin_cache				= (element, action) ->
 ###
 cs.db_test					= (url, added) ->
 	db_test	= $('#cs-db-test')
-	db_test.find('h3 + *').replaceWith('<div class="uk-progress uk-progress-striped uk-active"><div class="uk-progress-bar" style="width:100%"></div></div>')
+	db_test.find('h3 + *').replaceWith """
+		<div class="uk-progress uk-progress-striped uk-active">
+			<div class="uk-progress-bar" style="width:100%"></div>
+		</div>
+	"""
 	db_test.cs().modal('show')
 	if added
 		$.ajax({
@@ -91,7 +99,11 @@ cs.storage_test				= (url, added) ->
 	storage_test	= $('#cs-storage-test')
 	storage_test
 		.find('h3 + *')
-		.replaceWith('<div class="uk-progress uk-progress-striped uk-active"><div class="uk-progress-bar" style="width:100%"></div></div>')
+		.replaceWith """
+			<div class="uk-progress uk-progress-striped uk-active">
+				<div class="uk-progress-bar" style="width:100%"></div>
+			</div>
+		"""
 	storage_test.cs().modal('show')
 	if added
 		$.ajax(
@@ -131,7 +143,7 @@ cs.storage_test				= (url, added) ->
  *
  * @param {string}	position
 ###
-cs.blocks_toggle				= (position) ->
+cs.blocks_toggle			= (position) ->
 	container	= $("#cs-#{position}-blocks-items")
 	items		= container.children('li:not(:first)')
 	if container.data('mode') == 'open'
@@ -181,7 +193,7 @@ cs.hash						= (algo, data) ->
  *
  * @return {bool}
 ###
-cs.setcookie					= (name, value, expires) ->
+cs.setcookie				= (name, value, expires) ->
 	name	= cs.cookie_prefix + name
 	if expires
 		date	= new Date()
@@ -201,7 +213,7 @@ cs.setcookie					= (name, value, expires) ->
  *
  * @return {bool|string}
 ###
-cs.getcookie					= (name) ->
+cs.getcookie				= (name) ->
 	name	= cs.cookie_prefix + name
 	$.cookie(name)
 ###*
@@ -210,7 +222,7 @@ cs.getcookie					= (name) ->
  * @param {string} login
  * @param {string} password
 ###
-cs.login						= (login, password) ->
+cs.login					= (login, password) ->
 	login	= login.toLowerCase()
 	$.ajax(
 		cs.base_url + '/api/System/user/login'
@@ -385,7 +397,7 @@ cs.change_password			= (current_password, new_password) ->
  *
  * @param item
 ###
-cs.block_switch_textarea		= (item) ->
+cs.block_switch_textarea	= (item) ->
 	$('#cs-block-content-html, #cs-block-content-raw-html').hide()
 	switch $(item).val()
 		when 'html' then $('#cs-block-content-html').show()
@@ -396,13 +408,13 @@ cs.block_switch_textarea		= (item) ->
  *
  * @param {string} str
 ###
-cs.base64_encode				= (str) -> window.btoa(str)
+cs.base64_encode			= (str) -> window.btoa(str)
 ###*
  * Encodes data with MIME base64
  *
  * @param {string} str
 ###
-cs.base64_decode				= (str) -> window.atob(str)
+cs.base64_decode			= (str) -> window.atob(str)
 ###*
  * Bitwise XOR operation for 2 strings
  *

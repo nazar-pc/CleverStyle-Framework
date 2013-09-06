@@ -4,19 +4,18 @@
  * @copyright	Copyright (c) 2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
 ###
-(($) ->
-	$.fn.cs	= ->
-		this_	= this
+do ($=jQuery) ->
+	helpers	=
 		###*
 		 * Radio buttons with UIkit
 		 *
 		 * Required DOM structure * > label > input:radio, plugin may be applied to any of these elements
 		###
-		radio		: ->
-			if !this_.length
-				return this_
+		radio			: ->
+			if !this.length
+				return this
 			collection	= []
-			this_.each ->
+			this.each ->
 				radio	= $(this)
 				if !radio.is(':radio')
 					radio	= radio.find(':radio')
@@ -51,11 +50,11 @@
 		 *
 		 * Required DOM structure * > label > input:checkbox, plugin may be applied to any of these elements
 		###
-		checkbox	: ->
-			if !this_.length
-				return this_
+		checkbox		: ->
+			if !this.length
+				return this
 			collection	= []
-			this_.each ->
+			this.each ->
 				checkbox	= $(this)
 				if !checkbox.is(':checkbox')
 					checkbox	= checkbox.find(':checkbox')
@@ -90,11 +89,11 @@
 		 *
 		 * Required DOM structure *+*, where first element contains list of tabs, and second element content of each tab, plugin must be applied to the first element
 		###
-		tabs		: ->
-			if !this_.length
-				return this_
+		tabs			: ->
+			if !this.length
+				return this
 			UI	= $.UIkit
-			this_.each ->
+			this.each ->
 				$this	= $(this)
 				content	= $this.next()
 				$this
@@ -119,10 +118,10 @@
 		 *
 		 * Required DOM structure * > label > input:radio, plugin may be applied to any of these elements
 		###
-		tooltip		: ->
-			if !this_.length
-				return this_
-			this_.tooltip
+		tooltip			: ->
+			if !this.length
+				return this
+			this.tooltip
 				html		: true
 				container	: 'body'
 				placement	: 'auto top'
@@ -151,12 +150,12 @@
 		 * Required DOM structure * > *, plugin must be applied to the root element
 		 * If child element is not present - content will be automatically wrapped with <div>
 		###
-		modal		: (mode) ->
-			if !this_.length
-				return this_
+		modal			: (mode) ->
+			if !this.length
+				return this
 			UI		= $.UIkit
 			mode	= mode || 'init'
-			this_.each ->
+			this.each ->
 				$this	= $(this)
 				if !$this.data('modal')
 					$this
@@ -184,5 +183,20 @@
 				switch mode
 					when 'show' then modal.show()
 					when 'hide' then modal.hide()
+	###*
+	 * cs helper registration or running (if no parameters specified)
+	 *
+	 * @param {string}		name
+	 * @param {function}	helper
+	###
+	$.fn.cs	= (name, helper) ->
+		if name && helper
+			helpers[name]	= helper
+			return this
+		public_helpers		= {}
+		this_				= this
+		public_helpers[key]	= (do (method) ->
+			-> method.call this_
+		) for own key, method of helpers
+		public_helpers
 	return
-)(jQuery)

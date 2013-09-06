@@ -13,6 +13,20 @@ $ ->
 				data	:
 					session	: session_id
 		->
+			L			= cs.Language
+			L[key]		= (do (translation) ->
+				result	= ->
+					vsprintf translation, Array::slice.call(arguments)
+				result.toString	= ->
+					translation
+				result
+			) for own key, translation of L
+			L.get		= (key) ->
+				L[key].toString()
+			L.format	= (key) ->
+				L[key] arguments[1]
+			return
+		->
 			$('form:not(.cs-no-ui)').addClass('uk-form')
 		->
 			$('input:radio:not(.cs-no-ui)').cs().radio()
@@ -103,7 +117,16 @@ $ ->
 						.removeClass('uk-icon-unlock')
 			$('.cs-header-registration-process').click ->
 				L		= cs.Language
-				modal	= $('<div title="' + L.rules_agree + '"><div>' + rules_text + '<p class="cs-right"><button class="cs-registration-continue uk-button uk-button-primary">' + L.yes + '</button></p></div></div>')
+				modal	= $ """
+						<div title="#{L.rules_agree}">
+							<div>
+								#{cs.rules_text}
+								<p class="cs-right">
+									<button class="cs-registration-continue uk-button uk-button-primary">#{L.yes}</button>
+								</p>
+							</div>
+						</div>
+					"""
 					.appendTo('body')
 					.cs().modal('show')
 					.on(
@@ -184,7 +207,7 @@ $ ->
 									found.val() + ',' + id.substring(6, id.length-1)
 								)
 						$.ajax
-							url		: cs.current_base_url + '/' + cs.route[0] + '/' + cs.route[1] + '/search_users'
+							url		: "#{cs.current_base_url}/#{cs.route[0]}/#{cs.route[1]}/search_users"
 							data	:
 								found_users		: $('#cs-block-users-search-found').val(),
 								permission		: $(this).attr('permission'),

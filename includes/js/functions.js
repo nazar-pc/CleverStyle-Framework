@@ -59,7 +59,7 @@
 
 
   cs.admin_cache = function(element, action) {
-    $(element).html('<div class="uk-progress uk-progress-striped uk-active"><div class="uk-progress-bar" style="width:100%"></div></div>');
+    $(element).html("<div class=\"uk-progress uk-progress-striped uk-active\">\n	<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n</div>");
     $.ajax({
       url: action,
       success: function(result) {
@@ -79,7 +79,7 @@
   cs.db_test = function(url, added) {
     var db, db_test;
     db_test = $('#cs-db-test');
-    db_test.find('h3 + *').replaceWith('<div class="uk-progress uk-progress-striped uk-active"><div class="uk-progress-bar" style="width:100%"></div></div>');
+    db_test.find('h3 + *').replaceWith("<div class=\"uk-progress uk-progress-striped uk-active\">\n	<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n</div>");
     db_test.cs().modal('show');
     if (added) {
       return $.ajax({
@@ -126,7 +126,7 @@
   cs.storage_test = function(url, added) {
     var storage, storage_test;
     storage_test = $('#cs-storage-test');
-    storage_test.find('h3 + *').replaceWith('<div class="uk-progress uk-progress-striped uk-active"><div class="uk-progress-bar" style="width:100%"></div></div>');
+    storage_test.find('h3 + *').replaceWith("<div class=\"uk-progress uk-progress-striped uk-active\">\n	<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n</div>");
     storage_test.cs().modal('show');
     if (added) {
       return $.ajax({
