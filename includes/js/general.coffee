@@ -43,7 +43,6 @@ $ ->
 		->
 			$('textarea:not(.cs-no-ui)')
 				.not('.cs-no-resize, .EDITOR, .SIMPLE_EDITOR')
-				.addClass('cs-textarea-autosize')
 				.autosize
 					append	: "\n"
 		->

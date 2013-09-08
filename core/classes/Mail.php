@@ -20,7 +20,7 @@ class Mail extends PHPMailer {
 	function construct () {
 		$Config			= Config::instance();
 		if ($Config->core['smtp']) {
-			$this->Mailer		= 'smtp';
+			$this->IsSMTP();
 			$this->Host			= $Config->core['smtp_host'];
 			$this->Port			= $Config->core['smtp_port'] ?: $Config->core['smtp_secure'] ? 465 : 25;
 			$this->SMTPSecure	= $Config->core['smtp_secure'];
@@ -78,10 +78,10 @@ class Mail extends PHPMailer {
 		$this->Subject = $subject;
 		if ($signature === true) {
 			if ($signature = get_core_ml_text('mail_signature')) {
-				$signature = $this->LE.'-- '.$this->LE.$signature;
+				$signature = "$this->LE-- $this->LE.$signature";
 			}
 		} elseif ($signature) {
-			$signature = $this->LE.'-- '.$this->LE.xap($signature, true);
+			$signature = "$this->LE-- $this->LE".xap($signature, true);
 		} else {
 			$signature = '';
 		}
@@ -89,7 +89,7 @@ class Mail extends PHPMailer {
 			if (substr($body, 0, 5) != '<body') {
 				$body = h::body($body.$signature);
 			} else {
-				$body = str_replace('</body>', $signature.'</body>', $body);
+				$body = str_replace('</body>', "$signature</body>", $body);
 			}
 			$body = h::html(
 				h::{'head meta'}([
@@ -99,7 +99,7 @@ class Mail extends PHPMailer {
 				$body
 			);
 		} else {
-			$body = str_replace('</body>', $signature.'</body>', $body);
+			$body = str_replace('</body>', "$signature</body>", $body);
 		}
 		$this->Body = $body;
 		if ($body_text) {
