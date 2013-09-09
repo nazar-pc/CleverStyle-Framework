@@ -42,21 +42,44 @@ Trigger::instance()->register(
 			return;
 		}
 		$L				= Language::instance();
+		$icon_mapper	= function ($provider) {
+			switch ($provider) {
+				case 'Facebook':
+					return 'facebook';
+				case 'Foursquare':
+					return 'foursquare';
+				case 'GitHub':
+					return 'github';
+				case 'Google':
+					return 'google-plus';
+				case 'Instagram':
+					return 'instagram';
+				case 'LinkedIn':
+					return 'linkedin';
+				case 'Tumblr':
+					return 'tumbrl';
+				case 'Twitter':
+					return 'twitter';
+				case 'Vkontakte':
+					return 'vk';
+				default:
+					return false;
+			}
+		};
 		$data['list']	= h::{'ul.cs-hybrid-auth-providers-list li'}(
 			[
 				$L->or_login_with,
 				[
-					'class'	=> 'uk-button-primary'
+					'class'	=> 'uk-nav-header'
 				]
 			],
 			array_map(
-				function ($provider) use ($L) {
+				function ($provider) use ($L, $icon_mapper) {
 					return [
-						h::div().
-						$L->$provider,
+						h::a(h::icon($icon_mapper($provider)).$L->$provider),
 						[
 							'data-provider'	=> $provider,
-							'class'			=> "uk-button-default cs-hybrid-auth-$provider"
+							'class'			=> "cs-hybrid-auth-$provider"
 						]
 					];
 				},

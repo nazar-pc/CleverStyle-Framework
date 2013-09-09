@@ -263,7 +263,9 @@ class User extends Accessor {
 			if ($this->timezone) {
 				date_default_timezone_set($this->timezone);
 			}
-			Language::instance()->change($this->language);
+			if ($Config->core['multilingual'] && $this->language) {
+				Language::instance()->change($this->language);
+			}
 			if ($this->theme) {
 				$theme = _json_decode($this->theme);
 				if (

@@ -62,12 +62,12 @@ $Index->content(
 		get_posts_list($posts)
 	).
 	(
-		$posts ? h::{'nav.cs-center'}(
+		$posts ? h::{'div.cs-center-all.uk-margin nav.uk-button-group'}(
 			pages(
 				$page,
 				ceil($posts_count / $num),
 				function ($page) use ($module, $L) {
-					return $page == 1 ? $module.'/'.path($L->drafts) : $module.'/'.path($L->drafts).'/'.$page;
+					return $page == 1 ? "$module/".path($L->drafts) : "$module/".path($L->drafts)."/$page";
 				},
 				true
 			)

@@ -1,25 +1,20 @@
 <!doctype html>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <!--pre_Html--><!--head--><!--pre_Body--><!--debug_info-->
-<header>
+<header class="uk-navbar uk-navbar-attached">
 <!--header-->
-	<nav class="cs-header-main-menu">
-<!--main-menu-->
-	</nav>
-	<nav class="cs-header-main-submenu">
-<!--main-submenu-->
-	</nav>
-	<nav class="cs-header-menu-more">
-<!--menu-more-->
-	</nav>
-	<div class="cs-header-user">
-		<div class="cs-header-avatar" style="background-image:<!--user_avatar_image-->;"></div>
-		<div class="cs-header-user-info">
+	<div class="uk-navbar-content uk-navbar-flip">
+		<img alt="" src="<!--user-avatar-image-->">
 <!--header_info-->
-		</div>
 	</div>
-	<div class="cs-header-green"></div>
-	<div class="cs-header-black"></div>
+	<a href="" class="uk-navbar-brand"><?=get_core_ml_text('name')?></a>
+	<ul class="uk-navbar-nav">
+<!--main-menu-->
+	</ul>
+	<hr>
+	<ul class="uk-subnav uk-subnav-pill">
+<!--main-sub-menu-->
+	</ul>
 </header>
 <div id="body"<?=ADMIN ? 'class="cs-admin-page" ' : ''?>>
 	<aside id="left_blocks">

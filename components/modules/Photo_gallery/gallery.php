@@ -85,7 +85,7 @@ $Index->content(
 		)),
 		[
 			'data-allow-full-screen'	=> 'native',
-			'data-fit'					=> 'scale-down',
+			'data-fit'					=> 'scaledown',
 			'data-height'				=> '80%',
 			'data-keyboard'				=> 'true',
 			'data-nav'					=> 'thumbs',

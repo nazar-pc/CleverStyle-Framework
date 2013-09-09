@@ -16,13 +16,10 @@ $Page					= Page::instance();
 $providers_config		= $Config->module('HybridAuth')->providers;
 $providers				= _json_decode(file_get_contents(MFOLDER.'/../providers.json'));
 $Page->css('components/modules/HybridAuth/includes/css/admin.css');
-$Page->menumore			= h::a(
+$Page->main_sub_menu	= h::{'li.uk-active a'}(
+	$L->providers_list,
 	[
-		$L->providers_list,
-		[
-			'href'	=> 'admin/HybridAuth',
-			'class'	=> !isset($rc[0]) || $rc[0] == 'providers_list' ? 'active' : false
-		]
+		'href'	=> 'admin/HybridAuth'
 	]
 );
 $Index->apply_button	= false;

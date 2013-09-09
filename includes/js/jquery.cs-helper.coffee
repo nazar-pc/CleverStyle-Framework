@@ -114,26 +114,13 @@ do ($=jQuery) ->
 				content
 					.data("switcher", new UI.switcher(content))
 		###*
-		 * Tooltip with Twitter Bootstrap
-		 *
-		 * Required DOM structure * > label > input:radio, plugin may be applied to any of these elements
-		###
-		tooltip			: ->
-			if !this.length
-				return this
-			this.tooltip
-				html		: true
-				container	: 'body'
-				placement	: 'auto top'
-				delay		: 200
-		###*
 		 * Tooltip with UIkit
 		 *
 		 * Required title or data-title attribute with some content, optionally support data-pos attribute with desired position of tooltip
 		###
-		###tooltip		: ->
-			if !this_.length
-				return this_
+		tooltip		: ->
+			if !this.length
+				return this
 			UI	= $.UIkit
 			this.each ->
 				$this	= $(this)
@@ -143,7 +130,7 @@ do ($=jQuery) ->
 						.attr('data-title', '')
 				pos		= $this.data('pos')
 				$this
-					.attr('data-uk-tooltip', if pos then "{pos:'#{pos}'}" else '')###
+					.attr('data-uk-tooltip', if pos then "{pos:'#{pos}'}" else '')
 		###*
 		 * Dialog with Twitter Bootstrap
 		 *
@@ -196,7 +183,7 @@ do ($=jQuery) ->
 		public_helpers		= {}
 		this_				= this
 		public_helpers[key]	= (do (method) ->
-			-> method.call this_
+			-> method.apply this_, arguments
 		) for own key, method of helpers
 		public_helpers
 	return

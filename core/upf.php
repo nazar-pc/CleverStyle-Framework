@@ -578,7 +578,7 @@ function xap ($in, $html = 'text') {
 			$in
 		);
 		$in = preg_replace(
-			'/<[^>]*(on[a-z]+|dynsrc|lowsrc)[^>]*>?/ims',
+			'/<[^>]*\s(on[a-z]+|dynsrc|lowsrc)=[^>]*>?/ims',
 			'',
 			$in
 		);

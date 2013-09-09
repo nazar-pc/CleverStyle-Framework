@@ -9,21 +9,18 @@
  */
 namespace	cs;
 use			h;
-$Config	= Config::instance();
 if (
 	isset($_POST['edit_settings'], $_POST['max_file_size']) &&
 	$_POST['edit_settings'] == 'save'
 ) {
-	$Config->module('Plupload')->max_file_size		= xap($_POST['max_file_size']);
-	$Config->module('Plupload')->confirmation_time	= (int)$_POST['confirmation_time'];
+	$module_data					= Config::instance()->module('Plupload');
+	$module_data->max_file_size		= xap($_POST['max_file_size']);
+	$module_data->confirmation_time	= (int)$_POST['confirmation_time'];
 	Index::instance()->save(true);
 }
-Page::instance()->menumore		= h::a(
+Page::instance()->main_sub_menu	= h::{'li.uk-active a'}(
+	'Plupload',
 	[
-		'Plupload',
-		[
-			'href'	=> 'admin/Plupload',
-			'class'	=> 'active'
-		]
+		'href'	=> 'admin/Plupload'
 	]
 );

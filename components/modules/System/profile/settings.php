@@ -103,47 +103,48 @@ switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 			h::{'a.cs-button'}(
 				$L->general,
 				[
-					'href'	=> $Index->action.'/'.path($L->general)
+					'href'	=> "$Index->action/".path($L->general)
 				]
 			).
 			h::{'a.cs-button'}(
 				$L->change_password,
 				[
-					'href'	=> $Index->action.'/'.path($L->change_password)
+					'href'	=> "$Index->action/".path($L->change_password)
 				]
 			)
 		);
 		Trigger::instance()->run('System/profile/settings');
 	break;
 	case 'general':
-		$user_data					= $User->get($columns);
+		$user_data						= $User->get($columns);
 		unset($columns);
-		$timezones					= get_timezones_list();
-		$row						= function ($col1, $col2) {
+		$timezones						= get_timezones_list();
+		$row							= function ($col1, $col2) {
 			return	h::th($col1).
 				h::td($col2);
 		};
-		$themes						= [
-			$L->system_default.' ('.$Config->core['theme'].' - '.($Config->core['color_scheme'] ?: $Config->core['color_schemes'][$Config->core['theme']][0]).')' => ''
+		$themes							= [
+			"$L->system_default ({$Config->core['theme']} - ".($Config->core['color_scheme'] ?: $Config->core['color_schemes'][$Config->core['theme']][0]).')' => ''
 		];
 		foreach ($Config->core['active_themes'] as $theme) {
 			foreach ($Config->core['color_schemes'][$theme] as $color_scheme) {
-				$themes[$theme.' - '.$color_scheme] = _json_encode([
+				$themes["$theme - $color_scheme"] = _json_encode([
 					'theme'			=> $theme,
 					'color_scheme'	=> $color_scheme
 				]);
 			}
 		}
 		unset($theme, $color_scheme);
-		$Index->form				= true;
-		$Index->apply_button		= false;
-		$Index->cancel_button_back	= true;
+		$Index->form					= true;
+		$Index->form_atributes['class']	= 'cs-center';
+		$Index->apply_button			= false;
+		$Index->cancel_button_back		= true;
 		$Page->title($L->general);
 		$Index->content(
 			h::{'p.lead.cs-center'}(
 				$L->general_settings
 			).
-			h::{'table#users_edit.cs-table-borderless.cs-center-all tr'}(
+			h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr'}(
 				$row($L->login, h::input([
 					'name'		=> 'user[login]',
 					'value'		=> $user_data['login']
@@ -177,7 +178,7 @@ switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 				)),
 				$row($L->timezone, h::select(
 					[
-						'in'		=> array_merge([$L->system_default.' ('.$Config->core['timezone'].')'], array_keys($timezones)),
+						'in'		=> array_merge(["$L->system_default ({$Config->core['timezone']})"], array_keys($timezones)),
 						'value'		=> array_merge([''], array_values($timezones))
 					],
 					[
@@ -219,15 +220,16 @@ switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 		);
 	break;
 	case 'change_password':
-		$Index->form				= true;
-		$Index->buttons				= false;
-		$Index->cancel_button_back	= true;
+		$Index->form					= true;
+		$Index->form_atributes['class']	= 'cs-center';
+		$Index->buttons					= false;
+		$Index->cancel_button_back		= true;
 		$Page->title($L->password_changing);
 		$Index->content(
 			h::{'p.lead.cs-center'}(
 				$L->password_changing
 			).
-			h::{'table#users_edit.cs-table-borderless.cs-center-all tr'}(
+			h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr'}(
 				h::th(
 					"$L->current_password ".h::{'icon#current_password'}('lock')
 				).

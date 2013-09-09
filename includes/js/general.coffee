@@ -51,16 +51,16 @@ $ ->
 			$('.cs-tabs').cs().tabs()
 		->
 			$('.cs-header-login-slide').click ->
-				$('.cs-header-guest-form').slideUp()
-				$('.cs-header-login-form').slideDown()
+				$('.cs-header-guest-form').hide('medium')
+				$('.cs-header-login-form').show('medium')
 				$('.cs-header-login-email').focus()
 			$('.cs-header-registration-slide').click ->
-				$('.cs-header-guest-form').slideUp()
-				$('.cs-header-registration-form').slideDown()
+				$('.cs-header-guest-form').hide('medium')
+				$('.cs-header-registration-form').show('medium')
 				$('.cs-header-registration-email').focus()
 			$('.cs-header-restore-password-slide').click ->
-				$('.cs-header-login-form, .cs-header-registration-form').slideUp()
-				$('.cs-header-restore-password-form').slideDown()
+				$('.cs-header-login-form, .cs-header-registration-form').hide('medium')
+				$('.cs-header-restore-password-form').show('medium')
 				$('.cs-header-restore-password-email').focus()
 			$('.cs-header-login-email, .cs-header-user-password').keyup (event) ->
 				if event.which == 13
@@ -143,8 +143,8 @@ $ ->
 			$('.cs-profile-change-password').click ->
 				cs.change_password $('.cs-profile-current-password').val(), $('.cs-profile-new-password').val()
 			$('.cs-header-back').click ->
-				$('.cs-header-guest-form').slideDown()
-				$('.cs-header-registration-form, .cs-header-login-form, .cs-header-restore-password-form').slideUp()
+				$('.cs-header-guest-form').show('medium')
+				$('.cs-header-registration-form, .cs-header-login-form, .cs-header-restore-password-form').hide('medium')
 		->
 			if cs.in_admin
 				$('.cs-reload-button').click ->

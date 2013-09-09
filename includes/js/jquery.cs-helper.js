@@ -115,43 +115,27 @@
         });
       },
       /**
-      		 * Tooltip with Twitter Bootstrap
-      		 *
-      		 * Required DOM structure * > label > input:radio, plugin may be applied to any of these elements
-      */
-
-      tooltip: function() {
-        if (!this.length) {
-          return this;
-        }
-        return this.tooltip({
-          html: true,
-          container: 'body',
-          placement: 'auto top',
-          delay: 200
-        });
-      },
-      /**
       		 * Tooltip with UIkit
       		 *
       		 * Required title or data-title attribute with some content, optionally support data-pos attribute with desired position of tooltip
       */
 
-      /*tooltip		: ->
-      			if !this_.length
-      				return this_
-      			UI	= $.UIkit
-      			this.each ->
-      				$this	= $(this)
-      				if !$this.attr('title')
-      					$this
-      						.attr('title', $this.data('title'))
-      						.attr('data-title', '')
-      				pos		= $this.data('pos')
-      				$this
-      					.attr('data-uk-tooltip', if pos then "{pos:'#{pos}'}" else '')
-      */
-
+      tooltip: function() {
+        var UI;
+        if (!this.length) {
+          return this;
+        }
+        UI = $.UIkit;
+        return this.each(function() {
+          var $this, pos;
+          $this = $(this);
+          if (!$this.attr('title')) {
+            $this.attr('title', $this.data('title')).attr('data-title', '');
+          }
+          pos = $this.data('pos');
+          return $this.attr('data-uk-tooltip', pos ? "{pos:'" + pos + "'}" : '');
+        });
+      },
       /**
       		 * Dialog with Twitter Bootstrap
       		 *
@@ -216,7 +200,7 @@
         method = helpers[key];
         public_helpers[key] = (function(method) {
           return function() {
-            return method.call(this_);
+            return method.apply(this_, arguments);
           };
         })(method);
       }

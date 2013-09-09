@@ -83,7 +83,7 @@ $Index->content(
 		get_posts_list($posts)
 	).
 	(
-		$posts ? h::{'nav.cs-center'}(
+		$posts ? h::{'div.cs-center-all.uk-margin nav.uk-button-group'}(
 			pages(
 				$page,
 				ceil(Blogs::instance()->get_total_count() / $num),

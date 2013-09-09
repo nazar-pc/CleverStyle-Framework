@@ -39,6 +39,10 @@ class Index {
 				$submenu_auto		= false,
 				$menumore_auto		= false,
 
+				$main_menu			= [],
+				$main_sub_menu		= [],
+				$main_menu_more		= [],
+
 				$savefile			= 'save',
 				$form				= false,
 				$file_upload		= false,
@@ -281,38 +285,37 @@ class Index {
 		}
 	}
 	/**
-	 * Rendering of main menu
+	 * Rendering of data for main menu
 	 */
-	protected function mainmenu () {
+	protected function main_menu () {
 		$Config			= Config::instance();
 		$L				= Language::instance();
-		$Page			= Page::instance();
 		$User			= User::instance();
 		if ($User->admin() || ($Config->can_be_admin && $Config->core['ip_admin_list_only'])) {
 			if (DEBUG) {
-				$Page->mainmenu .= h::a(
+				$this->main_menu[]	= [
 					mb_substr($L->debug, 0, 1),
 					[
-						 'onClick'	=> 'cs.debug_window();',
-						 'title'	=> $L->debug
+						 'onClick'		=> 'cs.debug_window();',
+						 'data-title'	=> $L->debug
 					]
-				);
+				];
 			}
-			$Page->mainmenu .= h::a(
+			$this->main_menu[]	= [
 				mb_substr($L->administration, 0, 1),
 				[
-					 'href'		=> 'admin',
-					 'title'	=> $L->administration
+					 'href'			=> 'admin',
+					 'data-title'	=> $L->administration
 				]
-			);
+			];
 		}
-		$Page->mainmenu .= h::a(
+		$this->main_menu[]	= [
 			$L->home,
 			[
 				 'href'		=> '/',
 				 'title'	=> $L->home
 			]
-		);
+		];
 		foreach ($Config->components['modules'] as $module => $mdata) {
 			if (
 				$mdata['active'] == 1 &&
@@ -343,50 +346,52 @@ class Index {
 				if ($hide) {
 					continue;
 				}
-				$Page->mainmenu	.= h::a(
+				$this->main_menu[]	= [
 					$title,
 					[
 						'href'	=> $path,
 						'title'	=> $title
 					]
-				);
+				];
 			}
 		}
 	}
 	/**
-	 * Rendering of main submenu
+	 * Rendering of data for main sub menu
 	 */
-	protected function mainsubmenu () {
+	protected function main_sub_menu () {
 		if (!is_array($this->parts) || !$this->parts) {
 			return;
 		}
-		$Config	= Config::instance();
+		$rc		= Config::instance()->route;
+		$L		= Language::instance();
 		foreach ($this->parts as $part) {
-			Page::instance()->mainsubmenu .= h::a(
-				Language::instance()->$part,
+			$this->main_sub_menu[]	= [
+				$L->$part,
 				[
 					'href'		=> ($this->admin ? 'admin/' : '').MODULE."/$part",
-					'class'		=> isset($Config->route[0]) && $Config->route[0] == $part ? 'active' : ''
+					'class'		=> isset($rc[0]) && $rc[0] == $part ? 'uk-active' : ''
 				]
-			);
+			];
 		}
 	}
 	/**
-	 * Rendering of additional menu
+	 * Rendering of data for main menu more
 	 */
-	protected function menumore () {
+	protected function main_menu_more () {
 		if (!is_array($this->subparts) || !$this->subparts) {
 			return;
 		}
-		$rc	= Config::instance()->route;
+		$rc		= Config::instance()->route;
+		$L		= Language::instance();
 		foreach ($this->subparts as $subpart) {
-			Page::instance()->menumore .= h::a(
-				Language::instance()->$subpart,
+			$this->main_menu_more[]	= [
+				$L->$subpart,
 				[
 					'href'		=> ($this->admin ? 'admin/' : '').MODULE."/$rc[0]/$subpart",
-					'class'		=> $rc[1] == $subpart ? 'active' : ''
+					'class'		=> $rc[1] == $subpart ? 'uk-active' : ''
 				]
-			);
+			];
 		}
 	}
 	/**
@@ -400,9 +405,9 @@ class Index {
 			$Page->content($this->Content);
 			return;
 		}
-		$this->menu_auto		&& $this->mainmenu();
-		$this->submenu_auto		&& $this->mainsubmenu();
-		$this->menumore_auto	&& $this->menumore();
+		$this->menu_auto		&& $this->main_menu();
+		$this->submenu_auto		&& $this->main_sub_menu();
+		$this->menumore_auto	&& $this->main_menu_more();
 		$this->blocks_processing();
 		if ($this->form) {
 			$Page->content(
@@ -580,7 +585,7 @@ class Index {
 				);
 				if ($block['position'] == 'floating') {
 					$Page->replace(
-						'<!--block#'.$block['index'].'-->',
+						"<!--block#$block[index]-->",
 						$content
 					);
 				} else {

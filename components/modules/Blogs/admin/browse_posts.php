@@ -13,13 +13,14 @@ use			h,
 			cs\Index,
 			cs\Language,
 			cs\Page;
-$Index		= Index::instance();
-$L			= Language::instance();
+$Config			= Config::instance();
+$Index			= Index::instance();
+$L				= Language::instance();
 $Index->buttons	= false;
 Page::instance()->title($L->browse_posts);
-$page		= isset($_POST['page']) ? (int)$_POST['page'] : 1;
-$page		= $page > 0 ? $page : 1;
-$total		= Blogs::instance()->get_total_count();
+$page			= isset($Config->route[1]) ? (int)$Config->route[1] : 1;
+$page			= $page > 0 ? $page : 1;
+$total			= Blogs::instance()->get_total_count();
 $Index->content(
 	h::{'table.cs-center-all.cs-table'}(
 		h::{'thead tr th'}(
@@ -54,10 +55,10 @@ $Index->content(
 		)
 	).
 	(
-		$total ? h::{'nav.cs-center'}(
+		$total ? h::{'div.cs-center-all.uk-margin nav.uk-button-group'}(
 			pages(
 				$page,
-				ceil($total / Config::instance()->module('Blogs')->posts_per_page),
+				ceil($total / $Config->module('Blogs')->posts_per_page),
 				function ($page) {
 					return $page == 1 ? 'admin/Blogs/browse_posts' : "admin/Blogs/browse_posts/$page";
 				}

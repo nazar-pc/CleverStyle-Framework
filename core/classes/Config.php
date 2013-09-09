@@ -470,9 +470,10 @@ class Config {
 		}
 		Cache::instance()->config	= $config;
 		$L							= Language::instance();
-		$L->change($this->core['language']);
-		if (User::instance(true)) {
+		if (User::instance(true) && $this->core['multilingual']) {
 			$L->change(User::instance()->language);
+		} else {
+			$L->change($this->core['language']);
 		}
 		$this->init();
 		return true;

@@ -66,18 +66,18 @@
         return $('.cs-tabs').cs().tabs();
       }, function() {
         $('.cs-header-login-slide').click(function() {
-          $('.cs-header-guest-form').slideUp();
-          $('.cs-header-login-form').slideDown();
+          $('.cs-header-guest-form').hide('medium');
+          $('.cs-header-login-form').show('medium');
           return $('.cs-header-login-email').focus();
         });
         $('.cs-header-registration-slide').click(function() {
-          $('.cs-header-guest-form').slideUp();
-          $('.cs-header-registration-form').slideDown();
+          $('.cs-header-guest-form').hide('medium');
+          $('.cs-header-registration-form').show('medium');
           return $('.cs-header-registration-email').focus();
         });
         $('.cs-header-restore-password-slide').click(function() {
-          $('.cs-header-login-form, .cs-header-registration-form').slideUp();
-          $('.cs-header-restore-password-form').slideDown();
+          $('.cs-header-login-form, .cs-header-registration-form').hide('medium');
+          $('.cs-header-restore-password-form').show('medium');
           return $('.cs-header-restore-password-email').focus();
         });
         $('.cs-header-login-email, .cs-header-user-password').keyup(function(event) {
@@ -150,8 +150,8 @@
           return cs.change_password($('.cs-profile-current-password').val(), $('.cs-profile-new-password').val());
         });
         return $('.cs-header-back').click(function() {
-          $('.cs-header-guest-form').slideDown();
-          return $('.cs-header-registration-form, .cs-header-login-form, .cs-header-restore-password-form').slideUp();
+          $('.cs-header-guest-form').show('medium');
+          return $('.cs-header-registration-form, .cs-header-login-form, .cs-header-restore-password-form').hide('medium');
         });
       }, function() {
         if (cs.in_admin) {

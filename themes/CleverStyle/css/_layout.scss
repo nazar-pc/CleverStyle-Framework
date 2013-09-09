@@ -10,6 +10,7 @@
 
 * {
 	box-sizing : border-box;
+	-moz-box-sizing : border-box;
 }
 //Whole body
 body {
@@ -20,33 +21,11 @@ body {
 	margin  : 0;
 	padding : 0;
 	width   : 100%;
-	> {
-		header {
-			margin     : 0;
-			text-align : center;
-			width      : 100%;
-		}
-		footer {
-			@extend header;
-			a {
-				text-decoration : underline;
-			}
-
-			div {
-				&:first-child {
-					padding : .5em .5em 0;
-				}
-				&:last-child {
-					padding : 0 .5em .5em;
-				}
-			}
-		}
-	}
 }
 //Inner body with content
 #body {
 	border-radius : 10px;
-	margin        : 145px 7px 7px;
+	margin        : 7px;
 	padding       : 5px 0;
 
 	&:after {
@@ -95,5 +74,24 @@ body {
 		content : '';
 		clear   : both;
 		display : block;
+	}
+}
+
+body > footer {
+	margin     : 0;
+	text-align : center;
+	width      : 100%;
+
+	a {
+		text-decoration : underline;
+	}
+
+	div {
+		&:first-child {
+			padding : .5em .5em 0;
+		}
+		&:last-child {
+			padding : 0 .5em .5em;
+		}
 	}
 }

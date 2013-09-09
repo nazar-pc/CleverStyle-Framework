@@ -6,12 +6,6 @@
  * @license		MIT License, see license.txt
  */
 
-//Cross-browser transition
-@mixin transition($params) {
-	transition         : $params;
-	-moz-transition    : $params;
-	-webkit-transition : $params;
-}
 //Alignment mixin
 @mixin cs-align($side) {
 	.cs-#{$side}-odd > thead > tr > :nth-child(odd),
@@ -30,7 +24,7 @@
 		padding        : 2px;
 	}
 
-	td.cs-#{$side}-all {
+	.cs-#{$side}-all {
 		text-align : $side !important;
 	}
 

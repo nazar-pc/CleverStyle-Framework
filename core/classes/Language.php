@@ -51,10 +51,10 @@ class Language {
 			$this->change($this->need_to_rebuild_cache);
 			if (!empty($Config->components['modules'])) {
 				foreach ($Config->components['modules'] as $module => $mdata) {
-					if ($mdata['active'] != -1 && file_exists(MODULES.'/'.$module.'/languages/'.$this->clanguage.'.json')) {
+					if ($mdata['active'] != -1 && file_exists(MODULES."/$module/languages/$this->clanguage.json")) {
 						$this->translate	= array_merge(
 							$this->translate,
-							_json_decode_nocomments(file_get_contents(MODULES.'/'.$module.'/languages/'.$this->clanguage.'.json')) ?: []
+							_json_decode_nocomments(file_get_contents(MODULES."/$module/languages/$this->clanguage.json")) ?: []
 						);
 					}
 				}
@@ -62,10 +62,10 @@ class Language {
 			}
 			if (!empty($Config->components['plugins'])) {
 				foreach ($Config->components['plugins'] as $plugin) {
-					if (file_exists(PLUGINS.'/'.$plugin.'/languages/'.$this->clanguage.'.json')) {
+					if (file_exists(PLUGINS."/$plugin/languages/$this->clanguage.json")) {
 						$this->translate	= array_merge(
 							$this->translate,
-							_json_decode_nocomments(file_get_contents(PLUGINS.'/'.$plugin.'/languages/'.$this->clanguage.'.json')) ?: []
+							_json_decode_nocomments(file_get_contents(PLUGINS."/$plugin/languages/$this->clanguage.json")) ?: []
 						);
 					}
 				}
@@ -106,7 +106,7 @@ class Language {
 			$aliases		= [];
 			$aliases_list	= _strtolower(get_files_list(LANGUAGES.'/aliases'));
 			foreach ($aliases_list as $alias) {
-				$aliases[$alias] = file_get_contents(LANGUAGES.'/aliases/'.$alias);
+				$aliases[$alias] = file_get_contents(LANGUAGES."/aliases/$alias");
 			}
 			unset($aliases_list, $alias);
 			$Cache->{'languages/aliases'} = $aliases;
@@ -217,8 +217,7 @@ class Language {
 			(
 				(
 					$Config->core['multilingual'] ||
-					!$this->init ||
-					User::instance(true)->admin()
+					!$this->init
 				) &&
 				in_array($language, $Config->core['active_languages'])
 			)
@@ -228,8 +227,8 @@ class Language {
 			if ($translate = Cache::instance()->{"languages/$this->clanguage"}) {
 				$this->set($translate);
 				$return							= true;
-			} elseif (file_exists(LANGUAGES.'/'.$this->clanguage.'.json')) {
-				$this->translate				= _json_decode_nocomments(file_get_contents(LANGUAGES.'/'.$this->clanguage.'.json'));
+			} elseif (file_exists(LANGUAGES."/$this->clanguage.json")) {
+				$this->translate				= _json_decode_nocomments(file_get_contents(LANGUAGES."/$this->clanguage.json"));
 				$this->translate['clanguage']	= $this->clanguage;
 				if (!isset($this->translate['clang'])) {
 					$this->translate['clang']		= mb_strtolower(mb_substr($this->clanguage, 0, 2));
@@ -247,7 +246,7 @@ class Language {
 				}
 				$return							= true;
 			}
-			if (_include(LANGUAGES.'/'.$this->clanguage.'.php', false, false)) {
+			if (_include(LANGUAGES."/$this->clanguage.php", false, false)) {
 				$return							= true;
 			}
 			header('Content-Language: '.$this->translate['content_language']);
@@ -270,22 +269,22 @@ class Language {
 		} else {
 			switch ($type) {
 				case 's':
-					return $in.' '.$this->seconds;
+					return "$in $this->seconds";
 				break;
 				case 'm':
-					return $in.' '.$this->minutes;
+					return "$in $this->minutes";
 				break;
 				case 'h':
-					return $in.' '.$this->hours;
+					return "$in $this->hours";
 				break;
 				case 'd':
-					return $in.' '.$this->days;
+					return "$in $this->days";
 				break;
 				case 'M':
-					return $in.' '.$this->months;
+					return "$in $this->months";
 				break;
 				case 'y':
-					return $in.' '.$this->years;
+					return "$in $this->years";
 				break;
 			}
 		}
@@ -375,7 +374,7 @@ class Language {
 			'Sat'
 		];
 		foreach ($from as $f) {
-			$data = str_replace($f, $this->get('l_'.$f), $data);
+			$data = str_replace($f, $this->get("l_$f"), $data);
 		}
 		return $data;
 	}

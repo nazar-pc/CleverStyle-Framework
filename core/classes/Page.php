@@ -32,9 +32,9 @@ class Page {
 				$Head				= '',
 				$pre_Body			= '',
 					$Header			= '',
-						$mainmenu			= '',
-						$mainsubmenu		= '',
-						$menumore			= '',
+						$main_menu			= '',
+						$main_sub_menu		= '',
+						$main_menu_more		= '',
 					$Left			= '',
 					$Top			= '',
 					$Right			= '',
@@ -46,9 +46,9 @@ class Page {
 					'Head'				=> 0,	//of values into template
 					'pre_Body'			=> 0,
 					'Header'			=> 2,
-					'mainmenu'			=> 2,
-					'mainsubmenu'		=> 2,
-					'menumore'			=> 2,
+					'main_menu'			=> 2,
+					'main_sub_menu'		=> 2,
+					'main_menu_more'	=> 2,
 					'header_info'		=> 3,
 					'debug_info'		=> 1,
 					'Left'				=> 2,
@@ -262,14 +262,14 @@ class Page {
 		if ($this->js[1]) {
 			$this->js[1]		= h::script($this->js[1]);
 		}
-		if (file_exists(THEMES.'/'.$this->theme.'/'.$this->color_scheme.'/'.'img/favicon.png')) {
-			$favicon	= 'themes/'.$this->theme.'/'.$this->color_scheme.'/img/favicon.png';
-		} elseif (file_exists(THEMES.'/'.$this->theme.'/'.$this->color_scheme.'/img/favicon.ico')) {
-			$favicon	= 'themes/'.$this->theme.'/'.$this->color_scheme.'/img/favicon.ico';
-		} elseif (file_exists(THEMES.'/'.$this->theme.'/img/favicon.png')) {
-			$favicon	= 'themes/'.$this->theme.'/img/favicon.png';
-		} elseif (file_exists(THEMES.'/'.$this->theme.'/img/favicon.ico')) {
-			$favicon	= 'themes/'.$this->theme.'/img/favicon.ico';
+		if (file_exists(THEMES."/$this->theme/$this->color_scheme/img/favicon.png")) {
+			$favicon	= "themes/$this->theme/$this->color_scheme/img/favicon.png";
+		} elseif (file_exists(THEMES."/$this->theme/$this->color_scheme/img/favicon.ico")) {
+			$favicon	= "themes/$this->theme/$this->color_scheme/img/favicon.ico";
+		} elseif (file_exists(THEMES."/$this->theme/img/favicon.png")) {
+			$favicon	= "themes/$this->theme/img/favicon.png";
+		} elseif (file_exists(THEMES."/$this->theme/img/favicon.ico")) {
+			$favicon	= "themes/$this->theme/img/favicon.ico";
 		} else {
 			$favicon	= 'favicon.ico';
 		}
@@ -326,6 +326,34 @@ class Page {
 		 */
 		$this->get_footer();
 		/**
+		 * Menu generation
+		 */
+		$Index				= Index::instance();
+		if ($Index->main_menu) {
+			$this->main_menu	= h::{'li| a'}($Index->main_menu);
+		}
+		if ($Index->main_sub_menu) {
+			$this->main_sub_menu	= '';
+			foreach ($Index->main_sub_menu as $item) {
+				if (isset($item[1], $item[1]['class']) && $item[1]['class'] == 'uk-active') {
+					if ($Index->main_menu_more) {
+						$item[0]				.= ' '.h::icon('caret-down');
+					}
+					$item[1]['class']		= trim(str_replace('uk-active', '', $item[1]['class']));
+					$this->main_sub_menu	.= h::{'li.uk-active[data-uk-dropdown=]'}(
+						h::a($item).
+						(
+							$Index->main_menu_more ? h::{'div.uk-dropdown.uk-dropdown-small ul.uk-nav.uk-nav-dropdown li| a'}($Index->main_menu_more) : ''
+						)
+					);
+				} else {
+					$this->main_sub_menu	.= h::{'li a'}($item);
+				}
+			}
+		} elseif ($Index->main_menu_more) {
+			$this->main_menu	= h::{'li| a'}($Index->main_menu_more);
+		}
+		/**
 		 * Substitution of information into template
 		 */
 		$this->Html			= str_replace(
@@ -335,9 +363,9 @@ class Page {
 				'<!--pre_Body-->',
 				'<!--header-->',
 				'<!--main-menu-->',
-				'<!--main-submenu-->',
-				'<!--menu-more-->',
-				'<!--user_avatar_image-->',
+				'<!--main-sub-menu-->',
+				'<!--main-menu-more-->',
+				'<!--user-avatar-image-->',
 				'<!--header_info-->',
 				'<!--left_blocks-->',
 				'<!--top_blocks-->',
@@ -353,9 +381,9 @@ class Page {
 				h::level($this->Head, $this->level['Head']),
 				h::level($this->pre_Body, $this->level['pre_Body']),
 				h::level($this->Header, $this->level['Header']),
-				h::level($this->mainmenu, $this->level['mainmenu']),
-				h::level($this->mainsubmenu, $this->level['mainsubmenu']),
-				h::level($this->menumore, $this->level['menumore']),
+				h::level($this->main_menu, $this->level['main_menu']),
+				h::level($this->main_sub_menu, $this->level['main_sub_menu']),
+				h::level($this->main_menu_more, $this->level['main_menu_more']),
 				$this->user_avatar_image,
 				h::level($this->header_info, $this->level['header_info']),
 				h::level($this->Left, $this->level['Left']),
@@ -1120,8 +1148,8 @@ class Page {
 		} else {
 			ob_start();
 			if (
-				!_include_once(THEMES.'/'.$this->theme.'/error.html', false) &&
-				!_include_once(THEMES.'/'.$this->theme.'/error.php', false)
+				!_include_once(THEMES."/$this->theme/error.html", false) &&
+				!_include_once(THEMES."/$this->theme/error.php", false)
 			) {
 				echo "<!doctype html>\n".
 					h::title($error_text ?: ERROR_CODE).
@@ -1139,36 +1167,40 @@ class Page {
 	protected function get_header_info () {
 		$L		= Language::instance();
 		$User	= User::instance(true);
+		if ($User->avatar) {
+			$this->user_avatar_image = h::prepare_url($User->avatar, true);
+		} else {
+			$this->user_avatar_image = '/includes/img/guest.gif';
+		}
 		if ($User->user()) {
-			if ($User->avatar) {
-				$this->user_avatar_image = 'url('.h::prepare_url($User->avatar, true).')';
-			} else {
-				$this->user_avatar_image = 'url(/includes/img/guest.gif)';
-			}
-			$this->header_info = h::b($L->hello.', '.$User->username().'!').
-			h::{'icon.cs-header-logout-process'}(
-				'power-off',
-				[
-					'style'			=> 'cursor: pointer;',
-					'data-title'	=> $L->log_out
-				]
-			).
-			h::{'p.actions'}(
-				h::a(
-					$L->profile,
-					[
-						'href'	=> path($L->profile).'/'.$User->login
-					]
+			$this->header_info = h::{'div.cs-header-user-block'}(
+				h::b(
+					"$L->hello, ".$User->username().'! '.
+					h::{'icon.cs-header-logout-process'}(
+						'power-off',
+						[
+							'style'			=> 'cursor: pointer;',
+							'data-title'	=> $L->log_out
+						]
+					)
 				).
-				' | '.
-				h::a(
-					$L->settings,
-					[
-						'href'	=> path($L->profile).'/'.path($L->settings)
-					]
-				)
-			).
-			$this->header_info;
+				h::div(
+					h::a(
+						$L->profile,
+						[
+							'href'	=> path($L->profile)."/$User->login"
+						]
+					).
+					' | '.
+					h::a(
+						$L->settings,
+						[
+							'href'	=> path($L->profile).'/'.path($L->settings)
+						]
+					)
+				).
+				$this->header_info
+			);
 			Trigger::instance()->run('System/Page/get_header_info');
 		} else {
 			$external_systems_list		= '';
@@ -1178,32 +1210,30 @@ class Page {
 					'list'	=> &$external_systems_list
 				]
 			);
-			$this->user_avatar_image	= 'url(/includes/img/guest.gif)';
 			$this->header_info			= h::{'div.cs-header-guest-form'}(
-				h::b($L->hello.', '.$L->guest.'!').
-				h::br().
-				h::{'button.cs-header-login-slide.cs-button-compact'}(
-					h::icon('signin').$L->log_in
-				).
-				h::{'button.cs-header-registration-slide.cs-button-compact'}(
-					h::icon('pencil').$L->registration,
-					[
-						 'data-title'	=> $L->quick_registration_form
-					]
+				h::b("$L->hello, $L->guest!").
+				h::div(
+					h::{'button.cs-header-login-slide.cs-button-compact'}(
+						h::icon('signin').$L->log_in
+					).
+					h::{'button.cs-header-registration-slide.cs-button-compact'}(
+						h::icon('pencil').$L->registration,
+						[
+							'data-title'	=> $L->quick_registration_form
+						]
+					)
 				)
 			).
 			h::{'div.cs-header-restore-password-form'}(
-				h::{'input.cs-no-ui.cs-header-restore-password-email[tabindex=1]'}(
-					[
-						'placeholder'		=> $L->login_or_email,
-						'autocapitalize'	=> 'off',
-						'autocorrect'		=> 'off'
-					]
-				).
+				h::{'input.cs-no-ui.cs-header-restore-password-email[tabindex=1]'}([
+					'placeholder'		=> $L->login_or_email,
+					'autocapitalize'	=> 'off',
+					'autocorrect'		=> 'off'
+				]).
+				h::br().
 				h::{'button.cs-header-restore-password-process.cs-button-compact[tabindex=2]'}(
 					h::icon('question').$L->restore_password
 				).
-				h::div().
 				h::{'button.cs-button-compact.cs-header-back[tabindex=3]'}(
 					h::icon('chevron-down'),
 					[
@@ -1215,17 +1245,15 @@ class Page {
 				]
 			).
 			h::{'div.cs-header-registration-form'}(
-				h::{'input.cs-no-ui.cs-header-registration-email[type=email][tabindex=1]'}(
-					[
-						'placeholder'		=> $L->email,
-						'autocapitalize'	=> 'off',
-						'autocorrect'		=> 'off'
-					]
-				).
+				h::{'input.cs-no-ui.cs-header-registration-email[type=email][tabindex=1]'}([
+					'placeholder'		=> $L->email,
+					'autocapitalize'	=> 'off',
+					'autocorrect'		=> 'off'
+				]).
+				h::br().
 				h::{'button.cs-header-registration-process.cs-button-compact[tabindex=2]'}(
 					h::icon('pencil').$L->registration
 				).
-				h::div().
 				h::{'button.cs-button-compact.cs-header-back[tabindex=4]'}(
 					h::icon('chevron-down'),
 					[
@@ -1245,6 +1273,7 @@ class Page {
 				h::{'input.cs-no-ui.cs-header-user-password[type=password][tabindex=2]'}([
 					'placeholder'	=> $L->password
 				]).
+				h::br().
 				h::{'button.cs-header-login-process.cs-button-compact[tabindex=3]'}(h::icon('signin').$L->log_in).
 				h::{'button.cs-button-compact.cs-header-back[tabindex=5]'}(
 					h::icon('chevron-down'),

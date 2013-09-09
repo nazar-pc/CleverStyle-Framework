@@ -13,20 +13,23 @@ use			h,
 			cs\Index,
 			cs\Language,
 			cs\Page;
-$Config							= Config::instance();
-$L								= Language::instance();
-$Page							= Page::instance();
-Index::instance()->title_auto	= false;
+$Config					= Config::instance();
+$Index					= Index::instance();
+$L						= Language::instance();
+$Page					= Page::instance();
+$Index->title_auto		= false;
 $Page->title($L->administration);
 $Page->title($L->Static_pages);
 $Page->css('components/modules/Static_pages/includes/css/style.css');
-$Page->menumore					= h::a(
-	$L->browse_page_categories,
+$Index->main_sub_menu	= [
 	[
-		'href'	=> 'admin/Static_pages',
-		'class'	=> !isset($Config->route[0]) || $Config->route[0] == 'browse_sections' ? 'active' : false
+		$L->browse_page_categories,
+		[
+			'href'	=> 'admin/Static_pages',
+			'class'	=> !isset($Config->route[0]) || $Config->route[0] == 'browse_sections' ? 'uk-active' : false
+		]
 	]
-);
+];
 function get_categories_rows ($structure = null, $level = 0, $parent_categories = []) {
 	$L						= Language::instance();
 	$root					= false;

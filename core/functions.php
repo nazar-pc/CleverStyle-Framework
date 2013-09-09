@@ -148,28 +148,28 @@ function format_time ($time) {
 	$L		= Language::instance();
 	$res	= [];
 	if ($time >= 31536000) {
-		$time_x = round($time/31536000);
-		$time -= $time_x*31536000;
+		$time_x = round($time / 31536000);
+		$time -= $time_x * 31536000;
 		$res[] = $L->time($time_x, 'y');
 	}
 	if ($time >= 2592000) {
-		$time_x = round($time/2592000);
-		$time -= $time_x*2592000;
+		$time_x = round($time / 2592000);
+		$time -= $time_x * 2592000;
 		$res[] = $L->time($time_x, 'M');
 	}
 	if($time >= 86400) {
-		$time_x = round($time/86400);
-		$time -= $time_x*86400;
+		$time_x = round($time / 86400);
+		$time -= $time_x * 86400;
 		$res[] = $L->time($time_x, 'd');
 	}
 	if($time >= 3600) {
-		$time_x = round($time/3600);
-		$time -= $time_x*3600;
+		$time_x = round($time / 3600);
+		$time -= $time_x * 3600;
 		$res[] = $L->time($time_x, 'h');
 	}
 	if ($time >= 60) {
-		$time_x = round($time/60);
-		$time -= $time_x*60;
+		$time_x = round($time / 60);
+		$time -= $time_x * 60;
 		$res[] = $L->time($time_x, 'm');
 	}
 	if ($time > 0 || empty($res)) {
@@ -189,19 +189,19 @@ function format_filesize ($size, $round = false) {
 	$L		= Language::instance();
 	$unit	= '';
 	if($size >= 1099511627776) {
-		$size = $size/1099511627776;
-		$unit = ' '.$L->TB;
+		$size = $size / 1099511627776;
+		$unit = " $L->TB";
 	} elseif($size >= 1073741824) {
-		$size = $size/1073741824;
-		$unit = ' '.$L->GB;
+		$size = $size / 1073741824;
+		$unit = " $L->GB";
 	} elseif ($size >= 1048576) {
-		$size = $size/1048576;
-		$unit = ' '.$L->MB;
+		$size = $size / 1048576;
+		$unit = " $L->MB";
 	} elseif ($size >= 1024) {
-		$size = $size/1024;
-		$unit = ' '.$L->KB;
+		$size = $size / 1024;
+		$unit = " $L->KB";
 	} else {
-		$size = $size." ".$L->Bytes;
+		$size = "$size $L->Bytes";
 	}
 	return $round ? round($size, $round).$unit : $size;
 }
@@ -263,7 +263,7 @@ function _setcookie ($name, $value, $expire = 0, $httponly = false, $api = false
 					if ($Config->server['mirror_index'] != -1 && $domain != $Config->core['cookie_domain']) {
 						$url	= $Config->core_url();
 						if ($Key->add($database, $key = $Key->generate($database), $data)) {
-							$urls[] = $url.'/api/System/user/setcookie/'.$key;
+							$urls[] = $url."/api/System/user/setcookie/$key";
 						}
 						unset($url);
 					}
@@ -271,7 +271,7 @@ function _setcookie ($name, $value, $expire = 0, $httponly = false, $api = false
 						$mirrors_url[$i] = explode(';', $mirrors_url[$i], 2)[0];
 						if ($d && $d != $domain) {
 							if ($Key->add($database, $key = $Key->generate($database), $data)) {
-								$urls[]	= $mirrors_url[$i].'/api/System/user/setcookie/'.$key;
+								$urls[]	= $mirrors_url[$i]."/api/System/user/setcookie/$key";
 							}
 						}
 					}
@@ -340,7 +340,7 @@ function get_timezones_list () {
 							str_pad(floor(abs($offset / 3600)), 2, 0, STR_PAD_LEFT).':'.
 							str_pad(abs(($offset % 3600) / 60), 2, 0, STR_PAD_LEFT);
 			$timezones_[(39600 + $offset).$tz] = [
-				'key'	=> strtr($tz, '_', ' ').' ('.$offset_.')',
+				'key'	=> strtr($tz, '_', ' ')." ($offset_)",
 				'value'	=> $tz
 			];
 		}
@@ -461,7 +461,7 @@ function pages ($page, $total, $url, $head_links = false) {
 				$i,
 				[
 					'href'	=> $i == $page ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
-					'class'	=> $i == $page ? 'cs-button uk-button-primary disabled' : 'cs-button'
+					'class'	=> $i == $page ? 'cs-button uk-button-primary uk-frozen' : 'cs-button'
 				]
 			];
 			if ($head_links && ($i == $page - 1 || $i == $page + 1)) {
@@ -478,7 +478,7 @@ function pages ($page, $total, $url, $head_links = false) {
 					$i,
 					[
 						'href'	=> $i == $page ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
-						'class'	=> $i == $page ? 'cs-button uk-button-primary disabled' : 'cs-button'
+						'class'	=> $i == $page ? 'cs-button uk-button-primary uk-frozen' : 'cs-button'
 					]
 				];
 				if ($head_links&& ($i == $page - 1 || $i == $page + 1)) {
@@ -491,7 +491,7 @@ function pages ($page, $total, $url, $head_links = false) {
 			$output[]	= [
 				'...',
 				[
-					'class'	=> 'cs-button disabled'
+					'class'	=> 'cs-button uk-frozen'
 				]
 			];
 			for ($i = $total - 2; $i <= $total; ++$i) {
@@ -516,7 +516,7 @@ function pages ($page, $total, $url, $head_links = false) {
 			$output[]	= [
 				'...',
 				[
-					'class'	=> 'cs-button disabled'
+					'class'	=> 'cs-button uk-frozen'
 				]
 			];
 			for ($i = $total - 6; $i <= $total; ++$i) {
@@ -524,7 +524,7 @@ function pages ($page, $total, $url, $head_links = false) {
 					$i,
 					[
 						'href'	=> $i == $page ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
-						'class'	=> $i == $page ? 'cs-button uk-button-primary disabled' : 'cs-button'
+						'class'	=> $i == $page ? 'cs-button uk-button-primary uk-frozen' : 'cs-button'
 					]
 				];
 				if ($head_links && ($i == $page - 1 || $i == $page + 1)) {
@@ -547,7 +547,7 @@ function pages ($page, $total, $url, $head_links = false) {
 			$output[]	= [
 				'...',
 				[
-					'class'	=> 'cs-button disabled'
+					'class'	=> 'cs-button uk-frozen'
 				]
 			];
 			for ($i = $page - 1; $i <= $page + 3; ++$i) {
@@ -555,7 +555,7 @@ function pages ($page, $total, $url, $head_links = false) {
 					$i,
 					[
 						'href'	=> $i == $page ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
-						'class'	=> $i == $page ? 'cs-button uk-button-primary disabled' : 'cs-button'
+						'class'	=> $i == $page ? 'cs-button uk-button-primary uk-frozen' : 'cs-button'
 					]
 				];
 				if ($head_links && ($i == $page - 1 || $i == $page + 1)) {
@@ -568,7 +568,7 @@ function pages ($page, $total, $url, $head_links = false) {
 			$output[]	= [
 				'...',
 				[
-					'class'	=> 'cs-button disabled'
+					'class'	=> 'cs-button uk-frozen'
 				]
 			];
 			for ($i = $total - 1; $i <= $total; ++$i) {
@@ -582,7 +582,7 @@ function pages ($page, $total, $url, $head_links = false) {
 			}
 		}
 	}
-	return h::{'a'}($output);
+	return h::a($output);
 }
 /**
  * Pages navigation based on buttons (for search forms, etc.)
@@ -609,7 +609,7 @@ function pages_buttons ($page, $total, $url = false) {
 					'formaction'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
 					'value'			=> $i,
 					'type'			=> $i == $page ? 'button' : 'submit',
-					'class'			=> $i == $page ? 'uk-button-primary disabled' : false
+					'class'			=> $i == $page ? 'uk-button-primary uk-frozen' : false
 				]
 			];
 		}
@@ -622,7 +622,7 @@ function pages_buttons ($page, $total, $url = false) {
 						'formaction'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
 						'value'			=> $i == $page ? false : $i,
 						'type'			=> $i == $page ? 'button' : 'submit',
-						'class'			=> $i == $page ? 'uk-button-primary disabled' : false
+						'class'			=> $i == $page ? 'uk-button-primary uk-frozen' : false
 					]
 				];
 			}
@@ -668,7 +668,7 @@ function pages_buttons ($page, $total, $url = false) {
 						'formaction'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
 						'value'			=> $i == $page ? false : $i,
 						'type'			=> $i == $page ? 'button' : 'submit',
-						'class'			=> $i == $page ? 'uk-button-primary disabled' : false
+						'class'			=> $i == $page ? 'uk-button-primary uk-frozen' : false
 					]
 				];
 			}
@@ -697,7 +697,7 @@ function pages_buttons ($page, $total, $url = false) {
 						'formaction'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
 						'value'			=> $i == $page ? false : $i,
 						'type'			=> $i == $page ? 'button' : 'submit',
-						'class'			=> $i == $page ? 'uk-button-primary disabled' : false
+						'class'			=> $i == $page ? 'uk-button-primary uk-frozen' : false
 					]
 				];
 			}

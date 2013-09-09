@@ -1,0 +1,32 @@
+/**
+ * @package		CleverStyle CMS
+ * @subpackage	CleverStyle theme
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+
+@import "../../../css/config";
+
+body {
+	background-color : $body-bg;
+
+	> footer {
+		background : rgba($base-bg, .30);
+		color      : $base-bg;
+
+		> div > a {
+			color : $base-bg;
+		}
+	}
+}
+
+#body {
+	background : rgba($base-bg, .15);
+	border     : 1px solid rgba($base-bg, .25);
+}
+
+#main_content > div {
+	background : rgba($base-bg, .95);
+	box-shadow : 0 0 0 11px rgba($base-bg, .25), 0 0 0 10px rgba(#000, .15);
+}

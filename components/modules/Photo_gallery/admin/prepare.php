@@ -13,7 +13,7 @@ $Index->title_auto	= false;
 $L					= Language::instance();
 $Page				= Page::instance();
 $Page->title($L->administration)->title($L->Photo_gallery);
-$Page->mainsubmenu	= h::{'a.active'}(
+$Page->main_sub_menu	= h::{'li.uk-active a'}(
 	$L->photo_gallery_galleries,
 	[
 		'href'	=> 'admin/Photo_gallery'
