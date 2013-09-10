@@ -344,7 +344,7 @@ class Config {
 		$modules								= array_combine(
 			array_map(
 				function ($module) use ($L) {
-					return $L->get($module);
+					return path($L->get($module));
 				},
 				$modules
 			),

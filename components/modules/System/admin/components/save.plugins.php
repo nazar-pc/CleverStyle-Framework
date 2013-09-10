@@ -94,6 +94,8 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			);
 			if (!$extract) {
 				$Page->warning($L->plugin_files_unpacking_error);
+				unlink($plugin_dir.'/fs_old.json');
+				unlink($plugin_dir.'/meta_old.json');
 				break;
 			}
 			unset($extract);
@@ -115,6 +117,8 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 				}
 				if (!$success) {
 					$Page->warning($L->plugin_files_unpacking_error);
+					unlink($plugin_dir.'/fs_old.json');
+					unlink($plugin_dir.'/meta_old.json');
 					break;
 				}
 				unset($success, $mirror, $result);

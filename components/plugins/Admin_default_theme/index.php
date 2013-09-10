@@ -11,7 +11,7 @@ Trigger::instance()->register(
 	'System/Page/pre_display',
 	function () {
 		if (ADMIN && in_array('Admin_default_theme', Config::instance()->components['plugins'])) {
-			Page::instance()->set_theme('CleverStyle')->set_color_scheme('Green');
+			Page::instance()->set_theme('CleverStyle')->set_color_scheme('Default');
 		}
 	}
 );

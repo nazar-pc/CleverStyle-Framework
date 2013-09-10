@@ -274,6 +274,8 @@ if (isset($_POST['update_modules_list'])) {
 			);
 			if (!$extract) {
 				$Page->warning($L->module_files_unpacking_error);
+				unlink($module_dir.'/fs_old.json');
+				unlink($module_dir.'/meta_old.json');
 				break;
 			}
 			unset($extract);
@@ -295,6 +297,8 @@ if (isset($_POST['update_modules_list'])) {
 				}
 				if (!$success) {
 					$Page->warning($L->module_files_unpacking_error);
+					unlink($module_dir.'/fs_old.json');
+					unlink($module_dir.'/meta_old.json');
 					break;
 				}
 				unset($success, $mirror, $result);
@@ -408,6 +412,8 @@ if (isset($_POST['update_modules_list'])) {
 			);
 			if (!$extract) {
 				$Page->warning($L->system_files_unpacking_error);
+				unlink(DIR.'/core/fs_old.json');
+				unlink($module_dir.'/meta_old.json');
 				break;
 			}
 			unset($extract);
@@ -429,6 +435,8 @@ if (isset($_POST['update_modules_list'])) {
 				}
 				if (!$success) {
 					$Page->warning($L->system_files_unpacking_error);
+					unlink(DIR.'/core/fs_old.json');
+					unlink($module_dir.'/meta_old.json');
 					break;
 				}
 				unset($success, $mirror, $result);

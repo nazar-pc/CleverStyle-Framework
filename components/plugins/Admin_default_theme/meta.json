@@ -1,7 +1,7 @@
 {
 	"package"		: "Admin_default_theme",
 	"category"		: "plugins",
-	"version"		: "0.004",
+	"version"		: "0.005",
 	"description"	: "Forces default CleverStyle theme in all administration pages, that is helpful, because there is no need to adopt custom theme for admin panel.",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",

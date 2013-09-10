@@ -333,7 +333,7 @@ class Index {
 				)
 			) {
 				$title			= $L->$module;
-				$path			= $title;
+				$path			= path($title);
 				$hide			= false;
 				Trigger::instance()->run(
 					'System/Index/mainmenu',
