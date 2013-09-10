@@ -133,7 +133,11 @@
             $this.attr('title', $this.data('title')).attr('data-title', '');
           }
           pos = $this.data('pos');
-          return $this.attr('data-uk-tooltip', pos ? "{pos:'" + pos + "'}" : '');
+          return $this.data('tooltip', new UI.tooltip($this, UI.Utils.options({
+            pos: pos ? pos : 'top',
+            animation: true,
+            delay: 200
+          })));
         });
       },
       /**

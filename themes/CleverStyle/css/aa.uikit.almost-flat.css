@@ -6952,7 +6952,9 @@ input.uk-search-field {
  * Box with scrolling enabled
  */
 .uk-scrollable-box {
-  max-height: 150px;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  max-height: 170px;
   padding: 10px;
   border: 1px solid #dddddd;
   overflow: auto;

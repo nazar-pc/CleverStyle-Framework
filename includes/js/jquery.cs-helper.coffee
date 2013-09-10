@@ -130,7 +130,17 @@ do ($=jQuery) ->
 						.attr('data-title', '')
 				pos		= $this.data('pos')
 				$this
-					.attr('data-uk-tooltip', if pos then "{pos:'#{pos}'}" else '')
+					.data(
+						'tooltip'
+						new UI.tooltip(
+							$this
+							UI.Utils.options(
+								pos			: if pos then pos else 'top'
+								animation	: true
+								delay		: 200
+							)
+						)
+					)
 		###*
 		 * Dialog with Twitter Bootstrap
 		 *
