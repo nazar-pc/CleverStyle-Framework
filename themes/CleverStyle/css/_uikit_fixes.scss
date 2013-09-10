@@ -15,6 +15,14 @@
 	margin-top : auto;
 }
 
+a {
+	line-height : normal;
+
+	&:focus {
+		outline : none;
+	}
+}
+
 .uk-alert-default {
 	background : #ebf7fd;
 	color      : #2d7091;

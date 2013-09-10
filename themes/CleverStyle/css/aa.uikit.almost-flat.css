@@ -3636,7 +3636,7 @@ a.uk-button {
  ========================================================================== */
 @font-face {
   font-family: 'FontAwesome';
-  src: url(../../../includes/fonts/fontawesome-webfont.woff) format("woff");
+  src: url(../fonts/fontawesome-webfont.woff) format("woff");
   font-weight: normal;
   font-style: normal;
 }
