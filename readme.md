@@ -40,27 +40,27 @@ Copyright (c) 2011-2013, Nazar Mokrynskyi
 Main features
 =
 
-* Components support
- * Modules support (for displaying main page content)
- * Plugins support (are loaded on every page and provides additional functionality)
- * Blocks support (are placed on around the page for displaying additional information)
-* Human readable addresses support
-* Users groups and types support
-* Users permissions control support
-* Complete multilingual support (both interface and content)
- * Content autotranslation support
-* CSS and JavaScript minification and autocompression support
-* Site mirrors support
- * Domain mirrors support
- * Support of physical server mirrors for every domain name
-* Themes and color schemes support
-* Multiple Databases support
- * Multiple Databases mirrors support
-* Multiple files storages support
-* System cache support
-* IP filtering and restriction support
-* External site API support
-* IPv6 support
+* Components
+ * Modules (for displaying main page content)
+ * Plugins (are loaded on every page and provides additional functionality)
+ * Blocks (are placed on around the page for displaying additional information)
+* Human readable addresses
+* Users groups and types
+* Users permissions control
+* Localization and internationalization (both interface and content)
+ * Content autotranslation
+* CSS and JavaScript minification and autocompression
+* Site mirrors
+ * Domain mirrors
+ * Physical server mirrors for every domain name
+* Themes and color schemes
+* Multiple Databases
+ * Multiple Databases mirrors
+* Multiple files storages
+* System cache
+* IP filtering and restriction
+* RESTful API
+* IPv6
 
 Requirements:
 =
