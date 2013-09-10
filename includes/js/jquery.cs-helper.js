@@ -141,7 +141,7 @@
         });
       },
       /**
-      		 * Dialog with Twitter Bootstrap
+      		 * Dialog with UIkit
       		 *
       		 * Required DOM structure * > *, plugin must be applied to the root element
       		 * If child element is not present - content will be automatically wrapped with <div>
