@@ -135,9 +135,9 @@
         $('.cs-header-registration-process').click(function() {
           var L, modal;
           L = cs.Language;
-          modal = $(("<div title=\"" + L.rules_agree + "\">\n	<div>\n		" + cs.rules_text + "\n		<p class=\"cs-right\">\n			<button class=\"cs-registration-continue uk-button uk-button-primary\">" + L.yes + "</button>\n		</p>\n	</div>\n</div>").appendTo('body').cs().modal('show').on('uk.modal.hide', function() {
+          modal = $("<div title=\"" + L.rules_agree + "\">\n	<div>\n		" + cs.rules_text + "\n		<p class=\"cs-right\">\n			<button class=\"cs-registration-continue uk-button uk-button-primary\">" + L.yes + "</button>\n		</p>\n	</div>\n</div>").appendTo('body').cs().modal('show').on('uk.modal.hide', function() {
             return $(this).remove();
-          }));
+          });
           return modal.find('.cs-registration-continue').click(function() {
             modal.cs().modal('close').remove();
             return cs.registration($('.cs-header-registration-email').val());

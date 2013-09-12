@@ -116,7 +116,7 @@ $ ->
 						.removeClass('uk-icon-unlock')
 			$('.cs-header-registration-process').click ->
 				L		= cs.Language
-				modal	= $ """
+				modal	= $("""
 						<div title="#{L.rules_agree}">
 							<div>
 								#{cs.rules_text}
@@ -125,7 +125,7 @@ $ ->
 								</p>
 							</div>
 						</div>
-					"""
+					""")
 					.appendTo('body')
 					.cs().modal('show')
 					.on(
