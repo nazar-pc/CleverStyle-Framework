@@ -100,12 +100,15 @@ function install_process () {
 	/**
 	 * Connecting to the DataBase
 	 */
+	define('DEBUG', false);
+	require_once DIR.'/fs/'.$fs['core/traits/Singleton.php'];
+	require_once DIR.'/fs/'.$fs['core/classes/DB.php'];
 	require_once DIR.'/fs/'.$fs['core/engines/DB/_Abstract.php'];
-	require_once DIR.'/fs/'.$fs['core/engines/DB/'.$_POST['db_engine'].'.php'];
+	require_once DIR.'/fs/'.$fs["core/engines/DB/$_POST[db_engine].php"];
 	/**
 	 * @var \cs\DB\_Abstract $cdb
 	 */
-	$cdb							= '\\cs\\DB\\'.$_POST['db_engine'];
+	$cdb							= "\\cs\\DB\\$_POST[db_engine]";
 	$cdb							= new $cdb(
 		$_POST['db_name'],
 		$_POST['db_user'],
@@ -209,7 +212,7 @@ function install_process () {
 	}');
 	$config['name']					= $config['description']	= (string)$_POST['site_name'];
 	$config['keywords']				= implode(', ', _trim(explode(' ', $config['name']), ','));
-	$config['url']					= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+	$config['url']					= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http')."://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 	$config['url']					= mb_substr(
 		$config['url'],
 		0,
@@ -238,12 +241,12 @@ function install_process () {
 		array_map(
 			function ($index, $file) {
 				if (
-					!file_exists(pathinfo(ROOT.'/'.$file, PATHINFO_DIRNAME)) &&
-					!mkdir(pathinfo(ROOT.'/'.$file, PATHINFO_DIRNAME), 0700, true)
+					!file_exists(pathinfo(ROOT."/$file", PATHINFO_DIRNAME)) &&
+					!mkdir(pathinfo(ROOT."/$file", PATHINFO_DIRNAME), 0700, true)
 				) {
 					return 0;
 				}
-				return (int)copy(DIR.'/fs/'.$index, ROOT.'/'.$file);
+				return (int)copy(DIR."/fs/$index", ROOT."/$file");
 			},
 			$fs,
 			array_keys($fs)
@@ -339,10 +342,10 @@ function install_process () {
 	/**
 	 * DataBase structure import
 	 */
-	if (!file_exists(DIR.'/install/DB/'.$_POST['db_engine'].'.sql')) {
+	if (!file_exists(DIR."/install/DB/$_POST[db_engine].sql")) {
 		return 'Can\'t find system tables structure for selected database engine! Installation aborted.';
 	}
-	if (!$cdb->q(explode(';', file_get_contents(DIR.'/install/DB/'.$_POST['db_engine'].'.sql')))) {
+	if (!$cdb->q(explode(';', file_get_contents(DIR."/install/DB/$_POST[db_engine].sql")))) {
 		return 'Can\'t import system tables structure for selected database engine! Installation aborted.';
 	}
 	/**

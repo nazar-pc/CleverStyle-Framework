@@ -27,6 +27,7 @@ $list				= array_merge(
 	get_files_list(DIR.'/templates', false, 'f', true, true, false, false, true),
 	get_files_list(DIR.'/themes', false, 'f', true, true, false, false, true),
 	[
+		DIR.'/index.php',
 		DIR.'/license.txt',
 		DIR.'/Storage.php'
 	]
@@ -120,11 +121,6 @@ $list				= array_map(
 /**
  * Addition of separate files into package
  */
-$list[]				= 'index.php';
-$phar->addFromString(
-	'fs/'.(count($list)-1),
-	str_replace('$version$', $version, file_get_contents(DIR.'/index.php'))
-);
 $list[]				= 'readme.html';
 $phar->addFromString(
 	'fs/'.(count($list)-1),
