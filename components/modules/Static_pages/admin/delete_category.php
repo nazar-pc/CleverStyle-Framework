@@ -19,7 +19,7 @@ $title						= Static_pages::instance()->get_category($id)['title'];
 Page::instance()->title($L->deletion_of_page_category($title));
 $Index->buttons				= false;
 $Index->cancel_button_back	= true;
-$Index->action				= 'admin/OAuth2';
+$Index->action				= 'admin/Static_pages';
 $Index->content(
 	h::{'p.lead.cs-center'}(
 		$L->sure_to_delete_page_category($title)

@@ -19,7 +19,7 @@ $data						= Static_pages::instance()->get_category($id);
 Page::instance()->title($L->editing_of_page_category($data['title']));
 $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
-$Index->action				= 'admin/OAuth2';
+$Index->action				= 'admin/Static_pages';
 $Index->content(
 	h::{'p.lead.cs-center'}(
 		$L->editing_of_page_category($data['title'])

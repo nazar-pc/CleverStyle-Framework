@@ -34,13 +34,13 @@ $Index->content(
 		[
 			$L->add_page,
 			[
-				'href'	=> 'admin/OAuth2/add_page/'.array_slice($rc, -1)[0]
+				'href'	=> 'admin/Static_pages/add_page/'.array_slice($rc, -1)[0]
 			]
 		]/*,
 			[
 				$L->add_page_live,
 				[
-					'href'	=> 'admin/OAuth2/add_page_live/'.array_slice($rc, -1)[0]
+					'href'	=> 'admin/Static_pages/add_page_live/'.array_slice($rc, -1)[0]
 				]
 			]*/
 	)

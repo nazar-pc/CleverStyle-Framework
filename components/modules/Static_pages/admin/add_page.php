@@ -18,7 +18,7 @@ $L							= Language::instance();
 Page::instance()->title($L->adding_of_page);
 $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
-$Index->action				= 'admin/OAuth2';
+$Index->action				= 'admin/Static_pages';
 $Index->content(
 	h::{'p.lead.cs-center'}(
 		$L->adding_of_page
