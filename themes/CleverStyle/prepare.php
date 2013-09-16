@@ -7,4 +7,6 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-Page::instance()->Head	.= "<!--[if IE]><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\"><![endif]-->\n";
+if(preg_match('/msie/i',$_SERVER['HTTP_USER_AGENT'])) {
+	Page::instance()->Head	.= '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">';
+}
