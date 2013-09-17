@@ -55,7 +55,8 @@
  *  ['id'	=> <i>user_id</i>]
  */
 namespace	cs;
-use			cs\DB\Accessor;
+use			cs\DB\Accessor,
+			h;
 /**
  * Class for users/groups/permissions manipulating
  *
@@ -682,9 +683,29 @@ class User extends Accessor {
 		return $id && $id != 1 ? $id : false;
 	}
 	/**
+	 * Get user avatar, if no one present - uses Gravatar
+	 *
+	 * @param int|null	$size	Avatar size, if not specified or resizing is not possible - original image is used
+	 * @param bool|int	$user	If not specified - current user assumed
+	 *
+	 * @return string
+	 */
+	function avatar ($size = null, $user = false) {
+		$user	= (int)($user ?: $this->id);
+		$avatar	= $this->get('avatar', $user);
+		if (!$avatar && $this->id != 1) {
+			$avatar	= 'https://www.gravatar.com/avatar/'.md5($this->get('email', $user)).'?d=mm';
+			$avatar	.= '&d='.urlencode(Config::instance()->base_url().'/includes/img/guest.gif');
+		}
+		if (!$avatar) {
+			$avatar	= '/includes/img/guest.gif';
+		}
+		return h::prepare_url($avatar, true);
+	}
+	/**
 	 * Get user name or login or email, depending on existing information
 	 *
-	 * @param  bool|int $user	If not specified - current user assumed
+	 * @param bool|int $user	If not specified - current user assumed
 	 *
 	 * @return string
 	 */

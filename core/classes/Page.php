@@ -1167,11 +1167,7 @@ class Page {
 	protected function get_header_info () {
 		$L		= Language::instance();
 		$User	= User::instance(true);
-		if ($User->avatar) {
-			$this->user_avatar_image = h::prepare_url($User->avatar, true);
-		} else {
-			$this->user_avatar_image = '/includes/img/guest.gif';
-		}
+		$this->user_avatar_image = $User->avatar();
 		if ($User->user()) {
 			$this->header_info = h::{'div.cs-header-user-block'}(
 				h::b(

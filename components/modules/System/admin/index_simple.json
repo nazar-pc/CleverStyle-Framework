@@ -9,8 +9,8 @@
 	],
 	"components"	: [
 		"modules",
-		"blocks",
-		"plugins"
+		"plugins",
+		"blocks"
 	],
 	"users"			: [
 		"general",

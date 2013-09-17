@@ -84,6 +84,16 @@ class Properties {
 		return User::instance()->get($item, $this->id);
 	}
 	/**
+	 * Get user avatar, if no one present - uses Gravatar
+	 *
+	 * @param int|null	$size	Avatar size, if not specified or resizing is not possible - original image is used
+	 *
+	 * @return string
+	 */
+	function avatar ($size = null) {
+		return $this->avatar($size);
+	}
+	/**
 	 * Get user name or login or email, depending on existing information
 	 *
 	 * @return string

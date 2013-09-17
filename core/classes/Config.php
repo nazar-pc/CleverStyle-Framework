@@ -593,7 +593,7 @@ class Config {
 	 */
 	function module ($module_name) {
 		if (!isset($this->components['modules'][$module_name])) {
-			return false;
+			return False_class::instance();
 		}
 		return (new Config\Module_Properties($this->components['modules'][$module_name], $module_name));
 	}

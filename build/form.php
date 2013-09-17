@@ -21,18 +21,30 @@ echo	h::{'form[method=post]'}(
 			'Plugins'
 		],
 		[
-			h::{'select#modules[name=modules[]][size=10][multiple]'}(
-				get_files_list(DIR.'/components/modules', '/[^System)]/', 'd'),
-				[
-					'selected'	=> 'none'
-				]
-			),
-			h::{'select#plugins[name=plugins[]][size=10][multiple]'}(
-				get_files_list(DIR.'/components/plugins', false, 'd'),
-				[
-					'selected'	=> 'none'
-				]
-			)
+			h::{'select#modules[name=modules[]][size=10][multiple] option'}(array_map(
+				function ($module) {
+					return [
+						$module,
+						file_exists(DIR."/components/modules/$module/meta.json") ? [] : [
+							'title'		=> 'No meta.json file found',
+							'disabled'
+						]
+					];
+				},
+				get_files_list(DIR.'/components/modules', '/[^System)]/', 'd')
+			)),
+			h::{'select#plugins[name=plugins[]][size=10][multiple] option'}(array_map(
+				function ($plugin) {
+					return [
+						$plugin,
+						file_exists(DIR."/components/plugins/$plugin/meta.json") ? false : [
+							'title'		=> 'No meta.json file found',
+							'disabled'
+						]
+					];
+				},
+				get_files_list(DIR.'/components/plugins', false, 'd')
+			))
 		]
 	).
 	h::{'button.license[type=button]'}(

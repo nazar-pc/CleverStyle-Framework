@@ -585,11 +585,12 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 					]
 				);
 			}
-			$addition_state .= h::{'icon.cs-pointer'}(
+			$addition_state .= h::icon(
 				'link',
 				[
 					'data-title'	=> $L->api_exists.h::br().(file_exists($file) ? $L->click_to_view_details : ''),
-					'onClick'		=> "$('#{$module}_api').cs().modal('show');"
+					'onClick'		=> "$('#{$module}_api').cs().modal('show');",
+					'class'			=> file_exists($file) ? 'cs-pointer' : false
 				]
 			);
 			unset($tag, $file);

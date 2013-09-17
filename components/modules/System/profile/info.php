@@ -78,7 +78,7 @@ $Page->og(
 $Page->content(
 	h::{'table.cs-table-borderless.cs-profile-table tr'}([
 		h::{'td.cs-profile-avatar[rowspan=2] img'}([
-			'src'	=> $data['avatar'] ? h::prepare_url($data['avatar']) : '/includes/img/guest.gif',
+			'src'	=> $User->avatar(128, $id),
 			'alt'	=> $name,
 			'title'	=> $name
 		]).
