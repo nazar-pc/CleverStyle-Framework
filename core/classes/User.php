@@ -674,9 +674,14 @@ class User extends Accessor {
 			return false;
 		}
 		$Cache	= Cache::instance();
-		if (($id = $Cache->{'users/'.$login_hash}) === false) {
-			$Cache->{'users/'.$login_hash} = $id = $this->db()->qfs([
-				"SELECT `id` FROM `[prefix]users` WHERE `login_hash` = '%1\$s' OR `email_hash` = '%1\$s' LIMIT 1",
+		if (($id = $Cache->{"users/$login_hash"}) === false) {
+			$Cache->{"users/$login_hash"} = $id = $this->db()->qfs([
+				"SELECT `id`
+				FROM `[prefix]users`
+				WHERE
+					`login_hash`	= '%1\$s' OR
+					`email_hash`	= '%1\$s'
+				LIMIT 1",
 				$login_hash
 			]);
 		}
@@ -694,7 +699,7 @@ class User extends Accessor {
 		$user	= (int)($user ?: $this->id);
 		$avatar	= $this->get('avatar', $user);
 		if (!$avatar && $this->id != 1) {
-			$avatar	= 'https://www.gravatar.com/avatar/'.md5($this->get('email', $user)).'?d=mm';
+			$avatar	= 'https://www.gravatar.com/avatar/'.md5($this->get('email', $user))."?d=mm&s=$size";
 			$avatar	.= '&d='.urlencode(Config::instance()->base_url().'/includes/img/guest.gif');
 		}
 		if (!$avatar) {
