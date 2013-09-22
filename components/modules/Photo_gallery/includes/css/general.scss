@@ -74,7 +74,7 @@
 	 * Fotorama fix
 	 */
 	.fotorama__stage {
-		width:  100% !important;
+		width : 100% !important;
 	}
 
 	.cs-photo-gallery-image-control {
@@ -94,13 +94,20 @@
 }
 .cs-photo-gallery-edit-images {
 	article {
-		height : 266px;
+		height       : 266px;
+		padding-left : 266px;
+		position     : relative;
 
-		img {
-			float        : left;
-			height       : 256px;
-			margin-right : 10px;
-			width        : 256px;
+		> a {
+			left     : 0;
+			position : absolute;
+			top      : 0;
+
+			img {
+				height       : 256px;
+				margin-right : 10px;
+				width        : 256px;
+			}
 		}
 
 		input, textarea {
