@@ -9,7 +9,6 @@ namespace	cs\Cache;
 use			cs\Cache;
 /**
  * Class for simplified work with cache, when using common prefix
- * @package cs\Cache
  */
 class Prefix {
 
