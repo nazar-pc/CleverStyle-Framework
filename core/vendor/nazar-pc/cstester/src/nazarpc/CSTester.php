@@ -32,8 +32,7 @@ class CSTester {
 		if ($_SERVER['DOCUMENT_ROOT']) {
 			$this->test_file	= str_replace(rtrim($_SERVER['DOCUMENT_ROOT'], '/').'/', '', $this->test_file);
 		} else {
-			$this->test_file	= explode('/', $this->test_file);
-			$this->test_file	= array_pop($this->test_file);
+			$this->test_file	= array_pop(explode('/', $this->test_file));
 		}
 	}
 	/**
@@ -136,6 +135,7 @@ class CSTester {
 		}
 		closedir($suites_dir);
 		unset($suites_dir, $suite);
+		natcasesort($suites_list);
 		$suites_count	= count($suites_list);
 		/**
 		 * Display tester header

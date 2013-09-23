@@ -6,7 +6,6 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-require DIR.'/core/traits/Singleton.php';
 require DIR.'/core/classes/Core.php';
 define('CONFIG', TEMP);
 file_put_contents(CONFIG.'/main.json', '{

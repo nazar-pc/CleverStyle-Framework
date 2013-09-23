@@ -1,0 +1,6 @@
+{
+	"title"	: "Mail class",
+	"tests"	: {
+		"phpmailer_fix"			: "PHPMailer fix"
+	}
+}

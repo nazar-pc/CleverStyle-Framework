@@ -7,16 +7,16 @@
     "packages": [
         {
             "name": "nazar-pc/cstester",
-            "version": "0.1.6",
+            "version": "0.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nazar-pc/CSTester.git",
-                "reference": "0.1.6"
+                "reference": "9ac29d479efcfe4ef1fec7287c8c0bd3d89cd2e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nazar-pc/CSTester/zipball/0.1.6",
-                "reference": "0.1.6",
+                "url": "https://api.github.com/repos/nazar-pc/CSTester/zipball/9ac29d479efcfe4ef1fec7287c8c0bd3d89cd2e1",
+                "reference": "9ac29d479efcfe4ef1fec7287c8c0bd3d89cd2e1",
                 "shasum": ""
             },
             "require": {
@@ -46,7 +46,7 @@
                 "test",
                 "testing"
             ],
-            "time": "2013-07-30 10:41:37"
+            "time": "2013-07-30 12:18:33"
         }
     ],
     "packages-dev": [

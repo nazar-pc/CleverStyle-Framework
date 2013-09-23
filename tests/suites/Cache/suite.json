@@ -1,7 +1,7 @@
 {
 	"title"	: "Cache class",
 	"tests"	: {
-		"construct"				: "Constructor",
+		"constructor"			: "Constructor",
 		"get_set_del"			: "Get/set/delete item",
 		"debug"					: "Debug mode",
 		"disable"				: "Disabling",
