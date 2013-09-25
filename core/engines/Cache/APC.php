@@ -25,7 +25,7 @@ class APC extends _Abstract {
 		if (!$this->apc) {
 			return false;
 		}
-		return apc_fetch(DOMAIN.'/'.$item);
+		return apc_fetch(DOMAIN."/$item");
 	}
 	/**
 	 * Put or change data of cache item
@@ -39,7 +39,7 @@ class APC extends _Abstract {
 		if (!$this->apc) {
 			return false;
 		}
-		return apc_store(DOMAIN.'/'.$item, $data);
+		return apc_store(DOMAIN."/$item", $data);
 	}
 	/**
 	 * Delete item from cache
@@ -52,7 +52,7 @@ class APC extends _Abstract {
 		if (!$this->apc) {
 			return false;
 		}
-		$item	= DOMAIN.'/'.$item;
+		$item	= DOMAIN."/$item";
 		$return	= true;
 		foreach (new \APCIterator('user') as $element) {
 			if (

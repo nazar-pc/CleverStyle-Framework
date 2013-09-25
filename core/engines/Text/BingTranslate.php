@@ -47,13 +47,13 @@ class BingTranslate extends _Abstract {
 			);
 		}
 		//Create a streams context.
-		$objContext = stream_context_create([
+		$objContext	= stream_context_create([
 			'http'   => [
 				'header' => 'Authorization: Bearer '.self::$accessToken
 			]
 		]);
 		//Call Soap Client and get translation
-		return @(new SoapClient(
+		$Soap		= new SoapClient(
 			'http://api.microsofttranslator.com/V2/Soap.svc',
 			[
 				'soap_version'		=> 'SOAP_1_2',
@@ -64,7 +64,11 @@ class BingTranslate extends _Abstract {
 				'stream_context'	=> $objContext,
 				'user_agent'		=> 'PHP-SOAP/'.PHP_VERSION."\r\nAuthorization: Bearer ".self::$accessToken
 			]
-		))->Translate([
+		);
+		if (!$Soap) {
+			return $text;
+		}
+		return $Soap->Translate([
 			'text'        => $text,
 			'from'        => $from,
 			'to'          => $to,

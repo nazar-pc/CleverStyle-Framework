@@ -26,11 +26,11 @@ class FileSystem extends _Abstract {
 	 * @return bool|mixed			Returns item on success of <b>false</b> on failure
 	 */
 	function get ($item) {
-		if (is_file(CACHE.'/'.$item) && is_readable(CACHE.'/'.$item) && $cache = file_get_contents(CACHE.'/'.$item, FILE_BINARY)) {
+		if (is_file(CACHE."/$item") && is_readable(CACHE."/$item") && $cache = file_get_contents(CACHE."/$item", FILE_BINARY)) {
 			if (($cache = @_json_decode($cache)) !== false) {
 				return $cache;
 			} else {
-				unlink(CACHE.'/'.$item);
+				unlink(CACHE."/$item");
 				return false;
 			}
 		}
@@ -48,19 +48,19 @@ class FileSystem extends _Abstract {
 		$data = @_json_encode($data);
 		if (mb_strpos($item, '/') !== false) {
 			$path	=mb_substr($item, 0, mb_strrpos($item, '/'));
-			if (!is_dir(CACHE.'/'.$path)) {
-				@mkdir(CACHE.'/'.$path, 0700, true);
+			if (!is_dir(CACHE."/$path")) {
+				@mkdir(CACHE."/$path", 0700, true);
 			}
 			unset($path);
 		}
-		if (!file_exists(CACHE.'/'.$item) || is_writable(CACHE.'/'.$item)) {
+		if (!file_exists(CACHE."/$item") || is_writable(CACHE."/$item")) {
 			if ($this->cache_size > 0) {
 				$dsize				= strlen($data);
 				if ($dsize > $this->cache_size) {
 					return false;
 				}
-				if (file_exists(CACHE.'/'.$item)) {
-					$dsize -= filesize(CACHE.'/'.$item);
+				if (file_exists(CACHE."/$item")) {
+					$dsize -= filesize(CACHE."/$item");
 				}
 				$cache_size_file	= fopen(CACHE.'/size', 'c+b');
 				$time				= microtime(true);
@@ -86,7 +86,7 @@ class FileSystem extends _Abstract {
 					}
 					unset($cache_list, $file);
 				}
-				if (($return = file_put_contents(CACHE.'/'.$item, $data, LOCK_EX | FILE_BINARY)) !== false) {
+				if (($return = file_put_contents(CACHE."/$item", $data, LOCK_EX | FILE_BINARY)) !== false) {
 					ftruncate($cache_size_file, 0);
 					fseek($cache_size_file, 0);
 					fwrite($cache_size_file, $cache_size > 0 ? $cache_size : 0);
@@ -95,11 +95,11 @@ class FileSystem extends _Abstract {
 				fclose($cache_size_file);
 				return $return;
 			} else {
-				return file_put_contents(CACHE.'/'.$item, $data, LOCK_EX | FILE_BINARY);
+				return file_put_contents(CACHE."/$item", $data, LOCK_EX | FILE_BINARY);
 			}
 		} else {
 			$L	= Language::instance();
-			trigger_error($L->file.' '.CACHE.'/'.$item.' '.$L->not_writable, E_USER_WARNING);
+			trigger_error($L->file.' '.CACHE."/$item $L->not_writable", E_USER_WARNING);
 			return false;
 		}
 	}
@@ -111,14 +111,14 @@ class FileSystem extends _Abstract {
 	 * @return bool
 	 */
 	function del ($item) {
-		if (is_writable(CACHE.'/'.$item)) {
-			if (is_dir(CACHE.'/'.$item)) {
+		if (is_writable(CACHE."/$item")) {
+			if (is_dir(CACHE."/$item")) {
 				/**
 				 * Speed-up of files deletion
 				 */
 				if (!($this->cache_size > 0)) {
 					get_files_list(
-						CACHE.'/'.$item,
+						CACHE."/$item",
 						false,
 						'f',
 						true,
@@ -133,12 +133,12 @@ class FileSystem extends _Abstract {
 						}
 					);
 				}
-				$files = get_files_list(CACHE.'/'.$item, false, 'fd');
+				$files = get_files_list(CACHE."/$item", false, 'fd');
 				foreach ($files as $file) {
-					$this->del($item.'/'.$file, false);
+					$this->del($item."/$file", false);
 				}
 				unset($files, $file);
-				return @rmdir(CACHE.'/'.$item);
+				return @rmdir(CACHE."/$item");
 			}
 			if ($this->cache_size > 0) {
 				$cache_size_file	= fopen(CACHE.'/size', 'c+b');
@@ -152,8 +152,8 @@ class FileSystem extends _Abstract {
 				}
 				unset($time);
 				$cache_size	= (int)stream_get_contents($cache_size_file);
-				$cache_size -= filesize(CACHE.'/'.$item);
-				if (@unlink(CACHE.'/'.$item)) {
+				$cache_size -= filesize(CACHE."/$item");
+				if (@unlink(CACHE."/$item")) {
 					ftruncate($cache_size_file, 0);
 					fseek($cache_size_file, 0);
 					fwrite($cache_size_file, $cache_size > 0 ? $cache_size : 0);
@@ -161,9 +161,9 @@ class FileSystem extends _Abstract {
 				flock($cache_size_file, LOCK_UN);
 				fclose($cache_size_file);
 			} else {
-				@unlink(CACHE.'/'.$item);
+				@unlink(CACHE."/$item");
 			}
-		} elseif (file_exists(CACHE.'/'.$item)) {
+		} elseif (file_exists(CACHE."/$item")) {
 			return false;
 		}
 		return true;

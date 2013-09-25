@@ -369,7 +369,7 @@ abstract class _Abstract {
 			if (!isset($query[1]) || !$query[1]) {
 				return false;
 			}
-			$query[1]	.= str_repeat(','.$query[1], count($params) - 1);
+			$query[1]	.= str_repeat(",$query[1]", count($params) - 1);
 			$query		= $query[0].'VALUES'.$query[1].$query[2];
 			$params_	= [];
 			foreach ($params as $p) {
@@ -428,9 +428,10 @@ abstract class _Abstract {
 			return false;
 		}
 		if ($like) {
-			$columns = $this->qfa('SHOW COLUMNS FROM `'.$table.'` LIKE \''.$like.'\'');
+			$like		= $this->s($like);
+			$columns	= $this->qfa("SHOW COLUMNS FROM `$table` LIKE $like");
 		} else {
-			$columns = $this->qfa('SHOW COLUMNS FROM `'.$table.'`');
+			$columns	= $this->qfa("SHOW COLUMNS FROM `$table`");
 		}
 		foreach ($columns as &$column) {
 			$column = $column['Field'];
@@ -446,9 +447,10 @@ abstract class _Abstract {
 	 */
 	function tables ($like = false) {
 		if ($like) {
-			return $this->qfa('SHOW TABLES FROM `'.$this->database.'` LIKE \''.$like.'\'');
+			$like		= $this->s($like);
+			return $this->qfa("SHOW TABLES FROM `$this->database` LIKE $like");
 		} else {
-			return $this->qfa('SHOW TABLES FROM `'.$this->database.'`');
+			return $this->qfa("SHOW TABLES FROM `$this->database`");
 		}
 	}
 	/**

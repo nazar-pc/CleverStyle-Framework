@@ -42,6 +42,7 @@ class Cache {
 		if (!$this->cache) {
 			return false;
 		}
+		$item	= trim($item, '/');
 		return $this->engine_instance->get($item);
 	}
 
@@ -60,6 +61,7 @@ class Cache {
 		if (!$this->cache) {
 			return true;
 		}
+		$item	= trim($item, '/');
 		return $this->engine_instance->set($item, $data);
 	}
 	/**
@@ -74,6 +76,7 @@ class Cache {
 			return false;
 		}
 		if (is_object($this->engine_instance)){
+			$item	= trim($item, '/');
 			return $this->engine_instance->del($item);
 		} else {
 			return false;

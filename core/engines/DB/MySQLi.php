@@ -36,14 +36,14 @@ class MySQLi extends _Abstract {
 			$host	= $host[0];
 		} elseif (count($host) == 2) {
 			if ($host[0] == 'p') {
-				$host	= $host[0].':'.$host[1];
+				$host	= "$host[0]:$host[1]";
 			} else {
 				$port	= $host[1];
 				$host	= $host[0];
 			}
 		} elseif (count($host) == 3) {
 			$port	= $host[2];
-			$host	= $host[0].':'.$host[1];
+			$host	= "$host[0]:$host[1]";
 		}
 		$this->instance = new \MySQLi($host, $user, $password, $database, $port);
 		if(is_object($this->instance) && !$this->instance->connect_errno) {
