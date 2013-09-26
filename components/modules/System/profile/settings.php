@@ -19,7 +19,7 @@ $L				= Language::instance();
 $Page			= Page::instance();
 $User			= User::instance();
 if (!$User->user()) {
-	define('ERROR_CODE', 403);
+	error_code(403);
 	$Page->error();
 	return;
 }

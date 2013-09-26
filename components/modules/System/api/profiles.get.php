@@ -10,7 +10,7 @@
 namespace	cs;
 $User	= User::instance();
 if ($User->guest()) {
-	define('ERROR_CODE', 403);
+	error_code(403);
 	return;
 }
 $fields	= [
@@ -37,7 +37,7 @@ if (isset($Config->route[1])) {
 			$id = array_intersect($id, $User->get_contacts())
 		)
 	) {
-		define('ERROR_CODE', 403);
+		error_code(403);
 		$Page->error('User is not in your contacts');
 	}
 	if ($single) {
@@ -51,6 +51,6 @@ if (isset($Config->route[1])) {
 		));
 	}
 } else {
-	define('ERROR_CODE', 400);
+	error_code(400);
 	$Page->error('Specified ids are expected');
 }

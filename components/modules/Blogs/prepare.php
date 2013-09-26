@@ -50,7 +50,7 @@ if (!API) {
 			if (mb_strpos($rc[0], ':')) {
 				array_unshift($rc, 'post');
 			} else {
-				define('ERROR_CODE', 404);
+				error_code(404);
 				return;
 			}
 		break;

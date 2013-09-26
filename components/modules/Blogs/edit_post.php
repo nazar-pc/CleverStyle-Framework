@@ -22,7 +22,7 @@ if (
 	!isset($Config->route[1]) ||
 	!($post = $Blogs->get($Config->route[1]))
 ) {
-	define('ERROR_CODE', 404);
+	error_code(404);
 	return;
 }
 if (
@@ -33,7 +33,7 @@ if (
 		$User->get_user_permission('admin/Blogs', 'edit_post')
 	)
 ) {
-	define('ERROR_CODE', 403);
+	error_code(403);
 	return;
 }
 $Page->title(

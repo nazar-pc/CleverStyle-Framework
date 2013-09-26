@@ -98,7 +98,7 @@ class Index {
 			file_exists($admin_path) && (file_exists("$admin_path/index.php") || file_exists("$admin_path/index.json"))
 		) {
 			if (!($User->admin() && $User->get_user_permission($this->permission_group = 'admin/'.MODULE, 'index'))) {
-				define('ERROR_CODE', 403);
+				error_code(403);
 				exit;
 			}
 			define('MFOLDER', $admin_path);
@@ -106,20 +106,20 @@ class Index {
 			$this->admin	= true;
 		} elseif (API && file_exists($api_path)) {
 			if (!$User->get_user_permission($this->permission_group = 'api/'.MODULE, 'index')) {
-				define('ERROR_CODE', 403);
+				error_code(403);
 				exit;
 			}
 			define('MFOLDER', $api_path);
 			$this->api		= true;
 		} elseif (file_exists(MODULES.'/'.MODULE)) {
 			if (!$User->get_user_permission($this->permission_group = MODULE, 'index')) {
-				define('ERROR_CODE', 403);
+				error_code(403);
 				exit;
 			}
 			define('MFOLDER', MODULES.'/'.MODULE);
 			$this->module	= true;
 		} else {
-			define('ERROR_CODE', 404);
+			error_code(404);
 			exit;
 		}
 		unset($admin_path, $api_path);
@@ -179,13 +179,13 @@ class Index {
 								if ($User->get_user_permission($this->permission_group, "$item/$subpart")) {
 									$this->subparts[] = $subpart;
 								} elseif (isset($rc[1]) && $rc[1] == $subpart) {
-									define('ERROR_CODE', 403);
+									error_code(403);
 									return;
 								}
 							}
 						}
 					} elseif ($rc[0] == $item) {
-						define('ERROR_CODE', 403);
+						error_code(403);
 						return;
 					}
 				}
@@ -210,7 +210,7 @@ class Index {
 					$this->subparts = $this->structure[$rc[0]];
 				}
 			} elseif ($rc[0] != '' && !empty($this->parts) && !in_array($rc[0], $this->parts)) {
-				define('ERROR_CODE', 404);
+				error_code(404);
 				return;
 			}
 			/**
@@ -248,7 +248,7 @@ class Index {
 					}
 					$rc[1] = $this->subparts[0];
 				} elseif ($rc[1] != '' && !empty($this->subparts) && !in_array($rc[1], $this->subparts)) {
-					define('ERROR_CODE', 404);
+					error_code(404);
 					return;
 				}
 				if (!$this->api) {

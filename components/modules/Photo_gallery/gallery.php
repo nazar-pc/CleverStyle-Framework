@@ -20,7 +20,7 @@ $Photo_gallery		= Photo_gallery::instance();
 $galleries			= $Photo_gallery->get_galleries_list();
 $gallery			= Config::instance()->route[1];
 if (!isset($galleries[$gallery])) {
-	define('ERROR_CODE', 404);
+	error_code(404);
 	return;
 }
 $gallery			= $Photo_gallery->get_gallery($galleries[$gallery]);

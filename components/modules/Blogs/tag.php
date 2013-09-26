@@ -20,7 +20,7 @@ $Page					= Page::instance();
 $User					= User::instance();
 $rc						= array_slice($Config->route, 1);
 if (!isset($rc[0])) {
-	define('ERROR_CODE', 404);
+	error_code(404);
 	return;
 }
 $L						= Language::instance();
@@ -76,7 +76,7 @@ $tag					= $cdb->qfs([
 	$rc[0]
 ]);
 if (!$tag) {
-	define('ERROR_CODE', 404);
+	error_code(404);
 	return;
 }
 $tag					= [

@@ -21,11 +21,11 @@ if (!(
 	User::instance()->user()
 )) {
 	sleep(1);
-	define('ERROR_CODE', 403);
+	error_code(403);
 	return;
 }
 if (!isset($_POST['files'], $_POST['gallery']) || empty($_POST['files'])) {
-	define('ERROR_CODE', 400);
+	error_code(400);
 	return;
 }
 $Photo_gallery	= Photo_gallery::instance();

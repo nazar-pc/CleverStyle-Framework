@@ -22,14 +22,14 @@ if (
 	!$User->guest()
 ) {
 	sleep(1);
-	define('ERROR_CODE', 403);
+	error_code(403);
 	return;
 } elseif (!$_POST['email']) {
-	define('ERROR_CODE', 400);
+	error_code(400);
 	$Page->error($L->please_type_your_email);
 	return;
 } elseif (!($id = $User->get_id(mb_strtolower($_POST['email'])))) {
-	define('ERROR_CODE', 400);
+	error_code(400);
 	$Page->error($L->user_with_such_login_email_not_found);
 	return;
 }
@@ -48,6 +48,6 @@ if (
 ) {
 	$Page->json('OK');
 } else {
-	define('ERROR_CODE', 500);
+	error_code(500);
 	$Page->error($L->restore_password_server_error);
 }

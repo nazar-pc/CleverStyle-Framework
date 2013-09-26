@@ -21,14 +21,14 @@ if (!(
 	$Config->server['ajax']
 )) {
 	sleep(1);
-	define('ERROR_CODE', 403);
+	error_code(403);
 	return;
 } elseif (!$User->guest()) {
 	$Page->json('reload');
 	return;
 } elseif ($Config->core['login_attempts_block_count'] && $User->login_attempts() >= $Config->core['login_attempts_block_count']) {
 	$User->login_result(false);
-	define('ERROR_CODE', 403);
+	error_code(403);
 	$Page->error($L->login_attempts_ends_try_after.' '.format_time($Config->core['login_attempts_block_time']));
 	sleep(1);
 	return;
@@ -46,12 +46,12 @@ if (
 ) {
 	$_POST['login']	= mb_strtolower($_POST['login']);
 	if ($User->get('status', $id) == -1) {
-		define('ERROR_CODE', 403);
+		error_code(403);
 		$Page->error($L->your_account_is_not_active);
 		sleep(1);
 		return;
 	} elseif ($User->get('status', $id) == 0) {
-		define('ERROR_CODE', 403);
+		error_code(403);
 		$Page->error($L->your_account_disabled);
 		sleep(1);
 		return;
@@ -68,7 +68,7 @@ if (
 	)) {
 		$Page->json($random_hash);
 	} else {
-		define('ERROR_CODE', 500);
+		error_code(500);
 		$Page->json($L->auth_server_error);
 	}
 	unset($random_hash);
@@ -95,7 +95,7 @@ if (
 		$Page->json('reload');
 	} else {
 		$User->login_result(false);
-		define('ERROR_CODE', 400);
+		error_code(400);
 		$content	= $L->auth_error_login;
 		if (
 			$Config->core['login_attempts_block_count'] &&
@@ -112,7 +112,7 @@ if (
 	unset($key_data, $auth_hash);
 } else {
 	$User->login_result(false);
-	define('ERROR_CODE', 400);
+	error_code(400);
 	$content	= $L->auth_error_login;
 	if (
 		$Config->core['login_attempts_block_count'] &&

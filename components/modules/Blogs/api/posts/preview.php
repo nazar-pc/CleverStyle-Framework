@@ -23,7 +23,7 @@ if (!(
 	$User->user()
 )) {
 	sleep(1);
-	define('ERROR_CODE', 403);
+	error_code(403);
 	return;
 }
 $L		= Language::instance();

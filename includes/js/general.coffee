@@ -116,6 +116,9 @@ $ ->
 						.removeClass('uk-icon-unlock')
 			$('.cs-header-registration-process').click ->
 				L		= cs.Language
+				if !cs.rules_text
+					cs.registration $('.cs-header-registration-email').val()
+					return
 				modal	= $("""
 						<div title="#{L.rules_agree}">
 							<div>

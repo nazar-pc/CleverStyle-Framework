@@ -287,7 +287,7 @@ class User extends Accessor {
 		$session_id	= $this->get_session();
 		if (!$session_id || !isset($_REQUEST['session']) || $_REQUEST['session'] != $session_id) {
 			if (API) {
-				define('ERROR_CODE', 403);
+				error_code(403);
 				Page::instance()->error('Invalid user session');
 				exit;
 			}

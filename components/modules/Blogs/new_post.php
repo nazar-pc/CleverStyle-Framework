@@ -20,7 +20,7 @@ $User						= User::instance();
 $Page->title($L->new_post);
 if (!$User->user()) {
 	if ($User->bot()) {
-		define('ERROR_CODE', 403);
+		error_code(403);
 		return;
 	} else {
 		$Page->warning($L->for_reistered_users_only);

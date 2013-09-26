@@ -10,7 +10,7 @@
 namespace	cs;
 $User	= User::instance();
 if ($User->guest()) {
-	define('ERROR_CODE', 403);
+	error_code(403);
 	return;
 }
 if (isset($_POST['logout'])) {

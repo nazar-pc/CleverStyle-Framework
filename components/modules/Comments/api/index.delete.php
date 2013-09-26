@@ -25,7 +25,7 @@ use			h,
  */
 $Config			= Config::instance();
 if (!$Config->module('Comments')->active()) {
-	define('ERROR_CODE', 404);
+	error_code(404);
 	return;
 }
 /**
@@ -37,11 +37,11 @@ if (!(
 	User::instance()->user()
 )) {
 	sleep(1);
-	define('ERROR_CODE', 403);
+	error_code(403);
 	return;
 }
 if (!isset($Config->route[0], $_POST['module'])) {
-	define('ERROR_CODE', 400);
+	error_code(400);
 	return;
 }
 $Comments		= false;
@@ -59,7 +59,7 @@ $L				= Language::instance();
 $Page			= Page::instance();
 if (!is_object($Comments)) {
 	if (!defined('ERROR_CODE')) {
-		define('ERROR_CODE', 500);
+		error_code(500);
 		$Page->error($L->comment_deleting_server_error);
 	}
 	return;
@@ -70,6 +70,6 @@ if (!is_object($Comments)) {
 if ($result = $Comments->del($Config->route[0])) {
 	$Page->json($delete_parent ? h::{'icon.cs-comments-comment-delete.cs-pointer'}('trash') : '');
 } else {
-	define('ERROR_CODE', 500);
+	error_code(500);
 	$Page->error($L->comment_deleting_server_error);
 }

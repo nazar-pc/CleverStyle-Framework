@@ -1126,7 +1126,7 @@ class Page {
 		}
 		$error_showed	= true;
 		if (!defined('ERROR_CODE')) {
-			define('ERROR_CODE', 500);
+			error_code(500);
 		}
 		if (!API && ERROR_CODE == 403 && _getcookie('logout')) {
 			header('Location: '.Config::instance()->base_url(), true, 302);

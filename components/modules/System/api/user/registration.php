@@ -21,17 +21,17 @@ if (
 	!isset($_POST['email'])
 ) {
 	sleep(1);
-	define('ERROR_CODE', 403);
+	error_code(403);
 	return;
 } elseif (!$User->guest()) {
 	$Page->json('reload');
 	return;
 } elseif (!$Config->core['allow_user_registration']) {
-	define('ERROR_CODE', 403);
+	error_code(403);
 	$Page->error($L->registration_prohibited);
 	return;
 } elseif (empty($_POST['email'])) {
-	define('ERROR_CODE', 400);
+	error_code(400);
 	$Page->error($L->please_type_your_email);
 	sleep(1);
 	return;
@@ -39,16 +39,16 @@ if (
 $_POST['email']	= mb_strtolower($_POST['email']);
 $result			= $User->registration($_POST['email']);
 if ($result === false) {
-	define('ERROR_CODE', 400);
+	error_code(400);
 	$Page->error($L->please_type_correct_email);
 	sleep(1);
 	return;
 } elseif ($result == 'error') {
-	define('ERROR_CODE', 500);
+	error_code(500);
 	$Page->error($L->reg_server_error);
 	return;
 } elseif ($result == 'exists') {
-	define('ERROR_CODE', 400);
+	error_code(400);
 	$Page->error($L->reg_error_exists);
 	return;
 }
@@ -77,6 +77,6 @@ if (Mail::instance()->send_to(
 	$Page->json($confirm ? 'reg_confirmation' : 'reg_success');
 } else {
 	$User->registration_cancel();
-	define('ERROR_CODE', 500);
+	error_code(500);
 	$Page->error($L->sending_reg_mail_error);
 }

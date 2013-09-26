@@ -23,7 +23,7 @@ use			cs\Config,
  */
 $Config		= Config::instance();
 if (!$Config->module('Comments')->active()) {
-	define('ERROR_CODE', 404);
+	error_code(404);
 	return;
 }
 /**
@@ -35,17 +35,17 @@ if (!(
 	User::instance()->user()
 )) {
 	sleep(1);
-	define('ERROR_CODE', 403);
+	error_code(403);
 	return;
 }
 if (!isset($_POST['item'], $_POST['text'], $_POST['parent'], $_POST['module'])) {
-	define('ERROR_CODE', 400);
+	error_code(400);
 	return;
 }
 $L			= Language::instance();
 $Page		= Page::instance();
 if (!$_POST['text'] || !strip_tags($_POST['text'])) {
-	define('ERROR_CODE', 400);
+	error_code(400);
 	$Page->error($L->comment_cant_be_empty);
 	return;
 }
@@ -60,7 +60,7 @@ Trigger::instance()->run(
 );
 if (!is_object($Comments)) {
 	if (!defined('ERROR_CODE')) {
-		define('ERROR_CODE', 500);
+		error_code(500);
 		$Page->error($L->comment_sending_server_error);
 	}
 	return;
@@ -73,6 +73,6 @@ if ($result) {
 	$result['comments']	= false;
 	$Page->json($Comments->tree_html([$result]));
 } else {
-	define('ERROR_CODE', 500);
+	error_code(500);
 	$Page->error($L->comment_sending_server_error);
 }

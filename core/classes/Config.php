@@ -120,7 +120,7 @@ class Config {
 			$Page->replace($this->replace['in'], $this->replace['out']);
 			$this->init = true;
 			if ($this->check_ip($this->core['ip_black_list'])) {
-				define('ERROR_CODE', 403);
+				error_code(403);
 				$Page->error();
 				return;
 			}
@@ -268,7 +268,7 @@ class Config {
 			if ($this->server['referer']['local']) {
 				header('Location: '.substr($rc, 9));
 			} else {
-				define('ERROR_CODE', 404);
+				error_code(404);
 				Page::instance()->error();
 			}
 			exit;
@@ -308,7 +308,7 @@ class Config {
 		 */
 		if (isset($rc[0]) && mb_strtolower($rc[0]) == 'admin') {
 			if ($this->core['ip_admin_list_only'] && !$this->check_ip($this->core['ip_admin_list'])) {
-				define('ERROR_CODE', 403);
+				error_code(403);
 				Page::instance()->error();
 				return;
 			}

@@ -722,3 +722,11 @@ function pages_buttons ($page, $total, $url = false) {
 	}
 	return h::{'button[name=page]'}($output);
 }
+/**
+ * Simple wrapper for defining constant ERROR_CODE
+ *
+ * @param int	$code
+ */
+function error_code ($code) {
+	!defined('ERROR_CODE') && define('ERROR_CODE', $code);
+}

@@ -40,7 +40,7 @@ $path					= implode('/', $path);
 if (isset($structure['id'])) {
 	$section	= $structure['id'];
 } else {
-	define('ERROR_CODE', 404);
+	error_code(404);
 	return;
 }
 $L						= Language::instance();
