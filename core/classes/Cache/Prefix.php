@@ -62,7 +62,7 @@ class Prefix {
 	 * @return bool|mixed			Returns item on success of <b>false</b> on failure
 	 */
 	function __get ($item) {
-		return $this->get("$this->prefix/$item");
+		return $this->get($item);
 	}
 	/**
 	 * Put or change data of cache item
@@ -73,7 +73,7 @@ class Prefix {
 	 * @return bool
 	 */
 	function __set ($item, $data) {
-		return $this->set("$this->prefix/$item", $data);
+		return $this->set($item, $data);
 	}
 	/**
 	 * Delete item from cache
@@ -83,6 +83,6 @@ class Prefix {
 	 * @return bool
 	 */
 	function __unset ($item) {
-		return $this->del("$this->prefix/$item");
+		return $this->del($item);
 	}
 }
