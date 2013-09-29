@@ -5,7 +5,8 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace cs;
+namespace	cs;
+use			Closure;
 /**
  * @method static \cs\Cache instance($check = false)
  */
@@ -34,27 +35,20 @@ class Cache {
 	/**
 	 * Get item from cache
 	 *
-	 * @param string		$item	May contain "/" symbols for cache structure, for example users/<i>user_id</i>
+	 * If item not found and $closure parameter specified - closure must return value for item. This value will be set for current item, and returned.
 	 *
-	 * @return bool|mixed			Returns item on success of <b>false</b> on failure
+	 * @param string		$item		May contain "/" symbols for cache structure, for example users/<i>user_id</i>
+	 * @param Closure|null	$closure
+	 *
+	 * @return bool|mixed				Returns item on success of <b>false</b> on failure
 	 */
-	function get ($item) {
+	function get ($item, $closure = null) {
 		if (!$this->cache) {
 			return false;
 		}
 		$item	= trim($item, '/');
-		return $this->engine_instance->get($item);
-	}
-	/**
-	 * Tries to get item, and if item not found - calls closure, set returned value for specified item, and returns it as if it was found
-	 *
-	 * @param string	$item
-	 * @param \Closure	$closure
-	 *
-	 * @return bool|mixed
-	 */
-	function get_wrapper ($item, $closure) {
-		if (($data = $this->get($item)) === false) {
+		$data	= $this->engine_instance->get($item);
+		if ($data === false && $closure instanceof Closure) {
 			$data	= $closure();
 			if ($data !== false) {
 				$this->set($item, $data);

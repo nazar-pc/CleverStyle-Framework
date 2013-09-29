@@ -34,7 +34,7 @@ trait Singleton {
 		}
 		if (substr(__CLASS__, 0, 2) == 'cs' && class_exists('cs\\custom'.substr(__CLASS__, 2), false)) {
 			$instance	= 'cs\\custom'.substr(__CLASS__, 2);
-			$instance	= new $instance;
+			$instance	= $instance::instance();
 		} else {
 			$instance	= new static;
 		}

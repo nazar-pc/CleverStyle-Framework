@@ -72,7 +72,7 @@ class Photo_gallery extends Accessor {
 		}
 		$L			= Language::instance();
 		$id			= (int)$id;
-		return $this->cache->get_wrapper("images/$id/$L->clang", function () use ($id) {
+		return $this->cache->get("images/$id/$L->clang", function () use ($id) {
 			if ($data = $this->db()->qf([
 				"SELECT
 					`id`,
@@ -258,7 +258,7 @@ class Photo_gallery extends Accessor {
 	 */
 	function get_galleries_list () {
 		$L		= Language::instance();
-		return $this->cache->get_wrapper("galleries/list/$L->clang", function () {
+		return $this->cache->get("galleries/list/$L->clang", function () {
 			$data	= [];
 			foreach (
 				$this->db()->qfas(
@@ -289,7 +289,7 @@ class Photo_gallery extends Accessor {
 		}
 		$L		= Language::instance();
 		$id		= (int)$id;
-		return $this->cache->get_wrapper("galleries/$id/$L->clang", function () use ($id) {
+		return $this->cache->get("galleries/$id/$L->clang", function () use ($id) {
 			if ($data = $this->db()->qf([
 				"SELECT
 					`id`,

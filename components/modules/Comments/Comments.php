@@ -258,7 +258,7 @@ class Comments extends Accessor {
 	 */
 	function count ($item) {
 		$L	= Language::instance();
-		return $this->cache->get_wrapper("$item/count/$L->clang", function () use ($item)  {
+		return $this->cache->get("$item/count/$L->clang", function () use ($item)  {
 			return $this->count_internal($this->tree_data($item)) ?: 0;
 		});
 	}

@@ -6,7 +6,8 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace	cs;
+namespace	cs\custom;
+use			cs\Singleton;
 class Core {
 	use	Singleton;
 

@@ -83,7 +83,7 @@ class OAuth2 extends Accessor {
 		if (!$id) {
 			return false;
 		}
-		return $this->cache->get_wrapper($id, function () use ($id) {
+		return $this->cache->get($id, function () use ($id) {
 			return $this->db()->qf(
 				"SELECT *
 				FROM `[prefix]oauth2_clients`
@@ -210,7 +210,7 @@ class OAuth2 extends Accessor {
 		if ($user == 1) {
 			return $this->guest_tokens;
 		}
-		$clients	= $this->cache->get_wrapper("grant_access/$user", function () use ($user) {
+		$clients	= $this->cache->get("grant_access/$user", function () use ($user) {
 			return $this->db()->qfas([
 				"SELECT `id`
 				FROM `[prefix]oauth2_clients_grant_access`
@@ -413,7 +413,7 @@ class OAuth2 extends Accessor {
 			return false;
 		}
 		$Cache	= $this->cache;
-		$data	= $Cache->get_wrapper("tokens/$access_token", function () use($client, $access_token) {
+		$data	= $Cache->get("tokens/$access_token", function () use($client, $access_token) {
 			return $this->db()->qf([
 				"SELECT
 					`user`,

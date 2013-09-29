@@ -42,7 +42,7 @@ class Static_pages extends Accessor {
 	function get ($id) {
 		$L		= Language::instance();
 		$id		= (int)$id;
-		return $this->cache->get_wrapper("pages/$id/$L->clang", function () use ($id) {
+		return $this->cache->get("pages/$id/$L->clang", function () use ($id) {
 			if ($data = $this->db()->qf([
 				"SELECT
 					`id`,
@@ -173,7 +173,7 @@ class Static_pages extends Accessor {
 	 */
 	function get_structure () {
 		$L		= Language::instance();
-		return $this->cache->get_wrapper("structure/$L->clang", function () {
+		return $this->cache->get("structure/$L->clang", function () {
 			return $this->get_structure_internal();
 		});
 	}

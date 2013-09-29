@@ -120,7 +120,7 @@ class User extends Accessor {
 		$Cache		= Cache::instance();
 		$Config		= Config::instance();
 		Trigger::instance()->run('System/User/construct/before');
-		$this->users_columns = $Cache->get_wrapper('users/columns', function () {
+		$this->users_columns = $Cache->get('users/columns', function () {
 			return $this->db()->columns('[prefix]users');
 		});
 		/**
@@ -173,7 +173,7 @@ class User extends Accessor {
 			/**
 			 * Loading bots list
 			 */
-			$bots = $Cache->get_wrapper('users/bots', function () {
+			$bots = $Cache->get('users/bots', function () {
 				return $this->db()->qfa(
 					"SELECT
 						`u`.`id`,
@@ -873,7 +873,7 @@ class User extends Accessor {
 		if (!$user || $user == 1) {
 			return false;
 		}
-		return Cache::instance()->get_wrapper("users/groups/$user", function () use ($user) {
+		return Cache::instance()->get("users/groups/$user", function () use ($user) {
 			return $this->db()->qfas(
 				"SELECT `group`
 				FROM `[prefix]users_groups`
@@ -1007,7 +1007,7 @@ class User extends Accessor {
 		if (!$group) {
 			return false;
 		}
-		$group_data = $Cache->get_wrapper("groups/$group", function ($group) {
+		$group_data = $Cache->get("groups/$group", function ($group) {
 			$group_data = $this->db()->qf(
 				"SELECT
 					`title`,
@@ -1111,7 +1111,7 @@ class User extends Accessor {
 	 * @return array|bool		Every item in form of array('id' => <i>id</i>, 'title' => <i>title</i>, 'description' => <i>description</i>)
 	 */
 	function get_groups_list () {
-		return Cache::instance()->get_wrapper('groups/list', function () {
+		return Cache::instance()->get('groups/list', function () {
 			return $this->db()->qfa(
 				"SELECT
 					`id`,
@@ -1177,7 +1177,7 @@ class User extends Accessor {
 				return false;
 		}
 		$Cache	= Cache::instance();
-		return $Cache->get_wrapper($path.$id, function () use ($id, $table) {
+		return $Cache->get($path.$id, function () use ($id, $table) {
 			$permissions	= false;
 			if ($permissions_array = $this->db()->qfa(
 				"SELECT
@@ -1325,7 +1325,7 @@ class User extends Accessor {
 	 */
 	function get_permissions_table () {
 		if (empty($this->permissions_table)) {
-			$this->permissions_table = Cache::instance()->get_wrapper('permissions_table', function () {
+			$this->permissions_table = Cache::instance()->get('permissions_table', function () {
 				$permissions_table	= [];
 				$data				= $this->db()->qfa(
 					'SELECT

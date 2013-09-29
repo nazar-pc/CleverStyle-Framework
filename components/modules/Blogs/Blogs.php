@@ -47,7 +47,7 @@ class Blogs extends Accessor {
 	function get ($id) {
 		$L			= Language::instance();
 		$id			= (int)$id;
-		$data		= $this->cache->get_wrapper("posts/$id/$L->clang", function () use($id, $L) {
+		$data		= $this->cache->get("posts/$id/$L->clang", function () use($id, $L) {
 			if ($data	= $this->db()->qf([
 				"SELECT
 					`id`,
@@ -397,7 +397,7 @@ class Blogs extends Accessor {
 	 * @return int
 	 */
 	function get_total_count () {
-		return $this->cache->get_wrapper('total_count', function () {
+		return $this->cache->get('total_count', function () {
 			return $this->db()->qfs(
 				"SELECT COUNT(`id`)
 				FROM `[prefix]blogs_posts`
@@ -412,7 +412,7 @@ class Blogs extends Accessor {
 	 */
 	function get_sections_list () {
 		$L		= Language::instance();
-		return $this->cache->get_wrapper("sections/list/$L->clang", function () {
+		return $this->cache->get("sections/list/$L->clang", function () {
 			return $this->get_sections_list_internal(
 				$this->get_sections_structure()
 			);
@@ -436,7 +436,7 @@ class Blogs extends Accessor {
 	 */
 	function get_sections_structure () {
 		$L		= Language::instance();
-		return $this->cache->get_wrapper("sections/structure/$L->clang", function () {
+		return $this->cache->get("sections/structure/$L->clang", function () {
 			return $this->get_sections_structure_internal();
 		});
 	}
@@ -489,7 +489,7 @@ class Blogs extends Accessor {
 	function get_section ($id) {
 		$L		= Language::instance();
 		$id		= (int)$id;
-		return $this->cache->get_wrapper("sections/$id/$L->clang", function () use ($id) {
+		return $this->cache->get("sections/$id/$L->clang", function () use ($id) {
 			$data				= $this->db()->qf([
 				"SELECT
 					`id`,
@@ -671,7 +671,7 @@ class Blogs extends Accessor {
 	 */
 	function get_tags_list () {
 		$L		= Language::instance();
-		return $this->cache->get_wrapper("tags/$L->clang", function () {
+		return $this->cache->get("tags/$L->clang", function () {
 			$tags	= $this->db()->qfa(
 				"SELECT
 					`id`,
