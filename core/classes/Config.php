@@ -293,6 +293,7 @@ class Config {
 			errors_on();
 			unset($i, $search);
 		}
+		unset($r);
 		Trigger::instance()->run(
 			'System/Config/routing_replace',
 			[
@@ -370,7 +371,6 @@ class Config {
 			(ADMIN ? 'admin/' : '').MODULE.(API ? 'api/' : '').'/'.implode('/', $rc),
 			'/'
 		);
-		unset($rc, $r);
 		$this->server['ajax']					= isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
 	}
 	/**

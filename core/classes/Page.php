@@ -657,7 +657,7 @@ class Page {
 		if ($Config->core['multilingual']) {
 			$L	= Language::instance();
 			if (!isset($og['locale']) || empty($og['locale'])) {
-				$this->og('locale', $L->locale);
+				$this->og('locale', $L->clang.'_'.strtoupper($L->cregion));
 			}
 			if (
 				(
@@ -666,7 +666,7 @@ class Page {
 			) {
 				foreach ($Config->core['active_languages'] as $lang) {
 					if ($lang != $L->clanguage) {
-						$this->og('locale:alternate', $L->get('locale', $lang));
+						$this->og('locale:alternate', $L->get('clang', $lang).'_'.strtoupper($L->get('cregion', $lang)));
 					}
 				}
 			}

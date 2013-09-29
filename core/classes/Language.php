@@ -14,9 +14,8 @@ defined('FIXED_LANGUAGE') || define('FIXED_LANGUAGE', false);
  *  [
  *   'clanguage'		=> clanguage
  *   'clang'			=> clang
+ *   'cregion'			=> cregion
  *   'clanguage_en'		=> clanguage_en
- *   'content_language'	=> content_language
- *   'locale'			=> locale
  *  ]
  *
  * @method static \cs\Language instance($check = false)
@@ -25,10 +24,10 @@ class Language {
 	use Singleton;
 
 	public		$clanguage,								//Current language
-				$time = null;							//Closure for time processing
-	protected	$init = false,							//For single initialization
-				$translate = [],						//Local cache of translations
-				$need_to_rebuild_cache = null;			//Necessity for cache rebuilding
+				$time					= null;			//Closure for time processing
+	protected	$init					= false,		//For single initialization
+				$translate				= [],			//Local cache of translations
+				$need_to_rebuild_cache	= null;			//Necessity for cache rebuilding
 	/**
 	 * Set basic language
 	 */
@@ -76,9 +75,8 @@ class Language {
 				[
 					'clanguage'			=> $this->clanguage,
 					'clang'				=> $this->clang,
-					'clanguage_en'		=> $this->clanguage_en,
-					'content_language'	=> $this->content_language,
-					'locale'			=> $this->locale
+					'cregion'			=> $this->cregion,
+					'clanguage_en'		=> $this->clanguage_en
 				]
 			);
 			Cache::instance()->{"languages/$this->clanguage"} = $this->translate;

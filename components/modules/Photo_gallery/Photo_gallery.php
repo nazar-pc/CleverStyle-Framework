@@ -7,7 +7,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Photo_gallery;
-use			cs\Cache,
+use			cs\Cache\Prefix,
 			cs\Config,
 			cs\Language,
 			cs\Storage,
@@ -23,7 +23,15 @@ use			cs\Cache,
  */
 class Photo_gallery extends Accessor {
 	use Singleton;
+
+
+	/**
+	 * @var Prefix
+	 */
+	protected	$cache;
+
 	protected function construct () {
+		$this->cache	= new Prefix('Photo_gallery');
 		$module_data	= Config::instance()->module('Photo_gallery');
 		if (!$module_data->directory_created) {
 			$this->storage()->mkdir('Photo_gallery');
@@ -62,11 +70,10 @@ class Photo_gallery extends Accessor {
 			}
 			return $id;
 		}
-		$Cache		= Cache::instance();
 		$L			= Language::instance();
 		$id			= (int)$id;
-		if (($data = $Cache->{"Photo_gallery/images/$id/$L->clang"}) === false) {
-			$data	= $this->db()->qf([
+		return $this->cache->get_wrapper("images/$id/$L->clang", function () use ($id) {
+			if ($data = $this->db()->qf([
 				"SELECT
 					`id`,
 					`gallery`,
@@ -80,14 +87,12 @@ class Photo_gallery extends Accessor {
 				WHERE `id` = '%s'
 				LIMIT 1",
 				$id
-			]);
-			if ($data) {
-				$data['title']									= $this->ml_process($data['title']);
-				$data['description']							= $this->ml_process($data['description']);
-				$Cache->{"Photo_gallery/images/$id/$L->clang"}	= $data;
+			])) {
+				$data['title']			= $this->ml_process($data['title']);
+				$data['description']	= $this->ml_process($data['description']);
 			}
-		}
-		return $data;
+			return $data;
+		});
 	}
 	/**
 	 * Add new image
@@ -162,7 +167,7 @@ class Photo_gallery extends Accessor {
 				);
 				unset(
 					$new_file,
-					Cache::instance()->{"Photo_gallery/galleries/$gallery"}
+					$this->cache->{"galleries/$gallery"}
 				);
 				return $id;
 			} else {
@@ -207,7 +212,7 @@ class Photo_gallery extends Accessor {
 			$User->id,
 			(int)$User->admin()
 		)) {
-			unset(Cache::instance()->{"Photo_gallery/images/$id"});
+			unset($this->cache->{"images/$id"});
 			return true;
 		}
 		return false;
@@ -236,10 +241,10 @@ class Photo_gallery extends Accessor {
 				]
 			);
 			$this->storage()->unlink($this->storage()->source_by_url($data['preview']));
-			$Cache	= Cache::instance();
+			$Cache	= $this->cache;
 			unset(
-				$Cache->{"Photo_gallery/images/$id"},
-				$Cache->{"Photo_gallery/galleries/$data[gallery]"}
+				$Cache->{"images/$id"},
+				$Cache->{"galleries/$data[gallery]"}
 			);
 			return true;
 		} else {
@@ -252,9 +257,8 @@ class Photo_gallery extends Accessor {
 	 * @return array|bool
 	 */
 	function get_galleries_list () {
-		$Cache	= Cache::instance();
 		$L		= Language::instance();
-		if (($data = $Cache->{"Photo_gallery/galleries/list/$L->clang"}) === false) {
+		return $this->cache->get_wrapper("galleries/list/$L->clang", function () {
 			$data	= [];
 			foreach (
 				$this->db()->qfas(
@@ -264,14 +268,10 @@ class Photo_gallery extends Accessor {
 					ORDER BY `order` ASC"
 				) as $gallery
 			) {
-				$gallery				= $this->get_gallery($gallery);
-				$data[$gallery['path']]	= $gallery['id'];
+				$data[$this->get_gallery($gallery)['path']]	= $gallery['id'];
 			}
-			if ($data) {
-				$Cache->{"Photo_gallery/galleries/list/$L->clang"}	= $data;
-			}
-		}
-		return $data;
+			return $data;
+		});
 	}
 	/**
 	 * Get data of specified gallery
@@ -287,11 +287,10 @@ class Photo_gallery extends Accessor {
 			}
 			return $id;
 		}
-		$Cache	= Cache::instance();
 		$L		= Language::instance();
 		$id		= (int)$id;
-		if (($data = $Cache->{"Photo_gallery/galleries/$id/$L->clang"}) === false) {
-			$data												= $this->db()->qf([
+		return $this->cache->get_wrapper("galleries/$id/$L->clang", function () use ($id) {
+			if ($data = $this->db()->qf([
 				"SELECT
 					`id`,
 					`title`,
@@ -308,27 +307,26 @@ class Photo_gallery extends Accessor {
 				WHERE `id` = '%1\$s'
 				LIMIT 1",
 				$id
-			]);
-			$data['title']										= $this->ml_process($data['title']);
-			$data['path']										= $this->ml_process($data['path']);
-			$data['description']								= $this->ml_process($data['description']);
-			$order												= $data['preview_image'] == 'first' ? 'ASC' : 'DESC';
-			$data['preview']									= $this->db()->qfs(
-				"SELECT `preview`
-				FROM `[prefix]photo_gallery_images`
-				WHERE `gallery` = $data[id]
-				ORDER BY `id` $order"
-			) ?: '';
-			$data['images']										= $this->db()->qfas(
-				"SELECT `id`
-				FROM `[prefix]photo_gallery_images`
-				WHERE `gallery` = $data[id]
-				ORDER BY `id` $order"
-			) ?: [];
-			unset($order);
-			$Cache->{"Photo_gallery/galleries/$id/$L->clang"}	= $data;
-		}
-		return $data;
+			])) {
+				$data['title']			= $this->ml_process($data['title']);
+				$data['path']			= $this->ml_process($data['path']);
+				$data['description']	= $this->ml_process($data['description']);
+				$order					= $data['preview_image'] == 'first' ? 'ASC' : 'DESC';
+				$data['preview']		= $this->db()->qfs(
+					"SELECT `preview`
+					FROM `[prefix]photo_gallery_images`
+					WHERE `gallery` = $data[id]
+					ORDER BY `id` $order"
+				) ?: '';
+				$data['images']			= $this->db()->qfas(
+					"SELECT `id`
+					FROM `[prefix]photo_gallery_images`
+					WHERE `gallery` = $data[id]
+					ORDER BY `id` $order"
+				) ?: [];
+			}
+			return $data;
+		});
 	}
 	/**
 	 * Add new gallery
@@ -390,10 +388,10 @@ class Photo_gallery extends Accessor {
 			$preview_image,
 			$id
 		)) {
-			$Cache	= Cache::instance();
+			$Cache	= $this->cache;
 			unset(
-				$Cache->{"Photo_gallery/galleries/$id"},
-				$Cache->{'Photo_gallery/galleries/list'}
+				$Cache->{"galleries/$id"},
+				$Cache->{'galleries/list'}
 			);
 			return true;
 		} else {
@@ -420,10 +418,10 @@ class Photo_gallery extends Accessor {
 		$this->ml_del('Photo_gallery/galleries/title', $id);
 		$this->ml_del('Photo_gallery/galleries/path', $id);
 		$this->ml_del('Photo_gallery/galleries/description', $id);
-		$Cache	= Cache::instance();
+		$Cache	= $this->cache;
 		unset(
-			$Cache->{"Photo_gallery/galleries/$id"},
-			$Cache->{'Photo_gallery/galleries/list'}
+			$Cache->{"galleries/$id"},
+			$Cache->{'galleries/list'}
 		);
 		$images	= $this->cdb()->qfas([
 			"SELECT `id`

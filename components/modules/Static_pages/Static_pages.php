@@ -9,13 +9,21 @@
 namespace	cs\modules\Static_pages;
 use			cs\DB\Accessor,
 			cs\Singleton,
-			cs\Cache,
+			cs\Cache\Prefix,
 			cs\Config,
 			cs\Language,
 			cs\Text;
 class Static_pages extends Accessor {
 	use	Singleton;
 
+	/**
+	 * @var Prefix
+	 */
+	protected	$cache;
+
+	protected function construct () {
+		$this->cache	= new Prefix('Static_pages');
+	}
 	/**
 	 * Returns database index
 	 *
@@ -32,11 +40,10 @@ class Static_pages extends Accessor {
 	 * @return array|bool
 	 */
 	function get ($id) {
-		$Cache	= Cache::instance();
 		$L		= Language::instance();
 		$id		= (int)$id;
-		if (($data = $Cache->{'Static_pages/pages/'.$id.'/'.$L->clang}) === false) {
-			$data	= $this->db()->qf([
+		return $this->cache->get_wrapper("pages/$id/$L->clang", function () use ($id) {
+			if ($data = $this->db()->qf([
 				"SELECT
 					`id`,
 					`category`,
@@ -48,15 +55,13 @@ class Static_pages extends Accessor {
 				WHERE `id` = '%s'
 				LIMIT 1",
 				$id
-			]);
-			if ($data) {
+			])) {
 				$data['title']		= $this->ml_process($data['title']);
 				$data['path']		= $this->ml_process($data['path']);
 				$data['content']	= $this->ml_process($data['content']);
-				$Cache->{'Static_pages/pages/'.$id.'/'.$L->clang}	= $data;
 			}
-		}
-		return $data;
+			return $data;
+		});
 	}
 	/**
 	 * Add new page
@@ -82,7 +87,7 @@ class Static_pages extends Accessor {
 		)) {
 			$id	= $this->db_prime()->id();
 			$this->set($id, $category, $title, $path, $content, $interface);
-			unset(Cache::instance()->Static_pages);
+			unset($this->cache->{'/'});
 			return $id;
 		} else {
 			return false;
@@ -101,7 +106,6 @@ class Static_pages extends Accessor {
 	 * @return bool
 	 */
 	function set ($id, $category, $title, $path, $content, $interface) {
-		$Cache		= Cache::instance();
 		$category	= (int)$category;
 		$title		= trim($title);
 		$path		= path($path ?: $title);
@@ -124,9 +128,10 @@ class Static_pages extends Accessor {
 			$interface,
 			$id
 		)) {
+			$Cache	= $this->cache;
 			unset(
-				$Cache->{'Static_pages/structure'},
-				$Cache->{'Static_pages/pages/'.$id}
+				$Cache->structure,
+				$Cache->{"pages/$id"}
 			);
 			return true;
 		} else {
@@ -141,7 +146,6 @@ class Static_pages extends Accessor {
 	 * @return bool
 	 */
 	function del ($id) {
-		$Cache	= Cache::instance();
 		$id		= (int)$id;
 		if ($this->db_prime()->q(
 			"DELETE FROM `[prefix]static_pages`
@@ -152,9 +156,10 @@ class Static_pages extends Accessor {
 			$this->ml_del('Static_pages/pages/title', $id);
 			$this->ml_del('Static_pages/pages/path', $id);
 			$this->ml_del('Static_pages/pages/content', $id);
+			$Cache	= $this->cache;
 			unset(
-				$Cache->{'Static_pages/structure'},
-				$Cache->{'Static_pages/pages/'.$id}
+				$Cache->structure,
+				$Cache->{"pages/$id"}
 			);
 			return true;
 		} else {
@@ -167,15 +172,10 @@ class Static_pages extends Accessor {
 	 * @return array|bool
 	 */
 	function get_structure () {
-		$Cache	= Cache::instance();
 		$L		= Language::instance();
-		if (($data = $Cache->{'Static_pages/structure/'.$L->clang}) === false) {
-			$data	= $this->get_structure_internal();
-			if ($data) {
-				$Cache->{'Static_pages/structure/'.$L->clang}	= $data;
-			}
-		}
-		return $data;
+		return $this->cache->get_wrapper("structure/$L->clang", function () {
+			return $this->get_structure_internal();
+		});
 	}
 	private function get_structure_internal ($parent = 0) {
 		$structure					= ['id'	=> $parent];
@@ -257,7 +257,7 @@ class Static_pages extends Accessor {
 		)) {
 			$id	= $this->db_prime()->id();
 			$this->set_category($id, $parent, $title, $path);
-			unset(Cache::instance()->{'Static_pages/structure'});
+			unset($this->cache->structure);
 			return $id;
 		} else {
 			return false;
@@ -291,7 +291,7 @@ class Static_pages extends Accessor {
 			$this->ml_set('Static_pages/categories/path', $id, $path),
 			$id
 		)) {
-			unset(Cache::instance()->{'Static_pages/structure'});
+			unset($this->cache->structure);
 			return true;
 		} else {
 			return false;
@@ -322,7 +322,7 @@ class Static_pages extends Accessor {
 		)) {
 			$this->ml_del('Static_pages/categories/title', $id);
 			$this->ml_del('Static_pages/categories/path', $id);
-			unset(Cache::instance()->Static_pages);
+			unset($this->cache->{'/'});
 			return true;
 		} else {
 			return false;

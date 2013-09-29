@@ -29,7 +29,23 @@ class Prefix {
 	function get ($item) {
 		return Cache::instance()->get("$this->prefix/$item");
 	}
-
+	/**
+	 * Tries to get item, and if item not found - calls closure, set returned value for specified item, and returns it as if it was found
+	 *
+	 * @param string	$item
+	 * @param \Closure	$closure
+	 *
+	 * @return bool|mixed
+	 */
+	function get_wrapper ($item, $closure) {
+		if (($data = $this->get($item)) === false) {
+			$data	= $closure();
+			if ($data !== false) {
+				$this->set($item, $data);
+			}
+		}
+		return $data;
+	}
 	/**
 	 * Put or change data of cache item
 	 *

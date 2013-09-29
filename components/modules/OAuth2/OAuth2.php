@@ -7,7 +7,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\OAuth2;
-use			cs\Cache,
+use			cs\Cache\Prefix,
 			cs\Config,
 			cs\User,
 			cs\DB\Accessor,
@@ -17,7 +17,12 @@ class OAuth2 extends Accessor {
 
 	protected	$guest_tokens,
 				$expire			= 3600;
+	/**
+	 * @var Prefix
+	 */
+	protected	$cache;
 	function construct () {
+		$this->cache	= new Prefix('OAuth2');
 		$this->guest_tokens	= Config::instance()->module('OAuth2')->guest_tokens;
 	}
 	/**
@@ -63,7 +68,7 @@ class OAuth2 extends Accessor {
 			(int)(bool)$active
 		);
 		$id	= $this->db_prime()->id();
-		unset(Cache::instance()->{"OAuth2/$id"});
+		unset($this->cache->$id);
 		return $id;
 	}
 	/**
@@ -78,17 +83,14 @@ class OAuth2 extends Accessor {
 		if (!$id) {
 			return false;
 		}
-		$Cache	= Cache::instance();
-		if (($data = $Cache->{"OAuth2/$id"}) === false) {
-			$data	= $this->db()->qf(
+		return $this->cache->get_wrapper($id, function () use ($id) {
+			return $this->db()->qf(
 				"SELECT *
 				FROM `[prefix]oauth2_clients`
 				WHERE `id`	= $id
 				LIMIT 1"
 			);
-			$Cache->{"OAuth2/$id"}	= $data;
-		}
-		return $data;
+		});
 	}
 	/**
 	 * Set client data
@@ -128,7 +130,7 @@ class OAuth2 extends Accessor {
 			(int)(bool)$active,
 			$id
 		);
-		unset(Cache::instance()->{"OAuth2/$id"});
+		unset($this->cache->$id);
 		return $result;
 	}
 	/**
@@ -152,7 +154,7 @@ class OAuth2 extends Accessor {
 			"DELETE FROM `[prefix]oauth2_clients_sessions`
 			WHERE `id`	= $id"
 		]);
-		unset(Cache::instance()->OAuth2);
+		unset($this->cache->{'/'});
 		return $result;
 	}
 	/**
@@ -191,7 +193,7 @@ class OAuth2 extends Accessor {
 			$client,
 			$User->id
 		);
-		unset(Cache::instance()->{"OAuth2/grant_access/$User->id"});
+		unset($this->cache->{"grant_access/$User->id"});
 		return $result;
 	}
 	/**
@@ -208,17 +210,15 @@ class OAuth2 extends Accessor {
 		if ($user == 1) {
 			return $this->guest_tokens;
 		}
-		$Cache	= Cache::instance();
-		if (($data = $Cache->{"OAuth2/grant_access/$user"}) === false) {
-			$data	= $this->db()->qfas([
+		$clients	= $this->cache->get_wrapper("grant_access/$user", function () use ($user) {
+			return $this->db()->qfas([
 				"SELECT `id`
 				FROM `[prefix]oauth2_clients_grant_access`
 				WHERE `user`	= '%s'",
 				$user
 			]);
-			$Cache->{"OAuth2/grant_access/$user"}	= $data;
-		}
-		return $data ? in_array($client, $data) : false;
+		});
+		return $clients ? in_array($client, $clients) : false;
 	}
 	/**
 	 * Deny access for specified client/
@@ -252,7 +252,7 @@ class OAuth2 extends Accessor {
 			WHERE
 				`user`	= $user"
 		]);
-		unset(Cache::instance()->{"OAuth2/grant_access/$user"});
+		unset($this->cache->{"grant_access/$user"});
 		return $result;
 	}
 	/**
@@ -412,9 +412,9 @@ class OAuth2 extends Accessor {
 		if (!preg_match('/^[0-9a-z]{32}$/', $access_token) || !$client || $client['secret'] != $secret) {
 			return false;
 		}
-		$Cache	= Cache::instance();
-		if (($data = $Cache->{'OAuth2/tokens/'.$access_token}) === false) {
-			$data	= $this->db()->qf([
+		$Cache	= $this->cache;
+		$data	= $Cache->get_wrapper("tokens/$access_token", function () use($client, $access_token) {
+			return $this->db()->qf([
 				"SELECT
 					`user`,
 					`session`,
@@ -428,8 +428,7 @@ class OAuth2 extends Accessor {
 				$client['id'],
 				$access_token
 			]);
-			$Cache->{'OAuth2/tokens/'.$access_token}	= $data;
-		}
+		});
 		if ($data && !$this->get_access($client['id'], $data['user'])) {
 			$this->db()->q([
 				"DELETE FROM `[prefix]oauth2_clients_sessions`
@@ -440,7 +439,7 @@ class OAuth2 extends Accessor {
 				$client['id'],
 				$access_token
 			]);
-			unset($Cache->{'OAuth2/tokens/'.$access_token});
+			unset($Cache->{"tokens/$access_token"});
 			$data	= false;
 		}
 		return $data;
@@ -485,7 +484,7 @@ class OAuth2 extends Accessor {
 		if (!$data) {
 			return false;
 		}
-		unset(Cache::instance()->{"OAuth2/tokens/$data[access_token]"});
+		unset($this->cache->{"tokens/$data[access_token]"});
 		$User	= User::instance();
 		$id		= $User->get_session_user($data['session']);
 		if ($id != $data['user']) {

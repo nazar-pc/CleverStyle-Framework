@@ -451,12 +451,7 @@ abstract class _Abstract {
 		if ($in === false) {
 			return '';
 		}
-		if (
-			!is_array($in) ||
-			(
-				isset($in['in']) && !is_array($in['in'])
-			)
-		) {
+		if (!is_array($in)) {
 			return self::wrap($in, $data, $function);
 		}
 		if (
@@ -971,6 +966,10 @@ abstract class _Abstract {
 					isset($data[1]) ? $data[1] : false
 				]
 			);
+		}
+		if (substr($input, -1) == '|') {
+			$input	= substr($input, 0, -1);
+			$data	= [$data];
 		}
 		/**
 		 * Fix for textarea tag, which can accept array as content

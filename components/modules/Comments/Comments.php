@@ -9,7 +9,7 @@
 namespace	cs\modules\Comments;
 use			cs\DB\Accessor,
 			h,
-			cs\Cache,
+			cs\Cache\Prefix,
 			cs\Config,
 			cs\Language,
 			cs\User,
@@ -20,9 +20,19 @@ class Comments extends Accessor {
 	/**
 	 * @var string
 	 */
-	protected $module;
+	protected	$module;
+	/**
+	 * @var Prefix
+	 */
+	protected	$cache;
+	/**
+	 * @var int	Avatar size in px, can be redefined
+	 */
+	public		$avatar_size	= 36;
+
 	protected function construct () {
 		$this->module	= MODULE;
+		$this->cache	= new Prefix("Comments/$this->module");
 	}
 	/**
 	 * Set module (current module assumed by default)
@@ -31,6 +41,7 @@ class Comments extends Accessor {
 	 */
 	function set_module ($module) {
 		$this->module	= $module;
+		$this->cache	= new Prefix("Comments/$this->module");
 	}
 	/**
 	 * Returns database index
@@ -129,7 +140,7 @@ class Comments extends Accessor {
 			$text,
 			$L->clang
 		)) {
-			unset(Cache::instance()->{'Comments/'.$this->module.'/'.$item});
+			unset($this->cache->$item);
 			return [
 				'id'		=> $this->db_prime()->id(),
 				'parent'	=> $parent,
@@ -172,7 +183,7 @@ class Comments extends Accessor {
 			$id,
 			$this->module
 		)) {
-			unset(Cache::instance()->{'Comments/'.$this->module.'/'.$comment['item']});
+			unset($this->cache->{$comment['item']});
 			$comment['text']	= $text;
 			return $comment;
 		}
@@ -211,7 +222,7 @@ class Comments extends Accessor {
 			$id,
 			$this->module
 		)) {
-			unset(Cache::instance()->{'Comments/'.$this->module.'/'.$comment['item']});
+			unset($this->cache->{$comment['item']});
 			return true;
 		}
 		return false;
@@ -233,7 +244,7 @@ class Comments extends Accessor {
 			$this->module,
 			$item
 		)) {
-			unset(Cache::instance()->{'Comments/'.$this->module.'/'.$item});
+			unset($this->cache->$item);
 			return true;
 		}
 		return false;
@@ -246,16 +257,10 @@ class Comments extends Accessor {
 	 * @return int
 	 */
 	function count ($item) {
-		$Cache														= Cache::instance();
-		$L															= Language::instance();
-		$count														= $Cache->{'Comments/'.$this->module.'/'.$item.'/count/'.$L->clang};
-		if ($count !== false) {
-			return $count;
-		}
-		$data														= $this->tree_data($item);
-		$count														= $this->count_internal($data) ?: 0;
-		$Cache->{"Comments/$this->module/$item/count/$L->clang"}	= $count;
-		return $count;
+		$L	= Language::instance();
+		return $this->cache->get_wrapper("$item/count/$L->clang", function () use ($item)  {
+			return $this->count_internal($this->tree_data($item)) ?: 0;
+		});
 	}
 	protected function count_internal ($data) {
 		if (!is_array($data)) {
@@ -286,9 +291,9 @@ class Comments extends Accessor {
 	 * @return bool|array
 	 */
 	function tree_data ($item, $parent = 0) {
-		$Cache	= Cache::instance();
+		$Cache	= $this->cache;
 		$L		= Language::instance();
-		if ($parent != 0 || ($comments = $Cache->{'Comments/'.$this->module.'/'.$item.'/'.$L->clang}) === false) {
+		if (($comments = $Cache->{"$item/$L->clang"}) === false) {
 			$item		= (int)$item;
 			$parent		= (int)$parent;
 			$comments	= $this->db()->qfa([
@@ -314,8 +319,11 @@ class Comments extends Accessor {
 				}
 				unset($comment);
 			}
+			/**
+			 * Cache only root tree data
+			 */
 			if ($parent == 0) {
-				$Cache->{'Comments/'.$this->module.'/'.$item.'/'.$L->clang}	= $comments;
+				$Cache->{"$item/$L->clang"}	= $comments;
 			}
 		}
 		return $comments;
@@ -336,7 +344,7 @@ class Comments extends Accessor {
 				$content	.= h::{'article.cs-comments-comment'}(
 					h::a(
 						h::{'img.cs-comments-comment-avatar'}([
-							'src'	=> $User->get('avatar', $comment['user']) ? h::prepare_url($User->get('avatar', $comment['user']), true) : 'includes/img/guest.gif',
+							'src'	=> $User->avatar($this->avatar_size, $comment['user']),
 							'alt'	=> $User->username($comment['user']),
 							'title'	=> $User->username($comment['user'])
 						]),

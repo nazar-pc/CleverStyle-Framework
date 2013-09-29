@@ -1,9 +1,11 @@
 {
 //Service information
 	"clanguage_en"		: "english",
+//ISO 639-1
 	"clang"				: "en",
+//ISO 3166-1 Alpha-2
+	"cregion"			: "us",
 	"content_language"	: "en",
-	"locale"			: "en_US",
 //Regional parameters, syntaxis of PHP function date()
 	"_datetime_long"	: "l, d F Y, H:i",
 	"_datetime"			: "m.d.Y h:i a",

@@ -168,7 +168,7 @@ if (!$Config->core['allow_user_registration']) {
 if (
 	!$User->get_session_data('HybridAuth') &&
 	isset($_SERVER['HTTP_REFERER']) &&
-	strpos($_SERVER['HTTP_REFERER'], $Config->base_url().'/'.'HybridAuth') === false &&
+	strpos($_SERVER['HTTP_REFERER'], $Config->base_url().'/HybridAuth') === false &&
 	strpos($_SERVER['HTTP_REFERER'], $Config->base_url()) === 0
 ) {
 	_setcookie('HybridAuth_referer', $_SERVER['HTTP_REFERER']);

@@ -60,6 +60,18 @@ class Index {
 				$generate_auto		= true,
 				$title_auto			= true,
 				$stop				= false;	//Gives the ability to stop further processing
+	/**
+	 * Like Config::$route property, but excludes numerical items
+	 *
+	 * @var string[]
+	 */
+	public		$route_path	= [];
+	/**
+	 * Like Config::$route property, but only includes numerical items (opposite to route_path property)
+	 *
+	 * @var int[]
+	 */
+	public		$route_ids	= [];
 
 	protected	$post_title			= '',		//Appends to the end of title
 				$structure			= [],
@@ -159,7 +171,20 @@ class Index {
 		$L		= Language::instance();
 		$Page	= Page::instance();
 		$User	= User::instance();
-		$rc		= &$Config->route;
+		/**
+		 * Some routing preparations
+		 */
+		$rc_path	= &$this->route_path;
+		$rc_ids		= &$this->route_ids;
+		foreach ($Config->route as &$item) {
+			if (is_numeric($item)) {
+				$rc_ids[]	= &$item;
+			} else {
+				$rc_path[]	= &$item;
+			}
+		}
+		unset($item, $rc_path, $rc_ids);
+		$rc		= &$this->route_path;
 		if ($Config->core['simple_admin_mode'] && file_exists(MFOLDER.'/index_simple.json')) {
 			$structure_file	= 'index_simple.json';
 		} else {
@@ -316,9 +341,9 @@ class Index {
 				 'title'	=> $L->home
 			]
 		];
-		foreach ($Config->components['modules'] as $module => $mdata) {
+		foreach ($Config->components['modules'] as $module => $module_data) {
 			if (
-				$mdata['active'] == 1 &&
+				$module_data['active'] == 1 &&
 				$module != $Config->core['default_module'] &&
 				$module != 'System' &&
 				$User->get_user_permission($module, 'index') &&
@@ -363,7 +388,7 @@ class Index {
 		if (!is_array($this->parts) || !$this->parts) {
 			return;
 		}
-		$rc		= Config::instance()->route;
+		$rc		= $this->route_path;
 		$L		= Language::instance();
 		foreach ($this->parts as $part) {
 			$this->main_sub_menu[]	= [
@@ -382,7 +407,7 @@ class Index {
 		if (!is_array($this->subparts) || !$this->subparts) {
 			return;
 		}
-		$rc		= Config::instance()->route;
+		$rc		= $this->route_path;
 		$L		= Language::instance();
 		foreach ($this->subparts as $subpart) {
 			$this->main_menu_more[]	= [
@@ -505,7 +530,9 @@ class Index {
 					'cookie_domain'		=> $Config->core['cookie_domain'],
 					'cookie_path'		=> $Config->core['cookie_path'],
 					'protocol'			=> $Config->server['protocol'],
-					'route'				=> $Config->route
+					'route'				=> $Config->route,
+					'route_path'		=> $this->route_path,
+					'route_ids'			=> $this->route_ids
 				]).';',
 				'code'
 			);
