@@ -451,7 +451,12 @@ abstract class _Abstract {
 		if ($in === false) {
 			return '';
 		}
-		if (!is_array($in)) {
+		if (
+			!is_array($in) ||
+			(
+				isset($in['in']) && !is_array($in['in'])
+			)
+		) {
 			return self::wrap($in, $data, $function);
 		}
 		if (
