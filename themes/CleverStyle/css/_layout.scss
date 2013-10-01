@@ -5,8 +5,10 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-@import "config";
-@import "mixins";
+@import "common_config";
+
+$left-column			: 15%;
+$right-column			: 15%;
 
 * {
 	box-sizing : border-box;

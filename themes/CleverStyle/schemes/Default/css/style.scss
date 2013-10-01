@@ -5,11 +5,11 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-
-@import "../../../css/config";
+@import "config";
 
 body {
 	background-color : $body-bg;
+	color            : $base-color;
 
 	> footer {
 		background : rgba($base-bg, .30);
