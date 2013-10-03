@@ -14,7 +14,7 @@ $Index	= Index::instance();
 if (isset($_POST['mode'])) {
 	switch ($_POST['mode']) {
 		case 'add':
-			$Index->save($OAuth2->add_client($_POST['name'], $_POST['domain'], $_POST['active']));
+			$Index->save((bool)$OAuth2->add_client($_POST['name'], $_POST['domain'], $_POST['active']));
 			break;
 		case 'edit':
 			$Index->save($OAuth2->set_client($_POST['id'], $_POST['secret'], $_POST['name'], $_POST['domain'], $_POST['active']));

@@ -12,6 +12,10 @@ use			cs\Cache\Prefix,
 			cs\User,
 			cs\DB\Accessor,
 			cs\Singleton;
+
+/**
+ * @method static \cs\modules\OAuth2\OAuth2 instance($check = false)
+ */
 class OAuth2 extends Accessor {
 	use	Singleton;
 
@@ -36,11 +40,11 @@ class OAuth2 extends Accessor {
 	/**
 	 * Add new client
 	 *
-	 * @param string	$name
-	 * @param string	$domain
-	 * @param int		$active
+	 * @param string		$name
+	 * @param string		$domain
+	 * @param int			$active
 	 *
-	 * @return bool|int					<i>false</i> on failure, id of created client otherwise
+	 * @return bool|string			<i>false</i> on failure, id of created client otherwise
 	 */
 	function add_client ($name, $domain, $active) {
 		if (
@@ -49,53 +53,68 @@ class OAuth2 extends Accessor {
 		) {
 			return false;
 		}
-		$this->db_prime()->q(
-			"INSERT INTO `[prefix]oauth2_clients`
-				(
-					`secret`,
-					`name`,
-					`domain`,
-					`active`
-				) VALUES (
-					'%s',
-					'%s',
-					'%s',
-					'%s'
-				)",
-			md5(MICROTIME.uniqid('oauth2', true)),
-			xap($name),
-			xap($domain),
-			(int)(bool)$active
-		);
-		$id	= $this->db_prime()->id();
+		/**
+		 * Generate hash in cycle, to obtain unique value
+		 */
+		for ($i = 0; $id = md5(MICROTIME.uniqid($i, true)); ++$i) {
+			if ($this->db_prime()->qf(
+				"SELECT `id`
+				FROM `[prefix]oauth2_clients`
+				WHERE `id` = '$id'
+				LIMIT 1"
+			)) {
+				continue;
+			}
+			$this->db_prime()->q(
+				"INSERT INTO `[prefix]oauth2_clients`
+					(
+						`id`,
+						`secret`,
+						`name`,
+						`domain`,
+						`active`
+					) VALUES (
+						'%s',
+						'%s',
+						'%s',
+						'%s',
+						'%s'
+					)",
+				$id,
+				md5(MICROTIME.uniqid('oauth2', true)),
+				xap($name),
+				xap($domain),
+				(int)(bool)$active
+			);
+		}
 		unset($this->cache->$id);
 		return $id;
 	}
 	/**
 	 * Get client data
 	 *
-	 * @param int				$id
+	 * @param string		$id
 	 *
 	 * @return array|bool
 	 */
 	function get_client ($id) {
-		$id		= (int)$id;
-		if (!$id) {
+		if (!preg_match('/^[0-9a-z]{32}$/', $id)) {
 			return false;
 		}
 		return $this->cache->get($id, function () use ($id) {
-			return $this->db()->qf(
+			return $this->db()->qf([
 				"SELECT *
 				FROM `[prefix]oauth2_clients`
-				WHERE `id`	= $id
-				LIMIT 1"
-			);
+				WHERE `id`	= '%s'
+				LIMIT 1",
+				$id
+			]);
 		});
 	}
 	/**
 	 * Set client data
 	 *
-	 * @param int		$id
+	 * @param string	$id
 	 * @param string	$secret
 	 * @param string	$name
 	 * @param string	$domain
@@ -104,11 +123,8 @@ class OAuth2 extends Accessor {
 	 * @return bool
 	 */
 	function set_client ($id, $secret, $name, $domain, $active) {
-		$id	= (int)$id;
-		if (!$id) {
-			return false;
-		}
 		if (
+			!preg_match('/^[0-9a-z]{32}$/', $id) ||
 			!preg_match('/^[0-9a-z]{32}$/', $secret) ||
 			!$domain ||
 			strpos($domain, '/') !== false
@@ -136,23 +152,25 @@ class OAuth2 extends Accessor {
 	/**
 	 * Delete client
 	 *
-	 * @param int				$id
+	 * @param string	$id
 	 *
 	 * @return bool
 	 */
 	function del_client ($id) {
-		$id	= (int)$id;
-		if (!$id) {
+		if (!preg_match('/^[0-9a-z]{32}$/', $id)) {
 			return false;
 		}
 		$result	= $this->db_prime()->q([
-			"DELETE FROM `[prefix]oauth2_clients`
-			WHERE `id` = $id
-			LIMIT 1",
-			"DELETE FROM `[prefix]oauth2_clients_grant_access`
-			WHERE `id`	= $id",
-			"DELETE FROM `[prefix]oauth2_clients_sessions`
-			WHERE `id`	= $id"
+			[
+				"DELETE FROM `[prefix]oauth2_clients`
+				WHERE `id` = '%s'
+				LIMIT 1",
+				"DELETE FROM `[prefix]oauth2_clients_grant_access`
+				WHERE `id`	= '%s'",
+				"DELETE FROM `[prefix]oauth2_clients_sessions`
+				WHERE `id`	= '%s'"
+			],
+			$id
 		]);
 		unset($this->cache->{'/'});
 		return $result;
@@ -171,13 +189,12 @@ class OAuth2 extends Accessor {
 	/**
 	 * Grant access for specified client
 	 *
-	 * @param int		$client
+	 * @param string	$client
 	 *
 	 * @return bool
 	 */
 	function add_access ($client) {
 		$User	= User::instance();
-		$client	= (int)$client;
 		if (!$User->user() || !$this->get_client($client)) {
 			return false;
 		}
@@ -199,14 +216,13 @@ class OAuth2 extends Accessor {
 	/**
 	 * Check granted access for specified client
 	 *
-	 * @param int		$client
+	 * @param string	$client
 	 * @param bool|int	$user	If not specified - current user assumed
 	 *
 	 * @return bool
 	 */
 	function get_access ($client, $user = false) {
-		$user	= $user ?: User::instance()->id;
-		$client	= (int)$client;
+		$user	= (int)$user ?: User::instance()->id;
 		if ($user == 1) {
 			return $this->guest_tokens;
 		}
@@ -223,28 +239,30 @@ class OAuth2 extends Accessor {
 	/**
 	 * Deny access for specified client/
 	 *
-	 * @param int		$client	If 0 - access for all clients will be denied
+	 * @param string	$client	If '' - access for all clients will be denied
 	 * @param bool|int	$user	If not specified - current user assumed
 	 *
 	 * @return bool
 	 */
-	function del_access ($client = 0, $user = false) {
-		$user	= $user ?: User::instance()->id;
-		$client	= (int)$client;
+	function del_access ($client = '', $user = false) {
+		$user	= (int)$user ?: User::instance()->id;
 		if ($user == 1) {
 			return false;
 		}
-		$result	= $client ? $this->db_prime()->q([
-			"DELETE FROM `[prefix]oauth2_clients_grant_access`
-			WHERE
-				`user`	= $user AND
-				`id`	= $client
-			LIMIT 1",
-			"DELETE FROM `[prefix]oauth2_clients_sessions`
-			WHERE
-				`user`	= $user AND
-				`id`	= $client"
-		]) : $this->db_prime()->q([
+		$result	= $client ? $this->db_prime()->q(
+			[
+				"DELETE FROM `[prefix]oauth2_clients_grant_access`
+				WHERE
+					`user`	= $user AND
+					`id`	= '%s'
+				LIMIT 1",
+				"DELETE FROM `[prefix]oauth2_clients_sessions`
+				WHERE
+					`user`	= $user AND
+					`id`	= '%s'"
+			],
+			$client
+		) : $this->db_prime()->q([
 			"DELETE FROM `[prefix]oauth2_clients_grant_access`
 			WHERE
 				`user`	= $user",
@@ -258,7 +276,7 @@ class OAuth2 extends Accessor {
 	/**
 	 * Adds new code for specified client, code is used to obtain token
 	 *
-	 * @param int			$client
+	 * @param string		$client
 	 * @param string		$response_type	'code' or 'token'
 	 * @param string		$redirect_uri
 	 *
@@ -266,7 +284,7 @@ class OAuth2 extends Accessor {
 	 */
 	function add_code ($client, $response_type, $redirect_uri = '') {
 		$User	= User::instance();
-		$client	= $this->get_client((int)$client);
+		$client	= $this->get_client($client);
 		if (
 			(
 				!$this->guest_tokens && !$User->user()
@@ -346,7 +364,7 @@ class OAuth2 extends Accessor {
 	 * Get code data (tokens)
 	 *
 	 * @param string		$code
-	 * @param int			$client			Client id
+	 * @param string		$client			Client id
 	 * @param string		$secret			Client secret
 	 * @param string		$redirect_uri
 	 *
@@ -402,7 +420,7 @@ class OAuth2 extends Accessor {
 	 * Get token data
 	 *
 	 * @param string		$access_token
-	 * @param int			$client			Client id
+	 * @param string		$client			Client id
 	 * @param string		$secret			Client secret
 	 *
 	 * @return array|bool					<i>false</i> on failure, array ['user' => id, 'session' => id, 'expire' => unix time, 'type' => 'code'|'token']
@@ -448,7 +466,7 @@ class OAuth2 extends Accessor {
 	 * Get new access_token with refresh_token
 	 *
 	 * @param string		$refresh_token
-	 * @param int			$client			Client id
+	 * @param string		$client			Client id
 	 * @param string		$secret			Client secret
 	 *
 	 * @return array|bool					<i>false</i> on failure,

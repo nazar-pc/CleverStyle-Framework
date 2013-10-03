@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS `[prefix]oauth2_clients` (
-	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+	`id` varchar(32) NOT NULL,
 	`secret` varchar(32) NOT NULL,
 	`name` varchar(255) NOT NULL,
 	`domain` varchar(255) NOT NULL,
@@ -8,13 +8,13 @@ CREATE TABLE IF NOT EXISTS `[prefix]oauth2_clients` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `[prefix]oauth2_clients_grant_access` (
-	`id` int(10) unsigned NOT NULL,
+	`id` varchar(32) NOT NULL,
 	`user` int(10) unsigned NOT NULL COMMENT 'User id',
 	PRIMARY KEY (`id`,`user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `[prefix]oauth2_clients_sessions` (
-	`id` int(10) unsigned NOT NULL COMMENT 'Client id',
+	`id` varchar(32) NOT NULL COMMENT 'Client id',
 	`user` int(10) unsigned NOT NULL COMMENT 'User id',
 	`session` varchar(32) NOT NULL,
 	`created` bigint(20) unsigned NOT NULL,

@@ -45,5 +45,5 @@ function http_build_url ($url, $parts) {
 	}
 	unset($parts, $p);
 	$params	= array_unique($params);
-	return $url.'?'.implode('&', $params);
+	return "$url?".implode('&', $params);
 }
