@@ -86,9 +86,9 @@ class OAuth2 extends Accessor {
 				xap($domain),
 				(int)(bool)$active
 			);
+			unset($this->cache->$id);
+			return $id;
 		}
-		unset($this->cache->$id);
-		return $id;
 	}
 	/**
 	 * Get client data
