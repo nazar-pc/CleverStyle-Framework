@@ -49,7 +49,7 @@ Trigger::instance()->register(
 		if (!ADMIN) {
 			return;
 		}
-		switch (Config::instance()->components['modules']['Blogs']['active']) {
+		switch (Config::instance()->components['modules']['Static_pages']['active']) {
 			case 0:
 			case 1:
 				require __DIR__.'/trigger/installed.php';
