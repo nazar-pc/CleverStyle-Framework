@@ -954,6 +954,16 @@ function xor_string ($string1, $string2) {
 	return $string1;
 }
 /**
+ * Checks whether string is an md5 hash
+ *
+ * @param string	$string
+ *
+ * @return bool
+ */
+function is_md5 ($string) {
+	return is_string($string) && preg_match('/^[0-9a-z]{32}$/', $string);
+}
+/**
  * Checks associativity of array
  *
  * @param array	$array	Array to be checked

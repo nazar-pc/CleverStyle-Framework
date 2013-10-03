@@ -1546,7 +1546,7 @@ class User extends Accessor {
 			}
 			$session_id = $session_id ?: $this->current['session'];
 		}
-		if (!preg_match('/^[0-9a-z]{32}$/', $session_id)) {
+		if (!is_md5($session_id)) {
 			return false;
 		}
 		$Cache	= Cache::instance();
@@ -1665,7 +1665,7 @@ class User extends Accessor {
 		if (!$user) {
 			$user = 1;
 		}
-		if ($delete_current_session && preg_match('/^[0-9a-z]{32}$/', $this->current['session'])) {
+		if ($delete_current_session && is_md5($this->current['session'])) {
 			$this->del_session_internal(null, false);
 		}
 		/**
@@ -1831,7 +1831,7 @@ class User extends Accessor {
 	 */
 	protected function del_session_internal ($session_id = null, $create_guest_session = true) {
 		$session_id = $session_id ?: $this->current['session'];
-		if (!preg_match('/^[0-9a-z]{32}$/', $session_id)) {
+		if (!is_md5($session_id)) {
 			return false;
 		}
 		unset(Cache::instance()->{"sessions/$session_id"});
@@ -1899,7 +1899,7 @@ class User extends Accessor {
 	 */
 	function get_session_data ($item, $session_id = null) {
 		$session_id	= $session_id ?: $this->current['session'];
-		if (!preg_match('/^[0-9a-z]{32}$/', $session_id)) {
+		if (!is_md5($session_id)) {
 			return false;
 		}
 		$Cache		= Cache::instance();
@@ -1929,7 +1929,7 @@ class User extends Accessor {
 	 */
 	function set_session_data ($item, $value, $session_id = null) {
 		$session_id	= $session_id ?: $this->current['session'];
-		if (!preg_match('/^[0-9a-z]{32}$/', $session_id)) {
+		if (!is_md5($session_id)) {
 			return false;
 		}
 		$Cache		= Cache::instance();
@@ -1972,7 +1972,7 @@ class User extends Accessor {
 	 */
 	function del_session_data ($item, $session_id = null) {
 		$session_id	= $session_id ?: $this->current['session'];
-		if (!preg_match('/^[0-9a-z]{32}$/', $session_id)) {
+		if (!is_md5($session_id)) {
 			return false;
 		}
 		$Cache		= Cache::instance();
@@ -2219,7 +2219,7 @@ class User extends Accessor {
 	 * @return array|bool				array('id' => <i>id</i>, 'email' => <i>email</i>, 'password' => <i>password</i>) or <b>false</b> on failure
 	 */
 	function registration_confirmation ($reg_key) {
-		if (!preg_match('/^[0-9a-z]{32}$/', $reg_key)) {
+		if (!is_md5($reg_key)) {
 			return false;
 		}
 		if (!Trigger::instance()->run(
@@ -2330,7 +2330,7 @@ class User extends Accessor {
 	 * @return array|bool			array('id' => <i>id</i>, 'password' => <i>password</i>) or <b>false</b> on failure
 	 */
 	function restore_password_confirmation ($key) {
-		if (!preg_match('/^[0-9a-z]{32}$/', $key)) {
+		if (!is_md5($key)) {
 			return false;
 		}
 		$id			= $this->db_prime()->qfs([

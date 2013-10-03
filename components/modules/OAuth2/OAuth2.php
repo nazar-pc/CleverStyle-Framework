@@ -98,7 +98,7 @@ class OAuth2 extends Accessor {
 	 * @return array|bool
 	 */
 	function get_client ($id) {
-		if (!preg_match('/^[0-9a-z]{32}$/', $id)) {
+		if (!is_md5($id)) {
 			return false;
 		}
 		return $this->cache->get($id, function () use ($id) {
@@ -124,8 +124,8 @@ class OAuth2 extends Accessor {
 	 */
 	function set_client ($id, $secret, $name, $domain, $active) {
 		if (
-			!preg_match('/^[0-9a-z]{32}$/', $id) ||
-			!preg_match('/^[0-9a-z]{32}$/', $secret) ||
+			!is_md5($id) ||
+			!is_md5($secret) ||
 			!$domain ||
 			strpos($domain, '/') !== false
 		) {
@@ -157,7 +157,7 @@ class OAuth2 extends Accessor {
 	 * @return bool
 	 */
 	function del_client ($id) {
-		if (!preg_match('/^[0-9a-z]{32}$/', $id)) {
+		if (!is_md5($id)) {
 			return false;
 		}
 		$result	= $this->db_prime()->q([
@@ -374,7 +374,7 @@ class OAuth2 extends Accessor {
 	 */
 	function get_code ($code, $client, $secret, $redirect_uri = '') {
 		$client	= $this->get_client($client);
-		if (!preg_match('/^[0-9a-z]{32}$/', $code) || !$client || $client['secret'] != $secret) {
+		if (!is_md5($code) || !$client || $client['secret'] != $secret) {
 			return false;
 		}
 		$data	= $this->db()->qf([
@@ -427,7 +427,7 @@ class OAuth2 extends Accessor {
 	 */
 	function get_token ($access_token, $client, $secret) {
 		$client	= $this->get_client($client);
-		if (!preg_match('/^[0-9a-z]{32}$/', $access_token) || !$client || $client['secret'] != $secret) {
+		if (!is_md5($access_token) || !$client || $client['secret'] != $secret) {
 			return false;
 		}
 		$Cache	= $this->cache;
@@ -474,7 +474,7 @@ class OAuth2 extends Accessor {
 	 */
 	function refresh_token ($refresh_token, $client, $secret) {
 		$client	= $this->get_client($client);
-		if (!preg_match('/^[0-9a-z]{32}$/', $refresh_token) || !$client || $client['secret'] != $secret) {
+		if (!is_md5($refresh_token) || !$client || $client['secret'] != $secret) {
 			return false;
 		}
 		$data	= $this->db_prime()->qf([
