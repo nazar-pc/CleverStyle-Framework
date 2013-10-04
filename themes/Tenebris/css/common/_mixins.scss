@@ -1,0 +1,34 @@
+/**
+ * @package		CleverStyle CMS
+ * @subpackage	CleverStyle theme
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+
+//Alignment mixin
+@mixin cs-align($side) {
+	.cs-#{$side}-odd > thead > tr > :nth-child(odd),
+	.cs-#{$side}-even > thead > tr > :nth-child(even),
+	.cs-#{$side}-all > thead > tr > *,
+	.cs-#{$side}-odd > tbody > tr > :nth-child(odd),
+	.cs-#{$side}-even > tbody > tr > :nth-child(even),
+	.cs-#{$side}-all > tbody > tr > *,
+	.cs-#{$side}-odd > tfoot > tr > :nth-child(odd),
+	.cs-#{$side}-even > tfoot > tr > :nth-child(even),
+	.cs-#{$side}-all > tfoot > tr > *,
+	tr.cs-#{$side}-all > *,
+	td.cs-#{$side}-all {
+		text-align     : $side;
+		vertical-align : middle;
+		padding        : 2px;
+	}
+
+	.cs-#{$side}-all {
+		text-align : $side !important;
+	}
+
+	.cs-#{$side} {
+		text-align : $side;
+	}
+}

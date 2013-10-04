@@ -1,0 +1,74 @@
+/**
+ * @package		CleverStyle CMS
+ * @subpackage	Tenebris theme
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+@import "common_config";
+
+$left-column : 25%;
+
+* {
+	box-sizing      : border-box !important;
+	-moz-box-sizing : border-box !important;
+}
+html {
+	min-height : 100%;
+	position   : relative;
+}
+//Whole body
+body {
+	font       : {
+		family : $base-font-family;
+		size   : $base-font-size;
+	}
+	min-height : 100%;
+	margin     : 0;
+	padding    : 0;
+	width      : 100%;
+
+	&:before {
+		background      : url(../img/bg.png) no-repeat;
+		background-size : cover;
+		content         : '';
+		display         : block;
+		height          : 500px;
+		position        : absolute;
+		width           : 100%;
+		z-index         : -2;
+	}
+
+	> footer {
+		bottom     : 0;
+		height     : 70px;
+		margin-top : 70px;
+		padding    : 1rem;
+		position   : absolute;
+		text-align : center;
+		width      : 100%;
+	}
+
+	&:after {
+		content : '';
+		display : block;
+		height  : 70px;
+	}
+}
+
+#left_blocks {
+	border-right : .1rem solid #323232;
+	margin-left  : 1px;
+	padding      : 0 1rem;
+	position     : absolute;
+	top          : 450px;
+	width        : $left-column;
+}
+
+#body,
+#top_blocks,
+#bottom_blocks {
+	border-left : .1rem solid #323232;
+	margin-left : $left-column;
+	padding     : 0 1rem;
+}

@@ -1,0 +1,44 @@
+/**
+ * @package		CleverStyle CMS
+ * @subpackage	Tenebris theme
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+
+//Header
+body > header {
+	background    : rgba(31, 31, 31, 0.25);
+	margin-bottom : 400px;
+	padding       : 0 .5rem;
+	position      : relative;
+
+	h1 {
+		margin-bottom  : 0;
+		text-transform : none;
+	}
+
+	nav {
+		cursor         : pointer;
+		font-size      : 28px;
+		line-height    : 49px;
+		padding        : 0 .5rem;
+		position       : absolute;
+		right          : 0;
+		top            : 0;
+		vertical-align : middle;
+	}
+
+	&:after {
+		background : linear-gradient(to top, #131313, rgba(19,19,19,0.995) 10%, rgba(19,19,19,0) 100%);
+		content    : '';
+		display    : block;
+		height     : 500px;
+		left       : 0;
+		position   : absolute;
+		right      : 0;
+		top        : 0;
+		width      : 100%;
+		z-index    : -1;
+	}
+}

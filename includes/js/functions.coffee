@@ -223,7 +223,8 @@ cs.getcookie				= (name) ->
  * @param {string} password
 ###
 cs.login					= (login, password) ->
-	login	= login.toLowerCase()
+	login		= String(login).toLowerCase()
+	password	= String(password)
 	$.ajax(
 		cs.base_url + '/api/System/user/login'
 			cache	: false
@@ -286,7 +287,7 @@ cs.registration				= (email) ->
 	if !email
 		alert(L.please_type_your_email)
 		return
-	email	= email.toLowerCase()
+	email	= String(email).toLowerCase()
 	$.ajax(
 		cs.base_url + '/api/System/user/registration'
 			cache	: false
@@ -327,7 +328,7 @@ cs.restore_password			= (email) ->
 	if !email
 		alert(L.please_type_your_email)
 		return
-	email	= email.toLowerCase()
+	email	= String(email).toLowerCase()
 	$.ajax(
 		cs.base_url + '/api/System/user/restore_password',
 		{
@@ -369,8 +370,8 @@ cs.change_password			= (current_password, new_password) ->
 	else if current_password == new_password
 		alert(L.current_new_password_equal)
 		return
-	current_password	= cs.hash('sha512', cs.hash('sha512', current_password) + cs.public_key)
-	new_password		= cs.hash('sha512', cs.hash('sha512', new_password) + cs.public_key)
+	current_password	= cs.hash('sha512', cs.hash('sha512', String(current_password)) + cs.public_key)
+	new_password		= cs.hash('sha512', cs.hash('sha512', String(new_password)) + cs.public_key)
 	$.ajax(
 		cs.base_url + '/api/System/user/change_password',
 		{

@@ -43,21 +43,21 @@ class Page {
 				$post_Body			= '',
 				$post_Html			= '',
 				$level				= [				//Number of tabs by default for margins the substitution
-					'Head'				=> 0,	//of values into template
-					'pre_Body'			=> 0,
-					'Header'			=> 2,
-					'main_menu'			=> 2,
-					'main_sub_menu'		=> 2,
-					'main_menu_more'	=> 2,
-					'header_info'		=> 3,
-					'debug_info'		=> 1,
-					'Left'				=> 2,
-					'Top'				=> 2,
-					'Content'			=> 3,
-					'Bottom'			=> 2,
-					'Right'				=> 2,
-					'Footer'			=> 1,
-					'post_Body'			=> 0
+					'Head'				=> 0,		//of values into template
+					'pre_Body'			=> 1,
+					'Header'			=> 3,
+					'main_menu'			=> 3,
+					'main_sub_menu'		=> 3,
+					'main_menu_more'	=> 3,
+					'header_info'		=> 4,
+					'debug_info'		=> 2,
+					'Left'				=> 3,
+					'Top'				=> 3,
+					'Content'			=> 4,
+					'Bottom'			=> 3,
+					'Right'				=> 3,
+					'Footer'			=> 2,
+					'post_Body'			=> 1
 				],
 				$user_avatar_image,
 				$header_info,
@@ -329,28 +329,29 @@ class Page {
 		 * Menu generation
 		 */
 		$Index				= Index::instance();
-		if ($Index->main_menu) {
+		if (!$this->main_menu && $Index->main_menu) {
 			$this->main_menu	= h::{'li| a'}($Index->main_menu);
 		}
 		if ($Index->main_sub_menu) {
-			$this->main_sub_menu	= '';
-			foreach ($Index->main_sub_menu as $item) {
-				if (isset($item[1], $item[1]['class']) && $item[1]['class'] == 'uk-active') {
-					if ($Index->main_menu_more) {
-						$item[0]				.= ' '.h::icon('caret-down');
+			if (!$this->main_sub_menu) {
+				foreach ($Index->main_sub_menu as $item) {
+					if (isset($item[1], $item[1]['class']) && $item[1]['class'] == 'uk-active') {
+						if ($Index->main_menu_more) {
+							$item[0]				.= ' '.h::icon('caret-down');
+						}
+						$item[1]['class']		= trim(str_replace('uk-active', '', $item[1]['class']));
+						$this->main_sub_menu	.= h::{'li.uk-active[data-uk-dropdown=]'}(
+							h::a($item).
+							(
+								$Index->main_menu_more ? h::{'div.uk-dropdown.uk-dropdown-small ul.uk-nav.uk-nav-dropdown li| a'}($Index->main_menu_more) : ''
+							)
+						);
+					} else {
+						$this->main_sub_menu	.= h::{'li a'}($item);
 					}
-					$item[1]['class']		= trim(str_replace('uk-active', '', $item[1]['class']));
-					$this->main_sub_menu	.= h::{'li.uk-active[data-uk-dropdown=]'}(
-						h::a($item).
-						(
-							$Index->main_menu_more ? h::{'div.uk-dropdown.uk-dropdown-small ul.uk-nav.uk-nav-dropdown li| a'}($Index->main_menu_more) : ''
-						)
-					);
-				} else {
-					$this->main_sub_menu	.= h::{'li a'}($item);
 				}
 			}
-		} elseif ($Index->main_menu_more) {
+		} elseif (!$this->main_menu && $Index->main_menu_more) {
 			$this->main_menu	= h::{'li| a'}($Index->main_menu_more);
 		}
 		/**

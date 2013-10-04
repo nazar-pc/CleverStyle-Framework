@@ -1,12 +1,12 @@
 /**
  * @package		CleverStyle CMS
- * @subpackage	CleverStyle theme
+ * @subpackage	Tenebris theme
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
 
-@import "admin";
-@import "general";
-@import "profile";
-@import "uikit_fixes";
+//Text color
+$base-color				: #ddd;
+//Body background
+$body-bg				: #131313;

@@ -1,0 +1,20 @@
+/**
+ * @package		CleverStyle CMS
+ * @subpackage	CleverStyle theme
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+
+@font-face {
+	font-family: 'Open Sans Light Embedded';
+	font-style: normal;
+	font-weight: 300;
+	src: url(../fonts/OpenSans-Light.woff) format("woff"), local('Open Sans Light'), local('OpenSans-Light');
+}
+@font-face {
+	font-family: 'Open Sans Embedded';
+	font-style: normal;
+	font-weight: 400;
+	src: url(../fonts/OpenSans.woff) format("woff"), local('Open Sans'), local('OpenSans');
+}
