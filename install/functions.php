@@ -12,7 +12,7 @@ function install_form () {
 		h::nav(
 			h::{'input[name=mode][type=radio]'}([
 				'value'		=> ['1', '0'],
-				'in'		=> ['Regular user', 'Expert'],
+				'in'		=> [h::span('Regular user'), h::span('Expert')],
 				'onclick'	=> "var items = document.getElementsByClassName('expert');"
 								."for (var i = 0; i < items.length; i++) {"
 								."items.item(i).style.display = this.value == '0' ? 'table-row' : '';"

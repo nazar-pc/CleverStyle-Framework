@@ -45,16 +45,16 @@ section nav label {
 	position         : relative;
 	padding          : 0 30px;
 }
-section nav :checked+label {
+section nav :checked+span {
 	color : #ddd;
 }
 section nav input {
 	display : none;
 }
-section nav :nth-child(2) {
+section nav label:nth-of-type(1) {
 	margin-right : -10px;
 }
-section nav :nth-child(4)::before {
+section nav label:nth-of-type(2)::before {
 	background-color  : #d7d7d7;
 	content           : "";
 	height            : 30px;
