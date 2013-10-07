@@ -30,7 +30,7 @@ body {
 
 	&:before {
 		background      : url(../img/bg.jpg) no-repeat;
-		background-size : contain;
+		background-size : cover;
 		content         : '';
 		display         : block;
 		height          : 500px;
