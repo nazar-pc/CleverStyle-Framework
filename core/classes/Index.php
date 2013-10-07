@@ -716,11 +716,13 @@ class Index {
 			if ($this->title_auto) {
 				$Page->title(Language::instance()->{HOME ? 'home' : MODULE});
 			}
-		} else {
+		} elseif (!defined('ERROR_CODE') && !$this->stop) {
 			$this->init_auto	&& $this->init();
 		}
 		if ($this->generate_auto) {
-			$this->js_vars()->generate();
+			$this
+				->js_vars()
+				->generate();
 		}
 		if ($this->stop) {
 			if (!(

@@ -1166,9 +1166,9 @@ class Page {
 	 * @return Page
 	 */
 	protected function get_header_info () {
-		$L		= Language::instance();
-		$User	= User::instance(true);
-		$this->user_avatar_image = $User->avatar();
+		$L							= Language::instance();
+		$User						= User::instance(true);
+		$this->user_avatar_image	= $User->avatar();
 		if ($User->user()) {
 			$this->header_info = h::{'div.cs-header-user-block'}(
 				h::b(
@@ -1309,7 +1309,7 @@ class Page {
 			/**
 			 * Processing of replacing in content
 			 */
-			echo $this->process_replacing($this->Content);
+			echo $this->process_replacing($this->Content ?: (API ? 'null' : ''));
 		} else {
 			Trigger::instance()->run('System/Page/pre_display');
 			class_exists('\\cs\\Error', false) && Error::instance(true)->display();

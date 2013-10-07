@@ -226,7 +226,7 @@ cs.login					= (login, password) ->
 	login		= String(login).toLowerCase()
 	password	= String(password)
 	$.ajax(
-		cs.base_url + '/api/System/user/login'
+		'api/System/user/login'
 			cache	: false
 			data	:
 				login: cs.hash('sha224', login)
@@ -234,7 +234,7 @@ cs.login					= (login, password) ->
 			success	: (random_hash) ->
 				if random_hash.length == 56
 					$.ajax(
-						cs.base_url + '/api/user/login'
+						'api/user/login'
 							cache	: false
 							data	:
 								login		: cs.hash('sha224', login)
@@ -265,7 +265,7 @@ cs.login					= (login, password) ->
 ###
 cs.logout					= ->
 	$.ajax(
-		cs.base_url + '/api/System/user/logout'
+		'api/System/user/logout'
 			cache	: false
 			data	:
 				logout: true
@@ -289,7 +289,7 @@ cs.registration				= (email) ->
 		return
 	email	= String(email).toLowerCase()
 	$.ajax(
-		cs.base_url + '/api/System/user/registration'
+		'api/System/user/registration'
 			cache	: false
 			data	:
 				email: email
@@ -330,7 +330,7 @@ cs.restore_password			= (email) ->
 		return
 	email	= String(email).toLowerCase()
 	$.ajax(
-		cs.base_url + '/api/System/user/restore_password',
+		'api/System/user/restore_password',
 		{
 			cache	: false,
 			data	: {
@@ -373,7 +373,7 @@ cs.change_password			= (current_password, new_password) ->
 	current_password	= cs.hash('sha512', cs.hash('sha512', String(current_password)) + cs.public_key)
 	new_password		= cs.hash('sha512', cs.hash('sha512', String(new_password)) + cs.public_key)
 	$.ajax(
-		cs.base_url + '/api/System/user/change_password',
+		'api/System/user/change_password',
 		{
 			cache	: false,
 			data	: {

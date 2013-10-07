@@ -13,7 +13,7 @@ $ ->
 			add_button
 			(files) ->
 				$.ajax(
-					"#{cs.base_url}/api/Photo_gallery/images",
+					'api/Photo_gallery/images'
 					cache	: false
 					data	:
 						files	: files
@@ -48,7 +48,7 @@ $ ->
 			->
 				if confirm L.photo_gallery_sure_to_delete_image
 					$.ajax(
-						cs.base_url + '/api/Photo_gallery/images/' + $(this).data('image'),
+						'api/Photo_gallery/images/' + $(this).data('image'),
 						cache	: false
 						type	: 'delete'
 						success	: () ->

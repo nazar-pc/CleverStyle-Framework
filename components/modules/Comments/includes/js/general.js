@@ -77,7 +77,7 @@ $(function () {
 	function blogs_add_comment () {
 		var textarea	= $('.cs-comments-comment-write-text');
 		$.ajax(
-			cs.base_url + '/api/Comments',
+			'api/Comments',
 			{
 				cache		: false,
 				data		: {
@@ -114,7 +114,7 @@ $(function () {
 		var textarea	= $('.cs-comments-comment-write-text'),
 			id			= textarea.data('id');
 		$.ajax(
-			cs.base_url + '/api/Comments/' + id,
+			'api/Comments/' + id,
 			{
 				cache		: false,
 				data		: {
@@ -141,7 +141,7 @@ $(function () {
 		var comment = $(this).parent('article'),
 			id		= comment.prop('id').replace('comment_', '');
 		$.ajax(
-			cs.base_url + '/api/Comments/' + id,
+			'api/Comments/' + id,
 			{
 				cache		: false,
 				data		: {

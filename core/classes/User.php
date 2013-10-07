@@ -280,7 +280,7 @@ class User extends Accessor {
 		 * Security check
 		 */
 		$session_id	= $this->get_session();
-		if (!$session_id || !isset($_REQUEST['session']) || $_REQUEST['session'] != $session_id) {
+		if (!$session_id || !isset($_COOKIE['session']) || $_COOKIE['session'] != $session_id) {
 			if (API) {
 				error_code(403);
 				Page::instance()->error('Invalid user session');

@@ -20,7 +20,7 @@ $(function () {
 			data.id	= id;
 		}
 		$.ajax(
-			cs.base_url + '/api/Blogs/posts/preview',
+			'api/Blogs/posts/preview',
 			{
 				cache	: false,
 				data	: data,

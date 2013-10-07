@@ -286,7 +286,7 @@
   cs.login = function(login, password) {
     login = String(login).toLowerCase();
     password = String(password);
-    return $.ajax(cs.base_url + '/api/System/user/login', {
+    return $.ajax('api/System/user/login', {
       cache: false,
       data: {
         login: cs.hash('sha224', login)
@@ -294,7 +294,7 @@
       type: 'post',
       success: function(random_hash) {
         if (random_hash.length === 56) {
-          return $.ajax(cs.base_url + '/api/user/login', {
+          return $.ajax('api/user/login', {
             cache: false,
             data: {
               login: cs.hash('sha224', login),
@@ -334,7 +334,7 @@
 
 
   cs.logout = function() {
-    return $.ajax(cs.base_url + '/api/System/user/logout', {
+    return $.ajax('api/System/user/logout', {
       cache: false,
       data: {
         logout: true
@@ -366,7 +366,7 @@
       return;
     }
     email = String(email).toLowerCase();
-    return $.ajax(cs.base_url + '/api/System/user/registration', {
+    return $.ajax('api/System/user/registration', {
       cache: false,
       data: {
         email: email
@@ -406,7 +406,7 @@
       return;
     }
     email = String(email).toLowerCase();
-    return $.ajax(cs.base_url + '/api/System/user/restore_password', {
+    return $.ajax('api/System/user/restore_password', {
       cache: false,
       data: {
         email: cs.hash('sha224', email)
@@ -450,7 +450,7 @@
     }
     current_password = cs.hash('sha512', cs.hash('sha512', String(current_password)) + cs.public_key);
     new_password = cs.hash('sha512', cs.hash('sha512', String(new_password)) + cs.public_key);
-    return $.ajax(cs.base_url + '/api/System/user/change_password', {
+    return $.ajax('api/System/user/change_password', {
       cache: false,
       data: {
         verify_hash: cs.hash('sha224', current_password + session_id),

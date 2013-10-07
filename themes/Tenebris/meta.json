@@ -1,0 +1,8 @@
+{
+	"package"				: "Tenebris",
+	"category"				: "themes",
+	"version"				: "0.1.0",
+	"description"			: "Tenebris dark theme for CleverStyle CMS",
+	"author"				: "Nazar Mokrynskyi, design by Dmitry Kirsanov <extramid@gmail.com>",
+	"license"				: "MIT License"
+}

@@ -779,9 +779,9 @@ abstract class _Abstract {
 			return '';
 		}
 		if (!isset($data['class'])) {
-			$data['class'] = "uk-icon uk-icon-$class";
+			$data['class'] = "uk-icon-$class";
 		} else {
-			$data['class'] .= " uk-icon uk-icon-$class";
+			$data['class'] .= " uk-icon-$class";
 		}
 		$data['level']	= 0;
 		return self::span($data).' ';
@@ -1127,7 +1127,7 @@ abstract class _Abstract {
 			$attrs_ = explode('][', mb_substr($input, $pos+1, -1));
 			$input = mb_substr($input, 0, $pos);
 			foreach ($attrs_ as &$attr) {
-				$attr				= explode('=', $attr);
+				$attr				= explode('=', $attr, 2);
 				if (isset($attr[1])) {
 					$attrs[$attr[0]]	= $attr[1];
 				} else {
