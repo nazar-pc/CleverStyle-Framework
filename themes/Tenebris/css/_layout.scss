@@ -29,8 +29,8 @@ body {
 	width      : 100%;
 
 	&:before {
-		background      : url(../img/bg.png) no-repeat;
-		background-size : cover;
+		background      : url(../img/bg.jpg) no-repeat;
+		background-size : contain;
 		content         : '';
 		display         : block;
 		height          : 500px;
