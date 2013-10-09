@@ -164,10 +164,8 @@ if (isset($rc[2])) {
 						$User->get_group($rc[3], 'title')
 					)
 				).
-				h::{'div.cs-tabs'}(
-					h::{'ul li'}($tabs).
-					h::div($tabs_content)
-				).
+				h::{'ul.cs-tabs li'}($tabs).
+				h::div($tabs_content).
 				h::br().
 				h::{'input[type=hidden]'}([
 					'name'	=> 'id',
