@@ -1003,7 +1003,7 @@ class User extends Accessor {
 		if (!$group) {
 			return false;
 		}
-		$group_data = $Cache->get("groups/$group", function ($group) {
+		$group_data = $Cache->get("groups/$group", function () use ($group) {
 			$group_data = $this->db()->qf(
 				"SELECT
 					`title`,
@@ -1584,7 +1584,7 @@ class User extends Accessor {
 			is_array($result) &&
 			$result['expire'] > TIME &&
 			(
-				$Cache->{'users/'.$result['user']} ||
+				$Cache->{"users/$result[user]"} ||
 				$this->get('id', $result['user'])
 			)
 		)) {
