@@ -486,16 +486,12 @@ class User extends Accessor {
 					$value	= $value ? $L->clanguage : '';
 				}
 			}
-			$this->update_cache[$user] = true;
-			$this->data[$user][$item] = $value;
-			if ($this->init) {
-				$this->data_set[$user][$item] = $this->data[$user][$item];
-			}
+			$this->update_cache[$user]		= true;
+			$this->data[$user][$item]		= $value;
+			$this->data_set[$user][$item]	= $value;
 			if ($item == 'login' || $item == 'email') {
-				$this->data[$user][$item.'_hash'] = $value;
-				if ($this->init) {
-					$this->data_set[$user][$item.'_hash'] = $this->data[$user][$item];
-				}
+				$this->data[$user][$item.'_hash']		= hash('sha224', $value);
+				$this->data_set[$user][$item.'_hash']	= hash('sha224', $value);
 				unset(Cache::instance()->{'users/'.hash('sha224', $this->$item)});
 			} elseif ($item == 'password_hash') {
 				$this->del_all_sessions($user);

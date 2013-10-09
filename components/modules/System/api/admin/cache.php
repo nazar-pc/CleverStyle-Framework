@@ -32,7 +32,7 @@ if (isset($rc[2])) {
 					Core::instance()->api_request('System/admin/cache/clean_pcache/api');
 					time_limit_pause(false);
 				}
-				$Page->content($ajax ? _json_encode(h::{'puk-alert.uk-alert-success'}($L->done)) : 1);
+				$Page->content($ajax ? _json_encode(h::{'p.uk-alert.uk-alert-success'}($L->done)) : 1);
 			} else {
 				$Page->content($ajax ? _json_encode(h::{'p.uk-alert.uk-alert-danger'}($L->error)) : 0);
 			}
