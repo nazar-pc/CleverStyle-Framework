@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]blogs_sections` (
 CREATE TABLE IF NOT EXISTS `[prefix]blogs_tags` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `text` varchar(1024) NOT NULL,
+  `lang` varchar(2) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `text` (`text`(255))
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
