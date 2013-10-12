@@ -544,7 +544,7 @@ class Index {
 			}
 			if (!$Config->core['cache_compress_js_css']) {
 				$Page->js(
-					'cs.Language = '.Language::instance()->get_json().';',
+					'cs.Language = '._json_encode(Language::instance()).';',
 					'code'
 				);
 			}
