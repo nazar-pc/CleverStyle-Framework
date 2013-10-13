@@ -24,7 +24,7 @@ use			cs\Cache\Prefix,
 			cs\Permission\Any,
 			h;
 /**
- * Class for Groups manipulating
+ * Class for groups manipulating
  *
  * @method static \cs\Group instance($check = false)
  */

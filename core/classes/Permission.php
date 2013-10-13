@@ -10,7 +10,7 @@ use			cs\Cache\Prefix,
 			cs\DB\Accessor,
 			h;
 /**
- * Class for Permissions manipulating
+ * Class for permissions manipulating
  *
  * @method static \cs\Permission instance($check = false)
  */

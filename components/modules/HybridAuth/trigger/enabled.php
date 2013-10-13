@@ -98,7 +98,7 @@ Trigger::instance()->register(
 	}
 );
 Trigger::instance()->register(
-	'System/User/del_user/after',
+	'System/User/del/after',
 	function ($data) {
 		/**
 		 *	@var \cs\DB\_Abstract $cdb

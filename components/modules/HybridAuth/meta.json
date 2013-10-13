@@ -1,7 +1,7 @@
 {
 	"package"		: "HybridAuth",
 	"category"		: "modules",
-	"version"		: "2.1.1-cs27",
+	"version"		: "2.1.1-cs28",
 	"description"	: "Module for integration with social networks. Includes HybridAuth 2.1.1 core and additional providers 1.7",
 	"author"		: "HybridAuth authors",
 	"website"		: "hybridauth.sourceforge.net",
@@ -10,7 +10,7 @@
 		"MySQLi"
 	],
 	"provide"		: "social_integration",
-	"require"		: "System=>0.320",
+	"require"		: "System=>0.352",
 	"multilingual"	: [
 		"interface",
 		"content"

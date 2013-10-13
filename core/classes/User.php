@@ -23,10 +23,10 @@
  *  System/User/registration/confirmation/after
  *  ['id'	=> <i>user_id</i>]
  *
- *  System/User/del_user/before
+ *  System/User/del/before
  *  ['id'	=> <i>user_id</i>]
  *
- *  System/User/del_user/after
+ *  System/User/del/after
  *  ['id'	=> <i>user_id</i>]
  *
  *  System/User/add_bot
@@ -51,7 +51,7 @@ use			cs\Cache\Prefix,
 			cs\Permission\Any,
 			h;
 /**
- * Class for users/groups/permissions manipulating
+ * Class for users manipulating
  *
  * @property	int		$id
  * @property	string	$login
@@ -1796,7 +1796,7 @@ class User extends Accessor {
 	protected function del_user_internal ($user, $update = true) {
 		$Cache	= $this->cache;
 		Trigger::instance()->run(
-			'System/User/del_user/before',
+			'System/User/del/before',
 			[
 				'id'	=> $user
 			]
@@ -1853,7 +1853,7 @@ class User extends Accessor {
 				LIMIT 1"
 			);
 			Trigger::instance()->run(
-				'System/User/del_user/after',
+				'System/User/del/after',
 				[
 					'id'	=> $user
 				]
