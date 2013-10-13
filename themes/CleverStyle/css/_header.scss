@@ -26,13 +26,17 @@ body > header {
 		}
 
 		> div {
-			padding-left: 48px;
-			white-space : nowrap;
-			word-wrap   : normal;
+			padding-left : 48px;
+			white-space  : nowrap;
+			word-wrap    : normal;
 		}
 
 		button {
 			margin-top : 0;
+		}
+
+		button[class*=uk-icon-]:before {
+			margin-right : .5rem;
 		}
 	}
 

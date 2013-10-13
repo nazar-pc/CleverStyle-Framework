@@ -1210,11 +1210,9 @@ class Page {
 			$this->header_info			= h::{'div.cs-header-guest-form'}(
 				h::b("$L->hello, $L->guest!").
 				h::div(
-					h::{'button.cs-header-login-slide.cs-button-compact'}(
-						h::icon('signin').$L->log_in
-					).
-					h::{'button.cs-header-registration-slide.cs-button-compact'}(
-						h::icon('pencil').$L->registration,
+					h::{'button.cs-header-login-slide.cs-button-compact.uk-icon-signin'}($L->log_in).
+					h::{'button.cs-header-registration-slide.cs-button-compact.uk-icon-pencil'}(
+						$L->registration,
 						[
 							'data-title'	=> $L->quick_registration_form
 						]
@@ -1228,9 +1226,7 @@ class Page {
 					'autocorrect'		=> 'off'
 				]).
 				h::br().
-				h::{'button.cs-header-restore-password-process.cs-button-compact[tabindex=2]'}(
-					h::icon('question').$L->restore_password
-				).
+				h::{'button.cs-header-restore-password-process.cs-button-compact.uk-icon-question[tabindex=2]'}($L->restore_password).
 				h::{'button.cs-button-compact.cs-header-back[tabindex=3]'}(
 					h::icon('chevron-down'),
 					[
@@ -1248,9 +1244,7 @@ class Page {
 					'autocorrect'		=> 'off'
 				]).
 				h::br().
-				h::{'button.cs-header-registration-process.cs-button-compact[tabindex=2]'}(
-					h::icon('pencil').$L->registration
-				).
+				h::{'button.cs-header-registration-process.cs-button-compact.uk-icon-pencil[tabindex=2]'}($L->registration).
 				h::{'button.cs-button-compact.cs-header-back[tabindex=4]'}(
 					h::icon('chevron-down'),
 					[
@@ -1271,7 +1265,7 @@ class Page {
 					'placeholder'	=> $L->password
 				]).
 				h::br().
-				h::{'button.cs-header-login-process.cs-button-compact[tabindex=3]'}(h::icon('signin').$L->log_in).
+				h::{'button.cs-header-login-process.cs-button-compact.uk-icon-signin[tabindex=3]'}($L->log_in).
 				h::{'button.cs-button-compact.cs-header-back[tabindex=5]'}(
 					h::icon('chevron-down'),
 					[
