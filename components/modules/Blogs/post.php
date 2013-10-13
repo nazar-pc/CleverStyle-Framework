@@ -77,8 +77,8 @@ Index::instance()->content(
 		h::header(
 			(
 				$User->admin() &&
-				$User->get_user_permission('admin/Blogs', 'index') &&
-				$User->get_user_permission('admin/Blogs', 'edit_post') ? ' '.h::{'a.cs-button'}(
+				$User->get_permission('admin/Blogs', 'index') &&
+				$User->get_permission('admin/Blogs', 'edit_post') ? ' '.h::{'a.cs-button'}(
 					[
 						h::icon('edit'),
 						[

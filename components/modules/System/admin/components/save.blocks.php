@@ -8,12 +8,12 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-$Cache	= Cache::instance();
-$Config	= Config::instance();
-$L		= Language::instance();
-$Text	= Text::instance();
-$User	= User::instance();
-$a		= Index::instance();
+$Cache		= Cache::instance();
+$Config		= Config::instance();
+$L			= Language::instance();
+$Text		= Text::instance();
+$Permission	= Permission::instance();
+$a			= Index::instance();
 if (isset($_POST['mode'])) {
 	switch ($_POST['mode']) {
 		case 'add':
@@ -72,7 +72,7 @@ if (isset($_POST['mode'])) {
 			}
 			if ($_POST['mode'] == 'add') {
 				$Config->components['blocks'][] = $block;
-				$User->add_permission('Block', $block['index']);
+				$Permission->add('Block', $block['index']);
 			} else {
 				unset($Cache->{'blocks/'.$block['index'].'_'.$L->clang});
 			}
@@ -82,8 +82,8 @@ if (isset($_POST['mode'])) {
 		case 'delete':
 			if (isset($_POST['id'], $Config->components['blocks'][$_POST['id']])) {
 				$block = &$Config->components['blocks'][$_POST['id']];
-				$User->del_permission(
-					$User->get_permission(
+				$Permission->del(
+					$Permission->get(
 						null,
 						'Block',
 						$block['index']
@@ -109,7 +109,7 @@ if (isset($_POST['mode'])) {
 		break;
 		case 'permissions':
 			if (isset($_POST['block'], $_POST['block']['id'], $Config->components['blocks'][$_POST['block']['id']])) {
-				$permission = $User->get_permission(
+				$permission = $Permission->get(
 					null,
 					'Block',
 					$Config->components['blocks'][$_POST['block']['id']]['index']
@@ -117,12 +117,12 @@ if (isset($_POST['mode'])) {
 				$result = true;
 				if (isset($_POST['groups'])) {
 					foreach ($_POST['groups'] as $group => $value) {
-						$result = $result && $User->set_group_permissions([$permission => $value], $group);
+						$result = $result && Group::instance()->set_permissions([$permission => $value], $group);
 					}
 				}
 				if (isset($_POST['users'])) {
 					foreach ($_POST['users'] as $user => $value) {
-						$result = $result && $User->set_user_permissions([$permission => $value], $user);
+						$result = $result && User::instance()->set_permissions([$permission => $value], $user);
 					}
 				}
 				$a->save($result);

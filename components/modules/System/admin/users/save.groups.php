@@ -12,30 +12,30 @@ if (!isset($_POST['mode'])) {
 	return;
 }
 $Index	= Index::instance();
-$User	= User::instance();
+$Group	= Group::instance();
 if (isset($_POST['mode'])) {
 	switch ($_POST['mode']) {
 		case 'add':
 			$Index->save(
-				(bool)$User->add_group($_POST['group']['title'], $_POST['group']['description'])
+				(bool)$Group->add($_POST['group']['title'], $_POST['group']['description'])
 			);
 		break;
 		case 'edit':
 			$Index->save(
-				$User->set_group($_POST['group'], $_POST['group']['id'])
+				$Group->set($_POST['group'], $_POST['group']['id'])
 			);
 		break;
 		case 'delete':
 			$id = (int)$_POST['id'];
-			if ($id != 1 && $id != 2 && $id != 3) {
+			if ($id != 1 && $id != 2 && $id != 3) {	//Three primary groups should not be deleted
 				$Index->save(
-					$User->del_group($_POST['id'])
+					$Group->del($_POST['id'])
 				);
 			}
 		break;
 		case 'permissions':
 			$Index->save(
-				$User->set_group_permissions($_POST['permission'], $_POST['id'])
+				  $Group->set_permissions($_POST['permission'], $_POST['id'])
 			);
 		break;
 	}

@@ -12,7 +12,7 @@ use			h;
 $Config			= Config::instance();
 $L				= Language::instance();
 $Page			= Page::instance();
-$User			= User::instance();
+$Permission		= Permission::instance();
 $a				= Index::instance();
 $rc				= $Config->route;
 if (isset($rc[2])) {
@@ -43,7 +43,7 @@ if (isset($rc[2])) {
 			}
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
-			$permission				= $User->get_permission($rc[3]);
+			$permission				= $Permission->get($rc[3]);
 			$Page->title(
 				$L->editing_permission("$permission[group]/$permission[label]")
 			);
@@ -82,7 +82,7 @@ if (isset($rc[2])) {
 			}
 			$a->buttons				= false;
 			$a->cancel_button_back	= true;
-			$permission				= $User->get_permission($rc[3]);
+			$permission				= $Permission->get($rc[3]);
 			$Page->title(
 				$L->deletion_of_permission("$permission[group]/$permission[label]")
 			);
@@ -107,7 +107,7 @@ if (isset($rc[2])) {
 	);
 } else {
 	$a->buttons			= false;
-	$permissions		= $User->get_permissions_table();
+	$permissions		= $Permission->get_all();
 	$permissions_list	= [
 		h::th([$L->action, 'id', $L->group, $L->label]),
 		h::th([$L->action, 'id', $L->group, $L->label])

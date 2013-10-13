@@ -29,8 +29,8 @@ if (
 	$post['user'] != $User->id &&
 	!(
 		$User->admin() &&
-		$User->get_user_permission('admin/Blogs', 'index') &&
-		$User->get_user_permission('admin/Blogs', 'edit_post')
+		$User->get_permission('admin/Blogs', 'index') &&
+		$User->get_permission('admin/Blogs', 'edit_post')
 	)
 ) {
 	error_code(403);

@@ -50,7 +50,7 @@ $Page->Description		= description("$L->Blogs - ".implode(' - ', $description)." 
 $Page->og('type', 'blog');
 $module					= path($L->Blogs);
 if ($User->user()) {
-	if ($User->admin() && $User->get_user_permission('admin/Blogs', 'index')) {
+	if ($User->admin() && $User->get_permission('admin/Blogs', 'index')) {
 		$Index->content(
 			h::{'a.cs-button'}(
 				h::icon('gears'),

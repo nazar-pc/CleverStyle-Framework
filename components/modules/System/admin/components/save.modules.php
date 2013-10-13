@@ -32,6 +32,7 @@ $db			= DB::instance();
 $L			= Language::instance();
 $Page		= Page::instance();
 $User		= User::instance();
+$Permission	= Permission::instance();
 $a			= Index::instance();
 if (isset($_POST['update_modules_list'])) {
 	/**
@@ -59,9 +60,9 @@ if (isset($_POST['update_modules_list'])) {
 			if (!isset($modules_list[$module])) {
 				$permissions_ids = array_merge(
 					$permissions_ids,
-					(array)$User->get_permission(null, $module),
-					(array)$User->get_permission(null, "admin/$module"),
-					(array)$User->get_permission(null, "api/$module")
+					(array)$Permission->get(null, $module),
+					(array)$Permission->get(null, "admin/$module"),
+					(array)$Permission->get(null, "api/$module")
 				);
 			}
 		}
@@ -71,7 +72,7 @@ if (isset($_POST['update_modules_list'])) {
 				$id = $id['id'];
 			}
 			unset($id);
-			$User->del_permission($permissions_ids);
+			$Permission->del($permissions_ids);
 		}
 		unset($permissions_ids);
 	}
@@ -164,15 +165,15 @@ if (isset($_POST['update_modules_list'])) {
 				time_limit_pause(false);
 			}
 			$permissions_ids		= array_merge(
-				$User->get_permission(null, $module),
-				$User->get_permission(null, "$module/admin"),
-				$User->get_permission(null, "$module/api")
+				$Permission->get(null, $module),
+				$Permission->get(null, "$module/admin"),
+				$Permission->get(null, "$module/api")
 			);
 			if (!empty($permissions_ids)) {
 				foreach ($permissions_ids as &$id) {
 					$id = $id['id'];
 				}
-				$User->del_permission($permissions_ids);
+				$Permission->del($permissions_ids);
 			}
 			$module_data			= ['active' => -1];
 			$a->save();

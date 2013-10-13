@@ -26,7 +26,7 @@ if (!isset($rc[0])) {
 $L						= Language::instance();
 $module					= path($L->Blogs);
 if ($User->user()) {
-	if ($User->admin() && $User->get_user_permission('admin/Blogs', 'index')) {
+	if ($User->admin() && $User->get_permission('admin/Blogs', 'index')) {
 		$Index->content(
 			h::{'a.cs-button'}(
 				h::icon('gears'),

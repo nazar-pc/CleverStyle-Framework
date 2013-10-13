@@ -11,9 +11,11 @@ namespace	cs\modules\System\components\blocks;
 use			h,
 			cs\Cache,
 			cs\Config,
+			cs\Group,
 			cs\Index,
 			cs\Language,
 			cs\Page,
+			cs\Permission,
 			cs\Text,
 			cs\User;
 function get_block_title ($id) {
@@ -277,8 +279,8 @@ if (isset($rc[2])) {
 			$form					= false;
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
-			$permission				= $User->get_permission(null, 'Block', $Config->components['blocks'][$rc[3]]['index'])[0]['id'];
-			$groups					= $User->get_groups_list();
+			$permission				= Permission::instance()->get(null, 'Block', $Config->components['blocks'][$rc[3]]['index'])[0]['id'];
+			$groups					= Group::instance()->get_all();
 			$groups_content			= [];
 			foreach ($groups as $group) {
 				$group_permission = $User->db()->qfs([

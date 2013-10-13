@@ -10,9 +10,11 @@
 namespace	cs\modules\System\users\users;
 use			h,
 			cs\Config,
+			cs\Group,
 			cs\Index,
 			cs\Language,
 			cs\Page,
+			cs\Permission,
 			cs\Text,
 			cs\User;
 function row ($col1, $col2) {
@@ -27,7 +29,7 @@ $a				= Index::instance();
 $rc				= $Config->route;
 $search_columns	= $User->get_users_columns();
 if (isset($rc[2], $rc[3])) {
-	$is_bot = in_array(3, (array)$User->get_user_groups($rc[3]));
+	$is_bot = in_array(3, (array)$User->get_groups($rc[3]));
 	switch ($rc[2]) {
 		case 'add':
 			$a->apply_button		= false;
@@ -368,8 +370,8 @@ if (isset($rc[2], $rc[3])) {
 			}
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
-			$permissions			= $User->get_permissions_table();;
-			$user_permissions				= $User->get_user_permissions($rc[3]);
+			$permissions			= Permission::instance()->get_all();
+			$user_permissions		= $User->get_permissions($rc[3]);
 			$tabs					= [];
 			$tabs_content			= '';
 			$blocks					= [];
@@ -443,8 +445,9 @@ if (isset($rc[2], $rc[3])) {
 			$a->apply_button		= false;
 			$a->reset_button		= false;
 			$a->cancel_button_back	= true;
-			$user_groups			= array_reverse($User->get_user_groups($rc[3]));
-			$all_groups				= $User->get_groups_list();
+			$Group					= Group::instance();
+			$user_groups			= array_reverse($User->get_groups($rc[3]));
+			$all_groups				= $User->get_all();
 			$groups_selected		= h::{'li.uk-button-primary'}(
 				$L->selected_groups
 			);
@@ -453,7 +456,7 @@ if (isset($rc[2], $rc[3])) {
 			);
 			if (is_array($user_groups) && !empty($user_groups)) {
 				foreach ($user_groups as $group) {
-					$group				= ['id' => $group]+$User->get_group($group);
+					$group				= $Group->get($group);
 					$groups_selected	.= h::{'li.uk-button-success'}(
 						$group['title'],
 						[
@@ -620,7 +623,7 @@ if (isset($rc[2], $rc[3])) {
 	$users_list				= [];
 	if (isset($users_ids) && is_array($users_ids)) {
 		foreach ($users_ids as $id) {
-			$groups			= (array)$User->get_user_groups($id);
+			$groups			= (array)$User->get_groups($id);
 			$buttons		= ($id != 1 && $id != 2 && !in_array(3, $groups) ?
 				h::{'a.cs-button-compact'}(
 					h::icon('pencil'),

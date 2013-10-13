@@ -109,7 +109,7 @@ class Index {
 			ADMIN &&
 			file_exists($admin_path) && (file_exists("$admin_path/index.php") || file_exists("$admin_path/index.json"))
 		) {
-			if (!($User->admin() && $User->get_user_permission($this->permission_group = 'admin/'.MODULE, 'index'))) {
+			if (!($User->admin() && $User->get_permission($this->permission_group = 'admin/'.MODULE, 'index'))) {
 				error_code(403);
 				exit;
 			}
@@ -117,14 +117,14 @@ class Index {
 			$this->form		= true;
 			$this->admin	= true;
 		} elseif (API && file_exists($api_path)) {
-			if (!$User->get_user_permission($this->permission_group = 'api/'.MODULE, 'index')) {
+			if (!$User->get_permission($this->permission_group = 'api/'.MODULE, 'index')) {
 				error_code(403);
 				exit;
 			}
 			define('MFOLDER', $api_path);
 			$this->api		= true;
 		} elseif (file_exists(MODULES.'/'.MODULE)) {
-			if (!$User->get_user_permission($this->permission_group = MODULE, 'index')) {
+			if (!$User->get_permission($this->permission_group = MODULE, 'index')) {
 				error_code(403);
 				exit;
 			}
@@ -167,10 +167,10 @@ class Index {
 	 * Initialization: loading of module structure, including of necessary module files, inclusion of save file
 	 */
 	protected function init () {
-		$Config	= Config::instance();
-		$L		= Language::instance();
-		$Page	= Page::instance();
-		$User	= User::instance();
+		$Config		= Config::instance();
+		$L			= Language::instance();
+		$Page		= Page::instance();
+		$User		= User::instance();
 		/**
 		 * Some routing preparations
 		 */
@@ -197,11 +197,11 @@ class Index {
 					if (!is_array($value)) {
 						$item	= $value;
 					}
-					if ($User->get_user_permission($this->permission_group, $item)) {
+					if ($User->get_permission($this->permission_group, $item)) {
 						$this->parts[] = $item;
 						if (isset($rc[0]) && $item == $rc[0] && is_array($value)) {
 							foreach ($value as $subpart) {
-								if ($User->get_user_permission($this->permission_group, "$item/$subpart")) {
+								if ($User->get_permission($this->permission_group, "$item/$subpart")) {
 									$this->subparts[] = $subpart;
 								} elseif (isset($rc[1]) && $rc[1] == $subpart) {
 									error_code(403);
@@ -346,7 +346,7 @@ class Index {
 				$module_data['active'] == 1 &&
 				$module != $Config->core['default_module'] &&
 				$module != 'System' &&
-				$User->get_user_permission($module, 'index') &&
+				$User->get_permission($module, 'index') &&
 				(
 					(
 						file_exists(MODULES."/$module/index.php") && filesize(MODULES."/$module/index.php")
@@ -558,7 +558,6 @@ class Index {
 		$Config			= Config::instance();
 		$Page			= Page::instance();
 		$Text			= Text::instance();
-		$User			= User::instance();
 		$blocks_array	= [
 			'top'		=> '',
 			'left'		=> '',
@@ -570,7 +569,7 @@ class Index {
 				!$block['active'] ||
 				($block['expire'] != 0 && $block['expire'] < TIME) ||
 				$block['start'] > TIME ||
-				!($User->get_user_permission('Block', $block['index']))
+				!(User::instance()->get_permission('Block', $block['index']))
 			) {
 				continue;
 			}

@@ -37,7 +37,7 @@ switch ($_POST['mode']) {
 		if (
 			$id != 1 &&
 			$id != 2 &&
-			!in_array(3, (array)$User->get_user_groups($id))
+			!in_array(3, (array)$User->get_groups($id))
 		) {
 			$User->set($_POST['user'], null, $id);
 			$User->__finish();
@@ -181,13 +181,13 @@ switch ($_POST['mode']) {
 				break;
 			}
 			$Index->save(
-				$User->set_user_permissions($_POST['permission'], $_POST['id'])
+				$User->set_permissions($_POST['permission'], $_POST['id'])
 			);
 		}
 	break;
 	case 'groups':
 		if (isset($_POST['user'], $_POST['user']['id'], $_POST['user']['groups']) && $_POST['user']['groups']) {
-			if ($_POST['user']['id'] == 2 || in_array(3, (array)$User->get_user_groups($_POST['user']['id']))) {
+			if ($_POST['user']['id'] == 2 || in_array(3, (array)$User->get_groups($_POST['user']['id']))) {
 				break;
 			}
 			$_POST['user']['groups'] = _json_decode($_POST['user']['groups']);
@@ -196,7 +196,7 @@ switch ($_POST['mode']) {
 			}
 			unset($group);
 			$Index->save(
-				$User->set_user_groups($_POST['user']['groups'], $_POST['user']['id'])
+				$User->set_groups($_POST['user']['groups'], $_POST['user']['id'])
 			);
 		}
 	break;

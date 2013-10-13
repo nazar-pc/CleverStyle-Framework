@@ -24,7 +24,7 @@ $Page->Keywords			= keywords("$L->Blogs $L->latest_posts").", $Page->Keywords";
 $Page->Description		= description("$L->Blogs - $L->latest_posts. $Page->Description");//TODO og type, description and keywords
 $module					= path($L->Blogs);
 if ($User->user()) {
-	if ($User->admin() && $User->get_user_permission('admin/Blogs', 'index')) {
+	if ($User->admin() && $User->get_permission('admin/Blogs', 'index')) {
 		$Index->content(
 			h::{'a.cs-button'}(
 				h::icon('gears'),
