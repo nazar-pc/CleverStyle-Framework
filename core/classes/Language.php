@@ -138,7 +138,7 @@ class Language implements JsonSerializable {
 	 * @return string
 	 */
 	function get ($item, $language = false) {
-		if (!$language) {
+		if (!$language || $language === $this->clanguage) {
 			return isset($this->translate[$item]) ? $this->translate[$item] : ucfirst(str_replace('_', ' ', $item));
 		}
 		if ($translate = Cache::instance()->{"languages/$language"}) {

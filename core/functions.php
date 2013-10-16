@@ -11,7 +11,6 @@
  */
 use	cs\Cache,
 	cs\Config,
-	cs\Core,
 	cs\DB,
 	cs\Error,
 	cs\Index,
@@ -33,16 +32,16 @@ spl_autoload_register(function ($class) {
 		'namespace'	=> count($class) > 1 ? implode('/', array_slice($class, 0, -1)) : '',
 		'name'		=> array_pop($class)
 	];
-	_require_once(CLASSES."/$class[namespace]/$class[name].php", false) ||
-	_require_once(TRAITS."/$class[namespace]/$class[name].php", false) ||
-	_require_once(ENGINES."/$class[namespace]/$class[name].php", false) ||
-	(
-		mb_strpos($class['namespace'], "modules/") === 0 && _require_once(MODULES."/../$class[namespace]/$class[name].php", false)
-	) ||
-	(
-		mb_strpos($class['namespace'], "plugins/") === 0 && _require_once(PLUGINS."/../$class[namespace]/$class[name].php", false)
-	);
-});
+	return	_require_once(CLASSES."/$class[namespace]/$class[name].php", false) ||
+			_require_once(TRAITS."/$class[namespace]/$class[name].php", false) ||
+			_require_once(ENGINES."/$class[namespace]/$class[name].php", false) ||
+			(
+				mb_strpos($class['namespace'], "modules/") === 0 && _require_once(MODULES."/../$class[namespace]/$class[name].php", false)
+			) ||
+			(
+				mb_strpos($class['namespace'], "plugins/") === 0 && _require_once(PLUGINS."/../$class[namespace]/$class[name].php", false)
+			);
+}, true, true);
 /**
  * Correct termination
  */

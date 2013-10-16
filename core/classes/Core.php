@@ -30,7 +30,9 @@ class Core {
 		_include_once(CONFIG.'/main.php', false);
 		defined('DEBUG') || define('DEBUG', false);
 		define('DOMAIN', $this->config['domain']);
-		date_default_timezone_set($this->config['timezone']);
+		if (date_default_timezone_get() != $this->config['timezone']) {
+			date_default_timezone_set($this->config['timezone']);
+		}
 		if (!is_dir(STORAGE)) {
 			@mkdir(STORAGE, 0755);
 			file_put_contents(

@@ -261,7 +261,7 @@ class User extends Accessor {
 		 * If not guest - apply some individual settings
 		 */
 		if ($this->id != 1) {
-			if ($this->timezone) {
+			if ($this->timezone && date_default_timezone_get() != $this->timezone) {
 				date_default_timezone_set($this->timezone);
 			}
 			if ($Config->core['multilingual'] && $this->language) {
