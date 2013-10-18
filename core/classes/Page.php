@@ -1091,13 +1091,13 @@ class Page {
 	/**
 	 * Display success message
 	 *
-	 * @param string $notice_text
+	 * @param string $success_text
 	 *
 	 * @return Page
 	 */
-	function success ($notice_text) {
+	function success ($success_text) {
 		$this->Top .= h::{'div.uk-alert.uk-alert-success.uk-lead.cs-center'}(
-			$notice_text
+			$success_text
 		);
 		return $this;
 	}
