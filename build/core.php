@@ -39,6 +39,12 @@ if (file_exists(DIR.'/composer.json')) {
 	$list[]	= DIR.'/composer.json';
 }
 /**
+ * If composer.lock exists - include it into installation build
+ */
+if (file_exists(DIR.'/composer.lock')) {
+	$list[]	= DIR.'/composer.lock';
+}
+/**
  * Add selected modules that should be built-in into package
  */
 $components_list	= [];
