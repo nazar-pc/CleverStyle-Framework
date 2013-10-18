@@ -168,7 +168,7 @@ function check_dependencies ($name, $type, $dir = null, $mode = 'enable') {
 				)
 			);
 		} elseif (!$Config->core['simple_admin_mode']) {
-			$Page->notice(
+			$Page->success(
 				$L->compatible_databases(
 					implode('", "', $meta['db_support'])
 				)
@@ -197,7 +197,7 @@ function check_dependencies ($name, $type, $dir = null, $mode = 'enable') {
 				)
 			);
 		} elseif (!$Config->core['simple_admin_mode']) {
-			$Page->notice(
+			$Page->success(
 				$L->compatible_storages(
 					implode('", "', $meta['storage_support'])
 				)

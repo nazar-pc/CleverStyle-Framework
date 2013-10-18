@@ -196,7 +196,7 @@ if (isset($_POST['mode'])) {
 if (!$OAuth2->get_access($client['id'])) {
 	$Index->form			= true;
 	$Index->buttons			= false;
-	$Page->notice(
+	$Page->success(
 		$L->client_want_access_your_account($client['name'])
 	);
 	$Index->action			= $Config->base_url().'/'.$Config->server['raw_relative_address'];

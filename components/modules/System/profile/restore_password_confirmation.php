@@ -15,7 +15,7 @@ $User	= User::instance();
 if (isset($_COOKIE['restore_password_confirm'])) {
 	_setcookie('restore_password_confirm', '');
 	$Page->title($L->restore_password_success_title);
-	$Page->notice($L->restore_password_success);
+	$Page->success($L->restore_password_success);
 	return;
 } elseif (!$User->guest()) {
 	$Page->title($L->you_are_already_registered_title);

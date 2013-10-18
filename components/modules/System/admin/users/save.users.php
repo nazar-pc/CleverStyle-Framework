@@ -21,7 +21,7 @@ switch ($_POST['mode']) {
 		if ($_POST['email']) {
 			$result = $User->registration($_POST['email'], false, false);
 			if ($Index->save(is_array($result))) {
-				$Page->notice($L->user_was_added($User->get('login', $result['id']), $result['password']));
+				$Page->success($L->user_was_added($User->get('login', $result['id']), $result['password']));
 			} else {
 				$Page->warning($L->user_alredy_exists);
 			}

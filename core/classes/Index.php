@@ -636,7 +636,7 @@ class Index {
 		$Page	= Page::instance();
 		if ($result || ($result === null && Config::instance()->save())) {
 			$this->post_title = $L->changes_saved;
-			$Page->notice($L->changes_saved);
+			$Page->success($L->changes_saved);
 			return true;
 		} else {
 			$this->post_title = $L->changes_save_error;
@@ -656,7 +656,7 @@ class Index {
 		$Page	= Page::instance();
 		if ($result || ($result === null && Config::instance()->apply())) {
 			$this->post_title = $L->changes_applied;
-			$Page->notice($L->changes_applied.$L->check_applied);
+			$Page->success($L->changes_applied.$L->check_applied);
 			return true;
 		} else {
 			$this->post_title = $L->changes_apply_error;
@@ -675,7 +675,7 @@ class Index {
 		}
 		$L					= Language::instance();
 		$this->post_title	= $L->changes_canceled;
-		Page::instance()->notice($L->changes_canceled);
+		Page::instance()->success($L->changes_canceled);
 	}
 	/**
 	 * Executes plugins processing, blocks and module page generation

@@ -49,7 +49,7 @@ if (isset($_POST['name'], $_POST['email'], $_POST['text'])) {
 		null,
 		$_POST['email']
 	)) {
-		$Page->notice($L->feedback_sent_successfully);
+		$Page->success($L->feedback_sent_successfully);
 	} else {
 		$Page->warning($L->feedback_sending_error);
 	}

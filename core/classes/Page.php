@@ -1089,20 +1089,33 @@ class Page {
 		return $this;
 	}
 	/**
-	 * Display notice
+	 * Display success message
 	 *
 	 * @param string $notice_text
 	 *
 	 * @return Page
 	 */
-	function notice ($notice_text) {
+	function success ($notice_text) {
 		$this->Top .= h::{'div.uk-alert.uk-alert-success.uk-lead.cs-center'}(
 			$notice_text
 		);
 		return $this;
 	}
 	/**
-	 * Display warning
+	 * Display notice message
+	 *
+	 * @param string $notice_text
+	 *
+	 * @return Page
+	 */
+	function notice ($notice_text) {
+		$this->Top .= h::{'div.uk-alert.uk-alert-warning.uk-lead.cs-center'}(
+			$notice_text
+		);
+		return $this;
+	}
+	/**
+	 * Display warning message
 	 *
 	 * @param string $warning_text
 	 *
@@ -1158,6 +1171,8 @@ class Page {
 			}
 			$this->Content	= ob_get_clean();
 		}
+		Page::instance()->__finish();
+		User::instance(true)->__finish();
 		exit;
 	}
 	/**

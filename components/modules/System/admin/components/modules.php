@@ -210,7 +210,7 @@ if (
 			if (file_exists(MODULES."/$rc[3]/meta.json")) {
 				$meta	= _json_decode(file_get_contents(MODULES."/$rc[3]/meta.json"));
 				if (isset($meta['optional'])) {
-					$Page->notice(
+					$Page->success(
 						$L->for_complete_feature_set(
 							implode(', ', (array)$meta['optional'])
 						)

@@ -40,5 +40,5 @@ if (isset($_POST['edit_images'])) {
 			}
 		}
 	}
-	$Page->notice($L->changes_saved);
+	$Page->success($L->changes_saved);
 }

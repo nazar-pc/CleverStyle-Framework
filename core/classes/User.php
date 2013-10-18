@@ -122,8 +122,8 @@ class User extends Accessor {
 	 * Defining user id, type, session, personal settings
 	 */
 	function construct () {
-		$Cache		= $this->cache	= new Prefix('users');
-		$Config		= Config::instance();
+		$Cache	= $this->cache	= new Prefix('users');
+		$Config	= Config::instance();
 		Trigger::instance()->run('System/User/construct/before');
 		$this->users_columns = $Cache->get('columns', function () {
 			return $this->db()->columns('[prefix]users');
@@ -132,7 +132,7 @@ class User extends Accessor {
 		 * Detecting of current user
 		 * Last part in page path - key
 		 */
-		$rc			= $Config->route;
+		$rc	= $Config->route;
 		if (
 			$this->user_agent == 'CleverStyle CMS' &&
 			(
@@ -169,12 +169,13 @@ class User extends Accessor {
 		/**
 		 * If session exists
 		 */
-		if (_getcookie('session')) {
+		$initial_session	= _getcookie('session');
+		if ($initial_session) {
 			$this->id = $this->get_session_user();
 		/**
-		 * Try to detect bot
+		 * Try to detect bot, not necessary for API request
 		 */
-		} else {
+		} elseif (!API) {
 			/**
 			 * Loading bots list
 			 */
@@ -254,7 +255,13 @@ class User extends Accessor {
 			unset($bots, $bot_hash);
 		}
 		if (!$this->id) {
-			$this->add_session($this->id = 1);
+			$this->id	= 1;
+			/**
+			 * Do not create session for API request
+			 */
+			if (!API) {
+				$this->add_session();
+			}
 		}
 		$this->update_user_is();
 		/**
@@ -285,12 +292,7 @@ class User extends Accessor {
 		 * Security check
 		 */
 		$session_id	= $this->get_session();
-		if (!$session_id || !isset($_COOKIE['session']) || $_COOKIE['session'] != $session_id) {
-			if (API) {
-				error_code(403);
-				Page::instance()->error('Invalid user session');
-				exit;
-			}
+		if (!$session_id || $initial_session != $session_id) {
 			$_REQUEST	= array_diff_key($_REQUEST, $_POST);
 			$_POST		= [];
 		}
@@ -1079,12 +1081,12 @@ class User extends Accessor {
 	/**
 	 * Create the session for the user with specified id
 	 *
-	 * @param int	$user
-	 * @param bool	$delete_current_session
+	 * @param bool|int	$user
+	 * @param bool		$delete_current_session
 	 *
 	 * @return bool
 	 */
-	function add_session ($user, $delete_current_session = true) {
+	function add_session ($user = false, $delete_current_session = true) {
 		$user	= (int)$user;
 		if (!$user) {
 			$user = 1;
@@ -1449,17 +1451,17 @@ class User extends Accessor {
 	/**
 	 * Process login result (is used by system)
 	 *
-	 * @param bool			$result
+	 * @param bool $success
 	 * @param bool|string	$login_hash	Hash (sha224) from login (hash from lowercase string)
 	 */
-	function login_result ($result, $login_hash = false) {
+	function login_result ($success, $login_hash = false) {
 		$login_hash = $login_hash ?: (isset($_POST['login']) ? $_POST['login'] : false);
 		if (!preg_match('/^[0-9a-z]{56}$/', $login_hash)) {
 			return;
 		}
 		$ip	= ip2hex($this->ip);
 		$time	= TIME;
-		if ($result) {
+		if ($success) {
 			$this->db_prime()->q(
 				"UPDATE `[prefix]logins`
 				SET `expire` = 0
