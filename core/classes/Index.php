@@ -35,31 +35,31 @@ class Index {
 
 	public		$Content,
 
-				$menu_auto			= true,
-				$submenu_auto		= false,
-				$menumore_auto		= false,
+				$main_menu_auto			= true,
+				$main_sub_menu_auto		= false,
+				$main_menu_more_auto	= false,
 
-				$main_menu			= [],
-				$main_sub_menu		= [],
-				$main_menu_more		= [],
+				$main_menu				= [],
+				$main_sub_menu			= [],
+				$main_menu_more			= [],
 
-				$savefile			= 'save',
-				$form				= false,
-				$file_upload		= false,
-				$form_atributes		= [],
-				$action				= null,
-				$buttons			= true,
-				$save_button		= true,
-				$apply_button		= true,
-				$cancel_button		= ' disabled',
-				$cancel_button_back	= false,
-				$reset_button		= true,
-				$post_buttons		= '',
+				$savefile				= 'save',
+				$form					= false,
+				$file_upload			= false,
+				$form_atributes			= [],
+				$action					= null,
+				$buttons				= true,
+				$save_button			= true,
+				$apply_button			= true,
+				$cancel_button			= ' disabled',
+				$cancel_button_back		= false,
+				$reset_button			= true,
+				$post_buttons			= '',
 
-				$init_auto			= true,
-				$generate_auto		= true,
-				$title_auto			= true,
-				$stop				= false;	//Gives the ability to stop further processing
+				$init_auto				= true,
+				$generate_auto			= true,
+				$title_auto				= true,
+				$stop					= false;	//Gives the ability to stop further processing
 	/**
 	 * Like Config::$route property, but excludes numerical items
 	 *
@@ -430,9 +430,9 @@ class Index {
 			$Page->content($this->Content);
 			return;
 		}
-		$this->menu_auto		&& $this->main_menu();
-		$this->submenu_auto		&& $this->main_sub_menu();
-		$this->menumore_auto	&& $this->main_menu_more();
+		$this->main_menu_auto		&& $this->main_menu();
+		$this->main_sub_menu_auto		&& $this->main_sub_menu();
+		$this->main_menu_more_auto	&& $this->main_menu_more();
 		$this->blocks_processing();
 		if ($this->form) {
 			$Page->content(
@@ -473,9 +473,9 @@ class Index {
 								'name'			=> 'edit_settings',
 								'id'			=> 'cancel_settings',
 								'value'			=> 'cancel',
-								'data-title'	=> $this->cancel_button_back ? '' : $L->cancel_info,
+								'data-title'	=> $this->cancel_button_back ? false : $L->cancel_info,
 								'type'			=> $this->cancel_button_back ? 'button' : 'submit',
-								'onClick'		=> $this->cancel_button_back ? 'history.go(-1);' : '',
+								'onClick'		=> $this->cancel_button_back ? 'history.go(-1);' : false,
 								'add'			=> $this->cancel_button_back ? '' : (isset($Config->core['cache_not_saved']) ? '' : $this->cancel_button)
 							]
 						)

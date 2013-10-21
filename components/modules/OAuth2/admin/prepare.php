@@ -8,4 +8,4 @@
  */
 
 namespace	cs;
-Index::instance()->submenu_auto	= true;
+Index::instance()->main_sub_menu_auto	= true;

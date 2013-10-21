@@ -9,4 +9,4 @@
  */
 namespace	cs;
 $Index					= Index::instance();
-$Index->submenu_auto	= $Index->menumore_auto = true;
+$Index->main_sub_menu_auto	= $Index->main_menu_more_auto = true;

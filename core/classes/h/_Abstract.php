@@ -865,6 +865,7 @@ abstract class _Abstract {
 	 */
 	protected static function inserts_processing (&$data, &$insert) {
 		if (!$insert) {
+			$data	= '';
 			return;
 		}
 		if (is_array_indexed($insert) && is_array($insert[0])) {
