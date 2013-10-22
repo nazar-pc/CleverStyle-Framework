@@ -15,6 +15,7 @@ But in parallel with core some components are developed:
  * **Blogs** (simple blogging functionality)
  * **Comments** (adds comments functionality to other modules)
  * **Cron** (provides GUI for crontab, scheduled tasks)
+ * **Disqus** (Integration of Disqus commenting service, adds comments functionality to other modules)
  * **Feedback** (simple feedback module, sends message to admin's email)
  * **HybridAuth** (integration of [HybridAuth](https://github.com/hybridauth/hybridauth) library for integration with social networks and other services)
  * **OAuth2** (provides realization of OAuth 2 authorization protocol (server side))
