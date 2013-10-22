@@ -93,10 +93,6 @@ define('PCACHE',	DIR.'/storage/pcache');
  */
 define('THEMES',	DIR.'/themes');
 /**
- * Load information about minimal needed Software versions
- */
-require_once CORE.'/required_verions.php';
-/**
  * Including of custom user file
  */
 _include_once(DIR.'/custom.php', false);

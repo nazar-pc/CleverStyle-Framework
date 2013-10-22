@@ -14,12 +14,10 @@ use			h,
 			cs\DB,
 			cs\Index,
 			cs\Language;
-global $mcrypt;
 $Config			= Config::instance();
 $Core			= Core::instance();
 $Index			= Index::instance();
 $L				= Language::instance();
-global ${$Core->db_type};
 if (isset($Config->route[2]) && $Config->route[2] == 'phpinfo') {
 	interface_off();
 	ob_start();
@@ -98,21 +96,12 @@ $Index->content(
 				[
 					"$L->mcrypt:",
 					[
-						check_mcrypt() ? $L->on : $L->off.h::sup('(!)', ['title'	=> $L->mcrypt_warning]),
+						check_mcrypt() ? $L->on : $L->off.h::icon('info-sign', ['data-title'	=> $L->mcrypt_warning]),
 						[
 							'class' => state(check_mcrypt())
 						]
 					]
 				],
-				check_mcrypt() ? [
-					$L->version_of('mcrypt').':',
-					[
-						check_mcrypt().(!check_mcrypt(1) ? ' ('.$L->required.' '.$mcrypt.' '.$L->or_higher.')' : ''),
-						[
-							'class' => state(check_mcrypt(1))
-						]
-					]
-				] : false,
 				[
 					"$L->zlib:",
 					$L->get(zlib())
@@ -165,10 +154,7 @@ $Index->content(
 				[
 					$L->version_of($Core->db_type).':',
 					[
-						DB::instance()->server().(check_db() ? '' : ' ('.$L->required.' '.${$Core->db_type}.' '.$L->or_higher.')'),
-						[
-							'class' => state(check_db())
-						]
+						DB::instance()->server()
 					]
 				],
 				[
@@ -273,20 +259,6 @@ function server_api () {
 	} else {
 		return Language::instance()->indefinite;
 	}
-}
-/**
- * Check version of core DB
- *
- * @return bool	If version unsatisfactory - returns <b>false</b>
- */
-function check_db () {
-	$db_type	= Core::instance()->db_type;
-	global $$db_type;
-	if (!$$db_type) {
-		return true;
-	}
-	preg_match('/[\.0-9]+/', DB::instance()->server(), $db_version);
-	return (bool)version_compare($db_version[0], $$db_type, '>=');
 }
 /**
  * Returns autocompression level of zlib library
