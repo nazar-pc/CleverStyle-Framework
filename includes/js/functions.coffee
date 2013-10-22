@@ -60,13 +60,12 @@ cs.db_test					= (url, added) ->
 	"""
 	db_test.cs().modal('show')
 	if added
-		$.ajax({
+		$.ajax
 			url		: url,
 			success	: (result) ->
 				db_test.find('h3 + *').replaceWith(result)
 			error	: ->
 				db_test.find('h3 + *').replaceWith('<p class="cs-test-result">' + L.failed + '</p>')
-		})
 	else
 		db = cs.json_encode(
 			type		: value_by_name('db[type]')
@@ -76,7 +75,7 @@ cs.db_test					= (url, added) ->
 			host		: value_by_name('db[host]')
 			charset		: value_by_name('db[charset]')
 		)
-		$.ajax(
+		$.ajax
 			url		: url
 			data	:
 				db	: db
@@ -88,7 +87,6 @@ cs.db_test					= (url, added) ->
 				db_test
 					.find('h3 + *')
 					.replaceWith('<p class="cs-test-result">' + L.failed + '</p>')
-		)
 ###*
  * Send request for storage connection testing
  *
@@ -106,7 +104,7 @@ cs.storage_test				= (url, added) ->
 		"""
 	storage_test.cs().modal('show')
 	if added
-		$.ajax(
+		$.ajax
 			url		: url
 			success	: (result) ->
 				storage_test
@@ -116,7 +114,6 @@ cs.storage_test				= (url, added) ->
 				storage_test
 					.find('h3 + *')
 					.replaceWith('<p class="cs-test-result">' + L.failed + '</p>')
-		)
 	else
 		storage = cs.json_encode(
 			url			: value_by_name('storage[url]')
@@ -125,7 +122,7 @@ cs.storage_test				= (url, added) ->
 			user		: value_by_name('storage[user]')
 			password	: value_by_name('storage[password]')
 		)
-		$.ajax(
+		$.ajax
 			url		: url
 			data	:
 				storage	: storage
@@ -137,7 +134,6 @@ cs.storage_test				= (url, added) ->
 				storage_test
 					.find('h3 + *')
 					.replaceWith('<p class="cs-test-result">' + L.failed + '</p>')
-		)
 ###*
  * Toggling of blocks group in admin page
  *
@@ -202,9 +198,9 @@ cs.setcookie				= (name, value, expires) ->
 	!!$.cookie(
 		name
 		value
-			path	: cs.cookie_path
-			domain	: cs.cookie_domain
-			secure	: cs.protocol == 'https'
+		path	: cs.cookie_path
+		domain	: cs.cookie_domain
+		secure	: cs.protocol == 'https'
 	)
 ###*
  * Function for getting of cookies, taking into account cookies prefix
@@ -225,59 +221,57 @@ cs.getcookie				= (name) ->
 cs.login					= (login, password) ->
 	login		= String(login).toLowerCase()
 	password	= String(password)
-	$.ajax(
-		'api/System/user/login'
-			cache	: false
-			data	:
-				login: cs.hash('sha224', login)
-			type	: 'post'
-			success	: (random_hash) ->
-				if random_hash.length == 56
-					$.ajax(
-						'api/user/login'
-							cache	: false
-							data	:
-								login		: cs.hash('sha224', login)
-								auth_hash	: cs.hash(
-									'sha512',
-									cs.hash('sha224', login) + cs.hash('sha512', cs.hash('sha512', password) + cs.public_key) + navigator.userAgent + random_hash
-								)
-							type	: 'post'
-							success	: (result) ->
-								if result == 'reload'
-									location.reload()
-							error	: (xhr) ->
-								if xhr.responseText
-									alert(cs.json_decode(xhr.responseText).error_description)
-								else
-									alert(L.auth_connection_error)
-					)
-				else if random_hash == 'reload'
-					location.reload()
-			error	: (xhr) ->
-				if xhr.responseText
-					alert(cs.json_decode(xhr.responseText).error_description)
-				else
-					alert(L.auth_connection_error)
-	)
+	$.ajax
+		url		: 'api/System/user/login'
+		cache	: false
+		data	:
+			login: cs.hash('sha224', login)
+		type	: 'post'
+		success	: (random_hash) ->
+			if random_hash.length == 56
+				$.ajax(
+					'api/user/login'
+						cache	: false
+						data	:
+							login		: cs.hash('sha224', login)
+							auth_hash	: cs.hash(
+								'sha512',
+								cs.hash('sha224', login) + cs.hash('sha512', cs.hash('sha512', password) + cs.public_key) + navigator.userAgent + random_hash
+							)
+						type	: 'post'
+						success	: (result) ->
+							if result == 'reload'
+								location.reload()
+						error	: (xhr) ->
+							if xhr.responseText
+								alert(cs.json_decode(xhr.responseText).error_description)
+							else
+								alert(L.auth_connection_error)
+				)
+			else if random_hash == 'reload'
+				location.reload()
+		error	: (xhr) ->
+			if xhr.responseText
+				alert(cs.json_decode(xhr.responseText).error_description)
+			else
+				alert(L.auth_connection_error)
 ###*
  * Logout
 ###
 cs.logout					= ->
-	$.ajax(
-		'api/System/user/logout'
-			cache	: false
-			data	:
-				logout: true
-			type	: 'post'
-			success	: ->
-				location.reload()
-			error	: (xhr) ->
-				if xhr.responseText
-					alert(cs.json_decode(xhr.responseText).error_description)
-				else
-					alert(L.auth_connection_error)
-	)
+	$.ajax
+		url		: 'api/System/user/logout'
+		cache	: false
+		data	:
+			logout: true
+		type	: 'post'
+		success	: ->
+			location.reload()
+		error	: (xhr) ->
+			if xhr.responseText
+				alert(cs.json_decode(xhr.responseText).error_description)
+			else
+				alert(L.auth_connection_error)
 ###*
  * Registration in the system
  *
@@ -288,37 +282,36 @@ cs.registration				= (email) ->
 		alert(L.please_type_your_email)
 		return
 	email	= String(email).toLowerCase()
-	$.ajax(
-		'api/System/user/registration'
-			cache	: false
-			data	:
-				email: email
-			type	: 'post'
-			success	: (result) ->
-				if result == 'reg_confirmation'
-					$('<div>' + L.reg_confirmation + '</div>')
-						.appendTo('body')
-						.cs().modal('show')
-						.on(
-							'uk.modal.hide'
-							->
-								$(this).remove()
-						)
-				else if result == 'reg_success'
-					$('<div>' + L.reg_success + '</div>')
-						.appendTo('body')
-						.cs().modal('show')
-						.on(
-							'uk.modal.hide'
-							->
-								location.reload()
-						)
-			error	: (xhr) ->
-				if xhr.responseText
-					alert(cs.json_decode(xhr.responseText).error_description)
-				else
-					alert(L.reg_connection_error)
-	)
+	$.ajax
+		url		: 'api/System/user/registration'
+		cache	: false
+		data	:
+			email: email
+		type	: 'post'
+		success	: (result) ->
+			if result == 'reg_confirmation'
+				$('<div>' + L.reg_confirmation + '</div>')
+					.appendTo('body')
+					.cs().modal('show')
+					.on(
+						'uk.modal.hide'
+						->
+							$(this).remove()
+					)
+			else if result == 'reg_success'
+				$('<div>' + L.reg_success + '</div>')
+					.appendTo('body')
+					.cs().modal('show')
+					.on(
+						'uk.modal.hide'
+						->
+							location.reload()
+					)
+		error	: (xhr) ->
+			if xhr.responseText
+				alert(cs.json_decode(xhr.responseText).error_description)
+			else
+				alert(L.reg_connection_error)
 ###*
  * Password restoring
  *
@@ -329,31 +322,27 @@ cs.restore_password			= (email) ->
 		alert(L.please_type_your_email)
 		return
 	email	= String(email).toLowerCase()
-	$.ajax(
-		'api/System/user/restore_password',
-		{
-			cache	: false,
-			data	: {
-				email: cs.hash('sha224', email)
-			},
-			type	: 'post',
-			success	: (result) ->
-				if result == 'OK'
-					$('<div>' + L.restore_password_confirmation + '</div>')
-						.appendTo('body')
-						.cs().modal('show')
-						.on(
-							'uk.modal.hide'
-							->
-								$(this).remove()
-						)
-			error	: (xhr) ->
-				if xhr.responseText
-					alert(cs.json_decode(xhr.responseText).error_description)
-				else
-					alert(L.reg_connection_error)
-		}
-	)
+	$.ajax
+		url		: 'api/System/user/restore_password'
+		cache	: false,
+		data	:
+			email: cs.hash('sha224', email)
+		type	: 'post'
+		success	: (result) ->
+			if result == 'OK'
+				$('<div>' + L.restore_password_confirmation + '</div>')
+					.appendTo('body')
+					.cs().modal('show')
+					.on(
+						'uk.modal.hide'
+						->
+							$(this).remove()
+					)
+		error	: (xhr) ->
+			if xhr.responseText
+				alert(cs.json_decode(xhr.responseText).error_description)
+			else
+				alert(L.reg_connection_error)
 ###*
  * Password changing
  *
@@ -372,27 +361,23 @@ cs.change_password			= (current_password, new_password) ->
 		return
 	current_password	= cs.hash('sha512', cs.hash('sha512', String(current_password)) + cs.public_key)
 	new_password		= cs.hash('sha512', cs.hash('sha512', String(new_password)) + cs.public_key)
-	$.ajax(
-		'api/System/user/change_password',
-		{
-			cache	: false,
-			data	: {
-				verify_hash		: cs.hash('sha224', current_password + session_id),
-				new_password	: cs.xor_string(current_password, new_password)
-			},
-			type	: 'post',
-			success	: (result) ->
-				if result == 'OK'
-					alert(L.password_changed_successfully)
-				else
-					alert(result)
-			error	: (xhr) ->
-				if xhr.responseText
-					alert(cs.json_decode(xhr.responseText).error_description)
-				else
-					alert(L.password_changing_connection_error)
-		}
-	)
+	$.ajax
+		url		: 'api/System/user/change_password'
+		cache	: false
+		data	:
+			verify_hash		: cs.hash('sha224', current_password + session_id)
+			new_password	: cs.xor_string(current_password, new_password)
+		type	: 'post'
+		success	: (result) ->
+			if result == 'OK'
+				alert(L.password_changed_successfully)
+			else
+				alert(result)
+		error	: (xhr) ->
+			if xhr.responseText
+				alert(cs.json_decode(xhr.responseText).error_description)
+			else
+				alert(L.password_changing_connection_error)
 ###*
  * For textarea in blocks editing
  *

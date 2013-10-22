@@ -1,0 +1,10 @@
+{
+	"package"		: "Disqus",
+	"category"		: "modules",
+	"version"		: "1.0.0+build-1",
+	"description"	: "Integration of commenting service, adds comments functionality to other modules",
+	"author"		: "Nazar Mokrynskyi",
+	"website"		: "cleverstyle.org/cms",
+	"license"		: "MIT License",
+	"provide"		: "comments"
+}

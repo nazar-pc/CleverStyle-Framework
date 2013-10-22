@@ -254,11 +254,11 @@
       date.setTime(expires * 1000);
       expires = date;
     }
-    return !!$.cookie(name, value({
+    return !!$.cookie(name, value, {
       path: cs.cookie_path,
       domain: cs.cookie_domain,
       secure: cs.protocol === 'https'
-    }));
+    });
   };
 
   /**
@@ -286,7 +286,8 @@
   cs.login = function(login, password) {
     login = String(login).toLowerCase();
     password = String(password);
-    return $.ajax('api/System/user/login', {
+    return $.ajax({
+      url: 'api/System/user/login',
       cache: false,
       data: {
         login: cs.hash('sha224', login)
@@ -334,7 +335,8 @@
 
 
   cs.logout = function() {
-    return $.ajax('api/System/user/logout', {
+    return $.ajax({
+      url: 'api/System/user/logout',
       cache: false,
       data: {
         logout: true
@@ -366,7 +368,8 @@
       return;
     }
     email = String(email).toLowerCase();
-    return $.ajax('api/System/user/registration', {
+    return $.ajax({
+      url: 'api/System/user/registration',
       cache: false,
       data: {
         email: email
@@ -406,7 +409,8 @@
       return;
     }
     email = String(email).toLowerCase();
-    return $.ajax('api/System/user/restore_password', {
+    return $.ajax({
+      url: 'api/System/user/restore_password',
       cache: false,
       data: {
         email: cs.hash('sha224', email)
@@ -450,7 +454,8 @@
     }
     current_password = cs.hash('sha512', cs.hash('sha512', String(current_password)) + cs.public_key);
     new_password = cs.hash('sha512', cs.hash('sha512', String(new_password)) + cs.public_key);
-    return $.ajax('api/System/user/change_password', {
+    return $.ajax({
+      url: 'api/System/user/change_password',
       cache: false,
       data: {
         verify_hash: cs.hash('sha224', current_password + session_id),

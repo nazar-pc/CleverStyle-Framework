@@ -1,0 +1,40 @@
+<h3 style="text-align: center;">Disqus module (integration of Disqus commenting service), adds comments functionality to other modules</h3>
+<h4>Disqus module is compatible with Comments module by interface, but even simpler in usage.</h4>
+<h4>Integration of comments displaying:</h4>
+<pre>$Page	= \cs\Page::instance();
+$Comments	= null;
+\cs\Trigger::instance()->run(
+	'Comments/instance',
+	[
+		'Comments'	=> &$Comments
+	]
+);
+/**
+ * @var \cs\modules\Disqus\Disqus $Comments
+ */
+$Page->content(
+	$Comments ? $Comments->block($id) : ''
+);</pre>
+<p>Where <i>$id</i> is integer identifier of article, page or anything else, that will be commented. <i>$Comments</i> - is object created by module, but you can use own object of class, which inherits <i>cs\modules\Disqus\Disqus</i> class.</p>
+<h4>Trigger for getting instance of Comments class:</h4>
+<pre>$Comments	= null;
+\cs\Trigger::instance()->run(
+	'Comments\instance',
+	[
+		'Comments'	=> &$Comments
+	]
+);
+/**
+ * @var \cs\modules\Disqus\Disqus $Comments
+ */
+if ($Comments) {
+	//Some work here
+}</pre>
+<h4>Other methods of Disqus class:</h4>
+<ul>
+	<li>
+		int Disqus::count($item : int)
+		<p>Returns count of comments for specified item</p>
+	</li>
+</ul>
+<p>There are several other methods, but they are used directly not so frequent, so, you can find them with description in source code and IDE suggestions.</p>
