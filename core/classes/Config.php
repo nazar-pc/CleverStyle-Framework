@@ -288,7 +288,7 @@ class Config {
 		if (!empty($r['in'])) {
 			errors_off();
 			foreach ($r['in'] as $i => $search) {
-				$rc = _preg_replace($search, $r['out'], $rc) ?: str_replace($search, $r['out'][$i], $rc);
+				$rc = _preg_replace($search, $r['out'][$i], $rc) ?: str_replace($search, $r['out'][$i], $rc);
 			}
 			errors_on();
 			unset($i, $search);
