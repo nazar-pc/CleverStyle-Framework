@@ -32,7 +32,9 @@ class Memcached extends _Abstract {
 		if (!$this->memcached) {
 			return false;
 		}
-		return $this->memcached->get(DOMAIN."/$item");
+		return $this->memcached->get(
+			$this->namespaces_imitation($item)
+		);
 	}
 	/**
 	 * Put or change data of cache item
@@ -46,7 +48,10 @@ class Memcached extends _Abstract {
 		if (!$this->memcached) {
 			return false;
 		}
-		return $this->memcached->set(DOMAIN."/$item", $data);
+		return $this->memcached->set(
+			$this->namespaces_imitation($item),
+			$data
+		);
 	}
 	/**
 	 * Delete item from cache
@@ -59,24 +64,48 @@ class Memcached extends _Abstract {
 		if (!$this->memcached) {
 			return false;
 		}
-		$return	= true;
-		$keys	=  $this->memcached->getAllKeys();
-		if (!$keys) {
-			return false;
+		$this->memcached->delete($this->namespaces_imitation($item));
+		if ($pos = mb_strrpos($item, '/')) {
+			$this->memcached->increment(mb_substr($item, 0, $pos));
 		}
-		$item	= DOMAIN."/$item";
-		foreach ($keys as $element) {
-			if (
-				$item == $element ||
-				(
-					mb_strpos($element, $item) === 0 &&
-					mb_substr($element, mb_strlen($item), 1) == '/'
-				)
-			) {
-				$return	= $this->memcached->delete($element) && $return;
+		return true;
+	}
+	/**
+	 * Namespaces imitation
+	 *
+	 * Accepts item as parameter, returns item string that uses namespaces (needed for fast deletion of large branches of cache elements).
+	 *
+	 * @param $item
+	 *
+	 * @return string
+	 */
+	protected function namespaces_imitation ($item) {
+		static $root_items_cache = [];
+		$memcached	= $this->memcached;
+		$exploded	= explode('/', $item);
+		$count		= count($exploded);
+		if ($count > 1) {
+			$item_path	= DOMAIN;
+			--$count;
+			for ($i = 0; $i < $count; ++$i) {
+				$item_path	.= '/'.$exploded[$i];
+				if (!$i && isset($root_items_cache[$item_path])) {
+					$exploded[$i]	.= $root_items_cache[$item_path];
+					continue;
+				}
+				$version	= $memcached->get($item_path);
+				if ($version === false) {
+					$memcached->set($item_path, 0);
+					$version	= 0;
+				}
+				$exploded[$i]	.= $version;
+				if (!$i) {
+					$root_items_cache[$item_path]	= $version;
+				}
 			}
+			return DOMAIN.'/'.implode('/', $exploded);
 		}
-		return $return;
+		return DOMAIN."/$item";
 	}
 	/**
 	 * Clean cache by deleting all items

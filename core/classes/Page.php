@@ -937,7 +937,7 @@ class Page {
 		 * Includes processing
 		 */
 		$data	= preg_replace_callback(
-			'/(url\((.*?)\))|(@import[\s\t\n\r]{0,1}[\'"](.*?)[\'"])/',
+			'/(url\((.*?)\))|(@import[\s\t\n\r]*[\'"](.*?)[\'"])/',
 			function ($match) use (&$data) {
 				$link		= trim($match[count($match) - 1], '\'" ');
 				if (
