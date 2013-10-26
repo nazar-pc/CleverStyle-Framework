@@ -25,7 +25,9 @@ class APC extends _Abstract {
 		if (!$this->apc) {
 			return false;
 		}
-		return apc_fetch(DOMAIN."/$item");
+		return apc_fetch(
+			$this->namespaces_imitation(DOMAIN."/$item")
+		);
 	}
 	/**
 	 * Put or change data of cache item
@@ -39,7 +41,10 @@ class APC extends _Abstract {
 		if (!$this->apc) {
 			return false;
 		}
-		return apc_store(DOMAIN."/$item", $data);
+		return apc_store(
+			$this->namespaces_imitation(DOMAIN."/$item"),
+			$data
+		);
 	}
 	/**
 	 * Delete item from cache
@@ -53,19 +58,47 @@ class APC extends _Abstract {
 			return false;
 		}
 		$item	= DOMAIN."/$item";
-		$return	= true;
-		foreach (new \APCIterator('user') as $element) {
-			if (
-				$item == $element['key'] ||
-				(
-					mb_strpos($element['key'], $item) === 0 &&
-					mb_substr($element['key'], mb_strlen($item), 1) == '/'
-				)
-			) {
-				$return	= apc_delete($element['key']) && $return;
-			}
+		apc_delete($this->namespaces_imitation($item));
+		if ($pos = mb_strrpos($item, '/')) {
+			apc_inc(mb_substr($item, 0, $pos));
 		}
-		return $return;
+		return true;
+	}
+	/**
+	 * Namespaces imitation
+	 *
+	 * Accepts item as parameter, returns item string that uses namespaces (needed for fast deletion of large branches of cache elements).
+	 *
+	 * @param $item
+	 *
+	 * @return string
+	 */
+	protected function namespaces_imitation ($item) {
+		static $root_items_cache = [];
+		$exploded	= explode('/', $item);
+		$count		= count($exploded);
+		if ($count > 1) {
+			$item_path	= DOMAIN;
+			--$count;
+			for ($i = 0; $i < $count; ++$i) {
+				$item_path	.= '/'.$exploded[$i];
+				if (!$i && isset($root_items_cache[$item_path])) {
+					$exploded[$i]	.= $root_items_cache[$item_path];
+					continue;
+				}
+				$version	= apc_fetch($item_path);
+				if ($version === false) {
+					apc_store($item_path, 0);
+					$version	= 0;
+				}
+				$exploded[$i]	.= $version;
+				if (!$i) {
+					$root_items_cache[$item_path]	= $version;
+				}
+			}
+			return DOMAIN.'/'.implode('/', $exploded);
+		}
+		return DOMAIN."/$item";
 	}
 	/**
 	 * Clean cache by deleting all items

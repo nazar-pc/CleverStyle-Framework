@@ -118,4 +118,12 @@ class Memcached extends _Abstract {
 		}
 		return $this->memcached->flush();
 	}
+	/**
+	 * Close connections to memcached servers
+	 */
+	function __destruct () {
+		if ($this->memcached) {
+			$this->memcached->quit();
+		}
+	}
 }
