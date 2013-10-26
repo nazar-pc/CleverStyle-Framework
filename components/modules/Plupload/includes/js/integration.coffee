@@ -18,20 +18,24 @@
  * @return {function}
 ###
 cs.file_upload	= (button, success, error, progress, multi) ->
-	files				= []
-	uploader			= new plupload.Uploader
-		runtimes		: 'html5'
+	files			= []
+	browse_button	= $('<button id="plupload_' + (new Date).getTime() + '" style="display:none;"/>').appendTo('body')
+	uploader		= new plupload.Uploader
+		browse_button	: browse_button.get(0)
 		max_file_size	: cs.plupload?.max_file_size ? null
-		url				: '/Plupload'
 		multi_selection	: multi
 		multipart		: true
+		runtimes		: 'html5'
+		url				: '/Plupload'
 	uploader.init()
-	file_element		= $('#' + uploader.id + '_html5')
 	if button
 		button.click ->
-			file_element.click()
-	if !file_element.attr('accept')
-		file_element.removeAttr('accept')
+			setTimeout (->
+				input	= browse_button.next().children()
+				if !input.attr('accept')
+					input.removeAttr('accept')
+				browse_button.click()
+			), 0
 	uploader.bind 'FilesAdded', ->
 		uploader.refresh()
 		uploader.start()
@@ -66,8 +70,17 @@ cs.file_upload	= (button, success, error, progress, multi) ->
 	this.stop		= ->
 		uploader.stop()
 	this.destroy	= ->
+		browse_button.remove()
 		uploader.destroy()
+		$('.moxie-shim').each ->
+			if $(this).html() == ''
+				$(this).remove()
 	this.browse		= ->
-		file_element.click()
+		setTimeout (->
+			input	= browse_button.next().children()
+			if !input.attr('accept')
+				input.removeAttr('accept')
+			browse_button.click()
+		), 0
 	this
 return

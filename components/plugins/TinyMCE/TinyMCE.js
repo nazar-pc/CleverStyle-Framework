@@ -29,7 +29,7 @@ $(function () {
 					.cs().modal()
 					.css('z-index', 100000);
 			}
-			cs.file_upload(
+			var uploader	= cs.file_upload(
 				null,
 				function (files) {
 					tinymce.uploader_dialog.cs().modal('hide');
@@ -45,7 +45,17 @@ $(function () {
 					tinymce.uploader_dialog.find('.uk-progress-bar').width((file.percent ? file.percent : 1) + '%');
 					tinymce.uploader_dialog.cs().modal('show');
 				}
-			).browse();
+			);
+			uploader.browse();
+			/**
+			 * Destroy uploader instance on upload dialog closing
+			 */
+			var destroy_uploader = setInterval(function () {
+				if (!$('#mce-modal-block').length) {
+					uploader.destroy();
+					clearInterval(destroy_uploader);
+				}
+			}, 1000);
 		} : null
 	};
 	tinymce.editor_config	= $.extend(

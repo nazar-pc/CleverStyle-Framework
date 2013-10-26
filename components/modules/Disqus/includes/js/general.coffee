@@ -15,7 +15,7 @@ do ->
 	d = window.DISQUSWIDGETS;
 	load_counts = (i) ->
 		item	= window.disqus_count_items[i]
-		if !item
+		if !window.disqus_count_items.length || !item
 			window.DISQUSWIDGETS = d
 			return
 		s			= document.createElement('script')
@@ -25,7 +25,9 @@ do ->
 			load_counts(i + 1)
 		window.DISQUSWIDGETS	=
 			displayCount : (d) ->
-				qs('.cs-disqus-comments-count[data-identifier=\'' + item + '\']').outerHTML = d.counts[0].comments
+				element	= qs('.cs-disqus-comments-count[data-identifier=\'' + item + '\']')
+				if element
+					element.outerHTML = d.counts[0].comments
 		container.appendChild(s)
 	load_counts(0)
 	# Comments block

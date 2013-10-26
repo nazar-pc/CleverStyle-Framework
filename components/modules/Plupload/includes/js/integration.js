@@ -26,24 +26,29 @@
 (function() {
 
   cs.file_upload = function(button, success, error, progress, multi) {
-    var file_element, files, uploader, _ref, _ref1;
+    var browse_button, files, uploader, _ref, _ref1;
     files = [];
+    browse_button = $('<button id="plupload_' + (new Date).getTime() + '" style="display:none;"/>').appendTo('body');
     uploader = new plupload.Uploader({
-      runtimes: 'html5',
+      browse_button: browse_button.get(0),
       max_file_size: (_ref = (_ref1 = cs.plupload) != null ? _ref1.max_file_size : void 0) != null ? _ref : null,
-      url: '/Plupload',
       multi_selection: multi,
-      multipart: true
+      multipart: true,
+      runtimes: 'html5',
+      url: '/Plupload'
     });
     uploader.init();
-    file_element = $('#' + uploader.id + '_html5');
     if (button) {
       button.click(function() {
-        return file_element.click();
+        return setTimeout((function() {
+          var input;
+          input = browse_button.next().children();
+          if (!input.attr('accept')) {
+            input.removeAttr('accept');
+          }
+          return browse_button.click();
+        }), 0);
       });
-    }
-    if (!file_element.attr('accept')) {
-      file_element.removeAttr('accept');
     }
     uploader.bind('FilesAdded', function() {
       uploader.refresh();
@@ -78,10 +83,23 @@
       return uploader.stop();
     };
     this.destroy = function() {
-      return uploader.destroy();
+      browse_button.remove();
+      uploader.destroy();
+      return $('.moxie-shim').each(function() {
+        if ($(this).html() === '') {
+          return $(this).remove();
+        }
+      });
     };
     this.browse = function() {
-      return file_element.click();
+      return setTimeout((function() {
+        var input;
+        input = browse_button.next().children();
+        if (!input.attr('accept')) {
+          input.removeAttr('accept');
+        }
+        return browse_button.click();
+      }), 0);
     };
     return this;
   };

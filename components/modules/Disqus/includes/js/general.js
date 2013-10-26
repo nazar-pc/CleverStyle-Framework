@@ -24,7 +24,7 @@
     load_counts = function(i) {
       var item, s;
       item = window.disqus_count_items[i];
-      if (!item) {
+      if (!window.disqus_count_items.length || !item) {
         window.DISQUSWIDGETS = d;
         return;
       }
@@ -36,7 +36,11 @@
       };
       window.DISQUSWIDGETS = {
         displayCount: function(d) {
-          return qs('.cs-disqus-comments-count[data-identifier=\'' + item + '\']').outerHTML = d.counts[0].comments;
+          var element;
+          element = qs('.cs-disqus-comments-count[data-identifier=\'' + item + '\']');
+          if (element) {
+            return element.outerHTML = d.counts[0].comments;
+          }
         }
       };
       return container.appendChild(s);

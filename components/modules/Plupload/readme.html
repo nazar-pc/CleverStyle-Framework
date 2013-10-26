@@ -15,19 +15,22 @@
 			<dt>success</dt>
 			<dd>Function, will be called after successful uploading of all files, accepts one argument <code>files</code> with array of absolute urls of all uploaded files</dd>
 			<dt>error</dt>
-			<dd>Function, will be called if error occured in Plupload, accepts one argument <code>error</code> with error text</dd>
+			<dd>Function, will be called if error occurred in Plupload, accepts one argument <code>error</code> with error text</dd>
 			<dt>progress</dt>
 			<dd>Function, will be called when file uploading progress changes, accepts 4 arguments <code>percent, size, uploaded_size, name</code> current progress in percents, total file size, size of uploaded part and file name</dd>
 			<dt>multi</dt>
 			<dd>If specified and <code>true</code> - selection of several files will be possible</dd>
 		</dl>
 		<p>Example (TinyMCE plugin):</p>
-		<pre>file_browser_callback	: cs.file_upload ? function (field_name) {
+		<pre>cs.file_upload ? function (field_name) {
 	if (!tinymce.uploader_dialog) {
-		tinymce.uploader_dialog		= $('&lt;div title="Uploading..." class="cs-center"&gt;&lt;/div&gt;').cs().modal();
-		tinymce.uploader_dialog.parent().css('z-index', 100000);
+		tinymce.uploader_dialog		= $('&lt;div title="Uploading..." class="cs-center"&gt;&lt;/div&gt;')
+			.html('&lt;div style="margin-left: -10%; width: 20%;"&gt;&lt;div class="uk-progress uk-progress-striped uk-active"&gt;&lt;div class="uk-progress-bar"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;')
+			.appendTo('body')
+			.cs().modal()
+			.css('z-index', 100000);
 	}
-	cs.file_upload(
+	var uploader	= cs.file_upload(
 		null,
 		function (files) {
 			tinymce.uploader_dialog.cs().modal('hide');
@@ -40,9 +43,20 @@
 			alert(error);
 		},
 		function (file) {
-			tinymce.uploader_dialog.html(file.percent + '%').cs().modal('show');
+			tinymce.uploader_dialog.find('.uk-progress-bar').width((file.percent ? file.percent : 1) + '%');
+			tinymce.uploader_dialog.cs().modal('show');
 		}
-	).browse();
+	);
+	uploader.browse();
+	/**
+	 * Destroy uploader instance on upload dialog closing
+	 */
+	var destroy_uploader = setInterval(function () {
+		if (!$('#mce-modal-block').length) {
+			uploader.destroy();
+			clearInterval(destroy_uploader);
+		}
+	}, 1000);
 } : null</pre>
 	</li>
 </ul>
