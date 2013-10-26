@@ -14,7 +14,7 @@ $(function () {
 		skin					: cs.tinymce && cs.tinymce.skin !== undefined ? cs.tinymce.skin : 'lightgray',
 		language				: cs.Language.clang !== undefined ? cs.Language.clang : 'en',
 		menubar					: false,
-		plugins					: "advlist,anchor,charmap,code,contextmenu,emoticons,fullscreen,hr,image,link,lists,media,nonbreaking,noneditable,pagebreak,paste,preview,searchreplace,tabfocus,table,visualblocks,visualchars,wordcount,textcolor",
+		plugins					: "advlist,anchor,charmap,code,contextmenu,emoticons,fullscreen,hr,image,link,lists,media,nonbreaking,noneditable,pagebreak,paste,preview,searchreplace,tabfocus,table,textcolor,visualblocks,visualchars,wordcount",
 		resize					: 'both',
 		toolbar_items_size		: 'small',
 		width					: '100%',
