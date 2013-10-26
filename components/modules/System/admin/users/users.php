@@ -81,7 +81,7 @@ if (isset($rc[2], $rc[3])) {
 			foreach ($search_columns as $i => $column) {
 				$content_ .= h::th($column).
 				h::td(
-					$column == 'data' || $column == 'about' ?
+					$column == 'data' ?
 						h::textarea(
 							$user_data[$column],
 							[
@@ -144,12 +144,7 @@ if (isset($rc[2], $rc[3])) {
 						'last_login',
 						'last_ip',
 						'last_online',
-						'gender',
-						'birthday',
-						'avatar',
-						'website',
-						'skype',
-						'about'
+						'avatar'
 					],
 					$rc[3]
 				);
@@ -246,34 +241,10 @@ if (isset($rc[2], $rc[3])) {
 							'name'		=> 'user[block_until]',
 							'value'		=> date('Y-m-d\TH:i', $user_data['block_until'] ?: TIME)
 						])),
-						row($L->gender, h::{'input[type=radio]'}([
-							'name'		=> 'user[gender]',
-							'checked'	=> $user_data['gender'],
-							'value'		=> [-1, 0, 1],
-							'in'		=> [$L->undefined, $L->male, $L->female]
-						])),
-						row(h::info('birthday'), h::{'input[type=date]'}([
-							'name'		=> 'user[birthday]',
-							'value'		=> date('Y-m-d', $user_data['birthday'] ?: TIME)
-						])),
 						row($L->avatar, h::input([
 							'name'		=> 'user[avatar]',
 							'value'		=> $user_data['avatar']
-						])),
-						row($L->website, h::input([
-							'name'		=> 'user[website]',
-							'value'		=> $user_data['website']
-						])),
-						row($L->skype, h::input([
-							'name'		=> 'user[skype]',
-							'value'		=> $user_data['skype']
-						])),
-						row($L->about_me, h::textarea(
-							$user_data['about'],
-							[
-								'name'		=> 'user[about]',
-							]
-						))
+						]))
 					]).
 					h::{'input[type=hidden]'}([
 						'name'	=> 'user[id]',

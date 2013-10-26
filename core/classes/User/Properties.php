@@ -28,12 +28,7 @@ use			cs\User;
  * @property	int		$last_login		unix timestamp
  * @property	string	$last_ip		hex value, obtained by function ip2hex()
  * @property	int		$last_online	unix timestamp
- * @property	int		$gender			0 - male, 1 - female, -1 - undefined
- * @property	int		$birthday		unix timestamp
  * @property	string	$avatar
- * @property	string	$website
- * @property	string	$skype
- * @property	string	$about
  * @property	string	$user_agent
  * @property	string	$ip
  * @property	string	$forwarded_for

@@ -12,7 +12,7 @@
 			"id",
 			"secret"
 		],
-		"scope"	: "email, user_about_me, user_birthday, user_website"
+		"scope"	: "email"
 	},
 	"Twitter"		: {
 		"keys"	: [

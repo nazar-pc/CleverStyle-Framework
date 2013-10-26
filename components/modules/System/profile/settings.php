@@ -29,12 +29,7 @@ $columns		= [
 	'language',
 	'theme',
 	'timezone',
-	'gender',
-	'birthday',
-	'avatar',
-	'website',
-	'skype',
-	'about'
+	'avatar'
 ];
 if (isset($_POST['user']) && $_POST['edit_settings'] == 'save') {
 	$user_data = &$_POST['user'];
@@ -44,21 +39,6 @@ if (isset($_POST['user']) && $_POST['edit_settings'] == 'save') {
 		}
 	}
 	unset($item, $value);
-	if ($_POST['user']['birthday'] < TIME) {
-		$birthday				= $user_data['birthday'];
-		$birthday				= explode('-', $birthday);
-		$user_data['birthday']	= mktime(
-			0,
-			0,
-			0,
-			$birthday[1],
-			$birthday[2],
-			$birthday[0]
-		);
-		unset($birthday);
-	} else {
-		$user_data['block_until']	= 0;
-	}
 	if (isset($user_data['login'])) {
 		$user_data['login']	= mb_strtolower($user_data['login']);
 	}
@@ -187,35 +167,10 @@ switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 						'size'		=> 5
 					]
 				)),
-				$row($L->gender, h::{'input[type=radio]'}([
-					'name'		=> 'user[gender]',
-					'checked'	=> $user_data['gender'],
-					'value'		=> [-1, 0, 1],
-					'in'		=> [$L->undefined, $L->male, $L->female]
-				])),
-				$row(h::info('birthday'), h::{'input'}([
-					'name'			=> 'user[birthday]',
-					'value'			=> $user_data['birthday'] ? date('Y-m-d', $user_data['birthday'] ?: TIME) : '',
-					'placeholder'	=>'YYYY-MM-DD'
-				])),
 				$row($L->avatar, h::input([
 					'name'		=> 'user[avatar]',
 					'value'		=> $user_data['avatar']
-				])),
-				$row($L->website, h::input([
-					'name'		=> 'user[website]',
-					'value'		=> $user_data['website']
-				])),
-				$row($L->skype, h::input([
-					'name'		=> 'user[skype]',
-					'value'		=> $user_data['skype']
-				])),
-				$row($L->about_me, h::textarea(
-					$user_data['about'],
-					[
-						'name'		=> 'user[about]',
-					]
-				))
+				]))
 			)
 		);
 	break;

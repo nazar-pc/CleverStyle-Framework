@@ -222,6 +222,7 @@ class DB {
 			/**
 			 * If mirror connection is not allowed - display connection error
 			 */
+			$return	= False_class::instance();
 			if (!is_array($mirror)) {
 				code_header(500);
 				if ($connection == 0) {
@@ -229,8 +230,9 @@ class DB {
 				} else {
 					trigger_error($L->error_db.' '.$this->failed_connections[$connection], E_USER_ERROR);
 				}
+				$return->error	= 'Connection failed';
 			}
-			return False_class::instance();
+			return $return;
 		}
 	}
 	/**

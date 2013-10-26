@@ -29,7 +29,7 @@ function _require ($file, $once = false, $show_errors = true) {
 		}
 	} elseif (is_bool($show_errors) && $show_errors) {
 		$data = debug_backtrace()[0];
-		trigger_error('File '.$file.' does not exists in '.$data['file'].' on line '.$data['line'], E_USER_ERROR);
+		trigger_error("File $file does not exists in $data[file] on line $data[line]", E_USER_ERROR);
 	} elseif ($show_errors instanceof Closure) {
 		return (bool)$show_errors();
 	}
@@ -53,7 +53,7 @@ function _include ($file, $once = false, $show_errors = true) {
 		}
 	} elseif (is_bool($show_errors) && $show_errors) {
 			$data = debug_backtrace()[0];
-			trigger_error('File '.$file.' does not exists in '.$data['file'].' on line '.$data['line'], E_USER_WARNING);
+			trigger_error("File $file does not exists in $data[file] on line $data[line]", E_USER_WARNING);
 	} elseif ($show_errors instanceof Closure) {
 			return (bool)$show_errors();
 	}
@@ -838,15 +838,17 @@ function password_generate ($length = 10, $strength = 5) {
 	return '';
 }
 /**
- * Sending POST request to the specified host and path with specified data
+ * Sending request of specified type to the specified host and path with specified data
  *
+ * @param string $type	post/put/delete/etc.
+ * @param string $host
  * @param string $host
  * @param string $path
  * @param array  $data
  *
  * @return bool|string
  */
-function post_request ($host, $path, $data) {
+function any_request ($type, $host, $path, $data) {
 	if (!is_array($data) || empty($data)) {
 		return false;
 	}
@@ -855,10 +857,11 @@ function post_request ($host, $path, $data) {
 	if(!is_resource($socket)) {
 		return false;
 	}
-	$data = http_build_query($data);
+	$data	= http_build_query($data);
+	$type	= strtoupper($type);
 	fwrite(
 		$socket,
-		"POST $path HTTP/1.1\r\n".
+		"$type $path HTTP/1.1\r\n".
 		'Host: '.implode(':', $host)."\r\n".
 		"Content-Type: application/x-www-form-urlencoded\r\n".
 		"Content-length:".strlen($data)."\r\n".
@@ -871,6 +874,42 @@ function post_request ($host, $path, $data) {
 	$return = explode("\r\n\r\n", stream_get_contents($socket), 2)[1];
 	fclose($socket);
 	return $return;
+}
+/**
+ * Sending POST request to the specified host and path with specified data
+ *
+ * @param string $host
+ * @param string $path
+ * @param array  $data
+ *
+ * @return bool|string
+ */
+function post_request ($host, $path, $data) {
+	return any_request('post', $host, $path, $data);
+}
+/**
+ * Sending PUT request to the specified host and path with specified data
+ *
+ * @param string $host
+ * @param string $path
+ * @param array  $data
+ *
+ * @return bool|string
+ */
+function put_request ($host, $path, $data) {
+	return any_request('put', $host, $path, $data);
+}
+/**
+ * Sending DELETE request to the specified host and path with specified data
+ *
+ * @param string $host
+ * @param string $path
+ * @param array  $data
+ *
+ * @return bool|string
+ */
+function delete_request ($host, $path, $data) {
+	return any_request('delete', $host, $path, $data);
 }
 /**
  * Sends header with string representation of http status code, for example "404 Not Found" for corresponding server protocol

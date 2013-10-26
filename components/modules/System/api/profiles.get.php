@@ -19,12 +19,7 @@ $fields	= [
 	'username',
 	'language',
 	'timezone',
-	'gender',
-	'birthday',
-	'avatar',
-	'website',
-	'skype',
-	'about'
+	'avatar'
 ];
 $Page	= Page::instance();
 $Config	= Config::instance();

@@ -32,12 +32,7 @@ $data	= $User->get(
 		'reg_date',
 		'status',
 		'block_until',
-		'gender',
-		'birthday',
-		'avatar',
-		'website',
-		'skype',
-		'about'
+		'avatar'
 	],
 	$id
 );
@@ -68,12 +63,6 @@ $Page->og(
 	'username',
 	$name,
 	'profile:'
-)->og(
-	'gender',
-	$data['gender'] == 0 ? 'male' : ($data['gender'] == 1 ? 'female' : false)
-)->og(
-	'description',
-	$data['about'] ?: false
 );
 $Page->content(
 	h::{'table.cs-table-borderless.cs-profile-table tr'}([
@@ -87,45 +76,10 @@ $Page->content(
 		),
 
 		h::{'td table.cs-right-odd.cs-left-even tr'}([
-			($data['birthday'] ? h::td([
-				h::h2($L->birth_date.':'),
-				h::h2($L->to_locale(date($L->birth_date_format, $data['birthday'])))
-			])  : false),
-
-			($data['gender'] != -1 ? h::td([
-				h::h2($L->gender.':'),
-				h::h2($L->{$data['gender'] == 0 ? 'male' : 'female'})
-			]) : false),
-
-			($data['website'] ? h::td([
-				h::h2($L->website.':'),
-				h::{'h2 a'}(
-					$data['website'],
-					[
-						'href'	=> (substr($data['website'], 0, 4) != 'http' ? 'http://' : '').$data['website']
-					]
-				)
-			]) : false),
-
-			($data['skype'] ? h::td([
-				h::h2($L->skype.':'),
-				h::{'h2 a'}(
-					$data['skype'],
-					[
-						'href'	=> 'skype:'.$data['skype']
-					]
-				)
-			]) : false),
-
 			($data['reg_date'] ? h::td([
 				h::h2($L->reg_date.':'),
 				h::h2($L->to_locale(date($L->reg_date_format, $data['reg_date'])))
-			])  : false),
-
-			($data['about'] ? h::td([
-				h::h2($L->about_me.':'),
-				h::h2(str_replace("\n", h::br(), $data['about']))
-			]) : false)
+			])  : false)
 		])
 	])
 );

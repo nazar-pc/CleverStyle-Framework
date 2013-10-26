@@ -62,12 +62,7 @@ switch ($_POST['mode']) {
 				'timezone',
 				'status',
 				'block_until',
-				'gender',
-				'birthday',
-				'avatar',
-				'website',
-				'skype',
-				'about'
+				'avatar'
 			);
 			foreach ($user_data as $item => &$value) {
 				if (in_array($item, $columns) && $item != 'data') {
@@ -91,21 +86,6 @@ switch ($_POST['mode']) {
 					$block_until[0][0]
 				);
 				unset($block_until);
-			} else {
-				$user_data['block_until']	= 0;
-			}
-			if ($_POST['user']['birthday'] < TIME) {
-				$birthday				= $user_data['birthday'];
-				$birthday				= explode('-', $birthday);
-				$user_data['birthday']	= mktime(
-					0,
-					0,
-					0,
-					$birthday[1],
-					$birthday[2],
-					$birthday[0]
-				);
-				unset($birthday);
 			} else {
 				$user_data['block_until']	= 0;
 			}

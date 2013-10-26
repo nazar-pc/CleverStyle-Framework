@@ -194,11 +194,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 		$profile		= $adapter->getUserProfile();
 		$profile_info	= [
 			'username'	=> $profile->displayName,
-			'about'		=> $profile->description,
-			'avatar'	=> $profile->photoURL,
-			'website'	=> $profile->webSiteURL,
-			'gender'	=> $profile->gender == 'male' ? 0 : ($profile->gender == 'female' ? 1 : -1),
-			'birthday'	=> $profile->birthMonth ? strtotime($profile->birthMonth.'/'.$profile->birthDay.'/'.$profile->birthYear) : 0
+			'avatar'	=> $profile->photoURL
 		];
 		/**
 		 * Remove empty fields

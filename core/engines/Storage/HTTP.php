@@ -36,7 +36,7 @@ class HTTP extends _Abstract {
 	protected function request ($data) {
 		$socket = fsockopen($this->host[0], isset($this->host[1]) ? $this->host[1] : 80, $errno, $errstr);
 		if(!is_resource($socket)) {
-			trigger_error('#'.$errno.' '.$errstr, E_USER_WARNING);
+			trigger_error("#$errno $errstr", E_USER_WARNING);
 			$this->connected = false;
 			return false;
 		}
@@ -220,11 +220,11 @@ class HTTP extends _Abstract {
 	 */
 	function move_uploaded_file ($filename, $destination) {
 		$temp = md5(uniqid(microtime(true)));
-		while (file_exists(TEMP.'/'.$temp)) {
+		while (file_exists(TEMP."/$temp")) {
 			$temp = md5(uniqid(microtime(true)));
 		}
 		time_limit_pause();
-		if (move_uploaded_file($filename, TEMP.'/'.$temp) === false) {
+		if (move_uploaded_file($filename, TEMP."/$temp") === false) {
 			time_limit_pause(false);
 			return false;
 		}
@@ -233,7 +233,7 @@ class HTTP extends _Abstract {
 			'function'		=> __FUNCTION__,
 			'filename'		=> Config::instance()->base_url()."/$temp",
 			'destination'	=> $destination
-		])[1] && unlink(TEMP.'/'.$temp);
+		])[1] && unlink(TEMP."/$temp");
 	}
 	/**
 	 * Renames a file or directory
@@ -327,7 +327,7 @@ class HTTP extends _Abstract {
 	 */
 	function url_by_source ($source) {
 		if ($this->file_exists($source)) {
-			return $this->base_url.'/'.$source;
+			return $this->base_url."/$source";
 		}
 		return false;
 	}
@@ -342,7 +342,7 @@ class HTTP extends _Abstract {
 	 */
 	function source_by_url ($url) {
 		if (mb_strpos($url, $this->base_url) === 0) {
-			return str_replace($this->base_url.'/', '', $url);
+			return str_replace("$this->base_url/", '', $url);
 		}
 		return false;
 	}

@@ -109,12 +109,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]users` (
   `last_login` bigint(20) unsigned NOT NULL DEFAULT '0',
   `last_ip` varchar(32) NOT NULL COMMENT 'hex value, obtained by function ip2hex()',
   `last_online` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `gender` tinyint(1) NOT NULL DEFAULT '-1' COMMENT '0 - male, 1 - female, -1 - undefined',
-  `birthday` bigint(20) unsigned NOT NULL DEFAULT '0',
   `avatar` varchar(255) NOT NULL,
-  `website` varchar(255) NOT NULL,
-  `skype` varchar(255) NOT NULL,
-  `about` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `login` (`login`(5),`username`(5),`email`(5)),
   KEY `login_hash` (`login_hash`(5)),
@@ -122,10 +117,8 @@ CREATE TABLE IF NOT EXISTS `[prefix]users` (
   KEY `email_hash` (`email_hash`(5)),
   KEY `language` (`language`(3)),
   KEY `status` (`status`),
-  KEY `skype` (`skype`),
   KEY `last_login` (`last_login`),
-  KEY `last_online` (`last_online`),
-  KEY `gender` (`gender`)
+  KEY `last_online` (`last_online`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `[prefix]users` (`login`, `login_hash`, `status`) VALUES ('guest', '5cf371cef0648f2656ddc13b773aa642251267dbd150597506e96c3a', '1');
