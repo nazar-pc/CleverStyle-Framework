@@ -31,7 +31,7 @@ cs.file_upload	= (button, success, error, progress, multi) ->
 	if button
 		button.click ->
 			setTimeout (->
-				input	= browse_button.next().children()
+				input	= browse_button.nextAll('.moxie-shim:first').children()
 				if !input.attr('accept')
 					input.removeAttr('accept')
 				browse_button.click()
@@ -77,7 +77,7 @@ cs.file_upload	= (button, success, error, progress, multi) ->
 				$(this).remove()
 	this.browse		= ->
 		setTimeout (->
-			input	= browse_button.next().children()
+			input	= browse_button.nextAll('.moxie-shim:first').children()
 			if !input.attr('accept')
 				input.removeAttr('accept')
 			browse_button.click()

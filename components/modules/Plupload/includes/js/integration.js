@@ -42,7 +42,7 @@
       button.click(function() {
         return setTimeout((function() {
           var input;
-          input = browse_button.next().children();
+          input = browse_button.nextAll('.moxie-shim:first').children();
           if (!input.attr('accept')) {
             input.removeAttr('accept');
           }
@@ -94,7 +94,7 @@
     this.browse = function() {
       return setTimeout((function() {
         var input;
-        input = browse_button.next().children();
+        input = browse_button.nextAll('.moxie-shim:first').children();
         if (!input.attr('accept')) {
           input.removeAttr('accept');
         }
