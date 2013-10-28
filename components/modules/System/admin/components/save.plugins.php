@@ -15,6 +15,7 @@
  *  ['name'	=> <i>plugin_name</i>]
  */
 namespace	cs;
+$Cache		= Cache::instance();
 $Config		= Config::instance();
 $Core		= Core::instance();
 $Index		= Index::instance();
@@ -36,6 +37,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 						'name' => $plugin
 					]
 				);
+				unset($Cache->functionality);
 			}
 		break;
 		case 'disable':
@@ -49,6 +51,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 						'name' => $plugin
 					]
 				);
+				unset($Cache->functionality);
 			}
 		break;
 		case 'update':
@@ -94,8 +97,8 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			);
 			if (!$extract) {
 				$Page->warning($L->plugin_files_unpacking_error);
-				unlink($plugin_dir.'/fs_old.json');
-				unlink($plugin_dir.'/meta_old.json');
+				unlink("$plugin_dir/fs_old.json");
+				unlink("$plugin_dir/meta_old.json");
 				break;
 			}
 			unset($extract);
@@ -117,19 +120,19 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 				}
 				if (!$success) {
 					$Page->warning($L->plugin_files_unpacking_error);
-					unlink($plugin_dir.'/fs_old.json');
-					unlink($plugin_dir.'/meta_old.json');
+					unlink("$plugin_dir/fs_old.json");
+					unlink("$plugin_dir/meta_old.json");
 					break;
 				}
 				unset($success, $mirror, $result);
 			}
 			unlink($tmp_file);
 			unset($api_request, $tmp_file);
-			file_put_contents($plugin_dir.'/fs.json', _json_encode($fs = array_keys($fs)));
+			file_put_contents("$plugin_dir/fs.json", _json_encode($fs = array_keys($fs)));
 			/**
 			 * Removing of old unnecessary files and directories
 			 */
-			foreach (array_diff(_json_decode(file_get_contents($plugin_dir.'/fs_old.json')), $fs) as $file) {
+			foreach (array_diff(_json_decode(file_get_contents("$plugin_dir/fs_old.json")), $fs) as $file) {
 				$file	= "$plugin_dir/$file";
 				if (file_exists($file) && is_writable($file)) {
 					unlink($file);
@@ -142,19 +145,19 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			/**
 			 * Updating of plugin
 			 */
-			if (file_exists($plugin_dir.'/versions.json')) {
-				$old_version	= _json_decode(file_get_contents($plugin_dir.'/meta_old.json'))['version'];
-				foreach (_json_decode(file_get_contents($plugin_dir.'/versions.json')) as $version) {
+			if (file_exists("$plugin_dir/versions.json")) {
+				$old_version	= _json_decode(file_get_contents("$plugin_dir/meta_old.json"))['version'];
+				foreach (_json_decode(file_get_contents("$plugin_dir/versions.json")) as $version) {
 					if (version_compare($old_version, $version, '<')) {
 						/**
 						 * PHP update script
 						 */
-						_include($plugin_dir.'/meta/update/'.$version.'.php', true, false);
+						_include("$plugin_dir/meta/update/$version.php", true, false);
 					}
 				}
 			}
-			unlink($plugin_dir.'/fs_old.json');
-			unlink($plugin_dir.'/meta_old.json');
+			unlink("$plugin_dir/fs_old.json");
+			unlink("$plugin_dir/meta_old.json");
 			/**
 			 * Restore previous plugin state
 			 */
@@ -170,6 +173,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 				);
 			}
 			$Index->save();
+			unset($Cache->functionality);
 		break;
 	}
 }

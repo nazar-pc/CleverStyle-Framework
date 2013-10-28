@@ -6,4 +6,4 @@
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-return method_exists('PHPMailer', '__construct') ? '__construct() method should be removed from PHPMailer class' : 0;
+return !file_exists(DIR.'/core/classes/SMTP.php') ? 'File with SMTP class for PHPMailer should be named "SMTP.php"' : 0;

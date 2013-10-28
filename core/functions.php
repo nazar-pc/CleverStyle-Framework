@@ -717,3 +717,53 @@ function pages_buttons ($page, $total, $url = false) {
 function error_code ($code) {
 	!defined('ERROR_CODE') && define('ERROR_CODE', $code);
 }
+
+/**
+ * Checks whether specified functionality available or not
+ *
+ * @param string|string[]	$functionality	One functionality or array of them
+ *
+ * @return bool								<i>true</i> if all functionality available, <i>false</i> otherwise
+ */
+function functionality ($functionality) {
+	if (is_array($functionality)) {
+		$result	= true;
+		foreach ($functionality as $f) {
+			$result	= $result && functionality($f);
+		}
+		return $result;
+	}
+	$all	= Cache::instance()->get("functionality", function () {
+		$functionality	= [];
+		$components		= Config::instance()->components;
+		foreach ($components['modules'] as $module => $module_data) {
+			if ($module_data['active'] != 1 || !file_exists(MODULES."/$module/meta.json")) {
+				continue;
+			}
+			$meta			= _json_decode(file_get_contents(MODULES."/$module/meta.json"));
+			if (!isset($meta['provide'])) {
+				continue;
+			}
+			$functionality	= array_merge(
+				$functionality,
+				(array)$meta['provide']
+			);
+		}
+		unset($module, $module_data, $meta);
+		foreach ($components['plugins'] as $plugin) {
+			if (!file_exists(PLUGINS."/$plugin/meta.json")) {
+				continue;
+			}
+			$meta			= _json_decode(file_get_contents(PLUGINS."/$plugin/meta.json"));
+			if (!isset($meta['provide'])) {
+				continue;
+			}
+			$functionality	= array_merge(
+				$functionality,
+				(array)$meta['provide']
+			);
+		}
+		return $functionality;
+	});
+	return array_search($functionality, $all) !== false;
+}

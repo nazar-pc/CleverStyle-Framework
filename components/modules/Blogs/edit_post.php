@@ -91,17 +91,19 @@ $Index->buttons				= false;
 $Index->cancel_button_back	= true;
 $disabled					= [];
 $max_sections				= $Config->module('Blogs')->max_sections;
+$content					= uniqid('post_content');
+$Page->replace($content, isset($_POST['content']) ? $_POST['content'] : $post['content']);
 $Index->content(
 	h::{'p.lead.cs-center'}(
 		$L->editing_of_post($post['title'])
 	).
 	h::{'div.cs-blogs-post-preview-content'}().
-	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}(
+	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd.cs-blogs-post-form.cs-blogs-post-form tr| td'}(
 		[
 			$L->post_title,
-			h::{'input.cs-blogs-new-post-title[name=title][required]'}([
-				'value'		=> isset($_POST['title']) ? $_POST['title'] : $post['title']
-			])
+			h::{'h1.cs-blogs-new-post-title.TINY_INLINE_EDITOR'}(
+				isset($_POST['title']) ? $_POST['title'] : $post['title']
+			)
 		],
 		[
 			$L->post_section,
@@ -118,8 +120,12 @@ $Index->content(
 		],
 		[
 			$L->post_content,
-			h::{'textarea.cs-blogs-new-post-content.EDITOR[name=content][required]'}(
-				isset($_POST['content']) ? $_POST['content'] : $post['content']
+			(
+				functionality('inline_editor') ? h::{'div.cs-blogs-new-post-content.INLINE_EDITOR'}(
+					$content
+				) : h::{'textarea.cs-blogs-new-post-content.EDITOR[name=content][required]'}(
+					isset($_POST['content']) ? $_POST['content'] : $post['content']
+				)
 			).
 			h::br().
 			$L->post_use_pagebreak

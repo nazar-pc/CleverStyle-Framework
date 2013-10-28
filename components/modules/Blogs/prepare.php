@@ -95,6 +95,7 @@ if (!API) {
 		 */
 		$Blogs		= Blogs::instance();
 		$L			= Language::instance();
+		$Page		= Page::instance();
 		$User		= User::instance();
 		$module		= path($L->Blogs);
 		$content	= [];
@@ -102,12 +103,14 @@ if (!API) {
 			return '';
 		}
 		foreach ($posts as $post) {
-			$post		= $Blogs->get($post);
-			$content[]	= h::header(
+			$post			= $Blogs->get($post);
+			$short_content	= uniqid('post_content', true);
+			$Page->replace($short_content, $post['short_content']);
+			$content[]		= h::header(
 				h::{'h1 a'}(
 					$post['title'],
 					[
-						'href'	=> $module.'/'.$post['path'].':'.$post['id']
+						'href'	=> "$module/$post[path]:$post[id]"
 					]
 				).
 				($post['sections'] != [0] ? h::p(
@@ -118,7 +121,7 @@ if (!API) {
 								return h::a(
 									$section['title'],
 									[
-										'href'	=> $module.'/'.path($L->section).'/'.$section['full_path']
+										'href'	=> "$module/".path($L->section)."/$section[full_path]"
 									]
 								);
 							},
@@ -127,7 +130,7 @@ if (!API) {
 					)
 				) : '')
 			).
-			$post['short_content']."\n".
+			"$short_content\n".
 			h::footer(
 				h::hr().
 				h::p(
@@ -148,14 +151,14 @@ if (!API) {
 						Config::instance()->module('Blogs')->enable_comments && $Comments ? h::a(
 							h::icon('comments').$post['comments_count'],
 							[
-								'href'			=> $module.'/'.$post['path'].':'.$post['id'].'#comments'
+								'href'			=> "$module/$post[path]:$post[id]#comments"
 							]
 						) : ''
 					).
 					h::a(
 						h::icon('double-angle-right').$L->read_more,
 						[
-							'href'			=> $module.'/'.$post['path'].':'.$post['id']
+							'href'			=> "$module/$post[path]:$post[id]"
 						]
 					)
 				)

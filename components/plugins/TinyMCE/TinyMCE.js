@@ -14,7 +14,7 @@ $(function () {
 		skin					: cs.tinymce && cs.tinymce.skin !== undefined ? cs.tinymce.skin : 'lightgray',
 		language				: cs.Language.clang !== undefined ? cs.Language.clang : 'en',
 		menubar					: false,
-		plugins					: "advlist,anchor,charmap,code,contextmenu,emoticons,fullscreen,hr,image,link,lists,media,nonbreaking,noneditable,pagebreak,paste,preview,searchreplace,tabfocus,table,textcolor,visualblocks,visualchars,wordcount",
+		plugins					: 'advlist,anchor,charmap,code,contextmenu,emoticons,fullscreen,hr,image,link,lists,media,nonbreaking,noneditable,pagebreak,paste,preview,searchreplace,tabfocus,table,textcolor,visualblocks,visualchars,wordcount',
 		resize					: 'both',
 		toolbar_items_size		: 'small',
 		width					: '100%',
@@ -60,24 +60,30 @@ $(function () {
 	};
 	tinymce.editor_config	= $.extend(
 		{
-			toolbar1	: "styleselect fontselect fontsizeselect | alignleft aligncenter alignright alignjustify | bold italic underline strikethrough superscript subscript | forecolor backcolor",
-			toolbar2	: "insertfile undo redo | bullist numlist outdent indent blockquote | link unlink anchor image media emoticons charmap hr nonbreaking pagebreak | visualchars visualblocks | searchreplace | fullscreen preview code"
+			toolbar1	: 'styleselect fontselect fontsizeselect | alignleft aligncenter alignright alignjustify | bold italic underline strikethrough superscript subscript | forecolor backcolor',
+			toolbar2	: 'undo redo | bullist numlist outdent indent blockquote | link unlink anchor image media emoticons charmap hr nonbreaking pagebreak | visualchars visualblocks | searchreplace | fullscreen preview code'
 		},
 		base_config
 	);
 	tinymce.simple_editor_config	= $.extend(
 		{
-			toolbar	: "insertfile undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | link image media emoticons | code"
+			toolbar	: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | link image media emoticons | code'
 		},
 		base_config
 	);
 	tinymce.inline_editor_config	= $.extend(
 		{
 			inline	: true,
-			menubar	: false,
-			toolbar	: "insertfile undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | link image media emoticons | code"
+			menubar	: false
 		},
-		base_config
+		tinymce.editor_config
+	);
+	tinymce.simple_inline_editor_config	= $.extend(
+		{
+			inline	: true,
+			menubar	: false
+		},
+		tinymce.simple_editor_config
 	);
 	cs.async_call([
 		function () {
@@ -97,6 +103,12 @@ $(function () {
 			 * Inline editor
 			 */
 			$('.INLINE_EDITOR').prop('required', false).tinymce(tinymce.inline_editor_config);
+		},
+		function () {
+			/**
+			 * Small inline editor
+			 */
+			$('.SIMPLE_INLINE_EDITOR').prop('required', false).tinymce(tinymce.simple_inline_editor_config);
 		}
 	]);
 });
@@ -111,6 +123,8 @@ function editor_reinitialization (id) {
 		textarea.tinymce(tinymce.simple_editor_config).load();
 	} else if (textarea.hasClass('INLINE_EDITOR')) {
 		textarea.tinymce(tinymce.inline_editor_config).load();
+	} else if (textarea.hasClass('SIMPLE_INLINE_EDITOR')) {
+		textarea.tinymce(tinymce.simple_inline_editor_config).load();
 	}
 }
 function editor_focus (id) {

@@ -61,6 +61,8 @@
           append: "\n"
         });
       }, function() {
+        return $('.TINY_INLINE_EDITOR').prop('contenteditable', true);
+      }, function() {
         return $('.cs-info').cs().tooltip();
       }, function() {
         return $('.cs-tabs').cs().tabs();

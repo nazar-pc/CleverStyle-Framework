@@ -72,6 +72,8 @@ $Page->canonical_url(
 	$tags,
 	'article:'
 );
+$content			= uniqid('post_content');
+$Page->replace($content, $post['content']);
 Index::instance()->content(
 	h::{'section.cs-blogs-post article'}(
 		h::header(
@@ -128,7 +130,7 @@ Index::instance()->content(
 				)
 			) : '')
 		).
-		"$post[content]\n".
+		"$content\n".
 		h::footer(
 			h::p(
 				h::icon('tags').

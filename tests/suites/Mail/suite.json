@@ -1,6 +1,7 @@
 {
 	"title"	: "Mail class",
 	"tests"	: {
-		"phpmailer_fix"			: "PHPMailer fix"
+		"phpmailer"			: "PHPMailer constructor removing",
+		"smtp"				: "SMTP class file renaming"
 	}
 }

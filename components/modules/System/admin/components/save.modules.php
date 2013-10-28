@@ -123,6 +123,7 @@ if (isset($_POST['update_modules_list'])) {
 			}
 			$a->save();
 			clean_pcache();
+			unset($Cache->functionality);
 		break;
 		case 'uninstall':
 			if ($module_data['active'] == -1 || $module == 'System' || $module == $Config->core['default_module']) {
@@ -178,6 +179,7 @@ if (isset($_POST['update_modules_list'])) {
 			$module_data			= ['active' => -1];
 			$a->save();
 			clean_pcache();
+			unset($Cache->functionality);
 		break;
 		case 'update':
 			/**
@@ -321,6 +323,7 @@ if (isset($_POST['update_modules_list'])) {
 				unset($Cache->languages);
 			}
 			$a->save();
+			unset($Cache->functionality);
 		break;
 		case 'update_system':
 			/**
@@ -510,7 +513,10 @@ if (isset($_POST['update_modules_list'])) {
 					'name'	=> $module
 				]
 			);
-			unset($Cache->languages);
+			unset(
+				$Cache->functionality,
+				$Cache->languages
+			);
 		break;
 		case 'disable':
 			$module_data['active'] = 0;
@@ -522,7 +528,10 @@ if (isset($_POST['update_modules_list'])) {
 					'name'	=> $module
 				]
 			);
-			unset($Cache->languages);
+			unset(
+				$Cache->functionality,
+				$Cache->languages
+			);
 		break;
 	}
 }

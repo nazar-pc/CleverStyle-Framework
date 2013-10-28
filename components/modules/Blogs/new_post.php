@@ -56,7 +56,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 				$id		= $Blogs->add($_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])), $draft);
 				if ($id) {
 					interface_off();
-					header('Location: '.$Config->base_url().'/'.$module.'/'.$Blogs->get($id)['path'].':'.$id);
+					header('Location: '.$Config->base_url()."/$module/".$Blogs->get($id)['path'].":$id");
 					return;
 				} else {
 					$Page->warning($L->post_adding_error);
@@ -72,17 +72,19 @@ $Index->buttons				= false;
 $Index->cancel_button_back	= true;
 $disabled					= [];
 $max_sections				= $Config->module('Blogs')->max_sections;
+$content					= uniqid('post_content');
+$Page->replace($content, isset($_POST['content']) ? $_POST['content'] : '');
 $Index->content(
 	h::{'p.lead.cs-center'}(
 		$L->new_post
 	).
 	h::{'div.cs-blogs-post-preview-content'}().
-	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}(
+	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd.cs-blogs-post-form tr| td'}(
 		[
 			$L->post_title,
-			h::{'input.cs-blogs-new-post-title[name=title][required]'}([
-				'value'		=> isset($_POST['title']) ? $_POST['title'] : false
-			])
+			h::{'h1.cs-blogs-new-post-title.TINY_INLINE_EDITOR'}(
+				isset($_POST['title']) ? $_POST['title'] : ''
+			)
 		],
 		[
 			$L->post_section,
@@ -99,8 +101,12 @@ $Index->content(
 		],
 		[
 			$L->post_content,
-			h::{'textarea.cs-blogs-new-post-content.EDITOR[name=content][required]'}(
-				isset($_POST['content']) ? $_POST['content'] : ''
+			(
+				functionality('inline_editor') ? h::{'div.cs-blogs-new-post-content.INLINE_EDITOR'}(
+					$content
+				) : h::{'textarea.cs-blogs-new-post-content.EDITOR[name=content][required]'}(
+					isset($_POST['content']) ? $_POST['content'] : ''
+				)
 			).
 			h::br().
 			$L->post_use_pagebreak

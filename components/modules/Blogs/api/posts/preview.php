@@ -60,7 +60,7 @@ if (isset($_POST['id'])) {
 }
 $module	= path($L->Blogs);
 $Page->json(
-	h::{'section.cs-blogs-post article'}(
+	h::{'section.cs-blogs-post[level=0] article[level=0]'}(
 		h::header(
 			h::h1(xap($_POST['title'])).
 			((array)$_POST['sections'] != [0] ? h::p(
