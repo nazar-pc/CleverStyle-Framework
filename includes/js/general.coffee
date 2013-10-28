@@ -46,7 +46,7 @@ $ ->
 				.autosize
 					append	: "\n"
 		->
-			$('.TINY_INLINE_EDITOR')
+			$('.SIMPLEST_INLINE_EDITOR')
 				.prop('contenteditable', true)
 		->
 			$('.cs-info').cs().tooltip()

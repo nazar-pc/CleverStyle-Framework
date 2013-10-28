@@ -101,7 +101,7 @@ $Index->content(
 	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd.cs-blogs-post-form.cs-blogs-post-form tr| td'}(
 		[
 			$L->post_title,
-			h::{'h1.cs-blogs-new-post-title.TINY_INLINE_EDITOR'}(
+			h::{'h1.cs-blogs-new-post-title.SIMPLEST_INLINE_EDITOR'}(
 				isset($_POST['title']) ? $_POST['title'] : $post['title']
 			)
 		],
