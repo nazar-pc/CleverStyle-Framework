@@ -10,7 +10,7 @@
 		"MySQLi"
 	],
 	"provide"		: "blogs",
-	"require"		: "System=>0.337",
+	"require"		: "System=>0.363",
 	"optional"		: [
 		"Comments",
 		"Plupload",
