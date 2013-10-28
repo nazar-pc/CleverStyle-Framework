@@ -7,11 +7,12 @@
  */
 namespace cs;
 /**
- * Provides next triggers:<br>
- *  System/Config/pre_routing_replace<br>
- *  ['rc'	=> <i>&$rc</i>]		//Reference to string with current route, this string can be changed<br>
- *  System/Config/routing_replace<br>
- *  ['rc'	=> <i>&$rc</i>]		//Reference to string with current route, this string can be changed<br>
+ * Provides next triggers:
+ *  System/Config/pre_routing_replace
+ *  ['rc'	=> <i>&$rc</i>]		//Reference to string with current route, this string can be changed
+ *
+ *  System/Config/routing_replace
+ *  ['rc'	=> <i>&$rc</i>]		//Reference to string with current route, this string can be changed
  *
  * @method static \cs\Config instance($check = false)
  */
@@ -91,7 +92,7 @@ class Config {
 			$this->load();
 		}
 		/**
-		 * Engine initialization with current configuration
+		 * System initialization with current configuration
 		 */
 		$this->init();
 		if (!file_exists(MODULES.'/'.$this->core['default_module'])) {
@@ -107,7 +108,7 @@ class Config {
 	 * Engine initialization (or reinitialization if necessary)
 	 */
 	protected function init() {
-		Language::instance()->init($this->core['language']);
+		Language::instance()->change($this->core['language']);
 		$Page	= Page::instance();
 		$Page->init(
 			get_core_ml_text('name'),

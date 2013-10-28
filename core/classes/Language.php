@@ -27,67 +27,12 @@ class Language implements JsonSerializable {
 	public		$clanguage,								//Current language
 				$time					= null;			//Closure for time processing
 	protected	$init					= false,		//For single initialization
-				$translate				= [],			//Local cache of translations
-				$need_to_rebuild_cache	= null;			//Necessity for cache rebuilding
+				$translate				= [];			//Local cache of translations
 	/**
 	 * Set basic language
 	 */
 	protected function construct () {
 		$this->change(Core::instance()->language);
-	}
-	/**
-	 * Initialization: defining current language, loading translation
-	 *
-	 * @param string	$language
-	 *
-	 * @return void
-	 */
-	function init ($language) {
-		if ($this->init) {
-			return;
-		}
-		$Config	= Config::instance();
-		if ($this->need_to_rebuild_cache) {
-			$this->change($this->need_to_rebuild_cache);
-			if (!empty($Config->components['modules'])) {
-				foreach ($Config->components['modules'] as $module => $mdata) {
-					if ($mdata['active'] != -1 && file_exists(MODULES."/$module/languages/$this->clanguage.json")) {
-						$this->translate	= array_merge(
-							$this->translate,
-							_json_decode_nocomments(file_get_contents(MODULES."/$module/languages/$this->clanguage.json")) ?: []
-						);
-					}
-				}
-				unset($module, $mdata);
-			}
-			if (!empty($Config->components['plugins'])) {
-				foreach ($Config->components['plugins'] as $plugin) {
-					if (file_exists(PLUGINS."/$plugin/languages/$this->clanguage.json")) {
-						$this->translate	= array_merge(
-							$this->translate,
-							_json_decode_nocomments(file_get_contents(PLUGINS."/$plugin/languages/$this->clanguage.json")) ?: []
-						);
-					}
-				}
-				unset($plugin);
-			}
-			Trigger::instance()->run(
-				'System/general/languages/load',
-				[
-					'clanguage'			=> $this->clanguage,
-					'clang'				=> $this->clang,
-					'cregion'			=> $this->cregion,
-					'clanguage_en'		=> $this->clanguage_en
-				]
-			);
-			Cache::instance()->{"languages/$this->clanguage"} = $this->translate;
-			$this->need_to_rebuild_cache = null;
-			$this->change($language);
-		}
-		if (!FIXED_LANGUAGE) {
-			$this->change($language);
-		}
-		$this->init = true;
 	}
 	/**
 	 * Scanning of aliases for defining of current language
@@ -202,11 +147,11 @@ class Language implements JsonSerializable {
 			return false;
 		}
 		$changed_once	= true;
-		if ($this->init && $language == $this->clanguage) {
+		if ($language == $this->clanguage) {
 			return true;
 		}
 		$Config			= Config::instance(true);
-		if (!$this->init || empty($language)) {
+		if (empty($language)) {
 			if ($Config && $Config->core['multilingual']) {
 				$language	= $this->scan_aliases($Config->core['active_languages']) ?: $language;
 			}
@@ -214,41 +159,74 @@ class Language implements JsonSerializable {
 		if (
 			!$Config ||
 			(
-				(
-					$Config->core['multilingual'] ||
-					!$this->init
-				) &&
+				$Config->core['multilingual'] &&
 				in_array($language, $Config->core['active_languages'])
 			)
 		) {
 			$this->clanguage	= $language;
 			$return 			= false;
-			if ($translate = Cache::instance()->{"languages/$this->clanguage"}) {
+			$Cache				= Cache::instance();
+			/**
+			 * If translations in cache
+			 */
+			if ($translate = $Cache->{"languages/$this->clanguage"}) {
 				$this->set($translate);
-				$return							= true;
+				$return	= true;
+			/**
+			 * Otherwise check for system translations
+			 */
 			} elseif (file_exists(LANGUAGES."/$this->clanguage.json")) {
-				$this->translate				= _json_decode_nocomments(file_get_contents(LANGUAGES."/$this->clanguage.json"));
-				$this->translate['clanguage']	= $this->clanguage;
-				if (!isset($this->translate['clang'])) {
-					$this->translate['clang']		= mb_strtolower(mb_substr($this->clanguage, 0, 2));
+				/**
+				 * Set system translations
+				 */
+				$this->set(_json_decode_nocomments(file_get_contents(LANGUAGES."/$this->clanguage.json")));
+				$translate				= &$this->translate;
+				$translate['clanguage']	= $this->clanguage;
+				if (!isset($translate['clang'])) {
+					$translate['clang']			= mb_strtolower(mb_substr($this->clanguage, 0, 2));
 				}
-				if (!isset($this->translate['clanguage_en'])) {
-					$this->translate['clanguage_en']	= $this->clanguage;
+				if (!isset($translate['clanguage_en'])) {
+					$translate['clanguage_en']	= $this->clanguage;
 				}
-				if (!isset($this->translate['locale'])) {
-					$this->translate['locale']			= $this->clang.'_'.strtoupper($this->clang);
+				if (!isset($translate['locale'])) {
+					$translate['locale']		= $this->clang.'_'.strtoupper($this->clang);
 				}
-				$this->need_to_rebuild_cache	= $this->clanguage;
-				if ($this->init) {
-					$this->init	= false;
-					$this->init($Config->core['active_languages'], $language);
+				/**
+				 * Set modules' translations
+				 */
+				foreach (get_files_list(MODULES, false, 'd') as $module) {
+					if (file_exists(MODULES."/$module/languages/$this->clanguage.json")) {
+						$this->set(
+							_json_decode_nocomments(file_get_contents(MODULES."/$module/languages/$this->clanguage.json")) ?: []
+						);
+					}
 				}
-				$return							= true;
+				unset($module);
+				/**
+				 * Set plugins' translations
+				 */
+				foreach (get_files_list(PLUGINS, false, 'd') as $plugin) {
+					if (file_exists(PLUGINS."/$plugin/languages/$this->clanguage.json")) {
+						$this->set(
+							_json_decode_nocomments(file_get_contents(PLUGINS."/$plugin/languages/$this->clanguage.json")) ?: []
+						);
+					}
+				}
+				unset($plugin);
+				Trigger::instance()->run(
+					'System/general/languages/load',
+					[
+						'clanguage'			=> $this->clanguage,
+						'clang'				=> $this->clang,
+						'cregion'			=> $this->cregion,
+						'clanguage_en'		=> $this->clanguage_en
+					]
+				);
+				$Cache->{"languages/$this->clanguage"} = $translate;
+				$return	= true;
 			}
-			if (_include(LANGUAGES."/$this->clanguage.php", false, false)) {
-				$return							= true;
-			}
-			header('Content-Language: '.$this->translate['content_language']);
+			_include(LANGUAGES."/$this->clanguage.php", false, false);
+			header("Content-Language: $translate[content_language]");
 			return $return;
 		}
 		return false;

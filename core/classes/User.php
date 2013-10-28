@@ -6,7 +6,7 @@
  * @license		MIT License, see license.txt
  */
 /**
- * Provides next triggers:<br>
+ * Provides next triggers:
  *  System/User/construct/before
  *
  *  System/User/construct/after
@@ -266,7 +266,7 @@ class User extends Accessor {
 			if ($this->timezone && date_default_timezone_get() != $this->timezone) {
 				date_default_timezone_set($this->timezone);
 			}
-			if ($Config->core['multilingual'] && $this->language) {
+			if ($Config->core['multilingual']) {
 				Language::instance()->change($this->language);
 			}
 			if ($this->theme) {
