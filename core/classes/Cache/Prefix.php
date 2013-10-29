@@ -12,7 +12,6 @@ use			cs\Cache,
  * Class for simplified work with cache, when using common prefix
  */
 class Prefix {
-
 	protected	$prefix;
 	/**
 	 * Initialization with some prefix

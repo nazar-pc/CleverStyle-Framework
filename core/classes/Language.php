@@ -271,24 +271,24 @@ class Language implements JsonSerializable {
 	 * Allows to use formatted strings in translations
 	 *
 	 * @see format()
-	 * @param string	$name
+	 * @param string	$item
 	 * @param array		$arguments
 	 *
 	 * @return string
 	 */
-	function __call ($name, $arguments) {
-		return $this->format($name, $arguments);
+	function __call ($item, $arguments) {
+		return $this->format($item, $arguments);
 	}
 	/**
 	 * Allows to use formatted strings in translations
 	 *
-	 * @param string	$name
+	 * @param string	$item
 	 * @param string[]	$arguments
 	 *
 	 * @return string
 	 */
-	function format ($name, $arguments) {
-		return vsprintf($this->get($name), $arguments);
+	function format ($item, $arguments) {
+		return vsprintf($this->get($item), $arguments);
 	}
 	/**
 	 * Formatting data according to language locale (translating months names, days of week, etc.)
