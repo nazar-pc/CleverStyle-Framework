@@ -150,11 +150,7 @@ class Key {
 		}
 		$key = $database->s($key);
 		return $database->q(
-			"UPDATE `[prefix]keys`
-			SET
-				`expire`	= 0,
-				`data`		= null,
-				`key`		= null
+			"DELETE FROM `[prefix]keys`
 			WHERE
 				(
 					`id`	= '$key' OR

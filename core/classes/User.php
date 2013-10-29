@@ -1261,10 +1261,7 @@ class User extends Accessor {
 		$this->current['session'] = false;
 		_setcookie('session', '');
 		$result =  $this->db_prime()->q(
-			"UPDATE `[prefix]sessions`
-			SET
-				`expire`	= 0,
-				`data`		= ''
+			"DELETE FROM `[prefix]sessions`
 			WHERE `id` = '%s'
 			LIMIT 1",
 			$session_id
@@ -1298,16 +1295,14 @@ class User extends Accessor {
 			foreach ($sessions as $session) {
 				unset($this->cache->{"sessions/$session"});
 			}
-			unset($sessions, $session);
+			unset($session);
+			$sessions	= implode(',', $sessions);
+			return $this->db_prime()->q(
+				"DELETE FROM `[prefix]sessions`
+				WHERE `id` IN($sessions)"
+			);
 		}
-		$result		= $this->db_prime()->q(
-			"UPDATE `[prefix]sessions`
-			SET
-				`expire`	= 0,
-				`data`		= ''
-			WHERE `user` = '$user'"
-		);
-		return $result;
+		return true;
 	}
 	/**
 	 * Get data, stored with session
@@ -1458,8 +1453,7 @@ class User extends Accessor {
 		$time	= TIME;
 		if ($success) {
 			$this->db_prime()->q(
-				"UPDATE `[prefix]sign_ins`
-				SET `expire` = 0
+				"DELETE FROM `[prefix]sign_ins`
 				WHERE
 					`expire` > $time AND
 					(
@@ -1582,18 +1576,6 @@ class User extends Accessor {
 			}
 			if (!$confirmation && $auto_sign_in && $Config->core['auto_sign_in_after_registration']) {
 				$this->add_session($this->reg_id);
-			}
-			if ($this->reg_id % $Config->core['inserts_limit'] == 0) {
-				$this->db_prime()->aq(
-					"DELETE FROM `[prefix]users`
-					WHERE
-						`login_hash`	= '' AND
-						`email_hash`	= '' AND
-						`password_hash`	= '' AND
-						`status`		= '-1' AND
-						`id`			!= 1 AND
-						`id`			!= 2"
-				);
 			}
 			if (!Trigger::instance()->run(
 				'System/User/registration/after',
@@ -1804,19 +1786,7 @@ class User extends Accessor {
 			}
 			$user = implode(',', $user);
 			$this->db_prime()->q(
-				"UPDATE `[prefix]users`
-				SET
-					`login`			= null,
-					`login_hash`	= null,
-					`username`		= 'deleted',
-					`password_hash`	= null,
-					`email`			= null,
-					`email_hash`	= null,
-					`reg_date`		= 0,
-					`reg_ip`		= null,
-					`reg_key`		= null,
-					`status`		= '-1',
-					`data`			= ''
+				"DELETE FROM `[prefix]users`
 				WHERE `id` IN ($user)"
 			);
 			unset($Cache->{'/'});
@@ -1834,18 +1804,7 @@ class User extends Accessor {
 				$Cache->$user
 			);
 			$this->db_prime()->q(
-				"UPDATE `[prefix]users`
-				SET
-					`login`			= null,
-					`login_hash`	= null,
-					`username`		= 'deleted',
-					`password_hash`	= null,
-					`email`			= null,
-					`email_hash`	= null,
-					`reg_date`		= 0,
-					`reg_ip`		= null,
-					`reg_key`		= null,
-					`status`		= '-1'
+				"DELETE FROM `[prefix]users`
 				WHERE `id` = $user
 				LIMIT 1"
 			);

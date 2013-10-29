@@ -231,19 +231,6 @@ class Text {
 				);
 				return $text;
 			}
-			/**
-			 * Clean up old texts
-			 */
-			if ($id && $id % Config::instance()->core['inserts_limit'] == 0) {
-				$db_object->aq([
-					"DELETE FROM `[prefix]texts`
-					WHERE
-						`label`	= '' AND
-						`group`	= ''",
-					"DELETE FROM `[prefix]texts_data`
-					WHERE `lang` = ''"
-				]);
-			}
 			if ($id) {
 				return '{¶'.$id.'}';
 			} else {
@@ -280,15 +267,9 @@ class Text {
 			unset($Cache->{'texts/'.$database.'/'.$id.'_'.$L->clang});
 			return $db->$database()->q(
 				[
-					"UPDATE `[prefix]texts`
-					SET
-						`label`	= '',
-						`group`	= ''
+					"DELETE FROM `[prefix]texts`
 					WHERE `id` = '%s'",
-					"UPDATE `[prefix]texts_data`
-					SET
-						`lang`	= '',
-						`text`	= ''
+					"DELETE FROM `[prefix]texts_data`
 					WHERE `id` = '%s'"
 				],
 				$id
