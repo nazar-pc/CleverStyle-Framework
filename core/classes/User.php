@@ -68,7 +68,7 @@ use			cs\Cache\Prefix,
  * @property	string	$reg_key		random md5 hash, generated during registration
  * @property	int		$status			'-1' - not activated (for example after registration), 0 - inactive, 1 - active
  * @property	int		$block_until	unix timestamp
- * @property	int		$last_login		unix timestamp
+ * @property	int		$last_sign_in		unix timestamp
  * @property	string	$last_ip		hex value, obtained by function ip2hex()
  * @property	int		$last_online	unix timestamp
  * @property	string	$avatar
@@ -131,8 +131,8 @@ class User extends Accessor {
 		if (
 			$this->user_agent == 'CleverStyle CMS' &&
 			(
-				($this->login_attempts(hash('sha224', 0)) < $Config->core['login_attempts_block_count']) ||
-				$Config->core['login_attempts_block_count'] == 0
+				($this->get_sign_in_attempts_count(hash('sha224', 0)) < $Config->core['sign_in_attempts_block_count']) ||
+				$Config->core['sign_in_attempts_block_count'] == 0
 			) &&
 			count($rc) > 1 &&
 			(
@@ -155,7 +155,7 @@ class User extends Accessor {
 				/**
 				 * Simulate a bad sign in to block access
 				 */
-				$this->login_result(false, hash('sha224', 'system'));
+				$this->sign_in_result(false, hash('sha224', 'system'));
 				unset($_POST['data']);
 				sleep(1);
 			}
@@ -954,7 +954,7 @@ class User extends Accessor {
 		return $this->current['session'];
 	}
 	/**
-	 * Find the session by id as applies it, and return id of owner (user), updates last_login, last_ip and last_online information
+	 * Find the session by id as applies it, and return id of owner (user), updates last_sign_in, last_ip and last_online information
 	 *
 	 * @param null|string	$session_id
 	 *
@@ -1023,7 +1023,7 @@ class User extends Accessor {
 		 */
 		if ($result['user'] != 0 && $this->get('last_online', $result['user']) < TIME - $Config->core['online_time'] * $Config->core['update_ratio'] / 100) {
 			/**
-			 * Updating last login time and ip
+			 * Updating last sign in time and ip
 			 */
 			$time	= TIME;
 			if ($this->get('last_online', $result['user']) < TIME - $Config->core['online_time']) {
@@ -1031,13 +1031,13 @@ class User extends Accessor {
 				$update[]	= "
 					UPDATE `[prefix]users`
 					SET
-						`last_login`	= $time,
+						`last_sign_in`	= $time,
 						`last_ip`		= '$ip',
 						`last_online`	= $time
 					WHERE `id` =$result[user]";
 				$this->set(
 					[
-						'last_login'	=> TIME,
+						'last_sign_in'	=> TIME,
 						'last_ip'		=> $ip,
 						'last_online'	=> TIME
 					],
@@ -1198,7 +1198,7 @@ class User extends Accessor {
 			);
 			$time								= TIME;
 			if ($user != 1) {
-				$this->db_prime()->q("UPDATE `[prefix]users` SET `last_login` = $time, `last_online` = $time, `last_ip` = '$ip.' WHERE `id` ='$user'");
+				$this->db_prime()->q("UPDATE `[prefix]users` SET `last_sign_in` = $time, `last_online` = $time, `last_ip` = '$ip.' WHERE `id` ='$user'");
 			}
 			$this->current['session']			= $hash;
 			$this->cache->{"sessions/$hash"}	= [
@@ -1419,13 +1419,13 @@ class User extends Accessor {
 		return false;
 	}
 	/**
-	 * Check number of login attempts (is used by system)
+	 * Check number of sign in attempts (is used by system)
 	 *
 	 * @param bool|string	$login_hash	Hash (sha224) from login (hash from lowercase string)
 	 *
 	 * @return int						Number of attempts
 	 */
-	function login_attempts ($login_hash = false) {
+	function get_sign_in_attempts_count ($login_hash = false) {
 		$login_hash = $login_hash ?: (isset($_POST['login']) ? $_POST['login'] : false);
 		if (!preg_match('/^[0-9a-z]{56}$/', $login_hash)) {
 			return false;
@@ -1433,7 +1433,7 @@ class User extends Accessor {
 		$time	= TIME;
 		return $this->db()->qfs([
 			"SELECT COUNT(`expire`)
-			FROM `[prefix]logins`
+			FROM `[prefix]sign_ins`
 			WHERE
 				`expire` > $time AND
 				(
@@ -1444,12 +1444,12 @@ class User extends Accessor {
 		]);
 	}
 	/**
-	 * Process login result (is used by system)
+	 * Process sign in result (is used by system)
 	 *
 	 * @param bool $success
 	 * @param bool|string	$login_hash	Hash (sha224) from login (hash from lowercase string)
 	 */
-	function login_result ($success, $login_hash = false) {
+	function sign_in_result ($success, $login_hash = false) {
 		$login_hash = $login_hash ?: (isset($_POST['login']) ? $_POST['login'] : false);
 		if (!preg_match('/^[0-9a-z]{56}$/', $login_hash)) {
 			return;
@@ -1458,7 +1458,7 @@ class User extends Accessor {
 		$time	= TIME;
 		if ($success) {
 			$this->db_prime()->q(
-				"UPDATE `[prefix]logins`
+				"UPDATE `[prefix]sign_ins`
 				SET `expire` = 0
 				WHERE
 					`expire` > $time AND
@@ -1471,7 +1471,7 @@ class User extends Accessor {
 		} else {
 			$Config	= Config::instance();
 			$this->db_prime()->q(
-				"INSERT INTO `[prefix]logins`
+				"INSERT INTO `[prefix]sign_ins`
 					(
 						`expire`,
 						`login_hash`,
@@ -1481,12 +1481,12 @@ class User extends Accessor {
 						'%s',
 						'%s'
 					)",
-				TIME + $Config->core['login_attempts_block_time'],
+				TIME + $Config->core['sign_in_attempts_block_time'],
 				$login_hash,
 				$ip
 			);
 			if ($this->db_prime()->id() % $Config->core['inserts_limit'] == 0) {
-				$this->db_prime()->aq("DELETE FROM `[prefix]logins` WHERE `expire` < $time");
+				$this->db_prime()->aq("DELETE FROM `[prefix]sign_ins` WHERE `expire` < $time");
 			}
 		}
 	}
@@ -1497,7 +1497,7 @@ class User extends Accessor {
 	 * @param bool					$confirmation	If <b>true</b> - default system option is used, if <b>false</b> - registration will be
 	 *												finished without necessity of confirmation, independently from default system option
 	 *												(is used for manual registration).
-	 * @param bool					$autologin		If <b>false</b> - no autologin, if <b>true</b> - according to system configuration
+	 * @param bool					$auto_sign_in	If <b>false</b> - no auto sign in, if <b>true</b> - according to system configuration
 	 *
 	 * @return array|bool|string					<b>exists</b>	- if user with such email is already registered<br>
 	 * 												<b>error</b>	- if error occurred<br>
@@ -1509,7 +1509,7 @@ class User extends Accessor {
 	 * 												&nbsp;<b>'id'		=> *</b>	//Id of registered user in DB<br>
 	 * 												<b>)</b>
 	 */
-	function registration ($email, $confirmation = true, $autologin = true) {
+	function registration ($email, $confirmation = true, $auto_sign_in = true) {
 		$email			= mb_strtolower($email);
 		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			return false;
@@ -1580,7 +1580,7 @@ class User extends Accessor {
 			if (!$confirmation) {
 				$this->set_groups([2], $this->reg_id);
 			}
-			if (!$confirmation && $autologin && $Config->core['autologin_after_registration']) {
+			if (!$confirmation && $auto_sign_in && $Config->core['auto_sign_in_after_registration']) {
 				$this->add_session($this->reg_id);
 			}
 			if ($this->reg_id % $Config->core['inserts_limit'] == 0) {
@@ -1701,7 +1701,7 @@ class User extends Accessor {
 			"SELECT `id`
 			FROM `[prefix]users`
 			WHERE
-				`last_login`	= 0 AND
+				`last_sign_in`	= 0 AND
 				`status`		= '-1' AND
 				`reg_date`		< $reg_date"
 		);

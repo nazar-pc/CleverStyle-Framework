@@ -276,18 +276,18 @@
   };
 
   /**
-   * Login into system
+   * Sign in into system
    *
    * @param {string} login
    * @param {string} password
   */
 
 
-  cs.login = function(login, password) {
+  cs.sign_in = function(login, password) {
     login = String(login).toLowerCase();
     password = String(password);
     return $.ajax({
-      url: 'api/System/user/login',
+      url: 'api/System/user/sign_in',
       cache: false,
       data: {
         login: cs.hash('sha224', login)
@@ -295,7 +295,7 @@
       type: 'post',
       success: function(random_hash) {
         if (random_hash.length === 56) {
-          return $.ajax('api/user/login', {
+          return $.ajax('api/user/sign_in', {
             cache: false,
             data: {
               login: cs.hash('sha224', login),
@@ -330,13 +330,13 @@
   };
 
   /**
-   * Logout
+   * Sign out
   */
 
 
-  cs.logout = function() {
+  cs.sign_out = function() {
     return $.ajax({
-      url: 'api/System/user/logout',
+      url: 'api/System/user/sign_out',
       cache: false,
       data: {
         logout: true

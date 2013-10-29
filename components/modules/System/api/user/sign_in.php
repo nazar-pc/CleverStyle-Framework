@@ -26,10 +26,10 @@ if (!(
 } elseif (!$User->guest()) {
 	$Page->json('reload');
 	return;
-} elseif ($Config->core['login_attempts_block_count'] && $User->login_attempts() >= $Config->core['login_attempts_block_count']) {
-	$User->login_result(false);
+} elseif ($Config->core['sign_in_attempts_block_count'] && $User->get_sign_in_attempts_count() >= $Config->core['sign_in_attempts_block_count']) {
+	$User->sign_in_result(false);
 	error_code(403);
-	$Page->error($L->login_attempts_ends_try_after.' '.format_time($Config->core['login_attempts_block_time']));
+	$Page->error($L->sign_in_attempts_ends_try_after.' '.format_time($Config->core['sign_in_attempts_block_time']));
 	sleep(1);
 	return;
 }
@@ -91,37 +91,37 @@ if (
 	);
 	if ($_POST['auth_hash'] == $auth_hash) {
 		$User->add_session($key_data['id']);
-		$User->login_result(true);
+		$User->sign_in_result(true);
 		$Page->json('reload');
 	} else {
-		$User->login_result(false);
+		$User->sign_in_result(false);
 		error_code(400);
-		$content	= $L->auth_error_login;
+		$content	= $L->auth_error_sign_in;
 		if (
-			$Config->core['login_attempts_block_count'] &&
-			$User->login_attempts() >= floor($Config->core['login_attempts_block_count'] * 2 / 3)
+			$Config->core['sign_in_attempts_block_count'] &&
+			$User->get_sign_in_attempts_count() >= floor($Config->core['sign_in_attempts_block_count'] * 2 / 3)
 		) {
-			$content	.= ' '.$L->login_attempts_left.' '.($Config->core['login_attempts_block_count'] - $User->login_attempts());
+			$content	.= ' '.$L->sign_in_attempts_left.' '.($Config->core['sign_in_attempts_block_count'] - $User->get_sign_in_attempts_count());
 			sleep(1);
-		} elseif (!$Config->core['login_attempts_block_count']) {
-			sleep($User->login_attempts()*0.5);
+		} elseif (!$Config->core['sign_in_attempts_block_count']) {
+			sleep($User->get_sign_in_attempts_count()*0.5);
 		}
 		$Page->error($content);
 		unset($content);
 	}
 	unset($key_data, $auth_hash);
 } else {
-	$User->login_result(false);
+	$User->sign_in_result(false);
 	error_code(400);
-	$content	= $L->auth_error_login;
+	$content	= $L->auth_error_sign_in;
 	if (
-		$Config->core['login_attempts_block_count'] &&
-		$User->login_attempts() >= $Config->core['login_attempts_block_count'] * 2 / 3
+		$Config->core['sign_in_attempts_block_count'] &&
+		$User->get_sign_in_attempts_count() >= $Config->core['sign_in_attempts_block_count'] * 2 / 3
 	) {
-		$content	.= ' '.$L->login_attempts_left.' '.($Config->core['login_attempts_block_count'] - $User->login_attempts());
+		$content	.= ' '.$L->sign_in_attempts_left.' '.($Config->core['sign_in_attempts_block_count'] - $User->get_sign_in_attempts_count());
 		sleep(1);
-	} elseif (!$Config->core['login_attempts_block_count'] && $User->login_attempts() > 3) {
-		sleep($User->login_attempts()*0.5);
+	} elseif (!$Config->core['sign_in_attempts_block_count'] && $User->get_sign_in_attempts_count() > 3) {
+		sleep($User->get_sign_in_attempts_count()*0.5);
 	}
 	$Page->error($content);
 	unset($content);

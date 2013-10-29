@@ -18,7 +18,7 @@ use			h,
 			cs\Trigger,
 			cs\User;
 Trigger::instance()->register(
-	'System/Page/external_login_list',
+	'System/Page/external_sign_in_list',
 	function ($data) {
 		$Config			= Config::instance();
 		$Page			= Page::instance();
@@ -68,7 +68,7 @@ Trigger::instance()->register(
 		};
 		$data['list']	= h::{'ul.cs-hybrid-auth-providers-list li'}(
 			[
-				$L->or_login_with,
+				$L->or_sign_in_with,
 				[
 					'class'	=> 'uk-nav-header'
 				]

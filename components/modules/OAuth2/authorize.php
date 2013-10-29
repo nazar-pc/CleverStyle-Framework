@@ -8,7 +8,7 @@
  */
 /**
  * Provides next triggers:<br>
- *  OAuth2/custom_login_page
+ *  OAuth2/custom_sign_in_page
  */
 namespace	cs\modules\OAuth2;
 use			h,
@@ -143,7 +143,7 @@ $User			= User::instance();
 if (!$User->user()) {
 	if ($_GET['response_type'] != 'guest_token') {
 		code_header(403);
-		if (Trigger::instance()->run('OAuth2/custom_login_page')) {
+		if (Trigger::instance()->run('OAuth2/custom_sign_in_page')) {
 			$Page->Content	= '';
 			$Page->warning($L->you_are_not_logged_in);
 		}

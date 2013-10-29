@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]keys` (
   KEY `expire` (`expire`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Temporary keys';
 
-CREATE TABLE IF NOT EXISTS `[prefix]logins` (
+CREATE TABLE IF NOT EXISTS `[prefix]sign_ins` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `expire` bigint(20) NOT NULL,
   `login_hash` varchar(56) NOT NULL,
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]users` (
   `reg_key` varchar(32) NOT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '-1' COMMENT '''-1'' - not activated (for example after registration), 0 - inactive, 1 - active',
   `block_until` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `last_login` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `last_sign_in` bigint(20) unsigned NOT NULL DEFAULT '0',
   `last_ip` varchar(32) NOT NULL COMMENT 'hex value, obtained by function ip2hex()',
   `last_online` bigint(20) unsigned NOT NULL DEFAULT '0',
   `avatar` varchar(255) NOT NULL,
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]users` (
   KEY `email_hash` (`email_hash`(5)),
   KEY `language` (`language`(3)),
   KEY `status` (`status`),
-  KEY `last_login` (`last_login`),
+  KEY `last_sign_in` (`last_sign_in`),
   KEY `last_online` (`last_online`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 

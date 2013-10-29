@@ -213,16 +213,16 @@ cs.getcookie				= (name) ->
 	name	= cs.cookie_prefix + name
 	$.cookie(name)
 ###*
- * Login into system
+ * Sign in into system
  *
  * @param {string} login
  * @param {string} password
 ###
-cs.login					= (login, password) ->
+cs.sign_in					= (login, password) ->
 	login		= String(login).toLowerCase()
 	password	= String(password)
 	$.ajax
-		url		: 'api/System/user/login'
+		url		: 'api/System/user/sign_in'
 		cache	: false
 		data	:
 			login: cs.hash('sha224', login)
@@ -230,7 +230,7 @@ cs.login					= (login, password) ->
 		success	: (random_hash) ->
 			if random_hash.length == 56
 				$.ajax(
-					'api/user/login'
+					'api/user/sign_in'
 						cache	: false
 						data	:
 							login		: cs.hash('sha224', login)
@@ -256,11 +256,11 @@ cs.login					= (login, password) ->
 			else
 				alert(L.auth_connection_error)
 ###*
- * Logout
+ * Sign out
 ###
-cs.logout					= ->
+cs.sign_out					= ->
 	$.ajax
-		url		: 'api/System/user/logout'
+		url		: 'api/System/user/sign_out'
 		cache	: false
 		data	:
 			logout: true

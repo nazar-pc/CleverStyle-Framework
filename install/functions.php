@@ -168,8 +168,8 @@ function install_process () {
 		"key_expire": "120",
 		"session_expire": "2592000",
 		"update_ratio": "75",
-		"login_attempts_block_count": "0",
-		"login_attempts_block_time": "5",
+		"sign_in_attempts_block_count": "0",
+		"sign_in_attempts_block_time": "5",
 		"cookie_prefix": "",
 		"timezone": "",
 		"password_min_length": "4",
@@ -184,7 +184,7 @@ function install_process () {
 		"mail_from_name": "",
 		"allow_user_registration": "1",
 		"require_registration_confirmation": "1",
-		"autologin_after_registration": "1",
+		"auto_sign_in_after_registration": "1",
 		"registration_confirmation_time": "1",
 		"mail_signature": "",
 		"mail_from": "",
@@ -416,7 +416,7 @@ function install_process () {
 	).
 	h::{'table tr| td'}(
 		[
-			'Your login information:',
+			'Your sign in information:',
 			[
 				'colspan'	=> 2
 			]

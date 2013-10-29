@@ -1,7 +1,7 @@
 {
 	"user"		: [
-		"login",
-		"logout",
+		"sign_in",
+		"sign_out",
 		"registration",
 		"change_password",
 		"restore_password",

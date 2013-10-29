@@ -19,20 +19,20 @@ Index::instance()->content(
 		core_input('session_expire', 'number', null, false, 1, false, $L->seconds),
 		core_input('online_time', 'number', null, false, 1, false, $L->seconds),
 		[
-			h::info('login_attempts_block_count'),
+			h::info('sign_in_attempts_block_count'),
 			h::{'input[type=number]'}([
-				'name'		=> 'core[login_attempts_block_count]',
-				'value'		=> $Config->core['login_attempts_block_count'],
+				'name'		=> 'core[sign_in_attempts_block_count]',
+				'value'		=> $Config->core['sign_in_attempts_block_count'],
 				'min'		=> 0,
-				'onClick'	=> "if ($(this).val() == 0) { $('.cs-login-attempts-block-count').hide(); } else { $('.cs-login-attempts-block-count').show(); }",
-				'onChange'	=> "if ($(this).val() == 0) { $('.cs-login-attempts-block-count').hide(); } else { $('.cs-login-attempts-block-count').show(); }"
+				'onClick'	=> "if ($(this).val() == 0) { $('.cs-sign-in-attempts-block-count').hide(); } else { $('.cs-sign-in-attempts-block-count').show(); }",
+				'onChange'	=> "if ($(this).val() == 0) { $('.cs-sign-in-attempts-block-count').hide(); } else { $('.cs-sign-in-attempts-block-count').show(); }"
 			])
 		],
 		[
-			core_input('login_attempts_block_time', 'number', null, false, 1, false, $L->seconds),
+			core_input('sign_in_attempts_block_time', 'number', null, false, 1, false, $L->seconds),
 			[
-				'style'	=> $Config->core['login_attempts_block_count'] == 0 ? 'display: none;' : '',
-				'class'	=> 'cs-login-attempts-block-count'
+				'style'	=> $Config->core['sign_in_attempts_block_count'] == 0 ? 'display: none;' : '',
+				'class'	=> 'cs-sign-in-attempts-block-count'
 			]
 		],
 		core_input('remember_user_ip', 'radio'),
@@ -79,7 +79,7 @@ Index::instance()->content(
 			]
 		],
 		[
-			core_input('autologin_after_registration', 'radio'),
+			core_input('auto_sign_in_after_registration', 'radio'),
 			[
 				'style'	=>	$Config->core['allow_user_registration'] == 1 && $Config->core['require_registration_confirmation'] == 1 ? '' : 'display: none;',
 				'class'	=> 'cs-allow-user-registration cs-require-registration-confirmation'

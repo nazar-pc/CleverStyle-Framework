@@ -53,28 +53,28 @@ $ ->
 		->
 			$('.cs-tabs').cs().tabs()
 		->
-			$('.cs-header-login-slide').click ->
+			$('.cs-header-sign-in-slide').click ->
 				$('.cs-header-guest-form').hide('medium')
-				$('.cs-header-login-form').show('medium')
-				$('.cs-header-login-email').focus()
+				$('.cs-header-sign-in-form').show('medium')
+				$('.cs-header-sign-in-email').focus()
 			$('.cs-header-registration-slide').click ->
 				$('.cs-header-guest-form').hide('medium')
 				$('.cs-header-registration-form').show('medium')
 				$('.cs-header-registration-email').focus()
 			$('.cs-header-restore-password-slide').click ->
-				$('.cs-header-login-form, .cs-header-registration-form').hide('medium')
+				$('.cs-header-sign-in-form, .cs-header-registration-form').hide('medium')
 				$('.cs-header-restore-password-form').show('medium')
 				$('.cs-header-restore-password-email').focus()
-			$('.cs-header-login-email, .cs-header-user-password').keyup (event) ->
+			$('.cs-header-sign-in-email, .cs-header-user-password').keyup (event) ->
 				if event.which == 13
-					$('.cs-header-login-process').click()
+					$('.cs-header-sign-in-process').click()
 			$('.cs-header-registration-email').keyup (event) ->
 				if event.which == 13
 					$('.cs-header-registration-process').click()
-			$('.cs-header-login-process').click ->
-				cs.login($('.cs-header-login-email').val(), $('.cs-header-user-password').val())
+			$('.cs-header-sign-in-process').click ->
+				cs.sign_in($('.cs-header-sign-in-email').val(), $('.cs-header-user-password').val())
 			$('.cs-header-logout-process').click ->
-				cs.logout()
+				cs.sign_out()
 			$('.cs-show-password').click ->
 				$this	= $(this)
 				pass_input = $this
@@ -150,7 +150,7 @@ $ ->
 				cs.change_password $('.cs-profile-current-password').val(), $('.cs-profile-new-password').val()
 			$('.cs-header-back').click ->
 				$('.cs-header-guest-form').show('medium')
-				$('.cs-header-registration-form, .cs-header-login-form, .cs-header-restore-password-form').hide('medium')
+				$('.cs-header-registration-form, .cs-header-sign-in-form, .cs-header-restore-password-form').hide('medium')
 		->
 			if cs.in_admin
 				$('.cs-reload-button').click ->

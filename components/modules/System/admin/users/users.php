@@ -141,7 +141,7 @@ if (isset($rc[2], $rc[3])) {
 						'reg_ip',
 						'status',
 						'block_until',
-						'last_login',
+						'last_sign_in',
 						'last_ip',
 						'last_online',
 						'avatar'
@@ -176,7 +176,7 @@ if (isset($rc[2], $rc[3])) {
 						row('id', $rc[3]),
 						row($L->registration_date, $user_data['reg_date'] ? date($L->_date, $user_data['reg_date']) : $L->undefined),
 						row($L->registration_ip, $reg_ip[0] ? $reg_ip[0].($reg_ip[1] ? h::br().$reg_ip[1] : '') : $L->undefined),
-						row($L->last_login, $user_data['last_login'] ? date($L->_datetime, $user_data['last_login']) : $L->undefined),
+						row($L->last_sign_in, $user_data['last_sign_in'] ? date($L->_datetime, $user_data['last_sign_in']) : $L->undefined),
 						row($L->last_ip, $last_ip[0] ? $last_ip[0].($last_ip[1] ? h::br().$last_ip[1] : '') : $L->undefined),
 						row($L->last_online, $user_data['last_online'] ? date($L->_datetime, $user_data['last_online']) : $L->undefined),
 						row($L->login, h::input([

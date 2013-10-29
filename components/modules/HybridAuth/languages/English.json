@@ -2,7 +2,7 @@
 	"provider"									: "Provider",
 	"providers_list"							: "Providers list",
 	"submit"									: "Submit",
-	"or_login_with"								: "Or login with",
+	"or_sign_in_with"							: "Or sign in with",
 	"Vkontakte"									: "VK",
 	"Odnoclassniki"								: "Odnoclassniki",
 	"hybridauth_merge_confirmation"				: "Account with such email already registered, check your email, after confirmation we'll attach this account to your main account.",

@@ -13,8 +13,8 @@ use			h;
  *  System/Page/get_header_info
  *  System/Page/rebuild_cache
  *  ['key'	=> &$key]		//Reference to the key, that will be appended to all css and js files, can be changed to reflect JavaScript and CSS changes
- *  System/Page/external_login_list
- *  ['list'	=> &$list]		//Reference to the list of external login systems
+ *  System/Page/external_sign_in_list
+ *  ['list'	=> &$list]		//Reference to the list of external sign in systems
  *
  * @method static \cs\Page instance($check = false)
  */
@@ -1176,7 +1176,7 @@ class Page {
 		exit;
 	}
 	/**
-	 * Substitutes header information about user, login/registration forms, etc.
+	 * Substitutes header information about user, sign in/sign up forms, etc.
 	 *
 	 * @return Page
 	 */
@@ -1192,7 +1192,7 @@ class Page {
 						'power-off',
 						[
 							'style'			=> 'cursor: pointer;',
-							'data-title'	=> $L->log_out
+							'data-title'	=> $L->sign_out
 						]
 					)
 				).
@@ -1217,7 +1217,7 @@ class Page {
 		} else {
 			$external_systems_list		= '';
 			Trigger::instance()->run(
-				'System/Page/external_login_list',
+				'System/Page/external_sign_in_list',
 				[
 					'list'	=> &$external_systems_list
 				]
@@ -1225,9 +1225,9 @@ class Page {
 			$this->header_info			= h::{'div.cs-header-guest-form'}(
 				h::b("$L->hello, $L->guest!").
 				h::div(
-					h::{'button.cs-header-login-slide.cs-button-compact.uk-icon-signin'}($L->log_in).
+					h::{'button.cs-header-sign-in-slide.cs-button-compact.uk-icon-signin'}($L->sign_in).
 					h::{'button.cs-header-registration-slide.cs-button-compact.uk-icon-pencil'}(
-						$L->registration,
+						$L->sign_up,
 						[
 							'data-title'	=> $L->quick_registration_form
 						]
@@ -1259,7 +1259,7 @@ class Page {
 					'autocorrect'		=> 'off'
 				]).
 				h::br().
-				h::{'button.cs-header-registration-process.cs-button-compact.uk-icon-pencil[tabindex=2]'}($L->registration).
+				h::{'button.cs-header-registration-process.cs-button-compact.uk-icon-pencil[tabindex=2]'}($L->sign_up).
 				h::{'button.cs-button-compact.cs-header-back[tabindex=4]'}(
 					h::icon('chevron-down'),
 					[
@@ -1270,8 +1270,8 @@ class Page {
 					'style'	=> 'display: none;'
 				]
 			).
-			h::{'div.cs-header-login-form'}(
-				h::{'input.cs-no-ui.cs-header-login-email[tabindex=1]'}([
+			h::{'div.cs-header-sign-in-form'}(
+				h::{'input.cs-no-ui.cs-header-sign-in-email[tabindex=1]'}([
 					'placeholder'		=> $L->login_or_email,
 					'autocapitalize'	=> 'off',
 					'autocorrect'		=> 'off'
@@ -1280,7 +1280,7 @@ class Page {
 					'placeholder'	=> $L->password
 				]).
 				h::br().
-				h::{'button.cs-header-login-process.cs-button-compact.uk-icon-signin[tabindex=3]'}($L->log_in).
+				h::{'button.cs-header-sign-in-process.cs-button-compact.uk-icon-signin[tabindex=3]'}($L->sign_in).
 				h::{'button.cs-button-compact.cs-header-back[tabindex=5]'}(
 					h::icon('chevron-down'),
 					[
