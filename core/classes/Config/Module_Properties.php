@@ -118,12 +118,13 @@ class Module_Properties {
 		}
 	}
 	protected function set_internal ($item, $value, $save = true) {
-		$Config			= Config::instance();
-		$module_data	= &$Config->components['modules'][$this->module];
+		$Config						= Config::instance();
+		$module_data				= &$Config->components['modules'][$this->module];
 		if (!isset($module_data['data'])) {
 			$module_data['data']	= [];
 		}
 		$module_data['data'][$item]	= $value;
+		$this->module_data			= $module_data;
 		if ($save) {
 			return $Config->save();
 		}
