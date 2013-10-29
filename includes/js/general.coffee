@@ -73,7 +73,7 @@ $ ->
 					$('.cs-header-registration-process').click()
 			$('.cs-header-sign-in-process').click ->
 				cs.sign_in($('.cs-header-sign-in-email').val(), $('.cs-header-user-password').val())
-			$('.cs-header-logout-process').click ->
+			$('.cs-header-sign-out-process').click ->
 				cs.sign_out()
 			$('.cs-show-password').click ->
 				$this	= $(this)

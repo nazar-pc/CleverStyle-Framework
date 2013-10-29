@@ -339,7 +339,7 @@
       url: 'api/System/user/sign_out',
       cache: false,
       data: {
-        logout: true
+        sign_out: true
       },
       type: 'post',
       success: function() {

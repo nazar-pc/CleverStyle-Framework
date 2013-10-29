@@ -95,7 +95,7 @@
         $('.cs-header-sign-in-process').click(function() {
           return cs.sign_in($('.cs-header-sign-in-email').val(), $('.cs-header-user-password').val());
         });
-        $('.cs-header-logout-process').click(function() {
+        $('.cs-header-sign-out-process').click(function() {
           return cs.sign_out();
         });
         $('.cs-show-password').click(function() {

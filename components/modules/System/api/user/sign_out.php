@@ -13,8 +13,8 @@ if ($User->guest()) {
 	error_code(403);
 	return;
 }
-if (isset($_POST['logout'])) {
+if (isset($_POST['sign_out'])) {
 	$User->del_session();
-	_setcookie('logout', '1', 0, true, true);
+	_setcookie('sign_out', '1', 0, true, true);
 	Page::instance()->json(1);
 }

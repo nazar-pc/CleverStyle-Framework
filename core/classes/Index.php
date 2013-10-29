@@ -727,10 +727,10 @@ class Index {
 			if (!(
 				API &&
 				MODULE == 'System' &&
-				_getcookie('logout') &&
-				$Config->route == ['user', 'logout']
+				_getcookie('sign_out') &&
+				$Config->route == ['user', 'sign_out']
 			)) {
-				_setcookie('logout', '');
+				_setcookie('sign_out', '');
 			}
 			return;
 		}
@@ -739,10 +739,10 @@ class Index {
 		} elseif (!(
 			API &&
 			MODULE == 'System' &&
-			_getcookie('logout') &&
-			$Config->route == ['user', 'logout']
+			_getcookie('sign_out') &&
+			$Config->route == ['user', 'sign_out']
 		)) {
-			_setcookie('logout', '');
+			_setcookie('sign_out', '');
 		}
 		Trigger::instance()->run('System/Index/postload');
 	}

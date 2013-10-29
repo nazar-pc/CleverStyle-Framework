@@ -1142,7 +1142,7 @@ class Page {
 		if (!defined('ERROR_CODE')) {
 			error_code(500);
 		}
-		if (!API && ERROR_CODE == 403 && _getcookie('logout')) {
+		if (!API && ERROR_CODE == 403 && _getcookie('sign_out')) {
 			header('Location: '.Config::instance()->base_url(), true, 302);
 			$this->Content	= '';
 			exit;
@@ -1188,7 +1188,7 @@ class Page {
 			$this->header_info = h::{'div.cs-header-user-block'}(
 				h::b(
 					"$L->hello, ".$User->username().'! '.
-					h::{'icon.cs-header-logout-process'}(
+					h::{'icon.cs-header-sign-out-process'}(
 						'power-off',
 						[
 							'style'			=> 'cursor: pointer;',
