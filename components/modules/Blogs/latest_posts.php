@@ -21,7 +21,7 @@ $Page					= Page::instance();
 $User					= User::instance();
 $Page->title($L->latest_posts);
 $Page->Keywords			= keywords("$L->Blogs $L->latest_posts").", $Page->Keywords";
-$Page->Description		= description("$L->Blogs - $L->latest_posts. $Page->Description");//TODO og type, description and keywords
+$Page->Description		= description("$L->Blogs - $L->latest_posts. $Page->Description");
 $module					= path($L->Blogs);
 if ($User->user()) {
 	if ($User->admin() && $User->get_permission('admin/Blogs', 'index')) {

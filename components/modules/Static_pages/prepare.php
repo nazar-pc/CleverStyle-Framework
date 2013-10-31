@@ -11,23 +11,38 @@ use			h,
 			cs\Config,
 			cs\Index,
 			cs\Page;
-$Static_pages		= Static_pages::instance();
-$data				= $Static_pages->get(
-	HOME ? $Static_pages->get_structure()['pages']['index'] : Config::instance()->route[0]
+$Config			= Config::instance();
+$Static_pages	= Static_pages::instance();
+$page			= $Static_pages->get(
+	HOME ? $Static_pages->get_structure()['pages']['index'] : $Config->route[0]
 );
-$Page				= Page::instance();
-if ($data['interface']) {
+$Page			= Page::instance();
+if ($page['interface']) {
 	if (!HOME) {
 		Index::instance()->title_auto	= false;
-		$Page->title($data['title']);
+		$Page->title($page['title']);
 	}
-	$Page->Keywords		= keywords($data['title']);
-	$Page->Description	= description($data['content']);
+	$Page->Keywords		= keywords($page['title']);
+	$Page->Description	= description($page['content']);
+	if (HOME) {
+		$Page->canonical_url($Config->base_url());
+	} else {
+		$category			= $page['category'];
+		$canonical_url		= [];
+		while ($category) {
+			$category			= $Static_pages->get_category($category);
+			$canonical_url[]	= $category['path'];
+			$category			= $category['parent'];
+		}
+		unset($category);
+		$canonical_url[]	= $page['path'];
+		$Page->canonical_url($Config->base_url().'/'.implode('/', $canonical_url));
+	}
 	$Page->og('type', 'article');
 	$Page->content(
-		h::section($data['content'])
+		h::section($page['content'])
 	);
 } else {
 	interface_off();
-	$Page->Content	= $data['content'];
+	$Page->Content	= $page['content'];
 }

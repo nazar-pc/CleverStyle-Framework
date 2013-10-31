@@ -86,7 +86,7 @@ $tag					= [
 $Page->title($tag['text']);
 $Page->title($L->latest_posts);
 $Page->Keywords			= keywords("$L->Blogs $tag[text] $L->latest_posts").", $Page->Keywords";
-$Page->Description		= description("$L->Blogs - $tag[text] - $L->latest_posts. $Page->Description");//TODO og type, description and keywords
+$Page->Description		= description("$L->Blogs - $tag[text] - $L->latest_posts. $Page->Description");
 $posts_count			= $cdb->qfs([
 	"SELECT COUNT(`t`.`id`)
 	FROM `[prefix]blogs_posts_tags` AS `t`
