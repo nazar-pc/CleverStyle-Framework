@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * @package		CleverStyle CMS
  * @subpackage	System module
