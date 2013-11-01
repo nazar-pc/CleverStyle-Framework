@@ -15,10 +15,15 @@ use			h,
 			cs\Page,
 			cs\User;
 $Config					= Config::instance();
+$module_data			= $Config->module('Blogs');
 $Index					= Index::instance();
 $L						= Language::instance();
 $Page					= Page::instance();
 $User					= User::instance();
+if (!$User->admin() && $module_data->new_posts_only_from_admins) {
+	error_code(403);
+	return;
+}
 $Page->title($L->drafts);
 $module					= path($L->Blogs);
 $Index->form			= true;
@@ -29,9 +34,9 @@ $page					= $page > 0 ? $page : 1;
 if ($page > 1) {
 	$Page->title($L->blogs_nav_page($page));
 }
-$num					= $Config->module('Blogs')->posts_per_page;
+$num					= $module_data->posts_per_page;
 $from					= ($page - 1) * $num;
-$cdb					= DB::instance()->{$Config->module('Blogs')->db('posts')};
+$cdb					= DB::instance()->{$module_data->db('posts')};
 $posts_count			= $cdb->qfs([
 	"SELECT COUNT(`id`)
 	FROM `[prefix]blogs_posts`

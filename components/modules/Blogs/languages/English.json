@@ -50,6 +50,8 @@
 	"maximum_number_of_sections_for_post_info"	: "Every post can be associated with several sections. This parameter specifies the maximum number of such sections.",
 	"enable_comments"							: "Enable comments",
 	"enable_comments_info"						: "Allows to enable or disable posts comments, depends on Comments module",
+	"new_posts_only_from_admins"				: "New posts only from admins",
+	"new_posts_only_from_admins_info"			: "Only administrators are able to write new posts. Otherwise any registered user can write new post.",
 	"post_preview_connection_error"				: "Preview error: connection to the server failed. Check your internet connection and try again.",
 	"to_drafts"									: "To drafts",
 	"drafts"									: "Drafts",

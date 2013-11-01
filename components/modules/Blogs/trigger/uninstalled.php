@@ -14,9 +14,10 @@ Trigger::instance()->register(
 			return;
 		}
 		Config::instance()->module('Blogs')->set([
-			'posts_per_page'	=> 10,
-			'max_sections'		=> 3,
-			'enable_comments'	=> 1
+			'posts_per_page'				=> 10,
+			'max_sections'					=> 3,
+			'enable_comments'				=> 1,
+			'new_posts_only_from_admins'	=> 1
 		]);
 		return;
 	}

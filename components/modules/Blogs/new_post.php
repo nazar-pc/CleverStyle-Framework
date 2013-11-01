@@ -14,16 +14,21 @@ use			h,
 			cs\Page,
 			cs\User;
 $Config						= Config::instance();
+$module_data				= $Config->module('Blogs');
 $L							= Language::instance();
 $Page						= Page::instance();
 $User						= User::instance();
 $Page->title($L->new_post);
+if (!$User->admin() && $module_data->new_posts_only_from_admins) {
+	error_code(403);
+	return;
+}
 if (!$User->user()) {
 	if ($User->bot()) {
 		error_code(403);
 		return;
 	} else {
-		$Page->warning($L->for_reistered_users_only);
+		$Page->warning($L->for_registered_users_only);
 		return;
 	}
 }
@@ -67,11 +72,11 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 }
 $Index						= Index::instance();
 $Index->form				= true;
-$Index->action				= $module.'/new_post';
+$Index->action				= "$module/new_post";
 $Index->buttons				= false;
 $Index->cancel_button_back	= true;
 $disabled					= [];
-$max_sections				= $Config->module('Blogs')->max_sections;
+$max_sections				= $module_data->max_sections;
 $content					= uniqid('post_content');
 $Page->replace($content, isset($_POST['content']) ? $_POST['content'] : '');
 $Index->content(

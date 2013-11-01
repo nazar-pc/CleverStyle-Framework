@@ -15,9 +15,14 @@ use			h,
 			cs\User;
 $Blogs						= Blogs::instance();
 $Config						= Config::instance();
+$module_data				= $Config->module('Blogs');
 $L							= Language::instance();
 $Page						= Page::instance();
 $User						= User::instance();
+if (!$User->admin() && $module_data->new_posts_only_from_admins) {
+	error_code(403);
+	return;
+}
 if (
 	!isset($Config->route[1]) ||
 	!($post = $Blogs->get($Config->route[1]))
@@ -90,7 +95,7 @@ $Index->action				= "$module/edit_post/$post[id]";
 $Index->buttons				= false;
 $Index->cancel_button_back	= true;
 $disabled					= [];
-$max_sections				= $Config->module('Blogs')->max_sections;
+$max_sections				= $module_data->max_sections;
 $content					= uniqid('post_content');
 $Page->replace($content, isset($_POST['content']) ? $_POST['content'] : $post['content']);
 $Index->content(

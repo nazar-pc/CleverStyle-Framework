@@ -166,4 +166,44 @@ if (!API) {
 		}
 		return h::article($content);
 	}
+	function head_actions () {
+		$User	= User::instance();
+		if ($User->user()) {
+			$Index					= Index::instance();
+			$L						= Language::instance();
+			$module					= path($L->Blogs);
+			$module_data	= Config::instance()->module('Blogs');
+			/**
+			 * If administrator
+			 */
+			if ($User->admin() && $User->get_permission('admin/Blogs', 'index')) {
+				$Index->content(
+					h::{'a.cs-button'}(
+						h::icon('gears'),
+						[
+							'href'			=> 'admin/Blogs',
+							'data-title'	=> $L->administration
+						]
+					)
+				);
+			}
+			$Index->content(
+				$User->admin() || !$module_data->new_posts_only_from_admins ? h::{'a.cs-button'}(
+					h::icon('pencil').$L->new_post,
+					[
+						'href'			=> "$module/new_post",
+						'data-title'	=> $L->new_post
+					]
+				).
+				h::{'a.cs-button'}(
+					h::icon('archive').$L->drafts,
+					[
+						'href'			=> "$module/".path($L->drafts),
+						'data-title'	=> $L->drafts
+					]
+				).
+				h::br() : ''
+			);
+		}
+	}
 }

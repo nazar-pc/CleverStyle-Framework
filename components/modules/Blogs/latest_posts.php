@@ -12,47 +12,19 @@ use			h,
 			cs\DB,
 			cs\Index,
 			cs\Language,
-			cs\Page,
-			cs\User;
+			cs\Page;
 $Config					= Config::instance();
 $Index					= Index::instance();
 $L						= Language::instance();
 $Page					= Page::instance();
-$User					= User::instance();
 $Page->title($L->latest_posts);
 $Page->Keywords			= keywords("$L->Blogs $L->latest_posts").", $Page->Keywords";
 $Page->Description		= description("$L->Blogs - $L->latest_posts. $Page->Description");
 $module					= path($L->Blogs);
-if ($User->user()) {
-	if ($User->admin() && $User->get_permission('admin/Blogs', 'index')) {
-		$Index->content(
-			h::{'a.cs-button'}(
-				h::icon('gears'),
-				[
-					'href'			=> 'admin/Blogs',
-					'data-title'	=> $L->administration
-				]
-			)
-		);
-	}
-	$Index->content(
-		h::{'a.cs-button'}(
-			h::icon('pencil').$L->new_post,
-			[
-				'href'			=> "$module/new_post",
-				'data-title'	=> $L->new_post
-			]
-		).
-		h::{'a.cs-button'}(
-			h::icon('archive').$L->drafts,
-			[
-				'href'			=> "$module/".path($L->drafts),
-				'data-title'	=> $L->drafts
-			]
-		).
-		h::br()
-	);
-}
+/**
+ * Show administration, new post, draft actions
+ */
+head_actions();
 $Index->form			= true;
 $Index->buttons			= false;
 $Index->form_atributes	= ['class'	=> ''];

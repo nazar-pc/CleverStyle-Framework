@@ -14,11 +14,12 @@ use			h,
 			cs\Page,
 			cs\Trigger,
 			cs\User;
-$Config				= Config::instance();
-$L					= Language::instance();
-$Page				= Page::instance();
-$User				= User::instance();
-$Comments			= null;
+$Config					= Config::instance();
+$module_data			= $Config->module('Blogs');
+$L						= Language::instance();
+$Page					= Page::instance();
+$User					= User::instance();
+$Comments				= null;
 Trigger::instance()->run(
 	'Comments/instance',
 	[
@@ -28,14 +29,14 @@ Trigger::instance()->run(
 /**
  * @var \cs\modules\Comments\Comments $Comments
  */
-$Blogs				= Blogs::instance();
-$rc					= $Config->route;
-$post				= (int)mb_substr($rc[1], mb_strrpos($rc[1], ':')+1);
+$Blogs	= Blogs::instance();
+$rc		= $Config->route;
+$post	= (int)mb_substr($rc[1], mb_strrpos($rc[1], ':')+1);
 if (!$post) {
 	error_code(404);
 	return;
 }
-$post				= $Blogs->get($post, true);
+$post	= $Blogs->get($post, true);
 if (!$post) {
 	error_code(404);
 	return;
@@ -48,7 +49,7 @@ if ($post['path'] != mb_substr($rc[1], 0, mb_strrpos($rc[1], ':'))) {
 }
 $Page->title($post['title']);
 $tags				= $Blogs->get_tag($post['tags']);
-$Page->Keywords		= keywords($post['title'].' '.implode(' ', $tags));
+$Page->Keywords		= keywords("$post[title] ".implode(' ', $tags));
 $Page->Description	= description($post['short_content']);
 $Page->canonical_url(
 	"{$Config->base_url()}/$module/$post[path]:$post[id]"
@@ -96,7 +97,7 @@ Index::instance()->content(
 						]
 					]
 				) : (
-					$User->id == $post['user'] ? ' '.h::{'a.cs-button-compact'}(
+					$User->id == $post['user'] && !$module_data->new_posts_only_from_admins ? ' '.h::{'a.cs-button-compact'}(
 						h::icon('edit'),
 						[
 							'href'			=> "$module/edit_post/$post[id]",
@@ -166,12 +167,12 @@ Index::instance()->content(
 					]
 				).
 				(
-					$Config->module('Blogs')->enable_comments && $Comments ? h::icon('comments').$post['comments_count'] : ''
+					$module_data->enable_comments && $Comments ? h::icon('comments').$post['comments_count'] : ''
 				)
 			)
 		)
 	).
 	(
-		$Config->module('Blogs')->enable_comments && $Comments ? $Comments->block($post['id']) : ''
+		$module_data->enable_comments && $Comments ? $Comments->block($post['id']) : ''
 	)
 );
