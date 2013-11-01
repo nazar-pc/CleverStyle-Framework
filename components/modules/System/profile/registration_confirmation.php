@@ -12,7 +12,7 @@ $Config	= Config::instance();
 $L		= Language::instance();
 $Page	= Page::instance();
 $User	= User::instance();
-if (isset($_COOKIE['reg_confirm'])) {
+if (_getcookie('reg_confirm')) {
 	_setcookie('reg_confirm', '');
 	$Page->title($L->reg_success_title);
 	$Page->success($L->reg_success);

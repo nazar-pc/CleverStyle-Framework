@@ -20,14 +20,18 @@ class OAuth2 extends Accessor {
 	use	Singleton;
 
 	protected	$guest_tokens,
-				$expire			= 3600;
+				$automatic_prolongation,
+				$expiration;
 	/**
 	 * @var Prefix
 	 */
 	protected	$cache;
 	function construct () {
-		$this->cache	= new Prefix('OAuth2');
-		$this->guest_tokens	= Config::instance()->module('OAuth2')->guest_tokens;
+		$this->cache					= new Prefix('OAuth2');
+		$module_data					= Config::instance()->module('OAuth2');
+		$this->guest_tokens				= $module_data->guest_tokens;
+		$this->automatic_prolongation	= $module_data->automatic_prolongation;
+		$this->expiration				= $module_data->expiration;
 	}
 	/**
 	 * Returns database index
@@ -46,7 +50,7 @@ class OAuth2 extends Accessor {
 	 *
 	 * @return bool|string			<i>false</i> on failure, id of created client otherwise
 	 */
-	function add_client ($name, $domain, $active) {
+	function oauth2_add_client ($name, $domain, $active) {
 		if (
 			!$domain ||
 			strpos($domain, '/') !== false
@@ -349,7 +353,7 @@ class OAuth2 extends Accessor {
 				$User->id,
 				$new_session,
 				TIME,
-				TIME + $this->expire,
+				TIME + $this->expiration,
 				$access_token,
 				$refresh_token,
 				$code,
@@ -377,7 +381,7 @@ class OAuth2 extends Accessor {
 		if (!is_md5($code) || !$client || $client['secret'] != $secret) {
 			return false;
 		}
-		$data	= $this->db()->qf([
+		$data	= $this->db_prime()->qf([
 			"SELECT
 				`access_token`,
 				`refresh_token`,
@@ -396,7 +400,7 @@ class OAuth2 extends Accessor {
 		if (!$data) {
 			return false;
 		}
-		$this->db()->q(
+		$this->db_prime()->q(
 			"UPDATE `[prefix]oauth2_clients_sessions`
 			SET `code` = ''
 			WHERE
@@ -431,7 +435,7 @@ class OAuth2 extends Accessor {
 			return false;
 		}
 		$Cache	= $this->cache;
-		$data	= $Cache->get("tokens/$access_token", function () use($client, $access_token) {
+		$data	= $Cache->get("tokens/$access_token", function () use ($client, $access_token) {
 			return $this->db()->qf([
 				"SELECT
 					`user`,
@@ -447,18 +451,40 @@ class OAuth2 extends Accessor {
 				$access_token
 			]);
 		});
-		if ($data && !$this->get_access($client['id'], $data['user'])) {
-			$this->db()->q([
-				"DELETE FROM `[prefix]oauth2_clients_sessions`
-				WHERE
-					`id`			= '%s' AND
-					`access_token`	= '%s'
-				LIMIT 1",
-				$client['id'],
-				$access_token
-			]);
-			unset($Cache->{"tokens/$access_token"});
-			$data	= false;
+		if ($data) {
+			if($data['expire'] < TIME) {
+				return false;
+			}
+			if (!$this->get_access($client['id'], $data['user'])) {
+				$this->db_prime()->q([
+					"DELETE FROM `[prefix]oauth2_clients_sessions`
+					WHERE
+						`id`			= '%s' AND
+						`access_token`	= '%s'
+					LIMIT 1",
+					$client['id'],
+					$access_token
+				]);
+				unset($Cache->{"tokens/$access_token"});
+				$data	= false;
+			/**
+			 * Automatic prolongation of tokens' expiration time if configured
+			 */
+			} elseif ($this->automatic_prolongation && $data['expire'] < TIME - $this->expiration * Config::instance()->core['update_ratio'] / 100) {
+				$data['expire']	= TIME + $this->expiration;
+					$this->db_prime()->q(
+					"UPDATE `[prefix]oauth2_clients_sessions`
+					SET `expire` = '%s'
+					WHERE
+						`id`			= '%s' AND
+						`access_token`	= '%s'
+					LIMIT 1",
+					$data['expire'],
+					$client['id'],
+					$access_token
+				);
+				$Cache->{"tokens/$access_token"}	= $data;
+			}
 		}
 		return $data;
 	}

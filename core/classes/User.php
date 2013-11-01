@@ -164,8 +164,7 @@ class User extends Accessor {
 		/**
 		 * If session exists
 		 */
-		$initial_session	= _getcookie('session');
-		if ($initial_session) {
+		if (_getcookie('session')) {
 			$this->id = $this->get_session_user();
 		/**
 		 * Try to detect bot, not necessary for API request
@@ -286,8 +285,7 @@ class User extends Accessor {
 		/**
 		 * Security check
 		 */
-		$session_id	= $this->get_session();
-		if (!$session_id || $initial_session != $session_id) {
+		if (!isset($_REQUEST['session']) || $_REQUEST['session'] != $this->get_session()) {
 			$_REQUEST	= array_diff_key($_REQUEST, $_POST);
 			$_POST		= [];
 		}

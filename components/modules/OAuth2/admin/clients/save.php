@@ -14,16 +14,17 @@ $Index	= Index::instance();
 if (isset($_POST['mode'])) {
 	switch ($_POST['mode']) {
 		case 'add':
-			$Index->save((bool)$OAuth2->add_client($_POST['name'], $_POST['domain'], $_POST['active']));
-			break;
+			$Index->save((bool)$OAuth2->oauth2_add_client($_POST['name'], $_POST['domain'], $_POST['active']));
+		break;
 		case 'edit':
 			$Index->save($OAuth2->set_client($_POST['id'], $_POST['secret'], $_POST['name'], $_POST['domain'], $_POST['active']));
-			break;
+		break;
 		case 'delete':
 			$Index->save($OAuth2->del_client($_POST['id']));
 	}
 }
-if (isset($_POST['edit_settings'], $_POST['guest_tokens']) && $_POST['edit_settings'] == 'save') {
-	Config::instance()->module('OAuth2')->guest_tokens	= $_POST['guest_tokens'];
-	$Index->save(true);
+if (isset($_POST['general'])) {
+	$Index->save(
+		Config::instance()->module('OAuth2')->set($_POST['general'])
+	);
 }

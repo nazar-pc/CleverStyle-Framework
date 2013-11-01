@@ -14,14 +14,14 @@ namespace	cs\modules\OAuth2;
 use			h,
 			cs\Config,
 			cs\Index,
-			cs\Language,
+			cs\Language\Prefix,
 			cs\Page,
 			cs\Trigger,
 			cs\User;
 $OAuth2			= OAuth2::instance();
 $Config			= Config::instance();
 $Index			= Index::instance();
-$L				= Language::instance();
+$L				= new Prefix('oauth2_');
 $Page			= Page::instance();
 /**
  * Errors processing

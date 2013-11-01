@@ -84,7 +84,7 @@ Trigger::instance()->register(
 				exit;
 			}
 		}
-		if ($token_data['expire_in'] < 0) {
+		if (!$token_data) {
 			code_header(403);
 			$Page->json([
 				'error'				=> 'access_denied',

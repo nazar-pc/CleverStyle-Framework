@@ -10,10 +10,10 @@ namespace	cs\modules\OAuth2;
 use			h,
 			cs\Config,
 			cs\Index,
-			cs\Language,
+			cs\Language\Prefix,
 			cs\Page;
 $Index						= Index::instance();
-$L							= Language::instance();
+$L							= new Prefix('oauth2_');
 $client						= OAuth2::instance()->get_client(Config::instance()->route[2]);
 Page::instance()->title($L->deletion_of_client($client['name']));
 $Index->buttons				= false;

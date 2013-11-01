@@ -12,7 +12,7 @@ $Config	= Config::instance();
 $L		= Language::instance();
 $Page	= Page::instance();
 $User	= User::instance();
-if (isset($_COOKIE['restore_password_confirm'])) {
+if (_getcookie('restore_password_confirm')) {
 	_setcookie('restore_password_confirm', '');
 	$Page->title($L->restore_password_success_title);
 	$Page->success($L->restore_password_success);
