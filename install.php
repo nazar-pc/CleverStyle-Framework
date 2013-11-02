@@ -32,10 +32,7 @@ echo	h::title('CleverStyle CMS $version$ Installation').
 		h::style(file_get_contents(DIR.'/install/style.css')).
 		h::header(
 			h::img([
-				'src'	=> (isset($_SERVER['HTTPS']) ? 'https' : 'http').'://'.
-							$_SERVER['HTTP_HOST'].
-							'/'.trim(str_replace('install.php', '', $_SERVER['REQUEST_URI']), '/').
-							'/install/logo.png'
+				'src'	=> 'data:image/png;charset=utf-8;base64,'.base64_encode(file_get_contents(DIR.'/install/logo.png'))
 			]).
 			h::h1('CleverStyle CMS $version$ Installation')
 		).
