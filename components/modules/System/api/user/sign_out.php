@@ -15,6 +15,6 @@ if ($User->guest()) {
 }
 if (isset($_POST['sign_out'])) {
 	$User->del_session();
-	_setcookie('sign_out', '1', 0, true, true);
+	_setcookie('sign_out', 1, 0, true, true);
 	Page::instance()->json(1);
 }

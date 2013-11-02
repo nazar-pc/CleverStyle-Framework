@@ -36,11 +36,11 @@ $data	= $User->get(
 	],
 	$id
 );
-if ($data['status'] == -1) {
+if ($data['status'] == User::STATUS_NOT_ACTIVATED) {
 	error_code(404);
 	$Page->error();
 	return;
-} elseif ($data['status'] == 0) {
+} elseif ($data['status'] == User::STATUS_INACTIVE) {
 	$Page->warning(
 		h::tr([
 			$L->account_disabled
@@ -77,7 +77,7 @@ $Page->content(
 
 		h::{'td table.cs-right-odd.cs-left-even tr'}([
 			($data['reg_date'] ? h::td([
-				h::h2($L->reg_date.':'),
+				h::h2("$L->reg_date:"),
 				h::h2($L->to_locale(date($L->reg_date_format, $data['reg_date'])))
 			])  : false)
 		])

@@ -137,7 +137,7 @@ function get_user_contacts ($user) {
 	$user	= (int)$user;
 	if (
 		!$user ||
-		$user == 1 ||
+		$user == User::GUEST_ID ||
 		!$Config->module('HybridAuth')->enable_contacts_detection
 	) {
 		return [];
@@ -157,9 +157,10 @@ function get_user_contacts ($user) {
 			INNER JOIN `[prefix]users` AS `u`
 			ON
 				`i`.`id`		= `u`.`id` AND
-				`u`.`status`	= '1'
+				`u`.`status`	= '%s'
 			WHERE `c`.`id`	= '%s'
 			GROUP BY `i`.`id`",
+			User::STATUS_ACTIVE,
 			$user
 		]) ?: [];
 		$Cache->{"HybridAuth/contacts/$user"}	= $data;

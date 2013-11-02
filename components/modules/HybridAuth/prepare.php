@@ -113,8 +113,8 @@ if (isset($rc[1]) && $rc[0] == 'merge_confirmation') {
 				unserialize($HybridAuth->getSessionData())
 			)
 		);
-		if ($User->get('status', $data['id']) == '-1') {
-			$User->set('status', 1, $data['id']);
+		if ($User->get('status', $data['id']) == User::STATUS_NOT_ACTIVATED) {
+			$User->set('status', User::STATUS_ACTIVE, $data['id']);
 		}
 		Trigger::instance()->run(
 			'HybridAuth/add_session/before',
@@ -133,7 +133,7 @@ if (isset($rc[1]) && $rc[0] == 'merge_confirmation') {
 			]
 		);
 		unset($HybridAuth, $adapter);
-		if ($User->id != 1) {
+		if ($User->id != User::GUEST_ID) {
 			$existing_data	= $User->get(array_keys($data['profile_info']), $data['id']);
 			foreach ($data['profile_info'] as $item => $value) {
 				if (!$existing_data[$item] || $existing_data[$item] != $value) {
@@ -220,7 +220,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					$rc[0],
 					$profile->identifier
 				])
-			) && $User->get('status', $id) == '1'
+			) && $User->get('status', $id) == User::STATUS_ACTIVE
 		) {
 			Trigger::instance()->run(
 				'HybridAuth/add_session/before',
@@ -238,7 +238,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					'provider'	=> $rc[0]
 				]
 			);
-			if ($User->id != 1 && $Config->module('HybridAuth')->enable_contacts_detection) {
+			if ($User->id != User::GUEST_ID && $Config->module('HybridAuth')->enable_contacts_detection) {
 				$existing_data	= $User->get(array_keys($profile_info), $id);
 				foreach ($profile_info as $item => $value) {
 					if (!$existing_data[$item] || $existing_data[$item] != $value) {
@@ -315,8 +315,8 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 						$profile->identifier,
 						$profile->profileURL
 					);
-					if ($User->get('status', $user) == '-1') {
-						$User->set('status', 1, $user);
+					if ($User->get('status', $user) == User::STATUS_NOT_ACTIVATED) {
+						$User->set('status', User::STATUS_ACTIVE, $user);
 					}
 					unset($user);
 					Trigger::instance()->run(
@@ -335,7 +335,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 							'provider'	=> $rc[0]
 						]
 					);
-					if ($User->id != 1) {
+					if ($User->id != User::GUEST_ID) {
 						$existing_data	= $User->get(array_keys($profile_info), $id);
 						foreach ($profile_info as $item => $value) {
 							if (!$existing_data[$item] || $existing_data[$item] != $value) {
@@ -384,7 +384,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 							'provider'	=> $rc[0]
 						]
 					);
-					if ($User->id != 1) {
+					if ($User->id != User::GUEST_ID) {
 						$existing_data	= $User->get(array_keys($profile_info), $id);
 						foreach ($profile_info as $item => $value) {
 							if (!$existing_data[$item] || $existing_data[$item] != $value) {
@@ -500,8 +500,8 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					$HybridAuth_data['identifier'],
 					$HybridAuth_data['profile']
 				);
-				if ($User->get('status', $user) == '-1') {
-					$User->set('status', 1, $user);
+				if ($User->get('status', $user) == User::STATUS_NOT_ACTIVATED) {
+					$User->set('status', User::STATUS_ACTIVE, $user);
 				}
 				unset($user);
 				$User->del_session_data('HybridAuth');

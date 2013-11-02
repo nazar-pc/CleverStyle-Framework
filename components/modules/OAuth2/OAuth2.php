@@ -227,7 +227,7 @@ class OAuth2 extends Accessor {
 	 */
 	function get_access ($client, $user = false) {
 		$user	= (int)$user ?: User::instance()->id;
-		if ($user == 1) {
+		if ($user == User::GUEST_ID) {
 			return $this->guest_tokens;
 		}
 		$clients	= $this->cache->get("grant_access/$user", function () use ($user) {
@@ -250,7 +250,7 @@ class OAuth2 extends Accessor {
 	 */
 	function del_access ($client = '', $user = false) {
 		$user	= (int)$user ?: User::instance()->id;
-		if ($user == 1) {
+		if ($user == User::GUEST_ID) {
 			return false;
 		}
 		$result	= $client ? $this->db_prime()->q(

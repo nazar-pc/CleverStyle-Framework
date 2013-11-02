@@ -29,7 +29,7 @@ if (!(
 } elseif ($Config->core['sign_in_attempts_block_count'] && $User->get_sign_in_attempts_count() >= $Config->core['sign_in_attempts_block_count']) {
 	$User->sign_in_result(false);
 	error_code(403);
-	$Page->error($L->sign_in_attempts_ends_try_after.' '.format_time($Config->core['sign_in_attempts_block_time']));
+	$Page->error("$L->sign_in_attempts_ends_try_after ".format_time($Config->core['sign_in_attempts_block_time']));
 	sleep(1);
 	return;
 }
@@ -42,15 +42,15 @@ if (
 	!empty($_POST['login']) &&
 	!isset($_POST['auth_hash']) &&
 	($id = $User->get_id($_POST['login'])) &&
-	$id != 1
+	$id != User::GUEST_ID
 ) {
 	$_POST['login']	= mb_strtolower($_POST['login']);
-	if ($User->get('status', $id) == -1) {
+	if ($User->get('status', $id) == User::STATUS_NOT_ACTIVATED) {
 		error_code(403);
 		$Page->error($L->your_account_is_not_active);
 		sleep(1);
 		return;
-	} elseif ($User->get('status', $id) == 0) {
+	} elseif ($User->get('status', $id) == User::STATUS_INACTIVE) {
 		error_code(403);
 		$Page->error($L->your_account_disabled);
 		sleep(1);
@@ -101,10 +101,10 @@ if (
 			$Config->core['sign_in_attempts_block_count'] &&
 			$User->get_sign_in_attempts_count() >= floor($Config->core['sign_in_attempts_block_count'] * 2 / 3)
 		) {
-			$content	.= ' '.$L->sign_in_attempts_left.' '.($Config->core['sign_in_attempts_block_count'] - $User->get_sign_in_attempts_count());
+			$content	.= " $L->sign_in_attempts_left ".($Config->core['sign_in_attempts_block_count'] - $User->get_sign_in_attempts_count());
 			sleep(1);
 		} elseif (!$Config->core['sign_in_attempts_block_count']) {
-			sleep($User->get_sign_in_attempts_count()*0.5);
+			sleep($User->get_sign_in_attempts_count() * 0.5);
 		}
 		$Page->error($content);
 		unset($content);
@@ -118,10 +118,10 @@ if (
 		$Config->core['sign_in_attempts_block_count'] &&
 		$User->get_sign_in_attempts_count() >= $Config->core['sign_in_attempts_block_count'] * 2 / 3
 	) {
-		$content	.= ' '.$L->sign_in_attempts_left.' '.($Config->core['sign_in_attempts_block_count'] - $User->get_sign_in_attempts_count());
+		$content	.= " $L->sign_in_attempts_left ".($Config->core['sign_in_attempts_block_count'] - $User->get_sign_in_attempts_count());
 		sleep(1);
 	} elseif (!$Config->core['sign_in_attempts_block_count'] && $User->get_sign_in_attempts_count() > 3) {
-		sleep($User->get_sign_in_attempts_count()*0.5);
+		sleep($User->get_sign_in_attempts_count() * 0.5);
 	}
 	$Page->error($content);
 	unset($content);

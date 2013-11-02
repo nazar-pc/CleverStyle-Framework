@@ -31,12 +31,10 @@ use			cs\Cache\Prefix,
 class Group extends Accessor {
 	use	Singleton,
 		Any;
-
 	/**
 	 * @var Prefix
 	 */
 	protected	$cache;
-
 	/**
 	 * Returns database index
 	 *

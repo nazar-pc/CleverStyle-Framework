@@ -82,6 +82,38 @@ use			cs\Cache\Prefix,
 class User extends Accessor {
 	use	Singleton,
 		Any;
+	/**
+	 * Id of system guest user
+	 */
+	const		GUEST_ID				= 1;
+	/**
+	 * Id of first, primary system administrator
+	 */
+	const		ROOT_ID					= 2;
+	/**
+	 * Id of system group for administrators
+	 */
+	const		ADMIN_GROUP_ID			= 1;
+	/**
+	 * Id of system group for users
+	 */
+	const		USER_GROUP_ID			= 2;
+	/**
+	 * Id of system group for bots
+	 */
+	const		BOT_GROUP_ID			= 3;
+	/**
+	 * Status of active user
+	 */
+	const		STATUS_ACTIVE			= 1;
+	/**
+	 * Status of active user
+	 */
+	const		STATUS_INACTIVE			= 0;
+	/**
+	 * Status of active user
+	 */
+	const		STATUS_NOT_ACTIVATED	= -1;
 
 	protected	$current				= [
 					'session'		=> false,
@@ -174,7 +206,7 @@ class User extends Accessor {
 			 * Loading bots list
 			 */
 			$bots = $Cache->get('bots', function () {
-				return $this->db()->qfa(
+				return $this->db()->qfa([
 					"SELECT
 						`u`.`id`,
 						`u`.`login`,
@@ -183,9 +215,11 @@ class User extends Accessor {
 						INNER JOIN `[prefix]users_groups` AS `g`
 					ON `u`.`id` = `g`.`id`
 					WHERE
-						`g`.`group`		= 3 AND
-						`u`.`status`	= 1"
-				) ?: [];
+						`g`.`group`		= '%s' AND
+						`u`.`status`	= '%s'",
+					self::BOT_GROUP_ID,
+					self::STATUS_ACTIVE
+				]) ?: [];
 			});
 			/**
 			 * For bots: login is user agent, email is IP
@@ -238,7 +272,7 @@ class User extends Accessor {
 						if ($last_session) {
 							$this->get_session_user($last_session);
 						}
-						if (!$last_session || $this->id == 1) {
+						if (!$last_session || $this->id == self::GUEST_ID) {
 							$this->add_session($id);
 							$this->set_data('last_session', $this->get_session());
 						}
@@ -249,7 +283,7 @@ class User extends Accessor {
 			unset($bots, $bot_hash);
 		}
 		if (!$this->id) {
-			$this->id	= 1;
+			$this->id	= self::GUEST_ID;
 			/**
 			 * Do not create session for API request
 			 */
@@ -261,7 +295,7 @@ class User extends Accessor {
 		/**
 		 * If not guest - apply some individual settings
 		 */
-		if ($this->id != 1) {
+		if ($this->id != self::GUEST_ID) {
 			if ($this->timezone && date_default_timezone_get() != $this->timezone) {
 				date_default_timezone_set($this->timezone);
 			}
@@ -301,23 +335,22 @@ class User extends Accessor {
 		$this->current['is']['user']	= false;
 		$this->current['is']['admin']	= false;
 		$this->current['is']['system']	= false;
-		if ($this->id == 1) {
+		if ($this->id == self::GUEST_ID) {
 			$this->current['is']['guest'] = true;
 		} else {
 			/**
 			 * Checking of user type
 			 */
 			$groups = $this->get_groups() ?: [];
-			if (in_array(1, $groups)) {
+			if (in_array(self::ADMIN_GROUP_ID, $groups)) {
 				$this->current['is']['admin']	= Config::instance()->can_be_admin;
 				$this->current['is']['user']	= true;
-			} elseif (in_array(2, $groups)) {
+			} elseif (in_array(self::USER_GROUP_ID, $groups)) {
 				$this->current['is']['user']	= true;
-			} elseif (in_array(3, $groups)) {
+			} elseif (in_array(self::BOT_GROUP_ID, $groups)) {
 				$this->current['is']['guest']	= true;
 				$this->current['is']['bot']		= true;
 			}
-			unset($groups);
 		}
 	}
 	/**
@@ -530,7 +563,7 @@ class User extends Accessor {
 	 */
 	function get_data ($item, $user = false) {
 		$user	= (int)($user ?: $this->id);
-		if (!$user || $user == 1) {
+		if (!$user || $user == self::GUEST_ID) {
 			return false;
 		}
 		$Cache	= $this->cache;
@@ -561,7 +594,7 @@ class User extends Accessor {
 	 */
 	function set_data ($item, $value = null, $user = false) {
 		$user	= (int)($user ?: $this->id);
-		if (!$user || $user == 1) {
+		if (!$user || $user == self::GUEST_ID) {
 			return false;
 		}
 		$result	= $this->db()->q(
@@ -592,7 +625,7 @@ class User extends Accessor {
 	 */
 	function del_data ($item, $user = false) {
 		$user	= (int)($user ?: $this->id);
-		if (!$user || $user == 1) {
+		if (!$user || $user == self::GUEST_ID) {
 			return false;
 		}
 		$result	= $this->db()->q(
@@ -667,7 +700,7 @@ class User extends Accessor {
 				$login_hash
 			]) ?: false;
 		});
-		return $id && $id != 1 ? $id : false;
+		return $id && $id != self::GUEST_ID ? $id : false;
 	}
 	/**
 	 * Get user avatar, if no one present - uses Gravatar
@@ -680,7 +713,7 @@ class User extends Accessor {
 	function avatar ($size = null, $user = false) {
 		$user	= (int)($user ?: $this->id);
 		$avatar	= $this->get('avatar', $user);
-		if (!$avatar && $this->id != 1) {
+		if (!$avatar && $this->id != self::GUEST_ID) {
 			$avatar	= 'https://www.gravatar.com/avatar/'.md5($this->get('email', $user))."?d=mm&s=$size";
 			$avatar	.= '&d='.urlencode(Config::instance()->base_url().'/includes/img/guest.gif');
 		}
@@ -718,8 +751,9 @@ class User extends Accessor {
 					`username`	LIKE '%1\$s' OR
 					`email`		LIKE '%1\$s'
 				) AND
-				`status` != '-1'",
-			$search_phrase
+				`status` != '%s'",
+			$search_phrase,
+			self::STATUS_NOT_ACTIVATED
 		]);
 		return $found_users;
 	}
@@ -737,7 +771,7 @@ class User extends Accessor {
 	 */
 	function get_permission ($group, $label, $user = false) {
 		$user			= (int)($user ?: $this->id);
-		if ($this->system() || $user == 2) {
+		if ($this->system() || $user == self::ROOT_ID) {
 			return true;
 		}
 		if (!$user) {
@@ -746,7 +780,7 @@ class User extends Accessor {
 		if (!isset($this->permissions[$user])) {
 			$this->permissions[$user]	= $this->cache->get("permissions/$user", function () use ($user) {
 				$permissions	= [];
-				if ($user != 1) {
+				if ($user != self::GUEST_ID) {
 					$groups							= $this->get_groups($user);
 					if (is_array($groups)) {
 						$Group	= Group::instance();
@@ -856,7 +890,7 @@ class User extends Accessor {
 	 */
 	function get_groups ($user = false) {
 		$user	= (int)($user ?: $this->id);
-		if (!$user || $user == 1) {
+		if (!$user || $user == self::GUEST_ID) {
 			return false;
 		}
 		return $this->cache->get("groups/$user", function () use ($user) {
@@ -946,7 +980,7 @@ class User extends Accessor {
 	 * @return bool|string
 	 */
 	function get_session () {
-		if ($this->bot() && $this->id == 1) {
+		if ($this->bot() && $this->id == self::GUEST_ID) {
 			return '';
 		}
 		return $this->current['session'];
@@ -959,8 +993,8 @@ class User extends Accessor {
 	 * @return int						User id
 	 */
 	function get_session_user ($session_id = null) {
-		if ($this->bot() && $this->id == 1) {
-			return 1;
+		if ($this->bot() && $this->id == self::GUEST_ID) {
+			return self::GUEST_ID;
 		}
 		if (!$session_id) {
 			if (!$this->current['session']) {
@@ -1011,9 +1045,9 @@ class User extends Accessor {
 			$result['expire'] > TIME &&
 			$this->get('id', $result['user'])
 		)) {
-			$this->add_session(1);
+			$this->add_session(self::GUEST_ID);
 			$this->update_user_is();
-			return 1;
+			return self::GUEST_ID;
 		}
 		$update	= [];
 		/**
@@ -1080,10 +1114,7 @@ class User extends Accessor {
 	 * @return bool
 	 */
 	function add_session ($user = false, $delete_current_session = true) {
-		$user	= (int)$user;
-		if (!$user) {
-			$user = 1;
-		}
+		$user	= (int)$user ?: self::GUEST_ID;
 		if ($delete_current_session && is_md5($this->current['session'])) {
 			$this->del_session_internal(null, false);
 		}
@@ -1107,16 +1138,16 @@ class User extends Accessor {
 		if (is_array($data)) {
 			$L		= Language::instance();
 			$Page	= Page::instance();
-			if ($data['status'] != 1) {
+			if ($data['status'] != self::STATUS_ACTIVE) {
 				/**
 				 * If user is disabled
 				 */
-				if ($data['status'] == 0) {
+				if ($data['status'] == self::STATUS_INACTIVE) {
 					$Page->warning($L->your_account_disabled);
 					/**
 					 * Mark user as guest, load data again
 					 */
-					$user	= 1;
+					$user	= self::GUEST_ID;
 					goto getting_user_data;
 				/**
 				 * If user is not active
@@ -1126,7 +1157,7 @@ class User extends Accessor {
 					/**
 					 * Mark user as guest, load data again
 					 */
-					$user	= 1;
+					$user	= self::GUEST_ID;
 					goto getting_user_data;
 				}
 			/**
@@ -1137,14 +1168,14 @@ class User extends Accessor {
 				/**
 				 * Mark user as guest, load data again
 				 */
-				$user	= 1;
+				$user	= self::GUEST_ID;
 				goto getting_user_data;
 			}
-		} elseif ($this->id != 1) {
+		} elseif ($this->id != self::GUEST_ID) {
 			/**
 			 * If data was not loaded - mark user as guest, load data again
 			 */
-			$user	= 1;
+			$user	= self::GUEST_ID;
 			goto getting_user_data;
 		}
 		unset($data);
@@ -1188,14 +1219,14 @@ class User extends Accessor {
 				/**
 				 * Many guests open only one page, so create session only for 5 min
 				 */
-				TIME + ($user != 1 || $Config->core['session_expire'] < 300 ? $Config->core['session_expire'] : 300),
+				TIME + ($user != self::GUEST_ID || $Config->core['session_expire'] < 300 ? $Config->core['session_expire'] : 300),
 				$this->user_agent,
 				$ip				= ip2hex($this->ip),
 				$forwarded_for	= ip2hex($this->forwarded_for),
 				$client_ip		= ip2hex($this->client_ip)
 			);
 			$time								= TIME;
-			if ($user != 1) {
+			if ($user != self::GUEST_ID) {
 				$this->db_prime()->q("UPDATE `[prefix]users` SET `last_sign_in` = $time, `last_online` = $time, `last_ip` = '$ip.' WHERE `id` ='$user'");
 			}
 			$this->current['session']			= $hash;
@@ -1265,7 +1296,7 @@ class User extends Accessor {
 			$session_id
 		);
 		if ($create_guest_session) {
-			return $this->add_session(1);
+			return $this->add_session(self::GUEST_ID);
 		}
 		return $result;
 	}
@@ -1570,7 +1601,7 @@ class User extends Accessor {
 		)) {
 			$this->reg_id = $this->db_prime()->id();
 			if (!$confirmation) {
-				$this->set_groups([2], $this->reg_id);
+				$this->set_groups([self::USER_GROUP_ID], $this->reg_id);
 			}
 			if (!$confirmation && $auto_sign_in && $Config->core['auto_sign_in_after_registration']) {
 				$this->add_session($this->reg_id);
@@ -1585,7 +1616,7 @@ class User extends Accessor {
 				return false;
 			}
 			if (!$confirmation) {
-				$this->set_groups([2], $this->reg_id);
+				$this->set_groups([self::USER_GROUP_ID], $this->reg_id);
 			}
 			unset($this->cache->$login_hash);
 			return [
@@ -1618,17 +1649,19 @@ class User extends Accessor {
 			return false;
 		}
 		$this->delete_unconfirmed_users();
-		$data			= $this->db_prime()->qf(
+		$data			= $this->db_prime()->qf([
 			"SELECT
 				`id`,
 				`login_hash`,
 				`email`
 			FROM `[prefix]users`
 			WHERE
-				`reg_key`	= '$reg_key' AND
-				`status`	= '-1'
-			LIMIT 1"
-		);
+				`reg_key`	= '%s' AND
+				`status`	= '%s'
+			LIMIT 1",
+			$reg_key,
+			self::STATUS_NOT_ACTIVATED
+		]);
 		if (!$data) {
 			return false;
 		}
@@ -1638,12 +1671,12 @@ class User extends Accessor {
 		$this->set(
 			[
 				'password_hash'	=> hash('sha512', hash('sha512', $password).Core::instance()->public_key),
-				'status'		=> 1
+				'status'		=> self::STATUS_ACTIVE
 			],
 			null,
 			$this->reg_id
 		);
-		$this->set_groups([2], $this->reg_id);
+		$this->set_groups([self::USER_GROUP_ID], $this->reg_id);
 		$this->add_session($this->reg_id);
 		if (!Trigger::instance()->run(
 			'System/User/registration/confirmation/after',
@@ -1668,7 +1701,7 @@ class User extends Accessor {
 		if ($this->reg_id == 0) {
 			return;
 		}
-		$this->add_session(1);
+		$this->add_session(self::GUEST_ID);
 		$this->del_user($this->reg_id);
 		$this->reg_id = 0;
 	}
@@ -1677,14 +1710,15 @@ class User extends Accessor {
 	 */
 	protected function delete_unconfirmed_users () {
 		$reg_date		= TIME - Config::instance()->core['registration_confirmation_time'] * 86400;	//1 day = 86400 seconds
-		$ids			= $this->db_prime()->qfas(
+		$ids			= $this->db_prime()->qfas([
 			"SELECT `id`
 			FROM `[prefix]users`
 			WHERE
 				`last_sign_in`	= 0 AND
-				`status`		= '-1' AND
-				`reg_date`		< $reg_date"
-		);
+				`status`		= '%s' AND
+				`reg_date`		< $reg_date",
+			self::STATUS_NOT_ACTIVATED
+		]);
 		$this->del_user($ids);
 
 	}
@@ -1696,7 +1730,7 @@ class User extends Accessor {
 	 * @return bool|string			Key for confirmation or <b>false</b> on failure
 	 */
 	function restore_password ($user) {
-		if ($user && $user != 1) {
+		if ($user && $user != self::GUEST_ID) {
 			$reg_key		= md5(MICROTIME.$this->ip);
 			if ($this->set('reg_key', $reg_key, $user)) {
 				$data					= $this->get('data', $user);
@@ -1724,9 +1758,10 @@ class User extends Accessor {
 			FROM `[prefix]users`
 			WHERE
 				`reg_key`	= '%s' AND
-				`status`	= '1'
+				`status`	= '%s'
 			LIMIT 1",
-			$key
+			$key,
+			self::STATUS_ACTIVE
 		]);
 		if (!$id) {
 			return false;
@@ -1835,14 +1870,15 @@ class User extends Accessor {
 					'%s',
 					'%s',
 					'%s',
-					1
+					'%s'
 				)",
 			xap($name),
 			xap($user_agent),
-			xap($ip)
+			xap($ip),
+			self::STATUS_ACTIVE
 		)) {
 			$id	= $this->db_prime()->id();
-			$this->set_groups([3], $id);
+			$this->set_groups([self::BOT_GROUP_ID], $id);
 			Trigger::instance()->run(
 				'System/User/add_bot',
 				[
@@ -1911,7 +1947,7 @@ class User extends Accessor {
 	 */
 	function get_contacts ($user = false) {
 		$user = (int)($user ?: $this->id);
-		if (!$user || $user == 1) {
+		if (!$user || $user == self::GUEST_ID) {
 			return [];
 		}
 		$contacts	= [];

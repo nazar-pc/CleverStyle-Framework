@@ -27,7 +27,7 @@ if (isset($_POST['mode'])) {
 		break;
 		case 'delete':
 			$id = (int)$_POST['id'];
-			if ($id != 1 && $id != 2 && $id != 3) {	//Three primary groups should not be deleted
+			if ($id != User::ADMIN_GROUP_ID && $id != User::USER_GROUP_ID && $id != User::BOT_GROUP_ID) {	//Three primary groups should not be deleted
 				$Index->save(
 					$Group->del($_POST['id'])
 				);

@@ -57,7 +57,7 @@ if ($confirm) {
 	$body	= $L->reg_need_confirmation_mail_body(
 		strstr($_POST['email'], '@', true),
 		get_core_ml_text('name'),
-		$Config->core_url().'/profile/registration_confirmation/'.$result['reg_key'],
+		$Config->core_url()."/profile/registration_confirmation/$result[reg_key]",
 		$L->time($Config->core['registration_confirmation_time'], 'd')
 	);
 } else {

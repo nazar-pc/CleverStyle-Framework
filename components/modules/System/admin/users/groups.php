@@ -195,7 +195,7 @@ if (isset($rc[2])) {
 					'data-title'	=> $L->edit_group_information
 				]
 			).
-			($id != 1 && $id != 2 && $id != 3 ? h::{'a.cs-button-compact'}(
+			($id != User::ADMIN_GROUP_ID && $id != User::USER_GROUP_ID && $id != User::BOT_GROUP_ID ? h::{'a.cs-button-compact'}(
 				h::icon('trash'),
 				[
 					'href'			=> "$a->action/delete/$id",
