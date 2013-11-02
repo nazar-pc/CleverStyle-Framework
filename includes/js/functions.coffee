@@ -156,14 +156,14 @@ cs.blocks_toggle			= (position) ->
  *
  * @return {string}
 ###
-cs.json_encode				= (obj) -> $.toJSON(obj)
+cs.json_encode				= (obj) -> JSON.stringify(obj)
 ###*
  * Decodes a JSON string
  *
  * @param {string}	str
  * @return {object}
 ###
-cs.json_decode				= (str) -> $.secureEvalJSON(str)
+cs.json_decode				= (str) -> JSON.parse(str)
 ###*
  * Supports algorithms sha1, sha224, sha256, sha384, sha512
  *
@@ -191,6 +191,8 @@ cs.hash						= (algo, data) ->
 ###
 cs.setcookie				= (name, value, expires) ->
 	name	= cs.cookie_prefix + name
+	if !value
+		return $.removeCookie(name)
 	if expires
 		date	= new Date()
 		date.setTime(expires * 1000)

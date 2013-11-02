@@ -191,7 +191,7 @@
 
 
   cs.json_encode = function(obj) {
-    return $.toJSON(obj);
+    return JSON.stringify(obj);
   };
 
   /**
@@ -203,7 +203,7 @@
 
 
   cs.json_decode = function(str) {
-    return $.secureEvalJSON(str);
+    return JSON.parse(str);
   };
 
   /**
@@ -249,6 +249,9 @@
   cs.setcookie = function(name, value, expires) {
     var date;
     name = cs.cookie_prefix + name;
+    if (!value) {
+      return $.removeCookie(name);
+    }
     if (expires) {
       date = new Date();
       date.setTime(expires * 1000);
