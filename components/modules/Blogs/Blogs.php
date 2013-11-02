@@ -18,8 +18,9 @@ use			cs\Trigger,
 /**
  * @method static \cs\modules\Blogs\Blogs instance($check = false)
  */
-class Blogs extends Accessor {
-	use Singleton;
+class Blogs {
+	use Accessor,
+		Singleton;
 
 	/**
 	 * @var Prefix

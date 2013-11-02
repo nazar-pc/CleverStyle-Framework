@@ -2,17 +2,21 @@
 /**
  * @package		CleverStyle CMS
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
+ * @copyright	Copyright (c) 2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
 namespace	cs\DB;
 use			cs\DB;
-
-abstract class Accessor {
-	protected	$db			= false,	//Link to db object
-				$db_prime	= false;	//Link to primary db object
+/**
+ * Accessor trait
+ *
+ * Provides db() and db_prime() methods for simplified for with DB
+ */
+trait Accessor {
+	private	$db			= false,	//Link to db object
+			$db_prime	= false;	//Link to primary db object
 	/**
-	 * Returns link to the object of db for reading (can be mirror DB)
+	 * Returns link to the object of db for reading (can be mirror of main DB)
 	 *
 	 * @return \cs\DB\_Abstract
 	 */

@@ -14,8 +14,9 @@ use			cs\DB\Accessor,
 			cs\Language,
 			cs\User,
 			cs\Singleton;
-class Comments extends Accessor {
-	use	Singleton;
+class Comments {
+	use	Accessor,
+		Singleton;
 
 	/**
 	 * @var string

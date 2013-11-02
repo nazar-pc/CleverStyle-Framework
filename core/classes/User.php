@@ -79,8 +79,9 @@ use			cs\Cache\Prefix,
  *
  * @method static \cs\User instance($check = false)
  */
-class User extends Accessor {
-	use	Singleton,
+class User {
+	use	Accessor,
+		Singleton,
 		Any;
 	/**
 	 * Id of system guest user
@@ -107,11 +108,11 @@ class User extends Accessor {
 	 */
 	const		STATUS_ACTIVE			= 1;
 	/**
-	 * Status of active user
+	 * Status of inactive user
 	 */
 	const		STATUS_INACTIVE			= 0;
 	/**
-	 * Status of active user
+	 * Status of not activated user
 	 */
 	const		STATUS_NOT_ACTIVATED	= -1;
 

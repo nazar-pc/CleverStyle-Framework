@@ -16,8 +16,9 @@ use			cs\Cache\Prefix,
 /**
  * @method static \cs\modules\OAuth2\OAuth2 instance($check = false)
  */
-class OAuth2 extends Accessor {
-	use	Singleton;
+class OAuth2 {
+	use	Accessor,
+		Singleton;
 
 	protected	$guest_tokens,
 				$automatic_prolongation,

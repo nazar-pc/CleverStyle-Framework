@@ -14,8 +14,9 @@ use			cs\Cache\Prefix,
  *
  * @method static \cs\Permission instance($check = false)
  */
-class Permission extends Accessor {
-	use	Singleton;
+class Permission {
+	use	Accessor,
+		Singleton;
 
 	protected	$permissions_table	= [];		//Array of all permissions for quick selecting
 

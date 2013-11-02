@@ -1,7 +1,7 @@
 {
 	"package"		: "Comments",
 	"category"		: "modules",
-	"version"		: "0.020",
+	"version"		: "0.021",
 	"description"	: "Adds comments functionality to other modules",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",
@@ -10,7 +10,7 @@
 		"MySQLi"
 	],
 	"provide"		: "comments",
-	"require"		: "System=>0.337",
+	"require"		: "System=>0.374",
 	"optional"		: [
 		"TinyMCE",
 		"simple_editor"
