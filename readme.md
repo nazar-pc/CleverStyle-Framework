@@ -58,7 +58,7 @@ Main features
 * Multiple Databases
  * Multiple Databases mirrors
 * Multiple files storages
-* System cache
+* System cache (FileSystem, APC, Memcached)
 * IP filtering and restriction
 * RESTful API
 * IPv6
@@ -72,6 +72,7 @@ Requirements:
  * Mcrypt library (recommended for encryption)
  * cUrl library (recommended for autotranslation)
  * APC (Alternative PHP cache) module (recommended for system speed up with PHP 5.4)
+ * Memcached (optionally for Memcached cache engine)
 * MySQL Database server (MariaDB will work as well)
  * System may be extended to support other databases
 
