@@ -8,6 +8,11 @@
 @import "../common_config";
 @import "mixins";
 
+* {
+	box-sizing : border-box;
+	-moz-box-sizing : border-box;
+}
+
 code {
 	font-family : $code-font-family;
 	white-space : normal;
