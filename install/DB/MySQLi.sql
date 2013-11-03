@@ -99,7 +99,6 @@ CREATE TABLE IF NOT EXISTS `[prefix]users` (
   `email` varchar(1024) NOT NULL,
   `email_hash` varchar(56) NOT NULL COMMENT 'hash method - sha224',
   `language` varchar(255) NOT NULL,
-  `theme` varchar(512) CHARACTER SET utf8 NOT NULL,
   `timezone` varchar(255) NOT NULL,
   `reg_date` bigint(20) unsigned NOT NULL DEFAULT '0',
   `reg_ip` varchar(32) NOT NULL COMMENT 'hex value, obtained by function ip2hex()',

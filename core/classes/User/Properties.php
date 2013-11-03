@@ -18,7 +18,6 @@ use			cs\User;
  * @property	string	$email
  * @property	string	$email_hash		sha224 hash
  * @property	string	$language
- * @property	string	$theme
  * @property	string	$timezone
  * @property	int		$reg_date		unix timestamp
  * @property	string	$reg_ip			hex value, obtained by function ip2hex()

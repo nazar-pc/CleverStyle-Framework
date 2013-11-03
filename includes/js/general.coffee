@@ -157,10 +157,6 @@ $ ->
 					location.reload()
 				$('#change_theme, #change_color_scheme, #change_language').click ->
 					$('#apply_settings').click()
-				$('#change_active_themes').change ->
-					$(this)
-						.find("option[value='" + $('#change_theme').val() + "']")
-						.prop('selected', true)
 				$('#change_active_languages').change ->
 					$(this)
 						.find("option[value='" + $('#change_language').val() + "']")

@@ -118,7 +118,7 @@ $list				= array_merge(
  */
 $list				= array_map(
 	function ($index, $file) use ($phar, $length) {
-		$phar->addFromString('fs/'.$index, file_get_contents($file));
+		$phar->addFromString("fs/$index", file_get_contents($file));
 		return substr($file, $length);
 	},
 	array_keys($list),
@@ -129,7 +129,7 @@ $list				= array_map(
  */
 $list[]				= 'readme.html';
 $phar->addFromString(
-	'fs/'.(count($list)-1),
+	'fs/'.(count($list) - 1),
 	str_replace(
 		[
 			'$version$',
@@ -164,7 +164,7 @@ $phar->addFromString(
  */
 $list[]				= 'core/fs.json';
 $phar->addFromString(
-	'fs/'.(count($list)-1),
+	'fs/'.(count($list) - 1),
 	_json_encode(
 		array_flip(array_diff(array_slice($list, 0, -1), _substr($components_list, $length)))
 	)
@@ -175,7 +175,7 @@ unset($components_list, $length);
  */
 $list[]				= '.htaccess';
 $phar->addFromString(
-	'fs/'.(count($list)-1),
+	'fs/'.(count($list) - 1),
 	'AddDefaultCharset utf-8
 IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
 
@@ -203,22 +203,22 @@ RewriteRule .* index.php
 );
 $list[]				= 'config/main.php';
 $phar->addFromString(
-	'fs/'.(count($list)-1),
+	'fs/'.(count($list) - 1),
 	file_get_contents(DIR.'/config/main.php')
 );
 $list[]				= 'favicon.ico';
 $phar->addFromString(
-	'fs/'.(count($list)-1),
+	'fs/'.(count($list) - 1),
 	file_get_contents(DIR.'/favicon.ico')
 );
 $list[]				= '.gitignore';
 $phar->addFromString(
-	'fs/'.(count($list)-1),
+	'fs/'.(count($list) - 1),
 	file_get_contents(DIR.'/.gitignore')
 );
 $list[]				= 'custom.php';
 $phar->addFromString(
-	'fs/'.(count($list)-1),
+	'fs/'.(count($list) - 1),
 	file_get_contents(DIR.'/custom.php')
 );
 /**
@@ -272,7 +272,7 @@ $phar->addFromString(
 );
 $phar->addFromString(
 	'version',
-	'"'.$version.'"'
+	"\"$version\""
 );
 unset($themes, $theme, $color_schemes);
 $phar				= $phar->convertToExecutable(Phar::TAR, Phar::BZ2, '.phar.tar');

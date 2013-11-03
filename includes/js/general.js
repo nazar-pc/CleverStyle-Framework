@@ -167,9 +167,6 @@
           $('#change_theme, #change_color_scheme, #change_language').click(function() {
             return $('#apply_settings').click();
           });
-          $('#change_active_themes').change(function() {
-            return $(this).find("option[value='" + $('#change_theme').val() + "']").prop('selected', true);
-          });
           $('#change_active_languages').change(function() {
             return $(this).find("option[value='" + $('#change_language').val() + "']").prop('selected', true);
           });

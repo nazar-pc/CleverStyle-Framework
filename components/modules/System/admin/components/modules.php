@@ -310,7 +310,7 @@ if (
 				$tmp_file = TEMP.'/'.md5($_FILES['upload_system']['tmp_name'].MICROTIME).'.phar.php'
 			);
 			$tmp_dir								= "phar://$tmp_file";
-			if (!file_exists("$tmp_dir/version") || !file_exists($tmp_dir.'/themes.json')) {
+			if (!file_exists("$tmp_dir/version") || !file_exists("$tmp_dir/themes.json")) {
 				$Page->warning($L->this_is_not_system_installer_file);
 				unlink($tmp_file);
 				break;

@@ -80,7 +80,7 @@ trait CRUD {
 		$columns	= "`".implode("`,`", array_keys($data_model))."`";
 		$values		= implode(',', array_fill(0, count($arguments), "'%s'"));
 		return $this->db_prime()->q(
-			"INSERT INTO $table
+			"INSERT INTO `$table`
 				(
 					$columns
 				) VALUES (
@@ -102,7 +102,7 @@ trait CRUD {
 		$columns	= "`".implode("`,`", array_keys($data_model))."`";
 		return $this->db()->qf([
 			"SELECT $columns
-			FROM $table
+			FROM `$table`
 			WHERE `id` = '%s'
 			LIMIT 1",
 			$arguments[0]
@@ -128,7 +128,7 @@ trait CRUD {
 		));
 		$arguments[]	= $id;
 		return (bool)$this->db_prime()->q(
-			"UPDATE $table
+			"UPDATE `$table`
 			SET $columns
 			WHERE `id` = '%s'
 			LIMIT 1",
@@ -146,7 +146,7 @@ trait CRUD {
 	 */
 	protected function delete ($table, $data_model, $arguments) {
 		return (bool)$this->db_prime()->q(
-			"DELETE FROM $table
+			"DELETE FROM `$table`
 			WHERE `id` = '%s'
 			LIMIT 1",
 			$arguments[0]

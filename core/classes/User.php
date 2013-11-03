@@ -61,7 +61,6 @@ use			cs\Cache\Prefix,
  * @property	string	$email
  * @property	string	$email_hash		sha224 hash
  * @property	string	$language
- * @property	string	$theme
  * @property	string	$timezone
  * @property	int		$reg_date		unix timestamp
  * @property	string	$reg_ip			hex value, obtained by function ip2hex()
@@ -302,19 +301,6 @@ class User {
 			}
 			if ($Config->core['multilingual']) {
 				Language::instance()->change($this->language);
-			}
-			if ($this->theme) {
-				$theme = _json_decode($this->theme);
-				if (
-					!is_array($theme) &&
-					$theme['theme'] &&
-					$theme['color_scheme'] &&
-					!_getcookie('theme') &&
-					!_getcookie('color_scheme')
-				) {
-					_setcookie('theme', $theme['theme']);
-					_setcookie('color_scheme', $theme['color_scheme']);
-				}
 			}
 		}
 		/**

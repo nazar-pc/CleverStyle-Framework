@@ -157,37 +157,23 @@ class Page {
 		 * Theme detection
 		 */
 		if (is_object($Config)) {
-			$this->theme		= in_array($this->theme, $Config->core['active_themes']) ? $this->theme : $Config->core['theme'];
-			if ($Config->core['allow_change_theme']) {
-				$theme				= _getcookie('theme');
-				if ($theme && $theme !== $this->theme && in_array($theme, $Config->core['active_themes'])) {
-					$this->theme = $theme;
-				}
-				unset($theme);
-			}
+			$this->theme		= in_array($this->theme, $Config->core['themes']) ? $this->theme : $Config->core['theme'];
 			$this->color_scheme	= in_array($this->color_scheme, $Config->core['color_schemes'][$this->theme]) ?
 									$this->color_scheme : $Config->core['color_schemes'][$this->theme][0];
-			if ($Config->core['allow_change_theme']) {
-				$color_scheme		= _getcookie('color_scheme');
-				if ($color_scheme && $color_scheme !== $this->color_scheme && in_array($color_scheme, $Config->core['color_schemes'][$this->theme])) {
-					$this->color_scheme = $color_scheme;
-				}
-				unset($color_scheme);
-			}
 		}
 		/**
 		 * Base name for cache files
 		 */
-		$this->pcache_basename	= '_'.$this->theme.'_'.$this->color_scheme.'_'.Language::instance()->clang.'.';
+		$this->pcache_basename	= "_{$this->theme}_{$this->color_scheme}_".Language::instance()->clang.'.';
 		/**
 		 * Template loading
 		 */
 		if ($this->interface) {
-			_include_once(THEMES.'/'.$this->theme.'/prepare.php', false);
+			_include_once(THEMES."/$this->theme/prepare.php", false);
 			ob_start();
 			if (
 				!(
-					file_exists(THEMES.'/'.$this->theme.'/index.html') || file_exists(THEMES.'/'.$this->theme.'/index.php')
+					file_exists(THEMES."/$this->theme/index.html") || file_exists(THEMES."/$this->theme/index.php")
 				) ||
 				(
 					!(
@@ -196,7 +182,7 @@ class Page {
 					!User::instance(true)->admin() &&
 					code_header(503) &&
 					!(
-						_include_once(THEMES.'/'.$this->theme.'/closed.php', false) || _include_once(THEMES.'/'.$this->theme.'/closed.html', false)
+						_include_once(THEMES."/$this->theme/closed.php", false) || _include_once(THEMES."/$this->theme/closed.html", false)
 					)
 				)
 			) {
@@ -204,7 +190,7 @@ class Page {
 				h::title(get_core_ml_text('closed_title')).
 				get_core_ml_text('closed_text');
 			} else {
-				_include_once(THEMES.'/'.$this->theme.'/index.php', false) || _include_once(THEMES.'/'.$this->theme.'/index.html');
+				_include_once(THEMES."/$this->theme/index.php", false) || _include_once(THEMES."/$this->theme/index.html");
 			}
 			$this->Html = ob_get_clean();
 		}

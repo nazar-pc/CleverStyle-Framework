@@ -27,7 +27,6 @@ $columns		= [
 	'login',
 	'username',
 	'language',
-	'theme',
 	'timezone',
 	'avatar'
 ];
@@ -58,18 +57,6 @@ if (isset($_POST['user']) && $_POST['edit_settings'] == 'save') {
 			$Page->warning($L->login_occupied_or_is_not_valid);
 		}
 		unset($user_data['login']);
-	}
-	if ($user_data['theme']) {
-		$theme = _json_decode($user_data['theme']);
-		if (!(
-			in_array($theme['theme'], $Config->core['active_themes']) &&
-			in_array($theme['color_scheme'], $Config->core['color_schemes'][$theme['theme']])
-		)) {
-			unset($user_data['theme']);
-		}
-		unset($theme);
-	} else {
-		unset($user_data['theme']);
 	}
 	$Index->save($User->set($user_data));
 	unset($user_data);
@@ -103,18 +90,6 @@ switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 			return	h::th($col1).
 				h::td($col2);
 		};
-		$themes							= [
-			"$L->system_default ({$Config->core['theme']} - ".($Config->core['color_scheme'] ?: $Config->core['color_schemes'][$Config->core['theme']][0]).')' => ''
-		];
-		foreach ($Config->core['active_themes'] as $theme) {
-			foreach ($Config->core['color_schemes'][$theme] as $color_scheme) {
-				$themes["$theme - $color_scheme"] = _json_encode([
-					'theme'			=> $theme,
-					'color_scheme'	=> $color_scheme
-				]);
-			}
-		}
-		unset($theme, $color_scheme);
 		$Index->form					= true;
 		$Index->form_atributes['class']	= 'cs-center';
 		$Index->apply_button			= false;
@@ -142,17 +117,6 @@ switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 					[
 						'name'		=> 'user[language]',
 						'selected'	=> $user_data['language'],
-						'size'		=> 5
-					]
-				)),
-				$row($L->theme, h::select(
-					[
-						'in'		=> array_keys($themes),
-						'value'		=> array_values($themes)
-					],
-					[
-						'name'		=> 'user[theme]',
-						'selected'	=> $user_data['theme'],
 						'size'		=> 5
 					]
 				)),

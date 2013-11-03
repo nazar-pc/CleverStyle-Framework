@@ -135,7 +135,6 @@ if (isset($rc[2], $rc[3])) {
 						'username',
 						'email',
 						'language',
-						'theme',
 						'timezone',
 						'reg_date',
 						'reg_ip',
@@ -151,18 +150,6 @@ if (isset($rc[2], $rc[3])) {
 				$timezones				= get_timezones_list();
 				$reg_ip					= hex2ip($user_data['reg_ip'], 10);
 				$last_ip				= hex2ip($user_data['last_ip'], 10);
-				$themes					= [
-					"$L->system_default ({$Config->core['theme']} - {$Config->core['color_scheme']})" => ''
-				];
-				foreach ($Config->core['active_themes'] as $theme) {
-					foreach ($Config->core['color_schemes'][$theme] as $color_scheme) {
-						$themes["$theme - $color_scheme"] = _json_encode([
-							'theme'			=> $theme,
-							'color_scheme'	=> $color_scheme
-						]);
-					}
-				}
-				unset($theme, $color_scheme);
 				$Page->title(
 					$L->editing_of_user_information($User->username($rc[3]))
 				);
@@ -206,17 +193,6 @@ if (isset($rc[2], $rc[3])) {
 							[
 								'name'		=> 'user[language]',
 								'selected'	=> $user_data['language'],
-								'size'		=> 5
-							]
-						)),
-						row($L->theme, h::select(
-							[
-								'in'		=> array_keys($themes),
-								'value'		=> array_values($themes)
-							],
-							[
-								'name'		=> 'user[theme]',
-								'selected'	=> $user_data['theme'],
 								'size'		=> 5
 							]
 						)),
