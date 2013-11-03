@@ -13,3 +13,4 @@ unset(
 	$Config->core['active_themes'],
 	$Config->core['allow_change_theme']
 );
+$Config->save();
