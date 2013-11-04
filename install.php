@@ -1,4 +1,3 @@
-<!doctype html>
 <?php
 /**
  * @package		CleverStyle CMS
@@ -25,7 +24,8 @@ require_once DIR.'/install/functions.php';
 date_default_timezone_set('UTC');
 header('Content-Type: text/html; charset=utf-8');
 header('Connection: close');
-echo	h::title('CleverStyle CMS $version$ Installation').
+echo	"<!doctype html>\n".
+		h::title('CleverStyle CMS $version$ Installation').
 		h::meta([
 			'charset'	=> 'utf-8'
 		]).

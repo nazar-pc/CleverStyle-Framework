@@ -45,10 +45,10 @@
     return $('.cs-blogs-post-form').parents('form').submit(function() {
       var form;
       form = $(this);
-      if (title.not('input')) {
+      if (!title.is('input')) {
         form.append($('<input name="title" class="uk-hidden" />').val(title.text()));
       }
-      if (content.not('textarea')) {
+      if (!content.is('textarea')) {
         return form.append($('<textarea name="content" class="uk-hidden" />').val(content.html()));
       }
     });

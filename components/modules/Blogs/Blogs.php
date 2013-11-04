@@ -237,6 +237,7 @@ class Blogs {
 				)
 			)
 		);
+		$tags		= array_unique($tags);
 		$tags		= implode(
 			',',
 			array_unique(
