@@ -68,7 +68,7 @@ $Index->content(
 		],
 		preg_match('/apache/i', $_SERVER['SERVER_SOFTWARE']) ? [
 			$L->version_of('Apache').':',
-			$_SERVER['SERVER_SOFTWARE']
+			apache_get_version()
 		] : false,
 		preg_match('/nginx/i', $_SERVER['SERVER_SOFTWARE']) ? [
 			$L->version_of('Nginx').':',
