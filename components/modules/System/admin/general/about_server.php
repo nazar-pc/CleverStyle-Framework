@@ -68,7 +68,7 @@ $Index->content(
 		],
 		preg_match('/apache/i', $_SERVER['SERVER_SOFTWARE']) ? [
 			$L->version_of('Apache').':',
-			apache_get_version()
+			apache_version()
 		] : false,
 		preg_match('/nginx/i', $_SERVER['SERVER_SOFTWARE']) ? [
 			$L->version_of('Nginx').':',
@@ -259,6 +259,16 @@ function server_api () {
 	} else {
 		return Language::instance()->indefinite;
 	}
+}
+function apache_version () {
+	preg_match(
+		'/Apache[\-\/]([0-9\.\-]+)/',
+		ob_wrapper(function () {
+			phpinfo();
+		}),
+		$version
+	);
+	return $version[1];
 }
 /**
  * Returns autocompression level of zlib library
