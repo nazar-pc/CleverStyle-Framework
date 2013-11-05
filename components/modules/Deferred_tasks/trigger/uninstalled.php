@@ -14,7 +14,7 @@ Trigger::instance()->register(
 			return;
 		}
 		Config::instance()->module('Deferred_tasks')->set([
-			'posts_per_page'	=> hash('sha224', MICROTIME . uniqid()),
+			'security_key'		=> hash('sha224', MICROTIME . uniqid()),
 			'number_of_workers'	=> 5
 		]);
 		return;

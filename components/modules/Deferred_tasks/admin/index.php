@@ -31,8 +31,12 @@ $Index->content(
 	).
 	h::p(
 		$L->insert_line_into_cron,
-		h::{'textarea[disabled]'}("* * * * wget -O /dev/null {$Config->base_url()}/Deferred_tasks/$module_data->security_key"),
+		h::{'input[readonly]'}([
+			'value'	=> "* * * * wget -O /dev/null {$Config->base_url()}/Deferred_tasks/$module_data->security_key"
+		]),
 		$L->or_use_online_services.
-		h::{'textarea[disabled]'}($Config->base_url()."/Deferred_tasks/$module_data->security_key")
+		h::{'input[readonly]'}([
+			'value'	=> $Config->base_url()."/Deferred_tasks/$module_data->security_key"
+		])
 	)
 );
