@@ -1,0 +1,9 @@
+{
+	"Deferred_tasks"							: "Відкладені задачі",
+	"deferred_tasks_security_key"				: "Ключ безпеки",
+	"deferred_tasks_security_key_info"			: "Ключ безпеки використовується для генерації адрес, які не можуть бути вгаданими. Рядок має бути випадковим.",
+	"deferred_tasks_max_number_of_workers"		: "Максимальна кількість воркерів",
+	"deferred_tasks_max_number_of_workers_info"	: "Максимальна кількість задач, які можуть бути запущеними одночасно",
+	"deferred_tasks_insert_line_into_cron"		: "Додайте наступний рядок в ваш cron файл",
+	"deferred_tasks_or_use_online_services"		: "або використовуйде наступну адресу для online cron сервісів"
+}

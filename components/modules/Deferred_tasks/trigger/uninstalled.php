@@ -14,8 +14,8 @@ Trigger::instance()->register(
 			return;
 		}
 		Config::instance()->module('Deferred_tasks')->set([
-			'security_key'		=> hash('sha224', MICROTIME . uniqid()),
-			'number_of_workers'	=> 5
+			'security_key'			=> hash('sha224', MICROTIME . uniqid()),
+			'max_number_of_workers'	=> 5
 		]);
 		return;
 	}

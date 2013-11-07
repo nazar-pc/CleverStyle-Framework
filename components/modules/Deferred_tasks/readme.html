@@ -1,0 +1,48 @@
+<h3 style="text-align: center;">Deferred tasks allows other components to create tasks, that can be executed not immediately, but little bit later. Usually is used for parsers, rating calculators and other purposes, when it is necessary to do some tasks on regular basis.</h3>
+<h4>Tasks addition and deletion.</h4>
+<ul>
+	<li>
+		<p>Addition</p>
+		<h4>\cs\modules\Deferred_tasks\Deferred_tasks::instance()->add($module, $data, $expected, $begin = 0, $priority = 1)</h4>
+		<dl>
+			<dt>$module</dt>
+			<dd>Current module, that adds task</dd>
+			<dt>$data</dt>
+			<dd>Any data needed for the task execution</dd>
+			<dt>$expected</dt>
+			<dd>Max time in seconds, during which task is expected to be finished</dd>
+			<dt>$begin</dt>
+			<dd>Unix timestamp, task will not be executed until this time</dd>
+			<dt>$priority</dt>
+			<dd>Priority 0..2, higher number - higher priority</dd>
+		</dl>
+		Task addition is also needed at the end of execution in order to make repeating tasks.
+	</li>
+	<li>
+		<h4>\cs\modules\Deferred_tasks\Deferred_tasks::instance()->del($id)</h4>
+		<dl>
+			<dt>$id</dt>
+			<dd>Id of task</dd>
+		</dl>
+		<p>Normally task is deleted after execution automatically, but sometimes you may need to delete it earlier, or prevent repeat execution if previous execution failed.</p>
+	</li>
+</ul>
+<h4>Next trigger is used for task execution:</h4>
+<ul>
+	<li>
+		<h4>Deferred_tasks/{module_name}</h4>
+		<pre>[
+	'id'		=> <i>task_id</i>
+	'data'		=> <i>data</i>
+]</pre>
+		<dl>
+			<dt>{module_name}</dt>
+			<dd>For easy separation - trigger name depends on specified module when task was added</dd>
+			<dt>id</dt>
+			<dd>Task id</dd>
+			<dt>data</dt>
+			<dd>Data, specified during task addition</dd>
+		</dl>
+	</li>
+</ul>
+<p>There are several other methods, but they are used directly not so frequent, so, you can find them with description in source code and IDE suggestions.</p>
