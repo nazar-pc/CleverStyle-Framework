@@ -184,6 +184,7 @@ if (
 					'storage'	=> []
 				];
 				unset($tmp_file, $module);
+				ksort($Config->components['modules'], SORT_STRING | SORT_FLAG_CASE);
 				$Config->save();
 			} elseif ($rc[3] == 'upload') {
 				break;

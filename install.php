@@ -9,6 +9,9 @@
 if (version_compare(PHP_VERSION, '5.4', '<')) {
 	exit('CleverStyle CMS require PHP 5.4 or higher');
 }
+if (count(explode('/', $_SERVER['REQUEST_URI'])) > 3) {
+	exit('Installation into subdirectory is not supported!');
+}
 define('DIR',	__DIR__);														//Path to installer dir
 $ROOT	= pathinfo(__DIR__, PATHINFO_DIRNAME);
 mb_internal_encoding('utf-8');
