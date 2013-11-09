@@ -40,13 +40,6 @@ class Core {
 		}
 		if (!is_dir(CACHE)) {
 			@mkdir(CACHE, 0700);
-			file_put_contents(
-				CACHE.'/.gitignore',
-				"#do not commit cache\n".
-				"/*\n".
-				"!/.gitignore\n".
-				"!/.htaccess"
-			);
 		}
 		if (!is_dir(PCACHE)) {
 			@mkdir(PCACHE, 0755);
@@ -55,36 +48,15 @@ class Core {
 				"Allow From All\r\nAddEncoding gzip .js\n".
 				"AddEncoding gzip .css"
 			);
-			file_put_contents(
-				PCACHE.'/.gitignore',
-				"#do not commit public cache\n".
-				"/*\n".
-				"!/.gitignore\n".
-				"!/.htaccess"
-			);
 		}
 		if (!is_dir(LOGS)) {
 			@mkdir(LOGS, 0700);
-			file_put_contents(
-				PCACHE.'/.gitignore',
-				"#do not commit logs\n".
-				"/*\n".
-				"!/.gitignore\n".
-				"!/.htaccess"
-			);
 		}
 		if (!is_dir(TEMP)) {
 			@mkdir(TEMP, 0755);
 			file_put_contents(
 				TEMP.'/.htaccess',
 				'Allow From All'
-			);
-			file_put_contents(
-				TEMP.'/.gitignore',
-				"#do not commit temp files\n".
-				"/*\n".
-				"!/.gitignore\n".
-				"!/.htaccess"
 			);
 		}
 		if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') === 0) {

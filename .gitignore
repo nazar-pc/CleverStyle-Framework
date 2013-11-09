@@ -1,6 +1,11 @@
-#do not commit IDE settings
-/.idea
-#do not commit installer builds
+#Do not commit IDE settings
+.idea
+#Do not commit installer builds
 *.phar.php
 #Do not commit fs.json files of components
 components/*/*/fs.json
+#Do not commit configuration
+config/main.json
+#do not commit files from storage directory
+storage/*/*
+!storage/*/.htaccess
