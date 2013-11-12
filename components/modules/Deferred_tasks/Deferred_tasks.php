@@ -71,19 +71,15 @@ class Deferred_tasks {
 	 * @return bool|int				Id of created task or <i>false</i> on failure
 	 */
 	function add ($module, $data, $expected, $begin = 0, $priority = 1) {
-		return $this->create(
-			$this->table,
-			$this->data_model,
-			[
-				$begin,
-				0,
-				'',
-				$expected,
-				$priority,
-				$module,
-				$data
-			]
-		);
+		return $this->create_simple([
+			$begin,
+			0,
+			'',
+			$expected,
+			$priority,
+			$module,
+			$data
+		]);
 	}
 	/**
 	 * Get task
@@ -93,11 +89,7 @@ class Deferred_tasks {
 	 * @return bool|mixed
 	 */
 	protected function get ($id) {
-		$data	= $this->read(
-			$this->table,
-			$this->data_model,
-			$id
-		) ?: false;
+		$data	= $this->read_simple($id) ?: false;
 		if ($data) {
 			$data['data']	= _json_decode($data['data']);
 		}
@@ -111,7 +103,7 @@ class Deferred_tasks {
 	 * @return bool|mixed
 	 */
 	function del ($id) {
-		return $this->delete($this->table, $id);
+		return $this->delete_simple($id);
 	}
 	/**
 	 * Run tasks execution

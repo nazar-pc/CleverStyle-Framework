@@ -93,13 +93,25 @@ trait CRUD {
 		) ? $this->db_prime()->id() : false;
 	}
 	/**
+	 * Wrapper for create() method, when $table and $data_model arguments are expected to be a properties of class
+	 *
+	 * @see create
+	 *
+	 * @param array	$arguments	First element <i>id</i> can be omitted if it is autoincrement field
+	 *
+	 * @return bool|int			Id of created item on success, <i>false</i> otherwise
+	 */
+	protected function create_simple ($arguments) {
+		return $this->create($this->table, $this->data_model, $arguments);
+	}
+	/**
 	 * Read item
 	 *
 	 * @param string				$table
 	 * @param Closure[]|string[]	$data_model
 	 * @param int|int[]				$id
 	 *
-	 * @return bool
+	 * @return array|bool
 	 */
 	protected function read ($table, $data_model, $id) {
 		if (is_array($id)) {
@@ -116,6 +128,18 @@ trait CRUD {
 			LIMIT 1",
 			$id
 		]) ?: false;
+	}
+	/**
+	 * Wrapper for read() method, when $table and $data_model arguments are expected to be a properties of class
+	 *
+	 * @see read
+	 *
+	 * @param int|int[]		$id
+	 *
+	 * @return array|bool
+	 */
+	protected function read_simple ($id) {
+		return $this->read($this->table, $this->data_model, $id);
 	}
 	/**
 	 * Update item
@@ -145,6 +169,18 @@ trait CRUD {
 		);
 	}
 	/**
+	 * Wrapper for update() method, when $table and $data_model arguments are expected to be a properties of class
+	 *
+	 * @see update
+	 *
+	 * @param array	$arguments
+	 *
+	 * @return bool
+	 */
+	protected function update_simple ($arguments) {
+		return $this->update($this->table, $this->data_model, $arguments);
+	}
+	/**
 	 * Delete item
 	 *
 	 * @param string	$table
@@ -160,5 +196,17 @@ trait CRUD {
 			LIMIT 1",
 			$id
 		);
+	}
+	/**
+	 * Wrapper for delete() method, when $table argument is expected to be a property of class
+	 *
+	 * @see delete
+	 *
+	 * @param int|int[]	$id
+	 *
+	 * @return bool
+	 */
+	protected function delete_simple ($id) {
+		return $this->delete($this->table, $this->data_model, $id);
 	}
 }
