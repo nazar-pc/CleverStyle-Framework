@@ -47,6 +47,7 @@
  */
 namespace	cs;
 use			cs\Cache\Prefix,
+			cs\User\Properties,
 			cs\DB\Accessor,
 			cs\Permission\Any,
 			h;
@@ -343,14 +344,14 @@ class User {
 	/**
 	 * Get data item of specified user
 	 *
-	 * @param string|string[]						$item
-	 * @param bool|int 								$user	If not specified - current user assumed
+	 * @param string|string[]					$item
+	 * @param bool|int 							$user	If not specified - current user assumed
 	 *
-	 * @return bool|string|mixed[]|User\Properties			If <i>$item</i> is integer - User\Properties object will be returned
+	 * @return bool|string|mixed[]|Properties			If <i>$item</i> is integer - cs\User\Properties object will be returned
 	 */
 	function get ($item, $user = false) {
 		if (is_scalar($item) && preg_match('/^[0-9]+$/', $item)) {
-			return new User\Properties($item);
+			return new Properties($item);
 		}
 		switch ($item) {
 			case 'user_agent':
@@ -550,11 +551,45 @@ class User {
 	 */
 	function get_data ($item, $user = false) {
 		$user	= (int)($user ?: $this->id);
-		if (!$user || $user == self::GUEST_ID) {
+		if (!$user || $user == self::GUEST_ID || !$item) {
 			return false;
 		}
 		$Cache	= $this->cache;
-		if (($data = $Cache->{"data/$user"}) === false || !isset($data[$item])) {
+		$data	= $Cache->{"data/$user"};
+		if (is_array($item)) {
+			$result	= [];
+			$absent	= [];
+			foreach ($item as $i) {
+				if (isset($data[$i])) {
+					$result[$i]	= $data[$i];
+				} else {
+					$absent[]	= $i;
+				}
+			}
+			unset($i);
+			if ($absent) {
+				$absent					= implode(
+					',',
+					$this->db()->s($absent)
+				);
+				$absent					= array_column(
+					$this->db()->qfa([
+						"SELECT `item`, `value`
+						FROM `[prefix]users_data`
+						WHERE
+							`id`	= '$user' AND
+							`item`	IN($absent)",
+					]),
+					'value',
+					'item'
+				);
+				$result					+= $absent;
+				$data					+= $absent;
+				$Cache->{"data/$user"}	= $data;
+			}
+			return $result;
+		}
+		if ($data === false || !isset($data[$item])) {
 			if (!is_array($data)) {
 				$data	= [];
 			}
@@ -566,7 +601,7 @@ class User {
 					`item`	= '%s'",
 				$item
 			]);
-			$Cache->{"data/$user"}	= $data[$item];
+			$Cache->{"data/$user"}	= $data;
 		}
 		return _json_decode($data[$item]);
 	}
@@ -581,46 +616,71 @@ class User {
 	 */
 	function set_data ($item, $value = null, $user = false) {
 		$user	= (int)($user ?: $this->id);
-		if (!$user || $user == self::GUEST_ID) {
+		if (!$user || $user == self::GUEST_ID || !$item) {
 			return false;
 		}
-		$result	= $this->db()->q(
-			"INSERT INTO `[prefix]users_data`
-				(
-					`id`,
-					`item`,
-					`value`
-				) VALUES (
-					'$user',
-					'%s',
-					'%s'
-				)
-			ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)",
-			$item,
-			_json_encode($value)
-		);
+		if (is_array($item)) {
+			$inserts		= [];
+			$inserts_data	= [];
+			foreach ($item as $i => $v) {
+				$inserts[]		= "($user, '%s', '%s')";
+				$inserts_data[]	= $i;
+				$inserts_data[]	= $v;
+			}
+			unset($i, $v);
+			$inserts		= implode(',', $inserts);
+			$result			= $this->db_prime()->q(
+				"INSERT INTO `[prefix]users_data`
+					(
+						`id`,
+						`item`,
+						`value`
+					) VALUES $inserts
+				ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)",
+				$inserts_data
+			);
+		} else {
+			$result	= $this->db_prime()->q(
+				"INSERT INTO `[prefix]users_data`
+					(
+						`id`,
+						`item`,
+						`value`
+					) VALUES (
+						'$user',
+						'%s',
+						'%s'
+					)
+				ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)",
+				$item,
+				_json_encode($value)
+			);
+		}
 		unset($this->cache->{"data/$user"});
 		return $result;
 	}
 	/**
 	 * Deletion of additional data item(s) of specified user
 	 *
-	 * @param string|string[]		$item
-	 * @param bool|int				$user	If not specified - current user assumed
+	 * @param string|string[]	$item
+	 * @param bool|int			$user	If not specified - current user assumed
 	 *
 	 * @return bool
 	 */
 	function del_data ($item, $user = false) {
 		$user	= (int)($user ?: $this->id);
-		if (!$user || $user == self::GUEST_ID) {
+		if (!$user || $user == self::GUEST_ID || !$item) {
 			return false;
 		}
-		$result	= $this->db()->q(
+		$item	= implode(
+			',',
+			$this->db_prime()->s((array)$item)
+		);
+		$result	= $this->db_prime()->q(
 			"DELETE FROM `[prefix]users_data`
 			WHERE
 				`id`	= '$user' AND
-				`item`	= '%s'",
-			$item
+				`item`	IN($item)"
 		);
 		unset($this->cache->{"data/$user"});
 		return $result;
