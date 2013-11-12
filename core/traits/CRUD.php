@@ -71,12 +71,15 @@ trait CRUD {
 	 *
 	 * @param string				$table
 	 * @param Closure[]|string[]	$data_model
-	 * @param array					$arguments
+	 * @param array					$arguments	First element <i>id</i> can be omitted if it is autoincrement field
 	 *
-	 * @return bool|int				Id of created item on success, <i>false</i> otherwise
+	 * @return bool|int							Id of created item on success, <i>false</i> otherwise
 	 */
 	protected function create ($table, $data_model, $arguments) {
-		self::crud_arguments_preparation(array_slice($data_model, 1), $arguments);
+		self::crud_arguments_preparation(
+			count($data_model) == count($arguments) ? $data_model : array_slice($data_model, 1),
+			$arguments
+		);
 		$columns	= "`".implode("`,`", array_keys($data_model))."`";
 		$values		= implode(',', array_fill(0, count($arguments), "'%s'"));
 		return $this->db_prime()->q(
@@ -94,18 +97,24 @@ trait CRUD {
 	 *
 	 * @param string				$table
 	 * @param Closure[]|string[]	$data_model
-	 * @param array					$arguments
+	 * @param int|int[]				$id
 	 *
 	 * @return bool
 	 */
-	protected function read ($table, $data_model, $arguments) {
+	protected function read ($table, $data_model, $id) {
+		if (is_array($id)) {
+			foreach ($id as &$i) {
+				$i	= $this->read($table, $data_model, $i);
+			}
+			return $id;
+		}
 		$columns	= "`".implode("`,`", array_keys($data_model))."`";
 		return $this->db()->qf([
 			"SELECT $columns
 			FROM `$table`
 			WHERE `id` = '%s'
 			LIMIT 1",
-			$arguments[0]
+			$id
 		]) ?: false;
 	}
 	/**
@@ -138,18 +147,18 @@ trait CRUD {
 	/**
 	 * Delete item
 	 *
-	 * @param string				$table
-	 * @param Closure[]|string[]	$data_model
-	 * @param array					$arguments
+	 * @param string	$table
+	 * @param int|int[]	$id
 	 *
 	 * @return bool
 	 */
-	protected function delete ($table, $data_model, $arguments) {
+	protected function delete ($table, $id) {
+		$id	= implode(',', _int((array)$id));
 		return (bool)$this->db_prime()->q(
 			"DELETE FROM `$table`
-			WHERE `id` = '%s'
+			WHERE `id` IN(%s)
 			LIMIT 1",
-			$arguments[0]
+			$id
 		);
 	}
 }

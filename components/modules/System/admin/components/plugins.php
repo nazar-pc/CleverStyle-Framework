@@ -343,7 +343,7 @@ $a->content(
 			$L->state,
 			$L->action
 		).
-		h::{'tbody tr| td'}([$plugins_list])
+		h::{'tbody tr| td'}([$plugins_list ?: false])
 	).
 	h::p(
 		h::{'input[type=file][name=upload_plugin]'}([

@@ -96,7 +96,7 @@ class Deferred_tasks {
 		$data	= $this->read(
 			$this->table,
 			$this->data_model,
-			[$id]
+			$id
 		) ?: false;
 		if ($data) {
 			$data['data']	= _json_decode($data['data']);
@@ -111,11 +111,7 @@ class Deferred_tasks {
 	 * @return bool|mixed
 	 */
 	function del ($id) {
-		return $this->delete(
-			$this->table,
-			$this->data_model,
-			[$id]
-		);
+		return $this->delete($this->table, $id);
 	}
 	/**
 	 * Run tasks execution
