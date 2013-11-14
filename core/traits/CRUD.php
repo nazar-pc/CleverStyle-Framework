@@ -20,7 +20,7 @@ trait CRUD {
 	 * @param array					$arguments
 	 */
 	private function crud_arguments_preparation ($data_model, &$arguments) {
-		$arguments	= array_combine($data_model, $arguments);
+		$arguments	= array_combine(array_keys($data_model), $arguments);
 		array_walk(
 			$arguments,
 			function (&$argument, $item) use ($data_model) {
@@ -76,11 +76,12 @@ trait CRUD {
 	 * @return bool|int							Id of created item on success, <i>false</i> otherwise
 	 */
 	protected function create ($table, $data_model, $arguments) {
+		$insert_id	= count($data_model) == count($arguments);
 		self::crud_arguments_preparation(
-			count($data_model) == count($arguments) ? $data_model : array_slice($data_model, 1),
+			$insert_id ? $data_model : array_slice($data_model, 1),
 			$arguments
 		);
-		$columns	= "`".implode("`,`", array_keys($data_model))."`";
+		$columns	= "`".implode("`,`", array_keys($insert_id ? $data_model : array_slice($data_model, 1)))."`";
 		$values		= implode(',', array_fill(0, count($arguments), "'%s'"));
 		return $this->db_prime()->q(
 			"INSERT INTO `$table`
