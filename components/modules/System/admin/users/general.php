@@ -24,7 +24,6 @@ Index::instance()->content(
 				'name'		=> 'core[sign_in_attempts_block_count]',
 				'value'		=> $Config->core['sign_in_attempts_block_count'],
 				'min'		=> 0,
-				'onClick'	=> "if ($(this).val() == 0) { $('.cs-sign-in-attempts-block-count').hide(); } else { $('.cs-sign-in-attempts-block-count').show(); }",
 				'onChange'	=> "if ($(this).val() == 0) { $('.cs-sign-in-attempts-block-count').hide(); } else { $('.cs-sign-in-attempts-block-count').show(); }"
 			])
 		],
@@ -45,7 +44,7 @@ Index::instance()->content(
 				'checked'	=> $Config->core['allow_user_registration'],
 				'value'		=> [0, 1],
 				'in'		=> [$L->off, $L->on],
-				'onClick'	=> [
+				'onchange'	=> [
 					"$('.cs-allow-user-registration').hide();",
 					"$('.cs-allow-user-registration').show();".
 						"if (!$('.cs-allow-user-registration input[value=1]').prop('checked')) { $('.cs-require-registration-confirmation').hide(); }"
@@ -60,7 +59,7 @@ Index::instance()->content(
 					'checked'		=> $Config->core['require_registration_confirmation'],
 					'value'			=> [0, 1],
 					'in'			=> [$L->off, $L->on],
-					'onClick'		=> [
+					'onchange'		=> [
 						"$('.cs-require-registration-confirmation').hide();",
 						"$('.cs-require-registration-confirmation').show();"
 					]

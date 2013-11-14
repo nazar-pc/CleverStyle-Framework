@@ -478,77 +478,43 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 		 */
 		} elseif ($result == 'exists') {
 			/**
-			 * If registration confirmation is not required - make merge of accounts and login
+			 * Send merging confirmation mail
 			 */
-			if (!$Config->core['require_registration_confirmation']) {
-				$user	= $User->get_id(hash('sha224', $_POST['email']));
-				$db->$db_id()->q(
-					"INSERT INTO `[prefix]users_social_integration`
-						(
-							`id`,
-							`provider`,
-							`identifier`,
-							`profile`
-						) VALUES (
-							'%s',
-							'%s',
-							'%s',
-							'%s'
-						)",
-					$user,
-					$rc[0],
-					$HybridAuth_data['identifier'],
-					$HybridAuth_data['profile']
-				);
-				if ($User->get('status', $user) == User::STATUS_NOT_ACTIVATED) {
-					$User->set('status', User::STATUS_ACTIVE, $user);
-				}
-				unset($user);
-				$User->del_session_data('HybridAuth');
-				$profile_info				= $HybridAuth_data['profile_info'];
-				$contacts					= $HybridAuth_data['contacts'];
-				$email						= $_POST['email'];
-				goto success_registration;
-			/**
-			 * If registration confirmation is required - send merging confirmation mail
-			 */
-			} else {
-				$id							= $User->get_id(hash('sha224', $_POST['email']));
-				$HybridAuth_data['id']		= $id;
-				$HybridAuth_data['referer']	= _getcookie('HybridAuth_referer') ?: $Config->base_url();
+			$id							= $User->get_id(hash('sha224', $_POST['email']));
+			$HybridAuth_data['id']		= $id;
+			$HybridAuth_data['referer']	= _getcookie('HybridAuth_referer') ?: $Config->base_url();
+			_setcookie('HybridAuth_referer', '');
+			$confirm_key				= $Key->add(
+				$db_id,
+				false,
+				$HybridAuth_data,
+				TIME + $Config->core['registration_confirmation_time'] * 86400
+			);
+			$body						= $L->hybridauth_merge_confirmation_mail_body(
+				$User->username($id) ?: strstr($_POST['email'], '@', true),
+				get_core_ml_text('name'),
+				$L->{$rc[0]},
+				$Config->core_url().'/HybridAuth/merge_confirmation/'.$confirm_key,
+				$L->time($Config->core['registration_confirmation_time'], 'd')
+			);
+			if ($Mail->send_to(
+				$_POST['email'],
+				$L->hybridauth_merge_confirmation_mail_title(get_core_ml_text('name')),
+				$body
+			)) {
 				_setcookie('HybridAuth_referer', '');
-				$confirm_key				= $Key->add(
-					$db_id,
-					false,
-					$HybridAuth_data,
-					TIME + $Config->core['registration_confirmation_time'] * 86400
+				$Index->content(
+					h::p(
+						$L->hybridauth_merge_confirmation($L->{$rc[0]})
+					)
 				);
-				$body						= $L->hybridauth_merge_confirmation_mail_body(
-					$User->username($id) ?: strstr($_POST['email'], '@', true),
-					get_core_ml_text('name'),
-					$L->{$rc[0]},
-					$Config->core_url().'/HybridAuth/merge_confirmation/'.$confirm_key,
-					$L->time($Config->core['registration_confirmation_time'], 'd')
-				);
-				if ($Mail->send_to(
-					$_POST['email'],
-					$L->hybridauth_merge_confirmation_mail_title(get_core_ml_text('name')),
-					$body
-				)) {
-					_setcookie('HybridAuth_referer', '');
-					$Index->content(
-						h::p(
-							$L->hybridauth_merge_confirmation($L->{$rc[0]})
-						)
-					);
-				} else {
-					$User->registration_cancel();
-					$Page->title($L->sending_reg_mail_error_title);
-					$Page->warning($L->sending_reg_mail_error);
-					header('Refresh: 5; url='.$HybridAuth_data['referer']);
-				}
-				return;
+			} else {
+				$User->registration_cancel();
+				$Page->title($L->sending_reg_mail_error_title);
+				$Page->warning($L->sending_reg_mail_error);
+				header('Refresh: 5; url='.$HybridAuth_data['referer']);
 			}
+			return;
 		/**
 		 * Registration is successful and confirmation is not required
 		 */
