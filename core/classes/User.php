@@ -625,7 +625,7 @@ class User {
 			foreach ($item as $i => $v) {
 				$inserts[]		= "($user, '%s', '%s')";
 				$inserts_data[]	= $i;
-				$inserts_data[]	= $v;
+				$inserts_data[]	= _json_encode($v);
 			}
 			unset($i, $v);
 			$inserts		= implode(',', $inserts);
