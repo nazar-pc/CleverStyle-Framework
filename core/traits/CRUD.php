@@ -152,6 +152,7 @@ trait CRUD {
 	 * @return bool
 	 */
 	protected function update ($table, $data_model, $arguments) {
+		$arguments	= array_values($arguments);
 		$id			= $arguments[0];
 		self::crud_arguments_preparation(array_slice($data_model, 1), $arguments);
 		$columns	= implode(',', array_map(
