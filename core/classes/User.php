@@ -555,7 +555,7 @@ class User {
 			return false;
 		}
 		$Cache	= $this->cache;
-		$data	= $Cache->{"data/$user"};
+		$data	= $Cache->{"data/$user"} ?: [];
 		if (is_array($item)) {
 			$result	= [];
 			$absent	= [];
@@ -583,6 +583,10 @@ class User {
 					'value',
 					'item'
 				);
+				foreach ($absent as &$a) {
+					$a	= _json_decode($a);
+				}
+				unset($a);
 				$result					+= $absent;
 				$data					+= $absent;
 				$Cache->{"data/$user"}	= $data;
@@ -593,17 +597,17 @@ class User {
 			if (!is_array($data)) {
 				$data	= [];
 			}
-			$data[$item]					= $this->db()->qfs([
+			$data[$item]			= _json_decode($this->db()->qfs([
 				"SELECT `value`
 				FROM `[prefix]users_data`
 				WHERE
 					`id`	= '$user' AND
 					`item`	= '%s'",
 				$item
-			]);
+			]));
 			$Cache->{"data/$user"}	= $data;
 		}
-		return _json_decode($data[$item]);
+		return $data[$item];
 	}
 	/**
 	 * Setting additional data item(s) of specified user
