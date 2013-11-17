@@ -152,14 +152,13 @@ trait CRUD {
 	 * @return bool
 	 */
 	protected function update ($table, $data_model, $arguments) {
-		$arguments	= array_values($arguments);
-		$id			= $arguments[0];
+		$id			= array_shift($arguments);
 		self::crud_arguments_preparation(array_slice($data_model, 1), $arguments);
 		$columns	= implode(',', array_map(
 			function ($column) {
 				return "`$column` = '%s'";
 			},
-			array_keys($data_model)
+			array_keys($arguments)
 		));
 		$arguments[]	= $id;
 		return (bool)$this->db_prime()->q(
