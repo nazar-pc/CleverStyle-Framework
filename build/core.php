@@ -177,6 +177,7 @@ $list[]				= '.htaccess';
 $phar->addFromString(
 	'fs/'.(count($list) - 1),
 	'AddDefaultCharset utf-8
+Options -Indexes  -Multiviews +FollowSymLinks
 IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
 
 RewriteEngine On
@@ -194,8 +195,6 @@ RewriteBase /
 <Files favicon.ico>
 	RewriteEngine Off
 </Files>
-
-php_value zlib.output_compression off
 
 RewriteRule .* index.php
 

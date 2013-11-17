@@ -318,7 +318,6 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					if ($User->get('status', $user) == User::STATUS_NOT_ACTIVATED) {
 						$User->set('status', User::STATUS_ACTIVE, $user);
 					}
-					unset($user);
 					Trigger::instance()->run(
 						'HybridAuth/add_session/before',
 						[
@@ -326,7 +325,8 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 							'provider'	=> $rc[0]
 						]
 					);
-					$User->add_session($result['id']);
+					$User->add_session($user);
+					unset($user);
 					add_session_after();
 					Trigger::instance()->run(
 						'HybridAuth/add_session/after',
@@ -354,7 +354,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 				 */
 				success_registration:
 				$body	= $L->reg_success_mail_body(
-					isset($profile_info['username']) ? $profile_info['username'] : strstr($result['email'], '@', true),
+					isset($profile_info['username']) ? $profile_info['username'] : strstr($email, '@', true),
 					get_core_ml_text('name'),
 					$Config->base_url().'/profile/'.$User->get('login', $result['id']),
 					$User->get('login', $result['id']),
