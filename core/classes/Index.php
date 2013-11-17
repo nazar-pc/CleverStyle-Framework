@@ -123,7 +123,7 @@ class Index {
 			}
 			define('MFOLDER', $api_path);
 			$this->api		= true;
-		} elseif (file_exists(MODULES.'/'.MODULE)) {
+		} elseif (!ADMIN && !API && file_exists(MODULES.'/'.MODULE)) {
 			if (!$User->get_permission($this->permission_group = MODULE, 'index')) {
 				error_code(403);
 				exit;
