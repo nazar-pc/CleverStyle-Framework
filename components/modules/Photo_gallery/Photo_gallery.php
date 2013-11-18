@@ -141,7 +141,7 @@ class Photo_gallery {
 				$tmp_file	= TEMP.'/'.User::instance()->id.'_'.md5(MICROTIME);
 				try {
 					$SimpleImage	= new SimpleImage($original);
-					$SimpleImage->adaptive_resize(256)->save($tmp_file = "$tmp_file.".$SimpleImage->get_original_info()['format']);
+					$SimpleImage->thumbnail(256)->save($tmp_file = "$tmp_file.".$SimpleImage->get_original_info()['format']);
 					unset($SimpleImage);
 				} catch (Exception $e) {
 					$this->del($id);
