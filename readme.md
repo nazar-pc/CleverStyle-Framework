@@ -70,8 +70,8 @@ Requirements:
 * Unix-like operating system or Windows (not well tested, but should work anyway)
 * Apache2 or Nginx web server ([Nginx config sample](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Nginx-config-sample))
 * PHP 5.4+
+ * cUrl library
  * Mcrypt library (recommended for encryption)
- * cUrl library (recommended for autotranslation)
  * APC (Alternative PHP cache) module (recommended for system speed up with PHP 5.4)
  * Memcached (optionally for Memcached cache engine)
 * MySQL Database server (MariaDB will work as well)
