@@ -385,7 +385,7 @@ class Config {
 		$this->core['color_schemes']	= [];
 		foreach ($this->core['themes'] as $theme) {
 			$this->core['color_schemes'][$theme]	= [];
-			$this->core['color_schemes'][$theme]	= get_files_list(THEMES."/$theme/schemes", false, 'd') ?: [];
+			$this->core['color_schemes'][$theme]	= get_files_list(THEMES."/$theme/schemes", false, 'd') ?: ['Default'];
 			asort($this->core['color_schemes'][$theme]);
 		}
 		if ($themes != $this->core['themes'] || $color_schemes != $this->core['color_schemes']) {
