@@ -28,7 +28,7 @@ class Core {
 		}
 		$this->config	= _json_decode_nocomments(file_get_contents(CONFIG.'/main.json'));
 		if (file_exists(CACHE.'/languages/clangs')) {
-			$clangs			= _json_decode_nocomments(file_get_contents(CACHE.'/languages/clangs'));
+			$clangs			= _json_decode(file_get_contents(CACHE.'/languages/clangs'));
 			if (is_array($clangs) && !empty($clangs)) {
 				$clang	= explode('/', trim($_SERVER['REQUEST_URI'], '/'), 2)[0];
 				if (in_array($clang, $clangs)) {
