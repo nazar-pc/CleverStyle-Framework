@@ -585,6 +585,9 @@ class User {
 				);
 				foreach ($absent as &$a) {
 					$a	= _json_decode($a);
+					if (is_null($a)) {
+						$a	= false;
+					}
 				}
 				unset($a);
 				$result					+= $absent;
@@ -605,6 +608,9 @@ class User {
 					`item`	= '%s'",
 				$item
 			]));
+			if (is_null($data[$item])) {
+				$data[$item]	= false;
+			}
 			$Cache->{"data/$user"}	= $data;
 		}
 		return $data[$item];
