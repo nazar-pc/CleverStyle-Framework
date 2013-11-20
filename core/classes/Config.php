@@ -149,7 +149,7 @@ class Config {
 			if (!empty($ip)) {
 				$char = mb_substr($ip, 0, 1);
 				if ($char != mb_substr($ip, -1)) {
-					$ip = '/'.$ip.'/';
+					$ip = "/$ip/";
 				}
 				if (
 					_preg_match($ip, $REMOTE_ADDR) ||
@@ -166,28 +166,29 @@ class Config {
 	 * Analyzing and processing of current page address
 	 */
 	protected function routing () {
-		$L										= Language::instance();
-		$this->server['raw_relative_address']	= urldecode($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-		$this->server['raw_relative_address']	= null_byte_filter($this->server['raw_relative_address']);
-		$this->server['host']					= $_SERVER['HTTP_HOST'];
-		$this->server['protocol']				= isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http';
-		$core_url								= explode('://', $this->core['url'], 2);
-		$core_url[1]							= explode(';', $core_url[1]);
+		$L								= Language::instance();
+		$server							= &$this->server;
+		$server['raw_relative_address']	= urldecode($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+		$server['raw_relative_address']	= null_byte_filter($server['raw_relative_address']);
+		$server['host']					= $_SERVER['HTTP_HOST'];
+		$server['protocol']				= isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http';
+		$core_url						= explode('://', $this->core['url'], 2);
+		$core_url[1]					= explode(';', $core_url[1]);
 		/**
-		 * $core_url = array(0 => protocol, 1 => array(list of domain and IP addresses))
+		 * $core_url = [0 => protocol, 1 => [list of domain and IP addresses]]
 		 * Check, whether it is main domain
 		 */
-		$current_mirror = false;
-		if ($core_url[0] == $this->server['protocol']) {
+		$current_mirror	= false;
+		if ($core_url[0] == $server['protocol']) {
 			foreach ($core_url[1] as $url) {
-				if (mb_strpos($this->server['raw_relative_address'], $url) === 0) {
-					$this->server['base_url']	= $this->server['protocol']."://$url";
-					$current_mirror				= $url;
+				if (mb_strpos($server['raw_relative_address'], $url) === 0) {
+					$server['base_url']	= "$server[protocol]://$url";
+					$current_mirror		= $url;
 					break;
 				}
 			}
 		}
-		$this->server['mirrors'][$core_url[0]] = array_merge($this->server['mirrors'][$core_url[0]], $core_url[1]);
+		$server['mirrors'][$core_url[0]] = array_merge($server['mirrors'][$core_url[0]], $core_url[1]);
 		unset($core_url, $url);
 		/**
 		 * If it  is not the main domain - try to find match in mirrors
@@ -198,14 +199,14 @@ class Config {
 				$mirror_url		= explode('://', $mirror_url, 2);
 				$mirror_url[1]	= explode(';', $mirror_url[1]);
 				/**
-				 * $mirror_url = array(0 => protocol, 1 => array(list of domain and IP addresses))
+				 * $mirror_url = [0 => protocol, 1 => [list of domain and IP addresses]]
 				 */
-				if ($mirror_url[0] == $this->server['protocol']) {
+				if ($mirror_url[0] == $server['protocol']) {
 					foreach ($mirror_url[1] as $url) {
-						if (mb_strpos($this->server['raw_relative_address'], $url) === 0) {
-							$this->server['base_url']		= $this->server['protocol']."://$url";
-							$current_mirror					= $url;
-							$this->server['mirror_index']	= $i;
+						if (mb_strpos($server['raw_relative_address'], $url) === 0) {
+							$server['base_url']		= "$server[protocol]://$url";
+							$current_mirror			= $url;
+							$server['mirror_index']	= $i;
 							break 2;
 						}
 					}
@@ -215,8 +216,8 @@ class Config {
 			/**
 			 * If match in mirrors was not found - mirror is not allowed!
 			 */
-			if ($this->server['mirror_index'] == -1) {
-				$this->server['base_url'] = '';
+			if ($server['mirror_index'] == -1) {
+				$server['base_url'] = '';
 				code_header(400);
 				trigger_error($L->mirror_not_allowed, E_USER_ERROR);
 			}
@@ -224,49 +225,49 @@ class Config {
 		 * If match was not found - mirror is not allowed!
 		 */
 		} elseif ($current_mirror === false) {
-			$this->server['base_url'] = '';
+			$server['base_url'] = '';
 			code_header(400);
 			trigger_error($L->mirror_not_allowed, E_USER_ERROR);
 		}
 		if (!empty($this->core['mirrors_url'])) {
 			$mirrors_url = $this->core['mirrors_url'];
 			foreach ($mirrors_url as $mirror_url) {
-				$mirror_url									= explode('://', $mirror_url, 2);
-				$this->server['mirrors'][$mirror_url[0]]	= array_merge(
-					isset($this->server['mirrors'][$mirror_url[0]]) ? $this->server['mirrors'][$mirror_url[0]] : [],
+				$mirror_url							= explode('://', $mirror_url, 2);
+				$server['mirrors'][$mirror_url[0]]	= array_merge(
+					isset($server['mirrors'][$mirror_url[0]]) ? $server['mirrors'][$mirror_url[0]] : [],
 					isset($mirror_url[1]) ? explode(';', $mirror_url[1]) : []
 				);
 			}
-			$this->server['mirrors']['count'] = count($this->server['mirrors']['http'])+count($this->server['mirrors']['https']);
+			$server['mirrors']['count'] = count($server['mirrors']['http']) + count($server['mirrors']['https']);
 			unset($mirrors_url, $mirror_url);
 		}
 		/**
 		 * Referer detection
 		 */
 		if (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], '://') !== false) {
-			$ref				= &$this->server['referer'];
+			$ref				= &$server['referer'];
 			$referer			= explode('://', $ref['url'] = $_SERVER['HTTP_REFERER']);
 			$referer[1]			= explode('/', $referer[1]);
 			$referer[1]			= $referer[1][0];
 			$ref['protocol']	= $referer[0];
 			$ref['host']		= $referer[1];
 			unset($referer);
-			$ref['local']		= in_array($ref['host'], $this->server['mirrors'][$ref['protocol']]);
+			$ref['local']		= in_array($ref['host'], $server['mirrors'][$ref['protocol']]);
 			unset($ref);
 		}
 		/**
 		 * Preparing page url without basic path
 		 */
-		$this->server['raw_relative_address']	= trim(mb_substr($this->server['raw_relative_address'], mb_strlen($current_mirror)), ' /\\');
+		$server['raw_relative_address']	= trim(mb_substr($server['raw_relative_address'], mb_strlen($current_mirror)), ' /\\');
 		unset($current_mirror);
-		$r										= &$this->routing;
-		$rc										= &$this->route;
-		$rc										= trim($this->server['raw_relative_address'], '/');
+		$r								= &$this->routing;
+		$rc								= &$this->route;
+		$rc								= trim($server['raw_relative_address'], '/');
 		/**
 		 * Redirection processing
 		 */
 		if (mb_strpos($rc, 'redirect/') === 0) {
-			if ($this->server['referer']['local']) {
+			if ($server['referer']['local']) {
 				header('Location: '.substr($rc, 9));
 			} else {
 				error_code(404);
@@ -337,13 +338,13 @@ class Config {
 		/**
 		 * Module detection
 		 */
-		$modules								= array_keys(array_filter(
+		$modules	= array_keys(array_filter(
 			$this->components['modules'],
 			function ($module_data) {
 			   return ADMIN || $module_data['active'] == 1;
 			}
 		));
-		$modules								= array_combine(
+		$modules	= array_combine(
 			array_map(
 				function ($module) use ($L) {
 					return path($L->get($module));
@@ -368,11 +369,11 @@ class Config {
 		/**
 		 * Corrected full page address (recommended for usage)
 		 */
-		$this->server['relative_address']		= trim(
+		$server['relative_address']	= trim(
 			(ADMIN ? 'admin/' : '').MODULE.(API ? 'api/' : '').'/'.implode('/', $rc),
 			'/'
 		);
-		$this->server['ajax']					= isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
+		$server['ajax']				= isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
 	}
 	/**
 	 * Updating information about set of available themes
@@ -407,6 +408,41 @@ class Config {
 		if ($languages != $this->core['languages']) {
 			$this->save();
 		}
+	}
+	/**
+	 * Load and save clangs of all languages in cache for multilingual functionality.
+	 * Used by system
+	 */
+	function update_clangs () {
+		$clangs		= [];
+		foreach ($this->core['active_languages'] as $language) {
+			$clangs[$language]	= _json_decode_nocomments(file_get_contents(LANGUAGES."/$language.json"))['clang'];
+		}
+		unset($language);
+		$Cache							= Cache::instance();
+		$Cache->{"languages/clangs"}	= $clangs;
+		$core_urls						= explode('//', $this->core['url']);
+		$core_urls[1]					= explode(';', $core_urls[1]);
+		$last_url						= $core_urls[1][count($core_urls[1]) - 1];
+		$update							= false;
+		foreach ($clangs as $clang) {
+			if (!in_array("$last_url/$clang", $core_urls[1])) {
+				array_unshift($core_urls[1], "$last_url/$clang");
+				$update	= true;
+			}
+		}
+		unset($clangs, $clang, $last_url);
+		if ($update) {
+			$this->core['url']	= implode(
+				'//',
+				[
+					$core_urls[0],
+					implode(';', $core_urls[1])
+				]
+			);
+			$this->save();
+		}
+		unset($update, $core_urls);
 	}
 	/**
 	 * Reloading of settings cache
@@ -476,6 +512,9 @@ class Config {
 		} else {
 			$L->change($this->core['language']);
 		}
+		if ($this->core['multilingual']) {
+			$this->update_clangs();
+		}
 		$this->init();
 		return true;
 	}
@@ -485,19 +524,19 @@ class Config {
 	 * @return bool
 	 */
 	function save () {
-		$db		= DB::instance();
+		$cdb		= DB::instance()->db_prime(0);
 		$query	= '';
 		if (isset($this->data['core']['cache_not_saved'])) {
 			unset($this->data['core']['cache_not_saved']);
 		}
 		foreach ($this->admin_parts as $part) {
 			if (isset($this->data[$part])) {
-				$query[] = '`'.$part.'` = '.$db->{0}->s(_json_encode($this->$part));
+				$query[] = "`$part` = ".$cdb->s(_json_encode($this->$part));
 			}
 		}
 		unset($part, $temp);
 		$query	= implode(', ', $query);
-		if ($db->{0}->q("UPDATE `[prefix]config` SET $query WHERE `domain` = '%s' LIMIT 1", DOMAIN)) {
+		if ($cdb->q("UPDATE `[prefix]config` SET $query WHERE `domain` = '%s' LIMIT 1", DOMAIN)) {
 			$this->apply_internal(false);
 			return true;
 		}

@@ -7,6 +7,12 @@
  */
 define('DEBUG',				false);
 define('XHTML_TAGS_STYLE',	false);
-define('FIXED_LANGUAGE',	false);			//If true - language can't be changed, it can be useful if there are several domains,
-											//every of which must work with fixed language (en.domain.com, ru.domain.com, de.domain.com)
-define('CS_ERROR_HANDLER', false);			//Special error handler of CleverStyle CMS
+/**
+ * If true - language can't be changed, it can be useful if there are several domains,
+ * every of which must work with fixed language (en.domain.com, ru.domain.com, de.domain.com)
+ */
+defined('FIXED_LANGUAGE') || define('FIXED_LANGUAGE',	false);
+/**
+ * Special error handler of CleverStyle CMS
+ */
+define('CS_ERROR_HANDLER', false);

@@ -26,7 +26,19 @@ class Core {
 			code_header(404);
 			exit;
 		}
-		$this->config		= _json_decode_nocomments(file_get_contents(CONFIG.'/main.json'));
+		$this->config	= _json_decode_nocomments(file_get_contents(CONFIG.'/main.json'));
+		if (file_exists(CACHE.'/languages/clangs')) {
+			$clangs			= _json_decode_nocomments(file_get_contents(CACHE.'/languages/clangs'));
+			if (is_array($clangs) && !empty($clangs)) {
+				$clang	= explode('/', trim($_SERVER['REQUEST_URI'], '/'), 2)[0];
+				if (in_array($clang, $clangs)) {
+					$this->set('language', array_flip($clangs)[$clang]);
+					define('FIXED_LANGUAGE', true);
+				}
+				unset($clang);
+			}
+			unset($clangs);
+		}
 		_include_once(CONFIG.'/main.php', false);
 		defined('DEBUG') || define('DEBUG', false);
 		define('DOMAIN', $this->config['domain']);
