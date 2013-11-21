@@ -366,7 +366,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					$rc[0],
 					$profile->identifier,
 					$profile->profileURL
-				);file_put_contents(DIR.'/test', var_export($profile, true));
+				);
 				/**
 				 * Registration is successful, confirmation is not needed
 				 */
