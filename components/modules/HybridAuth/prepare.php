@@ -349,6 +349,24 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					code_header(301);
 					return;
 				}
+				$db->$db_id()->q(
+					"INSERT INTO `[prefix]users_social_integration`
+						(
+							`id`,
+							`provider`,
+							`identifier`,
+							`profile`
+						) VALUES (
+							'%s',
+							'%s',
+							'%s',
+							'%s'
+						)",
+					$result['id'],
+					$rc[0],
+					$profile->identifier,
+					$profile->profileURL
+				);file_put_contents(DIR.'/test', var_export($profile, true));
 				/**
 				 * Registration is successful, confirmation is not needed
 				 */
@@ -519,13 +537,31 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 		 */
 		} elseif ($result['reg_key'] === true) {
 			$User->del_session_data('HybridAuth');
-			$profile_info				= $HybridAuth_data['profile_info'];
-			$contacts					= $HybridAuth_data['contacts'];
-			$email						= $_POST['email'];
+			$db->$db_id()->q(
+				"INSERT INTO `[prefix]users_social_integration`
+					(
+						`id`,
+						`provider`,
+						`identifier`,
+						`profile`
+					) VALUES (
+						'%s',
+						'%s',
+						'%s',
+						'%s'
+					)",
+				$result['id'],
+				$rc[0],
+				$HybridAuth_data['identifier'],
+				$HybridAuth_data['profile']
+			);
+			$profile_info	= $HybridAuth_data['profile_info'];
+			$contacts		= $HybridAuth_data['contacts'];
+			$email			= $_POST['email'];
 			try {
-				$HybridAuth					= get_hybridauth_instance($rc[0]);
-				$adapter					= $HybridAuth->authenticate($rc[0]);
-				$body	= $L->reg_success_mail_body(
+				$HybridAuth		= get_hybridauth_instance($rc[0]);
+				$adapter		= $HybridAuth->getAdapter($rc[0]);
+				$body			= $L->reg_success_mail_body(
 					isset($profile_info['username']) ? $profile_info['username'] : strstr($email, '@', true),
 					get_core_ml_text('name'),
 					$Config->base_url().'/profile/'.$User->get('login', $result['id']),
@@ -582,7 +618,26 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 				_setcookie('HybridAuth_referer', '');
 			}
 		}
-		$body	= $L->reg_need_confirmation_mail_body(
+		$db->$db_id()->q(
+			"INSERT INTO `[prefix]users_social_integration`
+				(
+					`id`,
+					`provider`,
+					`identifier`,
+					`profile`
+				) VALUES (
+					'%s',
+					'%s',
+					'%s',
+					'%s'
+				)",
+			$result['id'],
+			$rc[0],
+			$HybridAuth_data['identifier'],
+			$HybridAuth_data['profile']
+		);
+		$profile_info	= $HybridAuth_data['profile_info'];
+		$body			= $L->reg_need_confirmation_mail_body(
 			isset($profile_info['username']) ? $profile_info['username'] : strstr($result['email'], '@', true),
 			get_core_ml_text('name'),
 			$Config->core_url().'/profile/registration_confirmation/'.$result['reg_key'],
@@ -593,6 +648,15 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 			$L->reg_need_confirmation_mail(get_core_ml_text('name')),
 			$body
 		)) {
+			$contacts		= $HybridAuth_data['contacts'];
+			$existing_data	= $User->get(array_keys($profile_info), $User->id);
+			foreach ($profile_info as $item => $value) {
+				if (!$existing_data[$item] || $existing_data[$item] != $value) {
+					$User->set($item, $value, $User->id);
+				}
+			}
+			unset($existing_data, $item, $value);
+			update_user_contacts($contacts, $rc[0]);
 			_setcookie('HybridAuth_referer', '');
 			$Index->content($L->reg_confirmation);
 		} else {
