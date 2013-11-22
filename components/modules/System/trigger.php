@@ -35,17 +35,16 @@ Trigger::instance()->register(
 				'href'		=> !HOME ? "$base_url/$relative_address" : "$base_url"
 			]).
 			h::{'link[rel=alternate]|'}(array_map(
-					function ($lang) use ($base_url, $relative_address) {
-						return [
-							'hreflang'	=> $lang,
-							'href'		=> "$base_url/$lang/$relative_address"
-						];
-					},
-					Cache::instance()->get('languages/clangs', function () use ($Config) {
-						$Config->update_clangs();
-						return Cache::instance()->{'languages/clangs'};
-					})
-				)
-			);
+				function ($lang) use ($base_url, $relative_address) {
+					return [
+						'hreflang'	=> $lang,
+						'href'		=> "$base_url/$lang/$relative_address"
+					];
+				},
+				array_values(Cache::instance()->get('languages/clangs', function () use ($Config) {
+					$Config->update_clangs();
+					return Cache::instance()->{'languages/clangs'};
+				}))
+			));
 	}
 );
