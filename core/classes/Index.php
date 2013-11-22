@@ -724,24 +724,28 @@ class Index {
 				->generate();
 		}
 		if ($this->stop) {
-			if (!(
-				API &&
-				MODULE == 'System' &&
+			if (
 				_getcookie('sign_out') &&
-				$Config->route == ['user', 'sign_out']
-			)) {
+				!(
+					API &&
+					MODULE == 'System' &&
+					$Config->route == ['user', 'sign_out']
+				)
+			) {
 				_setcookie('sign_out', '');
 			}
 			return;
 		}
 		if (defined('ERROR_CODE')) {
 			$Page->error();
-		} elseif (!(
-			API &&
-			MODULE == 'System' &&
+		} elseif (
 			_getcookie('sign_out') &&
-			$Config->route == ['user', 'sign_out']
-		)) {
+			!(
+				API &&
+				MODULE == 'System' &&
+				$Config->route == ['user', 'sign_out']
+			)
+		) {
 			_setcookie('sign_out', '');
 		}
 		Trigger::instance()->run('System/Index/postload');
