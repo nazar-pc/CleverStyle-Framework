@@ -20,7 +20,7 @@ Trigger::instance()->register(
 			return;
 		}
 		$relative_address	= $Config->server['relative_address'];
-		if (!FIXED_LANGUAGE) {
+		if (!FIXED_LANGUAGE && $_SERVER['REQUEST_METHOD'] == 'GET') {
 			$clang	= Language::instance()->clang;
 			if (!HOME) {
 				header("Location: /$clang/$relative_address", true, 301);
