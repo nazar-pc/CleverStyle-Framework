@@ -309,24 +309,10 @@
               if (result === 'reload') {
                 return location.reload();
               }
-            },
-            error: function(xhr) {
-              if (xhr.responseText) {
-                return alert(cs.json_decode(xhr.responseText).error_description);
-              } else {
-                return alert(L.auth_connection_error);
-              }
             }
           });
         } else if (random_hash === 'reload') {
           return location.reload();
-        }
-      },
-      error: function(xhr) {
-        if (xhr.responseText) {
-          return alert(cs.json_decode(xhr.responseText).error_description);
-        } else {
-          return alert(L.auth_connection_error);
         }
       }
     });
@@ -347,13 +333,6 @@
       type: 'post',
       success: function() {
         return location.reload();
-      },
-      error: function(xhr) {
-        if (xhr.responseText) {
-          return alert(cs.json_decode(xhr.responseText).error_description);
-        } else {
-          return alert(L.auth_connection_error);
-        }
       }
     });
   };
@@ -388,13 +367,6 @@
             return location.reload();
           });
         }
-      },
-      error: function(xhr) {
-        if (xhr.responseText) {
-          return alert(cs.json_decode(xhr.responseText).error_description);
-        } else {
-          return alert(L.reg_connection_error);
-        }
       }
     });
   };
@@ -424,13 +396,6 @@
           return $('<div>' + L.restore_password_confirmation + '</div>').appendTo('body').cs().modal('show').on('uk.modal.hide', function() {
             return $(this).remove();
           });
-        }
-      },
-      error: function(xhr) {
-        if (xhr.responseText) {
-          return alert(cs.json_decode(xhr.responseText).error_description);
-        } else {
-          return alert(L.reg_connection_error);
         }
       }
     });
@@ -470,13 +435,6 @@
           return alert(L.password_changed_successfully);
         } else {
           return alert(result);
-        }
-      },
-      error: function(xhr) {
-        if (xhr.responseText) {
-          return alert(cs.json_decode(xhr.responseText).error_description);
-        } else {
-          return alert(L.password_changing_connection_error);
         }
       }
     });

@@ -32,9 +32,6 @@
               alert(L.photo_gallery_some_images_not_supported);
             }
             return location.href = location.href + '/' + result.join(',');
-          },
-          error: function(xhr) {
-            return alert(xhr.responseText ? cs.json_decode(xhr.responseText).error_description : L.photo_gallery_images_addition_connection_error);
           }
         });
       }, function(error) {
@@ -55,9 +52,6 @@
             type: 'delete',
             success: function() {
               return location.reload();
-            },
-            error: function(xhr) {
-              return alert(xhr.responseText ? cs.json_decode(xhr.responseText).error_description : L.photo_gallery_image_deletion_connection_error);
             }
           });
         }

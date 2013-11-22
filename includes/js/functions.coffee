@@ -244,19 +244,9 @@ cs.sign_in					= (login, password) ->
 						success	: (result) ->
 							if result == 'reload'
 								location.reload()
-						error	: (xhr) ->
-							if xhr.responseText
-								alert(cs.json_decode(xhr.responseText).error_description)
-							else
-								alert(L.auth_connection_error)
 				)
 			else if random_hash == 'reload'
 				location.reload()
-		error	: (xhr) ->
-			if xhr.responseText
-				alert(cs.json_decode(xhr.responseText).error_description)
-			else
-				alert(L.auth_connection_error)
 ###*
  * Sign out
 ###
@@ -269,11 +259,6 @@ cs.sign_out					= ->
 		type	: 'post'
 		success	: ->
 			location.reload()
-		error	: (xhr) ->
-			if xhr.responseText
-				alert(cs.json_decode(xhr.responseText).error_description)
-			else
-				alert(L.auth_connection_error)
 ###*
  * Registration in the system
  *
@@ -309,11 +294,6 @@ cs.registration				= (email) ->
 						->
 							location.reload()
 					)
-		error	: (xhr) ->
-			if xhr.responseText
-				alert(cs.json_decode(xhr.responseText).error_description)
-			else
-				alert(L.reg_connection_error)
 ###*
  * Password restoring
  *
@@ -340,11 +320,6 @@ cs.restore_password			= (email) ->
 						->
 							$(this).remove()
 					)
-		error	: (xhr) ->
-			if xhr.responseText
-				alert(cs.json_decode(xhr.responseText).error_description)
-			else
-				alert(L.reg_connection_error)
 ###*
  * Password changing
  *
@@ -375,11 +350,6 @@ cs.change_password			= (current_password, new_password) ->
 				alert(L.password_changed_successfully)
 			else
 				alert(result)
-		error	: (xhr) ->
-			if xhr.responseText
-				alert(cs.json_decode(xhr.responseText).error_description)
-			else
-				alert(L.password_changing_connection_error)
 ###*
  * For textarea in blocks editing
  *

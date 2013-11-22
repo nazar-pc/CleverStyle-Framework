@@ -36,9 +36,6 @@
           return $('html, body').stop().animate({
             scrollTop: preview.offset().top
           }, 500);
-        },
-        error: function(xhr) {
-          return alert(xhr.responseText ? cs.json_decode(xhr.responseText).error_description : cs.Language.post_preview_connection_error);
         }
       });
     });

@@ -23,7 +23,5 @@
 	"photo_gallery_delete_image"						: "Удалить изображение",
 	"photo_gallery_images_not_supported"				: "Изображения не поддерживаются",
 	"photo_gallery_some_images_not_supported"			: "Некоторые изображения не поддерживаются",
-	"photo_gallery_images_addition_connection_error"	: "Ошибка добавления изображений: соединение с сервером неудачно. Проверьте подключение к интернету, и попробуйте снова.",
-	"photo_gallery_sure_to_delete_image"				: "Вы уверены, что хотите удалить это изображение?",
-	"photo_gallery_image_deletion_connection_error"		: "Ошибка удаления изображения: соединение с сервером неудачно. Проверьте подключение к интернету, и попробуйте снова."
+	"photo_gallery_sure_to_delete_image"				: "Вы уверены, что хотите удалить это изображение?"
 }

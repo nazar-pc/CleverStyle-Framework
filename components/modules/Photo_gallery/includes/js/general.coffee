@@ -25,8 +25,6 @@ $ ->
 						if files.length != result.length
 							alert L.photo_gallery_some_images_not_supported
 						location.href	= location.href + '/' + result.join(',')
-					error	: (xhr) ->
-						alert if xhr.responseText then cs.json_decode(xhr.responseText).error_description else L.photo_gallery_images_addition_connection_error
 				)
 			(error) ->
 				alert error
@@ -53,8 +51,6 @@ $ ->
 						type	: 'delete'
 						success	: () ->
 							location.reload()
-						error	: (xhr) ->
-							alert if xhr.responseText then cs.json_decode(xhr.responseText).error_description else L.photo_gallery_image_deletion_connection_error
 					)
 		)
 	$('.cs-photo-gallery-delete-image-checkbox').change ->

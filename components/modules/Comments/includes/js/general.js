@@ -99,13 +99,6 @@ $(function () {
 						$('#comment_' + textarea.data('parent')).append(result);
 					}
 					blogs_comment_cancel();
-				},
-				error		: function (xhr) {
-					if (xhr.responseText) {
-						alert(cs.json_decode(xhr.responseText).error_description);
-					} else {
-						alert(L.comment_sending_connection_error);
-					}
 				}
 			}
 		);
@@ -126,13 +119,6 @@ $(function () {
 				success		: function (result) {
 					$('#comment_' + id).children('.cs-comments-comment-text').html(result);
 					blogs_comment_cancel();
-				},
-				error		: function (xhr) {
-					if (xhr.responseText) {
-						alert(cs.json_decode(xhr.responseText).error_description);
-					} else {
-						alert(L.comment_editing_connection_error);
-					}
 				}
 			}
 		);
@@ -155,13 +141,6 @@ $(function () {
 					blogs_comment_cancel();
 					if (result && !parent.find('.cs-comments-comment').length && !parent.find('.cs-comments-comment-delete').length) {
 						parent.find('.cs-comments-comment-edit').after(result);
-					}
-				},
-				error	: function (xhr) {
-					if (xhr.responseText) {
-						alert(cs.json_decode(xhr.responseText).error_description);
-					} else {
-						alert(L.comment_deleting_connection_error);
 					}
 				}
 			}

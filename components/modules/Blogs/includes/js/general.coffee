@@ -29,8 +29,6 @@ $ ->
 						scrollTop	: preview.offset().top
 						500
 					)
-			error	: (xhr) ->
-				alert if xhr.responseText then cs.json_decode(xhr.responseText).error_description else cs.Language.post_preview_connection_error
 	$('.cs-blogs-post-form')
 		.parents('form')
 		.submit ->

@@ -23,7 +23,5 @@
 	"photo_gallery_delete_image"						: "Delete image",
 	"photo_gallery_images_not_supported"				: "Images not supported",
 	"photo_gallery_some_images_not_supported"			: "Some images not supported",
-	"photo_gallery_images_addition_connection_error"	: "Images addition error: connection to the server failed. Check your internet connection and try again.",
-	"photo_gallery_sure_to_delete_image"				: "Are you sure want to delete this image?",
-	"photo_gallery_image_deletion_connection_error"		: "Image deletion error: connection to the server failed. Check your internet connection and try again."
+	"photo_gallery_sure_to_delete_image"				: "Are you sure want to delete this image?"
 }

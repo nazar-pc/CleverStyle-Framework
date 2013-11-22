@@ -8,8 +8,5 @@
 	"comment_cant_be_empty"						: "Comment can't be empty",
 	"comment_sending_server_error"				: "Comment sending error: fault on the server. Wait for several minutes, please, and try again.",
 	"comment_deleting_server_error"				: "Comment deleting error: fault on the server. Wait for several minutes, please, and try again.",
-	"comment_editing_server_error"				: "Comment editing error: fault on the server. Wait for several minutes, please, and try again.",
-	"comment_sending_connection_error"			: "Comment sending error: connection to the server failed. Check your internet connection and try again.",
-	"comment_editing_connection_error"			: "Comment editing error: connection to the server failed. Check your internet connection and try again.",
-	"comment_deleting_connection_error"			: "Comment deleting error: connection to the server failed. Check your internet connection and try again."
+	"comment_editing_server_error"				: "Comment editing error: fault on the server. Wait for several minutes, please, and try again."
 }

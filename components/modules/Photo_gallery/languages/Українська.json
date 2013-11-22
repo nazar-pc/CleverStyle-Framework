@@ -23,7 +23,5 @@
 	"photo_gallery_delete_image"						: "Видалити зображення",
 	"photo_gallery_images_not_supported"				: "Зображення не підтримуються",
 	"photo_gallery_some_images_not_supported"			: "Деякі зображення не підтримуються",
-	"photo_gallery_images_addition_connection_error"	: "Помилка додавання зображень: з'єднання з сервером невдале. Перевірте підключення до інтернету і спробуйте знову.",
-	"photo_gallery_sure_to_delete_image"				: "Ви впевнені, що хочете видалити це зображення?",
-	"photo_gallery_image_deletion_connection_error"		: "Помилка видалення зображення: з'єднання з сервером невдале. Перевірте підключення до інтернету і спробуйте знову."
+	"photo_gallery_sure_to_delete_image"				: "Ви впевнені, що хочете видалити це зображення?"
 }
