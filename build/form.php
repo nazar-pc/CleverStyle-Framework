@@ -21,7 +21,7 @@ echo	h::{'form[method=post]'}(
 			'Plugins'
 		],
 		[
-			h::{'select#modules[name=modules[]][size=10][multiple] option'}(array_map(
+			h::{'select#modules[name=modules[]][size=15][multiple] option'}(array_map(
 				function ($module) {
 					return [
 						$module,
@@ -33,7 +33,7 @@ echo	h::{'form[method=post]'}(
 				},
 				get_files_list(DIR.'/components/modules', '/[^System)]/', 'd')
 			)),
-			h::{'select#plugins[name=plugins[]][size=10][multiple] option'}(array_map(
+			h::{'select#plugins[name=plugins[]][size=15][multiple] option'}(array_map(
 				function ($plugin) {
 					return [
 						$plugin,
