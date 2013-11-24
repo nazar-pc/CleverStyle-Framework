@@ -1,6 +1,7 @@
 <?php
 /**
  * @package		CSTester
+ * @version		0.1.7
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt

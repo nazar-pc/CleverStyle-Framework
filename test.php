@@ -11,5 +11,5 @@ use	nazarpc\CSTester;
 if (version_compare(PHP_VERSION, '5.4', '<')) {
 	exit('CleverStyle CMS require PHP 5.4 or higher');
 }
-require __DIR__.'/core/vendor/autoload.php';
+require __DIR__.'/core/classes/thirdparty/nazarpc/CSTester.php';
 (new CSTester(__DIR__.'/tests'))->run();

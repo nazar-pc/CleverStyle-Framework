@@ -1,18 +1,22 @@
 <?php
 /**
- * @package		CleverStyle CMS
+ * @package		BananaHTML
+ * @version		1.0.0
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace	h;
+namespace	nazarpc;
 /**
- * Class for HTML code rendering in accordance with the standards of HTML5, and with useful syntax extensions for simpler usage
- *
  * If constant "XHTML_TAGS_STYLE" is true - tags will be generated according to rules of xhtml
  */
 defined('XHTML_TAGS_STYLE') || define('XHTML_TAGS_STYLE', false);
-abstract class _Abstract {
+/**
+ * BananaHTML - single class that makes HTML generating easier
+ *
+ * This is class for HTML code rendering in accordance with the standards of HTML5, and with useful syntax extensions for simpler usage
+ */
+class BananaHTML {
 	protected static	$unit_atributes = [	//Unit attributes, that have no value, or have the same value as name in xhtml style
 			'async',
 			'defer',
@@ -1154,7 +1158,7 @@ abstract class _Abstract {
 			static::inserts_processing($data, $insert);
 			$html	= '';
 			foreach ($data as $d) {
-				if (method_exists(get_class(), $tag)) {
+				if (method_exists(get_called_class(), $tag)) {
 					$html			.= static::$tag($d[0], $d[1]);
 				} elseif (in_array($tag, static::$unpaired_tags)) {
 					$d[1]['tag']	= $tag;
@@ -1166,7 +1170,7 @@ abstract class _Abstract {
 			}
 			return $html;
 		}
-		if (method_exists(get_class(), $tag)) {
+		if (method_exists(get_called_class(), $tag)) {
 			$in				= static::$tag($in, $attrs);
 		} elseif (in_array($tag, static::$unpaired_tags)) {
 			$attrs['tag']	= $tag;

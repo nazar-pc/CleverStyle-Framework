@@ -32,15 +32,15 @@ spl_autoload_register(function ($class) {
 		'namespace'	=> count($class) > 1 ? implode('/', array_slice($class, 0, -1)) : '',
 		'name'		=> array_pop($class)
 	];
-	return	_require_once(CLASSES."/$class[namespace]/$class[name].php", false) ||
-			_require_once(TRAITS."/$class[namespace]/$class[name].php", false) ||
-			_require_once(ENGINES."/$class[namespace]/$class[name].php", false) ||
-			(
-				mb_strpos($class['namespace'], "modules/") === 0 && _require_once(MODULES."/../$class[namespace]/$class[name].php", false)
-			) ||
-			(
-				mb_strpos($class['namespace'], "plugins/") === 0 && _require_once(PLUGINS."/../$class[namespace]/$class[name].php", false)
-			);
+	/**
+	 * Try to load classes from different places. If not found in one place - try in another.
+	 */
+	return
+		_require_once(CLASSES."/$class[namespace]/$class[name].php", false) ||		//Core classes
+		_require_once(THIRDPARTY."/$class[namespace]/$class[name].php", false) ||	//Third party classes
+		_require_once(TRAITS."/$class[namespace]/$class[name].php", false) ||		//Core traits
+		_require_once(ENGINES."/$class[namespace]/$class[name].php", false) ||		//Core engines
+		_require_once(MODULES."/../$class[namespace]/$class[name].php", false);		//Classes in modules and plugins
 }, true, true);
 /**
  * Correct termination
@@ -717,7 +717,6 @@ function pages_buttons ($page, $total, $url = false) {
 function error_code ($code) {
 	!defined('ERROR_CODE') && define('ERROR_CODE', $code);
 }
-
 /**
  * Checks whether specified functionality available or not
  *

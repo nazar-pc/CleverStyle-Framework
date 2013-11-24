@@ -7,7 +7,6 @@
  */
 namespace	cs;
 require			CORE.'/upf.php';					//Inclusion of Useful PHP Functions
-require_once	CORE.'/vendor/autoload.php';		//Inclusion of composer's autoloader.php with system dependencies
 _require_once(DIR.'/vendor/autoload.php', false);	//Inclusion of composer's autoloader.php with user's dependencies
 require			CORE.'/functions.php';				//Inclusion of general system functions and system autoloader
 
@@ -23,75 +22,79 @@ header('Connection: close');
 /**
  * Directory for configuration
  */
-define('CONFIG',	DIR.'/config');
+define('CONFIG',		DIR.'/config');
 /**
  * Directory for main core classes
  */
-define('CLASSES',	CORE.'/classes');
+define('CLASSES',		CORE.'/classes');
+/**
+ * Directory for main core classes
+ */
+define('THIRDPARTY',	CLASSES.'/thirdparty');
 /**
  * Directory for main core traits
  */
-define('TRAITS',	CORE.'/traits');
+define('TRAITS',		CORE.'/traits');
 /**
  * Directory for cache, DB, storage and translation engines
  */
-define('ENGINES',	CORE.'/engines');
+define('ENGINES',		CORE.'/engines');
 /**
  * Languages directory
  */
-define('LANGUAGES',	CORE.'/languages');
+define('LANGUAGES',		CORE.'/languages');
 /**
  * Directory for CSS files
  */
-define('CSS',		DIR.'/includes/css');
+define('CSS',			DIR.'/includes/css');
 /**
  * Directory for images
  */
-define('IMG',		DIR.'/includes/img');
+define('IMG',			DIR.'/includes/img');
 /**
  * Directory for JavaScript files
  */
-define('JS',		DIR.'/includes/js');
+define('JS',			DIR.'/includes/js');
 /**
  * Templates directory
  */
-define('TEMPLATES',	DIR.'/templates');
+define('TEMPLATES',		DIR.'/templates');
 /**
  * Blocks directory
  */
-define('BLOCKS',	DIR.'/components/blocks');
+define('BLOCKS',		DIR.'/components/blocks');
 /**
  * Modules directory
  */
-define('MODULES',	DIR.'/components/modules');
+define('MODULES',		DIR.'/components/modules');
 /**
  * Plugins directory
  */
-define('PLUGINS',	DIR.'/components/plugins');
+define('PLUGINS',		DIR.'/components/plugins');
 /**
  * Local public storage for current domain
  */
-define('STORAGE',	DIR.'/storage/public');
+define('STORAGE',		DIR.'/storage/public');
 /**
  * Cache directory for current domain
  */
-define('CACHE',		DIR.'/storage/cache');
+define('CACHE',			DIR.'/storage/cache');
 /**
  * Log directory for current domain
  */
-define('LOGS',		DIR.'/storage/logs');
+define('LOGS',			DIR.'/storage/logs');
 /**
  * Temp directory for current domain
  */
-define('TEMP',		DIR.'/storage/temp');
+define('TEMP',			DIR.'/storage/temp');
 /**
  * Directory with public cache (available from the outside)
  */
-define('PCACHE',	DIR.'/storage/pcache');
+define('PCACHE',		DIR.'/storage/pcache');
 /**
  * Themes dir
  */
-define('THEMES',	DIR.'/themes');
+define('THEMES',		DIR.'/themes');
 /**
  * Including of custom user file
  */
