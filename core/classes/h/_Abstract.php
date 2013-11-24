@@ -6,13 +6,12 @@
  * @license		MIT License, see license.txt
  */
 namespace	h;
-use		cs\Config,
-		cs\Language,
-		cs\Page,
-		cs\User;
 /**
  * Class for HTML code rendering in accordance with the standards of HTML5, and with useful syntax extensions for simpler usage
+ *
+ * If constant "XHTML_TAGS_STYLE" is true - tags will be generated according to rules of xhtml
  */
+defined('XHTML_TAGS_STYLE') || define('XHTML_TAGS_STYLE', false);
 abstract class _Abstract {
 	protected static	$unit_atributes = [	//Unit attributes, that have no value, or have the same value as name in xhtml style
 			'async',
@@ -30,6 +29,7 @@ abstract class _Abstract {
 			'autoplay',
 			'controls',
 			'loop',
+			'itemscope',
 			'no-label'
 		],
 		$unpaired_tags = [
@@ -108,17 +108,14 @@ abstract class _Abstract {
 		}
 		if (isset($data['src'])) {
 			$data['src']		= str_replace(' ', '%20', $data['src']);
-			$data['src']		= self::prepare_url($data['src']);
+			$data['src']		= static::prepare_url($data['src']);
 		}
 		if (isset($data['href'])) {
 			$data['href']		= str_replace(' ', '%20', $data['href']);
 			if ($tag != 'a') {
-				$data['href']	= self::prepare_url($data['href']);
-			} elseif (
-				substr($data['href'], 0, 1) == '#' &&
-				$Config = Config::instance(true)
-			) {
-				$data['href']	= $Config->base_url().'/'.$Config->server['raw_relative_address'].$data['href'];
+				$data['href']	= static::prepare_url($data['href']);
+			} elseif (substr($data['href'], 0, 1) == '#') {
+				$data['href']	= static::url_with_hash($data['href']);
 			}
 		}
 		if (isset($data['action'])) {
@@ -145,17 +142,17 @@ abstract class _Abstract {
 			unset($data['style']);
 		}
 		if (isset($data['value'])) {
-			$data['value']		= filter($data['value']);
+			$data['value']		= prepare_attr_value($data['value']);
 		}
 		ksort($data);
 		foreach ($data as $key => $value) {
 			if (is_int($key)) {
 				unset($data[$key]);
-				if (in_array($value, self::$unit_atributes)) {
-					$add	.= ' '.$value.(XHTML_TAGS_STYLE ? '='.$q.$value.$q : '');
+				if (in_array($value, static::$unit_atributes)) {
+					$add	.= " $value".(XHTML_TAGS_STYLE ? "=$q$value$q" : '');
 				}
 			} elseif ($value !== false) {
-				$add			.= ' '.$key.'='.$q.$value.$q;
+				$add			.= " $key=$q$value$q";
 			}
 		}
 		return true;
@@ -164,6 +161,7 @@ abstract class _Abstract {
 	 * Adds, if necessary, slash or domain at the beginning of the url, provides correct absolute/relative url
 	 *
 	 * @static
+	 *
 	 * @param string	$url
 	 * @param bool		$absolute	Returns absolute url or relative
 	 *
@@ -171,24 +169,43 @@ abstract class _Abstract {
 	 */
 	static function prepare_url ($url, $absolute = false) {
 		if (substr($url, 0, 1) == '#') {
-			if ($Config = Config::instance(true)) {
-				return $Config->base_url().'/'.$Config->server['raw_relative_address'].$url;
-			}
+			$url	= static::url_with_hash($url);
 		} elseif (
 			substr($url, 0, 5) != 'data:' &&
 			substr($url, 0, 1) != '/' &&
 			substr($url, 0, 7) != 'http://' &&
 			substr($url, 0, 8) != 'https://'
 		) {
-			if (
-				$absolute &&
-				$Config = Config::instance(true)
-			) {
-				return $Config->base_url()."/$url";
+			if ($absolute) {
+				return static::absolute_url($url);
 			}
 			return "/$url";
 		}
 		return $url;
+	}
+	/**
+	 * Special processing for URLs with hash
+	 *
+	 * @static
+	 *
+	 * @param string	$url
+	 *
+	 * @return string
+	 */
+	protected static function url_with_hash ($url) {
+		return $url;
+	}
+	/**
+	 * Convert relative URL to absolute
+	 *
+	 * @static
+	 *
+	 * @param string	$url
+	 *
+	 * @return string
+	 */
+	protected static function absolute_url ($url) {
+		return "/$url";
 	}
 	/**
 	 * Wrapper for paired tags rendering
@@ -202,23 +219,18 @@ abstract class _Abstract {
 	 * @return bool|string
 	 */
 	protected static function wrap ($in = '', $data = [], $tag = 'div') {
-		$data		= self::array_merge(is_array($in) ? $in : ['in' => $in], is_array($data) ? $data : [], ['tag' => $tag]);
+		$data		= static::array_merge(is_array($in) ? $in : ['in' => $in], is_array($data) ? $data : [], ['tag' => $tag]);
 		$in			= $add = '';
 		$tag		= 'div';
 		$level		= 1;
 		if (isset($data['data-title']) && $data['data-title']) {
-			$data['data-title'] = filter($data['data-title']);
-			if (isset($data['class'])) {
-				$data['class'] .= ' cs-info';
-			} else {
-				$data['class'] = 'cs-info';
-			}
+			$data['data-title'] = prepare_attr_value($data['data-title']);
 		}
 		if (isset($data['level'])) {
 			$level	= $data['level'];
 			unset($data['level']);
 		}
-		if (!self::data_prepare($data, $in, $tag, $add)) {
+		if (!static::data_prepare($data, $in, $tag, $add)) {
 			return false;
 		}
 		if (!(
@@ -236,7 +248,7 @@ abstract class _Abstract {
 			) &&
 			$level
 		) {
-			$in		= $level ? self::level("\n$in\n", $level) : "\n$in\n";
+			$in		= $level ? static::level("\n$in\n", $level) : "\n$in\n";
 ;		}
 		return "<$tag$add>$in</$tag>".($level ? "\n" : '');
 	}
@@ -252,7 +264,7 @@ abstract class _Abstract {
 	protected static function u_wrap ($data = []) {
 		$in		= $add		= '';
 		$tag	= 'input';
-		if (!self::data_prepare($data, $in, $tag, $add, $label)) {
+		if (!static::data_prepare($data, $in, $tag, $add, $label)) {
 			return false;
 		}
 		if (isset($data['data-title']) && $data['data-title']) {
@@ -261,8 +273,8 @@ abstract class _Abstract {
 		}
 		$add	.= XHTML_TAGS_STYLE ? ' /' : '';
 		if (isset($data['type']) && $data['type'] == 'checkbox' && $label) {
-			$html	= self::span(
-				self::label(
+			$html	= static::span(
+				static::label(
 					"<$tag$add> $in",
 					[
 						'for'	=> $data['id']
@@ -274,7 +286,7 @@ abstract class _Abstract {
 			);
 		} else {
 			$html	= "<$tag$add> $in\n";
-			$html	= isset($data_title) ? self::label(
+			$html	= isset($data_title) ? static::label(
 				$html,
 				[
 					'data-title' => $data_title
@@ -295,12 +307,12 @@ abstract class _Abstract {
 	 */
 	static function form ($in = '', $data = []) {
 		if (isset($in['insert']) || isset($data['insert'])) {
-			return self::__callStatic(__FUNCTION__, func_get_args());
+			return static::__callStatic(__FUNCTION__, func_get_args());
 		}
 		if ($in === false) {
 			return '';
 		} elseif (is_array($in)) {
-			return self::__callStatic(__FUNCTION__, [$in, $data]);
+			return static::__callStatic(__FUNCTION__, [$in, $data]);
 		}
 		if (isset($in['method'])) {
 			$data['method']	= $in['method'];
@@ -308,22 +320,24 @@ abstract class _Abstract {
 		if (!isset($data['method'])) {
 			$data['method']	= 'post';
 		}
-		if (
-			strtolower($data['method']) == 'post' &&
-			class_exists('\\cs\\User', false) &&
-			$User = User::instance(true)
-		) {
-			$in_ = self::{'input[type=hidden][name=session]'}([
-				'value'	=> $User->get_session()
-			]);
+		if (strtolower($data['method']) == 'post') {
 			if (!is_array($in)) {
-				$in			.= $in_;
+				$in			.= static::form_csrf();
 			} else {
-				$in['in']	.= $in_;
+				$in['in']	.= static::form_csrf();
 			}
-			unset($in_);
 		}
-		return self::wrap($in, $data, __FUNCTION__);
+		return static::wrap($in, $data, __FUNCTION__);
+	}
+	/**
+	 * Allows to add something to inner of form, for example, hidden session input to prevent CSRF
+	 *
+	 * @static
+	 *
+	 * @return string
+	 */
+	protected static function form_csrf () {
+		return '';
 	}
 	/**
 	 * Rendering of input tag with automatic adding labels for type=radio if necessary and automatic correction if min and/or max attributes are specified
@@ -338,7 +352,7 @@ abstract class _Abstract {
 	 */
 	static function input ($in = [], $data = []) {
 		if (isset($in['insert']) || isset($data['insert'])) {
-			return self::__callStatic(__FUNCTION__, func_get_args());
+			return static::__callStatic(__FUNCTION__, func_get_args());
 		}
 		if ($in === false) {
 			return '';
@@ -348,7 +362,7 @@ abstract class _Abstract {
 		}
 		if (isset($in['type']) && $in['type'] == 'radio') {
 			if (is_array_indexed($in) && is_array($in[0])) {
-				return self::__callStatic(__FUNCTION__, [$in, $data]);
+				return static::__callStatic(__FUNCTION__, [$in, $data]);
 			}
 			if (is_array($in)) {
 				if (!isset($in['checked'])) {
@@ -382,24 +396,24 @@ abstract class _Abstract {
 					}
 					$item['tag'] = __FUNCTION__;
 					if (isset($item['value'])) {
-						$item['value'] = filter($item['value']);
+						$item['value'] = prepare_attr_value($item['value']);
 					}
-					$temp .= self::label(self::u_wrap($item), ['for' => $item['id']]);
+					$temp .= static::label(static::u_wrap($item), ['for' => $item['id']]);
 				}
-				return self::span($temp);
+				return static::span($temp);
 			} else {
 				if (!isset($in['id'])) {
 					$in['id'] = uniqid('input_');
 				}
 				$in['tag'] = __FUNCTION__;
 				if (isset($in['value'])) {
-					$in['value'] = filter($in['value']);
+					$in['value'] = prepare_attr_value($in['value']);
 				}
-				return self::label(self::u_wrap($in), ['for' => $in['id']]);
+				return static::label(static::u_wrap($in), ['for' => $in['id']]);
 			}
 		} else {
 			if (is_array_indexed($in)) {
-				return self::__callStatic(__FUNCTION__, [$in, $data]);
+				return static::__callStatic(__FUNCTION__, [$in, $data]);
 			}
 			if (
 				(
@@ -412,7 +426,7 @@ abstract class _Abstract {
 				$items	= array_flip_3d($in);
 				$return	= '';
 				foreach ($items as $item) {
-					$return .= self::input($item);
+					$return .= static::input($item);
 				}
 				return $return;
 			} else {
@@ -432,7 +446,7 @@ abstract class _Abstract {
 					$in['value'] = $in['max'];
 				}
 				$in['tag'] = __FUNCTION__;
-				return self::u_wrap($in);
+				return static::u_wrap($in);
 			}
 		}
 	}
@@ -457,7 +471,7 @@ abstract class _Abstract {
 				isset($in['in']) && !is_array($in['in'])
 			)
 		) {
-			return self::wrap($in, $data, $function);
+			return static::wrap($in, $data, $function);
 		}
 		if (
 			!isset($in['value']) && isset($in['in']) && is_array($in['in'])
@@ -542,10 +556,10 @@ abstract class _Abstract {
 				);
 			}
 			$option['in']	= str_replace('<', '&lt;', $option['in']);
-			$option			= self::option($option);
+			$option			= static::option($option);
 		}
 		unset($option);
-		return self::wrap(implode('', $options), $data, $function);
+		return static::wrap(implode('', $options), $data, $function);
 	}
 	/**
 	 * Rendering of select tag with autosubstitution of selected attribute when value of option is equal to $data['selected'], $data['selected'] may be
@@ -560,9 +574,9 @@ abstract class _Abstract {
 	 */
 	static function select ($in = '', $data = []) {
 		if (isset($in['insert']) || isset($data['insert'])) {
-			return self::__callStatic(__FUNCTION__, func_get_args());
+			return static::__callStatic(__FUNCTION__, func_get_args());
 		}
-		return self::template_1($in, $data, __FUNCTION__);
+		return static::template_1($in, $data, __FUNCTION__);
 	}
 	/**
 	 * Rendering of datalist tag with autosubstitution of selected attribute when value of option is equal to $data['selected'], $data['selected'] may be
@@ -577,9 +591,9 @@ abstract class _Abstract {
 	 */
 	static function datalist ($in = '', $data = []) {
 		if (isset($in['insert']) || isset($data['insert'])) {
-			return self::__callStatic(__FUNCTION__, func_get_args());
+			return static::__callStatic(__FUNCTION__, func_get_args());
 		}
-		return self::template_1($in, $data, __FUNCTION__);
+		return static::template_1($in, $data, __FUNCTION__);
 	}
 	/**
 	 * Template 2
@@ -593,22 +607,30 @@ abstract class _Abstract {
 		if ($in === false) {
 			return false;
 		}
-		$uniqid	= uniqid('html_replace_');
-		$Page	= Page::instance();
 		if (is_array($in)) {
 			if (isset($in['in'])) {
-				$Page->replace($uniqid, is_array($in['in']) ? implode("\n", $in['in']) : $in['in']);
-				$in['in'] = $uniqid;
+				$in['in'] = static::indentation_protection(is_array($in['in']) ? implode("\n", $in['in']) : $in['in']);
 			} else {
-				$Page->replace($uniqid, implode("\n", $in));
-				$in = $uniqid;
+				$in = static::indentation_protection(implode("\n", $in));
 			}
 		} else {
-			$Page->replace($uniqid, is_array($in) ? implode("\n", $in) : $in);
-			$in = $uniqid;
+			$in = static::indentation_protection(is_array($in) ? implode("\n", $in) : $in);
 		}
 		$data['level'] = false;
-		return self::wrap($in, $data, $function);
+		return static::wrap($in, $data, $function);
+	}
+	/**
+	 * Sometimes HTML code can be intended
+	 *
+	 * This function allows to store inner text of tags, that are sensitive to this operation (textarea, pre, code), and return some identifier.
+	 * Later, at page generation, this identifier will be replaced by original text again.
+	 *
+	 * @param string	$text
+	 *
+	 * @return string
+	 */
+	protected static function indentation_protection ($text) {
+		return $text;
 	}
 	/**
 	 * Rendering of textarea tag with supporting multiple input data in the form of array of strings
@@ -622,9 +644,9 @@ abstract class _Abstract {
 	 */
 	static function textarea ($in = '', $data = []) {
 		if (isset($in['insert']) || isset($data['insert'])) {
-			return self::__callStatic(__FUNCTION__, func_get_args());
+			return static::__callStatic(__FUNCTION__, func_get_args());
 		}
-		return self::template_2($in, $data, __FUNCTION__);
+		return static::template_2($in, $data, __FUNCTION__);
 	}
 	/**
 	 * Rendering of pre tag with supporting multiple input data in the form of array of strings
@@ -638,9 +660,9 @@ abstract class _Abstract {
 	 */
 	static function pre ($in = '', $data = []) {
 		if (isset($in['insert']) || isset($data['insert'])) {
-			return self::__callStatic(__FUNCTION__, func_get_args());
+			return static::__callStatic(__FUNCTION__, func_get_args());
 		}
-		return self::template_2($in, $data, __FUNCTION__);
+		return static::template_2($in, $data, __FUNCTION__);
 	}
 	/**
 	 * Rendering of code tag with supporting multiple input data in the form of array of strings
@@ -654,9 +676,9 @@ abstract class _Abstract {
 	 */
 	static function code ($in = '', $data = []) {
 		if (isset($in['insert']) || isset($data['insert'])) {
-			return self::__callStatic(__FUNCTION__, func_get_args());
+			return static::__callStatic(__FUNCTION__, func_get_args());
 		}
-		return self::template_2($in, $data, __FUNCTION__);
+		return static::template_2($in, $data, __FUNCTION__);
 	}
 	/**
 	 * Rendering of button tag, if button type is not specified - it will be button type
@@ -670,12 +692,12 @@ abstract class _Abstract {
 	 */
 	static function button ($in = '', $data = []) {
 		if (isset($in['insert']) || isset($data['insert'])) {
-			return self::__callStatic(__FUNCTION__, func_get_args());
+			return static::__callStatic(__FUNCTION__, func_get_args());
 		}
 		if ($in === false) {
 			return '';
 		} elseif (is_array($in)) {
-			return self::__callStatic(__FUNCTION__, [$in, $data]);
+			return static::__callStatic(__FUNCTION__, [$in, $data]);
 		}
 		if (is_array($in)) {
 			if (!isset($in['type'])) {
@@ -686,7 +708,7 @@ abstract class _Abstract {
 				$data['type'] = 'button';
 			}
 		}
-		return self::wrap($in, $data, __FUNCTION__);
+		return static::wrap($in, $data, __FUNCTION__);
 	}
 	/**
 	 * Rendering of style tag, if style type is not specified - it will be text/css type, that is used almost always
@@ -700,12 +722,12 @@ abstract class _Abstract {
 	 */
 	static function style ($in = '', $data = []) {
 		if (isset($in['insert']) || isset($data['insert'])) {
-			return self::__callStatic(__FUNCTION__, func_get_args());
+			return static::__callStatic(__FUNCTION__, func_get_args());
 		}
 		if ($in === false) {
 			return '';
 		} elseif (is_array($in)) {
-			return self::__callStatic(__FUNCTION__, [$in, $data]);
+			return static::__callStatic(__FUNCTION__, [$in, $data]);
 		}
 		if (is_array($in)) {
 			if (!isset($in['type'])) {
@@ -716,7 +738,7 @@ abstract class _Abstract {
 				$data['type'] = 'text/css';
 			}
 		}
-		return self::wrap($in, $data, __FUNCTION__);
+		return static::wrap($in, $data, __FUNCTION__);
 	}
 	/**
 	 * Rendering of br tag, very simple, only one parameter exists - number of br tags to be rendered, default is 1
@@ -732,59 +754,7 @@ abstract class _Abstract {
 			return false;
 		}
 		$in['tag'] = __FUNCTION__;
-		return str_repeat(self::u_wrap($in), $repeat);
-	}
-	/**
-	 * Pseudo tag for labels with tooltips, specified <i>input</i> is translation item of <b>$L</b> object,
-	 * <i>input</i>_into item of <b>$L</b> is content of tooltip
-	 *
-	 * @static
-	 *
-	 * @param array|string	$in
-	 * @param array			$data
-	 *
-	 * @return mixed
-	 */
-	static function info ($in = '', $data = []) {
-		if (isset($in['insert']) || isset($data['insert'])) {
-			return self::__callStatic(__FUNCTION__, func_get_args());
-		}
-		if ($in === false) {
-			return '';
-		} elseif (is_array($in)) {
-			return self::__callStatic(__FUNCTION__, [$in, $data]);
-		}
-		$L		= Language::instance();
-		if (Config::instance(true)->core['show_tooltips']) {
-			return self::span($L->$in, array_merge(['data-title' => $L->{$in.'_info'}], $data));
-		} else {
-			return self::span($L->$in, $data);
-		}
-	}
-	/**
-	 * Pseudo tag for inserting of icons
-	 *
-	 * @static
-	 *
-	 * @param string	$class	Icon name in jQuery UI CSS Framework, fow example, <b>gear</b>, <b>note</b>
-	 * @param array		$data
-	 *
-	 * @return mixed
-	 */
-	static function icon ($class, $data = []) {
-		if (isset($in['insert']) || isset($data['insert'])) {
-			return self::__callStatic(__FUNCTION__, func_get_args());
-		}
-		if ($class === false) {
-			return '';
-		}
-		if (!isset($data['class'])) {
-			$data['class'] = "uk-icon-$class";
-		} else {
-			$data['class'] .= " uk-icon-$class";
-		}
-		$data['level']	= 0;
-		return self::span($data).' ';
+		return str_repeat(static::u_wrap($in), $repeat);
 	}
 	/**
 	 * Merging of arrays, but joining all 'class' and 'style' items, supports 2-3 arrays for input
@@ -799,11 +769,11 @@ abstract class _Abstract {
 	 */
 	protected static function array_merge ($array1, $array2, $array3 = []) {
 		if (isset($array1['class'], $array2['class'])) {
-			$array1['class'] .= ' '.$array2['class'];
+			$array1['class'] .= " $array2[class]";
 			unset($array2['class']);
 		}
 		if (isset($array1['class'], $array3['class'])) {
-			$array1['class'] .= ' '.$array3['class'];
+			$array1['class'] .= " $array3[class]";
 			unset($array3['class']);
 		}
 		if (isset($array1['style'], $array2['style'])) {
@@ -842,7 +812,7 @@ abstract class _Abstract {
 			];
 			return true;
 		}
-		return self::analyze_selector($in, $space_position + 1);
+		return static::analyze_selector($in, $space_position + 1);
 	}
 	/**
 	 * @param array[]|string|string[]	$data
@@ -851,7 +821,7 @@ abstract class _Abstract {
 	protected static function inserts_replacing_recursive (&$data, &$insert) {
 		if (is_array($data)) {
 			foreach ($data as &$d) {
-				self::inserts_replacing_recursive($d, $insert);
+				static::inserts_replacing_recursive($d, $insert);
 			}
 		} else {
 			foreach ($insert as $i => $d) {
@@ -872,11 +842,11 @@ abstract class _Abstract {
 			$new_data	= [];
 			foreach ($insert as $i) {
 				$new_data[] = $data;
-				self::inserts_replacing_recursive($new_data[count($new_data) - 1], $i);
+				static::inserts_replacing_recursive($new_data[count($new_data) - 1], $i);
 			}
 			$data		= $new_data;
 		} else {
-			 self::inserts_replacing_recursive($data, $insert);
+			 static::inserts_replacing_recursive($data, $insert);
 		}
 	}
 	/**
@@ -902,7 +872,7 @@ abstract class _Abstract {
 		/**
 		 * Analysis of called tag. If nested tags presented
 		 */
-		if (self::analyze_selector($input)) {
+		if (static::analyze_selector($input)) {
 			/**
 			 * If tag name ends with pipe "|" symbol - for every element of array separate copy of current tag will be created
 			 */
@@ -922,35 +892,35 @@ abstract class _Abstract {
 					$data	= [$data];
 				}
 				foreach ($data[0] as $d) {
-					if (isset($d[0]) && is_array_indexed($d[0]) && !in_array($d[0][0], self::$unit_atributes)) {
+					if (isset($d[0]) && is_array_indexed($d[0]) && !in_array($d[0][0], static::$unit_atributes)) {
 						if (
 							isset($d[1]) &&
 							(
 								!is_array($d[1]) ||
 								(
-									is_array_indexed($d[1]) && !in_array($d[1][0], self::$unit_atributes)
+									is_array_indexed($d[1]) && !in_array($d[1][0], static::$unit_atributes)
 								)
 							)
 						) {
 							$output_	= [];
 							foreach ($d as $d_) {
-								$output_[]	= self::__callStatic($input[1], $d_);
+								$output_[]	= static::__callStatic($input[1], $d_);
 							}
 							$output[]	= $output_;
 							unset($output_);
 						} else {
 							$output[]	= [
-								self::__callStatic($input[1], $d[0]),
+								static::__callStatic($input[1], $d[0]),
 								isset($d[1]) ? $d[1] : ''
 							];
 						}
 					} else {
-						$output[]	= self::__callStatic($input[1], $d);
+						$output[]	= static::__callStatic($input[1], $d);
 					}
 				}
 				unset($d);
 			} elseif (!isset($data[1]) || is_array_assoc($data[1])) {
-				$output		= self::__callStatic(
+				$output		= static::__callStatic(
 					$input[1],
 					[
 						isset($data[0]) ? $data[0] : '',
@@ -959,13 +929,13 @@ abstract class _Abstract {
 				);
 				$data[1]	= [];
 			} else {
-				$output		= self::__callStatic(
+				$output		= static::__callStatic(
 					$input[1],
 					$data
 				);
 				$data[1]	= [];
 			}
-			return self::__callStatic(
+			return static::__callStatic(
 				$input[0],
 				[
 					$output,
@@ -990,7 +960,7 @@ abstract class _Abstract {
 			if (count($data) > 2) {
 				$output	= '';
 				foreach ($data as $d) {
-					$output			.= self::__callStatic(
+					$output			.= static::__callStatic(
 						$input,
 						$d
 					);
@@ -1010,7 +980,7 @@ abstract class _Abstract {
 							!isset($data[1]) ||
 							!is_array($data[1]) ||
 							(
-								is_array_indexed($data[1]) && !in_array($data[1][0], self::$unit_atributes)
+								is_array_indexed($data[1]) && !in_array($data[1][0], static::$unit_atributes)
 							)
 						)
 					)
@@ -1018,7 +988,7 @@ abstract class _Abstract {
 			) {
 				$output	= '';
 				foreach ($data as $d) {
-					$output				.= self::__callStatic(
+					$output				.= static::__callStatic(
 						$input,
 						$d
 					);
@@ -1034,7 +1004,7 @@ abstract class _Abstract {
 						strpos($input, 'select') !== 0 && strpos($input, 'datalist') !== 0
 					) ||
 					(
-						is_array_indexed($data[0][0]) && !in_array($data[0][0][0], self::$unit_atributes)
+						is_array_indexed($data[0][0]) && !in_array($data[0][0][0], static::$unit_atributes)
 					)
 				)
 			) {
@@ -1042,22 +1012,22 @@ abstract class _Abstract {
 				foreach ((array)$data[0] as $d) {
 					$data[1]	= isset($data[1]) ? $data[1] : [];
 					if (!is_array($d) || !isset($d[1]) || !is_array($d[1])) {
-						$output			.= self::__callStatic(
+						$output			.= static::__callStatic(
 							$input,
 							[
 								$d,
 								$data[1]
 							]
 						);
-					} elseif (is_array_indexed($d[1]) && !in_array($d[1], self::$unit_atributes)) {
-						$output			.= self::__callStatic(
+					} elseif (is_array_indexed($d[1]) && !in_array($d[1], static::$unit_atributes)) {
+						$output			.= static::__callStatic(
 							$input,
 							[
 								$d[0],
 								$data[1]
 							]
 						).
-						self::__callStatic(
+						static::__callStatic(
 							$input,
 							[
 								$d[1],
@@ -1065,11 +1035,11 @@ abstract class _Abstract {
 							]
 						);
 					} else {
-						$output			.= self::__callStatic(
+						$output			.= static::__callStatic(
 							$input,
 							[
 								$d[0],
-								self::array_merge($data[1], $d[1])
+								static::array_merge($data[1], $d[1])
 							]
 						);
 					}
@@ -1077,18 +1047,18 @@ abstract class _Abstract {
 				return $output;
 			} elseif (
 				!is_array($data[0]) &&
-				!in_array($data[0], self::$unit_atributes) &&
+				!in_array($data[0], static::$unit_atributes) &&
 				isset($data[1]) &&
 				(
 					!is_array($data[1]) ||
 					(
-						is_array_indexed($data[1])  && !in_array($data[1][0], self::$unit_atributes)
+						is_array_indexed($data[1])  && !in_array($data[1][0], static::$unit_atributes)
 					)
 				)
 			) {
 				$output	= '';
 				foreach ($data as $d) {
-					$output			.= self::__callStatic(
+					$output			.= static::__callStatic(
 						$input,
 						$d
 					);
@@ -1116,7 +1086,7 @@ abstract class _Abstract {
 			$data[0]	= ['in'	=> $data[0]];
 		}
 		if (isset($data[1])) {
-			$data		= self::array_merge($data[0], $data[1]);
+			$data		= static::array_merge($data[0], $data[1]);
 		} else {
 			$data		= $data[0];
 		}
@@ -1156,7 +1126,7 @@ abstract class _Abstract {
 		if (isset($input[1])) {
 			$attrs['id'] = $input[1];
 		}
-		$attrs = self::array_merge($attrs, $data);
+		$attrs = static::array_merge($attrs, $data);
 		unset($data);
 		if ($tag == 'select' || $tag == 'datalist') {
 			if (isset($attrs['value'])) {
@@ -1181,29 +1151,29 @@ abstract class _Abstract {
 			$insert	= $attrs['insert'];
 			unset($attrs['insert']);
 			$data	= [$in, $attrs];
-			self::inserts_processing($data, $insert);
+			static::inserts_processing($data, $insert);
 			$html	= '';
 			foreach ($data as $d) {
-				if (method_exists('h', $tag)) {
-					$html			.= self::$tag($d[0], $d[1]);
-				} elseif (in_array($tag, self::$unpaired_tags)) {
+				if (method_exists(get_class(), $tag)) {
+					$html			.= static::$tag($d[0], $d[1]);
+				} elseif (in_array($tag, static::$unpaired_tags)) {
 					$d[1]['tag']	= $tag;
 					$d[1]['in']		= $d[0];
-					$html			.= self::u_wrap($d[1]);
+					$html			.= static::u_wrap($d[1]);
 				} else {
-					$html			.= self::wrap($d[0], $d[1], $tag);
+					$html			.= static::wrap($d[0], $d[1], $tag);
 				}
 			}
 			return $html;
 		}
-		if (method_exists('h', $tag)) {
-			$in				= self::$tag($in, $attrs);
-		} elseif (in_array($tag, self::$unpaired_tags)) {
+		if (method_exists(get_class(), $tag)) {
+			$in				= static::$tag($in, $attrs);
+		} elseif (in_array($tag, static::$unpaired_tags)) {
 			$attrs['tag']	= $tag;
 			$attrs['in']	= $in;
-			$in				= self::u_wrap($attrs);
+			$in				= static::u_wrap($attrs);
 		} else {
-			$in				= self::wrap($in, $attrs, $tag);
+			$in				= static::wrap($in, $attrs, $tag);
 		}
 		return $in;
 	}

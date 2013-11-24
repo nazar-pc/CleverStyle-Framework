@@ -63,7 +63,7 @@
       }, function() {
         return $('.SIMPLEST_INLINE_EDITOR').prop('contenteditable', true);
       }, function() {
-        return $('.cs-info').cs().tooltip();
+        return $('[data-title]').cs().tooltip();
       }, function() {
         return $('.cs-tabs').cs().tabs();
       }, function() {

@@ -106,13 +106,13 @@ do ($=jQuery) ->
 						.first()
 							.addClass('uk-active')
 				$this
-					.data("tab", new UI.tab($this, {connect:content}))
+					.data('tab', new UI.tab($this, {connect:content}))
 				content
 					.addClass('uk-switcher uk-margin')
 					.children(':first')
 						.addClass('uk-active')
 				content
-					.data("switcher", new UI.switcher(content))
+					.data('switcher', new UI.switcher(content))
 		###*
 		 * Tooltip with UIkit
 		 *
@@ -121,7 +121,6 @@ do ($=jQuery) ->
 		tooltip		: ->
 			if !this.length
 				return this
-			UI	= $.UIkit
 			this.each ->
 				$this	= $(this)
 				if !$this.attr('title')
@@ -130,15 +129,12 @@ do ($=jQuery) ->
 						.attr('data-title', '')
 				pos		= $this.data('pos')
 				$this
-					.data(
-						'tooltip'
-						new UI.tooltip(
-							$this
-							UI.Utils.options(
-								pos			: if pos then pos else 'top'
-								animation	: true
-								delay		: 200
-							)
+					.attr(
+						'data-uk-tooltip'
+						cs.json_encode(
+							pos			: if pos then pos else 'top'
+							animation	: true
+							delay		: 200
 						)
 					)
 		###*

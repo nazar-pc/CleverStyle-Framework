@@ -579,7 +579,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 					$tag = 'div';
 				}
 				$addition_state .= h::{'div.cs-dialog'}(
-					h::$tag($tag == 'pre' ? filter(file_get_contents($file)) : file_get_contents($file)),
+					h::$tag($tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)),
 					[
 						'id'			=> "{$module}_api",
 						'title'			=> "$module » $L->api"
@@ -606,7 +606,7 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 				$tag = 'div';
 			}
 			$uniqid			= uniqid('module_info_');
-			$Page->replace($uniqid, $tag == 'pre' ? filter(file_get_contents($file)) : file_get_contents($file));
+			$Page->replace($uniqid, $tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file));
 			$addition_state .= h::{'div.cs-dialog'}(
 				h::$tag($uniqid),
 				[

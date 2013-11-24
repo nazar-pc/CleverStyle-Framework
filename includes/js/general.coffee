@@ -49,7 +49,7 @@ $ ->
 			$('.SIMPLEST_INLINE_EDITOR')
 				.prop('contenteditable', true)
 		->
-			$('.cs-info').cs().tooltip()
+			$('[data-title]').cs().tooltip()
 		->
 			$('.cs-tabs').cs().tabs()
 		->
