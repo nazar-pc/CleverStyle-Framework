@@ -79,12 +79,12 @@ class Blogs {
 					WHERE `id` = $id"
 				);
 				$data['tags']								= $this->db()->qfas([
-					"SELECT `tag`
+					"SELECT DISTINCT `tag`
 					FROM `[prefix]blogs_posts_tags`
 					WHERE
 						`id`	= $id AND
 						`lang`	= '%s'",
-					$L->cang
+					$L->clang
 				]);
 				if (!$data['tags']) {
 					$l				= $this->db()->qfs(
@@ -94,7 +94,7 @@ class Blogs {
 						LIMIT 1"
 					);
 					$data['tags']	= $this->db()->qfas(
-						"SELECT `tag`
+						"SELECT DISTINCT `tag`
 						FROM `[prefix]blogs_posts_tags`
 						WHERE
 							`id`	= $id AND
@@ -216,7 +216,7 @@ class Blogs {
 		$Config		= Config::instance();
 		$L			= Language::instance();
 		$id			= (int)$id;
-		$path		= path($path ?: $title);
+		$path		= path(trim($path ?: $title));
 		$title		= xap(trim($title));
 		$content	= xap($content, true);
 		$sections	= array_intersect(
@@ -243,9 +243,9 @@ class Blogs {
 			array_unique(
 				array_map(
 					function ($tag) use ($id, $L) {
-						return "($id, $tag, '{$L->clang}')";
+						return "($id, $tag, '$L->clang')";
 					},
-					$this->process_tags($tags)
+					$processed = $this->process_tags($tags)
 				)
 			)
 		);
@@ -269,7 +269,7 @@ class Blogs {
 				"DELETE FROM `[prefix]blogs_posts_tags`
 				WHERE
 					`id`	= '%5\$s' AND
-					`lang`	= '{$L->clang}'",
+					`lang`	= '$L->clang'",
 				"INSERT INTO `[prefix]blogs_posts_tags`
 					(`id`, `tag`, `lang`)
 				VALUES
@@ -292,7 +292,9 @@ class Blogs {
 							(`id`, `tag`, `lang`)
 						SELECT `id`, `tag`, '$lang'
 						FROM `[prefix]blogs_posts_tags`
-						WHERE `id` = $id"
+						WHERE
+							`id`	= $id AND
+							`lang`	= '$L->clang'"
 					);
 				}
 			}
