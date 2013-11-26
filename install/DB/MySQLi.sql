@@ -86,8 +86,10 @@ CREATE TABLE IF NOT EXISTS `[prefix]texts_data` (
   `id_` varchar(25) NOT NULL,
   `lang` varchar(2) NOT NULL,
   `text` mediumtext NOT NULL,
+  `text_md5` varchar(32) NOT NULL,
   PRIMARY KEY (`id`,`lang`),
-  KEY `id_` (`id_`)
+  KEY `id_` (`id_`),
+  KEY `text_md5` (`text_md5`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `[prefix]users` (
