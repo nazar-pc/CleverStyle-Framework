@@ -105,7 +105,7 @@ function time_limit_pause ($pause = true) {
  * @param	string		$dir			Directory for searching
  * @param	bool|string	$mask			Regexp for items
  * @param	string		$mode			Mode of searching<br>
- * 										<b>f</b> - files only<br> (default)
+ * 										<b>f</b> - files only (default)<br>
  * 										<b>d</b> - directories only<br>
  * 										<b>fd</b> - both files and directories
  * @param	bool|string	$prefix_path	Path to be added to the beginning of every found item. If <b>true</b> - prefix will

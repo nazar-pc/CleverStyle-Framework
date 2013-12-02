@@ -21,7 +21,7 @@ global $fs;
 $fs		= json_decode(file_get_contents(DIR.'/fs.json'), true);
 require_once DIR.'/fs/'.$fs['core/upf.php'];
 require_once DIR.'/fs/'.$fs['core/functions.php'];
-require_once DIR.'/fs/'.$fs['core/classes/thirdparty/BananaHTML.php'];
+require_once DIR.'/fs/'.$fs['core/classes/thirdparty/nazarpc/BananaHTML.php'];
 require_once DIR.'/fs/'.$fs['core/classes/ h/Base.php'];
 require_once DIR.'/fs/'.$fs['core/classes/h.php'];
 require_once DIR.'/install/functions.php';
