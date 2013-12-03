@@ -3,7 +3,7 @@
  * @package		Deferred tasks
  * @category	modules
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) Nazar Mokrynskyi, 2013
+ * @copyright	Copyright (c) 2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Deferred_tasks;
