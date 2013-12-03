@@ -3,7 +3,7 @@
  * @package		CleverStyle CMS
  * @subpackage	Installer
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
+ * @copyright	Copyright (c) Nazar Mokrynskyi, 2011—2013
  * @license		MIT License, see license.txt
  */
 if (version_compare(PHP_VERSION, '5.4', '<')) {
@@ -44,5 +44,5 @@ echo	"<!doctype html>\n".
 			isset($_POST['site_name']) ? install_process() : install_form()
 		).
 		h::footer(
-			'Copyright (c) 2011-2013, Nazar Mokrynskyi'
+			'Copyright (c) Nazar Mokrynskyi, 2011—2013'
 		);

@@ -4,7 +4,7 @@
  * @subpackage	System module
  * @category	modules
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2013, Nazar Mokrynskyi
+ * @copyright	Copyright (c) Nazar Mokrynskyi, 2013
  * @license		MIT License, see license.txt
  */
 namespace	cs;
