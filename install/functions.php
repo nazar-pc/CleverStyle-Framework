@@ -333,17 +333,17 @@ function install_process () {
 }'));
 	apc() && apc_clear_cache('user');
 	if (!$main_config) {
-		return 'Can\'t write base system configuration! Installation aborted.';
+		return "Can't write base system configuration! Installation aborted.";
 	}
 	chmod(ROOT.'/config/main.json', 0600);
 	/**
 	 * DataBase structure import
 	 */
 	if (!file_exists(DIR."/install/DB/$_POST[db_engine].sql")) {
-		return 'Can\'t find system tables structure for selected database engine! Installation aborted.';
+		return "Can't find system tables structure for selected database engine! Installation aborted.";
 	}
 	if (!$cdb->q(explode(';', file_get_contents(DIR."/install/DB/$_POST[db_engine].sql")))) {
-		return 'Can\'t import system tables structure for selected database engine! Installation aborted.';
+		return "Can't import system tables structure for selected database engine! Installation aborted.";
 	}
 	/**
 	 * General configuration import
@@ -379,7 +379,7 @@ function install_process () {
 		'{"modules":'._json_encode($modules).',"plugins":[],"blocks":[]}',
 		'{"in":[],"out":[]}'
 	)) {
-		return 'Can\'t import system configuration into database! Installation aborted.';
+		return "Can't import system configuration into database! Installation aborted.";
 	}
 	unset($modules);
 	/**
@@ -401,13 +401,19 @@ function install_process () {
 		$_SERVER['REMOTE_ADDR'],
 		1
 	)) {
-		return 'Can\'t register administrator user! Installation aborted.';
+		return "Can't register administrator user! Installation aborted.";
 	}
 	/**
 	 * Disconnecting from the DataBase, removing of installer file
 	 */
 	$cdb->__destruct();
-	unlink(ROOT.'/'.pathinfo(DIR, PATHINFO_BASENAME));
+	$warning	= false;
+	$installer	= ROOT.'/'.pathinfo(DIR, PATHINFO_BASENAME);
+	if (is_writable($installer)) {
+		unlink($installer);
+	} else {
+		$warning	= "Please, remove installer file <code>$installer</code> for security!";
+	}
 	return h::h3(
 		'Congratulations! CleverStyle CMS has been installed successfully!'
 	).
@@ -427,10 +433,16 @@ function install_process () {
 			$_POST['admin_password']
 		]
 	).
+	h::p(
+		$warning,
+		[
+			'style'	=> 'color: red;'
+		]
+	).
 	h::button(
 		'Go to website',
 		[
-			'onclick'	=> "location.href = '".addslashes($config['url'])."'"
+			'onclick'	=> "location.href = '/';"
 		]
 	);
 }
