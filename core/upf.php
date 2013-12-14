@@ -1208,6 +1208,8 @@ function truncate ($text, $length = 1024, $ending = '...', $exact = false, $cons
 /**
  * Prepare string to use as url path
  *
+ * Special THREE-PER-EM SPACE is used in order to prevent transformation spaces in URL into %20
+ *
  * @param string	$text
  *
  * @return string
@@ -1216,9 +1218,9 @@ function path ($text) {
 	return strtr(
 		trim($text),
 		[
-			' '		=> '_',
-			'/'		=> '_',
-			'\\'	=> '_'
+			' '		=> ' ',
+			'/'		=> ' ',
+			'\\'	=> ' '
 		]
 	);
 }
