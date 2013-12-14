@@ -276,7 +276,7 @@ class Page {
 					'name'			=> 'generator',
 					'content'		=> base64_decode('Q2xldmVyU3R5bGUgQ01TIGJ5IE1va3J5bnNreWkgTmF6YXI=')
 				],
-				ADMIN || API ? [
+				(defined('ADMIN') && ADMIN) || (defined('API') && API) ? [
 					'name'			=> 'robots',
 					'content'		=> 'noindex,nofollow'
 				] : false

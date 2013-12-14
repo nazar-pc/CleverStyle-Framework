@@ -258,7 +258,7 @@
 		"allow_file_upload"			: "Дозволити завантаження файлів на сервер",
 		"max_file_uploads"			: "Максимальна кількість файлів для завантаження за один раз",
 		"allow_url_fopen"			: "Підтримка URL-пакувальників (URL-wrappers)",
-		"display_errors"			: "Відібрати помилки",
+		"display_errors"			: "Відображати помилки",
 		"mcrypt"					: "Бібліотека mcrypt",
 		"php_ini_settings"			: "Налаштування php.ini",
 		"indefinite"				: "Невизначений",

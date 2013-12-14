@@ -44,7 +44,7 @@ Trigger::instance()->register(
 				array_values(Cache::instance()->get('languages/clangs', function () use ($Config) {
 					$Config->update_clangs();
 					return Cache::instance()->{'languages/clangs'};
-				}))
+				})) ?: []
 			));
 	}
 );

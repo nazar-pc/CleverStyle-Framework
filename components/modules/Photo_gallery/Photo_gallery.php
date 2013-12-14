@@ -268,7 +268,7 @@ class Photo_gallery {
 					ORDER BY `order` ASC"
 				) as $gallery
 			) {
-				$data[$this->get_gallery($gallery)['path']]	= $gallery['id'];
+				$data[$this->get_gallery($gallery)['path']]	= $gallery;
 			}
 			return $data;
 		});

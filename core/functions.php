@@ -24,6 +24,7 @@ use	cs\Cache,
  * Auto Loading of classes
  */
 spl_autoload_register(function ($class) {
+	$class	= ltrim($class, '\\');
 	if (substr($class, 0, 3) == 'cs\\') {
 		$class	= substr($class, 3);
 	}
@@ -144,6 +145,9 @@ function clean_pcache () {
  * @return string
  */
 function format_time ($time) {
+	if (!is_numeric($time)) {
+		return $time;
+	}
 	$L		= Language::instance();
 	$res	= [];
 	if ($time >= 31536000) {
@@ -185,6 +189,9 @@ function format_time ($time) {
  * @return float|string
  */
 function format_filesize ($size, $round = false) {
+	if (!is_numeric($size)) {
+		return $size;
+	}
 	$L		= Language::instance();
 	$unit	= '';
 	if($size >= 1099511627776) {
@@ -202,7 +209,7 @@ function format_filesize ($size, $round = false) {
 	} else {
 		$size = "$size $L->Bytes";
 	}
-	return $round ? round($size, $round).$unit : $size;
+	return $round ? round($size, $round).$unit : $size.$unit;
 }
 /**
  * Function for setting cookies on all mirrors and taking into account cookies prefix. Parameters like in system function, but $path, $domain and $secure

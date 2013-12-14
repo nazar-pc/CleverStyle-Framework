@@ -20,12 +20,14 @@ $Index			= Index::instance();
 $L				= Language::instance();
 if (isset($Config->route[2]) && $Config->route[2] == 'phpinfo') {
 	interface_off();
-	ob_start();
-	phpinfo();
-	$Index->content(ob_get_clean());
+	$Index->form	= false;
+	$Index->Content	= ob_wrapper(function () {
+		phpinfo();
+	});
 	$Index->stop;
 	return;
 }
+$hhvm			= defined('HHVM_VERSION');
 $Index->form	= false;
 $Index->content(
 	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}(
@@ -72,9 +74,13 @@ $Index->content(
 		] : false,
 		preg_match('/nginx/i', $_SERVER['SERVER_SOFTWARE']) ? [
 			$L->version_of('Nginx').':',
-			$_SERVER['SERVER_SOFTWARE']
+			explode('/', $_SERVER['SERVER_SOFTWARE'])[1]
 		] : false,
-		[
+		$hhvm ? [
+			$L->version_of('HHVM').':',
+			HHVM_VERSION
+		] : false,
+		$hhvm ? false : [
 			"$L->available_ram:",
 			str_replace(
 				['K', 'M', 'G'],
@@ -187,35 +193,35 @@ $Index->content(
 						]
 					]
 				],
-				[
+				$hhvm ? false : [
 					"$L->max_file_uploads:",
 					ini_get('max_file_uploads')
 				],
 				[
 					"$L->upload_limit:",
-					str_replace(
+					format_filesize(str_replace(
 						['K', 'M', 'G'],
 						[" $L->KB", " $L->MB", " $L->GB"],
 						ini_get('upload_max_filesize')
-					)
+					))
 				],
 				[
 					"$L->post_max_size:",
-					str_replace(
+					format_filesize(str_replace(
 						['K', 'M', 'G'],
 						[" $L->KB", " $L->MB", " $L->GB"],
 						ini_get('post_max_size')
-					)
+					))
 				],
-				[
+				$hhvm ? false : [
 					"$L->max_execution_time:",
 					format_time(ini_get('max_execution_time'))
 				],
-				[
+				$hhvm ? false : [
 					"$L->max_input_time:",
 					format_time(ini_get('max_input_time'))
 				],
-				[
+				$hhvm ? false : [
 					"$L->default_socket_timeout:",
 					format_time(ini_get('default_socket_timeout'))
 				],
@@ -250,12 +256,14 @@ function state ($state) {
  * @return string
  */
 function server_api () {
-	$tmp = ob_wrapper(function () {
+	$phpinfo = ob_wrapper(function () {
 		phpinfo(INFO_GENERAL);
 	});
-	preg_match('/Server API <\/td><td class="v">(.*?) <\/td><\/tr>/', $tmp, $tmp);
-	if ($tmp[1]) {
-		return $tmp[1];
+	preg_match('/Server API <\/td><td class="v">(.*?) <\/td><\/tr>/', $phpinfo, $sapi);
+	if (isset($sapi[1]) && $sapi[1]) {
+		return $sapi[1];
+	} elseif (defined('HHVM_VERSION')) {
+		return 'HipHop Virtual Machine';
 	} else {
 		return Language::instance()->indefinite;
 	}
