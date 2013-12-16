@@ -19,6 +19,13 @@
           type: 'post',
           data: {
             session: session_id
+          },
+          error: function(xhr) {
+            if (xhr.responseText) {
+              return alert(cs.json_decode(xhr.responseText).error_description);
+            } else {
+              return alert(L.connection_error);
+            }
           }
         });
       }, function() {

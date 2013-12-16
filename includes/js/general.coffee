@@ -12,6 +12,11 @@ $ ->
 				type	: 'post'
 				data	:
 					session	: session_id
+				error	: (xhr) ->
+					if xhr.responseText
+						alert(cs.json_decode(xhr.responseText).error_description)
+					else
+						alert(L.connection_error)
 		->
 			L			= cs.Language
 			L[key]		= (do (translation) ->
