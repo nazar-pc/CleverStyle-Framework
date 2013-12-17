@@ -47,7 +47,7 @@ if (!API) {
 		case 'drafts':
 		break;
 		default:
-			if (mb_strpos($rc[0], ':')) {
+			if (mb_strpos($rc[0], ':') !== false) {
 				array_unshift($rc, 'post');
 			} else {
 				error_code(404);

@@ -27,11 +27,13 @@ class Language implements JsonSerializable {
 	public		$clanguage,								//Current language
 				$time					= null;			//Closure for time processing
 	protected	$init					= false,		//For single initialization
-				$translate				= [];			//Local cache of translations
+				$translate				= [],			//Local cache of translations
+				$fixed_language			= false;
 	/**
 	 * Set basic language
 	 */
 	protected function construct () {
+		$this->fixed_language	= FIXED_LANGUAGE;
 		$this->change(Core::instance()->language);
 	}
 	/**
@@ -90,10 +92,13 @@ class Language implements JsonSerializable {
 			return isset($translate[$item]) ? $translate[$item] : ucfirst(str_replace('_', ' ', $item));
 		}
 		unset($translate);
-		$current_language	= $this->clanguage;
+		$current_language		= $this->clanguage;
+		$current_fixed_language	= $this->fixed_language;
+		$this->fixed_language	= false;
 		$this->change($language);
 		$return				= isset($this->translate[$item]) ? $this->translate[$item] : ucfirst(str_replace('_', ' ', $item));
 		$this->change($current_language);
+		$this->fixed_language	= $current_fixed_language;
 		return $return;
 	}
 	/**
@@ -143,7 +148,7 @@ class Language implements JsonSerializable {
 	 */
 	function change ($language) {
 		static $changed_once = false;
-		if (FIXED_LANGUAGE && $changed_once) {
+		if ($this->fixed_language && $changed_once) {
 			return false;
 		}
 		$changed_once	= true;

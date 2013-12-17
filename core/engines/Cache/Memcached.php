@@ -12,7 +12,8 @@ use			cs\Core;
  * Support optionally base configuration option Core::instance()->memcached_host and Core::instance()->memcached_port
  */
 class Memcached extends _Abstract {
-	protected	$memcached	= false;
+	protected	$memcached				= false;
+	protected	$root_versions_cache	= [];
 	function __construct () {
 		if (!memcached()) {
 			return;
@@ -65,9 +66,8 @@ class Memcached extends _Abstract {
 			return false;
 		}
 		$this->memcached->delete($this->namespaces_imitation($item));
-		if ($pos = mb_strrpos($item, '/')) {
-			$this->memcached->increment(mb_substr($item, 0, $pos));
-		}
+		$this->memcached->increment('/'.DOMAIN."/$item");
+		unset($this->root_versions_cache['/'.DOMAIN."/$item"]);
 		return true;
 	}
 	/**
@@ -80,8 +80,6 @@ class Memcached extends _Abstract {
 	 * @return string
 	 */
 	protected function namespaces_imitation ($item) {
-		static $root_items_cache = [];
-		$memcached	= $this->memcached;
 		$exploded	= explode('/', $item);
 		$count		= count($exploded);
 		if ($count > 1) {
@@ -89,18 +87,18 @@ class Memcached extends _Abstract {
 			--$count;
 			for ($i = 0; $i < $count; ++$i) {
 				$item_path	.= '/'.$exploded[$i];
-				if (!$i && isset($root_items_cache[$item_path])) {
-					$exploded[$i]	.= $root_items_cache[$item_path];
+				if (!$i && isset($this->root_versions_cache["/$item_path"])) {
+					$exploded[$i]	.= '/'.$this->root_versions_cache["/$item_path"];
 					continue;
 				}
-				$version	= $memcached->get($item_path);
+				$version	= apc_fetch("/$item_path");
 				if ($version === false) {
-					$memcached->set($item_path, 0);
+					apc_store("/$item_path", 0);
 					$version	= 0;
 				}
-				$exploded[$i]	.= $version;
+				$exploded[$i]	.= "/$version";
 				if (!$i) {
-					$root_items_cache[$item_path]	= $version;
+					$this->root_versions_cache["/$item_path"]	= $version;
 				}
 			}
 			return DOMAIN.'/'.implode('/', $exploded);

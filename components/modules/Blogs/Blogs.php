@@ -660,7 +660,7 @@ class Blogs {
 		}
 	}
 	private function ml_process ($text, $auto_translation = true) {
-		return Text::instance()->process($this->cdb(), $text, $auto_translation);
+		return Text::instance()->process($this->cdb(), $text, $auto_translation, true);
 	}
 	private function ml_set ($group, $label, $text) {
 		return Text::instance()->set($this->cdb(), $group, $label, $text);
@@ -670,6 +670,8 @@ class Blogs {
 	}
 	/**
 	 * Get array of tags list in form [<i>id</i> => <i>text</i>]
+	 *
+	 * @TODO remove method, add find_tag() instead
 	 *
 	 * @return array
 	 */

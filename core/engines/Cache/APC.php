@@ -11,6 +11,7 @@ namespace cs\Cache;
  */
 class APC extends _Abstract {
 	protected	$apc;
+	protected	$root_versions_cache	= [];
 	function __construct () {
 		$this->apc	= apc();
 	}
@@ -26,7 +27,7 @@ class APC extends _Abstract {
 			return false;
 		}
 		return apc_fetch(
-			$this->namespaces_imitation(DOMAIN."/$item")
+			$this->namespaces_imitation($item)
 		);
 	}
 	/**
@@ -42,7 +43,7 @@ class APC extends _Abstract {
 			return false;
 		}
 		return apc_store(
-			$this->namespaces_imitation(DOMAIN."/$item"),
+			$this->namespaces_imitation($item),
 			$data
 		);
 	}
@@ -57,11 +58,9 @@ class APC extends _Abstract {
 		if (!$this->apc) {
 			return false;
 		}
-		$item	= DOMAIN."/$item";
 		apc_delete($this->namespaces_imitation($item));
-		if ($pos = mb_strrpos($item, '/')) {
-			apc_inc(mb_substr($item, 0, $pos));
-		}
+		apc_inc('/'.DOMAIN."/$item");
+		unset($this->root_versions_cache['/'.DOMAIN."/$item"]);
 		return true;
 	}
 	/**
@@ -74,7 +73,6 @@ class APC extends _Abstract {
 	 * @return string
 	 */
 	protected function namespaces_imitation ($item) {
-		static $root_items_cache = [];
 		$exploded	= explode('/', $item);
 		$count		= count($exploded);
 		if ($count > 1) {
@@ -82,18 +80,18 @@ class APC extends _Abstract {
 			--$count;
 			for ($i = 0; $i < $count; ++$i) {
 				$item_path	.= '/'.$exploded[$i];
-				if (!$i && isset($root_items_cache[$item_path])) {
-					$exploded[$i]	.= $root_items_cache[$item_path];
+				if (!$i && isset($this->root_versions_cache["/$item_path"])) {
+					$exploded[$i]	.= '/'.$this->root_versions_cache["/$item_path"];
 					continue;
 				}
-				$version	= apc_fetch($item_path);
+				$version	= apc_fetch("/$item_path");
 				if ($version === false) {
-					apc_store($item_path, 0);
+					apc_store("/$item_path", 0);
 					$version	= 0;
 				}
-				$exploded[$i]	.= $version;
+				$exploded[$i]	.= "/$version";
 				if (!$i) {
-					$root_items_cache[$item_path]	= $version;
+					$this->root_versions_cache["/$item_path"]	= $version;
 				}
 			}
 			return DOMAIN.'/'.implode('/', $exploded);
@@ -109,6 +107,6 @@ class APC extends _Abstract {
 		if (!$this->apc) {
 			return false;
 		}
-		return apc_clear_cache('user');
+		return version_compare(PHP_VERSION, '5.5', '>=') ? apc_clear_cache() : apc_clear_cache('user');
 	}
 }
