@@ -27,7 +27,7 @@ if (isset($Config->route[2]) && $Config->route[2] == 'phpinfo') {
 	$Index->stop;
 	return;
 }
-$hhvm			= defined('HHVM_VERSION');
+$hhvm_version	= defined('HHVM_VERSION') ? HHVM_VERSION : false;
 $Index->form	= false;
 $Index->content(
 	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}(
@@ -76,11 +76,11 @@ $Index->content(
 			$L->version_of('Nginx').':',
 			explode('/', $_SERVER['SERVER_SOFTWARE'])[1]
 		] : false,
-		$hhvm ? [
+		$hhvm_version ? [
 			$L->version_of('HHVM').':',
-			HHVM_VERSION
+			$hhvm_version
 		] : false,
-		$hhvm ? false : [
+		$hhvm_version ? false : [
 			"$L->available_ram:",
 			str_replace(
 				['K', 'M', 'G'],
@@ -193,7 +193,7 @@ $Index->content(
 						]
 					]
 				],
-				$hhvm ? false : [
+				$hhvm_version ? false : [
 					"$L->max_file_uploads:",
 					ini_get('max_file_uploads')
 				],
@@ -213,15 +213,15 @@ $Index->content(
 						ini_get('post_max_size')
 					))
 				],
-				$hhvm ? false : [
+				$hhvm_version ? false : [
 					"$L->max_execution_time:",
 					format_time(ini_get('max_execution_time'))
 				],
-				$hhvm ? false : [
+				$hhvm_version ? false : [
 					"$L->max_input_time:",
 					format_time(ini_get('max_input_time'))
 				],
-				$hhvm ? false : [
+				$hhvm_version ? false : [
 					"$L->default_socket_timeout:",
 					format_time(ini_get('default_socket_timeout'))
 				],
@@ -257,11 +257,12 @@ function state ($state) {
  */
 function server_api () {
 	$phpinfo = ob_wrapper(function () {
-		phpinfo(INFO_GENERAL);
+		phpinfo();
 	});
-	preg_match('/Server API <\/td><td class="v">(.*?) <\/td><\/tr>/', $phpinfo, $sapi);
-	if (isset($sapi[1]) && $sapi[1]) {
-		return $sapi[1];
+	if (preg_match('/apache/i', $_SERVER['SERVER_SOFTWARE'])) {
+		return 'Apache'.(preg_match('/mod_php/i', $phpinfo) ? ' + mod_php' : '');
+	} elseif (preg_match('/nginx/i', $_SERVER['SERVER_SOFTWARE'])) {
+		return 'Nginx'.(preg_match('/php-fpm/i', $phpinfo) ? ' + PHP-FPM' : '');
 	} elseif (defined('HHVM_VERSION')) {
 		return 'HipHop Virtual Machine';
 	} else {

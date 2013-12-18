@@ -52,6 +52,8 @@
 	"enable_comments_info"						: "Позволяет включить или выключить комментарии к постам, зависит от модуля Comments",
 	"new_posts_only_from_admins"				: "Новые посты только от админов",
 	"new_posts_only_from_admins_info"			: "Только администраторы могут писать новые посты. Иначе любой зарегистрированный пользователь сможет написать новый пост.",
+	"allow_iframes_without_content"				: "Разрешить iframe-ы без внутреннего контента",
+	"allow_iframes_without_content_info"		: "Например, позволяет вставлять видео с youtube",
 	"to_drafts"									: "В черновики",
 	"drafts"									: "Черновики",
 	"draft"										: "черновик"

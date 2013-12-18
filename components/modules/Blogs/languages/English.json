@@ -52,6 +52,8 @@
 	"enable_comments_info"						: "Allows to enable or disable posts comments, depends on Comments module",
 	"new_posts_only_from_admins"				: "New posts only from admins",
 	"new_posts_only_from_admins_info"			: "Only administrators are able to write new posts. Otherwise any registered user can write new post.",
+	"allow_iframes_without_content"				: "Allow iframes without inner content",
+	"allow_iframes_without_content_info"		: "For example, allows to insert video from youtube",
 	"to_drafts"									: "To drafts",
 	"drafts"									: "Drafts",
 	"draft"										: "draft"

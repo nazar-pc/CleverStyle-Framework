@@ -53,6 +53,8 @@
 	"enable_comments_info"						: "Дозволяє увімкнути або вимкнути коментарі до постів, залежить від модулю Comments",
 	"new_posts_only_from_admins"				: "Нові пости тільки від адмінів",
 	"new_posts_only_from_admins_info"			: "Тільки адміністратори можуть писати нові пости. Інакше будь-який зареєстрований користувач зможе написати новий пост.",
+	"allow_iframes_without_content"				: "Дозволити iframe-и без внутрішнього контенту",
+	"allow_iframes_without_content_info"		: "Наприклад, дозволяє вставляти відео з youtube",
 	"to_drafts"									: "У чернетки",
 	"drafts"									: "Чернетки",
 	"draft"										: "чернетка"

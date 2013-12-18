@@ -50,6 +50,15 @@ $Index->content(
 				'in'		=> [$L->no, $L->yes],
 				'checked'	=> $module_data->new_posts_only_from_admins
 			])
+		],
+		[
+			h::info('allow_iframes_without_content'),
+			h::{'input[type=radio]'}([
+				'name'		=> 'general[allow_iframes_without_content]',
+				'value'		=> [0, 1],
+				'in'		=> [$L->no, $L->yes],
+				'checked'	=> $module_data->allow_iframes_without_content
+			])
 		]
 	).
 	h::{'input[type=hidden][name=mode][value=general]'}()

@@ -17,7 +17,8 @@ Trigger::instance()->register(
 			'posts_per_page'				=> 10,
 			'max_sections'					=> 3,
 			'enable_comments'				=> 1,
-			'new_posts_only_from_admins'	=> 1
+			'new_posts_only_from_admins'	=> 1,
+			'allow_iframes_without_content'	=> 1
 		]);
 		return;
 	}

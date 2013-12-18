@@ -213,17 +213,18 @@ class Blogs {
 		if (empty($tags) || empty($content)) {
 			return false;
 		}
-		$Config		= Config::instance();
-		$L			= Language::instance();
-		$id			= (int)$id;
-		$path		= path(trim($path ?: $title));
-		$title		= xap(trim($title));
-		$content	= xap($content, true);
-		$sections	= array_intersect(
+		$Config			= Config::instance();
+		$L				= Language::instance();
+		$id				= (int)$id;
+		$path			= path(trim($path ?: $title));
+		$title			= xap(trim($title));
+		$module_data	= $Config->module('Blogs');
+		$content		= xap($content, true, $module_data->allow_iframes_without_content);
+		$sections		= array_intersect(
 			array_keys($this->get_sections_list()),
 			$sections
 		);
-		if (empty($sections) || count($sections) > $Config->module('Blogs')->max_sections) {
+		if (empty($sections) || count($sections) > $module_data->max_sections) {
 			return false;
 		}
 		$sections	= implode(

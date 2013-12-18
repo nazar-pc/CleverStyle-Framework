@@ -584,13 +584,15 @@ function _preg_replace ($pattern, $replacement, $subject, $limit = -1, &$count =
 /**
  * XSS Attack Protection. Returns secure string using several types of filters
  *
- * @param string|string[]	$in HTML code
+ * @param string|string[]	$in		HTML code
  * @param bool|string		$html	<b>text</b> - text at output (default)<br>
  * 									<b>true</b> - processed HTML at output<br>
  * 									<b>false</b> - HTML tags will be deleted
+ * @param bool				$iframe	Whether to allow iframes without inner content (for example, video from youtube)<br>
+ * 									Works only if <i>$html === true</i>
  * @return string|string[]
  */
-function xap ($in, $html = 'text') {
+function xap ($in, $html = 'text', $iframe = false) {
 	if (is_array($in)) {
 		foreach ($in as &$item) {
 			$item = xap($item, $html);
@@ -601,17 +603,52 @@ function xap ($in, $html = 'text') {
 	 */
 	} elseif ($html === true) {
 		$in = preg_replace(
-			'/<[^>]*(link|script|iframe|object|applet|embed)[^>]*>?(.*<\/[^>]*\\1[^>]*>)?/ims',
+			'/
+				<[^a-z=>]*(link|script|object|applet|embed)[^>]*>?	# Open tag
+				(
+					.*												# Some content
+					<\/[^>]*\\1[^>]*>								# Close tag (with reference for tag name to open tag)
+				)?													# Section is optional
+			/xims',
 			'',
 			$in
 		);
+		/**
+		 * Remove iframes (regular expression the same as previous)
+		 */
+		if (!$iframe) {
+			$in = preg_replace(
+				'/
+					<[^a-z=>]*iframe[^>]*>?		# Open tag
+					(
+						.*						# Some content
+						<\/[^>]*iframe[^>]*>	# Close tag
+					)?							# Section is optional
+				/xims',
+				'',
+				$in
+			);
+		/**
+		 * Allow iframes without inner content (for example, video from youtube)
+		 */
+		} else {
+			$in = preg_replace(
+				'/
+					(<[^a-z=>]*iframe[^>]*>\s*)	# Open tag
+					[^<\s]+						# Search if there something that is not space or < character
+					(<\/[^>]*iframe[^>]*>)?		# Optional close tag
+				/xims',
+				'',
+				$in
+			);
+		}
 		$in = preg_replace(
 			'/(script|data|vbscript):/i',
 			'\\1&#58;',
 			$in
 		);
 		$in = preg_replace(
-			'/(expression[\s\t\r\n]*)\(/i',
+			'/(expression[\s]*)\(/i',
 			'\\1&#40;',
 			$in
 		);

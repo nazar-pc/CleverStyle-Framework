@@ -58,7 +58,8 @@ if (isset($_POST['id'])) {
 		'comments_count'	=> 0
 	];
 }
-$module	= path($L->Blogs);
+$module			= path($L->Blogs);
+$module_data	= $Config->module('Blogs');
 $Page->json(
 	h::{'section.cs-blogs-post[level=0] article[level=0]'}(
 		h::header(
@@ -82,7 +83,7 @@ $Page->json(
 				)
 			) : '')
 		).
-		"$_POST[content]\n".
+		xap($_POST['content'], true, $module_data->allow_iframes_without_content)."\n".
 		h::footer(
 			h::p(
 				h::icon('tags').
@@ -118,7 +119,7 @@ $Page->json(
 					]
 				).
 				(
-					$Config->module('Blogs')->enable_comments ? h::icon('comments').$post['comments_count'] : ''
+				$module_data->enable_comments ? h::icon('comments').$post['comments_count'] : ''
 				)
 			)
 		)
