@@ -82,89 +82,91 @@ if (!API) {
 		}
 		return $list;
 	}
-	function get_posts_list ($posts) {
-		$Comments	= null;
-		Trigger::instance()->run(
-			'Comments/instance',
-			[
-				'Comments'	=> &$Comments
-			]
-		);
-		/**
-		 * @var \cs\modules\Comments\Comments $Comments
-		 */
-		$Blogs		= Blogs::instance();
-		$L			= Language::instance();
-		$Page		= Page::instance();
-		$User		= User::instance();
-		$module		= path($L->Blogs);
-		$content	= [];
-		if (empty($posts)) {
-			return '';
-		}
-		foreach ($posts as $post) {
-			$post			= $Blogs->get($post);
-			$short_content	= uniqid('post_content', true);
-			$Page->replace($short_content, $post['short_content']);
-			$content[]		= h::header(
-				h::{'h1 a'}(
-					$post['title'],
-					[
-						'href'	=> "$module/$post[path]:$post[id]"
-					]
+	if (!function_exists(__NAMESPACE__.'\\get_posts_list')) {
+		function get_posts_list ($posts) {
+			$Comments	= null;
+			Trigger::instance()->run(
+				'Comments/instance',
+				[
+					'Comments'	=> &$Comments
+				]
+			);
+			/**
+			 * @var \cs\modules\Comments\Comments $Comments
+			 */
+			$Blogs		= Blogs::instance();
+			$L			= Language::instance();
+			$Page		= Page::instance();
+			$User		= User::instance();
+			$module		= path($L->Blogs);
+			$content	= [];
+			if (empty($posts)) {
+				return '';
+			}
+			foreach ($posts as $post) {
+				$post			= $Blogs->get($post);
+				$short_content	= uniqid('post_content', true);
+				$Page->replace($short_content, $post['short_content']);
+				$content[]		= h::header(
+					h::{'h1 a'}(
+						$post['title'],
+						[
+							'href'	=> "$module/$post[path]:$post[id]"
+						]
+					).
+					($post['sections'] != [0] ? h::p(
+						h::icon('bookmark').
+						implode(', ', array_map(
+								function ($section) use ($Blogs, $L, $module) {
+									$section	= $Blogs->get_section($section);
+									return h::a(
+										$section['title'],
+										[
+											'href'	=> "$module/".path($L->section)."/$section[full_path]"
+										]
+									);
+								},
+								$post['sections']
+							)
+						)
+					) : '')
 				).
-				($post['sections'] != [0] ? h::p(
-					h::icon('bookmark').
-					implode(', ', array_map(
-							function ($section) use ($Blogs, $L, $module) {
-								$section	= $Blogs->get_section($section);
-								return h::a(
-									$section['title'],
-									[
-										'href'	=> "$module/".path($L->section)."/$section[full_path]"
-									]
-								);
-							},
-							$post['sections']
+				"$short_content\n".
+				h::footer(
+					h::hr().
+					h::p(
+						h::time(
+							$L->to_locale(date($L->_datetime_long, $post['date'] ?: TIME)),
+							[
+								'datetime'		=> date('c', $post['date'] ?: TIME)
+							]
+						).
+						h::a(
+							h::icon('user').$User->username($post['user']),
+							[
+								'href'			=> path($L->profile).'/'.$User->get('login', $post['user']),
+								'rel'			=> 'author'
+							]
+						).
+						(
+							Config::instance()->module('Blogs')->enable_comments && $Comments ? h::a(
+								h::icon('comments').$post['comments_count'],
+								[
+									'href'			=> "$module/$post[path]:$post[id]#comments"
+								]
+							) : ''
+						).
+						h::a(
+							h::icon('double-angle-right').$L->read_more,
+							[
+								'href'			=> "$module/$post[path]:$post[id]"
+							]
 						)
 					)
-				) : '')
-			).
-			"$short_content\n".
-			h::footer(
-				h::hr().
-				h::p(
-					h::time(
-						$L->to_locale(date($L->_datetime_long, $post['date'] ?: TIME)),
-						[
-							'datetime'		=> date('c', $post['date'] ?: TIME)
-						]
-					).
-					h::a(
-						h::icon('user').$User->username($post['user']),
-						[
-							'href'			=> path($L->profile).'/'.$User->get('login', $post['user']),
-							'rel'			=> 'author'
-						]
-					).
-					(
-						Config::instance()->module('Blogs')->enable_comments && $Comments ? h::a(
-							h::icon('comments').$post['comments_count'],
-							[
-								'href'			=> "$module/$post[path]:$post[id]#comments"
-							]
-						) : ''
-					).
-					h::a(
-						h::icon('double-angle-right').$L->read_more,
-						[
-							'href'			=> "$module/$post[path]:$post[id]"
-						]
-					)
-				)
-			);
+				);
+			}
+			return h::article($content);
 		}
-		return h::article($content);
 	}
 	function head_actions () {
 		$User	= User::instance();
