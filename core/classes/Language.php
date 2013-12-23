@@ -163,6 +163,7 @@ class Language implements JsonSerializable {
 		}
 		if (
 			!$Config ||
+			$language == $Config->core['language'] ||
 			(
 				$Config->core['multilingual'] &&
 				in_array($language, $Config->core['active_languages'])
