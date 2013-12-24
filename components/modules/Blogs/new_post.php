@@ -79,6 +79,24 @@ $disabled					= [];
 $max_sections				= $module_data->max_sections;
 $content					= uniqid('post_content');
 $Page->replace($content, isset($_POST['content']) ? $_POST['content'] : '');
+$sections					= get_sections_select_post($disabled);
+if (count($sections['in']) > 1) {
+	$sections	= [
+		$L->post_section,
+		h::{'select.cs-blogs-new-post-sections[size=7][required]'}(
+			$sections,
+			[
+				'name'		=> 'sections[]',
+				'disabled'	=> $disabled,
+				'selected'	=> isset($_POST['sections']) ? $_POST['sections'] : (isset($Config->route[1]) ? $Config->route[1] : []),
+				$max_sections < 1 ? 'multiple' : false
+			]
+		).
+		($max_sections > 1 ? h::br().$L->select_sections_num($max_sections) : '')
+	];
+} else {
+	$sections	= false;
+}
 $Index->content(
 	h::{'p.lead.cs-center'}(
 		$L->new_post
@@ -91,19 +109,7 @@ $Index->content(
 				isset($_POST['title']) ? $_POST['title'] : '<br>'
 			)
 		],
-		[
-			$L->post_section,
-			h::{'select.cs-blogs-new-post-sections[size=7][required]'}(
-				get_sections_select_post($disabled),
-				[
-					'name'		=> 'sections[]',
-					'disabled'	=> $disabled,
-					'selected'	=> isset($_POST['sections']) ? $_POST['sections'] : (isset($Config->route[1]) ? $Config->route[1] : []),
-					$max_sections < 1 ? 'multiple' : false
-				]
-			).
-			($max_sections > 1 ? h::br().$L->select_sections_num($max_sections) : '')
-		],
+		$sections,
 		[
 			$L->post_content,
 			(
@@ -122,6 +128,9 @@ $Index->content(
 				'value'		=> isset($_POST['tags']) ? $_POST['tags'] : false
 			])
 		]
+	).
+	(
+		!$sections ? h::{'input[type=hidden][name=sections[]][value=0]'}() : ''
 	).
 	h::{'button.cs-blogs-post-preview'}(
 		$L->preview
