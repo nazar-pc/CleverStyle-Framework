@@ -157,14 +157,14 @@ if (isset($rc[2])) {
 				[
 					($i ?
 					h::{'a.cs-button-compact'}(
-						h::icon('edit'),
+						h::icon('pencil'),
 						[
 							'href'			=> "$a->action/edit/$i",
 							'data-title'	=> "$L->edit $L->storage"
 						]
 					).
 					h::{'a.cs-button-compact'}(
-						h::icon('trash'),
+						h::icon('trash-o'),
 						[
 							'href'			=> "$a->action/delete/$i",
 							'data-title'	=> "$L->delete $L->storage"

@@ -47,14 +47,14 @@ if (count($galleries) > 1) {
 							(
 								$User->admin() ? h::{'a.cs-photo-gallery-gallery-control'}(
 									[
-										h::icon('edit'),
+										h::icon('pencil'),
 										[
 											'href'			=> "admin/Photo_gallery/galleries/edit/$gallery[id]",
 											'data-title'	=> $L->edit
 										]
 									],
 									[
-										h::icon('trash'),
+										h::icon('trash-o'),
 										[
 											'href'			=> "admin/Photo_gallery/galleries/delete/$gallery[id]",
 											'data-title'	=> $L->delete

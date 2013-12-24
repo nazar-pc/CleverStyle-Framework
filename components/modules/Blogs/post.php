@@ -83,14 +83,14 @@ Index::instance()->content(
 				$User->get_permission('admin/Blogs', 'index') &&
 				$User->get_permission('admin/Blogs', 'edit_post') ? ' '.h::{'a.cs-button'}(
 					[
-						h::icon('edit'),
+						h::icon('pencil'),
 						[
 							'href'			=> "$module/edit_post/$post[id]",
 							'data-title'	=> $L->edit
 						]
 					],
 					[
-						h::icon('trash'),
+						h::icon('trash-o'),
 						[
 							'href'			=> "admin/Blogs/delete_post/$post[id]",
 							'data-title'	=> $L->delete
@@ -98,7 +98,7 @@ Index::instance()->content(
 					]
 				) : (
 					$User->id == $post['user'] && !$module_data->new_posts_only_from_admins ? ' '.h::{'a.cs-button-compact'}(
-						h::icon('edit'),
+						h::icon('pencil'),
 						[
 							'href'			=> "$module/edit_post/$post[id]",
 							'data-title'	=> $L->edit

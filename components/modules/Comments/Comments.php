@@ -383,13 +383,13 @@ class Comments {
 						) : ''
 					).
 					(
-						$User->id == $comment['user'] || $User->admin() ? h::{'icon.cs-comments-comment-edit.cs-pointer'}('edit') : ''
+						$User->id == $comment['user'] || $User->admin() ? h::{'icon.cs-comments-comment-edit.cs-pointer'}('pencil') : ''
 					).
 					(
 						!$comment['comments'] &&
 						(
 							$User->id == $comment['user'] || $User->admin()
-						) ? h::{'icon.cs-comments-comment-delete.cs-pointer'}('trash') : ''
+						) ? h::{'icon.cs-comments-comment-delete.cs-pointer'}('trash-o') : ''
 					).
 					h::{'div.cs-comments-comment-text'}(
 						$comment['text']

@@ -588,7 +588,7 @@ if (isset($rc[2], $rc[3])) {
 			).
 			(!$is_guest && !$is_root && (!$is_bot || !$Config->core['simple_admin_mode']) ?
 				h::{'a.cs-button-compact'}(
-					h::icon('edit'),
+					h::icon('pencil-square-o'),
 					[
 						'href'			=> "$a->action/edit/$id",
 						'data-title'	=> $L->{$is_bot ? 'edit_bot_information' : 'edit_user_information'}
@@ -597,7 +597,7 @@ if (isset($rc[2], $rc[3])) {
 			).
 			(!$is_guest && !$is_root ?
 				h::{'a.cs-button-compact'}(
-					h::icon($is_active ? 'check-minus' : 'check'),
+					h::icon($is_active ? 'minus' : 'check'),
 					[
 						'href'			=> "$a->action/".($is_active ? 'deactivate' : 'activate')."/$id",
 						'data-title'	=> $L->{($is_active ? 'de' : '').'activate_'.($is_bot ? 'bot' : 'user')}

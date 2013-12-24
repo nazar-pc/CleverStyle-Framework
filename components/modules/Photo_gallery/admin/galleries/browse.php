@@ -40,14 +40,14 @@ $Index->content(
 					),
 					h::{'a.cs-button-compact'}(
 						[
-							h::icon('edit'),
+							h::icon('pencil'),
 							[
 								'href'			=> "admin/Photo_gallery/galleries/edit/$gallery[id]",
 								'data-title'	=> $L->edit
 							]
 						],
 						[
-							h::icon('trash'),
+							h::icon('trash-o'),
 							[
 								'href'			=> "admin/Photo_gallery/galleries/delete/$gallery[id]",
 								'data-title'	=> $L->delete

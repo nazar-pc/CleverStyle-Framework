@@ -290,7 +290,7 @@ if (!empty($plugins)) {
 		unset($tag, $file);
 		$state = in_array($plugin, $Config->components['plugins']);
 		$action .= h::{'a.cs-button-compact'}(
-			h::icon($state ? 'check-minus' : 'check'),
+			h::icon($state ? 'minus' : 'check'),
 			[
 				'href'			=> $a->action.($state ? '/disable/' : '/enable/').$plugin,
 				'data-title'	=> $state ? $L->disable : $L->enable
@@ -324,7 +324,7 @@ if (!empty($plugins)) {
 				]
 			),
 			h::icon(
-				$state ? 'ok' : 'minus',
+				$state ? 'check' : 'minus',
 				[
 					'data-title'	=> $state ? $L->enabled : $L->disabled
 				]
@@ -350,7 +350,7 @@ $a->content(
 			'style'	=> 'position: relative;'
 		]).
 		h::{'button[type=submit]'}(
-			$L->upload_and_install_update_plugin,
+			h::icon('upload').$L->upload_and_install_update_plugin,
 			[
 				'formaction'	=>  "$a->action/enable/upload"
 			]

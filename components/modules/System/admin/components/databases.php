@@ -252,14 +252,14 @@ if (isset($rc[2])) {
 								]
 							],
 							$i ? [
-								h::icon('edit'),
+								h::icon('pencil'),
 								[
 									'href'			=> "$a->action/edit/$i",
 									'data-title'	=> "$L->edit $L->db"
 								]
 							] : false,
 							$i ? [
-								h::icon('trash'),
+								h::icon('trash-o'),
 								[
 									'href'			=> "$a->action/delete/$i",
 									'data-title'	=> $L->delete.' '.$L->db
@@ -294,14 +294,14 @@ if (isset($rc[2])) {
 						[
 							h::{'a.cs-button-compact'}(
 								[
-									h::icon('edit'),
+									h::icon('pencil'),
 									[
 										'href'			=> "admin/System/$rc[0]/$rc[1]/edit/$i/$m",
 										'data-title'	=> "$L->edit $L->mirror $L->of_db"
 									]
 								],
 								[
-									h::icon('trash'),
+									h::icon('trash-o'),
 									[
 										'href'			=> "admin/System/$rc[0]/$rc[1]/delete/$i/$m",
 										'data-title'	=> "$L->delete $L->mirror $L->of_db"

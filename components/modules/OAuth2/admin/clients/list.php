@@ -37,14 +37,14 @@ $Index->content(
 						h::{'input{disabled]'}($client['id']),
 						h::{'input{disabled]'}($client['secret']),
 						h::{'a.cs-button-compact'}([
-							h::icon('edit'),
+							h::icon('pencil'),
 							[
 								'href'			=> "admin/OAuth2/clients/edit/$client[id]",
 								'data-title'	=> $L->edit
 							]
 						]).
 						h::{'a.cs-button-compact'}([
-							h::icon('trash'),
+							h::icon('trash-o'),
 							[
 								'href'			=> "admin/OAuth2/clients/delete/$client[id]",
 								'data-title'	=> $L->delete

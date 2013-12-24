@@ -445,7 +445,7 @@ if ($form) {
 				h::{'div.cs-blocks-items-title'}("#$block[index] ".get_block_title($id)).
 				h::a(
 					[
-						h::{'div icon'}('edit'),
+						h::{'div icon'}('pencil'),
 						[
 							'href'			=> "$a->action/edit/$id",
 							'data-title'	=> $L->edit
@@ -459,14 +459,14 @@ if ($form) {
 						]
 					],
 					[
-						h::{'div icon'}($block['active'] ? 'check-minus' : 'check'),
+						h::{'div icon'}($block['active'] ? 'minus' : 'check'),
 						[
 							'href'			=> "$a->action/".($block['active'] ? 'disable' : 'enable')."/$id",
 							'data-title'	=> $L->{$block['active'] ? 'disable' : 'enable'}
 						]
 					],
 					[
-						h::{'div icon'}('trash'),
+						h::{'div icon'}('trash-o'),
 						[
 							'href'			=> "$a->action/delete/$id",
 							'data-title'	=> $L->delete

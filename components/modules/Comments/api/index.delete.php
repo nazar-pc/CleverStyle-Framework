@@ -68,7 +68,7 @@ if (!is_object($Comments)) {
  * @var Comments $Comments
  */
 if ($result = $Comments->del($Config->route[0])) {
-	$Page->json($delete_parent ? h::{'icon.cs-comments-comment-delete.cs-pointer'}('trash') : '');
+	$Page->json($delete_parent ? h::{'icon.cs-comments-comment-delete.cs-pointer'}('trash-o') : '');
 } else {
 	error_code(500);
 	$Page->error($L->comment_deleting_server_error);

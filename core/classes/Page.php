@@ -1175,7 +1175,7 @@ class Page {
 				h::b(
 					"$L->hello, ".$User->username().'! '.
 					h::{'icon.cs-header-sign-out-process'}(
-						'power-off',
+						'sign-out',
 						[
 							'style'			=> 'cursor: pointer;',
 							'data-title'	=> $L->sign_out
@@ -1211,7 +1211,7 @@ class Page {
 			$this->header_info			= h::{'div.cs-header-guest-form'}(
 				h::b("$L->hello, $L->guest!").
 				h::div(
-					h::{'button.cs-header-sign-in-slide.cs-button-compact.uk-icon-signin'}($L->sign_in).
+					h::{'button.cs-header-sign-in-slide.cs-button-compact.uk-icon-sign-in'}($L->sign_in).
 					h::{'button.cs-header-registration-slide.cs-button-compact.uk-icon-pencil'}(
 						$L->sign_up,
 						[
@@ -1266,7 +1266,7 @@ class Page {
 					'placeholder'	=> $L->password
 				]).
 				h::br().
-				h::{'button.cs-header-sign-in-process.cs-button-compact.uk-icon-signin[tabindex=3]'}($L->sign_in).
+				h::{'button.cs-header-sign-in-process.cs-button-compact.uk-icon-sign-in[tabindex=3]'}($L->sign_in).
 				h::{'button.cs-button-compact.cs-header-back[tabindex=5]'}(
 					h::icon('chevron-down'),
 					[

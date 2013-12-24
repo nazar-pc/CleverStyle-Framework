@@ -82,14 +82,14 @@ function get_categories_rows ($structure = null, $level = 0, $parent_categories 
 		).
 		(!$root ? h::{'a.cs-button-compact'}(
 			[
-				h::icon('edit'),
+				h::icon('pencil'),
 				[
 					'href'			=> "admin/Static_pages/edit_category/$structure[id]",
 					'data-title'	=> $L->edit
 				]
 			],
 			[
-				h::icon('trash'),
+				h::icon('trash-o'),
 				[
 					'href'			=> "admin/Static_pages/delete_category/$structure[id]",
 					'data-title'	=> $L->delete
@@ -179,7 +179,7 @@ function get_pages_rows () {
 						]
 					] : false*/,
 					[
-						h::icon('trash'),
+						h::icon('trash-o'),
 						[
 							'href'			=> "admin/Static_pages/delete_page/$page[id]",
 							'data-title'	=> $L->delete

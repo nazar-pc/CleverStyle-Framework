@@ -189,14 +189,14 @@ if (isset($rc[2])) {
 		$group_data 	= $Group->get($id);
 		$groups_list[]	= [
 			h::{'a.cs-button-compact'}(
-				h::icon('edit'),
+				h::icon('pencil'),
 				[
 					'href'			=> "$a->action/edit/$id",
 					'data-title'	=> $L->edit_group_information
 				]
 			).
 			($id != User::ADMIN_GROUP_ID && $id != User::USER_GROUP_ID && $id != User::BOT_GROUP_ID ? h::{'a.cs-button-compact'}(
-				h::icon('trash'),
+				h::icon('trash-o'),
 				[
 					'href'			=> "$a->action/delete/$id",
 					'data-title'	=> $L->delete
