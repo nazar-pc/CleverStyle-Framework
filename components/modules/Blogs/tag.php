@@ -45,7 +45,7 @@ $tag					= $cdb->qfs([
 	FROM  `[prefix]blogs_tags`
 	WHERE `text` = '%s'
 	LIMIT 1",
-	$rc[0]
+	trim(xap($rc[0]))
 ]);
 if (!$tag) {
 	error_code(404);

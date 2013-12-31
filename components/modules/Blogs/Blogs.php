@@ -284,7 +284,7 @@ class Blogs {
 		)) {
 			return false;
 		}
-		if ($add) {
+		if ($add && $Config->core['multilingual']) {
 			foreach ($Config->core['active_languages'] as $lang) {
 				if ($lang != $L->clanguage) {
 					$lang	= $L->get('clang', $lang);
