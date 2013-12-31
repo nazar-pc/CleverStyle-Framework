@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		BananaHTML
- * @version		1.0.0
+ * @version		1.0.1
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2013, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -115,7 +115,11 @@ class BananaHTML {
 			$data['src']		= static::prepare_url($data['src']);
 		}
 		if (isset($data['href'])) {
-			$data['href']		= str_replace(' ', '%20', $data['href']);
+			$data['href']		= str_replace(
+				[' ', '"'],
+				['%20', '&quot;'],
+				$data['href']
+			);
 			if ($tag != 'a') {
 				$data['href']	= static::prepare_url($data['href']);
 			} elseif (substr($data['href'], 0, 1) == '#') {
