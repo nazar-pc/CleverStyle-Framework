@@ -2,24 +2,24 @@
 /*!
 * HybridAuth
 * http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
-* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html 
+* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html
 */
 
-/** 
+/**
  * Yahoo OAuth Class
- * 
- * @package             HybridAuth providers package 
+ *
+ * @package             HybridAuth providers package
  * @author              Lukasz Koprowski <azram19@gmail.com>
  * @version             0.2
  * @license             BSD License
- */ 
+ */
 
 /**
  * Hybrid_Providers_Yahoo - Yahoo provider adapter based on OAuth1 protocol
  */
 class Hybrid_Providers_Yahoo extends Hybrid_Provider_Model_OAuth1
 {
-	function initialize() 
+	function initialize()
 	{
 		parent::initialize();
 
@@ -37,7 +37,7 @@ class Hybrid_Providers_Yahoo extends Hybrid_Provider_Model_OAuth1
 		$parameters = array();
 		$parameters['format']	= 'json';
 
-		$response = $this->api->get( 'user/' . $userId . '/profile', $parameters ); 
+		$response = $this->api->get( 'user/' . $userId . '/profile', $parameters );
 
 		if ( ! isset( $response->profile ) ){
 			throw new Exception( "User profile request failed! {$this->providerId} returned an invalid response.", 6 );
@@ -58,7 +58,7 @@ class Hybrid_Providers_Yahoo extends Hybrid_Provider_Model_OAuth1
 
 		if( $this->user->profile->gender == "M" ){
 			$this->user->profile->gender = "male";
-		} 
+		}
 
 		if( isset($data->emails) ){
 			$email = "";
@@ -73,7 +73,7 @@ class Hybrid_Providers_Yahoo extends Hybrid_Provider_Model_OAuth1
 			$this->user->profile->email         = $email;
 			$this->user->profile->emailVerified = $email;
 		}
-		
+
 		$this->user->profile->age           = (property_exists($data,'displayAge'))?$data->displayAge:"";
 		$this->user->profile->photoURL      = (property_exists($data,'image'))?$data->image->imageUrl:"";
 
@@ -93,7 +93,7 @@ class Hybrid_Providers_Yahoo extends Hybrid_Provider_Model_OAuth1
 		$parameters = array();
 		$parameters['format']	= 'json';
 		$parameters['count'] = 'max';
-		
+
 		$response = $this->api->get('user/' . $userId . '/contacts', $parameters);
 
 		if ( $this->api->http_code != 200 )
@@ -118,21 +118,21 @@ class Hybrid_Providers_Yahoo extends Hybrid_Provider_Model_OAuth1
 
 			$contacts[] = $uc;
 		}
-		
+
 		return $contacts;
 	}
 
 	/**
-	* return the user activity stream  
+	* return the user activity stream
 	*/
-	function getUserActivity( $stream ) 
+	function getUserActivity( $stream )
 	{
 		$userId = $this->getCurrentUserId();
 
 		$parameters = array();
 		$parameters['format']	= 'json';
 		$parameters['count']	= 'max';
-		
+
 		$response = $this->api->get('user/' . $userId . '/updates', $parameters);
 
 		if( ! $response->updates || $this->api->http_code != 200 )
@@ -152,7 +152,7 @@ class Hybrid_Providers_Yahoo extends Hybrid_Provider_Model_OAuth1
 			$ua->user->identifier  = (property_exists($item,'profile_guid'))?$item->profile_guid:"";
 			$ua->user->displayName = (property_exists($item,'profile_nickname'))?$item->profile_nickname:"";
 			$ua->user->profileURL  = (property_exists($item,'profile_profileUrl'))?$item->profile_profileUrl:"";
-			$ua->user->photoURL    = (property_exists($item,'profile_displayImage'))?$item->profile_displayImage:""; 
+			$ua->user->photoURL    = (property_exists($item,'profile_displayImage'))?$item->profile_displayImage:"";
 
 			$activities[] = $ua;
 		}
@@ -194,7 +194,7 @@ class Hybrid_Providers_Yahoo extends Hybrid_Provider_Model_OAuth1
 	function selectName( $v )
 	{
 		$s = $this->select($v, 'name');
-		
+
 		if( ! $s ){
 			$s = $this->select($v, 'nickname');
 			return ($s)?$s->value:"";

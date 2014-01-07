@@ -5,82 +5,82 @@
 *  (c) 2009-2011 HybridAuth authors | hybridauth.sourceforge.net/licenses.html
 */
 
-/** 
+/**
  * Sina OAuth Class
- * 
- * @package             HybridAuth additional providers package 
+ *
+ * @package             HybridAuth additional providers package
  * @author              RB Lin <xtheme@gmail.com>
  * @version             1.2
  * @license             BSD License
- */ 
- 
+ */
+
 /**
  * Sina provider adapter based on OAuth1 protocol
- * 
+ *
  * http://hybridauth.sourceforge.net/userguide/IDProvider_info_Sina.html
  */
 class Hybrid_Providers_Sina extends Hybrid_Provider_Model
-{ 
+{
 	public $user_id;
-	
+
 	/**
-	 * IDp wrappers initializer 
+	 * IDp wrappers initializer
 	 */
-	function initialize() 
+	function initialize()
 	{
 		if ( ! $this->config['keys']['key'] || ! $this->config['keys']['secret'] )
 		{
 			throw new Exception( 'Your application key and secret are required in order to connect to ' . $this->providerId . '.', 4 );
 		}
-		
-		require_once Hybrid_Auth::$config['path_libraries'] . 'Sina/saetv2.ex.class.php'; 
+
+		require_once Hybrid_Auth::$config['path_libraries'] . 'Sina/saetv2.ex.class.php';
 
 		if ( $this->token( 'access_token' ) ) {
-			$this->api = new SaeTClientV2 ( 
+			$this->api = new SaeTClientV2 (
 				$this->config['keys']['key'], $this->config['keys']['secret'], $this->token('access_token')
 			);
-			
+
 			$user = $this->api->get_uid();
 			$this->user_id = $user['uid'];
 		} else {
-			$this->api = new SaeTOAuthV2 ( 
-				$this->config['keys']['key'], $this->config['keys']['secret'] 
+			$this->api = new SaeTOAuthV2 (
+				$this->config['keys']['key'], $this->config['keys']['secret']
 			);
 		}
 	}
 
    /**
-	* begin login step 
+	* begin login step
 	*/
 	function loginBegin()
 	{
-		Hybrid_Auth::redirect( $this->api->getAuthorizeURL( $this->endpoint ) ); 
+		Hybrid_Auth::redirect( $this->api->getAuthorizeURL( $this->endpoint ) );
 	}
- 
+
    /**
-	* finish login step 
+	* finish login step
 	*/
 	function loginFinish()
-	{ 
+	{
 		if ( ! $_REQUEST['code'] )
 		{
 			throw new Exception( 'Authentication failed! ' . $this->providerId . ' returned an invalid OAuth Token and Verifier.', 5 );
 		}
-		
+
 
 		$params = array();
 		$params['code'] = $_REQUEST['code'];
 		$params['redirect_uri'] = $this->endpoint;
-		
+
 		try {
 			$tokz = $this->api->getAccessToken( 'code', $params ) ;
 		} catch (OAuthException $e) {
 			throw new Exception( 'Authentication failed! ' . $this->providerId . ' returned an invalid Access Token.', 5 );
 		}
 
-		// Store tokens 
-		$this->token( 'access_token',	$tokz['access_token'] ); 
-		
+		// Store tokens
+		$this->token( 'access_token',	$tokz['access_token'] );
+
 		// set user as logged in
 		$this->setUserConnected();
 	}
@@ -90,7 +90,7 @@ class Hybrid_Providers_Sina extends Hybrid_Provider_Model
 	*/
 	function getUserProfile()
 	{
-		$response = $this->api->show_user_by_id($this->user_id); 
+		$response = $this->api->show_user_by_id($this->user_id);
 
 		if ( $this->api->oauth->http_code != 200 )
 		{
@@ -112,10 +112,10 @@ class Hybrid_Providers_Sina extends Hybrid_Provider_Model
 			case 'm': $this->user->profile->gender = 'male'; break;
 			case 'f': $this->user->profile->gender = 'female'; break;
 		}
-		
+
 		return $this->user->profile;
 	}
-	
+
 	/**
 	 * load the user contacts
 	 */
@@ -125,7 +125,7 @@ class Hybrid_Providers_Sina extends Hybrid_Provider_Model
 		$params['uid'] = $this->user_id;
 		$params['cursor'] = 0;
 		$params['count'] = 10;
-		
+
 		$response = $this->api->oauth->get( 'friendships/friends', $params );
 
 		if ( $this->api->oauth->http_code != 200 )
@@ -137,9 +137,9 @@ class Hybrid_Providers_Sina extends Hybrid_Provider_Model
 		{
 			return array();
 		}
-		
+
 		$contacts = array();
-		
+
 		foreach( $response['users'] as $item ) {
 			$uc = new Hybrid_User_Contact();
 
@@ -151,55 +151,55 @@ class Hybrid_Providers_Sina extends Hybrid_Provider_Model
 
 			$contacts[] = $uc;
 		}
-		
+
 		return $contacts;
 	}
-	
+
 	/**
 	 * update user status
-	 */ 
+	 */
 	function setUserStatus( $status )
 	{
-		$response = $this->api->update($status); 
-		
+		$response = $this->api->update($status);
+
 		if ( $this->api->oauth->http_code != 200 )
 		{
 			throw new Exception( 'Update user status failed! ' . $this->providerId . ' returned an error: ' . $response['error'] );
 		}
-		
+
 		return $response;
 	}
-	
+
 	/**
-	 * load the user latest activity  
+	 * load the user latest activity
 	 *    - timeline : all the stream
-	 *    - me       : the user activity only  
+	 *    - me       : the user activity only
 	 */
 	function getUserActivity( $stream )
 	{
 		$page = 1;
 		$count = 10;
-		
+
 		if ( $stream == 'me' )
 		{
-			$response = $this->api->user_timeline_by_id($this->user_id, $page, $count); 
+			$response = $this->api->user_timeline_by_id($this->user_id, $page, $count);
 		} else {
-			$response = $this->api->home_timeline($page, $count); 
+			$response = $this->api->home_timeline($page, $count);
 		}
-		
+
 		if ( $this->api->oauth->http_code != 200 )
 		{
 			throw new Exception( 'User activity stream request failed! ' . $this->providerId . ' returned an error: ' . $response['error'] );
 		}
-		
+
 		$activities = array();
-		
-		if ( $response['total_number'] == 0 ) 
+
+		if ( $response['total_number'] == 0 )
 		{
 			return $activities;
 		}
-		
-		foreach ( $response['statuses']  as $item ) 
+
+		foreach ( $response['statuses']  as $item )
 		{
 			$ua = new Hybrid_User_Activity();
 			$ua->id                 = @ $item['id'];
@@ -209,10 +209,10 @@ class Hybrid_Providers_Sina extends Hybrid_Provider_Model
 			$ua->user->displayName  = @ $item['user']['screen_name'];
 			$ua->user->profileURL   = 'http://www.weibo.com/u/' . $item['user']['id'];
 			$ua->user->photoURL     = $item['user']['profile_image_url'];
-			
+
 			$activities[] = $ua;
 		}
-		
+
 		return $activities;
 	}
 }

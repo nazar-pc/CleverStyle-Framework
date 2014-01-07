@@ -2,14 +2,14 @@
 /*!
 * HybridAuth
 * http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
-* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html 
+* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html
 */
 
 /**
- * Hybrid_User_Activity 
- * 
+ * Hybrid_User_Activity
+ *
  * used to provider the connected user activity stream on a standardized structure across supported social apis.
- * 
+ *
  * http://hybridauth.sourceforge.net/userguide/Profile_Data_User_Activity.html
  */
 class Hybrid_User_Activity
@@ -17,10 +17,10 @@ class Hybrid_User_Activity
 	/* activity id on the provider side, usually given as integer */
 	public $id = NULL;
 
-	/* activity date of creation */ 
+	/* activity date of creation */
 	public $date = NULL;
 
-	/* activity content as a string */ 
+	/* activity content as a string */
 	public $text = NULL;
 
 	/* user who created the activity */
@@ -34,6 +34,6 @@ class Hybrid_User_Activity
 		$this->user->identifier  = NULL;
 		$this->user->displayName = NULL;
 		$this->user->profileURL  = NULL;
-		$this->user->photoURL    = NULL; 
+		$this->user->photoURL    = NULL;
 	}
 }

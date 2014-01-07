@@ -2,16 +2,16 @@
 /*!
 * HybridAuth
 * http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
-* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html 
+* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html
 */
 
 /**
-* Hybrid_Providers_Tumblr 
+* Hybrid_Providers_Tumblr
 */
 class Hybrid_Providers_Tumblr extends Hybrid_Provider_Model_OAuth1
 {
    	/**
-	* IDp wrappers initializer 
+	* IDp wrappers initializer
 	*/
 	function initialize()
 	{
@@ -32,7 +32,7 @@ class Hybrid_Providers_Tumblr extends Hybrid_Provider_Model_OAuth1
 	*/
 	function getUserProfile()
 	{
-		try{  
+		try{
 			$profile = $this->api->get( 'user/info' );
 
 			foreach ( $profile->response->user->blogs as $blog ){
@@ -53,27 +53,27 @@ class Hybrid_Providers_Tumblr extends Hybrid_Provider_Model_OAuth1
 
 					$this->user->profile->photoURL 		= $avatar->response->avatar_url;
 
-					break; 
+					break;
 				}
-			} 
+			}
 		}
 		catch( Exception $e ){
 			throw new Exception( "User profile request failed! {$this->providerId} returned an error while requesting the user profile.", 6 );
-		}	
-	
+		}
+
 		return $this->user->profile;
  	}
 
    	/**
 	* post to tumblr
-	*/ 
+	*/
 	function setUserStatus( $status )
 	{
-		$parameters = array( 'type' => "text", 'body' => $status ); 
-		$response  = $this->api->post( "blog/" . $this->token( "primary_blog" ) . '/post', $parameters );  
+		$parameters = array( 'type' => "text", 'body' => $status );
+		$response  = $this->api->post( "blog/" . $this->token( "primary_blog" ) . '/post', $parameters );
 
 		if ( $response->meta->status != 201 ){
 			throw new Exception( "Update user status failed! {$this->providerId} returned an error. " . $this->errorMessageByStatus( $response->meta->status ) );
-		} 
+		}
 	}
 }

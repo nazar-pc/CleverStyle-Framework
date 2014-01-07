@@ -13,13 +13,13 @@
 
 class Hybrid_Providers_Vkontakte extends Hybrid_Provider_Model_OAuth2
 {
-	// default permissions 
+	// default permissions
 	public $scope = "";
 
 	/**
-	* IDp wrappers initializer 
+	* IDp wrappers initializer
 	*/
-	function initialize() 
+	function initialize()
 	{
 		parent::initialize();
 
@@ -71,7 +71,7 @@ class Hybrid_Providers_Vkontakte extends Hybrid_Provider_Model_OAuth2
 	*/
 	function getUserProfile()
 	{
-		// refresh tokens if needed 
+		// refresh tokens if needed
 		$this->refreshToken();
 
 		// Vkontakte requires user id, not just token for api access

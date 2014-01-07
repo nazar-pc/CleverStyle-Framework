@@ -5,14 +5,14 @@
 *  (c) 2009-2011 HybridAuth authors | hybridauth.sourceforge.net/licenses.html
 */
 
-/** 
+/**
  * Murmur OAuth Class
- * 
- * @package             HybridAuth additional providers package 
+ *
+ * @package             HybridAuth additional providers package
  * @author              RB Lin <xtheme@gmail.com>
  * @version             1.2
  * @license             BSD License
- */ 
+ */
 
 /**
  * Murmur provider adapter based on OAuth1 protocol
@@ -21,7 +21,7 @@
  */
 class Hybrid_Providers_Murmur extends Hybrid_Provider_Model_OAuth1
 {
-	function initialize() 
+	function initialize()
 	{
 		parent::initialize();
 
@@ -38,14 +38,14 @@ class Hybrid_Providers_Murmur extends Hybrid_Provider_Model_OAuth1
 	/*function loginBegin()
 	{
 		// Get a new request token
-		$tokens = $this->api->requestToken( $this->endpoint ); 
+		$tokens = $this->api->requestToken( $this->endpoint );
 
 		if ( ! isset( $tokens ) ){
 			throw new Exception( 'Authentication failed! '.$this->providerId.' returned an invalid Request Token.', 5 );
 		}
 
-		$this->token( 'request_token'       ,  $tokens['oauth_token'] ); 
-		$this->token( 'request_token_secret',  $tokens['oauth_token_secret'] ); 
+		$this->token( 'request_token'       ,  $tokens['oauth_token'] );
+		$this->token( 'request_token_secret',  $tokens['oauth_token_secret'] );
 
 		# Build authorize link & redirect user to provider authorisation web page
 		Hybrid_Auth::redirect( $tokens['xoauth_request_auth_url'] );
@@ -57,7 +57,7 @@ class Hybrid_Providers_Murmur extends Hybrid_Provider_Model_OAuth1
 	function getUserProfile()
 	{
 		$response = $this->api->get( 'account/verify_credentials.json' );
-		
+
 		// check the last HTTP status code returned
 		if ( $this->api->http_code != 200 ){
 			throw new Exception( 'User profile request failed! ' . $this->providerId . ' returned an error. ' . $this->errorMessageByStatus( $this->api->http_code ), 6 );
@@ -70,10 +70,10 @@ class Hybrid_Providers_Murmur extends Hybrid_Provider_Model_OAuth1
 		$this->user->profile->identifier  = @ $response->id;
 		$this->user->profile->displayName = @ $response->name;
 		$this->user->profile->description = @ $response->description;
-		$this->user->profile->firstName   = @ $response->name; 
+		$this->user->profile->firstName   = @ $response->name;
 		$this->user->profile->photoURL    = @ $response->profile_image_url;
 		$this->user->profile->profileURL  = 'http://murmur.tw/' . $response->screen_name;
-		$this->user->profile->webSiteURL  = @ $response->url; 
+		$this->user->profile->webSiteURL  = @ $response->url;
 		$this->user->profile->region      = @ $response->location;
 		$this->user->profile->city        = @ $response->location;
 		$this->user->profile->age         = @ $response->age;
@@ -81,14 +81,14 @@ class Hybrid_Providers_Murmur extends Hybrid_Provider_Model_OAuth1
 
 		return $this->user->profile;
 	}
-	
+
 	/**
 	 * load the user contacts
 	 */
 	function getUserContacts()
 	{
 		$response = $this->api->get('statuses/friends.json');
-		
+
 		if ( $this->api->http_code != 200 )
 		{
 			throw new Exception( 'User contacts request failed! ' . $this->providerId . ' returned an error: ' . $this->errorMessageByStatus( $this->api->http_code ) );
@@ -97,9 +97,9 @@ class Hybrid_Providers_Murmur extends Hybrid_Provider_Model_OAuth1
 		if ( !$response ) {
 			return array();
 		}
-		
+
 		$contacts = array();
-		
+
 		foreach( $response as $item ) {
 			$uc = new Hybrid_User_Contact();
 
@@ -110,33 +110,33 @@ class Hybrid_Providers_Murmur extends Hybrid_Provider_Model_OAuth1
 
 			$contacts[] = $uc;
 		}
-		
+
 		return $contacts;
-		
+
 	}
-	
+
 	/**
 	 * update user status
-	 */ 
+	 */
 	function setUserStatus( $status )
 	{
 		$parameters = array();
 		$parameters['status'] = $status;
 
-		$response = $this->api->post('statuses/update.json', $parameters); 
-		
+		$response = $this->api->post('statuses/update.json', $parameters);
+
 		if ( $this->api->http_code != 200 )
 		{
 			throw new Exception( 'Update user status failed! ' . $this->providerId . ' returned an error: ' . $this->errorMessageByStatus( $this->api->http_code ) );
 		}
-		
+
 		return $response;
 	}
-	
+
 	/**
-	 * load the user latest activity  
+	 * load the user latest activity
 	 *    - timeline : all the stream
-	 *    - me       : the user activity only  
+	 *    - me       : the user activity only
 	 */
 	function getUserActivity( $stream )
 	{
@@ -145,20 +145,20 @@ class Hybrid_Providers_Murmur extends Hybrid_Provider_Model_OAuth1
 		} else {
 			$url = 'statuses/friends.json';
 		}
-		
-		$response = $this->api->get($url); 
-		
+
+		$response = $this->api->get($url);
+
 		if ( $this->api->http_code != 200 )
 		{
 			throw new Exception( 'User activity stream request failed! ' . $this->providerId . ' returned an error: ' . $this->errorMessageByStatus( $this->api->http_code ) );
 		}
-		
+
 		if ( ! $response ) {
 			return array();
 		}
-			
+
 		$activities = array();
-		
+
 		if ( $stream == 'me' ) {
 			foreach ( $response as $item ) {
 				$ua = new Hybrid_User_Activity();
@@ -169,7 +169,7 @@ class Hybrid_Providers_Murmur extends Hybrid_Provider_Model_OAuth1
 				$ua->user->displayName  = @ $item->user->name;
 				$ua->user->profileURL   = 'http://murmur.tw/' . $item->user->screen_name;
 				$ua->user->photoURL     = @ $item->user->profile_image_url;
-				
+
 				$activities[] = $ua;
 			}
 		} else {
@@ -183,12 +183,12 @@ class Hybrid_Providers_Murmur extends Hybrid_Provider_Model_OAuth1
 					$ua->user->displayName  = @ $item->name;
 					$ua->user->profileURL   = 'http://murmur.tw/' . $item->screen_name;
 					$ua->user->photoURL     = @ $item->profile_image_url;
-					
+
 					$activities[] = $ua;
 				}
 			}
 		}
-		
+
 		return $activities;
 	}
 }

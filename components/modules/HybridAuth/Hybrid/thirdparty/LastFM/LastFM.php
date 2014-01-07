@@ -1,16 +1,16 @@
 <?php
 // https://raw.github.com/fsobczak/PHP-LastFm-Minimal-API/master/LastFM.php
-// modified 
+// modified
 
 /*
  * This is minimal PHP library - it implements all the necessary
  * stuff, and ONLY that.
- * 
+ *
  * Implemented:
  * - authentication flow
  * - api calls wrapper
  * - error wrapper
- */ 
+ */
 
 /**
  * Thrown when an API call returns an exception.
@@ -63,13 +63,13 @@ class LastFMException extends Exception {
             $str .= $this->code . ': ';
         }
         return $str . $this->message;
-    } 
+    }
 
 }
-    
+
 class LastFMInvalidSessionException extends LastFMException {
     public function __construct($result) {
-        parent::__construct($result); 
+        parent::__construct($result);
     }
 }
 
@@ -119,9 +119,9 @@ class LastFM {
      * they all send api_sig
      * some methods are used to write data (type write)
      * they all send api_sig and sk, and use POST http method
-     * 
-     * All letters are small because users might use 
-     * variations of letter sizes, and we need to 
+     *
+     * All letters are small because users might use
+     * variations of letter sizes, and we need to
      * find these values fast, so strtolower is executed on method name.
      */
     public static $METHOD_TYPE =
@@ -170,7 +170,7 @@ class LastFM {
 
     /**
      * Initialize LastFM application.
-     * 
+     *
      * @param type $config configuration
      */
     public function __construct($config) {
@@ -247,7 +247,7 @@ class LastFM {
         $name = $result['session']['name'];
         $sessionKey = $result['session']['key'];
         $this->setSessionKey($sessionKey);
-        
+
         return array('name' => $name, 'sk' => $sessionKey);
     }
 
@@ -317,10 +317,10 @@ class LastFM {
         $opts[CURLOPT_URL] = $url;
 
         curl_setopt_array($ch, $opts);
-		
+
 		// mod:by:me
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		
+
         $result = curl_exec($ch);
 
         if ($result === false) {

@@ -9,59 +9,59 @@
 //	HybridAuth Config file: http://hybridauth.sourceforge.net/userguide/Configuration.html
 // ----------------------------------------------------------------------------------------
 
-return 
+return
 	array(
-		"base_url" => "#GLOBAL_HYBRID_AUTH_URL_BASE#", 
+		"base_url" => "#GLOBAL_HYBRID_AUTH_URL_BASE#",
 
-		"providers" => array ( 
+		"providers" => array (
 			// openid providers
 			"OpenID" => array (
 				"enabled" => #OPENID_ADAPTER_STATUS#
 			),
 
-			"AOL"  => array ( 
-				"enabled" => #AOL_ADAPTER_STATUS# 
+			"AOL"  => array (
+				"enabled" => #AOL_ADAPTER_STATUS#
 			),
 
-			"Yahoo" => array ( 
+			"Yahoo" => array (
 				"enabled" => #YAHOO_ADAPTER_STATUS#,
 				"keys"    => array ( "id" => "#YAHOO_APPLICATION_APP_ID#", "secret" => "#YAHOO_APPLICATION_SECRET#" )
 			),
 
-			"Google" => array ( 
+			"Google" => array (
 				"enabled" => #GOOGLE_ADAPTER_STATUS#,
 				"keys"    => array ( "id" => "#GOOGLE_APPLICATION_APP_ID#", "secret" => "#GOOGLE_APPLICATION_SECRET#" )
 			),
 
-			"Facebook" => array ( 
+			"Facebook" => array (
 				"enabled" => #FACEBOOK_ADAPTER_STATUS#,
 				"keys"    => array ( "id" => "#FACEBOOK_APPLICATION_APP_ID#", "secret" => "#FACEBOOK_APPLICATION_SECRET#" )
 			),
 
-			"Twitter" => array ( 
+			"Twitter" => array (
 				"enabled" => #TWITTER_ADAPTER_STATUS#,
-				"keys"    => array ( "key" => "#TWITTER_APPLICATION_KEY#", "secret" => "#TWITTER_APPLICATION_SECRET#" ) 
+				"keys"    => array ( "key" => "#TWITTER_APPLICATION_KEY#", "secret" => "#TWITTER_APPLICATION_SECRET#" )
 			),
 
 			// windows live
-			"Live" => array ( 
+			"Live" => array (
 				"enabled" => #LIVE_ADAPTER_STATUS#,
-				"keys"    => array ( "id" => "#LIVE_APPLICATION_APP_ID#", "secret" => "#LIVE_APPLICATION_SECRET#" ) 
+				"keys"    => array ( "id" => "#LIVE_APPLICATION_APP_ID#", "secret" => "#LIVE_APPLICATION_SECRET#" )
 			),
 
-			"MySpace" => array ( 
+			"MySpace" => array (
 				"enabled" => #MYSPACE_ADAPTER_STATUS#,
-				"keys"    => array ( "key" => "#MYSPACE_APPLICATION_KEY#", "secret" => "#MYSPACE_APPLICATION_SECRET#" ) 
+				"keys"    => array ( "key" => "#MYSPACE_APPLICATION_KEY#", "secret" => "#MYSPACE_APPLICATION_SECRET#" )
 			),
 
-			"LinkedIn" => array ( 
+			"LinkedIn" => array (
 				"enabled" => #LINKEDIN_ADAPTER_STATUS#,
-				"keys"    => array ( "key" => "#LINKEDIN_APPLICATION_KEY#", "secret" => "#LINKEDIN_APPLICATION_SECRET#" ) 
+				"keys"    => array ( "key" => "#LINKEDIN_APPLICATION_KEY#", "secret" => "#LINKEDIN_APPLICATION_SECRET#" )
 			),
 
 			"Foursquare" => array (
 				"enabled" => #FOURSQUARE_ADAPTER_STATUS#,
-				"keys"    => array ( "id" => "#FOURSQUARE_APPLICATION_APP_ID#", "secret" => "#FOURSQUARE_APPLICATION_SECRET#" ) 
+				"keys"    => array ( "id" => "#FOURSQUARE_APPLICATION_APP_ID#", "secret" => "#FOURSQUARE_APPLICATION_SECRET#" )
 			),
 		),
 

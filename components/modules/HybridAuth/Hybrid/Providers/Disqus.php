@@ -10,21 +10,21 @@
  * says wrong API version, wrote a mail to Disqus support
  */
 class Hybrid_Providers_Disqus extends Hybrid_Provider_Model_OAuth2
-{ 
-	// default permissions  
+{
+	// default permissions
 	public $scope = "read,write";
 
 	/**
-	* IDp wrappers initializer 
+	* IDp wrappers initializer
 	*/
-	function initialize() 
+	function initialize()
 	{
 		parent::initialize();
 		// Provider api end-points
 		$this->api->api_base_url  = "https://disqus.com/api/3.0/";
-		$this->api->authorize_url = "https://disqus.com/api/3.0/oauth/2.0/authorize";	   
+		$this->api->authorize_url = "https://disqus.com/api/3.0/oauth/2.0/authorize";
 		$this->api->token_url     = "https://disqus.com/api/3.0/oauth/2.0/access_token";
-		
+
 		$this->api->curl_header = array( 'client_id: ' . $this->config["keys"]["id"], 'Accept: application/json' );
 	}
 
@@ -33,7 +33,7 @@ class Hybrid_Providers_Disqus extends Hybrid_Provider_Model_OAuth2
 	*/
 	function getUserProfile()
 	{
-		$data = $this->api->get( "users/details" ); 
+		$data = $this->api->get( "users/details" );
 		print_r($data);
 		if ( ! isset( $data->code ) ){
 			throw new Exception( "User profile request failed! {$this->providerId} returned an invalid response.", 6 );
@@ -41,11 +41,11 @@ class Hybrid_Providers_Disqus extends Hybrid_Provider_Model_OAuth2
 			throw new Exception( "User profile request failed! {$this->providerId} returned error code".$data->code.".", 6 );
 		}
 
-		$this->user->profile->identifier  = @ $data->id; 
+		$this->user->profile->identifier  = @ $data->id;
 		$this->user->profile->displayName = @ $data->name;
 		$this->user->profile->description = @ $data->bio;
 		$this->user->profile->photoURL    = @ $data->avatar_url;
-		$this->user->profile->profileURL  = @ $data->html_url; 
+		$this->user->profile->profileURL  = @ $data->html_url;
 		$this->user->profile->email       = @ $data->email;
 		$this->user->profile->webSiteURL  = @ $data->blog;
 		$this->user->profile->region      = @ $data->location;
