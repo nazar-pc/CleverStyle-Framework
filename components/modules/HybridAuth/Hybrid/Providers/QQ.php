@@ -5,14 +5,14 @@
 *  (c) 2009-2011 HybridAuth authors | hybridauth.sourceforge.net/licenses.html
 */
 
-/** 
+/**
  * QQ OAuth Class
- * 
- * @package             HybridAuth additional providers package 
+ *
+ * @package             HybridAuth additional providers package
  * @author              RB Lin <xtheme@gmail.com>
  * @version             1.2
  * @license             BSD License
- */ 
+ */
 
 /**
  * QQ provider adapter based on OAuth1 protocol
@@ -21,11 +21,11 @@
  */
 class Hybrid_Providers_QQ extends Hybrid_Provider_Model_OAuth1
 {
-	function initialize() 
+	function initialize()
 	{
 		// Use Beijing Timezone
 		date_default_timezone_set ('Etc/GMT-8');
-		
+
 		parent::initialize();
 
 		// Provider api end-points
@@ -42,7 +42,7 @@ class Hybrid_Providers_QQ extends Hybrid_Provider_Model_OAuth1
 	{
 		$parameters = array();
 		$parameters['format']	= 'json';
-		
+
 		$response = $this->api->get('user/info', $parameters);
 
 		// check the last HTTP status code returned
@@ -69,10 +69,10 @@ class Hybrid_Providers_QQ extends Hybrid_Provider_Model_OAuth1
 			case '1': $this->user->profile->gender = 'male'; break;
 			case '2': $this->user->profile->gender = 'female'; break;
 		}
-		
+
 		return $this->user->profile;
 	}
-	
+
 	/**
 	 * load the user contacts
 	 */
@@ -81,7 +81,7 @@ class Hybrid_Providers_QQ extends Hybrid_Provider_Model_OAuth1
 		$parameters = array();
 		$parameters['format']	= 'json';
 		$parameters['reqnum'] = 10;
-		
+
 		$response = $this->api->get('friends/idollist', $parameters);
 
 		if ( $this->api->http_code != 200 )
@@ -93,9 +93,9 @@ class Hybrid_Providers_QQ extends Hybrid_Provider_Model_OAuth1
 		{
 			return array();
 		}
-		
+
 		$contacts = array();
-		
+
 		foreach( $response->data->info as $item ) {
 			$uc = new Hybrid_User_Contact();
 
@@ -106,68 +106,68 @@ class Hybrid_Providers_QQ extends Hybrid_Provider_Model_OAuth1
 
 			$contacts[] = $uc;
 		}
-		
+
 		return $contacts;
 	}
-	
+
 	/**
 	 * update user status
-	 */ 
+	 */
 	function setUserStatus( $status )
 	{
 		$parameters = array();
 		$parameters['content']	= $status;
 		$parameters['clientip']	= $this->getIP();
 		$parameters['format']	= 'json';
-		
 
-		$response = $this->api->post('t/add', $parameters); 
-		
+
+		$response = $this->api->post('t/add', $parameters);
+
 		if ( $this->api->http_code != 200 )
 		{
 			throw new Exception( 'Update user status failed! ' . $this->providerId . ' returned an error: ' . $this->errorMessageByStatus( $this->api->http_code ) );
 		}
-		
+
 		if ( $response->errcode != 0 )
 		{
 			throw new Exception( 'Update user status failed! ' . $this->providerId . ' returned an error: ' . $response->msg );
 		}
-		
+
 		return $response;
 	}
-	
+
 	/**
-	 * load the user latest activity  
+	 * load the user latest activity
 	 *    - timeline : all the stream
-	 *    - me       : the user activity only  
+	 *    - me       : the user activity only
 	 */
 	function getUserActivity( $stream )
 	{
 		$parameters = array();
 		$parameters['reqnum'] = '10';
-		
+
 		if ( $stream == 'me' )
 		{
 			$url = 'statuses/broadcast_timeline';
 		} else {
 			$url = 'statuses/home_timeline';
 		}
-		
-		$response = $this->api->get($url, $parameters); 
-		
+
+		$response = $this->api->get($url, $parameters);
+
 		if ( $this->api->http_code != 200 )
 		{
 			throw new Exception( 'User activity stream request failed! ' . $this->providerId . ' returned an error: ' . $this->errorMessageByStatus( $this->api->http_code ) );
 		}
-		
+
 		$activities = array();
-		
-		if ( count( $response->data->info ) > 0 && ( $response->errcode != 0 ) ) 
+
+		if ( count( $response->data->info ) > 0 && ( $response->errcode != 0 ) )
 		{
 			return array();
 		}
-		
-		foreach ( $response->data->info  as $item ) 
+
+		foreach ( $response->data->info  as $item )
 		{
 			$ua = new Hybrid_User_Activity();
 			$ua->id                 = @ $item->id;
@@ -177,13 +177,13 @@ class Hybrid_Providers_QQ extends Hybrid_Provider_Model_OAuth1
 			$ua->user->displayName  = @ $item->nick;
 			$ua->user->profileURL   = 'http://t.qq.com/' . $item->name;
 			$ua->user->photoURL     = $item->head . '/100';
-			
+
 			$activities[] = $ua;
 		}
-		
+
 		return $activities;
 	}
-	
+
 	function getIP() {
 		if ( !empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
 			$ip = $_SERVER['HTTP_CLIENT_IP'];

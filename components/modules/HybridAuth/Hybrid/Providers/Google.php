@@ -2,23 +2,23 @@
 /*!
 * HybridAuth
 * http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
-* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html 
+* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html
 */
 
 /**
  * Hybrid_Providers_Google provider adapter based on OAuth2 protocol
- * 
+ *
  * http://hybridauth.sourceforge.net/userguide/IDProvider_info_Google.html
  */
 class Hybrid_Providers_Google extends Hybrid_Provider_Model_OAuth2
 {
-	// default permissions 
+	// default permissions
 	public $scope = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.google.com/m8/feeds/";
 
 	/**
-	* IDp wrappers initializer 
+	* IDp wrappers initializer
 	*/
-	function initialize() 
+	function initialize()
 	{
 		parent::initialize();
 
@@ -29,7 +29,7 @@ class Hybrid_Providers_Google extends Hybrid_Provider_Model_OAuth2
 	}
 
 	/**
-	* begin login step 
+	* begin login step
 	*/
 	function loginBegin()
 	{
@@ -42,7 +42,7 @@ class Hybrid_Providers_Google extends Hybrid_Provider_Model_OAuth2
 			}
 		}
 
-		Hybrid_Auth::redirect( $this->api->authorizeUrl( $parameters ) ); 
+		Hybrid_Auth::redirect( $this->api->authorizeUrl( $parameters ) );
 	}
 
 	/**
@@ -50,11 +50,11 @@ class Hybrid_Providers_Google extends Hybrid_Provider_Model_OAuth2
 	*/
 	function getUserProfile()
 	{
-		// refresh tokens if needed 
+		// refresh tokens if needed
 		$this->refreshToken();
 
 		// ask google api for user infos
-		$response = $this->api->api( "https://www.googleapis.com/oauth2/v1/userinfo" ); 
+		$response = $this->api->api( "https://www.googleapis.com/oauth2/v1/userinfo" );
 
 		if ( ! isset( $response->id ) || isset( $response->error ) ){
 			throw new Exception( "User profile request failed! {$this->providerId} returned an invalid response.", 6 );
@@ -66,12 +66,12 @@ class Hybrid_Providers_Google extends Hybrid_Provider_Model_OAuth2
 		$this->user->profile->displayName   = (property_exists($response,'name'))?$response->name:"";
 		$this->user->profile->photoURL      = (property_exists($response,'picture'))?$response->picture:"";
 		$this->user->profile->profileURL    = "https://profiles.google.com/" . $this->user->profile->identifier;
-		$this->user->profile->gender        = (property_exists($response,'gender'))?$response->gender:""; 
+		$this->user->profile->gender        = (property_exists($response,'gender'))?$response->gender:"";
 		$this->user->profile->email         = (property_exists($response,'email'))?$response->email:"";
 		$this->user->profile->emailVerified = (property_exists($response,'email'))?$response->email:"";
 		$this->user->profile->language      = (property_exists($response,'locale'))?$response->locale:"";
 
-		if( property_exists($response,'birthday') ){ 
+		if( property_exists($response,'birthday') ){
 			list($birthday_year, $birthday_month, $birthday_day) = explode( '-', $response->birthday );
 
 			$this->user->profile->birthDay   = (int) $birthday_day;
@@ -83,36 +83,36 @@ class Hybrid_Providers_Google extends Hybrid_Provider_Model_OAuth2
 	}
 
 	/**
-	* load the user (Gmail) contacts 
+	* load the user (Gmail) contacts
 	*  ..toComplete
 	*/
 	function getUserContacts()
-	{ 
-		// refresh tokens if needed 
-		$this->refreshToken();  
+	{
+		// refresh tokens if needed
+		$this->refreshToken();
 
 		if( ! isset( $this->config['contacts_param'] ) ){
 			$this->config['contacts_param'] = array( "max-results" => 500 );
 		}
 
-		$response = $this->api->api( "https://www.google.com/m8/feeds/contacts/default/full?" 
-							. http_build_query( array_merge( array('alt' => 'json'), $this->config['contacts_param'] ) ) ); 
+		$response = $this->api->api( "https://www.google.com/m8/feeds/contacts/default/full?"
+							. http_build_query( array_merge( array('alt' => 'json'), $this->config['contacts_param'] ) ) );
 
 		if( ! $response ){
 			return ARRAY();
 		}
- 
-		$contacts = ARRAY(); 
+
+		$contacts = ARRAY();
 
 		foreach( $response->feed->entry as $idx => $entry ){
 			$uc = new Hybrid_User_Contact();
 
-			$uc->email        = isset($entry->{'gd$email'}[0]->address) ? (string) $entry->{'gd$email'}[0]->address : ''; 
-			$uc->displayName  = isset($entry->title->{'$t'}) ? (string) $entry->title->{'$t'} : '';  
+			$uc->email        = isset($entry->{'gd$email'}[0]->address) ? (string) $entry->{'gd$email'}[0]->address : '';
+			$uc->displayName  = isset($entry->title->{'$t'}) ? (string) $entry->title->{'$t'} : '';
 			$uc->identifier   = $uc->email;
 
 			$contacts[] = $uc;
-		}  
+		}
 
 		return $contacts;
  	}

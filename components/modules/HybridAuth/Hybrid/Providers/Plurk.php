@@ -5,14 +5,14 @@
 *  (c) 2009-2011 HybridAuth authors | hybridauth.sourceforge.net/licenses.html
 */
 
-/** 
+/**
  * Plurk OAuth Class
- * 
- * @package             HybridAuth additional providers package 
+ *
+ * @package             HybridAuth additional providers package
  * @author              RB Lin <xtheme@gmail.com>
  * @version             1.2
  * @license             BSD License
- */ 
+ */
 
 /**
  * Plurk provider adapter based on OAuth1 protocol
@@ -21,7 +21,7 @@
  */
 class Hybrid_Providers_Plurk extends Hybrid_Provider_Model_OAuth1
 {
-	function initialize() 
+	function initialize()
 	{
 		parent::initialize();
 
@@ -42,16 +42,16 @@ class Hybrid_Providers_Plurk extends Hybrid_Provider_Model_OAuth1
 	function getUserProfile()
 	{
 		$response = $this->api->get( 'Profile/getOwnProfile' );
-		
+
 		// check the last HTTP status code returned
 		if ( $this->api->http_code != 200 ){
 			throw new Exception( 'User profile request failed! ' . $this->providerId . ' returned an error. ' . $this->errorMessageByStatus( $this->api->http_code ), 6 );
 		}
 
-		if ( ! is_object( $response ) || ! isset( $response->user_info ) ){ 
+		if ( ! is_object( $response ) || ! isset( $response->user_info ) ){
 			throw new Exception( 'User profile request failed! ' . $this->providerId . ' api returned an invalid response.', 6 );
 		}
-		
+
 		$profile = $response->user_info;
 
 		$this->user->profile->identifier  = @ $profile->uid;
@@ -66,7 +66,7 @@ class Hybrid_Providers_Plurk extends Hybrid_Provider_Model_OAuth1
 
 		switch ( $profile->gender ) {
 			case '1': $this->user->profile->gender = 'male'; break;
-			case '2': $this->user->profile->gender = 'female'; break; 
+			case '2': $this->user->profile->gender = 'female'; break;
 		}
 
 		if( isset( $profile->date_of_birth ) ) {
@@ -79,7 +79,7 @@ class Hybrid_Providers_Plurk extends Hybrid_Provider_Model_OAuth1
 
 		return $this->user->profile;
 	}
-	
+
 	/**
 	 * load the user contacts
 	 */
@@ -87,41 +87,41 @@ class Hybrid_Providers_Plurk extends Hybrid_Provider_Model_OAuth1
 	{
 		$parameters = array();
 		$parameters['user_id'] = $this->user_id;
-		$response = $this->api->get('FriendsFans/getFriendsByOffset', $parameters); 
-		
+		$response = $this->api->get('FriendsFans/getFriendsByOffset', $parameters);
+
 		if ( $this->api->http_code != 200 )
 		{
 			throw new Exception( 'User contacts request failed! ' . $this->providerId . ' returned an error: ' . $this->api->lastErrorMessageFromStatus() );
 		}
-		
+
 		if ( !$response ) {
 			return array();
 		}
-		
+
 		$contacts = array();
-		
+
 		foreach( $response as $item ) {
 			$uc = new Hybrid_User_Contact();
 
 			$uc->identifier   = @ $item->uid;
 			$uc->displayName  = @ $item->display_name;
-			
+
 			if ( ! $this->user->profile->displayName ) {
 				$uc->displayName = @ $item->full_name;
 			}
-			
+
 			$uc->profileURL   = 'http://www.plurk.com/' . $item->nick_name;
 			$uc->photoURL     = $this->getPhotoURL( $item->uid, $item->has_profile_image, $item->avatar );
 
 			$contacts[] = $uc;
 		}
-		
+
 		return $contacts;
 	}
-	
+
 	/**
 	 * update user status
-	 */ 
+	 */
 	function setUserStatus( $status )
 	{
 		$parameters = array();
@@ -135,37 +135,37 @@ class Hybrid_Providers_Plurk extends Hybrid_Provider_Model_OAuth1
 			$parameters['qualifier']	= 'says';
 			$parameters['lang']			= 'en'; // tr_ch
 		}
-		
-		$response = $this->api->get('Timeline/plurkAdd', $parameters); 
-		
+
+		$response = $this->api->get('Timeline/plurkAdd', $parameters);
+
 		if ( $this->api->http_code != 200 )
 		{
 			throw new Exception( 'Update user status failed! ' . $this->providerId . ' returned an error: ' . $this->api->lastErrorMessageFromStatus() );
 		}
-		
+
 		return $response;
 	}
-	
+
 	/**
-	 * load the user latest activity  
+	 * load the user latest activity
 	 *    - timeline : all the stream
-	 *    - me       : the user activity only  
+	 *    - me       : the user activity only
 	 */
 	function getUserActivity( $stream )
 	{
 		$parameters = array();
-		
+
 		if ( $stream == 'me' ) {
 			$parameters['filter'] = 'only_user';
 		}
-		
-		$response = $this->api->get('Timeline/getPlurks', $parameters); 
-		
+
+		$response = $this->api->get('Timeline/getPlurks', $parameters);
+
 		if ( $this->api->http_code != 200 )
 		{
 			throw new Exception( 'User activity stream request failed! ' . $this->providerId . ' returned an error: ' . $this->api->lastErrorMessageFromStatus() );
 		}
-		
+
 		if ( ! $response || ! count(  $response->plurks ) ) {
 			return array();
 		}
@@ -174,10 +174,10 @@ class Hybrid_Providers_Plurk extends Hybrid_Provider_Model_OAuth1
 		echo '</pre>';*/
 
 		$activities = array();
-		
+
 		$users = $response->plurk_users;
 		$plurks = $response->plurks;
-		
+
 		foreach ( $plurks as $item ) {
 			$ua = new Hybrid_User_Activity();
 			$ua->id                 = @ $item->plurk_id;
@@ -192,14 +192,14 @@ class Hybrid_Providers_Plurk extends Hybrid_Provider_Model_OAuth1
 			$ua->user->photoURL = $this->getPhotoURL( $item->owner_id, $users->{$item->owner_id}->has_profile_image, $users->{$item->owner_id}->avatar );
 			$activities[] = $ua;
 		}
-		
+
 		return $activities;
 	}
-	
+
 	function getPhotoURL( $user_id, $has_profile_image, $avatar )
 	{
 		$photoURL = 'http://www.plurk.com/static/default_medium.gif';
-		
+
 		if ( $has_profile_image == 1 ) {
 			if ( $avatar == null ) {
 				$photoURL = 'http://avatars.plurk.com/'.$user_id.'-medium.gif';
@@ -207,7 +207,7 @@ class Hybrid_Providers_Plurk extends Hybrid_Provider_Model_OAuth1
 				$photoURL = 'http://avatars.plurk.com/'.$user_id.'-medium'.$avatar.'.gif';
 			}
 		}
-		
+
 		return $photoURL;
 	}
 }

@@ -7,13 +7,13 @@
 
 /**
  * Hybrid_Providers_LinkedIn provider adapter based on OAuth1 protocol
- * 
+ *
  * Hybrid_Providers_LinkedIn use linkedinPHP library created by fiftyMission Inc.
- * 
+ *
  * http://hybridauth.sourceforge.net/userguide/IDProvider_info_LinkedIn.html
  */
 class Hybrid_Providers_LinkedIn extends Hybrid_Provider_Model
-{ 
+{
 	/**
 	* IDp wrappers initializer
 	*/
@@ -152,7 +152,7 @@ class Hybrid_Providers_LinkedIn extends Hybrid_Provider_Model
 		}
 
 		$connections = new SimpleXMLElement( $response['linkedin'] );
-		
+
 		$contacts = ARRAY();
 
 		foreach( $connections->person as $connection ) {
@@ -227,7 +227,7 @@ class Hybrid_Providers_LinkedIn extends Hybrid_Provider_Model
 
 		$updates = new SimpleXMLElement( $response['linkedin'] );
 
-		$activities = ARRAY(); 
+		$activities = ARRAY();
 
 		foreach( $updates->update as $update ) {
 			$person = $update->{'update-content'}->person;
@@ -243,7 +243,7 @@ class Hybrid_Providers_LinkedIn extends Hybrid_Provider_Model
 			$ua->user->displayName  = (string) $person->{'first-name'} . ' ' . $person->{'last-name'};
 			$ua->user->profileURL   = (string) $person->{'site-standard-profile-request'}->url;
 			$ua->user->photoURL     = NULL;
-			
+
 			$activities[] = $ua;
 		}
 

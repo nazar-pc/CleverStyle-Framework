@@ -2,14 +2,14 @@
 /*!
 * HybridAuth
 * http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
-* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html 
+* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html
 */
 
 /**
- * Hybrid_User_Contact 
- * 
+ * Hybrid_User_Contact
+ *
  * used to provider the connected user contacts list on a standardized structure across supported social apis.
- * 
+ *
  * http://hybridauth.sourceforge.net/userguide/Profile_Data_User_Contacts.html
  */
 class Hybrid_User_Contact
@@ -17,7 +17,7 @@ class Hybrid_User_Contact
 	/* The Unique contact user ID */
 	public $identifier = NULL;
 
-	/* User website, blog, web page */ 
+	/* User website, blog, web page */
 	public $webSiteURL = NULL;
 
 	/* URL link to profile page on the IDp web site */

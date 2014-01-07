@@ -2,13 +2,13 @@
 /*!
 * HybridAuth
 * http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
-* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html 
+* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html
 */
 
 /**
  * To implement an OAuth 1 based service provider, Hybrid_Provider_Model_OAuth1
- * can be used to save the hassle of the authentication flow. 
- * 
+ * can be used to save the hassle of the authentication flow.
+ *
  * Each class that inherit from Hybrid_Provider_Model_OAuth1 have to implemenent
  * at least 2 methods:
  *   Hybrid_Providers_{provider_name}::initialize()     to setup the provider api end-points urls
@@ -21,11 +21,11 @@ class Hybrid_Provider_Model_OAuth1 extends Hybrid_Provider_Model
 {
 	public $request_tokens_raw = null; // request_tokens as recived from provider
 	public $access_tokens_raw  = null; // access_tokens as recived from provider
-	
+
 	/**
 	* try to get the error message from provider api
-	*/ 
-	function errorMessageByStatus( $code = null ) { 
+	*/
+	function errorMessageByStatus( $code = null ) {
 		$http_status_codes = ARRAY(
 			200 => "OK: Success!",
 			304 => "Not Modified: There was no new data to return.",
@@ -33,13 +33,13 @@ class Hybrid_Provider_Model_OAuth1 extends Hybrid_Provider_Model
 			401 => "Unauthorized.",
 			403 => "Forbidden: The request is understood, but it has been refused.",
 			404 => "Not Found: The URI requested is invalid or the resource requested does not exists.",
-			406 => "Not Acceptable.", 
+			406 => "Not Acceptable.",
 			500 => "Internal Server Error: Something is broken.",
 			502 => "Bad Gateway.",
 			503 => "Service Unavailable."
 		);
 
-		if( ! $code && $this->api ) 
+		if( ! $code && $this->api )
 			$code = $this->api->http_code;
 
 		if( isset( $http_status_codes[ $code ] ) )
@@ -49,7 +49,7 @@ class Hybrid_Provider_Model_OAuth1 extends Hybrid_Provider_Model
 	// --------------------------------------------------------------------
 
 	/**
-	* adapter initializer 
+	* adapter initializer
 	*/
 	function initialize()
 	{
@@ -64,17 +64,17 @@ class Hybrid_Provider_Model_OAuth1 extends Hybrid_Provider_Model
 
 		// 3.1 - setup access_token if any stored
 		if( $this->token( "access_token" ) ){
-			$this->api = new OAuth1Client( 
+			$this->api = new OAuth1Client(
 				$this->config["keys"]["key"], $this->config["keys"]["secret"],
-				$this->token( "access_token" ), $this->token( "access_token_secret" ) 
+				$this->token( "access_token" ), $this->token( "access_token_secret" )
 			);
 		}
 
 		// 3.2 - setup request_token if any stored, in order to exchange with an access token
 		elseif( $this->token( "request_token" ) ){
-			$this->api = new OAuth1Client( 
-				$this->config["keys"]["key"], $this->config["keys"]["secret"], 
-				$this->token( "request_token" ), $this->token( "request_token_secret" ) 
+			$this->api = new OAuth1Client(
+				$this->config["keys"]["key"], $this->config["keys"]["secret"],
+				$this->token( "request_token" ), $this->token( "request_token_secret" )
 			);
 		}
 
@@ -92,15 +92,15 @@ class Hybrid_Provider_Model_OAuth1 extends Hybrid_Provider_Model
 	// --------------------------------------------------------------------
 
 	/**
-	* begin login step 
+	* begin login step
 	*/
 	function loginBegin()
 	{
-		$tokens = $this->api->requestToken( $this->endpoint ); 
+		$tokens = $this->api->requestToken( $this->endpoint );
 
 		// request tokens as recived from provider
 		$this->request_tokens_raw = $tokens;
-		
+
 		// check the last HTTP status code returned
 		if ( $this->api->http_code != 200 ){
 			throw new Exception( "Authentication failed! {$this->providerId} returned an error. " . $this->errorMessageByStatus( $this->api->http_code ), 5 );
@@ -110,8 +110,8 @@ class Hybrid_Provider_Model_OAuth1 extends Hybrid_Provider_Model
 			throw new Exception( "Authentication failed! {$this->providerId} returned an invalid oauth token.", 5 );
 		}
 
-		$this->token( "request_token"       , $tokens["oauth_token"] ); 
-		$this->token( "request_token_secret", $tokens["oauth_token_secret"] ); 
+		$this->token( "request_token"       , $tokens["oauth_token"] );
+		$this->token( "request_token_secret", $tokens["oauth_token_secret"] );
 
 		# redirect the user to the provider authentication url
 		Hybrid_Auth::redirect( $this->api->authorizeUrl( $tokens ) );
@@ -120,8 +120,8 @@ class Hybrid_Provider_Model_OAuth1 extends Hybrid_Provider_Model
 	// --------------------------------------------------------------------
 
 	/**
-	* finish login step 
-	*/ 
+	* finish login step
+	*/
 	function loginFinish()
 	{
 		$oauth_token    = (array_key_exists('oauth_token',$_REQUEST))?$_REQUEST['oauth_token']:"";
@@ -153,9 +153,9 @@ class Hybrid_Provider_Model_OAuth1 extends Hybrid_Provider_Model
 
 		// sotre access_token for later user
 		$this->token( "access_token"        , $tokens['oauth_token'] );
-		$this->token( "access_token_secret" , $tokens['oauth_token_secret'] ); 
+		$this->token( "access_token_secret" , $tokens['oauth_token_secret'] );
 
 		// set user as logged in to the current provider
-		$this->setUserConnected(); 
+		$this->setUserConnected();
 	}
 }
