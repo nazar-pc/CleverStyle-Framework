@@ -6,6 +6,9 @@
  * @copyright	Copyright (c) 2011-2014, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
+require DIR.'/core/classes/Cache.php';
+require DIR.'/core/engines/Cache/_Abstract.php';
+require DIR.'/core/engines/Cache/FileSystem.php';
 require DIR.'/core/classes/Core.php';
 define('CONFIG', TEMP);
 file_put_contents(CONFIG.'/main.json', '{
