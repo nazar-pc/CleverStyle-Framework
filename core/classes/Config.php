@@ -412,6 +412,8 @@ class Config {
 	/**
 	 * Load and save clangs of all languages in cache for multilingual functionality.
 	 * Used by system
+	 *
+	 * @return array	clangs
 	 */
 	function update_clangs () {
 		$clangs		= [];
@@ -431,7 +433,7 @@ class Config {
 				$update	= true;
 			}
 		}
-		unset($clangs, $clang, $last_url);
+		unset($clang, $last_url);
 		if ($update) {
 			$this->core['url']	= implode(
 				'//',
@@ -443,6 +445,7 @@ class Config {
 			$this->save();
 		}
 		unset($update, $core_urls);
+		return $clangs;
 	}
 	/**
 	 * Reloading of settings cache

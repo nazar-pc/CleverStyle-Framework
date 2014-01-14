@@ -16,6 +16,8 @@ use			ArrayAccess,
  * Access to anything of this class instance will be casted to boolean <i>false</i>
  *
  * Inherits SimpleXMLElement in order to be casted from object to boolean as <i>false</i>
+ *
+ * @property string	$error
  */
 class False_class extends SimpleXMLElement implements ArrayAccess {
 	/**

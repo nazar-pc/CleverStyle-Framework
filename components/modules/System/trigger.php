@@ -20,7 +20,13 @@ Trigger::instance()->register(
 			return;
 		}
 		$relative_address	= $Config->server['relative_address'];
-		if (!FIXED_LANGUAGE && $_SERVER['REQUEST_METHOD'] == 'GET') {
+		$Cache				= Cache::instance();
+		if (
+			!FIXED_LANGUAGE &&
+			$_SERVER['REQUEST_METHOD'] == 'GET' &&
+			$Cache->cache_state() &&
+			Core::instance()->cache_engine != 'BlackHole'
+		) {
 			$clang	= Language::instance()->clang;
 			if (!HOME) {
 				header("Location: /$clang/$relative_address", true, 301);
@@ -41,9 +47,8 @@ Trigger::instance()->register(
 						'href'		=> "$base_url/$lang/$relative_address"
 					];
 				},
-				array_values(Cache::instance()->get('languages/clangs', function () use ($Config) {
-					$Config->update_clangs();
-					return Cache::instance()->{'languages/clangs'};
+				array_values($Cache->get('languages/clangs', function () use ($Config) {
+					return $Config->update_clangs();
 				})) ?: []
 			));
 	}

@@ -27,8 +27,11 @@ class Core {
 			exit;
 		}
 		$this->config	= _json_decode_nocomments(file_get_contents(CONFIG.'/main.json'));
-		if (file_exists(CACHE.'/languages/clangs')) {
-			$clangs			= _json_decode(file_get_contents(CACHE.'/languages/clangs'));
+		_include_once(CONFIG.'/main.php', false);
+		defined('DEBUG') || define('DEBUG', false);
+		define('DOMAIN', $this->config['domain']);
+		date_default_timezone_set($this->config['timezone']);
+		if ($clangs = Cache::instance()->{'languages/clangs'}) {
 			if (is_array($clangs) && !empty($clangs)) {
 				$clang	= explode('/', trim($_SERVER['REQUEST_URI'], '/'), 2)[0];
 				if (in_array($clang, $clangs)) {
@@ -37,12 +40,8 @@ class Core {
 				}
 				unset($clang);
 			}
-			unset($clangs);
 		}
-		_include_once(CONFIG.'/main.php', false);
-		defined('DEBUG') || define('DEBUG', false);
-		define('DOMAIN', $this->config['domain']);
-		date_default_timezone_set($this->config['timezone']);
+		unset($clangs);
 		if (!is_dir(STORAGE)) {
 			@mkdir(STORAGE, 0755);
 			file_put_contents(

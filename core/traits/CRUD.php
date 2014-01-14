@@ -12,6 +12,9 @@ use			Closure,
  * CRUD trait
  *
  * Provides create/read/update/delete methods for faster development
+ *
+ * @property array	$data_model
+ * @property string	$table
  */
 trait CRUD {
 	use	Accessor;
