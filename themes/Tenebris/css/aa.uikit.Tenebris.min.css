@@ -960,12 +960,16 @@ iframe {
 }
 .uk-comment-list .uk-comment + ul {
   margin: 25px 0 0 0;
-  padding-left: 100px;
   list-style: none;
 }
 .uk-comment-list > li:nth-child(n+2),
 .uk-comment-list .uk-comment + ul > li:nth-child(n+2) {
   margin-top: 25px;
+}
+@media (min-width: 768px) {
+  .uk-comment-list .uk-comment + ul {
+    padding-left: 100px;
+  }
 }
 .uk-comment-body {
   padding-left: 10px;
@@ -1250,6 +1254,7 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
 .uk-navbar-toggle {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  display: block;
   height: 40px;
   padding: 0 15px;
   float: left;
@@ -1816,6 +1821,7 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
 }
 .uk-form select,
 .uk-form textarea,
+.uk-form input:not([type]),
 .uk-form input[type="text"],
 .uk-form input[type="password"],
 .uk-form input[type="datetime"],
@@ -1842,6 +1848,7 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
 }
 .uk-form select:focus,
 .uk-form textarea:focus,
+.uk-form input:not([type]):focus,
 .uk-form input[type="text"]:focus,
 .uk-form input[type="password"]:focus,
 .uk-form input[type="datetime"]:focus,
@@ -1863,6 +1870,7 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
 }
 .uk-form select:disabled,
 .uk-form textarea:disabled,
+.uk-form input:not([type]):disabled,
 .uk-form input[type="text"]:disabled,
 .uk-form input[type="password"]:disabled,
 .uk-form input[type="datetime"]:disabled,
@@ -2018,13 +2026,21 @@ select.uk-form-width-mini {
 }
 .uk-form-icon > [class*='uk-icon-'] {
   position: absolute;
+  top: 50%;
   width: 30px;
-  line-height: 30px;
+  margin-top: -7px;
+  font-size: 14px;
   color: #666666;
   text-align: center;
 }
-.uk-form-icon > input {
+.uk-form-icon:not(.uk-form-icon-flip) > input {
   padding-left: 30px !important;
+}
+.uk-form-icon-flip > [class*='uk-icon-'] {
+  right: 0;
+}
+.uk-form-icon-flip > input {
+  padding-right: 30px !important;
 }
 .uk-button {
   display: inline-block;
@@ -4498,19 +4514,19 @@ input.uk-search-field {
   font-weight: bold;
 }
 .uk-text-muted {
-  color: #666666;
+  color: #666666 !important;
 }
 .uk-text-info {
-  color: #2d7091;
+  color: #2d7091 !important;
 }
 .uk-text-success {
-  color: #659f13;
+  color: #659f13 !important;
 }
 .uk-text-warning {
-  color: #faa732;
+  color: #faa732 !important;
 }
 .uk-text-danger {
-  color: #da314b;
+  color: #da314b !important;
 }
 .uk-text-left {
   text-align: left !important;
@@ -4675,6 +4691,9 @@ input.uk-search-field {
 }
 .uk-margin-bottom-remove {
   margin-bottom: 0 !important;
+}
+.uk-border-circle {
+  border-radius: 50%;
 }
 @media (min-width: 768px) {
   .uk-heading-large {
