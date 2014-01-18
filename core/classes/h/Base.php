@@ -5,7 +5,7 @@
  * @copyright	Copyright (c) 2011-2014, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace	h;
+namespace	cs\h;
 use			nazarpc\BananaHTML,
 			cs\Config,
 			cs\Language,

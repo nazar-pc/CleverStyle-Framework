@@ -6,7 +6,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-require			CORE.'/upf.php';					//Inclusion of Useful PHP Functions
+require			CORE.'/thirdparty/upf.php';			//Inclusion of Useful PHP Functions
 _require_once(DIR.'/vendor/autoload.php', false);	//Inclusion of composer's autoloader.php with user's dependencies
 require			CORE.'/functions.php';				//Inclusion of general system functions and system autoloader
 
@@ -28,9 +28,9 @@ define('CONFIG',		DIR.'/config');
  */
 define('CLASSES',		CORE.'/classes');
 /**
- * Directory for main core classes
+ * Directory for thirdparty libraries
  */
-define('THIRDPARTY',	CLASSES.'/thirdparty');
+define('THIRDPARTY',	CORE.'/thirdparty');
 /**
  * Directory for main core traits
  */

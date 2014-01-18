@@ -10,7 +10,7 @@
  */
 header('Content-Type: text/html; charset=utf-8');
 header('Connection: close');
-require __DIR__.'/core/upf.php';
+require __DIR__.'/core/thirdparty/upf.php';
 define('STORAGE',	__DIR__.'/storage/public');
 chdir(STORAGE);
 if (

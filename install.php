@@ -19,7 +19,7 @@ define('ROOT',	mb_strpos($ROOT, 'phar://') === 0 ? substr($ROOT, 7) : $ROOT);	//
 unset($ROOT);
 global $fs;
 $fs		= json_decode(file_get_contents(DIR.'/fs.json'), true);
-require_once DIR.'/fs/'.$fs['core/upf.php'];
+require_once DIR.'/fs/'.$fs['core/thirdparty/upf.php'];
 require_once DIR.'/fs/'.$fs['core/functions.php'];
 require_once DIR.'/fs/'.$fs['core/classes/thirdparty/nazarpc/BananaHTML.php'];
 require_once DIR.'/fs/'.$fs['core/classes/h/Base.php'];

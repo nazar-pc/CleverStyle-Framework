@@ -8,5 +8,5 @@
 /**
  * Class for HTML code rendering in accordance with the standards of HTML5, and with useful syntax extensions for simpler usage
  */
-use	h\Base;
+use	cs\h\Base;
 class h extends Base {}

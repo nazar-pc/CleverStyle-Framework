@@ -14,10 +14,10 @@ if (!Phar::canWrite()) {
 	exit("CleverStyle CMS Builder can't work, set, please, <b>phar.readonly=off</b> option in <b>php.ini</b>");
 }
 define('DIR', __DIR__);
-require_once DIR.'/core/classes/thirdparty/nazarpc/BananaHTML.php';
+require_once DIR.'/core/thirdparty/nazarpc/BananaHTML.php';
 require_once DIR.'/core/classes/h/Base.php';
 require_once DIR.'/core/classes/h.php';
-require_once DIR.'/core/upf.php';
+require_once DIR.'/core/thirdparty/upf.php';
 require_once DIR.'/core/functions.php';
 date_default_timezone_set('UTC');
 header('Content-Type: text/html; charset=utf-8');
