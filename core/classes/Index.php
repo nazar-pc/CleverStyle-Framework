@@ -79,7 +79,6 @@ class Index {
 				$subparts			= [],
 				$permission_group,
 
-				$admin				= false,
 				$module				= false,
 				$api				= false,
 				$request_method		= null;
@@ -115,7 +114,7 @@ class Index {
 			}
 			define('MFOLDER', $admin_path);
 			$this->form		= true;
-			$this->admin	= true;
+			define('IN_ADMIN', true);
 		} elseif (API && file_exists($api_path)) {
 			if (!$User->get_permission($this->permission_group = 'api/'.MODULE, 'index')) {
 				error_code(403);
@@ -134,6 +133,7 @@ class Index {
 			error_code(404);
 			exit;
 		}
+		defined('IN_ADMIN') || define('IN_ADMIN', false);
 		unset($admin_path, $api_path);
 		Trigger::instance()->run('System/Index/construct');
 		/**
@@ -241,10 +241,10 @@ class Index {
 			/**
 			 * Saving of changes
 			 */
-			if ($this->admin && !_include_once(MFOLDER."/$rc[0]/$this->savefile.php", false)) {
+			if (IN_ADMIN && !_include_once(MFOLDER."/$rc[0]/$this->savefile.php", false)) {
 				_include_once(MFOLDER."/$this->savefile.php", false);
 			}
-			$this->admin && $this->title_auto && $Page->title($L->administration);
+			IN_ADMIN && $this->title_auto && $Page->title($L->administration);
 			if (!$this->api && $this->title_auto) {
 				$Page->title($L->{HOME ? 'home' : MODULE});
 			}
@@ -281,7 +281,7 @@ class Index {
 						$Page->title($L->$rc[1]);
 					}
 					if ($this->action === null) {
-						$this->action = ($this->admin ? 'admin/' : '').MODULE."/$rc[0]/$rc[1]";
+						$this->action = (IN_ADMIN ? 'admin/' : '').MODULE."/$rc[0]/$rc[1]";
 					}
 				}
 				_include_once(MFOLDER."/$rc[0]/$rc[1].php", false);
@@ -292,14 +292,14 @@ class Index {
 					return;
 				}
 			} elseif (!$this->api && $this->action === null) {
-				$this->action = ($this->admin ? 'admin/' : '').MODULE."/$rc[0]";
+				$this->action = (IN_ADMIN ? 'admin/' : '').MODULE."/$rc[0]";
 			}
 			unset($rc);
 			if ($this->post_title && $this->title_auto) {
 				$Page->title($this->post_title);
 			}
 		} elseif (!$this->api) {
-			$this->admin && $Page->title($L->administration);
+			IN_ADMIN && $Page->title($L->administration);
 			if (!$this->api && $this->title_auto) {
 				$Page->title($L->{HOME ? 'home' : MODULE});
 			}
@@ -394,7 +394,7 @@ class Index {
 			$this->main_sub_menu[]	= [
 				$L->$part,
 				[
-					'href'		=> ($this->admin ? 'admin/' : '').MODULE."/$part",
+					'href'		=> (IN_ADMIN ? 'admin/' : '').MODULE."/$part",
 					'class'		=> isset($rc[0]) && $rc[0] == $part ? 'uk-active' : ''
 				]
 			];
@@ -413,7 +413,7 @@ class Index {
 			$this->main_menu_more[]	= [
 				$L->$subpart,
 				[
-					'href'		=> ($this->admin ? 'admin/' : '').MODULE."/$rc[0]/$subpart",
+					'href'		=> (IN_ADMIN ? 'admin/' : '').MODULE."/$rc[0]/$subpart",
 					'class'		=> $rc[1] == $subpart ? 'uk-active' : ''
 				]
 			];
@@ -504,52 +504,6 @@ class Index {
 		} elseif ($this->Content) {
 			$Page->content($this->Content);
 		}
-	}
-	/**
-	 * Adds JavaScript variables with some system configuration information
-	 *
-	 * @return Index
-	 */
-	protected function js_vars () {
-		if (!$this->api) {
-			$Config	= Config::instance();
-			$Page	= Page::instance();
-			$User	= User::instance();
-			$Page->js(
-				'window.cs	= '._json_encode([
-					'base_url'			=> $Config->base_url(),
-					'current_base_url'	=> $Config->base_url().'/'.($this->admin ? 'admin/' : '').MODULE,
-					'public_key'		=> Core::instance()->public_key,
-					'module'			=> MODULE,
-					'in_admin'			=> (int)$this->admin,
-					'is_admin'			=> (int)$User->admin(),
-					'is_user'			=> (int)$User->user(),
-					'is_guest'			=> (int)$User->guest(),
-					'debug'				=> (int)$User->guest(),
-					'cookie_prefix'		=> $Config->core['cookie_prefix'],
-					'cookie_domain'		=> $Config->core['cookie_domain'],
-					'cookie_path'		=> $Config->core['cookie_path'],
-					'protocol'			=> $Config->server['protocol'],
-					'route'				=> $Config->route,
-					'route_path'		=> $this->route_path,
-					'route_ids'			=> $this->route_ids
-				]).';',
-				'code'
-			);
-			if ($User->guest()) {
-				$Page->js(
-					'cs.rules_text = '._json_encode(get_core_ml_text('rules')).';',
-					'code'
-				);
-			}
-			if (!$Config->core['cache_compress_js_css']) {
-				$Page->js(
-					'cs.Language = '._json_encode(Language::instance()).';',
-					'code'
-				);
-			}
-		}
-		return $this;
 	}
 	/**
 	 * Blocks processing
@@ -704,11 +658,10 @@ class Index {
 			return;
 		}
 		if (defined('ERROR_CODE')) {
-			$this->js_vars();
 			$Page->error();
 		}
 		Trigger::instance()->run('System/Index/preload');
-		if (!$this->admin && !$this->api && file_exists(MODULES.'/'.MODULE.'/index.html')) {
+		if (!IN_ADMIN && !$this->api && file_exists(MODULES.'/'.MODULE.'/index.html')) {
 			ob_start();
 			_include(MODULES.'/'.MODULE.'/index.html', false, false);
 			$Page->content(ob_get_clean());
@@ -719,9 +672,7 @@ class Index {
 			$this->init_auto	&& $this->init();
 		}
 		if ($this->generate_auto) {
-			$this
-				->js_vars()
-				->generate();
+			$this->generate();
 		}
 		if ($this->stop) {
 			if (

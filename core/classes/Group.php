@@ -95,7 +95,7 @@ class Group {
 	function add ($title, $description) {
 		$title			= xap($title, false);
 		$description	= xap($description, false);
-		if (!$title || !$description) {
+		if (!$title) {
 			return false;
 		}
 		if ($this->db_prime()->q(

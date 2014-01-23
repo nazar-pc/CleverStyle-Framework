@@ -226,6 +226,47 @@ class Page {
 			$this->Title = $this->Title[0];
 		}
 		/**
+		 * Core JS
+		 */
+		if ($Config) {
+			$Index	= Index::instance();
+			$User	= User::instance();
+			$this->js_internal(
+				'window.cs	= '._json_encode([
+					'base_url'			=> $Config->base_url(),
+					'current_base_url'	=> $Config->base_url().'/'.(defined('IN_ADMIN') && IN_ADMIN ? 'admin/' : '').MODULE,
+					'public_key'		=> Core::instance()->public_key,
+					'module'			=> MODULE,
+					'in_admin'			=> (int)(defined('IN_ADMIN') && IN_ADMIN),
+					'is_admin'			=> (int)$User->admin(),
+					'is_user'			=> (int)$User->user(),
+					'is_guest'			=> (int)$User->guest(),
+					'debug'				=> (int)$User->guest(),
+					'cookie_prefix'		=> $Config->core['cookie_prefix'],
+					'cookie_domain'		=> $Config->core['cookie_domain'],
+					'cookie_path'		=> $Config->core['cookie_path'],
+					'protocol'			=> $Config->server['protocol'],
+					'route'				=> $Config->route,
+					'route_path'		=> $Index->route_path,
+					'route_ids'			=> $Index->route_ids
+				]).';',
+				'code',
+				true
+			);
+			if ($User->guest()) {
+				$this->js(
+					'cs.rules_text = '._json_encode(get_core_ml_text('rules')).';',
+					'code'
+				);
+			}
+			if (!$Config->core['cache_compress_js_css']) {
+				$this->js(
+					'cs.Language = '._json_encode(Language::instance()).';',
+					'code'
+				);
+			}
+		}
+		/**
 		 * Forming <head> content
 		 */
 		$this->core_css[0]	= implode('', array_unique($this->core_css[0]));
@@ -236,18 +277,6 @@ class Page {
 		$this->core_js[1]	= implode('', array_unique($this->core_js[1]));
 		$this->js[0]		= implode('', array_unique($this->js[0]));
 		$this->js[1]		= implode('', array_unique($this->js[1]));
-		if ($this->core_css[1]) {
-			$this->core_css[1]	= h::style($this->core_css[1]);
-		}
-		if ($this->css[1]) {
-			$this->css[1]		= h::style($this->css[1]);
-		}
-		if ($this->core_js[1]) {
-			$this->core_js[1]	= h::script($this->core_js[1]);
-		}
-		if ($this->js[1]) {
-			$this->js[1]		= h::script($this->js[1]);
-		}
 		if (file_exists(THEMES."/$this->theme/$this->color_scheme/img/favicon.png")) {
 			$favicon	= "themes/$this->theme/$this->color_scheme/img/favicon.png";
 		} elseif (file_exists(THEMES."/$this->theme/$this->color_scheme/img/favicon.ico")) {
@@ -294,10 +323,9 @@ class Page {
 				],
 				$this->link ?: false
 			).
-			implode('', $this->core_css).
-			implode('', $this->css).
-			$this->core_js[1].
-			$this->js[1];
+			$this->core_css[0].$this->css[0].
+			h::style($this->core_css[1].$this->css[1]).
+			h::script($this->core_js[1].$this->js[1]);
 		if ($Config->core['put_js_after_body']) {
 			$this->post_Body	.= $this->core_js[0].$this->js[0];
 		} else {
