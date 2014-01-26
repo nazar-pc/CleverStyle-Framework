@@ -150,13 +150,13 @@ switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 			).
 			h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr'}(
 				h::th(
-					"$L->current_password ".h::{'icon#current_password'}('lock')
+					"$L->current_password ".h::{'icon#current_password.cs-pointer'}('lock')
 				).
 				h::td(
 					h::{'input.cs-profile-current-password[type=password]'}()
 				),
 				h::th(
-					"$L->new_password ".h::{'icon#new_password'}('lock')
+					"$L->new_password ".h::{'icon#new_password.cs-pointer'}('lock')
 				).
 				h::td(
 					h::{'input.cs-profile-new-password[type=password]'}()

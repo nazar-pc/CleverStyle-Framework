@@ -2052,10 +2052,9 @@ class User {
 		/**
 		 * Updating users cache
 		 */
-		foreach ($this->data as $id => &$data) {
+		foreach (array_keys($this->data) as $id => $data) {
 			if (isset($this->update_cache[$id]) && $this->update_cache[$id]) {
-				$data['id'] = $id;
-				$this->cache->$id = $data;
+				unset($this->cache->$id);
 			}
 		}
 		$this->update_cache = [];
