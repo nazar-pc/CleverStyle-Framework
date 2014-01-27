@@ -514,7 +514,7 @@ class User {
 				$this->data[$user][$item.'_hash']		= hash('sha224', $value);
 				$this->data_set[$user][$item.'_hash']	= hash('sha224', $value);
 				unset($this->cache->{hash('sha224', $this->$item)});
-			} elseif ($item == 'password_hash') {
+			} elseif ($item == 'password_hash' || ($item == 'status' && $value == 0)) {
 				$this->del_all_sessions($user);
 			}
 		}
@@ -1382,10 +1382,10 @@ class User {
 				unset($this->cache->{"sessions/$session"});
 			}
 			unset($session);
-			$sessions	= implode(',', $sessions);
+			$sessions	= implode("','", $sessions);
 			return $this->db_prime()->q(
 				"DELETE FROM `[prefix]sessions`
-				WHERE `id` IN($sessions)"
+				WHERE `id` IN('$sessions')"
 			);
 		}
 		return true;
