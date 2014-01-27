@@ -407,7 +407,7 @@ class User {
 			 * If there are missing values - get them from the database
 			 */
 			$new_items	= '`'.implode('`, `', $new_items).'`';
-			$res = $this->db()->qf(
+			$res		= $this->db()->qf(
 				"SELECT $new_items
 				FROM `[prefix]users`
 				WHERE `id` = '$user'
@@ -415,9 +415,9 @@ class User {
 			);
 			unset($new_items);
 			if (is_array($res)) {
-				$this->update_cache[$user] = true;
-				$data = array_merge((array)$data, $res);
-				$result = array_merge($result, $res);
+				$this->update_cache[$user]	= true;
+				$data						= array_merge($res, $data ?: []);
+				$result						= array_merge($result, $res);
 				/**
 				 * Sorting the resulting array in the same manner as the input array
 				 */
@@ -450,7 +450,7 @@ class User {
 				 * Update the local cache
 				 */
 				if (is_array($new_data)) {
-					$data = array_merge((array)$data, $new_data);
+					$data = array_merge($new_data, $data ?: []);
 				}
 				/**
 				 * New attempt of getting the data
@@ -464,7 +464,7 @@ class User {
 					LIMIT 1"
 				);
 				if ($new_data !== false) {
-					$this->update_cache[$user] = true;
+					$this->update_cache[$user]	= true;
 					return $data[$item] = $new_data;
 				}
 			}
@@ -2052,9 +2052,10 @@ class User {
 		/**
 		 * Updating users cache
 		 */
-		foreach (array_keys($this->data) as $id => $data) {
+		foreach ($this->data as $id => &$data) {
 			if (isset($this->update_cache[$id]) && $this->update_cache[$id]) {
-				unset($this->cache->$id);
+				$data['id']			= $id;
+				$this->cache->$id	= $data;
 			}
 		}
 		$this->update_cache = [];
