@@ -12,6 +12,8 @@
   var __hasProp = {}.hasOwnProperty;
 
   $(function() {
+    var L;
+    L = cs.Language;
     cs.async_call([
       function() {
         window.session_id = cs.getcookie('session');
@@ -29,8 +31,7 @@
           }
         });
       }, function() {
-        var L, key, translation;
-        L = cs.Language;
+        var key, translation;
         for (key in L) {
           if (!__hasProp.call(L, key)) continue;
           translation = L[key];
@@ -142,8 +143,7 @@
           }
         });
         $('.cs-header-registration-process').click(function() {
-          var L, modal;
-          L = cs.Language;
+          var modal;
           if (!cs.rules_text) {
             cs.registration($('.cs-header-registration-email').val());
             return;

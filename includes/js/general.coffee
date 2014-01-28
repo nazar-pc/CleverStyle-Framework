@@ -5,6 +5,7 @@
  * @license		MIT License, see license.txt
 ###
 $ ->
+	L	= cs.Language
 	cs.async_call [
 		->
 			window.session_id	= cs.getcookie('session')
@@ -18,7 +19,6 @@ $ ->
 					else
 						alert(L.connection_error)
 		->
-			L			= cs.Language
 			L[key]		= (do (translation) ->
 				result	= ->
 					vsprintf translation, Array::slice.call(arguments)
@@ -123,7 +123,6 @@ $ ->
 						.addClass('uk-icon-lock')
 						.removeClass('uk-icon-unlock-alt')
 			$('.cs-header-registration-process').click ->
-				L		= cs.Language
 				if !cs.rules_text
 					cs.registration $('.cs-header-registration-email').val()
 					return
