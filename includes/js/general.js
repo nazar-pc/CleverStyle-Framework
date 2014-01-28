@@ -111,10 +111,10 @@
           pass_input = $this.parent().next().children('input');
           if (pass_input.prop('type') === 'password') {
             pass_input.prop('type', 'text');
-            return $this.addClass('uk-icon-unlock').removeClass('uk-icon-lock');
+            return $this.addClass('uk-icon-unlock-alt').removeClass('uk-icon-lock');
           } else {
             pass_input.prop('type', 'password');
-            return $this.addClass('uk-icon-lock').removeClass('uk-icon-unlock');
+            return $this.addClass('uk-icon-lock').removeClass('uk-icon-unlock-alt');
           }
         });
         $('#current_password').click(function() {
@@ -123,10 +123,10 @@
           password = $('.cs-profile-current-password');
           if (password.prop('type') === 'password') {
             password.prop('type', 'text');
-            return $this.addClass('uk-icon-unlock').removeClass('uk-icon-lock');
+            return $this.addClass('uk-icon-unlock-alt').removeClass('uk-icon-lock');
           } else {
             password.prop('type', 'password');
-            return $this.addClass('uk-icon-lock').removeClass('uk-icon-unlock');
+            return $this.addClass('uk-icon-lock').removeClass('uk-icon-unlock-alt');
           }
         });
         $('#new_password').click(function() {
@@ -135,10 +135,10 @@
           password = $('.cs-profile-new-password');
           if (password.prop('type') === 'password') {
             password.prop('type', 'text');
-            return $this.addClass('uk-icon-unlock').removeClass('uk-icon-lock');
+            return $this.addClass('uk-icon-unlock-alt').removeClass('uk-icon-lock');
           } else {
             password.prop('type', 'password');
-            return $this.addClass('uk-icon-lock').removeClass('uk-icon-unlock');
+            return $this.addClass('uk-icon-lock').removeClass('uk-icon-unlock-alt');
           }
         });
         $('.cs-header-registration-process').click(function() {

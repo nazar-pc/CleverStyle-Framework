@@ -89,39 +89,39 @@ $ ->
 				if pass_input.prop('type') == 'password'
 					pass_input.prop('type', 'text')
 					$this
-						.addClass('uk-icon-unlock')
+						.addClass('uk-icon-unlock-alt')
 						.removeClass('uk-icon-lock')
 				else
 					pass_input.prop('type', 'password')
 					$this
 						.addClass('uk-icon-lock')
-						.removeClass('uk-icon-unlock')
+						.removeClass('uk-icon-unlock-alt')
 			$('#current_password').click ->
 				$this		= $(this)
 				password	= $('.cs-profile-current-password')
 				if password.prop('type') == 'password'
 					password.prop('type', 'text')
 					$this
-						.addClass('uk-icon-unlock')
+						.addClass('uk-icon-unlock-alt')
 						.removeClass('uk-icon-lock')
 				else
 					password.prop('type', 'password')
 					$this
 						.addClass('uk-icon-lock')
-						.removeClass('uk-icon-unlock')
+						.removeClass('uk-icon-unlock-alt')
 			$('#new_password').click ->
 				$this		= $(this)
 				password	= $('.cs-profile-new-password')
 				if password.prop('type') == 'password'
 					password.prop('type', 'text')
 					$this
-						.addClass('uk-icon-unlock')
+						.addClass('uk-icon-unlock-alt')
 						.removeClass('uk-icon-lock')
 				else
 					password.prop('type', 'password')
 					$this
 						.addClass('uk-icon-lock')
-						.removeClass('uk-icon-unlock')
+						.removeClass('uk-icon-unlock-alt')
 			$('.cs-header-registration-process').click ->
 				L		= cs.Language
 				if !cs.rules_text
