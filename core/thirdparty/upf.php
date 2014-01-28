@@ -666,7 +666,7 @@ function xap ($in, $html = 'text', $iframe = false) {
 	} elseif ($html === false) {
 		return strip_tags($in);
 	} else {
-		return htmlspecialchars($in, ENT_QUOTES | ENT_HTML5 | ENT_DISALLOWED | ENT_SUBSTITUTE);
+		return htmlspecialchars($in, ENT_NOQUOTES | ENT_HTML5 | ENT_DISALLOWED | ENT_SUBSTITUTE | ENT_HTML5);
 	}
 }
 /**
