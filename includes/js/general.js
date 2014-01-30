@@ -90,18 +90,14 @@
           $('.cs-header-restore-password-form').show('medium');
           return $('.cs-header-restore-password-email').focus();
         });
-        $('.cs-header-sign-in-email, .cs-header-user-password').keyup(function(event) {
-          if (event.which === 13) {
-            return $('.cs-header-sign-in-process').click();
-          }
-        });
         $('.cs-header-registration-email').keyup(function(event) {
           if (event.which === 13) {
             return $('.cs-header-registration-process').click();
           }
         });
-        $('.cs-header-sign-in-process').click(function() {
-          return cs.sign_in($('.cs-header-sign-in-email').val(), $('.cs-header-user-password').val());
+        $('.cs-header-sign-in-form').submit(function() {
+          cs.sign_in($('.cs-header-sign-in-email').val(), $('.cs-header-user-password').val());
+          return false;
         });
         $('.cs-header-sign-out-process').click(function() {
           return cs.sign_out();

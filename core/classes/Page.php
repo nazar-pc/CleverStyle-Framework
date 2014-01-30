@@ -1284,7 +1284,7 @@ class Page {
 					'style'	=> 'display: none;'
 				]
 			).
-			h::{'div.cs-header-sign-in-form'}(
+			h::{'form.cs-header-sign-in-form.cs-no-ui'}(
 				h::{'input.cs-no-ui.cs-header-sign-in-email[tabindex=1]'}([
 					'placeholder'		=> $L->login_or_email,
 					'autocapitalize'	=> 'off',
@@ -1294,7 +1294,7 @@ class Page {
 					'placeholder'	=> $L->password
 				]).
 				h::br().
-				h::{'button.cs-header-sign-in-process.cs-button-compact.uk-icon-sign-in[tabindex=3]'}($L->sign_in).
+				h::{'button.cs-button-compact.uk-icon-sign-in[tabindex=3][type=submit]'}($L->sign_in).
 				h::{'button.cs-button-compact.cs-header-back[tabindex=5]'}(
 					h::icon('chevron-down'),
 					[

@@ -32,6 +32,10 @@ h1, h2, h3, h4, h5, h6 {
 		margin : 5px 0;
 	}
 
+	button {
+		height : 2rem;
+	}
+
 	button[class*=uk-icon-]:before {
 		margin-right : .5rem;
 	}

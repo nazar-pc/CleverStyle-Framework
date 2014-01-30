@@ -25,7 +25,8 @@ body > header {
 			max-width      : 44px;
 		}
 
-		> div {
+		> div,
+		> form {
 			padding-left : 48px;
 			white-space  : nowrap;
 			word-wrap    : normal;

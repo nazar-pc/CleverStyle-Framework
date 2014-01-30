@@ -70,14 +70,12 @@ $ ->
 				$('.cs-header-sign-in-form, .cs-header-registration-form').hide('medium')
 				$('.cs-header-restore-password-form').show('medium')
 				$('.cs-header-restore-password-email').focus()
-			$('.cs-header-sign-in-email, .cs-header-user-password').keyup (event) ->
-				if event.which == 13
-					$('.cs-header-sign-in-process').click()
 			$('.cs-header-registration-email').keyup (event) ->
 				if event.which == 13
 					$('.cs-header-registration-process').click()
-			$('.cs-header-sign-in-process').click ->
+			$('.cs-header-sign-in-form').submit ->
 				cs.sign_in($('.cs-header-sign-in-email').val(), $('.cs-header-user-password').val())
+				return false
 			$('.cs-header-sign-out-process').click ->
 				cs.sign_out()
 			$('.cs-show-password').click ->
