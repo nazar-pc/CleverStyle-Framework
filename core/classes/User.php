@@ -939,11 +939,31 @@ class User {
 		return $this->del_any_permissions_all($user, 'user');
 	}
 	/**
-	 * Get user groups
+	 * Add user's groups
+	 *
+	 * @param int|int[]		$group	Group id
+	 * @param bool|int		$user	If not specified - current user assumed
+	 *
+	 * @return bool
+	 */
+	function add_groups ($group, $user = false) {
+		$user	= (int)($user ?: $this->id);
+		if (!$user || $user == self::GUEST_ID) {
+			return false;
+		}
+		$groups	= $this->get_groups($user);
+		foreach ((array)_int($group) as $g) {
+			$groups[]	= $g;
+		}
+		unset($g);
+;		return $this->set_groups($groups, $user);
+	}
+	/**
+	 * Get user's groups
 	 *
 	 * @param bool|int		$user	If not specified - current user assumed
 	 *
-	 * @return array|bool
+	 * @return bool|int[]
 	 */
 	function get_groups ($user = false) {
 		$user	= (int)($user ?: $this->id);
@@ -960,31 +980,31 @@ class User {
 		});
 	}
 	/**
-	 * Set user groups
+	 * Set user's groups
 	 *
-	 * @param array		$data
+	 * @param int[]		$groups
 	 * @param bool|int	$user
 	 *
 	 * @return bool
 	 */
-	function set_groups ($data, $user = false) {
+	function set_groups ($groups, $user = false) {
 		$user		= (int)($user ?: $this->id);
 		if (!$user) {
 			return false;
 		}
-		if (!empty($data) && is_array_indexed($data)) {
-			foreach ($data as $i => &$group) {
+		if (!empty($groups) && is_array_indexed($groups)) {
+			foreach ($groups as $i => &$group) {
 				if (!($group = (int)$group)) {
-					unset($data[$i]);
+					unset($groups[$i]);
 				}
 			}
 		}
 		unset($i, $group);
-		$exiting	= $this->get_groups($user);
+		$existing	= $this->get_groups($user);
 		$return		= true;
-		$insert		= array_diff($data, $exiting);
-		$delete		= array_diff($exiting, $data);
-		unset($exiting);
+		$insert		= array_diff($groups, $existing);
+		$delete		= array_diff($existing, $groups);
+		unset($existing);
 		if (!empty($delete)) {
 			$delete	= implode(', ', $delete);
 			$return	= $return && $this->db_prime()->q(
@@ -1014,7 +1034,7 @@ class User {
 			unset($q);
 		}
 		$update		= [];
-		foreach ($data as $i => $group) {
+		foreach ($groups as $i => $group) {
 			$update[] =
 				"UPDATE `[prefix]users_groups`
 				SET `priority` = '$i'
@@ -1030,6 +1050,25 @@ class User {
 			$Cache->{"permissions/$user"}
 		);
 		return $return;
+	}
+	/**
+	 * Delete user's groups
+	 *
+	 * @param int|int[]		$group	Group id
+	 * @param bool|int		$user	If not specified - current user assumed
+	 *
+	 * @return bool
+	 */
+	function del_groups ($group, $user = false) {
+		$user	= (int)($user ?: $this->id);
+		if (!$user || $user == self::GUEST_ID) {
+			return false;
+		}
+		$groups	= array_diff(
+			$this->get_groups($user),
+			(array)_int($group)
+		);
+;		return $this->set_groups($groups, $user);
 	}
 	/**
 	 * Returns current session id
