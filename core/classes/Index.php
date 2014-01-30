@@ -216,6 +216,9 @@ class Index {
 				}
 				unset($item, $value, $subpart);
 			}
+		} elseif (API && !file_exists(MFOLDER.'/index.php')) {
+			error_code(404);
+			return;
 		}
 		unset($structure_file);
 		_include_once(MFOLDER.'/index.php', false);
