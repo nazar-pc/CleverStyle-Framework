@@ -1156,15 +1156,17 @@ class Page {
 		if (!defined('ERROR_CODE')) {
 			error_code(500);
 		}
-		if (!API && ERROR_CODE == 403 && _getcookie('sign_out')) {
+		if (defined('API') && !API && ERROR_CODE == 403 && _getcookie('sign_out')) {
 			header('Location: '.Config::instance()->base_url(), true, 302);
 			$this->Content	= '';
 			exit;
 		}
 		interface_off();
-		$error_text	= code_header(ERROR_CODE);
-		$error_text	= $custom_text ?: $error_text;
-		if (API || $json) {
+		$error_text	= $custom_text ?: code_header(ERROR_CODE);
+		if (
+			(defined('API') && API) ||
+			$json
+		) {
 			if ($json) {
 				header('Content-Type: application/json', true);
 				interface_off();
@@ -1180,13 +1182,11 @@ class Page {
 				!_include_once(THEMES."/$this->theme/error.php", false)
 			) {
 				echo "<!doctype html>\n".
-					h::title($error_text ?: ERROR_CODE).
+					h::title(code_header(ERROR_CODE)).
 					 ($error_text ?: ERROR_CODE);
 			}
 			$this->Content	= ob_get_clean();
 		}
-		Page::instance()->__finish();
-		User::instance(true)->__finish();
 		exit;
 	}
 	/**

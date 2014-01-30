@@ -23,7 +23,16 @@ class Core {
 	 */
 	protected function construct () {
 		if (!file_exists(CONFIG.'/main.json')) {
-			code_header(404);
+			error_code(500);
+			Page::instance()->error(
+				h::p('Config file not found, is system installed properly?').
+				h::a(
+					'How to install CleverStyle CMS',
+					[
+						'href'	=> 'https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation'
+					]
+				)
+			);
 			exit;
 		}
 		$this->config	= _json_decode_nocomments(file_get_contents(CONFIG.'/main.json'));
