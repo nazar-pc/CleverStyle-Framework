@@ -18,8 +18,6 @@ $Index					= Index::instance();
 $L						= Language::instance();
 $Page					= Page::instance();
 $Page->title($L->latest_posts);
-$Page->Keywords			= keywords("$L->Blogs $L->latest_posts").", $Page->Keywords";
-$Page->Description		= description("$L->Blogs - $L->latest_posts. $Page->Description");
 $module					= path($L->Blogs);
 /**
  * Show administration, new post, draft actions

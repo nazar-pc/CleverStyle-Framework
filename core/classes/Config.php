@@ -112,8 +112,6 @@ class Config {
 		$Page	= Page::instance();
 		$Page->init(
 			get_core_ml_text('name'),
-			get_core_ml_text('keywords'),
-			get_core_ml_text('description'),
 			$this->core['theme'],
 			$this->core['color_scheme']
 		);

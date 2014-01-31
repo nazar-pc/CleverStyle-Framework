@@ -56,7 +56,7 @@ if ($set_stub) {
 	$phar->setStub("<?php Phar::webPhar(null, '$set_stub'); __HALT_COMPILER();");
 } else {
 	$meta	= _json_decode(file_get_contents("$pdir/meta.json"));
-	$phar->addFromString('index.html', isset($meta['description']) ? $meta['description'] : $meta['title']);
+	$phar->addFromString('index.html', isset($meta['description']) ? $meta['description'] : $meta['package']);
 	unset($meta);
 	$phar->setStub("<?php Phar::webPhar(null, 'index.html'); __HALT_COMPILER();");
 }

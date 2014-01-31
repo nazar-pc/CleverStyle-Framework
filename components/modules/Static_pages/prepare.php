@@ -22,7 +22,6 @@ if ($page['interface']) {
 		Index::instance()->title_auto	= false;
 		$Page->title($page['title']);
 	}
-	$Page->Keywords		= keywords($page['title']);
 	$Page->Description	= description($page['content']);
 	if (HOME) {
 		$Page->canonical_url($Config->base_url());

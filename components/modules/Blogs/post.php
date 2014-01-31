@@ -49,7 +49,6 @@ if ($post['path'] != mb_substr($rc[1], 0, mb_strrpos($rc[1], ':'))) {
 }
 $Page->title($post['title']);
 $tags				= $Blogs->get_tag($post['tags']);
-$Page->Keywords		= keywords("$post[title] ".implode(' ', $tags));
 $Page->Description	= description($post['short_content']);
 $Page->canonical_url(
 	"{$Config->base_url()}/$module/$post[path]:$post[id]"

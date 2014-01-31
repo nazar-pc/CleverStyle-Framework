@@ -126,10 +126,7 @@ function install_process () {
 	$config							= _json_decode('{
 		"name": "",
 		"url": "",
-		"keywords": "",
-		"description": "",
 		"admin_email": "",
-		"admin_phone": "",
 		"closed_title": "Site closed",
 		"closed_text": "<p>Site closed for maintenance<\/p>",
 		"site_mode": "1",
@@ -208,8 +205,7 @@ function install_process () {
 		"show_footer_info": "1",
 		"og_support": "1"
 	}');
-	$config['name']					= $config['description']	= (string)$_POST['site_name'];
-	$config['keywords']				= implode(', ', _trim(explode(' ', $config['name']), ','));
+	$config['name']					= (string)$_POST['site_name'];
 	$config['url']					= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http')."://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 	$config['url']					= mb_substr(
 		$config['url'],

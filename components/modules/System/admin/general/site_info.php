@@ -56,8 +56,6 @@ Index::instance()->content(
 				]
 			)
 		] : false,
-		core_input('keywords'),
-		core_input('description'),
 		[
 			h::info('timezone'),
 			h::select(
@@ -72,7 +70,6 @@ Index::instance()->content(
 				]
 			)
 		],
-		core_input('admin_email', 'email'),
-		core_input('admin_phone', 'tel')
+		core_input('admin_email', 'email')
 	)
 );

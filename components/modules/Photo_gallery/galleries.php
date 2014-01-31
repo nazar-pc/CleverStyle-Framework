@@ -25,8 +25,7 @@ if (count($galleries) > 1) {
 	$galleries_titles	= array_filter(array_column(array_slice($galleries, 0, 10), 'title'));
 	$Page				= Page::instance();
 	if ($galleries_titles) {
-		$Page->Description	= implode('. ', $galleries_titles);
-		$Page->Keywords		= implode(', ', $galleries_titles);
+		$Page->Description	= description(implode('; ', $galleries_titles));
 	}
 	unset($galleries_titles);
 	$Index->content(

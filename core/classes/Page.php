@@ -25,7 +25,6 @@ class Page {
 				$interface			= true,
 				$pre_Html			= '',
 				$Html 				= '',
-					$Keywords			= '',
 					$Description		= '',
 					$Title				= [],
 				$debug_info			= '',
@@ -75,20 +74,16 @@ class Page {
 				$og_type			= '',
 				$canonical_url		= false;
 	/**
-	 * Initialization: setting of title, keywords, description, theme and color scheme according to specified parameters
+	 * Initialization: setting of title, theme and color scheme according to specified parameters
 	 *
 	 * @param string	$title
-	 * @param string	$keywords
-	 * @param string	$description
 	 * @param string	$theme
 	 * @param string	$color_scheme
 	 *
 	 * @return Page
 	 */
-	function init ($title, $keywords, $description, $theme, $color_scheme) {
+	function init ($title, $theme, $color_scheme) {
 		$this->Title[0] = htmlentities($title, ENT_COMPAT, 'utf-8');
-		$this->Keywords = $keywords;
-		$this->Description = $description;
 		$this->set_theme($theme);
 		$this->set_color_scheme($color_scheme);
 		return $this;
@@ -293,14 +288,10 @@ class Page {
 				[
 					'charset'		=> 'utf-8'
 				],
-				[
-					'name'			=> 'keywords',
-					'content'		=> $this->Keywords
-				],
-				[
+				$this->Description ? [
 					'name'			=> 'description',
 					'content'		=> $this->Description
-				],
+				] : false,
 				[
 					'name'			=> 'generator',
 					'content'		=> base64_decode('Q2xldmVyU3R5bGUgQ01TIGJ5IE1va3J5bnNreWkgTmF6YXI=')
@@ -657,7 +648,12 @@ class Page {
 		if (!isset($og['title']) || empty($og['title'])) {
 			$this->og('title', $this->Title);
 		}
-		if (!isset($og['description']) || empty($og['description'])) {
+		if (
+			(
+				!isset($og['description']) || empty($og['description'])
+			) &&
+			$this->Description
+		) {
 			$this->og('description', $this->Description);
 		}
 		if (!isset($og['url']) || empty($og['url'])) {

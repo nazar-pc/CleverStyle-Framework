@@ -31,8 +31,6 @@ function core_input ($item, $type = 'text', $info_item = null, $disabled = false
 				$value	= $Config->core[$item];
 			break;
 			case 'name':
-			case 'keywords':
-			case 'description':
 			case 'closed_title':
 			case 'mail_from_name':
 				$value	= get_core_ml_text($item);
