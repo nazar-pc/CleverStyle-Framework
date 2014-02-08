@@ -101,7 +101,7 @@
 	"restore_password_server_error"				: "Password restoring error: fault on the server. Wait for several minutes, please, try to restore password from th beginning.",
 	"restore_password_confirmation"				: "Password recovery is almost completed, you have to confirm the recovery by clicking on the link in the letter that we sent to your email",
 	"restore_password_confirmation_mail"		: "Request for password restoring on %s",
-	"restore_password_confirmation_mail_body"	: "<h3>Здравствуйте, %1$s!</h3><p>На сайте %2$s был оставлен запрос на восстановление пароля.</p><p>Если это были вы - перейдите по ссылке <a href=\"%3$s\">%3$s</a>, иначе проигнорируйте письмо, и через %4$s запрос на сервере будет автоматически удален.</p><p>Do not reply to this letter, it was sent automatically and does not require an answer.</p>",
+	"restore_password_confirmation_mail_body"	: "<h3>Hello, %1$s!</h3><p>You left password recovery request on website %2$s.</p><p>If it was you - follow the link <a href=\"%3$s\">%3$s</a>, otherwise ignore the letter, and after %4$s unconfirmed account on the server will be automatically deleted.</p><p>Do not reply to this letter, it was sent automatically and does not require an answer.</p>",
 	"restore_password_success"					: "Password restoration completed successfully, the details sent to your email",
 	"restore_password_success_title"			: "Password restoration completed successfully",
 	"restore_password_success_mail"				: "Password restoration on %s completed successfully",

@@ -630,24 +630,27 @@ class User {
 			return false;
 		}
 		if (is_array($item)) {
-			$inserts		= [];
-			$inserts_data	= [];
+			$params	= [];
 			foreach ($item as $i => $v) {
-				$inserts[]		= "($user, '%s', '%s')";
-				$inserts_data[]	= $i;
-				$inserts_data[]	= _json_encode($v);
+				$params[]	= [
+					$i,
+					_json_encode($v)
+				];
 			}
 			unset($i, $v);
-			$inserts		= implode(',', $inserts);
-			$result			= $this->db_prime()->q(
+			$result			= $this->db_prime()->insert(
 				"INSERT INTO `[prefix]users_data`
 					(
 						`id`,
 						`item`,
 						`value`
-					) VALUES $inserts
+					) VALUES (
+						$user,
+						'%s',
+						'%s'
+					)
 				ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)",
-				$inserts_data
+				$params
 			);
 		} else {
 			$result	= $this->db_prime()->q(
