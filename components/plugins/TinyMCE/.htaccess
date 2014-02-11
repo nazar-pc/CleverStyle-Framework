@@ -1,5 +1,0 @@
-Allow from all
-<Files *.php>
-	Deny from all
-</Files>
-RewriteEngine Off

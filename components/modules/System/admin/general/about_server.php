@@ -9,21 +9,25 @@
  */
 namespace	cs\modules\System\general\about_server;
 use			h,
-			cs\Config,
 			cs\Core,
 			cs\DB,
 			cs\Index,
 			cs\Language;
-$Config			= Config::instance();
 $Core			= Core::instance();
 $Index			= Index::instance();
 $L				= Language::instance();
-if (isset($Config->route[2]) && $Config->route[2] == 'phpinfo') {
+if (isset($Index->route_path[2])) {
 	interface_off();
 	$Index->form	= false;
-	$Index->Content	= ob_wrapper(function () {
-		phpinfo();
-	});
+	switch ($Index->route_path[2]) {
+		case 'phpinfo':
+			$Index->Content	= ob_wrapper(function () {
+				phpinfo();
+			});
+		break;
+		case 'readme.html':
+			$Index->Content	= file_get_contents(DIR.'/readme.html');
+	}
 	$Index->stop;
 	return;
 }
@@ -41,7 +45,7 @@ $Index->content(
 			h::{'a.cs-button[target=_blank]'}(
 				$L->information_about_system,
 				[
-				'href'	=> 'readme.html'
+					'href'	=> "$Index->action/readme.html"
 				]
 			).
 			h::{'div#cs-system-license.cs-dialog pre'}(

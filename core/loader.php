@@ -44,6 +44,10 @@ define('ENGINES',		CORE.'/engines');
  */
 define('LANGUAGES',		CORE.'/languages');
 /**
+ * Languages directory
+ */
+define('CUSTOM',		DIR.'/custom');
+/**
  * Directory for CSS files
  */
 define('CSS',			DIR.'/includes/css');
@@ -96,9 +100,12 @@ define('PCACHE',		DIR.'/storage/pcache');
  */
 define('THEMES',		DIR.'/themes');
 /**
- * Including of custom user file
+ * Including of custom user files
  */
-_include_once(DIR.'/custom.php', false);
+foreach (glob(CUSTOM.'/*.php') ?: [] as $custom) {
+	include $custom;
+}
+unset($custom);
 /**
  * System running
  */

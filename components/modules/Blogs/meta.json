@@ -1,7 +1,7 @@
 {
 	"package"		: "Blogs",
 	"category"		: "modules",
-	"version"		: "0.081",
+	"version"		: "0.082",
 	"description"	: "Adds blogging functionality. Comments module is required for comments functionality, Plupload or similar module is required for files uploading functionality.",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",
@@ -10,7 +10,7 @@
 		"MySQLi"
 	],
 	"provide"		: "blogs",
-	"require"		: "System=>0.374",
+	"require"		: "System=>0.450",
 	"optional"		: [
 		"Comments",
 		"Plupload",

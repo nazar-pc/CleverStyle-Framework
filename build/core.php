@@ -23,10 +23,13 @@ unset($file);
 $list				= array_merge(
 	get_files_list(DIR.'/components/modules/System', false, 'f', true, true, false, false, true),
 	get_files_list(DIR.'/core', '/^[^(ide)]/', 'f', true, true, false, false, true),
+	get_files_list(DIR.'/custom', false, 'f', true, true, false, false, true),
 	get_files_list(DIR.'/includes', false, 'f', true, true, false, false, true),
 	get_files_list(DIR.'/templates', false, 'f', true, true, false, false, true),
 	get_files_list(DIR.'/themes', false, 'f', true, true, false, false, true),
 	[
+		DIR.'/components/blocks/.gitkept',
+		DIR.'/components/plugins/.gitkept',
 		DIR.'/index.php',
 		DIR.'/license.txt',
 		DIR.'/Storage.php'
@@ -177,27 +180,26 @@ $list[]				= '.htaccess';
 $phar->addFromString(
 	'fs/'.(count($list) - 1),
 	'AddDefaultCharset utf-8
-Options -Indexes  -Multiviews +FollowSymLinks
+Options -Indexes  -Multiviews -FollowSymLinks
 IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
 
 RewriteEngine On
 RewriteBase /
 
+<FilesMatch ".*/.*">
+	Options -FollowSymLinks
+</FilesMatch>
+<FilesMatch "\.(css|js|gif|jpg|jpeg|png|ico|eot|ttc|ttf|svg|svgz|woff)$">
+	RewriteEngine Off
+</FilesMatch>
 <Files license.txt>
 	RewriteEngine Off
 </Files>
 #<Files Storage.php>
 #	RewriteEngine Off
 #</Files>
-<Files readme.html>
-	RewriteEngine Off
-</Files>
-<Files favicon.ico>
-	RewriteEngine Off
-</Files>
 
 RewriteRule .* index.php
-
 '
 );
 $list[]				= 'config/main.php';
@@ -214,11 +216,6 @@ $list[]				= '.gitignore';
 $phar->addFromString(
 	'fs/'.(count($list) - 1),
 	file_get_contents(DIR.'/.gitignore')
-);
-$list[]				= 'custom.php';
-$phar->addFromString(
-	'fs/'.(count($list) - 1),
-	file_get_contents(DIR.'/custom.php')
 );
 /**
  * Flip array to have direct access to files by name during extracting and installation, and fixing of files list for installation
