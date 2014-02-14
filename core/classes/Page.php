@@ -938,11 +938,40 @@ class Page {
 		$cwd	= getcwd();
 		chdir(dirname($file));
 		/**
-		 * Simple minification, removes comments, newlines, tabs and unnecessary spaces
+		 * Remove comments, tabs and new lines
 		 */
 		$data	= preg_replace('#(/\*.*?\*/)|\t|\n|\r#s', '', $data);
-		$data	= preg_replace('#\s*([,:;+>{}])\s*#s', '$1', $data);
+		/**
+		 * Remove unnecessary spaces
+		 */
+		$data	= preg_replace('#\s*([,:;+>{}\(\)])\s*#s', '$1', $data);
+		/**
+		 * Remove unnecessary trailing semicolons
+		 */
 		$data	= str_replace(';}', '}', $data);
+		/**
+		 * Minify repeated colors declarations
+		 */
+		$data	= preg_replace('/#([0-9a-f])\1([0-9a-f])\2([0-9a-f])\3/is', '#$1$2$3', $data);
+		/**
+		 * Minify rgb colors declarations
+		 */
+		$data	= preg_replace_callback(
+			'/rgb\(([0-9,\.]+)\)/is',
+			function ($rgb) {
+				$rgb	= explode(',', $rgb[1]);
+				return
+					'#'.
+					str_pad(dechex($rgb[0]), 2, 0, STR_PAD_LEFT).
+					str_pad(dechex($rgb[1]), 2, 0, STR_PAD_LEFT).
+					str_pad(dechex($rgb[2]), 2, 0, STR_PAD_LEFT);
+			},
+			$data
+		);
+		/**
+		 * Remove unnecessary zeros
+		 */
+		$data	= preg_replace('/([^0-9])0\.([0-9]+)/is', '$1.$2', $data);
 		/**
 		 * Includes processing
 		 */

@@ -10,7 +10,7 @@
 namespace	cs;
 $User	= User::instance();
 if ($User->guest()) {
-	error_code(403);
+	Page::instance()->json(1);
 	return;
 }
 if (isset($_POST['sign_out'])) {
