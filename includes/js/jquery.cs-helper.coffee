@@ -16,22 +16,22 @@ do ($=jQuery) ->
 				return this
 			collection	= []
 			this.each ->
-				radio	= $(this)
+				radio	= $(@)
 				if !radio.is(':radio')
 					radio	= radio.find(':radio')
 				collection.push(radio.parent().parent().get())
 			collection	= $($.unique(collection))
 			collection.each ->
-				$(this)
+				$(@)
 					.addClass('uk-button-group')
 					.attr('data-uk-button-radio', '')
 					.children('label')
 						.addClass('uk-button')
 						.click ->
-							$(this).find(':radio').prop('checked', true).change()
+							$(@).find(':radio').prop('checked', true).change()
 						.find(':radio')
 							.change ->
-								$this	= $(this)
+								$this	= $(@)
 								if !$this.is(':checked')
 									return
 								$this.parent()
@@ -55,22 +55,22 @@ do ($=jQuery) ->
 				return this
 			collection	= []
 			this.each ->
-				checkbox	= $(this)
+				checkbox	= $(@)
 				if !checkbox.is(':checkbox')
 					checkbox	= checkbox.find(':checkbox')
 				collection.push(checkbox.parent().parent().get())
 			collection	= $($.unique(collection))
 			collection.each ->
-				$(this)
+				$(@)
 					.addClass('uk-button-group')
 					.attr('data-uk-button-checkbox', '')
 					.children('label')
 						.addClass('uk-button')
 						.click ->
-							$(this).find(':radio:not(:checked)').prop('checked', true).change()
+							$(@).find(':radio:not(:checked)').prop('checked', true).change()
 						.find(':checkbox')
 							.change ->
-								$this	= $(this)
+								$this	= $(@)
 								if !$this.is(':checked')
 									return
 								$this.parent()
@@ -94,14 +94,14 @@ do ($=jQuery) ->
 				return this
 			UI	= $.UIkit
 			this.each ->
-				$this	= $(this)
+				$this	= $(@)
 				content	= $this.next()
 				$this
 					.addClass('uk-tab')
 					.attr('data-uk-tab', '')
 					.children()
 						.each ->
-							li	= $(this)
+							li	= $(@)
 							if !li.children('a').length then li.wrapInner('<a />')
 						.first()
 							.addClass('uk-active')
@@ -122,7 +122,7 @@ do ($=jQuery) ->
 			if !this.length
 				return this
 			this.each ->
-				$this	= $(this)
+				$this	= $(@)
 				if !$this.attr('title')
 					$this
 						.attr('title', $this.data('title'))
@@ -149,7 +149,7 @@ do ($=jQuery) ->
 			UI		= $.UIkit
 			mode	= mode || 'init'
 			this.each ->
-				$this	= $(this)
+				$this	= $(@)
 				if !$this.data('modal')
 					$this
 						.addClass('uk-modal')
@@ -176,6 +176,7 @@ do ($=jQuery) ->
 				switch mode
 					when 'show' then modal.show()
 					when 'hide' then modal.hide()
+
 	###*
 	 * cs helper registration or running (if no parameters specified)
 	 *
@@ -192,4 +193,26 @@ do ($=jQuery) ->
 			-> method.apply this_, arguments
 		) for own key, method of helpers
 		public_helpers
-	return
+	$.cs	=
+		###*
+		 * Simple wrapper around $(...).cs().modal() with inner form
+		 *
+		 * All content will be inserted into modal form, optionally it is possible to add close button and set width
+		 *
+		 * @return jQuery Root modal element, it is possible to use .cs().modal() on it and listen for events
+		###
+		simple_modal	: (content, close = false, width) ->
+			style	= if width then ' style="width:' + width + 'px; margin-left:-' + (width / 2) + 'px"' else ''
+			close	= if close then """<a class="uk-modal-close uk-close"></a>""" else ''
+			$("""
+				<div>
+					<div class="uk-form"#{style}>
+						#{close}
+						#{content}
+					</div>
+				</div>
+			""")
+				.appendTo('body')
+				.cs().modal('show')
+				.on 'uk.modal.hide', ->
+					$(@).remove()

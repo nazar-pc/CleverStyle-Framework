@@ -208,6 +208,27 @@
       }
       return public_helpers;
     };
+    return $.cs = {
+      /**
+      		 * Simple wrapper around $(...).cs().modal() with inner form
+      		 *
+      		 * All content will be inserted into modal form, optionally it is possible to add close button and set width
+      		 *
+      		 * @return jQuery Root modal element, it is possible to use .cs().modal() on it and listen for events
+      */
+
+      simple_modal: function(content, close, width) {
+        var style;
+        if (close == null) {
+          close = false;
+        }
+        style = width ? ' style="width:' + width + 'px; margin-left:-' + (width / 2) + 'px"' : '';
+        close = close ? "<a class=\"uk-modal-close uk-close\"></a>" : '';
+        return $("<div>\n	<div class=\"uk-form\"" + style + ">\n		" + close + "\n		" + content + "\n	</div>\n</div>").appendTo('body').cs().modal('show').on('uk.modal.hide', function() {
+          return $(this).remove();
+        });
+      }
+    };
   })(jQuery);
 
 }).call(this);
