@@ -133,7 +133,8 @@ class User {
 				$init					= false,	//Current state of initialization
 				$reg_id					= 0,		//User id after registration
 				$users_columns			= [],		//Copy of columns list of users table for internal needs without Cache usage
-				$permissions			= [];		//Permissions cache
+				$permissions			= [],		//Permissions cache
+				$memory_cache			= true;
 	/**
 	 * @var Prefix
 	 */
@@ -363,7 +364,11 @@ class User {
 			case 'client_ip':
 				return isset($_SERVER['HTTP_CLIENT_IP']) ? preg_replace('/[^a-f0-9\.:]/i', '', $_SERVER['HTTP_CLIENT_IP']) : false;
 		}
-		return $this->get_internal($item, $user);
+		$result	= $this->get_internal($item, $user);
+		if (!$this->memory_cache) {
+			$this->__finish();
+		}
+		return $result;
 	}
 	/**
 	 * Get data item of specified user
@@ -393,7 +398,7 @@ class User {
 			 */
 			foreach ($item as $i) {
 				if (in_array($i, $this->users_columns)) {
-					if (($res = $this->get($i, $user, true)) !== false) {
+					if (($res = $this->get_internal($i, $user, true)) !== false) {
 						$result[$i] = $res;
 					} else {
 						$new_items[] = $i;
@@ -481,6 +486,22 @@ class User {
 	 * @return bool
 	 */
 	function set ($item, $value = null, $user = false) {
+		$result	= $this->set_internal($item, $value, $user);
+		if (!$this->memory_cache) {
+			$this->__finish();
+		}
+		return $result;
+	}
+	/**
+	 * Set data item of specified user
+	 *
+	 * @param array|string	$item	Item-value array may be specified for setting several items at once
+	 * @param mixed|null	$value
+	 * @param bool|int		$user	If not specified - current user assumed
+	 *
+	 * @return bool
+	 */
+	protected function set_internal ($item, $value = null, $user = false) {
 		$user = (int)($user ?: $this->id);
 		if (!$user) {
 			return false;
@@ -2060,6 +2081,15 @@ class User {
 		return array_unique($contacts);
 	}
 	/**
+	 * Disable memory cache
+	 *
+	 * Memory cache stores users data inside User class in order to get data faster next time.
+	 * But in case of working with large amount of users this cache can be too large. Disabling will cause some performance drop, but save a lot of RAM.
+	 */
+	function disable_memory_cache () {
+		$this->memory_cache	= false;
+	}
+	/**
 	 * Saving changes of cache and users data
 	 */
 	function __finish () {
@@ -2072,8 +2102,8 @@ class User {
 				$data = [];
 				foreach ($data_set as $i => &$val) {
 					if (in_array($i, $this->users_columns) && $i != 'id') {
-						$val = xap($val, false);
-						$data[] = '`'.$i.'` = '.$this->db_prime()->s($val);
+						$val	= xap($val, false);
+						$data[]	= "`$i` = ".$this->db_prime()->s($val);
 					} elseif ($i != 'id') {
 						unset($data_set[$i]);
 					}
