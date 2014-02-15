@@ -944,7 +944,7 @@ class Page {
 		/**
 		 * Remove unnecessary spaces
 		 */
-		$data	= preg_replace('#\s*([,:;+>{}\(\)])\s*#s', '$1', $data);
+		$data	= preg_replace('#\s*([,:;+>{}\(])\s*#s', '$1', $data);
 		/**
 		 * Remove unnecessary trailing semicolons
 		 */
