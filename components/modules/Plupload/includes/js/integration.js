@@ -75,8 +75,12 @@
       });
     }
     if (error) {
-      uploader.bind('Error', function(uploader, error) {
-        return error(error);
+      uploader.bind('Error', function(uploader, error_details) {
+        if (error) {
+          return error(error_details);
+        } else {
+          return alert(error_details.message);
+        }
       });
     }
     this.stop = function() {

@@ -27,7 +27,7 @@ $ ->
 						location.href	= location.href + '/' + result.join(',')
 				)
 			(error) ->
-				alert error
+				alert error.message
 			null
 			true
 		)

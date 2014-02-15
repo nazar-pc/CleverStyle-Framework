@@ -22,7 +22,7 @@ $Photo_gallery			= Photo_gallery::instance();
 $images					= $Photo_gallery->get(explode(',', Config::instance()->route[1])) ?: [];
 $Index->form			= true;
 $Index->apply_button	= false;
-$Index->action			= $L->Photo_gallery.($images ? '/'.$Photo_gallery->get_gallery($images[0]['gallery'])['path'] : '');
+$Index->action			= path($L->Photo_gallery).($images ? '/'.$Photo_gallery->get_gallery($images[0]['gallery'])['path'] : '');
 $Index->content(
 	h::{'section.cs-photo-gallery-edit-images article'}(array_map(
 		function ($image) use ($L, $User) {
@@ -51,9 +51,10 @@ $Index->content(
 							]
 						).
 						h::br(2).
-						h::{'input.cs-photo-gallery-delete-image-checkbox[type=checkbox][value=1]'}([
+						h::{'input.build-mode[name=mode][type=radio]'}([
 							'name'	=> "edit_images[$image[id]][delete]",
-							'in'	=> $L->photo_gallery_delete_image
+							'value'		=> [0, 1],
+							'in'		=> [$L->edit, $L->photo_gallery_delete_image]
 						])
 					);
 		},

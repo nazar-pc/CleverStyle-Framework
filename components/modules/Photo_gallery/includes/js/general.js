@@ -35,7 +35,7 @@
           }
         });
       }, function(error) {
-        return alert(error);
+        return alert(error.message);
       }, null, true);
     }
     images_section = $('.cs-photo-gallery-images');
