@@ -179,6 +179,7 @@ class BananaHTML {
 		if (substr($url, 0, 1) == '#') {
 			$url	= static::url_with_hash($url);
 		} elseif (
+			substr($url, 0, 2) != '$i' &&
 			substr($url, 0, 5) != 'data:' &&
 			substr($url, 0, 1) != '/' &&
 			substr($url, 0, 7) != 'http://' &&
