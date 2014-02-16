@@ -46,6 +46,12 @@ class Blogs {
 	 * @return array|bool
 	 */
 	function get ($id) {
+		if (is_array($id)) {
+			foreach ($id as &$i) {
+				$i	= $this->get($i);
+			}
+			return $id;
+		}
 		$L			= Language::instance();
 		$id			= (int)$id;
 		$data		= $this->cache->get("posts/$id/$L->clang", function () use($id, $L) {
@@ -492,6 +498,12 @@ class Blogs {
 	 * @return array|bool
 	 */
 	function get_section ($id) {
+		if (is_array($id)) {
+			foreach ($id as &$i) {
+				$i	= $this->get_section($i);
+			}
+			return $id;
+		}
 		$L		= Language::instance();
 		$id		= (int)$id;
 		return $this->cache->get("sections/$id/$L->clang", function () use ($id) {
