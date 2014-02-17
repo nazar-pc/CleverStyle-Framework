@@ -485,7 +485,7 @@ class Blogs {
 		$structure['sections']	= [];
 		if (!empty($sections)) {
 			foreach ($sections as $section) {
-				$structure['sections'][$section['path']]	= $this->get_sections_structure_internal($section['id']);
+				$structure['sections'][$this->ml_process($section['path'])]	= $this->get_sections_structure_internal($section['id']);
 			}
 		}
 		return $structure;
