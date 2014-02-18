@@ -368,7 +368,7 @@ class Config {
 		 * Corrected full page address (recommended for usage)
 		 */
 		$server['relative_address']	= trim(
-			(ADMIN ? 'admin/' : '').MODULE.(API ? 'api/' : '').'/'.implode('/', $rc),
+			(ADMIN ? 'admin/' : '').(API ? 'api/' : '').MODULE.'/'.implode('/', $rc),
 			'/'
 		);
 		$server['ajax']				= isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';

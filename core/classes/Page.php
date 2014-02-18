@@ -1212,6 +1212,7 @@ class Page {
 			}
 			$this->Content	= ob_get_clean();
 		}
+		$this->__finish();
 		exit;
 	}
 	/**
@@ -1344,6 +1345,11 @@ class Page {
 	 * Page generation
 	 */
 	function __finish () {
+		static $executed = false;
+		if ($executed) {
+			return;
+		}
+		$executed	= true;
 		/**
 		 * Cleaning of output
 		 */
