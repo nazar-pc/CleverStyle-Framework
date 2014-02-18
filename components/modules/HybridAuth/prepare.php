@@ -373,7 +373,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 				$body	= $L->reg_success_mail_body(
 					isset($profile_info['username']) ? $profile_info['username'] : strstr($email, '@', true),
 					get_core_ml_text('name'),
-					$Config->base_url().'/profile/'.$User->get('login', $result['id']),
+					$Config->base_url().'/profile/settings',
 					$User->get('login', $result['id']),
 					$result['password']
 				);
@@ -564,7 +564,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 				$body			= $L->reg_success_mail_body(
 					isset($profile_info['username']) ? $profile_info['username'] : strstr($email, '@', true),
 					get_core_ml_text('name'),
-					$Config->base_url().'/profile/'.$User->get('login', $result['id']),
+					$Config->base_url().'/profile/settings',
 					$User->get('login', $result['id']),
 					$result['password']
 				);

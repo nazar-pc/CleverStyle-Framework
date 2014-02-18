@@ -64,7 +64,7 @@ if ($confirm) {
 	$body	= $L->reg_success_mail_body(
 		strstr($_POST['email'], '@', true),
 		get_core_ml_text('name'),
-		$Config->core_url().'/profile/'.$User->get('login', $result['id']),
+		$Config->core_url().'/profile/settings',
 		$User->get('login', $result['id']),
 		$result['password']
 	);
