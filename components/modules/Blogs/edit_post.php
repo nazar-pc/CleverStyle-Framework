@@ -144,10 +144,11 @@ $Index->content(
 		[
 			$L->post_tags,
 			h::{'input.cs-blogs-new-post-tags[name=tags][required]'}([
-				'value'	=> htmlspecialchars_decode(
+				'value'			=> htmlspecialchars_decode(
 					isset($_POST['tags']) ? $_POST['tags'] : implode(', ', $Blogs->get_tag($post['tags'])),
 					ENT_QUOTES | ENT_HTML5 | ENT_DISALLOWED | ENT_SUBSTITUTE
-				)
+				),
+				'placeholder'	=> 'CleverStyle, CMS, Open Source'
 			])
 		]
 	).

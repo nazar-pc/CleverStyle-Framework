@@ -125,7 +125,8 @@ $Index->content(
 		[
 			$L->post_tags,
 			h::{'input.cs-blogs-new-post-tags[name=tags][required]'}([
-				'value'		=> isset($_POST['tags']) ? $_POST['tags'] : false
+				'value'			=> isset($_POST['tags']) ? $_POST['tags'] : false,
+				'placeholder'	=> 'CleverStyle, CMS, Open Source'
 			])
 		]
 	).
