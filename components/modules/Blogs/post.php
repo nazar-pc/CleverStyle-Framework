@@ -138,11 +138,10 @@ Index::instance()->content(
 					', ',
 					array_map(
 						function ($tag) use ($L, $module) {
-							return h::a(
+							return h::{'a[level=0][rel=tag]'}(
 								$tag,
 								[
-									'href'	=> "$module/".path($L->tag)."/$tag",
-									'rel'	=> 'tag'
+									'href'	=> "$module/".path($L->tag)."/$tag"
 								]
 							);
 						},

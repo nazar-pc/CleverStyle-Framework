@@ -736,7 +736,11 @@ class Blogs {
 	 */
 	private function add_tag ($tag, $clean_cache = true) {
 		$tag	= trim(xap($tag));
-		if (($id = array_search($tag, $this->get_tags_list())) === false) {
+		$id		= array_search(
+			mb_strtolower($tag),
+			_mb_strtolower($this->get_tags_list())
+		);
+		if ($id === false) {
 			if ($this->db_prime()->q(
 				"INSERT INTO `[prefix]blogs_tags`
 					(`text`)
