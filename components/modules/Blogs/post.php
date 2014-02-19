@@ -96,7 +96,7 @@ Index::instance()->content(
 						]
 					]
 				) : (
-					$User->id == $post['user'] && !$module_data->new_posts_only_from_admins ? ' '.h::{'a.cs-button-compact'}(
+					$User->id == $post['user'] ? ' '.h::{'a.cs-button-compact'}(
 						h::icon('pencil'),
 						[
 							'href'			=> "$module/edit_post/$post[id]",
