@@ -26,7 +26,7 @@ trait Any {
 				$path	= 'users/';
 				break;
 			case 'group':
-				$table	= '[prefix]group_permissions';
+				$table	= '[prefix]groups_permissions';
 				$path	= 'groups/';
 				break;
 			default:

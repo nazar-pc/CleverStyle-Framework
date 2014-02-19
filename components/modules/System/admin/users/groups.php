@@ -108,7 +108,7 @@ if (isset($rc[2])) {
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
 			$permissions			= Permission::instance()->get_all();
-			$permission				= $Group->get_permissions($rc[3]);
+			$group_permissions		= $Group->get_permissions($rc[3]);
 			$tabs					= [];
 			$tabs_content			= '';
 			$blocks					= [];
@@ -130,7 +130,7 @@ if (isset($rc[2])) {
 					).
 					h::{'td input[type=radio]'}([
 						'name'			=> "permission[$id]",
-						'checked'		=> isset($permission[$id]) ? $permission[$id] : -1,
+						'checked'		=> isset($group_permissions[$id]) ? $group_permissions[$id] : -1,
 						'value'			=> [-1, 0, 1],
 						'in'			=> [$L->not_specified, $L->deny, $L->allow]
 					]);
