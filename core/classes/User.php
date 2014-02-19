@@ -1046,23 +1046,23 @@ class User {
 		}
 		unset($delete);
 		if (!empty($insert)) {
-			$q		= [];
-			foreach ($insert as $group) {
-				$q[] = $user."', '".$group;
+			foreach ($insert as &$i) {
+				$i = [$user, $i];
 			}
-			unset($group, $insert);
-			$q		= implode('), (', $q);
-			$return	= $return && $this->db_prime()->q(
+			unset($i);
+			$return	= $return && $this->db_prime()->insert(
 				"INSERT INTO `[prefix]users_groups`
 					(
 						`id`,
 						`group`
 					) VALUES (
-						'$q'
-					)"
+						'%s',
+						'%s'
+					)",
+				$insert
 			);
-			unset($q);
 		}
+		unset($insert);
 		$update		= [];
 		foreach ($groups as $i => $group) {
 			$update[] =

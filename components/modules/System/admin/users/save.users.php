@@ -160,16 +160,17 @@ switch ($_POST['mode']) {
 	break;
 	case 'groups':
 		if (isset($_POST['user'], $_POST['user']['id'], $_POST['user']['groups']) && $_POST['user']['groups']) {
-			if ($_POST['user']['id'] == User::ROOT_ID || in_array(User::BOT_GROUP_ID, (array)$User->get_groups($_POST['user']['id']))) {
+			$user_id	= (int)$_POST['user']['id'];
+			if ($_POST['user']['id'] == User::ROOT_ID || in_array(User::BOT_GROUP_ID, (array)$User->get_groups($user_id))) {
 				break;
 			}
-			$_POST['user']['groups'] = _json_decode($_POST['user']['groups']);
-			foreach ($_POST['user']['groups'] as &$group) {
+			$groups	= _json_decode($_POST['user']['groups']);
+			foreach ($groups as &$group) {
 				$group = (int)substr($group, 5);
 			}
 			unset($group);
 			$Index->save(
-				$User->set_groups($_POST['user']['groups'], $_POST['user']['id'])
+				$User->set_groups($groups, $user_id)
 			);
 		}
 	break;
