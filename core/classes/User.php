@@ -360,7 +360,8 @@ class User {
 			case 'ip':
 				return $_SERVER['REMOTE_ADDR'];
 			case 'forwarded_for':
-				return isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? preg_replace('/[^a-f0-9\.:]/i', '', array_pop($tmp = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']))) : false;
+				$tmp	= explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+				return isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? preg_replace('/[^a-f0-9\.:]/i', '', array_pop($tmp)) : false;
 			case 'client_ip':
 				return isset($_SERVER['HTTP_CLIENT_IP']) ? preg_replace('/[^a-f0-9\.:]/i', '', $_SERVER['HTTP_CLIENT_IP']) : false;
 		}
