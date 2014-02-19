@@ -866,12 +866,18 @@ class User {
 					if (is_array($groups)) {
 						$Group	= Group::instance();
 						foreach ($groups as $group_id) {
-							$permissions = array_merge($permissions ?: [], $Group->get_permissions($group_id) ?: []);
+							foreach ($Group->get_permissions($group_id) ?: [] as $p => $v) {
+								$permissions[$p]	= $v;
+							}
+							unset($p, $v);
 						}
 					}
 					unset($groups, $group_id);
 				}
-				return array_merge($permissions ?: [], $this->get_permissions($user) ?: []);
+				foreach ($this->get_permissions($user) ?: [] as $p => $v) {
+					$permissions[$p]	= $v;
+				}
+				return $permissions;
 			});
 		}
 		$all_permission	= Cache::instance()->{'permissions/all'} ?: Permission::instance()->get_all();
