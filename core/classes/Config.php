@@ -271,6 +271,7 @@ class Config {
 				error_code(404);
 				Page::instance()->error();
 			}
+			define('STOP', true);
 			exit;
 		}
 		/**
