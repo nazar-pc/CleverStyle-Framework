@@ -268,7 +268,7 @@ class Config {
 			if ($server['referer']['local']) {
 				header('Location: '.substr($rc, 9));
 			} else {
-				error_code(404);
+				error_code(400);
 				Page::instance()->error();
 			}
 			define('STOP', true);
