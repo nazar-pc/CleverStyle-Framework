@@ -6,6 +6,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\Permission;
+use			cs\Cache;
 /**
  * Class Any with common methods for User and Group classes
  */
@@ -23,16 +24,14 @@ trait Any {
 		switch ($type) {
 			case 'user':
 				$table	= '[prefix]users_permissions';
-				$path	= 'users/';
 				break;
 			case 'group':
 				$table	= '[prefix]groups_permissions';
-				$path	= 'groups/';
 				break;
 			default:
 				return false;
 		}
-		return $this->cache->get($path.$id, function () use ($id, $table) {
+		return $this->cache->get("permissions/$id", function () use ($id, $table) {
 			$permissions	= false;
 			if ($permissions_array = $this->db()->qfa(
 				"SELECT
@@ -64,11 +63,9 @@ trait Any {
 		switch ($type) {
 			case 'user':
 				$table	= '[prefix]users_permissions';
-				$path	= 'users/';
 				break;
 			case 'group':
 				$table	= '[prefix]groups_permissions';
-				$path	= 'groups/';
 				break;
 			default:
 				return false;
@@ -133,9 +130,9 @@ trait Any {
 			}
 		}
 		$Cache	= $this->cache;
-		unset($Cache->{$path.$id});
+		unset($Cache->{"permissions/$id"});
 		if ($type == 'group') {
-			unset($Cache->users);
+			unset(Cache::instance()->{'users/permissions'});
 		}
 		return $return;
 	}
@@ -153,11 +150,9 @@ trait Any {
 		switch ($type) {
 			case 'user':
 				$table	= '[prefix]users_permissions';
-				$path	= 'users/';
 			break;
 			case 'group':
 				$table	= '[prefix]groups_permissions';
-				$path	= 'groups/';
 			break;
 			default:
 				return false;
@@ -165,9 +160,9 @@ trait Any {
 		$return = $this->db_prime()->q("DELETE FROM `$table` WHERE `id` = '$id'");
 		if ($return) {
 			$Cache	= $this->cache;
-			unset($Cache->{$path.$id});
+			unset($Cache->{"permissions/$id"});
 			if ($type == 'group') {
-				unset($Cache->users);
+				unset(Cache::instance()->{'users/permissions'});
 			}
 			return true;
 		}
