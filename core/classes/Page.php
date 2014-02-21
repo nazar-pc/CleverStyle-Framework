@@ -1187,6 +1187,7 @@ class Page {
 			exit;
 		}
 		interface_off();
+		code_header(ERROR_CODE);
 		$error_text	= $custom_text ?: code_header(ERROR_CODE);
 		if (
 			(defined('API') && API) ||
