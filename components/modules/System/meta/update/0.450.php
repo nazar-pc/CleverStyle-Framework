@@ -11,7 +11,6 @@ file_put_contents(
 	DIR.'/.htaccess',
 	str_replace(
 		[
-			'Options -Indexes  -Multiviews +FollowSymLinks',
 			'
 <Files license.txt>',
 			'
@@ -23,7 +22,6 @@ file_put_contents(
 </Files>'
 		],
 		[
-			'Options -Indexes  -Multiviews -FollowSymLinks',
 			'
 <FilesMatch ".*/.*">
 	Options -FollowSymLinks
