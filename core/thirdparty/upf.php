@@ -355,7 +355,7 @@ function _addslashes ($str) {
  *
  * @return string|string[]
  */
-function _trim ($str, $charlist = null) {
+function _trim ($str, $charlist = " \t\n\r\0\x0B") {
 	if (is_array($str)) {
 		foreach ($str as &$s) {
 			$s = trim($s, $charlist);
@@ -372,7 +372,7 @@ function _trim ($str, $charlist = null) {
  *
  * @return string|string[]
  */
-function _ltrim ($str, $charlist = null) {
+function _ltrim ($str, $charlist = " \t\n\r\0\x0B") {
 	if (is_array($str)) {
 		foreach ($str as &$s) {
 			$s = ltrim($s);
@@ -389,7 +389,7 @@ function _ltrim ($str, $charlist = null) {
  *
  * @return string|string[]
  */
-function _rtrim ($str, $charlist = null) {
+function _rtrim ($str, $charlist = " \t\n\r\0\x0B") {
 	if (is_array($str)) {
 		foreach ($str as &$s) {
 			$s = rtrim($s, $charlist);
