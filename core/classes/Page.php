@@ -163,12 +163,13 @@ class Page {
 		/**
 		 * Template loading
 		 */
+		$theme_dir				= THEMES."/$this->theme";
 		if ($this->interface) {
-			_include_once(THEMES."/$this->theme/prepare.php", false);
+			_include_once("$theme_dir/prepare.php", false);
 			ob_start();
 			if (
 				!(
-					file_exists(THEMES."/$this->theme/index.html") || file_exists(THEMES."/$this->theme/index.php")
+					file_exists("$theme_dir/index.html") || file_exists("$theme_dir/index.php")
 				) ||
 				(
 					!(
@@ -177,7 +178,7 @@ class Page {
 					!User::instance(true)->admin() &&
 					code_header(503) &&
 					!(
-						_include_once(THEMES."/$this->theme/closed.php", false) || _include_once(THEMES."/$this->theme/closed.html", false)
+						_include_once("$theme_dir/closed.php", false) || _include_once("$theme_dir/closed.html", false)
 					)
 				)
 			) {
@@ -185,7 +186,7 @@ class Page {
 				h::title(get_core_ml_text('closed_title')).
 				get_core_ml_text('closed_text');
 			} else {
-				_include_once(THEMES."/$this->theme/index.php", false) || _include_once(THEMES."/$this->theme/index.html");
+				_include_once("$theme_dir/index.php", false) || _include_once("$theme_dir/index.html");
 			}
 			$this->Html = ob_get_clean();
 		}
@@ -315,7 +316,7 @@ class Page {
 				$this->link ?: false
 			).
 			$this->core_css[0].$this->css[0].
-			h::style($this->core_css[1].$this->css[1]).
+			h::style($this->core_css[1].$this->css[1] ?: false).
 			h::script($this->core_js[1].$this->js[1]);
 		if ($Config->core['put_js_after_body']) {
 			$this->post_Body	.= $this->core_js[0].$this->js[0];
