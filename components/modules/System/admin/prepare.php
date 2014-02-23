@@ -226,14 +226,16 @@ function check_dependencies ($name, $type, $dir = null, $mode = 'enable') {
 		 * If module uninstalled, disabled (in enable check mode), module name is the same as checked or meta.json file absent
 		 * Then skip this module
 		 */
+		if (!file_exists(MODULES."/$module/meta.json")) {
+			continue;
+		}
 		$module_meta	= _json_decode(file_get_contents(MODULES."/$module/meta.json"));
 		if (
 			$module_data['active'] == -1 ||
 			($mode == 'enable' && $module_data['active'] == 0) ||
 			(
 				$module == $name && $type == 'module'
-			) ||
-			!file_exists(MODULES."/$module/meta.json")
+			)
 		) {
 			/**
 			 * If module updates, check update possibility from current version
