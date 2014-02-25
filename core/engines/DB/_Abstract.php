@@ -360,7 +360,7 @@ abstract class _Abstract {
 		}
 		if ($join) {
 			$query		= explode('VALUES', $query, 2);
-			$query[1]	= explode(')', $query[1]);
+			$query[1]	= explode(')', $query[1], 2);
 			$query		= [
 				$query[0],
 				$query[1][0].')',
