@@ -13,7 +13,15 @@
 
   $(function() {
     var content, title;
+    if (cs.module !== 'Blogs') {
+      return;
+    }
     title = $('.cs-blogs-new-post-title');
+    if (title.length) {
+      window.onbeforeunload = function() {
+        return true;
+      };
+    }
     content = $('.cs-blogs-new-post-content');
     $('.cs-blogs-post-preview').mousedown(function() {
       var data;

@@ -6,7 +6,12 @@
  * @license		MIT License, see license.txt
 ###
 $ ->
+	if cs.module != 'Blogs'
+		return
 	title	= $('.cs-blogs-new-post-title')
+	if title.length
+		window.onbeforeunload	= ->
+			true
 	content	= $('.cs-blogs-new-post-content')
 	$('.cs-blogs-post-preview').mousedown ->
 		data =
