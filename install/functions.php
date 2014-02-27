@@ -168,7 +168,7 @@ function install_process () {
 		"cookie_prefix": "",
 		"timezone": "",
 		"password_min_length": "4",
-		"password_min_strength": "0",
+		"password_min_strength": "3",
 		"smtp": "0",
 		"smtp_host": "",
 		"smtp_port": "",
