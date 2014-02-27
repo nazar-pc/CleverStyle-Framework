@@ -760,9 +760,9 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 	unset($module_meta);
 	$modules_list[]	= [
 		h::a(
-			$module,
+			$L->$module,
 			[
-				'href'	=> $admin_link ? "admin/$module" : false,
+				'href'			=> $admin_link ? "admin/$module" : false,
 				'data-title'	=> $module_info
 			]
 		),

@@ -318,7 +318,7 @@ if (!empty($plugins)) {
 		unset($plugin_meta);
 		$plugins_list[]	= [
 			h::span(
-				$plugin,
+				$L->$plugin,
 				[
 					'data-title'	=> $plugin_info
 				]
