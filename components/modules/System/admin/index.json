@@ -1,4 +1,11 @@
 {
+	"components"	: [
+		"modules",
+		"plugins",
+		"blocks",
+		"databases",
+		"storages"
+	],
 	"general"		: [
 		"site_info",
 		"system",
@@ -6,13 +13,6 @@
 		"appearance",
 		"languages",
 		"about_server"
-	],
-	"components"	: [
-		"modules",
-		"plugins",
-		"blocks",
-		"databases",
-		"storages"
 	],
 	"users"			: [
 		"general",
