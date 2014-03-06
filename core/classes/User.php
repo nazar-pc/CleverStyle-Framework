@@ -76,8 +76,6 @@ use			cs\Cache\Prefix,
  * @property	string	$ip
  * @property	string	$forwarded_for
  * @property	string	$client_ip
- *
- * @method static \cs\User instance($check = false)
  */
 class User {
 	use	Accessor,

@@ -6,9 +6,7 @@
  * @license		MIT License, see license.txt
  */
 namespace cs;
-/**
- * @method static \cs\Text instance($check = false)
- */
+
 class Text {
 	use Singleton;
 

@@ -11,8 +11,6 @@ use			cs\Cache\Prefix,
 			h;
 /**
  * Class for permissions manipulating
- *
- * @method static \cs\Permission instance($check = false)
  */
 class Permission {
 	use	Accessor,

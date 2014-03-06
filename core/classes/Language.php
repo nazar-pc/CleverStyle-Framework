@@ -18,8 +18,6 @@ defined('FIXED_LANGUAGE') || define('FIXED_LANGUAGE', false);
  *   'cregion'			=> cregion
  *   'clanguage_en'		=> clanguage_en
  *  ]
- *
- * @method static \cs\Language instance($check = false)
  */
 class Language implements JsonSerializable {
 	use Singleton;

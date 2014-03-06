@@ -6,9 +6,7 @@
  * @license		MIT License, see license.txt
  */
 namespace cs;
-/**
- * @method static \cs\Error instance($check = false)
- */
+
 class Error {
 	use	Singleton;
 

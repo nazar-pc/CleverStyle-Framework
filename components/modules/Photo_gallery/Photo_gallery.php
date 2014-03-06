@@ -18,9 +18,7 @@ use			cs\Cache\Prefix,
 			cs\Singleton,
 			cs\plugins\SimpleImage\SimpleImage,
 			Exception;
-/**
- * @method static \cs\modules\Photo_gallery\Photo_gallery instance($check = false)
- */
+
 class Photo_gallery {
 	use Accessor,
 		Singleton;

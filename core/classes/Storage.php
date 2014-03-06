@@ -6,9 +6,7 @@
  * @license		MIT License, see license.txt
  */
 namespace cs;
-/**
- * @method static \cs\Storage instance($check = false)
- */
+
 class Storage {
 	use	Singleton;
 

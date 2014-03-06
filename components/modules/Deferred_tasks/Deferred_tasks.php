@@ -11,9 +11,7 @@ use			cs\Config,
 			cs\Trigger,
 			cs\CRUD,
 			cs\Singleton;
-/**
- * @method static \cs\modules\Deferred_tasks\Deferred_tasks instance($check = false)
- */
+
 class Deferred_tasks {
 	use			Singleton,
 				CRUD;

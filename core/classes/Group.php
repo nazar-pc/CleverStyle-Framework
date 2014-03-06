@@ -21,12 +21,9 @@
 namespace	cs;
 use			cs\Cache\Prefix,
 			cs\DB\Accessor,
-			cs\Permission\Any,
-			h;
+			cs\Permission\Any;
 /**
  * Class for groups manipulating
- *
- * @method static \cs\Group instance($check = false)
  */
 class Group {
 	use	Accessor,

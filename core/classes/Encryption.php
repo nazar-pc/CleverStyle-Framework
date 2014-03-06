@@ -10,8 +10,6 @@ use			h;
 /**
  * Encryption class.
  * Provides encryption and decryption functionality
- *
- * @method static \cs\Encryption instance($check = false)
  */
 class Encryption {
 	use Singleton;

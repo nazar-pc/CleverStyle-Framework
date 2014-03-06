@@ -13,9 +13,7 @@ use			cs\DB\Accessor,
 			cs\Config,
 			cs\Language,
 			cs\Text;
-/**
- * @method static \cs\modules\Static_pages\Static_pages instance($check = false)
- */
+
 class Static_pages {
 	use	Accessor,
 		Singleton;

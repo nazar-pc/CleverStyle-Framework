@@ -6,9 +6,7 @@
  * @license		MIT License, see license.txt
  */
 namespace cs;
-/**
- * @method static \cs\DB instance($check = false)
- */
+
 class DB {
 	use	Singleton;
 

@@ -10,8 +10,6 @@ use			h;
 /**
  * Core class.
  * Provides loading of base system configuration, API requests sending
- *
- * @method static \cs\Core instance($check = false)
  */
 class Core {
 	use Singleton;

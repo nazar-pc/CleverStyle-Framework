@@ -7,9 +7,7 @@
  */
 namespace	cs;
 use			Closure;
-/**
- * @method static \cs\Cache instance($check = false)
- */
+
 class Cache {
 	use Singleton;
 
