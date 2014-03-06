@@ -34,6 +34,34 @@ class Mail extends PHPMailer {
 		$this->IsHTML();
 	}
 	/**
+	 * @param string	$body
+	 * @param string	$signature
+	 *
+	 * @return string
+	 */
+	protected function body_normalization ($body, $signature) {
+		if (strpos($body, '<!doctype') === 0 && strpos($body, '<body') !== false) {
+			$body	= "<!doctype html>\n$body";
+		}
+		if (strpos($body, '<html') === false) {
+			if (substr($body, 0, 5) != '<body') {
+				$body = h::body($body.$signature);
+			} else {
+				$body = str_replace('</body>', "$signature</body>", $body);
+			}
+			$body = h::html(
+				h::{'head meta'}([
+					'content'		=> 'text/html; charset=utf-8',
+					'http-equiv'	=> 'Content-Type'
+				]).
+				$body
+			);
+		} else {
+			$body = str_replace('</body>', "$signature</body>", $body);
+		}
+		return $body;
+	}
+	/**
 	 * Sending of email
 	 *
 	 * @param array|string|string[]			$email			if emails without names - string (may be several emails separated by comma) or
@@ -83,23 +111,7 @@ class Mail extends PHPMailer {
 		} else {
 			$signature = '';
 		}
-		if (substr($body, 0, 5) != '<html') {
-			if (substr($body, 0, 5) != '<body') {
-				$body = h::body($body.$signature);
-			} else {
-				$body = str_replace('</body>', "$signature</body>", $body);
-			}
-			$body = h::html(
-				h::{'head meta'}([
-					'content'		=> 'text/html; charset=utf-8',
-					'http-equiv'	=> 'Content-Type'
-				]).
-				$body
-			);
-		} else {
-			$body = str_replace('</body>', "$signature</body>", $body);
-		}
-		$this->Body = $body;
+		$this->Body = $this->body_normalization($body, $signature);
 		if ($body_text) {
 			$this->AltBody = $body_text.strip_tags($signature);
 		}
