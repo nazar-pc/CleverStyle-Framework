@@ -35,7 +35,7 @@ class Config {
 					'server'		=> [						//Array of some address data about mirrors and current address properties
 						'raw_relative_address'		=> '',		//Raw page url (in browser's address bar)
 						'host'						=> '',		//Current domain
-						'relative_address'			=> '',		//Corrected full page address (recommended for usage)
+						'relative_address'			=> '',		//Corrected page address (recommended for usage)
 						'protocol'					=> '',		//Page protocol (http/https)
 						'base_url'					=> '',		//Address of the main page of current mirror, including prefix (http/https)
 						'mirrors'					=> [		//Array of all domains, which allowed to access the site
@@ -256,15 +256,13 @@ class Config {
 		 */
 		$server['raw_relative_address']	= trim(mb_substr($server['raw_relative_address'], mb_strlen($current_mirror)), ' /\\');
 		unset($current_mirror);
-		$r								= &$this->routing;
-		$rc								= &$this->route;
-		$rc								= trim($server['raw_relative_address'], '/');
+		$this->route					= trim($server['raw_relative_address'], '/');
 		/**
 		 * Redirection processing
 		 */
-		if (mb_strpos($rc, 'redirect/') === 0) {
+		if (mb_strpos($this->route, 'redirect/') === 0) {
 			if ($server['referer']['local']) {
-				header('Location: '.substr($rc, 9));
+				header('Location: '.substr($this->route, 9));
 			} else {
 				error_code(400);
 				Page::instance()->error();
@@ -272,75 +270,94 @@ class Config {
 			define('STOP', true);
 			exit;
 		}
+		$processed_route	= $this->process_route($server['raw_relative_address']);
+		if (!$processed_route) {
+			error_code(403);
+			Page::instance()->error();
+			return;
+		}
+		$this->route				= $processed_route['route'];
+		$server['relative_address']	= $processed_route['relative_address'];
+		!defined('ADMIN')	&& define('ADMIN', $processed_route['ADMIN']);
+		!defined('API')		&& define('API', $processed_route['API']);
+		!defined('MODULE')	&& define('MODULE', $processed_route['MODULE']);
+		!defined('HOME')	&& define('HOME', $processed_route['HOME']);
+		if (API) {
+			header('Content-Type: application/json', true);
+			interface_off();
+		}
+		$server['ajax']				= isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
+	}
+	/**
+	 * Process raw relative route.
+	 *
+	 * As result returns current route in system in form of array, corrected page address, detects MODULE, that responsible for processing this url,
+	 * whether this is API call, ADMIN page, or HOME page
+	 *
+	 * @param string		$raw_relative_address
+	 *
+	 * @return bool|string	Relative address or <i>false</i> if access denied (occurs when admin access is limited by IP)
+	 *                    	Array contains next elements: route, relative_address, ADMIN, API, MODULE, HOME
+	 */
+	function process_route ($raw_relative_address) {
+		$rc	= trim($raw_relative_address, '/');
 		/**
 		 * Routing replacing
 		 */
-		Trigger::instance()->run(
-			'System/Config/pre_routing_replace',
-			[
-				'rc'	=> &$rc
-			]
-		);
+		Trigger::instance()->run('System/Config/pre_routing_replace', [
+			'rc'	=> &$rc
+		]);
 		if ($rc && strpos($rc, 'api/') === 0) {
 			$rc	= explode('?', $rc, 2)[0];
 		}
-		if (!empty($r['in'])) {
-			errors_off();
-			foreach ($r['in'] as $i => $search) {
-				$rc = _preg_replace($search, $r['out'][$i], $rc) ?: str_replace($search, $r['out'][$i], $rc);
+		if (!empty($this->routing['in'])) {
+			foreach ($this->routing['in'] as $i => $search) {
+				$rc = _preg_replace($search, $this->routing['out'][$i], $rc) ?: str_replace($search, $this->routing['out'][$i], $rc);
 			}
-			errors_on();
 			unset($i, $search);
 		}
-		unset($r);
-		Trigger::instance()->run(
-			'System/Config/routing_replace',
-			[
-				'rc'	=> &$rc
-			]
-		);
+		Trigger::instance()->run('System/Config/routing_replace', [
+			'rc'	=> &$rc
+		]);
 		/**
 		 * Obtaining page path in form of array
 		 */
-		$rc										= $rc ? explode('/', $rc) : [];
+		$rc	= $rc ? explode('/', $rc) : [];
 		/**
 		 * If url looks like admin page
 		 */
 		if (isset($rc[0]) && mb_strtolower($rc[0]) == 'admin') {
 			if ($this->core['ip_admin_list_only'] && !$this->check_ip($this->core['ip_admin_list'])) {
-				error_code(403);
-				Page::instance()->error();
-				return;
+				return false;
 			}
-			if (!defined('ADMIN')) {
-				define('ADMIN', true);
-			}
+			$ADMIN	= true;
 			array_shift($rc);
 		/**
 		 * If url looks like API page
 		 */
 		} elseif (isset($rc[0]) && mb_strtolower($rc[0]) == 'api') {
-			if (!defined('API')) {
-				define('API', true);
-			}
+			$API	= true;
 			array_shift($rc);
-			header('Content-Type: application/json', true);
-			interface_off();
 		}
 		if ($this->core['ip_admin_list_only'] && !$this->check_ip($this->core['ip_admin_list'])) {
 			$this->can_be_admin = false;
 		}
-		!defined('ADMIN')	&& define('ADMIN', false);
-		!defined('API')		&& define('API', false);
+		if (!isset($ADMIN)) {
+			$ADMIN	= false;
+		}
+		if (!isset($API)) {
+			$API	= false;
+		}
 		/**
 		 * Module detection
 		 */
 		$modules	= array_keys(array_filter(
 			$this->components['modules'],
-			function ($module_data) {
-			   return ADMIN || $module_data['active'] == 1;
+			function ($module_data) use ($ADMIN) {
+			   return $ADMIN || $module_data['active'] == 1;
 			}
 		));
+		$L			= Language::instance();
 		$modules	= array_combine(
 			array_map(
 				function ($module) use ($L) {
@@ -350,27 +367,30 @@ class Config {
 			),
 			$modules
 		);
-		if (!defined('MODULE')) {
-			if (isset($rc[0]) && in_array($rc[0], array_values($modules))) {
-				define('MODULE', array_shift($rc));
-			} elseif (isset($rc[0]) && isset($modules[$rc[0]])) {
-				define('MODULE', $modules[array_shift($rc)]);
-			} else {
-				define('MODULE', ADMIN || API || isset($rc[0]) ? 'System' : $this->core['default_module']);
-				if (!ADMIN && !API && !isset($rc[1])) {
-					define('HOME', true);
-				}
+		if (isset($rc[0]) && in_array($rc[0], array_values($modules))) {
+			$MODULE	= array_shift($rc);
+		} elseif (isset($rc[0]) && isset($modules[$rc[0]])) {
+			$MODULE	= $modules[array_shift($rc)];
+		} else {
+			$MODULE	= $ADMIN || $API || isset($rc[0]) ? 'System' : $this->core['default_module'];
+			if (!$ADMIN && !$API && !isset($rc[1])) {
+				$HOME	= true;
 			}
 		}
-		!defined('HOME')	&& define('HOME', false);
-		/**
-		 * Corrected full page address (recommended for usage)
-		 */
-		$server['relative_address']	= trim(
-			(ADMIN ? 'admin/' : '').(API ? 'api/' : '').MODULE.'/'.implode('/', $rc),
-			'/'
-		);
-		$server['ajax']				= isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
+		if (!isset($HOME)) {
+			$HOME	= false;
+		}
+		return [
+			'route'				=> $rc,
+			'relative_address'	=> trim(
+				($ADMIN ? 'admin/' : '').($API ? 'api/' : '').$MODULE.'/'.implode('/', $rc),
+				'/'
+			),
+			'ADMIN'				=> $ADMIN,
+			'API'				=> $API,
+			'MODULE'			=> $MODULE,
+			'HOME'				=> $HOME
+		];
 	}
 	/**
 	 * Updating information about set of available themes
