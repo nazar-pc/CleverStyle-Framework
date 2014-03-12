@@ -271,6 +271,7 @@ class Config {
 			exit;
 		}
 		$processed_route	= $this->process_route($server['raw_relative_address']);
+		echo _json_encode($processed_route);die;
 		if (!$processed_route) {
 			error_code(403);
 			Page::instance()->error();
@@ -294,10 +295,10 @@ class Config {
 	 * As result returns current route in system in form of array, corrected page address, detects MODULE, that responsible for processing this url,
 	 * whether this is API call, ADMIN page, or HOME page
 	 *
-	 * @param string		$raw_relative_address
+	 * @param string			$raw_relative_address
 	 *
-	 * @return bool|string	Relative address or <i>false</i> if access denied (occurs when admin access is limited by IP)
-	 *                    	Array contains next elements: route, relative_address, ADMIN, API, MODULE, HOME
+	 * @return bool|string[]							Relative address or <i>false</i> if access denied (occurs when admin access is limited by IP)
+	 *                    								Array contains next elements: route, relative_address, ADMIN, API, MODULE, HOME
 	 */
 	function process_route ($raw_relative_address) {
 		$rc	= trim($raw_relative_address, '/');
