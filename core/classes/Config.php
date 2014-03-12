@@ -271,7 +271,6 @@ class Config {
 			exit;
 		}
 		$processed_route	= $this->process_route($server['raw_relative_address']);
-		echo _json_encode($processed_route);die;
 		if (!$processed_route) {
 			error_code(403);
 			Page::instance()->error();
