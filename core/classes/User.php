@@ -526,6 +526,13 @@ class User {
 					$L->change($value);
 					$value	= $value ? $L->clanguage : '';
 				}
+			} elseif ($item == 'avatar') {
+				if (
+					$value &&
+					strpos($value, 'http') === false
+				) {
+					$value	= '';
+				}
 			}
 			$this->update_cache[$user]		= true;
 			$this->data[$user][$item]		= $value;
