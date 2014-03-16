@@ -440,28 +440,32 @@ class Config {
 		unset($language);
 		$Cache							= Cache::instance();
 		$Cache->{"languages/clangs"}	= $clangs;
-		$core_urls						= explode('//', $this->core['url']);
-		$core_urls[1]					= explode(';', $core_urls[1]);
-		$last_url						= $core_urls[1][count($core_urls[1]) - 1];
-		$update							= false;
-		foreach ($clangs as $clang) {
-			if (!in_array("$last_url/$clang", $core_urls[1])) {
-				array_unshift($core_urls[1], "$last_url/$clang");
-				$update	= true;
+		$process_url					= function ($url) use ($clangs) {
+			$urls		= explode('//', $url);
+			$urls[1]	= explode(';', $urls[1]);
+			$last_url	= $urls[1][count($urls[1]) - 1];
+			$update		= false;
+			foreach ($clangs as $clang) {
+				if (!in_array("$last_url/$clang", $urls[1])) {
+					array_unshift($urls[1], "$last_url/$clang");
+					$update	= true;
+				}
 			}
-		}
-		unset($clang, $last_url);
-		if ($update) {
-			$this->core['url']	= implode(
-				'//',
-				[
-					$core_urls[0],
-					implode(';', $core_urls[1])
-				]
-			);
+			return $update ? "$urls[0]//".implode(';', $urls[1]) : $url;
+		};
+		$core_url	= $process_url($this->core['url']);
+		if ($core_url != $this->core['url']) {
+			$this->core['url']	= $core_url;
 			$this->save();
 		}
-		unset($update, $core_urls);
+		$mirrors_url	= &$this->core['mirrors_url'];
+		foreach ($mirrors_url as &$mirror_url) {
+			$mirror_url_processed	= $process_url($mirror_url);
+			if ($mirror_url_processed != $mirror_url) {
+				$mirror_url	= $mirror_url_processed;
+				$this->save();
+			}
+		}
 		return $clangs;
 	}
 	/**
