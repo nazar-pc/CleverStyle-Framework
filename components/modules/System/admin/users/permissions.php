@@ -137,16 +137,11 @@ if (isset($rc[2])) {
 					]
 				),
 				$id,
-				h::span(
-					$group,
-					[
-						'data-title'	=> $L->{"permissions_group_$group"}
-					]
-				),
+				h::span($group),
 				h::span(
 					$label,
 					[
-						'data-title'	=> $group != 'Block' ? $L->{"permission_label_$label"} : $blocks[$label]
+						'data-title'	=> $group == 'Block' ? Text::instance()->process($Config->module('System')->db('texts'), $blocks[$label]) : false
 					]
 				)
 			]);

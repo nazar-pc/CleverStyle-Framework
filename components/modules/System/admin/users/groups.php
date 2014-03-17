@@ -118,7 +118,7 @@ if (isset($rc[2])) {
 			unset($block);
 			foreach ($permissions as $group => $list) {
 				$tabs[]		= h::a(
-					$L->{"permissions_group_$group"},
+					$group,
 					[
 						'href'	=> '#permissions_group_'.strtr($group, '/', '_')
 					]
@@ -126,7 +126,7 @@ if (isset($rc[2])) {
 				$content	= [];
 				foreach($list as $label => $id) {
 					$content[] = h::th(
-						$group != 'Block' ? $L->{"permission_label_$label"} : Text::instance()->process($Config->module('System')->db('texts'), $blocks[$label])
+						$group == 'Block' ? Text::instance()->process($Config->module('System')->db('texts'), $blocks[$label]) : $label
 					).
 					h::{'td input[type=radio]'}([
 						'name'			=> "permission[$id]",
