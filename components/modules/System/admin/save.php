@@ -36,9 +36,9 @@ if ($_POST['edit_settings'] == 'apply' || $_POST['edit_settings'] == 'save') {
 					case 'rules':
 						$value	= set_core_ml_text($item, $value);
 					break;
-					case 'mirrors_url':
-					case 'mirrors_cookie_domain':
-					case 'mirrors_cookie_path':
+					case 'url':
+					case 'cookie_domain':
+					case 'cookie_path':
 					case 'ip_black_list':
 					case 'ip_admin_list':
 						$value	= _trim(explode("\n", $value));

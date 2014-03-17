@@ -50,7 +50,7 @@ class Config {
 							'local'		=> false
 						],
 						'ajax'						=> false,	//Is this page request via AJAX
-						'mirror_index'				=> -1		//Index of current domain in mirrors list ('-1' - main domain, not mirror)
+						'mirror_index'				=> 0		//Index of current domain in mirrors list ('0' - main domain)
 					],
 					'can_be_admin'		=> true					//Allows to check ability to be admin user (can be limited by IP)
 				],
@@ -168,74 +168,41 @@ class Config {
 		$server['raw_relative_address']	= null_byte_filter($server['raw_relative_address']);
 		$server['host']					= $_SERVER['HTTP_HOST'];
 		$server['protocol']				= isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http';
-		$core_url						= explode('://', $this->core['url'], 2);
-		$core_url[1]					= explode(';', $core_url[1]);
-		/**
-		 * $core_url = [0 => protocol, 1 => [list of domain and IP addresses]]
-		 * Check, whether it is main domain
-		 */
-		$current_mirror	= false;
-		if ($core_url[0] == $server['protocol']) {
-			foreach ($core_url[1] as $url) {
-				if (mb_strpos($server['raw_relative_address'], $url) === 0) {
-					$server['base_url']	= "$server[protocol]://$url";
-					$current_mirror		= $url;
-					break;
-				}
-			}
-		}
-		$server['mirrors'][$core_url[0]] = array_merge($server['mirrors'][$core_url[0]], $core_url[1]);
-		unset($core_url, $url);
 		/**
 		 * If it  is not the main domain - try to find match in mirrors
 		 */
-		if ($current_mirror === false && !empty($this->core['mirrors_url'])) {
-			$mirrors_url = $this->core['mirrors_url'];
-			foreach ($mirrors_url as $i => $mirror_url) {
-				$mirror_url		= explode('://', $mirror_url, 2);
-				$mirror_url[1]	= explode(';', $mirror_url[1]);
-				/**
-				 * $mirror_url = [0 => protocol, 1 => [list of domain and IP addresses]]
-				 */
-				if ($mirror_url[0] == $server['protocol']) {
-					foreach ($mirror_url[1] as $url) {
-						if (mb_strpos($server['raw_relative_address'], $url) === 0) {
-							$server['base_url']		= "$server[protocol]://$url";
-							$current_mirror			= $url;
-							$server['mirror_index']	= $i;
-							break 2;
-						}
+		foreach ((array)$this->core['url'] as $i => $url) {
+			$url						= explode('://', $url, 2);
+			$server['mirrors'][$url[0]]	= array_merge(
+				isset($server['mirrors'][$url[0]]) ? $server['mirrors'][$url[0]] : [],
+				isset($url[1]) ? explode(';', $url[1]) : []
+			);
+			$url[1]						= explode(';', $url[1]);
+			/**
+			 * $url = [0 => protocol, 1 => [list of domain and IP addresses]]
+			 */
+			if ($url[0] == $server['protocol']) {
+				foreach ($url[1] as $u) {
+					if (mb_strpos($server['raw_relative_address'], $u) === 0) {
+						$server['base_url']			= "$server[protocol]://$u";
+						$current_mirror_base_url	= $u;
+						$server['mirror_index']		= $i;
+						break 2;
 					}
 				}
+				unset($u);
 			}
-			unset($mirrors_url, $mirror_url, $url, $i);
-			/**
-			 * If match in mirrors was not found - mirror is not allowed!
-			 */
-			if ($server['mirror_index'] == -1) {
-				$server['base_url'] = '';
-				code_header(400);
-				trigger_error($L->mirror_not_allowed, E_USER_ERROR);
-			}
+		}
+		unset($url, $i);
+		$server['mirrors']['count'] = count($server['mirrors']['http']) + count($server['mirrors']['https']);
 		/**
 		 * If match was not found - mirror is not allowed!
 		 */
-		} elseif ($current_mirror === false) {
+		if (!isset($current_mirror_base_url)) {
 			$server['base_url'] = '';
 			code_header(400);
 			trigger_error($L->mirror_not_allowed, E_USER_ERROR);
-		}
-		if (!empty($this->core['mirrors_url'])) {
-			$mirrors_url = $this->core['mirrors_url'];
-			foreach ($mirrors_url as $mirror_url) {
-				$mirror_url							= explode('://', $mirror_url, 2);
-				$server['mirrors'][$mirror_url[0]]	= array_merge(
-					isset($server['mirrors'][$mirror_url[0]]) ? $server['mirrors'][$mirror_url[0]] : [],
-					isset($mirror_url[1]) ? explode(';', $mirror_url[1]) : []
-				);
-			}
-			$server['mirrors']['count'] = count($server['mirrors']['http']) + count($server['mirrors']['https']);
-			unset($mirrors_url, $mirror_url);
+			exit;
 		}
 		/**
 		 * Referer detection
@@ -254,8 +221,8 @@ class Config {
 		/**
 		 * Preparing page url without basic path
 		 */
-		$server['raw_relative_address']	= trim(mb_substr($server['raw_relative_address'], mb_strlen($current_mirror)), ' /\\');
-		unset($current_mirror);
+		$server['raw_relative_address']	= trim(mb_substr($server['raw_relative_address'], mb_strlen($current_mirror_base_url)), ' /\\');
+		unset($current_mirror_base_url);
 		$this->route					= trim($server['raw_relative_address'], '/');
 		/**
 		 * Redirection processing
@@ -438,32 +405,17 @@ class Config {
 			$clangs[$language]	= _json_decode_nocomments(file_get_contents(LANGUAGES."/$language.json"))['clang'];
 		}
 		unset($language);
-		$Cache							= Cache::instance();
-		$Cache->{"languages/clangs"}	= $clangs;
-		$process_url					= function ($url) use ($clangs) {
-			$urls		= explode('//', $url);
-			$urls[1]	= explode(';', $urls[1]);
-			$last_url	= $urls[1][count($urls[1]) - 1];
-			$update		= false;
+		Cache::instance()->{"languages/clangs"}	= $clangs;
+		foreach ($this->core['url'] as &$url) {
+			$url_aliases		= explode('//', $url);
+			$url_aliases[1]		= explode(';', $url_aliases[1]);
+			$last_url			= $url_aliases[1][count($url_aliases[1]) - 1];
 			foreach ($clangs as $clang) {
-				if (!in_array("$last_url/$clang", $urls[1])) {
-					array_unshift($urls[1], "$last_url/$clang");
-					$update	= true;
+				if (!in_array("$last_url/$clang", $url_aliases[1])) {
+					array_unshift($url_aliases[1], "$last_url/$clang");
+					$url	= "$url_aliases[0]//".implode(';', $url_aliases[1]);
+					$this->save();
 				}
-			}
-			return $update ? "$urls[0]//".implode(';', $urls[1]) : $url;
-		};
-		$core_url	= $process_url($this->core['url']);
-		if ($core_url != $this->core['url']) {
-			$this->core['url']	= $core_url;
-			$this->save();
-		}
-		$mirrors_url	= &$this->core['mirrors_url'];
-		foreach ($mirrors_url as &$mirror_url) {
-			$mirror_url_processed	= $process_url($mirror_url);
-			if ($mirror_url_processed != $mirror_url) {
-				$mirror_url	= $mirror_url_processed;
-				$this->save();
 			}
 		}
 		return $clangs;

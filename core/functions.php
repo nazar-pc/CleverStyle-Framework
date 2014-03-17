@@ -215,81 +215,26 @@ function format_filesize ($size, $round = false) {
  * Function for setting cookies on all mirrors and taking into account cookies prefix. Parameters like in system function, but $path, $domain and $secure
  * are skipped, they are detected automatically, and $api parameter added in the end.
  *
- * @param string     $name
- * @param string     $value
- * @param int        $expire
- * @param bool       $httponly
- * @param bool       $api		Is this cookie setting during api request (in most cases it is not necessary to change this parameter)
+ * @param string	$name
+ * @param string	$value
+ * @param int		$expire
+ * @param bool		$httponly
  *
  * @return bool
  */
-function _setcookie ($name, $value, $expire = 0, $httponly = false, $api = false) {
+function _setcookie ($name, $value, $expire = 0, $httponly = false) {
 	static $path, $domain, $prefix, $secure;
 	$Config					= Config::instance(true);
 	if (!isset($prefix) && $Config) {
-		$prefix		= $Config->core['cookie_prefix'];
-		$secure		= $Config->server['protocol'] == 'https';
-		if (
-			$Config->server['mirror_index'] == -1 ||
-			!isset(
-				$Config->core['mirrors_cookie_domain'][$Config->server['mirror_index']],
-				$Config->core['mirrors_cookie_path'][$Config->server['mirror_index']]
-			)
-		) {
-			$domain	= $Config->core['cookie_domain'];
-			$path	= $Config->core['cookie_path'];
-		} else {
-			$domain	= $Config->core['mirrors_cookie_domain'][$Config->server['mirror_index']];
-			$path	= $Config->core['mirrors_cookie_path'][$Config->server['mirror_index']];
-		}
+		$prefix	= $Config->core['cookie_prefix'];
+		$secure	= $Config->server['protocol'] == 'https';
+		$domain	= $Config->core['cookie_domain'][$Config->server['mirror_index']];
+		$path	= $Config->core['cookie_path'][$Config->server['mirror_index']];
 	}
 	if (!isset($prefix)) {
 		$prefix	= '';
 	}
 	$_COOKIE[$prefix.$name] = $value;
-	if (!$api && $Config->core['cookie_sync']) {
-		$data = [
-			'name'		=> $name,
-			'value'		=> $value,
-			'expire'	=> $expire,
-			'httponly'	=> $httponly
-		];
-		Trigger::instance()->register(
-			'System/Index/preload',
-			function () use ($prefix, $data, $domain) {
-				$Config	= Config::instance();
-				$Key	= Key::instance();
-				$User	= User::instance();
-				if (count($Config->core['mirrors_cookie_domain'])) {
-					$mirrors_url			= $Config->core['mirrors_url'];
-					$mirrors_cookie_domain	= $Config->core['mirrors_cookie_domain'];
-					$database				= DB::instance()->{$Config->module('System')->db('keys')}();
-					$data['check']			= md5($User->ip.$User->forwarded_for.$User->client_ip.$User->user_agent._json_encode($data));
-					$urls					= [];
-					if ($Config->server['mirror_index'] != -1 && $domain != $Config->core['cookie_domain']) {
-						$url	= $Config->core_url();
-						if ($Key->add($database, $key = $Key->generate($database), $data)) {
-							$urls[] = $url."/api/System/user/setcookie/$key";
-						}
-						unset($url);
-					}
-					foreach ($mirrors_cookie_domain as $i => $d) {
-						$mirrors_url[$i] = explode(';', $mirrors_url[$i], 2)[0];
-						if ($d && $d != $domain) {
-							if ($Key->add($database, $key = $Key->generate($database), $data)) {
-								$urls[]	= $mirrors_url[$i]."/api/System/user/setcookie/$key";
-							}
-						}
-					}
-					if (!empty($urls)) {
-						$setcookie	= isset($_COOKIE[$prefix.'setcookie']) ? (_json_decode($_COOKIE[$prefix.'setcookie']) ?: []) : [];
-						$setcookie	= array_merge($setcookie, $urls);
-						setcookie($prefix.'setcookie', $_COOKIE[$prefix.'setcookie'] = _json_encode($setcookie));
-					}
-				}
-			}
-		);
-	}
 	if (isset($domain)) {
 		return setcookie(
 			$prefix.$name,

@@ -4,8 +4,7 @@
 		"sign_out",
 		"registration",
 		"change_password",
-		"restore_password",
-		"setcookie"
+		"restore_password"
 	],
 	"admin"		: [
 		"cache",

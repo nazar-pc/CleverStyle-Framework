@@ -17,45 +17,10 @@ $sa			= $Config->core['simple_admin_mode'];
 Index::instance()->content(
 	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}(
 		core_input('name', 'text', 'site_name'),
-		!$sa ? core_input('url') : false,
-		!$sa ? core_input('cookie_domain') : false,
-		!$sa ? core_input('cookie_path') : false,
+		!$sa ? core_textarea('url') : false,
+		!$sa ? core_textarea('cookie_domain') : false,
+		!$sa ? core_textarea('cookie_path') : false,
 		!$sa ? core_input('cookie_prefix') : false,
-		!$sa ? [
-			h::info('mirrors'),
-			h::{'table.cs-table-borderless tr| td'}(
-				[
-					h::info('mirrors_url'),
-					h::info('mirrors_cookie_domain'),
-					h::info('mirrors_cookie_path')
-				],
-				[
-					[
-						h::textarea(
-							$Config->core['mirrors_url'],
-							[
-								'name' => 'core[mirrors_url]'
-							]
-						),
-						h::textarea(
-							$Config->core['mirrors_cookie_domain'],
-							[
-								'name' => 'core[mirrors_cookie_domain]'
-							]
-						),
-						h::textarea(
-							$Config->core['mirrors_cookie_path'],
-							[
-								'name' => 'core[mirrors_cookie_path]'
-							]
-						)
-					],
-					[
-						'id'	=> 'site_info_config_mirrors'
-					]
-				]
-			)
-		] : false,
 		[
 			h::info('timezone'),
 			h::select(

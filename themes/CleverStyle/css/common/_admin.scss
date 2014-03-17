@@ -74,19 +74,6 @@
 	text-transform : capitalize;
 }
 
-//Widths of columns with mirrors information
-#site_info_config_mirrors td {
-	&:nth-child(1) {
-		width : 40%;
-	}
-	&:nth-child(2) {
-		width : 30%;
-	}
-	&:nth-child(3) {
-		width : 30%;
-	}
-}
-
 //Style for code in debug window
 #cs-debug code {
 	display      : block;

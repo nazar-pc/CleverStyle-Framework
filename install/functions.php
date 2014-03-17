@@ -125,7 +125,7 @@ function install_process () {
 	 */
 	$config							= _json_decode('{
 		"name": "",
-		"url": "",
+		"url": [],
 		"admin_email": "",
 		"closed_title": "Site closed",
 		"closed_text": "<p>Site closed for maintenance<\/p>",
@@ -147,17 +147,8 @@ function install_process () {
 		"db_balance": "0",
 		"maindb_for_write": "0",
 		"active_languages": [],
-		"cookie_domain": "",
-		"cookie_path": "\/",
-		"mirrors_url": [
-			""
-		],
-		"mirrors_cookie_domain": [
-			""
-		],
-		"mirrors_cookie_path": [
-			""
-		],
+		"cookie_domain": [],
+		"cookie_path": [],
 		"languages": [],
 		"inserts_limit": "1000",
 		"key_expire": "120",
@@ -195,7 +186,6 @@ function install_process () {
 			""
 		],
 		"simple_admin_mode": "0",
-		"cookie_sync": "0",
 		"auto_translation": "0",
 		"auto_translation_engine": {
 			"name": ""
@@ -206,9 +196,8 @@ function install_process () {
 		"og_support": "1"
 	}');
 	$config['name']					= (string)$_POST['site_name'];
-	$config['url']					= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http')."://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-	$config['url']					= mb_substr(
-		$config['url'],
+	$config['url'][]				= mb_substr(
+		(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http')."://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]",
 		0,
 		mb_strrpos($config['url'], '/', -13)
 	);
@@ -220,8 +209,8 @@ function install_process () {
 	$config['theme']				= array_search('CleverStyle', $config['themes']) !== false ? 'CleverStyle' : $config['themes'][0];
 	$config['color_schemes']		= _json_decode(file_get_contents(DIR.'/color_schemes.json'));
 	$config['color_scheme']			= $config['color_schemes'][0];
-	$config['cookie_domain']		= explode('/', explode('//', $config['url'])[1], 2);
-	$config['cookie_path']			= isset($config['cookie_domain'][1]) && $config['cookie_domain'][1] ? '/'.trim($config['cookie_domain'][1], '/').'/' : '/';
+	$config['cookie_domain'][]		= explode('/', explode('//', $config['url'])[1], 2);
+	$config['cookie_path'][]		= isset($config['cookie_domain'][1]) && $config['cookie_domain'][1] ? '/'.trim($config['cookie_domain'][1], '/').'/' : '/';
 	$config['cookie_domain']		= $config['cookie_domain'][0];
 	$config['timezone']				= $_POST['timezone'];
 	$config['mail_from_name']		= 'Administrator of '.$config['name'];
