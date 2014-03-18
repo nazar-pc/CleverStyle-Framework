@@ -196,11 +196,9 @@ function install_process () {
 		"og_support": "1"
 	}');
 	$config['name']					= (string)$_POST['site_name'];
-	$config['url'][]				= mb_substr(
-		(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http')."://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]",
-		0,
-		mb_strrpos($config['url'], '/', -13)
-	);
+	$url							= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http')."://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+	$url							= implode('/', array_slice(explode('/', $url), 0, -2));	//Remove 2 last items
+	$config['url'][]				= $url;
 	$config['admin_email']			= $_POST['admin_email'];
 	$config['language']				= $_POST['language'];
 	$config['languages']			= _json_decode(file_get_contents(DIR.'/languages.json'));
@@ -209,9 +207,10 @@ function install_process () {
 	$config['theme']				= array_search('CleverStyle', $config['themes']) !== false ? 'CleverStyle' : $config['themes'][0];
 	$config['color_schemes']		= _json_decode(file_get_contents(DIR.'/color_schemes.json'));
 	$config['color_scheme']			= $config['color_schemes'][0];
-	$config['cookie_domain'][]		= explode('/', explode('//', $config['url'])[1], 2);
-	$config['cookie_path'][]		= isset($config['cookie_domain'][1]) && $config['cookie_domain'][1] ? '/'.trim($config['cookie_domain'][1], '/').'/' : '/';
-	$config['cookie_domain']		= $config['cookie_domain'][0];
+	$url							= explode('/', explode('//', $url)[1], 2);
+	$config['cookie_domain'][]		= $url[0];
+	$config['cookie_path'][]		= isset($url[1]) && $url[1] ? '/'.trim($url[1], '/').'/' : '/';
+	unset($url);
 	$config['timezone']				= $_POST['timezone'];
 	$config['mail_from_name']		= 'Administrator of '.$config['name'];
 	$config['mail_from']			= $_POST['admin_email'];
@@ -267,7 +266,7 @@ function install_process () {
 				'@public_key'
 			],
 			[
-				$config['cookie_domain'],
+				$config['cookie_domain'][0],
 				$_POST['timezone'],
 				$_POST['db_host'],
 				$_POST['db_engine'],
@@ -359,7 +358,7 @@ function install_process () {
 		) VALUES (
 			'%1\$s', '%2\$s', '[]', '[]', '%3\$s', '%4\$s', '%4\$s'
 		)",
-		$config['cookie_domain'],
+		$config['cookie_domain'][0],
 		_json_encode($config),
 		'{"modules":'._json_encode($modules).',"plugins":[],"blocks":[]}',
 		'{"in":[],"out":[]}'
