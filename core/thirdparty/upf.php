@@ -1105,21 +1105,18 @@ function array_flip_3d ($array) {
 	}
 	$result	= [];
 	$size	= 0;
-	foreach ($array as $a) {
-		if (is_array($a)) {
-			$count	= count($a);
-			$size	= $size < $count ? $count : $size;
-		}
+	foreach ($array as $values) {
+		$size	= max($size, count((array)$values));
 	}
-	unset($a, $count);
-	foreach ($array as $i => $a) {
-		for ($n = 0; $n < $size; ++$n) {
-			if (is_array($a)) {
-				if (isset($a[$n])) {
-					$result[$n][$i] = $a[$n];
+	unset($values);
+	foreach ($array as $key => $values) {
+		for ($i = 0; $i < $size; ++$i) {
+			if (is_array($values)) {
+				if (isset($values[$i])) {
+					$result[$i][$key] = $values[$i];
 				}
 			} else {
-				$result[$n][$i] = $a;
+				$result[$i][$key] = $values;
 			}
 		}
 	}
