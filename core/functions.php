@@ -394,12 +394,28 @@ function pages ($page, $total, $url, $head_links = false) {
 	}
 	$Page	= Page::instance();
 	$output	= [];
+	if ($url instanceof Closure) {
+		$url_func	= $url;
+	} else {
+		$original_url	= $url;
+		$url_func		= function ($page) use ($original_url) {
+			return sprintf($original_url, $page);
+		};
+	}
+	$base_url	= Config::instance()->base_url();
+	$url		= function ($page) use ($url_func, $base_url) {
+		$url	= $url_func($page);
+		if (is_string($url) && strpos($url, 'http') !== 0) {
+			$url	= $base_url.'/'.ltrim($url, '/');
+		}
+		return $url;
+	};
 	if ($total <= 11) {
 		for ($i = 1; $i <= $total; ++$i) {
 			$output[]	= [
 				$i,
 				[
-					'href'	=> $i == $page ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
+					'href'	=> $i == $page ? false : $url($i),
 					'class'	=> $i == $page ? 'cs-button uk-button-primary uk-frozen' : 'cs-button'
 				]
 			];
@@ -416,7 +432,7 @@ function pages ($page, $total, $url, $head_links = false) {
 				$output[]	= [
 					$i,
 					[
-						'href'	=> $i == $page ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
+						'href'	=> $i == $page ? false : $url($i),
 						'class'	=> $i == $page ? 'cs-button uk-button-primary uk-frozen' : 'cs-button'
 					]
 				];
@@ -462,7 +478,7 @@ function pages ($page, $total, $url, $head_links = false) {
 				$output[]	= [
 					$i,
 					[
-						'href'	=> $i == $page ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
+						'href'	=> $i == $page ? false : $url($i),
 						'class'	=> $i == $page ? 'cs-button uk-button-primary uk-frozen' : 'cs-button'
 					]
 				];
@@ -493,7 +509,7 @@ function pages ($page, $total, $url, $head_links = false) {
 				$output[]	= [
 					$i,
 					[
-						'href'	=> $i == $page ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
+						'href'	=> $i == $page ? false : $url($i),
 						'class'	=> $i == $page ? 'cs-button uk-button-primary uk-frozen' : 'cs-button'
 					]
 				];
@@ -540,12 +556,18 @@ function pages_buttons ($page, $total, $url = false) {
 		return false;
 	}
 	$output	= [];
+	if (!($url instanceof Closure)) {
+		$original_url	= $url;
+		$url			= function ($page) use ($original_url) {
+			return sprintf($original_url, $page);
+		};
+	}
 	if ($total <= 11) {
 		for ($i = 1; $i <= $total; ++$i) {
 			$output[]	= [
 				$i,
 				[
-					'formaction'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
+					'formaction'	=> $i == $page || $url === false ? false : $url($i),
 					'value'			=> $i,
 					'type'			=> $i == $page ? 'button' : 'submit',
 					'class'			=> $i == $page ? 'uk-button-primary uk-frozen' : false
@@ -558,7 +580,7 @@ function pages_buttons ($page, $total, $url = false) {
 				$output[]	= [
 					$i,
 					[
-						'formaction'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
+						'formaction'	=> $i == $page || $url === false ? false : $url($i),
 						'value'			=> $i == $page ? false : $i,
 						'type'			=> $i == $page ? 'button' : 'submit',
 						'class'			=> $i == $page ? 'uk-button-primary uk-frozen' : false
@@ -604,7 +626,7 @@ function pages_buttons ($page, $total, $url = false) {
 				$output[]	= [
 					$i,
 					[
-						'formaction'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
+						'formaction'	=> $i == $page || $url === false ? false : $url($i),
 						'value'			=> $i == $page ? false : $i,
 						'type'			=> $i == $page ? 'button' : 'submit',
 						'class'			=> $i == $page ? 'uk-button-primary uk-frozen' : false
@@ -633,7 +655,7 @@ function pages_buttons ($page, $total, $url = false) {
 				$output[]	= [
 					$i,
 					[
-						'formaction'	=> $i == $page || $url === false ? false : ($url instanceof Closure ? $url($i) : sprintf($url, $i)),
+						'formaction'	=> $i == $page || $url === false ? false : $url($i),
 						'value'			=> $i == $page ? false : $i,
 						'type'			=> $i == $page ? 'button' : 'submit',
 						'class'			=> $i == $page ? 'uk-button-primary uk-frozen' : false
