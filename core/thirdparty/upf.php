@@ -495,12 +495,12 @@ function _mb_strtoupper ($string) {
 /**
  * Works similar to the system function, but adds JSON_UNESCAPED_UNICODE option
  *
- * @param mixed		$in
+ * @param mixed		$value
  *
  * @return bool|string
  */
-function _json_encode ($in) {
-	return @json_encode($in, JSON_UNESCAPED_UNICODE);
+function _json_encode ($value) {
+	return @json_encode($value, JSON_UNESCAPED_UNICODE);
 }
 /**
  * Works similar to the system function, but always returns array, not object
@@ -533,7 +533,48 @@ function _json_decode_nocomments ($in, $depth = 512) {
 	unset($i, $string);
 	return @json_decode(implode('', $in), true, $depth);
 }
-
+/**
+ * file_put_contents(_json_encode())
+ *
+ * @param string	$filename	Name of the file to read.
+ * @param mixed		$data		The data to write
+ * @param int		$flags
+ * @param resource	$context
+ *
+ * @return mixed
+ */
+function file_put_json ($filename, $data, $flags = null, &$context = null) {
+	return file_put_contents(
+		$filename,
+		_json_encode($data),
+		$flags,
+		$context
+	);
+}
+/**
+ * _json_decode(file_get_contents())
+ *
+ * @param string	$filename	Name of the file to read.
+ *
+ * @return mixed
+ */
+function file_get_json ($filename) {
+	return _json_decode(
+		file_get_contents($filename)
+	);
+}
+/**
+ * _json_decode_nocomments(file_get_contents())
+ *
+ * @param string	$filename	Name of the file to read.
+ *
+ * @return mixed
+ */
+function file_get_json_nocomments ($filename) {
+	return _json_decode_nocomments(
+		file_get_contents($filename)
+	);
+}
 /**
  * Similar to system function, but make simple check, whether regexp is correct (actually checks if first symbol is / or #)
  *
