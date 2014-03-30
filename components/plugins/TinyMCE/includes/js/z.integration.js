@@ -6,7 +6,7 @@
  * @copyright	Moxiecode Systems AB
  * @license		GNU Lesser General Public License 2.1, see license.txt
  */
-tinymce.baseURL	= '/components/plugins/TinyMCE';
+tinymce.baseURL	= '/components/plugins/TinyMCE/includes/js';
 $(function () {
 	var base_config			= {
 		doctype					: '<!doctype html>',
@@ -14,7 +14,7 @@ $(function () {
 		skin					: cs.tinymce && cs.tinymce.skin !== undefined ? cs.tinymce.skin : 'lightgray',
 		language				: cs.Language.clang !== undefined ? cs.Language.clang : 'en',
 		menubar					: false,
-		plugins					: 'advlist,anchor,charmap,code,contextmenu,emoticons,fullscreen,hr,image,link,lists,media,nonbreaking,noneditable,pagebreak,paste,preview,searchreplace,tabfocus,table,textcolor,visualblocks,visualchars,wordcount',
+		plugins					: 'advlist,anchor,charmap,code,contextmenu,fullscreen,hr,image,link,lists,media,nonbreaking,noneditable,pagebreak,paste,preview,searchreplace,tabfocus,table,textcolor,visualblocks,visualchars,wordcount',
 		resize					: 'both',
 		toolbar_items_size		: 'small',
 		width					: '100%',
@@ -61,13 +61,13 @@ $(function () {
 	tinymce.editor_config	= $.extend(
 		{
 			toolbar1	: 'styleselect fontselect fontsizeselect | alignleft aligncenter alignright alignjustify | bold italic underline strikethrough superscript subscript | forecolor backcolor',
-			toolbar2	: 'undo redo | bullist numlist outdent indent blockquote | link unlink anchor image media emoticons charmap hr nonbreaking pagebreak | visualchars visualblocks | searchreplace | fullscreen preview code'
+			toolbar2	: 'undo redo | bullist numlist outdent indent blockquote | link unlink anchor image media charmap hr nonbreaking pagebreak | visualchars visualblocks | searchreplace | fullscreen preview code'
 		},
 		base_config
 	);
 	tinymce.simple_editor_config	= $.extend(
 		{
-			toolbar	: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | link image media emoticons | code'
+			toolbar	: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | link image media | code'
 		},
 		base_config
 	);

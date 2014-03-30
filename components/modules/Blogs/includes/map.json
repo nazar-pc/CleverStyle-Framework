@@ -1,0 +1,9 @@
+{
+	"admin/Blogs"	: [
+		"admin.css"
+	],
+	"Blogs"			: [
+		"general.css",
+		"general.js"
+	]
+}

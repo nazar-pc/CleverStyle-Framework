@@ -1,0 +1,6 @@
+{
+	"TinyMCE"	: [
+		"tinymce.min.js",
+		"z.integration.js"
+	]
+}

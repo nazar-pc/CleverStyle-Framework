@@ -1,7 +1,7 @@
 {
 	"package"		: "Feedback",
 	"category"		: "modules",
-	"version"		: "0.007",
+	"version"		: "0.008",
 	"description"	: "Simple feedback module, sends message to admin's email.",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",

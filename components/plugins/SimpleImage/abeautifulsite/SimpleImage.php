@@ -1,6 +1,7 @@
 <?php
 /**
  * @package		SimpleImage class
+ * @version		2.5.3
  * @author		Cory LaViska for A Beautiful Site, LLC. (http://www.abeautifulsite.net/)
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com> - merging of forks, namespace support, PhpDoc editing, adaptive_resize() method, other fixes
  * @license		This software is licensed under the MIT license: http://opensource.org/licenses/MIT
@@ -694,7 +695,7 @@ class SimpleImage {
 	 *
 	 * Overlay an image on top of another, works with 24-bit PNG alpha-transparency
 	 *
-	 * @param string		$overlay_file
+	 * @param string		$overlay		An image filename or a SimpleImage object
 	 * @param string		$position		center|top|left|bottom|right|top left|top right|bottom left|bottom right
 	 * @param float|int		$opacity		Overlay opacity 0-1
 	 * @param int			$x_offset		Horizontal offset in pixels
@@ -703,10 +704,12 @@ class SimpleImage {
 	 * @return SimpleImage
 	 *
 	 */
-	function overlay($overlay_file, $position = 'center', $opacity = 1, $x_offset = 0, $y_offset = 0) {
+	function overlay($overlay, $position = 'center', $opacity = 1, $x_offset = 0, $y_offset = 0) {
 
 		// Load overlay image
-		$overlay = new SimpleImage($overlay_file);
+		if( !($overlay instanceof SimpleImage) ) {
+			$overlay = new SimpleImage($overlay);
+		}
 
 		// Convert opacity
 		$opacity = $opacity * 100;
@@ -1028,8 +1031,8 @@ class SimpleImage {
 		} else {
 			$this->fit_to_width($width);
 		}
-		$left = ($this->width / 2) - ($width / 2);
-		$top = ($this->height / 2) - ($height / 2);
+		$left = floor(($this->width / 2) - ($width / 2));
+		$top = floor(($this->height / 2) - ($height / 2));
 
 		// Return trimmed image
 		return $this->crop($left, $top, $width + $left, $height + $top);

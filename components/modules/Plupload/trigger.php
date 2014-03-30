@@ -8,28 +8,29 @@
  * @license		GNU GPL v2, see license.txt
  */
 namespace	cs;
-Trigger::instance()->register(
-	'System/Config/pre_routing_replace',
-	function () {
-		switch (Config::instance()->components['modules']['Plupload']['active']) {
-			case 1:
-				require __DIR__.'/trigger/enabled.php';
+Trigger::instance()
+	->register(
+		'System/Config/pre_routing_replace',
+		function () {
+			switch (Config::instance()->components['modules']['Plupload']['active']) {
+				case 1:
+					require __DIR__.'/trigger/enabled.php';
+			}
 		}
-	}
-);
-Trigger::instance()->register(
-	'System/Index/construct',
-	function () {
-		if (!ADMIN) {
-			return;
+	)
+	->register(
+		'System/Index/construct',
+		function () {
+			if (!ADMIN) {
+				return;
+			}
+			switch (Config::instance()->components['modules']['Plupload']['active']) {
+				case -1:
+					require __DIR__.'/trigger/uninstalled.php';
+				break;
+				case 0:
+				case 1:
+					require __DIR__.'/trigger/installed.php';
+			}
 		}
-		switch (Config::instance()->components['modules']['Plupload']['active']) {
-			case -1:
-				require __DIR__.'/trigger/uninstalled.php';
-			break;
-			case 0:
-			case 1:
-				require __DIR__.'/trigger/installed.php';
-		}
-	}
-);
+	);

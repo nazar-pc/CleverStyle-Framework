@@ -9,78 +9,14 @@
  */
 namespace	cs\plugins\TinyMCE;
 use			cs\Config,
-			cs\Page,
-			cs\Trigger;
+			cs\Page;
 $Page	= Page::instance();
 if (!$Page->interface) {
 	return;
 }
 if (!Config::instance()->core['cache_compress_js_css']) {
 	$Page->js([
-		'components/plugins/TinyMCE/tinymce.min.js',
-		'components/plugins/TinyMCE/TinyMCE.js'
+		'components/plugins/TinyMCE/includes/js/tinymce.min.js',
+		'components/plugins/TinyMCE/includes/js/z.integration.js'
 	]);
-} elseif (!file_exists(PCACHE.'/plugin.TinyMCE.js')) {
-	rebuild_pcache();
-}
-
-Trigger::instance()->register(
-	'admin/System/components/plugins/disable',
-	function ($data) {
-		if ($data['name'] == 'TinyMCE') {
-			clean_pcache();
-		}
-	}
-);
-Trigger::instance()->register(
-	'admin/System/general/optimization/clean_pcache',
-	function () {
-		clean_pcache();
-	}
-);
-Trigger::instance()->register(
-	'System/Page/rebuild_cache',
-	function ($data) {
-		rebuild_pcache($data);
-	}
-);
-function clean_pcache () {
-	if (file_exists(PCACHE.'/plugin.TinyMCE.js')) {
-		unlink(PCACHE.'/plugin.TinyMCE.js');
-	}
-}
-function rebuild_pcache (&$data = null) {
-	$Config		= Config::instance();
-	if (
-		!$Config->core['cache_compress_js_css'] ||
-		(
-			$data !== null && !in_array('TinyMCE', $Config->components['plugins'])
-		) ||
-		file_exists(PCACHE.'/plugin.TinyMCE.js')
-	) {
-		return;
-	}
-	$files		= [];
-	$content	= '';
-	array_map(
-		function ($language) use (&$files, &$content) {
-			$files[]	= "langs/$language";
-			$content	.= file_get_contents(PLUGINS."/TinyMCE/langs/$language.js");
-		},
-		_mb_substr(get_files_list(PLUGINS.'/TinyMCE/langs', false, 'f'), 0, -3)
-	);
-	file_put_contents(
-		PCACHE.'/plugin.TinyMCE.js',
-		$key	= gzencode(
-			file_get_contents(PLUGINS.'/TinyMCE/tinymce.min.js').
-			$content.
-			'tinymce.each("' . implode(',', $files) . '".split(","),function(f){tinymce.ScriptLoader.markDone(tinyMCE.baseURL+"/"+f+".js");});'.
-			file_get_contents(PLUGINS.'/TinyMCE/TinyMCE.js'),
-			9
-		),
-		LOCK_EX | FILE_BINARY
-	);
-	if ($data !== null) {
-		$data['key']	.= md5($key);
-	}
 }
