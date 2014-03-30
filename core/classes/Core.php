@@ -33,7 +33,7 @@ class Core {
 			);
 			exit;
 		}
-		$this->config	= _json_decode_nocomments(file_get_contents(CONFIG.'/main.json'));
+		$this->config	= file_get_json_nocomments(CONFIG.'/main.json');
 		_include_once(CONFIG.'/main.php', false);
 		defined('DEBUG') || define('DEBUG', false);
 		define('DOMAIN', $this->config['domain']);

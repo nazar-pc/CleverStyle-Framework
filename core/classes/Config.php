@@ -402,7 +402,7 @@ class Config {
 	function update_clangs () {
 		$clangs		= [];
 		foreach ($this->core['active_languages'] as $language) {
-			$clangs[$language]	= _json_decode_nocomments(file_get_contents(LANGUAGES."/$language.json"))['clang'];
+			$clangs[$language]	= file_get_json_nocomments(LANGUAGES."/$language.json")['clang'];
 		}
 		unset($language);
 		Cache::instance()->{"languages/clangs"}	= $clangs;

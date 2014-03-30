@@ -141,7 +141,7 @@ function check_dependencies ($name, $type, $dir = null, $mode = 'enable') {
 	if (!file_exists("$dir/meta.json")) {
 		return true;
 	}
-	$meta		= _json_decode(file_get_contents("$dir/meta.json"));
+	$meta		= file_get_json("$dir/meta.json");
 	$Config		= Config::instance();
 	$Core		= Core::instance();
 	$L			= Language::instance();
@@ -229,7 +229,7 @@ function check_dependencies ($name, $type, $dir = null, $mode = 'enable') {
 		if (!file_exists(MODULES."/$module/meta.json")) {
 			continue;
 		}
-		$module_meta	= _json_decode(file_get_contents(MODULES."/$module/meta.json"));
+		$module_meta	= file_get_json(MODULES."/$module/meta.json");
 		if (
 			$module_data['active'] == -1 ||
 			($mode == 'enable' && $module_data['active'] == 0) ||
@@ -362,7 +362,7 @@ function check_dependencies ($name, $type, $dir = null, $mode = 'enable') {
 		) {
 			continue;
 		}
-		$plugin_meta	= _json_decode(file_get_contents(PLUGINS."/$plugin/meta.json"));
+		$plugin_meta	= file_get_json(PLUGINS."/$plugin/meta.json");
 		/**
 		 * If some plugin already provides the same functionality
 		 */
@@ -494,7 +494,7 @@ function check_backward_dependencies ($name, $type = 'module', $mode = 'disable'
 	if (!file_exists("$dir/meta.json")) {
 		return true;
 	}
-	$meta		= _json_decode(file_get_contents("$dir/meta.json"));
+	$meta		= file_get_json("$dir/meta.json");
 	$return		= true;
 	$Config		= Config::instance();
 	$L			= Language::instance();
@@ -518,7 +518,7 @@ function check_backward_dependencies ($name, $type = 'module', $mode = 'disable'
 		) {
 			continue;
 		}
-		$module_require	= _json_decode(file_get_contents(MODULES."/$module/meta.json"));
+		$module_require	= file_get_json(MODULES."/$module/meta.json");
 		if (!isset($module_require['require'])) {
 			continue;
 		}
@@ -551,7 +551,7 @@ function check_backward_dependencies ($name, $type = 'module', $mode = 'disable'
 		) {
 			continue;
 		}
-		$plugin_require	= _json_decode(file_get_contents(PLUGINS."/$plugin/meta.json"));
+		$plugin_require	= file_get_json(PLUGINS."/$plugin/meta.json");
 		if (!isset($plugin_require['require'])) {
 			continue;
 		}

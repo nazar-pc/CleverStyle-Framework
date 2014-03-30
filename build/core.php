@@ -7,7 +7,7 @@
  * @license		MIT License, see license.txt
  */
 time_limit_pause();
-$version			= _json_decode(file_get_contents(DIR.'/components/modules/System/meta.json'))['version'];
+$version			= file_get_json(DIR.'/components/modules/System/meta.json')['version'];
 if (file_exists(DIR.'/build.phar')) {
 	unlink(DIR.'/build.phar');
 }
@@ -56,14 +56,12 @@ if (!empty($_POST['modules'])) {
 		if (is_dir(DIR."/components/modules/$module") && file_exists(DIR."/components/modules/$module/meta.json")) {
 			unlink(DIR."/components/modules/$module/fs.json");
 			$list_				= get_files_list(DIR."/components/modules/$module", false, 'f', true, true, false, false, true);
-			file_put_contents(
+			file_put_json(
 				DIR."/components/modules/$module/fs.json",
-				_json_encode(
-					array_values(
-						_substr(
-							$list_,
-							strlen(DIR."/components/modules/$module/")
-						)
+				array_values(
+					_substr(
+						$list_,
+						strlen(DIR."/components/modules/$module/")
 					)
 				)
 			);
@@ -88,14 +86,12 @@ if (!empty($_POST['plugins'])) {
 		if (is_dir(DIR."/components/plugins/$plugin") && file_exists(DIR."/components/plugins/$plugin/meta.json")) {
 			unlink(DIR."/components/plugins/$plugin/fs.json");
 			$list_				= get_files_list(DIR."/components/plugins/$plugin", false, 'f', true, true, false, false, true);
-			file_put_contents(
+			file_put_json(
 				DIR."/components/plugins/$plugin/fs.json",
-				_json_encode(
-					array_values(
-						_substr(
-							$list_,
-							strlen(DIR."/components/plugins/$plugin/")
-						)
+				array_values(
+					_substr(
+						$list_,
+						strlen(DIR."/components/plugins/$plugin/")
 					)
 				)
 			);

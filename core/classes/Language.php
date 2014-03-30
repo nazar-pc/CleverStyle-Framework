@@ -183,7 +183,7 @@ class Language implements JsonSerializable {
 				/**
 				 * Set system translations
 				 */
-				$this->set(_json_decode_nocomments(file_get_contents(LANGUAGES."/$this->clanguage.json")));
+				$this->set(file_get_json_nocomments(LANGUAGES."/$this->clanguage.json"));
 				$translate				= &$this->translate;
 				$translate['clanguage']	= $this->clanguage;
 				if (!isset($translate['clang'])) {
@@ -201,7 +201,7 @@ class Language implements JsonSerializable {
 				foreach (get_files_list(MODULES, false, 'd') as $module) {
 					if (file_exists(MODULES."/$module/languages/$this->clanguage.json")) {
 						$this->set(
-							_json_decode_nocomments(file_get_contents(MODULES."/$module/languages/$this->clanguage.json")) ?: []
+							file_get_json_nocomments(MODULES."/$module/languages/$this->clanguage.json") ?: []
 						);
 					}
 				}
@@ -212,7 +212,7 @@ class Language implements JsonSerializable {
 				foreach (get_files_list(PLUGINS, false, 'd') as $plugin) {
 					if (file_exists(PLUGINS."/$plugin/languages/$this->clanguage.json")) {
 						$this->set(
-							_json_decode_nocomments(file_get_contents(PLUGINS."/$plugin/languages/$this->clanguage.json")) ?: []
+							file_get_json_nocomments(PLUGINS."/$plugin/languages/$this->clanguage.json") ?: []
 						);
 					}
 				}

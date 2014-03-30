@@ -27,7 +27,7 @@ function install_form () {
 			h::{'tr.expert td'}(
 				'Database engine:',
 				h::{'select[name=db_engine][size=3][selected=MySQLi]'}(
-					_json_decode(file_get_contents(DIR.'/db_engines.json'))
+					file_get_json(DIR.'/db_engines.json')
 				)
 			).
 			h::{'tr.expert td'}(
@@ -66,7 +66,7 @@ function install_form () {
 			h::{'tr td'}(
 				'Language:',
 				h::{'select[name=language][size=3][selected=English]'}(
-					_json_decode(file_get_contents(DIR.'/languages.json'))
+					file_get_json(DIR.'/languages.json')
 				)
 			).
 			h::{'tr td'}(
@@ -201,11 +201,11 @@ function install_process () {
 	$config['url'][]				= $url;
 	$config['admin_email']			= $_POST['admin_email'];
 	$config['language']				= $_POST['language'];
-	$config['languages']			= _json_decode(file_get_contents(DIR.'/languages.json'));
+	$config['languages']			= file_get_json(DIR.'/languages.json');
 	$config['active_languages']		= $config['languages'];
-	$config['themes']				= _json_decode(file_get_contents(DIR.'/themes.json'));
+	$config['themes']				= file_get_json(DIR.'/themes.json');
 	$config['theme']				= array_search('CleverStyle', $config['themes']) !== false ? 'CleverStyle' : $config['themes'][0];
-	$config['color_schemes']		= _json_decode(file_get_contents(DIR.'/color_schemes.json'));
+	$config['color_schemes']		= file_get_json(DIR.'/color_schemes.json');
 	$config['color_scheme']			= $config['color_schemes'][0];
 	$url							= explode('/', explode('//', $url)[1], 2);
 	$config['cookie_domain'][]		= $url[0];
@@ -343,7 +343,7 @@ function install_process () {
 		]
 	];
 	if (file_exists(DIR.'/modules.json')) {
-		foreach (_json_decode(file_get_contents(DIR.'/modules.json')) as $module) {
+		foreach (file_get_json(DIR.'/modules.json') as $module) {
 			$modules[$module]	= [
 				'active'	=> -1,
 				'db'		=> [],

@@ -189,7 +189,7 @@ class Index {
 			$structure_file	= 'index.json';
 		}
 		if (file_exists(MFOLDER."/$structure_file")) {
-			$this->structure	= _json_decode(file_get_contents(MFOLDER."/$structure_file"));
+			$this->structure	= file_get_json(MFOLDER."/$structure_file");
 			if (is_array($this->structure)) {
 				foreach ($this->structure as $item => $value) {
 					if (!is_array($value)) {

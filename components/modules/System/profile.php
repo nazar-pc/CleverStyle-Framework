@@ -9,7 +9,7 @@
  */
 namespace	cs;
 $rc			= &Config::instance()->route;
-$subparts	= _json_decode(file_get_contents(MFOLDER.'/index.json'))[$rc[0]];
+$subparts	= file_get_json(MFOLDER.'/index.json')[$rc[0]];
 $User		= User::instance();
 if (
 	(

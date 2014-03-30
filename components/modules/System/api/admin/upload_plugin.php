@@ -16,7 +16,7 @@ if (User::instance()->system()) {
 	);
 	$tmp_dir		= 'phar://'.$tmp_file;
 	$plugin			= file_get_contents($tmp_dir.'/dir');
-	$fs				= _json_decode(file_get_contents($tmp_dir.'/fs.json'));
+	$fs				= file_get_json($tmp_dir.'/fs.json');
 	$extract		= array_product(
 		array_map(
 			function ($index, $file) use ($tmp_dir, $plugin) {
@@ -32,7 +32,7 @@ if (User::instance()->system()) {
 			array_keys($fs)
 		)
 	);
-	file_put_contents(PLUGINS.'/'.$plugin.'/fs.json', _json_encode(array_keys($fs)));
+	file_put_json(PLUGINS.'/'.$plugin.'/fs.json', array_keys($fs));
 	$Page->content((int)(bool)$extract);
 } else {
 	$Page->content(0);

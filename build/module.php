@@ -20,7 +20,7 @@ if (!isset($_POST['modules'][0])) {
 	echo h::p('Can\'t build module, meta information (meta.json) not found');
 	return;
 }
-$version	= _json_decode(file_get_contents("$mdir/meta.json"))['version'];
+$version	= file_get_json("$mdir/meta.json")['version'];
 if (file_exists(DIR.'/build.phar')) {
 	unlink(DIR.'/build.phar');
 }
@@ -58,7 +58,7 @@ unlink(DIR.'/build.phar');
 if ($set_stub) {
 	$phar->setStub("<?php Phar::webPhar(null, '$set_stub'); __HALT_COMPILER();");
 } else {
-	$meta	= _json_decode(file_get_contents("$mdir/meta.json"));
+	$meta	= file_get_json("$mdir/meta.json");
 	$phar->addFromString('index.html', isset($meta['description']) ? $meta['description'] : $meta['package']);
 	unset($meta);
 	$phar->setStub("<?php Phar::webPhar(null, 'index.html'); __HALT_COMPILER();");

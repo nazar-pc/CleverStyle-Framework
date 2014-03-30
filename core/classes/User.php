@@ -1684,7 +1684,7 @@ class User {
 		$email_hash		= hash('sha224', $email);
 		$login			= strstr($email, '@', true);
 		$login_hash		= hash('sha224', $login);
-		if ($login && in_array($login, _json_decode(file_get_contents(MODULES.'/System/index.json'))['profile']) || $this->get_id($login_hash) !== false) {
+		if ($login && in_array($login, file_get_json(MODULES.'/System/index.json')['profile']) || $this->get_id($login_hash) !== false) {
 			$login		= $email;
 			$login_hash	= $email_hash;
 		}

@@ -14,7 +14,7 @@ $Index					= Index::instance();
 $L						= Language::instance();
 $Page					= Page::instance();
 $providers_config		= $Config->module('HybridAuth')->providers;
-$providers				= _json_decode(file_get_contents(MFOLDER.'/../providers.json'));
+$providers				= file_get_json(MFOLDER.'/../providers.json');
 $Page->css('components/modules/HybridAuth/includes/css/admin.css');
 $Page->main_sub_menu	= h::{'li.uk-active a'}(
 	$L->providers_list,

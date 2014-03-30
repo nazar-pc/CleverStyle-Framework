@@ -79,7 +79,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			 * Extracting new versions of files
 			 */
 			$tmp_dir	= 'phar://'.TEMP.'/'.$User->get_session().'_plugin_update.phar.php';
-			$fs			= _json_decode(file_get_contents("$tmp_dir/fs.json"));
+			$fs			= file_get_json("$tmp_dir/fs.json");
 			$extract	= array_product(
 				array_map(
 					function ($index, $file) use ($tmp_dir, $plugin_dir) {
@@ -128,11 +128,11 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			}
 			unlink($tmp_file);
 			unset($api_request, $tmp_file);
-			file_put_contents("$plugin_dir/fs.json", _json_encode($fs = array_keys($fs)));
+			file_put_json("$plugin_dir/fs.json", $fs = array_keys($fs));
 			/**
 			 * Removing of old unnecessary files and directories
 			 */
-			foreach (array_diff(_json_decode(file_get_contents("$plugin_dir/fs_old.json")), $fs) as $file) {
+			foreach (array_diff(file_get_json("$plugin_dir/fs_old.json"), $fs) as $file) {
 				$file	= "$plugin_dir/$file";
 				if (file_exists($file) && is_writable($file)) {
 					unlink($file);
@@ -146,8 +146,8 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			 * Updating of plugin
 			 */
 			if (file_exists("$plugin_dir/versions.json")) {
-				$old_version	= _json_decode(file_get_contents("$plugin_dir/meta_old.json"))['version'];
-				foreach (_json_decode(file_get_contents("$plugin_dir/versions.json")) as $version) {
+				$old_version	= file_get_json("$plugin_dir/meta_old.json")['version'];
+				foreach (file_get_json("$plugin_dir/versions.json") as $version) {
 					if (version_compare($old_version, $version, '<')) {
 						/**
 						 * PHP update script

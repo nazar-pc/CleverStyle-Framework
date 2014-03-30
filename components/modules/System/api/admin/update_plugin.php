@@ -24,7 +24,7 @@ if (User::instance()->system()) {
 		$Page->content(1);
 	}
 	copy("$plugin_dir/fs.json",		"$plugin_dir/fs_old.json");
-	$fs			= _json_decode(file_get_contents("$tmp_dir/fs.json"));
+	$fs			= file_get_json("$tmp_dir/fs.json");
 	$extract	= array_product(
 		array_map(
 			function ($index, $file) use ($tmp_dir, $plugin_dir) {
@@ -40,11 +40,11 @@ if (User::instance()->system()) {
 			array_keys($fs)
 		)
 	);
-	file_put_contents(PLUGINS.'/'.$plugin.'/fs.json', _json_encode($fs = array_keys($fs)));
+	file_put_json(PLUGINS.'/'.$plugin.'/fs.json', $fs = array_keys($fs));
 	/**
 	 * Removing of old unnecessary files and directories
 	 */
-	foreach (array_diff(_json_decode(file_get_contents($plugin_dir.'/fs_old.json')), $fs) as $file) {
+	foreach (array_diff(file_get_json($plugin_dir.'/fs_old.json'), $fs) as $file) {
 		$file	= "$plugin_dir/$file";
 		if (file_exists($file) && is_writable($file)) {
 			unlink($file);

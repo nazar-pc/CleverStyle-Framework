@@ -713,7 +713,7 @@ function functionality ($functionality) {
 			if ($module_data['active'] != 1 || !file_exists(MODULES."/$module/meta.json")) {
 				continue;
 			}
-			$meta			= _json_decode(file_get_contents(MODULES."/$module/meta.json"));
+			$meta			= file_get_json(MODULES."/$module/meta.json");
 			if (!isset($meta['provide'])) {
 				continue;
 			}
@@ -727,7 +727,7 @@ function functionality ($functionality) {
 			if (!file_exists(PLUGINS."/$plugin/meta.json")) {
 				continue;
 			}
-			$meta			= _json_decode(file_get_contents(PLUGINS."/$plugin/meta.json"));
+			$meta			= file_get_json(PLUGINS."/$plugin/meta.json");
 			if (!isset($meta['provide'])) {
 				continue;
 			}

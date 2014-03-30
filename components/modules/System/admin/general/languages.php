@@ -20,7 +20,7 @@ $translate_engines			= _mb_substr(get_files_list(ENGINES.'/Text', '/^[^_].*?\.ph
 $translate_engines_settings	= [];
 $current_engine_settings	= '';
 foreach ($translate_engines as $engine) {
-	$parameters					= _json_decode(file_get_contents(ENGINES.'/Text/'.$engine.'.json'));
+	$parameters					= file_get_json(ENGINES.'/Text/'.$engine.'.json');
 	if (is_array($parameters) && !empty($parameters)) {
 		$table							= '';
 		foreach ($parameters as $paremeter => $description) {
