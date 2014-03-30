@@ -171,29 +171,29 @@ class Config {
 		/**
 		 * If it  is not the main domain - try to find match in mirrors
 		 */
-		foreach ((array)$this->core['url'] as $i => $url) {
-			$url						= explode('://', $url, 2);
-			$server['mirrors'][$url[0]]	= array_merge(
-				isset($server['mirrors'][$url[0]]) ? $server['mirrors'][$url[0]] : [],
-				isset($url[1]) ? explode(';', $url[1]) : []
+		foreach ((array)$this->core['url'] as $i => $address) {
+			list($protocol, $urls)			= explode('://', $address, 2);
+			$urls							= explode(';', $urls);
+			$server['mirrors'][$protocol]	= array_merge(
+				isset($server['mirrors'][$protocol]) ? $server['mirrors'][$protocol] : [],
+				$urls[0]
 			);
-			$url[1]						= explode(';', $url[1]);
 			/**
 			 * $url = [0 => protocol, 1 => [list of domain and IP addresses]]
 			 */
-			if ($url[0] == $server['protocol']) {
-				foreach ($url[1] as $u) {
-					if (mb_strpos($server['raw_relative_address'], $u) === 0) {
-						$server['base_url']			= "$server[protocol]://$u";
-						$current_mirror_base_url	= $u;
+			if ($protocol == $server['protocol']) {
+				foreach ($urls as $url) {
+					if (mb_strpos($server['raw_relative_address'], $url) === 0) {
+						$server['base_url']			= "$server[protocol]://$url";
+						$current_mirror_base_url	= $url;
 						$server['mirror_index']		= $i;
 						break 2;
 					}
 				}
-				unset($u);
+				unset($url);
 			}
 		}
-		unset($url, $i);
+		unset($address, $i, $urls, $protocol);
 		$server['mirrors']['count'] = count($server['mirrors']['http']) + count($server['mirrors']['https']);
 		/**
 		 * If match was not found - mirror is not allowed!

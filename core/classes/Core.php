@@ -63,8 +63,19 @@ class Core {
 			@mkdir(PCACHE, 0755);
 			file_put_contents(
 				PCACHE.'/.htaccess',
-				"Allow From All\r\nAddEncoding gzip .js\n".
-				"AddEncoding gzip .css"
+				'<FilesMatch "\.(css|js)$">
+	Allow From All
+</FilesMatch>
+<ifModule mod_expires.c>
+	ExpiresActive On
+	ExpiresDefault "access plus 1 month"
+</ifModule>
+<ifModule mod_headers.c>
+	Header set Cache-Control "max-age=2592000, public"
+</ifModule>
+AddEncoding gzip .js
+AddEncoding gzip .css
+'
 			);
 		}
 		if (!is_dir(LOGS)) {

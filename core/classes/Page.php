@@ -60,7 +60,7 @@ class Page {
 				$header_info,
 				$head_prefix		= '',			//Is used as <head prefix="$head_prefix">
 				$no_head			= false;
-	protected	$theme, $color_scheme, $pcache_basename, $includes,
+	protected	$theme, $color_scheme, $pcache_basename,
 				$core_js			= [0 => [], 1 => []],
 				$core_css			= [0 => [], 1 => []],
 				$js					= [0 => [], 1 => []],
@@ -157,7 +157,7 @@ class Page {
 		/**
 		 * Base name for cache files
 		 */
-		$this->pcache_basename	= "_{$this->theme}_{$this->color_scheme}_".Language::instance()->clang.'.';
+		$this->pcache_basename	= "_{$this->theme}_{$this->color_scheme}_".Language::instance()->clang;
 		/**
 		 * Template loading
 		 */
@@ -202,7 +202,7 @@ class Page {
 		 * Loading of CSS and JavaScript
 		 * Getting user information
 		 */
-		$this->get_template()->get_includes()->get_header_info();
+		$this->get_template()->add_includes_on_page()->get_header_info();
 		/**
 		 * Forming page title
 		 */
@@ -733,7 +733,7 @@ class Page {
 	 *
 	 * @return Page
 	 */
-	protected function get_includes () {
+	protected function add_includes_on_page () {
 		if (!($Config = Config::instance(true))) {
 			return $this;
 		}
@@ -744,52 +744,46 @@ class Page {
 			/**
 			 * Current cache checking
 			 */
-			if (
-				!file_exists(PCACHE.'/'.$this->pcache_basename.'css') ||
-				!file_exists(PCACHE.'/'.$this->pcache_basename.'js') ||
-				!file_exists(PCACHE.'/pcache_key')
-			) {
+			if (!file_exists(PCACHE."/$this->pcache_basename.json")) {
 				$this->rebuild_cache();
 			}
-			$key = file_get_contents(PCACHE.'/pcache_key');
-			/**
-			 * Including of CSS
-			 */
-			$css_list = get_files_list(PCACHE, '/^[^_](.*)\.css$/i', 'f', 'storage/pcache');
-			$css_list = array_merge(
-				['storage/pcache/'.$this->pcache_basename.'css'],
-				$css_list
-			);
-			foreach ($css_list as &$file) {
-				$file .= '?'.$key;
+			$data				= file_get_json(PCACHE."/$this->pcache_basename.json");
+			$structure			= $data['structure'];
+			$dependencies		= $data['dependencies'];
+			unset($data);
+			$dependencies		= isset($dependencies[MODULE]) ? $dependencies[MODULE] : [];
+			$includes['css']	= ["storage/pcache/$this->pcache_basename.css?{$structure['']['css']}"];
+			$includes['js']		= ["storage/pcache/$this->pcache_basename.js?{$structure['']['js']}"];
+			$current_url		= str_replace('/', '+', $Config->server['relative_address']);
+			foreach ($structure as $filename_prefix => $hashes) {
+				if (
+					mb_strpos($current_url, $filename_prefix) === 0 ||
+					(
+						$dependencies &&
+						array_search(explode('+', $filename_prefix)[0], $dependencies)
+					)
+				) {
+					foreach ($hashes as $extension => $hash) {
+						$includes[$extension][]	= "storage/pcache/$filename_prefix$this->pcache_basename.$extension?$hash";
+					}
+					unset($extension, $hash);
+				}
 			}
-			unset($file);
-			$this->css_internal($css_list, 'file', true);
-			/**
-			 * Including of JavaScript
-			 */
-			$js_list = get_files_list(PCACHE, '/^[^_](.*)\.js$/i', 'f', 'storage/pcache');
-			$js_list = array_merge(
-				['storage/pcache/'.$this->pcache_basename.'js'],
-				$js_list
-			);
-			foreach ($js_list as &$file) {
-				$file .= '?'.$key;
-			}
-			unset($file);
-			$this->js_internal($js_list, 'file', true);
+			unset($dependencies, $structure, $filename_prefix, $hashes);
+			$this->css_internal($includes['css'], 'file', true);
+			$this->js_internal($includes['js'], 'file', true);
 		} else {
-			$this->get_includes_list();
+			$includes	= $this->get_includes_list();
 			/**
 			 * Including of CSS
 			 */
-			foreach ($this->includes['css'] as $file) {
+			foreach ($includes['css'] as $file) {
 				$this->css_internal($file, 'file', true);
 			}
 			/**
 			 * Including of JavaScript
 			 */
-			foreach ($this->includes['js'] as $file) {
+			foreach ($includes['js'] as $file) {
 				$this->js_internal($file, 'file', true);
 			}
 		}
@@ -798,88 +792,73 @@ class Page {
 	/**
 	 * Getting of JavaScript and CSS files list to be included
 	 *
-	 * @param bool $absolute    If <i>true</i> - absolute paths to files will be returned
+	 * @param bool		$absolute	If <i>true</i> - absolute paths to files will be returned
 	 *
-	 * @return Page
+	 * @return array
 	 */
 	protected function get_includes_list ($absolute = false) {
 		$theme_dir		= THEMES."/$this->theme";
 		$scheme_dir		= "$theme_dir/schemes/$this->color_scheme";
 		$theme_pdir		= "themes/$this->theme";
 		$scheme_pdir	= "$theme_pdir/schemes/$this->color_scheme";
-		/**
+		$get_files		= function ($dir, $prefix_path) {
+			$extension	= explode('/', $dir);
+			$extension	= array_pop($extension);
+			$list		= get_files_list(
+				$dir,
+				"/(.*)\\.$extension/i",
+				'f',
+				$prefix_path,
+				true,
+				false,
+				'!include'
+			) ?: [];
+			sort($list);
+			return $list;
+		};
+			/**
 		 * Get includes of system and theme + color scheme
 		 */
-		$this->includes = [
+		$includes	= [
 			'css' => array_merge(
-				get_files_list(CSS,					'/(.*)\.css$/i',	'f', $absolute ? true : 'includes/css',		true, false, '!include') ?: [],
-				get_files_list("$theme_dir/css",	'/(.*)\.css$/i',	'f', $absolute ? true : "$theme_pdir/css",	true, false, '!include') ?: [],
-				get_files_list("$scheme_dir/css",	'/(.*)\.css$/i',	'f', $absolute ? true : "$scheme_pdir/css",	true, false, '!include') ?: []
+				$get_files(CSS, $absolute ? true : 'includes/css'),
+				$get_files("$theme_dir/css", $absolute ? true : "$theme_pdir/css"),
+				$get_files("$scheme_dir/css", $absolute ? true : "$scheme_pdir/css")
 			),
 			'js' => array_merge(
-				get_files_list(JS,					'/(.*)\.js$/i',		'f', $absolute ? true : 'includes/js',		true, false, '!include') ?: [],
-				get_files_list("$theme_dir/js",		'/(.*)\.js$/i',		'f', $absolute ? true : "$theme_pdir/js",	true, false, '!include') ?: [],
-				get_files_list("$scheme_dir/js",	'/(.*)\.js$/i',		'f', $absolute ? true : "$scheme_pdir/js",	true, false, '!include') ?: []
+				$get_files(JS, $absolute ? true : 'includes/js'),
+				$get_files("$theme_dir/js", $absolute ? true : "$theme_pdir/js"),
+				$get_files("$scheme_dir/js", $absolute ? true : "$scheme_pdir/js")
 			)
 		];
 		unset($theme_dir, $scheme_dir, $theme_pdir, $scheme_pdir);
-		sort($this->includes['css']);
-		sort($this->includes['js']);
-		$Config			= Config::instance();
-		foreach ($Config->components['modules'] as $module => $mdata) {
-			if (!$mdata['active'] == '1') {
+		$Config		= Config::instance();
+		foreach ($Config->components['modules'] as $module_name => $module_data) {
+			if ($module_data['active'] == -1) {
 				continue;
 			}
-			$css	= get_files_list(
-				MODULES."/$module/includes/css",
-				'/(.*)\.css$/i',
-				'f',
-				$absolute ? true : "components/modules/$module/includes/css",
-				true,
-				false,
-				'!include'
-			) ?: [];
-			sort($css);
-			$this->includes['css']	= array_merge($this->includes['css'], $css);
-			$js		= get_files_list(
-				MODULES."/$module/includes/js",
-				'/(.*)\.js/i',
-				'f',
-				$absolute ? true : "components/modules/$module/includes/js",
-				true,
-				false,
-				'!include'
-			) ?: [];
-			sort($js);
-			$this->includes['js']	= array_merge($this->includes['js'], $js);
+			$includes['css']	= array_merge(
+				$includes['css'],
+				$get_files(MODULES."/$module_name/includes/css", $absolute ? true : "components/modules/$module_name/includes/css")
+			);
+			$includes['js']		= array_merge(
+				$includes['js'],
+				$get_files(MODULES."/$module_name/includes/js", $absolute ? true : "components/modules/$module_name/includes/js")
+			);
 		}
-		unset($module, $mdata, $css, $js);
-		foreach ($Config->components['plugins'] as $plugin) {
-			$css	= get_files_list(
-				PLUGINS."/$plugin/includes/css",
-				'/(.*)\.css$/i',
-				'f',
-				$absolute ? true : "components/plugins/$plugin/includes/css",
-				true,
-				false,
-				'!include'
-			) ?: [];
-			sort($css);
-			$this->includes['css']	= array_merge($this->includes['css'], $css);
-			$js		= get_files_list(
-				PLUGINS."/$plugin/includes/js",
-				'/(.*)\.js/i',
-				'f',
-				$absolute ? true : "components/plugins/$plugin/includes/js",
-				true,
-				false,
-				'!include'
-			) ?: [];
-			sort($js);
-			$this->includes['js']	= array_merge($this->includes['js'], $js);
+		unset($module_name, $module_data);
+		foreach ($Config->components['plugins'] as $plugin_name) {
+			$includes['css']	= array_merge(
+				$includes['css'],
+				$get_files(PLUGINS."/$plugin_name/includes/css", $absolute ? true : "components/plugins/$plugin_name/includes/css")
+			);
+			$includes['js']		= array_merge(
+				$includes['js'],
+				$get_files(PLUGINS."/$plugin_name/includes/js", $absolute ? true : "components/plugins/$plugin_name/includes/js")
+			);
 		}
-		unset($plugin, $css, $js);
-		return $this;
+		unset($plugin_name);
+		return $includes;
 	}
 	/**
 	 * Rebuilding of JavaScript and CSS cache
@@ -887,41 +866,182 @@ class Page {
 	 * @return Page
 	 */
 	protected function rebuild_cache () {
-		$key	= '';
-		Trigger::instance()->run(
-			'System/Page/rebuild_cache',
-			[
-				'key'	=> &$key
-			]
-		);
-		$this->get_includes_list(true);
-		foreach ($this->includes as $extension => &$files) {
-			$temp_cache = '';
-			foreach ($files as $file) {
-				if (file_exists($file)) {
-					$current_cache = file_get_contents($file);
-					if ($extension == 'css') {
-						/**
-						 * Insert external elements into resulting css file.
-						 * It is needed, because those files will not be copied into new destination of resulting css file.
-						 */
-						$this->css_includes_processing($current_cache, $file);
+		/**
+		 * Get all includes
+		 */
+		$all_includes			= $this->get_includes_list(true);
+		$includes_map			= [];
+		$dependencies			= [];
+		$dependencies_aliases	= [];
+		/**
+		 * According to components's maps some files should be included only on specific pages.
+		 * Here we read this rules, and remove from whole includes list such items, that should be included only on specific pages.
+		 * Also collect dependencies.
+		 */
+		$Config			= Config::instance();
+		foreach ($Config->components['modules'] as $module_name => $module_data) {
+			if ($module_data['active'] == -1) {
+				continue;
+			}
+			if (file_exists(MODULES."/$module_name/meta.json")) {
+				$meta	= file_get_json_nocomments(MODULES."/$module_name/meta.json");
+				if (isset($meta['require'])) {
+					foreach ((array)$meta['require'] as $r) {
+						preg_match('/([^=<>]+)/', $r, $r);
+						$dependencies[$module_name][]	= $r[0];
 					}
-					if ($extension == 'js') {
-						$current_cache .= ';';
+					unset($r);
+				}
+				if (isset($meta['optional'])) {
+					foreach ((array)$meta['optional'] as $o) {
+						$dependencies[$module_name][]	= $o;
 					}
-					$temp_cache .= $current_cache;
-					unset($current_cache);
+					unset($o);
+				}
+				if (isset($meta['provide'])) {
+					foreach ((array)$meta['provide'] as $p) {
+						$dependencies_aliases[$p]	= $module_name;
+					}
+					unset($p);
+				}
+				unset($meta);
+			}
+			if (!file_exists(MODULES."/$module_name/includes/map.json")) {
+				continue;
+			}
+			foreach (file_get_json_nocomments(MODULES."/$module_name/includes/map.json") as $path	=> $files) {
+				foreach ($files as $file) {
+					$extension							= explode('.', $file);
+					$extension							= array_pop($extension);
+					$file								= MODULES."/$module_name/includes/$extension/$file";
+					$includes_map[$path][$extension][]	= $file;
+					$all_includes[$extension]			= array_diff(
+						$all_includes[$extension],
+						[$file]
+					);
 				}
 			}
-			if ($extension == 'js') {
-				$temp_cache	= "window.cs.Language="._json_encode(Language::instance()).";$temp_cache";
-			}
-			file_put_contents(PCACHE."/$this->pcache_basename$extension", gzencode($temp_cache, 9), LOCK_EX | FILE_BINARY);
-			$key .= md5($temp_cache);
+			unset($path, $files, $file);
 		}
-		file_put_contents(PCACHE.'/pcache_key', mb_substr(md5($key), 0, 5), LOCK_EX | FILE_BINARY);
+		unset($module_name, $module_data);
+		foreach ($Config->components['plugins'] as $plugin_name) {
+			if (file_exists(PLUGINS."/$plugin_name/meta.json")) {
+				$meta	= file_get_json_nocomments(PLUGINS."/$plugin_name/meta.json");
+				if (isset($meta['require'])) {
+					foreach ((array)$meta['require'] as $r) {
+						preg_match('/([^=<>]+)/', $r, $r);
+						$dependencies[$plugin_name][]	= $r[0];
+					}
+					unset($r);
+				}
+				if (isset($meta['optional'])) {
+					foreach ((array)$meta['optional'] as $o) {
+						$dependencies[$plugin_name][]	= $o;
+					}
+					unset($o);
+				}
+				if (isset($meta['provide'])) {
+					foreach ((array)$meta['provide'] as $p) {
+						$dependencies_aliases[$p]	= $plugin_name;
+					}
+					unset($p);
+				}
+				unset($meta);
+			}
+			if (!file_exists(PLUGINS."/$plugin_name/includes/map.json")) {
+				continue;
+			}
+			foreach (file_get_json_nocomments(PLUGINS."/$plugin_name/includes/map.json") as $path => $files) {
+				foreach ($files as $file) {
+					$extension							= explode('.', $file);
+					$extension							= array_pop($extension);
+					$file								= PLUGINS."/$plugin_name/includes/$extension/$file";
+					$includes_map[$path][$extension][]	= $file;
+					$all_includes[$extension]			= array_diff(
+						$all_includes[$extension],
+						[$file]
+					);
+				}
+			}
+			unset($path, $files, $file);
+		}
+		unset($plugin_name);
+		/**
+		 * For consistency
+		 */
+		$includes_map['']['css']	= $all_includes['css'];
+		$includes_map['']['js']		= $all_includes['js'];
+		unset($all_includes);
+		/**
+		 * Components can depend on each other - we need to find all dependencies and replace aliases by real names of components
+		 */
+		foreach ($dependencies as $component_name => &$depends_on) {
+			foreach ($depends_on as $index => &$dependency) {
+				if (isset($dependencies_aliases[$dependency])) {
+					$dependency	= $dependencies_aliases[$dependency];
+				}
+				if (!isset($includes_map[$dependency])) {
+					unset($depends_on[$index]);
+				}
+			}
+			if (empty($depends_on)) {
+				unset($dependencies[$component_name]);
+			} else {
+				$depends_on	= array_unique($depends_on);
+			}
+		}
+		unset($depends_on, $index, $dependency, $dependencies_aliases);
+		$structure	= [];
+		foreach ($includes_map as $filename_prefix => $includes) {
+			$filename_prefix				= str_replace('/', '+', $filename_prefix);
+			$structure[$filename_prefix]	= $this->create_cached_includes_files($filename_prefix, $includes);
+		}
+		unset($includes_map, $filename_prefix, $includes);
+		file_put_json(PCACHE."/$this->pcache_basename.json", [
+			'dependencies'	=> $dependencies,
+			'structure'		=> $structure
+		]);
+		unset($structure);
+		Trigger::instance()->run('System/Page/rebuild_cache');
 		return $this;
+	}
+	/**
+	 * Creates cached version of given js and css files.<br>
+	 * Resulting file name consists of <b>$filename_prefix</b> and <b>$this->pcache_basename</b>
+	 *
+	 * @param string	$filename_prefix
+	 * @param array		$includes			Array of paths to files, may have keys: <b>css</b> and/or <b>js</b>
+	 *
+	 * @return array
+	 */
+	protected function create_cached_includes_files ($filename_prefix, $includes) {
+		$cache_hash	= [];
+		foreach ($includes as $extension => &$files) {
+			$files_content = '';
+			foreach ($files as $file) {
+				if (!file_exists($file)) {
+					continue;
+				}
+				/**
+				 * Insert external elements into resulting css file.
+				 * It is needed, because those files will not be copied into new destination of resulting css file.
+				 */
+				if ($extension == 'css') {
+					$files_content .= $this->css_includes_processing(
+						file_get_contents($file),
+						$file
+					);
+				} else {
+					$files_content .= file_get_contents($file).';';
+				}
+			}
+			if ($filename_prefix == '' && $extension == 'js') {
+				$files_content	= "window.cs.Language="._json_encode(Language::instance()).";$files_content";
+			}
+			file_put_contents(PCACHE."/$filename_prefix$this->pcache_basename.$extension", gzencode($files_content, 9), LOCK_EX | FILE_BINARY);
+			$cache_hash[$extension]	= substr(md5($files_content), 0, 5);
+		}
+		return $cache_hash;
 	}
 	/**
 	 * Analyses file for images, fonts and css links and include they content into single resulting css file.<br>
