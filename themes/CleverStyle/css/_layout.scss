@@ -10,6 +10,12 @@
 $left-column			: 15%;
 $right-column			: 15%;
 
+html {
+	font       : {
+		family : $base-font-family;
+		size   : $base-font-size;
+	}
+}
 //Whole body
 body {
 	font       : {
