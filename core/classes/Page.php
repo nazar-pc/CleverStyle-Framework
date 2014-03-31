@@ -975,22 +975,50 @@ class Page {
 		/**
 		 * Components can depend on each other - we need to find all dependencies and replace aliases by real names of components
 		 */
-		foreach ($dependencies as $component_name => &$depends_on) {
-			foreach ($depends_on as $index => &$dependency) {
-				if (isset($dependencies_aliases[$dependency])) {
-					$dependency	= $dependencies_aliases[$dependency];
+		$process_dependencies	= function (&$dependencies) use (&$process_dependencies, $dependencies_aliases) {
+			$iterate_again	= false;
+			foreach ($dependencies as $component_name => &$depends_on) {
+				foreach ($depends_on as $index => &$dependency) {
+					if (isset($dependencies_aliases[$dependency])) {
+						$dependency	= $dependencies_aliases[$dependency];
+					}
+					/**
+					 * If dependency have its own dependencies, that are nor present in current component - add them and mark, that it is necessary
+					 * to iterate through array again
+					 */
+					/*if (
+						isset($dependencies[$dependency]) &&
+						$dependencies[$dependency] &&
+						array_diff($dependencies[$dependency], $depends_on)
+					) {
+						$depends_on		= array_merge($depends_on, $dependencies[$dependency]);
+						$iterate_again	= true;
+					}*/
 				}
+				if (empty($depends_on)) {
+					unset($dependencies[$component_name]);
+				} else {
+					$depends_on = array_unique($depends_on);
+				}
+			}
+			unset($component_name, $depends_on, $index, $dependency);
+			if ($iterate_again) {
+				$process_dependencies($dependencies);
+			}
+		};
+		$process_dependencies($dependencies);
+		unset($dependencies_aliases);
+		/**
+		 * Clean dependencies without files
+		 */
+		foreach ($dependencies as &$depends_on) {
+			foreach ($depends_on as $index => &$dependency) {
 				if (!isset($includes_map[$dependency])) {
 					unset($depends_on[$index]);
 				}
 			}
-			if (empty($depends_on)) {
-				unset($dependencies[$component_name]);
-			} else {
-				$depends_on	= array_unique($depends_on);
-			}
 		}
-		unset($depends_on, $index, $dependency, $dependencies_aliases);
+		unset($depends_on, $index, $dependency);
 		$structure	= [];
 		foreach ($includes_map as $filename_prefix => $includes) {
 			$filename_prefix				= str_replace('/', '+', $filename_prefix);
