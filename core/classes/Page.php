@@ -756,11 +756,16 @@ class Page {
 			$includes['js']		= ["storage/pcache/$this->pcache_basename.js?{$structure['']['js']}"];
 			$current_url		= str_replace('/', '+', $Config->server['relative_address']);
 			foreach ($structure as $filename_prefix => $hashes) {
+				$prefix_module	= explode('+', $filename_prefix);
+				$prefix_module	= $prefix_module[0] != 'admin' ? $prefix_module[0] : $prefix_module[1];
 				if (
-					mb_strpos($current_url, $filename_prefix) === 0 ||
+					(
+						$filename_prefix &&
+						mb_strpos($current_url, $filename_prefix) === 0
+					) ||
 					(
 						$dependencies &&
-						array_search(explode('+', $filename_prefix)[0], $dependencies)
+						array_search($prefix_module, $dependencies) !== false
 					)
 				) {
 					foreach ($hashes as $extension => $hash) {
@@ -768,6 +773,7 @@ class Page {
 					}
 					unset($extension, $hash);
 				}
+				unset($prefix_module);
 			}
 			unset($dependencies, $structure, $filename_prefix, $hashes);
 			$this->css_internal($includes['css'], 'file', true);
@@ -975,39 +981,33 @@ class Page {
 		/**
 		 * Components can depend on each other - we need to find all dependencies and replace aliases by real names of components
 		 */
-		$process_dependencies	= function (&$dependencies) use (&$process_dependencies, $dependencies_aliases) {
-			$iterate_again	= false;
-			foreach ($dependencies as $component_name => &$depends_on) {
-				foreach ($depends_on as $index => &$dependency) {
-					if (isset($dependencies_aliases[$dependency])) {
-						$dependency	= $dependencies_aliases[$dependency];
+		foreach ($dependencies as $component_name => &$depends_on) {
+			foreach ($depends_on as $index => &$dependency) {
+				if (isset($dependencies_aliases[$dependency])) {
+					$dependency	= $dependencies_aliases[$dependency];
+				}
+				/**
+				 * If dependency have its own dependencies, that are nor present in current component - add them and mark, that it is necessary
+				 * to iterate through array again
+				 */
+				if (
+					isset($dependencies[$dependency]) &&
+					$dependencies[$dependency] &&
+					array_diff($dependencies[$dependency], $depends_on)
+				) {
+					foreach (array_diff($dependencies[$dependency], $depends_on) as $new_dependency) {
+						$depends_on[]	= $new_dependency;
 					}
-					/**
-					 * If dependency have its own dependencies, that are nor present in current component - add them and mark, that it is necessary
-					 * to iterate through array again
-					 */
-					/*if (
-						isset($dependencies[$dependency]) &&
-						$dependencies[$dependency] &&
-						array_diff($dependencies[$dependency], $depends_on)
-					) {
-						$depends_on		= array_merge($depends_on, $dependencies[$dependency]);
-						$iterate_again	= true;
-					}*/
-				}
-				if (empty($depends_on)) {
-					unset($dependencies[$component_name]);
-				} else {
-					$depends_on = array_unique($depends_on);
+					unset($new_dependency);
 				}
 			}
-			unset($component_name, $depends_on, $index, $dependency);
-			if ($iterate_again) {
-				$process_dependencies($dependencies);
+			if (empty($depends_on)) {
+				unset($dependencies[$component_name]);
+			} else {
+				$depends_on = array_unique($depends_on);
 			}
-		};
-		$process_dependencies($dependencies);
-		unset($dependencies_aliases);
+		}
+		unset($dependencies_aliases, $component_name, $depends_on, $index, $dependency);
 		/**
 		 * Clean dependencies without files
 		 */

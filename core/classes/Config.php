@@ -176,7 +176,7 @@ class Config {
 			$urls							= explode(';', $urls);
 			$server['mirrors'][$protocol]	= array_merge(
 				isset($server['mirrors'][$protocol]) ? $server['mirrors'][$protocol] : [],
-				$urls[0]
+				[$urls[0]]
 			);
 			/**
 			 * $url = [0 => protocol, 1 => [list of domain and IP addresses]]
