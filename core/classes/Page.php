@@ -1081,7 +1081,7 @@ class Page {
 	 *
 	 * @return	string			$data
 	 */
-	function css_includes_processing (&$data, $file) {
+	function css_includes_processing ($data, $file) {
 		$cwd	= getcwd();
 		chdir(dirname($file));
 		/**
@@ -1173,7 +1173,7 @@ class Page {
 				 * For recursive includes processing, if CSS file includes others CSS files
 				 */
 				if ($format == 'css') {
-					$this->css_includes_processing($content, realpath($link));
+					$content	= $this->css_includes_processing($content, realpath($link));
 				}
 				$content	= base64_encode($content);
 				return str_replace($match[count($match) - 1], "data:$mime_type;charset=utf-8;base64,$content", $match[0]);
