@@ -1087,11 +1087,12 @@ class Page {
 		/**
 		 * Remove comments, tabs and new lines
 		 */
-		$data	= preg_replace('#(/\*.*?\*/)|\t|\n|\r#s', '', $data);
+		$data	= preg_replace('#(/\*.*?\*/)|\t|\n|\r#s', ' ', $data);
 		/**
 		 * Remove unnecessary spaces
 		 */
 		$data	= preg_replace('#\s*([,;+>{}\(])\s*#s', '$1', $data);
+		$data	= preg_replace('#\s+#s', ' ', $data);
 		/**
 		 * Remove unnecessary trailing semicolons
 		 */
