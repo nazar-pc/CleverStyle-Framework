@@ -32,25 +32,25 @@ trait CRUD {
 					$argument	= $model($argument);
 					return;
 				}
-				$model	= explode(':', $model);
-				switch ($model[0]) {
+				list($type, $format) = explode(':', $model)[2];
+				switch ($type) {
 					case 'int':
 					case 'float':
 						$argument	= $model[0] == 'int' ? (int)$argument : (float)$argument;
 						/**
 						 * Ranges processing
 						 */
-						if (isset($model[1])) {
-							$model[1]	= explode('..', $model[1]);
+						if (isset($format)) {
+							list($min, $max) = explode('..', $format);
 							/**
 							 * Minimum
 							 */
-							$argument	= max($argument, $model[1][0]);
+							$argument	= max($argument, $min);
 							/**
 							 * Maximum
 							 */
-							if (isset($model[1][1])) {
-								$argument	= min($argument, $model[1][1]);
+							if (isset($max)) {
+								$argument	= min($argument, $max);
 							}
 						}
 					break;
@@ -60,9 +60,14 @@ trait CRUD {
 						/**
 						 * Truncation
 						 */
-						if (isset($model[1])) {
-							$model[1]	= explode(':', $model[1]);
-							$argument	= truncate($argument, $model[1][0], isset($model[1][1]) ? $model[1][1] : '...', true);
+						if (isset($format)) {
+							list($length, $ending) = explode(':', $format);
+							$argument	= truncate($argument, $length, isset($ending) ? $ending : '...', true);
+						}
+					case 'set':
+						$allowed_arguments	= explode(',', $format);
+						if (array_search($argument, $allowed_arguments) === false) {
+							$argument	= $allowed_arguments[0];
 						}
 					break;
 				}
