@@ -28,10 +28,7 @@ abstract class Base extends BananaHTML {
 	 * @return string
 	 */
 	protected static function url_with_hash ($url) {
-		if ($Config = Config::instance(true)) {
-			$url	= $Config->base_url().'/'.$Config->server['raw_relative_address'].$url;
-		}
-		return $url;
+		return $_SERVER['REQUEST_URI'].$url;
 	}
 	/**
 	 * Convert relative URL to absolute
