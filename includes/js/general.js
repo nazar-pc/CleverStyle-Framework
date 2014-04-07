@@ -63,8 +63,6 @@
       }, function() {
         return $(':button:not(.cs-no-ui), .cs-button, .cs-button-compact').addClass('uk-button').disableSelection();
       }, function() {
-        return $('.cs-dialog').cs().modal();
-      }, function() {
         return $('textarea:not(.cs-no-ui)').not('.cs-no-resize, .EDITOR, .SIMPLE_EDITOR').autosize({
           append: "\n"
         });

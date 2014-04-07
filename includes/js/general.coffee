@@ -44,8 +44,6 @@ $ ->
 				.addClass('uk-button')
 				.disableSelection()
 		->
-			$('.cs-dialog').cs().modal()
-		->
 			$('textarea:not(.cs-no-ui)')
 				.not('.cs-no-resize, .EDITOR, .SIMPLE_EDITOR')
 				.autosize

@@ -62,11 +62,6 @@ button, input, select, textarea {
 	padding : .2em .3em !important;
 }
 
-.cs-dialog {
-	display    : none;
-	text-align : left;
-}
-
 @include cs-align(left);
 @include cs-align(center);
 @include cs-align(right);

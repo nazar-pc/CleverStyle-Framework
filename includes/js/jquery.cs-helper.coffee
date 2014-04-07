@@ -151,9 +151,6 @@ do ($=jQuery) ->
 			this.each ->
 				$this	= $(@)
 				if !$this.data('modal')
-					$this
-						.addClass('uk-modal')
-						.data('modal', new UI.modal.Modal($this))
 					content	= $this.children()
 					if !content.length
 						content	= $this
@@ -172,6 +169,9 @@ do ($=jQuery) ->
 						$('<h3 />')
 							.html(content.attr('title'))
 							.prependTo(content)
+					$this
+						.addClass('uk-modal')
+						.data('modal', new UI.modal.Modal($this))
 				modal	= $this.data('modal')
 				switch mode
 					when 'show' then modal.show()

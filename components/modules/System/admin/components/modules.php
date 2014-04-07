@@ -578,8 +578,8 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 				} else {
 					$tag = 'div';
 				}
-				$addition_state .= h::{'div.cs-dialog'}(
-					h::$tag($tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)),
+				$addition_state .= h::{'div.uk-modal.cs-left'}(
+					h::{"$tag.uk-modal-dialog-large"}($tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)),
 					[
 						'id'			=> "{$module}_api",
 						'title'			=> "$module » $L->api"
@@ -607,8 +607,8 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 			}
 			$uniqid			= uniqid('module_info_');
 			$Page->replace($uniqid, $tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file));
-			$addition_state .= h::{'div.cs-dialog'}(
-				h::$tag($uniqid),
+			$addition_state .= h::{'div.uk-modal.cs-left'}(
+				h::{"$tag.uk-modal-dialog-large"}($uniqid),
 				[
 					'id'			=> "{$module}_readme",
 					'title'			=> "$module » $L->information_about_module"
@@ -633,8 +633,8 @@ foreach ($Config->components['modules'] as $module => &$mdata) {
 			} else {
 				$tag = 'div';
 			}
-			$addition_state .= h::{'div.cs-dialog'}(
-				h::$tag(file_get_contents($file)),
+			$addition_state .= h::{'div.uk-modal.cs-left'}(
+				h::{"$tag.uk-modal-dialog-large"}(file_get_contents($file)),
 				[
 					'id'			=> "{$module}_license",
 					'title'			=> "$module » $L->license"

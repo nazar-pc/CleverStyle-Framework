@@ -381,7 +381,7 @@ if (isset($rc[2])) {
 	);
 }
 $test_dialog && $a->content(
-	h::{'div#cs-db-test.cs-dialog div'}(
+	h::{'div#cs-db-test.uk-modal div'}(
 		h::h3($L->test_connection).
 		h::div()
 	)

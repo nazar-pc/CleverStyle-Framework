@@ -156,7 +156,6 @@
           var $this, content, modal;
           $this = $(this);
           if (!$this.data('modal')) {
-            $this.addClass('uk-modal').data('modal', new UI.modal.Modal($this));
             content = $this.children();
             if (!content.length) {
               content = $this.wrapInner('<div />').children();
@@ -171,6 +170,7 @@
             if (content.attr('title')) {
               $('<h3 />').html(content.attr('title')).prependTo(content);
             }
+            $this.addClass('uk-modal').data('modal', new UI.modal.Modal($this));
           }
           modal = $this.data('modal');
           switch (mode) {

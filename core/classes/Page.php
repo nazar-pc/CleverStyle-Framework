@@ -1555,7 +1555,7 @@ class Page {
 				],
 				[
 					$this->debug_info ? h::level(
-						h::{'div#cs-debug.cs-dialog div'}(
+						h::{'div#cs-debug.uk-modal div.uk-modal-dialog-large'}(
 							h::level($this->debug_info),
 							[
 								'title'			=> Language::instance()->debug,

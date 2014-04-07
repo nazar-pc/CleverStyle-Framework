@@ -218,7 +218,7 @@ if (isset($rc[2])) {
 	unset($storage_list);
 }
 $test_dialog && $a->content(
-	h::{'div#cs-storage-test.cs-dialog div'}(
+	h::{'div#cs-storage-test.uk-modal div'}(
 		h::h3($L->test_connection).
 		h::div()
 	)
