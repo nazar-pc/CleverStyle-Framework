@@ -17,7 +17,7 @@ $L				= Language::instance();
 $Index->buttons	= false;
 Page::instance()->title($L->browse_sections);
 $Index->content(
-	h::{'table.cs-left-all.cs-table-borderless'}(
+	h::{'table.cs-left-all.cs-table'}(
 		h::{'thead tr th'}(
 			[
 				$L->blogs_sections,

@@ -24,13 +24,6 @@ $Page
 $rc						= Config::instance()->route;
 $Index->main_sub_menu	= [
 	[
-		$L->general,
-		[
-			'href'	=> 'admin/Blogs',
-			'class'	=> !isset($rc[0]) || $rc[0] == 'general' ? 'uk-active' : false
-		]
-	],
-	[
 		$L->browse_sections,
 		[
 			'href'	=> 'admin/Blogs/browse_sections',
@@ -42,6 +35,13 @@ $Index->main_sub_menu	= [
 		[
 			'href'	=> 'admin/Blogs/browse_posts',
 			'class'	=> isset($rc[0]) && $rc[0] == 'browse_posts' ? 'uk-active' : false
+		]
+	],
+	[
+		$L->general,
+		[
+			'href'	=> 'admin/Blogs',
+			'class'	=> !isset($rc[0]) || $rc[0] == 'general' ? 'uk-active' : false
 		]
 	]
 ];
