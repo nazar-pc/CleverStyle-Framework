@@ -215,8 +215,18 @@ class Config {
 			$ref['protocol']	= $referer[0];
 			$ref['host']		= $referer[1];
 			unset($referer);
-			$ref['local']		= in_array($ref['host'], $server['mirrors'][$ref['protocol']]);
-			unset($ref);
+			foreach ((array)$this->core['url'] as $address) {
+				list($protocol, $urls)	= explode('://', $address, 2);
+				$urls					= explode(';', $urls);
+				if (
+					$protocol === $ref['protocol'] &&
+					in_array($ref['host'], $urls)
+				) {
+					$ref['local']		= true;
+					break;
+				}
+			}
+			unset($ref, $address, $protocol, $urls);
 		}
 		/**
 		 * Preparing page url without basic path

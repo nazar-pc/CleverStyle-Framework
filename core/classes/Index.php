@@ -214,7 +214,7 @@ class Index {
 				}
 				unset($item, $value, $subpart);
 			}
-		} elseif (API && !file_exists(MFOLDER.'/index.php')) {
+		} elseif (API && !file_exists(MFOLDER.'/index.php') && !file_exists(MFOLDER."/index.$this->request_method.php")) {
 			error_code(404);
 			return;
 		}
