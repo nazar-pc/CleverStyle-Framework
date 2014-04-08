@@ -528,6 +528,7 @@ class Index {
 			) {
 				continue;
 			}
+			$block['title']	= $Text->process($Config->module('System')->db('texts'), $block['title'], true, true);
 			if (Trigger::instance()->run(
 				'System/Index/block_render',
 				[
@@ -557,7 +558,7 @@ class Index {
 					],
 					[
 						$block['index'],
-						$Text->process($Config->module('System')->db('texts'), $block['title'], true, true),
+						$block['title'],
 						$content
 					],
 					ob_wrapper(function () use ($template) {
