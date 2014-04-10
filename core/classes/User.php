@@ -302,6 +302,11 @@ class User {
 			if ($Config->core['multilingual']) {
 				Language::instance()->change($this->language);
 			}
+		} elseif ($Config->core['multilingual']) {
+			/**
+			 * Automatic detection of current language for guest
+			 */
+			Language::instance()->change('');
 		}
 		/**
 		 * Security check
