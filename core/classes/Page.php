@@ -1547,6 +1547,7 @@ class Page {
 			) {
 				$this->get_debug_info();
 			}
+			Trigger::instance()->run('System/Page/display');
 			echo str_replace(
 				[
 					'<!--debug_info-->',
