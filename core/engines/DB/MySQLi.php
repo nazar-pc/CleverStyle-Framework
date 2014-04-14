@@ -14,16 +14,7 @@ class MySQLi extends _Abstract {
 	protected	$instance;
 
 	/**
-	 * Connecting to the DB
-	 *
-	 * @param string	$database
-	 * @param string	$user
-	 * @param string	$password
-	 * @param string	$host
-	 * @param string	$charset
-	 * @param string	$prefix
-	 *
-	 * @return bool|MySQLi
+	 * @inheritdoc
 	 */
 	function __construct ($database, $user = '', $password = '', $host = 'localhost', $charset = 'utf8', $prefix = '') {
 		$this->connecting_time	= microtime(true);
@@ -65,15 +56,8 @@ class MySQLi extends _Abstract {
 		$this->prefix			= $prefix;
 		return $this;
 	}
-
 	/**
-	 * SQL request into DB
-	 *
-	 * @abstract
-	 *
-	 * @param string|string[] $query
-	 *
-	 * @return bool|object|resource
+	 * @inheritdoc
 	 */
 	protected function q_internal ($query) {
 		if ($this->async && defined('MYSQLI_ASYNC')) {
@@ -83,13 +67,14 @@ class MySQLi extends _Abstract {
 		}
 	}
 	/**
-	 * Number
-	 *
-	 * Getting number of selected rows
-	 *
-	 * @param object 	$query_result
-	 *
-	 * @return bool|int
+	 * @inheritdoc
+	 */
+	protected function q_multi_internal ($query) {
+		$query	= implode(';', $query);
+		return @$this->instance->multi_query($query);
+	}
+	/**
+	 * @inheritdoc
 	 */
 	function n ($query_result) {
 		if(is_object($query_result)) {
@@ -99,16 +84,7 @@ class MySQLi extends _Abstract {
 		}
 	}
 	/**
-	 * Fetch
-	 *
-	 * Fetch a result row as an associative array
-	 *
-	 * @param object				$query_result
-	 * @param bool					$single_column
-	 * @param bool					$array
-	 * @param bool					$indexed
-	 *
-	 * @return array|bool|string
+	 * @inheritdoc
 	 */
 	function f ($query_result, $single_column = false, $array = false, $indexed = false) {
 		if ($single_column) {
@@ -142,31 +118,19 @@ class MySQLi extends _Abstract {
 		}
 	}
 	/**
-	 * Id
-	 *
-	 * Get id of last inserted row
-	 *
-	 * @return int
+	 * @inheritdoc
 	 */
 	function id () {
 		return $this->instance->insert_id;
 	}
 	/**
-	 * Affected
-	 *
-	 * Get number of affected rows during last query
-	 *
-	 * @return int
+	 * @inheritdoc
 	 */
 	function affected () {
 		return $this->instance->affected_rows;
 	}
 	/**
-	 * Free result memory
-	 *
-	 * @param object	$query_result
-	 *
-	 * @return bool
+	 * @inheritdoc
 	 */
 	function free ($query_result) {
 		if(is_object($query_result)) {
@@ -176,28 +140,20 @@ class MySQLi extends _Abstract {
 		}
 	}
 	/**
-	 * Preparing string for using in SQL query
-	 * SQL Injection Protection
-	 *
-	 * @param string	$string
-	 * @param bool		$single_quotes_around
-	 *
-	 * @return string
+	 * @inheritdoc
 	 */
 	protected function s_internal ($string, $single_quotes_around) {
 		$return	= $this->instance->real_escape_string($string);
 		return $single_quotes_around ? "'$return'" : $return;
 	}
 	/**
-	 * Get information about server
-	 *
-	 * @return string
+	 * @inheritdoc
 	 */
 	function server () {
 		return $this->instance->server_info;
 	}
 	/**
-	 * Disconnecting from DB
+	 * @inheritdoc
 	 */
 	function __destruct () {
 		if($this->connected && is_object($this->instance)) {

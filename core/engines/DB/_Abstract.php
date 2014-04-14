@@ -78,6 +78,8 @@ abstract class _Abstract {
 	 * @param string	$host
 	 * @param string	$charset
 	 * @param string	$prefix
+	 *
+	 * @return self
 	 */
 	abstract function __construct ($database, $user = '', $password = '', $host = 'localhost', $charset = 'utf8', $prefix = '');
 	/**
@@ -118,16 +120,23 @@ abstract class _Abstract {
 			unset($param);
 		}
 		if (is_array($query) && !empty($query)) {
-			$return = true;
+			$time_from	= microtime(true);
 			foreach ($query as &$q) {
+				$local_params	= $params;
 				if (is_array($q)) {
 					if (count($q) > 1) {
-						$params	= array_slice($q, 1);
+						$local_params	= array_slice($q, 1);
 					}
-					$q		= $q[0];
+					$q	= $q[0];
+					$q	= empty($local_params) ? $q : vsprintf($q, $local_params);
 				}
-				$return = $return && $this->q(empty($params) ? $q : vsprintf($q, $params));
 			}
+			unset($local_params, $q);
+			$db						= DB::instance();
+			$this->queries['num']	+= count($query);
+			$db->queries			+= count($query);
+			$return					= $this->q_multi_internal($query);
+			$db->time				+= round(microtime(true) - $time_from, 6);
 			return $return;
 		}
 		if(!$query) {
@@ -173,7 +182,7 @@ abstract class _Abstract {
 		return $result;
 	}
 	/**
-	 * SQL request into DB
+	 * SQL request to DB
 	 *
 	 * @abstract
 	 *
@@ -182,6 +191,16 @@ abstract class _Abstract {
 	 * @return bool|object|resource
 	 */
 	abstract protected function q_internal ($query);
+	/**
+	 * Multiple SQL request to DB
+	 *
+	 * @abstract
+	 *
+	 * @param string[] $query
+	 *
+	 * @return bool|object|resource
+	 */
+	abstract protected function q_multi_internal ($query);
 	/**
 	 * Number
 	 *
