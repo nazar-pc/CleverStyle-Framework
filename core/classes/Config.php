@@ -608,7 +608,7 @@ class Config {
 	 * @return string
 	 */
 	function core_url () {
-		return explode(';', $this->core['url'], 2)[0];
+		return explode(';', $this->core['url'][0], 2)[0];
 	}
 	/**
 	 * Get object for getting db and storage configuration of module
