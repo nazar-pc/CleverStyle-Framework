@@ -128,8 +128,8 @@ abstract class _Abstract {
 						$local_params	= array_slice($q, 1);
 					}
 					$q	= $q[0];
-					$q	= empty($local_params) ? $q : vsprintf($q, $local_params);
 				}
+				$q	= empty($local_params) ? $q : vsprintf($q, $local_params);
 			}
 			unset($local_params, $q);
 			$db						= DB::instance();

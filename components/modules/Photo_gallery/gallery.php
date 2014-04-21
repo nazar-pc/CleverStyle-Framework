@@ -42,6 +42,12 @@ $images				= $Photo_gallery->get($gallery['images']);
 $images_titles		= array_filter(array_column(array_slice($images, 0, 10), 'title'));
 $Page				= Page::instance();
 $Page->title($gallery['title']);
+if (isset($images[0])) {
+	$Page->og(
+		'image',
+		$images[0]['original']
+	);
+}
 if ($images_titles) {
 	$Page->Description	= description($gallery['description']);
 }

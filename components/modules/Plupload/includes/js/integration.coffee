@@ -84,6 +84,6 @@ cs.file_upload	= (button, success, error, progress, multi) ->
 			if !input.attr('accept')
 				input.removeAttr('accept')
 			browse_button.click()
-		), 0
+		), 1
 	this
 return

@@ -52,7 +52,7 @@ class Blogs {
 		}
 		$L			= Language::instance();
 		$id			= (int)$id;
-		$data		= $this->cache->get("posts/$id/$L->clang", function () use($id, $L) {
+		$data		= $this->cache->get("posts/$id/$L->clang", function () use ($id, $L) {
 			if ($data	= $this->db()->qf([
 				"SELECT
 					`id`,

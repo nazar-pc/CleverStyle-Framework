@@ -103,7 +103,7 @@
           input.removeAttr('accept');
         }
         return browse_button.click();
-      }), 0);
+      }), 1);
     };
     return this;
   };

@@ -49,6 +49,7 @@
     });
     return $('.cs-blogs-post-form').parents('form').submit(function() {
       var form;
+      window.onbeforeunload = null;
       form = $(this);
       if (!title.is('input')) {
         form.append($('<input name="title" class="uk-hidden" />').val(title.text()));

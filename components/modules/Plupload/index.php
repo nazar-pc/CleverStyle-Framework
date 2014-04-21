@@ -108,7 +108,7 @@ $destination_file	.= date('/H');
 if (!$storage->file_exists($destination_file)) {
 	$storage->mkdir($destination_file);
 }
-$destination_file	.= '/'.$User->id.date('_i:s_').uniqid();
+$destination_file	.= '/'.$User->id.date('_is').uniqid();
 if (!$storage->copy($_FILES['file']['tmp_name'], $destination_file)) {
 	$Page->json([
 		'jsonrpc'	=> '2.0',
