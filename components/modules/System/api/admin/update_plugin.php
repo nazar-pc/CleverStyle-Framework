@@ -40,11 +40,11 @@ if (User::instance()->system()) {
 			array_keys($fs)
 		)
 	);
-	file_put_json(PLUGINS.'/'.$plugin.'/fs.json', $fs = array_keys($fs));
+	file_put_json("$plugin_dir/fs.json", $fs = array_keys($fs));
 	/**
 	 * Removing of old unnecessary files and directories
 	 */
-	foreach (array_diff(file_get_json($plugin_dir.'/fs_old.json'), $fs) as $file) {
+	foreach (array_diff(file_get_json("$plugin_dir/fs_old.json"), $fs) as $file) {
 		$file	= "$plugin_dir/$file";
 		if (file_exists($file) && is_writable($file)) {
 			unlink($file);
@@ -54,6 +54,7 @@ if (User::instance()->system()) {
 		}
 	}
 	unset($fs, $file, $dir);
+	unlink("$plugin_dir/fs_old.json");
 	$Page->content((int)(bool)$extract);
 } else {
 	$Page->content(0);

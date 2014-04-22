@@ -40,11 +40,11 @@ if (User::instance()->system()) {
 			array_keys($fs)
 		)
 	);
-	file_put_json(MODULES.'/'.$module.'/fs.json', $fs = array_keys($fs));
+	file_put_json("$module_dir/fs.json", $fs = array_keys($fs));
 	/**
 	 * Removing of old unnecessary files and directories
 	 */
-	foreach (array_diff(file_get_json($module_dir.'/fs_old.json'), $fs) as $file) {
+	foreach (array_diff(file_get_json("$module_dir/fs_old.json"), $fs) as $file) {
 		$file	= "$module_dir/$file";
 		if (file_exists($file) && is_writable($file)) {
 			unlink($file);

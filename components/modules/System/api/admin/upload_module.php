@@ -14,25 +14,26 @@ if (User::instance()->system()) {
 		$_POST['package'],
 		$tmp_file = TEMP.'/'.md5($_POST['package'].MICROTIME).'.phar.php'
 	);
-	$tmp_dir		= 'phar://'.$tmp_file;
-	$module			= file_get_contents($tmp_dir.'/dir');
-	$fs				= file_get_json($tmp_dir.'/fs.json');
+	$tmp_dir		= "phar://$tmp_file";
+	$module			= file_get_contents("$tmp_dir/dir");
+	$module_dir		= MODULES."/$module";
+	$fs				= file_get_json("$tmp_dir/fs.json");
 	$extract		= array_product(
 		array_map(
-			function ($index, $file) use ($tmp_dir, $module) {
+			function ($index, $file) use ($tmp_dir, $module_dir) {
 				if (
-					!file_exists(pathinfo(MODULES.'/'.$module.'/'.$file, PATHINFO_DIRNAME)) &&
-					!mkdir(pathinfo(MODULES.'/'.$module.'/'.$file, PATHINFO_DIRNAME), 0700, true)
+					!file_exists(pathinfo("$module_dir/$file", PATHINFO_DIRNAME)) &&
+					!mkdir(pathinfo("$module_dir/$file", PATHINFO_DIRNAME), 0700, true)
 				) {
 					return 0;
 				}
-				return (int)copy($tmp_dir.'/fs/'.$index, MODULES.'/'.$module.'/'.$file);
+				return (int)copy("$tmp_dir/fs/$index", "$module_dir/$file");
 			},
 			$fs,
 			array_keys($fs)
 		)
 	);
-	file_put_json(MODULES.'/'.$module.'/fs.json', array_keys($fs));
+	file_put_json("$module_dir/fs.json", array_keys($fs));
 	$Page->content((int)(bool)$extract);
 } else {
 	$Page->content(0);
