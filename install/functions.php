@@ -222,8 +222,8 @@ function install_process () {
 		array_map(
 			function ($index, $file) {
 				if (
-					!file_exists(pathinfo(ROOT."/$file", PATHINFO_DIRNAME)) &&
-					!mkdir(pathinfo(ROOT."/$file", PATHINFO_DIRNAME), 0700, true)
+					!file_exists(dirname(ROOT."/$file")) &&
+					!mkdir(dirname(ROOT."/$file"), 0700, true)
 				) {
 					return 0;
 				}

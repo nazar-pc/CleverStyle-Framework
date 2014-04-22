@@ -22,8 +22,8 @@ if (User::instance()->system()) {
 		array_map(
 			function ($index, $file) use ($tmp_dir, $module_dir) {
 				if (
-					!file_exists(pathinfo("$module_dir/$file", PATHINFO_DIRNAME)) &&
-					!mkdir(pathinfo("$module_dir/$file", PATHINFO_DIRNAME), 0700, true)
+					!file_exists(dirname("$module_dir/$file")) &&
+					!mkdir(dirname("$module_dir/$file"), 0700, true)
 				) {
 					return 0;
 				}

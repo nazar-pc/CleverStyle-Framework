@@ -13,7 +13,7 @@ if (count(explode('/', $_SERVER['REQUEST_URI'])) > 3) {
 	exit('Installation into subdirectory is not supported!');
 }
 define('DIR',	__DIR__);														//Path to installer dir
-$ROOT	= pathinfo(__DIR__, PATHINFO_DIRNAME);
+$ROOT	= dirname(__DIR__);
 mb_internal_encoding('utf-8');
 define('ROOT',	mb_strpos($ROOT, 'phar://') === 0 ? substr($ROOT, 7) : $ROOT);	//Path to site root
 unset($ROOT);

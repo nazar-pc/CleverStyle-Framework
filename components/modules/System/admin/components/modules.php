@@ -138,8 +138,8 @@ if (
 					array_map(
 						function ($index, $file) use ($tmp_dir, $module) {
 							if (
-								!file_exists(pathinfo(MODULES."/$module/$file", PATHINFO_DIRNAME)) &&
-								!mkdir(pathinfo(MODULES."/$module/$file", PATHINFO_DIRNAME), 0700, true)
+								!file_exists(dirname(MODULES."/$module/$file")) &&
+								!mkdir(dirname(MODULES."/$module/$file"), 0700, true)
 							) {
 								return 0;
 							}

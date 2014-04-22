@@ -211,8 +211,8 @@ if (isset($_POST['update_modules_list'])) {
 				array_map(
 					function ($index, $file) use ($tmp_dir, $module_dir) {
 						if (
-							!file_exists(pathinfo("$module_dir/$file", PATHINFO_DIRNAME)) &&
-							!mkdir(pathinfo("$module_dir/$file", PATHINFO_DIRNAME), 0700, true)
+							!file_exists(dirname("$module_dir/$file")) &&
+							!mkdir(dirname("$module_dir/$file"), 0700, true)
 						) {
 							return 0;
 						}
@@ -263,7 +263,7 @@ if (isset($_POST['update_modules_list'])) {
 				$file	= "$module_dir/$file";
 				if (file_exists($file) && is_writable($file)) {
 					unlink($file);
-					if (!get_files_list($dir = pathinfo($file, PATHINFO_DIRNAME))) {
+					if (!get_files_list($dir = dirname($file))) {
 						rmdir($dir);
 					}
 				}
@@ -350,8 +350,8 @@ if (isset($_POST['update_modules_list'])) {
 				array_map(
 					function ($index, $file) use ($tmp_dir, $module_dir) {
 						if (
-							!file_exists(pathinfo(DIR."/$file", PATHINFO_DIRNAME)) &&
-							!mkdir(pathinfo(DIR."/$file", PATHINFO_DIRNAME), 0700, true)
+							!file_exists(dirname(DIR."/$file")) &&
+							!mkdir(dirname(DIR."/$file"), 0700, true)
 						) {
 							return 0;
 						}
@@ -402,7 +402,7 @@ if (isset($_POST['update_modules_list'])) {
 				$file	= DIR."/$file";
 				if (file_exists($file) && is_writable($file)) {
 					unlink($file);
-					if (!get_files_list($dir = pathinfo($file, PATHINFO_DIRNAME))) {
+					if (!get_files_list($dir = dirname($file))) {
 						rmdir($dir);
 					}
 				}

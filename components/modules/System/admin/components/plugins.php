@@ -109,8 +109,8 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 					array_map(
 						function ($index, $file) use ($tmp_dir, $plugin) {
 							if (
-								!file_exists(pathinfo(PLUGINS."/$plugin/$file", PATHINFO_DIRNAME)) &&
-								!mkdir(pathinfo(PLUGINS."/$plugin/$file", PATHINFO_DIRNAME), 0700, true)
+								!file_exists(dirname(PLUGINS."/$plugin/$file")) &&
+								!mkdir(dirname(PLUGINS."/$plugin/$file"), 0700, true)
 							) {
 								return 0;
 							}
