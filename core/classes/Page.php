@@ -1094,6 +1094,10 @@ class Page {
 		$data	= preg_replace('#\s*([,;+>{}\(])\s*#s', '$1', $data);
 		$data	= preg_replace('#\s+#s', ' ', $data);
 		/**
+		 * Return spaces required in media queries
+		 */
+		$data	= preg_replace('/\s(and|or)\(/s', ' $1 (', $data);
+		/**
 		 * Remove unnecessary trailing semicolons
 		 */
 		$data	= str_replace(';}', '}', $data);
