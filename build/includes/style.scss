@@ -1,0 +1,114 @@
+/**
+ * @package		CleverStyle CMS
+ * @subpackage	Builder
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2014, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+* {
+	font-family : sans-serif;
+	font-size   : 16px;
+}
+
+body {
+	background-color : #b9b9b9;
+	margin           : 0;
+	padding          : 0;
+}
+
+header {
+	background-color : #d7d7d7;
+	border-bottom    : 5px #666 solid;
+	padding          : 10px;
+
+	h1 {
+		display        : inline-block;
+		font-size      : 72px;
+		font-weight    : 100;
+		line-height    : 128px;
+		margin         : 0 -10px 0 0;
+		vertical-align : top;
+	}
+}
+
+section {
+	background-color : #d7d7d7;
+	border           : 1px #666 solid;
+	margin           : 100px 0 0 30%;
+	padding          : 10px 10px 45px;
+	position         : relative;
+	width            : 780px;
+
+	nav {
+		label {
+			background-color : #666;
+			color            : #aaa;
+			cursor           : pointer;
+			display          : inline-block;
+			height           : 30px;
+			line-height      : 30px;
+			position         : relative;
+			padding          : 0 30px;
+
+			&.active {
+				color : #ddd;
+			}
+
+			&:nth-child(n+1) {
+				margin-right : -10px;
+			}
+
+			&:nth-child(n + 2):before {
+				background-color  : #d7d7d7;
+				content           : "";
+				height            : 30px;
+				position          : absolute;
+				left              : 0;
+				-moz-transform    : skewX(-20deg);
+				-webkit-transform : skewX(-20deg);
+				transform         : skewX(-20deg);
+				width             : 5px;
+			}
+		}
+
+		input {
+			display : none;
+		}
+	}
+
+	table select,
+	input {
+		border    : none;
+		font-size : 14px;
+		padding   : 3px;
+		width     : 256px;
+	}
+
+	input {
+		margin : 3px;
+		width  : 769px;
+	}
+
+	button {
+		background-color : #666;
+		border           : none;
+		bottom           : 12px;
+		color            : #ddd;
+		cursor           : pointer;
+		padding          : 4px 20px;
+		position         : absolute;
+
+		&.license {
+			left : 12px;
+		}
+
+		&[type=submit] {
+			right : 12px;
+		}
+	}
+}
+
+footer {
+	padding    : 20px;
+	text-align : center;
+}

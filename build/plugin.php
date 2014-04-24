@@ -10,31 +10,31 @@ time_limit_pause();
 if (!isset($_POST['plugins'][0])) {
 	echo h::p('Please, specify plugin name');
 	return;
-} elseif (!file_exists($pdir = DIR.'/components/plugins/'.$_POST['plugins'][0])) {
+} elseif (!file_exists($plugin_dir = DIR.'/components/plugins/'.$_POST['plugins'][0])) {
 	echo h::p('Can\'t build plugin, plugin directory not found');
 	return;
-} elseif (!file_exists($pdir.'/meta.json')) {
+} elseif (!file_exists("$plugin_dir/meta.json")) {
 	echo h::p('Can\'t build plugin, meta information (meta.json) not found');
 	return;
 }
-$version	= file_get_json("$pdir/meta.json")['version'];
+$version	= file_get_json("$plugin_dir/meta.json")['version'];
 if (file_exists(DIR.'/build.phar')) {
 	unlink(DIR.'/build.phar');
 }
 $phar		= new Phar(DIR.'/build.phar');
-$phar->addFromString('meta.json', file_get_contents("$pdir/meta.json"));
+$phar->addFromString('meta.json', file_get_contents("$plugin_dir/meta.json"));
 $set_stub	= false;
-if (file_exists("$pdir/readme.html")) {
-	$phar->addFromString('readme.html', file_get_contents("$pdir/readme.html"));
+if (file_exists("$plugin_dir/readme.html")) {
+	$phar->addFromString('readme.html', file_get_contents("$plugin_dir/readme.html"));
 	$set_stub	= 'readme.html';
-} elseif (file_exists("$pdir/readme.txt")) {
-	$phar->addFromString('readme.txt', file_get_contents("$pdir/readme.txt"));
+} elseif (file_exists("$plugin_dir/readme.txt")) {
+	$phar->addFromString('readme.txt', file_get_contents("$plugin_dir/readme.txt"));
 	$set_stub	= 'readme.txt';
 }
 $list		= array_merge(
-	get_files_list($pdir, false, 'f', true, true, false, false, true)
+	get_files_list($plugin_dir, false, 'f', true, true, false, false, true)
 );
-$length		= strlen("$pdir/");
+$length		= strlen("$plugin_dir/");
 $list		= array_map(
 	function ($index, $file) use ($phar, $length) {
 		$phar->addFromString("fs/$index", file_get_contents($file));
@@ -55,12 +55,13 @@ unlink(DIR.'/build.phar');
 if ($set_stub) {
 	$phar->setStub("<?php Phar::webPhar(null, '$set_stub'); __HALT_COMPILER();");
 } else {
-	$meta	= file_get_json("$pdir/meta.json");
+	$meta	= file_get_json("$plugin_dir/meta.json");
 	$phar->addFromString('index.html', isset($meta['description']) ? $meta['description'] : $meta['package']);
 	unset($meta);
 	$phar->setStub("<?php Phar::webPhar(null, 'index.html'); __HALT_COMPILER();");
 }
 $phar->setSignatureAlgorithm(PHAR::SHA512);
 unset($phar);
-rename(DIR.'/build.phar.tar', DIR.'/'.str_replace(' ', '_', $_POST['plugins'][0])."_$version.phar.php");
+$suffix	= $_POST['suffix'] ? "_$_POST[suffix]" : '';
+rename(DIR.'/build.phar.tar', DIR.'/'.str_replace(' ', '_', 'plugin_'.$_POST['plugins'][0])."_$version$suffix.phar.php");
 echo h::p("Done! Plugin {$_POST['plugins'][0]} $version");

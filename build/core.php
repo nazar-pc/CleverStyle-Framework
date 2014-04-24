@@ -26,7 +26,7 @@ $list				= array_merge(
 	get_files_list(DIR.'/custom', false, 'f', true, true, false, false, true),
 	get_files_list(DIR.'/includes', false, 'f', true, true, false, false, true),
 	get_files_list(DIR.'/templates', false, 'f', true, true, false, false, true),
-	get_files_list(DIR.'/themes', false, 'f', true, true, false, false, true),
+	get_files_list(DIR.'/themes/CleverStyle', false, 'f', true, true, false, false, true),
 	[
 		DIR.'/components/blocks/.gitkept',
 		DIR.'/components/plugins/.gitkept',
@@ -104,6 +104,33 @@ if (!empty($_POST['plugins'])) {
 		}
 	}
 	unset($plugin);
+}
+/**
+ * Add selected themes that should be built-in into package
+ */
+if (!empty($_POST['themes'])) {
+	foreach ($_POST['themes'] as $theme) {
+		if (is_dir(DIR."/themes/$theme") && file_exists(DIR."/themes/$theme/meta.json")) {
+			unlink(DIR."/themes/$theme/fs.json");
+			$list_				= get_files_list(DIR."/themes/$theme", false, 'f', true, true, false, false, true);
+			file_put_json(
+				DIR."/themes/$theme/fs.json",
+				array_values(
+					_substr(
+						$list_,
+						strlen(DIR."/themes/$theme/")
+					)
+				)
+			);
+			$list_[]			= DIR."/themes/$theme/fs.json";
+			$components_list	= array_merge(
+				$components_list,
+				$list_
+			);
+			unset($list_);
+		}
+	}
+	unset($theme);
 }
 /**
  * Joining system and components files list
@@ -267,10 +294,11 @@ $phar->addFromString(
 	"\"$version\""
 );
 unset($themes, $theme, $color_schemes);
-$phar				= $phar->convertToExecutable(Phar::TAR, Phar::BZ2, '.phar.tar');
+$phar	= $phar->convertToExecutable(Phar::TAR, Phar::BZ2, '.phar.tar');
 unlink(DIR.'/build.phar');
 $phar->setStub("<?php Phar::webPhar(null, 'install.php'); __HALT_COMPILER();");
 $phar->setSignatureAlgorithm(PHAR::SHA512);
 unset($phar);
-rename(DIR.'/build.phar.tar', DIR."/CleverStyle_CMS_$version.phar.php");
+$suffix	= $_POST['suffix'] ? "_$_POST[suffix]" : '';
+rename(DIR.'/build.phar.tar', DIR."/CleverStyle_CMS_$version$suffix.phar.php");
 echo "Done! CleverStyle CMS $version";

@@ -28,6 +28,7 @@ if (isset($_POST['mode'])) {
 		case 'core':
 		case 'module':
 		case 'plugin':
+		case 'theme':
 			$mode	= $_POST['mode'];
 	}
 }

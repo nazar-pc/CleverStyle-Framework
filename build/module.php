@@ -65,5 +65,6 @@ if ($set_stub) {
 }
 $phar->setSignatureAlgorithm(PHAR::SHA512);
 unset($phar);
-rename(DIR.'/build.phar.tar', DIR.'/'.str_replace(' ', '_', $_POST['modules'][0])."_$version.phar.php");
+$suffix	= $_POST['suffix'] ? "_$_POST[suffix]" : '';
+rename(DIR.'/build.phar.tar', DIR.'/'.str_replace(' ', '_', 'module_'.$_POST['modules'][0])."_$version$suffix.phar.php");
 echo h::p("Done! Module {$_POST['modules'][0]} $version");

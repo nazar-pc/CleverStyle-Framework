@@ -10,15 +10,16 @@ echo	h::{'form[method=post]'}(
 	h::nav(
 		'Build: '.
 		h::{'input.build-mode[name=mode][type=radio]'}([
-			'value'		=> ['core', 'module', 'plugin'],
-			'in'		=> ['Core', 'Module', 'Plugin'],
+			'value'		=> ['core', 'module', 'plugin', 'theme'],
+			'in'		=> ['Core', 'Module', 'Plugin', 'Theme'],
 			'onclick'	=> 'change_mode(this.value, this);'
 		])
 	).
 	h::{'table tr| td'}(
 		[
 			'Modules',
-			'Plugins'
+			'Plugins',
+			'Themes'
 		],
 		[
 			h::{'select#modules[name=modules[]][size=15][multiple] option'}(array_map(
@@ -44,9 +45,24 @@ echo	h::{'form[method=post]'}(
 					];
 				},
 				get_files_list(DIR.'/components/plugins', false, 'd')
+			)),
+			h::{'select#themes[name=themes[]][size=15][multiple] option'}(array_map(
+				function ($theme) {
+					return [
+						$theme,
+						file_exists(DIR."/themes/$theme/meta.json") ? false : [
+							'title'		=> 'No meta.json file found',
+							'disabled'
+						]
+					];
+				},
+				get_files_list(DIR.'/themes', '/[^CleverStyle)]/', 'd')
 			))
 		]
 	).
+	h::{'input[name=suffix]'}([
+		'placeholder'	=> 'Package file suffix'
+	]).
 	h::{'button.license[type=button]'}(
 		'License',
 		[
