@@ -1,0 +1,9 @@
+{
+	"package"				: "DarkEnergy",
+	"category"				: "themes",
+	"version"				: "1.0.0+build-1",
+	"description"			: "Dark responsive theme for CleverStyle CMS",
+	"author"				: "Nazar Mokrynskyi",
+	"website"				: "cleverstyle.org/cms",
+	"license"				: "MIT License"
+}

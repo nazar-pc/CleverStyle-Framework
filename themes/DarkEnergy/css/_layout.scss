@@ -1,0 +1,55 @@
+/**
+ * @package		CleverStyle CMS
+ * @subpackage	DarkEnergy theme
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2014, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+@import "common_config";
+
+html {
+	font-family        : $base-font-family;
+	transition         : transform 1s, width 1s;
+	-webkit-transition : -webkit-transform 1s, width 1s;
+}
+
+body {
+	font-family : $base-font-family;
+	margin-left : -5px !important;
+	width       : 100%;
+
+	@media (max-width : 959px) {
+		> aside:first-child > :nth-child(n+2) {
+			display : none;
+		}
+	}
+
+	> footer {
+		text-align : center;
+
+		strong {
+			display     : block;
+			font-weight : normal;
+		}
+	}
+}
+
+@mixin page_scale($zoom) {
+	transform                : scale($zoom);
+	transform-origin         : 0 0 0;
+	-webkit-transform        : scale($zoom);
+	-webkit-transform-origin : 0 0 0;
+	width                    : (100% / $zoom);
+}
+
+@media (min-width : 1921px) {
+	html {
+		@include page_scale(1.5);
+	}
+}
+
+@media (min-width : 2561px) {
+	html {
+		@include page_scale(2);
+	}
+}

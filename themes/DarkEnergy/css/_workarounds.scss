@@ -1,0 +1,16 @@
+/**
+ * @package		CleverStyle CMS
+ * @subpackage	DarkEnergy theme
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2014, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+
+.uk-article-title a,
+a {
+	color : #47adff;
+
+	&:hover {
+		color : #398ccc;
+	}
+}
