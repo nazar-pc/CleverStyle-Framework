@@ -93,10 +93,6 @@ $Index->content(
 			)
 		],
 		[
-			"$L->free_disk_space:",
-			format_filesize(disk_free_space('./'), 2)
-		],
-		[
 			$L->version_of('PHP').':',
 			PHP_VERSION
 		],
@@ -186,6 +182,10 @@ $Index->content(
 			$Core->cache_engine
 		],
 		[
+			"$L->free_disk_space:",
+			format_filesize(disk_free_space('./'), 2)
+		],
+		[
 			"$L->php_ini_settings:",
 			h::{'table.cs-left-odd.cs-table-borderless tr| td'}(
 				[
@@ -266,7 +266,13 @@ function server_api () {
 	if (preg_match('/apache/i', $_SERVER['SERVER_SOFTWARE'])) {
 		return 'Apache'.(preg_match('/mod_php/i', $phpinfo) ? ' + mod_php' : '');
 	} elseif (preg_match('/nginx/i', $_SERVER['SERVER_SOFTWARE'])) {
-		return 'Nginx'.(preg_match('/php-fpm/i', $phpinfo) ? ' + PHP-FPM' : '');
+		$return = 'Nginx';
+		if (preg_match('/php-fpm/i', $phpinfo)) {
+			$return	.= ' + PHP-FPM';
+		} elseif (defined('HHVM_VERSION')) {
+			$return	.= ' + HHVM';
+		}
+		return $return;
 	} elseif (defined('HHVM_VERSION')) {
 		return 'HipHop Virtual Machine';
 	} else {
