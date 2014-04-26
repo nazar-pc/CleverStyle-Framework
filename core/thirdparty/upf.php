@@ -682,7 +682,7 @@ function xap ($in, $html = 'text', $iframe = false) {
 			$in
 		);
 		$in = preg_replace(
-			'/<[^>]*\s(on[a-z]+|dynsrc|lowsrc)=[^>]*>?/ims',
+			'/<[^>]*\s(on[a-z]+|dynsrc|lowsrc|formaction)=[^>]*>?/ims',
 			'',
 			$in
 		);
