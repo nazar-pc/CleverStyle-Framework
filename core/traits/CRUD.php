@@ -201,8 +201,7 @@ trait CRUD {
 		$id	= implode(',', _int((array)$id));
 		return (bool)$this->db_prime()->q(
 			"DELETE FROM `$table`
-			WHERE `id` IN(%s)
-			LIMIT 1",
+			WHERE `id` IN(%s)",
 			$id
 		);
 	}
@@ -216,6 +215,6 @@ trait CRUD {
 	 * @return bool
 	 */
 	protected function delete_simple ($id) {
-		return $this->delete($this->table, $this->data_model, $id);
+		return $this->delete($this->table, $id);
 	}
 }
