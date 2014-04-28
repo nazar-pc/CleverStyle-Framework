@@ -1510,6 +1510,22 @@ class Page {
 			ob_end_clean();
 		}
 		/**
+		 * Detection of compression
+		 */
+		$ob					= false;
+		$Config				= Config::instance(true);
+		if (
+			API ||
+			(
+				$Config &&
+				!zlib_compression() &&
+				$Config->core['gzip_compression']
+			)
+		) {
+			ob_start('ob_gzhandler');
+			$ob = true;
+		}
+		/**
 		 * For AJAX and API requests only content without page template
 		 */
 		if (!$this->interface) {
@@ -1529,25 +1545,17 @@ class Page {
 			 */
 			$this->Html			= $this->process_replacing($this->Html);
 			/**
-			 * Detection of compression
-			 */
-			$ob					= false;
-			$Config				= Config::instance(true);
-			if ($Config && !zlib_compression() && $Config->core['gzip_compression']) {
-				ob_start('ob_gzhandler');
-				$ob = true;
-			}
-			/**
 			 * Getting of debug information
 			 */
 			if (
+				DEBUG &&
 				(
 					User::instance(true)->admin() ||
 					(
 						$Config->can_be_admin &&
 						$Config->core['ip_admin_list_only']
 					)
-				) && DEBUG
+				)
 			) {
 				$this->get_debug_info();
 			}
@@ -1574,9 +1582,9 @@ class Page {
 				],
 				rtrim($this->Html)
 			);
-			if ($ob) {
-				ob_end_flush();
-			}
+		}
+		if ($ob) {
+			ob_end_flush();
 		}
 	}
 }
