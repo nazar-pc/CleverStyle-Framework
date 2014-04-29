@@ -175,5 +175,33 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			$Index->save();
 			unset($Cache->functionality);
 		break;
+		case 'remove':
+			if (in_array($plugin, $Config->components['plugins'])) {
+				break;
+			}
+			$ok			= true;
+			get_files_list(
+				PLUGINS."/$plugin",
+				false,
+				'fd',
+				true,
+				true,
+				false,
+				false,
+				true,
+				function ($item) use (&$ok) {
+					if (is_writable($item)) {
+						is_dir($item) ? @rmdir($item) : @unlink($item);
+					} else {
+						$ok = false;
+					}
+				}
+			);
+			if ($ok && @rmdir(PLUGINS."/$plugin")) {
+				$Index->save();
+			} else {
+				$Index->save(false);
+			}
+		break;
 	}
 }

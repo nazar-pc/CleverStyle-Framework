@@ -56,17 +56,17 @@ if (isset($_POST['update_modules_list'])) {
 	 */
 	if ($new_modules != $old_modules) {
 		$permissions_ids = [];
-		foreach ($old_modules as $module) {
-			if (!isset($modules_list[$module])) {
+		foreach ($old_modules as $module_name) {
+			if (!isset($modules_list[$module_name])) {
 				$permissions_ids = array_merge(
 					$permissions_ids,
-					(array)$Permission->get(null, $module),
-					(array)$Permission->get(null, "admin/$module"),
-					(array)$Permission->get(null, "api/$module")
+					(array)$Permission->get(null, $module_name),
+					(array)$Permission->get(null, "admin/$module_name"),
+					(array)$Permission->get(null, "api/$module_name")
 				);
 			}
 		}
-		unset($old_modules, $module);
+		unset($old_modules, $module_name);
 		if (!empty($permissions_ids)) {
 			foreach ($permissions_ids as &$id) {
 				$id = $id['id'];
@@ -81,8 +81,8 @@ if (isset($_POST['update_modules_list'])) {
 	ksort($modules, SORT_STRING | SORT_FLAG_CASE);
 	$a->save();
 } elseif (isset($_POST['mode'], $_POST['module'], $Config->components['modules'][$_POST['module']])) {
-	$module					= $_POST['module'];
-	$module_data = &$Config->components['modules'][$module];
+	$module_name	= $_POST['module'];
+	$module_data	= &$Config->components['modules'][$module_name];
 	switch ($_POST['mode']) {
 		case 'install':
 			if ($module_data['active'] != -1) {
@@ -92,15 +92,15 @@ if (isset($_POST['update_modules_list'])) {
 			if (!Trigger::instance()->run(
 				'admin/System/components/modules/install/process',
 				[
-					'name' => $module
+					'name' => $module_name
 				]
 			)) {
 				break;
 			}
 			$module_data['active'] = 0;
-			if (isset($_POST['db']) && is_array($_POST['db']) && file_exists(MODULES."/$module/meta/db.json")) {
+			if (isset($_POST['db']) && is_array($_POST['db']) && file_exists(MODULES."/$module_name/meta/db.json")) {
 				$module_data['db'] = $_POST['db'];
-				$db_json = file_get_json(MODULES."/$module/meta/db.json");
+				$db_json = file_get_json(MODULES."/$module_name/meta/db.json");
 				time_limit_pause();
 				foreach ($db_json as $database) {
 					if ($module_data['db'][$database] == 0) {
@@ -108,7 +108,7 @@ if (isset($_POST['update_modules_list'])) {
 					} else {
 						$db_type	= $Config->db[$module_data['db'][$database]]['type'];
 					}
-					$sql_file	= MODULES."/$module/meta/install_db/$database/$db_type.sql";
+					$sql_file	= MODULES."/$module_name/meta/install_db/$database/$db_type.sql";
 					if (file_exists($sql_file)) {
 						$db->{$module_data['db'][$database]}()->q(
 							explode(';', file_get_contents($sql_file))
@@ -126,14 +126,14 @@ if (isset($_POST['update_modules_list'])) {
 			unset($Cache->functionality);
 		break;
 		case 'uninstall':
-			if ($module_data['active'] == -1 || $module == 'System' || $module == $Config->core['default_module']) {
+			if ($module_data['active'] == -1 || $module_name == 'System' || $module_name == $Config->core['default_module']) {
 				break;
 			}
 			unset($Cache->languages);
 			if (!Trigger::instance()->run(
 				'admin/System/components/modules/uninstall/process',
 				[
-					'name' => $module
+					'name' => $module_name
 				]
 			)) {
 				break;
@@ -142,12 +142,12 @@ if (isset($_POST['update_modules_list'])) {
 			Trigger::instance()->run(
 				'admin/System/components/modules/disable',
 				[
-					'name'	=> $module
+					'name'	=> $module_name
 				]
 			);
 			$Config->save();
-			if (isset($module_data['db']) && file_exists(MODULES."/$module/meta/db.json")) {
-				$db_json = file_get_json(MODULES."/$module/meta/db.json");
+			if (isset($module_data['db']) && file_exists(MODULES."/$module_name/meta/db.json")) {
+				$db_json = file_get_json(MODULES."/$module_name/meta/db.json");
 				time_limit_pause();
 				foreach ($db_json as $database) {
 					if ($module_data['db'][$database] == 0) {
@@ -155,7 +155,7 @@ if (isset($_POST['update_modules_list'])) {
 					} else {
 						$db_type	= $Config->db[$module_data['db'][$database]]['type'];
 					}
-					$sql_file	= MODULES."/$module/meta/uninstall_db/$database/$db_type.sql";
+					$sql_file	= MODULES."/$module_name/meta/uninstall_db/$database/$db_type.sql";
 					if (file_exists($sql_file)) {
 						$db->{$module_data['db'][$database]}()->q(
 							explode(';', file_get_contents($sql_file))
@@ -166,9 +166,9 @@ if (isset($_POST['update_modules_list'])) {
 				time_limit_pause(false);
 			}
 			$permissions_ids		= array_merge(
-				$Permission->get(null, $module),
-				$Permission->get(null, "$module/admin"),
-				$Permission->get(null, "$module/api")
+				$Permission->get(null, $module_name),
+				$Permission->get(null, "$module_name/admin"),
+				$Permission->get(null, "$module_name/api")
 			);
 			if (!empty($permissions_ids)) {
 				foreach ($permissions_ids as &$id) {
@@ -192,11 +192,11 @@ if (isset($_POST['update_modules_list'])) {
 				Trigger::instance()->run(
 					'admin/System/components/modules/disable',
 					[
-						'name'	=> $module
+						'name'	=> $module_name
 					]
 				);
 			}
-			$module_dir				= MODULES."/$module";
+			$module_dir				= MODULES."/$module_name";
 			/**
 			 * Backing up some necessary information about current version
 			 */
@@ -317,7 +317,7 @@ if (isset($_POST['update_modules_list'])) {
 				Trigger::instance()->run(
 					'admin/System/components/modules/enable',
 					[
-						'name'	=> $module
+						'name'	=> $module_name
 					]
 				);
 				unset($Cache->languages);
@@ -458,11 +458,11 @@ if (isset($_POST['update_modules_list'])) {
 		case 'default_module':
 			if (
 				$module_data['active'] != 1 ||
-				$module == $Config->core['default_module'] ||
+				$module_name == $Config->core['default_module'] ||
 				!(
-					file_exists(MODULES."/$module/index.php") ||
-					file_exists(MODULES."/$module/index.html") ||
-					file_exists(MODULES."/$module/index.json")
+					file_exists(MODULES."/$module_name/index.php") ||
+					file_exists(MODULES."/$module_name/index.html") ||
+					file_exists(MODULES."/$module_name/index.json")
 				)
 			) {
 				break;
@@ -470,10 +470,10 @@ if (isset($_POST['update_modules_list'])) {
 			if (Trigger::instance()->run(
 				'admin/System/components/modules/default_module/process',
 				[
-					'name' => $module
+					'name' => $module_name
 				]
 			)) {
-				$Config->core['default_module'] = $module;
+				$Config->core['default_module'] = $module_name;
 				$a->save();
 			}
 		break;
@@ -481,7 +481,7 @@ if (isset($_POST['update_modules_list'])) {
 			if (Trigger::instance()->run(
 				'admin/System/components/modules/db/process',
 				[
-					'name' => $module
+					'name' => $module_name
 				]
 			)) {
 				if (isset($_POST['db']) && is_array($_POST['db']) && count($Config->db) > 1) {
@@ -494,7 +494,7 @@ if (isset($_POST['update_modules_list'])) {
 			if (Trigger::instance()->run(
 				'admin/System/components/modules/storage/process',
 				[
-					'name' => $module
+					'name' => $module_name
 				]
 			)) {
 				if(isset($_POST['storage']) && is_array($_POST['storage']) && count($Config->storage) > 1) {
@@ -510,7 +510,7 @@ if (isset($_POST['update_modules_list'])) {
 			Trigger::instance()->run(
 				'admin/System/components/modules/enable',
 				[
-					'name'	=> $module
+					'name'	=> $module_name
 				]
 			);
 			unset(
@@ -525,13 +525,42 @@ if (isset($_POST['update_modules_list'])) {
 			Trigger::instance()->run(
 				'admin/System/components/modules/disable',
 				[
-					'name'	=> $module
+					'name'	=> $module_name
 				]
 			);
 			unset(
 				$Cache->functionality,
 				$Cache->languages
 			);
+		break;
+		case 'remove':
+			if ($module_name == 'System' || $module_data['active'] != '-1') {
+				break;
+			}
+			$ok			= true;
+			get_files_list(
+				MODULES."/$module_name",
+				false,
+				'fd',
+				true,
+				true,
+				false,
+				false,
+				true,
+				function ($item) use (&$ok) {
+					if (is_writable($item)) {
+						is_dir($item) ? @rmdir($item) : @unlink($item);
+					} else {
+						$ok = false;
+					}
+				}
+			);
+			if ($ok && @rmdir(MODULES."/$module_name")) {
+				unset($Config->components['modules'][$module_name]);
+				$a->save();
+			} else {
+				$a->save(false);
+			}
 		break;
 	}
 }

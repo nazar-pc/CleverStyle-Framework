@@ -23,7 +23,17 @@ $rc				= $Config->route;
 $plugins		= get_files_list(PLUGINS, false, 'd');
 $show_plugins	= true;
 $a->buttons		= false;
-if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
+if (
+	isset($rc[2]) &&
+	!empty($rc[2]) &&
+	(
+		(
+			isset($rc[3]) &&
+			!empty($rc[3])
+		) ||
+		$rc[2] == 'remove'
+	)
+) {
 	switch ($rc[2]) {
 		case 'enable':
 			if ($rc[3] == 'upload' && isset($_FILES['upload_plugin']) && $_FILES['upload_plugin']['tmp_name']) {
@@ -189,7 +199,6 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 						'name'	=> 'plugin',
 						'value'	=> $rc[3]
 					])
-
 				);
 			}
 		break;
@@ -219,7 +228,29 @@ if (isset($rc[2], $rc[3]) && !empty($rc[2]) && !empty($rc[3])) {
 						'name'	=> 'plugin',
 						'value'	=> $rc[3]
 					])
-
+				);
+			}
+		break;
+		case 'remove':
+			if (!in_array($rc[3], $Config->components['plugins'])) {
+				$Page->title($L->complete_removal_of_plugin($rc[3]));
+				$a->content(
+					h::{'p.lead.cs-center'}(
+						$L->completely_remove_plugin($rc[3])
+					)
+				);
+				$show_plugins			= false;
+				$a->cancel_button_back	= true;
+				$a->content(
+					h::{'button[type=submit]'}($L->yes).
+					h::{'input[type=hidden]'}([
+						'name'	=> 'mode',
+						'value'	=> $rc[2]
+					]).
+					h::{'input[type=hidden]'}([
+						'name'	=> 'plugin',
+						'value'	=> $_POST['remove_plugin']
+					])
 				);
 			}
 		break;
@@ -334,8 +365,14 @@ if (!empty($plugins)) {
 		];
 		unset($plugin_info);
 	}
-	unset($plugins, $plugin, $state, $addition_state, $action);
+	unset($plugin, $state, $addition_state, $action);
 }
+$plugins_for_removal = array_values(array_filter(
+	$plugins,
+	function ($plugin) use ($Config) {
+		return !in_array($plugin, $Config->components['plugins']);
+	}
+));
 $a->content(
 	h::{'table.cs-table.cs-center-all'}(
 		h::{'thead tr th'}(
@@ -355,5 +392,18 @@ $a->content(
 				'formaction'	=>  "$a->action/enable/upload"
 			]
 		)
+	).
+	(
+		$plugins_for_removal
+			? h::p(
+				h::{'select[name=remove_plugin]'}($plugins_for_removal).
+				h::{'button[type=submit]'}(
+					h::icon('trash-o').$L->complete_plugin_removal,
+					[
+						'formaction'	=>  "$a->action/remove"
+					]
+				)
+			)
+			: ''
 	)
 );
