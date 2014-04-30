@@ -202,6 +202,7 @@ cs.setcookie				= (name, value, expires) ->
 		value
 		path	: cs.cookie_path
 		domain	: cs.cookie_domain
+		expires	: expires
 		secure	: cs.protocol == 'https'
 	)
 ###*
