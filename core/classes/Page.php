@@ -236,7 +236,7 @@ class Page {
 					'is_user'			=> (int)$User->user(),
 					'is_guest'			=> (int)$User->guest(),
 					'debug'				=> (int)$User->guest(),
-					'cookie_prefix'		=> $Config->core['cookie_prefix'][$Config->server['mirror_index']],
+					'cookie_prefix'		=> $Config->core['cookie_prefix'],
 					'cookie_domain'		=> $Config->core['cookie_domain'][$Config->server['mirror_index']],
 					'cookie_path'		=> $Config->core['cookie_path'][$Config->server['mirror_index']],
 					'protocol'			=> $Config->server['protocol'],
