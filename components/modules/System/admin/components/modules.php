@@ -531,10 +531,10 @@ if (
 		break;
 		case 'remove':
 			$show_modules			= false;
-			$Page->title($L->complete_removal_of_module($rc[3]));
+			$Page->title($L->complete_removal_of_module($_POST['remove_module']));
 			$a->content(
 				h::{'p.lead.cs-center'}(
-					$L->completely_remove_module($rc[3])
+					$L->completely_remove_module($_POST['remove_module'])
 				)
 			);
 			$a->cancel_button_back	= true;

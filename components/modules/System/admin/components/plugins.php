@@ -232,11 +232,11 @@ if (
 			}
 		break;
 		case 'remove':
-			if (!in_array($rc[3], $Config->components['plugins'])) {
-				$Page->title($L->complete_removal_of_plugin($rc[3]));
+			if (!in_array($_POST['remove_plugin'], $Config->components['plugins'])) {
+				$Page->title($L->complete_removal_of_plugin($_POST['remove_plugin']));
 				$a->content(
 					h::{'p.lead.cs-center'}(
-						$L->completely_remove_plugin($rc[3])
+						$L->completely_remove_plugin($_POST['remove_plugin'])
 					)
 				);
 				$show_plugins			= false;
