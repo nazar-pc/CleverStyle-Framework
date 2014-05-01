@@ -39,7 +39,7 @@ class MySQLi extends _Abstract {
 		/**
 		 * TODO: remove port number casting when HHVM will not fail because of this
 		 */
-		$this->instance = new \MySQLi($host, $user, $password, $database, (int)$port);
+		$this->instance = @new \MySQLi($host, $user, $password, $database, (int)$port);
 		if(is_object($this->instance) && !$this->instance->connect_errno) {
 			$this->database = $database;
 			/**
@@ -74,7 +74,11 @@ class MySQLi extends _Abstract {
 	 */
 	protected function q_multi_internal ($query) {
 		$query	= implode(';', $query);
-		return @$this->instance->multi_query($query);
+		$return = @$this->instance->multi_query($query);
+		while($this->instance->next_result()) {
+			//Nothing, just finish multi_query
+		}
+		return $return;
 	}
 	/**
 	 * @inheritdoc
