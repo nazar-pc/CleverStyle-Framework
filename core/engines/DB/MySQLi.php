@@ -75,7 +75,7 @@ class MySQLi extends _Abstract {
 	protected function q_multi_internal ($query) {
 		$query	= implode(';', $query);
 		$return = @$this->instance->multi_query($query);
-		while($this->instance->next_result()) {
+		while($this->instance->more_results() && $this->instance->next_result()) {
 			//Nothing, just finish multi_query
 		}
 		return $return;
