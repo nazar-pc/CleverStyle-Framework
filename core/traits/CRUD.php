@@ -91,7 +91,7 @@ trait CRUD {
 		);
 		$columns	= "`".implode("`,`", array_keys($insert_id ? $data_model : array_slice($data_model, 1)))."`";
 		$values		= implode(',', array_fill(0, count($arguments), "'%s'"));
-		return $this->db_prime()->q(
+		$return		= $this->db_prime()->q(
 			"INSERT INTO `$table`
 				(
 					$columns
@@ -99,7 +99,11 @@ trait CRUD {
 					$values
 				)",
 				$arguments
-		) ? $this->db_prime()->id() : false;
+		);
+		if (!$return) {
+			return false;
+		}
+		return $insert_id ? true : $this->db_prime()->id();
 	}
 	/**
 	 * Wrapper for create() method, when $table and $data_model arguments are expected to be a properties of class
