@@ -1,0 +1,29 @@
+{
+	"package"		: "Comments",
+	"category"		: "modules",
+	"version"		: "0.1.0+build-1",
+	"description"	: "Simple content functionality. My be used by other components or standalone.",
+	"author"		: "Nazar Mokrynskyi",
+	"website"		: "cleverstyle.org/cms",
+	"license"		: "MIT License",
+	"db_support"	: [
+		"MySQLi"
+	],
+	"provide"		: "content",
+	"require"		: "System>=0.505.0+build-525",
+	"optional"		: [
+		"Plupload",
+		"TinyMCE",
+		"file_upload",
+		"editor"
+	],
+	"multilingual"	: [
+		"interface",
+		"content"
+	],
+	"languages"		: [
+		"English",
+		"Русский",
+		"Українська"
+	]
+}
