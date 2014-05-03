@@ -133,11 +133,12 @@ trait CRUD {
 			}
 			return $id;
 		}
-		$columns	= "`".implode("`,`", array_keys($data_model))."`";
+		$columns		= "`".implode("`,`", array_keys($data_model))."`";
+		$first_column	= array_keys($data_model)[0];
 		return $this->db()->qf([
 			"SELECT $columns
 			FROM `$table`
-			WHERE `id` = '%s'
+			WHERE `$first_column` = '%s'
 			LIMIT 1",
 			$id
 		]) ?: false;
@@ -173,10 +174,11 @@ trait CRUD {
 			array_keys($arguments)
 		));
 		$arguments[]	= $id;
+		$first_column	= array_keys($data_model)[0];
 		return (bool)$this->db_prime()->q(
 			"UPDATE `$table`
 			SET $columns
-			WHERE `id` = '%s'
+			WHERE `$first_column` = '%s'
 			LIMIT 1",
 			$arguments
 		);
@@ -196,16 +198,18 @@ trait CRUD {
 	/**
 	 * Delete item
 	 *
-	 * @param string	$table
-	 * @param int|int[]	$id
+	 * @param string				$table
+	 * @param Closure[]|string[]	$data_model
+	 * @param int|int[]				$id
 	 *
 	 * @return bool
 	 */
-	protected function delete ($table, $id) {
-		$id	= implode(',', _int((array)$id));
+	protected function delete ($table, $data_model, $id) {
+		$id				= implode(',', _int((array)$id));
+		$first_column	= array_keys($data_model)[0];
 		return (bool)$this->db_prime()->q(
 			"DELETE FROM `$table`
-			WHERE `id` IN(%s)",
+			WHERE `$first_column` IN(%s)",
 			$id
 		);
 	}
@@ -219,6 +223,6 @@ trait CRUD {
 	 * @return bool
 	 */
 	protected function delete_simple ($id) {
-		return $this->delete($this->table, $id);
+		return $this->delete($this->table, $this->data_model, $id);
 	}
 }
