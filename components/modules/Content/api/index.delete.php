@@ -9,19 +9,23 @@
 
 namespace cs\modules\Content;
 
-use cs\User;
+use
+	cs\Index,
+	cs\User;
 
 if (!User::instance()->admin()) {
 	error_code(403);
 	return;
 }
 
-if (!isset($_POST['key'])) {
+$Index = Index::instance();
+
+if (!isset($Index->route_path[0])) {
 	error_code(400);
 	return;
 }
 
-$result = Content::instance()->del($_POST['key']);
+$result = Content::instance()->del($Index->route_path[0]);
 
 if (!$result) {
 	error_code(500);

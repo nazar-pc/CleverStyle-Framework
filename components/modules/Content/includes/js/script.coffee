@@ -64,9 +64,7 @@ $(document)
 			L	= cs.Language
 			key = $(@).val()
 			$.ajax(
-				url		: 'api/Content'
-				data	:
-					key	: key
+				url		: "api/Content/#{key}"
 				type	: 'get'
 				success	: (data) ->
 					modal_body	= $("""<div><div class="uk-form">
@@ -100,9 +98,8 @@ $(document)
 							$(@).remove()
 					modal_body.find('button').click ->
 						$.ajax(
-							url		: 'api/Content'
+							url		: "api/Content/#{key}"
 							data	:
-								key		: key
 								title	: title.val()
 								content	: content.val()
 								type	: type.val()
@@ -121,9 +118,7 @@ $(document)
 				return
 			key = $(@).val()
 			$.ajax(
-				url		: 'api/Content'
-				data	:
-					key	: key
+				url		: "api/Content/#{key}"
 				type	: 'delete'
 				success	: ->
 					location.reload()

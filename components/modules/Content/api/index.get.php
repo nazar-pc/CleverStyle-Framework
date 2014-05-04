@@ -9,14 +9,18 @@
 
 namespace cs\modules\Content;
 
-use cs\Page;
+use
+	cs\Index,
+	cs\Page;
 
-if (!isset($_GET['key'])) {
+$Index = Index::instance();
+
+if (!isset($Index->route_path[0])) {
 	error_code(400);
 	return;
 }
 
-$content = Content::instance()->get($_GET['key']);
+$content = Content::instance()->get($Index->route_path[0]);
 
 if (!$content) {
 	error_code(404);

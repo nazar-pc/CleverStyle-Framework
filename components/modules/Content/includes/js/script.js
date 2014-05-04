@@ -42,10 +42,7 @@
     L = cs.Language;
     key = $(this).val();
     return $.ajax({
-      url: 'api/Content',
-      data: {
-        key: key
-      },
+      url: "api/Content/" + key,
       type: 'get',
       success: function(data) {
         var content, modal_body, title, type;
@@ -58,9 +55,8 @@
         });
         return modal_body.find('button').click(function() {
           return $.ajax({
-            url: 'api/Content',
+            url: "api/Content/" + key,
             data: {
-              key: key,
               title: title.val(),
               content: content.val(),
               type: type.val()
@@ -81,10 +77,7 @@
     }
     key = $(this).val();
     return $.ajax({
-      url: 'api/Content',
-      data: {
-        key: key
-      },
+      url: "api/Content/" + key,
       type: 'delete',
       success: function() {
         return location.reload();
