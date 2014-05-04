@@ -37,13 +37,13 @@ $Index->content(
 					h::{'button.cs-content-edit'}(
 						$L->edit,
 						[
-							'value' => $item['key']
+							'data-key' => $item['key']
 						]
 					).
 					h::{'button.cs-content-delete'}(
 						$L->delete,
 						[
-							'value' => $item['key']
+							'data-key' => $item['key']
 						]
 					)
 				];

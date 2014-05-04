@@ -60,7 +60,7 @@ class Content {
 	 * @return bool
 	 */
 	function add ($key, $title, $content, $type) {
-		$key = str_replace(['/', '?', '#'], '_', $key);
+		$key = str_replace(['/', '?', '#', '"', '<', '>'], '_', $key);
 		preg_match_all('/"(http[s]?:\/\/.*)"/Uims', $content, $new_files);
 		$new_files = isset($new_files[1]) ? $new_files[1] : [];
 		$cache_key = md5($key).'/'.Language::instance()->clang;
