@@ -1,0 +1,12 @@
+{
+	"Content"			: "Контент",
+	"content_key"		: "Ключ",
+	"content_title"		: "Назва",
+	"content_type"		: "Тип",
+	"content_content"	: "Контент",
+	"content_action"	: "Дія",
+	"content_edit"		: "Редагувати",
+	"content_delete"	: "Видалити",
+	"content_add"		: "Додати",
+	"content_save"		: "Зберегти"
+}

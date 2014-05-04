@@ -16,12 +16,12 @@ if (!User::instance()->admin()) {
 	return;
 }
 
-if (!isset($_GET['key'], $_POST['title'], $_POST['content'], $_POST['type'])) {
+if (!isset($_POST['key'], $_POST['title'], $_POST['content'], $_POST['type'])) {
 	error_code(400);
 	return;
 }
 
-$result = Content::instance()->add($_GET['key'], $_POST['title'], $_POST['content'], $_POST['type']);
+$result = Content::instance()->add($_POST['key'], $_POST['title'], $_POST['content'], $_POST['type']);
 
 if (!$result) {
 	error_code(500);

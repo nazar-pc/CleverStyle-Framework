@@ -76,7 +76,7 @@ class Content {
 			unset($file);
 		}
 		unset($new_files);
-		$title   = $this->ml_set('Content/title', $key, xap($title));
+		$title   = $this->ml_set("Content/title", $key, xap($title));
 		$content = $this->ml_set('Content/content', $key, $content);
 		return $this->create_simple([
 			$key,
@@ -171,8 +171,6 @@ class Content {
 			$type
 		]);
 		if ($result) {
-			$this->ml_del('Content/title', $key);
-			$this->ml_del('Content/content', $key);
 			unset($this->cache->$cache_key);
 			return true;
 		}
@@ -187,15 +185,19 @@ class Content {
 	 */
 	function del ($key) {
 		if ($this->delete_simple($key)) {
-			$key = md5($key);
+			$this->ml_del('Content/title', $key);
+			$this->ml_del('Content/content', $key);
+			$cache_key = md5($key);
 			Trigger::instance()->run(
 				'System/upload_files/del_tag',
 				[
-					'tag' => "Content/$key%"
+					'tag' => "Content/$cache_key%"
 				]
 			);
-			unset($this->cache->$key);
+			unset($this->cache->$cache_key);
+			return true;
 		}
+		return false;
 	}
 	private function ml_process ($text) {
 		return Text::instance()->process($this->cdb(), $text, false, true);

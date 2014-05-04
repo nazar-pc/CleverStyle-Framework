@@ -1,0 +1,12 @@
+{
+	"Content"			: "Content",
+	"content_key"		: "Key",
+	"content_title"		: "Title",
+	"content_type"		: "Type",
+	"content_content"	: "Content",
+	"content_action"	: "Action",
+	"content_edit"		: "Edit",
+	"content_delete"	: "Delete",
+	"content_add"		: "Add",
+	"content_save"		: "Save"
+}
