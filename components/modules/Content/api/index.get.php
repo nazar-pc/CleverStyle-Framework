@@ -10,17 +10,17 @@
 namespace cs\modules\Content;
 
 use
-	cs\Index,
+	cs\Config,
 	cs\Page;
 
-$Index = Index::instance();
+$Config = Config::instance();
 
-if (!isset($Index->route_path[0])) {
+if (!isset($Config->route[0])) {
 	error_code(400);
 	return;
 }
 
-$content = Content::instance()->get($Index->route_path[0]);
+$content = Content::instance()->get($Config->route[0]);
 
 if (!$content) {
 	error_code(404);

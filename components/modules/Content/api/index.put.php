@@ -10,7 +10,7 @@
 namespace cs\modules\Content;
 
 use
-	cs\Index,
+	cs\Config,
 	cs\User;
 
 if (!User::instance()->admin()) {
@@ -18,14 +18,14 @@ if (!User::instance()->admin()) {
 	return;
 }
 
-$Index = Index::instance();
+$Config = Config::instance();
 
-if (!isset($Index->route_path[0], $_POST['title'], $_POST['content'], $_POST['type'])) {
+if (!isset($Config->route[0], $_POST['title'], $_POST['content'], $_POST['type'])) {
 	error_code(400);
 	return;
 }
 
-$result = Content::instance()->set($Index->route_path[0], $_POST['title'], $_POST['content'], $_POST['type']);
+$result = Content::instance()->set($Config->route[0], $_POST['title'], $_POST['content'], $_POST['type']);
 
 if (!$result) {
 	error_code(500);
