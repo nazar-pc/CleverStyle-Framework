@@ -88,17 +88,39 @@ class Content {
 	/**
 	 * Get content
 	 *
-	 * @param string $key
+	 * @param string|string[] $key
 	 *
 	 * @return bool|mixed
 	 */
-	protected function get ($key) {
+	function get ($key) {
+		if (is_array($key)) {
+			foreach ($key as &$k) {
+				$k = $this->get($k);
+			}
+			return $key;
+		}
 		$cache_key = md5($key).'/'.Language::instance()->clang;
 		return $this->cache->get($cache_key, function () use ($key) {
-			$data            = $this->read_simple($key);
+			$data = $this->read_simple($key);
+			if (!$data) {
+				return false;
+			}
 			$data['title']   = $this->ml_process($data['title']);
 			$data['content'] = $this->ml_process($data['content']);
+			return $data;
 		});
+	}
+	/**
+	 * Get keys of all content items
+	 *
+	 * @return int[]|bool
+	 */
+	function get_all () {
+		return $this->db()->qfas(
+			"SELECT `key`
+			FROM `$this->table`
+			ORDER BY `key` ASC"
+		);
 	}
 	/**
 	 * Set content
