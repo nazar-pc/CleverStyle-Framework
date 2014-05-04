@@ -76,7 +76,7 @@ class Content {
 			unset($file);
 		}
 		unset($new_files);
-		$title   = $this->ml_set("Content/title", $key, xap($title));
+		$title   = $this->ml_set('Content/title', $key, xap($title));
 		$content = $this->ml_set('Content/content', $key, $content);
 		return $this->create_simple([
 			$key,
