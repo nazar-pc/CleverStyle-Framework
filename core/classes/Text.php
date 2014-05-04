@@ -285,7 +285,8 @@ class Text {
 			FROM `[prefix]texts`
 			WHERE
 				`group`	= '%s' AND
-				`label`	= '%s'",
+				`label`	= '%s'
+			LIMIT 1",
 			$group,
 			$label
 		]);

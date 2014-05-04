@@ -32,16 +32,24 @@ trait CRUD {
 					$argument	= $model($argument);
 					return;
 				}
-				list($type, $format) = explode(':', $model)[2];
+				$model	= explode(':', $model, 2);
+				$type	= $model[0];
+				if (isset($model[1])) {
+					$format	= $model[1];
+				}
 				switch ($type) {
 					case 'int':
 					case 'float':
-						$argument	= $model[0] == 'int' ? (int)$argument : (float)$argument;
+						$argument	= $type == 'int' ? (int)$argument : (float)$argument;
 						/**
 						 * Ranges processing
 						 */
 						if (isset($format)) {
-							list($min, $max) = explode('..', $format);
+							$format	= explode('..', $format);
+							$min	= $format[0];
+							if (isset($format[1])) {
+								$max	= $format[1];
+							}
 							/**
 							 * Minimum
 							 */
@@ -61,10 +69,18 @@ trait CRUD {
 						 * Truncation
 						 */
 						if (isset($format)) {
-							list($length, $ending) = explode(':', $format);
+							$format		= explode(':', $format);
+							$length		= $format[0];
+							if (isset($format[1])) {
+								$ending	= $format[1];
+							}
 							$argument	= truncate($argument, $length, isset($ending) ? $ending : '...', true);
 						}
+					break;
 					case 'set':
+						/**
+						 * @var $format
+						 */
 						$allowed_arguments	= explode(',', $format);
 						if (array_search($argument, $allowed_arguments) === false) {
 							$argument	= $allowed_arguments[0];
@@ -198,27 +214,31 @@ trait CRUD {
 	/**
 	 * Delete item
 	 *
-	 * @param string				$table
-	 * @param Closure[]|string[]	$data_model
-	 * @param int|int[]				$id
+	 * @param string					$table
+	 * @param Closure[]|string[]		$data_model
+	 * @param int|int[]|string|string[]	$id
 	 *
 	 * @return bool
 	 */
 	protected function delete ($table, $data_model, $id) {
-		$id				= implode(',', _int((array)$id));
 		$first_column	= array_keys($data_model)[0];
-		return (bool)$this->db_prime()->q(
-			"DELETE FROM `$table`
-			WHERE `$first_column` IN(%s)",
-			$id
-		);
+		$result			= true;
+		foreach ((array)$id as $i) {
+			$result	= $result && $this->db_prime()->q(
+				"DELETE FROM `$table`
+				WHERE `$first_column` = '%s'
+				LIMIT 1",
+				$i
+			);
+		}
+		return $result;
 	}
 	/**
 	 * Wrapper for delete() method, when $table argument is expected to be a property of class
 	 *
 	 * @see delete
 	 *
-	 * @param int|int[]	$id
+	 * @param int|int[]|string|string[]	$id
 	 *
 	 * @return bool
 	 */
