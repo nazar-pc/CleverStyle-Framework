@@ -14,6 +14,7 @@ But in parallel with core some components are developed:
 
  * **Blogs** (simple blogging functionality)
  * **Comments** (adds comments functionality to other modules)
+ * **Content** (simple content functionality. May be used by other components or stand-alone)
  * **Cron** (provides GUI for crontab, scheduled tasks)
  * **Deferred tasks** (Deferred tasks allows other components to create tasks, that can be executed not immediately, but little bit later)
  * **Disqus** (Integration of Disqus commenting service, adds comments functionality to other modules)
