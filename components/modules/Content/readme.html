@@ -1,0 +1,19 @@
+<h3 style="text-align: center;">Content module - simple content functionality. May be used by other components or stand-alone</h3>
+<h4>To use module you need few steps:</h4>
+<ul>
+	<li>Create content in administration with some key</li>
+	<li>
+		In any theme or component you can get content in such way:
+		<pre>use cs\modules\Content\Content;
+$content_item	= Content::instance()->get('content key here');
+$content	= $content_item['content']; //title field available too</pre>
+	</li>
+	<li>
+		Add attribute to container with content:
+		<pre>&lt;section data-cs-content="content key here"&gt;
+	&lt;?=$content?&gt;
+&lt;/section&gt;
+		</pre>
+	</li>
+	<li>If you want to edit content - put mouse cursor over container and Edit button will appear, there is no need to edit it from administration anymore</li>
+</ul>

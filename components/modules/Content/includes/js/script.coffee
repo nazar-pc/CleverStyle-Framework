@@ -25,13 +25,14 @@ $ ->
 					</p>
 					<p>
 						<label>#{L.content_content}:</label>
-						<textarea name="content"></textarea>
+						<textarea class="text"></textarea>
+						<textarea class="html EDITOR" id="cs-content-html-content"></textarea>
 					</p>
 					<p>
 						<label>#{L.content_type}:</label>
 						<select name="type">
 							<option value="text">text</option>
-							<option value="html">html</option>
+							<option value="html" id="cs-content-html-content">html</option>
 						</select>
 					</p>
 					<p class="cs-right">
@@ -40,8 +41,18 @@ $ ->
 				</div></div>""")
 				key		= modal_body.find('[name=key]')
 				title	= modal_body.find('[name=title]')
-				content	= modal_body.find('[name=content]')
+				content	= modal_body.find('.text')
+				modal_body.find('.html').hide()
 				type	= modal_body.find('[name=type]')
+				type.change ->
+					if type.val() == 'text'
+						typeof window.editor_deinitialization == 'function' && editor_deinitialization('cs-content-html-content')
+						modal_body.find('.html').hide()
+						content	= modal_body.find('.text').show().val(content.val())
+					else
+						modal_body.find('.text').hide()
+						content	= modal_body.find('.html').show().val(content.val())
+						typeof window.editor_reinitialization == 'function' && editor_reinitialization('cs-content-html-content')
 				modal_body
 					.appendTo('body')
 					.cs().modal('show')
@@ -77,7 +88,8 @@ $ ->
 							</p>
 							<p>
 								<label>#{L.content_content}:</label>
-								<textarea name="content"></textarea>
+								<textarea class="text"></textarea>
+								<textarea class="html EDITOR" id="cs-content-html-content"></textarea>
 							</p>
 							<p>
 								<label>#{L.content_type}:</label>
@@ -91,8 +103,19 @@ $ ->
 							</p>
 						</div></div>""")
 						title	= modal_body.find('[name=title]').val(data.title)
-						content	= modal_body.find('[name=content]').val(data.content)
+						content	= modal_body.find('textarea').val(data.content)
+						modal_body.find("textarea:not(.#{data.type})").hide()
 						type	= modal_body.find('[name=type]').val(data.type)
+						type.change ->
+							if type.val() == 'text'
+								typeof window.editor_deinitialization == 'function' && editor_deinitialization('cs-content-html-content')
+								modal_body.find('.html').hide()
+								content	= modal_body.find('.text').show().val(content.val())
+							else
+								console.log ''
+								modal_body.find('.text').hide()
+								content	= modal_body.find('.html').show().val(content.val())
+								typeof window.editor_reinitialization == 'function' && editor_reinitialization('cs-content-html-content')
 						modal_body
 							.appendTo('body')
 							.cs().modal('show')
