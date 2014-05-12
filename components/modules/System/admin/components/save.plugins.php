@@ -17,11 +17,9 @@
 namespace	cs;
 $Cache		= Cache::instance();
 $Config		= Config::instance();
-$Core		= Core::instance();
 $Index		= Index::instance();
 $L			= Language::instance();
 $Page		= Page::instance();
-$User		= User::instance();
 $plugins	= get_files_list(PLUGINS, false, 'd');
 if (isset($_POST['mode'], $_POST['plugin'])) {
 	$plugin	= $_POST['plugin'];
@@ -78,7 +76,8 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			/**
 			 * Extracting new versions of files
 			 */
-			$tmp_dir	= 'phar://'.TEMP.'/'.$User->get_session().'_plugin_update.phar.php';
+			$tmp_file	= TEMP.'/'.User::instance()->get_session().'_plugin_update.phar.php';
+			$tmp_dir	= "phar://$tmp_file";
 			$fs			= file_get_json("$tmp_dir/fs.json");
 			$extract	= array_product(
 				array_map(
@@ -95,6 +94,8 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 					array_keys($fs)
 				)
 			);
+			unlink($tmp_file);
+			unset($tmp_file, $tmp_dir);
 			if (!$extract) {
 				$Page->warning($L->plugin_files_unpacking_error);
 				unlink("$plugin_dir/fs_old.json");
@@ -102,32 +103,6 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 				break;
 			}
 			unset($extract);
-			$tmp_file	= TEMP.'/'.$User->get_session().'_plugin_update.phar.php';
-			rename($tmp_file, $tmp_file = mb_substr($tmp_file, 0, -9));
-			$api_request							= $Core->api_request(
-				'System/admin/update_plugin',
-				[
-					'package'	=> str_replace(DIR, $Config->base_url(), $tmp_file)
-				]
-			);
-			if ($api_request) {
-				$success	= true;
-				foreach ($api_request as $mirror => $result) {
-					if ($result == 1) {
-						$success	= false;
-						$Page->warning($L->cant_unpack_plugin_on_mirror($mirror));
-					}
-				}
-				if (!$success) {
-					$Page->warning($L->plugin_files_unpacking_error);
-					unlink("$plugin_dir/fs_old.json");
-					unlink("$plugin_dir/meta_old.json");
-					break;
-				}
-				unset($success, $mirror, $result);
-			}
-			unlink($tmp_file);
-			unset($api_request, $tmp_file);
 			file_put_json("$plugin_dir/fs.json", $fs = array_keys($fs));
 			/**
 			 * Removing of old unnecessary files and directories
@@ -155,6 +130,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 						_include("$plugin_dir/meta/update/$version.php", true, false);
 					}
 				}
+				unset($old_version);
 			}
 			unlink("$plugin_dir/fs_old.json");
 			unlink("$plugin_dir/meta_old.json");

@@ -40,7 +40,6 @@ use			h,
 			cs\Trigger,
 			cs\User;
 $Config				= Config::instance();
-$Core				= Core::instance();
 $L					= Language::instance();
 $Page				= Page::instance();
 $User				= User::instance();
@@ -82,12 +81,11 @@ if (
 				if ($_FILES['upload_module']['error'] != UPLOAD_ERR_OK) {
 					break;
 				}
-				move_uploaded_file(
-					$_FILES['upload_module']['tmp_name'],
-					$tmp_file = TEMP.'/'.md5($_FILES['upload_module']['tmp_name'].MICROTIME).'.phar.php'
-				);
-				$tmp_dir								= "phar://$tmp_file";
-				if (!($module_name = file_get_contents("$tmp_dir/dir"))) {
+				$tmp_file = TEMP.'/'.md5($_FILES['upload_module']['tmp_name'].MICROTIME).'.phar.php';
+				move_uploaded_file($_FILES['upload_module']['tmp_name'], $tmp_file);
+				$tmp_dir	= "phar://$tmp_file";
+				$module_name = file_get_contents("$tmp_dir/dir");
+				if (!$module_name) {
 					unlink($tmp_file);
 					break;
 				}
@@ -150,40 +148,18 @@ if (
 					)
 				);
 				file_put_json(MODULES."/$module_name/fs.json", array_keys($fs));
-				unset($tmp_dir);
+				unlink($tmp_file);
+				unset($tmp_file, $tmp_dir);
 				if (!$extract) {
 					$Page->warning($L->module_files_unpacking_error);
 					break;
 				}
-				rename($tmp_file, $tmp_file = mb_substr($tmp_file, 0, -9));
-				$api_request							= $Core->api_request(
-					'System/admin/upload_module',
-					[
-						'package'	=> str_replace(DIR, $Config->base_url(), $tmp_file)
-					]
-				);
-				if ($api_request) {
-					$success	= true;
-					foreach ($api_request as $mirror => $result) {
-						if ($result == 1) {
-							$success	= false;
-							$Page->warning($L->cant_unpack_module_on_mirror($mirror));
-						}
-					}
-					if (!$success) {
-						$Page->warning($L->module_files_unpacking_error);
-						break;
-					}
-					unset($success, $mirror, $result);
-				}
-				unset($api_request);
-				unlink($tmp_file);
 				$Config->components['modules'][$module_name]	= [
 					'active'	=> -1,
 					'db'		=> [],
 					'storage'	=> []
 				];
-				unset($tmp_file, $module_name);
+				unset($module_name);
 				ksort($Config->components['modules'], SORT_STRING | SORT_FLAG_CASE);
 				$Config->save();
 			} elseif ($rc[3] == 'upload') {
@@ -394,6 +370,7 @@ if (
 				$a->cancel_button_back	= true;
 				module_db_settings:
 				if (file_exists(MODULES."/$rc[3]/meta/db.json")) {
+					$Core					= Core::instance();
 					$dbs					= [0 => "$L->core_db ($Core->db_type)"];
 					foreach ($Config->db as $i => &$db_data) {
 						if ($i) {

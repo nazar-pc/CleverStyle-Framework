@@ -205,7 +205,8 @@ if (isset($_POST['update_modules_list'])) {
 			/**
 			 * Extracting new versions of files
 			 */
-			$tmp_dir	= 'phar://'.TEMP.'/'.$User->get_session().'_module_update.phar.php';
+			$tmp_file	= TEMP.'/'.$User->get_session().'_module_update.phar.php';
+			$tmp_dir	= "phar://$tmp_file";
 			$fs			= file_get_json("$tmp_dir/fs.json");
 			$extract	= array_product(
 				array_map(
@@ -222,6 +223,8 @@ if (isset($_POST['update_modules_list'])) {
 					array_keys($fs)
 				)
 			);
+			unlink($tmp_file);
+			unset($tmp_file, $tmp_dir);
 			if (!$extract) {
 				$Page->warning($L->module_files_unpacking_error);
 				unlink("$module_dir/fs_old.json");
@@ -229,32 +232,6 @@ if (isset($_POST['update_modules_list'])) {
 				break;
 			}
 			unset($extract);
-			$tmp_file	= TEMP.'/'.$User->get_session().'_module_update.phar.php';
-			rename($tmp_file, $tmp_file = mb_substr($tmp_file, 0, -9));
-			$api_request							= $Core->api_request(
-				'System/admin/update_module',
-				[
-					'package'	=> str_replace(DIR, $Config->base_url(), $tmp_file)
-				]
-			);
-			if ($api_request) {
-				$success	= true;
-				foreach ($api_request as $mirror => $result) {
-					if ($result == 1) {
-						$success	= false;
-						$Page->warning($L->cant_unpack_module_on_mirror($mirror));
-					}
-				}
-				if (!$success) {
-					$Page->warning($L->module_files_unpacking_error);
-					unlink("$module_dir/fs_old.json");
-					unlink("$module_dir/meta_old.json");
-					break;
-				}
-				unset($success, $mirror, $result);
-			}
-			unlink($tmp_file);
-			unset($api_request, $tmp_file);
 			file_put_json("$module_dir/fs.json", $fs = array_keys($fs));
 			/**
 			 * Removing of old unnecessary files and directories
@@ -304,6 +281,7 @@ if (isset($_POST['update_modules_list'])) {
 						}
 					}
 				}
+				unset($old_version);
 			}
 			unlink("$module_dir/fs_old.json");
 			unlink("$module_dir/meta_old.json");
@@ -343,7 +321,8 @@ if (isset($_POST['update_modules_list'])) {
 			/**
 			 * Extracting new versions of files
 			 */
-			$tmp_dir	= 'phar://'.TEMP.'/'.$User->get_session().'_update_system.phar.php';
+			$tmp_file	= TEMP.'/'.$User->get_session().'_update_system.phar.php';
+			$tmp_dir	= "phar://$tmp_file";
 			$fs			= file_get_json("$tmp_dir/fs.json")['core/fs.json'];
 			$fs			= file_get_json("$tmp_dir/fs/$fs");
 			$extract	= array_product(
@@ -361,6 +340,8 @@ if (isset($_POST['update_modules_list'])) {
 					array_keys($fs)
 				)
 			);
+			unlink($tmp_file);
+			unset($tmp_file, $tmp_dir);
 			if (!$extract) {
 				$Page->warning($L->system_files_unpacking_error);
 				unlink(DIR.'/core/fs_old.json');
@@ -368,32 +349,6 @@ if (isset($_POST['update_modules_list'])) {
 				break;
 			}
 			unset($extract);
-			$tmp_file	= TEMP.'/'.$User->get_session().'_update_system.phar.php';
-			rename($tmp_file, $tmp_file = mb_substr($tmp_file, 0, -9));
-			$api_request							= $Core->api_request(
-				'System/admin/update_system',
-				[
-					'package'	=> str_replace(DIR, $Config->base_url(), $tmp_file)
-				]
-			);
-			if ($api_request) {
-				$success	= true;
-				foreach ($api_request as $mirror => $result) {
-					if ($result == 1) {
-						$success	= false;
-						$Page->warning($L->cant_unpack_system_on_mirror($mirror));
-					}
-				}
-				if (!$success) {
-					$Page->warning($L->system_files_unpacking_error);
-					unlink(DIR.'/core/fs_old.json');
-					unlink("$module_dir/meta_old.json");
-					break;
-				}
-				unset($success, $mirror, $result);
-			}
-			unlink($tmp_file);
-			unset($api_request, $tmp_file);
 			file_put_json(DIR.'/core/fs.json', $fs = array_keys($fs));
 			/**
 			 * Removing of old unnecessary files and directories
@@ -443,6 +398,7 @@ if (isset($_POST['update_modules_list'])) {
 						}
 					}
 				}
+				unset($old_version);
 			}
 			unlink(DIR.'/core/fs_old.json');
 			unlink("$module_dir/meta_old.json");

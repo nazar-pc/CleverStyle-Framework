@@ -21,7 +21,6 @@ $Page			= Page::instance();
 $a				= Index::instance();
 $rc				= $Config->route;
 $plugins		= get_files_list(PLUGINS, false, 'd');
-$show_plugins	= true;
 $a->buttons		= false;
 if (
 	isset($rc[2]) &&
@@ -55,12 +54,11 @@ if (
 				if ($_FILES['upload_module']['error'] != UPLOAD_ERR_OK) {
 					break;
 				}
-				move_uploaded_file(
-					$_FILES['upload_plugin']['tmp_name'],
-					$tmp_file = TEMP.'/'.md5($_FILES['upload_plugin']['tmp_name'].MICROTIME).'.phar.php'
-				);
-				$tmp_dir								= "phar://$tmp_file";
-				if (!($plugin	= file_get_contents("$tmp_dir/dir"))) {
+				$tmp_file = TEMP.'/'.md5($_FILES['upload_plugin']['tmp_name'].MICROTIME).'.phar.php';
+				move_uploaded_file($_FILES['upload_plugin']['tmp_name'], $tmp_file);
+				$tmp_dir	= "phar://$tmp_file";
+				$plugin		= file_get_contents("$tmp_dir/dir");
+				if (!$plugin) {
 					unlink($tmp_file);
 					break;
 				}
@@ -83,7 +81,6 @@ if (
 						break;
 					}
 					$rc[2]					= 'update';
-					$show_plugins			= false;
 					$Page->title($L->updating_of_plugin($plugin));
 					rename($tmp_file, $tmp_file = TEMP.'/'.User::instance()->get_session().'_plugin_update.phar.php');
 					$a->content(
@@ -107,7 +104,7 @@ if (
 					$a->content(
 						h::{'button[type=submit]'}($L->{$check_dependencies ? $L->yes : 'force_update_not_recommended'})
 					);
-					break;
+					return;
 				}
 				if (!file_exists(PLUGINS."/$plugin") && !mkdir(PLUGINS."/$plugin", 0700)) {
 					$Page->warning($L->cant_unpack_plugin_no_write_permissions);
@@ -136,29 +133,6 @@ if (
 					$Page->warning($L->plugin_files_unpacking_error);
 					break;
 				}
-				rename($tmp_file, mb_substr($tmp_file, 0, -9));
-				$Core			= Core::instance();
-				$api_request	= $Core->api_request(
-					'System/admin/upload_plugin',
-					[
-						'package'	=> str_replace(DIR, $Config->base_url(), mb_substr($tmp_file, 0, -9))
-					]
-				);
-				if ($api_request) {
-					$success	= true;
-					foreach ($api_request as $mirror => $result) {
-						if ($result == 1) {
-							$success	= false;
-							$Page->warning($L->cant_unpack_plugin_on_mirror($mirror));
-						}
-					}
-					if (!$success) {
-						$Page->warning($L->plugin_files_unpacking_error);
-						break;
-					}
-					unset($success, $mirror, $result);
-				}
-				unset($api_request);
 				unlink($tmp_file);
 				$plugins[]		= $plugin;
 				unset($tmp_file, $plugin);
@@ -170,7 +144,6 @@ if (
 						$L->enabling_of_plugin($rc[3])
 					)
 				);
-				$show_plugins			= false;
 				$check_dependencies		= check_dependencies($rc[3], 'plugin');
 				if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 					break;
@@ -200,6 +173,7 @@ if (
 						'value'	=> $rc[3]
 					])
 				);
+				return;
 			}
 		break;
 		case 'disable':
@@ -210,7 +184,6 @@ if (
 						$L->disabling_of_plugin($rc[3])
 					)
 				);
-				$show_plugins			= false;
 				$check_dependencies		= check_backward_dependencies($rc[3], 'plugin');
 				if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 					break;
@@ -230,36 +203,32 @@ if (
 					])
 				);
 			}
+			return;
 		break;
 		case 'remove':
-			if (!in_array($_POST['remove_plugin'], $Config->components['plugins'])) {
-				$Page->title($L->complete_removal_of_plugin($_POST['remove_plugin']));
-				$a->content(
-					h::{'p.lead.cs-center'}(
-						$L->completely_remove_plugin($_POST['remove_plugin'])
-					)
-				);
-				$show_plugins			= false;
-				$a->cancel_button_back	= true;
-				$a->content(
-					h::{'button[type=submit]'}($L->yes).
-					h::{'input[type=hidden]'}([
-						'name'	=> 'mode',
-						'value'	=> $rc[2]
-					]).
-					h::{'input[type=hidden]'}([
-						'name'	=> 'plugin',
-						'value'	=> $_POST['remove_plugin']
-					])
-				);
-			}
+			$Page->title($L->complete_removal_of_plugin($_POST['remove_plugin']));
+			$a->content(
+				h::{'p.lead.cs-center'}(
+					$L->completely_remove_plugin($_POST['remove_plugin'])
+				)
+			);
+			$a->cancel_button_back	= true;
+			$a->content(
+				h::{'button[type=submit]'}($L->yes).
+				h::{'input[type=hidden]'}([
+					'name'	=> 'mode',
+					'value'	=> $rc[2]
+				]).
+				h::{'input[type=hidden]'}([
+					'name'	=> 'plugin',
+					'value'	=> $_POST['remove_plugin']
+				])
+			);
+			return;
 		break;
 	}
 }
 unset($rc);
-if (!$show_plugins) {
-	return;
-}
 $a->buttons		= false;
 $a->file_upload	= true;
 $plugins_list	= [];
