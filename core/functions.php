@@ -14,11 +14,9 @@ use	cs\Cache,
 	cs\DB,
 	cs\Error,
 	cs\Index,
-	cs\Key,
 	cs\Language,
 	cs\Page,
 	cs\Text,
-	cs\Trigger,
 	cs\User;
 /**
  * Auto Loading of classes
@@ -28,20 +26,18 @@ spl_autoload_register(function ($class) {
 	if (substr($class, 0, 3) == 'cs\\') {
 		$class	= substr($class, 3);
 	}
-	$class	= explode('\\', $class);
-	$class	= [
-		'namespace'	=> count($class) > 1 ? implode('/', array_slice($class, 0, -1)) : '',
-		'name'		=> array_pop($class)
-	];
+	$class		= explode('\\', $class);
+	$namespace	= count($class) > 1 ? implode('/', array_slice($class, 0, -1)) : '';
+	$class		= array_pop($class);
 	/**
 	 * Try to load classes from different places. If not found in one place - try in another.
 	 */
 	return
-		_require_once(CLASSES."/$class[namespace]/$class[name].php", false) ||		//Core classes
-		_require_once(THIRDPARTY."/$class[namespace]/$class[name].php", false) ||	//Third party classes
-		_require_once(TRAITS."/$class[namespace]/$class[name].php", false) ||		//Core traits
-		_require_once(ENGINES."/$class[namespace]/$class[name].php", false) ||		//Core engines
-		_require_once(MODULES."/../$class[namespace]/$class[name].php", false);		//Classes in modules and plugins
+		_require_once(CLASSES."/$namespace/$class.php", false) ||		//Core classes
+		_require_once(THIRDPARTY."/$namespace/$class.php", false) ||	//Third party classes
+		_require_once(TRAITS."/$namespace/$class.php", false) ||		//Core traits
+		_require_once(ENGINES."/$namespace/$class.php", false) ||		//Core engines
+		_require_once(MODULES."/../$namespace/$class.php", false);		//Classes in modules and plugins
 }, true, true);
 /**
  * Correct termination
