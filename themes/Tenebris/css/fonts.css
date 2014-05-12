@@ -7,14 +7,14 @@
  */
 
 @font-face {
-	font-family: 'Open Sans Light Embedded';
+	font-family: 'Open Sans Light';
 	font-style: normal;
 	font-weight: 300;
-	src: url(../fonts/OpenSans-Light.woff) format("woff"), local('Open Sans Light'), local('OpenSans-Light');
+	src: local('Open Sans Light'), local('OpenSans-Light'), url(../fonts/OpenSans-Light.woff) format("woff");
 }
 @font-face {
-	font-family: 'Open Sans Embedded';
+	font-family: 'Open Sans';
 	font-style: normal;
 	font-weight: 400;
-	src: url(../fonts/OpenSans.woff) format("woff"), local('Open Sans'), local('OpenSans');
+	src: local('Open Sans'), local('OpenSans'), url(../fonts/OpenSans.woff) format("woff");
 }
