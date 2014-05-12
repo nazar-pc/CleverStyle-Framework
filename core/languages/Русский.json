@@ -213,6 +213,7 @@
 		"complete_removal_of_theme"					: "Полное удаление темы %s",
 		"completely_remove_theme"					: "Удалить тему %s полностью?",
 		"upload_and_install_update_theme"			: "Загрузить и установить (обновить) тему",
+		"complete_theme_removal"					: "Полное удаление темы",
 		//Languages
 		"languages"							: "Языки",
 		"language_fixed_as"					: "Язык зафиксирован в системной конфигурации как",
