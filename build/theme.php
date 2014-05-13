@@ -54,4 +54,4 @@ $phar->setStub("<?php Phar::webPhar(null, 'index.html'); __HALT_COMPILER();");
 $phar->setSignatureAlgorithm(PHAR::SHA512);
 unset($phar);
 rename(DIR.'/build.phar.tar', DIR.'/'.str_replace(' ', '_', 'theme_'.$_POST['themes'][0])."_$version.phar.php");
-echo h::p("Done! Plugin {$_POST['themes'][0]} $version");
+echo h::p("Done! Theme {$_POST['themes'][0]} $version");
