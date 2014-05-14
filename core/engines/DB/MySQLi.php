@@ -36,10 +36,7 @@ class MySQLi extends _Abstract {
 			$port	= $host[2];
 			$host	= "$host[0]:$host[1]";
 		}
-		/**
-		 * TODO: remove port number casting when HHVM will not fail because of this
-		 */
-		$this->instance = @new \MySQLi($host, $user, $password, $database, (int)$port);
+		$this->instance = @new \MySQLi($host, $user, $password, $database, $port);
 		if(is_object($this->instance) && !$this->instance->connect_errno) {
 			$this->database = $database;
 			/**
