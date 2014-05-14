@@ -32,6 +32,11 @@ But in parallel with core some components are developed:
  * **SimpleImage** (integration of [SimpleImage](https://github.com/claviska/SimpleImage) class into CleverStyle CMS)
  * **TinyMCE** (integration of [TinyMCE](https://github.com/tinymce/tinymce) WYSIWYG Editor for providing simpler content editing)
 
+#### Themes
+
+ * **DarkEnergy** (Dark theme used on CleverStyle.org)
+ * **Tenebris** (Another dark theme designed by Dmitry Kirsanov)
+
 System is free, Open Source and is distributed under MIT license, see [license.txt](https://github.com/nazar-pc/CleverStyle-CMS/blob/master/license.txt)
 
 Installation builds of core and components can be found on [downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages).
