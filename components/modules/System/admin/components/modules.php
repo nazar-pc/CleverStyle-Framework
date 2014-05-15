@@ -482,6 +482,10 @@ if (
 		break;
 		case 'enable':
 			$show_modules			= false;
+			$check_dependencies		= check_dependencies($rc[3], 'module', null, 'enable');
+			if (!$check_dependencies && $Config->core['simple_admin_mode']) {
+				break;
+			}
 			$Page->title($L->enabling_of_module($rc[3]));
 			$a->content(
 				h::{'p.lead.cs-center'}(
@@ -490,11 +494,15 @@ if (
 			);
 			$a->cancel_button_back	= true;
 			$a->content(
-				h::{'button[type=submit]'}($L->yes)
+				h::{'button[type=submit]'}($L->{$check_dependencies ? 'yes' : 'force_enable_not_recommended'})
 			);
 		break;
 		case 'disable':
 			$show_modules			= false;
+			$check_dependencies		= check_backward_dependencies($rc[3], 'module', 'disable');
+			if (!$check_dependencies && $Config->core['simple_admin_mode']) {
+				break;
+			}
 			$Page->title($L->disabling_of_module($rc[3]));
 			$a->content(
 				h::{'p.lead.cs-center'}(
@@ -503,7 +511,7 @@ if (
 			);
 			$a->cancel_button_back	= true;
 			$a->content(
-				h::{'button[type=submit]'}($L->yes)
+				h::{'button[type=submit]'}($L->{$check_dependencies ? 'yes' : 'force_disable_not_recommended'})
 			);
 		break;
 		case 'remove':
