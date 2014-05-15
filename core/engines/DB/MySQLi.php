@@ -22,7 +22,7 @@ class MySQLi extends _Abstract {
 		 * Parsing of $host variable, detecting port and persistent connection
 		 */
 		$host					= explode(':', $host);
-		$port					= ini_get("mysqli.default_port");
+		$port					= ini_get('mysqli.default_port') ?: 3306;
 		if (count($host) == 1) {
 			$host	= $host[0];
 		} elseif (count($host) == 2) {
