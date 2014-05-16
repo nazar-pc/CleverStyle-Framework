@@ -22,22 +22,35 @@ use	cs\Cache,
  * Auto Loading of classes
  */
 spl_autoload_register(function ($class) {
+	static $cache;
+	if (!isset($cache)) {
+		$cache = file_exists(CACHE.'/classes_autoloading') ? file_get_json(CACHE.'/classes_autoloading') : [];
+	}
+	if (isset($cache[$class])) {
+		return require_once $cache[$class];
+	}
 	$class	= ltrim($class, '\\');
 	if (substr($class, 0, 3) == 'cs\\') {
 		$class	= substr($class, 3);
 	}
-	$class		= explode('\\', $class);
-	$namespace	= count($class) > 1 ? implode('/', array_slice($class, 0, -1)) : '';
-	$class		= array_pop($class);
+	$class_exploded	= explode('\\', $class);
+	$namespace		= count($class_exploded) > 1 ? implode('/', array_slice($class_exploded, 0, -1)) : '';
+	$class_name		= array_pop($class_exploded);
 	/**
 	 * Try to load classes from different places. If not found in one place - try in another.
 	 */
-	return
-		_require_once(CLASSES."/$namespace/$class.php", false) ||		//Core classes
-		_require_once(THIRDPARTY."/$namespace/$class.php", false) ||	//Third party classes
-		_require_once(TRAITS."/$namespace/$class.php", false) ||		//Core traits
-		_require_once(ENGINES."/$namespace/$class.php", false) ||		//Core engines
-		_require_once(MODULES."/../$namespace/$class.php", false);		//Classes in modules and plugins
+	if (
+		_require_once($file = CLASSES."/$namespace/$class_name.php", false) ||		//Core classes
+		_require_once($file = THIRDPARTY."/$namespace/$class_name.php", false) ||	//Third party classes
+		_require_once($file = TRAITS."/$namespace/$class_name.php", false) ||		//Core traits
+		_require_once($file = ENGINES."/$namespace/$class_name.php", false) ||		//Core engines
+		_require_once($file = MODULES."/../$namespace/$class_name.php", false)		//Classes in modules and plugins
+	) {
+		$cache[$class] = $file;
+		file_put_json(CACHE.'/classes_autoloading', $cache);
+		return true;
+	}
+	return false;
 }, true, true);
 /**
  * Correct termination
