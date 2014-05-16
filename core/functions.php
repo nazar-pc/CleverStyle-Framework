@@ -94,7 +94,7 @@ function url_by_source ($source) {
 	}
 	$source = realpath($source);
 	if (mb_strpos($source, DIR) === 0) {
-		return $Config->base_url().mb_substr($source, mb_strlen(DIR));
+		return $Config->core_url().mb_substr($source, mb_strlen(DIR));
 	}
 	return false;
 }
@@ -110,8 +110,8 @@ function source_by_url ($url) {
 	if (!$Config) {
 		return false;
 	}
-	if (mb_strpos($url, $Config->base_url()) === 0) {
-		return DIR.mb_substr($url, mb_strlen($Config->base_url()));
+	if (mb_strpos($url, $Config->core_url()) === 0) {
+		return DIR.mb_substr($url, mb_strlen($Config->core_url()));
 	}
 	return false;
 }

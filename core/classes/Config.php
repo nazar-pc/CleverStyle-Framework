@@ -608,7 +608,13 @@ class Config {
 	 * @return string
 	 */
 	function core_url () {
-		return explode(';', $this->core['url'][0], 2)[0];
+		$core_url	= explode(';', $this->core['url'][0], 2)[0];
+		if ($this->core['multilingual']) {
+			$core_url	= explode('/', $core_url);
+			array_pop($core_url);
+			$core_url	= implode('/', $core_url);
+		}
+		return $core_url;
 	}
 	/**
 	 * Get object for getting db and storage configuration of module

@@ -38,9 +38,7 @@ Trigger::instance()->register(
 		} elseif (isset($_SERVER['CLIENT_SECRET'])) {
 			$client_secret	= $_SERVER['CLIENT_SECRET'];
 		}
-		if (!(
-			API && isset($client_id, $access_token)
-		)) {
+		if (!isset($client_id, $access_token)) {
 			return;
 		}
 		header('Cache-Control: no-store');
@@ -92,7 +90,7 @@ Trigger::instance()->register(
 			]);
 			exit;
 		}
-		$_POST['session']	= $_REQUEST['session']	= $token_data['session'];
+		_setcookie('session', $token_data['session']);
 		if (!Config::instance()->module('OAuth2')->guest_tokens) {
 			Trigger::instance()->register(
 				'System/User/construct/after',

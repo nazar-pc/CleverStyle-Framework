@@ -18,8 +18,8 @@ if (!isset($_FILES['file'])) {
 	$Page->json([
 		'jsonrpc'	=> '2.0',
 		'error'		=> [
-			'code'		=> 500,
-			'message'	=> '500 Internal Server Error'
+			'code'		=> 400,
+			'message'	=> '400 File Not Specified'
 		],
 		'id'		=> 'id'
 	]);
@@ -66,6 +66,9 @@ if ($_FILES['file']['error'] != UPLOAD_ERR_OK) {
 	]);
 	return;
 }
+/**
+ * Only registered users allowed
+ */
 if (!$User->user()) {
 	$Page->json([
 		'jsonrpc'	=> '2.0',
