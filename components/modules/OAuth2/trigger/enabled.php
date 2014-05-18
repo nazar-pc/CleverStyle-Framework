@@ -48,49 +48,44 @@ Trigger::instance()
 			$OAuth2 = OAuth2::instance();
 			$Page   = Page::instance();
 			if (!($client = $OAuth2->get_client($client_id))) {
-				code_header(400);
-				$Page->json([
-					'error'             => 'access_denied',
-					'error_description' => 'Invalid client id'
+				error_code(400);
+				$Page->error([
+					'access_denied',
+					'Invalid client id'
 				]);
-				exit;
 			} elseif (!$client['active']) {
-				code_header(403);
-				$Page->json([
-					'error'             => 'access_denied',
-					'error_description' => 'Inactive client id'
+				error_code(403);
+				$Page->error([
+					'access_denied',
+					'Inactive client id'
 				]);
-				exit;
 			}
 			$_SERVER['HTTP_USER_AGENT'] = "OAuth2-$client[name]-$client[id]";
 			if (isset($client_secret)) {
 				if ($client_secret != $client['secret']) {
-					code_header(400);
-					$Page->json([
-						'error'             => 'access_denied',
-						'error_description' => 'client_secret do not corresponds client_id'
+					error_code(400);
+					$Page->error([
+						'access_denied',
+						'client_secret do not corresponds client_id'
 					]);
-					exit;
 				}
 				$token_data = $OAuth2->get_token($access_token, $client_id, $client['secret']);
 			} else {
 				$token_data = $OAuth2->get_token($access_token, $client_id, $client['secret']);
 				if ($token_data['type'] == 'code') {
-					code_header(403);
-					$Page->json([
-						'error'             => 'invalid_request',
-						'error_description' => 'This access_token can\'t be used without client_secret'
+					error_code(403);
+					$Page->error([
+						'invalid_request',
+						"This access_token can't be used without client_secret"
 					]);
-					exit;
 				}
 			}
 			if (!$token_data) {
-				code_header(403);
-				$Page->json([
-					'error'             => 'access_denied',
-					'error_description' => 'access_token expired'
+				error_code(403);
+				$Page->error([
+					'access_denied',
+					'access_token expired'
 				]);
-				exit;
 			}
 			$_POST['session'] = $_REQUEST['session'] = $token_data['session'];
 			_setcookie('session', $token_data['session']);
@@ -99,12 +94,11 @@ Trigger::instance()
 					'System/User/construct/after',
 					function () {
 						if (!User::instance()->user()) {
-							code_header(403);
-							Page::instance()->json([
-								'error'             => 'access_denied',
-								'error_description' => 'Guest tokens disabled'
+							error_code(403);
+							Page::instance()->error([
+								'access_denied',
+								'Guest tokens disabled'
 							]);
-							exit;
 						}
 					}
 				);

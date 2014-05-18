@@ -1321,8 +1321,9 @@ class Page {
 	/**
 	 * Error pages processing
 	 *
-	 * @param null|string	$custom_text	Custom error text instead of text like "404 Not Found"
-	 * @param bool			$json			Force JSON return format
+	 * @param null|string|string[]	$custom_text	Custom error text instead of text like "404 Not Found",
+	 * 												or array with two elements: [error, error_description]
+	 * @param bool					$json			Force JSON return format
 	 */
 	function error ($custom_text = null, $json = false) {
 		static $error_showed = false;
@@ -1339,8 +1340,13 @@ class Page {
 			exit;
 		}
 		interface_off();
-		code_header(ERROR_CODE);
-		$error_text	= $custom_text ?: code_header(ERROR_CODE);
+		$error	= code_header(ERROR_CODE);
+		if (is_array($custom_text)) {
+			$error				= $custom_text[0];
+			$error_description	= $custom_text[1];
+		} else {
+			$error_description	= $custom_text ? : $error;
+		}
 		if (
 			(defined('API') && API) ||
 			$json
@@ -1350,8 +1356,8 @@ class Page {
 				interface_off();
 			}
 			$this->json([
-				'error'				=> ERROR_CODE,
-				'error_description'	=> $error_text
+				'error'				=> $error,
+				'error_description'	=> $error_description
 			]);
 		} else {
 			ob_start();
@@ -1360,8 +1366,8 @@ class Page {
 				!_include_once(THEMES."/$this->theme/error.php", false)
 			) {
 				echo "<!doctype html>\n".
-					h::title(code_header(ERROR_CODE)).
-					 ($error_text ?: ERROR_CODE);
+					h::title(code_header($error)).
+					 ($error_description ?: $error);
 			}
 			$this->Content	= ob_get_clean();
 		}

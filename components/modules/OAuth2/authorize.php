@@ -284,23 +284,19 @@ if (!$OAuth2->get_access($client['id'])) {
 			header('Pragma: no-cache');
 			interface_off();
 			if ($User->user()) {
-				code_header(403);
-				$Page->json([
-					'error'				=> 'access_denied',
-					'error_description'	=> 'Only guests, not user allowed to access this response_type'
+				error_code(403);
+				$Page->error([
+					'access_denied',
+					'Only guests, not user allowed to access this response_type'
 				]);
-				$Index->stop	= true;
-				return;
 			}
 			$code	= $OAuth2->add_code($client['id'], 'token', urldecode($_GET['redirect_uri']));
 			if (!$code) {
-				code_header(500);
-				$Page->json([
-					'error'				=> 'server_error',
-					'error_description'	=> "Server can't generate code, try later"
+				error_code(500);
+				$Page->error([
+					'server_error',
+					"Server can't generate code, try later"
 				]);
-				$Index->stop	= true;
-				return;
 			}
 			$token_data	= $OAuth2->get_code($code, $client['id'], $client['secret'], urldecode($_GET['redirect_uri']));
 			if ($token_data) {
@@ -309,14 +305,11 @@ if (!$OAuth2->get_access($client['id'])) {
 				$Index->stop	= true;
 				return;
 			} else {
-				code_header(500);
-				$Page->json([
-					'error'				=> 'server_error',
-					'error_description'	=> "Server can't get token data, try later"
+				error_code(500);
+				$Page->error([
+					'server_error',
+					"Server can't get token data, try later"
 				]);
-				$Page->Content	= '';
-				$Index->stop	= true;
-				return;
 			}
 	}
 }
