@@ -109,9 +109,7 @@ class Language implements JsonSerializable {
 	 */
 	function set ($item, $value = null) {
 		if (is_array($item)) {
-			foreach ($item as $i => &$v) {
-				$this->set($i, $v);
-			}
+			$this->translate = $item + $this->translate;
 		} else {
 			$this->translate[$item] = $value;
 		}

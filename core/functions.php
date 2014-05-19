@@ -29,13 +29,13 @@ spl_autoload_register(function ($class) {
 	if (isset($cache[$class])) {
 		return require_once $cache[$class];
 	}
-	$class	= ltrim($class, '\\');
-	if (substr($class, 0, 3) == 'cs\\') {
-		$class	= substr($class, 3);
+	$prepared_class_name	= ltrim($class, '\\');
+	if (substr($prepared_class_name, 0, 3) == 'cs\\') {
+		$prepared_class_name	= substr($prepared_class_name, 3);
 	}
-	$class_exploded	= explode('\\', $class);
-	$namespace		= count($class_exploded) > 1 ? implode('/', array_slice($class_exploded, 0, -1)) : '';
-	$class_name		= array_pop($class_exploded);
+	$prepared_class_name	= explode('\\', $prepared_class_name);
+	$namespace				= count($prepared_class_name) > 1 ? implode('/', array_slice($prepared_class_name, 0, -1)) : '';
+	$class_name				= array_pop($prepared_class_name);
 	/**
 	 * Try to load classes from different places. If not found in one place - try in another.
 	 */
@@ -46,7 +46,7 @@ spl_autoload_register(function ($class) {
 		_require_once($file = ENGINES."/$namespace/$class_name.php", false) ||		//Core engines
 		_require_once($file = MODULES."/../$namespace/$class_name.php", false)		//Classes in modules and plugins
 	) {
-		$cache[$class] = $file;
+		$cache[$class] = realpath($file);
 		file_put_json(CACHE.'/classes_autoloading', $cache);
 		return true;
 	}

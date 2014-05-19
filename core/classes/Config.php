@@ -56,6 +56,12 @@ class Config {
 				],
 				$init	= false;
 	/**
+	 * The "Late Static Binding" class name
+	 *
+	 * @var string
+	 */
+	protected	$class;
+	/**
 	 * Contains parsed route of current page url in form of array without module name and prefixes <i>admin</i>/<i>api</i>
 	 *
 	 * @var array
@@ -65,6 +71,7 @@ class Config {
 	 * Loading of configuration, initialization of $Config, $Cache, $L and Page objects, Routing processing
 	 */
 	function construct () {
+		$this->class	= get_called_class();
 		/**
 		 * Reading settings from cache and defining missing data
 		 */
@@ -522,7 +529,13 @@ class Config {
 		}
 		unset($part, $temp);
 		$query	= implode(', ', $query);
-		if ($cdb->q("UPDATE `[prefix]config` SET $query WHERE `domain` = '%s' LIMIT 1", DOMAIN)) {
+		if ($cdb->q(
+			"UPDATE `[prefix]config`
+			SET $query
+			WHERE `domain` = '%s'
+			LIMIT 1",
+			DOMAIN
+		)) {
 			$this->apply_internal(false);
 			return true;
 		}
@@ -545,17 +558,16 @@ class Config {
 	 */
 	function &__get ($item) {
 		if (isset($this->data[$item])) {
-			$debug_backtrace = debug_backtrace()[1];
-			$debug_backtrace = [
-				'class'		=> isset($debug_backtrace['class']) ? $debug_backtrace['class'] : '',
-				'function'	=> isset($debug_backtrace['function']) ? $debug_backtrace['function'] : ''
-			];
+			$callee_class = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
+			$callee_class = isset($callee_class['class']) ? $callee_class['class'] : '';
 			/**
 			 * Modifications only for administrators or requests from methods of Config class
 			 */
 			if (
-				User::instance(true)->admin() ||
-				$debug_backtrace['class'] == __CLASS__
+				(
+					defined('ADMIN') && ADMIN && User::instance(true)->admin()
+				) ||
+				$callee_class == $this->class
 			) {
 				$return = &$this->data[$item];
 			} else {
@@ -575,11 +587,8 @@ class Config {
 	 * @return array|bool
 	 */
 	function __set ($item, $data) {
-		$debug_backtrace = debug_backtrace()[1];
-		$debug_backtrace = [
-			'class'		=> $debug_backtrace['class'],
-			'function'	=> $debug_backtrace['function']
-		];
+		$callee_class = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
+		$callee_class = isset($callee_class['class']) ? $callee_class['class'] : '';
 		/**
 		 * Allow modification only for administrators or requests from methods of Config class
 		 */
@@ -587,7 +596,7 @@ class Config {
 			!isset($this->data[$item]) ||
 			(
 				User::instance(true)->admin() &&
-				$debug_backtrace['class'] != __CLASS__
+				$callee_class != $this->class
 			)
 		) {
 			return false;

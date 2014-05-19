@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		BananaHTML
- * @version		1.0.1
+ * @version		1.0.3
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2014, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -793,7 +793,7 @@ class BananaHTML {
 			$array1['style'] .= $array3['style'];
 			unset($array3['class']);
 		}
-		return array_merge($array1, $array2, $array3);
+		return $array3 + $array2 + $array1;
 	}
 	/**
 	 * Analyze CSS selector for nester tags
@@ -804,20 +804,20 @@ class BananaHTML {
 	 * @return bool			Returns <i>true</i> and changes <i>&$in</i> to array if nested tags detected
 	 */
 	protected static function analyze_selector (&$in, $offset = 0) {
-		$space_position	= mb_strpos($in, ' ', $offset);
+		$space_position	= strpos($in, ' ', $offset);
 		if ($space_position === false) {
 			return false;
 		}
-		$next_space		= mb_strpos($in, ' ', $space_position + 1);
-		$attr_close		= mb_strpos($in, ']', $space_position);
+		$next_space		= strpos($in, ' ', $space_position + 1);
+		$attr_close		= strpos($in, ']', $space_position);
 		if (
 			$next_space === false ||
 			$attr_close === false ||
 			$next_space > $attr_close
 		) {
 			$in	= [
-				mb_substr($in, 0, $space_position),
-				mb_substr($in, $space_position + 1)
+				substr($in, 0, $space_position),
+				substr($in, $space_position + 1)
 			];
 			return true;
 		}

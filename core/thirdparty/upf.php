@@ -28,7 +28,7 @@ function _require ($file, $once = false, $show_errors = true) {
 			return require $file;
 		}
 	} elseif (is_bool($show_errors) && $show_errors) {
-		$data = debug_backtrace()[0];
+		$data = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0];
 		trigger_error("File $file does not exists in $data[file] on line $data[line]", E_USER_ERROR);
 	} elseif ($show_errors instanceof Closure) {
 		return (bool)$show_errors();
@@ -52,8 +52,8 @@ function _include ($file, $once = false, $show_errors = true) {
 			return include $file;
 		}
 	} elseif (is_bool($show_errors) && $show_errors) {
-			$data = debug_backtrace()[0];
-			trigger_error("File $file does not exists in $data[file] on line $data[line]", E_USER_WARNING);
+		$data = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0];
+		trigger_error("File $file does not exists in $data[file] on line $data[line]", E_USER_WARNING);
 	} elseif ($show_errors instanceof Closure) {
 			return (bool)$show_errors();
 	}
