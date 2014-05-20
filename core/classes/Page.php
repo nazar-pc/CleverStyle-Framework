@@ -453,9 +453,9 @@ class Page {
 		return $this->js_internal($add, $mode);
 	}
 	/**
-	 * @param string	$add
-	 * @param string	$mode
-	 * @param bool		$core
+	 * @param string|string[]	$add
+	 * @param string			$mode
+	 * @param bool				$core
 	 *
 	 * @return Page
 	 */
@@ -501,9 +501,9 @@ class Page {
 		return $this->css_internal($add, $mode);
 	}
 	/**
-	 * @param string	$add
-	 * @param string	$mode
-	 * @param bool		$core
+	 * @param string|string[]	$add
+	 * @param string			$mode
+	 * @param bool				$core
 	 *
 	 * @return Page
 	 */
@@ -751,6 +751,9 @@ class Page {
 			$structure			= $data['structure'];
 			$dependencies		= $data['dependencies'];
 			unset($data);
+			/**
+			 * Narrow the dependence to current module only
+			 */
 			$dependencies		= isset($dependencies[MODULE]) ? $dependencies[MODULE] : [];
 			$includes['css']	= ["storage/pcache/$this->pcache_basename.css?{$structure['']['css']}"];
 			$includes['js']		= ["storage/pcache/$this->pcache_basename.js?{$structure['']['js']}"];
@@ -779,19 +782,56 @@ class Page {
 			$this->css_internal($includes['css'], 'file', true);
 			$this->js_internal($includes['js'], 'file', true);
 		} else {
-			$includes	= $this->get_includes_list();
+			if ($Config) {
+				$this->includes_dependencies_and_map($dependencies, $includes_map);
+				/**
+				 * Add system includes
+				 */
+				$includes		= $includes_map[''];
+				$current_url	= $Config->server['relative_address'];
+				/**
+				 * Narrow the dependence to current module only
+				 */
+				$dependencies	= isset($dependencies[MODULE]) ? $dependencies[MODULE] : [];
+				foreach ($includes_map as $url => $local_includes) {
+					$prefix_module	= explode('+', $url);
+					$prefix_module	= $prefix_module[0] != 'admin' ? $prefix_module[0] : $prefix_module[1];
+					if (
+						mb_strpos($current_url, $url) === 0 ||
+						(
+							$dependencies &&
+							array_search($prefix_module, $dependencies) !== false
+						)
+					) {
+						if (isset($local_includes['css'])) {
+							$includes['css']	= array_merge($includes['css'], $local_includes['css']);
+						}
+						if (isset($local_includes['js'])) {
+							$includes['js']	= array_merge($includes['js'], $local_includes['js']);
+						}
+					}
+				}
+				unset($current_url, $dependencies, $url, $local_includes, $prefix_module);
+				$root_strlen = strlen(DIR) + 1; // +1 means slash following after root path
+				foreach ($includes['css'] as &$file) {
+					$file = substr($file, $root_strlen);
+				}
+				unset($file);
+				foreach ($includes['js'] as &$file) {
+					$file = substr($file, $root_strlen);
+				}
+				unset($root_strlen, $file);
+			} else {
+				$includes	= $this->get_includes_list();
+			}
 			/**
 			 * Including of CSS
 			 */
-			foreach ($includes['css'] as $file) {
-				$this->css_internal($file, 'file', true);
-			}
+			$this->css_internal($includes['css'], 'file', true);
 			/**
 			 * Including of JavaScript
 			 */
-			foreach ($includes['js'] as $file) {
-				$this->js_internal($file, 'file', true);
-			}
+			$this->js_internal($includes['js'], 'file', true);
 		}
 		return $this;
 	}
@@ -872,6 +912,28 @@ class Page {
 	 * @return Page
 	 */
 	protected function rebuild_cache () {
+		$this->includes_dependencies_and_map($dependencies, $includes_map);
+		$structure	= [];
+		foreach ($includes_map as $filename_prefix => $includes) {
+			$filename_prefix				= str_replace('/', '+', $filename_prefix);
+			$structure[$filename_prefix]	= $this->create_cached_includes_files($filename_prefix, $includes);
+		}
+		unset($includes_map, $filename_prefix, $includes);
+		file_put_json(PCACHE."/$this->pcache_basename.json", [
+			'dependencies'	=> $dependencies,
+			'structure'		=> $structure
+		]);
+		unset($structure);
+		Trigger::instance()->run('System/Page/rebuild_cache');
+		return $this;
+	}
+	/**
+	 * Get dependencies of components between each other (only that contains some styles and scripts) and mapping styles and scripts to URL paths
+	 *
+	 * @param array	$dependencies
+	 * @param array	$includes_map
+	 */
+	protected function includes_dependencies_and_map (&$dependencies, &$includes_map) {
 		/**
 		 * Get all includes
 		 */
@@ -983,6 +1045,9 @@ class Page {
 		 */
 		foreach ($dependencies as $component_name => &$depends_on) {
 			foreach ($depends_on as $index => &$dependency) {
+				if ($dependency == 'System') {
+					continue;
+				}
 				if (isset($dependencies_aliases[$dependency])) {
 					$dependency	= $dependencies_aliases[$dependency];
 				}
@@ -1019,19 +1084,6 @@ class Page {
 			}
 		}
 		unset($depends_on, $index, $dependency);
-		$structure	= [];
-		foreach ($includes_map as $filename_prefix => $includes) {
-			$filename_prefix				= str_replace('/', '+', $filename_prefix);
-			$structure[$filename_prefix]	= $this->create_cached_includes_files($filename_prefix, $includes);
-		}
-		unset($includes_map, $filename_prefix, $includes);
-		file_put_json(PCACHE."/$this->pcache_basename.json", [
-			'dependencies'	=> $dependencies,
-			'structure'		=> $structure
-		]);
-		unset($structure);
-		Trigger::instance()->run('System/Page/rebuild_cache');
-		return $this;
 	}
 	/**
 	 * Creates cached version of given js and css files.<br>
