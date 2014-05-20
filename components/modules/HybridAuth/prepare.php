@@ -50,12 +50,18 @@ $rc			= $Config->route;
  * If user is registered, provider not found or this is request for final authentication and session does not corresponds - return user to the base url
  */
 if (
-	$User->user() ||
+	(
+		$User->user() &&
+		(
+			!isset($rc[0]) ||
+			$rc[0] != 'merge_confirmation'
+		)
+	) ||
 	!(
 		isset($rc[0]) &&
 		(
 			(
-				$Config->module('HybridAuth')->providers[$rc[0]] &&
+				isset($Config->module('HybridAuth')->providers[$rc[0]]) &&
 				$Config->module('HybridAuth')->providers[$rc[0]]['enabled']
 			) ||
 			(
@@ -97,7 +103,10 @@ if (isset($rc[1]) && $rc[0] == 'merge_confirmation') {
 					'%s',
 					'%s',
 					'%s'
-				)",
+				)
+			ON DUPLICATE KEY UPDATE
+				`id`		= VALUES(`id`),
+				`profile`	= VALUES(`profile`)",
 			$data['id'],
 			$data['provider'],
 			$data['identifier'],
@@ -471,7 +480,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 		'HybridAuth/registration/before',
 		[
 			'provider'		=> $rc[0],
-			'email'			=> $_POST['email'],
+			'email'			=> strtolower($_POST['email']),
 			'identifier'	=> $HybridAuth_data['identifier'],
 			'profile'		=> $HybridAuth_data['profile']
 		]
@@ -497,7 +506,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 			/**
 			 * Send merging confirmation mail
 			 */
-			$id							= $User->get_id(hash('sha224', $_POST['email']));
+			$id							= $User->get_id(hash('sha224', strtolower($_POST['email'])));
 			$HybridAuth_data['id']		= $id;
 			$HybridAuth_data['referer']	= _getcookie('HybridAuth_referer') ?: $Config->base_url();
 			_setcookie('HybridAuth_referer', '');
@@ -557,7 +566,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 			);
 			$profile_info	= $HybridAuth_data['profile_info'];
 			$contacts		= $HybridAuth_data['contacts'];
-			$email			= $_POST['email'];
+			$email			= strtolower($_POST['email']);
 			try {
 				$HybridAuth		= get_hybridauth_instance($rc[0]);
 				$adapter		= $HybridAuth->getAdapter($rc[0]);
