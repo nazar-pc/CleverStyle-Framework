@@ -158,7 +158,7 @@ do ($=jQuery) ->
 							.children()
 					content
 						.addClass('uk-modal-dialog uk-modal-dialog-slide')
-					if $this.data('modal-frameless')
+					if $this.is('[data-modal-frameless]')
 						content
 							.addClass('uk-modal-dialog-frameless')
 					if $this.attr('title')
