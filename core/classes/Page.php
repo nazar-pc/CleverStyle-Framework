@@ -788,6 +788,7 @@ class Page {
 				 * Add system includes
 				 */
 				$includes		= $includes_map[''];
+				unset($includes_map['']);
 				$current_url	= $Config->server['relative_address'];
 				/**
 				 * Narrow the dependence to current module only
@@ -1037,8 +1038,7 @@ class Page {
 		/**
 		 * For consistency
 		 */
-		$includes_map['']['css']	= $all_includes['css'];
-		$includes_map['']['js']		= $all_includes['js'];
+		$includes_map['']	= $all_includes;
 		unset($all_includes);
 		/**
 		 * Components can depend on each other - we need to find all dependencies and replace aliases by real names of components
