@@ -133,7 +133,7 @@ class Page {
 	 */
 	function json ($add) {
 		if (!API) {
-			header('Content-Type: application/json', true);
+			header('Content-Type: application/json; charset=utf-8', true);
 			interface_off();
 		}
 		$this->Content	= _json_encode($add);
@@ -1404,7 +1404,7 @@ class Page {
 			$json
 		) {
 			if ($json) {
-				header('Content-Type: application/json', true);
+				header('Content-Type: application/json; charset=utf-8', true);
 				interface_off();
 			}
 			$this->json([

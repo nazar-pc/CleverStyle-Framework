@@ -279,7 +279,6 @@ if (!$OAuth2->get_access($client['id'])) {
 				return;
 			}
 		case 'guest_token':
-			header('Content-Type: application/json', true);
 			header('Cache-Control: no-store');
 			header('Pragma: no-cache');
 			interface_off();
@@ -288,7 +287,7 @@ if (!$OAuth2->get_access($client['id'])) {
 				$Page->error([
 					'access_denied',
 					'Only guests, not user allowed to access this response_type'
-				]);
+				], true);
 			}
 			$code	= $OAuth2->add_code($client['id'], 'token', urldecode($_GET['redirect_uri']));
 			if (!$code) {
@@ -296,7 +295,7 @@ if (!$OAuth2->get_access($client['id'])) {
 				$Page->error([
 					'server_error',
 					"Server can't generate code, try later"
-				]);
+				], true);
 			}
 			$token_data	= $OAuth2->get_code($code, $client['id'], $client['secret'], urldecode($_GET['redirect_uri']));
 			if ($token_data) {
@@ -309,7 +308,7 @@ if (!$OAuth2->get_access($client['id'])) {
 				$Page->error([
 					'server_error',
 					"Server can't get token data, try later"
-				]);
+				], true);
 			}
 	}
 }

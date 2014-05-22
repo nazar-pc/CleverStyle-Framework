@@ -267,7 +267,7 @@ class Config {
 		!defined('MODULE')	&& define('MODULE', $processed_route['MODULE']);
 		!defined('HOME')	&& define('HOME', $processed_route['HOME']);
 		if (API) {
-			header('Content-Type: application/json', true);
+			header('Content-Type: application/json; charset=utf-8', true);
 			interface_off();
 		}
 		$server['ajax']				= isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
