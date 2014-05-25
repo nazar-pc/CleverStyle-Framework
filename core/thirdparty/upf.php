@@ -590,6 +590,7 @@ function _preg_match ($pattern, $subject, &$matches = null, $flags = 0, $offset 
 	if (strpos($pattern, '/') === false && strpos($pattern, '#') === false) {
 		return false;
 	}
+	$pattern = trim($pattern);
 	return preg_match($pattern, $subject, $matches, $flags, $offset);
 }
 
@@ -608,6 +609,7 @@ function _preg_replace ($pattern, $replacement, $subject, $limit = -1, &$count =
 	if (strpos($pattern, '/') === false && strpos($pattern, '#') === false) {
 		return false;
 	}
+	$pattern = trim($pattern);
 	return preg_replace($pattern, $replacement, $subject, $limit, $count);
 }
 /**
