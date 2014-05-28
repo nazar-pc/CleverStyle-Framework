@@ -131,7 +131,7 @@
             $this.attr('title', $this.data('title')).attr('data-title', '');
           }
           pos = $this.data('pos');
-          return $this.attr('data-uk-tooltip', cs.json_encode({
+          return $this.attr('data-uk-tooltip', JSON.stringify({
             pos: pos ? pos : 'top',
             animation: true,
             delay: 200

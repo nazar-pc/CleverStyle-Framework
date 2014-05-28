@@ -67,18 +67,16 @@ cs.db_test					= (url, added) ->
 			error	: ->
 				db_test.find('h3 + *').replaceWith('<p class="cs-test-result">' + L.failed + '</p>')
 	else
-		db = cs.json_encode(
-			type		: value_by_name('db[type]')
-			name		: value_by_name('db[name]')
-			user		: value_by_name('db[user]')
-			password	: value_by_name('db[password]')
-			host		: value_by_name('db[host]')
-			charset		: value_by_name('db[charset]')
-		)
 		$.ajax
 			url		: url
 			data	:
-				db	: db
+				db	:
+					type		: value_by_name('db[type]')
+					name		: value_by_name('db[name]')
+					user		: value_by_name('db[user]')
+					password	: value_by_name('db[password]')
+					host		: value_by_name('db[host]')
+					charset		: value_by_name('db[charset]')
 			success	: (result) ->
 				db_test
 					.find('h3 + *')
@@ -115,17 +113,15 @@ cs.storage_test				= (url, added) ->
 					.find('h3 + *')
 					.replaceWith('<p class="cs-test-result">' + L.failed + '</p>')
 	else
-		storage = cs.json_encode(
-			url			: value_by_name('storage[url]')
-			host		: value_by_name('storage[host]')
-			connection	: value_by_name('storage[connection]')
-			user		: value_by_name('storage[user]')
-			password	: value_by_name('storage[password]')
-		)
 		$.ajax
 			url		: url
 			data	:
-				storage	: storage
+				storage	:
+					url			: value_by_name('storage[url]')
+					host		: value_by_name('storage[host]')
+					connection	: value_by_name('storage[connection]')
+					user		: value_by_name('storage[user]')
+					password	: value_by_name('storage[password]')
 			success	: (result) ->
 				storage_test
 					.find('h3 + *')
@@ -149,21 +145,6 @@ cs.blocks_toggle			= (position) ->
 		items.slideDown('fast')
 		container.data('mode', 'open')
 	return
-###*
- * Returns the JSON representation of a value
- *
- * @param {object} obj
- *
- * @return {string}
-###
-cs.json_encode				= (obj) -> JSON.stringify(obj)
-###*
- * Decodes a JSON string
- *
- * @param {string}	str
- * @return {object}
-###
-cs.json_decode				= (str) -> JSON.parse(str)
 ###*
  * Supports algorithms sha1, sha224, sha256, sha384, sha512
  *

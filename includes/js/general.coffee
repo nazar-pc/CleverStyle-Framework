@@ -15,7 +15,7 @@ $ ->
 					session	: session_id
 				error	: (xhr) ->
 					if xhr.responseText
-						alert(cs.json_decode(xhr.responseText).error_description)
+						alert(JSON.parse(xhr.responseText).error_description)
 					else
 						alert(L.connection_error)
 		->
@@ -234,7 +234,7 @@ $ ->
 						cancel		: ':first'
 						stop		: ->
 							$('#cs-blocks-position').val(
-								cs.json_encode(
+								JSON.stringify(
 									top			: $('#cs-top-blocks-items').sortable('toArray')
 									left		: $('#cs-left-blocks-items').sortable('toArray')
 									floating	: $('#cs-floating-blocks-items').sortable('toArray')
@@ -259,7 +259,7 @@ $ ->
 								.removeClass('uk-alert-warning')
 								.addClass('uk-alert-success')
 							$('#cs-user-groups').val(
-								cs.json_encode(
+								JSON.stringify(
 									selected.sortable('toArray')
 								)
 							)

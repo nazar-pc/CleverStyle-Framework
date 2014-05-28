@@ -131,7 +131,7 @@ do ($=jQuery) ->
 				$this
 					.attr(
 						'data-uk-tooltip'
-						cs.json_encode(
+						JSON.stringify(
 							pos			: if pos then pos else 'top'
 							animation	: true
 							delay		: 200

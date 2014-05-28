@@ -77,7 +77,7 @@
 
 
   cs.db_test = function(url, added) {
-    var db, db_test;
+    var db_test;
     db_test = $('#cs-db-test');
     db_test.find('h3 + *').replaceWith("<div class=\"uk-progress uk-progress-striped uk-active\">\n	<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n</div>");
     db_test.cs().modal('show');
@@ -92,18 +92,17 @@
         }
       });
     } else {
-      db = cs.json_encode({
-        type: value_by_name('db[type]'),
-        name: value_by_name('db[name]'),
-        user: value_by_name('db[user]'),
-        password: value_by_name('db[password]'),
-        host: value_by_name('db[host]'),
-        charset: value_by_name('db[charset]')
-      });
       return $.ajax({
         url: url,
         data: {
-          db: db
+          db: {
+            type: value_by_name('db[type]'),
+            name: value_by_name('db[name]'),
+            user: value_by_name('db[user]'),
+            password: value_by_name('db[password]'),
+            host: value_by_name('db[host]'),
+            charset: value_by_name('db[charset]')
+          }
         },
         success: function(result) {
           return db_test.find('h3 + *').replaceWith(result);
@@ -124,7 +123,7 @@
 
 
   cs.storage_test = function(url, added) {
-    var storage, storage_test;
+    var storage_test;
     storage_test = $('#cs-storage-test');
     storage_test.find('h3 + *').replaceWith("<div class=\"uk-progress uk-progress-striped uk-active\">\n	<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n</div>");
     storage_test.cs().modal('show');
@@ -139,17 +138,16 @@
         }
       });
     } else {
-      storage = cs.json_encode({
-        url: value_by_name('storage[url]'),
-        host: value_by_name('storage[host]'),
-        connection: value_by_name('storage[connection]'),
-        user: value_by_name('storage[user]'),
-        password: value_by_name('storage[password]')
-      });
       return $.ajax({
         url: url,
         data: {
-          storage: storage
+          storage: {
+            url: value_by_name('storage[url]'),
+            host: value_by_name('storage[host]'),
+            connection: value_by_name('storage[connection]'),
+            user: value_by_name('storage[user]'),
+            password: value_by_name('storage[password]')
+          }
         },
         success: function(result) {
           return storage_test.find('h3 + *').replaceWith(result);
@@ -179,31 +177,6 @@
       items.slideDown('fast');
       container.data('mode', 'open');
     }
-  };
-
-  /**
-   * Returns the JSON representation of a value
-   *
-   * @param {object} obj
-   *
-   * @return {string}
-  */
-
-
-  cs.json_encode = function(obj) {
-    return JSON.stringify(obj);
-  };
-
-  /**
-   * Decodes a JSON string
-   *
-   * @param {string}	str
-   * @return {object}
-  */
-
-
-  cs.json_decode = function(str) {
-    return JSON.parse(str);
   };
 
   /**

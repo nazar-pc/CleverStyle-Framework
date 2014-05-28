@@ -117,21 +117,21 @@ class Storage {
 	/**
 	 * Test connection to the Storage
 	 *
-	 * @param array|bool|string $data	Array or string in JSON format of connection parameters
+	 * @param bool|int[]|string[] $data	Array or string in JSON format of connection parameters
 	 *
 	 * @return bool
 	 */
 	function test ($data = false) {
 		if (empty($data)) {
 			return false;
-		} elseif (is_array($data)) {
+		} elseif (is_array_indexed($data)) {
 			if (isset($data[0])) {
 				$storage = Config::instance()->storage[$data[0]];
 			} else {
 				return false;
 			}
 		} else {
-			$storage = _json_decode($data);
+			$storage = $data;
 		}
 		unset($data);
 		if (is_array($storage)) {

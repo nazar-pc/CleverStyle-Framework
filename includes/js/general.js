@@ -24,7 +24,7 @@
           },
           error: function(xhr) {
             if (xhr.responseText) {
-              return alert(cs.json_decode(xhr.responseText).error_description);
+              return alert(JSON.parse(xhr.responseText).error_description);
             } else {
               return alert(L.connection_error);
             }
@@ -226,7 +226,7 @@
             items: 'li:not(:first)',
             cancel: ':first',
             stop: function() {
-              return $('#cs-blocks-position').val(cs.json_encode({
+              return $('#cs-blocks-position').val(JSON.stringify({
                 top: $('#cs-top-blocks-items').sortable('toArray'),
                 left: $('#cs-left-blocks-items').sortable('toArray'),
                 floating: $('#cs-floating-blocks-items').sortable('toArray'),
@@ -244,7 +244,7 @@
               $('#cs-users-groups-list').find('.uk-alert-success').removeClass('uk-alert-success').addClass('uk-alert-warning');
               selected = $('#cs-users-groups-list-selected');
               selected.find('.uk-alert-warning').removeClass('uk-alert-warning').addClass('uk-alert-success');
-              return $('#cs-user-groups').val(cs.json_encode(selected.sortable('toArray')));
+              return $('#cs-user-groups').val(JSON.stringify(selected.sortable('toArray')));
             }
           });
           return $('#auto_translation_engine').find('select').change(function() {
