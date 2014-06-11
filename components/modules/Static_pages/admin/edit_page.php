@@ -21,7 +21,7 @@ $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/Static_pages';
 $Index->content(
-	h::{'p.lead.cs-center'}(
+	h::{'h2.cs-center'}(
 		$L->editing_of_page($data['title'])
 	).
 	h::{'table.cs-table-borderless.cs-center-all'}(

@@ -36,7 +36,7 @@ if (isset($rc[2], $rc[3])) {
 			$a->cancel_button_back	= true;
 			$Page->title($L->adding_a_user);
 			$a->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$L->adding_a_user
 				).
 				h::{'p.cs-center input'}([
@@ -50,7 +50,7 @@ if (isset($rc[2], $rc[3])) {
 			$a->cancel_button_back	= true;
 			$Page->title($L->adding_a_bot);
 			$a->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$L->adding_a_bot
 				).
 				h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}([
@@ -114,7 +114,7 @@ if (isset($rc[2], $rc[3])) {
 				$L->editing_raw_data_of_user($User->username($rc[3]))
 			);
 			$a->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$L->editing_raw_data_of_user(
 						$User->username($rc[3])
 					)
@@ -154,7 +154,7 @@ if (isset($rc[2], $rc[3])) {
 					$L->editing_of_user_information($User->username($rc[3]))
 				);
 				$a->content(
-					h::{'p.lead.cs-center'}(
+					h::{'h2.cs-center'}(
 						$L->editing_of_user_information(
 							$User->username($rc[3])
 						)
@@ -240,7 +240,7 @@ if (isset($rc[2], $rc[3])) {
 					$L->editing_of_bot_information($bot_data['username'])
 				);
 				$a->content(
-					h::{'p.lead.cs-center'}(
+					h::{'h2.cs-center'}(
 						$L->editing_of_bot_information(
 							$bot_data['username']
 						)
@@ -371,7 +371,7 @@ if (isset($rc[2], $rc[3])) {
 				$User->username($rc[3])
 			));
 			$a->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$L->{$is_bot ? 'permissions_for_bot' : 'permissions_for_user'}(
 						$User->username($rc[3])
 					)
@@ -431,7 +431,7 @@ if (isset($rc[2], $rc[3])) {
 				$L->user_groups($User->username($rc[3]))
 			);
 			$a->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$L->user_groups(
 						$User->username($rc[3])
 					),

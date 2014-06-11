@@ -20,7 +20,7 @@ $Index->buttons				= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/Photo_gallery/galleries/browse';
 $Index->content(
-	h::{'p.lead.cs-center'}(
+	h::{'h2.cs-center'}(
 		$L->photo_gallery_sure_to_delete_gallery($gallery['title'])
 	).
 	h::{'button[type=submit]'}($L->yes).

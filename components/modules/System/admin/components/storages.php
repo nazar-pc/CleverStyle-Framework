@@ -30,7 +30,7 @@ if (isset($rc[2])) {
 			$a->action = "admin/System/$rc[0]/$rc[1]";
 			$Page->title($rc[2] == 'edit' ? $L->editing_of_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']) : $L->adding_of_storage);
 			$a->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$rc[2] == 'edit' ? $L->editing_of_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']) : $L->adding_of_storage
 				).
 				h::{'table.cs-table-borderless.cs-center-all tr'}(
@@ -118,7 +118,7 @@ if (isset($rc[2])) {
 				$a->action = "admin/System/$rc[0]/$rc[1]";
 				$Page->title($L->deletion_of_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']));
 				$a->content(
-					h::{'p.lead.cs-center'}(
+					h::{'h2.cs-center'}(
 						$L->sure_to_delete.' '.$L->storage.' '.
 							$Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection'].'?'.
 							h::{'input[type=hidden]'}([

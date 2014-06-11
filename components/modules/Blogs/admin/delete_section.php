@@ -20,7 +20,7 @@ $Index->buttons				= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/Blogs/browse_sections';
 $Index->content(
-	h::{'p.lead.cs-center'}(
+	h::{'h2.cs-center'}(
 		$L->sure_to_delete_posts_section($section['title'])
 	).
 	h::{'button[type=submit]'}($L->yes).

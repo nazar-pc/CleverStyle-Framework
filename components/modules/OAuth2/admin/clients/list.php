@@ -19,7 +19,7 @@ Page::instance()->title($L->list_of_client);
 $Index->apply_button	= false;
 $module_data			= Config::instance()->module('OAuth2');
 $Index->content(
-	h::{'p.lead.cs-center'}(
+	h::{'h2.cs-center'}(
 		$L->list_of_clients
 	).
 	h::{'table.cs-table.cs-center-all'}(

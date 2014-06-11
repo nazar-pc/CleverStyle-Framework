@@ -21,7 +21,7 @@ $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/Photo_gallery/galleries/browse';
 $Index->content(
-	h::{'p.lead.cs-center'}(
+	h::{'h2.cs-center'}(
 		$L->photo_gallery_addition_of_gallery
 	).
 	h::{'table.cs-table-borderless.cs-center-all'}(

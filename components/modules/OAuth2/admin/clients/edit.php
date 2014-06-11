@@ -21,7 +21,7 @@ $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/OAuth2/clients/list';
 $Index->content(
-	h::{'p.lead.cs-center'}(
+	h::{'h2.cs-center'}(
 		$L->editing_of_client($client['name'])
 	).
 	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr'}(

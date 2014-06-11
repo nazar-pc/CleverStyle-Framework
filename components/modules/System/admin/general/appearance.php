@@ -72,7 +72,7 @@ if (isset($_POST['action'])) {
 				$Page->title($L->updating_of_theme($theme));
 				rename($tmp_file, $tmp_file = TEMP.'/'.User::instance()->get_session().'_theme_update.phar.php');
 				$Index->content(
-					h::{'p.lead.cs-center'}(
+					h::{'h2.cs-center'}(
 						$L->update_theme(
 							$theme,
 							$current_version,
@@ -190,7 +190,7 @@ if (isset($_POST['action'])) {
 			}
 			$Page->title($L->complete_removal_of_theme($_POST['remove_theme']));
 			$Index->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$L->completely_remove_theme($_POST['remove_theme'])
 				)
 			);

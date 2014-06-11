@@ -19,7 +19,7 @@ $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/OAuth2/clients/list';
 $Index->content(
-	h::{'p.lead.cs-center'}(
+	h::{'h2d.cs-center'}(
 		$L->addition_of_client
 	).
 	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr'}(

@@ -112,7 +112,7 @@ if (
 					$Page->title($L->updating_of_module($module_name));
 					rename($tmp_file, $tmp_file = TEMP.'/'.$User->get_session().'_module_update.phar.php');
 					$a->content(
-						h::{'p.lead.cs-center'}(
+						h::{'h2.cs-center'}(
 							$L->update_module(
 								$module_name,
 								$current_version,
@@ -168,7 +168,7 @@ if (
 			$show_modules	= false;
 			$Page->title($L->installation_of_module($rc[3]));
 			$a->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$L->installation_of_module($rc[3])
 				)
 			);
@@ -237,7 +237,7 @@ if (
 			$show_modules			= false;
 			$Page->title($L->uninstallation_of_module($rc[3]));
 			$a->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$L->uninstallation_of_module($rc[3])
 				)
 			);
@@ -314,7 +314,7 @@ if (
 			$Page->title($L->updating_of_system);
 			rename($tmp_file, $tmp_file = TEMP.'/'.$User->get_session().'_update_system.phar.php');
 			$a->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$L->update_system(
 						$current_version,
 						$new_version
@@ -330,7 +330,7 @@ if (
 			$show_modules			= false;
 			$Page->title($L->setting_default_module($rc[3]));
 			$a->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$L->setting_default_module($rc[3])
 				)
 			);
@@ -353,7 +353,7 @@ if (
 				$Page->warning($L->changing_settings_warning);
 				$Page->title($L->db_settings_for_module($rc[3]));
 				$a->content(
-					h::{'p.lead.cs-center'}(
+					h::{'h2.cs-center'}(
 						$L->db_settings_for_module($rc[3])
 					)
 				);
@@ -420,7 +420,7 @@ if (
 				$Page->warning($L->changing_settings_warning);
 				$Page->title($L->storage_settings_for_module($rc[3]));
 				$a->content(
-					h::{'p.lead.cs-center'}(
+					h::{'h2.cs-center'}(
 						$L->storage_settings_for_module($rc[3])
 					)
 				);
@@ -488,7 +488,7 @@ if (
 			}
 			$Page->title($L->enabling_of_module($rc[3]));
 			$a->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$L->enable_module($rc[3])
 				)
 			);
@@ -505,7 +505,7 @@ if (
 			}
 			$Page->title($L->disabling_of_module($rc[3]));
 			$a->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$L->disable_module($rc[3])
 				)
 			);
@@ -518,7 +518,7 @@ if (
 			$show_modules			= false;
 			$Page->title($L->complete_removal_of_module($_POST['remove_module']));
 			$a->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$L->completely_remove_module($_POST['remove_module'])
 				)
 			);

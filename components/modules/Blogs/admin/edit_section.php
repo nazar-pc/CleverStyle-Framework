@@ -22,7 +22,7 @@ $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/Blogs/browse_sections';
 $Index->content(
-	h::{'p.lead.cs-center'}(
+	h::{'h2.cs-center'}(
 		$L->editing_of_posts_section($section['title'])
 	).
 	h::{'table.cs-table-borderless.cs-center-all tr'}(

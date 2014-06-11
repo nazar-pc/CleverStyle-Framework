@@ -22,7 +22,7 @@ if (isset($rc[2])) {
 			$a->cancel_button_back	= true;
 			$Page->title($L->adding_permission);
 			$a->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$L->adding_permission
 				).
 				h::{'table.cs-table-borderless.cs-center-all'}(
@@ -48,7 +48,7 @@ if (isset($rc[2])) {
 				$L->editing_permission("$permission[group]/$permission[label]")
 			);
 			$a->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$L->editing_permission("$permission[group]/$permission[label]")
 				).
 				h::{'table.cs-table-borderless.cs-center-all'}(
@@ -87,7 +87,7 @@ if (isset($rc[2])) {
 				$L->deletion_of_permission("$permission[group]/$permission[label]")
 			);
 			$a->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$L->sure_delete_permission("$permission[group]/$permission[label]")
 				).
 				h::{'input[type=hidden]'}([

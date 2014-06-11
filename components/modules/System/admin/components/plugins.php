@@ -84,7 +84,7 @@ if (
 					$Page->title($L->updating_of_plugin($plugin));
 					rename($tmp_file, $tmp_file = TEMP.'/'.User::instance()->get_session().'_plugin_update.phar.php');
 					$a->content(
-						h::{'p.lead.cs-center'}(
+						h::{'h2.cs-center'}(
 							$L->update_plugin(
 								$plugin,
 								$current_version,
@@ -140,7 +140,7 @@ if (
 			if (!in_array($rc[3], $Config->components['plugins']) && in_array($rc[3], $plugins)) {
 				$Page->title($L->enabling_of_plugin($rc[3]));
 				$a->content(
-					h::{'p.lead.cs-center'}(
+					h::{'h2.cs-center'}(
 						$L->enabling_of_plugin($rc[3])
 					)
 				);
@@ -180,7 +180,7 @@ if (
 			if (in_array($rc[3], $Config->components['plugins'])) {
 				$Page->title($L->disabling_of_plugin($rc[3]));
 				$a->content(
-					h::{'p.lead.cs-center'}(
+					h::{'h2.cs-center'}(
 						$L->disabling_of_plugin($rc[3])
 					)
 				);
@@ -208,7 +208,7 @@ if (
 		case 'remove':
 			$Page->title($L->complete_removal_of_plugin($_POST['remove_plugin']));
 			$a->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$L->completely_remove_plugin($_POST['remove_plugin'])
 				)
 			);

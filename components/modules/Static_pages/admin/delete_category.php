@@ -21,7 +21,7 @@ $Index->buttons				= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/Static_pages';
 $Index->content(
-	h::{'p.lead.cs-center'}(
+	h::{'h2.cs-center'}(
 		$L->sure_to_delete_page_category($title)
 	).
 	h::{'button[type=submit]'}($L->yes).

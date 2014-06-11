@@ -49,7 +49,7 @@ if (count($sections['in']) > 1) {
 	$sections	= false;
 }
 $Index->content(
-	h::{'p.lead.cs-center'}(
+	h::{'h2.cs-center'}(
 		$L->editing_of_post($post['title'])
 	).
 	h::{'div.cs-blogs-post-preview-content'}().

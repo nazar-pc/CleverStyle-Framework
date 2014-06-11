@@ -42,7 +42,7 @@ foreach ($translate_engines as $engine) {
 }
 unset($engine, $parameters, $paremeter, $description, $table);
 Index::instance()->content(
-	h::{'p.lead.cs-center'}(
+	h::{'h2.cs-center'}(
 		FIXED_LANGUAGE ? $L->language_fixed_as.' '.Core::instance()->language : false
 	).
 	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}(

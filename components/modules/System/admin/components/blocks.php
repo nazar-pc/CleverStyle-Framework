@@ -60,7 +60,7 @@ if (isset($rc[2])) {
 			$a->action				= 'admin/System/'.$rc[0].'/'.$rc[1];
 			$Page->title($L->deletion_of_block(get_block_title($rc[3])));
 			$a->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$L->sure_to_delete_block(get_block_title($rc[3])).
 					h::{'input[type=hidden]'}([
 						'name'	=> 'mode',
@@ -81,7 +81,7 @@ if (isset($rc[2])) {
 			$a->form_atributes[]	= 'formnovalidate';
 			$Page->title($L->adding_a_block);
 			$a->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$L->adding_a_block
 				).
 				h::{'table.cs-table-borderless.cs-center-all tr'}(
@@ -185,7 +185,7 @@ if (isset($rc[2])) {
 			$block = &$Config->components['blocks'][$rc[3]];
 			$Page->title($L->editing_a_block(get_block_title($rc[3])));
 			$a->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$L->editing_a_block(get_block_title($rc[3]))
 				).
 				h::{'table.cs-table-borderless.cs-center-all tr'}(
@@ -339,7 +339,7 @@ if (isset($rc[2])) {
 			unset($user, $value);
 			$Page->title($L->permissions_for_block(get_block_title($rc[3])));
 			$a->content(
-				h::{'p.lead.cs-center'}(
+				h::{'h2.cs-center'}(
 					$L->permissions_for_block(get_block_title($rc[3]))
 				).
 				h::{'ul.cs-tabs li'}(

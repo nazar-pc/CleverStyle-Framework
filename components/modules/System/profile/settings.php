@@ -67,17 +67,19 @@ $Index->action	= path($L->profile).'/'.path($L->settings);
 switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 	default:
 		$Index->content(
-			h::{'a.cs-button'}(
-				$L->general,
-				[
-					'href'	=> "$Index->action/".path($L->general)
-				]
-			).
-			h::{'a.cs-button'}(
-				$L->change_password,
-				[
-					'href'	=> "$Index->action/".path($L->change_password)
-				]
+			h::p(
+				h::{'a.cs-button'}(
+					$L->general,
+					[
+						'href'	=> "$Index->action/".path($L->general)
+					]
+				).
+				h::{'a.cs-button'}(
+					$L->change_password,
+					[
+						'href'	=> "$Index->action/".path($L->change_password)
+					]
+				)
 			)
 		);
 		Trigger::instance()->run('System/profile/settings');
@@ -96,7 +98,7 @@ switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 		$Index->cancel_button_back		= true;
 		$Page->title($L->general);
 		$Index->content(
-			h::{'p.lead.cs-center'}(
+			h::{'h2.cs-center'}(
 				$L->general_settings
 			).
 			h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr'}(
@@ -145,7 +147,7 @@ switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 		$Index->cancel_button_back		= true;
 		$Page->title($L->password_changing);
 		$Index->content(
-			h::{'p.lead.cs-center'}(
+			h::{'h2.cs-center'}(
 				$L->password_changing
 			).
 			h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr'}(
