@@ -91,7 +91,7 @@ AddEncoding gzip .css
 		if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') === 0) {
 			$_POST		= _json_decode(@file_get_contents('php://input')) ?: [];
 			$_REQUEST	= array_merge($_REQUEST, $_POST);
-		} elseif (in_array(strtolower($_SERVER['REQUEST_METHOD']), ['head', 'put', 'delete'])) {
+		} elseif (!in_array(strtolower($_SERVER['REQUEST_METHOD']), ['get', 'post'])) {
 			if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/x-www-form-urlencoded') === 0) {
 				@parse_str(file_get_contents('php://input'), $_POST);
 				$_REQUEST	= array_merge($_REQUEST, $_POST);
