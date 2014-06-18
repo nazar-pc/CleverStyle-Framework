@@ -1,12 +1,16 @@
 {
-	"Content"			: "Контент",
-	"content_key"		: "Ключ",
-	"content_title"		: "Название",
-	"content_type"		: "Тип",
-	"content_content"	: "Контент",
-	"content_action"	: "Действие",
-	"content_edit"		: "Редактировать",
-	"content_delete"	: "Удалить",
-	"content_add"		: "Добавить",
-	"content_save"		: "Сохранить"
+	"Content"                    : "Контент",
+	"content_key"                : "Ключ",
+	"content_title"              : "Название",
+	"content_type"               : "Тип",
+	"content_content"            : "Контент",
+	"content_action"             : "Действие",
+	"content_edit"               : "Редактировать",
+	"content_delete"             : "Удалить",
+	"content_add"                : "Добавить",
+	"content_save"               : "Сохранить",
+	"content_simple_insert"      : "Простые вставки",
+	"content_simple_insert_info" : "Позволяет вставить контент с помощью HTML фрагментов (посмотрите readme, но будьте осторожны, не рекомендуется на веб-сайтах с добавлением контента пользователями, поскольку позволит им использовать эти фрагменты)",
+	"content_yes"                : "Да",
+	"content_no"                 : "Нет"
 }

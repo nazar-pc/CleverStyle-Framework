@@ -438,6 +438,8 @@ class Page {
 		foreach ($this->Search as $i => $search) {
 			$data = _preg_replace($search, $this->Replace[$i], $data) ?: str_replace($search, $this->Replace[$i], $data);
 		}
+		$this->Search  = [];
+		$this->Replace = [];
 		errors_on();
 		return $data;
 	}

@@ -17,3 +17,23 @@ $content	= $content_item['content']; //title field available too</pre>
 	</li>
 	<li>If you want to edit content - put mouse cursor over container and Edit button will appear, there is no need to edit it from administration anymore</li>
 </ul>
+<h4>Another way is to use simple html snippet*:</h4>
+<ul>
+	<li>Create content in administration with some key</li>
+	<li>
+		Insert anywhere on page in any possible way:
+		<pre>&lt;section data-cs-content="content key here"&gt;
+	{Content:content key here}
+&lt;/section&gt;
+		</pre>
+	</li>
+	<li>
+		If you need to show title - it is very easy as well:
+		<pre>&lt;section data-cs-content="content key here"&gt;
+	{Content_title:content key here}
+&lt;/section&gt;
+		</pre>
+	</li>
+	<li>If you want to edit content - put mouse cursor over container and Edit button will appear, there is no need to edit it from administration anymore</li>
+	<li>* This way is potentially dangerous on websites with user input, because the will be able to use the same snippets as well. So it is not recommended to use it on such websites.</li>
+</ul>

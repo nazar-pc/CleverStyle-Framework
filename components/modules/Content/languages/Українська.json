@@ -1,12 +1,16 @@
 {
-	"Content"			: "Контент",
-	"content_key"		: "Ключ",
-	"content_title"		: "Назва",
-	"content_type"		: "Тип",
-	"content_content"	: "Контент",
-	"content_action"	: "Дія",
-	"content_edit"		: "Редагувати",
-	"content_delete"	: "Видалити",
-	"content_add"		: "Додати",
-	"content_save"		: "Зберегти"
+	"Content"                    : "Контент",
+	"content_key"                : "Ключ",
+	"content_title"              : "Назва",
+	"content_type"               : "Тип",
+	"content_content"            : "Контент",
+	"content_action"             : "Дія",
+	"content_edit"               : "Редагувати",
+	"content_delete"             : "Видалити",
+	"content_add"                : "Додати",
+	"content_save"               : "Зберегти",
+	"content_simple_insert"      : "Прості вставки",
+	"content_simple_insert_info" : "Дозволяє вставити контент за допомогою HTML фрагментів (подивіться readme, але будьте обережні, не рекомендується на веб-сайтах з додаванням контенту користувачами, оскільки дозволить їм використовувати ці фрагменти)",
+	"content_yes"                : "Так",
+	"content_no"                 : "Ні"
 }
