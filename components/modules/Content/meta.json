@@ -1,7 +1,7 @@
 {
 	"package"		: "Comments",
 	"category"		: "modules",
-	"version"		: "0.7.0+build-8",
+	"version"		: "0.8.0+build-9",
 	"description"	: "Simple content functionality. May be used by other components or stand-alone.",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",

@@ -10,7 +10,7 @@ namespace	cs;
 Trigger::instance()->register(
 	'System/Index/construct',
 	function () {
-		switch (Config::instance()->components['modules']['Blogs']['active']) {
+		switch (Config::instance()->module('Blogs')->active()) {
 			case -1:
 				if (!ADMIN) {
 					return;

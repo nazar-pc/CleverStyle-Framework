@@ -15,11 +15,11 @@ use			cs\Cache,
 Trigger::instance()->register(
 	'admin/System/components/modules/uninstall/process',
 	function ($data) {
-		$Blogs		= Blogs::instance();
 		if ($data['name'] != 'Blogs' || !User::instance()->admin()) {
 			return;
 		}
 		time_limit_pause();
+		$Blogs		= Blogs::instance();
 		$sections	= array_keys($Blogs->get_sections_list());
 		if (!empty($sections)) {
 			foreach ($sections as $section) {

@@ -7,27 +7,19 @@
  * @license        MIT License, see license.txt
  */
 
-namespace cs\modules\Content;
-
-use
-	cs\Config,
-	cs\Page,
-	cs\Trigger;
+namespace	cs;
 
 Trigger::instance()->register(
-	'System/Page/display',
+	'System/Index/construct',
 	function () {
-		$module_data = Config::instance()->module('Content');
-		if ($module_data->active() && $module_data->simple_insert) {
-			$Page          = Page::instance();
-			$Page->Content = preg_replace_callback(
-				'/{(Content|Content_title):(.+)}/Uims',
-				function ($match) {
-					$content = Content::instance()->get($match[2]);
-					return $content[$match[1] == 'Content' ? 'content' : 'title'];
-				},
-				$Page->Content
-			);
+		switch (Config::instance()->module('Content')->active()) {
+			case 1:
+				require __DIR__.'/trigger/enabled.php';
+			default:
+				if (!ADMIN) {
+					return;
+				}
+				require __DIR__.'/trigger/installed.php';
 		}
 	}
 );
