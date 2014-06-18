@@ -5,22 +5,32 @@
  * @copyright	Copyright (c) 2011-2014, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-.cs-blogs-post header h1 a {
-	opacity            : 0.3;
-	-webkit-transition : opacity .3s;
-	transition         : opacity .3s;
-}
-.cs-blogs-post header h1:hover a {
-	opacity : 1;
-}
-.cs-blogs-post-preview-content {
-	text-align : left;;
-}
-.cs-blogs-post-form td {
-	vertical-align : top !important;
+.cs-blogs-post {
+	header h1 {
+		a {
+			opacity            : 0.3;
+			-webkit-transition : opacity .3s;
+			transition         : opacity .3s;
+		}
 
-	.INLINE_EDITOR,
-	.SIMPLEST_INLINE_EDITOR {
-		outline: #333333 dotted 1px;
+		&:hover a {
+			opacity : 1;
+		}
+	}
+}
+
+.cs-blogs-post-preview-content {
+	text-align : left;
+}
+
+.cs-blogs-post-form {
+
+	td {
+		vertical-align : top !important;
+
+		.INLINE_EDITOR,
+		.SIMPLEST_INLINE_EDITOR {
+			outline : #333333 dotted 1px;
+		}
 	}
 }

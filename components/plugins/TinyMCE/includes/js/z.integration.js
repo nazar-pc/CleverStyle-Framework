@@ -21,7 +21,7 @@ $(function () {
 		convert_urls			: false,
 		remove_script_host		: false,
 		relative_urls			: false,
-		file_browser_callback	: cs.file_upload ? function (field_name) {
+		file_picker_callback	: cs.file_upload ? function (callback) {
 			if (!tinymce.uploader_dialog) {
 				tinymce.uploader_dialog		= $('<div title="Uploading..." class="cs-center"></div>')
 					.html('<div style="margin-left: -10%; width: 20%;"><div class="uk-progress uk-progress-striped uk-active"><div class="uk-progress-bar"></div></div></div>')
@@ -34,7 +34,7 @@ $(function () {
 				function (files) {
 					tinymce.uploader_dialog.cs().modal('hide');
 					if (files.length) {
-						$('#' + field_name).val(files[0]);
+						callback(files[0]);
 					}
 				},
 				function (error) {
