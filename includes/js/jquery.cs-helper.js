@@ -107,11 +107,11 @@
               return li.wrapInner('<a />');
             }
           }).first().addClass('uk-active');
-          $this.data('tab', new UI.tab($this, {
+          $this.data('tab', UI.tab($this, {
             connect: content
           }));
           content.addClass('uk-switcher uk-margin').children(':first').addClass('uk-active');
-          return content.data('switcher', new UI.switcher(content));
+          return content.data('switcher', UI.switcher(content));
         });
       },
       /**
@@ -170,7 +170,7 @@
             if (content.attr('title')) {
               $('<h3 />').html(content.attr('title')).prependTo(content);
             }
-            $this.addClass('uk-modal').data('modal', new UI.modal.Modal($this));
+            $this.addClass('uk-modal').data('modal', UI.modal($this));
           }
           modal = $this.data('modal');
           switch (mode) {

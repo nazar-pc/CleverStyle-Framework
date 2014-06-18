@@ -48,7 +48,7 @@ $Index->content(
 					'href'	=> "$Index->action/readme.html"
 				]
 			).
-			h::{'div#cs-system-license.uk-modal pre.uk-modal-dialog-large'}(
+			h::{'div#cs-system-license.uk-modal pre.uk-modal-dialog-large.cs-left'}(
 				file_get_contents(DIR.'/license.txt'),
 				[
 					'title'			=> "$L->system » $L->license"

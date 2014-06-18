@@ -106,13 +106,13 @@ do ($=jQuery) ->
 						.first()
 							.addClass('uk-active')
 				$this
-					.data('tab', new UI.tab($this, {connect:content}))
+					.data('tab', UI.tab($this, {connect:content}))
 				content
 					.addClass('uk-switcher uk-margin')
 					.children(':first')
 						.addClass('uk-active')
 				content
-					.data('switcher', new UI.switcher(content))
+					.data('switcher', UI.switcher(content))
 		###*
 		 * Tooltip with UIkit
 		 *
@@ -171,7 +171,7 @@ do ($=jQuery) ->
 							.prependTo(content)
 					$this
 						.addClass('uk-modal')
-						.data('modal', new UI.modal.Modal($this))
+						.data('modal', UI.modal($this))
 				modal	= $this.data('modal')
 				switch mode
 					when 'show' then modal.show()
