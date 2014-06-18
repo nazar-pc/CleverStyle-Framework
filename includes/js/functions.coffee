@@ -34,14 +34,16 @@ cs.debug_window				= -> $('#cs-debug').cs().modal('show')
  * @param 			element
  * @param {string}	action
 ###
-cs.admin_cache				= (element, action) ->
+cs.admin_cache				= (element, action, partial_path) ->
 	$(element).html """
 		<div class="uk-progress uk-progress-striped uk-active">
 			<div class="uk-progress-bar" style="width:100%"></div>
 		</div>
 	"""
 	$.ajax
-		url		: action,
+		url		: action
+		data	:
+			partial_path	: partial_path
 		success	: (result) ->
 			$(element).html(result)
 	return

@@ -58,10 +58,13 @@
   */
 
 
-  cs.admin_cache = function(element, action) {
+  cs.admin_cache = function(element, action, partial_path) {
     $(element).html("<div class=\"uk-progress uk-progress-striped uk-active\">\n	<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n</div>");
     $.ajax({
       url: action,
+      data: {
+        partial_path: partial_path
+      },
       success: function(result) {
         return $(element).html(result);
       }

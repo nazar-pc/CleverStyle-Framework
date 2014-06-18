@@ -28,10 +28,13 @@ Index::instance()->content(
 			h::{'div#clean_pcache'}()
 		],
 		[
+			h::{'input[style=width:auto;]'}([
+				'placeholder'	=> $L->partial_cache_cleaning
+			]).
 			h::button(
 				$L->clean_settings_cache,
 				Cache::instance()->cache_state() ? [
-					'onMouseDown'	=> "cs.admin_cache('#clean_cache', '{$Config->base_url()}/api/System/admin/cache/clean_cache');"
+					'onMouseDown'	=> "cs.admin_cache('#clean_cache', '{$Config->base_url()}/api/System/admin/cache/clean_cache', $(this).prev().val());"
 				] : ['disabled']
 			),
 			h::button(
