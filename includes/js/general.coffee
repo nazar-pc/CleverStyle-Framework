@@ -263,14 +263,6 @@ $ ->
 									selected.sortable('toArray')
 								)
 							)
-				$('#auto_translation_engine')
-					.find('select')
-					.change ->
-						$('#auto_translation_engine_settings').html(
-							cs.base64_decode(
-								$(this).children(':selected').data('settings')
-							)
-						)
 		->
 			if cookie = cs.getcookie('setcookie')
 				for own i of cookie

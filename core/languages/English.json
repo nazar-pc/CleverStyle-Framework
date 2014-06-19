@@ -224,12 +224,6 @@
 		"active_languages_info"				: "Allows allow the use of one language, and prohibit the use of others. To select multiple languages use the the Ctrl key.",
 		"multilingual"						: "Multilingual",
 		"multilingual_info"					: "Allows to change the language of interface and content on this site, activates all multilingual features of site",
-		"auto_translation"					: "Automatic translation",
-		"auto_translation_info"				: "Untranslated content will be automatically translated with the help of special automatic engine and if necessary, the translation can be corrected",
-		"auto_translation_engine"			: "Engine of automatic translation",
-		"auto_translation_engine_info"		: "The engine is drawn to the service, which returns the desired translation of the content",
-		"auto_translation_engine_settings"	: "Setting of automatic translation engine",
-		"no_settings_found"					: "No parameters found",
 		//About server
 		"about_server"				: "About server",
 		"operation_system"			: "Operation system",

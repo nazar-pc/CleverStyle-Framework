@@ -433,8 +433,8 @@ class Photo_gallery {
 		@$this->storage()->rmdir("Photo_gallery/$id");
 		return true;
 	}
-	private function ml_process ($text, $auto_translation = true) {
-		return Text::instance()->process($this->cdb(), $text, $auto_translation);
+	private function ml_process ($text) {
+		return Text::instance()->process($this->cdb(), $text);
 	}
 	private function ml_set ($group, $label, $text) {
 		return Text::instance()->set($this->cdb(), $group, $label, $text);

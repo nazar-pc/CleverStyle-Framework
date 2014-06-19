@@ -670,8 +670,8 @@ class Blogs {
 			return false;
 		}
 	}
-	private function ml_process ($text, $auto_translation = true) {
-		return Text::instance()->process($this->cdb(), $text, $auto_translation, true);
+	private function ml_process ($text) {
+		return Text::instance()->process($this->cdb(), $text, true);
 	}
 	private function ml_set ($group, $label, $text) {
 		return Text::instance()->set($this->cdb(), $group, $label, $text);

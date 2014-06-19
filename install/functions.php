@@ -186,10 +186,6 @@ function install_process () {
 			""
 		],
 		"simple_admin_mode": "0",
-		"auto_translation": "0",
-		"auto_translation_engine": {
-			"name": ""
-		},
 		"default_module": "System",
 		"footer_text": "",
 		"show_footer_info": "1",

@@ -235,7 +235,7 @@
               }));
             }
           });
-          $('#cs-users-groups-list, #cs-users-groups-list-selected').disableSelection().sortable({
+          return $('#cs-users-groups-list, #cs-users-groups-list-selected').disableSelection().sortable({
             connectWith: '#cs-users-groups-list, #cs-users-groups-list-selected',
             items: 'li:not(:first)',
             cancel: ':first',
@@ -246,9 +246,6 @@
               selected.find('.uk-alert-warning').removeClass('uk-alert-warning').addClass('uk-alert-success');
               return $('#cs-user-groups').val(JSON.stringify(selected.sortable('toArray')));
             }
-          });
-          return $('#auto_translation_engine').find('select').change(function() {
-            return $('#auto_translation_engine_settings').html(cs.base64_decode($(this).children(':selected').data('settings')));
           });
         }
       }, function() {

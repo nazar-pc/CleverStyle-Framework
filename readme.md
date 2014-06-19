@@ -56,7 +56,6 @@ Main features
 * Users groups and types
 * Users permissions control
 * Localization and internationalization (both interface and content)
- * Content autotranslation
 * CSS and JavaScript minification and autocompression
 * Site mirrors
  * Domain mirrors
@@ -76,7 +75,6 @@ Requirements:
 * Unix-like operating system or Windows (not well tested, but should work anyway)
 * Apache2 or Nginx web server ([Nginx config sample](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Nginx-config-sample))
 * PHP 5.4+
- * cUrl library
  * Mcrypt library (recommended for encryption)
  * APC (Alternative PHP cache) module (recommended for system speed up with PHP 5.4)
  * Memcached (optionally for Memcached cache engine)

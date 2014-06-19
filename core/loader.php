@@ -36,7 +36,7 @@ define('THIRDPARTY',	CORE.'/thirdparty');
  */
 define('TRAITS',		CORE.'/traits');
 /**
- * Directory for cache, DB, storage and translation engines
+ * Directory for cache, DB and storage engines
  */
 define('ENGINES',		CORE.'/engines');
 /**
