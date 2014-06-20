@@ -422,7 +422,7 @@ class Config {
 			$clangs[$language]	= file_get_json_nocomments(LANGUAGES."/$language.json")['clang'];
 		}
 		unset($language);
-		Cache::instance()->{"languages/clangs"}	= $clangs;
+		file_put_json(CACHE.'/languages_clangs', $clangs);
 		foreach ($this->core['url'] as &$url) {
 			$url_aliases		= explode('//', $url);
 			$url_aliases[1]		= explode(';', $url_aliases[1]);
