@@ -14,7 +14,3 @@ define('XHTML_TAGS_STYLE',	false);
  * Usually, system care about this automatically and there is no need to change this
  */
 //define('FIXED_LANGUAGE',	false);
-/**
- * Special error handler of CleverStyle CMS
- */
-define('CS_ERROR_HANDLER', false);

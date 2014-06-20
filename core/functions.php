@@ -68,18 +68,12 @@ register_shutdown_function(function () {
  */
 function errors_on () {
 	error_reporting(defined('DEBUG') && DEBUG ? E_ALL : E_ERROR | E_WARNING | E_PARSE);
-	if (defined('CS_ERROR_HANDLER') && CS_ERROR_HANDLER && class_exists('\\cs\\Error', false)) {
-		Error::instance()->error = true;
-	}
 }
 /**
  * Disabling of errors processing
  */
 function errors_off () {
 	error_reporting(0);
-	if (defined('CS_ERROR_HANDLER') && CS_ERROR_HANDLER && class_exists('\\cs\\Error', false)) {
-		Error::instance()->error = false;
-	}
 }
 /**
  * Enabling of page interface

@@ -1595,7 +1595,6 @@ class Page {
 			echo $this->process_replacing($this->Content ?: (API ? 'null' : ''));
 		} else {
 			Trigger::instance()->run('System/Page/pre_display');
-			class_exists('\\cs\\Error', false) && Error::instance(true)->display();
 			/**
 			 * Processing of template, substituting of content, preparing for the output
 			 */

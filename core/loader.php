@@ -111,5 +111,4 @@ unset($custom);
  */
 Core::instance();
 Language::instance();
-defined('CS_ERROR_HANDLER') && CS_ERROR_HANDLER && Error::instance();
 Index::instance();

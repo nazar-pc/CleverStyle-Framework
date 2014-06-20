@@ -482,12 +482,6 @@ class Config {
 	 * @return bool
 	 */
 	protected function apply_internal ($cache_not_saved_mark = true) {
-		/**
-		 * If errors - cache updating must be stopped
-		 */
-		if (class_exists('\\cs\\Error', false) && Error::instance(true)->num()) {
-			return false;
-		}
 		$config						= [];
 		foreach ($this->admin_parts as $part) {
 			$config[$part] = $this->$part;
