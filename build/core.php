@@ -1,26 +1,26 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @subpackage	Builder
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2014, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package        CleverStyle CMS
+ * @subpackage     Builder
+ * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright      Copyright (c) 2011-2014, Nazar Mokrynskyi
+ * @license        MIT License, see license.txt
  */
 time_limit_pause();
-$version			= file_get_json(DIR.'/components/modules/System/meta.json')['version'];
+$version = file_get_json(DIR.'/components/modules/System/meta.json')['version'];
 if (file_exists(DIR.'/build.phar')) {
 	unlink(DIR.'/build.phar');
 }
-$phar				= new Phar(DIR.'/build.phar');
-$length				= strlen(DIR.'/');
+$phar   = new Phar(DIR.'/build.phar');
+$length = mb_strlen(DIR.'/');
 foreach (get_files_list(DIR.'/install', false, 'f', true, true) as $file) {
-	$phar->addFile($file, substr($file, $length));
+	$phar->addFile($file, mb_substr($file, $length));
 }
 unset($file);
 /**
  * Files to be included into installation package
  */
-$list				= array_merge(
+$list = array_merge(
 	get_files_list(DIR.'/components/modules/System', false, 'f', true, true, false, false, true),
 	get_files_list(DIR.'/core', '/^[^(ide)]/', 'f', true, true, false, false, true),
 	get_files_list(DIR.'/custom', false, 'f', true, true, false, false, true),
@@ -39,34 +39,34 @@ $list				= array_merge(
  * If composer.json exists - include it into installation build
  */
 if (file_exists(DIR.'/composer.json')) {
-	$list[]	= DIR.'/composer.json';
+	$list[] = DIR.'/composer.json';
 }
 /**
  * If composer.lock exists - include it into installation build
  */
 if (file_exists(DIR.'/composer.lock')) {
-	$list[]	= DIR.'/composer.lock';
+	$list[] = DIR.'/composer.lock';
 }
 /**
  * Add selected modules that should be built-in into package
  */
-$components_list	= [];
+$components_list = [];
 if (!empty($_POST['modules'])) {
 	foreach ($_POST['modules'] as $i => $module) {
 		if (is_dir(DIR."/components/modules/$module") && file_exists(DIR."/components/modules/$module/meta.json")) {
 			unlink(DIR."/components/modules/$module/fs.json");
-			$list_				= get_files_list(DIR."/components/modules/$module", false, 'f', true, true, false, false, true);
+			$list_ = get_files_list(DIR."/components/modules/$module", false, 'f', true, true, false, false, true);
 			file_put_json(
 				DIR."/components/modules/$module/fs.json",
 				array_values(
-					_substr(
+					_mb_substr(
 						$list_,
-						strlen(DIR."/components/modules/$module/")
+						mb_strlen(DIR."/components/modules/$module/")
 					)
 				)
 			);
-			$list_[]			= DIR."/components/modules/$module/fs.json";
-			$components_list	= array_merge(
+			$list_[]         = DIR."/components/modules/$module/fs.json";
+			$components_list = array_merge(
 				$components_list,
 				$list_
 			);
@@ -85,18 +85,18 @@ if (!empty($_POST['plugins'])) {
 	foreach ($_POST['plugins'] as $plugin) {
 		if (is_dir(DIR."/components/plugins/$plugin") && file_exists(DIR."/components/plugins/$plugin/meta.json")) {
 			unlink(DIR."/components/plugins/$plugin/fs.json");
-			$list_				= get_files_list(DIR."/components/plugins/$plugin", false, 'f', true, true, false, false, true);
+			$list_ = get_files_list(DIR."/components/plugins/$plugin", false, 'f', true, true, false, false, true);
 			file_put_json(
 				DIR."/components/plugins/$plugin/fs.json",
 				array_values(
-					_substr(
+					_mb_substr(
 						$list_,
-						strlen(DIR."/components/plugins/$plugin/")
+						mb_strlen(DIR."/components/plugins/$plugin/")
 					)
 				)
 			);
-			$list_[]			= DIR."/components/plugins/$plugin/fs.json";
-			$components_list	= array_merge(
+			$list_[]         = DIR."/components/plugins/$plugin/fs.json";
+			$components_list = array_merge(
 				$components_list,
 				$list_
 			);
@@ -112,18 +112,18 @@ if (!empty($_POST['themes'])) {
 	foreach ($_POST['themes'] as $theme) {
 		if (is_dir(DIR."/themes/$theme") && file_exists(DIR."/themes/$theme/meta.json")) {
 			unlink(DIR."/themes/$theme/fs.json");
-			$list_				= get_files_list(DIR."/themes/$theme", false, 'f', true, true, false, false, true);
+			$list_ = get_files_list(DIR."/themes/$theme", false, 'f', true, true, false, false, true);
 			file_put_json(
 				DIR."/themes/$theme/fs.json",
 				array_values(
-					_substr(
+					_mb_substr(
 						$list_,
-						strlen(DIR."/themes/$theme/")
+						mb_strlen(DIR."/themes/$theme/")
 					)
 				)
 			);
-			$list_[]			= DIR."/themes/$theme/fs.json";
-			$components_list	= array_merge(
+			$list_[]         = DIR."/themes/$theme/fs.json";
+			$components_list = array_merge(
 				$components_list,
 				$list_
 			);
@@ -135,14 +135,14 @@ if (!empty($_POST['themes'])) {
 /**
  * Joining system and components files list
  */
-$list				= array_merge(
+$list = array_merge(
 	$list,
 	$components_list
 );
 /**
  * Addition files content into package
  */
-$list				= array_map(
+$list = array_map(
 	function ($index, $file) use ($phar, $length) {
 		$phar->addFromString("fs/$index", file_get_contents($file));
 		return substr($file, $length);
@@ -153,7 +153,7 @@ $list				= array_map(
 /**
  * Addition of separate files into package
  */
-$list[]				= 'readme.html';
+$list[] = 'readme.html';
 $phar->addFromString(
 	'fs/'.(count($list) - 1),
 	str_replace(
@@ -164,7 +164,7 @@ $phar->addFromString(
 		[
 			$version,
 			h::img([
-				'src'	=> 'data:image/png;charset=utf-8;base64,'.base64_encode(file_get_contents(DIR.'/install/logo.png'))
+				'src' => 'data:image/png;charset=utf-8;base64,'.base64_encode(file_get_contents(DIR.'/install/logo.png'))
 			])
 		],
 		file_get_contents(DIR.'/readme.html')
@@ -188,7 +188,7 @@ $phar->addFromString(
 /**
  * Fixing of system files list (without components files and core/fs.json file itself), it is needed for future system updating
  */
-$list[]				= 'core/fs.json';
+$list[] = 'core/fs.json';
 $phar->addFromString(
 	'fs/'.(count($list) - 1),
 	_json_encode(
@@ -199,7 +199,7 @@ unset($components_list, $length);
 /**
  * Addition of files, that are needed only for installation
  */
-$list[]				= '.htaccess';
+$list[] = '.htaccess';
 $phar->addFromString(
 	'fs/'.(count($list) - 1),
 	'AddDefaultCharset utf-8
@@ -225,17 +225,17 @@ RewriteBase /
 RewriteRule .* index.php
 '
 );
-$list[]				= 'config/main.php';
+$list[] = 'config/main.php';
 $phar->addFromString(
 	'fs/'.(count($list) - 1),
 	file_get_contents(DIR.'/config/main.php')
 );
-$list[]				= 'favicon.ico';
+$list[] = 'favicon.ico';
 $phar->addFromString(
 	'fs/'.(count($list) - 1),
 	file_get_contents(DIR.'/favicon.ico')
 );
-$list[]				= '.gitignore';
+$list[] = '.gitignore';
 $phar->addFromString(
 	'fs/'.(count($list) - 1),
 	file_get_contents(DIR.'/.gitignore')
@@ -263,7 +263,7 @@ $phar->addFromString(
 		[
 			$version,
 			h::img([
-				'src'	=> 'data:image/png;charset=utf-8;base64,'.base64_encode(file_get_contents(DIR.'/install/logo.png'))
+				'src' => 'data:image/png;charset=utf-8;base64,'.base64_encode(file_get_contents(DIR.'/install/logo.png'))
 			])
 		],
 		file_get_contents(DIR.'/readme.html')
@@ -273,12 +273,12 @@ $phar->addFromString(
 	'license.txt',
 	file_get_contents(DIR.'/license.txt')
 );
-$themes				= get_files_list(DIR.'/themes', false, 'd');
+$themes = get_files_list(DIR.'/themes', false, 'd');
 asort($themes);
-$color_schemes		= [];
+$color_schemes = [];
 foreach ($themes as $theme) {
-	$color_schemes[$theme]	= [];
-	$color_schemes[$theme]	= get_files_list(DIR."/themes/$theme/schemes", false, 'd');
+	$color_schemes[$theme] = [];
+	$color_schemes[$theme] = get_files_list(DIR."/themes/$theme/schemes", false, 'd');
 	asort($color_schemes[$theme]);
 }
 $phar->addFromString(
@@ -294,11 +294,11 @@ $phar->addFromString(
 	"\"$version\""
 );
 unset($themes, $theme, $color_schemes);
-$phar	= $phar->convertToExecutable(Phar::TAR, Phar::BZ2, '.phar.tar');
+$phar = $phar->convertToExecutable(Phar::TAR, Phar::BZ2, '.phar.tar');
 unlink(DIR.'/build.phar');
 $phar->setStub("<?php Phar::webPhar(null, 'install.php'); __HALT_COMPILER();");
 $phar->setSignatureAlgorithm(PHAR::SHA512);
 unset($phar);
-$suffix	= $_POST['suffix'] ? "_$_POST[suffix]" : '';
+$suffix = $_POST['suffix'] ? "_$_POST[suffix]" : '';
 rename(DIR.'/build.phar.tar', DIR."/CleverStyle_CMS_$version$suffix.phar.php");
 echo "Done! CleverStyle CMS $version";
