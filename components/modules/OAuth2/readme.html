@@ -136,7 +136,7 @@
 		</dl>
 		<h4>Error request</h4>
 		Browser will redirect to URL like:<br><br>
-		<code><b>redirect_uri</b>?</code><br>
+		<code><b>redirect_uri</b>#</code><br>
 		<code>error=<b>error</b>&</code><br>
 		<code>error_description=<b>error_description</b>&</code><br>
 		<code>state=<b>state</b></code>
@@ -205,27 +205,73 @@
 		Obtaining access_token:<br><br>
 		<code>/OAuth2/authorize?</code><br>
 		<code>response_type=guest_token&</code><br>
-		<code>client_id=<b>client_id</b></code>
+		<code>client_id=<b>client_id</b>&</code><br>
+		<code>redirect_uri=<b>redirect_uri</b>&</code><br>
+		<code>state=<b>state</b></code>
 		<dl>
 			<dt>client_id</dt>
 			<dd>Id of client in administration of OAuth2 module [REQUIRED]</dd>
+			<dt>redirect_uri</dt>
+			<dd>URL to redirect to after the user allows or denies access. URL should be from the domain in client settings, supports custom uri schemes. [REQUIRED]</dd>
+			<dt>state</dt>
+			<dd>Random string, usually session id, which is used in order to protect against CSRF [OPTIONAL]</dd>
 		</dl>
 		<h4>Successful request</h4>
-		Browser will return JSON data with header "Content-Type: application/json" and status code HTTP 200 (OK):<br><br>
-		<code>{</code><br>
-		<code>"access_token":"<b>access_token</b>",</code><br>
-		<code>"expires_in":<b>expires_in</b>,</code><br>
-		<code>"token_type":"bearer",</code><br>
-		<code>"user_id":"<b>user_id</b>"</code><br>
-		<code>}</code>
+		Browser will redirect to:<br><br>
+		<code><b>redirect_uri</b>#</code><br>
+		<code>access_token=<b>access_token</b>&</code><br>
+		<code>expires_in=<b>expires_in</b>&</code><br>
+		<code>user_id=<b>user_id</b>&</code><br>
+		<code>token_type=bearer&</code><br>
+		<code>state=<b>state</b></code>
 		<dl>
+			<dt>redirect_uri</dt>
+			<dd>Parameter, given in request</dd>
 			<dt>access_token</dt>
 			<dd>Token, that will be used in API request</dd>
 			<dt>expires_in</dt>
 			<dd>Number of seconds, remained to access_token expiration</dd>
 			<dt>user_id</dt>
-			<dd>Internal system id of user, for guest always <b>1</b></dd>
+			<dd>Internal system id of user</dd>
+			<dt>state</dt>
+			<dd>Parameter, given in request</dd>
 		</dl>
+		<h4>Error request</h4>
+		Browser will redirect to URL like:<br><br>
+		<code><b>redirect_uri</b>#</code><br>
+		<code>error=<b>error</b>&</code><br>
+		<code>error_description=<b>error_description</b>&</code><br>
+		<code>state=<b>state</b></code>
+		<dl>
+			<dt>redirect_uri</dt>
+			<dd>Parameter, given in request</dd>
+			<dt>error</dt>
+			<dd>Error code according to <a href="https://tools.ietf.org/html/rfc6749">RFC 6749</a></dd>
+			<dt>error_description</dt>
+			<dd>Simple description, explaining error reason</dd>
+			<dt>state</dt>
+			<dd>Parameter, given in request</dd>
+		</dl>
+	</li>
+</ol>
+<h4>Token invalidation (server) (beyond RFC 6749 specification, used for proper sign out for API clients):</h4>
+<ol>
+	<li>
+		Invalidating access_token:<br><br>
+		<code>/OAuth2/invalidate_token?</code><br>
+		<code>client_id=<b>client_id</b>&</code><br>
+		<code>client_secret=<b>client_secret</b>&</code><br>
+		<code>access_token=<b>access_token</b></code>
+		<dl>
+			<dt>client_id</dt>
+			<dd>Id of client in administration of OAuth2 module [REQUIRED]</dd>
+			<dt>client_secret</dt>
+			<dd>Secret from client settings [REQUIRED]</dd>
+			<dt>access_token</dt>
+			<dd>Token, that will was used in API request [REQUIRED]</dd>
+		</dl>
+		<h4>Successful request</h4>
+		Browser will return empty body and status code HTTP 200 (OK)
 		<h4>Error request</h4>
 		Browser will return JSON data with header "Content-Type: application/json" and status code HTTP 400 (Bad Request) or HTTP 500 (Internal Server Error) or HTTP 403 (403 Forbidden):<br><br>
 		<code>{</code><br>
@@ -237,6 +283,51 @@
 			<dd>Error code according to <a href="https://tools.ietf.org/html/rfc6749">RFC 6749</a></dd>
 			<dt>error_description</dt>
 			<dd>Simple description, explaining error reason</dd>
+		</dl>
+	</li>
+</ol>
+<h4>Token invalidation (client) (beyond RFC 6749 specification, used for proper sign out for API clients):</h4>
+<ol>
+	<li>
+		Invalidating access_token:<br><br>
+		<code>/OAuth2/invalidate_token?</code><br>
+		<code>client_id=<b>client_id</b>&</code><br>
+		<code>redirect_uri=<b>redirect_uri</b>&</code><br>
+		<code>access_token=<b>access_token</b>&</code><br>
+		<code>state=<b>state</b></code>
+		<dl>
+			<dt>client_id</dt>
+			<dd>Id of client in administration of OAuth2 module [REQUIRED]</dd>
+			<dt>redirect_uri</dt>
+			<dd>URL to redirect to after the user allows or denies access. URL should be from the domain in client settings, supports custom uri schemes. [REQUIRED]</dd>
+			<dt>access_token</dt>
+			<dd>Token, that will was used in API request [REQUIRED]</dd>
+			<dt>state</dt>
+			<dd>Random string, usually session id, which is used in order to protect against CSRF [OPTIONAL]</dd>
+		</dl>
+		<h4>Successful request</h4>
+		Browser will redirect to:<br><br>
+		<code><b>redirect_uri</b>#</code><br>
+		<code>state=<b>state</b></code>
+		<dl>
+			<dt>state</dt>
+			<dd>Parameter, given in request</dd>
+		</dl>
+		<h4>Error request</h4>
+		Browser will redirect to URL like:<br><br>
+		<code><b>redirect_uri</b>#</code><br>
+		<code>error=<b>error</b>&</code><br>
+		<code>error_description=<b>error_description</b>&</code><br>
+		<code>state=<b>state</b></code>
+		<dl>
+			<dt>redirect_uri</dt>
+			<dd>Parameter, given in request</dd>
+			<dt>error</dt>
+			<dd>Error code according to <a href="https://tools.ietf.org/html/rfc6749">RFC 6749</a></dd>
+			<dt>error_description</dt>
+			<dd>Simple description, explaining error reason</dd>
+			<dt>state</dt>
+			<dd>Parameter, given in request</dd>
 		</dl>
 	</li>
 </ol>

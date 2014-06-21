@@ -47,7 +47,8 @@ Trigger::instance()
 			}
 			$OAuth2 = OAuth2::instance();
 			$Page   = Page::instance();
-			if (!($client = $OAuth2->get_client($client_id))) {
+			$client = $OAuth2->get_client($client_id);
+			if (!$client) {
 				error_code(400);
 				$Page->error([
 					'access_denied',

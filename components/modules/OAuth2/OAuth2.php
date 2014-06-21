@@ -48,7 +48,7 @@ class OAuth2 {
 	 *
 	 * @return bool|string			<i>false</i> on failure, id of created client otherwise
 	 */
-	function oauth2_add_client ($name, $domain, $active) {
+	function add_client ($name, $domain, $active) {
 		if (
 			!$domain ||
 			strpos($domain, '/') !== false
@@ -487,6 +487,44 @@ class OAuth2 {
 		return $data;
 	}
 	/**
+	 * Del token data (invalidate token)
+	 *
+	 * @param string		$access_token
+	 * @param string		$client			Client id
+	 *
+	 * @return bool
+	 */
+	function del_token ($access_token, $client) {
+		$client	= $this->get_client($client);
+		if (!is_md5($access_token) || !$client) {
+			return false;
+		}
+		$session	= $this->db_prime()->qfs([
+			"SELECT `session`
+			FROM `[prefix]oauth2_clients_sessions`
+			WHERE
+				`id`			= '%s' AND
+				`access_token`	= '%s'
+			LIMIT 1",
+			$client['id'],
+			$access_token
+		]);
+		if ($this->db_prime()->q(
+			"DELETE FROM `[prefix]oauth2_clients_sessions`
+			WHERE
+				`id`			= '%s' AND
+				`access_token`	= '%s'
+			LIMIT 1",
+			$client['id'],
+			$access_token
+		)) {
+			unset($this->cache->{"tokens/$access_token"});
+			User::instance()->del_session($session);
+			return true;
+		}
+		return false;
+	}
+	/**
 	 * Get new access_token with refresh_token
 	 *
 	 * @param string		$refresh_token
@@ -514,6 +552,9 @@ class OAuth2 {
 			$client['id'],
 			$refresh_token
 		]);
+		if (!$data) {
+			return false;
+		}
 		$this->db_prime()->q(
 			"DELETE FROM `[prefix]oauth2_clients_sessions`
 			WHERE
@@ -523,9 +564,6 @@ class OAuth2 {
 			$client['id'],
 			$refresh_token
 		);
-		if (!$data) {
-			return false;
-		}
 		unset($this->cache->{"tokens/$data[access_token]"});
 		$User	= User::instance();
 		$id		= $User->get_session_user($data['session']);
