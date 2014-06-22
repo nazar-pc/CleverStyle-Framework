@@ -611,11 +611,17 @@ class Config {
 	 * @return string
 	 */
 	function core_url () {
-		$core_url	= explode(';', $this->core['url'][0], 2)[0];
+		$core_url	= mb_substr(
+			$this->core['url'][0],
+			0,
+			mb_strpos($this->core['url'][0], ';') ?: null
+		);
 		if ($this->core['multilingual']) {
-			$core_url	= explode('/', $core_url);
-			array_pop($core_url);
-			$core_url	= implode('/', $core_url);
+			$core_url	= mb_substr(
+				$core_url,
+				0,
+				mb_strrpos($core_url, '/') ?: null
+			);
 		}
 		return $core_url;
 	}
@@ -630,6 +636,6 @@ class Config {
 		if (!isset($this->components['modules'][$module_name])) {
 			return False_class::instance();
 		}
-		return (new Config\Module_Properties($this->components['modules'][$module_name], $module_name));
+		return new Config\Module_Properties($this->components['modules'][$module_name], $module_name);
 	}
 }

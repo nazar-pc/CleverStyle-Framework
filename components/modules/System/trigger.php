@@ -47,7 +47,9 @@ Trigger::instance()->register(
 						'href'		=> "$base_url/$lang/$relative_address"
 					];
 				},
-				file_exists(CACHE.'/languages_clangs') ? file_get_json(CACHE.'/languages_clangs') : $Config->update_clangs()
+				array_values(
+					file_exists(CACHE.'/languages_clangs') ? file_get_json(CACHE.'/languages_clangs') : $Config->update_clangs()
+				)
 			));
 	}
 );
