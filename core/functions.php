@@ -87,6 +87,22 @@ function interface_off () {
 	Page::instance()->interface	= false;
 }
 /**
+ * Easy getting of translations
+ *
+ * @param string $item
+ * @param mixed  $arguments There can be any necessary number of arguments here
+ *
+ * @return string
+ */
+function __ ($item, $arguments = null) {
+	$L = Language::instance();
+	if (func_num_args() > 1) {
+		return $L->format($item, array_slice(func_get_args(), 1));
+	} else {
+		return $L->$item;
+	}
+}
+/**
  * Get file url by it's destination in file system
  *
  * @param string		$source
