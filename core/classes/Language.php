@@ -1,43 +1,69 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2014, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package        CleverStyle CMS
+ * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright      Copyright (c) 2011-2014, Nazar Mokrynskyi
+ * @license        MIT License, see license.txt
  */
-namespace	cs;
-use			Closure,
-			JsonSerializable;
+namespace cs;
+
+use
+	Closure,
+	JsonSerializable;
+
 defined('FIXED_LANGUAGE') || define('FIXED_LANGUAGE', false);
+
 /**
  * Provides next triggers:
  *  System/general/languages/load
  *  [
- *   'clanguage'		=> clanguage
- *   'clang'			=> clang
- *   'cregion'			=> cregion
- *   'clanguage_en'		=> clanguage_en
+ *   'clanguage'        => clanguage
+ *   'clang'            => clang
+ *   'cregion'            => cregion
+ *   'clanguage_en'        => clanguage_en
  *  ]
  */
 class Language implements JsonSerializable {
 	use Singleton;
 
-	public		$clanguage,								//Current language
-				$time					= null;			//Closure for time processing
-	protected	$init					= false,		//For single initialization
-				$translate				= [],			//Local cache of translations
-				$fixed_language			= false;
+	public
+		/**
+		 * Current language
+		 *
+		 * @var string
+		 */
+		$clanguage,
+		/**
+		 * Closure for time processing
+		 *
+		 * @var Closure
+		 */
+		$time           = null;
+	protected
+		/**
+		 * For single initialization
+		 *
+		 * @var bool
+		 */
+		$init           = false,
+		/**
+		 * Local cache of translations
+		 *
+		 * @var array
+		 */
+		$translate      = [],
+		$fixed_language = false;
 	/**
 	 * Set basic language
 	 */
 	protected function construct () {
-		$this->fixed_language	= FIXED_LANGUAGE;
+		$this->fixed_language = FIXED_LANGUAGE;
 		$this->change(Core::instance()->language);
 	}
 	/**
 	 * Scanning of aliases for defining of current language
 	 *
-	 * @param array			$active_languages
+	 * @param array $active_languages
 	 *
 	 * @return bool|string
 	 */
@@ -45,24 +71,24 @@ class Language implements JsonSerializable {
 		if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
 			return false;
 		}
-		$Cache				= Cache::instance();
+		$Cache = Cache::instance();
 		if (($aliases = $Cache->{'languages/aliases'}) === false) {
-			$aliases		= [];
-			$aliases_list	= _strtolower(get_files_list(LANGUAGES.'/aliases'));
+			$aliases      = [];
+			$aliases_list = _strtolower(get_files_list(LANGUAGES.'/aliases'));
 			foreach ($aliases_list as $alias) {
 				$aliases[$alias] = file_get_contents(LANGUAGES."/aliases/$alias");
 			}
 			unset($aliases_list, $alias);
 			$Cache->{'languages/aliases'} = $aliases;
 		}
-		$accept_languages	= str_replace(
+		$accept_languages = str_replace(
 			'-',
 			'_',
 			explode(',', strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']))
 		);
 		foreach (_strtolower($_SERVER) as $i => $v) {
 			if (preg_match('/.*locale/i', $i)) {
-				$accept_languages[]	= strtolower($v);
+				$accept_languages[] = strtolower($v);
 			}
 		}
 		unset($i, $v);
@@ -77,47 +103,47 @@ class Language implements JsonSerializable {
 	/**
 	 * Get translation
 	 *
-	 * @param string		$item
-	 * @param bool|string	$language	If specified - translation for specified language will be returned, otherwise for current
+	 * @param string      $item
+	 * @param bool|string $language If specified - translation for specified language will be returned, otherwise for current
 	 *
 	 * @return string
 	 */
 	function get ($item, $language = false) {
-		if (!$language || $language === $this->clanguage) {
-			return isset($this->translate[$item]) ? $this->translate[$item] : ucfirst(str_replace('_', ' ', $item));
-		}
-		if ($translate = Cache::instance()->{"languages/$language"}) {
+		$language  = $language ?: $this->clanguage;
+		$translate = & $this->translate[$language];
+		if (isset($translate)) {
 			return isset($translate[$item]) ? $translate[$item] : ucfirst(str_replace('_', ' ', $item));
 		}
 		unset($translate);
-		$current_language		= $this->clanguage;
-		$current_fixed_language	= $this->fixed_language;
-		$this->fixed_language	= false;
+		$current_language       = $this->clanguage;
+		$current_fixed_language = $this->fixed_language;
+		$this->fixed_language   = false;
 		$this->change($language);
-		$return				= isset($this->translate[$item]) ? $this->translate[$item] : ucfirst(str_replace('_', ' ', $item));
+		$return = $this->get($item);
 		$this->change($current_language);
-		$this->fixed_language	= $current_fixed_language;
+		$this->fixed_language = $current_fixed_language;
 		return $return;
 	}
 	/**
 	 * Set translation
 	 *
-	 * @param array|string	$item	Item string, or key-value array
-	 * @param null|string	$value
+	 * @param array|string $item Item string, or key-value array
+	 * @param null|string  $value
 	 *
 	 * @return void
 	 */
 	function set ($item, $value = null) {
+		$translate = & $this->translate[$this->clanguage];
 		if (is_array($item)) {
-			$this->translate = $item + $this->translate;
+			$translate = $item + ($translate ?: []);
 		} else {
-			$this->translate[$item] = $value;
+			$translate[$item] = $value;
 		}
 	}
 	/**
 	 * Get translation
 	 *
-	 * @param string	$item
+	 * @param string $item
 	 *
 	 * @return string
 	 */
@@ -127,8 +153,8 @@ class Language implements JsonSerializable {
 	/**
 	 * Set translation
 	 *
-	 * @param array|string	$item
-	 * @param null|string	$value
+	 * @param array|string $item
+	 * @param null|string  $value
 	 *
 	 * @return string
 	 */
@@ -138,7 +164,7 @@ class Language implements JsonSerializable {
 	/**
 	 * Change language
 	 *
-	 * @param string	$language
+	 * @param string $language
 	 *
 	 * @return bool
 	 */
@@ -147,15 +173,13 @@ class Language implements JsonSerializable {
 		if ($this->fixed_language && $changed_once) {
 			return false;
 		}
-		$changed_once	= true;
+		$changed_once = true;
 		if ($language == $this->clanguage) {
 			return true;
 		}
-		$Config			= Config::instance(true);
-		if (empty($language)) {
-			if ($Config && $Config->core['multilingual']) {
-				$language	= $this->scan_aliases($Config->core['active_languages']) ?: $language;
-			}
+		$Config = Config::instance(true);
+		if (!$language && $Config->core['multilingual']) {
+			$language = $this->scan_aliases($Config->core['active_languages']) ?: $language;
 		}
 		if (
 			!$Config ||
@@ -165,33 +189,37 @@ class Language implements JsonSerializable {
 				in_array($language, $Config->core['active_languages'])
 			)
 		) {
-			$this->clanguage	= $language;
-			$return 			= false;
-			$Cache				= Cache::instance();
+			$previous_language = $this->clanguage;
+			$this->clanguage   = $language;
+			$return            = false;
+			$Cache             = Cache::instance();
 			/**
 			 * If translations in cache
 			 */
 			if ($translate = $Cache->{"languages/$this->clanguage"}) {
 				$this->set($translate);
-				$return	= true;
-			/**
-			 * Otherwise check for system translations
-			 */
+				$return = true;
+				/**
+				 * Otherwise check for system translations
+				 */
 			} elseif (file_exists(LANGUAGES."/$this->clanguage.json")) {
 				/**
 				 * Set system translations
 				 */
 				$this->set(file_get_json_nocomments(LANGUAGES."/$this->clanguage.json"));
-				$translate				= &$this->translate;
-				$translate['clanguage']	= $this->clanguage;
+				$translate = & $this->translate[$language];
+				if (!$translate) {
+					$translate = $this->translate[$previous_language];
+				}
+				$translate['clanguage'] = $this->clanguage;
 				if (!isset($translate['clang'])) {
-					$translate['clang']			= mb_strtolower(mb_substr($this->clanguage, 0, 2));
+					$translate['clang'] = mb_strtolower(mb_substr($this->clanguage, 0, 2));
 				}
 				if (!isset($translate['clanguage_en'])) {
-					$translate['clanguage_en']	= $this->clanguage;
+					$translate['clanguage_en'] = $this->clanguage;
 				}
 				if (!isset($translate['locale'])) {
-					$translate['locale']		= $this->clang.'_'.strtoupper($this->clang);
+					$translate['locale'] = $this->clang.'_'.strtoupper($this->clang);
 				}
 				/**
 				 * Set modules' translations
@@ -218,14 +246,14 @@ class Language implements JsonSerializable {
 				Trigger::instance()->run(
 					'System/general/languages/load',
 					[
-						'clanguage'			=> $this->clanguage,
-						'clang'				=> $this->clang,
-						'cregion'			=> $this->cregion,
-						'clanguage_en'		=> $this->clanguage_en
+						'clanguage'    => $this->clanguage,
+						'clang'        => $this->clang,
+						'cregion'      => $this->cregion,
+						'clanguage_en' => $this->clanguage_en
 					]
 				);
 				$Cache->{"languages/$this->clanguage"} = $translate;
-				$return	= true;
+				$return                                = true;
 			}
 			_include(LANGUAGES."/$this->clanguage.php", false, false);
 			header("Content-Language: $translate[content_language]");
@@ -236,9 +264,9 @@ class Language implements JsonSerializable {
 	/**
 	 * Time formatting according to the current language (adding correct endings)
 	 *
-	 * @param int		$in		time (number)
-	 * @param string	$type	Type of formatting<br>
-	 * 							s - seconds<br>m - minutes<br>h - hours<br>d - days<br>M - months<br>y - years
+	 * @param int    $in          time (number)
+	 * @param string $type        Type of formatting<br>
+	 *                            s - seconds<br>m - minutes<br>h - hours<br>d - days<br>M - months<br>y - years
 	 *
 	 * @return string
 	 */
@@ -249,22 +277,22 @@ class Language implements JsonSerializable {
 			switch ($type) {
 				case 's':
 					return "$in $this->seconds";
-				break;
+					break;
 				case 'm':
 					return "$in $this->minutes";
-				break;
+					break;
 				case 'h':
 					return "$in $this->hours";
-				break;
+					break;
 				case 'd':
 					return "$in $this->days";
-				break;
+					break;
 				case 'M':
 					return "$in $this->months";
-				break;
+					break;
 				case 'y':
 					return "$in $this->years";
-				break;
+					break;
 			}
 		}
 		return $in;
@@ -273,8 +301,9 @@ class Language implements JsonSerializable {
 	 * Allows to use formatted strings in translations
 	 *
 	 * @see format()
-	 * @param string	$item
-	 * @param array		$arguments
+	 *
+	 * @param string $item
+	 * @param array  $arguments
 	 *
 	 * @return string
 	 */
@@ -284,8 +313,8 @@ class Language implements JsonSerializable {
 	/**
 	 * Allows to use formatted strings in translations
 	 *
-	 * @param string	$item
-	 * @param string[]	$arguments
+	 * @param string   $item
+	 * @param string[] $arguments
 	 *
 	 * @return string
 	 */
@@ -295,10 +324,10 @@ class Language implements JsonSerializable {
 	/**
 	 * Formatting data according to language locale (translating months names, days of week, etc.)
 	 *
-	 * @param string|string[]	$data
-	 * @param bool				$short_may	When in date() or similar functions "M" format option is used, third month "May"
-	 * 										have the same short textual representation as full, so, this option allows to
-	 * 										specify, which exactly form of representation do you want
+	 * @param string|string[] $data
+	 * @param bool            $short_may      When in date() or similar functions "M" format option is used, third month "May"
+	 *                                        have the same short textual representation as full, so, this option allows to
+	 *                                        specify, which exactly form of representation do you want
 	 *
 	 * @return string|string[]
 	 */
@@ -363,6 +392,6 @@ class Language implements JsonSerializable {
 	 * @return string[]
 	 */
 	function jsonSerialize () {
-		return $this->translate;
+		return $this->translate[$this->clanguage];
 	}
 }
