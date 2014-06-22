@@ -45,7 +45,7 @@ Author – Nazar Mokrynskyi <nazar@mokrynskyi.com>
 Copyright (c) 2011-2014, Nazar Mokrynskyi
 
 # Why?
-There are thousands of other CMS and CMF, that is true, but this one is different fom many because of ideas that lies in development.
+There are thousands of other CMS and CMF, that is true, but this one is different from many because of ideas that lies in development.
 
 ### Simple
 Really simple.
