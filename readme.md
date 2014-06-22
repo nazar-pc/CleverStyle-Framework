@@ -1,6 +1,5 @@
 [![Build Status](https://travis-ci.org/nazar-pc/CleverStyle-CMS.png?branch=master)](https://travis-ci.org/nazar-pc/CleverStyle-CMS)
-What is this?
-=
+# What is this?
 
 CleverStyle CMS is simple, scalable, and fast content management system.
 
@@ -45,8 +44,55 @@ Author – Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
 Copyright (c) 2011-2014, Nazar Mokrynskyi
 
-Main features
-=
+# Why?
+There are thousands of other CMS and CMF, that is true, but this one is different fom many because of ideas that lies in development.
+
+### Simple
+Really simple.
+
+There is no need to make it more complicated, add more abstractions that is necessary, or write code to support some architecture.
+
+Install only what you really need, write only code that you'll really use.
+
+### Standalone
+System contains everything necessary inside to ease setup and to be independent from outside uncontrolled services.
+
+No CDNs for JS and fonts in system core, no composer, bower or any other packages needed to be installed from command line.
+
+Just take SINGLE installation file, and open it from web browser to install system.
+
+However, if you add some composer packages to your project - system will understand that and all your packages become available immediately in any place of system.
+
+### Working
+Fresh system just works.
+
+Reasonable defaults allows you to use all system capabilities out of the box.
+
+There is no need to configure cache, storages, anything else.
+
+You can start from default, and when you're ready - you can switch to another cache engine, storage engine, add another database, or redefine almost every aspect of System.
+
+You can do that at any time, keeping possibility of system upgrade.
+
+But prior to that moment you do not need to change anything - it will work just fine.
+
+### Customizable
+You can subscribe to some events in system and do some operations at the same time or change default flow of things as needed.
+
+You can redefine how it looks to any imaginable extent.
+
+You can write code in any style you like, there are recommendations how to do that, but actually you do not forced to create classes on any small stupid thing, or avoid classes when you want them to be.
+
+You can!
+
+### Small
+System core in extracted form have around 1.8 MiB (distributive file is up to 400 KiB), that is comparable to other projects that are called just "libraries".
+
+There are no huge list of external dependencies, there are no external dependencies at all.
+
+Nevertheless, system includes a set of thirdparty components inside to make system complete and in order to not reinvent a good wheel.
+
+# Main features
 
 * Components
  * Modules (for displaying main page content)
@@ -69,8 +115,7 @@ Main features
 * RESTful API
 * IPv6
 
-Requirements:
-=
+# Requirements:
 
 * Unix-like operating system or Windows (not well tested, but should work anyway)
 * Apache2 or Nginx web server ([Nginx config sample](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Nginx-config-sample))
@@ -81,7 +126,6 @@ Requirements:
 * MySQL Database server (MariaDB will work as well)
  * System may be extended to support other databases
 
-How to install?
-=
+# How to install?
 
 [Read simple instructions in our wiki](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)
