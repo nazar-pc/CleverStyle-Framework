@@ -588,7 +588,7 @@ if (isset($rc[2], $rc[3])) {
 			).
 			(!$is_guest && !$is_root && (!$is_bot || !$Config->core['simple_admin_mode']) ?
 				h::{'a.cs-button-compact'}(
-					h::icon('pencil-square-o'),
+					h::icon('sliders'),
 					[
 						'href'			=> "$a->action/edit/$id",
 						'data-title'	=> $L->{$is_bot ? 'edit_bot_information' : 'edit_user_information'}

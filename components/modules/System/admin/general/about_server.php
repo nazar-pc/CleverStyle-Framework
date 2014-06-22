@@ -43,7 +43,7 @@ $Index->content(
 				]
 			).
 			h::{'a.cs-button[target=_blank]'}(
-				$L->information_about_system,
+				h::icon('info').$L->information_about_system,
 				[
 					'href'	=> "$Index->action/readme.html"
 				]
@@ -55,7 +55,7 @@ $Index->content(
 				]
 			).
 			h::{'button#cs-system-license-open'}(
-				$L->license,
+				h::icon('legal').$L->license,
 				[
 					'data-title'	=> $L->click_to_view_details
 				]

@@ -382,7 +382,7 @@ if (
 					$db_json				= file_get_json(MODULES."/$rc[3]/meta/db.json");
 					foreach ($db_json as $database) {
 						$db_list[] = [
-							$L->{"$rc[3]_db_$database"},
+							$database,
 							h::select(
 								[
 									'in'		=> array_values($dbs),
@@ -448,7 +448,7 @@ if (
 					$storage_json			= file_get_json(MODULES."/$rc[3]/meta/storage.json");
 					foreach ($storage_json as $storage) {
 						$storage_list[] = [
-							$L->{"$rc[3]_storage_$storage"},
+							$storage,
 							h::select(
 								[
 									'in'		=> array_values($storages),
@@ -674,7 +674,7 @@ foreach ($Config->components['modules'] as $module_name => &$module_data) {
 		 */
 		if (!$Config->core['simple_admin_mode'] && file_exists(MODULES."/$module_name/meta/db.json") && count($Config->db) > 1) {
 			$action .= h::{'a.cs-button-compact'}(
-				h::icon('gears'),
+				h::icon('database'),
 				[
 					'href'			=> "$a->action/db/$module_name",
 					'data-title'	=> $L->databases
@@ -686,7 +686,7 @@ foreach ($Config->components['modules'] as $module_name => &$module_data) {
 		 */
 		if (!$Config->core['simple_admin_mode'] && file_exists(MODULES."/$module_name/meta/storage.json") && count($Config->storage) > 1) {
 			$action .= h::{'a.cs-button-compact'}(
-				h::icon('hdd'),
+				h::icon('hdd-o'),
 				[
 					'href'			=> "$a->action/storage/$module_name",
 					'data-title'	=> $L->storages
@@ -699,7 +699,7 @@ foreach ($Config->components['modules'] as $module_name => &$module_data) {
 			 */
 			if (file_exists(MODULES."/$module_name/admin/index.php") || file_exists(MODULES."/$module_name/admin/index.json")) {
 				$action		.= h::{'a.cs-button-compact'}(
-					h::icon('wrench'),
+					h::icon('sliders'),
 					[
 						'href'			=> "admin/$module_name",
 						'data-title'	=> $L->module_admin_page
