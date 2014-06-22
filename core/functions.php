@@ -758,3 +758,11 @@ function functionality ($functionality) {
 	});
 	return array_search($functionality, $all) !== false;
 }
+/**
+ * Returns system version
+ *
+ * @return string
+ */
+function system_version () {
+	return file_get_json(MODULES.'/System/meta.json')['version'];
+}
