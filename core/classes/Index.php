@@ -79,7 +79,8 @@ class Index {
 
 				$module				= false,
 				$api				= false,
-				$request_method		= null;
+				$request_method		= null,
+				$working_directory	= '';
 	/**
 	 * Detecting module folder including of admin/api request type, including prepare file, including of plugins
 	 */
@@ -110,7 +111,7 @@ class Index {
 				error_code(403);
 				exit;
 			}
-			define('MFOLDER', $admin_path);
+			$this->working_directory = $admin_path;
 			$this->form		= true;
 			define('IN_ADMIN', true);
 		} elseif (API && file_exists($api_path)) {
@@ -118,14 +119,14 @@ class Index {
 				error_code(403);
 				exit;
 			}
-			define('MFOLDER', $api_path);
+			$this->working_directory = $api_path;
 			$this->api		= true;
 		} elseif (!ADMIN && !API && file_exists(MODULES.'/'.MODULE)) {
 			if (!$User->get_permission($this->permission_group = MODULE, 'index')) {
 				error_code(403);
 				exit;
 			}
-			define('MFOLDER', MODULES.'/'.MODULE);
+			$this->working_directory = MODULES.'/'.MODULE;
 			$this->module	= true;
 		} else {
 			error_code(404);
@@ -140,7 +141,7 @@ class Index {
 		foreach ($Config->components['plugins'] as $plugin) {
 			_include_once(PLUGINS."/$plugin/index.php", false);
 		}
-		_include_once(MFOLDER.'/prepare.php', false);
+		_include_once("$this->working_directory/prepare.php", false);
 		if (preg_match('/[a-z_\-]+/i', $_SERVER['REQUEST_METHOD'])) {
 			$this->request_method	= strtolower($_SERVER['REQUEST_METHOD']);
 		}
@@ -183,13 +184,10 @@ class Index {
 		}
 		unset($item, $rc_path, $rc_ids);
 		$rc		= &$this->route_path;
-		if ($Config->core['simple_admin_mode'] && file_exists(MFOLDER.'/index_simple.json')) {
-			$structure_file	= 'index_simple.json';
-		} else {
-			$structure_file	= 'index.json';
-		}
-		if (file_exists(MFOLDER."/$structure_file")) {
-			$this->structure	= file_get_json(MFOLDER."/$structure_file");
+		$working_directory = $this->working_directory;
+		$structure_file = $Config->core['simple_admin_mode'] && file_exists("$working_directory/index_simple.json") ? 'index_simple.json' : 'index.json';
+		if (file_exists("$working_directory/$structure_file")) {
+			$this->structure	= file_get_json("$working_directory/$structure_file");
 			if (is_array($this->structure)) {
 				foreach ($this->structure as $item => $value) {
 					if (!is_array($value)) {
@@ -214,14 +212,14 @@ class Index {
 				}
 				unset($item, $value, $subpart);
 			}
-		} elseif (API && !file_exists(MFOLDER.'/index.php') && !file_exists(MFOLDER."/index.$this->request_method.php")) {
+		} elseif (API && !file_exists("$working_directory/index.php") && !file_exists("$working_directory/index.$this->request_method.php")) {
 			error_code(404);
 			return;
 		}
 		unset($structure_file);
-		_include_once(MFOLDER.'/index.php', false);
+		_include_once("$working_directory/index.php", false);
 		if (API && $this->request_method) {
-			_include_once(MFOLDER."/index.$this->request_method.php", false);
+			_include_once("$working_directory/index.$this->request_method.php", false);
 		}
 		if ($this->stop || defined('ERROR_CODE')) {
 			return;
@@ -242,8 +240,8 @@ class Index {
 			/**
 			 * Saving of changes
 			 */
-			if (IN_ADMIN && !_include_once(MFOLDER."/$rc[0]/$this->savefile.php", false)) {
-				_include_once(MFOLDER."/$this->savefile.php", false);
+			if (IN_ADMIN && !_include_once("$working_directory/$rc[0]/$this->savefile.php", false)) {
+				_include_once("$working_directory/$this->savefile.php", false);
 			}
 			IN_ADMIN && $this->title_auto && $Page->title($L->administration);
 			if (!$this->api && $this->title_auto) {
@@ -260,9 +258,9 @@ class Index {
 			if (!$Config->core['site_mode']) {
 				$Page->warning(get_core_ml_text('closed_title'));
 			}
-			_include_once(MFOLDER."/$rc[0].php", false);
+			_include_once("$working_directory/$rc[0].php", false);
 			if (API && $this->request_method) {
-				_include_once(MFOLDER."/$rc[0].$this->request_method.php", false);
+				_include_once("$working_directory/$rc[0].$this->request_method.php", false);
 			}
 			if ($this->stop || defined('ERROR_CODE')) {
 				return;
@@ -285,9 +283,9 @@ class Index {
 						$this->action = (IN_ADMIN ? 'admin/' : '').MODULE."/$rc[0]/$rc[1]";
 					}
 				}
-				_include_once(MFOLDER."/$rc[0]/$rc[1].php", false);
+				_include_once("$working_directory/$rc[0]/$rc[1].php", false);
 				if (API && $this->request_method) {
-					_include_once(MFOLDER."/$rc[0]/$rc[1].$this->request_method.php", false);
+					_include_once("$working_directory/$rc[0]/$rc[1].$this->request_method.php", false);
 				}
 				if ($this->stop || defined('ERROR_CODE')) {
 					return;
@@ -307,7 +305,7 @@ class Index {
 			if ($this->action === null) {
 				$this->action = $Config->server['relative_address'];
 			}
-			_include_once(MFOLDER."/$this->savefile.php", false);
+			_include_once("$working_directory/$this->savefile.php", false);
 		}
 	}
 	/**
@@ -663,7 +661,12 @@ class Index {
 			$Page->error();
 		}
 		Trigger::instance()->run('System/Index/preload');
-		if (!IN_ADMIN && !$this->api && file_exists(MODULES.'/'.MODULE.'/index.html')) {
+		if (
+			!(
+				defined('IN_ADMIN') && IN_ADMIN
+			) &&
+			!$this->api && file_exists(MODULES.'/'.MODULE.'/index.html')
+		) {
 			ob_start();
 			_include(MODULES.'/'.MODULE.'/index.html', false, false);
 			$Page->content(ob_get_clean());
