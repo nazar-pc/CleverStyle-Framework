@@ -79,6 +79,7 @@ class Index {
 
 				$module				= false,
 				$api				= false,
+				$admin			= false,
 				$request_method		= null,
 				$working_directory	= '';
 	/**
@@ -113,7 +114,7 @@ class Index {
 			}
 			$this->working_directory = $admin_path;
 			$this->form		= true;
-			define('IN_ADMIN', true);
+			$this->admin = true;
 		} elseif (API && file_exists($api_path)) {
 			if (!$User->get_permission($this->permission_group = 'api/'.MODULE, 'index')) {
 				error_code(403);
@@ -132,7 +133,6 @@ class Index {
 			error_code(404);
 			exit;
 		}
-		defined('IN_ADMIN') || define('IN_ADMIN', false);
 		unset($admin_path, $api_path);
 		Trigger::instance()->run('System/Index/construct');
 		/**
@@ -240,10 +240,12 @@ class Index {
 			/**
 			 * Saving of changes
 			 */
-			if (IN_ADMIN && !_include_once("$working_directory/$rc[0]/$this->savefile.php", false)) {
+			if ($this->in_admin() && !_include_once("$working_directory/$rc[0]/$this->savefile.php", false)) {
 				_include_once("$working_directory/$this->savefile.php", false);
 			}
-			IN_ADMIN && $this->title_auto && $Page->title($L->administration);
+			if ($this->in_admin() && $this->title_auto) {
+				$Page->title($L->administration);
+			}
 			if (!$this->api && $this->title_auto) {
 				$Page->title($L->{HOME ? 'home' : MODULE});
 			}
@@ -280,7 +282,7 @@ class Index {
 						$Page->title($L->$rc[1]);
 					}
 					if ($this->action === null) {
-						$this->action = (IN_ADMIN ? 'admin/' : '').MODULE."/$rc[0]/$rc[1]";
+						$this->action = ($this->in_admin() ? 'admin/' : '').MODULE."/$rc[0]/$rc[1]";
 					}
 				}
 				_include_once("$working_directory/$rc[0]/$rc[1].php", false);
@@ -291,14 +293,16 @@ class Index {
 					return;
 				}
 			} elseif (!$this->api && $this->action === null) {
-				$this->action = (IN_ADMIN ? 'admin/' : '').MODULE."/$rc[0]";
+				$this->action = ($this->in_admin() ? 'admin/' : '').MODULE."/$rc[0]";
 			}
 			unset($rc);
 			if ($this->post_title && $this->title_auto) {
 				$Page->title($this->post_title);
 			}
 		} elseif (!$this->api) {
-			IN_ADMIN && $Page->title($L->administration);
+			if ($this->in_admin()) {
+				$Page->title($L->administration);
+			}
 			if (!$this->api && $this->title_auto) {
 				$Page->title($L->{HOME ? 'home' : MODULE});
 			}
@@ -393,7 +397,7 @@ class Index {
 			$this->main_sub_menu[]	= [
 				$L->$part,
 				[
-					'href'		=> (IN_ADMIN ? 'admin/' : '').MODULE."/$part",
+					'href'		=> ($this->in_admin() ? 'admin/' : '').MODULE."/$part",
 					'class'		=> isset($rc[0]) && $rc[0] == $part ? 'uk-active' : ''
 				]
 			];
@@ -412,7 +416,7 @@ class Index {
 			$this->main_menu_more[]	= [
 				$L->$subpart,
 				[
-					'href'		=> (IN_ADMIN ? 'admin/' : '').MODULE."/$rc[0]/$subpart",
+					'href'		=> ($this->in_admin() ? 'admin/' : '').MODULE."/$rc[0]/$subpart",
 					'class'		=> $rc[1] == $subpart ? 'uk-active' : ''
 				]
 			];
@@ -632,6 +636,14 @@ class Index {
 		Page::instance()->success($L->changes_canceled);
 	}
 	/**
+	 * Whether current page is administration and user is admin
+	 *
+	 * @return bool
+	 */
+	function in_admin () {
+		return $this->admin;
+	}
+	/**
 	 * Executes plugins processing, blocks and module page generation
 	 */
 	function __finish () {
@@ -661,12 +673,7 @@ class Index {
 			$Page->error();
 		}
 		Trigger::instance()->run('System/Index/preload');
-		if (
-			!(
-				defined('IN_ADMIN') && IN_ADMIN
-			) &&
-			!$this->api && file_exists(MODULES.'/'.MODULE.'/index.html')
-		) {
+		if (!$this->in_admin() && !$this->api && file_exists(MODULES.'/'.MODULE.'/index.html')) {
 			ob_start();
 			_include(MODULES.'/'.MODULE.'/index.html', false, false);
 			$Page->content(ob_get_clean());

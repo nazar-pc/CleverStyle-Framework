@@ -228,10 +228,10 @@ class Page {
 			$this->js_internal(
 				'window.cs	= '._json_encode([
 					'base_url'			=> $Config->base_url(),
-					'current_base_url'	=> $Config->base_url().'/'.(defined('IN_ADMIN') && IN_ADMIN ? 'admin/' : '').MODULE,
+					'current_base_url'	=> $Config->base_url().'/'.($Index->in_admin() ? 'admin/' : '').MODULE,
 					'public_key'		=> Core::instance()->public_key,
 					'module'			=> MODULE,
-					'in_admin'			=> (int)(defined('IN_ADMIN') && IN_ADMIN),
+					'in_admin'			=> (int)$Index->in_admin(),
 					'is_admin'			=> (int)$User->admin(),
 					'is_user'			=> (int)$User->user(),
 					'is_guest'			=> (int)$User->guest(),
