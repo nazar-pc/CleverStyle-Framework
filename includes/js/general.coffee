@@ -263,10 +263,5 @@ $ ->
 									selected.sortable('toArray')
 								)
 							)
-		->
-			if cookie = cs.getcookie('setcookie')
-				for own i of cookie
-					$.post(cookie[i])
-				cs.setcookie('setcookie', '')
 	]
 	return

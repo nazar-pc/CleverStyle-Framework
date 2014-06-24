@@ -248,15 +248,6 @@
             }
           });
         }
-      }, function() {
-        var cookie, i;
-        if (cookie = cs.getcookie('setcookie')) {
-          for (i in cookie) {
-            if (!__hasProp.call(cookie, i)) continue;
-            $.post(cookie[i]);
-          }
-          return cs.setcookie('setcookie', '');
-        }
       }
     ]);
   });
