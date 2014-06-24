@@ -407,7 +407,7 @@ if (isset($rc[2], $rc[3])) {
 					$groups_selected	.= h::{'li.uk-button-success'}(
 						$group['title'],
 						[
-							'id'			=> "group$group[id]",
+							'data-id'		=> $group['id'],
 							'data-title'	=> $group['description']
 						]
 					);
@@ -421,7 +421,7 @@ if (isset($rc[2], $rc[3])) {
 					$groups_list	.= h::{'li.uk-button-default'}(
 						$group['title'],
 						[
-							'id'			=> "group$group[id]",
+							'data-id'		=> $group['id'],
 							'data-title'	=> $group['description']
 						]
 					);
@@ -484,7 +484,7 @@ if (isset($rc[2], $rc[3])) {
 		$columns_list .= h::{'li.cs-pointer.uk-button.uk-margin-bottom'}(
 			$column,
 			[
-				'class'	=> in_array($column, $columns) ? 'ui-selected uk-button-primary' : ''
+				'class'	=> in_array($column, $columns) ? 'uk-button-primary' : ''
 			]
 		);
 	}

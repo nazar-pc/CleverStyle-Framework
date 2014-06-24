@@ -165,10 +165,6 @@ switch ($_POST['mode']) {
 				break;
 			}
 			$groups	= _json_decode($_POST['user']['groups']);
-			foreach ($groups as &$group) {
-				$group = (int)substr($group, 5);
-			}
-			unset($group);
 			$Index->save(
 				$User->set_groups($groups, $user_id)
 			);

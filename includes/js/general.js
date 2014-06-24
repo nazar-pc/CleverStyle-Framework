@@ -183,17 +183,17 @@
           $('.cs-permissions-deny-all').click(function() {
             return $(this).parentsUntil('div').find(':radio[value=0]').prop('checked', true).change();
           });
-          $('#cs-users-search-columns').selectable({
-            stop: function() {
-              var li, result;
-              result = [];
-              li = $(this).children('li');
-              li.filter('.uk-button-primary:not(.ui-selected)').removeClass('uk-button-primary');
-              li.filter('.ui-selected').addClass('uk-button-primary').each(function() {
-                return result.push($(this).text().trim());
-              });
-              return $('#cs-users-search-selected-columns').val(result.join(';'));
+          $('#cs-users-search-columns li').click(function() {
+            var $this;
+            $this = $(this);
+            if ($this.hasClass('uk-button-primary')) {
+              $this.removeClass('uk-button-primary');
+            } else {
+              $this.addClass('uk-button-primary');
             }
+            return $('#cs-users-search-selected-columns').val($this.parent().children('.uk-button-primary').map(function() {
+              return $.trim(this.innerHTML);
+            }).get().join(';'));
           });
           $('#block_users_search').keyup(function(event) {
             if (event.which !== 13) {
@@ -221,31 +221,39 @@
           }).keydown(function(event) {
             return event.which !== 13;
           });
-          $('#cs-top-blocks-items, #cs-left-blocks-items, #cs-floating-blocks-items, #cs-right-blocks-items, #cs-bottom-blocks-items').disableSelection().sortable({
+          $('#cs-top-blocks-items, #cs-left-blocks-items, #cs-floating-blocks-items, #cs-right-blocks-items, #cs-bottom-blocks-items').sortable({
             connectWith: '.cs-blocks-items',
-            items: 'li:not(:first)',
-            cancel: ':first',
-            stop: function() {
-              return $('#cs-blocks-position').val(JSON.stringify({
-                top: $('#cs-top-blocks-items').sortable('toArray'),
-                left: $('#cs-left-blocks-items').sortable('toArray'),
-                floating: $('#cs-floating-blocks-items').sortable('toArray'),
-                right: $('#cs-right-blocks-items').sortable('toArray'),
-                bottom: $('#cs-bottom-blocks-items').sortable('toArray')
-              }));
-            }
+            items: 'li:not(:first)'
+          }).on('sortupdate', function() {
+            return $('#cs-blocks-position').val(JSON.stringify({
+              top: $('#cs-top-blocks-items li:not(:first)').map(function() {
+                return $(this).data('id');
+              }).get(),
+              left: $('#cs-left-blocks-items li:not(:first)').map(function() {
+                return $(this).data('id');
+              }).get(),
+              floating: $('#cs-floating-blocks-items li:not(:first)').map(function() {
+                return $(this).data('id');
+              }).get(),
+              right: $('#cs-right-blocks-items li:not(:first)').map(function() {
+                return $(this).data('id');
+              }).get(),
+              bottom: $('#cs-bottom-blocks-items li:not(:first)').map(function() {
+                return $(this).data('id');
+              }).get()
+            }));
           });
-          return $('#cs-users-groups-list, #cs-users-groups-list-selected').disableSelection().sortable({
+          return $('#cs-users-groups-list, #cs-users-groups-list-selected').sortable({
             connectWith: '#cs-users-groups-list, #cs-users-groups-list-selected',
-            items: 'li:not(:first)',
-            cancel: ':first',
-            stop: function() {
-              var selected;
-              $('#cs-users-groups-list').find('.uk-alert-success').removeClass('uk-alert-success').addClass('uk-alert-warning');
-              selected = $('#cs-users-groups-list-selected');
-              selected.find('.uk-alert-warning').removeClass('uk-alert-warning').addClass('uk-alert-success');
-              return $('#cs-user-groups').val(JSON.stringify(selected.sortable('toArray')));
-            }
+            items: 'li:not(:first)'
+          }).on('sortupdate', function() {
+            var selected;
+            $('#cs-users-groups-list').find('.uk-alert-success').removeClass('uk-alert-success').addClass('uk-alert-warning');
+            selected = $('#cs-users-groups-list-selected');
+            selected.find('.uk-alert-warning').removeClass('uk-alert-warning').addClass('uk-alert-success');
+            return $('#cs-user-groups').val(JSON.stringify(selected.children('li:not(:first)').map(function() {
+              return $(this).data('id');
+            }).get()));
           });
         }
       }

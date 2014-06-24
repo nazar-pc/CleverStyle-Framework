@@ -181,19 +181,19 @@ $ ->
 						.find(':radio[value=0]')
 						.prop('checked', true)
 						.change()
-				$('#cs-users-search-columns').selectable
-					stop: ->
-						result	= []
-						li		= $(this).children('li')
-						li
-							.filter('.uk-button-primary:not(.ui-selected)')
-							.removeClass('uk-button-primary')
-						li
-							.filter('.ui-selected')
-							.addClass('uk-button-primary')
-							.each ->
-								result.push $(this).text().trim()
-						$('#cs-users-search-selected-columns').val(result.join(';'))
+				$('#cs-users-search-columns li').click ->
+					$this = $(@)
+					if $this.hasClass('uk-button-primary')
+						$this.removeClass('uk-button-primary')
+					else
+						$this.addClass('uk-button-primary')
+					$('#cs-users-search-selected-columns').val(
+						$this.parent().children('.uk-button-primary')
+							.map ->
+								$.trim(@.innerHTML)
+							.get()
+							.join(';')
+					)
 				$('#block_users_search')
 					.keyup (event) ->
 						if event.which != 13
@@ -227,28 +227,44 @@ $ ->
 					.keydown (event) ->
 						event.which != 13
 				$('#cs-top-blocks-items, #cs-left-blocks-items, #cs-floating-blocks-items, #cs-right-blocks-items, #cs-bottom-blocks-items')
-					.disableSelection()
 					.sortable
 						connectWith	: '.cs-blocks-items'
 						items		: 'li:not(:first)'
-						cancel		: ':first'
-						stop		: ->
+					.on(
+						'sortupdate'
+						->
 							$('#cs-blocks-position').val(
 								JSON.stringify(
-									top			: $('#cs-top-blocks-items').sortable('toArray')
-									left		: $('#cs-left-blocks-items').sortable('toArray')
-									floating	: $('#cs-floating-blocks-items').sortable('toArray')
-									right		: $('#cs-right-blocks-items').sortable('toArray')
-									bottom		: $('#cs-bottom-blocks-items').sortable('toArray')
+									top			: $('#cs-top-blocks-items li:not(:first)')
+										.map ->
+											$(@).data('id')
+										.get()
+									left		: $('#cs-left-blocks-items li:not(:first)')
+										.map ->
+											$(@).data('id')
+										.get()
+									floating	: $('#cs-floating-blocks-items li:not(:first)')
+										.map ->
+											$(@).data('id')
+										.get()
+									right		: $('#cs-right-blocks-items li:not(:first)')
+										.map ->
+											$(@).data('id')
+										.get()
+									bottom		: $('#cs-bottom-blocks-items li:not(:first)')
+										.map ->
+											$(@).data('id')
+										.get()
 								)
 							)
+					)
 				$('#cs-users-groups-list, #cs-users-groups-list-selected')
-					.disableSelection()
 					.sortable
 						connectWith	: '#cs-users-groups-list, #cs-users-groups-list-selected'
 						items		: 'li:not(:first)'
-						cancel		: ':first'
-						stop		: ->
+					.on(
+						'sortupdate'
+						->
 							$('#cs-users-groups-list')
 								.find('.uk-alert-success')
 								.removeClass('uk-alert-success')
@@ -260,8 +276,13 @@ $ ->
 								.addClass('uk-alert-success')
 							$('#cs-user-groups').val(
 								JSON.stringify(
-									selected.sortable('toArray')
+									selected
+										.children('li:not(:first)')
+										.map ->
+											$(@).data('id')
+										.get()
 								)
 							)
+					)
 	]
 	return

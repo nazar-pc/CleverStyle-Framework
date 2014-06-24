@@ -138,7 +138,6 @@ if (isset($_POST['mode'])) {
 				$blocks_array = [];
 				foreach ($_POST['position'] as $position => $items) {
 					foreach ($items as $item) {
-						$item = (int)substr($item, 5);
 						switch ($position) {
 							default:
 								$position = 'floating';

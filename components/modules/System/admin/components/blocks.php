@@ -474,8 +474,8 @@ if ($form) {
 					]
 				),
 				[
-					'id'	=> "block$id",
-					'class'	=> $block['active'] ? 'uk-button-success' : 'uk-button-default'
+					'data-id'	=> $id,
+					'class'		=> $block['active'] ? 'uk-button-success' : 'uk-button-default'
 				]
 			);
 			unset($block_data);
