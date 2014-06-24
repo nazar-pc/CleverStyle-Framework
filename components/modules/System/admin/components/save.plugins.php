@@ -37,6 +37,9 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 				);
 				unset($Cache->functionality);
 			}
+			if (file_exists(CACHE.'/classes_autoloading')) {
+				unlink(CACHE.'/classes_autoloading');
+			}
 		break;
 		case 'disable':
 			if (in_array($plugin, $Config->components['plugins'])) {
@@ -50,6 +53,9 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 					]
 				);
 				unset($Cache->functionality);
+			}
+			if (file_exists(CACHE.'/classes_autoloading')) {
+				unlink(CACHE.'/classes_autoloading');
 			}
 		break;
 		case 'update':
@@ -150,6 +156,9 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			}
 			$Index->save();
 			unset($Cache->functionality);
+			if (file_exists(CACHE.'/classes_autoloading')) {
+				unlink(CACHE.'/classes_autoloading');
+			}
 		break;
 		case 'remove':
 			if (in_array($plugin, $Config->components['plugins'])) {
