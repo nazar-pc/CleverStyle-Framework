@@ -23,6 +23,7 @@ Trigger::instance()->register(
 		$Cache				= Cache::instance();
 		if (
 			!FIXED_LANGUAGE &&
+			defined('HOME') &&
 			$_SERVER['REQUEST_METHOD'] == 'GET' &&
 			$Cache->cache_state() &&
 			Core::instance()->cache_engine != 'BlackHole'

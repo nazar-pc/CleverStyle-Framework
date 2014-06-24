@@ -78,8 +78,8 @@ class Index {
 				$permission_group,
 
 				$module				= false,
-				$api				= false,
-				$admin			= false,
+				$in_api				= false,
+				$in_admin			= false,
 				$request_method		= null,
 				$working_directory	= '';
 	/**
@@ -88,6 +88,7 @@ class Index {
 	function construct () {
 		$Config		= Config::instance();
 		$User		= User::instance();
+		$api		= defined('API') && API;
 		/**
 		 * If site is closed, user is not admin, and it is not request for sign in
 		 */
@@ -96,7 +97,7 @@ class Index {
 			!(
 				$User->admin() ||
 				(
-					API && $Config->route === ['user', 'sign_in']
+					$api && $Config->route === ['user', 'sign_in']
 				)
 			)
 		) {
@@ -114,15 +115,15 @@ class Index {
 			}
 			$this->working_directory = $admin_path;
 			$this->form		= true;
-			$this->admin = true;
-		} elseif (API && file_exists($api_path)) {
+			$this->in_admin = true;
+		} elseif ($api && file_exists($api_path)) {
 			if (!$User->get_permission($this->permission_group = 'api/'.MODULE, 'index')) {
 				error_code(403);
 				exit;
 			}
 			$this->working_directory = $api_path;
-			$this->api		= true;
-		} elseif (!ADMIN && !API && file_exists(MODULES.'/'.MODULE)) {
+			$this->in_api		= true;
+		} elseif (!ADMIN && !$api && file_exists(MODULES.'/'.MODULE)) {
 			if (!$User->get_permission($this->permission_group = MODULE, 'index')) {
 				error_code(403);
 				exit;
@@ -170,6 +171,7 @@ class Index {
 		$L			= Language::instance();
 		$Page		= Page::instance();
 		$User		= User::instance();
+		$api		= defined('API') && API;
 		/**
 		 * Some routing preparations
 		 */
@@ -212,13 +214,13 @@ class Index {
 				}
 				unset($item, $value, $subpart);
 			}
-		} elseif (API && !file_exists("$working_directory/index.php") && !file_exists("$working_directory/index.$this->request_method.php")) {
+		} elseif ($api && !file_exists("$working_directory/index.php") && !file_exists("$working_directory/index.$this->request_method.php")) {
 			error_code(404);
 			return;
 		}
 		unset($structure_file);
 		_include_once("$working_directory/index.php", false);
-		if (API && $this->request_method) {
+		if ($api && $this->request_method) {
 			_include_once("$working_directory/index.$this->request_method.php", false);
 		}
 		if ($this->stop || defined('ERROR_CODE')) {
@@ -226,7 +228,7 @@ class Index {
 		}
 		if ($this->parts) {
 			if (!isset($rc[0]) || $rc[0] == '') {
-				if (API) {
+				if ($api) {
 					return;
 				}
 				$rc[0] = $this->parts[0];
@@ -246,10 +248,10 @@ class Index {
 			if ($this->in_admin() && $this->title_auto) {
 				$Page->title($L->administration);
 			}
-			if (!$this->api && $this->title_auto) {
+			if (!$this->in_api && $this->title_auto) {
 				$Page->title($L->{HOME ? 'home' : MODULE});
 			}
-			if (!$this->api) {
+			if (!$this->in_api) {
 				if (!HOME && $this->title_auto) {
 					$Page->title($L->$rc[0]);
 				}
@@ -261,7 +263,7 @@ class Index {
 				$Page->warning(get_core_ml_text('closed_title'));
 			}
 			_include_once("$working_directory/$rc[0].php", false);
-			if (API && $this->request_method) {
+			if ($api && $this->request_method) {
 				_include_once("$working_directory/$rc[0].$this->request_method.php", false);
 			}
 			if ($this->stop || defined('ERROR_CODE')) {
@@ -269,7 +271,7 @@ class Index {
 			}
 			if ($this->subparts) {
 				if (!isset($rc[1]) || ($rc[1] == '' && !empty($this->subparts))) {
-					if (API) {
+					if ($api) {
 						return;
 					}
 					$rc[1] = $this->subparts[0];
@@ -277,7 +279,7 @@ class Index {
 					error_code(404);
 					return;
 				}
-				if (!$this->api) {
+				if (!$this->in_api) {
 					if (!HOME && $this->title_auto) {
 						$Page->title($L->$rc[1]);
 					}
@@ -286,24 +288,24 @@ class Index {
 					}
 				}
 				_include_once("$working_directory/$rc[0]/$rc[1].php", false);
-				if (API && $this->request_method) {
+				if ($api && $this->request_method) {
 					_include_once("$working_directory/$rc[0]/$rc[1].$this->request_method.php", false);
 				}
 				if ($this->stop || defined('ERROR_CODE')) {
 					return;
 				}
-			} elseif (!$this->api && $this->action === null) {
+			} elseif (!$this->in_api && $this->action === null) {
 				$this->action = ($this->in_admin() ? 'admin/' : '').MODULE."/$rc[0]";
 			}
 			unset($rc);
 			if ($this->post_title && $this->title_auto) {
 				$Page->title($this->post_title);
 			}
-		} elseif (!$this->api) {
+		} elseif (!$this->in_api) {
 			if ($this->in_admin()) {
 				$Page->title($L->administration);
 			}
-			if (!$this->api && $this->title_auto) {
+			if (!$this->in_api && $this->title_auto) {
 				$Page->title($L->{HOME ? 'home' : MODULE});
 			}
 			if ($this->action === null) {
@@ -429,7 +431,7 @@ class Index {
 		$Config	= Config::instance();
 		$L		= Language::instance();
 		$Page	= Page::instance();
-		if ($this->api) {
+		if ($this->in_api) {
 			$Page->content($this->Content);
 			return;
 		}
@@ -641,7 +643,7 @@ class Index {
 	 * @return bool
 	 */
 	function in_admin () {
-		return $this->admin;
+		return $this->in_admin;
 	}
 	/**
 	 * Executes plugins processing, blocks and module page generation
@@ -654,6 +656,7 @@ class Index {
 		$finished	= true;
 		$Config		= Config::instance();
 		$Page		= Page::instance();
+		$api		= defined('API') && API;
 		/**
 		 * If site is closed, user is not admin, and it is not request for sign in
 		 */
@@ -662,7 +665,7 @@ class Index {
 			!(
 				User::instance()->admin() ||
 				(
-					API && $Config->route === ['user', 'sign_in']
+					$api && $Config->route === ['user', 'sign_in']
 				)
 			)
 		) {
@@ -673,7 +676,7 @@ class Index {
 			$Page->error();
 		}
 		Trigger::instance()->run('System/Index/preload');
-		if (!$this->in_admin() && !$this->api && file_exists(MODULES.'/'.MODULE.'/index.html')) {
+		if (!$this->in_admin() && !$this->in_api && defined('MODULE') && file_exists(MODULES.'/'.MODULE.'/index.html')) {
 			ob_start();
 			_include(MODULES.'/'.MODULE.'/index.html', false, false);
 			$Page->content(ob_get_clean());
@@ -690,7 +693,7 @@ class Index {
 			if (
 				_getcookie('sign_out') &&
 				!(
-					API &&
+					$api &&
 					MODULE == 'System' &&
 					$Config->route == ['user', 'sign_out']
 				)
@@ -704,7 +707,7 @@ class Index {
 		} elseif (
 			_getcookie('sign_out') &&
 			!(
-				API &&
+				$api &&
 				MODULE == 'System' &&
 				$Config->route == ['user', 'sign_out']
 			)
