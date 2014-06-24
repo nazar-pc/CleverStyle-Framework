@@ -9,23 +9,10 @@
 
 
 (function() {
-  var L, value_by_name,
+  var L,
     __hasProp = {}.hasOwnProperty;
 
   L = cs.Language;
-
-  /**
-   * Get value by name
-   *
-   * @param {string}	name
-   *
-   * @return {string}
-  */
-
-
-  value_by_name = function(name) {
-    return document.getElementsByName(name).item(0).value;
-  };
 
   /**
    * Adds method for symbol replacing at specified position
@@ -48,138 +35,6 @@
 
   cs.debug_window = function() {
     return $('#cs-debug').cs().modal('show');
-  };
-
-  /**
-   * Cache cleaning
-   *
-   * @param 			element
-   * @param {string}	action
-  */
-
-
-  cs.admin_cache = function(element, action, partial_path) {
-    $(element).html("<div class=\"uk-progress uk-progress-striped uk-active\">\n	<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n</div>");
-    $.ajax({
-      url: action,
-      data: {
-        partial_path: partial_path
-      },
-      success: function(result) {
-        return $(element).html(result);
-      }
-    });
-  };
-
-  /**
-   * Send request for db connection testing
-   *
-   * @param {string}	url
-   * @param {bool}	added
-  */
-
-
-  cs.db_test = function(url, added) {
-    var db_test;
-    db_test = $('#cs-db-test');
-    db_test.find('h3 + *').replaceWith("<div class=\"uk-progress uk-progress-striped uk-active\">\n	<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n</div>");
-    db_test.cs().modal('show');
-    if (added) {
-      return $.ajax({
-        url: url,
-        success: function(result) {
-          return db_test.find('h3 + *').replaceWith(result);
-        },
-        error: function() {
-          return db_test.find('h3 + *').replaceWith('<p class="cs-test-result">' + L.failed + '</p>');
-        }
-      });
-    } else {
-      return $.ajax({
-        url: url,
-        data: {
-          db: {
-            type: value_by_name('db[type]'),
-            name: value_by_name('db[name]'),
-            user: value_by_name('db[user]'),
-            password: value_by_name('db[password]'),
-            host: value_by_name('db[host]'),
-            charset: value_by_name('db[charset]')
-          }
-        },
-        success: function(result) {
-          return db_test.find('h3 + *').replaceWith(result);
-        },
-        error: function() {
-          return db_test.find('h3 + *').replaceWith('<p class="cs-test-result">' + L.failed + '</p>');
-        }
-      });
-    }
-  };
-
-  /**
-   * Send request for storage connection testing
-   *
-   * @param {string}	url
-   * @param {bool}	added
-  */
-
-
-  cs.storage_test = function(url, added) {
-    var storage_test;
-    storage_test = $('#cs-storage-test');
-    storage_test.find('h3 + *').replaceWith("<div class=\"uk-progress uk-progress-striped uk-active\">\n	<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n</div>");
-    storage_test.cs().modal('show');
-    if (added) {
-      return $.ajax({
-        url: url,
-        success: function(result) {
-          return storage_test.find('h3 + *').replaceWith(result);
-        },
-        error: function() {
-          return storage_test.find('h3 + *').replaceWith('<p class="cs-test-result">' + L.failed + '</p>');
-        }
-      });
-    } else {
-      return $.ajax({
-        url: url,
-        data: {
-          storage: {
-            url: value_by_name('storage[url]'),
-            host: value_by_name('storage[host]'),
-            connection: value_by_name('storage[connection]'),
-            user: value_by_name('storage[user]'),
-            password: value_by_name('storage[password]')
-          }
-        },
-        success: function(result) {
-          return storage_test.find('h3 + *').replaceWith(result);
-        },
-        error: function() {
-          return storage_test.find('h3 + *').replaceWith('<p class="cs-test-result">' + L.failed + '</p>');
-        }
-      });
-    }
-  };
-
-  /**
-   * Toggling of blocks group in admin page
-   *
-   * @param {string}	position
-  */
-
-
-  cs.blocks_toggle = function(position) {
-    var container, items;
-    container = $("#cs-" + position + "-blocks-items");
-    items = container.children('li:not(:first)');
-    if (container.data('mode') === 'open') {
-      items.slideUp('fast');
-      container.data('mode', 'close');
-    } else {
-      items.slideDown('fast');
-      container.data('mode', 'open');
-    }
   };
 
   /**
@@ -415,24 +270,6 @@
         }
       }
     });
-  };
-
-  /**
-   * For textarea in blocks editing
-   *
-   * @param item
-  */
-
-
-  cs.block_switch_textarea = function(item) {
-    $('#cs-block-content-html, #cs-block-content-raw-html').hide();
-    switch ($(item).val()) {
-      case 'html':
-        $('#cs-block-content-html').show();
-        break;
-      case 'raw_html':
-        $('#cs-block-content-raw-html').show();
-    }
   };
 
   /**

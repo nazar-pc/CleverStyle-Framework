@@ -1,0 +1,6 @@
+{
+	"admin/System"	: [
+		"general.js",
+		"functions.js"
+	]
+}
