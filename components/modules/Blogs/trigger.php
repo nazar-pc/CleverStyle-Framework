@@ -13,7 +13,7 @@ Trigger::instance()
 		function ($data) {
 			$rc = explode('/', $data['rc']);
 			$L  = Language::instance();
-			if ($rc[0] != 'Blogs' && $rc[0] != $L->Blogs) {
+			if ($rc[0] != 'Blogs' && $rc[0] != path($L->Blogs)) {
 				return;
 			}
 			$rc[0] = 'Blogs';

@@ -19,7 +19,7 @@ Trigger::instance()
 		function ($data) {
 			$rc = explode('/', $data['rc']);
 			$L  = Language::instance();
-			if ($rc[0] != 'Photo_gallery' && $rc[0] != $L->Photo_gallery) {
+			if ($rc[0] != 'Photo_gallery' && $rc[0] != path($L->Photo_gallery)) {
 				return;
 			}
 			$rc[0] = 'Photo_gallery';
