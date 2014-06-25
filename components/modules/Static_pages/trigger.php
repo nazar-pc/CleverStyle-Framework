@@ -22,7 +22,9 @@ Trigger::instance()
 				case 'api':
 					return;
 				case 'Static_pages':
-					$rc = ['index'];
+					if (!isset($rc[1])) {
+						$rc = ['index'];
+					}
 			}
 			$Static_pages			= Static_pages::instance();
 			$structure				= $Static_pages->get_structure();
