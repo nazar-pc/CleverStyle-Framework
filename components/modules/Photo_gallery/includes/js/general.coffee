@@ -37,11 +37,6 @@ $ ->
 			scrollTop	: $('.cs-photo-gallery-images').offset().top - $(document).height() * .1
 		$(document).on(
 			'click',
-			'.cs-photo-gallery-image-edit'
-			->
-				location.href	= location.href + '/' + $(this).data('image')
-		).on(
-			'click',
 			'.cs-photo-gallery-image-delete'
 			->
 				if confirm L.photo_gallery_sure_to_delete_image

@@ -43,9 +43,7 @@
       $('html, body').stop().animate({
         scrollTop: $('.cs-photo-gallery-images').offset().top - $(document).height() * .1
       });
-      $(document).on('click', '.cs-photo-gallery-image-edit', function() {
-        return location.href = location.href + '/' + $(this).data('image');
-      }).on('click', '.cs-photo-gallery-image-delete', function() {
+      $(document).on('click', '.cs-photo-gallery-image-delete', function() {
         if (confirm(L.photo_gallery_sure_to_delete_image)) {
           return $.ajax('api/Photo_gallery/images/' + $(this).data('image'), {
             cache: false,
