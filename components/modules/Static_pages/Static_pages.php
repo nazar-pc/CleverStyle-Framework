@@ -14,6 +14,9 @@ use			cs\DB\Accessor,
 			cs\Language,
 			cs\Text;
 
+/**
+ * @method static Static_pages instance($check = false)
+ */
 class Static_pages {
 	use	Accessor,
 		Singleton;

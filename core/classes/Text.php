@@ -7,6 +7,9 @@
  */
 namespace cs;
 
+/**
+ * @method static Text instance($check = false)
+ */
 class Text {
 	use Singleton;
 

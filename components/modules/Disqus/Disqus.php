@@ -11,6 +11,10 @@ use			h,
 			cs\Config,
 			cs\Page,
 			cs\Singleton;
+
+/**
+ * @method static Disqus instance($check = false)
+ */
 class Disqus {
 	use	Singleton;
 
@@ -51,7 +55,9 @@ class Disqus {
 			"disqus_count_items.push('".str_replace("'", "\'", "$this->module/$item")."');",
 			'code'
 		);
-		return h::{"span.cs-disqus-comments-count[data-identifier=$this->module/$item]"}();
+		return h::{'span.cs-disqus-comments-count'}([
+			'data-identifier'=> "$this->module/$item"
+		]);
 	}
 	/**
 	 * Get comments block with comments tree and comments sending form

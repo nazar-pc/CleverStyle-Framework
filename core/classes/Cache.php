@@ -8,6 +8,9 @@
 namespace	cs;
 use			Closure;
 
+/**
+ * @method static Cache instance($check = false)
+ */
 class Cache {
 	use Singleton;
 

@@ -7,6 +7,9 @@
  */
 namespace cs;
 
+/**
+ * @method static Storage instance($check = false)
+ */
 class Storage {
 	use	Singleton;
 

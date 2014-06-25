@@ -7,6 +7,9 @@
  */
 namespace cs;
 
+/**
+ * @method static Key instance($check = false)
+ */
 class Key {
 	use	Singleton;
 

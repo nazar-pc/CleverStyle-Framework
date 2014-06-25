@@ -11,6 +11,8 @@ use			Closure;
  * Trigger class
  *
  * Provides triggers registering and running.
+ *
+ * @method static Trigger instance($check = false)
  */
 class Trigger {
 	use Singleton;

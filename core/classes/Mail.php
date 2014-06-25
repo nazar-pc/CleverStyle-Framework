@@ -9,6 +9,9 @@ namespace	cs;
 use			h,
 			PHPMailer;
 
+/**
+ * @method static Mail instance($check = false)
+ */
 class Mail extends PHPMailer {
 	use Singleton;
 

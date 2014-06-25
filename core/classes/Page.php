@@ -15,6 +15,8 @@ use			h;
  *  ['key'	=> &$key]		//Reference to the key, that will be appended to all css and js files, can be changed to reflect JavaScript and CSS changes
  *  System/Page/external_sign_in_list
  *  ['list'	=> &$list]		//Reference to the list of external sign in systems
+ *
+ * @method static Page instance($check = false)
  */
 class Page {
 	use	Singleton;

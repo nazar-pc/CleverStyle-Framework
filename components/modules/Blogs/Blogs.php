@@ -16,6 +16,9 @@ use			cs\Trigger,
 			cs\DB\Accessor,
 			cs\Singleton;
 
+/**
+ * @method static Blogs instance($check = false)
+ */
 class Blogs {
 	use Accessor,
 		Singleton;

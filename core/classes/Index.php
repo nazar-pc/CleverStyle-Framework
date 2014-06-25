@@ -27,6 +27,8 @@ use			h;
  *  System/Index/preload
  *
  *  System/Index/postload
+ *
+ * @method static Index instance($check = false)
  */
 class Index {
 	use	Singleton;

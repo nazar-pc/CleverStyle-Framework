@@ -12,6 +12,9 @@ use			cs\Config,
 			cs\CRUD,
 			cs\Singleton;
 
+/**
+ * @method static Deferred_tasks instance($check = false)
+ */
 class Deferred_tasks {
 	use			Singleton,
 				CRUD;

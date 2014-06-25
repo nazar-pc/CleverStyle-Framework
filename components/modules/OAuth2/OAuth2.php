@@ -13,6 +13,9 @@ use			cs\Cache\Prefix,
 			cs\DB\Accessor,
 			cs\Singleton;
 
+/**
+ * @method static OAuth2 instance($check = false)
+ */
 class OAuth2 {
 	use	Accessor,
 		Singleton;

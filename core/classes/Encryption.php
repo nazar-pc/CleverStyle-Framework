@@ -6,10 +6,12 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-use			h;
+
 /**
  * Encryption class.
  * Provides encryption and decryption functionality
+ *
+ * @method static Encryption instance($check = false)
  */
 class Encryption {
 	use Singleton;

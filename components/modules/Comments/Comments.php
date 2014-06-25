@@ -14,6 +14,10 @@ use			cs\DB\Accessor,
 			cs\Language,
 			cs\User,
 			cs\Singleton;
+
+/**
+ * @method static Comments instance($check = false)
+ */
 class Comments {
 	use	Accessor,
 		Singleton;
