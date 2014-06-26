@@ -24,7 +24,7 @@ $ ->
 							alert L.photo_gallery_images_not_supported
 						if files.length != result.length
 							alert L.photo_gallery_some_images_not_supported
-						location.href	= location.href + '/' + result.join(',')
+						location.href	= 'Photo_gallery/edit_images/' + result.join(',')
 				)
 			(error) ->
 				alert error.message

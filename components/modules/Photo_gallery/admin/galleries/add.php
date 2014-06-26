@@ -30,8 +30,8 @@ $Index->content(
 			($Config->core['simple_admin_mode'] ? false : h::info('photo_gallery_gallery_path')),
 			$L->photo_gallery_gallery_description,
 			$L->state,
-			$L->photo_gallery_gallery_preview_image
-		),
+			$L->photo_gallery_gallery_start_from
+		).
 		h::{'tbody tr td'}(
 			h::{'input[name=add[title]]'}(),
 			($Config->core['simple_admin_mode'] ? false : h::{'input[name=add[path]]'}()),
@@ -42,7 +42,7 @@ $Index->content(
 			]),
 			h::{'input[type=radio][name=add[preview_image]][checked=last]'}([
 				'value'	=> ['first', 'last'],
-				'in'	=> [$L->photo_gallery_first, $L->photo_gallery_last]
+				'in'	=> [$L->photo_gallery_first_uploaded, $L->photo_gallery_last_uploaded]
 			])
 		)
 	)

@@ -14,7 +14,7 @@ use			h,
 			cs\Language,
 			cs\Page;
 $Config						= Config::instance();
-$gallery					= Photo_gallery::instance()->get_gallery($Config->route[1]);
+$gallery					= Photo_gallery::instance()->get_gallery($Config->route[2]);
 $Index						= Index::instance();
 $L							= Language::instance();
 Page::instance()->title($L->photo_gallery_editing_of_gallery($gallery['title']));
@@ -31,14 +31,14 @@ $Index->content(
 			($Config->core['simple_admin_mode'] ? false : h::info('photo_gallery_gallery_path')),
 			$L->photo_gallery_gallery_description,
 			$L->state,
-			$L->photo_gallery_gallery_preview_image
-		),
+			$L->photo_gallery_gallery_start_from
+		).
 		h::{'tbody tr td'}(
 			h::{'input[name=edit[title]]'}([
-				$gallery['title']
+				'value'	=> $gallery['title']
 			]),
 			($Config->core['simple_admin_mode'] ? false : h::{'input[name=edit[path]]'}([
-				$gallery['path']
+				'value'	=> $gallery['path']
 			])),
 			h::{'textarea[name=edit[description]]'}($gallery['description']),
 			h::{'input[type=radio][name=edit[active]]'}([
@@ -48,8 +48,8 @@ $Index->content(
 			]),
 			h::{'input[type=radio][name=edit[preview_image]]'}([
 				'value'		=> ['first', 'last'],
-				'in'		=> [$L->photo_gallery_first, $L->photo_gallery_last],
-				'checked'	=> $gallery['first']
+				'in'		=> [$L->photo_gallery_first_uploaded, $L->photo_gallery_last_uploaded],
+				'checked'	=> $gallery['preview_image']
 			])
 		)
 	).

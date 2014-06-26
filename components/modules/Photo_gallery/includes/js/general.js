@@ -31,7 +31,7 @@
             if (files.length !== result.length) {
               alert(L.photo_gallery_some_images_not_supported);
             }
-            return location.href = location.href + '/' + result.join(',');
+            return location.href = 'Photo_gallery/edit_images/' + result.join(',');
           }
         });
       }, function(error) {

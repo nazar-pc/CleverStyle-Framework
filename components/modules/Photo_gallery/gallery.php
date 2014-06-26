@@ -50,32 +50,35 @@ if ($images_titles) {
 }
 unset($images_titles);
 $User   = User::instance();
-$module = $L->Photo_gallery;
+$module = path($L->Photo_gallery);
+$Page->canonical_url("{$Config->base_url()}/$module/$gallery[path]");
 $Index->content(
 	h::{'section.cs-photo-gallery-images.fotorama'}(
 		h::div(array_map(
-			function ($image) use ($Config, $L, $User, $gallery, $module) {
-				return [
-					(
-						$User->admin() || $image['user'] == $User->id ? h::{'a.cs-photo-gallery-image-control'}(
+			function ($image) use ($L, $User) {
+				$controls = '';
+				if ($User->admin() || $image['user'] == $User->id) {
+					$controls = h::{'a.cs-photo-gallery-image-control'}(
+						[
+							'&nbsp;'.h::icon('pencil'),
 							[
-								'&nbsp;'.h::icon('pencil'),
-								[
-									'href'       => "{$Config->server['relative_address']}/$image[id]",
-									'data-title' => $L->edit,
-									'data-image' => $image['id']
-								]
-							],
-							[
-								'&nbsp;'.h::icon('trash-o'),
-								[
-									'data-title' => $L->delete,
-									'class'      => 'cs-photo-gallery-image-delete',
-									'data-image' => $image['id']
-								]
+								'href'       => "Photo_gallery/edit_images/$image[id]",
+								'data-title' => $L->edit,
+								'data-image' => $image['id']
 							]
-						) : ''
-					),
+						],
+						[
+							'&nbsp;'.h::icon('trash-o'),
+							[
+								'data-title' => $L->delete,
+								'class'      => 'cs-photo-gallery-image-delete',
+								'data-image' => $image['id']
+							]
+						]
+					);
+				}
+				return [
+					$controls,
 					[
 						'data-caption' => $image['title'] ?: false,
 						'data-img'     => $image['original'],

@@ -23,20 +23,18 @@ Trigger::instance()
 				return;
 			}
 			$rc[0] = 'Photo_gallery';
-			if (isset($rc[1]) && $rc[1] != 'gallery' && !isset($rc[2])) {
-				$rc[2]         = $rc[1];
-				$rc[1]         = 'gallery';
-				$Photo_gallery = Photo_gallery::instance();
-				$galleries     = $Photo_gallery->get_galleries_list();
-				if (!isset($galleries[$rc[2]])) {
-					error_code(404);
-					return;
+			if (isset($rc[1]) && !in_array($rc[1], ['gallery', 'edit_image'])) {
+				if (!isset($rc[2])) {
+					$rc[2]         = $rc[1];
+					$rc[1]         = 'gallery';
+					$Photo_gallery = Photo_gallery::instance();
+					$galleries     = $Photo_gallery->get_galleries_list();
+					if (!isset($galleries[$rc[2]])) {
+						error_code(404);
+						return;
+					}
+					$rc[2] = $galleries[$rc[2]];
 				}
-				$rc[2] = $galleries[$rc[2]];
-			} elseif (isset($rc[3])) {
-				$rc[1] = 'edit_images';
-				$rc[2] = $rc[3];
-				unset($rc[3]);
 			}
 			$data['rc'] = implode('/', $rc);
 		}
