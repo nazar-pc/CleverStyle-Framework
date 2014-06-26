@@ -56,7 +56,7 @@ class Trigger {
 			return true;
 		}
 		if (!$this->initialized) {
-			$modules = array_keys(Config::instance()->components['modules']);
+			$modules = get_files_list(MODULES, false, 'd');
 			foreach ($modules as $module) {
 				_include_once(MODULES.'/'.$module.'/trigger.php', false);
 			}
