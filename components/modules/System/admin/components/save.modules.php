@@ -25,6 +25,7 @@
  *  ['name'	=> <i>module_name</i>]
  */
 namespace	cs;
+use h;
 $Cache		= Cache::instance();
 $Config		= Config::instance();
 $Core		= Core::instance();
@@ -121,7 +122,19 @@ if (isset($_POST['update_modules_list'])) {
 			if (isset($_POST['storage']) && is_array($_POST['storage'])) {
 				$module_data['storage'] = $_POST['storage'];
 			}
-			$a->save();
+			if ($a->save()) {
+				$Page->notice(
+					h::{'p.cs-center'}(
+						"$L->module_installed_but_not_enabled ".
+						h::{'a.cs-button'}(
+							$L->enable_module($module_name),
+							[
+								'href'	=> "admin/System/components/modules/enable/$module_name"
+							]
+						)
+					)
+				);
+			}
 			clean_pcache();
 			unset($Cache->functionality);
 			if (file_exists(CACHE.'/classes_autoloading')) {

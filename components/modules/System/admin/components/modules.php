@@ -709,10 +709,10 @@ foreach ($Config->components['modules'] as $module_name => &$module_data) {
 			}
 			if ($module_name != $Config->core['default_module']) {
 				$action		.= h::{'a.cs-button-compact'}(
-					h::icon($module_data['active'] == 1 ? 'minus' : 'check'),
+					$module_data['active'] == 1 ? h::icon('minus') : h::icon('check')." $L->enable",
 					[
 						'href'			=> $a->action.($module_data['active'] == 1 ? '/disable/' : '/enable/').$module_name,
-						'data-title'	=> $module_data['active'] == 1 ? $L->disable : $L->enable
+						'data-title'	=> $module_data['active'] == 1 ? $L->disable : false
 					]
 				).
 				h::{'a.cs-button-compact'}(
@@ -729,10 +729,9 @@ foreach ($Config->components['modules'] as $module_name => &$module_data) {
 	 */
 	} else {
 		$action .= h::{'a.cs-button-compact'}(
-			h::icon('download'),
+			h::icon('download')." $L->install",
 			[
-				'href'			=> "$a->action/install/$module_name",
-				'data-title'	=> $L->install
+				'href'			=> "$a->action/install/$module_name"
 			]
 		);
 	}

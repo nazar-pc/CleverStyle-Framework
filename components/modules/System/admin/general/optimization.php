@@ -29,7 +29,8 @@ Index::instance()->content(
 		],
 		[
 			h::{'input[style=width:auto;]'}([
-				'placeholder'	=> $L->partial_cache_cleaning
+				'placeholder'	=> $L->partial_cache_cleaning,
+				'style'			=> $Config->core['simple_admin_mode'] ? 'display:none;' : false
 			]).
 			h::button(
 				$L->clean_settings_cache,
