@@ -32,30 +32,6 @@ $ ->
 				L[key] arguments[1]
 			return
 		->
-			$('form:not(.cs-no-ui)').addClass('uk-form')
-		->
-			$('input:radio:not(.cs-no-ui)').cs().radio()
-		->
-			$('input:checkbox:not(.cs-no-ui)').cs().checkbox()
-		->
-			$('.cs-table').addClass('uk-table uk-table-condensed uk-table-hover')
-		->
-			$(':button:not(.cs-no-ui), .cs-button, .cs-button-compact')
-				.addClass('uk-button')
-				.disableSelection()
-		->
-			$('textarea:not(.cs-no-ui)')
-				.not('.cs-no-resize, .EDITOR, .SIMPLE_EDITOR')
-				.autosize
-					append	: "\n"
-		->
-			$('.SIMPLEST_INLINE_EDITOR')
-				.prop('contenteditable', true)
-		->
-			$('[data-title]').cs().tooltip()
-		->
-			$('.cs-tabs').cs().tabs()
-		->
 			$('.cs-header-sign-in-slide').click ->
 				$('.cs-header-guest-form').hide('medium')
 				$('.cs-header-sign-in-form').show('medium')

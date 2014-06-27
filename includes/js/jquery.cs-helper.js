@@ -9,9 +9,8 @@
 
 
 (function() {
-  var __hasProp = {}.hasOwnProperty;
 
-  (function($) {
+  (function($, UI) {
     var helpers;
     helpers = {
       /**
@@ -21,33 +20,17 @@
       */
 
       radio: function() {
-        var collection;
         if (!this.length) {
           return this;
         }
-        collection = [];
-        this.each(function() {
+        return this.each(function() {
           var radio;
           radio = $(this);
           if (!radio.is(':radio')) {
             radio = radio.find(':radio');
           }
-          return collection.push(radio.parent().parent().get());
+          return radio.parent().parent().addClass('uk-button-group').attr('data-uk-button-radio', '').children('label').addClass('uk-button').find(':radio').filter(':checked').parent().addClass('uk-active');
         });
-        collection = $($.unique(collection));
-        collection.each(function() {
-          return $(this).addClass('uk-button-group').attr('data-uk-button-radio', '').children('label').addClass('uk-button').click(function() {
-            return $(this).find(':radio').prop('checked', true).change();
-          }).find(':radio').change(function() {
-            var $this;
-            $this = $(this);
-            if (!$this.is(':checked')) {
-              return;
-            }
-            return $this.parent().parent().children('.uk-active').removeClass('uk-active').end().end().addClass('uk-active');
-          }).filter(':checked').parent().addClass('uk-active');
-        });
-        return this;
       },
       /**
       		 * Checkboxes with UIkit
@@ -56,33 +39,17 @@
       */
 
       checkbox: function() {
-        var collection;
         if (!this.length) {
           return this;
         }
-        collection = [];
-        this.each(function() {
+        return this.each(function() {
           var checkbox;
           checkbox = $(this);
           if (!checkbox.is(':checkbox')) {
             checkbox = checkbox.find(':checkbox');
           }
-          return collection.push(checkbox.parent().parent().get());
+          return checkbox.parent().parent().attr('data-uk-button-checkbox', '').children('label').addClass('uk-button').find(':checkbox').filter(':checked').parent().addClass('uk-active');
         });
-        collection = $($.unique(collection));
-        collection.each(function() {
-          return $(this).addClass('uk-button-group').attr('data-uk-button-checkbox', '').children('label').addClass('uk-button').click(function() {
-            return $(this).find(':radio:not(:checked)').prop('checked', true).change();
-          }).find(':checkbox').change(function() {
-            var $this;
-            $this = $(this);
-            if (!$this.is(':checked')) {
-              return;
-            }
-            return $this.parent().parent().children('.uk-active').removeClass('uk-active').end().end().addClass('uk-active');
-          }).filter(':checked').parent().addClass('uk-active');
-        });
-        return this;
       },
       /**
       		 * Tabs with UIkit
@@ -91,11 +58,9 @@
       */
 
       tabs: function() {
-        var UI;
         if (!this.length) {
           return this;
         }
-        UI = $.UIkit;
         return this.each(function() {
           var $this, content;
           $this = $(this);
@@ -146,11 +111,9 @@
       */
 
       modal: function(mode) {
-        var UI;
         if (!this.length) {
           return this;
         }
-        UI = $.UIkit;
         mode = mode || 'init';
         return this.each(function() {
           var $this, content, modal;
@@ -190,21 +153,15 @@
     */
 
     $.fn.cs = function(name, helper) {
-      var key, method, public_helpers, this_;
+      var func, public_helpers;
       if (name && helper) {
         helpers[name] = helper;
         return this;
       }
       public_helpers = {};
-      this_ = this;
-      for (key in helpers) {
-        if (!__hasProp.call(helpers, key)) continue;
-        method = helpers[key];
-        public_helpers[key] = (function(method) {
-          return function() {
-            return method.apply(this_, arguments);
-          };
-        })(method);
+      for (name in helpers) {
+        func = helpers[name];
+        public_helpers[name] = func.bind(this);
       }
       return public_helpers;
     };
@@ -229,6 +186,6 @@
         });
       }
     };
-  })(jQuery);
+  })(jQuery, jQuery.UIkit);
 
 }).call(this);

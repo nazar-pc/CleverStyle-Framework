@@ -4,7 +4,7 @@
  * @copyright	Copyright (c) 2013-2014, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
 ###
-do ($=jQuery) ->
+do ($=jQuery, UI = jQuery.UIkit) ->
 	helpers	=
 		###*
 		 * Radio buttons with UIkit
@@ -12,88 +12,50 @@ do ($=jQuery) ->
 		 * Required DOM structure * > label > input:radio, plugin may be applied to any of these elements
 		###
 		radio			: ->
-			if !this.length
-				return this
-			collection	= []
-			this.each ->
+			if !@.length
+				return @
+			@.each ->
 				radio	= $(@)
 				if !radio.is(':radio')
 					radio	= radio.find(':radio')
-				collection.push(radio.parent().parent().get())
-			collection	= $($.unique(collection))
-			collection.each ->
-				$(@)
+				radio.parent().parent()
 					.addClass('uk-button-group')
 					.attr('data-uk-button-radio', '')
 					.children('label')
 						.addClass('uk-button')
-						.click ->
-							$(@).find(':radio').prop('checked', true).change()
 						.find(':radio')
-							.change ->
-								$this	= $(@)
-								if !$this.is(':checked')
-									return
-								$this.parent()
-									.parent()
-										.children('.uk-active')
-											.removeClass('uk-active')
-											.end()
-										.end()
-									.addClass('uk-active')
 							.filter(':checked')
 							.parent()
 								.addClass('uk-active')
-			this
 		###*
 		 * Checkboxes with UIkit
 		 *
 		 * Required DOM structure * > label > input:checkbox, plugin may be applied to any of these elements
 		###
 		checkbox		: ->
-			if !this.length
-				return this
-			collection	= []
-			this.each ->
+			if !@.length
+				return @
+			@.each ->
 				checkbox	= $(@)
 				if !checkbox.is(':checkbox')
 					checkbox	= checkbox.find(':checkbox')
-				collection.push(checkbox.parent().parent().get())
-			collection	= $($.unique(collection))
-			collection.each ->
-				$(@)
-					.addClass('uk-button-group')
+				checkbox.parent().parent()
 					.attr('data-uk-button-checkbox', '')
 					.children('label')
 						.addClass('uk-button')
-						.click ->
-							$(@).find(':radio:not(:checked)').prop('checked', true).change()
 						.find(':checkbox')
-							.change ->
-								$this	= $(@)
-								if !$this.is(':checked')
-									return
-								$this.parent()
-									.parent()
-										.children('.uk-active')
-											.removeClass('uk-active')
-											.end()
-										.end()
-									.addClass('uk-active')
 							.filter(':checked')
 							.parent()
 								.addClass('uk-active')
-			this
 		###*
 		 * Tabs with UIkit
 		 *
 		 * Required DOM structure *+*, where first element contains list of tabs, and second element content of each tab, plugin must be applied to the first element
 		###
 		tabs			: ->
-			if !this.length
-				return this
-			UI	= $.UIkit
-			this.each ->
+			if !@.length
+				return @
+			@.each ->
 				$this	= $(@)
 				content	= $this.next()
 				$this
@@ -102,7 +64,8 @@ do ($=jQuery) ->
 					.children()
 						.each ->
 							li	= $(@)
-							if !li.children('a').length then li.wrapInner('<a />')
+							if !li.children('a').length
+								li.wrapInner('<a />')
 						.first()
 							.addClass('uk-active')
 				$this
@@ -119,9 +82,9 @@ do ($=jQuery) ->
 		 * Required title or data-title attribute with some content, optionally support data-pos attribute with desired position of tooltip
 		###
 		tooltip		: ->
-			if !this.length
-				return this
-			this.each ->
+			if !@.length
+				return @
+			@.each ->
 				$this	= $(@)
 				if !$this.attr('title')
 					$this
@@ -144,11 +107,10 @@ do ($=jQuery) ->
 		 * If child element is not present - content will be automatically wrapped with <div>
 		###
 		modal			: (mode) ->
-			if !this.length
-				return this
-			UI		= $.UIkit
+			if !@.length
+				return @
 			mode	= mode || 'init'
-			this.each ->
+			@.each ->
 				$this	= $(@)
 				if !$this.data('modal')
 					content	= $this.children()
@@ -186,12 +148,10 @@ do ($=jQuery) ->
 	$.fn.cs	= (name, helper) ->
 		if name && helper
 			helpers[name]	= helper
-			return this
+			return @
 		public_helpers		= {}
-		this_				= this
-		public_helpers[key]	= (do (method) ->
-			-> method.apply this_, arguments
-		) for own key, method of helpers
+		for name, func of helpers
+			public_helpers[name] = func.bind(@)
 		public_helpers
 	$.cs	=
 		###*
