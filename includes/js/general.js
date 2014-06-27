@@ -46,7 +46,7 @@
       return L[key].toString();
     };
     L.format = function(key) {
-      return L[key](arguments[1]);
+      return vsprintf(L[key].toString(), Array.prototype.slice.call(arguments, 1));
     };
     $('.cs-header-sign-in-slide').click(function() {
       $('.cs-header-guest-form').hide('medium');

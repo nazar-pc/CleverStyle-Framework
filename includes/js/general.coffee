@@ -19,7 +19,7 @@ $ ->
 	for own key, translation of L
 		L[key]		= (do (translation) ->
 			result	= ->
-				vsprintf translation, Array::slice.call(arguments)
+				vsprintf(translation, Array::slice.call(arguments))
 			result.toString	= ->
 				translation
 			result
@@ -27,7 +27,7 @@ $ ->
 	L.get		= (key) ->
 		L[key].toString()
 	L.format	= (key) ->
-		L[key] arguments[1]
+		vsprintf(L[key].toString(), Array::slice.call(arguments, 1))
 	$('.cs-header-sign-in-slide').click ->
 		$('.cs-header-guest-form').hide('medium')
 		$('.cs-header-sign-in-form').show('medium')
