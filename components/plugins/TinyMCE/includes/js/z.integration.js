@@ -90,25 +90,25 @@ $(function () {
 			/**
 			 * Full editor
 			 */
-			$('.EDITOR').prop('required', false).tinymce(tinymce.editor_config);
+			$('.EDITOR').addClass('cs-no-ui').prop('required', false).tinymce(tinymce.editor_config);
 		},
 		function () {
 			/**
 			 * Simple editor
 			 */
-			$('.SIMPLE_EDITOR').prop('required', false).tinymce(tinymce.simple_editor_config);
+			$('.SIMPLE_EDITOR').addClass('cs-no-ui').prop('required', false).tinymce(tinymce.simple_editor_config);
 		},
 		function () {
 			/**
 			 * Inline editor
 			 */
-			$('.INLINE_EDITOR').prop('required', false).tinymce(tinymce.inline_editor_config);
+			$('.INLINE_EDITOR').addClass('cs-no-ui').prop('required', false).tinymce(tinymce.inline_editor_config);
 		},
 		function () {
 			/**
 			 * Small inline editor
 			 */
-			$('.SIMPLE_INLINE_EDITOR').prop('required', false).tinymce(tinymce.simple_inline_editor_config);
+			$('.SIMPLE_INLINE_EDITOR').addClass('cs-no-ui').prop('required', false).tinymce(tinymce.simple_inline_editor_config);
 		}
 	]);
 });

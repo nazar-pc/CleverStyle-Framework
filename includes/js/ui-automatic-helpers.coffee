@@ -6,43 +6,45 @@
 ###
 $ ->
 	ui_automatic_helpers_update = (element) ->
-		cs.async_call [
-			->
-				element.filter('form:not(.cs-no-ui, .uk-form)').addClass('uk-form')
-				element.find('form:not(.cs-no-ui, .uk-form)').addClass('uk-form')
-			->
-				element.filter(':not(.uk-button) > input:radio:not(.cs-no-ui)').cs().radio()
-				element.find(':not(.uk-button) > input:radio:not(.cs-no-ui)').cs().radio()
-			->
-				element.filter(':not(.uk-button) > input:checkbox:not(.cs-no-ui)').cs().checkbox()
-				element.find(':not(.uk-button) > input:checkbox:not(.cs-no-ui)').cs().checkbox()
-			->
-				element.filter('.cs-table').addClass('uk-table uk-table-condensed uk-table-hover')
-				element.find('.cs-table').addClass('uk-table uk-table-condensed uk-table-hover')
-			->
-				element.filter(':button:not(.cs-no-ui), .cs-button, .cs-button-compact, .uk-button')
-					.addClass('uk-button')
-					.disableSelection()
-				element.find(':button:not(.cs-no-ui), .cs-button, .cs-button-compact, .uk-button')
-					.addClass('uk-button')
-					.disableSelection()
-			->
-				element.filter('textarea:not(.cs-no-ui, .cs-no-resize, .EDITOR, .SIMPLE_EDITOR, .cs-autosized)')
-					.addClass('cs-autosized')
-					.autosize
-						append	: "\n"
-				element.find('textarea:not(.cs-no-ui, .cs-no-resize, .EDITOR, .SIMPLE_EDITOR, .cs-autosized)')
-					.addClass('cs-autosized')
-					.autosize
-						append	: "\n"
-			->
-				element.find('.SIMPLEST_INLINE_EDITOR')
-					.prop('contenteditable', true)
-			->
-				element.find('[data-title]:not(data-uk-tooltip)').cs().tooltip()
-			->
-				element.find('.cs-tabs:not(.uk-tab)').cs().tabs()
-		]
+		element.filter('.cs-table').addClass('uk-table uk-table-condensed uk-table-hover')
+		element.find('.cs-table').addClass('uk-table uk-table-condensed uk-table-hover')
+
+		element.find('.SIMPLEST_INLINE_EDITOR')
+			.prop('contenteditable', true)
+
+		element.filter('[data-title]:not(data-uk-tooltip)').cs().tooltip()
+		element.find('[data-title]:not(data-uk-tooltip)').cs().tooltip()
+
+		element.filter('.cs-tabs:not(.uk-tab)').cs().tabs()
+		element.find('.cs-tabs:not(.uk-tab)').cs().tabs()
+
+		if element.is('.cs-no-ui') || element.parents().filter('.cs-no-ui').length
+			return
+
+		element.filter('form:not(.uk-form)').addClass('uk-form')
+		element.find('form:not(.cs-no-ui, .uk-form)').addClass('uk-form')
+
+		element.filter(':not(.uk-button) > input:radio:not(.cs-no-ui)').cs().radio()
+		element.find(':not(.uk-button) > input:radio:not(.cs-no-ui)').cs().radio()
+
+		element.filter(':not(.uk-button) > input:checkbox:not(.cs-no-ui)').cs().checkbox()
+		element.find(':not(.uk-button) > input:checkbox:not(.cs-no-ui)').cs().checkbox()
+
+		element.filter(':button:not(.uk-button), .cs-button, .cs-button-compact')
+			.addClass('uk-button')
+			.disableSelection()
+		element.find(':button:not(.cs-no-ui, .uk-button), .cs-button, .cs-button-compact')
+			.addClass('uk-button')
+			.disableSelection()
+
+		element.filter('textarea:not(.cs-no-resize, .EDITOR, .SIMPLE_EDITOR, .cs-autosized)')
+			.addClass('cs-autosized')
+			.autosize
+				append	: "\n"
+		element.find('textarea:not(.cs-no-ui, .cs-no-resize, .EDITOR, .SIMPLE_EDITOR, .cs-autosized)')
+			.addClass('cs-autosized')
+			.autosize
+				append	: "\n"
 	ui_automatic_helpers_update($('body'))
 	do ->
 		MutationObserver		= window.MutationObserver || window.WebKitMutationObserver
