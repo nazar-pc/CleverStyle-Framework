@@ -92,6 +92,13 @@ There are no huge list of external dependencies, there are no external dependenc
 
 Nevertheless, system includes a set of thirdparty components inside to make system complete and in order to not reinvent a good wheel.
 
+### Clean
+System track all files, DB tables and other things created in result of components functioning.
+
+This means that if you installed some component, used it for a year, and then completely remove - system will be exactly in the same state as before installation.
+
+This results in constant and predictable performance (no degradation with time), efficient disk space usage (no forgotten files, cache items, configs and stuff like this) and full control over system state.
+
 # Main features
 
 * Components
