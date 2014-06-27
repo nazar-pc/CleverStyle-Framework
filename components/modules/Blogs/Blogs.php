@@ -740,7 +740,7 @@ class Blogs {
 		return $cdb->qfas(
 			"SELECT `id`
 			FROM `[prefix]blogs_tags`
-			WHERE `id` IN($in)"
+			WHERE `text` IN($in)"
 		);
 	}
 }
