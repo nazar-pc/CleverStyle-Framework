@@ -12,7 +12,13 @@ use			h,
 			cs\Index,
 			cs\Language,
 			cs\Page,
+			cs\Trigger,
 			cs\User;
+
+if (!Trigger::instance()->run('Blogs/new_post')) {
+	return;
+}
+
 $Config						= Config::instance();
 $module_data				= $Config->module('Blogs');
 $L							= Language::instance();

@@ -14,6 +14,11 @@ use			h,
 			cs\Page,
 			cs\Trigger,
 			cs\User;
+
+if (!Trigger::instance()->run('Blogs/post')) {
+	return;
+}
+
 $Config					= Config::instance();
 $module_data			= $Config->module('Blogs');
 $L						= Language::instance();

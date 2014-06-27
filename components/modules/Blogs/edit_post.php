@@ -12,7 +12,13 @@ use			h,
 			cs\Index,
 			cs\Language,
 			cs\Page,
+			cs\Trigger,
 			cs\User;
+
+if (!Trigger::instance()->run('Blogs/edit_post')) {
+	return;
+}
+
 $Blogs						= Blogs::instance();
 $Config						= Config::instance();
 $module_data				= $Config->module('Blogs');

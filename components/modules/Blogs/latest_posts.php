@@ -12,7 +12,13 @@ use			h,
 			cs\DB,
 			cs\Index,
 			cs\Language,
-			cs\Page;
+			cs\Page,
+			cs\Trigger;
+
+if (!Trigger::instance()->run('Blogs/latest_posts')) {
+	return;
+}
+
 $Config					= Config::instance();
 $Index					= Index::instance();
 $L						= Language::instance();

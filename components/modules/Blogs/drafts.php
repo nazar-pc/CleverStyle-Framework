@@ -13,7 +13,13 @@ use			h,
 			cs\Index,
 			cs\Language,
 			cs\Page,
+			cs\Trigger,
 			cs\User;
+
+if (!Trigger::instance()->run('Blogs/drafts')) {
+	return;
+}
+
 $Config					= Config::instance();
 $module_data			= $Config->module('Blogs');
 $Index					= Index::instance();
