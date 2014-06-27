@@ -683,32 +683,6 @@ class Blogs {
 		return Text::instance()->del($this->cdb(), $group, $label);
 	}
 	/**
-	 * Get array of tags list in form [<i>id</i> => <i>text</i>]
-	 *
-	 * @TODO remove method, add find_tag() instead
-	 *
-	 * @return array
-	 */
-	function get_tags_list () {
-		$L		= Language::instance();
-		return $this->cache->get("tags/$L->clang", function () {
-			$tags	= $this->db()->qfa(
-				"SELECT
-					`id`,
-					`text`
-				FROM `[prefix]blogs_tags`"
-			);
-			$data	= [];
-			if (is_array($tags) && !empty($tags)) {
-				foreach ($tags as $tag) {
-					$data[$tag['id']]	= $this->ml_process($tag['text']);
-				}
-				unset($tag);
-			}
-			return $data;
-		});
-	}
-	/**
 	 * Get tag text
 	 *
 	 * @param int|int[]			$id
@@ -716,48 +690,22 @@ class Blogs {
 	 * @return string|string[]
 	 */
 	function get_tag ($id) {
-		$tags	= $this->get_tags_list();
 		if (is_array($id)) {
-			return array_map(
-				function ($id) use ($tags) {
-					return $tags[$id];
-				},
-				$id
-			);
-		}
-		return $tags[$id];
-	}
-	/**
-	 * Add tag, in most cases this function is not needed for usage, use ::process_tags() instead
-	 *
-	 * @param string		$tag
-	 * @param bool			$clean_cache
-	 *
-	 * @return bool|int
-	 */
-	private function add_tag ($tag, $clean_cache = true) {
-		$tag	= trim(xap($tag));
-		$id		= array_search(
-			mb_strtolower($tag),
-			_mb_strtolower($this->get_tags_list())
-		);
-		if ($id === false) {
-			if ($this->db_prime()->q(
-				"INSERT INTO `[prefix]blogs_tags`
-					(`text`)
-				VALUES
-					('%s')",
-				$tag
-			)) {
-				$id	= $this->db_prime()->id();
-				if ($clean_cache) {
-					unset($this->cache->tags);
-				}
-				return $id;
+			foreach ($id as &$i) {
+				$i = $this->get_tag($i);
 			}
-			return false;
+			return $id;
 		}
-		return $id;
+		$id = (int)$id;
+		return $this->cache->get("tags/$id", function () use($id) {
+			return $this->db()->qfs([
+				"SELECT `text`
+				FROM `[prefix]blogs_tags`
+				WHERE `id` = '%s'
+				LIMIT 1",
+				$id
+			]);
+		});
 	}
 	/**
 	 * Accepts array of string tags and returns corresponding array of id's of these tags, new tags will be added automatically
@@ -767,27 +715,32 @@ class Blogs {
 	 * @return int[]
 	 */
 	private function process_tags ($tags) {
-		$tags_list	= $this->get_tags_list();
-		$exists		= array_keys($tags_list, $tags);
-		$tags		= array_fill_keys($tags, null);
-		foreach ($exists as $tag) {
-			$tags[$tags_list[$tag]]	= $tag;
+		if (!$tags) {
+			return [];
 		}
-		unset($exists);
-		$added		= false;
-		foreach ($tags as $tag => &$id) {
-			if ($id === null) {
-				if (trim($tag)) {
-					$id		= $this->add_tag(trim($tag), false);
-					$added	= true;
-				} else {
-					unset($tags[$tag]);
-				}
-			}
+		$cdb = $this->db_prime();
+		$cdb->insert(
+			"INSERT IGNORE INTO `[prefix]blogs_tags`
+				(`text`)
+			VALUES
+				('%s')",
+			array_map(
+				function ($tag) {
+					return [$tag];
+				},
+				$tags
+			),
+			true
+		);
+		$in = [];
+		foreach ($tags as $tag) {
+			$in[] = $cdb->s($tag);
 		}
-		if ($added) {
-			unset($this->cache->tags);
-		}
-		return array_values(array_unique($tags));
+		$in = implode(',', $in);
+		return $cdb->qfas(
+			"SELECT `id`
+			FROM `[prefix]blogs_tags`
+			WHERE `id` IN($in)"
+		);
 	}
 }
