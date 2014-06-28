@@ -1,0 +1,12 @@
+{
+	"Polls"                      : "Polls",
+	"polls"                      : "Polls",
+	"polls_poll"                 : "Poll",
+	"polls_action"               : "Action",
+	"polls_edit"                 : "Edit",
+	"polls_add"                  : "Add",
+	"polls_new_poll"             : "New poll",
+	"polls_poll_title"           : "Poll title",
+	"polls_answers_one_per_line" : "Answers, one per line",
+	"polls_editing_of_poll"      : "Editing of poll %s"
+}

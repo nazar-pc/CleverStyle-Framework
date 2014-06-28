@@ -1,0 +1,12 @@
+{
+	"Polls"                      : "Опросы",
+	"polls"                      : "Опросы",
+	"polls_poll"                 : "Опрос",
+	"polls_action"               : "Действие",
+	"polls_edit"                 : "Редактировать",
+	"polls_add"                  : "Добавить",
+	"polls_new_poll"             : "Новый опрос",
+	"polls_poll_title"           : "Название опроса",
+	"polls_answers_one_per_line" : "Ответы, по одному на строку",
+	"polls_editing_of_poll"      : "Редактирование опроса %s"
+}

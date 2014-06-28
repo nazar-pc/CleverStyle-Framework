@@ -1,0 +1,7 @@
+{
+	"polls"		: [
+		"list",
+		"edit",
+		"delete"
+	]
+}

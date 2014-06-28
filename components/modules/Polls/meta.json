@@ -1,0 +1,23 @@
+{
+	"package"		: "Polls",
+	"category"		: "modules",
+	"version"		: "1.0.0+build-1",
+	"description"	: "Polls",
+	"author"		: "Nazar Mokrynskyi",
+	"website"		: "cleverstyle.org/cms",
+	"license"		: "MIT License",
+	"db_support"	: [
+		"MySQLi"
+	],
+	"provide"		: "polls",
+	"require"		: "System=>0.450",
+	"multilingual"	: [
+		"interface",
+		"content"
+	],
+	"languages"		: [
+		"English",
+		"Русский",
+		"Українська"
+	]
+}

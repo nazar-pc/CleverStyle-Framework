@@ -1,0 +1,12 @@
+{
+	"Polls"                      : "Опитування",
+	"polls"                      : "Опитування",
+	"polls_poll"                 : "Опитування",
+	"polls_action"               : "Дія",
+	"polls_edit"                 : "Редагувати",
+	"polls_add"                  : "Додати",
+	"polls_new_poll"             : "Нове опитування",
+	"polls_poll_title"           : "Назва опитування",
+	"polls_answers_one_per_line" : "Відповіді, по одній на рядок",
+	"polls_editing_of_poll"      : "Редагування опитування %s"
+}
