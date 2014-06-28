@@ -35,19 +35,19 @@ $Index->content(
 						[
 							'href' => "admin/Polls/polls/edit/$poll[id]"
 						]
-					)/*.//TODO polls deletion and trigger to delete all polls after removal
+					).
 					h::{'a.cs-button'}(
 						$L->delete,
 							[
 								'href'	=> "admin/Polls/polls/delete/$poll[id]"
 							]
-					)*/
+					)
 				);
 			},
 			$Polls->get($Polls->get_all())
 		)
 	).
-	h::{'p.cs-center'}($L->new_poll).
+	h::{'h2.cs-center'}($L->new_poll).
 	h::{'p input[name=add[title]]'}([
 		'placeholder' => $L->poll_title
 	]).

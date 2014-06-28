@@ -1,28 +1,32 @@
 <?php
 /**
- * @package		Polls
- * @category	modules
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2014, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package        Polls
+ * @category       modules
+ * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright      Copyright (c) 2014, Nazar Mokrynskyi
+ * @license        MIT License, see license.txt
  */
-namespace	cs\modules\Polls;
-use			cs\Config,
-			cs\User,
-			cs\CRUD,
-			cs\Singleton;
+namespace cs\modules\Polls;
+
+use
+	cs\Config,
+	cs\User,
+	cs\CRUD,
+	cs\Singleton;
+
 /**
  * @method static Answers instance($check = false)
  */
 class Answers {
-	use	CRUD,
+	use
+		CRUD,
 		Singleton;
 
-	protected $table		= '[prefix]polls_options_answers';
-	protected $data_model	= [
-		'id'		=> 'int',
-		'option'	=> 'int',
-		'user'		=> 'int'
+	protected $table      = '[prefix]polls_options_answers';
+	protected $data_model = [
+		'id'     => 'int',
+		'option' => 'int',
+		'user'   => 'int'
 	];
 
 	protected function cdb () {
@@ -37,15 +41,16 @@ class Answers {
 	 * @return bool
 	 */
 	function add ($poll, $option) {
-		$User	= User::instance();
+		$User = User::instance();
 		if ($User->guest()) {
 			return false;
 		}
-		if ($res = $this->create_simple([
+		$result = $this->create_simple([
 			$poll,
 			$option,
 			$User->id
-		]) !== false) {
+		]);
+		if ($result) {
 			Options::instance()->update_votes($option);
 			return true;
 		}
@@ -54,14 +59,14 @@ class Answers {
 	/**
 	 * Get answer
 	 *
-	 * @param int|int[]	$poll
+	 * @param int|int[] $poll
 	 *
-	 * @return int|int[]|bool	Option id
+	 * @return int|int[]|bool    Option id
 	 */
 	function get ($poll) {
 		if (is_array($poll)) {
 			foreach ($poll as &$i) {
-				$i	= $this->get($i);;
+				$i = $this->get($i);;
 			}
 			return $poll;
 		}

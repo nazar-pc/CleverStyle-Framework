@@ -15,14 +15,7 @@ use
 $Index   = Index::instance();
 $Options = Options::instance();
 $Polls   = Polls::instance();
-if (isset($_POST['edit'])) {
-	$edit = $_POST['edit'];
-	$Polls->set($edit['id'], $edit['title']);
-	foreach ($edit['options'] as $id => $title) {
-		$Options->set($id, $edit['id'], $title);
-	}
-	$Index->save(true);
-} elseif (isset($_POST['add'])) {
+if (isset($_POST['add'])) {
 	$add  = $_POST['add'];
 	$poll = $Polls->add($add['title']);
 	if (!$poll) {
@@ -33,4 +26,15 @@ if (isset($_POST['edit'])) {
 		$Options->add($poll, trim($title));
 	}
 	$Index->save(true);
+} elseif (isset($_POST['edit'])) {
+	$edit = $_POST['edit'];
+	$Polls->set($edit['id'], $edit['title']);
+	foreach ($edit['options'] as $id => $title) {
+		$Options->set($id, $edit['id'], $title);
+	}
+	$Index->save(true);
+} elseif (isset($_POST['delete'])) {
+	$Index->save(
+		$Polls->del($$_POST['delete'])
+	);
 }

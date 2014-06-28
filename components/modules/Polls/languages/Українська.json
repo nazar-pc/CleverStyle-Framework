@@ -1,12 +1,15 @@
 {
-	"Polls"                      : "Опитування",
-	"polls"                      : "Опитування",
-	"polls_poll"                 : "Опитування",
-	"polls_action"               : "Дія",
-	"polls_edit"                 : "Редагувати",
-	"polls_add"                  : "Додати",
-	"polls_new_poll"             : "Нове опитування",
-	"polls_poll_title"           : "Назва опитування",
-	"polls_answers_one_per_line" : "Відповіді, по одній на рядок",
-	"polls_editing_of_poll"      : "Редагування опитування %s"
+	"Polls"                         : "Опитування",
+	"polls"                         : "Опитування",
+	"polls_poll"                    : "Опитування",
+	"polls_action"                  : "Дія",
+	"polls_add"                     : "Додати",
+	"polls_edit"                    : "Редагувати",
+	"polls_delete"                  : "Видалити",
+	"polls_new_poll"                : "Нове опитування",
+	"polls_poll_title"              : "Назва опитування",
+	"polls_answers_one_per_line"    : "Відповіді, по одній на рядок",
+	"polls_editing_of_poll"         : "Редагування опитування %s",
+	"polls_deleting_of_poll"        : "Видалення опитування %s",
+	"poll_sure_want_to_delete_poll" : "Ви впевнены, що хочете видалити опитування %s?"
 }
