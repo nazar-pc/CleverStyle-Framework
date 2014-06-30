@@ -59,10 +59,8 @@ Trigger::instance()->run(
 	]
 );
 if (!is_object($Comments)) {
-	if (!defined('ERROR_CODE')) {
-		error_code(500);
-		$Page->error($L->comment_editing_server_error);
-	}
+	error_code(500);
+	$Page->error($L->comment_editing_server_error);
 	return;
 }
 /**

@@ -58,10 +58,8 @@ Trigger::instance()->run(
 $L				= Language::instance();
 $Page			= Page::instance();
 if (!is_object($Comments)) {
-	if (!defined('ERROR_CODE')) {
-		error_code(500);
-		$Page->error($L->comment_deleting_server_error);
-	}
+	error_code(500);
+	$Page->error($L->comment_deleting_server_error);
 	return;
 }
 /**
