@@ -225,7 +225,7 @@ class Index {
 		if ($api && $this->request_method) {
 			_include_once("$working_directory/index.$this->request_method.php", false);
 		}
-		if ($this->stop || defined('ERROR_CODE')) {
+		if ($this->stop || error_code()) {
 			return;
 		}
 		if ($this->parts) {
@@ -268,7 +268,7 @@ class Index {
 			if ($api && $this->request_method) {
 				_include_once("$working_directory/$rc[0].$this->request_method.php", false);
 			}
-			if ($this->stop || defined('ERROR_CODE')) {
+			if ($this->stop || error_code()) {
 				return;
 			}
 			if ($this->subparts) {
@@ -293,7 +293,7 @@ class Index {
 				if ($api && $this->request_method) {
 					_include_once("$working_directory/$rc[0]/$rc[1].$this->request_method.php", false);
 				}
-				if ($this->stop || defined('ERROR_CODE')) {
+				if ($this->stop || error_code()) {
 					return;
 				}
 			} elseif (!$this->in_api && $this->action === null) {
@@ -674,7 +674,7 @@ class Index {
 			code_header(503);
 			return;
 		}
-		if (defined('ERROR_CODE')) {
+		if (error_code()) {
 			$Page->error();
 		}
 		Trigger::instance()->run('System/Index/preload');
@@ -685,7 +685,7 @@ class Index {
 			if ($this->title_auto) {
 				$Page->title(Language::instance()->{HOME ? 'home' : MODULE});
 			}
-		} elseif (!defined('ERROR_CODE') && !$this->stop) {
+		} elseif (!error_code() && !$this->stop) {
 			$this->init_auto	&& $this->init();
 		}
 		if ($this->generate_auto) {
@@ -704,7 +704,7 @@ class Index {
 			}
 			return;
 		}
-		if (defined('ERROR_CODE')) {
+		if (error_code()) {
 			$Page->error();
 		} elseif (
 			_getcookie('sign_out') &&

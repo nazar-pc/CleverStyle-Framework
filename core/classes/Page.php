@@ -1387,16 +1387,16 @@ class Page {
 			return;
 		}
 		$error_showed	= true;
-		if (!defined('ERROR_CODE')) {
+		if (!error_code()) {
 			error_code(500);
 		}
-		if (defined('API') && !API && ERROR_CODE == 403 && _getcookie('sign_out')) {
+		if (defined('API') && !API && error_code() == 403 && _getcookie('sign_out')) {
 			header('Location: '.Config::instance()->base_url(), true, 302);
 			$this->Content	= '';
 			exit;
 		}
 		interface_off();
-		$error	= code_header(ERROR_CODE);
+		$error	= code_header(error_code());
 		if (is_array($custom_text)) {
 			$error				= $custom_text[0];
 			$error_description	= $custom_text[1];

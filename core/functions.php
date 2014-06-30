@@ -705,12 +705,23 @@ function pages_buttons ($page, $total, $url = false) {
 	return h::{'button[name=page]'}($output);
 }
 /**
- * Simple wrapper for defining constant ERROR_CODE
+ * Function that is used to define errors by specifying error code, and system will account this in its operation
  *
- * @param int	$code
+ * @param int|null	$code
+ *
+ * @return int				<b>0</b> if no errors, error code otherwise
  */
-function error_code ($code) {
-	!defined('ERROR_CODE') && define('ERROR_CODE', $code);
+function error_code ($code = null) {
+	static $stored_code = 0;
+	if (
+		$code !== null &&
+		(
+			!$stored_code || $code == 0 //Allows to reset error code, but not allows to redefine by other code directly
+		)
+	) {
+		$stored_code = $code;
+	}
+	return $stored_code;
 }
 /**
  * Checks whether specified functionality available or not
