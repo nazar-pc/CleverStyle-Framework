@@ -254,7 +254,6 @@ class Config {
 				error_code(400);
 				Page::instance()->error();
 			}
-			define('STOP', true);
 			exit;
 		}
 		$processed_route	= $this->process_route($server['raw_relative_address']);

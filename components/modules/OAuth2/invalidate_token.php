@@ -82,7 +82,6 @@ if ($token_data['type'] == 'code') { // Server request with client_secret needed
 		code_header(400);
 		$Page->Content = '';
 		$Page->warning($L->redirect_uri_parameter_required);
-		$Index->stop = true;
 		return;
 	}
 	if (
@@ -92,7 +91,6 @@ if ($token_data['type'] == 'code') { // Server request with client_secret needed
 		code_header(400);
 		$Page->Content = '';
 		$Page->warning($L->redirect_uri_parameter_invalid);
-		$Index->stop = true;
 		return;
 	}
 	if (!$OAuth2->del_token($_GET['access_token'], $client['id'])) {
@@ -125,6 +123,5 @@ if ($token_data['type'] == 'code') { // Server request with client_secret needed
 		);
 	}
 	$Page->Content = '';
-	$Index->stop   = true;
 	return;
 }

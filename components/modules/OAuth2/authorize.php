@@ -33,7 +33,6 @@ if (!isset($_GET['client_id'])) {
 	code_header(400);
 	$Page->Content = '';
 	$Page->warning($L->client_id_parameter_required);
-	$Index->stop = true;
 	return;
 }
 $client = $OAuth2->get_client($_GET['client_id']);
@@ -41,7 +40,6 @@ if (!$client) {
 	code_header(400);
 	$Page->Content = '';
 	$Page->warning($L->client_id_not_found);
-	$Index->stop = true;
 	return;
 }
 if (!$client['domain']) {
@@ -58,7 +56,6 @@ if (!$client['active']) {
 			$Page->Content = '';
 			$Page->warning($L->inactive_client_id);
 			$Page->warning($L->redirect_uri_parameter_required);
-			$Index->stop = true;
 			return;
 		} else {
 			if (
@@ -78,14 +75,12 @@ if (!$client['active']) {
 					302
 				);
 				$Page->Content = '';
-				$Index->stop   = true;
 				return;
 			} else {
 				code_header(400);
 				$Page->Content = '';
 				$Page->warning($L->inactive_client_id);
 				$Page->warning($L->redirect_uri_parameter_invalid);
-				$Index->stop = true;
 				return;
 			}
 		}
@@ -93,7 +88,6 @@ if (!$client['active']) {
 		code_header(400);
 		$Page->Content = '';
 		$Page->warning($L->inactive_client_id);
-		$Index->stop = true;
 		return;
 	}
 }
@@ -101,7 +95,6 @@ if (!isset($_GET['redirect_uri'])) {
 	code_header(400);
 	$Page->Content = '';
 	$Page->warning($L->redirect_uri_parameter_required);
-	$Index->stop = true;
 	return;
 } elseif (
 	urldecode($_GET['redirect_uri']) != $Config->base_url().'/OAuth2/blank/' &&
@@ -110,7 +103,6 @@ if (!isset($_GET['redirect_uri'])) {
 	code_header(400);
 	$Page->Content = '';
 	$Page->warning($L->redirect_uri_parameter_invalid);
-	$Index->stop = true;
 	return;
 }
 $redirect_uri = urldecode($_GET['redirect_uri']);
@@ -128,7 +120,6 @@ if (!isset($_GET['response_type'])) {
 		302
 	);
 	$Page->Content = '';
-	$Index->stop   = true;
 	return;
 }
 if (!in_array($_GET['response_type'], ['code', 'token', 'guest_token'])) {
@@ -145,7 +136,6 @@ if (!in_array($_GET['response_type'], ['code', 'token', 'guest_token'])) {
 		302
 	);
 	$Page->Content = '';
-	$Index->stop   = true;
 	return;
 }
 $User = User::instance();
@@ -156,7 +146,6 @@ if (!$User->user()) {
 			$Page->Content = '';
 			$Page->warning($L->you_are_not_logged_in);
 		}
-		$Index->stop = true;
 		return;
 	} elseif (!$Config->module('OAuth2')->guest_tokens) {
 		header(
@@ -172,7 +161,6 @@ if (!$User->user()) {
 			302
 		);
 		$Page->Content = '';
-		$Index->stop   = true;
 		return;
 	}
 }
@@ -198,7 +186,6 @@ if (isset($_POST['mode'])) {
 				302
 			);
 			$Page->Content = '';
-			$Index->stop   = true;
 			return;
 	}
 }
@@ -227,7 +214,6 @@ if (!$OAuth2->get_access($client['id'])) {
 			302
 		);
 		$Page->Content = '';
-		$Index->stop   = true;
 		return;
 	}
 	switch ($_GET['response_type']) {
@@ -244,7 +230,6 @@ if (!$OAuth2->get_access($client['id'])) {
 				302
 			);
 			$Page->Content = '';
-			$Index->stop   = true;
 			return;
 		case 'token':
 			$token_data = $OAuth2->get_code($code, $client['id'], $client['secret'], $redirect_uri);
@@ -266,7 +251,6 @@ if (!$OAuth2->get_access($client['id'])) {
 					302
 				);
 				$Page->Content = '';
-				$Index->stop   = true;
 				return;
 			} else {
 				header(
@@ -284,7 +268,6 @@ if (!$OAuth2->get_access($client['id'])) {
 					302
 				);
 				$Page->Content = '';
-				$Index->stop   = true;
 				return;
 			}
 		case 'guest_token':
@@ -325,7 +308,6 @@ if (!$OAuth2->get_access($client['id'])) {
 					302
 				);
 				$Page->Content = '';
-				$Index->stop   = true;
 				return;
 			} else {
 				error_code(500);

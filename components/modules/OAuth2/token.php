@@ -127,7 +127,6 @@ switch ($_GET['grant_type']) {
 			], true);
 		}
 		$Page->json($token_data);
-		$Index->stop = true;
 		return;
 	case 'refresh_token':
 		if (!isset($_GET['refresh_token'])) {
@@ -146,7 +145,6 @@ switch ($_GET['grant_type']) {
 			], true);
 		}
 		$Page->json($token_data);
-		$Index->stop = true;
 		return;
 	case 'guest_token':
 		if (User::instance()->user()) {
@@ -174,7 +172,6 @@ switch ($_GET['grant_type']) {
 		$token_data = $OAuth2->get_code($code, $client['id'], $client['secret'], '');
 		if ($token_data) {
 			$Page->json($token_data);
-			$Index->stop = true;
 			return;
 		} else {
 			error_code(500);

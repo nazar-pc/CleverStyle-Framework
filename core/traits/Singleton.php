@@ -23,7 +23,7 @@ trait Singleton {
 	 */
 	static function instance ($check = false) {
 		static $instance;
-		if (defined('STOP')) {
+		if (error_code()) {
 			return False_class::instance();
 		}
 		if ($check) {

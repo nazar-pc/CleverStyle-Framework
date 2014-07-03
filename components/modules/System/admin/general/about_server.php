@@ -28,7 +28,6 @@ if (isset($Index->route_path[2])) {
 		case 'readme.html':
 			$Index->Content	= file_get_contents(DIR.'/readme.html');
 	}
-	$Index->stop;
 	return;
 }
 $hhvm_version	= defined('HHVM_VERSION') ? HHVM_VERSION : false;

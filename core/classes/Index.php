@@ -58,8 +58,7 @@ class Index {
 
 				$init_auto				= true,
 				$generate_auto			= true,
-				$title_auto				= true,
-				$stop					= false;	//Gives the ability to stop further processing
+				$title_auto				= true;
 	/**
 	 * Like Config::$route property, but excludes numerical items
 	 *
@@ -225,7 +224,7 @@ class Index {
 		if ($api && $this->request_method) {
 			_include_once("$working_directory/index.$this->request_method.php", false);
 		}
-		if ($this->stop || error_code()) {
+		if (error_code()) {
 			return;
 		}
 		if ($this->parts) {
@@ -268,7 +267,7 @@ class Index {
 			if ($api && $this->request_method) {
 				_include_once("$working_directory/$rc[0].$this->request_method.php", false);
 			}
-			if ($this->stop || error_code()) {
+			if (error_code()) {
 				return;
 			}
 			if ($this->subparts) {
@@ -293,7 +292,7 @@ class Index {
 				if ($api && $this->request_method) {
 					_include_once("$working_directory/$rc[0]/$rc[1].$this->request_method.php", false);
 				}
-				if ($this->stop || error_code()) {
+				if (error_code()) {
 					return;
 				}
 			} elseif (!$this->in_api && $this->action === null) {
@@ -685,24 +684,11 @@ class Index {
 			if ($this->title_auto) {
 				$Page->title(Language::instance()->{HOME ? 'home' : MODULE});
 			}
-		} elseif (!error_code() && !$this->stop) {
+		} elseif (!error_code()) {
 			$this->init_auto	&& $this->init();
 		}
 		if ($this->generate_auto) {
 			$this->generate();
-		}
-		if ($this->stop) {
-			if (
-				_getcookie('sign_out') &&
-				!(
-					$api &&
-					MODULE == 'System' &&
-					$Config->route == ['user', 'sign_out']
-				)
-			) {
-				_setcookie('sign_out', '');
-			}
-			return;
 		}
 		if (error_code()) {
 			$Page->error();

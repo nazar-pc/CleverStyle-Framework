@@ -8,4 +8,6 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-Index::instance()->stop = !User::instance()->admin();
+if (!User::instance()->admin()) {
+	error_code(403);
+}
