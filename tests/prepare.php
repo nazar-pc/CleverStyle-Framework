@@ -12,3 +12,11 @@ require_once DIR.'/core/classes/h/Base.php';
 require_once DIR.'/core/classes/h.php';
 require_once DIR.'/core/traits/Singleton.php';
 require_once DIR.'/core/thirdparty/upf.php';
+/**
+ * Stub for system function
+ *
+ * @return bool
+ */
+function error_code () {
+	return false;
+}
