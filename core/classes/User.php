@@ -203,7 +203,7 @@ class User {
 		/**
 		 * Try to detect bot, not necessary for API request
 		 */
-		} elseif (!API) {
+		} elseif (!api_path()) {
 			/**
 			 * Loading bots list
 			 */
@@ -289,7 +289,7 @@ class User {
 			/**
 			 * Do not create session for API request
 			 */
-			if (!API) {
+			if (!api_path()) {
 				$this->add_session();
 			}
 		}

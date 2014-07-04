@@ -89,7 +89,7 @@ class Index {
 	function construct () {
 		$Config		= Config::instance();
 		$User		= User::instance();
-		$api		= defined('API') && API;
+		$api		= api_path();
 		/**
 		 * If site is closed, user is not admin, and it is not request for sign in
 		 */
@@ -104,13 +104,13 @@ class Index {
 		) {
 			return;
 		}
-		$admin_path	= MODULES.'/'.MODULE.'/admin';
-		$api_path	= MODULES.'/'.MODULE.'/api';
+		$admin_path	= MODULES.'/'.current_module().'/admin';
+		$api_path	= MODULES.'/'.current_module().'/api';
 		if (
-			ADMIN &&
+			admin_path() &&
 			file_exists($admin_path) && (file_exists("$admin_path/index.php") || file_exists("$admin_path/index.json"))
 		) {
-			if (!($User->admin() && $User->get_permission($this->permission_group = 'admin/'.MODULE, 'index'))) {
+			if (!($User->admin() && $User->get_permission($this->permission_group = 'admin/'.current_module(), 'index'))) {
 				error_code(403);
 				exit;
 			}
@@ -118,18 +118,18 @@ class Index {
 			$this->form		= true;
 			$this->in_admin = true;
 		} elseif ($api && file_exists($api_path)) {
-			if (!$User->get_permission($this->permission_group = 'api/'.MODULE, 'index')) {
+			if (!$User->get_permission($this->permission_group = 'api/'.current_module(), 'index')) {
 				error_code(403);
 				exit;
 			}
 			$this->working_directory = $api_path;
 			$this->in_api		= true;
-		} elseif (!ADMIN && !$api && file_exists(MODULES.'/'.MODULE)) {
-			if (!$User->get_permission($this->permission_group = MODULE, 'index')) {
+		} elseif (!admin_path() && !$api && file_exists(MODULES.'/'.current_module())) {
+			if (!$User->get_permission($this->permission_group = current_module(), 'index')) {
 				error_code(403);
 				exit;
 			}
-			$this->working_directory = MODULES.'/'.MODULE;
+			$this->working_directory = MODULES.'/'.current_module();
 			$this->module	= true;
 		} else {
 			error_code(404);
@@ -172,7 +172,7 @@ class Index {
 		$L			= Language::instance();
 		$Page		= Page::instance();
 		$User		= User::instance();
-		$api		= defined('API') && API;
+		$api		= api_path();
 		/**
 		 * Some routing preparations
 		 */
@@ -250,10 +250,10 @@ class Index {
 				$Page->title($L->administration);
 			}
 			if (!$this->in_api && $this->title_auto) {
-				$Page->title($L->{HOME ? 'home' : MODULE});
+				$Page->title($L->{home_page() ? 'home' : current_module()});
 			}
 			if (!$this->in_api) {
-				if (!HOME && $this->title_auto) {
+				if (!home_page() && $this->title_auto) {
 					$Page->title($L->$rc[0]);
 				}
 			}
@@ -281,11 +281,11 @@ class Index {
 					return;
 				}
 				if (!$this->in_api) {
-					if (!HOME && $this->title_auto) {
+					if (!home_page() && $this->title_auto) {
 						$Page->title($L->$rc[1]);
 					}
 					if ($this->action === null) {
-						$this->action = ($this->in_admin() ? 'admin/' : '').MODULE."/$rc[0]/$rc[1]";
+						$this->action = ($this->in_admin() ? 'admin/' : '').current_module()."/$rc[0]/$rc[1]";
 					}
 				}
 				_include_once("$working_directory/$rc[0]/$rc[1].php", false);
@@ -296,7 +296,7 @@ class Index {
 					return;
 				}
 			} elseif (!$this->in_api && $this->action === null) {
-				$this->action = ($this->in_admin() ? 'admin/' : '').MODULE."/$rc[0]";
+				$this->action = ($this->in_admin() ? 'admin/' : '').current_module()."/$rc[0]";
 			}
 			unset($rc);
 			if ($this->post_title && $this->title_auto) {
@@ -307,7 +307,7 @@ class Index {
 				$Page->title($L->administration);
 			}
 			if (!$this->in_api && $this->title_auto) {
-				$Page->title($L->{HOME ? 'home' : MODULE});
+				$Page->title($L->{home_page() ? 'home' : current_module()});
 			}
 			if ($this->action === null) {
 				$this->action = $Config->server['relative_address'];
@@ -400,7 +400,7 @@ class Index {
 			$this->main_sub_menu[]	= [
 				$L->$part,
 				[
-					'href'		=> ($this->in_admin() ? 'admin/' : '').MODULE."/$part",
+					'href'		=> ($this->in_admin() ? 'admin/' : '').current_module()."/$part",
 					'class'		=> isset($rc[0]) && $rc[0] == $part ? 'uk-active' : ''
 				]
 			];
@@ -419,7 +419,7 @@ class Index {
 			$this->main_menu_more[]	= [
 				$L->$subpart,
 				[
-					'href'		=> ($this->in_admin() ? 'admin/' : '').MODULE."/$rc[0]/$subpart",
+					'href'		=> ($this->in_admin() ? 'admin/' : '').current_module()."/$rc[0]/$subpart",
 					'class'		=> $rc[1] == $subpart ? 'uk-active' : ''
 				]
 			];
@@ -657,7 +657,7 @@ class Index {
 		$finished	= true;
 		$Config		= Config::instance();
 		$Page		= Page::instance();
-		$api		= defined('API') && API;
+		$api		= api_path();
 		/**
 		 * If site is closed, user is not admin, and it is not request for sign in
 		 */
@@ -677,12 +677,12 @@ class Index {
 			$Page->error();
 		}
 		Trigger::instance()->run('System/Index/preload');
-		if (!$this->in_admin() && !$this->in_api && defined('MODULE') && file_exists(MODULES.'/'.MODULE.'/index.html')) {
+		if (!$this->in_admin() && !$this->in_api && current_module() && file_exists(MODULES.'/'.current_module().'/index.html')) {
 			ob_start();
-			_include(MODULES.'/'.MODULE.'/index.html', false, false);
+			_include(MODULES.'/'.current_module().'/index.html', false, false);
 			$Page->content(ob_get_clean());
 			if ($this->title_auto) {
-				$Page->title(Language::instance()->{HOME ? 'home' : MODULE});
+				$Page->title(Language::instance()->{home_page() ? 'home' : current_module()});
 			}
 		} elseif (!error_code()) {
 			$this->init_auto	&& $this->init();
@@ -696,7 +696,7 @@ class Index {
 			_getcookie('sign_out') &&
 			!(
 				$api &&
-				MODULE == 'System' &&
+				current_module() == 'System' &&
 				$Config->route == ['user', 'sign_out']
 			)
 		) {

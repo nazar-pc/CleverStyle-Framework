@@ -36,7 +36,7 @@ class Comments {
 	public		$avatar_size	= 36;
 
 	protected function construct () {
-		$this->module	= MODULE;
+		$this->module	= current_module();
 		$this->cache	= new Prefix("Comments/$this->module");
 	}
 	/**

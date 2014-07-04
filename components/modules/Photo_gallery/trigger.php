@@ -45,7 +45,7 @@ Trigger::instance()
 			switch (Config::instance()->components['modules']['Photo_gallery']['active']) {
 				case 1:
 				case 0:
-					if (!ADMIN) {
+					if (!admin_path()) {
 						return;
 					}
 					require __DIR__.'/trigger/installed.php';

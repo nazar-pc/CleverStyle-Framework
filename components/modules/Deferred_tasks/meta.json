@@ -1,11 +1,11 @@
 {
 	"package"		: "Deferred tasks",
 	"category"		: "modules",
-	"version"		: "0.1.3+build-6",
+	"version"		: "0.2.0+build-7",
 	"description"	: "Deferred tasks allows other components to create tasks, that can be executed not immediately, but little bit later. Usually is used for parsers, rating calculators and other purposes, when it is necessary to do some tasks on regular basis.",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",
 	"license"		: "MIT License",
 	"provide"		: "delayed_tasks",
-	"require"		: "System=>0.385"
+	"require"		: "System=>0.529"
 }

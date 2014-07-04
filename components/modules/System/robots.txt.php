@@ -14,7 +14,7 @@
  */
 namespace	cs;
 interface_off();
-$text						= file_get_contents(__DIR__.'/'.MODULE.'/robots.txt');
+$text						= file_get_contents(__DIR__.'/robots.txt');
 Trigger::instance()->run(
 	'System/robots.txt',
 	[

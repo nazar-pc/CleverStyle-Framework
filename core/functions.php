@@ -780,3 +780,63 @@ function functionality ($functionality) {
 function system_version () {
 	return file_get_json(MODULES.'/System/meta.json')['version'];
 }
+/**
+ * Is current path from administration area?
+ *
+ * @param bool|null $admin_path
+ *
+ * @return bool
+ */
+function admin_path ($admin_path = null) {
+	static $stored_admin_path = false;
+	if ($admin_path !== null) {
+		$stored_admin_path = $admin_path;
+		!defined('ADMIN') && define('ADMIN', $admin_path); //TODO: remove before release
+	}
+	return $stored_admin_path;
+}
+/**
+ * Is current path from api area?
+ *
+ * @param bool|null $api_path
+ *
+ * @return bool
+ */
+function api_path ($api_path = null) {
+	static $stored_api_path = false;
+	if ($api_path !== null) {
+		$stored_api_path = $api_path;
+		!defined('API') && define('API', $api_path); //TODO: remove before release
+	}
+	return $stored_api_path;
+}
+/**
+ * Name of currently used module (for generation of current page)
+ *
+ * @param null|string $current_module
+ *
+ * @return bool
+ */
+function current_module ($current_module = null) {
+	static $stored_current_module = '';
+	if ($current_module !== null) {
+		$stored_current_module = $current_module;
+		!defined('MODULE') && define('MODULE', $current_module); //TODO: remove before release
+	}
+	return $stored_current_module;
+}
+/**
+ * Is current path from api area?
+ *
+ * @param bool|null $home_page
+ *
+ * @return bool
+ */
+function home_page ($home_page = null) {
+	static $stored_home_page = false;
+	if ($home_page !== null) {
+		$stored_home_page = $home_page;
+		!defined('HOME') && define('HOME', $home_page); //TODO: remove before release
+	}
+	return $stored_home_page;
+}

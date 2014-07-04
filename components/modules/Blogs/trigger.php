@@ -61,7 +61,7 @@ Trigger::instance()
 		function () {
 			switch (Config::instance()->module('Blogs')->active()) {
 				case -1:
-					if (!ADMIN) {
+					if (!admin_path()) {
 						return;
 					}
 					require __DIR__.'/trigger/uninstalled.php';
@@ -69,7 +69,7 @@ Trigger::instance()
 				case 1:
 					require __DIR__.'/trigger/enabled.php';
 				default:
-					if (!ADMIN) {
+					if (!admin_path()) {
 						return;
 					}
 					require __DIR__.'/trigger/installed.php';

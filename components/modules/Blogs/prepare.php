@@ -14,7 +14,7 @@ use			h,
 			cs\Page,
 			cs\Trigger,
 			cs\User;
-if (!API) {
+if (!api_path()) {
 	$Page							= Page::instance();
 	$L								= Language::instance();
 	Index::instance()->title_auto	= false;

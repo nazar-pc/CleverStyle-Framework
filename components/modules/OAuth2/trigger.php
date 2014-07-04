@@ -25,7 +25,7 @@ Trigger::instance()->register(
 		}
 		switch ($Config->components['modules']['OAuth2']['active']) {
 			case -1:
-				if (!ADMIN) {
+				if (!admin_path()) {
 					return;
 				}
 				require __DIR__.'/trigger/uninstalled.php';

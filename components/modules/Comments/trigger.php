@@ -14,7 +14,7 @@ Trigger::instance()->register(
 			case 1:
 				require __DIR__.'/trigger/enabled.php';
 			default:
-				if (!ADMIN) {
+				if (!admin_path()) {
 					return;
 				}
 				require __DIR__.'/trigger/installed.php';

@@ -47,7 +47,7 @@ Trigger::instance()
 	->register(
 		'System/Index/construct',
 		function () {
-			if (!ADMIN) {
+			if (!admin_path()) {
 				return;
 			}
 			switch (Config::instance()->components['modules']['Static_pages']['active']) {

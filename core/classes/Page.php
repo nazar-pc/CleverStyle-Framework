@@ -134,7 +134,7 @@ class Page {
 	 * @return Page
 	 */
 	function json ($add) {
-		if (!API) {
+		if (!api_path()) {
 			header('Content-Type: application/json; charset=utf-8', true);
 			interface_off();
 		}
@@ -230,9 +230,9 @@ class Page {
 			$this->js_internal(
 				'window.cs	= '._json_encode([
 					'base_url'			=> $Config->base_url(),
-					'current_base_url'	=> $Config->base_url().'/'.($Index->in_admin() ? 'admin/' : '').MODULE,
+					'current_base_url'	=> $Config->base_url().'/'.($Index->in_admin() ? 'admin/' : '').current_module(),
 					'public_key'		=> Core::instance()->public_key,
-					'module'			=> MODULE,
+					'module'			=> current_module(),
 					'in_admin'			=> (int)$Index->in_admin(),
 					'is_admin'			=> (int)$User->admin(),
 					'is_user'			=> (int)$User->user(),
@@ -297,7 +297,7 @@ class Page {
 					'name'			=> 'generator',
 					'content'		=> base64_decode('Q2xldmVyU3R5bGUgQ01TIGJ5IE1va3J5bnNreWkgTmF6YXI=')
 				],
-				(defined('ADMIN') && ADMIN) || (defined('API') && API) ? [
+				admin_path() ? [
 					'name'			=> 'robots',
 					'content'		=> 'noindex,nofollow'
 				] : false
@@ -660,7 +660,7 @@ class Page {
 			$this->og('description', $this->Description);
 		}
 		if (!isset($og['url']) || empty($og['url'])) {
-			$this->og('url', HOME ? $Config->base_url() : ($this->canonical_url ?: $Config->base_url().'/'.$Config->server['relative_address']));
+			$this->og('url', home_page() ? $Config->base_url() : ($this->canonical_url ?: $Config->base_url().'/'.$Config->server['relative_address']));
 		}
 		if (!isset($og['site_name']) || empty($og['site_name'])) {
 			$this->og('site_name', get_core_ml_text('name'));
@@ -758,7 +758,7 @@ class Page {
 			/**
 			 * Narrow the dependence to current module only
 			 */
-			$dependencies		= isset($dependencies[MODULE]) ? $dependencies[MODULE] : [];
+			$dependencies		= isset($dependencies[current_module()]) ? $dependencies[current_module()] : [];
 			$includes['css']	= ["storage/pcache/$this->pcache_basename.css?{$structure['']['css']}"];
 			$includes['js']		= ["storage/pcache/$this->pcache_basename.js?{$structure['']['js']}"];
 			$current_url		= str_replace('/', '+', $Config->server['relative_address']);
@@ -797,7 +797,7 @@ class Page {
 				/**
 				 * Narrow the dependence to current module only
 				 */
-				$dependencies	= isset($dependencies[MODULE]) ? $dependencies[MODULE] : [];
+				$dependencies	= isset($dependencies[current_module()]) ? $dependencies[current_module()] : [];
 				foreach ($includes_map as $url => $local_includes) {
 					$prefix_module	= explode('+', $url);
 					$prefix_module	= $prefix_module[0] != 'admin' ? $prefix_module[0] : $prefix_module[1];
@@ -1390,7 +1390,7 @@ class Page {
 		if (!error_code()) {
 			error_code(500);
 		}
-		if (defined('API') && !API && error_code() == 403 && _getcookie('sign_out')) {
+		if (!api_path() && error_code() == 403 && _getcookie('sign_out')) {
 			header('Location: '.Config::instance()->base_url(), true, 302);
 			$this->Content	= '';
 			exit;
@@ -1403,10 +1403,7 @@ class Page {
 		} else {
 			$error_description	= $custom_text ? : $error;
 		}
-		if (
-			(defined('API') && API) ||
-			$json
-		) {
+		if (api_path() || $json) {
 			if ($json) {
 				header('Content-Type: application/json; charset=utf-8', true);
 				interface_off();
@@ -1577,7 +1574,7 @@ class Page {
 		$ob					= false;
 		$Config				= Config::instance(true);
 		if (
-			API ||
+			api_path() ||
 			(
 				$Config &&
 				!zlib_compression() &&
@@ -1594,7 +1591,7 @@ class Page {
 			/**
 			 * Processing of replacing in content
 			 */
-			echo $this->process_replacing($this->Content ?: (API ? 'null' : ''));
+			echo $this->process_replacing($this->Content ?: (api_path() ? 'null' : ''));
 		} else {
 			Trigger::instance()->run('System/Page/pre_display');
 			/**

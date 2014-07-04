@@ -14,7 +14,7 @@ Trigger::instance()->register(
 		switch (Config::instance()->module('Polls')->active()) {
 			case 0:
 			case 1:
-				if (!ADMIN) {
+				if (!admin_path()) {
 					return;
 				}
 				require __DIR__.'/trigger/installed.php';

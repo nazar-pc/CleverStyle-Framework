@@ -58,13 +58,12 @@ Trigger::instance()
 			$Cache				= Cache::instance();
 			if (
 				!FIXED_LANGUAGE &&
-				defined('HOME') &&
 				$_SERVER['REQUEST_METHOD'] == 'GET' &&
 				$Cache->cache_state() &&
 				Core::instance()->cache_engine != 'BlackHole'
 			) {
 				$clang	= Language::instance()->clang;
-				if (!HOME) {
+				if (!home_page()) {
 					header("Location: /$clang/$relative_address", true, 301);
 				} else {
 					header("Location: /$clang", true, 301);
@@ -74,7 +73,7 @@ Trigger::instance()
 			Page::instance()->Head	.=
 				h::{'link[rel=alternate]'}([
 					'hreflang'	=> 'x-default',
-					'href'		=> !HOME ? "$base_url/$relative_address" : "$base_url"
+					'href'		=> home_page() ? $base_url : "$base_url/$relative_address"
 				]).
 				h::{'link[rel=alternate]|'}(array_map(
 					function ($lang) use ($base_url, $relative_address) {

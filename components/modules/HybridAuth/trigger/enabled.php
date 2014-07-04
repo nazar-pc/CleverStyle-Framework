@@ -236,7 +236,7 @@ function get_hybridauth_instance ($provider = null, $base_url = null) {
 		'base_url'	=> $base_url ?: $Config->base_url()."/HybridAuth/$provider/endpoint/".$User->get_session(),
 		'providers'	=> $Config->module('HybridAuth')->providers
 	]);
-	if ($User->user() && MODULE != 'HybridAuth') {
+	if ($User->user() && current_module() != 'HybridAuth') {
 		$HybridAuth->restoreSessionData(serialize($User->get_data('HybridAuth_session')));
 	}
 	return $HybridAuth;

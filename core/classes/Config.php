@@ -264,11 +264,11 @@ class Config {
 		}
 		$this->route				= $processed_route['route'];
 		$server['relative_address']	= $processed_route['relative_address'];
-		!defined('ADMIN')	&& define('ADMIN', $processed_route['ADMIN']);
-		!defined('API')		&& define('API', $processed_route['API']);
-		!defined('MODULE')	&& define('MODULE', $processed_route['MODULE']);
-		!defined('HOME')	&& define('HOME', $processed_route['HOME']);
-		if (API) {
+		admin_path($processed_route['ADMIN']);
+		api_path($processed_route['API']);
+		current_module($processed_route['MODULE']);
+		home_page($processed_route['HOME']);
+		if ($processed_route['API']) {
 			header('Content-Type: application/json; charset=utf-8', true);
 			interface_off();
 		}
@@ -561,7 +561,7 @@ class Config {
 			 */
 			if (
 				(
-					defined('ADMIN') && ADMIN && User::instance(true)->admin()
+					admin_path() && User::instance(true)->admin()
 				) ||
 				$callee_class == $this->class
 			) {

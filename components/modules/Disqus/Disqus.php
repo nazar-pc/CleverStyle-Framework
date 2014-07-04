@@ -28,7 +28,7 @@ class Disqus {
 	protected	$shortname;
 
 	protected function construct () {
-		$this->module		= MODULE;
+		$this->module		= current_module();
 		$this->shortname	= Config::instance()->module('Disqus')->shortname;
 	}
 	/**
