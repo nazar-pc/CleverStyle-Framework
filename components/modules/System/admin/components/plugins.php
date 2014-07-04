@@ -231,7 +231,7 @@ if (
 unset($rc);
 $a->buttons		= false;
 $a->file_upload	= true;
-$plugins_list	= [];
+$plugins_list	= '';
 if (!empty($plugins)) {
 	foreach ($plugins as $plugin) {
 		$addition_state = $action = '';
@@ -316,22 +316,27 @@ if (!empty($plugins)) {
 			);
 		}
 		unset($plugin_meta);
-		$plugins_list[]	= [
-			h::span(
-				$L->$plugin,
-				[
-					'data-title'	=> $plugin_info
-				]
+		$plugins_list	.= h::tr(
+			h::td(
+				h::span(
+					$L->$plugin,
+					[
+						'data-title'	=> $plugin_info
+					]
+				),
+				h::icon(
+					$state ? 'check' : 'minus',
+					[
+						'data-title'	=> $state ? $L->enabled : $L->disabled
+					]
+				).
+				$addition_state,
+				$action
 			),
-			h::icon(
-				$state ? 'check' : 'minus',
-				[
-					'data-title'	=> $state ? $L->enabled : $L->disabled
-				]
-			).
-			$addition_state,
-			$action
-		];
+			[
+				'class'	=> $state ? 'uk-alert-success' : 'uk-alert-warning'
+			]
+		);
 		unset($plugin_info);
 	}
 	unset($plugin, $state, $addition_state, $action);
@@ -349,7 +354,7 @@ $a->content(
 			$L->state,
 			$L->action
 		).
-		h::{'tbody tr| td'}([$plugins_list ?: false])
+		h::tbody($plugins_list ?: false)
 	).
 	h::p(
 		h::{'input[type=file][name=upload_plugin]'}([

@@ -92,14 +92,12 @@
         return this.each(function() {
           var $this, pos;
           $this = $(this);
-          if (!$this.attr('title')) {
-            $this.attr('title', $this.data('title')).attr('data-title', '');
-          }
           pos = $this.data('pos');
           return $this.attr('data-uk-tooltip', JSON.stringify({
             pos: pos ? pos : 'top',
             animation: true,
-            delay: 200
+            delay: 200,
+            src: $this.attr('data-title') ? $this.data('title') : $this.attr('title')
           }));
         });
       },

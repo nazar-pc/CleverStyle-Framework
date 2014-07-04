@@ -86,10 +86,6 @@ do ($=jQuery, UI = jQuery.UIkit) ->
 				return @
 			@.each ->
 				$this	= $(@)
-				if !$this.attr('title')
-					$this
-						.attr('title', $this.data('title'))
-						.attr('data-title', '')
 				pos		= $this.data('pos')
 				$this
 					.attr(
@@ -98,6 +94,11 @@ do ($=jQuery, UI = jQuery.UIkit) ->
 							pos			: if pos then pos else 'top'
 							animation	: true
 							delay		: 200
+							src			:
+								if $this.attr('data-title')
+									$this.data('title')
+								else
+									$this.attr('title')
 						)
 					)
 		###*

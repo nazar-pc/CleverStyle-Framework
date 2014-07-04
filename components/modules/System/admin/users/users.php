@@ -471,7 +471,7 @@ if (isset($rc[2], $rc[3])) {
 		'id', 'login', 'username', 'email'
 	];
 	$limit			= isset($_POST['search_limit'])	? (int)$_POST['search_limit']		: 20;
-	$start			= isset($_POST['search_start'])	? (int)$_POST['search_start'] - 1	: 0;
+	$page			= isset($_POST['page'])			? (int)$_POST['page']				: 1;
 	$search_text	= isset($_POST['search_text'])	? $_POST['search_text']				: '';
 	$columns_list	= '';
 	$search_modes	= [
@@ -554,7 +554,7 @@ if (isset($rc[2], $rc[3])) {
 		User::STATUS_NOT_ACTIVATED
 	]);
 	if ($results_count) {
-		$from		= $start * $limit;
+		$from		= ($page - 1) * $limit;
 		$users_ids	= $users_db->qfas([
 			"SELECT `id`
 			FROM `[prefix]users`
@@ -569,14 +569,15 @@ if (isset($rc[2], $rc[3])) {
 		]);
 		unset($from);
 	}
-	$users_list				= [];
+	$users_list				= '';
 	if (isset($users_ids) && is_array($users_ids)) {
 		foreach ($users_ids as $id) {
 			$is_guest		= $id == User::GUEST_ID;
 			$is_root		= $id == User::ROOT_ID;
 			$groups			= (array)$User->get_groups($id);
 			$is_bot			= in_array(User::BOT_GROUP_ID, $groups);
-			$is_active		= $User->get('status', $id) == User::STATUS_ACTIVE;
+			$status			= $User->get('status', $id);
+			$is_active		= $status == User::STATUS_ACTIVE;
 			$buttons		= (!$is_guest && !$is_root && !$is_bot ?
 				h::{'a.cs-button-compact'}(
 					h::icon('pencil'),
@@ -651,10 +652,16 @@ if (isset($rc[2], $rc[3])) {
 			} else {
 				$type = h::info('g');
 			}
-			$users_list[]	= array_values([$buttons, $type]+$user_data);
+			$users_list	.= h::tr(
+				h::td(array_values([$buttons, $type]+$user_data)),
+				[
+					'class'	=> $is_active ? 'uk-alert-success' : ($status == User::STATUS_INACTIVE ? 'uk-alert-warning' : false)
+				]
+			);
 		}
 	}
 	unset($id, $buttons, $user_data, $users_ids, $is_guest, $is_root, $is_bot);
+	$total_pages	= ceil($results_count / $limit);
 	$a->content(
 		h::{'ul.cs-tabs li'}(
 			$L->search,
@@ -685,12 +692,6 @@ if (isset($rc[2], $rc[3])) {
 					'name'			=> 'search_text',
 					'placeholder'	=> $L->search_text
 				]).
-				$L->page.' '.
-				h::{'input[type=number]'}([
-					'value'	=> $start + 1,
-					'min'	=> 1,
-					'name'	=> 'search_start'
-				]).
 				$L->items.' '.
 				h::{'input[type=number]'}([
 					'value'	=> $limit,
@@ -707,16 +708,16 @@ if (isset($rc[2], $rc[3])) {
 		h::hr().
 		h::{'p.cs-left'}(
 			h::{'button[type=submit]'}($L->search),
-			$L->found_users($results_count).($results_count > $limit ? ' / '.$L->page_from($start+1, ceil($results_count / $limit)) : '')
+			pages_buttons($page, $total_pages)
 		).
 		h::{'table.cs-table.cs-center-all'}(
 			h::{'thead tr th'}(
 				array_merge([$L->action, ''], $columns)
 			).
-			h::{'tbody tr| td'}($users_list)
+			h::tbody($users_list)
 		).
 		h::{'p.cs-left'}(
-			$L->found_users($results_count).($results_count > $limit ? ' / '.$L->page_from($start+1, ceil($results_count / $limit)) : ''),
+			pages_buttons($page, $total_pages),
 			h::{'a.cs-button'}(
 				$L->add_user,
 				[

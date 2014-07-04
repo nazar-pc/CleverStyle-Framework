@@ -557,7 +557,7 @@ if (!$show_modules) {
 	return;
 }
 $a->file_upload		= true;
-$modules_list = [];
+$modules_list		= '';
 foreach ($Config->components['modules'] as $module_name => &$module_data) {
 	/**
 	 * If module if enabled or disabled
@@ -757,36 +757,41 @@ foreach ($Config->components['modules'] as $module_name => &$module_data) {
 		);
 	}
 	unset($module_meta);
-	$modules_list[]	= [
-		h::a(
-			$L->$module_name,
+	$modules_list	.= h::tr(
+		h::td(
+			h::a(
+				$L->$module_name,
+				[
+					'href'			=> $admin_link ? "admin/$module_name" : false,
+					'data-title'	=> $module_info
+				]
+			),
+			h::icon(
+				$module_data['active'] == 1 ? (
+					$module_name == $Config->core['default_module'] ? 'home' : 'check'
+				) : (
+					$module_data['active'] == 0 ? 'minus' : 'times'
+				),
+				[
+					'data-title'	=> $module_data['active'] == 1 ? (
+						$module_name == $Config->core['default_module'] ? $L->default_module : $L->enabled
+					) : (
+						$module_data['active'] == 0 ? $L->disabled : "$L->uninstalled ($L->not_installed)"
+					)
+				]
+			).
+			$addition_state,
 			[
-				'href'			=> $admin_link ? "admin/$module_name" : false,
-				'data-title'	=> $module_info
+				$action,
+				[
+					'class'	=> 'cs-left-all'
+				]
 			]
 		),
-		h::icon(
-			$module_data['active'] == 1 ? (
-				$module_name == $Config->core['default_module'] ? 'home' : 'check'
-			) : (
-				$module_data['active'] == 0 ? 'minus' : 'times'
-			),
-			[
-				'data-title'	=> $module_data['active'] == 1 ? (
-					$module_name == $Config->core['default_module'] ? $L->default_module : $L->enabled
-				) : (
-					$module_data['active'] == 0 ? $L->disabled : "$L->uninstalled ($L->not_installed)"
-				)
-			]
-		).
-		$addition_state,
 		[
-			$action,
-			[
-				'class'	=> 'cs-left-all'
-			]
+			'class'	=> $module_data['active'] == 1 ? 'uk-alert-success' : ($module_data['active'] == -1 ? 'uk-alert-danger' : 'uk-alert-warning')
 		]
-	];
+	);
 	unset($module_info);
 }
 $modules_for_removal = array_keys(array_filter(
@@ -802,7 +807,7 @@ $a->content(
 			$L->state,
 			$L->action
 		).
-		h::{'tbody tr| td'}([$modules_list])
+		h::tbody($modules_list)
 	).
 	h::p(
 		h::{'input[type=file][name=upload_module]'}().
