@@ -826,7 +826,7 @@ function current_module ($current_module = null) {
 	return $stored_current_module;
 }
 /**
- * Is current path from api area?
+ * Is current page a home page?
  *
  * @param bool|null $home_page
  *
