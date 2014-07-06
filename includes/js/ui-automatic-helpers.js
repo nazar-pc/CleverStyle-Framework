@@ -43,11 +43,11 @@
       var MutationObserver, eventListenerSupported;
       MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
       eventListenerSupported = window.addEventListener;
-      if (!MutationObserver) {
+      if (MutationObserver) {
         return (new MutationObserver(function(mutations) {
-          return mutations.forEach(function() {
-            if (this.addedNodes.length) {
-              return ui_automatic_helpers_update($(this));
+          return mutations.forEach(function(mutation) {
+            if (mutation.addedNodes.length) {
+              return ui_automatic_helpers_update($(mutation.addedNodes));
             }
           });
         })).observe(document.body, {

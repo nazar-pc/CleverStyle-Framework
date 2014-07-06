@@ -49,12 +49,12 @@ $ ->
 	do ->
 		MutationObserver		= window.MutationObserver || window.WebKitMutationObserver
 		eventListenerSupported	= window.addEventListener;
-		if !MutationObserver
+		if MutationObserver
 			(
 				new MutationObserver (mutations) ->
-					mutations.forEach ->
-						if @.addedNodes.length
-							ui_automatic_helpers_update($(@))
+					mutations.forEach (mutation) ->
+						if mutation.addedNodes.length
+							ui_automatic_helpers_update($(mutation.addedNodes))
 			).observe(
 				document.body
 				childList	: true
