@@ -363,6 +363,9 @@ class User {
 			case 'user_agent':
 				return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 			case 'ip':
+				if (isset($_SERVER['HTTP_X_REAL_IP'])) {
+					return $_SERVER['HTTP_X_REAL_IP'];
+				}
 				return $_SERVER['REMOTE_ADDR'];
 			case 'forwarded_for':
 				if (!isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {

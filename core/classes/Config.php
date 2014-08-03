@@ -149,6 +149,7 @@ class Config {
 			return false;
 		}
 		$REMOTE_ADDR			= preg_replace('/[^a-f0-9\.:]/i', '', $_SERVER['REMOTE_ADDR']);
+		$HTTP_X_REAL_IP			= isset($_SERVER['HTTP_X_REAL_IP']) ? preg_replace('/[^a-f0-9\.:]/i', '', $_SERVER['HTTP_X_REAL_IP']) : false;
 		$HTTP_X_FORWARDED_FOR	= isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? preg_replace('/[^a-f0-9\.:]/i', '', $_SERVER['HTTP_X_FORWARDED_FOR']) : false;
 		$HTTP_CLIENT_IP			= isset($_SERVER['HTTP_CLIENT_IP']) ? preg_replace('/[^a-f0-9\.:]/i', '', $_SERVER['HTTP_CLIENT_IP']) : false;
 		foreach ($ips as $ip) {
@@ -159,6 +160,7 @@ class Config {
 				}
 				if (
 					_preg_match($ip, $REMOTE_ADDR) ||
+					($HTTP_X_REAL_IP && _preg_match($ip, $HTTP_X_REAL_IP)) ||
 					($HTTP_X_FORWARDED_FOR && _preg_match($ip, $HTTP_X_FORWARDED_FOR)) ||
 					($HTTP_CLIENT_IP && _preg_match($ip, $HTTP_CLIENT_IP))
 				) {
@@ -178,6 +180,9 @@ class Config {
 		$server['raw_relative_address']	= null_byte_filter($server['raw_relative_address']);
 		$server['host']					= $_SERVER['HTTP_HOST'];
 		$server['protocol']				= isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http';
+		if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+			$server['protocol']	= $_SERVER['HTTP_X_FORWARDED_PROTO'];
+		}
 		/**
 		 * If it  is not the main domain - try to find match in mirrors
 		 */
