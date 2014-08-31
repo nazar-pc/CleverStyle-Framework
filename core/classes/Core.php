@@ -66,7 +66,7 @@ class Core {
 			@mkdir(PCACHE, 0755);
 			file_put_contents(
 				PCACHE.'/.htaccess',
-				'<FilesMatch "\.(css|js)$">
+				'<FilesMatch "\.(css|js|html)$">
 	Allow From All
 </FilesMatch>
 <ifModule mod_expires.c>
@@ -78,6 +78,7 @@ class Core {
 </ifModule>
 AddEncoding gzip .js
 AddEncoding gzip .css
+AddEncoding gzip .html
 '
 			);
 		}

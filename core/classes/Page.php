@@ -63,8 +63,10 @@ class Page {
 				$head_prefix		= '',			//Is used as <head prefix="$head_prefix">
 				$no_head			= false;
 	protected	$theme, $color_scheme, $pcache_basename,
+				$core_html			= [0 => [], 1 => ''],
 				$core_js			= [0 => [], 1 => []],
 				$core_css			= [0 => [], 1 => []],
+				$html				= [0 => [], 1 => ''],
 				$js					= [0 => [], 1 => []],
 				$css				= [0 => [], 1 => []],
 				$link				= [],
@@ -265,6 +267,8 @@ class Page {
 		/**
 		 * Forming <head> content
 		 */
+		$this->core_html[0]	= implode('', array_unique($this->core_html[0]));
+		$this->html[0]		= implode('', array_unique($this->html[0]));
 		$this->core_css[0]	= implode('', array_unique($this->core_css[0]));
 		$this->core_css[1]	= implode('', array_unique($this->core_css[1]));
 		$this->css[0]		= implode('', array_unique($this->css[0]));
@@ -317,7 +321,9 @@ class Page {
 			).
 			$this->core_css[0].$this->css[0].
 			h::style($this->core_css[1].$this->css[1] ?: false).
-			h::script($this->core_js[1].$this->js[1]);
+			h::script($this->core_js[1].$this->js[1]).
+			$this->core_html[0].$this->html[0].
+			$this->core_html[1].$this->html[1];
 		if ($Config->core['put_js_after_body']) {
 			$this->post_Body	.= $this->core_js[0].$this->js[0];
 		} else {
@@ -444,6 +450,54 @@ class Page {
 		$this->Replace = [];
 		errors_on();
 		return $data;
+	}
+	/**
+	 * Including of Web Components
+	 *
+	 * @param string|string[]	$add	Path to including file, or code
+	 * @param string			$mode	Can be <b>file</b> or <b>code</b>
+	 *
+	 * @return Page
+	 */
+	function html ($add, $mode = 'file') {
+		return $this->html_internal($add, $mode);
+	}
+	/**
+	 * @param string|string[]	$add
+	 * @param string			$mode
+	 * @param bool				$core
+	 *
+	 * @return Page
+	 */
+	protected function html_internal ($add, $mode = 'file', $core = false) {
+		if (is_array($add)) {
+			foreach ($add as $script) {
+				if ($script) {
+					$this->html_internal($script, $mode, $core);
+				}
+			}
+		} elseif ($add) {
+			if ($core) {
+				if ($mode == 'file') {
+					$this->core_html[0][]	= h::link([
+						'href'	=> $add,
+						'rel'	=> 'import'
+					]);
+				} elseif ($mode == 'code') {
+					$this->core_html[1]	= $add."\n";
+				}
+			} else {
+				if ($mode == 'file') {
+					$this->html[0][]		= h::link([
+						'href'	=> $add,
+						'rel'	=> 'import'
+					]);
+				} elseif ($mode == 'code') {
+					$this->html[1]		= $add."\n";
+				}
+			}
+		}
+		return $this;
 	}
 	/**
 	 * Including of JavaScript
@@ -761,6 +815,7 @@ class Page {
 			$dependencies		= isset($dependencies[current_module()]) ? $dependencies[current_module()] : [];
 			$includes['css']	= ["storage/pcache/$this->pcache_basename.css?{$structure['']['css']}"];
 			$includes['js']		= ["storage/pcache/$this->pcache_basename.js?{$structure['']['js']}"];
+			$includes['html']	= ["storage/pcache/$this->pcache_basename.html?{$structure['']['html']}"];
 			$current_url		= str_replace('/', '+', $Config->server['relative_address']);
 			foreach ($structure as $filename_prefix => $hashes) {
 				$prefix_module	= explode('+', $filename_prefix);
@@ -785,6 +840,7 @@ class Page {
 			unset($dependencies, $structure, $filename_prefix, $hashes);
 			$this->css_internal($includes['css'], 'file', true);
 			$this->js_internal($includes['js'], 'file', true);
+			$this->html_internal($includes['html'], 'file', true);
 		} else {
 			if ($Config) {
 				$this->includes_dependencies_and_map($dependencies, $includes_map);
@@ -814,15 +870,22 @@ class Page {
 						if (isset($local_includes['js'])) {
 							$includes['js']	= array_merge($includes['js'], $local_includes['js']);
 						}
+						if (isset($local_includes['html'])) {
+							$includes['html']	= array_merge($includes['html'], $local_includes['html']);
+						}
 					}
 				}
 				unset($current_url, $dependencies, $url, $local_includes, $prefix_module);
-				$root_strlen = strlen(DIR) + 1; // +1 means slash following after root path
+				$root_strlen = strlen(DIR.'/');
 				foreach ($includes['css'] as &$file) {
 					$file = substr($file, $root_strlen);
 				}
 				unset($file);
 				foreach ($includes['js'] as &$file) {
+					$file = substr($file, $root_strlen);
+				}
+				unset($file);
+				foreach ($includes['html'] as &$file) {
 					$file = substr($file, $root_strlen);
 				}
 				unset($root_strlen, $file);
@@ -837,6 +900,10 @@ class Page {
 			 * Including of JavaScript
 			 */
 			$this->js_internal($includes['js'], 'file', true);
+			/**
+			 * Including of Web Components
+			 */
+			$this->html_internal($includes['html'], 'file', true);
 		}
 		return $this;
 	}
@@ -853,8 +920,7 @@ class Page {
 		$theme_pdir		= "themes/$this->theme";
 		$scheme_pdir	= "$theme_pdir/schemes/$this->color_scheme";
 		$get_files		= function ($dir, $prefix_path) {
-			$extension	= explode('/', $dir);
-			$extension	= array_pop($extension);
+			$extension	= basename($dir);
 			$list		= get_files_list(
 				$dir,
 				"/(.*)\\.$extension/i",
@@ -880,6 +946,11 @@ class Page {
 				$get_files(JS, $absolute ? true : 'includes/js'),
 				$get_files("$theme_dir/js", $absolute ? true : "$theme_pdir/js"),
 				$get_files("$scheme_dir/js", $absolute ? true : "$scheme_pdir/js")
+			),
+			'html' => array_merge(
+				$get_files(HTML, $absolute ? true : 'includes/html'),
+				$get_files("$theme_dir/html", $absolute ? true : "$theme_pdir/html"),
+				$get_files("$scheme_dir/html", $absolute ? true : "$scheme_pdir/html")
 			)
 		];
 		unset($theme_dir, $scheme_dir, $theme_pdir, $scheme_pdir);
@@ -896,6 +967,10 @@ class Page {
 				$includes['js'],
 				$get_files(MODULES."/$module_name/includes/js", $absolute ? true : "components/modules/$module_name/includes/js")
 			);
+			$includes['html']		= array_merge(
+				$includes['html'],
+				$get_files(MODULES."/$module_name/includes/html", $absolute ? true : "components/modules/$module_name/includes/html")
+			);
 		}
 		unset($module_name, $module_data);
 		foreach ($Config->components['plugins'] as $plugin_name) {
@@ -906,6 +981,10 @@ class Page {
 			$includes['js']		= array_merge(
 				$includes['js'],
 				$get_files(PLUGINS."/$plugin_name/includes/js", $absolute ? true : "components/plugins/$plugin_name/includes/js")
+			);
+			$includes['html']		= array_merge(
+				$includes['html'],
+				$get_files(PLUGINS."/$plugin_name/includes/html", $absolute ? true : "components/plugins/$plugin_name/includes/html")
 			);
 		}
 		unset($plugin_name);
@@ -984,8 +1063,7 @@ class Page {
 			}
 			foreach (file_get_json_nocomments(MODULES."/$module_name/includes/map.json") as $path	=> $files) {
 				foreach ($files as $file) {
-					$extension							= explode('.', $file);
-					$extension							= array_pop($extension);
+					$extension							= file_extension($file);
 					$file								= MODULES."/$module_name/includes/$extension/$file";
 					$includes_map[$path][$extension][]	= $file;
 					$all_includes[$extension]			= array_diff(
@@ -1026,8 +1104,7 @@ class Page {
 			}
 			foreach (file_get_json_nocomments(PLUGINS."/$plugin_name/includes/map.json") as $path => $files) {
 				foreach ($files as $file) {
-					$extension							= explode('.', $file);
-					$extension							= array_pop($extension);
+					$extension							= file_extension($file);
 					$file								= PLUGINS."/$plugin_name/includes/$extension/$file";
 					$includes_map[$path][$extension][]	= $file;
 					$all_includes[$extension]			= array_diff(
@@ -1115,6 +1192,15 @@ class Page {
 						file_get_contents($file),
 						$file
 					);
+				/**
+				 * Combine css and js files for Web Component into resulting files in order to optimize loading process
+				 */
+				} elseif ($extension == 'html') {
+					$files_content .= $this->html_includes_processing(
+						file_get_contents($file),
+						$file,
+						"$filename_prefix$this->pcache_basename"
+					);
 				} else {
 					$files_content .= file_get_contents($file).';';
 				}
@@ -1135,7 +1221,7 @@ class Page {
 	 * @param string	$data	Content of processed file
 	 * @param string	$file	Path to file, that includes specified in previous parameter content
 	 *
-	 * @return	string			$data
+	 * @return string	$data
 	 */
 	function css_includes_processing ($data, $file) {
 		$cwd	= getcwd();
@@ -1196,9 +1282,9 @@ class Page {
 				) {
 					return $match[0];
 				}
-				$format		= mb_substr($link, mb_strrpos($link, '.') + 1);
+				$extension	= file_extension($link);
 				$mime_type	= 'text/html';
-				switch ($format) {
+				switch ($extension) {
 					case 'jpeg':
 					case 'jpe':
 					case 'jpg':
@@ -1232,7 +1318,7 @@ class Page {
 				/**
 				 * For recursive includes processing, if CSS file includes others CSS files
 				 */
-				if ($format == 'css') {
+				if ($extension == 'css') {
 					$content	= $this->css_includes_processing($content, realpath($link));
 				}
 				$content	= base64_encode($content);
@@ -1240,6 +1326,97 @@ class Page {
 			},
 			$data
 		);
+		chdir($cwd);
+		return $data;
+	}
+	/**
+	 * Analyses file for scripts and styles, combines them into resulting files in order to optimize loading process
+	 * (files with combined scripts and styles will be created)
+	 *
+	 * @param string	$data								Content of processed file
+	 * @param string	$file								Path to file, that includes specified in previous parameter content
+	 * @param string	$base_filename_without_extension	Base filename without extension for resulting combined files
+	 *
+	 * @return string	$data
+	 */
+	function html_includes_processing ($data, $file, $base_filename_without_extension) {
+		$cwd				= getcwd();
+		chdir(dirname($file));
+		preg_match_all('/<script(.*)<\/script>/Uims', $data, $scripts);
+		if ($scripts) {
+			$scripts_content	= '';
+			foreach ($scripts[1] as $index => $script) {
+				$script	= explode('>', $script);
+				if (preg_match('/src\s*=\s*[\'"](.*)[\'"]/Uims', $script[0], $url)) {
+					$url	= $url[1];
+					if (
+						mb_strpos($url, 'http://') === 0 ||
+						mb_strpos($url, 'https://') === 0 ||
+						mb_strpos($url, 'ftp://') === 0 ||
+						mb_strpos($url, '/') === 0 ||
+						!file_exists(realpath($url))
+					) {
+						unset($scripts[0][$index]);
+						continue;
+					}
+					$scripts_content	.= file_get_contents(realpath($url)).';';
+				} else {
+					$scripts_content	.= $script[1].';';
+				}
+				unset($url);
+			}
+			unset($index, $script);
+			file_put_contents(PCACHE."/$base_filename_without_extension.js", gzencode($scripts_content, 9), LOCK_EX | FILE_BINARY);
+			unset($scripts_content);
+			// Replace first script with combined
+			$data	= str_replace($scripts[0][0], '<script src="'.$base_filename_without_extension.'.js"></script>', $data);
+			// Remove the rest of scripts
+			$data	= str_replace($scripts[0], '', $data);
+		}
+		unset($scripts);
+		preg_match_all('/<link(.*)>|<style(.*)<\/style>/Uims', $data, $links_and_styles);
+		$links_and_styles	= isset($links_and_styles[1]) ? $links_and_styles[1] : [];
+		if ($links_and_styles) {
+			$styles_content	= '';
+			foreach ($links_and_styles[1] as $index => $link) {
+				if (
+					$link &&
+					preg_match('/stylesheet/Uims', $link) &&
+					preg_match('/href\s*=\s*[\'"](.*)[\'"]/Uims', $link, $url)
+				) {
+					$url	= $url[1];
+					if (
+						mb_strpos($url, 'http://') === 0 ||
+						mb_strpos($url, 'https://') === 0 ||
+						mb_strpos($url, 'ftp://') === 0 ||
+						mb_strpos($url, '/') === 0 ||
+						!file_exists(realpath($url))
+					) {
+						unset($links_and_styles[0][$index]);
+						continue;
+					}
+					$url			= realpath($url);
+					$styles_content	.= $this->css_includes_processing(
+						file_get_contents($url),
+						$url
+					);
+				} elseif (mb_strpos($links_and_styles[0][$index], '</style>') !== -1) {
+					$style	= explode('>', $links_and_styles[2][$index])[1];
+					$styles_content	.= $this->css_includes_processing($style, $file);
+				} else {
+					unset($links_and_styles[0][$index]);
+				}
+				unset($url, $style);
+			}
+			unset($index, $link);
+			file_put_contents(PCACHE."/$base_filename_without_extension.css", gzencode($styles_content, 9), LOCK_EX | FILE_BINARY);
+			unset($styles_content);
+			// Replace first link or style with combined
+			$data	= str_replace($links_and_styles[0][0], '<link src="'.$base_filename_without_extension.'.css"></link>', $data);
+			// Remove the rest of links and styles
+			$data	= str_replace($links_and_styles[0], '', $data);
+		}
+		unset($scripts);
 		chdir($cwd);
 		return $data;
 	}

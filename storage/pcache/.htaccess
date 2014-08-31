@@ -1,4 +1,4 @@
-<FilesMatch "\.(css|js)$">
+<FilesMatch "\.(css|js|html)$">
 	Allow From All
 </FilesMatch>
 <ifModule mod_expires.c>
@@ -10,3 +10,4 @@
 </ifModule>
 AddEncoding gzip .js
 AddEncoding gzip .css
+AddEncoding gzip .html
