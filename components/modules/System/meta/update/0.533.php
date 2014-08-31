@@ -8,22 +8,6 @@
  * @license        MIT License, see license.txt
  */
 file_put_contents(
-	DIR.'/.htaccess',
-	str_replace(
-		[
-			'<FilesMatch "\.(css|js|gif|jpg|jpeg|png|ico|eot|ttc|ttf|svg|svgz|woff)$">'
-		],
-		[
-			'<FilesMatch ".*/includes/html/.*\.html$">
-	RewriteEngine Off
-</FilesMatch>
-<FilesMatch "\.(css|js|gif|jpg|jpeg|png|ico|eot|ttc|ttf|svg|svgz|woff)$">',
-			''
-		],
-		file_get_contents(DIR.'/.htaccess')
-	)
-);
-file_put_contents(
 	PCACHE.'/.htaccess',
 	'<FilesMatch "\.(css|js|html)$">
 	Allow From All
