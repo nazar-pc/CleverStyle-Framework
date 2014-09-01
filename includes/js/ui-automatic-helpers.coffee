@@ -5,6 +5,7 @@
  * @license		MIT License, see license.txt
 ###
 $ ->
+	window.no_ui_selector		= '.cs-no-ui'
 	ui_automatic_helpers_update = (element) ->
 		element.filter('.cs-table').addClass('uk-table uk-table-condensed uk-table-hover')
 		element.find('.cs-table').addClass('uk-table uk-table-condensed uk-table-hover')
@@ -18,22 +19,22 @@ $ ->
 		element.filter('.cs-tabs:not(.uk-tab)').cs().tabs()
 		element.find('.cs-tabs:not(.uk-tab)').cs().tabs()
 
-		if element.is('.cs-no-ui') || element.parents().filter('.cs-no-ui').length
+		if element.is(no_ui_selector) || element.closest(no_ui_selector).length
 			return
 
 		element.filter('form:not(.uk-form)').addClass('uk-form')
-		element.find('form:not(.cs-no-ui, .uk-form)').addClass('uk-form')
+		element.find("form:not(#{no_ui_selector}, .uk-form)").addClass('uk-form')
 
-		element.filter(':not(.uk-button) > input:radio:not(.cs-no-ui)').cs().radio()
-		element.find(':not(.uk-button) > input:radio:not(.cs-no-ui)').cs().radio()
+		element.filter(":not(.uk-button) > input:radio:not(#{no_ui_selector})").cs().radio()
+		element.find(":not(.uk-button) > input:radio:not(#{no_ui_selector})").cs().radio()
 
-		element.filter(':not(.uk-button) > input:checkbox:not(.cs-no-ui)').cs().checkbox()
-		element.find(':not(.uk-button) > input:checkbox:not(.cs-no-ui)').cs().checkbox()
+		element.filter(":not(.uk-button) > input:checkbox:not(#{no_ui_selector})").cs().checkbox()
+		element.find(":not(.uk-button) > input:checkbox:not(#{no_ui_selector})").cs().checkbox()
 
 		element.filter(':button:not(.uk-button), .cs-button, .cs-button-compact')
 			.addClass('uk-button')
 			.disableSelection()
-		element.find(':button:not(.cs-no-ui, .uk-button), .cs-button, .cs-button-compact')
+		element.find(":button:not(#{no_ui_selector}, .uk-button), .cs-button, .cs-button-compact")
 			.addClass('uk-button')
 			.disableSelection()
 
@@ -41,7 +42,7 @@ $ ->
 			.addClass('cs-autosized')
 			.autosize
 				append	: "\n"
-		element.find('textarea:not(.cs-no-ui, .cs-no-resize, .EDITOR, .SIMPLE_EDITOR, .cs-autosized)')
+		element.find("textarea:not(#{no_ui_selector}, .cs-no-resize, .EDITOR, .SIMPLE_EDITOR, .cs-autosized)")
 			.addClass('cs-autosized')
 			.autosize
 				append	: "\n"

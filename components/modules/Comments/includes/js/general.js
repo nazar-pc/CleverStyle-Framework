@@ -7,7 +7,7 @@
  */
 $(function () {
 	var	L	= cs.Language;
-	$(document).on(
+	$('body').on(
 		'click',
 		'.cs-comments-comment-write-send',
 		blogs_add_comment

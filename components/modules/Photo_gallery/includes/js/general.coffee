@@ -35,7 +35,7 @@ $ ->
 	if images_section.length
 		$('html, body').stop().animate
 			scrollTop	: $('.cs-photo-gallery-images').offset().top - $(document).height() * .1
-		$(document).on(
+		$('body').on(
 			'click',
 			'.cs-photo-gallery-image-delete'
 			->

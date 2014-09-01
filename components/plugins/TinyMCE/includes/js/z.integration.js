@@ -8,6 +8,7 @@
  */
 tinymce.baseURL	= '/components/plugins/TinyMCE/includes/js';
 $(function () {
+	window.no_ui_selector	+= ', .mce-tinymce';
 	var base_config			= {
 		doctype					: '<!doctype html>',
 		theme					: cs.tinymce && cs.tinymce.theme !== undefined ? cs.tinymce.theme : 'modern',

@@ -18,7 +18,7 @@
   $(function() {
     var L;
     L = cs.Language;
-    $(document).on('click', '.cs-content-add', function() {
+    $('body').on('click', '.cs-content-add', function() {
       var content, key, modal_body, title, type;
       modal_body = $("<div><div class=\"uk-form\">\n	<p>\n		<label>" + L.content_key + ":</label>\n		<input type=\"text\" name=\"key\">\n	</p>\n	<p>\n		<label>" + L.content_title + ":</label>\n		<input type=\"text\" name=\"title\">\n	</p>\n	<p>\n		<label>" + L.content_content + ":</label>\n		<textarea class=\"text\"></textarea>\n		<textarea class=\"html EDITOR\" id=\"cs-content-html-content\"></textarea>\n	</p>\n	<p>\n		<label>" + L.content_type + ":</label>\n		<select name=\"type\">\n			<option value=\"text\">text</option>\n			<option value=\"html\" id=\"cs-content-html-content\">html</option>\n		</select>\n	</p>\n	<p class=\"cs-right\">\n		<button class=\"uk-button\">Save</button>\n	</p>\n</div></div>");
       key = modal_body.find('[name=key]');
@@ -128,7 +128,7 @@
           return button.remove();
         });
       };
-      return $(document).on('mousemove', '[data-cs-content]', function(e) {
+      return $('body').on('mousemove', '[data-cs-content]', function(e) {
         var $this;
         if (showed_button) {
           return;

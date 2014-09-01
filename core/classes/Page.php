@@ -321,13 +321,17 @@ class Page {
 			).
 			$this->core_css[0].$this->css[0].
 			h::style($this->core_css[1].$this->css[1] ?: false).
-			h::script($this->core_js[1].$this->js[1]).
-			$this->core_html[0].$this->html[0].
-			$this->core_html[1].$this->html[1];
+			h::script($this->core_js[1].$this->js[1]);
 		if ($Config->core['put_js_after_body']) {
-			$this->post_Body	.= $this->core_js[0].$this->js[0];
+			$this->post_Body	.=
+				$this->core_js[0].$this->js[0].
+				$this->core_html[0].$this->html[0].
+				$this->core_html[1].$this->html[1];
 		} else {
-			$this->Head			.= $this->core_js[0].$this->js[0];
+			$this->Head			.=
+				$this->core_js[0].$this->js[0].
+				$this->core_html[0].$this->html[0].
+				$this->core_html[1].$this->html[1];
 		}
 		/**
 		 * Generation of Open Graph protocol information

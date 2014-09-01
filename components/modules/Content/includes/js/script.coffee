@@ -9,7 +9,7 @@ if !cs.is_admin
 	return
 $ ->
 	L	= cs.Language
-	$(document)
+	$('body')
 		.on(
 			'click'
 			'.cs-content-add'
@@ -162,7 +162,7 @@ $ ->
 			container.mouseleave ->
 				showed_button	= false
 				button.remove()
-		$(document)
+		$('body')
 			.on(
 				'mousemove'
 				'[data-cs-content]'
