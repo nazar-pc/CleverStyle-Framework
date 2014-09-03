@@ -1175,7 +1175,7 @@ class Page {
 	 * Resulting file name consists of <b>$filename_prefix</b> and <b>$this->pcache_basename</b>
 	 *
 	 * @param string	$filename_prefix
-	 * @param array		$includes			Array of paths to files, may have keys: <b>css</b> and/or <b>js</b>
+	 * @param array		$includes			Array of paths to files, may have keys: <b>css</b> and/or <b>js</b> and/or <b>html</b>
 	 *
 	 * @return array
 	 */
@@ -1203,10 +1203,11 @@ class Page {
 					$files_content .= $this->html_includes_processing(
 						file_get_contents($file),
 						$file,
-						"$filename_prefix$this->pcache_basename"
+						"$filename_prefix$this->pcache_basename.$extension",
+						PCACHE
 					);
 				} else {
-					$files_content .= file_get_contents($file).';';
+					$files_content .= file_get_contents($file).";\n";
 				}
 			}
 			if ($filename_prefix == '' && $extension == 'js') {
@@ -1337,13 +1338,14 @@ class Page {
 	 * Analyses file for scripts and styles, combines them into resulting files in order to optimize loading process
 	 * (files with combined scripts and styles will be created)
 	 *
-	 * @param string	$data								Content of processed file
-	 * @param string	$file								Path to file, that includes specified in previous parameter content
-	 * @param string	$base_filename_without_extension	Base filename without extension for resulting combined files
+	 * @param string	$data				Content of processed file
+	 * @param string	$file				Path to file, that includes specified in previous parameter content
+	 * @param string	$base_filename		Base filename for resulting combined files
+	 * @param string	$destination_dir	Directory where to put combined files
 	 *
 	 * @return string	$data
 	 */
-	function html_includes_processing ($data, $file, $base_filename_without_extension) {
+	function html_includes_processing ($data, $file, $base_filename, $destination_dir) {
 		$cwd				= getcwd();
 		chdir(dirname($file));
 		preg_match_all('/<script(.*)<\/script>/Uims', $data, $scripts);
@@ -1363,17 +1365,17 @@ class Page {
 						unset($scripts[0][$index]);
 						continue;
 					}
-					$scripts_content	.= file_get_contents(realpath($url)).';';
+					$scripts_content	.= file_get_contents(realpath($url)).";\n";
 				} else {
-					$scripts_content	.= $script[1].';';
+					$scripts_content	.= $script[1].";\n";
 				}
 				unset($url);
 			}
 			unset($index, $script);
-			file_put_contents(PCACHE."/$base_filename_without_extension.js", gzencode($scripts_content, 9), LOCK_EX | FILE_BINARY);
+			file_put_contents("$destination_dir/$base_filename.js", gzencode($scripts_content, 9), LOCK_EX | FILE_BINARY);
 			unset($scripts_content);
 			// Replace first script with combined
-			$data	= str_replace($scripts[0][0], '<script src="'.$base_filename_without_extension.'.js"></script>', $data);
+			$data	= str_replace($scripts[0][0], '<script src="'.$base_filename.'.js"></script>', $data);
 			// Remove the rest of scripts
 			$data	= str_replace($scripts[0], '', $data);
 		}
@@ -1413,10 +1415,10 @@ class Page {
 				unset($url, $style);
 			}
 			unset($index, $link);
-			file_put_contents(PCACHE."/$base_filename_without_extension.css", gzencode($styles_content, 9), LOCK_EX | FILE_BINARY);
+			file_put_contents("$destination_dir/$base_filename.css", gzencode($styles_content, 9), LOCK_EX | FILE_BINARY);
 			unset($styles_content);
 			// Replace first link or style with combined
-			$data	= str_replace($links_and_styles[0][0], '<link src="'.$base_filename_without_extension.'.css"></link>', $data);
+			$data	= str_replace($links_and_styles[0][0], '<link src="'.$base_filename.'.css"></link>', $data);
 			// Remove the rest of links and styles
 			$data	= str_replace($links_and_styles[0], '', $data);
 		}
