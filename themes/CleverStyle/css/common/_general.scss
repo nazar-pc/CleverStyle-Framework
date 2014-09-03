@@ -8,9 +8,23 @@
 @import "../common_config";
 @import "mixins";
 
-* {
+html {
 	box-sizing      : border-box;
 	-moz-box-sizing : border-box;
+}
+
+*,
+*::before,
+*:after {
+	box-sizing      : inherit;
+	-moz-box-sizing : inherit;
+}
+
+::shadow *,
+::shadow *::before,
+::shadow *:after {
+	box-sizing      : inherit;
+	-moz-box-sizing : inherit;
 }
 
 code {
