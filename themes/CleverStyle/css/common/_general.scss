@@ -20,9 +20,9 @@ html {
 	-moz-box-sizing : inherit;
 }
 
-::shadow *,
-::shadow *::before,
-::shadow *:after {
+body /deep/ *,
+body /deep/ *::before,
+body /deep/ *:after {
 	box-sizing      : inherit;
 	-moz-box-sizing : inherit;
 }
