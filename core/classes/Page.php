@@ -1203,7 +1203,7 @@ class Page {
 					$files_content .= $this->html_includes_processing(
 						file_get_contents($file),
 						$file,
-						"$filename_prefix$this->pcache_basename.$extension",
+						"$filename_prefix$this->pcache_basename-".basename($file).'+'.substr(md5($file), 0, 5),
 						PCACHE
 					);
 				} else {
