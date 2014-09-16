@@ -5,7 +5,7 @@
 <p>Integration on client-side is possible through JavaScript function <code>file_upload()</code></p>
 <ul>
 	<li>
-		<h4><code>file_upload(button, success, error, progress, multi)</code></h4>
+		<h4><code>file_upload(button, success, error, progress, multi, drop_element)</code></h4>
 		<dl>
 			<dt>button</dt>
 			<dd>
@@ -20,6 +20,8 @@
 			<dd>Function, will be called when file uploading progress changes, accepts 4 arguments <code>percent, size, uploaded_size, name</code> current progress in percents, total file size, size of uploaded part and file name</dd>
 			<dt>multi</dt>
 			<dd>If specified and <code>true</code> - selection of several files will be possible</dd>
+			<dt>drop_element</dt>
+			<dd>If specified - it will be possible to drop file on specified element to start file uploading; if not specified - <code>button</code> assumed</dd>
 		</dl>
 		<p>Example (TinyMCE plugin):</p>
 		<pre>cs.file_upload ? function (field_name) {
