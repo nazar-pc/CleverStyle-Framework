@@ -1,6 +1,6 @@
 {
 	"Plupload"	: [
-		"a.html5.moxie.min.js",
+		"a.moxie+FileInput+FileDrop+XHR+HTML5.min.js",
 		"b.plupload.min.js",
 		"i18n/ru.js",
 		"i18n/uk.js",
