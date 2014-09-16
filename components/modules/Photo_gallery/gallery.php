@@ -21,14 +21,17 @@ $Index         = Index::instance();
 $L             = Language::instance();
 $Photo_gallery = Photo_gallery::instance();
 $gallery       = $Photo_gallery->get_gallery($Config->route[1]);
-$Index->content(
-	h::{'p.cs-left a.cs-button-compact.cs-photo-gallery-add-images'}(
-		h::icon('plus').$L->photo_gallery_add_image,
-		[
-			'data-gallery' => $gallery['id']
-		]
-	)
-);
+$User   = User::instance();
+if ($User->user()) {
+	$Index->content(
+		h::{'p.cs-left a.cs-button-compact.cs-photo-gallery-add-images'}(
+			h::icon('plus').$L->photo_gallery_add_image,
+			[
+				'data-gallery' => $gallery['id']
+			]
+		)
+	);
+}
 if (!$gallery['images']) {
 	$Index->content(
 		h::{'p.cs-center'}($L->photo_gallery_gallery_empty)
@@ -49,7 +52,6 @@ if ($images_titles) {
 	$Page->Description = description($gallery['description']);
 }
 unset($images_titles);
-$User   = User::instance();
 $module = path($L->Photo_gallery);
 $Page->canonical_url("{$Config->base_url()}/$module/$gallery[path]");
 $Index->content(
