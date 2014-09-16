@@ -25,7 +25,7 @@ if (isset($_POST['edit_images'])) {
 	foreach ($_POST['edit_images'] as $image => $data) {
 		$image = $Photo_gallery->get($image);
 		if ($image && $User->admin() || $image['user'] == $User->id) {
-			if (isset($data['delete'])) {
+			if (isset($data['delete']) && $data['delete']) {
 				$Photo_gallery->del($image['id']);
 			} else {
 				$Photo_gallery->set($image['id'], $data['title'], $data['description']);
