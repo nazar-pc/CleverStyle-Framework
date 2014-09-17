@@ -530,6 +530,9 @@ class User {
 			}
 			if ($item == 'login' || $item == 'email') {
 				$value	= mb_strtolower($value);
+				if ($item == 'email' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+					return false;
+				}
 				if ($this->get_id(hash('sha224', $value)) !== false) {
 					return false;
 				}
