@@ -1457,6 +1457,7 @@ class Page {
 		unset($scripts);
 		preg_match_all('/<link(.*)>|<style(.*)<\/style>/Uims', $data, $links_and_styles);
 		$links_and_styles	= isset($links_and_styles[1]) ? $links_and_styles : [];
+		$shim				= false;
 		if ($links_and_styles) {
 			$styles_content	= '';
 			foreach ($links_and_styles[1] as $index => $link) {
@@ -1476,12 +1477,18 @@ class Page {
 						unset($links_and_styles[0][$index]);
 						continue;
 					}
+					if (preg_match('/shim-shadowdom/Uims', $links_and_styles[0][$index])) {
+						$shim = true;
+					}
 					$url			= realpath($url);
 					$styles_content	.= $this->css_includes_processing(
 						file_get_contents($url),
 						$url
 					);
 				} elseif (mb_strpos($links_and_styles[0][$index], '</style>') !== -1) {
+					if (preg_match('/shim-shadowdom/Uims', $links_and_styles[0][$index])) {
+						$shim = true;
+					}
 					$style	= explode('>', $links_and_styles[2][$index], 2)[1];
 					$styles_content	.= $this->css_includes_processing($style, $file);
 				} else {
@@ -1493,7 +1500,8 @@ class Page {
 			file_put_contents("$destination_dir/$base_filename.css", gzencode($styles_content, 9), LOCK_EX | FILE_BINARY);
 			unset($styles_content);
 			// Replace first link or style with combined
-			$data	= str_replace($links_and_styles[0][0], '<link rel="stylesheet" href="'.$base_filename.'.css">', $data);
+			$shim	= $shim ? ' shim-shadowdom' : '';
+			$data	= str_replace($links_and_styles[0][0], '<link rel="stylesheet" href="'.$base_filename.'.css"'.$shim.'>', $data);
 			// Remove the rest of links and styles
 			$data	= str_replace($links_and_styles[0], '', $data);
 		}
