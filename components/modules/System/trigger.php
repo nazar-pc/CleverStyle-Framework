@@ -16,12 +16,20 @@ Trigger::instance()
 	->register(
 		'System/Config/routing_replace',
 		function ($data) {
-			$rc = explode('/', $data['rc']);
+			$rc		= explode('/', $data['rc']);
+			$Config	= Config::instance();
 			if (!isset($rc[0])) {
 				return;
 			}
 			$L  = Language::instance();
-			if ($rc[0] == 'profile' || $rc[0] == path($L->profile)) {
+			if (
+				$rc[0] == 'profile' ||
+				(
+					$rc[0] == path($L->profile) &&
+					!isset($Config->components['modules'][$rc[0]]) &&
+					!in_array($rc[0], $Config->components['plugins'])
+				)
+			) {
 				$rc[0] = 'profile';
 				switch ($rc[0]) {
 					case path($L->profile):
