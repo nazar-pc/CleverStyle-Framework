@@ -816,14 +816,23 @@ class Page {
 			/**
 			 * Narrow the dependence to current module only
 			 */
-			$dependencies		= isset($dependencies[current_module()]) ? $dependencies[current_module()] : [];
-			$includes['css']	= ["storage/pcache/$this->pcache_basename.css?{$structure['']['css']}"];
-			$includes['js']		= ["storage/pcache/$this->pcache_basename.js?{$structure['']['js']}"];
-			$includes['html']	= ["storage/pcache/$this->pcache_basename.html?{$structure['']['html']}"];
-			$current_url		= str_replace('/', '+', $Config->server['relative_address']);
+			$dependencies			= isset($dependencies[current_module()]) ? $dependencies[current_module()] : [];
+			$system_includes		= [
+				'css'	=> ["storage/pcache/$this->pcache_basename.css?{$structure['']['css']}"],
+				'js'	=> ["storage/pcache/$this->pcache_basename.js?{$structure['']['js']}"],
+				'html'	=> ["storage/pcache/$this->pcache_basename.html?{$structure['']['html']}"]
+			];
+			$includes				= [
+				'css'	=> [],
+				'js'	=> [],
+				'html'	=> []
+			];
+			$dependencies_includes	= $includes;
+			$current_url			= str_replace('/', '+', $Config->server['relative_address']);
 			foreach ($structure as $filename_prefix => $hashes) {
 				$prefix_module	= explode('+', $filename_prefix);
 				$prefix_module	= $prefix_module[0] != 'admin' ? $prefix_module[0] : $prefix_module[1];
+				$is_dependency	= false;
 				if (
 					(
 						$filename_prefix &&
@@ -831,55 +840,121 @@ class Page {
 					) ||
 					(
 						$dependencies &&
-						array_search($prefix_module, $dependencies) !== false
+						array_search($prefix_module, $dependencies) !== false &&
+						$is_dependency = true
 					)
 				) {
 					foreach ($hashes as $extension => $hash) {
-						$includes[$extension][]	= "storage/pcache/$filename_prefix$this->pcache_basename.$extension?$hash";
+						if ($is_dependency) {
+							$dependencies_includes[$extension][] = "storage/pcache/$filename_prefix$this->pcache_basename.$extension?$hash";
+						} else {
+							$includes[$extension][] = "storage/pcache/$filename_prefix$this->pcache_basename.$extension?$hash";
+						}
 					}
 					unset($extension, $hash);
 				}
-				unset($prefix_module);
+				unset($prefix_module, $is_dependency);
 			}
 			unset($dependencies, $structure, $filename_prefix, $hashes);
-			$this->css_internal($includes['css'], 'file', true);
-			$this->js_internal($includes['js'], 'file', true);
-			$this->html_internal($includes['html'], 'file', true);
+			$this->css_internal(
+				array_merge(
+					$system_includes['css'],
+					$dependencies_includes['css'],
+					$includes['css']
+				),
+				'file',
+				true
+			);
+			$this->js_internal(
+				array_merge(
+					$system_includes['js'],
+					$dependencies_includes['js'],
+					$includes['js']
+				),
+				'file',
+				true
+			);
+			$this->html_internal(
+				array_merge(
+					$system_includes['html'],
+					$dependencies_includes['html'],
+					$includes['html']
+				),
+				'file',
+				true
+			);
 		} else {
 			if ($Config) {
 				$this->includes_dependencies_and_map($dependencies, $includes_map);
 				/**
 				 * Add system includes
 				 */
-				$includes		= $includes_map[''];
-				unset($includes_map['']);
+				$includes				= [
+					'css'	=> [],
+					'js'	=> [],
+					'html'	=> []
+				];
+				$dependencies_includes	= $includes;
 				$current_url	= $Config->server['relative_address'];
 				/**
 				 * Narrow the dependence to current module only
 				 */
 				$dependencies	= isset($dependencies[current_module()]) ? $dependencies[current_module()] : [];
 				foreach ($includes_map as $url => $local_includes) {
+					if (!$url) {
+						continue;
+					}
 					$prefix_module	= explode('+', $url);
 					$prefix_module	= $prefix_module[0] != 'admin' ? $prefix_module[0] : $prefix_module[1];
+					$is_dependency	= false;
 					if (
 						mb_strpos($current_url, $url) === 0 ||
 						(
 							$dependencies &&
-							array_search($prefix_module, $dependencies) !== false
+							array_search($prefix_module, $dependencies) !== false &&
+							$is_dependency = true
 						)
 					) {
-						if (isset($local_includes['css'])) {
-							$includes['css']	= array_merge($includes['css'], $local_includes['css']);
-						}
-						if (isset($local_includes['js'])) {
-							$includes['js']	= array_merge($includes['js'], $local_includes['js']);
-						}
-						if (isset($local_includes['html'])) {
-							$includes['html']	= array_merge($includes['html'], $local_includes['html']);
+						if ($is_dependency) {
+							if (isset($local_includes['css'])) {
+								$dependencies_includes['css'] = array_merge($dependencies_includes['css'], $local_includes['css']);
+							}
+							if (isset($local_includes['js'])) {
+								$dependencies_includes['js'] = array_merge($dependencies_includes['js'], $local_includes['js']);
+							}
+							if (isset($local_includes['html'])) {
+								$dependencies_includes['html'] = array_merge($dependencies_includes['html'], $local_includes['html']);
+							}
+						} else {
+							if (isset($local_includes['css'])) {
+								$includes['css'] = array_merge($includes['css'], $local_includes['css']);
+							}
+							if (isset($local_includes['js'])) {
+								$includes['js'] = array_merge($includes['js'], $local_includes['js']);
+							}
+							if (isset($local_includes['html'])) {
+								$includes['html'] = array_merge($includes['html'], $local_includes['html']);
+							}
 						}
 					}
 				}
-				unset($current_url, $dependencies, $url, $local_includes, $prefix_module);
+				unset($current_url, $dependencies, $url, $local_includes, $prefix_module, $is_dependency);
+				$includes['css']	= array_merge(
+					$includes_map['']['css'] ?: [],
+					$dependencies_includes['css'] ?: [],
+					$includes['css'] ?: []
+				);
+				$includes['js']		= array_merge(
+					$includes_map['']['js'] ?: [],
+					$dependencies_includes['js'] ?: [],
+					$includes['js'] ?: []
+				);
+				$includes['html']	= array_merge(
+					$includes_map['']['html'] ?: [],
+					$dependencies_includes['html'] ?: [],
+					$includes['html'] ?: []
+				);
+				unset($dependencies_includes);
 				$root_strlen = strlen(DIR.'/');
 				foreach ($includes['css'] as &$file) {
 					$file = substr($file, $root_strlen);
@@ -1381,7 +1456,7 @@ class Page {
 		}
 		unset($scripts);
 		preg_match_all('/<link(.*)>|<style(.*)<\/style>/Uims', $data, $links_and_styles);
-		$links_and_styles	= isset($links_and_styles[1]) ? $links_and_styles[1] : [];
+		$links_and_styles	= isset($links_and_styles[1]) ? $links_and_styles : [];
 		if ($links_and_styles) {
 			$styles_content	= '';
 			foreach ($links_and_styles[1] as $index => $link) {
@@ -1407,7 +1482,7 @@ class Page {
 						$url
 					);
 				} elseif (mb_strpos($links_and_styles[0][$index], '</style>') !== -1) {
-					$style	= explode('>', $links_and_styles[2][$index])[1];
+					$style	= explode('>', $links_and_styles[2][$index], 2)[1];
 					$styles_content	.= $this->css_includes_processing($style, $file);
 				} else {
 					unset($links_and_styles[0][$index]);
@@ -1418,7 +1493,7 @@ class Page {
 			file_put_contents("$destination_dir/$base_filename.css", gzencode($styles_content, 9), LOCK_EX | FILE_BINARY);
 			unset($styles_content);
 			// Replace first link or style with combined
-			$data	= str_replace($links_and_styles[0][0], '<link src="'.$base_filename.'.css"></link>', $data);
+			$data	= str_replace($links_and_styles[0][0], '<link rel="stylesheet" href="'.$base_filename.'.css">', $data);
 			// Remove the rest of links and styles
 			$data	= str_replace($links_and_styles[0], '', $data);
 		}
