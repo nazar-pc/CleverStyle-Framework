@@ -181,8 +181,10 @@ cs.restore_password			= (email) ->
  *
  * @param {string} current_password
  * @param {string} new_password
+ * @param {Function} success
+ * @param {Function} error
 ###
-cs.change_password			= (current_password, new_password) ->
+cs.change_password			= (current_password, new_password, success, error) ->
 	if !current_password
 		alert(L.please_type_current_password)
 		return
@@ -203,9 +205,17 @@ cs.change_password			= (current_password, new_password) ->
 		type	: 'post'
 		success	: (result) ->
 			if result == 'OK'
-				alert(L.password_changed_successfully)
+				if success
+					success()
+				else
+					alert(L.password_changed_successfully)
 			else
-				alert(result)
+				if error
+					error()
+				else
+					alert(result)
+		error	: ->
+			error()
 ###*
  * Encodes data with MIME base64
  *

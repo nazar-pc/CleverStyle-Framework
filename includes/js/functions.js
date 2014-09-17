@@ -238,10 +238,12 @@
    *
    * @param {string} current_password
    * @param {string} new_password
+   * @param {Function} success
+   * @param {Function} error
   */
 
 
-  cs.change_password = function(current_password, new_password) {
+  cs.change_password = function(current_password, new_password, success, error) {
     if (!current_password) {
       alert(L.please_type_current_password);
       return;
@@ -264,10 +266,21 @@
       type: 'post',
       success: function(result) {
         if (result === 'OK') {
-          return alert(L.password_changed_successfully);
+          if (success) {
+            return success();
+          } else {
+            return alert(L.password_changed_successfully);
+          }
         } else {
-          return alert(result);
+          if (error) {
+            return error();
+          } else {
+            return alert(result);
+          }
         }
+      },
+      error: function() {
+        return error();
       }
     });
   };
