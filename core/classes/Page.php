@@ -1447,10 +1447,12 @@ class Page {
 				unset($url);
 			}
 			unset($index, $script);
+			$content_md5	= substr(md5($scripts_content), 0, 5);
 			file_put_contents("$destination_dir/$base_filename.js", gzencode($scripts_content, 9), LOCK_EX | FILE_BINARY);
 			unset($scripts_content);
 			// Replace first script with combined
-			$data	= str_replace($scripts[0][0], '<script src="'.$base_filename.'.js"></script>', $data);
+			$data	= str_replace($scripts[0][0], '<script src="'.$base_filename.'.js?'.$content_md5.'"></script>', $data);
+			unset($content_md5);
 			// Remove the rest of scripts
 			$data	= str_replace($scripts[0], '', $data);
 		}
@@ -1497,11 +1499,13 @@ class Page {
 				unset($url, $style);
 			}
 			unset($index, $link);
+			$content_md5	= substr(md5($styles_content), 0, 5);
 			file_put_contents("$destination_dir/$base_filename.css", gzencode($styles_content, 9), LOCK_EX | FILE_BINARY);
 			unset($styles_content);
 			// Replace first link or style with combined
 			$shim	= $shim ? ' shim-shadowdom' : '';
-			$data	= str_replace($links_and_styles[0][0], '<link rel="stylesheet" href="'.$base_filename.'.css"'.$shim.'>', $data);
+			$data	= str_replace($links_and_styles[0][0], '<link rel="stylesheet" href="'.$base_filename.'.css?'.$content_md5.'"'.$shim.'>', $data);
+			unset($content_md5);
 			// Remove the rest of links and styles
 			$data	= str_replace($links_and_styles[0], '', $data);
 		}
