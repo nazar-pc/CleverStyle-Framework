@@ -51,17 +51,4 @@
     });
   })(jQuery);
 
-  /*
-   # Fix for jQuery.css() method with Polymer Platform
-  */
-
-
-  (function($) {
-    var css_original;
-    css_original = $.css;
-    return $.css = function(elem, name, extra, styles) {
-      return css_original.call(this, wrap(elem), name, extra, styles);
-    };
-  })(jQuery);
-
 }).call(this);

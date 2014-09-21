@@ -30,10 +30,3 @@ do ($ = jQuery) ->
 				$(fn)
 			functions	= []
 	)
-###
- # Fix for jQuery.css() method with Polymer Platform
-###
-do ($ = jQuery) ->
-	css_original	= $.css
-	$.css			= (elem, name, extra, styles) ->
-		css_original.call(@, wrap(elem), name, extra, styles)
