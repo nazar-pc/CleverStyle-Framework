@@ -19,6 +19,27 @@ class FileSystem extends _Abstract {
 		$this->cache_size = Core::instance()->cache_size * 1024 * 1024;
 	}
 	/**
+	 * Like realpath() but works even if files does not exists
+	 *
+	 * @param string $path
+	 *
+	 * @return string
+	 */
+	protected function get_absolute_path ($path) {
+		$path = str_replace(['/', '\\'], '/', $path);
+		$parts = array_filter(explode('/', $path), 'strlen');
+		$absolutes = [];
+		foreach ($parts as $part) {
+			if ('.' == $part) continue;
+			if ('..' == $part) {
+				array_pop($absolutes);
+			} else {
+				$absolutes[] = $part;
+			}
+		}
+		return '/'.implode('/', $absolutes);
+	}
+	/**
 	 * Get item from cache
 	 *
 	 * @param string		$item	May contain "/" symbols for cache structure, for example users/<i>user_id</i>
@@ -26,8 +47,8 @@ class FileSystem extends _Abstract {
 	 * @return bool|mixed			Returns item on success of <b>false</b> on failure
 	 */
 	function get ($item) {
-		$path_in_filesystem = realpath(CACHE."/$item");
-		if (!strpos($path_in_filesystem, CACHE) === 0) {
+		$path_in_filesystem = $this->get_absolute_path(CACHE."/$item");
+		if (strpos($path_in_filesystem, CACHE) !== 0) {
 			return false;
 		}
 		if (is_file($path_in_filesystem) && is_readable($path_in_filesystem) && $cache = file_get_contents($path_in_filesystem, FILE_BINARY)) {
@@ -49,8 +70,8 @@ class FileSystem extends _Abstract {
 	 * @return bool
 	 */
 	function set ($item, $data) {
-		$path_in_filesystem = realpath(CACHE."/$item");
-		if (!strpos($path_in_filesystem, CACHE) === 0) {
+		$path_in_filesystem = $this->get_absolute_path(CACHE."/$item");
+		if (strpos($path_in_filesystem, CACHE) !== 0) {
 			return false;
 		}
 		$data = @_json_encode($data);
@@ -119,8 +140,8 @@ class FileSystem extends _Abstract {
 	 * @return bool
 	 */
 	function del ($item) {
-		$path_in_filesystem = realpath(CACHE."/$item");
-		if (!strpos($path_in_filesystem, CACHE) === 0) {
+		$path_in_filesystem = $this->get_absolute_path(CACHE."/$item");
+		if (strpos($path_in_filesystem, CACHE) !== 0) {
 			return false;
 		}
 		if (is_writable($path_in_filesystem)) {
