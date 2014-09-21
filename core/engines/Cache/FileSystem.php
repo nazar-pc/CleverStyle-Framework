@@ -26,11 +26,15 @@ class FileSystem extends _Abstract {
 	 * @return bool|mixed			Returns item on success of <b>false</b> on failure
 	 */
 	function get ($item) {
-		if (is_file(CACHE."/$item") && is_readable(CACHE."/$item") && $cache = file_get_contents(CACHE."/$item", FILE_BINARY)) {
+		$path_in_filesystem = realpath(CACHE."/$item");
+		if (!strpos($path_in_filesystem, CACHE) === 0) {
+			return false;
+		}
+		if (is_file($path_in_filesystem) && is_readable($path_in_filesystem) && $cache = file_get_contents($path_in_filesystem, FILE_BINARY)) {
 			if (($cache = @_json_decode($cache)) !== false) {
 				return $cache;
 			} else {
-				unlink(CACHE."/$item");
+				unlink($path_in_filesystem);
 				return false;
 			}
 		}
@@ -45,6 +49,10 @@ class FileSystem extends _Abstract {
 	 * @return bool
 	 */
 	function set ($item, $data) {
+		$path_in_filesystem = realpath(CACHE."/$item");
+		if (!strpos($path_in_filesystem, CACHE) === 0) {
+			return false;
+		}
 		$data = @_json_encode($data);
 		if (mb_strpos($item, '/') !== false) {
 			$path	=mb_substr($item, 0, mb_strrpos($item, '/'));
@@ -53,14 +61,14 @@ class FileSystem extends _Abstract {
 			}
 			unset($path);
 		}
-		if (!file_exists(CACHE."/$item") || is_writable(CACHE."/$item")) {
+		if (!file_exists($path_in_filesystem) || is_writable($path_in_filesystem)) {
 			if ($this->cache_size > 0) {
 				$dsize				= strlen($data);
 				if ($dsize > $this->cache_size) {
 					return false;
 				}
-				if (file_exists(CACHE."/$item")) {
-					$dsize -= filesize(CACHE."/$item");
+				if (file_exists($path_in_filesystem)) {
+					$dsize -= filesize($path_in_filesystem);
 				}
 				$cache_size_file	= fopen(CACHE.'/size', 'c+b');
 				$time				= microtime(true);
@@ -86,7 +94,7 @@ class FileSystem extends _Abstract {
 					}
 					unset($cache_list, $file);
 				}
-				if (($return = file_put_contents(CACHE."/$item", $data, LOCK_EX | FILE_BINARY)) !== false) {
+				if (($return = file_put_contents($path_in_filesystem, $data, LOCK_EX | FILE_BINARY)) !== false) {
 					ftruncate($cache_size_file, 0);
 					fseek($cache_size_file, 0);
 					fwrite($cache_size_file, $cache_size > 0 ? $cache_size : 0);
@@ -95,11 +103,11 @@ class FileSystem extends _Abstract {
 				fclose($cache_size_file);
 				return $return;
 			} else {
-				return file_put_contents(CACHE."/$item", $data, LOCK_EX | FILE_BINARY);
+				return file_put_contents($path_in_filesystem, $data, LOCK_EX | FILE_BINARY);
 			}
 		} else {
 			$L	= Language::instance();
-			trigger_error($L->file.' '.CACHE."/$item $L->not_writable", E_USER_WARNING);
+			trigger_error("$L->file $path_in_filesystem $L->not_writable", E_USER_WARNING);
 			return false;
 		}
 	}
@@ -111,14 +119,18 @@ class FileSystem extends _Abstract {
 	 * @return bool
 	 */
 	function del ($item) {
-		if (is_writable(CACHE."/$item")) {
-			if (is_dir(CACHE."/$item")) {
+		$path_in_filesystem = realpath(CACHE."/$item");
+		if (!strpos($path_in_filesystem, CACHE) === 0) {
+			return false;
+		}
+		if (is_writable($path_in_filesystem)) {
+			if (is_dir($path_in_filesystem)) {
 				/**
 				 * Speed-up of files deletion
 				 */
 				if (!($this->cache_size > 0)) {
 					get_files_list(
-						CACHE."/$item",
+						$path_in_filesystem,
 						false,
 						'f',
 						true,
@@ -133,12 +145,12 @@ class FileSystem extends _Abstract {
 						}
 					);
 				}
-				$files = get_files_list(CACHE."/$item", false, 'fd');
+				$files = get_files_list($path_in_filesystem, false, 'fd');
 				foreach ($files as $file) {
 					$this->del($item."/$file", false);
 				}
 				unset($files, $file);
-				return @rmdir(CACHE."/$item");
+				return @rmdir($path_in_filesystem);
 			}
 			if ($this->cache_size > 0) {
 				$cache_size_file	= fopen(CACHE.'/size', 'c+b');
@@ -152,8 +164,8 @@ class FileSystem extends _Abstract {
 				}
 				unset($time);
 				$cache_size	= (int)stream_get_contents($cache_size_file);
-				$cache_size -= filesize(CACHE."/$item");
-				if (@unlink(CACHE."/$item")) {
+				$cache_size -= filesize($path_in_filesystem);
+				if (@unlink($path_in_filesystem)) {
 					ftruncate($cache_size_file, 0);
 					fseek($cache_size_file, 0);
 					fwrite($cache_size_file, $cache_size > 0 ? $cache_size : 0);
@@ -161,9 +173,9 @@ class FileSystem extends _Abstract {
 				flock($cache_size_file, LOCK_UN);
 				fclose($cache_size_file);
 			} else {
-				@unlink(CACHE."/$item");
+				@unlink($path_in_filesystem);
 			}
-		} elseif (file_exists(CACHE."/$item")) {
+		} elseif (file_exists($path_in_filesystem)) {
 			return false;
 		}
 		return true;
