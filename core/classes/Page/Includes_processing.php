@@ -147,59 +147,80 @@ class Includes_processing {
 	static function html ($data, $file, $base_filename, $destination) {
 		$cwd = getcwd();
 		chdir(dirname($file));
+		$data = static::html_process_scripts($data, $base_filename, $destination);
+		$data = static::html_process_links_and_styles($data, $file, $base_filename, $destination);
+		chdir($cwd);
+		return $data;
+	}
+	/**
+	 * @param string		$data			Content of processed file
+	 * @param string		$base_filename	Base filename for resulting combined files
+	 * @param bool|string	$destination	Directory where to put combined files or <i>false</i> to make includes built-in (vulcanization)
+	 *
+	 * @return string
+	 */
+	protected static function html_process_scripts ($data, $base_filename, $destination) {
 		preg_match_all('/<script(.*)<\/script>/Uims', $data, $scripts);
 		if ($scripts) {
 			$scripts_content	= '';
+			$scripts_to_replace	= [];
 			foreach ($scripts[1] as $index => $script) {
 				$script	= explode('>', $script);
 				if (preg_match('/src\s*=\s*[\'"](.*)[\'"]/Uims', $script[0], $url)) {
 					$url	= $url[1];
-					if (static::is_relative_path($url) || !file_exists($url)) {
-						unset($scripts[0][$index]);
+					if (!static::is_relative_path($url) || !file_exists($url)) {
 						continue;
 					}
-					$scripts_content	.= file_get_contents($url).";\n";
+					$scripts_to_replace[]	= $scripts[0][$index];
+					$scripts_content		.= file_get_contents($url).";\n";
 				} else {
 					$scripts_content	.= $script[1].";\n";
 				}
-				unset($url);
 			}
-			unset($index, $script);
-			if ($destination) {
-				$content_md5	= substr(md5($scripts_content), 0, 5);
-				file_put_contents(
-					"$destination/$base_filename.js",
-					gzencode($scripts_content, 9),
-					LOCK_EX | FILE_BINARY
-				);
-				// Replace first script with combined file
-				$data	= str_replace(
-					$scripts[0][0],
-					"<script src=\"$base_filename.js?$content_md5\"></script>",
-					$data
-				);
-				unset($content_md5);
-			} else {
-				// Replace first script with combined content
-				$data	= str_replace(
-					$scripts[0][0],
-					$scripts_content,
-					$data
-				);
+			if ($scripts_to_replace) {
+				if ($destination) {
+					$content_md5	= substr(md5($scripts_content), 0, 5);
+					file_put_contents(
+						"$destination/$base_filename.js",
+						gzencode($scripts_content, 9),
+						LOCK_EX | FILE_BINARY
+					);
+					// Replace first script with combined file
+					$data	= str_replace(
+						$scripts_to_replace[0],
+						"<script src=\"$base_filename.js?$content_md5\"></script>",
+						$data
+					);
+				} else {
+					// Replace first script with combined content
+					$data	= str_replace(
+						$scripts_to_replace[0],
+						"<script>$scripts_content</script>",
+						$data
+					);
+				}
+				// Remove the rest of scripts
+				$data	= str_replace($scripts_to_replace, '', $data);
 			}
-			unset($scripts_content);
-			// Remove the rest of scripts
-			$data	= str_replace($scripts[0], '', $data);
 		}
-		unset($scripts);
+		return $data;
+	}
+	/**
+	 * @param string		$data			Content of processed file
+	 * @param string		$file			Path to file, that includes specified in previous parameter content
+	 * @param string		$base_filename	Base filename for resulting combined files
+	 * @param bool|string	$destination	Directory where to put combined files or <i>false</i> to make includes built-in (vulcanization)
+	 *
+	 * @return string
+	 */
+	protected static function html_process_links_and_styles ($data, $file, $base_filename, $destination) {
 		preg_match_all('/<link(.*)>|<style(.*)<\/style>/Uims', $data, $links_and_styles);
 		$links_and_styles	= isset($links_and_styles[1]) ? $links_and_styles : [];
 		$shim				= false;
 		if ($links_and_styles) {
-			$styles_content		= '';
-			$imports_content	= '';
-			$styles_to_replace	= [];
-			$imports_to_replace	= [];
+			$styles_content					= '';
+			$imports_content				= '';
+			$links_and_styles_to_replace	= [];
 			foreach ($links_and_styles[1] as $index => $link) {
 				if (
 					$link &&
@@ -207,10 +228,10 @@ class Includes_processing {
 					preg_match('/href\s*=\s*[\'"](.*)[\'"]/Uims', $link, $url)
 				) {
 					$url	= $url[1];
-					if (static::is_relative_path($url) || !file_exists($url)) {
+					if (!static::is_relative_path($url) || !file_exists($url)) {
 						continue;
 					}
-					$styles_to_replace[]	= $links_and_styles[0][$index];
+					$links_and_styles_to_replace[]	= $links_and_styles[0][$index];
 					if (preg_match('/shim-shadowdom/Uims', $links_and_styles[0][$index])) {
 						$shim = true;
 					}
@@ -224,10 +245,10 @@ class Includes_processing {
 					preg_match('/href\s*=\s*[\'"](.*)[\'"]/Uims', $link, $url)
 				) {
 					$url	= $url[1];
-					if (static::is_relative_path($url) || !file_exists($url)) {
+					if (!static::is_relative_path($url) || !file_exists($url)) {
 						continue;
 					}
-					$imports_to_replace[]	= $links_and_styles[0][$index];
+					$links_and_styles_to_replace[]	= $links_and_styles[0][$index];
 					if (preg_match('/shim-shadowdom/Uims', $links_and_styles[0][$index])) {
 						$shim = true;
 					}
@@ -238,50 +259,43 @@ class Includes_processing {
 						$destination
 					);
 				} elseif (mb_strpos($links_and_styles[0][$index], '</style>') !== -1) {
-					$styles_to_replace[]	= $links_and_styles[0][$index];
+					$links_and_styles_to_replace[]	= $links_and_styles[0][$index];
 					if (preg_match('/shim-shadowdom/Uims', $links_and_styles[0][$index])) {
 						$shim = true;
 					}
 					$style	= explode('>', $links_and_styles[2][$index], 2)[1];
 					$styles_content	.= static::css($style, $file);
-				} else {
-					unset($links_and_styles[0][$index]);
 				}
-				unset($url, $style);
 			}
-			unset($index, $link);
-			if ($destination) {
-				$content_md5	= substr(md5($styles_content), 0, 5);
-				file_put_contents(
-					"$destination/$base_filename.css",
-					gzencode($styles_content, 9),
-					LOCK_EX | FILE_BINARY
-				);
-				// Replace first link or style with combined file
+			if ($links_and_styles_to_replace) {
 				$shim	= $shim ? ' shim-shadowdom' : '';
-				$data	= str_replace(
-					$links_and_styles[0][0],
-					"<link rel=\"stylesheet\" href=\"$base_filename.css?$content_md5\"$shim>",
-					$data
-				);
-				unset($content_md5);
-			} else {
-				// Replace first link or style with combined content
-				$data	= str_replace(
-					$links_and_styles[0][0],
-					$styles_content,
-					$data
-				);
+				if ($destination) {
+					$content_md5	= substr(md5($styles_content), 0, 5);
+					file_put_contents(
+						"$destination/$base_filename.css",
+						gzencode($styles_content, 9),
+						LOCK_EX | FILE_BINARY
+					);
+					// Replace first link or style with combined file
+					$data	= str_replace(
+						$links_and_styles_to_replace[0],
+						"<link rel=\"stylesheet\" href=\"$base_filename.css?$content_md5\"$shim>",
+						$data
+					);
+				} else {
+					// Replace first link or style with combined content
+					$data	= str_replace(
+						$links_and_styles_to_replace[0],
+						"<style$shim>$styles_content</style>",
+						$data
+					);
+				}
+				// Remove the rest of links and styles
+				$data	= str_replace($links_and_styles_to_replace, '', $data);
+				// Add imports to the end of file
+				$data	.= $imports_content;
 			}
-			unset($styles_content);
-			// Remove the rest of links and styles
-			$data	= str_replace($links_and_styles[0], '', $data);
-			// Add imports to the end of file
-			$data	.= $imports_content;
-			unset($imports_content);
 		}
-		unset($links_and_styles);
-		chdir($cwd);
 		return $data;
 	}
 	protected static function is_relative_path ($path) {
