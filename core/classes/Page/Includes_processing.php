@@ -137,10 +137,10 @@ class Includes_processing {
 	 * Analyses file for scripts and styles, combines them into resulting files in order to optimize loading process
 	 * (files with combined scripts and styles will be created)
 	 *
-	 * @param string	$data				Content of processed file
-	 * @param string	$file				Path to file, that includes specified in previous parameter content
-	 * @param string	$base_filename		Base filename for resulting combined files
-	 * @param string	$destination		Directory where to put combined files or <i>false</i> to make includes built-in (vulcanization)
+	 * @param string		$data			Content of processed file
+	 * @param string		$file			Path to file, that includes specified in previous parameter content
+	 * @param string		$base_filename	Base filename for resulting combined files
+	 * @param bool|string	$destination	Directory where to put combined files or <i>false</i> to make includes built-in (vulcanization)
 	 *
 	 * @return string	$data
 	 */
