@@ -12,7 +12,6 @@ class MySQLi extends _Abstract {
 	 * @var \MySQLi Instance of DB connection
 	 */
 	protected	$instance;
-
 	/**
 	 * @inheritdoc
 	 */

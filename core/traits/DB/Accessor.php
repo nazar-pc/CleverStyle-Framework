@@ -13,12 +13,20 @@ use			cs\DB;
  * Provides db() and db_prime() methods for simplified for with DB
  */
 trait Accessor {
-	private	$db			= false,	//Link to db object
-			$db_prime	= false;	//Link to primary db object
+	/**
+	 * Link to db object
+	 * @var bool|_Abstract
+	 */
+	private	$db			= false;
+	/**
+	 * Link to primary db object
+	 * @var bool|_Abstract
+	 */
+	private	$db_prime	= false;
 	/**
 	 * Returns link to the object of db for reading (can be mirror of main DB)
 	 *
-	 * @return \cs\DB\_Abstract
+	 * @return _Abstract
 	 */
 	function db () {
 		if (is_object($this->db)) {
@@ -36,7 +44,7 @@ trait Accessor {
 	/**
 	 * Returns link to the object of db for writing (always main DB)
 	 *
-	 * @return \cs\DB\_Abstract
+	 * @return _Abstract
 	 */
 	function db_prime () {
 		if (is_object($this->db_prime)) {

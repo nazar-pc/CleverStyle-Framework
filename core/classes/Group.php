@@ -19,16 +19,18 @@
  *
  */
 namespace	cs;
-use			cs\Cache\Prefix,
-			cs\DB\Accessor,
-			cs\Permission\Any;
+use
+	cs\Cache\Prefix,
+	cs\DB\Accessor,
+	cs\Permission\Any;
 /**
  * Class for groups manipulating
  *
  * @method static Group instance($check = false)
  */
 class Group {
-	use	Accessor,
+	use
+		Accessor,
 		Singleton,
 		Any;
 	/**

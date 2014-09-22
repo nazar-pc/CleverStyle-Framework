@@ -6,15 +6,15 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-use			h,
-			PHPMailer;
+use
+	h,
+	PHPMailer;
 
 /**
  * @method static Mail instance($check = false)
  */
 class Mail extends PHPMailer {
 	use Singleton;
-
 	/**
 	 * Setting base mail sending parameters according to system configuration
 	 */

@@ -7,8 +7,8 @@
  */
 namespace cs\Storage;
 abstract class _Abstract {
-	protected	$connected	= false,
-				$base_url	= '';
+	protected	$connected	= false;
+	protected	$base_url	= '';
 	/**
 	 * Connecting to the Storage
 	 *

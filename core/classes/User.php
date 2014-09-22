@@ -116,25 +116,61 @@ class User {
 	 */
 	const		STATUS_NOT_ACTIVATED	= -1;
 
-	protected	$current				= [
-					'session'		=> false,
-					'is'			=> [
-						'admin'			=> false,
-						'user'			=> false,
-						'bot'			=> false,
-						'guest'			=> false,
-						'system'		=> false
-					]
-				],
-				$id						= false,	//id of current user
-				$update_cache			= [],		//Do we need to update users cache
-				$data					= [],		//Local cache of users data
-				$data_set				= [],		//Changed users data, at the finish, data in db must be replaced by this data
-				$init					= false,	//Current state of initialization
-				$reg_id					= 0,		//User id after registration
-				$users_columns			= [],		//Copy of columns list of users table for internal needs without Cache usage
-				$permissions			= [],		//Permissions cache
-				$memory_cache			= true;
+	protected	$current		= [
+		'session'	=> false,
+		'is'		=> [
+			'admin'		=> false,
+			'user'		=> false,
+			'bot'		=> false,
+			'guest'		=> false,
+			'system'	=> false
+		]
+	];
+	/**
+	 * Id of current user
+	 * @var bool|int
+	 */
+	protected	$id				= false;
+	/**
+	 * Do we need to update users cache, if so - array will not be empty
+	 * @var array
+	 */
+	protected	$update_cache	= [];
+	/**
+	 * Local cache of users data
+	 * @var array
+	 */
+	protected	$data			= [];
+	/**
+	 * Changed users data, at the finish, data in db must be replaced by this data
+	 * @var array
+	 */
+	protected	$data_set		= [];
+	/**
+	 * Current state of initialization
+	 * @var bool
+	 */
+	protected	$init			= false;
+	/**
+	 * User id after registration
+	 * @var int
+	 */
+	protected	$reg_id			= 0;
+	/**
+	 * Copy of columns list of users table for internal needs without Cache usage
+	 * @var array
+	 */
+	protected	$users_columns	= [];
+	/**
+	 * Permissions cache for users
+	 * @var array
+	 */
+	protected	$permissions	= [];
+	/**
+	 * Whether to use memory cache (locally, inside object, may require a lot of memory if working with many users together)
+	 * @var bool
+	 */
+	protected	$memory_cache	= true;
 	/**
 	 * @var Prefix
 	 */

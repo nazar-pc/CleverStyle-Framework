@@ -12,7 +12,6 @@ namespace cs;
  */
 class Key {
 	use	Singleton;
-
 	/**
 	 * Generates guaranteed unique key
 	 *

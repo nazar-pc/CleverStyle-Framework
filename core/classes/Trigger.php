@@ -16,7 +16,6 @@ namespace	cs;
  */
 class Trigger {
 	use Singleton;
-
 	/**
 	 * @var callable[]
 	 */

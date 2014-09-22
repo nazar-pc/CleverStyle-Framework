@@ -26,34 +26,31 @@ defined('FIXED_LANGUAGE') || define('FIXED_LANGUAGE', false);
  */
 class Language implements JsonSerializable {
 	use Singleton;
-
-	public
-		/**
-		 * Current language
-		 *
-		 * @var string
-		 */
-		$clanguage,
-		/**
-		 * callable for time processing
-		 *
-		 * @var callable
-		 */
-		$time           = null;
-	protected
-		/**
-		 * For single initialization
-		 *
-		 * @var bool
-		 */
-		$init           = false,
-		/**
-		 * Local cache of translations
-		 *
-		 * @var array
-		 */
-		$translate      = [],
-		$fixed_language = false;
+	/**
+	 * Current language
+	 *
+	 * @var string
+	 */
+	public $clanguage;
+	/**
+	 * callable for time processing
+	 *
+	 * @var callable
+	 */
+	public $time = null;
+	/**
+	 * For single initialization
+	 *
+	 * @var bool
+	 */
+	protected $init = false;
+	/**
+	 * Local cache of translations
+	 *
+	 * @var array
+	 */
+	protected $translate      = [];
+	protected $fixed_language = false;
 	/**
 	 * Set basic language
 	 */
@@ -74,7 +71,7 @@ class Language implements JsonSerializable {
 		}
 		$Cache = Cache::instance();
 		if (($aliases = $Cache->{'languages/aliases'}) === false) {
-			$aliases      = [];
+			$aliases = [];
 			$aliases_list = _strtolower(get_files_list(LANGUAGES.'/aliases'));
 			foreach ($aliases_list as $alias) {
 				$aliases[$alias] = file_get_contents(LANGUAGES."/aliases/$alias");
@@ -112,12 +109,12 @@ class Language implements JsonSerializable {
 	function get ($item, $language = false) {
 		$language = $language ?: $this->clanguage;
 		if (isset($this->translate[$language])) {
-			$translate = & $this->translate[$language];
+			$translate = &$this->translate[$language];
 			return isset($translate[$item]) ? $translate[$item] : ucfirst(str_replace('_', ' ', $item));
 		}
-		$current_language       = $this->clanguage;
+		$current_language = $this->clanguage;
 		$current_fixed_language = $this->fixed_language;
-		$this->fixed_language   = false;
+		$this->fixed_language = false;
 		$this->change($language);
 		$return = $this->get($item);
 		$this->change($current_language);
@@ -133,7 +130,7 @@ class Language implements JsonSerializable {
 	 * @return void
 	 */
 	function set ($item, $value = null) {
-		$translate = & $this->translate[$this->clanguage];
+		$translate = &$this->translate[$this->clanguage];
 		if (is_array($item)) {
 			$translate = $item + ($translate ?: []);
 		} else {
@@ -190,9 +187,9 @@ class Language implements JsonSerializable {
 			)
 		) {
 			$previous_language = $this->clanguage;
-			$this->clanguage   = $language;
-			$return            = false;
-			$Cache             = Cache::instance();
+			$this->clanguage = $language;
+			$return = false;
+			$Cache = Cache::instance();
 			/**
 			 * If translations in cache
 			 */
@@ -206,7 +203,7 @@ class Language implements JsonSerializable {
 				/**
 				 * Set system translations
 				 */
-				$translate                 = & $this->translate[$language];
+				$translate = &$this->translate[$language];
 				$load_previous_translation = false;
 				if (!$translate && $previous_language) {
 					$load_previous_translation = true;
@@ -258,7 +255,7 @@ class Language implements JsonSerializable {
 					$translate = $translate + $this->translate[$previous_language];
 				}
 				$Cache->{"languages/$language"} = $translate;
-				$return                         = true;
+				$return = true;
 			}
 			_include(LANGUAGES."/$language.php", false, false);
 			header("Content-Language: $translate[content_language]");

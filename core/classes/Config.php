@@ -19,45 +19,48 @@ namespace cs;
  */
 class Config {
 	use	Singleton;
-
 	protected	$data			= [
-					'core'			=> [],
-					'db'			=> [],
-					'storage'		=> [],
-					'components'	=> [],
-					'replace'		=> [],
-					'routing'		=> [],
-					'admin_parts'	=> [						//Columns in DB table of engine configuration
-						'core',
-						'db',
-						'storage',
-						'components',
-						'replace',
-						'routing'
-					],
-					'server'		=> [						//Array of some address data about mirrors and current address properties
-						'raw_relative_address'		=> '',		//Raw page url (in browser's address bar)
-						'host'						=> '',		//Current domain
-						'relative_address'			=> '',		//Corrected page address (recommended for usage)
-						'protocol'					=> '',		//Page protocol (http/https)
-						'base_url'					=> '',		//Address of the main page of current mirror, including prefix (http/https)
-						'mirrors'					=> [		//Array of all domains, which allowed to access the site
-							'count'		=> 0,					//Total count
-							'http'		=> [],					//Insecure (http) domains
-							'https'		=> []					//Secure (https) domains
-						],
-						'referer'					=> [
-							'url'		=> '',
-							'host'		=> '',
-							'protocol'	=> '',
-							'local'		=> false
-						],
-						'ajax'						=> false,	//Is this page request via AJAX
-						'mirror_index'				=> 0		//Index of current domain in mirrors list ('0' - main domain)
-					],
-					'can_be_admin'		=> true					//Allows to check ability to be admin user (can be limited by IP)
-				],
-				$init	= false;
+		'core'			=> [],
+		'db'			=> [],
+		'storage'		=> [],
+		'components'	=> [],
+		'replace'		=> [],
+		'routing'		=> [],
+		'admin_parts'	=> [					//Columns in DB table of engine configuration
+			'core',
+			'db',
+			'storage',
+			'components',
+			'replace',
+			'routing'
+		],
+		'server'		=> [					//Array of some address data about mirrors and current address properties
+			'raw_relative_address'	=> '',		//Raw page url (in browser's address bar)
+			'host'					=> '',		//Current domain
+			'relative_address'		=> '',		//Corrected page address (recommended for usage)
+			'protocol'				=> '',		//Page protocol (http/https)
+			'base_url'				=> '',		//Address of the main page of current mirror, including prefix (http/https)
+			'mirrors'				=> [		//Array of all domains, which allowed to access the site
+				'count'		=> 0,				//Total count
+				'http'		=> [],				//Insecure (http) domains
+				'https'		=> []				//Secure (https) domains
+			],
+			'referer'				=> [
+				'url'		=> '',
+				'host'		=> '',
+				'protocol'	=> '',
+				'local'		=> false
+			],
+			'ajax'					=> false,	//Is this page request via AJAX
+			'mirror_index'			=> 0		//Index of current domain in mirrors list ('0' - main domain)
+		],
+		'can_be_admin'	=> true				//Allows to check ability to be admin user (can be limited by IP)
+	];
+	/**
+	 * Initialization state
+	 * @var bool
+	 */
+	protected	$init	= false;
 	/**
 	 * The "Late Static Binding" class name
 	 *

@@ -11,9 +11,14 @@ use			cs\Language;
  * Class for simplified work with languages, when using common prefix
  */
 class Prefix {
+	/**
+	 * @var string
+	 */
 	protected	$prefix;
 	/**
 	 * Initialization with some prefix
+	 *
+	 * @param string $prefix
 	 */
 	function __construct ($prefix) {
 		$this->prefix	= $prefix;

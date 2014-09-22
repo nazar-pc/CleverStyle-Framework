@@ -6,25 +6,27 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-use			cs\Cache\Prefix,
-			cs\DB\Accessor,
-			h;
+use
+	cs\Cache\Prefix,
+	cs\DB\Accessor;
 /**
  * Class for permissions manipulating
  *
  * @method static Permission instance($check = false)
  */
 class Permission {
-	use	Accessor,
+	use
+		Accessor,
 		Singleton;
-
-	protected	$permissions_table	= [];		//Array of all permissions for quick selecting
-
+	/**
+	 * Array of all permissions for quick selecting
+	 * @var array
+	 */
+	protected	$permissions_table	= [];
 	/**
 	 * @var Prefix
 	 */
 	protected	$cache;
-
 	/**
 	 * Returns database index
 	 *

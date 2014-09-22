@@ -23,61 +23,72 @@ use
  */
 class Page {
 	use	Singleton;
-
-	public		$Content,
-				$interface			= true,
-				$pre_Html			= '',
-				$Html 				= '',
-					$Description		= '',
-					$Title				= [],
-				$debug_info			= '',
-				$Head				= '',
-				$pre_Body			= '',
-					$Header			= '',
-						$main_menu			= '',
-						$main_sub_menu		= '',
-						$main_menu_more		= '',
-					$Left			= '',
-					$Top			= '',
-					$Right			= '',
-					$Bottom			= '',
-					$Footer			= '',
-				$post_Body			= '',
-				$post_Html			= '',
-				$level				= [				//Number of tabs by default for margins the substitution
-					'Head'				=> 0,		//of values into template
-					'pre_Body'			=> 1,
-					'Header'			=> 3,
-					'main_menu'			=> 3,
-					'main_sub_menu'		=> 3,
-					'main_menu_more'	=> 3,
-					'header_info'		=> 4,
-					'debug_info'		=> 2,
-					'Left'				=> 3,
-					'Top'				=> 3,
-					'Content'			=> 4,
-					'Bottom'			=> 3,
-					'Right'				=> 3,
-					'Footer'			=> 2,
-					'post_Body'			=> 1
-				],
-				$user_avatar_image,
-				$header_info,
-				$head_prefix		= '',			//Is used as <head prefix="$head_prefix">
-				$no_head			= false;
-	protected	$theme, $color_scheme, $pcache_basename,
-				$core_html			= [0 => [], 1 => ''],
-				$core_js			= [0 => [], 1 => []],
-				$core_css			= [0 => [], 1 => []],
-				$html				= [0 => [], 1 => ''],
-				$js					= [0 => [], 1 => []],
-				$css				= [0 => [], 1 => []],
-				$link				= [],
-				$Search				= [],
-				$Replace			= [],
-				$og_data			= [],
-				$og_type			= '',
-				$canonical_url		= false;
+	public	$Content;
+	public	$interface		= true;
+	public	$pre_Html		= '';
+	public	$Html 			= '';
+	public		$Description	= '';
+	public		$Title			= [];
+	public	$debug_info		= '';
+	public	$Head			= '';
+	public	$pre_Body		= '';
+	public		$Header		= '';
+	public			$main_menu		= '';
+	public			$main_sub_menu	= '';
+	public			$main_menu_more	= '';
+	public		$Left		= '';
+	public		$Top		= '';
+	public		$Right		= '';
+	public		$Bottom		= '';
+	public		$Footer		= '';
+	public	$post_Body		= '';
+	public	$post_Html		= '';
+	/**
+	 * Number of tabs by default for indentation the substitution of values into template
+	 * @var array
+	 */
+	public	$level				= [
+		'Head'				=> 0,
+		'pre_Body'			=> 1,
+		'Header'			=> 3,
+		'main_menu'			=> 3,
+		'main_sub_menu'		=> 3,
+		'main_menu_more'	=> 3,
+		'header_info'		=> 4,
+		'debug_info'		=> 2,
+		'Left'				=> 3,
+		'Top'				=> 3,
+		'Content'			=> 4,
+		'Bottom'			=> 3,
+		'Right'				=> 3,
+		'Footer'			=> 2,
+		'post_Body'			=> 1
+	];
+	public	$user_avatar_image;
+	public	$header_info;
+	/**
+	 * Is used as <head prefix="$head_prefix">
+	 * @var string
+	 */
+	public	$head_prefix		= '';
+	/**
+	 * If false - &lt;head&gt; will not be added automatically, and should be in template if needed
+	 * @var bool
+	 */
+	public	$no_head		= false;
+	public	$core_html		= [0 => [], 1 => ''];
+	public	$core_js		= [0 => [], 1 => []];
+	public	$core_css		= [0 => [], 1 => []];
+	public	$html			= [0 => [], 1 => ''];
+	public	$js				= [0 => [], 1 => []];
+	public	$css			= [0 => [], 1 => []];
+	public	$link			= [];
+	public	$Search			= [];
+	public	$Replace		= [];
+	public	$og_data		= [];
+	public	$og_type		= '';
+	public	$canonical_url	= false;
+	protected	$theme, $color_scheme, $pcache_basename;
 	/**
 	 * Initialization: setting of title, theme and color scheme according to specified parameters
 	 *

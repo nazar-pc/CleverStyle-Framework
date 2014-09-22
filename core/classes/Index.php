@@ -32,57 +32,59 @@ use			h;
  */
 class Index {
 	use	Singleton;
+	/**
+	 * @var string
+	 */
+	public	$Content;
 
-	public		$Content,
+	public	$main_menu_auto			= true;
+	public	$main_sub_menu_auto		= false;
+	public	$main_menu_more_auto	= false;
 
-				$main_menu_auto			= true,
-				$main_sub_menu_auto		= false,
-				$main_menu_more_auto	= false,
+	public	$main_menu				= [];
+	public	$main_sub_menu			= [];
+	public	$main_menu_more			= [];
 
-				$main_menu				= [],
-				$main_sub_menu			= [],
-				$main_menu_more			= [],
+	public	$savefile				= 'save';
+	public	$form					= false;
+	public	$file_upload			= false;
+	public	$form_atributes			= [];
+	public	$action					= null;
+	public	$buttons				= true;
+	public	$save_button			= true;
+	public	$apply_button			= true;
+	public	$cancel_button			= ' disabled';
+	public	$cancel_button_back		= false;
+	public	$reset_button			= true;
+	public	$post_buttons			= '';
 
-				$savefile				= 'save',
-				$form					= false,
-				$file_upload			= false,
-				$form_atributes			= [],
-				$action					= null,
-				$buttons				= true,
-				$save_button			= true,
-				$apply_button			= true,
-				$cancel_button			= ' disabled',
-				$cancel_button_back		= false,
-				$reset_button			= true,
-				$post_buttons			= '',
-
-				$init_auto				= true,
-				$generate_auto			= true,
-				$title_auto				= true;
+	public $init_auto				= true;
+	public $generate_auto			= true;
+	public $title_auto				= true;
 	/**
 	 * Like Config::$route property, but excludes numerical items
 	 *
 	 * @var string[]
 	 */
-	public		$route_path	= [];
+	public	$route_path	= [];
 	/**
 	 * Like Config::$route property, but only includes numerical items (opposite to route_path property)
 	 *
 	 * @var int[]
 	 */
-	public		$route_ids	= [];
+	public	$route_ids	= [];
 
-	protected	$post_title			= '',		//Appends to the end of title
-				$structure			= [],
-				$parts				= [],
-				$subparts			= [],
-				$permission_group,
+	protected	$post_title			= '';	//Appends to the end of title
+	protected	$structure			= [];
+	protected	$parts				= [];
+	protected	$subparts			= [];
+	protected	$permission_group;
 
-				$module				= false,
-				$in_api				= false,
-				$in_admin			= false,
-				$request_method		= null,
-				$working_directory	= '';
+	protected	$module				= false;
+	protected	$in_api				= false;
+	protected	$in_admin			= false;
+	protected	$request_method		= null;
+	protected	$working_directory	= '';
 	/**
 	 * Detecting module folder including of admin/api request type, including prepare file, including of plugins
 	 */

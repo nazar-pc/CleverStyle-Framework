@@ -12,13 +12,32 @@ namespace cs;
  */
 class DB {
 	use	Singleton;
-
-	public		$queries				= 0,
-				$time					= 0;
-	protected	$connections			= [],
-				$successful_connections	= [],
-				$failed_connections		= [],
-				$mirrors				= [];
+	/**
+	 * Total number of executed queries
+	 * @var int
+	 */
+	public		$queries				= 0;
+	/**
+	 * Total time spent on all queries and connections
+	 * @var int
+	 */
+	public		$time					= 0;
+	/**
+	 * @var array
+	 */
+	protected	$connections			= [];
+	/**
+	 * @var array
+	 */
+	protected	$successful_connections	= [];
+	/**
+	 * @var array
+	 */
+	protected	$failed_connections		= [];
+	/**
+	 * @var array
+	 */
+	protected	$mirrors				= [];
 	/**
 	 * Get list of connections of specified type
 	 *

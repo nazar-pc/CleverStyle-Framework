@@ -15,11 +15,23 @@ namespace	cs;
  */
 class Encryption {
 	use Singleton;
-
-	protected			$iv,
-						$td,
-						$key,
-						$encrypt_support	= false;
+	/**
+	 * @var string
+	 */
+	protected	$iv;
+	/**
+	 * @var resource
+	 */
+	protected	$td;
+	/**
+	 * @var string
+	 */
+	protected	$key;
+	/**
+	 * Whether Mcrypt is available, if not - encryption will not work and return original unencrypted data
+	 * @var bool
+	 */
+	protected	$encrypt_support	= false;
 	/**
 	 * Detection of encryption support
 	 */

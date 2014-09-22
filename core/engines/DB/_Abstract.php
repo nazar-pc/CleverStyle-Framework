@@ -8,67 +8,67 @@
 namespace	cs\DB;
 use			cs\DB;
 abstract class _Abstract {
-				/**
-				 * Is connection established
-				 *
-				 * @var bool
-				 */
-	protected	$connected	= false,
-				/**
-				 * DB type, may be used for constructing requests, accounting particular features of current DB (lowercase name)
-				 *
-				 * @var bool
-				 */
-				$db_type	= false,
-				/**
-				 * Current DB
-				 *
-				 * @var string
-				 */
-				$database,
-				/**
-				 * Current prefix
-				 *
-				 * @var string
-				 */
-				$prefix,
-				/**
-				 * Total time of requests execution
-				 *
-				 * @var int
-				 */
-				$time,
-				/**
-				 * Array for storing of data of the last executed request
-				 *
-				 * @var array
-				 */
-				$query		= [
-					'time'		=> '',
-					'text'		=> ''
-				],
-				/**
-				 * Array for storing data of all executed requests
-				 *
-				 * @var array
-				 */
-				$queries	= [
-					'num'		=> '',
-					'time'		=> [],
-					'text'		=> []
-				],
-				/**
-				 * Connection time
-				 *
-				 * @var int
-				 */
-				$connecting_time,
-				/**
-				 * Asynchronous request
-				 *
-				 * @var bool
-				 */
-				$async		= false;
+	/**
+	 * Is connection established
+	 *
+	 * @var bool
+	 */
+	protected	$connected	= false;
+	/**
+	 * DB type, may be used for constructing requests, accounting particular features of current DB (lowercase name)
+	 *
+	 * @var bool
+	 */
+	protected	$db_type	= false;
+	/**
+	 * Current DB
+	 *
+	 * @var string
+	 */
+	protected	$database;
+	/**
+	 * Current prefix
+	 *
+	 * @var string
+	 */
+	protected	$prefix;
+	/**
+	 * Total time of requests execution
+	 *
+	 * @var int
+	 */
+	protected	$time;
+	/**
+	 * Array for storing of data of the last executed request
+	 *
+	 * @var array
+	 */
+	protected	$query		= [
+		'time'		=> '',
+		'text'		=> ''
+	];
+	/**
+	 * Array for storing data of all executed requests
+	 *
+	 * @var array
+	 */
+	protected	$queries	= [
+		'num'		=> '',
+		'time'		=> [],
+		'text'		=> []
+	];
+	/**
+	 * Connection time
+	 *
+	 * @var int
+	 */
+	protected	$connecting_time;
+	/**
+	 * Asynchronous request
+	 *
+	 * @var bool
+	 */
+	protected	$async		= false;
 	/**
 	 * Connecting to the DB
 	 *

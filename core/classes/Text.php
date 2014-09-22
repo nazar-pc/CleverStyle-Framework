@@ -12,7 +12,6 @@ namespace cs;
  */
 class Text {
 	use Singleton;
-
 	/**
 	 * Gets text on current language
 	 *
@@ -26,7 +25,6 @@ class Text {
 	 */
 	function get ($database, $group, $label, $id = null, $store_in_cache = false) {
 		$Cache		= Cache::instance();
-		$Config		= Config::instance();
 		$L			= Language::instance();
 		$id			= (int)$id;
 		$cache_key	= "texts/$database/".($id ?: md5($group).md5($label))."_$L->clang";

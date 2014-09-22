@@ -15,9 +15,15 @@ use			h;
  */
 class Core {
 	use Singleton;
-
-	protected			$constructed		= false,	//Is object constructed
-						$config				= [];
+	/**
+	 * Is object constructed
+	 * @var bool
+	 */
+	protected	$constructed		= false;
+	/**
+	 * @var mixed[]
+	 */
+	protected	$config				= [];
 	/**
 	 * Loading of base system configuration, creating of missing directories
 	 */

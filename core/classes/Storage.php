@@ -12,10 +12,9 @@ namespace cs;
  */
 class Storage {
 	use	Singleton;
-
-	protected	$connections			= [],
-				$successful_connections	= [],
-				$failed_connections		= [];
+	protected	$connections			= [];
+	protected	$successful_connections	= [];
+	protected	$failed_connections		= [];
 	/**
 	 * Get list of connections of specified type
 	 *

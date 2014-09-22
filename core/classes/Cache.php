@@ -12,22 +12,33 @@ namespace	cs;
  */
 class Cache {
 	use Singleton;
-
-	protected	$cache,					//Cache state
-				$init		= false,	//Initialization state
-				$engine,
-				/**
-				 * Instance of cache engine object
-				 *
-				 * @var Cache\_Abstract
-				 */
-				$engine_instance;
+	/**
+	 * Cache state
+	 * @var
+	 */
+	protected	$state;
+	/**
+	 * Initialization state
+	 * @var bool
+	 */
+	protected	$init		= false;
+	/**
+	 * Name of cache engine
+	 * @var string
+	 */
+	protected	$engine;
+	/**
+	 * Instance of cache engine object
+	 *
+	 * @var Cache\_Abstract
+	 */
+	protected	$engine_instance;
 	/**
 	 * Initialization, creating cache engine instance
 	 */
 	protected function construct () {
-		$this->cache = !DEBUG;
-		if (!$this->init && $this->cache) {
+		$this->state = !DEBUG;
+		if (!$this->init && $this->state) {
 			$engine_class	= '\\cs\\Cache\\'.($this->engine = Core::instance()->cache_engine);
 			$this->engine_instance	= new $engine_class();
 		}
@@ -43,7 +54,7 @@ class Cache {
 	 * @return bool|mixed				Returns item on success of <b>false</b> on failure
 	 */
 	function get ($item, $callable = null) {
-		if (!$this->cache) {
+		if (!$this->state) {
 			return false;
 		}
 		$item	= trim($item, '/');
@@ -68,7 +79,7 @@ class Cache {
 		if ($this->engine != 'BlackHole' && is_object($this->engine_instance)){
 			$this->engine_instance->del($item);
 		}
-		if (!$this->cache) {
+		if (!$this->state) {
 			return true;
 		}
 		$item	= trim($item, '/');
@@ -110,13 +121,13 @@ class Cache {
 	 * @return bool
 	 */
 	function cache_state() {
-		return $this->cache;
+		return $this->state;
 	}
 	/**
 	 * Disable cache
 	 */
 	function disable () {
-		$this->cache = false;
+		$this->state = false;
 	}
 	/**
 	 * Get item from cache

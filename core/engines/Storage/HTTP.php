@@ -9,9 +9,9 @@ namespace	cs\Storage;
 use			cs\Config;
 
 class HTTP extends _Abstract {
-	protected	$host,
-				$user,
-				$password;
+	protected	$host;
+	protected	$user;
+	protected	$password;
 	/**
 	 * Connecting to the Storage
 	 *
