@@ -427,7 +427,7 @@ class User {
 	 * @return bool|string|mixed[]
 	 */
 	protected function get_internal ($item, $user = false, $cache_only = false) {
-		$user = (int)($user ?: $this->id);
+		$user = (int)$user ?: $this->id;
 		if (!$user) {
 			return false;
 		}
@@ -481,44 +481,57 @@ class User {
 			} else {
 				return false;
 			}
+		}
 		/**
 		 * If get one value
 		 */
-		} elseif (in_array($item, $this->users_columns)) {
-			/**
-			 * Pointer to the beginning of getting the data
-			 */
-			get_data:
-			/**
-			 * If data in local cache - return them
-			 */
-			if (isset($data[$item])) {
-				return $data[$item];
+		return $this->get_internal_one_item($item, $user, $data, $cache_only);
+	}
+	/**
+	 * @param string	$item
+	 * @param int		$user
+	 * @param mixed[]	$data
+	 * @param bool		$cache_only
+	 *
+	 * @return array|bool
+	 */
+	protected function get_internal_one_item ($item, $user, &$data, $cache_only) {
+		if (!in_array($item, $this->users_columns)) {
+			return false;
+		}
+		/**
+		 * If data in local cache - return them
+		 */
+		if (isset($data[$item])) {
+			return $data[$item];
 			/**
 			 * Try to get data from the cache
 			 */
-			} elseif (!isset($new_data) && ($new_data = $this->cache->$user) !== false && is_array($new_data)) {
-				/**
-				 * Update the local cache
-				 */
-				if (is_array($new_data)) {
-					$data = array_merge($new_data, $data ?: []);
-				}
-				/**
-				 * New attempt of getting the data
-				 */
-				goto get_data;
-			} elseif (!$cache_only) {
-				$new_data = $this->db()->qfs(
-					"SELECT `$item`
+		} elseif (
+			!isset($new_data) &&
+			($new_data = $this->cache->$user) !== false &&
+			is_array($new_data)
+		) {
+			/**
+			 * Update the local cache
+			 */
+			if (is_array($new_data)) {
+				$data = array_merge($new_data, $data ?: []);
+			}
+			/**
+			 * New attempt of getting the data
+			 */
+			return $this->get_internal_one_item($item, $user, $data, $cache_only);
+		} elseif (!$cache_only) {
+			$new_data = $this->db()->qfs(
+				"SELECT `$item`
 					FROM `[prefix]users`
 					WHERE `id` = '$user'
 					LIMIT 1"
-				);
-				if ($new_data !== false) {
-					$this->update_cache[$user]	= true;
-					return $data[$item] = $new_data;
-				}
+			);
+			if ($new_data !== false) {
+				$this->update_cache[$user]	= true;
+				return $data[$item] = $new_data;
 			}
 		}
 		return false;
@@ -549,7 +562,7 @@ class User {
 	 * @return bool
 	 */
 	protected function set_internal ($item, $value = null, $user = false) {
-		$user = (int)($user ?: $this->id);
+		$user = (int)$user ?: $this->id;
 		if (!$user) {
 			return false;
 		}
@@ -628,7 +641,7 @@ class User {
 	 * @return bool|string|mixed[]
 	 */
 	function get_data ($item, $user = false) {
-		$user	= (int)($user ?: $this->id);
+		$user	= (int)$user ?: $this->id;
 		if (!$user || $user == self::GUEST_ID || !$item) {
 			return false;
 		}
@@ -703,7 +716,7 @@ class User {
 	 * @return bool
 	 */
 	function set_data ($item, $value = null, $user = false) {
-		$user	= (int)($user ?: $this->id);
+		$user	= (int)$user ?: $this->id;
 		if (!$user || $user == self::GUEST_ID || !$item) {
 			return false;
 		}
@@ -759,7 +772,7 @@ class User {
 	 * @return bool
 	 */
 	function del_data ($item, $user = false) {
-		$user	= (int)($user ?: $this->id);
+		$user	= (int)$user ?: $this->id;
 		if (!$user || $user == self::GUEST_ID || !$item) {
 			return false;
 		}
@@ -832,9 +845,10 @@ class User {
 				"SELECT `id`
 				FROM `[prefix]users`
 				WHERE
-					`login_hash`	= '%1\$s' OR
-					`email_hash`	= '%1\$s'
+					`login_hash`	= '%s' OR
+					`email_hash`	= '%s'
 				LIMIT 1",
+				$login_hash,
 				$login_hash
 			]) ?: false;
 		});
@@ -849,7 +863,7 @@ class User {
 	 * @return string
 	 */
 	function avatar ($size = null, $user = false) {
-		$user	= (int)($user ?: $this->id);
+		$user	= (int)$user ?: $this->id;
 		$avatar	= $this->get('avatar', $user);
 		if (!$avatar && $this->id != self::GUEST_ID) {
 			$avatar	= 'https://www.gravatar.com/avatar/'.md5($this->get('email', $user))."?d=mm&s=$size";
@@ -868,7 +882,7 @@ class User {
 	 * @return string
 	 */
 	function username ($user = false) {
-		$user = (int)($user ?: $this->id);
+		$user = (int)$user ?: $this->id;
 		return $this->get('username', $user) ?: ($this->get('login', $user) ?: $this->get('email', $user));
 	}
 	/**
@@ -885,11 +899,13 @@ class User {
 			FROM `[prefix]users`
 			WHERE
 				(
-					`login`		LIKE '%1\$s' OR
-					`username`	LIKE '%1\$s' OR
-					`email`		LIKE '%1\$s'
+					`login`		LIKE '%s' OR
+					`username`	LIKE '%s' OR
+					`email`		LIKE '%s'
 				) AND
 				`status` != '%s'",
+			$search_phrase,
+			$search_phrase,
 			$search_phrase,
 			self::STATUS_NOT_ACTIVATED
 		]);
@@ -908,7 +924,7 @@ class User {
 	 * 							others <b>true</b>
 	 */
 	function get_permission ($group, $label, $user = false) {
-		$user			= (int)($user ?: $this->id);
+		$user			= (int)$user ?: $this->id;
 		if ($this->system() || $user == self::ROOT_ID) {
 			return true;
 		}
@@ -990,7 +1006,7 @@ class User {
 	 * @return array|bool
 	 */
 	function get_permissions ($user = false) {
-		$user = (int)($user ?: $this->id);
+		$user = (int)$user ?: $this->id;
 		if (!$user) {
 			return false;
 		}
@@ -1005,7 +1021,7 @@ class User {
 	 * @return bool
 	 */
 	function set_permissions ($data, $user = false) {
-		$user = (int)($user ?: $this->id);
+		$user = (int)$user ?: $this->id;
 		if (!$user) {
 			return false;
 		}
@@ -1019,7 +1035,7 @@ class User {
 	 * @return bool
 	 */
 	function del_permissions_all ($user = false) {
-		$user = (int)($user ?: $this->id);
+		$user = (int)$user ?: $this->id;
 		if (!$user) {
 			return false;
 		}
@@ -1034,7 +1050,7 @@ class User {
 	 * @return bool
 	 */
 	function add_groups ($group, $user = false) {
-		$user	= (int)($user ?: $this->id);
+		$user	= (int)$user ?: $this->id;
 		if (!$user || $user == self::GUEST_ID) {
 			return false;
 		}
@@ -1053,7 +1069,7 @@ class User {
 	 * @return bool|int[]
 	 */
 	function get_groups ($user = false) {
-		$user	= (int)($user ?: $this->id);
+		$user	= (int)$user ?: $this->id;
 		if (!$user || $user == self::GUEST_ID) {
 			return false;
 		}
@@ -1075,7 +1091,7 @@ class User {
 	 * @return bool
 	 */
 	function set_groups ($groups, $user = false) {
-		$user		= (int)($user ?: $this->id);
+		$user		= (int)$user ?: $this->id;
 		if (!$user) {
 			return false;
 		}
@@ -1147,7 +1163,7 @@ class User {
 	 * @return bool
 	 */
 	function del_groups ($group, $user = false) {
-		$user	= (int)($user ?: $this->id);
+		$user	= (int)$user ?: $this->id;
 		if (!$user || $user == self::GUEST_ID) {
 			return false;
 		}
@@ -2129,7 +2145,7 @@ class User {
 	 * @return	int[]				Array of user id
 	 */
 	function get_contacts ($user = false) {
-		$user = (int)($user ?: $this->id);
+		$user = (int)$user ?: $this->id;
 		if (!$user || $user == self::GUEST_ID) {
 			return [];
 		}
