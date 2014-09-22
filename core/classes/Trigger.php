@@ -27,19 +27,19 @@ class Trigger {
 	/**
 	 * Registration of triggers for actions
 	 * @param string	$trigger	For example <i>admin/System/components/plugins/disable</i>
-	 * @param callable	$callable	callable, that will be called at trigger running
+	 * @param callable	$callback	callable, that will be called at trigger running
 	 * @param bool		$replace	If <i>true</i> - existing closures for this trigger will be removed and replaced with specified one
 	 *
 	 * @return Trigger
 	 */
-	function register ($trigger, $callable, $replace = false) {
-		if (!is_string($trigger) || !is_callable($callable)) {
+	function register ($trigger, $callback, $replace = false) {
+		if (!is_string($trigger) || !is_callable($callback)) {
 			return $this;
 		}
 		if (!isset($this->triggers[$trigger]) || $replace) {
 			$this->triggers[$trigger]	= [];
 		}
-		$this->triggers[$trigger][]	= $callable;
+		$this->triggers[$trigger][]	= $callback;
 		return $this;
 	}
 	/**
@@ -73,11 +73,11 @@ class Trigger {
 			return true;
 		}
 		$return	= true;
-		foreach ($this->triggers[$trigger] as $callable) {
+		foreach ($this->triggers[$trigger] as $callback) {
 			if ($data === null) {
-				$return = $return && ($callable() === false ? false : true);
+				$return = $return && ($callback() === false ? false : true);
 			} else {
-				$return = $return && ($callable($data) === false ? false : true);
+				$return = $return && ($callback($data) === false ? false : true);
 			}
 		}
 		return $return;

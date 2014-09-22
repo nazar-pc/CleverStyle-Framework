@@ -23,15 +23,15 @@ class Prefix {
 	/**
 	 * Get item from cache
 	 *
-	 * If item not found and $callable parameter specified - closure must return value for item. This value will be set for current item, and returned.
+	 * If item not found and $callback parameter specified - closure must return value for item. This value will be set for current item, and returned.
 	 *
 	 * @param string		$item		May contain "/" symbols for cache structure, for example users/<i>user_id</i>
-	 * @param callable|null	$callable
+	 * @param callable|null	$callback
 	 *
 	 * @return bool|mixed				Returns item on success of <b>false</b> on failure
 	 */
-	function get ($item, $callable = null) {
-		return Cache::instance()->get("$this->prefix/$item", $callable);
+	function get ($item, $callback = null) {
+		return Cache::instance()->get("$this->prefix/$item", $callback);
 	}
 	/**
 	 * Put or change data of cache item

@@ -1331,13 +1331,13 @@ function description ($text) {
 /**
  * Returns of direct output of given function
  *
- * @param callable	$callable
+ * @param callable	$callback
  *
  * @return string
  */
-function ob_wrapper ($callable) {
+function ob_wrapper ($callback) {
 	ob_start();
-	$callable();
+	$callback();
 	return ob_get_clean();
 }
 /**

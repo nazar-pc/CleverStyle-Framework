@@ -46,21 +46,21 @@ class Cache {
 	/**
 	 * Get item from cache
 	 *
-	 * If item not found and $callable parameter specified - closure must return value for item. This value will be set for current item, and returned.
+	 * If item not found and $callback parameter specified - closure must return value for item. This value will be set for current item, and returned.
 	 *
 	 * @param string		$item		May contain "/" symbols for cache structure, for example users/<i>user_id</i>
-	 * @param callable|null	$callable
+	 * @param callable|null	$callback
 	 *
 	 * @return bool|mixed				Returns item on success of <b>false</b> on failure
 	 */
-	function get ($item, $callable = null) {
+	function get ($item, $callback = null) {
 		if (!$this->state) {
 			return false;
 		}
 		$item	= trim($item, '/');
 		$data	= $this->engine_instance->get($item);
-		if ($data === false && is_callable($callable)) {
-			$data	= $callable();
+		if ($data === false && is_callable($callback)) {
+			$data	= $callback();
 			if ($data !== false) {
 				$this->set($item, $data);
 			}
