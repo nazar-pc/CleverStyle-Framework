@@ -293,11 +293,10 @@ class Includes_processing {
 		$data	.= $imports_content;
 	}
 	protected static function is_relative_path ($path) {
-		return !(
-			mb_strpos($path, 'http://') === 0 ||
-			mb_strpos($path, 'https://') === 0 ||
-			mb_strpos($path, 'ftp://') === 0 ||
-			mb_strpos($path, '/') === 0
-		);
+		return
+			mb_strpos($path, 'http://') !== 0 &&
+			mb_strpos($path, 'https://') !== 0 &&
+			mb_strpos($path, 'ftp://') !== 0 &&
+			mb_strpos($path, '/') !== 0;
 	}
 }
