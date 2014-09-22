@@ -46,11 +46,12 @@
  *  ['id'	=> <i>user_id</i>]
  */
 namespace	cs;
-use			cs\Cache\Prefix,
-			cs\User\Properties,
-			cs\DB\Accessor,
-			cs\Permission\Any,
-			h;
+use
+	cs\Cache\Prefix,
+	cs\User\Properties,
+	cs\DB\Accessor,
+	cs\Permission\Any,
+	h;
 /**
  * Class for users manipulating
  *
@@ -80,7 +81,8 @@ use			cs\Cache\Prefix,
  * @method static User instance($check = false)
  */
 class User {
-	use	Accessor,
+	use
+		Accessor,
 		Singleton,
 		Any;
 	/**
@@ -115,17 +117,16 @@ class User {
 	 * Status of not activated user
 	 */
 	const		STATUS_NOT_ACTIVATED	= -1;
-
-	protected	$current		= [
-		'session'	=> false,
-		'is'		=> [
-			'admin'		=> false,
-			'user'		=> false,
-			'bot'		=> false,
-			'guest'		=> false,
-			'system'	=> false
-		]
-	];
+	/**
+	 * Session id of current user
+	 * @var bool|string
+	 */
+	protected	$session_id		= false;
+	protected	$is_admin		= false;
+	protected	$is_user		= false;
+	protected	$is_bot			= false;
+	protected	$is_guest		= false;
+	protected	$is_system		= false;
 	/**
 	 * Id of current user
 	 * @var bool|int
@@ -214,14 +215,14 @@ class User {
 			) &&
 			is_array($key_data)
 		) {
-			if ($this->current['is']['system'] = ($key_data['url'] == $Config->server['host'].'/'.$Config->server['raw_relative_address'])) {
-				$this->current['is']['admin'] = true;
+			if ($this->is_system = ($key_data['url'] == $Config->server['host'].'/'.$Config->server['raw_relative_address'])) {
+				$this->is_admin = true;
 				interface_off();
 				$_POST['data'] = _json_decode($_POST['data']);
 				Trigger::instance()->run('System/User/construct/after');
 				return;
 			} else {
-				$this->current['is']['guest'] = true;
+				$this->is_guest = true;
 				/**
 				 * Simulate a bad sign in to block access
 				 */
@@ -360,26 +361,27 @@ class User {
 	 * Updates information about who is user accessed by methods ::guest() ::bot() ::user() admin() ::system()
 	 */
 	protected function update_user_is () {
-		$this->current['is']['guest']	= false;
-		$this->current['is']['bot']		= false;
-		$this->current['is']['user']	= false;
-		$this->current['is']['admin']	= false;
-		$this->current['is']['system']	= false;
+		$this->is_guest		= false;
+		$this->is_bot		= false;
+		$this->is_user		= false;
+		$this->is_admin		= false;
+		$this->is_system	= false;
 		if ($this->id == self::GUEST_ID) {
-			$this->current['is']['guest'] = true;
+			$this->is_guest = true;
+			return;
 		} else {
 			/**
 			 * Checking of user type
 			 */
 			$groups = $this->get_groups() ?: [];
 			if (in_array(self::ADMIN_GROUP_ID, $groups)) {
-				$this->current['is']['admin']	= Config::instance()->can_be_admin;
-				$this->current['is']['user']	= true;
+				$this->is_admin	= Config::instance()->can_be_admin;
+				$this->is_user	= true;
 			} elseif (in_array(self::USER_GROUP_ID, $groups)) {
-				$this->current['is']['user']	= true;
+				$this->is_user	= true;
 			} elseif (in_array(self::BOT_GROUP_ID, $groups)) {
-				$this->current['is']['guest']	= true;
-				$this->current['is']['bot']		= true;
+				$this->is_guest	= true;
+				$this->is_bot	= true;
 			}
 		}
 	}
@@ -397,12 +399,9 @@ class User {
 		}
 		switch ($item) {
 			case 'user_agent':
-				return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+				return @$_SERVER['HTTP_USER_AGENT'] ?: '';
 			case 'ip':
-				if (isset($_SERVER['HTTP_X_REAL_IP'])) {
-					return $_SERVER['HTTP_X_REAL_IP'];
-				}
-				return $_SERVER['REMOTE_ADDR'];
+				return @$_SERVER['HTTP_X_REAL_IP'] ?: $_SERVER['REMOTE_ADDR'];
 			case 'forwarded_for':
 				if (!isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
 					return false;
@@ -783,7 +782,7 @@ class User {
 	 * @return bool
 	 */
 	function admin () {
-		return $this->current['is']['admin'];
+		return $this->is_admin;
 	}
 	/**
 	 * Is user
@@ -791,7 +790,7 @@ class User {
 	 * @return bool
 	 */
 	function user () {
-		return $this->current['is']['user'];
+		return $this->is_user;
 	}
 	/**
 	 * Is guest
@@ -799,7 +798,7 @@ class User {
 	 * @return bool
 	 */
 	function guest () {
-		return $this->current['is']['guest'];
+		return $this->is_guest;
 	}
 	/**
 	 * Is bot
@@ -807,7 +806,7 @@ class User {
 	 * @return bool
 	 */
 	function bot () {
-		return $this->current['is']['bot'];
+		return $this->is_bot;
 	}
 	/**
 	 * Is system
@@ -815,7 +814,7 @@ class User {
 	 * @return bool
 	 */
 	function system () {
-		return $this->current['is']['system'];
+		return $this->is_system;
 	}
 	/**
 	 * Get user id by login or email hash (sha224) (hash from lowercase string)
@@ -1167,7 +1166,7 @@ class User {
 		if ($this->bot() && $this->id == self::GUEST_ID) {
 			return '';
 		}
-		return $this->current['session'];
+		return $this->session_id;
 	}
 	/**
 	 * Find the session by id as applies it, and return id of owner (user), updates last_sign_in, last_ip and last_online information
@@ -1181,10 +1180,10 @@ class User {
 			return self::GUEST_ID;
 		}
 		if (!$session_id) {
-			if (!$this->current['session']) {
-				$this->current['session'] = _getcookie('session');
+			if (!$this->session_id) {
+				$this->session_id = _getcookie('session');
 			}
-			$session_id = $session_id ?: $this->current['session'];
+			$session_id = $session_id ?: $this->session_id;
 		}
 		if (!is_md5($session_id)) {
 			return false;
@@ -1299,7 +1298,7 @@ class User {
 	 */
 	function add_session ($user = false, $delete_current_session = true) {
 		$user	= (int)$user ?: self::GUEST_ID;
-		if ($delete_current_session && is_md5($this->current['session'])) {
+		if ($delete_current_session && is_md5($this->session_id)) {
 			$this->del_session_internal(null, false);
 		}
 		/**
@@ -1413,7 +1412,7 @@ class User {
 			if ($user != self::GUEST_ID) {
 				$this->db_prime()->q("UPDATE `[prefix]users` SET `last_sign_in` = $time, `last_online` = $time, `last_ip` = '$ip.' WHERE `id` ='$user'");
 			}
-			$this->current['session']			= $hash;
+			$this->session_id			= $hash;
 			$this->cache->{"sessions/$hash"}	= [
 				'user'			=> $user,
 				'expire'		=> TIME + $Config->core['session_expire'],
@@ -1466,12 +1465,12 @@ class User {
 	 * @return bool
 	 */
 	protected function del_session_internal ($session_id = null, $create_guest_session = true) {
-		$session_id = $session_id ?: $this->current['session'];
+		$session_id = $session_id ?: $this->session_id;
 		if (!is_md5($session_id)) {
 			return false;
 		}
 		unset($this->cache->{"sessions/$session_id"});
-		$this->current['session'] = false;
+		$this->session_id = false;
 		_setcookie('session', '');
 		$result =  $this->db_prime()->q(
 			"DELETE FROM `[prefix]sessions`
@@ -1527,7 +1526,7 @@ class User {
 	 *
 	 */
 	function get_session_data ($item, $session_id = null) {
-		$session_id	= $session_id ?: $this->current['session'];
+		$session_id	= $session_id ?: $this->session_id;
 		if (!is_md5($session_id)) {
 			return false;
 		}
@@ -1555,7 +1554,7 @@ class User {
 	 *
 	 */
 	function set_session_data ($item, $value, $session_id = null) {
-		$session_id		= $session_id ?: $this->current['session'];
+		$session_id		= $session_id ?: $this->session_id;
 		if (!is_md5($session_id)) {
 			return false;
 		}
@@ -1594,7 +1593,7 @@ class User {
 	 *
 	 */
 	function del_session_data ($item, $session_id = null) {
-		$session_id	= $session_id ?: $this->current['session'];
+		$session_id	= $session_id ?: $this->session_id;
 		if (!is_md5($session_id)) {
 			return false;
 		}
