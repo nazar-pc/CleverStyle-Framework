@@ -403,8 +403,8 @@ function get_core_ml_text ($item) {
  *
  * @param int				$page		Current page
  * @param int				$total		Total pages number
- * @param Closure|string	$url		if string - it will be formatted with sprintf with one parameter - page number<br>
- * 										if Closure - one parameter will be given, Closure should return url string
+ * @param callable|string	$url		if string - it will be formatted with sprintf with one parameter - page number<br>
+ * 										if callable - one parameter will be given, callable should return url string
  * @param bool				$head_links	If <b>true</b> - links with rel="prev" and rel="next" will be added
  *
  * @return bool|string					<b>false</b> if single page, otherwise string, set of navigation links
@@ -415,7 +415,7 @@ function pages ($page, $total, $url, $head_links = false) {
 	}
 	$Page	= Page::instance();
 	$output	= [];
-	if ($url instanceof Closure) {
+	if (is_callable($url)) {
 		$url_func	= $url;
 	} else {
 		$original_url	= $url;
@@ -442,7 +442,7 @@ function pages ($page, $total, $url, $head_links = false) {
 			];
 			if ($head_links && ($i == $page - 1 || $i == $page + 1)) {
 				$Page->link([
-					'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+					'href'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
 					'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
 				]);
 			}
@@ -459,7 +459,7 @@ function pages ($page, $total, $url, $head_links = false) {
 				];
 				if ($head_links&& ($i == $page - 1 || $i == $page + 1)) {
 					$Page->link([
-						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'href'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
 						'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
 					]);
 				}
@@ -474,7 +474,7 @@ function pages ($page, $total, $url, $head_links = false) {
 				$output[]	= [
 					$i,
 					[
-						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'href'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
 						'class'	=> 'cs-button'
 					]
 				];
@@ -484,7 +484,7 @@ function pages ($page, $total, $url, $head_links = false) {
 				$output[]	= [
 					$i,
 					[
-						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'href'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
 						'class'	=> 'cs-button'
 					]
 				];
@@ -505,7 +505,7 @@ function pages ($page, $total, $url, $head_links = false) {
 				];
 				if ($head_links && ($i == $page - 1 || $i == $page + 1)) {
 					$Page->link([
-						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'href'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
 						'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
 					]);
 				}
@@ -515,7 +515,7 @@ function pages ($page, $total, $url, $head_links = false) {
 				$output[]	= [
 					$i,
 					[
-						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'href'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
 						'class'	=> 'cs-button'
 					]
 				];
@@ -536,7 +536,7 @@ function pages ($page, $total, $url, $head_links = false) {
 				];
 				if ($head_links && ($i == $page - 1 || $i == $page + 1)) {
 					$Page->link([
-						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'href'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
 						'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
 					]);
 				}
@@ -551,7 +551,7 @@ function pages ($page, $total, $url, $head_links = false) {
 				$output[]	= [
 					$i,
 					[
-						'href'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'href'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
 						'class'	=> 'cs-button'
 					]
 				];
@@ -565,10 +565,10 @@ function pages ($page, $total, $url, $head_links = false) {
  *
  * @param int					$page		Current page
  * @param int					$total		Total pages number
- * @param bool|Closure|string	$url		Adds <i>formaction</i> parameter to every button<br>
+ * @param bool|callable|string	$url		Adds <i>formaction</i> parameter to every button<br>
  * 											if <b>false</b> - only form parameter <i>page</i> will we added<br>
  * 											if string - it will be formatted with sprintf with one parameter - page number<br>
- * 											if Closure - one parameter will be given, Closure should return url string
+ * 											if callable - one parameter will be given, callable should return url string
  *
  * @return bool|string						<b>false</b> if single page, otherwise string, set of navigation buttons
  */
@@ -577,7 +577,7 @@ function pages_buttons ($page, $total, $url = false) {
 		return false;
 	}
 	$output	= [];
-	if (!($url instanceof Closure)) {
+	if (!is_callable($url)) {
 		$original_url	= $url;
 		$url			= function ($page) use ($original_url) {
 			return sprintf($original_url, $page);
@@ -619,7 +619,7 @@ function pages_buttons ($page, $total, $url = false) {
 				$output[]	= [
 					$i,
 					[
-						'formaction'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'formaction'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
 						'value'			=> $i,
 						'type'			=> 'submit'
 					]
@@ -630,7 +630,7 @@ function pages_buttons ($page, $total, $url = false) {
 				$output[]	= [
 					$i,
 					[
-						'formaction'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'formaction'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
 						'value'			=> $i,
 						'type'			=> 'submit'
 					]
@@ -659,7 +659,7 @@ function pages_buttons ($page, $total, $url = false) {
 				$output[]	= [
 					$i,
 					[
-						'formaction'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'formaction'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
 						'value'			=> $i,
 						'type'			=> 'submit'
 					]
@@ -694,7 +694,7 @@ function pages_buttons ($page, $total, $url = false) {
 				$output[]	= [
 					$i,
 					[
-						'formaction'	=> $url instanceof Closure ? $url($i) : sprintf($url, $i),
+						'formaction'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
 						'value'			=> $i,
 						'type'			=> 'submit'
 					]

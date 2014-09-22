@@ -6,8 +6,9 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\Cache;
-use			cs\Cache,
-			Closure;
+use
+	cs\Cache;
+
 /**
  * Class for simplified work with cache, when using common prefix
  */
@@ -22,15 +23,15 @@ class Prefix {
 	/**
 	 * Get item from cache
 	 *
-	 * If item not found and $closure parameter specified - closure must return value for item. This value will be set for current item, and returned.
+	 * If item not found and $callable parameter specified - closure must return value for item. This value will be set for current item, and returned.
 	 *
 	 * @param string		$item		May contain "/" symbols for cache structure, for example users/<i>user_id</i>
-	 * @param Closure|null	$closure
+	 * @param callable|null	$callable
 	 *
 	 * @return bool|mixed				Returns item on success of <b>false</b> on failure
 	 */
-	function get ($item, $closure = null) {
-		return Cache::instance()->get("$this->prefix/$item", $closure);
+	function get ($item, $callable = null) {
+		return Cache::instance()->get("$this->prefix/$item", $callable);
 	}
 	/**
 	 * Put or change data of cache item

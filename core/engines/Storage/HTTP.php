@@ -7,6 +7,7 @@
  */
 namespace	cs\Storage;
 use			cs\Config;
+
 class HTTP extends _Abstract {
 	protected	$host,
 				$user,
@@ -75,7 +76,7 @@ class HTTP extends _Abstract {
 	 * @param	bool		$sort
 	 * @param	bool|string	$exclusion
 	 * @param	bool		$system_files
-	 * @param	\Closure	$apply
+	 * @param	callable	$apply
 	 * @param	int|null	$limit
 	 *
 	 * @return	array|bool
@@ -95,7 +96,7 @@ class HTTP extends _Abstract {
 				'limit'			=> $limit
 			])[1]
 		);
-		if ($apply instanceof \Closure && $return) {
+		if (is_callable($apply) && $return) {
 			foreach ($return as $r) {
 				$apply($r);
 			}

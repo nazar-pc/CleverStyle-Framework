@@ -8,7 +8,6 @@
 namespace cs;
 
 use
-	Closure,
 	JsonSerializable;
 
 defined('FIXED_LANGUAGE') || define('FIXED_LANGUAGE', false);
@@ -36,9 +35,9 @@ class Language implements JsonSerializable {
 		 */
 		$clanguage,
 		/**
-		 * Closure for time processing
+		 * callable for time processing
 		 *
-		 * @var Closure
+		 * @var callable
 		 */
 		$time           = null;
 	protected
@@ -277,7 +276,7 @@ class Language implements JsonSerializable {
 	 * @return string
 	 */
 	function time ($in, $type) {
-		if ($this->time instanceof Closure) {
+		if (is_callable($this->time)) {
 			return $this->time->__invoke($in, $type);
 		} else {
 			switch ($type) {

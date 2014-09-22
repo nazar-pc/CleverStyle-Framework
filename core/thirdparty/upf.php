@@ -12,7 +12,7 @@
  *
  * @param string		$file
  * @param bool			$once
- * @param bool|Closure	$show_errors	If bool error will be processed, if Closure - only Closure will be called
+ * @param bool|callable	$show_errors	If bool error will be processed, if callable - only callable will be called
  *
  * @return bool
  */
@@ -26,7 +26,7 @@ function _require ($file, $once = false, $show_errors = true) {
 	} elseif (is_bool($show_errors) && $show_errors) {
 		$data = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0];
 		trigger_error("File $file does not exists in $data[file] on line $data[line]", E_USER_ERROR);
-	} elseif ($show_errors instanceof Closure) {
+	} elseif (is_callable($show_errors)) {
 		return (bool)$show_errors();
 	}
 	return false;
@@ -36,7 +36,7 @@ function _require ($file, $once = false, $show_errors = true) {
  *
  * @param string		$file
  * @param bool			$once
- * @param bool|Closure	$show_errors	If bool error will be processed, if Closure - only Closure will be called
+ * @param bool|callable	$show_errors	If bool error will be processed, if callable - only callable will be called
  *
  * @return bool
  */
@@ -50,7 +50,7 @@ function _include ($file, $once = false, $show_errors = true) {
 	} elseif (is_bool($show_errors) && $show_errors) {
 		$data = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0];
 		trigger_error("File $file does not exists in $data[file] on line $data[line]", E_USER_WARNING);
-	} elseif ($show_errors instanceof Closure) {
+	} elseif (is_callable($show_errors)) {
 			return (bool)$show_errors();
 	}
 	return false;
@@ -59,7 +59,7 @@ function _include ($file, $once = false, $show_errors = true) {
  * Special function for files including
  *
  * @param string		$file
- * @param bool|Closure	$show_errors	If bool error will be processed, if Closure - only Closure will be called
+ * @param bool|callable	$show_errors	If bool error will be processed, if callable - only callable will be called
  *
  * @return bool
  */
@@ -70,7 +70,7 @@ function _require_once ($file, $show_errors = true) {
  * Special function for files including
  *
  * @param string		$file
- * @param bool|Closure	$show_errors	If bool error will be processed, if Closure - only Closure will be called
+ * @param bool|callable	$show_errors	If bool error will be processed, if callable - only callable will be called
  *
  * @return bool
  */
@@ -112,7 +112,7 @@ function time_limit_pause ($pause = true) {
  * 										Possible values for mode: <b>asc</b> (default), <b>desc</b>
  * @param	bool|string	$exclusion		If specified file exists in scanned directory - it will be excluded from scanning
  * @param	bool		$system_files	Show system files: .htaccess .htpasswd .gitignore
- * @param	Closure		$apply			Apply function to each found item, return nothing (sorting will not work, items will be processed as they found)
+ * @param	callable	$apply			Apply function to each found item, return nothing (sorting will not work, items will be processed as they found)
  * @param	int|null	$limit			If specified - limits total number of found items (if $limit items found - stop further searching)
  *
  * @return	array|bool
@@ -208,7 +208,7 @@ function get_files_list (
 			) {
 				--$limit;
 				$item	= $prefix_path === true ? $dir.$file : ($prefix_path ? $prefix_path.$file : $file);
-				if (!($apply instanceof Closure)) {
+				if (!is_callable($apply)) {
 					$prepare($list, $item, $dir.$file);
 				}
 			}
@@ -231,7 +231,7 @@ function get_files_list (
 					);
 				}
 			}
-			if (isset($item) && $apply instanceof Closure) {
+			if (isset($item) && is_callable($apply)) {
 				$apply($item);
 			}
 			unset($item);
@@ -1331,13 +1331,13 @@ function description ($text) {
 /**
  * Returns of direct output of given function
  *
- * @param Closure	$closure
+ * @param callable	$callable
  *
  * @return string
  */
-function ob_wrapper ($closure) {
+function ob_wrapper ($callable) {
 	ob_start();
-	$closure();
+	$callable();
 	return ob_get_clean();
 }
 /**

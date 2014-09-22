@@ -32,7 +32,7 @@ class Local extends _Abstract {
 	 * @param	bool		$sort
 	 * @param	bool|string	$exclusion
 	 * @param	bool		$system_files
-	 * @param	\Closure	$apply
+	 * @param	callable	$apply
 	 * @param	int|null	$limit
 	 *
 	 * @return	array|bool

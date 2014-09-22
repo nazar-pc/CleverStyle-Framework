@@ -6,7 +6,6 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-use			Closure;
 
 /**
  * @method static Cache instance($check = false)
@@ -36,21 +35,21 @@ class Cache {
 	/**
 	 * Get item from cache
 	 *
-	 * If item not found and $closure parameter specified - closure must return value for item. This value will be set for current item, and returned.
+	 * If item not found and $callable parameter specified - closure must return value for item. This value will be set for current item, and returned.
 	 *
 	 * @param string		$item		May contain "/" symbols for cache structure, for example users/<i>user_id</i>
-	 * @param Closure|null	$closure
+	 * @param callable|null	$callable
 	 *
 	 * @return bool|mixed				Returns item on success of <b>false</b> on failure
 	 */
-	function get ($item, $closure = null) {
+	function get ($item, $callable = null) {
 		if (!$this->cache) {
 			return false;
 		}
 		$item	= trim($item, '/');
 		$data	= $this->engine_instance->get($item);
-		if ($data === false && $closure instanceof Closure) {
-			$data	= $closure();
+		if ($data === false && is_callable($callable)) {
+			$data	= $callable();
 			if ($data !== false) {
 				$this->set($item, $data);
 			}

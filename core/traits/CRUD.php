@@ -6,8 +6,9 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-use			Closure,
-			cs\DB\Accessor;
+use
+	cs\DB\Accessor;
+
 /**
  * CRUD trait
  *
@@ -19,7 +20,7 @@ use			Closure,
 trait CRUD {
 	use	Accessor;
 	/**
-	 * @param Closure[]|string[]	$data_model
+	 * @param callable[]|string[]	$data_model
 	 * @param array					$arguments
 	 */
 	private function crud_arguments_preparation ($data_model, &$arguments) {
@@ -28,7 +29,7 @@ trait CRUD {
 			$arguments,
 			function (&$argument, $item) use ($data_model) {
 				$model	= $data_model[$item];
-				if ($model instanceof Closure) {
+				if (is_callable($model)) {
 					$argument	= $model($argument);
 					return;
 				}
@@ -94,7 +95,7 @@ trait CRUD {
 	 * Create item
 	 *
 	 * @param string				$table
-	 * @param Closure[]|string[]	$data_model
+	 * @param callable[]|string[]	$data_model
 	 * @param array					$arguments	First element <i>id</i> can be omitted if it is autoincrement field
 	 *
 	 * @return bool|int							Id of created item on success, <i>false</i> otherwise
@@ -137,7 +138,7 @@ trait CRUD {
 	 * Read item
 	 *
 	 * @param string				$table
-	 * @param Closure[]|string[]	$data_model
+	 * @param callable[]|string[]	$data_model
 	 * @param int|int[]				$id
 	 *
 	 * @return array|bool
@@ -175,7 +176,7 @@ trait CRUD {
 	 * Update item
 	 *
 	 * @param string				$table
-	 * @param Closure[]|string[]	$data_model
+	 * @param callable[]|string[]	$data_model
 	 * @param array					$arguments
 	 *
 	 * @return bool
@@ -215,7 +216,7 @@ trait CRUD {
 	 * Delete item
 	 *
 	 * @param string					$table
-	 * @param Closure[]|string[]		$data_model
+	 * @param callable[]|string[]		$data_model
 	 * @param int|int[]|string|string[]	$id
 	 *
 	 * @return bool
