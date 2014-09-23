@@ -9,7 +9,8 @@ namespace	cs\User;
 use
 	cs\Config,
 	cs\Core,
-	cs\Trigger;
+	cs\Trigger,
+	cs\User;
 
 /**
  * Trait that contains all methods from <i>>cs\User</i> for working with user management (creation, modification, deletion)
@@ -46,7 +47,7 @@ trait Management {
 			$search_phrase,
 			$search_phrase,
 			$search_phrase,
-			static::STATUS_NOT_ACTIVATED
+			User::STATUS_NOT_ACTIVATED
 		]);
 		return $found_users;
 	}
@@ -138,7 +139,7 @@ trait Management {
 		)) {
 			$this->reg_id = $this->db_prime()->id();
 			if (!$confirmation) {
-				$this->set_groups([static::USER_GROUP_ID], $this->reg_id);
+				$this->set_groups([User::USER_GROUP_ID], $this->reg_id);
 			}
 			if (!$confirmation && $auto_sign_in && $Config->core['auto_sign_in_after_registration']) {
 				$this->add_session($this->reg_id);
@@ -153,7 +154,7 @@ trait Management {
 				return false;
 			}
 			if (!$confirmation) {
-				$this->set_groups([static::USER_GROUP_ID], $this->reg_id);
+				$this->set_groups([User::USER_GROUP_ID], $this->reg_id);
 			}
 			unset($this->cache->$login_hash);
 			return [
@@ -197,7 +198,7 @@ trait Management {
 				`status`	= '%s'
 			LIMIT 1",
 			$reg_key,
-			static::STATUS_NOT_ACTIVATED
+			User::STATUS_NOT_ACTIVATED
 		]);
 		if (!$data) {
 			return false;
@@ -208,12 +209,12 @@ trait Management {
 		$this->set(
 			[
 				'password_hash'	=> hash('sha512', hash('sha512', $password).Core::instance()->public_key),
-				'status'		=> static::STATUS_ACTIVE
+				'status'		=> User::STATUS_ACTIVE
 			],
 			null,
 			$this->reg_id
 		);
-		$this->set_groups([static::USER_GROUP_ID], $this->reg_id);
+		$this->set_groups([User::USER_GROUP_ID], $this->reg_id);
 		$this->add_session($this->reg_id);
 		if (!Trigger::instance()->run(
 			'System/User/registration/confirmation/after',
@@ -238,7 +239,7 @@ trait Management {
 		if ($this->reg_id == 0) {
 			return;
 		}
-		$this->add_session(static::GUEST_ID);
+		$this->add_session(User::GUEST_ID);
 		$this->del_user($this->reg_id);
 		$this->reg_id = 0;
 	}
@@ -254,7 +255,7 @@ trait Management {
 				`last_sign_in`	= 0 AND
 				`status`		= '%s' AND
 				`reg_date`		< $reg_date",
-			static::STATUS_NOT_ACTIVATED
+			User::STATUS_NOT_ACTIVATED
 		]);
 		$this->del_user($ids);
 
@@ -267,7 +268,7 @@ trait Management {
 	 * @return bool|string			Key for confirmation or <b>false</b> on failure
 	 */
 	function restore_password ($user) {
-		if ($user && $user != static::GUEST_ID) {
+		if ($user && $user != User::GUEST_ID) {
 			$reg_key		= md5(MICROTIME.$this->ip);
 			if ($this->set('reg_key', $reg_key, $user)) {
 				$data					= $this->get('data', $user);
@@ -298,7 +299,7 @@ trait Management {
 				`status`	= '%s'
 			LIMIT 1",
 			$key,
-			static::STATUS_ACTIVE
+			User::STATUS_ACTIVE
 		]);
 		if (!$id) {
 			return false;
@@ -412,10 +413,10 @@ trait Management {
 			xap($name),
 			xap($user_agent),
 			xap($ip),
-			static::STATUS_ACTIVE
+			User::STATUS_ACTIVE
 		)) {
 			$id	= $this->db_prime()->id();
-			$this->set_groups([static::BOT_GROUP_ID], $id);
+			$this->set_groups([User::BOT_GROUP_ID], $id);
 			Trigger::instance()->run(
 				'System/User/add_bot',
 				[
@@ -468,7 +469,7 @@ trait Management {
 	 */
 	function get_contacts ($user = false) {
 		$user = (int)$user ?: $this->id;
-		if (!$user || $user == static::GUEST_ID) {
+		if (!$user || $user == User::GUEST_ID) {
 			return [];
 		}
 		$contacts	= [];

@@ -9,7 +9,8 @@ namespace	cs\User;
 use
 	cs\Cache,
 	cs\Group,
-	cs\Permission as System_Permission;
+	cs\Permission as System_Permission,
+	cs\User;
 
 /**
  * Trait that contains all methods from <i>>cs\User</i> for working with user permissions
@@ -37,7 +38,7 @@ trait Permission {
 	 */
 	function get_permission ($group, $label, $user = false) {
 		$user			= (int)$user ?: $this->id;
-		if ($this->system() || $user == static::ROOT_ID) {
+		if ($this->system() || $user == User::ROOT_ID) {
 			return true;
 		}
 		if (!$user) {
@@ -46,7 +47,7 @@ trait Permission {
 		if (!isset($this->permissions[$user])) {
 			$this->permissions[$user]	= $this->cache->get("permissions/$user", function () use ($user) {
 				$permissions	= [];
-				if ($user != static::GUEST_ID) {
+				if ($user != User::GUEST_ID) {
 					$groups							= $this->get_groups($user);
 					if (is_array($groups)) {
 						$Group	= Group::instance();

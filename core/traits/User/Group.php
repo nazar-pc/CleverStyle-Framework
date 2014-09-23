@@ -6,6 +6,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\User;
+use cs\User;
 
 /**
  * Trait that contains all methods from <i>>cs\User</i> for working with user groups
@@ -24,7 +25,7 @@ trait Group {
 	 */
 	function add_groups ($group, $user = false) {
 		$user	= (int)$user ?: $this->id;
-		if (!$user || $user == static::GUEST_ID) {
+		if (!$user || $user == User::GUEST_ID) {
 			return false;
 		}
 		$groups	= $this->get_groups($user);
@@ -43,7 +44,7 @@ trait Group {
 	 */
 	function get_groups ($user = false) {
 		$user	= (int)$user ?: $this->id;
-		if (!$user || $user == static::GUEST_ID) {
+		if (!$user || $user == User::GUEST_ID) {
 			return false;
 		}
 		return $this->cache->get("groups/$user", function () use ($user) {
@@ -137,7 +138,7 @@ trait Group {
 	 */
 	function del_groups ($group, $user = false) {
 		$user	= (int)$user ?: $this->id;
-		if (!$user || $user == static::GUEST_ID) {
+		if (!$user || $user == User::GUEST_ID) {
 			return false;
 		}
 		$groups	= array_diff(

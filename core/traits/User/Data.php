@@ -9,6 +9,7 @@ namespace	cs\User;
 use
 	cs\Config,
 	cs\Language,
+	cs\User,
 	h;
 
 /**
@@ -292,7 +293,7 @@ trait Data {
 	 */
 	function get_data ($item, $user = false) {
 		$user	= (int)$user ?: $this->id;
-		if (!$user || $user == static::GUEST_ID || !$item) {
+		if (!$user || $user == User::GUEST_ID || !$item) {
 			return false;
 		}
 		$Cache	= $this->cache;
@@ -367,7 +368,7 @@ trait Data {
 	 */
 	function set_data ($item, $value = null, $user = false) {
 		$user	= (int)$user ?: $this->id;
-		if (!$user || $user == static::GUEST_ID || !$item) {
+		if (!$user || $user == User::GUEST_ID || !$item) {
 			return false;
 		}
 		if (is_array($item)) {
@@ -423,7 +424,7 @@ trait Data {
 	 */
 	function del_data ($item, $user = false) {
 		$user	= (int)$user ?: $this->id;
-		if (!$user || $user == static::GUEST_ID || !$item) {
+		if (!$user || $user == User::GUEST_ID || !$item) {
 			return false;
 		}
 		$item	= implode(
@@ -462,7 +463,7 @@ trait Data {
 				$login_hash
 			]) ?: false;
 		});
-		return $id && $id != static::GUEST_ID ? $id : false;
+		return $id && $id != User::GUEST_ID ? $id : false;
 	}
 	/**
 	 * Get user avatar, if no one present - uses Gravatar
@@ -475,7 +476,7 @@ trait Data {
 	function avatar ($size = null, $user = false) {
 		$user	= (int)$user ?: $this->id;
 		$avatar	= $this->get('avatar', $user);
-		if (!$avatar && $this->id != static::GUEST_ID) {
+		if (!$avatar && $this->id != User::GUEST_ID) {
 			$avatar	= 'https://www.gravatar.com/avatar/'.md5($this->get('email', $user))."?d=mm&s=$size";
 			$avatar	.= '&d='.urlencode(Config::instance()->base_url().'/includes/img/guest.gif');
 		}

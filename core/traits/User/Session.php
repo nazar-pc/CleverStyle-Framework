@@ -10,7 +10,8 @@ use
 	cs\Config,
 	cs\Language,
 	cs\Page,
-	cs\Trigger;
+	cs\Trigger,
+	cs\User;
 
 /**
  * Trait that contains all methods from <i>>cs\User</i> for working with user sessions
@@ -34,7 +35,7 @@ trait Session {
 	 * @return bool|string
 	 */
 	function get_session () {
-		if ($this->bot() && $this->id == static::GUEST_ID) {
+		if ($this->bot() && $this->id == User::GUEST_ID) {
 			return '';
 		}
 		return $this->session_id;
@@ -47,8 +48,8 @@ trait Session {
 	 * @return int						User id
 	 */
 	function get_session_user ($session_id = null) {
-		if ($this->bot() && $this->id == static::GUEST_ID) {
-			return static::GUEST_ID;
+		if ($this->bot() && $this->id == User::GUEST_ID) {
+			return User::GUEST_ID;
 		}
 		if (!$session_id) {
 			if (!$this->session_id) {
@@ -99,9 +100,9 @@ trait Session {
 			$result['expire'] > TIME &&
 			$this->get('id', $result['user'])
 		)) {
-			$this->add_session(static::GUEST_ID);
+			$this->add_session(User::GUEST_ID);
 			$this->update_user_is();
-			return static::GUEST_ID;
+			return User::GUEST_ID;
 		}
 		$update	= [];
 		/**
@@ -168,7 +169,7 @@ trait Session {
 	 * @return bool
 	 */
 	function add_session ($user = false, $delete_current_session = true) {
-		$user	= (int)$user ?: static::GUEST_ID;
+		$user	= (int)$user ?: User::GUEST_ID;
 		if ($delete_current_session && is_md5($this->session_id)) {
 			$this->del_session_internal(null, false);
 		}
@@ -192,16 +193,16 @@ trait Session {
 		if (is_array($data)) {
 			$L		= Language::instance();
 			$Page	= Page::instance();
-			if ($data['status'] != static::STATUS_ACTIVE) {
+			if ($data['status'] != User::STATUS_ACTIVE) {
 				/**
 				 * If user is disabled
 				 */
-				if ($data['status'] == static::STATUS_INACTIVE) {
+				if ($data['status'] == User::STATUS_INACTIVE) {
 					$Page->warning($L->your_account_disabled);
 					/**
 					 * Mark user as guest, load data again
 					 */
-					$user	= static::GUEST_ID;
+					$user	= User::GUEST_ID;
 					goto getting_user_data;
 				/**
 				 * If user is not active
@@ -211,7 +212,7 @@ trait Session {
 					/**
 					 * Mark user as guest, load data again
 					 */
-					$user	= static::GUEST_ID;
+					$user	= User::GUEST_ID;
 					goto getting_user_data;
 				}
 			/**
@@ -222,14 +223,14 @@ trait Session {
 				/**
 				 * Mark user as guest, load data again
 				 */
-				$user	= static::GUEST_ID;
+				$user	= User::GUEST_ID;
 				goto getting_user_data;
 			}
-		} elseif ($this->id != static::GUEST_ID) {
+		} elseif ($this->id != User::GUEST_ID) {
 			/**
 			 * If data was not loaded - mark user as guest, load data again
 			 */
-			$user	= static::GUEST_ID;
+			$user	= User::GUEST_ID;
 			goto getting_user_data;
 		}
 		unset($data);
@@ -273,14 +274,14 @@ trait Session {
 				/**
 				 * Many guests open only one page, so create session only for 5 min
 				 */
-				TIME + ($user != static::GUEST_ID || $Config->core['session_expire'] < 300 ? $Config->core['session_expire'] : 300),
+				TIME + ($user != User::GUEST_ID || $Config->core['session_expire'] < 300 ? $Config->core['session_expire'] : 300),
 				$this->user_agent,
 				$ip				= ip2hex($this->ip),
 				$forwarded_for	= ip2hex($this->forwarded_for),
 				$client_ip		= ip2hex($this->client_ip)
 			);
 			$time								= TIME;
-			if ($user != static::GUEST_ID) {
+			if ($user != User::GUEST_ID) {
 				$this->db_prime()->q("UPDATE `[prefix]users` SET `last_sign_in` = $time, `last_online` = $time, `last_ip` = '$ip.' WHERE `id` ='$user'");
 			}
 			$this->session_id			= $hash;
@@ -350,7 +351,7 @@ trait Session {
 			$session_id
 		);
 		if ($create_guest_session) {
-			return $this->add_session(static::GUEST_ID);
+			return $this->add_session(User::GUEST_ID);
 		}
 		return $result;
 	}
