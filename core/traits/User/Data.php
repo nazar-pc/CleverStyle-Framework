@@ -155,34 +155,35 @@ trait Data {
 		 */
 		if (isset($data[$item])) {
 			return $data[$item];
-			/**
-			 * Try to get data from the cache
-			 */
-		} elseif (
-			!isset($new_data) &&
-			($new_data = $this->cache->$user) !== false &&
-			is_array($new_data)
-		) {
+		}
+		/**
+		 * Try to get data from the cache
+		 */
+		$data_from_cache	= $this->cache->$user;
+		if (is_array($data_from_cache)) {
 			/**
 			 * Update the local cache
 			 */
-			if (is_array($new_data)) {
-				$data = array_merge($new_data, $data ?: []);
+			if (is_array($data_from_cache)) {
+				$data = array_merge($data_from_cache, $data ?: []);
 			}
 			/**
-			 * New attempt of getting the data
+			 * New attempt of getting the data from cache
 			 */
-			return $this->get_internal_one_item($item, $user, $data, $cache_only);
-		} elseif (!$cache_only) {
-			$new_data = $this->db()->qfs(
+			if (isset($data[$item])) {
+				return $data[$item];
+			}
+		}
+		if (!$cache_only) {
+			$data_from_db = $this->db()->qfs(
 				"SELECT `$item`
-					FROM `[prefix]users`
-					WHERE `id` = '$user'
-					LIMIT 1"
+				FROM `[prefix]users`
+				WHERE `id` = '$user'
+				LIMIT 1"
 			);
-			if ($new_data !== false) {
+			if ($data_from_db !== false) {
 				$this->update_cache[$user]	= true;
-				return $data[$item] = $new_data;
+				return $data[$item] = $data_from_db;
 			}
 		}
 		return false;
