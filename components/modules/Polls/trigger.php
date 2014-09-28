@@ -11,7 +11,7 @@ namespace cs;
 Trigger::instance()->register(
 	'System/Index/construct',
 	function () {
-		switch (Config::instance()->module('Polls')->active()) {
+		switch (Config::instance()->components['modules']['Polls']['active']) {
 			case 0:
 			case 1:
 				if (!admin_path()) {

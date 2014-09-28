@@ -59,7 +59,7 @@ Trigger::instance()
 	->register(
 		'System/Index/construct',
 		function () {
-			switch (Config::instance()->module('Blogs')->active()) {
+			switch (Config::instance()->components['modules']['Blogs']['active']) {
 				case -1:
 					if (!admin_path()) {
 						return;

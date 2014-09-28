@@ -12,7 +12,7 @@ namespace	cs;
 Trigger::instance()->register(
 	'System/Index/construct',
 	function () {
-		switch (Config::instance()->module('Content')->active()) {
+		switch (Config::instance()->components['modules']['Content']['active']) {
 			case 1:
 				require __DIR__.'/trigger/enabled.php';
 			default:
