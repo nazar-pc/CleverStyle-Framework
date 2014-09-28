@@ -45,7 +45,6 @@ class Index {
 	public	$main_sub_menu			= [];
 	public	$main_menu_more			= [];
 
-	public	$savefile				= 'save';
 	public	$form					= false;
 	public	$file_upload			= false;
 	public	$form_atributes			= [];
@@ -245,8 +244,8 @@ class Index {
 			/**
 			 * Saving of changes
 			 */
-			if ($this->in_admin() && !_include_once("$working_directory/$rc[0]/$this->savefile.php", false)) {
-				_include_once("$working_directory/$this->savefile.php", false);
+			if ($this->in_admin() && !_include_once("$working_directory/$rc[0]/save.php", false)) {
+				_include_once("$working_directory/save.php", false);
 			}
 			if ($this->in_admin() && $this->title_auto) {
 				$Page->title($L->administration);
@@ -314,7 +313,9 @@ class Index {
 			if ($this->action === null) {
 				$this->action = $Config->server['relative_address'];
 			}
-			_include_once("$working_directory/$this->savefile.php", false);
+			if ($this->in_admin()) {
+				_include_once("$working_directory/save.php", false);
+			}
 		}
 	}
 	/**
