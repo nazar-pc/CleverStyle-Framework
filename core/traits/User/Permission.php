@@ -8,7 +8,7 @@
 namespace	cs\User;
 use
 	cs\Cache,
-	cs\Group as System_group,
+	cs\Group as System_Group,
 	cs\Permission as System_Permission,
 	cs\User;
 
@@ -50,7 +50,7 @@ trait Permission {
 				if ($user != User::GUEST_ID) {
 					$groups							= $this->get_groups($user);
 					if (is_array($groups)) {
-						$Group	= System_group::instance();
+						$Group	= System_Group::instance();
 						foreach ($groups as $group_id) {
 							foreach ($Group->get_permissions($group_id) ?: [] as $p => $v) {
 								$permissions[$p]	= $v;
