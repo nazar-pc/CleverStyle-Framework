@@ -84,7 +84,17 @@ class Index {
 	 * @var string
 	 */
 	protected	$module;
+	/**
+	 * Whether current page is api
+	 *
+	 * @var bool
+	 */
 	protected	$in_api				= false;
+	/**
+	 * Whether current page is administration and user is admin
+	 *
+	 * @var bool
+	 */
 	protected	$in_admin			= false;
 	protected	$request_method		= null;
 	protected	$working_directory	= '';
@@ -120,26 +130,36 @@ class Index {
 				file_exists("$admin_path/index.json")
 			)
 		) {
-			if (!($User->admin() && $User->get_permission($this->permission_group = "admin/$this->module", 'index'))) {
+			$this->permission_group	= "admin/$this->module";
+			if (!($User->admin() && $User->get_permission($this->permission_group, 'index'))) {
 				error_code(403);
 				exit;
 			}
-			$this->working_directory = $admin_path;
-			$this->form		= true;
-			$this->in_admin = true;
-		} elseif ($api && file_exists($api_path)) {
-			if (!$User->get_permission($this->permission_group = "api/$this->module", 'index')) {
+			$this->working_directory	= $admin_path;
+			$this->form					= true;
+			$this->in_admin				= true;
+		} elseif (
+			$api &&
+			file_exists($api_path)
+		) {
+			$this->permission_group	= "api/$this->module";
+			if (!$User->get_permission($this->permission_group, 'index')) {
 				error_code(403);
 				exit;
 			}
-			$this->working_directory = $api_path;
-			$this->in_api		= true;
-		} elseif (!admin_path() && !$api && file_exists(MODULES."/$this->module")) {
-			if (!$User->get_permission($this->permission_group = $this->module, 'index')) {
+			$this->working_directory	= $api_path;
+			$this->in_api				= true;
+		} elseif (
+			!admin_path() &&
+			!$api &&
+			file_exists(MODULES."/$this->module")
+		) {
+			$this->permission_group	= $this->module;
+			if (!$User->get_permission($this->permission_group, 'index')) {
 				error_code(403);
 				exit;
 			}
-			$this->working_directory = MODULES."/$this->module";
+			$this->working_directory	= MODULES."/$this->module";
 		} else {
 			error_code(404);
 			exit;
@@ -195,9 +215,13 @@ class Index {
 			}
 		}
 		unset($item, $rc_path, $rc_ids);
-		$rc		= &$this->route_path;
-		$working_directory = $this->working_directory;
-		$structure_file = $Config->core['simple_admin_mode'] && file_exists("$working_directory/index_simple.json") ? 'index_simple.json' : 'index.json';
+		$rc					= &$this->route_path;
+		$working_directory	= $this->working_directory;
+		$structure_file		=
+			$Config->core['simple_admin_mode'] &&
+			file_exists("$working_directory/index_simple.json")
+				? 'index_simple.json'
+				: 'index.json';
 		if (file_exists("$working_directory/$structure_file")) {
 			$this->structure	= file_get_json("$working_directory/$structure_file");
 			if (is_array($this->structure)) {
@@ -207,11 +231,11 @@ class Index {
 					}
 					if ($User->get_permission($this->permission_group, $item)) {
 						$this->parts[] = $item;
-						if (isset($rc[0]) && $item == $rc[0] && is_array($value)) {
+						if (@$rc[0] == $item && is_array($value)) {
 							foreach ($value as $subpart) {
 								if ($User->get_permission($this->permission_group, "$item/$subpart")) {
 									$this->subparts[] = $subpart;
-								} elseif (isset($rc[1]) && $rc[1] == $subpart) {
+								} elseif (@$rc[1] == $subpart) {
 									error_code(403);
 									return;
 								}
@@ -224,7 +248,11 @@ class Index {
 				}
 				unset($item, $value, $subpart);
 			}
-		} elseif ($api && !file_exists("$working_directory/index.php") && !file_exists("$working_directory/index.$this->request_method.php")) {
+		} elseif (
+			$api &&
+			!file_exists("$working_directory/index.php") &&
+			!file_exists("$working_directory/index.$this->request_method.php")
+		) {//TODO add 405 error here in addition to 404
 			error_code(404);
 			return;
 		}
@@ -237,26 +265,25 @@ class Index {
 			return;
 		}
 		if ($this->parts) {
-			if (!isset($rc[0]) || $rc[0] == '') {
+			if (@$rc[0] == '') { // IF path is empty
 				if ($api) {
 					return;
 				}
-				$rc[0] = $this->parts[0];
-				if (isset($this->structure[$rc[0]]) && is_array($this->structure[$rc[0]])) {
-					$this->subparts = $this->structure[$rc[0]];
-				}
-			} elseif ($rc[0] != '' && !empty($this->parts) && !in_array($rc[0], $this->parts)) {
+				$rc[0]			= $this->parts[0];
+				$this->subparts	= (array)@$this->structure[$rc[0]];
+			} elseif ($this->parts && !in_array($rc[0], $this->parts)) {
 				error_code(404);
 				return;
 			}
 			/**
 			 * Saving of changes
 			 */
-			if ($this->in_admin() && !_include_once("$working_directory/$rc[0]/save.php", false)) {
+			if ($this->in_admin) {
+				_include_once("$working_directory/$rc[0]/save.php", false) ||
 				_include_once("$working_directory/save.php", false);
-			}
-			if ($this->in_admin() && $this->title_auto) {
-				$Page->title($L->administration);
+				if ($this->title_auto) {
+					$Page->title($L->administration);
+				}
 			}
 			if (!$this->in_api && $this->title_auto) {
 				$Page->title($L->{home_page() ? 'home' : $this->module});
@@ -285,7 +312,7 @@ class Index {
 						return;
 					}
 					$rc[1] = $this->subparts[0];
-				} elseif ($rc[1] != '' && !empty($this->subparts) && !in_array($rc[1], $this->subparts)) {
+				} elseif ($rc[1] != '' && $this->subparts && !in_array($rc[1], $this->subparts)) {
 					error_code(404);
 					return;
 				}
@@ -294,7 +321,7 @@ class Index {
 						$Page->title($L->$rc[1]);
 					}
 					if ($this->action === null) {
-						$this->action = ($this->in_admin() ? 'admin/' : '')."$this->module/$rc[0]/$rc[1]";
+						$this->action = ($this->in_admin ? 'admin/' : '')."$this->module/$rc[0]/$rc[1]";
 					}
 				}
 				_include_once("$working_directory/$rc[0]/$rc[1].php", false);
@@ -305,14 +332,14 @@ class Index {
 					return;
 				}
 			} elseif (!$this->in_api && $this->action === null) {
-				$this->action = ($this->in_admin() ? 'admin/' : '')."$this->module/$rc[0]";
+				$this->action = ($this->in_admin ? 'admin/' : '')."$this->module/$rc[0]";
 			}
 			unset($rc);
 			if ($this->post_title && $this->title_auto) {
 				$Page->title($this->post_title);
 			}
 		} elseif (!$this->in_api) {
-			if ($this->in_admin()) {
+			if ($this->in_admin) {
 				$Page->title($L->administration);
 			}
 			if (!$this->in_api && $this->title_auto) {
@@ -321,7 +348,7 @@ class Index {
 			if ($this->action === null) {
 				$this->action = $Config->server['relative_address'];
 			}
-			if ($this->in_admin()) {
+			if ($this->in_admin) {
 				_include_once("$working_directory/save.php", false);
 			}
 		}
@@ -365,12 +392,8 @@ class Index {
 				$module != 'System' &&
 				$User->get_permission($module, 'index') &&
 				(
-					(
-						file_exists(MODULES."/$module/index.php") && filesize(MODULES."/$module/index.php")
-					) ||
-					(
-						file_exists(MODULES."/$module/index.html") && filesize(MODULES."/$module/index.html")
-					) ||
+					file_exists(MODULES."/$module/index.php") ||
+					file_exists(MODULES."/$module/index.html") ||
 					file_exists(MODULES."/$module/index.json")
 				)
 			) {
@@ -402,7 +425,7 @@ class Index {
 	 * Rendering of data for main sub menu
 	 */
 	protected function main_sub_menu () {
-		if (!is_array($this->parts) || !$this->parts) {
+		if (!$this->parts) {
 			return;
 		}
 		$rc		= $this->route_path;
@@ -411,8 +434,8 @@ class Index {
 			$this->main_sub_menu[]	= [
 				$L->$part,
 				[
-					'href'		=> ($this->in_admin() ? 'admin/' : '')."$this->module/$part",
-					'class'		=> isset($rc[0]) && $rc[0] == $part ? 'uk-active' : ''
+					'href'		=> ($this->in_admin ? 'admin/' : '')."$this->module/$part",
+					'class'		=> @$rc[0] == $part ? 'uk-active' : ''
 				]
 			];
 		}
@@ -421,7 +444,7 @@ class Index {
 	 * Rendering of data for main menu more
 	 */
 	protected function main_menu_more () {
-		if (!is_array($this->subparts) || !$this->subparts) {
+		if (!$this->subparts) {
 			return;
 		}
 		$rc		= $this->route_path;
@@ -430,7 +453,7 @@ class Index {
 			$this->main_menu_more[]	= [
 				$L->$subpart,
 				[
-					'href'		=> ($this->in_admin() ? 'admin/' : '')."$this->module/$rc[0]/$subpart",
+					'href'		=> ($this->in_admin ? 'admin/' : '')."$this->module/$rc[0]/$subpart",
 					'class'		=> $rc[1] == $subpart ? 'uk-active' : ''
 				]
 			];
@@ -448,7 +471,7 @@ class Index {
 			return;
 		}
 		$this->main_menu_auto		&& $this->main_menu();
-		$this->main_sub_menu_auto		&& $this->main_sub_menu();
+		$this->main_sub_menu_auto	&& $this->main_sub_menu();
 		$this->main_menu_more_auto	&& $this->main_menu_more();
 		$this->blocks_processing();
 		if ($this->form) {
@@ -493,7 +516,7 @@ class Index {
 								'data-title'	=> $this->cancel_button_back ? false : $L->cancel_info,
 								'type'			=> $this->cancel_button_back ? 'button' : 'submit',
 								'onClick'		=> $this->cancel_button_back ? 'history.go(-1);' : false,
-								'add'			=> $this->cancel_button_back ? '' : (isset($Config->core['cache_not_saved']) ? '' : $this->cancel_button)
+								'add'			=> $this->cancel_button_back ? '' : (@$Config->core['cache_not_saved'] ? '' : $this->cancel_button)
 							]
 						)
 					: '').
@@ -688,7 +711,7 @@ class Index {
 			$Page->error();
 		}
 		Trigger::instance()->run('System/Index/preload');
-		if (!$this->in_admin() && !$this->in_api && $this->module && file_exists(MODULES."/$this->module/index.html")) {
+		if (!$this->in_admin && !$this->in_api && $this->module && file_exists(MODULES."/$this->module/index.html")) {
 			ob_start();
 			_include(MODULES."/$this->module/index.html", false, false);
 			$Page->content(ob_get_clean());
