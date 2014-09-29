@@ -21,6 +21,7 @@ namespace cs;
  * @property mixed[] $components	Internal structure of components parameters
  * @property mixed[] $replace		Property stores replacing rules, that are used to replace text on pages
  * @property mixed[] $routing		Property store routs replacing rules, they are applied to current rule on every pages once
+ * @property array   $server		Array of some address data about mirrors and current address properties
  *
  * @method static Config instance($check = false)
  */
@@ -32,11 +33,6 @@ class Config {
 	protected $components	= [];
 	protected $replace		= [];
 	protected $routing		= [];
-	/**
-	 * Array of some address data about mirrors and current address properties
-	 *
-	 * @var array
-	 */
 	protected $server		= [
 		'raw_relative_address'	=> '',		//Raw page url (in browser's address bar)
 		'host'					=> '',		//Current domain

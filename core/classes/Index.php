@@ -158,9 +158,7 @@ class Index {
 			_include_once(PLUGINS."/$plugin/index.php", false);
 		}
 		_include_once("$this->working_directory/prepare.php", false);
-		if (preg_match('/[a-z_\-]+/i', $_SERVER['REQUEST_METHOD'])) {
-			$this->request_method	= strtolower($_SERVER['REQUEST_METHOD']);
-		}
+		$this->request_method	= strtolower($_SERVER['REQUEST_METHOD']);
 	}
 	/**
 	 * Adding of content on the page
@@ -237,13 +235,20 @@ class Index {
 			$api &&
 			!file_exists("$working_directory/index.php") &&
 			!file_exists("$working_directory/index.$this->request_method.php")
-		) {//TODO add 405 error here in addition to 404
-			error_code(404);
+		) {
+			if ($methods = get_files_list($working_directory, '/index\.[a-z]+\.php$/')) {
+				$methods = _strtoupper(_substr($methods, 6, -4));
+				$methods = implode(', ', $methods);
+				header("Allow: $methods");
+				error_code(405);
+			} else {
+				error_code(404);
+			}
 			return;
 		}
 		unset($structure_file);
 		_include_once("$working_directory/index.php", false);
-		if ($api && $this->request_method) {
+		if ($api) {
 			_include_once("$working_directory/index.$this->request_method.php", false);
 		}
 		if (error_code()) {
@@ -284,10 +289,21 @@ class Index {
 			if (!$Config->core['site_mode']) {
 				$Page->warning(get_core_ml_text('closed_title'));
 			}
-			_include_once("$working_directory/$rc[0].php", false);
-			if ($api && $this->request_method) {
-				_include_once("$working_directory/$rc[0].$this->request_method.php", false);
+			$part_included = _include_once("$working_directory/$rc[0].php", false);
+			if ($api) {
+				$part_included = _include_once("$working_directory/$rc[0].$this->request_method.php", false) || $part_included;
+				if (!$part_included && !$this->subparts) {
+					if ($methods = get_files_list($working_directory, "/$rc[0]\\.[a-z]+\\.php$/")) {
+						$methods = _strtoupper(_substr($methods, strlen($rc[0]) + 1, -4));
+						$methods = implode(', ', $methods);
+						header("Allow: $methods");
+						error_code(405);
+					} else {
+						error_code(404);
+					}
+				}
 			}
+			unset($part_included);
 			if (error_code()) {
 				return;
 			}
@@ -309,10 +325,21 @@ class Index {
 						$this->action = ($this->in_admin ? 'admin/' : '')."$this->module/$rc[0]/$rc[1]";
 					}
 				}
-				_include_once("$working_directory/$rc[0]/$rc[1].php", false);
-				if ($api && $this->request_method) {
-					_include_once("$working_directory/$rc[0]/$rc[1].$this->request_method.php", false);
+				$subpart_included = _include_once("$working_directory/$rc[0]/$rc[1].php", false);
+				if ($api) {
+					$subpart_included = _include_once("$working_directory/$rc[0]/$rc[1].$this->request_method.php", false) || $subpart_included;
+					if (!$subpart_included) {
+						if ($methods = get_files_list("$working_directory/$rc[0]", "/$rc[1]\\.[a-z]+\\.php$/")) {
+							$methods = _strtoupper(_substr($methods, strlen($rc[1]) + 1, -4));
+							$methods = implode(', ', $methods);
+							header("Allow: $methods");
+							error_code(405);
+						} else {
+							error_code(404);
+						}
+					}
 				}
+				unset($subpart_included);
 				if (error_code()) {
 					return;
 				}
