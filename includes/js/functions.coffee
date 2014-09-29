@@ -16,10 +16,6 @@ L							= cs.Language
 String::replaceAt			= (index, symbol) ->
 	this.substr(0, index) + symbol + this.substr(index + symbol.length)
 ###*
- * Debug window opening
-###
-cs.debug_window				= -> $('#cs-debug').cs().modal('show')
-###*
  * Supports algorithms sha1, sha224, sha256, sha384, sha512
  *
  * @param {string} algo Chosen algorithm

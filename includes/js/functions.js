@@ -29,15 +29,6 @@
   };
 
   /**
-   * Debug window opening
-  */
-
-
-  cs.debug_window = function() {
-    return $('#cs-debug').cs().modal('show');
-  };
-
-  /**
    * Supports algorithms sha1, sha224, sha256, sha384, sha512
    *
    * @param {string} algo Chosen algorithm

@@ -711,76 +711,6 @@ class Page {
 		return $this;
 	}
 	/**
-	 * Getting of debug information
-	 *
-	 * @return Page
-	 */
-	protected function get_debug_info () {
-		$Config				= Config::instance();
-		$db					= DB::instance();
-		$L					= Language::instance();
-		$debug_tabs			= [];
-		$debug_tabs_content	= '';
-		/**
-		 * DB queries
-		 */
-		if ($Config->core['show_db_queries']) {
-			$debug_tabs[]		= $L->db_queries;
-			$tmp				= '';
-			foreach ($db->get_connections_list() as $name => $database) {
-				$queries	= $database->queries();
-				$tmp		.= h::{'p.cs-padding-left'}(
-					$L->debug_db_info(
-						$name != 0 ? $L->db.' '.$database->database() : $L->core_db.' ('.$database->database().')',
-						format_time(round($database->connecting_time(), 5)),
-						$queries['num'],
-						format_time(round($database->time(), 5))
-					)
-				);
-				foreach ($queries['text'] as $i => $text) {
-					$tmp	.= h::code(
-						$text.
-						h::br(2).
-						'#'.h::i(format_time(round($queries['time'][$i], 5))),
-						[
-							'class' => ($queries['time'][$i] > .1 ? 'uk-alert-danger ' : '').'uk-alert'
-						]
-					);
-				}
-			}
-			unset($error, $name, $database, $i, $text);
-			$debug_tabs_content	.= h::div(
-				h::p(
-					$L->debug_db_total($db->queries, format_time(round($db->time, 5))),
-					$L->failed_connections.': '.h::b(implode(', ', $db->get_connections_list(false)) ?: $L->no),
-					$L->successful_connections.': '.h::b(implode(', ', $db->get_connections_list(true)) ?: $L->no),
-					$L->mirrors_connections.': '.h::b(implode(', ', $db->get_connections_list('mirror')) ?: $L->no),
-					$L->active_connections.': '.(count($db->get_connections_list()) ? '' : h::b($L->no))
-				).
-				$tmp
-			);
-			unset($tmp);
-		}
-		/**
-		 * Cookies
-		 */
-		if ($Config->core['show_cookies']) {
-			$debug_tabs[]		= $L->cookies;
-			$tmp				= [h::td($L->key.':', ['style' => 'width: 20%;']).h::td($L->value)];
-			foreach ($_COOKIE as $i => $v) {
-				$tmp[]	= h::td($i.':', ['style' => 'width: 20%;']).h::td(xap($v));
-			}
-			unset($i, $v);
-			$debug_tabs_content	.= h::{'table.cs-padding-left tr'}($tmp);
-			unset($tmp);
-		}
-		$this->debug_info = $this->process_replacing(
-			h::{'ul.cs-tabs li'}($debug_tabs).
-			h::div($debug_tabs_content)
-		);
-		return $this;
-	}
-	/**
 	 * Page generation
 	 */
 	function __finish () {
@@ -829,21 +759,6 @@ class Page {
 			 * Processing of replacing in content
 			 */
 			$this->Html			= $this->process_replacing($this->Html);
-			/**
-			 * Getting of debug information
-			 */
-			if (
-				DEBUG &&
-				(
-					User::instance(true)->admin() ||
-					(
-						$Config->can_be_admin &&
-						$Config->core['ip_admin_list_only']
-					)
-				)
-			) {
-				$this->get_debug_info();
-			}
 			Trigger::instance()->run('System/Page/display');
 			echo str_replace(
 				[

@@ -361,15 +361,6 @@ class Index {
 		$L				= Language::instance();
 		$User			= User::instance();
 		if ($User->admin() || ($Config->can_be_admin && $Config->core['ip_admin_list_only'])) {
-			if (DEBUG) {
-				$this->main_menu[]	= [
-					mb_substr($L->debug, 0, 1),
-					[
-						 'onClick'		=> 'cs.debug_window();',
-						 'data-title'	=> $L->debug
-					]
-				];
-			}
 			$this->main_menu[]	= [
 				mb_substr($L->administration, 0, 1),
 				[
