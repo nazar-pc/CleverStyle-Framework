@@ -50,6 +50,11 @@ class Language implements JsonSerializable {
 	 * @var array
 	 */
 	protected $translate      = [];
+	/**
+	 * Whether it is possible to change language (may be fixed to some concrete language)
+	 *
+	 * @var bool
+	 */
 	protected $fixed_language = false;
 	/**
 	 * Set basic language
@@ -92,7 +97,7 @@ class Language implements JsonSerializable {
 		unset($i, $v);
 		foreach ($accept_languages as $language) {
 			$language = explode(';', $language, 2)[0];
-			if (isset($aliases[$language]) && in_array($aliases[$language], $active_languages)) {
+			if (@in_array($aliases[$language], $active_languages)) {
 				return $aliases[$language];
 			}
 		}
@@ -109,8 +114,7 @@ class Language implements JsonSerializable {
 	function get ($item, $language = false) {
 		$language = $language ?: $this->clanguage;
 		if (isset($this->translate[$language])) {
-			$translate = &$this->translate[$language];
-			return isset($translate[$item]) ? $translate[$item] : ucfirst(str_replace('_', ' ', $item));
+			return $this->translate[$language][$item] ?: ucfirst(str_replace('_', ' ', $item));
 		}
 		$current_language = $this->clanguage;
 		$current_fixed_language = $this->fixed_language;

@@ -15,6 +15,13 @@ namespace cs;
  *  System/Config/routing_replace
  *  ['rc'	=> <i>&$rc</i>]		//Reference to string with current route, this string can be changed
  *
+ * @property mixed[] $core			Property with most general configuration properties
+ * @property mixed[] $db			Property, that stores configuration of databases, except the main database, parameters of which are written in configuration file
+ * @property mixed[] $storage		Property, that stores configuration of storages, except the main storage, parameters of which are written in configuration file
+ * @property mixed[] $components	Internal structure of components parameters
+ * @property mixed[] $replace		Property stores replacing rules, that are used to replace text on pages
+ * @property mixed[] $routing		Property store routs replacing rules, they are applied to current rule on every pages once
+ *
  * @method static Config instance($check = false)
  */
 class Config {
@@ -63,12 +70,6 @@ class Config {
 	 */
 	protected	$init	= false;
 	/**
-	 * The "Late Static Binding" class name
-	 *
-	 * @var string
-	 */
-	protected	$class;
-	/**
 	 * Contains parsed route of current page url in form of array without module name and prefixes <i>admin</i>/<i>api</i>
 	 *
 	 * @var array
@@ -78,7 +79,6 @@ class Config {
 	 * Loading of configuration, initialization of $Config, $Cache, $L and Page objects, Routing processing
 	 */
 	function construct () {
-		$this->class	= get_called_class();
 		/**
 		 * Reading settings from cache and defining missing data
 		 */
