@@ -278,7 +278,8 @@ class Language implements JsonSerializable {
 	 */
 	function time ($in, $type) {
 		if (is_callable($this->time)) {
-			return $this->time->__invoke($in, $type);
+			$time = $this->time;
+			return $time($in, $type);
 		} else {
 			switch ($type) {
 				case 's':
