@@ -141,30 +141,42 @@ function get_files_list (
 		if (!is_dir($dir) || ($exclusion !== false && file_exists($dir.$exclusion))) {
 			return false;
 		}
+		/**
+		 * Default sorting
+		 */
 		if ($sort === false) {
 			$sort	= 'name';
 			$sort_x	= ['name', 'asc'];
 		} else {
 			$sort	= mb_strtolower($sort);
 			$sort_x	= explode('|', $sort);
-			if (!isset($sort_x[1]) || $sort_x[1] != 'desc') {
+			if (@$sort_x[1] != 'desc') {
 				$sort_x[1] = 'asc';
 			}
 		}
-		if (isset($sort_x) && $sort_x[0] == 'date') {
-			$prepare = function (&$list, $tmp, $link) {
+		/**
+		 * Sort by
+		 */
+		if (@$sort_x[0] == 'date') {
+			$prepare_for_sort = function (&$list, $tmp, $link) {
+				/**
+				 * File access or modification time, access time may be unavailable on some configurations
+				 */
 				$list[fileatime($link) ?: filemtime($link)] = $tmp;
 			};
-		} elseif (isset($sort_x) && $sort_x[0] == 'size') {
-			$prepare = function (&$list, $tmp, $link) {
+		} elseif (@$sort_x[0] == 'size') {
+			$prepare_for_sort = function (&$list, $tmp, $link) {
 				$list[filesize($link)] = $tmp;
 			};
 		} else {
-			$prepare = function (&$list, $tmp) {
+			$prepare_for_sort = function (&$list, $tmp) {
 				$list[] = $tmp;
 			};
 		}
 		$list	= [];
+		/**
+		 * If custom prefix for path was specified
+		 */
 		if ($prefix_path !== true && $prefix_path) {
 			$prefix_path = rtrim($prefix_path, '/').'/';
 		}
@@ -173,6 +185,9 @@ function get_files_list (
 			return false;
 		}
 		while (($file = readdir($dirc)) !== false) {
+			/**
+			 * Limit of found files reached (updated at the end of iteration before nex iteration or recursive opening of nested directory)
+			 */
 			if ($limit < 0) {
 				break;
 			}
@@ -207,9 +222,9 @@ function get_files_list (
 				)
 			) {
 				--$limit;
-				$item	= $prefix_path === true ? $dir.$file : ($prefix_path ? $prefix_path.$file : $file);
+				$item	= $prefix_path === true ? $dir.$file : $prefix_path.$file;
 				if (!is_callable($apply)) {
-					$prepare($list, $item, $dir.$file);
+					$prepare_for_sort($list, $item, $dir.$file);
 				}
 			}
 			if ($limit >= 0) {
@@ -231,6 +246,9 @@ function get_files_list (
 					);
 				}
 			}
+			/**
+			 * Apply custom operation to found item without waiting for result returning
+			 */
 			if (isset($item) && is_callable($apply)) {
 				$apply($item);
 			}
@@ -240,8 +258,8 @@ function get_files_list (
 			}
 		}
 		closedir($dirc);
-		unset($prepare);
-		if (!empty($list) && isset($sort_x)) {
+		unset($prepare_for_sort);
+		if ($list && @$sort_x) {
 			switch ($sort_x[0]) {
 				case 'date':
 				case 'size':
@@ -856,32 +874,32 @@ function hex2ip ($hex, $mode = 6) {
  */
 function password_check ($password, $min_length = 4) {
 	$password	= preg_replace('/\s+/', ' ', $password);
-	$s			= 0;
+	$strength	= 0;
 	if(strlen($password) >= $min_length) {
 		if(preg_match('/[~!@#\$%\^&\*\(\)\-_=+\|\\/;:,\.\?\[\]\{\}]+/', $password, $match)) {
-			$s = 4;
+			$strength = 4;
 			if (strlen(implode('', $match)) > 1) {
-				++$s;
+				++$strength;
 			}
 		} else {
 			if(preg_match('/[A-Z]+/', $password)) {
-				++$s;
+				++$strength;
 			}
 			if(preg_match('/[a-z]+/', $password)) {
-				++$s;
+				++$strength;
 			}
 			if(preg_match('/[0-9]+/', $password)) {
-				++$s;
+				++$strength;
 			}
 		}
 		if (preg_match('/[^[0-9a-z~!@#\$%\^&\*\(\)\-_=+\|\\/;:,\.\?\[\]\{\}]]+/i', $password, $match)) {
-			++$s;
+			++$strength;
 			if (strlen(implode('', $match)) > 1) {
-				++$s;
+				++$strength;
 			}
 		}
 	}
-	return $s;
+	return $strength;
 }
 /**
  * Generates passwords till 5th level of strength, 6-7 - only for humans:)
