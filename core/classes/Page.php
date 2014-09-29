@@ -149,14 +149,19 @@ class Page {
 	 * @return Page
 	 */
 	protected function get_template () {
-		$Config					= Config::instance();
-		/**
-		 * Theme detection
-		 */
-		if (is_object($Config)) {
-			$this->theme		= in_array($this->theme, $Config->core['themes']) ? $this->theme : $Config->core['theme'];
-			$this->color_scheme	= in_array($this->color_scheme, $Config->core['color_schemes'][$this->theme]) ?
-									$this->color_scheme : $Config->core['color_schemes'][$this->theme][0];
+		$Config	= Config::instance();
+		if (admin_path()) {
+			$this->theme		= 'CleverStyle';
+			$this->color_scheme	= 'Default';
+		} else {
+			/**
+			 * Theme detection
+			 */
+			if (is_object($Config)) {
+				$this->theme		= in_array($this->theme, $Config->core['themes']) ? $this->theme : $Config->core['theme'];
+				$this->color_scheme	= in_array($this->color_scheme, $Config->core['color_schemes'][$this->theme]) ?
+										$this->color_scheme : $Config->core['color_schemes'][$this->theme][0];
+			}
 		}
 		/**
 		 * Template loading
@@ -196,7 +201,7 @@ class Page {
 	 * @return Page
 	 */
 	protected function prepare () {
-		$Config				= Config::instance(true);
+		$Config	= Config::instance(true);
 		/**
 		 * Loading of template
 		 * Getting user information
