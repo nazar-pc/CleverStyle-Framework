@@ -8,7 +8,6 @@
  * @license		GNU GPL v2, see license.txt
  */
 namespace	cs;
-use			h;
 if (
 	isset($_POST['edit_settings'], $_POST['max_file_size']) &&
 	$_POST['edit_settings'] == 'save'
@@ -18,9 +17,3 @@ if (
 	$module_data->confirmation_time	= (int)$_POST['confirmation_time'];
 	Index::instance()->save(true);
 }
-Page::instance()->main_sub_menu	= h::{'li.uk-active a'}(
-	'Plupload',
-	[
-		'href'	=> 'admin/Plupload'
-	]
-);

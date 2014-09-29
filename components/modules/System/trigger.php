@@ -95,4 +95,12 @@ Trigger::instance()
 					)
 				));
 		}
+	)
+	->register(
+		'System/Index/construct',
+		function () {
+			if (admin_path()) {
+				require __DIR__.'/trigger/admin.php';
+			}
+		}
 	);

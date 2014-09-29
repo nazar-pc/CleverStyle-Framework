@@ -7,15 +7,10 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-use			h;
 $Index				= Index::instance();
 $Index->title_auto	= false;
 $L					= Language::instance();
 $Page				= Page::instance();
-$Page->title($L->administration)->title($L->Photo_gallery);
-$Page->main_sub_menu	= h::{'li.uk-active a'}(
-	$L->photo_gallery_galleries,
-	[
-		'href'	=> 'admin/Photo_gallery'
-	]
-);
+$Page
+	->title($L->administration)
+	->title($L->Photo_gallery);

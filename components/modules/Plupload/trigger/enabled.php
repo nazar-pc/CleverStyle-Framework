@@ -42,16 +42,6 @@ Trigger::instance()
 		}
 	)
 	->register(
-		'System/Index/mainmenu',
-		function ($data) {
-			if ($data['path'] == 'Plupload') {
-				$data['hide']	= true;
-				return false;
-			}
-			return true;
-		}
-	)
-	->register(
 		'System/upload_files/add_tag',
 		function ($data) {
 			if (!isset($data['url'], $data['tag'])) {

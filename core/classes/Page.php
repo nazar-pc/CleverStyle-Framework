@@ -37,9 +37,6 @@ class Page {
 	public	$Head			= '';
 	public	$pre_Body		= '';
 	public		$Header		= '';
-	public			$main_menu		= '';
-	public			$main_sub_menu	= '';
-	public			$main_menu_more	= '';
 	public		$Left		= '';
 	public		$Top		= '';
 	public		$Right		= '';
@@ -55,9 +52,6 @@ class Page {
 		'Head'				=> 0,
 		'pre_Body'			=> 1,
 		'Header'			=> 3,
-		'main_menu'			=> 3,
-		'main_sub_menu'		=> 3,
-		'main_menu_more'	=> 3,
 		'header_info'		=> 4,
 		'debug_info'		=> 2,
 		'Left'				=> 3,
@@ -282,35 +276,6 @@ class Page {
 		 */
 		$this->get_footer();
 		/**
-		 * Menu generation
-		 */
-		$Index				= Index::instance();
-		if (!$this->main_menu && $Index->main_menu) {
-			$this->main_menu	= h::{'li| a'}($Index->main_menu);
-		}
-		if ($Index->main_sub_menu) {
-			if (!$this->main_sub_menu) {
-				foreach ($Index->main_sub_menu as $item) {
-					if (isset($item[1], $item[1]['class']) && $item[1]['class'] == 'uk-active') {
-						if ($Index->main_menu_more) {
-							$item[0]				.= ' '.h::icon('caret-down');
-						}
-						$item[1]['class']		= trim(str_replace('uk-active', '', $item[1]['class']));
-						$this->main_sub_menu	.= h::{'li.uk-active[data-uk-dropdown=]'}(
-							h::a($item).
-							(
-								$Index->main_menu_more ? h::{'div.uk-dropdown.uk-dropdown-small ul.uk-nav.uk-nav-dropdown li| a'}($Index->main_menu_more) : ''
-							)
-						);
-					} else {
-						$this->main_sub_menu	.= h::{'li a'}($item);
-					}
-				}
-			}
-		} elseif (!$this->main_menu && $Index->main_menu_more) {
-			$this->main_menu	= h::{'li| a'}($Index->main_menu_more);
-		}
-		/**
 		 * Substitution of information into template
 		 */
 		$this->Html			= str_replace(
@@ -319,9 +284,6 @@ class Page {
 				'<!--head-->',
 				'<!--pre_Body-->',
 				'<!--header-->',
-				'<!--main-menu-->',
-				'<!--main-sub-menu-->',
-				'<!--main-menu-more-->',
 				'<!--user-avatar-image-->',
 				'<!--header_info-->',
 				'<!--left_blocks-->',
@@ -338,9 +300,6 @@ class Page {
 				h::level($this->Head, $this->level['Head']),
 				h::level($this->pre_Body, $this->level['pre_Body']),
 				h::level($this->Header, $this->level['Header']),
-				h::level($this->main_menu, $this->level['main_menu']),
-				h::level($this->main_sub_menu, $this->level['main_sub_menu']),
-				h::level($this->main_menu_more, $this->level['main_menu_more']),
 				$this->user_avatar_image,
 				h::level($this->header_info, $this->level['header_info']),
 				h::level($this->Left, $this->level['Left']),

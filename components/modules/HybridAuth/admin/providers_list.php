@@ -16,12 +16,6 @@ $Page					= Page::instance();
 $providers_config		= $Config->module('HybridAuth')->providers;
 $providers				= file_get_json(__DIR__.'/../providers.json');
 $Page->css('components/modules/HybridAuth/includes/css/admin.css');
-$Page->main_sub_menu	= h::{'li.uk-active a'}(
-	$L->providers_list,
-	[
-		'href'	=> 'admin/HybridAuth'
-	]
-);
 $Index->apply_button	= false;
 $Index->content(
 	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr'}(

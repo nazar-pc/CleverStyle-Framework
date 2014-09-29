@@ -15,13 +15,6 @@ use			h;
  *  	'blocks_array'	=> &$blocks_array	//Reference to array in form ['top' => '', 'left' => '', 'right' => '', 'bottom' => '']
  *  ]
  *
- *  System/Index/mainmenu
- *  [
- *  	'path'	=> &$path,					//Reference to module path, can be changed by corresponding module
- *  	'title'	=> &title,					//Reference to module title, can be changed by corresponding module
- *  	'hide'	=> &$hide					//Reference to hide property, if set this to true (false by default) - menu element will not be displayed
- *  ]
- *
  *  System/Index/construct
  *
  *  System/Index/preload
@@ -36,14 +29,6 @@ class Index {
 	 * @var string
 	 */
 	public	$Content;
-
-	public	$main_menu_auto			= true;
-	public	$main_sub_menu_auto		= false;
-	public	$main_menu_more_auto	= false;
-
-	public	$main_menu				= [];
-	public	$main_sub_menu			= [];
-	public	$main_menu_more			= [];
 
 	public	$form					= false;
 	public	$file_upload			= false;
@@ -354,104 +339,7 @@ class Index {
 		}
 	}
 	/**
-	 * Rendering of data for main menu
-	 */
-	protected function main_menu () {
-		$Config			= Config::instance();
-		$L				= Language::instance();
-		$User			= User::instance();
-		if ($User->admin() || ($Config->can_be_admin && $Config->core['ip_admin_list_only'])) {
-			$this->main_menu[]	= [
-				mb_substr($L->administration, 0, 1),
-				[
-					 'href'			=> 'admin',
-					 'data-title'	=> $L->administration
-				]
-			];
-		}
-		$this->main_menu[]	= [
-			$L->home,
-			[
-				 'href'		=> '/',
-				 'title'	=> $L->home
-			]
-		];
-		foreach ($Config->components['modules'] as $module => $module_data) {
-			if (
-				$module_data['active'] == 1 &&
-				$module != $Config->core['default_module'] &&
-				$module != 'System' &&
-				$User->get_permission($module, 'index') &&
-				(
-					file_exists(MODULES."/$module/index.php") ||
-					file_exists(MODULES."/$module/index.html") ||
-					file_exists(MODULES."/$module/index.json")
-				)
-			) {
-				$title			= $L->$module;
-				$path			= path($title);
-				$hide			= false;
-				Trigger::instance()->run(
-					'System/Index/mainmenu',
-					[
-						'path'	=> &$path,
-						'title'	=> &$title,
-						'hide'	=> &$hide
-					]
-				);
-				if ($hide) {
-					continue;
-				}
-				$this->main_menu[]	= [
-					$title,
-					[
-						'href'	=> $path,
-						'title'	=> $title
-					]
-				];
-			}
-		}
-	}
-	/**
-	 * Rendering of data for main sub menu
-	 */
-	protected function main_sub_menu () {
-		if (!$this->parts) {
-			return;
-		}
-		$rc		= $this->route_path;
-		$L		= Language::instance();
-		foreach ($this->parts as $part) {
-			$this->main_sub_menu[]	= [
-				$L->$part,
-				[
-					'href'		=> ($this->in_admin ? 'admin/' : '')."$this->module/$part",
-					'class'		=> @$rc[0] == $part ? 'uk-active' : ''
-				]
-			];
-		}
-	}
-	/**
-	 * Rendering of data for main menu more
-	 */
-	protected function main_menu_more () {
-		if (!$this->subparts) {
-			return;
-		}
-		$rc		= $this->route_path;
-		$L		= Language::instance();
-		foreach ($this->subparts as $subpart) {
-			$this->main_menu_more[]	= [
-				$L->$subpart,
-				[
-					'href'		=> ($this->in_admin ? 'admin/' : '')."$this->module/$rc[0]/$subpart",
-					'class'		=> $rc[1] == $subpart ? 'uk-active' : ''
-				]
-			];
-		}
-	}
-	/**
-	 * Module page generation, menus rendering, blocks processing, adding of form with save/apply/cancel/reset and/or custom users buttons
+	 * Module page generation, blocks processing, adding of form with save/apply/cancel/reset and/or custom users buttons
 	 */
 	protected function generate () {
 		$Config	= Config::instance();
@@ -461,9 +349,6 @@ class Index {
 			$Page->content($this->Content);
 			return;
 		}
-		$this->main_menu_auto		&& $this->main_menu();
-		$this->main_sub_menu_auto	&& $this->main_sub_menu();
-		$this->main_menu_more_auto	&& $this->main_menu_more();
 		$this->blocks_processing();
 		if ($this->form) {
 			$Page->content(

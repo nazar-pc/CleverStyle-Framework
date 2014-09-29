@@ -1,0 +1,141 @@
+<?php
+/**
+ * @package        CleverStyle CMS
+ * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright      Copyright (c) 2014, Nazar Mokrynskyi
+ * @license        MIT License, see license.txt
+ */
+namespace cs;
+use
+	h;
+/**
+ * Menu class is used in administration for generating second and third level of menu
+ *
+ * Provides next triggers:<br>
+ *  admin/System/Menu
+ *
+ * @method static Menu instance($check = false)
+ */
+class Menu {
+	use
+		Singleton;
+	public $section_items = [];
+	public $items         = [];
+	/**
+	 * Get menu in HTML format
+	 *
+	 * @return string
+	 */
+	function get_menu () {
+		Trigger::instance()->run('admin/System/Menu');
+		$current_module = current_module();
+		if (isset($this->section_items[$current_module])) {
+			$content = $this->render_sections($current_module);
+		} else {
+			$content = $this->render_items($current_module);
+		}
+		return h::{'ul.uk-subnav.uk-subnav-pill'}($content ?: false);
+	}
+	/**
+	 * Render sections (automatically includes nested items)
+	 *
+	 * @param string $module
+	 *
+	 * @return string
+	 */
+	protected function render_sections ($module) {
+		$content = '';
+		foreach ($this->section_items[$module] as $href => $item) {
+			$inner = $this->render_items($module, $href);
+			if ($inner) {
+				$inner = h::{'div.uk-dropdown.uk-dropdown-small ul.uk-nav.uk-nav-dropdown'}($inner);
+			}
+			$content .= $this->render_single_item_common('li[data-uk-dropdown=]', $item[0], $href, $item[1], $inner);
+		}
+		return $content;
+	}
+	/**
+	 * Render items
+	 *
+	 * @param string $module
+	 * @param string $base_href If passed - only nested elements for this base href will be rendered
+	 *
+	 * @return string
+	 */
+	protected function render_items ($module, $base_href = '') {
+		if (!isset($this->items[$module])) {
+			return '';
+		}
+		$items = $this->items[$module];
+		$content = '';
+		$element = 'li';
+		/**
+		 * If there are no nested elements
+		 */
+		if (!$base_href) {
+			$element .= '[data-uk-dropdown=]';
+		}
+		foreach ($items as $href => $item) {
+			/**
+			 * Nested items for parent
+			 */
+			if ($base_href && strpos($href, $base_href) !== 0) {
+				continue;
+			}
+			$content .= $this->render_single_item_common($element, $item[0], $href, $item[1]);
+		}
+		return $content;
+	}
+	/**
+	 * Generic method for rendering elements both for sections and nested items (basically, `li` with `a` inside)
+	 *
+	 * @param string $element
+	 * @param string $title
+	 * @param string $href
+	 * @param array  $arguments
+	 * @param string $content
+	 *
+	 * @return mixed
+	 */
+	protected function render_single_item_common ($element, $title, $href, $arguments, $content = '') {
+		if ($content) {
+			$title .= ' '.h::icon('caret-down');
+		}
+		return h::$element(
+			h::a(
+				$title,
+				array_merge(
+					[
+						'href' => $href
+					],
+					$arguments
+				)
+			).
+			$content
+		);
+	}
+	/**
+	 * @param string      $module
+	 * @param string      $title
+	 * @param bool|string $href
+	 * @param array       $attributes
+	 */
+	function add_section_item ($module, $title, $href = false, $attributes = []) {
+		$this->section_items[$module][$href] = [
+			$title,
+			$attributes
+		];
+	}
+	/**
+	 * @param string      $module
+	 * @param string      $title
+	 * @param bool|string $href
+	 * @param array       $attributes
+	 */
+	function add_item ($module, $title, $href = false, $attributes = []) {
+		$this->items[$module][$href] = [
+			$title,
+			$attributes
+		];
+	}
+}

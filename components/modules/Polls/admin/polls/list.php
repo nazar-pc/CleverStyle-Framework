@@ -7,19 +7,16 @@
  * @license        MIT License, see license.txt
  */
 namespace cs\modules\Polls;
-
 use
 	cs\Config,
 	cs\Index,
 	cs\Language\Prefix,
 	cs\User,
 	h;
-
-$Index                     = Index::instance();
-$L                         = new Prefix('polls_');
-$Polls                     = Polls::instance();
-$Index->main_sub_menu_auto = true;
-$Index->buttons            = false;
+$Index			= Index::instance();
+$L				= new Prefix('polls_');
+$Polls			= Polls::instance();
+$Index->buttons	= false;
 $Index->content(
 	h::{'table.cs-table tr'}(
 		h::th([
@@ -38,9 +35,9 @@ $Index->content(
 					).
 					h::{'a.cs-button'}(
 						$L->delete,
-							[
-								'href'	=> "admin/Polls/polls/delete/$poll[id]"
-							]
+						[
+							'href' => "admin/Polls/polls/delete/$poll[id]"
+						]
 					)
 				);
 			},

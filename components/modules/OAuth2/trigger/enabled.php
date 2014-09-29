@@ -105,14 +105,4 @@ Trigger::instance()
 				);
 			}
 		}
-	)
-	->register(
-		'System/Index/mainmenu',
-		function ($data) {
-			if ($data['path'] == 'OAuth2') {
-				$data['hide'] = true;
-				return false;
-			}
-			return true;
-		}
 	);

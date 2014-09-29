@@ -7,7 +7,6 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-use			h;
 if (
 	isset($_POST['edit_settings'], $_POST['tasks']) &&
 	$_POST['edit_settings'] == 'save'
@@ -20,9 +19,3 @@ if (
 	unlink($filename);
 	Index::instance()->save($result === 0);
 }
-Page::instance()->main_sub_menu		= h::{'li.uk-active a'}(
-	'Crontab',
-	[
-		'href'	=> 'admin/Cron'
-	]
-);

@@ -1,6 +1,23 @@
-<!doctype html>
+<?php
+/**
+ * @package		ClevereStyle CMS
+ * @subpackage	Tenebris theme
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2014, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+namespace cs;
+use
+	cs\themes\CleverStyle,
+	h;
+include THEMES.'/CleverStyle/functions.php';
+$main_menu = h::{'ul.uk-nav.uk-nav-offcanvas[level=0] li[level=0]'}(
+	CleverStyle\get_main_menu()
+);
+$avatar	= User::instance()->avatar(90);
+?><!doctype html>
 <!--pre_Html--><!--head-->
-<body<?=admin_path() ? ' class="cs-admin-page"' : ''?>>
+<body>
 <!--pre_Body-->
 	<header>
 <!--header-->
@@ -25,15 +42,10 @@
 	<nav class="uk-offcanvas">
 		<div class="uk-offcanvas-bar uk-offcanvas-bar-flip">
 			<div class="uk-panel uk-form cs-tenebris-offcanvas-user-block">
-				<img alt="" src="<?=cs\User::instance()->avatar(90)?>" class="uk-thumbnail">
+				<img alt="" src="<?=$avatar?>" class="uk-thumbnail">
 <!--header_info-->
 			</div>
-			<ul class="uk-nav uk-nav-offcanvas" data-uk-nav>
-<!--main-menu-->
-			</ul>
-			<ul class="uk-nav uk-nav-offcanvas uk-nav-parent-icon" data-uk-nav>
-<!--main-sub-menu-->
-			</ul>
+			<?=$main_menu?>
 		</div>
 	</nav>
 <!--post_Body-->

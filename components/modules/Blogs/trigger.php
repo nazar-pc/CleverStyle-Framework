@@ -68,6 +68,9 @@ Trigger::instance()
 				break;
 				case 1:
 					require __DIR__.'/trigger/enabled.php';
+					if (admin_path()) {
+						require __DIR__.'/trigger/enabled/admin.php';
+					}
 				default:
 					if (!admin_path()) {
 						return;

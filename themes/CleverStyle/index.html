@@ -1,4 +1,22 @@
-<!doctype html>
+<?php
+/**
+ * @package		ClevereStyle CMS
+ * @subpackage	CleverStyle theme
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2014, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+namespace cs\themes\CleverStyle;
+use
+	cs\Menu,
+	h;
+include __DIR__.'/functions.php';
+$main_menu = h::{'ul.uk-navbar-nav[level=0] li[level=0]'}(
+	get_main_menu()
+);
+$submenu = admin_path() ? Menu::instance()->get_menu() : '';
+$body_class = admin_path() ? ' class="cs-admin-page"' : '';
+?><!doctype html>
 <!--pre_Html--><!--head-->
 <body>
 <!--pre_Body-->
@@ -9,15 +27,11 @@
 <!--header_info-->
 		</div>
 		<a href="/" class="uk-navbar-brand"><?=get_core_ml_text('name')?></a>
-		<ul class="uk-navbar-nav">
-<!--main-menu-->
-		</ul>
+		<?=$main_menu?>
 		<hr>
-		<ul class="uk-subnav uk-subnav-pill">
-<!--main-sub-menu-->
-		</ul>
+		<?=$submenu?>
 	</header>
-	<div id="body"<?=admin_path() ? 'class="cs-admin-page" ' : ''?>>
+	<div id="body"<?=$body_class?>>
 		<aside id="left_blocks">
 <!--left_blocks-->
 		</aside>
