@@ -77,7 +77,7 @@ class Includes_processing {
 			'/url\((.*?)\)|@import[\s\t\n\r]*[\'"](.*?)[\'"]/',
 			function ($match) {
 				$link		= trim($match[1], '\'" ');
-				if (!static::is_relative_path($link) || !file_exists($link)) {
+				if (!static::is_relative_path_and_exists($link)) {
 					return $match[0];
 				}
 				$content	= file_get_contents($link);
@@ -152,8 +152,7 @@ class Includes_processing {
 	 * @return string
 	 */
 	protected static function html_process_scripts (&$data, $base_filename, $destination) {
-		preg_match_all('/<script(.*)<\/script>/Uims', $data, $scripts);
-		if (!$scripts) {
+		if (!preg_match_all('/<script(.*)<\/script>/Uims', $data, $scripts)) {
 			return;
 		}
 		$scripts_content	= '';
@@ -162,19 +161,25 @@ class Includes_processing {
 			$script	= explode('>', $script);
 			if (preg_match('/src\s*=\s*[\'"](.*)[\'"]/Uims', $script[0], $url)) {
 				$url	= $url[1];
-				if (!static::is_relative_path($url) || !file_exists($url)) {
+				if (!static::is_relative_path_and_exists($url)) {
 					continue;
 				}
 				$scripts_to_replace[]	= $scripts[0][$index];
 				$scripts_content		.= file_get_contents($url).";\n";
 			} else {
-				$scripts_content		.= $script[1].";\n";
+				$scripts_content		.= "$script[1];\n";
 			}
 		}
 		if (!$scripts_to_replace) {
 			return;
 		}
+		/**
+		 * If there is destination - put contents into the file, and put link to it, otherwise put minified content back
+		 */
 		if ($destination) {
+			/**
+			 * md5 to distinguish modifications of the files
+			 */
 			$content_md5	= substr(md5($scripts_content), 0, 5);
 			file_put_contents(
 				"$destination/$base_filename.js",
@@ -207,66 +212,74 @@ class Includes_processing {
 	 * @return string
 	 */
 	protected static function html_process_links_and_styles (&$data, $file, $base_filename, $destination) {
-		preg_match_all('/<link(.*)>|<style(.*)<\/style>/Uims', $data, $links_and_styles);
-		$links_and_styles	= isset($links_and_styles[1]) ? $links_and_styles : [];
-		$shim				= false;
-		if (!$links_and_styles) {
+		if (!preg_match_all('/<link(.*)>|<style(.*)<\/style>/Uims', $data, $links_and_styles)) {
 			return;
 		}
+		$shim							= false;
 		$styles_content					= '';
 		$imports_content				= '';
 		$links_and_styles_to_replace	= [];
 		foreach ($links_and_styles[1] as $index => $link) {
+			/**
+			 * If content is link to CSS file
+			 */
 			if (
 				$link &&
 				preg_match('/stylesheet/Uims', $link) &&
 				preg_match('/href\s*=\s*[\'"](.*)[\'"]/Uims', $link, $url)
 			) {
 				$url	= $url[1];
-				if (!static::is_relative_path($url) || !file_exists($url)) {
+				if (!static::is_relative_path_and_exists($url)) {
 					continue;
 				}
 				$links_and_styles_to_replace[]	= $links_and_styles[0][$index];
-				if (preg_match('/shim-shadowdom/Uims', $links_and_styles[0][$index])) {
-					$shim = true;
-				}
-				$styles_content	.= static::css(
+				$shim							= $shim || static::need_shimming($links_and_styles[0][$index]);
+				$styles_content					.= static::css(
 					file_get_contents($url),
 					$url
 				);
+			/**
+			 * If content is HTML import
+			 */
 			} elseif (
 				$link &&
 				preg_match('/import/Uims', $link) &&
 				preg_match('/href\s*=\s*[\'"](.*)[\'"]/Uims', $link, $url)
 			) {
 				$url	= $url[1];
-				if (!static::is_relative_path($url) || !file_exists($url)) {
+				if (!static::is_relative_path_and_exists($url)) {
 					continue;
 				}
 				$links_and_styles_to_replace[]	= $links_and_styles[0][$index];
-				if (preg_match('/shim-shadowdom/Uims', $links_and_styles[0][$index])) {
-					$shim = true;
-				}
-				$imports_content	.= static::html(
+				$imports_content				.= static::html(
 					file_get_contents($url),
 					$url,
-					$base_filename.'-'.basename($url, '.html'),
+					"$base_filename-".basename($url, '.html'),
 					$destination
 				);
+			/**
+			 * If content is plain CSS
+			 */
 			} elseif (mb_strpos($links_and_styles[0][$index], '</style>') !== -1) {
 				$links_and_styles_to_replace[]	= $links_and_styles[0][$index];
-				if (preg_match('/shim-shadowdom/Uims', $links_and_styles[0][$index])) {
-					$shim = true;
-				}
-				$style	= explode('>', $links_and_styles[2][$index], 2)[1];
-				$styles_content	.= static::css($style, $file);
+				$shim							= $shim || static::need_shimming($links_and_styles[0][$index]);
+				$styles_content					.= static::css(
+					explode('>', $links_and_styles[2][$index], 2)[1],
+					$file
+				);
 			}
 		}
 		if (!$links_and_styles_to_replace) {
 			return;
 		}
 		$shim	= $shim ? ' shim-shadowdom' : '';
+		/**
+		 * If there is destination - put contents into the file, and put link to it, otherwise put minified content back
+		 */
 		if ($destination) {
+			/**
+			 * md5 to distinguish modifications of the files
+			 */
 			$content_md5	= substr(md5($styles_content), 0, 5);
 			file_put_contents(
 				"$destination/$base_filename.css",
@@ -292,11 +305,22 @@ class Includes_processing {
 		// Add imports to the end of file
 		$data	.= $imports_content;
 	}
-	protected static function is_relative_path ($path) {
-		return
-			mb_strpos($path, 'http://') !== 0 &&
-			mb_strpos($path, 'https://') !== 0 &&
-			mb_strpos($path, 'ftp://') !== 0 &&
-			mb_strpos($path, '/') !== 0;
+	/**
+	 * @param string $content
+	 *
+	 * @return bool
+	 */
+	protected static function need_shimming ($content) {
+		return preg_match('/shim-shadowdom/Uims', $content);
+	}
+	/**
+	 * Simple check for http[s], ftp and absolute links
+	 *
+	 * @param string $path
+	 *
+	 * @return bool
+	 */
+	protected static function is_relative_path_and_exists ($path) {
+		return !preg_match('#^(http://|https://|ftp://|/)#i', $path) && file_exists($path);
 	}
 }

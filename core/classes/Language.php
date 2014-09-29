@@ -114,7 +114,7 @@ class Language implements JsonSerializable {
 	function get ($item, $language = false) {
 		$language = $language ?: $this->clanguage;
 		if (isset($this->translate[$language])) {
-			return $this->translate[$language][$item] ?: ucfirst(str_replace('_', ' ', $item));
+			return @$this->translate[$language][$item] ?: ucfirst(str_replace('_', ' ', $item));
 		}
 		$current_language = $this->clanguage;
 		$current_fixed_language = $this->fixed_language;
