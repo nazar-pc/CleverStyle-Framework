@@ -22,7 +22,7 @@ if (!isset($_POST['edit_settings'])) {
 $Index	= Index::instance();
 $Config	= Config::instance();
 if ($_POST['edit_settings'] == 'apply' || $_POST['edit_settings'] == 'save') {
-	foreach ($Config->admin_parts as $part) {
+	foreach (['core', 'db', 'storage', 'components', 'replace', 'routing'] as $part) {
 		if (isset($_POST[$part])) {
 			$temp = &$Config->$part;
 			foreach ($_POST[$part] as $item => $value) {
