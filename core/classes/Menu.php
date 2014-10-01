@@ -115,6 +115,10 @@ class Menu {
 		);
 	}
 	/**
+	 * Add second-level item into menu
+	 *
+	 * All third-level items which start with the same `$href` will be inside this second-level menu item
+	 *
 	 * @param string      $module
 	 * @param string      $title
 	 * @param bool|string $href
@@ -127,6 +131,8 @@ class Menu {
 		];
 	}
 	/**
+	 * Add third-level item into menu (second-level when there is corresponding section items)
+	 *
 	 * @param string      $module
 	 * @param string      $title
 	 * @param bool|string $href
