@@ -386,45 +386,6 @@ if (isset($rc[2])) {
 					]]
 				])
 			);
-		break;
-		case 'search_users':
-			$form				= false;
-			$a->generate_auto	= false;
-			interface_off();
-			$users_list		= $User->search_users($_POST['search_phrase']);
-			$found_users	= explode(',', $_POST['found_users']);
-			$permission		= (int)$_POST['permission'];
-			$content		= [];
-			foreach ($users_list as $user) {
-				if (in_array($user, $found_users)) {
-					continue;
-				}
-				$found_users[]	= $user;
-				$value			= $User->db()->qfs([
-					"SELECT `value`
-					FROM `[prefix]users_permissions`
-					WHERE
-						`id`			= '%s' AND
-						`permission`	= '%s'",
-					$user,
-					$permission
-				]);
-				$content[]		= h::th($User->username($user)).
-					h::{'td input[type=radio]'}([
-						'name'			=> 'users['.$user.']',
-						'checked'		=> $value !== false ? $value : -1,
-						'value'			=> [-1, 0, 1],
-						'in'			=> [
-							$L->inherited.' ('.($value !== false && !$value ? '-' : '+').')',
-							$L->deny,
-							$L->allow
-						]
-					]);
-			}
-			$Page->content(
-				h::{'table.cs-table-borderless.cs-center-all tr'}($content)
-			);
-		break;
 	}
 }
 if ($form) {

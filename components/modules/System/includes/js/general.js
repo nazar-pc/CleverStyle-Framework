@@ -58,12 +58,13 @@
               return found.val(found.val() + ',' + id.substring(6, id.length - 1));
             });
             return $.ajax({
-              url: "" + cs.current_base_url + "/" + cs.route[0] + "/" + cs.route[1] + "/search_users",
+              url: "api/System/admin/blocks_search_users",
               data: {
                 found_users: $('#cs-block-users-search-found').val(),
                 permission: $(this).attr('permission'),
                 search_phrase: $(this).val()
               },
+              type: 'get',
               success: function(result) {
                 return $('#block_users_search_results').html(result).find(':radio').cs().radio().change(function() {
                   return $(this).parentsUntil('tr').parent().addClass('cs-block-users-changed');

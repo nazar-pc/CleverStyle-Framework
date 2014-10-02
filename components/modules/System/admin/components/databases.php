@@ -151,7 +151,7 @@ if (isset($rc[2])) {
 				h::{'p button'}(
 					$L->test_connection,
 					[
-						'onMouseDown'	=> "cs.db_test('$a->action/test');"
+						'onMouseDown'	=> "cs.db_test();"
 					]
 				)
 			);
@@ -208,31 +208,6 @@ if (isset($rc[2])) {
 					h::{'button[type=submit]'}($L->yes)
 				);
 			}
-		break;
-		case 'test':
-			interface_off();
-			$a->form			= false;
-			$a->generate_auto	= false;
-			$db					= DB::instance();
-			if (isset($rc[4])) {
-				$Page->content(
-					h::{'p.cs-test-result'}(
-						$db->test([$rc[3], $rc[4]]) ? $L->success : $L->failed
-					)
-				);
-			} elseif (isset($rc[3])) {
-				$Page->content(
-					h::{'p.cs-test-result'}(
-						$db->test([$rc[3]]) ? $L->success : $L->failed
-					)
-				);
-			} else {
-				$Page->content(
-					h::{'p.cs-test-result'}(
-						$db->test($_POST['db']) ? $L->success : $L->failed
-					)
-				);
-			}
 	}
 } else {
 	$test_dialog	= true;
@@ -268,7 +243,7 @@ if (isset($rc[2])) {
 							[
 								h::icon('signal'),
 								[
-									'onMouseDown'	=> "cs.db_test('$a->action/test/$i', true);",
+									'onMouseDown'	=> "cs.db_test($i);",
 									'data-title'	=> $L->test_connection
 								]
 							]
@@ -310,7 +285,7 @@ if (isset($rc[2])) {
 								[
 									h::icon('signal'),
 									[
-										'onMouseDown'	=> "cs.db_test('$a->action/test/$i/$m', true);",
+										'onMouseDown'	=> "cs.db_test($i, $m);",
 										'data-title'	=> $L->test_connection
 									]
 								]

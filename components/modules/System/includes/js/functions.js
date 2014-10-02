@@ -50,92 +50,74 @@
   /**
    * Send request for db connection testing
    *
-   * @param {string}	url
-   * @param {bool}	added
+   * @param {int}	index
+   * @param {int}	mirror_index
   */
 
 
-  cs.db_test = function(url, added) {
+  cs.db_test = function(index, mirror_index) {
     var db_test;
     db_test = $('#cs-db-test');
     db_test.find('h3 + *').replaceWith("<div class=\"uk-progress uk-progress-striped uk-active\">\n	<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n</div>");
     db_test.cs().modal('show');
-    if (added) {
-      return $.ajax({
-        url: url,
-        success: function(result) {
-          return db_test.find('h3 + *').replaceWith(result);
-        },
-        error: function() {
-          return db_test.find('h3 + *').replaceWith('<p class="cs-test-result">' + L.failed + '</p>');
+    return $.ajax({
+      url: 'api/System/admin/databases_test',
+      data: index !== void 0 ? {
+        index: index,
+        mirror_index: mirror_index
+      } : {
+        db: {
+          type: value_by_name('db[type]'),
+          name: value_by_name('db[name]'),
+          user: value_by_name('db[user]'),
+          password: value_by_name('db[password]'),
+          host: value_by_name('db[host]'),
+          charset: value_by_name('db[charset]')
         }
-      });
-    } else {
-      return $.ajax({
-        url: url,
-        data: {
-          db: {
-            type: value_by_name('db[type]'),
-            name: value_by_name('db[name]'),
-            user: value_by_name('db[user]'),
-            password: value_by_name('db[password]'),
-            host: value_by_name('db[host]'),
-            charset: value_by_name('db[charset]')
-          }
-        },
-        success: function(result) {
-          return db_test.find('h3 + *').replaceWith(result);
-        },
-        error: function() {
-          return db_test.find('h3 + *').replaceWith('<p class="cs-test-result">' + L.failed + '</p>');
-        }
-      });
-    }
+      },
+      type: 'get',
+      success: function(result) {
+        return db_test.find('h3 + *').replaceWith(result);
+      },
+      error: function() {
+        return db_test.find('h3 + *').replaceWith('<p class="cs-test-result">' + L.failed + '</p>');
+      }
+    });
   };
 
   /**
    * Send request for storage connection testing
    *
-   * @param {string}	url
-   * @param {bool}	added
+   * @param {int}	index
   */
 
 
-  cs.storage_test = function(url, added) {
+  cs.storage_test = function(index) {
     var storage_test;
     storage_test = $('#cs-storage-test');
     storage_test.find('h3 + *').replaceWith("<div class=\"uk-progress uk-progress-striped uk-active\">\n	<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n</div>");
     storage_test.cs().modal('show');
-    if (added) {
-      return $.ajax({
-        url: url,
-        success: function(result) {
-          return storage_test.find('h3 + *').replaceWith(result);
-        },
-        error: function() {
-          return storage_test.find('h3 + *').replaceWith('<p class="cs-test-result">' + L.failed + '</p>');
+    return $.ajax({
+      url: 'api/System/admin/storages_test',
+      data: index !== void 0 ? {
+        index: index
+      } : {
+        storage: {
+          url: value_by_name('storage[url]'),
+          host: value_by_name('storage[host]'),
+          connection: value_by_name('storage[connection]'),
+          user: value_by_name('storage[user]'),
+          password: value_by_name('storage[password]')
         }
-      });
-    } else {
-      return $.ajax({
-        url: url,
-        data: {
-          storage: {
-            url: value_by_name('storage[url]'),
-            host: value_by_name('storage[host]'),
-            connection: value_by_name('storage[connection]'),
-            user: value_by_name('storage[user]'),
-            password: value_by_name('storage[password]')
-          }
-        },
-        success: function(result) {
-          return storage_test.find('h3 + *').replaceWith(result);
-        },
-        error: function() {
-          return storage_test.find('h3 + *').replaceWith('<p class="cs-test-result">' + L.failed + '</p>');
-        }
-      });
-    }
+      },
+      type: 'get',
+      success: function(result) {
+        return storage_test.find('h3 + *').replaceWith(result);
+      },
+      error: function() {
+        return storage_test.find('h3 + *').replaceWith('<p class="cs-test-result">' + L.failed + '</p>');
+      }
+    });
   };
 
   /**

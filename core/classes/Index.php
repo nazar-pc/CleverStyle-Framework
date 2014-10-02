@@ -43,7 +43,6 @@ class Index {
 	public	$post_buttons			= '';
 
 	public $init_auto				= true;
-	public $generate_auto			= true;
 	public $title_auto				= true;
 	/**
 	 * Like Config::$route property, but excludes numerical items
@@ -392,7 +391,7 @@ class Index {
 	/**
 	 * Module page generation, blocks processing, adding of form with save/apply/cancel/reset and/or custom users buttons
 	 */
-	protected function generate () {
+	protected function render () {
 		$Config	= Config::instance();
 		$L		= Language::instance();
 		$Page	= Page::instance();
@@ -400,7 +399,7 @@ class Index {
 			$Page->content($this->Content);
 			return;
 		}
-		$this->blocks_processing();
+		$this->render_blocks();
 		if ($this->form) {
 			$Page->content(
 				h::form(
@@ -475,33 +474,38 @@ class Index {
 	/**
 	 * Blocks processing
 	 */
-	protected function blocks_processing () {
-		$Config			= Config::instance();
+	protected function render_blocks () {
+		$blocks			= Config::instance()->components['blocks'];
+		/**
+		 * It is frequent that there is no blocks - so, no need to to anything here
+		 */
+		if (!$blocks) {
+			return;
+		}
 		$Page			= Page::instance();
-		$Text			= Text::instance();
 		$blocks_array	= [
 			'top'		=> '',
 			'left'		=> '',
 			'right'		=> '',
 			'bottom'	=> ''
 		];
-		foreach ($Config->components['blocks'] as $block) {
+		foreach ($blocks as $block) {
 			if (
 				!$block['active'] ||
-				($block['expire'] != 0 && $block['expire'] < TIME) ||
+				($block['expire'] && $block['expire'] < TIME) ||
 				$block['start'] > TIME ||
 				!(User::instance()->get_permission('Block', $block['index']))
 			) {
 				continue;
 			}
-			$block['title']	= $Text->process($Config->module('System')->db('texts'), $block['title'], true, true);
 			if (Trigger::instance()->run(
 				'System/Index/block_render',
 				[
-					'block'			=> $block['index'],
+					'index'			=> $block['index'],
 					'blocks_array'	=> &$blocks_array
 				]
 			)) {
+				$block['title']	= $this->ml_process($block['title']);
 				switch ($block['type']) {
 					default:
 						$content = ob_wrapper(function () use ($block) {
@@ -510,7 +514,7 @@ class Index {
 					break;
 					case 'html':
 					case 'raw_html':
-						$content = $Text->process($Config->module('System')->db('texts'), $block['content'], true, true);
+						$content = $this->ml_process($block['content']);
 					break;
 				}
 				$template	= TEMPLATES.'/blocks/block.'.(
@@ -528,7 +532,7 @@ class Index {
 						$content
 					],
 					ob_wrapper(function () use ($template) {
-						_include($template);
+						include $template;
 					})
 				);
 				if ($block['position'] == 'floating') {
@@ -545,6 +549,9 @@ class Index {
 		$Page->Left		.= $blocks_array['left'];
 		$Page->Right	.= $blocks_array['right'];
 		$Page->Bottom	.= $blocks_array['bottom'];
+	}
+	protected function ml_process ($text) {
+		return Text::instance()->process(Config::instance()->module('System')->db('texts'), $text, true, true);
 	}
 	/**
 	 * Saving changes and/or showing resulting message of saving changes
@@ -648,9 +655,7 @@ class Index {
 		} elseif (!error_code()) {
 			$this->init_auto	&& $this->init();
 		}
-		if ($this->generate_auto) {
-			$this->generate();
-		}
+		$this->render();
 		if (error_code()) {
 			$Page->error();
 		} elseif (

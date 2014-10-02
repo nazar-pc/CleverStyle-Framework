@@ -13,25 +13,25 @@ $ ->
 				$('#change_theme, #change_color_scheme, #change_language').click ->
 					$('#apply_settings').click()
 				$('#change_active_languages').change ->
-					$(this)
+					$(@)
 						.find("option[value='" + $('#change_language').val() + "']")
 						.prop('selected', true)
 				$('#cs-system-license-open').click ->
 					$('#cs-system-license').cs().modal('show')
 				$('.cs-permissions-invert').click ->
-					$(this)
+					$(@)
 						.parentsUntil('div')
 						.find(':radio:not(:checked)[value!=-1]')
 						.prop('checked', true)
 						.change()
 				$('.cs-permissions-allow-all').click ->
-					$(this)
+					$(@)
 						.parentsUntil('div')
 						.find(':radio[value=1]')
 						.prop('checked', true)
 						.change()
 				$('.cs-permissions-deny-all').click ->
-					$(this)
+					$(@)
 						.parentsUntil('div')
 						.find(':radio[value=0]')
 						.prop('checked', true)
@@ -57,25 +57,25 @@ $ ->
 							.removeClass('cs-block-users-changed')
 							.appendTo('#cs-block-users-changed-permissions')
 							.each ->
-								id		= $(this).find(':radio:first').attr('name')
+								id		= $(@).find(':radio:first').attr('name')
 								found	= $('#cs-block-users-search-found')
 								found.val(
 									found.val() + ',' + id.substring(6, id.length-1)
 								)
 						$.ajax
-							url		: "#{cs.current_base_url}/#{cs.route[0]}/#{cs.route[1]}/search_users"
+							url		: "api/System/admin/blocks_search_users"
 							data	:
-								found_users		: $('#cs-block-users-search-found').val(),
-								permission		: $(this).attr('permission'),
-								search_phrase	: $(this).val()
-							,
+								found_users		: $('#cs-block-users-search-found').val()
+								permission		: $(@).attr('permission')
+								search_phrase	: $(@).val()
+							type	: 'get'
 							success	: (result) ->
 								$('#block_users_search_results')
 									.html(result)
 									.find(':radio')
 									.cs().radio()
 									.change ->
-										$(this)
+										$(@)
 											.parentsUntil('tr')
 											.parent()
 											.addClass('cs-block-users-changed')

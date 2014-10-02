@@ -36,28 +36,26 @@ cs.admin_cache				= (element, action, partial_path) ->
 ###*
  * Send request for db connection testing
  *
- * @param {string}	url
- * @param {bool}	added
+ * @param {int}	index
+ * @param {int}	mirror_index
 ###
-cs.db_test					= (url, added) ->
+cs.db_test					= (index, mirror_index) ->
 	db_test	= $('#cs-db-test')
-	db_test.find('h3 + *').replaceWith """
-		<div class="uk-progress uk-progress-striped uk-active">
-			<div class="uk-progress-bar" style="width:100%"></div>
-		</div>
-	"""
+	db_test
+		.find('h3 + *')
+		.replaceWith """
+			<div class="uk-progress uk-progress-striped uk-active">
+				<div class="uk-progress-bar" style="width:100%"></div>
+			</div>
+		"""
 	db_test.cs().modal('show')
-	if added
-		$.ajax
-			url		: url,
-			success	: (result) ->
-				db_test.find('h3 + *').replaceWith(result)
-			error	: ->
-				db_test.find('h3 + *').replaceWith('<p class="cs-test-result">' + L.failed + '</p>')
-	else
-		$.ajax
-			url		: url
-			data	:
+	$.ajax(
+		url		: 'api/System/admin/databases_test'
+		data	:
+			if index != undefined
+				index			: index
+				mirror_index	: mirror_index
+			else
 				db	:
 					type		: value_by_name('db[type]')
 					name		: value_by_name('db[name]')
@@ -65,21 +63,22 @@ cs.db_test					= (url, added) ->
 					password	: value_by_name('db[password]')
 					host		: value_by_name('db[host]')
 					charset		: value_by_name('db[charset]')
-			success	: (result) ->
-				db_test
-					.find('h3 + *')
-					.replaceWith(result)
-			error	: ->
-				db_test
-					.find('h3 + *')
-					.replaceWith('<p class="cs-test-result">' + L.failed + '</p>')
+		type	: 'get'
+		success	: (result) ->
+			db_test
+				.find('h3 + *')
+				.replaceWith(result)
+		error	: ->
+			db_test
+				.find('h3 + *')
+				.replaceWith('<p class="cs-test-result">' + L.failed + '</p>')
+	)
 ###*
  * Send request for storage connection testing
  *
- * @param {string}	url
- * @param {bool}	added
+ * @param {int}	index
 ###
-cs.storage_test				= (url, added) ->
+cs.storage_test				= (index) ->
 	storage_test	= $('#cs-storage-test')
 	storage_test
 		.find('h3 + *')
@@ -89,35 +88,28 @@ cs.storage_test				= (url, added) ->
 			</div>
 		"""
 	storage_test.cs().modal('show')
-	if added
-		$.ajax
-			url		: url
-			success	: (result) ->
-				storage_test
-					.find('h3 + *')
-					.replaceWith(result)
-			error	: ->
-				storage_test
-					.find('h3 + *')
-					.replaceWith('<p class="cs-test-result">' + L.failed + '</p>')
-	else
-		$.ajax
-			url		: url
-			data	:
+	$.ajax(
+		url		: 'api/System/admin/storages_test'
+		data	:
+			if index != undefined
+				index	: index
+			else
 				storage	:
 					url			: value_by_name('storage[url]')
 					host		: value_by_name('storage[host]')
 					connection	: value_by_name('storage[connection]')
 					user		: value_by_name('storage[user]')
 					password	: value_by_name('storage[password]')
-			success	: (result) ->
-				storage_test
-					.find('h3 + *')
-					.replaceWith(result)
-			error	: ->
-				storage_test
-					.find('h3 + *')
-					.replaceWith('<p class="cs-test-result">' + L.failed + '</p>')
+		type	: 'get'
+		success	: (result) ->
+			storage_test
+				.find('h3 + *')
+				.replaceWith(result)
+		error	: ->
+			storage_test
+				.find('h3 + *')
+				.replaceWith('<p class="cs-test-result">' + L.failed + '</p>')
+	)
 ###*
  * Toggling of blocks group in admin page
  *

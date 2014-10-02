@@ -93,7 +93,7 @@ if (isset($rc[2])) {
 				h::button(
 					$L->test_connection,
 					[
-						'onMouseDown'	=> "cs.storage_test('$a->action/test');"
+						'onMouseDown'	=> "cs.storage_test();"
 					]
 				)
 			);
@@ -133,19 +133,6 @@ if (isset($rc[2])) {
 					h::{'button[type=submit]'}($L->yes)
 				);
 			}
-		break;
-		case 'test':
-			interface_off();
-			$test_dialog		= false;
-			$a->form			= false;
-			$a->generate_auto	= false;
-			$Storage			= Storage::instance();
-			if (isset($rc[3])) {
-				$Page->Content = h::{'p.cs-test-result'}($Storage->test([$rc[3]]) ? $L->success : $L->failed);
-			} else {
-				$Page->Content = h::{'p.cs-test-result'}($Storage->test($_POST['storage']) ? $L->success : $L->failed);
-			}
-		break;
 	}
 } else {
 	$storage_list = [];
@@ -173,7 +160,7 @@ if (isset($rc[2])) {
 					h::{'a.cs-button-compact'}(
 						h::icon('signal'),
 						[
-							'onMouseDown'	=> "cs.storage_test('$a->action/test/$i', true);",
+							'onMouseDown'	=> "cs.storage_test($i);",
 							'data-title'	=> $L->test_connection
 						]
 					) : '-'),
