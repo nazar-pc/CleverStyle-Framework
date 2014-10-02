@@ -57,8 +57,12 @@ class Index {
 	 * @var int[]
 	 */
 	public	$route_ids	= [];
-
-	protected	$post_title			= '';	//Appends to the end of title
+	/**
+	 * Appends to the end of title
+	 *
+	 * @var string
+	 */
+	protected	$post_title			= '';
 	protected	$structure			= [];
 	protected	$parts				= [];
 	protected	$subparts			= [];
@@ -115,8 +119,7 @@ class Index {
 				file_exists("$admin_path/index.json")
 			)
 		) {
-			$this->permission_group	= "admin/$this->module";
-			if (!($User->admin() && $User->get_permission($this->permission_group, 'index'))) {
+			if (!$this->set_permission_group("admin/$this->module")) {
 				error_code(403);
 				exit;
 			}
@@ -127,8 +130,7 @@ class Index {
 			$api &&
 			file_exists($api_path)
 		) {
-			$this->permission_group	= "api/$this->module";
-			if (!$User->get_permission($this->permission_group, 'index')) {
+			if (!$this->set_permission_group("api/$this->module")) {
 				error_code(403);
 				exit;
 			}
@@ -139,8 +141,7 @@ class Index {
 			!$api &&
 			file_exists(MODULES."/$this->module")
 		) {
-			$this->permission_group	= $this->module;
-			if (!$User->get_permission($this->permission_group, 'index')) {
+			if (!$this->set_permission_group($this->module)) {
 				error_code(403);
 				exit;
 			}
@@ -159,6 +160,30 @@ class Index {
 		}
 		_include_once("$this->working_directory/prepare.php", false);
 		$this->request_method	= strtolower($_SERVER['REQUEST_METHOD']);
+	}
+	/**
+	 * Store permission group for further checks, check whether user allowed to access `index` permission label of this group
+	 *
+	 * @param string $permission_group
+	 *
+	 * @return bool
+	 */
+	protected function set_permission_group ($permission_group) {
+		if (strpos($permission_group, 'admin/') === 0 && !User::instance()->admin()) {
+			return false;
+		}
+		$this->permission_group	= $permission_group;
+		return $this->check_permission('index');
+	}
+	/**
+	 * Check whether user allowed to access to specified label
+	 *
+	 * @param string $label
+	 *
+	 * @return bool
+	 */
+	protected function check_permission ($label) {
+		return User::instance()->get_permission($this->permission_group, $label);
 	}
 	/**
 	 * Adding of content on the page
@@ -183,8 +208,6 @@ class Index {
 		$Config		= Config::instance();
 		$L			= Language::instance();
 		$Page		= Page::instance();
-		$User		= User::instance();
-		$api		= api_path();
 		/**
 		 * Some routing preparations
 		 */
@@ -212,11 +235,11 @@ class Index {
 					if (!is_array($value)) {
 						$item	= $value;
 					}
-					if ($User->get_permission($this->permission_group, $item)) {
+					if ($this->check_permission($item)) {
 						$this->parts[] = $item;
 						if (@$rc[0] == $item && is_array($value)) {
 							foreach ($value as $subpart) {
-								if ($User->get_permission($this->permission_group, "$item/$subpart")) {
+								if ($this->check_permission("$item/$subpart")) {
 									$this->subparts[] = $subpart;
 								} elseif (@$rc[1] == $subpart) {
 									error_code(403);
@@ -231,38 +254,13 @@ class Index {
 				}
 				unset($item, $value, $subpart);
 			}
-		} elseif (
-			$api &&
-			!file_exists("$working_directory/index.php") &&
-			!file_exists("$working_directory/index.$this->request_method.php")
-		) {
-			if ($methods = get_files_list($working_directory, '/index\.[a-z]+\.php$/')) {
-				$methods = _strtoupper(_substr($methods, 6, -4));
-				$methods = implode(', ', $methods);
-				header("Allow: $methods");
-				error_code(405);
-			} else {
-				error_code(404);
-			}
-			return;
 		}
 		unset($structure_file);
-		_include_once("$working_directory/index.php", false);
-		if ($api) {
-			_include_once("$working_directory/index.$this->request_method.php", false);
-		}
-		if (error_code()) {
+		if (!$this->include_handler($working_directory, 'index', false)) {
 			return;
 		}
 		if ($this->parts) {
-			if (@$rc[0] == '') { // IF path is empty
-				if ($api) {
-					return;
-				}
-				$rc[0]			= $this->parts[0];
-				$this->subparts	= (array)@$this->structure[$rc[0]];
-			} elseif ($this->parts && !in_array($rc[0], $this->parts)) {
-				error_code(404);
+			if (!$this->path_check($rc[0], $this->parts, $this->structure, $this->subparts)) {
 				return;
 			}
 			/**
@@ -289,32 +287,11 @@ class Index {
 			if (!$Config->core['site_mode']) {
 				$Page->warning(get_core_ml_text('closed_title'));
 			}
-			$part_included = _include_once("$working_directory/$rc[0].php", false) !== false;
-			if ($api) {
-				$part_included = _include_once("$working_directory/$rc[0].$this->request_method.php", false) !== false || $part_included;
-				if (!$part_included && !$this->subparts) {
-					if ($methods = get_files_list($working_directory, "/$rc[0]\\.[a-z]+\\.php$/")) {
-						$methods = _strtoupper(_substr($methods, strlen($rc[0]) + 1, -4));
-						$methods = implode(', ', $methods);
-						header("Allow: $methods");
-						error_code(405);
-					} else {
-						error_code(404);
-					}
-				}
-			}
-			unset($part_included);
-			if (error_code()) {
+			if (!$this->include_handler($working_directory, $rc[0], !$this->subparts)) {
 				return;
 			}
 			if ($this->subparts) {
-				if (!isset($rc[1]) || ($rc[1] == '' && !empty($this->subparts))) {
-					if ($api) {
-						return;
-					}
-					$rc[1] = $this->subparts[0];
-				} elseif ($rc[1] != '' && $this->subparts && !in_array($rc[1], $this->subparts)) {
-					error_code(404);
+				if (!$this->path_check($rc[1], $this->subparts)) {
 					return;
 				}
 				if (!$this->in_api) {
@@ -325,22 +302,7 @@ class Index {
 						$this->action = ($this->in_admin ? 'admin/' : '')."$this->module/$rc[0]/$rc[1]";
 					}
 				}
-				$subpart_included = _include_once("$working_directory/$rc[0]/$rc[1].php", false) !== false;
-				if ($api) {
-					$subpart_included = _include_once("$working_directory/$rc[0]/$rc[1].$this->request_method.php", false) !== false || $subpart_included;
-					if (!$subpart_included) {
-						if ($methods = get_files_list("$working_directory/$rc[0]", "/$rc[1]\\.[a-z]+\\.php$/")) {
-							$methods = _strtoupper(_substr($methods, strlen($rc[1]) + 1, -4));
-							$methods = implode(', ', $methods);
-							header("Allow: $methods");
-							error_code(405);
-						} else {
-							error_code(404);
-						}
-					}
-				}
-				unset($subpart_included);
-				if (error_code()) {
+				if (!$this->include_handler("$working_directory/$rc[0]", $rc[1])) {
 					return;
 				}
 			} elseif (!$this->in_api && $this->action === null) {
@@ -364,6 +326,68 @@ class Index {
 				_include_once("$working_directory/save.php", false);
 			}
 		}
+	}
+	/**
+	 * Include files that corresponds for specific paths in URL
+	 *
+	 * @param string $dir
+	 * @param string $basename
+	 * @param bool   $required
+	 *
+	 * @return bool
+	 */
+	protected function include_handler ($dir, $basename, $required = true) {
+		$this->include_handler_internal($dir, $basename, $required);
+		return !error_code();
+	}
+	protected function include_handler_internal ($dir, $basename, $required) {
+		$included	= _include_once("$dir/$basename.php", false) !== false;
+		if (!api_path()) {
+			return;
+		}
+		$included = _include_once("$dir/$basename.$this->request_method.php", false) !== false || $included;
+		if ($included || !$required) {
+			return;
+		}
+		if ($methods = get_files_list($dir, "/$basename\\.[a-z]+\\.php$/")) {
+			$methods = _strtoupper(_substr($methods, strlen($basename) + 1, -4));
+			$methods = implode(', ', $methods);
+			header("Allow: $methods");
+			error_code(405);
+		} else {
+			error_code(404);
+		}
+	}
+	/**
+	 * Check, whether current path part exists and if not - try to select first from possible if any, and set possible nested parts
+	 *
+	 * @param string          $path
+	 * @param string[]        $possible_parts
+	 * @param null|string[][] $structure
+	 * @param null|string[]   $nested_parts
+	 *
+	 * @return bool
+	 */
+	protected function path_check (&$path, $possible_parts, $structure = null, &$nested_parts = null) {
+		/**
+		 * Index not found or empty
+		 */
+		if (!@$path) {
+			if (api_path()) {
+				return false;
+			}
+			$path	= $possible_parts[0];
+			/**
+			 * If there is structure - set nested possible parts
+			 */
+			if ($structure) {
+				$nested_parts	= @$structure[$path];
+			}
+		} elseif (!in_array($path, $possible_parts)) {
+			error_code(404);
+			return false;
+		}
+		return true;
 	}
 	/**
 	 * Module page generation, blocks processing, adding of form with save/apply/cancel/reset and/or custom users buttons
