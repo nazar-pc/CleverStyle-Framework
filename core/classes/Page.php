@@ -14,11 +14,10 @@ use
 /**
  * Provides next triggers:<br>
  *  System/Page/pre_display
- *  System/Page/get_header_info
  *  System/Page/rebuild_cache
  *  ['key'	=> &$key]		//Reference to the key, that will be appended to all css and js files, can be changed to reflect JavaScript and CSS changes
  *  System/Page/external_sign_in_list
- *  ['list'	=> &$list]		//Reference to the list of external sign in systems
+ *  ['list'	=> &$list]		//Reference to the list of external sign in systems, actually handled by theme itself, not this class
  *
  * @method static Page instance($check = false)
  */
@@ -28,42 +27,38 @@ class Page {
 		Includes,
 		Open_graph;
 	public	$Content;
-	public	$interface		= true;
-	public	$pre_Html		= '';
-	public	$Html 			= '';
+	public	$interface	= true;
+	public	$pre_Html	= '';
+	public	$Html 		= '';
 	public		$Description	= '';
 	public		$Title			= [];
-	public	$debug_info		= '';
-	public	$Head			= '';
-	public	$pre_Body		= '';
-	public		$Header		= '';
-	public		$Left		= '';
-	public		$Top		= '';
-	public		$Right		= '';
-	public		$Bottom		= '';
-	public		$Footer		= '';
-	public	$post_Body		= '';
-	public	$post_Html		= '';
+	public	$Head		= '';
+	public	$pre_Body	= '';
+	public		$Header	= '';
+	public		$Left	= '';
+	public		$Top	= '';
+	public		$Right	= '';
+	public		$Bottom	= '';
+	public		$Footer	= '';
+	public	$post_Body	= '';
+	public	$post_Html	= '';
 	/**
 	 * Number of tabs by default for indentation the substitution of values into template
+	 *
 	 * @var array
 	 */
-	public	$level				= [
-		'Head'				=> 0,
-		'pre_Body'			=> 1,
-		'Header'			=> 3,
-		'header_info'		=> 4,
-		'debug_info'		=> 2,
-		'Left'				=> 3,
-		'Top'				=> 3,
-		'Content'			=> 4,
-		'Bottom'			=> 3,
-		'Right'				=> 3,
-		'Footer'			=> 2,
-		'post_Body'			=> 1
+	public	$level = [
+		'Head'		=> 0,
+		'pre_Body'	=> 1,
+		'Header'	=> 3,
+		'Left'		=> 3,
+		'Top'		=> 3,
+		'Content'	=> 4,
+		'Bottom'	=> 3,
+		'Right'		=> 3,
+		'Footer'	=> 2,
+		'post_Body'	=> 1
 	];
-	public	$user_avatar_image;
-	public	$header_info;
 	public	$link			= [];
 	public	$Search			= [];
 	public	$Replace		= [];
@@ -198,9 +193,8 @@ class Page {
 		$Config	= Config::instance(true);
 		/**
 		 * Loading of template
-		 * Getting user information
 		 */
-		$this->get_template()->get_header_info();
+		$this->get_template();
 		/**
 		 * Forming page title
 		 */
@@ -268,10 +262,6 @@ class Page {
 		 */
 		$this->og_generation();
 		/**
-		 * Getting footer information
-		 */
-		$this->get_footer();
-		/**
 		 * Substitution of information into template
 		 */
 		$this->Html			= str_replace(
@@ -280,8 +270,6 @@ class Page {
 				'<!--head-->',
 				'<!--pre_Body-->',
 				'<!--header-->',
-				'<!--user-avatar-image-->',
-				'<!--header_info-->',
 				'<!--left_blocks-->',
 				'<!--top_blocks-->',
 				'<!--content-->',
@@ -296,8 +284,6 @@ class Page {
 				h::level($this->Head, $this->level['Head']),
 				h::level($this->pre_Body, $this->level['pre_Body']),
 				h::level($this->Header, $this->level['Header']),
-				$this->user_avatar_image,
-				h::level($this->header_info, $this->level['header_info']),
 				h::level($this->Left, $this->level['Left']),
 				h::level($this->Top, $this->level['Top']),
 				h::level($this->Content, $this->level['Content']),
@@ -518,154 +504,6 @@ class Page {
 		exit;
 	}
 	/**
-	 * Substitutes header information about user, sign in/sign up forms, etc.
-	 *
-	 * @return Page
-	 */
-	protected function get_header_info () {
-		$L							= Language::instance();
-		$User						= User::instance(true);
-		$this->user_avatar_image	= $User->avatar();
-		if ($User->user()) {
-			$this->header_info = h::{'div.cs-header-user-block'}(
-				h::b(
-					"$L->hello, ".$User->username().'! '.
-					h::{'icon.cs-header-sign-out-process'}(
-						'sign-out',
-						[
-							'style'			=> 'cursor: pointer;',
-							'data-title'	=> $L->sign_out
-						]
-					)
-				).
-				h::div(
-					h::a(
-						$L->profile,
-						[
-							'href'	=> path($L->profile)."/$User->login"
-						]
-					).
-					' | '.
-					h::a(
-						$L->settings,
-						[
-							'href'	=> path($L->profile).'/'.path($L->settings)
-						]
-					)
-				).
-				$this->header_info
-			);
-			Trigger::instance()->run('System/Page/get_header_info');
-		} else {
-			$external_systems_list		= '';
-			Trigger::instance()->run(
-				'System/Page/external_sign_in_list',
-				[
-					'list'	=> &$external_systems_list
-				]
-			);
-			$this->header_info			= h::{'div.cs-header-guest-form'}(
-				h::b("$L->hello, $L->guest!").
-				h::div(
-					h::{'button.cs-header-sign-in-slide.cs-button-compact.uk-icon-sign-in'}($L->sign_in).
-					h::{'button.cs-header-registration-slide.cs-button-compact.uk-icon-pencil'}(
-						$L->sign_up,
-						[
-							'data-title'	=> $L->quick_registration_form
-						]
-					)
-				)
-			).
-			h::{'div.cs-header-restore-password-form'}(
-				h::{'input.cs-no-ui.cs-header-restore-password-email[tabindex=1]'}([
-					'placeholder'		=> $L->login_or_email,
-					'autocapitalize'	=> 'off',
-					'autocorrect'		=> 'off'
-				]).
-				h::br().
-				h::{'button.cs-header-restore-password-process.cs-button-compact.uk-icon-question[tabindex=2]'}($L->restore_password).
-				h::{'button.cs-button-compact.cs-header-back[tabindex=3]'}(
-					h::icon('chevron-down'),
-					[
-						'data-title'	=> $L->back
-					]
-				),
-				[
-					'style'	=> 'display: none;'
-				]
-			).
-			h::{'div.cs-header-registration-form'}(
-				h::{'input.cs-no-ui.cs-header-registration-email[type=email][tabindex=1]'}([
-					'placeholder'		=> $L->email,
-					'autocapitalize'	=> 'off',
-					'autocorrect'		=> 'off'
-				]).
-				h::br().
-				h::{'button.cs-header-registration-process.cs-button-compact.uk-icon-pencil[tabindex=2]'}($L->sign_up).
-				h::{'button.cs-button-compact.cs-header-back[tabindex=4]'}(
-					h::icon('chevron-down'),
-					[
-						'data-title'	=> $L->back
-					]
-				),
-				[
-					'style'	=> 'display: none;'
-				]
-			).
-			h::{'form.cs-header-sign-in-form.cs-no-ui'}(
-				h::{'input.cs-no-ui.cs-header-sign-in-email[tabindex=1]'}([
-					'placeholder'		=> $L->login_or_email,
-					'autocapitalize'	=> 'off',
-					'autocorrect'		=> 'off'
-				]).
-				h::{'input.cs-no-ui.cs-header-user-password[type=password][tabindex=2]'}([
-					'placeholder'	=> $L->password
-				]).
-				h::br().
-				h::{'button.cs-button-compact.uk-icon-sign-in[tabindex=3][type=submit]'}($L->sign_in).
-				h::{'button.cs-button-compact.cs-header-back[tabindex=5]'}(
-					h::icon('chevron-down'),
-					[
-						'data-title'	=> $L->back
-					]
-				).
-				h::{'button.cs-button-compact.cs-header-restore-password-slide[tabindex=4]'}(
-					h::icon('question'),
-					[
-						'data-title'	=> $L->restore_password
-					]
-				),
-				[
-					'style'	=> 'display: none;'
-				]
-			).
-			$external_systems_list;
-		}
-		return $this;
-	}
-	/**
-	 * Getting footer information
-	 *
-	 * @return Page
-	 */
-	protected function get_footer () {
-		$db				= class_exists('cs\\DB', false) ? DB::instance() : null;
-		$this->Footer	.= h::div(
-			get_core_ml_text('footer_text') ?: false,
-			Config::instance()->core['show_footer_info'] ? Language::instance()->page_footer_info(
-				'<!--generate time-->',
-				$db ? $db->queries : 0,
-				format_time(round($db ? $db->time : 0, 5)),
-				'<!--peak memory usage-->'
-			) : false,
-			base64_decode(
-				'wqkgUG93ZXJlZCBieSA8YSB0YXJnZXQ9Il9ibGFuayIgaHJlZj0iaHR0cDovL2NsZXZlcnN0eW'.
-				'xlLm9yZy9jbXMiIHRpdGxlPSJDbGV2ZXJTdHlsZSBDTVMiPkNsZXZlclN0eWxlIENNUzwvYT4='
-			)
-		);
-		return $this;
-	}
-	/**
 	 * Page generation
 	 */
 	function __finish () {
@@ -683,8 +521,8 @@ class Page {
 		/**
 		 * Detection of compression
 		 */
-		$ob					= false;
-		$Config				= Config::instance(true);
+		$ob		= false;
+		$Config	= Config::instance(true);
 		if (
 			api_path() ||
 			(
@@ -713,30 +551,9 @@ class Page {
 			/**
 			 * Processing of replacing in content
 			 */
-			$this->Html			= $this->process_replacing($this->Html);
+			$this->Html = $this->process_replacing($this->Html);
 			Trigger::instance()->run('System/Page/display');
-			echo str_replace(
-				[
-					'<!--debug_info-->',
-					'<!--generate time-->',
-					'<!--peak memory usage-->'
-				],
-				[
-					$this->debug_info ? h::level(
-						h::{'div#cs-debug.uk-modal div.uk-modal-dialog-large'}(
-							h::level($this->debug_info),
-							[
-								'title'			=> Language::instance()->debug,
-								'style'			=> 'margin-left: -45%; width: 90%;'
-							]
-						),
-						$this->level['debug_info']
-					) : '',
-					format_time(round(microtime(true) - MICROTIME, 5)),
-					format_filesize(memory_get_usage(), 5).h::{'sup[level=0]'}(format_filesize(memory_get_peak_usage(), 5))
-				],
-				rtrim($this->Html)
-			);
+			echo rtrim($this->Html);
 		}
 		if ($ob) {
 			ob_end_flush();

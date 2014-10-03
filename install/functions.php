@@ -187,8 +187,6 @@ function install_process () {
 		],
 		"simple_admin_mode": "0",
 		"default_module": "System",
-		"footer_text": "",
-		"show_footer_info": "1",
 		"og_support": "1"
 	}');
 	$config['name']					= (string)$_POST['site_name'];

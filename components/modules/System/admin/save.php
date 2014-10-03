@@ -30,7 +30,6 @@ if ($_POST['edit_settings'] == 'apply' || $_POST['edit_settings'] == 'save') {
 					case 'name':
 					case 'closed_title':
 					case 'closed_text':
-					case 'footer_text':
 					case 'mail_from_name':
 					case 'mail_signature':
 					case 'rules':

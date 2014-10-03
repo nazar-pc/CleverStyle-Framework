@@ -9,12 +9,14 @@
 namespace cs\themes\CleverStyle;
 use
 	cs\Menu,
+	cs\User,
 	h;
 include __DIR__.'/functions.php';
-$main_menu = h::{'ul.uk-navbar-nav[level=0] li[level=0]'}(
+$main_menu	= h::{'ul.uk-navbar-nav[level=0] li[level=0]'}(
 	get_main_menu()
 );
-$submenu = admin_path() ? Menu::instance()->get_menu() : '';
+$submenu	= admin_path() ? Menu::instance()->get_menu() : '';
+$avatar		= User::instance()->avatar();
 $body_class = admin_path() ? ' class="cs-admin-page"' : '';
 ?><!doctype html>
 <!--pre_Html--><!--head-->
@@ -23,8 +25,8 @@ $body_class = admin_path() ? ' class="cs-admin-page"' : '';
 	<header class="uk-navbar uk-navbar-attached">
 <!--header-->
 		<div class="uk-navbar-content uk-navbar-flip">
-			<img alt="" src="<!--user-avatar-image-->">
-<!--header_info-->
+			<img alt="" src="<?=$avatar?>">
+			<?=get_header_info()?>
 		</div>
 		<a href="/" class="uk-navbar-brand"><?=get_core_ml_text('name')?></a>
 		<?=$main_menu?>
@@ -51,6 +53,7 @@ $body_class = admin_path() ? ' class="cs-admin-page"' : '';
 		</aside>
 	</div>
 	<footer>
+		<?=get_footer()?>
 <!--footer-->
 	</footer>
 <!--post_Body-->

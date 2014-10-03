@@ -66,7 +66,6 @@ function core_textarea ($item, $editor = null, $info_item = null) {
 			$content	= Config::instance()->core[$item];
 			break;
 		case 'closed_text':
-		case 'footer_text':
 		case 'mail_signature':
 		case 'rules':
 			$content	= get_core_ml_text($item);

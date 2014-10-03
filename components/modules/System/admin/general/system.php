@@ -22,8 +22,6 @@ Index::instance()->content(
 		core_textarea('closed_text', 'SIMPLE_EDITOR'),
 		core_input('title_delimiter'),
 		core_input('title_reverse', 'radio'),
-		core_textarea('footer_text', 'SIMPLE_EDITOR'),
-		core_input('show_footer_info', 'radio'),
 		core_input('show_tooltips', 'radio', false),
 		core_input('og_support', 'radio'),
 		core_input('simple_admin_mode', 'radio'),

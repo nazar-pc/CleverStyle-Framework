@@ -11,10 +11,10 @@ use
 	cs\themes\CleverStyle,
 	h;
 include THEMES.'/CleverStyle/functions.php';
-$main_menu = h::{'ul.uk-nav.uk-nav-offcanvas[level=0] li[level=0]'}(
+$main_menu	= h::{'ul.uk-nav.uk-nav-offcanvas[level=0] li[level=0]'}(
 	CleverStyle\get_main_menu()
 );
-$avatar	= User::instance()->avatar(90);
+$avatar		= User::instance()->avatar(90);
 ?><!doctype html>
 <!--pre_Html--><!--head-->
 <body>
@@ -37,13 +37,14 @@ $avatar	= User::instance()->avatar(90);
 <!--bottom_blocks-->
 	</aside>
 	<footer>
+		<?=CleverStyle\get_footer()?>
 <!--footer-->
 	</footer>
 	<nav class="uk-offcanvas">
 		<div class="uk-offcanvas-bar uk-offcanvas-bar-flip">
 			<div class="uk-panel uk-form cs-tenebris-offcanvas-user-block">
 				<img alt="" src="<?=$avatar?>" class="uk-thumbnail">
-<!--header_info-->
+				<?=CleverStyle\get_header_info()?>
 			</div>
 			<?=$main_menu?>
 		</div>
