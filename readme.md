@@ -22,11 +22,11 @@ But in parallel with core some components are developed:
  * **OAuth2** (provides realization of OAuth 2 authorization protocol (server side))
  * **Photo gallery** (simple photo gallery module, powered by Fotorama, Plupload and SimpleImage components)
  * **Plupload** (integration of [Plupload](https://github.com/moxiecode/plupload) for files uploading, adds files uploading functionality to other modules)
+ * **Polls** (provides polls functionality to other modules)
  * **Static pages** (allows to create static pages like About page or pages without interface, for example for site owner verification)
 
 #### Plugins
 
- * **Admin default theme** (forces default CleverStyle theme in all administration pages, that is helpful, because there is no need to adapt custom theme for admin panel)
  * **Fotorama** (integration of [Fotorama](https://github.com/artpolikarpov/fotorama) jQuery gallery into CleverStyle CMS)
  * **SimpleImage** (integration of [SimpleImage](https://github.com/claviska/SimpleImage) class into CleverStyle CMS)
  * **TinyMCE** (integration of [TinyMCE](https://github.com/tinymce/tinymce) WYSIWYG Editor for providing simpler content editing)
