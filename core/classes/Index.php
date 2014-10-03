@@ -648,7 +648,7 @@ class Index {
 		}
 		Trigger::instance()->run('System/Index/preload');
 		/**
-		 * If module consists from index.html only
+		 * If module consists of index.html only
 		 */
 		if (!$this->in_admin && !$this->in_api && $this->module && file_exists(MODULES."/$this->module/index.html")) {
 			ob_start();
