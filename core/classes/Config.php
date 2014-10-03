@@ -22,6 +22,7 @@ namespace cs;
  * @property mixed[] $replace		Property stores replacing rules, that are used to replace text on pages
  * @property mixed[] $routing		Property store routs replacing rules, they are applied to current rule on every pages once
  * @property array   $server		Array of some address data about mirrors and current address properties
+ * @property bool    $can_be_admin	Allows to check ability to be admin user (can be limited by IP)
  *
  * @method static Config instance($check = false)
  */
@@ -53,11 +54,6 @@ class Config {
 		'ajax'					=> false,	//Is this page request via AJAX
 		'mirror_index'			=> 0		//Index of current domain in mirrors list ('0' - main domain)
 	];
-	/**
-	 * Allows to check ability to be admin user (can be limited by IP)
-	 *
-	 * @var bool
-	 */
 	protected $can_be_admin	= true;
 	/**
 	 * Initialization state

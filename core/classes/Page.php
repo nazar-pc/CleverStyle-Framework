@@ -244,11 +244,7 @@ class Page {
 				[
 					'name'			=> 'generator',
 					'content'		=> base64_decode('Q2xldmVyU3R5bGUgQ01TIGJ5IE1va3J5bnNreWkgTmF6YXI=')
-				],
-				admin_path() ? [
-					'name'			=> 'robots',
-					'content'		=> 'noindex,nofollow'
-				] : false
+				]
 			).
 			h::base($Config ? [
 				'href' => $Config->base_url().'/'
@@ -495,7 +491,7 @@ class Page {
 			$error				= $custom_text[0];
 			$error_description	= $custom_text[1];
 		} else {
-			$error_description	= $custom_text ? : $error;
+			$error_description	= $custom_text ?: $error;
 		}
 		if (api_path() || $json) {
 			if ($json) {
