@@ -139,40 +139,31 @@ class Page {
 	 */
 	protected function get_template () {
 		$Config	= Config::instance();
+		/**
+		 * Theme is fixed for administration, and may vary for other pages
+		 */
 		if (admin_path()) {
 			$this->theme		= 'CleverStyle';
 			$this->color_scheme	= 'Default';
-		} else {
-			/**
-			 * Theme detection
-			 */
-			if (is_object($Config)) {
-				$this->theme		= in_array($this->theme, $Config->core['themes']) ? $this->theme : $Config->core['theme'];
-				$this->color_scheme	= in_array($this->color_scheme, $Config->core['color_schemes'][$this->theme]) ?
-										$this->color_scheme : $Config->core['color_schemes'][$this->theme][0];
-			}
+		} elseif (is_object($Config)) {
+			$this->theme		= in_array($this->theme, $Config->core['themes']) ? $this->theme : $Config->core['theme'];
+			$color_schemes		= $Config->core['color_schemes'][$this->theme];
+			$this->color_scheme	= in_array($this->color_scheme, $color_schemes) ? $this->color_scheme : $color_schemes[0];
+			unset($color_schemes);
 		}
 		/**
 		 * Template loading
 		 */
-		$theme_dir				= THEMES."/$this->theme";
+		$theme_dir	= THEMES."/$this->theme";
 		if ($this->interface) {
 			_include_once("$theme_dir/prepare.php", false);
 			ob_start();
 			if (
-				!(
-					file_exists("$theme_dir/index.html") || file_exists("$theme_dir/index.php")
-				) ||
-				(
-					!(
-						is_object($Config) && $Config->core['site_mode']
-					) &&
-					!User::instance(true)->admin() &&
-					code_header(503) &&
-					!(
-						_include_once("$theme_dir/closed.php", false) || _include_once("$theme_dir/closed.html", false)
-					)
-				)
+				$Config->core['site_mode'] === '0' &&
+				!User::instance(true)->admin() &&
+				code_header(503) &&
+				!_include_once("$theme_dir/closed.php", false) &&
+				!_include_once("$theme_dir/closed.html", false)
 			) {
 				echo	"<!doctype html>\n".
 				h::title(get_core_ml_text('closed_title')).
@@ -198,61 +189,40 @@ class Page {
 		/**
 		 * Forming page title
 		 */
-		foreach ($this->Title as $i => $v) {
-			if (!trim($v)) {
+		foreach ($this->Title as $i => &$v) {
+			if (!($v = trim($v))) {
 				unset($this->Title[$i]);
-			} else {
-				$this->Title[$i] = trim($v);
 			}
 		}
-		if ($Config) {
-			$this->Title = $Config->core['title_reverse'] ? array_reverse($this->Title) : $this->Title;
-			$this->Title = implode($Config->core['title_delimiter'], $this->Title);
-		} else {
-			$this->Title = $this->Title[0];
-		}
+		$this->Title = $Config->core['title_reverse'] ? array_reverse($this->Title) : $this->Title;
+		$this->Title = implode($Config->core['title_delimiter'] ?: '|', $this->Title);
 		/**
 		 * Forming <head> content
 		 */
-		if (file_exists(THEMES."/$this->theme/$this->color_scheme/img/favicon.png")) {
-			$favicon	= "themes/$this->theme/$this->color_scheme/img/favicon.png";
-		} elseif (file_exists(THEMES."/$this->theme/$this->color_scheme/img/favicon.ico")) {
-			$favicon	= "themes/$this->theme/$this->color_scheme/img/favicon.ico";
-		} elseif (file_exists(THEMES."/$this->theme/img/favicon.png")) {
-			$favicon	= "themes/$this->theme/img/favicon.png";
-		} elseif (file_exists(THEMES."/$this->theme/img/favicon.ico")) {
-			$favicon	= "themes/$this->theme/img/favicon.ico";
-		} else {
-			$favicon	= 'favicon.ico';
-		}
 		$this->Head			=
 			h::title($this->Title).
 			h::meta(
 				[
-					'charset'		=> 'utf-8'
+					'charset'	=> 'utf-8'
 				],
 				$this->Description ? [
-					'name'			=> 'description',
-					'content'		=> $this->Description
+					'name'		=> 'description',
+					'content'	=> $this->Description
 				] : false,
 				[
-					'name'			=> 'generator',
-					'content'		=> base64_decode('Q2xldmVyU3R5bGUgQ01TIGJ5IE1va3J5bnNreWkgTmF6YXI=')
+					'name'		=> 'generator',
+					'content'	=> 'CleverStyle CMS by Mokrynskyi Nazar'
 				]
 			).
 			h::base($Config ? [
 				'href' => $Config->base_url().'/'
 			] : false).
 			$this->Head.
-			h::link(
-				[
-					[
-						'rel'		=> 'shortcut icon',
-						'href'		=> $favicon
-					]
-				],
-				$this->link ?: false
-			);
+			h::link([
+				'rel'	=> 'shortcut icon',
+				'href'	=> $this->get_favicon_path()
+			]).
+			h::link($this->link ?: false);
 		/**
 		 * Addition of CSS, JavaScript and Web Components includes
 		 */
@@ -281,21 +251,46 @@ class Page {
 			],
 			[
 				$this->pre_Html,
-				h::level($this->Head, $this->level['Head']),
-				h::level($this->pre_Body, $this->level['pre_Body']),
-				h::level($this->Header, $this->level['Header']),
-				h::level($this->Left, $this->level['Left']),
-				h::level($this->Top, $this->level['Top']),
-				h::level($this->Content, $this->level['Content']),
-				h::level($this->Bottom, $this->level['Bottom']),
-				h::level($this->Right, $this->level['Right']),
-				h::level($this->Footer, $this->level['Footer']),
-				h::level($this->post_Body, $this->level['post_Body']),
+				$this->get_property_with_indentation('Head'),
+				$this->get_property_with_indentation('pre_Body'),
+				$this->get_property_with_indentation('Header'),
+				$this->get_property_with_indentation('Left'),
+				$this->get_property_with_indentation('Top'),
+				$this->get_property_with_indentation('Content'),
+				$this->get_property_with_indentation('Bottom'),
+				$this->get_property_with_indentation('Right'),
+				$this->get_property_with_indentation('Footer'),
+				$this->get_property_with_indentation('post_Body'),
 				$this->post_Html
 			],
 			$this->Html
 		);
 		return $this;
+	}
+	/**
+	 * @return string
+	 */
+	protected function get_favicon_path () {
+		$theme_favicon			= "$this->theme/img/favicon";
+		$color_scheme_favicon	= "$this->theme/$this->color_scheme/img/favicon";
+		if (file_exists(THEMES."/$color_scheme_favicon.png")) {
+			return "$color_scheme_favicon.png";
+		} elseif (file_exists(THEMES."/$color_scheme_favicon.ico")) {
+			return "$color_scheme_favicon.ico";
+		} elseif (file_exists(THEMES."/$theme_favicon.png")) {
+			return "$theme_favicon.png";
+		} elseif (file_exists(THEMES."/$theme_favicon.ico")) {
+			return "$theme_favicon.ico";
+		}
+		return 'favicon.ico';
+	}
+	/**
+	 * @param string $property
+	 *
+	 * @return string
+	 */
+	protected function get_property_with_indentation ($property) {
+		return h::level($this->$property, $this->level[$property]);
 	}
 	/**
 	 * Replacing anything in source code of finally generated page
@@ -322,19 +317,21 @@ class Page {
 	/**
 	 * Processing of replacing in content
 	 *
-	 * @param string	$data
+	 * @param string	$content
 	 *
 	 * @return string
 	 */
-	protected function process_replacing ($data) {
-		errors_off();
-		foreach ($this->Search as $i => $search) {
-			$data = _preg_replace($search, $this->Replace[$i], $data) ?: str_replace($search, $this->Replace[$i], $data);
-		}
+	protected function process_replacing ($content) {
+		array_map(
+			function ($search, $replace) use (&$content) {
+				$content = _preg_replace($search, $replace, $content) ?: str_replace($search, $replace, $content);
+			},
+			$this->Search,
+			$this->Replace
+		);
 		$this->Search  = [];
 		$this->Replace = [];
-		errors_on();
-		return $data;
+		return $content;
 	}
 	/**
 	 * Adding links
@@ -398,16 +395,17 @@ class Page {
 	/**
 	 * Adding text to the title page
 	 *
-	 * @param string	$add
+	 * @param string	$title
 	 * @param bool		$replace	Replace whole title by this
 	 *
 	 * @return Page
 	 */
-	function title ($add, $replace = false) {
+	function title ($title, $replace = false) {
+		$title	= htmlentities($title, ENT_COMPAT, 'utf-8');
 		if ($replace) {
-			$this->Title	= [htmlentities($add, ENT_COMPAT, 'utf-8')];
+			$this->Title	= [$title];
 		} else {
-			$this->Title[]	= htmlentities($add, ENT_COMPAT, 'utf-8');
+			$this->Title[]	= $title;
 		}
 		return $this;
 	}
@@ -419,10 +417,7 @@ class Page {
 	 * @return Page
 	 */
 	function success ($success_text) {
-		$this->Top .= h::{'div.uk-alert.uk-alert-success.uk-lead.cs-center'}(
-			$success_text
-		);
-		return $this;
+		return $this->top_message($success_text, 'success uk-lead');
 	}
 	/**
 	 * Display notice message
@@ -432,10 +427,7 @@ class Page {
 	 * @return Page
 	 */
 	function notice ($notice_text) {
-		$this->Top .= h::{'div.uk-alert.uk-alert-warning.uk-lead.cs-center'}(
-			$notice_text
-		);
-		return $this;
+		return $this->top_message($notice_text, 'warning uk-lead');
 	}
 	/**
 	 * Display warning message
@@ -445,8 +437,22 @@ class Page {
 	 * @return Page
 	 */
 	function warning ($warning_text) {
-		$this->Top .= h::{'div.uk-alert.uk-alert-danger.cs-center'}(
-			$warning_text
+		return $this->top_message($warning_text, 'danger');
+	}
+	/**
+	 * Generic method for 3 methods above
+	 *
+	 * @param string $message
+	 * @param string $class_ending
+	 *
+	 * @return Page
+	 */
+	protected function top_message ($message, $class_ending) {
+		$this->Top .= h::div(
+			$message,
+			[
+				'class'	=> "cs-center uk-alert uk-alert-$class_ending"
+			]
 		);
 		return $this;
 	}
@@ -466,16 +472,18 @@ class Page {
 		if (!error_code()) {
 			error_code(500);
 		}
+		/**
+		 * Hack for 403 after sign out in administration
+		 */
 		if (!api_path() && error_code() == 403 && _getcookie('sign_out')) {
-			header('Location: '.Config::instance()->base_url(), true, 302);
+			header('Location: /', true, 302);
 			$this->Content	= '';
 			exit;
 		}
 		interface_off();
 		$error	= code_header(error_code());
 		if (is_array($custom_text)) {
-			$error				= $custom_text[0];
-			$error_description	= $custom_text[1];
+			list($error, $error_description)	= $custom_text;
 		} else {
 			$error_description	= $custom_text ?: $error;
 		}
@@ -507,11 +515,14 @@ class Page {
 	 * Page generation
 	 */
 	function __finish () {
-		static $executed = false;
-		if ($executed) {
+		/**
+		 * Protection from double calling
+		 */
+		static $called_once = false;
+		if ($called_once) {
 			return;
 		}
-		$executed	= true;
+		$called_once	= true;
 		/**
 		 * Cleaning of output
 		 */
@@ -519,18 +530,10 @@ class Page {
 			ob_end_clean();
 		}
 		/**
-		 * Detection of compression
+		 * Check whether gzip compression required, and apply it if so
 		 */
 		$ob		= false;
-		$Config	= Config::instance(true);
-		if (
-			api_path() ||
-			(
-				$Config &&
-				!zlib_compression() &&
-				$Config->core['gzip_compression']
-			)
-		) {
+		if (Config::instance(true)->core['gzip_compression'] && !zlib_compression()) {
 			ob_start('ob_gzhandler');
 			$ob = true;
 		}

@@ -15,6 +15,9 @@ if ($User->guest()) {
 }
 if (isset($_POST['sign_out'])) {
 	$User->del_session();
-	_setcookie('sign_out', 1, 0, true, true);
+	/**
+	 * Hack for 403 after sign out in administration
+	 */
+	_setcookie('sign_out', 1, TIME + 5, true);
 	Page::instance()->json(1);
 }

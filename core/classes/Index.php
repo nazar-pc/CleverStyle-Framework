@@ -618,14 +618,16 @@ class Index {
 	 * Executes plugins processing, blocks and module page generation
 	 */
 	function __finish () {
-		static $finished = false;
-		if ($finished) {
+		/**
+		 * Protection from double calling
+		 */
+		static $called_once = false;
+		if ($called_once) {
 			return;
 		}
-		$finished	= true;
-		$Config		= Config::instance();
-		$Page		= Page::instance();
-		$api		= api_path();
+		$called_once	= true;
+		$Config			= Config::instance();
+		$Page			= Page::instance();
 		/**
 		 * If site is closed, user is not admin, and it is not request for sign in
 		 */
@@ -634,7 +636,7 @@ class Index {
 			!(
 				User::instance()->admin() ||
 				(
-					$api && $Config->route === ['user', 'sign_in']
+					api_path() && $Config->route === ['user', 'sign_in']
 				)
 			)
 		) {
@@ -645,6 +647,9 @@ class Index {
 			$Page->error();
 		}
 		Trigger::instance()->run('System/Index/preload');
+		/**
+		 * If module consists from index.html only
+		 */
 		if (!$this->in_admin && !$this->in_api && $this->module && file_exists(MODULES."/$this->module/index.html")) {
 			ob_start();
 			_include(MODULES."/$this->module/index.html", false, false);
@@ -658,15 +663,6 @@ class Index {
 		$this->render();
 		if (error_code()) {
 			$Page->error();
-		} elseif (
-			_getcookie('sign_out') &&
-			!(
-				$api &&
-				$this->module == 'System' &&
-				$Config->route == ['user', 'sign_out']
-			)
-		) {
-			_setcookie('sign_out', '');
 		}
 		Trigger::instance()->run('System/Index/postload');
 	}
