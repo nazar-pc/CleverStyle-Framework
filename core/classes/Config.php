@@ -254,8 +254,6 @@ class Config {
 		foreach ((array)$this->core['url'] as $address) {
 			list($protocol, $urls)	= explode('://', $address, 2);
 			$urls					= explode(';', $urls);
-			echo "$protocol == $referer[protocol]\n";
-			echo "in_array($referer[host], $urls)\n";
 			if ($protocol === $referer['protocol'] && in_array($referer['host'], $urls)) {
 				return true;
 			}
