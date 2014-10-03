@@ -12,16 +12,10 @@ $Config	= Config::instance();
 $L		= Language::instance();
 $Page	= Page::instance();
 $User	= User::instance();
-/**
- * If AJAX request from local referer, user is guest - send request for password restore, otherwise - show error
- */
-if (
-	!$Config->server['referer']['local'] ||
-	!$Config->server['ajax'] ||
-	!isset($_POST['email']) ||
-	!$User->guest()
-) {
-	sleep(1);
+if (!isset($_POST['email'])) {
+	error_code(400);
+	return;
+} elseif (!$User->guest()) {
 	error_code(403);
 	return;
 } elseif (!$_POST['email']) {

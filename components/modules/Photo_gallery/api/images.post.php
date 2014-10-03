@@ -7,19 +7,15 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Photo_gallery;
-use			h,
-			cs\Config,
-			cs\Page,
-			cs\User;
+use
+	cs\Config,
+	cs\Page,
+	cs\User;
 $Config	= Config::instance();
 /**
  * If AJAX request from local referer, user is not guest - allow
  */
-if (!(
-	$Config->server['referer']['local'] &&
-	$Config->server['ajax'] &&
-	User::instance()->user()
-)) {
+if (!User::instance()->user()) {
 	sleep(1);
 	error_code(403);
 	return;

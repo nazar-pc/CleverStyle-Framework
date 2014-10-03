@@ -31,7 +31,12 @@ cs.admin_cache				= (element, action, partial_path) ->
 		data	:
 			partial_path	: partial_path
 		success	: (result) ->
-			$(element).html(result)
+			$(element).html(
+				if result
+					"""<p class="uk-alert uk-alert-success">#{L.done}</p>"""
+				else
+					"""<p class="uk-alert uk-alert-danger">#{L.error}</p>"""
+			)
 	return
 ###*
  * Send request for db connection testing

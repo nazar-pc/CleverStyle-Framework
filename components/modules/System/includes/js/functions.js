@@ -42,7 +42,7 @@
         partial_path: partial_path
       },
       success: function(result) {
-        return $(element).html(result);
+        return $(element).html(result ? "<p class=\"uk-alert uk-alert-success\">" + L.done + "</p>" : "<p class=\"uk-alert uk-alert-danger\">" + L.error + "</p>");
       }
     });
   };

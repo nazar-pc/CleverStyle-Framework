@@ -12,16 +12,8 @@ $Config			= Config::instance();
 $L				= Language::instance();
 $Page			= Page::instance();
 $User			= User::instance();
-/**
- * If AJAX request from local referer, user is guest, registration is allowed - process registration, otherwise - show error
- */
-if (
-	!$Config->server['referer']['local'] ||
-	!$Config->server['ajax'] ||
-	!isset($_POST['email'])
-) {
-	sleep(1);
-	error_code(403);
+if (!isset($_POST['email'])) {
+	error_code(400);
 	return;
 } elseif (!$User->guest()) {
 	$Page->json('reload');

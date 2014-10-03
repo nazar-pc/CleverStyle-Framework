@@ -8,19 +8,14 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-$Config	= Config::instance();
 $L		= Language::instance();
 $Page	= Page::instance();
 $User	= User::instance();
-/**
- * If AJAX request from local referer, user is registered - change password, otherwise - show error
- */
-if (
-	!$Config->server['referer']['local'] ||
-	!$Config->server['ajax'] ||
-	!isset($_POST['verify_hash'], $_POST['new_password']) ||
-	!$User->user()
-) {
+if (!isset($_POST['verify_hash'], $_POST['new_password'])) {
+	error_code(400);
+	return;
+}
+if (!$User->user()) {
 	sleep(1);
 	error_code(403);
 	return;

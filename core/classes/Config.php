@@ -45,13 +45,6 @@ class Config {
 			'http'		=> [],				//Insecure (http) domains
 			'https'		=> []				//Secure (https) domains
 		],
-		'referer'				=> [
-			'url'		=> '',
-			'host'		=> '',
-			'protocol'	=> '',
-			'local'		=> false
-		],
-		'ajax'					=> false,	//Is this page request via AJAX
 		'mirror_index'			=> 0		//Index of current domain in mirrors list ('0' - main domain)
 	];
 	protected $can_be_admin	= true;
@@ -207,30 +200,6 @@ class Config {
 			exit;
 		}
 		/**
-		 * Referer detection
-		 */
-		if (@strpos($_SERVER['HTTP_REFERER'], '://') !== false) {
-			$ref				= &$server['referer'];
-			$referer			= explode('://', $ref['url'] = $_SERVER['HTTP_REFERER']);
-			$referer[1]			= explode('/', $referer[1]);
-			$referer[1]			= $referer[1][0];
-			$ref['protocol']	= $referer[0];
-			$ref['host']		= $referer[1];
-			unset($referer);
-			foreach ((array)$this->core['url'] as $address) {
-				list($protocol, $urls)	= explode('://', $address, 2);
-				$urls					= explode(';', $urls);
-				if (
-					$protocol === $ref['protocol'] &&
-					in_array($ref['host'], $urls)
-				) {
-					$ref['local']		= true;
-					break;
-				}
-			}
-			unset($ref, $address, $protocol, $urls);
-		}
-		/**
 		 * Preparing page url without basic path
 		 */
 		$server['raw_relative_address']	= mb_substr($server['raw_relative_address'], mb_strlen($current_mirror_base_url));
@@ -240,7 +209,7 @@ class Config {
 		 * Redirection processing
 		 */
 		if (mb_strpos($server['raw_relative_address'], 'redirect/') === 0) {
-			if ($server['referer']['local']) {
+			if ($this->is_referer_local()) {
 				header('Location: '.substr($server['raw_relative_address'], 9));
 			} else {
 				error_code(400);
@@ -264,7 +233,34 @@ class Config {
 			header('Content-Type: application/json; charset=utf-8', true);
 			interface_off();
 		}
-		$server['ajax']				= @$_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
+	}
+	/**
+	 * Check whether referer is local
+	 *
+	 * @return bool
+	 */
+	protected function is_referer_local () {
+		if (@strpos($_SERVER['HTTP_REFERER'], '://') === false) {
+			return false;
+		}
+		$referer	= [
+			'url'		=> $_SERVER['HTTP_REFERER'],
+			'host'		=> '',
+			'protocol'	=> '',
+			'local'		=> false
+		];
+		list($referer['protocol'], $referer['host'])	= explode('://', $referer['url']);
+		$referer['host']								= explode('/', $referer['host'])[0];
+		foreach ((array)$this->core['url'] as $address) {
+			list($protocol, $urls)	= explode('://', $address, 2);
+			$urls					= explode(';', $urls);
+			echo "$protocol == $referer[protocol]\n";
+			echo "in_array($referer[host], $urls)\n";
+			if ($protocol === $referer['protocol'] && in_array($referer['host'], $urls)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	/**
 	 * Process raw relative route.

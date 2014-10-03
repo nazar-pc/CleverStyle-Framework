@@ -12,18 +12,7 @@ $Config	= Config::instance();
 $L		= Language::instance();
 $Page	= Page::instance();
 $User	= User::instance();
-/**
- * If AJAX request from local referer, user is guest, login attempts count is satisfactory,
- * user is active, not blocked - process authentication, otherwise - show error
- */
-if (!(
-	$Config->server['referer']['local'] &&
-	$Config->server['ajax']
-)) {
-	sleep(1);
-	error_code(403);
-	return;
-} elseif (!$User->guest()) {
+if (!$User->guest()) {
 	$Page->json('reload');
 	return;
 } elseif ($Config->core['sign_in_attempts_block_count'] && $User->get_sign_in_attempts_count() >= $Config->core['sign_in_attempts_block_count']) {

@@ -7,11 +7,12 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Comments;
-use			cs\Config,
-			cs\Language,
-			cs\Page,
-			cs\Trigger,
-			cs\User;
+use
+	cs\Config,
+	cs\Language,
+	cs\Page,
+	cs\Trigger,
+	cs\User;
 /**
  * Provides next triggers:<br>
  *  api/Comments/edit<code>
@@ -29,11 +30,7 @@ if (!$Config->module('Comments')->active()) {
 /**
  * If AJAX request from local referer, user is not guest - allow
  */
-if (!(
-	$Config->server['referer']['local'] &&
-	$Config->server['ajax'] &&
-	User::instance()->user()
-)) {
+if (!User::instance()->user()) {
 	sleep(1);
 	error_code(403);
 	return;
