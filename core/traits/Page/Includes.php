@@ -735,7 +735,8 @@ trait Includes {
 	 * @return array
 	 */
 	protected function create_cached_includes_files ($filename_prefix, $includes) {
-		$cache_hash	= [];
+		$cache_hash		= [];
+		$destination	= Config::instance()->core['vulcanization'] ? false : PCACHE;
 		foreach ($includes as $extension => &$files) {
 			$files_content = '';
 			foreach ($files as $file) {
@@ -759,7 +760,7 @@ trait Includes {
 						file_get_contents($file),
 						$file,
 						"$filename_prefix$this->pcache_basename-".basename($file).'+'.substr(md5($file), 0, 5),
-						PCACHE
+						$destination
 					);
 				} else {
 					$files_content .= file_get_contents($file).";\n";

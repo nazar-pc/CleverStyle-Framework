@@ -186,6 +186,8 @@
 		"gzip_compression_info"			: "Allows you to to compress page before sending it to the user, can significantly increase the page loading speed for end user with slow Internet connection, but increase load on server",
 		"cache_compress_js_css"			: "Cache and compress JavaScript and CSS (recommended)",
 		"cache_compress_js_css_info"	: "All JavaScript and CSS files (and included images, fonts and nested styles) combined into one file, compressed and placed in the site cache, that reduces load on the server due to fewer requests for include files, and saves the user traffic, because compression reduces the amount of data transferred in several times.<br>Disable only when errors occur!",
+		"vulcanization"					: "Vulcanization (recommended)",
+		"vulcanization_info"			: "Vulcanization is the process of inserting external css and js includes into html file, that is used with HTML Imports. The name vulcanization is from Google's Polymer project. Depends on \"Cache and compress JavaScript and CSS\" option.",
 		"put_js_after_body"				: "Put JavaScript includes after page body",
 		"put_js_after_body_info"		: "Move all JavaScript inclusions to the very end of &lt;body&gt; tag. This improves page loading speed, but is not by W3C standards (anyway works fine in all browsers).",
 		"inserts_limit"					: "Inserts limit",

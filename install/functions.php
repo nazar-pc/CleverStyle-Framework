@@ -136,6 +136,7 @@ function install_process () {
 		"show_cookies": "1",
 		"gzip_compression": "1",
 		"cache_compress_js_css": "1",
+		"vulcanization": "1",
 		"put_js_after_body": "1",
 		"theme": "",
 		"themes": [],
