@@ -6,6 +6,10 @@
  * @license		MIT License, see license.txt
  */
 
+html {
+	background : transparent;
+}
+
 * + h1,
 * + h2,
 * + h3,
@@ -174,5 +178,5 @@ a {
 }
 
 .uk-button-group {
-	z-index: 1;
+	z-index : 1;
 }
