@@ -232,7 +232,7 @@ if (isset($_POST['update_modules_list'])) {
 					function ($index, $file) use ($tmp_dir, $module_dir) {
 						if (
 							!file_exists(dirname("$module_dir/$file")) &&
-							!mkdir(dirname("$module_dir/$file"), 0700, true)
+							!mkdir(dirname("$module_dir/$file"), 0770, true)
 						) {
 							return 0;
 						}
@@ -352,7 +352,7 @@ if (isset($_POST['update_modules_list'])) {
 					function ($index, $file) use ($tmp_dir, $module_dir) {
 						if (
 							!file_exists(dirname(DIR."/$file")) &&
-							!mkdir(dirname(DIR."/$file"), 0700, true)
+							!mkdir(dirname(DIR."/$file"), 0770, true)
 						) {
 							return 0;
 						}

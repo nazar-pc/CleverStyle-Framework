@@ -90,7 +90,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 					function ($index, $file) use ($tmp_dir, $plugin_dir) {
 						if (
 							!file_exists(dirname("$plugin_dir/$file")) &&
-							!mkdir(dirname("$plugin_dir/$file"), 0700, true)
+							!mkdir(dirname("$plugin_dir/$file"), 0770, true)
 						) {
 							return 0;
 						}

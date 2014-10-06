@@ -59,17 +59,17 @@ class Core {
 		}
 		unset($clangs);
 		if (!is_dir(STORAGE)) {
-			@mkdir(STORAGE, 0755);
+			@mkdir(STORAGE, 0775);
 			file_put_contents(
 				STORAGE.'/.htaccess',
 				'Allow From All'
 			);
 		}
 		if (!is_dir(CACHE)) {
-			@mkdir(CACHE, 0700);
+			@mkdir(CACHE, 0770);
 		}
 		if (!is_dir(PCACHE)) {
-			@mkdir(PCACHE, 0755);
+			@mkdir(PCACHE, 0770);
 			file_put_contents(
 				PCACHE.'/.htaccess',
 				'<FilesMatch "\.(css|js|html)$">
@@ -89,10 +89,10 @@ AddEncoding gzip .html
 			);
 		}
 		if (!is_dir(LOGS)) {
-			@mkdir(LOGS, 0700);
+			@mkdir(LOGS, 0770);
 		}
 		if (!is_dir(TEMP)) {
-			@mkdir(TEMP, 0755);
+			@mkdir(TEMP, 0775);
 			file_put_contents(
 				TEMP.'/.htaccess',
 				'Allow From All'

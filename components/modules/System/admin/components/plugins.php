@@ -106,7 +106,7 @@ if (
 					);
 					return;
 				}
-				if (!file_exists(PLUGINS."/$plugin") && !mkdir(PLUGINS."/$plugin", 0700)) {
+				if (!file_exists(PLUGINS."/$plugin") && !mkdir(PLUGINS."/$plugin", 0770)) {
 					$Page->warning($L->cant_unpack_plugin_no_write_permissions);
 					unlink($tmp_file);
 					break;
@@ -117,7 +117,7 @@ if (
 						function ($index, $file) use ($tmp_dir, $plugin) {
 							if (
 								!file_exists(dirname(PLUGINS."/$plugin/$file")) &&
-								!mkdir(dirname(PLUGINS."/$plugin/$file"), 0700, true)
+								!mkdir(dirname(PLUGINS."/$plugin/$file"), 0770, true)
 							) {
 								return 0;
 							}

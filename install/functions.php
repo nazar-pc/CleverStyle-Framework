@@ -218,7 +218,7 @@ function install_process () {
 			function ($index, $file) {
 				if (
 					!file_exists(dirname(ROOT."/$file")) &&
-					!mkdir(dirname(ROOT."/$file"), 0700, true)
+					!mkdir(dirname(ROOT."/$file"), 0770, true)
 				) {
 					return 0;
 				}

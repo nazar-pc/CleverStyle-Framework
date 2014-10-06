@@ -126,7 +126,7 @@ if (
 					);
 					break;
 				}
-				if (!file_exists(MODULES."/$module_name") && !mkdir(MODULES."/$module_name", 0700)) {
+				if (!file_exists(MODULES."/$module_name") && !mkdir(MODULES."/$module_name", 0770)) {
 					$Page->warning($L->cant_unpack_module_no_write_permissions);
 					unlink($tmp_file);
 					break;
@@ -137,7 +137,7 @@ if (
 						function ($index, $file) use ($tmp_dir, $module_name) {
 							if (
 								!file_exists(dirname(MODULES."/$module_name/$file")) &&
-								!mkdir(dirname(MODULES."/$module_name/$file"), 0700, true)
+								!mkdir(dirname(MODULES."/$module_name/$file"), 0770, true)
 							) {
 								return 0;
 							}

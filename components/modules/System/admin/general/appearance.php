@@ -90,7 +90,7 @@ if (isset($_POST['action'])) {
 				);
 				return;
 			}
-			if (!file_exists(THEMES."/$theme") && !mkdir(THEMES."/$theme", 0700)) {
+			if (!file_exists(THEMES."/$theme") && !mkdir(THEMES."/$theme", 0770)) {
 				$Page->warning($L->cant_unpack_theme_no_write_permissions);
 				unlink($tmp_file);
 				break;
@@ -101,7 +101,7 @@ if (isset($_POST['action'])) {
 					function ($index, $file) use ($tmp_dir, $theme) {
 						if (
 							!file_exists(dirname(THEMES."/$theme/$file")) &&
-							!mkdir(dirname(THEMES."/$theme/$file"), 0700, true)
+							!mkdir(dirname(THEMES."/$theme/$file"), 0770, true)
 						) {
 							return 0;
 						}
@@ -143,7 +143,7 @@ if (isset($_POST['action'])) {
 					function ($index, $file) use ($tmp_dir, $theme_dir) {
 						if (
 							!file_exists(dirname("$theme_dir/$file")) &&
-							!mkdir(dirname("$theme_dir/$file"), 0700, true)
+							!mkdir(dirname("$theme_dir/$file"), 0770, true)
 						) {
 							return 0;
 						}
