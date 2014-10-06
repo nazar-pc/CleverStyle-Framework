@@ -91,9 +91,9 @@ class Memcached extends _Abstract {
 					$exploded[$i]	.= '/'.$this->root_versions_cache["/$item_path"];
 					continue;
 				}
-				$version	= apc_fetch("/$item_path");
+				$version	= $this->memcached->get("/$item_path");
 				if ($version === false) {
-					apc_store("/$item_path", 0);
+					$this->memcached->set("/$item_path", 0);
 					$version	= 0;
 				}
 				$exploded[$i]	.= "/$version";
