@@ -5,15 +5,6 @@
  * @license		MIT License, see license.txt
 ###
 ###
- # Fix for "TypeError: Argument 1 of Window.getComputedStyle does not implement interface Element." with Polymer Platform
-###
-do ->
-	getComputedStyle_original	= window.getComputedStyle
-	window.getComputedStyle		= (el, pseudo) ->
-		if !(el instanceof HTMLElement)
-			return true
-		getComputedStyle_original.call(window, el, pseudo)
-###
  # Fix for jQuery "ready" event, trigger it after "WebComponentsReady" event triggered by Polymer Platform
 ###
 do ($ = jQuery) ->

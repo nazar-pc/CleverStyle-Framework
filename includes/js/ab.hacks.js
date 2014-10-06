@@ -9,27 +9,11 @@
 
 
 /*
- # Fix for "TypeError: Argument 1 of Window.getComputedStyle does not implement interface Element." with Polymer Platform
+ # Fix for jQuery "ready" event, trigger it after "WebComponentsReady" event triggered by Polymer Platform
 */
 
 
 (function() {
-
-  (function() {
-    var getComputedStyle_original;
-    getComputedStyle_original = window.getComputedStyle;
-    return window.getComputedStyle = function(el, pseudo) {
-      if (!(el instanceof HTMLElement)) {
-        return true;
-      }
-      return getComputedStyle_original.call(window, el, pseudo);
-    };
-  })();
-
-  /*
-   # Fix for jQuery "ready" event, trigger it after "WebComponentsReady" event triggered by Polymer Platform
-  */
-
 
   (function($) {
     var functions, ready, ready_original;
