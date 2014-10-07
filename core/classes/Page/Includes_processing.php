@@ -37,7 +37,7 @@ class Includes_processing {
 		/**
 		 * Remove unnecessary spaces
 		 */
-		$data	= preg_replace('#\s*([,;+>{}\(])\s*#s', '$1', $data);
+		$data	= preg_replace('#\s*([,;>{}\(])\s*#s', '$1', $data);
 		$data	= preg_replace('#\s+#s', ' ', $data);
 		/**
 		 * Return spaces required in media queries
