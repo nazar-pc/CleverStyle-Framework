@@ -63,12 +63,13 @@ Trigger::instance()
 				return;
 			}
 			$relative_address	= $Config->server['relative_address'];
+			$Core				= Core::instance();
 			$Cache				= Cache::instance();
 			if (
-				!FIXED_LANGUAGE &&
+				!$Core->fixed_language &&
 				$_SERVER['REQUEST_METHOD'] == 'GET' &&
 				$Cache->cache_state() &&
-				Core::instance()->cache_engine != 'BlackHole'
+				$Core->cache_engine != 'BlackHole'
 			) {
 				$clang	= Language::instance()->clang;
 				if (!home_page()) {

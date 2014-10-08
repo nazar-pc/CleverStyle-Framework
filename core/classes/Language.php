@@ -10,8 +10,6 @@ namespace cs;
 use
 	JsonSerializable;
 
-defined('FIXED_LANGUAGE') || define('FIXED_LANGUAGE', false);
-
 /**
  * Provides next triggers:
  *  System/general/languages/load
@@ -60,8 +58,9 @@ class Language implements JsonSerializable {
 	 * Set basic language
 	 */
 	protected function construct () {
-		$this->fixed_language = FIXED_LANGUAGE;
-		$this->change(Core::instance()->language);
+		$Core					= Core::instance();
+		$this->fixed_language	= $Core->fixed_language;
+		$this->change($Core->language);
 	}
 	/**
 	 * Scanning of aliases for defining of current language

@@ -47,12 +47,13 @@ class Core {
 		define('DOMAIN', $this->config['domain']);
 		date_default_timezone_set($this->config['timezone']);
 		$clangs = file_exists(CACHE.'/languages_clangs') ? file_get_json(CACHE.'/languages_clangs') : false;
+		$this->set('fixed_language', false);
 		if ($clangs) {
 			if (is_array($clangs) && !empty($clangs)) {
 				$clang	= explode('/', trim($_SERVER['REQUEST_URI'], '/'), 2)[0];
 				if (in_array($clang, $clangs)) {
+					$this->set('fixed_language', true);
 					$this->set('language', array_flip($clangs)[$clang]);
-					define('FIXED_LANGUAGE', true);
 				}
 				unset($clang);
 			}
@@ -98,6 +99,9 @@ AddEncoding gzip .html
 				'Allow From All'
 			);
 		}
+		/**
+		 * Support for JSON requests, filling $_POST array for request methods different than GET and POST
+		 */
 		if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') === 0) {
 			$_POST		= _json_decode(@file_get_contents('php://input')) ?: [];
 			$_REQUEST	= array_merge($_REQUEST, $_POST);

@@ -12,7 +12,6 @@ namespace cs\modules\System;
 use
 	h,
 	cs\Config,
-	cs\Core,
 	cs\Index,
 	cs\Language;
 
@@ -20,9 +19,6 @@ $Config = Config::instance();
 $L      = Language::instance();
 $Config->reload_languages();
 Index::instance()->content(
-	h::{'h2.cs-center'}(
-		FIXED_LANGUAGE ? $L->language_fixed_as.' '.Core::instance()->language : false
-	).
 	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}(
 		core_select($Config->core['active_languages'], 'language', 'change_language', 'current_language'),
 		core_select($Config->core['languages'], 'active_languages', 'change_active_languages', null, true),
