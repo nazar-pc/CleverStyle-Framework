@@ -27,14 +27,14 @@ use
  * @property string $color_scheme
  */
 trait Includes {
-	public	$html			= [0 => [], 1 => ''];
-	public	$js				= [0 => [], 1 => []];
-	public	$css			= [0 => [], 1 => []];
-	public	$config			= '';
 	protected	$core_html		= [0 => [], 1 => ''];
 	protected	$core_js		= [0 => [], 1 => []];
 	protected	$core_css		= [0 => [], 1 => []];
 	protected	$core_config	= '';
+	protected	$html			= [0 => [], 1 => ''];
+	protected	$js				= [0 => [], 1 => []];
+	protected	$css			= [0 => [], 1 => []];
+	protected	$config			= '';
 	/**
 	 * Base name is used as prefix when creating CSS/JS/HTML cache files in order to avoid collisions when having several themes and languages
 	 * @var string
