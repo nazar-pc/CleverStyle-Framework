@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		BananaHTML
- * @version		1.0.3
+ * @version		1.1.0
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2014, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -1132,6 +1132,12 @@ class BananaHTML {
 		 */
 		$input	= explode('#', $input);
 		$tag	= $input[0];
+		/**
+		 * Convenient support of custom tags for Web Components
+		 *
+		 * Allows to write BananaHTML::custom_tag() that will be translated to <custom-tag></custom-tag>
+		 */
+		$tag	= strtr($tag, '_', '-');
 		if (isset($input[1])) {
 			$attrs['id'] = $input[1];
 		}
