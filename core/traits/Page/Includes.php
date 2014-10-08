@@ -27,12 +27,14 @@ use
  * @property string $color_scheme
  */
 trait Includes {
-	public	$core_html	= [0 => [], 1 => ''];
-	public	$core_js	= [0 => [], 1 => []];
-	public	$core_css	= [0 => [], 1 => []];
-	public	$html		= [0 => [], 1 => ''];
-	public	$js			= [0 => [], 1 => []];
-	public	$css		= [0 => [], 1 => []];
+	public	$core_html		= [0 => [], 1 => ''];
+	public	$core_js		= [0 => [], 1 => []];
+	public	$core_css		= [0 => [], 1 => []];
+	public	$core_config	= '';
+	public	$html			= [0 => [], 1 => ''];
+	public	$js				= [0 => [], 1 => []];
+	public	$css			= [0 => [], 1 => []];
+	public	$config			= '';
 	/**
 	 * Base name is used as prefix when creating CSS/JS/HTML cache files in order to avoid collisions when having several themes and languages
 	 * @var string
@@ -192,6 +194,41 @@ trait Includes {
 		return $this;
 	}
 	/**
+	 * Add config on page to make it available on frontend
+	 *
+	 * @param mixed		$config_structure	Any scalar type or array
+	 * @param string	$target				Target is property of `window` object where config will be inserted as value, nested properties like `cs.sub.prop`
+	 * 										are supported and all nested properties are created on demand. It is recommended to use sub-properties of `cs`
+	 *
+	 * @return \cs\Page
+	 */
+	function config ($config_structure, $target) {
+		return $this->config_internal($config_structure, $target);
+	}
+	/**
+	 * @param mixed		$config_structure
+	 * @param string	$target
+	 * @param bool		$core
+	 *
+	 * @return \cs\Page
+	 */
+	protected function config_internal ($config_structure, $target, $core = false) {
+		$config	= h::template(
+			'<!--'.str_replace('-', '- ', _json_encode($config_structure)).'-->',
+			[
+				'target'	=> $target,
+				'class'		=> 'cs-config',
+				'level'		=> 0
+			]
+		);
+		if ($core) {
+			$this->core_config	.= "$config\n";
+		} else {
+			$this->config		.= "$config\n";
+		}
+		return $this;
+	}
+	/**
 	 * Getting of CSS and JavaScript includes
 	 *
 	 * @return \cs\Page
@@ -210,33 +247,26 @@ trait Includes {
 		/**
 		 * Some JS code required by system
 		 */
-		$this->js_internal(
-			'window.cs	= '._json_encode([
-				'base_url'			=> $Config->base_url(),
-				'current_base_url'	=> $Config->base_url().'/'.($Index->in_admin() ? 'admin/' : '').current_module(),
-				'public_key'		=> Core::instance()->public_key,
-				'module'			=> current_module(),
-				'in_admin'			=> (int)$Index->in_admin(),
-				'is_admin'			=> (int)$User->admin(),
-				'is_user'			=> (int)$User->user(),
-				'is_guest'			=> (int)$User->guest(),
-				'debug'				=> (int)$User->guest(),
-				'cookie_prefix'		=> $Config->core['cookie_prefix'],
-				'cookie_domain'		=> $Config->core['cookie_domain'][$Config->server['mirror_index']],
-				'cookie_path'		=> $Config->core['cookie_path'][$Config->server['mirror_index']],
-				'protocol'			=> $Config->server['protocol'],
-				'route'				=> $Config->route,
-				'route_path'		=> $Index->route_path,
-				'route_ids'			=> $Index->route_ids
-			]).';',
-			'code',
-			true
-		);
+		$this->config_internal([
+			'base_url'			=> $Config->base_url(),
+			'current_base_url'	=> $Config->base_url().'/'.($Index->in_admin() ? 'admin/' : '').current_module(),
+			'public_key'		=> Core::instance()->public_key,
+			'module'			=> current_module(),
+			'in_admin'			=> (int)$Index->in_admin(),
+			'is_admin'			=> (int)$User->admin(),
+			'is_user'			=> (int)$User->user(),
+			'is_guest'			=> (int)$User->guest(),
+			'debug'				=> (int)$User->guest(),
+			'cookie_prefix'		=> $Config->core['cookie_prefix'],
+			'cookie_domain'		=> $Config->core['cookie_domain'][$Config->server['mirror_index']],
+			'cookie_path'		=> $Config->core['cookie_path'][$Config->server['mirror_index']],
+			'protocol'			=> $Config->server['protocol'],
+			'route'				=> $Config->route,
+			'route_path'		=> $Index->route_path,
+			'route_ids'			=> $Index->route_ids
+		], 'cs', true);
 		if ($User->guest()) {
-			$this->js(
-				'cs.rules_text = '._json_encode(get_core_ml_text('rules')).';',
-				'code'
-			);
+			$this->config_internal(get_core_ml_text('rules'), 'cs.rules_text', true);
 		}
 		/**
 		 * If CSS and JavaScript compression enabled
@@ -247,10 +277,10 @@ trait Includes {
 			/**
 			 * Language translation is added explicitly only when compression is disabled, otherwise it will be in compressed JS file
 			 */
-			$this->js(
-				'cs.Language = '._json_encode(Language::instance()).';',
-				'code'
-			);
+			/**
+			 * @var \cs\Page $this
+			 */
+			$this->config_internal(Language::instance(), 'cs.Language', true);
 			$this->add_includes_on_page_without_compression($Config);
 		}
 		$this->add_includes_on_page_manually_added($Config);
@@ -451,9 +481,11 @@ trait Includes {
 		$this->js[0]		= implode('', array_unique($this->js[0]));
 		$this->js[1]		= implode('', array_unique($this->js[1]));
 		$this->Head			.=
+			$this->core_config.
+			$this->config.
 			$this->core_css[0].$this->css[0].
 			h::style($this->core_css[1].$this->css[1] ?: false).
-			h::script($this->core_js[1].$this->js[1]);
+			h::script($this->core_js[1].$this->js[1] ?: false);
 		if ($Config->core['put_js_after_body']) {
 			$this->post_Body	.=
 				$this->core_js[0].$this->js[0].
