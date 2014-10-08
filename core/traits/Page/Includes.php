@@ -799,7 +799,7 @@ trait Includes {
 				}
 			}
 			if ($filename_prefix == '' && $extension == 'js') {
-				$files_content	= "window.cs.Language="._json_encode(Language::instance()).";$files_content";
+				$files_content	= "window.cs={};cs.Language="._json_encode(Language::instance()).";$files_content";
 			}
 			file_put_contents(PCACHE."/$filename_prefix$this->pcache_basename.$extension", gzencode($files_content, 9), LOCK_EX | FILE_BINARY);
 			$cache_hash[$extension]	= substr(md5($files_content), 0, 5);
