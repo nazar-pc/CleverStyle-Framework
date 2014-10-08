@@ -1143,8 +1143,13 @@ function is_array_assoc ($array) {
 	if (!is_array($array) || empty($array)) {
 		return false;
 	}
-	$keys = array_keys($array);
-	return array_keys($keys) !== $keys;
+	$count = count($array);
+	for ($i = 0; $i < $count; ++$i) {
+		if (!isset($array[$i])) {
+			return true;
+		}
+	}
+	return false;
 }
 /**
  * Checks whether array is indexed or not
