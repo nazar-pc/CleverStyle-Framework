@@ -34,12 +34,10 @@ class Page {
 	public		$Title			= [];
 	public	$Head		= '';
 	public	$pre_Body	= '';
-	public		$Header	= '';
 	public		$Left	= '';
 	public		$Top	= '';
 	public		$Right	= '';
 	public		$Bottom	= '';
-	public		$Footer	= '';
 	public	$post_Body	= '';
 	public	$post_Html	= '';
 	/**
@@ -50,13 +48,11 @@ class Page {
 	public	$level = [
 		'Head'		=> 0,
 		'pre_Body'	=> 1,
-		'Header'	=> 3,
 		'Left'		=> 3,
 		'Top'		=> 3,
 		'Content'	=> 4,
 		'Bottom'	=> 3,
 		'Right'		=> 3,
-		'Footer'	=> 2,
 		'post_Body'	=> 1
 	];
 	public	$link			= [];
@@ -239,13 +235,11 @@ class Page {
 				'<!--pre_Html-->',
 				'<!--head-->',
 				'<!--pre_Body-->',
-				'<!--header-->',
 				'<!--left_blocks-->',
 				'<!--top_blocks-->',
 				'<!--content-->',
 				'<!--bottom_blocks-->',
 				'<!--right_blocks-->',
-				'<!--footer-->',
 				'<!--post_Body-->',
 				'<!--post_Html-->'
 			],
@@ -253,13 +247,11 @@ class Page {
 				$this->pre_Html,
 				$this->get_property_with_indentation('Head'),
 				$this->get_property_with_indentation('pre_Body'),
-				$this->get_property_with_indentation('Header'),
 				$this->get_property_with_indentation('Left'),
 				$this->get_property_with_indentation('Top'),
 				$this->get_property_with_indentation('Content'),
 				$this->get_property_with_indentation('Bottom'),
 				$this->get_property_with_indentation('Right'),
-				$this->get_property_with_indentation('Footer'),
 				$this->get_property_with_indentation('post_Body'),
 				$this->post_Html
 			],
