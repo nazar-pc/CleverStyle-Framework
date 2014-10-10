@@ -9,7 +9,7 @@ namespace	cs;
 use
 	h,
 	cs\Page\Includes,
-	cs\Page\Open_graph;
+	cs\Page\Meta;
 
 /**
  * Provides next triggers:<br>
@@ -24,8 +24,7 @@ use
 class Page {
 	use
 		Singleton,
-		Includes,
-		Open_graph;
+		Includes;
 	public	$Content;
 	public	$interface	= true;
 	public	$pre_Html	= '';
@@ -226,7 +225,7 @@ class Page {
 		/**
 		 * Generation of Open Graph protocol information
 		 */
-		$this->og_generation();
+		Meta::instance()->render();
 		/**
 		 * Substitution of information into template
 		 */
@@ -553,5 +552,20 @@ class Page {
 		if ($ob) {
 			ob_end_flush();
 		}
+	}
+	/**
+	 * Open Graph protocol support
+	 *
+	 * @deprecated
+	 * @todo: Remove before release
+	 *
+	 * @param string          $property
+	 * @param string|string[] $content
+	 * @param string          $custom_prefix
+	 *
+	 * @return \cs\Page
+	 */
+	function og ($property, $content, $custom_prefix = 'og:') {
+		return Meta::instance()->og($property, $content, $custom_prefix);
 	}
 }

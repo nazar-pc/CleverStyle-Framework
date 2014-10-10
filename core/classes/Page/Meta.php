@@ -9,6 +9,8 @@ namespace	cs\Page;
 use
 	cs\Config,
 	cs\Language,
+	cs\Page,
+	cs\Singleton,
 	h;
 
 /**
@@ -19,7 +21,9 @@ use
  * @property string $canonical_url
  * @property string $Head
  */
-trait Open_graph {
+class Meta {
+	use
+		Singleton;
 	public	$og_data	= [];
 	public	$og_type	= '';
 	/**
@@ -44,7 +48,13 @@ trait Open_graph {
 	 * @return \cs\Page
 	 */
 	function og ($property, $content, $custom_prefix = 'og:') {
-		if (!$property || !($content || $content === 0)) {
+		if (
+			!$property ||
+			(
+				!$content &&
+				$content !== 0
+			)
+		) {
 			return $this;
 		}
 		if (!Config::instance()->core['og_support']) {
@@ -71,14 +81,10 @@ trait Open_graph {
 	/**
 	 * Generates Open Graph protocol information, and puts it into HTML
 	 */
-	protected function og_generation () {
+	function render () {
 		/**
 		 * Automatic generation of some information
 		 */
-		$Config		= Config::instance();
-		if (!$Config->core['og_support']) {
-			return;
-		}
 		$og			= &$this->og_data;
 		if (!isset($og['title']) || empty($og['title'])) {
 			$this->og('title', $this->Title);
@@ -91,6 +97,7 @@ trait Open_graph {
 		) {
 			$this->og('description', $this->Description);
 		}
+		$Config		= Config::instance();
 		if (!isset($og['url']) || empty($og['url'])) {
 			$this->og('url', home_page() ? $Config->base_url() : ($this->canonical_url ?: $Config->base_url().'/'.$Config->server['relative_address']));
 		}
@@ -138,10 +145,11 @@ trait Open_graph {
 				$prefix	.= ' website: http://ogp.me/ns/website#';
 			break;
 		}
-		$this->Head	= $this->Head.implode('', $og);
+		$Page		= Page::instance();
+		$Page->Head	= $Page->Head.implode('', $og);
 		if (!$this->no_head) {
-			$this->Head	= h::head(
-				$this->Head,
+			$Page->Head	= h::head(
+				$Page->Head,
 				[
 					'prefix'	=> $prefix.$this->head_prefix
 				]
