@@ -982,16 +982,12 @@ class BananaHTML {
 				strpos($input, 'select') !== 0 &&
 				strpos($input, 'datalist') !== 0 &&
 				strpos($input, 'input') !== 0 &&
+				is_array_indexed($data[0]) &&
 				(
+					!isset($data[1]) ||
+					!is_array($data[1]) ||
 					(
-						is_array_indexed($data[0]) &&
-						(
-							!isset($data[1]) ||
-							!is_array($data[1]) ||
-							(
-								is_array_indexed($data[1]) && !in_array($data[1][0], static::$unit_atributes)
-							)
-						)
+						is_array_indexed($data[1]) && !in_array($data[1][0], static::$unit_atributes)
 					)
 				)
 			) {
