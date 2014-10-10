@@ -14,12 +14,8 @@ use
 	h;
 
 /**
- * Open Graph functionality for <i>cs\Page</i> class
+ * Meta class for generation of various meta tags
  *
- * @property string $Title
- * @property string $Description
- * @property string $canonical_url
- * @property string $Head
  */
 class Meta {
 	use
@@ -45,7 +41,7 @@ class Meta {
 	 * @param string|string[]	$content		Content, may be an array
 	 * @param string			$custom_prefix	If prefix should differ from <i>og:</i>, for example, <i>article:</i> - specify it here
 	 *
-	 * @return \cs\Page
+	 * @return \cs\Page\Meta
 	 */
 	function og ($property, $content, $custom_prefix = 'og:') {
 		if (
@@ -55,9 +51,6 @@ class Meta {
 				$content !== 0
 			)
 		) {
-			return $this;
-		}
-		if (!Config::instance()->core['og_support']) {
 			return $this;
 		}
 		if (is_array($content)) {
@@ -80,26 +73,29 @@ class Meta {
 	}
 	/**
 	 * Generates Open Graph protocol information, and puts it into HTML
+	 *
+	 * Usually called by system itself, there is no need to call it manually
 	 */
 	function render () {
 		/**
 		 * Automatic generation of some information
 		 */
+		$Page		= Page::instance();
 		$og			= &$this->og_data;
 		if (!isset($og['title']) || empty($og['title'])) {
-			$this->og('title', $this->Title);
+			$this->og('title', $Page->Title);
 		}
 		if (
 			(
 				!isset($og['description']) || empty($og['description'])
 			) &&
-			$this->Description
+			$Page->Description
 		) {
-			$this->og('description', $this->Description);
+			$this->og('description', $Page->Description);
 		}
 		$Config		= Config::instance();
 		if (!isset($og['url']) || empty($og['url'])) {
-			$this->og('url', home_page() ? $Config->base_url() : ($this->canonical_url ?: $Config->base_url().'/'.$Config->server['relative_address']));
+			$this->og('url', home_page() ? $Config->base_url() : ($Page->canonical_url ?: $Config->base_url().'/'.$Config->server['relative_address']));
 		}
 		if (!isset($og['site_name']) || empty($og['site_name'])) {
 			$this->og('site_name', get_core_ml_text('name'));
@@ -145,7 +141,6 @@ class Meta {
 				$prefix	.= ' website: http://ogp.me/ns/website#';
 			break;
 		}
-		$Page		= Page::instance();
 		$Page->Head	= $Page->Head.implode('', $og);
 		if (!$this->no_head) {
 			$Page->Head	= h::head(

@@ -157,8 +157,6 @@
 		"title_reverse"					: "Title reverse",
 		"title_reverse_info"			: "Parts of title will be rotated 180˚. For example, instead of \"Site :: Section\" will be \"Section :: Site\", where \" :: \" - title delimiter.",
 		"show_tooltips"					: "Show tooltips",
-		"og_support"					: "Open Graph protocol support",
-		"og_support_info"				: "Enables functionality of system core and components for easy providing of Open Graph protocol support",
 		"simple_admin_mode"				: "Simple mode of administration",
 		"simple_admin_mode_info"		: "Some functionality may be too complicated to set up, and even excessive for a beginner administrator. This option allows you to hide some of the settings, making system management easier and more intuitive.",
 		"debug"							: "Debugging",

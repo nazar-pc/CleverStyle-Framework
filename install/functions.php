@@ -187,8 +187,7 @@ function install_process () {
 			""
 		],
 		"simple_admin_mode": "0",
-		"default_module": "System",
-		"og_support": "1"
+		"default_module": "System"
 	}');
 	$config['name']					= (string)$_POST['site_name'];
 	$url							= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http')."://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
