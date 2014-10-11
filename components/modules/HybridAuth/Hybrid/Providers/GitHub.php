@@ -47,8 +47,24 @@ class Hybrid_Providers_GitHub extends Hybrid_Provider_Model_OAuth2
 		$this->user->profile->webSiteURL  = @ $data->blog;
 		$this->user->profile->region      = @ $data->location;
 
-		if( ! $this->user->profile->displayName ){
+		if( empty($this->user->profile->displayName) ){
 			$this->user->profile->displayName = @ $data->login;
+		}
+
+		// request user emails from github api
+		if( empty($data->email) ){
+			try{
+				$emails = $this->api->api("user/emails");
+
+				// fail gracefully, and let apps collect the email if not present
+				if (is_array($emails) && !empty($emails[0]->email))
+				{
+				    $this->user->profile->email = $emails[0]->email;
+				}
+			}
+			catch( GithubApiException $e ){
+				throw new Exception( "User email request failed! {$this->providerId} returned an error: $e", 6 );
+			}
 		}
 
 		return $this->user->profile;

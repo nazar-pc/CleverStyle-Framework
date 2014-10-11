@@ -1,8 +1,8 @@
 {
 	"package"		: "HybridAuth",
 	"category"		: "modules",
-	"version"		: "2.1.1-cs48",
-	"description"	: "Module for integration with social networks. Includes HybridAuth 2.1.1 core and additional providers 1.7",
+	"version"		: "2.2.2+git-cs1",
+	"description"	: "Module for integration with social networks. Includes Git version of HybridAuth 2.2.2 will all available providers.",
 	"author"		: "HybridAuth authors",
 	"website"		: "hybridauth.sourceforge.net",
 	"license"		: "MIT License",

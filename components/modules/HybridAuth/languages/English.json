@@ -5,6 +5,8 @@
 	"or_sign_in_with"							: "Or sign in with",
 	"Vkontakte"									: "VK",
 	"Odnoclassniki"								: "Odnoclassniki",
+	"Yandex"									: "Yandex",
+	"Mailru"									: "Mail.Ru",
 	"hybridauth_merge_confirmation"				: "Account with such email already registered, check your email, after confirmation we'll attach this account to your main account.",
 	"hybridauth_merge_confirmation_mail_title"	: "Accounts merging on %s needs confirmation",
 	"hybridauth_merge_confirmation_mail_body"	: "<h3>Hello, %1$s!</h3><p>You are registered on the site %2$s. Someone tries enter our site with %2$s, by specifying this email.</p><p>If it was you - follow the link <a href=\"%4$s\">%4$s</a> so that we can unite your %3$s account with the main account on site, otherwise ignore the letter, and after %4$s unconfirmed %3$s account on the server will be automatically deleted, and your account will remain untouched.</p><p>Do not reply to this letter, it was sent automatically and does not require an answer.</p>",

@@ -75,7 +75,7 @@ class Hybrid_Providers_Identica extends Hybrid_Provider_Model_OAuth1
 
 		$contacts = ARRAY();
 
-		// donno if users/lookup is supported by identica.. to do
+		// dunno if users/lookup is supported by identica.. to do
 		foreach( $response as $item ){
 			$parameters = array( 'user_id' => $item ); 
 			$responseud = $this->api->get( 'users/show.json', $parameters ); 
@@ -117,6 +117,8 @@ class Hybrid_Providers_Identica extends Hybrid_Provider_Model_OAuth1
 		{
 			throw new Exception( "Update user status update failed! {$this->providerId} returned an error. " . $this->errorMessageByStatus( $this->api->http_code ) );
 		}
+                
+                return $response;
  	}
 
    /**
