@@ -51,7 +51,7 @@ if (file_exists(DIR.'/composer.lock')) {
  * Add selected modules that should be built-in into package
  */
 $components_list = [];
-if (!empty($_POST['modules'])) {
+if (@$_POST['modules']) {
 	foreach ($_POST['modules'] as $i => $module) {
 		if (is_dir(DIR."/components/modules/$module") && file_exists(DIR."/components/modules/$module/meta.json")) {
 			unlink(DIR."/components/modules/$module/fs.json");
@@ -81,7 +81,7 @@ if (!empty($_POST['modules'])) {
 /**
  * Add selected plugins that should be built-in into package
  */
-if (!empty($_POST['plugins'])) {
+if (@$_POST['plugins']) {
 	foreach ($_POST['plugins'] as $plugin) {
 		if (is_dir(DIR."/components/plugins/$plugin") && file_exists(DIR."/components/plugins/$plugin/meta.json")) {
 			unlink(DIR."/components/plugins/$plugin/fs.json");
@@ -108,7 +108,7 @@ if (!empty($_POST['plugins'])) {
 /**
  * Add selected themes that should be built-in into package
  */
-if (!empty($_POST['themes'])) {
+if (@$_POST['themes']) {
 	foreach ($_POST['themes'] as $theme) {
 		if (is_dir(DIR."/themes/$theme") && file_exists(DIR."/themes/$theme/meta.json")) {
 			unlink(DIR."/themes/$theme/fs.json");
@@ -299,6 +299,6 @@ unlink(DIR.'/build.phar');
 $phar->setStub("<?php Phar::webPhar(null, 'install.php'); __HALT_COMPILER();");
 $phar->setSignatureAlgorithm(PHAR::SHA512);
 unset($phar);
-$suffix = $_POST['suffix'] ? "_$_POST[suffix]" : '';
+$suffix = @$_POST['suffix'] ? "_$_POST[suffix]" : '';
 rename(DIR.'/build.phar.tar', DIR."/CleverStyle_CMS_$version$suffix.phar.php");
 echo "Done! CleverStyle CMS $version";

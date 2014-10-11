@@ -8,13 +8,13 @@
  */
 time_limit_pause();
 if (!isset($_POST['plugins'][0])) {
-	echo h::p('Please, specify plugin name');
+	echo 'Please, specify plugin name';
 	return;
 } elseif (!file_exists($plugin_dir = DIR.'/components/plugins/'.$_POST['plugins'][0])) {
-	echo h::p("Can't build plugin, plugin directory not found");
+	echo "Can't build plugin, plugin directory not found";
 	return;
 } elseif (!file_exists("$plugin_dir/meta.json")) {
-	echo h::p("Can't build plugin, meta information (meta.json) not found");
+	echo "Can't build plugin, meta information (meta.json) not found";
 	return;
 }
 $version = file_get_json("$plugin_dir/meta.json")['version'];
@@ -60,6 +60,6 @@ if ($set_stub) {
 }
 $phar->setSignatureAlgorithm(PHAR::SHA512);
 unset($phar);
-$suffix = $_POST['suffix'] ? "_$_POST[suffix]" : '';
+$suffix = @$_POST['suffix'] ? "_$_POST[suffix]" : '';
 rename(DIR.'/build.phar.tar', DIR.'/'.str_replace(' ', '_', 'plugin_'.$_POST['plugins'][0])."_$version$suffix.phar.php");
-echo h::p("Done! Plugin {$_POST['plugins'][0]} $version");
+echo "Done! Plugin {$_POST['plugins'][0]} $version";

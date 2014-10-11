@@ -8,16 +8,16 @@
  */
 time_limit_pause();
 if (!isset($_POST['themes'][0])) {
-	echo h::p('Please, specify theme name');
+	echo 'Please, specify theme name';
 	return;
 } elseif ($_POST['themes'][0] == 'CleverStyle') {
-	echo h::p("Can't build theme, CleverStyle theme is a part of core, it is not necessary to build it as separate theme");
+	echo "Can't build theme, CleverStyle theme is a part of core, it is not necessary to build it as separate theme";
 	return;
 } elseif (!file_exists($theme_dir = DIR.'/themes/'.$_POST['themes'][0])) {
-	echo h::p("Can't build theme, theme directory not found");
+	echo "Can't build theme, theme directory not found";
 	return;
 } elseif (!file_exists("$theme_dir/meta.json")) {
-	echo h::p("Can't build theme, meta information (meta.json) not found");
+	echo "Can't build theme, meta information (meta.json) not found";
 	return;
 }
 $version = file_get_json("$theme_dir/meta.json")['version'];
@@ -53,5 +53,6 @@ unset($meta);
 $phar->setStub("<?php Phar::webPhar(null, 'index.html'); __HALT_COMPILER();");
 $phar->setSignatureAlgorithm(PHAR::SHA512);
 unset($phar);
-rename(DIR.'/build.phar.tar', DIR.'/'.str_replace(' ', '_', 'theme_'.$_POST['themes'][0])."_$version.phar.php");
-echo h::p("Done! Theme {$_POST['themes'][0]} $version");
+$suffix = @$_POST['suffix'] ? "_$_POST[suffix]" : '';
+rename(DIR.'/build.phar.tar', DIR.'/'.str_replace(' ', '_', 'theme_'.$_POST['themes'][0])."_$version$suffix.phar.php");
+echo "Done! Theme {$_POST['themes'][0]} $version\n";

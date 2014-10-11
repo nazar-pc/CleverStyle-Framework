@@ -8,16 +8,16 @@
  */
 time_limit_pause();
 if (!isset($_POST['modules'][0])) {
-	echo h::p('Please, specify module name');
+	echo 'Please, specify module name';
 	return;
 } elseif ($_POST['modules'][0] == 'System') {
-	echo h::p("Can't build module, System module is a part of core, it is not necessary to build it as separate module");
+	echo "Can't build module, System module is a part of core, it is not necessary to build it as separate module";
 	return;
 } elseif (!file_exists($mdir = DIR.'/components/modules/'.$_POST['modules'][0])) {
-	echo h::p("Can't build module, module directory not found");
+	echo "Can't build module, module directory not found";
 	return;
 } elseif (!file_exists("$mdir/meta.json")) {
-	echo h::p("Can't build module, meta information (meta.json) not found");
+	echo "Can't build module, meta information (meta.json) not found";
 	return;
 }
 $version = file_get_json("$mdir/meta.json")['version'];
@@ -65,6 +65,6 @@ if ($set_stub) {
 }
 $phar->setSignatureAlgorithm(PHAR::SHA512);
 unset($phar);
-$suffix = $_POST['suffix'] ? "_$_POST[suffix]" : '';
+$suffix = @$_POST['suffix'] ? "_$_POST[suffix]" : '';
 rename(DIR.'/build.phar.tar', DIR.'/'.str_replace(' ', '_', 'module_'.$_POST['modules'][0])."_$version$suffix.phar.php");
-echo h::p("Done! Module {$_POST['modules'][0]} $version");
+echo "Done! Module {$_POST['modules'][0]} $version";
