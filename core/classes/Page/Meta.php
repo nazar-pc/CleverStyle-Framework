@@ -20,9 +20,6 @@ use
 class Meta {
 	use
 		Singleton;
-	public	$links		= '';
-	public	$og_data	= [];
-	public	$og_type	= '';
 	/**
 	 * Is used as <head prefix="$head_prefix">
 	 * @var string
@@ -33,6 +30,9 @@ class Meta {
 	 * @var bool
 	 */
 	public	$no_head	= false;
+	protected	$links		= '';
+	protected	$og_data	= [];
+	protected	$og_type	= '';
 	/**
 	 * Open Graph protocol support
 	 *
