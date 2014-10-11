@@ -7,10 +7,12 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Static_pages;
-use			h,
-			cs\Config,
-			cs\Index,
-			cs\Page;
+use
+	h,
+	cs\Config,
+	cs\Index,
+	cs\Page\Meta,
+	cs\Page;
 $Config			= Config::instance();
 $Static_pages	= Static_pages::instance();
 $page			= $Static_pages->get(
@@ -37,7 +39,7 @@ if ($page['interface']) {
 		$canonical_url[]	= $page['path'];
 		$Page->canonical_url($Config->base_url().'/'.implode('/', $canonical_url));
 	}
-	$Page->og('type', 'article');
+	Meta::instance()->article();
 	$Page->content(
 		h::section($page['content'])
 	);

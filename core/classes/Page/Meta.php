@@ -20,6 +20,7 @@ use
 class Meta {
 	use
 		Singleton;
+	public	$links		= '';
 	public	$og_data	= [];
 	public	$og_type	= '';
 	/**
@@ -37,11 +38,14 @@ class Meta {
 	 *
 	 * Provides automatic addition of &lt;html prefix="og: http://ogp.me/ns#"&gt;, and is used for simplification of Open Graph protocol support
 	 *
+	 * @deprecated
+	 * @todo: Remove before release
+	 *
 	 * @param string			$property		Property name, but without <i>og:</i> prefix. For example, <i>title</i>
 	 * @param string|string[]	$content		Content, may be an array
 	 * @param string			$custom_prefix	If prefix should differ from <i>og:</i>, for example, <i>article:</i> - specify it here
 	 *
-	 * @return \cs\Page\Meta
+	 * @return Meta
 	 */
 	function og ($property, $content, $custom_prefix = 'og:') {
 		if (
@@ -69,6 +73,53 @@ class Meta {
 			'property'	=> $custom_prefix.$property,
 			'content'	=> $content
 		]);
+		return $this;
+	}
+	/**
+	 * Common wrapper to add all necessary meta tags with images
+	 *
+	 * @param string|string[]	$images
+	 *
+	 * @return Meta
+	 */
+	function image ($images) {
+		if (!$images) {
+			return $this;
+		}
+		$images	= (array)$images;
+		$this->links	.= h::link([
+			'href'	=> $images[0],
+			'rel'	=> 'image_src'
+		]);
+		$this->__call('og', ['image', $images]);
+		return $this;
+	}
+	/**
+	 * Common wrapper for generation of various Open Graph protocol meta tags
+	 *
+	 * @param string	$type
+	 * @param mixed[]	$params
+	 *
+	 * @return $this
+	 */
+	function __call ($type, $params) {
+		if (!$params) {
+			$this->og_type	= $type;
+			return $this->__call('og', ['type', $type]);
+		}
+		if (!$params[0]) {
+			return $this;
+		}
+		if (is_array($params[1])) {
+			foreach ($params[1] as $p) {
+				$this->__call($type, [$params[0], $p]);
+			}
+		} elseif ($params[1] || $params[1] === 0) {
+			$this->og_data[$params[0]]	.= h::meta([
+				'property'	=> "$type:$params[0]",
+				'content'	=> $params[1]
+			]);
+		}
 		return $this;
 	}
 	/**
@@ -121,27 +172,21 @@ class Meta {
 			}
 		}
 		$prefix		= 'og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#';
-		switch (explode('.', $this->og_type, 2)[0]) {
+		$type		= explode('.', $this->og_type, 2)[0];
+		switch ($type) {
 			case 'article':
-				$prefix	.= ' article: http://ogp.me/ns/article#';
-			break;
 			case 'blog':
-				$prefix	.= ' blog: http://ogp.me/ns/blog#';
-			break;
 			case 'book':
-				$prefix	.= ' book: http://ogp.me/ns/book#';
-			break;
 			case 'profile':
-				$prefix	.= ' profile: http://ogp.me/ns/profile#';
-			break;
 			case 'video':
-				$prefix	.= ' video: http://ogp.me/ns/video#';
-			break;
 			case 'website':
-				$prefix	.= ' website: http://ogp.me/ns/website#';
+				$prefix	.= " $type: http://ogp.me/ns/$type#";
 			break;
 		}
-		$Page->Head	= $Page->Head.implode('', $og);
+		$Page->Head	=
+			$Page->Head.
+			implode('', $og).
+			$this->links;
 		if (!$this->no_head) {
 			$Page->Head	= h::head(
 				$Page->Head,

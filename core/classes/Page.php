@@ -563,7 +563,7 @@ class Page {
 	 * @param string|string[] $content
 	 * @param string          $custom_prefix
 	 *
-	 * @return \cs\Page
+	 * @return Page
 	 */
 	function og ($property, $content, $custom_prefix = 'og:') {
 		return Meta::instance()->og($property, $content, $custom_prefix);

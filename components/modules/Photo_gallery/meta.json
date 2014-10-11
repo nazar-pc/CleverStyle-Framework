@@ -1,14 +1,14 @@
 {
 	"package"		: "Photo_gallery",
 	"category"		: "modules",
-	"version"		: "0.031.1+build-39",
+	"version"		: "0.032.0+build-40",
 	"description"	: "Simple photo gallery, works standalone and integrates with other components (depends on Fotorama, SimpleImage and Plupload).",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",
 	"license"		: "MIT License",
 	"provide"		: "photo_gallery",
 	"require"		: [
-		"System>=0.529",
+		"System>=0.574",
 		"Fotorama>=4.4.9",
 		"SimpleImage",
 		"file_upload"

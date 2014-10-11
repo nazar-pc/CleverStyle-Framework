@@ -15,7 +15,9 @@
  *  ]</code>
  */
 namespace	cs;
-use			h;
+use
+	h,
+	cs\Page\Meta;
 $L		= Language::instance();
 $Page	= Page::instance();
 $User	= User::instance();
@@ -55,20 +57,10 @@ if ($data['status'] == User::STATUS_NOT_ACTIVATED) {
 }
 $name	= $data['username'] ? $data['username'].($data['username'] != $data['login'] ? ' aka '.$data['login'] : '') : $data['login'];
 $Page->title($L->profile_of_user($name));
-$Page
-	->og(
-		'type',
-		'profile'
-	)
-	->og(
-		'username',
-		$name,
-		'profile:'
-	)
-	->og(
-		'image',
-		$User->avatar(256, $id)
-	);
+Meta::instance()
+	->profile()
+	->profile('username', $name)
+	->image($User->avatar(256, $id));
 $Page->content(
 	h::{'table.cs-table-borderless.cs-profile-table tr'}([
 		h::{'td.cs-profile-avatar[rowspan=2] img'}([

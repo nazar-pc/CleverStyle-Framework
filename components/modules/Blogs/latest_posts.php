@@ -12,6 +12,7 @@ use			h,
 			cs\DB,
 			cs\Index,
 			cs\Language,
+			cs\Page\Meta,
 			cs\Page,
 			cs\Trigger;
 
@@ -35,7 +36,7 @@ $Index->form_atributes	= ['class'	=> ''];
 $page					= isset($Config->route[1]) ? (int)$Config->route[1] : 1;
 $page					= $page > 0 ? $page : 1;
 $Page->canonical_url($Config->base_url()."/$module/".path($L->latest_posts).($page > 1 ? "/$page" : ''));
-$Page->og('type', 'blog');
+Meta::instance()->blog();
 if ($page > 1) {
 	$Page->title($L->blogs_nav_page($page));
 }

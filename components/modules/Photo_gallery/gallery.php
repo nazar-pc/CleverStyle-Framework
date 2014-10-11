@@ -8,11 +8,13 @@
  */
 namespace cs\modules\Photo_gallery;
 
-use            h,
+use
+	h,
 	cs\Config,
 	cs\DB,
 	cs\Index,
 	cs\Language,
+	cs\Page\Meta,
 	cs\Page,
 	cs\User;
 
@@ -43,10 +45,9 @@ $images_titles = array_filter(array_column(array_slice($images, 0, 10), 'title')
 $Page          = Page::instance();
 $Page->title($gallery['title']);
 if (isset($images[0])) {
-	$Page->og(
-		'image',
-		$images[0]['original']
-	);
+	Meta::instance()->image(array_map(function ($image) {
+		return $image['original'];
+	}, $images));
 }
 if ($images_titles) {
 	$Page->Description = description($gallery['description']);

@@ -11,6 +11,7 @@ use			h,
 			cs\Config,
 			cs\Index,
 			cs\Language,
+			cs\Page\Meta,
 			cs\Page,
 			cs\Trigger,
 			cs\User;
@@ -55,39 +56,18 @@ if ($post['path'] != mb_substr($rc[1], 0, mb_strrpos($rc[1], ':'))) {
 $Page->title($post['title']);
 $tags				= $Blogs->get_tag($post['tags']);
 $Page->Description	= description($post['short_content']);
-$Page
-	->canonical_url(
-		"{$Config->base_url()}/$module/$post[path]:$post[id]"
-	)
-	->og(
-		'type',
-		'article'
-	)
-	->og(
-		'published_time',
-		date('Y-m-d', $post['date'] ?: TIME),
-		'article:'
-	)
-	->og(
-		'author',
-		$Config->base_url().'/'.path($L->profile).'/'.$User->get('login', $post['user']),
-		'article:'
-	)
-	->og(
-		'section',
-		$post['sections'] == [0] ? false : $Blogs->get_section($post['sections'][0])['title'],
-		'article:'
-	)
-	->og(
-		'tag',
-		$tags,
-		'article:'
-	);
+$Page->canonical_url(
+	"{$Config->base_url()}/$module/$post[path]:$post[id]"
+);
+$Meta	= Meta::instance();
+$Meta
+	->article()
+	->article('published_time', date('Y-m-d', $post['date'] ?: TIME))
+	->article('author', $Config->base_url().'/'.path($L->profile).'/'.$User->get('login', $post['user']))
+	->article('section', $post['sections'] == [0] ? false : $Blogs->get_section($post['sections'][0])['title'])
+	->article('tag', $tags);
 if (preg_match('/<img[^>]src=["\'](.*)["\']/Uims', $post['content'], $image)) {
-	$Page->og(
-		'image',
-		$image[1]
-	);
+	$Meta->image($image[1]);
 }
 unset($image);
 $content			= uniqid('post_content');

@@ -12,6 +12,7 @@ use			h,
 			cs\DB,
 			cs\Index,
 			cs\Language,
+			cs\Page\Meta,
 			cs\Page,
 			cs\Trigger;
 
@@ -45,7 +46,7 @@ if (isset($structure['id'])) {
 }
 $L						= Language::instance();
 $Page->title($L->latest_posts);
-$Page->og('type', 'blog');
+Meta::instance()->blog();
 $module					= path($L->Blogs);
 /**
  * Show administration, new post, draft actions
