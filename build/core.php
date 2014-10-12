@@ -296,7 +296,16 @@ $phar->addFromString(
 unset($themes, $theme, $color_schemes);
 $phar = $phar->convertToExecutable(Phar::TAR, Phar::BZ2, '.phar.tar');
 unlink(DIR.'/build.phar');
-$phar->setStub("<?php Phar::webPhar(null, 'install.php'); __HALT_COMPILER();");
+$phar->setStub(
+"<?php
+if (PHP_SAPI == 'cli') {
+	Phar::mapPhar();
+	include 'install.php';
+} else {
+	Phar::webPhar(null, 'install.php');
+}
+__HALT_COMPILER();"
+);
 $phar->setSignatureAlgorithm(PHAR::SHA512);
 unset($phar);
 $suffix = @$_POST['suffix'] ? "_$_POST[suffix]" : '';

@@ -27,7 +27,6 @@ if ($cli) {
 	for ($i = 1; $i < $argc; $i += 2) {
 		switch ($argv[$i]) {
 			case '-h':
-			default:
 				$mode = 'form';
 			break;
 			case '-M':
@@ -58,7 +57,7 @@ if ($cli) {
 }
 if ($cli) {
 	if ($mode == 'form') {
-		die(
+		exit(
 'CleverStyle CMS builder
 Builder is used for creating distributive of the CleverStyle CMS and its components.
 Usage: php build.php [-h] [-M <mode>] [-m <module>] [-p <plugin>] [-t <theme>] [-s <suffix>]

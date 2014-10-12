@@ -95,6 +95,10 @@ function install_form () {
 		)
 	);
 }
+
+/**
+ * @return string
+ */
 function install_process () {
 	global $fs;
 	/**
@@ -190,8 +194,17 @@ function install_process () {
 		"default_module": "System"
 	}');
 	$config['name']					= (string)$_POST['site_name'];
-	$url							= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http')."://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-	$url							= implode('/', array_slice(explode('/', $url), 0, -2));	//Remove 2 last items
+	if (isset($_POST['site_url'])) {
+		$url = $_POST['site_url'];
+	} else {
+		if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+			$url = $_SERVER['HTTP_X_FORWARDED_PROTO'];
+		} else {
+			$url = @$_SERVER['HTTPS'] == 'on' ? 'https' : 'http';
+		}
+		$url .= "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+		$url = implode('/', array_slice(explode('/', $url), 0, -2));	//Remove 2 last items
+	}
 	$config['url'][]				= $url;
 	$config['admin_email']			= $_POST['admin_email'];
 	$config['language']				= $_POST['language'];
@@ -390,37 +403,41 @@ function install_process () {
 	if (is_writable($installer)) {
 		unlink($installer);
 	} else {
-		$warning	= "Please, remove installer file <code>$installer</code> for security!";
+		$warning	= "Please, remove installer file $installer for security!\n";
 	}
-	return h::h3(
-		'Congratulations! CleverStyle CMS has been installed successfully!'
-	).
-	h::{'table tr| td'}(
-		[
-			'Your sign in information:',
+	if (PHP_SAPI == 'cli') {
+		return "Congratulations! CleverStyle CMS has been installed successfully!\n$warning";
+	} else {
+		return h::h3(
+			'Congratulations! CleverStyle CMS has been installed successfully!'
+		).
+		h::{'table tr| td'}(
 			[
-				'colspan'	=> 2
+				'Your sign in information:',
+				[
+					'colspan'	=> 2
+				]
+			],
+			[
+				'Login:',
+				$admin_login
+			],
+			[
+				'Password:',
+				$_POST['admin_password']
 			]
-		],
-		[
-			'Login:',
-			$admin_login
-		],
-		[
-			'Password:',
-			$_POST['admin_password']
-		]
-	).
-	h::p(
-		$warning,
-		[
-			'style'	=> 'color: red;'
-		]
-	).
-	h::button(
-		'Go to website',
-		[
-			'onclick'	=> "location.href = '/';"
-		]
-	);
+		).
+		h::p(
+			$warning,
+			[
+				'style'	=> 'color: red;'
+			]
+		).
+		h::button(
+			'Go to website',
+			[
+				'onclick'	=> "location.href = '/';"
+			]
+		);
+	}
 }

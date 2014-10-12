@@ -159,9 +159,10 @@ class Config {
 		$server['raw_relative_address']	= urldecode($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
 		$server['raw_relative_address']	= null_byte_filter($server['raw_relative_address']);
 		$server['host']					= $_SERVER['HTTP_HOST'];
-		$server['protocol']				= @$_SERVER['HTTPS'] == 'on' ? 'https' : 'http';
 		if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
 			$server['protocol']	= $_SERVER['HTTP_X_FORWARDED_PROTO'];
+		} else {
+			$server['protocol'] = @$_SERVER['HTTPS'] == 'on' ? 'https' : 'http';
 		}
 		/**
 		 * If it  is not the main domain - try to find match in mirrors
