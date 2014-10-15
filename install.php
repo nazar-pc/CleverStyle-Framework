@@ -14,7 +14,7 @@ $cli	= PHP_SAPI == 'cli';
  * Path to installer dir
  */
 if ($cli) {
-	define('DIR', 'phar://'.__DIR__."/$argv[0]");
+	define('DIR', 'phar://cleverstyle_cms.phar');
 } else {
 	define('DIR', __DIR__);
 }
@@ -173,7 +173,7 @@ Example:
 		if (!isset($_POST['language'])) {
 			$_POST['language'] = 'English';
 		}
-		echo install_process();
+		echo install_process($argv);
 	}
 	echo "\n";
 	return;

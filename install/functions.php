@@ -97,9 +97,11 @@ function install_form () {
 }
 
 /**
+ * @param array|null $argv
+ *
  * @return string
  */
-function install_process () {
+function install_process ($argv = null) {
 	global $fs;
 	/**
 	 * Connecting to the DataBase
@@ -213,7 +215,7 @@ function install_process () {
 	$config['themes']				= file_get_json(DIR.'/themes.json');
 	$config['theme']				= array_search('CleverStyle', $config['themes']) !== false ? 'CleverStyle' : $config['themes'][0];
 	$config['color_schemes']		= file_get_json(DIR.'/color_schemes.json');
-	$config['color_scheme']			= $config['color_schemes'][0];
+	$config['color_scheme']			= $config['color_schemes'][$config['theme']][0];
 	$url							= explode('/', explode('//', $url)[1], 2);
 	$config['cookie_domain'][]		= $url[0];
 	$config['cookie_path'][]		= isset($url[1]) && $url[1] ? '/'.trim($url[1], '/').'/' : '/';
@@ -221,7 +223,7 @@ function install_process () {
 	$config['timezone']				= $_POST['timezone'];
 	$config['mail_from_name']		= 'Administrator of '.$config['name'];
 	$config['mail_from']			= $_POST['admin_email'];
-	$config['simple_admin_mode']	= $_POST['mode'];
+	$config['simple_admin_mode']	= @$_POST['mode'] ? 1 : 0;
 	/**
 	 * Extracting of engine's files
 	 */
@@ -389,7 +391,7 @@ function install_process () {
 		$_POST['admin_email'],
 		hash('sha224', $_POST['admin_email']),
 		time(),
-		$_SERVER['REMOTE_ADDR'],
+		@$_SERVER['REMOTE_ADDR'] ?: '127.0.0.1',
 		1
 	)) {
 		return "Can't register administrator user! Installation aborted.";
@@ -399,14 +401,15 @@ function install_process () {
 	 */
 	$cdb->__destruct();
 	$warning	= false;
-	$installer	= ROOT.'/'.pathinfo(DIR, PATHINFO_BASENAME);
+	$cli		= PHP_SAPI == 'cli';
+	$installer	= $cli ? ROOT."/$argv[0]" : ROOT.'/'.pathinfo(DIR, PATHINFO_BASENAME);
 	if (is_writable($installer)) {
 		unlink($installer);
 	} else {
 		$warning	= "Please, remove installer file $installer for security!\n";
 	}
-	if (PHP_SAPI == 'cli') {
-		return "Congratulations! CleverStyle CMS has been installed successfully!\n$warning";
+	if ($cli) {
+		return "Congratulations! CleverStyle CMS has been installed successfully!\n$warning\nLogin: $admin_login\nPassword: $_POST[admin_password]";
 	} else {
 		return h::h3(
 			'Congratulations! CleverStyle CMS has been installed successfully!'

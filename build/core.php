@@ -299,8 +299,8 @@ unlink(DIR.'/build.phar');
 $phar->setStub(
 "<?php
 if (PHP_SAPI == 'cli') {
-	Phar::mapPhar();
-	include 'install.php';
+	Phar::mapPhar('cleverstyle_cms.phar');
+	include 'phar://cleverstyle_cms.phar/install.php';
 } else {
 	Phar::webPhar(null, 'install.php');
 }
