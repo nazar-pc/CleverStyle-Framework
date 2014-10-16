@@ -41,7 +41,7 @@ class MySQLi extends _Abstract {
 			/**
 			 * Changing DB charset
 			 */
-			if ($charset && $charset != $this->instance->get_charset()->charset) {
+			if ($charset && $charset != $this->instance->character_set_name()) {
 				$this->instance->set_charset($charset);
 			}
 			$this->connected = true;
