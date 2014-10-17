@@ -35,15 +35,15 @@ $Index->content(
 		]).
 		h::{'tbody tr| td'}(
 			array_map(
-				function ($provider, $pdata) use ($L, $providers_config, $Config) {
+				function ($provider, $provider_data) use ($L, $providers_config, $Config) {
 					$content	= '';
-					if (isset($pdata['keys'])) {
-						foreach ($pdata['keys'] as $key) {
+					if (isset($provider_data['keys'])) {
+						foreach ($provider_data['keys'] as $key) {
 							$content	.= h::{'tr td'}([
 								ucfirst($key),
 								h::input([
-									'name'	=> 'providers['.$provider.'][keys]['.$key.']',
-									'value'	=> isset($providers_config[$provider], $providers_config[$provider]['keys'][$key]) ? $providers_config[$provider]['keys'][$key] : ''
+									'name'	=> "providers[$provider][keys][$key]",
+									'value'	=> @$providers_config[$provider]['keys'][$key] ?: ''
 								])
 							]);
 						}
@@ -53,16 +53,25 @@ $Index->content(
 						h::{'table.cs-table-borderless.cs-left-even.cs-right-odd'}(
 							$content.
 							(
-								isset($pdata['scope']) ? h::{'tr td'}([
+								isset($provider_data['scope']) ? h::{'tr td'}([
 									'Scope',
 									h::input([
-										'name'	=> 'providers['.$provider.'][scope]',
-										'value'	=> isset($providers_config[$provider], $providers_config[$provider]['scope']) ? $providers_config[$provider]['scope'] : $pdata['scope']
+										'name'	=> "providers[$provider][scope]",
+										'value'	=> @$providers_config[$provider]['scope'] ?: $provider_data['scope']
 									])
 								]) : ''
 							).
+							(
+								isset($provider_data['trustForwarded'])
+									? h::{'tr td.cs-left-all[colspan=2] input'}([
+										'name'	=> "providers[$provider][trustForwarded]",
+										'value'	=> 1,
+										'type'	=> 'hidden'
+									])
+									: ''
+							).
 							h::{'tr td.cs-left-all[colspan=2]'}(
-								isset($pdata['info']) ? str_replace(
+								isset($provider_data['info']) ? str_replace(
 									[
 										'{base_url}',
 										'{provider}'
@@ -71,13 +80,13 @@ $Index->content(
 										$Config->base_url(),
 										$provider
 									],
-									$pdata['info']
+									$provider_data['info']
 								) : false
-							)
-						),
+							) ?: false
+						) ?: '',
 						h::{'input[type=radio]'}([
-							'name'		=> 'providers['.$provider.'][enabled]',
-							'checked'	=> isset($providers_config[$provider], $providers_config[$provider]['enabled']) ? $providers_config[$provider]['enabled'] : 0,
+							'name'		=> "providers[$provider][enabled]",
+							'checked'	=> @$providers_config[$provider]['enabled'] ?: 0,
 							'value'		=> [0, 1],
 							'in'		=> [$L->off, $L->on]
 						])
