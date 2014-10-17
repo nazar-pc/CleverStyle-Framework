@@ -59,6 +59,7 @@ class Page {
 	public	$Replace		= [];
 	public	$canonical_url	= false;
 	protected	$theme, $color_scheme;
+	protected	$error_showed = false;
 	/**
 	 * Initialization: setting of title, theme and color scheme according to specified parameters
 	 *
@@ -455,11 +456,10 @@ class Page {
 	 * @param bool					$json			Force JSON return format
 	 */
 	function error ($custom_text = null, $json = false) {
-		static $error_showed = false;
-		if ($error_showed) {
+		if ($this->error_showed) {
 			return;
 		}
-		$error_showed	= true;
+		$this->error_showed	= true;
 		if (!error_code()) {
 			error_code(500);
 		}

@@ -86,6 +86,7 @@ class Index {
 	protected	$in_admin			= false;
 	protected	$request_method		= null;
 	protected	$working_directory	= '';
+	protected 	$called_once		= false;
 	/**
 	 * Detecting module folder including of admin/api request type, including prepare file, including of plugins
 	 */
@@ -621,13 +622,12 @@ class Index {
 		/**
 		 * Protection from double calling
 		 */
-		static $called_once = false;
-		if ($called_once) {
+		if ($this->called_once) {
 			return;
 		}
-		$called_once	= true;
-		$Config			= Config::instance();
-		$Page			= Page::instance();
+		$this->called_once	= true;
+		$Config				= Config::instance();
+		$Page				= Page::instance();
 		/**
 		 * If site is closed, user is not admin, and it is not request for sign in
 		 */

@@ -54,6 +54,7 @@ class Language implements JsonSerializable {
 	 * @var bool
 	 */
 	protected $fixed_language = false;
+	protected $changed_once = false;
 	/**
 	 * Set basic language
 	 */
@@ -169,11 +170,10 @@ class Language implements JsonSerializable {
 	 * @return bool
 	 */
 	function change ($language) {
-		static $changed_once = false;
-		if ($this->fixed_language && $changed_once) {
+		if ($this->fixed_language && $this->changed_once) {
 			return false;
 		}
-		$changed_once = true;
+		$this->changed_once = true;
 		if ($language == $this->clanguage) {
 			return true;
 		}
