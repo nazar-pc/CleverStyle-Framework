@@ -147,11 +147,16 @@ class FileSystem extends _Abstract {
 		if (is_writable($path_in_filesystem)) {
 			if (is_dir($path_in_filesystem)) {
 				/**
+				 * Rename to random name in order to immediately invalidate nested elements, actual deletion done right after this
+				 */
+				$new_path	= $path_in_filesystem.uniqid();
+				rename($path_in_filesystem, $new_path);
+				/**
 				 * Speed-up of files deletion
 				 */
 				if (!($this->cache_size > 0)) {
 					get_files_list(
-						$path_in_filesystem,
+						$new_path,
 						false,
 						'f',
 						true,
@@ -166,12 +171,12 @@ class FileSystem extends _Abstract {
 						}
 					);
 				}
-				$files = get_files_list($path_in_filesystem, false, 'fd');
+				$files = get_files_list($new_path, false, 'fd');
 				foreach ($files as $file) {
 					$this->del($item."/$file", false);
 				}
 				unset($files, $file);
-				return @rmdir($path_in_filesystem);
+				return @rmdir($new_path);
 			}
 			if ($this->cache_size > 0) {
 				$cache_size_file	= fopen(CACHE.'/size', 'c+b');
