@@ -8,6 +8,7 @@
 @import "common_config";
 
 html {
+	background         : #161616;
 	font-family        : $base-font-family;
 	transition         : transform 1s, width 1s;
 	-webkit-transition : -webkit-transform 1s, width 1s;
