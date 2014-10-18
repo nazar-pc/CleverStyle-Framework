@@ -43,7 +43,7 @@ if (isset($_POST['action'])) {
 				case UPLOAD_ERR_NO_FILE:
 					break;
 			}
-			if ($_FILES['upload_module']['error'] != UPLOAD_ERR_OK) {
+			if ($_FILES['upload_theme']['error'] != UPLOAD_ERR_OK) {
 				break;
 			}
 			move_uploaded_file(
