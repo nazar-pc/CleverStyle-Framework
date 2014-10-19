@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		BananaHTML
- * @version		1.1.0
+ * @version		1.1.1
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2014, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -17,7 +17,7 @@ defined('XHTML_TAGS_STYLE') || define('XHTML_TAGS_STYLE', false);
  * This is class for HTML code rendering in accordance with the standards of HTML5, and with useful syntax extensions for simpler usage
  */
 class BananaHTML {
-	protected static	$unit_atributes = [	//Unit attributes, that have no value, or have the same value as name in xhtml style
+	protected static	$known_unit_atributes = [	//Unit attributes, that have no value, or have the same value as name in xhtml style
 			'async',
 			'defer',
 			'formnovalidate',
@@ -156,9 +156,7 @@ class BananaHTML {
 		foreach ($data as $key => $value) {
 			if (is_int($key)) {
 				unset($data[$key]);
-				if (in_array($value, static::$unit_atributes)) {
-					$add	.= " $value".(XHTML_TAGS_STYLE ? "=$q$value$q" : '');
-				}
+				$add	.= " $value".(XHTML_TAGS_STYLE ? "=$q$value$q" : '');
 			} elseif ($value !== false) {
 				$add			.= " $key=$q$value$q";
 			}
@@ -901,13 +899,13 @@ class BananaHTML {
 					$data	= [$data];
 				}
 				foreach ($data[0] as $d) {
-					if (isset($d[0]) && is_array_indexed($d[0]) && !in_array($d[0][0], static::$unit_atributes)) {
+					if (isset($d[0]) && is_array_indexed($d[0]) && !in_array($d[0][0], static::$known_unit_atributes)) {
 						if (
 							isset($d[1]) &&
 							(
 								!is_array($d[1]) ||
 								(
-									is_array_indexed($d[1]) && !in_array($d[1][0], static::$unit_atributes)
+									is_array_indexed($d[1]) && !in_array($d[1][0], static::$known_unit_atributes)
 								)
 							)
 						) {
@@ -987,7 +985,7 @@ class BananaHTML {
 					!isset($data[1]) ||
 					!is_array($data[1]) ||
 					(
-						is_array_indexed($data[1]) && !in_array($data[1][0], static::$unit_atributes)
+						is_array_indexed($data[1]) && !in_array($data[1][0], static::$known_unit_atributes)
 					)
 				)
 			) {
@@ -1009,7 +1007,7 @@ class BananaHTML {
 						strpos($input, 'select') !== 0 && strpos($input, 'datalist') !== 0
 					) ||
 					(
-						is_array_indexed($data[0][0]) && !in_array($data[0][0][0], static::$unit_atributes)
+						is_array_indexed($data[0][0]) && !in_array($data[0][0][0], static::$known_unit_atributes)
 					)
 				)
 			) {
@@ -1024,7 +1022,7 @@ class BananaHTML {
 								$data[1]
 							]
 						);
-					} elseif (is_array_indexed($d[1]) && !in_array($d[1], static::$unit_atributes)) {
+					} elseif (is_array_indexed($d[1]) && !in_array($d[1], static::$known_unit_atributes)) {
 						$output			.= static::__callStatic(
 							$input,
 							[
@@ -1052,12 +1050,12 @@ class BananaHTML {
 				return $output;
 			} elseif (
 				!is_array($data[0]) &&
-				!in_array($data[0], static::$unit_atributes) &&
+				!in_array($data[0], static::$known_unit_atributes) &&
 				isset($data[1]) &&
 				(
 					!is_array($data[1]) ||
 					(
-						is_array_indexed($data[1])  && !in_array($data[1][0], static::$unit_atributes)
+						is_array_indexed($data[1])  && !in_array($data[1][0], static::$known_unit_atributes)
 					)
 				)
 			) {
