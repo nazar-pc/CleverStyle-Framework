@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		BananaHTML
- * @version		1.1.1
+ * @version		1.1.2
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2014, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -918,7 +918,7 @@ class BananaHTML {
 						} else {
 							$output[]	= [
 								static::__callStatic($input[1], $d[0]),
-								isset($d[1]) ? $d[1] : ''
+								isset($d[1]) ? $d[1] : false
 							];
 						}
 					} else {
