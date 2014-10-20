@@ -85,65 +85,61 @@ if (isset($rc[2])) {
 					$L->adding_a_block
 				).
 				h::{'cs-table[center][right-left] cs-table-row| cs-table-cell'}(
-					\cs\modules\System\form_rows_to_cols([
-						array_map(
-							function ($in) {
-								return h::{'cs-table-cell info'}($in);
-							},
+					[
+						h::info('block_type'),
+						h::select(
+							array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4)),
 							[
-								'block_type',
-								'block_title',
-								'block_active',
-								'block_template',
-								'block_start',
-								'block_expire'
-							]
-						),
-						array_map(
-							function ($in) {
-								return h::cs_table_cell($in);
-							},
-							[
-								h::select(
-									array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4)),
-									[
-										'name'		=> 'block[type]',
-										'size'		=> 5,
-										'onchange'	=> 'cs.block_switch_textarea(this)'
-									]
-								),
-								h::input([
-									'name'		=> 'block[title]'
-								]),
-								h::{'div input[type=radio]'}([
-									'name'		=> 'block[active]',
-									'value'		=> [1, 0],
-									'in'		=> [$L->yes, $L->no]
-								]),
-								h::select(
-									_mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6),
-									[
-										'name'		=> 'block[template]',
-										'size'		=> 5
-									]
-								),
-								h::{'input[type=datetime-local]'}([
-									'name'		=> 'block[start]',
-									'value'		=> date('Y-m-d\TH:i', TIME)
-								]),
-								h::{'input[type=radio]'}([
-									'name'		=> 'block[expire][state]',
-									'value'		=> [0, 1],
-									'in'		=> [$L->never, $L->as_specified]
-								]).
-								h::br(2).
-								h::{'input[type=datetime-local]'}([
-									'name'		=> 'block[expire][date]',
-									'value'		=> date('Y-m-d\TH:i', TIME)
-								])
+								'name'		=> 'block[type]',
+								'size'		=> 5,
+								'onchange'	=> 'cs.block_switch_textarea(this)'
 							]
 						)
-					], 1)
+					],
+					[
+						h::info('block_title'),
+						h::input([
+							'name'		=> 'block[title]'
+						])
+					],
+					[
+						h::info('block_active'),
+						h::{'div input[type=radio]'}([
+							'name'		=> 'block[active]',
+							'value'		=> [1, 0],
+							'in'		=> [$L->yes, $L->no]
+						])
+					],
+					[
+						h::info('block_template'),
+						h::select(
+							_mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6),
+							[
+								'name'		=> 'block[template]',
+								'size'		=> 5
+							]
+						)
+					],
+					[
+						h::info('block_start'),
+						h::{'input[type=datetime-local]'}([
+							'name'		=> 'block[start]',
+							'value'		=> date('Y-m-d\TH:i', TIME)
+						])
+					],
+					[
+						h::info('block_expire'),
+						h::{'input[type=radio]'}([
+							'name'		=> 'block[expire][state]',
+							'value'		=> [0, 1],
+							'in'		=> [$L->never, $L->as_specified]
+						]).
+						h::br(2).
+						h::{'input[type=datetime-local]'}([
+							'name'		=> 'block[expire][date]',
+							'value'		=> date('Y-m-d\TH:i', TIME)
+						])
+					]
 				).
 				h::{'div#cs-block-content-html textarea.EDITOR'}(
 					'',
@@ -177,63 +173,57 @@ if (isset($rc[2])) {
 				h::{'h2.cs-center'}(
 					$L->editing_a_block(get_block_title($rc[3]))
 				).
-				h::{'cs-table[center][right-left] cs-table-row'}(
-					\cs\modules\System\form_rows_to_cols([
-						array_map(
-							function ($in) {
-								return h::{'cs-table-cell info'}($in);
-							},
+				h::{'cs-table[center][right-left] cs-table-row| cs-table-cell'}(
+					[
+						h::info('block_title'),
+						h::input([
+							'name'		=> 'block[title]',
+							'value'		=> get_block_title($rc[3])
+						])
+					],
+					[
+						h::info('block_active'),
+						h::{'div input[type=radio]'}([
+							'name'		=> 'block[active]',
+							'checked'	=> $block['active'],
+							'value'		=> [1, 0],
+							'in'		=> [$L->yes, $L->no]
+						])
+					],
+					[
+						h::info('block_template'),
+						h::select(
 							[
-								'block_title',
-								'block_active',
-								'block_template',
-								'block_start',
-								'block_expire'
-							]
-						),
-						array_map(
-							function ($in) {
-								return h::cs_table_cell($in);
-							},
+								'in'		=> _mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6)
+							],
 							[
-								h::input([
-									'name'		=> 'block[title]',
-									'value'		=> get_block_title($rc[3])
-								]),
-								h::{'div input[type=radio]'}([
-									'name'		=> 'block[active]',
-									'checked'	=> $block['active'],
-									'value'		=> [1, 0],
-									'in'		=> [$L->yes, $L->no]
-								]),
-								h::select(
-									[
-										'in'		=> _mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6)
-									],
-									[
-										'name'		=> 'block[template]',
-										'selected'	=> $block['template'],
-										'size'		=> 5
-									]
-								),
-								h::{'input[type=datetime-local]'}([
-									'name'		=> 'block[start]',
-									'value'		=> date('Y-m-d\TH:i', $block['start'] ?: TIME)
-								]),
-								h::{'input[type=radio]'}([
-									'name'		=> 'block[expire][state]',
-									'checked'	=> $block['expire'] != 0,
-									'value'		=> [0, 1],
-									'in'		=> [$L->never, $L->as_specified]
-								]).
-								h::br(2).
-								h::{'input[type=datetime-local]'}([
-									'name'		=> 'block[expire][date]',
-									'value'		=> date('Y-m-d\TH:i', $block['expire'] ?: TIME)
-								])
+								'name'		=> 'block[template]',
+								'selected'	=> $block['template'],
+								'size'		=> 5
 							]
 						)
-					], 1)
+					],
+					[
+						h::info('block_start'),
+						h::{'input[type=datetime-local]'}([
+							'name'		=> 'block[start]',
+							'value'		=> date('Y-m-d\TH:i', $block['start'] ?: TIME)
+						])
+					],
+					[
+						h::info('block_expire'),
+						h::{'input[type=radio]'}([
+							'name'		=> 'block[expire][state]',
+							'checked'	=> $block['expire'] != 0,
+							'value'		=> [0, 1],
+							'in'		=> [$L->never, $L->as_specified]
+						]).
+						h::br(2).
+						h::{'input[type=datetime-local]'}([
+							'name'		=> 'block[expire][date]',
+							'value'		=> date('Y-m-d\TH:i', $block['expire'] ?: TIME)
+						])
+					]
 				).
 				(
 					$block['type'] == 'html'

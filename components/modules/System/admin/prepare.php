@@ -570,31 +570,3 @@ function check_backward_dependencies ($name, $type = 'module', $mode = 'disable'
 	}
 	return $return && $return_p;
 }
-/**
- * @param array[]	$rows
- * @param int	$cols
- *
- * @return array
- */
-function form_rows_to_cols ($rows, $cols = 2) {
-	foreach ($rows[0] as $i => &$r) {
-		$r	.= $rows[1][$i];
-	}
-	unset($i, $r);
-	$rows	= $rows[0];
-	$return	= [];
-	$row	= 0;
-	foreach ($rows as $i => $r) {
-		if (!isset($return[$row])) {
-			$return[$row]	= '';
-		}
-		$return[$row]	.= $r;
-		if (++$i % $cols === 0) {
-			++$row;
-		}
-	}
-	if (isset($i) && ($i % $cols != 0)) {
-		$return[$row]	.= str_repeat(h::cs_table_cell().h::cs_table_cell(), $cols - ($i % $cols));
-	}
-	return $return;
-}

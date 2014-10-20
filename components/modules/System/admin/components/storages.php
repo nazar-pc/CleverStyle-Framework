@@ -33,62 +33,60 @@ if (isset($rc[2])) {
 				h::{'h2.cs-center'}(
 					$rc[2] == 'edit' ? $L->editing_of_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']) : $L->adding_of_storage
 				).
-				h::{'cs-table[center][right-left] cs-table-row'}(
-					\cs\modules\System\form_rows_to_cols([
-						array_map(
-							function ($in) {
-								return h::{'cs-table-cell info'}($in);
-							},
+				h::{'cs-table[center][right-left] cs-table-row| cs-table-cell'}(
+					[
+						h::info('storage_url'),
+						h::input([
+							'name'		=> 'storage[url]',
+							'value'		=> $rc[2] == 'edit' ? $storage['url'] : ''
+						])
+					],
+					[
+						h::info('storage_host'),
+						h::input([
+							'name'		=> 'storage[host]',
+							'value'		=> $rc[2] == 'edit' ? $storage['host'] : ''
+						])
+					],
+					[
+						h::info('storage_connection'),
+						h::select(
 							[
-								'storage_url',
-								'storage_host',
-								'storage_connection',
-								'storage_user',
-								'storage_pass'
-							]
-						),
-						array_map(
-							function ($in) {
-								return h::cs_table_cell($in);
-							},
+								'in'		=> _mb_substr(get_files_list(ENGINES.'/Storage', '/^[^_].*?\.php$/i', 'f'), 0, -4)
+							],
 							[
-								h::input([
-									'name'		=> 'storage[url]',
-									'value'		=> $rc[2] == 'edit' ? $storage['url'] : ''
-								]),
-								h::input([
-									'name'		=> 'storage[host]',
-									'value'		=> $rc[2] == 'edit' ? $storage['host'] : ''
-								]),
-								h::select(
-									[
-										'in'		=> _mb_substr(get_files_list(ENGINES.'/Storage', '/^[^_].*?\.php$/i', 'f'), 0, -4)
-									],
-									[
-										'name'		=> 'storage[connection]',
-										'selected'	=> $rc[2] == 'edit' ? $storage['connection'] : '',
-										'size'		=> 5
-									]
-								),
-								h::input([
-									'name'		=> 'storage[user]',
-									'value'		=> $rc[2] == 'edit' ? $storage['user'] : ''
-								]),
-								h::input([
-									'name'		=> 'storage[password]',
-									'value'		=> $rc[2] == 'edit' ? $storage['password'] : ''
-								]).
-								h::{'input[type=hidden]'}([
-									'name'		=> 'mode',
-									'value'		=> $rc[2] == 'edit' ? 'edit' : 'add'
-								]).
-								(isset($rc[3]) ? h::{'input[type=hidden]'}([
-									'name'	=> 'storage_id',
-									'value'	=> $rc[3]
-								]) : '')
+								'name'		=> 'storage[connection]',
+								'selected'	=> $rc[2] == 'edit' ? $storage['connection'] : '',
+								'size'		=> 5
 							]
 						)
-					])
+					],
+					[
+						h::info('storage_user'),
+						h::input([
+							'name'		=> 'storage[user]',
+							'value'		=> $rc[2] == 'edit' ? $storage['user'] : ''
+						])
+					],
+					[
+						h::info('storage_pass'),
+						h::input([
+							'name'		=> 'storage[password]',
+							'value'		=> $rc[2] == 'edit' ? $storage['password'] : ''
+						])
+					]
+				).
+				h::{'input[type=hidden]'}([
+					'name'		=> 'mode',
+					'value'		=> $rc[2] == 'edit' ? 'edit' : 'add'
+				]).
+				(
+					isset($rc[3])
+						? h::{'input[type=hidden]'}([
+							'name'	=> 'storage_id',
+							'value'	=> $rc[3]
+						])
+						: ''
 				).
 				h::button(
 					$L->test_connection,
