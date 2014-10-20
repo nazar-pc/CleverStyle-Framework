@@ -25,15 +25,15 @@ if (isset($rc[2])) {
 				h::{'h2.cs-center'}(
 					$L->adding_permission
 				).
-				h::{'table.cs-table-borderless.cs-center-all'}(
-					h::{'thead tr th'}([
+				h::{'cs-table[center][with-header] cs-table-row| cs-table-cell'}(
+					[
 						$L->group,
 						$L->label
-					]).
-					h::{'tbody tr td'}([
+					].
+					[
 						h::{'input[name=permission[group]]'}(),
 						h::{'input[name=permission[label]]'}()
-					])
+					]
 				)
 			);
 		break;
@@ -51,13 +51,13 @@ if (isset($rc[2])) {
 				h::{'h2.cs-center'}(
 					$L->editing_permission("$permission[group]/$permission[label]")
 				).
-				h::{'table.cs-table-borderless.cs-center-all'}(
-					h::{'thead tr th'}([
+				h::{'cs-table[center][with-header] cs-table-row| cs-table-cell'}(
+					[
 						'&nbsp;id&nbsp;',
 						$L->group,
 						$L->label
-					]).
-					h::{'tbody tr td'}([
+					].
+					[
 						$rc[3],
 						h::input([
 							'name'		=> 'permission[group]',
@@ -67,7 +67,7 @@ if (isset($rc[2])) {
 							'name'		=> 'permission[label]',
 							'value'		=> $permission['label']
 						])
-					])
+					]
 				).
 				h::{'input[type=hidden]'}([
 					'name'	=> 'permission[id]',
@@ -108,12 +108,9 @@ if (isset($rc[2])) {
 } else {
 	$a->buttons			= false;
 	$permissions		= $Permission->get_all();
-	$permissions_list	= [
-		h::th([$L->action, 'id', $L->group, $L->label]),
-		h::th([$L->action, 'id', $L->group, $L->label])
-	];
-	$count = 0;
-	$blocks					= [];
+	$permissions_list	= [];
+	$count				= 0;
+	$blocks				= [];
 	foreach ($Config->components['blocks'] as $block) {
 		$blocks[$block['index']] = $block['title'];
 	}
@@ -121,7 +118,7 @@ if (isset($rc[2])) {
 	foreach ($permissions as $group => $list) {
 		foreach ($list as $label => $id) {
 			++$count;
-			$permissions_list[] = h::{'td.cs-left-all'}([
+			$permissions_list[] = [
 				h::{'a.cs-button-compact'}(
 					h::icon('pencil'),
 					[
@@ -144,25 +141,18 @@ if (isset($rc[2])) {
 						'data-title'	=> $group == 'Block' ? Text::instance()->process($Config->module('System')->db('texts'), $blocks[$label]) : false
 					]
 				)
-			]);
+			];
 		}
 	}
-	if ($count % 2) {
-		$permissions_list[] = h::{'td[colspan=4]'}();
-	}
-	unset($permissions, $group, $list, $label, $id, $blocks);
-	$count				= count($permissions_list);
-	$permissions_list_	= '';
-	for ($i = 0; $i < $count; $i += 2) {
-		$permissions_list_ .= h::tr(
-			$permissions_list[$i].
-			$permissions_list[$i+1]
-		);
-	}
-	unset($permissions_list);
 	$a->content(
-		h::{'table.cs-table.cs-center-all'}(
-			$permissions_list_
+		h::{'cs-table[center][list][with-header] cs-table-row| cs-table-cell'}(
+			[
+				$L->action,
+				'id',
+				$L->group,
+				$L->label
+			],
+			$permissions_list
 		).
 		h::{'p.cs-left a.cs-button'}(
 			$L->add_permission,

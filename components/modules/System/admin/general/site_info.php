@@ -15,7 +15,7 @@ $Config		= Config::instance();
 $timezones	= get_timezones_list();
 $sa			= $Config->core['simple_admin_mode'];
 Index::instance()->content(
-	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}(
+	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
 		core_input('name', 'text', 'site_name'),
 		!$sa ? core_textarea('url') : false,
 		!$sa ? core_textarea('cookie_domain') : false,

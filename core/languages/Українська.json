@@ -539,6 +539,7 @@
 		//Groups
 		"groups"					: "Групи",
 		"group_name"				: "Назва групи",
+		"group_description"			: "Опис групи",
 		"edit_group_information"	: "Редагувати інформацію про групу",
 		"edit_group_permissions"	: "Редагувати дозволи для групи",
 		"permissions_for_group"		: "Дозволи для групи %s",

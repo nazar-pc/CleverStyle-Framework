@@ -30,8 +30,9 @@ foreach ($users_list as $user) {
 		$user,
 		$permission
 	]);
-	$content[]		= h::th($User->username($user)).
-		h::{'td input[type=radio]'}([
+	$content[]		= [
+		$User->username($user),
+		h::{'input[type=radio]'}([
 			'name'		=> 'users['.$user.']',
 			'checked'	=> $value !== false ? $value : -1,
 			'value'		=> [-1, 0, 1],
@@ -40,8 +41,9 @@ foreach ($users_list as $user) {
 				$L->deny,
 				$L->allow
 			]
-		]);
+		])
+	];
 }
 $Page->json(
-	h::{'table.cs-table-borderless.cs-center-all tr'}($content)
+	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}($content)
 );

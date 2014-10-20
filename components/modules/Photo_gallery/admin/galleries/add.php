@@ -24,15 +24,15 @@ $Index->content(
 	h::{'h2.cs-center'}(
 		$L->photo_gallery_addition_of_gallery
 	).
-	h::{'table.cs-table-borderless.cs-center-all'}(
-		h::{'thead tr th'}(
+	h::{'cs-table[center][with-header] cs-table-row| cs-table-cell'}(
+		[
 			$L->photo_gallery_gallery_title,
 			($Config->core['simple_admin_mode'] ? false : h::info('photo_gallery_gallery_path')),
 			$L->photo_gallery_gallery_description,
 			$L->state,
 			$L->photo_gallery_gallery_start_from
-		).
-		h::{'tbody tr td'}(
+		],
+		[
 			h::{'input[name=add[title]]'}(),
 			($Config->core['simple_admin_mode'] ? false : h::{'input[name=add[path]]'}()),
 			h::{'textarea[name=add[description]]'}(),
@@ -44,6 +44,6 @@ $Index->content(
 				'value'	=> ['first', 'last'],
 				'in'	=> [$L->photo_gallery_first_uploaded, $L->photo_gallery_last_uploaded]
 			])
-		)
+		]
 	)
 );

@@ -25,15 +25,15 @@ if (isset($rc[2])) {
 				h::{'h2.cs-center'}(
 					$L->adding_a_group
 				).
-				h::{'table.cs-table-borderless.cs-center-all tr'}(
-					h::{'thead tr th'}(
+				h::{'cs-table[center][with-header] cs-table-row| cs-table-cell'}(
+					[
 						$L->group_name,
-						$L->description
-					),
-					h::{'tbody tr td'}(
+						$L->group_description
+					],
+					[
 						h::{'input[name=group[title]]'}(),
 						h::{'input[name=group[description]]'}()
-					)
+					]
 				)
 			);
 		break;
@@ -51,14 +51,14 @@ if (isset($rc[2])) {
 				h::{'h2.cs-center'}(
 					$L->editing_of_group($group_data['title'])
 				).
-				h::{'table.cs-table-borderless.cs-center-all tr'}(
-					h::{'thead tr th'}(
+				h::{'cs-table[center][with-header] cs-table-row| cs-table-cell'}(
+					[
 						'&nbsp;id&nbsp;',
 						$L->group_name,
-						$L->description,
+						$L->group_description,
 						'data'
-					),
-					h::{'tbody tr td'}(
+					],
+					[
 						$rc[3],
 						h::input([
 							'name'		=> 'group[title]',
@@ -71,7 +71,7 @@ if (isset($rc[2])) {
 						h::{'textarea[name=group[data]]'}(
 							$group_data['data']
 						)
-					)
+					]
 				).
 				h::{'input[type=hidden]'}([
 					'name'	=> 'group[id]',
@@ -125,31 +125,31 @@ if (isset($rc[2])) {
 				);
 				$content	= [];
 				foreach($list as $label => $id) {
-					$content[] = h::th(
-						$group == 'Block' ? Text::instance()->process($Config->module('System')->db('texts'), $blocks[$label]) : $label
-					).
-					h::{'td input[type=radio]'}([
-						'name'			=> "permission[$id]",
-						'checked'		=> isset($group_permissions[$id]) ? $group_permissions[$id] : -1,
-						'value'			=> [-1, 0, 1],
-						'in'			=> [$L->not_specified, $L->deny, $L->allow]
-					]);
+					$content[] = h::cs_table_cell(
+						$group == 'Block' ? Text::instance()->process($Config->module('System')->db('texts'), $blocks[$label]) : $label,
+						h::{'input[type=radio]'}([
+							'name'			=> "permission[$id]",
+							'checked'		=> isset($group_permissions[$id]) ? $group_permissions[$id] : -1,
+							'value'			=> [-1, 0, 1],
+							'in'			=> [$L->not_specified, $L->deny, $L->allow]
+						])
+					);
 				}
 				if (count($list) % 2) {
-					$content[] = h::{'td[colspan=2]'}();
+					$content[] = h::cs_table_cell().h::cs_table_cell();
 				}
 				$count		= count($content);
 				$content_	= [];
 				for ($i = 0; $i < $count; $i += 2) {
 					$content_[]	= $content[$i].$content[$i+1];
 				}
-				$tabs_content .= h::{'div#permissions_group_'.strtr($group, '/', '_').' table.cs-table-borderless.cs-center-all tr'}(
-					h::{'td.cs-left-all[colspan=4]'}(
+				$tabs_content .= h::{'div#permissions_group_'.strtr($group, '/', '_')}(
+					h::{'p.cs-left'}(
 						h::{'button.cs-permissions-invert'}($L->invert).
 						h::{'button.cs-permissions-deny-all'}($L->deny_all).
 						h::{'button.cs-permissions-allow-all'}($L->allow_all)
-					),
-					$content_
+					).
+					h::{'cs-table[right-left] cs-table-row'}($content_)
 				);
 			}
 			unset($content, $content_, $count, $i, $permissions, $group, $list, $label, $id, $blocks);
@@ -216,14 +216,14 @@ if (isset($rc[2])) {
 	}
 	unset($id, $group_data, $groups_ids);
 	$a->content(
-		h::{'table.cs-table.cs-center-all'}(
-			h::{'thead tr th'}(
+		h::{'cs-table[center][list][with-header] cs-table-row| cs-table-cell'}(
+			[
 				$L->action,
 				'id',
 				$L->group_name,
-				$L->description
-			).
-			h::{'tbody tr| td'}($groups_list)
+				$L->group_description
+			],
+			$groups_list
 		).
 		h::{'p.cs-left a.cs-button'}(
 			$L->add_group,

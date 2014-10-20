@@ -14,8 +14,6 @@
     var ui_automatic_helpers_update;
     window.no_ui_selector = '.cs-no-ui';
     ui_automatic_helpers_update = function(element) {
-      element.filter('.cs-table').addClass('uk-table uk-table-condensed uk-table-hover');
-      element.find('.cs-table').addClass('uk-table uk-table-condensed uk-table-hover');
       element.find('.SIMPLEST_INLINE_EDITOR').prop('contenteditable', true);
       element.filter('[data-title]:not(data-uk-tooltip)').cs().tooltip();
       element.find('[data-title]:not(data-uk-tooltip)').cs().tooltip();

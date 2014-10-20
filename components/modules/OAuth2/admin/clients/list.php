@@ -22,16 +22,16 @@ $Index->content(
 	h::{'h2.cs-center'}(
 		$L->list_of_clients
 	).
-	h::{'table.cs-table.cs-center-all'}(
-		h::{'thead tr th'}([
+	h::{'cs-table[list][center][with-header]'}(
+		h::{'cs-table-row cs-table-cell'}(
 			$L->client_name,
 			'client_id',
 			'client_secret',
 			$L->action
-		]).
-		h::{'tbody tr'}(array_map(
+		).
+		h::{'cs-table-row| cs-table-cell'}(array_map(
 			function ($client) use ($L) {
-				return h::td(
+				return [
 					[
 						$client['name'],
 						h::{'input{disabled]'}($client['id']),
@@ -54,12 +54,12 @@ $Index->content(
 					[
 						'class'	=> $client['active'] ? false : 'text-muted'
 					]
-				);
+				];
 			},
 			OAuth2::instance()->clients_list()
 		))
 	).
-	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd.uk-margin-top tr| td'}(
+	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
 		[
 			h::info('oauth2_allow_guest_tokens'),
 			h::{'input[type=radio]'}([

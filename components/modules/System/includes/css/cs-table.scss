@@ -1,0 +1,89 @@
+/**
+ * @package		CleverStyle CMS
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2014, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+@mixin cs-table-alignment {
+	&[center] {
+		text-align : center !important;
+	}
+
+	&[left] {
+		text-align : left !important;
+	}
+
+	&[right] {
+		text-align : right !important;
+	}
+}
+
+@mixin cs-table-header {
+	font-weight    : bold;
+	text-transform : uppercase;
+}
+
+cs-table {
+	@include cs-table-alignment;
+	border-collapse : collapse;
+	border-spacing  : 0;
+	display         : table;
+	margin-bottom   : 15px;
+	width           : 100%;
+
+	&[width-auto] {
+		width : auto;
+	}
+
+	&[list],
+	&[compact] {
+		padding : 2px;
+	}
+
+	&[list],
+	&[lines] {
+		> cs-table-row {
+			border-bottom : 1px solid #ddd;
+		}
+	}
+
+	&[list],
+	&[hover] {
+		&[with-header] > cs-table-row:nth-child(n+2):hover,
+		&:not([with-header]) > cs-table-row:not([header]):hover {
+			background-color : #f0f0f0;
+		}
+	}
+
+	&[with-header] > cs-table-row:first-of-type {
+		@include cs-table-header;
+	}
+
+	&[right-left] > cs-table-row > cs-table-cell {
+		text-align : left;
+
+		&:nth-of-type(2n+1) {
+			text-align : right;
+		}
+	}
+}
+
+cs-table-row {
+	@include cs-table-alignment;
+	display        : table-row;
+	vertical-align : middle;
+
+	&[header] {
+		@include cs-table-header;
+	}
+}
+
+cs-table-cell {
+	@include cs-table-alignment;
+	display : table-cell;
+	padding : 8px;
+
+	&[header] {
+		@include cs-table-header;
+	}
+}

@@ -246,7 +246,7 @@ $themes_for_removal = array_values(array_filter(
 ));
 $Index->file_upload	= true;
 $Index->content(
-	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}(
+	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
 		core_select($Config->core['themes'], 'theme', 'change_theme', 'current_theme'),
 		core_select($Config->core['color_schemes'][$Config->core['theme']], 'color_scheme', 'change_color_scheme')
 	).

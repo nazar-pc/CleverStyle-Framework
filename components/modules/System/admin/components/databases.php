@@ -43,8 +43,8 @@ if (isset($rc[2])) {
 				}
 				unset($mirror, $cdb);
 			} elseif ($rc[2] == 'add') {
-				$dbs = array(-1, 0);
-				$dbsname = array($L->separate_db, $L->core_db);
+				$dbs = [-1, 0];
+				$dbsname = [$L->separate_db, $L->core_db];
 				foreach ($Config->db as $i => $db) {
 					if ($i) {
 						$dbs[] = $i;
@@ -65,11 +65,11 @@ if (isset($rc[2])) {
 				h::{'h2.cs-center'}(
 					$rc[2] == 'edit' ? $L->editing_the_database($name) : $L->addition_of_db
 				).
-				h::{'table.cs-table.cs-center-all tr'}(
+				h::{'cs-table[center][right-left] cs-table-row'}(
 					\cs\modules\System\form_rows_to_cols([
 						array_map(
 							function ($in) {
-								return h::{'th info'}($in);
+								return h::{'cs-table-cell info'}($in);
 							},
 							[
 								$rc[2] == 'add' ? 'db_mirror' : false,
@@ -84,7 +84,7 @@ if (isset($rc[2])) {
 						),
 						array_map(
 							function ($in) {
-								return h::td($in);
+								return h::cs_table_cell($in);
 							},
 							[
 								($rc[2] == 'add' ? h::select(
@@ -309,8 +309,8 @@ if (isset($rc[2])) {
 	}
 	unset($databases);
 	$a->content(
-		h::{'table.cs-table'}(
-			h::{'thead tr th'}(
+		h::{'cs-table[list][with-header] cs-table-row| cs-table-cell'}(
+			[
 				$L->action,
 				$L->db_host,
 				$L->db_type,
@@ -318,12 +318,10 @@ if (isset($rc[2])) {
 				$L->db_name,
 				$L->db_user,
 				$L->db_charset
-			).
-			h::tbody(
-				h::{'tr| td'}([$db_list])
-			)
+			],
+			$db_list
 		).
-		h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}([
+		h::{'cs-table[right-left] cs-table-row| cs-table-cell'}([
 			[
 				h::info('db_balance'),
 				h::{'input[type=radio]'}([

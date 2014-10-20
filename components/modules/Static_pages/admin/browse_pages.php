@@ -16,8 +16,8 @@ $L				= Language::instance();
 $rc				= Config::instance()->route;
 $Index->buttons	= false;
 $Index->content(
-	h::{'table.cs-left-all.cs-table'}(
-		h::{'thead tr th'}(
+	h::{'cs-table[list][with-header]'}(
+		h::{'cs-table-row cs-table-cell'}(
 			[
 				$L->page_title,
 				[
@@ -26,7 +26,7 @@ $Index->content(
 			],
 			$L->action
 		).
-		h::{'tbody tr| td'}(
+		h::{'cs-table-row| cs-table-cell'}(
 			get_pages_rows()
 		)
 	).
@@ -36,12 +36,6 @@ $Index->content(
 			[
 				'href'	=> 'admin/Static_pages/add_page/'.array_slice($rc, -1)[0]
 			]
-		]/*,
-			[
-				$L->add_page_live,
-				[
-					'href'	=> 'admin/Static_pages/add_page_live/'.array_slice($rc, -1)[0]
-				]
-			]*/
+		]
 	)
 );

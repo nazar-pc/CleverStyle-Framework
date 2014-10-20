@@ -84,11 +84,11 @@ if (isset($rc[2])) {
 				h::{'h2.cs-center'}(
 					$L->adding_a_block
 				).
-				h::{'table.cs-table-borderless.cs-center-all tr'}(
+				h::{'cs-table[center][right-left] cs-table-row| cs-table-cell'}(
 					\cs\modules\System\form_rows_to_cols([
 						array_map(
 							function ($in) {
-								return h::{'th info'}($in);
+								return h::{'cs-table-cell info'}($in);
 							},
 							[
 								'block_type',
@@ -101,7 +101,7 @@ if (isset($rc[2])) {
 						),
 						array_map(
 							function ($in) {
-								return h::td($in);
+								return h::cs_table_cell($in);
 							},
 							[
 								h::select(
@@ -143,29 +143,18 @@ if (isset($rc[2])) {
 								])
 							]
 						)
-					]),
+					], 1)
+				).
+				h::{'div#cs-block-content-html textarea.EDITOR'}(
+					'',
 					[
-						h::{'td[colspan=6] textarea.EDITOR'}(
-							'',
-							[
-								'name'	=> 'block[html]'
-							]
-						),
-						[
-							'id'	=> 'cs-block-content-html'
-						]
-					],
+						'name'	=> 'block[html]'
+					]
+				).
+				h::{'div#cs-block-content-raw-html[style=display:none;] textarea'}(
+					'',
 					[
-						h::{'td[colspan=6] textarea'}(
-							'',
-							[
-								'name'	=> 'block[raw_html]'
-							]
-						),
-						[
-							'style'	=> 'display: none;',
-							'id'	=> 'cs-block-content-raw-html'
-						]
+						'name'	=> 'block[raw_html]'
 					]
 				).
 				h::{'input[type=hidden]'}([
@@ -188,11 +177,11 @@ if (isset($rc[2])) {
 				h::{'h2.cs-center'}(
 					$L->editing_a_block(get_block_title($rc[3]))
 				).
-				h::{'table.cs-table-borderless.cs-center-all tr'}(
+				h::{'cs-table[center][right-left] cs-table-row'}(
 					\cs\modules\System\form_rows_to_cols([
 						array_map(
 							function ($in) {
-								return h::{'th info'}($in);
+								return h::{'cs-table-cell info'}($in);
 							},
 							[
 								'block_title',
@@ -204,7 +193,7 @@ if (isset($rc[2])) {
 						),
 						array_map(
 							function ($in) {
-								return h::td($in);
+								return h::cs_table_cell($in);
 							},
 							[
 								h::input([
@@ -244,21 +233,24 @@ if (isset($rc[2])) {
 								])
 							]
 						)
-					]),
-					($block['type'] == 'html' ? h::{'td[colspan=5] textarea.EDITOR'}(
+					], 1)
+				).
+				(
+					$block['type'] == 'html'
+						? h::{'textarea.EDITOR'}(
 							get_block_content($rc[3]),
 							[
 								'name'	=> 'block[html]'
 							]
-						) : (
-							$block['type'] == 'raw_html' ? h::{'td[colspan=5] textarea'}(
+						)
+						: (
+							$block['type'] == 'raw_html' ? h::textarea(
 								get_block_content($rc[3]),
 								[
 									'name'	=> 'block[raw_html]'
 								]
 							) : ''
 						)
-					)
 				).
 				h::{'input[type=hidden]'}([
 					[[
@@ -292,22 +284,24 @@ if (isset($rc[2])) {
 					$group['id'],
 					$permission
 				]);
-				$groups_content[] = h::th(
-					$group['title'],
+				$groups_content[] = h::cs_table_cell(
 					[
-						'data-title'	=> $group['description']
-					]
-				).
-				h::{'td input[type=radio]'}([
-					'name'			=> "groups[$group[id]]",
-					'checked'		=> $group_permission === false ? -1 : $group_permission,
-					'value'			=> [-1, 0, 1],
-					'in'			=> [$L->inherited, $L->deny, $L->allow]
-				]);
+						$group['title'],
+						[
+							'data-title'	=> $group['description']
+						]
+					],
+					h::{'input[type=radio]'}([
+						'name'			=> "groups[$group[id]]",
+						'checked'		=> $group_permission === false ? -1 : $group_permission,
+						'value'			=> [-1, 0, 1],
+						'in'			=> [$L->inherited, $L->deny, $L->allow]
+					])
+				);
 			}
 			unset($groups, $group, $group_permission);
 			if (count($groups_content) % 2) {
-				$groups_content[] = h::{'td[colspan=2]'}();
+				$groups_content[] = h::cs_table_cell().h::cs_table_cell();
 			}
 			$count			= count($groups_content);
 			$content_		= [];
@@ -328,13 +322,15 @@ if (isset($rc[2])) {
 			foreach ($users_list as &$user) {
 				$value				= $user['value'];
 				$user				= $user['id'];
-				$users_content[]	= h::th($User->username($user)).
-					h::{'td input[type=radio]'}([
+				$users_content[]	= h::cs_table_cell(
+					$User->username($user),
+					h::{'input[type=radio]'}([
 						'name'			=> 'users['.$user.']',
 						'checked'		=> $value,
 						'value'			=> [-1, 0, 1],
 						'in'			=> [$L->inherited, $L->deny, $L->allow]
-					]);
+					])
+				);
 			}
 			unset($user, $value);
 			$Page->title($L->permissions_for_block(get_block_title($rc[3])));
@@ -346,30 +342,26 @@ if (isset($rc[2])) {
 					$L->groups,
 					$L->users
 				).
-				h::div(
-					h::{'table.cs-table-borderless.cs-center-all tr'}(
-						h::{'td.cs-left-all[colspan=4]'}(
-							h::{'button.cs-permissions-invert'}($L->invert).
-							h::{'button.cs-permissions-allow-all'}($L->allow_all).
-							h::{'button.cs-permissions-deny-all'}($L->deny_all)
-						),
-						$groups_content
+				h::{'div div'}(
+					h::{'p.cs-left'}(
+						h::{'button.cs-permissions-invert'}($L->invert).
+						h::{'button.cs-permissions-allow-all'}($L->allow_all).
+						h::{'button.cs-permissions-deny-all'}($L->deny_all)
 					).
-					h::{'table.cs-table-borderless.cs-center-all tr'}([
-						h::{'td.cs-left-all'}(
-							h::{'button.cs-permissions-invert'}($L->invert).
-							h::{'button.cs-permissions-allow-all'}($L->allow_all).
-							h::{'button.cs-permissions-deny-all'}($L->deny_all)
-						),
-						h::{'td table#cs-block-users-changed-permissions.cs-table-borderless.cs-center-all tr'}($users_content),
-						h::{'td input#block_users_search[type=search]'}([
-							'autocomplete'	=> 'off',
-							'permission'	=> $permission,
-							'placeholder'	=> $L->type_username_or_email_press_enter,
-							'style'			=> 'width: 100%'
-						]),
-						h::{'td#block_users_search_results'}()
-					])
+					h::{'cs-table[right-left] cs-table-row'}($groups_content),
+					h::{'p.cs-left'}(
+						h::{'button.cs-permissions-invert'}($L->invert).
+						h::{'button.cs-permissions-allow-all'}($L->allow_all).
+						h::{'button.cs-permissions-deny-all'}($L->deny_all)
+					).
+					h::{'cs-table#cs-block-users-changed-permissions[right-left] cs-table-row'}($users_content).
+					h::{'input#block_users_search[type=search]'}([
+						'autocomplete'	=> 'off',
+						'permission'	=> $permission,
+						'placeholder'	=> $L->type_username_or_email_press_enter,
+						'style'			=> 'width: 100%'
+					]).
+					h::{'div#block_users_search_results'}()
 				).
 				h::{'input#cs-block-users-search-found[type=hidden]'}([
 					'value'	=> implode(',', $users_list)
@@ -444,7 +436,7 @@ if ($form) {
 		unset($id, $block);
 	}
 	foreach ($blocks_array as $position => &$content) {
-		$content = h::{'td.cs-blocks-items-groups ul.cs-blocks-items'}(
+		$content = h::{'cs-table-cell.cs-blocks-items-groups ul.cs-blocks-items'}(
 			h::{'li.uk-button-primary'}(
 				$L->{"{$position}_blocks"},
 				[
@@ -460,12 +452,12 @@ if ($form) {
 	}
 	unset($position, $content);
 	$a->content(
-		h::{'table.cs-table-borderless tr'}([
-			h::td().$blocks_array['top'].h::td(),
+		h::{'cs-table cs-table-row'}([
+			h::cs_table_cell().$blocks_array['top'].h::cs_table_cell(),
 
 			"$blocks_array[left]$blocks_array[floating]$blocks_array[right]",
 
-			h::td().$blocks_array['bottom'].h::td()
+			h::cs_table_cell().$blocks_array['bottom'].h::cs_table_cell()
 		]).
 		h::{'p.cs-left a.cs-button'}(
 			"$L->add $L->block",

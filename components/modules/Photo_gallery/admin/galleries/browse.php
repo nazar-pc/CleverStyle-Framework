@@ -18,17 +18,12 @@ Page::instance()->title($L->photo_gallery_browse_galleries);
 $Photo_gallery	= Photo_gallery::instance();
 $module			= path($L->Photo_gallery);
 $Index->content(
-	h::{'table.cs-left-all.cs-table-borderless'}(
-		h::{'thead tr th'}(
-			[
-				$L->photo_gallery_galleries,
-				[
-					'style'	=> 'width: 80%'
-				]
-			],
+	h::{'cs-table[list][with-header] cs-table-row| cs-table-cell'}(
+		[
+			$L->photo_gallery_galleries,
 			$L->action
-		).
-		h::{'tbody tr| td'}(array_map(
+		],
+		array_map(
 			function ($gallery) use ($Photo_gallery, $L, $module) {
 				$gallery	= $Photo_gallery->get_gallery($gallery);
 				return [
@@ -57,7 +52,7 @@ $Index->content(
 				];
 			},
 			array_values($Photo_gallery->get_galleries_list())
-		))
+		)
 	).
 	h::{'p.cs-left a.cs-button'}(
 		$L->photo_gallery_add_gallery,

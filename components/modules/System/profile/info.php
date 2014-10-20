@@ -62,23 +62,26 @@ Meta::instance()
 	->profile('username', $name)
 	->image($User->avatar(256, $id));
 $Page->content(
-	h::{'table.cs-table-borderless.cs-profile-table tr'}([
-		h::{'td.cs-profile-avatar[rowspan=2] img'}([
+	h::{'div[layout][horizontal]'}(
+		h::{'div.cs-profile-avatar img'}([
 			'src'	=> $User->avatar(128, $id),
 			'alt'	=> $name,
 			'title'	=> $name
 		]).
-		h::{'td h1'}(
-			$L->profile_of_user($name)
-		),
-
-		h::{'td table.cs-right-odd.cs-left-even tr'}([
-			($data['reg_date'] ? h::td([
-				h::h2("$L->reg_date:"),
-				h::h2($L->to_locale(date($L->reg_date_format, $data['reg_date'])))
-			])  : false)
-		])
-	])
+		h::{'div[flex]'}(
+			h::h1(
+				$L->profile_of_user($name)
+			).
+			h::{'cs-table[right-left] cs-table-row| cs-table-cell'}([
+				$data['reg_date']
+					? [
+						h::h2("$L->reg_date:"),
+						h::h2($L->to_locale(date($L->reg_date_format, $data['reg_date'])))
+					]
+					: false
+			])
+		)
+	)
 );
 Trigger::instance()->run(
 	'System/profile/info',

@@ -399,12 +399,12 @@ if (
 					}
 					unset($db_json, $dbs, $database);
 					$a->content(
-						h::{'table.cs-table'}(
-							h::{'thead tr th'}([
+						h::{'cs-table[right-left][with-header] cs-table-row| cs-table-cell'}(
+							[
 								h::info('appointment_of_db'),
 								h::info('system_db')
-							]).
-							h::{'tbody tr| td'}($db_list)
+							],
+							$db_list
 						)
 					);
 					unset($db_list);
@@ -465,12 +465,12 @@ if (
 					}
 					unset($storage_json, $storages, $storage);
 					$a->content(
-						h::{'table.cs-table'}(
-							h::{'thead tr th'}([
+						h::{'cs-table[right-left][with-header] cs-table-row| cs-table-cell'}(
+							[
 								h::info('appointment_of_storage'),
 								h::info('system_storage')
-							]).
-							h::{'tbody tr| td'}($storage_list)
+							],
+							$storage_list
 						)
 					);
 					unset($storage_list);
@@ -557,7 +557,7 @@ if (!$show_modules) {
 	return;
 }
 $a->file_upload		= true;
-$modules_list		= '';
+$modules_list		= [];
 foreach ($Config->components['modules'] as $module_name => &$module_data) {
 	/**
 	 * If module if enabled or disabled
@@ -757,8 +757,8 @@ foreach ($Config->components['modules'] as $module_name => &$module_data) {
 		);
 	}
 	unset($module_meta);
-	$modules_list	.= h::tr(
-		h::td(
+	$modules_list[]	= [
+		[
 			h::a(
 				$L->$module_name,
 				[
@@ -784,14 +784,14 @@ foreach ($Config->components['modules'] as $module_name => &$module_data) {
 			[
 				$action,
 				[
-					'class'	=> 'cs-left-all'
+					'left'	=> ''
 				]
 			]
-		),
+		],
 		[
 			'class'	=> $module_data['active'] == 1 ? 'uk-alert-success' : ($module_data['active'] == -1 ? 'uk-alert-danger' : 'uk-alert-warning')
 		]
-	);
+	];
 	unset($module_info);
 }
 $modules_for_removal = array_keys(array_filter(
@@ -801,13 +801,13 @@ $modules_for_removal = array_keys(array_filter(
 	}
 ));
 $a->content(
-	h::{'table.cs-table.cs-center-all'}(
-		h::{'thead tr th'}(
+	h::{'cs-table[list][center][with-header]'}(
+		h::{'cs-table-row cs-table-cell'}(
 			$L->module_name,
 			$L->state,
 			$L->action
 		).
-		h::tbody($modules_list)
+		h::{'cs-table-row| cs-table-cell'}($modules_list)
 	).
 	h::p(
 		h::{'input[type=file][name=upload_module]'}().

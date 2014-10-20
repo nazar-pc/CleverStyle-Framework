@@ -22,16 +22,22 @@ $Index->content(
 	h::{'h2d.cs-center'}(
 		$L->addition_of_client
 	).
-	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr'}(
-		h::th($L->client_name).
-		h::{'td input[name=name]'}(),
-		h::th($L->client_domain).
-		h::{'td input[name=domain]'}(),
-		h::th($L->active).
-		h::{'td input[type=radio][name=active][checked=1]'}([
-			'value'		=> [0, 1],
-			'in'		=> [$L->no, $L->yes]
-		])
+	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+		[
+			$L->client_name,
+			h::{'input[name=name]'}()
+		],
+		[
+			$L->client_domain,
+			h::{'input[name=domain]'}()
+		],
+		[
+			$L->active,
+			h::{'cs-table-cell input[type=radio][name=active][checked=1]'}([
+				'value'		=> [0, 1],
+				'in'		=> [$L->no, $L->yes]
+			])
+		]
 	).
 	h::{'input[type=hidden][name=mode][value=add]'}()
 );

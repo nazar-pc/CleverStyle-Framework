@@ -538,6 +538,7 @@
 		//Groups
 		"groups"					: "Группы",
 		"group_name"				: "Название группы",
+		"group_description"			: "Описание группы",
 		"edit_group_information"	: "Редактировать информацию о группе",
 		"edit_group_permissions"	: "Редактировать разрешения группы",
 		"permissions_for_group"		: "Разрешения для группы %s",

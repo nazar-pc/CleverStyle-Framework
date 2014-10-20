@@ -16,7 +16,7 @@ $Config	= Config::instance();
 $L		= Language::instance();
 $sa		= $Config->core['simple_admin_mode'];
 Index::instance()->content(
-	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}(
+	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
 		core_input('site_mode', 'radio'),
 		core_input('closed_title'),
 		core_textarea('closed_text', 'SIMPLE_EDITOR'),
@@ -38,7 +38,7 @@ Index::instance()->content(
 		] : false,
 		!$sa ? [
 			h::info('routing'),
-			h::{'table.cs-table-borderless tr| td'}(
+			h::{'cs-table[center] cs-table-row| cs-table-cell'}(
 				[
 					h::info('routing_in'),
 					h::info('routing_out')
@@ -61,7 +61,7 @@ Index::instance()->content(
 		] : false,
 		!$sa ? [
 			h::info('replace'),
-			h::{'table.cs-table-borderless tr| td'}(
+			h::{'cs-table[center] cs-table-row| cs-table-cell'}(
 				[
 					h::info('replace_in'),
 					h::info('replace_out')

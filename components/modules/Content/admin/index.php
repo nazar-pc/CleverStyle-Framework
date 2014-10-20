@@ -28,14 +28,14 @@ if (isset($_POST['simple_insert'])) {
 }
 
 $Index->content(
-	h::{'table.cs-center-all.cs-table'}(
-		h::{'thead tr th'}(
+	h::{'cs-table[center][list][with-header] cs-table-row| cs-table-cell'}(
+		[
 			$L->key,
 			$L->title,
 			$L->type,
 			$L->action
-		).
-		h::{'tbody tr| td'}(array_map(
+		],
+		array_map(
 			function ($item) use ($L, $Index) {
 				return [
 					$item['key'],
@@ -56,10 +56,10 @@ $Index->content(
 				];
 			},
 			$all_items
-		))
+		)
 	).
 	h::{'p button.cs-content-add'}($L->add).
-	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr td'}(
+	h::{'cs-table[right-left] cs-table-row cs-table-cell'}(
 		h::info('content_simple_insert'),
 		h::{'input[type=radio]'}([
 			'name'    => 'simple_insert',

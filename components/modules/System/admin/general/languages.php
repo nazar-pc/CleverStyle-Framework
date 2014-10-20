@@ -19,7 +19,7 @@ $Config = Config::instance();
 $L      = Language::instance();
 $Config->reload_languages();
 Index::instance()->content(
-	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}(
+	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
 		core_select($Config->core['active_languages'], 'language', 'change_language', 'current_language'),
 		core_select($Config->core['languages'], 'active_languages', 'change_active_languages', null, true),
 		[

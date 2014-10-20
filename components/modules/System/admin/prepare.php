@@ -594,7 +594,7 @@ function form_rows_to_cols ($rows, $cols = 2) {
 		}
 	}
 	if (isset($i) && ($i % $cols != 0)) {
-		$return[$row]	.= str_repeat(h::th().h::td(), $cols - ($i % $cols));
+		$return[$row]	.= str_repeat(h::cs_table_cell().h::cs_table_cell(), $cols - ($i % $cols));
 	}
 	return $return;
 }

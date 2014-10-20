@@ -33,11 +33,11 @@ if (isset($rc[2])) {
 				h::{'h2.cs-center'}(
 					$rc[2] == 'edit' ? $L->editing_of_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']) : $L->adding_of_storage
 				).
-				h::{'table.cs-table-borderless.cs-center-all tr'}(
+				h::{'cs-table[center][right-left] cs-table-row'}(
 					\cs\modules\System\form_rows_to_cols([
 						array_map(
 							function ($in) {
-								return h::{'th info'}($in);
+								return h::{'cs-table-cell info'}($in);
 							},
 							[
 								'storage_url',
@@ -49,7 +49,7 @@ if (isset($rc[2])) {
 						),
 						array_map(
 							function ($in) {
-								return h::td($in);
+								return h::cs_table_cell($in);
 							},
 							[
 								h::input([
@@ -135,12 +135,12 @@ if (isset($rc[2])) {
 			}
 	}
 } else {
-	$storage_list = [];
+	$storages_list = [];
 	$Core			= Core::instance();
 	$storages		= $Config->storage;
 	if (!empty($storages)) {
 		foreach ($storages as $i => &$storage_data) {
-			$storage_list[] =	[
+			$storages_list[] =	[
 				[
 					($i ?
 					h::{'a.cs-button-compact'}(
@@ -185,15 +185,15 @@ if (isset($rc[2])) {
 	}
 	unset($storages);
 	$a->content(
-		h::{'table.cs-table.cs-center-all'}(
-			h::{'thead tr th'}([
+		h::{'cs-table[center][list][with-header] cs-table-row| cs-table-cell'}(
+			[
 				$L->action,
 				$L->storage_url,
 				$L->storage_host,
 				$L->storage_connection,
 				$L->storage_user
-			]).
-			h::{'tbody tr| td'}([$storage_list])
+			],
+			$storages_list
 		).
 		h::{'p a.cs-button'}(
 			$L->add_storage,
@@ -202,7 +202,7 @@ if (isset($rc[2])) {
 			]
 		)
 	);
-	unset($storage_list);
+	unset($storages_list);
 }
 $test_dialog && $a->content(
 	h::{'div#cs-storage-test.uk-modal div'}(

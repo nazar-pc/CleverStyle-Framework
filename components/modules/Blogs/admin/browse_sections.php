@@ -17,8 +17,8 @@ $L				= Language::instance();
 $Index->buttons	= false;
 Page::instance()->title($L->browse_sections);
 $Index->content(
-	h::{'table.cs-left-all.cs-table'}(
-		h::{'thead tr th'}(
+	h::{'cs-table[list][with-header]'}(
+		h::{'cs-table-row cs-table-cell'}(
 			[
 				$L->blogs_sections,
 				[
@@ -27,7 +27,7 @@ $Index->content(
 			],
 			$L->action
 		).
-		h::{'tbody tr| td'}(
+		h::{'cs-table-row| cs-table-cell'}(
 			get_sections_rows()
 		)
 	).

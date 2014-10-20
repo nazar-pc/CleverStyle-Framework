@@ -12,8 +12,8 @@ use			h;
 $Config	= Config::instance();
 $L		= Language::instance();
 Index::instance()->content(
-	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr'}([
-		h::td([
+	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}([
+		[
 			h::info('key_expire'),
 			h::{'input[type=number]'}([
 				'name'			=> 'core[key_expire]',
@@ -21,9 +21,8 @@ Index::instance()->content(
 				'min'			=> 1
 			]).
 			$L->seconds
-		]),
-
-		h::td([
+		],
+		[
 			h::info('ip_black_list'),
 			h::textarea(
 				$Config->core['ip_black_list'],
@@ -31,9 +30,8 @@ Index::instance()->content(
 					'name' => 'core[ip_black_list]'
 				]
 			)
-		]),
-
-		h::td([
+		],
+		[
 			h::info('ip_admin_list_only'),
 			h::{'input[type=radio]'}([
 				'name'			=> 'core[ip_admin_list_only]',
@@ -41,9 +39,8 @@ Index::instance()->content(
 				'value'			=> [0, 1],
 				'in'			=> [$L->off, $L->on]
 			])
-		]),
-
-		h::td([
+		],
+		[
 			h::info('ip_admin_list'),
 			h::textarea(
 				$Config->core['ip_admin_list'],
@@ -53,6 +50,6 @@ Index::instance()->content(
 			).
 			h::br().
 			$L->current_ip.': '.h::b(User::instance()->ip)
-		])
+		]
 	])
 );

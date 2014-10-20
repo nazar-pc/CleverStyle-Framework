@@ -23,13 +23,13 @@ $Index->content(
 	h::{'h2.cs-center'}(
 		$L->addition_of_page_category
 	).
-	h::{'table.cs-table-borderless.cs-center-all'}(
-		h::{'thead tr th'}(
+	h::{'cs-table[center] cs-table-row| cs-table-cell'}(
+		[
 			$L->parent_category,
 			$L->category_title,
 			h::info('category_path')
-		),
-		h::{'tbody tr td'}(
+		],
+		[
 			h::{'select[name=parent][size=5]'}(
 				get_categories_list(),
 				[
@@ -38,7 +38,7 @@ $Index->content(
 			),
 			h::{'input[name=title]'}(),
 			h::{'input[name=path]'}()
-		)
+		]
 	).
 	h::{'input[type=hidden][name=mode][value=add_category]'}()
 );

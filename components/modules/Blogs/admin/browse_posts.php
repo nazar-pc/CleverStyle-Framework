@@ -22,8 +22,8 @@ $page			= isset($Config->route[1]) ? (int)$Config->route[1] : 1;
 $page			= $page > 0 ? $page : 1;
 $total			= Blogs::instance()->get_total_count();
 $Index->content(
-	h::{'table.cs-center-all.cs-table'}(
-		h::{'thead tr th'}(
+	h::{'cs-table[center][list][with-header]'}(
+		h::{'cs-table-row cs-table-cell'}(
 			[
 				$L->post_title,
 				[
@@ -50,7 +50,7 @@ $Index->content(
 			],
 			$L->action
 		).
-		h::{'tbody tr| td'}(
+		h::{'cs-table-row| cs-table-cell'}(
 			get_posts_rows($page)
 		)
 	).

@@ -24,27 +24,26 @@ $Options             = Options::instance();
 $Page->title(
 	$L->editing_of_poll($poll['title'])
 );
-$Index->action       = 'admin/Polls/polls';
-$Index->apply_button = false;
+$Index->action				= 'admin/Polls/polls';
+$Index->apply_button		= false;
+$Index->cancel_button_back	=  true;
 $Index->content(
 	h::{'h2.cs-center'}($L->editing_of_poll($poll['title'])).
-	h::{'table.cs-table tr'}(
-		h::td([
-			$L->poll_title,
-			h::{'input[name=edit[title]]'}([
-				'value' => $poll['title']
-			])
-		]),
-		array_map(
-			function ($option) {
-				return h::{'td[colspan=2] input'}([
-					'value' => $option['title'],
-					'name'  => "edit[options][$option[id]]"
-				]);
-			},
-			$Options->get($Options->get_all_for_poll($poll['id']))
-		)
+	h::{'cs-table[right-left] cs-table-row cs_table_cell'}(
+		$L->poll_title,
+		h::{'input[name=edit[title]]'}([
+			'value' => $poll['title']
+		])
 	).
+	h::p(array_map(
+		function ($option) {
+			return h::{'input'}([
+				'value' => $option['title'],
+				'name'  => "edit[options][$option[id]]"
+			]);
+		},
+		$Options->get($Options->get_all_for_poll($poll['id']))
+	)).
 	h::{'input[type=hidden][name=edit[id]]'}([
 		'value' => $poll['id']
 	])

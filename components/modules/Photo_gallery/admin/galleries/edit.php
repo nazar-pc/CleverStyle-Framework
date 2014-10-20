@@ -25,21 +25,25 @@ $Index->content(
 	h::{'h2.cs-center'}(
 		$L->photo_gallery_editing_of_gallery($gallery['title'])
 	).
-	h::{'table.cs-table-borderless.cs-center-all'}(
-		h::{'thead tr th'}(
+	h::{'cs-table[center] cs-table-row| cs-table-cell'}(
+		[
 			$L->photo_gallery_gallery_title,
 			($Config->core['simple_admin_mode'] ? false : h::info('photo_gallery_gallery_path')),
 			$L->photo_gallery_gallery_description,
 			$L->state,
 			$L->photo_gallery_gallery_start_from
-		).
-		h::{'tbody tr td'}(
+		],
+		[
 			h::{'input[name=edit[title]]'}([
 				'value'	=> $gallery['title']
 			]),
-			($Config->core['simple_admin_mode'] ? false : h::{'input[name=edit[path]]'}([
-				'value'	=> $gallery['path']
-			])),
+			(
+				$Config->core['simple_admin_mode']
+					? false
+					: h::{'input[name=edit[path]]'}([
+						'value'	=> $gallery['path']
+					])
+			),
 			h::{'textarea[name=edit[description]]'}($gallery['description']),
 			h::{'input[type=radio][name=edit[active]]'}([
 				'value'		=> [0, 1],
@@ -51,7 +55,7 @@ $Index->content(
 				'in'		=> [$L->photo_gallery_first_uploaded, $L->photo_gallery_last_uploaded],
 				'checked'	=> $gallery['preview_image']
 			])
-		)
+		]
 	).
 	h::{'input[type=hidden][name=edit[id]]'}([
 		'value'	=> $gallery['id']

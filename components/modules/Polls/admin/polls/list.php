@@ -18,14 +18,14 @@ $L				= new Prefix('polls_');
 $Polls			= Polls::instance();
 $Index->buttons	= false;
 $Index->content(
-	h::{'table.cs-table tr'}(
-		h::th([
+	h::{'cs-table[list][with-header] cs-table-row| cs-table-cell'}(
+		[
 			$L->poll,
 			$L->action
-		]),
+		],
 		array_map(
 			function ($poll) use ($Index, $L) {
-				return h::td(
+				return [
 					$poll['title'],
 					h::{'a.cs-button'}(
 						$L->edit,
@@ -39,7 +39,7 @@ $Index->content(
 							'href' => "admin/Polls/polls/delete/$poll[id]"
 						]
 					)
-				);
+				];
 			},
 			$Polls->get($Polls->get_all())
 		)

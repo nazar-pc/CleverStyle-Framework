@@ -15,7 +15,7 @@ use			h,
 $Config	= Config::instance();
 $L		= Language::instance();
 Index::instance()->content(
-	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}([
+	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}([
 		[
 			h::info('smtp'),
 			h::{'input[type=radio]'}([

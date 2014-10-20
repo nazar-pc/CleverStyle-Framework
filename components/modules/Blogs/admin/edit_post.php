@@ -53,7 +53,7 @@ $Index->content(
 		$L->editing_of_post($post['title'])
 	).
 	h::{'div.cs-blogs-post-preview-content'}().
-	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd.cs-blogs-post-form tr| td'}(
+	h::{'cs-table.cs-blogs-post-form[right-left] cs-table-row| cs-table-cell'}(
 		[
 			$L->post_title,
 			h::{'h1.cs-blogs-new-post-title.SIMPLEST_INLINE_EDITOR'}(

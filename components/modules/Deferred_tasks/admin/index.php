@@ -16,7 +16,7 @@ $Index->apply_button	= false;
 $L						= new Prefix('deferred_tasks_');
 $base_url				= $Config->base_url();
 $Index->content(
-	h::{'table.cs-table-borderless.cs-left-even.cs-right-odd tr| td'}(
+	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
 		[
 			h::info('deferred_tasks_security_key'),
 			h::{'input[name=general[security_key]]'}([

@@ -537,6 +537,7 @@
 		//Groups
 		"groups"					: "Groups",
 		"group_name"				: "Group name",
+		"group_description"			: "Description",
 		"edit_group_information"	: "Edit group information",
 		"edit_group_permissions"	: "Edit group permissions",
 		"permissions_for_group"		: "Permissions for group %s",
