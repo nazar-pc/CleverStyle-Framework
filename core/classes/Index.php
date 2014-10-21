@@ -32,7 +32,9 @@ class Index {
 
 	public	$form					= false;
 	public	$file_upload			= false;
-	public	$form_atributes			= [];
+	public	$form_attributes		= [
+		'class'	=> 'uk-form'
+	];
 	public	$action					= null;
 	public	$buttons				= true;
 	public	$save_button			= true;
@@ -464,7 +466,7 @@ class Index {
 							'enctype'	=> $this->file_upload ? 'multipart/form-data' : false,
 							'action'	=> $this->action
 						],
-						$this->form_atributes
+						$this->form_attributes
 					)
 				)
 			);

@@ -54,7 +54,6 @@ $module					= path($L->Blogs);
 head_actions();
 $Index->form			= true;
 $Index->buttons			= false;
-$Index->form_atributes	= ['class'	=> ''];
 $page					= isset($rc[0]) ? (int)$rc[0] : 1;
 $page					= $page > 0 ? $page : 1;
 $Page->canonical_url($Config->base_url()."/$module/".path($L->section)."/$path".($page > 1 ? "/$page" : ''));

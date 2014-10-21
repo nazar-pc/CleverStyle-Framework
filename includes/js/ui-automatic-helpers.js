@@ -22,20 +22,14 @@
       if (element.is(no_ui_selector) || element.closest(no_ui_selector).length) {
         return;
       }
-      element.filter('form:not(.uk-form)').addClass('uk-form');
-      element.find("form:not(" + no_ui_selector + ", .uk-form)").addClass('uk-form');
       element.filter(":not(.uk-button) > input:radio:not(" + no_ui_selector + ")").cs().radio();
       element.find(":not(.uk-button) > input:radio:not(" + no_ui_selector + ")").cs().radio();
       element.filter(":not(.uk-button) > input:checkbox:not(" + no_ui_selector + ")").cs().checkbox();
       element.find(":not(.uk-button) > input:checkbox:not(" + no_ui_selector + ")").cs().checkbox();
-      element.filter(':button:not(.uk-button), .cs-button, .cs-button-compact').addClass('uk-button').disableSelection();
-      element.find(":button:not(" + no_ui_selector + ", .uk-button), .cs-button, .cs-button-compact").addClass('uk-button').disableSelection();
-      element.filter('textarea:not(.cs-no-resize, .EDITOR, .SIMPLE_EDITOR, .cs-autosized)').addClass('cs-autosized').autosize({
-        append: "\n"
-      });
-      return element.find("textarea:not(" + no_ui_selector + ", .cs-no-resize, .EDITOR, .SIMPLE_EDITOR, .cs-autosized)").addClass('cs-autosized').autosize({
-        append: "\n"
-      });
+      element.filter(':button:not(.uk-button), .cs-button, .cs-button-compact').addClass('uk-button');
+      element.find(":button:not(" + no_ui_selector + ", .uk-button), .cs-button, .cs-button-compact").addClass('uk-button');
+      element.filter('textarea:not(.cs-no-resize)').autosize();
+      return element.find("textarea:not(" + no_ui_selector + ", .cs-no-resize)").autosize();
     };
     ui_automatic_helpers_update($('body'));
     return (function() {

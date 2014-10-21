@@ -67,6 +67,11 @@ button, input, select, textarea {
 	margin    : 0;
 }
 
+button,
+.cs-disable-selection {
+	@include disable-selection;
+}
+
 .cs-button-compact {
 	padding : .2em .3em !important;
 }

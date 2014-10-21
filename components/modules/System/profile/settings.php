@@ -87,11 +87,11 @@ switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 	case 'general':
 		$user_data						= $User->get($columns);
 		unset($columns);
-		$timezones						= get_timezones_list();
-		$Index->form					= true;
-		$Index->form_atributes['class']	= 'cs-center';
-		$Index->apply_button			= false;
-		$Index->cancel_button_back		= true;
+		$timezones							= get_timezones_list();
+		$Index->form						= true;
+		$Index->form_attributes['class']	.= ' cs-center';
+		$Index->apply_button				= false;
+		$Index->cancel_button_back			= true;
 		$Page->title($L->general);
 		$Index->content(
 			h::{'h2.cs-center'}(
@@ -152,10 +152,10 @@ switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 		);
 	break;
 	case 'change_password':
-		$Index->form					= true;
-		$Index->form_atributes['class']	= 'cs-center';
-		$Index->buttons					= false;
-		$Index->cancel_button_back		= true;
+		$Index->form						= true;
+		$Index->form_attributes['class']	.= ' cs-center';
+		$Index->buttons						= false;
+		$Index->cancel_button_back			= true;
 		$Page->title($L->password_changing);
 		$Index->content(
 			h::{'h2.cs-center'}(

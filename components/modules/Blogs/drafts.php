@@ -34,7 +34,6 @@ $Page->title($L->drafts);
 $module					= path($L->Blogs);
 $Index->form			= true;
 $Index->buttons			= false;
-$Index->form_atributes	= ['class'	=> ''];
 $page					= isset($Config->route[1]) ? (int)$Config->route[1] : 1;
 $page					= $page > 0 ? $page : 1;
 if ($page > 1) {

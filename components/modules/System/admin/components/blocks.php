@@ -78,7 +78,7 @@ if (isset($rc[2])) {
 			$form					= false;
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
-			$a->form_atributes[]	= 'formnovalidate';
+			$a->form_attributes[]	= 'formnovalidate';
 			$Page->title($L->adding_a_block);
 			$a->content(
 				h::{'h2.cs-center'}(
@@ -166,7 +166,7 @@ if (isset($rc[2])) {
 			$form					= false;
 			$a->apply_button		= false;
 			$a->cancel_button_back	= true;
-			$a->form_atributes[]	= 'formnovalidate';
+			$a->form_attributes[]	= 'formnovalidate';
 			$block = &$Config->components['blocks'][$rc[3]];
 			$Page->title($L->editing_a_block(get_block_title($rc[3])));
 			$a->content(
