@@ -33,7 +33,7 @@ $Index->content(
 							'href'	=> "$module/$gallery[path]"
 						]
 					),
-					h::{'a.cs-button-compact'}(
+					h::{'a.uk-button.cs-button-compact'}(
 						[
 							h::icon('pencil'),
 							[

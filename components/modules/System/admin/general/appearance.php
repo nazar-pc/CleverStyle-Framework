@@ -86,7 +86,7 @@ if (isset($_POST['action'])) {
 				);
 				$Index->cancel_button_back = true;
 				$Index->content(
-					h::{'button[type=submit][[name=action][value=update]'}($L->yes)
+					h::{'button.uk-button[type=submit][[name=action][value=update]'}($L->yes)
 				);
 				return;
 			}
@@ -197,7 +197,7 @@ if (isset($_POST['action'])) {
 			$Index->buttons            = false;
 			$Index->cancel_button_back = true;
 			$Index->content(
-				h::{'button[type=submit][name=action][value=remove_confirmed]'}($L->yes).
+				h::{'button.uk-button[type=submit][name=action][value=remove_confirmed]'}($L->yes).
 				h::{'input[type=hidden]'}([
 					'name'  => 'remove_theme_confirmed',
 					'value' => $_POST['remove_theme']
@@ -252,7 +252,7 @@ $Index->content(
 	).
 	h::p(
 		h::{'input[type=file][name=upload_theme]'}().
-		h::{'button[type=submit][name=action][value=upload]'}(
+		h::{'button.uk-button[type=submit][name=action][value=upload]'}(
 			h::icon('upload').$L->upload_and_install_update_theme,
 			[
 				'formaction' => $Index->action
@@ -263,7 +263,7 @@ $Index->content(
 	$themes_for_removal
 		? h::p(
 		h::{'select[name=remove_theme]'}($themes_for_removal).
-		h::{'button[type=submit][name=action][value=remove]'}(
+		h::{'button.uk-button[type=submit][name=action][value=remove]'}(
 			h::icon('trash-o').$L->complete_theme_removal,
 			[
 				'formaction' => $Index->action

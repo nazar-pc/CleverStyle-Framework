@@ -63,13 +63,13 @@ echo	h::{'form[method=post]'}(
 	h::{'input[name=suffix]'}([
 		'placeholder'	=> 'Package file suffix'
 	]).
-	h::{'button.license[type=button]'}(
+	h::{'button.uk-button.license'}(
 		'License',
 		[
 			'onclick'	=> "window.open('license.txt', 'license', 'location=no')"
 		]
 	).
-	h::{'button[type=submit]'}(
+	h::{'button.uk-button[type=submit]'}(
 		'Build'
 	)
 );

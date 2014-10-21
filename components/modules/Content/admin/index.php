@@ -41,13 +41,13 @@ $Index->content(
 					$item['key'],
 					$item['title'],
 					$item['type'],
-					h::{'button.cs-content-edit'}(
+					h::{'button.uk-button.cs-content-edit'}(
 						$L->edit,
 						[
 							'data-key' => $item['key']
 						]
 					).
-					h::{'button.cs-content-delete'}(
+					h::{'button.uk-button.cs-content-delete'}(
 						$L->delete,
 						[
 							'data-key' => $item['key']
@@ -58,7 +58,7 @@ $Index->content(
 			$all_items
 		)
 	).
-	h::{'p button.cs-content-add'}($L->add).
+	h::{'p button.uk-button.cs-content-add'}($L->add).
 	h::{'cs-table[right-left] cs-table-row cs-table-cell'}(
 		h::info('content_simple_insert'),
 		h::{'input[type=radio]'}([

@@ -324,7 +324,7 @@ if (isset($rc[2], $rc[3])) {
 					'name'	=> 'id',
 					'value'	=> $rc[3]
 				]).
-				h::{'button[type=submit]'}($L->yes)
+				h::{'button.uk-button[type=submit]'}($L->yes)
 			);
 		break;
 		case 'activate':
@@ -342,7 +342,7 @@ if (isset($rc[2], $rc[3])) {
 					'name'	=> 'id',
 					'value'	=> $rc[3]
 				]).
-				h::{'button[type=submit]'}($L->yes)
+				h::{'button.uk-button[type=submit]'}($L->yes)
 			);
 		break;
 		case 'permissions':
@@ -393,9 +393,9 @@ if (isset($rc[2], $rc[3])) {
 				}
 				$tabs_content .= h::{'div#permissions_group_'.strtr($group, '/', '_')}(
 					h::{'p.cs-left'}(
-						h::{'button.cs-permissions-invert'}($L->invert).
-						h::{'button.cs-permissions-deny-all'}($L->deny_all).
-						h::{'button.cs-permissions-allow-all'}($L->allow_all)
+						h::{'button.uk-button.cs-permissions-invert'}($L->invert).
+						h::{'button.uk-button.cs-permissions-deny-all'}($L->deny_all).
+						h::{'button.uk-button.cs-permissions-allow-all'}($L->allow_all)
 					).
 					h::{'cs-table[right-left] cs-table-row'}($content_)
 				);
@@ -608,7 +608,7 @@ if (isset($rc[2], $rc[3])) {
 			$status			= $User->get('status', $id);
 			$is_active		= $status == User::STATUS_ACTIVE;
 			$buttons		= (!$is_guest && !$is_root && !$is_bot ?
-				h::{'a.cs-button-compact'}(
+				h::{'a.uk-button.cs-button-compact'}(
 					h::icon('pencil'),
 					[
 						'href'			=> "$a->action/edit_raw/$id",
@@ -617,7 +617,7 @@ if (isset($rc[2], $rc[3])) {
 				) : ''
 			).
 			(!$is_guest && !$is_root && (!$is_bot || !$Config->core['simple_admin_mode']) ?
-				h::{'a.cs-button-compact'}(
+				h::{'a.uk-button.cs-button-compact'}(
 					h::icon('sliders'),
 					[
 						'href'			=> "$a->action/edit/$id",
@@ -626,7 +626,7 @@ if (isset($rc[2], $rc[3])) {
 				) : ''
 			).
 			(!$is_guest && !$is_root ?
-				h::{'a.cs-button-compact'}(
+				h::{'a.uk-button.cs-button-compact'}(
 					h::icon($is_active ? 'minus' : 'check'),
 					[
 						'href'			=> "$a->action/".($is_active ? 'deactivate' : 'activate')."/$id",
@@ -635,7 +635,7 @@ if (isset($rc[2], $rc[3])) {
 				) : ''
 			).
 			(!$is_guest && !$is_root && !$is_bot ?
-				h::{'a.cs-button-compact'}(
+				h::{'a.uk-button.cs-button-compact'}(
 					h::icon('group'),
 					[
 						'href'			=> "$a->action/groups/$id",
@@ -644,7 +644,7 @@ if (isset($rc[2], $rc[3])) {
 				) : ''
 			).
 			(!$is_root  ?
-				h::{'a.cs-button-compact'}(
+				h::{'a.uk-button.cs-button-compact'}(
 					h::icon('key'),
 					[
 						'href'			=> "$a->action/permissions/$id",
@@ -736,7 +736,7 @@ if (isset($rc[2], $rc[3])) {
 		h::{'input#cs-users-search-selected-columns[name=columns][type=hidden]'}().
 		h::hr().
 		h::{'p.cs-left'}(
-			h::{'button[type=submit]'}($L->search),
+			h::{'button.uk-button[type=submit]'}($L->search),
 			pages_buttons($page, $total_pages)
 		).
 		h::{'cs-table[center][list][with-header] cs-table-row| cs-table-cell'}(

@@ -702,7 +702,7 @@ function pages_buttons ($page, $total, $url = false) {
 			}
 		}
 	}
-	return h::{'button[name=page]'}($output);
+	return h::{'button.uk-button[name=page]'}($output);
 }
 /**
  * Function that is used to define errors by specifying error code, and system will account this in its operation

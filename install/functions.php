@@ -78,19 +78,19 @@ function install_form () {
 				h::{'input[type=password][name=admin_password]'}()
 			)
 		).
-		h::{'button.readme[type=button]'}(
+		h::{'button.uk-button.readme'}(
 			'Readme',
 			[
 				'onclick'	=> "window.open('readme.html', 'readme', 'location=no')"
 			]
 		).
-		h::{'button.license[type=button]'}(
+		h::{'button.uk-button.license'}(
 			'License',
 			[
 				'onclick'	=> "window.open('license.txt', 'license', 'location=no')"
 			]
 		).
-		h::{'button[type=submit]'}(
+		h::{'button.uk-button[type=submit]'}(
 			'Install'
 		)
 	);
@@ -436,7 +436,7 @@ function install_process ($argv = null) {
 				'style'	=> 'color: red;'
 			]
 		).
-		h::button(
+		h::{'button.uk-button'}(
 			'Go to website',
 			[
 				'onclick'	=> "location.href = '/';"

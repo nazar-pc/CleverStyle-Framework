@@ -52,7 +52,7 @@ $Index->content(
 				'title'			=> "$L->system » $L->license"
 			]
 		).
-		h::{'button#cs-system-license-open'}(
+		h::{'button.uk-button#cs-system-license-open'}(
 			h::icon('legal').$L->license,
 			[
 				'data-title'	=> $L->click_to_view_details

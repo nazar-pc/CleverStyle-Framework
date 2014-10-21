@@ -23,7 +23,7 @@ $Index->content(
 	h::{'h2.cs-center'}(
 		$L->photo_gallery_sure_to_delete_gallery($gallery['title'])
 	).
-	h::{'button[type=submit]'}($L->yes).
+	h::{'button.uk-button[type=submit]'}($L->yes).
 	h::{'input[type=hidden][name=delete]'}([
 		'value'	=> $gallery['id']
 	])

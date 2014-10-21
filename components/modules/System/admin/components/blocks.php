@@ -71,7 +71,7 @@ if (isset($rc[2])) {
 						'value'	=> $rc[3]
 					])
 				).
-				h::{'button[type=submit]'}($L->yes)
+				h::{'button.uk-button[type=submit]'}($L->yes)
 			);
 		break;
 		case 'add':
@@ -334,15 +334,15 @@ if (isset($rc[2])) {
 				).
 				h::{'div div'}(
 					h::{'p.cs-left'}(
-						h::{'button.cs-permissions-invert'}($L->invert).
-						h::{'button.cs-permissions-allow-all'}($L->allow_all).
-						h::{'button.cs-permissions-deny-all'}($L->deny_all)
+						h::{'button.uk-button.cs-permissions-invert'}($L->invert).
+						h::{'button.uk-button.cs-permissions-allow-all'}($L->allow_all).
+						h::{'button.uk-button.cs-permissions-deny-all'}($L->deny_all)
 					).
 					h::{'cs-table[right-left] cs-table-row'}($groups_content),
 					h::{'p.cs-left'}(
-						h::{'button.cs-permissions-invert'}($L->invert).
-						h::{'button.cs-permissions-allow-all'}($L->allow_all).
-						h::{'button.cs-permissions-deny-all'}($L->deny_all)
+						h::{'button.uk-button.cs-permissions-invert'}($L->invert).
+						h::{'button.uk-button.cs-permissions-allow-all'}($L->allow_all).
+						h::{'button.uk-button.cs-permissions-deny-all'}($L->deny_all)
 					).
 					h::{'cs-table#cs-block-users-changed-permissions[right-left] cs-table-row'}($users_content).
 					h::{'input#block_users_search[type=search]'}([
@@ -372,7 +372,7 @@ if (isset($rc[2])) {
 }
 if ($form) {
 	$a->reset_button	= false;
-	$a->post_buttons	.= h::{'button.cs-reload-button'}(
+	$a->post_buttons	.= h::{'button.uk-button.cs-reload-button'}(
 		$L->reset
 	);
 	$blocks_array = [

@@ -94,7 +94,7 @@ if (isset($rc[2])) {
 					'name'	=> 'id',
 					'value'	=> $rc[3]
 				]).
-				h::{'button[type=submit]'}($L->yes)
+				h::{'button.uk-button[type=submit]'}($L->yes)
 			);
 			$Page->warning($L->changing_settings_warning);
 		break;
@@ -119,14 +119,14 @@ if (isset($rc[2])) {
 		foreach ($list as $label => $id) {
 			++$count;
 			$permissions_list[] = [
-				h::{'a.cs-button-compact'}(
+				h::{'a.uk-button.cs-button-compact'}(
 					h::icon('pencil'),
 					[
 						'href'			=> "$a->action/edit/$id",
 						'data-title'	=> $L->edit
 					]
 				).
-				h::{'a.cs-button-compact'}(
+				h::{'a.uk-button.cs-button-compact'}(
 					h::icon('trash-o'),
 					[
 						'href'			=> "$a->action/delete/$id",

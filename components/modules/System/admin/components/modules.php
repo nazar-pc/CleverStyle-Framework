@@ -122,7 +122,7 @@ if (
 					);
 					$a->cancel_button_back	= true;
 					$a->content(
-						h::{'button[type=submit]'}($L->{$check_dependencies ? $L->yes : 'force_update_not_recommended'})
+						h::{'button.uk-button[type=submit]'}($L->{$check_dependencies ? $L->yes : 'force_update_not_recommended'})
 					);
 					break;
 				}
@@ -228,7 +228,7 @@ if (
 				back_to_module_installation_2:
 			}
 			$a->content(
-				h::{'button[type=submit]'}(
+				h::{'button.uk-button[type=submit]'}(
 					$L->{$check_dependencies ? 'install' : 'force_install_not_recommended'}
 				)
 			);
@@ -255,7 +255,7 @@ if (
 			}
 			$a->cancel_button_back	= true;
 			$a->content(
-				h::{'button[type=submit]'}(
+				h::{'button.uk-button[type=submit]'}(
 					$L->{$check_dependencies ? 'uninstall' : 'force_uninstall_not_recommended'}
 				)
 			);
@@ -320,7 +320,7 @@ if (
 						$new_version
 					)
 				).
-				h::{'button[type=submit]'}($L->yes)
+				h::{'button.uk-button[type=submit]'}($L->yes)
 			);
 			$rc[3]					= 'System';
 			$a->cancel_button_back	= true;
@@ -344,7 +344,7 @@ if (
 			}
 			$a->cancel_button_back	= true;
 			$a->content(
-				h::{'button[type=submit]'}($L->yes)
+				h::{'button.uk-button[type=submit]'}($L->yes)
 			);
 		break;
 		case 'db':
@@ -494,7 +494,7 @@ if (
 			);
 			$a->cancel_button_back	= true;
 			$a->content(
-				h::{'button[type=submit]'}($L->{$check_dependencies ? 'yes' : 'force_enable_not_recommended'})
+				h::{'button.uk-button[type=submit]'}($L->{$check_dependencies ? 'yes' : 'force_enable_not_recommended'})
 			);
 		break;
 		case 'disable':
@@ -511,7 +511,7 @@ if (
 			);
 			$a->cancel_button_back	= true;
 			$a->content(
-				h::{'button[type=submit]'}($L->{$check_dependencies ? 'yes' : 'force_disable_not_recommended'})
+				h::{'button.uk-button[type=submit]'}($L->{$check_dependencies ? 'yes' : 'force_disable_not_recommended'})
 			);
 		break;
 		case 'remove':
@@ -524,7 +524,7 @@ if (
 			);
 			$a->cancel_button_back	= true;
 			$a->content(
-				h::{'button[type=submit]'}($L->yes)
+				h::{'button.uk-button[type=submit]'}($L->yes)
 			);
 			$rc[3]					= $_POST['remove_module'];
 		break;
@@ -661,7 +661,7 @@ foreach ($Config->components['modules'] as $module_name => &$module_data) {
 				file_exists(MODULES."/$module_name/index.json")
 			)
 		) {
-			$action .= h::{'a.cs-button-compact'}(
+			$action .= h::{'a.uk-button.cs-button-compact'}(
 				h::icon('home'),
 				[
 					'href'			=> "$a->action/default_module/$module_name",
@@ -673,7 +673,7 @@ foreach ($Config->components['modules'] as $module_name => &$module_data) {
 		 * DataBases settings
 		 */
 		if (!$Config->core['simple_admin_mode'] && file_exists(MODULES."/$module_name/meta/db.json") && count($Config->db) > 1) {
-			$action .= h::{'a.cs-button-compact'}(
+			$action .= h::{'a.uk-button.cs-button-compact'}(
 				h::icon('database'),
 				[
 					'href'			=> "$a->action/db/$module_name",
@@ -685,7 +685,7 @@ foreach ($Config->components['modules'] as $module_name => &$module_data) {
 		 * Storages settings
 		 */
 		if (!$Config->core['simple_admin_mode'] && file_exists(MODULES."/$module_name/meta/storage.json") && count($Config->storage) > 1) {
-			$action .= h::{'a.cs-button-compact'}(
+			$action .= h::{'a.uk-button.cs-button-compact'}(
 				h::icon('hdd-o'),
 				[
 					'href'			=> "$a->action/storage/$module_name",
@@ -698,7 +698,7 @@ foreach ($Config->components['modules'] as $module_name => &$module_data) {
 			 * Link to the module admin page
 			 */
 			if (file_exists(MODULES."/$module_name/admin/index.php") || file_exists(MODULES."/$module_name/admin/index.json")) {
-				$action		.= h::{'a.cs-button-compact'}(
+				$action		.= h::{'a.uk-button.cs-button-compact'}(
 					h::icon('sliders'),
 					[
 						'href'			=> "admin/$module_name",
@@ -708,14 +708,14 @@ foreach ($Config->components['modules'] as $module_name => &$module_data) {
 				$admin_link	= true;
 			}
 			if ($module_name != $Config->core['default_module']) {
-				$action		.= h::{'a.cs-button-compact'}(
+				$action		.= h::{'a.uk-button.cs-button-compact'}(
 					$module_data['active'] == 1 ? h::icon('minus') : h::icon('check')." $L->enable",
 					[
 						'href'			=> $a->action.($module_data['active'] == 1 ? '/disable/' : '/enable/').$module_name,
 						'data-title'	=> $module_data['active'] == 1 ? $L->disable : false
 					]
 				).
-				h::{'a.cs-button-compact'}(
+				h::{'a.uk-button.cs-button-compact'}(
 					h::icon('trash-o'),
 					[
 						'href'			=> "$a->action/uninstall/$module_name",
@@ -728,7 +728,7 @@ foreach ($Config->components['modules'] as $module_name => &$module_data) {
 	 * If module uninstalled or not installed yet
 	 */
 	} else {
-		$action .= h::{'a.cs-button-compact'}(
+		$action .= h::{'a.uk-button.cs-button-compact'}(
 			h::icon('download')." $L->install",
 			[
 				'href'			=> "$a->action/install/$module_name"
@@ -811,7 +811,7 @@ $a->content(
 	).
 	h::p(
 		h::{'input[type=file][name=upload_module]'}().
-		h::{'button[type=submit]'}(
+		h::{'button.uk-button[type=submit]'}(
 			h::icon('upload').$L->upload_and_install_update_module,
 			[
 				'formaction'	=>  "$a->action/install/upload"
@@ -820,7 +820,7 @@ $a->content(
 	).
 	h::p(
 		h::{'input[type=file][name=upload_system]'}().
-		h::{'button[type=submit]'}(
+		h::{'button.uk-button[type=submit]'}(
 			h::icon('upload').$L->upload_and_update_system,
 			[
 				'formaction'	=>  "$a->action/update_system"
@@ -831,7 +831,7 @@ $a->content(
 		$modules_for_removal
 			? h::p(
 				h::{'select[name=remove_module]'}($modules_for_removal).
-				h::{'button[type=submit]'}(
+				h::{'button.uk-button[type=submit]'}(
 					h::icon('trash-o').$L->complete_module_removal,
 					[
 						'formaction'	=>  "$a->action/remove"
@@ -840,7 +840,7 @@ $a->content(
 			)
 			: ''
 	).
-	h::{'button[type=submit]'}(
+	h::{'button.uk-button[type=submit]'}(
 		h::icon('refresh').$L->update_modules_list,
 		[
 			'data-title'	=> $L->update_modules_list_info,

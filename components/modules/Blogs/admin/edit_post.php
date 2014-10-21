@@ -90,16 +90,16 @@ $Index->content(
 	(
 		!$sections ? h::{'input[type=hidden][name=sections[]][value=0]'}() : ''
 	).
-	h::{'button.cs-blogs-post-preview'}(
+	h::{'button.uk-button.cs-blogs-post-preview'}(
 		$L->preview,
 		[
 			'data-id'	=> $post['id']
 		]
 	).
-	h::{'button[type=submit][name=mode][value=edit_post]'}(
+	h::{'button.uk-button[type=submit][name=mode][value=edit_post]'}(
 		$L->save
 	).
-	h::{'button[type=submit][name=mode][value=edit_post_draft]'}(
+	h::{'button.uk-button[type=submit][name=mode][value=edit_post_draft]'}(
 		$L->to_drafts
 	)
 );

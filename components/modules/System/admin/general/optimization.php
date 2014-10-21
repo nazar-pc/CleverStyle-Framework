@@ -33,13 +33,13 @@ Index::instance()->content(
 				'placeholder'	=> $L->partial_cache_cleaning,
 				'style'			=> $Config->core['simple_admin_mode'] ? 'display:none;' : false
 			]).
-			h::button(
+			h::{'button.uk-button'}(
 				$L->clean_settings_cache,
 				Cache::instance()->cache_state() ? [
 					'onMouseDown'	=> "cs.admin_cache('#clean_cache', '{$Config->base_url()}/api/System/admin/cache/clean_cache', $(this).prev().val());"
 				] : ['disabled']
 			),
-			h::button(
+			h::{'button.uk-button'}(
 				$L->clean_scripts_styles_cache,
 				$Config->core['cache_compress_js_css'] ? [
 					'onMouseDown'	=> "cs.admin_cache('#clean_pcache', '{$Config->base_url()}/api/System/admin/cache/clean_pcache');"

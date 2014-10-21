@@ -25,11 +25,6 @@ $ ->
 		element.filter(":not(.uk-button) > input:checkbox:not(#{no_ui_selector})").cs().checkbox()
 		element.find(":not(.uk-button) > input:checkbox:not(#{no_ui_selector})").cs().checkbox()
 
-		element.filter(':button:not(.uk-button), .cs-button, .cs-button-compact')
-			.addClass('uk-button')
-		element.find(":button:not(#{no_ui_selector}, .uk-button), .cs-button, .cs-button-compact")
-			.addClass('uk-button')
-
 		element.filter('textarea:not(.cs-no-resize)')
 			.autosize()
 		element.find("textarea:not(#{no_ui_selector}, .cs-no-resize)")

@@ -97,7 +97,7 @@ if (isset($rc[2])) {
 					'name'	=> 'id',
 					'value'	=> $rc[3]
 				]).
-				h::{'button[type=submit]'}($L->yes)
+				h::{'button.uk-button[type=submit]'}($L->yes)
 			);
 			$Page->warning($L->changing_settings_warning);
 		break;
@@ -145,9 +145,9 @@ if (isset($rc[2])) {
 				}
 				$tabs_content .= h::{'div#permissions_group_'.strtr($group, '/', '_')}(
 					h::{'p.cs-left'}(
-						h::{'button.cs-permissions-invert'}($L->invert).
-						h::{'button.cs-permissions-deny-all'}($L->deny_all).
-						h::{'button.cs-permissions-allow-all'}($L->allow_all)
+						h::{'button.uk-button.cs-permissions-invert'}($L->invert).
+						h::{'button.uk-button.cs-permissions-deny-all'}($L->deny_all).
+						h::{'button.uk-button.cs-permissions-allow-all'}($L->allow_all)
 					).
 					h::{'cs-table[right-left] cs-table-row'}($content_)
 				);
@@ -188,21 +188,21 @@ if (isset($rc[2])) {
 		$id				= $id['id'];
 		$group_data 	= $Group->get($id);
 		$groups_list[]	= [
-			h::{'a.cs-button-compact'}(
+			h::{'a.uk-button.cs-button-compact'}(
 				h::icon('pencil'),
 				[
 					'href'			=> "$a->action/edit/$id",
 					'data-title'	=> $L->edit_group_information
 				]
 			).
-			($id != User::ADMIN_GROUP_ID && $id != User::USER_GROUP_ID && $id != User::BOT_GROUP_ID ? h::{'a.cs-button-compact'}(
+			($id != User::ADMIN_GROUP_ID && $id != User::USER_GROUP_ID && $id != User::BOT_GROUP_ID ? h::{'a.uk-button.cs-button-compact'}(
 				h::icon('trash-o'),
 				[
 					'href'			=> "$a->action/delete/$id",
 					'data-title'	=> $L->delete
 				]
 			) : '').
-			h::{'a.cs-button-compact'}(
+			h::{'a.uk-button.cs-button-compact'}(
 				h::icon('key'),
 				[
 					'href'			=> "$a->action/permissions/$id",

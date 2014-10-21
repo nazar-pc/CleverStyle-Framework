@@ -171,7 +171,7 @@ switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 					h::{'input.cs-profile-new-password[type=password]'}()
 				]
 			).
-			h::{'button.cs-profile-change-password'}(
+			h::{'button.uk-button.cs-profile-change-password'}(
 				$L->change_password
 			)
 		);

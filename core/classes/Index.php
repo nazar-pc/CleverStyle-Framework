@@ -409,7 +409,7 @@ class Index {
 					$this->Content.
 					//Apply button
 					($this->apply_button && $this->buttons ?
-						h::button(
+						h::{'button.uk-button'}(
 							$L->apply,
 							[
 								'name'			=> 'edit_settings',
@@ -423,7 +423,7 @@ class Index {
 					: '').
 					//Save button
 					($this->save_button && $this->buttons ?
-						h::button(
+						h::{'button.uk-button'}(
 							$L->save,
 							[
 								'name'			=> 'edit_settings',
@@ -436,7 +436,7 @@ class Index {
 					: '').
 					//Cancel button (cancel changes or returns to the previous page)
 					(($this->apply_button && $this->buttons) || $this->cancel_button_back ?
-						h::button(
+						h::{'button.uk-button'}(
 							$L->cancel,
 							[
 								'name'			=> 'edit_settings',
@@ -451,7 +451,7 @@ class Index {
 					: '').
 					//Reset button
 					($this->buttons && $this->reset_button ?
-						h::button(
+						h::{'button.uk-button'}(
 							$L->reset,
 							[
 								'id'			=> 'reset_settings',

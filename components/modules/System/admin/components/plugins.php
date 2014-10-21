@@ -102,7 +102,7 @@ if (
 					);
 					$a->cancel_button_back	= true;
 					$a->content(
-						h::{'button[type=submit]'}($L->{$check_dependencies ? $L->yes : 'force_update_not_recommended'})
+						h::{'button.uk-button[type=submit]'}($L->{$check_dependencies ? $L->yes : 'force_update_not_recommended'})
 					);
 					return;
 				}
@@ -161,7 +161,7 @@ if (
 				}
 				$a->cancel_button_back	= true;
 				$a->content(
-					h::{'button[type=submit]'}(
+					h::{'button.uk-button[type=submit]'}(
 						$L->{$check_dependencies ? 'enable' : 'force_enable_not_recommended'}
 					).
 					h::{'input[type=hidden]'}([
@@ -190,7 +190,7 @@ if (
 				}
 				$a->cancel_button_back	= true;
 				$a->content(
-					h::{'button[type=submit]'}(
+					h::{'button.uk-button[type=submit]'}(
 						$L->{$check_dependencies ? 'disable' : 'force_disable_not_recommended'}
 					).
 					h::{'input[type=hidden]'}([
@@ -214,7 +214,7 @@ if (
 			);
 			$a->cancel_button_back	= true;
 			$a->content(
-				h::{'button[type=submit]'}($L->yes).
+				h::{'button.uk-button[type=submit]'}($L->yes).
 				h::{'input[type=hidden]'}([
 					'name'	=> 'mode',
 					'value'	=> $rc[2]
@@ -289,7 +289,7 @@ if (!empty($plugins)) {
 		}
 		unset($tag, $file);
 		$state = in_array($plugin, $Config->components['plugins']);
-		$action .= h::{'a.cs-button-compact'}(
+		$action .= h::{'a.uk-button.cs-button-compact'}(
 			h::icon($state ? 'minus' : 'check'),
 			[
 				'href'			=> $a->action.($state ? '/disable/' : '/enable/').$plugin,
@@ -360,7 +360,7 @@ $a->content(
 		h::{'input[type=file][name=upload_plugin]'}([
 			'style'	=> 'position: relative;'
 		]).
-		h::{'button[type=submit]'}(
+		h::{'button.uk-button[type=submit]'}(
 			h::icon('upload').$L->upload_and_install_update_plugin,
 			[
 				'formaction'	=>  "$a->action/enable/upload"
@@ -371,7 +371,7 @@ $a->content(
 		$plugins_for_removal
 			? h::p(
 				h::{'select[name=remove_plugin]'}($plugins_for_removal).
-				h::{'button[type=submit]'}(
+				h::{'button.uk-button[type=submit]'}(
 					h::icon('trash-o').$L->complete_plugin_removal,
 					[
 						'formaction'	=>  "$a->action/remove"

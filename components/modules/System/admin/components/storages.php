@@ -88,7 +88,7 @@ if (isset($rc[2])) {
 						])
 						: ''
 				).
-				h::button(
+				h::{'button.uk-button'}(
 					$L->test_connection,
 					[
 						'onMouseDown'	=> "cs.storage_test();"
@@ -128,7 +128,7 @@ if (isset($rc[2])) {
 								'value'	=> $rc[3]
 							])
 					).
-					h::{'button[type=submit]'}($L->yes)
+					h::{'button.uk-button[type=submit]'}($L->yes)
 				);
 			}
 	}
@@ -141,21 +141,21 @@ if (isset($rc[2])) {
 			$storages_list[] =	[
 				[
 					($i ?
-					h::{'a.cs-button-compact'}(
+					h::{'a.uk-button.cs-button-compact'}(
 						h::icon('pencil'),
 						[
 							'href'			=> "$a->action/edit/$i",
 							'data-title'	=> "$L->edit $L->storage"
 						]
 					).
-					h::{'a.cs-button-compact'}(
+					h::{'a.uk-button.cs-button-compact'}(
 						h::icon('trash-o'),
 						[
 							'href'			=> "$a->action/delete/$i",
 							'data-title'	=> "$L->delete $L->storage"
 						]
 					).
-					h::{'a.cs-button-compact'}(
+					h::{'a.uk-button.cs-button-compact'}(
 						h::icon('signal'),
 						[
 							'onMouseDown'	=> "cs.storage_test($i);",

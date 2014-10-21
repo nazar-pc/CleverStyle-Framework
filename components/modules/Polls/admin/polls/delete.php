@@ -27,7 +27,7 @@ $Index->action       = 'admin/Polls/polls';
 $Index->apply_button = false;
 $Index->content(
 	h::{'h2.cs-center'}($L->deleting_of_poll($poll['title'])).
-	h::{'button[type=submit][name=delete]'}(
+	h::{'button.uk-button[type=submit][name=delete]'}(
 		$L->yes,
 		[
 			'value'	=> $poll['id']

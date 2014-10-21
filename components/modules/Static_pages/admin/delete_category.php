@@ -24,7 +24,7 @@ $Index->content(
 	h::{'h2.cs-center'}(
 		$L->sure_to_delete_page_category($title)
 	).
-	h::{'button[type=submit]'}($L->yes).
+	h::{'button.uk-button[type=submit]'}($L->yes).
 	h::{'input[type=hidden][name=id]'}([
 		'value'	=> $id
 	]).

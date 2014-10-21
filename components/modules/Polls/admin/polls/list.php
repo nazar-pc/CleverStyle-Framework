@@ -52,4 +52,4 @@ $Index->content(
 		'placeholder' => $L->answers_one_per_line
 	])
 );
-$Index->post_buttons = h::{'button[type=submit]'}($L->add);
+$Index->post_buttons = h::{'button.uk-button[type=submit]'}($L->add);

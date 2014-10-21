@@ -49,7 +49,7 @@ function get_sections_rows ($structure = null, $level = 0, &$content = null) {
 				'class'	=> "cs-blogs-padding-left-$level"
 			]
 		],
-		h::{'a.cs-button-compact'}(
+		h::{'a.uk-button.cs-button-compact'}(
 			[
 				h::icon('plus'),
 				[
@@ -58,7 +58,7 @@ function get_sections_rows ($structure = null, $level = 0, &$content = null) {
 				]
 			]
 		).
-		(!$root ? h::{'a.cs-button-compact'}(
+		(!$root ? h::{'a.uk-button.cs-button-compact'}(
 			[
 				h::icon('pencil'),
 				[
@@ -196,7 +196,7 @@ function get_posts_rows ($page = 1) {
 				).
 				h::br().
 				date($L->_datetime, $post['date']),
-				h::{'a.cs-button-compact'}(
+				h::{'a.uk-button.cs-button-compact'}(
 					[
 						h::icon('pencil'),
 						[

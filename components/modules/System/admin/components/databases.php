@@ -215,7 +215,7 @@ if (isset($rc[2])) {
 								'value'	=> $rc[4]
 							]) : '')
 					).
-					h::{'button[type=submit]'}($L->yes)
+					h::{'button.uk-button[type=submit]'}($L->yes)
 				);
 			}
 	}
@@ -228,7 +228,7 @@ if (isset($rc[2])) {
 			$db_list[]	= [
 				[
 					[
-						h::{'a.cs-button-compact'}(
+						h::{'a.uk-button.cs-button-compact'}(
 							[
 								h::icon('plus'),
 								[
@@ -277,7 +277,7 @@ if (isset($rc[2])) {
 				if (is_array($mirror) && !empty($mirror)) {
 					$db_list[]	= [
 						[
-							h::{'a.cs-button-compact'}(
+							h::{'a.uk-button.cs-button-compact'}(
 								[
 									h::icon('pencil'),
 									[

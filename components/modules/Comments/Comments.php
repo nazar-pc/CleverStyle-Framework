@@ -437,16 +437,16 @@ class Comments {
 					]
 				).
 				h::br().
-				h::{'button.cs-comments-comment-write-send'}(
+				h::{'button.uk-button.cs-comments-comment-write-send'}(
 					$L->send_comment
 				).
-				h::{'button.cs-comments-comment-write-edit'}(
+				h::{'button.uk-button.cs-comments-comment-write-edit'}(
 					$L->save,
 					[
 						'style'	=>	'display: none'
 					]
 				).
-				h::{'button.cs-comments-comment-write-cancel'}(
+				h::{'button.uk-button.cs-comments-comment-write-cancel'}(
 					$L->cancel,
 					[
 						'style'	=>	'display: none'

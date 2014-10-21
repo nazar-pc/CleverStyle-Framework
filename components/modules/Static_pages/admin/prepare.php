@@ -47,7 +47,7 @@ function get_categories_rows ($structure = null, $level = 0, $parent_categories 
 				'class'	=> "cs-static-pages-padding-left-$level"
 			]
 		],
-		h::{'a.cs-button-compact'}(
+		h::{'a.uk-button.cs-button-compact'}(
 			[
 				h::icon('plus'),
 				[
@@ -70,7 +70,7 @@ function get_categories_rows ($structure = null, $level = 0, $parent_categories 
 				]
 			]*/
 		).
-		(!$root ? h::{'a.cs-button-compact'}(
+		(!$root ? h::{'a.uk-button.cs-button-compact'}(
 			[
 				h::icon('pencil'),
 				[
@@ -153,7 +153,7 @@ function get_pages_rows () {
 						'class'	=> 'cs-static-pages-padding-left-0'
 					]
 				],
-				h::{'a.cs-button-compact'}(
+				h::{'a.uk-button.cs-button-compact'}(
 					[
 						h::icon('file-text'),
 						[
