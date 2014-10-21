@@ -130,7 +130,7 @@ $Index->content(
 	h::{'cs-table.cs-blogs-post-form[right-left] cs-table-row| cs-table-cell'}(
 		[
 			$L->post_title,
-			h::{'h1.cs-blogs-new-post-title.SIMPLEST_INLINE_EDITOR'}(
+			h::{'h1.cs-blogs-new-post-title[contenteditable=true]'}(
 				isset($_POST['title']) ? $_POST['title'] : $post['title']
 			)
 		],

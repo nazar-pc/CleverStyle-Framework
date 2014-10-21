@@ -25,11 +25,11 @@
 
 .cs-blogs-post-form {
 
-	td {
+	cs-table-cell {
 		vertical-align : top !important;
 
 		.INLINE_EDITOR,
-		.SIMPLEST_INLINE_EDITOR {
+		[contenteditable=true] {
 			outline : #333333 dotted 1px;
 		}
 	}

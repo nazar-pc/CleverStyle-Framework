@@ -7,9 +7,6 @@
 $ ->
 	window.no_ui_selector		= '.cs-no-ui'
 	ui_automatic_helpers_update = (element) ->
-		element.find('.SIMPLEST_INLINE_EDITOR')
-			.prop('contenteditable', true)
-
 		element.filter('[data-title]:not(data-uk-tooltip)').cs().tooltip()
 		element.find('[data-title]:not(data-uk-tooltip)').cs().tooltip()
 
