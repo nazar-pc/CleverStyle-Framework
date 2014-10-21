@@ -14,44 +14,6 @@
     var helpers;
     helpers = {
       /**
-      		 * Radio buttons with UIkit
-      		 *
-      		 * Required DOM structure * > label > input:radio, plugin may be applied to any of these elements
-      */
-
-      radio: function() {
-        if (!this.length) {
-          return this;
-        }
-        return this.each(function() {
-          var radio;
-          radio = $(this);
-          if (!radio.is(':radio')) {
-            radio = radio.find(':radio');
-          }
-          return radio.parent().parent().addClass('uk-button-group').attr('data-uk-button-radio', '').children('label').addClass('uk-button').find(':radio').filter(':checked').parent().addClass('uk-active');
-        });
-      },
-      /**
-      		 * Checkboxes with UIkit
-      		 *
-      		 * Required DOM structure * > label > input:checkbox, plugin may be applied to any of these elements
-      */
-
-      checkbox: function() {
-        if (!this.length) {
-          return this;
-        }
-        return this.each(function() {
-          var checkbox;
-          checkbox = $(this);
-          if (!checkbox.is(':checkbox')) {
-            checkbox = checkbox.find(':checkbox');
-          }
-          return checkbox.parent().parent().attr('data-uk-button-checkbox', '').children('label').addClass('uk-button').find(':checkbox').filter(':checked').parent().addClass('uk-active');
-        });
-      },
-      /**
       		 * Tabs with UIkit
       		 *
       		 * Required DOM structure *+*, where first element contains list of tabs, and second element content of each tab, plugin must be applied to the first element

@@ -36,11 +36,11 @@ $Index->content(
 			h::{'input[name=add[title]]'}(),
 			($Config->core['simple_admin_mode'] ? false : h::{'input[name=add[path]]'}()),
 			h::{'textarea[name=add[description]]'}(),
-			h::{'input[type=radio][name=add[active]][checked=1]'}([
+			h::{'radio[name=add[active]][checked=1]'}([
 				'value'	=> [0, 1],
 				'in'	=> [$L->off, $L->on]
 			]),
-			h::{'input[type=radio][name=add[preview_image]][checked=last]'}([
+			h::{'radio[name=add[preview_image]][checked=last]'}([
 				'value'	=> ['first', 'last'],
 				'in'	=> [$L->photo_gallery_first_uploaded, $L->photo_gallery_last_uploaded]
 			])

@@ -61,7 +61,7 @@ $Index->content(
 	h::{'p button.uk-button.cs-content-add'}($L->add).
 	h::{'cs-table[right-left] cs-table-row cs-table-cell'}(
 		h::info('content_simple_insert'),
-		h::{'input[type=radio]'}([
+		h::radio([
 			'name'    => 'simple_insert',
 			'value'   => [0, 1],
 			'in'      => [$L->no, $L->yes],

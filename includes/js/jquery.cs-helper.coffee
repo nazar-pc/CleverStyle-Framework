@@ -7,47 +7,6 @@
 do ($=jQuery, UI = jQuery.UIkit) ->
 	helpers	=
 		###*
-		 * Radio buttons with UIkit
-		 *
-		 * Required DOM structure * > label > input:radio, plugin may be applied to any of these elements
-		###
-		radio			: ->
-			if !@.length
-				return @
-			@.each ->
-				radio	= $(@)
-				if !radio.is(':radio')
-					radio	= radio.find(':radio')
-				radio.parent().parent()
-					.addClass('uk-button-group')
-					.attr('data-uk-button-radio', '')
-					.children('label')
-						.addClass('uk-button')
-						.find(':radio')
-							.filter(':checked')
-							.parent()
-								.addClass('uk-active')
-		###*
-		 * Checkboxes with UIkit
-		 *
-		 * Required DOM structure * > label > input:checkbox, plugin may be applied to any of these elements
-		###
-		checkbox		: ->
-			if !@.length
-				return @
-			@.each ->
-				checkbox	= $(@)
-				if !checkbox.is(':checkbox')
-					checkbox	= checkbox.find(':checkbox')
-				checkbox.parent().parent()
-					.attr('data-uk-button-checkbox', '')
-					.children('label')
-						.addClass('uk-button')
-						.find(':checkbox')
-							.filter(':checked')
-							.parent()
-								.addClass('uk-active')
-		###*
 		 * Tabs with UIkit
 		 *
 		 * Required DOM structure *+*, where first element contains list of tabs, and second element content of each tab, plugin must be applied to the first element

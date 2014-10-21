@@ -18,7 +18,7 @@ Index::instance()->content(
 	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}([
 		[
 			h::info('smtp'),
-			h::{'input[type=radio]'}([
+			h::radio([
 				'name'			=> 'core[smtp]',
 				'checked'		=> $Config->core['smtp'],
 				'value'			=> [0, 1],
@@ -38,7 +38,7 @@ Index::instance()->content(
 					),
 					h::td([
 						h::info('smtp_secure'),
-						h::{'input[type=radio]'}([
+						h::radio([
 							'name'			=> 'core[smtp_secure]',
 							'checked'		=> $Config->core['smtp_secure'],
 							'value'			=> ['', 'ssl', 'tls'],
@@ -47,7 +47,7 @@ Index::instance()->content(
 					]),
 					h::td([
 						$L->smtp_auth,
-						h::{'input[type=radio]'}([
+						h::radio([
 							'name'			=> 'core[smtp_auth]',
 							'checked'		=> $Config->core['smtp_auth'],
 							'value'			=> [0, 1],

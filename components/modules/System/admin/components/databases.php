@@ -334,7 +334,7 @@ if (isset($rc[2])) {
 		h::{'cs-table[right-left] cs-table-row| cs-table-cell'}([
 			[
 				h::info('db_balance'),
-				h::{'input[type=radio]'}([
+				h::radio([
 					'name'			=> 'core[db_balance]',
 					'checked'		=> $Config->core['db_balance'],
 					'value'			=> [0, 1],
@@ -343,7 +343,7 @@ if (isset($rc[2])) {
 			],
 			[
 				h::info('maindb_for_write'),
-				h::{'input[type=radio]'}([
+				h::radio([
 					'name'			=> 'core[maindb_for_write]',
 					'checked'		=> $Config->core['maindb_for_write'],
 					'value'			=> [0, 1],

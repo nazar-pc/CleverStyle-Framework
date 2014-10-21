@@ -104,7 +104,7 @@ if (isset($rc[2])) {
 					],
 					[
 						h::info('block_active'),
-						h::{'div input[type=radio]'}([
+						h::{'div radio'}([
 							'name'		=> 'block[active]',
 							'value'		=> [1, 0],
 							'in'		=> [$L->yes, $L->no]
@@ -129,7 +129,7 @@ if (isset($rc[2])) {
 					],
 					[
 						h::info('block_expire'),
-						h::{'input[type=radio]'}([
+						h::radio([
 							'name'		=> 'block[expire][state]',
 							'value'		=> [0, 1],
 							'in'		=> [$L->never, $L->as_specified]
@@ -183,7 +183,7 @@ if (isset($rc[2])) {
 					],
 					[
 						h::info('block_active'),
-						h::{'div input[type=radio]'}([
+						h::{'div radio'}([
 							'name'		=> 'block[active]',
 							'checked'	=> $block['active'],
 							'value'		=> [1, 0],
@@ -212,7 +212,7 @@ if (isset($rc[2])) {
 					],
 					[
 						h::info('block_expire'),
-						h::{'input[type=radio]'}([
+						h::radio([
 							'name'		=> 'block[expire][state]',
 							'checked'	=> $block['expire'] != 0,
 							'value'		=> [0, 1],
@@ -281,7 +281,7 @@ if (isset($rc[2])) {
 							'data-title'	=> $group['description']
 						]
 					],
-					h::{'input[type=radio]'}([
+					h::radio([
 						'name'			=> "groups[$group[id]]",
 						'checked'		=> $group_permission === false ? -1 : $group_permission,
 						'value'			=> [-1, 0, 1],
@@ -314,7 +314,7 @@ if (isset($rc[2])) {
 				$user				= $user['id'];
 				$users_content[]	= h::cs_table_cell(
 					$User->username($user),
-					h::{'input[type=radio]'}([
+					h::radio([
 						'name'			=> 'users['.$user.']',
 						'checked'		=> $value,
 						'value'			=> [-1, 0, 1],

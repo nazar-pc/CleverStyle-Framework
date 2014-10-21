@@ -234,7 +234,7 @@ if (isset($rc[2], $rc[3])) {
 						],
 						[
 							$L->status,
-							h::{'input[type=radio]'}([
+							h::radio([
 								'name'		=> 'user[status]',
 								'checked'	=> $user_data['status'],
 								'value'		=> [User::STATUS_NOT_ACTIVATED, User::STATUS_INACTIVE, User::STATUS_ACTIVE],
@@ -371,7 +371,7 @@ if (isset($rc[2], $rc[3])) {
 				foreach($list as $label => $id) {
 					$content[] = h::cs_table_cell(
 						$group != 'Block' ? $label : Text::instance()->process($Config->module('System')->db('texts'), $blocks[$label]),
-						h::{'input[type=radio]'}([
+						h::radio([
 							'name'			=> "permission[$id]",
 							'checked'		=> isset($user_permissions[$id]) ? $user_permissions[$id] : -1,
 							'value'			=> [-1, 0, 1],

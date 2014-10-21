@@ -33,7 +33,7 @@ $Index->content(
 		],
 		[
 			$L->active,
-			h::{'cs-table-cell input[type=radio][name=active][checked=1]'}([
+			h::{'cs-table-cell radio[name=active][checked=1]'}([
 				'value'		=> [0, 1],
 				'in'		=> [$L->no, $L->yes]
 			])

@@ -21,10 +21,6 @@
       if (element.is(no_ui_selector) || element.closest(no_ui_selector).length) {
         return;
       }
-      element.filter(":not(.uk-button) > input:radio:not(" + no_ui_selector + ")").cs().radio();
-      element.find(":not(.uk-button) > input:radio:not(" + no_ui_selector + ")").cs().radio();
-      element.filter(":not(.uk-button) > input:checkbox:not(" + no_ui_selector + ")").cs().checkbox();
-      element.find(":not(.uk-button) > input:checkbox:not(" + no_ui_selector + ")").cs().checkbox();
       element.filter('textarea:not(.cs-no-resize)').autosize();
       return element.find("textarea:not(" + no_ui_selector + ", .cs-no-resize)").autosize();
     };

@@ -18,7 +18,7 @@ $Index->apply_button	= false;
 $Index->content(
 	h::{'cs-table[right-left] cs-table-row cs-table-cell'}(
 		h::info('enable_contacts_detection'),
-		h::{'input[type=radio]'}([
+		h::radio([
 			'name'		=> 'enable_contacts_detection',
 			'checked'	=> $Config->module('HybridAuth')->enable_contacts_detection,
 			'value'		=> [0, 1],
@@ -81,7 +81,7 @@ $Index->content(
 							) : false
 						) ?: false
 					) ?: '',
-					h::{'input[type=radio]'}([
+					h::radio([
 						'name'		=> "providers[$provider][enabled]",
 						'checked'	=> @$providers_config[$provider]['enabled'] ?: 0,
 						'value'		=> [0, 1],

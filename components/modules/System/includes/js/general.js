@@ -66,7 +66,7 @@
               },
               type: 'get',
               success: function(result) {
-                return $('#block_users_search_results').html(result).find(':radio').cs().radio().change(function() {
+                return $('#block_users_search_results').html(result).find(':radio').change(function() {
                   return $(this).parentsUntil('tr').parent().addClass('cs-block-users-changed');
                 });
               }

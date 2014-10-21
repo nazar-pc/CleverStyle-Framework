@@ -127,7 +127,7 @@ if (isset($rc[2])) {
 				foreach($list as $label => $id) {
 					$content[] = h::cs_table_cell(
 						$group == 'Block' ? Text::instance()->process($Config->module('System')->db('texts'), $blocks[$label]) : $label,
-						h::{'input[type=radio]'}([
+						h::radio([
 							'name'			=> "permission[$id]",
 							'checked'		=> isset($group_permissions[$id]) ? $group_permissions[$id] : -1,
 							'value'			=> [-1, 0, 1],

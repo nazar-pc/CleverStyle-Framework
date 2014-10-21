@@ -73,7 +73,6 @@ $ ->
 								$('#block_users_search_results')
 									.html(result)
 									.find(':radio')
-									.cs().radio()
 									.change ->
 										$(@)
 											.parentsUntil('tr')

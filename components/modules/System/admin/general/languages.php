@@ -24,7 +24,7 @@ Index::instance()->content(
 		core_select($Config->core['languages'], 'active_languages', 'change_active_languages', null, true),
 		[
 			h::info('multilingual'),
-			h::{'input[type=radio]'}([
+			h::radio([
 				'name'    => 'core[multilingual]',
 				'checked' => $Config->core['multilingual'],
 				'value'   => [0, 1],

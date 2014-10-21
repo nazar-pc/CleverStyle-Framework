@@ -9,7 +9,7 @@
 echo	h::{'form[method=post]'}(
 	h::nav(
 		'Build: '.
-		h::{'input.build-mode[name=mode][type=radio]'}([
+		h::{'radio.build-mode[name=mode]'}([
 			'value'		=> ['core', 'module', 'plugin', 'theme'],
 			'in'		=> ['Core', 'Module', 'Plugin', 'Theme'],
 			'onclick'	=> 'change_mode(this.value, this);'

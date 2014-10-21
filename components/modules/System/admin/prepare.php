@@ -50,12 +50,11 @@ function core_input ($item, $type = 'text', $info_item = null, $disabled = false
 	} else {
 		return [
 			$info_item !== false ? h::info($info_item ?: $item) : $L->$item,
-			h::input([
+			h::radio([
 				'name'		=> "core[$item]",
 				'checked'	=> $Config->core[$item],
 				'value'		=> [0, 1],
-				'in'		=> [$L->off, $L->on],
-				'type'		=> $type
+				'in'		=> [$L->off, $L->on]
 			])
 		];
 	}

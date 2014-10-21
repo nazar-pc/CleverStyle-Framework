@@ -129,4 +129,139 @@ abstract class Base extends BananaHTML {
 		$data['level']	= 0;
 		return static::span($data).' ';
 	}
+	/**
+	 * Rendering of input[type=checkbox] with automatic adding labels and necessary classes
+	 *
+	 * @static
+	 *
+	 * @param array|string	$in
+	 * @param array			$data
+	 *
+	 * @return string
+	 */
+	static function checkbox ($in = [], $data = []) {
+		if (isset($in['insert']) || isset($data['insert'])) {
+			return static::__callStatic(__FUNCTION__, func_get_args());
+		}
+		if ($in === false) {
+			return '';
+		}
+		$in	= static::input_merge($in, $data);
+		if (is_array_indexed($in) && is_array($in[0])) {
+			return static::__callStatic(__FUNCTION__, [$in, $data]);
+		}
+		$in['type'] = 'checkbox';
+		if (
+			(
+				isset($in['name'])	&& is_array($in['name'])
+			) ||
+			(
+				isset($in['id'])	&& is_array($in['id'])
+			)
+		) {
+			$items	= array_flip_3d($in);
+			$return	= '';
+			foreach ($items as $item) {
+				$return .= static::checkbox($item);
+			}
+			return $return;
+		} else {
+			if (!isset($in['id'])) {
+				$in['id'] = uniqid('input_');
+			}
+			if (isset($in['value'], $in['checked']) && $in['value'] == $in['checked']) {
+				$in[]	= 'checked';
+			}
+			unset($in['checked']);
+			if (isset($in['min'], $in['value']) && $in['min'] !== false && $in['min'] > $in['value']) {
+				$in['value'] = $in['min'];
+			}
+			if (isset($in['max'], $in['value']) && $in['max'] !== false && $in['max'] < $in['value']) {
+				$in['value'] = $in['max'];
+			}
+			$in['tag'] = 'input';
+			return static::span(
+				static::label(
+					static::u_wrap($in),
+					[
+						'for'			=> $in['id'],
+						'data-title'	=> isset($in['data-title']) ? $in['data-title'] : false,
+						'class'			=> 'uk-button'.(in_array('checked', $in) ? ' uk-active' : '')
+					]
+				),
+				[
+					'data-uk-button-checkbox'	=> ''
+				]
+			);
+		}
+	}
+	/**
+	 * Rendering of input[type=radio] with automatic adding labels and necessary classes
+	 *
+	 * @static
+	 *
+	 * @param array|string	$in
+	 * @param array			$data
+	 *
+	 * @return string
+	 */
+	static function radio ($in = [], $data = []) {
+		if (isset($in['insert']) || isset($data['insert'])) {
+			return static::__callStatic(__FUNCTION__, func_get_args());
+		}
+		if ($in === false) {
+			return '';
+		}
+		$in	= static::input_merge($in, $data);
+		$in['type'] = 'radio';
+		if (is_array_indexed($in) && is_array($in[0])) {
+			return static::__callStatic(__FUNCTION__, [$in, $data]);
+		}
+		if (!isset($in['checked'])) {
+			$in['checked'] = $in['value'][0];
+		}
+		if (isset($in['add']) && !is_array($in['add'])) {
+			$add = $in['add'];
+			$in['add'] = [];
+			foreach ($in['in'] as $v) {
+				$in['add'][] = $add;
+			}
+			unset($add);
+		}
+		$checked		= $in['checked'];
+		$in['checked']	= [];
+		foreach ($in['value'] as $i => $v) {
+			if ($v == $checked) {
+				$in['checked'][$i] = '';
+				break;
+			}
+		}
+		unset($checked, $i, $v);
+		$items = array_flip_3d($in);
+		unset($in, $v, $i);
+		$temp = '';
+		foreach ($items as $item) {
+			if (!isset($item['id'])) {
+				$item['id'] = uniqid('input_');
+			}
+			$item['tag'] = 'input';
+			if (isset($item['value'])) {
+				$item['value'] = prepare_attr_value($item['value']);
+			}
+			$temp .= static::label(
+				static::u_wrap($item),
+				[
+					'for'	=> $item['id'],
+					'class'	=> 'uk-button'.(isset($item['checked']) ? ' uk-active' : '')
+				]
+			);
+		}
+		return static::span(
+			$temp,
+			[
+				'class'					=> 'uk-button-group',
+				'data-uk-button-radio'	=> ''
+			]
+		);
+	}
 }

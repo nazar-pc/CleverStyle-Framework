@@ -51,8 +51,8 @@ $Index->content(
 							]
 						).
 						h::br(2).
-						h::{'input.build-mode[name=mode][type=radio]'}([
-							'name'	=> "edit_images[$image[id]][delete]",
+						h::radio([
+							'name'		=> "edit_images[$image[id]][delete]",
 							'value'		=> [0, 1],
 							'in'		=> [$L->edit, $L->photo_gallery_delete_image]
 						])

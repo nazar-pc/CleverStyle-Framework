@@ -33,7 +33,7 @@ Index::instance()->content(
 		],
 		[
 			h::info('ip_admin_list_only'),
-			h::{'input[type=radio]'}([
+			h::radio([
 				'name'			=> 'core[ip_admin_list_only]',
 				'checked'		=> $Config->core['ip_admin_list_only'],
 				'value'			=> [0, 1],

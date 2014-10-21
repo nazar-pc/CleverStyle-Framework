@@ -62,7 +62,7 @@ $Index->content(
 	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
 		[
 			h::info('oauth2_allow_guest_tokens'),
-			h::{'input[type=radio]'}([
+			h::radio([
 				'name'		=> 'general[guest_tokens]',
 				'checked'	=> $module_data->guest_tokens,
 				'value'		=> [0, 1],
@@ -71,7 +71,7 @@ $Index->content(
 		],
 		[
 			h::info('oauth2_automatic_prolongation'),
-			h::{'input[type=radio]'}([
+			h::radio([
 				'name'		=> 'general[automatic_prolongation]',
 				'checked'	=> $module_data->automatic_prolongation,
 				'value'		=> [0, 1],

@@ -45,7 +45,7 @@ $Index->content(
 		],
 		[
 			$L->active,
-			h::{'input[type=radio][name=active]'}([
+			h::{'radio[name=active]'}([
 				'checked'	=> $client['active'],
 				'value'		=> [0, 1],
 				'in'		=> [$L->no, $L->yes]

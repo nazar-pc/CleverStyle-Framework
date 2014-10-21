@@ -48,7 +48,3 @@ $ ->
 							location.reload()
 					)
 		)
-	$('.cs-photo-gallery-delete-image-checkbox').change ->
-		t	= $(this)
-		t.parentsUntil('section').find('img, :text, textarea, p').animate
-			opacity : if t.is(':checked') then .2 else 1

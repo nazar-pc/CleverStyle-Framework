@@ -45,12 +45,12 @@ $Index->content(
 					])
 			),
 			h::{'textarea[name=edit[description]]'}($gallery['description']),
-			h::{'input[type=radio][name=edit[active]]'}([
+			h::{'radio[name=edit[active]]'}([
 				'value'		=> [0, 1],
 				'in'		=> [$L->off, $L->on],
 				'checked'	=> $gallery['active']
 			]),
-			h::{'input[type=radio][name=edit[preview_image]]'}([
+			h::{'radio[name=edit[preview_image]]'}([
 				'value'		=> ['first', 'last'],
 				'in'		=> [$L->photo_gallery_first_uploaded, $L->photo_gallery_last_uploaded],
 				'checked'	=> $gallery['preview_image']

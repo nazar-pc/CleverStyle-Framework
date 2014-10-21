@@ -39,7 +39,7 @@ Index::instance()->content(
 		core_input('password_min_strength', 'range', null, false, 0, 7),
 		[
 			h::info('allow_user_registration'),
-			h::{'input[type=radio]'}([
+			h::radio([
 				'name'		=> 'core[allow_user_registration]',
 				'checked'	=> $Config->core['allow_user_registration'],
 				'value'		=> [0, 1],
@@ -54,7 +54,7 @@ Index::instance()->content(
 		[
 			[
 				h::info('require_registration_confirmation'),
-				h::{'input[type=radio]'}([
+				h::radio([
 					'name'			=> 'core[require_registration_confirmation]',
 					'checked'		=> $Config->core['require_registration_confirmation'],
 					'value'			=> [0, 1],

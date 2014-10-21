@@ -43,7 +43,7 @@
       $('html, body').stop().animate({
         scrollTop: $('.cs-photo-gallery-images').offset().top - $(document).height() * .1
       });
-      $('body').on('click', '.cs-photo-gallery-image-delete', function() {
+      return $('body').on('click', '.cs-photo-gallery-image-delete', function() {
         if (confirm(L.photo_gallery_sure_to_delete_image)) {
           return $.ajax('api/Photo_gallery/images/' + $(this).data('image'), {
             cache: false,
@@ -55,13 +55,6 @@
         }
       });
     }
-    return $('.cs-photo-gallery-delete-image-checkbox').change(function() {
-      var t;
-      t = $(this);
-      return t.parentsUntil('section').find('img, :text, textarea, p').animate({
-        opacity: t.is(':checked') ? .2 : 1
-      });
-    });
   });
 
 }).call(this);

@@ -39,7 +39,7 @@ $Index->content(
 			),
 			h::{'input[name=title]'}(),
 			h::{'input[name=path]'}(),
-			h::{'div input[type=radio][name=interface]'}([
+			h::{'div radio[name=interface]'}([
 				'checked'	=> 1,
 				'value'		=> [0, 1],
 				'in'		=> [$L->off, $L->on]

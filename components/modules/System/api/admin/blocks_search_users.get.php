@@ -32,7 +32,7 @@ foreach ($users_list as $user) {
 	]);
 	$content[]		= [
 		$User->username($user),
-		h::{'input[type=radio]'}([
+		h::radio([
 			'name'		=> 'users['.$user.']',
 			'checked'	=> $value !== false ? $value : -1,
 			'value'		=> [-1, 0, 1],
