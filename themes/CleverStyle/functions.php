@@ -128,7 +128,7 @@ function get_header_info () {
 				)
 			).
 			h::{'div.cs-header-restore-password-form'}(
-				h::{'input.cs-no-ui.cs-header-restore-password-email[tabindex=1]'}([
+				h::{'input.cs-header-restore-password-email[tabindex=1]'}([
 					'placeholder'		=> $L->login_or_email,
 					'autocapitalize'	=> 'off',
 					'autocorrect'		=> 'off'
@@ -146,7 +146,7 @@ function get_header_info () {
 				]
 			).
 			h::{'div.cs-header-registration-form'}(
-				h::{'input.cs-no-ui.cs-header-registration-email[type=email][tabindex=1]'}([
+				h::{'input.cs-header-registration-email[type=email][tabindex=1]'}([
 					'placeholder'		=> $L->email,
 					'autocapitalize'	=> 'off',
 					'autocorrect'		=> 'off'
@@ -163,13 +163,13 @@ function get_header_info () {
 					'style'	=> 'display: none;'
 				]
 			).
-			h::{'form.cs-header-sign-in-form.cs-no-ui'}(
-				h::{'input.cs-no-ui.cs-header-sign-in-email[tabindex=1]'}([
+			h::{'form.cs-header-sign-in-form'}(
+				h::{'input.cs-header-sign-in-email[tabindex=1]'}([
 					'placeholder'		=> $L->login_or_email,
 					'autocapitalize'	=> 'off',
 					'autocorrect'		=> 'off'
 				]).
-				h::{'input.cs-no-ui.cs-header-user-password[type=password][tabindex=2]'}([
+				h::{'input.cs-header-user-password[type=password][tabindex=2]'}([
 					'placeholder'	=> $L->password
 				]).
 				h::br().
