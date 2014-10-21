@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]photo_gallery_images` (
 	`title` varchar(255) NOT NULL,
 	`description` text NOT NULL,
 	`date` bigint(20) unsigned NOT NULL,
-	`file` varchar(255) NOT NULL,
+	`original` varchar(255) NOT NULL,
 	`preview` varchar(255) NOT NULL,
 	PRIMARY KEY (`id`),
 	KEY `gallery` (`gallery`),
