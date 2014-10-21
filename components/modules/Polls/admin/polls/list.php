@@ -27,13 +27,13 @@ $Index->content(
 			function ($poll) use ($Index, $L) {
 				return [
 					$poll['title'],
-					h::{'a.cs-button'}(
+					h::{'a.uk-button'}(
 						$L->edit,
 						[
 							'href' => "admin/Polls/polls/edit/$poll[id]"
 						]
 					).
-					h::{'a.cs-button'}(
+					h::{'a.uk-button'}(
 						$L->delete,
 						[
 							'href' => "admin/Polls/polls/delete/$poll[id]"

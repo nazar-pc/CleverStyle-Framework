@@ -745,13 +745,13 @@ if (isset($rc[2], $rc[3])) {
 		).
 		h::{'p.cs-left'}(
 			pages_buttons($page, $total_pages),
-			h::{'a.cs-button'}(
+			h::{'a.uk-button'}(
 				$L->add_user,
 				[
 					'href' => 'admin/System/users/users/add/0',
 				]
 			).
-			h::{'a.cs-button'}(
+			h::{'a.uk-button'}(
 				$L->add_bot,
 				[
 					'href' => 'admin/System/users/users/add_bot/0',

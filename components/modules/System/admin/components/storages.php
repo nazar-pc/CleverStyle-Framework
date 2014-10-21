@@ -193,7 +193,7 @@ if (isset($rc[2])) {
 			],
 			$storages_list
 		).
-		h::{'p a.cs-button'}(
+		h::{'p a.uk-button'}(
 			$L->add_storage,
 			[
 				'href' => "admin/System/$rc[0]/$rc[1]/add"

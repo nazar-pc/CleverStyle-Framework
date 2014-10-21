@@ -34,13 +34,13 @@ $hhvm_version	= defined('HHVM_VERSION') ? HHVM_VERSION : false;
 $Index->form	= false;
 $Index->content(
 	h::{'div.cs-right'}(
-		h::{'a.cs-button[target=_blank]'}(
+		h::{'a.uk-button[target=_blank]'}(
 			'phpinfo()',
 			[
 				'href'	=> "$Index->action/phpinfo"
 			]
 		).
-		h::{'a.cs-button[target=_blank]'}(
+		h::{'a.uk-button[target=_blank]'}(
 			h::icon('info').$L->information_about_system,
 			[
 				'href'	=> "$Index->action/readme.html"

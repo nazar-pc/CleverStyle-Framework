@@ -437,7 +437,7 @@ function pages ($page, $total, $url, $head_links = false) {
 				$i,
 				[
 					'href'	=> $i == $page ? false : $url($i),
-					'class'	=> $i == $page ? 'cs-button uk-button-primary uk-frozen' : 'cs-button'
+					'class'	=> $i == $page ? 'uk-button uk-button-primary uk-frozen' : 'uk-button'
 				]
 			];
 			if ($head_links && ($i == $page - 1 || $i == $page + 1)) {
@@ -454,7 +454,7 @@ function pages ($page, $total, $url, $head_links = false) {
 					$i,
 					[
 						'href'	=> $i == $page ? false : $url($i),
-						'class'	=> $i == $page ? 'cs-button uk-button-primary uk-frozen' : 'cs-button'
+						'class'	=> $i == $page ? 'uk-button uk-button-primary uk-frozen' : 'uk-button'
 					]
 				];
 				if ($head_links&& ($i == $page - 1 || $i == $page + 1)) {
@@ -467,7 +467,7 @@ function pages ($page, $total, $url, $head_links = false) {
 			$output[]	= [
 				'...',
 				[
-					'class'	=> 'cs-button uk-frozen'
+					'class'	=> 'uk-button uk-frozen'
 				]
 			];
 			for ($i = $total - 2; $i <= $total; ++$i) {
@@ -475,7 +475,7 @@ function pages ($page, $total, $url, $head_links = false) {
 					$i,
 					[
 						'href'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
-						'class'	=> 'cs-button'
+						'class'	=> 'uk-button'
 					]
 				];
 			}
@@ -485,14 +485,14 @@ function pages ($page, $total, $url, $head_links = false) {
 					$i,
 					[
 						'href'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
-						'class'	=> 'cs-button'
+						'class'	=> 'uk-button'
 					]
 				];
 			}
 			$output[]	= [
 				'...',
 				[
-					'class'	=> 'cs-button uk-frozen'
+					'class'	=> 'uk-button uk-frozen'
 				]
 			];
 			for ($i = $total - 6; $i <= $total; ++$i) {
@@ -500,7 +500,7 @@ function pages ($page, $total, $url, $head_links = false) {
 					$i,
 					[
 						'href'	=> $i == $page ? false : $url($i),
-						'class'	=> $i == $page ? 'cs-button uk-button-primary uk-frozen' : 'cs-button'
+						'class'	=> $i == $page ? 'uk-button uk-button-primary uk-frozen' : 'uk-button'
 					]
 				];
 				if ($head_links && ($i == $page - 1 || $i == $page + 1)) {
@@ -516,14 +516,14 @@ function pages ($page, $total, $url, $head_links = false) {
 					$i,
 					[
 						'href'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
-						'class'	=> 'cs-button'
+						'class'	=> 'uk-button'
 					]
 				];
 			}
 			$output[]	= [
 				'...',
 				[
-					'class'	=> 'cs-button uk-frozen'
+					'class'	=> 'uk-button uk-frozen'
 				]
 			];
 			for ($i = $page - 1; $i <= $page + 3; ++$i) {
@@ -531,7 +531,7 @@ function pages ($page, $total, $url, $head_links = false) {
 					$i,
 					[
 						'href'	=> $i == $page ? false : $url($i),
-						'class'	=> $i == $page ? 'cs-button uk-button-primary uk-frozen' : 'cs-button'
+						'class'	=> $i == $page ? 'uk-button uk-button-primary uk-frozen' : 'uk-button'
 					]
 				];
 				if ($head_links && ($i == $page - 1 || $i == $page + 1)) {
@@ -544,7 +544,7 @@ function pages ($page, $total, $url, $head_links = false) {
 			$output[]	= [
 				'...',
 				[
-					'class'	=> 'cs-button uk-frozen'
+					'class'	=> 'uk-button uk-frozen'
 				]
 			];
 			for ($i = $total - 1; $i <= $total; ++$i) {
@@ -552,7 +552,7 @@ function pages ($page, $total, $url, $head_links = false) {
 					$i,
 					[
 						'href'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
-						'class'	=> 'cs-button'
+						'class'	=> 'uk-button'
 					]
 				];
 			}

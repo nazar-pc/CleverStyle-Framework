@@ -225,7 +225,7 @@ if (isset($rc[2])) {
 			],
 			$groups_list
 		).
-		h::{'p.cs-left a.cs-button'}(
+		h::{'p.cs-left a.uk-button'}(
 			$L->add_group,
 			[
 				'href' => "admin/System/$rc[0]/$rc[1]/add"

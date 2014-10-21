@@ -449,7 +449,7 @@ if ($form) {
 
 			h::cs_table_cell().$blocks_array['bottom'].h::cs_table_cell()
 		]).
-		h::{'p.cs-left a.cs-button'}(
+		h::{'p.cs-left a.uk-button'}(
 			"$L->add $L->block",
 			[
 			'href' => "admin/System/$rc[0]/$rc[1]/add"

@@ -29,7 +29,7 @@ $Index->content(
 		)
 	).
 	h::{'p.cs-left'}($L->index_page_path).
-	h::{'p.cs-left a.cs-button'}(
+	h::{'p.cs-left a.uk-button'}(
 		[
 			$L->add_category,
 			[

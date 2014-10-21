@@ -126,7 +126,7 @@ if (isset($_POST['update_modules_list'])) {
 				$Page->notice(
 					h::{'p.cs-center'}(
 						"$L->module_installed_but_not_enabled ".
-						h::{'a.cs-button'}(
+						h::{'a.uk-button'}(
 							$L->enable_module($module_name),
 							[
 								'href'	=> "admin/System/components/modules/enable/$module_name"

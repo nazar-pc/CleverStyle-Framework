@@ -351,7 +351,7 @@ if (isset($rc[2])) {
 				])
 			]
 		]).
-		h::{'p a.cs-button'}(
+		h::{'p a.uk-button'}(
 			$L->add_database,
 			[
 				'href' => "admin/System/$rc[0]/$rc[1]/add"

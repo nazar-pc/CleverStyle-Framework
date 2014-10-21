@@ -30,7 +30,7 @@ $Index->content(
 			get_pages_rows()
 		)
 	).
-	h::{'p.cs-left a.cs-button'}(
+	h::{'p.cs-left a.uk-button'}(
 		[
 			$L->add_page,
 			[

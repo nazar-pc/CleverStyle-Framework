@@ -87,7 +87,7 @@ $Index->content(
 			]).$L->seconds
 		]
 	).
-	h::{'p.cs-left a.cs-button'}([
+	h::{'p.cs-left a.uk-button'}([
 		$L->add_client,
 		[
 			'href'	=> 'admin/OAuth2/clients/add'

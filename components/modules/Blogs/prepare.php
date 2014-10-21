@@ -143,7 +143,7 @@ if (!api_path()) {
 			 */
 			if ($User->admin() && $User->get_permission('admin/Blogs', 'index')) {
 				$Index->content(
-					h::{'a.cs-button'}(
+					h::{'a.uk-button'}(
 						h::icon('gears'),
 						[
 							'href'			=> 'admin/Blogs',
@@ -153,14 +153,14 @@ if (!api_path()) {
 				);
 			}
 			$Index->content(
-				$User->admin() || !$module_data->new_posts_only_from_admins ? h::{'a.cs-button'}(
+				$User->admin() || !$module_data->new_posts_only_from_admins ? h::{'a.uk-button'}(
 					h::icon('pencil').$L->new_post,
 					[
 						'href'			=> "$module/new_post",
 						'data-title'	=> $L->new_post
 					]
 				).
-				h::{'a.cs-button'}(
+				h::{'a.uk-button'}(
 					h::icon('archive').$L->drafts,
 					[
 						'href'			=> "$module/".path($L->drafts),

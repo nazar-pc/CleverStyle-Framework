@@ -154,7 +154,7 @@ if (isset($rc[2])) {
 			],
 			$permissions_list
 		).
-		h::{'p.cs-left a.cs-button'}(
+		h::{'p.cs-left a.uk-button'}(
 			$L->add_permission,
 			[
 				'href' => "admin/System/$rc[0]/$rc[1]/add"

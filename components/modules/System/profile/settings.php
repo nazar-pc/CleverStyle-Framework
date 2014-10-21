@@ -68,13 +68,13 @@ switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 	default:
 		$Index->content(
 			h::p(
-				h::{'a.cs-button'}(
+				h::{'a.uk-button'}(
 					$L->general,
 					[
 						'href'	=> "$Index->action/".path($L->general)
 					]
 				).
-				h::{'a.cs-button'}(
+				h::{'a.uk-button'}(
 					$L->change_password,
 					[
 						'href'	=> "$Index->action/".path($L->change_password)

@@ -54,7 +54,7 @@ $Index->content(
 			array_values($Photo_gallery->get_galleries_list())
 		)
 	).
-	h::{'p.cs-left a.cs-button'}(
+	h::{'p.cs-left a.uk-button'}(
 		$L->photo_gallery_add_gallery,
 		[
 			'href'	=> 'admin/Photo_gallery/galleries/add'
