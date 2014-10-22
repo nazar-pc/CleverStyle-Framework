@@ -10,10 +10,8 @@
 namespace	cs\modules\System;
 use			h,
 			cs\Config,
-			cs\Index,
-			cs\Language;
+			cs\Index;
 $Config	= Config::instance();
-$L		= Language::instance();
 $sa		= $Config->core['simple_admin_mode'];
 Index::instance()->content(
 	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
@@ -24,18 +22,6 @@ Index::instance()->content(
 		core_input('title_reverse', 'radio'),
 		core_input('show_tooltips', 'radio', false),
 		core_input('simple_admin_mode', 'radio'),
-		!$sa ? [
-			$L->debug,
-			[
-				h::{'table tr| td'}(
-					core_input('show_db_queries', 'radio'),
-					core_input('show_cookies', 'radio')
-				),
-				[
-					'class'	=> 'cs-padding-left'
-				]
-			]
-		] : false,
 		!$sa ? [
 			h::info('routing'),
 			h::{'cs-table[center] cs-table-row| cs-table-cell'}(

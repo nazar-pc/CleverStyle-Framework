@@ -138,8 +138,6 @@ function install_process ($argv = null) {
 		"site_mode": "1",
 		"title_delimiter": " | ",
 		"title_reverse": "0",
-		"show_db_queries": "1",
-		"show_cookies": "1",
 		"gzip_compression": "1",
 		"cache_compress_js_css": "1",
 		"vulcanization": "1",

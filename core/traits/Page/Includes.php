@@ -256,7 +256,7 @@ trait Includes {
 			'is_admin'			=> (int)$User->admin(),
 			'is_user'			=> (int)$User->user(),
 			'is_guest'			=> (int)$User->guest(),
-			'debug'				=> (int)$User->guest(),
+			'debug'				=> (int)DEBUG,
 			'cookie_prefix'		=> $Config->core['cookie_prefix'],
 			'cookie_domain'		=> $Config->core['cookie_domain'][$Config->server['mirror_index']],
 			'cookie_path'		=> $Config->core['cookie_path'][$Config->server['mirror_index']],

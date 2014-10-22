@@ -104,8 +104,12 @@ class Meta {
 	 */
 	function __call ($type, $params) {
 		if (!$params) {
-			$this->og_type	= $type;
-			return $this->__call('og', ['type', $type]);
+			$this->og_type			= $type;
+			$this->og_data['type']	= h::meta([
+				'property'	=> "og:type",
+				'content'	=> $type
+			]);
+			return $this;
 		}
 		if (!$params[0]) {
 			return $this;
