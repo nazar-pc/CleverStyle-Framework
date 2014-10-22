@@ -10,7 +10,8 @@
 		"blocks_search_users",
 		"cache",
 		"databases_test",
-		"storages_test"
+		"storages_test",
+		"email_sending_test"
 	],
 	"profile"	: [
 		"blank",

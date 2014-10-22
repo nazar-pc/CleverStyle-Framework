@@ -81,6 +81,10 @@ Index::instance()->content(
 		],
 		core_input('mail_from'),
 		core_input('mail_from_name'),
-		core_textarea('mail_signature', 'SIMPLE_EDITOR')
+		core_textarea('mail_signature', 'SIMPLE_EDITOR'),
+		[
+			'',
+			h::{'td button.uk-button[onclick=cs.test_email_sending()]'}($L->test_email_sending)
+		]
 	])
 );

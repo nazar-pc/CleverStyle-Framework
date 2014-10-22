@@ -585,6 +585,8 @@
 		"mail_from_name"		: "Sender email",
 		"mail_signature"		: "Mail signature",
 		"mail_signature_info"	: "Signature will be appended to every sent email",
+		"test_email_sending"	: "Test email sending",
+		"test_email_sending_failed"	: "Email sending failed, check your configuration",
 
 //User Profile
 	//Profile

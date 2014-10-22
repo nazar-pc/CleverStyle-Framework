@@ -158,4 +158,24 @@
     }
   };
 
+  cs.test_email_sending = function() {
+    var email;
+    email = prompt(L.email);
+    if (email) {
+      return $.ajax({
+        url: 'api/System/admin/email_sending_test',
+        data: {
+          email: email
+        },
+        type: 'get',
+        success: function() {
+          return alert(L.done);
+        },
+        error: function() {
+          return alert(L.test_email_sending_failed);
+        }
+      });
+    }
+  };
+
 }).call(this);

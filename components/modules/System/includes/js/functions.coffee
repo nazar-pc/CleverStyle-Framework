@@ -141,3 +141,16 @@ cs.block_switch_textarea	= (item) ->
 		when 'html' then $('#cs-block-content-html').show()
 		when 'raw_html' then $('#cs-block-content-raw-html').show()
 	return
+cs.test_email_sending		= () ->
+	email = prompt(L.email)
+	if email
+		$.ajax(
+			url		: 'api/System/admin/email_sending_test'
+			data	:
+				email	: email
+			type	: 'get'
+			success	: ->
+				alert(L.done)
+			error	: ->
+				alert(L.test_email_sending_failed)
+		)
