@@ -42,28 +42,6 @@
         });
       },
       /**
-      		 * Tooltip with UIkit
-      		 *
-      		 * Required title or data-title attribute with some content, optionally support data-pos attribute with desired position of tooltip
-      */
-
-      tooltip: function() {
-        if (!this.length) {
-          return this;
-        }
-        return this.each(function() {
-          var $this, pos;
-          $this = $(this);
-          pos = $this.data('pos');
-          return $this.attr('data-uk-tooltip', JSON.stringify({
-            pos: pos ? pos : 'top',
-            animation: true,
-            delay: 200,
-            src: $this.attr('data-title') ? $this.data('title') : $this.attr('title')
-          }));
-        });
-      },
-      /**
       		 * Dialog with UIkit
       		 *
       		 * Required DOM structure * > *, plugin must be applied to the root element

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		BananaHTML
- * @version		2.0.0
+ * @version		2.1.0
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2014, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -208,6 +208,14 @@ class BananaHTML {
 		return "/$url";
 	}
 	/**
+	 * Empty stub, may be redefined if needed for custom attributes processing
+	 *
+	 * @static
+	 *
+	 * @param array	$attributes
+	 */
+	protected static function pre_processing (&$attributes) {}
+	/**
 	 * Wrapper for paired tags rendering
 	 *
 	 * @static
@@ -223,13 +231,11 @@ class BananaHTML {
 		$in			= $add = '';
 		$tag		= 'div';
 		$level		= 1;
-		if (isset($data['data-title']) && $data['data-title']) {
-			$data['data-title'] = static::prepare_attr_value($data['data-title']);
-		}
 		if (isset($data['level'])) {
 			$level	= $data['level'];
 			unset($data['level']);
 		}
+		static::pre_processing($data);
 		if (!static::data_prepare($data, $in, $tag, $add)) {
 			return false;
 		}
@@ -264,11 +270,9 @@ class BananaHTML {
 	protected static function u_wrap ($data = []) {
 		$in		= $add		= '';
 		$tag	= 'input';
+		static::pre_processing($data);
 		if (!static::data_prepare($data, $in, $tag, $add)) {
 			return false;
-		}
-		if (isset($data['data-title']) && $data['data-title']) {
-			$data['data-title'] = static::prepare_attr_value($data['data-title']);
 		}
 		$add	.= XHTML_TAGS_STYLE ? ' /' : '';
 		return "<$tag$add> $in\n";

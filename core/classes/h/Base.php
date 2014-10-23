@@ -63,6 +63,20 @@ abstract class Base extends BananaHTML {
 		return '';
 	}
 	/**
+	 * CleverStyle CMS-specific processing of attributes
+	 *
+	 * @static
+	 *
+	 * @param array	$attributes
+	 */
+	protected static function pre_processing (&$attributes) {
+		if (isset($attributes['data-title']) && $attributes['data-title']) {
+			$attributes['title']	= static::prepare_attr_value($attributes['data-title']);
+			unset($attributes['data-title']);
+			@$attributes['data-uk-tooltip']	= '{animation:true,delay:200}';
+		}
+	}
+	/**
 	 * Sometimes HTML code can be intended
 	 *
 	 * This function allows to store inner text of tags, that are sensitive to this operation (textarea, pre, code), and return some identifier.

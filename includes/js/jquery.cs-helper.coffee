@@ -36,31 +36,6 @@ do ($=jQuery, UI = jQuery.UIkit) ->
 				content
 					.data('switcher', UI.switcher(content))
 		###*
-		 * Tooltip with UIkit
-		 *
-		 * Required title or data-title attribute with some content, optionally support data-pos attribute with desired position of tooltip
-		###
-		tooltip		: ->
-			if !@.length
-				return @
-			@.each ->
-				$this	= $(@)
-				pos		= $this.data('pos')
-				$this
-					.attr(
-						'data-uk-tooltip'
-						JSON.stringify(
-							pos			: if pos then pos else 'top'
-							animation	: true
-							delay		: 200
-							src			:
-								if $this.attr('data-title')
-									$this.data('title')
-								else
-									$this.attr('title')
-						)
-					)
-		###*
 		 * Dialog with UIkit
 		 *
 		 * Required DOM structure * > *, plugin must be applied to the root element

@@ -7,9 +7,6 @@
 $ ->
 	window.no_ui_selector		= '.cs-no-ui'
 	ui_automatic_helpers_update = (element) ->
-		element.filter('[data-title]:not(data-uk-tooltip)').cs().tooltip()
-		element.find('[data-title]:not(data-uk-tooltip)').cs().tooltip()
-
 		element.filter('.cs-tabs:not(.uk-tab)').cs().tabs()
 		element.find('.cs-tabs:not(.uk-tab)').cs().tabs()
 
