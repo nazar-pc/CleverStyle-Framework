@@ -104,14 +104,12 @@ class Menu {
 		return h::$element(
 			h::a(
 				$title,
-				array_merge(
-					[
-						'href' => $href
-					],
-					$arguments
-				)
+				[
+					'href' => $href
+				]
 			).
-			$content
+			$content,
+			$arguments
 		);
 	}
 	/**
