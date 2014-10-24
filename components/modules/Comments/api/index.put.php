@@ -27,11 +27,7 @@ if (!$Config->module('Comments')->active()) {
 	error_code(404);
 	return;
 }
-/**
- * If AJAX request from local referer, user is not guest - allow
- */
 if (!User::instance()->user()) {
-	sleep(1);
 	error_code(403);
 	return;
 }

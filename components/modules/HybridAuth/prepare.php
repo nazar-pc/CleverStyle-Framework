@@ -491,7 +491,6 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 		if ($result === false) {
 			$Page->title($L->please_type_correct_email);
 			$Page->warning($L->please_type_correct_email);
-			sleep(1);
 			goto email_form;
 		} elseif ($result == 'error') {
 			$Page->title($L->reg_server_error);

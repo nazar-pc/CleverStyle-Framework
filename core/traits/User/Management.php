@@ -102,14 +102,12 @@ trait Management {
 		}
 		$Config			= Config::instance();
 		$password		= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
-		$password_hash	= hash('sha512', hash('sha512', $password).Core::instance()->public_key);
 		$reg_key		= md5($password.$this->ip);
 		$confirmation	= $confirmation && $Config->core['require_registration_confirmation'];
 		if ($this->db_prime()->q(
 			"INSERT INTO `[prefix]users` (
 				`login`,
 				`login_hash`,
-				`password_hash`,
 				`email`,
 				`email_hash`,
 				`reg_date`,
@@ -124,12 +122,10 @@ trait Management {
 				'%s',
 				'%s',
 				'%s',
-				'%s',
 				'%s'
 			)",
 			$login,
 			$login_hash,
-			$password_hash,
 			$email,
 			$email_hash,
 			TIME,
@@ -138,6 +134,7 @@ trait Management {
 			!$confirmation ? 1 : -1
 		)) {
 			$this->reg_id = $this->db_prime()->id();
+			$this->set_password($password, $this->reg_id);
 			if (!$confirmation) {
 				$this->set_groups([User::USER_GROUP_ID], $this->reg_id);
 			}
@@ -206,14 +203,8 @@ trait Management {
 		$this->reg_id	= $data['id'];
 		$Config			= Config::instance();
 		$password		= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
-		$this->set(
-			[
-				'password_hash'	=> hash('sha512', hash('sha512', $password).Core::instance()->public_key),
-				'status'		=> User::STATUS_ACTIVE
-			],
-			null,
-			$this->reg_id
-		);
+		$this->set_password($password, $this->reg_id);
+		$this->set('status', User::STATUS_ACTIVE, $this->reg_id);
 		$this->set_groups([User::USER_GROUP_ID], $this->reg_id);
 		$this->add_session($this->reg_id);
 		if (!Trigger::instance()->run(
@@ -259,6 +250,69 @@ trait Management {
 		]);
 		$this->del_user($ids);
 
+	}
+	/**
+	 * Proper password setting without any need to deal with low-level implementation
+	 *
+	 * @param string	$new_password
+	 * @param bool		$user
+	 * @param bool		$already_prepared	If true - assumed that `sha512(sha512(password) + public_key)` was applied to password
+	 *
+	 * @return bool
+	 */
+	function set_password ($new_password, $user = false, $already_prepared = false) {
+		$public_key	= Core::instance()->public_key;
+		if (!$already_prepared) {
+			$new_password	=  hash('sha512', hash('sha512', $new_password).$public_key);
+		}
+		/**
+		 * Do not allow to set password to empty
+		 */
+		if ($new_password == hash('sha512', hash('sha512', '').$public_key)) {
+			return false;
+		}
+		return $this->set('password_hash', password_hash($new_password, PASSWORD_DEFAULT), $user);
+	}
+	/**
+	 * Proper password validation without any need to deal with low-level implementation
+	 *
+	 * @param string	$password
+	 * @param bool		$user
+	 * @param bool		$already_prepared	If true - assumed that `sha512(sha512(password) + public_key)` was applied to password
+	 *
+	 * @return bool
+	 */
+	function validate_password ($password, $user = false, $already_prepared = false) {
+		if (!$already_prepared) {
+			$password	=  hash('sha512', hash('sha512', $password).Core::instance()->public_key);
+		}
+		$user			= (int)$user ?: $this->id;
+		$password_hash	= $this->get('password_hash', $user);
+		/**
+		 * TODO This is fallback for smooth upgrade of old passwords, will be removed in future
+		 */
+		if (password_get_info($password_hash)['algo'] === 0 && $password == $password_hash) {
+			$current_user_id	= $this->id;
+			$this->set_password($password, $user, true);
+			if ($current_user_id == $user) {
+				$this->add_session($current_user_id);
+			}
+			return true;
+		}
+		if (!password_verify($password, $password_hash)) {
+			return false;
+		}
+		/**
+		 * Rehash password if needed
+		 */
+		if (password_needs_rehash($password_hash, PASSWORD_DEFAULT)) {
+			$current_user_id	= $this->id;
+			$this->set_password($password, $user, true);
+			if ($current_user_id == $user) {
+				$this->add_session($current_user_id);
+			}
+		}
+		return true;
 	}
 	/**
 	 * Restoring of password
@@ -315,14 +369,8 @@ trait Management {
 		unset($data['restore_until']);
 		$Config		= Config::instance();
 		$password	= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
-		$this->set(
-			[
-				'password_hash'	=> hash('sha512', hash('sha512', $password).Core::instance()->public_key),
-				'data'			=> $data
-			],
-			null,
-			$id
-		);
+		$this->set_password($password, $id);
+		$this->set('data', $data, $id);
 		$this->add_session($id);
 		return [
 			'id'		=> $id,

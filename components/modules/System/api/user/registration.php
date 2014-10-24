@@ -25,7 +25,6 @@ if (!isset($_POST['email'])) {
 } elseif (empty($_POST['email'])) {
 	error_code(400);
 	$Page->error($L->please_type_your_email);
-	sleep(1);
 	return;
 }
 $_POST['email']	= mb_strtolower($_POST['email']);
@@ -33,7 +32,6 @@ $result			= $User->registration($_POST['email']);
 if ($result === false) {
 	error_code(400);
 	$Page->error($L->please_type_correct_email);
-	sleep(1);
 	return;
 } elseif ($result == 'error') {
 	error_code(500);

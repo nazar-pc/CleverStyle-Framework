@@ -11,12 +11,7 @@ use
 	cs\Config,
 	cs\Page,
 	cs\User;
-$Config	= Config::instance();
-/**
- * If AJAX request from local referer, user is not guest - allow
- */
 if (!User::instance()->user()) {
-	sleep(1);
 	error_code(403);
 	return;
 }

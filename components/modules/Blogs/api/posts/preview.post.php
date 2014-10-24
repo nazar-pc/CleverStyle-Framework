@@ -16,7 +16,6 @@ use
 $Config	= Config::instance();
 $User	= User::instance();
 if (!$User->user()) {
-	sleep(1);
 	error_code(403);
 	return;
 }

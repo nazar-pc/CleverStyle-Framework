@@ -24,12 +24,18 @@ define('ROOT',	mb_strpos($ROOT, 'phar://') === 0 ? substr($ROOT, 7) : $ROOT);	//
 unset($ROOT);
 global $fs;
 $fs		= json_decode(file_get_contents(DIR.'/fs.json'), true);
-require_once DIR.'/fs/'.$fs['core/thirdparty/upf.php'];
-require_once DIR.'/fs/'.$fs['core/functions.php'];
-require_once DIR.'/fs/'.$fs['core/thirdparty/nazarpc/BananaHTML.php'];
-require_once DIR.'/fs/'.$fs['core/classes/h/Base.php'];
-require_once DIR.'/fs/'.$fs['core/classes/h.php'];
-require_once DIR.'/install/functions.php';
+/**
+ * Fallback for PHP 5.5 hashing functions, that are not present in PHP 5.4
+ */
+if (!defined('PASSWORD_DEFAULT')) {
+	require DIR.'/fs/'.$fs['core/thirdparty/password_compat.php'];
+}
+require DIR.'/fs/'.$fs['core/thirdparty/upf.php'];
+require DIR.'/fs/'.$fs['core/functions.php'];
+require DIR.'/fs/'.$fs['core/thirdparty/nazarpc/BananaHTML.php'];
+require DIR.'/fs/'.$fs['core/classes/h/Base.php'];
+require DIR.'/fs/'.$fs['core/classes/h.php'];
+require DIR.'/install/functions.php';
 date_default_timezone_set('UTC');
 if ($cli) {
 	$help	= false;

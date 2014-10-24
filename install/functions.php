@@ -385,7 +385,7 @@ function install_process ($argv = null) {
 		)",
 		$admin_login,
 		hash('sha224', $admin_login),
-		hash('sha512', hash('sha512', $_POST['admin_password']).$public_key),
+		password_hash(hash('sha512', hash('sha512', $_POST['admin_password']).$public_key), PASSWORD_DEFAULT),
 		$_POST['admin_email'],
 		hash('sha224', $_POST['admin_email']),
 		time(),

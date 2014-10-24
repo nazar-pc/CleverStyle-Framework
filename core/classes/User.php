@@ -343,7 +343,6 @@ class User {
 		 */
 		$this->sign_in_result(false, hash('sha224', 'system'));
 		unset($_POST['data']);
-		sleep(1);
 		return false;
 	}
 	/**

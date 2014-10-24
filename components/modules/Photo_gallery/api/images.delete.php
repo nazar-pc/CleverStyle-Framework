@@ -13,11 +13,7 @@ use
 	cs\User;
 $Config			= Config::instance();
 $User			= User::instance();
-/**
- * If AJAX request from local referer, user is not guest - allow
- */
 if (!$User->user()) {
-	sleep(1);
 	error_code(403);
 	return;
 }

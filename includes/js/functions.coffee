@@ -79,26 +79,11 @@ cs.sign_in					= (login, password) ->
 		url		: 'api/System/user/sign_in'
 		cache	: false
 		data	:
-			login: cs.hash('sha224', login)
+			login		: cs.hash('sha224', login)
+			password	: cs.hash('sha512', cs.hash('sha512', password) + cs.public_key)
 		type	: 'post'
-		success	: (random_hash) ->
-			if random_hash.length == 56
-				$.ajax(
-					'api/user/sign_in'
-						cache	: false
-						data	:
-							login		: cs.hash('sha224', login)
-							auth_hash	: cs.hash(
-								'sha512',
-								cs.hash('sha224', login) + cs.hash('sha512', cs.hash('sha512', password) + cs.public_key) + navigator.userAgent + random_hash
-							)
-						type	: 'post'
-						success	: (result) ->
-							if result == 'reload'
-								location.reload()
-				)
-			else if random_hash == 'reload'
-				location.reload()
+		success	: ->
+			location.reload()
 ###*
  * Sign out
 ###
@@ -196,8 +181,8 @@ cs.change_password			= (current_password, new_password, success, error) ->
 		url		: 'api/System/user/change_password'
 		cache	: false
 		data	:
-			verify_hash		: cs.hash('sha224', current_password + session_id)
-			new_password	: cs.xor_string(current_password, new_password)
+			current_password	: current_password
+			new_password		: new_password
 		type	: 'post'
 		success	: (result) ->
 			if result == 'OK'
