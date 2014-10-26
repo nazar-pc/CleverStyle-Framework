@@ -23,7 +23,6 @@ if (!$User->guest()) {
 $id = $User->get_id(@$_POST['login']);
 if (
 	$id &&
-	$id != User::GUEST_ID &&
 	$User->validate_password(@$_POST['password'], $id, true)
 ) {
 	if ($User->get('status', $id) == User::STATUS_NOT_ACTIVATED) {
