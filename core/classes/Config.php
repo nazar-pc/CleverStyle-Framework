@@ -377,7 +377,6 @@ class Config {
 			$this->core['color_schemes'][$theme]	= get_files_list(THEMES."/$theme/schemes", false, 'd') ?: ['Default'];
 			asort($this->core['color_schemes'][$theme]);
 		}
-		$this->save();
 	}
 	/**
 	 * Updating information about set of available languages
@@ -390,7 +389,6 @@ class Config {
 			)
 		);
 		asort($this->core['languages']);
-		$this->save();
 	}
 	/**
 	 * Load and save clangs of all languages in cache for multilingual functionality.
