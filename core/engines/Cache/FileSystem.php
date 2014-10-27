@@ -213,25 +213,53 @@ class FileSystem extends _Abstract {
 	 */
 	function clean () {
 		$ok			= true;
-		$cache_old	= CACHE.'_old';
-		rename(CACHE, $cache_old);
+		$dirs_to_rm	= [];
+		/**
+		 * Remove root files and rename root directories for instant cache cleaning
+		 */
+		$uniqid		= uniqid();
 		get_files_list(
-			$cache_old,
+			CACHE,
 			false,
 			'fd',
 			true,
-			true,
 			false,
 			false,
+			false,
 			true,
-			function ($item) use (&$ok) {
+			function ($item) use (&$ok, &$dirs_to_rm, $uniqid) {
 				if (is_writable($item)) {
-					is_dir($item) ? @rmdir($item) : @unlink($item);
+					if (is_dir($item)) {
+						rename($item, "$item$uniqid");
+						$dirs_to_rm[]	= "$item$uniqid";
+					} else {
+						@unlink($item);
+					}
 				} else {
 					$ok = false;
 				}
 			}
 		);
-		return $ok && @rmdir($cache_old);
+		foreach ($dirs_to_rm as $dir) {
+			get_files_list(
+				$dir,
+				false,
+				'fd',
+				true,
+				true,
+				false,
+				false,
+				true,
+				function ($item) use (&$ok) {
+					if (is_writable($item)) {
+						is_dir($item) ? @rmdir($item) : @unlink($item);
+					} else {
+						$ok = false;
+					}
+				}
+			);
+			@rmdir($dir);
+		}
+		return $ok;
 	}
 }

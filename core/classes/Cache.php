@@ -93,8 +93,14 @@ class Cache {
 	 * @return bool
 	 */
 	function del ($item) {
-		if (empty($item) || $item == '/') {
+		if (empty($item)) {
 			return false;
+		}
+		/**
+		 * Cache cleaning instead of removing when root specified
+		 */
+		if ($item == '/') {
+			return $this->clean();
 		}
 		if (is_object($this->engine_instance)){
 			$item	= trim($item, '/');
