@@ -369,25 +369,20 @@ class Config {
 	 * Updating information about set of available themes
 	 */
 	function reload_themes () {
-		$themes							= $this->core['themes'];
 		$this->core['themes']			= get_files_list(THEMES, false, 'd');
 		asort($this->core['themes']);
-		$color_schemes					= $this->core['color_schemes'];
 		$this->core['color_schemes']	= [];
 		foreach ($this->core['themes'] as $theme) {
 			$this->core['color_schemes'][$theme]	= [];
 			$this->core['color_schemes'][$theme]	= get_files_list(THEMES."/$theme/schemes", false, 'd') ?: ['Default'];
 			asort($this->core['color_schemes'][$theme]);
 		}
-		if ($themes != $this->core['themes'] || $color_schemes != $this->core['color_schemes']) {
-			$this->save();
-		}
+		$this->save();
 	}
 	/**
 	 * Updating information about set of available languages
 	 */
 	function reload_languages () {
-		$languages	= $this->core['languages'];
 		$this->core['languages'] = array_unique(
 			array_merge(
 				_mb_substr(get_files_list(LANGUAGES, '/^.*?\.php$/i', 'f'), 0, -4) ?: [],
@@ -395,9 +390,7 @@ class Config {
 			)
 		);
 		asort($this->core['languages']);
-		if ($languages != $this->core['languages']) {
-			$this->save();
-		}
+		$this->save();
 	}
 	/**
 	 * Load and save clangs of all languages in cache for multilingual functionality.
@@ -413,17 +406,17 @@ class Config {
 		unset($language);
 		file_put_json(CACHE.'/languages_clangs', $clangs);
 		foreach ($this->core['url'] as &$url) {
-			$url_aliases		= explode('//', $url);
-			$url_aliases[1]		= explode(';', $url_aliases[1]);
-			$last_url			= $url_aliases[1][count($url_aliases[1]) - 1];
+			list($protocol, $urls)	= explode('://', $url);
+			$urls					= explode(';', $urls);
+			$last_url				= $urls[count($urls) - 1];
 			foreach ($clangs as $clang) {
-				if (!in_array("$last_url/$clang", $url_aliases[1])) {
-					array_unshift($url_aliases[1], "$last_url/$clang");
-					$url	= "$url_aliases[0]//".implode(';', $url_aliases[1]);
-					$this->save();
+				if (!in_array("$last_url/$clang", $urls)) {
+					array_unshift($urls, "$last_url/$clang");
+					$url	= "$protocol://".implode(';', $urls);
 				}
 			}
 		}
+		$this->save();
 		return $clangs;
 	}
 	/**
@@ -492,9 +485,6 @@ class Config {
 			$L->change(User::instance()->language);
 		} else {
 			$L->change($this->core['language']);
-		}
-		if ($this->core['multilingual']) {
-			$this->update_clangs();
 		}
 		$this->init();
 		return true;
