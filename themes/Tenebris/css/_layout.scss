@@ -7,6 +7,11 @@
  */
 @import "common_config";
 
+//Text color
+$base-color				: #ddd;
+//Body background
+$body-bg				: #131313;
+
 $left-column : 25%;
 
 html {
@@ -19,6 +24,8 @@ html {
 }
 //Whole body
 body {
+	background-color : $body-bg;
+	color            : $base-color;
 	font       : {
 		family : $base-font-family;
 		size   : $base-font-size;
@@ -37,6 +44,10 @@ body {
 		position        : absolute;
 		width           : 100%;
 		z-index         : -2;
+	}
+
+	> nav .uk-active .uk-active {
+		color: $base-color;
 	}
 
 	> footer {
@@ -71,4 +82,8 @@ body {
 	border-left : .1rem solid #323232;
 	margin-left : $left-column;
 	padding     : 0 1rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	color : #da451c;
 }

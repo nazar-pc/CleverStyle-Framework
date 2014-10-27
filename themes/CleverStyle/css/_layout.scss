@@ -7,8 +7,15 @@
  */
 @import "common_config";
 
-$left-column			: 15%;
-$right-column			: 15%;
+//Text color
+$base-color : #444;
+//Body background
+$body-bg : #666;
+//Main background
+$base-bg : #fff;
+
+$left-column : 15%;
+$right-column : 15%;
 
 html {
 	font       : {
@@ -16,18 +23,24 @@ html {
 		size   : $base-font-size;
 	}
 }
+
 //Whole body
 body {
+	background-color : $body-bg;
+	color            : $base-color;
 	font       : {
 		family : $base-font-family;
 		size   : $base-font-size;
 	}
-	margin  : 0;
-	padding : 0;
-	width   : 100%;
+	margin           : 0;
+	padding          : 0;
+	width            : 100%;
 }
+
 //Inner body with content
 #body {
+	background    : rgba($base-bg, .15);
+	border        : 1px solid rgba($base-bg, .25);
 	border-radius : 10px;
 	margin        : 7px;
 	padding       : 5px 0;
@@ -38,6 +51,7 @@ body {
 		display : block;
 	}
 }
+
 //Left and right blocks
 #left_blocks {
 	float          : left;
@@ -45,12 +59,14 @@ body {
 	vertical-align : top;
 	width          : $left-column;
 }
+
 #right_blocks {
 	@extend #left_blocks;
 
 	float : right;
 	width : $right-column;
 }
+
 //Top, bottom blocks
 #top_blocks,
 #bottom_blocks {
@@ -67,7 +83,9 @@ body {
 	vertical-align : top;
 
 	> div {
+		background    : rgba($base-bg, .95);
 		border-radius : 5px;
+		box-shadow    : 0 0 0 11px rgba($base-bg, .25), 0 0 0 10px rgba(#000, .15);
 		float         : left;
 		padding       : 10px;
 		height        : 100%;
@@ -82,11 +100,14 @@ body {
 }
 
 body > footer {
+	background : rgba($base-bg, .30);
+	color      : $base-bg;
 	margin     : 0;
 	text-align : center;
 	width      : 100%;
 
 	a {
+		color           : $base-bg;
 		text-decoration : underline;
 	}
 
