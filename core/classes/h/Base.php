@@ -6,11 +6,12 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\h;
-use			nazarpc\BananaHTML,
-			cs\Config,
-			cs\Language,
-			cs\Page,
-			cs\User;
+use
+	nazarpc\BananaHTML,
+	cs\Config,
+	cs\Language,
+	cs\Page,
+	cs\User;
 /**
  * Class for HTML code rendering in accordance with the standards of HTML5, and with useful syntax extensions for simpler usage
  */
@@ -37,10 +38,10 @@ abstract class Base extends BananaHTML {
 	 * @return string
 	 */
 	protected static function absolute_url ($url) {
-		if ($Config = Config::instance(true)) {
-			return $Config->base_url()."/$url";
-		}
-		return "/$url";
+		/**
+		 * If Config not initialized yet - method will return `false`, which will be interpreted as empty string
+		 */
+		return Config::instance(true)->base_url()."/$url";
 	}
 	/**
 	 * Allows to add something to inner of form, for example, hidden session input to prevent CSRF
@@ -70,10 +71,10 @@ abstract class Base extends BananaHTML {
 	 * @param array	$attributes
 	 */
 	protected static function pre_processing (&$attributes) {
-		if (isset($attributes['data-title']) && $attributes['data-title']) {
+		if (isset($attributes['data-title']) && $attributes['data-title'] !== false) {
 			$attributes['title']	= static::prepare_attr_value($attributes['data-title']);
 			unset($attributes['data-title']);
-			@$attributes['data-uk-tooltip']	= '{animation:true,delay:200}';
+			$attributes['data-uk-tooltip']	= '{animation:true,delay:200}';
 		}
 	}
 	/**
@@ -135,11 +136,7 @@ abstract class Base extends BananaHTML {
 		if ($class === false) {
 			return '';
 		}
-		if (!isset($data['class'])) {
-			$data['class'] = "uk-icon-$class";
-		} else {
-			$data['class'] .= " uk-icon-$class";
-		}
+		@$data['class']	.= " uk-icon-$class";
 		$data['level']	= 0;
 		return static::span($data).' ';
 	}
@@ -165,14 +162,7 @@ abstract class Base extends BananaHTML {
 			return static::__callStatic(__FUNCTION__, [$in, $data]);
 		}
 		$in['type'] = 'checkbox';
-		if (
-			(
-				isset($in['name'])	&& is_array($in['name'])
-			) ||
-			(
-				isset($in['id'])	&& is_array($in['id'])
-			)
-		) {
+		if (@is_array($in['name']) || @is_array($in['id'])) {
 			$items	= array_flip_3d($in);
 			$return	= '';
 			foreach ($items as $item) {
@@ -187,12 +177,6 @@ abstract class Base extends BananaHTML {
 				$in[]	= 'checked';
 			}
 			unset($in['checked']);
-			if (isset($in['min'], $in['value']) && $in['min'] !== false && $in['min'] > $in['value']) {
-				$in['value'] = $in['min'];
-			}
-			if (isset($in['max'], $in['value']) && $in['max'] !== false && $in['max'] < $in['value']) {
-				$in['value'] = $in['max'];
-			}
 			$in['tag'] = 'input';
 			return static::span(
 				static::label(
