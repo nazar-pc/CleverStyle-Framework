@@ -59,7 +59,8 @@ class Page {
 	public	$Replace		= [];
 	public	$canonical_url	= false;
 	protected	$theme, $color_scheme;
-	protected	$error_showed = false;
+	protected	$error_showed		= false;
+	protected	$finish_called_once	= false;
 	/**
 	 * Initialization: setting of title, theme and color scheme according to specified parameters
 	 *
@@ -134,41 +135,34 @@ class Page {
 	 * @return Page
 	 */
 	protected function get_template () {
-		$Config	= Config::instance();
 		/**
 		 * Theme is fixed for administration, and may vary for other pages
 		 */
 		if (admin_path()) {
 			$this->theme		= 'CleverStyle';
 			$this->color_scheme	= 'Default';
-		} elseif (is_object($Config)) {
-			$this->theme		= in_array($this->theme, $Config->core['themes']) ? $this->theme : $Config->core['theme'];
-			$color_schemes		= $Config->core['color_schemes'][$this->theme];
-			$this->color_scheme	= in_array($this->color_scheme, $color_schemes) ? $this->color_scheme : $color_schemes[0];
-			unset($color_schemes);
 		}
-		/**
-		 * Template loading
-		 */
 		$theme_dir	= THEMES."/$this->theme";
-		if ($this->interface) {
-			_include_once("$theme_dir/prepare.php", false);
-			ob_start();
-			if (
-				$Config->core['site_mode'] === '0' &&
-				!User::instance(true)->admin() &&
-				code_header(503) &&
-				!_include_once("$theme_dir/closed.php", false) &&
-				!_include_once("$theme_dir/closed.html", false)
-			) {
-				echo	"<!doctype html>\n".
+		_include_once("$theme_dir/prepare.php", false);
+		ob_start();
+		/**
+		 * If website is closed and user is not an administrator - send `503 Service Unavailable` header and show closed site page
+		 */
+		if (
+			!Config::instance()->core['site_mode'] &&
+			!User::instance(true)->admin() &&
+			code_header(503) &&
+			!_include_once("$theme_dir/closed.php", false) &&
+			!_include_once("$theme_dir/closed.html", false)
+		) {
+			echo
+				"<!doctype html>\n".
 				h::title(get_core_ml_text('closed_title')).
 				get_core_ml_text('closed_text');
-			} else {
-				_include_once("$theme_dir/index.php", false) || _include_once("$theme_dir/index.html");
-			}
-			$this->Html = ob_get_clean();
+		} else {
+			_include_once("$theme_dir/index.php", false) || _include_once("$theme_dir/index.html");
 		}
+		$this->Html = ob_get_clean();
 		return $this;
 	}
 	/**
@@ -495,7 +489,7 @@ class Page {
 			) {
 				echo "<!doctype html>\n".
 					h::title(code_header($error)).
-					 ($error_description ?: $error);
+					($error_description ?: $error);
 			}
 			$this->Content	= ob_get_clean();
 		}
@@ -509,17 +503,10 @@ class Page {
 		/**
 		 * Protection from double calling
 		 */
-		static $called_once = false;
-		if ($called_once) {
+		if ($this->finish_called_once) {
 			return;
 		}
-		$called_once	= true;
-		/**
-		 * Cleaning of output
-		 */
-		if (OUT_CLEAN) {
-			ob_end_clean();
-		}
+		$this->finish_called_once	= true;
 		/**
 		 * Check whether gzip compression required, and apply it if so
 		 */

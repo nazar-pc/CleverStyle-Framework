@@ -25,8 +25,6 @@ if (version_compare(PHP_VERSION, '5.4', '<')) {
  */
 define('MICROTIME',	microtime(true));	//Time in seconds (float)
 define('TIME',		floor(MICROTIME));	//Time in seconds (integer)
-define('OUT_CLEAN',	false);				//Enable output grabbing and cleaning (for security)
-OUT_CLEAN && ob_start();
 define('DIR',		__DIR__);			//Root directory
 chdir(DIR);
 define('CORE',		DIR.'/core');		//Core directory
