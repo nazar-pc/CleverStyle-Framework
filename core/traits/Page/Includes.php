@@ -24,7 +24,6 @@ use
  * @property string $Head
  * @property string $post_Body
  * @property string $theme
- * @property string $color_scheme
  */
 trait Includes {
 	protected	$core_html		= [0 => [], 1 => ''];
@@ -241,7 +240,7 @@ trait Includes {
 		/**
 		 * Base name for cache files
 		 */
-		$this->pcache_basename	= "_{$this->theme}_{$this->color_scheme}_".Language::instance()->clang;
+		$this->pcache_basename	= "_{$this->theme}_".Language::instance()->clang;
 		$Index					= Index::instance();
 		$User					= User::instance();
 		/**
@@ -507,9 +506,7 @@ trait Includes {
 	 */
 	protected function get_includes_list ($absolute = false) {
 		$theme_dir		= THEMES."/$this->theme";
-		$scheme_dir		= "$theme_dir/schemes/$this->color_scheme";
 		$theme_pdir		= "themes/$this->theme";
-		$scheme_pdir	= "$theme_pdir/schemes/$this->color_scheme";
 		$get_files		= function ($dir, $prefix_path) {
 			$extension	= basename($dir);
 			$list		= get_files_list(
@@ -525,26 +522,23 @@ trait Includes {
 			return $list;
 		};
 			/**
-		 * Get includes of system and theme + color scheme
+		 * Get includes of system and theme
 		 */
 		$includes	= [
 			'css' => array_merge(
 				$get_files(CSS, $absolute ? true : 'includes/css'),
-				$get_files("$theme_dir/css", $absolute ? true : "$theme_pdir/css"),
-				$get_files("$scheme_dir/css", $absolute ? true : "$scheme_pdir/css")
+				$get_files("$theme_dir/css", $absolute ? true : "$theme_pdir/css")
 			),
 			'js' => array_merge(
 				$get_files(JS, $absolute ? true : 'includes/js'),
-				$get_files("$theme_dir/js", $absolute ? true : "$theme_pdir/js"),
-				$get_files("$scheme_dir/js", $absolute ? true : "$scheme_pdir/js")
+				$get_files("$theme_dir/js", $absolute ? true : "$theme_pdir/js")
 			),
 			'html' => array_merge(
 				$get_files(HTML, $absolute ? true : 'includes/html'),
-				$get_files("$theme_dir/html", $absolute ? true : "$theme_pdir/html"),
-				$get_files("$scheme_dir/html", $absolute ? true : "$scheme_pdir/html")
+				$get_files("$theme_dir/html", $absolute ? true : "$theme_pdir/html")
 			)
 		];
-		unset($theme_dir, $scheme_dir, $theme_pdir, $scheme_pdir);
+		unset($theme_dir, $theme_pdir);
 		$Config		= Config::instance();
 		foreach ($Config->components['modules'] as $module_name => $module_data) {
 			if ($module_data['active'] == -1) {

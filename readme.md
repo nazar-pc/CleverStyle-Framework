@@ -113,7 +113,7 @@ This results in constant and predictable performance (no degradation with time),
 * Site mirrors
  * Domain mirrors
  * Physical server mirrors for every domain name
-* Themes and color schemes
+* Themes
 * Multiple Databases
  * Multiple Databases mirrors
 * Multiple files storages

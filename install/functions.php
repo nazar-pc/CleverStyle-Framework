@@ -144,8 +144,6 @@ function install_process ($argv = null) {
 		"put_js_after_body": "1",
 		"theme": "",
 		"themes": [],
-		"color_schemes": [],
-		"color_scheme": "",
 		"language": "",
 		"allow_change_language": "0",
 		"multilingual": "0",
@@ -212,8 +210,6 @@ function install_process ($argv = null) {
 	$config['active_languages']		= $config['languages'];
 	$config['themes']				= file_get_json(DIR.'/themes.json');
 	$config['theme']				= array_search('CleverStyle', $config['themes']) !== false ? 'CleverStyle' : $config['themes'][0];
-	$config['color_schemes']		= file_get_json(DIR.'/color_schemes.json');
-	$config['color_scheme']			= $config['color_schemes'][$config['theme']][0];
 	$url							= explode('/', explode('//', $url)[1], 2);
 	$config['cookie_domain'][]		= $url[0];
 	$config['cookie_path'][]		= isset($url[1]) && $url[1] ? '/'.trim($url[1], '/').'/' : '/';

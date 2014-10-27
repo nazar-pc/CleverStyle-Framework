@@ -58,22 +58,20 @@ class Page {
 	public	$Search			= [];
 	public	$Replace		= [];
 	public	$canonical_url	= false;
-	protected	$theme, $color_scheme;
+	protected	$theme;
 	protected	$error_showed		= false;
 	protected	$finish_called_once	= false;
 	/**
-	 * Initialization: setting of title, theme and color scheme according to specified parameters
+	 * Initialization: setting of title and theme according to specified parameters
 	 *
 	 * @param string	$title
 	 * @param string	$theme
-	 * @param string	$color_scheme
 	 *
 	 * @return Page
 	 */
-	function init ($title, $theme, $color_scheme) {
+	function init ($title, $theme) {
 		$this->Title[0] = htmlentities($title, ENT_COMPAT, 'utf-8');
 		$this->set_theme($theme);
-		$this->set_color_scheme($color_scheme);
 		return $this;
 	}
 	/**
@@ -85,17 +83,6 @@ class Page {
 	 */
 	function set_theme ($theme) {
 		$this->theme = $theme;
-		return $this;
-	}
-	/**
-	 * Color scheme changing
-	 *
-	 * @param string	$color_scheme
-	 *
-	 * @return Page
-	 */
-	function set_color_scheme ($color_scheme) {
-		$this->color_scheme = $color_scheme;
 		return $this;
 	}
 	/**
@@ -139,8 +126,7 @@ class Page {
 		 * Theme is fixed for administration, and may vary for other pages
 		 */
 		if (admin_path()) {
-			$this->theme		= 'CleverStyle';
-			$this->color_scheme	= 'Default';
+			$this->theme	= 'CleverStyle';
 		}
 		$theme_dir	= THEMES."/$this->theme";
 		_include_once("$theme_dir/prepare.php", false);
@@ -257,13 +243,8 @@ class Page {
 	 * @return string
 	 */
 	protected function get_favicon_path () {
-		$theme_favicon			= "$this->theme/img/favicon";
-		$color_scheme_favicon	= "$this->theme/$this->color_scheme/img/favicon";
-		if (file_exists(THEMES."/$color_scheme_favicon.png")) {
-			return "$color_scheme_favicon.png";
-		} elseif (file_exists(THEMES."/$color_scheme_favicon.ico")) {
-			return "$color_scheme_favicon.ico";
-		} elseif (file_exists(THEMES."/$theme_favicon.png")) {
+		$theme_favicon	= "$this->theme/img/favicon";
+		if (file_exists(THEMES."/$theme_favicon.png")) {
 			return "$theme_favicon.png";
 		} elseif (file_exists(THEMES."/$theme_favicon.ico")) {
 			return "$theme_favicon.ico";

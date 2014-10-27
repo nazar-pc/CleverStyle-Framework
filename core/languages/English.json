@@ -192,9 +192,7 @@
 		//Appearance
 		"appearance"								: "Appearance",
 		"current_theme"								: "Current theme",
-		"current_theme_info"						: "Allows you to select the current theme on the site by default.",
-		"color_scheme"								: "Choosing a color scheme of theme",
-		"color_scheme_info"							: "Themes with a certain style of interface may have several color versions, choose the default version",
+		"current_theme_info"						: "Allows you to select the current theme on the site by default",
 		"this_is_not_theme_installer_file"			: "This is not theme installer file",
 		"update_theme_impossible_older_version"		: "Theme %s already installed, but can't be updated, because proposed version is older, than installed",
 		"updating_of_theme"							: "Updating of theme %s",

@@ -100,8 +100,7 @@ class Config {
 		$Page	= Page::instance();
 		$Page->init(
 			get_core_ml_text('name'),
-			$this->core['theme'],
-			$this->core['color_scheme']
+			$this->core['theme']
 		);
 		if (!$this->init) {
 			$Page->replace($this->replace['in'], $this->replace['out']);
@@ -369,14 +368,8 @@ class Config {
 	 * Updating information about set of available themes
 	 */
 	function reload_themes () {
-		$this->core['themes']			= get_files_list(THEMES, false, 'd');
+		$this->core['themes']	= get_files_list(THEMES, false, 'd');
 		asort($this->core['themes']);
-		$this->core['color_schemes']	= [];
-		foreach ($this->core['themes'] as $theme) {
-			$this->core['color_schemes'][$theme]	= [];
-			$this->core['color_schemes'][$theme]	= get_files_list(THEMES."/$theme/schemes", false, 'd') ?: ['Default'];
-			asort($this->core['color_schemes'][$theme]);
-		}
 	}
 	/**
 	 * Updating information about set of available languages

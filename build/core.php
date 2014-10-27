@@ -275,25 +275,15 @@ $phar->addFromString(
 );
 $themes = get_files_list(DIR.'/themes', false, 'd');
 asort($themes);
-$color_schemes = [];
-foreach ($themes as $theme) {
-	$color_schemes[$theme] = [];
-	$color_schemes[$theme] = get_files_list(DIR."/themes/$theme/schemes", false, 'd');
-	asort($color_schemes[$theme]);
-}
 $phar->addFromString(
 	'themes.json',
 	_json_encode($themes)
 );
 $phar->addFromString(
-	'color_schemes.json',
-	_json_encode($color_schemes)
-);
-$phar->addFromString(
 	'version',
 	"\"$version\""
 );
-unset($themes, $theme, $color_schemes);
+unset($themes, $theme);
 $phar = $phar->convertToExecutable(Phar::TAR, Phar::BZ2, '.phar.tar');
 unlink(DIR.'/build.phar');
 $phar->setStub(

@@ -46,9 +46,6 @@ if ($_POST['edit_settings'] == 'apply' || $_POST['edit_settings'] == 'save') {
 						}
 				}
 				$temp[$item] = xap($value, true);
-				if ($item == 'theme') {
-					$temp['color_scheme']	= $Config->core['color_schemes'][$temp['theme']][0];
-				}
 			}
 			unset($item, $value);
 			if ($part == 'routing' || $part == 'replace') {

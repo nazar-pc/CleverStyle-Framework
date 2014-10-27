@@ -10,8 +10,6 @@ $ ->
 			if cs.in_admin
 				$('.cs-reload-button').click ->
 					location.reload()
-				$('#change_theme, #change_color_scheme, #change_language').click ->
-					$('#apply_settings').click()
 				$('#change_active_languages').change ->
 					$(@)
 						.find("option[value='" + $('#change_language').val() + "']")
