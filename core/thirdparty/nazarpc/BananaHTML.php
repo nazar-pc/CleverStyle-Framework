@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		BananaHTML
- * @version		2.1.0
+ * @version		2.1.2
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2014, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -375,9 +375,6 @@ class BananaHTML {
 			unset($in, $v, $i);
 			$temp = '';
 			foreach ($items as $item) {
-				if (!isset($item['id'])) {
-					$item['id'] = uniqid('input_');
-				}
 				$item['tag'] = __FUNCTION__;
 				if (isset($item['value'])) {
 					$item['value'] = static::prepare_attr_value($item['value']);
@@ -491,6 +488,7 @@ class BananaHTML {
 			}
 			$data['selected']	= (array)$data['selected'];
 			if (isset($data['disabled'])) {
+				$data['disabled']	= (array)$data['disabled'];
 				$data['selected']	= array_diff($data['selected'], $data['disabled']);
 			} else {
 				$data['disabled']	= [];
