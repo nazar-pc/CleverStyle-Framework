@@ -479,7 +479,7 @@ trait Data {
 		$avatar	= $this->get('avatar', $user);
 		if (!$avatar && $this->id != User::GUEST_ID) {
 			$avatar	= 'https://www.gravatar.com/avatar/'.md5($this->get('email', $user))."?d=mm&s=$size";
-			$avatar	.= '&d='.urlencode(Config::instance()->base_url().'/includes/img/guest.svg');
+			$avatar	.= '&d='.urlencode(Config::instance()->core_url().'/includes/img/guest.svg');
 		}
 		if (!$avatar) {
 			$avatar	= '/includes/img/guest.svg';
