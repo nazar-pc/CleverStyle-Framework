@@ -8,17 +8,12 @@
  * @license		  MIT License, see license.txt
  */
 namespace	cs\modules\Static_pages;
-use			h,
-			cs\Config,
-			cs\Index,
-			cs\Language,
-			cs\Page;
-$Index					= Index::instance();
-$L						= Language::instance();
-$Page					= Page::instance();
-$Index->title_auto		= false;
-$Page->title($L->administration);
-$Page->title($L->Static_pages);
+use
+	h,
+	cs\Config,
+	cs\Language,
+	cs\Page;
+$Page	= Page::instance();
 $Page->css('components/modules/Static_pages/includes/css/style.css');
 function get_categories_rows ($structure = null, $level = 0, $parent_categories = []) {
 	$L						= Language::instance();
@@ -61,14 +56,7 @@ function get_categories_rows ($structure = null, $level = 0, $parent_categories 
 					'href'			=> "admin/Static_pages/add_page/$structure[id]",
 					'data-title'	=> $L->add_page
 				]
-			]/*,
-			[
-				h::icon('document'),
-				[
-					'href'			=> "admin/Static_pages/add_page_live/$structure[id]",
-					'data-title'	=> $L->add_page_live
-				]
-			]*/
+			]
 		).
 		(!$root ? h::{'a.uk-button.cs-button-compact'}(
 			[
@@ -160,14 +148,7 @@ function get_pages_rows () {
 							'href'			=> "admin/Static_pages/edit_page/$page[id]",
 							'data-title'	=> $L->edit
 						]
-					]/*,
-					$page['interface'] ? [
-						h::icon('document'),
-						[
-							'href'			=> "admin/Static_pages/edit_page_live/$page[id]",
-							'data-title'	=> $L->edit_page_live
-						]
-					] : false*/,
+					],
 					[
 						h::icon('trash-o'),
 						[

@@ -7,8 +7,10 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-use			h,
-			cs\Language\Prefix;
+use
+	h,
+	cs\Language\Prefix;
+include __DIR__.'/save.php';
 $Config					= Config::instance();
 $module_data			= $Config->module('Deferred_tasks');
 $Index					= Index::instance();

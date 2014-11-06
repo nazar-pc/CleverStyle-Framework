@@ -10,17 +10,9 @@ namespace	cs\modules\Blogs;
 use			h,
 			cs\Config,
 			cs\DB,
-			cs\Index,
 			cs\Language,
 			cs\Page,
 			cs\User;
-$Index					= Index::instance();
-$Index->title_auto		= false;
-$L						= Language::instance();
-$Page					= Page::instance();
-$Page
-	->title($L->administration)
-	->title($L->Blogs);
 function get_sections_rows ($structure = null, $level = 0, &$content = null) {
 	$L			= Language::instance();
 	$root		= false;

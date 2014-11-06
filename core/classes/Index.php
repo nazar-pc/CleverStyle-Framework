@@ -43,9 +43,6 @@ class Index {
 	public	$cancel_button_back		= false;
 	public	$reset_button			= true;
 	public	$post_buttons			= '';
-
-	public $init_auto				= true;
-	public $title_auto				= true;
 	/**
 	 * Like Config::$route property, but excludes numerical items
 	 *
@@ -63,10 +60,7 @@ class Index {
 	 *
 	 * @var string
 	 */
-	protected	$post_title			= '';
-	protected	$structure			= [];
-	protected	$parts				= [];
-	protected	$subparts			= [];
+	protected	$append_to_title	= '';
 	protected	$permission_group;
 	/**
 	 * Name of current module
@@ -204,129 +198,88 @@ class Index {
 		return $this;
 	}
 	/**
-	 * Initialization: loading of module structure, including of necessary module files, inclusion of save file
+	 * Normalize route path and fill `cs\Index::$route_path` and `cs\Index::$route_ids` properties
 	 */
-	protected function init () {
-		$Config		= Config::instance();
-		$L			= Language::instance();
-		$Page		= Page::instance();
+	protected function normalize_route () {
 		/**
-		 * Some routing preparations
+		 * Separate numeric and other parts of route
 		 */
-		$rc_path	= &$this->route_path;
-		$rc_ids		= &$this->route_ids;
-		foreach ($Config->route as &$item) {
+		foreach (Config::instance()->route as $item) {
 			if (is_numeric($item)) {
-				$rc_ids[]	= &$item;
+				$this->route_ids[]	= $item;
 			} else {
-				$rc_path[]	= &$item;
+				$this->route_path[]	= $item;
 			}
 		}
-		unset($item, $rc_path, $rc_ids);
-		$rc					= &$this->route_path;
-		$working_directory	= $this->working_directory;
-		$structure_file		=
-			$Config->core['simple_admin_mode'] &&
-			file_exists("$working_directory/index_simple.json")
-				? 'index_simple.json'
-				: 'index.json';
-		if (file_exists("$working_directory/$structure_file")) {
-			$this->structure	= file_get_json("$working_directory/$structure_file");
-			if (is_array($this->structure)) {
-				foreach ($this->structure as $item => $value) {
-					if (!is_array($value)) {
-						$item	= $value;
-					}
-					if ($this->check_permission($item)) {
-						$this->parts[] = $item;
-						if (@$rc[0] == $item && is_array($value)) {
-							foreach ($value as $subpart) {
-								if ($this->check_permission("$item/$subpart")) {
-									$this->subparts[] = $subpart;
-								} elseif (@$rc[1] == $subpart) {
-									error_code(403);
-									return;
-								}
-							}
-						}
-					} elseif ($rc[0] == $item) {
-						error_code(403);
-						return;
-					}
-				}
-				unset($item, $value, $subpart);
-			}
-		}
-		unset($structure_file);
-		if (!$this->include_handler($working_directory, 'index', false)) {
+		unset($item);
+		if (!file_exists("$this->working_directory/index.json")) {
 			return;
 		}
-		if ($this->parts) {
-			if (!$this->path_check($rc[0], $this->parts, $this->structure, $this->subparts)) {
+		$structure	= file_get_json("$this->working_directory/index.json");
+		if (!$structure) {
+			return;
+		}
+		/**
+		 * First level path routing
+		 */
+		$path	= @$this->route_path[0];
+		/**
+		 * If path not specified - take first from structure
+		 */
+		if (!$path) {
+			if (api_path()) {
+				error_code(404);
 				return;
 			}
-			/**
-			 * Saving of changes
-			 */
-			if ($this->in_admin) {
-				_include_once("$working_directory/$rc[0]/save.php", false) ||
-				_include_once("$working_directory/save.php", false);
-				if ($this->title_auto) {
-					$Page->title($L->administration);
-				}
-			}
-			if (!$this->in_api && $this->title_auto) {
-				$Page->title($L->{home_page() ? 'home' : $this->module});
-			}
-			if (!$this->in_api) {
-				if (!home_page() && $this->title_auto) {
-					$Page->title($L->$rc[0]);
-				}
-			}
-			/**
-			 * Warning if site is closed
-			 */
-			if (!$Config->core['site_mode']) {
-				$Page->warning(get_core_ml_text('closed_title'));
-			}
-			if (!$this->include_handler($working_directory, $rc[0], !$this->subparts)) {
+			$path	= isset($structure[0]) ? $structure[0] : array_keys($structure)[0];
+		} elseif (!isset($structure[$path]) && !in_array($path, $structure)) {
+			error_code(404);
+			return;
+		}
+		if (!$this->check_permission($path)) {
+			error_code(403);
+		}
+		$this->route_path[0]	= $path;
+		/**
+		 * If there is second level routing in structure - handle that
+		 */
+		if (!isset($structure[$path])) {
+			return;
+		}
+		$sub_path	= @$this->route_path[1];
+		/**
+		 * If sub path not specified - take first from structure
+		 */
+		if (!$sub_path) {
+			if (api_path()) {
+				error_code(404);
 				return;
 			}
-			if ($this->subparts) {
-				if (!$this->path_check($rc[1], $this->subparts)) {
-					return;
-				}
-				if (!$this->in_api) {
-					if (!home_page() && $this->title_auto) {
-						$Page->title($L->$rc[1]);
-					}
-					if ($this->action === null) {
-						$this->action = ($this->in_admin ? 'admin/' : '')."$this->module/$rc[0]/$rc[1]";
-					}
-				}
-				if (!$this->include_handler("$working_directory/$rc[0]", $rc[1])) {
-					return;
-				}
-			} elseif (!$this->in_api && $this->action === null) {
-				$this->action = ($this->in_admin ? 'admin/' : '')."$this->module/$rc[0]";
-			}
-			unset($rc);
-			if ($this->post_title && $this->title_auto) {
-				$Page->title($this->post_title);
-			}
-		} elseif (!$this->in_api) {
-			if ($this->in_admin) {
-				$Page->title($L->administration);
-			}
-			if (!$this->in_api && $this->title_auto) {
-				$Page->title($L->{home_page() ? 'home' : $this->module});
-			}
-			if ($this->action === null) {
-				$this->action = $Config->server['relative_address'];
-			}
-			if ($this->in_admin) {
-				_include_once("$working_directory/save.php", false);
-			}
+			$sub_path = array_shift($structure[$path]);
+		} elseif (!in_array($sub_path, $structure[$path])) {
+			error_code(404);
+			return;
+		}
+		if (!$this->check_permission("$path/$sub_path")) {
+			error_code(403);
+		}
+		$this->route_path[1]	= $sub_path;
+	}
+	/**
+	 * Include files necessary for module page rendering
+	 *
+	 * @param string	$path
+	 * @param string	$sub_path
+	 */
+	protected function module_page_rendering ($path, $sub_path) {
+		if (!$this->include_handler($this->working_directory, 'index', false)) {
+			return;
+		}
+		if (!$path || !$this->include_handler($this->working_directory, $path, !$sub_path)) {
+			return;
+		}
+		if (!$sub_path || !$this->include_handler("$this->working_directory/$path", $sub_path)) {
+			return;
 		}
 	}
 	/**
@@ -361,40 +314,9 @@ class Index {
 		}
 	}
 	/**
-	 * Check, whether current path part exists and if not - try to select first from possible if any, and set possible nested parts
-	 *
-	 * @param string          $path
-	 * @param string[]        $possible_parts
-	 * @param null|string[][] $structure
-	 * @param null|string[]   $nested_parts
-	 *
-	 * @return bool
+	 * Page generation, blocks processing, adding of form with save/apply/cancel/reset and/or custom users buttons
 	 */
-	protected function path_check (&$path, $possible_parts, $structure = null, &$nested_parts = null) {
-		/**
-		 * Index not found or empty
-		 */
-		if (!@$path) {
-			if (api_path()) {
-				return false;
-			}
-			$path	= $possible_parts[0];
-			/**
-			 * If there is structure - set nested possible parts
-			 */
-			if ($structure) {
-				$nested_parts	= @$structure[$path];
-			}
-		} elseif (!in_array($path, $possible_parts)) {
-			error_code(404);
-			return false;
-		}
-		return true;
-	}
-	/**
-	 * Module page generation, blocks processing, adding of form with save/apply/cancel/reset and/or custom users buttons
-	 */
-	protected function render () {
+	protected function render_complete_page () {
 		$Config	= Config::instance();
 		$L		= Language::instance();
 		$Page	= Page::instance();
@@ -464,7 +386,7 @@ class Index {
 					array_merge(
 						[
 							'enctype'	=> $this->file_upload ? 'multipart/form-data' : false,
-							'action'	=> $this->action
+							'action'	=> $this->get_action()
 						],
 						$this->form_attributes
 					)
@@ -473,6 +395,23 @@ class Index {
 		} elseif ($this->Content) {
 			$Page->content($this->Content);
 		}
+	}
+	/**
+	 * Get form action based on current module, path and other parameters
+	 *
+	 * @return string
+	 */
+	protected function get_action () {
+		if ($this->action === null) {
+			$this->action	= ($this->in_admin ? 'admin/' : '')."$this->module";
+			if (isset($this->route_path[0])) {
+				$this->action	.= '/'.$this->route_path[0];
+				if (isset($this->route_path[1])) {
+					$this->action	.= '/'.$this->route_path[1];
+				}
+			}
+		}
+		return $this->action ?: '';
 	}
 	/**
 	 * Blocks processing
@@ -567,11 +506,11 @@ class Index {
 		$L		= Language::instance();
 		$Page	= Page::instance();
 		if ($result || ($result === null && Config::instance()->save())) {
-			$this->post_title = $L->changes_saved;
+			$this->append_to_title = $L->changes_saved;
 			$Page->success($L->changes_saved);
 			return true;
 		} else {
-			$this->post_title = $L->changes_save_error;
+			$this->append_to_title = $L->changes_save_error;
 			$Page->warning($L->changes_save_error);
 			return false;
 		}
@@ -587,11 +526,11 @@ class Index {
 		$L		= Language::instance();
 		$Page	= Page::instance();
 		if ($result || ($result === null && Config::instance()->apply())) {
-			$this->post_title = $L->changes_applied;
+			$this->append_to_title = $L->changes_applied;
 			$Page->success($L->changes_applied.$L->check_applied);
 			return true;
 		} else {
-			$this->post_title = $L->changes_apply_error;
+			$this->append_to_title = $L->changes_apply_error;
 			$Page->warning($L->changes_apply_error);
 			return false;
 		}
@@ -606,7 +545,7 @@ class Index {
 			Config::instance()->cancel();
 		}
 		$L					= Language::instance();
-		$this->post_title	= $L->changes_canceled;
+		$this->append_to_title	= $L->changes_canceled;
 		Page::instance()->success($L->changes_canceled);
 	}
 	/**
@@ -631,22 +570,42 @@ class Index {
 		$Config				= Config::instance();
 		$Page				= Page::instance();
 		/**
-		 * If site is closed, user is not admin, and it is not request for sign in
+		 * If site is closed
 		 */
-		if (
-			!$Config->core['site_mode'] &&
-			!(
-				User::instance()->admin() ||
-				(
+		if (!$Config->core['site_mode']) {
+			/**
+			 * If user is not admin and it is not request for sign in
+			 */
+			if (
+				!User::instance()->admin() &&
+				!(
 					api_path() && $Config->route === ['user', 'sign_in']
 				)
-			)
-		) {
-			code_header(503);
-			return;
+			) {
+				code_header(503);
+				return;
+			}
+			/**
+			 * Warning about closed site
+			 */
+			if (!$this->in_api) {
+				$Page->warning(get_core_ml_text('closed_title'));
+			}
 		}
 		if (error_code()) {
 			$Page->error();
+		}
+		/**
+		 * Add generic Home or Module Name title
+		 */
+		if (!$this->in_api) {
+			$L	= Language::instance();
+			if ($this->in_admin()) {
+				$Page->title($L->administration);
+			}
+			$Page->title(
+				$L->{home_page() ? 'home' : $this->module}
+			);
 		}
 		Trigger::instance()->run('System/Index/preload');
 		/**
@@ -656,13 +615,13 @@ class Index {
 			ob_start();
 			_include(MODULES."/$this->module/index.html", false, false);
 			$Page->content(ob_get_clean());
-			if ($this->title_auto) {
-				$Page->title(Language::instance()->{home_page() ? 'home' : $this->module});
-			}
 		} elseif (!error_code()) {
-			$this->init_auto	&& $this->init();
+			$this->normalize_route();
+			if (!error_code()) {
+				$this->module_page_rendering(@$this->route_path[0], @$this->route_path[1]);
+			}
 		}
-		$this->render();
+		$this->render_complete_page();
 		if (error_code()) {
 			$Page->error();
 		}

@@ -9,6 +9,7 @@
  */
 namespace	cs;
 use			h;
+include __DIR__.'/save.php';
 $Config					= Config::instance();
 $Index					= Index::instance();
 $L						= Language::instance();
@@ -60,25 +61,31 @@ $Index->content(
 						).
 						(
 							isset($provider_data['trustForwarded'])
-								? h::{'cs-table-row cs-table-cell[left][colspan=2] input'}([
+								? h::{'cs-table-row cs-table-cell input'}([
 									'name'	=> "providers[$provider][trustForwarded]",
 									'value'	=> 1,
 									'type'	=> 'hidden'
 								])
 								: ''
 						).
-						h::{'cs-table-row cs-table-cell[left][colspan=2]'}(
-							isset($provider_data['info']) ? str_replace(
-								[
-									'{base_url}',
-									'{provider}'
-								],
-								[
-									$Config->base_url(),
-									$provider
-								],
-								$provider_data['info']
-							) : false
+						h::{'cs-table-row'}(
+							isset($provider_data['info'])
+								?
+									h::{'cs-table-cell'}().
+									h::{'cs-table-cell[left]'}(
+										str_replace(
+											[
+												'{base_url}',
+												'{provider}'
+											],
+											[
+												$Config->core_url(),
+												$provider
+											],
+											$provider_data['info']
+										)
+									)
+								: false
 						) ?: false
 					) ?: '',
 					h::radio([

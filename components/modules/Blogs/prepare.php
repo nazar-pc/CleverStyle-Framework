@@ -15,10 +15,6 @@ use			h,
 			cs\Trigger,
 			cs\User;
 if (!api_path()) {
-	$Page							= Page::instance();
-	$L								= Language::instance();
-	Index::instance()->title_auto	= false;
-	$Page->title($L->Blogs);
 	function get_sections_select_post (&$disabled, $current = null, $structure = null, $level = 0) {
 		$list	= [
 			'in'	=> [],

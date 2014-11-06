@@ -7,7 +7,6 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-use			h;
 if (isset($_POST['general'])) {
 	Config::instance()->module('Deferred_tasks')->set($_POST['general']);
 	Index::instance()->save(true);

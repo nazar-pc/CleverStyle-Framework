@@ -7,10 +7,11 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			cs\Config,
-			cs\Index,
-			cs\Language,
-			cs\Page;
+use
+	cs\Config,
+	cs\Index,
+	cs\Language,
+	cs\Page;
 if (!isset($_POST['mode'])) {
 	return;
 }

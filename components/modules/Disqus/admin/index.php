@@ -8,6 +8,7 @@
  */
 namespace	cs;
 use			h;
+include __DIR__.'/save.php';
 $Index					= Index::instance();
 $Index->apply_button	= false;
 $Index->content(

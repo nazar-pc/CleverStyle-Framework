@@ -10,15 +10,12 @@ namespace cs\modules\Photo_gallery;
 
 use
 	cs\DB,
-	cs\Index,
 	cs\Language,
 	cs\Page,
 	cs\User;
 
-Index::instance()->title_auto = false;
-$L                            = Language::instance();
-$Page                         = Page::instance();
-$Page->title($L->Photo_gallery);
+$L    = Language::instance();
+$Page = Page::instance();
 if (isset($_POST['edit_images'])) {
 	$User          = User::instance();
 	$Photo_gallery = Photo_gallery::instance();

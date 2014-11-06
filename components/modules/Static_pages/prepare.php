@@ -10,7 +10,6 @@ namespace	cs\modules\Static_pages;
 use
 	h,
 	cs\Config,
-	cs\Index,
 	cs\Page\Meta,
 	cs\Page;
 $Config			= Config::instance();
@@ -21,8 +20,7 @@ $page			= $Static_pages->get(
 $Page			= Page::instance();
 if ($page['interface']) {
 	if (!home_page()) {
-		Index::instance()->title_auto	= false;
-		$Page->title($page['title']);
+		$Page->Title[1]	= $page['title'];
 	}
 	$Page->Description	= description($page['content']);
 	if (home_page()) {
