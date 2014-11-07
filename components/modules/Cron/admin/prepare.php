@@ -7,10 +7,7 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-if (
-	isset($_POST['edit_settings'], $_POST['tasks']) &&
-	$_POST['edit_settings'] == 'save'
-) {
+if (isset($_POST['save'], $_POST['tasks'])) {
 	$filename	= TEMP.'/'.uniqid('cron');
 	$tasks		= _trim(explode("\n", trim($_POST['tasks'])));
 	$tasks		= implode("\n", $tasks);

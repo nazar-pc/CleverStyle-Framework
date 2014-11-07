@@ -8,10 +8,7 @@
  * @license		GNU GPL v2, see license.txt
  */
 namespace	cs;
-if (
-	isset($_POST['edit_settings'], $_POST['max_file_size']) &&
-	$_POST['edit_settings'] == 'save'
-) {
+if (isset($_POST['save'])) {
 	$module_data					= Config::instance()->module('Plupload');
 	$module_data->max_file_size		= xap($_POST['max_file_size']);
 	$module_data->confirmation_time	= (int)$_POST['confirmation_time'];

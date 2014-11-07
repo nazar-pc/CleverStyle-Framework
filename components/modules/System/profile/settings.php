@@ -30,7 +30,7 @@ $columns		= [
 	'timezone',
 	'avatar'
 ];
-if (isset($_POST['user']) && $_POST['edit_settings'] == 'save') {
+if (isset($_POST['user'], $_POST['save'])) {
 	$user_data = &$_POST['user'];
 	foreach ($user_data as $item => &$value) {
 		if (in_array($item, $columns) && $item != 'data') {

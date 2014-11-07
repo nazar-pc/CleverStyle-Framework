@@ -39,7 +39,6 @@ class Index {
 	public	$buttons				= true;
 	public	$save_button			= true;
 	public	$apply_button			= true;
-	public	$cancel_button			= ' disabled';
 	public	$cancel_button_back		= false;
 	public	$reset_button			= true;
 	public	$post_buttons			= '';
@@ -317,8 +316,6 @@ class Index {
 	 * Page generation, blocks processing, adding of form with save/apply/cancel/reset and/or custom users buttons
 	 */
 	protected function render_complete_page () {
-		$Config	= Config::instance();
-		$L		= Language::instance();
 		$Page	= Page::instance();
 		if ($this->in_api) {
 			$Page->content($this->Content);
@@ -326,75 +323,79 @@ class Index {
 		}
 		$this->render_blocks();
 		if ($this->form) {
-			$Page->content(
-				h::form(
-					$this->Content.
-					//Apply button
-					($this->apply_button && $this->buttons ?
-						h::{'button.uk-button'}(
-							$L->apply,
-							[
-								'name'			=> 'edit_settings',
-								'data-title'	=> $L->apply_info,
-								'id'			=> 'apply_settings',
-								'type'			=> 'submit',
-								'value'			=> 'apply',
-								'add'			=> Cache::instance()->cache_state() ? '' : ' disabled'
-							]
-						)
-					: '').
-					//Save button
-					($this->save_button && $this->buttons ?
-						h::{'button.uk-button'}(
-							$L->save,
-							[
-								'name'			=> 'edit_settings',
-								'data-title'	=> $L->save_info,
-								'id'			=> 'save_settings',
-								'type'			=> 'submit',
-								'value'			=> 'save'
-							]
-						)
-					: '').
-					//Cancel button (cancel changes or returns to the previous page)
-					(($this->apply_button && $this->buttons) || $this->cancel_button_back ?
-						h::{'button.uk-button'}(
-							$L->cancel,
-							[
-								'name'			=> 'edit_settings',
-								'id'			=> 'cancel_settings',
-								'value'			=> 'cancel',
-								'data-title'	=> $this->cancel_button_back ? false : $L->cancel_info,
-								'type'			=> $this->cancel_button_back ? 'button' : 'submit',
-								'onClick'		=> $this->cancel_button_back ? 'history.go(-1);' : false,
-								'add'			=> $this->cancel_button_back ? '' : (@$Config->core['cache_not_saved'] ? '' : $this->cancel_button)
-							]
-						)
-					: '').
-					//Reset button
-					($this->buttons && $this->reset_button ?
-						h::{'button.uk-button'}(
-							$L->reset,
-							[
-								'id'			=> 'reset_settings',
-								'data-title'	=> $L->reset_info,
-								'type'			=> 'reset'
-							]
-						)
-					: '').
-					$this->post_buttons,
-					array_merge(
-						[
-							'enctype'	=> $this->file_upload ? 'multipart/form-data' : false,
-							'action'	=> $this->get_action()
-						],
-						$this->form_attributes
-					)
-				)
-			);
-		} elseif ($this->Content) {
-			$Page->content($this->Content);
+			$this->form_wrapper();
 		}
+		$Page->content($this->Content);
+	}
+	/**
+	 * Wraps `cs\Index::$Content` with form and adds form buttons to the end of content
+	 */
+	protected function form_wrapper () {
+		$Config			= Config::instance();
+		$L				= Language::instance();
+		$this->Content	= h::form(
+			$this->Content.
+			//Apply button
+			($this->apply_button && $this->buttons ?
+				$this->form_button('apply', !Cache::instance()->cache_state())
+				: '').
+			//Save button
+			($this->save_button && $this->buttons ?
+				$this->form_button('save')
+				: '').
+			//Cancel button
+			($this->apply_button && $this->buttons && !$this->cancel_button_back ?
+				$this->form_button('cancel', !@$Config->core['cache_not_saved'])
+				: '').
+			($this->cancel_button_back ?
+				h::{'button.uk-button'}(
+					$L->cancel,
+					[
+						'name'		=> 'cancel',
+						'type'		=> 'button',
+						'onclick'	=> 'history.go(-1);'
+					]
+				)
+				: '').
+			//Reset button
+			($this->buttons && $this->reset_button ?
+				h::{'button.uk-button'}(
+					$L->reset,
+					[
+						'data-title'	=> $L->reset_info,
+						'type'			=> 'reset'
+					]
+				)
+				: '').
+			$this->post_buttons,
+			array_merge(
+				[
+					'enctype'	=> $this->file_upload ? 'multipart/form-data' : false,
+					'action'	=> $this->get_action()
+				],
+				$this->form_attributes
+			)
+		);
+	}
+	/**
+	 * Simple wrapper for form buttons
+	 *
+	 * @param string	$name
+	 * @param bool		$disabled
+	 *
+	 * @return string
+	 */
+	protected function form_button ($name, $disabled = false) {
+		$L	= Language::instance();
+		return h::{'button.uk-button'}(
+			$L->$name,
+			[
+				'name'			=> $name,
+				'type'			=> 'submit',
+				'data-title'	=> $L->{$name.'_info'},
+				$disabled ? 'disabled' : false
+			]
+		);
 	}
 	/**
 	 * Get form action based on current module, path and other parameters

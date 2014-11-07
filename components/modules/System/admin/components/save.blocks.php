@@ -129,42 +129,36 @@ if (isset($_POST['mode'])) {
 			}
 		break;
 	}
-} elseif (isset($_POST['edit_settings'])) {
-	switch ($_POST['edit_settings']) {
-		case 'apply':
-		case 'save':
-			$_POST['position'] = _json_decode($_POST['position']);
-			if (is_array($_POST['position'])) {
-				$blocks_array = [];
-				foreach ($_POST['position'] as $position => $items) {
-					foreach ($items as $item) {
-						switch ($position) {
-							default:
-								$position = 'floating';
-							break;
-							case 'top':
-							case 'left':
-							case 'floating':
-							case 'right':
-							case 'bottom':
-							break;
-						}
-						$Config->components['blocks'][$item]['position']	= $position;
-						$blocks_array[]										= $Config->components['blocks'][$item];
-					}
+} elseif (isset($_POST['apply']) || isset($_POST['save'])) {
+	$_POST['position'] = _json_decode($_POST['position']);
+	if (is_array($_POST['position'])) {
+		$blocks_array = [];
+		foreach ($_POST['position'] as $position => $items) {
+			foreach ($items as $item) {
+				switch ($position) {
+					default:
+						$position = 'floating';
+					break;
+					case 'top':
+					case 'left':
+					case 'floating':
+					case 'right':
+					case 'bottom':
+					break;
 				}
-				$Config->components['blocks']	= [];
-				$Config->components['blocks']	= $blocks_array;
-				unset($blocks_array, $position, $items, $item);
-				if ($_POST['edit_settings'] == 'save') {
-					$a->save();
-				} else {
-					$a->apply();
-				}
+				$Config->components['blocks'][$item]['position']	= $position;
+				$blocks_array[]										= $Config->components['blocks'][$item];
 			}
-		break;
-		case 'cancel':
-			$a->cancel();
-		break;
+		}
+		$Config->components['blocks']	= [];
+		$Config->components['blocks']	= $blocks_array;
+		unset($blocks_array, $position, $items, $item);
+		if (isset($_POST['save'])) {
+			$a->save();
+		} else {
+			$a->apply();
+		}
 	}
+} elseif (isset($_POST['cancel'])) {
+	$a->cancel();
 }
