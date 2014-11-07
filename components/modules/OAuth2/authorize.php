@@ -196,7 +196,7 @@ if (!$OAuth2->get_access($client['id'])) {
 		$L->client_want_access_your_account($client['name'])
 	);
 	$Index->action       = $Config->base_url().'/'.$Config->server['raw_relative_address'];
-	$Index->post_buttons = h::{'button.uk-button[type=submit][name=mode][value=allow]'}($L->allow).
+	$Index->custom_buttons = h::{'button.uk-button[type=submit][name=mode][value=allow]'}($L->allow).
 		h::{'button.uk-button[type=submit][mode=mode][value=deny]'}($L->deny);
 } else {
 	$code = $OAuth2->add_code($client['id'], $_GET['response_type'], $redirect_uri);

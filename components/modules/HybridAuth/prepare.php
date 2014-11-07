@@ -454,7 +454,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 			email_form:
 			$Index->form			= true;
 			$Index->buttons			= false;
-			$Index->post_buttons	= h::{'button.uk-button[type=submit]'}($L->submit);
+			$Index->custom_buttons	= h::{'button.uk-button[type=submit]'}($L->submit);
 			$Index->content(
 				h::{'p.cs-center'}(
 					$L->please_type_your_email.':'.

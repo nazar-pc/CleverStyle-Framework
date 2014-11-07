@@ -41,7 +41,7 @@ class Index {
 	public	$apply_button			= true;
 	public	$cancel_button_back		= false;
 	public	$reset_button			= true;
-	public	$post_buttons			= '';
+	public	$custom_buttons			= '';
 	/**
 	 * Like Config::$route property, but excludes numerical items
 	 *
@@ -367,7 +367,7 @@ class Index {
 					]
 				)
 				: '').
-			$this->post_buttons,
+			$this->custom_buttons,
 			array_merge(
 				[
 					'enctype'	=> $this->file_upload ? 'multipart/form-data' : false,
