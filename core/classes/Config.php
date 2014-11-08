@@ -39,13 +39,12 @@ class Config {
 		'host'					=> '',		//Current domain
 		'relative_address'		=> '',		//Corrected page address (recommended for usage)
 		'protocol'				=> '',		//Page protocol (http/https)
-		'base_url'				=> '',		//Address of the main page of current mirror, including prefix (http/https)
 		'mirrors'				=> [		//Array of all domains, which allowed to access the site
 			'count'		=> 0,				//Total count
 			'http'		=> [],				//Insecure (http) domains
 			'https'		=> []				//Secure (https) domains
 		],
-		'mirror_index'			=> 0		//Index of current domain in mirrors list ('0' - main domain)
+		'mirror_index'			=> -1		//Index of current domain in mirrors list ('0' - main domain)
 	];
 	protected $can_be_admin	= true;
 	/**
@@ -95,7 +94,7 @@ class Config {
 	/**
 	 * Engine initialization (or reinitialization if necessary)
 	 */
-	protected function init() {
+	protected function init () {
 		Language::instance()->change($this->core['language']);
 		$Page	= Page::instance();
 		$Page->init(
@@ -155,8 +154,11 @@ class Config {
 	protected function routing () {
 		$L								= Language::instance();
 		$server							= &$this->server;
-		$server['raw_relative_address']	= urldecode($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+		$server['raw_relative_address']	= urldecode(trim($_SERVER['REQUEST_URI'], '/'));
 		$server['raw_relative_address']	= null_byte_filter($server['raw_relative_address']);
+		if (Core::instance()->fixed_language) {
+			$server['raw_relative_address']	= explode('/', $server['raw_relative_address'], 2)[1];
+		}
 		$server['host']					= $_SERVER['HTTP_HOST'];
 		if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
 			$server['protocol']	= $_SERVER['HTTP_X_FORWARDED_PROTO'];
@@ -164,46 +166,34 @@ class Config {
 			$server['protocol'] = @$_SERVER['HTTPS'] == 'on' ? 'https' : 'http';
 		}
 		/**
-		 * If it  is not the main domain - try to find match in mirrors
+		 * Search for url matching in all mirrors
 		 */
-		foreach ((array)$this->core['url'] as $i => $address) {
+		foreach ($this->core['url'] as $i => $address) {
 			list($protocol, $urls)			= explode('://', $address, 2);
 			$urls							= explode(';', $urls);
-			$server['mirrors'][$protocol]	= array_merge(
-				isset($server['mirrors'][$protocol]) ? $server['mirrors'][$protocol] : [],
-				[$urls[0]]
-			);
-			/**
-			 * $url = [0 => protocol, 1 => [list of domain and IP addresses]]
-			 */
-			if ($protocol == $server['protocol']) {
+			$server['mirrors'][$protocol][]	= $urls[0];
+			if ($protocol == $server['protocol'] && $server['mirror_index'] === -1) {
 				foreach ($urls as $url) {
-					if (mb_strpos($server['raw_relative_address'], $url) === 0) {
-						$server['base_url']			= "$server[protocol]://$url";
-						$current_mirror_base_url	= $url;
-						$server['mirror_index']		= $i;
-						break 2;
+					if (mb_strpos("$_SERVER[HTTP_HOST]$server[raw_relative_address]", $url) === 0) {
+						$server['mirror_index']	= $i;
+						break;
 					}
 				}
-				unset($url);
 			}
 		}
-		unset($address, $i, $urls, $protocol);
+		unset($address, $i, $urls, $url, $protocol);
 		$server['mirrors']['count'] = count($server['mirrors']['http']) + count($server['mirrors']['https']);
 		/**
 		 * If match was not found - mirror is not allowed!
 		 */
-		if (!isset($current_mirror_base_url)) {
-			$server['base_url'] = '';
+		if ($server['mirror_index'] === -1) {
 			code_header(400);
 			trigger_error($L->mirror_not_allowed, E_USER_ERROR);
 			exit;
 		}
 		/**
-		 * Preparing page url without basic path
+		 * Remove trailing slashes
 		 */
-		$server['raw_relative_address']	= mb_substr($server['raw_relative_address'], mb_strlen($current_mirror_base_url));
-		unset($current_mirror_base_url);
 		$server['raw_relative_address']	= trim($server['raw_relative_address'], ' /\\');
 		/**
 		 * Redirection processing
@@ -254,8 +244,12 @@ class Config {
 		foreach ((array)$this->core['url'] as $address) {
 			list($protocol, $urls)	= explode('://', $address, 2);
 			$urls					= explode(';', $urls);
-			if ($protocol === $referer['protocol'] && in_array($referer['host'], $urls)) {
-				return true;
+			if ($protocol === $referer['protocol']) {
+				foreach ($urls as $url) {
+					if (mb_strpos($referer['host'], $url) === 0) {
+						return true;
+					}
+				}
 			}
 		}
 		return false;
@@ -396,18 +390,6 @@ class Config {
 		}
 		unset($language);
 		file_put_json(CACHE.'/languages_clangs', $clangs);
-		foreach ($this->core['url'] as &$url) {
-			list($protocol, $urls)	= explode('://', $url);
-			$urls					= explode(';', $urls);
-			$last_url				= $urls[count($urls) - 1];
-			foreach ($clangs as $clang) {
-				if (!in_array("$last_url/$clang", $urls)) {
-					array_unshift($urls, "$last_url/$clang");
-					$url	= "$protocol://".implode(';', $urls);
-				}
-			}
-		}
-		$this->save();
 		return $clangs;
 	}
 	/**
@@ -562,12 +544,19 @@ class Config {
 		return $this->$item = $data;
 	}
 	/**
-	 * Get base url of current mirror
+	 * Get base url of current mirror including language suffix
 	 *
 	 * @return string
 	 */
 	function base_url () {
-		return $this->server['base_url'];
+		if ($this->server['mirror_index'] === -1) {
+			return '';
+		}
+		$base_url	= $this->server['protocol'].'://'.$this->server['host'];
+		if (Core::instance()->fixed_language) {
+			$base_url	.= '/'.Language::instance()->clang;
+		}
+		return $base_url;
 	}
 	/**
 	 * Get base url of main domain
@@ -575,19 +564,7 @@ class Config {
 	 * @return string
 	 */
 	function core_url () {
-		$core_url	= mb_substr(
-			$this->core['url'][0],
-			0,
-			mb_strpos($this->core['url'][0], ';') ?: null
-		);
-		if ($this->core['multilingual']) {
-			$core_url	= mb_substr(
-				$core_url,
-				0,
-				mb_strrpos($core_url, '/') ?: null
-			);
-		}
-		return $core_url;
+		return $this->server['protocol'].'://'.$this->server['host'];
 	}
 	/**
 	 * Get object for getting db and storage configuration of module
