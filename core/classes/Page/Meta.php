@@ -15,7 +15,6 @@ use
 
 /**
  * Meta class for generation of various meta tags
- *
  */
 class Meta {
 	use

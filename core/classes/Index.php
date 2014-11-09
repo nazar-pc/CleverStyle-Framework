@@ -22,6 +22,8 @@ use			h;
  *  System/Index/postload
  *
  * @method static Index instance($check = false)
+ *
+ * @property string $action	Form action
  */
 class Index {
 	use	Singleton;
@@ -35,7 +37,6 @@ class Index {
 	public	$form_attributes		= [
 		'class'	=> 'uk-form'
 	];
-	public	$action					= null;
 	public	$buttons				= true;
 	public	$save_button			= true;
 	public	$apply_button			= true;
@@ -54,6 +55,7 @@ class Index {
 	 * @var int[]
 	 */
 	public	$route_ids	= [];
+	protected	$action				= null;
 	/**
 	 * Appends to the end of title
 	 *
@@ -556,6 +558,30 @@ class Index {
 	 */
 	function in_admin () {
 		return $this->in_admin;
+	}
+	/**
+	 * Getter for `action` property (no other properties supported currently)
+	 *
+	 * @param string $property
+	 *
+	 * @return bool|string
+	 */
+	function __get ($property) {
+		if ($property == 'action') {
+			return $this->get_action();
+		}
+		return false;
+	}
+	/**
+	 * Getter for `action` property (no other properties supported currently)
+	 *
+	 * @param string $property
+	 * @param string $value
+	 */
+	function __set ($property, $value) {
+		if ($property == 'action') {
+			$this->action	= $value;
+		}
 	}
 	/**
 	 * Executes plugins processing, blocks and module page generation

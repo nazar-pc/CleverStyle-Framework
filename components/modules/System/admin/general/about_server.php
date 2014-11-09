@@ -8,11 +8,12 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\System\general\about_server;
-use			h,
-			cs\Core,
-			cs\DB,
-			cs\Index,
-			cs\Language;
+use
+	h,
+	cs\Core,
+	cs\DB,
+	cs\Index,
+	cs\Language;
 $Core			= Core::instance();
 $Index			= Index::instance();
 $L				= Language::instance();
@@ -52,7 +53,7 @@ $Index->content(
 				'title'			=> "$L->system » $L->license"
 			]
 		).
-		h::{'button.uk-button#cs-system-license-open'}(
+		h::{'button#cs-system-license-open.uk-button'}(
 			h::icon('legal').$L->license,
 			[
 				'data-title'	=> $L->click_to_view_details
