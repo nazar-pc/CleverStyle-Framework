@@ -36,7 +36,7 @@ Index::instance()->content(
 		],
 		core_input('remember_user_ip', 'radio'),
 		core_input('password_min_length', 'number', null, false, 4),
-		core_input('password_min_strength', 'range', null, false, 0, 7),
+		core_input('password_min_strength', 'number', null, false, 0, 7),
 		[
 			h::info('allow_user_registration'),
 			h::radio([
