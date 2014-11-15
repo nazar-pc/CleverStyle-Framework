@@ -12,8 +12,30 @@ Trigger::instance()->register(
 	function () {
 		$L		= Language::instance();
 		$Menu	= Menu::instance();
-		$Menu->add_item('Blogs', $L->browse_sections, 'admin/Blogs/browse_sections');
-		$Menu->add_item('Blogs', $L->browse_posts, 'admin/Blogs/browse_posts');
-		$Menu->add_item('Blogs', $L->general, 'admin/Blogs');
+		$route	= Index::instance()->route_path;
+		$Menu->add_item(
+			'Blogs',
+			$L->browse_sections,
+			'admin/Blogs/browse_sections',
+			[
+				'class'	=> $route[0] == 'browse_sections' ? 'uk-active' : false
+			]
+		);
+		$Menu->add_item(
+			'Blogs',
+			$L->browse_posts,
+			'admin/Blogs/browse_posts',
+			[
+				'class'	=> $route[0] == 'browse_posts' ? 'uk-active' : false
+			]
+		);
+		$Menu->add_item(
+			'Blogs',
+			$L->general,
+			'admin/Blogs',
+			[
+				'class'	=> $route[0] == 'general' ? 'uk-active' : false
+			]
+		);
 	}
 );
