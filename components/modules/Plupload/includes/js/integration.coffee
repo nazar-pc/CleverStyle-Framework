@@ -31,17 +31,6 @@ cs.file_upload	= (button, success, error, progress, multi, drop_element) ->
 		url				: '/Plupload'
 		drop_element	: drop_element || button.get(0)
 	uploader.init()
-	if button.length
-		button.on(
-			'click.cs-plupload'
-			->
-				setTimeout (->
-					input	= browse_button.nextAll('.moxie-shim:first').children()
-					if !input.attr('accept')
-						input.removeAttr('accept')
-					browse_button.click()
-				), 0
-		)
 	uploader.bind 'FilesAdded', ->
 		uploader.refresh()
 		uploader.start()
@@ -76,21 +65,19 @@ cs.file_upload	= (button, success, error, progress, multi, drop_element) ->
 				else
 					alert error_details.message
 		)
-	this.stop		= ->
+	@stop		= ->
 		uploader.stop()
-	this.destroy	= ->
+	@destroy	= ->
+		browse_button.nextAll('.moxie-shim:first').remove()
 		browse_button.remove()
-		browse.off('click.cs-plupload')
+		button.off('click.cs-plupload')
 		uploader.destroy()
-		$('.moxie-shim').each ->
-			if $(@).html() == ''
-				$(@).remove()
-	this.browse		= ->
-		setTimeout (->
-			input	= browse_button.nextAll('.moxie-shim:first').children()
-			if !input.attr('accept')
-				input.removeAttr('accept')
-			browse_button.click()
-		), 1
-	this
+	@browse		= ->
+		input	= browse_button.nextAll('.moxie-shim:first').children()
+		if !input.attr('accept')
+			input.removeAttr('accept')
+		browse_button.click()
+	if button.length
+		button.on('click.cs-plupload', @browse)
+	@
 return

@@ -41,18 +41,6 @@
       drop_element: drop_element || button.get(0)
     });
     uploader.init();
-    if (button.length) {
-      button.on('click.cs-plupload', function() {
-        return setTimeout((function() {
-          var input;
-          input = browse_button.nextAll('.moxie-shim:first').children();
-          if (!input.attr('accept')) {
-            input.removeAttr('accept');
-          }
-          return browse_button.click();
-        }), 0);
-      });
-    }
     uploader.bind('FilesAdded', function() {
       uploader.refresh();
       return uploader.start();
@@ -90,25 +78,22 @@
       return uploader.stop();
     };
     this.destroy = function() {
+      browse_button.nextAll('.moxie-shim:first').remove();
       browse_button.remove();
-      browse.off('click.cs-plupload');
-      uploader.destroy();
-      return $('.moxie-shim').each(function() {
-        if ($(this).html() === '') {
-          return $(this).remove();
-        }
-      });
+      button.off('click.cs-plupload');
+      return uploader.destroy();
     };
     this.browse = function() {
-      return setTimeout((function() {
-        var input;
-        input = browse_button.nextAll('.moxie-shim:first').children();
-        if (!input.attr('accept')) {
-          input.removeAttr('accept');
-        }
-        return browse_button.click();
-      }), 1);
+      var input;
+      input = browse_button.nextAll('.moxie-shim:first').children();
+      if (!input.attr('accept')) {
+        input.removeAttr('accept');
+      }
+      return browse_button.click();
     };
+    if (button.length) {
+      button.on('click.cs-plupload', this.browse);
+    }
     return this;
   };
 
