@@ -8,6 +8,7 @@
  * @license		GNU GPL v2, see license.txt
  */
 namespace	cs;
+use Karwana\Mime\Mime;
 $Page				= Page::instance();
 $User				= User::instance();
 interface_off();
@@ -112,6 +113,8 @@ if (!$storage->file_exists($destination_file)) {
 	$storage->mkdir($destination_file);
 }
 $destination_file	.= '/'.$User->id.date('_is').uniqid();
+require_once __DIR__.'/Mime/Mime.php';
+$destination_file	.= '.'.Mime::guessExtension($_FILES['file']['tmp_name'], $_FILES['file']['name']);
 if (!$storage->copy($_FILES['file']['tmp_name'], $destination_file)) {
 	$Page->json([
 		'jsonrpc'	=> '2.0',

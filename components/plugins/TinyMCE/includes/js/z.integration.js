@@ -34,13 +34,15 @@ $(function () {
 				null,
 				function (files) {
 					tinymce.uploader_dialog.cs().modal('hide');
+					tinymce.uploader_dialog.remove();
 					if (files.length) {
 						callback(files[0]);
 					}
 				},
 				function (error) {
 					tinymce.uploader_dialog.cs().modal('hide');
-					alert(error);
+					tinymce.uploader_dialog.remove();
+					alert(error.message);
 				},
 				function (file) {
 					tinymce.uploader_dialog.find('.uk-progress-bar').width((file.percent ? file.percent : 1) + '%');
