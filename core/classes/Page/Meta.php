@@ -118,7 +118,10 @@ class Meta {
 				$this->__call($type, [$params[0], $p]);
 			}
 		} elseif ($params[1] || $params[1] === 0) {
-			$this->og_data[$params[0]]	.= h::meta([
+			if (!isset($this->og_data[$params[0]])) {
+				$this->og_data[$params[0]]	= '';
+			}
+			$this->og_data[$params[0]]	= h::meta([
 				'property'	=> "$type:$params[0]",
 				'content'	=> $params[1]
 			]);

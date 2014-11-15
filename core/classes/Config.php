@@ -157,7 +157,8 @@ class Config {
 		$server['raw_relative_address']	= urldecode(trim($_SERVER['REQUEST_URI'], '/'));
 		$server['raw_relative_address']	= null_byte_filter($server['raw_relative_address']);
 		if (Core::instance()->fixed_language) {
-			$server['raw_relative_address']	= explode('/', $server['raw_relative_address'], 2)[1];
+			$server['raw_relative_address']	= explode('/', $server['raw_relative_address'], 2);
+			$server['raw_relative_address']	= isset($server['raw_relative_address'][1]) ? $server['raw_relative_address'][1] : '';
 		}
 		$server['host']					= $_SERVER['HTTP_HOST'];
 		if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
