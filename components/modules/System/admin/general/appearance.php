@@ -84,9 +84,10 @@ if (isset($_POST['action'])) {
 						'value' => $theme
 					])
 				);
-				$Index->cancel_button_back = true;
+				$Index->buttons				= false;
+				$Index->cancel_button_back	= true;
 				$Index->content(
-					h::{'button.uk-button[type=submit][[name=action][value=update]'}($L->yes)
+					h::{'button.uk-button[type=submit][name=action][value=update]'}($L->yes)
 				);
 				return;
 			}
