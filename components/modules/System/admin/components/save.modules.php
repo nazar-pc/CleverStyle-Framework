@@ -224,7 +224,7 @@ if (isset($_POST['update_modules_list'])) {
 			/**
 			 * Extracting new versions of files
 			 */
-			$tmp_file	= TEMP.'/'.$User->get_session().'_module_update.phar.php';
+			$tmp_file	= TEMP.'/'.$User->get_session().'_module_update.phar';
 			$tmp_dir	= "phar://$tmp_file";
 			$fs			= file_get_json("$tmp_dir/fs.json");
 			$extract	= array_product(
@@ -343,7 +343,7 @@ if (isset($_POST['update_modules_list'])) {
 			/**
 			 * Extracting new versions of files
 			 */
-			$tmp_file	= TEMP.'/'.$User->get_session().'_update_system.phar.php';
+			$tmp_file	= TEMP.'/'.$User->get_session().'_update_system.phar';
 			$tmp_dir	= "phar://$tmp_file";
 			$fs			= file_get_json("$tmp_dir/fs.json")['core/fs.json'];
 			$fs			= file_get_json("$tmp_dir/fs/$fs");

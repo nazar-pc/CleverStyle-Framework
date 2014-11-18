@@ -284,8 +284,6 @@ $phar->addFromString(
 	"\"$version\""
 );
 unset($themes, $theme);
-$phar = $phar->convertToExecutable(Phar::TAR, Phar::BZ2, '.phar.tar');
-unlink(DIR.'/build.phar');
 $phar->setStub(
 "<?php
 if (PHP_SAPI == 'cli') {
@@ -296,8 +294,7 @@ if (PHP_SAPI == 'cli') {
 }
 __HALT_COMPILER();"
 );
-$phar->setSignatureAlgorithm(PHAR::SHA512);
 unset($phar);
 $suffix = @$_POST['suffix'] ? "_$_POST[suffix]" : '';
-rename(DIR.'/build.phar.tar', DIR."/CleverStyle_CMS_$version$suffix.phar.php");
+rename(DIR.'/build.phar', DIR."/CleverStyle_CMS_$version$suffix.phar.php");
 echo "Done! CleverStyle CMS $version";

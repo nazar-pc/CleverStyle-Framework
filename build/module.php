@@ -53,8 +53,6 @@ unset($length);
 $phar->addFromString('fs.json', _json_encode(array_flip($list)));
 $phar->addFromString('dir', $_POST['modules'][0]);
 unset($list);
-$phar = $phar->convertToExecutable(Phar::TAR, Phar::BZ2, '.phar.tar');
-unlink(DIR.'/build.phar');
 if ($set_stub) {
 	$phar->setStub("<?php Phar::webPhar(null, '$set_stub'); __HALT_COMPILER();");
 } else {
@@ -63,8 +61,7 @@ if ($set_stub) {
 	unset($meta);
 	$phar->setStub("<?php Phar::webPhar(null, 'index.html'); __HALT_COMPILER();");
 }
-$phar->setSignatureAlgorithm(PHAR::SHA512);
 unset($phar);
 $suffix = @$_POST['suffix'] ? "_$_POST[suffix]" : '';
-rename(DIR.'/build.phar.tar', DIR.'/'.str_replace(' ', '_', 'module_'.$_POST['modules'][0])."_$version$suffix.phar.php");
+rename(DIR.'/build.bz2', DIR.'/'.str_replace(' ', '_', 'module_'.$_POST['modules'][0])."_$version$suffix.phar.php");
 echo "Done! Module {$_POST['modules'][0]} $version";

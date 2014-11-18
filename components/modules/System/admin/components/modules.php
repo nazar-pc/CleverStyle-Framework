@@ -31,14 +31,15 @@
  *  ['name'	=> <i>module_name</i>]
  */
 namespace	cs\modules\System;
-use			h,
-			cs\Config,
-			cs\Core,
-			cs\Index,
-			cs\Language,
-			cs\Page,
-			cs\Trigger,
-			cs\User;
+use
+	h,
+	cs\Config,
+	cs\Core,
+	cs\Index,
+	cs\Language,
+	cs\Page,
+	cs\Trigger,
+	cs\User;
 $Config				= Config::instance();
 $L					= Language::instance();
 $Page				= Page::instance();
@@ -81,7 +82,7 @@ if (
 				if ($_FILES['upload_module']['error'] != UPLOAD_ERR_OK) {
 					break;
 				}
-				$tmp_file = TEMP.'/'.md5($_FILES['upload_module']['tmp_name'].MICROTIME).'.phar.php';
+				$tmp_file = TEMP.'/'.md5($_FILES['upload_module']['tmp_name'].MICROTIME).'.phar';
 				move_uploaded_file($_FILES['upload_module']['tmp_name'], $tmp_file);
 				$tmp_dir	= "phar://$tmp_file";
 				$module_name = file_get_contents("$tmp_dir/dir");
@@ -110,7 +111,7 @@ if (
 					$rc[2]					= 'update';
 					$show_modules			= false;
 					$Page->title($L->updating_of_module($module_name));
-					rename($tmp_file, $tmp_file = TEMP.'/'.$User->get_session().'_module_update.phar.php');
+					rename($tmp_file, $tmp_file = TEMP.'/'.$User->get_session().'_module_update.phar');
 					$a->content(
 						h::{'h2.cs-center'}(
 							$L->update_module(
@@ -284,9 +285,9 @@ if (
 			}
 			move_uploaded_file(
 				$_FILES['upload_system']['tmp_name'],
-				$tmp_file = TEMP.'/'.md5($_FILES['upload_system']['tmp_name'].MICROTIME).'.phar.php'
+				$tmp_file = TEMP.'/'.md5($_FILES['upload_system']['tmp_name'].MICROTIME).'.phar'
 			);
-			$tmp_dir								= "phar://$tmp_file";
+			$tmp_dir = "phar://$tmp_file";
 			if (!file_exists("$tmp_dir/version") || !file_exists("$tmp_dir/themes.json")) {
 				$Page->warning($L->this_is_not_system_installer_file);
 				unlink($tmp_file);
@@ -312,7 +313,7 @@ if (
 			$rc[2]					= 'update_system';
 			$show_modules			= false;
 			$Page->title($L->updating_of_system);
-			rename($tmp_file, $tmp_file = TEMP.'/'.$User->get_session().'_update_system.phar.php');
+			rename($tmp_file, $tmp_file = TEMP.'/'.$User->get_session().'_update_system.phar');
 			$a->content(
 				h::{'h2.cs-center'}(
 					$L->update_system(

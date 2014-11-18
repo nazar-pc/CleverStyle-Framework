@@ -82,7 +82,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			/**
 			 * Extracting new versions of files
 			 */
-			$tmp_file	= TEMP.'/'.User::instance()->get_session().'_plugin_update.phar.php';
+			$tmp_file	= TEMP.'/'.User::instance()->get_session().'_plugin_update.phar';
 			$tmp_dir	= "phar://$tmp_file";
 			$fs			= file_get_json("$tmp_dir/fs.json");
 			$extract	= array_product(

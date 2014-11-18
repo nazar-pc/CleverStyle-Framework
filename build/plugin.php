@@ -58,8 +58,7 @@ if ($set_stub) {
 	unset($meta);
 	$phar->setStub("<?php Phar::webPhar(null, 'index.html'); __HALT_COMPILER();");
 }
-$phar->setSignatureAlgorithm(PHAR::SHA512);
 unset($phar);
 $suffix = @$_POST['suffix'] ? "_$_POST[suffix]" : '';
-rename(DIR.'/build.phar.tar', DIR.'/'.str_replace(' ', '_', 'plugin_'.$_POST['plugins'][0])."_$version$suffix.phar.php");
+rename(DIR.'/build.phar', DIR.'/'.str_replace(' ', '_', 'plugin_'.$_POST['plugins'][0])."_$version$suffix.phar.php");
 echo "Done! Plugin {$_POST['plugins'][0]} $version";
