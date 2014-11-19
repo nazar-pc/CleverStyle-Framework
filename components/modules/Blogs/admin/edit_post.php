@@ -25,7 +25,6 @@ $Index->form				= true;
 $Index->action				= 'admin/Blogs/browse_posts';
 $Index->buttons				= false;
 $Index->cancel_button_back	= true;
-$Index->reset_button		= true;
 $disabled					= [];
 $max_sections				= $Config->module('Blogs')->max_sections;
 $content					= uniqid('post_content');

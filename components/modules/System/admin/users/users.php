@@ -424,7 +424,6 @@ if (isset($rc[2], $rc[3])) {
 				break;
 			}
 			$a->apply_button		= false;
-			$a->reset_button		= false;
 			$a->cancel_button_back	= true;
 			$Group					= Group::instance();
 			$user_groups			= array_reverse($User->get_groups($rc[3]));

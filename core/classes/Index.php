@@ -32,17 +32,16 @@ class Index {
 	 */
 	public	$Content;
 
-	public	$form					= false;
-	public	$file_upload			= false;
-	public	$form_attributes		= [
+	public	$form				= false;
+	public	$file_upload		= false;
+	public	$form_attributes	= [
 		'class'	=> 'uk-form'
 	];
-	public	$buttons				= true;
-	public	$save_button			= true;
-	public	$apply_button			= true;
-	public	$cancel_button_back		= false;
-	public	$reset_button			= true;
-	public	$custom_buttons			= '';
+	public	$buttons			= true;
+	public	$save_button		= true;
+	public	$apply_button		= true;
+	public	$cancel_button_back	= false;
+	public	$custom_buttons		= '';
 	/**
 	 * Like Config::$route property, but excludes numerical items
 	 *
@@ -356,16 +355,6 @@ class Index {
 						'name'		=> 'cancel',
 						'type'		=> 'button',
 						'onclick'	=> 'history.go(-1);'
-					]
-				)
-				: '').
-			//Reset button
-			($this->buttons && $this->reset_button ?
-				h::{'button.uk-button'}(
-					$L->reset,
-					[
-						'data-title'	=> $L->reset_info,
-						'type'			=> 'reset'
 					]
 				)
 				: '').

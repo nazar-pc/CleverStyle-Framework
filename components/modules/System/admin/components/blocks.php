@@ -371,7 +371,6 @@ if (isset($rc[2])) {
 	}
 }
 if ($form) {
-	$a->reset_button	= false;
 	$a->custom_buttons	.= h::{'button.uk-button.cs-reload-button'}(
 		$L->reset
 	);
