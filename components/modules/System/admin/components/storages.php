@@ -183,15 +183,15 @@ if (isset($rc[2])) {
 	}
 	unset($storages);
 	$a->content(
-		h::{'cs-table[center][list][with-header] cs-table-row| cs-table-cell'}(
-			[
+		h::{'cs-table[center][list][with-header]'}(
+			h::{'cs-table-row cs-table-cell'}(
 				$L->action,
 				$L->storage_url,
 				$L->storage_host,
 				$L->storage_connection,
 				$L->storage_user
-			],
-			$storages_list
+			).
+			h::{'cs-table-row| cs-table-cell'}($storages_list)
 		).
 		h::{'p a.uk-button'}(
 			$L->add_storage,

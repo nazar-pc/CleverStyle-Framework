@@ -319,8 +319,8 @@ if (isset($rc[2])) {
 	}
 	unset($databases);
 	$a->content(
-		h::{'cs-table[list][with-header] cs-table-row| cs-table-cell'}(
-			[
+		h::{'cs-table[list][with-header]'}(
+			h::{'cs-table-row cs-table-cell'}(
 				$L->action,
 				$L->db_host,
 				$L->db_type,
@@ -328,8 +328,8 @@ if (isset($rc[2])) {
 				$L->db_name,
 				$L->db_user,
 				$L->db_charset
-			],
-			$db_list
+			).
+			h::{'cs-table-row| cs-table-cell'}($db_list)
 		).
 		h::{'cs-table[right-left] cs-table-row| cs-table-cell'}([
 			[

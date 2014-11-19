@@ -348,13 +348,13 @@ $plugins_for_removal = array_values(array_filter(
 	}
 ));
 $a->content(
-	h::{'cs-table[center][list][with-header] cs-table-row| cs-table-cell'}(
-		[
+	h::{'cs-table[center][list][with-header]'}(
+		h::{'cs-table-row cs-table-cell'}(
 			$L->plugin_name,
 			$L->state,
 			$L->action
-		],
-		$plugins_list ?: false
+		).
+		h::{'cs-table-row| cs-table-cell'}($plugins_list ?: false)
 	).
 	h::p(
 		h::{'input[type=file][name=upload_plugin]'}([
