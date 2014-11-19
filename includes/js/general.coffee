@@ -29,16 +29,16 @@ $ ->
 	L.format	= (key) ->
 		vsprintf(L[key].toString(), Array::slice.call(arguments, 1))
 	$('.cs-header-sign-in-slide').click ->
-		$('.cs-header-guest-form').hide('medium')
-		$('.cs-header-sign-in-form').show('medium')
+		$('.cs-header-guest-form').removeClass('active')
+		$('.cs-header-sign-in-form').addClass('active')
 		$('.cs-header-sign-in-email').focus()
 	$('.cs-header-registration-slide').click ->
-		$('.cs-header-guest-form').hide('medium')
-		$('.cs-header-registration-form').show('medium')
+		$('.cs-header-guest-form').removeClass('active')
+		$('.cs-header-registration-form').addClass('active')
 		$('.cs-header-registration-email').focus()
 	$('.cs-header-restore-password-slide').click ->
-		$('.cs-header-sign-in-form, .cs-header-registration-form').hide('medium')
-		$('.cs-header-restore-password-form').show('medium')
+		$('.cs-header-sign-in-form, .cs-header-registration-form').removeClass('active')
+		$('.cs-header-restore-password-form').addClass('active')
 		$('.cs-header-restore-password-email').focus()
 	$('.cs-header-registration-email').keyup (event) ->
 		if event.which == 13
@@ -121,6 +121,6 @@ $ ->
 	$('.cs-profile-change-password').click ->
 		cs.change_password $('.cs-profile-current-password').val(), $('.cs-profile-new-password').val()
 	$('.cs-header-back').click ->
-		$('.cs-header-guest-form').show('medium')
-		$('.cs-header-registration-form, .cs-header-sign-in-form, .cs-header-restore-password-form').hide('medium')
+		$('.cs-header-guest-form').addClass('active')
+		$('.cs-header-registration-form, .cs-header-sign-in-form, .cs-header-restore-password-form').removeClass('active')
 	return

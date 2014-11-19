@@ -79,7 +79,7 @@ function get_header_info () {
 	$L		= Language::instance();
 	$User	= User::instance(true);
 	if ($User->user()) {
-		$content	= h::{'div.cs-header-user-block'}(
+		$content	= h::{'div.cs-header-user-block.active'}(
 			h::b(
 				"$L->hello, ".$User->username().'! '.
 				h::{'icon.cs-header-sign-out-process'}(
@@ -115,7 +115,7 @@ function get_header_info () {
 			]
 		);
 		$content	=
-			h::{'div.cs-header-guest-form'}(
+			h::{'div.cs-header-guest-form.active'}(
 				h::b("$L->hello, $L->guest!").
 				h::div(
 					h::{'button.uk-button.cs-button-compact.cs-header-sign-in-slide.uk-icon-sign-in'}($L->sign_in).
@@ -140,10 +140,7 @@ function get_header_info () {
 					[
 						'data-title'	=> $L->back
 					]
-				),
-				[
-					'style'	=> 'display: none;'
-				]
+				)
 			).
 			h::{'div.cs-header-registration-form'}(
 				h::{'input.cs-header-registration-email[type=email][tabindex=1]'}([
@@ -158,10 +155,7 @@ function get_header_info () {
 					[
 						'data-title'	=> $L->back
 					]
-				),
-				[
-					'style'	=> 'display: none;'
-				]
+				)
 			).
 			h::{'form.cs-header-sign-in-form'}(
 				h::{'input.cs-header-sign-in-email[tabindex=1]'}([
@@ -185,10 +179,7 @@ function get_header_info () {
 					[
 						'data-title'	=> $L->restore_password
 					]
-				),
-				[
-					'style'	=> 'display: none;'
-				]
+				)
 			).
 			$external_systems_list;
 	}

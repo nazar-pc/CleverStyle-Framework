@@ -27,9 +27,21 @@ body > header {
 
 		> div,
 		> form {
-			padding-left : 48px;
-			white-space  : nowrap;
-			word-wrap    : normal;
+			height                   : 0;
+			padding-left             : 48px;
+			transform                : scale(0);
+			-webkit-transform        : scale(0);
+			transform-origin         : center top;
+			-webkit-transform-origin : center top;
+			transition               : transform .3s ease-in-out, -webkit-transform .3s ease-in-out;
+			white-space              : nowrap;
+			word-wrap                : normal;
+
+			&.active {
+				height            : 42px;
+				transform         : scale(1);
+				-webkit-transform : scale(1);
+			}
 		}
 
 		button {
