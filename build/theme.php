@@ -45,8 +45,6 @@ unset($length);
 $phar->addFromString('fs.json', _json_encode(array_flip($list)));
 $phar->addFromString('dir', $_POST['themes'][0]);
 unset($list);
-$phar = $phar->convertToExecutable(Phar::TAR, Phar::BZ2, '.phar.tar');
-unlink(DIR.'/build.phar');
 $meta = file_get_json("$theme_dir/meta.json");
 $phar->addFromString('index.html', isset($meta['description']) ? $meta['description'] : $meta['package']);
 unset($meta);

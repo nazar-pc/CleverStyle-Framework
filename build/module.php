@@ -63,5 +63,5 @@ if ($set_stub) {
 }
 unset($phar);
 $suffix = @$_POST['suffix'] ? "_$_POST[suffix]" : '';
-rename(DIR.'/build.bz2', DIR.'/'.str_replace(' ', '_', 'module_'.$_POST['modules'][0])."_$version$suffix.phar.php");
+rename(DIR.'/build.phar', DIR.'/'.str_replace(' ', '_', 'module_'.$_POST['modules'][0])."_$version$suffix.phar.php");
 echo "Done! Module {$_POST['modules'][0]} $version";

@@ -48,8 +48,6 @@ unset($length);
 $phar->addFromString('fs.json', _json_encode(array_flip($list)));
 $phar->addFromString('dir', $_POST['plugins'][0]);
 unset($list);
-$phar = $phar->convertToExecutable(Phar::TAR, Phar::BZ2, '.phar.tar');
-unlink(DIR.'/build.phar');
 if ($set_stub) {
 	$phar->setStub("<?php Phar::webPhar(null, '$set_stub'); __HALT_COMPILER();");
 } else {
