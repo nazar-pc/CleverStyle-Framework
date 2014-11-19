@@ -35,11 +35,16 @@ Trigger::instance()
 					case path($L->profile):
 						$rc[0]	= 'profile';
 				}
+			} else {
+				return;
 			}
 			if (isset($rc[1])) {
 				switch ($rc[1]) {
 					case path($L->settings):
 						$rc[1] = 'settings';
+					default:
+						$rc[2]	= $rc[1];
+						$rc[1]	= 'info';
 				}
 				if (isset($rc[2])) {
 					switch ($rc[2]) {
