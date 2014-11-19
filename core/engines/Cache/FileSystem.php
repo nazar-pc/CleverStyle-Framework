@@ -149,7 +149,8 @@ class FileSystem extends _Abstract {
 				/**
 				 * Rename to random name in order to immediately invalidate nested elements, actual deletion done right after this
 				 */
-				$new_path	= $path_in_filesystem.uniqid();
+				$random_id	= uniqid();
+				$new_path	= $path_in_filesystem.$random_id;
 				rename($path_in_filesystem, $new_path);
 				/**
 				 * Speed-up of files deletion
@@ -173,7 +174,7 @@ class FileSystem extends _Abstract {
 				}
 				$files = get_files_list($new_path, false, 'fd');
 				foreach ($files as $file) {
-					$this->del($item."/$file", false);
+					$this->del($item.$random_id."/$file", false);
 				}
 				unset($files, $file);
 				return @rmdir($new_path);
