@@ -31,6 +31,9 @@ if (!defined('PASSWORD_DEFAULT')) {
 	require DIR.'/fs/'.$fs['core/thirdparty/password_compat.php'];
 }
 require DIR.'/fs/'.$fs['core/thirdparty/upf.php'];
+if (!defined('PASSWORD_DEFAULT')) {
+	require DIR.'/fs/'.$fs['core/thirdparty/password_compat.php'];
+}
 require DIR.'/fs/'.$fs['core/functions.php'];
 require DIR.'/fs/'.$fs['core/thirdparty/nazarpc/BananaHTML.php'];
 require DIR.'/fs/'.$fs['core/classes/h/Base.php'];
