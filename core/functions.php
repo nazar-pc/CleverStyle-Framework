@@ -46,6 +46,9 @@ spl_autoload_register(function ($class) {
 		_require_once($file = MODULES."/../$namespace/$class_name.php", false)		//Classes in modules and plugins
 	) {
 		$cache[$class] = realpath($file);
+		if (!is_dir(CACHE)) {
+			@mkdir(CACHE, 0770);
+		}
 		file_put_json(CACHE.'/classes_autoloading', $cache);
 		return true;
 	}
