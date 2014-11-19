@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		BananaHTML
- * @version		2.1.2
+ * @version		2.1.3
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2014, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -827,7 +827,7 @@ class BananaHTML {
 	 * @return string
 	 */
 	static function __callStatic ($input, $data) {
-		if ($data === false) {
+		if ($data === false || $data === [false]) {
 			return false;
 		}
 		if (is_scalar($data)) {

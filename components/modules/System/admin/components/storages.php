@@ -191,7 +191,7 @@ if (isset($rc[2])) {
 				$L->storage_connection,
 				$L->storage_user
 			).
-			h::{'cs-table-row| cs-table-cell'}($storages_list)
+			h::{'cs-table-row| cs-table-cell'}($storages_list ?: false)
 		).
 		h::{'p a.uk-button'}(
 			$L->add_storage,

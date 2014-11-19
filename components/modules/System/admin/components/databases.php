@@ -329,7 +329,7 @@ if (isset($rc[2])) {
 				$L->db_user,
 				$L->db_charset
 			).
-			h::{'cs-table-row| cs-table-cell'}($db_list)
+			h::{'cs-table-row| cs-table-cell'}($db_list ?: false)
 		).
 		h::{'cs-table[right-left] cs-table-row| cs-table-cell'}([
 			[
