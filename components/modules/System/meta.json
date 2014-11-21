@@ -1,12 +1,12 @@
 {
 	"package"				: "System",
 	"category"				: "modules",
-	"version"				: "0.611.0+build-728",
+	"version"				: "0.612.0+build-729",
 	"description"			: "Base system module of CleverStyle CMS",
 	"author"				: "Nazar Mokrynskyi",
 	"website"				: "cleverstyle.org/cms",
 	"license"				: "MIT License",
-	"update_from_version"	: "0.574",
+	"update_from_version"	: "0.596",
 	"db_support"			: [
 		"MySQLi"
 	],
