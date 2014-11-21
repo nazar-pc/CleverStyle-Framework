@@ -521,19 +521,4 @@ class Page {
 			ob_end_flush();
 		}
 	}
-	/**
-	 * Open Graph protocol support
-	 *
-	 * @deprecated
-	 * @todo: Remove before release
-	 *
-	 * @param string          $property
-	 * @param string|string[] $content
-	 * @param string          $custom_prefix
-	 *
-	 * @return Page
-	 */
-	function og ($property, $content, $custom_prefix = 'og:') {
-		return Meta::instance()->og($property, $content, $custom_prefix);
-	}
 }
