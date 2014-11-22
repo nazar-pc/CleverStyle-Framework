@@ -144,7 +144,11 @@ $list = array_merge(
  */
 $list = array_map(
 	function ($index, $file) use ($phar, $length) {
-		$phar->addFromString("fs/$index", file_get_contents($file));
+		/**
+		 * TODO: `f` here and in other places in this file before index is added as hack for HHVM in order to allow installation/upgrading of components
+		 * TODO: and should be removed when bug (extracting files with name `0`) fixed upstream
+		 */
+		$phar->addFromString("fs/f$index", file_get_contents($file));
 		return substr($file, $length);
 	},
 	array_keys($list),
@@ -155,7 +159,7 @@ $list = array_map(
  */
 $list[] = 'readme.html';
 $phar->addFromString(
-	'fs/'.(count($list) - 1),
+	'fs/f'.(count($list) - 1),
 	str_replace(
 		[
 			'$version$',
@@ -190,9 +194,18 @@ $phar->addFromString(
  */
 $list[] = 'core/fs.json';
 $phar->addFromString(
-	'fs/'.(count($list) - 1),
+	'fs/f'.(count($list) - 1),
 	_json_encode(
-		array_flip(array_diff(array_slice($list, 0, -1), _substr($components_list, $length)))
+		array_map(
+			function ($file_index) {
+				/**
+				 * TODO: `f` before index is added as hack for HHVM in order to allow installation/upgrading of components
+				 * TODO: and should be removed when bug (extracting files with name `0`) fixed upstream
+				 */
+				return "f$file_index";
+			},
+			array_flip(array_diff(array_slice($list, 0, -1), _substr($components_list, $length)))
+		)
 	)
 );
 unset($components_list, $length);
@@ -201,7 +214,7 @@ unset($components_list, $length);
  */
 $list[] = '.htaccess';
 $phar->addFromString(
-	'fs/'.(count($list) - 1),
+	'fs/f'.(count($list) - 1),
 	'AddDefaultCharset utf-8
 Options -Indexes  -Multiviews +FollowSymLinks
 IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
@@ -227,23 +240,30 @@ RewriteRule .* index.php
 );
 $list[] = 'config/main.php';
 $phar->addFromString(
-	'fs/'.(count($list) - 1),
+	'fs/f'.(count($list) - 1),
 	file_get_contents(DIR.'/config/main.php')
 );
 $list[] = 'favicon.ico';
 $phar->addFromString(
-	'fs/'.(count($list) - 1),
+	'fs/f'.(count($list) - 1),
 	file_get_contents(DIR.'/favicon.ico')
 );
 $list[] = '.gitignore';
 $phar->addFromString(
-	'fs/'.(count($list) - 1),
+	'fs/f'.(count($list) - 1),
 	file_get_contents(DIR.'/.gitignore')
 );
 /**
  * Flip array to have direct access to files by name during extracting and installation, and fixing of files list for installation
  */
-$phar->addFromString('fs.json', _json_encode(array_flip($list)));
+$phar->addFromString('fs.json', _json_encode(
+	array_map(
+		function ($file_index) {
+			return "f$file_index";
+		},
+		array_flip($list))
+	)
+);
 unset($list);
 /**
  * Addition of supplementary files, that are needed directly for installation process: installer with GUI interface, readme, license, some additional

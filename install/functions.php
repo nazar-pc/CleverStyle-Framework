@@ -230,7 +230,11 @@ function install_process ($argv = null) {
 				) {
 					return 0;
 				}
-				return (int)copy(DIR."/fs/$index", ROOT."/$file");
+				/**
+				 * TODO: copy() + file_exists() is a hack for HHVM, when bug fixed upstream (copying of empty files) this should be simplified
+				 */
+				copy(DIR."/fs/$index", ROOT."/$file");
+				return (int)file_exists(ROOT."/$file");
 			},
 			$fs,
 			array_keys($fs)
@@ -239,9 +243,7 @@ function install_process ($argv = null) {
 	unset($fs);
 	if (
 		!$extract ||
-		!(file_exists(ROOT.'/storage') || mkdir(ROOT.'/storage')) ||
-		!(file_exists(ROOT.'/components/plugins') || mkdir(ROOT.'/components/plugins')) ||
-		!(file_exists(ROOT.'/components/blocks') || mkdir(ROOT.'/components/blocks')) ||
+		!(file_exists(ROOT.'/storage') || mkdir(ROOT.'/storage', 0770)) ||
 		!file_put_contents(ROOT.'/storage/.htaccess', "Deny from all\nRewriteEngine Off")
 	) {
 		return 'Can\'t extract system files from the archive! Installation aborted.';

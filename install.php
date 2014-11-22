@@ -18,10 +18,8 @@ if ($cli) {
 } else {
 	define('DIR', __DIR__);
 }
-$ROOT	= dirname(__DIR__);
 mb_internal_encoding('utf-8');
-define('ROOT',	mb_strpos($ROOT, 'phar://') === 0 ? substr($ROOT, 7) : $ROOT);	//Path to site root
-unset($ROOT);
+define('ROOT',	getcwd());	//Path to site root
 global $fs;
 $fs		= json_decode(file_get_contents(DIR.'/fs.json'), true);
 /**
