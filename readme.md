@@ -128,6 +128,7 @@ This results in constant and predictable performance (no degradation with time),
  * Mcrypt library (recommended for encryption)
  * APC (Alternative PHP cache) module (recommended for system speed up with PHP 5.4)
  * Memcached (optionally for Memcached cache engine)
+* or HHVM 3.3.2+ LTS / HHVM 3.4.1+
 * MySQL Database server (MariaDB will work as well)
  * System may be extended to support other databases
 
