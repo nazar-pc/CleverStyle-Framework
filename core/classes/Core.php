@@ -28,20 +28,7 @@ class Core {
 	 * Loading of base system configuration, creating of missing directories
 	 */
 	protected function construct () {
-		if (!file_exists(CONFIG.'/main.json')) {
-			error_code(500);
-			Page::instance()->error(
-				h::p('Config file not found, is system installed properly?').
-				h::a(
-					'How to install CleverStyle CMS',
-					[
-						'href'	=> 'https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation'
-					]
-				)
-			);
-			exit;
-		}
-		$this->config	= file_get_json_nocomments(CONFIG.'/main.json');
+		$this->config	= $this->load_config();
 		_include_once(CONFIG.'/main.php', false);
 		defined('DEBUG') || define('DEBUG', false);
 		define('DOMAIN', $this->config['domain']);
@@ -112,6 +99,27 @@ AddEncoding gzip .html
 			}
 		}
 		$this->constructed	= true;
+	}
+	/**
+	 * Load main.json config file and return array of it contents
+	 *
+	 * @return array
+	 */
+	protected function load_config () {
+		if (!file_exists(CONFIG.'/main.json')) {
+			error_code(500);
+			Page::instance()->error(
+				h::p('Config file not found, is system installed properly?').
+				h::a(
+					'How to install CleverStyle CMS',
+					[
+						'href'	=> 'https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation'
+					]
+				)
+			);
+			exit;
+		}
+		return file_get_json_nocomments(CONFIG.'/main.json');
 	}
 	/**
 	 * Getting of base configuration parameter
