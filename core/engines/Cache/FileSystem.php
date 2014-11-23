@@ -6,9 +6,10 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\Cache;
-use			cs\Config,
-			cs\Core,
-			cs\Language;
+use
+	cs\Config,
+	cs\Core,
+	cs\Language;
 /**
  * Provides cache functionality based on file system structure.
  * Require base configuration option Core::instance()->cache_size with maximum allowed cache size in MB, 0 means without limitation (is not recommended)
