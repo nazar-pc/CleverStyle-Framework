@@ -216,7 +216,7 @@ $list[] = '.htaccess';
 $phar->addFromString(
 	'fs/f'.(count($list) - 1),
 	'AddDefaultCharset utf-8
-Options -Indexes  -Multiviews +FollowSymLinks
+Options -Indexes -Multiviews +FollowSymLinks
 IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
 
 RewriteEngine On

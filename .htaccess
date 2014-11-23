@@ -1,5 +1,5 @@
 AddDefaultCharset utf-8
-Options -Indexes +FollowSymLinks
+Options -Indexes -Multiviews +FollowSymLinks
 IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
 
 RewriteEngine On

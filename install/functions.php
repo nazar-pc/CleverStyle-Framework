@@ -244,7 +244,7 @@ function install_process ($argv = null) {
 	if (
 		!$extract ||
 		!(file_exists(ROOT.'/storage') || mkdir(ROOT.'/storage', 0770)) ||
-		!file_put_contents(ROOT.'/storage/.htaccess', "Deny from all\nRewriteEngine Off")
+		!file_put_contents(ROOT.'/storage/.htaccess', "Deny from all\nRewriteEngine Off\n<Files *>\n\tSetHandler default-handler\n</Files>")
 	) {
 		return 'Can\'t extract system files from the archive! Installation aborted.';
 	}
