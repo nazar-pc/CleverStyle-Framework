@@ -74,7 +74,8 @@ Trigger::instance()
 				!$Core->fixed_language &&
 				$_SERVER['REQUEST_METHOD'] == 'GET' &&
 				$Cache->cache_state() &&
-				$Core->cache_engine != 'BlackHole'
+				$Core->cache_engine != 'BlackHole' &&
+				$Config->route[0]	!= 'robots.txt'
 			) {
 				$clang	= Language::instance()->clang;
 				if (!home_page()) {
