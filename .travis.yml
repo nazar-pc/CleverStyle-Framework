@@ -5,4 +5,4 @@ php:
   - 5.6
 before_script:
   - mysql -e 'CREATE DATABASE `cscms.travis`;'
-script: ./run-tests.php -P tests
+script: php run-tests.php -P --show-diff tests

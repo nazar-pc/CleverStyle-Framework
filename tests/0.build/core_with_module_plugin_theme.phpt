@@ -1,5 +1,5 @@
 --TEST--
-Building distributive of system core with built-in modulem plugin and theme
+Building distributive of system core with built-in module, plugin and theme
 --ARGS--
 -M core -m Blogs -p TinyMCE -t DarkEnergy
 --FILE--
