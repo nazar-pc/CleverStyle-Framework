@@ -42,7 +42,7 @@ if ($cli) {
 				$_POST['themes'] = explode(',', $argv[$i + 1]);
 			break;
 			case '-s':
-				$_POST['suffix'] = explode(',', $argv[$i + 1]);
+				$_POST['suffix'] = $argv[$i + 1];
 			break;
 		}
 	}
