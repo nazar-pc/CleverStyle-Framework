@@ -54,7 +54,7 @@ $components_list = [];
 if (@$_POST['modules']) {
 	foreach ($_POST['modules'] as $i => $module) {
 		if (is_dir(DIR."/components/modules/$module") && file_exists(DIR."/components/modules/$module/meta.json")) {
-			unlink(DIR."/components/modules/$module/fs.json");
+			@unlink(DIR."/components/modules/$module/fs.json");
 			$list_ = get_files_list(DIR."/components/modules/$module", false, 'f', true, true, false, false, true);
 			file_put_json(
 				DIR."/components/modules/$module/fs.json",
@@ -84,7 +84,7 @@ if (@$_POST['modules']) {
 if (@$_POST['plugins']) {
 	foreach ($_POST['plugins'] as $plugin) {
 		if (is_dir(DIR."/components/plugins/$plugin") && file_exists(DIR."/components/plugins/$plugin/meta.json")) {
-			unlink(DIR."/components/plugins/$plugin/fs.json");
+			@unlink(DIR."/components/plugins/$plugin/fs.json");
 			$list_ = get_files_list(DIR."/components/plugins/$plugin", false, 'f', true, true, false, false, true);
 			file_put_json(
 				DIR."/components/plugins/$plugin/fs.json",
@@ -111,7 +111,7 @@ if (@$_POST['plugins']) {
 if (@$_POST['themes']) {
 	foreach ($_POST['themes'] as $theme) {
 		if (is_dir(DIR."/themes/$theme") && file_exists(DIR."/themes/$theme/meta.json")) {
-			unlink(DIR."/themes/$theme/fs.json");
+			@unlink(DIR."/themes/$theme/fs.json");
 			$list_ = get_files_list(DIR."/themes/$theme", false, 'f', true, true, false, false, true);
 			file_put_json(
 				DIR."/themes/$theme/fs.json",

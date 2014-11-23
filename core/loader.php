@@ -7,12 +7,16 @@
  */
 namespace cs;
 /**
+ * Directory for thirdparty libraries
+ */
+define('THIRDPARTY', CORE.'/thirdparty');
+/**
  * Fallback for PHP 5.5 hashing functions, that are not present in PHP 5.4
  */
 if (!defined('PASSWORD_DEFAULT')) {
-	require __DIR__.'/thirdparty/password_compat.php';
+	require THIRDPARTY.'/password_compat.php';
 }
-require CORE.'/thirdparty/upf.php';               //Inclusion of Useful PHP Functions
+require THIRDPARTY.'/upf.php';                    //Inclusion of Useful PHP Functions
 _require_once(DIR.'/vendor/autoload.php', false); //Inclusion of composer's autoloader.php with user's dependencies
 require CORE.'/functions.php';                    //Inclusion of general system functions and system autoloader
 
@@ -33,10 +37,6 @@ define('CONFIG', DIR.'/config');
  * Directory for main core classes
  */
 define('CLASSES', CORE.'/classes');
-/**
- * Directory for thirdparty libraries
- */
-define('THIRDPARTY', CORE.'/thirdparty');
 /**
  * Directory for main core traits
  */
