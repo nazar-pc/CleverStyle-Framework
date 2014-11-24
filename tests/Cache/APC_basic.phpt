@@ -1,5 +1,7 @@
 --TEST--
-Basic features using FileSystem cache engine
+Basic features using APC cache engine
+--INI--
+apc.enable_cli=1
 --FILE--
 <?php
 namespace cs\custom;
@@ -11,8 +13,7 @@ define('DEBUG', false);
 class Core {
 	use	Singleton;
 	function construct () {
-		$this->cache_engine	= 'FileSystem';
-		$this->cache_size	= 1;
+		$this->cache_engine	= 'APC';
 	}
 }
 $Cache	= Cache::instance();

@@ -148,3 +148,6 @@ trait Singleton {
 	final protected function __clone () {}
 	final protected function __wakeup() {}
 }
+if (!defined('DOMAIN')) {
+	define('DOMAIN', 'cscms.travis');
+}

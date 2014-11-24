@@ -1,5 +1,5 @@
 --TEST--
-Basic features using FileSystem cache engine
+Basic features using Memcached cache engine
 --FILE--
 <?php
 namespace cs\custom;
@@ -11,8 +11,9 @@ define('DEBUG', false);
 class Core {
 	use	Singleton;
 	function construct () {
-		$this->cache_engine	= 'FileSystem';
-		$this->cache_size	= 1;
+		$this->cache_engine		= 'Memcached';
+		$this->memcached_host	= '127.0.0.1';
+		$this->memcached_port	= '11211';
 	}
 }
 $Cache	= Cache::instance();
