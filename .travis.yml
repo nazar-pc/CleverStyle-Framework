@@ -7,7 +7,7 @@ services:
   - memcached
 env:
   global:
-    - REPORT_EXIT_STATUS = 1
+    - REPORT_EXIT_STATUS=1
 before_script:
   - mysql -e 'CREATE DATABASE `cscms.travis`;'
   - echo $(pecl install apcu) || true
