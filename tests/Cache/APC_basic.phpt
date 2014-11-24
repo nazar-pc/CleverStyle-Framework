@@ -1,7 +1,7 @@
 --TEST--
 Basic features using APC cache engine
 --INI--
-apc.enable_cli=1
+apc.enable_cli	= 1
 --FILE--
 <?php
 namespace cs\custom;
