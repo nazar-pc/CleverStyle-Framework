@@ -11,5 +11,5 @@ env:
 before_script:
   - mysql -e 'CREATE DATABASE `cscms.travis`;'
   - echo 'yes' | pecl install apcu-beta
-  - phpenv config-add tests/$TRAVIS_PHP_VERSION.ini
+  - echo 'extension = memcached.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 script: php run-tests.php -P --show-diff tests
