@@ -32,7 +32,7 @@ if (!$Cache->del('test')) {
 if ($Cache->get('test') !== false) {
 	die('Value still exists');
 }
-if ($Cache->set('test', 5)) {
+if (!$Cache->set('test', 5)) {
 	die('::set() failed (2)');
 }
 $Cache->disable();

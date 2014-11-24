@@ -10,6 +10,6 @@ env:
     - REPORT_EXIT_STATUS=1
 before_script:
   - mysql -e 'CREATE DATABASE `cscms.travis`;'
-  - echo 'no' | pecl install apcu
+  - echo 'no' | pecl install apcu-beta
   - phpenv config-add tests/$TRAVIS_PHP_VERSION.ini
 script: php run-tests.php -P --show-diff tests
