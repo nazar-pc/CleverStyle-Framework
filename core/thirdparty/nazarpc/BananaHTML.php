@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		BananaHTML
- * @version		2.1.3
+ * @version		2.1.4
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2014, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -254,7 +254,7 @@ class BananaHTML {
 			) &&
 			$level
 		) {
-			$in		= $level ? static::level("\n$in\n", $level) : "\n$in\n";
+			$in		= $level ? "\n".static::level("$in\n", $level) : "\n$in\n";
 ;		}
 		return "<$tag$add>$in</$tag>".($level ? "\n" : '');
 	}
