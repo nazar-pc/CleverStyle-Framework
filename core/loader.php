@@ -119,6 +119,5 @@ unset($custom);
 /**
  * System running
  */
-Core::instance();
 Language::instance();
 Index::instance();

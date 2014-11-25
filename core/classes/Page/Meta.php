@@ -32,6 +32,7 @@ class Meta {
 	protected	$links		= '';
 	protected	$og_data	= [];
 	protected	$og_type	= '';
+	protected	$image_src	= false;
 	/**
 	 * Common wrapper to add all necessary meta tags with images
 	 *
@@ -44,10 +45,13 @@ class Meta {
 			return $this;
 		}
 		$images	= (array)$images;
-		$this->links	.= h::link([
-			'href'	=> $images[0],
-			'rel'	=> 'image_src'
-		]);
+		if (!$this->image_src) {
+			$this->image_src	= true;
+			$this->links		.= h::link([
+				'href'	=> $images[0],
+				'rel'	=> 'image_src'
+			]);
+		}
 		$this->__call('og', ['image', $images]);
 		return $this;
 	}
@@ -79,7 +83,7 @@ class Meta {
 			if (!isset($this->og_data[$params[0]])) {
 				$this->og_data[$params[0]]	= '';
 			}
-			$this->og_data[$params[0]]	= h::meta([
+			$this->og_data[$params[0]]	.= h::meta([
 				'property'	=> "$type:$params[0]",
 				'content'	=> $params[1]
 			]);
