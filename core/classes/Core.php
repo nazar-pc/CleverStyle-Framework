@@ -31,7 +31,7 @@ class Core {
 		$this->config	= $this->load_config();
 		_include_once(CONFIG.'/main.php', false);
 		defined('DEBUG') || define('DEBUG', false);
-		define('DOMAIN', $this->config['domain']);
+		defined('DOMAIN') || define('DOMAIN', $this->config['domain']);
 		date_default_timezone_set($this->config['timezone']);
 		$clangs = file_exists(CACHE.'/languages_clangs') ? file_get_json(CACHE.'/languages_clangs') : false;
 		$this->set('fixed_language', false);

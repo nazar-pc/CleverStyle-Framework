@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		BananaHTML
- * @version		2.1.4
+ * @version		2.1.5
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2014, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -275,7 +275,7 @@ class BananaHTML {
 			return false;
 		}
 		$add	.= XHTML_TAGS_STYLE ? ' /' : '';
-		return "<$tag$add> $in\n";
+		return "<$tag$add>".($in ? " $in" : '')."\n";
 	}
 	/**
 	 * Rendering of form tag, default method is post, if form method is post - special session key in hidden input is added for security.
