@@ -1,5 +1,5 @@
 --TEST--
-Test triggers functionality
+Triggers functionality
 --FILE--
 <?php
 namespace cs;

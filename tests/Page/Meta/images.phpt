@@ -1,5 +1,5 @@
 --TEST--
-Test Meta functionality with images
+Meta functionality with images
 --FILE--
 <?php
 namespace cs;

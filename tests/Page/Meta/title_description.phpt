@@ -1,5 +1,5 @@
 --TEST--
-Test Meta functionality with title and description
+Meta functionality with title and description
 --FILE--
 <?php
 namespace cs;
