@@ -352,12 +352,7 @@ function get_timezones_list () {
  * @return bool
  */
 function check_mcrypt () {
-	return preg_match(
-		'/mcrypt support<\/th><th>enabled/',
-		ob_wrapper(function () {
-			phpinfo(INFO_MODULES);
-		})
-	);
+	return extension_loaded('mcrypt');
 }
 /**
  * Check existence of zlib library

@@ -12,4 +12,5 @@ before_script:
   - mysql -e 'CREATE DATABASE `cscms.travis`;'
   - echo 'yes' | pecl install apcu-beta
   - echo 'extension = memcached.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo 'extension = mcrypt.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 script: php run-tests.php -P --show-diff tests
