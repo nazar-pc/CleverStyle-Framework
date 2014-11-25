@@ -134,3 +134,4 @@ if (!defined('DEBUG')) {
 if (!defined('DOMAIN')) {
 	define('DOMAIN', 'cscms.travis');
 }
+ob_start();
