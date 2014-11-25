@@ -8,7 +8,7 @@
  */
 namespace cs;
 /**
- * This is custom loader that includes basic files and defines constants and define Singleton which is not a Singleton at all (return new instance every time),
+ * This is custom loader that includes basic files and defines constants,
  * but do not call any class to leave that all for test cases, and unregisters shutdown function
  */
 if (version_compare(PHP_VERSION, '5.4', '<')) {
@@ -127,27 +127,10 @@ define('PCACHE', DIR.'/storage/pcache');
  */
 define('THEMES', DIR.'/themes');
 shutdown_function(true);
-trait Singleton {
-	final protected function __construct () {}
-	protected function construct () {}
-	static function instance ($check = false) {
-		static $instance;
-		if ($check) {
-			return isset($instance) ? $instance : False_class::instance();
-		}
-		$class	= ltrim(get_called_class(), '\\');
-		if (substr($class, 0, 2) == 'cs' && class_exists('cs\\custom'.substr($class, 2), false)) {
-			$instance	= 'cs\\custom'.substr($class, 2);
-			$instance	= $instance::instance();
-		} else {
-			$instance	= new static;
-		}
-		$instance->construct();
-		return $instance;
-	}
-	final protected function __clone () {}
-	final protected function __wakeup() {}
+if (!defined('DEBUG')) {
+	define('DEBUG', false);
 }
+
 if (!defined('DOMAIN')) {
 	define('DOMAIN', 'cscms.travis');
 }

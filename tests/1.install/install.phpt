@@ -15,6 +15,8 @@ rename("$root/CleverStyle_CMS_$version.phar.php", "$root/cscms.travis/distributi
 $argv[0] = 'distributive.phar.php';
 chdir("$root/cscms.travis");
 include "$root/cscms.travis/distributive.phar.php";
+// Remove php config because its parameters anyway will be declared by custom loader or tests or not used at all
+unlink("$root/cscms.travis/config/main.php");
 ?>
 --EXPECT--
 Congratulations! CleverStyle CMS has been installed successfully!

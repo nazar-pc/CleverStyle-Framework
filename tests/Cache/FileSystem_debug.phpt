@@ -6,8 +6,8 @@ namespace cs\custom;
 use
 	cs\Cache,
 	cs\Singleton;
-include __DIR__.'/../custom_loader.php';
 define('DEBUG', true);
+include __DIR__.'/../custom_loader.php';
 class Core {
 	use	Singleton;
 	function construct () {

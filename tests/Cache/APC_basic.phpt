@@ -9,7 +9,6 @@ use
 	cs\Cache,
 	cs\Singleton;
 include __DIR__.'/../custom_loader.php';
-define('DEBUG', false);
 class Core {
 	use	Singleton;
 	function construct () {
