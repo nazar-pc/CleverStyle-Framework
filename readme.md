@@ -131,6 +131,16 @@ This results in constant and predictable performance (no degradation with time),
 * or HHVM 3.3.2+ LTS / HHVM 3.4.1+
 * MySQL Database server (MariaDB will work as well)
  * System may be extended to support other databases
+ 
+# How to try?
+
+It is possible to try latest git version of CleverStyle CMS without even installing it using [Docker](https://www.docker.com/), just type in terminal:
+```bash
+$ docker run --rm -p 8888:8888 nazarpc/cleverstyle-cms
+```
+And go to `http://localhost:8888`, sign in using login `admin` and password `1111`.
+
+`--rm` means that container will be removed after stopping (you can stop it with `Ctrl+C`).
 
 # How to install?
 
