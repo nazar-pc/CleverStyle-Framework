@@ -211,7 +211,7 @@ function install_process ($argv = null) {
 	$config['themes']				= file_get_json(DIR.'/themes.json');
 	$config['theme']				= array_search('CleverStyle', $config['themes']) !== false ? 'CleverStyle' : $config['themes'][0];
 	$url							= explode('/', explode('//', $url)[1], 2);
-	$config['cookie_domain'][]		= $url[0];
+	$config['cookie_domain'][]		= explode(':', $url[0])[0];
 	$config['cookie_path'][]		= isset($url[1]) && $url[1] ? '/'.trim($url[1], '/').'/' : '/';
 	unset($url);
 	$config['timezone']				= $_POST['timezone'];

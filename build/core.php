@@ -53,7 +53,7 @@ if (file_exists(DIR.'/composer.lock')) {
 $components_list = [];
 if (@$_POST['modules']) {
 	foreach ($_POST['modules'] as $i => $module) {
-		if (is_dir(DIR."/components/modules/$module") && file_exists(DIR."/components/modules/$module/meta.json")) {
+		if ($module != 'System' && is_dir(DIR."/components/modules/$module") && file_exists(DIR."/components/modules/$module/meta.json")) {
 			@unlink(DIR."/components/modules/$module/fs.json");
 			$list_ = get_files_list(DIR."/components/modules/$module", false, 'f', true, true, false, false, true);
 			file_put_json(
