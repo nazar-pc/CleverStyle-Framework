@@ -223,7 +223,7 @@ class Page {
 				'<!--post_Body-->',
 				'<!--post_Html-->'
 			],
-			[
+			_rtrim([
 				$this->pre_Html,
 				$this->get_property_with_indentation('Head'),
 				$this->get_property_with_indentation('pre_Body'),
@@ -234,7 +234,7 @@ class Page {
 				$this->get_property_with_indentation('Right'),
 				$this->get_property_with_indentation('post_Body'),
 				$this->post_Html
-			],
+			], "\t"),
 			$this->Html
 		);
 		return $this;

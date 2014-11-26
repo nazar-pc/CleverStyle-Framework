@@ -12,12 +12,15 @@ use
 	cs\User,
 	h;
 include_once __DIR__.'/functions.php';
+function level ($in, $level) {
+	return trim(h::level($in, $level))."\n";
+}
 $main_menu	= h::{'ul.uk-navbar-nav[level=0] li[level=0]'}(
 	get_main_menu()
 );
-$submenu	= admin_path() ? Menu::instance()->get_menu() : '';
-$avatar		= User::instance()->avatar();
-$body_class = admin_path() ? ' class="cs-admin-page"' : '';
+$submenu		= admin_path() ? Menu::instance()->get_menu() : '';
+$avatar			= User::instance()->avatar();
+$body_class		= admin_path() ? ' class="cs-admin-page"' : '';
 ?><!doctype html>
 <!--pre_Html--><!--head-->
 <body>
@@ -25,12 +28,12 @@ $body_class = admin_path() ? ' class="cs-admin-page"' : '';
 	<header class="uk-navbar uk-navbar-attached">
 		<div class="uk-navbar-content uk-navbar-flip">
 			<img alt="" src="<?=$avatar?>">
-			<?=get_header_info()?>
+			<?=level(get_header_info(), 3)?>
 		</div>
 		<a href="/" class="uk-navbar-brand"><?=get_core_ml_text('name')?></a>
-		<?=$main_menu?>
+		<?=level($main_menu, 2)?>
 		<hr>
-		<?=$submenu?>
+		<?=level($submenu, 2)?>
 	</header>
 	<div id="body"<?=$body_class?>>
 		<aside id="left_blocks">
@@ -52,7 +55,7 @@ $body_class = admin_path() ? ' class="cs-admin-page"' : '';
 		</aside>
 	</div>
 	<footer>
-		<?=get_footer()?>
+		<?=level(get_footer(), 2)?>
 	</footer>
 <!--post_Body-->
 </body><!--post_Html-->
