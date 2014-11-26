@@ -42,6 +42,7 @@ Trigger::instance()
 				switch ($rc[1]) {
 					case path($L->settings):
 						$rc[1] = 'settings';
+					break;
 					default:
 						$rc[2]	= $rc[1];
 						$rc[1]	= 'info';
