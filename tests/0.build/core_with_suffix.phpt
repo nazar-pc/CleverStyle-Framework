@@ -1,5 +1,7 @@
 --TEST--
 Building distributive of system core with suffix
+--INI--
+phar.readonly	= Off
 --ARGS--
 -M core -s Core
 --FILE--

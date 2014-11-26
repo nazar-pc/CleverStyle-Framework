@@ -1,16 +1,13 @@
 FROM phusion/baseimage
 MAINTAINER Nazar Mokrynskyi <nazar@mokrynskyi.com>
 
-# Install packages
-ENV DEBIAN_FRONTEND noninteractive
-
 RUN	export DEBIAN_FRONTEND=noninteractive && \
 
 # Update packages list, upgrade installed packages
 
 	apt-get update && \
 	apt-get -y upgrade && \
-	
+
 # Generate password for MySQL
 
 	apt-get install -y pwgen && \
@@ -68,7 +65,7 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 # Install CleverStyle CMS
 
 	php dist.phar.php \
-		-site_name      "CleverStyle CMS Demo (not for production)" \
+		-site_name      "CleverStyle CMS Demo (not for production, admin:1111)" \
 		-site_url       http://localhost:8888 \
 		-db_name        cscms \
 		-db_user        root \

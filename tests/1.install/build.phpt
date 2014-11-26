@@ -1,5 +1,7 @@
 --TEST--
 Building distributive of system core without removal
+--INI--
+phar.readonly	= Off
 --ARGS--
 -M core
 --FILE--

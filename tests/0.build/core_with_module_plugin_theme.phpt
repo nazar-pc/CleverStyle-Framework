@@ -1,5 +1,7 @@
 --TEST--
 Building distributive of system core with built-in module, plugin and theme
+--INI--
+phar.readonly	= Off
 --ARGS--
 -M core -m Blogs -p TinyMCE -t DarkEnergy
 --FILE--
