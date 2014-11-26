@@ -1,0 +1,62 @@
+server {
+	listen					8888;
+	server_name				localhost; 
+	root					/web;
+	index					index.php;
+	error_log				/web/error.log info;
+	client_max_body_size	10M;
+	# User-friendly URLs
+	location / {
+		try_files $uri $uri/ /index.php?$args;
+	}
+	# Allow access to root index.php
+	location ~ ^/index\.php {
+		include			fastcgi_params;
+		fastcgi_pass	unix:/var/run/php5-fpm.sock;
+	#	fastcgi_pass	127.0.0.1:9000;
+		fastcgi_index	index.php;
+		fastcgi_param	SCRIPT_FILENAME $document_root$fastcgi_script_name;
+	}
+	# Add necessary headers
+	location /storage/pcache {
+		location ~ \.css$ {
+			add_header Content-Encoding gzip;
+			add_header Content-Type text/css;
+			add_header Cache-Control "max-age=2592000, public";
+		}
+		location ~ \.js$ {
+			add_header Content-Encoding gzip;
+			add_header Content-Type application/javascript;
+			add_header Cache-Control "max-age=2592000, public";
+		}
+		location ~ \.html$ {
+			add_header Content-Encoding gzip;
+			add_header Content-Type htxt/html;
+			add_header Cache-Control "max-age=2592000, public";
+		}
+	}
+	# Exclude files inside temp directory from next rule
+	location ~ ^/storage/temp/.*\.php$ {}
+	# Deny access to all *.php files
+	location ~ \.php$ {
+		error_page 404 = /index.php;
+		return 404;
+	}
+	# Deny access to hidden files
+	location ~ /\. {
+		deny all;
+		access_log off;
+		log_not_found off;
+	}
+	# Deny access to directories config, core, storage/cache
+	location ~ ^/(config|core|storage/cache|templates) {
+		return 404;
+	}
+	# Exclude html imports (for Web Components) from next rule
+	location ~ ^/components/.*includes/html/.*\.html$ {}
+	# Deny access to other *.json, *.html, *.txt files inside components directory
+	location ~ ^/components/.*\.(json|html|txt)$ {
+		return 404;
+	}
+}
+
