@@ -440,7 +440,7 @@ abstract class _Abstract {
 	 * @param string $table
 	 * @param bool|string $like
 	 *
-	 * @return array|bool
+	 * @return string[]|bool
 	 */
 	function columns ($table, $like = false) {
 		if(!$table) {
@@ -462,14 +462,14 @@ abstract class _Abstract {
 	 *
 	 * @param bool $like
 	 *
-	 * @return array|bool
+	 * @return string[]|bool
 	 */
 	function tables ($like = false) {
 		if ($like) {
 			$like		= $this->s($like);
-			return $this->qfa("SHOW TABLES FROM `$this->database` LIKE $like");
+			return $this->qfas("SHOW TABLES FROM `$this->database` LIKE $like");
 		} else {
-			return $this->qfa("SHOW TABLES FROM `$this->database`");
+			return $this->qfas("SHOW TABLES FROM `$this->database`");
 		}
 	}
 	/**
