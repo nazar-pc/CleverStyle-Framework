@@ -27,5 +27,4 @@ define('MICROTIME',	microtime(true));	//Time in seconds (float)
 define('TIME',		floor(MICROTIME));	//Time in seconds (integer)
 define('DIR',		__DIR__);			//Root directory
 chdir(DIR);
-define('CORE',		DIR.'/core');		//Core directory
-require_once CORE.'/loader.php';		//Loader starting
+require_once DIR.'/core/loader.php';	//Loader starting
