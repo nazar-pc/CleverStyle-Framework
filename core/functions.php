@@ -40,11 +40,11 @@ spl_autoload_register(function ($class) {
 	 * Try to load classes from different places. If not found in one place - try in another.
 	 */
 	if (
-		_require_once($file = CLASSES."/$namespace/$class_name.php", false) ||		//Core classes
-		_require_once($file = THIRDPARTY."/$namespace/$class_name.php", false) ||	//Third party classes
-		_require_once($file = TRAITS."/$namespace/$class_name.php", false) ||		//Core traits
-		_require_once($file = ENGINES."/$namespace/$class_name.php", false) ||		//Core engines
-		_require_once($file = MODULES."/../$namespace/$class_name.php", false)		//Classes in modules and plugins
+		_require_once($file = DIR."/core/classes/$namespace/$class_name.php", false) ||		//Core classes
+		_require_once($file = DIR."/core/thirdparty/$namespace/$class_name.php", false) ||	//Third party classes
+		_require_once($file = DIR."/core/traits/$namespace/$class_name.php", false) ||		//Core traits
+		_require_once($file = ENGINES."/$namespace/$class_name.php", false) ||				//Core engines
+		_require_once($file = MODULES."/../$namespace/$class_name.php", false)				//Classes in modules and plugins
 	) {
 		$cache[$class] = realpath($file);
 		if (!is_dir(CACHE)) {

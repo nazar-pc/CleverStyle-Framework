@@ -23,18 +23,14 @@ define('DIR',		realpath(__DIR__.'/../cscms.travis'));	//Root directory
 chdir(DIR);
 
 /**
- * Directory for thirdparty libraries
- */
-define('THIRDPARTY', DIR.'/core/thirdparty');
-/**
  * Fallback for PHP 5.5 hashing functions, that are not present in PHP 5.4
  */
 if (!defined('PASSWORD_DEFAULT')) {
-	require THIRDPARTY.'/password_compat.php';
+	require DIR.'/core/thirdparty/password_compat.php';
 }
-require THIRDPARTY.'/upf.php';                    //Inclusion of Useful PHP Functions
+require DIR.'/core/thirdparty/upf.php';           //Inclusion of Useful PHP Functions
 _require_once(DIR.'/vendor/autoload.php', false); //Inclusion of composer's autoloader.php with user's dependencies
-require DIR.'/core/functions.php';                    //Inclusion of general system functions and system autoloader
+require DIR.'/core/functions.php';                //Inclusion of general system functions and system autoloader
 
 error_reporting(E_ALL);
 
@@ -45,18 +41,6 @@ header('Connection: close');
 /**
  * Defining of basic constants with paths to system directories
  */
-/**
- * Directory for configuration
- */
-define('CONFIG', DIR.'/config');
-/**
- * Directory for main core classes
- */
-define('CLASSES', DIR.'/core/classes');
-/**
- * Directory for main core traits
- */
-define('TRAITS', DIR.'/core/traits');
 /**
  * Directory for cache, DB and storage engines
  */
@@ -117,4 +101,7 @@ if (!defined('DEBUG')) {
 if (!defined('DOMAIN')) {
 	define('DOMAIN', 'cscms.travis');
 }
+/**
+ * Will allow headers sending, and will output buffered content before exit anyway
+ */
 ob_start();

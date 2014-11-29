@@ -29,7 +29,7 @@ class Core {
 	 */
 	protected function construct () {
 		$this->config	= $this->load_config();
-		_include_once(CONFIG.'/main.php', false);
+		_include_once(DIR.'/config/main.php', false);
 		defined('DEBUG') || define('DEBUG', false);
 		defined('DOMAIN') || define('DOMAIN', $this->config['domain']);
 		date_default_timezone_set($this->config['timezone']);
@@ -106,7 +106,7 @@ AddEncoding gzip .html
 	 * @return array
 	 */
 	protected function load_config () {
-		if (!file_exists(CONFIG.'/main.json')) {
+		if (!file_exists(DIR.'/config/main.json')) {
 			error_code(500);
 			Page::instance()->error(
 				h::p('Config file not found, is system installed properly?').
@@ -119,7 +119,7 @@ AddEncoding gzip .html
 			);
 			exit;
 		}
-		return file_get_json_nocomments(CONFIG.'/main.json');
+		return file_get_json_nocomments(DIR.'/config/main.json');
 	}
 	/**
 	 * Getting of base configuration parameter
