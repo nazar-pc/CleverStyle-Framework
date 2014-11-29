@@ -526,15 +526,15 @@ trait Includes {
 		 */
 		$includes	= [
 			'css' => array_merge(
-				$get_files(CSS, $absolute ? true : 'includes/css'),
+				$get_files(DIR.'/includes/css', $absolute ? true : 'includes/css'),
 				$get_files("$theme_dir/css", $absolute ? true : "$theme_pdir/css")
 			),
 			'js' => array_merge(
-				$get_files(JS, $absolute ? true : 'includes/js'),
+				$get_files(DIR.'/includes/js', $absolute ? true : 'includes/js'),
 				$get_files("$theme_dir/js", $absolute ? true : "$theme_pdir/js")
 			),
 			'html' => array_merge(
-				$get_files(HTML, $absolute ? true : 'includes/html'),
+				$get_files(DIR.'/includes/html', $absolute ? true : 'includes/html'),
 				$get_files("$theme_dir/html", $absolute ? true : "$theme_pdir/html")
 			)
 		];

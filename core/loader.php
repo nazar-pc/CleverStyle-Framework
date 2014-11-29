@@ -54,22 +54,6 @@ define('LANGUAGES', DIR.'/core/languages');
  */
 define('CUSTOM', DIR.'/custom');
 /**
- * Directory for CSS files
- */
-define('CSS', DIR.'/includes/css');
-/**
- * Directory for images
- */
-define('IMG', DIR.'/includes/img');
-/**
- * Directory for JavaScript files
- */
-define('JS', DIR.'/includes/js');
-/**
- * Directory for Web Components files
- */
-define('HTML', DIR.'/includes/html');
-/**
  * Templates directory
  */
 define('TEMPLATES', DIR.'/templates');
