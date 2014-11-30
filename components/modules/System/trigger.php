@@ -78,11 +78,12 @@ Trigger::instance()
 				$Core->cache_engine != 'BlackHole' &&
 				$Config->route[0]	!= 'robots.txt'
 			) {
-				$clang	= Language::instance()->clang;
+				$clang			= Language::instance()->clang;
+				$query_string	= $_SERVER['QUERY_STRING'] ? "?$_SERVER[QUERY_STRING]" : '';
 				if (!home_page()) {
-					header("Location: /$clang/$relative_address", true, 301);
+					header("Location: /$clang/$relative_address$query_string", true, 301);
 				} else {
-					header("Location: /$clang", true, 301);
+					header("Location: /$clang$query_string", true, 301);
 				}
 			}
 			$base_url				= substr($Config->base_url(), 0, -3);

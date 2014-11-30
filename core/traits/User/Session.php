@@ -157,8 +157,10 @@ trait Session {
 		if (!empty($update)) {
 			$this->db_prime()->q($update);
 		}
+		$this->id			= $result['user'];
+		$this->session_id	= $session_id;
 		$this->update_user_is();
-		return $this->id = $result['user'];
+		return $this->id;
 	}
 	/**
 	 * Create the session for the user with specified id
@@ -294,7 +296,7 @@ trait Session {
 				'client_ip'		=> $client_ip
 			];
 			_setcookie('session', $hash, TIME + $Config->core['session_expire']);
-			$this->id							= $this->get_session_user();
+			$this->get_session_user();
 			$this->update_user_is();
 			if (
 				($this->db()->qfs(
