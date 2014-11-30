@@ -7,11 +7,12 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\OAuth2;
-use			cs\Cache\Prefix,
-			cs\Config,
-			cs\User,
-			cs\DB\Accessor,
-			cs\Singleton;
+use
+	cs\Cache\Prefix,
+	cs\Config,
+	cs\User,
+	cs\DB\Accessor,
+	cs\Singleton;
 
 /**
  * @method static OAuth2 instance($check = false)
@@ -86,7 +87,7 @@ class OAuth2 {
 						'%s'
 					)",
 				$id,
-				md5(MICROTIME.uniqid('oauth2', true)),
+				md5($id.uniqid($i, true)),
 				xap($name),
 				xap($domain),
 				(int)(bool)$active
@@ -103,9 +104,6 @@ class OAuth2 {
 	 * @return array|bool
 	 */
 	function get_client ($id) {
-		if (!is_md5($id)) {
-			return false;
-		}
 		return $this->cache->get($id, function () use ($id) {
 			return $this->db()->qf([
 				"SELECT *
@@ -162,9 +160,6 @@ class OAuth2 {
 	 * @return bool
 	 */
 	function del_client ($id) {
-		if (!is_md5($id)) {
-			return false;
-		}
 		$result	= $this->db_prime()->q([
 			[
 				"DELETE FROM `[prefix]oauth2_clients`

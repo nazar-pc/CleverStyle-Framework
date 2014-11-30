@@ -29,18 +29,18 @@ Trigger::instance()
 			 */
 			if (isset($_REQUEST['client_id'])) {
 				$client_id = $_REQUEST['client_id'];
-			} elseif (isset($_SERVER['CLIENT_ID'])) {
-				$client_id = $_SERVER['CLIENT_ID'];
+			} elseif (isset($_SERVER['HTTP_CLIENT_ID'])) {
+				$client_id = $_SERVER['HTTP_CLIENT_ID'];
 			}
 			if (isset($_REQUEST['access_token'])) {
 				$access_token = $_REQUEST['access_token'];
-			} elseif (isset($_SERVER['ACCESS_TOKEN'])) {
-				$access_token = $_SERVER['ACCESS_TOKEN'];
+			} elseif (isset($_SERVER['HTTP_ACCESS_TOKEN'])) {
+				$access_token = $_SERVER['HTTP_ACCESS_TOKEN'];
 			}
 			if (isset($_REQUEST['client_secret'])) {
 				$client_secret = $_REQUEST['client_secret'];
-			} elseif (isset($_SERVER['CLIENT_SECRET'])) {
-				$client_secret = $_SERVER['CLIENT_SECRET'];
+			} elseif (isset($_SERVER['HTTP_CLIENT_SECRET'])) {
+				$client_secret = $_SERVER['HTTP_CLIENT_SECRET'];
 			}
 			if (!isset($client_id, $access_token)) {
 				return;
