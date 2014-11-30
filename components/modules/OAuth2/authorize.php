@@ -21,6 +21,22 @@ use
 	cs\Trigger,
 	cs\User;
 
+function error_redirect ($error, $description) {
+	header(
+		'Location: '.http_build_url(
+			urldecode($_GET['redirect_uri']),
+			[
+				'error'             => $error,
+				'error_description' => $description,
+				'state'             => isset($_GET['state']) ? $_GET['state'] : false
+			]
+		),
+		true,
+		302
+	);
+	interface_off();
+}
+
 $OAuth2 = OAuth2::instance();
 $Config = Config::instance();
 $Index  = Index::instance();
@@ -30,16 +46,12 @@ $Page   = Page::instance();
  * Errors processing
  */
 if (!isset($_GET['client_id'])) {
-	code_header(400);
-	$Page->Content = '';
-	$Page->warning($L->client_id_parameter_required);
+	error_redirect('invalid_request', 'client_id parameter required');
 	return;
 }
 $client = $OAuth2->get_client($_GET['client_id']);
 if (!$client) {
-	code_header(400);
-	$Page->Content = '';
-	$Page->warning($L->client_id_not_found);
+	error_redirect('invalid_request', 'client_id not found');
 	return;
 }
 if (!$client['domain']) {
@@ -47,96 +59,86 @@ if (!$client['domain']) {
 	$Page->error([
 		'unauthorized_client',
 		'Request method is not authored'
-	], true);
+	]);
 }
 if (!$client['active']) {
+	/**
+	 * guest_token should return JSON data while all other works with redirects
+	 */
 	if ($_GET['response_type'] != 'guest_token') {
 		if (!isset($_GET['redirect_uri'])) {
 			code_header(400);
-			$Page->Content = '';
-			$Page->warning($L->inactive_client_id);
-			$Page->warning($L->redirect_uri_parameter_required);
-			return;
+			$Page->error([
+				'invalid_request',
+				'Inactive client_id, redirect_uri parameter required'
+			]);
 		} else {
 			if (
 				urldecode($_GET['redirect_uri']) != $Config->base_url().'/OAuth2/blank/' &&
 				!preg_match("/^[^\/]+:\/\/$client[domain]/", urldecode($_GET['redirect_uri']))
 			) {
-				header(
-					'Location: '.http_build_url(
-						urldecode($_GET['redirect_uri']),
-						[
-							'error'             => 'access_denied',
-							'error_description' => 'Inactive client id',
-							'state'             => isset($_GET['state']) ? $_GET['state'] : false
-						]
-					),
-					true,
-					302
-				);
-				$Page->Content = '';
+				error_redirect('access_denied', 'Inactive client id');
 				return;
 			} else {
 				code_header(400);
-				$Page->Content = '';
-				$Page->warning($L->inactive_client_id);
-				$Page->warning($L->redirect_uri_parameter_invalid);
-				return;
+				$Page->error([
+					'invalid_request',
+					'Inactive client_id, redirect_uri parameter required'
+				]);
 			}
 		}
 	} else {
 		code_header(400);
-		$Page->Content = '';
-		$Page->warning($L->inactive_client_id);
-		return;
+		$Page->error([
+			'invalid_request',
+			'inactive client_id'
+		], true);
 	}
 }
-if (!isset($_GET['redirect_uri'])) {
-	code_header(400);
-	$Page->Content = '';
-	$Page->warning($L->redirect_uri_parameter_required);
-	return;
-} elseif (
-	urldecode($_GET['redirect_uri']) != $Config->base_url().'/OAuth2/blank/' &&
-	!preg_match("/^[^\/]+:\/\/$client[domain]/", urldecode($_GET['redirect_uri']))
-) {
-	code_header(400);
-	$Page->Content = '';
-	$Page->warning($L->redirect_uri_parameter_invalid);
-	return;
-}
-$redirect_uri = urldecode($_GET['redirect_uri']);
-if (!isset($_GET['response_type'])) {
-	header(
-		'Location: '.http_build_url(
-			urldecode($redirect_uri),
-			[
-				'error'             => 'invalid_request',
-				'error_description' => 'response_type parameter required',
-				'state'             => isset($_GET['state']) ? $_GET['state'] : false
-			]
-		),
-		true,
-		302
-	);
-	$Page->Content = '';
-	return;
-}
-if (!in_array($_GET['response_type'], ['code', 'token', 'guest_token'])) {
-	header(
-		'Location: '.http_build_url(
-			urldecode($redirect_uri),
-			[
-				'error'             => 'unsupported_response_type',
-				'error_description' => 'Specified response type is not supported, only "token" or "code" types available',
-				'state'             => isset($_GET['state']) ? $_GET['state'] : false
-			]
-		),
-		true,
-		302
-	);
-	$Page->Content = '';
-	return;
+/**
+ * guest_token should return JSON data while all other works with redirects
+ */
+if ($_GET['response_type'] != 'guest_token') {
+	if (!isset($_GET['redirect_uri'])) {
+		code_header(400);
+		$Page->error([
+			'invalid_request',
+			'redirect_uri parameter required'
+		]);
+	} elseif (
+		urldecode($_GET['redirect_uri']) != $Config->base_url().'/OAuth2/blank/' &&
+		!preg_match("/^[^\/]+:\/\/$client[domain]/", urldecode($_GET['redirect_uri']))
+	) {
+		code_header(400);
+		$Page->error([
+			'invalid_request',
+			'redirect_uri parameter invalid'
+		]);
+	}
+	$redirect_uri = urldecode($_GET['redirect_uri']);
+	if (!isset($_GET['response_type'])) {
+		error_redirect('invalid_request', 'response_type parameter required');
+		return;
+	}
+	if (!in_array($_GET['response_type'], ['code', 'token', 'guest_token'])) {
+		error_redirect('unsupported_response_type', 'Specified response_type is not supported, only "token" or "code" or "guest_token" types available');
+		return;
+	}
+} else {
+	if (!isset($_GET['response_type'])) {
+		$Page->error_code([
+			'invalid_request',
+			'response_type parameter required'
+		], true);
+		return;
+	}
+	if (!in_array($_GET['response_type'], ['code', 'token', 'guest_token'])) {
+		$Page->error([
+			'unsupported_response_type',
+			'Specified response_type is not supported, only "token" or "code" or "guest_token" types available'
+		], true);
+		return;
+	}
 }
 $User = User::instance();
 if (!$User->user()) {
@@ -148,19 +150,7 @@ if (!$User->user()) {
 		}
 		return;
 	} elseif (!$Config->module('OAuth2')->guest_tokens) {
-		header(
-			'Location: '.http_build_url(
-				urldecode($redirect_uri),
-				[
-					'error'             => 'access_denied',
-					'error_description' => 'Guest tokens disabled',
-					'state'             => isset($_GET['state']) ? $_GET['state'] : false
-				]
-			),
-			true,
-			302
-		);
-		$Page->Content = '';
+		error_redirect('access_denied', 'Guest tokens disabled');
 		return;
 	}
 }
@@ -195,19 +185,25 @@ if (!$OAuth2->get_access($client['id'])) {
 	$Page->success(
 		$L->client_want_access_your_account($client['name'])
 	);
-	$Index->action       = $Config->base_url().'/'.$Config->server['raw_relative_address'];
-	$Index->custom_buttons = h::{'button.uk-button[type=submit][name=mode][value=allow]'}($L->allow).
+	$Index->action         = $Config->base_url().'/'.$Config->server['raw_relative_address'];
+	$Index->custom_buttons =
+		h::{'button.uk-button[type=submit][name=mode][value=allow]'}($L->allow).
 		h::{'button.uk-button[type=submit][mode=mode][value=deny]'}($L->deny);
-} else {
-	$code = $OAuth2->add_code($client['id'], $_GET['response_type'], $redirect_uri);
-	if (!$code) {
+	return;
+}
+$code = $OAuth2->add_code($client['id'], $_GET['response_type'], $redirect_uri);
+if (!$code) {
+	error_redirect('server_error', "Server can't generate code, try later");
+	return;
+}
+switch ($_GET['response_type']) {
+	case 'code':
 		header(
 			'Location: '.http_build_url(
 				urldecode($redirect_uri),
 				[
-					'error'             => 'server_error',
-					'error_description' => "Server can't generate code, try later",
-					'state'             => isset($_GET['state']) ? $_GET['state'] : false
+					'code'  => $code,
+					'state' => isset($_GET['state']) ? $_GET['state'] : false
 				]
 			),
 			true,
@@ -215,106 +211,60 @@ if (!$OAuth2->get_access($client['id'])) {
 		);
 		$Page->Content = '';
 		return;
-	}
-	switch ($_GET['response_type']) {
-		case 'code':
+	case 'token':
+		$token_data = $OAuth2->get_code($code, $client['id'], $client['secret'], $redirect_uri);
+		if ($token_data) {
+			unset($token_data['refresh_token']);
 			header(
-				'Location: '.http_build_url(
-					urldecode($redirect_uri),
-					[
-						'code'  => $code,
-						'state' => isset($_GET['state']) ? $_GET['state'] : false
-					]
+				'Location: '.uri_for_token(
+					http_build_url(
+						urldecode($redirect_uri),
+						array_merge(
+							$token_data,
+							[
+								'state' => isset($_GET['state']) ? $_GET['state'] : false
+							]
+						)
+					)
 				),
 				true,
 				302
 			);
 			$Page->Content = '';
 			return;
-		case 'token':
-			$token_data = $OAuth2->get_code($code, $client['id'], $client['secret'], $redirect_uri);
-			if ($token_data) {
-				unset($token_data['refresh_token']);
-				header(
-					'Location: '.uri_for_token(
-						http_build_url(
-							urldecode($redirect_uri),
-							array_merge(
-								$token_data,
-								[
-									'state' => isset($_GET['state']) ? $_GET['state'] : false
-								]
-							)
-						)
-					),
-					true,
-					302
-				);
-				$Page->Content = '';
-				return;
-			} else {
-				header(
-					'Location: '.uri_for_token(
-						http_build_url(
-							urldecode($redirect_uri),
-							[
-								'error'             => 'server_error',
-								'error_description' => "Server can't get token data, try later",
-								'state'             => isset($_GET['state']) ? $_GET['state'] : false
-							]
-						)
-					),
-					true,
-					302
-				);
-				$Page->Content = '';
-				return;
-			}
-		case 'guest_token':
-			header('Cache-Control: no-store');
-			header('Pragma: no-cache');
-			interface_off();
-			if ($User->user()) {
-				error_code(403);
-				$Page->error([
-					'access_denied',
-					'Only guests, not user allowed to access this response_type'
-				], true);
-			}
-			$code = $OAuth2->add_code($client['id'], 'token', urldecode($_GET['redirect_uri']));
-			if (!$code) {
-				error_code(500);
-				$Page->error([
-					'server_error',
-					"Server can't generate code, try later"
-				], true);
-			}
-			$token_data = $OAuth2->get_code($code, $client['id'], $client['secret'], urldecode($_GET['redirect_uri']));
-			if ($token_data) {
-				unset($token_data['refresh_token']);
-				header(
-					'Location: '.uri_for_token(
-						http_build_url(
-							urldecode($redirect_uri),
-							array_merge(
-								$token_data,
-								[
-									'state' => isset($_GET['state']) ? $_GET['state'] : false
-								]
-							)
-						)
-					),
-					true,
-					302
-				);
-				$Page->Content = '';
-				return;
-			} else {
-				error_code(500);
-				$Page->error([
-					'server_error',
-					"Server can't get token data, try later"
-				], true);
-			}
-	}
+		} else {
+			error_redirect('server_error', "Server can't get token data, try later");
+			return;
+		}
+	case 'guest_token':
+		header('Cache-Control: no-store');
+		header('Pragma: no-cache');
+		interface_off();
+		if ($User->user()) {
+			error_code(403);
+			$Page->error([
+				'access_denied',
+				'Only guests, not users allowed to access this response_type'
+			], true);
+		}
+		$code = $OAuth2->add_code($client['id'], 'token', urldecode($_GET['redirect_uri']));
+		if (!$code) {
+			error_code(500);
+			$Page->error([
+				'server_error',
+				"Server can't generate code, try later"
+			], true);
+		}
+		$token_data = $OAuth2->get_code($code, $client['id'], $client['secret'], urldecode($_GET['redirect_uri']));
+		if ($token_data) {
+			unset($token_data['refresh_token']);
+			$Page->json($token_data);
+			return;
+		} else {
+			error_code(500);
+			$Page->error([
+				'server_error',
+				"Server can't get token data, try later"
+			], true);
+		}
 }

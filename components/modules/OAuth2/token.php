@@ -10,7 +10,6 @@ namespace cs\modules\OAuth2;
 
 use
 	cs\Config,
-	cs\Index,
 	cs\Page,
 	cs\User;
 
@@ -21,23 +20,22 @@ interface_off();
  * Errors processing
  */
 $Config = Config::instance();
-$Index  = Index::instance();
 $Page   = Page::instance();
-if (!isset($_GET['grant_type'])) {
+if (!isset($_POST['grant_type'])) {
 	error_code(400);
 	$Page->error([
 		'invalid_request',
 		'grant_type parameter required'
 	], true);
 }
-if (!isset($_GET['client_id'])) {
+if (!isset($_POST['client_id'])) {
 	error_code(400);
 	$Page->error([
 		'invalid_request',
 		'client_id parameter required'
 	], true);
 }
-if (!isset($_GET['client_secret'])) {
+if (!isset($_POST['client_secret'])) {
 	error_code(400);
 	$Page->error([
 		'invalid_request',
@@ -45,7 +43,7 @@ if (!isset($_GET['client_secret'])) {
 	], true);
 }
 $OAuth2 = OAuth2::instance();
-$client = $OAuth2->get_client($_GET['client_id']);
+$client = $OAuth2->get_client($_POST['client_id']);
 if (!$client) {
 	error_code(400);
 	$Page->error([
@@ -60,7 +58,7 @@ if (!$client['active']) {
 		'Inactive client id'
 	], true);
 }
-if ($_GET['client_secret'] != $client['secret']) {
+if ($_POST['client_secret'] != $client['secret']) {
 	error_code(400);
 	$Page->error([
 		'access_denied',
@@ -74,16 +72,16 @@ if (!$client['domain']) {
 		'Request method is not authored'
 	], true);
 }
-if ($_GET['grant_type'] != 'guest_token') {
-	if (!isset($_GET['redirect_uri'])) {
+if ($_POST['grant_type'] == 'authorization_code') {
+	if (!isset($_POST['redirect_uri'])) {
 		error_code(400);
 		$Page->error([
 			'invalid_request',
 			'redirect_uri parameter required'
 		], true);
 	} elseif (
-		urldecode($_GET['redirect_uri']) != $Config->base_url().'/OAuth2/blank/' &&
-		!preg_match("/^[^\/]+:\/\/$client[domain]/", urldecode($_GET['redirect_uri']))
+		urldecode($_POST['redirect_uri']) != $Config->base_url().'/OAuth2/blank/' &&
+		!preg_match("/^[^\/]+:\/\/$client[domain]/", urldecode($_POST['redirect_uri']))
 	) {
 		error_code(400);
 		$Page->error([
@@ -92,7 +90,7 @@ if ($_GET['grant_type'] != 'guest_token') {
 		], true);
 	}
 }
-if (!in_array($_GET['grant_type'], ['authorization_code', 'refresh_token', 'guest_token'])) {
+if (!in_array($_POST['grant_type'], ['authorization_code', 'refresh_token', 'guest_token'])) {
 	error_code(400);
 	$Page->error([
 		'unsupported_grant_type',
@@ -102,16 +100,16 @@ if (!in_array($_GET['grant_type'], ['authorization_code', 'refresh_token', 'gues
 /**
  * Tokens operations processing
  */
-switch ($_GET['grant_type']) {
+switch ($_POST['grant_type']) {
 	case 'authorization_code':
-		if (!isset($_GET['code'])) {
+		if (!isset($_POST['code'])) {
 			error_code(400);
 			$Page->error([
 				'invalid_request',
 				'code parameter required'
 			], true);
 		}
-		$token_data = $OAuth2->get_code($_GET['code'], $client['id'], $client['secret'], urldecode($_GET['redirect_uri']));
+		$token_data = $OAuth2->get_code($_POST['code'], $client['id'], $client['secret'], urldecode($_POST['redirect_uri']));
 		if (!$token_data) {
 			error_code(403);
 			$Page->error([
@@ -129,14 +127,14 @@ switch ($_GET['grant_type']) {
 		$Page->json($token_data);
 		return;
 	case 'refresh_token':
-		if (!isset($_GET['refresh_token'])) {
+		if (!isset($_POST['refresh_token'])) {
 			error_code(400);
 			$Page->error([
 				'refresh_token',
 				'refresh_token parameter required'
 			], true);
 		}
-		$token_data = $OAuth2->refresh_token($_GET['refresh_token'], $client['id'], $client['secret']);
+		$token_data = $OAuth2->refresh_token($_POST['refresh_token'], $client['id'], $client['secret']);
 		if (!$token_data) {
 			error_code(403);
 			$Page->error([
@@ -171,6 +169,7 @@ switch ($_GET['grant_type']) {
 		}
 		$token_data = $OAuth2->get_code($code, $client['id'], $client['secret'], '');
 		if ($token_data) {
+			unset($token_data['refresh_token']);
 			$Page->json($token_data);
 			return;
 		} else {

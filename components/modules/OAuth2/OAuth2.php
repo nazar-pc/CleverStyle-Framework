@@ -18,7 +18,8 @@ use
  * @method static OAuth2 instance($check = false)
  */
 class OAuth2 {
-	use	Accessor,
+	use
+		Accessor,
 		Singleton;
 
 	protected	$guest_tokens,
@@ -160,7 +161,7 @@ class OAuth2 {
 	 * @return bool
 	 */
 	function del_client ($id) {
-		$result	= $this->db_prime()->q([
+		$result	= $this->db_prime()->q(
 			[
 				"DELETE FROM `[prefix]oauth2_clients`
 				WHERE `id` = '%s'
@@ -171,7 +172,7 @@ class OAuth2 {
 				WHERE `id`	= '%s'"
 			],
 			$id
-		]);
+		);
 		unset($this->cache->{'/'});
 		return $result;
 	}
@@ -420,30 +421,26 @@ class OAuth2 {
 	 * Get token data
 	 *
 	 * @param string		$access_token
-	 * @param string		$client			Client id
-	 * @param string		$secret			Client secret
 	 *
 	 * @return array|bool					<i>false</i> on failure, array ['user' => id, 'session' => id, 'expire' => unix time, 'type' => 'code'|'token']
 	 */
-	function get_token ($access_token, $client, $secret) {
-		$client	= $this->get_client($client);
-		if (!is_md5($access_token) || !$client || $client['secret'] != $secret) {
+	function get_token ($access_token) {
+		if (!is_md5($access_token)) {
 			return false;
 		}
 		$Cache	= $this->cache;
-		$data	= $Cache->get("tokens/$access_token", function () use ($client, $access_token) {
+		$data	= $Cache->get("tokens/$access_token", function () use ($access_token) {
 			return $this->db()->qf([
 				"SELECT
+					`id` AS `client_id`,
 					`user`,
 					`session`,
 					`expire`,
 					`type`
 				FROM `[prefix]oauth2_clients_sessions`
 				WHERE
-					`id`			= '%s' AND
 					`access_token`	= '%s'
 				LIMIT 1",
-				$client['id'],
 				$access_token
 			]);
 		});
@@ -451,14 +448,12 @@ class OAuth2 {
 			if($data['expire'] < TIME) {
 				return false;
 			}
-			if (!$this->get_access($client['id'], $data['user'])) {
+			if (!$this->get_access($data['client_id'], $data['user'])) {
 				$this->db_prime()->q([
 					"DELETE FROM `[prefix]oauth2_clients_sessions`
 					WHERE
-						`id`			= '%s' AND
 						`access_token`	= '%s'
 					LIMIT 1",
-					$client['id'],
 					$access_token
 				]);
 				unset($Cache->{"tokens/$access_token"});
@@ -472,11 +467,9 @@ class OAuth2 {
 					"UPDATE `[prefix]oauth2_clients_sessions`
 					SET `expire` = '%s'
 					WHERE
-						`id`			= '%s' AND
 						`access_token`	= '%s'
 					LIMIT 1",
 					$data['expire'],
-					$client['id'],
 					$access_token
 				);
 				$Cache->{"tokens/$access_token"}	= $data;
@@ -487,33 +480,27 @@ class OAuth2 {
 	/**
 	 * Del token data (invalidate token)
 	 *
-	 * @param string		$access_token
-	 * @param string		$client			Client id
+	 * @param string	$access_token
 	 *
 	 * @return bool
 	 */
-	function del_token ($access_token, $client) {
-		$client	= $this->get_client($client);
-		if (!is_md5($access_token) || !$client) {
+	function del_token ($access_token) {
+		if (!is_md5($access_token)) {
 			return false;
 		}
 		$session	= $this->db_prime()->qfs([
 			"SELECT `session`
 			FROM `[prefix]oauth2_clients_sessions`
 			WHERE
-				`id`			= '%s' AND
 				`access_token`	= '%s'
 			LIMIT 1",
-			$client['id'],
 			$access_token
 		]);
 		if ($this->db_prime()->q(
 			"DELETE FROM `[prefix]oauth2_clients_sessions`
 			WHERE
-				`id`			= '%s' AND
 				`access_token`	= '%s'
 			LIMIT 1",
-			$client['id'],
 			$access_token
 		)) {
 			unset($this->cache->{"tokens/$access_token"});

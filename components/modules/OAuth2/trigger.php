@@ -13,7 +13,7 @@ Trigger::instance()->register(
 	function ($data) {
 		$Config = Config::instance();
 		if ($Config->module('OAuth2')->active() && substr($data['rc'], 0, 5) != 'admin') {
-			$rc = explode('/', $data['rc']);
+			$rc = explode('/', $data['rc'], 2);
 			if (isset($rc[0]) && $rc[0] == 'OAuth2') {
 				if (isset($rc[1])) {
 					$rc[1] = explode('?', $rc[1], 2)[0];
@@ -22,6 +22,10 @@ Trigger::instance()->register(
 				header('Cache-Control: no-store');
 				header('Pragma: no-cache');
 			}
+			$POST	= $_POST;
+			Trigger::instance()->register('System/User/construct/after', function () use ($POST) {
+				$_POST	= $POST + $_POST;
+			});
 		}
 		switch ($Config->components['modules']['OAuth2']['active']) {
 			case -1:

@@ -1,9 +1,9 @@
-<h3 style="text-align: center;">OAuth2 module, provides support of OAuth 2.0 protocol (server side)</h3>
+<h3 style="text-align: center;">OAuth2 module, provides support of OAuth 2.0 protocol (server side) according to RFC 6749 and 6750 (and some extended features)</h3>
 <h4>Server authorization:</h4>
 <ol>
 	<li>
 		Open authentication dialog at:<br><br>
-		<code>/OAuth2/authorize?</code><br>
+		<code>GET /OAuth2/authorize?</code><br>
 		<code>response_type=code&</code><br>
 		<code>client_id=<b>client_id</b>&</code><br>
 		<code>redirect_uri=<b>redirect_uri</b>&</code><br>
@@ -48,7 +48,7 @@
 	</li>
 	<li>
 		Obtaining access_token:<br><br>
-		<code>/OAuth2/token?</code><br>
+		<code>POST /OAuth2/token</code><br><br>
 		<code>grant_type=authorization_code&</code><br>
 		<code>client_id=<b>client_id</b>&</code><br>
 		<code>client_secret=<b>client_secret</b>&</code><br>
@@ -96,12 +96,59 @@
 			<dd>Simple description, explaining error reason</dd>
 		</dl>
 	</li>
+	<li>
+		Obtaining new access_token (when old expired) using refresh_token:<br><br>
+		<code>POST /OAuth2/token</code><br><br>
+		<code>grant_type=refresh_token&</code><br>
+		<code>client_id=<b>client_id</b>&</code><br>
+		<code>client_secret=<b>client_secret</b>&</code><br>
+		<code>refresh_token=<b>refresh_token</b></code>
+		<dl>
+			<dt>client_id</dt>
+			<dd>Id of client in administration of OAuth2 module [REQUIRED]</dd>
+			<dt>client_secret</dt>
+			<dd>Secret from client settings [REQUIRED]</dd>
+			<dt>refresh_token</dt>
+			<dd>refresh_token from previous step [REQUIRED]</dd>
+		</dl>
+		<h4>Successful request</h4>
+		Browser will return JSON data with header "Content-Type: application/json" and status code HTTP 200 (OK):<br><br>
+		<code>{</code><br>
+		<code>"access_token":"<b>access_token</b>",</code><br>
+		<code>"refresh_token":"<b>refresh_token</b>",</code><br>
+		<code>"expires_in":<b>expires_in</b>,</code><br>
+		<code>"token_type":"bearer",</code><br>
+		<code>"user_id":"<b>user_id</b>"</code><br>
+		<code>}</code>
+		<dl>
+			<dt>access_token</dt>
+			<dd>Token, that will be used in API request</dd>
+			<dt>refresh_token</dt>
+			<dd>Token, that will be used to obtain new access_token, when old expires</dd>
+			<dt>expires_in</dt>
+			<dd>Number of seconds, remained to access_token expiration</dd>
+			<dt>user_id</dt>
+			<dd>Internal system id of user</dd>
+		</dl>
+		<h4>Error request</h4>
+		Browser will return JSON data with header "Content-Type: application/json" and status code HTTP 400 (Bad Request) or HTTP 500 (Internal Server Error) or HTTP 403 (403 Forbidden):<br><br>
+		<code>{</code><br>
+		<code>"error":"<b>error</b>",</code><br>
+		<code>"error_description":"<b>error_description</b>"</code><br>
+		<code>}</code>
+		<dl>
+			<dt>error</dt>
+			<dd>Error code according to <a href="https://tools.ietf.org/html/rfc6749">RFC 6749</a></dd>
+			<dt>error_description</dt>
+			<dd>Simple description, explaining error reason</dd>
+		</dl>
+	</li>
 </ol>
 <h4>Client authorization:</h4>
 <ol>
 	<li>
 		Open authentication dialog at:<br><br>
-		<code>/OAuth2/authorize?</code><br>
+		<code>GET /OAuth2/authorize?</code><br>
 		<code>response_type=token&</code><br>
 		<code>client_id=<b>client_id</b>&</code><br>
 		<code>redirect_uri=<b>redirect_uri</b>&</code><br>
@@ -156,7 +203,7 @@
 <ol>
 	<li>
 		Obtaining access_token:<br><br>
-		<code>/OAuth2/token?</code><br>
+		<code>POST /OAuth2/token</code><br><br>
 		<code>grant_type=guest_token&</code><br>
 		<code>client_id=<b>client_id</b>&</code><br>
 		<code>client_secret=<b>client_secret</b></code>
@@ -203,70 +250,50 @@
 <ol>
 	<li>
 		Obtaining access_token:<br><br>
-		<code>/OAuth2/authorize?</code><br>
+		<code>GET /OAuth2/authorize?</code><br>
 		<code>response_type=guest_token&</code><br>
-		<code>client_id=<b>client_id</b>&</code><br>
-		<code>redirect_uri=<b>redirect_uri</b>&</code><br>
-		<code>state=<b>state</b></code>
+		<code>client_id=<b>client_id</b></code>
 		<dl>
 			<dt>client_id</dt>
 			<dd>Id of client in administration of OAuth2 module [REQUIRED]</dd>
-			<dt>redirect_uri</dt>
-			<dd>URL to redirect to after the user allows or denies access. URL should be from the domain in client settings, supports custom uri schemes. [REQUIRED]</dd>
-			<dt>state</dt>
-			<dd>Random string, usually session id, which is used in order to protect against CSRF [OPTIONAL]</dd>
 		</dl>
 		<h4>Successful request</h4>
-		Browser will redirect to:<br><br>
-		<code><b>redirect_uri</b>#</code><br>
-		<code>access_token=<b>access_token</b>&</code><br>
-		<code>expires_in=<b>expires_in</b>&</code><br>
-		<code>user_id=<b>user_id</b>&</code><br>
-		<code>token_type=bearer&</code><br>
-		<code>state=<b>state</b></code>
+		Browser will return JSON data with header "Content-Type: application/json" and status code HTTP 200 (OK):<br><br>
+		<code>{</code><br>
+		<code>"access_token":"<b>access_token</b>",</code><br>
+		<code>"expires_in":<b>expires_in</b>,</code><br>
+		<code>"token_type":"bearer",</code><br>
+		<code>"user_id":"<b>user_id</b>"</code><br>
+		<code>}</code>
 		<dl>
-			<dt>redirect_uri</dt>
-			<dd>Parameter, given in request</dd>
 			<dt>access_token</dt>
 			<dd>Token, that will be used in API request</dd>
 			<dt>expires_in</dt>
 			<dd>Number of seconds, remained to access_token expiration</dd>
 			<dt>user_id</dt>
-			<dd>Internal system id of user</dd>
-			<dt>state</dt>
-			<dd>Parameter, given in request</dd>
+			<dd>Internal system id of user, for guest always <b>1</b></dd>
 		</dl>
 		<h4>Error request</h4>
-		Browser will redirect to URL like:<br><br>
-		<code><b>redirect_uri</b>#</code><br>
-		<code>error=<b>error</b>&</code><br>
-		<code>error_description=<b>error_description</b>&</code><br>
-		<code>state=<b>state</b></code>
+		Browser will return JSON data with header "Content-Type: application/json" and status code HTTP 400 (Bad Request) or HTTP 500 (Internal Server Error) or HTTP 403 (403 Forbidden):<br><br>
+		<code>{</code><br>
+		<code>"error":"<b>error</b>",</code><br>
+		<code>"error_description":"<b>error_description</b>"</code><br>
+		<code>}</code>
 		<dl>
-			<dt>redirect_uri</dt>
-			<dd>Parameter, given in request</dd>
 			<dt>error</dt>
 			<dd>Error code according to <a href="https://tools.ietf.org/html/rfc6749">RFC 6749</a></dd>
 			<dt>error_description</dt>
 			<dd>Simple description, explaining error reason</dd>
-			<dt>state</dt>
-			<dd>Parameter, given in request</dd>
 		</dl>
 	</li>
 </ol>
-<h4>Token invalidation (server) (beyond RFC 6749 specification, used for proper sign out for API clients):</h4>
+<h4>Token invalidation (both server and client) (beyond RFC 6749 specification, used for proper sign out for API clients):</h4>
 <ol>
 	<li>
 		Invalidating access_token:<br><br>
-		<code>/OAuth2/invalidate_token?</code><br>
-		<code>client_id=<b>client_id</b>&</code><br>
-		<code>client_secret=<b>client_secret</b>&</code><br>
+		<code>POST /OAuth2/invalidate_token</code><br><br>
 		<code>access_token=<b>access_token</b></code>
 		<dl>
-			<dt>client_id</dt>
-			<dd>Id of client in administration of OAuth2 module [REQUIRED]</dd>
-			<dt>client_secret</dt>
-			<dd>Secret from client settings [REQUIRED]</dd>
 			<dt>access_token</dt>
 			<dd>Token, that will was used in API request [REQUIRED]</dd>
 		</dl>
@@ -286,61 +313,13 @@
 		</dl>
 	</li>
 </ol>
-<h4>Token invalidation (client) (beyond RFC 6749 specification, used for proper sign out for API clients):</h4>
+<h4>API requests (using Bearer token, RFC 6750):</h4>
 <ol>
 	<li>
-		Invalidating access_token:<br><br>
-		<code>/OAuth2/invalidate_token?</code><br>
-		<code>client_id=<b>client_id</b>&</code><br>
-		<code>redirect_uri=<b>redirect_uri</b>&</code><br>
-		<code>access_token=<b>access_token</b>&</code><br>
-		<code>state=<b>state</b></code>
-		<dl>
-			<dt>client_id</dt>
-			<dd>Id of client in administration of OAuth2 module [REQUIRED]</dd>
-			<dt>redirect_uri</dt>
-			<dd>URL to redirect to after the user allows or denies access. URL should be from the domain in client settings, supports custom uri schemes. [REQUIRED]</dd>
-			<dt>access_token</dt>
-			<dd>Token, that will was used in API request [REQUIRED]</dd>
-			<dt>state</dt>
-			<dd>Random string, usually session id, which is used in order to protect against CSRF [OPTIONAL]</dd>
-		</dl>
-		<h4>Successful request</h4>
-		Browser will redirect to:<br><br>
-		<code><b>redirect_uri</b>#</code><br>
-		<code>state=<b>state</b></code>
-		<dl>
-			<dt>state</dt>
-			<dd>Parameter, given in request</dd>
-		</dl>
-		<h4>Error request</h4>
-		Browser will redirect to URL like:<br><br>
-		<code><b>redirect_uri</b>#</code><br>
-		<code>error=<b>error</b>&</code><br>
-		<code>error_description=<b>error_description</b>&</code><br>
-		<code>state=<b>state</b></code>
-		<dl>
-			<dt>redirect_uri</dt>
-			<dd>Parameter, given in request</dd>
-			<dt>error</dt>
-			<dd>Error code according to <a href="https://tools.ietf.org/html/rfc6749">RFC 6749</a></dd>
-			<dt>error_description</dt>
-			<dd>Simple description, explaining error reason</dd>
-			<dt>state</dt>
-			<dd>Parameter, given in request</dd>
-		</dl>
-	</li>
-</ol>
-<h4>API requests (server):</h4>
-<ol>
-	<li>
-		Every request should contain besides other parameters:
+		Every request should contain header:
 		<ul>
-			<li>client_id</li>
-			<li>client_secret</li>
-			<li>access_token</li>
+			<li>Authorization: Bearer <b>access_token</b></li>
 		</ul>
-		<p>NOTE: <b>client_id</b>, <b>client_secret</b> and <b>access_token</b> parameters may be replaced by http headers with the same names (beyond RFC 6749 specification)</p>
 		<h4>Successful request</h4>
 		Browser will return data according to format, provided by module.
 		<h4>Error request</h4>
@@ -357,15 +336,14 @@
 		</dl>
 	</li>
 </ol>
-<h4>API requests (client):</h4>
+<h4>API requests (another way, beyond RFC 6749 and 6750 specifications, not recommended):</h4>
 <ol>
 	<li>
-		Every request should contain besides other parameters:
+		Every request should contain header:
 		<ul>
-			<li>client_id</li>
-			<li>access_token</li>
+			<li>Access-token: <b>access_token</b></li>
 		</ul>
-		<p>NOTE: <b>client_id</b> and <b>access_token</b> parameters may be replaced by http headers with the same names (beyond RFC 6749 specification)</p>
+		<p>NOTE: <b>access_token</b> header may be replaced by request parameter <b>access_token</b> with the same name, but this is not recommended and should be used as last resort</p>
 		<h4>Successful request</h4>
 		Browser will return data according to format, provided by module.
 		<h4>Error request</h4>

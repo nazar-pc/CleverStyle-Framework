@@ -1,9 +1,6 @@
 {
-	"oauth2_client_id_parameter_required"		: "Параметр client_id обов’язковий",
 	"oauth2_client_id_not_found"				: "Id клієнта не знайдено",
 	"oauth2_inactive_client_id"					: "Неактивний id клієнта",
-	"oauth2_redirect_uri_parameter_required"	: "Параметр redirect_uri обов’язковий",
-	"oauth2_redirect_uri_parameter_invalid"		: "Параметр redirect_uri недійсний",
 	"oauth2_you_are_not_logged_in"				: "Ви не увійшли. Увійдіть, будь-ласка, для продовження",
 	"oauth2_client_want_access_your_account"	: "Клієнт \"%s\" хоче отримати доступ до вашого аккаунту",
 	"oauth2_addition_of_client"					: "Додавання клієнту",
@@ -26,5 +23,7 @@
 	"oauth2_active"								: "Активний",
 	"oauth2_action"								: "Дія",
 	"oauth2_edit"								: "Редагувати",
-	"oauth2_delete"								: "Видалити"
+	"oauth2_delete"								: "Видалити",
+	"oauth2_allow"								: "Дозволити",
+	"oauth2_deny"								: "Заборонити"
 }

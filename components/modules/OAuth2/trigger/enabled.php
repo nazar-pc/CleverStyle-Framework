@@ -25,29 +25,35 @@ Trigger::instance()
 		'System/User/construct/before',
 		function () {
 			/**
-			 * Get client credentials from request body or headers and create corresponding local variables
+			 * Works only for API requests
 			 */
-			if (isset($_REQUEST['client_id'])) {
-				$client_id = $_REQUEST['client_id'];
-			} elseif (isset($_SERVER['HTTP_CLIENT_ID'])) {
-				$client_id = $_SERVER['HTTP_CLIENT_ID'];
-			}
-			if (isset($_REQUEST['access_token'])) {
-				$access_token = $_REQUEST['access_token'];
-			} elseif (isset($_SERVER['HTTP_ACCESS_TOKEN'])) {
-				$access_token = $_SERVER['HTTP_ACCESS_TOKEN'];
-			}
-			if (isset($_REQUEST['client_secret'])) {
-				$client_secret = $_REQUEST['client_secret'];
-			} elseif (isset($_SERVER['HTTP_CLIENT_SECRET'])) {
-				$client_secret = $_SERVER['HTTP_CLIENT_SECRET'];
-			}
-			if (!isset($client_id, $access_token)) {
+			if (!api_path()) {
 				return;
 			}
-			$OAuth2 = OAuth2::instance();
-			$Page   = Page::instance();
-			$client = $OAuth2->get_client($client_id);
+			if (isset($_SERVER['HTTP_AUTHORIZATION']) && preg_match('/Bearer ([0-9a-z]{32})/i', $_SERVER['HTTP_AUTHORIZATION'], $access_token)) {
+				$access_token = $access_token[1];
+			} else {
+				unset($access_token);
+				if (isset($_SERVER['HTTP_ACCESS_TOKEN'])) {
+					$access_token = $_SERVER['HTTP_ACCESS_TOKEN'];
+				} elseif (isset($_REQUEST['access_token'])) {
+					$access_token = $_REQUEST['access_token'];
+				}
+			}
+			if (!isset($access_token)) {
+				return;
+			}
+			$OAuth2     = OAuth2::instance();
+			$Page       = Page::instance();
+			$token_data = $OAuth2->get_token($access_token);
+			if (!$token_data) {
+				error_code(403);
+				$Page->error([
+					'access_denied',
+					'access_token expired'
+				]);
+			}
+			$client = $OAuth2->get_client($token_data['client_id']);
 			if (!$client) {
 				error_code(400);
 				$Page->error([
@@ -61,34 +67,13 @@ Trigger::instance()
 					'Inactive client id'
 				]);
 			}
+			if ($token_data['type'] == 'token') {
+				// TODO: add some mark if this is client-side only token, so that it can be accounted by components
+				// Also ADMIN access should be blocked for client-side only tokens
+			}
 			$_SERVER['HTTP_USER_AGENT'] = "OAuth2-$client[name]-$client[id]";
-			if (isset($client_secret)) {
-				if ($client_secret != $client['secret']) {
-					error_code(400);
-					$Page->error([
-						'access_denied',
-						'client_secret do not corresponds client_id'
-					]);
-				}
-				$token_data = $OAuth2->get_token($access_token, $client_id, $client['secret']);
-			} else {
-				$token_data = $OAuth2->get_token($access_token, $client_id, $client['secret']);
-				if ($token_data['type'] == 'code') {
-					error_code(403);
-					$Page->error([
-						'invalid_request',
-						"This access_token can't be used without client_secret"
-					]);
-				}
-			}
-			if (!$token_data) {
-				error_code(403);
-				$Page->error([
-					'access_denied',
-					'access_token expired'
-				]);
-			}
-			$_POST['session'] = $_REQUEST['session'] = $token_data['session'];
+			$_POST['session']           = $token_data['session'];
+			$_REQUEST['session']        = $token_data['session'];
 			_setcookie('session', $token_data['session']);
 			if (!Config::instance()->module('OAuth2')->guest_tokens) {
 				Trigger::instance()->register(

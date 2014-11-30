@@ -1,9 +1,6 @@
 {
-	"oauth2_client_id_parameter_required"		: "client_id parameter required",
 	"oauth2_client_id_not_found"				: "Client id not found",
 	"oauth2_inactive_client_id"					: "Inactive client id",
-	"oauth2_redirect_uri_parameter_required"	: "redirect_uri parameter required",
-	"oauth2_redirect_uri_parameter_invalid"		: "redirect_uri parameter invalid",
 	"oauth2_you_are_not_logged_in"				: "You are not logged in. Make login, please, to continue",
 	"oauth2_client_want_access_your_account"	: "Client \"%s\" want access your account",
 	"oauth2_addition_of_client"					: "Addition of client",
@@ -26,5 +23,7 @@
 	"oauth2_active"								: "Active",
 	"oauth2_action"								: "Action",
 	"oauth2_edit"								: "Edit",
-	"oauth2_delete"								: "Delete"
+	"oauth2_delete"								: "Delete",
+	"oauth2_allow"								: "Allow",
+	"oauth2_deny"								: "Deny"
 }

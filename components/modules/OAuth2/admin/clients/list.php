@@ -57,7 +57,7 @@ $Index->content(
 				];
 			},
 			OAuth2::instance()->clients_list()
-		))
+		) ?: false)
 	).
 	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
 		[
