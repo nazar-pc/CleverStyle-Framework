@@ -16,6 +16,9 @@ Trigger::instance()
 	->register(
 		'System/Config/routing_replace',
 		function ($data) {
+			if ($data['rc'] == 'api/System/profile') {
+				$data['rc'] = 'api/System/profile/profile';
+			}
 			$rc		= explode('/', $data['rc']);
 			$Config	= Config::instance();
 			if (!isset($rc[0])) {

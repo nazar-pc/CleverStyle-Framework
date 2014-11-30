@@ -14,7 +14,7 @@
 		"email_sending_test"
 	],
 	"profile"	: [
-		"blank",
+		"profile",
 		"contacts"
 	],
 	"profiles"	: []
