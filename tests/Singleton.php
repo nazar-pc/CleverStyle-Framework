@@ -75,6 +75,14 @@ trait Singleton {
 	static function instance_reset () {
 		static::instance_internal(false, null);
 	}
+	/**
+	 * Replace instance with custom object
+	 *
+	 * @param	object	$object
+	 */
+	static function instance_replace ($object) {
+		static::instance_internal(false, $object);
+	}
 	final protected function __clone () {}
 	final protected function __wakeup() {}
 }
