@@ -2,19 +2,13 @@
 Basic features using Memcached cache engine
 --FILE--
 <?php
-namespace cs\custom;
-use
-	cs\Cache,
-	cs\Singleton;
+namespace cs;
 include __DIR__.'/../custom_loader.php';
-class Core {
-	use	Singleton;
-	function construct () {
-		$this->cache_engine		= 'Memcached';
-		$this->memcached_host	= '127.0.0.1';
-		$this->memcached_port	= '11211';
-	}
-}
+Core::instance_mock([
+	'cache_engine'		=> 'Memcached',
+	'memcached_host'	=> '127.0.0.1',
+	'11211'				=> '11211'
+]);
 $Cache	= Cache::instance();
 if (!$Cache->cache_state()) {
 	die('Cache state check failed');

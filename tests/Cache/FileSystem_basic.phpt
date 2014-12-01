@@ -2,18 +2,12 @@
 Basic features using FileSystem cache engine
 --FILE--
 <?php
-namespace cs\custom;
-use
-	cs\Cache,
-	cs\Singleton;
+namespace cs;
 include __DIR__.'/../custom_loader.php';
-class Core {
-	use	Singleton;
-	function construct () {
-		$this->cache_engine	= 'FileSystem';
-		$this->cache_size	= 1;
-	}
-}
+Core::instance_mock([
+	'cache_engine'	=> 'FileSystem',
+	'cache_size'	=> 1
+]);
 $Cache	= Cache::instance();
 if (!$Cache->cache_state()) {
 	die('Cache state check failed');

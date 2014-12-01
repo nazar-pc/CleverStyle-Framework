@@ -105,3 +105,5 @@ if (!defined('DOMAIN')) {
  * Will allow headers sending, and will output buffered content before exit anyway
  */
 ob_start();
+include __DIR__.'/Mock_object.php';
+include __DIR__.'/Singleton.php';

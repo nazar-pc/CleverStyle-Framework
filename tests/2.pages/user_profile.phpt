@@ -102,7 +102,7 @@ shutdown_function(false);
 									<h2>Registration date:</h2>
 								</cs-table-cell>
 								<cs-table-cell>
-									<h2>%d November %d</h2>
+									<h2>%d %s %d</h2>
 								</cs-table-cell>
 							</cs-table-row>
 						</cs-table>

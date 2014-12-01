@@ -5,6 +5,7 @@ Section item level menu
 namespace cs;
 include __DIR__.'/../custom_loader.php';
 current_module('System');
+Trigger::instance_mock();
 $Menu	= Menu::instance();
 $Menu->add_section_item(
 	'System',

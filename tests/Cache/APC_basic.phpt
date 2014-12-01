@@ -4,17 +4,11 @@ Basic features using APC cache engine
 apc.enable_cli	= 1
 --FILE--
 <?php
-namespace cs\custom;
-use
-	cs\Cache,
-	cs\Singleton;
+namespace cs;
 include __DIR__.'/../custom_loader.php';
-class Core {
-	use	Singleton;
-	function construct () {
-		$this->cache_engine	= 'APC';
-	}
-}
+Core::instance_mock([
+	'cache_engine'	=> 'APC'
+]);
 $Cache	= Cache::instance();
 if (!$Cache->cache_state()) {
 	die('Cache state check failed');

@@ -1,18 +1,33 @@
 --TEST--
-Basic Meta functionality
+Basic Meta functionality (home page)
 --FILE--
 <?php
 namespace cs;
 use cs\Page\Meta;
 include __DIR__.'/../../custom_loader.php';
-include __DIR__.'/../../_SERVER.php';
-// Just initialize Language object
-Language::instance();
+home_page(true);
+Config::instance_mock(
+	[
+		'core'		=> [
+			'multilingual'	=> false,
+			'name'			=> ''
+		]
+	],
+	[
+		'base_url'	=> 'http://cscms.travis',
+		'module'	=> False_class::instance()
+	]
+);
+$Page	= Page::instance_mock([
+	'canonical_url'	=> false
+]);
+Text::instance_mock([], [
+	'process'	=> 'Web-site'
+]);
 Meta::instance()
 	->article()
 	->article('section', 'CMS')
 	->render();
-$Page	= Page::instance();
 echo $Page->Head;
 ?>
 --EXPECT--
