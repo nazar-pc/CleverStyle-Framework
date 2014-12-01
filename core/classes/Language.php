@@ -182,7 +182,7 @@ class Language implements JsonSerializable {
 			$language = $this->scan_aliases($Config->core['active_languages']) ?: $language;
 		}
 		if (
-			!$Config ||
+			!$Config->core ||
 			$language == $Config->core['language'] ||
 			(
 				$Config->core['multilingual'] &&

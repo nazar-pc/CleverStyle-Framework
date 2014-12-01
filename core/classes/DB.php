@@ -141,7 +141,7 @@ class DB {
 		if (is_int($connection) || $connection == '0') {
 			return $this->connecting($connection, isset($mode[0]) ? (bool)$mode[0] : false);
 		} elseif (method_exists('\\cs\\DB\\_Abstract', $connection)) {
-			return call_user_func_array([$this->{0}, $connection], $mode);
+			return call_user_func_array([$this->db(0), $connection], $mode);
 		} else {
 			return False_class::instance();
 		}
