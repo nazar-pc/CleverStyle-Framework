@@ -6,7 +6,7 @@ apc.enable_cli	= 1
 <?php
 namespace cs;
 include __DIR__.'/../custom_loader.php';
-Core::instance_mock([
+Core::instance_stub([
 	'cache_engine'	=> 'APC'
 ]);
 $Cache	= Cache::instance();

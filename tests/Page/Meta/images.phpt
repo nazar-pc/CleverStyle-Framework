@@ -6,7 +6,7 @@ namespace cs;
 use cs\Page\Meta;
 include __DIR__.'/../../custom_loader.php';
 home_page(true);
-Config::instance_mock(
+Config::instance_stub(
 	[
 		'core'		=> [
 			'multilingual'	=> false,
@@ -18,10 +18,10 @@ Config::instance_mock(
 		'module'	=> False_class::instance()
 	]
 );
-$Page	= Page::instance_mock([
+$Page	= Page::instance_stub([
 	'canonical_url'	=> false
 ]);
-Text::instance_mock([], [
+Text::instance_stub([], [
 	'process'	=> 'Web-site'
 ]);
 Meta::instance()

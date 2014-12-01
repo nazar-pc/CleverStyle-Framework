@@ -56,14 +56,14 @@ trait Singleton {
 		return $instance;
 	}
 	/**
-	 * Mock instance with custom object that will contain properties and methods specified here
+	 * Stub instance with custom object that will contain properties and methods specified here
 	 *
 	 * @param mixed[]				$properties	Default properties of object
 	 * @param callable[]|string[]	$methods	Methods of object - if callable - will be called, if not - will be used as return values
 	 *
 	 * @return False_class|static
 	 */
-	static function instance_mock ($properties = [], $methods = []) {
+	static function instance_stub ($properties = [], $methods = []) {
 		return static::instance_internal(
 			false,
 			new Mock_object($properties, $methods)

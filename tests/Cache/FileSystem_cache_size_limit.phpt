@@ -4,7 +4,7 @@ Size limit check using FileSystem cache engine
 <?php
 namespace cs;
 include __DIR__.'/../custom_loader.php';
-Core::instance_mock([
+Core::instance_stub([
 	'cache_engine'	=> 'FileSystem',
 	'cache_size'	=> 5 / 1024 / 1024
 ]);

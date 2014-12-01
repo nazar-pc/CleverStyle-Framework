@@ -4,7 +4,7 @@ Basic features using Memcached cache engine
 <?php
 namespace cs;
 include __DIR__.'/../custom_loader.php';
-Core::instance_mock([
+Core::instance_stub([
 	'cache_engine'		=> 'Memcached',
 	'memcached_host'	=> '127.0.0.1',
 	'11211'				=> '11211'
