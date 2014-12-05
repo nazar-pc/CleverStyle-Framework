@@ -88,8 +88,8 @@ class Categories {
 			$parent,
 			'',
 			'',
-			$title_attribute,
-			$visible
+			[],
+			0
 		]);
 		if (!$id) {
 			return false;
@@ -116,37 +116,40 @@ class Categories {
 			$parent,
 			$this->ml_set('Shop/categories/title', $id, $title),
 			$this->ml_set('Shop/categories/description', $id, $description),
-			$title_attribute,
+			in_array($title_attribute, $attributes) ? $title_attribute : $attributes[0],
 			$visible
 		]);
 		if (!$result) {
 			return false;
 		}
-		$cdb	= $this->db_prime();
+		$cdb = $this->db_prime();
 		$cdb->q(
 			"DELETE FROM `{$this->table}_attributes`
 			WHERE `id` = $id"
 		);
-		/**
-		 * @var int[][] $attributes
-		 */
-		foreach ($attributes as &$attribute) {
-			$attribute	= [$attribute];
+		if ($attributes) {
+			/**
+			 * @var int[][] $attributes
+			 */
+			foreach ($attributes as &$attribute) {
+				$attribute = [$attribute];
+			}
+			unset($attribute);
+			$cdb->insert(
+				"INSERT INTO `{$this->table}_attributes`
+					(
+						`id`,
+						`attribute`
+					)
+				VALUES
+					(
+						$id,
+						'%s'
+					)",
+				$attributes
+			);
 		}
-		unset($attribute);
-		$cdb->insert(
-			"INSERT INTO `{$this->table}_attributes`
-				(
-					`id`,
-					`attribute`
-				)
-			VALUES
-				(
-					$id,
-					'%s'
-				)",
-			$attributes
-		);
+		return true;
 	}
 	/**
 	 * Delete specified post
