@@ -11,7 +11,6 @@ use
 	cs\Cache\Prefix,
 	cs\Config,
 	cs\Language,
-	cs\Text,
 	cs\CRUD,
 	cs\Singleton;
 
@@ -22,6 +21,9 @@ class Categories {
 	use
 		CRUD,
 		Singleton;
+
+	const VISIBLE   = 1;
+	const INVISIBLE = 0;
 
 	protected $data_model = [
 		'id'              => 'int',
@@ -103,7 +105,7 @@ class Categories {
 	 * @param string $title
 	 * @param string $description
 	 * @param int    $title_attribute Attribute that will be considered as title
-	 * @param int    $visible         `0` or `1`
+	 * @param int    $visible         `Categories::VISIBLE` or `Categories::INVISIBLE`
 	 * @param int[]  $attributes      Array of attributes ids used in category
 	 *
 	 * @return bool|int Id of created category on success of <b>false</> on failure
@@ -114,7 +116,7 @@ class Categories {
 			'',
 			'',
 			[],
-			0
+			static::INVISIBLE
 		]);
 		if (!$id) {
 			return false;
@@ -129,7 +131,7 @@ class Categories {
 	 * @param string $title
 	 * @param string $description
 	 * @param int    $title_attribute Attribute that will be considered as title
-	 * @param int    $visible         `0` or `1`
+	 * @param int    $visible         `Categories::VISIBLE` or `Categories::INVISIBLE`
 	 * @param int[]  $attributes      Array of attributes ids used in category
 	 *
 	 * @return bool
@@ -196,14 +198,5 @@ class Categories {
 		// TODO do something with items in category on removal
 		unset($this->cache->$id);
 		return true;
-	}
-	private function ml_process ($text) {
-		return Text::instance()->process($this->cdb(), $text, true);
-	}
-	private function ml_set ($group, $label, $text) {
-		return Text::instance()->set($this->cdb(), $group, $label, trim($text));
-	}
-	private function ml_del ($group, $label) {
-		return Text::instance()->del($this->cdb(), $group, $label);
 	}
 }

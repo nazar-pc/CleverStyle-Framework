@@ -23,6 +23,16 @@ class Attributes {
 		CRUD,
 		Singleton;
 
+	const TYPE_INT_SET     = 1;
+	const TYPE_FLOAT_SET   = 2;
+	const TYPE_INT_RANGE   = 3;
+	const TYPE_FLOAT_RANGE = 4;
+	const TYPE_STRING      = 5;
+	const TYPE_STRING_SET  = 6;
+	const TYPE_TEXT        = 7;
+	const TYPE_RADIO       = 8;
+	const TYPE_COLOR_SET   = 9;
+
 	protected $data_model = [
 		'id'             => 'int',
 		'type'           => 'int',
