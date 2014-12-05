@@ -1,0 +1,32 @@
+{
+	"package"		: "Shop",
+	"category"		: "modules",
+	"version"		: "0.1.0+build-1",
+	"description"	: "Shop functionality",
+	"author"		: "Nazar Mokrynskyi",
+	"website"		: "cleverstyle.org/cms",
+	"license"		: "MIT License",
+	"db_support"	: [
+		"MySQLi"
+	],
+	"provide"		: "shop",
+	"require"		: "System=>0.589",
+	"optional"		: [
+		"Comments",
+		"Plupload",
+		"TinyMCE",
+		"file_upload",
+		"editor",
+		"simple_editor",
+		"inline_editor"
+	],
+	"multilingual"	: [
+		"interface",
+		"content"
+	],
+	"languages"		: [
+		"English",
+		"Русский",
+		"Українська"
+	]
+}
