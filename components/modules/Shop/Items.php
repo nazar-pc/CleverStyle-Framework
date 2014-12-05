@@ -63,7 +63,7 @@ class Items {
 		$id = (int)$id;
 		return $this->cache->get("$id/$L->clang", function () use ($id, $L) {
 			$data               = $this->read_simple($id);
-			$data['attributes'] = $this->db()->qfas(
+			$data['attributes'] = $this->db()->qfa(
 				"SELECT
 					`atribute`,
 					`numeric_value`,
@@ -76,7 +76,7 @@ class Items {
 						`lang`	= '$L->clang' OR
 						`lang`	= ''
 					)"
-			);
+			) ?: [];
 			$Attributes         = Attributes::instance();
 			foreach ($data['attributes'] as $attribute => &$value) {
 				$attribute = $Attributes->get($attribute);
@@ -107,20 +107,27 @@ class Items {
 				}
 				unset($value['numeric_value'], $value['string_value'], $value['text_value']);
 			}
+			unset($attribute, $value);
+			$data['images'] = $this->db()->qfas(
+				"SELECT `image`
+				FROM `{$this->table}_images`
+				WHERE `id` = $id"
+			) ?: [];
 			return $data;
 		});
 	}
 	/**
 	 * Add new item
 	 *
-	 * @param int   $category
-	 * @param float $price
-	 * @param int   $in_stock
-	 * @param array $attributes
+	 * @param int      $category
+	 * @param float    $price
+	 * @param int      $in_stock
+	 * @param array    $attributes
+	 * @param string[] $images
 	 *
 	 * @return bool|int Id of created item on success of <b>false</> on failure
 	 */
-	function add ($category, $price, $in_stock, $attributes) {
+	function add ($category, $price, $in_stock, $attributes, $images) {
 		$id = $this->create_simple([
 			$category,
 			$price,
@@ -129,21 +136,24 @@ class Items {
 		if (!$id) {
 			return false;
 		}
-		return $this->set($id, $category, $price, $in_stock, $attributes);
+		return $this->set($id, $category, $price, $in_stock, $attributes, $images);
 	}
 	/**
 	 * Set data of specified item
 	 *
-	 * @param int   $id
-	 * @param int   $category
-	 * @param float $price
-	 * @param int   $in_stock
-	 * @param array $attributes
+	 * @param int      $id
+	 * @param int      $category
+	 * @param float    $price
+	 * @param int      $in_stock
+	 * @param array    $attributes
+	 * @param string[] $images
 	 *
 	 * @return bool
 	 */
-	function set ($id, $category, $price, $in_stock, $attributes) {
-		$id     = (int)$id;
+	function set ($id, $category, $price, $in_stock, $attributes, $images) {
+		$id = (int)$id;
+		// TODO will be used for files tags removal
+		$data   = $this->get($id);
 		$result = $this->update_simple([
 			$id,
 			$category,
@@ -164,6 +174,11 @@ class Items {
 					`lang`	= $L->clang OR
 					`lang`	= ''
 				)"
+		);
+		// TODO clean tags on files (not immediately, calculate diff with new files)
+		$cdb->q(
+			"DELETE FROM `{$this->table}_images`
+			WHERE `id` = $id"
 		);
 		if ($attributes) {
 			$Attributes = Attributes::instance();
@@ -234,6 +249,28 @@ class Items {
 				$attributes
 			);
 		}
+		if ($images) {
+			foreach ($images as &$image) {
+				$image = [$image];
+			}
+			unset($image);
+			/**
+			 * @var string[][] $images
+			 */
+			$cdb->insert(
+				"INSERT INTO `{$this->table}_attributes`
+					(
+						`id`,
+						`image`
+					)
+				VALUES
+					(
+						$id,
+						'%s'
+					)",
+				$images
+			);
+		}
 		$this->cache->del("$id/$L->clang");
 		return true;
 	}
@@ -252,6 +289,11 @@ class Items {
 		// TODO clean tags on files (text fields)
 		$this->db_prime()->q(
 			"DELETE FROM `{$this->table}_attributes`
+			WHERE `id` = $id"
+		);
+		// TODO clean tags on files (text fields)
+		$this->db_prime()->q(
+			"DELETE FROM `{$this->table}_images`
 			WHERE `id` = $id"
 		);
 		unset($this->cache->$id);

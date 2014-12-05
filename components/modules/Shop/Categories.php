@@ -175,7 +175,7 @@ class Categories {
 						'%s'
 					)",
 				$attributes
-			);
+			) ?: [];
 		}
 		$L = Language::instance();
 		$this->cache->del("$id/$L->clang");
