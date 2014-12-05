@@ -51,7 +51,7 @@ class Categories {
 	/**
 	 * Get category
 	 *
-	 * @param int $id
+	 * @param int|int[] $id
 	 *
 	 * @return array|bool
 	 */
@@ -64,12 +64,38 @@ class Categories {
 		}
 		$L  = Language::instance();
 		$id = (int)$id;
-		return $this->cache->get("$id/$L->clang", function () use ($id, $L) {
+		return $this->cache->get("$id/$L->clang", function () use ($id) {
 			$data                = $this->read_simple($id);
 			$data['title']       = $this->ml_process($data['title']);
 			$data['description'] = $this->ml_process($data['description']);
+			$data['attributes']  = $this->db()->qfas(
+				"SELECT `atribute`
+				FROM `{$this->table}_attributes`
+				WHERE `id` = $id"
+			);
+			$data['attributes']  = $this->clean_nonexistent_attributes($data['attributes']);
 			return $data;
 		});
+	}
+	/**
+	 * @param int[] $attributes
+	 *
+	 * @return int[]
+	 */
+	protected function clean_nonexistent_attributes ($attributes) {
+		if (!$attributes) {
+			return [];
+		}
+		$Attributes = Attributes::instance();
+		/**
+		 * Remove nonexistent attributes
+		 */
+		foreach ($attributes as $i => &$attribute) {
+			if (!$Attributes->get($attribute)) {
+				unset($attributes[$i]);
+			}
+		}
+		return $attributes;
 	}
 	/**
 	 * Add new category
@@ -110,8 +136,9 @@ class Categories {
 	 * @return bool
 	 */
 	function set ($id, $parent, $title, $description, $title_attribute, $visible, $attributes) {
-		$id     = (int)$id;
-		$result = $this->update_simple([
+		$id         = (int)$id;
+		$attributes = $this->clean_nonexistent_attributes($attributes);
+		$result     = $this->update_simple([
 			$id,
 			$parent,
 			$this->ml_set('Shop/categories/title', $id, $title),
@@ -128,13 +155,13 @@ class Categories {
 			WHERE `id` = $id"
 		);
 		if ($attributes) {
-			/**
-			 * @var int[][] $attributes
-			 */
 			foreach ($attributes as &$attribute) {
 				$attribute = [$attribute];
 			}
 			unset($attribute);
+			/**
+			 * @var int[][] $attributes
+			 */
 			$cdb->insert(
 				"INSERT INTO `{$this->table}_attributes`
 					(
@@ -152,7 +179,7 @@ class Categories {
 		return true;
 	}
 	/**
-	 * Delete specified post
+	 * Delete specified category
 	 *
 	 * @param int $id
 	 *
