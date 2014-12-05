@@ -12,7 +12,6 @@ use
 	cs\Cache\Prefix,
 	cs\Config,
 	cs\Language,
-	cs\Text,
 	cs\CRUD,
 	cs\Singleton;
 
@@ -27,9 +26,9 @@ class Attributes {
 	protected $data_model = [
 		'id'             => 'int',
 		'type'           => 'int',
-		'title'          => 'text',
-		'internal_title' => 'text',
-		'value'          => null
+		'title'          => 'ml:text',
+		'internal_title' => 'ml:text',
+		'value'          => 'ml:'
 	];
 	protected $table      = '[prefix]shop_attributes';
 	/**
@@ -38,7 +37,8 @@ class Attributes {
 	protected $cache;
 
 	protected function construct () {
-		$this->cache = new Prefix('Shop/attributes');
+		$this->cache               = new Prefix('Shop/attributes');
+		$this->data_model_ml_group = 'Shop/attributes';
 	}
 	/**
 	 * Returns database index
@@ -65,11 +65,7 @@ class Attributes {
 		$L  = Language::instance();
 		$id = (int)$id;
 		return $this->cache->get("$id/$L->clang", function () use ($id) {
-			$data                   = $this->read_simple($id);
-			$data['title']          = $this->ml_process($data['title']);
-			$data['internal_title'] = $this->ml_process($data['internal_title']);
-			$data['value']          = $this->ml_process($data['value']);
-			return $data;
+			return $this->read_simple($id);
 		});
 	}
 	/**
@@ -109,9 +105,9 @@ class Attributes {
 		return $this->update_simple([
 			$id,
 			$type,
-			$this->ml_set('Shop/attributes/title', $id, $title),
-			$this->ml_set('Shop/attributes/internal_title', $id, $internal_title),
-			$this->ml_set('Shop/attributes/value', $id, $value)
+			trim($title),
+			trim($internal_title),
+			trim($value)
 		]);
 	}
 	/**
@@ -126,22 +122,10 @@ class Attributes {
 		if (!$this->delete_simple($id)) {
 			return false;
 		}
-		$this->ml_del('Shop/attributes/title', $id);
-		$this->ml_del('Shop/attributes/internal_title', $id);
-		$this->ml_del('Shop/attributes/value', $id);
 		unset(
 			$this->cache->$id,
 			Cache::instance()->{'Shop/categories'}
 		);
 		return true;
-	}
-	private function ml_process ($text) {
-		return Text::instance()->process($this->cdb(), $text, true);
-	}
-	private function ml_set ($group, $label, $text) {
-		return Text::instance()->set($this->cdb(), $group, $label, trim($text));
-	}
-	private function ml_del ($group, $label) {
-		return Text::instance()->del($this->cdb(), $group, $label);
 	}
 }

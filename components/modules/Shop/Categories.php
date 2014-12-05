@@ -26,8 +26,8 @@ class Categories {
 	protected $data_model = [
 		'id'              => 'int',
 		'parent'          => 'int',
-		'title'           => 'text',
-		'description'     => 'html',
+		'title'           => 'ml:text',
+		'description'     => 'ml:html',
 		'title_attribute' => 'int',
 		'visible'         => 'int:0..1'
 	];
@@ -38,7 +38,8 @@ class Categories {
 	protected $cache;
 
 	protected function construct () {
-		$this->cache = new Prefix('Shop/categories');
+		$this->cache               = new Prefix('Shop/categories');
+		$this->data_model_ml_group = 'Shop/categories';
 	}
 	/**
 	 * Returns database index
@@ -65,15 +66,13 @@ class Categories {
 		$L  = Language::instance();
 		$id = (int)$id;
 		return $this->cache->get("$id/$L->clang", function () use ($id) {
-			$data                = $this->read_simple($id);
-			$data['title']       = $this->ml_process($data['title']);
-			$data['description'] = $this->ml_process($data['description']);
-			$data['attributes']  = $this->db()->qfas(
+			$data               = $this->read_simple($id);
+			$data['attributes'] = $this->db()->qfas(
 				"SELECT `atribute`
 				FROM `{$this->table}_attributes`
 				WHERE `id` = $id"
 			);
-			$data['attributes']  = $this->clean_nonexistent_attributes($data['attributes']);
+			$data['attributes'] = $this->clean_nonexistent_attributes($data['attributes']);
 			return $data;
 		});
 	}
@@ -141,8 +140,8 @@ class Categories {
 		$result     = $this->update_simple([
 			$id,
 			$parent,
-			$this->ml_set('Shop/categories/title', $id, $title),
-			$this->ml_set('Shop/categories/description', $id, $description),
+			trim($title),
+			trim($description),
 			in_array($title_attribute, $attributes) ? $title_attribute : $attributes[0],
 			$visible
 		]);
@@ -195,8 +194,6 @@ class Categories {
 			WHERE `id` = $id"
 		);
 		// TODO do something with items in category on removal
-		$this->ml_del('Shop/categories/title', $id);
-		$this->ml_del('Shop/categories/description', $id);
 		unset($this->cache->$id);
 		return true;
 	}
