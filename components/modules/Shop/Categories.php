@@ -25,7 +25,7 @@ class Categories {
 	const VISIBLE   = 1;
 	const INVISIBLE = 0;
 
-	protected $data_model = [
+	protected $data_model          = [
 		'id'              => 'int',
 		'parent'          => 'int',
 		'title'           => 'ml:text',
@@ -33,15 +33,15 @@ class Categories {
 		'title_attribute' => 'int',
 		'visible'         => 'int:0..1'
 	];
-	protected $table      = '[prefix]shop_categories';
+	protected $data_model_ml_group = 'Shop/categories';
+	protected $table               = '[prefix]shop_categories';
 	/**
 	 * @var Prefix
 	 */
 	protected $cache;
 
 	protected function construct () {
-		$this->cache               = new Prefix('Shop/categories');
-		$this->data_model_ml_group = 'Shop/categories';
+		$this->cache = new Prefix('Shop/categories');
 	}
 	/**
 	 * Returns database index
@@ -124,7 +124,7 @@ class Categories {
 		return $this->set($id, $parent, $title, $description, $title_attribute, $visible, $attributes);
 	}
 	/**
-	 * Set data of specified  category
+	 * Set data of specified category
 	 *
 	 * @param int    $id
 	 * @param int    $parent
@@ -177,6 +177,8 @@ class Categories {
 				$attributes
 			);
 		}
+		$L = Language::instance();
+		$this->cache->del("$id/$L->clang");
 		return true;
 	}
 	/**

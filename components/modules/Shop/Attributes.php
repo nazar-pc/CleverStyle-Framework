@@ -33,22 +33,22 @@ class Attributes {
 	const TYPE_RADIO       = 8;
 	const TYPE_COLOR_SET   = 9;
 
-	protected $data_model = [
+	protected $data_model          = [
 		'id'             => 'int',
 		'type'           => 'int',
 		'title'          => 'ml:text',
 		'internal_title' => 'ml:text',
 		'value'          => 'ml:'
 	];
-	protected $table      = '[prefix]shop_attributes';
+	protected $data_model_ml_group = 'Shop/attributes';
+	protected $table               = '[prefix]shop_attributes';
 	/**
 	 * @var Prefix
 	 */
 	protected $cache;
 
 	protected function construct () {
-		$this->cache               = new Prefix('Shop/attributes');
-		$this->data_model_ml_group = 'Shop/attributes';
+		$this->cache = new Prefix('Shop/attributes');
 	}
 	/**
 	 * Returns database index
@@ -101,7 +101,7 @@ class Attributes {
 		return $this->set($id, $type, $title, $internal_title, $value);
 	}
 	/**
-	 * Set data of specified  attribute
+	 * Set data of specified attribute
 	 *
 	 * @param int    $id
 	 * @param int    $type
@@ -112,13 +112,18 @@ class Attributes {
 	 * @return bool
 	 */
 	function set ($id, $type, $title, $internal_title, $value) {
-		return $this->update_simple([
+		$result = $this->update_simple([
 			$id,
 			$type,
 			trim($title),
 			trim($internal_title),
 			trim($value)
 		]);
+		if ($result) {
+			$L = Language::instance();
+			$this->cache->del("$id/$L->clang");
+		}
+		return $result;
 	}
 	/**
 	 * Delete specified attribute
