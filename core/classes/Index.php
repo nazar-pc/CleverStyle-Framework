@@ -83,6 +83,8 @@ class Index {
 	protected	$request_method		= null;
 	protected	$working_directory	= '';
 	protected 	$called_once		= false;
+	protected	$path_required		= false;
+	protected	$sub_path_required	= false;
 	/**
 	 * Detecting module folder including of admin/api request type, including prepare file, including of plugins
 	 */
@@ -219,10 +221,11 @@ class Index {
 		if (!$structure) {
 			return;
 		}
+		$this->path_required	= true;
 		/**
 		 * First level path routing
 		 */
-		$path	= @$this->route_path[0];
+		$path					= @$this->route_path[0];
 		/**
 		 * If path not specified - take first from structure
 		 */
@@ -246,7 +249,8 @@ class Index {
 		if (!isset($structure[$path])) {
 			return;
 		}
-		$sub_path	= @$this->route_path[1];
+		$this->sub_path_required	= true;
+		$sub_path					= @$this->route_path[1];
 		/**
 		 * If sub path not specified - take first from structure
 		 */
@@ -275,10 +279,10 @@ class Index {
 		if (!$this->include_handler($this->working_directory, 'index', false)) {
 			return;
 		}
-		if (!$path || !$this->include_handler($this->working_directory, $path, !$sub_path)) {
+		if (!$this->path_required || !$this->include_handler($this->working_directory, $path, !$sub_path)) {
 			return;
 		}
-		if (!$sub_path || !$this->include_handler("$this->working_directory/$path", $sub_path)) {
+		if (!$this->sub_path_required || !$this->include_handler("$this->working_directory/$path", $sub_path)) {
 			return;
 		}
 	}
