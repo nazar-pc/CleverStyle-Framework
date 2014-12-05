@@ -79,10 +79,11 @@ class Categories {
 	 * @param string $description
 	 * @param int    $title_attribute Attribute that will be considered as title
 	 * @param int    $visible         `0` or `1`
+	 * @param int[]  $attributes      Array of attributes ids used in category
 	 *
 	 * @return bool|int Id of created category on success of <b>false</> on failure
 	 */
-	function add ($parent, $title, $description, $title_attribute, $visible) {
+	function add ($parent, $title, $description, $title_attribute, $visible, $attributes) {
 		$id = $this->create_simple([
 			$parent,
 			'',
@@ -93,7 +94,7 @@ class Categories {
 		if (!$id) {
 			return false;
 		}
-		return $this->set($id, $parent, $title, $description, $title_attribute, $visible);
+		return $this->set($id, $parent, $title, $description, $title_attribute, $visible, $attributes);
 	}
 	/**
 	 * Set data of specified  category
@@ -104,11 +105,13 @@ class Categories {
 	 * @param string $description
 	 * @param int    $title_attribute Attribute that will be considered as title
 	 * @param int    $visible         `0` or `1`
+	 * @param int[]  $attributes      Array of attributes ids used in category
 	 *
 	 * @return bool
 	 */
-	function set ($id, $parent, $title, $description, $title_attribute, $visible) {
-		return $this->update_simple([
+	function set ($id, $parent, $title, $description, $title_attribute, $visible, $attributes) {
+		$id     = (int)$id;
+		$result = $this->update_simple([
 			$id,
 			$parent,
 			$this->ml_set('Shop/categories/title', $id, $title),
@@ -116,6 +119,34 @@ class Categories {
 			$title_attribute,
 			$visible
 		]);
+		if (!$result) {
+			return false;
+		}
+		$cdb	= $this->db_prime();
+		$cdb->q(
+			"DELETE FROM `{$this->table}_attributes`
+			WHERE `id` = $id"
+		);
+		/**
+		 * @var int[][] $attributes
+		 */
+		foreach ($attributes as &$attribute) {
+			$attribute	= [$attribute];
+		}
+		unset($attribute);
+		$cdb->insert(
+			"INSERT INTO `{$this->table}_attributes`
+				(
+					`id`,
+					`attribute`
+				)
+			VALUES
+				(
+					$id,
+					'%s'
+				)",
+			$attributes
+		);
 	}
 	/**
 	 * Delete specified post
@@ -129,6 +160,10 @@ class Categories {
 		if (!$this->delete_simple($id)) {
 			return false;
 		}
+		$this->db_prime()->q(
+			"DELETE FROM `{$this->table}_attributes`
+			WHERE `id` = $id"
+		);
 		// TODO do something with items in category on removal
 		$this->ml_del('Shop/categories/title', $id);
 		$this->ml_del('Shop/categories/description', $id);
