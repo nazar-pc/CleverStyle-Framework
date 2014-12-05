@@ -36,6 +36,11 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_items_attributes` (
 	`lang` varchar(2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS `[prefix]shop_items_images` (
+	`id` int(11) NOT NULL COMMENT 'Item id',
+	`image` varchar(1024) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS `[prefix]shop_items_tags` (
 	`id` int(11) NOT NULL COMMENT 'Item id',
 	`tag` int(11) NOT NULL,
@@ -89,6 +94,9 @@ ADD PRIMARY KEY (`id`), ADD KEY `category` (`category`), ADD KEY `in_stock` (`in
 
 ALTER TABLE `[prefix]shop_items_attributes`
 ADD PRIMARY KEY (`id`,`attribute`,`lang`), ADD KEY `numeric_value` (`numeric_value`), ADD KEY `string_value` (`string_value`(255)), ADD KEY `lang` (`lang`), ADD FULLTEXT KEY `text_value` (`text_value`);
+
+ALTER TABLE `[prefix]shop_items_images`
+ADD KEY `id` (`id`);
 
 ALTER TABLE `[prefix]shop_items_tags`
 ADD PRIMARY KEY (`id`,`tag`,`lang`), ADD KEY `tag` (`tag`), ADD KEY `lang` (`lang`);
