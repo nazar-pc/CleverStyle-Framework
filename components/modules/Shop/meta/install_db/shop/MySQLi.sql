@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_categories` (
 	`parent` int(11) NOT NULL,
 	`title` varchar(1024) NOT NULL,
 	`description` text NOT NULL,
-	`title_attribute` int(11) NOT NULL
+	`title_attribute` int(11) NOT NULL,
+	`visible` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `[prefix]shop_category_attributes` (
@@ -22,7 +23,8 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_category_attributes` (
 CREATE TABLE IF NOT EXISTS `[prefix]shop_items` (
 	`id` int(11) NOT NULL,
 	`category` int(11) NOT NULL,
-	`price` float NOT NULL DEFAULT '0'
+	`price` float NOT NULL DEFAULT '0',
+	`in_stock` int(11) NOT NULL DEFAULT '0' COMMENT 'How much items are in in stock'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `[prefix]shop_items_attributes` (
@@ -77,13 +79,13 @@ ALTER TABLE `[prefix]shop_attributes`
 ADD PRIMARY KEY (`id`), ADD KEY `type` (`type`), ADD KEY `internal_title` (`internal_title`(255));
 
 ALTER TABLE `[prefix]shop_categories`
-ADD PRIMARY KEY (`id`), ADD KEY `parent` (`parent`);
+ADD PRIMARY KEY (`id`), ADD KEY `parent` (`parent`), ADD KEY `visible` (`visible`);
 
 ALTER TABLE `[prefix]shop_category_attributes`
 ADD PRIMARY KEY (`id`,`attribute`);
 
 ALTER TABLE `[prefix]shop_items`
-ADD PRIMARY KEY (`id`), ADD KEY `category` (`category`);
+ADD PRIMARY KEY (`id`), ADD KEY `category` (`category`), ADD KEY `in_stock` (`in_stock`);
 
 ALTER TABLE `[prefix]shop_items_attributes`
 ADD PRIMARY KEY (`id`,`attribute`,`lang`), ADD KEY `numeric_value` (`numeric_value`), ADD KEY `string_value` (`string_value`(255)), ADD KEY `lang` (`lang`), ADD FULLTEXT KEY `text_value` (`text_value`);
