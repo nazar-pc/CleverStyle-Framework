@@ -1300,9 +1300,18 @@ function truncate ($text, $length = 1024, $ending = '...', $exact = false, $cons
 	return $truncate;
 }
 /**
- * Prepare string to use as url path
+ * Search for links inside html attributes
  *
- * Special THREE-PER-EM SPACE is used in order to prevent transformation spaces in URL into %20
+ * @param string	$text
+ *
+ * @return string[]			Array of found links or empty array otherwise
+ */
+function find_links ($text) {
+	preg_match_all('/"(http[s]?:\/\/.*)"/Uims', $text, $links);
+	return $links ?: [];
+}
+/**
+ * Prepare string to use as url path
  *
  * @param string	$text
  *
