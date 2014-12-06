@@ -392,7 +392,7 @@ abstract class _Abstract {
 			$query		= $query[0].'VALUES'.$query[1].$query[2];
 			$params_	= [];
 			foreach ($params as $p) {
-				$params_	= array_merge($params_, $p);
+				$params_	= array_merge($params_, (array)$p);
 			}
 			unset($params, $p);
 			return (bool)$this->q($query, $params_);
