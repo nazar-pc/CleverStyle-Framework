@@ -156,13 +156,6 @@ class Categories {
 			WHERE `id` = $id"
 		);
 		if ($attributes) {
-			foreach ($attributes as &$attribute) {
-				$attribute = [$attribute];
-			}
-			unset($attribute);
-			/**
-			 * @var int[][] $attributes
-			 */
 			$cdb->insert(
 				"INSERT INTO `{$this->table}_attributes`
 					(

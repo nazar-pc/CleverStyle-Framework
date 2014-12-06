@@ -318,13 +318,6 @@ class Items {
 			WHERE `id` = $id"
 		);
 		if ($images) {
-			foreach ($images as &$image) {
-				$image = [$image];
-			}
-			unset($image);
-			/**
-			 * @var string[][] $images
-			 */
 			$cdb->insert(
 				"INSERT INTO `{$this->table}_attributes`
 					(
@@ -377,13 +370,6 @@ class Items {
 		$Tags = Tags::instance();
 		$tags = array_unique($tags);
 		$tags = $Tags->process($tags);
-		foreach ($tags as &$tag) {
-			$tag = [$tag];
-		}
-		unset($tag);
-		/**
-		 * @var int[][] $tags
-		 */
 		$cdb->insert(
 			"INSERT INTO `{$this->table}_tags`
 				(`id`, `tag`, `lang`)
