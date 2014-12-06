@@ -66,6 +66,13 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_orders_items` (
 	`unit_price` float NOT NULL COMMENT 'Original price of one unit'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS `[prefix]shop_order_statuses` (
+	`id` int(11) NOT NULL,
+	`title` varchar(1024) NOT NULL,
+	`type` tinyint(4) NOT NULL,
+	`send_update_status_email` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS `[prefix]shop_shipping_types` (
 	`id` tinyint(4) NOT NULL,
 	`price` int(11) NOT NULL,
@@ -107,6 +114,9 @@ ADD PRIMARY KEY (`id`), ADD KEY `user` (`user`), ADD KEY `date` (`date`), ADD KE
 ALTER TABLE `[prefix]shop_orders_items`
 ADD PRIMARY KEY (`id`,`item`), ADD KEY `item` (`item`);
 
+ALTER TABLE `[prefix]shop_order_statuses`
+ADD PRIMARY KEY (`id`);
+
 ALTER TABLE `[prefix]shop_shipping_types`
 ADD PRIMARY KEY (`id`);
 
@@ -117,6 +127,12 @@ ALTER TABLE `[prefix]shop_categories`
 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `[prefix]shop_items`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `[prefix]shop_orders`
+MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `[prefix]shop_order_statuses`
 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `[prefix]shop_shipping_types`
