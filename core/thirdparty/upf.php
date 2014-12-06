@@ -1308,7 +1308,7 @@ function truncate ($text, $length = 1024, $ending = '...', $exact = false, $cons
  */
 function find_links ($text) {
 	preg_match_all('/"(http[s]?:\/\/.*)"/Uims', $text, $links);
-	return $links ?: [];
+	return $links[1] ?: [];
 }
 /**
  * Prepare string to use as url path
