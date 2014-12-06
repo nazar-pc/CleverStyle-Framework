@@ -34,13 +34,15 @@ class Order_statuses {
 	const TYPE_REFUNDED         = 10;
 	const TYPE_COMPLETED        = 11;
 
-	protected $data_model = [
+	protected $data_model          = [
 		'id'                       => 'int',
 		'title'                    => 'text',
 		'type'                     => 'int',
-		'send_update_status_email' => 'int'
+		'send_update_status_email' => 'int',
+		'comment'                  => 'ml:html'
 	];
-	protected $table      = '[prefix]shop_order_statuses';
+	protected $data_model_ml_group = 'Shop/order_statuses';
+	protected $table               = '[prefix]shop_order_statuses';
 	/**
 	 * @var Prefix
 	 */
@@ -76,15 +78,17 @@ class Order_statuses {
 	 * @param string $title
 	 * @param int    $type
 	 * @param int    $send_update_status_email
+	 * @param string $comment
 	 *
 	 * @return bool|int Id of created item on success of <b>false</> on failure
 	 *
 	 */
-	function add ($title, $type, $send_update_status_email) {
+	function add ($title, $type, $send_update_status_email, $comment) {
 		return $this->create_simple([
 			$title,
 			$type,
-			$send_update_status_email
+			$send_update_status_email,
+			$comment
 		]);
 	}
 	/**
@@ -94,16 +98,18 @@ class Order_statuses {
 	 * @param string $title
 	 * @param int    $type
 	 * @param int    $send_update_status_email
+	 * @param string $comment
 	 *
 	 * @return bool
 	 */
-	function set ($id, $title, $type, $send_update_status_email) {
+	function set ($id, $title, $type, $send_update_status_email, $comment) {
 		$id = (int)$id;
 		if ($this->update_simple([
 			$id,
 			$title,
 			$type,
-			$send_update_status_email
+			$send_update_status_email,
+			$comment
 		])
 		) {
 			unset($this->cache->$id);

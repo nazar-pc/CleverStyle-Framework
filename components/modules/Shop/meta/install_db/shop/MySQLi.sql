@@ -58,6 +58,13 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_orders` (
 	`comment` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS `[prefix]shop_orders_history` (
+	`id` bigint(20) NOT NULL,
+	`date` bigint(20) NOT NULL,
+	`status` tinyint(4) NOT NULL,
+	`comment` text NOT NULL COMMENT 'Can be used for emails'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS `[prefix]shop_orders_items` (
 	`id` bigint(20) NOT NULL COMMENT 'Order id',
 	`item` int(11) NOT NULL,
@@ -70,7 +77,8 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_order_statuses` (
 	`id` int(11) NOT NULL,
 	`title` varchar(1024) NOT NULL,
 	`type` tinyint(4) NOT NULL,
-	`send_update_status_email` tinyint(1) NOT NULL
+	`send_update_status_email` tinyint(1) NOT NULL,
+	`comment` text NOT NULL COMMENT 'Can be used for emails'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `[prefix]shop_shipping_types` (
@@ -110,6 +118,9 @@ ADD PRIMARY KEY (`id`,`tag`,`lang`), ADD KEY `tag` (`tag`), ADD KEY `lang` (`lan
 
 ALTER TABLE `[prefix]shop_orders`
 ADD PRIMARY KEY (`id`), ADD KEY `user` (`user`), ADD KEY `date` (`date`), ADD KEY `status` (`status`);
+
+ALTER TABLE `[prefix]shop_orders_history`
+ADD PRIMARY KEY (`id`,`date`), ADD KEY `date` (`date`);
 
 ALTER TABLE `[prefix]shop_orders_items`
 ADD PRIMARY KEY (`id`,`item`), ADD KEY `item` (`item`);
