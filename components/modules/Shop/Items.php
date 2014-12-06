@@ -78,11 +78,29 @@ class Items {
 						`lang`	= ''
 					)"
 			) ?: [];
-			$Attributes         = Attributes::instance();
-			foreach ($data['attributes'] as $attribute => &$value) {
-				$attribute = $Attributes->get($attribute);
+			$title_attribute    = Categories::instance()->get($data['category'])['title_attribute'];
+			/**
+			 * If title attribute is not yet translated to current language
+			 */
+			if (!in_array($title_attribute, array_column($data['attributes'], 'attribute'))) {
+				$data['attributes'][] = $this->db()->qfas(
+					"SELECT
+						`atribute`,
+						`numeric_value`,
+						`string_value`,
+						`text_value`
+					FROM `{$this->table}_attributes`
+					WHERE
+						`id`		= $id AND
+						`attribute`	= $title_attribute
+					LIMIT 1"
+				);
+			}
+			$Attributes = Attributes::instance();
+			foreach ($data['attributes'] as $index => &$value) {
+				$attribute = $Attributes->get($value['attribute']);
 				if (!$attribute) {
-					unset($data['attributes'][$attribute]);
+					unset($data['attributes'][$index]);
 					continue;
 				}
 				switch ($attribute['type']) {
@@ -108,12 +126,35 @@ class Items {
 				}
 				unset($value['numeric_value'], $value['string_value'], $value['text_value']);
 			}
-			unset($attribute, $value);
+			unset($index, $value, $attribute);
 			$data['images'] = $this->db()->qfas(
 				"SELECT `image`
 				FROM `{$this->table}_images`
 				WHERE `id` = $id"
 			) ?: [];
+			$data['tags']   = $this->db()->qfas(
+				"SELECT DISTINCT `tag`
+				FROM `{$this->table}_tags`
+				WHERE
+					`id`	= $id AND
+					`lang`	= '$L->clang'"
+			) ?: [];
+			if (!$data['tags']) {
+				$l            = $this->db()->qfs(
+					"SELECT `lang`
+					FROM `{$this->table}_tags`
+					WHERE `id` = $id
+					LIMIT 1"
+				);
+				$data['tags'] = $this->db()->qfas(
+					"SELECT DISTINCT `tag`
+					FROM `{$this->table}_tags`
+					WHERE
+						`id`	= $id AND
+						`lang`	= '$l'"
+				) ?: [];
+				unset($l);
+			}
 			return $data;
 		});
 	}
@@ -125,10 +166,11 @@ class Items {
 	 * @param int      $in_stock
 	 * @param array    $attributes
 	 * @param string[] $images
+	 * @param string[] $tags
 	 *
 	 * @return bool|int Id of created item on success of <b>false</> on failure
 	 */
-	function add ($category, $price, $in_stock, $attributes, $images) {
+	function add ($category, $price, $in_stock, $attributes, $images, $tags) {
 		$id = $this->create_simple([
 			$category,
 			$price,
@@ -137,7 +179,7 @@ class Items {
 		if (!$id) {
 			return false;
 		}
-		return $this->set($id, $category, $price, $in_stock, $attributes, $images);
+		return $this->set($id, $category, $price, $in_stock, $attributes, $images, $tags);
 	}
 	/**
 	 * Set data of specified item
@@ -148,15 +190,16 @@ class Items {
 	 * @param int      $in_stock
 	 * @param array    $attributes
 	 * @param string[] $images
+	 * @param string[] $tags
 	 *
 	 * @return bool
 	 */
-	function set ($id, $category, $price, $in_stock, $attributes, $images) {
-		$id        = (int)$id;
-		$data      = $this->get($id);
-		$old_files = $data['images'];
-		$new_files = $images;
-		$result    = $this->update_simple([
+	function set ($id, $category, $price, $in_stock, $attributes, $images, $tags) {
+		$id = (int)$id;
+		if (!$id) {
+			return false;
+		}
+		$result = $this->update_simple([
 			$id,
 			$category,
 			$price,
@@ -165,7 +208,12 @@ class Items {
 		if (!$result) {
 			return false;
 		}
-		$cdb            = $this->db_prime();
+		$old_files = $this->get($id)['images'];
+		$new_files = $images;
+		$cdb       = $this->db_prime();
+		/**
+		 * Attributes processing
+		 */
 		$L              = Language::instance();
 		$old_attributes = $cdb->qfas(
 			"SELECT `text_value`
@@ -188,12 +236,9 @@ class Items {
 					`lang`	= ''
 				)"
 		);
-		$cdb->q(
-			"DELETE FROM `{$this->table}_images`
-			WHERE `id` = $id"
-		);
 		if ($attributes) {
-			$Attributes = Attributes::instance();
+			$Attributes      = Attributes::instance();
+			$title_attribute = Categories::instance()->get($category)['title_attribute'];
 			foreach ($attributes as $attribute => &$value) {
 				$attribute = $Attributes->get($attribute);
 				if (!$attribute) {
@@ -220,7 +265,12 @@ class Items {
 						break;
 					case Attributes::TYPE_STRING:
 						$string_value = $value;
-						$lang         = $L->clang;
+						/**
+						 * Multilingual feature only for title attribute
+						 */
+						if ($attribute['id'] == $title_attribute) {
+							$lang = $L->clang;
+						}
 						break;
 					default:
 						$text_value = $value;
@@ -236,7 +286,7 @@ class Items {
 					$lang
 				];
 			}
-			unset($attribute, $value, $numeric_value, $string_value, $text_value);
+			unset($title_attribute, $attribute, $value, $numeric_value, $string_value, $text_value);
 			/**
 			 * @var array[] $attributes
 			 */
@@ -262,6 +312,13 @@ class Items {
 				$attributes
 			);
 		}
+		/**
+		 * Images processing
+		 */
+		$cdb->q(
+			"DELETE FROM `{$this->table}_images`
+			WHERE `id` = $id"
+		);
 		if ($images) {
 			foreach ($images as &$image) {
 				$image = [$image];
@@ -284,13 +341,16 @@ class Items {
 				$images
 			);
 		}
+		/**
+		 * Cleaning old files and registering new ones
+		 */
 		if ($old_files || $new_files) {
 			foreach (array_diff($old_files, $new_files) as $file) {
 				Trigger::instance()->run(
 					'System/upload_files/del_tag',
 					[
-						'tag'	=> "Shop/items/$id/$L->clang",
-						'url'	=> $file
+						'tag' => "Shop/items/$id/$L->clang",
+						'url' => $file
 					]
 				);
 			}
@@ -299,14 +359,40 @@ class Items {
 				Trigger::instance()->run(
 					'System/upload_files/add_tag',
 					[
-						'tag'	=> "Shop/items/$id/$L->clang",
-						'url'	=> $file
+						'tag' => "Shop/items/$id/$L->clang",
+						'url' => $file
 					]
 				);
 			}
 			unset($file);
 		}
 		unset($old_files, $new_files);
+		/**
+		 * Tags processing
+		 */
+		$cdb->q(
+			"DELETE FROM `{$this->table}_tags`
+			WHERE
+				`id`	= $id AND
+				`lang`	= '$L->clang'"
+		);
+		$Tags = Tags::instance();
+		$tags = array_unique($tags);
+		$tags = $Tags->process($tags);
+		foreach ($tags as &$tag) {
+			$tag = [$tag];
+		}
+		unset($tag);
+		/**
+		 * @var int[][] $tags
+		 */
+		$cdb->insert(
+			"INSERT INTO `{$this->table}_tags`
+				(`id`, `tag`, `lang`)
+			VALUES
+				($id, '%d', $L->clang)",
+			$tags
+		);
 		$this->cache->del("$id/$L->clang");
 		return true;
 	}
@@ -319,21 +405,21 @@ class Items {
 	 */
 	function del ($id) {
 		$id = (int)$id;
-		if (!$this->delete_simple($id)) {
+		if (!$id || !$this->delete_simple($id)) {
 			return false;
 		}
-		$this->db_prime()->q(
+		$this->db_prime()->q([
 			"DELETE FROM `{$this->table}_attributes`
-			WHERE `id` = $id"
-		);
-		$this->db_prime()->q(
+			WHERE `id` = $id",
 			"DELETE FROM `{$this->table}_images`
+			WHERE `id` = $id",
+			"DELETE FROM `{$this->table}_tags`
 			WHERE `id` = $id"
-		);
+		]);
 		Trigger::instance()->run(
 			'System/upload_files/del_tag',
 			[
-				'tag'	=> "Shop/items/$id%"
+				'tag' => "Shop/items/$id%"
 			]
 		);
 		unset($this->cache->$id);
