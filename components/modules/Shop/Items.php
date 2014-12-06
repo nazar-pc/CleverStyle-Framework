@@ -103,27 +103,7 @@ class Items {
 					unset($data['attributes'][$index]);
 					continue;
 				}
-				switch ($attribute['type']) {
-					/**
-					 * For numeric values and value sets (each value have its own index in set and does not depend on language) value is stored in numeric
-					 * column for faster search
-					 */
-					case Attributes::TYPE_INT_SET:
-					case Attributes::TYPE_INT_RANGE:
-					case Attributes::TYPE_FLOAT_SET:
-					case Attributes::TYPE_FLOAT_RANGE:
-					case Attributes::TYPE_RADIO:
-					case Attributes::TYPE_STRING_SET:
-					case Attributes::TYPE_COLOR_SET:
-						$value['value'] = $value['numeric_value'];
-						break;
-					case Attributes::TYPE_STRING:
-						$value['value'] = $value['string_value'];
-						break;
-					default:
-						$value['value'] = $value['text_value'];
-						break;
-				}
+				$value['value'] = $value[$this->attribute_type_to_value_field($attribute['type'])];
 				unset($value['numeric_value'], $value['string_value'], $value['text_value']);
 			}
 			unset($index, $value, $attribute);
@@ -157,6 +137,31 @@ class Items {
 			}
 			return $data;
 		});
+	}
+	/**
+	 * @param int $type
+	 *
+	 * @return string
+	 */
+	protected function attribute_type_to_value_field ($type) {
+		switch ($type) {
+			/**
+			 * For numeric values and value sets (each value have its own index in set and does not depend on language) value is stored in numeric
+			 * column for faster search
+			 */
+			case Attributes::TYPE_INT_SET:
+			case Attributes::TYPE_INT_RANGE:
+			case Attributes::TYPE_FLOAT_SET:
+			case Attributes::TYPE_FLOAT_RANGE:
+			case Attributes::TYPE_RADIO:
+			case Attributes::TYPE_STRING_SET:
+			case Attributes::TYPE_COLOR_SET:
+				return 'numeric_value';
+			case Attributes::TYPE_STRING:
+				return 'string_value';
+			default:
+				return 'text_value';
+		}
 	}
 	/**
 	 * Add new item
@@ -245,26 +250,18 @@ class Items {
 					unset($attributes[$attribute]);
 					continue;
 				}
-				$numeric_value = 0;
-				$string_value  = '';
-				$text_value    = '';
+				$value_type    = [
+					'numeric' => 0,
+					'string'  => '',
+					'text'    => ''
+				];
 				$lang          = '';
-				switch ($attribute['type']) {
-					/**
-					 * For numeric values and value sets (each value have its own index in set and does not depend on language) store value in numeric column
-					 * for faster search
-					 */
-					case Attributes::TYPE_INT_SET:
-					case Attributes::TYPE_INT_RANGE:
-					case Attributes::TYPE_FLOAT_SET:
-					case Attributes::TYPE_FLOAT_RANGE:
-					case Attributes::TYPE_RADIO:
-					case Attributes::TYPE_STRING_SET:
-					case Attributes::TYPE_COLOR_SET:
-						$numeric_value = $value;
+				switch ($this->attribute_type_to_value_field($attribute['type'])) {
+					case 'numeric_value':
+						$value_type['numeric'] = $value;
 						break;
-					case Attributes::TYPE_STRING:
-						$string_value = $value;
+					case 'string_value':
+						$value_type['string'] = $value;
 						/**
 						 * Multilingual feature only for title attribute
 						 */
@@ -272,21 +269,21 @@ class Items {
 							$lang = $L->clang;
 						}
 						break;
-					default:
-						$text_value = $value;
-						$new_files  = array_merge($new_files, find_links($value));
-						$lang       = $L->clang;
+					case 'text_value':
+						$value_type['text'] = $value;
+						$new_files          = array_merge($new_files, find_links($value));
+						$lang               = $L->clang;
 						break;
 				}
 				$value = [
 					$attribute['id'],
-					$numeric_value,
-					$string_value,
-					$text_value,
+					$value_type['numeric'],
+					$value_type['string'],
+					$value_type['text'],
 					$lang
 				];
 			}
-			unset($title_attribute, $attribute, $value, $numeric_value, $string_value, $text_value);
+			unset($title_attribute, $attribute, $value, $value_type);
 			/**
 			 * @var array[] $attributes
 			 */
