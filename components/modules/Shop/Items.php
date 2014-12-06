@@ -11,6 +11,7 @@ use
 	cs\Cache\Prefix,
 	cs\Config,
 	cs\Language,
+	cs\Trigger,
 	cs\CRUD,
 	cs\Singleton;
 
@@ -151,10 +152,11 @@ class Items {
 	 * @return bool
 	 */
 	function set ($id, $category, $price, $in_stock, $attributes, $images) {
-		$id = (int)$id;
-		// TODO will be used for files tags removal
-		$data   = $this->get($id);
-		$result = $this->update_simple([
+		$id        = (int)$id;
+		$data      = $this->get($id);
+		$old_files = $data['images'];
+		$new_files = $images;
+		$result    = $this->update_simple([
 			$id,
 			$category,
 			$price,
@@ -163,9 +165,20 @@ class Items {
 		if (!$result) {
 			return false;
 		}
-		$cdb = $this->db_prime();
-		$L   = Language::instance();
-		// TODO clean tags on files (text fields, not immediately, calculate diff with new files)
+		$cdb            = $this->db_prime();
+		$L              = Language::instance();
+		$old_attributes = $cdb->qfas(
+			"SELECT `text_value`
+			FROM `{$this->table}_attributes`
+			WHERE
+				`id`			= $id AND
+				`lang`			= $L->clang AND
+				`text_value`	!= ''"
+		);
+		foreach ($old_attributes as $old_attribute) {
+			$old_files = array_merge($old_files, find_links($old_attribute));
+		}
+		unset($old_attributes, $old_attribute);
 		$cdb->q(
 			"DELETE FROM `{$this->table}_attributes`
 			WHERE
@@ -175,7 +188,6 @@ class Items {
 					`lang`	= ''
 				)"
 		);
-		// TODO clean tags on files (not immediately, calculate diff with new files)
 		$cdb->q(
 			"DELETE FROM `{$this->table}_images`
 			WHERE `id` = $id"
@@ -212,6 +224,7 @@ class Items {
 						break;
 					default:
 						$text_value = $value;
+						$new_files  = array_merge($new_files, find_links($value));
 						$lang       = $L->clang;
 						break;
 				}
@@ -271,6 +284,29 @@ class Items {
 				$images
 			);
 		}
+		if ($old_files || $new_files) {
+			foreach (array_diff($old_files, $new_files) as $file) {
+				Trigger::instance()->run(
+					'System/upload_files/del_tag',
+					[
+						'tag'	=> "Shop/items/$id/$L->clang",
+						'url'	=> $file
+					]
+				);
+			}
+			unset($file);
+			foreach (array_diff($new_files, $old_files) as $file) {
+				Trigger::instance()->run(
+					'System/upload_files/add_tag',
+					[
+						'tag'	=> "Shop/items/$id/$L->clang",
+						'url'	=> $file
+					]
+				);
+			}
+			unset($file);
+		}
+		unset($old_files, $new_files);
 		$this->cache->del("$id/$L->clang");
 		return true;
 	}
@@ -286,15 +322,19 @@ class Items {
 		if (!$this->delete_simple($id)) {
 			return false;
 		}
-		// TODO clean tags on files (text fields)
 		$this->db_prime()->q(
 			"DELETE FROM `{$this->table}_attributes`
 			WHERE `id` = $id"
 		);
-		// TODO clean tags on files (text fields)
 		$this->db_prime()->q(
 			"DELETE FROM `{$this->table}_images`
 			WHERE `id` = $id"
+		);
+		Trigger::instance()->run(
+			'System/upload_files/del_tag',
+			[
+				'tag'	=> "Shop/items/$id%"
+			]
 		);
 		unset($this->cache->$id);
 		return true;
