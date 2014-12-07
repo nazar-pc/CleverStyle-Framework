@@ -79,6 +79,19 @@ class Attributes {
 		});
 	}
 	/**
+	 * Get array of all attributes
+	 *
+	 * @return int[] Array of categories ids
+	 */
+	function get_all () {
+		return $this->cache->get('all', function () {
+			return $this->db()->qfas(
+				"SELECT `id`
+				FROM `$this->table`"
+			) ?: [];
+		});
+	}
+	/**
 	 * Add new attribute
 	 *
 	 * @param int    $type
@@ -98,7 +111,9 @@ class Attributes {
 		if (!$id) {
 			return false;
 		}
-		return $this->set($id, $type, $title, $internal_title, $value);
+		unset($this->cache->all);
+		$this->set($id, $type, $title, $internal_title, $value);
+		return $id;
 	}
 	/**
 	 * Set data of specified attribute
@@ -121,7 +136,10 @@ class Attributes {
 		]);
 		if ($result) {
 			$L = Language::instance();
-			$this->cache->del("$id/$L->clang");
+			unset(
+				$this->cache->{"$id/$L->clang"},
+				$this->cache->all
+			);
 		}
 		return $result;
 	}
@@ -139,6 +157,7 @@ class Attributes {
 		}
 		unset(
 			$this->cache->$id,
+			$this->cache->all,
 			Cache::instance()->{'Shop/categories'}
 		);
 		return true;

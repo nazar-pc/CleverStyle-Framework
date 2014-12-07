@@ -1,0 +1,10 @@
+{
+	"admin" : [
+		"attributes",
+		"categories",
+		"items",
+		"order_statuses",
+		"orders",
+		"shipping_types"
+	]
+}
