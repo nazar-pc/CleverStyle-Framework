@@ -1,3 +1,11 @@
 {
-	"Shop"	: "Магазин"
+	"Shop"                 : "Магазин",
+	"shop_categories"      : "Категории",
+	"shop_title"           : "Название",
+	"shop_title_attribute" : "Атрибут названия товара",
+	"shop_visible"         : "Видимость",
+	"shop_action"          : "Действие",
+	"shop_add"             : "Добавить",
+	"shop_edit"            : "Редактировать",
+	"shop_delete"          : "Удалить"
 }

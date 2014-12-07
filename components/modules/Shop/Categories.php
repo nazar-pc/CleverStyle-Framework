@@ -79,6 +79,19 @@ class Categories {
 		});
 	}
 	/**
+	 * Get array of all categories
+	 *
+	 * @return int[] Array of categories ids
+	 */
+	function get_all () {
+		return $this->cache->get('all', function () {
+			return $this->db()->qfas(
+				"SELECT `id`
+				FROM `$this->table`"
+			) ?: [];
+		});
+	}
+	/**
 	 * @param int[] $attributes
 	 *
 	 * @return int[]
@@ -121,6 +134,7 @@ class Categories {
 		if (!$id) {
 			return false;
 		}
+		unset($this->cache->all);
 		return $this->set($id, $parent, $title, $description, $title_attribute, $visible, $attributes);
 	}
 	/**
@@ -171,7 +185,10 @@ class Categories {
 			) ?: [];
 		}
 		$L = Language::instance();
-		$this->cache->del("$id/$L->clang");
+		unset(
+			$this->cache->{"$id/$L->clang"},
+			$this->cache->all
+		);
 		return true;
 	}
 	/**
@@ -191,7 +208,10 @@ class Categories {
 			WHERE `id` = $id"
 		);
 		// TODO do something with items in category on removal
-		unset($this->cache->$id);
+		unset(
+			$this->cache->$id,
+			$this->cache->all
+		);
 		return true;
 	}
 }

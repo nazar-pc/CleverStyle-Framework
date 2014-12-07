@@ -1,3 +1,11 @@
 {
-	"Shop"	: "Shop"
+	"Shop"                 : "Shop",
+	"shop_categories"      : "Categories",
+	"shop_title"           : "Title",
+	"shop_title_attribute" : "Item title attribute",
+	"shop_visible"         : "Visible",
+	"shop_action"          : "Action",
+	"shop_add"             : "Add",
+	"shop_edit"            : "Edit",
+	"shop_delete"          : "Delete"
 }
