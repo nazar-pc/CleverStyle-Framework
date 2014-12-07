@@ -41,7 +41,7 @@ class Orders {
 		return Config::instance()->module('Shop')->db('shop');
 	}
 	/**
-	 * Get item
+	 * Get order
 	 *
 	 * @param int|int[] $id
 	 *
@@ -49,6 +49,25 @@ class Orders {
 	 */
 	function get ($id) {
 		return $this->read_simple($id);
+	}
+	/**
+	 * Get order statuses history
+	 *
+	 * @param int $id
+	 *
+	 * @return array|bool
+	 */
+	function get_statuses ($id) {
+		return $this->db()->qfa([
+			"SELECT
+				`id`,
+				`date`,
+				`status`,
+				`comment`
+			FROM `{$this->table}_history`
+			WHERE `id` = '%d'",
+			$id
+		]);
 	}
 	/**
 	 * Add new order
@@ -64,14 +83,38 @@ class Orders {
 	 *
 	 */
 	function add ($user, $shipping_type, $shipping_phone, $shipping_address, $status, $comment) {
-		return $this->create_simple([
+		$id = $this->create_simple([
 			$user,
+			TIME,
 			$shipping_type,
 			$shipping_phone,
 			$shipping_address,
 			$status,
 			$comment
 		]);
+		if ($id) {
+			$this->db_prime()->q(
+				"INSERT INTO `{$this->table}_history`
+					(
+						`id`,
+						`date`,
+						`status`,
+						`comment`
+					)
+				VALUES
+					(
+						'%d',
+						'%d',
+						'%d',
+						'%s'
+					)",
+				$id,
+				TIME,
+				$status,
+				Order_statuses::instance()->get($status)['comment']
+			);
+		}
+		return $id;
 	}
 	/**
 	 * Set data of specified order
@@ -87,24 +130,86 @@ class Orders {
 	 * @return bool
 	 */
 	function set ($id, $user, $shipping_type, $shipping_phone, $shipping_address, $status, $comment) {
-		return $this->update_simple([
+		$order  = $this->read_simple($id);
+		$result = $this->update_simple([
 			$id,
 			$user,
+			$order['date'],
 			$shipping_type,
 			$shipping_phone,
 			$shipping_address,
 			$status,
 			$comment
 		]);
+		if ($result && $order['status'] != $status) {
+			$this->db_prime()->q(
+				"INSERT INTO `{$this->table}_history`
+					(
+						`id`,
+						`date`,
+						`status`,
+						`comment`
+					)
+				VALUES
+					(
+						'%d',
+						'%d',
+						'%d',
+						'%s'
+					)",
+				$id,
+				TIME,
+				$status,
+				Order_statuses::instance()->get($status)['comment']
+			);
+		}
+		return $result;
 	}
 	/**
-	 * Delete specified item
+	 * Change order status and attach message for this change
+	 *
+	 * @param int    $id
+	 * @param int    $status
+	 * @param string $comment
+	 */
+	function set_status ($id, $status, $comment) {
+		$this->db_prime()->q(
+			"INSERT INTO `{$this->table}_history`
+					(
+						`id`,
+						`date`,
+						`status`,
+						`comment`
+					)
+				VALUES
+					(
+						'%d',
+						'%d',
+						'%d',
+						'%s'
+					)",
+			$id,
+			TIME,
+			$status,
+			$comment
+		);
+	}
+	/**
+	 * Delete specified order
 	 *
 	 * @param int $id
 	 *
 	 * @return bool
 	 */
 	function del ($id) {
-		return $this->delete_simple($id);
+		if ($this->delete_simple($id)) {
+			$this->db_prime()->q(
+				"DELETE FROM `{$this->table}_history`
+				WHERE `id` = '%d'",
+				$id
+			);
+			return true;
+		}
+		return false;
 	}
 }
