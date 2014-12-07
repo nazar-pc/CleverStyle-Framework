@@ -80,6 +80,19 @@ class Attributes {
 		});
 	}
 	/**
+	 * Get array of all attributes
+	 *
+	 * @return int[] Array of categories ids
+	 */
+	function get_all () {
+		return $this->cache->get('all', function () {
+			return $this->db()->qfas(
+				"SELECT `id`
+				FROM `$this->table`"
+			) ?: [];
+		});
+	}
+	/**
 	 * Get array with attribute types ids as keys and string translations as values
 	 *
 	 * @return array
@@ -99,19 +112,6 @@ class Attributes {
 		];
 	}
 	/**
-	 * Get array of all attributes
-	 *
-	 * @return int[] Array of categories ids
-	 */
-	function get_all () {
-		return $this->cache->get('all', function () {
-			return $this->db()->qfas(
-				"SELECT `id`
-				FROM `$this->table`"
-			) ?: [];
-		});
-	}
-	/**
 	 * Add new attribute
 	 *
 	 * @param int    $type
@@ -128,11 +128,10 @@ class Attributes {
 			'',
 			''
 		]);
-		if (!$id) {
-			return false;
+		if ($id) {
+			unset($this->cache->all);
+			$this->set($id, $type, $title, $internal_title, $value);
 		}
-		unset($this->cache->all);
-		$this->set($id, $type, $title, $internal_title, $value);
 		return $id;
 	}
 	/**
@@ -171,15 +170,15 @@ class Attributes {
 	 * @return bool
 	 */
 	function del ($id) {
-		$id = (int)$id;
-		if (!$this->delete_simple($id)) {
-			return false;
+		$id     = (int)$id;
+		$result = $this->delete_simple($id);
+		if ($result) {
+			unset(
+				$this->cache->$id,
+				$this->cache->all,
+				Cache::instance()->{'Shop/categories'}
+			);
 		}
-		unset(
-			$this->cache->$id,
-			$this->cache->all,
-			Cache::instance()->{'Shop/categories'}
-		);
-		return true;
+		return $result;
 	}
 }

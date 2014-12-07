@@ -38,6 +38,7 @@ usort($all_categories, function ($cat1, $cat2) {
 	return $cat1['title'] > $cat2['title'] ? 1 : -1;
 });
 $Page->content(
+	h::{'h3.uk-lead.cs-center'}($L->categories).
 	h::{'cs-table[list][with-header]'}(
 		h::{'cs-table-row cs-table-cell'}(
 			$L->title,
@@ -50,7 +51,7 @@ $Page->content(
 				return [
 					$category['title'],
 					$Attributes->get($category['title_attribute'])['internal_title'],
-					$category['visible'] ? h::icon('check') : h::icon('minus'),
+					h::icon($category['visible'] ? 'check' : 'minus'),
 					h::{'button.uk-button.cs-shop-category-edit'}(
 						$L->edit,
 						[

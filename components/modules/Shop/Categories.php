@@ -131,11 +131,11 @@ class Categories {
 			[],
 			static::INVISIBLE
 		]);
-		if (!$id) {
-			return false;
+		if ($id) {
+			unset($this->cache->all);
+			$this->set($id, $parent, $title, $description, $title_attribute, $visible, $attributes);
 		}
-		unset($this->cache->all);
-		return $this->set($id, $parent, $title, $description, $title_attribute, $visible, $attributes);
+		return $id;
 	}
 	/**
 	 * Set data of specified category
@@ -199,19 +199,19 @@ class Categories {
 	 * @return bool
 	 */
 	function del ($id) {
-		$id = (int)$id;
-		if (!$this->delete_simple($id)) {
-			return false;
+		$id     = (int)$id;
+		$result = $this->delete_simple($id);
+		if ($result) {
+			$this->db_prime()->q(
+				"DELETE FROM `{$this->table}_attributes`
+				WHERE `id` = $id"
+			);
+			// TODO do something with items in category on removal
+			unset(
+				$this->cache->$id,
+				$this->cache->all
+			);
 		}
-		$this->db_prime()->q(
-			"DELETE FROM `{$this->table}_attributes`
-			WHERE `id` = $id"
-		);
-		// TODO do something with items in category on removal
-		unset(
-			$this->cache->$id,
-			$this->cache->all
-		);
-		return true;
+		return $result;
 	}
 }
