@@ -84,6 +84,7 @@ $Page->json(
 					', ',
 					array_map(
 						function ($tag) use ($L, $module) {
+							$tag = xap($tag);
 							return h::a(
 								$tag,
 								[

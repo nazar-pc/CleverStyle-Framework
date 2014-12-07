@@ -23,14 +23,15 @@ trait CRUD {
 	/**
 	 * @param callable[]|string[] $data_model
 	 * @param array               $arguments
+	 * @param bool|int            $id            On update id should be specified to work properly with multilingual fields
+	 * @param bool                $update_needed If on creation request without specified primary key and multilingual fields present - update needed
+	 *                                           after creation (there is no id before creation)
 	 */
-	private function crud_arguments_preparation ($data_model, &$arguments) {
-		$data_model_keys = array_keys($data_model);
-		$arguments       = array_combine($data_model_keys, $arguments);
-		$primary_field   = $data_model_keys[0];
+	private function crud_arguments_preparation ($data_model, &$arguments, $id = false, &$update_needed = false) {
+		$arguments = array_combine(array_keys($data_model), $arguments);
 		array_walk(
 			$arguments,
-			function (&$argument, $item) use ($data_model, $primary_field, $arguments) {
+			function (&$argument, $item) use ($data_model, $arguments, $id, &$update_needed) {
 				$model = $data_model[$item];
 				if (is_callable($model)) {
 					$argument = $model($argument);
@@ -104,7 +105,11 @@ trait CRUD {
 				 * If field is multilingual - handle multilingual storing of value automatically
 				 */
 				if ($multilingual && isset($this->data_model_ml_group) && $this->data_model_ml_group) {
-					$argument = Text::instance()->set($this->cdb(), "$this->data_model_ml_group/$item", $arguments[$primary_field], $argument);
+					if ($id !== false) {
+						$argument = Text::instance()->set($this->cdb(), "$this->data_model_ml_group/$item", $id, $argument);
+					} else {
+						$update_needed = true;
+					}
 				}
 			}
 		);
@@ -114,15 +119,17 @@ trait CRUD {
 	 *
 	 * @param string              $table
 	 * @param callable[]|string[] $data_model
-	 * @param array               $arguments First element <i>id</i> can be omitted if it is autoincrement field
+	 * @param array               $arguments First element `id` can be omitted if it is autoincrement field
 	 *
-	 * @return bool|int                            Id of created item on success, <i>false</i> otherwise
+	 * @return bool|int|string                Id of created item on success (or specified primary key), `false` otherwise
 	 */
 	protected function create ($table, $data_model, $arguments) {
 		$insert_id = count($data_model) == count($arguments);
 		self::crud_arguments_preparation(
 			$insert_id ? $data_model : array_slice($data_model, 1),
-			$arguments
+			$arguments,
+			$insert_id ? $arguments[0] : false,
+			$update_needed
 		);
 		$columns = "`".implode("`,`", array_keys($insert_id ? $data_model : array_slice($data_model, 1)))."`";
 		$values  = implode(',', array_fill(0, count($arguments), "'%s'"));
@@ -138,16 +145,24 @@ trait CRUD {
 		if (!$return) {
 			return false;
 		}
-		return $insert_id ? true : $this->db_prime()->id();
+		$id = $insert_id ? $arguments[0] : $this->db_prime()->id();
+		/**
+		 * If on creation request without specified primary key and multilingual fields present - update needed
+		 * after creation (there is no id before creation)
+		 */
+		if ($update_needed) {
+			$this->update($table, $data_model, array_merge([$id], $arguments));
+		}
+		return $id;
 	}
 	/**
-	 * Wrapper for create() method, when $table and $data_model arguments are expected to be a properties of class
+	 * Wrapper for `::create()` method, when `$table` and `$data_model` arguments are expected to be a properties of class
 	 *
 	 * @see create
 	 *
-	 * @param array $arguments First element <i>id</i> can be omitted if it is autoincrement field
+	 * @param array $arguments First element `id` can be omitted if it is autoincrement field
 	 *
-	 * @return bool|int            Id of created item on success, <i>false</i> otherwise
+	 * @return bool|int            Id of created item on success, `false` otherwise
 	 */
 	protected function create_simple ($arguments) {
 		return $this->create($this->table, $this->data_model, $arguments);
@@ -190,7 +205,7 @@ trait CRUD {
 		return $data;
 	}
 	/**
-	 * Wrapper for read() method, when $table and $data_model arguments are expected to be a properties of class
+	 * Wrapper for `::read()` method, when `$table` and `$data_model` arguments are expected to be a properties of class
 	 *
 	 * @see read
 	 *
@@ -212,7 +227,7 @@ trait CRUD {
 	 */
 	protected function update ($table, $data_model, $arguments) {
 		$id = array_shift($arguments);
-		self::crud_arguments_preparation(array_slice($data_model, 1), $arguments);
+		self::crud_arguments_preparation(array_slice($data_model, 1), $arguments, $id);
 		$columns      = implode(',', array_map(
 			function ($column) {
 				return "`$column` = '%s'";
@@ -230,7 +245,7 @@ trait CRUD {
 		);
 	}
 	/**
-	 * Wrapper for update() method, when $table and $data_model arguments are expected to be a properties of class
+	 * Wrapper for `::update()` method, when `$table` and `$data_model` arguments are expected to be a properties of class
 	 *
 	 * @see update
 	 *
@@ -278,7 +293,7 @@ trait CRUD {
 		return $result;
 	}
 	/**
-	 * Wrapper for delete() method, when $table argument is expected to be a property of class
+	 * Wrapper for `::delete()` method, when `$table` argument is expected to be a property of class
 	 *
 	 * @see delete
 	 *
