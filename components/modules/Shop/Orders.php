@@ -55,7 +55,7 @@ class Orders {
 	 *
 	 * @param int $id
 	 *
-	 * @return array|bool
+	 * @return array
 	 */
 	function get_statuses ($id) {
 		return $this->db()->qfa([
@@ -67,7 +67,28 @@ class Orders {
 			FROM `{$this->table}_history`
 			WHERE `id` = '%d'",
 			$id
-		]);
+		]) ?: [];
+	}
+	/**
+	 * Get order items
+	 *
+	 * @param int $id
+	 *
+	 * @return array
+	 */
+	function get_items ($id) {
+		return $this->db()->qfa([
+			"SELECT
+				`id`,
+				`item`,
+				`units`,
+				`price`,
+				`unit_price`
+			FROM `{$this->table}_items`
+			WHERE
+				`id` = '%d'",
+			$id
+		]) ?: [];
 	}
 	/**
 	 * Add new order
@@ -115,6 +136,42 @@ class Orders {
 			);
 		}
 		return $id;
+	}
+	/**
+	 * Add item to order
+	 *
+	 * @param int   $id    Order id
+	 * @param int   $item  Item id
+	 * @param int   $units How much units of this item ordered
+	 * @param float $price Total price of all units (not more than `$units * $unit_price`, may include discount)
+	 *
+	 * @return bool
+	 */
+	function add_item ($id, $item, $units, $price) {
+		$unit_price = Items::instance()->get($item)['price'];
+		return $this->db_prime()->q(
+			"INSERT INTO `{$this->table}_items`
+				(
+					`id`,
+					`item`,
+					`units`,
+					`price`,
+					`unit_price`
+				)
+			VALUES
+				(
+					'%d',
+					'%d',
+					'%d',
+					'%s',
+					'%s'
+				)",
+			$id,
+			$item,
+			$units,
+			min($price, $units * $unit_price),
+			$unit_price
+		);
 	}
 	/**
 	 * Set data of specified order
@@ -166,6 +223,33 @@ class Orders {
 		return $result;
 	}
 	/**
+	 * Set item in order (update units and/or price)
+	 *
+	 * @param int   $id    Order id
+	 * @param int   $item  Item id
+	 * @param int   $units How much units of this item ordered
+	 * @param float $price Total price of all units (not more than `$units * $unit_price`, may include discount)
+	 *
+	 * @return bool
+	 */
+	function set_item ($id, $item, $units, $price) {
+		$unit_price = Items::instance()->get($item)['price'];
+		return $this->db_prime()->q(
+			"UPDATE `{$this->table}_items`
+			SET
+				`units`	= '%d',
+				`price`	= '%s'
+			WHERE
+				`id`	= '%d' AND
+				`item`	= '%d'
+			LIMIT 1",
+			$units,
+			min($price, $units * $unit_price),
+			$id,
+			$item
+		);
+	}
+	/**
 	 * Change order status and attach message for this change
 	 *
 	 * @param int    $id
@@ -208,8 +292,32 @@ class Orders {
 				WHERE `id` = '%d'",
 				$id
 			);
+			$this->db_prime()->q(
+				"DELETE FROM `{$this->table}_items`
+				WHERE `id` = '%d'",
+				$id
+			);
 			return true;
 		}
 		return false;
+	}
+	/**
+	 * Delete item from order
+	 *
+	 * @param int $id   Order id
+	 * @param int $item Item id
+	 *
+	 * @return bool
+	 */
+	function del_item ($id, $item) {
+		return $this->db_prime()->q(
+			"DELETE FROM `{$this->table}_items`
+			WHERE
+				`id`	= '%d' AND
+				`item`	= '%d'
+			LIMIT 1",
+			$id,
+			$item
+		);
 	}
 }
