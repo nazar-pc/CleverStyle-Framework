@@ -77,6 +77,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_order_statuses` (
 	`id` int(11) NOT NULL,
 	`title` varchar(1024) NOT NULL,
 	`type` tinyint(4) NOT NULL,
+	`color` varchar(255) NOT NULL,
 	`send_update_status_email` tinyint(1) NOT NULL,
 	`comment` text NOT NULL COMMENT 'Can be used for emails'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

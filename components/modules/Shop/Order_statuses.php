@@ -38,6 +38,7 @@ class Order_statuses {
 		'id'                       => 'int',
 		'title'                    => 'text',
 		'type'                     => 'int',
+		'color'                    => 'string',
 		'send_update_status_email' => 'int',
 		'comment'                  => 'ml:html'
 	];
@@ -77,16 +78,18 @@ class Order_statuses {
 	 *
 	 * @param string $title
 	 * @param int    $type
+	 * @param string $color
 	 * @param int    $send_update_status_email
 	 * @param string $comment
 	 *
 	 * @return bool|int Id of created item on success of <b>false</> on failure
 	 *
 	 */
-	function add ($title, $type, $send_update_status_email, $comment) {
+	function add ($title, $type, $color, $send_update_status_email, $comment) {
 		return $this->create_simple([
 			$title,
 			$type,
+			$color,
 			$send_update_status_email,
 			$comment
 		]);
@@ -97,17 +100,19 @@ class Order_statuses {
 	 * @param int    $id
 	 * @param string $title
 	 * @param int    $type
+	 * @param string $color
 	 * @param int    $send_update_status_email
 	 * @param string $comment
 	 *
 	 * @return bool
 	 */
-	function set ($id, $title, $type, $send_update_status_email, $comment) {
+	function set ($id, $title, $type, $color, $send_update_status_email, $comment) {
 		$id = (int)$id;
 		if ($this->update_simple([
 			$id,
 			$title,
 			$type,
+			$color,
 			$send_update_status_email,
 			$comment
 		])
