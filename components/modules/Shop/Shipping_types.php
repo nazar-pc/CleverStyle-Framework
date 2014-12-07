@@ -15,43 +15,30 @@ use
 	cs\Singleton;
 
 /**
- * @method static Order_statuses instance($check = false)
+ * @method static Shipping_types instance($check = false)
  */
-class Order_statuses {
+class Shipping_types {
 	use
 		CRUD,
 		Singleton;
 
-	const TYPE_OTHER            = 0;
-	const TYPE_CREATED          = 1;
-	const TYPE_CONFIRMED        = 2;
-	const TYPE_PAYMENT_AWAITING = 3;
-	const TYPE_PAID             = 4;
-	const TYPE_PROCESSING       = 5;
-	const TYPE_PROCESSED        = 6;
-	const TYPE_SHIPPED          = 7;
-	const TYPE_DELIVERED        = 8;
-	const TYPE_CANCELED         = 9;
-	const TYPE_REFUNDED         = 10;
-	const TYPE_COMPLETED        = 11;
-
 	protected $data_model          = [
-		'id'                       => 'int',
-		'title'                    => 'text',
-		'type'                     => 'int',
-		'color'                    => 'string',
-		'send_update_status_email' => 'int',
-		'comment'                  => 'ml:html'
+		'id'             => 'int',
+		'price'          => 'float',
+		'phone_needed'   => 'int:0..1',
+		'address_needed' => 'int:0..1',
+		'title'          => 'ml:string',
+		'description'    => 'ml:html'
 	];
-	protected $data_model_ml_group = 'Shop/order_statuses';
-	protected $table               = '[prefix]shop_order_statuses';
+	protected $data_model_ml_group = 'Shop/shipping_types';
+	protected $table               = '[prefix]shop_shipping_types';
 	/**
 	 * @var Prefix
 	 */
 	protected $cache;
 
 	protected function construct () {
-		$this->cache = new Prefix('Shop/order_statuses');
+		$this->cache = new Prefix('Shop/shipping_types');
 	}
 	/**
 	 * Returns database index
@@ -62,7 +49,7 @@ class Order_statuses {
 		return Config::instance()->module('Shop')->db('shop');
 	}
 	/**
-	 * Get order status
+	 * Get shipping type
 	 *
 	 * @param int|int[] $id
 	 *
@@ -82,47 +69,46 @@ class Order_statuses {
 		});
 	}
 	/**
-	 * Add new order status
+	 * Add new shipping type
 	 *
+	 * @param float  $price
+	 * @param int    $phone_needed
+	 * @param int    $address_needed
 	 * @param string $title
-	 * @param int    $type
-	 * @param string $color
-	 * @param int    $send_update_status_email
-	 * @param string $comment
+	 * @param string $description
 	 *
 	 * @return bool|int Id of created item on success of <b>false</> on failure
-	 *
 	 */
-	function add ($title, $type, $color, $send_update_status_email, $comment) {
+	function add ($price, $phone_needed, $address_needed, $title, $description) {
 		return $this->create_simple([
+			$price,
+			$phone_needed,
+			$address_needed,
 			$title,
-			$type,
-			$color,
-			$send_update_status_email,
-			$comment
+			$description
 		]);
 	}
 	/**
-	 * Set data of specified order status
+	 * Set data of specified shipping type
 	 *
 	 * @param int    $id
+	 * @param float  $price
+	 * @param int    $phone_needed
+	 * @param int    $address_needed
 	 * @param string $title
-	 * @param int    $type
-	 * @param string $color
-	 * @param int    $send_update_status_email
-	 * @param string $comment
+	 * @param string $description
 	 *
 	 * @return bool
 	 */
-	function set ($id, $title, $type, $color, $send_update_status_email, $comment) {
+	function set ($id, $price, $phone_needed, $address_needed, $title, $description) {
 		$id = (int)$id;
 		if ($this->update_simple([
 			$id,
+			$price,
+			$phone_needed,
+			$address_needed,
 			$title,
-			$type,
-			$color,
-			$send_update_status_email,
-			$comment
+			$description
 		])
 		) {
 			$L = Language::instance();
@@ -132,7 +118,7 @@ class Order_statuses {
 		return false;
 	}
 	/**
-	 * Delete specified order status
+	 * Delete specified shipping type
 	 *
 	 * @param int $id
 	 *
