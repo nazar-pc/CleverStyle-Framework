@@ -136,6 +136,9 @@ ADD PRIMARY KEY (`id`);
 ALTER TABLE `[prefix]shop_tags`
 ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `text` (`text`(255));
 
+ALTER TABLE `[prefix]shop_attributes`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 ALTER TABLE `[prefix]shop_categories`
 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
