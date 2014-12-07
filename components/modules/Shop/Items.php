@@ -155,7 +155,7 @@ class Items {
 			case Attributes::TYPE_INT_RANGE:
 			case Attributes::TYPE_FLOAT_SET:
 			case Attributes::TYPE_FLOAT_RANGE:
-			case Attributes::TYPE_RADIO:
+			case Attributes::TYPE_SWITCH:
 			case Attributes::TYPE_STRING_SET:
 			case Attributes::TYPE_COLOR_SET:
 				return 'numeric_value';

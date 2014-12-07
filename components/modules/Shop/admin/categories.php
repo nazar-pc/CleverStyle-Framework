@@ -22,17 +22,23 @@ $Categories     = Categories::instance();
 $Attributes     = Attributes::instance();
 $all_categories = $Categories->get($Categories->get_all());
 $all_categories = array_map(function ($category) use ($Categories) {
-	if ($category['parent']) {
-		$category['title'] .= " :: ".$Categories->get($category['parent'])['title'];
+	$parent = $category['parent'];
+	while (
+		$parent &&
+		$parent != $category['id'] // infinite loop protection
+	) {
+		$parent            = $Categories->get($category['parent']);
+		$category['title'] = "$parent[title] :: $category[title]";
+		$parent            = $parent['parent'];
 	}
 	return $category;
 }, $all_categories);
 
 usort($all_categories, function ($cat1, $cat2) {
-	return $cat1['title'] > $cat2['title'] ? -1 : 1;
+	return $cat1['title'] > $cat2['title'] ? 1 : -1;
 });
 $Page->content(
-	h::{'cs-table[center][list][with-header]'}(
+	h::{'cs-table[list][with-header]'}(
 		h::{'cs-table-row cs-table-cell'}(
 			$L->title,
 			$L->title_attribute,
