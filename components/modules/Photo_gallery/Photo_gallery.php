@@ -109,6 +109,9 @@ class Photo_gallery {
 		if (empty($original) || !$gallery) {
 			return false;
 		}
+		if (!filter_var($original, FILTER_VALIDATE_URL)) {
+			return false;
+		}
 		$gallery		= (int)$gallery;
 		if ($this->db_prime()->q(
 			"INSERT INTO `[prefix]photo_gallery_images`

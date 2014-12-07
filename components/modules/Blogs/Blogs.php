@@ -718,6 +718,7 @@ class Blogs {
 		if (!$tags) {
 			return [];
 		}
+		$tags = xap($tags);
 		$cdb = $this->db_prime();
 		$cdb->insert(
 			"INSERT IGNORE INTO `[prefix]blogs_tags`
