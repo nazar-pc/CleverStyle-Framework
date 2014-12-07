@@ -275,7 +275,7 @@ class Orders {
 			$id,
 			TIME,
 			$status,
-			$comment
+			xap($comment, true)
 		);
 	}
 	/**

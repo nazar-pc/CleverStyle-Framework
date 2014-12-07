@@ -27,7 +27,8 @@ class Items {
 		'id'       => 'int',
 		'category' => 'int',
 		'price'    => 'float',
-		'in_stock' => 'int'
+		'in_stock' => 'int',
+		'listed'   => 'int:0..1'
 	];
 	protected $table      = '[prefix]shop_items';
 	/**
@@ -170,22 +171,24 @@ class Items {
 	 * @param int      $category
 	 * @param float    $price
 	 * @param int      $in_stock
+	 * @param int      $listed
 	 * @param array    $attributes
 	 * @param string[] $images
 	 * @param string[] $tags
 	 *
 	 * @return bool|int Id of created item on success of <b>false</> on failure
 	 */
-	function add ($category, $price, $in_stock, $attributes, $images, $tags) {
+	function add ($category, $price, $in_stock, $listed, $attributes, $images, $tags) {
 		$id = $this->create_simple([
 			$category,
 			$price,
-			$in_stock
+			$in_stock,
+			$listed
 		]);
 		if (!$id) {
 			return false;
 		}
-		return $this->set($id, $category, $price, $in_stock, $attributes, $images, $tags);
+		return $this->set($id, $category, $price, $in_stock, $listed, $attributes, $images, $tags);
 	}
 	/**
 	 * Set data of specified item
@@ -194,13 +197,14 @@ class Items {
 	 * @param int      $category
 	 * @param float    $price
 	 * @param int      $in_stock
+	 * @param int      $listed
 	 * @param array    $attributes
 	 * @param string[] $images
 	 * @param string[] $tags
 	 *
 	 * @return bool
 	 */
-	function set ($id, $category, $price, $in_stock, $attributes, $images, $tags) {
+	function set ($id, $category, $price, $in_stock, $listed, $attributes, $images, $tags) {
 		$id = (int)$id;
 		if (!$id) {
 			return false;
@@ -209,11 +213,15 @@ class Items {
 			$id,
 			$category,
 			$price,
-			$in_stock
+			$in_stock,
+			$listed
 		]);
 		if (!$result) {
 			return false;
 		}
+		$images	= array_filter($images, function ($image) {
+			return filter_var($image, FILTER_VALIDATE_URL);
+		});
 		$old_files = $this->get($id)['images'];
 		$new_files = $images;
 		$cdb       = $this->db_prime();
@@ -262,7 +270,7 @@ class Items {
 						$value_type['numeric'] = $value;
 						break;
 					case 'string_value':
-						$value_type['string'] = $value;
+						$value_type['string'] = xap($value);
 						/**
 						 * Multilingual feature only for title attribute
 						 */
@@ -271,8 +279,8 @@ class Items {
 						}
 						break;
 					case 'text_value':
-						$value_type['text'] = $value;
-						$new_files          = array_merge($new_files, find_links($value));
+						$value_type['text'] = xap($value, true, true);
+						$new_files          = array_merge($new_files, find_links($value_type['text']));
 						$lang               = $L->clang;
 						break;
 				}
