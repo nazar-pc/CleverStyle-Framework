@@ -15,6 +15,6 @@ if (!isset($Index->route_ids[0])) {
 	error_code(400);
 	return;
 }
-if (!Attributes::instance()->del($Index->route_ids[0])) {
+if (!Order_statuses::instance()->del($Index->route_ids[0])) {
 	error_code(500);
 }

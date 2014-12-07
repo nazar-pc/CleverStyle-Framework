@@ -12,19 +12,21 @@ use
 	cs\Page;
 
 if (!isset(
-	$_POST['type'],
 	$_POST['title'],
-	$_POST['internal_title'],
-	$_POST['value']
+	$_POST['type'],
+	$_POST['color'],
+	$_POST['send_update_status_email'],
+	$_POST['comment']
 )) {
 	error_code(400);
 	return;
 }
-$id = Attributes::instance()->add(
-	$_POST['type'],
+$id = Order_statuses::instance()->add(
 	$_POST['title'],
-	$_POST['internal_title'],
-	$_POST['value']
+	$_POST['type'],
+	$_POST['color'],
+	$_POST['send_update_status_email'],
+	$_POST['comment']
 );
 if (!$id) {
 	error_code(500);

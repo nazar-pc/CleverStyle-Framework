@@ -8,30 +8,30 @@
  */
 namespace cs\modules\Shop;
 use
-	cs\Config,
+	cs\Index,
 	cs\Page;
 
+$Index = Index::instance();var_dump($_POST);
 if (!isset(
-	$_POST['type'],
+	$Index->route_ids[0],
 	$_POST['title'],
-	$_POST['internal_title'],
-	$_POST['value']
+	$_POST['type'],
+	$_POST['color'],
+	$_POST['send_update_status_email'],
+	$_POST['comment']
 )) {
 	error_code(400);
 	return;
 }
-$id = Attributes::instance()->add(
-	$_POST['type'],
+$result = Order_statuses::instance()->set(
+	$Index->route_ids[0],
 	$_POST['title'],
-	$_POST['internal_title'],
-	$_POST['value']
+	$_POST['type'],
+	$_POST['color'],
+	$_POST['send_update_status_email'],
+	$_POST['comment']
 );
-if (!$id) {
+if (!$result) {
 	error_code(500);
 	return;
 }
-code_header(201);
-$Config = Config::instance();
-Page::instance()->json(
-	$Config->core_url().'/'.$Config->server['relative_address']."/$id"
-);
