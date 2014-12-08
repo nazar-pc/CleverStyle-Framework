@@ -84,7 +84,7 @@
                 return _results;
               })();
               types = types.join('');
-              modal = $.cs.simple_modal("<h3 class=\"cs-center\">" + L.shop_attribute_addition + "</h3>\n<p>\n	" + L.shop_attribute_type + ": <select name=\"type\">" + types + "</select>\n</p>\n<p>\n	" + L.shop_possible_values + ": <textarea name=\"value\"></textarea>\n</p>\n<p>\n	" + L.shop_title + ": <input name=\"title\">\n</p>\n<p>\n	" + L.shop_internal_title + ": <input name=\"internal_title\">\n</p>\n<p>\n	<button class=\"uk-button\">" + L.shop_edit + "</button>\n</p>");
+              modal = $.cs.simple_modal("<h3 class=\"cs-center\">" + L.shop_attribute_edition + "</h3>\n<p>\n	" + L.shop_attribute_type + ": <select name=\"type\">" + types + "</select>\n</p>\n<p>\n	" + L.shop_possible_values + ": <textarea name=\"value\"></textarea>\n</p>\n<p>\n	" + L.shop_title + ": <input name=\"title\">\n</p>\n<p>\n	" + L.shop_internal_title + ": <input name=\"internal_title\">\n</p>\n<p>\n	<button class=\"uk-button\">" + L.shop_edit + "</button>\n</p>");
               modal.on('click', 'button', function() {
                 var value;
                 type = modal.find('[name=type]').val();

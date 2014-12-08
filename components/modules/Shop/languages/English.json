@@ -36,6 +36,7 @@
 	"shop_order_status_type"        : "Type of order status",
 	"shop_send_update_status_email" : "Send email on status update",
 	"shop_attribute_addition"       : "Attribute addition",
+	"shop_attribute_edition"        : "Attribute edition",
 	"shop_possible_values"          : "Possible values (one per line)",
 	"shop_added_successfully"       : "Added successfully",
 	"shop_edited_successfully"      : "Edited successfully",

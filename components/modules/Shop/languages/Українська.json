@@ -36,6 +36,7 @@
 	"shop_order_status_type"        : "Тип статусу замовлення",
 	"shop_send_update_status_email" : "Надсилати email при зміні статусу",
 	"shop_attribute_addition"       : "Додавання атрибуту",
+	"shop_attribute_edition"        : "Редагування атрибуту",
 	"shop_possible_values"          : "Можливі значення (по одному на рядок)",
 	"shop_added_successfully"       : "Успішно додано",
 	"shop_edited_successfully"      : "Успішно відредаговано",

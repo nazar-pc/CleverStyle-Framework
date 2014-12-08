@@ -82,7 +82,7 @@ $ ->
 									"""<option value="#{index}">#{type}</option>"""
 							types = types.join('')
 							modal = $.cs.simple_modal("""
-								<h3 class="cs-center">#{L.shop_attribute_addition}</h3>
+								<h3 class="cs-center">#{L.shop_attribute_edition}</h3>
 								<p>
 									#{L.shop_attribute_type}: <select name="type">#{types}</select>
 								</p>
