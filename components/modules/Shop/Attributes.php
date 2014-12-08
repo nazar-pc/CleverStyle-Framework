@@ -76,7 +76,9 @@ class Attributes {
 		$L  = Language::instance();
 		$id = (int)$id;
 		return $this->cache->get("$id/$L->clang", function () use ($id) {
-			return $this->read_simple($id);
+			$data          = $this->read_simple($id);
+			$data['value'] = $data['value'] ? _json_decode($data['value']) : '';
+			return $data;
 		});
 	}
 	/**
@@ -114,10 +116,10 @@ class Attributes {
 	/**
 	 * Add new attribute
 	 *
-	 * @param int    $type
-	 * @param string $title
-	 * @param string $internal_title
-	 * @param int    $value
+	 * @param int          $type
+	 * @param string       $title
+	 * @param string       $internal_title
+	 * @param array|string $value
 	 *
 	 * @return bool|int Id of created attribute on success of <b>false</> on failure
 	 */
@@ -137,11 +139,11 @@ class Attributes {
 	/**
 	 * Set data of specified attribute
 	 *
-	 * @param int    $id
-	 * @param int    $type
-	 * @param string $title
-	 * @param string $internal_title
-	 * @param int    $value Attribute that will be considered as title
+	 * @param int          $id
+	 * @param int          $type
+	 * @param string       $title
+	 * @param string       $internal_title
+	 * @param array|string $value
 	 *
 	 * @return bool
 	 */
@@ -151,7 +153,7 @@ class Attributes {
 			$type,
 			trim($title),
 			trim($internal_title),
-			trim($value)
+			is_array($value) ? _json_encode(xap($value)) : ''
 		]);
 		if ($result) {
 			$L = Language::instance();

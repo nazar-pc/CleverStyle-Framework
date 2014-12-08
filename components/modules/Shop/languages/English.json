@@ -34,5 +34,11 @@
 	"shop_type_completed"           : "Completed",
 	"shop_order_statuses"           : "Order statuses",
 	"shop_order_status_type"        : "Type of order status",
-	"shop_send_update_status_email" : "Send email on status update"
+	"shop_send_update_status_email" : "Send email on status update",
+	"shop_attribute_addition"       : "Attribute addition",
+	"shop_possible_values"          : "Possible values (one per line)",
+	"shop_added_successfully"       : "Added successfully",
+	"shop_edited_successfully"      : "Edited successfully",
+	"shop_deleted_successfully"     : "Deleted successfully",
+	"shop_sure_want_to_delete"      : "Are you sure want to delete?"
 }

@@ -69,5 +69,5 @@ $Page->content(
 			$all_categories
 		) ?: false)
 	).
-	h::{'p button.uk-button.cs-content-add'}($L->add)
+	h::{'p button.uk-button.cs-shop-category-add'}($L->add)
 );

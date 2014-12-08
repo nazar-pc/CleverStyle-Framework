@@ -22,6 +22,10 @@ if (isset($Index->route_ids[0])) {
 		$Page->json($attribute);
 	}
 	return;
+} elseif (isset($Index->route_path[2]) && $Index->route_path[2] == 'types') {
+	$Page->json(
+		$Attributes->get_type_to_name_array()
+	);
 } else {
 	$Page->json(
 		$Attributes->get(

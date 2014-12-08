@@ -56,5 +56,5 @@ $Page->content(
 			$all_order_statuses
 		) ?: false)
 	).
-	h::{'p button.uk-button.cs-content-add'}($L->add)
+	h::{'p button.uk-button.cs-shop-order-status-add'}($L->add)
 );

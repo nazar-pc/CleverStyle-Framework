@@ -56,5 +56,5 @@ $Page->content(
 			$all_attributes
 		) ?: false)
 	).
-	h::{'p button.uk-button.cs-content-add'}($L->add)
+	h::{'p button.uk-button.cs-shop-attribute-add'}($L->add)
 );
