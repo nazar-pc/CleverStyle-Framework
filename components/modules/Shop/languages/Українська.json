@@ -15,7 +15,7 @@
 	"shop_type_float_set"           : "Множина дробових чисел",
 	"shop_type_int_range"           : "Інтервал цілих чисел",
 	"shop_type_float_range"         : "Інтервал дробових чисел",
-	"shop_type_string"              : "Радок",
+	"shop_type_string"              : "Рядок",
 	"shop_type_string_set"          : "Множина рядків",
 	"shop_type_text"                : "Текст",
 	"shop_type_switch"              : "Перемикач так/ні",
