@@ -14,7 +14,7 @@ use
 if (!isset(
 	$_POST['type'],
 	$_POST['title'],
-	$_POST['internal_title'],
+	$_POST['title_internal'],
 	$_POST['value']
 )) {
 	error_code(400);
@@ -23,7 +23,7 @@ if (!isset(
 $id = Attributes::instance()->add(
 	$_POST['type'],
 	$_POST['title'],
-	$_POST['internal_title'],
+	$_POST['title_internal'],
 	$_POST['value']
 );
 if (!$id) {

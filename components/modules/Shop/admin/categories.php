@@ -28,6 +28,9 @@ $all_categories = array_map(function ($category) use ($Categories) {
 		$parent != $category['id'] // infinite loop protection
 	) {
 		$parent            = $Categories->get($category['parent']);
+		if ($parent['parent'] == $category['id']) { // infinite loop protection
+			break;
+		}
 		$category['title'] = "$parent[title] :: $category[title]";
 		$parent            = $parent['parent'];
 	}
@@ -50,7 +53,7 @@ $Page->content(
 			function ($category) use ($L, $Attributes) {
 				return [
 					$category['title'],
-					$Attributes->get($category['title_attribute'])['internal_title'],
+					$Attributes->get($category['title_attribute'])['title_internal'],
 					h::icon($category['visible'] ? 'check' : 'minus'),
 					h::{'button.uk-button.cs-shop-category-edit'}(
 						$L->edit,

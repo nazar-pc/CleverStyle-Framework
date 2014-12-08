@@ -9,7 +9,7 @@
 	"shop_edit"                     : "Редагувати",
 	"shop_delete"                   : "Видалити",
 	"shop_attributes"               : "Атрибути",
-	"shop_internal_title"           : "Внутрішня назва",
+	"shop_title_internal"           : "Внутрішня назва",
 	"shop_attribute_type"           : "Тип атрибуту",
 	"shop_type_int_set"             : "Множина цілих чисел",
 	"shop_type_float_set"           : "Множина дробових чисел",
@@ -41,5 +41,10 @@
 	"shop_added_successfully"       : "Успішно додано",
 	"shop_edited_successfully"      : "Успішно відредаговано",
 	"shop_deleted_successfully"     : "Успішно видалено",
-	"shop_sure_want_to_delete"      : "Ви впевнені що хочете видалити?"
+	"shop_sure_want_to_delete"      : "Ви впевнені що хочете видалити?",
+	"shop_category_addition"        : "Додавання категорії",
+	"shop_category_edition"         : "Редагування категорії",
+	"shop_parent_category"          : "Батьківська категорія",
+	"shop_description"              : "Опис",
+	"shop_category_attributes"      : "Отрибути що використовуються в категорії"
 }

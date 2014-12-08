@@ -16,17 +16,19 @@ if (!isset(
 	$_POST['title'],
 	$_POST['description'],
 	$_POST['title_attribute'],
-	$_POST['visible']
+	$_POST['visible'],
+	$_POST['attributes']
 )) {
 	error_code(400);
 	return;
 }
-$id = Attributes::instance()->add(
+$id = Categories::instance()->add(
 	$_POST['parent'],
 	$_POST['title'],
 	$_POST['description'],
 	$_POST['title_attribute'],
-	$_POST['visible']
+	$_POST['visible'],
+	$_POST['attributes']
 );
 if (!$id) {
 	error_code(500);

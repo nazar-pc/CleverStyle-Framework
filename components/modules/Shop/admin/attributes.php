@@ -22,13 +22,13 @@ $Attributes      = Attributes::instance();
 $all_attributes  = $Attributes->get($Attributes->get_all());
 $attribute_types = $Attributes->get_type_to_name_array();
 usort($all_attributes, function ($attr1, $attr2) {
-	return $attr1['internal_title'] > $attr2['internal_title'] ? 1 : -1;
+	return $attr1['title_internal'] > $attr2['title_internal'] ? 1 : -1;
 });
 $Page->content(
 	h::{'h3.uk-lead.cs-center'}($L->attributes).
 	h::{'cs-table[list][with-header]'}(
 		h::{'cs-table-row cs-table-cell'}(
-			$L->internal_title,
+			$L->title_internal,
 			$L->title,
 			$L->attribute_type,
 			$L->action
@@ -36,7 +36,7 @@ $Page->content(
 		h::{'cs-table-row| cs-table-cell'}(array_map(
 			function ($attribute) use ($L, $attribute_types) {
 				return [
-					$attribute['internal_title'],
+					$attribute['title_internal'],
 					$attribute['title'],
 					$attribute_types[$attribute['type']],
 					h::{'button.uk-button.cs-shop-attribute-edit'}(

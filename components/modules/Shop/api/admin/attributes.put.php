@@ -16,7 +16,7 @@ if (!isset(
 	$Index->route_ids[0],
 	$_POST['type'],
 	$_POST['title'],
-	$_POST['internal_title'],
+	$_POST['title_internal'],
 	$_POST['value']
 )) {
 	error_code(400);
@@ -26,7 +26,7 @@ $result = Attributes::instance()->set(
 	$Index->route_ids[0],
 	$_POST['type'],
 	$_POST['title'],
-	$_POST['internal_title'],
+	$_POST['title_internal'],
 	$_POST['value']
 );
 if (!$result) {

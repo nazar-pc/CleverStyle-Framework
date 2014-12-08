@@ -9,7 +9,7 @@
 	"shop_edit"                     : "Edit",
 	"shop_delete"                   : "Delete",
 	"shop_attributes"               : "Attributes",
-	"shop_internal_title"           : "Internal title",
+	"shop_title_internal"           : "Internal title",
 	"shop_attribute_type"           : "Attribute type",
 	"shop_type_int_set"             : "Integer set",
 	"shop_type_float_set"           : "Fractional set",
@@ -41,5 +41,10 @@
 	"shop_added_successfully"       : "Added successfully",
 	"shop_edited_successfully"      : "Edited successfully",
 	"shop_deleted_successfully"     : "Deleted successfully",
-	"shop_sure_want_to_delete"      : "Are you sure want to delete?"
+	"shop_sure_want_to_delete"      : "Are you sure want to delete?",
+	"shop_category_addition"        : "Category addition",
+	"shop_category_edition"         : "Category edition",
+	"shop_parent_category"          : "Parent category",
+	"shop_description"              : "Description",
+	"shop_category_attributes"      : "Attributes used in category"
 }

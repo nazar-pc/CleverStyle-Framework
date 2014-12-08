@@ -12,34 +12,38 @@
 (function() {
 
   $(function() {
-    var L, set_attribute_types;
+    var L, make_modal, set_attribute_types;
     L = cs.Language;
     set_attribute_types = [1, 2, 6, 9];
+    make_modal = function(types, title, action) {
+      var index, type;
+      types = (function() {
+        var _results;
+        _results = [];
+        for (index in types) {
+          type = types[index];
+          _results.push("<option value=\"" + index + "\">" + type + "</option>");
+        }
+        return _results;
+      })();
+      types = types.join('');
+      return $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_attribute_type + ": <select name=\"type\">" + types + "</select>\n	</p>\n	<p>\n		" + L.shop_possible_values + ": <textarea name=\"value\"></textarea>\n	</p>\n	<p>\n		" + L.shop_title + ": <input name=\"title\">\n	</p>\n	<p>\n		" + L.shop_title_internal + ": <input name=\"title_internal\">\n	</p>\n	<p>\n		<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n	</p>\n</form>");
+    };
     return $('html').on('click', '.cs-shop-attribute-add', function() {
       return $.getJSON('api/Shop/admin/attributes/types', function(types) {
-        var index, modal, type;
-        types = (function() {
-          var _results;
-          _results = [];
-          for (index in types) {
-            type = types[index];
-            _results.push("<option value=\"" + index + "\">" + type + "</option>");
-          }
-          return _results;
-        })();
-        types = types.join('');
-        modal = $.cs.simple_modal("<h3 class=\"cs-center\">" + L.shop_attribute_addition + "</h3>\n<p>\n	" + L.shop_attribute_type + ": <select name=\"type\">" + types + "</select>\n</p>\n<p>\n	" + L.shop_possible_values + ": <textarea name=\"value\"></textarea>\n</p>\n<p>\n	" + L.shop_title + ": <input name=\"title\">\n</p>\n<p>\n	" + L.shop_internal_title + ": <input name=\"internal_title\">\n</p>\n<p>\n	<button class=\"uk-button\">" + L.shop_add + "</button>\n</p>");
-        return modal.on('click', 'button', function() {
-          var value;
+        var modal;
+        modal = make_modal(types, L.shop_attribute_addition, L.shop_add);
+        return modal.on('submit', 'form', function() {
+          var type, value;
           type = modal.find('[name=type]').val();
           value = set_attribute_types.indexOf(parseInt(type)) !== -1 ? modal.find('[name=value]').val().split('\n') : '';
-          return $.ajax({
+          $.ajax({
             url: 'api/Shop/admin/attributes',
             type: 'post',
             data: {
               type: type,
               title: modal.find('[name=title]').val(),
-              internal_title: modal.find('[name=internal_title]').val(),
+              title_internal: modal.find('[name=title_internal]').val(),
               value: value
             },
             success: function() {
@@ -47,8 +51,9 @@
               return location.reload();
             }
           });
+          return false;
         }).on('change', '[name=type]', function() {
-          var value_container;
+          var type, value_container;
           value_container = $(this).parent().next();
           type = $(this).val();
           if (set_attribute_types.indexOf(parseInt(type)) !== -1) {
@@ -62,31 +67,19 @@
       var id;
       id = $(this).data('id');
       return $.when($.getJSON('api/Shop/admin/attributes/types'), $.getJSON("api/Shop/admin/attributes/" + id)).done(function(types, attribute) {
-        var index, modal, type;
-        types = types[0];
-        attribute = attribute[0];
-        types = (function() {
-          var _results;
-          _results = [];
-          for (index in types) {
-            type = types[index];
-            _results.push("<option value=\"" + index + "\">" + type + "</option>");
-          }
-          return _results;
-        })();
-        types = types.join('');
-        modal = $.cs.simple_modal("<h3 class=\"cs-center\">" + L.shop_attribute_edition + "</h3>\n<p>\n	" + L.shop_attribute_type + ": <select name=\"type\">" + types + "</select>\n</p>\n<p>\n	" + L.shop_possible_values + ": <textarea name=\"value\"></textarea>\n</p>\n<p>\n	" + L.shop_title + ": <input name=\"title\">\n</p>\n<p>\n	" + L.shop_internal_title + ": <input name=\"internal_title\">\n</p>\n<p>\n	<button class=\"uk-button\">" + L.shop_edit + "</button>\n</p>");
-        modal.on('click', 'button', function() {
-          var value;
+        var modal;
+        modal = make_modal(types[0], L.shop_attribute_edition, L.shop_edit);
+        modal.on('submit', 'form', function() {
+          var type, value;
           type = modal.find('[name=type]').val();
           value = set_attribute_types.indexOf(parseInt(type)) !== -1 ? modal.find('[name=value]').val().split('\n') : '';
-          return $.ajax({
+          $.ajax({
             url: "api/Shop/admin/attributes/" + id,
             type: 'put',
             data: {
               type: type,
               title: modal.find('[name=title]').val(),
-              internal_title: modal.find('[name=internal_title]').val(),
+              title_internal: modal.find('[name=title_internal]').val(),
               value: value
             },
             success: function() {
@@ -94,8 +87,9 @@
               return location.reload();
             }
           });
+          return false;
         }).on('change', '[name=type]', function() {
-          var value_container;
+          var type, value_container;
           value_container = $(this).parent().next();
           type = $(this).val();
           if (set_attribute_types.indexOf(parseInt(type)) !== -1) {
@@ -104,10 +98,11 @@
             return value_container.hide();
           }
         });
+        attribute = attribute[0];
         modal.find('[name=type]').val(attribute.type).change();
         modal.find('[name=value]').val(attribute.value ? attribute.value.join('\n') : '');
         modal.find('[name=title]').val(attribute.title);
-        return modal.find('[name=internal_title]').val(attribute.internal_title);
+        return modal.find('[name=title_internal]').val(attribute.title_internal);
       });
     }).on('click', '.cs-shop-attribute-delete', function() {
       var id;

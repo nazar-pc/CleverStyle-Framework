@@ -70,7 +70,7 @@ class Categories {
 		return $this->cache->get("$id/$L->clang", function () use ($id) {
 			$data               = $this->read_simple($id);
 			$data['attributes'] = $this->db()->qfas(
-				"SELECT `atribute`
+				"SELECT `attribute`
 				FROM `{$this->table}_attributes`
 				WHERE `id` = $id"
 			);

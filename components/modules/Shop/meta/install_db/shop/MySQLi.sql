@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_attributes` (
 	`id` int(11) NOT NULL,
 	`type` tinyint(4) NOT NULL,
 	`title` varchar(1024) NOT NULL,
-	`internal_title` varchar(1024) NOT NULL,
+	`title_internal` varchar(1024) NOT NULL,
 	`value` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_categories` (
 	`visible` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `[prefix]shop_category_attributes` (
+CREATE TABLE IF NOT EXISTS `[prefix]shop_categories_attributes` (
 	`id` int(11) NOT NULL COMMENT 'Category id',
 	`attribute` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -98,12 +98,12 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_tags` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `[prefix]shop_attributes`
-ADD PRIMARY KEY (`id`), ADD KEY `type` (`type`), ADD KEY `internal_title` (`internal_title`(255));
+ADD PRIMARY KEY (`id`), ADD KEY `type` (`type`), ADD KEY `title_internal` (`title_internal`(255));
 
 ALTER TABLE `[prefix]shop_categories`
 ADD PRIMARY KEY (`id`), ADD KEY `parent` (`parent`), ADD KEY `visible` (`visible`);
 
-ALTER TABLE `[prefix]shop_category_attributes`
+ALTER TABLE `[prefix]shop_categories_attributes`
 ADD PRIMARY KEY (`id`,`attribute`);
 
 ALTER TABLE `[prefix]shop_items`

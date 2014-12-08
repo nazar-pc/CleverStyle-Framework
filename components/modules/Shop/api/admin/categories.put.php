@@ -18,18 +18,20 @@ if (!isset(
 	$_POST['title'],
 	$_POST['description'],
 	$_POST['title_attribute'],
-	$_POST['visible']
+	$_POST['visible'],
+	$_POST['attributes']
 )) {
 	error_code(400);
 	return;
 }
-$result = Attributes::instance()->set(
+$result = Categories::instance()->set(
 	$Index->route_ids[0],
 	$_POST['parent'],
 	$_POST['title'],
 	$_POST['description'],
 	$_POST['title_attribute'],
-	$_POST['visible']
+	$_POST['visible'],
+	$_POST['attributes']
 );
 if (!$result) {
 	error_code(500);

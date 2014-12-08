@@ -38,7 +38,7 @@ class Attributes {
 		'id'             => 'int',
 		'type'           => 'int',
 		'title'          => 'ml:text',
-		'internal_title' => 'ml:text',
+		'title_internal' => 'ml:text',
 		'value'          => 'ml:'
 	];
 	protected $data_model_ml_group = 'Shop/attributes';
@@ -118,12 +118,12 @@ class Attributes {
 	 *
 	 * @param int          $type
 	 * @param string       $title
-	 * @param string       $internal_title
+	 * @param string       $title_internal
 	 * @param array|string $value
 	 *
 	 * @return bool|int Id of created attribute on success of <b>false</> on failure
 	 */
-	function add ($type, $title, $internal_title, $value) {
+	function add ($type, $title, $title_internal, $value) {
 		$id = $this->create_simple([
 			$type,
 			'',
@@ -132,7 +132,7 @@ class Attributes {
 		]);
 		if ($id) {
 			unset($this->cache->all);
-			$this->set($id, $type, $title, $internal_title, $value);
+			$this->set($id, $type, $title, $title_internal, $value);
 		}
 		return $id;
 	}
@@ -142,17 +142,17 @@ class Attributes {
 	 * @param int          $id
 	 * @param int          $type
 	 * @param string       $title
-	 * @param string       $internal_title
+	 * @param string       $title_internal
 	 * @param array|string $value
 	 *
 	 * @return bool
 	 */
-	function set ($id, $type, $title, $internal_title, $value) {
+	function set ($id, $type, $title, $title_internal, $value) {
 		$result = $this->update_simple([
 			$id,
 			$type,
 			trim($title),
-			trim($internal_title),
+			trim($title_internal),
 			is_array($value) ? _json_encode(xap($value)) : ''
 		]);
 		if ($result) {
