@@ -50,5 +50,9 @@
 	"shop_order_status_addition"    : "Order status addition",
 	"shop_order_status_edition"     : "Order status edition",
 	"shop_color"                    : "Color",
-	"shop_comment_used_in_email"    : "Comment (used in email sending)"
+	"shop_comment_used_in_email"    : "Comment (used in email sending)",
+	"shop_shipping_types"           : "Shipping types",
+	"shop_price"                    : "Price",
+	"shop_phone_needed"             : "Phone needed",
+	"shop_address_needed"           : "Address needed"
 }

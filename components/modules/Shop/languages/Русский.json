@@ -50,5 +50,9 @@
 	"shop_order_status_addition"    : "Добавление статуса заказа",
 	"shop_order_status_edition"     : "Редактирование статуса заказа",
 	"shop_color"                    : "Цвет",
-	"shop_comment_used_in_email"    : "Комментарий (используетсяя при отправке email)"
+	"shop_comment_used_in_email"    : "Комментарий (используетсяя при отправке email)",
+	"shop_shipping_types"           : "Типы доставки",
+	"shop_price"                    : "Цена",
+	"shop_phone_needed"             : "Нужен телефон",
+	"shop_address_needed"           : "Нужен адресс"
 }

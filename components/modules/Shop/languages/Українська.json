@@ -50,5 +50,9 @@
 	"shop_order_status_addition"    : "Додавання статусу замовлення",
 	"shop_order_status_edition"     : "Редагування статусу замовлення",
 	"shop_color"                    : "Колір",
-	"shop_comment_used_in_email"    : "Коментар (використовується при надсиланні email)"
+	"shop_comment_used_in_email"    : "Коментар (використовується при надсиланні email)",
+	"shop_shipping_types"           : "Типи доставки",
+	"shop_price"                    : "Ціна",
+	"shop_phone_needed"             : "Потрібен телефон",
+	"shop_address_needed"           : "Потрібна адреса"
 }

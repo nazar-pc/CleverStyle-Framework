@@ -69,6 +69,19 @@ class Shipping_types {
 		});
 	}
 	/**
+	 * Get array of all shipping types
+	 *
+	 * @return int[] Array of categories ids
+	 */
+	function get_all () {
+		return $this->cache->get('all', function () {
+			return $this->db()->qfas(
+				"SELECT `id`
+				FROM `$this->table`"
+			) ?: [];
+		});
+	}
+	/**
 	 * Add new shipping type
 	 *
 	 * @param float  $price
@@ -80,13 +93,17 @@ class Shipping_types {
 	 * @return bool|int Id of created item on success of <b>false</> on failure
 	 */
 	function add ($price, $phone_needed, $address_needed, $title, $description) {
-		return $this->create_simple([
+		$id = $this->create_simple([
 			$price,
 			$phone_needed,
 			$address_needed,
 			$title,
 			$description
 		]);
+		if ($id) {
+			unset($this->cache->all);
+		}
+		return $id;
 	}
 	/**
 	 * Set data of specified shipping type
@@ -101,21 +118,23 @@ class Shipping_types {
 	 * @return bool
 	 */
 	function set ($id, $price, $phone_needed, $address_needed, $title, $description) {
-		$id = (int)$id;
-		if ($this->update_simple([
+		$id     = (int)$id;
+		$result = $this->update_simple([
 			$id,
 			$price,
 			$phone_needed,
 			$address_needed,
 			$title,
 			$description
-		])
-		) {
+		]);
+		if ($result) {
 			$L = Language::instance();
-			$this->cache->del("$id/$L->clang");
-			return true;
+			unset(
+				$this->cache->{"$id/$L->clang"},
+				$this->cache->all
+			);
 		}
-		return false;
+		return $result;
 	}
 	/**
 	 * Delete specified shipping type
@@ -125,11 +144,14 @@ class Shipping_types {
 	 * @return bool
 	 */
 	function del ($id) {
-		$id = (int)$id;
-		if ($this->delete_simple($id)) {
-			unset($this->cache->$id);
-			return true;
+		$id     = (int)$id;
+		$result = $this->delete_simple($id);
+		if ($result) {
+			unset(
+				$this->cache->$id,
+				$this->cache->all
+			);
 		}
-		return false;
+		return $result;
 	}
 }
