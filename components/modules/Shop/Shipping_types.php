@@ -71,7 +71,7 @@ class Shipping_types {
 	/**
 	 * Get array of all shipping types
 	 *
-	 * @return int[] Array of categories ids
+	 * @return int[] Array of shipping types ids
 	 */
 	function get_all () {
 		return $this->cache->get('all', function () {

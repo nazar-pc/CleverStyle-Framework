@@ -56,5 +56,15 @@
 	"shop_phone_needed"             : "Потрібен телефон",
 	"shop_address_needed"           : "Потрібна адреса",
 	"shop_shipping_type_addition"   : "Додавання типу доставки",
-	"shop_shipping_type_edition"    : "Редагування типу доставки"
+	"shop_shipping_type_edition"    : "Редагування типу доставки",
+	"shop_orders"                   : "Замовлення",
+	"shop_user"                     : "Користувач",
+	"shop_datetime"                 : "Дата і час",
+	"shop_shipping_type"            : "Тип доставки",
+	"shop_shipping_phone"           : "Телефон",
+	"shop_shipping_address"         : "Адреса доставки",
+	"shop_status"                   : "Стан",
+	"shop_comment"                  : "Коментар",
+	"shop_details"                  : "Деталі",
+	"shop_order_items"              : "Позиції"
 }

@@ -84,7 +84,7 @@ class Attributes {
 	/**
 	 * Get array of all attributes
 	 *
-	 * @return int[] Array of categories ids
+	 * @return int[] Array of attributes ids
 	 */
 	function get_all () {
 		return $this->cache->get('all', function () {

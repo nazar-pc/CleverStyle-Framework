@@ -51,6 +51,17 @@ class Orders {
 		return $this->read_simple($id);
 	}
 	/**
+	 * Get array of all orders
+	 *
+	 * @return int[] Array of orders ids
+	 */
+	function get_all () {
+		return $this->db()->qfas(
+			"SELECT `id`
+			FROM `$this->table`"
+		) ?: [];
+	}
+	/**
 	 * Get order statuses history
 	 *
 	 * @param int $id

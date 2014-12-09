@@ -83,9 +83,9 @@ class Order_statuses {
 		});
 	}
 	/**
-	 * Get array of all attributes
+	 * Get array of all order statuses
 	 *
-	 * @return int[] Array of categories ids
+	 * @return int[] Array of order statuses ids
 	 */
 	function get_all () {
 		return $this->cache->get('all', function () {

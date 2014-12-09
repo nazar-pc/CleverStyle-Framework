@@ -56,5 +56,15 @@
 	"shop_phone_needed"             : "Phone needed",
 	"shop_address_needed"           : "Address needed",
 	"shop_shipping_type_addition"   : "Shipping type addition",
-	"shop_shipping_type_edition"    : "Shipping type edition"
+	"shop_shipping_type_edition"    : "Shipping type edition",
+	"shop_orders"                   : "Orders",
+	"shop_user"                     : "User",
+	"shop_datetime"                 : "Date and time",
+	"shop_shipping_type"            : "Shipping type",
+	"shop_shipping_phone"           : "Phone",
+	"shop_shipping_address"         : "Shipping address",
+	"shop_status"                   : "Status",
+	"shop_comment"                  : "User comment",
+	"shop_details"                  : "Details",
+	"shop_order_items"              : "Items"
 }
