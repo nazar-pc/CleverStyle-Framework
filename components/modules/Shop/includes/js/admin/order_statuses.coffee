@@ -24,7 +24,7 @@ $ ->
 				#{L.shop_order_status_type}: <select name="type">#{types}</select>
 			</p>
 			<p>
-				#{L.shop_send_update_status_email}
+				#{L.shop_send_update_status_email}:
 				<label><input type="radio" name="send_update_status_email" value="1" checked> #{L.yes}</label>
 				<label><input type="radio" name="send_update_status_email" value="0"> #{L.no}</label>
 			</p>

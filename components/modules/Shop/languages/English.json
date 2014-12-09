@@ -54,5 +54,7 @@
 	"shop_shipping_types"           : "Shipping types",
 	"shop_price"                    : "Price",
 	"shop_phone_needed"             : "Phone needed",
-	"shop_address_needed"           : "Address needed"
+	"shop_address_needed"           : "Address needed",
+	"shop_shipping_type_addition"   : "Shipping type addition",
+	"shop_shipping_type_edition"    : "Shipping type edition"
 }

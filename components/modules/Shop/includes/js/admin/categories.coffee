@@ -60,7 +60,7 @@ $ ->
 				#{L.shop_title_attribute}: <select name="title_attribute">#{attributes}</select>
 			</p>
 			<p>
-				#{L.shop_visible}
+				#{L.shop_visible}:
 				<label><input type="radio" name="visible" value="1" checked> #{L.yes}</label>
 				<label><input type="radio" name="visible" value="0"> #{L.no}</label>
 			</p>

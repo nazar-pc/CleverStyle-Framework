@@ -54,5 +54,7 @@
 	"shop_shipping_types"           : "Типи доставки",
 	"shop_price"                    : "Ціна",
 	"shop_phone_needed"             : "Потрібен телефон",
-	"shop_address_needed"           : "Потрібна адреса"
+	"shop_address_needed"           : "Потрібна адреса",
+	"shop_shipping_type_addition"   : "Додавання типу доставки",
+	"shop_shipping_type_edition"    : "Редагування типу доставки"
 }
