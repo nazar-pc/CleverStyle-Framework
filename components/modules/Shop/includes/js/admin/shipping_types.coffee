@@ -11,10 +11,10 @@ $ ->
 		$.cs.simple_modal("""<form>
 			<h3 class="cs-center">#{title}</h3>
 			<p>
-				#{L.shop_title}: <input name="title">
+				#{L.shop_title}: <input name="title" required>
 			</p>
 			<p>
-				#{L.shop_price}: <input name="price" type="number" min="0">
+				#{L.shop_price}: <input name="price" type="number" min="0" value="0" required>
 			</p>
 			<p>
 				#{L.shop_phone_needed}:

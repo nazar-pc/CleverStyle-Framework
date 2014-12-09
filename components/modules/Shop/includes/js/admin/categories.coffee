@@ -45,19 +45,19 @@ $ ->
 		$.cs.simple_modal("""<form>
 			<h3 class="cs-center">#{title}</h3>
 			<p>
-				#{L.shop_parent_category}: <select name="parent">#{categories}</select>
+				#{L.shop_parent_category}: <select name="parent" required>#{categories}</select>
 			</p>
 			<p>
-				#{L.shop_title}: <input name="title">
+				#{L.shop_title}: <input name="title" required>
 			</p>
 			<p>
 				#{L.shop_description}: <textarea name="description"></textarea>
 			</p>
 			<p>
-				#{L.shop_category_attributes}: <select name="attributes[]" multiple>#{attributes}</select>
+				#{L.shop_category_attributes}: <select name="attributes[]" multiple required>#{attributes}</select>
 			</p>
 			<p>
-				#{L.shop_title_attribute}: <select name="title_attribute">#{attributes}</select>
+				#{L.shop_title_attribute}: <select name="title_attribute" required>#{attributes}</select>
 			</p>
 			<p>
 				#{L.shop_visible}:

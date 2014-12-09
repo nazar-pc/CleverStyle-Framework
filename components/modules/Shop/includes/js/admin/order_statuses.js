@@ -26,7 +26,7 @@
         return _results;
       })();
       types = types.join('');
-      modal = $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_title + ": <input name=\"title\">\n	</p>\n	<p>\n		" + L.shop_color + ": <input name=\"color\"><input type=\"color\">\n	</p>\n	<p>\n		" + L.shop_order_status_type + ": <select name=\"type\">" + types + "</select>\n	</p>\n	<p>\n		" + L.shop_send_update_status_email + ":\n		<label><input type=\"radio\" name=\"send_update_status_email\" value=\"1\" checked> " + L.yes + "</label>\n		<label><input type=\"radio\" name=\"send_update_status_email\" value=\"0\"> " + L.no + "</label>\n	</p>\n	<p>\n		" + L.shop_comment_used_in_email + ": <textarea name=\"comment\"></textarea>\n	</p>\n	<p>\n		<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n	</p>\n</form>");
+      modal = $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_title + ": <input name=\"title\" required>\n	</p>\n	<p>\n		" + L.shop_color + ": <input name=\"color\"><input type=\"color\">\n	</p>\n	<p>\n		" + L.shop_order_status_type + ": <select name=\"type\" required>" + types + "</select>\n	</p>\n	<p>\n		" + L.shop_send_update_status_email + ":\n		<label><input type=\"radio\" name=\"send_update_status_email\" value=\"1\" checked> " + L.yes + "</label>\n		<label><input type=\"radio\" name=\"send_update_status_email\" value=\"0\"> " + L.no + "</label>\n	</p>\n	<p>\n		" + L.shop_comment_used_in_email + ": <textarea name=\"comment\"></textarea>\n	</p>\n	<p>\n		<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n	</p>\n</form>");
       modal.find('[type=color]').change(function() {
         var $this;
         $this = $(this);

@@ -15,13 +15,13 @@ $ ->
 		modal	=$.cs.simple_modal("""<form>
 			<h3 class="cs-center">#{title}</h3>
 			<p>
-				#{L.shop_title}: <input name="title">
+				#{L.shop_title}: <input name="title" required>
 			</p>
 			<p>
 				#{L.shop_color}: <input name="color"><input type="color">
 			</p>
 			<p>
-				#{L.shop_order_status_type}: <select name="type">#{types}</select>
+				#{L.shop_order_status_type}: <select name="type" required>#{types}</select>
 			</p>
 			<p>
 				#{L.shop_send_update_status_email}:

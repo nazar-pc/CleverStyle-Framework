@@ -16,16 +16,16 @@ $ ->
 		$.cs.simple_modal("""<form>
 			<h3 class="cs-center">#{title}</h3>
 			<p>
-				#{L.shop_attribute_type}: <select name="type">#{types}</select>
+				#{L.shop_attribute_type}: <select name="type" required>#{types}</select>
 			</p>
 			<p>
-				#{L.shop_possible_values}: <textarea name="value" value="0"></textarea>
+				#{L.shop_possible_values}: <textarea name="value"></textarea>
 			</p>
 			<p>
-				#{L.shop_title}: <input name="title">
+				#{L.shop_title}: <input name="title" required>
 			</p>
 			<p>
-				#{L.shop_title_internal}: <input name="title_internal">
+				#{L.shop_title_internal}: <input name="title_internal" required>
 			</p>
 			<p>
 				<button class="uk-button" type="submit">#{action}</button>

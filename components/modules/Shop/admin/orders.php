@@ -70,14 +70,12 @@ $Page->content(
 								'data-id' => $order['id']
 							]
 						).
-						h::br().
 						h::{'button.uk-button.cs-shop-order-edit'}(
 							$L->edit,
 							[
 								'data-id' => $order['id']
 							]
 						).
-						h::br().
 						h::{'button.uk-button.cs-shop-order-delete'}(
 							$L->delete,
 							[
