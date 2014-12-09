@@ -29,7 +29,7 @@
       types = types.join('');
       return $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_attribute_type + ": <select name=\"type\">" + types + "</select>\n	</p>\n	<p>\n		" + L.shop_possible_values + ": <textarea name=\"value\"></textarea>\n	</p>\n	<p>\n		" + L.shop_title + ": <input name=\"title\">\n	</p>\n	<p>\n		" + L.shop_title_internal + ": <input name=\"title_internal\">\n	</p>\n	<p>\n		<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n	</p>\n</form>");
     };
-    return $('html').on('click', '.cs-shop-attribute-add', function() {
+    return $('html').on('mousedown', '.cs-shop-attribute-add', function() {
       return $.getJSON('api/Shop/admin/attributes/types', function(types) {
         var modal;
         modal = make_modal(types, L.shop_attribute_addition, L.shop_add);
@@ -63,7 +63,7 @@
           }
         });
       });
-    }).on('click', '.cs-shop-attribute-edit', function() {
+    }).on('mousedown', '.cs-shop-attribute-edit', function() {
       var id;
       id = $(this).data('id');
       return $.when($.getJSON('api/Shop/admin/attributes/types'), $.getJSON("api/Shop/admin/attributes/" + id)).done(function(types, attribute) {
@@ -104,7 +104,7 @@
         modal.find('[name=title]').val(attribute.title);
         return modal.find('[name=title_internal]').val(attribute.title_internal);
       });
-    }).on('click', '.cs-shop-attribute-delete', function() {
+    }).on('mousedown', '.cs-shop-attribute-delete', function() {
       var id;
       id = $(this).data('id');
       if (confirm(L.shop_sure_want_to_delete)) {

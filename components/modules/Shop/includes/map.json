@@ -1,6 +1,7 @@
 {
 	"admin/Shop" : [
 		"admin/attributes.js",
-		"admin/categories.js"
+		"admin/categories.js",
+		"admin/order_statuses.js"
 	]
 }

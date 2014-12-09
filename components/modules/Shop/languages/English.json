@@ -46,5 +46,9 @@
 	"shop_category_edition"         : "Category edition",
 	"shop_parent_category"          : "Parent category",
 	"shop_description"              : "Description",
-	"shop_category_attributes"      : "Attributes used in category"
+	"shop_category_attributes"      : "Attributes used in category",
+	"shop_order_status_addition"    : "Order status addition",
+	"shop_order_status_edition"     : "Order status edition",
+	"shop_color"                    : "Color",
+	"shop_comment_used_in_email"    : "Comment (used in email sending)"
 }

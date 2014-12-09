@@ -32,7 +32,7 @@ $ ->
 			</p>
 		</form>""")
 	$('html')
-		.on('click', '.cs-shop-attribute-add', ->
+		.on('mousedown', '.cs-shop-attribute-add', ->
 			$.getJSON('api/Shop/admin/attributes/types', (types) ->
 				modal	= make_modal(types, L.shop_attribute_addition, L.shop_add)
 				modal
@@ -67,7 +67,7 @@ $ ->
 				)
 			)
 		)
-		.on('click', '.cs-shop-attribute-edit', ->
+		.on('mousedown', '.cs-shop-attribute-edit', ->
 			id = $(@).data('id')
 			$.when(
 				$.getJSON('api/Shop/admin/attributes/types')
@@ -110,7 +110,7 @@ $ ->
 				modal.find('[name=title]').val(attribute.title)
 				modal.find('[name=title_internal]').val(attribute.title_internal)
 		)
-		.on('click', '.cs-shop-attribute-delete', ->
+		.on('mousedown', '.cs-shop-attribute-delete', ->
 			id = $(@).data('id')
 			if confirm(L.shop_sure_want_to_delete)
 				$.ajax(

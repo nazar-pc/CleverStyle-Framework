@@ -46,5 +46,9 @@
 	"shop_category_edition"         : "Редактирование категории",
 	"shop_parent_category"          : "Родительская категория",
 	"shop_description"              : "Описание",
-	"shop_category_attributes"      : "Атрибуты используемые в категории"
+	"shop_category_attributes"      : "Атрибуты используемые в категории",
+	"shop_order_status_addition"    : "Добавление статуса заказа",
+	"shop_order_status_edition"     : "Редактирование статуса заказа",
+	"shop_color"                    : "Цвет",
+	"shop_comment_used_in_email"    : "Комментарий (используетсяя при отправке email)"
 }

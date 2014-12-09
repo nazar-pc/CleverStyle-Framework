@@ -46,5 +46,9 @@
 	"shop_category_edition"         : "Редагування категорії",
 	"shop_parent_category"          : "Батьківська категорія",
 	"shop_description"              : "Опис",
-	"shop_category_attributes"      : "Отрибути що використовуються в категорії"
+	"shop_category_attributes"      : "Отрибути що використовуються в категорії",
+	"shop_order_status_addition"    : "Додавання статусу замовлення",
+	"shop_order_status_edition"     : "Редагування статусу замовлення",
+	"shop_color"                    : "Колір",
+	"shop_comment_used_in_email"    : "Коментар (використовується при надсиланні email)"
 }

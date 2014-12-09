@@ -69,7 +69,7 @@ $ ->
 			</p>
 		</form>""")
 	$('html')
-		.on('click', '.cs-shop-category-add', ->
+		.on('mousedown', '.cs-shop-category-add', ->
 			$.when(
 				$.getJSON('api/Shop/admin/attributes')
 				$.getJSON('api/Shop/admin/categories')
@@ -86,7 +86,7 @@ $ ->
 					)
 					return false
 		)
-		.on('click', '.cs-shop-category-edit', ->
+		.on('mousedown', '.cs-shop-category-edit', ->
 			id = $(@).data('id')
 			$.when(
 				$.getJSON('api/Shop/admin/attributes')
@@ -113,7 +113,7 @@ $ ->
 				modal.find('[name=title_attribute]').val(category.title_attribute)
 				modal.find("[name=visible][value=#{category.visible}]").prop('checked', true)
 		)
-		.on('click', '.cs-shop-category-delete', ->
+		.on('mousedown', '.cs-shop-category-delete', ->
 			id = $(@).data('id')
 			if confirm(L.shop_sure_want_to_delete)
 				$.ajax(

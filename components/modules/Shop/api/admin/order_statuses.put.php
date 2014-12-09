@@ -11,7 +11,7 @@ use
 	cs\Index,
 	cs\Page;
 
-$Index = Index::instance();var_dump($_POST);
+$Index = Index::instance();
 if (!isset(
 	$Index->route_ids[0],
 	$_POST['title'],
