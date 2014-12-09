@@ -18,12 +18,14 @@ use
 
 Index::instance()->buttons = false;
 $L                         = new Prefix('shop_');
-$Language				= Language::instance();
+$Language                  = Language::instance();
 $Page                      = Page::instance();
 $Page->title($L->orders);
-$Orders       = Orders::instance();
+$Items          = Items::instance();
+$Orders         = Orders::instance();
 $Order_statuses = Order_statuses::instance();
-$all_orders   = $Orders->get($Orders->get_all());
+$Shipping_types = Shipping_types::instance();
+$all_orders     = $Orders->get($Orders->get_all());
 usort($all_orders, function ($attr1, $attr2) {
 	return $attr1['title'] > $attr2['title'] ? 1 : -1;
 });
@@ -41,7 +43,7 @@ $Page->content(
 			$L->action
 		).
 		h::{'cs-table-row'}(array_map(
-			function ($order) use ($L, $Language, $Order_statuses, $Orders) {
+			function ($order) use ($L, $Language, $Items, $Order_statuses, $Orders, $Shipping_types) {
 				$order_status = $Order_statuses->get($order['status']);
 				return h::cs_table_cell(
 					[
@@ -52,9 +54,14 @@ $Page->content(
 						User::instance()->username($order['user']).h::br().$order['shipping_phone'], // TODO links to all orders of this user
 						implode(
 							h::br(),
-							array_column($Orders->get_items($order['id']), 'title') // TODO links to items
+							array_map(
+								function ($item) use ($Items) {
+									return $Items->get($item['item'])['title']; // TODO links to items
+								},
+								$Orders->get_items($order['id'])
+							)
 						),
-						Shipping_types::instance()->get($order['shipping_type'])['title'], // TODO links to all orders with this shipping type
+						$Shipping_types->get($order['shipping_type'])['title'], // TODO links to all orders with this shipping type
 						$order_status['title'], // TODO links to all orders with this order status
 						$order['comment'],
 						h::{'button.uk-button.cs-shop-order-details'}( // TODO details page/modal
@@ -63,12 +70,14 @@ $Page->content(
 								'data-id' => $order['id']
 							]
 						).
+						h::br().
 						h::{'button.uk-button.cs-shop-order-edit'}(
 							$L->edit,
 							[
 								'data-id' => $order['id']
 							]
 						).
+						h::br().
 						h::{'button.uk-button.cs-shop-order-delete'}(
 							$L->delete,
 							[

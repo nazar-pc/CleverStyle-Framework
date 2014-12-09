@@ -67,7 +67,7 @@ class Items {
 			$data               = $this->read_simple($id);
 			$data['attributes'] = $this->db()->qfa(
 				"SELECT
-					`atribute`,
+					`attribute`,
 					`numeric_value`,
 					`string_value`,
 					`text_value`
@@ -86,7 +86,7 @@ class Items {
 			if (!in_array($title_attribute, array_column($data['attributes'], 'attribute'))) {
 				$data['attributes'][] = $this->db()->qfas(
 					"SELECT
-						`atribute`,
+						`attribute`,
 						`numeric_value`,
 						`string_value`,
 						`text_value`
@@ -107,6 +107,12 @@ class Items {
 				$value['value'] = $value[$this->attribute_type_to_value_field($attribute['type'])];
 			}
 			unset($index, $value, $attribute);
+			$data['title'] =
+				array_column(
+					$data['attributes'],
+					'value',
+					'attribute'
+				)[Categories::instance()->get($data['category'])['title_attribute']];
 			$data['attributes'] = array_column($data['attributes'], 'value', 'attribute');
 			$data['images']     = $this->db()->qfas(
 				"SELECT `image`
