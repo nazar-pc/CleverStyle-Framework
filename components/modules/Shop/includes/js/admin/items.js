@@ -115,8 +115,6 @@
             return images_container.sortable({
               placeholder: '<span>&nbsp;</span>',
               forcePlaceholderSize: true
-            }).on('sortstart', function() {
-              return console.log('');
             }).on('sortupdate', modal.update_images);
           } else {
             return images_container.sortable('destroy');

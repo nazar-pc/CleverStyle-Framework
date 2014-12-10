@@ -116,11 +116,6 @@ $ ->
 							forcePlaceholderSize	: true
 						)
 						.on(
-							'sortstart'
-							->
-								console.log ''
-						)
-						.on(
 							'sortupdate'
 							modal.update_images
 						)
