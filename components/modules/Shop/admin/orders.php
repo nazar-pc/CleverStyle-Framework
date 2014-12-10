@@ -26,9 +26,6 @@ $Orders         = Orders::instance();
 $Order_statuses = Order_statuses::instance();
 $Shipping_types = Shipping_types::instance();
 $all_orders     = $Orders->get($Orders->get_all());
-usort($all_orders, function ($attr1, $attr2) {
-	return $attr1['title'] > $attr2['title'] ? 1 : -1;
-});
 $Page->content(
 	h::{'h3.uk-lead.cs-center'}($L->orders).
 	h::{'cs-table[list][with-header]'}(

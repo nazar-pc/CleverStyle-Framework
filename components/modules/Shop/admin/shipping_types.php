@@ -20,8 +20,8 @@ $Page                      = Page::instance();
 $Page->title($L->shipping_types);
 $Shipping_types     = Shipping_types::instance();
 $all_shipping_types = $Shipping_types->get($Shipping_types->get_all());
-usort($all_shipping_types, function ($attr1, $attr2) {
-	return $attr1['title'] > $attr2['title'] ? 1 : -1;
+usort($all_shipping_types, function ($shipping_type1, $shipping_type2) {
+	return $shipping_type1['title'] > $shipping_type2['title'] ? 1 : -1;
 });
 $Page->content(
 	h::{'h3.uk-lead.cs-center'}($L->shipping_types).
@@ -34,22 +34,22 @@ $Page->content(
 			$L->action
 		).
 		h::{'cs-table-row| cs-table-cell'}(array_map(
-			function ($order_status) use ($L) {
+			function ($shipping_type) use ($L) {
 				return [
-					$order_status['title'],
-					$order_status['price'],
-					h::icon($order_status['phone_needed'] ? 'check' : 'minus'),
-					h::icon($order_status['address_needed'] ? 'check' : 'minus'),
+					$shipping_type['title'],
+					$shipping_type['price'],
+					h::icon($shipping_type['phone_needed'] ? 'check' : 'minus'),
+					h::icon($shipping_type['address_needed'] ? 'check' : 'minus'),
 					h::{'button.uk-button.cs-shop-shipping-type-edit'}(
 						$L->edit,
 						[
-							'data-id' => $order_status['id']
+							'data-id' => $shipping_type['id']
 						]
 					).
 					h::{'button.uk-button.cs-shop-shipping-type-delete'}(
 						$L->delete,
 						[
-							'data-id' => $order_status['id']
+							'data-id' => $shipping_type['id']
 						]
 					)
 				];
