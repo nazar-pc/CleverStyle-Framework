@@ -66,5 +66,9 @@
 	"shop_status"                   : "Состояние",
 	"shop_comment"                  : "Комментарий пользователя",
 	"shop_details"                  : "Подробности",
-	"shop_order_items"              : "Позиции"
+	"shop_order_items"              : "Позиции",
+	"shop_items"                    : "Позиции",
+	"shop_category"                 : "Категория",
+	"shop_in_stock"                 : "Количество позиций в наличии",
+	"shop_listed"                   : "Размещена"
 }

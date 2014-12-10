@@ -107,7 +107,7 @@ class Items {
 				$value['value'] = $value[$this->attribute_type_to_value_field($attribute['type'])];
 			}
 			unset($index, $value, $attribute);
-			$data['title'] =
+			$data['title']      =
 				array_column(
 					$data['attributes'],
 					'value',
@@ -144,6 +144,19 @@ class Items {
 			}
 			$data['tags'] = Tags::instance()->get($data['tags']);
 			return $data;
+		});
+	}
+	/**
+	 * Get array of all items
+	 *
+	 * @return int[] Array of items ids
+	 */
+	function get_all () {
+		return $this->cache->get('all', function () {
+			return $this->db()->qfas(
+				"SELECT `id`
+				FROM `$this->table`"
+			) ?: [];
 		});
 	}
 	/**
@@ -191,10 +204,11 @@ class Items {
 			$in_stock,
 			$listed
 		]);
-		if (!$id) {
-			return false;
+		if ($id) {
+			unset($this->cache->all);
+			$this->set($id, $category, $price, $in_stock, $listed, $attributes, $images, $tags);
 		}
-		return $this->set($id, $category, $price, $in_stock, $listed, $attributes, $images, $tags);
+		return $id;
 	}
 	/**
 	 * Set data of specified item
@@ -225,7 +239,7 @@ class Items {
 		if (!$result) {
 			return false;
 		}
-		$images	= array_filter($images, function ($image) {
+		$images    = array_filter($images, function ($image) {
 			return filter_var($image, FILTER_VALIDATE_URL);
 		});
 		$old_files = $this->get($id)['images'];
@@ -391,7 +405,10 @@ class Items {
 				($id, '%d', $L->clang)",
 			$tags
 		);
-		$this->cache->del("$id/$L->clang");
+		unset(
+			$this->cache->{"$id/$L->clang"},
+			$this->cache->all
+		);
 		return true;
 	}
 	/**
@@ -402,25 +419,28 @@ class Items {
 	 * @return bool
 	 */
 	function del ($id) {
-		$id = (int)$id;
-		if (!$id || !$this->delete_simple($id)) {
-			return false;
+		$id     = (int)$id;
+		$result = $this->delete_simple($id);
+		if ($result) {
+			$this->db_prime()->q([
+				"DELETE FROM `{$this->table}_attributes`
+				WHERE `id` = $id",
+				"DELETE FROM `{$this->table}_images`
+				WHERE `id` = $id",
+				"DELETE FROM `{$this->table}_tags`
+				WHERE `id` = $id"
+			]);
+			Trigger::instance()->run(
+				'System/upload_files/del_tag',
+				[
+					'tag' => "Shop/items/$id%"
+				]
+			);
+			unset(
+				$this->cache->$id,
+				$this->cache->all
+			);
 		}
-		$this->db_prime()->q([
-			"DELETE FROM `{$this->table}_attributes`
-			WHERE `id` = $id",
-			"DELETE FROM `{$this->table}_images`
-			WHERE `id` = $id",
-			"DELETE FROM `{$this->table}_tags`
-			WHERE `id` = $id"
-		]);
-		Trigger::instance()->run(
-			'System/upload_files/del_tag',
-			[
-				'tag' => "Shop/items/$id%"
-			]
-		);
-		unset($this->cache->$id);
-		return true;
+		return $result;
 	}
 }

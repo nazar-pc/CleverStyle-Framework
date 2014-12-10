@@ -66,5 +66,9 @@
 	"shop_status"                   : "Стан",
 	"shop_comment"                  : "Коментар",
 	"shop_details"                  : "Деталі",
-	"shop_order_items"              : "Позиції"
+	"shop_order_items"              : "Позиції",
+	"shop_items"                    : "Позиції",
+	"shop_category"                 : "Категорія",
+	"shop_in_stock"                 : "Кількість позицій в наявності",
+	"shop_listed"                   : "Розміщена"
 }

@@ -66,5 +66,9 @@
 	"shop_status"                   : "Status",
 	"shop_comment"                  : "User comment",
 	"shop_details"                  : "Details",
-	"shop_order_items"              : "Items"
+	"shop_order_items"              : "Items",
+	"shop_items"                    : "Items",
+	"shop_category"                 : "Category",
+	"shop_in_stock"                 : "Number of items in stock",
+	"shop_listed"                   : "Listed"
 }

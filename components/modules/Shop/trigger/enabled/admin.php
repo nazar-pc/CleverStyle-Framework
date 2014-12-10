@@ -31,6 +31,7 @@ Trigger::instance()->register(
 	function () {
 		add_menu_section_item('orders');
 		add_menu_section_item('categories');
+		add_menu_section_item('items');
 		add_menu_section_item('attributes');
 		add_menu_section_item('order_statuses');
 		add_menu_section_item('shipping_types');
