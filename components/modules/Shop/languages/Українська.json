@@ -69,6 +69,11 @@
 	"shop_order_items"              : "Позиції",
 	"shop_items"                    : "Позиції",
 	"shop_category"                 : "Категорія",
-	"shop_in_stock"                 : "Кількість позицій в наявності",
-	"shop_listed"                   : "Розміщена"
+	"shop_in_stock"                 : "В наявності",
+	"shop_listed"                   : "Розміщена",
+	"shop_item_addition"            : "Додавання позиції",
+	"shop_item_edition"             : "Редагування позиції",
+	"shop_add_images"               : "Додати зображення",
+	"shop_remove_image"             : "Видалити зображення",
+	"shop_tags"                     : "Теги"
 }

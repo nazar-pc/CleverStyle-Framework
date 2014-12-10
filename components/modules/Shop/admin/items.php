@@ -35,27 +35,32 @@ $Page->content(
 			$L->listed,
 			$L->action
 		).
-		h::{'cs-table-row| cs-table-cell'}(array_map(
+		h::cs_table_row(array_map(
 			function ($item) use ($L, $Categories) {
-				return [
-					$item['title'],
-					$Categories->get($item['category'])['title'], // TODO link to all items in this category
-					$item['price'],
-					$item['in_stock'],
-					h::icon($item['listed'] ? 'check' : 'minus'), // TODO link to all listed items
-					h::{'button.uk-button.cs-shop-item-edit'}(
-						$L->edit,
-						[
-							'data-id' => $item['id']
-						]
-					).
-					h::{'button.uk-button.cs-shop-item-delete'}(
-						$L->delete,
-						[
-							'data-id' => $item['id']
-						]
-					)
-				];
+				return h::cs_table_cell(
+					[
+						$item['title'],
+						$Categories->get($item['category'])['title'], // TODO link to all items in this category
+						$item['price'],
+						$item['in_stock'],
+						h::icon($item['listed'] ? 'check' : 'minus'), // TODO link to all listed items
+						h::{'button.uk-button.cs-shop-item-edit'}(
+							$L->edit,
+							[
+								'data-id' => $item['id']
+							]
+						).
+						h::{'button.uk-button.cs-shop-item-delete'}(
+							$L->delete,
+							[
+								'data-id' => $item['id']
+							]
+						)
+					],
+					[
+						'class'	=> $item['listed'] ? 'uk-alert-success' : (!$item['listed'] && $item['in_stock'] ? 'uk-alert-warning' : 'uk-alert-danger')
+					]
+				);
 			},
 			$all_items
 		) ?: false)

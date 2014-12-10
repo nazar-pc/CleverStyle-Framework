@@ -69,6 +69,11 @@
 	"shop_order_items"              : "Позиции",
 	"shop_items"                    : "Позиции",
 	"shop_category"                 : "Категория",
-	"shop_in_stock"                 : "Количество позиций в наличии",
-	"shop_listed"                   : "Размещена"
+	"shop_in_stock"                 : "В наличии",
+	"shop_listed"                   : "Размещена",
+	"shop_item_addition"            : "Добавление позиции",
+	"shop_item_edition"             : "Редактирование позиции",
+	"shop_add_images"               : "Добавить изображения",
+	"shop_remove_image"             : "Удалить изображения",
+	"shop_tags"                     : "Тэги"
 }

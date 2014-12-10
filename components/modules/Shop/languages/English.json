@@ -69,6 +69,11 @@
 	"shop_order_items"              : "Items",
 	"shop_items"                    : "Items",
 	"shop_category"                 : "Category",
-	"shop_in_stock"                 : "Number of items in stock",
-	"shop_listed"                   : "Listed"
+	"shop_in_stock"                 : "In stock",
+	"shop_item_addition"            : "Item addition",
+	"shop_item_edition"             : "Item edition",
+	"shop_listed"                   : "Listed",
+	"shop_add_images"               : "Add images",
+	"shop_remove_image"             : "Remove image",
+	"shop_tags"                     : "Tags"
 }

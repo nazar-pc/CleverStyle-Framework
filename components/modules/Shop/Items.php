@@ -254,7 +254,7 @@ class Items {
 			FROM `{$this->table}_attributes`
 			WHERE
 				`id`			= $id AND
-				`lang`			= $L->clang AND
+				`lang`			= '$L->clang' AND
 				`text_value`	!= ''"
 		);
 		foreach ($old_attributes as $old_attribute) {
@@ -266,7 +266,7 @@ class Items {
 			WHERE
 				`id`	= $id AND
 				(
-					`lang`	= $L->clang OR
+					`lang`	= '$L->clang' OR
 					`lang`	= ''
 				)"
 		);
@@ -275,7 +275,7 @@ class Items {
 			$title_attribute = Categories::instance()->get($category)['title_attribute'];
 			foreach ($attributes as $attribute => &$value) {
 				$attribute = $Attributes->get($attribute);
-				if (!$attribute) {
+				if (!$attribute && $attribute != '0') {
 					unset($attributes[$attribute]);
 					continue;
 				}
@@ -347,7 +347,7 @@ class Items {
 		);
 		if ($images) {
 			$cdb->insert(
-				"INSERT INTO `{$this->table}_attributes`
+				"INSERT INTO `{$this->table}_images`
 					(
 						`id`,
 						`image`
@@ -357,7 +357,7 @@ class Items {
 						$id,
 						'%s'
 					)",
-				$images
+				xap($images)
 			);
 		}
 		/**
@@ -402,7 +402,7 @@ class Items {
 			"INSERT INTO `{$this->table}_tags`
 				(`id`, `tag`, `lang`)
 			VALUES
-				($id, '%d', $L->clang)",
+				($id, '%d', '$L->clang')",
 			$tags
 		);
 		unset(

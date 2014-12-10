@@ -74,6 +74,7 @@ class Tags {
 			return [];
 		}
 		$tags = xap($tags);
+		$tags = array_filter($tags);
 		$cdb  = $this->db_prime();
 		$cdb->insert(
 			"INSERT IGNORE INTO `[prefix]shop_tags`
