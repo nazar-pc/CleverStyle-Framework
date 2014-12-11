@@ -18,7 +18,6 @@ if (!isset(
 	$_POST['title'],
 	$_POST['description'],
 	$_POST['title_attribute'],
-	$_POST['order_status_on_creation'],
 	$_POST['visible'],
 	$_POST['attributes']
 )) {
@@ -31,7 +30,6 @@ $result = Categories::instance()->set(
 	$_POST['title'],
 	$_POST['description'],
 	$_POST['title_attribute'],
-	$_POST['order_status_on_creation'],
 	$_POST['visible'],
 	$_POST['attributes']
 );

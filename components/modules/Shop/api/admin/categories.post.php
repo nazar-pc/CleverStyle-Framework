@@ -16,7 +16,6 @@ if (!isset(
 	$_POST['title'],
 	$_POST['description'],
 	$_POST['title_attribute'],
-	$_POST['order_status_on_creation'],
 	$_POST['visible'],
 	$_POST['attributes']
 )) {
@@ -28,7 +27,6 @@ $id = Categories::instance()->add(
 	$_POST['title'],
 	$_POST['description'],
 	$_POST['title_attribute'],
-	$_POST['order_status_on_creation'],
 	$_POST['visible'],
 	$_POST['attributes']
 );

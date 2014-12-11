@@ -12,7 +12,6 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_categories` (
 	`title` varchar(1024) NOT NULL,
 	`description` text NOT NULL,
 	`title_attribute` int(11) NOT NULL,
-	`order_status_on_creation` int(11) NOT NULL,
 	`visible` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
