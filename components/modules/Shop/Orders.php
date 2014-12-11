@@ -151,15 +151,15 @@ class Orders {
 	/**
 	 * Add item to order
 	 *
-	 * @param int   $id    Order id
-	 * @param int   $item  Item id
-	 * @param int   $units How much units of this item ordered
-	 * @param float $price Total price of all units (not more than `$units * $unit_price`, may include discount)
+	 * @param int   $id         Order id
+	 * @param int   $item       Item id
+	 * @param int   $units      How much units of this item ordered
+	 * @param float $price      Total price of all units (not more than `$units * $unit_price`, may include discount)
+	 * @param float $unit_price Price of one item at the moment of order submission
 	 *
 	 * @return bool
 	 */
-	function add_item ($id, $item, $units, $price) {
-		$unit_price = Items::instance()->get($item)['price'];
+	function add_item ($id, $item, $units, $price, $unit_price) {
 		return $this->db_prime()->q(
 			"INSERT INTO `{$this->table}_items`
 				(
@@ -236,26 +236,28 @@ class Orders {
 	/**
 	 * Set item in order (update units and/or price)
 	 *
-	 * @param int   $id    Order id
-	 * @param int   $item  Item id
-	 * @param int   $units How much units of this item ordered
-	 * @param float $price Total price of all units (not more than `$units * $unit_price`, may include discount)
+	 * @param int   $id         Order id
+	 * @param int   $item       Item id
+	 * @param int   $units      How much units of this item ordered
+	 * @param float $price      Total price of all units (not more than `$units * $unit_price`, may include discount)
+	 * @param float $unit_price Price of one item at the moment of order submission
 	 *
 	 * @return bool
 	 */
-	function set_item ($id, $item, $units, $price) {
-		$unit_price = Items::instance()->get($item)['price'];
+	function set_item ($id, $item, $units, $price, $unit_price) {
 		return $this->db_prime()->q(
 			"UPDATE `{$this->table}_items`
 			SET
-				`units`	= '%d',
-				`price`	= '%s'
+				`units`			= '%d',
+				`price`			= '%s',
+				`unit_price`	= '%s'
 			WHERE
 				`id`	= '%d' AND
 				`item`	= '%d'
 			LIMIT 1",
 			$units,
 			min($price, $units * $unit_price),
+			$unit_price,
 			$id,
 			$item
 		);

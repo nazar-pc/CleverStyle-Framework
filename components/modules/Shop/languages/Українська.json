@@ -77,5 +77,10 @@
 	"shop_remove_image"             : "Видалити зображення",
 	"shop_tags"                     : "Теги",
 	"shop_order_addition"           : "Додавання замовлення",
-	"shop_order_edition"            : "Редагування замовлення"
+	"shop_order_edition"            : "Редагування замовлення",
+	"shop_item"                     : "Позиція",
+	"shop_unit_price"               : "Ціна за одиницю",
+	"shop_units"                    : "Одиниць",
+	"shop_total_price"              : "Всього",
+	"shop_add_item"                 : "Додати позицію"
 }

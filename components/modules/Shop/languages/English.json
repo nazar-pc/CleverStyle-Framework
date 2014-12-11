@@ -77,5 +77,10 @@
 	"shop_remove_image"             : "Remove image",
 	"shop_tags"                     : "Tags",
 	"shop_order_addition"           : "Order addition",
-	"shop_order_edition"            : "Order edition"
+	"shop_order_edition"            : "Order edition",
+	"shop_item"                     : "Item",
+	"shop_unit_price"               : "Unit price",
+	"shop_units"                    : "Units",
+	"shop_total_price"              : "Total price",
+	"shop_add_item"                 : "Add item"
 }

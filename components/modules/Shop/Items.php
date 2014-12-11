@@ -65,6 +65,9 @@ class Items {
 		$id = (int)$id;
 		return $this->cache->get("$id/$L->clang", function () use ($id, $L) {
 			$data               = $this->read_simple($id);
+			if (!$data) {
+				return false;
+			}
 			$data['attributes'] = $this->db()->qfa(
 				"SELECT
 					`attribute`,

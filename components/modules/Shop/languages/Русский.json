@@ -77,5 +77,10 @@
 	"shop_remove_image"             : "Удалить изображения",
 	"shop_tags"                     : "Тэги",
 	"shop_order_addition"           : "Добавление заказа",
-	"shop_order_edition"            : "Редактирование заказа"
+	"shop_order_edition"            : "Редактирование заказа",
+	"shop_item"                     : "Позиция",
+	"shop_unit_price"               : "Цена за единицу",
+	"shop_units"                    : "Единиц",
+	"shop_total_price"              : "Всего",
+	"shop_add_item"                 : "Добавить позицию"
 }

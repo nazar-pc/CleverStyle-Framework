@@ -28,6 +28,7 @@ $Page->content(
 	h::{'h3.uk-lead.cs-center'}($L->items).
 	h::{'cs-table[list][with-header]'}(
 		h::{'cs-table-row cs-table-cell'}(
+			'id',
 			$L->title,
 			$L->category,
 			$L->price,
@@ -39,6 +40,7 @@ $Page->content(
 			function ($item) use ($L, $Categories) {
 				return h::cs_table_cell(
 					[
+						$item['id'],
 						$item['title'],
 						$Categories->get($item['category'])['title'], // TODO link to all items in this category
 						$item['price'],
