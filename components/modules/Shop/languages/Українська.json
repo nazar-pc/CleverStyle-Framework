@@ -75,5 +75,7 @@
 	"shop_item_edition"             : "Редагування позиції",
 	"shop_add_images"               : "Додати зображення",
 	"shop_remove_image"             : "Видалити зображення",
-	"shop_tags"                     : "Теги"
+	"shop_tags"                     : "Теги",
+	"shop_order_addition"           : "Додавання замовлення",
+	"shop_order_edition"            : "Редагування замовлення"
 }

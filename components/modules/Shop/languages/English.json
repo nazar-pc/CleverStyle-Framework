@@ -75,5 +75,7 @@
 	"shop_listed"                   : "Listed",
 	"shop_add_images"               : "Add images",
 	"shop_remove_image"             : "Remove image",
-	"shop_tags"                     : "Tags"
+	"shop_tags"                     : "Tags",
+	"shop_order_addition"           : "Order addition",
+	"shop_order_edition"            : "Order edition"
 }

@@ -42,13 +42,15 @@ $Page->content(
 		h::{'cs-table-row'}(array_map(
 			function ($order) use ($L, $Language, $Items, $Order_statuses, $Orders, $Shipping_types) {
 				$order_status = $Order_statuses->get($order['status']);
+				$date         = $L->to_locale(
+					date($Language->{TIME - $order['date'] < 24 * 3600 ? '_time' : '_datetime_long'}, $order['date'])
+				);
+				$username     = User::instance()->username($order['user']);
 				return h::cs_table_cell(
 					[
 						$order['id'],
-						$L->to_locale(
-							date($Language->{TIME - $order['date'] < 24 * 3600 ? '_time' : '_datetime_long'}, $order['date'])
-						),
-						User::instance()->username($order['user']).h::br().$order['shipping_phone'], // TODO links to all orders of this user
+						$date,
+						$username.h::br().$order['shipping_phone'], // TODO links to all orders of this user
 						implode(
 							h::br(),
 							array_map(
@@ -70,7 +72,9 @@ $Page->content(
 						h::{'button.uk-button.cs-shop-order-edit'}(
 							$L->edit,
 							[
-								'data-id' => $order['id']
+								'data-id'       => $order['id'],
+								'data-username' => $username,
+								'data-date'     => $date
 							]
 						).
 						h::{'button.uk-button.cs-shop-order-delete'}(
