@@ -14,7 +14,7 @@
   $(function() {
     var L, make_modal;
     L = cs.Language;
-    make_modal = function(attributes, categories, title, action) {
+    make_modal = function(attributes, categories, order_statuses, title, action) {
       attributes = (function() {
         var attribute, attributes_, key, keys, _i, _len, _results;
         attributes_ = {};
@@ -71,12 +71,30 @@
         return _results;
       })();
       categories = categories.join('');
-      return $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_parent_category + ": <select name=\"parent\" required>" + categories + "</select>\n	</p>\n	<p>\n		" + L.shop_title + ": <input name=\"title\" required>\n	</p>\n	<p>\n		" + L.shop_description + ": <textarea name=\"description\"></textarea>\n	</p>\n	<p>\n		" + L.shop_category_attributes + ": <select name=\"attributes[]\" multiple required>" + attributes + "</select>\n	</p>\n	<p>\n		" + L.shop_title_attribute + ": <select name=\"title_attribute\" required>" + attributes + "</select>\n	</p>\n	<p>\n		" + L.shop_visible + ":\n		<label><input type=\"radio\" name=\"visible\" value=\"1\" checked> " + L.yes + "</label>\n		<label><input type=\"radio\" name=\"visible\" value=\"0\"> " + L.no + "</label>\n	</p>\n	<p>\n		<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n	</p>\n</form>");
+      order_statuses = (function() {
+        var key, keys, order_status, order_statuses_, _i, _len, _results;
+        order_statuses_ = {};
+        keys = [];
+        for (order_status in order_statuses) {
+          order_status = order_statuses[order_status];
+          order_statuses_[order_status.title] = "<option value=\"" + order_status.id + "\">" + order_status.title + "</option>";
+          keys.push(order_status.title);
+        }
+        keys.sort();
+        _results = [];
+        for (_i = 0, _len = keys.length; _i < _len; _i++) {
+          key = keys[_i];
+          _results.push(order_statuses_[key]);
+        }
+        return _results;
+      })();
+      order_statuses = order_statuses.join('');
+      return $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_parent_category + ": <select name=\"parent\" required>" + categories + "</select>\n	</p>\n	<p>\n		" + L.shop_title + ": <input name=\"title\" required>\n	</p>\n	<p>\n		" + L.shop_description + ": <textarea name=\"description\"></textarea>\n	</p>\n	<p>\n		" + L.shop_category_attributes + ": <select name=\"attributes[]\" multiple required>" + attributes + "</select>\n	</p>\n	<p>\n		" + L.shop_title_attribute + ": <select name=\"title_attribute\" required>" + attributes + "</select>\n	</p>\n	<p>\n		" + L.shop_order_status_on_creation + ": <select name=\"order_status_on_creation\" required>" + order_statuses + "</select>\n	</p>\n	<p>\n		" + L.shop_visible + ":\n		<label><input type=\"radio\" name=\"visible\" value=\"1\" checked> " + L.yes + "</label>\n		<label><input type=\"radio\" name=\"visible\" value=\"0\"> " + L.no + "</label>\n	</p>\n	<p>\n		<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n	</p>\n</form>");
     };
     return $('html').on('mousedown', '.cs-shop-category-add', function() {
-      return $.when($.getJSON('api/Shop/admin/attributes'), $.getJSON('api/Shop/admin/categories')).done(function(attributes, categories) {
+      return $.when($.getJSON('api/Shop/admin/attributes'), $.getJSON('api/Shop/admin/categories'), $.getJSON('api/Shop/admin/order_statuses')).done(function(attributes, categories, order_statuses) {
         var modal;
-        modal = make_modal(attributes[0], categories[0], L.shop_category_addition, L.shop_add);
+        modal = make_modal(attributes[0], categories[0], order_statuses[0], L.shop_category_addition, L.shop_add);
         return modal.find('form').submit(function() {
           $.ajax({
             url: 'api/Shop/admin/categories',
@@ -93,9 +111,9 @@
     }).on('mousedown', '.cs-shop-category-edit', function() {
       var id;
       id = $(this).data('id');
-      return $.when($.getJSON('api/Shop/admin/attributes'), $.getJSON('api/Shop/admin/categories'), $.getJSON("api/Shop/admin/categories/" + id)).done(function(attributes, categories, category) {
+      return $.when($.getJSON('api/Shop/admin/attributes'), $.getJSON('api/Shop/admin/categories'), $.getJSON('api/Shop/admin/order_statuses'), $.getJSON("api/Shop/admin/categories/" + id)).done(function(attributes, categories, order_statuses, category) {
         var modal;
-        modal = make_modal(attributes[0], categories[0], L.shop_category_edition, L.shop_edit);
+        modal = make_modal(attributes[0], categories[0], order_statuses[0], L.shop_category_edition, L.shop_edit);
         modal.find('form').submit(function() {
           $.ajax({
             url: "api/Shop/admin/categories/" + id,
@@ -116,6 +134,7 @@
           return modal.find("[name='attributes[]'] > [value=" + attribute + "]").prop('selected', true);
         });
         modal.find('[name=title_attribute]').val(category.title_attribute);
+        modal.find('[name=order_status_on_creation]').val(category.order_status_on_creation);
         return modal.find("[name=visible][value=" + category.visible + "]").prop('checked', true);
       });
     }).on('mousedown', '.cs-shop-category-delete', function() {

@@ -26,12 +26,13 @@ class Categories {
 	const INVISIBLE = 0;
 
 	protected $data_model          = [
-		'id'              => 'int',
-		'parent'          => 'int',
-		'title'           => 'ml:text',
-		'description'     => 'ml:html',
-		'title_attribute' => 'int',
-		'visible'         => 'int:0..1'
+		'id'                       => 'int',
+		'parent'                   => 'int',
+		'title'                    => 'ml:text',
+		'description'              => 'ml:html',
+		'title_attribute'          => 'int',
+		'order_status_on_creation' => 'int',
+		'visible'                  => 'int:0..1'
 	];
 	protected $data_model_ml_group = 'Shop/categories';
 	protected $table               = '[prefix]shop_categories';
@@ -117,23 +118,25 @@ class Categories {
 	 * @param int    $parent
 	 * @param string $title
 	 * @param string $description
-	 * @param int    $title_attribute Attribute that will be considered as title
-	 * @param int    $visible         `Categories::VISIBLE` or `Categories::INVISIBLE`
-	 * @param int[]  $attributes      Array of attributes ids used in category
+	 * @param int    $title_attribute          Attribute that will be considered as title
+	 * @param int    $order_status_on_creation Order status assigned on order creation
+	 * @param int    $visible                  `Categories::VISIBLE` or `Categories::INVISIBLE`
+	 * @param int[]  $attributes               Array of attributes ids used in category
 	 *
 	 * @return bool|int Id of created category on success of <b>false</> on failure
 	 */
-	function add ($parent, $title, $description, $title_attribute, $visible, $attributes) {
+	function add ($parent, $title, $description, $title_attribute, $order_status_on_creation, $visible, $attributes) {
 		$id = $this->create_simple([
 			$parent,
 			'',
 			'',
-			[],
+			$title_attribute,
+			$order_status_on_creation,
 			static::INVISIBLE
 		]);
 		if ($id) {
 			unset($this->cache->all);
-			$this->set($id, $parent, $title, $description, $title_attribute, $visible, $attributes);
+			$this->set($id, $parent, $title, $description, $title_attribute, $order_status_on_creation, $visible, $attributes);
 		}
 		return $id;
 	}
@@ -144,13 +147,14 @@ class Categories {
 	 * @param int    $parent
 	 * @param string $title
 	 * @param string $description
-	 * @param int    $title_attribute Attribute that will be considered as title
-	 * @param int    $visible         `Categories::VISIBLE` or `Categories::INVISIBLE`
-	 * @param int[]  $attributes      Array of attributes ids used in category
+	 * @param int    $title_attribute          Attribute that will be considered as title
+	 * @param int    $order_status_on_creation Order status assigned on order creation
+	 * @param int    $visible                  `Categories::VISIBLE` or `Categories::INVISIBLE`
+	 * @param int[]  $attributes               Array of attributes ids used in category
 	 *
 	 * @return bool
 	 */
-	function set ($id, $parent, $title, $description, $title_attribute, $visible, $attributes) {
+	function set ($id, $parent, $title, $description, $title_attribute, $order_status_on_creation, $visible, $attributes) {
 		$id         = (int)$id;
 		$attributes = $this->clean_nonexistent_attributes($attributes);
 		$result     = $this->update_simple([
@@ -159,6 +163,7 @@ class Categories {
 			trim($title),
 			trim($description),
 			in_array($title_attribute, $attributes) ? $title_attribute : $attributes[0],
+			$order_status_on_creation,
 			$visible
 		]);
 		if (!$result) {

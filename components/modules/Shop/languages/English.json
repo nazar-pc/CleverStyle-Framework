@@ -3,6 +3,7 @@
 	"shop_categories"               : "Categories",
 	"shop_title"                    : "Title",
 	"shop_title_attribute"          : "Item title attribute",
+	"shop_order_status_on_creation"     : "Order status on creation",
 	"shop_visible"                  : "Visible",
 	"shop_action"                   : "Action",
 	"shop_add"                      : "Add",

@@ -3,6 +3,7 @@
 	"shop_categories"               : "Категорії",
 	"shop_title"                    : "Назва",
 	"shop_title_attribute"          : "Атрибут назви товару",
+	"shop_order_status_on_creation"     : "Стан замовлення при створенні",
 	"shop_visible"                  : "Видимість",
 	"shop_action"                   : "Дія",
 	"shop_add"                      : "Додати",

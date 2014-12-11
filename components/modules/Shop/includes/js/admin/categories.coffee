@@ -7,7 +7,7 @@
 ###
 $ ->
 	L = cs.Language
-	make_modal = (attributes, categories, title, action) ->
+	make_modal = (attributes, categories, order_statuses, title, action) ->
 		attributes	= do ->
 			attributes_	= {}
 			keys		= []
@@ -42,6 +42,16 @@ $ ->
 			for key in keys
 				categories_[key]
 		categories	= categories.join('')
+		order_statuses	= do ->
+			order_statuses_	= {}
+			keys		= []
+			for order_status, order_status of order_statuses
+				order_statuses_[order_status.title]	= """<option value="#{order_status.id}">#{order_status.title}</option>"""
+				keys.push(order_status.title)
+			keys.sort()
+			for key in keys
+				order_statuses_[key]
+		order_statuses	= order_statuses.join('')
 		$.cs.simple_modal("""<form>
 			<h3 class="cs-center">#{title}</h3>
 			<p>
@@ -60,6 +70,9 @@ $ ->
 				#{L.shop_title_attribute}: <select name="title_attribute" required>#{attributes}</select>
 			</p>
 			<p>
+				#{L.shop_order_status_on_creation}: <select name="order_status_on_creation" required>#{order_statuses}</select>
+			</p>
+			<p>
 				#{L.shop_visible}:
 				<label><input type="radio" name="visible" value="1" checked> #{L.yes}</label>
 				<label><input type="radio" name="visible" value="0"> #{L.no}</label>
@@ -73,8 +86,9 @@ $ ->
 			$.when(
 				$.getJSON('api/Shop/admin/attributes')
 				$.getJSON('api/Shop/admin/categories')
-			).done (attributes, categories) ->
-				modal = make_modal(attributes[0], categories[0], L.shop_category_addition, L.shop_add)
+				$.getJSON('api/Shop/admin/order_statuses')
+			).done (attributes, categories, order_statuses) ->
+				modal = make_modal(attributes[0], categories[0], order_statuses[0], L.shop_category_addition, L.shop_add)
 				modal.find('form').submit ->
 					$.ajax(
 						url     : 'api/Shop/admin/categories'
@@ -91,9 +105,10 @@ $ ->
 			$.when(
 				$.getJSON('api/Shop/admin/attributes')
 				$.getJSON('api/Shop/admin/categories')
+				$.getJSON('api/Shop/admin/order_statuses')
 				$.getJSON("api/Shop/admin/categories/#{id}")
-			).done (attributes, categories, category) ->
-				modal = make_modal(attributes[0], categories[0], L.shop_category_edition, L.shop_edit)
+			).done (attributes, categories, order_statuses, category) ->
+				modal = make_modal(attributes[0], categories[0], order_statuses[0], L.shop_category_edition, L.shop_edit)
 				modal.find('form').submit ->
 					$.ajax(
 						url     : "api/Shop/admin/categories/#{id}"
@@ -111,6 +126,7 @@ $ ->
 				category.attributes.forEach (attribute) ->
 					modal.find("[name='attributes[]'] > [value=#{attribute}]").prop('selected', true)
 				modal.find('[name=title_attribute]').val(category.title_attribute)
+				modal.find('[name=order_status_on_creation]').val(category.order_status_on_creation)
 				modal.find("[name=visible][value=#{category.visible}]").prop('checked', true)
 		)
 		.on('mousedown', '.cs-shop-category-delete', ->
