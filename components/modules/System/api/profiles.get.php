@@ -36,7 +36,7 @@ if (isset($Config->route[1])) {
 		$Page->error('User is not in your contacts');
 	}
 	if ($single) {
-		$Page->json($User->get($fields, $id));
+		$Page->json($User->get($fields, $id[0]));
 	} else {
 		$Page->json(array_map(
 			function ($id) use ($fields, $User) {
