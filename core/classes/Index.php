@@ -246,7 +246,7 @@ class Index {
 		/**
 		 * If there is second level routing in structure - handle that
 		 */
-		if (!isset($structure[$path])) {
+		if (!isset($structure[$path]) || empty($structure[$path])) {
 			return;
 		}
 		$this->sub_path_required	= true;
