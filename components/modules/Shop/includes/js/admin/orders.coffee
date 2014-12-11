@@ -9,15 +9,20 @@ $ ->
 	L = cs.Language
 	make_modal = (shipping_types, order_statuses, title, action) ->
 		shipping_types	= do ->
-			shipping_types_	= {}
+			shipping_types_ = {}
+			for shipping_type, shipping_type of shipping_types
+				shipping_types_[shipping_type.id] = shipping_type
+			shipping_types_
+		shipping_types_list	= do ->
+			shipping_types_list_	= {}
 			keys		= []
 			for shipping_type, shipping_type of shipping_types
-				shipping_types_[shipping_type.title]	= """<option value="#{shipping_type.id}">#{shipping_type.title}</option>"""
+				shipping_types_list_[shipping_type.title]	= """<option value="#{shipping_type.id}">#{shipping_type.title}</option>"""
 				keys.push(shipping_type.title)
 			keys.sort()
 			for key in keys
-				shipping_types_[key]
-		shipping_types	= shipping_types.join('')
+				shipping_types_list_[key]
+		shipping_types_list	= shipping_types_list.join('')
 		order_statuses	= do ->
 			order_statuses_	= {}
 			keys		= []
@@ -28,22 +33,22 @@ $ ->
 			for key in keys
 				order_statuses_[key]
 		order_statuses	= order_statuses.join('')
-		$.cs.simple_modal("""<form>
+		modal			= $.cs.simple_modal("""<form>
 			<h3 class="cs-center">#{title}</h3>
 			<p>
 				#{L.shop_datetime}: <span class="date"></span>
 			</p>
 			<p>
-				#{L.shop_user}: <span class="user"></span>, id: <input name="user">
+				#{L.shop_user}: <span class="username"></span>, id: <input name="user" required>
+			</p>
+			<p>
+				#{L.shop_shipping_type}: <select name="shipping_type" required>#{shipping_types_list}</select>
 			</p>
 			<p>
 				#{L.shop_shipping_phone}: <input name="shipping_phone">
 			</p>
 			<p>
 				#{L.shop_shipping_address}: <textarea name="shipping_address"></textarea>
-			</p>
-			<p>
-				#{L.shop_shipping_type}: <select name="shipping_type" required>#{shipping_types}</select>
 			</p>
 			<p>
 				#{L.shop_status}: <select name="status" required>#{order_statuses}</select>
@@ -55,6 +60,23 @@ $ ->
 				<button class="uk-button" type="submit">#{action}</button>
 			</p>
 		</form>""")
+		do ->
+			timeout = 0
+			modal.find('[name=user]').keyup ->
+				clearTimeout(timeout)
+				timeout = setTimeout (=>
+					$.getJSON('api/System/profiles/' + $(@).val(), (profile) ->
+						modal.find('.username').html(profile.username || profile.login)
+					)
+				), 300
+		do ->
+			shipping_type_select	= modal.find('[name=shipping_type]')
+			shipping_type_select.change ->
+				shipping_type	= shipping_types[$(@).val()]
+				modal.find('[name=shipping_phone]').parent()[if parseInt(shipping_type.phone_needed) then 'show' else 'hide']()
+				modal.find('[name=shipping_address]').parent()[if parseInt(shipping_type.address_needed) then 'show' else 'hide']()
+			shipping_type_select.change()
+		modal
 	$('html')
 		.on('mousedown', '.cs-shop-order-add', ->
 			$.when(
@@ -96,7 +118,7 @@ $ ->
 					return false
 				order	= order[0]
 				modal.find('.date').html(date)
-				modal.find('.user').html(username)
+				modal.find('.username').html(username)
 				modal.find('[name=user]').val(order.user)
 				modal.find('[name=shipping_phone]').val(order.shipping_phone)
 				modal.find('[name=shipping_address]').val(order.shipping_address)

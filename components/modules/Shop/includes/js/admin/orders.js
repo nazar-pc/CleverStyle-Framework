@@ -15,24 +15,34 @@
     var L, make_modal;
     L = cs.Language;
     make_modal = function(shipping_types, order_statuses, title, action) {
+      var modal, shipping_types_list;
       shipping_types = (function() {
-        var key, keys, shipping_type, shipping_types_, _i, _len, _results;
+        var shipping_type, shipping_types_;
         shipping_types_ = {};
+        for (shipping_type in shipping_types) {
+          shipping_type = shipping_types[shipping_type];
+          shipping_types_[shipping_type.id] = shipping_type;
+        }
+        return shipping_types_;
+      })();
+      shipping_types_list = (function() {
+        var key, keys, shipping_type, shipping_types_list_, _i, _len, _results;
+        shipping_types_list_ = {};
         keys = [];
         for (shipping_type in shipping_types) {
           shipping_type = shipping_types[shipping_type];
-          shipping_types_[shipping_type.title] = "<option value=\"" + shipping_type.id + "\">" + shipping_type.title + "</option>";
+          shipping_types_list_[shipping_type.title] = "<option value=\"" + shipping_type.id + "\">" + shipping_type.title + "</option>";
           keys.push(shipping_type.title);
         }
         keys.sort();
         _results = [];
         for (_i = 0, _len = keys.length; _i < _len; _i++) {
           key = keys[_i];
-          _results.push(shipping_types_[key]);
+          _results.push(shipping_types_list_[key]);
         }
         return _results;
       })();
-      shipping_types = shipping_types.join('');
+      shipping_types_list = shipping_types_list.join('');
       order_statuses = (function() {
         var key, keys, order_status, order_statuses_, _i, _len, _results;
         order_statuses_ = {};
@@ -51,7 +61,32 @@
         return _results;
       })();
       order_statuses = order_statuses.join('');
-      return $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_datetime + ": <span class=\"date\"></span>\n	</p>\n	<p>\n		" + L.shop_user + ": <span class=\"user\"></span>, id: <input name=\"user\">\n	</p>\n	<p>\n		" + L.shop_shipping_phone + ": <input name=\"shipping_phone\">\n	</p>\n	<p>\n		" + L.shop_shipping_address + ": <textarea name=\"shipping_address\"></textarea>\n	</p>\n	<p>\n		" + L.shop_shipping_type + ": <select name=\"shipping_type\" required>" + shipping_types + "</select>\n	</p>\n	<p>\n		" + L.shop_status + ": <select name=\"status\" required>" + order_statuses + "</select>\n	</p>\n	<p>\n		" + L.shop_comment + ": <textarea name=\"comment\"></textarea>\n	</p>\n	<p>\n		<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n	</p>\n</form>");
+      modal = $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_datetime + ": <span class=\"date\"></span>\n	</p>\n	<p>\n		" + L.shop_user + ": <span class=\"username\"></span>, id: <input name=\"user\" required>\n	</p>\n	<p>\n		" + L.shop_shipping_type + ": <select name=\"shipping_type\" required>" + shipping_types_list + "</select>\n	</p>\n	<p>\n		" + L.shop_shipping_phone + ": <input name=\"shipping_phone\">\n	</p>\n	<p>\n		" + L.shop_shipping_address + ": <textarea name=\"shipping_address\"></textarea>\n	</p>\n	<p>\n		" + L.shop_status + ": <select name=\"status\" required>" + order_statuses + "</select>\n	</p>\n	<p>\n		" + L.shop_comment + ": <textarea name=\"comment\"></textarea>\n	</p>\n	<p>\n		<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n	</p>\n</form>");
+      (function() {
+        var timeout;
+        timeout = 0;
+        return modal.find('[name=user]').keyup(function() {
+          var _this = this;
+          clearTimeout(timeout);
+          return timeout = setTimeout((function() {
+            return $.getJSON('api/System/profiles/' + $(_this).val(), function(profile) {
+              return modal.find('.username').html(profile.username || profile.login);
+            });
+          }), 300);
+        });
+      })();
+      (function() {
+        var shipping_type_select;
+        shipping_type_select = modal.find('[name=shipping_type]');
+        shipping_type_select.change(function() {
+          var shipping_type;
+          shipping_type = shipping_types[$(this).val()];
+          modal.find('[name=shipping_phone]').parent()[parseInt(shipping_type.phone_needed) ? 'show' : 'hide']();
+          return modal.find('[name=shipping_address]').parent()[parseInt(shipping_type.address_needed) ? 'show' : 'hide']();
+        });
+        return shipping_type_select.change();
+      })();
+      return modal;
     };
     return $('html').on('mousedown', '.cs-shop-order-add', function() {
       return $.when($.getJSON('api/Shop/admin/shipping_types'), $.getJSON('api/Shop/admin/order_statuses')).done(function(shipping_types, order_statuses) {
@@ -93,7 +128,7 @@
         });
         order = order[0];
         modal.find('.date').html(date);
-        modal.find('.user').html(username);
+        modal.find('.username').html(username);
         modal.find('[name=user]').val(order.user);
         modal.find('[name=shipping_phone]').val(order.shipping_phone);
         modal.find('[name=shipping_address]').val(order.shipping_address);
