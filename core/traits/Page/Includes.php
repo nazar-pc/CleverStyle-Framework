@@ -270,7 +270,7 @@ trait Includes {
 		/**
 		 * If CSS and JavaScript compression enabled
 		 */
-		if ($Config->core['cache_compress_js_css']) {
+		if ($Config->core['cache_compress_js_css'] && !admin_path()) {
 			$this->add_includes_on_page_with_compression($Config);
 		} else {
 			/**
@@ -369,7 +369,7 @@ trait Includes {
 	}
 	protected function add_includes_on_page_without_compression ($Config) {
 		if ($Config) {
-			$this->includes_dependencies_and_map($dependencies, $includes_map);
+			$this->includes_dependencies_and_map($dependencies, $includes_map, admin_path());
 			/**
 			 * Add system includes
 			 */
@@ -500,11 +500,12 @@ trait Includes {
 	/**
 	 * Getting of JavaScript and CSS files list to be included
 	 *
-	 * @param bool		$absolute	If <i>true</i> - absolute paths to files will be returned
+	 * @param bool		$absolute		If <i>true</i> - absolute paths to files will be returned
+	 * @param bool		$with_disabled
 	 *
 	 * @return array
 	 */
-	protected function get_includes_list ($absolute = false) {
+	protected function get_includes_list ($absolute = false, $with_disabled = false) {
 		$theme_dir		= THEMES."/$this->theme";
 		$theme_pdir		= "themes/$this->theme";
 		$get_files		= function ($dir, $prefix_path) {
@@ -541,7 +542,13 @@ trait Includes {
 		unset($theme_dir, $theme_pdir);
 		$Config		= Config::instance();
 		foreach ($Config->components['modules'] as $module_name => $module_data) {
-			if ($module_data['active'] == -1) {
+			if (
+				$module_data['active'] == -1 ||
+				(
+					$module_data['active'] == 0 &&
+					!$with_disabled
+				)
+			) {
 				continue;
 			}
 			$includes['css']	= array_merge(
@@ -601,12 +608,13 @@ trait Includes {
 	 *
 	 * @param array	$dependencies
 	 * @param array	$includes_map
+	 * @param bool	$with_disabled
 	 */
-	protected function includes_dependencies_and_map (&$dependencies, &$includes_map) {
+	protected function includes_dependencies_and_map (&$dependencies, &$includes_map, $with_disabled = false) {
 		/**
 		 * Get all includes
 		 */
-		$all_includes			= $this->get_includes_list(true);
+		$all_includes			= $this->get_includes_list(true, $with_disabled);
 		$includes_map			= [];
 		$dependencies			= [];
 		$dependencies_aliases	= [];
@@ -617,7 +625,13 @@ trait Includes {
 		 */
 		$Config			= Config::instance();
 		foreach ($Config->components['modules'] as $module_name => $module_data) {
-			if ($module_data['active'] == -1) {
+			if (
+				$module_data['active'] == -1 ||
+				(
+					$module_data['active'] == 0 &&
+					!$with_disabled
+				)
+			) {
 				continue;
 			}
 			if (file_exists(MODULES."/$module_name/meta.json")) {

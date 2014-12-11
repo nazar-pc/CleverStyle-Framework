@@ -10,7 +10,7 @@ tinymce.baseURL	= '/components/plugins/TinyMCE/includes/js';
 $(function () {
 	window.no_ui_selector	+= ', .mce-tinymce';
 	var uploader_callback;
-	var uploader	= cs.file_upload(
+	var uploader	= cs.file_upload ? cs.file_upload(
 		null,
 		function (files) {
 			tinymce.uploader_dialog.cs().modal('hide');
@@ -34,7 +34,7 @@ $(function () {
 			}
 			tinymce.uploader_dialog.find('.uk-progress-bar').width((file.percent ? file.percent : 1) + '%');
 		}
-	);
+	) : false;
 	var base_config			= {
 		doctype					: '<!doctype html>',
 		theme					: cs.tinymce && cs.tinymce.theme !== undefined ? cs.tinymce.theme : 'modern',
@@ -48,7 +48,7 @@ $(function () {
 		convert_urls			: false,
 		remove_script_host		: false,
 		relative_urls			: false,
-		file_picker_callback	: cs.file_upload ? function (callback) {
+		file_picker_callback	: uploader ? function (callback) {
 			uploader_callback	= callback;
 			uploader.browse();
 		} : null
