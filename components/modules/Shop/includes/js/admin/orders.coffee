@@ -103,7 +103,7 @@ $ ->
 					)
 			timeout	= 0
 			items_container
-				.on('keyup, change', "[name='items[units][]']", ->
+				.on('keyup change', "[name='items[units][]']", ->
 					$this					= $(@)
 					item_price_container	= $this.parent().find('.item-price')
 					item_price_container.html(

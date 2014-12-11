@@ -107,7 +107,7 @@
           }
         };
         timeout = 0;
-        return items_container.on('keyup, change', "[name='items[units][]']", function() {
+        return items_container.on('keyup change', "[name='items[units][]']", function() {
           var $this, item_price_container;
           $this = $(this);
           item_price_container = $this.parent().find('.item-price');
