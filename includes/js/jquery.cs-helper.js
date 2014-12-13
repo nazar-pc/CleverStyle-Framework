@@ -35,10 +35,10 @@
             }
           }).first().addClass('uk-active');
           $this.data('tab', UI.tab($this, {
-            connect: content
+            connect: content,
+            animation: 'fade'
           }));
-          content.addClass('uk-switcher uk-margin').children(':first').addClass('uk-active');
-          return content.data('switcher', UI.switcher(content));
+          return content.addClass('uk-switcher uk-margin').children(':first').addClass('uk-active');
         });
       },
       /**

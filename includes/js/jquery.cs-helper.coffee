@@ -28,13 +28,15 @@ do ($=jQuery, UI = jQuery.UIkit) ->
 						.first()
 							.addClass('uk-active')
 				$this
-					.data('tab', UI.tab($this, {connect:content}))
+					.data('tab', UI.tab(
+						$this
+						connect		: content
+						animation	: 'fade'
+					))
 				content
 					.addClass('uk-switcher uk-margin')
 					.children(':first')
 						.addClass('uk-active')
-				content
-					.data('switcher', UI.switcher(content))
 		###*
 		 * Dialog with UIkit
 		 *
