@@ -70,6 +70,7 @@
 	"shop_items"                    : "Позиции",
 	"shop_category"                 : "Категория",
 	"shop_in_stock"                 : "В наличии",
+	"shop_available_soon"           : "Скоро в продаже",
 	"shop_listed"                   : "Размещена",
 	"shop_item_addition"            : "Добавление позиции",
 	"shop_item_edition"             : "Редактирование позиции",

@@ -44,7 +44,7 @@ $Page->content(
 						$item['title'],
 						$Categories->get($item['category'])['title'], // TODO link to all items in this category
 						$item['price'],
-						$item['in_stock'],
+						$item['in_stock'] ?: ($item['soon'] ? $L->available_soon : 0),
 						h::icon($item['listed'] ? 'check' : 'minus'), // TODO link to all listed items
 						h::{'button.uk-button.cs-shop-item-edit'}(
 							$L->edit,
@@ -60,7 +60,7 @@ $Page->content(
 						)
 					],
 					[
-						'class'	=> $item['listed'] ? 'uk-alert-success' : (!$item['listed'] && $item['in_stock'] ? 'uk-alert-warning' : 'uk-alert-danger')
+						'class'	=> $item['listed'] ? 'uk-alert-success' : ($item['in_stock'] || $item['soon'] ? 'uk-alert-warning' : 'uk-alert-danger')
 					]
 				);
 			},

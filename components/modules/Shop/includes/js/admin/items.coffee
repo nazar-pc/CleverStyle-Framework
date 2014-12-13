@@ -84,6 +84,11 @@ $ ->
 					#{L.shop_in_stock}: <input name="in_stock" type="number" value="1" step="1">
 				</p>
 				<p>
+					#{L.shop_available_soon}:
+					<label><input type="radio" name="soon" value="1"> #{L.yes}</label>
+					<label><input type="radio" name="soon" value="0" checked> #{L.no}</label>
+				</p>
+				<p>
 					#{L.shop_listed}:
 					<label><input type="radio" name="listed" value="1" checked> #{L.yes}</label>
 					<label><input type="radio" name="listed" value="0"> #{L.no}</label>
@@ -194,6 +199,7 @@ $ ->
 				modal.find("[name=category]").val(item.category).change()
 				modal.find('[name=price]').val(item.price)
 				modal.find('[name=in_stock]').val(item.in_stock)
+				modal.find("[name=soon][value=#{item.soon}]").prop('checked', true)
 				modal.find("[name=listed][value=#{item.listed}]").prop('checked', true)
 				modal.add_images(item.images)
 				for attribute, value of item.attributes

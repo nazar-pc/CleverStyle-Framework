@@ -102,7 +102,7 @@
           return _results;
         })();
         attributes_list = attributes_list.join('');
-        $this.parent().next().html("<p>\n	" + L.shop_price + ": <input name=\"price\" type=\"number\" value=\"0\" required>\n</p>\n<p>\n	" + L.shop_in_stock + ": <input name=\"in_stock\" type=\"number\" value=\"1\" step=\"1\">\n</p>\n<p>\n	" + L.shop_listed + ":\n	<label><input type=\"radio\" name=\"listed\" value=\"1\" checked> " + L.yes + "</label>\n	<label><input type=\"radio\" name=\"listed\" value=\"0\"> " + L.no + "</label>\n</p>\n<p>\n	<div class=\"images\"></div>\n	<button type=\"button\" class=\"add-images uk-button\">" + L.shop_add_images + "</button>\n	<input type=\"hidden\" name=\"images\">\n</p>\n" + attributes_list + "\n<p>\n	" + L.shop_tags + ": <input name=\"tags\" placeholder=\"shop, high quality, e-commerce\">\n</p>\n<p>\n	<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n</p>");
+        $this.parent().next().html("<p>\n	" + L.shop_price + ": <input name=\"price\" type=\"number\" value=\"0\" required>\n</p>\n<p>\n	" + L.shop_in_stock + ": <input name=\"in_stock\" type=\"number\" value=\"1\" step=\"1\">\n</p>\n<p>\n	" + L.shop_available_soon + ":\n	<label><input type=\"radio\" name=\"soon\" value=\"1\"> " + L.yes + "</label>\n	<label><input type=\"radio\" name=\"soon\" value=\"0\" checked> " + L.no + "</label>\n</p>\n<p>\n	" + L.shop_listed + ":\n	<label><input type=\"radio\" name=\"listed\" value=\"1\" checked> " + L.yes + "</label>\n	<label><input type=\"radio\" name=\"listed\" value=\"0\"> " + L.no + "</label>\n</p>\n<p>\n	<div class=\"images\"></div>\n	<button type=\"button\" class=\"add-images uk-button\">" + L.shop_add_images + "</button>\n	<input type=\"hidden\" name=\"images\">\n</p>\n" + attributes_list + "\n<p>\n	" + L.shop_tags + ": <input name=\"tags\" placeholder=\"shop, high quality, e-commerce\">\n</p>\n<p>\n	<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n</p>");
         images_container = modal.find('.images');
         modal.update_images = function() {
           var images;
@@ -191,6 +191,7 @@
         modal.find("[name=category]").val(item.category).change();
         modal.find('[name=price]').val(item.price);
         modal.find('[name=in_stock]').val(item.in_stock);
+        modal.find("[name=soon][value=" + item.soon + "]").prop('checked', true);
         modal.find("[name=listed][value=" + item.listed + "]").prop('checked', true);
         modal.add_images(item.images);
         _ref = item.attributes;

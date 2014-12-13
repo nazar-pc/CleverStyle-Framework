@@ -25,9 +25,11 @@ class Items {
 
 	protected $data_model = [
 		'id'       => 'int',
+		'date'     => 'int',
 		'category' => 'int',
 		'price'    => 'float',
 		'in_stock' => 'int',
+		'soon'     => 'int:0..1',
 		'listed'   => 'int:0..1'
 	];
 	protected $table      = '[prefix]shop_items';
@@ -64,7 +66,7 @@ class Items {
 		$L  = Language::instance();
 		$id = (int)$id;
 		return $this->cache->get("$id/$L->clang", function () use ($id, $L) {
-			$data               = $this->read_simple($id);
+			$data = $this->read_simple($id);
 			if (!$data) {
 				return false;
 			}
@@ -193,6 +195,7 @@ class Items {
 	 * @param int      $category
 	 * @param float    $price
 	 * @param int      $in_stock
+	 * @param int      $soon
 	 * @param int      $listed
 	 * @param array    $attributes
 	 * @param string[] $images
@@ -200,16 +203,18 @@ class Items {
 	 *
 	 * @return bool|int Id of created item on success of <b>false</> on failure
 	 */
-	function add ($category, $price, $in_stock, $listed, $attributes, $images, $tags) {
+	function add ($category, $price, $in_stock, $soon, $listed, $attributes, $images, $tags) {
 		$id = $this->create_simple([
+			TIME,
 			$category,
 			$price,
 			$in_stock,
+			$soon && !$in_stock ? 1 : 0,
 			$listed
 		]);
 		if ($id) {
 			unset($this->cache->all);
-			$this->set($id, $category, $price, $in_stock, $listed, $attributes, $images, $tags);
+			$this->set($id, $category, $price, $in_stock, $soon, $listed, $attributes, $images, $tags);
 		}
 		return $id;
 	}
@@ -220,6 +225,7 @@ class Items {
 	 * @param int      $category
 	 * @param float    $price
 	 * @param int      $in_stock
+	 * @param int      $soon
 	 * @param int      $listed
 	 * @param array    $attributes
 	 * @param string[] $images
@@ -227,16 +233,19 @@ class Items {
 	 *
 	 * @return bool
 	 */
-	function set ($id, $category, $price, $in_stock, $listed, $attributes, $images, $tags) {
-		$id = (int)$id;
-		if (!$id) {
+	function set ($id, $category, $price, $in_stock, $soon, $listed, $attributes, $images, $tags) {
+		$id   = (int)$id;
+		$data = $this->get($id);
+		if (!$data) {
 			return false;
 		}
 		$result = $this->update_simple([
 			$id,
+			$data['date'],
 			$category,
 			$price,
 			$in_stock,
+			$soon && !$in_stock ? 1 : 0,
 			$listed
 		]);
 		if (!$result) {

@@ -70,6 +70,7 @@
 	"shop_items"                    : "Items",
 	"shop_category"                 : "Category",
 	"shop_in_stock"                 : "In stock",
+	"shop_available_soon"           : "Available soon",
 	"shop_item_addition"            : "Item addition",
 	"shop_item_edition"             : "Item edition",
 	"shop_listed"                   : "Listed",
