@@ -20,14 +20,14 @@ $Page                      = Page::instance();
 $Page->title($L->items);
 $Categories = Categories::instance();
 $Items  = Items::instance();
-$all_items  = $Items->get($Items->get_all());
+$all_items  = $Items->get($Items->search());
 usort($all_items, function ($item1, $item2) {
 	return $item1['title'] > $item2['title'] ? 1 : -1;
 });
 $Page->content(
 	h::{'h3.uk-lead.cs-center'}($L->items).
 	h::{'cs-table[list][with-header]'}(
-		h::{'cs-table-row cs-table-cell'}(
+		h::{'cs-table-row cs-table-cell'}(// TODO make order change on click
 			'id',
 			$L->title,
 			$L->category,

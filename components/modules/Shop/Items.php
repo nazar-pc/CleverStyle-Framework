@@ -165,6 +165,43 @@ class Items {
 		});
 	}
 	/**
+	 * Simple items search
+	 *
+	 * @param int         $page
+	 * @param int         $count
+	 * @param null|string $field
+	 * @param null|string $value
+	 * @param string      $order_by
+	 * @param bool        $asc
+	 *
+	 * @return array|bool|string
+	 */
+	function search ($page = 1, $count = 20, $field = null, $value = null, $order_by = 'id', $asc = false) {
+		if ($field && !isset($this->data_model[$field])) {
+			return false;
+		}
+		if (!isset($this->data_model[$order_by])) {
+			return false;
+		}
+		$where  = '1';
+		$params = [];
+		if ($field) {
+			$where    = "`$field` = '%s'";
+			$params[] = $value;
+		}
+		$params[] = ($page - 1) * $count;
+		$params[] = $count;
+		$asc      = $asc ? 'ASC' : 'DESC';
+		return $this->db()->qfas([
+			"SELECT `id`
+			FROM `$this->table`
+			WHERE $where
+			ORDER BY `$order_by` $asc
+			LIMIT %d, %d",
+			$params
+		]);
+	}
+	/**
 	 * @param int $type
 	 *
 	 * @return string
