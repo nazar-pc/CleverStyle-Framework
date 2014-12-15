@@ -21,7 +21,7 @@ function make_url ($arguments) {
 }
 
 function make_header ($title, $field) {
-	$order_by = @$_GET['order_by'] ?: 'id';
+	$order_by = @$_GET['order_by'] ?: 'date';
 	return h::a(
 		"$title ".
 		($order_by == $field ? h::icon(@$_GET['asc'] ? 'caret-up' : 'caret-down') : ''),
@@ -50,7 +50,7 @@ $orders         = $Orders->get($Orders->search(
 	$_GET,
 	$page,
 	$count,
-	@$_GET['order_by'] ?: 'id',
+	@$_GET['order_by'] ?: 'date',
 	@$_GET['asc']
 ));
 $orders_total   = $Orders->search(
@@ -62,7 +62,7 @@ $orders_total   = $Orders->search(
 	),
 	$page,
 	$count,
-	@$_GET['order_by'] ?: 'id',
+	@$_GET['order_by'] ?: 'date',
 	@$_GET['asc']
 );
 $Page->content(

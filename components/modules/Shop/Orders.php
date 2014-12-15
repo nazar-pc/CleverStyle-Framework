@@ -113,7 +113,7 @@ class Orders {
 	 *
 	 * @return array|bool|string
 	 */
-	function search ($search_parameters = [], $page = 1, $count = 20, $order_by = 'id', $asc = false) {
+	function search ($search_parameters = [], $page = 1, $count = 20, $order_by = 'date', $asc = false) {
 		if (!isset($this->data_model[$order_by])) {
 			return false;
 		}
