@@ -15,6 +15,7 @@
     var L, make_modal;
     L = cs.Language;
     make_modal = function(attributes, categories, title, action) {
+      var modal, uploader;
       attributes = (function() {
         var attribute, attributes_, key, keys, _i, _len, _results;
         attributes_ = {};
@@ -71,7 +72,37 @@
         return _results;
       })();
       categories = categories.join('');
-      return $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_parent_category + ": <select name=\"parent\" required>" + categories + "</select>\n	</p>\n	<p>\n		" + L.shop_title + ": <input name=\"title\" required>\n	</p>\n	<p>\n		" + L.shop_description + ": <textarea name=\"description\"></textarea>\n	</p>\n	<p>\n		" + L.shop_category_attributes + ": <select name=\"attributes[]\" multiple required>" + attributes + "</select>\n	</p>\n	<p>\n		" + L.shop_title_attribute + ": <select name=\"title_attribute\" required>" + attributes + "</select>\n	</p>\n	<p>\n		" + L.shop_visible + ":\n		<label><input type=\"radio\" name=\"visible\" value=\"1\" checked> " + L.yes + "</label>\n		<label><input type=\"radio\" name=\"visible\" value=\"0\"> " + L.no + "</label>\n	</p>\n	<p>\n		<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n	</p>\n</form>");
+      modal = $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_parent_category + ": <select name=\"parent\" required>" + categories + "</select>\n	</p>\n	<p>\n		" + L.shop_title + ": <input name=\"title\" required>\n	</p>\n	<p>\n		" + L.shop_description + ": <textarea name=\"description\"></textarea>\n	</p>\n	<p class=\"image uk-hidden\">\n		" + L.shop_image + ":\n		<a target=\"_blank\" class=\"uk-thumbnail\">\n			<img>\n			<br>\n			<button type=\"button\" class=\"remove-image uk-button uk-button-danger uk-width-1-1\">" + L.shop_remove_image + "</button>\n		</a>\n		<input type=\"hidden\" name=\"image\">\n	</p>\n	<p>\n		<button type=\"button\" class=\"set-image uk-button\">" + L.shop_set_image + "</button>\n	</p>\n	<p>\n		" + L.shop_category_attributes + ": <select name=\"attributes[]\" multiple required>" + attributes + "</select>\n	</p>\n	<p>\n		" + L.shop_title_attribute + ": <select name=\"title_attribute\" required>" + attributes + "</select>\n	</p>\n	<p>\n		" + L.shop_visible + ":\n		<label><input type=\"radio\" name=\"visible\" value=\"1\" checked> " + L.yes + "</label>\n		<label><input type=\"radio\" name=\"visible\" value=\"0\"> " + L.no + "</label>\n	</p>\n	<p>\n		<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n	</p>\n</form>");
+      modal.set_image = function(image) {
+        modal.find('[name=image]').val(image);
+        if (image) {
+          return modal.find('.image').removeClass('uk-hidden').find('a').attr('href', image).find('img').attr('src', image);
+        } else {
+          return modal.find('.image').addClass('uk-hidden');
+        }
+      };
+      modal.find('.remove-image').click(function() {
+        return modal.set_image('');
+      });
+      if (cs.file_upload) {
+        uploader = cs.file_upload(modal.find('.set-image'), function(image) {
+          return modal.set_image(image[0]);
+        }, function(error) {
+          return alert(error.message);
+        });
+        modal.on('uk.modal.hide', function() {
+          return uploader.destroy();
+        });
+      } else {
+        modal.find('.set-image').click(function() {
+          var image;
+          image = prompt(L.shop_image_url);
+          if (image) {
+            return modal.set_image(image);
+          }
+        });
+      }
+      return modal;
     };
     return $('html').on('mousedown', '.cs-shop-category-add', function() {
       return $.when($.getJSON('api/Shop/admin/attributes'), $.getJSON('api/Shop/admin/categories')).done(function(attributes, categories) {
@@ -116,6 +147,7 @@
           return modal.find("[name='attributes[]'] > [value=" + attribute + "]").prop('selected', true);
         });
         modal.find('[name=title_attribute]').val(category.title_attribute);
+        modal.set_image(category.image);
         return modal.find("[name=visible][value=" + category.visible + "]").prop('checked', true);
       });
     }).on('mousedown', '.cs-shop-category-delete', function() {

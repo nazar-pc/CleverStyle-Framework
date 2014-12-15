@@ -46,7 +46,7 @@
 	"shop_category_edition"         : "Редагування категорії",
 	"shop_parent_category"          : "Батьківська категорія",
 	"shop_description"              : "Опис",
-	"shop_category_attributes"      : "Отрибути що використовуються в категорії",
+	"shop_category_attributes"      : "Атрибути що використовуються в категорії",
 	"shop_order_status_addition"    : "Додавання статусу замовлення",
 	"shop_order_status_edition"     : "Редагування статусу замовлення",
 	"shop_color"                    : "Колір",
@@ -75,6 +75,7 @@
 	"shop_item_addition"            : "Додавання позиції",
 	"shop_item_edition"             : "Редагування позиції",
 	"shop_add_images"               : "Додати зображення",
+	"shop_image_url"                : "URL зображення",
 	"shop_remove_image"             : "Видалити зображення",
 	"shop_tags"                     : "Теги",
 	"shop_order_addition"           : "Додавання замовлення",
@@ -83,5 +84,7 @@
 	"shop_unit_price"               : "Ціна за одиницю",
 	"shop_units"                    : "Одиниць",
 	"shop_total_price"              : "Всього",
-	"shop_add_item"                 : "Додати позицію"
+	"shop_add_item"                 : "Додати позицію",
+	"shop_image"                    : "Зображення",
+	"shop_set_image"                : "Змінити зображення"
 }

@@ -150,7 +150,7 @@ $ ->
 					uploader.destroy()
 			else
 				modal.find('.add-images').click ->
-					image	= prompt('Image url')
+					image	= prompt(L.shop_image_url)
 					if image
 						modal.add_images([image])
 			modal.on('click', '.remove-image', ->

@@ -42,7 +42,7 @@ $ ->
 			for key in keys
 				categories_[key]
 		categories	= categories.join('')
-		$.cs.simple_modal("""<form>
+		modal		= $.cs.simple_modal("""<form>
 			<h3 class="cs-center">#{title}</h3>
 			<p>
 				#{L.shop_parent_category}: <select name="parent" required>#{categories}</select>
@@ -52,6 +52,18 @@ $ ->
 			</p>
 			<p>
 				#{L.shop_description}: <textarea name="description"></textarea>
+			</p>
+			<p class="image uk-hidden">
+				#{L.shop_image}:
+				<a target="_blank" class="uk-thumbnail">
+					<img>
+					<br>
+					<button type="button" class="remove-image uk-button uk-button-danger uk-width-1-1">#{L.shop_remove_image}</button>
+				</a>
+				<input type="hidden" name="image">
+			</p>
+			<p>
+				<button type="button" class="set-image uk-button">#{L.shop_set_image}</button>
 			</p>
 			<p>
 				#{L.shop_category_attributes}: <select name="attributes[]" multiple required>#{attributes}</select>
@@ -68,6 +80,35 @@ $ ->
 				<button class="uk-button" type="submit">#{action}</button>
 			</p>
 		</form>""")
+		modal.set_image	= (image) ->
+			modal.find('[name=image]').val(image)
+			if image
+				modal.find('.image')
+					.removeClass('uk-hidden')
+					.find('a')
+						.attr('href', image)
+						.find('img')
+							.attr('src', image)
+			else
+				modal.find('.image').addClass('uk-hidden')
+		modal.find('.remove-image').click ->
+			modal.set_image('')
+		if cs.file_upload
+			uploader = cs.file_upload(
+				modal.find('.set-image')
+				(image) ->
+					modal.set_image(image[0])
+				(error) ->
+					alert error.message
+			)
+			modal.on 'uk.modal.hide', ->
+				uploader.destroy()
+		else
+			modal.find('.set-image').click ->
+				image	= prompt(L.shop_image_url)
+				if image
+					modal.set_image(image)
+		modal
 	$('html')
 		.on('mousedown', '.cs-shop-category-add', ->
 			$.when(
@@ -111,6 +152,7 @@ $ ->
 				category.attributes.forEach (attribute) ->
 					modal.find("[name='attributes[]'] > [value=#{attribute}]").prop('selected', true)
 				modal.find('[name=title_attribute]').val(category.title_attribute)
+				modal.set_image(category.image)
 				modal.find("[name=visible][value=#{category.visible}]").prop('checked', true)
 		)
 		.on('mousedown', '.cs-shop-category-delete', ->

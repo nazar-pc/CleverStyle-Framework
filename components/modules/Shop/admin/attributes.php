@@ -29,7 +29,7 @@ $Page->content(
 	h::{'cs-table[list][with-header]'}(
 		h::{'cs-table-row cs-table-cell'}(
 			'id',
-			$L->title_internal,
+			"$L->title_internal ".h::icon('caret-down'),
 			$L->title,
 			$L->attribute_type,
 			$L->action

@@ -28,7 +28,7 @@ $Page->content(
 	h::{'cs-table[list][with-header]'}(
 		h::{'cs-table-row cs-table-cell'}(
 			'id',
-			$L->title,
+			"$L->title ".h::icon('caret-down'),
 			$L->price,
 			$L->phone_needed,
 			$L->address_needed,

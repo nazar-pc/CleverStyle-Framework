@@ -29,7 +29,7 @@ $Page->content(
 	h::{'cs-table[list][with-header]'}(
 		h::{'cs-table-row cs-table-cell'}(
 			'id',
-			$L->title,
+			"$L->title ".h::icon('caret-down'),
 			$L->order_status_type,
 			$L->send_update_status_email,
 			$L->action

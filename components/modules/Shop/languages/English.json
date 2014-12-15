@@ -75,6 +75,7 @@
 	"shop_item_edition"             : "Item edition",
 	"shop_listed"                   : "Listed",
 	"shop_add_images"               : "Add images",
+	"shop_image_url"                : "Image URL",
 	"shop_remove_image"             : "Remove image",
 	"shop_tags"                     : "Tags",
 	"shop_order_addition"           : "Order addition",
@@ -83,5 +84,7 @@
 	"shop_unit_price"               : "Unit price",
 	"shop_units"                    : "Units",
 	"shop_total_price"              : "Total price",
-	"shop_add_item"                 : "Add item"
+	"shop_add_item"                 : "Add item",
+	"shop_image"                    : "Image",
+	"shop_set_image"                : "Set image"
 }

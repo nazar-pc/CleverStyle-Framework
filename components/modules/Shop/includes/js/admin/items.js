@@ -138,7 +138,7 @@
         } else {
           modal.find('.add-images').click(function() {
             var image;
-            image = prompt('Image url');
+            image = prompt(L.shop_image_url);
             if (image) {
               return modal.add_images([image]);
             }

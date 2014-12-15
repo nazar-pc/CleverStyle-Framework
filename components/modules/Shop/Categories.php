@@ -11,6 +11,7 @@ use
 	cs\Cache\Prefix,
 	cs\Config,
 	cs\Language,
+	cs\Trigger,
 	cs\CRUD,
 	cs\Singleton;
 
@@ -31,6 +32,7 @@ class Categories {
 		'title'           => 'ml:text',
 		'description'     => 'ml:html',
 		'title_attribute' => 'int',
+		'image'           => 'string',
 		'visible'         => 'int:0..1'
 	];
 	protected $data_model_ml_group = 'Shop/categories';
@@ -118,22 +120,24 @@ class Categories {
 	 * @param string $title
 	 * @param string $description
 	 * @param int    $title_attribute Attribute that will be considered as title
+	 * @param string $image
 	 * @param int    $visible         `Categories::VISIBLE` or `Categories::INVISIBLE`
 	 * @param int[]  $attributes      Array of attributes ids used in category
 	 *
 	 * @return bool|int Id of created category on success of <b>false</> on failure
 	 */
-	function add ($parent, $title, $description, $title_attribute, $visible, $attributes) {
+	function add ($parent, $title, $description, $title_attribute, $image, $visible, $attributes) {
 		$id = $this->create_simple([
 			$parent,
 			'',
 			'',
-			[],
+			0,
+			'',
 			static::INVISIBLE
 		]);
 		if ($id) {
 			unset($this->cache->all);
-			$this->set($id, $parent, $title, $description, $title_attribute, $visible, $attributes);
+			$this->set($id, $parent, $title, $description, $title_attribute, $image, $visible, $attributes);
 		}
 		return $id;
 	}
@@ -145,13 +149,18 @@ class Categories {
 	 * @param string $title
 	 * @param string $description
 	 * @param int    $title_attribute Attribute that will be considered as title
+	 * @param string $image
 	 * @param int    $visible         `Categories::VISIBLE` or `Categories::INVISIBLE`
 	 * @param int[]  $attributes      Array of attributes ids used in category
 	 *
 	 * @return bool
 	 */
-	function set ($id, $parent, $title, $description, $title_attribute, $visible, $attributes) {
-		$id         = (int)$id;
+	function set ($id, $parent, $title, $description, $title_attribute, $image, $visible, $attributes) {
+		$id   = (int)$id;
+		$data = $this->read_simple($id);
+		if (!$data) {
+			return false;
+		}
 		$attributes = $this->clean_nonexistent_attributes($attributes);
 		$result     = $this->update_simple([
 			$id,
@@ -159,10 +168,27 @@ class Categories {
 			trim($title),
 			trim($description),
 			in_array($title_attribute, $attributes) ? $title_attribute : $attributes[0],
+			$image,
 			$visible
 		]);
 		if (!$result) {
 			return false;
+		}
+		if ($data['image'] != $image) {
+			Trigger::instance()->run(
+				'System/upload_files/del_tag',
+				[
+					'tag' => "Shop/categories/$id",
+					'url' => $data['image']
+				]
+			);
+			Trigger::instance()->run(
+				'System/upload_files/add_tag',
+				[
+					'tag' => "Shop/categories/$id",
+					'url' => $image
+				]
+			);
 		}
 		$cdb = $this->db_prime();
 		$cdb->q(
@@ -205,6 +231,12 @@ class Categories {
 			$this->db_prime()->q(
 				"DELETE FROM `{$this->table}_attributes`
 				WHERE `id` = $id"
+			);
+			Trigger::instance()->run(
+				'System/upload_files/del_tag',
+				[
+					'tag' => "Shop/categories/$id"
+				]
 			);
 			// TODO do something with items in category on removal
 			unset(
