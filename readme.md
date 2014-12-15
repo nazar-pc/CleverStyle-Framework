@@ -57,7 +57,7 @@ System contains everything necessary inside to ease setup and to be independent 
 
 No CDNs for JS and fonts in system core, no composer, bower or any other packages needed to be installed from command line.
 
-Just take SINGLE installation file, and open it from web browser to install system.
+Just take SINGLE installation file, and open it from web browser or run from command line to install system.
 
 However, if you add some composer packages to your project - system will understand that and all your packages become available immediately in any place of system.
 

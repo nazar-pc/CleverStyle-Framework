@@ -89,7 +89,6 @@ Trigger::instance()
 						SELECT `id`
 						FROM `[prefix]plupload_files`
 						WHERE `url` = '%s'
-						LIMIT 1
 					)",
 					$data['url']
 				);
@@ -101,7 +100,6 @@ Trigger::instance()
 							SELECT `id`
 							FROM `[prefix]plupload_files`
 							WHERE `url` = '%s'
-							LIMIT 1
 						) AND
 						`tag`	= '%s'",
 					$data['url'],

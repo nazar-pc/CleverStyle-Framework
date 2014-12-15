@@ -346,7 +346,8 @@ class Comments {
 		$content	= '';
 		if (is_array($comments) && !empty($comments)) {
 			foreach ($comments as $comment) {
-				$content	.= h::{'article.cs-comments-comment'}(
+				$uniqid		= uniqid('comment_');
+				$content	.= str_replace($uniqid, $comment['text'], h::{'article.cs-comments-comment'}(
 					h::a(
 						h::{'img.cs-comments-comment-avatar'}([
 							'src'	=> $User->avatar($this->avatar_size, $comment['user']),
@@ -395,16 +396,14 @@ class Comments {
 							$User->id == $comment['user'] || $User->admin()
 						) ? h::{'icon.cs-comments-comment-delete.cs-pointer'}('trash-o') : ''
 					).
-					h::{'div.cs-comments-comment-text'}(
-						$comment['text']
-					).
+					h::{'div.cs-comments-comment-text'}($uniqid).
 					(
 						$comment['comments'] ? $this->tree_html($comment['comments']) : ''
 					),
 					[
 						'id'	=> "comment_$comment[id]"
 					]
-				);
+				));
 			}
 		}
 		return $content;
