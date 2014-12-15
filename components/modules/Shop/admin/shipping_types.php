@@ -27,6 +27,7 @@ $Page->content(
 	h::{'h3.uk-lead.cs-center'}($L->shipping_types).
 	h::{'cs-table[list][with-header]'}(
 		h::{'cs-table-row cs-table-cell'}(
+			'id',
 			$L->title,
 			$L->price,
 			$L->phone_needed,
@@ -36,6 +37,7 @@ $Page->content(
 		h::{'cs-table-row| cs-table-cell'}(array_map(
 			function ($shipping_type) use ($L) {
 				return [
+					$shipping_type['id'],
 					$shipping_type['title'],
 					$shipping_type['price'],
 					h::icon($shipping_type['phone_needed'] ? 'check' : 'minus'),

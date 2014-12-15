@@ -28,6 +28,7 @@ $Page->content(
 	h::{'h3.uk-lead.cs-center'}($L->order_statuses).
 	h::{'cs-table[list][with-header]'}(
 		h::{'cs-table-row cs-table-cell'}(
+			'id',
 			$L->title,
 			$L->order_status_type,
 			$L->send_update_status_email,
@@ -37,6 +38,7 @@ $Page->content(
 			function ($order_status) use ($L, $order_status_types) {
 				return h::cs_table_cell(
 					[
+						$order_status['id'],
 						$order_status['title'],
 						$order_status_types[$order_status['type']],
 						h::icon($order_status['send_update_status_email'] ? 'check' : 'minus'),

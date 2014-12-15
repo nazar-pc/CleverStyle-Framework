@@ -44,6 +44,7 @@ $Page->content(
 	h::{'h3.uk-lead.cs-center'}($L->categories).
 	h::{'cs-table[list][with-header]'}(
 		h::{'cs-table-row cs-table-cell'}(
+			'id',
 			$L->title,
 			$L->title_attribute,
 			$L->visible,
@@ -52,6 +53,7 @@ $Page->content(
 		h::{'cs-table-row| cs-table-cell'}(array_map(
 			function ($category) use ($L, $Attributes) {
 				return [
+					$category['id'],
 					$category['title'],
 					$Attributes->get($category['title_attribute'])['title_internal'],
 					h::icon($category['visible'] ? 'check' : 'minus'),

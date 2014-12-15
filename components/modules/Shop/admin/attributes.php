@@ -28,6 +28,7 @@ $Page->content(
 	h::{'h3.uk-lead.cs-center'}($L->attributes).
 	h::{'cs-table[list][with-header]'}(
 		h::{'cs-table-row cs-table-cell'}(
+			'id',
 			$L->title_internal,
 			$L->title,
 			$L->attribute_type,
@@ -36,6 +37,7 @@ $Page->content(
 		h::{'cs-table-row| cs-table-cell'}(array_map(
 			function ($attribute) use ($L, $attribute_types) {
 				return [
+					$attribute['id'],
 					$attribute['title_internal'],
 					$attribute['title'],
 					$attribute_types[$attribute['type']],
