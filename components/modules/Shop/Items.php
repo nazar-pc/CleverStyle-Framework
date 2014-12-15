@@ -165,41 +165,117 @@ class Items {
 		});
 	}
 	/**
-	 * Simple items search
+	 * Items search
 	 *
-	 * @param int         $page
-	 * @param int         $count
-	 * @param null|string $field
-	 * @param null|string $value
-	 * @param string      $order_by
-	 * @param bool        $asc
+	 * @param mixed[] $search_parameters Array in form [attribute => value], [attribute => [value, value]], [attribute => [from => value, to => value]],
+	 *                                   [property => value], [tag] or mixed; if `count => 1` element is present - total number of found rows will be returned
+	 *                                   instead of rows themselves
+	 * @param int     $page
+	 * @param int     $count
+	 * @param string  $order_by
+	 * @param bool    $asc
 	 *
 	 * @return array|bool|string
 	 */
-	function search ($page = 1, $count = 20, $field = null, $value = null, $order_by = 'id', $asc = false) {
-		if ($field && !isset($this->data_model[$field])) {
-			return false;
-		}
+	function search ($search_parameters = [], $page = 1, $count = 20, $order_by = 'id', $asc = false) {
 		if (!isset($this->data_model[$order_by])) {
 			return false;
 		}
-		$where  = '1';
-		$params = [];
-		if ($field) {
-			$where    = "`$field` = '%s'";
-			$params[] = $value;
+		$Attributes   = Attributes::instance();
+		$L            = Language::instance();
+		$joins        = '';
+		$join_params  = [];
+		$join_index   = 0;
+		$where        = [];
+		$where_params = [];
+		foreach ($search_parameters as $key => $details) {
+			if (isset($this->data_model[$key])) { // Property
+				$where[]        = "`i`.`$key` = '%s'";
+				$where_params[] = $details;
+			} elseif (!is_numeric($key)) { // Tag
+				$joins .=
+					"INNER JOIN `{$this->table}_tags` AS `t`
+					ON
+						`i`.`id`	= `t`.`id` AND
+						`t`.`tag`	= '%s'";
+				$where_params[] = $details;
+			} else { // Attribute
+				$field = @$this->attribute_type_to_value_field($Attributes->get($key)['type']);
+				if (!$field || empty($details)) {
+					continue;
+				}
+				$join_params[] = $key;
+				++$join_index;
+				$joins .=
+					"INNER JOIN `{$this->table}_attributes` AS `a$join_index`
+					ON
+						`i`.`id`					= `a$join_index`.`id` AND
+						`a$join_index`.`attribute`	= '%s' AND
+						(
+							`a$join_index`.`id`.`lang`	= '$L->clang' OR
+							`a$join_index`.`id`.`lang`	= ''
+						)";
+				if (is_array($details)) {
+					if (isset($details['from']) || isset($details['to'])) {
+						if (isset($details['from'])) {
+							$joins .= "AND `a$join_index`.`$field`	>= '%s'";
+							$join_params[] = $details['from'];
+						}
+						if (isset($details['to'])) {
+							$joins .= "AND `a$join_index`.`$field`	<= '%s'";
+							$join_params[] = $details['to'];
+						}
+					} else {
+						$on = [];
+						foreach ($details as $d) {
+							$on[]          = "`a$join_index`.`$field` = '%s'";
+							$join_params[] = $d;
+						}
+						$on = implode(' OR ', $on);
+						$joins .= "AND ($on)";
+						unset($on, $d);
+					}
+				} else {
+					switch ($field) {
+						case 'numeric_value':
+							$joins .= "AND `a$join_index`.`$field` = '%s'";
+							break;
+						case 'string_value':
+							$joins .= "AND `a$join_index`.`$field` LIKE '%s%%'";
+							break;
+						default:
+							$joins .= "AND MATCH (`a$join_index`.`$field`) AGAINST ('%s' IN BOOLEAN MODE) > 0";
+					}
+					$join_params[] = $details;
+				}
+			}
 		}
-		$params[] = ($page - 1) * $count;
-		$params[] = $count;
-		$asc      = $asc ? 'ASC' : 'DESC';
-		return $this->db()->qfas([
-			"SELECT `id`
-			FROM `$this->table`
-			WHERE $where
-			ORDER BY `$order_by` $asc
-			LIMIT %d, %d",
-			$params
-		]);
+		unset($key, $details, $join_index, $field);
+		$where = $where ? "WHERE ".implode(' AND ', $where) : '';
+		if (@$search_parameters['count']) {
+			return $this->db()->qfs([
+				"SELECT count(`i`.`id`)
+				FROM `$this->table` AS `i`
+				$joins
+				$where
+				GROUP BY `i`.`id`",
+				array_merge($join_params, $where_params)
+			]);
+		} else {
+			$where_params[] = ($page - 1) * $count;
+			$where_params[] = $count;
+			$asc            = $asc ? 'ASC' : 'DESC';
+			return $this->db()->qfas([
+				"SELECT `i`.`id`
+				FROM `$this->table` AS `i`
+				$joins
+				$where
+				GROUP BY `i`.`id`
+				ORDER BY `i`.`$order_by` $asc
+				LIMIT %d, %d",
+				array_merge($join_params, $where_params)
+			]);
+		}
 	}
 	/**
 	 * @param int $type
@@ -222,8 +298,10 @@ class Items {
 				return 'numeric_value';
 			case Attributes::TYPE_STRING:
 				return 'string_value';
-			default:
+			case Attributes::TYPE_TEXT:
 				return 'text_value';
+			default:
+				return false;
 		}
 	}
 	/**
