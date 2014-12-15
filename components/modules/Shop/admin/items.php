@@ -14,8 +14,7 @@ use
 	cs\Language\Prefix,
 	cs\Page;
 function make_url ($arguments) {
-	$base_url          = 'admin/Shop/items/?';
-	unset($arguments['page']);
+	$base_url = 'admin/Shop/items/?';
 	return $base_url.http_build_query(array_merge($_GET, $arguments));
 }
 
@@ -27,7 +26,8 @@ function make_header ($title, $field) {
 		[
 			'href' => make_url([
 				'order_by' => $field,
-				'asc'      => $order_by == $field ? !@$_GET['asc'] : false
+				'asc'      => $order_by == $field ? !@$_GET['asc'] : false,
+				'page'     => 1
 			])
 		]
 	);
@@ -37,15 +37,29 @@ Index::instance()->buttons = false;
 $L                         = new Prefix('shop_');
 $Page                      = Page::instance();
 $Page->title($L->items);
-$Categories = Categories::instance();
-$Items      = Items::instance();
-$all_items  = $Items->get($Items->search(
-	@$_GET,
-	@$_GET['page'] ?: 1,
-	@$_GET['count'] ?: 20,
+$Categories  = Categories::instance();
+$Items       = Items::instance();
+$page        = @$_GET['page'] ?: 1;
+$count       = @$_GET['count'] ?: 20;
+$items       = $Items->get($Items->search(
+	$_GET,
+	$page,
+	$count,
 	@$_GET['order_by'] ?: 'id',
 	@$_GET['asc']
 ));
+$items_total = $Items->search(
+	array_merge(
+		$_GET,
+		[
+			'total_count' => 1
+		]
+	),
+	$page,
+	$count,
+	@$_GET['order_by'] ?: 'id',
+	@$_GET['asc']
+);
 $Page->content(
 	h::{'h3.uk-lead.cs-center'}($L->items).
 	h::{'cs-table[list][with-header]'}(
@@ -96,8 +110,13 @@ $Page->content(
 					]
 				);
 			},
-			$all_items
+			$items
 		) ?: false)
-	).//TODO pages navigation
+	).
+	pages($page, ceil($items_total / $count), function ($page) {
+		return make_url([
+			'page' => $page
+		]);
+	}, true).
 	h::{'p button.uk-button.cs-shop-item-add'}($L->add)
 );

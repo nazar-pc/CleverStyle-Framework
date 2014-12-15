@@ -168,7 +168,7 @@ class Items {
 	 * Items search
 	 *
 	 * @param mixed[] $search_parameters Array in form [attribute => value], [attribute => [value, value]], [attribute => [from => value, to => value]],
-	 *                                   [property => value], [tag] or mixed; if `count => 1` element is present - total number of found rows will be returned
+	 *                                   [property => value], [tag] or mixed; if `total_count => 1` element is present - total number of found rows will be returned
 	 *                                   instead of rows themselves
 	 * @param int     $page
 	 * @param int     $count
@@ -192,7 +192,7 @@ class Items {
 			if (isset($this->data_model[$key])) { // Property
 				$where[]        = "`i`.`$key` = '%s'";
 				$where_params[] = $details;
-			} elseif (!is_numeric($key)) { // Tag
+			} elseif (is_numeric($key)) { // Tag
 				$joins .=
 					"INNER JOIN `{$this->table}_tags` AS `t`
 					ON
@@ -252,13 +252,12 @@ class Items {
 		}
 		unset($key, $details, $join_index, $field);
 		$where = $where ? "WHERE ".implode(' AND ', $where) : '';
-		if (@$search_parameters['count']) {
+		if (@$search_parameters['total_count']) {
 			return $this->db()->qfs([
-				"SELECT count(`i`.`id`)
+				"SELECT COUNT(DISTINCT `i`.`id`)
 				FROM `$this->table` AS `i`
 				$joins
-				$where
-				GROUP BY `i`.`id`",
+				$where",
 				array_merge($join_params, $where_params)
 			]);
 		} else {
