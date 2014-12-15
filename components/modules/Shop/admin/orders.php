@@ -15,6 +15,25 @@ use
 	cs\Language\Prefix,
 	cs\Page,
 	cs\User;
+function make_url ($arguments) {
+	$base_url = 'admin/Shop/orders/?';
+	return $base_url.http_build_query(array_merge($_GET, $arguments));
+}
+
+function make_header ($title, $field) {
+	$order_by = @$_GET['order_by'] ?: 'id';
+	return h::a(
+		"$title ".
+		($order_by == $field ? h::icon(@$_GET['asc'] ? 'caret-up' : 'caret-down') : ''),
+		[
+			'href' => make_url([
+				'order_by' => $field,
+				'asc'      => $order_by == $field ? !@$_GET['asc'] : false,
+				'page'     => 1
+			])
+		]
+	);
+}
 
 Index::instance()->buttons = false;
 $L                         = new Prefix('shop_');
@@ -25,17 +44,37 @@ $Items          = Items::instance();
 $Orders         = Orders::instance();
 $Order_statuses = Order_statuses::instance();
 $Shipping_types = Shipping_types::instance();
-$all_orders     = $Orders->get($Orders->get_all());
+$page           = @$_GET['page'] ?: 1;
+$count          = @$_GET['count'] ?: 20;
+$orders         = $Orders->get($Orders->search(
+	$_GET,
+	$page,
+	$count,
+	@$_GET['order_by'] ?: 'id',
+	@$_GET['asc']
+));
+$orders_total   = $Orders->search(
+	array_merge(
+		$_GET,
+		[
+			'total_count' => 1
+		]
+	),
+	$page,
+	$count,
+	@$_GET['order_by'] ?: 'id',
+	@$_GET['asc']
+);
 $Page->content(
 	h::{'h3.uk-lead.cs-center'}($L->orders).
 	h::{'cs-table[list][with-header]'}(
 		h::{'cs-table-row cs-table-cell'}(
-			'id',
-			$L->datetime,
-			$L->user,
+			make_header('id', 'id'),
+			make_header($L->datetime, 'date'),
+			make_header($L->user, 'user'),
 			$L->order_items,
-			$L->shipping_type,
-			$L->status,
+			make_header($L->shipping_type, 'shipping_type'),
+			make_header($L->status, 'status'),
 			$L->comment,
 			$L->action
 		).
@@ -50,7 +89,12 @@ $Page->content(
 					[
 						$order['id'],
 						$date,
-						$username.h::br().$order['shipping_phone'], // TODO links to all orders of this user
+						h::a(
+							$username.h::br().$order['shipping_phone'],
+							[
+								'href' => "admin/Shop/orders/?user=$order[user]"
+							]
+						),
 						implode(
 							h::br(),
 							array_map(
@@ -60,8 +104,18 @@ $Page->content(
 								$Orders->get_items($order['id'])
 							)
 						),
-						$Shipping_types->get($order['shipping_type'])['title'], // TODO links to all orders with this shipping type
-						$order_status['title'], // TODO links to all orders with this order status
+						h::a(
+							$Shipping_types->get($order['shipping_type'])['title'],
+							[
+								'href' => "admin/Shop/orders/?shipping_type=$order[shipping_type]"
+							]
+						),
+						h::a(
+							$order_status['title'],
+							[
+								'href' => "admin/Shop/orders/?status=$order[status]"
+							]
+						),
 						$order['comment'],
 						h::{'button.uk-button.cs-shop-order-details'}( // TODO details page/modal
 							$L->details,
@@ -89,8 +143,13 @@ $Page->content(
 					]
 				);
 			},
-			$all_orders
+			$orders
 		) ?: false)
 	).
+	pages($page, ceil($orders_total / $count), function ($page) {
+		return make_url([
+			'page' => $page
+		]);
+	}, true).
 	h::{'p button.uk-button.cs-shop-order-add'}($L->add)
 );

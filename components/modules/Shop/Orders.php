@@ -102,6 +102,53 @@ class Orders {
 		]) ?: [];
 	}
 	/**
+	 * Orders search
+	 *
+	 * @param mixed[] $search_parameters Array in form [attribute => value];
+	 *                                   if `total_count => 1` element is present - total number of found rows will be returned instead of rows themselves
+	 * @param int     $page
+	 * @param int     $count
+	 * @param string  $order_by
+	 * @param bool    $asc
+	 *
+	 * @return array|bool|string
+	 */
+	function search ($search_parameters = [], $page = 1, $count = 20, $order_by = 'id', $asc = false) {
+		if (!isset($this->data_model[$order_by])) {
+			return false;
+		}
+		$where  = [];
+		$params = [];
+		foreach ($search_parameters as $key => $details) {
+			if (isset($this->data_model[$key])) {
+				$where[]  = "`$key` = '%s'";
+				$params[] = $details;
+			}
+		}
+		unset($key, $details);
+		$where = $where ? "WHERE ".implode(' AND ', $where) : '';
+		if (@$search_parameters['total_count']) {
+			return $this->db()->qfs([
+				"SELECT COUNT(`id`)
+				FROM `$this->table`
+				$where",
+				$params
+			]);
+		} else {
+			$params[] = ($page - 1) * $count;
+			$params[] = $count;
+			$asc      = $asc ? 'ASC' : 'DESC';
+			return $this->db()->qfas([
+				"SELECT `id`
+				FROM `$this->table`
+				$where
+				ORDER BY `$order_by` $asc
+				LIMIT %d, %d",
+				$params
+			]);
+		}
+	}
+	/**
 	 * Add new order
 	 *
 	 * @param int    $user

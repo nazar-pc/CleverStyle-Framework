@@ -154,16 +154,18 @@
         var modal;
         modal = make_modal(shipping_types[0], order_statuses[0], L.shop_order_addition, L.shop_add);
         return modal.find('form').submit(function() {
+          var data;
+          data = $(this).serialize();
           $.ajax({
             url: 'api/Shop/admin/orders',
             type: 'post',
-            data: $(this).serialize(),
+            data: data,
             success: function(url) {
               url = url.split('/');
               return $.ajax({
                 url: 'api/Shop/admin/orders/' + url.pop() + '/items',
                 type: 'put',
-                data: $(this).serialize(),
+                data: data,
                 success: function() {
                   alert(L.shop_added_successfully);
                   return location.reload();

@@ -151,16 +151,17 @@ $ ->
 			).done (shipping_types, order_statuses) ->
 				modal = make_modal(shipping_types[0], order_statuses[0], L.shop_order_addition, L.shop_add)
 				modal.find('form').submit ->
+					data	= $(@).serialize()
 					$.ajax(
 						url     : 'api/Shop/admin/orders'
 						type    : 'post'
-						data    : $(@).serialize()
+						data    : data
 						success : (url) ->
 							url	= url.split('/')
 							$.ajax(
 								url     : 'api/Shop/admin/orders/' + url.pop() + '/items'
 								type    : 'put'
-								data    : $(@).serialize()
+								data    : data
 								success : ->
 									alert(L.shop_added_successfully)
 									location.reload()
