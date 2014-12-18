@@ -1,5 +1,6 @@
 {
 	"Shop"                          : "Магазин",
+	"shop_shop"                     : "Магазин",
 	"shop_categories"               : "Категорії",
 	"shop_title"                    : "Назва",
 	"shop_title_attribute"          : "Атрибут назви товару",

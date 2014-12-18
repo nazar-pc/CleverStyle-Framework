@@ -1,0 +1,18 @@
+<polymer-element name="cs-shop-root-category" extends="article">
+	<template>
+		<div class="uk-grid">
+			<div class="uk-width-3-10">
+				<figure class="uk-thumbnail">
+					<a href="{{href}}">
+						<content select="img"></content>
+					</a>
+				</figure>
+			</div>
+			<div class="uk-width-7-10">
+				<content select="h1"></content>
+				<content select=".description"></content>
+			</div>
+		</div>
+	</template>
+	<script src="script.js"></script>
+</polymer-element>
