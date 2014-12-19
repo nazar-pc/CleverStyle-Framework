@@ -12,69 +12,71 @@ html {
 	-moz-box-sizing : border-box;
 }
 
-*,
-*::before,
-*:after {
-	box-sizing      : inherit;
-	-moz-box-sizing : inherit;
-}
-
-body /deep/ *,
-body /deep/ *::before,
-body /deep/ *:after {
-	box-sizing      : inherit;
-	-moz-box-sizing : inherit;
-}
-
-code {
-	font-family : $code-font-family;
-	white-space : normal;
-}
-
-h1, h2, h3, h4, h5, h6 {
-	color       : inherit;
-	font-family : $heading-font-family;
-}
-
-a {
-	color  : inherit;
-	cursor : pointer;
-
-	&:hover {
-		color : inherit;
-	}
-}
-
-button,
-.cs-pointer {
-	cursor : pointer;
-}
-
-a {
-	&:focus {
-		outline : none;
+html /deep/ {
+	*,
+	*::before,
+	*:after {
+		box-sizing      : inherit;
+		-moz-box-sizing : inherit;
 	}
 
-	&:hover {
-		text-decoration : none;
+	body /deep/ *,
+	body /deep/ *::before,
+	body /deep/ *:after {
+		box-sizing      : inherit;
+		-moz-box-sizing : inherit;
 	}
-}
 
-button, input, select, textarea {
-	color     : inherit;
-	font-size : 100%;
-	margin    : 0;
-}
+	code {
+		font-family : $code-font-family;
+		white-space : normal;
+	}
 
-button,
-.cs-disable-selection {
-	@include disable-selection;
-}
+	h1, h2, h3, h4, h5, h6 {
+		color       : inherit;
+		font-family : $heading-font-family;
+	}
 
-.cs-button-compact {
-	padding : .2em .3em !important;
-}
+	a {
+		color  : inherit;
+		cursor : pointer;
 
-@include cs-align(left);
-@include cs-align(center);
-@include cs-align(right);
+		&:hover {
+			color : inherit;
+		}
+	}
+
+	button,
+	.cs-pointer {
+		cursor : pointer;
+	}
+
+	a {
+		&:focus {
+			outline : none;
+		}
+
+		&:hover {
+			text-decoration : none;
+		}
+	}
+
+	button, input, select, textarea {
+		color     : inherit;
+		font-size : 100%;
+		margin    : 0;
+	}
+
+	button,
+	.cs-disable-selection {
+		@include disable-selection;
+	}
+
+	.cs-button-compact {
+		padding : .2em .3em !important;
+	}
+
+	@include cs-align(left);
+	@include cs-align(center);
+	@include cs-align(right);
+}

@@ -18,12 +18,12 @@ function level ($in, $level) {
 $main_menu	= h::{'ul.uk-navbar-nav[level=0] li[level=0]'}(
 	get_main_menu()
 );
-$submenu		= admin_path() ? Menu::instance()->get_menu() : '';
-$avatar			= User::instance()->avatar();
-$body_class		= admin_path() ? ' class="cs-admin-page"' : '';
+$submenu	= admin_path() ? Menu::instance()->get_menu() : '';
+$avatar		= User::instance()->avatar();
+$body_class	= admin_path() ? ' class="cs-admin-page"' : '';
 ?><!doctype html>
 <!--pre_Html--><!--head-->
-<body>
+<body unresolved>
 <!--pre_Body-->
 	<header class="uk-navbar uk-navbar-attached">
 		<div class="uk-navbar-content uk-navbar-flip">
