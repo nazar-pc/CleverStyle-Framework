@@ -174,8 +174,9 @@ trait Includes {
 		if ($core) {
 			if ($mode == 'file') {
 				$this->core_css[0][]	= h::link([
-					'href'	=> $add,
-					'rel'	=> 'stylesheet'
+					'href'				=> $add,
+					'rel'				=> 'stylesheet',
+					'shim-shadowdom'	=> ''
 				]);
 			} elseif ($mode == 'code') {
 				$this->core_css[1][]	 = $add."\n";
@@ -183,8 +184,9 @@ trait Includes {
 		} else {
 			if ($mode == 'file') {
 				$this->css[0][]			= h::link([
-					'href'	=> $add,
-					'rel'	=> 'stylesheet'
+					'href'				=> $add,
+					'rel'				=> 'stylesheet',
+					'shim-shadowdom'	=> ''
 				]);
 			} elseif ($mode == 'code') {
 				$this->css[1][]			 = $add."\n";
