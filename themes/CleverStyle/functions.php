@@ -135,7 +135,7 @@ function get_header_info () {
 				]).
 				h::br().
 				h::{'button.uk-button.cs-button-compact.cs-header-restore-password-process.uk-button.uk-icon-question[tabindex=2]'}($L->restore_password).
-				h::{'button.uk-button.cs-button-compact.uk-button.cs-header-back[tabindex=3]'}(
+				h::{'button.uk-button.cs-button-compact.uk-button.cs-header-back'}(
 					h::icon('chevron-down'),
 					[
 						'data-title'	=> $L->back
@@ -143,14 +143,14 @@ function get_header_info () {
 				)
 			).
 			h::{'div.cs-header-registration-form'}(
-				h::{'input.cs-header-registration-email[type=email][tabindex=1]'}([
+				h::{'input.cs-header-registration-email[type=email]'}([
 					'placeholder'		=> $L->email,
 					'autocapitalize'	=> 'off',
 					'autocorrect'		=> 'off'
 				]).
 				h::br().
-				h::{'button.uk-button.cs-button-compact.cs-header-registration-process.uk-button.uk-icon-pencil[tabindex=2]'}($L->sign_up).
-				h::{'button.uk-button.cs-button-compact.cs-header-back[tabindex=4]'}(
+				h::{'button.uk-button.cs-button-compact.cs-header-registration-process.uk-button.uk-icon-pencil'}($L->sign_up).
+				h::{'button.uk-button.cs-button-compact.cs-header-back'}(
 					h::icon('chevron-down'),
 					[
 						'data-title'	=> $L->back
@@ -158,23 +158,23 @@ function get_header_info () {
 				)
 			).
 			h::{'form.cs-header-sign-in-form'}(
-				h::{'input.cs-header-sign-in-email[tabindex=1]'}([
+				h::{'input.cs-header-sign-in-email'}([
 					'placeholder'		=> $L->login_or_email,
 					'autocapitalize'	=> 'off',
 					'autocorrect'		=> 'off'
 				]).
-				h::{'input.cs-header-user-password[type=password][tabindex=2]'}([
+				h::{'input.cs-header-user-password[type=password]'}([
 					'placeholder'	=> $L->password
 				]).
 				h::br().
-				h::{'button.uk-button.cs-button-compact.uk-icon-sign-in[tabindex=3][type=submit]'}($L->sign_in).
-				h::{'button.uk-button.cs-button-compact.cs-header-back[tabindex=5]'}(
+				h::{'button.uk-button.cs-button-compact.uk-icon-sign-in[type=submit]'}($L->sign_in).
+				h::{'button.uk-button.cs-button-compact.cs-header-back'}(
 					h::icon('chevron-down'),
 					[
 						'data-title'	=> $L->back
 					]
 				).
-				h::{'button.uk-button.cs-button-compact.cs-header-restore-password-slide[tabindex=4]'}(
+				h::{'button.uk-button.cs-button-compact.cs-header-restore-password-slide'}(
 					h::icon('question'),
 					[
 						'data-title'	=> $L->restore_password

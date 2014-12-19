@@ -21,7 +21,7 @@ shutdown_function(false);
 	<link href="/CleverStyle/img/favicon.ico" rel="shortcut icon">
 	<template class="cs-config" target="cs"><!--{"base_url":"http:\/\/cscms.travis","current_base_url":"http:\/\/cscms.travis\/System","public_key":"%s","module":"System","in_admin":0,"is_admin":0,"is_user":0,"is_guest":1,"debug":0,"cookie_prefix":"","cookie_domain":"cscms.travis","cookie_path":"\/","protocol":"http","route":["profile","info","admin"],"route_path":["profile","info","admin"],"route_ids":[]}--></template>
 	<template class="cs-config" target="cs.rules_text"><!--"<p>Site rules<\/p>"--></template>
-	<link href="/storage/pcache/_CleverStyle_en.css?%s" rel="stylesheet">
+	<link href="/storage/pcache/_CleverStyle_en.css?%s" rel="stylesheet" shim-shadowdom="">
 	<meta content="profile" property="og:type">
 	<meta content="admin" property="profile:username">
 	<meta content="/includes/img/guest.svg" property="og:image">
@@ -31,7 +31,7 @@ shutdown_function(false);
 	<link href="/includes/img/guest.svg" rel="image_src">
 </head>
 
-<body>
+<body unresolved>
 
 	<header class="uk-navbar uk-navbar-attached">
 		<div class="uk-navbar-content uk-navbar-flip">
@@ -47,27 +47,27 @@ shutdown_function(false);
 				<input autocapitalize="off" autocorrect="off" class="cs-header-restore-password-email" placeholder="Login or e-mail" tabindex="1" type="text">
 				<br>
 				<button class="uk-button cs-button-compact cs-header-restore-password-process uk-button uk-icon-question" tabindex="2" type="button">Restore password</button>
-				<button class="uk-button cs-button-compact uk-button cs-header-back" data-uk-tooltip="{animation:true,delay:200}" tabindex="3" title="Back" type="button">
+				<button class="uk-button cs-button-compact uk-button cs-header-back" data-uk-tooltip="{animation:true,delay:200}" title="Back" type="button">
 					<span class=" uk-icon-chevron-down"></span>
 				</button>
 			</div>
 			<div class="cs-header-registration-form">
-				<input autocapitalize="off" autocorrect="off" class="cs-header-registration-email" placeholder="Email" tabindex="1" type="email">
+				<input autocapitalize="off" autocorrect="off" class="cs-header-registration-email" placeholder="Email" type="email">
 				<br>
-				<button class="uk-button cs-button-compact cs-header-registration-process uk-button uk-icon-pencil" tabindex="2" type="button">Sign up</button>
-				<button class="uk-button cs-button-compact cs-header-back" data-uk-tooltip="{animation:true,delay:200}" tabindex="4" title="Back" type="button">
+				<button class="uk-button cs-button-compact cs-header-registration-process uk-button uk-icon-pencil" type="button">Sign up</button>
+				<button class="uk-button cs-button-compact cs-header-back" data-uk-tooltip="{animation:true,delay:200}" title="Back" type="button">
 					<span class=" uk-icon-chevron-down"></span>
 				</button>
 			</div>
 			<form class="cs-header-sign-in-form" method="post">
-				<input autocapitalize="off" autocorrect="off" class="cs-header-sign-in-email" placeholder="Login or e-mail" tabindex="1" type="text">
-				<input class="cs-header-user-password" placeholder="Password" tabindex="2" type="password">
+				<input autocapitalize="off" autocorrect="off" class="cs-header-sign-in-email" placeholder="Login or e-mail" type="text">
+				<input class="cs-header-user-password" placeholder="Password" type="password">
 				<br>
-				<button class="uk-button cs-button-compact uk-icon-sign-in" tabindex="3" type="submit">Sign in</button>
-				<button class="uk-button cs-button-compact cs-header-back" data-uk-tooltip="{animation:true,delay:200}" tabindex="5" title="Back" type="button">
+				<button class="uk-button cs-button-compact uk-icon-sign-in" type="submit">Sign in</button>
+				<button class="uk-button cs-button-compact cs-header-back" data-uk-tooltip="{animation:true,delay:200}" title="Back" type="button">
 					<span class=" uk-icon-chevron-down"></span>
 				</button>
-				<button class="uk-button cs-button-compact cs-header-restore-password-slide" data-uk-tooltip="{animation:true,delay:200}" tabindex="4" title="Restore password" type="button">
+				<button class="uk-button cs-button-compact cs-header-restore-password-slide" data-uk-tooltip="{animation:true,delay:200}" title="Restore password" type="button">
 					<span class=" uk-icon-question"></span>
 				</button>
 				<input name="session" type="hidden" value="%s">
