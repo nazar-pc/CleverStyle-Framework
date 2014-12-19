@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		BananaHTML
- * @version		2.1.5
+ * @version		2.1.6
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2014, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -1185,7 +1185,7 @@ class BananaHTML {
 	 *
 	 * @return string|string[]
 	 */
-	protected static function prepare_attr_value ($text) {
+	static function prepare_attr_value ($text) {
 		if (is_array($text)) {
 			foreach ($text as &$val) {
 				$val = static::prepare_attr_value($val);
