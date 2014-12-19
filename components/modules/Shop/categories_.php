@@ -10,7 +10,6 @@ namespace cs\modules\Shop;
 use
 	h,
 	cs\Config,
-	cs\Index,
 	cs\Language\Prefix,
 	cs\Page;
 $L               = new Prefix('shop_');
@@ -28,7 +27,8 @@ foreach ($categories_tree[0] as $category) {
 	$category                            = $all_categories[$category];
 	$categories_list[$category['title']] = h::{'article[is=cs-shop-root-category]'}(
 		h::img([
-			'src'	=> $category['image']
+			'src'	=> $category['image'],
+			'title'	=> h::prepare_attr_value($category['title'])
 		]).
 		h::h1(
 			h::a(

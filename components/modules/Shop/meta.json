@@ -1,7 +1,7 @@
 {
 	"package"		: "Shop",
 	"category"		: "modules",
-	"version"		: "0.48.0+build-63",
+	"version"		: "0.49.0+build-64",
 	"description"	: "Shop functionality",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",
@@ -10,7 +10,7 @@
 		"MySQLi"
 	],
 	"provide"		: "shop",
-	"require"		: "System=>1.4",
+	"require"		: "System=>1.10",
 	"optional"		: [
 		"Comments",
 		"Plupload",
