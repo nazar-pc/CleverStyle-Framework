@@ -13,8 +13,9 @@
 
   Polymer({
     ready: function() {
-      this.$.img.innerHTML = this.querySelector('#img').outerHTML;
-      return this.href = this.querySelector('#link').href;
+      $(this.$.img).prepend(this.querySelector('#img').outerHTML);
+      this.href = this.querySelector('#link').href;
+      return this.title = this.querySelector('#link').innerText;
     }
   });
 

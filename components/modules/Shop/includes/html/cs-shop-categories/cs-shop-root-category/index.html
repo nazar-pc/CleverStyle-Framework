@@ -2,15 +2,14 @@
 	<template>
 		<div class="uk-grid">
 			<div class="uk-width-3-10">
-				<figure class="uk-thumbnail">
-					<a href="{{href}}">
-						<content select="img"></content>
-					</a>
-				</figure>
+				<a href="{{href}}" class="uk-thumbnail uk-thumbnail-expand" id="img"></a>
 			</div>
 			<div class="uk-width-7-10">
 				<content select="h1"></content>
-				<content select=".description"></content>
+				<content select="#description"></content>
+				<div layout horizontal>
+					<content select="#nested"></content>
+				</div>
 			</div>
 		</div>
 	</template>

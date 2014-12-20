@@ -7,6 +7,7 @@
 ###
 Polymer(
 	ready : ->
-		@$.img.innerHTML	= @querySelector('#img').outerHTML
-		@href				= @querySelector('#link').href
+		$(@$.img).prepend(@querySelector('#img').outerHTML)
+		@href	= @querySelector('#link').href
+		@title	= @querySelector('#link').innerText
 );
