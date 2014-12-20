@@ -39,6 +39,7 @@ if (isset($all_categories[$current_category])) {
 	$Page->canonical_url(
 		"{$Config->base_url()}/$module_path/$categories_path/".path($category['title']).":$category[id]"
 	);
+	$Page->Description	= description($category['description']);
 	unset($category);
 } elseif ($current_category === 0) {
 	$Page->canonical_url(
