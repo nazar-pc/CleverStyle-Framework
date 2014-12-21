@@ -45,9 +45,7 @@
       })();
       categories = (function() {
         var categories_, category, key, keys, parent_category, _i, _len, _results;
-        categories_ = {
-          '-': "<option value=\"0\">" + L.none + "</option>"
-        };
+        categories_ = {};
         keys = ['-'];
         for (category in categories) {
           category = categories[category];
@@ -72,7 +70,7 @@
         return _results;
       })();
       categories = categories.join('');
-      modal = $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_parent_category + ": <select name=\"parent\" required>" + categories + "</select>\n	</p>\n	<p>\n		" + L.shop_title + ": <input name=\"title\" required>\n	</p>\n	<p>\n		" + L.shop_description + ": <textarea name=\"description\"></textarea>\n	</p>\n	<p class=\"image uk-hidden\">\n		" + L.shop_image + ":\n		<a target=\"_blank\" class=\"uk-thumbnail\">\n			<img>\n			<br>\n			<button type=\"button\" class=\"remove-image uk-button uk-button-danger uk-width-1-1\">" + L.shop_remove_image + "</button>\n		</a>\n		<input type=\"hidden\" name=\"image\">\n	</p>\n	<p>\n		<button type=\"button\" class=\"set-image uk-button\">" + L.shop_set_image + "</button>\n	</p>\n	<p>\n		" + L.shop_category_attributes + ": <select name=\"attributes[]\" multiple required>" + attributes + "</select>\n	</p>\n	<p>\n		" + L.shop_title_attribute + ": <select name=\"title_attribute\" required>" + attributes + "</select>\n	</p>\n	<p>\n		" + L.shop_visible + ":\n		<label><input type=\"radio\" name=\"visible\" value=\"1\" checked> " + L.yes + "</label>\n		<label><input type=\"radio\" name=\"visible\" value=\"0\"> " + L.no + "</label>\n	</p>\n	<p>\n		<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n	</p>\n</form>");
+      modal = $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_parent_category + ":\n		<select name=\"parent\" required>\n			<option value=\"0\">" + L.none + "</option>\n			" + categories + "\n		</select>\n	</p>\n	<p>\n		" + L.shop_title + ": <input name=\"title\" required>\n	</p>\n	<p>\n		" + L.shop_description + ": <textarea name=\"description\"></textarea>\n	</p>\n	<p class=\"image uk-hidden\">\n		" + L.shop_image + ":\n		<a target=\"_blank\" class=\"uk-thumbnail\">\n			<img>\n			<br>\n			<button type=\"button\" class=\"remove-image uk-button uk-button-danger uk-width-1-1\">" + L.shop_remove_image + "</button>\n		</a>\n		<input type=\"hidden\" name=\"image\">\n	</p>\n	<p>\n		<button type=\"button\" class=\"set-image uk-button\">" + L.shop_set_image + "</button>\n	</p>\n	<p>\n		" + L.shop_category_attributes + ": <select name=\"attributes[]\" multiple required>" + attributes + "</select>\n	</p>\n	<p>\n		" + L.shop_title_attribute + ": <select name=\"title_attribute\" required>" + attributes + "</select>\n	</p>\n	<p>\n		" + L.shop_description_attribute + ":\n		<select name=\"description_attribute\" required>\n			<option value=\"0\">" + L.none + "</option>\n			" + attributes + "\n		</select>\n	</p>\n	<p>\n		" + L.shop_visible + ":\n		<label><input type=\"radio\" name=\"visible\" value=\"1\" checked> " + L.yes + "</label>\n		<label><input type=\"radio\" name=\"visible\" value=\"0\"> " + L.no + "</label>\n	</p>\n	<p>\n		<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n	</p>\n</form>");
       modal.set_image = function(image) {
         modal.find('[name=image]').val(image);
         if (image) {
@@ -147,6 +145,7 @@
           return modal.find("[name='attributes[]'] > [value=" + attribute + "]").prop('selected', true);
         });
         modal.find('[name=title_attribute]').val(category.title_attribute);
+        modal.find('[name=description_attribute]').val(category.description_attribute);
         modal.set_image(category.image);
         return modal.find("[name=visible][value=" + category.visible + "]").prop('checked', true);
       });

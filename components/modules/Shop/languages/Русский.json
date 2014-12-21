@@ -4,6 +4,7 @@
 	"shop_categories"               : "Категории",
 	"shop_title"                    : "Название",
 	"shop_title_attribute"          : "Атрибут названия товара",
+	"shop_description_attribute"    : "Атрибут описания товара",
 	"shop_visible"                  : "Видимость",
 	"shop_action"                   : "Действие",
 	"shop_add"                      : "Добавить",

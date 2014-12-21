@@ -16,6 +16,7 @@ if (!isset(
 	$_POST['title'],
 	$_POST['description'],
 	$_POST['title_attribute'],
+	$_POST['description_attribute'],
 	$_POST['image'],
 	$_POST['visible'],
 	$_POST['attributes']
@@ -28,6 +29,7 @@ $id = Categories::instance()->add(
 	$_POST['title'],
 	$_POST['description'],
 	$_POST['title_attribute'],
+	$_POST['description_attribute'],
 	$_POST['image'],
 	$_POST['visible'],
 	$_POST['attributes']

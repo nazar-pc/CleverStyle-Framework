@@ -4,6 +4,7 @@
 	"shop_categories"               : "Categories",
 	"shop_title"                    : "Title",
 	"shop_title_attribute"          : "Item title attribute",
+	"shop_description_attribute"    : "Item description attribute",
 	"shop_visible"                  : "Visible",
 	"shop_action"                   : "Action",
 	"shop_add"                      : "Add",

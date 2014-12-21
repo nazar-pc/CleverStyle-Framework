@@ -84,11 +84,11 @@ class Items {
 						`lang`	= ''
 					)"
 			) ?: [];
-			$title_attribute    = Categories::instance()->get($data['category'])['title_attribute'];
+			$category           = Categories::instance()->get($data['category']);
 			/**
 			 * If title attribute is not yet translated to current language
 			 */
-			if (!in_array($title_attribute, array_column($data['attributes'], 'attribute'))) {
+			if (!in_array($category['title_attribute'], array_column($data['attributes'], 'attribute'))) {
 				$data['attributes'][] = $this->db()->qfas(
 					"SELECT
 						`attribute`,
@@ -98,7 +98,24 @@ class Items {
 					FROM `{$this->table}_attributes`
 					WHERE
 						`id`		= $id AND
-						`attribute`	= $title_attribute
+						`attribute`	= $category[title_attribute]
+					LIMIT 1"
+				);
+			}
+			/**
+			 * If title attribute is not yet translated to current language
+			 */
+			if ($category['description_attribute'] && !in_array($category['description_attribute'], array_column($data['attributes'], 'attribute'))) {
+				$data['attributes'][] = $this->db()->qfas(
+					"SELECT
+						`attribute`,
+						`numeric_value`,
+						`string_value`,
+						`text_value`
+					FROM `{$this->table}_attributes`
+					WHERE
+						`id`		= $id AND
+						`attribute`	= $category[description_attribute]
 					LIMIT 1"
 				);
 			}
@@ -112,19 +129,15 @@ class Items {
 				$value['value'] = $value[$this->attribute_type_to_value_field($attribute['type'])];
 			}
 			unset($index, $value, $attribute);
-			$data['title']      =
-				array_column(
-					$data['attributes'],
-					'value',
-					'attribute'
-				)[Categories::instance()->get($data['category'])['title_attribute']];
-			$data['attributes'] = array_column($data['attributes'], 'value', 'attribute');
-			$data['images']     = $this->db()->qfas(
+			$data['attributes']  = array_column($data['attributes'], 'value', 'attribute');
+			$data['title']       = $data['attributes'][$category['title_attribute']];
+			$data['description'] = @$data['attributes'][$category['description_attribute']] ?: '';
+			$data['images']      = $this->db()->qfas(
 				"SELECT `image`
 				FROM `{$this->table}_images`
 				WHERE `id` = $id"
 			) ?: [];
-			$data['tags']       = $this->db()->qfas(
+			$data['tags']        = $this->db()->qfas(
 				"SELECT DISTINCT `tag`
 				FROM `{$this->table}_tags`
 				WHERE
@@ -251,7 +264,7 @@ class Items {
 			}
 		}
 		unset($key, $details, $join_index, $field);
-		$where = $where ? "WHERE ".implode(' AND ', $where) : '';
+		$where = $where ? 'WHERE '.implode(' AND ', $where) : '';
 		if (@$search_parameters['total_count']) {
 			return $this->db()->qfs([
 				"SELECT COUNT(DISTINCT `i`.`id`)

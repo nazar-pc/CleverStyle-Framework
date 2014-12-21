@@ -47,6 +47,7 @@ $Page->content(
 			'id',
 			"$L->title ".h::icon('caret-down'),
 			$L->title_attribute,
+			$L->description_attribute,
 			$L->visible,
 			$L->action
 		).
@@ -56,6 +57,7 @@ $Page->content(
 					$category['id'],
 					$category['title'],
 					$Attributes->get($category['title_attribute'])['title_internal'],
+					@$Attributes->get($category['description_attribute'])['title_internal'] ?: '',
 					h::icon($category['visible'] ? 'check' : 'minus'),
 					h::{'button.uk-button.cs-shop-category-edit'}(
 						$L->edit,

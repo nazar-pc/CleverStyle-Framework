@@ -27,13 +27,14 @@ class Categories {
 	const INVISIBLE = 0;
 
 	protected $data_model          = [
-		'id'              => 'int',
-		'parent'          => 'int',
-		'title'           => 'ml:text',
-		'description'     => 'ml:html',
-		'title_attribute' => 'int',
-		'image'           => 'string',
-		'visible'         => 'int:0..1'
+		'id'                    => 'int',
+		'parent'                => 'int',
+		'title'                 => 'ml:text',
+		'description'           => 'ml:html',
+		'title_attribute'       => 'int',
+		'description_attribute' => 'int',
+		'image'                 => 'string',
+		'visible'               => 'int:0..1'
 	];
 	protected $data_model_ml_group = 'Shop/categories';
 	protected $table               = '[prefix]shop_categories';
@@ -119,25 +120,27 @@ class Categories {
 	 * @param int    $parent
 	 * @param string $title
 	 * @param string $description
-	 * @param int    $title_attribute Attribute that will be considered as title
+	 * @param int    $title_attribute       Attribute that will be considered as title
+	 * @param int    $description_attribute Attribute that will be considered as description
 	 * @param string $image
-	 * @param int    $visible         `Categories::VISIBLE` or `Categories::INVISIBLE`
-	 * @param int[]  $attributes      Array of attributes ids used in category
+	 * @param int    $visible               `Categories::VISIBLE` or `Categories::INVISIBLE`
+	 * @param int[]  $attributes            Array of attributes ids used in category
 	 *
 	 * @return bool|int Id of created category on success of <b>false</> on failure
 	 */
-	function add ($parent, $title, $description, $title_attribute, $image, $visible, $attributes) {
+	function add ($parent, $title, $description, $title_attribute, $description_attribute, $image, $visible, $attributes) {
 		$id = $this->create_simple([
 			$parent,
 			'',
 			'',
+			0,
 			0,
 			'',
 			static::INVISIBLE
 		]);
 		if ($id) {
 			unset($this->cache->all);
-			$this->set($id, $parent, $title, $description, $title_attribute, $image, $visible, $attributes);
+			$this->set($id, $parent, $title, $description, $title_attribute, $description_attribute, $image, $visible, $attributes);
 		}
 		return $id;
 	}
@@ -148,14 +151,15 @@ class Categories {
 	 * @param int    $parent
 	 * @param string $title
 	 * @param string $description
-	 * @param int    $title_attribute Attribute that will be considered as title
+	 * @param int    $title_attribute       Attribute that will be considered as title
+	 * @param int    $description_attribute Attribute that will be considered as description
 	 * @param string $image
-	 * @param int    $visible         `Categories::VISIBLE` or `Categories::INVISIBLE`
-	 * @param int[]  $attributes      Array of attributes ids used in category
+	 * @param int    $visible               `Categories::VISIBLE` or `Categories::INVISIBLE`
+	 * @param int[]  $attributes            Array of attributes ids used in category
 	 *
 	 * @return bool
 	 */
-	function set ($id, $parent, $title, $description, $title_attribute, $image, $visible, $attributes) {
+	function set ($id, $parent, $title, $description, $title_attribute, $description_attribute, $image, $visible, $attributes) {
 		$id   = (int)$id;
 		$data = $this->read_simple($id);
 		if (!$data) {
@@ -168,6 +172,7 @@ class Categories {
 			trim($title),
 			trim($description),
 			in_array($title_attribute, $attributes) ? $title_attribute : $attributes[0],
+			in_array($description_attribute, $attributes) ? $description_attribute : $attributes[0],
 			$image,
 			$visible
 		]);

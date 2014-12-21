@@ -24,9 +24,7 @@ $ ->
 				categories_[category.id] = category
 			categories_
 		categories	= do ->
-			categories_	= {
-				'-' : """<option value="0">#{L.none}</option>"""
-			}
+			categories_	= {}
 			keys		= ['-']
 			for category, category of categories
 				parent_category = parseInt(category.parent)
@@ -45,7 +43,11 @@ $ ->
 		modal		= $.cs.simple_modal("""<form>
 			<h3 class="cs-center">#{title}</h3>
 			<p>
-				#{L.shop_parent_category}: <select name="parent" required>#{categories}</select>
+				#{L.shop_parent_category}:
+				<select name="parent" required>
+					<option value="0">#{L.none}</option>
+					#{categories}
+				</select>
 			</p>
 			<p>
 				#{L.shop_title}: <input name="title" required>
@@ -70,6 +72,13 @@ $ ->
 			</p>
 			<p>
 				#{L.shop_title_attribute}: <select name="title_attribute" required>#{attributes}</select>
+			</p>
+			<p>
+				#{L.shop_description_attribute}:
+				<select name="description_attribute" required>
+					<option value="0">#{L.none}</option>
+					#{attributes}
+				</select>
 			</p>
 			<p>
 				#{L.shop_visible}:
@@ -152,6 +161,7 @@ $ ->
 				category.attributes.forEach (attribute) ->
 					modal.find("[name='attributes[]'] > [value=#{attribute}]").prop('selected', true)
 				modal.find('[name=title_attribute]').val(category.title_attribute)
+				modal.find('[name=description_attribute]').val(category.description_attribute)
 				modal.set_image(category.image)
 				modal.find("[name=visible][value=#{category.visible}]").prop('checked', true)
 		)
