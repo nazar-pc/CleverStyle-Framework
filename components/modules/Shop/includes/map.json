@@ -5,5 +5,9 @@
 		"admin/items.js",
 		"admin/order_statuses.js",
 		"admin/shipping_types.js"
+	],
+	"Shop"       : [
+		"cs-shop-categories/cs-shop-nested-category/index.html",
+		"cs-shop-categories/cs-shop-root-category/index.html"
 	]
 }

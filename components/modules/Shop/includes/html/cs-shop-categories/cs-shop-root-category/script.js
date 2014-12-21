@@ -14,7 +14,8 @@
   Polymer({
     ready: function() {
       this.$.img.innerHTML = this.querySelector('#img').outerHTML;
-      return this.href = this.querySelector('#link').href;
+      this.href = this.querySelector('#link').href;
+      return $(this.querySelector('#nested')).addClass('uk-grid uk-width-1-1').children('article').addClass('uk-width-1-4');
     }
   });
 

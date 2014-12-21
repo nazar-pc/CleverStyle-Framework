@@ -15,7 +15,7 @@
     ready: function() {
       $(this.$.img).prepend(this.querySelector('#img').outerHTML);
       this.href = this.querySelector('#link').href;
-      return this.title = this.querySelector('#link').innerText;
+      return this.title = this.querySelector('#link').innerHTML;
     }
   });
 

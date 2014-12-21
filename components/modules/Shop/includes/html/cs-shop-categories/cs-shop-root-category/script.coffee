@@ -9,4 +9,8 @@ Polymer(
 	ready : ->
 		@$.img.innerHTML	= @querySelector('#img').outerHTML
 		@href				= @querySelector('#link').href
+		$(@querySelector('#nested'))
+			.addClass('uk-grid uk-width-1-1')
+			.children('article')
+				.addClass('uk-width-1-4')
 );
