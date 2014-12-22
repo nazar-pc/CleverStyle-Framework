@@ -13,6 +13,10 @@ html {
 }
 
 html /deep/ {
+	body[unresolved] {
+		cursor : wait;
+	}
+
 	*,
 	*::before,
 	*:after {
