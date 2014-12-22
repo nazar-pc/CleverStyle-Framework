@@ -124,6 +124,6 @@
         });
       }
     };
-  })(jQuery, jQuery.UIkit);
+  })(jQuery, UIkit);
 
 }).call(this);
