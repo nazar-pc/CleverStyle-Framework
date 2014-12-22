@@ -36,24 +36,22 @@ $categories_path = path($L->categories);
 if (isset($all_categories[$current_category])) {
 	$category = $all_categories[$current_category];
 	$Page->title($category['title']);
-	$Page->canonical_url(
-		"{$Config->base_url()}/$module_path/$categories_path/".path($category['title']).":$category[id]"
-	);
-	$Page->Description	= description($category['description']);
+	$canonical_url     = "{$Config->base_url()}/$module_path/$categories_path/".path($category['title']).":$category[id]";
+	$Page->Description = description($category['description']);
 	unset($category);
 } elseif ($current_category === 0) {
-	$Page->canonical_url(
-		"{$Config->base_url()}/$module_path"
-	);
+	$canonical_url = "{$Config->base_url()}/$module_path";
 } else {
 	error_code(404);
 	return;
 }
-if (@$categories_tree[$current_category]) {
+$Page->canonical_url($canonical_url);
+$page = (int)@$_GET['page'] ?: 1;
+if ($page == 1 && @$categories_tree[$current_category]) {
 	$categories_list = [];
 	foreach ($categories_tree[$current_category] as $category) {
 		$category                            = $all_categories[$category];
-		$categories_list[$category['title']] = h::{'article[is=cs-shop-root-category]'}(
+		$categories_list[$category['title']] =
 			h::{'img#img'}([
 				'src'   => $category['image'] ?: 'components/modules/Shop/includes/img/no-image.svg',
 				'title' => h::prepare_attr_value($category['title'])
@@ -65,7 +63,7 @@ if (@$categories_tree[$current_category]) {
 				]
 			).
 			h::{'#description'}($category['description'] ?: false).
-			h::{'section#nested article[is=cs-shop-nested-category]'}(array_map(function ($category) use ($L, $all_categories, $module_path, $categories_path) {
+			h::{'section#nested article[is=cs-shop-category-nested]'}(array_map(function ($category) use ($L, $all_categories, $module_path, $categories_path) {
 				$category = $all_categories[$category];
 				return
 					h::{'img#img'}([
@@ -78,15 +76,60 @@ if (@$categories_tree[$current_category]) {
 							'href' => "$module_path/$categories_path/".path($category['title']).":$category[id]"
 						]
 					);
-			}, @$categories_tree[$category['id']] ?: []) ?: false)
-		);
+			}, @$categories_tree[$category['id']] ?: []) ?: false);
 	}
 	ksort($categories_list);
 	$Page->content(
-		h::{'section[is=cs-shop-categories]'}(
-			implode('', $categories_list)
-		)
+		h::{'section[is=cs-shop-categories] article[is=cs-shop-category]'}(array_values($categories_list))
 	);
 	unset($categories_list);
 }
-//TODO items list
+$count = (int)@$_GET['count'] ?: 20;
+$Items = Items::instance();
+$items = $Items->get($Items->search(
+	$_GET,
+	$page,
+	$count,
+	@$_GET['order_by'] ?: 'id',
+	@$_GET['asc']
+));
+if ($items) {
+	$items_total = $Items->search(
+		array_merge(
+			$_GET,
+			[
+				'total_count' => 1
+			]
+		),
+		$page,
+		$count,
+		@$_GET['order_by'] ?: 'id',
+		@$_GET['asc']
+	);
+	$items_path  = path($L->items);
+	foreach ($items as &$item) {
+		$item = [
+			($item['images'] ? h::img([
+				'src'   => $item['images'][0],
+				'title' => h::prepare_attr_value($item['title'])
+			]) : '').
+			h::{'h1 a#link'}(
+				$item['title'],
+				[
+					'href' => "$module_path/$items_path/".path($all_categories[$item['category']]['title']).'/'.path($item['title']).":$item[id]"
+				]
+			).
+			h::{'#description'}($item['description'] ?: false),
+			[
+				'data-id' => $item['id']
+			]
+		];
+	}
+	unset($item);
+	$Page->content(
+		h::{'section[is=cs-shop-category-items] article[is=cs-shop-category-item]'}(array_values($items)).
+		pages($page, ceil($items_total / $count), function ($page) use ($canonical_url) {
+			return "$canonical_url/?page=$page";
+		}, true)
+	);
+}
