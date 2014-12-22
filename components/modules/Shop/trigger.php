@@ -29,6 +29,9 @@ Trigger::instance()
 				case path($L->categories):
 					$rc[1] = 'categories_';
 					break;
+				case path($L->items):
+					$rc[1] = 'items_';
+					break;
 			}
 			$data['rc'] = implode('/', $rc);
 		}
