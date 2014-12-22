@@ -172,7 +172,7 @@ class Categories {
 			trim($title),
 			trim($description),
 			in_array($title_attribute, $attributes) ? $title_attribute : $attributes[0],
-			in_array($description_attribute, $attributes) ? $description_attribute : $attributes[0],
+			in_array($description_attribute, $attributes) || $description == 0 ? $description_attribute : $attributes[0],
 			$image,
 			$visible
 		]);

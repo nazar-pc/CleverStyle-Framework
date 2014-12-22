@@ -116,7 +116,7 @@ $items_total     = $Items->search(
 $base_items_path = "$module_path/".path($L->items).'/'.path($all_categories[$current_category]['title']).'/';
 foreach ($items as &$item) {
 	$item = [
-		h::img([
+		h::{'img#img'}([
 			'src'   => @$item['images'][0] ?: 'components/modules/Shop/includes/img/no-image.svg',
 			'title' => h::prepare_attr_value($item['title'])
 		]).

@@ -1,4 +1,4 @@
-<polymer-element name="cs-shop-category" extends="article">
+<polymer-element name="cs-shop-category-item" extends="article">
 	<template>
 		<div class="uk-grid uk-margin-top">
 			<div class="uk-width-3-10">
@@ -6,10 +6,11 @@
 			</div>
 			<div class="uk-width-7-10">
 				<content select="h1"></content>
+				<p class="uk-text-large">
+					<span class="uk-text-primary">{{price}}</span>
+					<button type="button" class="uk-button uk-button-primary">Add to cart</button> ({{in_stock}} in stock)
+				</p>
 				<content select="#description"></content>
-				<div layout horizontal>
-					<content select="#nested"></content>
-				</div>
 			</div>
 		</div>
 	</template>
