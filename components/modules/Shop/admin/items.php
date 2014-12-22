@@ -49,12 +49,9 @@ $items       = $Items->get($Items->search(
 	@$_GET['asc']
 ));
 $items_total = $Items->search(
-	array_merge(
-		$_GET,
-		[
-			'total_count' => 1
-		]
-	),
+	[
+		'total_count' => 1
+	] + $_GET,
 	$page,
 	$count,
 	@$_GET['order_by'] ?: 'id',

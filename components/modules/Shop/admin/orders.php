@@ -54,12 +54,9 @@ $orders         = $Orders->get($Orders->search(
 	@$_GET['asc']
 ));
 $orders_total   = $Orders->search(
-	array_merge(
-		$_GET,
-		[
-			'total_count' => 1
-		]
-	),
+	[
+		'total_count' => 1
+	] + $_GET,
 	$page,
 	$count,
 	@$_GET['order_by'] ?: 'date',

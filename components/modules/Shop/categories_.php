@@ -84,52 +84,62 @@ if ($page == 1 && @$categories_tree[$current_category]) {
 	);
 	unset($categories_list);
 }
+if (!$current_category) {
+	return;
+}
 $count = (int)@$_GET['count'] ?: 20;
 $Items = Items::instance();
 $items = $Items->get($Items->search(
-	$_GET,
+	[
+		'listed'   => 1,
+		'category' => $current_category
+	] + $_GET,
 	$page,
 	$count,
 	@$_GET['order_by'] ?: 'id',
 	@$_GET['asc']
 ));
-if ($items) {
-	$items_total = $Items->search(
-		array_merge(
-			$_GET,
-			[
-				'total_count' => 1
-			]
-		),
-		$page,
-		$count,
-		@$_GET['order_by'] ?: 'id',
-		@$_GET['asc']
-	);
-	$items_path  = path($L->items);
-	foreach ($items as &$item) {
-		$item = [
-			($item['images'] ? h::img([
-				'src'   => $item['images'][0],
-				'title' => h::prepare_attr_value($item['title'])
-			]) : '').
-			h::{'h1 a#link'}(
-				$item['title'],
-				[
-					'href' => "$module_path/$items_path/".path($all_categories[$item['category']]['title']).'/'.path($item['title']).":$item[id]"
-				]
-			).
-			h::{'#description'}($item['description'] ?: false),
-			[
-				'data-id' => $item['id']
-			]
-		];
-	}
-	unset($item);
-	$Page->content(
-		h::{'section[is=cs-shop-category-items] article[is=cs-shop-category-item]'}(array_values($items)).
-		pages($page, ceil($items_total / $count), function ($page) use ($canonical_url) {
-			return "$canonical_url/?page=$page";
-		}, true)
-	);
+if (!$items) {
+	return;
 }
+$items_total     = $Items->search(
+	[
+		'listed'      => 1,
+		'category'    => $current_category,
+		'total_count' => 1
+	] + $_GET,
+	$page,
+	$count,
+	@$_GET['order_by'] ?: 'id',
+	@$_GET['asc']
+);
+$base_items_path = "$module_path/".path($L->items).'/'.path($all_categories[$current_category]['title']).'/';
+foreach ($items as &$item) {
+	$item = [
+		h::img([
+			'src'   => @$item['images'][0] ?: 'components/modules/Shop/includes/img/no-image.svg',
+			'title' => h::prepare_attr_value($item['title'])
+		]).
+		h::{'h1 a#link'}(
+			$item['title'],
+			[
+				'href' => $base_items_path.path($item['title']).":$item[id]"
+			]
+		).
+		h::{'#description'}($item['description'] ?: false),
+		[
+			'data-id'       => $item['id'],
+			'data-date'     => $item['price'],
+			'data-price'    => $item['price'],
+			'data-in_stock' => $item['in_stock'],
+			'data-soon'     => $item['soon']
+		]
+	];
+}
+unset($item);
+$Page->content(
+	h::{'section[is=cs-shop-category-items] article[is=cs-shop-category-item]'}(array_values($items)).
+	pages($page, ceil($items_total / $count), function ($page) use ($canonical_url) {
+		return "$canonical_url/?page=$page";
+	}, true)
+);

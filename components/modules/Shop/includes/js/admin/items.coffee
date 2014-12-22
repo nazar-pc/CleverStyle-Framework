@@ -47,6 +47,7 @@ $ ->
 			</p>
 			<div></div>
 		</form>""")
+		modal.set_attributes	= ->
 		modal.find('[name=category]').change ->
 			$this			= $(@)
 			category		= categories[$this.val()]
@@ -106,6 +107,7 @@ $ ->
 					<button class="uk-button" type="submit">#{action}</button>
 				</p>
 			""")
+			modal.set_attributes()
 			images_container	= modal.find('.images')
 			modal.update_images	= ->
 				images	= []
@@ -202,8 +204,10 @@ $ ->
 				modal.find("[name=soon][value=#{item.soon}]").prop('checked', true)
 				modal.find("[name=listed][value=#{item.listed}]").prop('checked', true)
 				modal.add_images(item.images)
-				for attribute, value of item.attributes
-					modal.find("[name='attributes[#{attribute}]']").val(value)
+				modal.set_attributes	= ->
+					for attribute, value of item.attributes
+						modal.find("[name='attributes[#{attribute}]']").val(value)
+				modal.set_attributes()
 				modal.find('[name=tags]').val(item.tags.join(', '))
 		)
 		.on('mousedown', '.cs-shop-item-delete', ->
