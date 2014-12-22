@@ -24,6 +24,7 @@ $item              = explode(
 	array_slice($Index->route_path, -1)[0]
 );
 $item              = $Items->get(array_pop($item));
+$Page->title($item['title']);
 $Page->Description = description($item['description']);
 $Page->canonical_url(
 	"{$Config->base_url()}/".path($L->shop).'/'.path($L->items).'/'.path($Categories->get($item['category'])['title']).'/'.path($item['title']).":$item[id]"
