@@ -47,8 +47,38 @@ $ ->
 			</p>
 			<div></div>
 		</form>""")
-		modal.set_attributes	= ->
+		modal.item_data			= {}
+		modal.update_item_data	= ->
+			item	= modal.item_data
+			console.log item
+			modal.find('[name=price]').val(item.price)
+			modal.find('[name=in_stock]').val(item.in_stock)
+			modal.find("[name=soon][value=#{item.soon}]").prop('checked', true)
+			modal.find("[name=listed][value=#{item.listed}]").prop('checked', true)
+			if item.images
+				modal.add_images(item.images)
+			if item.attributes
+				for attribute, value of item.attributes
+					modal.find("[name='attributes[#{attribute}]']").val(value)
+			if item.tags
+				modal.find('[name=tags]').val(item.tags.join(', '))
 		modal.find('[name=category]').change ->
+			modal.find('form').serializeArray().forEach (item) ->
+				value	= item.value
+				name	= item.name
+				switch name
+					when 'tags'
+						value	= value.split(',').map (v) ->
+							$.trim(v)
+					when 'images'
+						if value
+							value	= JSON.parse(value)
+				if attribute = name.match(/attributes\[([0-9]+)\]/)
+					if !modal.item_data.attributes
+						modal.item_data.attributes	= {}
+					modal.item_data.attributes[attribute[1]]	= value
+				else
+					modal.item_data[item.name]	= value
 			$this			= $(@)
 			category		= categories[$this.val()]
 			attributes_list	= do ->
@@ -107,7 +137,6 @@ $ ->
 					<button class="uk-button" type="submit">#{action}</button>
 				</p>
 			""")
-			modal.set_attributes()
 			images_container	= modal.find('.images')
 			modal.update_images	= ->
 				images	= []
@@ -160,6 +189,7 @@ $ ->
 				modal.update_images()
 				return false
 			)
+			modal.update_item_data()
 		modal
 	$('html')
 		.on('mousedown', '.cs-shop-item-add', ->
@@ -197,18 +227,8 @@ $ ->
 							location.reload()
 					)
 					return false
-				item	= item[0]
-				modal.find("[name=category]").val(item.category).change()
-				modal.find('[name=price]').val(item.price)
-				modal.find('[name=in_stock]').val(item.in_stock)
-				modal.find("[name=soon][value=#{item.soon}]").prop('checked', true)
-				modal.find("[name=listed][value=#{item.listed}]").prop('checked', true)
-				modal.add_images(item.images)
-				modal.set_attributes	= ->
-					for attribute, value of item.attributes
-						modal.find("[name='attributes[#{attribute}]']").val(value)
-				modal.set_attributes()
-				modal.find('[name=tags]').val(item.tags.join(', '))
+				modal.item_data	= item[0]
+				modal.find("[name=category]").val(item[0].category).change()
 		)
 		.on('mousedown', '.cs-shop-item-delete', ->
 			id = $(@).data('id')

@@ -67,9 +67,55 @@
       })();
       categories_list = categories_list.join('');
       modal = $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_category + ": <select name=\"category\" required>" + categories_list + "</select>\n	</p>\n	<div></div>\n</form>");
-      modal.set_attributes = function() {};
+      modal.item_data = {};
+      modal.update_item_data = function() {
+        var attribute, item, value, _ref;
+        item = modal.item_data;
+        console.log(item);
+        modal.find('[name=price]').val(item.price);
+        modal.find('[name=in_stock]').val(item.in_stock);
+        modal.find("[name=soon][value=" + item.soon + "]").prop('checked', true);
+        modal.find("[name=listed][value=" + item.listed + "]").prop('checked', true);
+        if (item.images) {
+          modal.add_images(item.images);
+        }
+        if (item.attributes) {
+          _ref = item.attributes;
+          for (attribute in _ref) {
+            value = _ref[attribute];
+            modal.find("[name='attributes[" + attribute + "]']").val(value);
+          }
+        }
+        if (item.tags) {
+          return modal.find('[name=tags]').val(item.tags.join(', '));
+        }
+      };
       modal.find('[name=category]').change(function() {
         var $this, attributes_list, category, images_container, uploader;
+        modal.find('form').serializeArray().forEach(function(item) {
+          var attribute, name, value;
+          value = item.value;
+          name = item.name;
+          switch (name) {
+            case 'tags':
+              value = value.split(',').map(function(v) {
+                return $.trim(v);
+              });
+              break;
+            case 'images':
+              if (value) {
+                value = JSON.parse(value);
+              }
+          }
+          if (attribute = name.match(/attributes\[([0-9]+)\]/)) {
+            if (!modal.item_data.attributes) {
+              modal.item_data.attributes = {};
+            }
+            return modal.item_data.attributes[attribute[1]] = value;
+          } else {
+            return modal.item_data[item.name] = value;
+          }
+        });
         $this = $(this);
         category = categories[$this.val()];
         attributes_list = (function() {
@@ -104,7 +150,6 @@
         })();
         attributes_list = attributes_list.join('');
         $this.parent().next().html("<p>\n	" + L.shop_price + ": <input name=\"price\" type=\"number\" value=\"0\" required>\n</p>\n<p>\n	" + L.shop_in_stock + ": <input name=\"in_stock\" type=\"number\" value=\"1\" step=\"1\">\n</p>\n<p>\n	" + L.shop_available_soon + ":\n	<label><input type=\"radio\" name=\"soon\" value=\"1\"> " + L.yes + "</label>\n	<label><input type=\"radio\" name=\"soon\" value=\"0\" checked> " + L.no + "</label>\n</p>\n<p>\n	" + L.shop_listed + ":\n	<label><input type=\"radio\" name=\"listed\" value=\"1\" checked> " + L.yes + "</label>\n	<label><input type=\"radio\" name=\"listed\" value=\"0\"> " + L.no + "</label>\n</p>\n<p>\n	<div class=\"images\"></div>\n	<button type=\"button\" class=\"add-images uk-button\">" + L.shop_add_images + "</button>\n	<input type=\"hidden\" name=\"images\">\n</p>\n" + attributes_list + "\n<p>\n	" + L.shop_tags + ": <input name=\"tags\" placeholder=\"shop, high quality, e-commerce\">\n</p>\n<p>\n	<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n</p>");
-        modal.set_attributes();
         images_container = modal.find('.images');
         modal.update_images = function() {
           var images;
@@ -146,11 +191,12 @@
             }
           });
         }
-        return modal.on('click', '.remove-image', function() {
+        modal.on('click', '.remove-image', function() {
           $(this).parent().remove();
           modal.update_images();
           return false;
         });
+        return modal.update_item_data();
       });
       return modal;
     };
@@ -189,25 +235,8 @@
           });
           return false;
         });
-        item = item[0];
-        modal.find("[name=category]").val(item.category).change();
-        modal.find('[name=price]').val(item.price);
-        modal.find('[name=in_stock]').val(item.in_stock);
-        modal.find("[name=soon][value=" + item.soon + "]").prop('checked', true);
-        modal.find("[name=listed][value=" + item.listed + "]").prop('checked', true);
-        modal.add_images(item.images);
-        modal.set_attributes = function() {
-          var attribute, value, _ref, _results;
-          _ref = item.attributes;
-          _results = [];
-          for (attribute in _ref) {
-            value = _ref[attribute];
-            _results.push(modal.find("[name='attributes[" + attribute + "]']").val(value));
-          }
-          return _results;
-        };
-        modal.set_attributes();
-        return modal.find('[name=tags]').val(item.tags.join(', '));
+        modal.item_data = item[0];
+        return modal.find("[name=category]").val(item[0].category).change();
       });
     }).on('mousedown', '.cs-shop-item-delete', function() {
       var id;
