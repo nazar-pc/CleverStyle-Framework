@@ -47,20 +47,20 @@ class Language implements JsonSerializable {
 	 *
 	 * @var array
 	 */
-	protected $translate      = [];
+	protected $translate = [];
 	/**
 	 * Whether it is possible to change language (may be fixed to some concrete language)
 	 *
 	 * @var bool
 	 */
 	protected $fixed_language = false;
-	protected $changed_once = false;
+	protected $changed_once   = false;
 	/**
 	 * Set basic language
 	 */
 	protected function construct () {
-		$Core					= Core::instance();
-		$this->fixed_language	= $Core->fixed_language;
+		$Core                 = Core::instance();
+		$this->fixed_language = $Core->fixed_language;
 		$this->change($Core->language);
 	}
 	/**
@@ -76,7 +76,7 @@ class Language implements JsonSerializable {
 		}
 		$Cache = Cache::instance();
 		if (($aliases = $Cache->{'languages/aliases'}) === false) {
-			$aliases = [];
+			$aliases      = [];
 			$aliases_list = _strtolower(get_files_list(LANGUAGES.'/aliases'));
 			foreach ($aliases_list as $alias) {
 				$aliases[$alias] = file_get_contents(LANGUAGES."/aliases/$alias");
@@ -116,9 +116,9 @@ class Language implements JsonSerializable {
 		if (isset($this->translate[$language])) {
 			return @$this->translate[$language][$item] ?: ucfirst(str_replace('_', ' ', $item));
 		}
-		$current_language = $this->clanguage;
+		$current_language       = $this->clanguage;
 		$current_fixed_language = $this->fixed_language;
-		$this->fixed_language = false;
+		$this->fixed_language   = false;
 		$this->change($language);
 		$return = $this->get($item);
 		$this->change($current_language);
@@ -190,9 +190,9 @@ class Language implements JsonSerializable {
 			)
 		) {
 			$previous_language = $this->clanguage;
-			$this->clanguage = $language;
-			$return = false;
-			$Cache = Cache::instance();
+			$this->clanguage   = $language;
+			$return            = false;
+			$Cache             = Cache::instance();
 			/**
 			 * If translations in cache
 			 */
@@ -206,7 +206,7 @@ class Language implements JsonSerializable {
 				/**
 				 * Set system translations
 				 */
-				$translate = &$this->translate[$language];
+				$translate                 = &$this->translate[$language];
 				$load_previous_translation = false;
 				if (!$translate && $previous_language) {
 					$load_previous_translation = true;
@@ -258,7 +258,7 @@ class Language implements JsonSerializable {
 					$translate = $translate + $this->translate[$previous_language];
 				}
 				$Cache->{"languages/$language"} = $translate;
-				$return = true;
+				$return                         = true;
 			}
 			_include(LANGUAGES."/$language.php", false, false);
 			header("Content-Language: $translate[content_language]");
@@ -391,6 +391,17 @@ class Language implements JsonSerializable {
 			$data = str_replace($f, $this->get("l_$f"), $data);
 		}
 		return $data;
+	}
+	/**
+	 * Refresh fixed language and actual language from Core class (used by Core class, usually there is no need to call it manually)
+	 */
+	function reload_core_config () {
+		$Core = Core::instance();
+		if ($Core->language != $this->clanguage) {
+			$this->fixed_language = false;
+			$this->change($Core->language);
+		}
+		$this->fixed_language = $Core->fixed_language;
 	}
 	/**
 	 * Implementation of JsonSerializable interface
