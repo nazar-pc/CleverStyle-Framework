@@ -7,6 +7,28 @@
 ###
 Polymer(
 	ready : ->
-		@header_title = @querySelector('h1').innerHTML
-		$(@$.images).append(@querySelectorAll('#images > img'))
+		@header_title	= @querySelector('h1').innerHTML
+		$(@$.images).fotorama(
+			data			:
+				Array::map.call(@querySelectorAll('#images > img'), (img) ->
+					img : img.src
+				)
+			allowfullscreen	: 'native'
+			controlsonstart	: false
+			fit				: 'scaledown'
+			keyboard		: true
+			nav				: 'thumbs'
+			ratio			: 4/3
+		)
+		$this			= $(@)
+		@price			= $this.data('price')
+		@in_stock		= $this.data('in_stock')
+		attributes		= $(@querySelector('#attributes'))
+		if attributes.length
+			@show_attributes	= true
+			attributes
+				.find('table')
+					.addClass('uk-table uk-table-hover')
+					.find('td:first-of-type')
+						.addClass('uk-text-bold')
 );

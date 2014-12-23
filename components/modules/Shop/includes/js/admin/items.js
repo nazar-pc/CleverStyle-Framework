@@ -137,9 +137,9 @@
                 }
                 return _results1;
               })();
-              values = ("<option value=\"\">" + L.none + "</option>") + values.join('');
-              color = attribute.type === color_set_attribute_type ? "<input type=\"color\">" : "";
-              _results.push("<p>\n	" + attribute.title + ": <select name=\"attributes[" + attribute.id + "]\">" + values + "</select> " + color + "\n</p>");
+              values = values.join('');
+              color = attribute.type === color_set_attribute_type ? "<input type=\"color\">" : '';
+              _results.push("<p>\n	" + attribute.title + ":\n	<select name=\"attributes[" + attribute.id + "]\">\n		<option value=\"\">" + L.none + "</option>\n		" + values + "\n	</select>\n	" + color + "\n</p>");
             } else if (string_attribute_types.indexOf(attribute.type) !== -1) {
               _results.push("<p>\n	" + attribute.title + ": <input name=\"attributes[" + attribute.id + "]\">\n</p>");
             } else {

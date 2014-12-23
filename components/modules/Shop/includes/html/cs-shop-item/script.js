@@ -13,8 +13,29 @@
 
   Polymer({
     ready: function() {
+      var $this, attributes;
       this.header_title = this.querySelector('h1').innerHTML;
-      return $(this.$.images).append(this.querySelectorAll('#images > img'));
+      $(this.$.images).fotorama({
+        data: Array.prototype.map.call(this.querySelectorAll('#images > img'), function(img) {
+          return {
+            img: img.src
+          };
+        }),
+        allowfullscreen: 'native',
+        controlsonstart: false,
+        fit: 'scaledown',
+        keyboard: true,
+        nav: 'thumbs',
+        ratio: 4 / 3
+      });
+      $this = $(this);
+      this.price = $this.data('price');
+      this.in_stock = $this.data('in_stock');
+      attributes = $(this.querySelector('#attributes'));
+      if (attributes.length) {
+        this.show_attributes = true;
+        return attributes.find('table').addClass('uk-table uk-table-hover').find('td:first-of-type').addClass('uk-text-bold');
+      }
     }
   });
 

@@ -89,14 +89,19 @@ $ ->
 						values = do ->
 							for value in attribute.value
 								"""<option value="#{value}">#{value}</option>"""
-						values = """<option value="">#{L.none}</option>""" + values.join('')
+						values = values.join('')
 						color	=
 							if attribute.type == color_set_attribute_type
 								"""<input type="color">"""
 							else
-								""
+								''
 						"""<p>
-							#{attribute.title}: <select name="attributes[#{attribute.id}]">#{values}</select> #{color}
+							#{attribute.title}:
+							<select name="attributes[#{attribute.id}]">
+								<option value="">#{L.none}</option>
+								#{values}
+							</select>
+							#{color}
 						</p>"""
 					else if string_attribute_types.indexOf(attribute.type) != -1
 						"""<p>

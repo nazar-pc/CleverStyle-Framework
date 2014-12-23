@@ -1,12 +1,20 @@
 <polymer-element name="cs-shop-item" extends="section">
 	<template>
-		<div class="uk-grid uk-grid-width-1-2">
+		<div class="uk-grid uk-grid-divider uk-grid-small uk-grid-width-1-2">
 			<h1 class="uk-margin-bottom uk-width-1-1">{{header_title}}</h1>
-			<cs-shop-item-images id="images"></cs-shop-item-images>
-			<div>
+			<div id="images"></div>
+			<div class="uk-width-1-2">
+				<p class="uk-text-large">
+					<span class="uk-text-primary">{{price}}</span>
+					<button type="button" class="uk-button uk-button-primary">Add to cart</button> ({{in_stock}} in stock)
+				</p>
 				<content select="#description"></content>
 			</div>
 		</div>
+		<template if="{{show_attributes}}">
+			<h2 class="uk-margin-top">Properties</h2>
+			<content select="#attributes"></content>
+		</template>
 	</template>
 	<script src="script.js"></script>
 </polymer-element>

@@ -13,21 +13,27 @@ use
 	cs\Index,
 	cs\Language\Prefix,
 	cs\Page;
-$Config            = Config::instance();
-$Index             = Index::instance();
-$L                 = new Prefix('shop_');
-$Page              = Page::instance();
-$Categories        = Categories::instance();
-$Items             = Items::instance();
-$item              = explode(
+$Config     = Config::instance();
+$Index      = Index::instance();
+$L          = new Prefix('shop_');
+$Page       = Page::instance();
+$Categories = Categories::instance();
+$Attributes = Attributes::instance();
+$Items      = Items::instance();
+$item       = explode(
 	':',
 	array_slice($Index->route_path, -1)[0]
 );
-$item              = $Items->get(array_pop($item));
+$item       = $Items->get(array_pop($item));
 $Page->title($item['title']);
 $Page->Description = description($item['description']);
 $Page->canonical_url(
 	"{$Config->base_url()}/".path($L->shop).'/'.path($L->items).'/'.path($Categories->get($item['category'])['title']).'/'.path($item['title']).":$item[id]"
+);
+$category	= $Categories->get($item['category']);
+unset(
+	$item['attributes'][$category['title_attribute']],
+	$item['attributes'][$category['description_attribute']]
 );
 $Page->content(
 	h::{'section[is=cs-shop-item]'}(
@@ -38,9 +44,12 @@ $Page->content(
 		}, $item['images'])).
 		h::h1($item['title']).
 		h::{'#description'}($item['description']).
-		h::{'#attributes'}(
-			// TODO add attributes here
-		),
+		h::{'#attributes table tr| td'}(array_map(function ($attribute) use ($item, $Attributes) {
+			return [
+				$Attributes->get($attribute)['title'],
+				$item['attributes'][$attribute]
+			];
+		}, array_keys($item['attributes'])) ?: false),
 		[
 			'data-id'       => $item['id'],
 			'data-date'     => $item['price'],
