@@ -98,6 +98,7 @@ $Index->content(
 			'data-height'            => '80%',
 			'data-keyboard'          => 'true',
 			'data-nav'               => 'thumbs',
+			'data-trackpad'          => 'true',
 			'data-width'             => '100%'
 		]
 	)
