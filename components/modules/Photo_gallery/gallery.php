@@ -23,7 +23,7 @@ $Index         = Index::instance();
 $L             = Language::instance();
 $Photo_gallery = Photo_gallery::instance();
 $gallery       = $Photo_gallery->get_gallery($Config->route[1]);
-$User   = User::instance();
+$User          = User::instance();
 if ($User->user()) {
 	$Index->content(
 		h::{'p.cs-left a.uk-button.cs-button-compact.cs-photo-gallery-add-images'}(
@@ -93,6 +93,7 @@ $Index->content(
 		)),
 		[
 			'data-allow-full-screen' => 'native',
+			'data-controlsonstart'   => 'false',
 			'data-fit'               => 'scaledown',
 			'data-height'            => '80%',
 			'data-keyboard'          => 'true',

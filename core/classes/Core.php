@@ -40,6 +40,7 @@ class Core {
 			if (in_array($clang, $clangs)) {
 				$this->config['fixed_language']	= true;
 				$this->config['language']		= array_flip($clangs)[$clang];
+				Language::instance()->reload_core_config();
 			}
 		});
 		if (!is_dir(STORAGE)) {

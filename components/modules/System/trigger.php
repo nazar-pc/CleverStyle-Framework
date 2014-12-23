@@ -79,7 +79,7 @@ Trigger::instance()
 				$_SERVER['REQUEST_METHOD'] == 'GET' &&
 				$Cache->cache_state() &&
 				$Core->cache_engine != 'BlackHole' &&
-				$Config->route[0]	!= 'robots.txt'
+				@$Config->route[0]	!= 'robots.txt'
 			) {
 				$clang			= Language::instance()->clang;
 				$query_string	= $_SERVER['QUERY_STRING'] ? "?$_SERVER[QUERY_STRING]" : '';

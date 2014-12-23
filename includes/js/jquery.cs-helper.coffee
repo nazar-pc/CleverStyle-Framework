@@ -4,7 +4,7 @@
  * @copyright	Copyright (c) 2013-2014, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
 ###
-do ($=jQuery, UI = jQuery.UIkit) ->
+do ($=jQuery, UI = UIkit) ->
 	helpers	=
 		###*
 		 * Tabs with UIkit
