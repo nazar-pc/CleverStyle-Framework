@@ -1,0 +1,12 @@
+<polymer-element name="cs-shop-item" extends="section">
+	<template>
+		<div class="uk-grid uk-grid-width-1-2">
+			<h1 class="uk-margin-bottom uk-width-1-1">{{header_title}}</h1>
+			<cs-shop-item-images id="images"></cs-shop-item-images>
+			<div>
+				<content select="#description"></content>
+			</div>
+		</div>
+	</template>
+	<script src="script.js"></script>
+</polymer-element>

@@ -31,7 +31,7 @@ $Page->canonical_url(
 );
 $Page->content(
 	h::{'section[is=cs-shop-item]'}(
-		h::{'div[is=cs-shop-item-images] img'}(array_map(function ($image) {
+		h::{'div#images img'}(array_map(function ($image) {
 			return [
 				'src' => $image
 			];

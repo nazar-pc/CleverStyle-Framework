@@ -8,6 +8,9 @@
 	],
 	"Shop"       : [
 		"cs-shop-categories/cs-shop-category-nested/index.html",
-		"cs-shop-categories/cs-shop-category/index.html"
+		"cs-shop-categories/cs-shop-category/index.html",
+		"cs-shop-category-items/cs-shop-category-item/index.html",
+		"cs-shop-item/cs-shop-item-images/index.html",
+		"cs-shop-item/cs-shop-item/index.html"
 	]
 }
