@@ -1,6 +1,6 @@
 {
 	"Fotorama"	: [
-		"fotorama.css",
+		"style.css",
 		"fotorama.js"
 	]
 }
