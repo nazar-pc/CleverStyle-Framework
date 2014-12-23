@@ -17,8 +17,10 @@ Polymer(
 			controlsonstart	: false
 			fit				: 'scaledown'
 			keyboard		: true
+			'loop'			: true
 			nav				: 'thumbs'
 			ratio			: 4/3
+			trackpad		: true
 		)
 		$this			= $(@)
 		@price			= $this.data('price')

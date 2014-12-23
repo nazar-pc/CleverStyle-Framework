@@ -25,8 +25,10 @@
         controlsonstart: false,
         fit: 'scaledown',
         keyboard: true,
+        'loop': true,
         nav: 'thumbs',
-        ratio: 4 / 3
+        ratio: 4 / 3,
+        trackpad: true
       });
       $this = $(this);
       this.price = $this.data('price');
