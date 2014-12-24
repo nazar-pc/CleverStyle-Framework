@@ -20,7 +20,7 @@ class Orders {
 		CRUD,
 		Singleton;
 
-	protected $data_model = [
+	protected $data_model            = [
 		'id'               => 'int',
 		'user'             => 'int',
 		'date'             => 'int',
@@ -30,8 +30,12 @@ class Orders {
 		'status'           => 'int',
 		'comment'          => 'text'
 	];
-	protected $table      = '[prefix]shop_orders';
+	protected $table                 = '[prefix]shop_orders';
+	protected $reduce_in_stock_value = false;
 
+	protected function construct () {
+		$this->reduce_in_stock_value = Config::instance()->module('Shop')->automatically_reduce_in_stock_value;
+	}
 	/**
 	 * Returns database index
 	 *
@@ -126,7 +130,7 @@ class Orders {
 			}
 		}
 		unset($key, $details);
-		$where = $where ? "WHERE ".implode(' AND ', $where) : '';
+		$where = $where ? 'WHERE '.implode(' AND ', $where) : '';
 		if (@$search_parameters['total_count']) {
 			return $this->db()->qfs([
 				"SELECT COUNT(`id`)
@@ -207,7 +211,7 @@ class Orders {
 	 * @return bool
 	 */
 	function add_item ($id, $item, $units, $price, $unit_price) {
-		return $this->db_prime()->q(
+		$result = $this->db_prime()->q(
 			"INSERT INTO `{$this->table}_items`
 				(
 					`id`,
@@ -230,6 +234,23 @@ class Orders {
 			min($price, $units * $unit_price),
 			$unit_price
 		);
+		if ($result && $this->reduce_in_stock_value) {
+			$Items            = Items::instance();
+			$item             = $Items->get($item);
+			$item['in_stock'] = $item['in_stock'] - $units;
+			$Items->set(
+				$item['id'],
+				$item['category'],
+				$item['price'],
+				$item['in_stock'],
+				$item['soon'],
+				$item['listed'],
+				$item['attributes'],
+				$item['images'],
+				$item['tags']
+			);
+		}
+		return $result;
 	}
 	/**
 	 * Set data of specified order
@@ -292,7 +313,8 @@ class Orders {
 	 * @return bool
 	 */
 	function set_item ($id, $item, $units, $price, $unit_price) {
-		return $this->db_prime()->q(
+		$items  = $this->get_items($id);
+		$result = $this->db_prime()->q(
 			"UPDATE `{$this->table}_items`
 			SET
 				`units`			= '%d',
@@ -308,6 +330,24 @@ class Orders {
 			$id,
 			$item
 		);
+		if ($result && $this->reduce_in_stock_value) {
+			$Items            = Items::instance();
+			$old_units        = array_column($items, 'item', 'units')[$item];
+			$item             = $Items->get($item);
+			$item['in_stock'] = $item['in_stock'] + $old_units - $units;
+			$Items->set(
+				$item['id'],
+				$item['category'],
+				$item['price'],
+				$item['in_stock'],
+				$item['soon'],
+				$item['listed'],
+				$item['attributes'],
+				$item['images'],
+				$item['tags']
+			);
+		}
+		return $result;
 	}
 	/**
 	 * Change order status and attach message for this change
@@ -370,7 +410,8 @@ class Orders {
 	 * @return bool
 	 */
 	function del_item ($id, $item) {
-		return $this->db_prime()->q(
+		$items  = $this->get_items($id);
+		$result = $this->db_prime()->q(
 			"DELETE FROM `{$this->table}_items`
 			WHERE
 				`id`	= '%d' AND
@@ -379,5 +420,23 @@ class Orders {
 			$id,
 			$item
 		);
+		if ($result && $this->reduce_in_stock_value) {
+			$Items            = Items::instance();
+			$old_units        = array_column($items, 'item', 'units')[$item];
+			$item             = $Items->get($item);
+			$item['in_stock'] = $item['in_stock'] + $old_units;
+			$Items->set(
+				$item['id'],
+				$item['category'],
+				$item['price'],
+				$item['in_stock'],
+				$item['soon'],
+				$item['listed'],
+				$item['attributes'],
+				$item['images'],
+				$item['tags']
+			);
+		}
+		return $result;
 	}
 }
