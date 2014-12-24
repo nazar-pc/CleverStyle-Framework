@@ -10,6 +10,6 @@ Polymer(
 		@$.img.innerHTML	= @querySelector('#img').outerHTML
 		@href				= @querySelector('#link').href
 		$this				= $(@)
-		@price				= $this.data('price')
+		@price				= sprintf(cs.shop.price_formatting, $this.data('price'))
 		@in_stock			= $this.data('in_stock')
 );

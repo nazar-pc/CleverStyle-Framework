@@ -87,7 +87,7 @@ if ($page == 1 && @$categories_tree[$current_category]) {
 if (!$current_category) {
 	return;
 }
-$count = (int)@$_GET['count'] ?: 20;
+$count = (int)@$_GET['count'] ?: $Config->module('Shop')->items_per_page;
 $Items = Items::instance();
 $items = $Items->get($Items->search(
 	[

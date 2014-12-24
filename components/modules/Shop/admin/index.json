@@ -1,5 +1,6 @@
 [
 	"orders",
+	"general",
 	"categories",
 	"items",
 	"attributes",

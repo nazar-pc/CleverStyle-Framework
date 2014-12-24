@@ -29,6 +29,7 @@ function add_menu_section_item ($section) {
 Trigger::instance()->register(
 	'admin/System/Menu',
 	function () {
+		add_menu_section_item('general');
 		add_menu_section_item('orders');
 		add_menu_section_item('categories');
 		add_menu_section_item('items');

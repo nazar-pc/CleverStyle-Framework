@@ -40,6 +40,12 @@ Trigger::instance()
 		'System/Index/construct',
 		function () {
 			switch (Config::instance()->components['modules']['Shop']['active']) {
+				case -1:
+					if (!admin_path()) {
+						return;
+					}
+					require __DIR__.'/trigger/uninstalled.php';
+					break;
 				case 1:
 					if (admin_path()) {
 						require __DIR__.'/trigger/enabled/admin.php';

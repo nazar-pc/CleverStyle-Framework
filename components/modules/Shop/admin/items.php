@@ -40,7 +40,7 @@ $Page->title($L->items);
 $Categories  = Categories::instance();
 $Items       = Items::instance();
 $page        = @$_GET['page'] ?: 1;
-$count       = @$_GET['count'] ?: 20;
+$count       = @$_GET['count'] ?: Config::instance()->module('Shop')->items_per_page_admin;
 $items       = $Items->get($Items->search(
 	$_GET,
 	$page,
