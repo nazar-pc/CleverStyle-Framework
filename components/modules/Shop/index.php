@@ -12,5 +12,5 @@ use
 	cs\Page;
 Page::instance()->config(
 	Config::instance()->components['modules']['Shop']['data'],
-	'cs.shop'
+	'cs.shop.settings'
 );

@@ -31,7 +31,7 @@
         trackpad: true
       });
       $this = $(this);
-      this.price = sprintf(cs.shop.price_formatting, $this.data('price'));
+      this.price = sprintf(cs.shop.settings.price_formatting, $this.data('price'));
       this.in_stock = $this.data('in_stock');
       attributes = $(this.querySelector('#attributes'));
       if (attributes.length) {

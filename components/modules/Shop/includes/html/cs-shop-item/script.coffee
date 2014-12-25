@@ -23,7 +23,7 @@ Polymer(
 			trackpad		: true
 		)
 		$this			= $(@)
-		@price			= sprintf(cs.shop.price_formatting, $this.data('price'))
+		@price			= sprintf(cs.shop.settings.price_formatting, $this.data('price'))
 		@in_stock		= $this.data('in_stock')
 		attributes		= $(@querySelector('#attributes'))
 		if attributes.length
