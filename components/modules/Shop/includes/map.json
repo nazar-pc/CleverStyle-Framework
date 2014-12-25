@@ -4,12 +4,14 @@
 		"admin/categories.js",
 		"admin/items.js",
 		"admin/order_statuses.js",
+		"admin/orders.js",
 		"admin/shipping_types.js"
 	],
 	"Shop"       : [
 		"cs-shop-categories/cs-shop-category-nested/index.html",
 		"cs-shop-categories/cs-shop-category/index.html",
 		"cs-shop-category-items/cs-shop-category-item/index.html",
-		"cs-shop-item/index.html"
+		"cs-shop-item/index.html",
+		"cart.js"
 	]
 }
