@@ -31,7 +31,9 @@ if (isset($_GET['ids'])) {
 } else {
 	$Page->json(
 		$Categories->get(
-			$Categories->get_all()
+			array_filter($Categories->get_all(), function ($category) {
+				return $category['visible'];
+			})
 		)
 	);
 }

@@ -11,27 +11,23 @@ use
 	cs\Index,
 	cs\Page;
 
-$Index      = Index::instance();
-$Page       = Page::instance();
-$Categories = Categories::instance();
+$Index = Index::instance();
+$Page  = Page::instance();
+$Items = Items::instance();
 if (isset($_GET['ids'])) {
-	$categories = $Categories->get(explode(',', $Index->route_ids[0]));
-	if (!$categories) {
+	$items = $Items->get(explode(',', $Index->route_ids[0]));
+	if (!$items) {
 		error_code(404);
 	} else {
-		$Page->json($categories);
+		$Page->json($items);
 	}
 } elseif (isset($Index->route_ids[0])) {
-	$category = $Categories->get($Index->route_ids[0]);
-	if (!$category) {
+	$item = $Items->get($Index->route_ids[0]);
+	if (!$item) {
 		error_code(404);
 	} else {
-		$Page->json($category);
+		$Page->json($item);
 	}
 } else {
-	$Page->json(
-		$Categories->get(
-			$Categories->get_all()
-		)
-	);
+	error_code(400);
 }

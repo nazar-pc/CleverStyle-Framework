@@ -25,7 +25,6 @@ if (isset($Index->route_ids[0], $Index->route_path[2]) && $Index->route_path[2] 
 	} else {
 		$Page->json($orders);
 	}
-	return;
 } else {
 	$Page->json(
 		$Orders->get(

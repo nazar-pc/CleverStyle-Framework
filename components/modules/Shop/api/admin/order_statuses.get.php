@@ -21,7 +21,6 @@ if (isset($Index->route_ids[0])) {
 	} else {
 		$Page->json($order_status);
 	}
-	return;
 } elseif (isset($Index->route_path[2]) && $Index->route_path[2] == 'types') {
 	$Page->json(
 		$Order_statuses->get_type_to_name_array()

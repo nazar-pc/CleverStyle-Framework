@@ -14,14 +14,20 @@ use
 $Index      = Index::instance();
 $Page       = Page::instance();
 $Attributes = Attributes::instance();
-if (isset($Index->route_ids[0])) {
+if (isset($_GET['ids'])) {
+	$attributes = $Attributes->get(explode(',', $Index->route_ids[0]));
+	if (!$attributes) {
+		error_code(404);
+	} else {
+		$Page->json($attributes);
+	}
+} elseif (isset($Index->route_ids[0])) {
 	$attribute = $Attributes->get($Index->route_ids[0]);
 	if (!$attribute) {
 		error_code(404);
 	} else {
 		$Page->json($attribute);
 	}
-	return;
 } elseif (isset($Index->route_path[2]) && $Index->route_path[2] == 'types') {
 	$Page->json(
 		$Attributes->get_type_to_name_array()

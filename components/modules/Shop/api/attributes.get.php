@@ -13,25 +13,25 @@ use
 
 $Index      = Index::instance();
 $Page       = Page::instance();
-$Categories = Categories::instance();
+$Attributes = Attributes::instance();
 if (isset($_GET['ids'])) {
-	$categories = $Categories->get(explode(',', $Index->route_ids[0]));
-	if (!$categories) {
+	$attributes = $Attributes->get(explode(',', $Index->route_ids[0]));
+	if (!$attributes) {
 		error_code(404);
 	} else {
-		$Page->json($categories);
+		$Page->json($attributes);
 	}
 } elseif (isset($Index->route_ids[0])) {
-	$category = $Categories->get($Index->route_ids[0]);
-	if (!$category) {
+	$attribute = $Attributes->get($Index->route_ids[0]);
+	if (!$attribute) {
 		error_code(404);
 	} else {
-		$Page->json($category);
+		$Page->json($attribute);
 	}
-} else {
+} elseif (isset($Index->route_path[2]) && $Index->route_path[2] == 'types') {
 	$Page->json(
-		$Categories->get(
-			$Categories->get_all()
-		)
+		$Attributes->get_type_to_name_array()
 	);
+} else {
+	error_code(400);
 }
