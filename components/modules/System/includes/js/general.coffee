@@ -14,8 +14,6 @@ $ ->
 					$(@)
 						.find("option[value='" + $('#change_language').val() + "']")
 						.prop('selected', true)
-				$('#cs-system-license-open').click ->
-					$('#cs-system-license').cs().modal('show')
 				$('.cs-permissions-invert').click ->
 					$(@)
 						.parentsUntil('div')

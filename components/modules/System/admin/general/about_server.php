@@ -47,7 +47,7 @@ $Index->content(
 				'href'	=> "$Index->action/readme.html"
 			]
 		).
-		h::{'div#cs-system-license.uk-modal pre.uk-modal-dialog-large.cs-left'}(
+		h::{'div#cs-system-license.uk-modal pre.uk-modal-dialog.uk-modal-dialog-large.cs-left'}(
 			file_get_contents(DIR.'/license.txt'),
 			[
 				'title'			=> "$L->system » $L->license"
@@ -56,7 +56,7 @@ $Index->content(
 		h::{'button#cs-system-license-open.uk-button'}(
 			h::icon('legal').$L->license,
 			[
-				'data-title'	=> $L->click_to_view_details
+				'data-uk-modal'	=> "{target:'#cs-system-license'}"
 			]
 		)
 	).
