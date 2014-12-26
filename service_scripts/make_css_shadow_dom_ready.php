@@ -6,8 +6,8 @@
  * @copyright  Copyright (c) 2014, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-if ($argc < 3) {
-	exit("Converts any CSS file into CSS that works inside Shadow DOM (native support of polyfill needed after conversion).\nUsage: php make_css_shadow_dom_ready.php source.css destination.css\n");
+if ($argc < 2) {
+	exit("Converts any CSS file into CSS that works inside Shadow DOM (native support of polyfill needed after conversion).\nUsage: php make_css_shadow_dom_ready.php source.css[ destination.css]\n");
 }
 $content = file_get_contents($argv[1]);
 if (preg_match('#/deep/#', $content)) {
@@ -39,5 +39,5 @@ function process_content ($content) {
 }
 
 $content = process_content($content);
-file_put_contents($argv[2], $content);
+file_put_contents(@$argv[2] ?: $argv[1], $content);
 exit("Ready!\n");
