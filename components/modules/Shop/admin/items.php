@@ -40,7 +40,8 @@ $Page->title($L->items);
 $Categories  = Categories::instance();
 $Items       = Items::instance();
 $page        = @$_GET['page'] ?: 1;
-$count       = @$_GET['count'] ?: Config::instance()->module('Shop')->items_per_page_admin;
+$module_data = Config::instance()->module('Shop');
+$count       = @$_GET['count'] ?: $module_data->items_per_page_admin;
 $items       = $Items->get($Items->search(
 	$_GET,
 	$page,
@@ -70,7 +71,7 @@ $Page->content(
 			$L->action
 		).
 		h::cs_table_row(array_map(
-			function ($item) use ($L, $Categories) {
+			function ($item) use ($L, $Categories, $module_data) {
 				return h::cs_table_cell(
 					[
 						$item['id'],
@@ -81,7 +82,7 @@ $Page->content(
 								'href' => "admin/Shop/items/?category=$item[category]"
 							]
 						),
-						$item['price'],
+						sprintf($module_data->price_formatting, $item['price']),
 						$item['in_stock'] ?: ($item['soon'] ? $L->available_soon : 0),
 						h::a(
 							h::icon($item['listed'] ? 'check' : 'minus'),
