@@ -17,6 +17,7 @@
       this.$.img.innerHTML = this.querySelector('#img').outerHTML;
       this.href = this.querySelector('#link').href;
       $this = $(this);
+      this.item_id = $this.data('id');
       this.price = sprintf(cs.shop.settings.price_formatting, $this.data('price'));
       return this.in_stock = $this.data('in_stock');
     }

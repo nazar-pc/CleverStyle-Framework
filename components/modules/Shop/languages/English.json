@@ -96,5 +96,7 @@
 	"shop_automatically_reduce_in_stock_value"      : "Automatically reduce in stock value",
 	"shop_automatically_reduce_in_stock_value_info" : "If this option enabled - in stock value for item will be reduced after order by number of ordered items",
 	"shop_yes"                                      : "Yes",
-	"shop_no"                                       : "No"
+	"shop_no"                                       : "No",
+	"shop_add_to_cart"                              : "Add to cart",
+	"shop_already_in_cart"                          : "Already in cart"
 }

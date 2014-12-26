@@ -12,7 +12,7 @@
 (function() {
 
   cs.shop.cart = (function() {
-    var add_item, del_item, get_items, items, items_storage, set_item;
+    var add_item, del_item, get_item, get_items, items, items_storage, set_item;
     items_storage = {
       get: function() {
         var data;
@@ -28,6 +28,9 @@
     };
     get_items = function() {
       return items_storage.get();
+    };
+    get_item = function(id) {
+      return items[id] || 0;
     };
     add_item = function(id) {
       if (items[id]) {
@@ -49,6 +52,7 @@
     items = get_items();
     return {
       get_all: get_items,
+      get: get_item,
       add: add_item,
       set: set_item,
       del: del_item

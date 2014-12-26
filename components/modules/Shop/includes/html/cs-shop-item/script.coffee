@@ -23,6 +23,7 @@ Polymer(
 			trackpad		: true
 		)
 		$this			= $(@)
+		@item_id		= $this.data('id')
 		@price			= sprintf(cs.shop.settings.price_formatting, $this.data('price'))
 		@in_stock		= $this.data('in_stock')
 		attributes		= $(@querySelector('#attributes'))

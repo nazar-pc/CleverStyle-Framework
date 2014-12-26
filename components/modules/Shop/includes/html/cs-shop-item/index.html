@@ -6,7 +6,8 @@
 			<div class="uk-width-1-2">
 				<p class="uk-text-large">
 					<span class="uk-text-primary">{{price}}</span>
-					<button type="button" class="uk-button uk-button-primary">Add to cart</button> ({{in_stock}} in stock)
+					<cs-shop-add-to-cart data-id="{{item_id}}"></cs-shop-add-to-cart>
+					({{in_stock}} in stock)
 				</p>
 				<content select="#description"></content>
 			</div>

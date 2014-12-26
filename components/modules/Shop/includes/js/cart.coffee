@@ -20,6 +20,8 @@ cs.shop.cart	= do ->
 			)
 	get_items	= ->
 		items_storage.get()
+	get_item	= (id) ->
+		items[id] || 0
 	add_item	= (id) ->
 		if items[id]
 			++items[id]
@@ -36,6 +38,7 @@ cs.shop.cart	= do ->
 	items	= get_items()
 	return {
 		get_all	: get_items
+		get		: get_item
 		add		: add_item
 		set		: set_item
 		del		: del_item

@@ -8,6 +8,7 @@
 		"admin/shipping_types.js"
 	],
 	"Shop"       : [
+		"cs-shop-add-to-cart/index.html",
 		"cs-shop-categories/cs-shop-category-nested/index.html",
 		"cs-shop-categories/cs-shop-category/index.html",
 		"cs-shop-category-items/cs-shop-category-item/index.html",

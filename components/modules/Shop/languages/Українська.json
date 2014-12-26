@@ -96,5 +96,7 @@
 	"shop_automatically_reduce_in_stock_value"      : "Автоматично зменшувати значення в наявності",
 	"shop_automatically_reduce_in_stock_value_info" : "Якщо опція увімкнена - значення в наявності позиції після замовлення буде зменшено на кількість замовлених позицій",
 	"shop_yes"                                      : "Так",
-	"shop_no"                                       : "Ні"
+	"shop_no"                                       : "Ні",
+	"shop_add_to_cart"                              : "Додати в кошик",
+	"shop_already_in_cart"                          : "Вже в кошику"
 }
