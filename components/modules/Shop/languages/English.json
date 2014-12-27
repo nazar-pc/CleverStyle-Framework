@@ -98,5 +98,6 @@
 	"shop_yes"                                      : "Yes",
 	"shop_no"                                       : "No",
 	"shop_add_to_cart"                              : "Add to cart",
-	"shop_already_in_cart"                          : "Already in cart"
+	"shop_already_in_cart"                          : "Already in cart",
+	"shop_your_orders"                              : "Your orders"
 }

@@ -32,6 +32,9 @@ Trigger::instance()
 				case path($L->items):
 					$rc[1] = 'items_';
 					break;
+				case path($L->orders):
+					$rc[1] = 'orders_';
+					break;
 			}
 			$data['rc'] = implode('/', $rc);
 		}

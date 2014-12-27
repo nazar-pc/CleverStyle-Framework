@@ -98,5 +98,6 @@
 	"shop_yes"                                      : "Да",
 	"shop_no"                                       : "Нет",
 	"shop_add_to_cart"                              : "Добавить в корзину",
-	"shop_already_in_cart"                          : "Уже в корзине"
+	"shop_already_in_cart"                          : "Уже в корзине",
+	"shop_your_orders"                              : "Ваши заказы"
 }
