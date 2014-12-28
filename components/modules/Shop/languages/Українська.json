@@ -99,5 +99,10 @@
 	"shop_no"                                       : "Ні",
 	"shop_add_to_cart"                              : "Додати в кошик",
 	"shop_already_in_cart"                          : "Вже в кошику",
-	"shop_your_orders"                              : "Ваші замовлення"
+	"shop_your_orders"                              : "Ваші замовлення",
+	"shop_order_number"                             : "Замовлення №%s",
+	"shop_total_price"                              : "Загальна вартість",
+	"shop_discount"                                 : "Знижка",
+	"shop_shipping_cost"                            : "Вартість доставки",
+	"shop_for_payment"                              : "До сплати"
 }

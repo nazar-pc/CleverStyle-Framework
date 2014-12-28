@@ -52,10 +52,11 @@ $Page->title($L->orders);
 $Page->content(
 	h::cs_shop_orders(
 		h::h1($L->your_orders).
-		h::cs_shop_order(array_map(
+		h::{'#orders cs-shop-order'}(array_map(
 			function ($order) use ($L, $Language, $Categories, $Items, $Order_statuses, $Orders, $Shipping_types, $module_path, $items_path) {
-				$order_status = $Order_statuses->get($order['status']);
-				$date         = $L->to_locale(
+				$order_status  = $Order_statuses->get($order['status']);
+				$shipping_type = $Shipping_types->get($order['shipping_type']);
+				$date          = $L->to_locale(
 					date($Language->{TIME - $order['date'] < 24 * 3600 ? '_time' : '_datetime_long'}, $order['date'])
 				);
 				return [
@@ -64,16 +65,17 @@ $Page->content(
 							function ($item) use ($Categories, $Items, $module_path, $items_path) {
 								$item_data = $Items->get($item['item']);
 								return [
-									h::img([
+									h::{'img#img'}([
 										'src' => @$item['images'][0] ?: 'components/modules/Shop/includes/img/no-image.svg'
 									]).
-									h::a(
+									h::{'a#link'}(
 										$item_data['title'],
 										[
 											'href'   => "$module_path/$items_path/".path($Categories->get($item_data['category'])['title']).'/'.path($item_data['title']).":$item_data[id]",
 											'target' => '_blank'
 										]
-									),
+									).
+									h::{'#description'}(truncate($item_data['description'], 200) ?: false),
 									[
 										'data-id'         => $item_data['id'],
 										'data-price'      => $item['price'],
@@ -85,9 +87,10 @@ $Page->content(
 							$Orders->get_items($order['id'])
 						)).
 						h::{'#shipping_type'}(
-							$Shipping_types->get($order['shipping_type'])['title'],
+							$shipping_type['title'],
 							[
-								'data-id' => $order['shipping_type']
+								'data-id'    => $order['shipping_type'],
+								'data-price' => $shipping_type['price']
 							]
 						).
 						h::{'#order_status'}(

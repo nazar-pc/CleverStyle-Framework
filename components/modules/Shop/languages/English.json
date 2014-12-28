@@ -99,5 +99,10 @@
 	"shop_no"                                       : "No",
 	"shop_add_to_cart"                              : "Add to cart",
 	"shop_already_in_cart"                          : "Already in cart",
-	"shop_your_orders"                              : "Your orders"
+	"shop_your_orders"                              : "Your orders",
+	"shop_order_number"                             : "Order #%s",
+	"shop_total_price"                              : "Total price",
+	"shop_discount"                                 : "Discount",
+	"shop_shipping_cost"                            : "Shipping price",
+	"shop_for_payment"                              : "For payment"
 }

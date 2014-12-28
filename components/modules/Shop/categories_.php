@@ -126,7 +126,7 @@ foreach ($items as &$item) {
 				'href' => $base_items_path.path($item['title']).":$item[id]"
 			]
 		).
-		h::{'#description'}($item['description'] ?: false),
+		h::{'#description'}(truncate($item['description'], 200) ?: false),
 		[
 			'data-id'       => $item['id'],
 			'data-date'     => $item['price'],

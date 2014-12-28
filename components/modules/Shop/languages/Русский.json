@@ -99,5 +99,10 @@
 	"shop_no"                                       : "Нет",
 	"shop_add_to_cart"                              : "Добавить в корзину",
 	"shop_already_in_cart"                          : "Уже в корзине",
-	"shop_your_orders"                              : "Ваши заказы"
+	"shop_your_orders"                              : "Ваши заказы",
+	"shop_order_number"                             : "Заказ №%s",
+	"shop_total_price"                              : "Общая стоимость",
+	"shop_discount"                                 : "Скидка",
+	"shop_shipping_cost"                            : "Стоимость доставки",
+	"shop_for_payment"                              : "К оплате"
 }
