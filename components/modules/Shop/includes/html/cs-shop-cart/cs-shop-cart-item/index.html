@@ -1,0 +1,18 @@
+<polymer-element name="cs-shop-cart-item">
+	<template>
+		<div class="uk-grid uk-grid-small uk-margin-top">
+			<div class="uk-width-1-10">
+				<a href="{{href}}" class="uk-thumbnail uk-thumbnail-expand" id="img"></a>
+			</div>
+			<div class="uk-grid uk-grid-small uk-grid-width-1-1 uk-form">
+				<div class="uk-text-large">
+					<a href="{{href}}">{{item_title}}</a>: <input type="number" min="0" value="{{units}}" class="uk-form-width-small"> x {{unit_price_formatted}} = {{price_formatted}} <span id="discount"></span>
+				</div>
+				<div>
+					<content select="#description"></content>
+				</div>
+			</div>
+		</div>
+	</template>
+	<script src="script.js"></script>
+</polymer-element>

@@ -15,7 +15,7 @@ Polymer(
 		price					= $this.data('price')
 		@units					= $this.data('units')
 		@unit_price_formatted	= sprintf(cs.shop.settings.price_formatting, unit_price)
-		@price_formatted		= sprintf(cs.shop.settings.price_formatting, $this.data('price'))
+		@price_formatted		= sprintf(cs.shop.settings.price_formatting, price)
 		discount				= @units * unit_price - price
 		if discount
 			discount				= sprintf(cs.shop.settings.price_formatting, discount)

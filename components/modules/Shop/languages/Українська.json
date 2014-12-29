@@ -104,5 +104,8 @@
 	"shop_total_price"                              : "Загальна вартість",
 	"shop_discount"                                 : "Знижка",
 	"shop_shipping_cost"                            : "Вартість доставки",
-	"shop_for_payment"                              : "До сплати"
+	"shop_for_payment"                              : "До сплати",
+	"shop_cart"                                     : "Кошик",
+	"shop_cart_empty"                               : "Кошик порожній",
+	"shop_your_cart"                                : "Ваш кошик"
 }

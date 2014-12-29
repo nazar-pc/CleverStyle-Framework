@@ -104,5 +104,8 @@
 	"shop_total_price"                              : "Total price",
 	"shop_discount"                                 : "Discount",
 	"shop_shipping_cost"                            : "Shipping price",
-	"shop_for_payment"                              : "For payment"
+	"shop_for_payment"                              : "For payment",
+	"shop_cart"                                     : "Cart",
+	"shop_cart_empty"                               : "Cart empty",
+	"shop_your_cart"                                : "Your cart"
 }

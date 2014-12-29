@@ -35,6 +35,9 @@ Trigger::instance()
 				case path($L->orders):
 					$rc[1] = 'orders_';
 					break;
+				case path($L->cart):
+					$rc[1] = 'cart';
+					break;
 			}
 			$data['rc'] = implode('/', $rc);
 		}

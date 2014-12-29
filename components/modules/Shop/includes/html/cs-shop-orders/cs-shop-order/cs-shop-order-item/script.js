@@ -22,7 +22,7 @@
       price = $this.data('price');
       this.units = $this.data('units');
       this.unit_price_formatted = sprintf(cs.shop.settings.price_formatting, unit_price);
-      this.price_formatted = sprintf(cs.shop.settings.price_formatting, $this.data('price'));
+      this.price_formatted = sprintf(cs.shop.settings.price_formatting, price);
       discount = this.units * unit_price - price;
       if (discount) {
         discount = sprintf(cs.shop.settings.price_formatting, discount);

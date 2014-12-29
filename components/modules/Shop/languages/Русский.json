@@ -104,5 +104,8 @@
 	"shop_total_price"                              : "Общая стоимость",
 	"shop_discount"                                 : "Скидка",
 	"shop_shipping_cost"                            : "Стоимость доставки",
-	"shop_for_payment"                              : "К оплате"
+	"shop_for_payment"                              : "К оплате",
+	"shop_cart"                                     : "Корзина",
+	"shop_cart_empty"                               : "Корзина пуста",
+	"shop_your_cart"                                : "Ваша корзина"
 }

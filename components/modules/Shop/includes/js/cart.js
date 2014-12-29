@@ -16,14 +16,14 @@
     items_storage = {
       get: function() {
         var data;
-        if (data = cs.getcookie('shop.cart.items')) {
+        if (data = cs.getcookie('shop_cart_items')) {
           return JSON.parse(data);
         } else {
           return {};
         }
       },
       set: function(items) {
-        return cs.setcookie('shop.cart.items', JSON.stringify(items), new Date / 1000 + 86400);
+        return cs.setcookie('shop_cart_items', JSON.stringify(items), new Date / 1000 + 86400);
       }
     };
     get_items = function() {
@@ -41,8 +41,8 @@
       items_storage.set(items);
       return items[id];
     };
-    set_item = function(id, count) {
-      items[id] = count;
+    set_item = function(id, units) {
+      items[id] = units;
       return items_storage.set(items);
     };
     del_item = function(id) {

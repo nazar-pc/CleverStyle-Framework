@@ -8,13 +8,13 @@
 cs.shop.cart	= do ->
 	items_storage	=
 		get	: ->
-			if data = cs.getcookie('shop.cart.items')
+			if data = cs.getcookie('shop_cart_items')
 				JSON.parse(data)
 			else
 				{}
 		set	: (items) ->
 			cs.setcookie(
-				'shop.cart.items'
+				'shop_cart_items'
 				JSON.stringify(items)
 				new Date / 1000 + 86400	# +24h from now
 			)
@@ -29,8 +29,8 @@ cs.shop.cart	= do ->
 			items[id]	= 1
 		items_storage.set(items)
 		items[id]
-	set_item	= (id, count) ->
-		items[id]	= count
+	set_item	= (id, units) ->
+		items[id]	= units
 		items_storage.set(items)
 	del_item	= (id) ->
 		delete items[id]
