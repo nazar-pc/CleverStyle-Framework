@@ -23,6 +23,7 @@
     phone_text: L.shop_shipping_phone,
     address_text: L.shop_shipping_address,
     comment_text: L.shop_comment,
+    finish_order_text: L.shop_finish_order,
     phone: localStorage.phone || '',
     address: localStorage.address || '',
     comment: localStorage.comment || '',
@@ -53,6 +54,25 @@
     },
     commentChanged: function() {
       return localStorage.comment = this.comment;
+    },
+    finish_order: function() {
+      return $.ajax({
+        url: 'api/Shop/orders',
+        type: 'post',
+        data: {
+          shipping_type: this.shipping_type,
+          shipping_phone: this.shipping_type_details.phone_needed ? this.phone : '',
+          shipping_address: this.shipping_type_details.address_needed ? this.address : '',
+          comment: this.comment,
+          items: cs.shop.cart.get_all()
+        },
+        success: function() {
+          return $.cs.simple_modal("<h1 class=\"uk-text-center\">" + L.shop_thanks_for_order + "</h1>").on('hide.uk.modal', function() {
+            cs.shop.cart.clean();
+            return location.href = 'Shop/orders_';
+          });
+        }
+      });
     }
   });
 

@@ -110,7 +110,7 @@ $ ->
 				(error) ->
 					alert error.message
 			)
-			modal.on 'uk.modal.hide', ->
+			modal.on 'hide.uk.modal', ->
 				uploader.destroy()
 		else
 			modal.find('.set-image').click ->

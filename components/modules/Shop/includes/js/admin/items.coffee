@@ -182,7 +182,7 @@ $ ->
 					null
 					true
 				)
-				modal.on 'uk.modal.hide', ->
+				modal.on 'hide.uk.modal', ->
 					uploader.destroy()
 			else
 				modal.find('.add-images').click ->

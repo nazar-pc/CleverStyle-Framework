@@ -15,6 +15,7 @@ Polymer(
 	phone_text					: L.shop_shipping_phone
 	address_text				: L.shop_shipping_address
 	comment_text				: L.shop_comment
+	finish_order_text			: L.shop_finish_order
 	phone						: localStorage.phone || ''
 	address						: localStorage.address || ''
 	comment						: localStorage.comment || ''
@@ -37,4 +38,22 @@ Polymer(
 		localStorage.address	= @address
 	commentChanged				: ->
 		localStorage.comment	= @comment
+	finish_order				: ->
+		$.ajax(
+			url		: 'api/Shop/orders'
+			type	: 'post'
+			data	:
+				shipping_type		: @shipping_type
+				shipping_phone		: if @shipping_type_details.phone_needed then @phone else ''
+				shipping_address	: if @shipping_type_details.address_needed then @address else ''
+				comment				: @comment
+				items				: cs.shop.cart.get_all()
+			success	: ->
+				$.cs.simple_modal("""
+					<h1 class="uk-text-center">#{L.shop_thanks_for_order}</h1>
+				""")
+				.on 'hide.uk.modal', ->
+					cs.shop.cart.clean()
+					location.href	= 'Shop/orders_'
+		)
 );

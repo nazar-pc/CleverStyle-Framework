@@ -12,7 +12,7 @@
 (function() {
 
   cs.shop.cart = (function() {
-    var add_item, del_item, get_item, get_items, items, items_storage, set_item;
+    var add_item, clean, del_item, get_item, get_items, items, items_storage, set_item;
     items_storage = {
       get: function() {
         var data;
@@ -49,13 +49,19 @@
       delete items[id];
       return items_storage.set(items);
     };
+    clean = function() {
+      var items;
+      cs.setcookie('shop_cart_items', '');
+      return items = {};
+    };
     items = get_items();
     return {
       get_all: get_items,
       get: get_item,
       add: add_item,
       set: set_item,
-      del: del_item
+      del: del_item,
+      clean: clean
     };
   })();
 

@@ -107,5 +107,9 @@
 	"shop_for_payment"                              : "До сплати",
 	"shop_cart"                                     : "Кошик",
 	"shop_cart_empty"                               : "Кошик порожній",
-	"shop_your_cart"                                : "Ваш кошик"
+	"shop_your_cart"                                : "Ваш кошик",
+	"shop_finish_order"                             : "Завершити замовлення",
+	"shop_default_order_status"                     : "Статус замовлення за замовчуванням",
+	"shop_default_order_status_info"                : "Може бути кілька статусів замовлення, тут можна обрати статус, котрий буде назначено замовленню при створенні",
+	"shop_thanks_for_order"                         : "Дякуємо за замовлення!"
 }

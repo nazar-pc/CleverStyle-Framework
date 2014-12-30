@@ -107,5 +107,9 @@
 	"shop_for_payment"                              : "К оплате",
 	"shop_cart"                                     : "Корзина",
 	"shop_cart_empty"                               : "Корзина пуста",
-	"shop_your_cart"                                : "Ваша корзина"
+	"shop_your_cart"                                : "Ваша корзина",
+	"shop_finish_order"                             : "Завершить заказ",
+	"shop_default_order_status"                     : "Статус заказа по умолчанию",
+	"shop_default_order_status_info"                : "Может быть несколько статусов заказа, тут можно выбрать статус, который будет назначен заказу при создании",
+	"shop_thanks_for_order"                         : "Спасибо за заказ!"
 }

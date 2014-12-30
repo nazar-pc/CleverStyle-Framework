@@ -88,7 +88,7 @@
         }, function(error) {
           return alert(error.message);
         });
-        modal.on('uk.modal.hide', function() {
+        modal.on('hide.uk.modal', function() {
           return uploader.destroy();
         });
       } else {

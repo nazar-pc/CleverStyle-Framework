@@ -35,6 +35,12 @@ cs.shop.cart	= do ->
 	del_item	= (id) ->
 		delete items[id]
 		items_storage.set(items)
+	clean		= ->
+		cs.setcookie(
+			'shop_cart_items'
+			''
+		)
+		items	= {}
 	items	= get_items()
 	return {
 		get_all	: get_items
@@ -42,4 +48,5 @@ cs.shop.cart	= do ->
 		add		: add_item
 		set		: set_item
 		del		: del_item
+		clean	: clean
 	}
