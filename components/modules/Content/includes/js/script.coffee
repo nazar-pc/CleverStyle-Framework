@@ -56,7 +56,7 @@ $ ->
 				modal_body
 					.appendTo('body')
 					.cs().modal('show')
-					.on 'uk.modal.hide', ->
+					.on 'hide.uk.modal', ->
 						$(@).remove()
 				modal_body.find('button').click ->
 					$.ajax(
@@ -119,7 +119,7 @@ $ ->
 						modal_body
 							.appendTo('body')
 							.cs().modal('show')
-							.on 'uk.modal.hide', ->
+							.on 'hide.uk.modal', ->
 								$(@).remove()
 						modal_body.find('button').click ->
 							$.ajax(
