@@ -16,16 +16,13 @@ use
 	cs\User;
 
 $L              = new Prefix('shop_');
-$Language       = Language::instance();
 $Page           = Page::instance();
-$User           = User::instance();
 $Categories     = Categories::instance();
 $Items          = Items::instance();
-$Orders         = Orders::instance();
-$Order_statuses = Order_statuses::instance();
 $Shipping_types = Shipping_types::instance();
 $items          = @_json_decode($_COOKIE['shop_cart_items']);
 $Page->title($L->cart);
+$Page->config($Shipping_types->get($Shipping_types->get_all()), 'cs.shop.shipping_types');
 if (!$items || !is_array($items)) {
 	$Page->content(
 		h::cs_shop_empty_cart($L->cart_empty)

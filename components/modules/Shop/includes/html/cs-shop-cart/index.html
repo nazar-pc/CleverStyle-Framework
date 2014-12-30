@@ -2,6 +2,15 @@
 	<template>
 		<h1 id="h1" class="uk-text-center"></h1>
 		<content select="#items"></content>
+		<p class="uk-form">
+			{{shipping_type_text}}: <select id="shipping_type" value="{{shipping_type}}}">
+				<template repeat="{{shipping_types}}">
+					<option value="{{id}}">{{title}}</option>
+				</template>
+			</select> ({{shipping_cost_formatted}})
+			<br>
+			{{shipping_type_description}}
+		</p>
 	</template>
 	<script src="script.js"></script>
 </polymer-element>

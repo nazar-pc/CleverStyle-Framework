@@ -10,10 +10,31 @@
 
 
 (function() {
+  var L;
+
+  L = cs.Language;
 
   Polymer({
+    shipping_types: cs.shop.shipping_types,
+    shipping_type: cs.shop.shipping_types[0].id,
+    shipping_type_description: '',
+    shipping_type_text: L.shop_shipping_type,
+    shipping_cost: 0,
+    shipping_cost_formatted: '',
     ready: function() {
-      return this.$.h1.innerHTML = this.querySelector('h1').innerHTML;
+      this.$.h1.innerHTML = this.querySelector('h1').innerHTML;
+      return this.shipping_typeChanged();
+    },
+    shipping_typeChanged: function() {
+      var _this = this;
+      return this.shipping_types.forEach(function(shipping_type) {
+        if (shipping_type.id === _this.shipping_type) {
+          _this.shipping_type_description = shipping_type.description;
+          _this.shipping_cost = shipping_type.price;
+          _this.shipping_cost_formatted = sprintf(cs.shop.settings.price_formatting, _this.shipping_cost);
+          return false;
+        }
+      });
     }
   });
 
