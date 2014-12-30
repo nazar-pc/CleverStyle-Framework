@@ -23,9 +23,9 @@
     phone_text: L.shop_shipping_phone,
     address_text: L.shop_shipping_address,
     comment_text: L.shop_comment,
-    phone: '',
-    address: '',
-    comment: '',
+    phone: localStorage.phone || '',
+    address: localStorage.address || '',
+    comment: localStorage.comment || '',
     created: function() {
       this.shipping_type_details = this.shipping_types[0];
       return this.shipping_type = this.shipping_type_details.id;
@@ -44,6 +44,15 @@
           return false;
         }
       });
+    },
+    phoneChanged: function() {
+      return localStorage.phone = this.phone;
+    },
+    addressChanged: function() {
+      return localStorage.address = this.address;
+    },
+    commentChanged: function() {
+      return localStorage.comment = this.comment;
     }
   });
 

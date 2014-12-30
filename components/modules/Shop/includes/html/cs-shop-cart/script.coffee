@@ -15,9 +15,9 @@ Polymer(
 	phone_text					: L.shop_shipping_phone
 	address_text				: L.shop_shipping_address
 	comment_text				: L.shop_comment
-	phone						: ''
-	address						: ''
-	comment						: ''
+	phone						: localStorage.phone || ''
+	address						: localStorage.address || ''
+	comment						: localStorage.comment || ''
 	created						: ->
 		@shipping_type_details	= @shipping_types[0]
 		@shipping_type			= @shipping_type_details.id
@@ -31,4 +31,10 @@ Polymer(
 				@shipping_type_details		= shipping_type
 				@shipping_cost_formatted	= sprintf(cs.shop.settings.price_formatting, shipping_type.price)
 				return false
+	phoneChanged				: ->
+		localStorage.phone	= @phone
+	addressChanged				: ->
+		localStorage.address	= @address
+	commentChanged				: ->
+		localStorage.comment	= @comment
 );
