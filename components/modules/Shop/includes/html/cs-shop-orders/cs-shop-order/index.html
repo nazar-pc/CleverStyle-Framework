@@ -24,6 +24,13 @@
 		<p class="uk-text-bold">
 			{{for_payment_text}} : {{for_payment_formatted}}
 		</p>
+		<p hidden?="{{!phone}}">
+			{{phone_text}} : <span id="phone"></span>
+		</p>
+		<p hidden?="{{!address}}">
+			{{address_text}} : <span id="address"></span>
+		</p>
+		<blockquote id="comment"></blockquote>
 		<hr class="uk-article-divider">
 	</template>
 	<script src="script.js"></script>

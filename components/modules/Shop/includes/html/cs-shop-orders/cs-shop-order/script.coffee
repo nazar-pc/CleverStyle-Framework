@@ -12,6 +12,8 @@ Polymer(
 	discount_text		: L.shop_discount
 	shipping_cost_text	: L.shop_shipping_cost
 	for_payment_text	: L.shop_for_payment
+	phone_text			: L.shop_shipping_phone
+	address_text		: L.shop_shipping_address
 	ready				: ->
 		$this						= $(@)
 		@order_number				= sprintf(L.shop_order_number, $this.data('id'))
@@ -34,4 +36,13 @@ Polymer(
 		@total_price_formatted	= sprintf(cs.shop.settings.price_formatting, total_price)
 		@discount_formatted		= if discount then sprintf(cs.shop.settings.price_formatting, discount) else ''
 		@for_payment_formatted	= sprintf(cs.shop.settings.price_formatting, for_payment)
+		@phone					= @querySelector('#phone')?.innerHTML || ''
+		@address				= $.trim(@querySelector('#address')?.innerHTML || '').replace(/\n/g, '<br>')
+		@comment				= $.trim(@querySelector('#comment')?.innerHTML || '').replace(/\n/g, '<br>')
+	phoneChanged		: ->
+		@$.phone.innerHTML	= @phone
+	addressChanged		: ->
+		@$.address.innerHTML	= @address
+	commentChanged		: ->
+		@$.comment.innerHTML	= @comment
 );

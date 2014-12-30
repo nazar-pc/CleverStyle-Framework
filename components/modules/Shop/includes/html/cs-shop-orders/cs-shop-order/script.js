@@ -20,8 +20,10 @@
     discount_text: L.shop_discount,
     shipping_cost_text: L.shop_shipping_cost,
     for_payment_text: L.shop_for_payment,
+    phone_text: L.shop_shipping_phone,
+    address_text: L.shop_shipping_address,
     ready: function() {
-      var $this, discount, for_payment, shipping_type, total_price;
+      var $this, discount, for_payment, shipping_type, total_price, _ref, _ref1, _ref2;
       $this = $(this);
       this.order_number = sprintf(L.shop_order_number, $this.data('id'));
       this.order_date = $this.data('date-formatted');
@@ -44,7 +46,19 @@
       for_payment = total_price - discount + this.shipping_cost;
       this.total_price_formatted = sprintf(cs.shop.settings.price_formatting, total_price);
       this.discount_formatted = discount ? sprintf(cs.shop.settings.price_formatting, discount) : '';
-      return this.for_payment_formatted = sprintf(cs.shop.settings.price_formatting, for_payment);
+      this.for_payment_formatted = sprintf(cs.shop.settings.price_formatting, for_payment);
+      this.phone = ((_ref = this.querySelector('#phone')) != null ? _ref.innerHTML : void 0) || '';
+      this.address = $.trim(((_ref1 = this.querySelector('#address')) != null ? _ref1.innerHTML : void 0) || '').replace(/\n/g, '<br>');
+      return this.comment = $.trim(((_ref2 = this.querySelector('#comment')) != null ? _ref2.innerHTML : void 0) || '').replace(/\n/g, '<br>');
+    },
+    phoneChanged: function() {
+      return this.$.phone.innerHTML = this.phone;
+    },
+    addressChanged: function() {
+      return this.$.address.innerHTML = this.address;
+    },
+    commentChanged: function() {
+      return this.$.comment.innerHTML = this.comment;
     }
   });
 

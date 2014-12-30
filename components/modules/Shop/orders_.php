@@ -75,7 +75,7 @@ $Page->content(
 											'target' => '_blank'
 										]
 									).
-									h::{'#description'}(truncate($item_data['description'], 200) ?: false),
+									h::{'#description'}(truncate($item_data['description'], 100) ?: false),
 									[
 										'data-id'         => $item_data['id'],
 										'data-price'      => $item['price'],
@@ -101,7 +101,9 @@ $Page->content(
 								'data-type'  => $order_status['type']
 							]
 						).
-						$order['comment']
+						h::{'#phone'}($order['shipping_phone'] ?: false).
+						h::{'#address'}($order['shipping_address'] ?: false).
+						h::{'#comment'}($order['comment'] ?: false)
 					],
 					[
 						'data-id'             => $order['id'],
