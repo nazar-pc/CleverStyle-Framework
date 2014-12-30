@@ -8,19 +8,23 @@
 L	= cs.Language
 Polymer(
 	shipping_types				: cs.shop.shipping_types
-	shipping_type				: cs.shop.shipping_types[0].id
-	shipping_type_description	: ''
+	shipping_type				: 0
+	shipping_type_details		: {}
 	shipping_type_text			: L.shop_shipping_type
-	shipping_cost				: 0
 	shipping_cost_formatted		: ''
+	phone_text					: L.shop_shipping_phone
+	address_text				: L.shop_shipping_address
+	created						: ->
+		@shipping_type_details	= @shipping_types[0]
+		@shipping_type			= @shipping_type_details.id
 	ready						: ->
 		@$.h1.innerHTML	= @querySelector('h1').innerHTML
+		$(@$.address).autosize()
 		@shipping_typeChanged()
 	shipping_typeChanged		: ->
 		@shipping_types.forEach (shipping_type) =>
 			if shipping_type.id == @shipping_type
-				@shipping_type_description		= shipping_type.description
-				@shipping_cost					= shipping_type.price
-				@shipping_cost_formatted		= sprintf(cs.shop.settings.price_formatting, @shipping_cost)
+				@shipping_type_details		= shipping_type
+				@shipping_cost_formatted	= sprintf(cs.shop.settings.price_formatting, shipping_type.price)
 				return false
 );

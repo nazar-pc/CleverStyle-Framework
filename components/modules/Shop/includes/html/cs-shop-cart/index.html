@@ -2,15 +2,27 @@
 	<template>
 		<h1 id="h1" class="uk-text-center"></h1>
 		<content select="#items"></content>
-		<p class="uk-form">
-			{{shipping_type_text}}: <select id="shipping_type" value="{{shipping_type}}}">
-				<template repeat="{{shipping_types}}">
-					<option value="{{id}}">{{title}}</option>
-				</template>
-			</select> ({{shipping_cost_formatted}})
-			<br>
-			{{shipping_type_description}}
-		</p>
+		<div class="uk-form uk-form-stacked uk-margin-top">
+			<p class="uk-form-row">
+				<label class="uk-form-label">{{shipping_type_text}}</label>
+				<select id="shipping_type" value="{{shipping_type}}}">
+					<template repeat="{{shipping_types}}">
+						<option value="{{id}}">{{title}}</option>
+					</template>
+				</select> ({{shipping_cost_formatted}})
+			</p>
+			<p class="uk-form-row" hidden?="{{!shipping_type_details.description}}">
+				{{shipping_type_details.description}}
+			</p>
+			<p class="uk-form-row" hidden?="{{shipping_type_details.phone_needed != 1}}">
+				<label class="uk-form-label">{{phone_text}}</label>
+				<input type="text" value="{{phone}}" class="uk-form-width-large">
+			</p>
+			<p class="uk-form-row" hidden?="{{shipping_type_details.address_needed != 1}}">
+				<label class="uk-form-label">{{address_text}}</label>
+				<textarea value="{{address}}" class="uk-form-width-large" id="address"></textarea>
+			</p>
+		</div>
 	</template>
 	<script src="script.js"></script>
 </polymer-element>
