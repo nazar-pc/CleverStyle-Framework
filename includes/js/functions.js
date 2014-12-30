@@ -69,22 +69,22 @@
 
 
   cs.setcookie = function(name, value, expires) {
-    var date;
+    var date, options;
     name = cs.cookie_prefix + name;
+    options = {
+      path: cs.cookie_path,
+      domain: cs.cookie_domain,
+      secure: cs.protocol === 'https'
+    };
     if (!value) {
       return $.removeCookie(name);
     }
     if (expires) {
       date = new Date();
       date.setTime(expires * 1000);
-      expires = date;
+      options.expires = date;
     }
-    return !!$.cookie(name, value, {
-      path: cs.cookie_path,
-      domain: cs.cookie_domain,
-      expires: expires,
-      secure: cs.protocol === 'https'
-    });
+    return !!$.cookie(name, value, options);
   };
 
   /**
