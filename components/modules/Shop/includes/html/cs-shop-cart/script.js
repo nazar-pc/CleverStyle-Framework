@@ -22,13 +22,17 @@
     shipping_cost_formatted: '',
     phone_text: L.shop_shipping_phone,
     address_text: L.shop_shipping_address,
+    comment_text: L.shop_comment,
+    phone: '',
+    address: '',
+    comment: '',
     created: function() {
       this.shipping_type_details = this.shipping_types[0];
       return this.shipping_type = this.shipping_type_details.id;
     },
     ready: function() {
       this.$.h1.innerHTML = this.querySelector('h1').innerHTML;
-      $(this.$.address).autosize();
+      $(this.shadowRoot).find('textarea').autosize();
       return this.shipping_typeChanged();
     },
     shipping_typeChanged: function() {

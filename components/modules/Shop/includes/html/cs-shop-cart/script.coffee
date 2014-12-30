@@ -14,12 +14,16 @@ Polymer(
 	shipping_cost_formatted		: ''
 	phone_text					: L.shop_shipping_phone
 	address_text				: L.shop_shipping_address
+	comment_text				: L.shop_comment
+	phone						: ''
+	address						: ''
+	comment						: ''
 	created						: ->
 		@shipping_type_details	= @shipping_types[0]
 		@shipping_type			= @shipping_type_details.id
 	ready						: ->
 		@$.h1.innerHTML	= @querySelector('h1').innerHTML
-		$(@$.address).autosize()
+		$(@shadowRoot).find('textarea').autosize()
 		@shipping_typeChanged()
 	shipping_typeChanged		: ->
 		@shipping_types.forEach (shipping_type) =>
