@@ -211,6 +211,9 @@ class Orders {
 	 * @return bool
 	 */
 	function add_item ($id, $item, $units, $price, $unit_price) {
+		if (!$units) {
+			return false;
+		}
 		$result = $this->db_prime()->q(
 			"INSERT INTO `{$this->table}_items`
 				(
@@ -313,6 +316,9 @@ class Orders {
 	 * @return bool
 	 */
 	function set_item ($id, $item, $units, $price, $unit_price) {
+		if (!$units) {
+			return $this->del_item($id, $item);
+		}
 		$items  = $this->get_items($id);
 		$result = $this->db_prime()->q(
 			"UPDATE `{$this->table}_items`
