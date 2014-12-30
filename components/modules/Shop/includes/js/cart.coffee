@@ -36,10 +36,7 @@ cs.shop.cart	= do ->
 		delete items[id]
 		items_storage.set(items)
 	clean		= ->
-		cs.setcookie(
-			'shop_cart_items'
-			''
-		)
+		cs.setcookie('shop_cart_items')
 		items	= {}
 	items	= get_items()
 	return {

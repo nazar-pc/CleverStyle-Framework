@@ -51,7 +51,7 @@
     };
     clean = function() {
       var items;
-      cs.setcookie('shop_cart_items', '');
+      cs.setcookie('shop_cart_items');
       return items = {};
     };
     items = get_items();
