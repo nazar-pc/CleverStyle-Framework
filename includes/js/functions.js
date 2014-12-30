@@ -167,11 +167,11 @@
       type: 'post',
       success: function(result) {
         if (result === 'reg_confirmation') {
-          return $('<div>' + L.reg_confirmation + '</div>').appendTo('body').cs().modal('show').on('uk.modal.hide', function() {
+          return $('<div>' + L.reg_confirmation + '</div>').appendTo('body').cs().modal('show').on('hide.uk.modal', function() {
             return $(this).remove();
           });
         } else if (result === 'reg_success') {
-          return $('<div>' + L.reg_success + '</div>').appendTo('body').cs().modal('show').on('uk.modal.hide', function() {
+          return $('<div>' + L.reg_success + '</div>').appendTo('body').cs().modal('show').on('hide.uk.modal', function() {
             return location.reload();
           });
         }
@@ -201,7 +201,7 @@
       type: 'post',
       success: function(result) {
         if (result === 'OK') {
-          return $('<div>' + L.restore_password_confirmation + '</div>').appendTo('body').cs().modal('show').on('uk.modal.hide', function() {
+          return $('<div>' + L.restore_password_confirmation + '</div>').appendTo('body').cs().modal('show').on('hide.uk.modal', function() {
             return $(this).remove();
           });
         }

@@ -37,7 +37,7 @@
           return typeof window.editor_reinitialization === 'function' && editor_reinitialization('cs-content-html-content');
         }
       });
-      modal_body.appendTo('body').cs().modal('show').on('uk.modal.hide', function() {
+      modal_body.appendTo('body').cs().modal('show').on('hide.uk.modal', function() {
         return $(this).remove();
       });
       return modal_body.find('button').click(function() {
@@ -80,7 +80,7 @@
               return typeof window.editor_reinitialization === 'function' && editor_reinitialization('cs-content-html-content');
             }
           });
-          modal_body.appendTo('body').cs().modal('show').on('uk.modal.hide', function() {
+          modal_body.appendTo('body').cs().modal('show').on('hide.uk.modal', function() {
             return $(this).remove();
           });
           return modal_body.find('button').click(function() {

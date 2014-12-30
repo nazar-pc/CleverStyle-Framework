@@ -111,5 +111,5 @@ do ($=jQuery, UI = UIkit) ->
 			""")
 				.appendTo('body')
 				.cs().modal('show')
-				.on 'uk.modal.hide', ->
+				.on 'hide.uk.modal', ->
 					$(@).remove()

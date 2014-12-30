@@ -107,7 +107,7 @@ $ ->
 			.appendTo('body')
 			.cs().modal('show')
 			.on(
-				'uk.modal.hide'
+				'hide.uk.modal'
 				->
 					$(this).remove()
 			)

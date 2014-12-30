@@ -118,7 +118,7 @@ cs.registration				= (email) ->
 					.appendTo('body')
 					.cs().modal('show')
 					.on(
-						'uk.modal.hide'
+						'hide.uk.modal'
 						->
 							$(this).remove()
 					)
@@ -127,7 +127,7 @@ cs.registration				= (email) ->
 					.appendTo('body')
 					.cs().modal('show')
 					.on(
-						'uk.modal.hide'
+						'hide.uk.modal'
 						->
 							location.reload()
 					)
@@ -153,7 +153,7 @@ cs.restore_password			= (email) ->
 					.appendTo('body')
 					.cs().modal('show')
 					.on(
-						'uk.modal.hide'
+						'hide.uk.modal'
 						->
 							$(this).remove()
 					)
