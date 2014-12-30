@@ -42,19 +42,22 @@ cs.hash						= (algo, data) ->
 ###
 cs.setcookie				= (name, value, expires) ->
 	name	= cs.cookie_prefix + name
+	options	=
+		path	: cs.cookie_path
+		domain	: cs.cookie_domain
+		secure	: cs.protocol == 'https'
 	if !value
-		return $.removeCookie(name)
+		return $.removeCookie(
+			name
+		)
 	if expires
 		date	= new Date()
 		date.setTime(expires * 1000)
-		expires	= date
+		options.expires	= date
 	!!$.cookie(
 		name
 		value
-		path	: cs.cookie_path
-		domain	: cs.cookie_domain
-		expires	: expires
-		secure	: cs.protocol == 'https'
+		options
 	)
 ###*
  * Function for getting of cookies, taking into account cookies prefix
