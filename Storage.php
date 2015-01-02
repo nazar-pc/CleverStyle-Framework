@@ -3,7 +3,7 @@
  * @package		CleverStyle CMS
  * @subpackage	HTTP Storage Engine backend
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2014, Nazar Mokrynskyi
+ * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  *
  * Requires config.php file in current directory with specified global variables $STORAGE_USER and $STORAGE_PASSWORD

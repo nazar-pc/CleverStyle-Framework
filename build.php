@@ -3,7 +3,7 @@
  * @package		CleverStyle CMS
  * @subpackage	Builder
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2014, Nazar Mokrynskyi
+ * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
 if (version_compare(PHP_VERSION, '5.4', '<')) {
@@ -110,5 +110,5 @@ echo
 		})
 	).
 	h::footer(
-		'Copyright (c) 2011-2014, Nazar Mokrynskyi'
+		'Copyright (c) 2011-2015, Nazar Mokrynskyi'
 	);
