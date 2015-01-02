@@ -2,7 +2,7 @@
  * @package       Shop
  * @order_status  modules
  * @author        Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright     Copyright (c) 2014, Nazar Mokrynskyi
+ * @copyright     Copyright (c) 2014-2015, Nazar Mokrynskyi
  * @license       MIT License, see license.txt
 ###
 do (cart = cs.shop.cart, L = cs.Language) ->
