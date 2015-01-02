@@ -87,7 +87,7 @@ $Page->content(
 						$order['id'],
 						$date,
 						h::a(
-							$username.h::br().$order['shipping_phone'],
+							$username." ($order[shipping_username]) ".h::br().$order['shipping_phone'],
 							[
 								'href' => "admin/Shop/orders/?user=$order[user]"
 							]
@@ -113,7 +113,7 @@ $Page->content(
 								'href' => "admin/Shop/orders/?status=$order[status]"
 							]
 						),
-						$order['comment'],
+						nl2br($order['comment']),
 						h::{'button.uk-button.cs-shop-order-details'}( // TODO details page/modal
 							$L->details,
 							[

@@ -49,6 +49,12 @@ $ ->
 				#{L.shop_shipping_type}: <select name="shipping_type" required>#{shipping_types_list}</select>
 			</p>
 			<p>
+				#{L.shop_shipping_cost}: <input name="shipping_cost"> (<span id="shipping_cost"></span>)
+			</p>
+			<p>
+				#{L.shop_shipping_username}: <input name="shipping_username">
+			</p>
+			<p>
 				#{L.shop_shipping_phone}: <input name="shipping_phone">
 			</p>
 			<p>
@@ -79,6 +85,7 @@ $ ->
 				shipping_type	= shipping_types[$(@).val()]
 				modal.find('[name=shipping_phone]').parent()[if parseInt(shipping_type.phone_needed) then 'show' else 'hide']()
 				modal.find('[name=shipping_address]').parent()[if parseInt(shipping_type.address_needed) then 'show' else 'hide']()
+				modal.find('#shipping_cost').html(shipping_type.price)
 			shipping_type_select.change()
 		do ->
 			items_container	= modal.find('.items')
@@ -204,7 +211,9 @@ $ ->
 				modal.find('[name=user]').val(order.user)
 				modal.find('[name=shipping_phone]').val(order.shipping_phone)
 				modal.find('[name=shipping_address]').val(order.shipping_address)
-				modal.find('[name=shipping_type]').val(order.shipping_type)
+				modal.find('[name=shipping_type]').val(order.shipping_type).change()
+				modal.find('[name=shipping_cost]').val(order.shipping_cost).change()
+				modal.find('[name=shipping_username]').val(order.shipping_username).change()
 				modal.find('[name=status]').val(order.status)
 				modal.find('[name=comment]').val(order.comment)
 				items	= items[0]

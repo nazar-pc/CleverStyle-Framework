@@ -21,14 +21,16 @@ class Orders {
 		Singleton;
 
 	protected $data_model            = [
-		'id'               => 'int',
-		'user'             => 'int',
-		'date'             => 'int',
-		'shipping_type'    => 'int',
-		'shipping_phone'   => 'text',
-		'shipping_address' => 'text',
-		'status'           => 'int',
-		'comment'          => 'text'
+		'id'                => 'int',
+		'user'              => 'int',
+		'date'              => 'int',
+		'shipping_type'     => 'int',
+		'shipping_cost'     => 'float',
+		'shipping_username' => 'text',
+		'shipping_phone'    => 'text',
+		'shipping_address'  => 'text',
+		'status'            => 'int',
+		'comment'           => 'text'
 	];
 	protected $table                 = '[prefix]shop_orders';
 	protected $reduce_in_stock_value = false;
@@ -157,6 +159,8 @@ class Orders {
 	 *
 	 * @param int    $user
 	 * @param int    $shipping_type
+	 * @param float  $shipping_cost
+	 * @param string $shipping_username
 	 * @param string $shipping_phone
 	 * @param string $shipping_address
 	 * @param int    $status
@@ -165,11 +169,13 @@ class Orders {
 	 * @return bool|int Id of created item on success of <b>false</> on failure
 	 *
 	 */
-	function add ($user, $shipping_type, $shipping_phone, $shipping_address, $status, $comment) {
+	function add ($user, $shipping_type, $shipping_cost, $shipping_username, $shipping_phone, $shipping_address, $status, $comment) {
 		$id = $this->create_simple([
 			$user,
 			TIME,
 			$shipping_type,
+			$shipping_cost,
+			$shipping_username,
 			$shipping_phone,
 			$shipping_address,
 			$status,
@@ -261,6 +267,8 @@ class Orders {
 	 * @param int    $id
 	 * @param int    $user
 	 * @param int    $shipping_type
+	 * @param float  $shipping_cost
+	 * @param string $shipping_username
 	 * @param string $shipping_phone
 	 * @param string $shipping_address
 	 * @param int    $status
@@ -268,13 +276,15 @@ class Orders {
 	 *
 	 * @return bool
 	 */
-	function set ($id, $user, $shipping_type, $shipping_phone, $shipping_address, $status, $comment) {
+	function set ($id, $user, $shipping_type, $shipping_cost, $shipping_username, $shipping_phone, $shipping_address, $status, $comment) {
 		$order  = $this->read_simple($id);
 		$result = $this->update_simple([
 			$id,
 			$user,
 			$order['date'],
 			$shipping_type,
+			$shipping_cost,
+			$shipping_username,
 			$shipping_phone,
 			$shipping_address,
 			$status,

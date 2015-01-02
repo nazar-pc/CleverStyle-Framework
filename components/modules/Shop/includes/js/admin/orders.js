@@ -61,7 +61,7 @@
         return _results;
       })();
       order_statuses = order_statuses.join('');
-      modal = $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p class=\"uk-hidden\">\n		" + L.shop_datetime + ": <span class=\"date\"></span>\n	</p>\n	<p>\n		" + L.shop_user + ": <span class=\"username\"></span>, id: <input name=\"user\" required>\n	</p>\n	<p>\n		<div class=\"items\"></div>\n		<button type=\"button\" class=\"add-item uk-button\">" + L.shop_add_item + "</button>\n	</p>\n	<p>\n		" + L.shop_shipping_type + ": <select name=\"shipping_type\" required>" + shipping_types_list + "</select>\n	</p>\n	<p>\n		" + L.shop_shipping_phone + ": <input name=\"shipping_phone\">\n	</p>\n	<p>\n		" + L.shop_shipping_address + ": <textarea name=\"shipping_address\"></textarea>\n	</p>\n	<p>\n		" + L.shop_status + ": <select name=\"status\" required>" + order_statuses + "</select>\n	</p>\n	<p>\n		" + L.shop_comment + ": <textarea name=\"comment\"></textarea>\n	</p>\n	<p>\n		<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n	</p>\n</form>", false, 1200);
+      modal = $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p class=\"uk-hidden\">\n		" + L.shop_datetime + ": <span class=\"date\"></span>\n	</p>\n	<p>\n		" + L.shop_user + ": <span class=\"username\"></span>, id: <input name=\"user\" required>\n	</p>\n	<p>\n		<div class=\"items\"></div>\n		<button type=\"button\" class=\"add-item uk-button\">" + L.shop_add_item + "</button>\n	</p>\n	<p>\n		" + L.shop_shipping_type + ": <select name=\"shipping_type\" required>" + shipping_types_list + "</select>\n	</p>\n	<p>\n		" + L.shop_shipping_cost + ": <input name=\"shipping_cost\"> (<span id=\"shipping_cost\"></span>)\n	</p>\n	<p>\n		" + L.shop_shipping_username + ": <input name=\"shipping_username\">\n	</p>\n	<p>\n		" + L.shop_shipping_phone + ": <input name=\"shipping_phone\">\n	</p>\n	<p>\n		" + L.shop_shipping_address + ": <textarea name=\"shipping_address\"></textarea>\n	</p>\n	<p>\n		" + L.shop_status + ": <select name=\"status\" required>" + order_statuses + "</select>\n	</p>\n	<p>\n		" + L.shop_comment + ": <textarea name=\"comment\"></textarea>\n	</p>\n	<p>\n		<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n	</p>\n</form>", false, 1200);
       (function() {
         var timeout;
         timeout = 0;
@@ -82,7 +82,8 @@
           var shipping_type;
           shipping_type = shipping_types[$(this).val()];
           modal.find('[name=shipping_phone]').parent()[parseInt(shipping_type.phone_needed) ? 'show' : 'hide']();
-          return modal.find('[name=shipping_address]').parent()[parseInt(shipping_type.address_needed) ? 'show' : 'hide']();
+          modal.find('[name=shipping_address]').parent()[parseInt(shipping_type.address_needed) ? 'show' : 'hide']();
+          return modal.find('#shipping_cost').html(shipping_type.price);
         });
         return shipping_type_select.change();
       })();
@@ -212,7 +213,9 @@
         modal.find('[name=user]').val(order.user);
         modal.find('[name=shipping_phone]').val(order.shipping_phone);
         modal.find('[name=shipping_address]').val(order.shipping_address);
-        modal.find('[name=shipping_type]').val(order.shipping_type);
+        modal.find('[name=shipping_type]').val(order.shipping_type).change();
+        modal.find('[name=shipping_cost]').val(order.shipping_cost).change();
+        modal.find('[name=shipping_username]').val(order.shipping_username).change();
         modal.find('[name=status]').val(order.status);
         modal.find('[name=comment]').val(order.comment);
         items = items[0];

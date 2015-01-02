@@ -14,6 +14,8 @@ use
 if (!isset(
 	$_POST['user'],
 	$_POST['shipping_type'],
+	$_POST['shipping_cost'],
+	$_POST['shipping_username'],
 	$_POST['shipping_phone'],
 	$_POST['shipping_address'],
 	$_POST['status'],
@@ -25,6 +27,8 @@ if (!isset(
 $id = Orders::instance()->add(
 	$_POST['user'],
 	$_POST['shipping_type'],
+	$_POST['shipping_cost'],
+	$_POST['shipping_username'],
 	$_POST['shipping_phone'],
 	$_POST['shipping_address'],
 	$_POST['status'],

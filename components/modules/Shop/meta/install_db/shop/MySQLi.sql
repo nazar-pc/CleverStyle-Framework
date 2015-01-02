@@ -57,6 +57,8 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_orders` (
 	`user` int(11) NOT NULL,
 	`date` bigint(20) NOT NULL,
 	`shipping_type` tinyint(4) NOT NULL,
+	`shipping_cost` float NOT NULL,
+	`shipping_username` varchar(1024) NOT NULL,
 	`shipping_phone` varchar(255) NOT NULL,
 	`shipping_address` text NOT NULL,
 	`status` tinyint(4) NOT NULL,

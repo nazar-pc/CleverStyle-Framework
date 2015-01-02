@@ -111,5 +111,7 @@
 	"shop_finish_order"                             : "Завершити замовлення",
 	"shop_default_order_status"                     : "Статус замовлення за замовчуванням",
 	"shop_default_order_status_info"                : "Може бути кілька статусів замовлення, тут можна обрати статус, котрий буде назначено замовленню при створенні",
-	"shop_thanks_for_order"                         : "Дякуємо за замовлення!"
+	"shop_thanks_for_order"                         : "Дякуємо за замовлення!",
+	"shop_shipping_cost"                            : "Вартість доставки",
+	"shop_shipping_username"                        : "Доставка на ім’я"
 }

@@ -20,16 +20,19 @@
     shipping_type_details: {},
     shipping_type_text: L.shop_shipping_type,
     shipping_cost_formatted: '',
+    shipping_username_text: L.shop_shipping_username,
     phone_text: L.shop_shipping_phone,
     address_text: L.shop_shipping_address,
     comment_text: L.shop_comment,
     finish_order_text: L.shop_finish_order,
+    shipping_username: localStorage.shipping_username || '',
     phone: localStorage.phone || '',
     address: localStorage.address || '',
     comment: localStorage.comment || '',
     created: function() {
       this.shipping_type_details = this.shipping_types[0];
-      return this.shipping_type = this.shipping_type_details.id;
+      this.shipping_type = this.shipping_type_details.id;
+      return this.shipping_username = this.shipping_username || (cs.is_user ? this.getAttribute('username') : '');
     },
     ready: function() {
       this.$.h1.innerHTML = this.querySelector('h1').innerHTML;
@@ -46,6 +49,9 @@
         }
       });
     },
+    shipping_usernameChanged: function() {
+      return localStorage.shipping_username = this.shipping_username;
+    },
     phoneChanged: function() {
       return localStorage.phone = this.phone;
     },
@@ -61,6 +67,7 @@
         type: 'post',
         data: {
           shipping_type: this.shipping_type,
+          shipping_username: this.shipping_username,
           shipping_phone: this.shipping_type_details.phone_needed ? this.phone : '',
           shipping_address: this.shipping_type_details.address_needed ? this.address : '',
           comment: this.comment,

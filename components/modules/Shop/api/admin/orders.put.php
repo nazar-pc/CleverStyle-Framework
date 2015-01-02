@@ -43,6 +43,8 @@ if (isset($Index->route_path[2]) && $Index->route_path[2] == 'items') {
 	if (!isset(
 		$_POST['user'],
 		$_POST['shipping_type'],
+		$_POST['shipping_cost'],
+		$_POST['shipping_username'],
 		$_POST['shipping_phone'],
 		$_POST['shipping_address'],
 		$_POST['status'],
@@ -56,6 +58,8 @@ if (isset($Index->route_path[2]) && $Index->route_path[2] == 'items') {
 		$order_id,
 		$_POST['user'],
 		$_POST['shipping_type'],
+		$_POST['shipping_cost'],
+		$_POST['shipping_username'],
 		$_POST['shipping_phone'],
 		$_POST['shipping_address'],
 		$_POST['status'],

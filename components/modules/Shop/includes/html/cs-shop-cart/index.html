@@ -14,6 +14,10 @@
 			<p class="uk-form-row" hidden?="{{!shipping_type_details.description}}">
 				{{shipping_type_details.description}}
 			</p>
+			<p class="uk-form-row">
+				<label class="uk-form-label">{{shipping_username_text}}</label>
+				<input type="text" value="{{shipping_username}}" class="uk-form-width-large">
+			</p>
 			<p class="uk-form-row" hidden?="{{shipping_type_details.phone_needed != 1}}">
 				<label class="uk-form-label">{{phone_text}}</label>
 				<input type="text" value="{{phone}}" class="uk-form-width-large">
