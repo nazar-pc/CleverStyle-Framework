@@ -46,17 +46,18 @@ $ ->
 				#{L.shop_category}: <select name="category" required>#{categories_list}</select>
 			</p>
 			<div></div>
-		</form>""")
+		</form>""", false, 1200)
 		modal.item_data			= {}
 		modal.update_item_data	= ->
 			item	= modal.item_data
-			console.log item
 			modal.find('[name=price]').val(item.price)
 			modal.find('[name=in_stock]').val(item.in_stock)
 			modal.find("[name=soon][value=#{item.soon}]").prop('checked', true)
 			modal.find("[name=listed][value=#{item.listed}]").prop('checked', true)
 			if item.images
 				modal.add_images(item.images)
+			if item.videos
+				modal.add_videos(item.videos)
 			if item.attributes
 				for attribute, value of item.attributes
 					modal.find("[name='attributes[#{attribute}]']").val(value)
@@ -134,6 +135,10 @@ $ ->
 					<button type="button" class="add-images uk-button">#{L.shop_add_images}</button>
 					<input type="hidden" name="images">
 				</p>
+				<p>
+					<div class="videos"></div>
+					<button type="button" class="add-video uk-button">#{L.shop_add_video}</button>
+				</p>
 				#{attributes_list}
 				<p>
 					#{L.shop_tags}: <input name="tags" placeholder="shop, high quality, e-commerce">
@@ -150,18 +155,16 @@ $ ->
 				modal.find('[name=images]').val(
 					JSON.stringify(images)
 				)
-				if images.length > 1
-					images_container
-						.sortable(
-							placeholder				: '<span>&nbsp;</span>'
-							forcePlaceholderSize	: true
-						)
-						.on(
-							'sortupdate'
-							modal.update_images
-						)
-				else
-					images_container.sortable('destroy')
+				images_container.sortable('destroy')
+				images_container
+					.sortable(
+						forcePlaceholderSize	: true
+						placeholder				: '<a class="uk-thumbnail uk-thumbnail-mini"></a>'
+					)
+					.on(
+						'sortupdate'
+						modal.update_images
+					)
 			modal.add_images	= (images) ->
 				images.forEach (image) ->
 					images_container.append("""<span>
@@ -193,6 +196,93 @@ $ ->
 				$(@).parent().remove()
 				modal.update_images()
 				return false
+			)
+			videos_container	= modal.find('.videos')
+			modal.update_videos	= ->
+				videos_container.sortable('destroy')
+				videos_container
+					.sortable(
+						handle					: '.handle'
+						forcePlaceholderSize	: true
+					)
+					.on(
+						'sortupdate'
+						modal.update_videos
+					)
+			modal.add_videos	= (videos) ->
+				videos.forEach (video) ->
+					videos_container.append("""<p>
+						<i class="uk-icon-sort uk-sortable-moving handle"></i>
+						<select name="videos[type][]" class="video-type">
+							<option value="supported_video">#{L.shop_youtube_vimeo_url}</option>
+							<option value="iframe">#{L.shop_iframe_url_or_embed_code}</option>
+							<option value="direct_url">#{L.shop_direct_video_url}</option>
+						</select>
+						<textarea name="videos[video][]" placeholder="#{L.shop_url_or_code}" class="video-video uk-form-width-large" rows="3"></textarea>
+						<input name="videos[poster][]" class="video-poster" placeholder="#{L.shop_video_poster}">
+						<button type="button" class="delete-video uk-button"><i class="uk-icon-close"></i></button>
+					</p>""")
+					added_video	= videos_container.children('p:last')
+					video_video		= added_video.find('.video-video').val(video.video)
+					video_poster	= added_video.find('.video-poster').val(video.poster)
+					if cs.file_upload
+						do ->
+							video_video.after("""
+								&nbsp;<button type="button" class="uk-button"><i class="uk-icon-upload"></i></button>
+							""")
+							uploader = cs.file_upload(
+								video_video.next()
+								(video) ->
+									video_video.val(video[0])
+								(error) ->
+									alert error.message
+								# TODO progress window
+							)
+							modal.on 'hide.uk.modal', ->
+								uploader.destroy()
+						do ->
+							video_poster.after("""
+								&nbsp;<button type="button" class="uk-button"><i class="uk-icon-upload"></i></button>
+							""")
+							uploader = cs.file_upload(
+								video_poster.next()
+								(poster) ->
+									video_poster.val(poster[0])
+								(error) ->
+									alert error.message
+							)
+							modal.on 'hide.uk.modal', ->
+								uploader.destroy()
+					added_video.find('.video-type').val(video.type).change()
+				modal.update_videos()
+			modal.find('.add-video').click ->
+				modal.add_videos([
+					video	: ''
+					poster	: ''
+					type	: 'supported_video'
+				])
+			videos_container.on(
+				'click'
+				'.delete-video'
+				->
+					$(@).parent().remove()
+			)
+			videos_container.on(
+				'change'
+				'.video-type'
+				->
+					$this		= $(@)
+					container	= $this.parent()
+					switch $this.val()
+						when 'supported_video'
+							container.find('.video-video').next('button').hide()
+							container.find('.video-poster').hide().next('button').hide()
+						when 'iframe'
+							container.find('.video-video').next('button').hide()
+							container.find('.video-poster').show().next('button').show()
+						when 'direct_url'
+							container.find('.video-video').next('button').show()
+							container.find('.video-poster').show().next('button').show()
 			)
 			modal.update_item_data()
 		modal

@@ -113,5 +113,11 @@
 	"shop_default_order_status_info"                : "Может быть несколько статусов заказа, тут можно выбрать статус, который будет назначен заказу при создании",
 	"shop_thanks_for_order"                         : "Спасибо за заказ!",
 	"shop_shipping_cost"                            : "Стоимость доставки",
-	"shop_shipping_username"                        : "Доставка на имя"
+	"shop_shipping_username"                        : "Доставка на имя",
+	"shop_youtube_vimeo_url"                        : "YouTube или Vimeo URL",
+	"shop_iframe_url_or_embed_code"                 : "Iframe URL или код для вставки",
+	"shop_direct_video_url"                         : "Прямой URL к видео (или загрузка)",
+	"shop_url_or_code"                              : "URL или код",
+	"shop_add_video"                                : "Добавить видео",
+	"shop_video_poster"                             : "Постер"
 }

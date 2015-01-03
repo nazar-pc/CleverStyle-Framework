@@ -113,5 +113,11 @@
 	"shop_default_order_status_info"                : "There can be several order statuses, here you can choose which status will be assigned to order on its creation",
 	"shop_thanks_for_order"                         : "Thanks for order!",
 	"shop_shipping_cost"                            : "Shipping cost",
-	"shop_shipping_username"                        : "Shipping for name"
+	"shop_shipping_username"                        : "Shipping for name",
+	"shop_youtube_vimeo_url"                        : "YouTube or Vimeo URL",
+	"shop_iframe_url_or_embed_code"                 : "Iframe URL or embed code",
+	"shop_direct_video_url"                         : "Direct video URL (or upload)",
+	"shop_url_or_code"                              : "URL or code",
+	"shop_add_video"                                : "Add video",
+	"shop_video_poster"                             : "Poster"
 }

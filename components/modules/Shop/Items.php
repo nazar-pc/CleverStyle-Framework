@@ -137,6 +137,14 @@ class Items {
 				FROM `{$this->table}_images`
 				WHERE `id` = $id"
 			) ?: [];
+			$data['videos']      = $this->db()->qfa(
+				"SELECT
+					`video`,
+					`poster`,
+					`type`
+				FROM `{$this->table}_videos`
+				WHERE `id` = $id"
+			) ?: [];
 			$data['tags']        = $this->db()->qfas(
 				"SELECT DISTINCT `tag`
 				FROM `{$this->table}_tags`
@@ -326,11 +334,12 @@ class Items {
 	 * @param int      $listed
 	 * @param array    $attributes
 	 * @param string[] $images
+	 * @param array[]  $videos
 	 * @param string[] $tags
 	 *
 	 * @return bool|int Id of created item on success of <b>false</> on failure
 	 */
-	function add ($category, $price, $in_stock, $soon, $listed, $attributes, $images, $tags) {
+	function add ($category, $price, $in_stock, $soon, $listed, $attributes, $images, $videos, $tags) {
 		$id = $this->create_simple([
 			TIME,
 			$category,
@@ -341,7 +350,7 @@ class Items {
 		]);
 		if ($id) {
 			unset($this->cache->all);
-			$this->set($id, $category, $price, $in_stock, $soon, $listed, $attributes, $images, $tags);
+			$this->set($id, $category, $price, $in_stock, $soon, $listed, $attributes, $images, $videos, $tags);
 		}
 		return $id;
 	}
@@ -356,11 +365,12 @@ class Items {
 	 * @param int      $listed
 	 * @param array    $attributes
 	 * @param string[] $images
+	 * @param array[]  $videos
 	 * @param string[] $tags
 	 *
 	 * @return bool
 	 */
-	function set ($id, $category, $price, $in_stock, $soon, $listed, $attributes, $images, $tags) {
+	function set ($id, $category, $price, $in_stock, $soon, $listed, $attributes, $images, $videos, $tags) {
 		$id   = (int)$id;
 		$data = $this->get($id);
 		if (!$data) {
@@ -381,8 +391,18 @@ class Items {
 		$images    = array_filter($images, function ($image) {
 			return filter_var($image, FILTER_VALIDATE_URL);
 		});
-		$old_files = $this->get($id)['images'];
-		$new_files = $images;
+		$videos    = $this->prepare_videos($videos);
+		$old_data  = $this->get($id);
+		$old_files = array_merge(
+			$old_data['images'],
+			array_column($old_data['videos'], 'video'),
+			array_column($old_data['videos'], 'poster')
+		);
+		$new_files = array_merge(
+			$images,
+			$videos ? array_column($videos, 0) : [],
+			$videos ? array_column($videos, 1) : []
+		);
 		$cdb       = $this->db_prime();
 		/**
 		 * Attributes processing
@@ -500,6 +520,32 @@ class Items {
 			);
 		}
 		/**
+		 * Videos processing
+		 */
+		$cdb->q(
+			"DELETE FROM `{$this->table}_videos`
+			WHERE `id` = $id"
+		);
+		if ($videos) {
+			$cdb->insert(
+				"INSERT INTO `{$this->table}_videos`
+					(
+						`id`,
+						`video`,
+						`poster`,
+						`type`
+					)
+				VALUES
+					(
+						$id,
+						'%s',
+						'%s',
+						'%s'
+					)",
+				xap($videos)
+			);
+		}
+		/**
 		 * Cleaning old files and registering new ones
 		 */
 		if ($old_files || $new_files) {
@@ -549,6 +595,30 @@ class Items {
 			$this->cache->all
 		);
 		return true;
+	}
+	/**
+	 * Normalize videos array structure
+	 *
+	 * @param array[] $videos
+	 *
+	 * @return array[]
+	 */
+	protected function prepare_videos ($videos) {
+		if (!$videos || !is_array($videos)) {
+			return [];
+		}
+		$videos = array_flip_3d($videos);
+		foreach ($videos as $i => &$video) {
+			if (!@$video['video']) {
+				unset($videos[$i]);
+			}
+			$video = [
+				$video['video'], //TODO get iframe link from embed code if type = embed
+				$video['poster'],
+				$video['type']
+			];
+		}
+		return $videos;
 	}
 	/**
 	 * Delete specified item

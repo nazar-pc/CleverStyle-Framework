@@ -52,6 +52,13 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_items_tags` (
 	`lang` varchar(2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS `[prefix]shop_items_videos` (
+	`id` int(11) NOT NULL COMMENT 'Post id',
+	`video` varchar(1024) NOT NULL,
+	`poster` varchar(1024) NOT NULL,
+	`type` varchar(255) NOT NULL COMMENT 'Defined and processed in code'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS `[prefix]shop_orders` (
 	`id` bigint(20) NOT NULL,
 	`user` int(11) NOT NULL,
@@ -123,6 +130,9 @@ ADD KEY `id` (`id`);
 
 ALTER TABLE `[prefix]shop_items_tags`
 ADD PRIMARY KEY (`id`,`tag`,`lang`), ADD KEY `tag` (`tag`), ADD KEY `lang` (`lang`);
+
+ALTER TABLE `[prefix]shop_items_videos`
+ADD KEY `id` (`id`);
 
 ALTER TABLE `[prefix]shop_orders`
 ADD PRIMARY KEY (`id`), ADD KEY `user` (`user`), ADD KEY `date` (`date`), ADD KEY `status` (`status`);

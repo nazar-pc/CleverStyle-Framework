@@ -8,7 +8,7 @@
  */
 namespace cs;
 Trigger::instance()->register(
-	'admin/System/components/modules/install/process',
+	'admin/System/components/modules/install/process', //TODO add trigger for uninstallation to remove all files and other stuff
 	function ($data) {
 		if ($data['name'] != 'Shop') {
 			return;

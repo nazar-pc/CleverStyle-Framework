@@ -6,6 +6,7 @@ DROP TABLE
 `[prefix]shop_items_attributes`,
 `[prefix]shop_items_images`,
 `[prefix]shop_items_tags`,
+`[prefix]shop_items_videos`,
 `[prefix]shop_orders`,
 `[prefix]shop_orders_history`,
 `[prefix]shop_orders_items`,
