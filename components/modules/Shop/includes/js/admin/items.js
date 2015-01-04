@@ -93,7 +93,7 @@
         }
       };
       modal.find('[name=category]').change(function() {
-        var $this, attributes_list, category, images_container, uploader, videos_container;
+        var $this, attributes_list, category, images_container, videos_container;
         modal.find('form').serializeArray().forEach(function(item) {
           var attribute, name, value;
           value = item.value;
@@ -151,7 +151,7 @@
           return _results;
         })();
         attributes_list = attributes_list.join('');
-        $this.parent().next().html("<p>\n	" + L.shop_price + ": <input name=\"price\" type=\"number\" value=\"0\" required>\n</p>\n<p>\n	" + L.shop_in_stock + ": <input name=\"in_stock\" type=\"number\" value=\"1\" step=\"1\">\n</p>\n<p>\n	" + L.shop_available_soon + ":\n	<label><input type=\"radio\" name=\"soon\" value=\"1\"> " + L.yes + "</label>\n	<label><input type=\"radio\" name=\"soon\" value=\"0\" checked> " + L.no + "</label>\n</p>\n<p>\n	" + L.shop_listed + ":\n	<label><input type=\"radio\" name=\"listed\" value=\"1\" checked> " + L.yes + "</label>\n	<label><input type=\"radio\" name=\"listed\" value=\"0\"> " + L.no + "</label>\n</p>\n<p>\n	<div class=\"images\"></div>\n	<button type=\"button\" class=\"add-images uk-button\">" + L.shop_add_images + "</button>\n	<input type=\"hidden\" name=\"images\">\n</p>\n<p>\n	<div class=\"videos\"></div>\n	<button type=\"button\" class=\"add-video uk-button\">" + L.shop_add_video + "</button>\n</p>\n" + attributes_list + "\n<p>\n	" + L.shop_tags + ": <input name=\"tags\" placeholder=\"shop, high quality, e-commerce\">\n</p>\n<p>\n	<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n</p>");
+        $this.parent().next().html("<p>\n	" + L.shop_price + ": <input name=\"price\" type=\"number\" value=\"0\" required>\n</p>\n<p>\n	" + L.shop_in_stock + ": <input name=\"in_stock\" type=\"number\" value=\"1\" step=\"1\">\n</p>\n<p>\n	" + L.shop_available_soon + ":\n	<label><input type=\"radio\" name=\"soon\" value=\"1\"> " + L.yes + "</label>\n	<label><input type=\"radio\" name=\"soon\" value=\"0\" checked> " + L.no + "</label>\n</p>\n<p>\n	" + L.shop_listed + ":\n	<label><input type=\"radio\" name=\"listed\" value=\"1\" checked> " + L.yes + "</label>\n	<label><input type=\"radio\" name=\"listed\" value=\"0\"> " + L.no + "</label>\n</p>\n<p>\n	<span class=\"images uk-display-block\"></span>\n	<span class=\"uk-progress uk-progress-striped uk-active uk-hidden uk-display-block\">\n		<span class=\"uk-progress-bar\"></span>\n	</span>\n	<button type=\"button\" class=\"add-images uk-button\">" + L.shop_add_images + "</button>\n	<input type=\"hidden\" name=\"images\">\n</p>\n<p>\n	<div class=\"videos\"></div>\n	<button type=\"button\" class=\"add-video uk-button\">" + L.shop_add_video + "</button>\n</p>\n" + attributes_list + "\n<p>\n	" + L.shop_tags + ": <input name=\"tags\" placeholder=\"shop, high quality, e-commerce\">\n</p>\n<p>\n	<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n</p>");
         images_container = modal.find('.images');
         modal.update_images = function() {
           var images;
@@ -173,14 +173,22 @@
           return modal.update_images();
         };
         if (cs.file_upload) {
-          uploader = cs.file_upload(modal.find('.add-images'), function(images) {
-            return modal.add_images(images);
-          }, function(error) {
-            return alert(error.message);
-          }, null, true);
-          modal.on('hide.uk.modal', function() {
-            return uploader.destroy();
-          });
+          (function() {
+            var progress, uploader;
+            progress = modal.find('.add-images').prev();
+            uploader = cs.file_upload(modal.find('.add-images'), function(images) {
+              progress.addClass('uk-hidden').children().width(0);
+              return modal.add_images(images);
+            }, function(error) {
+              progress.addClass('uk-hidden').children().width(0);
+              return alert(error.message);
+            }, function(percents) {
+              return progress.removeClass('uk-hidden').children().width(percents + '%');
+            }, true);
+            return modal.on('hide.uk.modal', function() {
+              return uploader.destroy();
+            });
+          })();
         } else {
           modal.find('.add-images').click(function() {
             var image;
@@ -206,28 +214,40 @@
         modal.add_videos = function(videos) {
           videos.forEach(function(video) {
             var added_video, video_poster, video_video;
-            videos_container.append("<p>\n	<i class=\"uk-icon-sort uk-sortable-moving handle\"></i>\n	<select name=\"videos[type][]\" class=\"video-type\">\n		<option value=\"supported_video\">" + L.shop_youtube_vimeo_url + "</option>\n		<option value=\"iframe\">" + L.shop_iframe_url_or_embed_code + "</option>\n		<option value=\"direct_url\">" + L.shop_direct_video_url + "</option>\n	</select>\n	<textarea name=\"videos[video][]\" placeholder=\"" + L.shop_url_or_code + "\" class=\"video-video uk-form-width-large\" rows=\"3\"></textarea>\n	<input name=\"videos[poster][]\" class=\"video-poster\" placeholder=\"" + L.shop_video_poster + "\">\n	<button type=\"button\" class=\"delete-video uk-button\"><i class=\"uk-icon-close\"></i></button>\n</p>");
+            videos_container.append("<p>\n	<i class=\"uk-icon-sort uk-sortable-moving handle\"></i>\n	<select name=\"videos[type][]\" class=\"video-type\">\n		<option value=\"supported_video\">" + L.shop_youtube_vimeo_url + "</option>\n		<option value=\"iframe\">" + L.shop_iframe_url_or_embed_code + "</option>\n		<option value=\"direct_url\">" + L.shop_direct_video_url + "</option>\n	</select>\n	<textarea name=\"videos[video][]\" placeholder=\"" + L.shop_url_or_code + "\" class=\"video-video uk-form-width-large\" rows=\"3\"></textarea>\n	<input name=\"videos[poster][]\" class=\"video-poster\" placeholder=\"" + L.shop_video_poster + "\">\n	<button type=\"button\" class=\"delete-video uk-button\"><i class=\"uk-icon-close\"></i></button>\n	<span class=\"uk-progress uk-progress-striped uk-active uk-hidden uk-display-block\">\n		<span class=\"uk-progress-bar\"></span>\n	</span>\n</p>");
             added_video = videos_container.children('p:last');
             video_video = added_video.find('.video-video').val(video.video);
             video_poster = added_video.find('.video-poster').val(video.poster);
             if (cs.file_upload) {
               (function() {
+                var progress, uploader;
                 video_video.after("&nbsp;<button type=\"button\" class=\"uk-button\"><i class=\"uk-icon-upload\"></i></button>");
+                progress = video_video.parent().find('.uk-progress');
                 uploader = cs.file_upload(video_video.next(), function(video) {
+                  progress.addClass('uk-hidden').children().width(0);
                   return video_video.val(video[0]);
                 }, function(error) {
+                  progress.addClass('uk-hidden').children().width(0);
                   return alert(error.message);
+                }, function(percents) {
+                  return progress.removeClass('uk-hidden').children().width(percents + '%');
                 });
                 return modal.on('hide.uk.modal', function() {
                   return uploader.destroy();
                 });
               })();
               (function() {
+                var progress, uploader;
                 video_poster.after("&nbsp;<button type=\"button\" class=\"uk-button\"><i class=\"uk-icon-upload\"></i></button>");
+                progress = video_video.parent().find('.uk-progress');
                 uploader = cs.file_upload(video_poster.next(), function(poster) {
+                  progress.addClass('uk-hidden').children().width(0);
                   return video_poster.val(poster[0]);
                 }, function(error) {
+                  progress.addClass('uk-hidden').children().width(0);
                   return alert(error.message);
+                }, function(percents) {
+                  return progress.removeClass('uk-hidden').children().width(percents + '%');
                 });
                 return modal.on('hide.uk.modal', function() {
                   return uploader.destroy();

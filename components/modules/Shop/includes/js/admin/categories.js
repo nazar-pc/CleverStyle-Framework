@@ -15,7 +15,7 @@
     var L, make_modal;
     L = cs.Language;
     make_modal = function(attributes, categories, title, action) {
-      var modal, uploader;
+      var modal;
       attributes = (function() {
         var attribute, attributes_, key, keys, _i, _len, _results;
         attributes_ = {};
@@ -70,7 +70,7 @@
         return _results;
       })();
       categories = categories.join('');
-      modal = $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_parent_category + ":\n		<select name=\"parent\" required>\n			<option value=\"0\">" + L.none + "</option>\n			" + categories + "\n		</select>\n	</p>\n	<p>\n		" + L.shop_title + ": <input name=\"title\" required>\n	</p>\n	<p>\n		" + L.shop_description + ": <textarea name=\"description\"></textarea>\n	</p>\n	<p class=\"image uk-hidden\">\n		" + L.shop_image + ":\n		<a target=\"_blank\" class=\"uk-thumbnail\">\n			<img>\n			<br>\n			<button type=\"button\" class=\"remove-image uk-button uk-button-danger uk-width-1-1\">" + L.shop_remove_image + "</button>\n		</a>\n		<input type=\"hidden\" name=\"image\">\n	</p>\n	<p>\n		<button type=\"button\" class=\"set-image uk-button\">" + L.shop_set_image + "</button>\n	</p>\n	<p>\n		" + L.shop_category_attributes + ": <select name=\"attributes[]\" multiple required>" + attributes + "</select>\n	</p>\n	<p>\n		" + L.shop_title_attribute + ": <select name=\"title_attribute\" required>" + attributes + "</select>\n	</p>\n	<p>\n		" + L.shop_description_attribute + ":\n		<select name=\"description_attribute\" required>\n			<option value=\"0\">" + L.none + "</option>\n			" + attributes + "\n		</select>\n	</p>\n	<p>\n		" + L.shop_visible + ":\n		<label><input type=\"radio\" name=\"visible\" value=\"1\" checked> " + L.yes + "</label>\n		<label><input type=\"radio\" name=\"visible\" value=\"0\"> " + L.no + "</label>\n	</p>\n	<p>\n		<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n	</p>\n</form>");
+      modal = $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_parent_category + ":\n		<select name=\"parent\" required>\n			<option value=\"0\">" + L.none + "</option>\n			" + categories + "\n		</select>\n	</p>\n	<p>\n		" + L.shop_title + ": <input name=\"title\" required>\n	</p>\n	<p>\n		" + L.shop_description + ": <textarea name=\"description\"></textarea>\n	</p>\n	<p class=\"image uk-hidden\">\n		" + L.shop_image + ":\n		<a target=\"_blank\" class=\"uk-thumbnail\">\n			<img>\n			<br>\n			<button type=\"button\" class=\"remove-image uk-button uk-button-danger uk-width-1-1\">" + L.shop_remove_image + "</button>\n		</a>\n		<input type=\"hidden\" name=\"image\">\n	</p>\n	<p>\n		<span class=\"uk-progress uk-progress-striped uk-active uk-hidden uk-display-block\">\n			<span class=\"uk-progress-bar\"></span>\n		</span>\n		<button type=\"button\" class=\"set-image uk-button\">" + L.shop_set_image + "</button>\n	</p>\n	<p>\n		" + L.shop_category_attributes + ": <select name=\"attributes[]\" multiple required>" + attributes + "</select>\n	</p>\n	<p>\n		" + L.shop_title_attribute + ": <select name=\"title_attribute\" required>" + attributes + "</select>\n	</p>\n	<p>\n		" + L.shop_description_attribute + ":\n		<select name=\"description_attribute\" required>\n			<option value=\"0\">" + L.none + "</option>\n			" + attributes + "\n		</select>\n	</p>\n	<p>\n		" + L.shop_visible + ":\n		<label><input type=\"radio\" name=\"visible\" value=\"1\" checked> " + L.yes + "</label>\n		<label><input type=\"radio\" name=\"visible\" value=\"0\"> " + L.no + "</label>\n	</p>\n	<p>\n		<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n	</p>\n</form>");
       modal.set_image = function(image) {
         modal.find('[name=image]').val(image);
         if (image) {
@@ -83,14 +83,22 @@
         return modal.set_image('');
       });
       if (cs.file_upload) {
-        uploader = cs.file_upload(modal.find('.set-image'), function(image) {
-          return modal.set_image(image[0]);
-        }, function(error) {
-          return alert(error.message);
-        });
-        modal.on('hide.uk.modal', function() {
-          return uploader.destroy();
-        });
+        (function() {
+          var progress, uploader;
+          progress = modal.find('.set-image').prev();
+          uploader = cs.file_upload(modal.find('.set-image'), function(image) {
+            progress.addClass('uk-hidden').children().width(0);
+            return modal.set_image(image[0]);
+          }, function(error) {
+            progress.addClass('uk-hidden').children().width(0);
+            return alert(error.message);
+          }, function(percents) {
+            return progress.removeClass('uk-hidden').children().width(percents + '%');
+          });
+          return modal.on('hide.uk.modal', function() {
+            return uploader.destroy();
+          });
+        })();
       } else {
         modal.find('.set-image').click(function() {
           var image;

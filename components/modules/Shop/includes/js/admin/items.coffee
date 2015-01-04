@@ -131,7 +131,10 @@ $ ->
 					<label><input type="radio" name="listed" value="0"> #{L.no}</label>
 				</p>
 				<p>
-					<div class="images"></div>
+					<span class="images uk-display-block"></span>
+					<span class="uk-progress uk-progress-striped uk-active uk-hidden uk-display-block">
+						<span class="uk-progress-bar"></span>
+					</span>
 					<button type="button" class="add-images uk-button">#{L.shop_add_images}</button>
 					<input type="hidden" name="images">
 				</p>
@@ -176,17 +179,22 @@ $ ->
 					</span>""")
 				modal.update_images()
 			if cs.file_upload
-				uploader = cs.file_upload(
-					modal.find('.add-images')
-					(images) ->
-						modal.add_images(images)
-					(error) ->
-						alert error.message
-					null
-					true
-				)
-				modal.on 'hide.uk.modal', ->
-					uploader.destroy()
+				do ->
+					progress	= modal.find('.add-images').prev()
+					uploader	= cs.file_upload(
+						modal.find('.add-images')
+						(images) ->
+							progress.addClass('uk-hidden').children().width(0)
+							modal.add_images(images)
+						(error) ->
+							progress.addClass('uk-hidden').children().width(0)
+							alert error.message
+						(percents) ->
+							progress.removeClass('uk-hidden').children().width(percents + '%')
+						true
+					)
+					modal.on 'hide.uk.modal', ->
+						uploader.destroy()
 			else
 				modal.find('.add-images').click ->
 					image	= prompt(L.shop_image_url)
@@ -221,8 +229,11 @@ $ ->
 						<textarea name="videos[video][]" placeholder="#{L.shop_url_or_code}" class="video-video uk-form-width-large" rows="3"></textarea>
 						<input name="videos[poster][]" class="video-poster" placeholder="#{L.shop_video_poster}">
 						<button type="button" class="delete-video uk-button"><i class="uk-icon-close"></i></button>
+						<span class="uk-progress uk-progress-striped uk-active uk-hidden uk-display-block">
+							<span class="uk-progress-bar"></span>
+						</span>
 					</p>""")
-					added_video	= videos_container.children('p:last')
+					added_video		= videos_container.children('p:last')
 					video_video		= added_video.find('.video-video').val(video.video)
 					video_poster	= added_video.find('.video-poster').val(video.poster)
 					if cs.file_upload
@@ -230,13 +241,17 @@ $ ->
 							video_video.after("""
 								&nbsp;<button type="button" class="uk-button"><i class="uk-icon-upload"></i></button>
 							""")
-							uploader = cs.file_upload(
+							progress	= video_video.parent().find('.uk-progress')
+							uploader	= cs.file_upload(
 								video_video.next()
 								(video) ->
+									progress.addClass('uk-hidden').children().width(0)
 									video_video.val(video[0])
 								(error) ->
+									progress.addClass('uk-hidden').children().width(0)
 									alert error.message
-								# TODO progress window
+								(percents) ->
+									progress.removeClass('uk-hidden').children().width(percents + '%')
 							)
 							modal.on 'hide.uk.modal', ->
 								uploader.destroy()
@@ -244,12 +259,17 @@ $ ->
 							video_poster.after("""
 								&nbsp;<button type="button" class="uk-button"><i class="uk-icon-upload"></i></button>
 							""")
-							uploader = cs.file_upload(
+							progress	= video_video.parent().find('.uk-progress')
+							uploader	= cs.file_upload(
 								video_poster.next()
 								(poster) ->
+									progress.addClass('uk-hidden').children().width(0)
 									video_poster.val(poster[0])
 								(error) ->
+									progress.addClass('uk-hidden').children().width(0)
 									alert error.message
+								(percents) ->
+									progress.removeClass('uk-hidden').children().width(percents + '%')
 							)
 							modal.on 'hide.uk.modal', ->
 								uploader.destroy()

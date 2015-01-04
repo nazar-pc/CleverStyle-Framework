@@ -65,6 +65,9 @@ $ ->
 				<input type="hidden" name="image">
 			</p>
 			<p>
+				<span class="uk-progress uk-progress-striped uk-active uk-hidden uk-display-block">
+					<span class="uk-progress-bar"></span>
+				</span>
 				<button type="button" class="set-image uk-button">#{L.shop_set_image}</button>
 			</p>
 			<p>
@@ -103,15 +106,21 @@ $ ->
 		modal.find('.remove-image').click ->
 			modal.set_image('')
 		if cs.file_upload
-			uploader = cs.file_upload(
-				modal.find('.set-image')
-				(image) ->
-					modal.set_image(image[0])
-				(error) ->
-					alert error.message
-			)
-			modal.on 'hide.uk.modal', ->
-				uploader.destroy()
+			do ->
+				progress	= modal.find('.set-image').prev()
+				uploader	= cs.file_upload(
+					modal.find('.set-image')
+					(image) ->
+						progress.addClass('uk-hidden').children().width(0)
+						modal.set_image(image[0])
+					(error) ->
+						progress.addClass('uk-hidden').children().width(0)
+						alert error.message
+					(percents) ->
+						progress.removeClass('uk-hidden').children().width(percents + '%')
+				)
+				modal.on 'hide.uk.modal', ->
+					uploader.destroy()
 		else
 			modal.find('.set-image').click ->
 				image	= prompt(L.shop_image_url)
