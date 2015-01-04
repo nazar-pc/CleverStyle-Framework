@@ -48,23 +48,26 @@ cs.file_upload	= (button, success, error, progress, multi, drop_element) ->
 				if !response.error
 					files.push(response.result)
 				else
-					alert response.error.message
+					if error
+						error response.error
+					else
+						alert response.error.message
 		)
 		uploader.bind(
 			'UploadComplete'
 			->
-				success(files)
-				files	= []
+				if files.length
+					success(files)
+					files	= []
 		)
-	if error
-		uploader.bind(
-			'Error'
-			(uploader, error_details) ->
-				if error
-					error error_details
-				else
-					alert error_details.message
-		)
+	uploader.bind(
+		'Error'
+		(uploader, error_details) ->
+			if error
+				error error_details
+			else
+				alert error_details.message
+	)
 	@stop		= ->
 		uploader.stop()
 	@destroy	= ->
