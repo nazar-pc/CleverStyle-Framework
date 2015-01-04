@@ -57,23 +57,27 @@
         if (!response.error) {
           return files.push(response.result);
         } else {
-          return alert(response.error.message);
+          if (error) {
+            return error(response.error);
+          } else {
+            return alert(response.error.message);
+          }
         }
       });
       uploader.bind('UploadComplete', function() {
-        success(files);
-        return files = [];
-      });
-    }
-    if (error) {
-      uploader.bind('Error', function(uploader, error_details) {
-        if (error) {
-          return error(error_details);
-        } else {
-          return alert(error_details.message);
+        if (files.length) {
+          success(files);
+          return files = [];
         }
       });
     }
+    uploader.bind('Error', function(uploader, error_details) {
+      if (error) {
+        return error(error_details);
+      } else {
+        return alert(error_details.message);
+      }
+    });
     this.stop = function() {
       return uploader.stop();
     };
