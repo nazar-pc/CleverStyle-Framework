@@ -39,21 +39,21 @@ Index::instance()->buttons = false;
 $L                         = new Prefix('shop_');
 $Language                  = Language::instance();
 $Page                      = Page::instance();
-$Page->title($L->orders);
-$Items          = Items::instance();
-$Orders         = Orders::instance();
-$Order_statuses = Order_statuses::instance();
-$Shipping_types = Shipping_types::instance();
-$page           = @$_GET['page'] ?: 1;
-$count          = @$_GET['count'] ?: Config::instance()->module('Shop')->items_per_page_admin;
-$orders         = $Orders->get($Orders->search(
+$Categories                = Categories::instance();
+$Items                     = Items::instance();
+$Orders                    = Orders::instance();
+$Order_statuses            = Order_statuses::instance();
+$Shipping_types            = Shipping_types::instance();
+$page                      = @$_GET['page'] ?: 1;
+$count                     = @$_GET['count'] ?: Config::instance()->module('Shop')->items_per_page_admin;
+$orders                    = $Orders->get($Orders->search(
 	$_GET,
 	$page,
 	$count,
 	@$_GET['order_by'] ?: 'date',
 	@$_GET['asc']
 ));
-$orders_total   = $Orders->search(
+$orders_total              = $Orders->search(
 	[
 		'total_count' => 1
 	] + $_GET,
@@ -62,6 +62,9 @@ $orders_total   = $Orders->search(
 	@$_GET['order_by'] ?: 'date',
 	@$_GET['asc']
 );
+$module_path               = path($L->shop);
+$items_path                = path($L->items);
+$Page->title($L->orders);
 $Page->content(
 	h::{'h3.uk-lead.cs-center'}($L->orders).
 	h::{'cs-table[list][with-header]'}(
@@ -76,7 +79,7 @@ $Page->content(
 			$L->action
 		).
 		h::{'cs-table-row'}(array_map(
-			function ($order) use ($L, $Language, $Items, $Order_statuses, $Orders, $Shipping_types) {
+			function ($order) use ($L, $Language, $Categories, $Items, $Order_statuses, $Orders, $Shipping_types, $module_path, $items_path) {
 				$order_status = $Order_statuses->get($order['status']);
 				$date         = $L->to_locale(
 					date($Language->{TIME - $order['date'] < 24 * 3600 ? '_time' : '_datetime_long'}, $order['date'])
@@ -95,8 +98,15 @@ $Page->content(
 						implode(
 							h::br(),
 							array_map(
-								function ($item) use ($Items) {
-									return $Items->get($item['item'])['title']; // TODO links to items
+								function ($item) use ($Categories, $Items, $module_path, $items_path) {
+									$item = $Items->get($item['item']);
+									return h::a(
+										$item['title'],
+										[
+											'href'   => "$module_path/$items_path/".path($Categories->get($item['category'])['title']).'/'.path($item['title']).":$item[id]",
+											'target' => '_blank'
+										]
+									);
 								},
 								$Orders->get_items($order['id'])
 							)
