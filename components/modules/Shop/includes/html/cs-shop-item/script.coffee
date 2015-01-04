@@ -21,7 +21,7 @@ Polymer(
 			.fotorama(
 				allowfullscreen	: 'native'
 				controlsonstart	: false
-				fit				: 'scaledown'
+				fit				: 'contain'
 				keyboard		: true
 				nav				: 'thumbs'
 				ratio			: 4/3
