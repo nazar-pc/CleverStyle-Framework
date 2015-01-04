@@ -19,7 +19,7 @@ function process_content ($content) {
 		$content  = $matches[2];
 		foreach ($selector as &$s) {
 			$s = trim($s);
-			if ($s == 'html') {
+			if ($s == 'html' || preg_match('/^[0-9]+(\s+)?%$/', $s)) {
 				continue;
 			}
 			if (strpos($s, '@') === 0) {
