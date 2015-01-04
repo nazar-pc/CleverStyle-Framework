@@ -8,19 +8,26 @@
 Polymer(
 	ready : ->
 		@header_title	= @querySelector('h1').innerHTML
-		$(@$.images).fotorama(
-			data			:
-				Array::map.call(@querySelectorAll('#images > img'), (img) ->
-					img : img.src
-				)
-			allowfullscreen	: 'native'
-			controlsonstart	: false
-			fit				: 'scaledown'
-			keyboard		: true
-			nav				: 'thumbs'
-			ratio			: 4/3
-			trackpad		: true
-		)
+		$(@$.images)
+			.append(
+				$(@querySelectorAll('#videos > a')).each ->
+					$this	= $(@)
+					if $this.children('img')
+						$this.attr('data-video', 'true')
+			)
+			.append(
+				@querySelectorAll('#images > img')
+			)
+			.fotorama(
+				allowfullscreen	: 'native'
+				controlsonstart	: false
+				fit				: 'scaledown'
+				keyboard		: true
+				nav				: 'thumbs'
+				ratio			: 4/3
+				trackpad		: true
+				width			: '100%'
+			)
 		$this			= $(@)
 		@item_id		= $this.data('id')
 		@price			= sprintf(cs.shop.settings.price_formatting, $this.data('price'))

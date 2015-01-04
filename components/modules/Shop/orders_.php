@@ -66,7 +66,7 @@ $Page->content(
 								$item_data = $Items->get($item['item']);
 								return [
 									h::{'img#img'}([
-										'src' => @$item['images'][0] ?: 'components/modules/Shop/includes/img/no-image.svg'
+										'src' => @$item['images'][0] ?: Items::DEFAULT_IMAGE
 									]).
 									h::{'a#link'}(
 										$item_data['title'],

@@ -30,18 +30,28 @@ $Page->Description = description($item['description']);
 $Page->canonical_url(
 	"{$Config->base_url()}/".path($L->shop).'/'.path($L->items).'/'.path($Categories->get($item['category'])['title']).'/'.path($item['title']).":$item[id]"
 );
-$category	= $Categories->get($item['category']);
+$category = $Categories->get($item['category']);
 unset(
 	$item['attributes'][$category['title_attribute']],
 	$item['attributes'][$category['description_attribute']]
 );
 $Page->content(
 	h::{'section[is=cs-shop-item]'}(
-		h::{'div#images img'}(array_map(function ($image) {
+		h::{'#images img'}(array_map(function ($image) {
 			return [
 				'src' => $image
 			];
-		}, $item['images'])).
+		}, $item['images'] ?: Items::DEFAULT_IMAGE)).
+		h::{'#videos a'}(array_map(function ($video) {
+			return [
+				$video['poster'] ? h::img([
+					'src' => $video['poster']
+				]) : '',
+				[
+					'href' => $video['video']
+				]
+			];
+		}, $item['videos']) ?: false).
 		h::h1($item['title']).
 		h::{'#description'}($item['description']).
 		h::{'#attributes table tr| td'}(array_map(function ($attribute) use ($item, $Attributes) {

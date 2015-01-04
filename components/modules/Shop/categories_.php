@@ -53,7 +53,7 @@ if ($page == 1 && @$categories_tree[$current_category]) {
 		$category                            = $all_categories[$category];
 		$categories_list[$category['title']] =
 			h::{'img#img'}([
-				'src'   => $category['image'] ?: 'components/modules/Shop/includes/img/no-image.svg',
+				'src'   => $category['image'] ?: Items::DEFAULT_IMAGE,
 				'title' => h::prepare_attr_value($category['title'])
 			]).
 			h::{'h1 a#link'}(
@@ -67,7 +67,7 @@ if ($page == 1 && @$categories_tree[$current_category]) {
 				$category = $all_categories[$category];
 				return
 					h::{'img#img'}([
-						'src'   => $category['image'] ?: 'components/modules/Shop/includes/img/no-image.svg',
+						'src'   => $category['image'] ?: Items::DEFAULT_IMAGE,
 						'title' => h::prepare_attr_value($category['title'])
 					]).
 					h::{'h1 a#link'}(
@@ -117,7 +117,7 @@ $base_items_path = "$module_path/".path($L->items).'/'.path($all_categories[$cur
 foreach ($items as &$item) {
 	$item = [
 		h::{'img#img'}([
-			'src'   => @$item['images'][0] ?: 'components/modules/Shop/includes/img/no-image.svg',
+			'src'   => @$item['images'][0] ?: Items::DEFAULT_IMAGE,
 			'title' => h::prepare_attr_value($item['title'])
 		]).
 		h::{'h1 a#link'}(

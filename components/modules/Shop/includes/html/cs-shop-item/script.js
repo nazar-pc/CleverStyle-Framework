@@ -15,19 +15,21 @@
     ready: function() {
       var $this, attributes;
       this.header_title = this.querySelector('h1').innerHTML;
-      $(this.$.images).fotorama({
-        data: Array.prototype.map.call(this.querySelectorAll('#images > img'), function(img) {
-          return {
-            img: img.src
-          };
-        }),
+      $(this.$.images).append($(this.querySelectorAll('#videos > a')).each(function() {
+        var $this;
+        $this = $(this);
+        if ($this.children('img')) {
+          return $this.attr('data-video', 'true');
+        }
+      })).append(this.querySelectorAll('#images > img')).fotorama({
         allowfullscreen: 'native',
         controlsonstart: false,
         fit: 'scaledown',
         keyboard: true,
         nav: 'thumbs',
         ratio: 4 / 3,
-        trackpad: true
+        trackpad: true,
+        width: '100%'
       });
       $this = $(this);
       this.item_id = $this.data('id');

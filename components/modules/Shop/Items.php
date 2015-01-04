@@ -23,6 +23,8 @@ class Items {
 		CRUD,
 		Singleton;
 
+	const DEFAULT_IMAGE = 'components/modules/Shop/includes/img/no-image.svg';
+
 	protected $data_model = [
 		'id'       => 'int',
 		'date'     => 'int',
