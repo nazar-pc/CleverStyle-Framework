@@ -54,6 +54,7 @@ Trigger::instance()
 					break;
 				case 1:
 					if (admin_path()) {
+						require __DIR__.'/trigger/installed.php';
 						require __DIR__.'/trigger/enabled/admin.php';
 					}
 			}
