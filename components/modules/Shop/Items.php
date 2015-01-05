@@ -614,8 +614,14 @@ class Items {
 			if (!@$video['video']) {
 				unset($videos[$i]);
 			}
+			if (
+				$video['type'] == 'iframe' &&
+				preg_match('#(http[s]?:)?//[^\s"\'>]+#ims', $video['video'], $match)
+			) {
+				$video['video'] = $match[0];
+			}
 			$video = [
-				$video['video'], //TODO get iframe link from embed code if type = embed
+				$video['video'],
 				$video['poster'],
 				$video['type']
 			];
