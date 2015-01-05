@@ -111,6 +111,7 @@ function install_process ($argv = null) {
 	require_once DIR.'/fs/'.$fs['core/classes/DB.php'];
 	require_once DIR.'/fs/'.$fs['core/engines/DB/_Abstract.php'];
 	require_once DIR.'/fs/'.$fs["core/engines/DB/$_POST[db_engine].php"];
+	require_once DIR.'/fs/'.$fs['core/classes/False_class.php'];
 	/**
 	 * @var \cs\DB\_Abstract $cdb
 	 */

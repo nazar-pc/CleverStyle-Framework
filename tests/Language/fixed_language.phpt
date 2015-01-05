@@ -6,6 +6,7 @@ namespace cs\custom;
 use cs\Language;
 include __DIR__.'/../custom_loader.php';
 include __DIR__.'/../_SERVER.php';
+clean_classes_cache();
 class Core extends \cs\Core {
 	protected function construct () {
 		parent::construct();
@@ -18,3 +19,8 @@ echo $L->home;
 ?>
 --EXPECT--
 Home
+--CLEAN--
+<?php
+include __DIR__.'/../custom_loader.php';
+clean_classes_cache();
+?>

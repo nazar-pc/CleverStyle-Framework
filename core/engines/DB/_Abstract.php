@@ -119,6 +119,7 @@ abstract class _Abstract {
 			}
 			unset($param);
 		}
+		$db	= DB::instance(true);
 		if (is_array($query) && !empty($query)) {
 			$time_from	= microtime(true);
 			foreach ($query as &$q) {
@@ -132,7 +133,6 @@ abstract class _Abstract {
 				$q	= empty($local_params) ? $q : vsprintf($q, $local_params);
 			}
 			unset($local_params, $q);
-			$db						= DB::instance();
 			$this->queries['num']	+= count($query);
 			$db->queries			+= count($query);
 			$return					= $this->q_multi_internal($query);
@@ -154,7 +154,6 @@ abstract class _Abstract {
 			$this->queries['time'][]	= $this->query['time'];
 		}
 		++$this->queries['num'];
-		$db							= DB::instance();
 		$db->time					+= $this->query['time'];
 		++$db->queries;
 		return $result;
