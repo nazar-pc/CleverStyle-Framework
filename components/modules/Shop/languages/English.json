@@ -44,6 +44,7 @@
 	"shop_edited_successfully"                      : "Edited successfully",
 	"shop_deleted_successfully"                     : "Deleted successfully",
 	"shop_sure_want_to_delete"                      : "Are you sure want to delete?",
+	"shop_sure_want_to_delete_category"             : "Are you sure want to delete category, operation can't be undone? There can be some items inside, and you'll need to assign new category to them (better move items somewhere first).",
 	"shop_category_addition"                        : "Category addition",
 	"shop_category_edition"                         : "Category edition",
 	"shop_parent_category"                          : "Parent category",

@@ -124,11 +124,17 @@ class Items {
 			$Attributes = Attributes::instance();
 			foreach ($data['attributes'] as $index => &$value) {
 				$attribute = $Attributes->get($value['attribute']);
-				if (!$attribute) {
-					unset($data['attributes'][$index]);
-					continue;
+				if ($attribute) {
+					$value['value'] = $value[$this->attribute_type_to_value_field($attribute['type'])];
+				} else {
+					$value['value'] = $value['text_value'];
+					if (!strlen($value['value'])) {
+						$value['value'] = $value['string_value'];
+					}
+					if (!strlen($value['value'])) {
+						$value['value'] = $value['numeric_value'];
+					}
 				}
-				$value['value'] = $value[$this->attribute_type_to_value_field($attribute['type'])];
 			}
 			unset($index, $value, $attribute);
 			$data['attributes']  = array_column($data['attributes'], 'value', 'attribute');

@@ -160,7 +160,7 @@
     }).on('mousedown', '.cs-shop-category-delete', function() {
       var id;
       id = $(this).data('id');
-      if (confirm(L.shop_sure_want_to_delete)) {
+      if (confirm(L.shop_sure_want_to_delete_category)) {
         return $.ajax({
           url: "api/Shop/admin/categories/" + id,
           type: 'delete',

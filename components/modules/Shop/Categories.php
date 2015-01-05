@@ -243,7 +243,6 @@ class Categories {
 					'tag' => "Shop/categories/$id"
 				]
 			);
-			// TODO do something with items in category on removal
 			unset(
 				$this->cache->$id,
 				$this->cache->all
