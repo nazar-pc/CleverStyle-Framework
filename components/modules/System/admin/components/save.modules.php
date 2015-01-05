@@ -137,9 +137,7 @@ if (isset($_POST['update_modules_list'])) {
 			}
 			clean_pcache();
 			unset($Cache->functionality);
-			if (file_exists(CACHE.'/classes_autoloading')) {
-				unlink(CACHE.'/classes_autoloading');
-			}
+			clean_classes_cache();
 		break;
 		case 'uninstall':
 			if ($module_data['active'] == -1 || $module_name == 'System' || $module_name == $Config->core['default_module']) {
@@ -196,9 +194,7 @@ if (isset($_POST['update_modules_list'])) {
 			$a->save();
 			clean_pcache();
 			unset($Cache->functionality);
-			if (file_exists(CACHE.'/classes_autoloading')) {
-				unlink(CACHE.'/classes_autoloading');
-			}
+			clean_classes_cache();
 		break;
 		case 'update':
 			/**
@@ -321,9 +317,7 @@ if (isset($_POST['update_modules_list'])) {
 			}
 			$a->save();
 			unset($Cache->functionality);
-			if (file_exists(CACHE.'/classes_autoloading')) {
-				unlink(CACHE.'/classes_autoloading');
-			}
+			clean_classes_cache();
 		break;
 		case 'update_system':
 			/**
@@ -432,9 +426,7 @@ if (isset($_POST['update_modules_list'])) {
 			}
 			$a->save();
 			clean_pcache();
-			if (file_exists(CACHE.'/classes_autoloading')) {
-				unlink(CACHE.'/classes_autoloading');
-			}
+			clean_classes_cache();
 		break;
 		case 'default_module':
 			if (
@@ -498,9 +490,7 @@ if (isset($_POST['update_modules_list'])) {
 				$Cache->functionality,
 				$Cache->languages
 			);
-			if (file_exists(CACHE.'/classes_autoloading')) {
-				unlink(CACHE.'/classes_autoloading');
-			}
+			clean_classes_cache();
 		break;
 		case 'disable':
 			$module_data['active'] = 0;
@@ -516,9 +506,7 @@ if (isset($_POST['update_modules_list'])) {
 				$Cache->functionality,
 				$Cache->languages
 			);
-			if (file_exists(CACHE.'/classes_autoloading')) {
-				unlink(CACHE.'/classes_autoloading');
-			}
+			clean_classes_cache();
 		break;
 		case 'remove':
 			if ($module_name == 'System' || $module_data['active'] != '-1') {
