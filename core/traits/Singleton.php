@@ -71,6 +71,19 @@ trait Singleton {
 			file_put_json(CACHE.'/classes/modified', self::$modified);
 		}
 		foreach (self::$modified[$class]['aliases'] as $alias) {
+			/**
+			 * If for whatever reason base class does or file that should be included does not exists
+			 */
+			if (
+				!class_exists($alias['original'], false) ||
+				!file_exists(CUSTOM."/classes/$alias[path].php")
+			) {
+				clean_classes_cache();
+				self::$modified = null;
+				$instance       = new $class;
+				$instance->construct();
+				return $instance;
+			}
 			class_alias($alias['original'], $alias['alias']);
 			require_once CUSTOM."/classes/$alias[path].php";
 		}
