@@ -62,7 +62,7 @@ $Page->content(
 		}, array_keys($item['attributes'])) ?: false),
 		[
 			'data-id'       => $item['id'],
-			'data-date'     => $item['price'],
+			'data-date'     => $item['date'],
 			'data-price'    => $item['price'],
 			'data-in_stock' => $item['in_stock'],
 			'data-soon'     => $item['soon']
