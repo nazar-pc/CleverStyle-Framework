@@ -1,22 +1,25 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @subpackage	Test
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2014-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package        CleverStyle CMS
+ * @subpackage     Test
+ * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright      Copyright (c) 2014-2015, Nazar Mokrynskyi
+ * @license        MIT License, see license.txt
  */
-namespace	cs;
+namespace cs;
 /**
  * Singleton trait (actually not at all, hackable thing for tests)
  */
 trait Singleton {
-	final protected function __construct () {}
-	protected function construct () {}
+	private static $modified;
+	final protected function __construct () {
+	}
+	protected function construct () {
+	}
 	/**
 	 * Get instance of class
 	 *
-	 * @param bool					$check	If true - checks, if instance was already created, if not - instance of cs\False_class will be returned
+	 * @param bool $check If true - checks, if instance was already created, if not - instance of cs\False_class will be returned
 	 *
 	 * @return False_class|static
 	 */
@@ -24,8 +27,8 @@ trait Singleton {
 		return static::instance_internal($check);
 	}
 	/**
-	 * @param bool					$check
-	 * @param bool|object|null		$replace_with
+	 * @param bool             $check
+	 * @param bool|object|null $replace_with
 	 *
 	 * @return False_class|static
 	 */
@@ -36,7 +39,7 @@ trait Singleton {
 				unset($instance);
 				return False_class::instance();
 			}
-			$instance	= $replace_with;
+			$instance = $replace_with;
 			return $instance;
 		}
 		if ($check) {
@@ -45,21 +48,70 @@ trait Singleton {
 		if (isset($instance)) {
 			return $instance;
 		}
-		$class	= ltrim(get_called_class(), '\\');
-		if (substr($class, 0, 2) == 'cs' && class_exists('cs\\custom'.substr($class, 2), false)) {
-			$instance	= 'cs\\custom'.substr($class, 2);
-			$instance	= $instance::instance();
-		} else {
-			$instance	= new static;
+		$class = get_called_class();
+		if (substr($class, 0, 2) != 'cs') {
+			return False_class::instance();
 		}
+		$custom_class_base = 'cs\\custom'.substr($class, 2);
+		$next_alias        = $class;
+		if (class_exists($custom_class_base, false)) {
+			$next_alias = $custom_class_base;
+		}
+		if (self::$modified === null) {
+			self::$modified = file_exists(CACHE.'/classes/modified') ? file_get_json(CACHE.'/classes/modified') : [];
+		}
+		if (!isset(self::$modified[$class])) {
+			$aliases                = [];
+			self::$modified[$class] = [
+				'aliases'     => &$aliases,
+				'final_class' => &$next_alias
+			];
+			$classes                = glob(CUSTOM.'/classes/'.substr($class, 2).'_*.php');
+			foreach ($classes as $custom_class) {
+				// Path to file with customized class
+				$custom_class = str_replace(CUSTOM.'/classes/', '', substr($custom_class, 0, -4));
+				// Same path with prefixed class name
+				$_custom_class   = explode('/', $custom_class);
+				$_custom_class[] = '_'.array_pop($_custom_class);
+				$_custom_class   = implode('/', $_custom_class);
+				$aliases[]       = [
+					'original' => $next_alias,
+					'alias'    => "cs\\custom\\$_custom_class",
+					'path'     => $custom_class
+				];
+				$next_alias      = "cs\\custom\\$custom_class";
+			}
+			if (!is_dir(CACHE.'/classes')) {
+				@mkdir(CACHE.'/classes', 0770, true);
+			}
+			file_put_json(CACHE.'/classes/modified', self::$modified);
+		}
+		foreach (self::$modified[$class]['aliases'] as $alias) {
+			/**
+			 * If for whatever reason base class does or file that should be included does not exists
+			 */
+			if (
+				!class_exists($alias['original'], false) ||
+				!file_exists(CUSTOM."/classes/$alias[path].php")
+			) {
+				clean_classes_cache();
+				self::$modified = null;
+				$instance       = new $class;
+				$instance->construct();
+				return $instance;
+			}
+			class_alias($alias['original'], $alias['alias']);
+			require_once CUSTOM."/classes/$alias[path].php";
+		}
+		$instance = new self::$modified[$class]['final_class'];
 		$instance->construct();
 		return $instance;
 	}
 	/**
 	 * Stub instance with custom object that will contain properties and methods specified here
 	 *
-	 * @param mixed[]				$properties	Default properties of object
-	 * @param callable[]|string[]	$methods	Methods of object - if callable - will be called, if not - will be used as return values
+	 * @param mixed[]             $properties Default properties of object
+	 * @param callable[]|string[] $methods    Methods of object - if callable - will be called, if not - will be used as return values
 	 *
 	 * @return False_class|static
 	 */
@@ -78,13 +130,15 @@ trait Singleton {
 	/**
 	 * Replace instance with custom object
 	 *
-	 * @param	object	$object
+	 * @param    object $object
 	 *
 	 * @return False_class|static
 	 */
 	static function instance_replace ($object) {
 		return static::instance_internal(false, $object);
 	}
-	final protected function __clone () {}
-	final protected function __wakeup() {}
+	final protected function __clone () {
+	}
+	final protected function __wakeup () {
+	}
 }

@@ -20,6 +20,7 @@ if (isset($rc[2])) {
 				$result = $Cache->del($_POST['partial_path']);
 			} else {
 				$result = $Cache->clean();
+				clean_classes_cache();
 			}
 			time_limit_pause(false);
 			if ($result) {

@@ -24,7 +24,7 @@ use
 spl_autoload_register(function ($class) {
 	static $cache;
 	if (!isset($cache)) {
-		$cache = file_exists(CACHE.'/classes_autoloading') ? file_get_json(CACHE.'/classes_autoloading') : [];
+		$cache = file_exists(CACHE.'/classes/autoload') ? file_get_json(CACHE.'/classes/autoload') : [];
 	}
 	if (isset($cache[$class])) {
 		return require_once $cache[$class];
@@ -47,14 +47,25 @@ spl_autoload_register(function ($class) {
 		_require_once($file = MODULES."/../$namespace/$class_name.php", false)				//Classes in modules and plugins
 	) {
 		$cache[$class] = realpath($file);
-		if (!is_dir(CACHE)) {
-			@mkdir(CACHE, 0770);
+		if (!is_dir(CACHE.'/classes')) {
+			@mkdir(CACHE.'/classes', 0770, true);
 		}
-		file_put_json(CACHE.'/classes_autoloading', $cache);
+		file_put_json(CACHE.'/classes/autoload', $cache);
 		return true;
 	}
 	return false;
 }, true, true);
+/**
+ * Clean cache of classes autoload and customization
+ */
+function clean_classes_cache () {
+	if (file_exists(CACHE.'/classes/autoload')) {
+		unlink(CACHE.'/classes/autoload');
+	}
+	if (file_exists(CACHE.'/classes/modified')) {
+		unlink(CACHE.'/classes/modified');
+	}
+}
 /**
  * Correct termination
  *
