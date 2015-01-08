@@ -80,8 +80,8 @@ class Shipping_types {
 	/**
 	 * Get shipping type data for specific user (price might be adjusted, some shipping types may be restricted and so on)
 	 *
-	 * @param $id
-	 * @param $user
+	 * @param int|int[] $id
+	 * @param bool|int  $user
 	 *
 	 * @return array|bool
 	 */

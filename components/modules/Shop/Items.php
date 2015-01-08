@@ -218,8 +218,8 @@ class Items {
 	/**
 	 * Get item data for specific user (price might be adjusted, some items may be restricted and so on)
 	 *
-	 * @param $id
-	 * @param $user
+	 * @param int|int[] $id
+	 * @param bool|int  $user
 	 *
 	 * @return array|bool
 	 */
