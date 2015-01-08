@@ -9,11 +9,41 @@
 namespace cs\modules\Shop;
 use
 	cs\Config,
+	cs\Trigger,
+	cs\User,
 	cs\CRUD,
 	cs\Singleton;
 
 /**
  * @method static Orders instance($check = false)
+ *
+ * Provides next triggers:<br>
+ *  Shop/Orders/get<code>
+ *  [
+ *   'data' => &$data
+ *  ]</code>
+ *
+ *  Shop/Orders/add<code>
+ *  [
+ *   'id' => $id
+ *  ]</code>
+ *
+ *  Shop/Orders/set<code>
+ *  [
+ *   'id' => $id
+ *  ]</code>
+ *
+ *  Shop/Orders/set_status<code>
+ *  [
+ *   'id'      => $id,
+ *   'status'  => $status,
+ *   'comment' => $comment
+ *  ]</code>
+ *
+ *  Shop/Orders/del<code>
+ *  [
+ *   'id' => $id
+ *  ]</code>
  */
 class Orders {
 	use
@@ -54,7 +84,14 @@ class Orders {
 	 * @return array|bool
 	 */
 	function get ($id) {
-		return $this->read_simple($id);
+		$data = $this->read_simple($id);
+		if (!Trigger::instance()->run('Shop/Orders/get', [
+			'data' => &$data
+		])
+		) {
+			return false;
+		}
+		return $data;
 	}
 	/**
 	 * Get array of all orders
@@ -202,6 +239,9 @@ class Orders {
 				$status,
 				Order_statuses::instance()->get($status)['comment']
 			);
+			Trigger::instance()->run('Shop/Orders/add', [
+				'id' => $id
+			]);
 		}
 		return $id;
 	}
@@ -256,6 +296,7 @@ class Orders {
 				$item['listed'],
 				$item['attributes'],
 				$item['images'],
+				$item['videos'],
 				$item['tags']
 			);
 		}
@@ -311,6 +352,9 @@ class Orders {
 				$status,
 				Order_statuses::instance()->get($status)['comment']
 			);
+			Trigger::instance()->run('Shop/Orders/set', [
+				'id' => $id
+			]);
 		}
 		return $result;
 	}
@@ -360,6 +404,7 @@ class Orders {
 				$item['listed'],
 				$item['attributes'],
 				$item['images'],
+				$item['videos'],
 				$item['tags']
 			);
 		}
@@ -393,6 +438,11 @@ class Orders {
 			$status,
 			xap($comment, true)
 		);
+		Trigger::instance()->run('Shop/Orders/set_status', [
+			'id'      => $id,
+			'status'  => $status,
+			'comment' => $comment
+		]);
 	}
 	/**
 	 * Delete specified order
@@ -413,6 +463,9 @@ class Orders {
 				WHERE `id` = '%d'",
 				$id
 			);
+			Trigger::instance()->run('Shop/Orders/del', [
+				'id' => $id
+			]);
 			return true;
 		}
 		return false;
@@ -450,6 +503,7 @@ class Orders {
 				$item['listed'],
 				$item['attributes'],
 				$item['images'],
+				$item['videos'],
 				$item['tags']
 			);
 		}

@@ -15,14 +15,14 @@ $Index          = Index::instance();
 $Page           = Page::instance();
 $Shipping_types = Shipping_types::instance();
 if (isset($_GET['ids'])) {
-	$shipping_types = $Shipping_types->get(explode(',', $Index->route_ids[0]));
+	$shipping_types = $Shipping_types->get_for_user(explode(',', $Index->route_ids[0]));
 	if (!$shipping_types) {
 		error_code(404);
 	} else {
 		$Page->json($shipping_types);
 	}
 } elseif (isset($Index->route_ids[0])) {
-	$shipping_type = $Shipping_types->get($Index->route_ids[0]);
+	$shipping_type = $Shipping_types->get_for_user($Index->route_ids[0]);
 	if (!$shipping_type) {
 		error_code(404);
 	} else {
@@ -30,7 +30,7 @@ if (isset($_GET['ids'])) {
 	}
 } else {
 	$Page->json(
-		$Shipping_types->get(
+		$Shipping_types->get_for_user(
 			$Shipping_types->get_all()
 		)
 	);

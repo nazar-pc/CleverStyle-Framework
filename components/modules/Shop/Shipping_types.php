@@ -11,11 +11,20 @@ use
 	cs\Cache\Prefix,
 	cs\Config,
 	cs\Language,
+	cs\Trigger,
+	cs\User,
 	cs\CRUD,
 	cs\Singleton;
 
 /**
  * @method static Shipping_types instance($check = false)
+ *
+ * Provides next triggers:<br>
+ *  Shop/Shipping_types/get_for_user<code>
+ *  [
+ *   'data' => &$data,
+ *   'user' => $user
+ *  ]</code>
  */
 class Shipping_types {
 	use
@@ -67,6 +76,35 @@ class Shipping_types {
 		return $this->cache->get("$id/$L->clang", function () use ($id) {
 			return $this->read_simple($id);
 		});
+	}
+	/**
+	 * Get shipping type data for specific user (price might be adjusted, some shipping types may be restricted and so on)
+	 *
+	 * @param $id
+	 * @param $user
+	 *
+	 * @return array|bool
+	 */
+	function get_for_user ($id, $user = false) {
+		if (is_array($id)) {
+			foreach ($id as $index => &$i) {
+				$i = $this->get_for_user($i, $user);
+				if ($i === false) {
+					unset($id[$index]);
+				}
+			}
+			return $id;
+		}
+		$user = (int)$user ?: User::instance()->id;
+		$data = $this->get($id);
+		if (!Trigger::instance()->run('Shop/Shipping_type/get_for_user', [
+			'data' => &$data,
+			'user' => $user
+		])
+		) {
+			return false;
+		}
+		return $data;
 	}
 	/**
 	 * Get array of all shipping types

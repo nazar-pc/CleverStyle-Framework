@@ -12,11 +12,39 @@ use
 	cs\Config,
 	cs\Language,
 	cs\Trigger,
+	cs\User,
 	cs\CRUD,
 	cs\Singleton;
 
 /**
  * @method static Items instance($check = false)
+ *
+ * Provides next triggers:<br>
+ *  Shop/Items/get<code>
+ *  [
+ *   'data' => &$data
+ *  ]</code>
+ *
+ *  Shop/Items/get_for_user<code>
+ *  [
+ *   'data' => &$data,
+ *   'user' => $user
+ *  ]</code>
+ *
+ *  Shop/Items/add<code>
+ *  [
+ *   'id' => $id
+ *  ]</code>
+ *
+ *  Shop/Items/set<code>
+ *  [
+ *   'id' => $id
+ *  ]</code>
+ *
+ *  Shop/Items/del<code>
+ *  [
+ *   'id' => $id
+ *  ]</code>
  */
 class Items {
 	use
@@ -65,9 +93,9 @@ class Items {
 			}
 			return $id;
 		}
-		$L  = Language::instance();
-		$id = (int)$id;
-		return $this->cache->get("$id/$L->clang", function () use ($id, $L) {
+		$L    = Language::instance();
+		$id   = (int)$id;
+		$data = $this->cache->get("$id/$L->clang", function () use ($id, $L) {
 			$data = $this->read_simple($id);
 			if (!$data) {
 				return false;
@@ -179,6 +207,42 @@ class Items {
 			$data['tags'] = Tags::instance()->get($data['tags']);
 			return $data;
 		});
+		if (!Trigger::instance()->run('Shop/Items/get', [
+			'data' => &$data
+		])
+		) {
+			return false;
+		}
+		return $data;
+	}
+	/**
+	 * Get item data for specific user (price might be adjusted, some items may be restricted and so on)
+	 *
+	 * @param $id
+	 * @param $user
+	 *
+	 * @return array|bool
+	 */
+	function get_for_user ($id, $user = false) {
+		if (is_array($id)) {
+			foreach ($id as $index => &$i) {
+				$i = $this->get_for_user($i, $user);
+				if ($i === false) {
+					unset($id[$index]);
+				}
+			}
+			return $id;
+		}
+		$user = (int)$user ?: User::instance()->id;
+		$data = $this->get($id);
+		if (!Trigger::instance()->run('Shop/Items/get_for_user', [
+			'data' => &$data,
+			'user' => $user
+		])
+		) {
+			return false;
+		}
+		return $data;
 	}
 	/**
 	 * Get array of all items
@@ -358,6 +422,9 @@ class Items {
 		]);
 		if ($id) {
 			unset($this->cache->all);
+			Trigger::instance()->run('Shop/Items/add', [
+				'id' => $id
+			]);
 			$this->set($id, $category, $price, $in_stock, $soon, $listed, $attributes, $images, $videos, $tags);
 		}
 		return $id;
@@ -602,6 +669,9 @@ class Items {
 			$this->cache->{"$id/$L->clang"},
 			$this->cache->all
 		);
+		Trigger::instance()->run('Shop/Items/set', [
+			'id' => $id
+		]);
 		return true;
 	}
 	/**
@@ -663,6 +733,9 @@ class Items {
 				$this->cache->$id,
 				$this->cache->all
 			);
+			Trigger::instance()->run('Shop/Items/del', [
+				'id' => $id
+			]);
 		}
 		return $result;
 	}

@@ -12,11 +12,39 @@ use
 	cs\Config,
 	cs\Language,
 	cs\Trigger,
+	cs\User,
 	cs\CRUD,
 	cs\Singleton;
 
 /**
  * @method static Categories instance($check = false)
+ *
+ * Provides next triggers:<br>
+ *  Shop/Categories/get<code>
+ *  [
+ *   'data' => &$data
+ *  ]</code>
+ *
+ *  Shop/Categories/get_for_user<code>
+ *  [
+ *   'data' => &$data,
+ *   'user' => $user
+ *  ]</code>
+ *
+ *  Shop/Categories/add<code>
+ *  [
+ *   'id' => $id
+ *  ]</code>
+ *
+ *  Shop/Categories/set<code>
+ *  [
+ *   'id' => $id
+ *  ]</code>
+ *
+ *  Shop/Categories/del<code>
+ *  [
+ *   'id' => $id
+ *  ]</code>
  */
 class Categories {
 	use
@@ -68,9 +96,9 @@ class Categories {
 			}
 			return $id;
 		}
-		$L  = Language::instance();
-		$id = (int)$id;
-		return $this->cache->get("$id/$L->clang", function () use ($id) {
+		$L    = Language::instance();
+		$id   = (int)$id;
+		$data = $this->cache->get("$id/$L->clang", function () use ($id) {
 			$data               = $this->read_simple($id);
 			$data['attributes'] = $this->db()->qfas(
 				"SELECT `attribute`
@@ -80,6 +108,42 @@ class Categories {
 			$data['attributes'] = $this->clean_nonexistent_attributes($data['attributes']);
 			return $data;
 		});
+		if (!Trigger::instance()->run('Shop/Categories/get', [
+			'data' => &$data
+		])
+		) {
+			return false;
+		}
+		return $data;
+	}
+	/**
+	 * Get category data for specific user (some categories may be restricted and so on)
+	 *
+	 * @param $id
+	 * @param $user
+	 *
+	 * @return array|bool
+	 */
+	function get_for_user ($id, $user = false) {
+		if (is_array($id)) {
+			foreach ($id as $index => &$i) {
+				$i = $this->get_for_user($i, $user);
+				if ($i === false) {
+					unset($id[$index]);
+				}
+			}
+			return $id;
+		}
+		$user = (int)$user ?: User::instance()->id;
+		$data = $this->get($id);
+		if (!Trigger::instance()->run('Shop/Categories/get_for_user', [
+			'data' => &$data,
+			'user' => $user
+		])
+		) {
+			return false;
+		}
+		return $data;
 	}
 	/**
 	 * Get array of all categories
@@ -140,6 +204,9 @@ class Categories {
 		]);
 		if ($id) {
 			unset($this->cache->all);
+			Trigger::instance()->run('Shop/Categories/add', [
+				'id' => $id
+			]);
 			$this->set($id, $parent, $title, $description, $title_attribute, $description_attribute, $image, $visible, $attributes);
 		}
 		return $id;
@@ -220,6 +287,9 @@ class Categories {
 			$this->cache->{"$id/$L->clang"},
 			$this->cache->all
 		);
+		Trigger::instance()->run('Shop/Categories/set', [
+			'id' => $id
+		]);
 		return true;
 	}
 	/**
@@ -247,6 +317,9 @@ class Categories {
 				$this->cache->$id,
 				$this->cache->all
 			);
+			Trigger::instance()->run('Shop/Categories/del', [
+				'id' => $id
+			]);
 		}
 		return $result;
 	}

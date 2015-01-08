@@ -15,14 +15,14 @@ $Index      = Index::instance();
 $Page       = Page::instance();
 $Categories = Categories::instance();
 if (isset($_GET['ids'])) {
-	$categories = $Categories->get(explode(',', $Index->route_ids[0]));
+	$categories = $Categories->get_for_user(explode(',', $Index->route_ids[0]));
 	if (!$categories) {
 		error_code(404);
 	} else {
 		$Page->json($categories);
 	}
 } elseif (isset($Index->route_ids[0])) {
-	$category = $Categories->get($Index->route_ids[0]);
+	$category = $Categories->get_for_user($Index->route_ids[0]);
 	if (!$category) {
 		error_code(404);
 	} else {
@@ -30,7 +30,7 @@ if (isset($_GET['ids'])) {
 	}
 } else {
 	$Page->json(
-		$Categories->get(
+		$Categories->get_for_user(
 			array_filter($Categories->get_all(), function ($category) {
 				return $category['visible'];
 			})

@@ -15,14 +15,14 @@ $Index = Index::instance();
 $Page  = Page::instance();
 $Items = Items::instance();
 if (isset($_GET['ids'])) {
-	$items = $Items->get(explode(',', $Index->route_ids[0]));
+	$items = $Items->get_for_user(explode(',', $Index->route_ids[0]));
 	if (!$items) {
 		error_code(404);
 	} else {
 		$Page->json($items);
 	}
 } elseif (isset($Index->route_ids[0])) {
-	$item = $Items->get($Index->route_ids[0]);
+	$item = $Items->get_for_user($Index->route_ids[0]);
 	if (!$item) {
 		error_code(404);
 	} else {
