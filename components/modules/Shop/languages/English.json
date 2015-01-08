@@ -112,6 +112,8 @@
 	"shop_finish_order"                             : "Finish order",
 	"shop_default_order_status"                     : "Default order status",
 	"shop_default_order_status_info"                : "There can be several order statuses, here you can choose which status will be assigned to order on its creation",
+	"shop_default_paid_order_status"                : "Default paid order status",
+	"shop_default_paid_order_status_info"           : "There can be several order statuses, here you can choose which status will be assigned to order when user paid for it",
 	"shop_thanks_for_order"                         : "Thanks for order!",
 	"shop_shipping_cost"                            : "Shipping cost",
 	"shop_shipping_username"                        : "Shipping for name",

@@ -65,6 +65,18 @@ $Index->content(
 					'selected' => $module_data->default_order_status
 				]
 			)
+		],
+		[
+			h::info('shop_default_paid_order_status'),
+			h::{'select[name=default_paid_order_status]'}(
+				[
+					'in'    => array_column($order_statuses, 'title'),
+					'value' => array_column($order_statuses, 'id')
+				],
+				[
+					'selected' => $module_data->default_paid_order_status
+				]
+			)
 		]
 	)
 );

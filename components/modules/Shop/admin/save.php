@@ -14,5 +14,6 @@ if (isset($_POST['save'])) {
 	$module_data->items_per_page_admin                = (int)$_POST['items_per_page_admin'];
 	$module_data->automatically_reduce_in_stock_value = (int)$_POST['automatically_reduce_in_stock_value'];
 	$module_data->default_order_status                = (int)$_POST['default_order_status'];
+	$module_data->default_paid_order_status           = (int)$_POST['default_paid_order_status'];
 	Index::instance()->save(true);
 }
