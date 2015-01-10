@@ -67,28 +67,31 @@ Polymer(
 				shipping_username	: @shipping_username
 				shipping_phone		: if @shipping_type_details.phone_needed then @phone else ''
 				shipping_address	: if @shipping_type_details.address_needed then @address else ''
+				payment_method		: @payment_method
 				comment				: @comment
 				items				: cs.shop.cart.get_all()
-			success	:
-				if @payment_method == 'shop:cash' # Default payment method
-					->
-						$.cs.simple_modal("""
-							<h1 class="uk-text-center">#{L.shop_thanks_for_order}</h1>
-						""")
-						.on 'hide.uk.modal', ->
-							cs.shop.cart.clean()
-							location.href	= 'Shop/orders_'
+			success	: (result) =>
+				cs.shop.cart.clean()
+				if @payment_method == 'shop:cash' # Default payment method (Orders::PAYMENT_METHOD_CASH)
+					$.cs.simple_modal("""
+						<h1 class="uk-text-center">#{L.shop_thanks_for_order}</h1>
+					""")
+					.on 'hide.uk.modal', ->
+						location.href	= 'Shop/orders_'
 				else
-					->
-						$.cs.simple_modal("""
-							<h1 class="uk-text-center">#{L.shop_thanks_for_order}</h1>
-							<p>
-								<button type="button" class="uk-button uk-button-primary" id="pay_now">#{L.shop_pay_now}</button>
-								<button type="button" class="uk-button" id="pay_later">#{L.shop_pay_later}</button>
-							</p>
-						""")
-						.on 'hide.uk.modal', ->
-							cs.shop.cart.clean()
-							location.href	= 'Shop/orders_'
+					id		= result.split('/').pop()
+					modal	= $.cs.simple_modal("""
+						<h1 class="uk-text-center">#{L.shop_thanks_for_order}</h1>
+						<p class="uk-text-center">
+							<button type="button" class="uk-button uk-button-primary pay-now">#{L.shop_pay_now}</button>
+							<button type="button" class="uk-button pay-later">#{L.shop_pay_later}</button>
+						</p>
+					""")
+					.on 'hide.uk.modal', ->
+						location.href	= 'Shop/orders_'
+					modal.find('.pay-now').click ->
+						location.href	= "Shop/pay/#{id}"
+					modal.find('.pay-later').click ->
+						modal.hide()
 		)
 );

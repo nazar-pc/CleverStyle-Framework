@@ -69,10 +69,8 @@ $ ->
 			</p>
 			<p>
 				#{L.shop_paid}:
-				<select name="paid" required>
-					<option value="0" selected>#{L.shop_no}</option>
-					<option value="1">#{L.shop_yes}</option>
-				</select>
+				<label><input type="radio" name="paid" value="1"> #{L.shop_yes}</label>
+				<label><input type="radio" name="paid" value="0" checked> #{L.shop_no}</label>
 			</p>
 			<p>
 				#{L.shop_status}: <select name="status" required>#{order_statuses}</select>
@@ -231,7 +229,7 @@ $ ->
 				modal.find('[name=shipping_cost]').val(order.shipping_cost).change()
 				modal.find('[name=shipping_username]').val(order.shipping_username).change()
 				modal.find('[name=payment_method]').val(order.payment_method)
-				modal.find('[name=paid]').val(order.paid)
+				modal.find('[name=paid][value=' + (if parseInt(order.paid) then 1 else 0) + ']').prop('checked', true)
 				modal.find('[name=status]').val(order.status)
 				modal.find('[name=comment]').val(order.comment)
 				items	= items[0]

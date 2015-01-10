@@ -127,5 +127,6 @@
 	"shop_cash"                                     : "Наличные",
 	"shop_pay_now"                                  : "Оплатить сейчас",
 	"shop_pay_later"                                : "Оплатить позже",
-	"shop_paid"                                     : "Оплачено"
+	"shop_paid"                                     : "Оплачено",
+	"shop_payment_for_order"                        : "Оплата в магазине за заказ №%s"
 }

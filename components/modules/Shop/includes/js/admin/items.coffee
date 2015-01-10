@@ -122,13 +122,13 @@ $ ->
 				</p>
 				<p>
 					#{L.shop_available_soon}:
-					<label><input type="radio" name="soon" value="1"> #{L.yes}</label>
-					<label><input type="radio" name="soon" value="0" checked> #{L.no}</label>
+					<label><input type="radio" name="soon" value="1"> #{L.shop_yes}</label>
+					<label><input type="radio" name="soon" value="0" checked> #{L.shop_no}</label>
 				</p>
 				<p>
 					#{L.shop_listed}:
-					<label><input type="radio" name="listed" value="1" checked> #{L.yes}</label>
-					<label><input type="radio" name="listed" value="0"> #{L.no}</label>
+					<label><input type="radio" name="listed" value="1" checked> #{L.shop_yes}</label>
+					<label><input type="radio" name="listed" value="0"> #{L.shop_no}</label>
 				</p>
 				<p>
 					<span class="images uk-display-block"></span>

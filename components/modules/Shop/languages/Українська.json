@@ -127,5 +127,6 @@
 	"shop_cash"                                     : "Готівка",
 	"shop_pay_now"                                  : "Оплатити зараз",
 	"shop_pay_later"                                : "Оплатити пізніше",
-	"shop_paid"                                     : "Оплачено"
+	"shop_paid"                                     : "Оплачено",
+	"shop_payment_for_order"                        : "Оплата в магазині за замовлення №%s"
 }

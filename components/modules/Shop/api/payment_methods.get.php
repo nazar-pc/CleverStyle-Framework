@@ -8,19 +8,8 @@
  */
 namespace cs\modules\Shop;
 use
-	cs\Language\Prefix,
-	cs\Page,
-	cs\Trigger;
+	cs\Page;
 
-$L               = new Prefix('shop_');
-$Page            = Page::instance();
-$payment_methods = [
-	'shop:cash' => [
-		'title'       => $L->cash,
-		'description' => ''
-	]
-];
-Trigger::instance()->run('System/payment/methods', [
-	'methods' => &$payment_methods
-]);
-$Page->json($payment_methods);
+Page::instance()->json(
+	Orders::instance()->get_payment_methods()
+);

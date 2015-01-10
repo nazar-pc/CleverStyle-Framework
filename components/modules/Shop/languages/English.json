@@ -127,5 +127,6 @@
 	"shop_cash"                                     : "Cash",
 	"shop_pay_now"                                  : "Pay now",
 	"shop_pay_later"                                : "Pay later",
-	"shop_paid"                                     : "Paid"
+	"shop_paid"                                     : "Paid",
+	"shop_payment_for_order"                        : "Payment in shop for order #%s"
 }

@@ -62,7 +62,9 @@
     commentChanged: function() {
       return this.$.comment.innerHTML = this.comment;
     },
-    pay: function() {}
+    pay: function() {
+      return location.href = 'Shop/pay/' + $(this).data('id');
+    }
   });
 
 }).call(this);

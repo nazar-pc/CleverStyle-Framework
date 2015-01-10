@@ -53,10 +53,13 @@ Trigger::instance()
 					require __DIR__.'/trigger/uninstalled.php';
 					break;
 				case 1:
+					require __DIR__.'/trigger/enabled.php';
 					if (admin_path()) {
-						require __DIR__.'/trigger/installed.php';
 						require __DIR__.'/trigger/enabled/admin.php';
 					}
+				//Yes, this is not a typo
+				case 0:
+					require __DIR__.'/trigger/installed.php';
 			}
 		}
 	);

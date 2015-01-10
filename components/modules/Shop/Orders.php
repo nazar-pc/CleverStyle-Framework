@@ -9,6 +9,7 @@
 namespace cs\modules\Shop;
 use
 	cs\Config,
+	cs\Language,
 	cs\Trigger,
 	cs\User,
 	cs\CRUD,
@@ -50,6 +51,8 @@ class Orders {
 		CRUD,
 		Singleton;
 
+	const PAYMENT_METHOD_CASH = 'shop:cash';
+
 	protected $data_model            = [
 		'id'                => 'int',
 		'user'              => 'int',
@@ -60,7 +63,7 @@ class Orders {
 		'shipping_phone'    => 'text',
 		'shipping_address'  => 'text',
 		'payment_method'    => 'text',
-		'paid'              => 'int:0..1',
+		'paid'              => 'int',
 		'status'            => 'int',
 		'comment'           => 'text'
 	];
@@ -166,6 +169,23 @@ class Orders {
 		]) ?: [];
 	}
 	/**
+	 * Get array of payment methods
+	 *
+	 * @return array [method => [title => title, description => description]]
+	 */
+	function get_payment_methods () {
+		$payment_methods = [
+			self::PAYMENT_METHOD_CASH => [
+				'title'       => Language::instance()->shop_cash,
+				'description' => ''
+			]
+		];
+		Trigger::instance()->run('System/payment/methods', [
+			'methods' => &$payment_methods
+		]);
+		return $payment_methods;
+	}
+	/**
 	 * Orders search
 	 *
 	 * @param mixed[] $search_parameters Array in form [attribute => value];
@@ -239,7 +259,7 @@ class Orders {
 			$shipping_phone,
 			$shipping_address,
 			$payment_method,
-			$paid,
+			$paid == 1 ? TIME : $paid,
 			$status,
 			$comment
 		]);
@@ -356,7 +376,7 @@ class Orders {
 			$shipping_phone,
 			$shipping_address,
 			$payment_method,
-			$paid,
+			$paid == 1 ? ($order['paid'] ?: TIME) : $paid,
 			$status,
 			$comment
 		]);

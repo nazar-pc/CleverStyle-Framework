@@ -48,5 +48,5 @@ Polymer(
 	commentChanged		: ->
 		@$.comment.innerHTML	= @comment
 	pay					: ->
-		# TODO: Pay implementation here
+		location.href	= 'Shop/pay/' + $(@).data('id')
 );

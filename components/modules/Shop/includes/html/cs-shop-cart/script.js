@@ -81,6 +81,7 @@
       return localStorage.comment = this.comment;
     },
     finish_order: function() {
+      var _this = this;
       return $.ajax({
         url: 'api/Shop/orders',
         type: 'post',
@@ -89,19 +90,29 @@
           shipping_username: this.shipping_username,
           shipping_phone: this.shipping_type_details.phone_needed ? this.phone : '',
           shipping_address: this.shipping_type_details.address_needed ? this.address : '',
+          payment_method: this.payment_method,
           comment: this.comment,
           items: cs.shop.cart.get_all()
         },
-        success: this.payment_method === 'shop:cash' ? function() {
-          return $.cs.simple_modal("<h1 class=\"uk-text-center\">" + L.shop_thanks_for_order + "</h1>").on('hide.uk.modal', function() {
-            cs.shop.cart.clean();
-            return location.href = 'Shop/orders_';
-          });
-        } : function() {
-          return $.cs.simple_modal("<h1 class=\"uk-text-center\">" + L.shop_thanks_for_order + "</h1>\n<p>\n	<button type=\"button\" class=\"uk-button uk-button-primary\" id=\"pay_now\">" + L.shop_pay_now + "</button>\n	<button type=\"button\" class=\"uk-button\" id=\"pay_later\">" + L.shop_pay_later + "</button>\n</p>").on('hide.uk.modal', function() {
-            cs.shop.cart.clean();
-            return location.href = 'Shop/orders_';
-          });
+        success: function(result) {
+          var id, modal;
+          cs.shop.cart.clean();
+          if (_this.payment_method === 'shop:cash') {
+            return $.cs.simple_modal("<h1 class=\"uk-text-center\">" + L.shop_thanks_for_order + "</h1>").on('hide.uk.modal', function() {
+              return location.href = 'Shop/orders_';
+            });
+          } else {
+            id = result.split('/').pop();
+            modal = $.cs.simple_modal("<h1 class=\"uk-text-center\">" + L.shop_thanks_for_order + "</h1>\n<p class=\"uk-text-center\">\n	<button type=\"button\" class=\"uk-button uk-button-primary pay-now\">" + L.shop_pay_now + "</button>\n	<button type=\"button\" class=\"uk-button pay-later\">" + L.shop_pay_later + "</button>\n</p>").on('hide.uk.modal', function() {
+              return location.href = 'Shop/orders_';
+            });
+            modal.find('.pay-now').click(function() {
+              return location.href = "Shop/pay/" + id;
+            });
+            return modal.find('.pay-later').click(function() {
+              return modal.hide();
+            });
+          }
         }
       });
     }
