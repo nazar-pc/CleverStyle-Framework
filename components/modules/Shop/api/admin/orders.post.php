@@ -19,6 +19,7 @@ if (!isset(
 	$_POST['shipping_phone'],
 	$_POST['shipping_address'],
 	$_POST['payment_method'],
+	$_POST['paid'],
 	$_POST['status'],
 	$_POST['comment']
 )) {
@@ -33,6 +34,7 @@ $id = Orders::instance()->add(
 	$_POST['shipping_phone'],
 	$_POST['shipping_address'],
 	$_POST['payment_method'],
+	$_POST['paid'],
 	$_POST['status'],
 	$_POST['comment']
 );

@@ -48,6 +48,7 @@ if (isset($Index->route_path[2]) && $Index->route_path[2] == 'items') {
 		$_POST['shipping_phone'],
 		$_POST['shipping_address'],
 		$_POST['payment_method'],
+		$_POST['paid'],
 		$_POST['status'],
 		$_POST['comment']
 	)
@@ -64,6 +65,7 @@ if (isset($Index->route_path[2]) && $Index->route_path[2] == 'items') {
 		$_POST['shipping_phone'],
 		$_POST['shipping_address'],
 		$_POST['payment_method'],
+		$_POST['paid'],
 		$_POST['status'],
 		$_POST['comment']
 	);

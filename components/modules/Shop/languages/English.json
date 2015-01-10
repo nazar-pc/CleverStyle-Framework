@@ -124,5 +124,8 @@
 	"shop_add_video"                                : "Add video",
 	"shop_video_poster"                             : "Poster",
 	"shop_payment_method"                           : "Payment method",
-	"shop_cash"                                     : "Cash"
+	"shop_cash"                                     : "Cash",
+	"shop_pay_now"                                  : "Pay now",
+	"shop_pay_later"                                : "Pay later",
+	"shop_paid"                                     : "Paid"
 }

@@ -110,7 +110,9 @@ $Page->content(
 						'data-date'           => $order['date'],
 						'data-date-formatted' => h::prepare_attr_value($date),
 						'data-shipping_cost'  => $order['shipping_cost'],
-						'data-for_payment'    => $order['for_payment']
+						'data-for_payment'    => $order['for_payment'],
+						'data-payment_method' => $order['payment_method'],
+						'data-paid'           => $order['paid']
 					]
 				];
 			},

@@ -14,8 +14,11 @@ Polymer(
 	for_payment_text	: L.shop_for_payment
 	phone_text			: L.shop_shipping_phone
 	address_text		: L.shop_shipping_address
+	pay_now_text		: L.shop_pay_now
+	paid				: true
 	ready				: ->
 		$this						= $(@)
+		@paid						= $this.data('paid')
 		@order_number				= sprintf(L.shop_order_number, $this.data('id'))
 		@order_date					= $this.data('date-formatted')
 		@order_status				= $this.children('#order_status').text()
@@ -44,4 +47,6 @@ Polymer(
 		@$.address.innerHTML	= @address
 	commentChanged		: ->
 		@$.comment.innerHTML	= @comment
+	pay					: ->
+		# TODO: Pay implementation here
 );

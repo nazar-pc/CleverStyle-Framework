@@ -22,9 +22,12 @@
     for_payment_text: L.shop_for_payment,
     phone_text: L.shop_shipping_phone,
     address_text: L.shop_shipping_address,
+    pay_now_text: L.shop_pay_now,
+    paid: true,
     ready: function() {
       var $this, discount, shipping_type, total_price, _ref, _ref1, _ref2;
       $this = $(this);
+      this.paid = $this.data('paid');
       this.order_number = sprintf(L.shop_order_number, $this.data('id'));
       this.order_date = $this.data('date-formatted');
       this.order_status = $this.children('#order_status').text();
@@ -58,7 +61,8 @@
     },
     commentChanged: function() {
       return this.$.comment.innerHTML = this.comment;
-    }
+    },
+    pay: function() {}
   });
 
 }).call(this);

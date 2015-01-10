@@ -80,6 +80,15 @@ Polymer(
 							location.href	= 'Shop/orders_'
 				else
 					->
-						# TODO: Thanks for order, pay now or later?
+						$.cs.simple_modal("""
+							<h1 class="uk-text-center">#{L.shop_thanks_for_order}</h1>
+							<p>
+								<button type="button" class="uk-button uk-button-primary" id="pay_now">#{L.shop_pay_now}</button>
+								<button type="button" class="uk-button" id="pay_later">#{L.shop_pay_later}</button>
+							</p>
+						""")
+						.on 'hide.uk.modal', ->
+							cs.shop.cart.clean()
+							location.href	= 'Shop/orders_'
 		)
 );

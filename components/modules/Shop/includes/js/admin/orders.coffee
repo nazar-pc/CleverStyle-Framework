@@ -68,6 +68,13 @@ $ ->
 				#{L.shop_payment_method}: <select name="payment_method" required>#{payment_methods_list}</select>
 			</p>
 			<p>
+				#{L.shop_paid}:
+				<select name="paid" required>
+					<option value="0" selected>#{L.shop_no}</option>
+					<option value="1">#{L.shop_yes}</option>
+				</select>
+			</p>
+			<p>
 				#{L.shop_status}: <select name="status" required>#{order_statuses}</select>
 			</p>
 			<p>
@@ -223,7 +230,8 @@ $ ->
 				modal.find('[name=shipping_type]').val(order.shipping_type).change()
 				modal.find('[name=shipping_cost]').val(order.shipping_cost).change()
 				modal.find('[name=shipping_username]').val(order.shipping_username).change()
-				modal.find('[name=payment_method]').val(order.payment_method).change()
+				modal.find('[name=payment_method]').val(order.payment_method)
+				modal.find('[name=paid]').val(order.paid)
 				modal.find('[name=status]').val(order.status)
 				modal.find('[name=comment]').val(order.comment)
 				items	= items[0]

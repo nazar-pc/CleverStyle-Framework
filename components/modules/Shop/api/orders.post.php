@@ -44,6 +44,7 @@ $id            = $Orders->add(
 	$_POST['shipping_phone'],
 	$_POST['shipping_address'],
 	$_POST['payment_method'],
+	0,
 	$Config->module('Shop')->default_order_status,
 	$_POST['comment']
 );

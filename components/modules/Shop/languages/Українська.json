@@ -124,5 +124,8 @@
 	"shop_add_video"                                : "Додати відео",
 	"shop_video_poster"                             : "Постер",
 	"shop_payment_method"                           : "Спосіб оплати",
-	"shop_cash"                                     : "Готівка"
+	"shop_cash"                                     : "Готівка",
+	"shop_pay_now"                                  : "Оплатити зараз",
+	"shop_pay_later"                                : "Оплатити пізніше",
+	"shop_paid"                                     : "Оплачено"
 }

@@ -97,7 +97,12 @@
             cs.shop.cart.clean();
             return location.href = 'Shop/orders_';
           });
-        } : function() {}
+        } : function() {
+          return $.cs.simple_modal("<h1 class=\"uk-text-center\">" + L.shop_thanks_for_order + "</h1>\n<p>\n	<button type=\"button\" class=\"uk-button uk-button-primary\" id=\"pay_now\">" + L.shop_pay_now + "</button>\n	<button type=\"button\" class=\"uk-button\" id=\"pay_later\">" + L.shop_pay_later + "</button>\n</p>").on('hide.uk.modal', function() {
+            cs.shop.cart.clean();
+            return location.href = 'Shop/orders_';
+          });
+        }
       });
     }
   });
