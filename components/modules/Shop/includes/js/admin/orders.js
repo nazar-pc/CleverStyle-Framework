@@ -14,8 +14,8 @@
   $(function() {
     var L, make_modal;
     L = cs.Language;
-    make_modal = function(shipping_types, order_statuses, title, action) {
-      var modal, shipping_types_list;
+    make_modal = function(shipping_types, order_statuses, payment_methods, title, action) {
+      var details, method, modal, payment_methods_list, shipping_types_list;
       shipping_types = (function() {
         var shipping_type, shipping_types_;
         shipping_types_ = {};
@@ -61,7 +61,17 @@
         return _results;
       })();
       order_statuses = order_statuses.join('');
-      modal = $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p class=\"uk-hidden\">\n		" + L.shop_datetime + ": <span class=\"date\"></span>\n	</p>\n	<p>\n		" + L.shop_user + ": <span class=\"username\"></span>, id: <input name=\"user\" required>\n	</p>\n	<p>\n		<div class=\"items\"></div>\n		<button type=\"button\" class=\"add-item uk-button\">" + L.shop_add_item + "</button>\n	</p>\n	<p>\n		" + L.shop_shipping_type + ": <select name=\"shipping_type\" required>" + shipping_types_list + "</select>\n	</p>\n	<p>\n		" + L.shop_shipping_cost + ": <input name=\"shipping_cost\"> (<span id=\"shipping_cost\"></span>)\n	</p>\n	<p>\n		" + L.shop_shipping_username + ": <input name=\"shipping_username\">\n	</p>\n	<p>\n		" + L.shop_shipping_phone + ": <input name=\"shipping_phone\">\n	</p>\n	<p>\n		" + L.shop_shipping_address + ": <textarea name=\"shipping_address\"></textarea>\n	</p>\n	<p>\n		" + L.shop_status + ": <select name=\"status\" required>" + order_statuses + "</select>\n	</p>\n	<p>\n		" + L.shop_comment + ": <textarea name=\"comment\"></textarea>\n	</p>\n	<p>\n		<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n	</p>\n</form>", false, 1200);
+      payment_methods_list = (function() {
+        var _results;
+        _results = [];
+        for (method in payment_methods) {
+          details = payment_methods[method];
+          _results.push("<option value=\"" + method + "\">" + details.title + "</option>");
+        }
+        return _results;
+      })();
+      payment_methods_list = payment_methods_list.join('');
+      modal = $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p class=\"uk-hidden\">\n		" + L.shop_datetime + ": <span class=\"date\"></span>\n	</p>\n	<p>\n		" + L.shop_user + ": <span class=\"username\"></span>, id: <input name=\"user\" required>\n	</p>\n	<p>\n		<div class=\"items\"></div>\n		<button type=\"button\" class=\"add-item uk-button\">" + L.shop_add_item + "</button>\n	</p>\n	<p>\n		" + L.shop_shipping_type + ": <select name=\"shipping_type\" required>" + shipping_types_list + "</select>\n	</p>\n	<p>\n		" + L.shop_shipping_cost + ": <input name=\"shipping_cost\"> (<span id=\"shipping_cost\"></span>)\n	</p>\n	<p>\n		" + L.shop_shipping_username + ": <input name=\"shipping_username\">\n	</p>\n	<p>\n		" + L.shop_shipping_phone + ": <input name=\"shipping_phone\">\n	</p>\n	<p>\n		" + L.shop_shipping_address + ": <textarea name=\"shipping_address\"></textarea>\n	</p>\n	<p>\n		" + L.shop_payment_method + ": <select name=\"payment_method\" required>" + payment_methods_list + "</select>\n	</p>\n	<p>\n		" + L.shop_status + ": <select name=\"status\" required>" + order_statuses + "</select>\n	</p>\n	<p>\n		" + L.shop_comment + ": <textarea name=\"comment\"></textarea>\n	</p>\n	<p>\n		<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n	</p>\n</form>", false, 1200);
       (function() {
         var timeout;
         timeout = 0;
@@ -151,9 +161,9 @@
       });
     };
     return $('html').on('mousedown', '.cs-shop-order-add', function() {
-      return $.when($.getJSON('api/Shop/admin/shipping_types'), $.getJSON('api/Shop/admin/order_statuses')).done(function(shipping_types, order_statuses) {
+      return $.when($.getJSON('api/Shop/admin/shipping_types'), $.getJSON('api/Shop/admin/order_statuses'), $.getJSON('api/Shop/payment_methods')).done(function(shipping_types, order_statuses, payment_methods) {
         var modal;
-        modal = make_modal(shipping_types[0], order_statuses[0], L.shop_order_addition, L.shop_add);
+        modal = make_modal(shipping_types[0], order_statuses[0], payment_methods[0], L.shop_order_addition, L.shop_add);
         return modal.find('form').submit(function() {
           var data;
           data = $(this).serialize();
@@ -183,9 +193,9 @@
       id = $this.data('id');
       username = $this.data('username');
       date = $this.data('date');
-      return $.when($.getJSON('api/Shop/admin/shipping_types'), $.getJSON('api/Shop/admin/order_statuses'), $.getJSON("api/Shop/admin/orders/" + id), $.getJSON("api/Shop/admin/orders/" + id + "/items")).done(function(shipping_types, order_statuses, order, items) {
+      return $.when($.getJSON('api/Shop/admin/shipping_types'), $.getJSON('api/Shop/admin/order_statuses'), $.getJSON('api/Shop/payment_methods'), $.getJSON("api/Shop/admin/orders/" + id), $.getJSON("api/Shop/admin/orders/" + id + "/items")).done(function(shipping_types, order_statuses, payment_methods, order, items) {
         var modal;
-        modal = make_modal(shipping_types[0], order_statuses[0], L.shop_order_edition, L.shop_edit);
+        modal = make_modal(shipping_types[0], order_statuses[0], payment_methods[0], L.shop_order_edition, L.shop_edit);
         modal.find('form').submit(function() {
           var data;
           data = $(this).serialize();
@@ -216,6 +226,7 @@
         modal.find('[name=shipping_type]').val(order.shipping_type).change();
         modal.find('[name=shipping_cost]').val(order.shipping_cost).change();
         modal.find('[name=shipping_username]').val(order.shipping_username).change();
+        modal.find('[name=payment_method]').val(order.payment_method).change();
         modal.find('[name=status]').val(order.status);
         modal.find('[name=comment]').val(order.comment);
         items = items[0];

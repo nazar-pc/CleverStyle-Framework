@@ -7,7 +7,7 @@
 ###
 $ ->
 	L = cs.Language
-	make_modal = (shipping_types, order_statuses, title, action) ->
+	make_modal = (shipping_types, order_statuses, payment_methods, title, action) ->
 		shipping_types	= do ->
 			shipping_types_ = {}
 			for shipping_type, shipping_type of shipping_types
@@ -32,8 +32,12 @@ $ ->
 			keys.sort()
 			for key in keys
 				order_statuses_[key]
-		order_statuses	= order_statuses.join('')
-		modal			= $.cs.simple_modal("""<form>
+		order_statuses			= order_statuses.join('')
+		payment_methods_list	=
+			for method, details of payment_methods
+				"""<option value="#{method}">#{details.title}</option>"""
+		payment_methods_list	= payment_methods_list.join('')
+		modal					= $.cs.simple_modal("""<form>
 			<h3 class="cs-center">#{title}</h3>
 			<p class="uk-hidden">
 				#{L.shop_datetime}: <span class="date"></span>
@@ -59,6 +63,9 @@ $ ->
 			</p>
 			<p>
 				#{L.shop_shipping_address}: <textarea name="shipping_address"></textarea>
+			</p>
+			<p>
+				#{L.shop_payment_method}: <select name="payment_method" required>#{payment_methods_list}</select>
 			</p>
 			<p>
 				#{L.shop_status}: <select name="status" required>#{order_statuses}</select>
@@ -155,8 +162,9 @@ $ ->
 			$.when(
 				$.getJSON('api/Shop/admin/shipping_types')
 				$.getJSON('api/Shop/admin/order_statuses')
-			).done (shipping_types, order_statuses) ->
-				modal = make_modal(shipping_types[0], order_statuses[0], L.shop_order_addition, L.shop_add)
+				$.getJSON('api/Shop/payment_methods')
+			).done (shipping_types, order_statuses, payment_methods) ->
+				modal = make_modal(shipping_types[0], order_statuses[0], payment_methods[0], L.shop_order_addition, L.shop_add)
 				modal.find('form').submit ->
 					data	= $(@).serialize()
 					$.ajax(
@@ -184,10 +192,11 @@ $ ->
 			$.when(
 				$.getJSON('api/Shop/admin/shipping_types')
 				$.getJSON('api/Shop/admin/order_statuses')
+				$.getJSON('api/Shop/payment_methods')
 				$.getJSON("api/Shop/admin/orders/#{id}")
 				$.getJSON("api/Shop/admin/orders/#{id}/items")
-			).done (shipping_types, order_statuses, order, items) ->
-				modal	= make_modal(shipping_types[0], order_statuses[0], L.shop_order_edition, L.shop_edit)
+			).done (shipping_types, order_statuses, payment_methods, order, items) ->
+				modal	= make_modal(shipping_types[0], order_statuses[0], payment_methods[0], L.shop_order_edition, L.shop_edit)
 				modal.find('form').submit ->
 					data	= $(@).serialize()
 					$.ajax(
@@ -214,6 +223,7 @@ $ ->
 				modal.find('[name=shipping_type]').val(order.shipping_type).change()
 				modal.find('[name=shipping_cost]').val(order.shipping_cost).change()
 				modal.find('[name=shipping_username]').val(order.shipping_username).change()
+				modal.find('[name=payment_method]').val(order.payment_method).change()
 				modal.find('[name=status]').val(order.status)
 				modal.find('[name=comment]').val(order.comment)
 				items	= items[0]

@@ -68,6 +68,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_orders` (
 	`shipping_username` varchar(1024) NOT NULL,
 	`shipping_phone` varchar(255) NOT NULL,
 	`shipping_address` text NOT NULL,
+	`payment_method` varchar(255) NOT NULL,
 	`status` tinyint(4) NOT NULL,
 	`comment` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

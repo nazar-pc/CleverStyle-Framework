@@ -42,6 +42,7 @@ $id            = $Orders->add(
 	@$_POST['shipping_username'] ?: $User->username(),
 	$_POST['shipping_phone'],
 	$_POST['shipping_address'],
+	'shop:cash', // TODO: use real payment method, check real payment
 	$Config->module('Shop')->default_order_status,
 	$_POST['comment']
 );

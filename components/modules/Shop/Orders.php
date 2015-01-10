@@ -59,6 +59,7 @@ class Orders {
 		'shipping_username' => 'text',
 		'shipping_phone'    => 'text',
 		'shipping_address'  => 'text',
+		'payment_method'    => 'text',
 		'status'            => 'int',
 		'comment'           => 'text'
 	];
@@ -200,13 +201,14 @@ class Orders {
 	 * @param string $shipping_username
 	 * @param string $shipping_phone
 	 * @param string $shipping_address
+	 * @param string $payment_method
 	 * @param int    $status
 	 * @param string $comment
 	 *
 	 * @return bool|int Id of created item on success of <b>false</> on failure
 	 *
 	 */
-	function add ($user, $shipping_type, $shipping_cost, $shipping_username, $shipping_phone, $shipping_address, $status, $comment) {
+	function add ($user, $shipping_type, $shipping_cost, $shipping_username, $shipping_phone, $shipping_address, $payment_method, $status, $comment) {
 		$id = $this->create_simple([
 			$user,
 			TIME,
@@ -215,6 +217,7 @@ class Orders {
 			$shipping_username,
 			$shipping_phone,
 			$shipping_address,
+			$payment_method,
 			$status,
 			$comment
 		]);
@@ -312,12 +315,13 @@ class Orders {
 	 * @param string $shipping_username
 	 * @param string $shipping_phone
 	 * @param string $shipping_address
+	 * @param string $payment_method
 	 * @param int    $status
 	 * @param string $comment
 	 *
 	 * @return bool
 	 */
-	function set ($id, $user, $shipping_type, $shipping_cost, $shipping_username, $shipping_phone, $shipping_address, $status, $comment) {
+	function set ($id, $user, $shipping_type, $shipping_cost, $shipping_username, $shipping_phone, $shipping_address, $payment_method, $status, $comment) {
 		$order  = $this->read_simple($id);
 		$result = $this->update_simple([
 			$id,
@@ -328,6 +332,7 @@ class Orders {
 			$shipping_username,
 			$shipping_phone,
 			$shipping_address,
+			$payment_method,
 			$status,
 			$comment
 		]);
