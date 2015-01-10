@@ -86,6 +86,13 @@ class Orders {
 	 */
 	function get ($id) {
 		$data = $this->read_simple($id);
+		if (is_array($id)) {
+			foreach ($data ?: [] as &$d) {
+				$d['for_payment'] = $this->get_for_payment($d);
+			}
+		} else {
+			$data['for_payment'] = $this->get_for_payment($data);
+		}
 		if (!Trigger::instance()->run('Shop/Orders/get', [
 			'data' => &$data
 		])
@@ -93,6 +100,18 @@ class Orders {
 			return false;
 		}
 		return $data;
+	}
+	/**
+	 * @param array $data
+	 *
+	 * @return number
+	 */
+	protected function get_for_payment ($data) {
+		return
+			array_sum(array_column(
+				$this->get_items($data['id'])
+				, 'price'
+			)) + $data['shipping_cost'];
 	}
 	/**
 	 * Get array of all orders

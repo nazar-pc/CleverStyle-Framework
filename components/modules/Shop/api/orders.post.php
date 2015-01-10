@@ -18,6 +18,7 @@ if (
 		$_POST['shipping_username'],
 		$_POST['shipping_phone'],
 		$_POST['shipping_address'],
+		$_POST['payment_method'],
 		$_POST['comment'],
 		$_POST['items']
 	) ||
@@ -42,7 +43,7 @@ $id            = $Orders->add(
 	@$_POST['shipping_username'] ?: $User->username(),
 	$_POST['shipping_phone'],
 	$_POST['shipping_address'],
-	'shop:cash', // TODO: use real payment method, check real payment
+	$_POST['payment_method'],
 	$Config->module('Shop')->default_order_status,
 	$_POST['comment']
 );

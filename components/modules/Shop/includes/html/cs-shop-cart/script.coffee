@@ -59,11 +59,6 @@ Polymer(
 	commentChanged				: ->
 		localStorage.comment	= @comment
 	finish_order				: ->
-		if @payment_method == 'shop:cash'
-			@save()
-		else
-			# TODO: check payment method, if not shop:cash - proceed to payment
-	save_order					: ->
 		$.ajax(
 			url		: 'api/Shop/orders'
 			type	: 'post'
@@ -74,12 +69,17 @@ Polymer(
 				shipping_address	: if @shipping_type_details.address_needed then @address else ''
 				comment				: @comment
 				items				: cs.shop.cart.get_all()
-			success	: ->
-				$.cs.simple_modal("""
-					<h1 class="uk-text-center">#{L.shop_thanks_for_order}</h1>
-				""")
-				.on 'hide.uk.modal', ->
-					cs.shop.cart.clean()
-					location.href	= 'Shop/orders_'
+			success	:
+				if @payment_method == 'shop:cash' # Default payment method
+					->
+						$.cs.simple_modal("""
+							<h1 class="uk-text-center">#{L.shop_thanks_for_order}</h1>
+						""")
+						.on 'hide.uk.modal', ->
+							cs.shop.cart.clean()
+							location.href	= 'Shop/orders_'
+				else
+					->
+						# TODO: Thanks for order, pay now or later?
 		)
 );

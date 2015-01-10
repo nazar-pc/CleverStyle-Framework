@@ -81,13 +81,6 @@
       return localStorage.comment = this.comment;
     },
     finish_order: function() {
-      if (this.payment_method === 'shop:cash') {
-        return this.save();
-      } else {
-
-      }
-    },
-    save_order: function() {
       return $.ajax({
         url: 'api/Shop/orders',
         type: 'post',
@@ -99,12 +92,12 @@
           comment: this.comment,
           items: cs.shop.cart.get_all()
         },
-        success: function() {
+        success: this.payment_method === 'shop:cash' ? function() {
           return $.cs.simple_modal("<h1 class=\"uk-text-center\">" + L.shop_thanks_for_order + "</h1>").on('hide.uk.modal', function() {
             cs.shop.cart.clean();
             return location.href = 'Shop/orders_';
           });
-        }
+        } : function() {}
       });
     }
   });

@@ -102,13 +102,15 @@ $Page->content(
 							]
 						).
 						h::{'#phone'}($order['shipping_phone'] ?: false).
-						h::{'#address'}($order['shipping_address'] ?: false).
+						h::{'#address'}($order['shipping_address'] ?: false).//Payment method add here
 						h::{'#comment'}($order['comment'] ?: false)
 					],
 					[
 						'data-id'             => $order['id'],
 						'data-date'           => $order['date'],
-						'data-date-formatted' => h::prepare_attr_value($date)
+						'data-date-formatted' => h::prepare_attr_value($date),
+						'data-shipping_cost'  => $order['shipping_cost'],
+						'data-for_payment'    => $order['for_payment']
 					]
 				];
 			},
