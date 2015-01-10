@@ -13,6 +13,7 @@ use
 	cs\Language,
 	cs\Language\Prefix,
 	cs\Page,
+	cs\Trigger,
 	cs\User;
 
 $L              = new Prefix('shop_');
@@ -23,6 +24,16 @@ $Shipping_types = Shipping_types::instance();
 $items          = @_json_decode($_COOKIE['shop_cart_items']);
 $Page->title($L->cart);
 $Page->config($Shipping_types->get($Shipping_types->get_all()), 'cs.shop.shipping_types');
+$payment_methods = [
+	'shop:cash' => [
+		'title'       => $L->cash,
+		'description' => ''
+	]
+];
+Trigger::instance()->run('System/payment/methods', [
+	'methods' => &$payment_methods
+]);
+$Page->config($payment_methods, 'cs.shop.payment_methods');
 if (!$items || !is_array($items)) {
 	$Page->content(
 		h::cs_shop_empty_cart($L->cart_empty)
@@ -61,7 +72,7 @@ $Page->content(
 			_int(array_values($items))
 		)),
 		[
-			'username'	=> h::prepare_attr_value(User::instance()->username())
+			'username' => h::prepare_attr_value(User::instance()->username())
 		]
 	)
 );

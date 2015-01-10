@@ -16,25 +16,40 @@ Polymer(
 	phone_text					: L.shop_shipping_phone
 	address_text				: L.shop_shipping_address
 	comment_text				: L.shop_comment
+	payment_method_text			: L.shop_payment_method
 	finish_order_text			: L.shop_finish_order
 	shipping_username			: localStorage.shipping_username || ''
 	phone						: localStorage.phone || ''
 	address						: localStorage.address || ''
 	comment						: localStorage.comment || ''
+	payment_method				: 0
+	payment_methods				:
+		for method, details of cs.shop.payment_methods
+			details.method	= method
+			details
 	created						: ->
-		@shipping_type_details	= @shipping_types[0]
-		@shipping_type			= @shipping_type_details.id
-		@shipping_username		= @shipping_username || (if cs.is_user then @getAttribute('username') else '')
-	ready						: ->
+		@shipping_username			= @shipping_username || (if cs.is_user then @getAttribute('username') else '')
+	domReady						: ->
 		@$.h1.innerHTML	= @querySelector('h1').innerHTML
 		$(@shadowRoot).find('textarea').autosize()
-		@shipping_typeChanged()
-	shipping_typeChanged		: ->
-		@shipping_types.forEach (shipping_type) =>
-			if shipping_type.id == @shipping_type
-				@shipping_type_details		= shipping_type
-				@shipping_cost_formatted	= sprintf(cs.shop.settings.price_formatting, shipping_type.price)
-				return false
+		$shipping_type			= $(@$.shipping_type)
+		$shipping_type
+			.val(@shipping_types[0].id)
+			.change =>
+				@shipping_types.forEach (shipping_type) =>
+					if shipping_type.id == $shipping_type.val()
+						@shipping_type_details		= shipping_type
+						@shipping_cost_formatted	= sprintf(cs.shop.settings.price_formatting, shipping_type.price)
+						return false
+			.change()
+		$payment_method			= $(@$.payment_method)
+		$payment_method
+			.val(@payment_method)
+			.change =>
+				payment_method							= @payment_methods[$payment_method.val()]
+				@payment_method							= payment_method.method
+				@$.payment_method_description.innerHTML	= payment_method.description
+			.change()
 	shipping_usernameChanged	: ->
 		localStorage.shipping_username	= @shipping_username
 	phoneChanged				: ->
@@ -44,6 +59,11 @@ Polymer(
 	commentChanged				: ->
 		localStorage.comment	= @comment
 	finish_order				: ->
+		if @payment_method == 'shop:cash'
+			@save()
+		else
+			# TODO: check payment method, if not shop:cash - proceed to payment
+	save_order					: ->
 		$.ajax(
 			url		: 'api/Shop/orders'
 			type	: 'post'

@@ -122,5 +122,7 @@
 	"shop_direct_video_url"                         : "Пряма URL до відео (чи завантаження)",
 	"shop_url_or_code"                              : "URL чи код",
 	"shop_add_video"                                : "Додати відео",
-	"shop_video_poster"                             : "Постер"
+	"shop_video_poster"                             : "Постер",
+	"shop_payment_method"                           : "Спосіб оплати",
+	"shop_cash"                                     : "Готівка"
 }

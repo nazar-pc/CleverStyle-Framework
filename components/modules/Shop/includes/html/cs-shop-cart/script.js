@@ -10,7 +10,7 @@
 
 
 (function() {
-  var L;
+  var L, details, method;
 
   L = cs.Language;
 
@@ -24,30 +24,49 @@
     phone_text: L.shop_shipping_phone,
     address_text: L.shop_shipping_address,
     comment_text: L.shop_comment,
+    payment_method_text: L.shop_payment_method,
     finish_order_text: L.shop_finish_order,
     shipping_username: localStorage.shipping_username || '',
     phone: localStorage.phone || '',
     address: localStorage.address || '',
     comment: localStorage.comment || '',
+    payment_method: 0,
+    payment_methods: (function() {
+      var _ref, _results;
+      _ref = cs.shop.payment_methods;
+      _results = [];
+      for (method in _ref) {
+        details = _ref[method];
+        details.method = method;
+        _results.push(details);
+      }
+      return _results;
+    })(),
     created: function() {
-      this.shipping_type_details = this.shipping_types[0];
-      this.shipping_type = this.shipping_type_details.id;
       return this.shipping_username = this.shipping_username || (cs.is_user ? this.getAttribute('username') : '');
     },
-    ready: function() {
+    domReady: function() {
+      var $payment_method, $shipping_type,
+        _this = this;
       this.$.h1.innerHTML = this.querySelector('h1').innerHTML;
       $(this.shadowRoot).find('textarea').autosize();
-      return this.shipping_typeChanged();
-    },
-    shipping_typeChanged: function() {
-      var _this = this;
-      return this.shipping_types.forEach(function(shipping_type) {
-        if (shipping_type.id === _this.shipping_type) {
-          _this.shipping_type_details = shipping_type;
-          _this.shipping_cost_formatted = sprintf(cs.shop.settings.price_formatting, shipping_type.price);
-          return false;
-        }
-      });
+      $shipping_type = $(this.$.shipping_type);
+      $shipping_type.val(this.shipping_types[0].id).change(function() {
+        return _this.shipping_types.forEach(function(shipping_type) {
+          if (shipping_type.id === $shipping_type.val()) {
+            _this.shipping_type_details = shipping_type;
+            _this.shipping_cost_formatted = sprintf(cs.shop.settings.price_formatting, shipping_type.price);
+            return false;
+          }
+        });
+      }).change();
+      $payment_method = $(this.$.payment_method);
+      return $payment_method.val(this.payment_method).change(function() {
+        var payment_method;
+        payment_method = _this.payment_methods[$payment_method.val()];
+        _this.payment_method = payment_method.method;
+        return _this.$.payment_method_description.innerHTML = payment_method.description;
+      }).change();
     },
     shipping_usernameChanged: function() {
       return localStorage.shipping_username = this.shipping_username;
@@ -62,6 +81,13 @@
       return localStorage.comment = this.comment;
     },
     finish_order: function() {
+      if (this.payment_method === 'shop:cash') {
+        return this.save();
+      } else {
+
+      }
+    },
+    save_order: function() {
       return $.ajax({
         url: 'api/Shop/orders',
         type: 'post',

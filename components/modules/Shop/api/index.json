@@ -1,5 +1,5 @@
 {
-	"admin"      : [
+	"admin"           : [
 		"attributes",
 		"categories",
 		"items",
@@ -7,9 +7,10 @@
 		"orders",
 		"shipping_types"
 	],
-	"settings"   : [],
-	"attributes" : [],
-	"categories" : [],
-	"items"      : [],
-	"orders"     : []
+	"settings"        : [],
+	"attributes"      : [],
+	"categories"      : [],
+	"items"           : [],
+	"orders"          : [],
+	"payment_methods" : []
 }
