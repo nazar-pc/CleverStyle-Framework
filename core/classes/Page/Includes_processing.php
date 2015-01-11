@@ -296,7 +296,7 @@ class Includes_processing {
 	 *
 	 * @return bool
 	 */
-	protected function has_relative_href ($link, &$url, $rel) {
+	protected static function has_relative_href ($link, &$url, $rel) {
 		$result =
 			$link &&
 			preg_match('/rel\s*=\s*[\'"]'.$rel.'[\'"]/Uims', $link) &&
