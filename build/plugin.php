@@ -35,11 +35,7 @@ $list   = get_files_list($plugin_dir, false, 'f', true, true, false, false, true
 $length = mb_strlen("$plugin_dir/");
 $list   = array_map(
 	function ($index, $file) use ($phar, $length) {
-		/**
-		 * TODO: `f` before index is added as hack for HHVM in order to allow installation/upgrading of components
-		 * TODO: and should be removed when bug (extracting files with name `0`) fixed upstream
-		 */
-		$phar->addFromString("fs/f$index", file_get_contents($file));
+		$phar->addFromString("fs/$index", file_get_contents($file));
 		return mb_substr($file, $length);
 	},
 	array_keys($list),
@@ -52,16 +48,7 @@ unset($length);
 $phar->addFromString(
 	'fs.json',
 	_json_encode(
-		array_map(
-			function ($file_index) {
-				/**
-				 * TODO: `f` before index is added as hack for HHVM in order to allow installation/upgrading of components
-				 * TODO: and should be removed when bug (extracting files with name `0`) fixed upstream
-				 */
-				return "f$file_index";
-			},
-			array_flip($list)
-		)
+		array_flip($list)
 	)
 );
 $phar->addFromString('dir', $_POST['plugins'][0]);
