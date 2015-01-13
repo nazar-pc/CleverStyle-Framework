@@ -42,7 +42,7 @@
 		},
 		function (error) {
 			tinymce.uploader_dialog.cs().modal('hide');
-			alert(error);
+			alert(error.message);
 		},
 		function (file) {
 			tinymce.uploader_dialog.find('.uk-progress-bar').width((file.percent ? file.percent : 1) + '%');
