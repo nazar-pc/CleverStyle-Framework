@@ -275,14 +275,14 @@ class Index {
 	 * @param string	$path
 	 * @param string	$sub_path
 	 */
-	protected function module_page_rendering ($path, $sub_path) {
-		if (!$this->include_handler($this->working_directory, 'index', false)) {
+	protected function files_router ($path, $sub_path) {
+		if (!$this->files_router_handler($this->working_directory, 'index', false)) {
 			return;
 		}
-		if (!$this->path_required || !$this->include_handler($this->working_directory, $path, !$sub_path)) {
+		if (!$this->path_required || !$this->files_router_handler($this->working_directory, $path, !$sub_path)) {
 			return;
 		}
-		if (!$this->sub_path_required || !$this->include_handler("$this->working_directory/$path", $sub_path)) {
+		if (!$this->sub_path_required || !$this->files_router_handler("$this->working_directory/$path", $sub_path)) {
 			return;
 		}
 	}
@@ -295,11 +295,11 @@ class Index {
 	 *
 	 * @return bool
 	 */
-	protected function include_handler ($dir, $basename, $required = true) {
-		$this->include_handler_internal($dir, $basename, $required);
+	protected function files_router_handler ($dir, $basename, $required = true) {
+		$this->files_router_handler_internal($dir, $basename, $required);
 		return !error_code();
 	}
-	protected function include_handler_internal ($dir, $basename, $required) {
+	protected function files_router_handler_internal ($dir, $basename, $required) {
 		$included	= _include_once("$dir/$basename.php", false) !== false;
 		if (!api_path()) {
 			return;
@@ -638,7 +638,7 @@ class Index {
 		} elseif (!error_code()) {
 			$this->normalize_route();
 			if (!error_code()) {
-				$this->module_page_rendering(@$this->route_path[0], @$this->route_path[1]);
+				$this->files_router(@$this->route_path[0], @$this->route_path[1]);
 			}
 		}
 		$this->render_complete_page();
