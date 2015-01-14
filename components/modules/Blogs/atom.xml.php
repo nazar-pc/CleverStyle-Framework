@@ -18,11 +18,15 @@ $Config = Config::instance();
 $L      = Language::instance();
 $Page   = Page::instance();
 $User   = User::instance();
-$title  = $L->blogs;
+$title  = [
+	get_core_ml_text('name'),
+	$L->Blogs
+];
 switch (@$_GET['mode']) {// TODO: feed for single tag, for section
 	default:
-		$title .= $Config->core['title_delimiter'].$L->latest_posts;
+		$title[] = $L->latest_posts;
 }
+$title    = implode($Config->core['title_delimiter'], $title);
 $base_url = $Config->base_url();
 $number   = $Config->module('Blogs')->posts_per_page;
 $Blogs    = Blogs::instance();
