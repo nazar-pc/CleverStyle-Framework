@@ -276,7 +276,7 @@ class Index {
 	 * @param string $sub_path
 	 */
 	protected function files_router ($path, $sub_path) {
-		if (!$this->files_router_handler($this->working_directory, 'index', false)) {
+		if (!$this->files_router_handler($this->working_directory, 'index', !$path)) {
 			return;
 		}
 		if (!$this->path_required || !$this->files_router_handler($this->working_directory, $path, !$sub_path)) {
@@ -308,8 +308,68 @@ class Index {
 		if ($included || !$required) {
 			return;
 		}
-		if ($methods = get_files_list($dir, "/$basename\\.[a-z]+\\.php$/")) {
+		if ($methods = get_files_list($dir, "/^$basename\\.[a-z]+\\.php$/")) {
 			$methods = _strtoupper(_substr($methods, strlen($basename) + 1, -4));
+			$methods = implode(', ', $methods);
+			header("Allow: $methods");
+			error_code(405);
+		} else {
+			error_code(404);
+		}
+	}
+	/**
+	 * Call methods necessary for module page rendering
+	 *
+	 * @param string $path
+	 * @param string $sub_path
+	 */
+	protected function controller_router ($path, $sub_path) {
+		$controller_class = "cs\\modules\\$this->module\\".($this->in_admin ? 'admin\\' : ($this->in_api ? 'api\\' : '')).'Controller';
+		if (!$this->controller_router_handler($controller_class, 'index', !$path)) {
+			return;
+		}
+		if (!$this->path_required || !$this->controller_router_handler($controller_class, $path, !$sub_path)) {
+			return;
+		}
+		if (!$this->sub_path_required || !$this->controller_router_handler($controller_class, $path.'_'.$sub_path)) {
+			return;
+		}
+	}
+	/**
+	 * Call methods that corresponds for specific paths in URL
+	 *
+	 * @param string $controller_class
+	 * @param string $method_name
+	 * @param bool   $required
+	 *
+	 * @return bool
+	 */
+	protected function controller_router_handler ($controller_class, $method_name, $required = true) {
+		$this->controller_router_handler_internal($controller_class, $method_name, $required);
+		return !error_code();
+	}
+	protected function controller_router_handler_internal ($controller_class, $method_name, $required) {
+		$included =
+			method_exists($controller_class, $method_name) &&
+			$controller_class::$method_name() !== false;
+		if (!api_path()) {
+			return;
+		}
+		$included =
+			method_exists($controller_class, $method_name.'_'.$this->request_method) &&
+			$controller_class::{$method_name.'_'.$this->request_method}() !== false ||
+			$included;
+		if ($included || !$required) {
+			return;
+		}
+		$methods = array_filter(
+			get_class_methods($controller_class),
+			function ($method) use ($method_name) {
+				return preg_match("/^{$method_name}_[a-z]+$/", $method);
+			}
+		);
+		if ($methods) {
+			$methods = _strtoupper(_substr($methods, strlen($method_name) + 1, -4));
 			$methods = implode(', ', $methods);
 			header("Allow: $methods");
 			error_code(405);
@@ -639,7 +699,11 @@ class Index {
 		} elseif (!error_code()) {
 			$this->normalize_route();
 			if (!error_code()) {
-				$this->files_router(@$this->route_path[0], @$this->route_path[1]);
+				if (file_exists("$this->working_directory/Controller.php")) {
+					$this->controller_router(@$this->route_path[0], @$this->route_path[1]);
+				} else {
+					$this->files_router(@$this->route_path[0], @$this->route_path[1]);
+				}
 			}
 		}
 		$this->render_complete_page();
