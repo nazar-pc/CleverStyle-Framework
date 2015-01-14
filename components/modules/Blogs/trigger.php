@@ -23,16 +23,16 @@ Trigger::instance()
 			switch ($rc[1]) {
 				case path($L->latest_posts):
 					$rc[1] = 'latest_posts';
-				break;
+					break;
 				case path($L->section):
 					$rc[1] = 'section';
-				break;
+					break;
 				case path($L->tag):
 					$rc[1] = 'tag';
-				break;
+					break;
 				case path($L->new_post):
 					$rc[1] = 'new_post';
-				break;
+					break;
 				case path($L->drafts):
 					$rc[1] = 'drafts';
 					break;
@@ -43,7 +43,8 @@ Trigger::instance()
 				case 'edit_post':
 				case 'drafts':
 				case 'post':
-				break;
+				case 'atom.xml':
+					break;
 				default:
 					if (mb_strpos($rc[1], ':') !== false) {
 						$rc[2] = $rc[1];
@@ -65,7 +66,7 @@ Trigger::instance()
 						return;
 					}
 					require __DIR__.'/trigger/uninstalled.php';
-				break;
+					break;
 				case 1:
 					require __DIR__.'/trigger/enabled.php';
 					if (admin_path()) {
