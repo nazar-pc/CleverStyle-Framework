@@ -345,6 +345,7 @@ class Index {
 	 * @return bool
 	 */
 	protected function controller_router_handler ($controller_class, $method_name, $required = true) {
+		$method_name = strtr($method_name, '.', '_');
 		$this->controller_router_handler_internal($controller_class, $method_name, $required);
 		return !error_code();
 	}
