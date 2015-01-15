@@ -402,25 +402,13 @@ trait Includes {
 					)
 				) {
 					if ($is_dependency) {
-						if (isset($local_includes['css'])) {
-							$dependencies_includes['css'] = array_merge($dependencies_includes['css'], $local_includes['css']);
-						}
-						if (isset($local_includes['js'])) {
-							$dependencies_includes['js'] = array_merge($dependencies_includes['js'], $local_includes['js']);
-						}
-						if (isset($local_includes['html'])) {
-							$dependencies_includes['html'] = array_merge($dependencies_includes['html'], $local_includes['html']);
-						}
+						$dependencies_includes['css']  = array_merge($dependencies_includes['css'], @$local_includes['css'] ?: []);
+						$dependencies_includes['js']   = array_merge($dependencies_includes['js'], @$local_includes['js'] ?: []);
+						$dependencies_includes['html'] = array_merge($dependencies_includes['html'], @$local_includes['html'] ?: []);
 					} else {
-						if (isset($local_includes['css'])) {
-							$includes['css'] = array_merge($includes['css'], $local_includes['css']);
-						}
-						if (isset($local_includes['js'])) {
-							$includes['js'] = array_merge($includes['js'], $local_includes['js']);
-						}
-						if (isset($local_includes['html'])) {
-							$includes['html'] = array_merge($includes['html'], $local_includes['html']);
-						}
+						$includes['css']  = array_merge($includes['css'], @$local_includes['css'] ?: []);
+						$includes['js']   = array_merge($includes['js'], @$local_includes['js'] ?: []);
+						$includes['html'] = array_merge($includes['html'], @$local_includes['html'] ?: []);
 					}
 				}
 			}
@@ -653,7 +641,15 @@ trait Includes {
 				}
 				if (isset($meta['provide'])) {
 					foreach ((array)$meta['provide'] as $p) {
-						$dependencies_aliases[$p]	= $module_name;
+						/**
+						 * If provides sub-functionality of other component (Blog/post_patch) - inverse "providing" to "dependency"
+						 */
+						if (strpos($p, '/') !== false) {
+							$p                  = explode('/', $p)[0];
+							$dependencies[$p][] = $module_name;
+						} else {
+							$dependencies_aliases[$p]	= $module_name;
+						}
 					}
 					unset($p);
 				}
@@ -694,7 +690,15 @@ trait Includes {
 				}
 				if (isset($meta['provide'])) {
 					foreach ((array)$meta['provide'] as $p) {
-						$dependencies_aliases[$p]	= $plugin_name;
+						/**
+						 * If provides sub-functionality of other component (Blog/post_patch) - inverse "providing" to "dependency"
+						 */
+						if (strpos($p, '/') !== false) {
+							$p                  = explode('/', $p)[0];
+							$dependencies[$p][] = $plugin_name;
+						} else {
+							$dependencies_aliases[$p]	= $plugin_name;
+						}
 					}
 					unset($p);
 				}

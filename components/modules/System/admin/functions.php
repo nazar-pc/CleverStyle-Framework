@@ -317,33 +317,29 @@ function check_dependencies ($name, $type, $dir = null, $mode = 'enable') {
 		if (
 			!empty($conflict) &&
 			isset($module_meta['conflict']) &&
-			!empty($module_meta['conflict'])
+			version_compare(
+				$module_meta['version'],
+				$conflict[$module_meta['package']][1],
+				$conflict[$module_meta['package']][0]
+			)
 		) {
-			if (
-				version_compare(
-					$module_meta['version'],
-					$conflict[$module_meta['package']][1],
-					$conflict[$module_meta['package']][0]
-				)
-			) {
-				if ($return_m) {
-					$Page->warning($L->dependencies_not_satisfied);
-				}
-				$return_m	= false;
-				$Page->warning(
-					$L->conflict_module(
-						$module_meta['package'],
-						$module
-					).
-					(
-						$conflict[$module_meta['package']][1] != 0 ? $L->compatible_package_versions(
-							$require[$module_meta['package']][0].' '.$require[$module_meta['package']][1]
-						) : $L->package_is_incompatible(
-							$module_meta['package']
-						)
-					)
-				);
+			if ($return_m) {
+				$Page->warning($L->dependencies_not_satisfied);
 			}
+			$return_m	= false;
+			$Page->warning(
+				$L->conflict_module(
+					$module_meta['package'],
+					$module
+				).
+				(
+					$conflict[$module_meta['package']][1] != 0 ? $L->compatible_package_versions(
+						$require[$module_meta['package']][0].' '.$require[$module_meta['package']][1]
+					) : $L->package_is_incompatible(
+						$module_meta['package']
+					)
+				)
+			);
 		}
 	}
 	$return		= $return && $return_m;
@@ -369,7 +365,6 @@ function check_dependencies ($name, $type, $dir = null, $mode = 'enable') {
 			!empty($provide) &&
 			isset($plugin_meta['provide']) &&
 			is_array($plugin_meta['provide']) &&
-			!empty($plugin_meta['provide']) &&
 			$intersect = array_intersect($provide, $plugin_meta['provide'])
 		) {
 			if ($return_p) {
@@ -426,29 +421,29 @@ function check_dependencies ($name, $type, $dir = null, $mode = 'enable') {
 		/**
 		 * Checking for conflict packages
 		 */
-		if (isset($plugin_meta['conflict']) && is_array($plugin_meta['conflict']) && !empty($plugin_meta['conflict'])) {
-			if (
-				version_compare(
-					$plugin_meta['version'],
-					$conflict[$plugin_meta['package']][1],
-					$conflict[$plugin_meta['package']][0]
-				)
-			) {
-				if ($return_p) {
-					$Page->warning($L->dependencies_not_satisfied);
-				}
-				$return_p	= false;
-				$Page->warning(
-					$L->conflict_plugin($plugin).
-					(
-						$conflict[$plugin_meta['package']][1] != 0 ? $L->compatible_package_versions(
-							$require[$plugin_meta['package']][0].' '.$require[$plugin_meta['package']][1]
-						) : $L->package_is_incompatible(
-							$plugin_meta['package']
-						)
-					)
-				);
+		if (
+			isset($plugin_meta['conflict']) &&
+			is_array($plugin_meta['conflict']) &&
+			version_compare(
+				$plugin_meta['version'],
+				$conflict[$plugin_meta['package']][1],
+				$conflict[$plugin_meta['package']][0]
+			)
+		) {
+			if ($return_p) {
+				$Page->warning($L->dependencies_not_satisfied);
 			}
+			$return_p	= false;
+			$Page->warning(
+				$L->conflict_plugin($plugin).
+				(
+					$conflict[$plugin_meta['package']][1] != 0 ? $L->compatible_package_versions(
+						$require[$plugin_meta['package']][0].' '.$require[$plugin_meta['package']][1]
+					) : $L->package_is_incompatible(
+						$plugin_meta['package']
+					)
+				)
+			);
 		}
 	}
 	$return		= $return && $return_p;

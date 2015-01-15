@@ -118,8 +118,12 @@ function get_header_info () {
 			h::{'div.cs-header-guest-form.active'}(
 				h::b("$L->hello, $L->guest!").
 				h::div(
-					h::{'button.uk-button.cs-button-compact.cs-header-sign-in-slide.uk-icon-sign-in'}($L->sign_in).
-					h::{'button.uk-button.cs-button-compact.cs-header-registration-slide.uk-icon-pencil'}(
+					h::{'button.uk-button.cs-button-compact.cs-header-sign-in-slide'}(
+						h::icon('sign-in').
+						$L->sign_in
+					).
+					h::{'button.uk-button.cs-button-compact.cs-header-registration-slide'}(
+						h::icon('pencil').
 						$L->sign_up,
 						[
 							'data-title'	=> $L->quick_registration_form
@@ -134,8 +138,11 @@ function get_header_info () {
 					'autocorrect'		=> 'off'
 				]).
 				h::br().
-				h::{'button.uk-button.cs-button-compact.cs-header-restore-password-process.uk-button.uk-icon-question[tabindex=2]'}($L->restore_password).
-				h::{'button.uk-button.cs-button-compact.uk-button.cs-header-back'}(
+				h::{'button.uk-button.cs-button-compact.cs-header-restore-password-process[tabindex=2]'}(
+					h::icon('question').
+					$L->restore_password
+				).
+				h::{'button.uk-button.cs-button-compact.cs-header-back'}(
 					h::icon('chevron-down'),
 					[
 						'data-title'	=> $L->back
@@ -149,7 +156,10 @@ function get_header_info () {
 					'autocorrect'		=> 'off'
 				]).
 				h::br().
-				h::{'button.uk-button.cs-button-compact.cs-header-registration-process.uk-button.uk-icon-pencil'}($L->sign_up).
+				h::{'button.uk-button.cs-button-compact.cs-header-registration-process'}(
+					h::icon('pencil').
+					$L->sign_up
+				).
 				h::{'button.uk-button.cs-button-compact.cs-header-back'}(
 					h::icon('chevron-down'),
 					[
@@ -167,7 +177,10 @@ function get_header_info () {
 					'placeholder'	=> $L->password
 				]).
 				h::br().
-				h::{'button.uk-button.cs-button-compact.uk-icon-sign-in[type=submit]'}($L->sign_in).
+				h::{'button.uk-button.cs-button-compact[type=submit]'}(
+					h::icon('sign-in').
+					$L->sign_in
+				).
 				h::{'button.uk-button.cs-button-compact.cs-header-back'}(
 					h::icon('chevron-down'),
 					[

@@ -19,8 +19,8 @@
       if (element.is(no_ui_selector) || element.closest(no_ui_selector).length) {
         return;
       }
-      element.filter('textarea:not(.cs-no-resize)').autosize();
-      return element.find("textarea:not(" + no_ui_selector + ", .cs-no-resize)").autosize();
+      element.filter('textarea:not(.cs-no-resize, .autosizejs)').autosize();
+      return element.find("textarea:not(" + no_ui_selector + ", .cs-no-resize, .autosizejs)").autosize();
     };
     ui_automatic_helpers_update($('body'));
     return (function() {

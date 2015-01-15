@@ -223,15 +223,7 @@ class Includes_processing {
 			/**
 			 * If content is link to CSS file
 			 */
-			if (
-				$link &&
-				preg_match('/stylesheet/Uims', $link) &&
-				preg_match('/href\s*=\s*[\'"](.*)[\'"]/Uims', $link, $url)
-			) {
-				$url	= $url[1];
-				if (!static::is_relative_path_and_exists($url)) {
-					continue;
-				}
+			if (static::has_relative_href($link, $url, 'stylesheet')) {
 				$links_and_styles_to_replace[]	= $links_and_styles[0][$index];
 				$shim							= $shim || static::need_shimming($links_and_styles[0][$index]);
 				$styles_content					.= static::css(
@@ -241,15 +233,7 @@ class Includes_processing {
 			/**
 			 * If content is HTML import
 			 */
-			} elseif (
-				$link &&
-				preg_match('/import/Uims', $link) &&
-				preg_match('/href\s*=\s*[\'"](.*)[\'"]/Uims', $link, $url)
-			) {
-				$url	= $url[1];
-				if (!static::is_relative_path_and_exists($url)) {
-					continue;
-				}
+			} elseif (static::has_relative_href($link, $url, 'import')) {
 				$links_and_styles_to_replace[]	= $links_and_styles[0][$index];
 				$imports_content				.= static::html(
 					file_get_contents($url),
@@ -306,12 +290,22 @@ class Includes_processing {
 		$data	.= $imports_content;
 	}
 	/**
-	 * @param string $content
+	 * @param string $link
+	 * @param string $url
+	 * @param string $rel
 	 *
 	 * @return bool
 	 */
-	protected static function need_shimming ($content) {
-		return preg_match('/shim-shadowdom/Uims', $content);
+	protected static function has_relative_href ($link, &$url, $rel) {
+		$result =
+			$link &&
+			preg_match('/rel\s*=\s*[\'"]'.$rel.'[\'"]/Uims', $link) &&
+			preg_match('/href\s*=\s*[\'"](.*)[\'"]/Uims', $link, $url);
+		if ($result && static::is_relative_path_and_exists($url[1])) {
+			$url = $url[1];
+			return true;
+		}
+		return false;
 	}
 	/**
 	 * Simple check for http[s], ftp and absolute links
@@ -322,5 +316,13 @@ class Includes_processing {
 	 */
 	protected static function is_relative_path_and_exists ($path) {
 		return !preg_match('#^(http://|https://|ftp://|/)#i', $path) && file_exists($path);
+	}
+	/**
+	 * @param string $content
+	 *
+	 * @return bool
+	 */
+	protected static function need_shimming ($content) {
+		return preg_match('/shim-shadowdom/Uims', $content);
 	}
 }

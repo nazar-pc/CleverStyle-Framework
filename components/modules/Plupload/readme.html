@@ -2,10 +2,10 @@
 <h3 style="text-align: center;">Integration of Plupload into CleverStyle CMS for files uploading, adds files uploading functionality to other modules</h3>
 
 <h4>Integration of files uploading (client-side):</h4>
-<p>Integration on client-side is possible through JavaScript function <code>file_upload()</code></p>
+<p>Integration on client-side is possible through JavaScript function <code>cs.file_upload()</code></p>
 <ul>
 	<li>
-		<h4><code>file_upload(button, success, error, progress, multi, drop_element)</code></h4>
+		<h4><code>cs.file_upload(button, success, error, progress, multi, drop_element)</code></h4>
 		<dl>
 			<dt>button</dt>
 			<dd>
@@ -42,7 +42,7 @@
 		},
 		function (error) {
 			tinymce.uploader_dialog.cs().modal('hide');
-			alert(error);
+			alert(error.message);
 		},
 		function (file) {
 			tinymce.uploader_dialog.find('.uk-progress-bar').width((file.percent ? file.percent : 1) + '%');
