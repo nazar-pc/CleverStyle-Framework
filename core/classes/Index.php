@@ -352,13 +352,13 @@ class Index {
 	protected function controller_router_handler_internal ($controller_class, $method_name, $required) {
 		$included =
 			method_exists($controller_class, $method_name) &&
-			$controller_class::$method_name() !== false;
+			$controller_class::$method_name($this->route_ids, $this->route_path) !== false;
 		if (!api_path()) {
 			return;
 		}
 		$included =
 			method_exists($controller_class, $method_name.'_'.$this->request_method) &&
-			$controller_class::{$method_name.'_'.$this->request_method}() !== false ||
+			$controller_class::{$method_name.'_'.$this->request_method}($this->route_ids, $this->route_path) !== false ||
 			$included;
 		if ($included || !$required) {
 			return;
