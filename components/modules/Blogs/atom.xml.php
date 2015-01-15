@@ -22,14 +22,35 @@ $title  = [
 	get_core_ml_text('name'),
 	$L->Blogs
 ];
-switch (@$_GET['mode']) {// TODO: feed for single tag, for section
-	default:
-		$title[] = $L->latest_posts;
+$Blogs  = Blogs::instance();
+$number = $Config->module('Blogs')->posts_per_page;
+if (isset($_GET['section'])) {
+	$section = $Blogs->get_section($_GET['section']);
+	if (!$section) {
+		error_code(404);
+		return;
+	}
+	$title[] = $L->section;
+	$title[] = $section['title'];
+	$posts   = $Blogs->get_for_section($section['id'], 1, $number);
+} elseif (isset($_GET['tag'])) {
+	$tag = [
+		'id'   => (int)$_GET['tag'],
+		'text' => $Blogs->get_tag($_GET['tag'])
+	];
+	if (!$tag['text']) {
+		error_code(404);
+		return;
+	}
+	$title[] = $L->tag;
+	$title[] = $tag['text'];
+	$posts   = $Blogs->get_for_tag($tag['id'], $L->clang, 1, $number);
+} else {
+	$posts = $Blogs->get_latest_posts(1, $number);
 }
+$title[]  = $L->latest_posts;
 $title    = implode($Config->core['title_delimiter'], $title);
 $base_url = $Config->base_url();
-$number   = $Config->module('Blogs')->posts_per_page;
-$Blogs    = Blogs::instance();
 header('Content-Type: application/atom+xml');
 interface_off();
 
@@ -68,7 +89,8 @@ $Page->content(
 				h::category($post['sections'] == ['0'] ? false : array_map(function ($category) {
 					return [
 						'term'  => h::prepare_attr_value($category['title']),
-						'label' => h::prepare_attr_value($category['title'])
+						'label' => h::prepare_attr_value($category['title']),
+						'level' => 0
 					];
 				}, $Blogs->get_section($post['sections']))).
 				h::summary(
@@ -83,7 +105,7 @@ $Page->content(
 						'type' => 'html'
 					]
 				);
-		}, $Blogs->get_latest_posts(1, $number))),
+		}, $posts ?: [])),
 		[
 			'xmlns'    => 'http://www.w3.org/2005/Atom',
 			'xml:lang' => $L->clang,
