@@ -51,7 +51,7 @@ if (
 					case UPLOAD_ERR_NO_FILE:
 						break;
 				}
-				if ($_FILES['upload_module']['error'] != UPLOAD_ERR_OK) {
+				if ($_FILES['upload_plugin']['error'] != UPLOAD_ERR_OK) {
 					break;
 				}
 				$tmp_file = TEMP.'/'.md5($_FILES['upload_plugin']['tmp_name'].MICROTIME).'.phar';
