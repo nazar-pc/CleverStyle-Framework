@@ -28,14 +28,14 @@ if (isset($_POST['simple_insert'])) {
 }
 
 $Index->content(
-	h::{'cs-table[center][list][with-header] cs-table-row| cs-table-cell'}(
-		[
+	h::{'cs-table[center][list][with-header]'}(
+		h::{'cs-table-row cs-table-cell'}([
 			$L->key,
 			$L->title,
 			$L->type,
 			$L->action
-		],
-		array_map(
+		]).
+		h::{'cs-table-row| cs-table-cell'}(array_map(
 			function ($item) use ($L, $Index) {
 				return [
 					$item['key'],
@@ -56,7 +56,7 @@ $Index->content(
 				];
 			},
 			$all_items
-		)
+		) ?: false)
 	).
 	h::{'p button.uk-button.cs-content-add'}($L->add).
 	h::{'cs-table[right-left] cs-table-row cs-table-cell'}(
