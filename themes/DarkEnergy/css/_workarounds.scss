@@ -6,11 +6,13 @@
  * @license		MIT License, see license.txt
  */
 
-.uk-article-title a,
-a {
-	color : #47adff;
+html /deep/ {
+	.uk-article-title a,
+	a {
+		color : #47adff;
 
-	&:hover {
-		color : #398ccc;
+		&:hover {
+			color : #398ccc;
+		}
 	}
 }
