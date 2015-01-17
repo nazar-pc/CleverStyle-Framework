@@ -273,14 +273,14 @@ class Config {
 	 *                    								Array contains next elements: route, relative_address, ADMIN, API, MODULE, HOME
 	 */
 	function process_route ($raw_relative_address) {
-		$rc	= trim($raw_relative_address, '/');
+		$rc	= explode('?', $raw_relative_address, 2)[0];
+		$rc	= trim($rc, '/');
 		/**
 		 * Routing replacing
 		 */
 		Trigger::instance()->run('System/Config/pre_routing_replace', [
 			'rc'	=> &$rc
 		]);
-		$rc	= explode('?', $rc, 2)[0];
 		if (!empty($this->routing['in'])) {
 			foreach ($this->routing['in'] as $i => $search) {
 				$rc = _preg_replace($search, $this->routing['out'][$i], $rc) ?: str_replace($search, $this->routing['out'][$i], $rc);

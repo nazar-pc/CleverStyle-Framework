@@ -36,7 +36,8 @@ class Core {
 		$this->set('fixed_language', false);
 		Trigger::instance()->register('System/Config/before_init', function () {
 			$clangs = file_exists(CACHE.'/languages_clangs') ? file_get_json(CACHE.'/languages_clangs') : Config::instance()->update_clangs();
-			$clang	= explode('/', trim($_SERVER['REQUEST_URI'], '/'), 2)[0];
+			$clang	= explode('?', $_SERVER['REQUEST_URI'], 2)[0];
+			$clang	= explode('/', trim($clang, '/'), 2)[0];
 			if (in_array($clang, $clangs)) {
 				$this->config['fixed_language']	= true;
 				$this->config['language']		= array_flip($clangs)[$clang];
