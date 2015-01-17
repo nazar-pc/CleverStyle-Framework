@@ -53,8 +53,9 @@ class Language implements JsonSerializable {
 	 *
 	 * @var bool
 	 */
-	protected $fixed_language = false;
-	protected $changed_once   = false;
+	protected $fixed_language        = false;
+	protected $changed_once          = false;
+	protected $facebook_scanned_once = false;
 	/**
 	 * Set basic language
 	 */
@@ -74,16 +75,7 @@ class Language implements JsonSerializable {
 		if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
 			return false;
 		}
-		$Cache = Cache::instance();
-		if (($aliases = $Cache->{'languages/aliases'}) === false) {
-			$aliases      = [];
-			$aliases_list = _strtolower(get_files_list(LANGUAGES.'/aliases'));
-			foreach ($aliases_list as $alias) {
-				$aliases[$alias] = file_get_contents(LANGUAGES."/aliases/$alias");
-			}
-			unset($aliases_list, $alias);
-			$Cache->{'languages/aliases'} = $aliases;
-		}
+		$aliases          = $this->get_aliases();
 		$accept_languages = str_replace(
 			'-',
 			'_',
@@ -102,6 +94,42 @@ class Language implements JsonSerializable {
 			}
 		}
 		return false;
+	}
+	/**
+	 * Detect language for Facebook if X-Facebook-Locale header is present
+	 *
+	 * @param array $active_languages
+	 *
+	 * @return bool|string
+	 */
+	protected function scan_facebook_header ($active_languages) {
+		if (!isset($_SERVER['HTTP_X_FACEBOOK_LOCALE'])) {
+			return false;
+		}
+		$aliases  = $this->get_aliases();
+		$language = strtolower($_SERVER['HTTP_X_FACEBOOK_LOCALE']);
+		if (@in_array($aliases[$language], $active_languages)) {
+			return $aliases[$language];
+		}
+		return false;
+	}
+	/**
+	 * Get languages aliases
+	 *
+	 * @return array|bool
+	 */
+	protected function get_aliases () {
+		$Cache = Cache::instance();
+		if (($aliases = $Cache->{'languages/aliases'}) === false) {
+			$aliases      = [];
+			$aliases_list = _strtolower(get_files_list(LANGUAGES.'/aliases'));
+			foreach ($aliases_list as $alias) {
+				$aliases[$alias] = file_get_contents(LANGUAGES."/aliases/$alias");
+			}
+			unset($aliases_list, $alias);
+			$Cache->{'languages/aliases'} = $aliases;
+		}
+		return $aliases;
 	}
 	/**
 	 * Get translation
@@ -178,8 +206,14 @@ class Language implements JsonSerializable {
 			return true;
 		}
 		$Config = Config::instance(true);
-		if (!$language && $Config->core['multilingual']) {
-			$language = $this->scan_aliases($Config->core['active_languages']) ?: $language;
+		if ($Config->core['multilingual']) {
+			if (!$language) {
+				$language = $this->scan_aliases($Config->core['active_languages']) ?: $language;
+			}
+			if (!$this->facebook_scanned_once) {
+				$this->facebook_scanned_once = true;
+				$language                    = $this->scan_facebook_header($Config->core['active_languages']) ?: $language;
+			}
 		}
 		if (
 			!$Config->core ||
