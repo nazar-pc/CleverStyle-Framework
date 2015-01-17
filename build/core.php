@@ -22,7 +22,7 @@ unset($file);
  */
 $list = array_merge(
 	get_files_list(DIR.'/components/modules/System', false, 'f', true, true, false, false, true),
-	get_files_list(DIR.'/core', '/^[^(ide)]/', 'f', true, true, false, false, true),
+	get_files_list(DIR.'/core', false, 'f', true, true, false, false, true),
 	get_files_list(DIR.'/custom', false, 'f', true, true, false, false, true),
 	get_files_list(DIR.'/includes', false, 'f', true, true, false, false, true),
 	get_files_list(DIR.'/templates', false, 'f', true, true, false, false, true),
