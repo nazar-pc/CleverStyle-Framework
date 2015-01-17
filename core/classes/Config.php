@@ -280,9 +280,7 @@ class Config {
 		Trigger::instance()->run('System/Config/pre_routing_replace', [
 			'rc'	=> &$rc
 		]);
-		if ($rc && strpos($rc, 'api/') === 0) {
-			$rc	= explode('?', $rc, 2)[0];
-		}
+		$rc	= explode('?', $rc, 2)[0];
 		if (!empty($this->routing['in'])) {
 			foreach ($this->routing['in'] as $i => $search) {
 				$rc = _preg_replace($search, $this->routing['out'][$i], $rc) ?: str_replace($search, $this->routing['out'][$i], $rc);
