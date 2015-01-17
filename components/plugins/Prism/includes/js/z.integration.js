@@ -21,8 +21,7 @@
       if (element.matches('[contenteditable=true] *') || element.matches('.INLINE_EDITOR *')) {
         continue;
       }
-      element.classList.add('line-numbers');
-      element.parentNode.classList.add('prism-allow-modification');
+      (element.parentNode.tagName === 'PRE' ? element.parentNode : element).classList.add('line-numbers');
       _results.push(Prism.highlightElement(element, async === true, callback));
     }
     return _results;

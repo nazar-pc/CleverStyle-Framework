@@ -10,7 +10,11 @@ Prism.highlightAll = (async, callback) ->
 	for element in elements
 		if element.matches('[contenteditable=true] *') || element.matches('.INLINE_EDITOR *')
 			continue
-		element.classList.add('line-numbers')
-		element.parentNode.classList.add('prism-allow-modification')
+		(
+			if element.parentNode.tagName == 'PRE'
+				element.parentNode
+			else
+				element
+		).classList.add('line-numbers')
 		Prism.highlightElement(element, async == true, callback);
 document.addEventListener('DOMContentLoaded', Prism.highlightAll)

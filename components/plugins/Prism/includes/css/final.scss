@@ -4,6 +4,6 @@
  * @copyright	Copyright (c) 2015, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-html /deep/ .prism-allow-modification {
+html /deep/ {
 	@import 'prism';
 }
