@@ -101,7 +101,7 @@ class Config {
 	 * Engine initialization (or reinitialization if necessary)
 	 */
 	protected function init () {
-		Language::instance()->change($this->core['language']);
+		Language::instance()->change('');
 		$Page	= Page::instance();
 		$Page->init(
 			get_core_ml_text('name'),

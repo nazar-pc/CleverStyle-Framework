@@ -35,7 +35,7 @@ class Language implements JsonSerializable {
 	 *
 	 * @var callable
 	 */
-	public $time = null;
+	public $time;
 	/**
 	 * For single initialization
 	 *
@@ -55,7 +55,6 @@ class Language implements JsonSerializable {
 	 */
 	protected $fixed_language        = false;
 	protected $changed_once          = false;
-	protected $facebook_scanned_once = false;
 	/**
 	 * Set basic language
 	 */
@@ -206,15 +205,10 @@ class Language implements JsonSerializable {
 			return true;
 		}
 		$Config = Config::instance(true);
-		if ($Config->core['multilingual']) {
-			if (!$language) {
-				$language = $this->scan_aliases($Config->core['active_languages']) ?: $language;
-			}
-			if (!$this->facebook_scanned_once) {
-				$this->facebook_scanned_once = true;
-				$language                    = $this->scan_facebook_header($Config->core['active_languages']) ?: $language;
-			}
+		if (!$language && $Config->core['multilingual']) {
+			$language = $this->scan_facebook_header($Config->core['active_languages']) ?: $this->scan_aliases($Config->core['active_languages']);
 		}
+		$language = $language ?: $Config->core['language'];
 		if (
 			!$Config->core ||
 			$language == $Config->core['language'] ||
