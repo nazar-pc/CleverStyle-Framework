@@ -69,14 +69,9 @@ class Blogs {
 					`draft`
 				FROM `[prefix]blogs_posts`
 				WHERE
-					`id` = '%s' AND
-					(
-						`user`	= '%s' OR
-						`draft`	= 0
-					)
+					`id` = '%s'
 				LIMIT 1",
-				$id,
-				User::instance()->id
+				$id
 			]);
 			if ($data) {
 				$data['title']         = $this->ml_process($data['title']);

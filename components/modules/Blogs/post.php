@@ -43,7 +43,12 @@ if (!$post) {
 	return;
 }
 $post	= $Blogs->get($post, true);
-if (!$post) {
+if (
+	!$post ||
+	(
+		$post['draft'] && $post['user'] != $User->id
+	)
+) {
 	error_code(404);
 	return;
 }
