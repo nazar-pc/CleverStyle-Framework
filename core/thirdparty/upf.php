@@ -1318,7 +1318,7 @@ function find_links ($text) {
  * @return string
  */
 function path ($text) {
-	$text	= preg_replace('/[\s\(\)\/\\#]+/', '_', $text);
+	$text	= preg_replace('/[\s\(\)\/\\#?]+/', '_', $text);
 	$text	= preg_replace('/_+/', '_', $text);
 	return trim($text, '_');
 }
