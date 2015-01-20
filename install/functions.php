@@ -360,11 +360,12 @@ function install_process ($argv = null) {
 		"INSERT INTO `[prefix]config` (
 			`domain`, `core`, `db`, `storage`, `components`, `replace`, `routing`
 		) VALUES (
-			'%1\$s', '%2\$s', '[]', '[]', '%3\$s', '%4\$s', '%4\$s'
+			'%s', '%s', '[]', '[]', '%s', '%s', '%s'
 		)",
 		$config['cookie_domain'][0],
 		_json_encode($config),
 		'{"modules":'._json_encode($modules).',"plugins":[],"blocks":[]}',
+		'{"in":[],"out":[]}',
 		'{"in":[],"out":[]}'
 	)) {
 		return "Can't import system configuration into database! Installation aborted.";
@@ -386,7 +387,7 @@ function install_process ($argv = null) {
 		$_POST['admin_email'],
 		hash('sha224', $_POST['admin_email']),
 		time(),
-		@$_SERVER['REMOTE_ADDR'] ?: '127.0.0.1',
+		$_SERVER->remote_addr,
 		1
 	)) {
 		return "Can't register administrator user! Installation aborted.";

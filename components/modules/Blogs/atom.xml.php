@@ -63,14 +63,16 @@ function get_favicon_path ($theme) {
 	}
 	return 'favicon.ico';
 }
-
+/**
+ * @var \cs\_SERVER $_SERVER
+ */
 $Page->content(
 	"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n".
 	h::feed(
 		h::title($title).
-		h::id($Config->core_url().$_SERVER['REQUEST_URI']).
+		h::id($Config->core_url().$_SERVER->request_uri).
 		str_replace('>', '/>', h::link([
-			'href' => $Config->core_url().$_SERVER['REQUEST_URI'],
+			'href' => $Config->core_url().$_SERVER->request_uri,
 			'rel'  => 'self'
 		])).
 		h::updated(date('c')).

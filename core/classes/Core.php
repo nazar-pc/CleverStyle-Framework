@@ -35,8 +35,11 @@ class Core {
 		date_default_timezone_set($this->config['timezone']);
 		$this->set('fixed_language', false);
 		Trigger::instance()->register('System/Config/before_init', function () {
+			/**
+			 * @var _SERVER $_SERVER
+			 */
 			$clangs = file_exists(CACHE.'/languages_clangs') ? file_get_json(CACHE.'/languages_clangs') : Config::instance()->update_clangs();
-			$clang	= explode('?', $_SERVER['REQUEST_URI'], 2)[0];
+			$clang	= explode('?', $_SERVER->request_uri, 2)[0];
 			$clang	= explode('/', trim($clang, '/'), 2)[0];
 			if (in_array($clang, $clangs)) {
 				$this->config['fixed_language']	= true;
@@ -85,15 +88,18 @@ AddEncoding gzip .html
 			);
 		}
 		/**
+		 * @var _SERVER $_SERVER
+		 */
+		/**
 		 * Support for JSON requests, filling $_POST array for request method different than POST
 		 */
-		if (isset($_SERVER['CONTENT_TYPE'])) {
-			if (strpos($_SERVER['CONTENT_TYPE'], 'application/json') === 0) {
+		if (isset($_SERVER->content_type)) {
+			if (strpos($_SERVER->content_type, 'application/json') === 0) {
 				$_POST		= _json_decode(@file_get_contents('php://input')) ?: [];
 				$_REQUEST	= array_merge($_REQUEST, $_POST);
 			} elseif (
-				strtolower($_SERVER['REQUEST_METHOD']) !== 'post' &&
-				strpos($_SERVER['CONTENT_TYPE'], 'application/x-www-form-urlencoded') === 0
+				strtolower($_SERVER->request_method) !== 'post' &&
+				strpos($_SERVER->content_type, 'application/x-www-form-urlencoded') === 0
 			) {
 				@parse_str(file_get_contents('php://input'), $_POST);
 				$_REQUEST	= array_merge($_REQUEST, $_POST);

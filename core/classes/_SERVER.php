@@ -10,6 +10,7 @@ use
 	ArrayIterator;
 
 /**
+ * Generic wrapper for `$_SERVER` to make its usage easier and more secure
  *
  * @property string $accept_language Language accepted by client, `''` by default
  * @property string $accept_version  Version accepted by client, will match `/^[0-9\.]+$/`, `1` by default

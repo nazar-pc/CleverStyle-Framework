@@ -74,15 +74,18 @@ Trigger::instance()
 			$relative_address	= $Config->server['relative_address'];
 			$Core				= Core::instance();
 			$Cache				= Cache::instance();
+			/**
+			 * @var _SERVER $_SERVER
+			 */
 			if (
 				!$Core->fixed_language &&
-				$_SERVER['REQUEST_METHOD'] == 'GET' &&
-				$Cache->cache_state() &&
+				$_SERVER->request_method == 'GET' &&
 				$Core->cache_engine != 'BlackHole' &&
-				@$Config->route[0]	!= 'robots.txt'
+				@$Config->route[0]	!= 'robots.txt' &&
+				$Cache->cache_state()
 			) {
 				$clang			= Language::instance()->clang;
-				$query_string	= $_SERVER['QUERY_STRING'] ? "?$_SERVER[QUERY_STRING]" : '';
+				$query_string	= $_SERVER->query_string ? "?$_SERVER->query_string" : '';
 				if (!home_page()) {
 					header("Location: /$clang/$relative_address$query_string", true, 301);
 				} else {

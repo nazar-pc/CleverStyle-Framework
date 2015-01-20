@@ -157,7 +157,10 @@ class Index {
 			_include_once(PLUGINS."/$plugin/index.php", false);
 		}
 		_include_once("$this->working_directory/prepare.php", false);
-		$this->request_method = strtolower($_SERVER['REQUEST_METHOD']);
+		/**
+		 * @var _SERVER $_SERVER
+		 */
+		$this->request_method = strtolower($_SERVER->request_method);
 		if (!preg_match('/^[a-z]+$/', $this->request_method)) {
 			error_code(400);
 		}
