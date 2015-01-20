@@ -132,10 +132,9 @@ class Config {
 		if (!is_array($ips) || empty($ips)) {
 			return false;
 		}
-		$REMOTE_ADDR			= preg_replace('/[^a-f0-9\.:]/i', '', $_SERVER['REMOTE_ADDR']);
-		$HTTP_X_REAL_IP			= @preg_replace('/[^a-f0-9\.:]/i', '', $_SERVER['HTTP_X_REAL_IP']) ?: false;
-		$HTTP_X_FORWARDED_FOR	= @preg_replace('/[^a-f0-9\.:]/i', '', $_SERVER['HTTP_X_FORWARDED_FOR']) ?: false;
-		$HTTP_CLIENT_IP			= @preg_replace('/[^a-f0-9\.:]/i', '', $_SERVER['HTTP_CLIENT_IP']) ?: false;
+		/**
+		 * @var _SERVER $_SERVER
+		 */
 		foreach ($ips as $ip) {
 			if ($ip) {
 				$char = mb_substr($ip, 0, 1);
@@ -143,10 +142,11 @@ class Config {
 					$ip = "/$ip/";
 				}
 				if (
-					_preg_match($ip, $REMOTE_ADDR) ||
-					@_preg_match($ip, $HTTP_X_REAL_IP) ||
-					@_preg_match($ip, $HTTP_X_FORWARDED_FOR) ||
-					@_preg_match($ip, $HTTP_CLIENT_IP)
+					_preg_match($ip, $_SERVER->remote_addr) ||
+					(
+						$_SERVER->ip &&
+						_preg_match($ip, $_SERVER->ip)
+					)
 				) {
 					return true;
 				}
@@ -160,18 +160,17 @@ class Config {
 	protected function routing () {
 		$L								= Language::instance();
 		$server							= &$this->server;
-		$server['raw_relative_address']	= urldecode(trim($_SERVER['REQUEST_URI'], '/'));
+		/**
+		 * @var _SERVER $_SERVER
+		 */
+		$server['raw_relative_address']	= urldecode(trim($_SERVER->request_uri, '/'));
 		$server['raw_relative_address']	= null_byte_filter($server['raw_relative_address']);
 		if (Core::instance()->fixed_language) {
 			$server['raw_relative_address']	= explode('/', $server['raw_relative_address'], 2);
 			$server['raw_relative_address']	= isset($server['raw_relative_address'][1]) ? $server['raw_relative_address'][1] : '';
 		}
-		$server['host']					= $_SERVER['HTTP_HOST'];
-		if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
-			$server['protocol']	= $_SERVER['HTTP_X_FORWARDED_PROTO'];
-		} else {
-			$server['protocol'] = @$_SERVER['HTTPS'] == 'on' ? 'https' : 'http';
-		}
+		$server['host']		= $_SERVER->host;
+		$server['protocol']	= $_SERVER->secure ? 'https' : 'http';
 		/**
 		 * Search for url matching in all mirrors
 		 */
@@ -181,7 +180,7 @@ class Config {
 			$server['mirrors'][$protocol][]	= $urls[0];
 			if ($protocol == $server['protocol'] && $server['mirror_index'] === -1) {
 				foreach ($urls as $url) {
-					if (mb_strpos("$_SERVER[HTTP_HOST]$server[raw_relative_address]", $url) === 0) {
+					if (mb_strpos("$server[host]$server[raw_relative_address]", $url) === 0) {
 						$server['mirror_index']	= $i;
 						break;
 					}
@@ -237,11 +236,11 @@ class Config {
 	 * @return bool
 	 */
 	protected function is_referer_local () {
-		if (@strpos($_SERVER['HTTP_REFERER'], '://') === false) {
+		if (!$_SERVER->referer) {
 			return false;
 		}
 		$referer	= [
-			'url'		=> $_SERVER['HTTP_REFERER'],
+			'url'		=> $_SERVER->referer,
 			'host'		=> '',
 			'protocol'	=> '',
 			'local'		=> false

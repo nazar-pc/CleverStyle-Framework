@@ -14,6 +14,7 @@ require __DIR__.'/core/thirdparty/upf.php';
 define('STORAGE',	__DIR__.'/storage/public');
 chdir(STORAGE);
 if (
+	isset($_SERVER['HTTP_USER_AGENT']) &&
 	$_SERVER['HTTP_USER_AGENT'] == 'CleverStyle CMS' &&
 	file_exists(__DIR__.'/config.php') &&
 	isset($_POST['data'])

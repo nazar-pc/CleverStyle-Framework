@@ -8,7 +8,10 @@
  */
 namespace	cs;
 $Page	= Page::instance();
-if (isset($_SERVER['HTTP_USER_AGENT']) && preg_match('/msie|trident/i',$_SERVER['HTTP_USER_AGENT'])) {
-	$Page->Head	.= '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">';
+/**
+ * @var _SERVER $_SERVER
+ */
+if (preg_match('/msie|trident/i', $_SERVER->user_agent)) {
+	Page::instance()->Head	.= '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">';
 }
 $Page->Head	.= '<meta name="viewport" content="width=device-width">';

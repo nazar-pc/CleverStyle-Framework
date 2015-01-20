@@ -49,16 +49,20 @@ class _SERVER extends ArrayIterator {
 			isset($SERVER['HTTP_ACCEPT_VERSION']) && preg_match('/^[0-9\.]+$/', $SERVER['HTTP_ACCEPT_VERSION']) ? $SERVER['HTTP_ACCEPT_VERSION'] : 1;
 		$this->content_type    = isset($SERVER['CONTENT_TYPE']) ? $SERVER['CONTENT_TYPE'] : '';
 		$this->dnt             = isset($SERVER['HTTP_DNT']) && $SERVER['HTTP_DNT'] == 1;
-		$this->host            = $SERVER['SERVER_NAME'];
-		if (isset($SERVER['HTTP_HOST']) && filter_var($this->host, FILTER_VALIDATE_IP)) {
-			$this->host = $SERVER['HTTP_HOST'];
+		$this->host            = isset($SERVER['SERVER_NAME']) ? $SERVER['SERVER_NAME'] : '';
+		if (isset($SERVER['HTTP_HOST'])) {
+			if (filter_var($this->host, FILTER_VALIDATE_IP)) {
+				$this->host = $SERVER['HTTP_HOST'];
+			} elseif (strpos($SERVER['HTTP_HOST'], ':') !== false) {
+				$this->host .= ':'.(int)explode(':', $SERVER['HTTP_HOST'], 2)[1];
+			}
 		}
 		$this->ip             = $this->ip($_SERVER);
-		$this->query_string   = $SERVER['QUERY_STRING'];
+		$this->query_string   = isset($SERVER['QUERY_STRING']) ? $SERVER['QUERY_STRING'] : '';
 		$this->referer        = isset($SERVER['HTTP_REFERER']) && filter_var($SERVER['HTTP_REFERER'], FILTER_VALIDATE_URL) ? $SERVER['HTTP_REFERER'] : '';
-		$this->remote_addr    = $SERVER['REMOTE_ADDR'];
-		$this->request_uri    = $SERVER['REQUEST_URI'];
-		$this->request_method = $SERVER['REQUEST_METHOD'];
+		$this->remote_addr    = isset($SERVER['REMOTE_ADDR']) ? $SERVER['REMOTE_ADDR'] : '127.0.0.1';
+		$this->request_uri    = isset($SERVER['REQUEST_URI']) ? $SERVER['REQUEST_URI'] : '';
+		$this->request_method = isset($SERVER['REQUEST_METHOD']) ? $SERVER['REQUEST_METHOD'] : '';
 		$this->secure         = isset($SERVER['HTTPS']) ? $SERVER['HTTPS'] == 'on' : (
 			isset($SERVER['HTTP_X_FORWARDED_PROTO']) && $SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'
 		);
@@ -88,7 +92,7 @@ class _SERVER extends ArrayIterator {
 				}
 			}
 		}
-		return $SERVER['REMOTE_ADDR'];
+		return isset($SERVER['REMOTE_ADDR']) ? '127.0.0.1' : '';
 	}
 	/**
 	 * Whether key exists (from original `$_SERVER` super global)

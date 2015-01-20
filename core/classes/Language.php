@@ -71,11 +71,17 @@ class Language implements JsonSerializable {
 	 * @return bool|string
 	 */
 	protected function scan_aliases ($active_languages) {
+		/**
+		 * @var _SERVER $_SERVER
+		 */
 		$aliases          = $this->get_aliases();
-		$accept_languages = str_replace(
-			'-',
-			'_',
-			explode(',', strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']))
+		$accept_languages =  array_filter(
+			explode(
+				',',
+				strtolower(
+					strtr('-', '_', $_SERVER->accept_language)
+				)
+			)
 		);
 		/**
 		 * For `X-Facebook-Locale` and other similar

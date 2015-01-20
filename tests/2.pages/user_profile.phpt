@@ -6,7 +6,7 @@ namespace cs;
 include __DIR__.'/../custom_loader.php';
 include __DIR__.'/../_SERVER.php';
 // Simulate regular initialization
-$_SERVER['REQUEST_URI']	= '/Profile/admin';
+$_SERVER->request_uri = '/Profile/admin';
 Language::instance();
 Index::instance();
 shutdown_function(false);

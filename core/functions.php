@@ -298,7 +298,7 @@ function _setcookie ($name, $value, $expire = 0, $httponly = false) {
 			$value,
 			$expire,
 			'/',
-			$_SERVER['HTTP_HOST'],
+			$_SERVER->host,
 			false,
 			$httponly
 		);

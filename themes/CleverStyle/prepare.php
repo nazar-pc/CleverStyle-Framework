@@ -7,6 +7,9 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-if (isset($_SERVER['HTTP_USER_AGENT']) && preg_match('/msie|trident/i',$_SERVER['HTTP_USER_AGENT'])) {
+/**
+ * @var _SERVER $_SERVER
+ */
+if (preg_match('/msie|trident/i', $_SERVER->user_agent)) {
 	Page::instance()->Head	.= '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">';
 }
