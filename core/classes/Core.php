@@ -85,13 +85,16 @@ AddEncoding gzip .html
 			);
 		}
 		/**
-		 * Support for JSON requests, filling $_POST array for request methods different than GET and POST
+		 * Support for JSON requests, filling $_POST array for request method different than POST
 		 */
-		if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') === 0) {
-			$_POST		= _json_decode(@file_get_contents('php://input')) ?: [];
-			$_REQUEST	= array_merge($_REQUEST, $_POST);
-		} elseif (!in_array(strtolower($_SERVER['REQUEST_METHOD']), ['get', 'post'])) {
-			if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/x-www-form-urlencoded') === 0) {
+		if (isset($_SERVER['CONTENT_TYPE'])) {
+			if (strpos($_SERVER['CONTENT_TYPE'], 'application/json') === 0) {
+				$_POST		= _json_decode(@file_get_contents('php://input')) ?: [];
+				$_REQUEST	= array_merge($_REQUEST, $_POST);
+			} elseif (
+				strtolower($_SERVER['REQUEST_METHOD']) !== 'post' &&
+				strpos($_SERVER['CONTENT_TYPE'], 'application/x-www-form-urlencoded') === 0
+			) {
 				@parse_str(file_get_contents('php://input'), $_POST);
 				$_REQUEST	= array_merge($_REQUEST, $_POST);
 			}

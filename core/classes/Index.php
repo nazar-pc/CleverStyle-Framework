@@ -158,6 +158,9 @@ class Index {
 		}
 		_include_once("$this->working_directory/prepare.php", false);
 		$this->request_method = strtolower($_SERVER['REQUEST_METHOD']);
+		if (!preg_match('/^[a-z]+$/', $this->request_method)) {
+			error_code(400);
+		}
 	}
 	/**
 	 * Store permission group for further checks, check whether user allowed to access `index` permission label of this group
