@@ -99,7 +99,7 @@ class _SERVER implements ArrayAccess, Iterator {
 		return isset($SERVER['REMOTE_ADDR']) ? '127.0.0.1' : '';
 	}
 	/**
-	 * Whether key exists (from original `$_SERVER` super global)
+	 * Whether key exists (from original `$_SERVER` superglobal)
 	 *
 	 * @param string $index
 	 *
@@ -109,7 +109,7 @@ class _SERVER implements ArrayAccess, Iterator {
 		return isset($this->_SERVER[$index]);
 	}
 	/**
-	 * Get key (from original `$_SERVER` super global)
+	 * Get key (from original `$_SERVER` superglobal)
 	 *
 	 * @param string $index
 	 *
@@ -119,7 +119,7 @@ class _SERVER implements ArrayAccess, Iterator {
 		return $this->_SERVER[$index];
 	}
 	/**
-	 * Set key (from original `$_SERVER` super global)
+	 * Set key (from original `$_SERVER` superglobal)
 	 *
 	 * @param string $index
 	 * @param mixed  $value
@@ -129,7 +129,7 @@ class _SERVER implements ArrayAccess, Iterator {
 		$this->update($this->_SERVER);
 	}
 	/**
-	 * Unset key (from original `$_SERVER` super global)
+	 * Unset key (from original `$_SERVER` superglobal)
 	 *
 	 * @param string $index
 	 */
@@ -137,7 +137,7 @@ class _SERVER implements ArrayAccess, Iterator {
 		unset($this->_SERVER[$index]);
 	}
 	/**
-	 * Get current (from original `$_SERVER` super global)
+	 * Get current (from original `$_SERVER` superglobal)
 	 *
 	 * @return mixed Can return any type.
 	 */
@@ -145,13 +145,13 @@ class _SERVER implements ArrayAccess, Iterator {
 		return current($this->_SERVER);
 	}
 	/**
-	 * Move forward to next element (from original `$_SERVER` super global)
+	 * Move forward to next element (from original `$_SERVER` superglobal)
 	 */
 	public function next () {
 		next($this->_SERVER);
 	}
 	/**
-	 * Return the key of the current element (from original `$_SERVER` super global)
+	 * Return the key of the current element (from original `$_SERVER` superglobal)
 	 *
 	 * @return mixed scalar on success, or null on failure.
 	 */
@@ -159,7 +159,7 @@ class _SERVER implements ArrayAccess, Iterator {
 		return key($this->_SERVER);
 	}
 	/**
-	 * Checks if current position is valid (from original `$_SERVER` super global)
+	 * Checks if current position is valid (from original `$_SERVER` superglobal)
 	 *
 	 * @return boolean The return value will be casted to boolean and then evaluated.
 	 * Returns true on success or false on failure.
@@ -168,7 +168,7 @@ class _SERVER implements ArrayAccess, Iterator {
 		return $this->key() !== null;
 	}
 	/**
-	 * Rewind the Iterator to the first element (from original `$_SERVER` super global)
+	 * Rewind the Iterator to the first element (from original `$_SERVER` superglobal)
 	 */
 	public function rewind () {
 		reset($this->_SERVER);
