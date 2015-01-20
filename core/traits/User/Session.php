@@ -65,18 +65,16 @@ trait Session {
 		if ($session_id && !($result = $Cache->{"sessions/$session_id"})) {
 			$condition	= $Config->core['remember_user_ip'] ?
 				"AND
-				`ip`			= '".ip2hex($_SERVER->ip)."' AND
-				`forwarded_for`	= '".ip2hex($_SERVER->ip)."' AND
-				`client_ip`		= '".ip2hex($_SERVER->ip)."'"
+				`remote_addr`	= '".ip2hex($_SERVER->remote_addr)."' AND
+				`ip`			= '".ip2hex($_SERVER->ip)."'"
 				: '';
 			$result	= $this->db()->qf([
 				"SELECT
 					`user`,
 					`expire`,
 					`user_agent`,
-					`ip`,
-					`forwarded_for`,
-					`client_ip`
+					`remote_addr`,
+					`ip`
 				FROM `[prefix]sessions`
 				WHERE
 					`id`			= '%s' AND
@@ -251,7 +249,8 @@ trait Session {
 			/**
 			 * @var \cs\_SERVER $_SERVER
 			 */
-			$ip = ip2hex($_SERVER->ip);
+			$remote_addr = ip2hex($_SERVER->remote_addr);
+			$ip          = ip2hex($_SERVER->ip);
 			$this->db_prime()->q(
 				"INSERT INTO `[prefix]sessions`
 					(
@@ -260,11 +259,9 @@ trait Session {
 						`created`,
 						`expire`,
 						`user_agent`,
-						`ip`,
-						`forwarded_for`,
-						`client_ip`
+						`remote_addr`,
+						`ip`
 					) VALUES (
-						'%s',
 						'%s',
 						'%s',
 						'%s',
@@ -281,8 +278,7 @@ trait Session {
 				 */
 				TIME + ($user != User::GUEST_ID || $Config->core['session_expire'] < 300 ? $Config->core['session_expire'] : 300),
 				$_SERVER->user_agent,
-				$ip,
-				$ip,
+				$remote_addr,
 				$ip
 			);
 			$time								= TIME;
@@ -294,9 +290,8 @@ trait Session {
 				'user'			=> $user,
 				'expire'		=> TIME + $Config->core['session_expire'],
 				'user_agent'	=> $_SERVER->user_agent,
-				'ip'			=> $ip,
-				'forwarded_for'	=> $ip,
-				'client_ip'		=> $ip
+				'remote_addr'	=> $remote_addr,
+				'ip'			=> $ip
 			];
 			_setcookie('session', $hash, TIME + $Config->core['session_expire']);
 			$this->get_session_user();
