@@ -71,18 +71,18 @@ class Language implements JsonSerializable {
 	 * @return bool|string
 	 */
 	protected function scan_aliases ($active_languages) {
-		if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-			return false;
-		}
 		$aliases          = $this->get_aliases();
 		$accept_languages = str_replace(
 			'-',
 			'_',
 			explode(',', strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']))
 		);
-		foreach (_strtolower($_SERVER) as $i => $v) {
-			if (preg_match('/.*locale/i', $i)) {
-				$accept_languages[] = strtolower($v);
+		/**
+		 * For `X-Facebook-Locale` and other similar
+		 */
+		foreach ($_SERVER as $i => $v) {
+			if (preg_match('/.*_LOCALE$/i', $i)) {
+				array_unshift($accept_languages, strtolower($v));
 			}
 		}
 		unset($i, $v);
@@ -91,24 +91,6 @@ class Language implements JsonSerializable {
 			if (@in_array($aliases[$language], $active_languages)) {
 				return $aliases[$language];
 			}
-		}
-		return false;
-	}
-	/**
-	 * Detect language for Facebook if X-Facebook-Locale header is present
-	 *
-	 * @param array $active_languages
-	 *
-	 * @return bool|string
-	 */
-	protected function scan_facebook_header ($active_languages) {
-		if (!isset($_SERVER['HTTP_X_FACEBOOK_LOCALE'])) {
-			return false;
-		}
-		$aliases  = $this->get_aliases();
-		$language = strtolower($_SERVER['HTTP_X_FACEBOOK_LOCALE']);
-		if (@in_array($aliases[$language], $active_languages)) {
-			return $aliases[$language];
 		}
 		return false;
 	}
@@ -206,7 +188,7 @@ class Language implements JsonSerializable {
 		}
 		$Config = Config::instance(true);
 		if (!$language && $Config->core['multilingual']) {
-			$language = $this->scan_facebook_header($Config->core['active_languages']) ?: $this->scan_aliases($Config->core['active_languages']);
+			$language = $this->scan_aliases($Config->core['active_languages']);
 		}
 		$language = $language ?: $Config->core['language'];
 		if (
