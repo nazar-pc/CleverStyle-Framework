@@ -18,10 +18,6 @@ use
  *
  * @property int				$id
  * @property \cs\Cache\Prefix	$cache
- * @property string				$user_agent
- * @property string				$ip
- * @property string				$forwarded_for
- * @property string				$client_ip
  */
 trait Session {
 	/**
@@ -35,7 +31,7 @@ trait Session {
 	 * @return bool|string
 	 */
 	function get_session () {
-		if ($this->bot() && $this->id == User::GUEST_ID) {
+		if ($this->id == User::GUEST_ID && $this->bot()) {
 			return '';
 		}
 		return $this->session_id;
@@ -48,7 +44,7 @@ trait Session {
 	 * @return int						User id
 	 */
 	function get_session_user ($session_id = null) {
-		if ($this->bot() && $this->id == User::GUEST_ID) {
+		if ($this->id == User::GUEST_ID && $this->bot()) {
 			return User::GUEST_ID;
 		}
 		if (!$session_id) {
@@ -63,12 +59,15 @@ trait Session {
 		$Cache	= $this->cache;
 		$Config	= Config::instance();
 		$result	= false;
+		/**
+		 * @var \cs\_SERVER $_SERVER
+		 */
 		if ($session_id && !($result = $Cache->{"sessions/$session_id"})) {
 			$condition	= $Config->core['remember_user_ip'] ?
 				"AND
-				`ip`			= '".ip2hex($this->ip)."' AND
-				`forwarded_for`	= '".ip2hex($this->forwarded_for)."' AND
-				`client_ip`		= '".ip2hex($this->client_ip)."'"
+				`ip`			= '".ip2hex($_SERVER->ip)."' AND
+				`forwarded_for`	= '".ip2hex($_SERVER->ip)."' AND
+				`client_ip`		= '".ip2hex($_SERVER->ip)."'"
 				: '';
 			$result	= $this->db()->qf([
 				"SELECT
@@ -87,7 +86,7 @@ trait Session {
 				LIMIT 1",
 				$session_id,
 				TIME,
-				$this->user_agent
+				$_SERVER->user_agent
 			]);
 			unset($condition);
 			if ($result) {
@@ -114,7 +113,7 @@ trait Session {
 			 */
 			$time	= TIME;
 			if ($this->get('last_online', $result['user']) < TIME - $Config->core['online_time']) {
-				$ip			= ip2hex($this->ip);
+				$ip			= ip2hex($_SERVER->ip);
 				$update[]	= "
 					UPDATE `[prefix]users`
 					SET
@@ -249,6 +248,10 @@ trait Session {
 			)) {
 				continue;
 			}
+			/**
+			 * @var \cs\_SERVER $_SERVER
+			 */
+			$ip = ip2hex($_SERVER->ip);
 			$this->db_prime()->q(
 				"INSERT INTO `[prefix]sessions`
 					(
@@ -277,10 +280,10 @@ trait Session {
 				 * Many guests open only one page, so create session only for 5 min
 				 */
 				TIME + ($user != User::GUEST_ID || $Config->core['session_expire'] < 300 ? $Config->core['session_expire'] : 300),
-				$this->user_agent,
-				$ip				= ip2hex($this->ip),
-				$forwarded_for	= ip2hex($this->forwarded_for),
-				$client_ip		= ip2hex($this->client_ip)
+				$_SERVER->user_agent,
+				$ip,
+				$ip,
+				$ip
 			);
 			$time								= TIME;
 			if ($user != User::GUEST_ID) {
@@ -290,10 +293,10 @@ trait Session {
 			$this->cache->{"sessions/$hash"}	= [
 				'user'			=> $user,
 				'expire'		=> TIME + $Config->core['session_expire'],
-				'user_agent'	=> $this->user_agent,
+				'user_agent'	=> $_SERVER->user_agent,
 				'ip'			=> $ip,
-				'forwarded_for'	=> $forwarded_for,
-				'client_ip'		=> $client_ip
+				'forwarded_for'	=> $ip,
+				'client_ip'		=> $ip
 			];
 			_setcookie('session', $hash, TIME + $Config->core['session_expire']);
 			$this->get_session_user();
