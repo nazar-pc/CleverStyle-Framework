@@ -7,7 +7,8 @@
  */
 namespace cs;
 use
-	ArrayIterator;
+	ArrayAccess,
+	Iterator;
 
 /**
  * Generic wrapper for `$_SERVER` to make its usage easier and more secure
@@ -26,25 +27,27 @@ use
  * @property bool   $secure          Is requested with HTTPS
  * @property string $user_agent      User agent
  */
-class _SERVER extends ArrayIterator {
-	public $language       = '';
-	public $version        = '';
-	public $content_type   = '';
-	public $dnt            = false;
-	public $host           = '';
-	public $ip             = '';
-	public $query_string   = '';
-	public $referer        = '';
-	public $remote_addr    = '';
-	public $request_method = '';
-	public $request_uri    = '';
-	public $secure         = false;
-	public $user_agent     = '';
-	public $_SERVER        = [];
+class _SERVER implements ArrayAccess, Iterator {
+	public    $language       = '';
+	public    $version        = '';
+	public    $content_type   = '';
+	public    $dnt            = false;
+	public    $host           = '';
+	public    $ip             = '';
+	public    $query_string   = '';
+	public    $referer        = '';
+	public    $remote_addr    = '';
+	public    $request_method = '';
+	public    $request_uri    = '';
+	public    $secure         = false;
+	public    $user_agent     = '';
+	protected $_SERVER        = [];
 
 	function __construct ($SERVER) {
-		parent::__construct($SERVER);
-		$this->_SERVER      = $SERVER;
+		$this->_SERVER = $SERVER;
+		$this->update($SERVER);
+	}
+	protected function update ($SERVER) {
 		$this->language     = isset($SERVER['HTTP_ACCEPT_LANGUAGE']) ? $SERVER['HTTP_ACCEPT_LANGUAGE'] : '';
 		$this->version      =
 			isset($SERVER['HTTP_ACCEPT_VERSION']) && preg_match('/^[0-9\.]+$/', $SERVER['HTTP_ACCEPT_VERSION']) ? $SERVER['HTTP_ACCEPT_VERSION'] : 1;
@@ -98,38 +101,76 @@ class _SERVER extends ArrayIterator {
 	/**
 	 * Whether key exists (from original `$_SERVER` super global)
 	 *
-	 * @param string $key
+	 * @param string $index
 	 *
 	 * @return bool
 	 */
-	function offsetExists ($key) {
-		return isset($this->_SERVER[$key]);
+	function offsetExists ($index) {
+		return isset($this->_SERVER[$index]);
 	}
 	/**
 	 * Get key (from original `$_SERVER` super global)
 	 *
-	 * @param string $key
+	 * @param string $index
 	 *
 	 * @return mixed
 	 */
-	function offsetGet ($key) {
-		return $this->_SERVER[$key];
+	function offsetGet ($index) {
+		return $this->_SERVER[$index];
 	}
 	/**
 	 * Set key (from original `$_SERVER` super global)
 	 *
-	 * @param string $key
+	 * @param string $index
 	 * @param mixed  $value
 	 */
-	function offsetSet ($key, $value) {
-		$this->_SERVER[$key] = $value;
+	function offsetSet ($index, $value) {
+		$this->_SERVER[$index] = $value;
+		$this->update($this->_SERVER);
 	}
 	/**
 	 * Unset key (from original `$_SERVER` super global)
 	 *
-	 * @param string $key
+	 * @param string $index
 	 */
-	public function offsetUnset ($key) {
-		unset($this->_SERVER[$key]);
+	public function offsetUnset ($index) {
+		unset($this->_SERVER[$index]);
+	}
+	/**
+	 * Get current (from original `$_SERVER` super global)
+	 *
+	 * @return mixed Can return any type.
+	 */
+	public function current () {
+		return current($this->_SERVER);
+	}
+	/**
+	 * Move forward to next element (from original `$_SERVER` super global)
+	 */
+	public function next () {
+		next($this->_SERVER);
+	}
+	/**
+	 * Return the key of the current element (from original `$_SERVER` super global)
+	 *
+	 * @return mixed scalar on success, or null on failure.
+	 */
+	public function key () {
+		return key($this->_SERVER);
+	}
+	/**
+	 * Checks if current position is valid (from original `$_SERVER` super global)
+	 *
+	 * @return boolean The return value will be casted to boolean and then evaluated.
+	 * Returns true on success or false on failure.
+	 */
+	public function valid () {
+		return $this->key() !== null;
+	}
+	/**
+	 * Rewind the Iterator to the first element (from original `$_SERVER` super global)
+	 */
+	public function rewind () {
+		reset($this->_SERVER);
 	}
 }
