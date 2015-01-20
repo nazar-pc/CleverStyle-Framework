@@ -9,7 +9,7 @@ include __DIR__.'/../_SERVER.php';
 $_SERVER->request_uri = '/Profile/admin';
 Language::instance();
 Index::instance();
-shutdown_function(false);
+shutdown_function(true);
 ?>
 --EXPECTF--
 <!doctype html>

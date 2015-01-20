@@ -14,7 +14,7 @@ Trigger::instance()->register('System/User/construct/after', function () {
 });
 Language::instance();
 Index::instance();
-shutdown_function(false);
+shutdown_function(true);
 ?>
 --EXPECT--
 null

@@ -97,7 +97,7 @@ define('THEMES', DIR.'/themes');
  * Wrapper around default `$_SERVER` super global
  */
 $_SERVER = new _SERVER($_SERVER);
-shutdown_function(true);
+shutdown_function(false);
 if (!defined('DEBUG')) {
 	define('DEBUG', false);
 }

@@ -8,7 +8,7 @@ include __DIR__.'/../_SERVER.php';
 // Simulate regular initialization
 Language::instance();
 Index::instance();
-shutdown_function(false);
+shutdown_function(true);
 ?>
 --EXPECTF--
 <!doctype html>
