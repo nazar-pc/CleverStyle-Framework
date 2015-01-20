@@ -79,7 +79,7 @@ class Language implements JsonSerializable {
 			explode(
 				',',
 				strtolower(
-					strtr('-', '_', $_SERVER->accept_language)
+					strtr('-', '_', $_SERVER->language)
 				)
 			)
 		);

@@ -12,8 +12,8 @@ use
 /**
  * Generic wrapper for `$_SERVER` to make its usage easier and more secure
  *
- * @property string $accept_language Language accepted by client, `''` by default
- * @property string $accept_version  Version accepted by client, will match `/^[0-9\.]+$/`, `1` by default
+ * @property string $language        Language accepted by client, `''` by default
+ * @property string $version         Version accepted by client, will match `/^[0-9\.]+$/`, useful for API, `1` by default
  * @property string $content_type    Content type, `''` by default
  * @property bool   $dnt             Do not track
  * @property string $host            The best guessed host
@@ -27,30 +27,30 @@ use
  * @property string $user_agent      User agent
  */
 class _SERVER extends ArrayIterator {
-	public $accept_language = '';
-	public $accept_version  = '';
-	public $content_type    = '';
-	public $dnt             = false;
-	public $host            = '';
-	public $ip              = '';
-	public $query_string    = '';
-	public $referer         = '';
-	public $remote_addr     = '';
-	public $request_method  = '';
-	public $request_uri     = '';
-	public $secure          = false;
-	public $user_agent      = '';
-	public $_SERVER         = [];
+	public $language       = '';
+	public $version        = '';
+	public $content_type   = '';
+	public $dnt            = false;
+	public $host           = '';
+	public $ip             = '';
+	public $query_string   = '';
+	public $referer        = '';
+	public $remote_addr    = '';
+	public $request_method = '';
+	public $request_uri    = '';
+	public $secure         = false;
+	public $user_agent     = '';
+	public $_SERVER        = [];
 
 	function __construct ($SERVER) {
 		parent::__construct($SERVER);
-		$this->_SERVER         = $SERVER;
-		$this->accept_language = isset($SERVER['HTTP_ACCEPT_LANGUAGE']) ? $SERVER['HTTP_ACCEPT_LANGUAGE'] : '';
-		$this->accept_version  =
+		$this->_SERVER      = $SERVER;
+		$this->language     = isset($SERVER['HTTP_ACCEPT_LANGUAGE']) ? $SERVER['HTTP_ACCEPT_LANGUAGE'] : '';
+		$this->version      =
 			isset($SERVER['HTTP_ACCEPT_VERSION']) && preg_match('/^[0-9\.]+$/', $SERVER['HTTP_ACCEPT_VERSION']) ? $SERVER['HTTP_ACCEPT_VERSION'] : 1;
-		$this->content_type    = isset($SERVER['CONTENT_TYPE']) ? $SERVER['CONTENT_TYPE'] : '';
-		$this->dnt             = isset($SERVER['HTTP_DNT']) && $SERVER['HTTP_DNT'] == 1;
-		$this->host            = isset($SERVER['SERVER_NAME']) ? $SERVER['SERVER_NAME'] : '';
+		$this->content_type = isset($SERVER['CONTENT_TYPE']) ? $SERVER['CONTENT_TYPE'] : '';
+		$this->dnt          = isset($SERVER['HTTP_DNT']) && $SERVER['HTTP_DNT'] == 1;
+		$this->host         = isset($SERVER['SERVER_NAME']) ? $SERVER['SERVER_NAME'] : '';
 		if (isset($SERVER['HTTP_HOST'])) {
 			if (filter_var($this->host, FILTER_VALIDATE_IP)) {
 				$this->host = $SERVER['HTTP_HOST'];
