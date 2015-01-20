@@ -548,14 +548,8 @@ function _json_decode ($in, $depth = 512) {
  * @return bool|mixed
  */
 function _json_decode_nocomments ($in, $depth = 512) {
-	$in	= explode("\n", $in);
-	foreach ($in as $i => $string) {
-		if (substr(ltrim($string), 0, 2) == '//') {
-			unset($in[$i]);
-		}
-	}
-	unset($i, $string);
-	return @json_decode(implode('', $in), true, $depth);
+	$in	= preg_replace('#^\s*//[^\n]*\n#ims', '', $in);
+	return @json_decode($in, true, $depth);
 }
 /**
  * file_put_contents(_json_encode())
