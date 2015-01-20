@@ -107,11 +107,13 @@ function install_process ($argv = null) {
 	 * Connecting to the DataBase
 	 */
 	define('DEBUG', false);
+	require_once DIR.'/fs/'.$fs['core/classes/_SERVER.php'];
 	require_once DIR.'/fs/'.$fs['core/traits/Singleton.php'];
 	require_once DIR.'/fs/'.$fs['core/classes/DB.php'];
 	require_once DIR.'/fs/'.$fs['core/engines/DB/_Abstract.php'];
 	require_once DIR.'/fs/'.$fs["core/engines/DB/$_POST[db_engine].php"];
 	require_once DIR.'/fs/'.$fs['core/classes/False_class.php'];
+	$_SERVER						= new \cs\_SERVER($_SERVER);
 	/**
 	 * @var \cs\DB\_Abstract $cdb
 	 */
@@ -196,12 +198,8 @@ function install_process ($argv = null) {
 	if (isset($_POST['site_url'])) {
 		$url = $_POST['site_url'];
 	} else {
-		if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
-			$url = $_SERVER['HTTP_X_FORWARDED_PROTO'];
-		} else {
-			$url = @$_SERVER['HTTPS'] == 'on' ? 'https' : 'http';
-		}
-		$url .= "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+		$url = @$_SERVER->secure ? 'https' : 'http';
+		$url .= "://$_SERVER->host$_SERVER->request_uri";
 		$url = implode('/', array_slice(explode('/', $url), 0, -2));	//Remove 2 last items
 	}
 	$config['url'][]				= $url;
@@ -362,11 +360,12 @@ function install_process ($argv = null) {
 		"INSERT INTO `[prefix]config` (
 			`domain`, `core`, `db`, `storage`, `components`, `replace`, `routing`
 		) VALUES (
-			'%1\$s', '%2\$s', '[]', '[]', '%3\$s', '%4\$s', '%4\$s'
+			'%s', '%s', '[]', '[]', '%s', '%s', '%s'
 		)",
 		$config['cookie_domain'][0],
 		_json_encode($config),
 		'{"modules":'._json_encode($modules).',"plugins":[],"blocks":[]}',
+		'{"in":[],"out":[]}',
 		'{"in":[],"out":[]}'
 	)) {
 		return "Can't import system configuration into database! Installation aborted.";
@@ -388,7 +387,7 @@ function install_process ($argv = null) {
 		$_POST['admin_email'],
 		hash('sha224', $_POST['admin_email']),
 		time(),
-		@$_SERVER['REMOTE_ADDR'] ?: '127.0.0.1',
+		$_SERVER->remote_addr,
 		1
 	)) {
 		return "Can't register administrator user! Installation aborted.";

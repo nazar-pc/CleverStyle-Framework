@@ -69,14 +69,9 @@ class Blogs {
 					`draft`
 				FROM `[prefix]blogs_posts`
 				WHERE
-					`id` = '%s' AND
-					(
-						`user`	= '%s' OR
-						`draft`	= 0
-					)
+					`id` = '%s'
 				LIMIT 1",
-				$id,
-				User::instance()->id
+				$id
 			]);
 			if ($data) {
 				$data['title']         = $this->ml_process($data['title']);
@@ -146,6 +141,87 @@ class Blogs {
 			ORDER BY `date` DESC
 			LIMIT $from, $number"
 		) ?: [];
+	}
+	/**
+	 * Get posts for section
+	 *
+	 * @param int $section
+	 * @param int $page
+	 * @param int $number
+	 *
+	 * @return int[]
+	 */
+	function get_for_section ($section, $page, $number) {
+		$section = (int)$section;
+		$number  = (int)$number;
+		$from    = ($page - 1) * $number;
+		return $this->db()->qfas(
+			"SELECT `s`.`id`
+			FROM `[prefix]blogs_posts_sections` AS `s`
+				LEFT JOIN `[prefix]blogs_posts` AS `p`
+			ON `s`.`id` = `p`.`id`
+			WHERE
+				`s`.`section`	= $section AND
+				`p`.`draft`		= 0
+			ORDER BY `p`.`date` DESC
+			LIMIT $from, $number"
+		) ?: [];
+	}
+	/**
+	 * Get posts for tag
+	 *
+	 * @param int    $tag
+	 * @param string $lang
+	 * @param int    $page
+	 * @param int    $number
+	 *
+	 * @return int[]
+	 */
+	function get_for_tag ($tag, $lang, $page, $number) {
+		$number = (int)$number;
+		$from   = ($page - 1) * $number;
+		return $this->db()->qfas([
+			"SELECT `t`.`id`
+			FROM `[prefix]blogs_posts_tags` AS `t`
+				LEFT JOIN `[prefix]blogs_posts` AS `p`
+			ON `t`.`id` = `p`.`id`
+			WHERE
+				`t`.`tag`	= '%s' AND
+				`p`.`draft`	= 0 AND
+				`t`.`lang`	= '%s'
+			ORDER BY `p`.`date` DESC
+			LIMIT $from, $number",
+			$tag,
+			$lang
+		]) ?: [];
+	}
+	/**
+	 * Get count of posts for tag
+	 *
+	 * @param int    $tag
+	 * @param string $lang
+	 * @param int    $page
+	 * @param int    $number
+	 *
+	 * @return int
+	 */
+	function get_for_tag_count ($tag, $lang, $page, $number) {
+		$number = (int)$number;
+		$from   = ($page - 1) * $number;
+		return $this->db()->qfs([
+			"SELECT COUNT(`t`.`id`)
+			FROM `[prefix]blogs_posts_tags` AS `t`
+				LEFT JOIN `[prefix]blogs_posts` AS `p`
+			ON `t`.`id` = `p`.`id`
+			WHERE
+				`t`.`tag`	= '%s' AND
+				`p`.`draft`	= 0 AND
+				`t`.`lang`	= '%s'
+			ORDER BY `p`.`date` DESC
+			LIMIT $from, $number",
+			$tag,
+			$lang
+		]) ?: 0;
 	}
 	/**
 	 * Add new post
@@ -734,6 +810,22 @@ class Blogs {
 				$id
 			]);
 		});
+	}
+	/**
+	 * Find tag by its text
+	 *
+	 * @param string $tag_text
+	 *
+	 * @return bool|int
+	 */
+	function find_tag ($tag_text) {
+		return $this->db()->qfs([
+			"SELECT `id`
+			FROM  `[prefix]blogs_tags`
+			WHERE `text` = '%s'
+			LIMIT 1",
+			trim(xap($tag_text))
+		]);
 	}
 	/**
 	 * Accepts array of string tags and returns corresponding array of id's of these tags, new tags will be added automatically

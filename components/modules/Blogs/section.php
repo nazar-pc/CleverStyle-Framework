@@ -1,79 +1,71 @@
 <?php
 /**
- * @package		Blogs
- * @category	modules
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package        Blogs
+ * @category       modules
+ * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright      Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license        MIT License, see license.txt
  */
-namespace	cs\modules\Blogs;
-use			h,
-			cs\Config,
-			cs\DB,
-			cs\Index,
-			cs\Language,
-			cs\Page\Meta,
-			cs\Page,
-			cs\Trigger;
+namespace cs\modules\Blogs;
+use            h,
+	cs\Config,
+	cs\DB,
+	cs\Index,
+	cs\Language,
+	cs\Page\Meta,
+	cs\Page,
+	cs\Trigger;
 
 if (!Trigger::instance()->run('Blogs/section')) {
 	return;
 }
 
-$Config					= Config::instance();
-$Index					= Index::instance();
-$Page					= Page::instance();
-$rc						= array_slice($Config->route, 1);
-$structure				= Blogs::instance()->get_sections_structure();
-$path					= [];
+$Config    = Config::instance();
+$Index     = Index::instance();
+$Page      = Page::instance();
+$rc        = array_slice($Config->route, 1);
+$structure = Blogs::instance()->get_sections_structure();
+$path      = [];
 foreach ($rc as $path_) {
-	if ($structure['posts']	== 0 && isset($structure['sections'][$path_])) {
+	if ($structure['posts'] == 0 && isset($structure['sections'][$path_])) {
 		array_shift($rc);
-		$structure		= $structure['sections'][$path_];
+		$structure = $structure['sections'][$path_];
 		$Page->title($structure['title']);
-		$path[]			= $path_;
+		$path[] = $path_;
 	} else {
 		break;
 	}
 }
 unset($path_);
-$path					= implode('/', $path);
+$path = implode('/', $path);
 if (isset($structure['id'])) {
-	$section	= $structure['id'];
+	$section = $structure['id'];
 } else {
 	error_code(404);
 	return;
 }
-$L						= Language::instance();
+$L = Language::instance();
 $Page->title($L->latest_posts);
+$Page->atom(
+	"Blogs/atom.xml/?section=$section",
+	implode($Config->core['title_delimiter'], [$L->latest_posts, $L->section, $structure['title']])
+);
 Meta::instance()->blog();
-$module					= path($L->Blogs);
+$module = path($L->Blogs);
 /**
  * Show administration, new post, draft actions
  */
 head_actions();
-$Index->form			= true;
-$Index->buttons			= false;
-$page					= isset($rc[0]) ? (int)$rc[0] : 1;
-$page					= $page > 0 ? $page : 1;
+$Index->form    = true;
+$Index->buttons = false;
+$page           = isset($rc[0]) ? (int)$rc[0] : 1;
+$page           = $page > 0 ? $page : 1;
 $Page->canonical_url($Config->base_url()."/$module/".path($L->section)."/$path".($page > 1 ? "/$page" : ''));
 if ($page > 1) {
 	$Page->title($L->blogs_nav_page($page));
 }
-$num					= $Config->module('Blogs')->posts_per_page;
-$from					= ($page - 1) * $num;
-$cdb					= DB::instance()->{$Config->module('Blogs')->db('posts')};
-$posts					= $cdb->qfas(
-	"SELECT `s`.`id`
-	FROM `[prefix]blogs_posts_sections` AS `s`
-		LEFT JOIN `[prefix]blogs_posts` AS `p`
-	ON `s`.`id` = `p`.`id`
-	WHERE
-		`s`.`section`	= $section AND
-		`p`.`draft`		= 0
-	ORDER BY `p`.`date` DESC
-	LIMIT $from, $num"
-);
+$number = $Config->module('Blogs')->posts_per_page;
+$posts  = Blogs::instance()->get_for_section($section, $page, $number);
 if (empty($posts)) {
 	$Index->content(
 		h::{'p.cs-center'}($L->no_posts_yet)
@@ -85,15 +77,15 @@ $Index->content(
 		get_posts_list($posts)
 	).
 	(
-		$posts ? h::{'div.cs-center-all.uk-margin nav.uk-button-group'}(
-			pages(
-				$page,
-				ceil($structure['posts'] / $num),
-				function ($page) use ($module, $L, $path) {
-					return $page == 1 ? "$module/".path($L->section)."/$path" : "$module/".path($L->section)."/$path/$page";
-				},
-				true
-			)
-		) : ''
+	$posts ? h::{'div.cs-center-all.uk-margin nav.uk-button-group'}(
+		pages(
+			$page,
+			ceil($structure['posts'] / $number),
+			function ($page) use ($module, $L, $path) {
+				return $page == 1 ? "$module/".path($L->section)."/$path" : "$module/".path($L->section)."/$path/$page";
+			},
+			true
+		)
+	) : ''
 	)
 );

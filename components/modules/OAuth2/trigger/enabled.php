@@ -71,9 +71,12 @@ Trigger::instance()
 				// TODO: add some mark if this is client-side only token, so that it can be accounted by components
 				// Also ADMIN access should be blocked for client-side only tokens
 			}
-			$_SERVER['HTTP_USER_AGENT'] = "OAuth2-$client[name]-$client[id]";
-			$_POST['session']           = $token_data['session'];
-			$_REQUEST['session']        = $token_data['session'];
+			/**
+			 * @var \cs\_SERVER $_SERVER
+			 */
+			$_SERVER->user_agent = "OAuth2-$client[name]-$client[id]";
+			$_POST['session']    = $token_data['session'];
+			$_REQUEST['session'] = $token_data['session'];
 			_setcookie('session', $token_data['session']);
 			if (!Config::instance()->module('OAuth2')->guest_tokens) {
 				Trigger::instance()->register(

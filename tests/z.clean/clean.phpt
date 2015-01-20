@@ -14,6 +14,7 @@ include __DIR__.'/../_SERVER.php';
 /**
  * @var DB\_Abstract $cdb
  */
+Config::instance_replace(False_class::instance());
 $cdb	= DB::instance();
 foreach ($cdb->tables() as $table) {
 	if (!$cdb->q("DROP TABLE `$table`")) {

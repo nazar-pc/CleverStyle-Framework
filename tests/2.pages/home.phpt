@@ -8,7 +8,7 @@ include __DIR__.'/../_SERVER.php';
 // Simulate regular initialization
 Language::instance();
 Index::instance();
-shutdown_function(false);
+shutdown_function(true);
 ?>
 --EXPECTF--
 <!doctype html>
@@ -35,22 +35,30 @@ shutdown_function(false);
 			<div class="cs-header-guest-form active">
 				<b>Hello, Guest!</b>
 				<div>
-					<button class="uk-button cs-button-compact cs-header-sign-in-slide uk-icon-sign-in" type="button">Sign in</button>
-					<button class="uk-button cs-button-compact cs-header-registration-slide uk-icon-pencil" data-uk-tooltip="{animation:true,delay:200}" title="Quick registration form" type="button">Sign up</button>
+					<button class="uk-button cs-button-compact cs-header-sign-in-slide" type="button">
+						<span class=" uk-icon-sign-in"></span> Sign in
+					</button>
+					<button class="uk-button cs-button-compact cs-header-registration-slide" data-uk-tooltip="{animation:true,delay:200}" title="Quick registration form" type="button">
+						<span class=" uk-icon-pencil"></span> Sign up
+					</button>
 				</div>
 			</div>
 			<div class="cs-header-restore-password-form">
 				<input autocapitalize="off" autocorrect="off" class="cs-header-restore-password-email" placeholder="Login or e-mail" tabindex="1" type="text">
 				<br>
-				<button class="uk-button cs-button-compact cs-header-restore-password-process uk-button uk-icon-question" tabindex="2" type="button">Restore password</button>
-				<button class="uk-button cs-button-compact uk-button cs-header-back" data-uk-tooltip="{animation:true,delay:200}" title="Back" type="button">
+				<button class="uk-button cs-button-compact cs-header-restore-password-process" tabindex="2" type="button">
+					<span class=" uk-icon-question"></span> Restore password
+				</button>
+				<button class="uk-button cs-button-compact cs-header-back" data-uk-tooltip="{animation:true,delay:200}" title="Back" type="button">
 					<span class=" uk-icon-chevron-down"></span>
 				</button>
 			</div>
 			<div class="cs-header-registration-form">
 				<input autocapitalize="off" autocorrect="off" class="cs-header-registration-email" placeholder="Email" type="email">
 				<br>
-				<button class="uk-button cs-button-compact cs-header-registration-process uk-button uk-icon-pencil" type="button">Sign up</button>
+				<button class="uk-button cs-button-compact cs-header-registration-process" type="button">
+					<span class=" uk-icon-pencil"></span> Sign up
+				</button>
 				<button class="uk-button cs-button-compact cs-header-back" data-uk-tooltip="{animation:true,delay:200}" title="Back" type="button">
 					<span class=" uk-icon-chevron-down"></span>
 				</button>
@@ -59,7 +67,9 @@ shutdown_function(false);
 				<input autocapitalize="off" autocorrect="off" class="cs-header-sign-in-email" placeholder="Login or e-mail" type="text">
 				<input class="cs-header-user-password" placeholder="Password" type="password">
 				<br>
-				<button class="uk-button cs-button-compact uk-icon-sign-in" type="submit">Sign in</button>
+				<button class="uk-button cs-button-compact" type="submit">
+					<span class=" uk-icon-sign-in"></span> Sign in
+				</button>
 				<button class="uk-button cs-button-compact cs-header-back" data-uk-tooltip="{animation:true,delay:200}" title="Back" type="button">
 					<span class=" uk-icon-chevron-down"></span>
 				</button>

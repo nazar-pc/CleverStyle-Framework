@@ -48,19 +48,19 @@ trait Data {
 		if (is_scalar($item) && preg_match('/^[0-9]+$/', $item)) {
 			return new Properties($item);
 		}
+		/**
+		 * @var \cs\_SERVER $_SERVER
+		 */
+		/**
+		 * TODO: deprecated, remove in future version
+		 */
 		switch ($item) {
 			case 'user_agent':
-				return @$_SERVER['HTTP_USER_AGENT'] ?: '';
+				return $_SERVER->user_agent;
 			case 'ip':
-				return @$_SERVER['HTTP_X_REAL_IP'] ?: $_SERVER['REMOTE_ADDR'];
 			case 'forwarded_for':
-				if (!isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-					return false;
-				}
-				$tmp	= explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-				return preg_replace('/[^a-f0-9\.:]/i', '', array_pop($tmp));
 			case 'client_ip':
-				return isset($_SERVER['HTTP_CLIENT_IP']) ? preg_replace('/[^a-f0-9\.:]/i', '', $_SERVER['HTTP_CLIENT_IP']) : false;
+				return $_SERVER->ip;
 		}
 		$result	= $this->get_internal($item, $user);
 		if (!$this->memory_cache) {
@@ -554,9 +554,15 @@ trait Data {
 	/**
 	 * Do not track checking
 	 *
+	 * @deprecated
+	 * @todo deprecated, remove in future versions
+	 *
 	 * @return bool	<b>true</b> if tracking is not desired, <b>false</b> otherwise
 	 */
 	function dnt () {
-		return isset($_SERVER['HTTP_DNT']) && $_SERVER['HTTP_DNT'] == 1;
+		/**
+		 * @var \cs\_SERVER $_SERVER
+		 */
+		return $_SERVER->dnt;
 	}
 }

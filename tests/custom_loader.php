@@ -93,7 +93,11 @@ define('PCACHE', DIR.'/storage/pcache');
  * Themes dir
  */
 define('THEMES', DIR.'/themes');
-shutdown_function(true);
+/**
+ * Wrapper around default `$_SERVER` super global
+ */
+$_SERVER = new _SERVER($_SERVER);
+shutdown_function(false);
 if (!defined('DEBUG')) {
 	define('DEBUG', false);
 }

@@ -69,15 +69,15 @@ function clean_classes_cache () {
 /**
  * Correct termination
  *
- * @param bool|null $cancel	Allows to cancel shutdown function execution since there is no good way to unregister it
+ * @param bool|null $enable	Allows to disable shutdown function execution since there is no good way to un-register it
  */
-function shutdown_function ($cancel = null) {
-	static $cancel_internal = false;
-	if ($cancel !== null) {
-		$cancel_internal = $cancel;
+function shutdown_function ($enable = null) {
+	static $enable_internal = true;
+	if ($enable !== null) {
+		$enable_internal = $enable;
 		return;
 	}
-	if ($cancel_internal) {
+	if (!$enable_internal) {
 		return;
 	}
 	if (!class_exists('\\cs\\Core', false)) {
@@ -298,7 +298,7 @@ function _setcookie ($name, $value, $expire = 0, $httponly = false) {
 			$value,
 			$expire,
 			'/',
-			$_SERVER['HTTP_HOST'],
+			$_SERVER->host,
 			false,
 			$httponly
 		);

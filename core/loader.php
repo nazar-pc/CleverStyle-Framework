@@ -78,7 +78,11 @@ define('PCACHE', DIR.'/storage/pcache');
  */
 define('THEMES', DIR.'/themes');
 /**
- * Including of custom user files
+ * Wrapper around default `$_SERVER` super global
+ */
+$_SERVER = new _SERVER($_SERVER);
+/**
+ * Including of custom files
  */
 foreach (glob(CUSTOM.'/*.php') ?: [] as $custom) {
 	include $custom;

@@ -35,7 +35,7 @@ class Language implements JsonSerializable {
 	 *
 	 * @var callable
 	 */
-	public $time = null;
+	public $time;
 	/**
 	 * For single initialization
 	 *
@@ -53,8 +53,8 @@ class Language implements JsonSerializable {
 	 *
 	 * @var bool
 	 */
-	protected $fixed_language = false;
-	protected $changed_once   = false;
+	protected $fixed_language        = false;
+	protected $changed_once          = false;
 	/**
 	 * Set basic language
 	 */
@@ -71,27 +71,24 @@ class Language implements JsonSerializable {
 	 * @return bool|string
 	 */
 	protected function scan_aliases ($active_languages) {
-		if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-			return false;
-		}
-		$Cache = Cache::instance();
-		if (($aliases = $Cache->{'languages/aliases'}) === false) {
-			$aliases      = [];
-			$aliases_list = _strtolower(get_files_list(LANGUAGES.'/aliases'));
-			foreach ($aliases_list as $alias) {
-				$aliases[$alias] = file_get_contents(LANGUAGES."/aliases/$alias");
-			}
-			unset($aliases_list, $alias);
-			$Cache->{'languages/aliases'} = $aliases;
-		}
-		$accept_languages = str_replace(
-			'-',
-			'_',
-			explode(',', strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']))
+		/**
+		 * @var _SERVER $_SERVER
+		 */
+		$aliases          = $this->get_aliases();
+		$accept_languages =  array_filter(
+			explode(
+				',',
+				strtolower(
+					strtr('-', '_', $_SERVER->language)
+				)
+			)
 		);
-		foreach (_strtolower($_SERVER) as $i => $v) {
-			if (preg_match('/.*locale/i', $i)) {
-				$accept_languages[] = strtolower($v);
+		/**
+		 * For `X-Facebook-Locale` and other similar
+		 */
+		foreach ($_SERVER as $i => $v) {
+			if (preg_match('/.*_LOCALE$/i', $i)) {
+				array_unshift($accept_languages, strtolower($v));
 			}
 		}
 		unset($i, $v);
@@ -102,6 +99,24 @@ class Language implements JsonSerializable {
 			}
 		}
 		return false;
+	}
+	/**
+	 * Get languages aliases
+	 *
+	 * @return array|bool
+	 */
+	protected function get_aliases () {
+		$Cache = Cache::instance();
+		if (($aliases = $Cache->{'languages/aliases'}) === false) {
+			$aliases      = [];
+			$aliases_list = _strtolower(get_files_list(LANGUAGES.'/aliases'));
+			foreach ($aliases_list as $alias) {
+				$aliases[$alias] = file_get_contents(LANGUAGES."/aliases/$alias");
+			}
+			unset($aliases_list, $alias);
+			$Cache->{'languages/aliases'} = $aliases;
+		}
+		return $aliases;
 	}
 	/**
 	 * Get translation
@@ -179,8 +194,9 @@ class Language implements JsonSerializable {
 		}
 		$Config = Config::instance(true);
 		if (!$language && $Config->core['multilingual']) {
-			$language = $this->scan_aliases($Config->core['active_languages']) ?: $language;
+			$language = $this->scan_aliases($Config->core['active_languages']);
 		}
+		$language = $language ?: $Config->core['language'];
 		if (
 			!$Config->core ||
 			$language == $Config->core['language'] ||
