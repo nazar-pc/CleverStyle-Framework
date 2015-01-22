@@ -8,10 +8,12 @@
  */
 /**
  * Before usage run:
- *
  * $ git clone git@github.com:reactphp/http.git
  * $ cd http
  * $ composer install
+ *
+ * Start server with:
+ * $ php-cgi server.php
  */
 require_once __DIR__.'/http/vendor/autoload.php';
 $loop   = React\EventLoop\Factory::create();
