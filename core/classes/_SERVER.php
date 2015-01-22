@@ -55,7 +55,7 @@ class _SERVER implements ArrayAccess, Iterator {
 		$this->dnt          = isset($SERVER['HTTP_DNT']) && $SERVER['HTTP_DNT'] == 1;
 		$this->host         = isset($SERVER['SERVER_NAME']) ? $SERVER['SERVER_NAME'] : '';
 		if (isset($SERVER['HTTP_HOST'])) {
-			if (filter_var($this->host, FILTER_VALIDATE_IP)) {
+			if (!$this->host || filter_var($this->host, FILTER_VALIDATE_IP)) {
 				$this->host = $SERVER['HTTP_HOST'];
 			} elseif (strpos($SERVER['HTTP_HOST'], ':') !== false) {
 				$this->host .= ':'.(int)explode(':', $SERVER['HTTP_HOST'], 2)[1];

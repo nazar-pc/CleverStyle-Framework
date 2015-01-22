@@ -107,9 +107,9 @@ Trigger::instance()
 							'href'     => "$base_url/$lang/$relative_address"
 						];
 					},
-					$Cache->get('language/clangs', function () {
+					$Cache->get('language/clangs', function () use ($Config) {
 						$clangs = [];
-						foreach ($this->core['active_languages'] as $language) {
+						foreach ($Config->core['active_languages'] as $language) {
 							$clangs[] = file_get_json_nocomments(LANGUAGES."/$language.json")['clang'];
 						}
 						return $clangs;
