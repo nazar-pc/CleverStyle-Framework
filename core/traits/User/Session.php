@@ -37,11 +37,11 @@ trait Session {
 		return $this->session_id;
 	}
 	/**
-	 * Find the session by id as applies it, and return id of owner (user), updates last_sign_in, last_ip and last_online information
+	 * Load session by id and return id of session owner (user), updates last_sign_in, last_ip and last_online information
 	 *
-	 * @param null|string	$session_id
+	 * @param null|string	$session_id	If not specified - loaded from `$this->session_id`, and if that also empty - from cookies
 	 *
-	 * @return int						User id
+	 * @return int User id
 	 */
 	function get_session_user ($session_id = null) {
 		if ($this->id == User::GUEST_ID && $this->bot()) {
@@ -51,24 +51,26 @@ trait Session {
 			if (!$this->session_id) {
 				$this->session_id = _getcookie('session');
 			}
-			$session_id = $session_id ?: $this->session_id;
+			$session_id = $this->session_id;
 		}
 		if (!is_md5($session_id)) {
 			return false;
 		}
 		$Cache	= $this->cache;
 		$Config	= Config::instance();
-		$result	= false;
 		/**
 		 * @var \cs\_SERVER $_SERVER
 		 */
-		if ($session_id && !($result = $Cache->{"sessions/$session_id"})) {
+		$result = $Cache->get("sessions/$session_id", function () use ($session_id, $Config) {
+			/**
+			 * @var \cs\_SERVER $_SERVER
+			 */
 			$condition	= $Config->core['remember_user_ip'] ?
 				"AND
 				`remote_addr`	= '".ip2hex($_SERVER->remote_addr)."' AND
 				`ip`			= '".ip2hex($_SERVER->ip)."'"
 				: '';
-			$result	= $this->db()->qf([
+			return $this->db()->qf([
 				"SELECT
 					`user`,
 					`expire`,
@@ -85,15 +87,11 @@ trait Session {
 				$session_id,
 				TIME,
 				$_SERVER->user_agent
-			]);
-			unset($condition);
-			if ($result) {
-				$Cache->{"sessions/$session_id"} = $result;
-			}
-		}
+			]) ?: false;
+		});
 		if (!(
 			$session_id &&
-			is_array($result) &&
+			$result &&
 			$result['expire'] > TIME &&
 			$this->get('id', $result['user'])
 		)) {
