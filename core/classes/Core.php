@@ -33,20 +33,6 @@ class Core {
 		defined('DEBUG') || define('DEBUG', false);
 		defined('DOMAIN') || define('DOMAIN', $this->config['domain']);
 		date_default_timezone_set($this->config['timezone']);
-		$this->set('fixed_language', false);
-		Trigger::instance()->register('System/Config/before_init', function () {
-			/**
-			 * @var _SERVER $_SERVER
-			 */
-			$clangs = file_exists(CACHE.'/languages_clangs') ? file_get_json(CACHE.'/languages_clangs') : Config::instance()->update_clangs();
-			$clang	= explode('?', $_SERVER->request_uri, 2)[0];
-			$clang	= explode('/', trim($clang, '/'), 2)[0];
-			if (in_array($clang, $clangs)) {
-				$this->config['fixed_language']	= true;
-				$this->config['language']		= array_flip($clangs)[$clang];
-				Language::instance()->reload_core_config();
-			}
-		});
 		if (!is_dir(STORAGE)) {
 			@mkdir(STORAGE, 0775);
 			file_put_contents(

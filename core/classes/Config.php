@@ -101,7 +101,7 @@ class Config {
 	 * Engine initialization (or reinitialization if necessary)
 	 */
 	protected function init () {
-		Language::instance()->change('');
+		Language::instance()->init();
 		$Page	= Page::instance();
 		$Page->init(
 			get_core_ml_text('name'),
@@ -129,7 +129,7 @@ class Config {
 	 * @return bool
 	 */
 	protected function check_ip ($ips) {
-		if (!is_array($ips) || empty($ips)) {
+		if (!$ips || !is_array($ips)) {
 			return false;
 		}
 		/**
@@ -165,10 +165,6 @@ class Config {
 		 */
 		$server['raw_relative_address']	= urldecode(trim($_SERVER->request_uri, '/'));
 		$server['raw_relative_address']	= null_byte_filter($server['raw_relative_address']);
-		if (Core::instance()->fixed_language) {
-			$server['raw_relative_address']	= explode('/', $server['raw_relative_address'], 2);
-			$server['raw_relative_address']	= isset($server['raw_relative_address'][1]) ? $server['raw_relative_address'][1] : '';
-		}
 		$server['host']		= $_SERVER->host;
 		$server['protocol']	= $_SERVER->secure ? 'https' : 'http';
 		/**
@@ -272,8 +268,12 @@ class Config {
 	 *                    								Array contains next elements: route, relative_address, ADMIN, API, MODULE, HOME
 	 */
 	function process_route ($raw_relative_address) {
-		$rc	= explode('?', $raw_relative_address, 2)[0];
-		$rc	= trim($rc, '/');
+		$rc = explode('?', $raw_relative_address, 2)[0];
+		$rc = trim($rc, '/');
+		if (Language::instance()->url_language($rc)) {
+			$rc = explode('/', $rc, 2);
+			$rc = isset($rc[1]) ? $rc[1] : '';
+		}
 		/**
 		 * Routing replacing
 		 */
@@ -382,21 +382,6 @@ class Config {
 		asort($this->core['languages']);
 	}
 	/**
-	 * Load and save clangs of all languages in cache for multilingual functionality.
-	 * Used by system
-	 *
-	 * @return array	clangs
-	 */
-	function update_clangs () {
-		$clangs		= [];
-		foreach ($this->core['active_languages'] as $language) {
-			$clangs[$language]	= file_get_json_nocomments(LANGUAGES."/$language.json")['clang'];
-		}
-		unset($language);
-		file_put_json(CACHE.'/languages_clangs', $clangs);
-		return $clangs;
-	}
-	/**
 	 * Reloading of settings cache
 	 *
 	 * @return bool
@@ -449,16 +434,18 @@ class Config {
 		} else {
 			unset($this->core['cache_not_saved']);
 		}
-		Cache::instance()->config	= [
-			'core'			=> $this->core,
-			'db'			=> $this->db,
-			'storage'		=> $this->storage,
-			'components'	=> $this->components,
-			'replace'		=> $this->replace,
-			'routing'		=> $this->routing
+		$Cache         = Cache::instance();
+		$Cache->config = [
+			'core'       => $this->core,
+			'db'         => $this->db,
+			'storage'    => $this->storage,
+			'components' => $this->components,
+			'replace'    => $this->replace,
+			'routing'    => $this->routing
 		];
-		$L							= Language::instance();
-		if (User::instance(true) && $this->core['multilingual']) {
+		unset($Cache->{'languages'});
+		$L = Language::instance();
+		if ($this->core['multilingual'] && User::instance(true)) {
 			$L->change(User::instance()->language);
 		} else {
 			$L->change($this->core['language']);
@@ -557,8 +544,9 @@ class Config {
 			return '';
 		}
 		$base_url	= $this->server['protocol'].'://'.$this->server['host'];
-		if (Core::instance()->fixed_language) {
-			$base_url	.= '/'.Language::instance()->clang;
+		$L			= Language::instance();
+		if ($L->url_language()) {
+			$base_url	.= '/'.$L->clang;
 		}
 		return $base_url;
 	}

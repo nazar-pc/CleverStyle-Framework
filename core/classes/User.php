@@ -279,14 +279,13 @@ class User {
 			if ($this->timezone && date_default_timezone_get() != $this->timezone) {
 				date_default_timezone_set($this->timezone);
 			}
-			if ($Config->core['multilingual']) {
-				Language::instance()->change($this->language);
-			}
-		} elseif ($Config->core['multilingual']) {
+			$L = Language::instance();
 			/**
-			 * Automatic detection of current language for guest
+			 * Change language if configuration is multilingual and this is not page with localized url
 			 */
-			Language::instance()->change('');
+			if ($Config->core['multilingual'] && !$L->url_language()) {
+				$L->change($this->language);
+			}
 		}
 		/**
 		 * Security check

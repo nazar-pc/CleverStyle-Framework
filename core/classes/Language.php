@@ -49,53 +49,118 @@ class Language implements JsonSerializable {
 	 */
 	protected $translate = [];
 	/**
-	 * Whether it is possible to change language (may be fixed to some concrete language)
+	 * Cache to optimize frequent calls
 	 *
-	 * @var bool
+	 * @var array
 	 */
-	protected $fixed_language        = false;
-	protected $changed_once          = false;
+	protected $localized_url = [];
 	/**
 	 * Set basic language
 	 */
 	protected function construct () {
-		$Core                 = Core::instance();
-		$this->fixed_language = $Core->fixed_language;
+		$Core = Core::instance();
 		$this->change($Core->language);
 	}
 	/**
-	 * Scanning of aliases for defining of current language
+	 * Initialization
+	 *
+	 * Is called from Config class by system. Usually there is no need to call it manually.
+	 */
+	function init () {
+		$Config = Config::instance(true);
+		/**
+		 * We need Config for initialization
+		 */
+		if (!$Config) {
+			return;
+		}
+		/**
+		 * @var _SERVER $_SERVER
+		 */
+		/**
+		 * Highest priority - `-Locale` header
+		 */
+		$language = $this->check_locale_header($Config->core['active_languages']);
+		/**
+		 * Second priority - URL
+		 */
+		$language = $language ?: $this->url_language($_SERVER->request_uri);
+		/**
+		 * Third - `Accept-Language` header
+		 */
+		$language = $language ?: $this->check_accept_header($Config->core['active_languages']);
+		$this->change($language ?: '');
+	}
+	/**
+	 * Does URL have language prefix
+	 *
+	 * @param bool|string $url Relative url, `$_SERVER->request_uri` by default
+	 *
+	 * @return bool|string If there is language prefix - language will be returned, `false` otherwise
+	 */
+	function url_language ($url = false) {
+		$url = $url ?: $_SERVER->request_uri;
+		if (isset($this->localized_url[$url])) {
+			return $this->localized_url[$url];
+		}
+		$aliases = $this->get_aliases();
+		$clang   = explode('?', $url, 2)[0];
+		$clang   = explode('/', trim($clang, '/'), 2)[0];
+		if (isset($aliases[$clang])) {
+			return $this->localized_url[$url] = $aliases[$clang];
+		}
+		return false;
+	}
+	/**
+	 * Checking Accept-Language header for languages that exists in configuration
 	 *
 	 * @param array $active_languages
 	 *
 	 * @return bool|string
 	 */
-	protected function scan_aliases ($active_languages) {
+	protected function check_accept_header ($active_languages) {
 		/**
 		 * @var _SERVER $_SERVER
 		 */
 		$aliases          = $this->get_aliases();
-		$accept_languages =  array_filter(
+		$accept_languages = array_filter(
 			explode(
 				',',
 				strtolower(
-					strtr('-', '_', $_SERVER->language)
+					strtr($_SERVER->language, '-', '_')
 				)
 			)
 		);
+		foreach ($accept_languages as $language) {
+			$language = explode(';', $language, 2)[0];
+			if (@in_array($aliases[$language], $active_languages)) {
+				return $aliases[$language];
+			}
+		}
+		return false;
+	}
+	/**
+	 * Check `*-Locale` header (for instance, `X-Facebook-Locale`) that exists in configuration
+	 *
+	 * @param array $active_languages
+	 *
+	 * @return bool|string
+	 */
+	protected function check_locale_header ($active_languages) {
+		/**
+		 * @var _SERVER $_SERVER
+		 */
+		$aliases = $this->get_aliases();
 		/**
 		 * For `X-Facebook-Locale` and other similar
 		 */
 		foreach ($_SERVER as $i => $v) {
 			if (preg_match('/.*_LOCALE$/i', $i)) {
-				array_unshift($accept_languages, strtolower($v));
-			}
-		}
-		unset($i, $v);
-		foreach ($accept_languages as $language) {
-			$language = explode(';', $language, 2)[0];
-			if (@in_array($aliases[$language], $active_languages)) {
-				return $aliases[$language];
+				$language = strtolower($v);
+				if (@in_array($aliases[$language], $active_languages)) {
+					return $aliases[$language];
+				}
+				return false;
 			}
 		}
 		return false;
@@ -106,17 +171,14 @@ class Language implements JsonSerializable {
 	 * @return array|bool
 	 */
 	protected function get_aliases () {
-		$Cache = Cache::instance();
-		if (($aliases = $Cache->{'languages/aliases'}) === false) {
+		return Cache::instance()->get('languages/aliases', function () {
 			$aliases      = [];
 			$aliases_list = _strtolower(get_files_list(LANGUAGES.'/aliases'));
 			foreach ($aliases_list as $alias) {
 				$aliases[$alias] = file_get_contents(LANGUAGES."/aliases/$alias");
 			}
-			unset($aliases_list, $alias);
-			$Cache->{'languages/aliases'} = $aliases;
-		}
-		return $aliases;
+			return $aliases;
+		});
 	}
 	/**
 	 * Get translation
@@ -131,13 +193,10 @@ class Language implements JsonSerializable {
 		if (isset($this->translate[$language])) {
 			return @$this->translate[$language][$item] ?: ucfirst(str_replace('_', ' ', $item));
 		}
-		$current_language       = $this->clanguage;
-		$current_fixed_language = $this->fixed_language;
-		$this->fixed_language   = false;
+		$current_language = $this->clanguage;
 		$this->change($language);
 		$return = $this->get($item);
 		$this->change($current_language);
-		$this->fixed_language = $current_fixed_language;
 		return $return;
 	}
 	/**
@@ -185,17 +244,10 @@ class Language implements JsonSerializable {
 	 * @return bool
 	 */
 	function change ($language) {
-		if ($this->fixed_language && $this->changed_once) {
-			return false;
-		}
-		$this->changed_once = true;
 		if ($language == $this->clanguage) {
 			return true;
 		}
-		$Config = Config::instance(true);
-		if (!$language && $Config->core['multilingual']) {
-			$language = $this->scan_aliases($Config->core['active_languages']);
-		}
+		$Config   = Config::instance(true);
 		$language = $language ?: $Config->core['language'];
 		if (
 			!$Config->core ||
@@ -407,17 +459,6 @@ class Language implements JsonSerializable {
 			$data = str_replace($f, $this->get("l_$f"), $data);
 		}
 		return $data;
-	}
-	/**
-	 * Refresh fixed language and actual language from Core class (used by Core class, usually there is no need to call it manually)
-	 */
-	function reload_core_config () {
-		$Core = Core::instance();
-		if ($Core->language != $this->clanguage) {
-			$this->fixed_language = false;
-			$this->change($Core->language);
-		}
-		$this->fixed_language = $Core->fixed_language;
 	}
 	/**
 	 * Implementation of JsonSerializable interface
