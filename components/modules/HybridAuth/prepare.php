@@ -71,7 +71,7 @@ if (
 		)
 	) ||
 	(
-		isset($rc[2]) && strpos($rc[2], $User->get_session()) !== 0
+		isset($rc[2]) && strpos($rc[2], md5($rc[0].$User->get_session())) !== 0
 	)
 ) {
 	header('Location: '.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));

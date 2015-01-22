@@ -233,7 +233,7 @@ function get_hybridauth_instance ($provider = null, $base_url = null) {
 	$Config			= Config::instance();
 	$User			= User::instance();
 	$HybridAuth		= new Hybrid_Auth([
-		'base_url'	=> $base_url ?: $Config->base_url()."/HybridAuth/$provider/endpoint/".$User->get_session(),
+		'base_url'	=> $base_url ?: $Config->base_url()."/HybridAuth/$provider/endpoint/".md5($provider.$User->get_session()),
 		'providers'	=> $Config->module('HybridAuth')->providers
 	]);
 	if ($User->user() && current_module() != 'HybridAuth') {
