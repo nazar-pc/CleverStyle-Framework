@@ -48,28 +48,19 @@ class _SERVER implements ArrayAccess, Iterator {
 		$this->update($SERVER);
 	}
 	protected function update ($SERVER) {
-		$this->language     = isset($SERVER['HTTP_ACCEPT_LANGUAGE']) ? $SERVER['HTTP_ACCEPT_LANGUAGE'] : '';
-		$this->version      =
+		$this->language       = isset($SERVER['HTTP_ACCEPT_LANGUAGE']) ? $SERVER['HTTP_ACCEPT_LANGUAGE'] : '';
+		$this->version        =
 			isset($SERVER['HTTP_ACCEPT_VERSION']) && preg_match('/^[0-9\.]+$/', $SERVER['HTTP_ACCEPT_VERSION']) ? $SERVER['HTTP_ACCEPT_VERSION'] : 1;
-		$this->content_type = isset($SERVER['CONTENT_TYPE']) ? $SERVER['CONTENT_TYPE'] : '';
-		$this->dnt          = isset($SERVER['HTTP_DNT']) && $SERVER['HTTP_DNT'] == 1;
-		$this->host         = isset($SERVER['SERVER_NAME']) ? $SERVER['SERVER_NAME'] : '';
-		if (isset($SERVER['HTTP_HOST'])) {
-			if (!$this->host || filter_var($this->host, FILTER_VALIDATE_IP)) {
-				$this->host = $SERVER['HTTP_HOST'];
-			} elseif (strpos($SERVER['HTTP_HOST'], ':') !== false) {
-				$this->host .= ':'.(int)explode(':', $SERVER['HTTP_HOST'], 2)[1];
-			}
-		}
+		$this->content_type   = isset($SERVER['CONTENT_TYPE']) ? $SERVER['CONTENT_TYPE'] : '';
+		$this->dnt            = isset($SERVER['HTTP_DNT']) && $SERVER['HTTP_DNT'] == 1;
+		$this->secure         = $this->secure($SERVER);
+		$this->host           = $this->host($SERVER);
 		$this->ip             = $this->ip($_SERVER);
 		$this->query_string   = isset($SERVER['QUERY_STRING']) ? $SERVER['QUERY_STRING'] : '';
 		$this->referer        = isset($SERVER['HTTP_REFERER']) && filter_var($SERVER['HTTP_REFERER'], FILTER_VALIDATE_URL) ? $SERVER['HTTP_REFERER'] : '';
 		$this->remote_addr    = isset($SERVER['REMOTE_ADDR']) ? $SERVER['REMOTE_ADDR'] : '127.0.0.1';
 		$this->request_uri    = isset($SERVER['REQUEST_URI']) ? $SERVER['REQUEST_URI'] : '';
 		$this->request_method = isset($SERVER['REQUEST_METHOD']) ? $SERVER['REQUEST_METHOD'] : '';
-		$this->secure         = isset($SERVER['HTTPS']) ? $SERVER['HTTPS'] == 'on' : (
-			isset($SERVER['HTTP_X_FORWARDED_PROTO']) && $SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'
-		);
 		$this->user_agent     = isset($SERVER['HTTP_USER_AGENT']) ? $SERVER['HTTP_USER_AGENT'] : '';
 	}
 	/**
@@ -97,6 +88,49 @@ class _SERVER implements ArrayAccess, Iterator {
 			}
 		}
 		return isset($SERVER['REMOTE_ADDR']) ? '127.0.0.1' : '';
+	}
+	/**
+	 * The best guessed host
+	 *
+	 * @param array $SERVER
+	 *
+	 * @return string
+	 */
+	protected function host ($SERVER) {
+		$host          = isset($SERVER['SERVER_NAME']) ? $SERVER['SERVER_NAME'] : '';
+		$port          = '';
+		$expected_port = $this->secure ? 443 : 80;
+		if (!$host && isset($SERVER['HTTP_X_FORWARDED_HOST'])) {
+			$host = $SERVER['HTTP_X_FORWARDED_HOST'];
+			if (
+				isset($SERVER['HTTP_X_FORWARDED_PORT']) &&
+				$SERVER['HTTP_X_FORWARDED_PORT'] != $expected_port
+			) {
+				$port = (int)$SERVER['HTTP_X_FORWARDED_PORT'];
+			}
+		} elseif (isset($SERVER['HTTP_HOST'])) {
+			if (!$host || filter_var($host, FILTER_VALIDATE_IP)) {
+				$host = $SERVER['HTTP_HOST'];
+			} elseif (strpos($SERVER['HTTP_HOST'], ':') !== false) {
+				$port = (int)explode(':', $SERVER['HTTP_HOST'])[1];
+				if ($port == $expected_port) {
+					$port = '';
+				}
+			}
+		}
+		return $host.($port ? ":$port" : '');
+	}
+	/**
+	 * Secure protocol detection
+	 *
+	 * @param array $SERVER
+	 *
+	 * @return bool
+	 */
+	protected function secure ($SERVER) {
+		return isset($SERVER['HTTPS']) ? $SERVER['HTTPS'] == 'on' : (
+			isset($SERVER['HTTP_X_FORWARDED_PROTO']) && $SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'
+		);
 	}
 	/**
 	 * Whether key exists (from original `$_SERVER` superglobal)
