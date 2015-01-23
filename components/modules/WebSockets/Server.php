@@ -70,7 +70,7 @@ class Server implements MessageComponentInterface {
 		 */
 		$this->io_server = IoServer::factory(
 			new HttpServer($ws_server),
-			Config::instance()->module('WebSockets')->{$_SERVER->secure ? 'external_port' : 'external_port_secure'}
+			Config::instance()->module('WebSockets')->{$_SERVER->secure ? 'external_port_secure' : 'external_port'}
 		);
 		$this->io_server->run();
 		// Since we may work with a lot of different users - disable this cache in order to not run out of memory

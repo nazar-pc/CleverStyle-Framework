@@ -23,7 +23,7 @@ if (isset($_POST['external_port'], $_POST['external_port_secure'])) {
 	$Index->save(true);
 }
 $Index->content(
-	h::{'cs-table[right-left] cs-table-row cs-table-cell'}(
+	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
 		[
 			h::info('websockets_external_port'),
 			h::input([

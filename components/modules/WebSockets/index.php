@@ -13,9 +13,9 @@ require DIR.'/Ratchet/vendor/autoload.php';
 // TODO: security check here
 $Config = Config::instance();
 // Try to connect to socket if exists
-$socket = fsockopen(
-	explode('/', $Config->base_url())[1],
-	$Config->module('WebSockets')->{$_SERVER->secure ? 'external_port' : 'external_port_secure'},
+$socket = @fsockopen(
+	explode('/', $Config->base_url())[2],
+	$Config->module('WebSockets')->{$_SERVER->secure ? 'external_port_secure' : 'external_port'},
 	$error,
 	$error,
 	2
