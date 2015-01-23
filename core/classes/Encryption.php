@@ -73,7 +73,7 @@ class Encryption {
 		]));
 		mcrypt_generic_deinit($this->td);
 		if ($encrypted) {
-			return "$iv:$encrypted";
+			return $iv.$encrypted;
 		} else {
 			return false;
 		}
@@ -96,7 +96,9 @@ class Encryption {
 		} else {
 			$key = mb_substr(hash('sha512', $this->key.$key), 0, mcrypt_enc_get_key_size($this->td));
 		}
-		list($iv, $data) = explode(':', $data, 2);
+		$iv_size = mcrypt_enc_get_iv_size($this->td);
+		$iv      = substr($data, 0, $iv_size);
+		$data    = substr($data, $iv_size);
 		mcrypt_generic_init($this->td, $key, $iv);
 		errors_off();
 		$decrypted = @unserialize(mdecrypt_generic($this->td, $data));
