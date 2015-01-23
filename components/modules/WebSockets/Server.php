@@ -37,6 +37,11 @@ class Server implements MessageComponentInterface {
 	 * @var ConnectionInterface[]
 	 */
 	protected $servers;
+	/**
+	 * Is current server instance master server
+	 *
+	 * @var bool
+	 */
 	protected $is_master = false;
 	/**
 	 * Connection to master server
@@ -51,7 +56,7 @@ class Server implements MessageComponentInterface {
 	/**
 	 * Run WebSockets server
 	 */
-	function construct () {
+	function run () {
 		$this->clients   = new SplObjectStorage;
 		$this->servers   = new SplObjectStorage;
 		$this->io_server = IoServer::factory(
