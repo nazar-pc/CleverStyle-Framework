@@ -120,7 +120,7 @@ Trigger::instance()
 	->register(
 		'System/Index/construct',
 		function () {
-			if (admin_path()) {
+			if (admin_path() && current_module() == 'System') {
 				require __DIR__.'/trigger/admin.php';
 			}
 		}
