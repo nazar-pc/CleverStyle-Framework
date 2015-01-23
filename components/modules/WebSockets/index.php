@@ -9,8 +9,6 @@
 namespace cs\modules\WebSockets;
 use
 	cs\Config;
-require __DIR__.'/Ratchet/vendor/autoload.php';
-require __DIR__.'/functions.php';
 if (PHP_SAPI == 'cli') {
 	Server::instance()->run();
 } else {

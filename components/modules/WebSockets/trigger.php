@@ -11,6 +11,10 @@ Trigger::instance()->register(
 	'System/Index/construct',
 	function () {
 		switch (Config::instance()->components['modules']['WebSockets']['active']) {
+			case 1:
+				require __DIR__.'/Pawl/vendor/autoload.php';
+				require __DIR__.'/functions.php';
+				return;
 			case -1:
 				if (!admin_path()) {
 					return;

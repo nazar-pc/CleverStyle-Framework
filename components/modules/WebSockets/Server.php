@@ -8,10 +8,13 @@
  */
 namespace cs\modules\WebSockets;
 use
+	React\EventLoop\Factory as Loop_factory,
+	Ratchet\Client\Factory as Client_factory,
 	Ratchet\ConnectionInterface,
 	Ratchet\Http\HttpServer,
 	Ratchet\MessageComponentInterface,
 	Ratchet\Server\IoServer,
+	Ratchet\Client\WebSocket as Client_websocket,
 	Ratchet\WebSocket\WsServer,
 	cs\Config,
 	cs\Core,
@@ -23,10 +26,10 @@ use
 class Server implements MessageComponentInterface {
 	use
 		Singleton;
-	const RESPONSE_TO_ALL              = 1;
-	const RESPONSE_TO_REGISTERED_USERS = 2;
-	const RESPONSE_TO_SPECIFIC_USERS   = 3;
-	const RESPONSE_TO_USERS_GROUP      = 4;
+	const SEND_TO_ALL              = 1;
+	const SEND_TO_REGISTERED_USERS = 2;
+	const SEND_TO_SPECIFIC_USERS   = 3;
+	const SEND_TO_USERS_GROUP      = 4;
 	/**
 	 * Each object additionally will have properties `user_id` and `user_groups` with user id and ids of user groups correspondingly
 	 *
@@ -91,18 +94,11 @@ class Server implements MessageComponentInterface {
 	 * @param string              $message
 	 */
 	function onMessage (ConnectionInterface $from, $message) {
-		$decoded_message = _json_decode($message);
-		if (
-			!isset($decoded_message[0], $decoded_message[1]) ||
-			!is_array($decoded_message)
-		) {
+		$res = $this->parse_message($message, $action, $details, $response_to, $target);
+		if (!$res) {
 			$from->close();
 			return;
 		}
-		list($action, $details) = $decoded_message;
-		$response_to = isset($decoded_message[2]) ? $decoded_message[2] : 0;
-		$target      = isset($decoded_message[3]) ? $decoded_message[4] : false;
-		unset($decoded_message);
 		switch ($action) {
 			/**
 			 * Connection to master server as server (by default all connections considered as clients)
@@ -115,17 +111,25 @@ class Server implements MessageComponentInterface {
 				}
 				$from->close();
 				return;
+			/**
+			 * Internal connection from application
+			 */
+			case 'Internal':
+				if (
+					$this->parse_message($details, $action_, $details_, $response_to_, $target_) &&
+					in_array($from->remoteAddress, ['127.0.0.1', '::1'])
+				) {
+					$from->close();
+					$this->send_to_master($details);
+					$this->send_to_clients_internal($action_, $details_, $response_to_, $target_);
+				}
+				return;
 			case 'Client/authentication':
 				// TODO: client authentication, assign user id and groups as properties of connection
 		}
 		if ($this->servers->contains($from)) {
-			foreach ($this->servers as $server) {
-				if ($server === $from) {
-					continue;
-				}
-				$server->send($message);
-			}
-			if (!$response_to || !$target) {
+			$this->broadcast_message_to_servers($message, $from);
+			if (!$response_to) {
 				return;
 			}
 			$this->send_to_clients_internal($action, $details, $response_to, $target);
@@ -134,21 +138,38 @@ class Server implements MessageComponentInterface {
 		}
 	}
 	/**
-	 * Send request to client
+	 * @param string    $message
+	 * @param string    $action
+	 * @param mixed     $details
+	 * @param int|int[] $response_to
+	 * @param int       $target
 	 *
-	 * @param string         $action
-	 * @param mixed          $details
-	 * @param int            $response_to Constants `self::RESPONSE_TO*` should be used here
-	 * @param bool|int|int[] $target      Id or array of ids in case of response to one or several users or groups
+	 * @return bool
 	 */
-	function send_to_clients ($action, $details, $response_to, $target, $target = false) {
-		if (!$this->is_master) {
-			$this->send_to_master($action, $details, $response_to, $target);
+	protected function parse_message ($message, &$action, &$details, &$response_to, &$target) {
+		$decoded_message = _json_decode($message);
+		if (
+			!isset($decoded_message[0], $decoded_message[1]) ||
+			!is_array($decoded_message)
+		) {
+			return false;
 		}
-		if (!$this->io_server) {
-			// TODO: if no local io server - there is a need to connect to local WebSockets server
+		list($action, $details) = $decoded_message;
+		$response_to = isset($decoded_message[2]) ? $decoded_message[2] : 0;
+		$target      = isset($decoded_message[3]) ? $decoded_message[4] : false;
+		return true;
+	}
+	/**
+	 * @param string                   $message
+	 * @param ConnectionInterface|null $skip_server
+	 */
+	protected function broadcast_message_to_servers ($message, $skip_server = null) {
+		foreach ($this->servers as $server) {
+			if ($server === $skip_server) {
+				continue;
+			}
+			$server->send($message);
 		}
-		$this->send_to_clients_internal($action, $details, $response_to, $target);
 	}
 	/**
 	 * Send request to client
@@ -158,22 +179,81 @@ class Server implements MessageComponentInterface {
 	 * @param int            $response_to Constants `self::RESPONSE_TO*` should be used here
 	 * @param bool|int|int[] $target      Id or array of ids in case of response to one or several users or groups
 	 */
+	function send_to_clients ($action, $details, $response_to, $target = false) {
+		$message = _json_encode([$action, $details, $response_to, $target]);
+		/**
+		 * If server running in current process
+		 */
+		if ($this->io_server) {
+			if ($this->is_master) {
+				$this->broadcast_message_to_servers($message);
+			} else {
+				$this->send_to_master($message);
+			}
+			$this->send_to_clients_internal($action, $details, $response_to, $target);
+			$this->broadcast_message_to_servers($message);
+			return;
+		}
+		/**
+		 * Is server not running at all - run it
+		 */
+		if (!is_server_running()) {
+			if (is_exec_available()) {
+				cross_platform_server_in_background();
+			} else {
+				file_get_contents(
+					Config::instance()->base_url().'/WebSockets',
+					null,
+					stream_context_create([
+						'http' => [
+							'timeout' => 2
+						]
+					])
+				);
+			}
+			// Wait while server will start
+			sleep(2);
+		}
+		$protocol  = $_SERVER->secure ? 'wss' : 'ws';
+		$port      = Config::instance()->module('WebSockets')->{$_SERVER->secure ? 'external_port_secure' : 'external_port'};
+		$loop      = Loop_factory::create();
+		$connector = new Client_factory($loop);
+		$connector("$protocol://127.0.0.1:$port")->then(
+			function (Client_websocket $conn) use ($loop, $message) {
+				$conn->send(
+					_json_encode(['Internal', $message])
+				);
+			},
+			function () use ($loop) {
+				$loop->stop();
+			}
+		);
+		$loop->run();
+	}
+	/**
+	 * Send request to client
+	 *
+	 * @param string         $action
+	 * @param mixed          $details
+	 * @param int            $response_to Constants `self::SEND_TO_*` should be used here
+	 * @param bool|int|int[] $target      Id or array of ids in case of response to one or several users or groups
+	 */
 	protected function send_to_clients_internal ($action, $details, $response_to, $target = false) {
-		$message = _json_decode($action, $details);
+		$message = _json_encode([$action, $details]);
 		switch ($response_to) {
-			case self::RESPONSE_TO_ALL:
+			case self::SEND_TO_ALL:
 				foreach ($this->clients as $client) {
 					$client->send($message);
 				}
 				break;
-			case self::RESPONSE_TO_REGISTERED_USERS:
+			case self::SEND_TO_REGISTERED_USERS:
 				foreach ($this->clients as $client) {
 					if ($client->user_id != User::GUEST_ID) {
 						$client->send($message);
 					}
 				}
 				break;
-			case self::RESPONSE_TO_SPECIFIC_USERS:
+			case self::SEND_TO_SPECIFIC_USERS:
 				$target = (array)$target;
 				foreach ($this->clients as $client) {
 					if (in_array($client->user_id, $target)) {
@@ -181,7 +261,7 @@ class Server implements MessageComponentInterface {
 					}
 				}
 				break;
-			case self::RESPONSE_TO_USERS_GROUP:
+			case self::SEND_TO_USERS_GROUP:
 				$target = (array)$target;
 				foreach ($this->clients as $client) {
 					if (array_intersect($client->user_groups, $target)) {
@@ -194,18 +274,13 @@ class Server implements MessageComponentInterface {
 	/**
 	 * Send request to master server in order to propagate request to all other servers
 	 *
-	 * @param string         $action
-	 * @param mixed          $details
-	 * @param int            $response_to Constants `self::RESPONSE_TO*` should be used here
-	 * @param bool|int|int[] $target      Id or array of ids in case of response to one or several users or groups
+	 * @param string $message
 	 */
-	protected function send_to_master ($action, $details, $response_to = 0, $target = false) {
+	protected function send_to_master ($message) {
 		if (!$this->connection_to_master) {
 			return;
 		}
-		$this->connection_to_master->send(
-			_json_decode($action, $details, $response_to, $target)
-		);
+		$this->connection_to_master->send($message);
 	}
 	/**
 	 * @param ConnectionInterface $connection
