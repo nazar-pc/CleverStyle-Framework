@@ -69,7 +69,7 @@ Trigger::instance()
 					break;
 				case 1:
 					require __DIR__.'/trigger/enabled.php';
-					if (admin_path()) {
+					if (admin_path() && current_module() == 'Blogs') {
 						require __DIR__.'/trigger/enabled/admin.php';
 					}
 				default:
