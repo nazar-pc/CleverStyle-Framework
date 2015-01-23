@@ -9,20 +9,41 @@
 namespace cs\modules\WebSockets;
 use
 	cs\Config;
-require DIR.'/Ratchet/vendor/autoload.php';
-// TODO: security check here
-$Config = Config::instance();
-// Try to connect to socket if exists
-$socket = @fsockopen(
-	explode('/', $Config->base_url())[2],
-	$Config->module('WebSockets')->{$_SERVER->secure ? 'external_port_secure' : 'external_port'},
-	$error,
-	$error,
-	2
-);
-if ($socket) {
-	fclose($socket);
-	return;
+require __DIR__.'/Ratchet/vendor/autoload.php';
+if (PHP_SAPI == 'cli') {
+	Server::instance()->run();
+} else {
+	interface_off();
+	// TODO: security check here
+	$Config = Config::instance();
+	// Try to connect to socket if exists
+	$socket = @fsockopen(
+		explode('/', $Config->base_url())[2],
+		$Config->module('WebSockets')->{$_SERVER->secure ? 'external_port_secure' : 'external_port'},
+		$error,
+		$error,
+		2
+	);
+	if ($socket) {
+		fclose($socket);
+		return;
+	}
+	/**
+	 * Check whether `exec()` is available (to run server from CLI completely in background)
+	 */
+	if (
+		function_exists('exec') &&
+		strtolower(ini_get('safe_mode')) != 'off' &&
+		!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))))
+	) {
+		$cmd = 'php '.__DIR__.'/prepare_cli.php '.$Config->base_url().'/WebSockets';
+		if (substr(PHP_OS, 0, 3) != 'WIN') {
+			exec("$cmd > /dev/null &");
+		} else {
+			pclose(popen("start /B $cmd", 'r'));
+		}
+	} else {
+		ignore_user_abort(1);
+		Server::instance()->run();
+	}
 }
-ignore_user_abort(1);
-Server::instance()->run();
