@@ -1,10 +1,10 @@
 <?php
 /**
- * @package    WebSockets
- * @subpackage CleverStyle CMS We
- * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright  Copyright (c) 2015, Nazar Mokrynskyi
- * @license    MIT License, see license.txt
+ * @package   WebSockets
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs\modules\WebSockets;
 use
@@ -13,13 +13,13 @@ use
 	Ratchet\MessageComponentInterface,
 	Ratchet\Server\IoServer,
 	Ratchet\WebSocket\WsServer,
+	cs\Config,
 	cs\Core,
 	cs\Encryption,
 	cs\Singleton,
 	cs\Trigger,
 	cs\User,
 	SplObjectStorage;
-
 class Server implements MessageComponentInterface {
 	use
 		Singleton;
@@ -57,15 +57,24 @@ class Server implements MessageComponentInterface {
 	 * Run WebSockets server
 	 */
 	function run () {
-		$this->clients   = new SplObjectStorage;
-		$this->servers   = new SplObjectStorage;
+		$this->clients = new SplObjectStorage;
+		$this->servers = new SplObjectStorage;
+		$ws_server     = new WsServer($this);
+		// No encoding check - better performance, browsers do this anyway
+		$ws_server->setEncodingChecks(false);
+		// Disable all versions except RFC6455, which is supported by all
+		$ws_server->disableVersion(0);
+		$ws_server->disableVersion(6);
+		/**
+		 * @var \cs\_SERVER $_SERVER
+		 */
 		$this->io_server = IoServer::factory(
-			new HttpServer(
-				new WsServer($this)
-			),
-			7777
+			new HttpServer($ws_server),
+			Config::instance()->module('WebSockets')->{$_SERVER->secure ? 'external_port' : 'external_port_secure'}
 		);
 		$this->io_server->run();
+		// Since we may work with a lot of different users - disable this cache in order to not run out of memory
+		User::instance()->disable_memory_cache();
 		Trigger::instance()->run('WebSockets/register_actions');
 	}
 	/**
