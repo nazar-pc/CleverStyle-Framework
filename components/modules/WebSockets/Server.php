@@ -51,7 +51,7 @@ class Server implements MessageComponentInterface {
 	 *
 	 * @var ConnectionInterface
 	 */
-	protected $connection_to_master;
+	protected $connection_to_master; //TODO servers pool and connection to master
 	/**
 	 * @var IoServer
 	 */
@@ -94,8 +94,7 @@ class Server implements MessageComponentInterface {
 	 * @param string              $message
 	 */
 	function onMessage (ConnectionInterface $from, $message) {
-		$res = $this->parse_message($message, $action, $details, $response_to, $target);
-		if (!$res) {
+		if (!$this->parse_message($message, $action, $details, $response_to, $target)) {
 			$from->close();
 			return;
 		}
@@ -117,7 +116,7 @@ class Server implements MessageComponentInterface {
 			case 'Internal':
 				if (
 					$this->parse_message($details, $action_, $details_, $response_to_, $target_) &&
-					in_array($from->remoteAddress, ['127.0.0.1', '::1'])
+					$from->remoteAddress == '127.0.0.1'
 				) {
 					$from->close();
 					$this->send_to_master($details);
@@ -223,6 +222,7 @@ class Server implements MessageComponentInterface {
 				$conn->send(
 					_json_encode(['Internal', $message])
 				);
+				// Connection will be closed by server itself, no need to stop loop here
 			},
 			function () use ($loop) {
 				$loop->stop();
