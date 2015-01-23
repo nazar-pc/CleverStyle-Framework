@@ -26,6 +26,7 @@ if (PHP_SAPI == 'cli') {
 	);
 	if ($socket) {
 		fclose($socket);
+		echo 'Server already running';
 		return;
 	}
 	/**
@@ -33,7 +34,7 @@ if (PHP_SAPI == 'cli') {
 	 */
 	if (
 		function_exists('exec') &&
-		strtolower(ini_get('safe_mode')) != 'off' &&
+		strtolower(ini_get('safe_mode')) != 'on' &&
 		!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))))
 	) {
 		$cmd = 'php '.__DIR__.'/prepare_cli.php '.$Config->base_url().'/WebSockets';
@@ -42,6 +43,7 @@ if (PHP_SAPI == 'cli') {
 		} else {
 			pclose(popen("start /B $cmd", 'r'));
 		}
+		echo 'Server started';
 	} else {
 		ignore_user_abort(1);
 		Server::instance()->run();
