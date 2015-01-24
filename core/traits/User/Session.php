@@ -305,6 +305,7 @@ trait Session {
 			}
 			$this->session_id                = $hash;
 			$this->cache->{"sessions/$hash"} = [
+				'id'          => $hash,
 				'user'        => $user,
 				'expire'      => TIME + $Config->core['session_expire'],
 				'user_agent'  => $_SERVER->user_agent,
@@ -314,12 +315,11 @@ trait Session {
 			_setcookie('session', $hash, TIME + $Config->core['session_expire']);
 			$this->load_session();
 			$this->update_user_is();
-			if (
-				($this->db()->qfs(
-						"SELECT COUNT(`id`)
-					 FROM `[prefix]sessions`"
-					) % $Config->core['inserts_limit']) == 0
-			) {
+			$ids_count = $this->db()->qfs(
+				"SELECT COUNT(`id`)
+				FROM `[prefix]sessions`"
+			);
+			if (($ids_count % $Config->core['inserts_limit']) == 0) {
 				$this->db_prime()->aq(
 					"DELETE FROM `[prefix]sessions`
 					WHERE `expire` < $time"
