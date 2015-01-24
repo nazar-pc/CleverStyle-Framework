@@ -31,7 +31,7 @@ class Server implements MessageComponentInterface {
 	const SEND_TO_SPECIFIC_USERS   = 3;
 	const SEND_TO_USERS_GROUP      = 4;
 	/**
-	 * Each object additionally will have properties `user_id` and `user_groups` with user id and ids of user groups correspondingly
+	 * Each object additionally will have properties `user_id`, `session_id` and `user_groups` with user id and ids of user groups correspondingly
 	 *
 	 * @var ConnectionInterface[]
 	 */
@@ -57,6 +57,19 @@ class Server implements MessageComponentInterface {
 	 */
 	protected $io_server;
 	/**
+	 * @var int
+	 */
+	protected $listen_port;
+	/**
+	 * @var bool
+	 */
+	protected $remember_session_ip;
+	protected function construct () {
+		$Config                    = Config::instance();
+		$this->listen_port         = $Config->module('WebSockets')->{$_SERVER->secure ? 'external_port_secure' : 'external_port'};
+		$this->remember_session_ip = $Config->core['remember_user_ip'];
+	}
+	/**
 	 * Run WebSockets server
 	 */
 	function run () {
@@ -73,7 +86,7 @@ class Server implements MessageComponentInterface {
 		 */
 		$this->io_server = IoServer::factory(
 			new HttpServer($ws_server),
-			Config::instance()->module('WebSockets')->{$_SERVER->secure ? 'external_port_secure' : 'external_port'}
+			$this->listen_port
 		);
 		$this->io_server->run();
 		// Since we may work with a lot of different users - disable this cache in order to not run out of memory
@@ -86,8 +99,6 @@ class Server implements MessageComponentInterface {
 	function onOpen (ConnectionInterface $connection) {
 		echo "Connected\n";
 		$this->clients->attach($connection);
-		$connection->user_id     = User::GUEST_ID;
-		$connection->user_groups = [];
 	}
 	/**
 	 * @param ConnectionInterface $from
@@ -114,9 +125,10 @@ class Server implements MessageComponentInterface {
 			 * Internal connection from application
 			 */
 			case 'Internal':
+				/** @noinspection PhpUndefinedFieldInspection */
 				if (
-					$this->parse_message($details, $action_, $details_, $response_to_, $target_) &&
-					$from->remoteAddress == '127.0.0.1'
+					$from->remoteAddress == '127.0.0.1' &&
+					$this->parse_message($details, $action_, $details_, $response_to_, $target_)
 				) {
 					$from->close();
 					$this->send_to_master($details);
@@ -124,7 +136,34 @@ class Server implements MessageComponentInterface {
 				}
 				return;
 			case 'Client/authentication':
-				// TODO: client authentication, assign user id and groups as properties of connection
+				if (!isset($details['session'], $details['user_agent'])) {
+					$from->send(_json_encode([
+						'Client/authentication:error',
+						$this->compose_error(400)
+					]));
+				}
+				$User    = User::instance();
+				$session = $User->get_session($details['session']);
+				/** @noinspection PhpUndefinedFieldInspection */
+				if (
+					$session['user_agent'] != $details['user_agent'] ||
+					(
+						$this->remember_session_ip &&
+						$session['ip'] != ip2hex($from->remoteAddress)
+					)
+				) {
+					$from->send(_json_encode([
+						'Client/authentication:error',
+						$this->compose_error(403)
+					]));
+				}
+				$from->user_id    = $session['user'];
+				$from->session_id = $session['id'];
+				$from->groups     = $User->get_groups($session['user']);
+				$from->send(_json_encode([
+					'Client/authentication',
+					$this->compose_error(403)
+				]));
 		}
 		if ($this->servers->contains($from)) {
 			$this->broadcast_message_to_servers($message, $from);
@@ -132,8 +171,13 @@ class Server implements MessageComponentInterface {
 				return;
 			}
 			$this->send_to_clients_internal($action, $details, $response_to, $target);
-		} else {
-			Trigger::instance()->run("WebSockets/$action", $details);
+		} elseif (isset($from->user_id)) {
+			/** @noinspection PhpUndefinedFieldInspection */
+			Trigger::instance()->run("WebSockets/$action", [
+				'details' => $details,
+				'user'    => $from->user_id,
+				'session' => $from->session_id
+			]);
 		}
 	}
 	/**
@@ -169,6 +213,21 @@ class Server implements MessageComponentInterface {
 			}
 			$server->send($message);
 		}
+	}
+	/**
+	 * Compose error, arguments similar to `code_header()`
+	 *
+	 * @param int         $error_code
+	 * @param null|string $error_message String representation of status code code
+	 *
+	 * @return array Array to be passed as details to `::send_to_clients()`
+	 */
+	function compose_error ($error_code, $error_message = null) {
+		$error_message = $error_message ?: code_header($error_code);
+		return [
+			$error_code,
+			$error_message
+		];
 	}
 	/**
 	 * Send request to client
@@ -214,7 +273,7 @@ class Server implements MessageComponentInterface {
 			sleep(2);
 		}
 		$protocol  = $_SERVER->secure ? 'wss' : 'ws';
-		$port      = Config::instance()->module('WebSockets')->{$_SERVER->secure ? 'external_port_secure' : 'external_port'};
+		$port      = $this->listen_port;
 		$loop      = Loop_factory::create();
 		$connector = new Client_factory($loop);
 		$connector("$protocol://127.0.0.1:$port")->then(
