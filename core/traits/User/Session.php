@@ -1,11 +1,11 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   CleverStyle CMS
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
-namespace	cs\User;
+namespace cs\User;
 use
 	cs\Config,
 	cs\Language,
@@ -16,15 +16,15 @@ use
 /**
  * Trait that contains all methods from <i>>cs\User</i> for working with user sessions
  *
- * @property int				$id
- * @property \cs\Cache\Prefix	$cache
+ * @property int                 $id
+ * @property \cs\Cache\Prefix    $cache
  */
 trait Session {
 	/**
 	 * Session id of current user
 	 * @var bool|string
 	 */
-	protected	$session_id		= false;
+	protected $session_id = false;
 	/**
 	 * Returns current session id
 	 *
@@ -39,7 +39,7 @@ trait Session {
 	/**
 	 * Load session by id and return id of session owner (user), updates last_sign_in, last_ip and last_online information
 	 *
-	 * @param null|string	$session_id	If not specified - loaded from `$this->session_id`, and if that also empty - from cookies
+	 * @param null|string $session_id If not specified - loaded from `$this->session_id`, and if that also empty - from cookies
 	 *
 	 * @return int User id
 	 */
@@ -56,8 +56,8 @@ trait Session {
 		if (!is_md5($session_id)) {
 			return false;
 		}
-		$Cache	= $this->cache;
-		$Config	= Config::instance();
+		$Cache  = $this->cache;
+		$Config = Config::instance();
 		/**
 		 * @var \cs\_SERVER $_SERVER
 		 */
@@ -65,7 +65,7 @@ trait Session {
 			/**
 			 * @var \cs\_SERVER $_SERVER
 			 */
-			$condition	= $Config->core['remember_user_ip'] ?
+			$condition = $Config->core['remember_user_ip'] ?
 				"AND
 				`remote_addr`	= '".ip2hex($_SERVER->remote_addr)."' AND
 				`ip`			= '".ip2hex($_SERVER->ip)."'"
@@ -89,28 +89,31 @@ trait Session {
 				$_SERVER->user_agent
 			]) ?: false;
 		});
-		if (!(
-			$session_id &&
-			$result &&
-			$result['expire'] > TIME &&
-			$this->get('id', $result['user'])
-		)) {
+		if (
+			!$session_id ||
+			!$result ||
+			$result['expire'] <= TIME ||
+			!$this->get('id', $result['user'])
+		) {
 			$this->add_session(User::GUEST_ID);
 			$this->update_user_is();
 			return User::GUEST_ID;
 		}
-		$update	= [];
+		$update = [];
 		/**
 		 * Updating last online time
 		 */
-		if ($result['user'] != 0 && $this->get('last_online', $result['user']) < TIME - $Config->core['online_time'] * $Config->core['update_ratio'] / 100) {
+		if (
+			$result['user'] != 0 &&
+			$this->get('last_online', $result['user']) < TIME - $Config->core['online_time'] * $Config->core['update_ratio'] / 100
+		) {
 			/**
 			 * Updating last sign in time and ip
 			 */
-			$time	= TIME;
+			$time = TIME;
 			if ($this->get('last_online', $result['user']) < TIME - $Config->core['online_time']) {
-				$ip			= ip2hex($_SERVER->ip);
-				$update[]	= "
+				$ip       = ip2hex($_SERVER->ip);
+				$update[] = "
 					UPDATE `[prefix]users`
 					SET
 						`last_sign_in`	= $time,
@@ -119,16 +122,16 @@ trait Session {
 					WHERE `id` =$result[user]";
 				$this->set(
 					[
-						'last_sign_in'	=> TIME,
-						'last_ip'		=> $ip,
-						'last_online'	=> TIME
+						'last_sign_in' => TIME,
+						'last_ip'      => $ip,
+						'last_online'  => TIME
 					],
 					null,
 					$result['user']
 				);
 				unset($ip);
 			} else {
-				$update[]	= "
+				$update[] = "
 					UPDATE `[prefix]users`
 					SET `last_online` = $time
 					WHERE `id` = $result[user]";
@@ -141,8 +144,8 @@ trait Session {
 			unset($time);
 		}
 		if ($result['expire'] - TIME < $Config->core['session_expire'] * $Config->core['update_ratio'] / 100) {
-			$result['expire']	= TIME + $Config->core['session_expire'];
-			$update[]			= "
+			$result['expire']                = TIME + $Config->core['session_expire'];
+			$update[]                        = "
 				UPDATE `[prefix]sessions`
 				SET `expire` = $result[expire]
 				WHERE `id` = '$session_id'
@@ -152,21 +155,21 @@ trait Session {
 		if (!empty($update)) {
 			$this->db_prime()->q($update);
 		}
-		$this->id			= $result['user'];
-		$this->session_id	= $session_id;
+		$this->id         = $result['user'];
+		$this->session_id = $session_id;
 		$this->update_user_is();
 		return $this->id;
 	}
 	/**
 	 * Create the session for the user with specified id
 	 *
-	 * @param bool|int	$user
-	 * @param bool		$delete_current_session
+	 * @param bool|int $user
+	 * @param bool     $delete_current_session
 	 *
 	 * @return bool
 	 */
 	function add_session ($user = false, $delete_current_session = true) {
-		$user	= (int)$user ?: User::GUEST_ID;
+		$user = (int)$user ?: User::GUEST_ID;
 		if ($delete_current_session && is_md5($this->session_id)) {
 			$this->del_session_internal(null, false);
 		}
@@ -175,7 +178,7 @@ trait Session {
 		 * Return point, runs if user is blocked, inactive, or disabled
 		 */
 		getting_user_data:
-		$data	= $this->get(
+		$data = $this->get(
 			[
 				'login',
 				'username',
@@ -188,50 +191,50 @@ trait Session {
 			$user
 		);
 		if (is_array($data)) {
-			$L		= Language::instance();
-			$Page	= Page::instance();
+			$L    = Language::instance();
+			$Page = Page::instance();
 			if ($data['status'] != User::STATUS_ACTIVE) {
-				/**
-				 * If user is disabled
-				 */
 				if ($data['status'] == User::STATUS_INACTIVE) {
+					/**
+					 * If user is disabled
+					 */
 					$Page->warning($L->your_account_disabled);
 					/**
 					 * Mark user as guest, load data again
 					 */
-					$user	= User::GUEST_ID;
+					$user = User::GUEST_ID;
 					goto getting_user_data;
-				/**
-				 * If user is not active
-				 */
 				} else {
+					/**
+					 * If user is not active
+					 */
 					$Page->warning($L->your_account_is_not_active);
 					/**
 					 * Mark user as guest, load data again
 					 */
-					$user	= User::GUEST_ID;
+					$user = User::GUEST_ID;
 					goto getting_user_data;
 				}
-			/**
-			 * If user if blocked
-			 */
 			} elseif ($data['block_until'] > TIME) {
+				/**
+				 * If user if blocked
+				 */
 				$Page->warning($L->your_account_blocked_until.' '.date($L->_datetime, $data['block_until']));
 				/**
 				 * Mark user as guest, load data again
 				 */
-				$user	= User::GUEST_ID;
+				$user = User::GUEST_ID;
 				goto getting_user_data;
 			}
 		} elseif ($this->id != User::GUEST_ID) {
 			/**
 			 * If data was not loaded - mark user as guest, load data again
 			 */
-			$user	= User::GUEST_ID;
+			$user = User::GUEST_ID;
 			goto getting_user_data;
 		}
 		unset($data);
-		$Config	= Config::instance();
+		$Config = Config::instance();
 		/**
 		 * Generate hash in cycle, to obtain unique value
 		 */
@@ -241,7 +244,8 @@ trait Session {
 				FROM `[prefix]sessions`
 				WHERE `id` = '$hash'
 				LIMIT 1"
-			)) {
+			)
+			) {
 				continue;
 			}
 			/**
@@ -279,26 +283,26 @@ trait Session {
 				$remote_addr,
 				$ip
 			);
-			$time								= TIME;
+			$time = TIME;
 			if ($user != User::GUEST_ID) {
 				$this->db_prime()->q("UPDATE `[prefix]users` SET `last_sign_in` = $time, `last_online` = $time, `last_ip` = '$ip.' WHERE `id` ='$user'");
 			}
-			$this->session_id			= $hash;
-			$this->cache->{"sessions/$hash"}	= [
-				'user'			=> $user,
-				'expire'		=> TIME + $Config->core['session_expire'],
-				'user_agent'	=> $_SERVER->user_agent,
-				'remote_addr'	=> $remote_addr,
-				'ip'			=> $ip
+			$this->session_id                = $hash;
+			$this->cache->{"sessions/$hash"} = [
+				'user'        => $user,
+				'expire'      => TIME + $Config->core['session_expire'],
+				'user_agent'  => $_SERVER->user_agent,
+				'remote_addr' => $remote_addr,
+				'ip'          => $ip
 			];
 			_setcookie('session', $hash, TIME + $Config->core['session_expire']);
 			$this->get_session_user();
 			$this->update_user_is();
 			if (
 				($this->db()->qfs(
-					 "SELECT COUNT(`id`)
+						"SELECT COUNT(`id`)
 					 FROM `[prefix]sessions`"
-				 ) % $Config->core['inserts_limit']) == 0
+					) % $Config->core['inserts_limit']) == 0
 			) {
 				$this->db_prime()->aq(
 					"DELETE FROM `[prefix]sessions`
@@ -312,7 +316,7 @@ trait Session {
 	/**
 	 * Destroying of the session
 	 *
-	 * @param null|string	$session_id
+	 * @param null|string $session_id
 	 *
 	 * @return bool
 	 */
@@ -320,7 +324,7 @@ trait Session {
 		Trigger::instance()->run(
 			'System/User/del_session/before'
 		);
-		$result	= $this->del_session_internal($session_id);
+		$result = $this->del_session_internal($session_id);
 		Trigger::instance()->run(
 			'System/User/del_session/after'
 		);
@@ -329,8 +333,8 @@ trait Session {
 	/**
 	 * Deletion of the session
 	 *
-	 * @param string	$session_id
-	 * @param bool		$create_guest_session
+	 * @param string $session_id
+	 * @param bool   $create_guest_session
 	 *
 	 * @return bool
 	 */
@@ -342,7 +346,7 @@ trait Session {
 		unset($this->cache->{"sessions/$session_id"});
 		$this->session_id = false;
 		_setcookie('session', '');
-		$result =  $this->db_prime()->q(
+		$result = $this->db_prime()->q(
 			"DELETE FROM `[prefix]sessions`
 			WHERE `id` = '%s'
 			LIMIT 1",
@@ -356,7 +360,7 @@ trait Session {
 	/**
 	 * Deletion of all user sessions
 	 *
-	 * @param bool|int	$user	If not specified - current user assumed
+	 * @param bool|int $user If not specified - current user assumed
 	 *
 	 * @return bool
 	 */
@@ -364,11 +368,11 @@ trait Session {
 		Trigger::instance()->run(
 			'System/User/del_all_sessions',
 			[
-				'id'	=> $user
+				'id' => $user
 			]
 		);
-		$user		= $user ?: $this->id;
-		$sessions	= $this->db_prime()->qfas(
+		$user     = $user ?: $this->id;
+		$sessions = $this->db_prime()->qfas(
 			"SELECT `id`
 			FROM `[prefix]sessions`
 			WHERE `user` = '$user'"
@@ -378,7 +382,7 @@ trait Session {
 				unset($this->cache->{"sessions/$session"});
 			}
 			unset($session);
-			$sessions	= implode("','", $sessions);
+			$sessions = implode("','", $sessions);
 			return $this->db_prime()->q(
 				"DELETE FROM `[prefix]sessions`
 				WHERE `id` IN('$sessions')"
@@ -389,18 +393,18 @@ trait Session {
 	/**
 	 * Get data, stored with session
 	 *
-	 * @param string		$item
-	 * @param null|string	$session_id
+	 * @param string      $item
+	 * @param null|string $session_id
 	 *
 	 * @return bool|mixed
 	 *
 	 */
 	function get_session_data ($item, $session_id = null) {
-		$session_id	= $session_id ?: $this->session_id;
+		$session_id = $session_id ?: $this->session_id;
 		if (!is_md5($session_id)) {
 			return false;
 		}
-		$data	= $this->cache->get("sessions/data/$session_id", function () use ($session_id) {
+		$data = $this->cache->get("sessions/data/$session_id", function () use ($session_id) {
 			return _json_decode(
 				$this->db()->qfs([
 					"SELECT `data`
@@ -416,19 +420,19 @@ trait Session {
 	/**
 	 * Store data with session
 	 *
-	 * @param string		$item
-	 * @param mixed			$value
-	 * @param null|string	$session_id
+	 * @param string      $item
+	 * @param mixed       $value
+	 * @param null|string $session_id
 	 *
 	 * @return bool
 	 *
 	 */
 	function set_session_data ($item, $value, $session_id = null) {
-		$session_id		= $session_id ?: $this->session_id;
+		$session_id = $session_id ?: $this->session_id;
 		if (!is_md5($session_id)) {
 			return false;
 		}
-		$data			= $this->cache->get("sessions/data/$session_id", function () use ($session_id) {
+		$data        = $this->cache->get("sessions/data/$session_id", function () use ($session_id) {
 			return _json_decode(
 				$this->db()->qfs([
 					"SELECT `data`
@@ -439,7 +443,7 @@ trait Session {
 				])
 			) ?: false;
 		}) ?: [];
-		$data[$item]	= $value;
+		$data[$item] = $value;
 		if ($this->db()->q(
 			"UPDATE `[prefix]sessions`
 			SET `data` = '%s'
@@ -447,7 +451,8 @@ trait Session {
 			LIMIT 1",
 			_json_encode($data),
 			$session_id
-		)) {
+		)
+		) {
 			unset($this->cache->{"sessions/data/$session_id"});
 			return true;
 		}
@@ -456,18 +461,18 @@ trait Session {
 	/**
 	 * Delete data, stored with session
 	 *
-	 * @param string		$item
-	 * @param null|string	$session_id
+	 * @param string      $item
+	 * @param null|string $session_id
 	 *
 	 * @return bool
 	 *
 	 */
 	function del_session_data ($item, $session_id = null) {
-		$session_id	= $session_id ?: $this->session_id;
+		$session_id = $session_id ?: $this->session_id;
 		if (!is_md5($session_id)) {
 			return false;
 		}
-		$data		= $this->cache->get("sessions/data/$session_id", function () use ($session_id) {
+		$data = $this->cache->get("sessions/data/$session_id", function () use ($session_id) {
 			return _json_decode(
 				$this->db()->qfs([
 					"SELECT `data`
@@ -489,7 +494,8 @@ trait Session {
 			LIMIT 1",
 			_json_encode($data),
 			$session_id
-		)) {
+		)
+		) {
 			unset($this->cache->{"sessions/data/$session_id"});
 			return true;
 		}
