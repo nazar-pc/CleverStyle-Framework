@@ -88,9 +88,6 @@ class Server implements MessageComponentInterface {
 		// Disable all versions except RFC6455, which is supported by all modern browsers
 		$ws_server->disableVersion(0);
 		$ws_server->disableVersion(6);
-		/**
-		 * @var \cs\_SERVER $_SERVER
-		 */
 		$this->io_server = IoServer::factory(
 			new HttpServer($ws_server),
 			$this->listen_port,
@@ -169,7 +166,7 @@ class Server implements MessageComponentInterface {
 				$from->groups     = $User->get_groups($session['user']);
 				$from->send(_json_encode([
 					'Client/authentication',
-					$this->compose_error(403)
+					'ok'
 				]));
 		}
 		if ($this->servers->contains($from)) {
@@ -279,11 +276,10 @@ class Server implements MessageComponentInterface {
 			// Wait while server will start
 			sleep(2);
 		}
-		$protocol  = $_SERVER->secure ? 'wss' : 'ws';
 		$loop      = Loop_factory::create();
 		$connector = new Client_factory($loop);
-		$connector("$protocol://127.0.0.1:$this->listen_port")->then(
-			function (Client_websocket $conn) use ($loop, $message) {
+		$connector("ws://127.0.0.1:$this->listen_port")->then(
+			function (Client_websocket $conn) use ($message) {
 				$conn->send(
 					_json_encode(['Internal', $message])
 				);
