@@ -111,7 +111,7 @@ if (
 					$rc[2]					= 'update';
 					$show_modules			= false;
 					$Page->title($L->updating_of_module($module_name));
-					rename($tmp_file, $tmp_file = TEMP.'/'.$User->get_session().'_module_update.phar');
+					rename($tmp_file, $tmp_file = TEMP.'/'.$User->get_session_id().'_module_update.phar');
 					$a->content(
 						h::{'h2.cs-center'}(
 							$L->update_module(
@@ -313,7 +313,7 @@ if (
 			$rc[2]					= 'update_system';
 			$show_modules			= false;
 			$Page->title($L->updating_of_system);
-			rename($tmp_file, $tmp_file = TEMP.'/'.$User->get_session().'_update_system.phar');
+			rename($tmp_file, $tmp_file = TEMP.'/'.$User->get_session_id().'_update_system.phar');
 			$a->content(
 				h::{'h2.cs-center'}(
 					$L->update_system(
