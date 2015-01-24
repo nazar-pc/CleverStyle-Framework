@@ -1,7 +1,7 @@
 {
 	"package"		: "WebSockets",
 	"category"		: "modules",
-	"version"		: "0.8.0+build-14",
+	"version"		: "0.9.0+build-15",
 	"description"	: "WebSockets server based on Ratchet and React with client-side bindings as well",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",
