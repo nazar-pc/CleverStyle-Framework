@@ -22,6 +22,7 @@ use
 	cs\Singleton,
 	cs\Trigger,
 	cs\User,
+	Exception,
 	SplObjectStorage;
 class Server implements MessageComponentInterface {
 	use
@@ -78,6 +79,7 @@ class Server implements MessageComponentInterface {
 	 * Run WebSockets server
 	 */
 	function run () {
+		@ini_set('error_log', LOGS.'/WebSockets-server.log');
 		$this->clients = new SplObjectStorage;
 		$this->servers = new SplObjectStorage;
 		$ws_server     = new WsServer($this);
@@ -103,7 +105,6 @@ class Server implements MessageComponentInterface {
 	 * @param ConnectionInterface $connection
 	 */
 	function onOpen (ConnectionInterface $connection) {
-		echo "Connected\n";
 		$this->clients->attach($connection);
 	}
 	/**
@@ -350,17 +351,15 @@ class Server implements MessageComponentInterface {
 	 * @param ConnectionInterface $connection
 	 */
 	function onClose (ConnectionInterface $connection) {
-		echo "Disconnected\n";
 		// The connection is closed, remove it, as we can no longer send it messages
 		$this->clients->detach($connection);
 		$this->servers->detach($connection);
 	}
 	/**
 	 * @param ConnectionInterface $connection
-	 * @param \Exception          $e
+	 * @param Exception           $e
 	 */
-	function onError (ConnectionInterface $connection, \Exception $e) {
-		echo "An error has occurred: {$e->getMessage()}\n";
+	function onError (ConnectionInterface $connection, Exception $e) {
 		$connection->close();
 	}
 }
