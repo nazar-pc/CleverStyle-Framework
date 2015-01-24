@@ -82,7 +82,7 @@ if (
 					}
 					$rc[2]					= 'update';
 					$Page->title($L->updating_of_plugin($plugin));
-					rename($tmp_file, $tmp_file = TEMP.'/'.User::instance()->get_session().'_plugin_update.phar.php');
+					rename($tmp_file, $tmp_file = TEMP.'/'.User::instance()->get_session_id().'_plugin_update.phar.php');
 					$a->content(
 						h::{'h2.cs-center'}(
 							$L->update_plugin(

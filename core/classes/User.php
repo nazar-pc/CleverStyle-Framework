@@ -254,7 +254,7 @@ class User {
 						}
 						if (!$last_session || $this->id == self::GUEST_ID) {
 							$this->add_session($id);
-							$this->set_data('last_session', $this->get_session());
+							$this->set_data('last_session', $this->get_session_id());
 						}
 						unset($id, $last_session);
 					}
@@ -290,7 +290,7 @@ class User {
 		/**
 		 * Security check
 		 */
-		if (!isset($_REQUEST['session']) || $_REQUEST['session'] != $this->get_session()) {
+		if (!isset($_REQUEST['session']) || $_REQUEST['session'] != $this->get_session_id()) {
 			$_REQUEST	= array_diff_key($_REQUEST, $_POST);
 			$_POST		= [];
 		}

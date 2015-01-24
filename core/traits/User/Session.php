@@ -30,22 +30,23 @@ trait Session {
 	 *
 	 * @return bool|string
 	 */
-	function get_session () {
+	function get_session_id () {
 		if ($this->id == User::GUEST_ID && $this->bot()) {
 			return '';
 		}
 		return $this->session_id;
 	}
 	/**
-	 * Load session by id and return id of session owner (user), updates last_sign_in, last_ip and last_online information
+	 * Returns session details by session id
 	 *
-	 * @param null|string $session_id If not specified - loaded from `$this->session_id`, and if that also empty - from cookies
+	 * @param null|string $session_id If `null` - loaded from `$this->session_id`, and if that also empty - from cookies
 	 *
-	 * @return int User id
+	 * @return bool|array
 	 */
-	function load_session ($session_id = null) {
-		if ($this->id == User::GUEST_ID && $this->bot()) {
-			return User::GUEST_ID;
+	function get_session ($session_id) {
+		if (func_num_args() == 0) {
+			trigger_error('calling User::get_session() without arguments is deprecated, use ::get_session_id() instead', E_USER_DEPRECATED);
+			return $this->get_session_id();
 		}
 		if (!$session_id) {
 			if (!$this->session_id) {
@@ -56,12 +57,11 @@ trait Session {
 		if (!is_md5($session_id)) {
 			return false;
 		}
-		$Cache  = $this->cache;
-		$Config = Config::instance();
+		$Cache = $this->cache;
 		/**
 		 * @var \cs\_SERVER $_SERVER
 		 */
-		$session = $Cache->get("sessions/$session_id", function () use ($session_id) {
+		return $Cache->get("sessions/$session_id", function () use ($session_id) {
 			return $this->db()->qf([
 				"SELECT
 					`user`,
@@ -78,6 +78,20 @@ trait Session {
 				TIME
 			]) ?: false;
 		});
+	}
+	/**
+	 * Load session by id and return id of session owner (user), updates last_sign_in, last_ip and last_online information
+	 *
+	 * @param null|string $session_id If not specified - loaded from `$this->session_id`, and if that also empty - from cookies
+	 *
+	 * @return int User id
+	 */
+	function load_session ($session_id = null) {
+		if ($this->id == User::GUEST_ID && $this->bot()) {
+			return User::GUEST_ID;
+		}
+		$Config  = Config::instance();
+		$session = $this->get_session($session_id);
 		if (
 			!$session ||
 			$session['expire'] <= TIME ||
@@ -146,7 +160,7 @@ trait Session {
 				SET `expire` = $session[expire]
 				WHERE `id` = '$session_id'
 				LIMIT 1";
-			$Cache->{"sessions/$session_id"} = $session;
+			$this->cache->{"sessions/$session_id"} = $session;
 		}
 		if (!empty($update)) {
 			$this->db_prime()->q($update);

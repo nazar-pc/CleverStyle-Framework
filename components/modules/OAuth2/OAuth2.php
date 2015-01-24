@@ -299,10 +299,10 @@ class OAuth2 {
 		 * @var \cs\_SERVER $_SERVER
 		 */
 		$user_agent				= $_SERVER->user_agent;
-		$current_session		= $User->get_session();
+		$current_session		= $User->get_session_id();
 		$_SERVER->user_agent	= "OAuth2-$client[name]-$client[id]";
 		$User->add_session($User->id, false);
-		$new_session			= $User->get_session();
+		$new_session			= $User->get_session_id();
 		$_SERVER->user_agent	= $user_agent;
 		$User->load_session($current_session);
 		unset($user_agent, $current_session);
