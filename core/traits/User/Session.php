@@ -61,7 +61,7 @@ trait Session {
 		/**
 		 * @var \cs\_SERVER $_SERVER
 		 */
-		$result = $Cache->get("sessions/$session_id", function () use ($session_id, $Config) {
+		$session = $Cache->get("sessions/$session_id", function () use ($session_id, $Config) {
 			/**
 			 * @var \cs\_SERVER $_SERVER
 			 */
@@ -90,10 +90,9 @@ trait Session {
 			]) ?: false;
 		});
 		if (
-			!$session_id ||
-			!$result ||
-			$result['expire'] <= TIME ||
-			!$this->get('id', $result['user'])
+			!$session ||
+			$session['expire'] <= TIME ||
+			!$this->get('id', $session['user'])
 		) {
 			$this->add_session(User::GUEST_ID);
 			$this->update_user_is();
@@ -104,14 +103,14 @@ trait Session {
 		 * Updating last online time
 		 */
 		if (
-			$result['user'] != 0 &&
-			$this->get('last_online', $result['user']) < TIME - $Config->core['online_time'] * $Config->core['update_ratio'] / 100
+			$session['user'] != 0 &&
+			$this->get('last_online', $session['user']) < TIME - $Config->core['online_time'] * $Config->core['update_ratio'] / 100
 		) {
 			/**
 			 * Updating last sign in time and ip
 			 */
 			$time = TIME;
-			if ($this->get('last_online', $result['user']) < TIME - $Config->core['online_time']) {
+			if ($this->get('last_online', $session['user']) < TIME - $Config->core['online_time']) {
 				$ip       = ip2hex($_SERVER->ip);
 				$update[] = "
 					UPDATE `[prefix]users`
@@ -119,7 +118,7 @@ trait Session {
 						`last_sign_in`	= $time,
 						`last_ip`		= '$ip',
 						`last_online`	= $time
-					WHERE `id` =$result[user]";
+					WHERE `id` =$session[user]";
 				$this->set(
 					[
 						'last_sign_in' => TIME,
@@ -127,35 +126,35 @@ trait Session {
 						'last_online'  => TIME
 					],
 					null,
-					$result['user']
+					$session['user']
 				);
 				unset($ip);
 			} else {
 				$update[] = "
 					UPDATE `[prefix]users`
 					SET `last_online` = $time
-					WHERE `id` = $result[user]";
+					WHERE `id` = $session[user]";
 				$this->set(
 					'last_online',
 					TIME,
-					$result['user']
+					$session['user']
 				);
 			}
 			unset($time);
 		}
-		if ($result['expire'] - TIME < $Config->core['session_expire'] * $Config->core['update_ratio'] / 100) {
-			$result['expire']                = TIME + $Config->core['session_expire'];
+		if ($session['expire'] - TIME < $Config->core['session_expire'] * $Config->core['update_ratio'] / 100) {
+			$session['expire']                = TIME + $Config->core['session_expire'];
 			$update[]                        = "
 				UPDATE `[prefix]sessions`
-				SET `expire` = $result[expire]
+				SET `expire` = $session[expire]
 				WHERE `id` = '$session_id'
 				LIMIT 1";
-			$Cache->{"sessions/$session_id"} = $result;
+			$Cache->{"sessions/$session_id"} = $session;
 		}
 		if (!empty($update)) {
 			$this->db_prime()->q($update);
 		}
-		$this->id         = $result['user'];
+		$this->id         = $session['user'];
 		$this->session_id = $session_id;
 		$this->update_user_is();
 		return $this->id;
