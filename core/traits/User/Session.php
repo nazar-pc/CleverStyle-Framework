@@ -64,6 +64,7 @@ trait Session {
 		return $Cache->get("sessions/$session_id", function () use ($session_id) {
 			return $this->db()->qf([
 				"SELECT
+					`id`,
 					`user`,
 					`expire`,
 					`user_agent`,
@@ -109,7 +110,12 @@ trait Session {
 			$this->update_user_is();
 			return User::GUEST_ID;
 		}
-		$update = [];
+		/**
+		 * Session id passed into this method might be `null`, but returned session will contain proper session id
+		 * (can be loaded from `$this->session_id`, and if that also empty - from cookies)
+		 */
+		$session_id = $session['id'];
+		$update     = [];
 		/**
 		 * Updating last online time
 		 */
@@ -154,8 +160,8 @@ trait Session {
 			unset($time);
 		}
 		if ($session['expire'] - TIME < $Config->core['session_expire'] * $Config->core['update_ratio'] / 100) {
-			$session['expire']               = TIME + $Config->core['session_expire'];
-			$update[]                        = "
+			$session['expire']                     = TIME + $Config->core['session_expire'];
+			$update[]                              = "
 				UPDATE `[prefix]sessions`
 				SET `expire` = $session[expire]
 				WHERE `id` = '$session_id'
