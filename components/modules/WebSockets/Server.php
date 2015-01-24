@@ -262,19 +262,19 @@ class Server implements MessageComponentInterface {
 		if (!is_server_running()) {
 			if (is_exec_available()) {
 				cross_platform_server_in_background();
+				// Wait while server will start
+				sleep(1);
 			} else {
 				file_get_contents(
 					Config::instance()->base_url().'/WebSockets',
 					null,
 					stream_context_create([
 						'http' => [
-							'timeout' => 2
+							'timeout' => 1
 						]
 					])
 				);
 			}
-			// Wait while server will start
-			sleep(2);
 		}
 		$loop      = Loop_factory::create();
 		$connector = new Client_factory($loop);

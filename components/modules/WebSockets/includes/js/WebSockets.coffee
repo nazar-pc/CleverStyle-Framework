@@ -12,7 +12,7 @@ window.cs.WebSockets = do ->
 		delay			= 0
 		onopen			= ->
 			delay	= 1000
-			window.cs.WebSockets.send(
+			cs.WebSockets.send(
 				'Client/authentication'
 				session		: cs.getcookie('session')
 				user_agent	: navigator.userAgent
@@ -67,10 +67,10 @@ window.cs.WebSockets = do ->
 		once	: (action, callback, error) ->
 			callback_	= ->
 				callback.apply(callback, arguments)
-				window.cs.WebSockets.off(action, callback_, error_)
+				cs.WebSockets.off(action, callback_, error_)
 			error_		= ->
 				error.apply(error, arguments)
-				window.cs.WebSockets.off(action, callback_, error_)
+				cs.WebSockets.off(action, callback_, error_)
 			methods.on(action, callback_, error_)
 		send	: (action, details) ->
 			socket.send(

@@ -20,7 +20,7 @@
       delay = 0;
       onopen = function() {
         delay = 1000;
-        window.cs.WebSockets.send('Client/authentication', {
+        cs.WebSockets.send('Client/authentication', {
           session: cs.getcookie('session'),
           user_agent: navigator.userAgent
         });
@@ -91,11 +91,11 @@
         var callback_, error_;
         callback_ = function() {
           callback.apply(callback, arguments);
-          return window.cs.WebSockets.off(action, callback_, error_);
+          return cs.WebSockets.off(action, callback_, error_);
         };
         error_ = function() {
           error.apply(error, arguments);
-          return window.cs.WebSockets.off(action, callback_, error_);
+          return cs.WebSockets.off(action, callback_, error_);
         };
         return methods.on(action, callback_, error_);
       },
