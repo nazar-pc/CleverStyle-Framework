@@ -52,7 +52,7 @@ window.cs.WebSockets = do ->
 			if !handlers[action]
 				handlers[action]	= []
 			handlers[action].push([callback, error])
-			return
+			cs.WebSockets
 		'off'	: (action, callback, error) ->
 			if !handlers[action]
 				return
@@ -63,7 +63,7 @@ window.cs.WebSockets = do ->
 					h[1] = undefined
 				if h[0] == undefined && h[1] == undefined
 					delete handlers[action][index]
-			return
+			cs.WebSockets
 		once	: (action, callback, error) ->
 			callback_	= ->
 				callback.apply(callback, arguments)
@@ -71,9 +71,11 @@ window.cs.WebSockets = do ->
 			error_		= ->
 				error.apply(error, arguments)
 				cs.WebSockets.off(action, callback_, error_)
-			methods.on(action, callback_, error_)
+			cs.WebSockets.on(action, callback_, error_)
+			cs.WebSockets
 		send	: (action, details) ->
 			socket.send(
 				JSON.stringify([action, details])
 			)
+			cs.WebSockets
 	}

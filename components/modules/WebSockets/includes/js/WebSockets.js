@@ -67,6 +67,7 @@
           handlers[action] = [];
         }
         handlers[action].push([callback, error]);
+        return cs.WebSockets;
       },
       'off': function(action, callback, error) {
         var h, index, _i, _len, _ref;
@@ -86,6 +87,7 @@
             delete handlers[action][index];
           }
         }
+        return cs.WebSockets;
       },
       once: function(action, callback, error) {
         var callback_, error_;
@@ -97,10 +99,12 @@
           error.apply(error, arguments);
           return cs.WebSockets.off(action, callback_, error_);
         };
-        return methods.on(action, callback_, error_);
+        cs.WebSockets.on(action, callback_, error_);
+        return cs.WebSockets;
       },
       send: function(action, details) {
-        return socket.send(JSON.stringify([action, details]));
+        socket.send(JSON.stringify([action, details]));
+        return cs.WebSockets;
       }
     };
   })();
