@@ -43,7 +43,7 @@ trait Session {
 	 *
 	 * @return int User id
 	 */
-	function get_session_user ($session_id = null) {
+	function load_session ($session_id = null) {
 		if ($this->id == User::GUEST_ID && $this->bot()) {
 			return User::GUEST_ID;
 		}
@@ -61,15 +61,7 @@ trait Session {
 		/**
 		 * @var \cs\_SERVER $_SERVER
 		 */
-		$session = $Cache->get("sessions/$session_id", function () use ($session_id, $Config) {
-			/**
-			 * @var \cs\_SERVER $_SERVER
-			 */
-			$condition = $Config->core['remember_user_ip'] ?
-				"AND
-				`remote_addr`	= '".ip2hex($_SERVER->remote_addr)."' AND
-				`ip`			= '".ip2hex($_SERVER->ip)."'"
-				: '';
+		$session = $Cache->get("sessions/$session_id", function () use ($session_id) {
 			return $this->db()->qf([
 				"SELECT
 					`user`,
@@ -80,19 +72,24 @@ trait Session {
 				FROM `[prefix]sessions`
 				WHERE
 					`id`			= '%s' AND
-					`expire`		> '%s' AND
-					`user_agent`	= '%s'
-					$condition
+					`expire`		> '%s'
 				LIMIT 1",
 				$session_id,
-				TIME,
-				$_SERVER->user_agent
+				TIME
 			]) ?: false;
 		});
 		if (
 			!$session ||
 			$session['expire'] <= TIME ||
-			!$this->get('id', $session['user'])
+			$session['user_agent'] != $_SERVER->user_agent ||
+			!$this->get('id', $session['user']) ||
+			(
+				$Config->core['remember_user_ip'] &&
+				(
+					$session['remote_addr'] != ip2hex($_SERVER->remote_addr) ||
+					$session['ip'] != ip2hex($_SERVER->ip)
+				)
+			)
 		) {
 			$this->add_session(User::GUEST_ID);
 			$this->update_user_is();
@@ -143,7 +140,7 @@ trait Session {
 			unset($time);
 		}
 		if ($session['expire'] - TIME < $Config->core['session_expire'] * $Config->core['update_ratio'] / 100) {
-			$session['expire']                = TIME + $Config->core['session_expire'];
+			$session['expire']               = TIME + $Config->core['session_expire'];
 			$update[]                        = "
 				UPDATE `[prefix]sessions`
 				SET `expire` = $session[expire]
@@ -295,7 +292,7 @@ trait Session {
 				'ip'          => $ip
 			];
 			_setcookie('session', $hash, TIME + $Config->core['session_expire']);
-			$this->get_session_user();
+			$this->load_session();
 			$this->update_user_is();
 			if (
 				($this->db()->qfs(

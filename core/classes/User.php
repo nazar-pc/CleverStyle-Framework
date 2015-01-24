@@ -173,7 +173,7 @@ class User {
 		 * If session exists
 		 */
 		if (_getcookie('session')) {
-			$this->id = $this->get_session_user();
+			$this->id = $this->load_session();
 		/**
 		 * Try to detect bot, not necessary for API request
 		 */
@@ -250,7 +250,7 @@ class User {
 						$last_session		= $this->get_data('last_session');
 						$id					= $this->id;
 						if ($last_session) {
-							$this->get_session_user($last_session);
+							$this->load_session($last_session);
 						}
 						if (!$last_session || $this->id == self::GUEST_ID) {
 							$this->add_session($id);
