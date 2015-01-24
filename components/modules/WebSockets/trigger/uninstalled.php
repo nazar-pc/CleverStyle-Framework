@@ -14,6 +14,7 @@ Trigger::instance()->register(
 			return;
 		}
 		Config::instance()->module('WebSockets')->set([
+			'security_key'   => hash('sha224', MICROTIME.uniqid()),
 			'listen_port'    => 8080,
 			'listen_locally' => 1
 		]);

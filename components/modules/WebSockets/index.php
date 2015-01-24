@@ -13,7 +13,13 @@ if (PHP_SAPI == 'cli') {
 	Server::instance()->run();
 } else {
 	interface_off();
-	// TODO: security check here
+	$Config      = Config::instance();
+	$module_data = $Config->module('WebSockets');
+	$rc          = $Config->route;
+	if ($module_data->security_key !== $rc[0]) {
+		error_code(400);
+		return;
+	}
 	if (is_server_running()) {
 		echo 'Server already running';
 		return;

@@ -16,7 +16,8 @@ $Index               = Index::instance();
 $Index->apply_button = false;
 $module_data         = Config::instance()->module('WebSockets');
 if (isset($_POST['listen_port'], $_POST['listen_locally'])) {
-	Config::instance()->module('WebSockets')->set([
+	$module_data->set([
+		'security_key'   => $_POST['security_key'],
 		'listen_port'    => (int)$_POST['listen_port'] ?: 8080,
 		'listen_locally' => (int)$_POST['listen_locally']
 	]);
@@ -24,6 +25,13 @@ if (isset($_POST['listen_port'], $_POST['listen_locally'])) {
 }
 $Index->content(
 	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+		[
+			h::info('websockets_security_key'),
+			h::input([
+				'name'  => 'security_key',
+				'value' => $module_data->security_key
+			])
+		],
 		[
 			h::info('websockets_listen_port'),
 			h::input([
