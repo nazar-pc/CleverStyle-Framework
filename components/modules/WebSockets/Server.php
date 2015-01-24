@@ -63,10 +63,15 @@ class Server implements MessageComponentInterface {
 	/**
 	 * @var bool
 	 */
+	protected $listen_locally;
+	/**
+	 * @var bool
+	 */
 	protected $remember_session_ip;
 	protected function construct () {
 		$Config                    = Config::instance();
-		$this->listen_port         = $Config->module('WebSockets')->{$_SERVER->secure ? 'external_port_secure' : 'external_port'};
+		$this->listen_port         = $Config->module('WebSockets')->listen_port;
+		$this->listen_locally      = $Config->module('WebSockets')->listen_locally;
 		$this->remember_session_ip = $Config->core['remember_user_ip'];
 	}
 	/**
@@ -78,7 +83,7 @@ class Server implements MessageComponentInterface {
 		$ws_server     = new WsServer($this);
 		// No encoding check - better performance, browsers do this anyway
 		$ws_server->setEncodingChecks(false);
-		// Disable all versions except RFC6455, which is supported by all
+		// Disable all versions except RFC6455, which is supported by all modern browsers
 		$ws_server->disableVersion(0);
 		$ws_server->disableVersion(6);
 		/**
@@ -86,7 +91,8 @@ class Server implements MessageComponentInterface {
 		 */
 		$this->io_server = IoServer::factory(
 			new HttpServer($ws_server),
-			$this->listen_port
+			$this->listen_port,
+			$this->listen_locally ? '127.0.0.1' : '0.0.0.0'
 		);
 		$this->io_server->run();
 		// Since we may work with a lot of different users - disable this cache in order to not run out of memory
@@ -273,10 +279,9 @@ class Server implements MessageComponentInterface {
 			sleep(2);
 		}
 		$protocol  = $_SERVER->secure ? 'wss' : 'ws';
-		$port      = $this->listen_port;
 		$loop      = Loop_factory::create();
 		$connector = new Client_factory($loop);
-		$connector("$protocol://127.0.0.1:$port")->then(
+		$connector("$protocol://127.0.0.1:$this->listen_port")->then(
 			function (Client_websocket $conn) use ($loop, $message) {
 				$conn->send(
 					_json_encode(['Internal', $message])

@@ -14,8 +14,8 @@ Trigger::instance()->register(
 			return;
 		}
 		Config::instance()->module('WebSockets')->set([
-			'external_port'        => 80,
-			'external_port_secure' => 443
+			'listen_port'    => 8080,
+			'listen_locally' => 1
 		]);
 		return;
 	}

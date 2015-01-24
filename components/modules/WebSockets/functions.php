@@ -16,8 +16,8 @@ function is_server_running () {
 	$Config = Config::instance();
 	// Try to connect to socket if exists
 	$socket = @fsockopen(
-		explode('/', $Config->base_url())[2],
-		$Config->module('WebSockets')->{$_SERVER->secure ? 'external_port_secure' : 'external_port'},
+		'127.0.0.1',
+		$Config->module('WebSockets')->listen_port,
 		$error,
 		$error,
 		2
