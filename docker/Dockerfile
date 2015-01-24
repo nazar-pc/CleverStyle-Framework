@@ -24,6 +24,10 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 		wget && \
 	rm -rf /var/lib/apt/lists/* && \
 
+# Enable PHP modules
+
+	php5enmod mcrypt && \
+
 # Download git master version of CleverStyle CMS
 
 	cd /tmp && \
