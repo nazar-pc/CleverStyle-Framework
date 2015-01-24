@@ -11,10 +11,57 @@
 
 (function() {
 
-  window.cs.ws = (function() {
-    var handlers, methods, socket;
+  window.cs.WebSockets = (function() {
+    var handlers, socket;
+    socket = null;
     handlers = {};
-    methods = {
+    (function() {
+      var connect, delay, keep_connection, onmessage, onopen;
+      delay = 0;
+      onopen = function() {
+        delay = 1000;
+        window.cs.WebSockets.send('Client/authentication', {
+          session: cs.getcookie('session'),
+          user_agent: navigator.userAgent
+        });
+      };
+      onmessage = function(message) {
+        var action, action_handlers, details, type, _ref, _ref1, _ref2;
+        _ref = JSON.parse(message.data), action = _ref[0], details = _ref[1];
+        _ref1 = action.split(':'), action = _ref1[0], type = _ref1[1];
+        action_handlers = handlers[action];
+        if (!action_handlers || !action_handlers.length) {
+          return;
+        }
+        if ((_ref2 = typeof details) === 'boolean' || _ref2 === 'number' || _ref2 === 'string') {
+          details = [details];
+        }
+        action_handlers.forEach(function(h) {
+          if (type === 'error') {
+            return h[1] && h[1].apply(h[1], details);
+          } else {
+            return h[0] && h[0].apply(h[0], details);
+          }
+        });
+      };
+      connect = function() {
+        socket = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + ("://" + location.hostname + "/WebSockets"));
+        socket.onopen = onopen;
+        socket.onmessage = onmessage;
+      };
+      keep_connection = function() {
+        return setTimeout((function() {
+          var _ref;
+          if (!socket || ((_ref = socket.readyState) === WebSocket.CLOSING || _ref === WebSocket.CLOSED)) {
+            delay = (delay || 1000) * 2;
+            connect();
+          }
+          return keep_connection();
+        }), delay);
+      };
+      return keep_connection();
+    })();
+    return {
       'on': function(action, callback, error) {
         if (!handlers[action]) {
           handlers[action] = [];
@@ -40,41 +87,22 @@
           }
         }
       },
+      once: function(action, callback, error) {
+        var callback_, error_;
+        callback_ = function() {
+          callback.apply(callback, arguments);
+          return window.cs.WebSockets.off(action, callback_, error_);
+        };
+        error_ = function() {
+          error.apply(error, arguments);
+          return window.cs.WebSockets.off(action, callback_, error_);
+        };
+        return methods.on(action, callback_, error_);
+      },
       send: function(action, details) {
         return socket.send(JSON.stringify([action, details]));
       }
     };
-    socket = new WebSocket((function() {
-      var proto;
-      proto = location.protocol === 'https:' ? 'wss' : 'ws';
-      return "" + proto + "://" + location.host + "/WebSockets";
-    })());
-    socket.onopen = function() {
-      return methods.send('Client/authentication', {
-        session: cs.getcookie('session'),
-        user_agent: navigator.userAgent
-      });
-    };
-    socket.onmessage = function(message) {
-      var action, action_handlers, details, type, _ref, _ref1, _ref2;
-      _ref = JSON.parse(message.data), action = _ref[0], details = _ref[1];
-      _ref1 = action.split(':'), action = _ref1[0], type = _ref1[1];
-      action_handlers = handlers[action];
-      if (!action_handlers || !action_handlers.length) {
-        return;
-      }
-      if ((_ref2 = typeof details) === 'boolean' || _ref2 === 'number' || _ref2 === 'string') {
-        details = [details];
-      }
-      action_handlers.forEach(function(h) {
-        if (type === 'error') {
-          return h[1] && h[1].apply(h[1], details);
-        } else {
-          return h[0] && h[0].apply(h[0], details);
-        }
-      });
-    };
-    return methods;
   })();
 
 }).call(this);

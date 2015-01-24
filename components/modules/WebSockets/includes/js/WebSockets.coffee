@@ -5,9 +5,49 @@
  * @copyright Copyright (c) 2015, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
 ###
-window.cs.ws = do ->
-	handlers			= {}
-	methods				=
+window.cs.WebSockets = do ->
+	socket		= null
+	handlers	= {}
+	do ->
+		delay			= 0
+		onopen			= ->
+			delay	= 1000
+			window.cs.WebSockets.send(
+				'Client/authentication'
+				session		: cs.getcookie('session')
+				user_agent	: navigator.userAgent
+			)
+			return
+		onmessage		= (message) ->
+			[action, details]	= JSON.parse(message.data)
+			[action, type]	= action.split(':')
+			action_handlers		= handlers[action]
+			if !action_handlers || !action_handlers.length
+				return
+			if typeof details in ['boolean', 'number', 'string']
+				details	= [details]
+			action_handlers.forEach (h) ->
+				if type == 'error'
+					h[1] && h[1].apply(h[1], details)
+				else
+					h[0] && h[0].apply(h[0], details)
+			return
+		connect			= ->
+			socket				= new WebSocket(
+				(if location.protocol == 'https:' then 'wss' else 'ws') + "://#{location.hostname}/WebSockets"
+			)
+			socket.onopen		= onopen
+			socket.onmessage	= onmessage
+			return
+		keep_connection	= ->
+			setTimeout (->
+				if !socket || socket.readyState in [WebSocket.CLOSING, WebSocket.CLOSED]
+					delay	= (delay || 1000) * 2
+					connect()
+				keep_connection()
+			), delay
+		keep_connection()
+	{
 		'on'	: (action, callback, error) ->
 			if !handlers[action]
 				handlers[action]	= []
@@ -24,33 +64,16 @@ window.cs.ws = do ->
 				if h[0] == undefined && h[1] == undefined
 					delete handlers[action][index]
 			return
+		once	: (action, callback, error) ->
+			callback_	= ->
+				callback.apply(callback, arguments)
+				window.cs.WebSockets.off(action, callback_, error_)
+			error_		= ->
+				error.apply(error, arguments)
+				window.cs.WebSockets.off(action, callback_, error_)
+			methods.on(action, callback_, error_)
 		send	: (action, details) ->
 			socket.send(
 				JSON.stringify([action, details])
 			)
-	socket				= new WebSocket(
-		do ->
-			proto	= if location.protocol == 'https:' then 'wss' else 'ws'
-			"#{proto}://#{location.host}/WebSockets"
-	)
-	socket.onopen		= ->
-		methods.send(
-			'Client/authentication'
-			session		: cs.getcookie('session')
-			user_agent	: navigator.userAgent
-		)
-	socket.onmessage	= (message) ->
-		[action, details]	= JSON.parse(message.data)
-		[action, type]	= action.split(':')
-		action_handlers		= handlers[action]
-		if !action_handlers || !action_handlers.length
-			return
-		if typeof details in ['boolean', 'number', 'string']
-			details	= [details]
-		action_handlers.forEach (h) ->
-			if type == 'error'
-				h[1] && h[1].apply(h[1], details)
-			else
-				h[0] && h[0].apply(h[0], details)
-		return
-	methods
+	}
