@@ -46,7 +46,7 @@
         });
       };
       connect = function() {
-        socket = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + ("://" + location.hostname + "/WebSockets"));
+        socket = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + ("://" + location.host + "/WebSockets"));
         socket.onopen = onopen;
         socket.onmessage = onmessage;
       };

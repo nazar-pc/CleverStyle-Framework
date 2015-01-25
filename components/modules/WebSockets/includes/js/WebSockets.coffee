@@ -35,7 +35,7 @@ window.cs.WebSockets = do ->
 			return
 		connect			= ->
 			socket				= new WebSocket(
-				(if location.protocol == 'https:' then 'wss' else 'ws') + "://#{location.hostname}/WebSockets"
+				(if location.protocol == 'https:' then 'wss' else 'ws') + "://#{location.host}/WebSockets"
 			)
 			socket.onopen		= onopen
 			socket.onmessage	= onmessage
