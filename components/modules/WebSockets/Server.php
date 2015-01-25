@@ -152,7 +152,7 @@ class Server implements MessageComponentInterface {
 				}
 				return;
 			case 'Client/authentication':
-				if (!isset($details['session'], $details['user_agent'])) {
+				if (!isset($details['session'], $details['user_agent'], $details['language'])) {
 					$connection->send(_json_encode([
 						'Client/authentication:error',
 						$this->compose_error(400)
@@ -172,7 +172,9 @@ class Server implements MessageComponentInterface {
 						'Client/authentication:error',
 						$this->compose_error(403)
 					]));
+					$connection->close();
 				}
+				$connection->language   = $details['language'];
 				$connection->user_id    = $session['user'];
 				$connection->session_id = $session['id'];
 				$connection->groups     = $User->get_groups($session['user']);
@@ -192,9 +194,10 @@ class Server implements MessageComponentInterface {
 		} elseif (isset($connection->user_id)) {
 			/** @noinspection PhpUndefinedFieldInspection */
 			Trigger::instance()->run("WebSockets/$action", [
-				'details' => $details,
-				'user'    => $connection->user_id,
-				'session' => $connection->session_id
+				'details'  => $details,
+				'language' => $connection->language,
+				'user'     => $connection->user_id,
+				'session'  => $connection->session_id
 			]);
 		}
 	}
@@ -323,8 +326,7 @@ class Server implements MessageComponentInterface {
 				break;
 			case self::SEND_TO_REGISTERED_USERS:
 				foreach ($this->clients as $client) {
-					/** @noinspection PhpUndefinedFieldInspection */
-					if ($client->user_id != User::GUEST_ID) {
+					if (isset($client->user_id)) {
 						$client->send($message);
 					}
 				}
@@ -332,8 +334,7 @@ class Server implements MessageComponentInterface {
 			case self::SEND_TO_SPECIFIC_USERS:
 				$target = (array)$target;
 				foreach ($this->clients as $client) {
-					/** @noinspection PhpUndefinedFieldInspection */
-					if (in_array($client->user_id, $target)) {
+					if (isset($client->user_id) && in_array($client->user_id, $target)) {
 						$client->send($message);
 					}
 				}
@@ -341,8 +342,7 @@ class Server implements MessageComponentInterface {
 			case self::SEND_TO_USERS_GROUP:
 				$target = (array)$target;
 				foreach ($this->clients as $client) {
-					/** @noinspection PhpUndefinedFieldInspection */
-					if (array_intersect($client->user_groups, $target)) {
+					if (isset($client->user_groups) && array_intersect($client->user_groups, $target)) {
 						$client->send($message);
 					}
 				}

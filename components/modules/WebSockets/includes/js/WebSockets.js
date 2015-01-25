@@ -22,7 +22,8 @@
         delay = 1000;
         cs.WebSockets.send('Client/authentication', {
           session: cs.getcookie('session'),
-          user_agent: navigator.userAgent
+          user_agent: navigator.userAgent,
+          language: cs.Language.clanguage
         });
       };
       onmessage = function(message) {

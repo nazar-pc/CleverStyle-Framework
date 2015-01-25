@@ -16,6 +16,7 @@ window.cs.WebSockets = do ->
 				'Client/authentication'
 				session		: cs.getcookie('session')
 				user_agent	: navigator.userAgent
+				language	: cs.Language.clanguage
 			)
 			return
 		onmessage		= (message) ->
