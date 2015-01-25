@@ -93,12 +93,12 @@
       once: function(action, callback, error) {
         var callback_, error_;
         callback_ = function() {
-          callback.apply(callback, arguments);
-          return cs.WebSockets.off(action, callback_, error_);
+          cs.WebSockets.off(action, callback_, error_);
+          return callback.apply(callback, arguments);
         };
         error_ = function() {
-          error.apply(error, arguments);
-          return cs.WebSockets.off(action, callback_, error_);
+          cs.WebSockets.off(action, callback_, error_);
+          return error.apply(error, arguments);
         };
         cs.WebSockets.on(action, callback_, error_);
         return cs.WebSockets;

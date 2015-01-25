@@ -67,11 +67,11 @@ window.cs.WebSockets = do ->
 			cs.WebSockets
 		once	: (action, callback, error) ->
 			callback_	= ->
+				cs.WebSockets.off(action, callback_, error_)
 				callback.apply(callback, arguments)
-				cs.WebSockets.off(action, callback_, error_)
 			error_		= ->
-				error.apply(error, arguments)
 				cs.WebSockets.off(action, callback_, error_)
+				error.apply(error, arguments)
 			cs.WebSockets.on(action, callback_, error_)
 			cs.WebSockets
 		send	: (action, details) ->
