@@ -42,17 +42,21 @@ class Server implements MessageComponentInterface {
 	 */
 	protected $servers;
 	/**
-	 * Is current server instance master server
-	 *
-	 * @var bool
-	 */
-	protected $is_master = false;
-	/**
 	 * Connection to master server
 	 *
 	 * @var ConnectionInterface
 	 */
-	protected $connection_to_master; //TODO servers pool and connection to master
+	protected $connection_to_master;
+	/**
+	 * @var Pool
+	 */
+	protected $pool;
+	/**
+	 * Public address to WebSockets server in format wss://server/WebSockets or ws://server/WebSockets
+	 *
+	 * @var string
+	 */
+	protected $public_address;
 	/**
 	 * @var IoServer
 	 */
@@ -74,6 +78,11 @@ class Server implements MessageComponentInterface {
 		$this->listen_port         = $Config->module('WebSockets')->listen_port;
 		$this->listen_locally      = $Config->module('WebSockets')->listen_locally;
 		$this->remember_session_ip = $Config->core['remember_user_ip'];
+		$this->pool                = Pool::instance();
+		/**
+		 * @var \cs\_SERVER $_SERVER
+		 */
+		$this->public_address = ($_SERVER->secure ? 'wss' : 'ws')."://$_SERVER->host/WebSockets";
 	}
 	/**
 	 * Run WebSockets server
@@ -93,10 +102,11 @@ class Server implements MessageComponentInterface {
 			$this->listen_port,
 			$this->listen_locally ? '127.0.0.1' : '0.0.0.0'
 		);
-		$this->io_server->run();
+		$this->connect_to_master();
 		// Since we may work with a lot of different users - disable this cache in order to not run out of memory
 		User::instance()->disable_memory_cache();
 		Trigger::instance()->run('WebSockets/register_actions');
+		$this->io_server->run();
 	}
 	/**
 	 * @param ConnectionInterface $connection
@@ -105,12 +115,15 @@ class Server implements MessageComponentInterface {
 		$this->clients->attach($connection);
 	}
 	/**
-	 * @param ConnectionInterface $from
+	 * @param ConnectionInterface $connection
 	 * @param string              $message
 	 */
-	function onMessage (ConnectionInterface $from, $message) {
+	function onMessage (ConnectionInterface $connection, $message) {
+		$from_master = $connection === $this->connection_to_master;
 		if (!$this->parse_message($message, $action, $details, $response_to, $target)) {
-			$from->close();
+			if (!$from_master) {
+				$connection->close();
+			}
 			return;
 		}
 		switch ($action) {
@@ -119,29 +132,28 @@ class Server implements MessageComponentInterface {
 			 */
 			case 'Server/connect':
 				if (Encryption::instance()->decrypt($details) == Core::instance()->public_key) {
-					$this->clients->detach($from);
-					$this->servers->attach($from);
+					$this->clients->detach($connection);
+					$this->servers->attach($connection);
 					return;
 				}
-				$from->close();
+				$connection->close();
 				return;
 			/**
 			 * Internal connection from application
 			 */
-			case 'Internal':
+			case 'Application/Internal':
 				/** @noinspection PhpUndefinedFieldInspection */
 				if (
-					$from->remoteAddress == '127.0.0.1' &&
+					$connection->remoteAddress == '127.0.0.1' &&
 					$this->parse_message($details, $action_, $details_, $response_to_, $target_)
 				) {
-					$from->close();
-					$this->send_to_master($details);
-					$this->send_to_clients_internal($action_, $details_, $response_to_, $target_);
+					$connection->close();
+					$this->send_to_clients($action_, $details_, $response_to_, $target_);
 				}
 				return;
 			case 'Client/authentication':
 				if (!isset($details['session'], $details['user_agent'])) {
-					$from->send(_json_encode([
+					$connection->send(_json_encode([
 						'Client/authentication:error',
 						$this->compose_error(400)
 					]));
@@ -153,34 +165,36 @@ class Server implements MessageComponentInterface {
 					$session['user_agent'] != $details['user_agent'] ||
 					(
 						$this->remember_session_ip &&
-						$session['ip'] != ip2hex($from->remoteAddress)
+						$session['ip'] != ip2hex($connection->remoteAddress)
 					)
 				) {
-					$from->send(_json_encode([
+					$connection->send(_json_encode([
 						'Client/authentication:error',
 						$this->compose_error(403)
 					]));
 				}
-				$from->user_id    = $session['user'];
-				$from->session_id = $session['id'];
-				$from->groups     = $User->get_groups($session['user']);
-				$from->send(_json_encode([
+				$connection->user_id    = $session['user'];
+				$connection->session_id = $session['id'];
+				$connection->groups     = $User->get_groups($session['user']);
+				$connection->send(_json_encode([
 					'Client/authentication',
 					'ok'
 				]));
 		}
-		if ($this->servers->contains($from)) {
-			$this->broadcast_message_to_servers($message, $from);
+		if ($from_master) {
+			$this->send_to_clients_internal($action, $details, $response_to, $target);
+		} elseif ($this->servers->contains($connection)) {
+			$this->broadcast_message_to_servers($message, $connection);
 			if (!$response_to) {
 				return;
 			}
 			$this->send_to_clients_internal($action, $details, $response_to, $target);
-		} elseif (isset($from->user_id)) {
+		} elseif (isset($connection->user_id)) {
 			/** @noinspection PhpUndefinedFieldInspection */
 			Trigger::instance()->run("WebSockets/$action", [
 				'details' => $details,
-				'user'    => $from->user_id,
-				'session' => $from->session_id
+				'user'    => $connection->user_id,
+				'session' => $connection->session_id
 			]);
 		}
 	}
@@ -247,13 +261,12 @@ class Server implements MessageComponentInterface {
 		 * If server running in current process
 		 */
 		if ($this->io_server) {
-			if ($this->is_master) {
-				$this->broadcast_message_to_servers($message);
+			if ($this->connection_to_master) {
+				$this->connection_to_master->send($message);
 			} else {
-				$this->send_to_master($message);
+				$this->broadcast_message_to_servers($message);
 			}
 			$this->send_to_clients_internal($action, $details, $response_to, $target);
-			$this->broadcast_message_to_servers($message);
 			return;
 		}
 		/**
@@ -265,8 +278,9 @@ class Server implements MessageComponentInterface {
 				// Wait while server will start
 				sleep(1);
 			} else {
+				$Config = Config::instance();
 				file_get_contents(
-					Config::instance()->base_url().'/WebSockets',
+					$Config->base_url().'/WebSockets/'.$Config->module('WebSockets')->security_key,
 					null,
 					stream_context_create([
 						'http' => [
@@ -279,9 +293,9 @@ class Server implements MessageComponentInterface {
 		$loop      = Loop_factory::create();
 		$connector = new Client_factory($loop);
 		$connector("ws://127.0.0.1:$this->listen_port")->then(
-			function (Client_websocket $conn) use ($message) {
-				$conn->send(
-					_json_encode(['Internal', $message])
+			function (Client_websocket $connection) use ($message) {
+				$connection->send(
+					_json_encode(['Application/Internal', $message])
 				);
 				// Connection will be closed by server itself, no need to stop loop here
 			},
@@ -309,6 +323,7 @@ class Server implements MessageComponentInterface {
 				break;
 			case self::SEND_TO_REGISTERED_USERS:
 				foreach ($this->clients as $client) {
+					/** @noinspection PhpUndefinedFieldInspection */
 					if ($client->user_id != User::GUEST_ID) {
 						$client->send($message);
 					}
@@ -317,6 +332,7 @@ class Server implements MessageComponentInterface {
 			case self::SEND_TO_SPECIFIC_USERS:
 				$target = (array)$target;
 				foreach ($this->clients as $client) {
+					/** @noinspection PhpUndefinedFieldInspection */
 					if (in_array($client->user_id, $target)) {
 						$client->send($message);
 					}
@@ -325,6 +341,7 @@ class Server implements MessageComponentInterface {
 			case self::SEND_TO_USERS_GROUP:
 				$target = (array)$target;
 				foreach ($this->clients as $client) {
+					/** @noinspection PhpUndefinedFieldInspection */
 					if (array_intersect($client->user_groups, $target)) {
 						$client->send($message);
 					}
@@ -333,15 +350,46 @@ class Server implements MessageComponentInterface {
 		}
 	}
 	/**
-	 * Send request to master server in order to propagate request to all other servers
+	 * Connect to master server
 	 *
-	 * @param string $message
+	 * Two trials, if server do not respond twice - it will be removed from servers pool, and next server will become master
 	 */
-	protected function send_to_master ($message) {
-		if (!$this->connection_to_master) {
-			return;
+	protected function connect_to_master () {
+		static $last_trial = '';
+		// Add server to connections pool and connect to master if any
+		$this->pool->add($this->public_address);
+		$master = $this->pool->get_master();
+		if ($master != $this->public_address) {
+			$connector = new Client_factory($this->io_server->loop);
+			$connector($master)->then(
+				function (Client_websocket $connection) use (&$last_trial) {
+					$last_trial                 = '';
+					$this->connection_to_master = $connection;
+					$connection->on('message', function ($message) use ($connection) {
+						$this->onMessage($connection, $message);
+					});
+					$connection->on('error', function () use ($connection) {
+						$connection->close();
+					});
+					$connection->on('close', function () {
+						$this->connection_to_master = null;
+						sleep(1);
+						$this->connect_to_master();
+					});
+				},
+				function () use ($master, &$last_trial) {
+					if ($last_trial == $master) {
+						$this->pool->del($master);
+					} else {
+						$last_trial = $master;
+					}
+					sleep(1);
+					$this->connect_to_master();
+				}
+			);
+		} else {
+			$last_trial = '';
 		}
-		$this->connection_to_master->send($message);
 	}
 	/**
 	 * @param ConnectionInterface $connection
@@ -357,5 +405,8 @@ class Server implements MessageComponentInterface {
 	 */
 	function onError (ConnectionInterface $connection, Exception $e) {
 		$connection->close();
+	}
+	function __destruct () {
+		$this->pool->del($this->public_address);
 	}
 }
