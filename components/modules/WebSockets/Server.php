@@ -157,6 +157,7 @@ class Server implements MessageComponentInterface {
 						'Client/authentication:error',
 						$this->compose_error(400)
 					]));
+					return;
 				}
 				$User    = User::instance();
 				$session = $User->get_session($details['session']);
@@ -173,6 +174,7 @@ class Server implements MessageComponentInterface {
 						$this->compose_error(403)
 					]));
 					$connection->close();
+					return;
 				}
 				$connection->language   = $details['language'];
 				$connection->user_id    = $session['user'];
@@ -359,7 +361,7 @@ class Server implements MessageComponentInterface {
 		// Add server to connections pool and connect to master if any
 		$this->pool->add($this->public_address);
 		$master = $this->pool->get_master();
-		if ($master != $this->public_address) {
+		if ($master && $master != $this->public_address) {
 			$connector = new Client_factory($this->io_server->loop);
 			$connector($master)->then(
 				function (Client_websocket $connection) use (&$last_trial) {
