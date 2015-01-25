@@ -143,6 +143,12 @@ And go to `http://localhost:8888`, sign in using login `admin` and password `111
 
 `--rm` means that container will be removed after stopping (you can stop it with `Ctrl+C`).
 
+If you want to play with live system - attach volume to container:
+```bash
+$ docker run --rm -p 8888:8888 -v /some_dir:/web nazarpc/cleverstyle-cms
+```
+Now in `/some_dir` you'll have source code of CleverStyle CMS from container which you can edit as you like and it will reflect on demo.
+
 # How to install?
 
 [Read simple instructions in our wiki](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)

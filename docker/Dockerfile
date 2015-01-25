@@ -77,9 +77,9 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 		-admin_email    admin@localhost.loc \
 		-admin_password 1111 && \
 
-# Adjust permissions
+# Move to special directory for volume support on running
 
-	chown www-data:www-data -R /web
+	mv /web /web_tmp
 
 # Add Nginx config
 ADD cscms /etc/nginx/sites-enabled/cscms
