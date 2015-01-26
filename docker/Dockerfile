@@ -11,7 +11,7 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 # Generate password for MySQL
 
 	apt-get install -y pwgen && \
-	[[ $MYSQL_PASSWORD ]] || MYSQL_PASSWORD=`pwgen -s 20 1` && \
+	test ! -z "$MYSQL_PASSWORD" || MYSQL_PASSWORD=`pwgen -s 20 1` && \
 	echo mysql-server mysql-server/root_password password $MYSQL_PASSWORD | debconf-set-selections && \
 	echo mysql-server mysql-server/root_password_again password $MYSQL_PASSWORD | debconf-set-selections && \
 
