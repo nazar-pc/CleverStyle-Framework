@@ -1,0 +1,83 @@
+<h3 style="text-align: center;">WebSockets module, provides WebSockets integration into CleverStyle CMS both on server and on client</h3>
+<p>WebSockets server is running in background and listen for incoming connections.</p>
+<p>It is highly recommended to have working <code>exec()</code> function in PHP (otherwise fallback will be used, but not guaranteed to work) and Nginx should be configured properly (<a href="https://github.com/nazar-pc/CleverStyle-CMS/wiki/Nginx-config-sample">Nginx config sample</a>).</p>
+There are two ways to run WebSockets server:
+<dl>
+	<dt>CLI (recommended): <code>php components/modules/WebSockets/supervisor.php 'php components/modules/WebSockets/prepare_cli.php https://example.com/WebServer'</code></dt>
+	<dd>Where <code>https://example.com</code> is web-site address, server should be running on every physical server if there are few of them</dd>
+	<dt>Web: open <code>https://example.com/WebServer/security_key</code></dt>
+	<dd>Where <code>https://example.com</code> is web-site address, server should be running on every physical server if there are few of them.</dd>
+	<dd>And <code>security_key</code> should be replaced by security key from module settings.</dd>
+</dl>
+<p>Web will automatically switch to CLI if available. Also instead of <code>supervisor.php</code> you can use any other supervisor you like, no details here - you should know what to do.</p>
+<p>One more note here: WebSockets server might be started automatically if sending data to client will be initiated on server side (please, do not rely on this in production).</p>
+
+<h4 style="text-align: center;">Usage on server</h4>
+<p>On server running trigger <code>WebSockets/register_actions</code> will be called, modules should register they actions at this moment.</p>
+<p>When request comes from client, trigger <code>WebSockets/action</code> will be called, where <code>action</code> is action that came from user.</p>
+<p>Callback will receive as argument array with fields <code>details</code> (what came from client), <code>language</code> (to handle multilingual features), <code>user</code> (user id) and <code>session</code> (current session id of user).</p>
+<p>To send response back to client (or clients) <code>\cs\modules\WebSockets\Server::instance()->send_to_clients($action, $details, $response_to, $target = false)</code> method is used</p>
+<p>Example:</p>
+<pre>
+	<code language="php">
+&lt;?php
+use
+	cs\Trigger,
+	cs\modules\WebSockets\Server;
+// Register actions
+Trigger::instance()->register('WebSockets/register_action', function () {
+	// If `hello` action from user
+	Trigger::instance()->register('WebSockets/hello', function ($data) {
+		$Server = Server::instance();
+		// Send `hello` action back to the same user with the same content
+		if ($data['details']) {
+			$Server->send_to_clients(
+				'hello',
+				$data['details'],
+				Server::SEND_TO_SPECIFIC_USERS,
+				$data['user']
+			);
+		} else {
+			$Server->send_to_clients(
+				'hello:error',
+				$Server->compose_error(
+					400,
+					'No hello message:('
+				),
+				Server::SEND_TO_SPECIFIC_USERS,
+				$data['user']
+			);
+		}
+	});
+});
+?>
+	</code>
+</pre>
+<p><code>::send_to_clients()</code> method may be called anywhere, even on regular pages (for example, after AJAX request or just on page opening), also client will receive message even if he is connected to another server or have multiple tabs opened - response will be delivered to each tab.</p>
+<p>Is response should represent error, <code>:error</code> suffix should be added to action and <code>::compose_error()</code> method is used to compose generic error response if necessary.</p>
+
+<h4 style="text-align: center;">Usage on client</h4>
+<p>If module depends on <code>WebSockets</code> module - connection with server will be established automatically and <code>cs.WebSockets</code> object will become available with next methods:</p>
+<dl>
+	<dt><code>on(action, success, error)</code></dt>
+	<dd>Handler of server responses.</dd>
+	<dd><code>action</code> - action from server, <code>success</code> and <code>error</code> are optional, you may specify any of them if you need</dd>
+	<dd><code>details</code> from server will be passed into corresponding callback (if <code>details</code> is array - each element will be passed as separate argument</dd>
+	<dt><code>off(action, success, error)</code></dt>
+	<dd>Similar to <code>on</code>, but removes handler (it is possible to remove <code>success</code> or <code>error</code> handler only, both parameters are optional</dd>
+	<dt><code>once(action, success, error)</code></dt>
+	<dd>Similar to <code>on</code>, but removes handler after handling of first response</dd>
+	<dt><code>send(action, details)</code></dt>
+	<dd>Will send data to server</dd>
+</dl>
+<p>Example:</p>
+<pre>
+	<code language="javascript">
+// Since everything is asynchronous - lets add handler first
+cs.WebSockets.once('hello', function (message) {
+	alert(message);
+});
+// Now send request to server
+cs.WebSockets.send('hello', 'Hello, world!');
+	</code>
+</pre>

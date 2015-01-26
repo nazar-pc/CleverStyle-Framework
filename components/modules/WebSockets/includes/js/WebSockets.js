@@ -12,9 +12,14 @@
 (function() {
 
   window.cs.WebSockets = (function() {
-    var handlers, socket;
+    var handlers, messages_pool, socket, socket_active;
     socket = null;
     handlers = {};
+    messages_pool = [];
+    socket_active = function() {
+      var _ref;
+      return socket && ((_ref = socket.readyState) !== WebSocket.CLOSING && _ref !== WebSocket.CLOSED);
+    };
     (function() {
       var connect, delay, keep_connection, onmessage, onopen;
       delay = 0;
@@ -25,6 +30,9 @@
           user_agent: navigator.userAgent,
           language: cs.Language.clanguage
         });
+        while (messages_pool.length) {
+          cs.WebSockets.send(messages_pool.shift());
+        }
       };
       onmessage = function(message) {
         var action, action_handlers, details, type, _ref, _ref1, _ref2;
@@ -52,8 +60,7 @@
       };
       keep_connection = function() {
         return setTimeout((function() {
-          var _ref;
-          if (!socket || ((_ref = socket.readyState) === WebSocket.CLOSING || _ref === WebSocket.CLOSED)) {
+          if (!socket_active()) {
             delay = (delay || 1000) * 2;
             connect();
           }
@@ -104,7 +111,13 @@
         return cs.WebSockets;
       },
       send: function(action, details) {
-        socket.send(JSON.stringify([action, details]));
+        var message;
+        message = JSON.stringify([action, details]);
+        if (!socket_active()) {
+          messages_pool.push(message);
+        } else {
+          socket.send(message);
+        }
         return cs.WebSockets;
       }
     };

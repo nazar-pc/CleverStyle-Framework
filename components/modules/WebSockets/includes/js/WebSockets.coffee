@@ -6,8 +6,11 @@
  * @license   MIT License, see license.txt
 ###
 window.cs.WebSockets = do ->
-	socket		= null
-	handlers	= {}
+	socket			= null
+	handlers		= {}
+	messages_pool	= []
+	socket_active	= ->
+		socket && socket.readyState not in [WebSocket.CLOSING, WebSocket.CLOSED]
 	do ->
 		delay			= 0
 		onopen			= ->
@@ -18,6 +21,8 @@ window.cs.WebSockets = do ->
 				user_agent	: navigator.userAgent
 				language	: cs.Language.clanguage
 			)
+			while messages_pool.length
+				cs.WebSockets.send(messages_pool.shift())
 			return
 		onmessage		= (message) ->
 			[action, details]	= JSON.parse(message.data)
@@ -42,7 +47,7 @@ window.cs.WebSockets = do ->
 			return
 		keep_connection	= ->
 			setTimeout (->
-				if !socket || socket.readyState in [WebSocket.CLOSING, WebSocket.CLOSED]
+				if !socket_active()
 					delay	= (delay || 1000) * 2
 					connect()
 				keep_connection()
@@ -75,8 +80,10 @@ window.cs.WebSockets = do ->
 			cs.WebSockets.on(action, callback_, error_)
 			cs.WebSockets
 		send	: (action, details) ->
-			socket.send(
-				JSON.stringify([action, details])
-			)
+			message	= JSON.stringify([action, details])
+			if !socket_active()
+				messages_pool.push(message)
+			else
+				socket.send(message)
 			cs.WebSockets
 	}
