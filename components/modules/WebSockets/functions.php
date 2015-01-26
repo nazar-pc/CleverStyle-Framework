@@ -30,6 +30,8 @@ function is_server_running () {
 }
 
 /**
+ * Just check whether is is possible to call `exec()`
+ *
  * @return bool
  */
 function is_exec_available () {
@@ -38,12 +40,15 @@ function is_exec_available () {
 		strtolower(ini_get('safe_mode')) != 'on' &&
 		!in_array('exec', array_map('trim', explode(',', ini_get('disable_functions'))));
 }
-
+/**
+ * Running WebSockets server in background on any platform
+ */
 function cross_platform_server_in_background () {
-	$cmd = 'php '.__DIR__.'/prepare_cli.php '.Config::instance()->base_url().'/WebSockets';
+	$supervisor = 'php '.__DIR__.'/supervisor.php';
+	$cmd        = 'php '.__DIR__.'/prepare_cli.php '.Config::instance()->base_url().'/WebSockets';
 	if (substr(PHP_OS, 0, 3) != 'WIN') {
-		exec("$cmd > /dev/null &");
+		exec("$supervisor '$cmd' > /dev/null &");
 	} else {
-		pclose(popen("start /B $cmd", 'r'));
+		pclose(popen("start /B $supervisor '$cmd'", 'r'));
 	}
 }
