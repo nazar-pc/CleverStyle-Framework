@@ -579,82 +579,82 @@ foreach ($Config->components['modules'] as $module_name => &$module_data) {
 				file_exists($file = MODULES."/$module_name/api/readme.txt") ||
 				file_exists($file = MODULES."/$module_name/api/readme.html")
 			) {
-				if (substr($file, -3) == 'txt') {
-					$tag = 'pre';
-				} else {
-					$tag = 'div';
-				}
-				$addition_state .= h::{'div.uk-modal.cs-left'}(
-					h::{"$tag.uk-modal-dialog-large"}($tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)),
-					[
-						'id'    => "{$module_name}_api",
-						'title' => "$module_name » $L->api"
-					]
+				$tag    = substr($file, -3) == 'txt' ? 'pre' : 'div';
+				$uniqid = uniqid('module_info_');
+				$modal  = "#{$module_name}_api.uk-modal .uk-modal-dialog.uk-modal-dialog-large";
+				$Page->post_Body .= h::$modal(
+					h::{'.uk-modal-caption'}("$module_name » $L->api").
+					h::$tag($uniqid)
+				);
+				$Page->replace(
+					$uniqid,
+					$tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)
 				);
 			}
 			$addition_state .= h::icon(
 				'link',
 				[
-					'data-title' => $L->api_exists.h::br().(file_exists($file) ? $L->click_to_view_details : ''),
-					'onClick'    => "$('#{$module_name}_api').cs().modal('show');",
-					'class'      => file_exists($file) ? 'cs-pointer' : false
+					'data-title'    => $L->api_exists.h::br().(file_exists($file) ? $L->click_to_view_details : ''),
+					'data-uk-modal' => "{target : '#{$module_name}_api'}",
+					'class'         => file_exists($file) ? 'cs-pointer' : false
 				]
 			);
-			unset($tag, $file);
+			unset($file, $tag, $uniqid, $modal);
 		}
 		/**
 		 * Information about module
 		 */
-		if (file_exists($file = MODULES."/$module_name/readme.txt") || file_exists($file = MODULES."/$module_name/readme.html")) {
-			if (substr($file, -3) == 'txt') {
-				$tag = 'pre';
-			} else {
-				$tag = 'div';
-			}
+		if (
+			file_exists($file = MODULES."/$module_name/readme.txt") ||
+			file_exists($file = MODULES."/$module_name/readme.html")
+		) {
+			$tag    = substr($file, -3) == 'txt' ? 'pre' : 'div';
 			$uniqid = uniqid('module_info_');
-			$Page->replace($uniqid, $tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file));
-			$addition_state .= h::{'div.uk-modal.cs-left'}(
-				h::{"$tag.uk-modal-dialog-large"}($uniqid),
-				[
-					'id'    => "{$module_name}_readme",
-					'title' => "$module_name » $L->information_about_module"
-				]
-			).
-			h::{'icon.cs-pointer'}(
+			$modal  = "#{$module_name}_readme.uk-modal .uk-modal-dialog.uk-modal-dialog-large";
+			$Page->post_Body .= h::$modal(
+				h::{'.uk-modal-caption'}("$module_name » $L->information_about_module").
+				h::$tag($uniqid)
+			);
+			$Page->replace(
+				$uniqid,
+				$tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)
+			);
+			$addition_state .= h::{'icon.cs-pointer'}(
 				'exclamation',
 				[
-					'data-title' => $L->information_about_module.h::br().$L->click_to_view_details,
-					'onClick'    => "$('#{$module_name}_readme').cs().modal('show');"
+					'data-title'    => $L->information_about_module.h::br().$L->click_to_view_details,
+					'data-uk-modal' => "{target : '#{$module_name}_readme'}"
 				]
 			);
-			unset($uniqid);
 		}
-		unset($tag, $file);
+		unset($file, $tag, $uniqid, $modal);
 		/**
 		 * License
 		 */
-		if (file_exists($file = MODULES."/$module_name/license.txt") || file_exists($file = MODULES."/$module_name/license.html")) {
-			if (substr($file, -3) == 'txt') {
-				$tag = 'pre';
-			} else {
-				$tag = 'div';
-			}
-			$addition_state .= h::{'div.uk-modal.cs-left'}(
-				h::{"$tag.uk-modal-dialog-large"}(file_get_contents($file)),
-				[
-					'id'    => "{$module_name}_license",
-					'title' => "$module_name » $L->license"
-				]
-			).
-			h::{'icon.cs-pointer'}(
+		if (
+			file_exists($file = MODULES."/$module_name/license.txt") ||
+			file_exists($file = MODULES."/$module_name/license.html")
+		) {
+			$tag    = substr($file, -3) == 'txt' ? 'pre' : 'div';
+			$uniqid = uniqid('module_info_');
+			$modal  = "#{$module_name}_license.uk-modal .uk-modal-dialog.uk-modal-dialog-large";
+			$Page->post_Body .= h::$modal(
+				h::{'.uk-modal-caption'}("$module_name » $L->license").
+				h::$tag($uniqid)
+			);
+			$Page->replace(
+				$uniqid,
+				$tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)
+			);
+			$addition_state .= h::{'icon.cs-pointer'}(
 				'legal',
 				[
-					'data-title' => $L->license.h::br().$L->click_to_view_details,
-					'onClick'    => "$('#{$module_name}_license').cs().modal('show');"
+					'data-title'    => $L->license.h::br().$L->click_to_view_details,
+					'data-uk-modal' => "{target : '#{$module_name}_license'}"
 				]
 			);
 		}
-		unset($tag, $file);
+		unset($file, $tag, $uniqid, $modal);
 		/**
 		 * Setting default module
 		 */
