@@ -253,7 +253,7 @@ if (!empty($plugins)) {
 				$uniqid,
 				$tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)
 			);
-			$addition_state .= h::{'icon.cs-pointer'}(
+			$addition_state .= h::{'icon.uk-button.cs-button-compact'}(
 				'exclamation',
 				[
 					'data-title'    => $L->information_about_plugin.h::br().$L->click_to_view_details,
@@ -281,7 +281,7 @@ if (!empty($plugins)) {
 				$uniqid,
 				$tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)
 			);
-			$addition_state .= h::{'icon.cs-pointer'}(
+			$addition_state .= h::{'icon.uk-button.cs-button-compact'}(
 				'legal',
 				[
 					'data-title'    => $L->license.h::br().$L->click_to_view_details,

@@ -596,7 +596,7 @@ foreach ($Config->components['modules'] as $module_name => &$module_data) {
 				[
 					'data-title'    => $L->api_exists.h::br().(file_exists($file) ? $L->click_to_view_details : ''),
 					'data-uk-modal' => "{target : '#{$module_name}_api'}",
-					'class'         => file_exists($file) ? 'cs-pointer' : false
+					'class'         => file_exists($file) ? 'uk-button cs-button-compact' : false
 				]
 			);
 			unset($file, $tag, $uniqid, $modal);
@@ -619,7 +619,7 @@ foreach ($Config->components['modules'] as $module_name => &$module_data) {
 				$uniqid,
 				$tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)
 			);
-			$addition_state .= h::{'icon.cs-pointer'}(
+			$addition_state .= h::{'icon.uk-button.cs-button-compact'}(
 				'exclamation',
 				[
 					'data-title'    => $L->information_about_module.h::br().$L->click_to_view_details,
@@ -646,7 +646,7 @@ foreach ($Config->components['modules'] as $module_name => &$module_data) {
 				$uniqid,
 				$tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)
 			);
-			$addition_state .= h::{'icon.cs-pointer'}(
+			$addition_state .= h::{'icon.uk-button.cs-button-compact'}(
 				'legal',
 				[
 					'data-title'    => $L->license.h::br().$L->click_to_view_details,
