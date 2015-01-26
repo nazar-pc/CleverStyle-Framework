@@ -28,7 +28,20 @@ if (PHP_SAPI == 'cli') {
 		cross_platform_server_in_background();
 		echo 'Server started';
 	} else {
+		set_time_limit(0);
 		ignore_user_abort(1);
-		Server::instance()->run();
+		if (!isset($rc[1])) {
+			file_get_contents(
+				$Config->base_url().'/WebSockets/'.$Config->module('WebSockets')->security_key.'/supervised',
+				null,
+				stream_context_create([
+					'http' => [
+						'timeout' => 0
+					]
+				])
+			);
+		} else {
+			Server::instance()->run();
+		}
 	}
 }
