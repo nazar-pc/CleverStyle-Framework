@@ -1,5 +1,5 @@
 {
-	"admin/Shop" : [
+	"admin/Shop"   : [
 		"admin/attributes.js",
 		"admin/categories.js",
 		"admin/items.js",
@@ -7,7 +7,7 @@
 		"admin/orders.js",
 		"admin/shipping_types.js"
 	],
-	"Shop"       : [
+	"Shop"         : [
 		"cs-shop-add-to-cart/index.html",
 		"cs-shop-cart/cs-shop-cart-item/index.html",
 		"cs-shop-cart/index.html",
@@ -20,5 +20,8 @@
 		"cs-shop-orders/cs-shop-order/index.html",
 		"cs-shop-orders/index.html",
 		"cart.js"
+	],
+	"Shop/orders_" : [
+		"paid_notification.js"
 	]
 }

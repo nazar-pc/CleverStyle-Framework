@@ -128,5 +128,7 @@
 	"shop_pay_now"                                  : "Оплатити зараз",
 	"shop_pay_later"                                : "Оплатити пізніше",
 	"shop_paid"                                     : "Оплачено",
-	"shop_payment_for_order"                        : "Оплата в магазині за замовлення №%s"
+	"shop_payment_for_order"                        : "Оплата в магазині за замовлення №%s",
+	"shop_paid_success_notification"                : "Ви успішно оплатили замовлення №%s, дякуємо вам!",
+	"shop_paid_error_notification"                  : "Оплата замовлення №%s завершилась з помилкою:("
 }

@@ -46,7 +46,7 @@ Trigger::instance()
 			);
 			$L = new Prefix('shop_');
 			interface_off();
-			header('Location: '.$Config->core_url().'/'.path($L->shop).'/'.path($L->orders).'/?paid='.(int)$purpose[1]); // TODO: handle successful payment in interface
+			header('Location: '.$Config->core_url().'/'.path($L->shop).'/'.path($L->orders).'/?paid_success='.(int)$purpose[1]);
 		}
 	)
 	->register(
@@ -62,6 +62,6 @@ Trigger::instance()
 			$Config = Config::instance();
 			$L      = new Prefix('shop_');
 			interface_off();
-			header('Location: '.$Config->core_url().'/'.path($L->shop).'/'.path($L->orders).'/?error='.(int)$purpose[1]); // TODO: handle failed payment in interface
+			header('Location: '.$Config->core_url().'/'.path($L->shop).'/'.path($L->orders).'/?paid_error='.(int)$purpose[1]);
 		}
 	);
