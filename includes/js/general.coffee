@@ -6,11 +6,10 @@
 ###
 $ ->
 	L	= cs.Language
-	window.session_id	= cs.getcookie('session')
 	$.ajaxSetup
 		type	: 'post'
 		data	:
-			session	: session_id
+			session	: cs.getcookie('session')
 		error	: (xhr) ->
 			if xhr.responseText
 				alert(JSON.parse(xhr.responseText).error_description)

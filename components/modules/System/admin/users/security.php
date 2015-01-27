@@ -11,6 +11,9 @@ namespace	cs;
 use			h;
 $Config	= Config::instance();
 $L		= Language::instance();
+/**
+ * @var \cs\_SERVER $_SERVER
+ */
 Index::instance()->content(
 	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}([
 		[
@@ -49,7 +52,7 @@ Index::instance()->content(
 				]
 			).
 			h::br().
-			$L->current_ip.': '.h::b(User::instance()->ip)
+			$L->current_ip.': '.h::b($_SERVER->ip)
 		]
 	])
 );

@@ -56,10 +56,12 @@ trait Data {
 		 */
 		switch ($item) {
 			case 'user_agent':
+				trigger_error('Deprecated \cs\User::$user_agent usage, use $_SERVER->user_agent instead', E_USER_DEPRECATED);
 				return $_SERVER->user_agent;
 			case 'ip':
 			case 'forwarded_for':
 			case 'client_ip':
+				trigger_error('Deprecated \cs\User::$ip, ::$forwarded_for or ::$client_ip usage, use $_SERVER->remote_addr or $_SERVER->ip instead', E_USER_DEPRECATED);
 				return $_SERVER->ip;
 		}
 		$result	= $this->get_internal($item, $user);

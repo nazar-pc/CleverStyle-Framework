@@ -28,10 +28,6 @@ use			cs\User;
  * @property	string	$last_ip		hex value, obtained by function ip2hex()
  * @property	int		$last_online	unix timestamp
  * @property	string	$avatar
- * @property	string	$user_agent
- * @property	string	$ip
- * @property	string	$forwarded_for
- * @property	string	$client_ip
  */
 class Properties {
 	/**

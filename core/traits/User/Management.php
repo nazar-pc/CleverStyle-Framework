@@ -87,7 +87,13 @@ trait Management {
 		$email_hash		= hash('sha224', $email);
 		$login			= strstr($email, '@', true);
 		$login_hash		= hash('sha224', $login);
-		if ($login && in_array($login, file_get_json(MODULES.'/System/index.json')['profile']) || $this->get_id($login_hash) !== false) {
+		if (
+			$this->get_id($login_hash) !== false ||
+			(
+				$login &&
+				in_array($login, file_get_json(MODULES.'/System/index.json')['profile'])
+			)
+		) {
 			$login		= $email;
 			$login_hash	= $email_hash;
 		}
@@ -102,7 +108,10 @@ trait Management {
 		}
 		$Config			= Config::instance();
 		$password		= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
-		$reg_key		= md5($password.$this->ip);
+		/**
+		 * @var \cs\_SERVER $_SERVER
+		 */
+		$reg_key		= md5($password.uniqid('', true));
 		$confirmation	= $confirmation && $Config->core['require_registration_confirmation'];
 		if ($this->db_prime()->q(
 			"INSERT INTO `[prefix]users` (
@@ -129,7 +138,7 @@ trait Management {
 			$email,
 			$email_hash,
 			TIME,
-			ip2hex($this->ip),
+			ip2hex($_SERVER->ip),
 			$reg_key,
 			!$confirmation ? 1 : -1
 		)) {
@@ -323,7 +332,7 @@ trait Management {
 	 */
 	function restore_password ($user) {
 		if ($user && $user != User::GUEST_ID) {
-			$reg_key		= md5(MICROTIME.$this->ip);
+			$reg_key		= md5(MICROTIME.uniqid('', true));
 			if ($this->set('reg_key', $reg_key, $user)) {
 				$data					= $this->get('data', $user);
 				$data['restore_until']	= TIME + Config::instance()->core['registration_confirmation_time'] * 86400;

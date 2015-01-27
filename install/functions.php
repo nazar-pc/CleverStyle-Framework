@@ -1,22 +1,23 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @subpackage	Installer
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package    CleverStyle CMS
+ * @subpackage Installer
+ * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright  Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license    MIT License, see license.txt
  */
 function install_form () {
 	$timezones = get_timezones_list();
 	return h::{'form[method=post]'}(
 		h::nav(
 			h::{'radio[name=mode]'}([
-				'value'		=> ['1', '0'],
-				'in'		=> [h::span('Regular user'), h::span('Expert')],
-				'onclick'	=> "var items = document.getElementsByClassName('expert');"
-								."for (var i = 0; i < items.length; i++) {"
-								."items.item(i).style.display = this.value == '0' ? 'table-row' : '';"
-								."}"
+				'value'   => ['1', '0'],
+				'in'      => [h::span('Regular user'), h::span('Expert')],
+				'onclick' =>
+					"var items = document.getElementsByClassName('expert');"
+					."for (var i = 0; i < items.length; i++) {"
+					."items.item(i).style.display = this.value == '0' ? 'table-row' : '';"
+					."}"
 			])
 		).
 		h::table(
@@ -49,7 +50,7 @@ function install_form () {
 			h::{'tr.expert td'}(
 				'Database tables prefix:',
 				h::{'input[name=db_prefix]'}([
-					'value'	=> substr(md5(uniqid(microtime(true), true)), 0, 5).'_'
+					'value' => substr(md5(uniqid(microtime(true), true)), 0, 5).'_'
 				])
 			).
 			h::{'tr.expert td'}(
@@ -59,8 +60,8 @@ function install_form () {
 			h::{'tr td'}(
 				'Timezone:',
 				h::{'select[name=timezone][size=7][selected=UTC]'}([
-					'in'		=> array_keys($timezones),
-					'value'		=> array_values($timezones)
+					'in'    => array_keys($timezones),
+					'value' => array_values($timezones)
 				])
 			).
 			h::{'tr td'}(
@@ -81,13 +82,13 @@ function install_form () {
 		h::{'button.uk-button.readme'}(
 			'Readme',
 			[
-				'onclick'	=> "window.open('readme.html', 'readme', 'location=no')"
+				'onclick' => "window.open('readme.html', 'readme', 'location=no')"
 			]
 		).
 		h::{'button.uk-button.license'}(
 			'License',
 			[
-				'onclick'	=> "window.open('license.txt', 'license', 'location=no')"
+				'onclick' => "window.open('license.txt', 'license', 'location=no')"
 			]
 		).
 		h::{'button.uk-button[type=submit]'}(
@@ -113,12 +114,12 @@ function install_process ($argv = null) {
 	require_once DIR.'/fs/'.$fs['core/engines/DB/_Abstract.php'];
 	require_once DIR.'/fs/'.$fs["core/engines/DB/$_POST[db_engine].php"];
 	require_once DIR.'/fs/'.$fs['core/classes/False_class.php'];
-	$_SERVER						= new \cs\_SERVER($_SERVER);
+	$_SERVER = new \cs\_SERVER($_SERVER);
 	/**
 	 * @var \cs\DB\_Abstract $cdb
 	 */
-	$cdb							= "\\cs\\DB\\$_POST[db_engine]";
-	$cdb							= new $cdb(
+	$cdb = "\\cs\\DB\\$_POST[db_engine]";
+	$cdb = new $cdb(
 		$_POST['db_name'],
 		$_POST['db_user'],
 		$_POST['db_password'],
@@ -132,7 +133,7 @@ function install_process ($argv = null) {
 	/**
 	 * General system configuration
 	 */
-	$config							= _json_decode('{
+	$config         = _json_decode('{
 		"name": "",
 		"url": [],
 		"admin_email": "",
@@ -194,33 +195,33 @@ function install_process ($argv = null) {
 		"simple_admin_mode": "0",
 		"default_module": "System"
 	}');
-	$config['name']					= (string)$_POST['site_name'];
+	$config['name'] = (string)$_POST['site_name'];
 	if (isset($_POST['site_url'])) {
 		$url = $_POST['site_url'];
 	} else {
 		$url = @$_SERVER->secure ? 'https' : 'http';
 		$url .= "://$_SERVER->host$_SERVER->request_uri";
-		$url = implode('/', array_slice(explode('/', $url), 0, -2));	//Remove 2 last items
+		$url = implode('/', array_slice(explode('/', $url), 0, -2));    //Remove 2 last items
 	}
-	$config['url'][]				= $url;
-	$config['admin_email']			= $_POST['admin_email'];
-	$config['language']				= $_POST['language'];
-	$config['languages']			= file_get_json(DIR.'/languages.json');
-	$config['active_languages']		= $config['languages'];
-	$config['themes']				= file_get_json(DIR.'/themes.json');
-	$config['theme']				= array_search('CleverStyle', $config['themes']) !== false ? 'CleverStyle' : $config['themes'][0];
-	$url							= explode('/', explode('//', $url)[1], 2);
-	$config['cookie_domain'][]		= explode(':', $url[0])[0];
-	$config['cookie_path'][]		= isset($url[1]) && $url[1] ? '/'.trim($url[1], '/').'/' : '/';
+	$config['url'][]            = $url;
+	$config['admin_email']      = $_POST['admin_email'];
+	$config['language']         = $_POST['language'];
+	$config['languages']        = file_get_json(DIR.'/languages.json');
+	$config['active_languages'] = $config['languages'];
+	$config['themes']           = file_get_json(DIR.'/themes.json');
+	$config['theme']            = array_search('CleverStyle', $config['themes']) !== false ? 'CleverStyle' : $config['themes'][0];
+	$url                        = explode('/', explode('//', $url)[1], 2);
+	$config['cookie_domain'][]  = explode(':', $url[0])[0];
+	$config['cookie_path'][]    = isset($url[1]) && $url[1] ? '/'.trim($url[1], '/').'/' : '/';
 	unset($url);
-	$config['timezone']				= $_POST['timezone'];
-	$config['mail_from_name']		= 'Administrator of '.$config['name'];
-	$config['mail_from']			= $_POST['admin_email'];
-	$config['simple_admin_mode']	= @$_POST['mode'] ? 1 : 0;
+	$config['timezone']          = $_POST['timezone'];
+	$config['mail_from_name']    = 'Administrator of '.$config['name'];
+	$config['mail_from']         = $_POST['admin_email'];
+	$config['simple_admin_mode'] = @$_POST['mode'] ? 1 : 0;
 	/**
 	 * Extracting of engine's files
 	 */
-	$extract						= array_product(
+	$extract = array_product(
 		array_map(
 			function ($index, $file) {
 				if (
@@ -250,41 +251,40 @@ function install_process ($argv = null) {
 	/**
 	 * Basic system configuration
 	 */
-	$public_key						= hash('sha512', uniqid(microtime(true), true));
-	$main_config					= file_exists(ROOT.'/config') && file_put_contents(
-		ROOT.'/config/main.json',
-		str_replace(
-			[
-				'@domain',
-				'@timezone',
-				'@db_host',
-				'@db_type',
-				'@db_name',
-				'@db_user',
-				'@db_password',
-				'@db_prefix',
-				'@db_charset',
-				'@language',
-				'@key',
-				'@iv',
-				'@public_key'
-			],
-			[
-				$config['cookie_domain'][0],
-				$_POST['timezone'],
-				$_POST['db_host'],
-				$_POST['db_engine'],
-				$_POST['db_name'],
-				$_POST['db_user'],
-				str_replace('"', '\\"', $_POST['db_password']),
-				$_POST['db_prefix'],
-				$_POST['db_charset'],
-				$_POST['language'],
-				hash('sha224', uniqid(microtime(true), true)),
-				substr(md5(uniqid(microtime(true), true)), 0, 8),
-				$public_key
-			],
-		'{
+	$public_key  = hash('sha512', uniqid(microtime(true), true));
+	$td          = mcrypt_module_open(MCRYPT_TWOFISH, '', MCRYPT_MODE_CBC, '');
+	$main_config = file_exists(ROOT.'/config') && file_put_contents(
+			ROOT.'/config/main.json',
+			str_replace(
+				[
+					'@domain',
+					'@timezone',
+					'@db_host',
+					'@db_type',
+					'@db_name',
+					'@db_user',
+					'@db_password',
+					'@db_prefix',
+					'@db_charset',
+					'@language',
+					'@key',
+					'@public_key'
+				],
+				[
+					$config['cookie_domain'][0],
+					$_POST['timezone'],
+					$_POST['db_host'],
+					$_POST['db_engine'],
+					$_POST['db_name'],
+					$_POST['db_user'],
+					str_replace('"', '\\"', $_POST['db_password']),
+					$_POST['db_prefix'],
+					$_POST['db_charset'],
+					$_POST['language'],
+					substr(hash('sha512', openssl_random_pseudo_bytes(1000)), 0, mcrypt_enc_get_key_size($td)),
+					$public_key
+				],
+				'{
 //Domain of main mirror
 	"domain"			: "@domain",
 //Base timezone
@@ -312,10 +312,8 @@ function install_process ($argv = null) {
 //Settings of Memcached cache engine
 	"memcache_host"		: "127.0.0.1",
 	"memcache_port"		: "11211",
-//Will be truncated to 56 symbols
+//Will be truncated if necessary
 	"key"				: "@key",
-//Will be truncated to 8 symbols
-	"iv"				: "@iv",
 //Any length
 	"public_key"		: "@public_key"
 }'));
@@ -336,22 +334,22 @@ function install_process ($argv = null) {
 	/**
 	 * General configuration import
 	 */
-	$modules						= [
-		'System'	=> [
-			'active'	=> 1,
-			'db'		=> [
-				'keys'	=> '0',
-				'users'	=> '0',
-				'texts'	=> '0'
+	$modules = [
+		'System' => [
+			'active' => 1,
+			'db'     => [
+				'keys'  => '0',
+				'users' => '0',
+				'texts' => '0'
 			]
 		]
 	];
 	if (file_exists(DIR.'/modules.json')) {
 		foreach (file_get_json(DIR.'/modules.json') as $module) {
-			$modules[$module]	= [
-				'active'	=> -1,
-				'db'		=> [],
-				'storage'	=> []
+			$modules[$module] = [
+				'active'  => -1,
+				'db'      => [],
+				'storage' => []
 			];
 		}
 		unset($module);
@@ -367,14 +365,15 @@ function install_process ($argv = null) {
 		'{"modules":'._json_encode($modules).',"plugins":[],"blocks":[]}',
 		'{"in":[],"out":[]}',
 		'{"in":[],"out":[]}'
-	)) {
+	)
+	) {
 		return "Can't import system configuration into database! Installation aborted.";
 	}
 	unset($modules);
 	/**
 	 * Administrator registration
 	 */
-	$admin_login					= strstr($_POST['admin_email'], '@', true);
+	$admin_login = strstr($_POST['admin_email'], '@', true);
 	if (!$cdb->q(
 		"INSERT INTO `[prefix]users` (
 			`login`, `login_hash`, `password_hash`, `email`, `email_hash`, `reg_date`, `reg_ip`, `status`
@@ -389,20 +388,21 @@ function install_process ($argv = null) {
 		time(),
 		$_SERVER->remote_addr,
 		1
-	)) {
+	)
+	) {
 		return "Can't register administrator user! Installation aborted.";
 	}
 	/**
 	 * Disconnecting from the DataBase, removing of installer file
 	 */
 	$cdb->__destruct();
-	$warning	= false;
-	$cli		= PHP_SAPI == 'cli';
-	$installer	= $cli ? ROOT."/$argv[0]" : ROOT.'/'.pathinfo(DIR, PATHINFO_BASENAME);
+	$warning   = false;
+	$cli       = PHP_SAPI == 'cli';
+	$installer = $cli ? ROOT."/$argv[0]" : ROOT.'/'.pathinfo(DIR, PATHINFO_BASENAME);
 	if (is_writable($installer)) {
 		unlink($installer);
 	} else {
-		$warning	= "Please, remove installer file $installer for security!\n";
+		$warning = "Please, remove installer file $installer for security!\n";
 	}
 	if ($cli) {
 		return "Congratulations! CleverStyle CMS has been installed successfully!\n$warning\nLogin: $admin_login\nPassword: $_POST[admin_password]";
@@ -414,7 +414,7 @@ function install_process ($argv = null) {
 			[
 				'Your sign in information:',
 				[
-					'colspan'	=> 2
+					'colspan' => 2
 				]
 			],
 			[
@@ -429,13 +429,13 @@ function install_process ($argv = null) {
 		h::p(
 			$warning,
 			[
-				'style'	=> 'color: red;'
+				'style' => 'color: red;'
 			]
 		).
 		h::{'button.uk-button'}(
 			'Go to website',
 			[
-				'onclick'	=> "location.href = '/';"
+				'onclick' => "location.href = '/';"
 			]
 		);
 	}

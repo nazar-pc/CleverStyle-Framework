@@ -65,11 +65,10 @@ CREATE TABLE IF NOT EXISTS `[prefix]sessions` (
   `created` bigint(20) unsigned NOT NULL,
   `expire` bigint(20) unsigned NOT NULL,
   `user_agent` varchar(255) NOT NULL,
-  `ip` varchar(32) NOT NULL COMMENT 'hex value, obtained by function ip2hex()',
-  `forwarded_for` varchar(32) NOT NULL COMMENT 'hex value, obtained by function ip2hex()',
-  `client_ip` varchar(32) NOT NULL COMMENT 'hex value, obtained by function ip2hex()',
+  `remote_addr` varchar(32) COLLATE utf8_unicode_ci NOT NULL COMMENT 'hex value, obtained by function ip2hex()',
+  `ip` varchar(32) COLLATE utf8_unicode_ci NOT NULL COMMENT 'hex value, obtained by function ip2hex()',
   `data` mediumtext NOT NULL,
-  PRIMARY KEY (`id`,`expire`,`user_agent`,`ip`,`forwarded_for`,`client_ip`),
+  PRIMARY KEY (`id`,`expire`,`user_agent`,`remote_addr`,`ip`),
   KEY `user` (`user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

@@ -78,7 +78,7 @@ define('PCACHE', DIR.'/storage/pcache');
  */
 define('THEMES', DIR.'/themes');
 /**
- * Wrapper around default `$_SERVER` super global
+ * Wrapper around default `$_SERVER` superglobal
  */
 $_SERVER = new _SERVER($_SERVER);
 /**

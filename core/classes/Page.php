@@ -453,7 +453,7 @@ class Page {
 		} else {
 			$error_description	= $custom_text ?: $error;
 		}
-		if (api_path() || $json) {
+		if ($json || api_path()) {
 			if ($json) {
 				header('Content-Type: application/json; charset=utf-8', true);
 				interface_off();

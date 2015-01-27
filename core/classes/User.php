@@ -76,10 +76,6 @@ use
  * @property	string	$last_ip		hex value, obtained by function ip2hex()
  * @property	int		$last_online	unix timestamp
  * @property	string	$avatar
- * @property	string	$user_agent
- * @property	string	$ip
- * @property	string	$forwarded_for
- * @property	string	$client_ip
  *
  * @method static User instance($check = false)
  */
@@ -177,7 +173,7 @@ class User {
 		 * If session exists
 		 */
 		if (_getcookie('session')) {
-			$this->id = $this->get_session_user();
+			$this->id = $this->load_session();
 		/**
 		 * Try to detect bot, not necessary for API request
 		 */
@@ -202,9 +198,12 @@ class User {
 				]) ?: [];
 			});
 			/**
+			 * @var _SERVER $_SERVER
+			 */
+			/**
 			 * For bots: login is user agent, email is IP
 			 */
-			$bot_hash	= hash('sha224', $this->user_agent.$this->ip);
+			$bot_hash	= hash('sha224', $_SERVER->user_agent.$_SERVER->ip);
 			/**
 			 * If list is not empty - try to find bot
 			 */
@@ -221,8 +220,8 @@ class User {
 						if (
 							$bot['login'] &&
 							(
-								strpos($this->user_agent, $bot['login']) !== false ||
-								_preg_match($bot['login'], $this->user_agent)
+								strpos($_SERVER->user_agent, $bot['login']) !== false ||
+								_preg_match($bot['login'], $_SERVER->user_agent)
 							)
 						) {
 							$this->id	= $bot['id'];
@@ -231,8 +230,8 @@ class User {
 						if (
 							$bot['email'] &&
 							(
-								$this->ip == $bot['email'] ||
-								_preg_match($bot['email'], $this->ip)
+								$_SERVER->ip == $bot['email'] ||
+								_preg_match($bot['email'], $_SERVER->ip)
 							)
 						) {
 							$this->id	= $bot['id'];
@@ -251,11 +250,11 @@ class User {
 						$last_session		= $this->get_data('last_session');
 						$id					= $this->id;
 						if ($last_session) {
-							$this->get_session_user($last_session);
+							$this->load_session($last_session);
 						}
 						if (!$last_session || $this->id == self::GUEST_ID) {
 							$this->add_session($id);
-							$this->set_data('last_session', $this->get_session());
+							$this->set_data('last_session', $this->get_session_id());
 						}
 						unset($id, $last_session);
 					}
@@ -280,19 +279,18 @@ class User {
 			if ($this->timezone && date_default_timezone_get() != $this->timezone) {
 				date_default_timezone_set($this->timezone);
 			}
-			if ($Config->core['multilingual']) {
-				Language::instance()->change($this->language);
-			}
-		} elseif ($Config->core['multilingual']) {
+			$L = Language::instance();
 			/**
-			 * Automatic detection of current language for guest
+			 * Change language if configuration is multilingual and this is not page with localized url
 			 */
-			Language::instance()->change('');
+			if ($Config->core['multilingual'] && !$L->url_language()) {
+				$L->change($this->language);
+			}
 		}
 		/**
 		 * Security check
 		 */
-		if (!isset($_REQUEST['session']) || $_REQUEST['session'] != $this->get_session()) {
+		if (!isset($_REQUEST['session']) || $_REQUEST['session'] != $this->get_session_id()) {
 			$_REQUEST	= array_diff_key($_REQUEST, $_POST);
 			$_POST		= [];
 		}
@@ -301,17 +299,20 @@ class User {
 	}
 	protected function request_from_system ($Config) {
 		/**
+		 * @var _SERVER $_SERVER
+		 */
+		/**
 		 * Check for User Agent
 		 */
-		if ($this->user_agent != 'CleverStyle CMS') {
+		if ($_SERVER->user_agent != 'CleverStyle CMS') {
 			return false;
 		}
 		/**
 		 * Check for allowed sign in attempts
 		 */
 		if (
-			$this->get_sign_in_attempts_count(hash('sha224', 0)) > $Config->core['sign_in_attempts_block_count'] && // 0 - is magical login used for blocking in such cases
-			$Config->core['sign_in_attempts_block_count'] != 0
+			$Config->core['sign_in_attempts_block_count'] != 0 &&
+			$this->get_sign_in_attempts_count(hash('sha224', 0)) > $Config->core['sign_in_attempts_block_count']// 0 - is magical login used for blocking in such cases
 		) {
 			return false;
 		}
@@ -426,6 +427,9 @@ class User {
 			return false;
 		}
 		$time	= TIME;
+		/**
+		 * @var \cs\_SERVER $_SERVER
+		 */
 		return $this->db()->qfs([
 			"SELECT COUNT(`expire`)
 			FROM `[prefix]sign_ins`
@@ -435,7 +439,7 @@ class User {
 					`login_hash` = '%s' OR `ip` = '%s'
 				)",
 			$login_hash,
-			ip2hex($this->ip)
+			ip2hex($_SERVER->ip)
 		]);
 	}
 	/**
@@ -449,7 +453,10 @@ class User {
 		if (!preg_match('/^[0-9a-z]{56}$/', $login_hash)) {
 			return;
 		}
-		$ip		= ip2hex($this->ip);
+		/**
+		 * @var \cs\_SERVER $_SERVER
+		 */
+		$ip		= ip2hex($_SERVER->ip);
 		$time	= TIME;
 		if ($success) {
 			$this->db_prime()->q(
