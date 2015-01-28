@@ -26,28 +26,35 @@ $Order_statuses = Order_statuses::instance();
 $Shipping_types = Shipping_types::instance();
 $page           = @$_GET['page'] ?: 1;
 $count          = @$_GET['count'] ?: Config::instance()->module('Shop')->items_per_page;
-$orders         = $Orders->get($Orders->search(
-	[
-		'user' => $User->id
-	] + $_GET,
-	$page,
-	$count,
-	@$_GET['order_by'] ?: 'date',
-	@$_GET['asc']
-));
-$orders_total   = $Orders->search(
-	[
-		'user'        => $User->id,
-		'total_count' => 1
-	] + $_GET,
-	$page,
-	$count,
-	@$_GET['order_by'] ?: 'date',
-	@$_GET['asc']
-);
-$module_path    = path($L->shop);
-$items_path     = path($L->items);
-$orders_path    = path($L->orders);
+if ($User->user()) {
+	$orders       = $Orders->get($Orders->search(
+		[
+			'user' => $User->id
+		] + $_GET,
+		$page,
+		$count,
+		@$_GET['order_by'] ?: 'date',
+		@$_GET['asc']
+	));
+	$orders_total = $Orders->search(
+		[
+			'user'        => $User->id,
+			'total_count' => 1
+		] + $_GET,
+		$page,
+		$count,
+		@$_GET['order_by'] ?: 'date',
+		@$_GET['asc']
+	);
+} else {
+	$orders       = $Orders->get(
+		$User->get_session_data('shop_orders') ?: []
+	);
+	$orders_total = count($orders);
+}
+$module_path = path($L->shop);
+$items_path  = path($L->items);
+$orders_path = path($L->orders);
 $Page->title($L->orders);
 $Page->content(
 	h::cs_shop_orders(

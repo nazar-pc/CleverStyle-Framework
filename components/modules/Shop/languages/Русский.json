@@ -94,6 +94,8 @@
 	"shop_price_formatting"                         : "Форматирование цены",
 	"shop_items_per_page"                           : "Элементов на страницу",
 	"shop_items_per_page_admin"                     : "Элементов на страницу (администрирование)",
+	"shop_allow_guests_orders"                      : "Разрешить гостевые заказы",
+	"shop_allow_guests_orders_info"                 : "Разрешить гостям делать закаты или нет (если нет - для заказа будет требоваться регистрация)",
 	"shop_automatically_reduce_in_stock_value"      : "Автоматически уменьшать значение в наличии",
 	"shop_automatically_reduce_in_stock_value_info" : "Если опция включена - значение в наличии товары после заказа будет уменьшено на количество заказанных позиций",
 	"shop_yes"                                      : "Да",
@@ -130,5 +132,6 @@
 	"shop_paid"                                     : "Оплачено",
 	"shop_payment_for_order"                        : "Оплата в магазине за заказ №%s",
 	"shop_paid_success_notification"                : "Вы успешно оплатили заказ №%s, спасибо вам!",
-	"shop_paid_error_notification"                  : "Ваша оплата заказа №%s завершилась с ошибкой:("
+	"shop_paid_error_notification"                  : "Ваша оплата заказа №%s завершилась с ошибкой:(",
+	"shop_register_to_finish_order"                 : "Для завершения заказа вы должны быть зарегистрированы (не переживайте, ваша корзина не опустеет если вы зарегистрируетесь сейчас)"
 }

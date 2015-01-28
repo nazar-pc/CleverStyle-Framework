@@ -47,6 +47,14 @@ $Index->content(
 			])
 		],
 		[
+			h::info('shop_allow_guests_orders'),
+			h::{'radio[name=allow_guests_orders]'}([
+				'checked' => $module_data->allow_guests_orders,
+				'value'   => [0, 1],
+				'in'      => [$L->no, $L->yes]
+			])
+		],
+		[
 			h::info('shop_automatically_reduce_in_stock_value'),
 			h::{'radio[name=automatically_reduce_in_stock_value]'}([
 				'checked' => $module_data->automatically_reduce_in_stock_value,

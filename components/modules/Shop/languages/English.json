@@ -94,6 +94,8 @@
 	"shop_price_formatting"                         : "Price formatting",
 	"shop_items_per_page"                           : "Items per page",
 	"shop_items_per_page_admin"                     : "Items per page (administration)",
+	"shop_allow_guests_orders"                      : "Allow guests orders",
+	"shop_allow_guests_orders_info"                 : "Whether allow guests or not to make orders (if not - registration will be required to make an order)",
 	"shop_automatically_reduce_in_stock_value"      : "Automatically reduce in stock value",
 	"shop_automatically_reduce_in_stock_value_info" : "If this option enabled - in stock value for item will be reduced after order by number of ordered items",
 	"shop_yes"                                      : "Yes",
@@ -130,5 +132,6 @@
 	"shop_paid"                                     : "Paid",
 	"shop_payment_for_order"                        : "Payment in shop for order #%s",
 	"shop_paid_success_notification"                : "You have successfully paid for order #%s, thank you!",
-	"shop_paid_error_notification"                  : "Your payment for order #%s finished with error:("
+	"shop_paid_error_notification"                  : "Your payment for order #%s finished with error:(",
+	"shop_register_to_finish_order"                 : "In order to finish order you need to be registered user (do not worry, items in your cart will be kept if you register now)"
 }

@@ -28,12 +28,15 @@ if (
 	error_code(400);
 	return;
 }
-$User = User::instance();
-if ($User->guest()) { // TODO make configurable and allow guests to make orders (store order id in session to allow getting order data until session died in GET request)
+$Config = Config::instance();
+$User   = User::instance();
+if (
+	!$Config->module('Shop')->allow_guests_orders &&
+	!$User->user()
+) {
 	error_code(403);
 	return;
 }
-$Config        = Config::instance();
 $Orders        = Orders::instance();
 $shipping_type = Shipping_types::instance()->get($_POST['shipping_type']);
 $id            = $Orders->add(
@@ -51,6 +54,12 @@ $id            = $Orders->add(
 if (!$id) {
 	error_code(500);
 	return;
+}
+if (!$User->user()) {
+	$orders   = $User->get_session_data('shop_orders') ?: [];
+	$orders[] = $id;
+	$User->set_session_data('shop_orders', $orders);
+	unset($orders);
 }
 $Items = Items::instance();
 foreach ($_POST['items'] as $item => $units) {

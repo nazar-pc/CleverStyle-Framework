@@ -42,6 +42,8 @@
       }
       return _results;
     })(),
+    registration_required: !cs.is_user && !cs.shop.settings.allow_guests_orders,
+    register_to_finish_order_text: L.shop_register_to_finish_order,
     created: function() {
       return this.shipping_username = this.shipping_username || (cs.is_user ? this.getAttribute('username') : '');
     },

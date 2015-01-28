@@ -91,7 +91,7 @@ class Orders {
 	function get ($id) {
 		$data = $this->read_simple($id);
 		if (is_array($id)) {
-			foreach ($data ?: [] as &$d) {
+			foreach ($data as &$d) {
 				$d['for_payment'] = $this->get_for_payment($d);
 			}
 		} else {

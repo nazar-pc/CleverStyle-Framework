@@ -39,7 +39,13 @@
 				</select>
 			</p>
 			<p class="uk-form-row" id="payment_method_description"></p>
-			<button type="button" class="uk-button" on-click="{{finish_order}}">{{finish_order_text}}</button>
+			<template if="{{!registration_required}}">
+				<button type="button" class="uk-button" on-click="{{finish_order}}">{{finish_order_text}}</button>
+			</template>
+			<template if="{{registration_required}}">
+				<p class="uk-alert uk-alert-warning">{{register_to_finish_order_text}}</p>
+				<button type="button" class="uk-button" disabled>{{finish_order_text}}</button>
+			</template>
 		</div>
 	</template>
 	<script src="script.js"></script>

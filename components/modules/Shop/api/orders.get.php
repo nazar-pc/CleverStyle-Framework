@@ -23,7 +23,19 @@ if ($User->guest()) {
 /**
  * Get order items, not order itself
  */
-if (isset($Index->route_ids[0], $Index->route_path[2]) && $Index->route_path[2] == 'items') {
+if (
+	isset($Index->route_ids[0], $Index->route_path[2]) &&
+	$Index->route_path[2] == 'items'
+) {
+	$order = $Orders->get($Index->route_ids[0]);
+	if (!$order) {
+		error_code(404);
+	} elseif (
+		$order['user'] != $User->id &&
+		!in_array($order['id'], $User->get_session_data('shop_orders'))
+	) {
+		error_code(403);
+	}
 	$Page->json(
 		$Orders->get_items($Index->route_ids[0])
 	);
@@ -31,17 +43,26 @@ if (isset($Index->route_ids[0], $Index->route_path[2]) && $Index->route_path[2] 
 	$order = $Orders->get($Index->route_ids[0]);
 	if (!$order) {
 		error_code(404);
-	} elseif ($order['user'] != $User->id) {
+	} elseif (
+		$order['user'] != $User->id &&
+		!in_array($order['id'], $User->get_session_data('shop_orders'))
+	) {
 		error_code(403);
 	} else {
 		$Page->json($order);
 	}
-} else {
+} elseif ($User->user()) {
 	$Page->json(
 		$Orders->get(
 			$Orders->search([
 				'user' => $User->id
 			])
+		)
+	);
+} else {
+	$Page->json(
+		$Orders->get(
+			$User->get_session_data('shop_orders') ?: []
 		)
 	);
 }

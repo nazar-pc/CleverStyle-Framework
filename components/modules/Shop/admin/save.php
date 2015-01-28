@@ -8,12 +8,14 @@
  */
 namespace cs;
 if (isset($_POST['save'])) {
-	$module_data                                      = Config::instance()->module('Shop');
-	$module_data->price_formatting                    = xap($_POST['price_formatting']);
-	$module_data->items_per_page                      = (int)$_POST['items_per_page'];
-	$module_data->items_per_page_admin                = (int)$_POST['items_per_page_admin'];
-	$module_data->automatically_reduce_in_stock_value = (int)$_POST['automatically_reduce_in_stock_value'];
-	$module_data->default_order_status                = (int)$_POST['default_order_status'];
-	$module_data->default_paid_order_status           = (int)$_POST['default_paid_order_status'];
+	Config::instance()->module('Shop')->set([
+		'price_formatting'                    => xap($_POST['price_formatting']),
+		'items_per_page'                      => (int)$_POST['items_per_page'],
+		'items_per_page_admin'                => (int)$_POST['items_per_page_admin'],
+		'allow_guests_orders'                 => (int)$_POST['allow_guests_orders'],
+		'automatically_reduce_in_stock_value' => (int)$_POST['automatically_reduce_in_stock_value'],
+		'default_order_status'                => (int)$_POST['default_order_status'],
+		'default_paid_order_status'           => (int)$_POST['default_paid_order_status']
+	]);
 	Index::instance()->save(true);
 }
