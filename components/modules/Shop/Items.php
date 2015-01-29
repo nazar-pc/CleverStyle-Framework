@@ -235,9 +235,6 @@ class Items {
 		}
 		$user = (int)$user ?: User::instance()->id;
 		$data = $this->get($id);
-		if ($data['user'] != $user) {
-			return false;
-		}
 		if (!Trigger::instance()->run('Shop/Items/get_for_user', [
 			'data' => &$data,
 			'user' => $user

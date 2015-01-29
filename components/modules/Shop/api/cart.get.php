@@ -17,10 +17,8 @@
 
 namespace cs\modules\Shop;
 use
-	cs\Page,
-	cs\Trigger;
+	cs\Page;
 
-$Items         = Items::instance();
 $items         = @$_GET['items'];
 $shipping_type = @$_GET['shipping_type'];
 if (!$items || !$shipping_type) {
@@ -31,31 +29,6 @@ $shipping_type = Shipping_types::instance()->get_for_user($shipping_type);
 if (!$shipping_type) {
 	error_code(404);
 }
-$items    = array_map(
-	function ($item, $units) use ($Items) {
-		$item = $Items->get_for_user($item);
-		if (!$item || $units < 1) {
-			return false;
-		}
-		return [
-			'id'    => $item['id'],
-			'units' => (int)$units,
-			'price' => $item['price'] * $units
-		];
-	},
-	array_keys($items),
-	array_values($items)
+Page::instance()->json(
+	Orders::instance()->get_recalculated_cart_prices($items, $shipping_type['id'])
 );
-$items    = array_filter($items);
-$shipping = [
-	'type'  => $shipping_type['id'],
-	'price' => $shipping_type['price']
-];
-Trigger::instance()->run('Shop/Cart/calculate', [
-	'items'    => &$items,
-	'shipping' => &$shipping
-]);
-Page::instance()->json([
-	'items'    => $items,
-	'shipping' => $shipping
-]);

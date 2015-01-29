@@ -37,12 +37,16 @@ if (
 	error_code(403);
 	return;
 }
-$Orders        = Orders::instance();
-$shipping_type = Shipping_types::instance()->get($_POST['shipping_type']);
-$id            = $Orders->add(
+$Orders       = Orders::instance();
+$recalculated = $Orders->get_recalculated_cart_prices($_POST['items'], $_POST['shipping_type']);
+if (!$recalculated) {
+	error_code(400);
+	return;
+}
+$id = $Orders->add(
 	$User->id,
 	$_POST['shipping_type'],
-	$shipping_type['price'], // TODO discount feature
+	$recalculated['shipping']['price'],
 	@$_POST['shipping_username'] ?: $User->username(),
 	$_POST['shipping_phone'],
 	$_POST['shipping_address'],
@@ -62,9 +66,9 @@ if (!$User->user()) {
 	unset($orders);
 }
 $Items = Items::instance();
-foreach ($_POST['items'] as $item => $units) {
-	$item_data = $Items->get($item);
-	$Orders->add_item($id, $item, $units, $item_data['price'] * $units, $item_data['price']); // TODO discount feature
+foreach ($recalculated['items'] as $item) {
+	$item_data = $Items->get($item['id']);
+	$Orders->add_item($id, $item, $item['units'], $item['price'], $item_data['price']);
 }
 code_header(201);
 Page::instance()->json(

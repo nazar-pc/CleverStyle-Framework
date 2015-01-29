@@ -56,8 +56,7 @@ $Page->content(
 					h::{'#description'}(truncate($item['description'], 200) ?: false),
 					[
 						'data-id'         => $item['id'],
-						'data-price'      => $item['price'] * $units,
-						'data-unit-price' => $item['price'], // TODO discount feature
+						'data-unit-price' => $item['price'],
 						'data-units'      => $units
 					]
 				];

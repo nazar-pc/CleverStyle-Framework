@@ -45,6 +45,12 @@ use
  *  [
  *   'id' => $id
  *  ]</code>
+ *
+ *  Shop/Orders/Cart/recalculate<code>
+ *  [
+ *   'items'    => &$items,   // Array of array elements [id => item_id, units => units, price => total_price]
+ *   'shipping' => &$shipping // Array in form [type => shipping_type_id, price => shipping_type_price]
+ *  ]</code>
  */
 class Orders {
 	use
@@ -231,6 +237,56 @@ class Orders {
 				$params
 			]);
 		}
+	}
+	/**
+	 * Returns recalculated prices for items and shipping
+	 *
+	 * Using trigger third party components may automatically apply different discounts for items and shipping based on user, number of units and other things
+	 *
+	 * @param array    $items Array in form of [id => units]
+	 * @param int      $shipping_type
+	 * @param bool|int $user
+	 *
+	 * @return array   <pre>
+	 *  [
+	 *   'items'    => $items,   // Array of array elements [id => item_id, units => units, price => total_price]
+	 *   'shipping' => $shipping // Array in form [type => shipping_type_id, price => shipping_type_price]
+	 *  ]</pre>
+	 */
+	function get_recalculated_cart_prices ($items, $shipping_type, $user = false) {
+		$Items         = Items::instance();
+		$items         = array_map(
+			function ($item, $units) use ($Items, $user) {
+				$item = $Items->get_for_user($item, $user);
+				if (!$item || $units < 1) {
+					return false;
+				}
+				return [
+					'id'    => $item['id'],
+					'units' => (int)$units,
+					'price' => $item['price'] * $units
+				];
+			},
+			array_keys($items),
+			array_values($items)
+		);
+		$items         = array_filter($items);
+		$shipping_type = Shipping_types::instance()->get_for_user($shipping_type, $user);
+		if (!$items || !$shipping_type) {
+			return false;
+		}
+		$shipping      = [
+			'type'  => $shipping_type['id'],
+			'price' => $shipping_type['price']
+		];
+		Trigger::instance()->run('Shop/Orders/Cart/recalculate', [
+			'items'    => &$items,
+			'shipping' => &$shipping
+		]);
+		return [
+			'items'    => $items,
+			'shipping' => $shipping
+		];
 	}
 	/**
 	 * Add new order

@@ -26,22 +26,30 @@
       $this = $(this);
       this.item_id = $this.data('id');
       this.unit_price = $this.data('unit-price');
-      this.price = $this.data('price');
+      this.price = 0;
       this.units = $this.data('units');
       this.unit_price_formatted = sprintf(price_formatting, this.unit_price);
       return this.price_formatted = sprintf(price_formatting, this.price);
     },
     unitsChanged: function() {
-      var discount;
+      var _this = this;
       if (parseInt(this.units)) {
         cart.set(this.item_id, this.units);
       } else {
         cart.del(this.item_id);
       }
-      this.price = this.unit_price * this.units;
-      this.price_formatted = sprintf(price_formatting, this.price);
-      discount = this.units * this.unit_price - this.price;
-      return this.$.discount.innerHTML = discount ? (discount = sprintf(price_formatting, discount), "(" + cs.Language.shop_discount + ": " + discount + ")") : '';
+      cart.get_calculated(function(data) {
+        data.items.forEach(function(item) {
+          var discount;
+          if (parseInt(item.id) === _this.item_id) {
+            _this.price = item.price;
+            _this.price_formatted = sprintf(price_formatting, _this.price);
+            discount = _this.units * _this.unit_price - _this.price;
+            _this.$.discount.innerHTML = discount ? (discount = sprintf(price_formatting, discount), "(" + cs.Language.shop_discount + ": " + discount + ")") : '';
+            return false;
+          }
+        });
+      });
     }
   });
 
