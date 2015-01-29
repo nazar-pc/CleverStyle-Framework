@@ -5,10 +5,11 @@
  * @copyright     Copyright (c) 2014-2015, Nazar Mokrynskyi
  * @license       MIT License, see license.txt
 ###
-L	= cs.Language
+L		= cs.Language
+cart	= cs.shop.cart
 Polymer(
 	shipping_types					: cs.shop.shipping_types
-	shipping_type					: 0
+	shipping_type					: cart.params.shipping_type || 0
 	shipping_type_details			: {}
 	shipping_type_text				: L.shop_shipping_type
 	shipping_cost_formatted			: ''
@@ -18,10 +19,10 @@ Polymer(
 	comment_text					: L.shop_comment
 	payment_method_text				: L.shop_payment_method
 	finish_order_text				: L.shop_finish_order
-	shipping_username				: localStorage.shipping_username || ''
-	phone							: localStorage.phone || ''
-	address							: localStorage.address || ''
-	comment							: localStorage.comment || ''
+	shipping_username				: cart.params.shipping_username || ''
+	phone							: cart.params.phone || ''
+	address							: cart.params.address || ''
+	comment							: cart.params.comment || ''
 	payment_method					: 0
 	payment_methods					:
 		for method, details of cs.shop.payment_methods
@@ -36,10 +37,12 @@ Polymer(
 		$(@shadowRoot).find('textarea').autosize()
 		$shipping_type			= $(@$.shipping_type)
 		$shipping_type
-			.val(@shipping_types[0].id)
+			.val(@shipping_type || @shipping_types[0].id)
 			.change =>
 				@shipping_types.forEach (shipping_type) =>
 					if shipping_type.id == $shipping_type.val()
+						@shipping_type				= shipping_type.id
+						cart.params.shipping_type	= @shipping_type
 						@shipping_type_details		= shipping_type
 						@shipping_cost_formatted	= sprintf(cs.shop.settings.price_formatting, shipping_type.price)
 						return false
@@ -53,13 +56,13 @@ Polymer(
 				@$.payment_method_description.innerHTML	= payment_method.description
 			.change()
 	shipping_usernameChanged	: ->
-		localStorage.shipping_username	= @shipping_username
+		cart.params.shipping_username	= @shipping_username
 	phoneChanged				: ->
-		localStorage.phone	= @phone
+		cart.params.phone	= @phone
 	addressChanged				: ->
-		localStorage.address	= @address
+		cart.params.address	= @address
 	commentChanged				: ->
-		localStorage.comment	= @comment
+		cart.params.comment	= @comment
 	finish_order				: ->
 		$.ajax(
 			url		: 'api/Shop/orders'

@@ -10,13 +10,15 @@
 
 
 (function() {
-  var L, details, method;
+  var L, cart, details, method;
 
   L = cs.Language;
 
+  cart = cs.shop.cart;
+
   Polymer({
     shipping_types: cs.shop.shipping_types,
-    shipping_type: 0,
+    shipping_type: cart.params.shipping_type || 0,
     shipping_type_details: {},
     shipping_type_text: L.shop_shipping_type,
     shipping_cost_formatted: '',
@@ -26,10 +28,10 @@
     comment_text: L.shop_comment,
     payment_method_text: L.shop_payment_method,
     finish_order_text: L.shop_finish_order,
-    shipping_username: localStorage.shipping_username || '',
-    phone: localStorage.phone || '',
-    address: localStorage.address || '',
-    comment: localStorage.comment || '',
+    shipping_username: cart.params.shipping_username || '',
+    phone: cart.params.phone || '',
+    address: cart.params.address || '',
+    comment: cart.params.comment || '',
     payment_method: 0,
     payment_methods: (function() {
       var _ref, _results;
@@ -53,9 +55,11 @@
       this.$.h1.innerHTML = this.querySelector('h1').innerHTML;
       $(this.shadowRoot).find('textarea').autosize();
       $shipping_type = $(this.$.shipping_type);
-      $shipping_type.val(this.shipping_types[0].id).change(function() {
+      $shipping_type.val(this.shipping_type || this.shipping_types[0].id).change(function() {
         return _this.shipping_types.forEach(function(shipping_type) {
           if (shipping_type.id === $shipping_type.val()) {
+            _this.shipping_type = shipping_type.id;
+            cart.params.shipping_type = _this.shipping_type;
             _this.shipping_type_details = shipping_type;
             _this.shipping_cost_formatted = sprintf(cs.shop.settings.price_formatting, shipping_type.price);
             return false;
@@ -71,16 +75,16 @@
       }).change();
     },
     shipping_usernameChanged: function() {
-      return localStorage.shipping_username = this.shipping_username;
+      return cart.params.shipping_username = this.shipping_username;
     },
     phoneChanged: function() {
-      return localStorage.phone = this.phone;
+      return cart.params.phone = this.phone;
     },
     addressChanged: function() {
-      return localStorage.address = this.address;
+      return cart.params.address = this.address;
     },
     commentChanged: function() {
-      return localStorage.comment = this.comment;
+      return cart.params.comment = this.comment;
     },
     finish_order: function() {
       var _this = this;
