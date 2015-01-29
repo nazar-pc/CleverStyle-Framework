@@ -16,10 +16,6 @@ $Index  = Index::instance();
 $Page   = Page::instance();
 $User   = User::instance();
 $Orders = Orders::instance();
-if ($User->guest()) {
-	error_code(403);
-	return;
-}
 /**
  * Get order items, not order itself
  */
