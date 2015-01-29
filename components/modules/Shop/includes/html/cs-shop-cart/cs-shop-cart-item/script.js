@@ -36,7 +36,6 @@
       if (parseInt(this.units)) {
         cart.set(this.item_id, this.units);
       } else {
-        console.log(this.units);
         cart.del(this.item_id);
       }
       this.price = this.unit_price * this.units;

@@ -24,7 +24,6 @@ Polymer(
 		if parseInt(@units)
 			cart.set(@item_id, @units)
 		else
-			console.log @units
 			cart.del(@item_id)
 		@price				= @unit_price * @units # TODO discount feature
 		@price_formatted	= sprintf(price_formatting, @price)
