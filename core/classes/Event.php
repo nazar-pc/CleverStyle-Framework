@@ -127,13 +127,15 @@ class Event {
 	protected function initialize () {
 		$modules = get_files_list(MODULES, false, 'd');
 		foreach ($modules as $module) {
-			_include_once(MODULES."/$module/trigger.php", false);
+			_include_once(MODULES."/$module/trigger.php", false); //TODO remove in future versions
+			_include_once(MODULES."/$module/events.php", false);
 		}
 		unset($modules, $module);
 		$plugins = get_files_list(PLUGINS, false, 'd');
 		if (!empty($plugins)) {
 			foreach ($plugins as $plugin) {
-				_include_once(PLUGINS."/$plugin/trigger.php", false);
+				_include_once(PLUGINS."/$plugin/trigger.php", false); //TODO remove in future versions
+				_include_once(PLUGINS."/$plugin/events.php", false);
 			}
 		}
 		unset($plugins, $plugin);
