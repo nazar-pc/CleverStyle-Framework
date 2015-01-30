@@ -10,125 +10,134 @@
 
 
 (function() {
+  var allow_reconnect, handlers, messages_pool, socket, socket_active, w;
 
-  window.cs.WebSockets = (function() {
-    var allow_reconnect, handlers, messages_pool, socket, socket_active;
-    socket = null;
-    handlers = {};
-    messages_pool = [];
-    allow_reconnect = true;
-    socket_active = function() {
-      var _ref;
-      return socket && ((_ref = socket.readyState) !== WebSocket.CLOSING && _ref !== WebSocket.CLOSED);
-    };
-    (function() {
-      var connect, delay, keep_connection, onmessage, onopen;
-      delay = 0;
-      onopen = function() {
-        delay = 1000;
-        cs.WebSockets.send('Client/authentication', {
-          session: cs.getcookie('session'),
-          user_agent: navigator.userAgent,
-          language: cs.Language.clanguage
-        });
-        while (messages_pool.length) {
-          cs.WebSockets.send(messages_pool.shift());
-        }
-      };
-      onmessage = function(message) {
-        var action, action_handlers, details, type, _ref, _ref1, _ref2;
-        _ref = JSON.parse(message.data), action = _ref[0], details = _ref[1];
-        _ref1 = action.split(':'), action = _ref1[0], type = _ref1[1];
-        switch (action) {
-          case 'Server/close':
-            allow_reconnect = false;
-        }
-        action_handlers = handlers[action];
-        if (!action_handlers || !action_handlers.length) {
-          return;
-        }
-        if ((_ref2 = typeof details) === 'boolean' || _ref2 === 'number' || _ref2 === 'string') {
-          details = [details];
-        }
-        action_handlers.forEach(function(h) {
-          if (type === 'error') {
-            return h[1] && h[1].apply(h[1], details);
-          } else {
-            return h[0] && h[0].apply(h[0], details);
-          }
-        });
-      };
-      connect = function() {
-        socket = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + ("://" + location.host + "/WebSockets"));
-        socket.onopen = onopen;
-        socket.onmessage = onmessage;
-      };
-      keep_connection = function() {
-        return setTimeout((function() {
-          if (!allow_reconnect) {
-            return;
-          }
-          if (!socket_active()) {
-            delay = (delay || 1000) * 2;
-            connect();
-          }
-          return keep_connection();
-        }), delay);
-      };
-      return keep_connection();
-    })();
-    return {
-      'on': function(action, callback, error) {
-        if (!handlers[action]) {
-          handlers[action] = [];
-        }
-        handlers[action].push([callback, error]);
-        return cs.WebSockets;
-      },
-      'off': function(action, callback, error) {
-        var h, index, _i, _len, _ref;
-        if (!handlers[action]) {
-          return;
-        }
-        _ref = handlers[action];
-        for (index = _i = 0, _len = _ref.length; _i < _len; index = ++_i) {
-          h = _ref[index];
-          if (h[0] === callback) {
-            h[0] = void 0;
-          }
-          if (h[1] === error) {
-            h[1] = void 0;
-          }
-          if (h[0] === void 0 && h[1] === void 0) {
-            delete handlers[action][index];
-          }
-        }
-        return cs.WebSockets;
-      },
-      once: function(action, callback, error) {
-        var callback_, error_;
-        callback_ = function() {
-          cs.WebSockets.off(action, callback_, error_);
-          return callback.apply(callback, arguments);
-        };
-        error_ = function() {
-          cs.WebSockets.off(action, callback_, error_);
-          return error.apply(error, arguments);
-        };
-        cs.WebSockets.on(action, callback_, error_);
-        return cs.WebSockets;
-      },
-      send: function(action, details) {
-        var message;
-        message = JSON.stringify([action, details]);
-        if (!socket_active()) {
-          messages_pool.push(message);
-        } else {
-          socket.send(message);
-        }
-        return cs.WebSockets;
+  socket = null;
+
+  handlers = {};
+
+  messages_pool = [];
+
+  allow_reconnect = true;
+
+  socket_active = function() {
+    var _ref;
+    return socket && ((_ref = socket.readyState) !== WebSocket.CLOSING && _ref !== WebSocket.CLOSED);
+  };
+
+  (function() {
+    var connect, delay, keep_connection, onmessage, onopen;
+    delay = 0;
+    onopen = function() {
+      delay = 1000;
+      cs.WebSockets.send('Client/authentication', {
+        session: cs.getcookie('session'),
+        user_agent: navigator.userAgent,
+        language: cs.Language.clanguage
+      });
+      while (messages_pool.length) {
+        cs.WebSockets.send(messages_pool.shift());
       }
     };
+    onmessage = function(message) {
+      var action, action_handlers, details, type, _ref, _ref1, _ref2;
+      _ref = JSON.parse(message.data), action = _ref[0], details = _ref[1];
+      _ref1 = action.split(':'), action = _ref1[0], type = _ref1[1];
+      switch (action) {
+        case 'Server/close':
+          allow_reconnect = false;
+      }
+      action_handlers = handlers[action];
+      if (!action_handlers || !action_handlers.length) {
+        return;
+      }
+      if ((_ref2 = typeof details) === 'boolean' || _ref2 === 'number' || _ref2 === 'string') {
+        details = [details];
+      }
+      action_handlers.forEach(function(h) {
+        if (type === 'error') {
+          return h[1] && h[1].apply(h[1], details);
+        } else {
+          return h[0] && h[0].apply(h[0], details);
+        }
+      });
+    };
+    connect = function() {
+      socket = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + ("://" + location.host + "/WebSockets"));
+      socket.onopen = onopen;
+      socket.onmessage = onmessage;
+    };
+    keep_connection = function() {
+      return setTimeout((function() {
+        if (!allow_reconnect) {
+          return;
+        }
+        if (!socket_active()) {
+          delay = (delay || 1000) * 2;
+          connect();
+        }
+        return keep_connection();
+      }), delay);
+    };
+    return keep_connection();
   })();
+
+  w = {
+    'on': function(action, callback, error) {
+      if (!action || (!callback && !error)) {
+        return w;
+      }
+      if (!handlers[action]) {
+        handlers[action] = [];
+      }
+      handlers[action].push([callback, error]);
+      return w;
+    },
+    'off': function(action, callback, error) {
+      if (!handlers[action]) {
+        return w;
+      }
+      handlers[action] = handlers[action].filter(function(h) {
+        if (h[0] === callback) {
+          delete h[0];
+        }
+        if (h[1] === error) {
+          delete h[1];
+        }
+        return h[0] || h[1];
+      });
+      return w;
+    },
+    once: function(action, callback, error) {
+      var callback_, error_;
+      if (!action || (!callback && !error)) {
+        return w;
+      }
+      callback_ = function() {
+        w.off(action, callback_, error_);
+        return callback.apply(callback, arguments);
+      };
+      error_ = function() {
+        w.off(action, callback_, error_);
+        return error.apply(error, arguments);
+      };
+      return w.on(action, callback_, error_);
+    },
+    send: function(action, details) {
+      var message;
+      if (!action || !handlers[action]) {
+        return w;
+      }
+      message = JSON.stringify([action, details]);
+      if (!socket_active()) {
+        messages_pool.push(message);
+      } else {
+        socket.send(message);
+      }
+      return w;
+    }
+  };
+
+  cs.WebSockets = w;
 
 }).call(this);
