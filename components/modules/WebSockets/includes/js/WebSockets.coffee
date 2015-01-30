@@ -88,7 +88,7 @@ w =
 			error.apply(error, arguments)
 		w.on(action, callback_, error_)
 	send	: (action, details) ->
-		if !action || !handlers[action]
+		if !action
 			return w
 		message	= JSON.stringify([action, details])
 		if !socket_active()

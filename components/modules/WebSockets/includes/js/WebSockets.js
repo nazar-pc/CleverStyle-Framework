@@ -125,7 +125,7 @@
     },
     send: function(action, details) {
       var message;
-      if (!action || !handlers[action]) {
+      if (!action) {
         return w;
       }
       message = JSON.stringify([action, details]);
