@@ -8,16 +8,16 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-Trigger::instance()->register(
+Event::instance()->on(
 	'System/Config/pre_routing_replace',
 	function () {
 		switch (Config::instance()->components['modules']['HybridAuth']['active']) {
 			case 1:
-				require __DIR__.'/trigger/enabled.php';
+				require __DIR__.'/events/enabled.php';
 		}
 	}
 );
-Trigger::instance()->register(
+Event::instance()->on(
 	'System/Index/construct',
 	function () {
 		if (!admin_path()) {
@@ -25,7 +25,7 @@ Trigger::instance()->register(
 		}
 		switch (Config::instance()->components['modules']['HybridAuth']['active']) {
 			case -1:
-				require __DIR__.'/trigger/uninstalled.php';
+				require __DIR__.'/events/uninstalled.php';
 			break;
 		}
 	}

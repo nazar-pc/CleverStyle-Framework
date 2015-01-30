@@ -8,9 +8,9 @@
 namespace cs\User;
 use
 	cs\Config,
+	cs\Event,
 	cs\Language,
 	cs\Page,
-	cs\Trigger,
 	cs\User;
 
 /**
@@ -61,7 +61,7 @@ trait Session {
 		/**
 		 * @var \cs\_SERVER $_SERVER
 		 */
-		return $Cache->get("sessions/$session_id", function () use ($session_id) {
+		$session = $Cache->get("sessions/$session_id", function () use ($session_id) {
 			return $this->db()->qf([
 				"SELECT
 					`id`,
@@ -76,9 +76,13 @@ trait Session {
 					`expire`		> '%s'
 				LIMIT 1",
 				$session_id,
-				TIME
+				time()
 			]) ?: false;
 		});
+		if ($session['expire'] < time()) {
+			return false;
+		}
+		return $session;
 	}
 	/**
 	 * Load session by id and return id of session owner (user), updates last_sign_in, last_ip and last_online information
@@ -93,10 +97,11 @@ trait Session {
 		}
 		$Config  = Config::instance();
 		$session = $this->get_session($session_id);
+		$time = time();
 		if (
 			!$session ||
-			$session['expire'] <= TIME ||
 			$session['user_agent'] != $_SERVER->user_agent ||
+			$session['expire'] <= $time ||
 			!$this->get('id', $session['user']) ||
 			(
 				$Config->core['remember_user_ip'] &&
@@ -121,13 +126,12 @@ trait Session {
 		 */
 		if (
 			$session['user'] != 0 &&
-			$this->get('last_online', $session['user']) < TIME - $Config->core['online_time'] * $Config->core['update_ratio'] / 100
+			$this->get('last_online', $session['user']) < $time - $Config->core['online_time'] * $Config->core['update_ratio'] / 100
 		) {
 			/**
 			 * Updating last sign in time and ip
 			 */
-			$time = TIME;
-			if ($this->get('last_online', $session['user']) < TIME - $Config->core['online_time']) {
+			if ($this->get('last_online', $session['user']) < $time - $Config->core['online_time']) {
 				$ip       = ip2hex($_SERVER->ip);
 				$update[] = "
 					UPDATE `[prefix]users`
@@ -138,9 +142,9 @@ trait Session {
 					WHERE `id` =$session[user]";
 				$this->set(
 					[
-						'last_sign_in' => TIME,
+						'last_sign_in' => $time,
 						'last_ip'      => $ip,
-						'last_online'  => TIME
+						'last_online'  => $time
 					],
 					null,
 					$session['user']
@@ -153,14 +157,13 @@ trait Session {
 					WHERE `id` = $session[user]";
 				$this->set(
 					'last_online',
-					TIME,
+					$time,
 					$session['user']
 				);
 			}
-			unset($time);
 		}
-		if ($session['expire'] - TIME < $Config->core['session_expire'] * $Config->core['update_ratio'] / 100) {
-			$session['expire']                     = TIME + $Config->core['session_expire'];
+		if ($session['expire'] - $time < $Config->core['session_expire'] * $Config->core['update_ratio'] / 100) {
+			$session['expire']                     = $time + $Config->core['session_expire'];
 			$update[]                              = "
 				UPDATE `[prefix]sessions`
 				SET `expire` = $session[expire]
@@ -231,7 +234,7 @@ trait Session {
 					$user = User::GUEST_ID;
 					goto getting_user_data;
 				}
-			} elseif ($data['block_until'] > TIME) {
+			} elseif ($data['block_until'] > time()) {
 				/**
 				 * If user if blocked
 				 */
@@ -251,10 +254,11 @@ trait Session {
 		}
 		unset($data);
 		$Config = Config::instance();
+		$time = time();
 		/**
 		 * Generate hash in cycle, to obtain unique value
 		 */
-		for ($i = 0; $hash = md5(MICROTIME.uniqid($i, true)); ++$i) {
+		while ($hash = md5(openssl_random_pseudo_bytes(1000))) {
 			if ($this->db_prime()->qf(
 				"SELECT `id`
 				FROM `[prefix]sessions`
@@ -290,29 +294,35 @@ trait Session {
 					)",
 				$hash,
 				$user,
-				TIME,
+				$time,
 				/**
 				 * Many guests open only one page, so create session only for 5 min
 				 */
-				TIME + ($user != User::GUEST_ID || $Config->core['session_expire'] < 300 ? $Config->core['session_expire'] : 300),
+				$time + ($user != User::GUEST_ID || $Config->core['session_expire'] < 300 ? $Config->core['session_expire'] : 300),
 				$_SERVER->user_agent,
 				$remote_addr,
 				$ip
 			);
-			$time = TIME;
 			if ($user != User::GUEST_ID) {
-				$this->db_prime()->q("UPDATE `[prefix]users` SET `last_sign_in` = $time, `last_online` = $time, `last_ip` = '$ip.' WHERE `id` ='$user'");
+				$this->db_prime()->q(
+					"UPDATE `[prefix]users`
+					SET
+						`last_sign_in`	= $time,
+						`last_online`	= $time,
+						`last_ip`		= '$ip.'
+					WHERE `id` ='$user'"
+				);
 			}
 			$this->session_id                = $hash;
 			$this->cache->{"sessions/$hash"} = [
 				'id'          => $hash,
 				'user'        => $user,
-				'expire'      => TIME + $Config->core['session_expire'],
+				'expire'      => $time + $Config->core['session_expire'],
 				'user_agent'  => $_SERVER->user_agent,
 				'remote_addr' => $remote_addr,
 				'ip'          => $ip
 			];
-			_setcookie('session', $hash, TIME + $Config->core['session_expire']);
+			_setcookie('session', $hash, $time + $Config->core['session_expire']);
 			$this->load_session();
 			$this->update_user_is();
 			$ids_count = $this->db()->qfs(
@@ -337,11 +347,11 @@ trait Session {
 	 * @return bool
 	 */
 	function del_session ($session_id = null) {
-		Trigger::instance()->run(
+		Event::instance()->fire(
 			'System/User/del_session/before'
 		);
 		$result = $this->del_session_internal($session_id);
-		Trigger::instance()->run(
+		Event::instance()->fire(
 			'System/User/del_session/after'
 		);
 		return $result;
@@ -381,7 +391,7 @@ trait Session {
 	 * @return bool
 	 */
 	function del_all_sessions ($user = false) {
-		Trigger::instance()->run(
+		Event::instance()->fire(
 			'System/User/del_all_sessions',
 			[
 				'id' => $user

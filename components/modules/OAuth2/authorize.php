@@ -7,7 +7,7 @@
  * @license        MIT License, see license.txt
  */
 /**
- * Provides next triggers:<br>
+ * Provides next events:<br>
  *  OAuth2/custom_sign_in_page
  */
 namespace cs\modules\OAuth2;
@@ -15,10 +15,10 @@ namespace cs\modules\OAuth2;
 use
 	h,
 	cs\Config,
+	cs\Event,
 	cs\Index,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\Trigger,
 	cs\User;
 
 function error_redirect ($error, $description) {
@@ -144,7 +144,7 @@ $User = User::instance();
 if (!$User->user()) {
 	if ($_GET['response_type'] != 'guest_token') {
 		code_header(403);
-		if (Trigger::instance()->run('OAuth2/custom_sign_in_page')) {
+		if (Event::instance()->fire('OAuth2/custom_sign_in_page')) {
 			$Page->Content = '';
 			$Page->warning($L->you_are_not_logged_in);
 		}

@@ -7,17 +7,18 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Photo_gallery;
-use			cs\Cache\Prefix,
-			cs\Config,
-			cs\Language,
-			cs\Storage,
-			cs\Text,
-			cs\Trigger,
-			cs\User,
-			cs\DB\Accessor,
-			cs\Singleton,
-			cs\plugins\SimpleImage\SimpleImage,
-			Exception;
+use
+	cs\Cache\Prefix,
+	cs\Config,
+	cs\Event,
+	cs\Language,
+	cs\Storage,
+	cs\Text,
+	cs\User,
+	cs\DB\Accessor,
+	cs\Singleton,
+	cs\plugins\SimpleImage\SimpleImage,
+	Exception;
 
 /**
  * @method static Photo_gallery instance($check = false)
@@ -135,7 +136,7 @@ class Photo_gallery {
 		)) {
 			$id	= $this->db_prime()->id();
 			if ($this->set($id, $title, $description)) {
-				Trigger::instance()->run(
+				Event::instance()->fire(
 					'System/upload_files/add_tag',
 					[
 						'tag'	=> "Photo_gallery/images/$id",
@@ -238,7 +239,7 @@ class Photo_gallery {
 		)) {
 			$this->ml_del('Photo_gallery/images/title', $id);
 			$this->ml_del('Photo_gallery/images/description', $id);
-			Trigger::instance()->run(
+			Event::instance()->fire(
 				'System/upload_files/del_tag',
 				[
 					'tag'	=> "Photo_gallery/images/$id"

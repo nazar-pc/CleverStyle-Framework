@@ -6,7 +6,7 @@
  * @license		MIT License, see license.txt
  */
 /**
- * Provides next triggers:<br>
+ * Provides next events:<br>
  *
  *  System/User/Group/add
  *  ['id'	=> <i>group_id</i>]
@@ -113,7 +113,7 @@ class Group {
 		)) {
 			unset($this->cache->all);
 			$id	= $this->db_prime()->id();
-			Trigger::instance()->run(
+			Event::instance()->fire(
 				'System/User/Group/add',
 				[
 					'id'	=> $id
@@ -168,7 +168,7 @@ class Group {
 	 */
 	function del ($group) {
 		$group = (int)$group;
-		Trigger::instance()->run(
+		Event::instance()->fire(
 			'System/User/Group/del/before',
 			[
 				'id'	=> $group
@@ -186,7 +186,7 @@ class Group {
 				$Cache->$group,
 				$Cache->all
 			);
-			Trigger::instance()->run(
+			Event::instance()->fire(
 				'System/User/Group/del/after',
 				[
 					'id'	=> $group

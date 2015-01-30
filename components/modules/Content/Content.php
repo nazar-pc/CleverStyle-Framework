@@ -11,9 +11,9 @@ namespace cs\modules\Content;
 use
 	cs\Cache\Prefix,
 	cs\Config,
+	cs\Event,
 	cs\Language,
 	cs\Text,
-	cs\Trigger,
 	cs\CRUD,
 	cs\Singleton;
 
@@ -69,7 +69,7 @@ class Content {
 		$cache_key = md5($key).'/'.Language::instance()->clang;
 		if ($new_files) {
 			foreach ($new_files as $file) {
-				Trigger::instance()->run(
+				Event::instance()->fire(
 					'System/upload_files/add_tag',
 					[
 						'tag' => "Content/$cache_key",
@@ -145,7 +145,7 @@ class Content {
 		$cache_key = md5($key).'/'.Language::instance()->clang;
 		if ($old_files || $new_files) {
 			foreach (array_diff($old_files, $new_files) as $file) {
-				Trigger::instance()->run(
+				Event::instance()->fire(
 					'System/upload_files/del_tag',
 					[
 						'tag' => "Content/$cache_key",
@@ -155,7 +155,7 @@ class Content {
 			}
 			unset($file);
 			foreach (array_diff($new_files, $old_files) as $file) {
-				Trigger::instance()->run(
+				Event::instance()->fire(
 					'System/upload_files/add_tag',
 					[
 						'tag' => "Content/$cache_key",
@@ -192,7 +192,7 @@ class Content {
 			$this->ml_del('Content/title', $key);
 			$this->ml_del('Content/content', $key);
 			$cache_key = md5($key);
-			Trigger::instance()->run(
+			Event::instance()->fire(
 				'System/upload_files/del_tag',
 				[
 					'tag' => "Content/$cache_key%"

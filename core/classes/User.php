@@ -6,7 +6,7 @@
  * @license		MIT License, see license.txt
  */
 /**
- * Provides next triggers:
+ * Provides next events:
  *  System/User/construct/before
  *
  *  System/User/construct/after
@@ -39,8 +39,10 @@
  *  ]
  *
  *  System/User/del_session/before
+ *  ['id' => session_id]
  *
  *  System/User/del_session/after
+ *  ['id' => session_id]
  *
  *  System/User/del_all_sessions
  *  ['id'	=> <i>user_id</i>]
@@ -159,7 +161,7 @@ class User {
 	function construct () {
 		$Cache	= $this->cache	= new Prefix('users');
 		$Config	= Config::instance();
-		Trigger::instance()->run('System/User/construct/before');
+		Event::instance()->fire('System/User/construct/before');
 		$this->users_columns = $Cache->get('columns', function () {
 			return $this->db()->columns('[prefix]users');
 		});
@@ -295,7 +297,7 @@ class User {
 			$_POST		= [];
 		}
 		$this->init	= true;
-		Trigger::instance()->run('System/User/construct/after');
+		Event::instance()->fire('System/User/construct/after');
 	}
 	protected function request_from_system ($Config) {
 		/**
@@ -335,7 +337,7 @@ class User {
 			$this->is_admin = true;
 			interface_off();
 			$_POST['data'] = _json_decode($_POST['data']);
-			Trigger::instance()->run('System/User/construct/after');
+			Event::instance()->fire('System/User/construct/after');
 			return true;
 		}
 		$this->is_guest = true;

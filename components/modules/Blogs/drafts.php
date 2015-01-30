@@ -7,16 +7,17 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h,
-			cs\Config,
-			cs\DB,
-			cs\Index,
-			cs\Language,
-			cs\Page,
-			cs\Trigger,
-			cs\User;
+use
+	h,
+	cs\Config,
+	cs\DB,
+	cs\Event,
+	cs\Index,
+	cs\Language,
+	cs\Page,
+	cs\User;
 
-if (!Trigger::instance()->run('Blogs/drafts')) {
+if (!Event::instance()->fire('Blogs/drafts')) {
 	return;
 }
 
@@ -26,7 +27,7 @@ $Index					= Index::instance();
 $L						= Language::instance();
 $Page					= Page::instance();
 $User					= User::instance();
-if (!$User->admin() && $module_data->new_posts_only_from_admins) {
+if ($module_data->new_posts_only_from_admins && !$User->admin()) {
 	error_code(403);
 	return;
 }

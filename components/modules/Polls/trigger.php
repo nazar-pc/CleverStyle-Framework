@@ -8,7 +8,7 @@
  */
 namespace cs;
 
-Trigger::instance()->register(
+Event::instance()->on(
 	'System/Index/construct',
 	function () {
 		switch (Config::instance()->components['modules']['Polls']['active']) {
@@ -17,7 +17,7 @@ Trigger::instance()->register(
 				if (!admin_path()) {
 					return;
 				}
-				require __DIR__.'/trigger/installed.php';
+				require __DIR__.'/events/installed.php';
 		}
 	}
 );
