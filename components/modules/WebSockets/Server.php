@@ -19,8 +19,8 @@ use
 	cs\Config,
 	cs\Core,
 	cs\Encryption,
+	cs\Event,
 	cs\Singleton,
-	cs\Trigger,
 	cs\User,
 	Exception,
 	SplObjectStorage;
@@ -105,7 +105,7 @@ class Server implements MessageComponentInterface {
 		$this->connect_to_master();
 		// Since we may work with a lot of different users - disable this cache in order to not run out of memory
 		User::instance()->disable_memory_cache();
-		Trigger::instance()->run('WebSockets/register_actions');
+		Event::instance()->fire('WebSockets/register_actions');
 		$this->io_server->run();
 	}
 	/**
@@ -196,7 +196,7 @@ class Server implements MessageComponentInterface {
 			$this->send_to_clients_internal($action, $details, $send_to, $target);
 		} elseif (isset($connection->user_id)) {
 			/** @noinspection PhpUndefinedFieldInspection */
-			Trigger::instance()->run("WebSockets/$action", [
+			Event::instance()->fire("WebSockets/$action", [
 				'details'  => $details,
 				'language' => $connection->language,
 				'user'     => $connection->user_id,

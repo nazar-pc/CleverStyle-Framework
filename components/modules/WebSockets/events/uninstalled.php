@@ -7,14 +7,14 @@
  * @license   MIT License, see license.txt
  */
 namespace cs;
-Trigger::instance()->register(
+Event::instance()->on(
 	'admin/System/components/modules/install/process',
 	function ($data) {
 		if ($data['name'] != 'WebSockets') {
 			return;
 		}
 		Config::instance()->module('WebSockets')->set([
-			'security_key'   => hash('sha224', MICROTIME.uniqid()),
+			'security_key'   => hash('sha224', openssl_random_pseudo_bytes(100)),
 			'listen_port'    => 8080,
 			'listen_locally' => 1
 		]);

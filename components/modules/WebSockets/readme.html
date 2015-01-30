@@ -13,8 +13,8 @@ There are two ways to run WebSockets server:
 <p>One more note here: WebSockets server might be started automatically if sending data to client will be initiated on server side (please, do not rely on this in production).</p>
 
 <h4 style="text-align: center;">Usage on server</h4>
-<p>On server running trigger <code>WebSockets/register_actions</code> will be called, modules should register they actions at this moment.</p>
-<p>When request comes from client, trigger <code>WebSockets/action</code> will be called, where <code>action</code> is action that came from user.</p>
+<p>On server event <code>WebSockets/register_actions</code> will be dispatched, modules should subscribe to event and subscribe any other WebSockets-related actions at this moment.</p>
+<p>When request comes from client, event <code>WebSockets/action</code> will be dispatched, where <code>action</code> is action that came from user.</p>
 <p>Callback will receive as argument array with fields <code>details</code> (what came from client), <code>language</code> (to handle multilingual features), <code>user</code> (user id) and <code>session</code> (current session id of user).</p>
 <p>To send response back to client (or clients) <code>\cs\modules\WebSockets\Server::instance()->send_to_clients($action, $details, $response_to, $target = false)</code> method is used</p>
 <p>Example:</p>
@@ -22,12 +22,12 @@ There are two ways to run WebSockets server:
 	<code language="php">
 &lt;?php
 use
-	cs\Trigger,
+	cs\Event,
 	cs\modules\WebSockets\Server;
 // Register actions
-Trigger::instance()->register('WebSockets/register_action', function () {
+Event::instance()->on('WebSockets/register_action', function () {
 	// If `hello` action from user
-	Trigger::instance()->register('WebSockets/hello', function ($data) {
+		Event::instance()->on('WebSockets/hello', function ($data) {
 		$Server = Server::instance();
 		// Send `hello` action back to the same user with the same content
 		if ($data['details']) {

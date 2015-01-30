@@ -7,20 +7,20 @@
  * @license   MIT License, see license.txt
  */
 namespace	cs;
-Trigger::instance()->register(
+Event::instance()->on(
 	'System/Index/construct',
 	function () {
 		switch (Config::instance()->components['modules']['WebSockets']['active']) {
 			case 1:
 				require __DIR__.'/Pawl/vendor/autoload.php';
 				require __DIR__.'/functions.php';
-				require __DIR__.'/trigger/enabled.php';
+				require __DIR__.'/events/enabled.php';
 				return;
 			case -1:
 				if (!admin_path()) {
 					return;
 				}
-				require __DIR__.'/trigger/uninstalled.php';
+				require __DIR__.'/events/uninstalled.php';
 		}
 	}
 );
