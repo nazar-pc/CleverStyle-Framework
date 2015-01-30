@@ -39,8 +39,10 @@
  *  ]
  *
  *  System/User/del_session/before
+ *  ['id' => session_id]
  *
  *  System/User/del_session/after
+ *  ['id' => session_id]
  *
  *  System/User/del_all_sessions
  *  ['id'	=> <i>user_id</i>]
