@@ -7,15 +7,16 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h,
-			cs\Config,
-			cs\Index,
-			cs\Language,
-			cs\Page,
-			cs\Trigger,
-			cs\User;
+use
+	h,
+	cs\Config,
+	cs\Event,
+	cs\Index,
+	cs\Language,
+	cs\Page,
+	cs\User;
 
-if (!Trigger::instance()->run('Blogs/edit_post')) {
+if (!Event::instance()->fire('Blogs/edit_post')) {
 	return;
 }
 
@@ -25,7 +26,7 @@ $module_data				= $Config->module('Blogs');
 $L							= Language::instance();
 $Page						= Page::instance();
 $User						= User::instance();
-if (!$User->admin() && $module_data->new_posts_only_from_admins) {
+if ($module_data->new_posts_only_from_admins && !$User->admin()) {
 	error_code(403);
 	return;
 }

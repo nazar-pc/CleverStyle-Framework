@@ -29,7 +29,7 @@ class Event {
 	 * Add event handler
 	 *
 	 * @param string   $event    For example `admin/System/components/plugins/disable`
-	 * @param callable $callback callable, that will be called at trigger running
+	 * @param callable $callback Callable, that will be called at event dispatching
 	 *
 	 * @return Event
 	 */

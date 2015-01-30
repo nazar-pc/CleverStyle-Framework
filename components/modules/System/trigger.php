@@ -13,8 +13,8 @@ use
 /**
  * Multilingual functionality: redirects and necessary meta-tags
  */
-Trigger::instance()
-	->register(
+Event::instance()
+	->on(
 		'System/Config/routing_replace',
 		function ($data) {
 			if ($data['rc'] == 'api/System/profile') {
@@ -65,7 +65,7 @@ Trigger::instance()
 			$data['rc'] = implode('/', $rc);
 		}
 	)
-	->register(
+	->on(
 		'System/User/construct/after',
 		function () {
 			$Config = Config::instance();
@@ -117,11 +117,11 @@ Trigger::instance()
 				));
 		}
 	)
-	->register(
+	->on(
 		'System/Index/construct',
 		function () {
 			if (admin_path() && current_module() == 'System') {
-				require __DIR__.'/trigger/admin.php';
+				require __DIR__.'/events/admin.php';
 			}
 		}
 	);

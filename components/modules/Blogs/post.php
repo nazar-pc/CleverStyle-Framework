@@ -7,16 +7,17 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h,
-			cs\Config,
-			cs\Index,
-			cs\Language,
-			cs\Page\Meta,
-			cs\Page,
-			cs\Trigger,
-			cs\User;
+use
+	h,
+	cs\Config,
+	cs\Event,
+	cs\Index,
+	cs\Language,
+	cs\Page\Meta,
+	cs\Page,
+	cs\User;
 
-if (!Trigger::instance()->run('Blogs/post')) {
+if (!Event::instance()->fire('Blogs/post')) {
 	return;
 }
 
@@ -26,7 +27,7 @@ $L						= Language::instance();
 $Page					= Page::instance();
 $User					= User::instance();
 $Comments				= null;
-Trigger::instance()->run(
+Event::instance()->fire(
 	'Comments/instance',
 	[
 		'Comments'	=> &$Comments

@@ -2,7 +2,7 @@
 <h4>Integration of comments displaying:</h4>
 <pre>$Page	= \cs\Page::instance();
 $Comments	= null;
-\cs\Trigger::instance()->run(
+\cs\Event::instance()->fire(
 	'Comments/instance',
 	[
 		'Comments'	=> &$Comments
@@ -15,9 +15,9 @@ $Page->content(
 	$Comments ? $Comments->block($id) : ''
 );</pre>
 <p>Where <i>$id</i> is integer identifier of article, page or anything else, that will be commented. <i>$Comments</i> - is object created by module, but you can use own object of class, which inherits <i>cs\modules\Comments\Comments</i> class.</p>
-<h4>Trigger for getting instance of Comments class:</h4>
+<h4>Event for getting instance of Comments class:</h4>
 <pre>$Comments	= null;
-\cs\Trigger::instance()->run(
+\cs\Event::instance()->fire(
 	'Comments\instance',
 	[
 		'Comments'	=> &$Comments
@@ -53,11 +53,11 @@ if ($Comments) {
 		<h4>If user have no access</h4>
 		<p>But other conditions holds true - return <i>false</i> from closure</p>
 		<p>Example (Blogs module):</p>
-		<pre>\cs\Trigger::instance()->register(
+		<pre>\cs\Event::instance()->on(
 	'api/Comments/add',
 	function ($data) {
 		$Comments	= null;
-		\cs\Trigger::instance()->run(
+		\cs\Event::instance()->fire(
 			'Comments\instance',
 			[
 				'Comments'	=> &$Comments
@@ -103,11 +103,11 @@ if ($Comments) {
 		<h4>If user have no access</h4>
 		<p>But other conditions holds true - return <i>false</i> from closure</p>
 		<p>Example (Blogs module):</p>
-		<pre>\cs\Trigger::instance()->register(
+		<pre>\cs\Event::instance()->on(
 	'api/Comments/edit',
 	function ($data) {
 		$Comments	= null;
-		\cs\Trigger::instance()->run(
+		\cs\Event::instance()->fire(
 			'Comments\instance',
 			[
 				'Comments'	=> &$Comments
@@ -158,11 +158,11 @@ if ($Comments) {
 		<h4>If user have no access</h4>
 		<p>But other conditions holds true - return <i>false</i> from closure</p>
 		<p>Example (Blogs module):</p>
-		<pre>\cs\Trigger::instance()->register(
+		<pre>\cs\Event::instance()->on(
 	'api/Comments/delete',
 	function ($data) {
 		$Comments	= null;
-		\cs\Trigger::instance()->run(
+		\cs\Event::instance()->fire(
 			'Comments\instance',
 			[
 				'Comments'	=> &$Comments

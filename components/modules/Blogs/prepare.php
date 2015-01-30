@@ -7,13 +7,14 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h,
-			cs\Config,
-			cs\Index,
-			cs\Language,
-			cs\Page,
-			cs\Trigger,
-			cs\User;
+use
+	h,
+	cs\Config,
+	cs\Event,
+	cs\Index,
+	cs\Language,
+	cs\Page,
+	cs\User;
 if (!api_path()) {
 	function get_sections_select_post (&$disabled, $current = null, $structure = null, $level = 0) {
 		$list	= [
@@ -44,7 +45,7 @@ if (!api_path()) {
 	if (!function_exists(__NAMESPACE__.'\\get_posts_list')) {
 		function get_posts_list ($posts) {
 			$Comments	= null;
-			Trigger::instance()->run(
+			Event::instance()->fire(
 				'Comments/instance',
 				[
 					'Comments'	=> &$Comments

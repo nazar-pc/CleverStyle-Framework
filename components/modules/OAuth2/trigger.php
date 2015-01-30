@@ -8,7 +8,7 @@
  */
 namespace cs;
 
-Trigger::instance()->register(
+Event::instance()->on(
 	'System/Config/routing_replace',
 	function ($data) {
 		$Config = Config::instance();
@@ -23,7 +23,7 @@ Trigger::instance()->register(
 				header('Pragma: no-cache');
 			}
 			$POST	= $_POST;
-			Trigger::instance()->register('System/User/construct/after', function () use ($POST) {
+			Event::instance()->on('System/User/construct/after', function () use ($POST) {
 				$_POST	= $POST + $_POST;
 			});
 		}
@@ -32,10 +32,10 @@ Trigger::instance()->register(
 				if (!admin_path()) {
 					return;
 				}
-				require __DIR__.'/trigger/uninstalled.php';
+				require __DIR__.'/events/uninstalled.php';
 				break;
 			case 1:
-				require __DIR__.'/trigger/enabled.php';
+				require __DIR__.'/events/enabled.php';
 		}
 	}
 );

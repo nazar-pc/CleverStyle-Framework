@@ -8,7 +8,7 @@
  */
 namespace cs\modules\Blogs;
 use
-	cs\Trigger,
+	cs\Event,
 	cs\Cache\Prefix,
 	cs\Config,
 	cs\Language,
@@ -111,7 +111,7 @@ class Blogs {
 			return $data;
 		});
 		$Comments = null;
-		Trigger::instance()->run(
+		Event::instance()->fire(
 			'Comments/instance',
 			[
 				'Comments' => &$Comments
@@ -414,7 +414,7 @@ class Blogs {
 		$new_files = isset($new_files[1]) ? $new_files[1] : [];
 		if ($old_files || $new_files) {
 			foreach (array_diff($old_files, $new_files) as $file) {
-				Trigger::instance()->run(
+				Event::instance()->fire(
 					'System/upload_files/del_tag',
 					[
 						'tag' => "Blogs/posts/$id/$L->clang",
@@ -424,7 +424,7 @@ class Blogs {
 			}
 			unset($file);
 			foreach (array_diff($new_files, $old_files) as $file) {
-				Trigger::instance()->run(
+				Event::instance()->fire(
 					'System/upload_files/add_tag',
 					[
 						'tag' => "Blogs/posts/$id/$L->clang",
@@ -477,14 +477,14 @@ class Blogs {
 		$this->ml_del('Blogs/posts/title', $id);
 		$this->ml_del('Blogs/posts/path', $id);
 		$this->ml_del('Blogs/posts/content', $id);
-		Trigger::instance()->run(
+		Event::instance()->fire(
 			'System/upload_files/del_tag',
 			[
 				'tag' => "Blogs/posts/$id%"
 			]
 		);
 		$Comments = null;
-		Trigger::instance()->run(
+		Event::instance()->fire(
 			'Comments/instance',
 			[
 				'Comments' => &$Comments

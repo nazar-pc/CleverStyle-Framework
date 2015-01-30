@@ -11,13 +11,13 @@ use
 	h,
 	cs\Config,
 	cs\DB,
+	cs\Event,
 	cs\Index,
 	cs\Language,
 	cs\Page\Meta,
-	cs\Page,
-	cs\Trigger;
+	cs\Page;
 
-if (!Trigger::instance()->run('Blogs/latest_posts')) {
+if (!Event::instance()->fire('Blogs/latest_posts')) {
 	return;
 }
 

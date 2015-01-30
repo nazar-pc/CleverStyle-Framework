@@ -8,7 +8,7 @@
  * @license		MIT License, see license.txt
  */
 /**
- * Provides next triggers:<br>
+ * Provides next events:<br>
  *  System/profile/settings
  */
 namespace	cs;
@@ -82,7 +82,7 @@ switch (isset($Config->route[2]) ? $Config->route[2] : '') {
 				)
 			)
 		);
-		Trigger::instance()->run('System/profile/settings');
+		Event::instance()->fire('System/profile/settings');
 	break;
 	case 'general':
 		$user_data						= $User->get($columns);

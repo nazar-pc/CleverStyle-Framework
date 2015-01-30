@@ -8,7 +8,7 @@
  * @license    MIT License, see license.txt
  */
 /**
- * Provides next triggers:<br>
+ * Provides next events:<br>
  *  admin/System/components/modules/install/prepare<br>
  *  ['name' => <i>module_name</i>]<br>
  *
@@ -33,12 +33,12 @@
 namespace cs\modules\System;
 use
 	h,
-	cs\Config,
 	cs\Core,
+	cs\Config,
+	cs\Event,
 	cs\Index,
 	cs\Language,
 	cs\Page,
-	cs\Trigger,
 	cs\User;
 $Config       = Config::instance();
 $L            = Language::instance();
@@ -173,7 +173,7 @@ if (
 					$L->installation_of_module($rc[3])
 				)
 			);
-			if (!Trigger::instance()->run(
+			if (!Event::instance()->fire(
 				'admin/System/components/modules/install/prepare',
 				[
 					'name' => $rc[3]
@@ -243,7 +243,7 @@ if (
 					$L->uninstallation_of_module($rc[3])
 				)
 			);
-			if (!Trigger::instance()->run(
+			if (!Event::instance()->fire(
 				'admin/System/components/modules/uninstall/prepare',
 				[
 					'name' => $rc[3]
@@ -337,7 +337,7 @@ if (
 					$L->setting_default_module($rc[3])
 				)
 			);
-			if (!Trigger::instance()->run(
+			if (!Event::instance()->fire(
 				'admin/System/components/modules/default_module/prepare',
 				[
 					'name' => $rc[3]
@@ -361,7 +361,7 @@ if (
 						$L->db_settings_for_module($rc[3])
 					)
 				);
-				if (!Trigger::instance()->run(
+				if (!Event::instance()->fire(
 					'admin/System/components/modules/db/prepare',
 					[
 						'name' => $rc[3]
@@ -429,7 +429,7 @@ if (
 						$L->storage_settings_for_module($rc[3])
 					)
 				);
-				if (!Trigger::instance()->run(
+				if (!Event::instance()->fire(
 					'admin/System/components/modules/storage/prepare',
 					[
 						'name' => $rc[3]

@@ -7,10 +7,11 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Deferred_tasks;
-use			cs\Config,
-			cs\Trigger,
-			cs\CRUD,
-			cs\Singleton;
+use
+	cs\Config,
+	cs\Event,
+	cs\CRUD,
+	cs\Singleton;
 
 /**
  * @method static Deferred_tasks instance($check = false)
@@ -121,7 +122,7 @@ class Deferred_tasks {
 				error_code(404);
 				return;
 			}
-			Trigger::instance()->run(
+			Event::instance()->fire(
 				"Deferred_tasks/$data[module]",
 				[
 					'id'		=> $data['id'],
