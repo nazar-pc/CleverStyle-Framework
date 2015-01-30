@@ -49,10 +49,6 @@ class Trigger {
 	 * @return bool
 	 */
 	function run ($trigger, $data = null) {
-		return call_user_func(
-			[Event::instance(), 'fire'],
-			$trigger,
-			$data
-		);
+		return Event::instance()->fire($trigger, $data);
 	}
 }
