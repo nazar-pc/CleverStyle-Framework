@@ -9,6 +9,7 @@ window.cs.WebSockets = do ->
 	socket			= null
 	handlers		= {}
 	messages_pool	= []
+	allow_reconnect = true
 	socket_active	= ->
 		socket && socket.readyState not in [WebSocket.CLOSING, WebSocket.CLOSED]
 	do ->
@@ -27,6 +28,10 @@ window.cs.WebSockets = do ->
 		onmessage		= (message) ->
 			[action, details]	= JSON.parse(message.data)
 			[action, type]	= action.split(':')
+			# Special system actions
+			switch action
+				when 'Server/close'
+					allow_reconnect = false
 			action_handlers		= handlers[action]
 			if !action_handlers || !action_handlers.length
 				return
@@ -47,6 +52,8 @@ window.cs.WebSockets = do ->
 			return
 		keep_connection	= ->
 			setTimeout (->
+				if !allow_reconnect
+					return
 				if !socket_active()
 					delay	= (delay || 1000) * 2
 					connect()

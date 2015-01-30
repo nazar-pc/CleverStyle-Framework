@@ -32,13 +32,13 @@ class Server implements MessageComponentInterface {
 	const SEND_TO_SPECIFIC_USERS   = 3;
 	const SEND_TO_USERS_GROUP      = 4;
 	/**
-	 * Each object additionally will have properties `user_id`, `session_id` and `user_groups` with user id and ids of user groups correspondingly
+	 * Each object additionally will have properties `user_id`, `session_id`, `session_expire` and `user_groups` with user id and ids of user groups correspondingly
 	 *
-	 * @var ConnectionInterface[]
+	 * @var ConnectionInterface[]|SplObjectStorage
 	 */
 	protected $clients;
 	/**
-	 * @var ConnectionInterface[]
+	 * @var ConnectionInterface[]|SplObjectStorage
 	 */
 	protected $servers;
 	/**
@@ -120,7 +120,7 @@ class Server implements MessageComponentInterface {
 	 */
 	function onMessage (ConnectionInterface $connection, $message) {
 		$from_master = $connection === $this->connection_to_master;
-		if (!$this->parse_message($message, $action, $details, $response_to, $target)) {
+		if (!$this->parse_message($message, $action, $details, $send_to, $target)) {
 			if (!$from_master) {
 				$connection->close();
 			}
@@ -145,10 +145,10 @@ class Server implements MessageComponentInterface {
 				/** @noinspection PhpUndefinedFieldInspection */
 				if (
 					$connection->remoteAddress == '127.0.0.1' &&
-					$this->parse_message($details, $action_, $details_, $response_to_, $target_)
+					$this->parse_message($details, $action_, $details_, $send_to_, $target_)
 				) {
 					$connection->close();
-					$this->send_to_clients($action_, $details_, $response_to_, $target_);
+					$this->send_to_clients($action_, $details_, $send_to_, $target_);
 				}
 				return;
 			case 'Client/authentication':
@@ -176,23 +176,24 @@ class Server implements MessageComponentInterface {
 					$connection->close();
 					return;
 				}
-				$connection->language   = $details['language'];
-				$connection->user_id    = $session['user'];
-				$connection->session_id = $session['id'];
-				$connection->groups     = $User->get_groups($session['user']);
+				$connection->language       = $details['language'];
+				$connection->user_id        = $session['user'];
+				$connection->session_id     = $session['id'];
+				$connection->session_expire = $session['expire'];
+				$connection->groups         = $User->get_groups($session['user']);
 				$connection->send(_json_encode([
 					'Client/authentication',
 					'ok'
 				]));
 		}
 		if ($from_master) {
-			$this->send_to_clients_internal($action, $details, $response_to, $target);
+			$this->send_to_clients_internal($action, $details, $send_to, $target);
 		} elseif ($this->servers->contains($connection)) {
 			$this->broadcast_message_to_servers($message, $connection);
-			if (!$response_to) {
+			if (!$send_to) {
 				return;
 			}
-			$this->send_to_clients_internal($action, $details, $response_to, $target);
+			$this->send_to_clients_internal($action, $details, $send_to, $target);
 		} elseif (isset($connection->user_id)) {
 			/** @noinspection PhpUndefinedFieldInspection */
 			Trigger::instance()->run("WebSockets/$action", [
@@ -207,12 +208,12 @@ class Server implements MessageComponentInterface {
 	 * @param string    $message
 	 * @param string    $action
 	 * @param mixed     $details
-	 * @param int|int[] $response_to
+	 * @param int|int[] $send_to
 	 * @param int       $target
 	 *
 	 * @return bool
 	 */
-	protected function parse_message ($message, &$action, &$details, &$response_to, &$target) {
+	protected function parse_message ($message, &$action, &$details, &$send_to, &$target) {
 		$decoded_message = _json_decode($message);
 		if (
 			!isset($decoded_message[0], $decoded_message[1]) ||
@@ -221,8 +222,8 @@ class Server implements MessageComponentInterface {
 			return false;
 		}
 		list($action, $details) = $decoded_message;
-		$response_to = isset($decoded_message[2]) ? $decoded_message[2] : 0;
-		$target      = isset($decoded_message[3]) ? $decoded_message[4] : false;
+		$send_to = isset($decoded_message[2]) ? $decoded_message[2] : 0;
+		$target  = isset($decoded_message[3]) ? $decoded_message[4] : false;
 		return true;
 	}
 	/**
@@ -257,11 +258,11 @@ class Server implements MessageComponentInterface {
 	 *
 	 * @param string         $action
 	 * @param mixed          $details
-	 * @param int            $response_to Constants `self::RESPONSE_TO*` should be used here
-	 * @param bool|int|int[] $target      Id or array of ids in case of response to one or several users or groups
+	 * @param int            $send_to Constants `self::SEND_TO*` should be used here
+	 * @param bool|int|int[] $target  Id or array of ids in case of response to one or several users or groups
 	 */
-	function send_to_clients ($action, $details, $response_to, $target = false) {
-		$message = _json_encode([$action, $details, $response_to, $target]);
+	function send_to_clients ($action, $details, $send_to, $target = false) {
+		$message = _json_encode([$action, $details, $send_to, $target]);
 		/**
 		 * If server running in current process
 		 */
@@ -271,7 +272,7 @@ class Server implements MessageComponentInterface {
 			} else {
 				$this->broadcast_message_to_servers($message);
 			}
-			$this->send_to_clients_internal($action, $details, $response_to, $target);
+			$this->send_to_clients_internal($action, $details, $send_to, $target);
 			return;
 		}
 		/**
@@ -315,12 +316,33 @@ class Server implements MessageComponentInterface {
 	 *
 	 * @param string         $action
 	 * @param mixed          $details
-	 * @param int            $response_to Constants `self::SEND_TO_*` should be used here
-	 * @param bool|int|int[] $target      Id or array of ids in case of response to one or several users or groups
+	 * @param int            $send_to Constants `self::SEND_TO_*` should be used here
+	 * @param bool|int|int[] $target  Id or array of ids in case of response to one or several users or groups
 	 */
-	protected function send_to_clients_internal ($action, $details, $response_to, $target = false) {
+	protected function send_to_clients_internal ($action, $details, $send_to, $target = false) {
 		$message = _json_encode([$action, $details]);
-		switch ($response_to) {
+		/**
+		 * Special system actions
+		 */
+		switch ($action) {
+			case 'Server/close_by_session':
+				foreach ($this->clients as $client) {
+					if ($client->session_id == $details) {
+						$client->send(_json_encode('Server/close'));
+						$client->close();
+					}
+				}
+				return;
+			case 'Server/close_by_user':
+				foreach ($this->clients as $client) {
+					if ($client->user_id == $details) {
+						$client->send(_json_encode('Server/close'));
+						$client->close();
+					}
+				}
+				return;
+		}
+		switch ($send_to) {
 			case self::SEND_TO_ALL:
 				foreach ($this->clients as $client) {
 					$client->send($message);
@@ -329,7 +351,7 @@ class Server implements MessageComponentInterface {
 			case self::SEND_TO_REGISTERED_USERS:
 				foreach ($this->clients as $client) {
 					if (isset($client->user_id)) {
-						$client->send($message);
+						$this->send_to_client_if_not_expire($client, $message);
 					}
 				}
 				break;
@@ -337,7 +359,7 @@ class Server implements MessageComponentInterface {
 				$target = (array)$target;
 				foreach ($this->clients as $client) {
 					if (isset($client->user_id) && in_array($client->user_id, $target)) {
-						$client->send($message);
+						$this->send_to_client_if_not_expire($client, $message);
 					}
 				}
 				break;
@@ -345,11 +367,41 @@ class Server implements MessageComponentInterface {
 				$target = (array)$target;
 				foreach ($this->clients as $client) {
 					if (isset($client->user_groups) && array_intersect($client->user_groups, $target)) {
-						$client->send($message);
+						$this->send_to_client_if_not_expire($client, $message);
 					}
 				}
 				break;
 		}
+	}
+	/**
+	 * If session not expire - will send message, otherwise will disconnect
+	 *
+	 * @param ConnectionInterface $client
+	 * @param string              $message
+	 */
+	protected function send_to_client_if_not_expire ($client, $message) {
+		/** @noinspection PhpUndefinedFieldInspection */
+		if ($client->session_expire >= time()) {
+			$client->send($message);
+		} else {
+			$client->close();
+		}
+	}
+	/**
+	 * Close all client connections by specified session id
+	 *
+	 * @param string $session_id
+	 */
+	function close_by_session ($session_id) {
+		$this->send_to_clients('Server/close_by_session', $session_id, 0);
+	}
+	/**
+	 * Close all client connections by specified user id
+	 *
+	 * @param string $user_id
+	 */
+	function close_by_user ($user_id) {
+		$this->send_to_clients('Server/close_by_user', $user_id, 0);
 	}
 	/**
 	 * Connect to master server

@@ -12,10 +12,11 @@
 (function() {
 
   window.cs.WebSockets = (function() {
-    var handlers, messages_pool, socket, socket_active;
+    var allow_reconnect, handlers, messages_pool, socket, socket_active;
     socket = null;
     handlers = {};
     messages_pool = [];
+    allow_reconnect = true;
     socket_active = function() {
       var _ref;
       return socket && ((_ref = socket.readyState) !== WebSocket.CLOSING && _ref !== WebSocket.CLOSED);
@@ -38,6 +39,10 @@
         var action, action_handlers, details, type, _ref, _ref1, _ref2;
         _ref = JSON.parse(message.data), action = _ref[0], details = _ref[1];
         _ref1 = action.split(':'), action = _ref1[0], type = _ref1[1];
+        switch (action) {
+          case 'Server/close':
+            allow_reconnect = false;
+        }
         action_handlers = handlers[action];
         if (!action_handlers || !action_handlers.length) {
           return;
@@ -60,6 +65,9 @@
       };
       keep_connection = function() {
         return setTimeout((function() {
+          if (!allow_reconnect) {
+            return;
+          }
           if (!socket_active()) {
             delay = (delay || 1000) * 2;
             connect();

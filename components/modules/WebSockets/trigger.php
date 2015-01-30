@@ -14,6 +14,7 @@ Trigger::instance()->register(
 			case 1:
 				require __DIR__.'/Pawl/vendor/autoload.php';
 				require __DIR__.'/functions.php';
+				require __DIR__.'/trigger/enabled.php';
 				return;
 			case -1:
 				if (!admin_path()) {
