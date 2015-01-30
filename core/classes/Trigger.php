@@ -12,7 +12,7 @@ namespace	cs;
  *
  * Provides triggers registering and running.
  *
- * @deprecated
+ * @deprecated Use `cs\Event` instead
  * @todo Remove in future versions
  *
  * @method static Trigger instance($check = false)
@@ -22,7 +22,7 @@ class Trigger {
 	/**
 	 * Registration of triggers for actions
 	 *
-	 * @deprecated
+	 * @deprecated Use `cs\Event::on()` instead
 	 *
 	 * @param string	$trigger	For example <i>admin/System/components/plugins/disable</i>
 	 * @param callable	$callback	callable, that will be called at trigger running
@@ -41,7 +41,7 @@ class Trigger {
 	/**
 	 * Running triggers for some actions
 	 *
-	 * @deprecated
+	 * @deprecatedUse `cs\Event::fire()` instead
 	 *
 	 * @param string	$trigger	For example <i>admin/System/components/plugins/disable</i>
 	 * @param mixed		$data		For example ['name'	=> <i>plugin_name</i>]
