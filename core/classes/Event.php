@@ -92,7 +92,7 @@ class Event {
 	/**
 	 * Fire event
 	 *
-	 * After event name it is possible to specify up to 10 arguments if needed
+	 * After event name it is possible to specify as many arguments as needed
 	 *
 	 * @param string $event For example `admin/System/components/plugins/disable`
 	 * @param mixed  $param1
@@ -100,7 +100,7 @@ class Event {
 	 *
 	 * @return bool
 	 */
-	function fire ($event, &$param1 = null, &$_ = null, &$_3 = null, &$_4 = null, &$_5 = null, &$_6 = null, &$_7 = null, &$_8 = null, &$_9 = null, &$_10 = null) {
+	function fire ($event, $param1 = null, $_ = null) {
 		if (!$this->initialized) {
 			$this->initialize();
 		}
@@ -110,12 +110,9 @@ class Event {
 		) {
 			return true;
 		}
+		$arguments = array_slice(func_get_args(), 1);
 		foreach ($this->callbacks[$event] as $callback) {
-			/**
-			 * 10 arguments that can be passed by reference if needed.
-			 * Dirty, but there is no possibility to pass it by reference using `func_get_args()`
-			 */
-			if ($callback($param1, $_, $_3, $_4, $_5, $_6, $_7, $_8, $_9, $_10) === false) {
+			if (call_user_func_array($callback, $arguments) === false) {
 				return false;
 			}
 		}
