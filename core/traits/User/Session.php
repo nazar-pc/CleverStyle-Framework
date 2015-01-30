@@ -8,9 +8,9 @@
 namespace cs\User;
 use
 	cs\Config,
+	cs\Event,
 	cs\Language,
 	cs\Page,
-	cs\Trigger,
 	cs\User;
 
 /**
@@ -347,11 +347,11 @@ trait Session {
 	 * @return bool
 	 */
 	function del_session ($session_id = null) {
-		Trigger::instance()->run(
+		Event::instance()->fire(
 			'System/User/del_session/before'
 		);
 		$result = $this->del_session_internal($session_id);
-		Trigger::instance()->run(
+		Event::instance()->fire(
 			'System/User/del_session/after'
 		);
 		return $result;
@@ -391,7 +391,7 @@ trait Session {
 	 * @return bool
 	 */
 	function del_all_sessions ($user = false) {
-		Trigger::instance()->run(
+		Event::instance()->fire(
 			'System/User/del_all_sessions',
 			[
 				'id' => $user

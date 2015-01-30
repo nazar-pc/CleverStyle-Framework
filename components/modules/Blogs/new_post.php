@@ -7,15 +7,16 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h,
-			cs\Config,
-			cs\Index,
-			cs\Language,
-			cs\Page,
-			cs\Trigger,
-			cs\User;
+use
+	h,
+	cs\Config,
+	cs\Event,
+	cs\Index,
+	cs\Language,
+	cs\Page,
+	cs\User;
 
-if (!Trigger::instance()->run('Blogs/new_post')) {
+if (!Event::instance()->fire('Blogs/new_post')) {
 	return;
 }
 

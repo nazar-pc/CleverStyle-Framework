@@ -11,7 +11,7 @@ use
 	JsonSerializable;
 
 /**
- * Provides next triggers:
+ * Provides next events:
  *  System/general/languages/load
  *  [
  *   'clanguage'        => clanguage
@@ -313,7 +313,7 @@ class Language implements JsonSerializable {
 					}
 				}
 				unset($plugin);
-				Trigger::instance()->run(
+				Event::instance()->fire(
 					'System/general/languages/load',
 					[
 						'clanguage'    => $language,

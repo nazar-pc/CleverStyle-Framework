@@ -8,17 +8,17 @@
  * @license		GNU GPL v2, see license.txt
  */
 namespace	cs;
-Trigger::instance()
-	->register(
+Event::instance()
+	->on(
 		'System/Config/pre_routing_replace',
 		function () {
 			switch (Config::instance()->components['modules']['Plupload']['active']) {
 				case 1:
-					require __DIR__.'/trigger/enabled.php';
+					require __DIR__.'/events/enabled.php';
 			}
 		}
 	)
-	->register(
+	->on(
 		'System/Index/construct',
 		function () {
 			if (!admin_path()) {
@@ -26,11 +26,11 @@ Trigger::instance()
 			}
 			switch (Config::instance()->components['modules']['Plupload']['active']) {
 				case -1:
-					require __DIR__.'/trigger/uninstalled.php';
+					require __DIR__.'/events/uninstalled.php';
 				break;
 				case 0:
 				case 1:
-					require __DIR__.'/trigger/installed.php';
+					require __DIR__.'/events/installed.php';
 			}
 		}
 	);

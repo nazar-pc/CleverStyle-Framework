@@ -1,7 +1,7 @@
 {
 	"package"		: "Plupload",
 	"category"		: "modules",
-	"version"		: "2.1.2-cs13",
+	"version"		: "2.1.2-cs14",
 	"description"	: "Integration of Plupload into CleverStyle CMS for files uploading, adds files uploading functionality to other modules",
 	"author"		: "Moxiecode Systems AB",
 	"website"		: "www.plupload.com",
@@ -10,7 +10,7 @@
 		"MySQLi"
 	],
 	"provide"		: "file_upload",
-	"require"		: "System=>0.599",
+	"require"		: "System=>1.40",
 	"multilingual"	: [
 		"interface"
 	],

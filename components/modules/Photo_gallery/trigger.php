@@ -10,11 +10,11 @@ namespace cs\modules\Photo_gallery;
 
 use
 	cs\Config,
-	cs\Language,
-	cs\Trigger;
+	cs\Event,
+	cs\Language;
 
-Trigger::instance()
-	->register(
+Event::instance()
+	->on(
 		'System/Config/routing_replace',
 		function ($data) {
 			$rc = explode('/', $data['rc']);
@@ -39,7 +39,7 @@ Trigger::instance()
 			$data['rc'] = implode('/', $rc);
 		}
 	)
-	->register(
+	->on(
 		'System/Index/construct',
 		function () {
 			switch (Config::instance()->components['modules']['Photo_gallery']['active']) {
@@ -48,7 +48,7 @@ Trigger::instance()
 					if (!admin_path()) {
 						return;
 					}
-					require __DIR__.'/trigger/installed.php';
+					require __DIR__.'/events/installed.php';
 			}
 		}
 	);

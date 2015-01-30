@@ -1,7 +1,7 @@
 {
 	"package"		: "Polls",
 	"category"		: "modules",
-	"version"		: "1.7.0+build-9",
+	"version"		: "1.8.0+build-10",
 	"description"	: "Polls",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",
@@ -10,7 +10,7 @@
 		"MySQLi"
 	],
 	"provide"		: "polls",
-	"require"		: "System=>0.600",
+	"require"		: "System=>1.40",
 	"multilingual"	: [
 		"interface",
 		"content"

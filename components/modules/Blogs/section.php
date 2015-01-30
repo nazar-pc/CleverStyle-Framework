@@ -10,13 +10,13 @@ namespace cs\modules\Blogs;
 use            h,
 	cs\Config,
 	cs\DB,
+	cs\Event,
 	cs\Index,
 	cs\Language,
 	cs\Page\Meta,
-	cs\Page,
-	cs\Trigger;
+	cs\Page;
 
-if (!Trigger::instance()->run('Blogs/section')) {
+if (!Event::instance()->fire('Blogs/section')) {
 	return;
 }
 
