@@ -14,9 +14,6 @@
 
 
 (function() {
-  var Language;
-
-  Language = typeof cs !== "undefined" && cs !== null ? cs.Language : void 0;
 
   [].forEach.call(document.head.querySelectorAll('.cs-config'), function(config) {
     var destination, last_part, target;
@@ -34,9 +31,5 @@
     });
     return destination[last_part] = JSON.parse(config.innerHTML.substring(4, config.innerHTML.length - 3).replace('-  ', '-', 'g'));
   });
-
-  if (Language) {
-    cs.Language = Language;
-  }
 
 }).call(this);

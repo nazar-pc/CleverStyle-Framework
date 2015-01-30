@@ -7,7 +7,6 @@
 ###
  # Load configuration from special template elements
 ###
-Language	= cs?.Language
 [].forEach.call(
 	document.head.querySelectorAll('.cs-config')
 	(config) ->
@@ -24,5 +23,3 @@ Language	= cs?.Language
 			config.innerHTML.substring(4, config.innerHTML.length - 3).replace('-  ', '-', 'g')
 		)
 )
-if Language
-	cs.Language	= Language

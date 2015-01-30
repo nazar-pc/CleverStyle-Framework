@@ -6,7 +6,8 @@
  * @license   MIT License, see license.txt
  */
 namespace cs;
-
+use
+	cs\Event\Once_wrapper;
 /**
  * Event class
  *
@@ -17,7 +18,7 @@ namespace cs;
 class Event {
 	use Singleton;
 	/**
-	 * @var callable[]
+	 * @var callable[][]
 	 */
 	protected $callbacks = [];
 	/**
@@ -33,7 +34,7 @@ class Event {
 	 * @return Event
 	 */
 	function on ($event, $callback) {
-		if (!is_string($event) || !is_callable($callback)) {
+		if (!$event || !is_callable($callback)) {
 			return $this;
 		}
 		if (!isset($this->callbacks[$event])) {
@@ -51,15 +52,16 @@ class Event {
 	 * @return Event
 	 */
 	function off ($event, $callback = null) {
+		if (!isset($this->callbacks[$event])) {
+			return $this;
+		}
 		if (!$callback) {
 			unset($this->callbacks[$event]);
 			return $this;
 		}
-		foreach ($this->callbacks[$event] as $i => $c) {
-			if ($c === $callback) {
-				unset($this->callbacks[$event][$i]);
-			}
-		}
+		$this->callbacks[$event] = array_filter($this->callbacks[$event], function ($c) use ($callback) {
+			return $c !== $callback;
+		});
 		return $this;
 	}
 	/**
@@ -71,17 +73,21 @@ class Event {
 	 * @return Event
 	 */
 	function once ($event, $callback) {
-		if (!is_string($event) || !is_callable($callback)) {
+		if (!$event || !is_callable($callback)) {
 			return $this;
 		}
 		if (!isset($this->callbacks[$event])) {
 			$this->callbacks[$event] = [];
 		}
-		$this->callbacks[$event][] = function () use ($event, $callback) {
-			$this->off($event, $callback);
+		$Event     = $this;
+		$callback_ = new Once_wrapper(function () use ($event, $callback, $Event) {
+			/**
+			 * @var Once_wrapper $this
+			 */
+			$Event->off($event, $this);
 			call_user_func_array($callback, func_get_args());
-		};
-		return $this;
+		});
+		return $this->on($event, $callback_);
 	}
 	/**
 	 * Fire event
@@ -99,28 +105,18 @@ class Event {
 			$this->initialize();
 		}
 		if (
-			!isset($this->callbacks[$event]) ||
-			empty($this->callbacks[$event]) ||
-			!is_string($event)
+			!$event ||
+			!isset($this->callbacks[$event])
 		) {
 			return true;
 		}
-		$return = true;
-		if (func_num_args() > 1) {
-			$arguments = array_slice(func_get_args(), 1);
-			foreach ($this->callbacks[$event] as $callback) {
-				$return =
-					$return &&
-					call_user_func_array($callback, $arguments) !== false;
-			}
-		} else {
-			foreach ($this->callbacks[$event] as $callback) {
-				$return =
-					$return &&
-					$callback() !== false;
+		$arguments = array_slice(func_get_args(), 1);
+		foreach ($this->callbacks[$event] as $callback) {
+			if (call_user_func_array($callback, $arguments) === false) {
+				return false;
 			}
 		}
-		return $return;
+		return true;
 	}
 	/**
 	 * Initialize all events handlers
