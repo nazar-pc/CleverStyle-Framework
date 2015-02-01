@@ -17,10 +17,19 @@ $Orders = Orders::instance();
 /**
  * Get order items, not order itself
  */
-if (isset($Index->route_ids[0], $Index->route_path[2]) && $Index->route_path[2] == 'items') {
-	$Page->json(
-		$Orders->get_items($Index->route_ids[0])
-	);
+if (isset($Index->route_ids[0], $Index->route_path[2])) {
+	switch ($Index->route_path[2]) {
+		case 'items':
+			$Page->json(
+				$Orders->get_items($Index->route_ids[0])
+			);
+			break;
+		case 'statuses':
+			$Page->json(
+				$Orders->get_statuses($Index->route_ids[0])
+			);
+			break;
+	}
 } elseif (isset($Index->route_ids[0])) {
 	$order = $Orders->get($Index->route_ids[0]);
 	if (!$order) {
