@@ -187,6 +187,31 @@
           return false;
         });
       });
+    }).on('mousedown', '.cs-shop-order-statuses-history', function() {
+      var id;
+      id = $(this).data('id');
+      return $.when($.getJSON('api/Shop/admin/order_statuses'), $.getJSON("api/Shop/admin/orders/" + id + "/statuses")).done(function(order_statuses, statuses) {
+        var content;
+        order_statuses = (function() {
+          var result;
+          result = {};
+          order_statuses[0].forEach(function(status) {
+            return result[status.id] = status;
+          });
+          return result;
+        })();
+        content = '';
+        statuses[0].forEach(function(status) {
+          var color, comment, order_status;
+          order_status = order_statuses != null ? order_statuses[status.status] : void 0;
+          color = order_status ? "background: " + order_status.color : '';
+          comment = status.comment ? "<tr style=\"" + color + "\">\n	<td colspan=\"2\" style=\"white-space:pre\">" + status.comment + "</td>\n</tr>" : '';
+          return content += "<tr style=\"" + color + "\">\n	<td><i class=\"uk-icon-calendar\"></i> " + status.date_formatted + "</td>\n	<td>" + (order_status != null ? order_status.title : void 0) + "</td>\n</tr>\n" + comment;
+        });
+        return $("<div class=\"uk-modal\">\n	<div class=\"uk-modal-dialog uk-modal-dialog-large\">\n		<table class=\"uk-table\">" + content + "</table>\n	</div>\n</div>").appendTo('body').cs().modal('show').on('hide.uk.modal', function() {
+          return $(this).remove();
+        });
+      });
     }).on('mousedown', '.cs-shop-order-edit', function() {
       var $this, date, id, username;
       $this = $(this);

@@ -68,7 +68,7 @@
 	"shop_shipping_address"                         : "Адресс доставки",
 	"shop_status"                                   : "Состояние",
 	"shop_comment"                                  : "Комментарий пользователя",
-	"shop_details"                                  : "Подробности",
+	"shop_statuses_history"                         : "История статусов",
 	"shop_order_items"                              : "Товары",
 	"shop_items"                                    : "Товары",
 	"shop_category"                                 : "Категория",

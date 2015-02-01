@@ -124,8 +124,8 @@ $Page->content(
 							]
 						),
 						nl2br($order['comment']),
-						h::{'button.uk-button.cs-shop-order-details'}( // TODO details page/modal
-							$L->details,
+						h::{'button.uk-button.cs-shop-order-statuses-history'}(
+							$L->statuses_history,
 							[
 								'data-id' => $order['id']
 							]

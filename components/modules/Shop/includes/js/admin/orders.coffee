@@ -189,6 +189,51 @@ $ ->
 					)
 					return false
 		)
+		.on('mousedown', '.cs-shop-order-statuses-history', ->
+			id	= $(@).data('id')
+			$.when(
+				$.getJSON('api/Shop/admin/order_statuses')
+				$.getJSON("api/Shop/admin/orders/#{id}/statuses")
+			).done (order_statuses, statuses) ->
+				order_statuses	= do ->
+					result	= {}
+					order_statuses[0].forEach (status) ->
+						result[status.id]	= status
+					result
+				content			= ''
+				statuses[0].forEach (status) ->
+					order_status	= order_statuses?[status.status]
+					color			=
+						if order_status
+							"background: #{order_status.color}"
+						else
+							''
+					comment			=
+						if status.comment
+							"""
+								<tr style="#{color}">
+									<td colspan="2" style="white-space:pre">#{status.comment}</td>
+								</tr>
+							"""
+						else
+							''
+					content			+= """
+						<tr style="#{color}">
+							<td><i class="uk-icon-calendar"></i> #{status.date_formatted}</td>
+							<td>#{order_status?.title}</td>
+						</tr>
+						#{comment}
+					"""
+				$("""<div class="uk-modal">
+					<div class="uk-modal-dialog uk-modal-dialog-large">
+						<table class="uk-table">#{content}</table>
+					</div>
+				</div>""")
+					.appendTo('body')
+					.cs().modal('show')
+					.on 'hide.uk.modal', ->
+						$(@).remove()
+	)
 		.on('mousedown', '.cs-shop-order-edit', ->
 			$this		= $(@)
 			id			= $this.data('id')

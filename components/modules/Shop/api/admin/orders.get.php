@@ -9,6 +9,7 @@
 namespace cs\modules\Shop;
 use
 	cs\Index,
+	cs\Language,
 	cs\Page;
 
 $Index  = Index::instance();
@@ -25,8 +26,14 @@ if (isset($Index->route_ids[0], $Index->route_path[2])) {
 			);
 			break;
 		case 'statuses':
+			$Language = Language::instance();
 			$Page->json(
-				$Orders->get_statuses($Index->route_ids[0])
+				array_map(function ($status) use ($Language) {
+					$status['date_formatted'] = $Language->to_locale(
+						date($Language->{TIME - $status['date'] < 24 * 3600 ? '_time' : '_datetime_long'}, $status['date'])
+					);
+					return $status;
+				}, $Orders->get_statuses($Index->route_ids[0]))
 			);
 			break;
 	}
