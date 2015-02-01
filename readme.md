@@ -22,6 +22,7 @@ But in parallel with core some components are developed:
  * **Plupload** (integration of [Plupload](https://github.com/moxiecode/plupload) for files uploading, adds files uploading functionality to other modules)
  * **Polls** (provides polls functionality to other modules)
  * **Static pages** (allows to create static pages like About page or pages without interface, for example for site owner verification)
+ * **WebSockets** (support for WebSockets connections utilizing [React](https://github.com/reactphp/react) and [Ratchet](https://github.com/ratchetphp/Ratchet))
 
 #### Plugins
 
