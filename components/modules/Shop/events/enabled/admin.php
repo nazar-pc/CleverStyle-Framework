@@ -9,10 +9,10 @@
 namespace cs\modules\Shop;
 use
 	cs\Config,
+	cs\Event,
 	cs\Index,
 	cs\Language\Prefix,
-	cs\Menu,
-	cs\Trigger;
+	cs\Menu;
 function add_menu_section_item ($section) {
 	$L		= new Prefix('shop_');
 	$Menu	= Menu::instance();
@@ -26,7 +26,7 @@ function add_menu_section_item ($section) {
 		]
 	);
 }
-Trigger::instance()->register(
+Event::instance()->on(
 	'admin/System/Menu',
 	function () {
 		add_menu_section_item('general');

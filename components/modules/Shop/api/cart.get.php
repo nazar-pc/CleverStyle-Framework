@@ -7,7 +7,7 @@
  * @license   MIT License, see license.txt
  */
 /**
- * Provides next triggers:
+ * Provides next events:
  *  Shop/Cart/calculate
  *  [
  *   'items'    => &$items,   // Array of array elements [id => item_id, units => units, price => total_price]

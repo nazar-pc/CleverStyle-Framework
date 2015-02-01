@@ -9,11 +9,11 @@
 namespace cs\modules\Shop;
 use
 	cs\Config,
-	cs\Trigger,
+	cs\Event,
 	cs\Language\Prefix;
 
-Trigger::instance()
-	->register(
+Event::instance()
+	->on(
 		'System/Config/routing_replace',
 		function ($data) {
 			$rc = explode('/', $data['rc']);
@@ -42,7 +42,7 @@ Trigger::instance()
 			$data['rc'] = implode('/', $rc);
 		}
 	)
-	->register(
+	->on(
 		'System/Index/construct',
 		function () {
 			switch (Config::instance()->components['modules']['Shop']['active']) {
@@ -50,16 +50,16 @@ Trigger::instance()
 					if (!admin_path()) {
 						return;
 					}
-					require __DIR__.'/trigger/uninstalled.php';
+					require __DIR__.'/events/uninstalled.php';
 					break;
 				case 1:
-					require __DIR__.'/trigger/enabled.php';
+					require __DIR__.'/events/enabled.php';
 					if (admin_path()) {
-						require __DIR__.'/trigger/enabled/admin.php';
+						require __DIR__.'/events/enabled/admin.php';
 					}
 				//Yes, this is not a typo
 				case 0:
-					require __DIR__.'/trigger/installed.php';
+					require __DIR__.'/events/installed.php';
 			}
 		}
 	);

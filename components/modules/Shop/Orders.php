@@ -9,8 +9,8 @@
 namespace cs\modules\Shop;
 use
 	cs\Config,
+	cs\Event,
 	cs\Language,
-	cs\Trigger,
 	cs\User,
 	cs\CRUD,
 	cs\Singleton;
@@ -18,7 +18,7 @@ use
 /**
  * @method static Orders instance($check = false)
  *
- * Provides next triggers:<br>
+ * Provides next events:<br>
  *  Shop/Orders/get<code>
  *  [
  *   'data' => &$data
@@ -103,7 +103,7 @@ class Orders {
 		} else {
 			$data['for_payment'] = $this->get_for_payment($data);
 		}
-		if (!Trigger::instance()->run('Shop/Orders/get', [
+		if (!Event::instance()->fire('Shop/Orders/get', [
 			'data' => &$data
 		])
 		) {
@@ -186,7 +186,7 @@ class Orders {
 				'description' => ''
 			]
 		];
-		Trigger::instance()->run('System/payment/methods', [
+		Event::instance()->fire('System/payment/methods', [
 			'methods' => &$payment_methods
 		]);
 		return $payment_methods;
@@ -241,7 +241,7 @@ class Orders {
 	/**
 	 * Returns recalculated prices for items and shipping
 	 *
-	 * Using trigger third party components may automatically apply different discounts for items and shipping based on user, number of units and other things
+	 * Using this event third party components may automatically apply different discounts for items and shipping based on user, number of units and other things
 	 *
 	 * @param array    $items Array in form of [id => units]
 	 * @param int      $shipping_type
@@ -279,7 +279,7 @@ class Orders {
 			'type'  => $shipping_type['id'],
 			'price' => $shipping_type['price']
 		];
-		Trigger::instance()->run('Shop/Orders/Cart/recalculate', [
+		Event::instance()->fire('Shop/Orders/Cart/recalculate', [
 			'items'    => &$items,
 			'shipping' => &$shipping
 		]);
@@ -340,7 +340,7 @@ class Orders {
 				$status,
 				Order_statuses::instance()->get($status)['comment']
 			);
-			Trigger::instance()->run('Shop/Orders/add', [
+			Event::instance()->fire('Shop/Orders/add', [
 				'id' => $id
 			]);
 		}
@@ -457,7 +457,7 @@ class Orders {
 				$status,
 				Order_statuses::instance()->get($status)['comment']
 			);
-			Trigger::instance()->run('Shop/Orders/set', [
+			Event::instance()->fire('Shop/Orders/set', [
 				'id' => $id
 			]);
 		}
@@ -543,7 +543,7 @@ class Orders {
 			$status,
 			xap($comment, true)
 		);
-		Trigger::instance()->run('Shop/Orders/set_status', [
+		Event::instance()->fire('Shop/Orders/set_status', [
 			'id'      => $id,
 			'status'  => $status,
 			'comment' => $comment
@@ -568,7 +568,7 @@ class Orders {
 				WHERE `id` = '%d'",
 				$id
 			);
-			Trigger::instance()->run('Shop/Orders/del', [
+			Event::instance()->fire('Shop/Orders/del', [
 				'id' => $id
 			]);
 			return true;

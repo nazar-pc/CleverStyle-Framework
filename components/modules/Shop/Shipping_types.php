@@ -10,8 +10,8 @@ namespace cs\modules\Shop;
 use
 	cs\Cache\Prefix,
 	cs\Config,
+	cs\Event,
 	cs\Language,
-	cs\Trigger,
 	cs\User,
 	cs\CRUD,
 	cs\Singleton;
@@ -19,7 +19,7 @@ use
 /**
  * @method static Shipping_types instance($check = false)
  *
- * Provides next triggers:<br>
+ * Provides next events:<br>
  *  Shop/Shipping_types/get_for_user<code>
  *  [
  *   'data' => &$data,
@@ -97,7 +97,7 @@ class Shipping_types {
 		}
 		$user = (int)$user ?: User::instance()->id;
 		$data = $this->get($id);
-		if (!Trigger::instance()->run('Shop/Shipping_type/get_for_user', [
+		if (!Event::instance()->fire('Shop/Shipping_type/get_for_user', [
 			'data' => &$data,
 			'user' => $user
 		])

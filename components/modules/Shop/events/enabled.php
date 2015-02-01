@@ -9,11 +9,10 @@
 namespace cs\modules\Shop;
 use
 	cs\Config,
-	cs\Language\Prefix,
-	cs\Trigger;
-
-Trigger::instance()
-	->register(
+	cs\Event,
+	cs\Language\Prefix;
+Event::instance()
+	->on(
 		'System/payment/success',
 		function ($data) {
 			if ($data['module'] != 'Shop') {
@@ -49,7 +48,7 @@ Trigger::instance()
 			header('Location: '.$Config->core_url().'/'.path($L->shop).'/'.path($L->orders).'/?paid_success='.(int)$purpose[1]);
 		}
 	)
-	->register(
+	->on(
 		'System/payment/error',
 		function ($data) {
 			if ($data['module'] != 'Shop') {

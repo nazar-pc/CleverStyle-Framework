@@ -10,8 +10,8 @@ namespace cs\modules\Shop;
 use
 	cs\Cache\Prefix,
 	cs\Config,
+	cs\Event,
 	cs\Language,
-	cs\Trigger,
 	cs\User,
 	cs\CRUD,
 	cs\Singleton;
@@ -19,7 +19,7 @@ use
 /**
  * @method static Categories instance($check = false)
  *
- * Provides next triggers:<br>
+ * Provides next events:<br>
  *  Shop/Categories/get<code>
  *  [
  *   'data' => &$data
@@ -108,7 +108,7 @@ class Categories {
 			$data['attributes'] = $this->clean_nonexistent_attributes($data['attributes']);
 			return $data;
 		});
-		if (!Trigger::instance()->run('Shop/Categories/get', [
+		if (!Event::instance()->fire('Shop/Categories/get', [
 			'data' => &$data
 		])
 		) {
@@ -136,7 +136,7 @@ class Categories {
 		}
 		$user = (int)$user ?: User::instance()->id;
 		$data = $this->get($id);
-		if (!Trigger::instance()->run('Shop/Categories/get_for_user', [
+		if (!Event::instance()->fire('Shop/Categories/get_for_user', [
 			'data' => &$data,
 			'user' => $user
 		])
@@ -204,7 +204,7 @@ class Categories {
 		]);
 		if ($id) {
 			unset($this->cache->all);
-			Trigger::instance()->run('Shop/Categories/add', [
+			Event::instance()->fire('Shop/Categories/add', [
 				'id' => $id
 			]);
 			$this->set($id, $parent, $title, $description, $title_attribute, $description_attribute, $image, $visible, $attributes);
@@ -247,14 +247,14 @@ class Categories {
 			return false;
 		}
 		if ($data['image'] != $image) {
-			Trigger::instance()->run(
+			Event::instance()->fire(
 				'System/upload_files/del_tag',
 				[
 					'tag' => "Shop/categories/$id",
 					'url' => $data['image']
 				]
 			);
-			Trigger::instance()->run(
+			Event::instance()->fire(
 				'System/upload_files/add_tag',
 				[
 					'tag' => "Shop/categories/$id",
@@ -287,7 +287,7 @@ class Categories {
 			$this->cache->{"$id/$L->clang"},
 			$this->cache->all
 		);
-		Trigger::instance()->run('Shop/Categories/set', [
+		Event::instance()->fire('Shop/Categories/set', [
 			'id' => $id
 		]);
 		return true;
@@ -307,7 +307,7 @@ class Categories {
 				"DELETE FROM `{$this->table}_attributes`
 				WHERE `id` = $id"
 			);
-			Trigger::instance()->run(
+			Event::instance()->fire(
 				'System/upload_files/del_tag',
 				[
 					'tag' => "Shop/categories/$id"
@@ -317,7 +317,7 @@ class Categories {
 				$this->cache->$id,
 				$this->cache->all
 			);
-			Trigger::instance()->run('Shop/Categories/del', [
+			Event::instance()->fire('Shop/Categories/del', [
 				'id' => $id
 			]);
 		}

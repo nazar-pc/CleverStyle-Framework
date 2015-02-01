@@ -7,8 +7,9 @@
  * @license       MIT License, see license.txt
  */
 namespace cs\modules\Shop;
-use cs\Trigger;
-Trigger::instance()->register(
+use
+	cs\Event;
+Event::instance()->on(
 	'admin/System/components/modules/uninstall/process',
 	function ($data) {
 		if ($data['name'] != 'Shop') {

@@ -1,7 +1,7 @@
 {
 	"package"		: "Shop",
 	"category"		: "modules",
-	"version"		: "0.94.0+build-126",
+	"version"		: "0.95.0+build-127",
 	"description"	: "Shop functionality",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",
@@ -11,7 +11,7 @@
 	],
 	"provide"		: "shop",
 	"require"		: [
-		"System=>1.26",
+		"System=>1.40",
 		"fotorama"
 	],
 	"optional"		: [

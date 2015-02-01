@@ -10,8 +10,8 @@ namespace cs\modules\Shop;
 use
 	cs\Cache\Prefix,
 	cs\Config,
+	cs\Event,
 	cs\Language,
-	cs\Trigger,
 	cs\User,
 	cs\CRUD,
 	cs\Singleton;
@@ -19,7 +19,7 @@ use
 /**
  * @method static Items instance($check = false)
  *
- * Provides next triggers:<br>
+ * Provides next events:<br>
  *  Shop/Items/get<code>
  *  [
  *   'data' => &$data
@@ -207,7 +207,7 @@ class Items {
 			$data['tags'] = Tags::instance()->get($data['tags']);
 			return $data;
 		});
-		if (!Trigger::instance()->run('Shop/Items/get', [
+		if (!Event::instance()->fire('Shop/Items/get', [
 			'data' => &$data
 		])
 		) {
@@ -235,7 +235,7 @@ class Items {
 		}
 		$user = (int)$user ?: User::instance()->id;
 		$data = $this->get($id);
-		if (!Trigger::instance()->run('Shop/Items/get_for_user', [
+		if (!Event::instance()->fire('Shop/Items/get_for_user', [
 			'data' => &$data,
 			'user' => $user
 		])
@@ -422,7 +422,7 @@ class Items {
 		]);
 		if ($id) {
 			unset($this->cache->all);
-			Trigger::instance()->run('Shop/Items/add', [
+			Event::instance()->fire('Shop/Items/add', [
 				'id' => $id
 			]);
 			$this->set($id, $category, $price, $in_stock, $soon, $listed, $attributes, $images, $videos, $tags);
@@ -625,7 +625,7 @@ class Items {
 		 */
 		if ($old_files || $new_files) {
 			foreach (array_diff($old_files, $new_files) as $file) {
-				Trigger::instance()->run(
+				Event::instance()->fire(
 					'System/upload_files/del_tag',
 					[
 						'tag' => "Shop/items/$id/$L->clang",
@@ -635,7 +635,7 @@ class Items {
 			}
 			unset($file);
 			foreach (array_diff($new_files, $old_files) as $file) {
-				Trigger::instance()->run(
+				Event::instance()->fire(
 					'System/upload_files/add_tag',
 					[
 						'tag' => "Shop/items/$id/$L->clang",
@@ -669,7 +669,7 @@ class Items {
 			$this->cache->{"$id/$L->clang"},
 			$this->cache->all
 		);
-		Trigger::instance()->run('Shop/Items/set', [
+		Event::instance()->fire('Shop/Items/set', [
 			'id' => $id
 		]);
 		return true;
@@ -723,7 +723,7 @@ class Items {
 				"DELETE FROM `{$this->table}_tags`
 				WHERE `id` = $id"
 			]);
-			Trigger::instance()->run(
+			Event::instance()->fire(
 				'System/upload_files/del_tag',
 				[
 					'tag' => "Shop/items/$id%"
@@ -733,7 +733,7 @@ class Items {
 				$this->cache->$id,
 				$this->cache->all
 			);
-			Trigger::instance()->run('Shop/Items/del', [
+			Event::instance()->fire('Shop/Items/del', [
 				'id' => $id
 			]);
 		}
