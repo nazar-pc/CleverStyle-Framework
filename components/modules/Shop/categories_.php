@@ -18,7 +18,7 @@ $Index           = Index::instance();
 $L               = new Prefix('shop_');
 $Page            = Page::instance();
 $Categories      = Categories::instance();
-$all_categories  = $Categories->get($Categories->get_all());
+$all_categories  = $Categories->get_for_user($Categories->get_all());
 $all_categories  = array_combine(array_column($all_categories, 'id'), $all_categories);
 $categories_tree = [];
 foreach ($all_categories as $category) {

@@ -24,7 +24,7 @@ $item       = explode(
 	':',
 	array_slice($Index->route_path, -1)[0]
 );
-$item       = $Items->get(array_pop($item));
+$item       = $Items->get_for_user(array_pop($item));
 $Page->title($item['title']);
 $Page->Description = description($item['description']);
 $Page->canonical_url(

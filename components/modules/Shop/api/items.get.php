@@ -15,7 +15,7 @@ $Index = Index::instance();
 $Page  = Page::instance();
 $Items = Items::instance();
 if (isset($_GET['ids'])) {
-	$items = $Items->get_for_user(explode(',', $Index->route_ids[0]));
+	$items = $Items->get_for_user(explode(',', $_GET['ids']));
 	if (!$items) {
 		error_code(404);
 	} else {

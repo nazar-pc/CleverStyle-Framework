@@ -15,7 +15,7 @@ $Index      = Index::instance();
 $Page       = Page::instance();
 $Attributes = Attributes::instance();
 if (isset($_GET['ids'])) {
-	$attributes = $Attributes->get(explode(',', $Index->route_ids[0]));
+	$attributes = $Attributes->get(explode(',', $_GET['ids']));
 	if (!$attributes) {
 		error_code(404);
 	} else {
@@ -28,7 +28,7 @@ if (isset($_GET['ids'])) {
 	} else {
 		$Page->json($attribute);
 	}
-} elseif (isset($Index->route_path[2]) && $Index->route_path[2] == 'types') {
+} elseif (isset($Index->route_path[1]) && $Index->route_path[1] == 'types') {
 	$Page->json(
 		$Attributes->get_type_to_name_array()
 	);

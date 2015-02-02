@@ -15,7 +15,7 @@ $Index      = Index::instance();
 $Page       = Page::instance();
 $Categories = Categories::instance();
 if (isset($_GET['ids'])) {
-	$categories = $Categories->get_for_user(explode(',', $Index->route_ids[0]));
+	$categories = $Categories->get_for_user(explode(',', $_GET['ids']));
 	if (!$categories) {
 		error_code(404);
 	} else {
