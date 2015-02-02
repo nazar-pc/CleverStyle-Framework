@@ -16,7 +16,7 @@ $Index  = Index::instance();
 $Page   = Page::instance();
 $User   = User::instance();
 $Orders = Orders::instance();
-if (isset($Index->route_ids[0], $Index->route_path[2])) {
+if (isset($Index->route_ids[0], $Index->route_path[1])) {
 	$order = $Orders->get($Index->route_ids[0]);
 	if (!$order) {
 		error_code(404);
@@ -26,7 +26,7 @@ if (isset($Index->route_ids[0], $Index->route_path[2])) {
 	) {
 		error_code(403);
 	}
-	switch ($Index->route_path[2]) {
+	switch ($Index->route_path[1]) {
 		/**
 		 * Get order items, not order itself
 		 */

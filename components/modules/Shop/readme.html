@@ -1,0 +1,383 @@
+<h3 style="text-align: center;">Shop module provides basic functionality, but is very hackable that allows to greatly extend features and appearance of module</h3>
+<h4 style="text-align: center;">For user</h4>
+<p>Shop module have some basic elements</p>
+<dl>
+	<dt>Orders</dt>
+	<dd>Orders usually includes few items, some shipping type and have current status</dd>
+	<dt>Items</dt>
+	<dd>Items can be of different categories (item can be placed only in one category) and be accompanied with some attributes</dd>
+	<dt>Categories</dt>
+	<dd>Categories are main way to group set of items in one place, category defines which attributes are available to items in it</dd>
+	<dt>Attributes</dt>
+	<dd>Attributes are used to describe characteristics of items in category and is used in searching and filtering of items</dd>
+	<dt>Shipping types</dt>
+	<dd>Shipping types are used to differentiate shipping cost and time</dd>
+	<dt>Order statuses</dt>
+	<dd>There can be different order statuses of different types. Types are predefined</dd>
+</dl>
+<p>IMPORTANT: After installation you have no Orders, Items, Categories, Attributes, Shipping types or Order statuses. You have to create them, preferably starting from the end of list moving to the beginning because items at the beginning of the list depends on items at the end.</p>
+<p>There are no payment types except Cash out of the box, so Cash assumed by default. However, new payment types will appear in interface as soon as third party module that implements this functionality will be installed (there can be multiple modules for different payment types)</p>
+
+<h4>For developer</h4>
+<p>This section will describe how developer can extend Shop module to make it unique and implement necessary functionality that is not available out of the box.</p>
+<h5 style="text-align: center;">Appearance</h5>
+<p>All user-side elements are WebComponents, Polymer elements. This means that you can <a href="https://github.com/nazar-pc/CleverStyle-CMS/wiki/Polymer-elements-extension">extend elements</a> using patched Polymer that comes with CleverStyle CMS easily:</p>
+<pre>
+	<code class="language-markup">
+		&lt;polymer-element name="cs-shop-category" extends="cs-shop-category">
+			&lt;template>
+				//Whatever here
+			&lt;/template>
+			&lt;script>
+				// Whatever here
+			&lt;/script>
+		&lt;/polymer-element>
+	</code>
+</pre>
+<h5 style="text-align: center;">API</h5>
+<p>There are 2 APIs: one for administration, another for user-side. Usually you'll need user-side API, which is simple and will give you all information you may see on user-side pages and even more.</p>
+<p>API is especially useful for customizing appearance, because sometimes you may need more that actually present in HTML markup, so you can easily load it on demand.</p>
+<p>Possible API calls for user-side:</p>
+<dl>
+	<dt>GET api/Shop/cart?items={items}&shipping_type={shipping_type}</dt>
+	<dd>{items} - Array in form of [id => units]</dd>
+	<dd>{shipping_type} - Shipping type id</dd>
+	<dd>Returns:
+		<pre>[
+	'items'    => $items,   // Array of array elements [id => item_id, units => units, price => total_price]
+	'shipping' => $shipping // Array in form [type => shipping_type_id, price => shipping_type_price]
+]</pre>
+	</dd>
+	<dd>Is used to calculate prices of items and shipping (possibly including discounts and something else)</dd>
+	<dt>GET api/Shop/settings</dt>
+	<dd>Returns:
+		<pre>{
+	"price_formatting"                    : "$%s USD",
+	"items_per_page"                      : 20,
+	"items_per_page_admin"                : 50,
+	"automatically_reduce_in_stock_value" : 1,
+	"default_order_status"                : 2,
+	"default_paid_order_status"           : 3,
+	"allow_guests_orders"                 : 1
+}</pre>
+	</dd>
+	<dt>GET api/Shop/attributes/{id}</dt>
+	<dd>{id} - Attribute id</dd>
+	<dd>Returns:
+		<pre>{"id"                : "1",
+	"type"           : "5",
+	"title"          : "Title",
+	"title_internal" : "Internal title",
+	"value"          : ""
+}</pre>
+	</dd>
+	<dt>GET api/Shop/attributes?ids={id},{id}</dt>
+	<dd>{id},{id} - coma-separated list of ids</dd>
+	<dd>Returns:
+		<pre>[
+	{
+		"id"             : "1",
+		"type"           : "5",
+		"title"          : "Title",
+		"title_internal" : "Internal title",
+		"value"          : ""
+	},
+	{
+		"id"             : "3",
+		"type"           : "1",
+		"title"          : "Int set",
+		"title_internal" : "Int set",
+		"value"          : [
+			"1",
+			"2",
+			"3",
+			"4"
+		]
+	}
+]</pre>
+	</dd>
+	<dt>GET api/Shop/attributes/types</dt>
+	<dd>Returns:
+		<pre>{
+	"1" : "Integer set",
+	"2" : "Fractional set",
+	"3" : "Integer range",
+	"4" : "Fractional range",
+	"5" : "String",
+	"6" : "String set",
+	"7" : "Text",
+	"8" : "Yes\/no switch",
+	"9" : "Color set"
+}</pre>
+	</dd>
+	<dt>GET api/Shop/categories</dt>
+	<dd>Includes only visible categories</dd>
+	<dd>Returns:
+		<pre>[
+	{
+		"id"                    : "1",
+		"parent"                : "0",
+		"title"                 : "First category",
+		"description"           : "Long category description",
+		"title_attribute"       : "2",
+		"description_attribute" : "6",
+		"image"                 : "",
+		"visible"               : "1",
+		"attributes"            : [
+			"2",
+			"6"
+		]
+	},
+	{
+		"id"                    : "2",
+		"parent"                : "1",
+		"title"                 : "Second category (nested)",
+		"description"           : "Long description",
+		"title_attribute"       : "2",
+		"description_attribute" : "6",
+		"image"                 : "",
+		"visible"               : "1",
+		"attributes"            : [
+			"2",
+			"3",
+			"6"
+		]
+	},
+	{
+		"id"                    : "3",
+		"parent"                : "1",
+		"title"                 : "Third category (nested)",
+		"description"           : "Long description",
+		"title_attribute"       : "1",
+		"description_attribute" : "0",
+		"image"                 : "",
+		"visible"               : "1",
+		"attributes"            : []
+	},
+	{
+		"id"                    : "6",
+		"parent"                : "0",
+		"title"                 : "Category with image",
+		"description"           : "This is the first category with image",
+		"title_attribute"       : "1",
+		"description_attribute" : "0",
+		"image"                 : "http:\/\/cscms.org\/storage\/public\/Plupload\/2014-12-15\/20\/2_3905548f2ac9b2d5f.jpg",
+		"visible"               : "1",
+		"attributes"            : [
+			"1",
+			"2",
+			"3",
+			"6"
+		]
+	}
+]</pre>
+	</dd>
+	<dt>GET api/Shop/categories?ids={id},{id}</dt>
+	<dd>{id},{id} - coma-separated list of ids</dd>
+	<dd>Returns:
+		<pre>[
+	{
+		"id"                    : "1",
+		"parent"                : "0",
+		"title"                 : "First category",
+		"description"           : "Long category description",
+		"title_attribute"       : "2",
+		"description_attribute" : "6",
+		"image"                 : "",
+		"visible"               : "1",
+		"attributes"            : [
+			"2",
+			"6"
+		]
+	},
+	{
+		"id"                    : "6",
+		"parent"                : "0",
+		"title"                 : "Category with image",
+		"description"           : "This is the first category with image",
+		"title_attribute"       : "1",
+		"description_attribute" : "0",
+		"image"                 : "http:\/\/cscms.org\/storage\/public\/Plupload\/2014-12-15\/20\/2_3905548f2ac9b2d5f.jpg",
+		"visible"               : "1",
+		"attributes"            : [
+			"1",
+			"2",
+			"3",
+			"6"
+		]
+	}
+]</pre>
+	</dd>
+	<dt>GET api/Shop/categories/{id}</dt>
+	<dd>{id} - Category id</dd>
+	<dd>Returns:
+		<pre>{
+	"id"                    : "6",
+	"parent"                : "0",
+	"title"                 : "Category with image",
+	"description"           : "This is the first category with image",
+	"title_attribute"       : "1",
+	"description_attribute" : "0",
+	"image"                 : "http:\/\/cscms.org\/storage\/public\/Plupload\/2014-12-15\/20\/2_3905548f2ac9b2d5f.jpg",
+	"visible"               : "1",
+	"attributes"            : [
+		"1",
+		"2",
+		"3",
+		"6"
+	]
+}</pre>
+	</dd>
+	<dt>GET api/Shop/items?ids={id},{id}</dt>
+	<dd>{id},{id} - coma-separated list of items ids</dd>
+	<dd>Returns:
+		<pre>[
+	{
+		"id"                    : "1",
+		"parent"                : "0",
+		"title"                 : "First category",
+		"description"           : "Long category description",
+		"title_attribute"       : "2",
+		"description_attribute" : "6",
+		"image"                 : "",
+		"visible"               : "1",
+		"attributes"            : [
+			"2",
+			"6"
+		]
+	},
+	{
+		"id"                    : "6",
+		"parent"                : "0",
+		"title"                 : "Category with image",
+		"description"           : "This is the first category with image",
+		"title_attribute"       : "1",
+		"description_attribute" : "0",
+		"image"                 : "http:\/\/cscms.org\/storage\/public\/Plupload\/2014-12-15\/20\/2_3905548f2ac9b2d5f.jpg",
+		"visible"               : "1",
+		"attributes"            : [
+			"1",
+			"2",
+			"3",
+			"6"
+		]
+	}
+]</pre>
+	</dd>
+	<dt>GET api/Shop/orders</dt>
+	<dd>Returns:
+		<pre>[
+	{
+		"id"                : "1",
+		"user"              : "2",
+		"date"              : "1420929764",
+		"shipping_type"     : "0",
+		"shipping_cost"     : "0",
+		"shipping_username" : "Назар",
+		"shipping_phone"    : "+380000000000",
+		"shipping_address"  : "Kyiv\nUkraine",
+		"payment_method"    : "shop:test",
+		"paid"              : "0",
+		"status"            : "2",
+		"comment"           : "Long comment from user\nin two lines",
+		"for_payment"       : 20
+	},
+	{
+		"id"                : "1",
+		"user"              : "2",
+		"date"              : "1419939973",
+		"shipping_type"     : "2",
+		"shipping_cost"     : "5",
+		"shipping_username" : "Nazar",
+		"shipping_phone"    : "+380000000000",
+		"shipping_address"  : "Kyiv\nUkraine",
+		"payment_method"    : "shop:cash",
+		"paid"              : "1",
+		"status"            : "3",
+		"comment"           : "Comment for paid order",
+		"for_payment"       : 25
+	}
+]</pre>
+	</dd>
+	<dt>POST api/Shop/orders</dt>
+	<dt><pre>{
+	"shipping_type"     : "1",
+	"shipping_username" : "Назар",
+	"shipping_phone"    : "+380000000000",
+	"shipping_address"  : "Kyiv\nUkraine",
+	"payment_method"    : "shop:cash",
+	"comment"           : "Huge comment)",
+	"items"             : {
+		"2" : 1,
+		"3" : 5
+	}
+}</pre>
+	</dt>
+	<dd>items - contains array in form [id => units]</dd>
+	<dd>Returns:
+		<pre>"http:\/\/cscms.org\/api\/Shop\/orders\/20"</pre>
+		Status code: 201 Created
+	</dd>
+	<dt>GET api/Shop/orders/{id}</dt>
+	<dd>{id} - Order id</dd>
+	<dd>Returns:
+		<pre>{
+	"id"                : "20",
+	"user"              : "2",
+	"date"              : "1422918620",
+	"shipping_type"     : "1",
+	"shipping_cost"     : "0",
+	"shipping_username" : "Назар",
+	"shipping_phone"    : "+380000000000",
+	"shipping_address"  : "Kyiv\nUkraine",
+	"payment_method"    : "shop:cash",
+	"paid"              : "0",
+	"status"            : "2",
+	"comment"           : "Huge comment)",
+	"for_payment"       : 0
+}</pre>
+	</dd>
+	<dt>GET api/Shop/orders/{id}/items</dt>
+	<dd>{id} - Order id</dd>
+	<dd>Returns:
+		<pre>[
+	{
+		"id"         : "20",
+		"item"       : "2",
+		"units"      : "1",
+		"price"      : "30",
+		"unit_price" : "30"
+	},
+	{
+		"id"         : "20",
+		"item"       : "3",
+		"units"      : "5",
+		"price"      : "10",
+		"unit_price" : "2"
+	}
+]</pre>
+	</dd>
+	<dt>GET api/Shop/orders/{id}/statuses</dt>
+	<dd>{id} - Order id</dd>
+	<dd>Returns:
+		<pre>[
+	{
+		"id"      : "20",
+		"date"    : "1422918620",
+		"status"  : "2",
+		"comment" : "Order created"
+	}
+]</pre>
+	</dd>
+	<dt>GET api/Shop/payment_methods</dt>
+	<dd>Returns:
+		<pre>{
+	"shop:cash" : {
+		"title"       : "Cash",
+		"description" : ""
+	}
+}</pre>
+	</dd>
+</dl>
+<h5 style="text-align: center;">Backend events</h5>
+TODO
