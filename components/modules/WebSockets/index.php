@@ -31,15 +31,22 @@ if (PHP_SAPI == 'cli') {
 		set_time_limit(0);
 		ignore_user_abort(1);
 		if (!isset($rc[1])) {
-			file_get_contents(
-				$Config->base_url().'/WebSockets/'.$Config->module('WebSockets')->security_key.'/supervised',
-				null,
-				stream_context_create([
-					'http' => [
-						'timeout' => 0
-					]
-				])
-			);
+			// Supervising for the case if server will go down
+			while (true) {
+				if (is_server_running()) {
+					sleep(10);
+					continue;
+				}
+				file_get_contents(
+					$Config->base_url().'/WebSockets/'.$Config->module('WebSockets')->security_key.'/supervised',
+					null,
+					stream_context_create([
+						'http' => [
+							'timeout' => 0
+						]
+					])
+				);
+			}
 		} else {
 			Server::instance()->run();
 		}

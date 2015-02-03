@@ -281,8 +281,6 @@ class Server implements MessageComponentInterface {
 		if (!is_server_running()) {
 			if (is_exec_available()) {
 				cross_platform_server_in_background();
-				// Wait while server will start
-				sleep(1);
 			} else {
 				$Config = Config::instance();
 				file_get_contents(
@@ -295,6 +293,8 @@ class Server implements MessageComponentInterface {
 					])
 				);
 			}
+			// Wait while server will start
+			sleep(1);
 		}
 		$loop      = Loop_factory::create();
 		$connector = new Client_factory($loop);
