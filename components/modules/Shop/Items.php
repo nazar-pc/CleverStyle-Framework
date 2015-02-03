@@ -119,7 +119,7 @@ class Items {
 			 * If title attribute is not yet translated to current language
 			 */
 			if (!in_array($category['title_attribute'], array_column($data['attributes'], 'attribute'))) {
-				$data['attributes'][] = $this->db()->qfas(
+				$data['attributes'][] = $this->db()->qf(
 					"SELECT
 						`attribute`,
 						`numeric_value`,
@@ -136,7 +136,7 @@ class Items {
 			 * If title attribute is not yet translated to current language
 			 */
 			if ($category['description_attribute'] && !in_array($category['description_attribute'], array_column($data['attributes'], 'attribute'))) {
-				$data['attributes'][] = $this->db()->qfas(
+				$data['attributes'][] = $this->db()->qf(
 					"SELECT
 						`attribute`,
 						`numeric_value`,
