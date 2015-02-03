@@ -76,7 +76,7 @@ $Page->content(
 										'src' => @$item['images'][0] ?: Items::DEFAULT_IMAGE
 									]).
 									h::{'a#link'}(
-										$item_data['title'],
+										$item_data['title'] ?: '_',
 										[
 											'href'   => "$module_path/$items_path/".path($Categories->get_for_user($item_data['category'])['title']).'/'.path($item_data['title']).":$item_data[id]",
 											'target' => '_blank'
