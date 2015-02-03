@@ -31,10 +31,11 @@ if ($order['paid'] || $order['payment_method'] == Orders::PAYMENT_METHOD_CASH) {
 Event::instance()->fire(
 	'System/payment/execute',
 	[
-		'amount'      => $order['for_payment'],
-		'user'        => $order['user'],
-		'module'      => 'Shop',
-		'purpose'     => "orders/$order[id]",
-		'description' => $L->payment_for_order($order['id'])
+		'amount'         => $order['for_payment'],
+		'user'           => $order['user'],
+		'payment_method' => $order['payment_method'],
+		'module'         => 'Shop',
+		'purpose'        => "orders/$order[id]",
+		'description'    => $L->payment_for_order($order['id'])
 	]
 );

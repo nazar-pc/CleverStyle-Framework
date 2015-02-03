@@ -18,7 +18,7 @@
 <p>IMPORTANT: After installation you have no Orders, Items, Categories, Attributes, Shipping types or Order statuses. You have to create them, preferably starting from the end of list moving to the beginning because items at the beginning of the list depends on items at the end.</p>
 <p>There are no payment types except Cash out of the box, so Cash assumed by default. However, new payment types will appear in interface as soon as third party module that implements this functionality will be installed (there can be multiple modules for different payment types)</p>
 
-<h4>For developer</h4>
+<h4 style="text-align: center;">For developer</h4>
 <p>This section will describe how developer can extend Shop module to make it unique and implement necessary functionality that is not available out of the box.</p>
 <h5 style="text-align: center;">Appearance</h5>
 <p>All user-side elements are WebComponents, Polymer elements. This means that you can <a href="https://github.com/nazar-pc/CleverStyle-CMS/wiki/Polymer-elements-extension">extend elements</a> using patched Polymer that comes with CleverStyle CMS easily:</p>
@@ -380,4 +380,67 @@
 	</dd>
 </dl>
 <h5 style="text-align: center;">Backend events</h5>
-TODO
+<p>Backend events greatly extends customizations and functionality - they allow to apply discounts, special offers, limit access to specific items for specific users and so on.</p>
+<p>Shop module dispatches such own events:</p>
+<ul>
+	<li>Shop/Categories/get</li>
+	<li>Shop/Categories/get_for_user</li>
+	<li>Shop/Categories/add</li>
+	<li>Shop/Categories/set</li>
+	<li>Shop/Categories/del</li>
+	<li>Shop/Items/get</li>
+	<li>Shop/Items/get_for_user</li>
+	<li>Shop/Items/add</li>
+	<li>Shop/Items/set</li>
+	<li>Shop/Items/del</li>
+	<li>Shop/Orders/get</li>
+	<li>Shop/Orders/add</li>
+	<li>Shop/Orders/set</li>
+	<li>Shop/Orders/set_status</li>
+	<li>Shop/Orders/del</li>
+	<li>Shop/Orders/Cart/recalculate</li>
+	<li>Shop/Shipping_type/get_for_user</li>
+</ul>
+<p>Details about how to use them you can find at their declaration in source code, it is pretty simple.</p>
+<p>Also Shop module dispatches some other events that might be useful for implementing additional payment methods and payment processing:</p>
+<dl>
+	<dt>System/payment/methods</dt>
+	<dt>
+		<pre>[
+	'methods' => &$payment_methods
+]</pre>
+	</dt>
+	<dd>To implement payment method its name should be added into array <i>$payment_method</i>. Payment method should look like <i>shop:cash</i>, where <i>shop</i> identifies module name and <i>cash</i> payment method itself.</dd>
+	<dt>System/payment/execute</dt>
+	<dt>
+		<pre>[
+	'amount'         => {amount},
+	'user'           => {user_id},
+	'payment_method' => {payment_method},
+	'module'         => Shop,
+	'purpose'        => orders/{order_id},
+	'description'    => {description}
+]</pre>
+	</dt>
+	<dd>Module that implements payment method should be subscribed to this event, and if <i>{payment_method}</i> corresponds to specified in <i>System/payment/methods</i> - payment should be processed.</dd>
+	<dd>After payment processing <i>System/payment/success</i> or <i>System/payment/error</i> event should be dispatched.</dd>
+</dl>
+<p>Shop module is subscribed to events that corresponds to payments processing, which can be done by third-party modules:</p>
+<dl>
+	<dt>System/payment/success</dt>
+	<dd>
+		<pre>[
+	'module'  => Shop,
+	'purpose' => orders/{order_id}
+]</pre>
+	</dd>
+	<dd>Both parameters are the same as in <i>System/payment/execute</i></dd>
+	<dt>System/payment/error</dt>
+	<dd>
+		<pre>[
+	'module'  => Shop,
+	'purpose' => orders/{order_id}
+]</pre>
+	</dd>
+	<dd>Both parameters are the same as in <i>System/payment/execute</i></dd>
+</dl>
