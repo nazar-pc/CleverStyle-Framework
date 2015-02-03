@@ -22,7 +22,7 @@ function add_menu_section_item ($section) {
 		$L->$section,
 		"admin/Shop/$section",
 		[
-			'class'	=> $route[0] == $section ? 'uk-active' : false
+			'class'	=> isset($route[0]) && $route[0] == $section ? 'uk-active' : false
 		]
 	);
 }
