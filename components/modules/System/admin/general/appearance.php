@@ -48,7 +48,7 @@ if (isset($_POST['action'])) {
 			}
 			move_uploaded_file(
 				$_FILES['upload_theme']['tmp_name'],
-				$tmp_file = TEMP.'/'.md5($_FILES['upload_theme']['tmp_name'].MICROTIME).'.phar'
+				$tmp_file = TEMP.'/'.md5($_FILES['upload_theme']['tmp_name'].openssl_random_pseudo_bytes(1000)).'.phar'
 			);
 			$tmp_dir = "phar://$tmp_file";
 			$theme   = file_get_contents("$tmp_dir/dir");

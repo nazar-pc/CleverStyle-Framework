@@ -497,8 +497,8 @@ class Index {
 		foreach ($blocks as $block) {
 			if (
 				!$block['active'] ||
-				$block['start'] > TIME ||
-				($block['expire'] && $block['expire'] < TIME) ||
+				$block['start'] > time() ||
+				($block['expire'] && $block['expire'] < time()) ||
 				!(User::instance()->get_permission('Block', $block['index']))
 			) {
 				continue;

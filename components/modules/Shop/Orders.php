@@ -308,14 +308,14 @@ class Orders {
 	function add ($user, $shipping_type, $shipping_cost, $shipping_username, $shipping_phone, $shipping_address, $payment_method, $paid, $status, $comment) {
 		$id = $this->create_simple([
 			$user,
-			TIME,
+			time(),
 			$shipping_type,
 			$shipping_cost,
 			$shipping_username,
 			$shipping_phone,
 			$shipping_address,
 			$payment_method,
-			$paid == 1 ? TIME : $paid,
+			$paid == 1 ? time() : $paid,
 			$status,
 			$comment
 		]);
@@ -336,7 +336,7 @@ class Orders {
 						'%s'
 					)",
 				$id,
-				TIME,
+				time(),
 				$status,
 				Order_statuses::instance()->get($status)['comment']
 			);
@@ -432,7 +432,7 @@ class Orders {
 			$shipping_phone,
 			$shipping_address,
 			$payment_method,
-			$paid == 1 ? ($order['paid'] ?: TIME) : $paid,
+			$paid == 1 ? ($order['paid'] ?: time()) : $paid,
 			$status,
 			$comment
 		]);
@@ -453,7 +453,7 @@ class Orders {
 						'%s'
 					)",
 				$id,
-				TIME,
+				time(),
 				$status,
 				Order_statuses::instance()->get($status)['comment']
 			);
@@ -539,7 +539,7 @@ class Orders {
 						'%s'
 					)",
 			$id,
-			TIME,
+			time(),
 			$status,
 			xap($comment, true)
 		);

@@ -82,7 +82,7 @@ if (
 				if ($_FILES['upload_module']['error'] != UPLOAD_ERR_OK) {
 					break;
 				}
-				$tmp_file = TEMP.'/'.md5($_FILES['upload_module']['tmp_name'].MICROTIME).'.phar';
+				$tmp_file = TEMP.'/'.md5($_FILES['upload_module']['tmp_name'].openssl_random_pseudo_bytes(1000)).'.phar';
 				move_uploaded_file($_FILES['upload_module']['tmp_name'], $tmp_file);
 				$tmp_dir     = "phar://$tmp_file";
 				$module_name = file_get_contents("$tmp_dir/dir");
@@ -287,7 +287,7 @@ if (
 			}
 			move_uploaded_file(
 				$_FILES['upload_system']['tmp_name'],
-				$tmp_file = TEMP.'/'.md5($_FILES['upload_system']['tmp_name'].MICROTIME).'.phar'
+				$tmp_file = TEMP.'/'.md5($_FILES['upload_system']['tmp_name'].openssl_random_pseudo_bytes(1000)).'.phar'
 			);
 			$tmp_dir = "phar://$tmp_file";
 			if (!file_exists("$tmp_dir/version") || !file_exists("$tmp_dir/themes.json")) {

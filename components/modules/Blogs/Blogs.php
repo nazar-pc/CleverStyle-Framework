@@ -260,7 +260,7 @@ class Blogs {
 					'%s'
 				)",
 			User::instance()->id,
-			$draft ? 0 : TIME,
+			$draft ? 0 : time(),
 			(int)(bool)$draft
 		)
 		) {
@@ -441,7 +441,7 @@ class Blogs {
 				SET `date` = '%s'
 				WHERE `id` = '%s'
 				LIMIT 1",
-				TIME,
+				time(),
 				$id
 			);
 		}

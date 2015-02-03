@@ -428,7 +428,7 @@ class User {
 		if (!preg_match('/^[0-9a-z]{56}$/', $login_hash)) {
 			return false;
 		}
-		$time	= TIME;
+		$time	= time();
 		/**
 		 * @var \cs\_SERVER $_SERVER
 		 */
@@ -459,7 +459,7 @@ class User {
 		 * @var \cs\_SERVER $_SERVER
 		 */
 		$ip		= ip2hex($_SERVER->ip);
-		$time	= TIME;
+		$time	= time();
 		if ($success) {
 			$this->db_prime()->q(
 				"DELETE FROM `[prefix]sign_ins`
@@ -484,7 +484,7 @@ class User {
 						'%s',
 						'%s'
 					)",
-				TIME + $Config->core['sign_in_attempts_block_time'],
+				$time + $Config->core['sign_in_attempts_block_time'],
 				$login_hash,
 				$ip
 			);

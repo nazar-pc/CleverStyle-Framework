@@ -54,7 +54,7 @@ if (
 				if ($_FILES['upload_plugin']['error'] != UPLOAD_ERR_OK) {
 					break;
 				}
-				$tmp_file = TEMP.'/'.md5($_FILES['upload_plugin']['tmp_name'].MICROTIME).'.phar';
+				$tmp_file = TEMP.'/'.md5($_FILES['upload_plugin']['tmp_name'].openssl_random_pseudo_bytes(1000)).'.phar';
 				move_uploaded_file($_FILES['upload_plugin']['tmp_name'], $tmp_file);
 				$tmp_dir = "phar://$tmp_file";
 				$plugin  = file_get_contents("$tmp_dir/dir");

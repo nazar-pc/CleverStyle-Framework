@@ -141,7 +141,7 @@ class Comments {
 			$this->module,
 			$item,
 			$User->id,
-			TIME,
+			time(),
 			$text,
 			$L->clang
 		)) {
@@ -152,7 +152,7 @@ class Comments {
 				'module'	=> $this->module,
 				'item'		=> $item,
 				'user'		=> $User->id,
-				'date'		=> TIME,
+				'date'		=> time(),
 				'text'		=> $text,
 				'lang'		=> $L->clang
 			];
@@ -367,7 +367,7 @@ class Comments {
 						]
 					).
 					h::{'time.cs-comments-comment-date'}(
-						date('dmY', TIME) == date('dmY', $comment['date']) ?
+						date('dmY', time()) == date('dmY', $comment['date']) ?
 							date($L->_time, $comment['date']) : $L->to_locale(date($L->_datetime, $comment['date'])),
 						[
 							'datetime'		=> date('c', $comment['date'])

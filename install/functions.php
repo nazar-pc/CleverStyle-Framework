@@ -50,7 +50,7 @@ function install_form () {
 			h::{'tr.expert td'}(
 				'Database tables prefix:',
 				h::{'input[name=db_prefix]'}([
-					'value' => substr(md5(uniqid(microtime(true), true)), 0, 5).'_'
+					'value' => substr(md5(openssl_random_pseudo_bytes(1000)), 0, 5).'_'
 				])
 			).
 			h::{'tr.expert td'}(
@@ -251,7 +251,7 @@ function install_process ($argv = null) {
 	/**
 	 * Basic system configuration
 	 */
-	$public_key  = hash('sha512', uniqid(microtime(true), true));
+	$public_key  = hash('sha512', openssl_random_pseudo_bytes(1000));
 	$td          = mcrypt_module_open(MCRYPT_TWOFISH, '', MCRYPT_MODE_CBC, '');
 	$main_config = file_exists(ROOT.'/config') && file_put_contents(
 			ROOT.'/config/main.json',

@@ -167,7 +167,7 @@ class Deferred_tasks {
 			WHERE `id` = '%s'
 			LIMIT 1",
 			time(),
-			$hash = md5(uniqid(microtime(true))),
+			$hash = md5(openssl_random_pseudo_bytes(1000)),
 			$id
 		);
 		return $hash === $this->db_prime()->qfs(

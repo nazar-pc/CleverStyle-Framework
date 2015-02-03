@@ -413,7 +413,7 @@ class Items {
 	 */
 	function add ($category, $price, $in_stock, $soon, $listed, $attributes, $images, $videos, $tags) {
 		$id = $this->create_simple([
-			TIME,
+			time(),
 			$category,
 			$price,
 			$in_stock,

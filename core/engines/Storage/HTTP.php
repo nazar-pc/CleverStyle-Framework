@@ -220,9 +220,9 @@ class HTTP extends _Abstract {
 	 * @return bool
 	 */
 	function move_uploaded_file ($filename, $destination) {
-		$temp = md5(uniqid(microtime(true)));
+		$temp = md5(openssl_random_pseudo_bytes(1000));
 		while (file_exists(TEMP."/$temp")) {
-			$temp = md5(uniqid(microtime(true)));
+			$temp = md5(openssl_random_pseudo_bytes(1000));
 		}
 		time_limit_pause();
 		if (move_uploaded_file($filename, TEMP."/$temp") === false) {

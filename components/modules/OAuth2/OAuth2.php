@@ -63,7 +63,7 @@ class OAuth2 {
 		/**
 		 * Generate hash in cycle, to obtain unique value
 		 */
-		for ($i = 0; $id = md5(MICROTIME.uniqid($i, true)); ++$i) {
+		for ($i = 0; $id = md5(openssl_random_pseudo_bytes(1000)); ++$i) {
 			if ($this->db_prime()->qf(
 				"SELECT `id`
 				FROM `[prefix]oauth2_clients`
@@ -88,7 +88,7 @@ class OAuth2 {
 						'%s'
 					)",
 				$id,
-				md5($id.uniqid($i, true)),
+				md5(openssl_random_pseudo_bytes(1000)),
 				xap($name),
 				xap($domain),
 				(int)(bool)$active
@@ -308,9 +308,9 @@ class OAuth2 {
 		unset($user_agent, $current_session);
 		for (
 			$i = 0;
-			$access_token	= md5(MICROTIME.uniqid($i, true)),
-			$refresh_token	= md5($access_token.uniqid($i, true)),
-			$code			= md5($refresh_token.uniqid($i, true));
+			$access_token	= md5(openssl_random_pseudo_bytes(1000)),
+			$refresh_token	= md5($access_token.openssl_random_pseudo_bytes(1000)),
+			$code			= md5($refresh_token.openssl_random_pseudo_bytes(1000));
 			++$i
 		) {
 			if ($this->db_prime()->qf(
@@ -352,8 +352,8 @@ class OAuth2 {
 				$client['id'],
 				$User->id,
 				$new_session,
-				TIME,
-				TIME + $this->expiration,
+				time(),
+				time() + $this->expiration,
 				$access_token,
 				$refresh_token,
 				$code,
@@ -415,7 +415,7 @@ class OAuth2 {
 		return [
 			'access_token'	=> $data['access_token'],
 			'refresh_token'	=> $data['refresh_token'],
-			'expires_in'	=> $data['expire'] - TIME,
+			'expires_in'	=> $data['expire'] - time(),
 			'token_type'	=> 'bearer',
 			'user_id'		=> $data['user']
 		];
@@ -448,7 +448,7 @@ class OAuth2 {
 			]);
 		});
 		if ($data) {
-			if($data['expire'] < TIME) {
+			if($data['expire'] < time()) {
 				return false;
 			}
 			if (!$this->get_access($data['client_id'], $data['user'])) {
@@ -464,8 +464,8 @@ class OAuth2 {
 			/**
 			 * Automatic prolongation of tokens' expiration time if configured
 			 */
-			} elseif ($this->automatic_prolongation && $data['expire'] < TIME - $this->expiration * Config::instance()->core['update_ratio'] / 100) {
-				$data['expire']	= TIME + $this->expiration;
+			} elseif ($this->automatic_prolongation && $data['expire'] < time() - $this->expiration * Config::instance()->core['update_ratio'] / 100) {
+				$data['expire']	= time() + $this->expiration;
 					$this->db_prime()->q(
 					"UPDATE `[prefix]oauth2_clients_sessions`
 					SET `expire` = '%s'

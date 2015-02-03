@@ -111,7 +111,7 @@ trait Management {
 		/**
 		 * @var \cs\_SERVER $_SERVER
 		 */
-		$reg_key		= md5($password.uniqid('', true));
+		$reg_key		= md5(openssl_random_pseudo_bytes(1000));
 		$confirmation	= $confirmation && $Config->core['require_registration_confirmation'];
 		if ($this->db_prime()->q(
 			"INSERT INTO `[prefix]users` (
@@ -137,7 +137,7 @@ trait Management {
 			$login_hash,
 			$email,
 			$email_hash,
-			TIME,
+			time(),
 			ip2hex($_SERVER->ip),
 			$reg_key,
 			!$confirmation ? 1 : -1
@@ -247,7 +247,7 @@ trait Management {
 	 * Checks for unconfirmed registrations and deletes expired
 	 */
 	protected function delete_unconfirmed_users () {
-		$reg_date		= TIME - Config::instance()->core['registration_confirmation_time'] * 86400;	//1 day = 86400 seconds
+		$reg_date		= time() - Config::instance()->core['registration_confirmation_time'] * 86400;	//1 day = 86400 seconds
 		$ids			= $this->db_prime()->qfas([
 			"SELECT `id`
 			FROM `[prefix]users`
@@ -332,10 +332,10 @@ trait Management {
 	 */
 	function restore_password ($user) {
 		if ($user && $user != User::GUEST_ID) {
-			$reg_key		= md5(MICROTIME.uniqid('', true));
+			$reg_key		= md5(openssl_random_pseudo_bytes(1000));
 			if ($this->set('reg_key', $reg_key, $user)) {
 				$data					= $this->get('data', $user);
-				$data['restore_until']	= TIME + Config::instance()->core['registration_confirmation_time'] * 86400;
+				$data['restore_until']	= time() + Config::instance()->core['registration_confirmation_time'] * 86400;
 				if ($this->set('data', $data, $user)) {
 					return $reg_key;
 				}
@@ -370,7 +370,7 @@ trait Management {
 		$data		= $this->get('data', $id);
 		if (!isset($data['restore_until'])) {
 			return false;
-		} elseif ($data['restore_until'] < TIME) {
+		} elseif ($data['restore_until'] < time()) {
 			unset($data['restore_until']);
 			$this->set('data', $data, $id);
 			return false;
