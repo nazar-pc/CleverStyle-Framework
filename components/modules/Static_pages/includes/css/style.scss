@@ -1,0 +1,50 @@
+/**
+ * @package		Static Pages
+ * @category	modules
+ * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license		MIT License, see license.txt
+ */
+.cs-static-pages- {
+	&-padding-left- {
+		&0,
+		&1,
+		&2,
+		&3,
+		&4,
+		&5 {
+			padding : 8px !important;
+		}
+
+		&1 {
+			padding-left : 20px !important;
+		}
+
+		&2 {
+			padding-left : 40px !important;
+		}
+
+		&3 {
+			padding-left : 60px !important;
+		}
+
+		&4 {
+			padding-left : 80px !important;
+		}
+
+		&5 {
+			padding-left : 100px !important;
+		}
+	}
+
+	&count {
+		float : right;
+	}
+
+	&page-form cs-table-cell {
+		.INLINE_EDITOR,
+		[contenteditable=true] {
+			outline : #333333 dotted 1px
+		}
+	}
+}
