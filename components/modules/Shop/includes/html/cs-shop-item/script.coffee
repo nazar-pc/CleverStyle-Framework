@@ -6,8 +6,21 @@
  * @license       MIT License, see license.txt
 ###
 Polymer(
-	ready : ->
+	characteristics_text	: cs.Language.shop_characteristics_text
+	ready					: ->
 		@header_title	= @querySelector('h1').innerHTML
+		$this			= $(@)
+		@item_id		= $this.data('id')
+		@price			= sprintf(cs.shop.settings.price_formatting, $this.data('price'))
+		@in_stock		= $this.data('in_stock')
+		attributes		= $(@querySelector('#attributes'))
+		if attributes.length
+			@show_attributes	= true
+			attributes
+				.find('table')
+					.addClass('uk-table uk-table-hover')
+					.find('td:first-of-type')
+						.addClass('uk-text-bold')
 		$(@$.images)
 			.append(
 				$(@querySelectorAll('#videos > a')).each ->
@@ -28,16 +41,4 @@ Polymer(
 				trackpad		: true
 				width			: '100%'
 			)
-		$this			= $(@)
-		@item_id		= $this.data('id')
-		@price			= sprintf(cs.shop.settings.price_formatting, $this.data('price'))
-		@in_stock		= $this.data('in_stock')
-		attributes		= $(@querySelector('#attributes'))
-		if attributes.length
-			@show_attributes	= true
-			attributes
-				.find('table')
-					.addClass('uk-table uk-table-hover')
-					.find('td:first-of-type')
-						.addClass('uk-text-bold')
-);
+)
