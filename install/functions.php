@@ -110,7 +110,6 @@ function install_process ($argv = null) {
 	define('DEBUG', false);
 	require_once DIR.'/fs/'.$fs['core/classes/_SERVER.php'];
 	require_once DIR.'/fs/'.$fs['core/traits/Singleton.php'];
-	require_once DIR.'/fs/'.$fs['core/classes/DB.php'];
 	require_once DIR.'/fs/'.$fs['core/engines/DB/_Abstract.php'];
 	require_once DIR.'/fs/'.$fs["core/engines/DB/$_POST[db_engine].php"];
 	require_once DIR.'/fs/'.$fs['core/classes/False_class.php'];
