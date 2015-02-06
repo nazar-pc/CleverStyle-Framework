@@ -19,47 +19,47 @@
   callbacks = {};
 
   e = {
-    'on': function(action, callback) {
-      if (!action || !callback) {
+    'on': function(event, callback) {
+      if (!event || !callback) {
         return e;
       }
-      if (!callbacks[action]) {
-        callbacks[action] = [];
+      if (!callbacks[event]) {
+        callbacks[event] = [];
       }
-      callbacks[action].push(callback);
+      callbacks[event].push(callback);
       return e;
     },
-    'off': function(action, callback) {
-      if (!callbacks[action]) {
+    'off': function(event, callback) {
+      if (!callbacks[event]) {
         return e;
       }
       if (!callback) {
-        delete callbacks[action];
+        delete callbacks[event];
         return e;
       }
-      callbacks[action] = callbacks[action].filter(function(c) {
+      callbacks[event] = callbacks[event].filter(function(c) {
         return c !== callback;
       });
       return e;
     },
-    once: function(action, callback) {
+    once: function(event, callback) {
       var callback_;
-      if (!action || !callback) {
+      if (!event || !callback) {
         return e;
       }
       callback_ = function() {
-        e.off(action, callback_);
+        e.off(event, callback_);
         return callback.apply(callback, arguments);
       };
-      return e.on(action, callback_);
+      return e.on(event, callback_);
     },
-    fire: function(action, param1, _) {
+    fire: function(event, param1, _) {
       var args, callback, index, _i, _len, _ref;
-      if (!action || !callbacks[action]) {
+      if (!event || !callbacks[event]) {
         return true;
       }
       args = Array.prototype.slice.call(arguments, 1);
-      _ref = callbacks[action];
+      _ref = callbacks[event];
       for (index = _i = 0, _len = _ref.length; _i < _len; index = ++_i) {
         callback = _ref[index];
         if (callback.apply(callback, args) === false) {

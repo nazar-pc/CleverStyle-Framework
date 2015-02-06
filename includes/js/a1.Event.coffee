@@ -9,34 +9,34 @@
 ###
 callbacks = {}
 e =
-	'on'  : (action, callback) ->
-		if !action || !callback
+	'on'  : (event, callback) ->
+		if !event || !callback
 			return e
-		if !callbacks[action]
-			callbacks[action] = []
-		callbacks[action].push(callback)
+		if !callbacks[event]
+			callbacks[event] = []
+		callbacks[event].push(callback)
 		e
-	'off' : (action, callback) ->
-		if !callbacks[action]
+	'off' : (event, callback) ->
+		if !callbacks[event]
 			return e
 		if !callback
-			delete callbacks[action]
+			delete callbacks[event]
 			return e
-		callbacks[action] = callbacks[action].filter (c) ->
+		callbacks[event] = callbacks[event].filter (c) ->
 			c != callback
 		e
-	once  : (action, callback) ->
-		if !action || !callback
+	once  : (event, callback) ->
+		if !event || !callback
 			return e
 		callback_ = ->
-			e.off(action, callback_)
+			e.off(event, callback_)
 			callback.apply(callback, arguments)
-		e.on(action, callback_)
-	fire  : (action, param1, _) ->
-		if !action || !callbacks[action]
+		e.on(event, callback_)
+	fire  : (event, param1, _) ->
+		if !event || !callbacks[event]
 			return true
 		args = Array::slice.call(arguments, 1)
-		for callback, index in callbacks[action]
+		for callback, index in callbacks[event]
 			if callback.apply(callback, args) == false
 				return false
 		true
