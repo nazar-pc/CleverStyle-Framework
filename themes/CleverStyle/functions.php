@@ -228,8 +228,8 @@ function get_footer () {
 	return h::div(
 		Language::instance()->page_footer_info(
 			'<!--generate time-->',
-			$db ? $db->queries : 0,
-			format_time(round($db ? $db->time : 0, 5)),
+			$db ? $db->queries() : 0,
+			format_time(round($db ? $db->time() : 0, 5)),
 			'<!--peak memory usage-->'
 		),
 		'© Powered by <a target="_blank" href="http://cleverstyle.org/cms" title="CleverStyle CMS">CleverStyle CMS</a>'

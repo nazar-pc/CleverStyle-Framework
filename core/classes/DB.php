@@ -8,22 +8,15 @@
 namespace cs;
 
 /**
+ * @property int   $queries Total number of executed queries
+ * @property float $time    Total time spent on all queries and connections
+ *
  * @method static DB instance($check = false)
  */
 class DB {
 	use	Singleton;
 	/**
-	 * Total number of executed queries
-	 * @var int
-	 */
-	public		$queries				= 0;
-	/**
-	 * Total time spent on all queries and connections
-	 * @var int
-	 */
-	public		$time					= 0;
-	/**
-	 * @var array
+	 * @var DB\_Abstract[]
 	 */
 	protected	$connections			= [];
 	/**
@@ -58,6 +51,30 @@ class DB {
 			return $this->mirrors;
 		}
 		return null;
+	}
+	/**
+	 * Total number of executed queries
+	 *
+	 * @return int
+	 */
+	function queries () {
+		$queries	= 0;
+		foreach ($this->connections as $c) {
+			$queries += $c->queries()['num'];
+		}
+		return $queries;
+	}
+	/**
+	 * Total time spent on all queries and connections
+	 *
+	 * @return float
+	 */
+	function time () {
+		$time	= 0;
+		foreach ($this->connections as $c) {
+			$time += $c->connecting_time() + $c->time();
+		}
+		return $time;
 	}
 	/**
 	 * Processing of requests for getting data from DB. Balancing of DB may be used with corresponding settings.
@@ -114,6 +131,16 @@ class DB {
 	 * @return	DB\_Abstract|False_class					Returns instance of False_class on failure
 	 */
 	function __get ($connection) {
+		if ($connection === 'queries') {
+			// TODO remove in future versions
+			trigger_error('DB::instance()->queries property is deprecated, use ->queries() method instead', E_USER_DEPRECATED);
+			return $this->queries();
+		}
+		if ($connection === 'time') {
+			// TODO remove in future versions
+			trigger_error('DB::instance()->time property is deprecated, use ->time() method instead', E_USER_DEPRECATED);
+			return $this->time();
+		}
 		return $this->db($connection);
 	}
 	/**
@@ -289,7 +316,6 @@ class DB {
 		} else {
 			$db = $data;
 		}
-		unset($data);
 		if (is_array($db)) {
 			errors_off();
 			$engine_class	= '\\cs\\DB\\'.$db['type'];

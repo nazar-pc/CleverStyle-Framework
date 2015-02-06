@@ -6,7 +6,6 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\DB;
-use			cs\DB;
 class MySQLi extends _Abstract {
 	/**
 	 * @var \MySQLi Instance of DB connection
@@ -46,13 +45,11 @@ class MySQLi extends _Abstract {
 			}
 			$this->connected = true;
 		} else {
-			return false;
+			return;
 		}
 		$this->connecting_time		= microtime(true) - $this->connecting_time;
-		DB::instance(true)->time	+= $this->connecting_time;
 		$this->db_type				= 'mysql';
 		$this->prefix				= $prefix;
-		return $this;
 	}
 	/**
 	 * @inheritdoc
