@@ -194,7 +194,10 @@ class Server implements MessageComponentInterface {
 				return;
 			}
 			$this->send_to_clients_internal($action, $details, $send_to, $target);
-		} elseif (isset($connection->user_id)) {
+		} elseif (
+			$action != 'register_actions' &&
+			isset($connection->user_id)
+		) {
 			/** @noinspection PhpUndefinedFieldInspection */
 			Event::instance()->fire("WebSockets/$action", [
 				'details'  => $details,
