@@ -20,7 +20,6 @@ if ($cli) {
 }
 mb_internal_encoding('utf-8');
 define('ROOT',	getcwd());	//Path to site root
-global $fs;
 $fs		= json_decode(file_get_contents(DIR.'/fs.json'), true);
 /**
  * Fallback for PHP 5.5 hashing functions, that are not present in PHP 5.4
@@ -180,7 +179,7 @@ Example:
 		if (!isset($_POST['language'])) {
 			$_POST['language'] = 'English';
 		}
-		echo install_process($argv);
+		echo install_process($fs, $argv);
 	}
 	echo "\n";
 	return;
@@ -203,7 +202,7 @@ echo	"<!doctype html>\n".
 			h::h1('CleverStyle CMS $version$ Installation')
 		).
 		h::section(
-			isset($_POST['site_name']) ? install_process() : install_form()
+			isset($_POST['site_name']) ? install_process($fs) : install_form()
 		).
 		h::footer(
 			'Copyright (c) 2011-2015, Nazar Mokrynskyi'

@@ -98,12 +98,12 @@ function install_form () {
 }
 
 /**
+ * @param array[]    $fs
  * @param array|null $argv
  *
  * @return string
  */
-function install_process ($argv = null) {
-	global $fs;
+function install_process ($fs, $argv = null) {
 	/**
 	 * Connecting to the DataBase
 	 */
