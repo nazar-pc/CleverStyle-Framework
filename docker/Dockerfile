@@ -11,7 +11,7 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 # Generate password for MySQL
 
 	apt-get install -y pwgen && \
-	[[ $MYSQL_PASSWORD ]] || MYSQL_PASSWORD=`pwgen -s 20 1` && \
+	test ! -z "$MYSQL_PASSWORD" || MYSQL_PASSWORD=`pwgen -s 20 1` && \
 	echo mysql-server mysql-server/root_password password $MYSQL_PASSWORD | debconf-set-selections && \
 	echo mysql-server mysql-server/root_password_again password $MYSQL_PASSWORD | debconf-set-selections && \
 
@@ -23,6 +23,10 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 		php5-cli php5-curl php5-fpm php5-mcrypt php5-mysql \
 		wget && \
 	rm -rf /var/lib/apt/lists/* && \
+
+# Enable PHP modules
+
+	php5enmod mcrypt && \
 
 # Download git master version of CleverStyle CMS
 
@@ -73,9 +77,9 @@ RUN	export DEBIAN_FRONTEND=noninteractive && \
 		-admin_email    admin@localhost.loc \
 		-admin_password 1111 && \
 
-# Adjust permissions
+# Move to special directory for volume support on running
 
-	chown www-data:www-data -R /web
+	mv /web /web_tmp
 
 # Add Nginx config
 ADD cscms /etc/nginx/sites-enabled/cscms

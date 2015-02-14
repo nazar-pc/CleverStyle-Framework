@@ -8,15 +8,15 @@
  * @license		MIT License, see license.txt
  */
 /**
- * Provides next triggers:<br>
+ * Provides next events:<br>
  *  admin/System/general/optimization/clean_pcache
  */
 namespace	cs\modules\System;
 use
 	cs\Cache,
 	cs\Config,
-	cs\Index,
-	cs\Trigger;
+	cs\Event,
+	cs\Index;
 $Index	= Index::instance();
 $Config	= Config::instance();
 if (isset($_POST['apply']) || isset($_POST['save'])) {
@@ -65,13 +65,13 @@ $Cache	= Cache::instance();
 if (isset($_POST['apply']) && $Cache->cache_state()) {
 	if ($Index->apply() && !$Config->core['cache_compress_js_css']) {
 		clean_pcache();
-		Trigger::instance()->run('admin/System/general/optimization/clean_pcache');
+		Event::instance()->fire('admin/System/general/optimization/clean_pcache');
 	}
 } elseif (isset($_POST['save'])) {
 	$save = $Index->save();
 	if ($save && !$Config->core['cache_compress_js_css']) {
 		clean_pcache();
-		Trigger::instance()->run('admin/System/general/optimization/clean_pcache');
+		Event::instance()->fire('admin/System/general/optimization/clean_pcache');
 	}
 } elseif (isset($_POST['cancel']) && $Cache->cache_state()) {
 	$Index->cancel();

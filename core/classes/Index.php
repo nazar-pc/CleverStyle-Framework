@@ -8,7 +8,7 @@
 namespace cs;
 use            h;
 /**
- * Provides next triggers:
+ * Provides next events:
  *  System/Index/block_render
  *  [
  *      'index'           => $index,           //Block index
@@ -149,7 +149,7 @@ class Index {
 			exit;
 		}
 		unset($admin_path, $api_path);
-		Trigger::instance()->run('System/Index/construct');
+		Event::instance()->fire('System/Index/construct');
 		/**
 		 * Plugins processing
 		 */
@@ -497,13 +497,13 @@ class Index {
 		foreach ($blocks as $block) {
 			if (
 				!$block['active'] ||
-				$block['start'] > TIME ||
-				($block['expire'] && $block['expire'] < TIME) ||
+				$block['start'] > time() ||
+				($block['expire'] && $block['expire'] < time()) ||
 				!(User::instance()->get_permission('Block', $block['index']))
 			) {
 				continue;
 			}
-			if (Trigger::instance()->run(
+			if (Event::instance()->fire(
 				'System/Index/block_render',
 				[
 					'index'        => $block['index'],
@@ -695,7 +695,7 @@ class Index {
 				$L->{home_page() ? 'home' : $this->module}
 			);
 		}
-		Trigger::instance()->run('System/Index/preload');
+		Event::instance()->fire('System/Index/preload');
 		/**
 		 * If module consists of index.html only
 		 */
@@ -717,6 +717,6 @@ class Index {
 		if (error_code()) {
 			$Page->error();
 		}
-		Trigger::instance()->run('System/Index/postload');
+		Event::instance()->fire('System/Index/postload');
 	}
 }

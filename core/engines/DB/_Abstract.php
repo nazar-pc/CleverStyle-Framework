@@ -6,7 +6,6 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\DB;
-use			cs\DB;
 abstract class _Abstract {
 	/**
 	 * Is connection established
@@ -78,8 +77,6 @@ abstract class _Abstract {
 	 * @param string	$host
 	 * @param string	$charset
 	 * @param string	$prefix
-	 *
-	 * @return self
 	 */
 	abstract function __construct ($database, $user = '', $password = '', $host = 'localhost', $charset = 'utf8', $prefix = '');
 	/**
@@ -107,19 +104,14 @@ abstract class _Abstract {
 				return false;
 			case 1:
 			case 2:
-				if (!is_array($params)) {
-					$params	= [$params];
-				}
+				$params	= (array)$params;
 			break;
 		}
 		if (!empty($params)) {
-			unset($param);
 			foreach ($params as &$param) {
 				$param	= $this->s($param, false);
 			}
-			unset($param);
 		}
-		$db	= DB::instance(true);
 		if (is_array($query) && !empty($query)) {
 			$time_from	= microtime(true);
 			foreach ($query as &$q) {
@@ -134,9 +126,8 @@ abstract class _Abstract {
 			}
 			unset($local_params, $q);
 			$this->queries['num']	+= count($query);
-			$db->queries			+= count($query);
 			$return					= $this->q_multi_internal($query);
-			$db->time				+= round(microtime(true) - $time_from, 6);
+			$this->time				+= round(microtime(true) - $time_from, 6);
 			return $return;
 		}
 		if(!$query) {
@@ -154,8 +145,6 @@ abstract class _Abstract {
 			$this->queries['time'][]	= $this->query['time'];
 		}
 		++$this->queries['num'];
-		$db->time					+= $this->query['time'];
-		++$db->queries;
 		return $result;
 	}
 	/**
@@ -393,7 +382,7 @@ abstract class _Abstract {
 			foreach ($params as $p) {
 				$params_	= array_merge($params_, (array)$p);
 			}
-			unset($params, $p);
+			unset($p);
 			return (bool)$this->q($query, $params_);
 		} else {
 			$result	= true;

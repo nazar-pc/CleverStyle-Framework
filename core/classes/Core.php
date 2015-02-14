@@ -80,7 +80,7 @@ AddEncoding gzip .html
 		 * Support for JSON requests, filling $_POST array for request method different than POST
 		 */
 		if (isset($_SERVER->content_type)) {
-			if (strpos($_SERVER->content_type, 'application/json') === 0) {
+			if (preg_match('#^application/([^+\s]+\+)?json#', $_SERVER->content_type)) {
 				$_POST		= _json_decode(@file_get_contents('php://input')) ?: [];
 				$_REQUEST	= array_merge($_REQUEST, $_POST);
 			} elseif (

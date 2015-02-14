@@ -10,9 +10,9 @@ namespace	cs\themes\CleverStyle;
 use
 	cs\Config,
 	cs\DB,
+	cs\Event,
 	cs\Language,
 	cs\Page,
-	cs\Trigger,
 	cs\User,
 	h;
 /**
@@ -108,7 +108,7 @@ function get_header_info () {
 		);
 	} else {
 		$external_systems_list		= '';
-		Trigger::instance()->run(
+		Event::instance()->fire(
 			'System/Page/external_sign_in_list',
 			[
 				'list'	=> &$external_systems_list
@@ -208,7 +208,7 @@ function get_footer () {
 	/**
 	 * Some useful details about page execution process, will be called directly before output
 	 */
-	Trigger::instance()->register(
+	Event::instance()->on(
 		'System/Page/display',
 		function () {
 			$Page		= Page::instance();
@@ -228,8 +228,8 @@ function get_footer () {
 	return h::div(
 		Language::instance()->page_footer_info(
 			'<!--generate time-->',
-			$db ? $db->queries : 0,
-			format_time(round($db ? $db->time : 0, 5)),
+			$db ? $db->queries() : 0,
+			format_time(round($db ? $db->time() : 0, 5)),
 			'<!--peak memory usage-->'
 		),
 		'© Powered by <a target="_blank" href="http://cleverstyle.org/cms" title="CleverStyle CMS">CleverStyle CMS</a>'

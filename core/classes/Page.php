@@ -12,7 +12,7 @@ use
 	cs\Page\Meta;
 
 /**
- * Provides next triggers:<br>
+ * Provides next events:<br>
  *  System/Page/pre_display
  *  System/Page/rebuild_cache
  *  ['key'	=> &$key]		//Reference to the key, that will be appended to all css and js files, can be changed to reflect JavaScript and CSS changes
@@ -453,7 +453,7 @@ class Page {
 		} else {
 			$error_description	= $custom_text ?: $error;
 		}
-		if (api_path() || $json) {
+		if ($json || api_path()) {
 			if ($json) {
 				header('Content-Type: application/json; charset=utf-8', true);
 				interface_off();
@@ -505,7 +505,7 @@ class Page {
 			 */
 			echo $this->process_replacing($this->Content ?: (api_path() ? 'null' : ''));
 		} else {
-			Trigger::instance()->run('System/Page/pre_display');
+			Event::instance()->fire('System/Page/pre_display');
 			/**
 			 * Processing of template, substituting of content, preparing for the output
 			 */
@@ -514,7 +514,7 @@ class Page {
 			 * Processing of replacing in content
 			 */
 			$this->Html = $this->process_replacing($this->Html);
-			Trigger::instance()->run('System/Page/display');
+			Event::instance()->fire('System/Page/display');
 			echo rtrim($this->Html);
 		}
 		if ($ob) {

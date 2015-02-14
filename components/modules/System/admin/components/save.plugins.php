@@ -8,7 +8,7 @@
  * @license		MIT License, see license.txt
  */
 /**
- * Provides next triggers:<br>
+ * Provides next events:<br>
  *  admin/System/components/plugins/enable<br>
  *  ['name'	=> <i>plugin_name</i>]<br>
  *  admin/System/components/plugins/disable<br>
@@ -29,7 +29,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 				$Config->components['plugins'][] = $plugin;
 				$Index->save();
 				clean_pcache();
-				Trigger::instance()->run(
+				Event::instance()->fire(
 					'admin/System/components/plugins/enable',
 					[
 						'name' => $plugin
@@ -44,7 +44,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 				unset($Config->components['plugins'][array_search($plugin, $Config->components['plugins'])]);
 				$Index->save();
 				clean_pcache();
-				Trigger::instance()->run(
+				Event::instance()->fire(
 					'admin/System/components/plugins/disable',
 					[
 						'name' => $plugin
@@ -62,7 +62,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			if ($active) {
 				unset($Config->components['plugins'][array_search($plugin, $Config->components['plugins'])]);
 				$Config->save();
-				Trigger::instance()->run(
+				Event::instance()->fire(
 					'admin/System/components/plugins/disable',
 					[
 						'name' => $plugin
@@ -78,7 +78,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 			/**
 			 * Extracting new versions of files
 			 */
-			$tmp_file	= TEMP.'/'.User::instance()->get_session().'_plugin_update.phar';
+			$tmp_file	= TEMP.'/'.User::instance()->get_session_id().'_plugin_update.phar';
 			$tmp_dir	= "phar://$tmp_file";
 			$fs			= file_get_json("$tmp_dir/fs.json");
 			$extract	= array_product(
@@ -143,7 +143,7 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 				$Config->components['plugins'][]	= $plugin;
 				$Config->save();
 				clean_pcache();
-				Trigger::instance()->run(
+				Event::instance()->fire(
 					'admin/System/components/plugins/enable',
 					[
 						'name' => $plugin

@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package        CleverStyle CMS
+ * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright      Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license        MIT License, see license.txt
  */
 namespace cs;
 
@@ -11,11 +11,12 @@ namespace cs;
  * @method static Key instance($check = false)
  */
 class Key {
-	use	Singleton;
+	use
+		Singleton;
 	/**
 	 * Generates guaranteed unique key
 	 *
-	 * @param int|object	$database	Keys database
+	 * @param int|object $database Keys database
 	 *
 	 * @return string
 	 */
@@ -24,8 +25,8 @@ class Key {
 			$database = DB::instance()->$database();
 		}
 		while (true) {
-			$key	= hash('sha224', microtime(true));
-			$time	= TIME;
+			$key  = hash('sha224', openssl_random_pseudo_bytes(1000));
+			$time = time();
 			if (!$database->qfs(
 				"SELECT `id`
 				FROM `[prefix]keys`
@@ -33,7 +34,8 @@ class Key {
 					`key`		= '$key' AND
 					`expire`	>= $time
 				LIMIT 1"
-			)) {
+			)
+			) {
 				return $key;
 			}
 		}
@@ -42,10 +44,10 @@ class Key {
 	/**
 	 * Adding key into specified database
 	 *
-	 * @param int|object	$database	Keys database
-	 * @param bool|string	$key		If <b>false</b> - key will be generated automatically, otherwise must contain 56 character [0-9a-z] key
-	 * @param null|mixed	$data		Data to be stored with key
-	 * @param int			$expire		Timestamp of key expiration, if not specified - default system value will be used
+	 * @param int|object  $database Keys database
+	 * @param bool|string $key      If <b>false</b> - key will be generated automatically, otherwise must contain 56 character [0-9a-z] key
+	 * @param null|mixed  $data     Data to be stored with key
+	 * @param int         $expire   Timestamp of key expiration, if not specified - default system value will be used
 	 *
 	 * @return bool|string
 	 */
@@ -61,9 +63,10 @@ class Key {
 			}
 		}
 		$expire = (int)$expire;
-		$Config	= Config::instance();
-		if ($expire == 0 || $expire < TIME) {
-			$expire = TIME + $Config->core['key_expire'];
+		$Config = Config::instance();
+		$time   = time();
+		if ($expire == 0 || $expire < $time) {
+			$expire = $time + $Config->core['key_expire'];
 		}
 		$this->del($database, $key);
 		$database->q(
@@ -86,7 +89,6 @@ class Key {
 		 * Cleaning old keys
 		 */
 		if ($id && ($id % $Config->core['inserts_limit']) == 0) {
-			$time	= TIME;
 			$database->aq(
 				"DELETE FROM `[prefix]keys`
 				WHERE `expire` < $time"
@@ -97,9 +99,9 @@ class Key {
 	/**
 	 * Check key existence and/or getting of data stored with key. After this key will be deleted automatically.
 	 *
-	 * @param int				$database	Keys database
-	 * @param string			$key		56 character [0-9a-z] key
-	 * @param bool $get_data				If <b>true</d> - stored data will be returned on success, otherwise boolean result of key existence will be returned
+	 * @param int    $database Keys database
+	 * @param string $key      56 character [0-9a-z] key
+	 * @param bool   $get_data If <b>true</d> - stored data will be returned on success, otherwise boolean result of key existence will be returned
 	 *
 	 * @return bool|mixed
 	 */
@@ -110,8 +112,8 @@ class Key {
 		if (!is_object($database)) {
 			$database = DB::instance()->$database();
 		}
-		$time	= TIME;
-		$result	= $database->qf([
+		$time   = time();
+		$result = $database->qf([
 			"SELECT
 				`id`,
 				`data`
@@ -125,7 +127,7 @@ class Key {
 			LIMIT 1"
 		]);
 		$this->del($database, $key);
-		if (!$result || !is_array($result) || empty($result)) {
+		if (!$result || !is_array($result)) {
 			return false;
 		} elseif ($get_data) {
 			return _json_decode($result['data']);
@@ -136,8 +138,8 @@ class Key {
 	/**
 	 * Key deletion from database
 	 *
-	 * @param int|object	$database	Keys database
-	 * @param string		$key		56 character [0-9a-z] key
+	 * @param int|object $database Keys database
+	 * @param string     $key      56 character [0-9a-z] key
 	 *
 	 * @return bool
 	 */

@@ -9,12 +9,12 @@
 namespace	cs\modules\Comments;
 use
 	cs\Config,
+	cs\Event,
 	cs\Language,
 	cs\Page,
-	cs\Trigger,
 	cs\User;
 /**
- * Provides next triggers:<br>
+ * Provides next events:<br>
  *  api/Comments/add<code>
  *  [
  *   'Comments'	=> <i>&$Comments</i>	//Comments object should be returned in this parameter (after access checking)<br>
@@ -43,7 +43,7 @@ if (!$_POST['text'] || !strip_tags($_POST['text'])) {
 	return;
 }
 $Comments	= false;
-Trigger::instance()->run(
+Event::instance()->fire(
 	'api/Comments/add',
 	[
 		'Comments'	=> &$Comments,

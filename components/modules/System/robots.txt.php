@@ -8,14 +8,14 @@
  * @license		MIT License, see license.txt
  */
 /**
- * Provides next triggers:<br>
+ * Provides next events:<br>
  *  System/robots.txt<br>
  *  ['text'	=> <i>&$text</i>]<br>
  */
 namespace	cs;
 interface_off();
 $text						= file_get_contents(__DIR__.'/robots.txt');
-Trigger::instance()->run(
+Event::instance()->fire(
 	'System/robots.txt',
 	[
 		'text'	=> &$text

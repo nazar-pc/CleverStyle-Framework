@@ -9,17 +9,17 @@
 
 namespace	cs;
 
-Trigger::instance()->register(
+Event::instance()->on(
 	'System/Index/construct',
 	function () {
 		switch (Config::instance()->components['modules']['Content']['active']) {
 			case 1:
-				require __DIR__.'/trigger/enabled.php';
+				require __DIR__.'/events/enabled.php';
 			default:
 				if (!admin_path()) {
 					return;
 				}
-				require __DIR__.'/trigger/installed.php';
+				require __DIR__.'/events/installed.php';
 		}
 	}
 );

@@ -8,7 +8,7 @@
  * @license		MIT License, see license.txt
  */
 /**
- * Provides next triggers:<br>
+ * Provides next events:<br>
  *  admin/System/components/modules/install/process<br>
  *  ['name'	=> <i>module_name</i>]<br>
  *
@@ -90,7 +90,7 @@ if (isset($_POST['update_modules_list'])) {
 				break;
 			}
 			unset($Cache->languages);
-			if (!Trigger::instance()->run(
+			if (!Event::instance()->fire(
 				'admin/System/components/modules/install/process',
 				[
 					'name' => $module_name
@@ -144,7 +144,7 @@ if (isset($_POST['update_modules_list'])) {
 				break;
 			}
 			unset($Cache->languages);
-			if (!Trigger::instance()->run(
+			if (!Event::instance()->fire(
 				'admin/System/components/modules/uninstall/process',
 				[
 					'name' => $module_name
@@ -153,7 +153,7 @@ if (isset($_POST['update_modules_list'])) {
 				break;
 			}
 			$module_data['active']	= -1;
-			Trigger::instance()->run(
+			Event::instance()->fire(
 				'admin/System/components/modules/disable',
 				[
 					'name'	=> $module_name
@@ -204,7 +204,7 @@ if (isset($_POST['update_modules_list'])) {
 			if ($active) {
 				$module_data['active']	= 0;
 				$Config->save();
-				Trigger::instance()->run(
+				Event::instance()->fire(
 					'admin/System/components/modules/disable',
 					[
 						'name'	=> $module_name
@@ -220,7 +220,7 @@ if (isset($_POST['update_modules_list'])) {
 			/**
 			 * Extracting new versions of files
 			 */
-			$tmp_file	= TEMP.'/'.$User->get_session().'_module_update.phar';
+			$tmp_file	= TEMP.'/'.$User->get_session_id().'_module_update.phar';
 			$tmp_dir	= "phar://$tmp_file";
 			$fs			= file_get_json("$tmp_dir/fs.json");
 			$extract	= array_product(
@@ -307,7 +307,7 @@ if (isset($_POST['update_modules_list'])) {
 				$module_data['active']	= 1;
 				$Config->save();
 				clean_pcache();
-				Trigger::instance()->run(
+				Event::instance()->fire(
 					'admin/System/components/modules/enable',
 					[
 						'name'	=> $module_name
@@ -337,7 +337,7 @@ if (isset($_POST['update_modules_list'])) {
 			/**
 			 * Extracting new versions of files
 			 */
-			$tmp_file	= TEMP.'/'.$User->get_session().'_update_system.phar';
+			$tmp_file	= TEMP.'/'.$User->get_session_id().'_update_system.phar';
 			$tmp_dir	= "phar://$tmp_file";
 			$fs			= file_get_json("$tmp_dir/fs.json")['core/fs.json'];
 			$fs			= file_get_json("$tmp_dir/fs/$fs");
@@ -440,7 +440,7 @@ if (isset($_POST['update_modules_list'])) {
 			) {
 				break;
 			}
-			if (Trigger::instance()->run(
+			if (Event::instance()->fire(
 				'admin/System/components/modules/default_module/process',
 				[
 					'name' => $module_name
@@ -451,7 +451,7 @@ if (isset($_POST['update_modules_list'])) {
 			}
 		break;
 		case 'db':
-			if (Trigger::instance()->run(
+			if (Event::instance()->fire(
 				'admin/System/components/modules/db/process',
 				[
 					'name' => $module_name
@@ -464,7 +464,7 @@ if (isset($_POST['update_modules_list'])) {
 			}
 		break;
 		case 'storage':
-			if (Trigger::instance()->run(
+			if (Event::instance()->fire(
 				'admin/System/components/modules/storage/process',
 				[
 					'name' => $module_name
@@ -480,7 +480,7 @@ if (isset($_POST['update_modules_list'])) {
 			$module_data['active'] = 1;
 			$a->save();
 			clean_pcache();
-			Trigger::instance()->run(
+			Event::instance()->fire(
 				'admin/System/components/modules/enable',
 				[
 					'name'	=> $module_name
@@ -496,7 +496,7 @@ if (isset($_POST['update_modules_list'])) {
 			$module_data['active'] = 0;
 			$a->save();
 			clean_pcache();
-			Trigger::instance()->run(
+			Event::instance()->fire(
 				'admin/System/components/modules/disable',
 				[
 					'name'	=> $module_name

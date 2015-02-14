@@ -14,11 +14,10 @@
   $(function() {
     var L, key, translation;
     L = cs.Language;
-    window.session_id = cs.getcookie('session');
     $.ajaxSetup({
       type: 'post',
       data: {
-        session: session_id
+        session: cs.getcookie('session')
       },
       error: function(xhr) {
         if (xhr.responseText) {

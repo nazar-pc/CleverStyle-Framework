@@ -10,12 +10,12 @@ namespace	cs\modules\Comments;
 use
 	h,
 	cs\Config,
+	cs\Event,
 	cs\Language,
 	cs\Page,
-	cs\Trigger,
 	cs\User;
 /**
- * Provides next triggers:<br>
+ * Provides next events:<br>
  *  api/Comments/delete<code>
  *  [
  *   'Comments'			=> <i>&$Comments</i>		//Comments object should be returned in this parameter (after access checking)<br>
@@ -39,7 +39,7 @@ if (!isset($Config->route[0], $_POST['module'])) {
 }
 $Comments		= false;
 $delete_parent	= false;
-Trigger::instance()->run(
+Event::instance()->fire(
 	'api/Comments/delete',
 	[
 		'Comments'		=> &$Comments,

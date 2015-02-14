@@ -1,0 +1,12 @@
+{
+	"WebSockets"                       : "WebSockets",
+	"websockets_security_key"          : "Security key",
+	"websockets_security_key_info"     : "Security key is used in order to generate urls that can't be guessed. String should be random.",
+	"websockets_listen_port"           : "Listen port",
+	"websockets_listen_port_info"      : "Port where WebSockets server will listen for incoming connection. Should not be taking by anything else, otherwise server will not start",
+	"websockets_listen_on"             : "Listen on",
+	"websockets_listen_on_info"        : "Address on which server will listen for incoming connections. Since usually some reverse proxy stands шn front (like Nginx) it is better to choose 127.0.0.1",
+	"websockets_server_is_running"     : "WebSockets server is running",
+	"websockets_server_is_not_running" : "WebSockets server is not running",
+	"websockets_start_server"          : "Start WebSockets server"
+}

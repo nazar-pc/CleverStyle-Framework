@@ -9,9 +9,9 @@ namespace	cs\Page;
 use
 	cs\Core,
 	cs\Config,
+	cs\Event,
 	cs\Index,
 	cs\Language,
-	cs\Trigger,
 	cs\User,
 	h;
 
@@ -590,7 +590,7 @@ trait Includes {
 			'structure'		=> $structure
 		]);
 		unset($structure);
-		Trigger::instance()->run('System/Page/rebuild_cache');
+		Event::instance()->fire('System/Page/rebuild_cache');
 		return $this;
 	}
 	/**

@@ -7,10 +7,11 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Static_pages;
-use			cs\Config,
-			cs\Trigger;
-Trigger::instance()
-	->register(
+use
+	cs\Config,
+	cs\Event;
+Event::instance()
+	->on(
 		'System/Config/routing_replace',
 		function ($data) {
 			if (!Config::instance()->module('Static_pages')->active() && substr($data['rc'], 0, 5) != 'admin') {
@@ -44,7 +45,7 @@ Trigger::instance()
 			}
 		}
 	)
-	->register(
+	->on(
 		'System/Index/construct',
 		function () {
 			if (!admin_path()) {
@@ -53,7 +54,7 @@ Trigger::instance()
 			switch (Config::instance()->components['modules']['Static_pages']['active']) {
 				case 0:
 				case 1:
-					require __DIR__.'/trigger/installed.php';
+					require __DIR__.'/events/installed.php';
 			}
 		}
 	);

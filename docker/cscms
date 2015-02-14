@@ -1,6 +1,6 @@
 server {
 	listen					8888;
-	server_name				localhost; 
+	server_name				localhost;
 	root					/web;
 	index					index.php;
 	error_log				/web/error.log info;
@@ -17,6 +17,12 @@ server {
 		fastcgi_index	index.php;
 		fastcgi_param	SCRIPT_FILENAME $document_root$fastcgi_script_name;
 	}
+    location ~ ^/WebSockets$ {
+        proxy_pass          http://127.0.0.1:8080;
+        proxy_http_version  1.1;
+        proxy_set_header    Upgrade $http_upgrade;
+        proxy_set_header    Connection  "upgrade";
+    }
 	# Add necessary headers
 	location /storage/pcache {
 		location ~ \.css$ {
@@ -31,7 +37,7 @@ server {
 		}
 		location ~ \.html$ {
 			add_header Content-Encoding gzip;
-			add_header Content-Type htxt/html;
+			add_header Content-Type text/html;
 			add_header Cache-Control "max-age=2592000, public";
 		}
 	}

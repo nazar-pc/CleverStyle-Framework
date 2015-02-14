@@ -1,0 +1,40 @@
+<polymer-element name="cs-shop-order">
+	<template>
+		<div class="uk-text-large">
+			{{order_number}}: {{order_status}}
+			<template if="{{!paid}}">
+				<button type="button" class="uk-button uk-button-primary" on-click="{{pay}}">{{pay_now_text}}</button>
+			</template>
+		</div>
+		<div>
+			{{order_date}}
+		</div>
+		<content select="#items"></content>
+		<p>
+			{{shipping_type_text}} : {{shipping_type}} ({{shipping_cost_formatted}})
+		</p>
+		<p>
+			{{total_price_text}}: {{total_price_formatted}}
+		</p>
+		<p>
+			<template if="{{discount_formatted}}">
+				{{discount_text}}: {{discount_formatted}}
+			</template>
+		</p>
+		<p>
+			{{shipping_cost_text}} : {{shipping_cost_formatted}}
+		</p>
+		<p class="uk-text-bold">
+			{{for_payment_text}} : {{for_payment_formatted}}
+		</p>
+		<p hidden?="{{!phone}}">
+			{{phone_text}} : <span id="phone"></span>
+		</p>
+		<p hidden?="{{!address}}">
+			{{address_text}} : <span id="address"></span>
+		</p>
+		<blockquote id="comment"></blockquote>
+		<hr class="uk-article-divider">
+	</template>
+	<script src="script.js"></script>
+</polymer-element>

@@ -8,7 +8,7 @@
  * @license		MIT License, see license.txt
  */
 /**
- * Provides next triggers:<br>
+ * Provides next events:<br>
  *  System/profile/info<code>
  *  [
  *   'id'	=> <i>user_id</i><br>
@@ -83,7 +83,7 @@ $Page->content(
 		)
 	)
 );
-Trigger::instance()->run(
+Event::instance()->fire(
 	'System/profile/info',
 	[
 		'id'	=> $id

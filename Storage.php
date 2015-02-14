@@ -1,33 +1,30 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @subpackage	HTTP Storage Engine backend
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package    CleverStyle CMS
+ * @subpackage HTTP Storage Engine backend
+ * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright  Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license    MIT License, see license.txt
  *
  * Requires config.php file in current directory with specified global variables $STORAGE_USER and $STORAGE_PASSWORD
  */
 header('Content-Type: text/html; charset=utf-8');
 header('Connection: close');
 require __DIR__.'/core/thirdparty/upf.php';
-define('STORAGE',	__DIR__.'/storage/public');
+define('STORAGE', __DIR__.'/storage/public');
 chdir(STORAGE);
 if (
-	isset($_SERVER['HTTP_USER_AGENT']) &&
+	isset($_SERVER['HTTP_USER_AGENT'], $_POST['data']) &&
 	$_SERVER['HTTP_USER_AGENT'] == 'CleverStyle CMS' &&
-	file_exists(__DIR__.'/config.php') &&
-	isset($_POST['data'])
+	file_exists(__DIR__.'/config.php')
 ) {
-	include __DIR__.'/config.php';
-	global $STORAGE_USER, $STORAGE_PASSWORD;
+	list($STORAGE_USER, $STORAGE_PASSWORD) = __DIR__.'/config.php';
 	$data = _json_decode(urldecode($_POST['data']));
-	$KEY = substr($data['key'], 0, 32);
+	$KEY  = substr($data['key'], 0, 32);
 	unset($data['key']);
 	if (md5(_json_encode($data).$STORAGE_USER.$STORAGE_PASSWORD) !== $KEY) {
 		exit;
 	}
-	unset($GLOBALS['STORAGE_USER'], $GLOBALS['STORAGE_PASSWORD'], $KEY);
 } else {
 	exit;
 }

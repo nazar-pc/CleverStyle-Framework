@@ -48,7 +48,7 @@ if (isset($_POST['action'])) {
 			}
 			move_uploaded_file(
 				$_FILES['upload_theme']['tmp_name'],
-				$tmp_file = TEMP.'/'.md5($_FILES['upload_theme']['tmp_name'].MICROTIME).'.phar'
+				$tmp_file = TEMP.'/'.md5($_FILES['upload_theme']['tmp_name'].openssl_random_pseudo_bytes(1000)).'.phar'
 			);
 			$tmp_dir = "phar://$tmp_file";
 			$theme   = file_get_contents("$tmp_dir/dir");
@@ -70,7 +70,7 @@ if (isset($_POST['action'])) {
 					break;
 				}
 				$Page->title($L->updating_of_theme($theme));
-				rename($tmp_file, $tmp_file = TEMP.'/'.User::instance()->get_session().'_theme_update.phar');
+				rename($tmp_file, $tmp_file = TEMP.'/'.User::instance()->get_session_id().'_theme_update.phar');
 				$Index->content(
 					h::{'h2.cs-center'}(
 						$L->update_theme(
@@ -136,7 +136,7 @@ if (isset($_POST['action'])) {
 			/**
 			 * Extracting new versions of files
 			 */
-			$tmp_file = TEMP.'/'.$User->get_session().'_theme_update.phar';
+			$tmp_file = TEMP.'/'.$User->get_session_id().'_theme_update.phar';
 			$tmp_dir  = "phar://$tmp_file";
 			$fs       = file_get_json("$tmp_dir/fs.json");
 			$extract  = array_product(

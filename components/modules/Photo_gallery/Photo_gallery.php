@@ -7,17 +7,18 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Photo_gallery;
-use			cs\Cache\Prefix,
-			cs\Config,
-			cs\Language,
-			cs\Storage,
-			cs\Text,
-			cs\Trigger,
-			cs\User,
-			cs\DB\Accessor,
-			cs\Singleton,
-			cs\plugins\SimpleImage\SimpleImage,
-			Exception;
+use
+	cs\Cache\Prefix,
+	cs\Config,
+	cs\Event,
+	cs\Language,
+	cs\Storage,
+	cs\Text,
+	cs\User,
+	cs\DB\Accessor,
+	cs\Singleton,
+	cs\plugins\SimpleImage\SimpleImage,
+	Exception;
 
 /**
  * @method static Photo_gallery instance($check = false)
@@ -130,19 +131,20 @@ class Photo_gallery {
 				)",
 			$gallery,
 			User::instance()->id,
-			TIME,
+			time(),
 			$original
 		)) {
 			$id	= $this->db_prime()->id();
 			if ($this->set($id, $title, $description)) {
-				Trigger::instance()->run(
+				Event::instance()->fire(
 					'System/upload_files/add_tag',
 					[
 						'tag'	=> "Photo_gallery/images/$id",
 						'url'	=> $original
 					]
 				);
-				$tmp_file	= TEMP.'/'.User::instance()->id.'_'.md5(MICROTIME);
+				$hash		= md5(openssl_random_pseudo_bytes(1000));
+				$tmp_file	= TEMP.'/'.User::instance()->id."_$hash";
 				try {
 					$SimpleImage	= new SimpleImage($original);
 					$SimpleImage->thumbnail(256)->save($tmp_file = "$tmp_file.".$SimpleImage->get_original_info()['format']);
@@ -156,7 +158,7 @@ class Photo_gallery {
 				if (!$storage->file_exists("Photo_gallery/$gallery")) {
 					$storage->mkdir("Photo_gallery/$gallery");
 				}
-				$copy_result = $storage->copy($tmp_file, $new_file = "Photo_gallery/$gallery/{$id}_".md5(MICROTIME));
+				$copy_result = $storage->copy($tmp_file, $new_file = "Photo_gallery/$gallery/{$id}_$hash");
 				unlink($tmp_file);
 				if (!$copy_result) {
 					$this->del($id);
@@ -238,7 +240,7 @@ class Photo_gallery {
 		)) {
 			$this->ml_del('Photo_gallery/images/title', $id);
 			$this->ml_del('Photo_gallery/images/description', $id);
-			Trigger::instance()->run(
+			Event::instance()->fire(
 				'System/upload_files/del_tag',
 				[
 					'tag'	=> "Photo_gallery/images/$id"

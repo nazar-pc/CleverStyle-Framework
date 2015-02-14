@@ -8,20 +8,21 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\HybridAuth;
-use			Exception,
-			h,
-			Hybrid_Endpoint,
-			cs\Config,
-			cs\Index,
-			cs\Key,
-			cs\DB,
-			cs\Language,
-			cs\Mail,
-			cs\Page,
-			cs\Trigger,
-			cs\User;
+use
+	Exception,
+	h,
+	Hybrid_Endpoint,
+	cs\Config,
+	cs\Event,
+	cs\Index,
+	cs\Key,
+	cs\DB,
+	cs\Language,
+	cs\Mail,
+	cs\Page,
+	cs\User;
 /**
- * Provides next triggers:
+ * Provides next events:
  *  HybridAuth/registration/before
  *  [
  *   'provider'		=> provider		//Provider name
@@ -71,7 +72,7 @@ if (
 		)
 	) ||
 	(
-		isset($rc[2]) && strpos($rc[2], md5($rc[0].$User->get_session())) !== 0
+		isset($rc[2]) && strpos($rc[2], md5($rc[0].$User->get_session_id())) !== 0
 	)
 ) {
 	header('Location: '.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
@@ -125,7 +126,7 @@ if (isset($rc[1]) && $rc[0] == 'merge_confirmation') {
 		if ($User->get('status', $data['id']) == User::STATUS_NOT_ACTIVATED) {
 			$User->set('status', User::STATUS_ACTIVE, $data['id']);
 		}
-		Trigger::instance()->run(
+		Event::instance()->fire(
 			'HybridAuth/add_session/before',
 			[
 				'adapter'	=> $adapter,
@@ -134,7 +135,7 @@ if (isset($rc[1]) && $rc[0] == 'merge_confirmation') {
 		);
 		$User->add_session($data['id']);
 		add_session_after();
-		Trigger::instance()->run(
+		Event::instance()->fire(
 			'HybridAuth/add_session/after',
 			[
 				'adapter'	=> $adapter,
@@ -233,7 +234,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 				])
 			) && $User->get('status', $id) == User::STATUS_ACTIVE
 		) {
-			Trigger::instance()->run(
+			Event::instance()->fire(
 				'HybridAuth/add_session/before',
 				[
 					'adapter'	=> $adapter,
@@ -242,7 +243,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 			);
 			$User->add_session($id);
 			add_session_after();
-			Trigger::instance()->run(
+			Event::instance()->fire(
 				'HybridAuth/add_session/after',
 				[
 					'adapter'	=> $adapter,
@@ -288,7 +289,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 			 * Try to register user
 			 */
 			$adapter		= $HybridAuth->getAdapter($rc[0]);
-			if (!Trigger::instance()->run(
+			if (!Event::instance()->fire(
 				'HybridAuth/registration/before',
 				[
 					'provider'		=> $rc[0],
@@ -329,7 +330,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					if ($User->get('status', $user) == User::STATUS_NOT_ACTIVATED) {
 						$User->set('status', User::STATUS_ACTIVE, $user);
 					}
-					Trigger::instance()->run(
+					Event::instance()->fire(
 						'HybridAuth/add_session/before',
 						[
 							'adapter'	=> $adapter,
@@ -339,7 +340,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					$User->add_session($user);
 					unset($user);
 					add_session_after();
-					Trigger::instance()->run(
+					Event::instance()->fire(
 						'HybridAuth/add_session/after',
 						[
 							'adapter'	=> $adapter,
@@ -396,7 +397,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					$L->reg_success_mail(get_core_ml_text('name')),
 					$body
 				)) {
-					Trigger::instance()->run(
+					Event::instance()->fire(
 						'HybridAuth/add_session/before',
 						[
 							'adapter'	=> $adapter,
@@ -405,7 +406,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					);
 					$User->add_session($result['id']);
 					add_session_after();
-					Trigger::instance()->run(
+					Event::instance()->fire(
 						'HybridAuth/add_session/after',
 						[
 							'adapter'	=> $adapter,
@@ -478,7 +479,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 	/**
 	 * Try to register user
 	 */
-	if (!Trigger::instance()->run(
+	if (!Event::instance()->fire(
 		'HybridAuth/registration/before',
 		[
 			'provider'		=> $rc[0],
@@ -586,7 +587,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					$L->reg_success_mail(get_core_ml_text('name')),
 					$body
 				)) {
-					Trigger::instance()->run(
+					Event::instance()->fire(
 						'HybridAuth/add_session/before',
 						[
 							'adapter'	=> $adapter,
@@ -595,7 +596,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					);
 					$User->add_session($result['id']);
 					add_session_after();
-					Trigger::instance()->run(
+					Event::instance()->fire(
 						'HybridAuth/add_session/after',
 						[
 							'adapter'	=> $adapter,

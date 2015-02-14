@@ -6,7 +6,7 @@
  * @license		MIT License, see license.txt
  */
 /**
- * Provides next triggers:
+ * Provides next events:
  *  System/User/construct/before
  *
  *  System/User/construct/after
@@ -39,8 +39,10 @@
  *  ]
  *
  *  System/User/del_session/before
+ *  ['id' => session_id]
  *
  *  System/User/del_session/after
+ *  ['id' => session_id]
  *
  *  System/User/del_all_sessions
  *  ['id'	=> <i>user_id</i>]
@@ -159,7 +161,7 @@ class User {
 	function construct () {
 		$Cache	= $this->cache	= new Prefix('users');
 		$Config	= Config::instance();
-		Trigger::instance()->run('System/User/construct/before');
+		Event::instance()->fire('System/User/construct/before');
 		$this->users_columns = $Cache->get('columns', function () {
 			return $this->db()->columns('[prefix]users');
 		});
@@ -173,7 +175,7 @@ class User {
 		 * If session exists
 		 */
 		if (_getcookie('session')) {
-			$this->id = $this->get_session_user();
+			$this->id = $this->load_session();
 		/**
 		 * Try to detect bot, not necessary for API request
 		 */
@@ -250,11 +252,11 @@ class User {
 						$last_session		= $this->get_data('last_session');
 						$id					= $this->id;
 						if ($last_session) {
-							$this->get_session_user($last_session);
+							$this->load_session($last_session);
 						}
 						if (!$last_session || $this->id == self::GUEST_ID) {
 							$this->add_session($id);
-							$this->set_data('last_session', $this->get_session());
+							$this->set_data('last_session', $this->get_session_id());
 						}
 						unset($id, $last_session);
 					}
@@ -290,12 +292,12 @@ class User {
 		/**
 		 * Security check
 		 */
-		if (!isset($_REQUEST['session']) || $_REQUEST['session'] != $this->get_session()) {
+		if (!isset($_REQUEST['session']) || $_REQUEST['session'] != $this->get_session_id()) {
 			$_REQUEST	= array_diff_key($_REQUEST, $_POST);
 			$_POST		= [];
 		}
 		$this->init	= true;
-		Trigger::instance()->run('System/User/construct/after');
+		Event::instance()->fire('System/User/construct/after');
 	}
 	protected function request_from_system ($Config) {
 		/**
@@ -335,7 +337,7 @@ class User {
 			$this->is_admin = true;
 			interface_off();
 			$_POST['data'] = _json_decode($_POST['data']);
-			Trigger::instance()->run('System/User/construct/after');
+			Event::instance()->fire('System/User/construct/after');
 			return true;
 		}
 		$this->is_guest = true;
@@ -426,7 +428,7 @@ class User {
 		if (!preg_match('/^[0-9a-z]{56}$/', $login_hash)) {
 			return false;
 		}
-		$time	= TIME;
+		$time	= time();
 		/**
 		 * @var \cs\_SERVER $_SERVER
 		 */
@@ -457,7 +459,7 @@ class User {
 		 * @var \cs\_SERVER $_SERVER
 		 */
 		$ip		= ip2hex($_SERVER->ip);
-		$time	= TIME;
+		$time	= time();
 		if ($success) {
 			$this->db_prime()->q(
 				"DELETE FROM `[prefix]sign_ins`
@@ -482,7 +484,7 @@ class User {
 						'%s',
 						'%s'
 					)",
-				TIME + $Config->core['sign_in_attempts_block_time'],
+				$time + $Config->core['sign_in_attempts_block_time'],
 				$login_hash,
 				$ip
 			);

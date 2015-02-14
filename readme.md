@@ -21,7 +21,9 @@ But in parallel with core some components are developed:
  * **Photo gallery** (simple photo gallery module, powered by Fotorama, Plupload and SimpleImage components)
  * **Plupload** (integration of [Plupload](https://github.com/moxiecode/plupload) for files uploading, adds files uploading functionality to other modules)
  * **Polls** (provides polls functionality to other modules)
+ * **Shop** (provides simple, but highly extensible and customizable shopping functionality)
  * **Static pages** (allows to create static pages like About page or pages without interface, for example for site owner verification)
+ * **WebSockets** (support for WebSockets connections utilizing [React](https://github.com/reactphp/react) and [Ratchet](https://github.com/ratchetphp/Ratchet))
 
 #### Plugins
 
@@ -142,6 +144,12 @@ $ docker run --rm -p 8888:8888 nazarpc/cleverstyle-cms
 And go to `http://localhost:8888`, sign in using login `admin` and password `1111`.
 
 `--rm` means that container will be removed after stopping (you can stop it with `Ctrl+C`).
+
+If you want to play with live system - attach volume to container:
+```bash
+$ docker run --rm -p 8888:8888 -v /some_dir:/web nazarpc/cleverstyle-cms
+```
+Now in `/some_dir` you'll have source code of CleverStyle CMS from container which you can edit as you like and it will reflect on demo.
 
 # How to install?
 

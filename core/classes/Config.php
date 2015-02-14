@@ -8,7 +8,7 @@
 namespace cs;
 
 /**
- * Provides next triggers:
+ * Provides next events:
  *  System/Config/pre_routing_replace
  *  ['rc'	=> <i>&$rc</i>]		//Reference to string with current route, this string can be changed
  *
@@ -82,12 +82,12 @@ class Config {
 			}
 			unset($part, $value);
 		}
-		Trigger::instance()->run('System/Config/before_init');
+		Event::instance()->fire('System/Config/before_init');
 		/**
 		 * System initialization with current configuration
 		 */
 		$this->init();
-		Trigger::instance()->run('System/Config/after_init');
+		Event::instance()->fire('System/Config/after_init');
 		if (!file_exists(MODULES.'/'.$this->core['default_module'])) {
 			$this->core['default_module']	= 'System';
 			$this->save();
@@ -277,7 +277,7 @@ class Config {
 		/**
 		 * Routing replacing
 		 */
-		Trigger::instance()->run('System/Config/pre_routing_replace', [
+		Event::instance()->fire('System/Config/pre_routing_replace', [
 			'rc'	=> &$rc
 		]);
 		if (!empty($this->routing['in'])) {
@@ -286,7 +286,7 @@ class Config {
 			}
 			unset($i, $search);
 		}
-		Trigger::instance()->run('System/Config/routing_replace', [
+		Event::instance()->fire('System/Config/routing_replace', [
 			'rc'	=> &$rc
 		]);
 		/**

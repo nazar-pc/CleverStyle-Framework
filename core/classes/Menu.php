@@ -11,7 +11,7 @@ use
 /**
  * Menu class is used in administration for generating second and third level of menu
  *
- * Provides next triggers:<br>
+ * Provides next events:<br>
  *  admin/System/Menu
  *
  * @method static Menu instance($check = false)
@@ -27,7 +27,7 @@ class Menu {
 	 * @return string
 	 */
 	function get_menu () {
-		Trigger::instance()->run('admin/System/Menu');
+		Event::instance()->fire('admin/System/Menu');
 		$current_module = current_module();
 		if (isset($this->section_items[$current_module])) {
 			$content = $this->render_sections($current_module);
