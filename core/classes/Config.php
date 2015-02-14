@@ -529,10 +529,9 @@ class Config {
 		/**
 		 * Allow modification only for administrators or requests from methods of Config class
 		 */
-		if (!isset($this->$item) || !User::instance(true)->admin()) {
-			return false;
+		if (isset($this->$item) && User::instance(true)->admin()) {
+			$this->$item = $data;
 		}
-		return $this->$item = $data;
 	}
 	/**
 	 * Get base url of current mirror including language suffix
