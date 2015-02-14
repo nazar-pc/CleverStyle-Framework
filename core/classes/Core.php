@@ -210,7 +210,7 @@ AddEncoding gzip .html
 		);
 		list($host, $url)	= explode('/', $url, 2);
 		$host				= explode(':', $host);
-		$socket				= fsockopen($host[0], isset($host[1]) ? $host[1] : $protocol == 'http' ? 80 : 443, $errno, $errstr);
+		$socket				= fsockopen($host[0], isset($host[1]) ? $host[1] : ($protocol == 'http' ? 80 : 443), $errno, $errstr);
 		$host				= implode(':', $host);
 		if(!is_resource($socket)) {
 			trigger_error("#$errno $errstr", E_USER_WARNING);
