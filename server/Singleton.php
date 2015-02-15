@@ -23,7 +23,6 @@ trait Singleton {
 			'cs\\Config',
 			'cs\\Event',
 			'cs\\Index',
-			'cs\\Language',
 			'cs\\Menu',
 			'cs\\Page',
 			'cs\\Page\\Meta',
