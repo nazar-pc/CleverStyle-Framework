@@ -22,10 +22,15 @@ class Request {
 		// To clean result of previous execution
 		$this->reset();
 		$this->__request_id = md5(openssl_random_pseudo_bytes(100));
-		// TODO: Parse cookie header
 		foreach ($request->getHeaders() as $key => $value) {
 			if ($key == 'Content-Type') {
 				$_SERVER['CONTENT_TYPE'] = $value;
+			} elseif ($key == 'Cookie') {
+				$value   = _trim(explode(';', $value));
+				$value   = array_map(function ($cookie) {
+					return explode('=', $cookie);
+				}, $value);
+				$_COOKIE = array_column($value, 1, 0);
 			} else {
 				$_SERVER['HTTP_'.strtoupper(strtr($key, '-', '_'))] = $value;
 			}
