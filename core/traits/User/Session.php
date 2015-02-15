@@ -97,7 +97,7 @@ trait Session {
 		}
 		$Config  = Config::instance();
 		$session = $this->get_session($session_id);
-		$time = time();
+		$time    = time();
 		if (
 			!$session ||
 			$session['user_agent'] != $_SERVER->user_agent ||
@@ -254,7 +254,7 @@ trait Session {
 		}
 		unset($data);
 		$Config = Config::instance();
-		$time = time();
+		$time   = time();
 		/**
 		 * Generate hash in cycle, to obtain unique value
 		 */
@@ -347,14 +347,7 @@ trait Session {
 	 * @return bool
 	 */
 	function del_session ($session_id = null) {
-		Event::instance()->fire(
-			'System/User/del_session/before'
-		);
-		$result = $this->del_session_internal($session_id);
-		Event::instance()->fire(
-			'System/User/del_session/after'
-		);
-		return $result;
+		return $this->del_session_internal($session_id);
 	}
 	/**
 	 * Deletion of the session
@@ -369,6 +362,9 @@ trait Session {
 		if (!is_md5($session_id)) {
 			return false;
 		}
+		Event::instance()->fire('System/User/del_session/before', [
+			'id' => $session_id
+		]);
 		unset($this->cache->{"sessions/$session_id"});
 		$this->session_id = false;
 		_setcookie('session', '');
@@ -381,6 +377,9 @@ trait Session {
 		if ($create_guest_session) {
 			return $this->add_session(User::GUEST_ID);
 		}
+		Event::instance()->fire('System/User/del_session/after', [
+			'id' => $session_id
+		]);
 		return $result;
 	}
 	/**
@@ -391,12 +390,9 @@ trait Session {
 	 * @return bool
 	 */
 	function del_all_sessions ($user = false) {
-		Event::instance()->fire(
-			'System/User/del_all_sessions',
-			[
-				'id' => $user
-			]
-		);
+		Event::instance()->fire('System/User/del_all_sessions', [
+			'id' => $user
+		]);
 		$user     = $user ?: $this->id;
 		$sessions = $this->db_prime()->qfas(
 			"SELECT `id`
