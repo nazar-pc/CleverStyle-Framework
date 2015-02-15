@@ -5,7 +5,7 @@
  * @copyright Copyright (c) 2015, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-namespace cs;
+namespace cs\server;
 use
 	ArrayAccess,
 	Iterator;

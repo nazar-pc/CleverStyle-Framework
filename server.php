@@ -40,7 +40,7 @@ $http   = new React\Http\Server($socket);
 // TODO: only first request handled currently, need more work in core
 $http->on('request', function (\React\Http\Request $request, \React\Http\Response $response) {
 	$request->on('data', function ($data) use ($request, $response) {
-		Request::handle($data, $request, $response);
+		new Request($data, $request, $response);
 	});
 });
 

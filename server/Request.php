@@ -6,14 +6,23 @@
  * @license   MIT License, see license.txt
  */
 namespace cs\server;
+use
+	cs\Language,
+	cs\Index,
+	cs\Page,
+	cs\User;
 class Request {
+	public $__request_id;
 	/**
 	 * @param string               $data
 	 * @param \React\Http\Request  $request
 	 * @param \React\Http\Response $response
 	 */
-	static function handle ($data, $request, $response) {
-		$_SERVER = [];
+	function __construct ($data, $request, $response) {
+		// To clean result of previous execution
+		http_response_code(200);
+		$this->__request_id = md5(openssl_random_pseudo_bytes(100));
+		$_SERVER            = [];
 		// TODO: Parse cookie header
 		foreach ($request->getHeaders() as $key => $value) {
 			if ($key == 'Content-Type') {
@@ -35,14 +44,20 @@ class Request {
 				parse_str($data, $_POST);
 		}
 		ob_start();
-		// TODO: run request processing here
+		$_SERVER = new _SERVER($_SERVER);
+		Language::instance();
+		Index::instance()->__finish();
+		Page::instance()->__finish();
+		User::instance(true)->__finish();
 		$headers = [];
 		array_map(function ($header) use (&$headers) {
 			$header              = explode(':', $header, 2);
 			$headers[$header[0]] = ltrim($header[1]);
 		}, headers_list());
 		header_remove();
-		$response->writeHead(200, $headers);
+		$response->writeHead(http_response_code(), $headers);
 		$response->end(ob_get_clean());
+		// TODO: probably, better solution in future
+		objects_pool([]);
 	}
 }

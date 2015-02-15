@@ -7,6 +7,7 @@
  */
 namespace cs;
 require DIR.'/core/loader_base.php'; //Inclusion of loader base
+require DIR.'/server/functions.php'; //Inclusion of functions needed for http server
 require DIR.'/server/_SERVER.php';   //Inclusion of `$_SERVER` wrapper, specific for http server
 require DIR.'/server/Request.php';   //Inclusion of Request class, used for http server requests processing
 require DIR.'/server/Singleton.php'; //Inclusion of `Singleton` trait, specific for http server
