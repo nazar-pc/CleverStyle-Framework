@@ -11,12 +11,17 @@
  * @return string
  */
 function get_request_id () {
-	foreach (debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS) as $item) {
-		if (isset($item['object']->__request_id)) {
-			return $item['object']->__request_id;
+	static $request_index;
+	$backtrace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS);
+	if (!isset($request_index)) {
+		foreach (array_reverse($backtrace) as $i => $b) {
+			if (isset($b['object']->__request_id)) {
+				$request_index = -$i - 1;
+				break;
+			}
 		}
 	}
-	return '';
+	return array_slice($backtrace, $request_index, 1)[0]['object']->__request_id;
 }
 
 /**
@@ -31,7 +36,7 @@ function &objects_pool ($update_objects_pool = null) {
 	 * @var object[] $objects_pool
 	 */
 	static $objects_pool = [];
-	if ($update_objects_pool) {
+	if (is_array($update_objects_pool)) {
 		$objects_pool = $update_objects_pool;
 	}
 	return $objects_pool;
