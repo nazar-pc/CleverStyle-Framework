@@ -20,9 +20,8 @@ class Request {
 	 */
 	function __construct ($data, $request, $response) {
 		// To clean result of previous execution
-		http_response_code(200);
+		$this->reset();
 		$this->__request_id = md5(openssl_random_pseudo_bytes(100));
-		$_SERVER            = [];
 		// TODO: Parse cookie header
 		foreach ($request->getHeaders() as $key => $value) {
 			if ($key == 'Content-Type') {
@@ -54,10 +53,28 @@ class Request {
 			$header              = explode(':', $header, 2);
 			$headers[$header[0]] = ltrim($header[1]);
 		}, headers_list());
-		header_remove();
 		$response->writeHead(http_response_code(), $headers);
 		$response->end(ob_get_clean());
-		// TODO: probably, better solution in future
+	}
+	/**
+	 * Clean and reset as much as possible in order to provide clean environment for next request
+	 */
+	protected function reset () {
+		// TODO: probably, better solution in future (for truly asynchronous requests)
 		objects_pool([]);
+		admin_path(false);
+		api_path(false);
+		current_module('');
+		home_page(false);
+		http_response_code(200);
+		error_code(0);
+		$_SERVER = [];
+		$_COOKIE = [];
+		$_GET    = [];
+		$_POST   = [];
+		header_remove();
+		header('Content-Type: text/html; charset=utf-8');
+		header('Vary: Content-Language,User-Agent,Cookie');
+		header('Connection: close');
 	}
 }
