@@ -14,7 +14,6 @@ use
  * Provides Singleton pattern implementation
  */
 trait Base {
-	private static $modified;
 	final protected function __construct () {
 	}
 	protected function construct () {
@@ -40,9 +39,9 @@ trait Base {
 	 */
 	protected static function instance_prototype (&$instance, $check = false) {
 		if ($check) {
-			return isset($instance) ? $instance : False_class::instance();
+			return $instance ?: False_class::instance();
 		}
-		if (isset($instance)) {
+		if ($instance) {
 			return $instance;
 		}
 		$class = get_called_class();
@@ -54,16 +53,14 @@ trait Base {
 		if (class_exists($custom_class_base, false)) {
 			$next_alias = $custom_class_base;
 		}
-		if (self::$modified === null) {
-			self::$modified = file_exists(CACHE.'/classes/modified') ? file_get_json(CACHE.'/classes/modified') : [];
-		}
-		if (!isset(self::$modified[$class])) {
-			$aliases                = [];
-			self::$modified[$class] = [
+		$modified_classes = modified_classes();
+		if (!isset($modified_classes[$class])) {
+			$aliases                  = [];
+			$modified_classes[$class] = [
 				'aliases'     => &$aliases,
 				'final_class' => &$next_alias
 			];
-			$classes                = glob(CUSTOM.'/classes/'.substr($class, 2).'_*.php');
+			$classes                  = glob(CUSTOM.'/classes/'.substr($class, 2).'_*.php');
 			foreach ($classes as $custom_class) {
 				// Path to file with customized class
 				$custom_class = str_replace(CUSTOM.'/classes/', '', substr($custom_class, 0, -4));
@@ -81,9 +78,9 @@ trait Base {
 			if (!is_dir(CACHE.'/classes')) {
 				@mkdir(CACHE.'/classes', 0770, true);
 			}
-			file_put_json(CACHE.'/classes/modified', self::$modified);
+			modified_classes($modified_classes);
 		}
-		foreach (self::$modified[$class]['aliases'] as $alias) {
+		foreach ($modified_classes[$class]['aliases'] as $alias) {
 			/**
 			 * If for whatever reason base class does or file that should be included does not exists
 			 */
@@ -92,15 +89,15 @@ trait Base {
 				!file_exists(CUSTOM."/classes/$alias[path].php")
 			) {
 				clean_classes_cache();
-				self::$modified = null;
-				$instance       = new $class;
+				$modified_classes = null;
+				$instance         = new $class;
 				$instance->construct();
 				return $instance;
 			}
 			class_alias($alias['original'], $alias['alias']);
 			require_once CUSTOM."/classes/$alias[path].php";
 		}
-		$instance = new self::$modified[$class]['final_class'];
+		$instance = new $modified_classes[$class]['final_class'];
 		$instance->construct();
 		return $instance;
 	}

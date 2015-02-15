@@ -67,6 +67,24 @@ function clean_classes_cache () {
 	}
 }
 /**
+ * Get or set modified classes (used in Singleton trait)
+ *
+ * @param array|null $updated_modified_classes
+ *
+ * @return array
+ */
+function modified_classes ($updated_modified_classes = null) {
+	static $modified_classes;
+	if (!isset($modified_classes)) {
+		$modified_classes = file_exists(CACHE.'/classes/modified') ? file_get_json(CACHE.'/classes/modified') : [];
+	}
+	if ($updated_modified_classes) {
+		$modified_classes = $updated_modified_classes;
+		file_put_json(CACHE.'/classes/modified', $modified_classes);
+	}
+	return $modified_classes;
+}
+/**
  * Correct termination
  *
  * @param bool|null $enable	Allows to disable shutdown function execution since there is no good way to un-register it
