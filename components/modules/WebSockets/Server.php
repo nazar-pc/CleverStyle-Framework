@@ -219,8 +219,9 @@ class Server implements MessageComponentInterface {
 	protected function parse_message ($message, &$action, &$details, &$send_to, &$target) {
 		$decoded_message = _json_decode($message);
 		if (
-			!isset($decoded_message[0], $decoded_message[1]) ||
-			!is_array($decoded_message)
+			!is_array($decoded_message) ||
+			!array_key_exists(0, $decoded_message) ||
+			!array_key_exists(1, $decoded_message)
 		) {
 			return false;
 		}
