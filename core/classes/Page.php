@@ -129,7 +129,7 @@ class Page {
 			$this->theme	= 'CleverStyle';
 		}
 		$theme_dir	= THEMES."/$this->theme";
-		_include_once("$theme_dir/prepare.php", false);
+		_include("$theme_dir/prepare.php", false, false);
 		ob_start();
 		/**
 		 * If website is closed and user is not an administrator - send `503 Service Unavailable` header and show closed site page
@@ -138,15 +138,15 @@ class Page {
 			!Config::instance()->core['site_mode'] &&
 			!User::instance(true)->admin() &&
 			code_header(503) &&
-			!_include_once("$theme_dir/closed.php", false) &&
-			!_include_once("$theme_dir/closed.html", false)
+			!_include("$theme_dir/closed.php", false, false) &&
+			!_include("$theme_dir/closed.html", false, false)
 		) {
 			echo
 				"<!doctype html>\n".
 				h::title(get_core_ml_text('closed_title')).
 				get_core_ml_text('closed_text');
 		} else {
-			_include_once("$theme_dir/index.php", false) || _include_once("$theme_dir/index.html");
+			_include("$theme_dir/index.php", false, false) || _include("$theme_dir/index.html");
 		}
 		$this->Html = ob_get_clean();
 		return $this;
@@ -465,8 +465,8 @@ class Page {
 		} else {
 			ob_start();
 			if (
-				!_include_once(THEMES."/$this->theme/error.html", false) &&
-				!_include_once(THEMES."/$this->theme/error.php", false)
+				!_include(THEMES."/$this->theme/error.html", false, false) &&
+				!_include(THEMES."/$this->theme/error.php", false, false)
 			) {
 				echo "<!doctype html>\n".
 					h::title(code_header($error)).

@@ -8,4 +8,4 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs;
-_include_once(__DIR__.'/../save.php', false);
+_include(__DIR__.'/../save.php', false, false);

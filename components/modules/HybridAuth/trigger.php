@@ -14,6 +14,7 @@ Event::instance()->on(
 		switch (Config::instance()->components['modules']['HybridAuth']['active']) {
 			case 1:
 				require __DIR__.'/events/enabled.php';
+				require_once __DIR__.'/events/enabled/functions.php';
 		}
 	}
 );

@@ -154,9 +154,9 @@ class Index {
 		 * Plugins processing
 		 */
 		foreach ($Config->components['plugins'] as $plugin) {
-			_include_once(PLUGINS."/$plugin/index.php", false);
+			_include(PLUGINS."/$plugin/index.php", false, false);
 		}
-		_include_once("$this->working_directory/prepare.php", false);
+		_include("$this->working_directory/prepare.php", false, false);
 		/**
 		 * @var _SERVER $_SERVER
 		 */
@@ -306,11 +306,11 @@ class Index {
 		return !error_code();
 	}
 	protected function files_router_handler_internal ($dir, $basename, $required) {
-		$included = _include_once("$dir/$basename.php", false) !== false;
+		$included = _include("$dir/$basename.php", false, false) !== false;
 		if (!api_path()) {
 			return;
 		}
-		$included = _include_once("$dir/$basename.$this->request_method.php", false) !== false || $included;
+		$included = _include("$dir/$basename.$this->request_method.php", false, false) !== false || $included;
 		if ($included || !$required) {
 			return;
 		}

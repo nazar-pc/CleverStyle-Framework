@@ -12,8 +12,8 @@ Event::instance()->on(
 	function () {
 		switch (Config::instance()->components['modules']['WebSockets']['active']) {
 			case 1:
-				require __DIR__.'/Pawl/vendor/autoload.php';
-				require __DIR__.'/functions.php';
+				require_once __DIR__.'/Pawl/vendor/autoload.php';
+				require_once __DIR__.'/functions.php';
 				require __DIR__.'/events/enabled.php';
 				return;
 			case -1:

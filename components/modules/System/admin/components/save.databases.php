@@ -46,7 +46,7 @@ if ($_POST['mode'] == 'add') {
 		$update = true;
 	}
 } elseif ($_POST['mode'] == 'config') {
-	_include_once(__DIR__."/../save.php", false);
+	_include(__DIR__."/../save.php", false, false);
 }
 if ($update) {
 	$Index->save();

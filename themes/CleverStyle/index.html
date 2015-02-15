@@ -12,8 +12,10 @@ use
 	cs\User,
 	h;
 include_once __DIR__.'/functions.php';
-function level ($in, $level) {
-	return trim(h::level($in, $level))."\n";
+if (!function_exists(__NAMESPACE__.'\\level')) {
+	function level ($in, $level) {
+		return trim(h::level($in, $level))."\n";
+	}
 }
 $main_menu	= h::{'ul.uk-navbar-nav[level=0] li[level=0]'}(
 	get_main_menu()
