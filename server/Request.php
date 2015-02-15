@@ -7,6 +7,7 @@
  */
 namespace cs\server;
 use
+	cs\Config,
 	cs\Language,
 	cs\Index,
 	cs\Page,
@@ -49,6 +50,7 @@ class Request {
 		}
 		ob_start();
 		$_SERVER = new _SERVER($_SERVER);
+		Config::instance(true)->reinit();
 		Language::instance();
 		Index::instance()->__finish();
 		Page::instance()->__finish();

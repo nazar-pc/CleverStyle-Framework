@@ -20,7 +20,6 @@ trait Singleton {
 		static $instance;
 		$class = get_called_class();
 		if (in_array($class, [
-			'cs\\Config',
 			'cs\\Event',
 			'cs\\Index',
 			'cs\\Menu',

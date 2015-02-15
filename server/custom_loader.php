@@ -11,6 +11,8 @@ require DIR.'/server/functions.php'; //Inclusion of functions needed for http se
 require DIR.'/server/_SERVER.php';   //Inclusion of `$_SERVER` wrapper, specific for http server
 require DIR.'/server/Request.php';   //Inclusion of Request class, used for http server requests processing
 require DIR.'/server/Singleton.php'; //Inclusion of `Singleton` trait, specific for http server
+require DIR.'/server/Config.php';    //Inclusion of `cs\custom\Config` class, which is used instead original `cs\Config` for http server
+clean_classes_cache();
 /**
  * Including of custom files
  */
