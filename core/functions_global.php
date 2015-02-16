@@ -36,7 +36,12 @@ function _setcookie ($name, $value, $expire = 0, $httponly = false) {
 	if (!isset($prefix)) {
 		$prefix = '';
 	}
-	$_COOKIE[$prefix.$name] = $value;
+	if ($value === '') {
+		unset($_COOKIE[$prefix.$name]);
+		return true;
+	} else {
+		$_COOKIE[$prefix.$name] = $value;
+	}
 	if (isset($domain)) {
 		return setcookie(
 			$prefix.$name,
