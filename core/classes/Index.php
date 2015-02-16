@@ -317,7 +317,7 @@ class Index {
 		if ($methods = get_files_list($dir, "/^$basename\\.[a-z]+\\.php$/")) {
 			$methods = _strtoupper(_substr($methods, strlen($basename) + 1, -4));
 			$methods = implode(', ', $methods);
-			header("Allow: $methods");
+			_header("Allow: $methods");
 			error_code(405);
 		} else {
 			error_code(404);
@@ -378,7 +378,7 @@ class Index {
 		if ($methods) {
 			$methods = _strtoupper(_substr($methods, strlen($method_name) + 1, -4));
 			$methods = implode(', ', $methods);
-			header("Allow: $methods");
+			_header("Allow: $methods");
 			error_code(405);
 		} else {
 			error_code(404);

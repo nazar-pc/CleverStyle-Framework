@@ -11,8 +11,8 @@ namespace cs\modules\OAuth2;
 use
 	cs\Page;
 
-header('Cache-Control: no-store');
-header('Pragma: no-cache');
+_header('Cache-Control: no-store');
+_header('Pragma: no-cache');
 $Page   = Page::instance();
 $OAuth2 = OAuth2::instance();
 if (!isset($_POST['access_token'])) {

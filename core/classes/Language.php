@@ -329,7 +329,7 @@ class Language implements JsonSerializable {
 				$return                         = true;
 			}
 			_include(LANGUAGES."/$language.php", false, false);
-			header("Content-Language: $translate[content_language]");
+			_header("Content-Language: $translate[content_language]");
 			return $return;
 		}
 		return false;

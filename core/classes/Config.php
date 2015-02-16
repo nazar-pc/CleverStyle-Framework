@@ -202,7 +202,7 @@ class Config {
 		 */
 		if (mb_strpos($server['raw_relative_address'], 'redirect/') === 0) {
 			if ($this->is_referer_local()) {
-				header('Location: '.substr($server['raw_relative_address'], 9));
+				_header('Location: '.substr($server['raw_relative_address'], 9));
 			} else {
 				error_code(400);
 				Page::instance()->error();
@@ -222,7 +222,7 @@ class Config {
 		current_module($processed_route['MODULE']);
 		home_page($processed_route['HOME']);
 		if ($processed_route['API']) {
-			header('Content-Type: application/json; charset=utf-8', true);
+			_header('Content-Type: application/json; charset=utf-8', true);
 			interface_off();
 		}
 	}

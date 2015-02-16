@@ -13,8 +13,8 @@ use
 	cs\Page,
 	cs\User;
 
-header('Cache-Control: no-store');
-header('Pragma: no-cache');
+_header('Cache-Control: no-store');
+_header('Pragma: no-cache');
 interface_off();
 /**
  * Errors processing

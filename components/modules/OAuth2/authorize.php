@@ -22,7 +22,7 @@ use
 	cs\User;
 
 function error_redirect ($error, $description) {
-	header(
+	_header(
 		'Location: '.http_build_url(
 			urldecode($_GET['redirect_uri']),
 			[
@@ -163,7 +163,7 @@ if (isset($_POST['mode'])) {
 			$OAuth2->add_access($client['id']);
 			break;
 		default:
-			header(
+			_header(
 				'Location: '.http_build_url(
 					urldecode($redirect_uri),
 					[
@@ -198,7 +198,7 @@ if (!$code) {
 }
 switch ($_GET['response_type']) {
 	case 'code':
-		header(
+		_header(
 			'Location: '.http_build_url(
 				urldecode($redirect_uri),
 				[
@@ -215,7 +215,7 @@ switch ($_GET['response_type']) {
 		$token_data = $OAuth2->get_code($code, $client['id'], $client['secret'], $redirect_uri);
 		if ($token_data) {
 			unset($token_data['refresh_token']);
-			header(
+			_header(
 				'Location: '.uri_for_token(
 					http_build_url(
 						urldecode($redirect_uri),
@@ -237,8 +237,8 @@ switch ($_GET['response_type']) {
 			return;
 		}
 	case 'guest_token':
-		header('Cache-Control: no-store');
-		header('Pragma: no-cache');
+		_header('Cache-Control: no-store');
+		_header('Pragma: no-cache');
 		interface_off();
 		if ($User->user()) {
 			error_code(403);

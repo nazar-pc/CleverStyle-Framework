@@ -110,7 +110,7 @@ class Page {
 	 */
 	function json ($add) {
 		if (!api_path()) {
-			header('Content-Type: application/json; charset=utf-8', true);
+			_header('Content-Type: application/json; charset=utf-8', true);
 			interface_off();
 		}
 		$this->Content	= _json_encode($add);
@@ -442,7 +442,7 @@ class Page {
 		 * Hack for 403 after sign out in administration
 		 */
 		if (!api_path() && error_code() == 403 && _getcookie('sign_out')) {
-			header('Location: /', true, 302);
+			_header('Location: /', true, 302);
 			$this->Content	= '';
 			exit;
 		}
@@ -455,7 +455,7 @@ class Page {
 		}
 		if ($json || api_path()) {
 			if ($json) {
-				header('Content-Type: application/json; charset=utf-8', true);
+				_header('Content-Type: application/json; charset=utf-8', true);
 				interface_off();
 			}
 			$this->json([

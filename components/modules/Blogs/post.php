@@ -56,7 +56,7 @@ if (
 $module				= path($L->Blogs);
 if ($post['path'] != mb_substr($rc[1], 0, mb_strrpos($rc[1], ':'))) {
 	code_header(303);
-	header("Location: {$Config->base_url()}/$module/$post[path]:$post[id]");
+	_header("Location: {$Config->base_url()}/$module/$post[path]:$post[id]");
 	return;
 }
 $Page->title($post['title']);

@@ -89,9 +89,9 @@ Event::instance()
 				$clang        = $L->clang;
 				$query_string = $_SERVER->query_string ? "?$_SERVER->query_string" : '';
 				if (!home_page()) {
-					header("Location: /$clang/$relative_address$query_string", true, 301);
+					_header("Location: /$clang/$relative_address$query_string", true, 301);
 				} else {
-					header("Location: /$clang$query_string", true, 301);
+					_header("Location: /$clang$query_string", true, 301);
 				}
 			}
 			$base_url = substr($Config->base_url(), 0, -3);

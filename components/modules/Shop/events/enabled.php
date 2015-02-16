@@ -45,7 +45,7 @@ Event::instance()
 			);
 			$L = new Prefix('shop_');
 			interface_off();
-			header('Location: '.$Config->core_url().'/'.path($L->shop).'/'.path($L->orders).'/?paid_success='.(int)$purpose[1]);
+			_header('Location: '.$Config->core_url().'/'.path($L->shop).'/'.path($L->orders).'/?paid_success='.(int)$purpose[1]);
 		}
 	)
 	->on(
@@ -61,6 +61,6 @@ Event::instance()
 			$Config = Config::instance();
 			$L      = new Prefix('shop_');
 			interface_off();
-			header('Location: '.$Config->core_url().'/'.path($L->shop).'/'.path($L->orders).'/?paid_error='.(int)$purpose[1]);
+			_header('Location: '.$Config->core_url().'/'.path($L->shop).'/'.path($L->orders).'/?paid_error='.(int)$purpose[1]);
 		}
 	);
