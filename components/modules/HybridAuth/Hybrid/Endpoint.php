@@ -68,7 +68,7 @@ class Hybrid_Endpoint {
 	{
 		$output = file_get_contents( dirname(__FILE__) . "/resources/openid_policy.html" );
 		print $output;
-		die();
+		throw new \ExitException;
 	}
 
 	/**
@@ -88,7 +88,7 @@ class Hybrid_Endpoint {
 			file_get_contents( dirname(__FILE__) . "/resources/openid_xrds.xml" )
 		);
 		print $output;
-		die();
+		throw new \ExitException;
 	}
 
 	/**
@@ -103,7 +103,7 @@ class Hybrid_Endpoint {
 			file_get_contents( dirname(__FILE__) . "/resources/openid_realm.html" )
 		);
 		print $output;
-		die();
+		throw new \ExitException;
 	}
 
 	/**
@@ -144,7 +144,7 @@ class Hybrid_Endpoint {
 			$hauth->returnToCallbackUrl();
 		}
 
-		die();
+		throw new \ExitException;
 	}
 
 	/**
@@ -181,7 +181,7 @@ class Hybrid_Endpoint {
 		Hybrid_Logger::info( "Endpoint: job done. retrun to callback url." );
 
 		$hauth->returnToCallbackUrl();
-		die();
+		throw new \ExitException;
 	}
 
 	public static function authInit()

@@ -191,7 +191,7 @@ class Config {
 		if ($server['mirror_index'] === -1) {
 			code_header(400);
 			trigger_error($L->mirror_not_allowed, E_USER_ERROR);
-			exit;
+			throw new \ExitException;
 		}
 		/**
 		 * Remove trailing slashes
@@ -207,7 +207,7 @@ class Config {
 				error_code(400);
 				Page::instance()->error();
 			}
-			exit;
+			throw new \ExitException;
 		}
 		$processed_route	= $this->process_route($server['raw_relative_address']);
 		if (!$processed_route) {

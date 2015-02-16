@@ -444,7 +444,7 @@ class Page {
 		if (!api_path() && error_code() == 403 && _getcookie('sign_out')) {
 			_header('Location: /', true, 302);
 			$this->Content	= '';
-			exit;
+			throw new \ExitException;
 		}
 		interface_off();
 		$error	= code_header(error_code());
@@ -475,7 +475,7 @@ class Page {
 			$this->Content	= ob_get_clean();
 		}
 		$this->__finish();
-		exit;
+		throw new \ExitException;
 	}
 	/**
 	 * Page generation

@@ -277,6 +277,8 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 		if ($Config->module('HybridAuth')->enable_contacts_detection) {
 			try {
 				$contacts	= $adapter->getUserContacts();
+			} catch (\ExitException $e) {
+				throw $e;
 			} catch (Exception $e) {
 				unset($e);
 			}
@@ -467,6 +469,8 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 				)
 			);
 		}
+	} catch (\ExitException $e) {
+		throw $e;
 	} catch (Exception $e) {
 		trigger_error($e->getMessage());
 		_header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
@@ -623,6 +627,8 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					_header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
 					_setcookie('HybridAuth_referer', '');
 				}
+			} catch (\ExitException $e) {
+				throw $e;
 			} catch (Exception $e) {
 				trigger_error($e->getMessage());
 				_header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));

@@ -366,7 +366,7 @@ class Hybrid_Auth
 			echo '</html>';
 		}
 
-		die();
+		throw new \ExitException;
 	}
 
 	// --------------------------------------------------------------------

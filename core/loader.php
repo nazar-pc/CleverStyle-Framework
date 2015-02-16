@@ -22,5 +22,10 @@ unset($custom);
 /**
  * System running
  */
-Language::instance();
-Index::instance();
+try {
+	Language::instance();
+	Index::instance();
+} catch (\ExitException $e) {}
+try {
+	shutdown_function();
+} catch (\ExitException $e) {}

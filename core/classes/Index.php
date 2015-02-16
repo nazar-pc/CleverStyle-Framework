@@ -119,7 +119,7 @@ class Index {
 		) {
 			if (!$this->set_permission_group("admin/$this->module")) {
 				error_code(403);
-				exit;
+				throw new \ExitException;
 			}
 			$this->working_directory = $admin_path;
 			$this->form              = true;
@@ -130,7 +130,7 @@ class Index {
 		) {
 			if (!$this->set_permission_group("api/$this->module")) {
 				error_code(403);
-				exit;
+				throw new \ExitException;
 			}
 			$this->working_directory = $api_path;
 			$this->in_api            = true;
@@ -141,12 +141,12 @@ class Index {
 		) {
 			if (!$this->set_permission_group($this->module)) {
 				error_code(403);
-				exit;
+				throw new \ExitException;
 			}
 			$this->working_directory = MODULES."/$this->module";
 		} else {
 			error_code(404);
-			exit;
+			throw new \ExitException;
 		}
 		unset($admin_path, $api_path);
 		Event::instance()->fire('System/Index/construct');
