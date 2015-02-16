@@ -51,7 +51,7 @@ if (isset($_GET['section'])) {
 $title[]  = $L->latest_posts;
 $title    = implode($Config->core['title_delimiter'], $title);
 $base_url = $Config->base_url();
-header('Content-Type: application/atom+xml');
+_header('Content-Type: application/atom+xml');
 interface_off();
 
 function get_favicon_path ($theme) {

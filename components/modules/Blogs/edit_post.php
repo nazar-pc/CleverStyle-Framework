@@ -78,7 +78,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 			if ($save) {
 				if ($Blogs->set($post['id'], $_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])), $draft)) {
 					interface_off();
-					header('Location: '.$Config->base_url()."/$module/$post[path]:$post[id]");
+					_header('Location: '.$Config->base_url()."/$module/$post[path]:$post[id]");
 					return;
 				} else {
 					$Page->warning($L->post_saving_error);
@@ -88,7 +88,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 		case 'delete':
 			if ($Blogs->del($post['id'])) {
 				interface_off();
-				header('Location: '.$Config->base_url()."/$module");
+				_header('Location: '.$Config->base_url()."/$module");
 				return;
 			} else {
 				$Page->warning($L->post_deleting_error);

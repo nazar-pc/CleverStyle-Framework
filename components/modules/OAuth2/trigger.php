@@ -19,8 +19,8 @@ Event::instance()->on(
 					$rc[1] = explode('?', $rc[1], 2)[0];
 				}
 				$data['rc'] = implode('/', $rc);
-				header('Cache-Control: no-store');
-				header('Pragma: no-cache');
+				_header('Cache-Control: no-store');
+				_header('Pragma: no-cache');
 			}
 			$POST	= $_POST;
 			Event::instance()->on('System/User/construct/after', function () use ($POST) {

@@ -256,7 +256,7 @@ class phpVimeo
         $t = $this->getRequestToken($callback_url);
         $this->setToken($t['oauth_token'], $t['oauth_token_secret'], 'request', true);
         $url = $this->getAuthorizeUrl($this->_token, $permission);
-        header("Location: {$url}");
+        _header("Location: {$url}");
     }
 
     /**

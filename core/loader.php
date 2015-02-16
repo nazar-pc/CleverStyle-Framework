@@ -6,7 +6,8 @@
  * @license   MIT License, see license.txt
  */
 namespace cs;
-require __DIR__.'/loader_base.php'; //Inclusion of loader base
+require __DIR__.'/loader_base.php';      //Inclusion of loader base
+require __DIR__.'/functions_global.php'; //Inclusion of functions that work with global state
 /**
  * Wrapper around default `$_SERVER` superglobal
  */
@@ -21,5 +22,10 @@ unset($custom);
 /**
  * System running
  */
-Language::instance();
-Index::instance();
+try {
+	Language::instance();
+	Index::instance();
+} catch (\ExitException $e) {}
+try {
+	shutdown_function();
+} catch (\ExitException $e) {}

@@ -10,7 +10,7 @@ namespace cs;
 use
 	cs\themes\CleverStyle,
 	h;
-include THEMES.'/CleverStyle/functions.php';
+include_once THEMES.'/CleverStyle/functions.php';
 $main_menu	= h::{'ul.uk-nav.uk-nav-offcanvas[level=0] li[level=0]'}(
 	CleverStyle\get_main_menu()
 );

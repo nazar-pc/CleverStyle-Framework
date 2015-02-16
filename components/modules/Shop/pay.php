@@ -25,7 +25,7 @@ if (!$order || $order['user'] != User::instance()->id) {
 }
 interface_off();
 if ($order['paid'] || $order['payment_method'] == Orders::PAYMENT_METHOD_CASH) {
-	header('Location: '.$Config->core_url().'/'.path($L->shop).'/'.path($L->orders));
+	_header('Location: '.$Config->core_url().'/'.path($L->shop).'/'.path($L->orders));
 	return;
 }
 Event::instance()->fire(

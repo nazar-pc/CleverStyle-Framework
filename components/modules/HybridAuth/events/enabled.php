@@ -92,7 +92,7 @@ Event::instance()->on(
 	'System/User/registration/confirmation/after',
 	function () {
 		if ($referer = _getcookie('HybridAuth_referer')) {
-			header("Refresh: 5; url=$referer");
+			_header("Refresh: 5; url=$referer");
 			_setcookie('HybridAuth_referer', '');
 		}
 	}
