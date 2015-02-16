@@ -15,14 +15,28 @@ use
 class Request {
 	public $__request_id;
 	/**
-	 * @param string               $data
+	 * @var \React\Http\Request
+	 */
+	protected $request;
+	/**
+	 * @var \React\Http\Response
+	 */
+	protected $response;
+	/**
 	 * @param \React\Http\Request  $request
 	 * @param \React\Http\Response $response
 	 */
-	function __construct ($data, $request, $response) {
-		// To clean result of previous execution
-		$this->reset();
+	function __construct ($request, $response) {
+		$this->request      = $request;
+		$this->response     = $response;
 		$this->__request_id = md5(openssl_random_pseudo_bytes(100));
+	}
+	/**
+	 * @param string $data
+	 */
+	function __invoke ($data) {
+		$this->bootstrap();
+		$request = $this->request;
 		foreach ($request->getHeaders() as $key => $value) {
 			if ($key == 'Content-Type') {
 				$_SERVER['CONTENT_TYPE'] = $value;
@@ -55,33 +69,37 @@ class Request {
 		Index::instance()->__finish();
 		Page::instance()->__finish();
 		User::instance(true)->__finish();
-		$headers = [];
-		array_map(function ($header) use (&$headers) {
-			$header              = explode(':', $header, 2);
-			$headers[$header[0]] = ltrim($header[1]);
-		}, headers_list());
-		$response->writeHead(http_response_code(), $headers);
+		$headers  = array_map(function ($header) {
+			return implode(', ', $header);
+		}, _header(null));
+		$response = $this->response;
+		$response->writeHead(_http_response_code(), $headers);
 		$response->end(ob_get_clean());
+		$this->cleanup();
 	}
 	/**
-	 * Clean and reset as much as possible in order to provide clean environment for next request
+	 * Various preparations before processing of current request
 	 */
-	protected function reset () {
-		// TODO: probably, better solution in future (for truly asynchronous requests)
-		objects_pool([]);
+	protected function bootstrap () {
 		admin_path(false);
 		api_path(false);
 		current_module('');
 		home_page(false);
-		http_response_code(200);
-		error_code(0);
 		$_SERVER = [];
 		$_COOKIE = [];
 		$_GET    = [];
 		$_POST   = [];
-		header_remove();
-		header('Content-Type: text/html; charset=utf-8');
-		header('Vary: Content-Language,User-Agent,Cookie');
-		header('Connection: close');
+		_header('Content-Type: text/html; charset=utf-8');
+		_header('Vary: Content-Language,User-Agent,Cookie');
+		_header('Connection: close');
+	}
+	/**
+	 * Various cleanups after processing of current request to free used memory
+	 */
+	function cleanup () {
+		/**
+		 * Clean objects pool
+		 */
+		objects_pool($this->__request_id, []);
 	}
 }

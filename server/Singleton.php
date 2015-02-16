@@ -28,15 +28,11 @@ trait Singleton {
 			'cs\\User'
 		])) {
 			$request_id   = get_request_id();
-			$objects_pool = &objects_pool();
-			if (!isset($objects_pool[$request_id])) {
-				$objects_pool[$request_id] = [];
+			$objects_pool = &objects_pool($request_id);
+			if (isset($objects_pool[$class]) && $objects_pool[$class]) {
+				return $objects_pool[$class];
 			}
-			$request_pool = &$objects_pool[$request_id];
-			if (isset($request_pool[$class]) && $request_pool[$class]) {
-				return $request_pool[$class];
-			}
-			return self::instance_prototype($request_pool[$class], $check);
+			return self::instance_prototype($objects_pool[$class], $check);
 		}
 		return self::instance_prototype($instance, $check);
 	}

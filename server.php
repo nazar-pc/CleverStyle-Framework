@@ -40,9 +40,10 @@ $socket = new React\Socket\Server($loop);
 $http   = new React\Http\Server($socket);
 // TODO: only first request handled currently, need more work in core
 $http->on('request', function (\React\Http\Request $request, \React\Http\Response $response) {
-	$request->on('data', function ($data) use ($request, $response) {
-		new Request($data, $request, $response);
-	});
+	$request->on(
+		'data',
+		new Request($request, $response)
+	);
 });
 $socket->listen(9998);
 $loop->run();
