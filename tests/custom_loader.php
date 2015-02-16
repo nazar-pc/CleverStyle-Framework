@@ -22,7 +22,8 @@ define('TIME', floor(MICROTIME));                    //Time in seconds (integer)
 define('DIR', realpath(__DIR__.'/../cscms.travis')); //Root directory
 chdir(DIR);
 
-require DIR.'/core/loader_base.php'; //Inclusion of loader base
+require DIR.'/core/loader_base.php';     //Inclusion of loader base
+require DIR.'/core/functions_global.php'; //Inclusion of functions that work with global state
 /**
  * Wrapper around default `$_SERVER` superglobal
  */
