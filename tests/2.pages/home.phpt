@@ -9,6 +9,7 @@ include __DIR__.'/../_SERVER.php';
 Language::instance();
 Index::instance();
 shutdown_function(true);
+shutdown_function();
 ?>
 --EXPECTF--
 <!doctype html>

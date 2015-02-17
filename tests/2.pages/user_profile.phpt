@@ -10,6 +10,7 @@ $_SERVER->request_uri = '/Profile/admin';
 Language::instance();
 Index::instance();
 shutdown_function(true);
+shutdown_function();
 ?>
 --EXPECTF--
 <!doctype html>
