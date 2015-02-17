@@ -45,7 +45,7 @@ class Request {
 				$value   = array_map(function ($cookie) {
 					return explode('=', $cookie);
 				}, $value);
-				$_COOKIE = array_column($value, 1, 0);
+				$_COOKIE[$this->__request_id] = array_column($value, 1, 0);
 			} else {
 				$_SERVER['HTTP_'.strtoupper(strtr($key, '-', '_'))] = $value;
 			}
@@ -64,16 +64,18 @@ class Request {
 		}
 		ob_start();
 		$_SERVER = new _SERVER($_SERVER);
-		Config::instance(true)->reinit();
-		Language::instance();
-		Index::instance()->__finish();
-		Page::instance()->__finish();
-		User::instance(true)->__finish();
-		$headers  = array_map(function ($header) {
-			return implode(', ', $header);
-		}, _header(null));
+		try {
+			Config::instance(true)->reinit();
+			Language::instance();
+			Index::instance();
+		} catch (\ExitException $e) {}
+		try {
+			Index::instance(true)->__finish();
+			Page::instance()->__finish();
+			User::instance(true)->__finish();
+		} catch (\ExitException $e) {}
 		$response = $this->response;
-		$response->writeHead(_http_response_code(), $headers);
+		$response->writeHead(_http_response_code(), _header(null));
 		$response->end(ob_get_clean());
 		$this->cleanup();
 	}
@@ -81,10 +83,6 @@ class Request {
 	 * Various preparations before processing of current request
 	 */
 	protected function bootstrap () {
-		admin_path(false);
-		api_path(false);
-		current_module('');
-		home_page(false);
 		$_SERVER = [];
 		$_COOKIE = [];
 		$_GET    = [];
@@ -101,5 +99,13 @@ class Request {
 		 * Clean objects pool
 		 */
 		objects_pool($this->__request_id, []);
+		/**
+		 * Clean cookies
+		 */
+		unset($_COOKIE[$this->__request_id]);
+		admin_path(-1);
+		api_path(-1);
+		current_module(-1);
+		home_page(-1);
 	}
 }
