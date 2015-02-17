@@ -293,7 +293,7 @@ class User {
 		 * Security check
 		 */
 		if (!isset($_REQUEST['session']) || $_REQUEST['session'] != $this->get_session_id()) {
-			foreach (array_keys($_POST) as $key) {
+			foreach (array_keys((array)$_POST) as $key) {
 				unset($_POST[$key], $_REQUEST[$key]);
 			}
 		}
