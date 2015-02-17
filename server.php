@@ -38,7 +38,7 @@ clean_classes_cache();
 $loop   = React\EventLoop\Factory::create();
 $socket = new React\Socket\Server($loop);
 $http   = new React\Http\Server($socket);
-// TODO: only first request handled currently, need more work in core
+
 $http->on('request', function (\React\Http\Request $request, \React\Http\Response $response) {
 	$request->on(
 		'data',

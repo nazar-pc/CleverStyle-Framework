@@ -38,7 +38,9 @@ class Request {
 	function __invoke ($data) {
 		$this->bootstrap();
 		$request = $this->request;
-		$SERVER  = [];
+		$SERVER  = [
+			'SERVER_SOFTWARE' => 'ReactPHP'
+		];
 		foreach ($request->getHeaders() as $key => $value) {
 			if ($key == 'Content-Type') {
 				$SERVER['CONTENT_TYPE'] = $value;
