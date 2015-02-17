@@ -15,7 +15,7 @@ use
 	cs\Page;
 function make_url ($arguments) {
 	$base_url = 'admin/Shop/items/?';
-	return $base_url.http_build_query(array_merge($_GET, $arguments));
+	return $base_url.http_build_query(array_merge((array)$_GET, $arguments));
 }
 
 function make_header ($title, $field) {
@@ -43,7 +43,7 @@ $page        = @$_GET['page'] ?: 1;
 $module_data = Config::instance()->module('Shop');
 $count       = @$_GET['count'] ?: $module_data->items_per_page_admin;
 $items       = $Items->get($Items->search(
-	$_GET,
+	(array)$_GET,
 	$page,
 	$count,
 	@$_GET['order_by'] ?: 'id',
@@ -52,7 +52,7 @@ $items       = $Items->get($Items->search(
 $items_total = $Items->search(
 	[
 		'total_count' => 1
-	] + $_GET,
+	] + (array)$_GET,
 	$page,
 	$count,
 	@$_GET['order_by'] ?: 'id',

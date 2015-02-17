@@ -81,14 +81,19 @@ AddEncoding gzip .html
 		 */
 		if (isset($_SERVER->content_type)) {
 			if (preg_match('#^application/([^+\s]+\+)?json#', $_SERVER->content_type)) {
-				$_POST		= _json_decode(@file_get_contents('php://input')) ?: [];
-				$_REQUEST	= array_merge($_REQUEST, $_POST);
+				foreach (_json_decode(@file_get_contents('php://input')) ?: [] as $i => $v) {
+					$_POST[$i]    = $v;
+					$_REQUEST[$i] = $v;
+				}
 			} elseif (
 				strtolower($_SERVER->request_method) !== 'post' &&
 				strpos($_SERVER->content_type, 'application/x-www-form-urlencoded') === 0
 			) {
-				@parse_str(file_get_contents('php://input'), $_POST);
-				$_REQUEST	= array_merge($_REQUEST, $_POST);
+				@parse_str(file_get_contents('php://input'), $POST);
+				foreach ($POST as $i => $v) {
+					$_POST[$i]    = $v;
+					$_REQUEST[$i] = $v;
+				}
 			}
 		}
 		$this->constructed	= true;

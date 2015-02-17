@@ -30,7 +30,7 @@ if ($User->user()) {
 	$orders       = $Orders->get($Orders->search(
 		[
 			'user' => $User->id
-		] + $_GET,
+		] + (array)$_GET,
 		$page,
 		$count,
 		@$_GET['order_by'] ?: 'date',
@@ -40,7 +40,7 @@ if ($User->user()) {
 		[
 			'user'        => $User->id,
 			'total_count' => 1
-		] + $_GET,
+		] + (array)$_GET,
 		$page,
 		$count,
 		@$_GET['order_by'] ?: 'date',
@@ -131,7 +131,7 @@ $Page->content(
 				[
 					'page' => $page,
 					'user' => $User->id
-				] + $_GET
+				] + (array)$_GET
 			));
 		}, true)
 	)
