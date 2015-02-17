@@ -17,7 +17,7 @@ use
 	cs\User;
 function make_url ($arguments) {
 	$base_url = 'admin/Shop/orders/?';
-	return $base_url.http_build_query(array_merge($_GET, $arguments));
+	return $base_url.http_build_query(array_merge((array)$_GET, $arguments));
 }
 
 function make_header ($title, $field) {
@@ -47,7 +47,7 @@ $Shipping_types            = Shipping_types::instance();
 $page                      = @$_GET['page'] ?: 1;
 $count                     = @$_GET['count'] ?: Config::instance()->module('Shop')->items_per_page_admin;
 $orders                    = $Orders->get($Orders->search(
-	$_GET,
+	(array)$_GET,
 	$page,
 	$count,
 	@$_GET['order_by'] ?: 'date',
@@ -56,7 +56,7 @@ $orders                    = $Orders->get($Orders->search(
 $orders_total              = $Orders->search(
 	[
 		'total_count' => 1
-	] + $_GET,
+	] + (array)$_GET,
 	$page,
 	$count,
 	@$_GET['order_by'] ?: 'date',

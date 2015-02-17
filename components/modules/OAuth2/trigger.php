@@ -22,9 +22,11 @@ Event::instance()->on(
 				_header('Cache-Control: no-store');
 				_header('Pragma: no-cache');
 			}
-			$POST	= $_POST;
+			$POST	= (array)$_POST;
 			Event::instance()->on('System/User/construct/after', function () use ($POST) {
-				$_POST	= $POST + $_POST;
+				foreach ($POST as $i => $v) {
+					$_POST[$i] = $v;
+				}
 			});
 		}
 		switch ($Config->components['modules']['OAuth2']['active']) {

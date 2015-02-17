@@ -293,8 +293,9 @@ class User {
 		 * Security check
 		 */
 		if (!isset($_REQUEST['session']) || $_REQUEST['session'] != $this->get_session_id()) {
-			$_REQUEST	= array_diff_key($_REQUEST, $_POST);
-			$_POST		= [];
+			foreach (array_keys($_POST) as $key) {
+				unset($_POST[$key], $_REQUEST[$key]);
+			}
 		}
 		$this->init	= true;
 		Event::instance()->fire('System/User/construct/after');

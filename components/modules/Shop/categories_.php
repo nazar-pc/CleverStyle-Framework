@@ -93,7 +93,7 @@ $items = $Items->get($Items->search(
 	[
 		'listed'   => 1,
 		'category' => $current_category
-	] + $_GET,
+	] + (array)$_GET,
 	$page,
 	$count,
 	@$_GET['order_by'] ?: 'id',
@@ -107,7 +107,7 @@ $items_total     = $Items->search(
 		'listed'      => 1,
 		'category'    => $current_category,
 		'total_count' => 1
-	] + $_GET,
+	] + (array)$_GET,
 	$page,
 	$count,
 	@$_GET['order_by'] ?: 'id',

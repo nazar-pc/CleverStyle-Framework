@@ -192,7 +192,7 @@ $Mail		= Mail::instance();
  */
 if (isset($rc[1]) && $rc[1] == 'endpoint') {
 	require_once __DIR__.'/Hybrid/Endpoint.php';
-	Hybrid_Endpoint::process();
+	Hybrid_Endpoint::process($_REQUEST);
 /**
  * If user did not specified email
  */
