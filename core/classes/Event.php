@@ -6,8 +6,6 @@
  * @license   MIT License, see license.txt
  */
 namespace cs;
-use
-	cs\Event\Once_wrapper;
 /**
  * Event class
  *
@@ -79,15 +77,11 @@ class Event {
 		if (!isset($this->callbacks[$event])) {
 			$this->callbacks[$event] = [];
 		}
-		$Event     = $this;
-		$callback_ = new Once_wrapper(function () use ($event, $callback, $Event) {
-			/**
-			 * @var Once_wrapper $this
-			 */
-			$Event->off($event, $this);
+		$wrapped_callback = function () use (&$wrapped_callback, $event, $callback) {
+			$this->off($event, $wrapped_callback);
 			call_user_func_array($callback, func_get_args());
-		});
-		return $this->on($event, $callback_);
+		};
+		return $this->on($event, $wrapped_callback);
 	}
 	/**
 	 * Fire event

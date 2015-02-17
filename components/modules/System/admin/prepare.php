@@ -7,4 +7,4 @@
  * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-require __DIR__.'/functions.php';
+require_once __DIR__.'/functions.php';
