@@ -105,7 +105,6 @@ function shutdown_function ($enable = null) {
 	Page::instance()->__finish();
 	User::instance(true)->__finish();
 }
-register_shutdown_function('shutdown_function');
 /**
  * Enable of errors processing
  */

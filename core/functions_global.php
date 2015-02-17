@@ -26,43 +26,37 @@ use
  */
 function _setcookie ($name, $value, $expire = 0, $httponly = false) {
 	static $path, $domain, $prefix, $secure;
-	$Config = Config::instance(true);
-	if ($Config && !isset($prefix)) {
-		$prefix = $Config->core['cookie_prefix'];
-		$secure = $Config->server['protocol'] == 'https';
-		$domain = $Config->core['cookie_domain'][$Config->server['mirror_index']];
-		$path   = $Config->core['cookie_path'][$Config->server['mirror_index']];
-	}
 	if (!isset($prefix)) {
-		$prefix = '';
+		$Config = Config::instance(true);
+		if ($Config) {
+			$prefix = $Config->core['cookie_prefix'];
+			$secure = $Config->server['protocol'] == 'https';
+			$domain = $Config->core['cookie_domain'][$Config->server['mirror_index']];
+			$path   = $Config->core['cookie_path'][$Config->server['mirror_index']];
+		} else {
+			$prefix = '';
+			/**
+			 * @var \cs\_SERVER $_SERVER
+			 */
+			$secure = $_SERVER->secure;
+			$domain = $_SERVER->host;
+			$path   = '/';
+		}
 	}
 	if ($value === '') {
 		unset($_COOKIE[$prefix.$name]);
-		return true;
 	} else {
 		$_COOKIE[$prefix.$name] = $value;
 	}
-	if (isset($domain)) {
-		return setcookie(
-			$prefix.$name,
-			$value,
-			$expire,
-			$path,
-			$domain,
-			$secure,
-			$httponly
-		);
-	} else {
-		return setcookie(
-			$prefix.$name,
-			$value,
-			$expire,
-			'/',
-			$_SERVER->host,
-			false,
-			$httponly
-		);
-	}
+	return setcookie(
+		$prefix.$name,
+		$value,
+		$expire,
+		$path,
+		$domain,
+		$secure,
+		$httponly
+	);
 }
 
 /**
@@ -75,8 +69,7 @@ function _setcookie ($name, $value, $expire = 0, $httponly = false) {
 function _getcookie ($name) {
 	static $prefix;
 	if (!isset($prefix)) {
-		$Config = Config::instance(true);
-		$prefix = $Config->core['cookie_prefix'] ? $Config->core['cookie_prefix'].'_' : '';
+		$prefix = Config::instance(true)->core['cookie_prefix'] ?: '';
 	}
 	return isset($_COOKIE[$prefix.$name]) ? $_COOKIE[$prefix.$name] : false;
 }
