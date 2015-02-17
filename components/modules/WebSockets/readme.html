@@ -3,7 +3,7 @@
 <p>It is highly recommended to have working <code>exec()</code> function in PHP (otherwise fallback will be used, but not guaranteed to work) and Nginx should be configured properly (<a href="https://github.com/nazar-pc/CleverStyle-CMS/wiki/Nginx-config-sample">Nginx config sample</a>).</p>
 There are two ways to run WebSockets server:
 <dl>
-	<dt>CLI (recommended): <code>php components/modules/WebSockets/supervisor.php 'php components/modules/WebSockets/prepare_cli.php https://example.com/WebServer'</code></dt>
+	<dt>CLI (recommended): <code>php components/modules/WebSockets/supervisor.php 'php components/modules/WebSockets/start_cli.php https://example.com/WebServer'</code></dt>
 	<dd>Where <code>https://example.com</code> is web-site address, server should be running on every physical server if there are few of them</dd>
 	<dt>Web: open <code>https://example.com/WebServer/security_key</code></dt>
 	<dd>Where <code>https://example.com</code> is web-site address, server should be running on every physical server if there are few of them.</dd>

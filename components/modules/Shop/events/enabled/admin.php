@@ -13,18 +13,20 @@ use
 	cs\Index,
 	cs\Language\Prefix,
 	cs\Menu;
-function add_menu_section_item ($section) {
-	$L		= new Prefix('shop_');
-	$Menu	= Menu::instance();
-	$route	= Index::instance()->route_path;
-	$Menu->add_item(
-		'Shop',
-		$L->$section,
-		"admin/Shop/$section",
-		[
-			'class'	=> isset($route[0]) && $route[0] == $section ? 'uk-active' : false
-		]
-	);
+if (!function_exists(__NAMESPACE__.'\\add_menu_section_item')) {
+	function add_menu_section_item ($section) {
+		$L		= new Prefix('shop_');
+		$Menu	= Menu::instance();
+		$route	= Index::instance()->route_path;
+		$Menu->add_item(
+			'Shop',
+			$L->$section,
+			"admin/Shop/$section",
+			[
+				'class'	=> isset($route[0]) && $route[0] == $section ? 'uk-active' : false
+			]
+		);
+	}
 }
 Event::instance()->on(
 	'admin/System/Menu',

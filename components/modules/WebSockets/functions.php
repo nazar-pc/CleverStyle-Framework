@@ -45,7 +45,7 @@ function is_exec_available () {
  */
 function cross_platform_server_in_background () {
 	$supervisor = 'php '.__DIR__.'/supervisor.php';
-	$cmd        = 'php '.__DIR__.'/prepare_cli.php '.Config::instance()->base_url().'/WebSockets';
+	$cmd        = 'php '.__DIR__.'/start_cli.php '.Config::instance()->base_url().'/WebSockets';
 	if (substr(PHP_OS, 0, 3) != 'WIN') {
 		exec("$supervisor '$cmd' > /dev/null &");
 	} else {
