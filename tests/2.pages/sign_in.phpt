@@ -15,6 +15,7 @@ Event::instance()->on('System/User/construct/after', function () {
 Language::instance();
 Index::instance();
 shutdown_function(true);
+shutdown_function();
 ?>
 --EXPECT--
 null
