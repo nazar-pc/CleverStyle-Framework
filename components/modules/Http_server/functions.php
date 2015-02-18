@@ -14,20 +14,25 @@ namespace {
 	 *
 	 * @return string
 	 */
-	function get_request_id () {
-		static $request_index;
-		$backtrace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS);
-		if (!isset($request_index)) {
-			foreach (array_reverse($backtrace) as $i => $b) {
-				if (isset($b['object']->__request_id)) {
-					$request_index = -$i - 1;
-					break;
+	if (!ASYNC_HTTP_SERVER) {
+		function get_request_id () {
+			return 1;
+		}
+	} else {
+		function get_request_id () {
+			static $request_index;
+			$backtrace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS);
+			if (!isset($request_index)) {
+				foreach (array_reverse($backtrace) as $i => $b) {
+					if (isset($b['object']->__request_id)) {
+						$request_index = -$i - 1;
+						break;
+					}
 				}
 			}
+			return array_slice($backtrace, $request_index, 1)[0]['object']->__request_id;
 		}
-		return array_slice($backtrace, $request_index, 1)[0]['object']->__request_id;
 	}
-
 	/**
 	 * Objects pool for usage in Singleton, optimized for WebServer
 	 *

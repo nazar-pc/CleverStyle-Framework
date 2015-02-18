@@ -31,7 +31,7 @@ class Request {
 	function __construct ($request, $response) {
 		$this->request      = $request;
 		$this->response     = $response;
-		$this->__request_id = md5(openssl_random_pseudo_bytes(100));
+		$this->__request_id = ASYNC_HTTP_SERVER ? md5(openssl_random_pseudo_bytes(100)) : 1;
 	}
 	/**
 	 * @param string $data
@@ -47,11 +47,11 @@ class Request {
 			if ($key == 'Content-Type') {
 				$SERVER['CONTENT_TYPE'] = $value;
 			} elseif ($key == 'Cookie') {
-				$value                = _trim(explode(';', $value));
-				$value                = array_map(function ($cookie) {
+				$value  = _trim(explode(';', $value));
+				$value  = array_map(function ($cookie) {
 					return explode('=', $cookie);
 				}, $value);
-				$_COOKIE[$request_id] = array_column($value, 1, 0);
+				$COOKIE = array_column($value, 1, 0);
 			} else {
 				$SERVER['HTTP_'.strtoupper(strtr($key, '-', '_'))] = $value;
 			}
@@ -59,20 +59,37 @@ class Request {
 		$SERVER['REQUEST_METHOD']  = $request->getMethod();
 		$SERVER['REQUEST_URI']     = $request->getPath();
 		$SERVER['QUERY_STRING']    = http_build_query($request->getQuery());
-		$_GET[$request_id]         = $request->getQuery();
+		$GET[$request_id]          = $request->getQuery();
 		$SERVER['SERVER_PROTOCOL'] = 'HTTP/'.$request->getHttpVersion();
 		switch (explode(';', @$SERVER['CONTENT_TYPE'])[0]) {
 			case 'application/json':
-				$_POST[$request_id] = json_decode($data, true);
+				$POST[$request_id] = json_decode($data, true);
 				break;
 			default:
 				parse_str($data, $POST);
-				$_POST[$request_id] = $POST;
+				$POST[$request_id] = $POST;
 				unset($POST);
 		}
 		ob_start();
-		$_SERVER[$request_id] = new _SERVER($SERVER);
+		$COOKIE = isset($COOKIE) ? $COOKIE : [];
+		$POST   = isset($POST) ? $POST : [];
+		if (ASYNC_HTTP_SERVER) {
+			$_SERVER[$request_id]  = new _SERVER($SERVER);
+			$_COOKIE[$request_id]  = $COOKIE;
+			$_GET[$request_id]     = $GET;
+			$_POST[$request_id]    = $POST;
+			$_REQUEST[$request_id] = $POST + $GET;
+		} else {
+			$_SERVER  = new _SERVER($SERVER);
+			$_COOKIE  = $COOKIE;
+			$_GET     = $GET;
+			$_POST    = $POST;
+			$_REQUEST = $POST + $GET;
+		}
 		try {
+			if (!ASYNC_HTTP_SERVER) {
+				Config::instance(true)->reinit();
+			}
 			Language::instance();
 			Index::instance();
 		} catch (\ExitException $e) {
@@ -106,13 +123,15 @@ class Request {
 		 * Clean objects pool
 		 */
 		objects_pool($request_id, []);
-		unset(
-			$_COOKIE[$request_id],
-			$_SERVER[$request_id],
-			$_GET[$request_id],
-			$_POST[$request_id],
-			$_REQUEST[$request_id]
-		);
+		if (ASYNC_HTTP_SERVER) {
+			unset(
+				$_COOKIE[$request_id],
+				$_SERVER[$request_id],
+				$_GET[$request_id],
+				$_POST[$request_id],
+				$_REQUEST[$request_id]
+			);
+		}
 		error_code(-1);
 		admin_path(-1);
 		api_path(-1);

@@ -20,15 +20,24 @@ trait Singleton {
 	static function instance ($check = false) {
 		static $instance;
 		$class = get_called_class();
-		if (in_array($class, [
+		$request_specific_classes = ASYNC_HTTP_SERVER ? [
 			'cs\\Config',
+			'cs\\Event',
+			'cs\\Index',
+			'cs\\Language',
+			'cs\\Menu',
+			'cs\\Page',
+			'cs\\Page\\Meta',
+			'cs\\User'
+		] : [
 			'cs\\Event',
 			'cs\\Index',
 			'cs\\Menu',
 			'cs\\Page',
 			'cs\\Page\\Meta',
 			'cs\\User'
-		])) {
+		];
+		if (in_array($class, $request_specific_classes)) {
 			$request_id   = get_request_id();
 			$objects_pool = &objects_pool($request_id);
 			if (isset($objects_pool[$class]) && $objects_pool[$class]) {
