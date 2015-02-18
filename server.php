@@ -13,7 +13,8 @@
  * $ composer install
  *
  * Start server with:
- * $ php-cgi server.php
+ * $ php server.php 8080
+ * Where 8080 is desired port number
  */
 use
 	cs\server\Request;
@@ -34,7 +35,6 @@ chdir(DIR);
 
 require_once __DIR__.'/server/custom_loader.php';
 require_once __DIR__.'/http/vendor/autoload.php';
-clean_classes_cache();
 $loop   = React\EventLoop\Factory::create();
 $socket = new React\Socket\Server($loop);
 $http   = new React\Http\Server($socket);
@@ -45,6 +45,5 @@ $http->on('request', function (\React\Http\Request $request, \React\Http\Respons
 		new Request($request, $response)
 	);
 });
-$socket->listen(9998);
+$socket->listen($argv[1]);
 $loop->run();
-clean_classes_cache();
