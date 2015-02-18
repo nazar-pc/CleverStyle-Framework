@@ -75,14 +75,20 @@ class Superglobals_wrapper implements ArrayAccess, Iterator {
 	 */
 	function current () {
 		$request_id = get_request_id();
-		return current($this->requests[$request_id]);
+		/**
+		 * Workaround with checking for object is for HHVM
+		 */
+		return is_object($this->requests[$request_id]) ? $this->requests[$request_id]->current() : current($this->requests[$request_id]);
 	}
 	/**
 	 * Move forward to next element (from original superglobal)
 	 */
 	function next () {
 		$request_id = get_request_id();
-		next($this->requests[$request_id]);
+		/**
+		 * Workaround with checking for object is for HHVM
+		 */
+		is_object($this->requests[$request_id]) ? $this->requests[$request_id]->next() : next($this->requests[$request_id]);
 	}
 	/**
 	 * Return the key of the current element (from original superglobal)
@@ -91,7 +97,10 @@ class Superglobals_wrapper implements ArrayAccess, Iterator {
 	 */
 	function key () {
 		$request_id = get_request_id();
-		return key($this->requests[$request_id]);
+		/**
+		 * Workaround with checking for object is for HHVM
+		 */
+		return is_object($this->requests[$request_id]) ? $this->requests[$request_id]->key() : key($this->requests[$request_id]);
 	}
 	/**
 	 * Checks if current position is valid (from original superglobal)
@@ -107,7 +116,9 @@ class Superglobals_wrapper implements ArrayAccess, Iterator {
 	 */
 	function rewind () {
 		$request_id = get_request_id();
-		reset($this->requests[$request_id]);
+		/**
+		 * Workaround with checking for object is for HHVM
+		 */
 	}
 	function __get ($index) {
 		$request_id = get_request_id();

@@ -44,7 +44,8 @@ namespace {
 		if (is_array($update_objects_pool)) {
 			if (empty($update_objects_pool)) {
 				unset($objects_pool[$request_id]);
-				return;
+				$null = null;
+				return $null;
 			} else {
 				$objects_pool[$request_id] = $update_objects_pool;
 			}
