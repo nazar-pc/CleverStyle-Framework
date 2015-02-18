@@ -87,18 +87,21 @@ class Request {
 			$_REQUEST = $POST + $GET;
 		}
 		try {
-			if (!ASYNC_HTTP_SERVER) {
-				Config::instance(true)->reinit();
+			try {
+				if (!ASYNC_HTTP_SERVER) {
+					Config::instance(true)->reinit();
+				}
+				Language::instance();
+				Index::instance();
+			} catch (\ExitException $e) {
 			}
-			Language::instance();
-			Index::instance();
-		} catch (\ExitException $e) {
-		}
-		try {
-			Index::instance(true)->__finish();
-			Page::instance()->__finish();
-			User::instance(true)->__finish();
-		} catch (\ExitException $e) {
+			try {
+				Index::instance(true)->__finish();
+				Page::instance()->__finish();
+				User::instance(true)->__finish();
+			} catch (\ExitException $e) {
+			}
+		} catch (\Exception $e) {
 		}
 		$response = $this->response;
 		$response->writeHead(_http_response_code(0, $request_id), _header(null));
