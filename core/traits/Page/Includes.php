@@ -245,14 +245,15 @@ trait Includes {
 		$this->pcache_basename	= "_{$this->theme}_".Language::instance()->clang;
 		$Index					= Index::instance();
 		$User					= User::instance();
+		$current_module			= current_module();
 		/**
 		 * Some JS code required by system
 		 */
 		$this->config_internal([
 			'base_url'			=> $Config->base_url(),
-			'current_base_url'	=> $Config->base_url().'/'.($Index->in_admin() ? 'admin/' : '').current_module(),
+			'current_base_url'	=> $Config->base_url().'/'.($Index->in_admin() ? 'admin/' : '').$current_module,
 			'public_key'		=> Core::instance()->public_key,
-			'module'			=> current_module(),
+			'module'			=> $current_module,
 			'in_admin'			=> (int)$Index->in_admin(),
 			'is_admin'			=> (int)$User->admin(),
 			'is_user'			=> (int)$User->user(),
@@ -298,10 +299,11 @@ trait Includes {
 		$structure			= $data['structure'];
 		$dependencies		= $data['dependencies'];
 		unset($data);
+		$current_module		= current_module();
 		/**
 		 * Narrow the dependence to current module only
 		 */
-		$dependencies			= isset($dependencies[current_module()]) ? $dependencies[current_module()] : [];
+		$dependencies			= isset($dependencies[$current_module]) ? $dependencies[$current_module] : [];
 		$system_includes		= [
 			'css'	=> ["storage/pcache/$this->pcache_basename.css?{$structure['']['css']}"],
 			'js'	=> ["storage/pcache/$this->pcache_basename.js?{$structure['']['js']}"],
