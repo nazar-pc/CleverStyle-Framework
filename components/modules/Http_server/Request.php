@@ -38,19 +38,20 @@ class Request {
 	 */
 	function __invoke ($data) {
 		$this->bootstrap();
-		$request = $this->request;
-		$SERVER  = [
+		$request    = $this->request;
+		$request_id = $this->__request_id;
+		$SERVER     = [
 			'SERVER_SOFTWARE' => 'ReactPHP'
 		];
 		foreach ($request->getHeaders() as $key => $value) {
 			if ($key == 'Content-Type') {
 				$SERVER['CONTENT_TYPE'] = $value;
 			} elseif ($key == 'Cookie') {
-				$value                        = _trim(explode(';', $value));
-				$value                        = array_map(function ($cookie) {
+				$value                = _trim(explode(';', $value));
+				$value                = array_map(function ($cookie) {
 					return explode('=', $cookie);
 				}, $value);
-				$_COOKIE[$this->__request_id] = array_column($value, 1, 0);
+				$_COOKIE[$request_id] = array_column($value, 1, 0);
 			} else {
 				$SERVER['HTTP_'.strtoupper(strtr($key, '-', '_'))] = $value;
 			}
@@ -58,21 +59,20 @@ class Request {
 		$SERVER['REQUEST_METHOD']  = $request->getMethod();
 		$SERVER['REQUEST_URI']     = $request->getPath();
 		$SERVER['QUERY_STRING']    = http_build_query($request->getQuery());
-		$_GET[$this->__request_id] = $request->getQuery();
+		$_GET[$request_id]         = $request->getQuery();
 		$SERVER['SERVER_PROTOCOL'] = 'HTTP/'.$request->getHttpVersion();
 		switch (explode(';', @$SERVER['CONTENT_TYPE'])[0]) {
 			case 'application/json':
-				$_POST[$this->__request_id] = json_decode($data, true);
+				$_POST[$request_id] = json_decode($data, true);
 				break;
 			default:
 				parse_str($data, $POST);
-				$_POST[$this->__request_id] = $POST;
+				$_POST[$request_id] = $POST;
 				unset($POST);
 		}
 		ob_start();
-		$_SERVER[$this->__request_id] = new _SERVER($SERVER);
+		$_SERVER[$request_id] = new _SERVER($SERVER);
 		try {
-			Config::instance(true)->reinit();
 			Language::instance();
 			Index::instance();
 		} catch (\ExitException $e) {
@@ -84,7 +84,7 @@ class Request {
 		} catch (\ExitException $e) {
 		}
 		$response = $this->response;
-		$response->writeHead(_http_response_code(), _header(null));
+		$response->writeHead(_http_response_code(0, $request_id), _header(null));
 		$response->end(ob_get_clean());
 		$this->cleanup();
 		$request->close();
@@ -101,17 +101,19 @@ class Request {
 	 * Various cleanups after processing of current request to free used memory
 	 */
 	function cleanup () {
+		$request_id = $this->__request_id;
 		/**
 		 * Clean objects pool
 		 */
-		objects_pool($this->__request_id, []);
+		objects_pool($request_id, []);
 		unset(
-			$_COOKIE[$this->__request_id],
-			$_SERVER[$this->__request_id],
-			$_GET[$this->__request_id],
-			$_POST[$this->__request_id],
-			$_REQUEST[$this->__request_id]
+			$_COOKIE[$request_id],
+			$_SERVER[$request_id],
+			$_GET[$request_id],
+			$_POST[$request_id],
+			$_REQUEST[$request_id]
 		);
+		error_code(-1);
 		admin_path(-1);
 		api_path(-1);
 		current_module(-1);
