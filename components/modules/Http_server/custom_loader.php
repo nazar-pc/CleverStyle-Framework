@@ -8,6 +8,7 @@
  */
 namespace cs\modules\Http_server;
 require DIR.'/core/loader_base.php';         //Inclusion of loader base
+@ini_set('error_log', LOGS.'/Http_server.log');
 require __DIR__.'/functions.php';            //Inclusion of functions needed for http server
 require __DIR__.'/Superglobals_wrapper.php'; //Inclusion of wrapper for `$_SERVER` `$_GET`, `$_POST`, `$_REQUEST` for http server
 require __DIR__.'/Request.php';              //Inclusion of Request class, used for http server requests processing

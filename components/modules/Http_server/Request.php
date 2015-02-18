@@ -87,6 +87,7 @@ class Request {
 		$response->writeHead(_http_response_code(), _header(null));
 		$response->end(ob_get_clean());
 		$this->cleanup();
+		$request->close();
 	}
 	/**
 	 * Various preparations before processing of current request

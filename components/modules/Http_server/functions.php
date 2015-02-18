@@ -10,7 +10,7 @@ namespace {
 	use
 		cs\Config;
 	/**
-	 * Return request id based on backtrace (maximum to Request object)
+	 * Return request id from Request object
 	 *
 	 * @return string
 	 */
@@ -44,6 +44,7 @@ namespace {
 		if (is_array($update_objects_pool)) {
 			if (empty($update_objects_pool)) {
 				unset($objects_pool[$request_id]);
+				return;
 			} else {
 				$objects_pool[$request_id] = $update_objects_pool;
 			}
@@ -68,11 +69,6 @@ namespace {
 	function _header ($string, $replace = true, $http_response_code = null) {
 		static $headers = [];
 		$request_id = get_request_id();
-		if (strcasecmp(substr($string, 0, 4), 'http') === 0) {
-			_http_response_code(explode(' ', $string)[1], $request_id);
-			/** @noinspection PhpInconsistentReturnPointsInspection */
-			return;
-		}
 		if ($string === null) {
 			if (isset($headers[$request_id])) {
 				$return = $headers[$request_id];
@@ -80,6 +76,11 @@ namespace {
 				return $return;
 			}
 			return [];
+		}
+		if (strcasecmp(substr($string, 0, 4), 'http') === 0) {
+			_http_response_code(explode(' ', $string)[1], $request_id);
+			/** @noinspection PhpInconsistentReturnPointsInspection */
+			return;
 		}
 		if (!isset($headers[$request_id])) {
 			$headers[$request_id] = [];
@@ -106,8 +107,7 @@ namespace {
 	function _http_response_code ($response_code = 0, $request_id = null) {
 		static $codes = [];
 		$request_id    = $request_id ?: get_request_id();
-		$response_code = $response_code ?: 200;
-		if ($response_code < 1) {
+		if ($response_code == 0) {
 			if (isset($codes[$request_id])) {
 				$code = $codes[$request_id];
 				unset($codes[$request_id]);
@@ -206,6 +206,7 @@ namespace {
 		}
 		if ($code === -1) {
 			unset($stored_code[$request_id]);
+			return;
 		}
 		if (
 			$code !== null &&
@@ -233,6 +234,7 @@ namespace {
 		}
 		if ($admin_path === -1) {
 			unset($stored_admin_path[$request_id]);
+			return;
 		}
 		if ($admin_path !== null) {
 			$stored_admin_path[$request_id] = $admin_path;
@@ -255,6 +257,7 @@ namespace {
 		}
 		if ($api_path === -1) {
 			unset($stored_api_path[$request_id]);
+			return;
 		}
 		if ($api_path !== null) {
 			$stored_api_path[$request_id] = $api_path;
@@ -277,6 +280,7 @@ namespace {
 		}
 		if ($current_module === -1) {
 			unset($stored_current_module[$request_id]);
+			return;
 		}
 		if ($current_module !== null) {
 			$stored_current_module[$request_id] = $current_module;
@@ -299,6 +303,7 @@ namespace {
 		}
 		if ($home_page === -1) {
 			unset($stored_home_page[$request_id]);
+			return;
 		}
 		if ($home_page !== null) {
 			$stored_home_page[$request_id] = $home_page;
