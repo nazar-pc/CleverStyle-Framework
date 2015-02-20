@@ -61,14 +61,12 @@ class Request {
 		$SERVER['QUERY_STRING']    = http_build_query($request->getQuery());
 		$GET[$request_id]          = $request->getQuery();
 		$SERVER['SERVER_PROTOCOL'] = 'HTTP/'.$request->getHttpVersion();
-		switch (explode(';', @$SERVER['CONTENT_TYPE'])[0]) {
-			case 'application/json':
-				$POST[$request_id] = json_decode($data, true);
-				break;
-			default:
+		if (isset($SERVER['CONTENT_TYPE'])) {
+			if (strpos($SERVER['CONTENT_TYPE'], 'application/x-www-form-urlencoded') === 0) {
 				parse_str($data, $POST);
-				$POST[$request_id] = $POST;
-				unset($POST);
+			} elseif (preg_match('#^application/([^+\s]+\+)?json#', $SERVER['CONTENT_TYPE'])) {
+				$POST[$request_id] = json_decode($data, true);
+			}
 		}
 		ob_start();
 		$COOKIE = isset($COOKIE) ? $COOKIE : [];
