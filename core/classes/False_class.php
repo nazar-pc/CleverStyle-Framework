@@ -54,6 +54,14 @@ class False_class extends SimpleXMLElement implements ArrayAccess {
 		return $this;
 	}
 	/**
+	 * Calling as callable
+	 *
+	 * @return False_class
+	 */
+	function __invoke () {
+		return $this;
+	}
+	/**
 	 * @return string
 	 */
 	function __toString () {
