@@ -1,0 +1,61 @@
+<h3 style="text-align: center;">Http server based on React, potentially consumes less memory and works much faster that mod-php5 and php-fpm (and even pure HHVM too)</h3>
+<p>Http server is running in background and listen for incoming connections.</p>
+<p>Server can be runned as single instance:</p>
+<dl>
+	<dt>php components/modules/Http_server/supervisor.php 'php components/modules/Http_server/run_server.php -p 8080'</dt>
+	<dd>php is used as example, hhvm can be used instead as well</dd>
+	<dd>8080 is port, you can replace it by any port you need</dd>
+</dl>
+<p>It is also possible to run the pool of servers and use load balancer to distribute requests between separate instances in pool:</p>
+<dl>
+	<dt>php components/modules/Http_server/run_pool.php -p 8001-8010</dt>
+	<dd>In this example 10 servers will be started on ports from 8001 to 8010 (supervisor will be included)</dd>
+</dl>
+<p>To see more details about execution parameters run server or pull without arguments and you'll see description of available options:</p>
+<ul>
+	<li>php components/modules/Http_server/run_server.php</li>
+	<li>php components/modules/Http_server/run_pool.php</li>
+</ul>
+<h4>Nginx config</h4>
+<p>Nginx is recommended as web server here, since this Http server doesn't handle (and, likely, shouldn't) static content.</p>
+<p>Take regular Nginx config as reference, and replace <b>location ~ ^/index\.php {</b> block by one of following.</p>
+<h5>For single Http server instance:</h5>
+<pre>
+	<code>
+location ~ ^/index\.php {
+	proxy_pass			http://127.0.0.1:8080$request_uri;
+	proxy_set_header	X-Forwarded-Host	$server_name;
+	proxy_set_header	X-Forwarded-Port	$server_port;
+	proxy_set_header	X-Forwarded-Proto	$scheme;
+	proxy_set_header	X-Forwarded-For		$remote_addr;
+}
+	</code>
+</pre>
+<h5>For pool of Http server instances:</h5>
+<pre>
+	<code>
+location ~ ^/index\.php {
+	proxy_pass			http://http_servers_pool$request_uri;
+	proxy_set_header	X-Forwarded-Host	$server_name;
+	proxy_set_header	X-Forwarded-Port	$server_port;
+	proxy_set_header	X-Forwarded-Proto	$scheme;
+	proxy_set_header	X-Forwarded-For		$remote_addr;
+}
+	</code>
+</pre>
+Also in case of pool you have to add pool itself right before <b>server {</b> block:
+<pre>
+	<code>
+upstream http_servers_pool  {
+    server 127.0.0.1:8001;
+    server 127.0.0.1:8002;
+    server 127.0.0.1:8003;
+    server 127.0.0.1:8004;
+    server 127.0.0.1:8005;
+    server 127.0.0.1:8006;
+    server 127.0.0.1:8007;
+    server 127.0.0.1:8008;
+    server 127.0.0.1:8009;
+    server 127.0.0.1:8010;
+}	</code>
+</pre>
