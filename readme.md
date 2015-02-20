@@ -16,6 +16,7 @@ But in parallel with core some components are developed:
  * **Deferred tasks** (Deferred tasks allows other components to create tasks, that can be executed not immediately, but little bit later)
  * **Disqus** (Integration of Disqus commenting service, adds comments functionality to other modules)
  * **Feedback** (simple feedback module, sends message to admin's email)
+ * **Http server** (Http server based on [React](https://github.com/reactphp/react), potentially consumes less memory and works much faster that mod-php5 and php-fpm (and even pure HHVM too))
  * **HybridAuth** (integration of [HybridAuth](https://github.com/hybridauth/hybridauth) library for integration with social networks and other services)
  * **OAuth2** (provides realization of OAuth 2 authorization protocol (server side))
  * **Photo gallery** (simple photo gallery module, powered by Fotorama, Plupload and SimpleImage components)
