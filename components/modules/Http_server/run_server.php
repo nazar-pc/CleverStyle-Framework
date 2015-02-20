@@ -8,10 +8,6 @@
  */
 use
 	cs\modules\Http_server\Request;
-/**
- * This is custom loader that includes basic files and defines constants,
- * but do not call any class to leave that all for test cases, and unregisters shutdown function
- */
 if (version_compare(PHP_VERSION, '5.4', '<')) {
 	exit('CleverStyle CMS require PHP 5.4 or higher');
 }
