@@ -1,26 +1,22 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   CleverStyle CMS
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs\Cache;
 /**
  * Provides cache functionality based on APC (Alternative PHP Cache).
  */
 class APC extends _Abstract {
-	protected	$apc;
-	protected	$root_versions_cache	= [];
+	protected $apc;
+	protected $root_versions_cache = [];
 	function __construct () {
-		$this->apc	= apc();
+		$this->apc = apc();
 	}
 	/**
-	 * Get item from cache
-	 *
-	 * @param string		$item	May contain "/" symbols for cache structure, for example users/<i>user_id</i>
-	 *
-	 * @return bool|mixed			Returns item on success of <b>false</b> on failure
+	 * @inheritdoc
 	 */
 	function get ($item) {
 		if (!$this->apc) {
@@ -31,12 +27,7 @@ class APC extends _Abstract {
 		);
 	}
 	/**
-	 * Put or change data of cache item
-	 *
-	 * @param string	$item	May contain "/" symbols for cache structure, for example users/<i>user_id</i>
-	 * @param mixed		$data
-	 *
-	 * @return bool
+	 * @inheritdoc
 	 */
 	function set ($item, $data) {
 		if (!$this->apc) {
@@ -48,11 +39,7 @@ class APC extends _Abstract {
 		);
 	}
 	/**
-	 * Delete item from cache
-	 *
-	 * @param string	$item	May contain "/" symbols for cache structure, for example users/<i>user_id</i>
-	 *
-	 * @return bool
+	 * @inheritdoc
 	 */
 	function del ($item) {
 		if (!$this->apc) {
@@ -73,25 +60,25 @@ class APC extends _Abstract {
 	 * @return string
 	 */
 	protected function namespaces_imitation ($item) {
-		$exploded	= explode('/', $item);
-		$count		= count($exploded);
+		$exploded = explode('/', $item);
+		$count    = count($exploded);
 		if ($count > 1) {
-			$item_path	= DOMAIN;
+			$item_path = DOMAIN;
 			--$count;
 			for ($i = 0; $i < $count; ++$i) {
-				$item_path	.= '/'.$exploded[$i];
+				$item_path .= '/'.$exploded[$i];
 				if (!$i && isset($this->root_versions_cache["/$item_path"])) {
-					$exploded[$i]	.= '/'.$this->root_versions_cache["/$item_path"];
+					$exploded[$i] .= '/'.$this->root_versions_cache["/$item_path"];
 					continue;
 				}
-				$version	= apc_fetch("/$item_path");
+				$version = apc_fetch("/$item_path");
 				if ($version === false) {
 					apc_store("/$item_path", 0);
-					$version	= 0;
+					$version = 0;
 				}
-				$exploded[$i]	.= "/$version";
+				$exploded[$i] .= "/$version";
 				if (!$i) {
-					$this->root_versions_cache["/$item_path"]	= $version;
+					$this->root_versions_cache["/$item_path"] = $version;
 				}
 			}
 			return DOMAIN.'/'.implode('/', $exploded);
@@ -99,9 +86,7 @@ class APC extends _Abstract {
 		return DOMAIN."/$item";
 	}
 	/**
-	 * Clean cache by deleting all items
-	 *
-	 * @return bool
+	 * @inheritdoc
 	 */
 	function clean () {
 		if (!$this->apc) {

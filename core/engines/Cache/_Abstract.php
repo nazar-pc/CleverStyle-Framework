@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   CleverStyle CMS
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs\Cache;
 abstract class _Abstract {
@@ -12,9 +12,9 @@ abstract class _Abstract {
 	 *
 	 * @abstract
 	 *
-	 * @param string		$item	May contain "/" symbols for cache structure, for example users/<i>user_id</i>
+	 * @param string $item May contain "/" symbols for cache structure, for example users/<i>user_id</i>
 	 *
-	 * @return bool|mixed			Returns item on success of <b>false</b> on failure
+	 * @return bool|mixed            Returns item on success of <b>false</b> on failure
 	 */
 	abstract function get ($item);
 	/**
@@ -22,8 +22,8 @@ abstract class _Abstract {
 	 *
 	 * @abstract
 	 *
-	 * @param string	$item	May contain "/" symbols for cache structure, for example users/<i>user_id</i>
-	 * @param mixed		$data
+	 * @param string $item May contain "/" symbols for cache structure, for example users/<i>user_id</i>
+	 * @param mixed  $data
 	 *
 	 * @return bool
 	 */
@@ -33,7 +33,7 @@ abstract class _Abstract {
 	 *
 	 * @abstract
 	 *
-	 * @param string	$item	May contain "/" symbols for cache structure, for example users/<i>user_id</i>
+	 * @param string $item May contain "/" symbols for cache structure, for example users/<i>user_id</i>
 	 *
 	 * @return bool
 	 */
@@ -51,5 +51,6 @@ abstract class _Abstract {
 	 *
 	 * @final
 	 */
-	final function __clone () {}
+	final function __clone () {
+	}
 }

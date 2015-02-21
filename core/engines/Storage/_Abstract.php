@@ -1,21 +1,21 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   CleverStyle CMS
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs\Storage;
 abstract class _Abstract {
-	protected	$connected	= false;
-	protected	$base_url	= '';
+	protected $connected = false;
+	protected $base_url  = '';
 	/**
 	 * Connecting to the Storage
 	 *
-	 * @param string	$base_url
-	 * @param string	$host
-	 * @param string	$user
-	 * @param string	$password
+	 * @param string $base_url
+	 * @param string $host
+	 * @param string $user
+	 * @param string $password
 	 */
 	abstract function __construct ($base_url, $host, $user = '', $password = '');
 	/**
@@ -25,18 +25,18 @@ abstract class _Abstract {
 	 *
 	 * @see get_files_list()
 	 *
-	 * @param	string		$dir
-	 * @param	bool|string	$mask
-	 * @param	string		$mode
-	 * @param	bool|string	$prefix_path
-	 * @param	bool		$subfolders
-	 * @param	bool		$sort
-	 * @param	bool|string	$exclusion
-	 * @param	bool		$system_files
-	 * @param	callable	$apply
-	 * @param	int|null	$limit
+	 * @param    string      $dir
+	 * @param    bool|string $mask
+	 * @param    string      $mode
+	 * @param    bool|string $prefix_path
+	 * @param    bool        $subfolders
+	 * @param    bool        $sort
+	 * @param    bool|string $exclusion
+	 * @param    bool        $system_files
+	 * @param    callable    $apply
+	 * @param    int|null    $limit
 	 *
-	 * @return	array|bool
+	 * @return    array|bool
 	 */
 	abstract function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subfolders = false, $sort = false, $exclusion = false, $system_files = false, $apply = null, $limit = null);
 	/**
@@ -46,8 +46,8 @@ abstract class _Abstract {
 	 *
 	 * @see file()
 	 *
-	 * @param string		$filename
-	 * @param int			$flags
+	 * @param string $filename
+	 * @param int    $flags
 	 *
 	 * @return array|bool
 	 */
@@ -59,8 +59,8 @@ abstract class _Abstract {
 	 *
 	 * @see file_get_contents()
 	 *
-	 * @param string	$filename
-	 * @param int		$flags
+	 * @param string $filename
+	 * @param int    $flags
 	 *
 	 * @return bool|string
 	 */
@@ -72,9 +72,9 @@ abstract class _Abstract {
 	 *
 	 * @see file_put_contents()
 	 *
-	 * @param string	$filename
-	 * @param string	$data
-	 * @param int		$flags
+	 * @param string $filename
+	 * @param string $data
+	 * @param int    $flags
 	 *
 	 * @return bool|int
 	 */
@@ -86,8 +86,8 @@ abstract class _Abstract {
 	 *
 	 * @see copy()
 	 *
-	 * @param string	$source
-	 * @param string	$dest
+	 * @param string $source
+	 * @param string $dest
 	 *
 	 * @return bool
 	 */
@@ -99,7 +99,7 @@ abstract class _Abstract {
 	 *
 	 * @see unlink()
 	 *
-	 * @param string	$filename
+	 * @param string $filename
 	 *
 	 * @return bool
 	 */
@@ -111,7 +111,7 @@ abstract class _Abstract {
 	 *
 	 * @see file_exists()
 	 *
-	 * @param string	$filename
+	 * @param string $filename
 	 *
 	 * @return bool
 	 */
@@ -123,8 +123,8 @@ abstract class _Abstract {
 	 *
 	 * @see move_uploaded_file()
 	 *
-	 * @param string	$filename
-	 * @param string	$destination
+	 * @param string $filename
+	 * @param string $destination
 	 *
 	 * @return bool
 	 */
@@ -136,8 +136,8 @@ abstract class _Abstract {
 	 *
 	 * @see rename()
 	 *
-	 * @param string	$oldname
-	 * @param string	$newname
+	 * @param string $oldname
+	 * @param string $newname
 	 *
 	 * @return bool
 	 */
@@ -149,9 +149,9 @@ abstract class _Abstract {
 	 *
 	 * @see mkdir()
 	 *
-	 * @param string	$pathname
-	 * @param int		$mode
-	 * @param bool		$recursive
+	 * @param string $pathname
+	 * @param int    $mode
+	 * @param bool   $recursive
 	 *
 	 * @return bool
 	 */
@@ -163,7 +163,7 @@ abstract class _Abstract {
 	 *
 	 * @see rmdir()
 	 *
-	 * @param string	$dirname
+	 * @param string $dirname
 	 *
 	 * @return bool
 	 */
@@ -175,7 +175,7 @@ abstract class _Abstract {
 	 *
 	 * @see is_file()
 	 *
-	 * @param string	$filename
+	 * @param string $filename
 	 *
 	 * @return bool
 	 */
@@ -187,7 +187,7 @@ abstract class _Abstract {
 	 *
 	 * @see is_dir()
 	 *
-	 * @param string	$filename
+	 * @param string $filename
 	 *
 	 * @return bool
 	 */
@@ -199,7 +199,7 @@ abstract class _Abstract {
 	 *
 	 * @see url_by_source()
 	 *
-	 * @param string		$source
+	 * @param string $source
 	 *
 	 * @return bool|string
 	 */
@@ -211,7 +211,7 @@ abstract class _Abstract {
 	 *
 	 * @see source_by_url()
 	 *
-	 * @param string		$url
+	 * @param string $url
 	 *
 	 * @return bool|string
 	 */
@@ -237,5 +237,6 @@ abstract class _Abstract {
 	 *
 	 * @final
 	 */
-	final function __clone () {}
+	final function __clone () {
+	}
 }

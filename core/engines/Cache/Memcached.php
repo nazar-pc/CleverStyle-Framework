@@ -1,33 +1,29 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   CleverStyle CMS
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
-namespace	cs\Cache;
-use			cs\Core;
+namespace cs\Cache;
+use            cs\Core;
 /**
  * Provides cache functionality based on Memcached.
  * Support optionally base configuration option Core::instance()->memcached_host and Core::instance()->memcached_port
  */
 class Memcached extends _Abstract {
-	protected	$memcached				= false;
-	protected	$root_versions_cache	= [];
+	protected $memcached           = false;
+	protected $root_versions_cache = [];
 	function __construct () {
 		if (!memcached()) {
 			return;
 		}
-		$this->memcached	= new \Memcached(DOMAIN);
-		$Core				= Core::instance();
+		$this->memcached = new \Memcached(DOMAIN);
+		$Core            = Core::instance();
 		$this->memcached->addServer($Core->memcached_host ?: '127.0.0.1', $Core->memcached_port ?: 11211);
 	}
 	/**
-	 * Get item from cache
-	 *
-	 * @param string		$item	May contain "/" symbols for cache structure, for example users/<i>user_id</i>
-	 *
-	 * @return bool|mixed			Returns item on success of <b>false</b> on failure
+	 * @inheritdoc
 	 */
 	function get ($item) {
 		if (!$this->memcached) {
@@ -38,12 +34,7 @@ class Memcached extends _Abstract {
 		);
 	}
 	/**
-	 * Put or change data of cache item
-	 *
-	 * @param string	$item	May contain "/" symbols for cache structure, for example users/<i>user_id</i>
-	 * @param mixed		$data
-	 *
-	 * @return bool
+	 * @inheritdoc
 	 */
 	function set ($item, $data) {
 		if (!$this->memcached) {
@@ -55,11 +46,7 @@ class Memcached extends _Abstract {
 		);
 	}
 	/**
-	 * Delete item from cache
-	 *
-	 * @param string	$item	May contain "/" symbols for cache structure, for example users/<i>user_id</i>
-	 *
-	 * @return bool
+	 * @inheritdoc
 	 */
 	function del ($item) {
 		if (!$this->memcached) {
@@ -80,25 +67,25 @@ class Memcached extends _Abstract {
 	 * @return string
 	 */
 	protected function namespaces_imitation ($item) {
-		$exploded	= explode('/', $item);
-		$count		= count($exploded);
+		$exploded = explode('/', $item);
+		$count    = count($exploded);
 		if ($count > 1) {
-			$item_path	= DOMAIN;
+			$item_path = DOMAIN;
 			--$count;
 			for ($i = 0; $i < $count; ++$i) {
-				$item_path	.= '/'.$exploded[$i];
+				$item_path .= '/'.$exploded[$i];
 				if (!$i && isset($this->root_versions_cache["/$item_path"])) {
-					$exploded[$i]	.= '/'.$this->root_versions_cache["/$item_path"];
+					$exploded[$i] .= '/'.$this->root_versions_cache["/$item_path"];
 					continue;
 				}
-				$version	= $this->memcached->get("/$item_path");
+				$version = $this->memcached->get("/$item_path");
 				if ($version === false) {
 					$this->memcached->set("/$item_path", 0);
-					$version	= 0;
+					$version = 0;
 				}
-				$exploded[$i]	.= "/$version";
+				$exploded[$i] .= "/$version";
 				if (!$i) {
-					$this->root_versions_cache["/$item_path"]	= $version;
+					$this->root_versions_cache["/$item_path"] = $version;
 				}
 			}
 			return DOMAIN.'/'.implode('/', $exploded);
@@ -106,9 +93,7 @@ class Memcached extends _Abstract {
 		return DOMAIN."/$item";
 	}
 	/**
-	 * Clean cache by deleting all items
-	 *
-	 * @return bool
+	 * @inheritdoc
 	 */
 	function clean () {
 		if (!$this->memcached) {
