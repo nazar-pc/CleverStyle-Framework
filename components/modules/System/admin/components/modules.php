@@ -570,91 +570,91 @@ foreach ($Config->components['modules'] as $module_name => &$module_data) {
 	 */
 	$addition_state = $action = '';
 	$admin_link     = false;
+	/**
+	 * Notice about API existence
+	 */
+	if (is_dir(MODULES."/$module_name/api")) {
+		if (
+			file_exists($file = MODULES."/$module_name/api/readme.txt") ||
+			file_exists($file = MODULES."/$module_name/api/readme.html")
+		) {
+			$tag    = substr($file, -3) == 'txt' ? 'pre' : 'div';
+			$uniqid = uniqid('module_info_');
+			$modal  = "#{$module_name}_api.uk-modal .uk-modal-dialog.uk-modal-dialog-large";
+			$Page->post_Body .= h::$modal(
+				h::{'.uk-modal-caption'}("$module_name » $L->api").
+				h::$tag($uniqid)
+			);
+			$Page->replace(
+				$uniqid,
+				$tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)
+			);
+		}
+		$addition_state .= h::icon(
+			'link',
+			[
+				'data-title'    => $L->api_exists.h::br().(file_exists($file) ? $L->click_to_view_details : ''),
+				'data-uk-modal' => "{target : '#{$module_name}_api'}",
+				'class'         => file_exists($file) ? 'uk-button cs-button-compact' : false
+			]
+		);
+		unset($file, $tag, $uniqid, $modal);
+	}
+	/**
+	 * Information about module
+	 */
+	if (
+		file_exists($file = MODULES."/$module_name/readme.txt") ||
+		file_exists($file = MODULES."/$module_name/readme.html")
+	) {
+		$tag    = substr($file, -3) == 'txt' ? 'pre' : 'div';
+		$uniqid = uniqid('module_info_');
+		$modal  = "#{$module_name}_readme.uk-modal .uk-modal-dialog.uk-modal-dialog-large";
+		$Page->post_Body .= h::$modal(
+			h::{'.uk-modal-caption'}("$module_name » $L->information_about_module").
+			h::$tag($uniqid)
+		);
+		$Page->replace(
+			$uniqid,
+			$tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)
+		);
+		$addition_state .= h::{'icon.uk-button.cs-button-compact'}(
+			'exclamation',
+			[
+				'data-title'    => $L->information_about_module.h::br().$L->click_to_view_details,
+				'data-uk-modal' => "{target : '#{$module_name}_readme'}"
+			]
+		);
+	}
+	unset($file, $tag, $uniqid, $modal);
+	/**
+	 * License
+	 */
+	if (
+		file_exists($file = MODULES."/$module_name/license.txt") ||
+		file_exists($file = MODULES."/$module_name/license.html")
+	) {
+		$tag    = substr($file, -3) == 'txt' ? 'pre' : 'div';
+		$uniqid = uniqid('module_info_');
+		$modal  = "#{$module_name}_license.uk-modal .uk-modal-dialog.uk-modal-dialog-large";
+		$Page->post_Body .= h::$modal(
+			h::{'.uk-modal-caption'}("$module_name » $L->license").
+			h::$tag($uniqid)
+		);
+		$Page->replace(
+			$uniqid,
+			$tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)
+		);
+		$addition_state .= h::{'icon.uk-button.cs-button-compact'}(
+			'legal',
+			[
+				'data-title'    => $L->license.h::br().$L->click_to_view_details,
+				'data-uk-modal' => "{target : '#{$module_name}_license'}"
+			]
+		);
+	}
+	unset($file, $tag, $uniqid, $modal);
 	if ($module_data['active'] != -1) {
-		/**
-		 * Notice about API existence
-		 */
-		if (is_dir(MODULES."/$module_name/api")) {
-			if (
-				file_exists($file = MODULES."/$module_name/api/readme.txt") ||
-				file_exists($file = MODULES."/$module_name/api/readme.html")
-			) {
-				$tag    = substr($file, -3) == 'txt' ? 'pre' : 'div';
-				$uniqid = uniqid('module_info_');
-				$modal  = "#{$module_name}_api.uk-modal .uk-modal-dialog.uk-modal-dialog-large";
-				$Page->post_Body .= h::$modal(
-					h::{'.uk-modal-caption'}("$module_name » $L->api").
-					h::$tag($uniqid)
-				);
-				$Page->replace(
-					$uniqid,
-					$tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)
-				);
-			}
-			$addition_state .= h::icon(
-				'link',
-				[
-					'data-title'    => $L->api_exists.h::br().(file_exists($file) ? $L->click_to_view_details : ''),
-					'data-uk-modal' => "{target : '#{$module_name}_api'}",
-					'class'         => file_exists($file) ? 'uk-button cs-button-compact' : false
-				]
-			);
-			unset($file, $tag, $uniqid, $modal);
-		}
-		/**
-		 * Information about module
-		 */
-		if (
-			file_exists($file = MODULES."/$module_name/readme.txt") ||
-			file_exists($file = MODULES."/$module_name/readme.html")
-		) {
-			$tag    = substr($file, -3) == 'txt' ? 'pre' : 'div';
-			$uniqid = uniqid('module_info_');
-			$modal  = "#{$module_name}_readme.uk-modal .uk-modal-dialog.uk-modal-dialog-large";
-			$Page->post_Body .= h::$modal(
-				h::{'.uk-modal-caption'}("$module_name » $L->information_about_module").
-				h::$tag($uniqid)
-			);
-			$Page->replace(
-				$uniqid,
-				$tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)
-			);
-			$addition_state .= h::{'icon.uk-button.cs-button-compact'}(
-				'exclamation',
-				[
-					'data-title'    => $L->information_about_module.h::br().$L->click_to_view_details,
-					'data-uk-modal' => "{target : '#{$module_name}_readme'}"
-				]
-			);
-		}
-		unset($file, $tag, $uniqid, $modal);
-		/**
-		 * License
-		 */
-		if (
-			file_exists($file = MODULES."/$module_name/license.txt") ||
-			file_exists($file = MODULES."/$module_name/license.html")
-		) {
-			$tag    = substr($file, -3) == 'txt' ? 'pre' : 'div';
-			$uniqid = uniqid('module_info_');
-			$modal  = "#{$module_name}_license.uk-modal .uk-modal-dialog.uk-modal-dialog-large";
-			$Page->post_Body .= h::$modal(
-				h::{'.uk-modal-caption'}("$module_name » $L->license").
-				h::$tag($uniqid)
-			);
-			$Page->replace(
-				$uniqid,
-				$tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)
-			);
-			$addition_state .= h::{'icon.uk-button.cs-button-compact'}(
-				'legal',
-				[
-					'data-title'    => $L->license.h::br().$L->click_to_view_details,
-					'data-uk-modal' => "{target : '#{$module_name}_license'}"
-				]
-			);
-		}
-		unset($file, $tag, $uniqid, $modal);
 		/**
 		 * Setting default module
 		 */
