@@ -56,9 +56,27 @@ class MySQLi extends _Abstract {
 	 */
 	protected function q_internal ($query) {
 		if ($this->async && defined('MYSQLI_ASYNC')) {
-			return @$this->instance->query($query, MYSQLI_ASYNC);
+			$result = @$this->instance->query($query, MYSQLI_ASYNC);
+			// In case of MySQL Client error - try to fix everything, but only once
+			if (
+				!$result &&
+				$this->instance->errno >= 2000 &&
+				$this->instance->ping()
+			) {
+				$result = @$this->instance->query($query, MYSQLI_ASYNC);
+			}
+			return $result;
 		} else {
-			return @$this->instance->query($query);
+			$result = @$this->instance->query($query);
+			// In case of MySQL Client error - try to fix everything, but only once
+			if (
+				!$result &&
+				$this->instance->errno >= 2000 &&
+				$this->instance->ping()
+			) {
+				$result = @$this->instance->query($query);
+			}
+			return $result;
 		}
 	}
 	/**
