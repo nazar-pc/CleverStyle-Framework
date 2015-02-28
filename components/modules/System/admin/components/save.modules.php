@@ -8,21 +8,39 @@
  * @license		MIT License, see license.txt
  */
 /**
- * Provides next events:<br>
- *  admin/System/components/modules/install/process<br>
- *  ['name'	=> <i>module_name</i>]<br>
+ * Provides next events:
+ *  admin/System/components/modules/install/process
+ *  ['name'	=> module_name]
  *
- *  admin/System/components/modules/uninstall/process<br>
- *  ['name'	=> <i>module_name</i>]<br>
+ *  admin/System/components/modules/uninstall/process
+ *  ['name'	=> module_name]
  *
- *  admin/System/components/modules/default_module/process<br>
- *  ['name'	=> <i>module_name</i>]<br>
+ *  admin/System/components/modules/update/process/before
+ *  ['name'	=> module_name]
  *
- *  admin/System/components/modules/db/process<br>
- *  ['name'	=> <i>module_name</i>]<br>
+ *  admin/System/components/modules/update/process/after
+ *  ['name'	=> module_name]
  *
- *  admin/System/components/modules/storage/process<br>
- *  ['name'	=> <i>module_name</i>]
+ *  admin/System/components/modules/update_system/process/before
+ *  ['name'	=> module_name]
+ *
+ *  admin/System/components/modules/update_system/process/after
+ *  ['name'	=> module_name]
+ *
+ *  admin/System/components/modules/default_module/process
+ *  ['name'	=> module_name]
+ *
+ *  admin/System/components/modules/db/process
+ *  ['name'	=> module_name]
+ *
+ *  admin/System/components/modules/storage/process
+ *  ['name'	=> module_name]
+ *
+ *  admin/System/components/modules/enable/process
+ *  ['name'	=> module_name]
+ *
+ *  admin/System/components/modules/disable/process
+ *  ['name'	=> module_name]
  */
 namespace	cs;
 use h;
@@ -210,6 +228,12 @@ if (isset($_POST['update_modules_list'])) {
 						'name'	=> $module_name
 					]
 				);
+				Event::instance()->fire(
+					'admin/System/components/modules/update/process/before',
+					[
+						'name'	=> $module_name
+					]
+				);
 			}
 			$module_dir				= MODULES."/$module_name";
 			/**
@@ -313,6 +337,12 @@ if (isset($_POST['update_modules_list'])) {
 						'name'	=> $module_name
 					]
 				);
+				Event::instance()->fire(
+					'admin/System/components/modules/update/process/after',
+					[
+						'name'	=> $module_name
+					]
+				);
 				unset($Cache->languages);
 			}
 			$a->save();
@@ -328,6 +358,12 @@ if (isset($_POST['update_modules_list'])) {
 				$Config->core['site_mode']	= 0;
 				$Config->save();
 			}
+			Event::instance()->fire(
+				'admin/System/components/modules/update_system/process/before',
+				[
+					'name'	=> $module_name
+				]
+			);
 			$module_dir				= MODULES.'/System';
 			/**
 			 * Backing up some necessary information about current version
@@ -427,6 +463,12 @@ if (isset($_POST['update_modules_list'])) {
 			$a->save();
 			clean_pcache();
 			clean_classes_cache();
+			Event::instance()->fire(
+				'admin/System/components/modules/update_system/process/after',
+				[
+					'name'	=> $module_name
+				]
+			);
 		break;
 		case 'default_module':
 			if (
@@ -480,8 +522,15 @@ if (isset($_POST['update_modules_list'])) {
 			$module_data['active'] = 1;
 			$a->save();
 			clean_pcache();
+			//TODO remove in future versions
 			Event::instance()->fire(
 				'admin/System/components/modules/enable',
+				[
+					'name'	=> $module_name
+				]
+			);
+			Event::instance()->fire(
+				'admin/System/components/modules/enable/process',
 				[
 					'name'	=> $module_name
 				]
@@ -496,8 +545,15 @@ if (isset($_POST['update_modules_list'])) {
 			$module_data['active'] = 0;
 			$a->save();
 			clean_pcache();
+			//TODO remove in future versions
 			Event::instance()->fire(
 				'admin/System/components/modules/disable',
+				[
+					'name'	=> $module_name
+				]
+			);
+			Event::instance()->fire(
+				'admin/System/components/modules/disable/process',
 				[
 					'name'	=> $module_name
 				]
