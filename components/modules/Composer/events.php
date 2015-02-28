@@ -8,17 +8,50 @@
  */
 namespace cs\modules\Composer;
 use
-	cs\Event;
+	cs\Event,
+	cs\Page;
 Event::instance()
-	->on('admin/System/components/modules/install/prepare', function () {
-		//
+	->on('admin/System/components/modules/install/prepare', function ($data) {
+		if (file_exists(MODULES."/$data[name]/meta.json")) {
+			$meta = file_get_json(MODULES."/$data[name]/meta.json");
+			if (isset($meta['require_composer'])) {
+				Page::instance()->config([
+					'name'     => $meta['name'],
+					'category' => $meta['category']
+				], 'cs.composer');
+			}
+		}
 	})
-	->on('admin/System/components/modules/uninstall/process', function () {
-		//
+	->on('admin/System/components/modules/uninstall/process', function ($data) {
+		if (file_exists(MODULES."/$data[name]/meta.json")) {
+			$meta = file_get_json(MODULES."/$data[name]/meta.json");
+			if (isset($meta['require_composer'])) {
+				Page::instance()->config([
+					'name'     => $meta['name'],
+					'category' => $meta['category']
+				], 'cs.composer');
+			}
+		}
 	})
-	->on('admin/System/components/plugins/enable/prepare', function () {
-		//
+	->on('admin/System/components/plugins/enable/prepare', function ($data) {
+		if (file_exists(PLUGINS."/$data[name]/meta.json")) {
+			$meta = file_get_json(PLUGINS."/$data[name]/meta.json");
+			if (isset($meta['require_composer'])) {
+				Page::instance()->config([
+					'name'     => $meta['name'],
+					'category' => $meta['category']
+				], 'cs.composer');
+			}
+		}
 	})
-	->on('admin/System/components/plugins/disable/prepare', function () {
-		//
+	->on('admin/System/components/plugins/disable/prepare', function ($data) {
+		if (file_exists(PLUGINS."/$data[name]/meta.json")) {
+			$meta = file_get_json(PLUGINS."/$data[name]/meta.json");
+			if (isset($meta['require_composer'])) {
+				Page::instance()->config([
+					'name'     => $meta['name'],
+					'category' => $meta['category']
+				], 'cs.composer');
+			}
+		}
 	});
