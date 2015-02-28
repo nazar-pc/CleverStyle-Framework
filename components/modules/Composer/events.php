@@ -16,19 +16,21 @@ Event::instance()
 			$meta = file_get_json(MODULES."/$data[name]/meta.json");
 			if (isset($meta['require_composer'])) {
 				Page::instance()->config([
-					'name'     => $meta['name'],
-					'category' => $meta['category']
+					'name' => $meta['package'],
+					'type' => Composer::COMPONENT_MODULE,
+					'add'  => 1
 				], 'cs.composer');
 			}
 		}
 	})
-	->on('admin/System/components/modules/uninstall/process', function ($data) {
+	->on('admin/System/components/modules/uninstall/prepare', function ($data) {
 		if (file_exists(MODULES."/$data[name]/meta.json")) {
 			$meta = file_get_json(MODULES."/$data[name]/meta.json");
 			if (isset($meta['require_composer'])) {
 				Page::instance()->config([
-					'name'     => $meta['name'],
-					'category' => $meta['category']
+					'name' => $meta['package'],
+					'type' => Composer::COMPONENT_MODULE,
+					'add'  => 0
 				], 'cs.composer');
 			}
 		}
@@ -38,8 +40,9 @@ Event::instance()
 			$meta = file_get_json(PLUGINS."/$data[name]/meta.json");
 			if (isset($meta['require_composer'])) {
 				Page::instance()->config([
-					'name'     => $meta['name'],
-					'category' => $meta['category']
+					'name' => $meta['package'],
+					'type' => Composer::COMPONENT_PLUGIN,
+					'add'  => 1
 				], 'cs.composer');
 			}
 		}
@@ -49,8 +52,9 @@ Event::instance()
 			$meta = file_get_json(PLUGINS."/$data[name]/meta.json");
 			if (isset($meta['require_composer'])) {
 				Page::instance()->config([
-					'name'     => $meta['name'],
-					'category' => $meta['category']
+					'name' => $meta['package'],
+					'type' => Composer::COMPONENT_PLUGIN,
+					'add'  => 0
 				], 'cs.composer');
 			}
 		}
