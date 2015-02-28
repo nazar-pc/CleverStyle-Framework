@@ -7,10 +7,23 @@
  * @copyright  Copyright (c) 2011-2015, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
+/**
+ * Provides next events:
+ *  admin/System/components/plugins/update/prepare
+ *  ['name' => plugin_name]
+ *
+ *  admin/System/components/plugins/enable/prepare
+ *  ['name' => plugin_name]
+ *
+ *  admin/System/components/plugins/disable/prepare
+ *  ['name' => plugin_name]
+ *
+ */
 namespace cs\modules\System;
 use
 	h,
 	cs\Config,
+	cs\Event,
 	cs\Index,
 	cs\Language,
 	cs\Page,
@@ -68,12 +81,21 @@ if (
 					unlink($tmp_file);
 					break;
 				}
-				if (in_array($plugin, $Config->components['plugins'])) {
+				if (in_array($plugin, $plugins)) {
 					$current_version = file_get_json(PLUGINS."/$plugin/meta.json")['version'];
 					$new_version     = file_get_json("$tmp_dir/meta.json")['version'];
 					if (!version_compare($current_version, $new_version, '<')) {
 						$Page->warning($L->update_plugin_impossible_older_version($plugin));
 						unlink($tmp_file);
+						break;
+					}
+					if (!Event::instance()->fire(
+						'admin/System/components/plugins/update/prepare',
+						[
+							'name' => $plugin
+						]
+					)
+					) {
 						break;
 					}
 					$check_dependencies = check_dependencies($plugin, 'plugin', $tmp_dir);
@@ -144,6 +166,15 @@ if (
 						$L->enabling_of_plugin($rc[3])
 					)
 				);
+				if (!Event::instance()->fire(
+					'admin/System/components/plugins/enable/prepare',
+					[
+						'name' => $rc[3]
+					]
+				)
+				) {
+					break;
+				}
 				$check_dependencies = check_dependencies($rc[3], 'plugin');
 				if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 					break;
@@ -184,6 +215,15 @@ if (
 						$L->disabling_of_plugin($rc[3])
 					)
 				);
+				if (!Event::instance()->fire(
+					'admin/System/components/plugins/disable/prepare',
+					[
+						'name' => $rc[3]
+					]
+				)
+				) {
+					break;
+				}
 				$check_dependencies = check_backward_dependencies($rc[3], 'plugin');
 				if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 					break;

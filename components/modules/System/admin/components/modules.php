@@ -8,27 +8,32 @@
  * @license    MIT License, see license.txt
  */
 /**
- * Provides next events:<br>
- *  admin/System/components/modules/install/prepare<br>
- *  ['name' => <i>module_name</i>]<br>
+ * Provides next events:
+ *  admin/System/components/modules/install/prepare
+ *  ['name' => module_name]
  *
- *  admin/System/components/modules/uninstall/prepare<br>
- *  ['name' => <i>module_name</i>]<br>
+ *  admin/System/components/modules/update/prepare
+ *  ['name' => module_name]
  *
- *  admin/System/components/modules/default_module/prepare<br>
- *  ['name' => <i>module_name</i>]<br>
+ *  admin/System/components/modules/uninstall/prepare
+ *  ['name' => module_name]
  *
- *  admin/System/components/modules/db/prepare<br>
- *  ['name' => <i>module_name</i>]<br>
+ *  admin/System/components/modules/update_system/prepare
  *
- *  admin/System/components/modules/storage/prepare<br>
- *  ['name' => <i>module_name</i>]<br>
+ *  admin/System/components/modules/default_module/prepare
+ *  ['name' => module_name]
  *
- *  admin/System/components/modules/enable<br>
- *  ['name' => <i>module_name</i>]<br>
+ *  admin/System/components/modules/db/prepare
+ *  ['name' => module_name]
  *
- *  admin/System/components/modules/disable<br>
- *  ['name' => <i>module_name</i>]
+ *  admin/System/components/modules/storage/prepare
+ *  ['name' => module_name]
+ *
+ *  admin/System/components/modules/enable/prepare
+ *  ['name' => module_name]
+ *
+ *  admin/System/components/modules/disable/prepare
+ *  ['name' => module_name]
  */
 namespace cs\modules\System;
 use
@@ -102,6 +107,15 @@ if (
 					if (!version_compare($current_version, $new_version, '<')) {
 						$Page->warning($L->update_module_impossible_older_version($module_name));
 						unlink($tmp_file);
+						break;
+					}
+					if (!Event::instance()->fire(
+						'admin/System/components/modules/update/prepare',
+						[
+							'name' => $module_name
+						]
+					)
+					) {
 						break;
 					}
 					$check_dependencies = check_dependencies($module_name, 'module', $tmp_dir, 'update');
@@ -314,6 +328,9 @@ if (
 			unset($new_meta);
 			$rc[2]        = 'update_system';
 			$show_modules = false;
+			if (!Event::instance()->fire('admin/System/components/modules/update_system/prepare')) {
+				break;
+			}
 			$Page->title($L->updating_of_system);
 			rename($tmp_file, $tmp_file = TEMP.'/'.$User->get_session_id().'_update_system.phar');
 			$a->content(
@@ -492,6 +509,12 @@ if (
 			if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 				break;
 			}
+			Event::instance()->fire(
+				'admin/System/components/modules/enable/prepare',
+				[
+					'name'	=> $rc[3]
+				]
+			);
 			$Page->title($L->enabling_of_module($rc[3]));
 			$a->content(
 				h::{'h2.cs-center'}(
@@ -509,6 +532,12 @@ if (
 			if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 				break;
 			}
+			Event::instance()->fire(
+				'admin/System/components/modules/disable/prepare',
+				[
+					'name'	=> $rc[3]
+				]
+			);
 			$Page->title($L->disabling_of_module($rc[3]));
 			$a->content(
 				h::{'h2.cs-center'}(

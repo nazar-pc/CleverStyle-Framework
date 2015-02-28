@@ -8,11 +8,24 @@
  * @license		MIT License, see license.txt
  */
 /**
- * Provides next events:<br>
- *  admin/System/components/plugins/enable<br>
- *  ['name'	=> <i>plugin_name</i>]<br>
- *  admin/System/components/plugins/disable<br>
- *  ['name'	=> <i>plugin_name</i>]
+ * Provides next events:
+ *  admin/System/components/plugins/enable/process
+ *  ['name'	=> plugin_name]
+ *
+ *  admin/System/components/plugins/disable/process
+ *  ['name'	=> plugin_name]
+ *
+ *  admin/System/components/plugins/update/process/before
+ *  ['name'	=> plugin_name]
+ *
+ *  admin/System/components/plugins/update/process/after
+ *  ['name'	=> plugin_name]
+ *
+ *  admin/System/components/plugins/update/process/before
+ *  ['name'	=> plugin_name]
+ *
+ *  admin/System/components/plugins/update/process/after
+ *  ['name'	=> plugin_name]
  */
 namespace	cs;
 $Cache		= Cache::instance();
@@ -35,6 +48,12 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 						'name' => $plugin
 					]
 				);
+				Event::instance()->fire(
+					'admin/System/components/plugins/enable/process',
+					[
+						'name' => $plugin
+					]
+				);
 				unset($Cache->functionality);
 			}
 			clean_classes_cache();
@@ -46,6 +65,12 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 				clean_pcache();
 				Event::instance()->fire(
 					'admin/System/components/plugins/disable',
+					[
+						'name' => $plugin
+					]
+				);
+				Event::instance()->fire(
+					'admin/System/components/plugins/disable/process',
 					[
 						'name' => $plugin
 					]
@@ -64,6 +89,12 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 				$Config->save();
 				Event::instance()->fire(
 					'admin/System/components/plugins/disable',
+					[
+						'name' => $plugin
+					]
+				);
+				Event::instance()->fire(
+					'admin/System/components/plugins/update/process/before',
 					[
 						'name' => $plugin
 					]
@@ -145,6 +176,12 @@ if (isset($_POST['mode'], $_POST['plugin'])) {
 				clean_pcache();
 				Event::instance()->fire(
 					'admin/System/components/plugins/enable',
+					[
+						'name' => $plugin
+					]
+				);
+				Event::instance()->fire(
+					'admin/System/components/plugins/update/process/after',
 					[
 						'name' => $plugin
 					]
