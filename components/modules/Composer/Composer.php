@@ -20,7 +20,6 @@ class Composer {
 	const COMPONENT_PLUGIN = 2;
 	protected function construct () {
 		require_once 'phar://'.__DIR__.'/composer.phar/src/bootstrap.php';
-		require_once __DIR__.'/ansispan.php';
 	}
 	/**
 	 * Update composer
@@ -53,18 +52,21 @@ class Composer {
 			$application->setAutoExit(false);
 			$status_code = $application->run($input, $output);
 			$description = $output->fetch();
-			switch ($status_code) {
-				case 0:
-				case 1:
-				case 2:
-					//TODO do something depending on status code, for instance move files from tmp into normal directory
+			file_put_contents("$storage/last_execution.log", $description);
+			if ($status_code == 0) {
+				$this->rmdir_recursive("$storage/vendor");
+				@unlink("$storage/composer.json");
+				@unlink("$storage/composer.lock");
+				rename("$storage/tmp/vendor", "$storage/vendor");
+				rename("$storage/tmp/composer.json", "$storage/composer.json");
+				rename("$storage/tmp/composer.lock", "$storage/composer.lock");
 			}
 		}
-		time_limit_pause(false);
 		$this->cleanup($storage);
+		time_limit_pause(false);
 		return [
 			'code'        => $status_code,
-			'description' => $description //TODO put into file in storage directory also
+			'description' => $description
 		];
 	}
 	protected function prepare ($storage) {
@@ -78,6 +80,7 @@ class Composer {
 		putenv("COMPOSER_HOME=$storage/home");
 		@ini_set('display_errors', 1);
 		@ini_set('memory_limit', '512M');
+		@unlink("$storage/last_execution.log");
 	}
 	protected function generate_composer_json ($component_name, $component_type) {
 		$composer = [
