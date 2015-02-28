@@ -1,0 +1,7 @@
+{
+	"composer_force_update"          : "Force update",
+	"composer_updated_successfully"  : "Updated successfully",
+	"composer_update_failed"         : "Update failed",
+	"composer_dependencies_conflict" : "Update failed, dependencies conflict",
+	"composer_last_log"              : "Log of last execution"
+}

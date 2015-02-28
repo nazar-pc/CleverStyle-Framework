@@ -1,0 +1,7 @@
+{
+	"composer_force_update"          : "Принудительное обновление",
+	"composer_updated_successfully"  : "Обновлено успешно",
+	"composer_update_failed"         : "Обновление не удалось",
+	"composer_dependencies_conflict" : "Обновление не удалось, конфликт зависимостей",
+	"composer_last_log"              : "Журнал последнего выполнения"
+}
