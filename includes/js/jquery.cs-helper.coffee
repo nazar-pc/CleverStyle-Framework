@@ -99,7 +99,7 @@ do ($=jQuery, UI = UIkit) ->
 		 * @return jQuery Root modal element, it is possible to use .cs().modal() on it and listen for events
 		###
 		simple_modal	: (content, close = false, width) ->
-			style	= if width then ' style="width:' + width + 'px;"' else ''
+			style	= if width then ' style="width:' + (if /^[0-9]+$/.test(width) then width + 'px;"' else width) else ''
 			close	= if close then """<a class="uk-modal-close uk-close"></a>""" else ''
 			$("""
 				<div>
