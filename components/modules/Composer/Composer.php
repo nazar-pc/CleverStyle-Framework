@@ -18,8 +18,23 @@ class Composer {
 		Singleton;
 	const COMPONENT_MODULE = 1;
 	const COMPONENT_PLUGIN = 2;
+	/**
+	 * Force update even if nothing changed
+	 *
+	 * @var bool
+	 */
+	protected $force_update = false;
 	protected function construct () {
 		require_once 'phar://'.__DIR__.'/composer.phar/src/bootstrap.php';
+	}
+	/**
+	 * Update composer even if nothing changed
+	 *
+	 * @return array
+	 */
+	function force_update () {
+		$this->force_update = true;
+		return $this->update();
 	}
 	/**
 	 * Update composer
@@ -40,15 +55,19 @@ class Composer {
 		);
 		$status_code = 0;
 		$description = '';
-		if (md5_file("$storage/tmp/composer.json") != md5_file("$storage/composer.json")) {
-			$application = new Application;
-			$input       = new ArrayInput([
+		if (
+			$this->force_update ||
+			md5_file("$storage/tmp/composer.json") != md5_file("$storage/composer.json")
+		) {
+			$this->force_update = false;
+			$application        = new Application;
+			$input              = new ArrayInput([
 				'command'       => 'update',
 				'--working-dir' => "$storage/tmp",
 				'--ansi',
 				'--no-dev'
 			]);
-			$output      = new BufferedOutput;
+			$output             = new BufferedOutput;
 			$application->setAutoExit(false);
 			$status_code = $application->run($input, $output);
 			$description = $output->fetch();
