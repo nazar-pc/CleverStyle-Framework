@@ -10,6 +10,7 @@ namespace cs\modules\Composer;
 use
 	cs\Config,
 	cs\Event;
+_require_once(STORAGE.'/Composer/vendor/autoload.php', false);
 Event::instance()->on(
 	'System/Index/construct',
 	function () {

@@ -10,7 +10,6 @@ namespace cs\modules\Composer;
 use
 	cs\Event,
 	cs\Page;
-_require_once(STORAGE.'/Composer/vendor/autoload.php', false);
 Event::instance()
 	->on('admin/System/components/modules/install/prepare', function ($data) {
 		if (file_exists(MODULES."/$data[name]/meta.json")) {

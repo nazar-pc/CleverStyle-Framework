@@ -59,7 +59,7 @@ class Request {
 		$SERVER['REQUEST_METHOD']  = $request->getMethod();
 		$SERVER['REQUEST_URI']     = $request->getPath();
 		$SERVER['QUERY_STRING']    = http_build_query($request->getQuery());
-		$SERVER['REMOTE_ADDR']     = http_build_query($request->remoteAddress);
+		$SERVER['REMOTE_ADDR']     = $request->remoteAddress;
 		$GET[$request_id]          = $request->getQuery();
 		$SERVER['SERVER_PROTOCOL'] = 'HTTP/'.$request->getHttpVersion();
 		if (isset($SERVER['CONTENT_TYPE'])) {

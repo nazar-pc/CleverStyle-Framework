@@ -34,7 +34,10 @@ for ($i = 1; isset($argv[$i]); ++$i) {
 define('ASYNC_HTTP_SERVER', $async);
 unset($async);
 require_once __DIR__.'/custom_loader.php';
-require_once __DIR__.'/vendor/autoload.php';
+/**
+ * Manually require composer autoloader because otherwise it will be included much later
+ */
+require_once STORAGE.'/Composer/vendor/autoload.php';
 $loop   = React\EventLoop\Factory::create();
 $socket = new React\Socket\Server($loop);
 $http   = new React\Http\Server($socket);
