@@ -22,6 +22,7 @@ $ ->
 					success	: (result) ->
 						if !result.length || !result
 							alert L.photo_gallery_images_not_supported
+							return
 						if files.length != result.length
 							alert L.photo_gallery_some_images_not_supported
 						location.href	= 'Photo_gallery/edit_images/' + result.join(',')
