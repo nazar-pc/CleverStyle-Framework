@@ -50,7 +50,7 @@ class Composer {
 	 */
 	function update ($component_name = null, $component_type = self::COMPONENT_MODULE, $mode = self::MODE_ADD) {
 		time_limit_pause();
-		$storage     = DIR.'/storage/Composer';
+		$storage     = STORAGE.'/Composer';
 		$status_code = 0;
 		$description = '';
 		$this->prepare($storage);
