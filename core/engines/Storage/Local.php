@@ -11,7 +11,7 @@ class Local extends _Abstract {
 	 * @inheritdoc
 	 */
 	function __construct ($base_url, $host, $user = '', $password = '') {
-		$this->base_url  = url_by_source(STORAGE);
+		$this->base_url  = url_by_source(PUBLIC_STORAGE);
 		$this->connected = true;
 	}
 	/**
@@ -153,6 +153,6 @@ class Local extends _Abstract {
 	}
 	protected function absolute_path ($path) {
 		// If not absolute path -
-		return preg_match('#^(([a-z]+:)?//|/)#i', $path) ? $path : STORAGE.'/'.ltrim($path);
+		return preg_match('#^(([a-z]+:)?//|/)#i', $path) ? $path : PUBLIC_STORAGE.'/'.ltrim($path);
 	}
 }

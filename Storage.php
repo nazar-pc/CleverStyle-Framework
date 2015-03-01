@@ -11,8 +11,7 @@
 header('Content-Type: text/html; charset=utf-8');
 header('Connection: close');
 require __DIR__.'/core/thirdparty/upf.php';
-define('STORAGE', __DIR__.'/storage/public');
-chdir(STORAGE);
+chdir(__DIR__.'/storage/public');
 if (
 	isset($_SERVER['HTTP_USER_AGENT'], $_POST['data']) &&
 	$_SERVER['HTTP_USER_AGENT'] == 'CleverStyle CMS' &&
