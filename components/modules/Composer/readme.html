@@ -1,0 +1,20 @@
+<h3 style="text-align: center;">Composer integration into CleverStyle CMS, allows to specify composer dependencies in meta.json that will be installed automatically</h3>
+<p>To use this module you need to make few modifications in your component's <i>meta.json</i>:</p>
+<ul>
+	<li>Add dependency on <i>composer</i> functionality</li>
+	<li>Mention required packages in <i>require_composer</i> in the same way as in <i>require</i> of regular <i>composer.json</i></li>
+</ul>
+<pre>
+	<code>
+{
+	..
+	"require"          : "composer",
+	"require_composer" : {
+		"react/react" : "~0.4"
+	},
+	..
+}
+	</code>
+</pre>
+<p>NOTE: do not forget to specify other required fields of <i>meta.json</i> as specified <a href="https://github.com/nazar-pc/CleverStyle-CMS/wiki/Module-architecture#metajson">in documentation</a>.</p>
+<p>Now if someone will install your component - it will need Composer package, and if it is installed - all composer packages will be installed and become available everywhere automatically.</p>
