@@ -33,20 +33,20 @@ class Core {
 		defined('DEBUG') || define('DEBUG', false);
 		defined('DOMAIN') || define('DOMAIN', $this->config['domain']);
 		date_default_timezone_set($this->config['timezone']);
-		if (!is_dir(STORAGE)) {
-			@mkdir(STORAGE, 0775);
+		if (!is_dir(PUBLIC_STORAGE)) {
+			@mkdir(PUBLIC_STORAGE, 0775, true);
 			file_put_contents(
-				STORAGE.'/.htaccess',
+				PUBLIC_STORAGE.'/.htaccess',
 				'Allow From All'
 			);
 		}
 		if (!is_dir(CACHE)) {
 			@mkdir(CACHE, 0770);
 		}
-		if (!is_dir(PCACHE)) {
-			@mkdir(PCACHE, 0770);
+		if (!is_dir(PUBLIC_CACHE)) {
+			@mkdir(PUBLIC_CACHE, 0770);
 			file_put_contents(
-				PCACHE.'/.htaccess',
+				PUBLIC_CACHE.'/.htaccess',
 				'<FilesMatch "\.(css|js|html)$">
 	Allow From All
 </FilesMatch>

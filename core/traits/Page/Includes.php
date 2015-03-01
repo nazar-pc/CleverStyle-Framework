@@ -292,10 +292,10 @@ trait Includes {
 		/**
 		 * Current cache checking
 		 */
-		if (!file_exists(PCACHE."/$this->pcache_basename.json")) {
+		if (!file_exists(PUBLIC_CACHE."/$this->pcache_basename.json")) {
 			$this->rebuild_cache();
 		}
-		$data				= file_get_json(PCACHE."/$this->pcache_basename.json");
+		$data				= file_get_json(PUBLIC_CACHE."/$this->pcache_basename.json");
 		$structure			= $data['structure'];
 		$dependencies		= $data['dependencies'];
 		unset($data);
@@ -587,7 +587,7 @@ trait Includes {
 			$structure[$filename_prefix]	= $this->create_cached_includes_files($filename_prefix, $includes);
 		}
 		unset($includes_map, $filename_prefix, $includes);
-		file_put_json(PCACHE."/$this->pcache_basename.json", [
+		file_put_json(PUBLIC_CACHE."/$this->pcache_basename.json", [
 			'dependencies'	=> $dependencies,
 			'structure'		=> $structure
 		]);
@@ -784,7 +784,7 @@ trait Includes {
 	 */
 	protected function create_cached_includes_files ($filename_prefix, $includes) {
 		$cache_hash		= [];
-		$destination	= Config::instance()->core['vulcanization'] ? false : PCACHE;
+		$destination	= Config::instance()->core['vulcanization'] ? false : PUBLIC_CACHE;
 		foreach ($includes as $extension => &$files) {
 			$files_content = '';
 			foreach ($files as $file) {
@@ -817,7 +817,7 @@ trait Includes {
 			if ($filename_prefix == '' && $extension == 'js') {
 				$files_content	= "window.cs={};cs.Language="._json_encode(Language::instance()).";$files_content";
 			}
-			file_put_contents(PCACHE."/$filename_prefix$this->pcache_basename.$extension", gzencode($files_content, 9), LOCK_EX | FILE_BINARY);
+			file_put_contents(PUBLIC_CACHE."/$filename_prefix$this->pcache_basename.$extension", gzencode($files_content, 9), LOCK_EX | FILE_BINARY);
 			$cache_hash[$extension]	= substr(md5($files_content), 0, 5);
 		}
 		return $cache_hash;

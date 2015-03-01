@@ -190,7 +190,7 @@ function source_by_url ($url) {
  */
 function clean_pcache () {
 	$ok = true;
-	$list = get_files_list(PCACHE, false, 'fd', true, true, 'name|desc');
+	$list = get_files_list(PUBLIC_CACHE, false, 'fd', true, true, 'name|desc');
 	foreach ($list as $item) {
 		if (is_writable($item)) {
 			is_dir($item) ? @rmdir($item) : @unlink($item);

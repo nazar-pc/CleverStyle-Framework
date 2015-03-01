@@ -168,7 +168,7 @@ if (isset($rc[2])) {
 				],
 				[
 					[
-						$i	? $storage_data['url']			: $Core->storage_url ?: url_by_source(STORAGE),
+						$i	? $storage_data['url']			: $Core->storage_url ?: url_by_source(PUBLIC_STORAGE),
 						$i	? $storage_data['host']			: $Core->storage_host,
 						$i	? $storage_data['connection']	: $Core->storage_type,
 						$i	? $storage_data['user']			: $Core->storage_user ?: '-'
