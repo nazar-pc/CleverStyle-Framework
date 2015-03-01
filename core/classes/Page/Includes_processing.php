@@ -28,8 +28,7 @@ class Includes_processing {
 	 * @return string	$data
 	 */
 	static function css ($data, $file) {
-		$cwd = getcwd();
-		chdir(dirname($file));
+		$dir = dirname($file);
 		/**
 		 * Remove comments, tabs and new lines
 		 */
@@ -75,12 +74,12 @@ class Includes_processing {
 		 */
 		$data	= preg_replace_callback(
 			'/url\((.*?)\)|@import[\s\t\n\r]*[\'"](.*?)[\'"]/',
-			function ($match) {
+			function ($match) use ($dir) {
 				$link		= trim($match[1], '\'" ');
-				if (!static::is_relative_path_and_exists($link)) {
+				if (!static::is_relative_path_and_exists($link, $dir)) {
 					return $match[0];
 				}
-				$content	= file_get_contents($link);
+				$content	= file_get_contents("$dir/$link");
 				switch (file_extension($link)) {
 					case 'jpeg':
 					case 'jpe':
@@ -122,7 +121,6 @@ class Includes_processing {
 			},
 			$data
 		);
-		chdir($cwd);
 		return $data;
 	}
 	/**
@@ -137,35 +135,34 @@ class Includes_processing {
 	 * @return string	$data
 	 */
 	static function html ($data, $file, $base_filename, $destination) {
-		$cwd = getcwd();
-		chdir(dirname($file));
-		static::html_process_scripts($data, $base_filename, $destination);
+		static::html_process_scripts($data, $file, $base_filename, $destination);
 		static::html_process_links_and_styles($data, $file, $base_filename, $destination);
-		chdir($cwd);
 		return $data;
 	}
 	/**
 	 * @param string		$data			Content of processed file
+	 * @param string		$file			Path to file, that includes specified in previous parameter content
 	 * @param string		$base_filename	Base filename for resulting combined files
 	 * @param bool|string	$destination	Directory where to put combined files or <i>false</i> to make includes built-in (vulcanization)
 	 *
 	 * @return string
 	 */
-	protected static function html_process_scripts (&$data, $base_filename, $destination) {
+	protected static function html_process_scripts (&$data, $file, $base_filename, $destination) {
 		if (!preg_match_all('/<script(.*)<\/script>/Uims', $data, $scripts)) {
 			return;
 		}
 		$scripts_content	= '';
 		$scripts_to_replace	= [];
+		$dir	= dirname($file);
 		foreach ($scripts[1] as $index => $script) {
 			$script	= explode('>', $script);
 			if (preg_match('/src\s*=\s*[\'"](.*)[\'"]/Uims', $script[0], $url)) {
 				$url	= $url[1];
-				if (!static::is_relative_path_and_exists($url)) {
+				if (!static::is_relative_path_and_exists($url, $dir)) {
 					continue;
 				}
 				$scripts_to_replace[]	= $scripts[0][$index];
-				$scripts_content		.= file_get_contents($url).";\n";
+				$scripts_content		.= file_get_contents("$dir/$url").";\n";
 			} else {
 				$scripts_content		.= "$script[1];\n";
 			}
@@ -219,25 +216,26 @@ class Includes_processing {
 		$styles_content					= '';
 		$imports_content				= '';
 		$links_and_styles_to_replace	= [];
+		$dir							= dirname($file);
 		foreach ($links_and_styles[1] as $index => $link) {
 			/**
 			 * If content is link to CSS file
 			 */
-			if (static::has_relative_href($link, $url, 'stylesheet')) {
+			if (static::has_relative_href($link, $url, $dir, 'stylesheet')) {
 				$links_and_styles_to_replace[]	= $links_and_styles[0][$index];
 				$shim							= $shim || static::need_shimming($links_and_styles[0][$index]);
 				$styles_content					.= static::css(
-					file_get_contents($url),
-					$url
+					file_get_contents("$dir/$url"),
+					"$dir/$url"
 				);
 			/**
 			 * If content is HTML import
 			 */
-			} elseif (static::has_relative_href($link, $url, 'import')) {
+			} elseif (static::has_relative_href($link, $url, $dir, 'import')) {
 				$links_and_styles_to_replace[]	= $links_and_styles[0][$index];
 				$imports_content				.= static::html(
-					file_get_contents($url),
-					$url,
+					file_get_contents("$dir/$url"),
+					"$dir/$url",
 					"$base_filename-".basename($url, '.html'),
 					$destination
 				);
@@ -292,16 +290,17 @@ class Includes_processing {
 	/**
 	 * @param string $link
 	 * @param string $url
+	 * @param string $dir
 	 * @param string $rel
 	 *
 	 * @return bool
 	 */
-	protected static function has_relative_href ($link, &$url, $rel) {
+	protected static function has_relative_href ($link, &$url, $dir, $rel) {
 		$result =
 			$link &&
 			preg_match('/rel\s*=\s*[\'"]'.$rel.'[\'"]/Uims', $link) &&
 			preg_match('/href\s*=\s*[\'"](.*)[\'"]/Uims', $link, $url);
-		if ($result && static::is_relative_path_and_exists($url[1])) {
+		if ($result && static::is_relative_path_and_exists($url[1], $dir)) {
 			$url = $url[1];
 			return true;
 		}
@@ -311,11 +310,12 @@ class Includes_processing {
 	 * Simple check for http[s], ftp and absolute links
 	 *
 	 * @param string $path
+	 * @param string $dir
 	 *
 	 * @return bool
 	 */
-	protected static function is_relative_path_and_exists ($path) {
-		return !preg_match('#^(http://|https://|ftp://|/)#i', $path) && file_exists($path);
+	protected static function is_relative_path_and_exists ($path, $dir) {
+		return !preg_match('#^(http://|https://|ftp://|/)#i', $path) && file_exists("$dir/$path");
 	}
 	/**
 	 * @param string $content
