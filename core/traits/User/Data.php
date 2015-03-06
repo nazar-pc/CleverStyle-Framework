@@ -166,9 +166,7 @@ trait Data {
 			/**
 			 * Update the local cache
 			 */
-			if (is_array($data_from_cache)) {
-				$data = array_merge($data_from_cache, $data ?: []);
-			}
+			$data = array_merge($data_from_cache, $data ?: []);
 			/**
 			 * New attempt of getting the data from cache
 			 */
@@ -222,16 +220,17 @@ trait Data {
 		}
 		if (is_array($item)) {
 			foreach ($item as $i => &$v) {
-				if (in_array($i, $this->users_columns) && $i != 'id') {
+				if ($i != 'id' && in_array($i, $this->users_columns)) {
 					$this->set($i, $v, $user);
 				}
 			}
-		} elseif (in_array($item, $this->users_columns) && $item != 'id') {
+		} elseif ($item != 'id' && in_array($item, $this->users_columns)) {
 			if (in_array($item, ['login_hash', 'email_hash'])) {
 				return true;
 			}
 			if ($item == 'login' || $item == 'email') {
 				$value	= mb_strtolower($value);
+				/** @noinspection NotOptimalIfConditionsInspection */
 				if ($item == 'email' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
 					return false;
 				}
@@ -284,7 +283,7 @@ trait Data {
 	 * @return bool
 	 */
 	function __set ($item, $value = null) {
-		return $this->set($item, $value);
+		$this->set($item, $value);
 	}
 	/**
 	 * Getting additional data item(s) of specified user
@@ -296,7 +295,7 @@ trait Data {
 	 */
 	function get_data ($item, $user = false) {
 		$user	= (int)$user ?: $this->id;
-		if (!$user || $user == User::GUEST_ID || !$item) {
+		if (!$user || !$item || $user == User::GUEST_ID) {
 			return false;
 		}
 		$Cache	= $this->cache;
@@ -323,14 +322,14 @@ trait Data {
 						FROM `[prefix]users_data`
 						WHERE
 							`id`	= '$user' AND
-							`item`	IN($absent)",
+							`item`	IN($absent)"
 					]),
 					'value',
 					'item'
 				);
 				foreach ($absent as &$a) {
 					$a	= _json_decode($a);
-					if (is_null($a)) {
+					if ($a === null) {
 						$a	= false;
 					}
 				}
@@ -353,7 +352,7 @@ trait Data {
 					`item`	= '%s'",
 				$item
 			]));
-			if (is_null($data[$item])) {
+			if ($data[$item] === null) {
 				$data[$item]	= false;
 			}
 			$Cache->{"data/$user"}	= $data;
@@ -371,7 +370,7 @@ trait Data {
 	 */
 	function set_data ($item, $value = null, $user = false) {
 		$user	= (int)$user ?: $this->id;
-		if (!$user || $user == User::GUEST_ID || !$item) {
+		if (!$user || !$item || $user == User::GUEST_ID) {
 			return false;
 		}
 		if (is_array($item)) {
@@ -427,7 +426,7 @@ trait Data {
 	 */
 	function del_data ($item, $user = false) {
 		$user	= (int)$user ?: $this->id;
-		if (!$user || $user == User::GUEST_ID || !$item) {
+		if (!$user || !$item || $user == User::GUEST_ID) {
 			return false;
 		}
 		$item	= implode(
@@ -520,7 +519,7 @@ trait Data {
 			foreach ($this->data_set as $id => &$data_set) {
 				$data = [];
 				foreach ($data_set as $i => &$val) {
-					if (in_array($i, $this->users_columns) && $i != 'id') {
+					if ($i != 'id' && in_array($i, $this->users_columns)) {
 						$val	= xap($val, false);
 						$data[]	= "`$i` = ".$this->db_prime()->s($val);
 					} elseif ($i != 'id') {
