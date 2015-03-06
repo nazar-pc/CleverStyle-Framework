@@ -21,9 +21,7 @@ function state ($state) {
  * @return string
  */
 function server_api () {
-	$phpinfo = ob_wrapper(function () {
-		phpinfo();
-	});
+	$phpinfo = ob_wrapper('phpinfo');
 	if (preg_match('/apache/i', $_SERVER['SERVER_SOFTWARE'])) {
 		return 'Apache'.(preg_match('/mod_php/i', $phpinfo) ? ' + mod_php' : '');
 	} elseif (preg_match('/nginx/i', $_SERVER['SERVER_SOFTWARE'])) {
@@ -44,21 +42,10 @@ function server_api () {
 function apache_version () {
 	preg_match(
 		'/Apache[\-\/]([0-9\.\-]+)/',
-		ob_wrapper(function () {
-			phpinfo();
-		}),
+		ob_wrapper('phpinfo'),
 		$version
 	);
 	return $version[1];
-}
-
-/**
- * Returns autocompression level of zlib library
- *
- * @return bool
- */
-function zlib_compression_level () {
-	return ini_get('zlib.output_compression_level');
 }
 
 /**

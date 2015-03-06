@@ -18,7 +18,6 @@ $L		= Language::instance();
 $sa		= $Config->core['simple_admin_mode'];
 Index::instance()->content(
 	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
-		core_input('gzip_compression', 'radio', null, zlib_compression()),
 		core_input('cache_compress_js_css', 'radio'),
 		core_input('vulcanization', 'radio'),
 		core_input('put_js_after_body', 'radio'),

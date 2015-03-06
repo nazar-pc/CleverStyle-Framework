@@ -107,18 +107,6 @@ $Index->content(
 					]
 				],
 				[
-					"$L->zlib:",
-					$L->get(zlib())
-				],
-				zlib() ? [
-					"$L->zlib_compression:",
-					$L->get(zlib_compression())
-				] : false,
-				zlib_compression() ? [
-					"$L->zlib_compression_level:",
-					zlib_compression_level()
-				] : false,
-				[
 					"$L->curl_lib:",
 					[
 						$L->get(curl()),

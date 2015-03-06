@@ -426,9 +426,11 @@ class Page {
 	/**
 	 * Error pages processing
 	 *
-	 * @param null|string|string[]	$custom_text	Custom error text instead of text like "404 Not Found",
-	 * 												or array with two elements: [error, error_description]
-	 * @param bool					$json			Force JSON return format
+	 * @param null|string|string[] $custom_text       Custom error text instead of text like "404 Not Found",
+	 *                                                or array with two elements: [error, error_description]
+	 * @param bool                 $json              Force JSON return format
+	 *
+	 * @throws \ExitException
 	 */
 	function error ($custom_text = null, $json = false) {
 		if ($this->error_showed) {
@@ -489,14 +491,6 @@ class Page {
 		}
 		$this->finish_called_once	= true;
 		/**
-		 * Check whether gzip compression required, and apply it if so
-		 */
-		$ob		= false;
-		if (Config::instance(true)->core['gzip_compression'] && !zlib_compression()) {
-			ob_start('ob_gzhandler');
-			$ob = true;
-		}
-		/**
 		 * For AJAX and API requests only content without page template
 		 */
 		if (!$this->interface) {
@@ -516,9 +510,6 @@ class Page {
 			$this->Html = $this->process_replacing($this->Html);
 			Event::instance()->fire('System/Page/display');
 			echo rtrim($this->Html);
-		}
-		if ($ob) {
-			ob_end_flush();
 		}
 	}
 }

@@ -142,7 +142,6 @@ function install_process ($fs, $argv = null) {
 		"site_mode": "1",
 		"title_delimiter": " | ",
 		"title_reverse": "0",
-		"gzip_compression": "1",
 		"cache_compress_js_css": "1",
 		"vulcanization": "1",
 		"put_js_after_body": "1",
@@ -209,7 +208,7 @@ function install_process ($fs, $argv = null) {
 	$config['languages']        = file_get_json(DIR.'/languages.json');
 	$config['active_languages'] = $config['languages'];
 	$config['themes']           = file_get_json(DIR.'/themes.json');
-	$config['theme']            = array_search('CleverStyle', $config['themes']) !== false ? 'CleverStyle' : $config['themes'][0];
+	$config['theme']            = in_array('CleverStyle', $config['themes']) ? 'CleverStyle' : $config['themes'][0];
 	$url                        = explode('/', explode('//', $url)[1], 2);
 	$config['cookie_domain'][]  = explode(':', $url[0])[0];
 	$config['cookie_path'][]    = isset($url[1]) && $url[1] ? '/'.trim($url[1], '/').'/' : '/';
@@ -240,7 +239,6 @@ function install_process ($fs, $argv = null) {
 			array_keys($fs)
 		)
 	);
-	unset($fs);
 	if (
 		!$extract ||
 		!(file_exists(ROOT.'/storage') || mkdir(ROOT.'/storage', 0770)) ||

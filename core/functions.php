@@ -322,22 +322,6 @@ function check_mcrypt () {
 	return extension_loaded('mcrypt');
 }
 /**
- * Check existence of zlib library
- *
- * @return bool
- */
-function zlib () {
-	return extension_loaded('zlib');
-}
-/**
- * Check autocompression state of zlib library
- *
- * @return bool
- */
-function zlib_compression () {
-	return zlib() && strtolower(ini_get('zlib.output_compression')) != 'off';
-}
-/**
  * Check existence of curl library
  *
  * @return bool
