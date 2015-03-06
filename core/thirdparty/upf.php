@@ -692,14 +692,16 @@ function xap ($in, $html = 'text', $iframe = false) {
 			);
 			$in = preg_replace_callback(
 				'/
-					<[^a-z=>]*iframe[^>]*>
+					<[^\/a-z=>]*iframe[^>]*>
 				/xims',
 				function ($matches) {
-					return str_replace(
+					$result = preg_replace('/sandbox\s*=\s*([\'"])?[^\\1>]*\\1?/ims', '', $matches[0]);
+					$result = str_replace(
 						'>',
-						' sandbox="allow-same-origin allow-forms allow-popups allow-scripts"',
-						$matches[0]
+						' sandbox="allow-same-origin allow-forms allow-popups allow-scripts">',
+						$result
 					);
+					return $result;
 				},
 				$in
 			);
