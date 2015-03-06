@@ -162,6 +162,9 @@ AddEncoding gzip .html
 	/**
 	 * Sending system api request to all mirrors
 	 *
+	 * @deprecated
+	 * @todo Remove in future versions
+	 *
 	 * @param string	$path	Path for api request, for example <i>System/admin/setcookie<i>, where
 	 * 							<i>System</b> - module name, <i>admin/setcookie</b> - path to action file in current module api structure
 	 * @param mixed		$data	Any type of data, will be accessible through <i>$_POST['data']</b>
