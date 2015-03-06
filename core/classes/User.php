@@ -158,7 +158,7 @@ class User {
 	/**
 	 * Defining user id, type, session, personal settings
 	 */
-	function construct () {
+	protected function construct () {
 		$Cache	= $this->cache	= new Prefix('users');
 		$Config	= Config::instance();
 		Event::instance()->fire('System/User/construct/before');
