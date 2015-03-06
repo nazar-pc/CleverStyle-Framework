@@ -37,7 +37,11 @@ class Core {
 			@mkdir(PUBLIC_STORAGE, 0775, true);
 			file_put_contents(
 				PUBLIC_STORAGE.'/.htaccess',
-				'Allow From All'
+				'Allow From All
+<ifModule mod_headers.c>
+	Header always append X-Frame-Options DENY
+	Header set Content-Type application/octet-stream
+</ifModule>'
 			);
 		}
 		if (!is_dir(CACHE)) {

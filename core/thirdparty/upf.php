@@ -690,6 +690,19 @@ function xap ($in, $html = 'text', $iframe = false) {
 				'',
 				$in
 			);
+			$in = preg_replace_callback(
+				'/
+					<[^a-z=>]*iframe[^>]*>
+				/xims',
+				function ($matches) {
+					return str_replace(
+						'>',
+						' sandbox="allow-same-origin allow-forms allow-popups allow-scripts"',
+						$matches[0]
+					);
+				},
+				$in
+			);
 		}
 		$in = preg_replace(
 			'/(script|data|vbscript):/i',
