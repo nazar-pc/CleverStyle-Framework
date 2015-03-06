@@ -300,6 +300,11 @@ class User {
 		$this->init	= true;
 		Event::instance()->fire('System/User/construct/after');
 	}
+	/**
+	 * Is used for `\cs\Core::api_request()`
+	 * @deprecated
+	 * @todo Remove in future versions
+	 */
 	protected function request_from_system ($Config) {
 		/**
 		 * @var _SERVER $_SERVER
