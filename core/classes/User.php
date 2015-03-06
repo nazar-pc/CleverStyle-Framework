@@ -127,6 +127,12 @@ class User {
 	protected	$is_user		= false;
 	protected	$is_bot			= false;
 	protected	$is_guest		= false;
+	/**
+	 * @deprecated
+	 * @todo Remove in future versions
+	 *
+	 * @var bool
+	 */
 	protected	$is_system		= false;
 	/**
 	 * Id of current user
@@ -416,6 +422,9 @@ class User {
 	}
 	/**
 	 * Is system
+	 *
+	 * @deprecated
+	 * @todo Remove in future versions
 	 *
 	 * @return bool
 	 */
