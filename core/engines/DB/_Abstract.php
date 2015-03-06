@@ -86,15 +86,15 @@ abstract class _Abstract {
 	 *
 	 * @abstract
 	 *
-	 * @param string|string[] $query          SQL query string or array, may be a format string in accordance with the first parameter of sprintf() function
-	 * @param string|string[] $params         May be array of arguments for formatting of <b>$query</b><br>
-	 *                                        or string - in this case it will be first argument for formatting of <b>$query</b>
-	 * @param string          $param          if <b>$params</s> is string - this parameter will be second argument for formatting of <b>$query</b>.
-	 *                                        If you need more arguments - add them after this one, function will accept them.
+	 * @param string|string[] $query  SQL query string or array, may be a format string in accordance with the first parameter of sprintf() function
+	 * @param string|string[] $params May be array of arguments for formatting of <b>$query</b><br>
+	 *                                or string - in this case it will be first argument for formatting of <b>$query</b>
+	 * @param string          $_      if <b>$params</s> is string - this parameter will be second argument for formatting of <b>$query</b>.
+	 *                                If you need more arguments - add them after this one, function will accept them.
 	 *
 	 * @return bool|object|resource
 	 */
-	function q ($query, $params = [], $param = null) {
+	function q ($query, $params = [], $_ = null) {
 		$query = str_replace('[prefix]', $this->prefix, $query);
 		switch (func_num_args()) {
 			default:
@@ -356,8 +356,8 @@ abstract class _Abstract {
 	 *
 	 * @param string        $query
 	 * @param array|array[] $params   Array of array of parameters for inserting
-	 * @param bool          $join     If true - inserting of several rows will be combined in one query. For this, be sure, that your query has keyword <i>VALUES</i>
-	 *                                in uppercase. Part of query after this keyword will be multiplied with coma separator.
+	 * @param bool          $join     If true - inserting of several rows will be combined in one query. For this, be sure, that your query has keyword
+	 *                                <i>VALUES</i> in uppercase. Part of query after this keyword will be multiplied with coma separator.
 	 *
 	 * @return bool
 	 */
