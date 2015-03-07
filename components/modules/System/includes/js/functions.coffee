@@ -30,6 +30,7 @@ cs.admin_cache				= (element, action, partial_path) ->
 		url		: action
 		data	:
 			partial_path	: partial_path
+		type	: 'delete'
 		success	: (result) ->
 			$(element).html(
 				if result
