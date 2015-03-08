@@ -12,7 +12,7 @@ use
 	cs\Page,
 	cs\User;
 trait profile {
-	static function profile_index_get () {
+	static function profile_get () {
 		$User = User::instance();
 		if ($User->guest()) {
 			error_code(403);

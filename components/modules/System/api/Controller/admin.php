@@ -19,7 +19,7 @@ use
 	cs\User,
 	h;
 trait admin {
-	static function admin_index () {
+	static function admin () {
 		if (!User::instance()->admin()) {
 			error_code(403);
 		}
