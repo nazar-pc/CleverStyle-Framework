@@ -1163,7 +1163,7 @@ trait components {
 						)
 							: ''
 						).
-						h::{'p button'}(
+						h::{'p button.uk-button'}(
 							$L->test_connection,
 							[
 								'onMouseDown' => "cs.db_test();"
