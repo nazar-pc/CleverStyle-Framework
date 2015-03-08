@@ -25,8 +25,8 @@ trait users {
 		$L      = Language::instance();
 		Index::instance()->content(
 			h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
-				core_input('session_expire', 'number', null, false, 1, false, $L->seconds),
-				core_input('online_time', 'number', null, false, 1, false, $L->seconds),
+				static::core_input('session_expire', 'number', null, false, 1, false, $L->seconds),
+				static::core_input('online_time', 'number', null, false, 1, false, $L->seconds),
 				[
 					h::info('sign_in_attempts_block_count'),
 					h::{'input[type=number]'}(
@@ -39,15 +39,15 @@ trait users {
 					)
 				],
 				[
-					core_input('sign_in_attempts_block_time', 'number', null, false, 1, false, $L->seconds),
+					static::core_input('sign_in_attempts_block_time', 'number', null, false, 1, false, $L->seconds),
 					[
 						'style' => $Config->core['sign_in_attempts_block_count'] == 0 ? 'display: none;' : '',
 						'class' => 'cs-sign-in-attempts-block-count'
 					]
 				],
-				core_input('remember_user_ip', 'radio'),
-				core_input('password_min_length', 'number', null, false, 4),
-				core_input('password_min_strength', 'number', null, false, 0, 7),
+				static::core_input('remember_user_ip', 'radio'),
+				static::core_input('password_min_length', 'number', null, false, 4),
+				static::core_input('password_min_strength', 'number', null, false, 0, 7),
 				[
 					h::info('allow_user_registration'),
 					h::radio(
@@ -86,7 +86,7 @@ trait users {
 					]
 				],
 				[
-					core_input('registration_confirmation_time', 'number', null, false, 1, false, $L->days),
+					static::core_input('registration_confirmation_time', 'number', null, false, 1, false, $L->days),
 					[
 						'style' => $Config->core['allow_user_registration'] == 1 && $Config->core['require_registration_confirmation'] == 1 ? '' :
 							'display: none;',
@@ -94,14 +94,14 @@ trait users {
 					]
 				],
 				[
-					core_input('auto_sign_in_after_registration', 'radio'),
+					static::core_input('auto_sign_in_after_registration', 'radio'),
 					[
 						'style' => $Config->core['allow_user_registration'] == 1 && $Config->core['require_registration_confirmation'] == 1 ? '' :
 							'display: none;',
 						'class' => 'cs-allow-user-registration cs-require-registration-confirmation'
 					]
 				],
-				core_textarea('rules', 'SIMPLE_EDITOR')
+				static::core_textarea('rules', 'SIMPLE_EDITOR')
 			)
 		);
 	}
@@ -371,10 +371,10 @@ trait users {
 							'',
 							h::{'table#smtp_form tr'}(
 								h::td(
-									core_input('smtp_host')
+									static::core_input('smtp_host')
 								),
 								h::td(
-									core_input('smtp_port')
+									static::core_input('smtp_port')
 								),
 								h::td(
 									[
@@ -405,7 +405,7 @@ trait users {
 								),
 								[
 									h::td(
-										core_input('smtp_user')
+										static::core_input('smtp_user')
 									),
 									[
 										'style' => (!$Config->core['smtp_auth'] ? 'display: none;' : '').' padding-left: 20px;',
@@ -414,7 +414,7 @@ trait users {
 								],
 								[
 									h::td(
-										core_input('smtp_password')
+										static::core_input('smtp_password')
 									),
 									[
 										'style' => !$Config->core['smtp_auth'] ? 'display: none;' : '',
@@ -427,9 +427,9 @@ trait users {
 							'style' => !$Config->core['smtp'] ? 'display: none; ' : ''
 						]
 					],
-					core_input('mail_from'),
-					core_input('mail_from_name'),
-					core_textarea('mail_signature', 'SIMPLE_EDITOR'),
+					static::core_input('mail_from'),
+					static::core_input('mail_from_name'),
+					static::core_textarea('mail_signature', 'SIMPLE_EDITOR'),
 					[
 						'',
 						h::{'td button.uk-button[onclick=cs.test_email_sending()]'}($L->test_email_sending)

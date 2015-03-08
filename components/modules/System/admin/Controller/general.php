@@ -16,144 +16,8 @@ use
 	cs\Index,
 	cs\Language,
 	cs\Page,
-	cs\Text,
 	cs\User,
 	h;
-
-function state ($state) {
-	return $state ? 'uk-alert-success' : 'uk-alert-danger';
-}
-
-/**
- * Returns server type
- *
- * @return string
- */
-function server_api () {
-	$phpinfo = ob_wrapper('phpinfo');
-	if (preg_match('/apache/i', $_SERVER['SERVER_SOFTWARE'])) {
-		return 'Apache'.(preg_match('/mod_php/i', $phpinfo) ? ' + mod_php' : '');
-	} elseif (preg_match('/nginx/i', $_SERVER['SERVER_SOFTWARE'])) {
-		$return = 'Nginx';
-		if (preg_match('/php-fpm/i', $phpinfo)) {
-			$return .= ' + PHP-FPM';
-		} elseif (defined('HHVM_VERSION')) {
-			$return .= ' + HHVM';
-		}
-		return $return;
-	} elseif (isset($_SERVER['SERVER_SOFTWARE'])) {
-		return $_SERVER['SERVER_SOFTWARE'];
-	} else {
-		return Language::instance()->indefinite;
-	}
-}
-
-function apache_version () {
-	preg_match(
-		'/Apache[\-\/]([0-9\.\-]+)/',
-		ob_wrapper('phpinfo'),
-		$version
-	);
-	return $version[1];
-}
-
-/**
- * Check of "display_errors" configuration of php.ini
- *
- * @return bool
- */
-function display_errors () {
-	return (bool)ini_get('display_errors');
-}
-
-function set_core_ml_text ($item, $text) {
-	return Text::instance()->set(
-		Config::instance()->module('System')->db('texts'),
-		'System/Config/core',
-		$item,
-		$text
-	);
-}
-
-function core_input ($item, $type = 'text', $info_item = null, $disabled = false, $min = false, $max = false, $post_text = '') {
-	$Config = Config::instance();
-	$L      = Language::instance();
-	if ($type != 'radio') {
-		switch ($item) {
-			default:
-				$value = $Config->core[$item];
-				break;
-			case 'name':
-			case 'closed_title':
-			case 'mail_from_name':
-				$value = get_core_ml_text($item);
-		}
-		return [
-			$info_item !== false ? h::info($info_item ?: $item) : $L->$item,
-			h::input(
-				[
-					'name'  => "core[$item]",
-					'value' => $value,
-					'min'   => $min,
-					'max'   => $max,
-					'type'  => $type,
-					($disabled ? 'disabled' : '')
-				]
-			).
-			$post_text
-		];
-	} else {
-		return [
-			$info_item !== false ? h::info($info_item ?: $item) : $L->$item,
-			h::radio(
-				[
-					'name'    => "core[$item]",
-					'checked' => $Config->core[$item],
-					'value'   => [0, 1],
-					'in'      => [$L->off, $L->on]
-				]
-			)
-		];
-	}
-}
-
-function core_textarea ($item, $editor = null, $info_item = null) {
-	switch ($item) {
-		default:
-			$content = Config::instance()->core[$item];
-			break;
-		case 'closed_text':
-		case 'mail_signature':
-		case 'rules':
-			$content = get_core_ml_text($item);
-	}
-	return [
-		h::info($info_item ?: $item),
-		h::textarea(
-			$content,
-			[
-				'name'  => "core[$item]",
-				'class' => $editor ? " $editor" : ''
-			]
-		)
-	];
-}
-
-function core_select ($items_array, $item, $id = null, $info_item = null, $multiple = false, $size = 5) {
-	return [
-		h::info($info_item ?: $item),
-		h::select(
-			$items_array,
-			[
-				'name'     => "core[$item]".($multiple ? '[]' : ''),
-				'selected' => Config::instance()->core[$item],
-				'size'     => $size,
-				'id'       => $id ?: false,
-				$multiple ? 'multiple' : false
-			]
-		)
-	];
-}
 
 trait general {
 	static function general_about_server () {
@@ -212,11 +76,11 @@ trait general {
 				],
 				[
 					"$L->server_type:",
-					server_api()
+					self::server_api()
 				],
 				preg_match('/apache/i', $_SERVER['SERVER_SOFTWARE']) ? [
 					$L->version_of('Apache').':',
-					apache_version()
+					self::apache_version()
 				] : false,
 				preg_match('/nginx/i', $_SERVER['SERVER_SOFTWARE']) ? [
 					$L->version_of('Nginx').':',
@@ -246,7 +110,7 @@ trait general {
 							[
 								check_mcrypt() ? $L->on : $L->off.h::icon('info-sign', ['data-title' => $L->mcrypt_warning]),
 								[
-									'class' => state(check_mcrypt())
+									'class' => self::state(check_mcrypt())
 								]
 							]
 						],
@@ -255,7 +119,7 @@ trait general {
 							[
 								$L->get(curl()),
 								[
-									'class' => state(curl())
+									'class' => self::state(curl())
 								]
 							]
 						],
@@ -264,7 +128,7 @@ trait general {
 							[
 								$L->get(apc()),
 								[
-									'class' => version_compare(PHP_VERSION, '5.5', '>=') ? false : state(apc())
+									'class' => version_compare(PHP_VERSION, '5.5', '>=') ? false : self::state(apc())
 								]
 							]
 						],
@@ -323,7 +187,7 @@ trait general {
 							[
 								$L->get(ini_get('file_uploads')),
 								[
-									'class' => state(ini_get('file_uploads'))
+									'class' => self::state(ini_get('file_uploads'))
 								]
 							]
 						],
@@ -368,16 +232,16 @@ trait general {
 							[
 								$L->get(ini_get('allow_url_fopen')),
 								[
-									'class' => state(ini_get('allow_url_fopen'))
+									'class' => self::state(ini_get('allow_url_fopen'))
 								]
 							]
 						],
 						[
 							"$L->display_errors:",
 							[
-								$L->get(display_errors()),
+								$L->get((bool)ini_get('display_errors')),
 								[
-									'class' => state(!display_errors())
+									'class' => self::state(!ini_get('display_errors'))
 								]
 							]
 						]
@@ -385,6 +249,40 @@ trait general {
 				]
 			)
 		);
+	}
+	static private function state ($state) {
+		return $state ? 'uk-alert-success' : 'uk-alert-danger';
+	}
+	/**
+	 * Returns server type
+	 *
+	 * @return string
+	 */
+	static private function server_api () {
+		$phpinfo = ob_wrapper('phpinfo');
+		if (preg_match('/apache/i', $_SERVER['SERVER_SOFTWARE'])) {
+			return 'Apache'.(preg_match('/mod_php/i', $phpinfo) ? ' + mod_php' : '');
+		} elseif (preg_match('/nginx/i', $_SERVER['SERVER_SOFTWARE'])) {
+			$return = 'Nginx';
+			if (preg_match('/php-fpm/i', $phpinfo)) {
+				$return .= ' + PHP-FPM';
+			} elseif (defined('HHVM_VERSION')) {
+				$return .= ' + HHVM';
+			}
+			return $return;
+		} elseif (isset($_SERVER['SERVER_SOFTWARE'])) {
+			return $_SERVER['SERVER_SOFTWARE'];
+		} else {
+			return Language::instance()->indefinite;
+		}
+	}
+	static private function apache_version () {
+		preg_match(
+			'/Apache[\-\/]([0-9\.\-]+)/',
+			ob_wrapper('phpinfo'),
+			$version
+		);
+		return $version[1];
 	}
 	static function general_appearance () {
 		$Config = Config::instance();
@@ -625,7 +523,7 @@ trait general {
 		$Index->content(
 			h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
 				[
-					core_select($Config->core['themes'], 'theme', null, 'current_theme')
+					static::core_select($Config->core['themes'], 'theme', null, 'current_theme')
 				]
 			).
 			h::p(
@@ -658,8 +556,8 @@ trait general {
 		$Config->reload_languages();
 		Index::instance()->content(
 			h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
-				core_select($Config->core['active_languages'], 'language', 'change_language', 'current_language'),
-				core_select($Config->core['languages'], 'active_languages', 'change_active_languages', null, true),
+				static::core_select($Config->core['active_languages'], 'language', 'change_language', 'current_language'),
+				static::core_select($Config->core['languages'], 'active_languages', 'change_active_languages', null, true),
 				[
 					h::info('multilingual'),
 					h::radio(
@@ -680,11 +578,11 @@ trait general {
 		$sa     = $Config->core['simple_admin_mode'];
 		Index::instance()->content(
 			h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
-				core_input('cache_compress_js_css', 'radio'),
-				core_input('vulcanization', 'radio'),
-				core_input('put_js_after_body', 'radio'),
-				(!$sa ? core_input('inserts_limit', 'number', null, false, 1) : false),
-				(!$sa ? core_input('update_ratio', 'number', null, false, 0, 100) : false),
+				static::core_input('cache_compress_js_css', 'radio'),
+				static::core_input('vulcanization', 'radio'),
+				static::core_input('put_js_after_body', 'radio'),
+				(!$sa ? static::core_input('inserts_limit', 'number', null, false, 1) : false),
+				(!$sa ? static::core_input('update_ratio', 'number', null, false, 0, 100) : false),
 				[
 					h::{'div#clean_cache'}(),
 					h::{'div#clean_pcache'}()
@@ -718,11 +616,11 @@ trait general {
 		$sa        = $Config->core['simple_admin_mode'];
 		Index::instance()->content(
 			h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
-				core_input('name', 'text', 'site_name'),
-				!$sa ? core_textarea('url') : false,
-				!$sa ? core_textarea('cookie_domain') : false,
-				!$sa ? core_textarea('cookie_path') : false,
-				!$sa ? core_input('cookie_prefix') : false,
+				static::core_input('name', 'text', 'site_name'),
+				!$sa ? static::core_input('url') : false,
+				!$sa ? static::core_input('cookie_domain') : false,
+				!$sa ? static::core_input('cookie_path') : false,
+				!$sa ? static::core_input('cookie_prefix') : false,
 				[
 					h::info('timezone'),
 					h::select(
@@ -737,7 +635,7 @@ trait general {
 						]
 					)
 				],
-				core_input('admin_email', 'email')
+				static::core_input('admin_email', 'email')
 			)
 		);
 	}
@@ -746,13 +644,13 @@ trait general {
 		$sa     = $Config->core['simple_admin_mode'];
 		Index::instance()->content(
 			h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
-				core_input('site_mode', 'radio'),
-				core_input('closed_title'),
-				core_textarea('closed_text', 'SIMPLE_EDITOR'),
-				core_input('title_delimiter'),
-				core_input('title_reverse', 'radio'),
-				core_input('show_tooltips', 'radio', false),
-				core_input('simple_admin_mode', 'radio'),
+				static::core_input('site_mode', 'radio'),
+				static::core_input('closed_title'),
+				static::core_input('closed_text', 'SIMPLE_EDITOR'),
+				static::core_input('title_delimiter'),
+				static::core_input('title_reverse', 'radio'),
+				static::core_input('show_tooltips', 'radio', false),
+				static::core_input('simple_admin_mode', 'radio'),
 				!$sa ? [
 					h::info('routing'),
 					h::{'cs-table[center] cs-table-row| cs-table-cell'}(

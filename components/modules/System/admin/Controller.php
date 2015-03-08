@@ -15,11 +15,13 @@ use
 	cs\Index,
 	cs\Language,
 	cs\Page,
+	cs\Text,
 	cs\modules\System\admin\Controller\components,
 	cs\modules\System\admin\Controller\general,
 	cs\modules\System\admin\Controller\users,
 	cs\modules\System\admin\Controller\components_save,
-	cs\modules\System\admin\Controller\users_save;
+	cs\modules\System\admin\Controller\users_save,
+	h;
 
 class Controller {
 	use
@@ -56,7 +58,12 @@ class Controller {
 							case 'mail_from_name':
 							case 'mail_signature':
 							case 'rules':
-								$value = Controller\set_core_ml_text($item, $value);
+								$value = Text::instance()->set(
+									Config::instance()->module('System')->db('texts'),
+									'System/Config/core',
+									$item,
+									$value
+								);
 								break;
 							case 'url':
 							case 'cookie_domain':
@@ -102,5 +109,82 @@ class Controller {
 		} /** @noinspection NotOptimalIfConditionsInspection */ elseif (isset($_POST['cancel']) && $Cache->cache_state()) {
 			$Index->cancel();
 		}
+	}
+	static protected function core_input ($item, $type = 'text', $info_item = null, $disabled = false, $min = false, $max = false, $post_text = '') {
+		$Config = Config::instance();
+		$L      = Language::instance();
+		if ($type != 'radio') {
+			switch ($item) {
+				default:
+					$value = $Config->core[$item];
+					break;
+				case 'name':
+				case 'closed_title':
+				case 'mail_from_name':
+					$value = get_core_ml_text($item);
+			}
+			return [
+				$info_item !== false ? h::info($info_item ?: $item) : $L->$item,
+				h::input(
+					[
+						'name'  => "core[$item]",
+						'value' => $value,
+						'min'   => $min,
+						'max'   => $max,
+						'type'  => $type,
+						($disabled ? 'disabled' : '')
+					]
+				).
+				$post_text
+			];
+		} else {
+			return [
+				$info_item !== false ? h::info($info_item ?: $item) : $L->$item,
+				h::radio(
+					[
+						'name'    => "core[$item]",
+						'checked' => $Config->core[$item],
+						'value'   => [0, 1],
+						'in'      => [$L->off, $L->on]
+					]
+				)
+			];
+		}
+	}
+	static protected function core_textarea ($item, $editor = null, $info_item = null) {
+		switch ($item) {
+			default:
+				$content = Config::instance()->core[$item];
+				break;
+			case 'closed_text':
+			case 'mail_signature':
+			case 'rules':
+				$content = get_core_ml_text($item);
+		}
+		return [
+			h::info($info_item ?: $item),
+			h::textarea(
+				$content,
+				[
+					'name'  => "core[$item]",
+					'class' => $editor ? " $editor" : ''
+				]
+			)
+		];
+	}
+	static protected function core_select ($items_array, $item, $id = null, $info_item = null, $multiple = false, $size = 5) {
+		return [
+			h::info($info_item ?: $item),
+			h::select(
+				$items_array,
+				[
+					'name'     => "core[$item]".($multiple ? '[]' : ''),
+					'selected' => Config::instance()->core[$item],
+					'size'     => $size,
+					'id'       => $id ?: false,
+					$multiple ? 'multiple' : false
+				]
+			)
+		];
 	}
 }
