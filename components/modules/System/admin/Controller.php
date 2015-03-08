@@ -30,18 +30,21 @@ class Controller {
 		users,
 		components_save,
 		users_save;
-	static function index () {
+	static function index (
+		/** @noinspection PhpUnusedParameterInspection */
+		$route_ids,
+		$route_path
+	) {
 		$L           = Language::instance();
-		$Index       = Index::instance();
 		$Page        = Page::instance();
-		$save_method = $Index->route_path[0].'_'.$Index->route_path[1].'_save';
+		$save_method = "$route_path[0]_$route_path[1]_save";
 		if (method_exists(__CLASS__, $save_method)) {
 			self::$save_method();
 		} else {
 			self::save();
 		}
-		$Page->title($L->{$Index->route_path[0]});
-		$Page->title($L->{$Index->route_path[1]});
+		$Page->title($L->{$route_path[0]});
+		$Page->title($L->{$route_path[1]});
 	}
 	static function save () {
 		$Index  = Index::instance();

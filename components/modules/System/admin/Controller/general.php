@@ -617,9 +617,9 @@ trait general {
 		Index::instance()->content(
 			h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
 				static::core_input('name', 'text', 'site_name'),
-				!$sa ? static::core_input('url') : false,
-				!$sa ? static::core_input('cookie_domain') : false,
-				!$sa ? static::core_input('cookie_path') : false,
+				!$sa ? static::core_textarea('url') : false,
+				!$sa ? static::core_textarea('cookie_domain') : false,
+				!$sa ? static::core_textarea('cookie_path') : false,
 				!$sa ? static::core_input('cookie_prefix') : false,
 				[
 					h::info('timezone'),
@@ -646,7 +646,7 @@ trait general {
 			h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
 				static::core_input('site_mode', 'radio'),
 				static::core_input('closed_title'),
-				static::core_input('closed_text', 'SIMPLE_EDITOR'),
+				static::core_textarea('closed_text', 'SIMPLE_EDITOR'),
 				static::core_input('title_delimiter'),
 				static::core_input('title_reverse', 'radio'),
 				static::core_input('show_tooltips', 'radio', false),
