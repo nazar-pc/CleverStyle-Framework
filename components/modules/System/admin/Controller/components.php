@@ -298,10 +298,10 @@ trait components {
 						$group_permission = $User->db()->qfs(
 							[
 								"SELECT `value`
-					FROM `[prefix]groups_permissions`
-					WHERE
-						`id`			= '%s' AND
-						`permission`	= '%s'",
+								FROM `[prefix]groups_permissions`
+								WHERE
+									`id`			= '%s' AND
+									`permission`	= '%s'",
 								$group['id'],
 								$permission
 							]
@@ -337,10 +337,10 @@ trait components {
 					$users_list    = $User->db()->qfa(
 						[
 							"SELECT
-					`id`,
-					`value`
-				FROM `[prefix]users_permissions`
-				WHERE `permission` = '%s'",
+								`id`,
+								`value`
+							FROM `[prefix]users_permissions`
+							WHERE `permission` = '%s'",
 							$permission
 						]
 					);
@@ -1925,7 +1925,12 @@ trait components {
 						$Page->warning($L->dependencies_not_satisfied);
 					}
 					$Page->warning(
-						$L->module_cant_be_updated_from_version_to_supported_only($module, $module_meta['version'], $meta['version'], $meta['update_from_version'])
+						$L->module_cant_be_updated_from_version_to_supported_only(
+							$module,
+							$module_meta['version'],
+							$meta['version'],
+							$meta['update_from_version']
+						)
 					);
 					return false;
 				}

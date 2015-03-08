@@ -1283,12 +1283,12 @@ trait users {
 			$results_count = $users_db->qfs(
 				[
 					"SELECT COUNT(`id`)
-		FROM `[prefix]users`
-		WHERE
-			(
-				$where
-			) AND
-			`status` != '%s'",
+					FROM `[prefix]users`
+					WHERE
+						(
+							$where
+						) AND
+						`status` != '%s'",
 					User::STATUS_NOT_ACTIVATED
 				]
 			);
@@ -1297,14 +1297,14 @@ trait users {
 				$users_ids = $users_db->qfas(
 					[
 						"SELECT `id`
-			FROM `[prefix]users`
-			WHERE
-				(
-					$where
-				) AND
-				`status` != '%s'
-			ORDER BY `id`
-			LIMIT $from, $limit",
+						FROM `[prefix]users`
+						WHERE
+							(
+								$where
+							) AND
+							`status` != '%s'
+						ORDER BY `id`
+						LIMIT $from, $limit",
 						User::STATUS_NOT_ACTIVATED
 					]
 				);
