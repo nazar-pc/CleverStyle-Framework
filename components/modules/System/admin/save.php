@@ -31,7 +31,7 @@ if (isset($_POST['apply']) || isset($_POST['save'])) {
 					case 'mail_from_name':
 					case 'mail_signature':
 					case 'rules':
-						$value	= set_core_ml_text($item, $value);
+						$value	= admin\Controller\set_core_ml_text($item, $value);
 					break;
 					case 'url':
 					case 'cookie_domain':

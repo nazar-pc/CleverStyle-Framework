@@ -153,6 +153,7 @@ if (isset($_POST['mode'])) {
 		$Config->components['blocks']	= [];
 		$Config->components['blocks']	= $blocks_array;
 		unset($blocks_array, $position, $items, $item);
+		/** @noinspection NotOptimalIfConditionsInspection */
 		if (isset($_POST['save'])) {
 			$a->save();
 		} else {
