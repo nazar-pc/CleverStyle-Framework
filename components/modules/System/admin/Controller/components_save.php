@@ -198,14 +198,14 @@ trait components_save {
 			$update = true;
 		} elseif ($_POST['mode'] == 'edit') {
 			if (isset($_POST['mirror'])) {
-				$cdb = &$Config->db[$_POST['database']]['mirrors'][$_POST['mirror']];
+				$current_db = &$Config->db[$_POST['database']]['mirrors'][$_POST['mirror']];
 			} elseif ($_POST['database'] > 0) {
-				$cdb = &$Config->db[$_POST['database']];
+				$current_db = &$Config->db[$_POST['database']];
 			}
 			foreach ($_POST['db'] as $item => $value) {
-				$cdb[$item] = $value;
+				$current_db[$item] = $value;
 			}
-			unset($cdb, $item, $value);
+			unset($current_db, $item, $value);
 			$update = true;
 		} elseif ($_POST['mode'] == 'delete' && isset($_POST['database'])) {
 			if (isset($_POST['mirror'])) {
@@ -453,61 +453,16 @@ trait components_save {
 							]
 						);
 					}
-					$module_dir = MODULES."/$module_name";
-					/**
-					 * Backing up some necessary information about current version
-					 */
-					copy("$module_dir/fs.json", "$module_dir/fs_old.json");
-					copy("$module_dir/meta.json", "$module_dir/meta_old.json");
-					/**
-					 * Extracting new versions of files
-					 */
-					$tmp_file = TEMP.'/'.$User->get_session_id().'_module_update.phar';
-					$tmp_dir  = "phar://$tmp_file";
-					$fs       = file_get_json("$tmp_dir/fs.json");
-					$extract  = array_product(
-						array_map(
-							function ($index, $file) use ($tmp_dir, $module_dir) {
-								if (
-									!file_exists(dirname("$module_dir/$file")) &&
-									!mkdir(dirname("$module_dir/$file"), 0770, true)
-								) {
-									return 0;
-								}
-								return (int)copy("$tmp_dir/fs/$index", "$module_dir/$file");
-							},
-							$fs,
-							array_keys($fs)
-						)
-					);
-					unlink($tmp_file);
-					unset($tmp_file, $tmp_dir);
-					if (!$extract) {
+					$module_dir  = MODULES."/$module_name";
+					$old_version = file_get_json("$module_dir/meta.json")['version'];
+					if (!self::extract_update_generic($module_dir, TEMP.'/'.$User->get_session_id().'_module_update.phar')) {
 						$Page->warning($L->module_files_unpacking_error);
-						unlink("$module_dir/fs_old.json");
-						unlink("$module_dir/meta_old.json");
 						break;
 					}
-					unset($extract);
-					file_put_json("$module_dir/fs.json", $fs = array_keys($fs));
-					/**
-					 * Removing of old unnecessary files and directories
-					 */
-					foreach (array_diff(file_get_json("$module_dir/fs_old.json"), $fs) as $file) {
-						$file = "$module_dir/$file";
-						if (file_exists($file) && is_writable($file)) {
-							unlink($file);
-							if (!get_files_list($dir = dirname($file))) {
-								rmdir($dir);
-							}
-						}
-					}
-					unset($fs, $file, $dir);
 					/**
 					 * Updating of module
 					 */
 					if ($active && file_exists("$module_dir/versions.json")) {
-						$old_version = file_get_json("$module_dir/meta_old.json")['version'];
 						foreach (file_get_json("$module_dir/versions.json") as $version) {
 							if (version_compare($old_version, $version, '<')) {
 								/**
@@ -528,9 +483,12 @@ trait components_save {
 										}
 										$sql_file = "$module_dir/meta/update_db/$database/$version/$db_type.sql";
 										if (file_exists($sql_file)) {
-											$db->{$module_data['db'][$database]}()->q(
-												explode(';', file_get_contents($sql_file))
-											);
+											$cdb = $db->{$module_data['db'][$database]}();
+											if ($cdb) {
+												$cdb->q(
+													explode(';', file_get_contents($sql_file))
+												);
+											}
 										}
 									}
 									unset($db_json, $database, $db_type, $sql_file);
@@ -540,8 +498,6 @@ trait components_save {
 						}
 						unset($old_version);
 					}
-					unlink("$module_dir/fs_old.json");
-					unlink("$module_dir/meta_old.json");
 					/**
 					 * Restore previous module state
 					 */
@@ -1062,5 +1018,77 @@ trait components_save {
 			Index::instance()->save();
 		}
 		unset($update);
+	}
+	/**
+	 * Generic extraction of files from phar distributive for CleverStyle CMS (system and components)
+	 *
+	 * @param string      $target_directory
+	 * @param string      $source_phar             Will be removed after extraction
+	 * @param null|string $fs_location_directory   Defaults to `$target_directory`
+	 * @param null|string $meta_location_directory Defaults to `$target_directory`
+	 *
+	 * @return bool
+	 */
+	static private function extract_update_generic ($target_directory, $source_phar, $fs_location_directory = null, $meta_location_directory = null) {
+		$fs_location_directory   = $fs_location_directory ?: $target_directory;
+		$meta_location_directory = $meta_location_directory ?: $target_directory;
+		/**
+		 * Backup some necessary information about current version
+		 */
+		copy("$fs_location_directory/fs.json", "$fs_location_directory/fs_backup.json");
+		copy("$meta_location_directory/meta.json", "$meta_location_directory/meta_backup.json");
+		/**
+		 * Extracting new versions of files
+		 */
+		$tmp_dir = "phar://$source_phar";
+		$fs      = file_get_json("$tmp_dir/fs.json");
+		$extract = array_product(
+			array_map(
+				function ($index, $file) use ($tmp_dir, $target_directory) {
+					if (
+						!file_exists(dirname("$target_directory/$file")) &&
+						!mkdir(dirname("$target_directory/$file"), 0770, true)
+					) {
+						return 0;
+					}
+					return (int)copy("$tmp_dir/fs/$index", "$target_directory/$file");
+				},
+				$fs,
+				array_keys($fs)
+			)
+		);
+		unlink($source_phar);
+		unset($tmp_dir);
+		if (!$extract) {
+			return false;
+		}
+		unset($extract);
+		$fs = array_keys($fs);
+		/**
+		 * Removing of old unnecessary files and directories
+		 */
+		foreach (
+			array_diff(
+				file_get_json("$fs_location_directory/fs.json"),
+				$fs
+			) as $file
+		) {
+			$file = "$target_directory/$file";
+			if (file_exists($file) && is_writable($file)) {
+				unlink($file);
+				// Recursively remove all empty parent directories
+				while (!get_files_list($file = dirname($file))) {
+					rmdir($file);
+				}
+			}
+		}
+		unset($file, $dir);
+		file_put_json("$fs_location_directory/fs.json", $fs);
+		/**
+		 * Removing backups after successful update
+		 */
+		unlink("$fs_location_directory/fs_backup.json");
+		unlink("$meta_location_directory/meta_backup.json");
+		return true;
 	}
 }
