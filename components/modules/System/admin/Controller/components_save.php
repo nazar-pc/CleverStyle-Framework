@@ -216,7 +216,7 @@ trait components_save {
 				$update = true;
 			}
 		} elseif ($_POST['mode'] == 'config') {
-			_include(__DIR__."/../save.php", false, false);
+			static::save();
 		}
 		if ($update) {
 			$Index->save();
