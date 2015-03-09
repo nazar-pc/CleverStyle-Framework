@@ -20,14 +20,18 @@ use
 	h;
 
 trait general {
-	static function general_about_server () {
+	static function general_about_server (
+		/** @noinspection PhpUnusedParameterInspection */
+		$route_ids,
+		$route_path
+	) {
 		$Core  = Core::instance();
 		$Index = Index::instance();
 		$L     = Language::instance();
-		if (isset($Index->route_path[2])) {
+		if (isset($route_path[2])) {
 			interface_off();
 			$Index->form = false;
-			switch ($Index->route_path[2]) {
+			switch ($route_path[2]) {
 				case 'phpinfo':
 					$Index->Content = ob_wrapper(
 						function () {
