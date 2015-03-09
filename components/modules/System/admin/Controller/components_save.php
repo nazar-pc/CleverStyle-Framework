@@ -455,7 +455,7 @@ trait components_save {
 					}
 					$module_dir  = MODULES."/$module_name";
 					$old_version = file_get_json("$module_dir/meta.json")['version'];
-					if (!self::extract_update_generic($module_dir, TEMP.'/'.$User->get_session_id().'_module_update.phar')) {
+					if (!static::extract_update_generic($module_dir, TEMP.'/'.$User->get_session_id().'_module_update.phar')) {
 						$Page->warning($L->module_files_unpacking_error);
 						break;
 					}
@@ -538,62 +538,16 @@ trait components_save {
 							'name' => $module_name
 						]
 					);
-					$module_dir = MODULES.'/System';
-					/**
-					 * Backing up some necessary information about current version
-					 */
-					copy(DIR.'/core/fs.json', DIR.'/core/fs_old.json');
-					copy("$module_dir/meta.json", "$module_dir/meta_old.json");
-					/**
-					 * Extracting new versions of files
-					 */
-					$tmp_file = TEMP.'/'.$User->get_session_id().'_update_system.phar';
-					$tmp_dir  = "phar://$tmp_file";
-					$fs       = file_get_json("$tmp_dir/fs.json")['core/fs.json'];
-					$fs       = file_get_json("$tmp_dir/fs/$fs");
-					$extract  = array_product(
-						array_map(
-							function ($index, $file) use ($tmp_dir, $module_dir) {
-								if (
-									!file_exists(dirname(DIR."/$file")) &&
-									!mkdir(dirname(DIR."/$file"), 0770, true)
-								) {
-									return 0;
-								}
-								return (int)copy("$tmp_dir/fs/$index", DIR."/$file");
-							},
-							$fs,
-							array_keys($fs)
-						)
-					);
-					unlink($tmp_file);
-					unset($tmp_file, $tmp_dir);
-					if (!$extract) {
+					$module_dir  = MODULES.'/System';
+					$old_version = file_get_json("$module_dir/meta.json")['version'];
+					if (!static::extract_update_generic(DIR, TEMP.'/'.$User->get_session_id().'_update_system.phar', DIR.'/core', $module_dir)) {
 						$Page->warning($L->system_files_unpacking_error);
-						unlink(DIR.'/core/fs_old.json');
-						unlink("$module_dir/meta_old.json");
 						break;
 					}
-					unset($extract);
-					file_put_json(DIR.'/core/fs.json', $fs = array_keys($fs));
-					/**
-					 * Removing of old unnecessary files and directories
-					 */
-					foreach (array_diff(file_get_json(DIR.'/core/fs_old.json'), $fs) as $file) {
-						$file = DIR."/$file";
-						if (file_exists($file) && is_writable($file)) {
-							unlink($file);
-							if (!get_files_list($dir = dirname($file))) {
-								rmdir($dir);
-							}
-						}
-					}
-					unset($fs, $file, $dir);
 					/**
 					 * Updating of System
 					 */
 					if (file_exists("$module_dir/versions.json")) {
-						$old_version = file_get_json("$module_dir/meta_old.json")['version'];
 						foreach (file_get_json("$module_dir/versions.json") as $version) {
 							if (version_compare($old_version, $version, '<')) {
 								/**
@@ -626,8 +580,6 @@ trait components_save {
 						}
 						unset($old_version);
 					}
-					unlink(DIR.'/core/fs_old.json');
-					unlink("$module_dir/meta_old.json");
 					/**
 					 * Restore previous site mode
 					 */
