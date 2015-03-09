@@ -650,25 +650,7 @@ trait components_save {
 					if ($module_name == 'System' || $module_data['active'] != '-1') {
 						break;
 					}
-					$ok = true;
-					get_files_list(
-						MODULES."/$module_name",
-						false,
-						'fd',
-						true,
-						true,
-						false,
-						false,
-						true,
-						function ($item) use (&$ok) {
-							if (is_writable($item)) {
-								is_dir($item) ? @rmdir($item) : @unlink($item);
-							} else {
-								$ok = false;
-							}
-						}
-					);
-					if ($ok && @rmdir(MODULES."/$module_name")) {
+					if (static::recursive_directory_removal(MODULES."/$module_name")) {
 						unset($Config->components['modules'][$module_name]);
 						$a->save();
 					} else {
@@ -815,25 +797,7 @@ trait components_save {
 					if (in_array($plugin, $Config->components['plugins'])) {
 						break;
 					}
-					$ok = true;
-					get_files_list(
-						PLUGINS."/$plugin",
-						false,
-						'fd',
-						true,
-						true,
-						false,
-						false,
-						true,
-						function ($item) use (&$ok) {
-							if (is_writable($item)) {
-								is_dir($item) ? @rmdir($item) : @unlink($item);
-							} else {
-								$ok = false;
-							}
-						}
-					);
-					if ($ok && @rmdir(PLUGINS."/$plugin")) {
+					if (static::recursive_directory_removal(PLUGINS."/$plugin")) {
 						$Index->save();
 					} else {
 						$Index->save(false);
@@ -980,5 +944,34 @@ trait components_save {
 				}
 			}
 		}
+	}
+	/**
+	 * @param string $target_directory
+	 *
+	 * @return bool
+	 */
+	static protected function recursive_directory_removal ($target_directory) {
+		$ok = true;
+		get_files_list(
+			$target_directory,
+			false,
+			'fd',
+			true,
+			true,
+			false,
+			false,
+			true,
+			function ($item) use (&$ok) {
+				if (is_writable($item)) {
+					is_dir($item) ? rmdir($item) : unlink($item);
+				} else {
+					$ok = false;
+				}
+			}
+		);
+		if ($ok) {
+			rmdir($target_directory);
+		}
+		return $ok;
 	}
 }
