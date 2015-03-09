@@ -21,6 +21,7 @@ use
 	cs\modules\System\admin\Controller\users,
 	cs\modules\System\admin\Controller\components_save,
 	cs\modules\System\admin\Controller\users_save,
+	cs\modules\System\admin\Controller\components_manipulation,
 	h;
 
 class Controller {
@@ -29,7 +30,8 @@ class Controller {
 		general,
 		users,
 		components_save,
-		users_save;
+		users_save,
+		components_manipulation;
 	static function index (
 		/** @noinspection PhpUnusedParameterInspection */
 		$route_ids,
