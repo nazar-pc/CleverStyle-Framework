@@ -371,24 +371,7 @@ trait general {
 						unlink($tmp_file);
 						break;
 					}
-					$fs      = file_get_json("$tmp_dir/fs.json");
-					$extract = array_product(
-						array_map(
-							function ($index, $file) use ($tmp_dir, $theme) {
-								if (
-									!file_exists(dirname(THEMES."/$theme/$file")) &&
-									!mkdir(dirname(THEMES."/$theme/$file"), 0770, true)
-								) {
-									return 0;
-								}
-								return (int)copy("$tmp_dir/fs/$index", THEMES."/$theme/$file");
-							},
-							$fs,
-							array_keys($fs)
-						)
-					);
-					file_put_json(THEMES."/$theme/fs.json", array_keys($fs));
-					unlink($tmp_file);
+					$extract = static::install_extract(THEMES."/$theme", $tmp_file);
 					unset($tmp_file, $tmp_dir, $theme, $tmp_dir);
 					if (!$extract) {
 						$Page->warning($L->theme_files_unpacking_error);
