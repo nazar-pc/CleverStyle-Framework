@@ -502,41 +502,49 @@ trait components {
 		$Config = Config::instance();
 		return Text::instance()->process($Config->module('System')->db('texts'), $Config->components['blocks'][$id]['content']);
 	}
-	static function components_databases () {
-		$Config      = Config::instance();
-		$Core        = Core::instance();
-		$L           = Language::instance();
-		$Page        = Page::instance();
-		$a           = Index::instance();
-		$rc          = $Config->route;
-		$test_dialog = false;
-		if (isset($rc[2])) {
+	static function components_databases (
+		/** @noinspection PhpUnusedParameterInspection */
+		$route_ids,
+		$route_path
+	) {
+		$Config       = Config::instance();
+		$Core         = Core::instance();
+		$L            = Language::instance();
+		$Page         = Page::instance();
+		$a            = Index::instance();
+		$test_dialog  = false;
+		$action       = isset($route_path[2]) ? $route_path[2] : null;
+		$db_id        = isset($route_ids[0]) ? $route_ids[0] : 0;
+		$db_mirror_id = isset($route_ids[1]) ? $route_ids[1] : 0;
+		if ($action) {
 			$a->apply_button       = false;
 			$a->cancel_button_back = true;
-			switch ($rc[2]) {
+			switch ($action) {
 				case 'edit':
-					if (!isset($rc[3])) {
+					if (!$db_id) {
 						break;
 					}
 				case 'add':
 					$test_dialog = true;
-					if ($rc[2] == 'edit') {
-						if (isset($rc[4])) {
-							$database = &$Config->db[$rc[3]]['mirrors'][$rc[4]];
+					if ($action == 'edit') {
+						if ($db_mirror_id) {
+							$database = &$Config->db[$db_id]['mirrors'][$db_mirror_id];
 						} else {
-							$database = &$Config->db[$rc[3]];
+							$database = &$Config->db[$db_id];
 						}
-						$mirror = isset($rc[4]);
-						$cdb    = $Config->db[$rc[3]];
-						if ($mirror) {
-							$cdbm = $Config->db[$rc[3]]['mirrors'][$rc[4]];
-							$name = "$L->mirror ".($rc[3] ? "$L->db $cdb[name]" : $L->core_db).", $cdbm[name] ($cdbm[host]/$cdbm[type])?";
-							unset($cdbm);
+						$current_db = $Config->db[$db_id];
+						if ($db_mirror_id) {
+							$current_db_mirror = $Config->db[$db_id]['mirrors'][$db_mirror_id];
+							$name              =
+								"$L->mirror ".
+								($db_id ? "$L->db $current_db[name]" : $L->core_db).
+								", $current_db_mirror[name] ($current_db_mirror[host]/$current_db_mirror[type])?";
+							unset($current_db_mirror);
 						} else {
-							$name = "$L->db $cdb[name] ($cdb[host]/$cdb[type])?";
+							$name = "$L->db $current_db[name] ($current_db[host]/$current_db[type])?";
 						}
-						unset($mirror, $cdb);
-					} elseif ($rc[2] == 'add') {
+						unset($current_db);
+					} elseif ($action == 'add') {
 						$dbs     = [-1, 0];
 						$dbsname = [$L->separate_db, $L->core_db];
 						foreach ($Config->db as $i => $db) {
@@ -547,22 +555,21 @@ trait components {
 						}
 						unset($i, $db);
 					}
-					$a->action = "admin/System/$rc[0]/$rc[1]";
 					/**
 					 * @var array  $dbsname
 					 * @var array  $dbs
 					 * @var array  $database
 					 * @var string $name
 					 */
-					$Page->title($rc[2] == 'edit' ? $L->editing_the_database($name) : $L->addition_of_db);
+					$Page->title($action == 'edit' ? $L->editing_the_database($name) : $L->addition_of_db);
 					$a->content(
 						h::{'h2.cs-center'}(
-							$rc[2] == 'edit' ? $L->editing_the_database($name) : $L->addition_of_db
+							$action == 'edit' ? $L->editing_the_database($name) : $L->addition_of_db
 						).
 						h::{'cs-table[center][right-left] cs-table-row| cs-table-cell'}(
 							[
-								h::info($rc[2] == 'add' ? 'db_mirror' : false),
-								$rc[2] == 'add'
+								h::info($action == 'add' ? 'db_mirror' : false),
+								$action == 'add'
 									? h::select(
 									[
 										'in'    => $dbsname,
@@ -570,7 +577,7 @@ trait components {
 									],
 									[
 										'name'     => 'db[mirror]',
-										'selected' => isset($rc[3]) ? $rc[3] : -1,
+										'selected' => $db_id ?: -1,
 										'size'     => 5
 									]
 								)
@@ -581,7 +588,7 @@ trait components {
 								h::input(
 									[
 										'name'  => 'db[host]',
-										'value' => $rc[2] == 'edit' ? $database['host'] : $Core->db_host
+										'value' => $action == 'edit' ? $database['host'] : $Core->db_host
 									]
 								)
 							],
@@ -593,7 +600,7 @@ trait components {
 									],
 									[
 										'name'     => 'db[type]',
-										'selected' => $rc[2] == 'edit' ? $database['type'] : $Core->db_type,
+										'selected' => $action == 'edit' ? $database['type'] : $Core->db_type,
 										'size'     => 5
 									]
 								)
@@ -603,7 +610,7 @@ trait components {
 								h::input(
 									[
 										'name'  => 'db[prefix]',
-										'value' => $rc[2] == 'edit' ? $database['prefix'] : $Core->db_prefix
+										'value' => $action == 'edit' ? $database['prefix'] : $Core->db_prefix
 									]
 								)
 							],
@@ -612,7 +619,7 @@ trait components {
 								h::input(
 									[
 										'name'  => 'db[name]',
-										'value' => $rc[2] == 'edit' ? $database['name'] : ''
+										'value' => $action == 'edit' ? $database['name'] : ''
 									]
 								)
 							],
@@ -621,7 +628,7 @@ trait components {
 								h::input(
 									[
 										'name'  => 'db[user]',
-										'value' => $rc[2] == 'edit' ? $database['user'] : ''
+										'value' => $action == 'edit' ? $database['user'] : ''
 									]
 								)
 							],
@@ -630,7 +637,7 @@ trait components {
 								h::input(
 									[
 										'name'  => 'db[password]',
-										'value' => $rc[2] == 'edit' ? $database['password'] : ''
+										'value' => $action == 'edit' ? $database['password'] : ''
 									]
 								)
 							],
@@ -639,33 +646,33 @@ trait components {
 								h::input(
 									[
 										'name'  => 'db[charset]',
-										'value' => $rc[2] == 'edit' ? $database['charset'] : $Core->db_charset
+										'value' => $action == 'edit' ? $database['charset'] : $Core->db_charset
 									]
 								).
 								h::{'input[type=hidden]'}(
 									[
 										'name'  => 'mode',
-										'value' => $rc[2] == 'edit' ? 'edit' : 'add'
+										'value' => $action == 'edit' ? 'edit' : 'add'
 									]
 								)
 							]
 						).
 						(
-						isset($rc[3])
+						$db_id
 							? h::{'input[type=hidden]'}(
 							[
 								'name'  => 'database',
-								'value' => $rc[3]
+								'value' => $db_id
 							]
 						)
 							: ''
 						).
 						(
-						isset($rc[4])
+						$db_mirror_id
 							? h::{'input[type=hidden]'}(
 							[
 								'name'  => 'mirror',
-								'value' => $rc[4]
+								'value' => $db_mirror_id
 							]
 						)
 							: ''
@@ -681,11 +688,11 @@ trait components {
 				case 'delete':
 					$a->buttons = false;
 					$content    = [];
-					if (!isset($rc[4])) {
+					if (!$db_mirror_id) {
 						foreach ($Config->components['modules'] as $module => &$mdata) {
 							if (isset($mdata['db']) && is_array($mdata['db'])) {
 								foreach ($mdata['db'] as $db_name) {
-									if ($db_name == $rc[3]) {
+									if ($db_name == $db_id) {
 										$content[] = h::b($module);
 										break;
 									}
@@ -697,17 +704,18 @@ trait components {
 					if (!empty($content)) {
 						$Page->warning($L->db_used_by_modules.': '.implode(', ', $content));
 					} else {
-						$a->action = 'admin/System/'.$rc[0].'/'.$rc[1];
-						$mirror    = isset($rc[4]);
-						$cdb       = $Config->db[$rc[3]];
-						if ($mirror) {
-							$cdbm = $Config->db[$rc[3]]['mirrors'][$rc[4]];
-							$name = "$L->mirror ".($rc[3] ? "$L->db $cdb[name]" : $L->core_db).", $cdbm[name] ($cdbm[host]/$cdbm[type])?";
-							unset($cdbm);
+						$current_db = $Config->db[$db_id];
+						if ($db_mirror_id) {
+							$current_db_mirror = $Config->db[$db_id]['mirrors'][$db_mirror_id];
+							$name              =
+								"$L->mirror ".
+								($db_id ? "$L->db $current_db[name]" : $L->core_db).
+								", $current_db_mirror[name] ($current_db_mirror[host]/$current_db_mirror[type])?";
+							unset($current_db_mirror);
 						} else {
-							$name = "$L->db $cdb[name] ($cdb[host]/$cdb[type])?";
+							$name = "$L->db $current_db[name] ($current_db[host]/$current_db[type])?";
 						}
-						unset($mirror, $cdb);
+						unset($current_db);
 						$Page->title($L->deletion_of_database($name));
 						$a->content(
 							h::{'h2.cs-center'}(
@@ -717,21 +725,21 @@ trait components {
 										[
 											[
 												'name'  => 'mode',
-												'value' => $rc[2]
+												'value' => $action
 											]
 										],
 										[
 											[
 												'name'  => 'database',
-												'value' => $rc[3]
+												'value' => $db_id
 											]
 										]
 									]
 								).
-								(isset($rc[4]) ? h::{'input[type=hidden]'}(
+								($db_mirror_id ? h::{'input[type=hidden]'}(
 									[
 										'name'  => 'mirror',
-										'value' => $rc[4]
+										'value' => $db_mirror_id
 									]
 								) : '')
 							).
@@ -801,14 +809,14 @@ trait components {
 										[
 											h::icon('pencil'),
 											[
-												'href'       => "admin/System/$rc[0]/$rc[1]/edit/$i/$m",
+												'href'       => "$a->action/edit/$i/$m",
 												'data-title' => "$L->edit $L->mirror $L->of_db"
 											]
 										],
 										[
 											h::icon('trash-o'),
 											[
-												'href'       => "admin/System/$rc[0]/$rc[1]/delete/$i/$m",
+												'href'       => "$a->action/delete/$i/$m",
 												'data-title' => "$L->delete $L->mirror $L->of_db"
 											]
 										],
@@ -880,7 +888,7 @@ trait components {
 				h::{'p a.uk-button'}(
 					$L->add_database,
 					[
-						'href' => "admin/System/$rc[0]/$rc[1]/add"
+						'href' => "$a->action/add"
 					]
 				).
 				h::{'input[type=hidden]'}(
