@@ -455,7 +455,7 @@ trait components_save {
 					}
 					$module_dir  = MODULES."/$module_name";
 					$old_version = file_get_json("$module_dir/meta.json")['version'];
-					if (!static::extract_update_generic($module_dir, TEMP.'/'.$User->get_session_id().'_module_update.phar')) {
+					if (!static::update_extract($module_dir, TEMP.'/'.$User->get_session_id().'_module_update.phar')) {
 						$Page->warning($L->module_files_unpacking_error);
 						break;
 					}
@@ -463,36 +463,11 @@ trait components_save {
 					 * Updating of module
 					 */
 					if ($active != -1 && file_exists("$module_dir/versions.json")) {
-						foreach (file_get_json("$module_dir/versions.json") as $version) {
-							if (version_compare($old_version, $version, '<')) {
-								/**
-								 * PHP update script
-								 */
-								_include("$module_dir/meta/update/$version.php", true, false);
-								/**
-								 * Database update
-								 */
-								if (isset($module_data['db']) && file_exists("$module_dir/meta/db.json")) {
-									$db_json = file_get_json("$module_dir/meta/db.json");
-									time_limit_pause();
-									foreach ($db_json as $database) {
-										if ($module_data['db'][$database] == 0) {
-											$db_type = $Core->db_type;
-										} else {
-											$db_type = $Config->db[$module_data['db'][$database]]['type'];
-										}
-										$sql_file = "$module_dir/meta/update_db/$database/$version/$db_type.sql";
-										if (isset($module_data['db'][$database]) && file_exists($sql_file)) {
-											$db->{$module_data['db'][$database]}()->q(
-												explode(';', file_get_contents($sql_file))
-											);
-										}
-									}
-									unset($db_json, $database, $db_type, $sql_file);
-									time_limit_pause(false);
-								}
-							}
-						}
+						static::update_php_sql(
+							$module_dir,
+							$old_version,
+							isset($module_data['db']) ? $module_data['db'] : null
+						);
 					}
 					unset($old_version);
 					/**
@@ -537,7 +512,7 @@ trait components_save {
 					);
 					$module_dir  = MODULES.'/System';
 					$old_version = file_get_json("$module_dir/meta.json")['version'];
-					if (!static::extract_update_generic(DIR, TEMP.'/'.$User->get_session_id().'_update_system.phar', DIR.'/core', $module_dir)) {
+					if (!static::update_extract(DIR, TEMP.'/'.$User->get_session_id().'_update_system.phar', DIR.'/core', $module_dir)) {
 						$Page->warning($L->system_files_unpacking_error);
 						break;
 					}
@@ -545,36 +520,11 @@ trait components_save {
 					 * Updating of System
 					 */
 					if (file_exists("$module_dir/versions.json")) {
-						foreach (file_get_json("$module_dir/versions.json") as $version) {
-							if (version_compare($old_version, $version, '<')) {
-								/**
-								 * PHP update script
-								 */
-								_include("$module_dir/meta/update/$version.php", true, false);
-								/**
-								 * Database update
-								 */
-								if (isset($module_data['db']) && file_exists("$module_dir/meta/db.json")) {
-									$db_json = file_get_json("$module_dir/meta/db.json");
-									time_limit_pause();
-									foreach ($db_json as $database) {
-										if ($module_data['db'][$database] == 0) {
-											$db_type = $Core->db_type;
-										} else {
-											$db_type = $Config->db[$module_data['db'][$database]]['type'];
-										}
-										$sql_file = "$module_dir/meta/update_db/$database/$version/$db_type.sql";
-										if (file_exists($sql_file)) {
-											$db->{$module_data['db'][$database]}()->q(
-												explode(';', file_get_contents($sql_file))
-											);
-										}
-									}
-									unset($db_json, $database, $db_type, $sql_file);
-									time_limit_pause(false);
-								}
-							}
-						}
+						static::update_php_sql(
+							$module_dir,
+							$old_version,
+							$module_data['db']
+						);
 					}
 					unset($old_version);
 					/**
@@ -823,7 +773,7 @@ trait components_save {
 					}
 					$plugin_dir  = PLUGINS."/$plugin";
 					$old_version = file_get_json("$plugin_dir/meta.json")['version'];
-					if (!static::extract_update_generic($plugin_dir, TEMP.'/'.User::instance()->get_session_id().'_plugin_update.phar')) {
+					if (!static::update_extract($plugin_dir, TEMP.'/'.User::instance()->get_session_id().'_plugin_update.phar')) {
 						$Page->warning($L->plugin_files_unpacking_error);
 						break;
 					}
@@ -831,14 +781,10 @@ trait components_save {
 					 * Updating of plugin
 					 */
 					if (file_exists("$plugin_dir/versions.json")) {
-						foreach (file_get_json("$plugin_dir/versions.json") as $version) {
-							if (version_compare($old_version, $version, '<')) {
-								/**
-								 * PHP update script
-								 */
-								_include("$plugin_dir/meta/update/$version.php", true, false);
-							}
-						}
+						static::update_php_sql(
+							$plugin_dir,
+							$old_version
+						);
 					}
 					unset($old_version);
 					/**
@@ -931,7 +877,7 @@ trait components_save {
 	 *
 	 * @return bool
 	 */
-	static protected function extract_update_generic ($target_directory, $source_phar, $fs_location_directory = null, $meta_location_directory = null) {
+	static protected function update_extract ($target_directory, $source_phar, $fs_location_directory = null, $meta_location_directory = null) {
 		$fs_location_directory   = $fs_location_directory ?: $target_directory;
 		$meta_location_directory = $meta_location_directory ?: $target_directory;
 		/**
@@ -993,7 +939,46 @@ trait components_save {
 		unlink("$meta_location_directory/meta_backup.json");
 		return true;
 	}
-	static protected function update_php_sql () {
-
+	/**
+	 * Generic update for CleverStyle CMS (system and components), runs PHP scripts and does DB migrations after extracting of new distributive
+	 *
+	 * @param string     $target_directory
+	 * @param string     $old_version
+	 * @param array|null $db_array `$module_data['db']` if module or system
+	 */
+	static protected function update_php_sql ($target_directory, $old_version, $db_array = null) {
+		$Core   = Core::instance();
+		$Config = Config::instance();
+		$db     = DB::instance();
+		foreach (file_get_json("$target_directory/versions.json") as $version) {
+			if (version_compare($old_version, $version, '<')) {
+				/**
+				 * PHP update script
+				 */
+				_include("$target_directory/meta/update/$version.php", true, false);
+				/**
+				 * Database update
+				 */
+				if ($db_array && file_exists("$target_directory/meta/db.json")) {
+					$db_json = file_get_json("$target_directory/meta/db.json");
+					time_limit_pause();
+					foreach ($db_json as $database) {
+						if ($db_array[$database] == 0) {
+							$db_type = $Core->db_type;
+						} else {
+							$db_type = $Config->db[$db_array[$database]]['type'];
+						}
+						$sql_file = "$target_directory/meta/update_db/$database/$version/$db_type.sql";
+						if (isset($db_array[$database]) && file_exists($sql_file)) {
+							$db->{$db_array[$database]}()->q(
+								explode(';', file_get_contents($sql_file))
+							);
+						}
+					}
+					unset($db_json, $database, $db_type, $sql_file);
+					time_limit_pause(false);
+				}
+			}
+		}
 	}
 }
