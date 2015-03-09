@@ -470,25 +470,7 @@ trait general {
 					if ($theme == 'CleverStyle' || $theme == $Config->core['theme']) {
 						break;
 					}
-					$ok = true;
-					get_files_list(
-						THEMES."/$theme",
-						false,
-						'fd',
-						true,
-						true,
-						false,
-						false,
-						true,
-						function ($item) use (&$ok) {
-							if (is_writable($item)) {
-								is_dir($item) ? @rmdir($item) : @unlink($item);
-							} else {
-								$ok = false;
-							}
-						}
-					);
-					if ($ok && @rmdir(THEMES."/$theme")) {
+					if (static::recursive_directory_removal(THEMES."/$theme")) {
 						$Index->save();
 					} else {
 						$Index->save(false);
