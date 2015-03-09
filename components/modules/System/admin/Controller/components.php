@@ -23,43 +23,37 @@ use
 	h;
 
 trait components {
-	static function components_blocks () {
+	static function components_blocks (
+		/** @noinspection PhpUnusedParameterInspection */
+		$route_ids,
+		$route_path
+	) {
 		$Config = Config::instance();
 		$L      = Language::instance();
 		$Page   = Page::instance();
 		$User   = User::instance();
 		$a      = Index::instance();
-		$rc     = $Config->route;
+		$action = isset($route_path[2]) ? $route_path[2] : null;
+		$id     = isset($route_ids[0]) ? $route_ids[0] : 0;
 		$form   = true;
-		if (isset($rc[2])) {
-			switch ($rc[2]) {
+		if ($action == 'add' || isset($id, $Config->components['blocks'][$id])) {
+			switch ($action) {
 				case 'enable':
-					if (!isset($rc[3], $Config->components['blocks'][$rc[3]])) {
-						break;
-					}
-					$Config->components['blocks'][$rc[3]]['active'] = 1;
+					$Config->components['blocks'][$id]['active'] = 1;
 					$a->save();
 					break;
 				case 'disable':
-					if (!isset($rc[3], $Config->components['blocks'][$rc[3]])) {
-						break;
-					}
-					$Config->components['blocks'][$rc[3]]['active'] = 0;
+					$Config->components['blocks'][$id]['active'] = 0;
 					$a->save();
-					unset(Cache::instance()->{'blocks/'.$Config->components['blocks'][$rc[3]]['index']});
 					break;
 				case 'delete':
-					if (!isset($rc[3], $Config->components['blocks'][$rc[3]])) {
-						break;
-					}
 					$form                  = false;
 					$a->buttons            = false;
 					$a->cancel_button_back = true;
-					$a->action             = 'admin/System/'.$rc[0].'/'.$rc[1];
-					$Page->title($L->deletion_of_block(static::get_block_title($rc[3])));
+					$Page->title($L->deletion_of_block(static::get_block_title($id)));
 					$a->content(
 						h::{'h2.cs-center'}(
-							$L->sure_to_delete_block(static::get_block_title($rc[3])).
+							$L->sure_to_delete_block(static::get_block_title($id)).
 							h::{'input[type=hidden]'}(
 								[
 									'name'  => 'mode',
@@ -69,7 +63,7 @@ trait components {
 							h::{'input[type=hidden]'}(
 								[
 									'name'  => 'id',
-									'value' => $rc[3]
+									'value' => $id
 								]
 							)
 						).
@@ -168,24 +162,21 @@ trait components {
 						h::{'input[type=hidden]'}(
 							[
 								'name'  => 'mode',
-								'value' => $rc[2]
+								'value' => $action
 							]
 						)
 					);
 					break;
 				case 'edit':
-					if (!isset($rc[3], $Config->components['blocks'][$rc[3]])) {
-						break;
-					}
 					$form                  = false;
 					$a->apply_button       = false;
 					$a->cancel_button_back = true;
 					$a->form_attributes[]  = 'formnovalidate';
-					$block                 = &$Config->components['blocks'][$rc[3]];
-					$Page->title($L->editing_a_block(static::get_block_title($rc[3])));
+					$block                 = &$Config->components['blocks'][$id];
+					$Page->title($L->editing_a_block(static::get_block_title($id)));
 					$a->content(
 						h::{'h2.cs-center'}(
-							$L->editing_a_block(static::get_block_title($rc[3]))
+							$L->editing_a_block(static::get_block_title($id))
 						).
 						h::{'cs-table[center][right-left] cs-table-row| cs-table-cell'}(
 							[
@@ -193,7 +184,7 @@ trait components {
 								h::input(
 									[
 										'name'  => 'block[title]',
-										'value' => static::get_block_title($rc[3])
+										'value' => static::get_block_title($id)
 									]
 								)
 							],
@@ -252,14 +243,14 @@ trait components {
 						(
 						$block['type'] == 'html'
 							? h::{'textarea.EDITOR'}(
-							static::get_block_content($rc[3]),
+							static::get_block_content($id),
 							[
 								'name' => 'block[html]'
 							]
 						)
 							: (
 						$block['type'] == 'raw_html' ? h::textarea(
-							static::get_block_content($rc[3]),
+							static::get_block_content($id),
 							[
 								'name' => 'block[raw_html]'
 							]
@@ -271,13 +262,13 @@ trait components {
 								[
 									[
 										'name'  => 'block[id]',
-										'value' => $rc[3]
+										'value' => $id
 									]
 								],
 								[
 									[
 										'name'  => 'mode',
-										'value' => $rc[2]
+										'value' => $action
 									]
 								]
 							]
@@ -285,13 +276,10 @@ trait components {
 					);
 					break;
 				case 'permissions':
-					if (!isset($rc[3], $Config->components['blocks'][$rc[3]])) {
-						break;
-					}
 					$form                  = false;
 					$a->apply_button       = false;
 					$a->cancel_button_back = true;
-					$permission            = Permission::instance()->get(null, 'Block', $Config->components['blocks'][$rc[3]]['index'])[0]['id'];
+					$permission            = Permission::instance()->get(null, 'Block', $Config->components['blocks'][$id]['index'])[0]['id'];
 					$groups                = Group::instance()->get_all();
 					$groups_content        = [];
 					foreach ($groups as $group) {
@@ -361,10 +349,10 @@ trait components {
 						);
 					}
 					unset($user, $value);
-					$Page->title($L->permissions_for_block(static::get_block_title($rc[3])));
+					$Page->title($L->permissions_for_block(static::get_block_title($id)));
 					$a->content(
 						h::{'h2.cs-center'}(
-							$L->permissions_for_block(static::get_block_title($rc[3]))
+							$L->permissions_for_block(static::get_block_title($id))
 						).
 						h::{'ul.cs-tabs li'}(
 							$L->groups,
@@ -404,13 +392,13 @@ trait components {
 								[
 									[
 										'name'  => 'block[id]',
-										'value' => $rc[3]
+										'value' => $id
 									]
 								],
 								[
 									[
 										'name'  => 'mode',
-										'value' => $rc[2]
+										'value' => $action
 									]
 								]
 							]
@@ -499,7 +487,7 @@ trait components {
 				h::{'p.cs-left a.uk-button'}(
 					"$L->add $L->block",
 					[
-						'href' => "admin/System/$rc[0]/$rc[1]/add"
+						'href' => "$a->action/add"
 					]
 				).
 				h::{'input#cs-blocks-position[type=hidden][name=position]'}()

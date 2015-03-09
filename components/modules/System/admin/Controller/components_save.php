@@ -25,9 +25,7 @@ use
 
 trait components_save {
 	static function components_blocks_save () {
-		$Cache      = Cache::instance();
 		$Config     = Config::instance();
-		$L          = Language::instance();
 		$Text       = Text::instance();
 		$Permission = Permission::instance();
 		$a          = Index::instance();
@@ -54,21 +52,10 @@ trait components_save {
 					$block['active']   = $block_new['active'];
 					$block['template'] = $block_new['template'];
 					$block['start']    = $block_new['start'];
-					$start             = &$block_new['start'];
-					$start             = explode('T', $start);
-					$start[0]          = explode('-', $start[0]);
-					$start[1]          = explode(':', $start[1]);
-					$block['start']    = mktime($start[1][0], $start[1][1], 0, $start[0][1], $start[0][2], $start[0][0]);
-					unset($start);
+					$block['start']    = strtotime($block_new['start']);
+					$block['expire']   = 0;
 					if ($block_new['expire']['state']) {
-						$expire          = &$block_new['expire']['date'];
-						$expire          = explode('T', $expire);
-						$expire[0]       = explode('-', $expire[0]);
-						$expire[1]       = explode(':', $expire[1]);
-						$block['expire'] = mktime($expire[1][0], $expire[1][1], 0, $expire[0][1], $expire[0][2], $expire[0][0]);
-						unset($expire);
-					} else {
-						$block['expire'] = 0;
+						$block['expire'] = strtotime($block_new['expire']['date']);
 					}
 					if ($block['type'] == 'html') {
 						$block['content'] = $Text->set(
@@ -90,8 +77,6 @@ trait components_save {
 					if ($_POST['mode'] == 'add') {
 						$Config->components['blocks'][] = $block;
 						$Permission->add('Block', $block['index']);
-					} else {
-						unset($Cache->{'blocks/'.$block['index'].'_'.$L->clang});
 					}
 					unset($block, $block_new);
 					$a->save();
@@ -117,7 +102,6 @@ trait components_save {
 							$block['index']
 						);
 						unset(
-							$Cache->{'blocks/'.$block['index'].'_'.$L->clang},
 							$block,
 							$Config->components['blocks'][$_POST['id']]
 						);
