@@ -496,8 +496,8 @@ trait components_save {
 								}
 							}
 						}
-						unset($old_version);
 					}
+					unset($old_version);
 					/**
 					 * Restore previous module state
 					 */
@@ -578,8 +578,8 @@ trait components_save {
 								}
 							}
 						}
-						unset($old_version);
 					}
+					unset($old_version);
 					/**
 					 * Restore previous site mode
 					 */
@@ -824,61 +824,16 @@ trait components_save {
 							]
 						);
 					}
-					$plugin_dir = PLUGINS."/$plugin";
-					/**
-					 * Backing up some necessary information about current version
-					 */
-					copy("$plugin_dir/fs.json", "$plugin_dir/fs_old.json");
-					copy("$plugin_dir/meta.json", "$plugin_dir/meta_old.json");
-					/**
-					 * Extracting new versions of files
-					 */
-					$tmp_file = TEMP.'/'.User::instance()->get_session_id().'_plugin_update.phar';
-					$tmp_dir  = "phar://$tmp_file";
-					$fs       = file_get_json("$tmp_dir/fs.json");
-					$extract  = array_product(
-						array_map(
-							function ($index, $file) use ($tmp_dir, $plugin_dir) {
-								if (
-									!file_exists(dirname("$plugin_dir/$file")) &&
-									!mkdir(dirname("$plugin_dir/$file"), 0770, true)
-								) {
-									return 0;
-								}
-								return (int)copy("$tmp_dir/fs/$index", "$plugin_dir/$file");
-							},
-							$fs,
-							array_keys($fs)
-						)
-					);
-					unlink($tmp_file);
-					unset($tmp_file, $tmp_dir);
-					if (!$extract) {
+					$plugin_dir  = PLUGINS."/$plugin";
+					$old_version = file_get_json("$plugin_dir/meta.json")['version'];
+					if (!static::extract_update_generic($plugin_dir, TEMP.'/'.User::instance()->get_session_id().'_plugin_update.phar')) {
 						$Page->warning($L->plugin_files_unpacking_error);
-						unlink("$plugin_dir/fs_old.json");
-						unlink("$plugin_dir/meta_old.json");
 						break;
 					}
-					unset($extract);
-					file_put_json("$plugin_dir/fs.json", $fs = array_keys($fs));
-					/**
-					 * Removing of old unnecessary files and directories
-					 */
-					foreach (array_diff(file_get_json("$plugin_dir/fs_old.json"), $fs) as $file) {
-						$file = "$plugin_dir/$file";
-						if (file_exists($file) && is_writable($file)) {
-							unlink($file);
-							if (!get_files_list($dir = dirname($file))) {
-								rmdir($dir);
-							}
-						}
-					}
-					unset($fs, $file, $dir);
 					/**
 					 * Updating of plugin
 					 */
 					if (file_exists("$plugin_dir/versions.json")) {
-						$old_version = file_get_json("$plugin_dir/meta_old.json")['version'];
 						foreach (file_get_json("$plugin_dir/versions.json") as $version) {
 							if (version_compare($old_version, $version, '<')) {
 								/**
@@ -887,10 +842,8 @@ trait components_save {
 								_include("$plugin_dir/meta/update/$version.php", true, false);
 							}
 						}
-						unset($old_version);
 					}
-					unlink("$plugin_dir/fs_old.json");
-					unlink("$plugin_dir/meta_old.json");
+					unset($old_version);
 					/**
 					 * Restore previous plugin state
 					 */
