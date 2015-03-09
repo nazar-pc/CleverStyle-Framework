@@ -514,36 +514,31 @@ trait components {
 		$a            = Index::instance();
 		$test_dialog  = false;
 		$action       = isset($route_path[2]) ? $route_path[2] : null;
-		$db_id        = isset($route_ids[0]) ? $route_ids[0] : 0;
-		$db_mirror_id = isset($route_ids[1]) ? $route_ids[1] : 0;
+		$db_id        = isset($route_ids[0]) ? $route_ids[0] : false;
+		$db_mirror_id = isset($route_ids[1]) ? $route_ids[1] : false;
 		if ($action) {
 			$a->apply_button       = false;
 			$a->cancel_button_back = true;
 			switch ($action) {
 				case 'edit':
-					if (!$db_id) {
+					if ($db_id === false) {
 						break;
 					}
 				case 'add':
 					$test_dialog = true;
 					if ($action == 'edit') {
-						if ($db_mirror_id) {
-							$database = &$Config->db[$db_id]['mirrors'][$db_mirror_id];
+						if ($db_mirror_id !== false) {
+							$parent_db = $Config->db[$db_id];
+							$database  = &$Config->db[$db_id]['mirrors'][$db_mirror_id];
+							$name      =
+								"$L->mirror ".
+								($db_id !== false ? "$L->db $parent_db[name]" : $L->core_db).
+								", $database[name] ($database[host]/$database[type])?";
+							unset($parent_db);
 						} else {
 							$database = &$Config->db[$db_id];
+							$name     = "$L->db $database[name] ($database[host]/$database[type])?";
 						}
-						$current_db = $Config->db[$db_id];
-						if ($db_mirror_id) {
-							$current_db_mirror = $Config->db[$db_id]['mirrors'][$db_mirror_id];
-							$name              =
-								"$L->mirror ".
-								($db_id ? "$L->db $current_db[name]" : $L->core_db).
-								", $current_db_mirror[name] ($current_db_mirror[host]/$current_db_mirror[type])?";
-							unset($current_db_mirror);
-						} else {
-							$name = "$L->db $current_db[name] ($current_db[host]/$current_db[type])?";
-						}
-						unset($current_db);
 					} elseif ($action == 'add') {
 						$dbs     = [-1, 0];
 						$dbsname = [$L->separate_db, $L->core_db];
@@ -577,7 +572,7 @@ trait components {
 									],
 									[
 										'name'     => 'db[mirror]',
-										'selected' => $db_id ?: -1,
+										'selected' => $db_id !== false ? $db_id : -1,
 										'size'     => 5
 									]
 								)
@@ -658,7 +653,7 @@ trait components {
 							]
 						).
 						(
-						$db_id
+						$db_id !== false
 							? h::{'input[type=hidden]'}(
 							[
 								'name'  => 'database',
@@ -668,7 +663,7 @@ trait components {
 							: ''
 						).
 						(
-						$db_mirror_id
+						$db_mirror_id !== false
 							? h::{'input[type=hidden]'}(
 							[
 								'name'  => 'mirror',
@@ -688,7 +683,7 @@ trait components {
 				case 'delete':
 					$a->buttons = false;
 					$content    = [];
-					if (!$db_mirror_id) {
+					if ($db_mirror_id === false) {
 						foreach ($Config->components['modules'] as $module => &$mdata) {
 							if (isset($mdata['db']) && is_array($mdata['db'])) {
 								foreach ($mdata['db'] as $db_name) {
@@ -704,18 +699,18 @@ trait components {
 					if (!empty($content)) {
 						$Page->warning($L->db_used_by_modules.': '.implode(', ', $content));
 					} else {
-						$current_db = $Config->db[$db_id];
-						if ($db_mirror_id) {
+						$parent_db = $Config->db[$db_id];
+						if ($db_mirror_id !== false) {
 							$current_db_mirror = $Config->db[$db_id]['mirrors'][$db_mirror_id];
 							$name              =
 								"$L->mirror ".
-								($db_id ? "$L->db $current_db[name]" : $L->core_db).
+								($db_id !== false ? "$L->db $parent_db[name]" : $L->core_db).
 								", $current_db_mirror[name] ($current_db_mirror[host]/$current_db_mirror[type])?";
 							unset($current_db_mirror);
 						} else {
-							$name = "$L->db $current_db[name] ($current_db[host]/$current_db[type])?";
+							$name = "$L->db $parent_db[name] ($parent_db[host]/$parent_db[type])?";
 						}
-						unset($current_db);
+						unset($parent_db);
 						$Page->title($L->deletion_of_database($name));
 						$a->content(
 							h::{'h2.cs-center'}(
@@ -736,7 +731,7 @@ trait components {
 										]
 									]
 								).
-								($db_mirror_id ? h::{'input[type=hidden]'}(
+								($db_mirror_id !== false ? h::{'input[type=hidden]'}(
 									[
 										'name'  => 'mirror',
 										'value' => $db_mirror_id
