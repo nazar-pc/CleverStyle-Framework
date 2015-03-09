@@ -462,7 +462,7 @@ trait components_save {
 					/**
 					 * Updating of module
 					 */
-					if ($active && file_exists("$module_dir/versions.json")) {
+					if ($active != -1 && file_exists("$module_dir/versions.json")) {
 						foreach (file_get_json("$module_dir/versions.json") as $version) {
 							if (version_compare($old_version, $version, '<')) {
 								/**
@@ -482,13 +482,10 @@ trait components_save {
 											$db_type = $Config->db[$module_data['db'][$database]]['type'];
 										}
 										$sql_file = "$module_dir/meta/update_db/$database/$version/$db_type.sql";
-										if (file_exists($sql_file)) {
-											$cdb = $db->{$module_data['db'][$database]}();
-											if ($cdb) {
-												$cdb->q(
-													explode(';', file_get_contents($sql_file))
-												);
-											}
+										if (isset($module_data['db'][$database]) && file_exists($sql_file)) {
+											$db->{$module_data['db'][$database]}()->q(
+												explode(';', file_get_contents($sql_file))
+											);
 										}
 									}
 									unset($db_json, $database, $db_type, $sql_file);
@@ -934,7 +931,7 @@ trait components_save {
 	 *
 	 * @return bool
 	 */
-	static private function extract_update_generic ($target_directory, $source_phar, $fs_location_directory = null, $meta_location_directory = null) {
+	static protected function extract_update_generic ($target_directory, $source_phar, $fs_location_directory = null, $meta_location_directory = null) {
 		$fs_location_directory   = $fs_location_directory ?: $target_directory;
 		$meta_location_directory = $meta_location_directory ?: $target_directory;
 		/**
@@ -995,5 +992,8 @@ trait components_save {
 		unlink("$fs_location_directory/fs_backup.json");
 		unlink("$meta_location_directory/meta_backup.json");
 		return true;
+	}
+	static protected function update_php_sql () {
+
 	}
 }
