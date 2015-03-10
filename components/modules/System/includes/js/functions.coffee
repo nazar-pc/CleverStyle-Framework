@@ -46,15 +46,12 @@ cs.admin_cache				= (element, action, partial_path) ->
  * @param {int}	mirror_index
 ###
 cs.db_test					= (index, mirror_index) ->
-	db_test	= $('#cs-db-test')
-	db_test
-		.find('h3 + *')
-		.replaceWith """
-			<div class="uk-progress uk-progress-striped uk-active">
-				<div class="uk-progress-bar" style="width:100%"></div>
-			</div>
-		"""
-	db_test.cs().modal('show')
+	modal	= $.cs.simple_modal("""<div>
+		<h3 class="cs-center">#{L.test_connection}</h3>
+		<div class="uk-progress uk-progress-striped uk-active">
+			<div class="uk-progress-bar" style="width:100%"></div>
+		</div>
+	</div>""")
 	$.ajax(
 		url		: 'api/System/admin/databases_test'
 		data	:
@@ -71,13 +68,18 @@ cs.db_test					= (index, mirror_index) ->
 					charset		: value_by_name('db[charset]')
 		type	: 'get'
 		success	: (result) ->
-			db_test
-				.find('h3 + *')
-				.replaceWith(result)
+			if result
+				status = 'success'
+			else
+				status = 'danger'
+			result = if result then L.success else L.failed
+			modal
+				.find('.uk-progress')
+				.replaceWith("""<p class="cs-center uk-alert uk-alert-#{status}" style=text-transform:capitalize;">#{result}</p>""")
 		error	: ->
-			db_test
-				.find('h3 + *')
-				.replaceWith('<p class="cs-test-result">' + L.failed + '</p>')
+			modal
+				.find('.uk-progress')
+				.replaceWith("""<p class="cs-center uk-alert uk-alert-danger" style=text-transform:capitalize;">#{L.failed}</p>""")
 	)
 ###*
  * Send request for storage connection testing
@@ -85,15 +87,12 @@ cs.db_test					= (index, mirror_index) ->
  * @param {int}	index
 ###
 cs.storage_test				= (index) ->
-	storage_test	= $('#cs-storage-test')
-	storage_test
-		.find('h3 + *')
-		.replaceWith """
-			<div class="uk-progress uk-progress-striped uk-active">
-				<div class="uk-progress-bar" style="width:100%"></div>
-			</div>
-		"""
-	storage_test.cs().modal('show')
+	modal	= $.cs.simple_modal("""<div>
+		<h3 class="cs-center">#{L.test_connection}</h3>
+		<div class="uk-progress uk-progress-striped uk-active">
+			<div class="uk-progress-bar" style="width:100%"></div>
+		</div>
+	</div>""")
 	$.ajax(
 		url		: 'api/System/admin/storages_test'
 		data	:
@@ -108,13 +107,18 @@ cs.storage_test				= (index) ->
 					password	: value_by_name('storage[password]')
 		type	: 'get'
 		success	: (result) ->
-			storage_test
-				.find('h3 + *')
-				.replaceWith(result)
+			if result
+				status = 'success'
+			else
+				status = 'danger'
+			result = if result then L.success else L.failed
+			modal
+				.find('.uk-progress')
+				.replaceWith("""<p class="cs-center uk-alert uk-alert-#{status}" style=text-transform:capitalize;">#{result}</p>""")
 		error	: ->
-			storage_test
-				.find('h3 + *')
-				.replaceWith('<p class="cs-test-result">' + L.failed + '</p>')
+			modal
+				.find('.uk-progress')
+				.replaceWith("""<p class="cs-center uk-alert uk-alert-danger" style=text-transform:capitalize;">#{L.failed}</p>""")
 	)
 ###*
  * Toggling of blocks group in admin page

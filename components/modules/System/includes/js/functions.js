@@ -57,10 +57,8 @@
 
 
   cs.db_test = function(index, mirror_index) {
-    var db_test;
-    db_test = $('#cs-db-test');
-    db_test.find('h3 + *').replaceWith("<div class=\"uk-progress uk-progress-striped uk-active\">\n	<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n</div>");
-    db_test.cs().modal('show');
+    var modal;
+    modal = $.cs.simple_modal("<div>\n	<h3 class=\"cs-center\">" + L.test_connection + "</h3>\n	<div class=\"uk-progress uk-progress-striped uk-active\">\n		<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n	</div>\n</div>");
     return $.ajax({
       url: 'api/System/admin/databases_test',
       data: index !== void 0 ? {
@@ -78,10 +76,17 @@
       },
       type: 'get',
       success: function(result) {
-        return db_test.find('h3 + *').replaceWith(result);
+        var status;
+        if (result) {
+          status = 'success';
+        } else {
+          status = 'danger';
+        }
+        result = result ? L.success : L.failed;
+        return modal.find('.uk-progress').replaceWith("<p class=\"cs-center uk-alert uk-alert-" + status + "\" style=text-transform:capitalize;\">" + result + "</p>");
       },
       error: function() {
-        return db_test.find('h3 + *').replaceWith('<p class="cs-test-result">' + L.failed + '</p>');
+        return modal.find('.uk-progress').replaceWith("<p class=\"cs-center uk-alert uk-alert-danger\" style=text-transform:capitalize;\">" + L.failed + "</p>");
       }
     });
   };
@@ -94,10 +99,8 @@
 
 
   cs.storage_test = function(index) {
-    var storage_test;
-    storage_test = $('#cs-storage-test');
-    storage_test.find('h3 + *').replaceWith("<div class=\"uk-progress uk-progress-striped uk-active\">\n	<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n</div>");
-    storage_test.cs().modal('show');
+    var modal;
+    modal = $.cs.simple_modal("<div>\n	<h3 class=\"cs-center\">" + L.test_connection + "</h3>\n	<div class=\"uk-progress uk-progress-striped uk-active\">\n		<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n	</div>\n</div>");
     return $.ajax({
       url: 'api/System/admin/storages_test',
       data: index !== void 0 ? {
@@ -113,10 +116,17 @@
       },
       type: 'get',
       success: function(result) {
-        return storage_test.find('h3 + *').replaceWith(result);
+        var status;
+        if (result) {
+          status = 'success';
+        } else {
+          status = 'danger';
+        }
+        result = result ? L.success : L.failed;
+        return modal.find('.uk-progress').replaceWith("<p class=\"cs-center uk-alert uk-alert-" + status + "\" style=text-transform:capitalize;\">" + result + "</p>");
       },
       error: function() {
-        return storage_test.find('h3 + *').replaceWith('<p class="cs-test-result">' + L.failed + '</p>');
+        return modal.find('.uk-progress').replaceWith("<p class=\"cs-center uk-alert uk-alert-danger\" style=text-transform:capitalize;\">" + L.failed + "</p>");
       }
     });
   };

@@ -512,7 +512,6 @@ trait components {
 		$L            = Language::instance();
 		$Page         = Page::instance();
 		$a            = Index::instance();
-		$test_dialog  = false;
 		$action       = isset($route_path[2]) ? $route_path[2] : null;
 		$db_id        = isset($route_ids[0]) ? $route_ids[0] : false;
 		$db_mirror_id = isset($route_ids[1]) ? $route_ids[1] : false;
@@ -525,7 +524,6 @@ trait components {
 						break;
 					}
 				case 'add':
-					$test_dialog = true;
 					if ($action == 'edit') {
 						if ($db_mirror_id !== false) {
 							$parent_db = $Config->db[$db_id];
@@ -672,7 +670,7 @@ trait components {
 						)
 							: ''
 						).
-						h::{'p button.uk-button'}(
+						h::{'button.uk-button'}(
 							$L->test_connection,
 							[
 								'onMouseDown' => "cs.db_test();"
@@ -743,9 +741,8 @@ trait components {
 					}
 			}
 		} else {
-			$test_dialog = true;
-			$db_list     = [];
-			$databases   = $Config->db;
+			$db_list   = [];
+			$databases = $Config->db;
 			if (!empty($databases)) {
 				foreach ($databases as $i => &$db_data) {
 					$db_list[] = [
@@ -894,12 +891,6 @@ trait components {
 				)
 			);
 		}
-		$test_dialog && $a->content(
-			h::{'div#cs-db-test.uk-modal div'}(
-				h::h3($L->test_connection).
-				h::div()
-			)
-		);
 	}
 	/**
 	 * Provides next events:
@@ -2178,12 +2169,11 @@ trait components {
 		);
 	}
 	static function components_storages () {
-		$Config      = Config::instance();
-		$L           = Language::instance();
-		$Page        = Page::instance();
-		$a           = Index::instance();
-		$rc          = $Config->route;
-		$test_dialog = true;
+		$Config = Config::instance();
+		$L      = Language::instance();
+		$Page   = Page::instance();
+		$a      = Index::instance();
+		$rc     = $Config->route;
 		if (isset($rc[2])) {
 			$a->apply_button       = false;
 			$a->cancel_button_back = true;
@@ -2322,6 +2312,7 @@ trait components {
 					}
 			}
 		} else {
+			$a->buttons    = false;
 			$storages_list = [];
 			$Core          = Core::instance();
 			$storages      = $Config->storage;
@@ -2391,11 +2382,5 @@ trait components {
 			);
 			unset($storages_list);
 		}
-		$test_dialog && $a->content(
-			h::{'div#cs-storage-test.uk-modal div'}(
-				h::h3($L->test_connection).
-				h::div()
-			)
-		);
 	}
 }

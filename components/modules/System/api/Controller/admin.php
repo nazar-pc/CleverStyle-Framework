@@ -105,7 +105,6 @@ trait admin {
 	}
 	static function admin_databases_test_get () {
 		$db = DB::instance();
-		$L  = Language::instance();
 		if (isset($_GET['mirror_index'])) {
 			$result = $db->test([$_GET['index'], $_GET['mirror_index']]);
 		} elseif (isset($_GET['index'])) {
@@ -114,7 +113,7 @@ trait admin {
 			$result = $db->test($_GET['db']);
 		}
 		Page::instance()->json(
-			h::{'p.cs-test-result'}($result ? $L->success : $L->failed)
+			(int)$result
 		);
 	}
 	static function admin_email_sending_test_get () {
@@ -127,7 +126,6 @@ trait admin {
 		}
 	}
 	static function admin_storages_test_get () {
-		$L       = Language::instance();
 		$Storage = Storage::instance();
 		if (isset($_GET['index'])) {
 			$result = $Storage->test([$_GET['index']]);
@@ -135,7 +133,7 @@ trait admin {
 			$result = $Storage->test($_GET['storage']);
 		}
 		Page::instance()->json(
-			h::{'p.cs-test-result'}($result ? $L->success : $L->failed)
+			(int)$result
 		);
 	}
 }
