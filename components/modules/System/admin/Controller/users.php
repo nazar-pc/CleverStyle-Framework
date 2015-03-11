@@ -24,7 +24,7 @@ trait users {
 		$Config = Config::instance();
 		$L      = Language::instance();
 		Index::instance()->content(
-			h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+			static::vertical_table(
 				static::core_input('session_expire', 'number', null, false, 1, false, $L->seconds),
 				static::core_input('online_time', 'number', null, false, 1, false, $L->seconds),
 				[
@@ -122,7 +122,7 @@ trait users {
 						h::{'h2.cs-center'}(
 							$L->adding_a_group
 						).
-						h::{'cs-table[center][with-header] cs-table-row| cs-table-cell'}(
+						static::horizontal_table(
 							[
 								$L->group_name,
 								$L->group_description
@@ -148,7 +148,7 @@ trait users {
 						h::{'h2.cs-center'}(
 							$L->editing_of_group($group_data['title'])
 						).
-						h::{'cs-table[center][with-header] cs-table-row| cs-table-cell'}(
+						static::horizontal_table(
 							[
 								'&nbsp;id&nbsp;',
 								$L->group_name,
@@ -330,7 +330,7 @@ trait users {
 			}
 			unset($id, $group_data, $groups_ids);
 			$a->content(
-				h::{'cs-table[center][list][with-header] cs-table-row| cs-table-cell'}(
+				static::list_center_table(
 					[
 						$L->action,
 						'id',
@@ -352,7 +352,7 @@ trait users {
 		$Config = Config::instance();
 		$L      = Language::instance();
 		Index::instance()->content(
-			h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+			static::vertical_table(
 				[
 					[
 						h::info('smtp'),
@@ -455,7 +455,7 @@ trait users {
 						h::{'h2.cs-center'}(
 							$L->adding_permission
 						).
-						h::{'cs-table[center][with-header] cs-table-row| cs-table-cell'}(
+						static::horizontal_table(
 							[
 								$L->group,
 								$L->label
@@ -481,7 +481,7 @@ trait users {
 						h::{'h2.cs-center'}(
 							$L->editing_permission("$permission[group]/$permission[label]")
 						).
-						h::{'cs-table[center][with-header] cs-table-row| cs-table-cell'}(
+						static::horizontal_table(
 							[
 								'&nbsp;id&nbsp;',
 								$L->group,
@@ -585,7 +585,7 @@ trait users {
 				}
 			}
 			$a->content(
-				h::{'cs-table[center][list][with-header] cs-table-row| cs-table-cell'}(
+				static::list_center_table(
 					[
 						$L->action,
 						'id',
@@ -610,7 +610,7 @@ trait users {
 		 * @var \cs\_SERVER $_SERVER
 		 */
 		Index::instance()->content(
-			h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+			static::vertical_table(
 				[
 					[
 						h::info('key_expire'),
@@ -693,7 +693,7 @@ trait users {
 						h::{'h2.cs-center'}(
 							$L->adding_a_bot
 						).
-						h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+						static::vertical_table(
 							[
 								[
 									$L->bot_name,
@@ -799,8 +799,7 @@ trait users {
 									$User->username($rc[3])
 								)
 							).
-							h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
-								[
+							static::vertical_table(
 									[
 										'id',
 										$rc[3]
@@ -918,7 +917,6 @@ trait users {
 											]
 										)
 									]
-								]
 							).
 							h::{'input[type=hidden]'}(
 								[
@@ -945,7 +943,7 @@ trait users {
 									$bot_data['username']
 								)
 							).
-							h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+							static::vertical_table(
 								[
 									[
 										$L->bot_name,
@@ -1455,7 +1453,7 @@ trait users {
 					h::{'button.uk-button[type=submit]'}($L->search),
 					pages_buttons($page, $total_pages)
 				).
-				h::{'cs-table[center][list][with-header] cs-table-row| cs-table-cell'}(
+				static::list_center_table(
 					array_merge([$L->action, ''], $columns),
 					$users_list
 				).

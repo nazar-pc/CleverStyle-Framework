@@ -21,8 +21,8 @@ use
 	cs\modules\System\admin\Controller\users,
 	cs\modules\System\admin\Controller\components_save,
 	cs\modules\System\admin\Controller\users_save,
-	cs\modules\System\admin\Controller\packages_manipulation,
-	h;
+	cs\modules\System\admin\Controller\layout_elements,
+	cs\modules\System\admin\Controller\packages_manipulation;
 
 class Controller {
 	use
@@ -31,6 +31,7 @@ class Controller {
 		users,
 		components_save,
 		users_save,
+		layout_elements,
 		packages_manipulation;
 	static function index (
 		/** @noinspection PhpUnusedParameterInspection */

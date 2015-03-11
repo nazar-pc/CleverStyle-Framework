@@ -73,7 +73,7 @@ trait general {
 					]
 				)
 			).
-			h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+			static::vertical_table(
 				[
 					"$L->operation_system:",
 					php_uname('s').' '.php_uname('r').' '.php_uname('v')
@@ -490,7 +490,7 @@ trait general {
 		);
 		$Index->file_upload = true;
 		$Index->content(
-			h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+			static::vertical_table(
 				[
 					static::core_select($Config->core['themes'], 'theme', null, 'current_theme')
 				]
@@ -524,7 +524,7 @@ trait general {
 		$L      = Language::instance();
 		$Config->reload_languages();
 		Index::instance()->content(
-			h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+			static::vertical_table(
 				static::core_select($Config->core['active_languages'], 'language', 'change_language', 'current_language'),
 				static::core_select($Config->core['languages'], 'active_languages', 'change_active_languages', null, true),
 				[
@@ -546,7 +546,7 @@ trait general {
 		$L      = Language::instance();
 		$sa     = $Config->core['simple_admin_mode'];
 		Index::instance()->content(
-			h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+			static::vertical_table(
 				static::core_input('cache_compress_js_css', 'radio'),
 				static::core_input('vulcanization', 'radio'),
 				static::core_input('put_js_after_body', 'radio'),
@@ -584,7 +584,7 @@ trait general {
 		$timezones = get_timezones_list();
 		$sa        = $Config->core['simple_admin_mode'];
 		Index::instance()->content(
-			h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+			static::vertical_table(
 				static::core_input('name', 'text', 'site_name'),
 				!$sa ? static::core_textarea('url') : false,
 				!$sa ? static::core_textarea('cookie_domain') : false,
@@ -612,7 +612,7 @@ trait general {
 		$Config = Config::instance();
 		$sa     = $Config->core['simple_admin_mode'];
 		Index::instance()->content(
-			h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+			static::vertical_table(
 				static::core_input('site_mode', 'radio'),
 				static::core_input('closed_title'),
 				static::core_textarea('closed_text', 'SIMPLE_EDITOR'),

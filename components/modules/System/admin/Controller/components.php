@@ -80,7 +80,7 @@ trait components {
 						h::{'h2.cs-center'}(
 							$L->adding_a_block
 						).
-						h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+						static::vertical_table(
 							[
 								h::info('block_type'),
 								h::select(
@@ -178,7 +178,7 @@ trait components {
 						h::{'h2.cs-center'}(
 							$L->editing_a_block(static::get_block_title($id))
 						).
-						h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+						static::vertical_table(
 							[
 								h::info('block_title'),
 								h::input(
@@ -559,7 +559,7 @@ trait components {
 						h::{'h2.cs-center'}(
 							$action == 'edit' ? $L->editing_the_database($name) : $L->addition_of_db
 						).
-						h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+						static::vertical_table(
 							[
 								h::info($action == 'add' ? 'db_mirror' : false),
 								$action == 'add'
@@ -839,8 +839,8 @@ trait components {
 			}
 			unset($databases);
 			$a->content(
-				h::{'cs-table[list][with-header]'}(
-					h::{'cs-table-row cs-table-cell'}(
+				static::list_center_table(
+					[
 						$L->action,
 						$L->db_host,
 						$L->db_type,
@@ -848,10 +848,10 @@ trait components {
 						$L->db_name,
 						$L->db_user,
 						$L->db_charset
-					).
-					h::{'cs-table-row| cs-table-cell'}($db_list ? [$db_list] : false)
+					],
+					$db_list
 				).
-				h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+				static::vertical_table(
 					[
 						[
 							h::info('db_balance'),
@@ -1707,13 +1707,13 @@ trait components {
 			)
 		);
 		$a->content(
-			h::{'cs-table[list][center][with-header]'}(
-				h::{'cs-table-row cs-table-cell'}(
+			static::list_center_table(
+				[
 					$L->module_name,
 					$L->state,
 					$L->action
-				).
-				h::{'cs-table-row| cs-table-cell'}($modules_list)
+				],
+				$modules_list
 			).
 			h::p(
 				h::{'input[type=file][name=upload_module]'}().
@@ -2133,13 +2133,13 @@ trait components {
 			)
 		);
 		$a->content(
-			h::{'cs-table[center][list][with-header]'}(
-				h::{'cs-table-row cs-table-cell'}(
+			static::list_center_table(
+				[
 					$L->plugin_name,
 					$L->state,
 					$L->action
-				).
-				h::{'cs-table-row| cs-table-cell'}($plugins_list ?: false)
+				],
+				$plugins_list
 			).
 			h::p(
 				h::{'input[type=file][name=upload_plugin]'}(
@@ -2197,7 +2197,7 @@ trait components {
 							$rc[2] == 'edit' ? $L->editing_of_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']) :
 								$L->adding_of_storage
 						).
-						h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+						static::vertical_table(
 							[
 								h::info('storage_url'),
 								h::input(
@@ -2364,15 +2364,15 @@ trait components {
 			}
 			unset($storages);
 			$a->content(
-				h::{'cs-table[center][list][with-header]'}(
-					h::{'cs-table-row cs-table-cell'}(
+				static::list_center_table(
+					[
 						$L->action,
 						$L->storage_url,
 						$L->storage_host,
 						$L->storage_connection,
 						$L->storage_user
-					).
-					h::{'cs-table-row| cs-table-cell'}($storages_list ? [$storages_list] : false)
+					],
+					$storages_list
 				).
 				h::{'p a.uk-button'}(
 					$L->add_storage,

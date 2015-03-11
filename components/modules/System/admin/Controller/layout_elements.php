@@ -10,9 +10,39 @@
 namespace cs\modules\System\admin\Controller;
 use
 	cs\Config,
-	cs\Language;
+	cs\Language,
+	h;
 
 trait layout_elements {
+	/**
+	 * @param string[][] $rows
+	 *
+	 * @return string
+	 */
+	static protected function vertical_table ($rows) {
+		return h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(func_get_args());
+	}
+	/**
+	 * @param string[] $header_columns
+	 * @param string[] $columns
+	 *
+	 * @return string
+	 */
+	static protected function horizontal_table ($header_columns, $columns) {
+		return h::{'cs-table[center][with-header] cs-table-row| cs-table-cell'}($header_columns, $columns);
+	}
+	/**
+	 * @param string[]   $header_columns
+	 * @param string[][] $rows
+	 *
+	 * @return string
+	 */
+	static protected function list_center_table ($header_columns, $rows) {
+		return h::{'cs-table[center][list][with-header]'}(
+			h::{'cs-table-row cs-table-cell'}($header_columns).
+			h::{'cs-table-row| cs-table-cell'}($rows ? [$rows] : false)
+		);
+	}
 	static protected function core_input ($item, $type = 'text', $info_item = null, $disabled = false, $min = false, $max = false, $post_text = '') {
 		$Config = Config::instance();
 		$L      = Language::instance();
