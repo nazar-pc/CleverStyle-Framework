@@ -15,7 +15,7 @@ use
 	cs\Language,
 	cs\Page;
 
-trait components_manipulation {
+trait packages_manipulation {
 	/**
 	 * Generic extraction of files from phar distributive for CleverStyle CMS (components installation)
 	 *

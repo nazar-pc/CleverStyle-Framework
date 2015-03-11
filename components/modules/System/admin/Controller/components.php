@@ -80,7 +80,7 @@ trait components {
 						h::{'h2.cs-center'}(
 							$L->adding_a_block
 						).
-						h::{'cs-table[center][right-left] cs-table-row| cs-table-cell'}(
+						h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
 							[
 								h::info('block_type'),
 								h::select(
@@ -178,7 +178,7 @@ trait components {
 						h::{'h2.cs-center'}(
 							$L->editing_a_block(static::get_block_title($id))
 						).
-						h::{'cs-table[center][right-left] cs-table-row| cs-table-cell'}(
+						h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
 							[
 								h::info('block_title'),
 								h::input(
@@ -559,7 +559,7 @@ trait components {
 						h::{'h2.cs-center'}(
 							$action == 'edit' ? $L->editing_the_database($name) : $L->addition_of_db
 						).
-						h::{'cs-table[center][right-left] cs-table-row| cs-table-cell'}(
+						h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
 							[
 								h::info($action == 'add' ? 'db_mirror' : false),
 								$action == 'add'
@@ -1697,6 +1697,7 @@ trait components {
 			];
 			unset($module_info);
 		}
+		unset($module_data);
 		$modules_for_removal = array_keys(
 			array_filter(
 				$Config->components['modules'],
@@ -2196,7 +2197,7 @@ trait components {
 							$rc[2] == 'edit' ? $L->editing_of_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']) :
 								$L->adding_of_storage
 						).
-						h::{'cs-table[center][right-left] cs-table-row| cs-table-cell'}(
+						h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
 							[
 								h::info('storage_url'),
 								h::input(

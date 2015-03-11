@@ -21,7 +21,7 @@ use
 	cs\modules\System\admin\Controller\users,
 	cs\modules\System\admin\Controller\components_save,
 	cs\modules\System\admin\Controller\users_save,
-	cs\modules\System\admin\Controller\components_manipulation,
+	cs\modules\System\admin\Controller\packages_manipulation,
 	h;
 
 class Controller {
@@ -31,7 +31,7 @@ class Controller {
 		users,
 		components_save,
 		users_save,
-		components_manipulation;
+		packages_manipulation;
 	static function index (
 		/** @noinspection PhpUnusedParameterInspection */
 		$route_ids,
@@ -114,82 +114,5 @@ class Controller {
 		} /** @noinspection NotOptimalIfConditionsInspection */ elseif (isset($_POST['cancel']) && $Cache->cache_state()) {
 			$Index->cancel();
 		}
-	}
-	static protected function core_input ($item, $type = 'text', $info_item = null, $disabled = false, $min = false, $max = false, $post_text = '') {
-		$Config = Config::instance();
-		$L      = Language::instance();
-		if ($type != 'radio') {
-			switch ($item) {
-				default:
-					$value = $Config->core[$item];
-					break;
-				case 'name':
-				case 'closed_title':
-				case 'mail_from_name':
-					$value = get_core_ml_text($item);
-			}
-			return [
-				$info_item !== false ? h::info($info_item ?: $item) : $L->$item,
-				h::input(
-					[
-						'name'  => "core[$item]",
-						'value' => $value,
-						'min'   => $min,
-						'max'   => $max,
-						'type'  => $type,
-						($disabled ? 'disabled' : '')
-					]
-				).
-				$post_text
-			];
-		} else {
-			return [
-				$info_item !== false ? h::info($info_item ?: $item) : $L->$item,
-				h::radio(
-					[
-						'name'    => "core[$item]",
-						'checked' => $Config->core[$item],
-						'value'   => [0, 1],
-						'in'      => [$L->off, $L->on]
-					]
-				)
-			];
-		}
-	}
-	static protected function core_textarea ($item, $editor = null, $info_item = null) {
-		switch ($item) {
-			default:
-				$content = Config::instance()->core[$item];
-				break;
-			case 'closed_text':
-			case 'mail_signature':
-			case 'rules':
-				$content = get_core_ml_text($item);
-		}
-		return [
-			h::info($info_item ?: $item),
-			h::textarea(
-				$content,
-				[
-					'name'  => "core[$item]",
-					'class' => $editor ? " $editor" : ''
-				]
-			)
-		];
-	}
-	static protected function core_select ($items_array, $item, $id = null, $info_item = null, $multiple = false, $size = 5) {
-		return [
-			h::info($info_item ?: $item),
-			h::select(
-				$items_array,
-				[
-					'name'     => "core[$item]".($multiple ? '[]' : ''),
-					'selected' => Config::instance()->core[$item],
-					'size'     => $size,
-					'id'       => $id ?: false,
-					$multiple ? 'multiple' : false
-				]
-			)
-		];
 	}
 }
