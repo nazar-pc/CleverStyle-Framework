@@ -372,7 +372,7 @@ trait general {
 						break;
 					}
 					$extract = static::install_extract(THEMES."/$theme", $tmp_file);
-					unset($tmp_file, $tmp_dir, $theme, $tmp_dir);
+					unset($tmp_file, $tmp_dir, $theme);
 					if (!$extract) {
 						$Page->warning($L->theme_files_unpacking_error);
 						break;
@@ -385,57 +385,10 @@ trait general {
 					}
 					$User      = User::instance();
 					$theme_dir = THEMES."/$_POST[update_theme]";
-					/**
-					 * Backing up some necessary information about current version
-					 */
-					copy("$theme_dir/fs.json", "$theme_dir/fs_old.json");
-					copy("$theme_dir/meta.json", "$theme_dir/meta_old.json");
-					/**
-					 * Extracting new versions of files
-					 */
-					$tmp_file = TEMP.'/'.$User->get_session_id().'_theme_update.phar';
-					$tmp_dir  = "phar://$tmp_file";
-					$fs       = file_get_json("$tmp_dir/fs.json");
-					$extract  = array_product(
-						array_map(
-							function ($index, $file) use ($tmp_dir, $theme_dir) {
-								if (
-									!file_exists(dirname("$theme_dir/$file")) &&
-									!mkdir(dirname("$theme_dir/$file"), 0770, true)
-								) {
-									return 0;
-								}
-								return (int)copy("$tmp_dir/fs/$index", "$theme_dir/$file");
-							},
-							$fs,
-							array_keys($fs)
-						)
-					);
-					unlink($tmp_file);
-					unset($tmp_file, $tmp_dir);
-					if (!$extract) {
+					if (!static::update_extract($theme_dir, TEMP.'/'.$User->get_session_id().'_theme_update.phar')) {
 						$Page->warning($L->theme_files_unpacking_error);
-						unlink("$theme_dir/fs_old.json");
-						unlink("$theme_dir/meta_old.json");
 						break;
 					}
-					unset($extract);
-					file_put_json("$theme_dir/fs.json", $fs = array_keys($fs));
-					/**
-					 * Removing of old unnecessary files and directories
-					 */
-					foreach (array_diff(file_get_json("$theme_dir/fs_old.json"), $fs) as $file) {
-						$file = "$theme_dir/$file";
-						if (file_exists($file) && is_writable($file)) {
-							unlink($file);
-							if (!get_files_list($dir = dirname($file))) {
-								rmdir($dir);
-							}
-						}
-					}
-					unset($fs, $file, $dir);
-					unlink("$theme_dir/fs_old.json");
-					unlink("$theme_dir/meta_old.json");
 					/**
 					 * Clean themes cache
 					 */
