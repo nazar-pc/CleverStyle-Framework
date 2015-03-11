@@ -557,7 +557,7 @@ class Index {
 		$Page->Bottom .= $blocks_array['bottom'];
 	}
 	protected function ml_process ($text) {
-		return Text::instance()->process(Config::instance()->module('System')->db('texts'), $text, true, true);
+		return Text::instance()->process(Config::instance()->module('System')->db('texts'), $text, true);
 	}
 	/**
 	 * Saving changes and/or showing resulting message of saving changes
@@ -664,6 +664,7 @@ class Index {
 			/**
 			 * If user is not admin and it is not request for sign in
 			 */
+			/** @noinspection NotOptimalIfConditionsInspection */
 			if (
 				!User::instance()->admin() &&
 				!(
@@ -705,6 +706,7 @@ class Index {
 			$Page->content(ob_get_clean());
 		} elseif (!error_code()) {
 			$this->normalize_route();
+			/** @noinspection NotOptimalIfConditionsInspection */
 			if (!error_code()) {
 				if (file_exists("$this->working_directory/Controller.php")) {
 					$this->controller_router(@$this->route_path[0], @$this->route_path[1]);
