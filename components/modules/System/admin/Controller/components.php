@@ -944,27 +944,11 @@ trait components {
 		) {
 			switch ($rc[2]) {
 				case 'install':
-					if ($rc[3] == 'upload' && isset($_FILES['upload_module']) && $_FILES['upload_module']['tmp_name']) {
-						switch ($_FILES['upload_module']['error']) {
-							case UPLOAD_ERR_INI_SIZE:
-							case UPLOAD_ERR_FORM_SIZE:
-								$Page->warning($L->file_too_large);
-								break;
-							case UPLOAD_ERR_NO_TMP_DIR:
-								$Page->warning($L->temporary_folder_is_missing);
-								break;
-							case UPLOAD_ERR_CANT_WRITE:
-								$Page->warning($L->cant_write_file_to_disk);
-								break;
-							case UPLOAD_ERR_PARTIAL:
-							case UPLOAD_ERR_NO_FILE:
-								break;
-						}
-						if ($_FILES['upload_module']['error'] != UPLOAD_ERR_OK) {
+					if ($rc[3] == 'upload') {
+						$tmp_file = static::move_uploaded_file_to_tmp('upload_module');
+						if (!$tmp_file) {
 							break;
 						}
-						$tmp_file = TEMP.'/'.md5($_FILES['upload_module']['tmp_name'].openssl_random_pseudo_bytes(1000)).'.phar';
-						move_uploaded_file($_FILES['upload_module']['tmp_name'], $tmp_file);
 						$tmp_dir     = "phar://$tmp_file";
 						$module_name = file_get_contents("$tmp_dir/dir");
 						if (!$module_name) {
@@ -1142,31 +1126,10 @@ trait components {
 					);
 					break;
 				case 'update_system':
-					if (!isset($_FILES['upload_system']) || !$_FILES['upload_system']['tmp_name']) {
+					$tmp_file = static::move_uploaded_file_to_tmp('upload_system');
+					if (!$tmp_file) {
 						break;
 					}
-					switch ($_FILES['upload_system']['error']) {
-						case UPLOAD_ERR_INI_SIZE:
-						case UPLOAD_ERR_FORM_SIZE:
-							$Page->warning($L->file_too_large);
-							break;
-						case UPLOAD_ERR_NO_TMP_DIR:
-							$Page->warning($L->temporary_folder_is_missing);
-							break;
-						case UPLOAD_ERR_CANT_WRITE:
-							$Page->warning($L->cant_write_file_to_disk);
-							break;
-						case UPLOAD_ERR_PARTIAL:
-						case UPLOAD_ERR_NO_FILE:
-							break;
-					}
-					if ($_FILES['upload_system']['error'] != UPLOAD_ERR_OK) {
-						break;
-					}
-					move_uploaded_file(
-						$_FILES['upload_system']['tmp_name'],
-						$tmp_file = TEMP.'/'.md5($_FILES['upload_system']['tmp_name'].openssl_random_pseudo_bytes(1000)).'.phar'
-					);
 					$tmp_dir = "phar://$tmp_file";
 					if (!file_exists("$tmp_dir/version") || !file_exists("$tmp_dir/themes.json")) {
 						$Page->warning($L->this_is_not_system_installer_file);
@@ -1788,27 +1751,11 @@ trait components {
 		) {
 			switch ($rc[2]) {
 				case 'enable':
-					if ($rc[3] == 'upload' && isset($_FILES['upload_plugin']) && $_FILES['upload_plugin']['tmp_name']) {
-						switch ($_FILES['upload_plugin']['error']) {
-							case UPLOAD_ERR_INI_SIZE:
-							case UPLOAD_ERR_FORM_SIZE:
-								$Page->warning($L->file_too_large);
-								break;
-							case UPLOAD_ERR_NO_TMP_DIR:
-								$Page->warning($L->temporary_folder_is_missing);
-								break;
-							case UPLOAD_ERR_CANT_WRITE:
-								$Page->warning($L->cant_write_file_to_disk);
-								break;
-							case UPLOAD_ERR_PARTIAL:
-							case UPLOAD_ERR_NO_FILE:
-								break;
-						}
-						if ($_FILES['upload_plugin']['error'] != UPLOAD_ERR_OK) {
+					if ($rc[3] == 'upload') {
+						$tmp_file = static::move_uploaded_file_to_tmp('upload_plugin');
+						if (!$tmp_file) {
 							break;
 						}
-						$tmp_file = TEMP.'/'.md5($_FILES['upload_plugin']['tmp_name'].openssl_random_pseudo_bytes(1000)).'.phar';
-						move_uploaded_file($_FILES['upload_plugin']['tmp_name'], $tmp_file);
 						$tmp_dir = "phar://$tmp_file";
 						$plugin  = file_get_contents("$tmp_dir/dir");
 						if (!$plugin) {

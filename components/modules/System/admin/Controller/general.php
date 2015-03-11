@@ -293,35 +293,13 @@ trait general {
 		$Index  = Index::instance();
 		$L      = Language::instance();
 		$Page   = Page::instance();
-
 		if (isset($_POST['action'])) {
 			switch ($_POST['action']) {
 				case 'upload':
-					if (!isset($_FILES['upload_theme']) || !$_FILES['upload_theme']['tmp_name']) {
+					$tmp_file = static::move_uploaded_file_to_tmp('upload_theme');
+					if (!$tmp_file) {
 						break;
 					}
-					switch ($_FILES['upload_theme']['error']) {
-						case UPLOAD_ERR_INI_SIZE:
-						case UPLOAD_ERR_FORM_SIZE:
-							$Page->warning($L->file_too_large);
-							break;
-						case UPLOAD_ERR_NO_TMP_DIR:
-							$Page->warning($L->temporary_folder_is_missing);
-							break;
-						case UPLOAD_ERR_CANT_WRITE:
-							$Page->warning($L->cant_write_file_to_disk);
-							break;
-						case UPLOAD_ERR_PARTIAL:
-						case UPLOAD_ERR_NO_FILE:
-							break;
-					}
-					if ($_FILES['upload_theme']['error'] != UPLOAD_ERR_OK) {
-						break;
-					}
-					move_uploaded_file(
-						$_FILES['upload_theme']['tmp_name'],
-						$tmp_file = TEMP.'/'.md5($_FILES['upload_theme']['tmp_name'].openssl_random_pseudo_bytes(1000)).'.phar'
-					);
 					$tmp_dir = "phar://$tmp_file";
 					$theme   = file_get_contents("$tmp_dir/dir");
 					if (!$theme) {

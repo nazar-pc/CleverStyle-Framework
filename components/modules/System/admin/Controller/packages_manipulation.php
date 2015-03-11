@@ -17,6 +17,38 @@ use
 
 trait packages_manipulation {
 	/**
+	 * @param string $file_name File key in `$_FILES` superglobal
+	 *
+	 * @return bool|string Path to file location if succeed or `false` on failure
+	 */
+	static protected function move_uploaded_file_to_tmp ($file_name) {
+		if (!isset($_FILES[$file_name]) || !$_FILES[$file_name]['tmp_name']) {
+			return false;
+		}
+		$L    = Language::instance();
+		$Page = Page::instance();
+		switch ($_FILES[$file_name]['error']) {
+			case UPLOAD_ERR_INI_SIZE:
+			case UPLOAD_ERR_FORM_SIZE:
+				$Page->warning($L->file_too_large);
+				return false;
+			case UPLOAD_ERR_NO_TMP_DIR:
+				$Page->warning($L->temporary_folder_is_missing);
+				return false;
+			case UPLOAD_ERR_CANT_WRITE:
+				$Page->warning($L->cant_write_file_to_disk);
+				return false;
+			case UPLOAD_ERR_PARTIAL:
+			case UPLOAD_ERR_NO_FILE:
+				return false;
+		}
+		if ($_FILES[$file_name]['error'] != UPLOAD_ERR_OK) {
+			return false;
+		}
+		$tmp_name = TEMP.'/'.md5(openssl_random_pseudo_bytes(1000)).'.phar';
+		return move_uploaded_file($_FILES[$file_name]['tmp_name'], $tmp_name) ? $tmp_name : false;
+	}
+	/**
 	 * Generic extraction of files from phar distributive for CleverStyle CMS (components installation)
 	 *
 	 * @param string $target_directory
