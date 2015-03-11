@@ -287,11 +287,9 @@ trait components_save {
 				}
 				unset($old_modules, $module_name);
 				if (!empty($permissions_ids)) {
-					foreach ($permissions_ids as &$id) {
-						$id = $id['id'];
-					}
-					unset($id);
-					$Permission->del($permissions_ids);
+					$Permission->del(
+						array_column($permissions_ids, 'id')
+					);
 				}
 				unset($permissions_ids);
 			}
@@ -405,10 +403,9 @@ trait components_save {
 						$Permission->get(null, "$module_name/api")
 					);
 					if (!empty($permissions_ids)) {
-						foreach ($permissions_ids as &$id) {
-							$id = $id['id'];
-						}
-						$Permission->del($permissions_ids);
+						$Permission->del(
+							array_column($permissions_ids, 'id')
+						);
 					}
 					$module_data = ['active' => -1];
 					$a->save();
