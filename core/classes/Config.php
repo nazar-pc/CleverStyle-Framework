@@ -19,26 +19,52 @@ namespace cs;
  *
  *  System/Config/after_init
  *
- * @property mixed[] $core			Property with most general configuration properties
- * @property mixed[] $db			Property, that stores configuration of databases, except the main database, parameters of which are written in configuration file
- * @property mixed[] $storage		Property, that stores configuration of storages, except the main storage, parameters of which are written in configuration file
- * @property mixed[] $components	Internal structure of components parameters
- * @property mixed[] $replace		Property stores replacing rules, that are used to replace text on pages
- * @property mixed[] $routing		Property store routs replacing rules, they are applied to current rule on every pages once
- * @property array   $server		Array of some address data about mirrors and current address properties
- * @property bool    $can_be_admin	Allows to check ability to be admin user (can be limited by IP)
- *
  * @method static Config instance($check = false)
  */
 class Config {
 	use	Singleton;
-	protected $core			= [];
-	protected $db			= [];
-	protected $storage		= [];
-	protected $components	= [];
-	protected $replace		= [];
-	protected $routing		= [];
-	protected $server		= [
+	/**
+	 * Most general configuration properties
+	 *
+	 * @var mixed[]
+	 */
+	public $core		= [];
+	/**
+	 * Configuration of databases, except the main database, parameters of which are stored in configuration file
+	 *
+	 * @var mixed[]
+	 */
+	public $db			= [];
+	/**
+	 * Configuration of storages, except the main storage, parameters of which are stored in configuration file
+	 *
+	 * @var mixed[]
+	 */
+	public $storage		= [];
+	/**
+	 * Internal structure of components parameters
+	 *
+	 * @var mixed[]
+	 */
+	public $components	= [];
+	/**
+	 * Replacing rules, that are used to replace text on pages
+	 *
+	 * @var mixed[]
+	 */
+	public $replace		= [];
+	/**
+	 * Replacing rules, they are applied to current route, every rule is applied only once
+	 *
+	 * @var mixed[]
+	 */
+	public $routing		= [];
+	/**
+	 * Array of some address data about mirrors and current address properties
+	 *
+	 * @var mixed[]
+	 */
+	public $server		= [
 		'raw_relative_address'	=> '',		//Raw page url (in browser's address bar)
 		'host'					=> '',		//Current domain
 		'relative_address'		=> '',		//Corrected page address (recommended for usage)
@@ -50,7 +76,13 @@ class Config {
 		],
 		'mirror_index'			=> -1		//Index of current domain in mirrors list ('0' - main domain)
 	];
-	protected $can_be_admin	= true;
+	/**
+	 * Allows to check ability to be admin user (can be limited by IP)
+	 * @todo Refactor to method
+	 *
+	 * @var bool
+	 */
+	public $can_be_admin	= true;
 	/**
 	 * Initialization state
 	 *
@@ -75,7 +107,7 @@ class Config {
 		 * Cache reloading, if necessary
 		 */
 		if (!is_array($config)) {
-			$this->load();
+			$this->load_config_from_db();
 		} else {
 			foreach ($config as $part => $value) {
 				$this->$part = $value;
@@ -386,7 +418,7 @@ class Config {
 	 *
 	 * @return bool
 	 */
-	protected function load () {
+	protected function load_config_from_db () {
 		$result = DB::instance()->qf([
 			"SELECT
 				`core`,
@@ -492,46 +524,8 @@ class Config {
 	 */
 	function cancel () {
 		unset(Cache::instance()->config);
-		$this->load();
+		$this->load_config_from_db();
 		$this->apply_internal(false);
-	}
-	/**
-	 * Returns specified item with allowed access level (read only or read/write)
-	 *
-	 * @param string		$item
-	 *
-	 * @return array|bool
-	 */
-	function &__get ($item) {
-		if (!isset($this->$item)) {
-			$return	= false;
-			return $return;
-		}
-		/**
-		 * Modifications only for administrators
-		 */
-		if (admin_path() && User::instance(true)->admin()) {
-			$return = &$this->$item;
-		} else {
-			$return = $this->$item;
-		}
-		return $return;
-	}
-	/**
-	 * Sets value of specified item if it is allowed
-	 *
-	 * @param string		$item
-	 * @param array|bool	$data
-	 *
-	 * @return array|bool
-	 */
-	function __set ($item, $data) {
-		/**
-		 * Allow modification only for administrators or requests from methods of Config class
-		 */
-		if (isset($this->$item) && User::instance(true)->admin()) {
-			$this->$item = $data;
-		}
 	}
 	/**
 	 * Get base url of current mirror including language suffix
