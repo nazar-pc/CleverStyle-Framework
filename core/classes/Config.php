@@ -137,8 +137,6 @@ class Config {
 			$this->core['default_module']	= 'System';
 			$this->save();
 		}
-		// TODO Remove in future versions, temporary hack
-		Route::instance();
 		// TODO Remove in future versions
 		$this->can_be_admin = $this->can_be_admin();
 	}
