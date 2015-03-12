@@ -9,7 +9,7 @@
 namespace cs;
 
 Event::instance()->on(
-	'System/Config/routing_replace',
+	'System/Route/routing_replace',
 	function ($data) {
 		$Config = Config::instance();
 		if ($Config->module('OAuth2')->active() && substr($data['rc'], 0, 5) != 'admin') {

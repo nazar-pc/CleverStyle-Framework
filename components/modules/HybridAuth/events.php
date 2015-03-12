@@ -9,7 +9,7 @@
  */
 namespace	cs;
 Event::instance()->on(
-	'System/Config/pre_routing_replace',
+	'System/User/construct/after',
 	function () {
 		switch (Config::instance()->components['modules']['HybridAuth']['active']) {
 			case 1:

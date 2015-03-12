@@ -15,7 +15,7 @@ use
  */
 Event::instance()
 	->on(
-		'System/Config/routing_replace',
+		'System/Route/routing_replace',
 		function ($data) {
 			if ($data['rc'] == 'api/System/profile') {
 				$data['rc'] = 'api/System/profile/profile';

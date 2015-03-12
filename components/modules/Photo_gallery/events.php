@@ -15,7 +15,7 @@ use
 
 Event::instance()
 	->on(
-		'System/Config/routing_replace',
+		'System/Route/routing_replace',
 		function ($data) {
 			$rc = explode('/', $data['rc']);
 			$L  = Language::instance();
@@ -23,18 +23,20 @@ Event::instance()
 				return;
 			}
 			$rc[0] = 'Photo_gallery';
-			if (isset($rc[1]) && !in_array($rc[1], ['gallery', 'edit_image'])) {
-				if (!isset($rc[2])) {
-					$rc[2]         = $rc[1];
-					$rc[1]         = 'gallery';
-					$Photo_gallery = Photo_gallery::instance();
-					$galleries     = $Photo_gallery->get_galleries_list();
-					if (!isset($galleries[$rc[2]])) {
-						error_code(404);
-						return;
-					}
-					$rc[2] = $galleries[$rc[2]];
+			if (
+				isset($rc[1]) &&
+				!isset($rc[2]) &&
+				!in_array($rc[1], ['gallery', 'edit_image'])
+			) {
+				$rc[2]         = $rc[1];
+				$rc[1]         = 'gallery';
+				$Photo_gallery = Photo_gallery::instance();
+				$galleries     = $Photo_gallery->get_galleries_list();
+				if (!isset($galleries[$rc[2]])) {
+					error_code(404);
+					return;
 				}
+				$rc[2] = $galleries[$rc[2]];
 			}
 			$data['rc'] = implode('/', $rc);
 		}

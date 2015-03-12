@@ -9,7 +9,7 @@
 namespace cs;
 Event::instance()
 	->on(
-		'System/Config/routing_replace',
+		'System/Route/routing_replace',
 		function ($data) {
 			$rc = explode('/', $data['rc']);
 			$L  = Language::instance();
