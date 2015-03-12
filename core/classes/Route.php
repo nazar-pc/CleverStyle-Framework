@@ -44,6 +44,18 @@ class Route {
 	 */
 	public $route = [];
 	/**
+	 * Like $route property, but excludes numerical items
+	 *
+	 * @var string[]
+	 */
+	public $path = [];
+	/**
+	 * Like $route property, but only includes numerical items (opposite to route_path property)
+	 *
+	 * @var int[]
+	 */
+	public $ids = [];
+	/**
 	 * Loading of configuration, initialization of $Config, $Cache, $L and Page objects, Routing processing
 	 */
 	protected function construct () {
@@ -102,7 +114,18 @@ class Route {
 			Page::instance()->error();
 			return;
 		}
-		$this->route            = $processed_route['route'];
+		$this->route = $processed_route['route'];
+		/**
+		 * Separate numeric and other parts of route
+		 */
+		foreach ($this->route as $item) {
+			if (is_numeric($item)) {
+				$this->ids[] = $item;
+			} else {
+				$this->path[] = $item;
+			}
+		}
+		unset($item);
 		$this->relative_address = $processed_route['relative_address'];
 		admin_path($processed_route['ADMIN']);
 		api_path($processed_route['API']);
@@ -128,6 +151,9 @@ class Route {
 		$Config->server['protocol']             = $_SERVER->protocol;
 		$Config->server['mirror_index']         = &$this->mirror_index;
 		$Config->route                          = &$this->route;
+		$Index                                  = Index::instance();
+		$Index->route_ids                       = &$this->ids;
+		$Index->route_path                      = &$this->path;
 	}
 	/**
 	 * Check whether referer is local

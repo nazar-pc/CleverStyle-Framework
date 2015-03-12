@@ -43,13 +43,15 @@ class Index {
 	public $cancel_button_back = false;
 	public $custom_buttons     = '';
 	/**
-	 * Like Config::$route property, but excludes numerical items
+	 * @deprecated
+	 * @todo Remove in future versions
 	 *
 	 * @var string[]
 	 */
 	public $route_path = [];
 	/**
-	 * Like Config::$route property, but only includes numerical items (opposite to route_path property)
+	 * @deprecated
+	 * @todo Remove in future versions
 	 *
 	 * @var int[]
 	 */
@@ -86,12 +88,34 @@ class Index {
 	protected $path_required     = false;
 	protected $sub_path_required = false;
 	/**
+	 * Reference to Route::instance()->route
+	 *
+	 * @var array
+	 */
+	protected $route = [];
+	/**
+	 * Reference to Route::instance()->path
+	 *
+	 * @var string[]
+	 */
+	protected $path = [];
+	/**
+	 * Reference to Route::instance()->ids
+	 *
+	 * @var int[]
+	 */
+	protected $ids = [];
+	/**
 	 * Detecting module folder including of admin/api request type, including prepare file, including of plugins
 	 */
 	function construct () {
-		$Config = Config::instance();
-		$User   = User::instance();
-		$api    = api_path();
+		$Config      = Config::instance();
+		$Route       = Route::instance();
+		$this->route = &$Route->route;
+		$this->path  = &$Route->path;
+		$this->ids   = &$Route->ids;
+		$User        = User::instance();
+		$api         = api_path();
 		/**
 		 * If site is closed, user is not admin, and it is not request for sign in
 		 */
@@ -100,7 +124,7 @@ class Index {
 			!(
 				$User->admin() ||
 				(
-					$api && $Config->route === ['user', 'sign_in']
+					$api && $this->route === ['user', 'sign_in']
 				)
 			)
 		) {
@@ -209,17 +233,6 @@ class Index {
 	 * Normalize route path and fill `cs\Index::$route_path` and `cs\Index::$route_ids` properties
 	 */
 	protected function normalize_route () {
-		/**
-		 * Separate numeric and other parts of route
-		 */
-		foreach (Config::instance()->route as $item) {
-			if (is_numeric($item)) {
-				$this->route_ids[] = $item;
-			} else {
-				$this->route_path[] = $item;
-			}
-		}
-		unset($item);
 		if (!file_exists("$this->working_directory/index.json")) {
 			return;
 		}
@@ -231,7 +244,7 @@ class Index {
 		/**
 		 * First level path routing
 		 */
-		$path = @$this->route_path[0];
+		$path = @$this->path[0];
 		/**
 		 * If path not specified - take first from structure
 		 */
@@ -248,7 +261,7 @@ class Index {
 		if (!$this->check_permission($path)) {
 			error_code(403);
 		}
-		$this->route_path[0] = $path;
+		$this->path[0] = $path;
 		/**
 		 * If there is second level routing in structure - handle that
 		 */
@@ -256,7 +269,7 @@ class Index {
 			return;
 		}
 		$this->sub_path_required = true;
-		$sub_path                = @$this->route_path[1];
+		$sub_path                = @$this->path[1];
 		/**
 		 * If sub path not specified - take first from structure
 		 */
@@ -273,7 +286,7 @@ class Index {
 		if (!$this->check_permission("$path/$sub_path")) {
 			error_code(403);
 		}
-		$this->route_path[1] = $sub_path;
+		$this->path[1] = $sub_path;
 	}
 	/**
 	 * Include files necessary for module page rendering
@@ -358,13 +371,13 @@ class Index {
 	protected function controller_router_handler_internal ($controller_class, $method_name, $required) {
 		$included =
 			method_exists($controller_class, $method_name) &&
-			$controller_class::$method_name($this->route_ids, $this->route_path) !== false;
+			$controller_class::$method_name($this->ids, $this->path) !== false;
 		if (!api_path()) {
 			return;
 		}
 		$included =
 			method_exists($controller_class, $method_name.'_'.$this->request_method) &&
-			$controller_class::{$method_name.'_'.$this->request_method}($this->route_ids, $this->route_path) !== false ||
+			$controller_class::{$method_name.'_'.$this->request_method}($this->ids, $this->path) !== false ||
 			$included;
 		if ($included || !$required) {
 			return;
@@ -467,10 +480,10 @@ class Index {
 	protected function get_action () {
 		if ($this->action === null) {
 			$this->action = ($this->in_admin ? 'admin/' : '')."$this->module";
-			if (isset($this->route_path[0])) {
-				$this->action .= '/'.$this->route_path[0];
-				if (isset($this->route_path[1])) {
-					$this->action .= '/'.$this->route_path[1];
+			if (isset($this->path[0])) {
+				$this->action .= '/'.$this->path[0];
+				if (isset($this->path[1])) {
+					$this->action .= '/'.$this->path[1];
 				}
 			}
 		}
@@ -514,9 +527,11 @@ class Index {
 				$block['title'] = $this->ml_process($block['title']);
 				switch ($block['type']) {
 					default:
-						$content = ob_wrapper(function () use ($block) {
-							include BLOCKS."/block.$block[type].php";
-						});
+						$content = ob_wrapper(
+							function () use ($block) {
+								include BLOCKS."/block.$block[type].php";
+							}
+						);
 						break;
 					case 'html':
 					case 'raw_html':
@@ -537,9 +552,11 @@ class Index {
 						$block['title'],
 						$content
 					],
-					ob_wrapper(function () use ($template) {
-						include $template;
-					})
+					ob_wrapper(
+						function () use ($template) {
+							include $template;
+						}
+					)
 				);
 				if ($block['position'] == 'floating') {
 					$Page->replace(
@@ -668,7 +685,7 @@ class Index {
 			if (
 				!User::instance()->admin() &&
 				!(
-					api_path() && $Config->route === ['user', 'sign_in']
+					api_path() && $this->route === ['user', 'sign_in']
 				)
 			) {
 				code_header(503);
@@ -709,9 +726,9 @@ class Index {
 			/** @noinspection NotOptimalIfConditionsInspection */
 			if (!error_code()) {
 				if (file_exists("$this->working_directory/Controller.php")) {
-					$this->controller_router(@$this->route_path[0], @$this->route_path[1]);
+					$this->controller_router(@$this->path[0], @$this->path[1]);
 				} else {
-					$this->files_router(@$this->route_path[0], @$this->route_path[1]);
+					$this->files_router(@$this->path[0], @$this->path[1]);
 				}
 			}
 		}
