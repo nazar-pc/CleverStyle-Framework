@@ -14,6 +14,7 @@ use
 	cs\Index,
 	cs\Language,
 	cs\Page,
+	cs\Route,
 	cs\User;
 
 if (!Event::instance()->fire('Blogs/new_post')) {
@@ -24,6 +25,7 @@ $Config						= Config::instance();
 $module_data				= $Config->module('Blogs');
 $L							= Language::instance();
 $Page						= Page::instance();
+$Route						= Route::instance();
 $User						= User::instance();
 $Page->title($L->new_post);
 if (!$User->admin() && $module_data->new_posts_only_from_admins) {
@@ -95,7 +97,7 @@ if (count($sections['in']) > 1) {
 			[
 				'name'		=> 'sections[]',
 				'disabled'	=> $disabled,
-				'selected'	=> isset($_POST['sections']) ? $_POST['sections'] : (isset($Config->route[1]) ? $Config->route[1] : []),
+				'selected'	=> isset($_POST['sections']) ? $_POST['sections'] : (isset($Route->route[1]) ? $Route->route[1] : []),
 				$max_sections < 1 ? 'multiple' : false
 			]
 		).

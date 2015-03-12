@@ -111,7 +111,7 @@ trait users {
 		$Page   = Page::instance();
 		$Group  = Group::instance();
 		$a      = Index::instance();
-		$rc     = $Config->route;
+		$rc     = Route::instance()->route;
 		if (isset($rc[2])) {
 			switch ($rc[2]) {
 				case 'add':
@@ -444,7 +444,7 @@ trait users {
 		$Page       = Page::instance();
 		$Permission = Permission::instance();
 		$a          = Index::instance();
-		$rc         = $Config->route;
+		$rc         = Route::instance()->route;
 		if (isset($rc[2])) {
 			switch ($rc[2]) {
 				case 'add':

@@ -8,13 +8,15 @@
  */
 
 namespace	cs\modules\Photo_gallery;
-use			h,
-			cs\Config,
-			cs\Index,
-			cs\Language,
-			cs\Page;
+use
+	h,
+	cs\Config,
+	cs\Index,
+	cs\Language,
+	cs\Page,
+	cs\Route;
 $Config						= Config::instance();
-$gallery					= Photo_gallery::instance()->get_gallery($Config->route[2]);
+$gallery					= Photo_gallery::instance()->get_gallery(Route::instance()->route[2]);
 $Index						= Index::instance();
 $L							= Language::instance();
 Page::instance()->title($L->photo_gallery_editing_of_gallery($gallery['title']));

@@ -14,13 +14,14 @@ use
 	cs\Language,
 	cs\Page\Meta,
 	cs\Page,
+	cs\Route,
 	cs\User;
 $Config       = Config::instance();
 $Index        = Index::instance();
 $L            = Language::instance();
 $Static_pages = Static_pages::instance();
 $page         = $Static_pages->get(
-	home_page() ? $Static_pages->get_structure()['pages']['index'] : $Config->route[0]
+	home_page() ? $Static_pages->get_structure()['pages']['index'] : Route::instance()->route[0]
 );
 $Page         = Page::instance();
 $User         = User::instance();

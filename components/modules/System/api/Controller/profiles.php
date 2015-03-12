@@ -9,8 +9,8 @@
  */
 namespace cs\modules\System\api\Controller;
 use
-	cs\Config,
 	cs\Page,
+	cs\Route,
 	cs\User;
 trait profiles {
 	static function profiles_get () {
@@ -28,9 +28,9 @@ trait profiles {
 			'avatar'
 		];
 		$Page   = Page::instance();
-		$Config = Config::instance();
-		if (isset($Config->route[1])) {
-			$id     = _int(explode(',', $Config->route[1]));
+		$Route  = Route::instance();
+		if (isset($Route->route[1])) {
+			$id     = _int(explode(',', $Route->route[1]));
 			$single = count($id) == 1;
 			if (
 				!$User->admin() &&

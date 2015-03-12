@@ -8,14 +8,15 @@
  */
 namespace cs\modules\WebSockets;
 use
-	cs\Config;
+	cs\Config,
+	cs\Route;
 if (PHP_SAPI == 'cli') {
 	Server::instance()->run();
 } else {
 	interface_off();
 	$Config      = Config::instance();
 	$module_data = $Config->module('WebSockets');
-	$rc          = $Config->route;
+	$rc          = Route::instance()->route;
 	if ($module_data->security_key !== @$rc[0]) {
 		error_code(400);
 		return;

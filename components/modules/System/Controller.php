@@ -16,11 +16,12 @@ use
 	cs\Mail,
 	cs\Page,
 	cs\Page\Meta,
+	cs\Route,
 	cs\User,
 	h;
 class Controller {
 	static function profile () {
-		$rc       = &Config::instance()->route;
+		$rc       = &Route::instance()->route;
 		$subparts = file_get_json(__DIR__.'/index.json')[$rc[0]];
 		$User     = User::instance();
 		if (
@@ -43,7 +44,7 @@ class Controller {
 		$L    = Language::instance();
 		$Page = Page::instance();
 		$User = User::instance();
-		$rc   = Config::instance()->route;
+		$rc   = Route::instance()->route;
 		if (!isset($rc[1], $rc[2]) || !($id = $User->get_id(hash('sha224', $rc[2])))) {
 			error_code(404);
 			$Page->error();
@@ -124,6 +125,7 @@ class Controller {
 		$Config = Config::instance();
 		$L      = Language::instance();
 		$Page   = Page::instance();
+		$Route  = Route::instance();
 		$User   = User::instance();
 		if (_getcookie('reg_confirm')) {
 			_setcookie('reg_confirm', '');
@@ -134,12 +136,12 @@ class Controller {
 			$Page->title($L->you_are_already_registered_title);
 			$Page->warning($L->you_are_already_registered);
 			return;
-		} elseif (!isset($Config->route[2])) {
+		} elseif (!isset($Route->route[2])) {
 			$Page->title($L->invalid_confirmation_code);
 			$Page->warning($L->invalid_confirmation_code);
 			return;
 		}
-		$result = $User->registration_confirmation($Config->route[2]);
+		$result = $User->registration_confirmation($Route->route[2]);
 		if ($result === false) {
 			$Page->title($L->invalid_confirmation_code);
 			$Page->warning($L->invalid_confirmation_code);
@@ -170,6 +172,7 @@ class Controller {
 		$Config = Config::instance();
 		$L      = Language::instance();
 		$Page   = Page::instance();
+		$Route  = Route::instance();
 		$User   = User::instance();
 		if (_getcookie('restore_password_confirm')) {
 			_setcookie('restore_password_confirm', '');
@@ -180,12 +183,12 @@ class Controller {
 			$Page->title($L->you_are_already_registered_title);
 			$Page->warning($L->you_are_already_registered);
 			return;
-		} elseif (!isset($Config->route[2])) {
+		} elseif (!isset($Route->route[2])) {
 			$Page->title($L->invalid_confirmation_code);
 			$Page->warning($L->invalid_confirmation_code);
 			return;
 		}
-		$result = $User->restore_password_confirmation($Config->route[2]);
+		$result = $User->restore_password_confirmation($Route->route[2]);
 		if ($result === false) {
 			$Page->title($L->invalid_confirmation_code);
 			$Page->warning($L->invalid_confirmation_code);
@@ -215,6 +218,7 @@ class Controller {
 		$Index  = Index::instance();
 		$L      = Language::instance();
 		$Page   = Page::instance();
+		$Route  = Route::instance();
 		$User   = User::instance();
 		if (!$User->user()) {
 			error_code(403);
@@ -263,7 +267,7 @@ class Controller {
 		$Page->title($L->my_profile);
 		$Page->title($L->settings);
 		$Index->action = path($L->profile).'/'.path($L->settings);
-		switch (isset($Config->route[2]) ? $Config->route[2] : '') {
+		switch (isset($Route->route[2]) ? $Route->route[2] : '') {
 			default:
 				$Index->content(
 					h::p(

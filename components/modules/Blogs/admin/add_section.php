@@ -8,15 +8,18 @@
  */
 
 namespace	cs\modules\Blogs;
-use			h,
-			cs\Config,
-			cs\Index,
-			cs\Language,
-			cs\Page;
+use
+	h,
+	cs\Config,
+	cs\Index,
+	cs\Language,
+	cs\Page,
+	cs\Route;
 $Config						= Config::instance();
 $Index						= Index::instance();
 $L							= Language::instance();
 Page::instance()->title($L->addition_of_posts_section);
+$Route						= Route::instance();
 $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/Blogs/browse_sections';
@@ -34,7 +37,7 @@ $Index->content(
 			h::{'select[name=parent][size=5]'}(
 				get_sections_select_section(),
 				[
-					'selected'	=> isset($Config->route[1]) ? (int)$Config->route[1] : 0
+					'selected'	=> isset($Route->route[1]) ? (int)$Route->route[1] : 0
 				]
 			),
 			h::{'input[name=title]'}(),

@@ -7,13 +7,14 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Static_pages;
-use			h,
-			cs\Config,
-			cs\Index,
-			cs\Language;
+use
+	h,
+	cs\Index,
+	cs\Language,
+	cs\Route;
 $Index			= Index::instance();
 $L				= Language::instance();
-$rc				= Config::instance()->route;
+$rc				= Route::instance()->route;
 $Index->buttons	= false;
 $Index->content(
 	h::{'cs-table[list][with-header]'}(

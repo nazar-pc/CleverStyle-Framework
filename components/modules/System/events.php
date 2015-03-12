@@ -82,7 +82,7 @@ Event::instance()
 			if (
 				$_SERVER->request_method == 'GET' &&
 				$Core->cache_engine != 'BlackHole' &&
-				@$Config->route[0] != 'robots.txt' &&
+				@Route::instance()->route[0] != 'robots.txt' &&
 				!$L->url_language() &&
 				$Cache->cache_state()
 			) {

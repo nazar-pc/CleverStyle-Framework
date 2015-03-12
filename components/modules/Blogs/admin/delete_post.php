@@ -7,12 +7,13 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h,
-			cs\Config,
-			cs\Index,
-			cs\Language,
-			cs\Page;
-$post						= Blogs::instance()->get(Config::instance()->route[1]);
+use
+	h,
+	cs\Index,
+	cs\Language,
+	cs\Page,
+	cs\Route;
+$post						= Blogs::instance()->get(Route::instance()->route[1]);
 $Index						= Index::instance();
 $L							= Language::instance();
 Page::instance()->title($L->deletion_of_post($post['title']));

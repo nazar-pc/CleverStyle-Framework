@@ -15,6 +15,7 @@ use
 	cs\Language,
 	cs\Mail,
 	cs\Page,
+	cs\Route,
 	cs\Storage,
 	cs\User,
 	h;
@@ -70,9 +71,8 @@ trait admin {
 	}
 	static function admin_cache_delete () {
 		$Cache  = Cache::instance();
-		$Config = Config::instance();
 		$Page   = Page::instance();
-		$rc     = $Config->route;
+		$rc     = Route::instance()->route;
 		if (isset($rc[2])) {
 			switch ($rc[2]) {
 				case 'clean_cache':

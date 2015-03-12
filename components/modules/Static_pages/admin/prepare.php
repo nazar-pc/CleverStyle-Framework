@@ -10,9 +10,9 @@
 namespace	cs\modules\Static_pages;
 use
 	h,
-	cs\Config,
 	cs\Language,
-	cs\Page;
+	cs\Page,
+	cs\Route;
 $Page	= Page::instance();
 $Page->css('components/modules/Static_pages/includes/css/style.css');
 function get_categories_rows ($structure = null, $level = 0, $parent_categories = []) {
@@ -110,7 +110,7 @@ function get_categories_list ($current = null, $structure = null, $level = 0) {
 function get_pages_rows () {
 	$L				= Language::instance();
 	$Static_pages	= Static_pages::instance();
-	$categories		= array_slice(Config::instance()->route, 2);
+	$categories		= array_slice(Route::instance()->route, 2);
 	$structure		= $Static_pages->get_structure();
 	$path			= [];
 	if (!empty($categories)) {

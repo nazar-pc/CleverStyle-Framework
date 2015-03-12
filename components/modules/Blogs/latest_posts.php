@@ -15,7 +15,8 @@ use
 	cs\Index,
 	cs\Language,
 	cs\Page\Meta,
-	cs\Page;
+	cs\Page,
+	cs\Route;
 
 if (!Event::instance()->fire('Blogs/latest_posts')) {
 	return;
@@ -25,6 +26,7 @@ $Config = Config::instance();
 $Index  = Index::instance();
 $L      = Language::instance();
 $Page   = Page::instance();
+$Route  = Route::instance();
 $Page->title($L->latest_posts);
 $Page->atom('Blogs/atom.xml', $L->latest_posts);
 $module = path($L->Blogs);
@@ -34,7 +36,7 @@ $module = path($L->Blogs);
 head_actions();
 $Index->form    = true;
 $Index->buttons = false;
-$page           = isset($Config->route[1]) ? (int)$Config->route[1] : 1;
+$page           = isset($Route->route[1]) ? (int)$Route->route[1] : 1;
 $page           = $page > 0 ? $page : 1;
 $Page->canonical_url($Config->base_url()."/$module/".path($L->latest_posts).($page > 1 ? "/$page" : ''));
 Meta::instance()->blog();

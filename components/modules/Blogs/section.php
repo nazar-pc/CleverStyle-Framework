@@ -14,7 +14,8 @@ use            h,
 	cs\Index,
 	cs\Language,
 	cs\Page\Meta,
-	cs\Page;
+	cs\Page,
+	cs\Route;
 
 if (!Event::instance()->fire('Blogs/section')) {
 	return;
@@ -23,7 +24,7 @@ if (!Event::instance()->fire('Blogs/section')) {
 $Config    = Config::instance();
 $Index     = Index::instance();
 $Page      = Page::instance();
-$rc        = array_slice($Config->route, 1);
+$rc        = array_slice(Route::instance()->route, 1);
 $structure = Blogs::instance()->get_sections_structure();
 $path      = [];
 foreach ($rc as $path_) {

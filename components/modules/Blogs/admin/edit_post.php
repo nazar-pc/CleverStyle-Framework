@@ -7,17 +7,19 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Blogs;
-use			h,
-			cs\Config,
-			cs\Index,
-			cs\Language,
-			cs\Page;
+use
+	h,
+	cs\Config,
+	cs\Index,
+	cs\Language,
+	cs\Page,
+	cs\Route;
 $Blogs						= Blogs::instance();
 $Config						= Config::instance();
 $Index						= Index::instance();
 $L							= Language::instance();
 $Page						= Page::instance();
-$post						= $Blogs->get($Config->route[1]);
+$post						= $Blogs->get(Route::instance()->route[1]);
 $Page->title(
 	$L->editing_of_post($post['title'])
 );

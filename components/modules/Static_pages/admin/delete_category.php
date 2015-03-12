@@ -7,14 +7,15 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Static_pages;
-use			h,
-			cs\Config,
-			cs\Index,
-			cs\Language,
-			cs\Page;
+use
+	h,
+	cs\Index,
+	cs\Language,
+	cs\Page,
+	cs\Route;
 $Index						= Index::instance();
 $L							= Language::instance();
-$id							= (int)Config::instance()->route[1];
+$id							= (int)Route::instance()->route[1];
 $title						= Static_pages::instance()->get_category($id)['title'];
 Page::instance()->title($L->deletion_of_page_category($title));
 $Index->buttons				= false;

@@ -15,6 +15,7 @@ use
 	cs\Language,
 	cs\Page\Meta,
 	cs\Page,
+	cs\Route,
 	cs\User;
 
 if (!Event::instance()->fire('Blogs/post')) {
@@ -37,13 +38,13 @@ Event::instance()->fire(
  * @var \cs\modules\Comments\Comments $Comments
  */
 $Blogs	= Blogs::instance();
-$rc		= $Config->route;
+$rc		= Route::instance()->route;
 $post	= (int)mb_substr($rc[1], mb_strrpos($rc[1], ':')+1);
 if (!$post) {
 	error_code(404);
 	return;
 }
-$post	= $Blogs->get($post, true);
+$post	= $Blogs->get($post);
 if (
 	!$post ||
 	(

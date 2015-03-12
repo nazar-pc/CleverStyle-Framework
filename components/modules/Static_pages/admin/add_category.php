@@ -7,14 +7,15 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Static_pages;
-use			h,
-			cs\Config,
-			cs\Index,
-			cs\Language,
-			cs\Page;
-$Config						= Config::instance();
+use
+	h,
+	cs\Index,
+	cs\Language,
+	cs\Page,
+	cs\Route;
 $Index						= Index::instance();
 $L							= Language::instance();
+$Route						= Route::instance();
 Page::instance()->title($L->addition_of_page_category);
 $Index->apply_button		= false;
 $Index->cancel_button_back	= true;
@@ -33,7 +34,7 @@ $Index->content(
 			h::{'select[name=parent][size=5]'}(
 				get_categories_list(),
 				[
-					'selected'	=> isset($Config->route[1]) ? (int)$Config->route[1] : 0
+					'selected'	=> isset($Route->route[1]) ? (int)$Route->route[1] : 0
 				]
 			),
 			h::{'input[name=title]'}(),

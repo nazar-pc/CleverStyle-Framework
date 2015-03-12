@@ -18,6 +18,7 @@ use
 	cs\Language,
 	cs\Page,
 	cs\Permission,
+	cs\Route,
 	cs\Text,
 	cs\User,
 	h;
@@ -926,7 +927,7 @@ trait components {
 		$Page         = Page::instance();
 		$User         = User::instance();
 		$a            = Index::instance();
-		$rc           = $Config->route;
+		$rc           = Route::instance()->route;
 		$a->buttons   = false;
 		$show_modules = true;
 		if (
@@ -1735,7 +1736,7 @@ trait components {
 		$L          = Language::instance();
 		$Page       = Page::instance();
 		$a          = Index::instance();
-		$rc         = $Config->route;
+		$rc         = Route::instance()->route;
 		$plugins    = get_files_list(PLUGINS, false, 'd');
 		$a->buttons = false;
 		if (
@@ -2121,7 +2122,7 @@ trait components {
 		$L      = Language::instance();
 		$Page   = Page::instance();
 		$a      = Index::instance();
-		$rc     = $Config->route;
+		$rc     = Route::instance()->route;
 		if (isset($rc[2])) {
 			$a->apply_button       = false;
 			$a->cancel_button_back = true;

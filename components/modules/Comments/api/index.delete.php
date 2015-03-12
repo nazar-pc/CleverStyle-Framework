@@ -13,6 +13,7 @@ use
 	cs\Event,
 	cs\Language,
 	cs\Page,
+	cs\Route,
 	cs\User;
 /**
  * Provides next events:<br>
@@ -33,7 +34,8 @@ if (!User::instance()->user()) {
 	error_code(403);
 	return;
 }
-if (!isset($Config->route[0], $_POST['module'])) {
+$Route = Route::instance();
+if (!isset($Route->route[0], $_POST['module'])) {
 	error_code(400);
 	return;
 }
@@ -44,7 +46,7 @@ Event::instance()->fire(
 	[
 		'Comments'		=> &$Comments,
 		'delete_parent'	=> &$delete_parent,
-		'id'			=> $Config->route[0],
+		'id'			=> $Route->route[0],
 		'module'		=> $_POST['module']
 	]
 );
@@ -58,7 +60,7 @@ if (!is_object($Comments)) {
 /**
  * @var Comments $Comments
  */
-if ($result = $Comments->del($Config->route[0])) {
+if ($result = $Comments->del($Route->route[0])) {
 	$Page->json($delete_parent ? h::{'icon.cs-comments-comment-delete.cs-pointer'}('trash-o') : '');
 } else {
 	error_code(500);

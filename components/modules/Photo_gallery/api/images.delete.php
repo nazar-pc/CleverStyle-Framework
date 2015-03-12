@@ -8,21 +8,21 @@
  */
 namespace	cs\modules\Photo_gallery;
 use
-	cs\Config,
 	cs\Page,
+	cs\Route,
 	cs\User;
-$Config			= Config::instance();
+$Route			= Route::instance();
 $User			= User::instance();
 if (!$User->user()) {
 	error_code(403);
 	return;
 }
-if (!isset($Config->route[1])) {
+if (!isset($Route->route[1])) {
 	error_code(400);
 	return;
 }
 $Photo_gallery	= Photo_gallery::instance();
-$image			= $Photo_gallery->get($Config->route[1]);
+$image			= $Photo_gallery->get($Route->route[1]);
 if (!$image) {
 	error_code(404);
 	return;

@@ -20,6 +20,7 @@ use
 	cs\Language,
 	cs\Mail,
 	cs\Page,
+	cs\Route,
 	cs\User;
 /**
  * Provides next events:
@@ -46,7 +47,7 @@ use
 $Config		= Config::instance();
 $Index		= Index::instance();
 $User		= User::instance();
-$rc			= $Config->route;
+$rc			= Route::instance()->route;
 /**
  * If user is registered, provider not found or this is request for final authentication and session does not corresponds - return user to the base url
  */
@@ -250,6 +251,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					'provider'	=> $rc[0]
 				]
 			);
+			/** @noinspection NotOptimalIfConditionsInspection */
 			if ($User->id != User::GUEST_ID && $Config->module('HybridAuth')->enable_contacts_detection) {
 				$existing_data	= $User->get(array_keys($profile_info), $id);
 				foreach ($profile_info as $item => $value) {

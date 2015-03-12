@@ -14,6 +14,7 @@ use
 	cs\Index,
 	cs\Language,
 	cs\Page,
+	cs\Route,
 	cs\User;
 
 if (!Event::instance()->fire('Blogs/edit_post')) {
@@ -25,14 +26,15 @@ $Config						= Config::instance();
 $module_data				= $Config->module('Blogs');
 $L							= Language::instance();
 $Page						= Page::instance();
+$Route						= Route::instance();
 $User						= User::instance();
 if ($module_data->new_posts_only_from_admins && !$User->admin()) {
 	error_code(403);
 	return;
 }
 if (
-	!isset($Config->route[1]) ||
-	!($post = $Blogs->get($Config->route[1]))
+	!isset($Route->route[1]) ||
+	!($post = $Blogs->get($Route->route[1]))
 ) {
 	error_code(404);
 	return;

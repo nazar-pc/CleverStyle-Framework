@@ -7,19 +7,20 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Photo_gallery;
-use			h,
-			cs\Config,
-			cs\DB,
-			cs\Index,
-			cs\Language,
-			cs\Page,
-			cs\User;
+use
+	h,
+	cs\DB,
+	cs\Index,
+	cs\Language,
+	cs\Page,
+	cs\Route,
+	cs\User;
 $Index					= Index::instance();
 $L						= Language::instance();
 $User					= User::instance();
 Page::instance()->title($L->photo_gallery_images_editing);
 $Photo_gallery			= Photo_gallery::instance();
-$images					= $Photo_gallery->get(explode(',', Config::instance()->route[1])) ?: [];
+$images					= $Photo_gallery->get(explode(',', Route::instance()->route[1])) ?: [];
 $Index->form			= true;
 $Index->apply_button	= false;
 $Index->action			= path($L->Photo_gallery).($images ? '/'.$Photo_gallery->get_gallery($images[0]['gallery'])['path'] : '');

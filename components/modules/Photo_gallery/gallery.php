@@ -16,13 +16,14 @@ use
 	cs\Language,
 	cs\Page\Meta,
 	cs\Page,
+	cs\Route,
 	cs\User;
 
 $Config        = Config::instance();
 $Index         = Index::instance();
 $L             = Language::instance();
 $Photo_gallery = Photo_gallery::instance();
-$gallery       = $Photo_gallery->get_gallery($Config->route[1]);
+$gallery       = $Photo_gallery->get_gallery(Route::instance()->route[1]);
 $User          = User::instance();
 if ($User->user()) {
 	$Index->content(

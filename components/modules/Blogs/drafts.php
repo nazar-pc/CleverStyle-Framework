@@ -15,6 +15,7 @@ use
 	cs\Index,
 	cs\Language,
 	cs\Page,
+	cs\Route,
 	cs\User;
 
 if (!Event::instance()->fire('Blogs/drafts')) {
@@ -26,6 +27,7 @@ $module_data			= $Config->module('Blogs');
 $Index					= Index::instance();
 $L						= Language::instance();
 $Page					= Page::instance();
+$Route					= Route::instance();
 $User					= User::instance();
 if ($module_data->new_posts_only_from_admins && !$User->admin()) {
 	error_code(403);
@@ -35,7 +37,7 @@ $Page->title($L->drafts);
 $module					= path($L->Blogs);
 $Index->form			= true;
 $Index->buttons			= false;
-$page					= isset($Config->route[1]) ? (int)$Config->route[1] : 1;
+$page					= isset($Route->route[1]) ? (int)$Route->route[1] : 1;
 $page					= $page > 0 ? $page : 1;
 if ($page > 1) {
 	$Page->title($L->blogs_nav_page($page));
