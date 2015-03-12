@@ -10,6 +10,7 @@ use
 	cs\Config,
 	cs\Language,
 	cs\Page,
+	cs\Route,
 	cs\Singleton,
 	h;
 
@@ -114,7 +115,7 @@ class Meta {
 		}
 		$Config		= Config::instance();
 		if (!isset($og['url']) || empty($og['url'])) {
-			$this->og('url', home_page() ? $Config->base_url() : ($Page->canonical_url ?: $Config->base_url().'/'.$Config->server['relative_address']));
+			$this->og('url', home_page() ? $Config->base_url() : ($Page->canonical_url ?: $Config->base_url().'/'.Route::instance()->relative_address));
 		}
 		if (!isset($og['site_name']) || empty($og['site_name'])) {
 			$this->og('site_name', get_core_ml_text('name'));

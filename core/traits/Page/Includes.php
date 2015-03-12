@@ -12,6 +12,7 @@ use
 	cs\Event,
 	cs\Index,
 	cs\Language,
+	cs\Route,
 	cs\User,
 	h;
 
@@ -244,10 +245,14 @@ trait Includes {
 		 */
 		$this->pcache_basename	= "_{$this->theme}_".Language::instance()->clang;
 		$Index					= Index::instance();
+		$Route					= Route::instance();
 		$User					= User::instance();
 		$current_module			= current_module();
 		/**
 		 * Some JS code required by system
+		 */
+		/**
+		 * @var \cs\_SERVER $_SERVER
 		 */
 		$this->config_internal([
 			'base_url'			=> $Config->base_url(),
@@ -260,10 +265,10 @@ trait Includes {
 			'is_guest'			=> (int)$User->guest(),
 			'debug'				=> (int)DEBUG,
 			'cookie_prefix'		=> $Config->core['cookie_prefix'],
-			'cookie_domain'		=> $Config->core['cookie_domain'][$Config->server['mirror_index']],
-			'cookie_path'		=> $Config->core['cookie_path'][$Config->server['mirror_index']],
-			'protocol'			=> $Config->server['protocol'],
-			'route'				=> $Config->route,
+			'cookie_domain'		=> $Config->core['cookie_domain'][$Route->mirror_index],
+			'cookie_path'		=> $Config->core['cookie_path'][$Route->mirror_index],
+			'protocol'			=> $_SERVER->protocol,
+			'route'				=> $Route->route,
 			'route_path'		=> $Index->route_path,
 			'route_ids'			=> $Index->route_ids
 		], 'cs', true);
@@ -315,7 +320,7 @@ trait Includes {
 			'html'	=> []
 		];
 		$dependencies_includes	= $includes;
-		$current_url			= str_replace('/', '+', $Config->server['relative_address']);
+		$current_url			= str_replace('/', '+', Route::instance()->relative_address);
 		foreach ($structure as $filename_prefix => $hashes) {
 			$prefix_module	= explode('+', $filename_prefix);
 			$prefix_module	= $prefix_module[0] != 'admin' ? $prefix_module[0] : $prefix_module[1];
@@ -383,7 +388,7 @@ trait Includes {
 				'html'	=> []
 			];
 			$dependencies_includes	= $includes;
-			$current_url	= $Config->server['relative_address'];
+			$current_url	= Route::instance()->relative_address;
 			/**
 			 * Narrow the dependence to current module only
 			 */
@@ -399,17 +404,23 @@ trait Includes {
 					mb_strpos($current_url, $url) === 0 ||
 					(
 						$dependencies &&
-						array_search($prefix_module, $dependencies) !== false &&
+						in_array($prefix_module, $dependencies) &&
 						$is_dependency = true
 					)
 				) {
 					if ($is_dependency) {
+						/** @noinspection SlowArrayOperationsInLoopInspection */
 						$dependencies_includes['css']  = array_merge($dependencies_includes['css'], @$local_includes['css'] ?: []);
+						/** @noinspection SlowArrayOperationsInLoopInspection */
 						$dependencies_includes['js']   = array_merge($dependencies_includes['js'], @$local_includes['js'] ?: []);
+						/** @noinspection SlowArrayOperationsInLoopInspection */
 						$dependencies_includes['html'] = array_merge($dependencies_includes['html'], @$local_includes['html'] ?: []);
 					} else {
+						/** @noinspection SlowArrayOperationsInLoopInspection */
 						$includes['css']  = array_merge($includes['css'], @$local_includes['css'] ?: []);
+						/** @noinspection SlowArrayOperationsInLoopInspection */
 						$includes['js']   = array_merge($includes['js'], @$local_includes['js'] ?: []);
+						/** @noinspection SlowArrayOperationsInLoopInspection */
 						$includes['html'] = array_merge($includes['html'], @$local_includes['html'] ?: []);
 					}
 				}

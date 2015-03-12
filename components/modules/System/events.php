@@ -72,7 +72,7 @@ Event::instance()
 			if (!$Config->core['multilingual']) {
 				return;
 			}
-			$relative_address = $Config->server['relative_address'];
+			$relative_address = Route::instance()->relative_address;
 			$Core             = Core::instance();
 			$Cache            = Cache::instance();
 			$L                = Language::instance();

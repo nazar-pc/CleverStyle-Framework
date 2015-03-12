@@ -19,6 +19,7 @@ use
 	cs\Index,
 	cs\Language\Prefix,
 	cs\Page,
+	cs\Route,
 	cs\User;
 
 function error_redirect ($error, $description) {
@@ -185,7 +186,7 @@ if (!$OAuth2->get_access($client['id'])) {
 	$Page->success(
 		$L->client_want_access_your_account($client['name'])
 	);
-	$Index->action         = $Config->base_url().'/'.$Config->server['raw_relative_address'];
+	$Index->action         = $Config->base_url().'/'.Route::instance()->raw_relative_address;
 	$Index->custom_buttons =
 		h::{'button.uk-button[type=submit][name=mode][value=allow]'}($L->allow).
 		h::{'button.uk-button[type=submit][mode=mode][value=deny]'}($L->deny);

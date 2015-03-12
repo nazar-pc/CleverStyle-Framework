@@ -10,7 +10,8 @@ namespace cs\modules\Shop;
 use
 	cs\Config,
 	cs\Page,
-	cs\User;
+	cs\Page,
+	cs\Route;
 
 if (
 	!isset(
@@ -72,5 +73,5 @@ foreach ($recalculated['items'] as $item) {
 }
 code_header(201);
 Page::instance()->json(
-	$Config->core_url().'/'.$Config->server['relative_address']."/$id"
+	$Config->core_url().'/'.Route::instance()->relative_address."/$id"
 );

@@ -9,7 +9,8 @@
 namespace cs\modules\Shop;
 use
 	cs\Config,
-	cs\Page;
+	cs\Page,
+	cs\Route;
 
 if (!isset(
 	$_POST['category'],
@@ -42,5 +43,5 @@ if (!$id) {
 code_header(201);
 $Config = Config::instance();
 Page::instance()->json(
-	$Config->core_url().'/'.$Config->server['relative_address']."/$id"
+	$Config->core_url().'/'.Route::instance()->relative_address."/$id"
 );

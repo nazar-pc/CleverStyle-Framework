@@ -8,7 +8,8 @@
  */
 namespace {
 	use
-		cs\Config;
+		cs\Config,
+		cs\Route;
 	/**
 	 * Return request id from Request object
 	 *
@@ -152,9 +153,10 @@ namespace {
 			$domain = $_SERVER->host;
 			$path   = '/';
 			if ($Config) {
+				$Route = Route::instance();
 				$prefix = $Config->core['cookie_prefix'];
-				$domain = $Config->core['cookie_domain'][$Config->server['mirror_index']];
-				$path   = $Config->core['cookie_path'][$Config->server['mirror_index']];
+				$domain = $Config->core['cookie_domain'][$Route->mirror_index];
+				$path   = $Config->core['cookie_path'][$Route->mirror_index];
 			}
 		}
 		if ($value === '') {

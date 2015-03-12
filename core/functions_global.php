@@ -12,7 +12,8 @@
  * This particular file contains functions that work with global state (cookies, headers, status codes, etc.)
  */
 use
-	cs\Config;
+	cs\Config,
+	cs\Route;
 /**
  * Function for setting cookies on all mirrors and taking into account cookies prefix. Parameters like in system function, but $path, $domain and $secure
  * are skipped, they are detected automatically, and $api parameter added in the end.
@@ -36,9 +37,10 @@ function _setcookie ($name, $value, $expire = 0, $httponly = false) {
 		$domain = $_SERVER->host;
 		$path   = '/';
 		if ($Config) {
+			$Route  = Route::instance();
 			$prefix = $Config->core['cookie_prefix'];
-			$domain = $Config->core['cookie_domain'][$Config->server['mirror_index']];
-			$path   = $Config->core['cookie_path'][$Config->server['mirror_index']];
+			$domain = $Config->core['cookie_domain'][$Route->mirror_index];
+			$path   = $Config->core['cookie_path'][$Route->mirror_index];
 		}
 	}
 	if ($value === '') {

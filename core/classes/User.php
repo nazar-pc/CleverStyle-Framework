@@ -378,7 +378,7 @@ class User {
 			 */
 			$groups = $this->get_groups() ?: [];
 			if (in_array(self::ADMIN_GROUP_ID, $groups)) {
-				$this->is_admin	= Config::instance()->can_be_admin;
+				$this->is_admin	= Config::instance()->can_be_admin();
 				$this->is_user	= true;
 			} elseif (in_array(self::USER_GROUP_ID, $groups)) {
 				$this->is_user	= true;
