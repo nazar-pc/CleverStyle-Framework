@@ -8,11 +8,11 @@
  */
 namespace cs\modules\Shop;
 use
-	cs\Index,
-	cs\Page;
+	cs\Page,
+	cs\Route;
 
-$Index      = Index::instance();
 $Page       = Page::instance();
+$Route      = Route::instance();
 $Items = Items::instance();
 if (isset($_GET['ids'])) {
 	$items = $Items->get(explode(',', $_GET['ids']));
@@ -21,8 +21,8 @@ if (isset($_GET['ids'])) {
 	} else {
 		$Page->json($items);
 	}
-} elseif (isset($Index->route_ids[0])) {
-	$item = $Items->get($Index->route_ids[0]);
+} elseif (isset($Route->ids[0])) {
+	$item = $Items->get($Route->ids[0]);
 	if (!$item) {
 		error_code(404);
 	} else {

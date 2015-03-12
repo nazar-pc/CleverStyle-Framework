@@ -8,13 +8,13 @@
  */
 namespace cs\modules\Shop;
 use
-	cs\Index;
+	cs\Route;
 
-$Index = Index::instance();
-if (!isset($Index->route_ids[0])) {
+$Route = Route::instance();
+if (!isset($Route->ids[0])) {
 	error_code(400);
 	return;
 }
-if (!Categories::instance()->del($Index->route_ids[0])) {
+if (!Categories::instance()->del($Route->ids[0])) {
 	error_code(500);
 }

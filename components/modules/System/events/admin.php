@@ -15,7 +15,7 @@ Event::instance()->on(
 		$L			= Language::instance();
 		$Menu		= Menu::instance();
 		$structure	= $Config->core['simple_admin_mode'] ? file_get_json(__DIR__.'/../admin/index_simple.json') :  file_get_json(__DIR__.'/../admin/index.json');
-		$route		= Index::instance()->route_path;
+		$route		= Route::instance()->path;
 		foreach ($structure as $section => $items) {
 			$Menu->add_section_item(
 				'System',

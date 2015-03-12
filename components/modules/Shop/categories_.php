@@ -10,13 +10,13 @@ namespace cs\modules\Shop;
 use
 	h,
 	cs\Config,
-	cs\Index,
 	cs\Language\Prefix,
-	cs\Page;
+	cs\Page,
+	cs\Route;
 $Config          = Config::instance();
-$Index           = Index::instance();
 $L               = new Prefix('shop_');
 $Page            = Page::instance();
+$Route = Route::instance();
 $Categories      = Categories::instance();
 $all_categories  = $Categories->get_for_user($Categories->get_all());
 $all_categories  = array_combine(array_column($all_categories, 'id'), $all_categories);
@@ -26,8 +26,8 @@ foreach ($all_categories as $category) {
 }
 unset($category);
 $current_category = 0;
-if ($Index->route_path) {
-	$current_category = array_slice($Index->route_path, -1)[0];
+if ($Route->path) {
+	$current_category = array_slice($Route->path, -1)[0];
 	$current_category = explode(':', $current_category);
 	$current_category = (int)array_pop($current_category);
 }

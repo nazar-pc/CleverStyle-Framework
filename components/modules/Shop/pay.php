@@ -10,15 +10,14 @@ namespace cs\modules\Shop;
 use
 	cs\Config,
 	cs\Event,
-	cs\Index,
 	cs\Language\Prefix,
 	cs\Page,
+	cs\Route,
 	cs\User;
 $Config = Config::instance();
-$Index  = Index::instance();
 $L      = new Prefix('shop_');
 $Orders = Orders::instance();
-$order  = $Orders->get($Index->route_ids[0]);
+$order  = $Orders->get(@Route::instance()->ids[0]);
 if (!$order || $order['user'] != User::instance()->id) {
 	error_code(404);
 	return;

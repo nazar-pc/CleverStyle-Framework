@@ -8,16 +8,16 @@
  */
 namespace cs\modules\Shop;
 use
-	cs\Index,
 	cs\Page,
+	cs\Route,
 	cs\User;
 
-$Index  = Index::instance();
 $Page   = Page::instance();
+$Route  = Route::instance();
 $User   = User::instance();
 $Orders = Orders::instance();
-if (isset($Index->route_ids[0], $Index->route_path[1])) {
-	$order = $Orders->get($Index->route_ids[0]);
+if (isset($Route->ids[0], $Route->path[1])) {
+	$order = $Orders->get($Route->ids[0]);
 	if (!$order) {
 		error_code(404);
 	} elseif (
@@ -26,23 +26,23 @@ if (isset($Index->route_ids[0], $Index->route_path[1])) {
 	) {
 		error_code(403);
 	}
-	switch ($Index->route_path[1]) {
+	switch ($Route->path[1]) {
 		/**
 		 * Get order items, not order itself
 		 */
 		case 'items':
 			$Page->json(
-				$Orders->get_items($Index->route_ids[0])
+				$Orders->get_items($Route->ids[0])
 			);
 			break;
 		case 'statuses':
 			$Page->json(
-				$Orders->get_statuses($Index->route_ids[0])
+				$Orders->get_statuses($Route->ids[0])
 			);
 			break;
 	}
-} elseif (isset($Index->route_ids[0])) {
-	$order = $Orders->get($Index->route_ids[0]);
+} elseif (isset($Route->ids[0])) {
+	$order = $Orders->get($Route->ids[0]);
 	if (!$order) {
 		error_code(404);
 	} elseif (

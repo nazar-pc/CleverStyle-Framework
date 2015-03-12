@@ -13,13 +13,14 @@ use
 	cs\Index,
 	cs\Language\Prefix,
 	cs\Page,
+	cs\Route,
 	cs\User,
 	h;
 
 $Index               = Index::instance();
 $Page                = Page::instance();
 $L                   = new Prefix('polls_');
-$poll                = Polls::instance()->get($Index->route_ids[0]);
+$poll                = Polls::instance()->get(Route::instance()->ids[0]);
 $Page->title(
 	$L->deleting_of_poll($poll['title'])
 );

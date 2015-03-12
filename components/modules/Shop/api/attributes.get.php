@@ -8,10 +8,10 @@
  */
 namespace cs\modules\Shop;
 use
-	cs\Index,
-	cs\Page;
+	cs\Page,
+	cs\Route;
 
-$Index      = Index::instance();
+$Route      = Route::instance();
 $Page       = Page::instance();
 $Attributes = Attributes::instance();
 if (isset($_GET['ids'])) {
@@ -21,14 +21,14 @@ if (isset($_GET['ids'])) {
 	} else {
 		$Page->json($attributes);
 	}
-} elseif (isset($Index->route_ids[0])) {
-	$attribute = $Attributes->get($Index->route_ids[0]);
+} elseif (isset($Route->ids[0])) {
+	$attribute = $Attributes->get($Route->ids[0]);
 	if (!$attribute) {
 		error_code(404);
 	} else {
 		$Page->json($attribute);
 	}
-} elseif (isset($Index->route_path[1]) && $Index->route_path[1] == 'types') {
+} elseif (isset($Route->path[1]) && $Route->path[1] == 'types') {
 	$Page->json(
 		$Attributes->get_type_to_name_array()
 	);

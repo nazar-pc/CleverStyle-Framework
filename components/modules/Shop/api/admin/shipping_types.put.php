@@ -8,12 +8,12 @@
  */
 namespace cs\modules\Shop;
 use
-	cs\Index,
-	cs\Page;
+	cs\Page,
+	cs\Route;
 
-$Index = Index::instance();
+$Route = Route::instance();
 if (!isset(
-	$Index->route_ids[0],
+	$Route->ids[0],
 	$_POST['price'],
 	$_POST['phone_needed'],
 	$_POST['address_needed'],
@@ -24,7 +24,7 @@ if (!isset(
 	return;
 }
 $result = Shipping_types::instance()->set(
-	$Index->route_ids[0],
+	$Route->ids[0],
 	$_POST['price'],
 	$_POST['phone_needed'],
 	$_POST['address_needed'],

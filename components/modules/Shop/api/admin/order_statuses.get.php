@@ -8,20 +8,20 @@
  */
 namespace cs\modules\Shop;
 use
-	cs\Index,
-	cs\Page;
+	cs\Page,
+	cs\Route;
 
-$Index          = Index::instance();
+$Route          = Route::instance();
 $Page           = Page::instance();
 $Order_statuses = Order_statuses::instance();
-if (isset($Index->route_ids[0])) {
-	$order_status = $Order_statuses->get($Index->route_ids[0]);
+if (isset($Route->ids[0])) {
+	$order_status = $Order_statuses->get($Route->ids[0]);
 	if (!$order_status) {
 		error_code(404);
 	} else {
 		$Page->json($order_status);
 	}
-} elseif (isset($Index->route_path[2]) && $Index->route_path[2] == 'types') {
+} elseif (isset($Route->path[2]) && $Route->path[2] == 'types') {
 	$Page->json(
 		$Order_statuses->get_type_to_name_array()
 	);

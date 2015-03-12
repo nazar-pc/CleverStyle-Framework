@@ -8,21 +8,21 @@
  */
 namespace cs\modules\Shop;
 use
-	cs\Index,
 	cs\Language,
-	cs\Page;
+	cs\Page,
+	cs\Route;
 
-$Index  = Index::instance();
+$Route  = Route::instance();
 $Page   = Page::instance();
 $Orders = Orders::instance();
 /**
  * Get order items, not order itself
  */
-if (isset($Index->route_ids[0], $Index->route_path[1])) {
-	switch ($Index->route_path[1]) {
+if (isset($Route->ids[0], $Route->path[1])) {
+	switch ($Route->path[1]) {
 		case 'items':
 			$Page->json(
-				$Orders->get_items($Index->route_ids[0])
+				$Orders->get_items($Route->ids[0])
 			);
 			break;
 		case 'statuses':
@@ -33,12 +33,12 @@ if (isset($Index->route_ids[0], $Index->route_path[1])) {
 						date($Language->{TIME - $status['date'] < 24 * 3600 ? '_time' : '_datetime_long'}, $status['date'])
 					);
 					return $status;
-				}, $Orders->get_statuses($Index->route_ids[0]))
+				}, $Orders->get_statuses($Route->ids[0]))
 			);
 			break;
 	}
-} elseif (isset($Index->route_ids[0])) {
-	$order = $Orders->get($Index->route_ids[0]);
+} elseif (isset($Route->ids[0])) {
+	$order = $Orders->get($Route->ids[0]);
 	if (!$order) {
 		error_code(404);
 	} else {

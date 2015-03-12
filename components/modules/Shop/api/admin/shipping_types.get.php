@@ -8,21 +8,21 @@
  */
 namespace cs\modules\Shop;
 use
-	cs\Index,
-	cs\Page;
+	cs\Page,
+	cs\Route;
 
-$Index          = Index::instance();
+$Route          = Route::instance();
 $Page           = Page::instance();
 $Shipping_types = Shipping_types::instance();
 if (isset($_GET['ids'])) {
-	$shipping_types = $Shipping_types->get(explode(',', $Index->route_ids[0]));
+	$shipping_types = $Shipping_types->get(explode(',', $Route->ids[0]));
 	if (!$shipping_types) {
 		error_code(404);
 	} else {
 		$Page->json($shipping_types);
 	}
-} elseif (isset($Index->route_ids[0])) {
-	$shipping_type = $Shipping_types->get($Index->route_ids[0]);
+} elseif (isset($Route->ids[0])) {
+	$shipping_type = $Shipping_types->get($Route->ids[0]);
 	if (!$shipping_type) {
 		error_code(404);
 	} else {

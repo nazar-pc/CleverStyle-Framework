@@ -269,8 +269,8 @@ trait Includes {
 			'cookie_path'		=> $Config->core['cookie_path'][$Route->mirror_index],
 			'protocol'			=> $_SERVER->protocol,
 			'route'				=> $Route->route,
-			'route_path'		=> $Index->route_path,
-			'route_ids'			=> $Index->route_ids
+			'route_path'		=> $Route->path,
+			'route_ids'			=> $Route->ids
 		], 'cs', true);
 		if ($User->guest()) {
 			$this->config_internal(get_core_ml_text('rules'), 'cs.rules_text', true);
@@ -279,7 +279,7 @@ trait Includes {
 		 * If CSS and JavaScript compression enabled
 		 */
 		if ($Config->core['cache_compress_js_css'] && !admin_path()) {
-			$this->add_includes_on_page_with_compression($Config);
+			$this->add_includes_on_page_with_compression();
 		} else {
 			/**
 			 * Language translation is added explicitly only when compression is disabled, otherwise it will be in compressed JS file
@@ -293,7 +293,7 @@ trait Includes {
 		$this->add_includes_on_page_manually_added($Config);
 		return $this;
 	}
-	protected function add_includes_on_page_with_compression ($Config) {
+	protected function add_includes_on_page_with_compression () {
 		/**
 		 * Current cache checking
 		 */
@@ -332,7 +332,7 @@ trait Includes {
 				) ||
 				(
 					$dependencies &&
-					array_search($prefix_module, $dependencies) !== false &&
+					in_array($prefix_module, $dependencies) &&
 					$is_dependency = true
 				)
 			) {
@@ -554,14 +554,17 @@ trait Includes {
 			) {
 				continue;
 			}
+			/** @noinspection SlowArrayOperationsInLoopInspection */
 			$includes['css']	= array_merge(
 				$includes['css'],
 				$get_files(MODULES."/$module_name/includes/css", $absolute ? true : "components/modules/$module_name/includes/css")
 			);
+			/** @noinspection SlowArrayOperationsInLoopInspection */
 			$includes['js']		= array_merge(
 				$includes['js'],
 				$get_files(MODULES."/$module_name/includes/js", $absolute ? true : "components/modules/$module_name/includes/js")
 			);
+			/** @noinspection SlowArrayOperationsInLoopInspection */
 			$includes['html']		= array_merge(
 				$includes['html'],
 				$get_files(MODULES."/$module_name/includes/html", $absolute ? true : "components/modules/$module_name/includes/html")
@@ -569,14 +572,17 @@ trait Includes {
 		}
 		unset($module_name, $module_data);
 		foreach ($Config->components['plugins'] as $plugin_name) {
+			/** @noinspection SlowArrayOperationsInLoopInspection */
 			$includes['css']	= array_merge(
 				$includes['css'],
 				$get_files(PLUGINS."/$plugin_name/includes/css", $absolute ? true : "components/plugins/$plugin_name/includes/css")
 			);
+			/** @noinspection SlowArrayOperationsInLoopInspection */
 			$includes['js']		= array_merge(
 				$includes['js'],
 				$get_files(PLUGINS."/$plugin_name/includes/js", $absolute ? true : "components/plugins/$plugin_name/includes/js")
 			);
+			/** @noinspection SlowArrayOperationsInLoopInspection */
 			$includes['html']		= array_merge(
 				$includes['html'],
 				$get_files(PLUGINS."/$plugin_name/includes/html", $absolute ? true : "components/plugins/$plugin_name/includes/html")
@@ -765,13 +771,14 @@ trait Includes {
 					unset($new_dependency);
 				}
 			}
+			unset($dependency);
 			if (empty($depends_on)) {
 				unset($dependencies[$component_name]);
 			} else {
 				$depends_on = array_unique($depends_on);
 			}
 		}
-		unset($dependencies_aliases, $component_name, $depends_on, $index, $dependency);
+		unset($dependencies_aliases, $component_name, $depends_on, $index);
 		/**
 		 * Clean dependencies without files
 		 */
@@ -781,8 +788,9 @@ trait Includes {
 					unset($depends_on[$index]);
 				}
 			}
+			unset($dependency);
 		}
-		unset($depends_on, $index, $dependency);
+		unset($depends_on, $index);
 	}
 	/**
 	 * Creates cached version of given js and css files.<br>
@@ -796,6 +804,7 @@ trait Includes {
 	protected function create_cached_includes_files ($filename_prefix, $includes) {
 		$cache_hash		= [];
 		$destination	= Config::instance()->core['vulcanization'] ? false : PUBLIC_CACHE;
+		/** @noinspection AlterInForeachInspection */
 		foreach ($includes as $extension => &$files) {
 			$files_content = '';
 			foreach ($files as $file) {

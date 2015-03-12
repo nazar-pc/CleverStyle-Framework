@@ -8,17 +8,17 @@
  */
 namespace cs\modules\Shop;
 use
-	cs\Index,
-	cs\Page;
+	cs\Page,
+	cs\Route;
 
-$Index = Index::instance();
-if (!isset($Index->route_ids[0])) {
+$Route = Route::instance();
+if (!isset($Route->ids[0])) {
 	error_code(400);
 	return;
 }
 $Orders   = Orders::instance();
-$order_id = $Index->route_ids[0];
-if (isset($Index->route_path[2]) && $Index->route_path[2] == 'items') {
+$order_id = $Route->ids[0];
+if (isset($Route->path[2]) && $Route->path[2] == 'items') {
 	if (!isset($_POST['items']) || empty($_POST['items'])) {
 		error_code(400);
 		return;

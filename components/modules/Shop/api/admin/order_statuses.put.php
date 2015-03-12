@@ -8,12 +8,12 @@
  */
 namespace cs\modules\Shop;
 use
-	cs\Index,
-	cs\Page;
+	cs\Page,
+	cs\Route;
 
-$Index = Index::instance();
+$Route = Route::instance();
 if (!isset(
-	$Index->route_ids[0],
+	$Route->ids[0],
 	$_POST['title'],
 	$_POST['type'],
 	$_POST['color'],
@@ -24,7 +24,7 @@ if (!isset(
 	return;
 }
 $result = Order_statuses::instance()->set(
-	$Index->route_ids[0],
+	$Route->ids[0],
 	$_POST['title'],
 	$_POST['type'],
 	$_POST['color'],

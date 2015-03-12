@@ -8,10 +8,10 @@
  */
 namespace cs\modules\Shop;
 use
-	cs\Index,
-	cs\Page;
+	cs\Page,
+	cs\Route;
 
-$Index      = Index::instance();
+$Route      = Route::instance();
 $Page       = Page::instance();
 $Categories = Categories::instance();
 if (isset($_GET['ids'])) {
@@ -21,8 +21,8 @@ if (isset($_GET['ids'])) {
 	} else {
 		$Page->json($categories);
 	}
-} elseif (isset($Index->route_ids[0])) {
-	$category = $Categories->get_for_user($Index->route_ids[0]);
+} elseif (isset($Route->ids[0])) {
+	$category = $Categories->get_for_user($Route->ids[0]);
 	if (!$category) {
 		error_code(404);
 	} else {

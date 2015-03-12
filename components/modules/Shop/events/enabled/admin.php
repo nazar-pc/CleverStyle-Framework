@@ -10,14 +10,14 @@ namespace cs\modules\Shop;
 use
 	cs\Config,
 	cs\Event,
-	cs\Index,
 	cs\Language\Prefix,
-	cs\Menu;
+	cs\Menu,
+	cs\Route;
 if (!function_exists(__NAMESPACE__.'\\add_menu_section_item')) {
 	function add_menu_section_item ($section) {
 		$L		= new Prefix('shop_');
 		$Menu	= Menu::instance();
-		$route	= Index::instance()->route_path;
+		$route	= Route::instance()->path;
 		$Menu->add_item(
 			'Shop',
 			$L->$section,

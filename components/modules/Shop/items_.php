@@ -10,11 +10,10 @@ namespace cs\modules\Shop;
 use
 	h,
 	cs\Config,
-	cs\Index,
 	cs\Language\Prefix,
-	cs\Page;
+	cs\Page,
+	cs\Route;
 $Config     = Config::instance();
-$Index      = Index::instance();
 $L          = new Prefix('shop_');
 $Page       = Page::instance();
 $Categories = Categories::instance();
@@ -22,7 +21,7 @@ $Attributes = Attributes::instance();
 $Items      = Items::instance();
 $item       = explode(
 	':',
-	array_slice($Index->route_path, -1)[0]
+	array_slice(Route::instance()->path, -1)[0]
 );
 $item       = $Items->get_for_user(array_pop($item));
 $Page->title($item['title']);

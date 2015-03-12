@@ -12,7 +12,7 @@ Event::instance()->on(
 	function () {
 		$L		= Language::instance();
 		$Menu	= Menu::instance();
-		$route	= Index::instance()->route_path;
+		$route	= Route::instance()->path;
 		$Menu->add_item(
 			'Blogs',
 			$L->browse_sections,

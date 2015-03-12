@@ -8,12 +8,12 @@
  */
 namespace cs\modules\Shop;
 use
-	cs\Index,
-	cs\Page;
+	cs\Page,
+	cs\Route;
 
-$Index = Index::instance();
+$Route = Route::instance();
 if (!isset(
-	$Index->route_ids[0],
+	$Route->ids[0],
 	$_POST['category'],
 	$_POST['price'],
 	$_POST['in_stock'],
@@ -27,7 +27,7 @@ if (!isset(
 	return;
 }
 $result = Items::instance()->set(
-	$Index->route_ids[0],
+	$Route->ids[0],
 	$_POST['category'],
 	$_POST['price'],
 	$_POST['in_stock'],
