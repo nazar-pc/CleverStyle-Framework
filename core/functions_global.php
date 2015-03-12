@@ -28,19 +28,17 @@ function _setcookie ($name, $value, $expire = 0, $httponly = false) {
 	static $path, $domain, $prefix, $secure;
 	if (!isset($prefix)) {
 		$Config = Config::instance(true);
+		$prefix = '';
+		/**
+		 * @var \cs\_SERVER $_SERVER
+		 */
+		$secure = $_SERVER->secure;
+		$domain = $_SERVER->host;
+		$path   = '/';
 		if ($Config) {
 			$prefix = $Config->core['cookie_prefix'];
-			$secure = $Config->server['protocol'] == 'https';
 			$domain = $Config->core['cookie_domain'][$Config->server['mirror_index']];
 			$path   = $Config->core['cookie_path'][$Config->server['mirror_index']];
-		} else {
-			$prefix = '';
-			/**
-			 * @var \cs\_SERVER $_SERVER
-			 */
-			$secure = $_SERVER->secure;
-			$domain = $_SERVER->host;
-			$path   = '/';
 		}
 	}
 	if ($value === '') {

@@ -109,10 +109,8 @@ class Page {
 	 * @return Page
 	 */
 	function json ($add) {
-		if (!api_path()) {
-			_header('Content-Type: application/json; charset=utf-8', true);
-			interface_off();
-		}
+		_header('Content-Type: application/json; charset=utf-8', true);
+		interface_off();
 		$this->Content	= _json_encode($add);
 		return $this;
 	}
