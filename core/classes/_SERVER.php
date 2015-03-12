@@ -19,6 +19,7 @@ use
  * @property bool   $dnt             Do not track
  * @property string $host            The best guessed host
  * @property string $ip              The best guessed IP of client (based on all known headers), `$this->remote_addr` by default
+ * @property string $protocol        Protocol `http` or `https`
  * @property string $query_string    Query string
  * @property string $referer         HTTP referer, `''` by default
  * @property string $remote_addr     Where request came from, not necessary real IP of client
@@ -34,6 +35,7 @@ class _SERVER implements ArrayAccess, Iterator {
 	public    $dnt            = false;
 	public    $host           = '';
 	public    $ip             = '';
+	public    $protocol       = '';
 	public    $query_string   = '';
 	public    $referer        = '';
 	public    $remote_addr    = '';
@@ -54,6 +56,7 @@ class _SERVER implements ArrayAccess, Iterator {
 		$this->content_type   = isset($SERVER['CONTENT_TYPE']) ? $SERVER['CONTENT_TYPE'] : '';
 		$this->dnt            = isset($SERVER['HTTP_DNT']) && $SERVER['HTTP_DNT'] == 1;
 		$this->secure         = $this->secure($SERVER);
+		$this->protocol       = $this->secure ? 'https' : 'http';
 		$this->host           = $this->host($SERVER);
 		$this->ip             = $this->ip($_SERVER);
 		$this->query_string   = isset($SERVER['QUERY_STRING']) ? $SERVER['QUERY_STRING'] : '';
@@ -109,6 +112,7 @@ class _SERVER implements ArrayAccess, Iterator {
 				$port = (int)$SERVER['HTTP_X_FORWARDED_PORT'];
 			}
 		} elseif (isset($SERVER['HTTP_HOST'])) {
+			/** @noinspection NotOptimalIfConditionsInspection */
 			if (!$host || filter_var($host, FILTER_VALIDATE_IP)) {
 				$host = $SERVER['HTTP_HOST'];
 			} elseif (strpos($SERVER['HTTP_HOST'], ':') !== false) {

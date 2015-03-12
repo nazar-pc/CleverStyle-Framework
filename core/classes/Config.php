@@ -370,8 +370,7 @@ class Config {
 		/**
 		 * @var _SERVER $_SERVER
 		 */
-		$protocol	= $_SERVER->secure ? 'https' : 'http';
-		$base_url	= "$protocol://$_SERVER->host";
+		$base_url	= "$_SERVER->protocol://$_SERVER->host";
 		$L			= Language::instance();
 		if ($L->url_language()) {
 			$base_url	.= "/$L->clang";
@@ -387,8 +386,7 @@ class Config {
 		/**
 		 * @var _SERVER $_SERVER
 		 */
-		$protocol = $_SERVER->secure ? 'https' : 'http';
-		return "$protocol://$_SERVER->host";
+		return "$_SERVER->protocol://$_SERVER->host";
 	}
 	/**
 	 * Get object for getting db and storage configuration of module

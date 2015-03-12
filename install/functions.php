@@ -198,7 +198,7 @@ function install_process ($fs, $argv = null) {
 	if (isset($_POST['site_url'])) {
 		$url = $_POST['site_url'];
 	} else {
-		$url = @$_SERVER->secure ? 'https' : 'http';
+		$url = @$_SERVER->protocol;
 		$url .= "://$_SERVER->host$_SERVER->request_uri";
 		$url = implode('/', array_slice(explode('/', $url), 0, -2));    //Remove 2 last items
 	}

@@ -61,10 +61,7 @@ class Route {
 			list($protocol, $urls) = explode('://', $address, 2);
 			if (
 				$this->mirror_index === -1 &&
-				(
-					// Protocol should be the same
-					$protocol == 'http' xor $_SERVER->secure
-				)
+				$protocol == $_SERVER->protocol
 			) {
 				foreach (explode(';', $urls) as $url) {
 					if (mb_strpos("$_SERVER->host$this->raw_relative_address", $url) === 0) {
@@ -128,7 +125,7 @@ class Route {
 		$Config->server['raw_relative_address'] = &$this->raw_relative_address;
 		$Config->server['host']                 = $_SERVER->host;
 		$Config->server['relative_address']     = &$this->relative_address;
-		$Config->server['protocol']             = $_SERVER->secure ? 'https' : 'http';
+		$Config->server['protocol']             = $_SERVER->protocol;
 		$Config->server['mirror_index']         = &$this->mirror_index;
 		$Config->route                          = &$this->route;
 	}
