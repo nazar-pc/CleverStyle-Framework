@@ -491,11 +491,12 @@ class Page {
 		/**
 		 * For AJAX and API requests only content without page template
 		 */
-		if (!$this->interface) {
+		$api = api_path();
+		if ($api || !$this->interface) {
 			/**
 			 * Processing of replacing in content
 			 */
-			echo $this->process_replacing($this->Content ?: (api_path() ? 'null' : ''));
+			echo $this->process_replacing($this->Content ?: ($api ? 'null' : ''));
 		} else {
 			Event::instance()->fire('System/Page/pre_display');
 			/**
