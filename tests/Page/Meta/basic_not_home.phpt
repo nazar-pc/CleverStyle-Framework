@@ -10,14 +10,16 @@ Config::instance_stub(
 		'core'		=> [
 			'multilingual'	=> false,
 			'name'			=> ''
-		],
-		'server'	=> [
-			'relative_address'	=> 'System'
 		]
 	],
 	[
 		'base_url'	=> 'http://cscms.travis',
 		'module'	=> False_class::instance()
+	]
+);
+Route::instance_stub(
+	[
+		'relative_address' => 'System'
 	]
 );
 $Page	= Page::instance_stub([
