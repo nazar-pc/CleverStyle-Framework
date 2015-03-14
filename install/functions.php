@@ -10,15 +10,17 @@ function install_form () {
 	$timezones = get_timezones_list();
 	return h::{'form[method=post]'}(
 		h::nav(
-			h::{'radio[name=mode]'}([
-				'value'   => ['1', '0'],
-				'in'      => [h::span('Regular user'), h::span('Expert')],
-				'onclick' =>
-					"var items = document.getElementsByClassName('expert');"
-					."for (var i = 0; i < items.length; i++) {"
-					."items.item(i).style.display = this.value == '0' ? 'table-row' : '';"
-					."}"
-			])
+			h::{'radio[name=mode]'}(
+				[
+					'value'   => ['1', '0'],
+					'in'      => [h::span('Regular user'), h::span('Expert')],
+					'onclick' =>
+						"var items = document.getElementsByClassName('expert');"
+						."for (var i = 0; i < items.length; i++) {"
+						."items.item(i).style.display = this.value == '0' ? 'table-row' : '';"
+						."}"
+				]
+			)
 		).
 		h::table(
 			h::{'tr td'}(
@@ -49,9 +51,11 @@ function install_form () {
 			).
 			h::{'tr.expert td'}(
 				'Database tables prefix:',
-				h::{'input[name=db_prefix]'}([
-					'value' => substr(md5(openssl_random_pseudo_bytes(1000)), 0, 5).'_'
-				])
+				h::{'input[name=db_prefix]'}(
+					[
+						'value' => substr(md5(openssl_random_pseudo_bytes(1000)), 0, 5).'_'
+					]
+				)
 			).
 			h::{'tr.expert td'}(
 				'Database charset:',
@@ -59,10 +63,12 @@ function install_form () {
 			).
 			h::{'tr td'}(
 				'Timezone:',
-				h::{'select[name=timezone][size=7][selected=UTC]'}([
-					'in'    => array_keys($timezones),
-					'value' => array_values($timezones)
-				])
+				h::{'select[name=timezone][size=7][selected=UTC]'}(
+					[
+						'in'    => array_keys($timezones),
+						'value' => array_values($timezones)
+					]
+				)
 			).
 			h::{'tr td'}(
 				'Language:',
@@ -133,67 +139,63 @@ function install_process ($fs, $argv = null) {
 	/**
 	 * General system configuration
 	 */
-	$config         = _json_decode('{
-		"name": "",
-		"url": [],
-		"admin_email": "",
-		"closed_title": "Site closed",
-		"closed_text": "<p>Site closed for maintenance<\/p>",
-		"site_mode": "1",
-		"title_delimiter": " | ",
-		"title_reverse": "0",
-		"cache_compress_js_css": "1",
-		"vulcanization": "1",
-		"put_js_after_body": "1",
-		"theme": "",
-		"themes": [],
-		"language": "",
-		"allow_change_language": "0",
-		"multilingual": "0",
-		"db_balance": "0",
-		"maindb_for_write": "0",
-		"active_languages": [],
-		"cookie_domain": [],
-		"cookie_path": [],
-		"languages": [],
-		"inserts_limit": "1000",
-		"key_expire": "120",
-		"session_expire": "2592000",
-		"update_ratio": "75",
-		"sign_in_attempts_block_count": "0",
-		"sign_in_attempts_block_time": "5",
-		"cookie_prefix": "",
-		"timezone": "",
-		"password_min_length": "4",
-		"password_min_strength": "3",
-		"smtp": "0",
-		"smtp_host": "",
-		"smtp_port": "",
-		"smtp_secure": "",
-		"smtp_auth": "0",
-		"smtp_user": "",
-		"smtp_password": "",
-		"mail_from_name": "",
-		"allow_user_registration": "1",
-		"require_registration_confirmation": "1",
-		"auto_sign_in_after_registration": "1",
-		"registration_confirmation_time": "1",
-		"mail_signature": "",
-		"mail_from": "",
-		"rules": "<p>Site rules<\/p>",
-		"show_tooltips": "1",
-		"online_time": "300",
-		"remember_user_ip": "0",
-		"ip_black_list": [
-			""
-		],
-		"ip_admin_list_only": "0",
-		"ip_admin_list": [
-			""
-		],
-		"simple_admin_mode": "0",
-		"default_module": "System"
-	}');
+	$config         = [
+		'name'                              => '',
+		'url'                               => [],
+		'admin_email'                       => '',
+		'closed_title'                      => 'Site closed',
+		'closed_text'                       => '<p>Site closed for maintenance</p>',
+		'site_mode'                         => 1,
+		'title_delimiter'                   => ' | ',
+		'title_reverse'                     => 0,
+		'cache_compress_js_css'             => 1,
+		'vulcanization'                     => 1,
+		'put_js_after_body'                 => 1,
+		'theme'                             => '',
+		'themes'                            => [],
+		'language'                          => '',
+		'allow_change_language'             => 0,
+		'multilingual'                      => 0,
+		'db_balance'                        => 0,
+		'maindb_for_write'                  => 0,
+		'active_languages'                  => [],
+		'cookie_domain'                     => [],
+		'cookie_path'                       => [],
+		'languages'                         => [],
+		'inserts_limit'                     => 1000,
+		'key_expire'                        => 120,
+		'session_expire'                    => 2592000,
+		'update_ratio'                      => 75,
+		'sign_in_attempts_block_count'      => 0,
+		'sign_in_attempts_block_time'       => 5,
+		'cookie_prefix'                     => '',
+		'timezone'                          => '',
+		'password_min_length'               => 4,
+		'password_min_strength'             => 3,
+		'smtp'                              => 0,
+		'smtp_host'                         => '',
+		'smtp_port'                         => '',
+		'smtp_secure'                       => '',
+		'smtp_auth'                         => 0,
+		'smtp_user'                         => '',
+		'smtp_password'                     => '',
+		'mail_from_name'                    => '',
+		'allow_user_registration'           => 1,
+		'require_registration_confirmation' => 1,
+		'auto_sign_in_after_registration'   => 1,
+		'registration_confirmation_time'    => 1,
+		'mail_signature'                    => '',
+		'mail_from'                         => '',
+		'rules'                             => '',
+		'show_tooltips'                     => 1,
+		'online_time'                       => 300,
+		'remember_user_ip'                  => 0,
+		'ip_black_list'                     => [],
+		'ip_admin_list_only'                => 0,
+		'ip_admin_list'                     => [],
+		'simple_admin_mode'                 => 0,
+		'default_module'                    => 'System'
+	];
 	$config['name'] = (string)$_POST['site_name'];
 	if (isset($_POST['site_url'])) {
 		$url = $_POST['site_url'];
@@ -314,7 +316,9 @@ function install_process ($fs, $argv = null) {
 	"key"				: "@key",
 //Any length
 	"public_key"		: "@public_key"
-}'));
+}'
+			)
+		);
 	apc() && apc_clear_cache('user');
 	if (!$main_config) {
 		return "Can't write base system configuration! Installation aborted.";
@@ -405,36 +409,37 @@ function install_process ($fs, $argv = null) {
 	if ($cli) {
 		return "Congratulations! CleverStyle CMS has been installed successfully!\n$warning\nLogin: $admin_login\nPassword: $_POST[admin_password]";
 	} else {
-		return h::h3(
-			'Congratulations! CleverStyle CMS has been installed successfully!'
-		).
-		h::{'table tr| td'}(
-			[
-				'Your sign in information:',
+		return
+			h::h3(
+				'Congratulations! CleverStyle CMS has been installed successfully!'
+			).
+			h::{'table tr| td'}(
 				[
-					'colspan' => 2
+					'Your sign in information:',
+					[
+						'colspan' => 2
+					]
+				],
+				[
+					'Login:',
+					$admin_login
+				],
+				[
+					'Password:',
+					$_POST['admin_password']
 				]
-			],
-			[
-				'Login:',
-				$admin_login
-			],
-			[
-				'Password:',
-				$_POST['admin_password']
-			]
-		).
-		h::p(
-			$warning,
-			[
-				'style' => 'color: red;'
-			]
-		).
-		h::{'button.uk-button'}(
-			'Go to website',
-			[
-				'onclick' => "location.href = '/';"
-			]
-		);
+			).
+			h::p(
+				$warning,
+				[
+					'style' => 'color: red;'
+				]
+			).
+			h::{'button.uk-button'}(
+				'Go to website',
+				[
+					'onclick' => "location.href = '/';"
+				]
+			);
 	}
 }
