@@ -11,17 +11,23 @@
 	document.head.querySelectorAll('.cs-config')
 	(config) ->
 		target		= config.getAttribute('target').split('.')
+		data		= JSON.parse(
+			config.innerHTML.substring(4, config.innerHTML.length - 3).replace('-  ', '-', 'g')
+		)
 		destination	= window
-		target.forEach (target_part) ->
+		target.forEach (target_part, i) ->
 			if target_part != 'window'
 				if !destination[target_part]
 					destination[target_part]	= {}
-				destination	= destination[target_part]
+				if i < target.length - 1
+					destination	= destination[target_part]
+				else
+					if data instanceof Object
+						destination	= destination[target_part]
+						for index, value of data
+							destination[index]	= value
+					else
+						destination[target_part] = data
 			return
-		data	= JSON.parse(
-			config.innerHTML.substring(4, config.innerHTML.length - 3).replace('-  ', '-', 'g')
-		)
-		for index, value of data
-			destination[index]	= value
 		return
 )

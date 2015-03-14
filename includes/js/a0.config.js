@@ -16,22 +16,31 @@
 (function() {
 
   [].forEach.call(document.head.querySelectorAll('.cs-config'), function(config) {
-    var data, destination, index, target, value;
+    var data, destination, target;
     target = config.getAttribute('target').split('.');
+    data = JSON.parse(config.innerHTML.substring(4, config.innerHTML.length - 3).replace('-  ', '-', 'g'));
     destination = window;
-    target.forEach(function(target_part) {
+    target.forEach(function(target_part, i) {
+      var index, value;
       if (target_part !== 'window') {
         if (!destination[target_part]) {
           destination[target_part] = {};
         }
-        destination = destination[target_part];
+        if (i < target.length - 1) {
+          destination = destination[target_part];
+        } else {
+          if (data instanceof Object) {
+            destination = destination[target_part];
+            for (index in data) {
+              value = data[index];
+              destination[index] = value;
+            }
+          } else {
+            destination[target_part] = data;
+          }
+        }
       }
     });
-    data = JSON.parse(config.innerHTML.substring(4, config.innerHTML.length - 3).replace('-  ', '-', 'g'));
-    for (index in data) {
-      value = data[index];
-      destination[index] = value;
-    }
   });
 
 }).call(this);
