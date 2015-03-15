@@ -736,7 +736,7 @@ trait components_save {
 					}
 					$plugin_dir  = PLUGINS."/$plugin";
 					$old_version = file_get_json("$plugin_dir/meta.json")['version'];
-					if (!static::update_extract($plugin_dir, TEMP.'/'.User::instance()->get_session_id().'_plugin_update.phar')) {
+					if (!static::update_extract($plugin_dir, TEMP.'/'.User::instance()->get_session_id().'_plugin_update.phar.php')) {
 						$Page->warning($L->plugin_files_unpacking_error);
 						break;
 					}
