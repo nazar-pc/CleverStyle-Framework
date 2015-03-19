@@ -41,13 +41,14 @@ $(function () {
 		skin					: cs.tinymce && cs.tinymce.skin !== undefined ? cs.tinymce.skin : 'lightgray',
 		language				: cs.Language.clang !== undefined ? cs.Language.clang : 'en',
 		menubar					: false,
-		plugins					: 'advlist,anchor,charmap,code,contextmenu,fullscreen,hr,image,link,lists,media,nonbreaking,noneditable,pagebreak,paste,preview,searchreplace,tabfocus,table,textcolor,visualblocks,visualchars,wordcount',
+		plugins					: 'advlist anchor charmap code colorpicker contextmenu fullscreen hr image link lists media nonbreaking noneditable pagebreak paste preview searchreplace tabfocus table textcolor visualblocks visualchars wordcount',
 		resize					: 'both',
 		toolbar_items_size		: 'small',
 		width					: '100%',
 		convert_urls			: false,
 		remove_script_host		: false,
 		relative_urls			: false,
+		table_style_by_css		: true,
 		file_picker_callback	: uploader ? function (callback) {
 			uploader_callback	= callback;
 			uploader.browse();

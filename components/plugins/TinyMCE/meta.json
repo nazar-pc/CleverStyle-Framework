@@ -1,7 +1,7 @@
 {
 	"package"		: "TinyMCE",
 	"category"		: "plugins",
-	"version"		: "4.1.6-cs3",
+	"version"		: "4.1.9-cs1",
 	"description"	: "TinyMCE is a platform independent web based Javascript HTML WYSIWYG editor control released as Open Source under LGPL by Moxiecode Systems AB. Plupload or similar module is required for files uploading functionality.",
 	"author"		: "Moxiecode Systems AB",
 	"website"		: "www.tinymce.com",
