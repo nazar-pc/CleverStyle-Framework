@@ -407,14 +407,16 @@
 	<dt>System/payment/methods</dt>
 	<dt>
 		<pre>[
-	'methods' => &$payment_methods
+	'methods'  => &$payment_methods,
+	'currency' => {currency}
 ]</pre>
 	</dt>
-	<dd>To implement payment method its name should be added into array <i>$payment_method</i>. Payment method should look like <i>shop:cash</i>, where <i>shop</i> identifies module name and <i>cash</i> payment method itself.</dd>
+	<dd>To implement payment method its name should be added into array <i>$payment_method</i>. Payment method should look like <i>shop:cash</i>, where <i>shop</i> identifies module name and <i>cash</i> payment method itself, {currency} is 3-4 capital letters short code of currency (might be regular currency or cryptocurrency).</dd>
 	<dt>System/payment/execute</dt>
 	<dt>
 		<pre>[
 	'amount'         => {amount},
+	'currency'       => {currency},
 	'user'           => {user_id},
 	'payment_method' => {payment_method},
 	'module'         => Shop,
@@ -422,7 +424,7 @@
 	'description'    => {description}
 ]</pre>
 	</dt>
-	<dd>Module that implements payment method should be subscribed to this event, and if <i>{payment_method}</i> corresponds to specified in <i>System/payment/methods</i> - payment should be processed.</dd>
+	<dd>Module that implements payment method should be subscribed to this event, and if <i>{payment_method}</i> corresponds to specified in <i>System/payment/methods</i> - payment should be processed, {currency} is 3-4 capital letters short code of currency (might be regular currency or cryptocurrency).</dd>
 	<dd>After payment processing <i>System/payment/success</i> or <i>System/payment/error</i> event should be dispatched.</dd>
 </dl>
 <p>Shop module is subscribed to events that corresponds to payments processing, which can be done by third-party modules:</p>

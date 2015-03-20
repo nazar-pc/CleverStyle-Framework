@@ -1,10 +1,10 @@
 <?php
 /**
- * @package       Shop
- * @order_status  modules
- * @author        Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright     Copyright (c) 2015, Nazar Mokrynskyi
- * @license       MIT License, see license.txt
+ * @package      Shop
+ * @order_status modules
+ * @author       Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright    Copyright (c) 2015, Nazar Mokrynskyi
+ * @license      MIT License, see license.txt
  */
 namespace cs\modules\Shop;
 use
@@ -31,6 +31,7 @@ Event::instance()->fire(
 	'System/payment/execute',
 	[
 		'amount'         => $order['for_payment'],
+		'currency'       => $Config->module('Shop')->currency,
 		'user'           => $order['user'],
 		'payment_method' => $order['payment_method'],
 		'module'         => 'Shop',

@@ -46,6 +46,12 @@ use
  *   'id' => $id
  *  ]</code>
  *
+ *  System/payment/methods<code>
+ *  [
+ *   'items'    => &$payment_methods,
+ *   'currency' => $currency
+ *  ]</code>
+ *
  *  Shop/Orders/Cart/recalculate<code>
  *  [
  *   'items'    => &$items,   // Array of array elements [id => item_id, units => units, price => total_price]
@@ -187,7 +193,8 @@ class Orders {
 			]
 		];
 		Event::instance()->fire('System/payment/methods', [
-			'methods' => &$payment_methods
+			'methods'  => &$payment_methods,
+			'currency' => Config::instance()->module('Shop')->currency
 		]);
 		return $payment_methods;
 	}
