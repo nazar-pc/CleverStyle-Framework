@@ -127,15 +127,18 @@ This results in constant and predictable performance (no degradation with time),
 
 # Requirements:
 
-* Unix-like operating system or Windows (not well tested, but should work anyway)
-* Apache2 or Nginx web server ([Nginx config sample](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Nginx-config-sample))
-* PHP 5.4+
- * Mcrypt library (recommended for encryption)
- * APC (Alternative PHP cache) module (recommended for system speed up with PHP 5.4)
- * Memcached (optionally for Memcached cache engine)
-* or HHVM 3.3.2+ LTS / HHVM 3.4.1+
-* MySQL Database server (MariaDB will work as well)
- * System may be extended to support other databases
+* Unix-like operating system
+* or Windows (is not tested, but should also work)
+* Apache2 with modules:
+ * REQUIRED: rewrite, headers
+ * OPTIONAL: expires
+* or Nginx ([config sample](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Nginx-config-sample))
+* PHP 5.4+ with libraries:
+ * REQUIRED: Mcrypt, cURL
+ * OPTIONAL: APCu, Memcached
+* or HHVM 3.3.2+ LTS or HHVM 3.4.1+
+* MySQL 5.5+
+* or MariaDB 5.5+
  
 # How to try?
 

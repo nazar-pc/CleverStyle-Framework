@@ -7,6 +7,8 @@
  */
 /**
  * Fallback for PHP 5.5 hashing functions, that are not present in PHP 5.4
+ *
+ * @todo Remove in future versions
  */
 if (!defined('PASSWORD_DEFAULT')) {
 	require DIR.'/core/thirdparty/password_compat.php';
