@@ -1,5 +1,11 @@
 --TEST--
 Basic features using Memcached cache engine
+--SKIPIF--
+<?php
+if (!extension_loaded('memcached')) {
+	die('Memcached is not available');
+}
+?>
 --FILE--
 <?php
 namespace cs;
