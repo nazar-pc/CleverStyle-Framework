@@ -2,12 +2,6 @@
 Basic features using APC cache engine
 --INI--
 apc.enable_cli	= 1
---SKIPIF--
-<?php
-if (version_compare(PHP_VERSION, '7', '>=')) {
-	die('APC cache engine is not yet supported under PHP 7');
-}
-?>
 --FILE--
 <?php
 namespace cs;
