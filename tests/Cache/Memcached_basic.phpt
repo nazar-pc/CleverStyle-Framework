@@ -2,8 +2,8 @@
 Basic features using Memcached cache engine
 --SKIPIF--
 <?php
-if (!extension_loaded('memcached')) {
-	die('Memcached is not available');
+if (version_compare(PHP_VERSION, '7', '>=')) {
+	die('Memcached cache engine is not yet supported under PHP 7');
 }
 ?>
 --FILE--
