@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		BananaHTML
- * @version		2.1.6
+ * @version		2.2.0
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -86,7 +86,7 @@ class BananaHTML {
 			$in = trim($data['in']);
 			unset($data['in']);
 		}
-		if (array_search(false, $data, true) !== false) {
+		if (in_array(false, $data, true)) {
 			foreach ($data as $i => $item) {
 				if ($item === false) {
 					unset($data[$i]);
@@ -248,11 +248,11 @@ class BananaHTML {
 		}
 		if (
 			$in &&
+			$level &&
 			(
 				strpos($in, "\n") !== false ||
 				strpos($in, "<") !== false
-			) &&
-			$level
+			)
 		) {
 			$in		= $level ? "\n".static::level("$in\n", $level) : "\n$in\n";
 ;		}
@@ -372,7 +372,7 @@ class BananaHTML {
 			}
 			unset($in['checked'], $i, $v);
 			$items = static::array_flip_3d($in);
-			unset($in, $v, $i);
+			unset($v, $i);
 			$temp = '';
 			foreach ($items as $item) {
 				$item['tag'] = __FUNCTION__;
@@ -398,6 +398,7 @@ class BananaHTML {
 				}
 				return $return;
 			} else {
+				/** @noinspection NotOptimalIfConditionsInspection */
 				if (!isset($in['type'])) {
 					$in['type'] = 'text';
 				}
@@ -448,13 +449,13 @@ class BananaHTML {
 		) {
 			$in['in']		= &$in['value'];
 		} elseif (
+			is_array($in) &&
 			(
 				!isset($in['in']) || !is_array($in['in'])
 			) &&
 			(
 				!isset($in['value']) || !is_array($in['value'])
-			) &&
-			is_array($in)
+			)
 		) {
 			$temp			= $in;
 			$in				= [];
@@ -474,6 +475,7 @@ class BananaHTML {
 				unset($data[$attr]);
 			}
 		}
+		unset($value);
 		if (is_array($in['value'])) {
 			if (isset($in['disabled'])) {
 				$data['disabled']	= array_merge((array)$in['disabled'], isset($data['disabled']) ? $data['disabled'] : []);
@@ -512,7 +514,6 @@ class BananaHTML {
 			unset($data['disabled'], $data['selected'], $i, $v);
 		}
 		$options = static::array_flip_3d($in);
-		unset($in);
 		foreach ($options as &$option) {
 			if (isset($option[1])) {
 				$option	= array_merge(
@@ -540,6 +541,23 @@ class BananaHTML {
 	 * @return bool|string
 	 */
 	static function select ($in = '', $data = []) {
+		if (isset($in['insert']) || isset($data['insert'])) {
+			return static::__callStatic(__FUNCTION__, func_get_args());
+		}
+		return static::template_1($in, $data, __FUNCTION__);
+	}
+	/**
+	 * Rendering of optgroup tag with autosubstitution of selected attribute when value of option is equal to $data['selected'], $data['selected'] may be
+	 * array as well as string
+	 *
+	 * @static
+	 *
+	 * @param array|string	$in
+	 * @param array			$data
+	 *
+	 * @return bool|string
+	 */
+	static function optgroup ($in = '', $data = []) {
 		if (isset($in['insert']) || isset($data['insert'])) {
 			return static::__callStatic(__FUNCTION__, func_get_args());
 		}
@@ -790,6 +808,7 @@ class BananaHTML {
 			foreach ($data as &$d) {
 				static::inserts_replacing_recursive($d, $insert);
 			}
+			unset($d);
 		} else {
 			foreach ($insert as $i => $d) {
 				$data	= str_replace("\$i[$i]", $d, $data);
@@ -917,7 +936,11 @@ class BananaHTML {
 		/**
 		 * Fix for textarea tag, which can accept array as content
 		 */
-		if (strpos($input, 'textarea') === 0 && isset($data[0]) && static::is_array_indexed($data[0]) && !is_array($data[0][0])) {
+		if (
+			isset($data[0]) &&
+			strpos($input, 'textarea') === 0 &&
+			static::is_array_indexed($data[0]) && !is_array($data[0][0])
+		) {
 			$data[0]	= implode("\n", $data[0]);
 		}
 		/**
@@ -938,6 +961,7 @@ class BananaHTML {
 				 * Fix for "select" and "datalist" tags because they accept arrays as values
 				 */
 				strpos($input, 'select') !== 0 &&
+				strpos($input, 'optgroup') !== 0 &&
 				strpos($input, 'datalist') !== 0 &&
 				strpos($input, 'input') !== 0 &&
 				static::is_array_indexed($data[0]) &&
@@ -957,14 +981,16 @@ class BananaHTML {
 					);
 				}
 				return $output;
-			} elseif (
+			} /** @noinspection NotOptimalIfConditionsInspection */ elseif (
 				static::is_array_indexed($data[0]) &&
 				(
 					/**
 					 * Fix for "select" and "datalist" tags because they accept arrays as values
 					 */
 					(
-						strpos($input, 'select') !== 0 && strpos($input, 'datalist') !== 0
+						strpos($input, 'select') !== 0 &&
+						strpos($input, 'optgroup') !== 0 &&
+						strpos($input, 'datalist') !== 0
 					) ||
 					(
 						static::is_array_indexed($data[0][0]) && !in_array($data[0][0][0], static::$known_unit_atributes)
@@ -974,7 +1000,11 @@ class BananaHTML {
 				$output = '';
 				foreach ((array)$data[0] as $d) {
 					$data[1]	= isset($data[1]) ? $data[1] : [];
-					if (!is_array($d) || !isset($d[1]) || !is_array($d[1])) {
+					if (
+						!isset($d[1]) ||
+						!is_array($d) ||
+						!is_array($d[1])
+					) {
 						$output			.= static::__callStatic(
 							$input,
 							[
@@ -1009,9 +1039,9 @@ class BananaHTML {
 				}
 				return $output;
 			} elseif (
+				isset($data[1]) &&
 				!is_array($data[0]) &&
 				!in_array($data[0], static::$known_unit_atributes) &&
-				isset($data[1]) &&
 				(
 					!is_array($data[1]) ||
 					(
@@ -1041,7 +1071,9 @@ class BananaHTML {
 			!is_array($data[0]) ||
 			(
 				(
-					strpos($input, 'select') === 0 || strpos($input, 'datalist') === 0
+					strpos($input, 'select') === 0 ||
+					strpos($input, 'optgroup') === 0 ||
+					strpos($input, 'datalist') === 0
 				) &&
 				!isset($data[0]['in'])
 			)
@@ -1096,8 +1128,11 @@ class BananaHTML {
 			$attrs['id'] = $input[1];
 		}
 		$attrs = static::array_merge($attrs, $data);
-		unset($data);
-		if ($tag == 'select' || $tag == 'datalist') {
+		if (
+			$tag == 'select' ||
+			$tag == 'optgroup' ||
+			$tag == 'datalist'
+		) {
 			if (isset($attrs['value'])) {
 				$in = [
 					'in'	=> $attrs['in'],
@@ -1154,7 +1189,7 @@ class BananaHTML {
 	 * @return bool
 	 */
 	protected static function is_array_assoc ($array) {
-		if (!is_array($array) || empty($array)) {
+		if (empty($array) || !is_array($array)) {
 			return false;
 		}
 		$count = count($array);
@@ -1173,7 +1208,7 @@ class BananaHTML {
 	 * @return bool
 	 */
 	protected static function is_array_indexed ($array) {
-		if (!is_array($array) || empty($array)) {
+		if (empty($array) || !is_array($array)) {
 			return false;
 		}
 		return !static::is_array_assoc($array);
@@ -1190,6 +1225,7 @@ class BananaHTML {
 			foreach ($text as &$val) {
 				$val = static::prepare_attr_value($val);
 			}
+			unset($val);
 			return $text;
 		}
 		return strtr(
