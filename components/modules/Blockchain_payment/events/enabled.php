@@ -27,4 +27,26 @@ Event::instance()
 				];
 			}
 		}
+	)
+	->on(
+		'System/payment/execute',
+		function ($data) {
+			if ($data['payment_method'] != 'blockchain_payment:btc') {
+				return;
+			}
+			$id = Transactions::instance()->add(
+				$data['amount'],
+				$data['currency'],
+				$data['user'],
+				$data['module'],
+				$data['purpose'],
+				$data['description']
+			);
+			if (!$id) {
+				error_code(500);
+				return false;
+			}
+			_header('Location: '.Config::instance()->base_url()."/Blockchain_payment/$id", true, 307);
+			return false;
+		}
 	);

@@ -21,19 +21,22 @@ class Transactions {
 		Singleton;
 
 	protected $data_model = [
-		'id'              => 'int',
-		'amount'          => 'float:0',
-		'currency'        => 'text',
-		'user'            => 'int:0',
-		'module'          => 'text',
-		'purpose'         => 'text',
-		'description'     => 'text',
-		'amount_btc'      => 'float:0.0005',
-		'bitcoin_address' => 'text',
-		'created'         => 'int:0',
-		'paid'            => 'int:0',
-		'confirmed'       => 'int:0',
-		'secret'          => 'text'
+		'id'                     => 'int',
+		'amount'                 => 'float:0',
+		'currency'               => 'text',
+		'user'                   => 'int:0',
+		'module'                 => 'text',
+		'purpose'                => 'text',
+		'description'            => 'text',
+		'amount_btc'             => 'float:0.0005',
+		'destination_address'    => 'text',
+		'input_address'          => 'text',
+		'created'                => 'int:0',
+		'paid'                   => 'int:0',
+		'confirmed'              => 'int:0',
+		'secret'                 => 'text',
+		'transaction_hash'       => 'text',
+		'input_transaction_hash' => 'text'
 	];
 	protected $table      = '[prefix]blockchain_payment_transactions';
 
@@ -135,6 +138,19 @@ class Transactions {
 		if ($amount_btc < 0.0005) {
 			return false;
 		}
+		$Config              = Config::instance();
+		$destination_address = $Config->module('Blockchain_payment')->bitcoin_address;
+		$callback            = $Config->base_url()."/Blockchain_payment?secret=$secret";
+		$blockchain_receive  = file_get_json(
+			"https://blockchain.info/api/receive?method=create&address=$destination_address&callback=".urlencode($callback)
+		);
+		if (
+			!isset($blockchain_receive['callback_url']) ||
+			$blockchain_receive['callback_url'] !== $callback
+		) {
+			return false;
+		}
+		$input_address = $blockchain_receive['input_address'];
 		return $this->create_simple(
 			[
 				$amount,
@@ -144,11 +160,14 @@ class Transactions {
 				$purpose,
 				$description,
 				$amount_btc,
-				Config::instance()->module('Blockchain_payment')->bitcoin_address,
+				$destination_address,
+				$input_address,
 				time(),
 				0,
 				0,
-				$secret
+				$secret,
+				'',
+				''
 			]
 		);
 	}
@@ -194,6 +213,30 @@ class Transactions {
 			WHERE `id` = '%d'
 			LIMIT 1",
 			time(),
+			$id
+		);
+	}
+	/**
+	 * Set transaction hashes
+	 *
+	 * @param int    $id
+	 * @param string $transaction_hash
+	 * @param string $input_transaction_hash
+	 *
+	 * @return bool
+	 */
+	function set_transaction_hash ($id, $transaction_hash, $input_transaction_hash) {
+		return (bool)$this->db()->q(
+			"UPDATE `$this->table`
+			SET
+				`transaction_hash`			= '%s',
+				`input_transaction_hash`	= '%s'
+			WHERE
+				`id`				= '%d' AND
+				`transaction_hash`	= ''
+			LIMIT 1",
+			$transaction_hash,
+			$input_transaction_hash,
 			$id
 		);
 	}
