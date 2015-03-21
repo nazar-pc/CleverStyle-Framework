@@ -24,10 +24,14 @@ if (isset($_GET['secret'])) {
 		]
 	);
 	if (!$id) {
-		error_code(404);
+		error_code(400);
 		return;
 	}
 	$transaction = $Transactions->get($id[0]);
+	if (!$transaction) {
+		error_code(404);
+		return;
+	}
 	if (
 		$transaction['input_address'] != $_GET['input_address'] ||
 		$transaction['destination_address'] != $_GET['destination_address']
@@ -54,6 +58,10 @@ if (isset($_GET['secret'])) {
 		return;
 	}
 	$transaction = $Transactions->get($Route->ids[0]);
+	if (!$transaction) {
+		error_code(404);
+		return;
+	}
 	if ($transaction['user'] != User::instance()->id) {
 		error_code(403);
 		return;
