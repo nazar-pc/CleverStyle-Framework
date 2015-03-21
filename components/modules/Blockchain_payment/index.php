@@ -8,6 +8,7 @@
  */
 namespace cs\modules\Blockchain_payment;
 use
+	h,
 	cs\Config,
 	cs\Event,
 	cs\Language\Prefix,
@@ -34,7 +35,8 @@ if (isset($_GET['secret'])) {
 	}
 	if (
 		$transaction['input_address'] != $_GET['input_address'] ||
-		$transaction['destination_address'] != $_GET['destination_address']
+		$transaction['destination_address'] != $_GET['destination_address'] ||
+		$transaction['amount'] != $_GET['value'] / 100000000
 	) {
 		error_code(400);
 		return;
@@ -66,6 +68,14 @@ if (isset($_GET['secret'])) {
 		error_code(403);
 		return;
 	}
-	// TODO page with QR-code
-	$Page->content("$transaction[amount_btc] BTC for $transaction[input_address]");
+	$Page->content(
+		h::cs_blockchain_payment_pay(
+			[
+				'address'     => $transaction['input_address'],
+				'amount'      => $transaction['amount_btc'],
+				'label'       => urlencode("$transaction[module]/$transaction[purpose]"),
+				'description' => h::prepare_attr_value(_json_encode($transaction['description']))
+			]
+		)
+	);
 }

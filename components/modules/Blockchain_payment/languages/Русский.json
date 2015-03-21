@@ -1,7 +1,9 @@
 {
+	"Blockchain_payment"                             : "Оплата через blockchain.info",
 	"blockchain_payment_bitcoin_address"             : "Bitcoin адресс",
 	"blockchain_payment_bitcoin_address_info"        : "Адресс кошелька Bitcoin куда платеж должен быть отправлен",
 	"blockchain_payment_confirmations_required"      : "Необходимые подтвердения",
 	"blockchain_payment_confirmations_required_info" : "Число необходимых подтверждений, используется для защиты от двойной траты",
-	"blockchain_payment_pay_in_bitcoin"              : "Оплатить в Bitcoin на blockchain.info"
+	"blockchain_payment_pay_in_bitcoin"              : "Оплатить в Bitcoin на blockchain.info",
+	"blockchain_payment_scan_or_transfer"            : "Отсканируйте этот QR код или перечислите другим способом %s BTC на Bitcoin адресс %s"
 }
