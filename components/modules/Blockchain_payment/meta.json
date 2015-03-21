@@ -1,0 +1,25 @@
+{
+	"package"		: "Blockchain payment",
+	"category"		: "modules",
+	"version"		: "0.1.0+build-1",
+	"description"	: "Payment though blockchain in Bitcoins",
+	"author"		: "Nazar Mokrynskyi",
+	"website"		: "cleverstyle.org/cms",
+	"license"		: "MIT License",
+	"db_support"	: [
+		"MySQLi"
+	],
+	"provide"		: "blockchain_payment",
+	"require"		: [
+		"System=>1.90"
+	],
+	"multilingual"	: [
+		"interface",
+		"content"
+	],
+	"languages"		: [
+		"English",
+		"Русский",
+		"Українська"
+	]
+}
