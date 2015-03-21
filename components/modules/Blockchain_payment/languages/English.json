@@ -1,4 +1,5 @@
 {
 	"blockchain_payment_bitcoin_address"      : "Bitcoin address",
-	"blockchain_payment_bitcoin_address_info" : "Bitcoin wallet address where payments should be sent to"
+	"blockchain_payment_bitcoin_address_info" : "Bitcoin wallet address where payments should be sent to",
+	"blockchain_payment_pay_in_bitcoin"       : "Pay in Bitcoin on blockchain.info"
 }
