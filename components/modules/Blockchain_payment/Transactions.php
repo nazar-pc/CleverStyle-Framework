@@ -184,19 +184,28 @@ class Transactions {
 		return (float)file_get_contents("https://blockchain.info/tobtc?currency=$currency&value=$amount");
 	}
 	/**
-	 * Set transaction as paid (not confirmed though)
+	 * Set transaction as paid (not confirmed though) and set transaction hashed
 	 *
-	 * @param int $id
+	 * @param int    $id
+	 * @param string $transaction_hash
+	 * @param string $input_transaction_hash
 	 *
 	 * @return bool
 	 */
-	function set_as_paid ($id) {
+	function set_as_paid ($id, $transaction_hash, $input_transaction_hash) {
 		return (bool)$this->db()->q(
 			"UPDATE `$this->table`
-			SET `paid` = '%d'
-			WHERE `id` = '%d'
+			SET
+				`paid`						= '%d',
+				`transaction_hash`			= '%s',
+				`input_transaction_hash`	= '%s'
+			WHERE
+				`id`	= '%d' AND
+				`paid`	= '0'
 			LIMIT 1",
 			time(),
+			$transaction_hash,
+			$input_transaction_hash,
 			$id
 		);
 	}
@@ -210,34 +219,12 @@ class Transactions {
 	function set_as_confirmed ($id) {
 		return (bool)$this->db()->q(
 			"UPDATE `$this->table`
-			SET `paid` = '%d'
-			WHERE `id` = '%d'
+			SET `confirmed` = '%d'
+			WHERE
+				`id`		= '%d' AND
+				`confirmed`	= '0'
 			LIMIT 1",
 			time(),
-			$id
-		);
-	}
-	/**
-	 * Set transaction hashes
-	 *
-	 * @param int    $id
-	 * @param string $transaction_hash
-	 * @param string $input_transaction_hash
-	 *
-	 * @return bool
-	 */
-	function set_transaction_hash ($id, $transaction_hash, $input_transaction_hash) {
-		return (bool)$this->db()->q(
-			"UPDATE `$this->table`
-			SET
-				`transaction_hash`			= '%s',
-				`input_transaction_hash`	= '%s'
-			WHERE
-				`id`				= '%d' AND
-				`transaction_hash`	= ''
-			LIMIT 1",
-			$transaction_hash,
-			$input_transaction_hash,
 			$id
 		);
 	}
