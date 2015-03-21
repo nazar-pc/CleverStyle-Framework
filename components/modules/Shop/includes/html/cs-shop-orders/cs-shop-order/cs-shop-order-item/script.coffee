@@ -8,7 +8,10 @@
 Polymer(
 	ready : ->
 		@$.img.innerHTML		= @querySelector('#img').outerHTML
-		@href					= @querySelector('#link').href
+		href					= @querySelector('#link').href
+		if href
+			@$.img.href		= href
+			@$.link.href	= href
 		@item_title				= @querySelector('#link').innerHTML
 		$this					= $(@)
 		unit_price				= $this.data('unit-price')

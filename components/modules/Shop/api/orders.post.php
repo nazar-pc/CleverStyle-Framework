@@ -10,7 +10,7 @@ namespace cs\modules\Shop;
 use
 	cs\Config,
 	cs\Page,
-	cs\Page,
+	cs\User,
 	cs\Route;
 
 if (
@@ -69,7 +69,7 @@ if (!$User->user()) {
 $Items = Items::instance();
 foreach ($recalculated['items'] as $item) {
 	$item_data = $Items->get($item['id']);
-	$Orders->add_item($id, $item, $item['units'], $item['price'], $item_data['price']);
+	$Orders->add_item($id, $item['id'], $item['units'], $item['price'], $item_data['price']);
 }
 code_header(201);
 Page::instance()->json(

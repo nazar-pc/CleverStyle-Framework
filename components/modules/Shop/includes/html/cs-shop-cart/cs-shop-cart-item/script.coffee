@@ -25,19 +25,23 @@ Polymer(
 			cart.set(@item_id, @units)
 		else
 			cart.del(@item_id)
+			@update_price(0)
+			return
 		cart.get_calculated (data) =>
 			data.items.forEach (item) =>
 				if parseInt(item.id) == @item_id
-					@price				= item.price
-					@price_formatted	= sprintf(price_formatting, @price)
-					discount			= @units * @unit_price - @price
-					@$.discount.innerHTML	=
-						if discount
-							discount	= sprintf(price_formatting, discount)
-							"(#{cs.Language.shop_discount}: #{discount})"
-						else
-							''
+					@update_price(item.price)
 					return false
 			return
 		return
+	update_price	: (price) ->
+		@price				= price
+		@price_formatted	= sprintf(price_formatting, @price)
+		discount			= @units * @unit_price - @price
+		@$.discount.innerHTML	=
+			if discount
+				discount	= sprintf(price_formatting, discount)
+				"(#{cs.Language.shop_discount}: #{discount})"
+			else
+				''
 );

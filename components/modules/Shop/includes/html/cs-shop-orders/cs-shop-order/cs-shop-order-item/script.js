@@ -13,9 +13,13 @@
 
   Polymer({
     ready: function() {
-      var $this, discount, price, unit_price;
+      var $this, discount, href, price, unit_price;
       this.$.img.innerHTML = this.querySelector('#img').outerHTML;
-      this.href = this.querySelector('#link').href;
+      href = this.querySelector('#link').href;
+      if (href) {
+        this.$.img.href = href;
+        this.$.link.href = href;
+      }
       this.item_title = this.querySelector('#link').innerHTML;
       $this = $(this);
       unit_price = $this.data('unit-price');

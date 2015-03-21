@@ -73,12 +73,12 @@ $Page->content(
 								$item_data = $Items->get_for_user($item['item']);
 								return [
 									h::{'img#img'}([
-										'src' => @$item['images'][0] ?: Items::DEFAULT_IMAGE
+										'src' => @$item_data['images'][0] ?: Items::DEFAULT_IMAGE
 									]).
 									h::{'a#link'}(
 										$item_data['title'] ?: '_',
 										[
-											'href'   => "$module_path/$items_path/".path($Categories->get_for_user($item_data['category'])['title']).'/'.path($item_data['title']).":$item_data[id]",
+											'href'   => $item_data ? "$module_path/$items_path/".path($Categories->get_for_user($item_data['category'])['title']).'/'.path($item_data['title']).":$item_data[id]" : false,
 											'target' => '_blank'
 										]
 									).
@@ -94,10 +94,10 @@ $Page->content(
 							$Orders->get_items($order['id'])
 						)).
 						h::{'#shipping_type'}(
-							$shipping_type['title'],
+							@$shipping_type['title'] ?: '_',
 							[
 								'data-id'    => $order['shipping_type'],
-								'data-price' => $shipping_type['price']
+								'data-price' => @$shipping_type['price'] ?: '?'
 							]
 						).
 						h::{'#order_status'}(

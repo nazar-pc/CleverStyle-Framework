@@ -22,7 +22,7 @@
 				if i < target.length - 1
 					destination	= destination[target_part]
 				else
-					if data instanceof Object
+					if data instanceof Object && !(data instanceof Array)
 						destination	= destination[target_part]
 						for index, value of data
 							destination[index]	= value
