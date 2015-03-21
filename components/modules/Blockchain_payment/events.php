@@ -15,8 +15,15 @@ use
 Event::instance()->on(
 	'System/Index/construct',
 	function () {
-		if (Config::instance()->module('Blockchain_payment')->active()) {
-			require __DIR__.'/events/enabled.php';
+		switch (Config::instance()->components['modules']['Blockchain_payment']['active']) {
+			case -1:
+				if (!admin_path()) {
+					return;
+				}
+				require __DIR__.'/events/uninstalled.php';
+				break;
+			case 1:
+				require __DIR__.'/events/enabled.php';
 		}
 	}
 );

@@ -1,5 +1,7 @@
 {
-	"blockchain_payment_bitcoin_address"      : "Bitcoin адреса",
-	"blockchain_payment_bitcoin_address_info" : "Адреса гаманця Bitcoin куди має бути надіслано платіж",
-	"blockchain_payment_pay_in_bitcoin"       : "Оплатити в Bitcoin на blockchain.info"
+	"blockchain_payment_bitcoin_address"             : "Bitcoin адреса",
+	"blockchain_payment_bitcoin_address_info"        : "Адреса гаманця Bitcoin куди має бути надіслано платіж",
+	"blockchain_payment_confirmations_required"      : "Необхідні підтвердження",
+	"blockchain_payment_confirmations_required_info" : "Число необхідних підтверджень, використовується для захисту від подвійної страти",
+	"blockchain_payment_pay_in_bitcoin"              : "Оплатити в Bitcoin на blockchain.info"
 }

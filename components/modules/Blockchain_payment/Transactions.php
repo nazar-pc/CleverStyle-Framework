@@ -123,7 +123,7 @@ class Transactions {
 	 *
 	 */
 	function add ($amount, $currency, $user, $module, $purpose, $description) {
-		while ($secret = md5(openssl_random_pseudo_bytes(1000))) {
+		while ($secret = hash('sha512', openssl_random_pseudo_bytes(1000))) {
 			if ($this->db_prime()->qf(
 				"SELECT `id`
 				FROM `$this->table`
@@ -135,8 +135,9 @@ class Transactions {
 			}
 		}
 		$amount_btc = $currency == 'BTC' ? $amount : $this->convert_to_btc($amount, $currency);
+		// Minimal acceptable payment
 		if ($amount_btc < 0.0005) {
-			return false;
+			$amount_btc	= 0.0005;
 		}
 		$Config              = Config::instance();
 		$destination_address = $Config->module('Blockchain_payment')->bitcoin_address;
