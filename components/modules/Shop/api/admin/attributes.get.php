@@ -28,7 +28,7 @@ if (isset($_GET['ids'])) {
 	} else {
 		$Page->json($attribute);
 	}
-} elseif (isset($Route->path[1]) && $Route->path[1] == 'types') {
+} elseif (isset($Route->path[2]) && $Route->path[2] == 'types') {
 	$Page->json(
 		$Attributes->get_type_to_name_array()
 	);

@@ -186,15 +186,16 @@ class Orders {
 	 * @return array [method => [title => title, description => description]]
 	 */
 	function get_payment_methods () {
+		$currency        = Config::instance()->module('Shop')->currency;
 		$payment_methods = [
 			self::PAYMENT_METHOD_CASH => [
-				'title'       => Language::instance()->shop_cash,
+				'title'       => "$currency: ".Language::instance()->shop_cash,
 				'description' => ''
 			]
 		];
 		Event::instance()->fire('System/payment/methods', [
 			'methods'  => &$payment_methods,
-			'currency' => Config::instance()->module('Shop')->currency
+			'currency' => $currency
 		]);
 		return $payment_methods;
 	}

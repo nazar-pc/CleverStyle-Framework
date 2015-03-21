@@ -18,8 +18,8 @@ $Orders = Orders::instance();
 /**
  * Get order items, not order itself
  */
-if (isset($Route->ids[0], $Route->path[1])) {
-	switch ($Route->path[1]) {
+if (isset($Route->ids[0], $Route->path[2])) {
+	switch ($Route->path[2]) {
 		case 'items':
 			$Page->json(
 				$Orders->get_items($Route->ids[0])

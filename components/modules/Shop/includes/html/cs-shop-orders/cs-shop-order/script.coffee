@@ -19,6 +19,7 @@ Polymer(
 	ready				: ->
 		$this						= $(@)
 		@paid						= $this.data('paid')
+		@show_pay_now				= !@paid && $this.data('payment_method') != 'shop:cash'
 		@order_number				= sprintf(L.shop_order_number, $this.data('id'))
 		@order_date					= $this.data('date-formatted')
 		@order_status				= $this.children('#order_status').text()

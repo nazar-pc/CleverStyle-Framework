@@ -81,10 +81,14 @@
     return {
       get_all: get_items,
       get_calculated: function(callback) {
+        items = get_items();
+        if (!items) {
+          return;
+        }
         return $.ajax({
           url: 'api/Shop/cart',
           data: {
-            items: get_items(),
+            items: items,
             shipping_type: params.shipping_type
           },
           type: 'get',

@@ -2,7 +2,7 @@
 	<template>
 		<div class="uk-text-large">
 			{{order_number}}: {{order_status}}
-			<template if="{{!paid}}">
+			<template if="{{show_pay_now}}">
 				<button type="button" class="uk-button uk-button-primary" on-click="{{pay}}">{{pay_now_text}}</button>
 			</template>
 		</div>

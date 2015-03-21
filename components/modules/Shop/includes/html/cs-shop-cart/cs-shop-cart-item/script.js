@@ -37,19 +37,24 @@
         cart.set(this.item_id, this.units);
       } else {
         cart.del(this.item_id);
+        this.update_price(0);
+        return;
       }
       cart.get_calculated(function(data) {
         data.items.forEach(function(item) {
-          var discount;
           if (parseInt(item.id) === _this.item_id) {
-            _this.price = item.price;
-            _this.price_formatted = sprintf(price_formatting, _this.price);
-            discount = _this.units * _this.unit_price - _this.price;
-            _this.$.discount.innerHTML = discount ? (discount = sprintf(price_formatting, discount), "(" + cs.Language.shop_discount + ": " + discount + ")") : '';
+            _this.update_price(item.price);
             return false;
           }
         });
       });
+    },
+    update_price: function(price) {
+      var discount;
+      this.price = price;
+      this.price_formatted = sprintf(price_formatting, this.price);
+      discount = this.units * this.unit_price - this.price;
+      return this.$.discount.innerHTML = discount ? (discount = sprintf(price_formatting, discount), "(" + cs.Language.shop_discount + ": " + discount + ")") : '';
     }
   });
 

@@ -28,6 +28,7 @@
       var $this, discount, shipping_type, total_price, _ref, _ref1, _ref2;
       $this = $(this);
       this.paid = $this.data('paid');
+      this.show_pay_now = !this.paid && $this.data('payment_method') !== 'shop:cash';
       this.order_number = sprintf(L.shop_order_number, $this.data('id'));
       this.order_date = $this.data('date-formatted');
       this.order_status = $this.children('#order_status').text();
