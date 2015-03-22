@@ -19,12 +19,37 @@
         amount: 0,
         label: ''
       },
+      progress_text: L.blockchain_payment_waiting_for_payment,
       ready: function() {
         var _this = this;
         return $(function() {
           _this.description = JSON.parse(_this.description);
           _this.text = L.blockchain_payment_scan_or_transfer(_this.amount, _this.address);
-          return $(_this.$.qr).qrcode('bitcoin:' + _this.address + '?amount=' + _this.amount + '&label=' + _this.label);
+          $(_this.$.qr).qrcode({
+            height: 512,
+            text: 'bitcoin:' + _this.address + '?amount=' + _this.amount + '&label=' + _this.label,
+            width: 512
+          });
+          return _this.update_status();
+        });
+      },
+      update_status: function() {
+        var _this = this;
+        return $.ajax({
+          url: 'api/Blockchain_payment/' + $(this).data('id'),
+          type: 'get',
+          success: function(data) {
+            if (parseInt(data.confirmed)) {
+              location.reload();
+              return;
+            }
+            if (parseInt(data.paid)) {
+              _this.progress_text = L.blockchain_payment_waiting_for_confirmations;
+            }
+            return setTimeout((function() {
+              return _this.update_status();
+            }), 5000);
+          }
         });
       }
     });

@@ -5,5 +5,7 @@
 	"blockchain_payment_confirmations_required_info" : "Число необхідних підтверджень, використовується для захисту від подвійної страти",
 	"blockchain_payment_pay_in_bitcoin"              : "Оплатити в Bitcoin",
 	"blockchain_payment_scan_or_transfer"            : "Відскануйте цей QR код чи перерахуйте іншим способом %s BTC на Bitcoin адресу %s",
-	"blockchain_payment_bitcoin"                     : "Оплата Bitcoin"
+	"blockchain_payment_bitcoin"                     : "Оплата Bitcoin",
+	"blockchain_payment_waiting_for_payment"         : "Очікування оплати",
+	"blockchain_payment_waiting_for_confirmations"   : "Очікування підтвердження (може зайняти кілька хвилин)"
 }

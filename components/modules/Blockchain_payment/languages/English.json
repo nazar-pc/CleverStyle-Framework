@@ -5,5 +5,7 @@
 	"blockchain_payment_confirmations_required_info" : "Number or required confirmations, is used for protection from double-spending",
 	"blockchain_payment_pay_in_bitcoin"              : "Pay in Bitcoin",
 	"blockchain_payment_scan_or_transfer"            : "Scan this QR code or transfer in some other way %s BTC to Bitcoin address %s",
-	"blockchain_payment_bitcoin"                     : "Payment with Bitcoin"
+	"blockchain_payment_bitcoin"                     : "Payment with Bitcoin",
+	"blockchain_payment_waiting_for_payment"         : "Waiting for payment",
+	"blockchain_payment_waiting_for_confirmations"   : "Waiting for confirmations (may take few minutes)"
 }

@@ -59,8 +59,8 @@ if (isset($_GET['secret'])) {
 		Event::instance()->fire(
 			'System/payment/success',
 			[
-				'module' => $transaction['module'],
-				'purose' => $transaction['purpose']
+				'module'  => $transaction['module'],
+				'purpose' => $transaction['purpose']
 			]
 		);
 		$Page->content('*ok*');
@@ -82,9 +82,23 @@ if (isset($_GET['secret'])) {
 		error_code(403);
 		return;
 	}
+	if ($transaction['confirmed']) {
+		Event::instance()->fire(
+			'System/payment/success',
+			[
+				'module'   => $transaction['module'],
+				'purpose'  => $transaction['purpose'],
+				'callback' => &$callback
+			]
+		);
+		interface_off();
+		_header("Location: $callback");
+		return;
+	}
 	$Page->content(
 		h::cs_blockchain_payment_pay(
 			[
+				'data-id'     => $transaction['id'],
 				'address'     => $transaction['input_address'],
 				'amount'      => $transaction['amount_btc'],
 				'label'       => urlencode("$transaction[module]/$transaction[purpose]"),
