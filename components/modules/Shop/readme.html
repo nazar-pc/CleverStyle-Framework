@@ -432,17 +432,19 @@
 	<dt>System/payment/success</dt>
 	<dd>
 		<pre>[
-	'module'  => Shop,
-	'purpose' => orders/{order_id}
+	'module'   => Shop,
+	'purpose'  => orders/{order_id},
+	'callback' => &$callback
 ]</pre>
 	</dd>
-	<dd>Both parameters are the same as in <i>System/payment/execute</i></dd>
+	<dd>First two parameters are the same as in <i>System/payment/execute</i>, <i>callback</i> will contain Page where user can be redirected after successful payment.</dd>
 	<dt>System/payment/error</dt>
 	<dd>
 		<pre>[
-	'module'  => Shop,
-	'purpose' => orders/{order_id}
+	'module'   => Shop,
+	'purpose'  => orders/{order_id},
+	'callback' => &$callback
 ]</pre>
 	</dd>
-	<dd>Both parameters are the same as in <i>System/payment/execute</i></dd>
+	<dd>First two parameters are the same as in <i>System/payment/execute</i>, <i>callback</i> will contain Page where user can be redirected after failed payment.</dd>
 </dl>
