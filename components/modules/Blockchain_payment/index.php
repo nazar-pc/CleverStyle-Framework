@@ -23,6 +23,10 @@ $Page->title(
 );
 $Transactions = Transactions::instance();
 if (isset($_GET['secret'])) {
+	interface_off();
+	if ($_GET['test']) {
+		return;
+	}
 	$id = $Transactions->search(
 		[
 			'secret' => $_GET['secret']
@@ -50,7 +54,6 @@ if (isset($_GET['secret'])) {
 		$_GET['transaction_hash'],
 		$_GET['input_transaction_hash']
 	);
-	interface_off();
 	if ($_GET['confirmations'] >= Config::instance()->module('Blockchain_payment')->confirmations_required) {
 		$Transactions->set_as_confirmed($transaction['id']);
 		Event::instance()->fire(
