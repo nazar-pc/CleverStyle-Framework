@@ -11,12 +11,16 @@ use
 	h,
 	cs\Config,
 	cs\Event,
-	cs\Language\Prefix,
+	cs\Language,
 	cs\Page,
 	cs\Route,
 	cs\User;
 
-$Page         = Page::instance();
+$Page = Page::instance();
+array_pop($Page->Title);
+$Page->title(
+	Language::instance()->blockchain_payment_bitcoin
+);
 $Transactions = Transactions::instance();
 if (isset($_GET['secret'])) {
 	$id = $Transactions->search(
@@ -36,7 +40,7 @@ if (isset($_GET['secret'])) {
 	if (
 		$transaction['input_address'] != $_GET['input_address'] ||
 		$transaction['destination_address'] != $_GET['destination_address'] ||
-		$transaction['amount'] != $_GET['value'] / 100000000
+		$transaction['amount'] > $_GET['value'] / 100000000
 	) {
 		error_code(400);
 		return;
@@ -49,6 +53,13 @@ if (isset($_GET['secret'])) {
 	interface_off();
 	if ($_GET['confirmations'] >= Config::instance()->module('Blockchain_payment')->confirmations_required) {
 		$Transactions->set_as_confirmed($transaction['id']);
+		Event::instance()->fire(
+			'System/payment/success',
+			[
+				'module' => $transaction['module'],
+				'purose' => $transaction['purpose']
+			]
+		);
 		$Page->content('*ok*');
 	} else {
 		$Page->content('More confirmations needed');

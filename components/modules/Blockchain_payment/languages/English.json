@@ -1,9 +1,9 @@
 {
-	"Blockchain_payment"                             : "Payment through blockchain.info",
 	"blockchain_payment_bitcoin_address"             : "Bitcoin address",
 	"blockchain_payment_bitcoin_address_info"        : "Bitcoin wallet address where payments should be sent to",
 	"blockchain_payment_confirmations_required"      : "Confirmations required",
 	"blockchain_payment_confirmations_required_info" : "Number or required confirmations, is used for protection from double-spending",
-	"blockchain_payment_pay_in_bitcoin"              : "Pay in Bitcoin on blockchain.info",
-	"blockchain_payment_scan_or_transfer"            : "Scan this QR code or transfer in some other way %s BTC to Bitcoin address %s"
+	"blockchain_payment_pay_in_bitcoin"              : "Pay in Bitcoin",
+	"blockchain_payment_scan_or_transfer"            : "Scan this QR code or transfer in some other way %s BTC to Bitcoin address %s",
+	"blockchain_payment_bitcoin"                     : "Payment with Bitcoin"
 }
