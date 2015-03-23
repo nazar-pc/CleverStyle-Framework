@@ -116,7 +116,8 @@
               return location.href = "Shop/pay/" + id;
             });
             return modal.find('.pay-later').click(function() {
-              return modal.hide();
+              modal.hide();
+              return location.href = 'Shop/orders_';
             });
           }
         }

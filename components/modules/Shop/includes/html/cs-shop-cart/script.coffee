@@ -98,5 +98,6 @@ Polymer(
 						location.href	= "Shop/pay/#{id}"
 					modal.find('.pay-later').click ->
 						modal.hide()
+						location.href	= 'Shop/orders_'
 		)
 );

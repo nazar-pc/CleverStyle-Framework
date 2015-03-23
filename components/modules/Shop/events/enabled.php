@@ -36,7 +36,7 @@ Event::instance()
 					$order['shipping_address'],
 					$order['payment_method'],
 					1,
-					$order['status'],
+					$Config->module('Shop')->default_paid_order_status,
 					$order['comment']
 				);
 				$Orders->set_status(
