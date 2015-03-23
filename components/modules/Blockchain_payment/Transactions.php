@@ -20,7 +20,7 @@ class Transactions {
 		CRUD,
 		Singleton;
 
-	protected $data_model = [
+	protected $data_model     = [
 		'id'                     => 'int',
 		'amount'                 => 'float:0',
 		'currency'               => 'text',
@@ -38,7 +38,8 @@ class Transactions {
 		'transaction_hash'       => 'text',
 		'input_transaction_hash' => 'text'
 	];
-	protected $table      = '[prefix]blockchain_payment_transactions';
+	protected $table          = '[prefix]blockchain_payment_transactions';
+	protected $blockchain_url = 'https://blockchain.info';
 
 	/**
 	 * Returns database index
@@ -137,13 +138,13 @@ class Transactions {
 		$amount_btc = $currency == 'BTC' ? $amount : $this->convert_to_btc($amount, $currency);
 		// Minimal acceptable payment
 		if ($amount_btc < 0.0005) {
-			$amount_btc	= 0.0005;
+			$amount_btc = 0.0005;
 		}
 		$Config              = Config::instance();
 		$destination_address = $Config->module('Blockchain_payment')->bitcoin_address;
 		$callback            = $Config->base_url()."/Blockchain_payment?secret=$secret";
 		$blockchain_receive  = file_get_json(
-			"https://blockchain.info/api/receive?method=create&address=$destination_address&callback=".urlencode($callback)
+			"$this->blockchain_url/api/receive?method=create&address=$destination_address&callback=".urlencode($callback)
 		);
 		if (
 			!isset($blockchain_receive['callback_url']) ||
@@ -181,7 +182,7 @@ class Transactions {
 	 * @return float
 	 */
 	function convert_to_btc ($amount, $currency) {
-		return (float)file_get_contents("https://blockchain.info/tobtc?currency=$currency&value=$amount");
+		return (float)file_get_contents("$this->blockchain_url/tobtc?currency=$currency&value=$amount");
 	}
 	/**
 	 * Set transaction as paid (not confirmed though) and set transaction hashed
