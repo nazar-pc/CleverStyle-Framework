@@ -5,26 +5,41 @@
  * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-namespace cs\User;
-use
-	cs\Config,
-	cs\Event,
-	cs\Language,
-	cs\Page,
-	cs\User;
-
 /**
- * Trait that contains all methods from <i>>cs\User</i> for working with user sessions
+ * Provides next events:
  *
- * @property int                 $id
- * @property \cs\Cache\Prefix    $cache
+ *  System/Session/del/before
+ *  ['id' => session_id]
+ *
+ *  System/Session/del/after
+ *  ['id' => session_id]
+ *
+ *  System/Session/del_all
+ *  ['id'	=> user_id]
  */
-trait Session {
+namespace cs;
+use
+	cs\Cache\Prefix,
+	cs\DB\Accessor;
+/**
+ * Class responsible for current user session
+ */
+class Session {
+	use
+		Accessor,
+		Singleton;
 	/**
-	 * Session id of current user
+	 * Id of current session
+	 *
 	 * @var bool|string
 	 */
 	protected $session_id = false;
+	/**
+	 * User id of current session
+	 *
+	 * @var bool|string
+	 */
+	protected $user_id    = User::GUEST_ID;
 	protected $is_admin   = false;
 	protected $is_user    = false;
 	protected $is_bot     = false;
@@ -37,21 +52,44 @@ trait Session {
 	 */
 	protected	$is_system		= false;
 	/**
+	 * @var Prefix
+	 */
+	protected	$cache;
+	/**
+	 * @var Prefix
+	 */
+	protected	$users_cache;
+	protected function construct () {
+		$this->cache		= new Prefix('sessions');
+		$this->users_cache	= new Prefix('users');
+		$this->initialize_session();
+	}
+	/**
+	 * Returns database index
+	 *
+	 * @return int
+	 */
+	protected function cdb () {
+		return Config::instance()->module('System')->db('users');
+	}
+	/**
 	 * Use cookie as source of session id, load session
 	 *
 	 * Bots detection is also done here
 	 */
 	protected function initialize_session () {
+		Event::instance()->fire('System/Session/init/before');
 		/**
 		 * If session exists
 		 */
+		$User = User::instance();
 		if (_getcookie('session')) {
-			$this->id = $this->load_session();
+			$this->user_id = $this->load();
 		/**
 		 * Try to detect bot, not necessary for API request
 		 */
 		} elseif (!api_path()) {
-			$Cache = $this->cache;
+			$Cache = $this->users_cache;
 			/**
 			 * Loading bots list
 			 */
@@ -85,8 +123,8 @@ trait Session {
 				/**
 				 * Load data
 				 */
-				$this->id = $Cache->$bot_hash;
-				if ($this->id === false) {
+				$this->user_id = $Cache->$bot_hash;
+				if ($this->user_id === false) {
 					/**
 					 * If no data - try to find bot in list of known bots
 					 */
@@ -98,7 +136,7 @@ trait Session {
 								_preg_match($bot['login'], $_SERVER->user_agent)
 							)
 						) {
-							$this->id	= $bot['id'];
+							$this->user_id	= $bot['id'];
 							break;
 						}
 						if (
@@ -108,7 +146,7 @@ trait Session {
 								_preg_match($bot['email'], $_SERVER->ip)
 							)
 						) {
-							$this->id	= $bot['id'];
+							$this->user_id	= $bot['id'];
 							break;
 						}
 					}
@@ -116,44 +154,47 @@ trait Session {
 					/**
 					 * If found id - this is bot
 					 */
-					if ($this->id) {
-						$Cache->$bot_hash	= $this->id;
+					if ($this->user_id) {
+						$Cache->$bot_hash	= $this->user_id;
 						/**
 						 * Searching for last bot session, if exists - load it, otherwise create new one
 						 */
-						$last_session		= $this->get_data('last_session');
-						$id					= $this->id;
+						$last_session		= $User->get_data('last_session', $this->user_id);
 						if ($last_session) {
-							$this->load_session($last_session);
+							$this->load($last_session);
 						}
-						if (!$last_session || $this->id == User::GUEST_ID) {
-							$this->add_session($id);
-							$this->set_data('last_session', $this->get_session_id());
+						if (!$last_session || $this->user_id == User::GUEST_ID) {
+							$this->add($this->user_id);
+							$User->set_data('last_session', $this->get_id(), $this->user_id);
 						}
-						unset($id, $last_session);
+						unset($last_session);
 					}
 				}
 			}
 			unset($bots, $bot_hash);
 		}
-		if (!$this->id) {
-			$this->id	= User::GUEST_ID;
+		if (!$this->user_id) {
+			$this->user_id	= User::GUEST_ID;
 			/**
 			 * Do not create session for API request
 			 */
 			if (!api_path()) {
-				$this->add_session();
+				$this->add();
 			}
 		}
 		$this->update_user_is();
 		/**
 		 * If not guest - apply some individual settings
+		 *
+		 * @todo Probably, better move to System/User/construct/after event handler somewhere instead
 		 */
-		if ($this->id != User::GUEST_ID) {
-			if ($this->timezone && date_default_timezone_get() != $this->timezone) {
-				date_default_timezone_set($this->timezone);
+		if ($this->user_id != User::GUEST_ID) {
+			$timezone = $User->get('timezone', $this->user_id);
+			if ($timezone && date_default_timezone_get() != $timezone) {
+				date_default_timezone_set($timezone);
 			}
-			$L = Language::instance();
+			$Config = Config::instance();
+			$L      = Language::instance();
 			/**
 			 * Change language if configuration is multilingual and this is not page with localized url
 			 */
@@ -166,11 +207,12 @@ trait Session {
 		 *
 		 * @todo Probably, better move to System/User/construct/after event handler somewhere instead
 		 */
-		if (!isset($_REQUEST['session']) || $_REQUEST['session'] != $this->get_session_id()) {
+		if (!isset($_REQUEST['session']) || $_REQUEST['session'] != $this->get_id()) {
 			foreach (array_keys((array)$_POST) as $key) {
 				unset($_POST[$key], $_REQUEST[$key]);
 			}
 		}
+		Event::instance()->fire('System/Session/init/after');
 	}
 	/**
 	 * Updates information about who is user accessed by methods ::guest() ::bot() ::user() admin() ::system()
@@ -182,20 +224,20 @@ trait Session {
 		$this->is_admin		= false;
 		//TODO Remove in future versions
 		$this->is_system	= false;
-		if ($this->id == self::GUEST_ID) {
+		if ($this->user_id == User::GUEST_ID) {
 			$this->is_guest = true;
 			return;
 		} else {
 			/**
 			 * Checking of user type
 			 */
-			$groups = $this->get_groups() ?: [];
-			if (in_array(self::ADMIN_GROUP_ID, $groups)) {
+			$groups = User::instance()->get_groups($this->user_id) ?: [];
+			if (in_array(User::ADMIN_GROUP_ID, $groups)) {
 				$this->is_admin	= Config::instance()->can_be_admin();
 				$this->is_user	= true;
-			} elseif (in_array(self::USER_GROUP_ID, $groups)) {
+			} elseif (in_array(User::USER_GROUP_ID, $groups)) {
 				$this->is_user	= true;
-			} elseif (in_array(self::BOT_GROUP_ID, $groups)) {
+			} elseif (in_array(User::BOT_GROUP_ID, $groups)) {
 				$this->is_guest	= true;
 				$this->is_bot	= true;
 			}
@@ -245,15 +287,23 @@ trait Session {
 		return $this->is_system;
 	}
 	/**
-	 * Returns current session id
+	 * Returns id of current session
 	 *
 	 * @return bool|string
 	 */
-	function get_session_id () {
-		if ($this->id == User::GUEST_ID && $this->bot()) {
+	function get_id () {
+		if ($this->user_id == User::GUEST_ID && $this->bot()) {
 			return '';
 		}
 		return $this->session_id;
+	}
+	/**
+	 * Returns user id of current session
+	 *
+	 * @return int
+	 */
+	function get_user () {
+		return $this->user_id;
 	}
 	/**
 	 * Returns session details by session id
@@ -262,10 +312,10 @@ trait Session {
 	 *
 	 * @return bool|array
 	 */
-	function get_session ($session_id) {
+	function get ($session_id) {
 		if (func_num_args() == 0) {
-			trigger_error('calling User::get_session() without arguments is deprecated, use ::get_session_id() instead', E_USER_DEPRECATED);
-			return $this->get_session_id();
+			trigger_error('calling User::get_session() without arguments is deprecated, use Session::get_id() instead', E_USER_DEPRECATED);
+			return $this->get_id();
 		}
 		if (!$session_id) {
 			if (!$this->session_id) {
@@ -276,11 +326,10 @@ trait Session {
 		if (!is_md5($session_id)) {
 			return false;
 		}
-		$Cache = $this->cache;
 		/**
 		 * @var \cs\_SERVER $_SERVER
 		 */
-		$session = $Cache->get("sessions/$session_id", function () use ($session_id) {
+		$session = $this->cache->get($session_id, function () use ($session_id) {
 			return $this->db()->qf([
 				"SELECT
 					`id`,
@@ -291,8 +340,8 @@ trait Session {
 					`ip`
 				FROM `[prefix]sessions`
 				WHERE
-					`id`			= '%s' AND
-					`expire`		> '%s'
+					`id`		= '%s' AND
+					`expire`	> '%s'
 				LIMIT 1",
 				$session_id,
 				time()
@@ -310,18 +359,19 @@ trait Session {
 	 *
 	 * @return int User id
 	 */
-	function load_session ($session_id = null) {
-		if ($this->id == User::GUEST_ID && $this->bot()) {
+	function load ($session_id = null) {
+		if ($this->user_id == User::GUEST_ID && $this->bot()) {
 			return User::GUEST_ID;
 		}
 		$Config  = Config::instance();
-		$session = $this->get_session($session_id);
+		$User    = User::instance();
+		$session = $this->get($session_id);
 		$time    = time();
 		if (
 			!$session ||
 			$session['user_agent'] != $_SERVER->user_agent ||
 			$session['expire'] <= $time ||
-			!$this->get('id', $session['user']) ||
+			!$User->get('id', $session['user']) ||
 			(
 				$Config->core['remember_user_ip'] &&
 				(
@@ -330,7 +380,7 @@ trait Session {
 				)
 			)
 		) {
-			$this->add_session(User::GUEST_ID);
+			$this->add(User::GUEST_ID);
 			$this->update_user_is();
 			return User::GUEST_ID;
 		}
@@ -345,12 +395,12 @@ trait Session {
 		 */
 		if (
 			$session['user'] != 0 &&
-			$this->get('last_online', $session['user']) < $time - $Config->core['online_time'] * $Config->core['update_ratio'] / 100
+			$User->get('last_online', $session['user']) < $time - $Config->core['online_time'] * $Config->core['update_ratio'] / 100
 		) {
 			/**
 			 * Updating last sign in time and ip
 			 */
-			if ($this->get('last_online', $session['user']) < $time - $Config->core['online_time']) {
+			if ($User->get('last_online', $session['user']) < $time - $Config->core['online_time']) {
 				$ip       = ip2hex($_SERVER->ip);
 				$update[] = "
 					UPDATE `[prefix]users`
@@ -359,7 +409,7 @@ trait Session {
 						`last_ip`		= '$ip',
 						`last_online`	= $time
 					WHERE `id` =$session[user]";
-				$this->set(
+				$User->set(
 					[
 						'last_sign_in' => $time,
 						'last_ip'      => $ip,
@@ -374,7 +424,7 @@ trait Session {
 					UPDATE `[prefix]users`
 					SET `last_online` = $time
 					WHERE `id` = $session[user]";
-				$this->set(
+				$User->set(
 					'last_online',
 					$time,
 					$session['user']
@@ -388,15 +438,15 @@ trait Session {
 				SET `expire` = $session[expire]
 				WHERE `id` = '$session_id'
 				LIMIT 1";
-			$this->cache->{"sessions/$session_id"} = $session;
+			$this->cache->$session_id = $session;
 		}
 		if (!empty($update)) {
 			$this->db_prime()->q($update);
 		}
-		$this->id         = $session['user'];
+		$this->user_id         = $session['user'];
 		$this->session_id = $session_id;
 		$this->update_user_is();
-		return $this->id;
+		return $this->user_id;
 	}
 	/**
 	 * Create the session for the user with specified id
@@ -406,17 +456,17 @@ trait Session {
 	 *
 	 * @return bool
 	 */
-	function add_session ($user = false, $delete_current_session = true) {
+	function add ($user = false, $delete_current_session = true) {
 		$user = (int)$user ?: User::GUEST_ID;
 		if ($delete_current_session && is_md5($this->session_id)) {
-			$this->del_session_internal(null, false);
+			$this->del_internal(null, false);
 		}
 		/**
 		 * Load user data
 		 * Return point, runs if user is blocked, inactive, or disabled
 		 */
 		getting_user_data:
-		$data = $this->get(
+		$data = $User->get(
 			[
 				'login',
 				'username',
@@ -464,7 +514,7 @@ trait Session {
 				$user = User::GUEST_ID;
 				goto getting_user_data;
 			}
-		} elseif ($this->id != User::GUEST_ID) {
+		} elseif ($this->user_id != User::GUEST_ID) {
 			/**
 			 * If data was not loaded - mark user as guest, load data again
 			 */
@@ -533,7 +583,7 @@ trait Session {
 				);
 			}
 			$this->session_id                = $hash;
-			$this->cache->{"sessions/$hash"} = [
+			$this->cache->$hash = [
 				'id'          => $hash,
 				'user'        => $user,
 				'expire'      => $time + $Config->core['session_expire'],
@@ -542,7 +592,7 @@ trait Session {
 				'ip'          => $ip
 			];
 			_setcookie('session', $hash, $time + $Config->core['session_expire']);
-			$this->load_session();
+			$this->load();
 			$this->update_user_is();
 			$ids_count = $this->db()->qfs(
 				"SELECT COUNT(`id`)
@@ -566,7 +616,7 @@ trait Session {
 	 * @return bool
 	 */
 	function del_session ($session_id = null) {
-		return $this->del_session_internal($session_id);
+		return $this->del_internal($session_id);
 	}
 	/**
 	 * Deletion of the session
@@ -576,15 +626,19 @@ trait Session {
 	 *
 	 * @return bool
 	 */
-	protected function del_session_internal ($session_id = null, $create_guest_session = true) {
+	protected function del_internal ($session_id = null, $create_guest_session = true) {
 		$session_id = $session_id ?: $this->session_id;
 		if (!is_md5($session_id)) {
 			return false;
 		}
+		Event::instance()->fire('System/Session/del/before', [
+			'id' => $session_id
+		]);
+		//TODO Remove in future versions
 		Event::instance()->fire('System/User/del_session/before', [
 			'id' => $session_id
 		]);
-		unset($this->cache->{"sessions/$session_id"});
+		unset($this->cache->$session_id);
 		$this->session_id = false;
 		_setcookie('session', '');
 		$result = $this->db_prime()->q(
@@ -594,8 +648,12 @@ trait Session {
 			$session_id
 		);
 		if ($create_guest_session) {
-			return $this->add_session(User::GUEST_ID);
+			return $this->add(User::GUEST_ID);
 		}
+		Event::instance()->fire('System/Session/del/after', [
+			'id' => $session_id
+		]);
+		//TODO Remove in future versions
 		Event::instance()->fire('System/User/del_session/after', [
 			'id' => $session_id
 		]);
@@ -608,11 +666,15 @@ trait Session {
 	 *
 	 * @return bool
 	 */
-	function del_all_sessions ($user = false) {
+	function del_all ($user = false) {
+		Event::instance()->fire('System/Session/del_all', [
+			'id' => $user
+		]);
+		//TODO Remove in future versions
 		Event::instance()->fire('System/User/del_all_sessions', [
 			'id' => $user
 		]);
-		$user     = $user ?: $this->id;
+		$user     = $user ?: $this->user_id;
 		$sessions = $this->db_prime()->qfas(
 			"SELECT `id`
 			FROM `[prefix]sessions`
@@ -620,7 +682,7 @@ trait Session {
 		);
 		if (is_array($sessions)) {
 			foreach ($sessions as $session) {
-				unset($this->cache->{"sessions/$session"});
+				unset($this->cache->$session);
 			}
 			unset($session);
 			$sessions = implode("','", $sessions);
@@ -640,12 +702,12 @@ trait Session {
 	 * @return bool|mixed
 	 *
 	 */
-	function get_session_data ($item, $session_id = null) {
+	function get_data ($item, $session_id = null) {
 		$session_id = $session_id ?: $this->session_id;
 		if (!is_md5($session_id)) {
 			return false;
 		}
-		$data = $this->cache->get("sessions/data/$session_id", function () use ($session_id) {
+		$data = $this->cache->get("data/$session_id", function () use ($session_id) {
 			return _json_decode(
 				$this->db()->qfs([
 					"SELECT `data`
@@ -668,12 +730,12 @@ trait Session {
 	 * @return bool
 	 *
 	 */
-	function set_session_data ($item, $value, $session_id = null) {
+	function set_data ($item, $value, $session_id = null) {
 		$session_id = $session_id ?: $this->session_id;
 		if (!is_md5($session_id)) {
 			return false;
 		}
-		$data        = $this->cache->get("sessions/data/$session_id", function () use ($session_id) {
+		$data        = $this->cache->get("data/$session_id", function () use ($session_id) {
 			return _json_decode(
 				$this->db()->qfs([
 					"SELECT `data`
@@ -694,7 +756,7 @@ trait Session {
 			$session_id
 		)
 		) {
-			unset($this->cache->{"sessions/data/$session_id"});
+			unset($this->cache->{"data/$session_id"});
 			return true;
 		}
 		return false;
@@ -708,12 +770,12 @@ trait Session {
 	 * @return bool
 	 *
 	 */
-	function del_session_data ($item, $session_id = null) {
+	function del_data ($item, $session_id = null) {
 		$session_id = $session_id ?: $this->session_id;
 		if (!is_md5($session_id)) {
 			return false;
 		}
-		$data = $this->cache->get("sessions/data/$session_id", function () use ($session_id) {
+		$data = $this->cache->get("data/$session_id", function () use ($session_id) {
 			return _json_decode(
 				$this->db()->qfs([
 					"SELECT `data`
@@ -737,7 +799,7 @@ trait Session {
 			$session_id
 		)
 		) {
-			unset($this->cache->{"sessions/data/$session_id"});
+			unset($this->cache->{"data/$session_id"});
 			return true;
 		}
 		return false;

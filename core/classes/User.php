@@ -55,8 +55,7 @@ use
 	cs\User\Data as User_data,
 	cs\User\Group as User_group,
 	cs\User\Management as User_management,
-	cs\User\Permission as User_permission,
-	cs\User\Session as User_sessions;
+	cs\User\Permission as User_permission;
 /**
  * Class for users manipulating
  *
@@ -89,8 +88,7 @@ class User {
 		User_data,
 		User_group,
 		User_management,
-		User_permission,
-		User_sessions;
+		User_permission;
 	/**
 	 * Id of system guest user
 	 */
@@ -124,11 +122,6 @@ class User {
 	 */
 	const		STATUS_NOT_ACTIVATED	= -1;
 	/**
-	 * Id of current user
-	 * @var bool|int
-	 */
-	protected	$id				= false;
-	/**
 	 * @var Prefix
 	 */
 	protected	$cache;
@@ -140,9 +133,6 @@ class User {
 	protected function cdb () {
 		return Config::instance()->module('System')->db('users');
 	}
-	/**
-	 * Defining user id, type, session, personal settings
-	 */
 	protected function construct () {
 		$this->cache	= new Prefix('users');
 		$Config	= Config::instance();
@@ -154,7 +144,10 @@ class User {
 			 */
 			return;
 		}
-		$this->initialize_session();
+		/**
+		 * Initialize session
+		 */
+		Session::instance();
 		Event::instance()->fire('System/User/construct/after');
 	}
 	/**
@@ -299,7 +292,7 @@ class User {
 	function __get ($item) {
 		// Micro optimization since `id` is already a property of object, we can just return it here
 		if ($item == 'id') {
-			return $this->id;
+			return Session::instance()->get_user();
 		}
 		return $this->get($item);
 	}
@@ -313,6 +306,185 @@ class User {
 	 */
 	function __set ($item, $value = null) {
 		$this->set($item, $value);
+	}
+	/**
+	 * Is admin
+	 *
+	 * Proxy to \cs\Session::instance()->admin() for convenience
+	 *
+	 * @return bool
+	 */
+	function admin () {
+		return Session::instance()->admin();
+	}
+	/**
+	 * Is user
+	 *
+	 * Proxy to \cs\Session::instance()->user() for convenience
+	 *
+	 * @return bool
+	 */
+	function user () {
+		return Session::instance()->user();
+	}
+	/**
+	 * Is guest
+	 *
+	 * Proxy to \cs\Session::instance()->guest() for convenience
+	 *
+	 * @return bool
+	 */
+	function guest () {
+		return Session::instance()->guest();
+	}
+	/**
+	 * Is bot
+	 *
+	 * Proxy to \cs\Session::instance()->bot() for convenience
+	 *
+	 * @return bool
+	 */
+	function bot () {
+		return Session::instance()->bot();
+	}
+	/**
+	 * Is system
+	 *
+	 * @deprecated
+	 * @todo Remove in future versions
+	 *
+	 * Proxy to \cs\Session::instance()->system() for convenience
+	 *
+	 * @return bool
+	 */
+	function system () {
+		return Session::instance()->system();
+	}
+	/**
+	 * Returns id of current session
+	 *
+	 * @deprecated
+	 * @todo Remove in future versions
+	 *
+	 * @return bool|string
+	 */
+	function get_session_id () {
+		trigger_error('calling User::get_session_id() is deprecated, use Session::get_id() instead', E_USER_DEPRECATED);
+		return Session::instance()->get_id();
+	}
+	/**
+	 * Returns session details by session id
+	 *
+	 * @deprecated
+	 * @todo Remove in future versions
+	 *
+	 * @param null|string $session_id If `null` - loaded from `$this->session_id`, and if that also empty - from cookies
+	 *
+	 * @return bool|array
+	 */
+	function get_session ($session_id) {
+		trigger_error('calling User::get_session() without arguments is deprecated, use Session::get_session_id() instead', E_USER_DEPRECATED);
+		return Session::instance()->get($session_id);
+	}
+	/**
+	 * Load session by id and return id of session owner (user), updates last_sign_in, last_ip and last_online information
+	 *
+	 * @deprecated
+	 * @todo Remove in future versions
+	 *
+	 * @param null|string $session_id If not specified - loaded from `$this->session_id`, and if that also empty - from cookies
+	 *
+	 * @return int User id
+	 */
+	function load_session ($session_id = null) {
+		trigger_error('calling User::load_session() is deprecated, use Session::load() instead', E_USER_DEPRECATED);
+		return Session::instance()->load($session_id);
+	}
+	/**
+	 * Create the session for the user with specified id
+	 *
+	 * @deprecated
+	 * @todo Remove in future versions
+	 *
+	 * @param bool|int $user
+	 * @param bool     $delete_current_session
+	 *
+	 * @return bool
+	 */
+	function add_session ($user = false, $delete_current_session = true) {
+		trigger_error('calling User::add_session() is deprecated, use Session::add() instead', E_USER_DEPRECATED);
+		return Session::instance()->add($user, $delete_current_session);
+	}
+	/**
+	 * Destroying of the session
+	 *
+	 * @deprecated
+	 * @todo Remove in future versions
+	 *
+	 * @param null|string $session_id
+	 *
+	 * @return bool
+	 */
+	function del_session ($session_id = null) {
+		trigger_error('calling User::del_session() is deprecated, use Session::del() instead', E_USER_DEPRECATED);
+		return Session::instance()->del($session_id);
+	}
+	/**
+	 * Deletion of all user sessions
+	 *
+	 * @deprecated
+	 * @todo Remove in future versions
+	 *
+	 * @param bool|int $user If not specified - current user assumed
+	 *
+	 * @return bool
+	 */
+	function del_all_sessions ($user = false) {
+		trigger_error('calling User::del_all_sessions() is deprecated, use Session::del_all() instead', E_USER_DEPRECATED);
+		return Session::instance()->del_all($user);
+	}
+	/**
+	 * Get data, stored with session
+	 *
+	 * @deprecated
+	 * @todo Remove in future versions
+	 *
+	 * @param string      $item
+	 * @param null|string $session_id
+	 *
+	 * @return bool|mixed
+	 *
+	 */
+	function get_session_data ($item, $session_id = null) {
+		trigger_error('calling User::get_session_data() is deprecated, use Session::get_data() instead', E_USER_DEPRECATED);
+		return Session::instance()->get_data($item, $session_id);
+	}
+	/**
+	 * Store data with session
+	 *
+	 * @param string      $item
+	 * @param mixed       $value
+	 * @param null|string $session_id
+	 *
+	 * @return bool
+	 *
+	 */
+	function set_session_data ($item, $value, $session_id = null) {
+		trigger_error('calling User::set_session_data() is deprecated, use Session::set_data() instead', E_USER_DEPRECATED);
+		return Session::instance()->set_data($item, $value, $session_id);
+	}
+	/**
+	 * Delete data, stored with session
+	 *
+	 * @param string      $item
+	 * @param null|string $session_id
+	 *
+	 * @return bool
+	 *
+	 */
+	function del_session_data ($item, $session_id = null) {
+		trigger_error('calling User::del_session_data() is deprecated, use Session::del_data() instead', E_USER_DEPRECATED);
+		return Session::instance()->del_data($item, $session_id);
 	}
 	/**
 	 * Saving changes of cache and users data

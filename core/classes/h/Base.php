@@ -11,7 +11,7 @@ use
 	cs\Config,
 	cs\Language,
 	cs\Page,
-	cs\User;
+	cs\Session;
 /**
  * Class for HTML code rendering in accordance with the standards of HTML5, and with useful syntax extensions for simpler usage
  */
@@ -55,11 +55,11 @@ abstract class Base extends BananaHTML {
 	 */
 	protected static function form_csrf () {
 		if (
-			class_exists('\\cs\\User', false) &&
-			$User = User::instance(true)
+			class_exists('\\cs\\Session', false) &&
+			$Session = Session::instance(true)
 		) {
 			return static::input([
-				'value'	=> $User->get_session_id(),
+				'value'	=> $Session->get_id(),
 				'type'	=> 'hidden',
 				'name'	=> 'session'
 			]);
