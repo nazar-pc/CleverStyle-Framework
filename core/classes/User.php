@@ -74,7 +74,7 @@ use
  * @property	string	$reg_key		random md5 hash, generated during registration
  * @property	int		$status			'-1' - not activated (for example after registration), 0 - inactive, 1 - active
  * @property	int		$block_until	unix timestamp
- * @property	int		$last_sign_in		unix timestamp
+ * @property	int		$last_sign_in	unix timestamp
  * @property	string	$last_ip		hex value, obtained by function ip2hex()
  * @property	int		$last_online	unix timestamp
  * @property	string	$avatar
@@ -123,32 +123,11 @@ class User {
 	 * Status of not activated user
 	 */
 	const		STATUS_NOT_ACTIVATED	= -1;
-	protected	$is_admin		= false;
-	protected	$is_user		= false;
-	protected	$is_bot			= false;
-	protected	$is_guest		= false;
-	/**
-	 * @deprecated
-	 * @todo Remove in future versions
-	 *
-	 * @var bool
-	 */
-	protected	$is_system		= false;
 	/**
 	 * Id of current user
 	 * @var bool|int
 	 */
 	protected	$id				= false;
-	/**
-	 * Current state of initialization
-	 * @var bool
-	 */
-	protected	$init			= false;
-	/**
-	 * Copy of columns list of users table for internal needs without Cache usage
-	 * @var array
-	 */
-	protected	$users_columns	= [];
 	/**
 	 * @var Prefix
 	 */
@@ -165,145 +144,17 @@ class User {
 	 * Defining user id, type, session, personal settings
 	 */
 	protected function construct () {
-		$Cache	= $this->cache	= new Prefix('users');
+		$this->cache	= new Prefix('users');
 		$Config	= Config::instance();
 		Event::instance()->fire('System/User/construct/before');
-		$this->users_columns = $Cache->get('columns', function () {
-			return $this->db()->columns('[prefix]users');
-		});
+		$this->initialize_data();
 		if ($this->request_from_system($Config)) {
 			/**
 			 * No need to do anything else for system, just exit from constructor
 			 */
 			return;
 		}
-		/**
-		 * If session exists
-		 */
-		if (_getcookie('session')) {
-			$this->id = $this->load_session();
-		/**
-		 * Try to detect bot, not necessary for API request
-		 */
-		} elseif (!api_path()) {
-			/**
-			 * Loading bots list
-			 */
-			$bots = $Cache->get('bots', function () {
-				return $this->db()->qfa([
-					"SELECT
-						`u`.`id`,
-						`u`.`login`,
-						`u`.`email`
-					FROM `[prefix]users` AS `u`
-						INNER JOIN `[prefix]users_groups` AS `g`
-					ON `u`.`id` = `g`.`id`
-					WHERE
-						`g`.`group`		= '%s' AND
-						`u`.`status`	= '%s'",
-					self::BOT_GROUP_ID,
-					self::STATUS_ACTIVE
-				]) ?: [];
-			});
-			/**
-			 * @var _SERVER $_SERVER
-			 */
-			/**
-			 * For bots: login is user agent, email is IP
-			 */
-			$bot_hash	= hash('sha224', $_SERVER->user_agent.$_SERVER->ip);
-			/**
-			 * If list is not empty - try to find bot
-			 */
-			if (is_array($bots) && !empty($bots)) {
-				/**
-				 * Load data
-				 */
-				$this->id = $Cache->$bot_hash;
-				if ($this->id === false) {
-					/**
-					 * If no data - try to find bot in list of known bots
-					 */
-					foreach ($bots as $bot) {
-						if (
-							$bot['login'] &&
-							(
-								strpos($_SERVER->user_agent, $bot['login']) !== false ||
-								_preg_match($bot['login'], $_SERVER->user_agent)
-							)
-						) {
-							$this->id	= $bot['id'];
-							break;
-						}
-						if (
-							$bot['email'] &&
-							(
-								$_SERVER->ip == $bot['email'] ||
-								_preg_match($bot['email'], $_SERVER->ip)
-							)
-						) {
-							$this->id	= $bot['id'];
-							break;
-						}
-					}
-					unset($bots, $bot, $login, $email);
-					/**
-					 * If found id - this is bot
-					 */
-					if ($this->id) {
-						$Cache->$bot_hash	= $this->id;
-						/**
-						 * Searching for last bot session, if exists - load it, otherwise create new one
-						 */
-						$last_session		= $this->get_data('last_session');
-						$id					= $this->id;
-						if ($last_session) {
-							$this->load_session($last_session);
-						}
-						if (!$last_session || $this->id == self::GUEST_ID) {
-							$this->add_session($id);
-							$this->set_data('last_session', $this->get_session_id());
-						}
-						unset($id, $last_session);
-					}
-				}
-			}
-			unset($bots, $bot_hash);
-		}
-		if (!$this->id) {
-			$this->id	= self::GUEST_ID;
-			/**
-			 * Do not create session for API request
-			 */
-			if (!api_path()) {
-				$this->add_session();
-			}
-		}
-		$this->update_user_is();
-		/**
-		 * If not guest - apply some individual settings
-		 */
-		if ($this->id != self::GUEST_ID) {
-			if ($this->timezone && date_default_timezone_get() != $this->timezone) {
-				date_default_timezone_set($this->timezone);
-			}
-			$L = Language::instance();
-			/**
-			 * Change language if configuration is multilingual and this is not page with localized url
-			 */
-			if ($Config->core['multilingual'] && !$L->url_language()) {
-				$L->change($this->language);
-			}
-		}
-		/**
-		 * Security check
-		 */
-		if (!isset($_REQUEST['session']) || $_REQUEST['session'] != $this->get_session_id()) {
-			foreach (array_keys((array)$_POST) as $key) {
-				unset($_POST[$key], $_REQUEST[$key]);
-			}
-		}
-		$this->init	= true;
+		$this->initialize_session();
 		Event::instance()->fire('System/User/construct/after');
 	}
 	/**
@@ -361,77 +212,6 @@ class User {
 		return false;
 	}
 	/**
-	 * Updates information about who is user accessed by methods ::guest() ::bot() ::user() admin() ::system()
-	 */
-	protected function update_user_is () {
-		$this->is_guest		= false;
-		$this->is_bot		= false;
-		$this->is_user		= false;
-		$this->is_admin		= false;
-		$this->is_system	= false;
-		if ($this->id == self::GUEST_ID) {
-			$this->is_guest = true;
-			return;
-		} else {
-			/**
-			 * Checking of user type
-			 */
-			$groups = $this->get_groups() ?: [];
-			if (in_array(self::ADMIN_GROUP_ID, $groups)) {
-				$this->is_admin	= Config::instance()->can_be_admin();
-				$this->is_user	= true;
-			} elseif (in_array(self::USER_GROUP_ID, $groups)) {
-				$this->is_user	= true;
-			} elseif (in_array(self::BOT_GROUP_ID, $groups)) {
-				$this->is_guest	= true;
-				$this->is_bot	= true;
-			}
-		}
-	}
-	/**
-	 * Is admin
-	 *
-	 * @return bool
-	 */
-	function admin () {
-		return $this->is_admin;
-	}
-	/**
-	 * Is user
-	 *
-	 * @return bool
-	 */
-	function user () {
-		return $this->is_user;
-	}
-	/**
-	 * Is guest
-	 *
-	 * @return bool
-	 */
-	function guest () {
-		return $this->is_guest;
-	}
-	/**
-	 * Is bot
-	 *
-	 * @return bool
-	 */
-	function bot () {
-		return $this->is_bot;
-	}
-	/**
-	 * Is system
-	 *
-	 * @deprecated
-	 * @todo Remove in future versions
-	 *
-	 * @return bool
-	 */
-	function system () {
-		return $this->is_system;
-	}
-	/**
 	 * Check number of sign in attempts (is used by system)
 	 *
 	 * @param bool|string	$login_hash	Hash (sha224) from login (hash from lowercase string)
@@ -453,7 +233,8 @@ class User {
 			WHERE
 				`expire` > $time AND
 				(
-					`login_hash` = '%s' OR `ip` = '%s'
+					`login_hash`	= '%s' OR
+					`ip`			= '%s'
 				)",
 			$login_hash,
 			ip2hex($_SERVER->ip)
@@ -509,11 +290,34 @@ class User {
 		}
 	}
 	/**
-	 * Returns array of users columns, available for getting of data
+	 * Get data item of current user
 	 *
-	 * @return array
+	 * @param string|string[]		$item
+	 *
+	 * @return array|bool|string
 	 */
-	function get_users_columns () {
-		return $this->users_columns;
+	function __get ($item) {
+		// Micro optimization since `id` is already a property of object, we can just return it here
+		if ($item == 'id') {
+			return $this->id;
+		}
+		return $this->get($item);
+	}
+	/**
+	 * Set data item of current user
+	 *
+	 * @param array|string	$item	Item-value array may be specified for setting several items at once
+	 * @param mixed|null	$value
+	 *
+	 * @return bool
+	 */
+	function __set ($item, $value = null) {
+		$this->set($item, $value);
+	}
+	/**
+	 * Saving changes of cache and users data
+	 */
+	function __finish () {
+		$this->save_cache_and_user_data();
 	}
 }

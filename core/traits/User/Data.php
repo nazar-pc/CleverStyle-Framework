@@ -17,6 +17,11 @@ use
  */
 trait Data {
 	/**
+	 * Copy of columns list of users table for internal needs without Cache usage
+	 * @var array
+	 */
+	protected	$users_columns	= [];
+	/**
 	 * Do we need to update users cache, if so - array will not be empty
 	 * @var array
 	 */
@@ -36,6 +41,11 @@ trait Data {
 	 * @var bool
 	 */
 	protected	$memory_cache	= true;
+	protected function initialize_data () {
+		$this->users_columns = $this->cache->get('columns', function () {
+			return $this->db()->columns('[prefix]users');
+		});
+	}
 	/**
 	 * Get data item of specified user
 	 *
@@ -265,27 +275,6 @@ trait Data {
 		return true;
 	}
 	/**
-	 * Get data item of current user
-	 *
-	 * @param string|string[]		$item
-	 *
-	 * @return array|bool|string
-	 */
-	function __get ($item) {
-		return $this->get($item);
-	}
-	/**
-	 * Set data item of current user
-	 *
-	 * @param array|string	$item	Item-value array may be specified for setting several items at once
-	 * @param mixed|null	$value
-	 *
-	 * @return bool
-	 */
-	function __set ($item, $value = null) {
-		$this->set($item, $value);
-	}
-	/**
 	 * Getting additional data item(s) of specified user
 	 *
 	 * @param string|string[]		$item
@@ -508,9 +497,17 @@ trait Data {
 		$this->memory_cache	= false;
 	}
 	/**
+	 * Returns array of users columns, available for getting of data
+	 *
+	 * @return array
+	 */
+	function get_users_columns () {
+		return $this->users_columns;
+	}
+	/**
 	 * Saving changes of cache and users data
 	 */
-	function __finish () {
+	protected function save_cache_and_user_data () {
 		/**
 		 * Updating users data
 		 */
