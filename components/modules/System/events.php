@@ -66,6 +66,40 @@ Event::instance()
 		}
 	)
 	->on(
+		'System/Session/init/after',
+		function () {
+			$Config  = Config::instance();
+			$Session = Session::instance();
+			$user_id = $Session->get_user();
+			/**
+			 * If not guest - apply some individual settings
+			 */
+			if ($user_id != User::GUEST_ID) {
+				$User     = User::instance();
+				$timezone = $User->get('timezone', $user_id);
+				if ($timezone && date_default_timezone_get() != $timezone) {
+					date_default_timezone_set($timezone);
+				}
+				$Config = Config::instance();
+				$L      = Language::instance();
+				/**
+				 * Change language if configuration is multilingual and this is not page with localized url
+				 */
+				if ($Config->core['multilingual'] && !$L->url_language()) {
+					$L->change($User->get('language', $user_id));
+				}
+			}
+			/**
+			 * Security check
+			 */
+			if (!isset($_REQUEST['session']) || $_REQUEST['session'] != $Session->get_id()) {
+				foreach (array_keys((array)$_POST) as $key) {
+					unset($_POST[$key], $_REQUEST[$key]);
+				}
+			}
+		}
+	)
+	->on(
 		'System/User/construct/after',
 		function () {
 			$Config = Config::instance();
@@ -96,25 +130,32 @@ Event::instance()
 			}
 			$base_url = substr($Config->base_url(), 0, -3);
 			Page::instance()->Head .=
-				h::{'link[rel=alternate]'}([
-					'hreflang' => 'x-default',
-					'href'     => home_page() ? $base_url : "$base_url/$relative_address"
-				]).
-				h::{'link[rel=alternate]|'}(array_map(
-					function ($lang) use ($base_url, $relative_address) {
-						return [
-							'hreflang' => $lang,
-							'href'     => "$base_url/$lang/$relative_address"
-						];
-					},
-					$Cache->get('language/clangs', function () use ($Config) {
-						$clangs = [];
-						foreach ($Config->core['active_languages'] as $language) {
-							$clangs[] = file_get_json_nocomments(LANGUAGES."/$language.json")['clang'];
-						}
-						return $clangs;
-					})
-				));
+				h::{'link[rel=alternate]'}(
+					[
+						'hreflang' => 'x-default',
+						'href'     => home_page() ? $base_url : "$base_url/$relative_address"
+					]
+				).
+				h::{'link[rel=alternate]|'}(
+					array_map(
+						function ($lang) use ($base_url, $relative_address) {
+							return [
+								'hreflang' => $lang,
+								'href'     => "$base_url/$lang/$relative_address"
+							];
+						},
+						$Cache->get(
+							'language/clangs',
+							function () use ($Config) {
+								$clangs = [];
+								foreach ($Config->core['active_languages'] as $language) {
+									$clangs[] = file_get_json_nocomments(LANGUAGES."/$language.json")['clang'];
+								}
+								return $clangs;
+							}
+						)
+					)
+				);
 		}
 	)
 	->on(

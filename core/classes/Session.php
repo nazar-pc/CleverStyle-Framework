@@ -23,6 +23,8 @@ use
 	cs\DB\Accessor;
 /**
  * Class responsible for current user session
+ *
+ * @method static Session instance($check = false)
  */
 class Session {
 	use
@@ -188,35 +190,6 @@ class Session {
 			}
 		}
 		$this->update_user_is();
-		/**
-		 * If not guest - apply some individual settings
-		 *
-		 * @todo Probably, better move to System/User/construct/after event handler somewhere instead
-		 */
-		if ($this->user_id != User::GUEST_ID) {
-			$timezone = $User->get('timezone', $this->user_id);
-			if ($timezone && date_default_timezone_get() != $timezone) {
-				date_default_timezone_set($timezone);
-			}
-			$Config = Config::instance();
-			$L      = Language::instance();
-			/**
-			 * Change language if configuration is multilingual and this is not page with localized url
-			 */
-			if ($Config->core['multilingual'] && !$L->url_language()) {
-				$L->change($this->language);
-			}
-		}
-		/**
-		 * Security check
-		 *
-		 * @todo Probably, better move to System/User/construct/after event handler somewhere instead
-		 */
-		if (!isset($_REQUEST['session']) || $_REQUEST['session'] != $this->get_id()) {
-			foreach (array_keys((array)$_POST) as $key) {
-				unset($_POST[$key], $_REQUEST[$key]);
-			}
-		}
 		Event::instance()->fire('System/Session/init/after');
 	}
 	/**
