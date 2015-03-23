@@ -109,9 +109,12 @@ class Orders {
 		} else {
 			$data['for_payment'] = $this->get_for_payment($data);
 		}
-		if (!Event::instance()->fire('Shop/Orders/get', [
-			'data' => &$data
-		])
+		if (!Event::instance()->fire(
+			'Shop/Orders/get',
+			[
+				'data' => &$data
+			]
+		)
 		) {
 			return false;
 		}
@@ -124,10 +127,12 @@ class Orders {
 	 */
 	protected function get_for_payment ($data) {
 		return
-			array_sum(array_column(
-				$this->get_items($data['id'])
-				, 'price'
-			)) + $data['shipping_cost'];
+			array_sum(
+				array_column(
+					$this->get_items($data['id']),
+					'price'
+				)
+			) + $data['shipping_cost'];
 	}
 	/**
 	 * Get array of all orders
@@ -148,16 +153,18 @@ class Orders {
 	 * @return array
 	 */
 	function get_statuses ($id) {
-		return $this->db()->qfa([
-			"SELECT
+		return $this->db()->qfa(
+			[
+				"SELECT
 				`id`,
 				`date`,
 				`status`,
 				`comment`
-			FROM `{$this->table}_history`
-			WHERE `id` = '%d'",
-			$id
-		]) ?: [];
+				FROM `{$this->table}_history`
+				WHERE `id` = '%d'",
+				$id
+			]
+		) ?: [];
 	}
 	/**
 	 * Get order items
@@ -167,18 +174,20 @@ class Orders {
 	 * @return array
 	 */
 	function get_items ($id) {
-		return $this->db()->qfa([
-			"SELECT
+		return $this->db()->qfa(
+			[
+				"SELECT
 				`id`,
 				`item`,
 				`units`,
 				`price`,
 				`unit_price`
-			FROM `{$this->table}_items`
-			WHERE
+				FROM `{$this->table}_items`
+				WHERE
 				`id` = '%d'",
-			$id
-		]) ?: [];
+				$id
+			]
+		) ?: [];
 	}
 	/**
 	 * Get array of payment methods
@@ -193,10 +202,13 @@ class Orders {
 				'description' => ''
 			]
 		];
-		Event::instance()->fire('System/payment/methods', [
-			'methods'  => &$payment_methods,
-			'currency' => $currency
-		]);
+		Event::instance()->fire(
+			'System/payment/methods',
+			[
+				'methods'  => &$payment_methods,
+				'currency' => $currency
+			]
+		);
 		return $payment_methods;
 	}
 	/**
@@ -226,30 +238,35 @@ class Orders {
 		unset($key, $details);
 		$where = $where ? 'WHERE '.implode(' AND ', $where) : '';
 		if (@$search_parameters['total_count']) {
-			return $this->db()->qfs([
-				"SELECT COUNT(`id`)
-				FROM `$this->table`
-				$where",
-				$params
-			]);
+			return $this->db()->qfs(
+				[
+					"SELECT COUNT(`id`)
+					FROM `$this->table`
+					$where",
+					$params
+				]
+			);
 		} else {
 			$params[] = ($page - 1) * $count;
 			$params[] = $count;
 			$asc      = $asc ? 'ASC' : 'DESC';
-			return $this->db()->qfas([
-				"SELECT `id`
-				FROM `$this->table`
-				$where
-				ORDER BY `$order_by` $asc
-				LIMIT %d, %d",
-				$params
-			]);
+			return $this->db()->qfas(
+				[
+					"SELECT `id`
+					FROM `$this->table`
+					$where
+					ORDER BY `$order_by` $asc
+					LIMIT %d, %d",
+					$params
+				]
+			);
 		}
 	}
 	/**
 	 * Returns recalculated prices for items and shipping
 	 *
-	 * Using this event third party components may automatically apply different discounts for items and shipping based on user, number of units and other things
+	 * Using this event third party components may automatically apply different discounts for items and shipping based on user, number of units and other
+	 * things
 	 *
 	 * @param array    $items Array in form of [id => units]
 	 * @param int      $shipping_type
@@ -283,14 +300,17 @@ class Orders {
 		if (!$items || !$shipping_type) {
 			return false;
 		}
-		$shipping      = [
+		$shipping = [
 			'type'  => $shipping_type['id'],
 			'price' => $shipping_type['price']
 		];
-		Event::instance()->fire('Shop/Orders/Cart/recalculate', [
-			'items'    => &$items,
-			'shipping' => &$shipping
-		]);
+		Event::instance()->fire(
+			'Shop/Orders/Cart/recalculate',
+			[
+				'items'    => &$items,
+				'shipping' => &$shipping
+			]
+		);
 		return [
 			'items'    => $items,
 			'shipping' => $shipping
@@ -314,19 +334,21 @@ class Orders {
 	 *
 	 */
 	function add ($user, $shipping_type, $shipping_cost, $shipping_username, $shipping_phone, $shipping_address, $payment_method, $paid, $status, $comment) {
-		$id = $this->create_simple([
-			$user,
-			time(),
-			$shipping_type,
-			$shipping_cost,
-			$shipping_username,
-			$shipping_phone,
-			$shipping_address,
-			$payment_method,
-			$paid == 1 ? time() : $paid,
-			$status,
-			$comment
-		]);
+		$id = $this->create_simple(
+			[
+				$user,
+				time(),
+				$shipping_type,
+				$shipping_cost,
+				$shipping_username,
+				$shipping_phone,
+				$shipping_address,
+				$payment_method,
+				$paid == 1 ? time() : $paid,
+				$status,
+				$comment
+			]
+		);
 		if ($id) {
 			$this->db_prime()->q(
 				"INSERT INTO `{$this->table}_history`
@@ -348,9 +370,12 @@ class Orders {
 				$status,
 				Order_statuses::instance()->get($status)['comment']
 			);
-			Event::instance()->fire('Shop/Orders/add', [
-				'id' => $id
-			]);
+			Event::instance()->fire(
+				'Shop/Orders/add',
+				[
+					'id' => $id
+				]
+			);
 		}
 		return $id;
 	}
@@ -428,22 +453,36 @@ class Orders {
 	 *
 	 * @return bool
 	 */
-	function set ($id, $user, $shipping_type, $shipping_cost, $shipping_username, $shipping_phone, $shipping_address, $payment_method, $paid, $status, $comment) {
+	function set (
+		$id,
+		$user,
+		$shipping_type,
+		$shipping_cost,
+		$shipping_username,
+		$shipping_phone,
+		$shipping_address,
+		$payment_method,
+		$paid,
+		$status,
+		$comment
+	) {
 		$order  = $this->read_simple($id);
-		$result = $this->update_simple([
-			$id,
-			$user,
-			$order['date'],
-			$shipping_type,
-			$shipping_cost,
-			$shipping_username,
-			$shipping_phone,
-			$shipping_address,
-			$payment_method,
-			$paid == 1 ? ($order['paid'] ?: time()) : $paid,
-			$status,
-			$comment
-		]);
+		$result = $this->update_simple(
+			[
+				$id,
+				$user,
+				$order['date'],
+				$shipping_type,
+				$shipping_cost,
+				$shipping_username,
+				$shipping_phone,
+				$shipping_address,
+				$payment_method,
+				$paid == 1 ? ($order['paid'] ?: time()) : $paid,
+				$status,
+				$comment
+			]
+		);
 		if ($result && $order['status'] != $status) {
 			$this->db_prime()->q(
 				"INSERT INTO `{$this->table}_history`
@@ -465,9 +504,12 @@ class Orders {
 				$status,
 				Order_statuses::instance()->get($status)['comment']
 			);
-			Event::instance()->fire('Shop/Orders/set', [
-				'id' => $id
-			]);
+			Event::instance()->fire(
+				'Shop/Orders/set',
+				[
+					'id' => $id
+				]
+			);
 		}
 		return $result;
 	}
@@ -505,7 +547,7 @@ class Orders {
 		);
 		if ($result && $this->reduce_in_stock_value) {
 			$Items            = Items::instance();
-			$old_units        = array_column($items, 'item', 'units')[$item];
+			$old_units        = array_column($items, 'units', 'item')[$item];
 			$item             = $Items->get($item);
 			$item['in_stock'] = $item['in_stock'] + $old_units - $units;
 			$Items->set(
@@ -533,29 +575,32 @@ class Orders {
 	function set_status ($id, $status, $comment) {
 		$this->db_prime()->q(
 			"INSERT INTO `{$this->table}_history`
-					(
-						`id`,
-						`date`,
-						`status`,
-						`comment`
-					)
-				VALUES
-					(
-						'%d',
-						'%d',
-						'%d',
-						'%s'
-					)",
+				(
+					`id`,
+					`date`,
+					`status`,
+					`comment`
+				)
+			VALUES
+				(
+					'%d',
+					'%d',
+					'%d',
+					'%s'
+				)",
 			$id,
 			time(),
 			$status,
 			xap($comment, true)
 		);
-		Event::instance()->fire('Shop/Orders/set_status', [
-			'id'      => $id,
-			'status'  => $status,
-			'comment' => $comment
-		]);
+		Event::instance()->fire(
+			'Shop/Orders/set_status',
+			[
+				'id'      => $id,
+				'status'  => $status,
+				'comment' => $comment
+			]
+		);
 	}
 	/**
 	 * Delete specified order
@@ -576,9 +621,12 @@ class Orders {
 				WHERE `id` = '%d'",
 				$id
 			);
-			Event::instance()->fire('Shop/Orders/del', [
-				'id' => $id
-			]);
+			Event::instance()->fire(
+				'Shop/Orders/del',
+				[
+					'id' => $id
+				]
+			);
 			return true;
 		}
 		return false;
@@ -604,7 +652,7 @@ class Orders {
 		);
 		if ($result && $this->reduce_in_stock_value) {
 			$Items            = Items::instance();
-			$old_units        = array_column($items, 'item', 'units')[$item];
+			$old_units        = array_column($items, 'units', 'item')[$item];
 			$item             = $Items->get($item);
 			$item['in_stock'] = $item['in_stock'] + $old_units;
 			$Items->set(
