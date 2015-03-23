@@ -1,7 +1,7 @@
 {
 	"package"		: "Blockchain payment",
 	"category"		: "modules",
-	"version"		: "0.8.1+build-11",
+	"version"		: "0.8.2+build-12",
 	"description"	: "Payment though blockchain.info in Bitcoin",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",

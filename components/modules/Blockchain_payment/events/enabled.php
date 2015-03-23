@@ -22,8 +22,8 @@ Event::instance()
 			) {
 				$L                                         = new Prefix('blockchain_payment_');
 				$data['methods']['blockchain_payment:btc'] = [
-					'title'       => 'BTC: blockchain.info',
-					'description' => $L->pay_in_bitcoin
+					'title'       => "BTC: $L->pay_in_bitcoin",
+					'description' => ''
 				];
 			}
 		}
