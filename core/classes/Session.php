@@ -15,7 +15,7 @@
  *  ['id' => session_id]
  *
  *  System/Session/del_all
- *  ['id'	=> user_id]
+ *  ['id' => user_id]
  */
 namespace cs;
 use
@@ -37,31 +37,31 @@ class Session {
 	/**
 	 * User id of current session
 	 *
-	 * @var bool|string
+	 * @var bool|int
 	 */
-	protected $user_id    = User::GUEST_ID;
-	protected $is_admin   = false;
-	protected $is_user    = false;
-	protected $is_bot     = false;
-	protected $is_guest   = false;
+	protected $user_id  = false;
+	protected $is_admin = false;
+	protected $is_user  = false;
+	protected $is_bot   = false;
+	protected $is_guest = false;
 	/**
 	 * @deprecated
 	 * @todo Remove in future versions
 	 *
 	 * @var bool
 	 */
-	protected	$is_system		= false;
+	protected $is_system = false;
 	/**
 	 * @var Prefix
 	 */
-	protected	$cache;
+	protected $cache;
 	/**
 	 * @var Prefix
 	 */
-	protected	$users_cache;
+	protected $users_cache;
 	protected function construct () {
-		$this->cache		= new Prefix('sessions');
-		$this->users_cache	= new Prefix('users');
+		$this->cache       = new Prefix('sessions');
+		$this->users_cache = new Prefix('users');
 		$this->initialize_session();
 	}
 	/**
@@ -85,37 +85,42 @@ class Session {
 		$User = User::instance();
 		if (_getcookie('session')) {
 			$this->user_id = $this->load();
-		/**
-		 * Try to detect bot, not necessary for API request
-		 */
+			/**
+			 * Try to detect bot, not necessary for API request
+			 */
 		} elseif (!api_path()) {
 			$Cache = $this->users_cache;
 			/**
 			 * Loading bots list
 			 */
-			$bots = $Cache->get('bots', function () {
-				return $this->db()->qfa([
-					"SELECT
-						`u`.`id`,
-						`u`.`login`,
-						`u`.`email`
-					FROM `[prefix]users` AS `u`
-						INNER JOIN `[prefix]users_groups` AS `g`
-					ON `u`.`id` = `g`.`id`
-					WHERE
-						`g`.`group`		= '%s' AND
-						`u`.`status`	= '%s'",
-					User::BOT_GROUP_ID,
-					User::STATUS_ACTIVE
-				]) ?: [];
-			});
+			$bots = $Cache->get(
+				'bots',
+				function () {
+					return $this->db()->qfa(
+						[
+							"SELECT
+								`u`.`id`,
+								`u`.`login`,
+								`u`.`email`
+							FROM `[prefix]users` AS `u`
+								INNER JOIN `[prefix]users_groups` AS `g`
+							ON `u`.`id` = `g`.`id`
+							WHERE
+								`g`.`group`		= '%s' AND
+								`u`.`status`	= '%s'",
+							User::BOT_GROUP_ID,
+							User::STATUS_ACTIVE
+						]
+					) ?: [];
+				}
+			);
 			/**
 			 * @var \cs\_SERVER $_SERVER
 			 */
 			/**
 			 * For bots: login is user agent, email is IP
 			 */
-			$bot_hash	= hash('sha224', $_SERVER->user_agent.$_SERVER->ip);
+			$bot_hash = hash('sha224', $_SERVER->user_agent.$_SERVER->ip);
 			/**
 			 * If list is not empty - try to find bot
 			 */
@@ -136,7 +141,7 @@ class Session {
 								_preg_match($bot['login'], $_SERVER->user_agent)
 							)
 						) {
-							$this->user_id	= $bot['id'];
+							$this->user_id = $bot['id'];
 							break;
 						}
 						if (
@@ -146,7 +151,7 @@ class Session {
 								_preg_match($bot['email'], $_SERVER->ip)
 							)
 						) {
-							$this->user_id	= $bot['id'];
+							$this->user_id = $bot['id'];
 							break;
 						}
 					}
@@ -155,11 +160,11 @@ class Session {
 					 * If found id - this is bot
 					 */
 					if ($this->user_id) {
-						$Cache->$bot_hash	= $this->user_id;
+						$Cache->$bot_hash = $this->user_id;
 						/**
 						 * Searching for last bot session, if exists - load it, otherwise create new one
 						 */
-						$last_session		= $User->get_data('last_session', $this->user_id);
+						$last_session = $User->get_data('last_session', $this->user_id);
 						if ($last_session) {
 							$this->load($last_session);
 						}
@@ -174,7 +179,7 @@ class Session {
 			unset($bots, $bot_hash);
 		}
 		if (!$this->user_id) {
-			$this->user_id	= User::GUEST_ID;
+			$this->user_id = User::GUEST_ID;
 			/**
 			 * Do not create session for API request
 			 */
@@ -218,12 +223,12 @@ class Session {
 	 * Updates information about who is user accessed by methods ::guest() ::bot() ::user() admin() ::system()
 	 */
 	protected function update_user_is () {
-		$this->is_guest		= false;
-		$this->is_bot		= false;
-		$this->is_user		= false;
-		$this->is_admin		= false;
+		$this->is_guest = false;
+		$this->is_bot   = false;
+		$this->is_user  = false;
+		$this->is_admin = false;
 		//TODO Remove in future versions
-		$this->is_system	= false;
+		$this->is_system = false;
 		if ($this->user_id == User::GUEST_ID) {
 			$this->is_guest = true;
 			return;
@@ -233,13 +238,13 @@ class Session {
 			 */
 			$groups = User::instance()->get_groups($this->user_id) ?: [];
 			if (in_array(User::ADMIN_GROUP_ID, $groups)) {
-				$this->is_admin	= Config::instance()->can_be_admin();
-				$this->is_user	= true;
+				$this->is_admin = Config::instance()->can_be_admin();
+				$this->is_user  = true;
 			} elseif (in_array(User::USER_GROUP_ID, $groups)) {
-				$this->is_user	= true;
+				$this->is_user = true;
 			} elseif (in_array(User::BOT_GROUP_ID, $groups)) {
-				$this->is_guest	= true;
-				$this->is_bot	= true;
+				$this->is_guest = true;
+				$this->is_bot   = true;
 			}
 		}
 	}
@@ -329,24 +334,29 @@ class Session {
 		/**
 		 * @var \cs\_SERVER $_SERVER
 		 */
-		$session = $this->cache->get($session_id, function () use ($session_id) {
-			return $this->db()->qf([
-				"SELECT
-					`id`,
-					`user`,
-					`expire`,
-					`user_agent`,
-					`remote_addr`,
-					`ip`
-				FROM `[prefix]sessions`
-				WHERE
-					`id`		= '%s' AND
-					`expire`	> '%s'
-				LIMIT 1",
-				$session_id,
-				time()
-			]) ?: false;
-		});
+		$session = $this->cache->get(
+			$session_id,
+			function () use ($session_id) {
+				return $this->db()->qf(
+					[
+						"SELECT
+							`id`,
+							`user`,
+							`expire`,
+							`user_agent`,
+							`remote_addr`,
+							`ip`
+						FROM `[prefix]sessions`
+						WHERE
+							`id`		= '%s' AND
+							`expire`	> '%s'
+						LIMIT 1",
+						$session_id,
+						time()
+					]
+				) ?: false;
+			}
+		);
 		if ($session['expire'] < time()) {
 			return false;
 		}
@@ -432,8 +442,8 @@ class Session {
 			}
 		}
 		if ($session['expire'] - $time < $Config->core['session_expire'] * $Config->core['update_ratio'] / 100) {
-			$session['expire']                     = $time + $Config->core['session_expire'];
-			$update[]                              = "
+			$session['expire']        = $time + $Config->core['session_expire'];
+			$update[]                 = "
 				UPDATE `[prefix]sessions`
 				SET `expire` = $session[expire]
 				WHERE `id` = '$session_id'
@@ -443,7 +453,7 @@ class Session {
 		if (!empty($update)) {
 			$this->db_prime()->q($update);
 		}
-		$this->user_id         = $session['user'];
+		$this->user_id    = $session['user'];
 		$this->session_id = $session_id;
 		$this->update_user_is();
 		return $this->user_id;
@@ -466,7 +476,7 @@ class Session {
 		 * Return point, runs if user is blocked, inactive, or disabled
 		 */
 		getting_user_data:
-		$data = $User->get(
+		$data = User::instance()->get(
 			[
 				'login',
 				'username',
@@ -582,7 +592,7 @@ class Session {
 					WHERE `id` ='$user'"
 				);
 			}
-			$this->session_id                = $hash;
+			$this->session_id   = $hash;
 			$this->cache->$hash = [
 				'id'          => $hash,
 				'user'        => $user,
@@ -631,13 +641,19 @@ class Session {
 		if (!is_md5($session_id)) {
 			return false;
 		}
-		Event::instance()->fire('System/Session/del/before', [
-			'id' => $session_id
-		]);
+		Event::instance()->fire(
+			'System/Session/del/before',
+			[
+				'id' => $session_id
+			]
+		);
 		//TODO Remove in future versions
-		Event::instance()->fire('System/User/del_session/before', [
-			'id' => $session_id
-		]);
+		Event::instance()->fire(
+			'System/User/del_session/before',
+			[
+				'id' => $session_id
+			]
+		);
 		unset($this->cache->$session_id);
 		$this->session_id = false;
 		_setcookie('session', '');
@@ -650,13 +666,19 @@ class Session {
 		if ($create_guest_session) {
 			return $this->add(User::GUEST_ID);
 		}
-		Event::instance()->fire('System/Session/del/after', [
-			'id' => $session_id
-		]);
+		Event::instance()->fire(
+			'System/Session/del/after',
+			[
+				'id' => $session_id
+			]
+		);
 		//TODO Remove in future versions
-		Event::instance()->fire('System/User/del_session/after', [
-			'id' => $session_id
-		]);
+		Event::instance()->fire(
+			'System/User/del_session/after',
+			[
+				'id' => $session_id
+			]
+		);
 		return $result;
 	}
 	/**
@@ -667,13 +689,19 @@ class Session {
 	 * @return bool
 	 */
 	function del_all ($user = false) {
-		Event::instance()->fire('System/Session/del_all', [
-			'id' => $user
-		]);
+		Event::instance()->fire(
+			'System/Session/del_all',
+			[
+				'id' => $user
+			]
+		);
 		//TODO Remove in future versions
-		Event::instance()->fire('System/User/del_all_sessions', [
-			'id' => $user
-		]);
+		Event::instance()->fire(
+			'System/User/del_all_sessions',
+			[
+				'id' => $user
+			]
+		);
 		$user     = $user ?: $this->user_id;
 		$sessions = $this->db_prime()->qfas(
 			"SELECT `id`
@@ -707,17 +735,22 @@ class Session {
 		if (!is_md5($session_id)) {
 			return false;
 		}
-		$data = $this->cache->get("data/$session_id", function () use ($session_id) {
-			return _json_decode(
-				$this->db()->qfs([
-					"SELECT `data`
-					FROM `[prefix]sessions`
-					WHERE `id` = '%s'
-					LIMIT 1",
-					$session_id
-				])
-			) ?: false;
-		}) ?: [];
+		$data = $this->cache->get(
+			"data/$session_id",
+			function () use ($session_id) {
+				return _json_decode(
+					$this->db()->qfs(
+						[
+							"SELECT `data`
+							FROM `[prefix]sessions`
+							WHERE `id` = '%s'
+							LIMIT 1",
+							$session_id
+						]
+					)
+				) ?: false;
+			}
+		) ?: [];
 		return isset($data[$item]) ? $data[$item] : false;
 	}
 	/**
@@ -735,17 +768,22 @@ class Session {
 		if (!is_md5($session_id)) {
 			return false;
 		}
-		$data        = $this->cache->get("data/$session_id", function () use ($session_id) {
-			return _json_decode(
-				$this->db()->qfs([
-					"SELECT `data`
-					FROM `[prefix]sessions`
-					WHERE `id` = '%s'
-					LIMIT 1",
-					$session_id
-				])
-			) ?: false;
-		}) ?: [];
+		$data        = $this->cache->get(
+			"data/$session_id",
+			function () use ($session_id) {
+				return _json_decode(
+					$this->db()->qfs(
+						[
+							"SELECT `data`
+							FROM `[prefix]sessions`
+							WHERE `id` = '%s'
+							LIMIT 1",
+							$session_id
+						]
+					)
+				) ?: false;
+			}
+		) ?: [];
 		$data[$item] = $value;
 		if ($this->db()->q(
 			"UPDATE `[prefix]sessions`
@@ -775,17 +813,22 @@ class Session {
 		if (!is_md5($session_id)) {
 			return false;
 		}
-		$data = $this->cache->get("data/$session_id", function () use ($session_id) {
-			return _json_decode(
-				$this->db()->qfs([
-					"SELECT `data`
-					FROM `[prefix]sessions`
-					WHERE `id` = '%s'
-					LIMIT 1",
-					$session_id
-				])
-			) ?: false;
-		}) ?: [];
+		$data = $this->cache->get(
+			"data/$session_id",
+			function () use ($session_id) {
+				return _json_decode(
+					$this->db()->qfs(
+						[
+							"SELECT `data`
+							FROM `[prefix]sessions`
+							WHERE `id` = '%s'
+							LIMIT 1",
+							$session_id
+						]
+					)
+				) ?: false;
+			}
+		) ?: [];
 		if (!isset($data[$item])) {
 			return true;
 		}

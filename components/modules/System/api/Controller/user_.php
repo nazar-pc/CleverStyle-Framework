@@ -13,6 +13,7 @@ use
 	cs\Language,
 	cs\Mail,
 	cs\Page,
+	cs\Session,
 	cs\User;
 trait user_ {
 	static function user_change_password () {
@@ -175,7 +176,7 @@ trait user_ {
 				$Page->error($L->your_account_disabled);
 				return;
 			}
-			$User->add_session($id);
+			Session::instance()->add($id);
 			$User->sign_in_result(true);
 		} else {
 			$User->sign_in_result(false);
