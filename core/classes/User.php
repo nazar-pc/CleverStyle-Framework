@@ -281,7 +281,6 @@ class User {
 	 * @return array|bool|string
 	 */
 	function __get ($item) {
-		// Micro optimization since `id` is already a property of object, we can just return it here
 		if ($item == 'id') {
 			return Session::instance()->get_user();
 		}
