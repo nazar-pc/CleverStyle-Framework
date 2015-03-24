@@ -249,25 +249,24 @@ trait packages_manipulation {
 		if (!file_exists("$dir/meta.json")) {
 			return true;
 		}
-		$meta   = file_get_json("$dir/meta.json");
-		$Config = Config::instance();
-		$Core   = Core::instance();
-		$L      = Language::instance();
-		$Page   = Page::instance();
+		$meta         = file_get_json("$dir/meta.json");
+		$Config       = Config::instance();
+		$Core         = Core::instance();
+		$L            = Language::instance();
+		$Page         = Page::instance();
+		$check_result = true;
 		if (isset($meta['db_support']) && !empty($meta['db_support'])) {
-			$return = false;
-			if (in_array($Core->db_type, $meta['db_support'])) {
-				$return = true;
-			} else {
+			$check_result = false;
+			if (!in_array($Core->db_type, $meta['db_support'])) {
 				foreach ($Config->db as $database) {
 					if (isset($database['type']) && in_array($database['type'], $meta['db_support'])) {
-						$return = true;
+						$check_result = true;
 						break;
 					}
 				}
 				unset($database);
 			}
-			if (!$return) {
+			if (!$check_result) {
 				$Page->warning(
 					$L->compatible_databases_not_found(
 						implode('", "', $meta['db_support'])
@@ -280,8 +279,6 @@ trait packages_manipulation {
 					)
 				);
 			}
-		} else {
-			$return = true;
 		}
 		if (isset($meta['storage_support']) && !empty($meta['storage_support'])) {
 			$return_s = false;
@@ -309,26 +306,16 @@ trait packages_manipulation {
 					)
 				);
 			}
-			$return = $return && $return_s;
+			$check_result = $check_result && $return_s;
 			unset($return_s);
 		}
-		$provide  = [];
-		$require  = [];
-		$conflict = [];
-		if (isset($meta['provide'])) {
-			$provide = (array)$meta['provide'];
-		}
-		if (isset($meta['require']) && !empty($meta['require'])) {
-			$require = self::dep_normal((array)$meta['require']);
-		}
-		if (isset($meta['conflict']) && !empty($meta['conflict'])) {
-			$conflict = self::dep_normal((array)$meta['conflict']);
-		}
-		unset($meta);
+		$provide  = @(array)$meta['provide'] ?: [];
+		$require  = @$meta['require'] ? self::dep_normal($meta['require']) : [];
+		$conflict = @$meta['conflict'] ? self::dep_normal($meta['conflict']) : [];
 		/**
 		 * Checking for compatibility with modules
 		 */
-		$return_m = true;
+		$check_result_modules = true;
 		foreach ($Config->components['modules'] as $module => $module_data) {
 			/**
 			 * If module uninstalled, disabled (in enable check mode), module name is the same as checked or meta.json file absent
@@ -352,10 +339,13 @@ trait packages_manipulation {
 				 * If module updates, check update possibility from current version
 				 */
 				if (
-					$module == $name && $type == 'module' && $mode == 'update' &&
-					isset($meta['update_from']) && version_compare($meta['update_from_version'], $module_meta['version'], '>')
+					$module == $name &&
+					$type == 'module' &&
+					$mode == 'update' &&
+					isset($meta['update_from']) &&
+					version_compare($meta['update_from_version'], $module_meta['version'], '>')
 				) {
-					if ($return_m) {
+					if ($check_result_modules) {
 						$Page->warning($L->dependencies_not_satisfied);
 					}
 					$Page->warning(
@@ -379,10 +369,10 @@ trait packages_manipulation {
 				!empty($module_meta['provide']) &&
 				$intersect = array_intersect($provide, (array)$module_meta['provide'])
 			) {
-				if ($return_m) {
+				if ($check_result_modules) {
 					$Page->warning($L->dependencies_not_satisfied);
 				}
-				$return_m = false;
+				$check_result_modules = false;
 				$Page->warning(
 					$L->module_already_provides_functionality(
 						$module,
@@ -394,7 +384,7 @@ trait packages_manipulation {
 			/**
 			 * Checking for required packages
 			 */
-			if (!empty($require) && isset($require[$module_meta['package']])) {
+			if (isset($require[$module_meta['package']])) {
 				if (
 				version_compare(
 					$module_meta['version'],
@@ -404,10 +394,10 @@ trait packages_manipulation {
 				) {
 					unset($require[$module_meta['package']]);
 				} else {
-					if ($return_m) {
+					if ($check_result_modules) {
 						$Page->warning($L->dependencies_not_satisfied);
 					}
-					$return_m = false;
+					$check_result_modules = false;
 					$Page->warning(
 						$L->unsatisfactory_version_of_the_module(
 							$module,
@@ -420,11 +410,7 @@ trait packages_manipulation {
 			/**
 			 * Checking for required functionality
 			 */
-			if (
-				!empty($require) &&
-				isset($module_meta['provide']) &&
-				!empty($module_meta['provide'])
-			) {
+			if (isset($module_meta['provide'])) {
 				foreach ((array)$module_meta['provide'] as $p) {
 					unset($require[$p]);
 				}
@@ -434,18 +420,29 @@ trait packages_manipulation {
 			 * Checking for conflict packages
 			 */
 			if (
-				!empty($conflict) &&
-				isset($module_meta['conflict']) &&
-				version_compare(
-					$module_meta['version'],
-					$conflict[$module_meta['package']][1],
-					$conflict[$module_meta['package']][0]
+				(
+					isset($conflict[$module_meta['package']]) &&
+					version_compare(
+						$module_meta['version'],
+						$conflict[$module_meta['package']][1],
+						$conflict[$module_meta['package']][0]
+					)
+				) ||
+				(
+					isset($module_meta['conflict']) &&
+					($module_meta['conflict'] = self::dep_normal($module_meta['conflict'])) &&
+					isset($module_meta['conflict'][$name]) &&
+					version_compare(
+						$meta['version'],
+						$module_meta['conflict'][$name][1],
+						$module_meta['conflict'][$name][0]
+					)
 				)
 			) {
-				if ($return_m) {
+				if ($check_result_modules) {
 					$Page->warning($L->dependencies_not_satisfied);
 				}
-				$return_m = false;
+				$check_result_modules = false;
 				$Page->warning(
 					$L->conflict_module(
 						$module_meta['package'],
@@ -461,12 +458,12 @@ trait packages_manipulation {
 				);
 			}
 		}
-		$return = $return && $return_m;
-		unset($return_m, $module, $module_data, $module_meta);
+		$check_result = $check_result && $check_result_modules;
+		unset($check_result_modules, $module, $module_data, $module_meta);
 		/**
 		 * Checking for compatibility with plugins
 		 */
-		$return_p = true;
+		$check_result_plugins = true;
 		foreach ($Config->components['plugins'] as $plugin) {
 			if (
 				(
@@ -478,18 +475,16 @@ trait packages_manipulation {
 			}
 			$plugin_meta = file_get_json(PLUGINS."/$plugin/meta.json");
 			/**
-			 * If some plugin already provides the same functionality
+			 * If plugin already provides the same functionality
 			 */
 			if (
-				!empty($provide) &&
 				isset($plugin_meta['provide']) &&
-				is_array($plugin_meta['provide']) &&
-				$intersect = array_intersect($provide, $plugin_meta['provide'])
+				$intersect = array_intersect($provide, (array)$plugin_meta['provide'])
 			) {
-				if ($return_p) {
+				if ($check_result_plugins) {
 					$Page->warning($L->dependencies_not_satisfied);
 				}
-				$return_p = false;
+				$check_result_plugins = false;
 				$Page->warning(
 					$L->plugin_already_provides_functionality(
 						$plugin,
@@ -511,10 +506,10 @@ trait packages_manipulation {
 				) {
 					unset($require[$plugin_meta['package']]);
 				} else {
-					if ($return_p) {
+					if ($check_result_plugins) {
 						$Page->warning($L->dependencies_not_satisfied);
 					}
-					$return_p = false;
+					$check_result_plugins = false;
 					$Page->warning(
 						$L->unsatisfactory_version_of_the_plugin(
 							$plugin,
@@ -541,18 +536,29 @@ trait packages_manipulation {
 			 * Checking for conflict packages
 			 */
 			if (
-				isset($plugin_meta['conflict']) &&
-				is_array($plugin_meta['conflict']) &&
-				version_compare(
-					$plugin_meta['version'],
-					$conflict[$plugin_meta['package']][1],
-					$conflict[$plugin_meta['package']][0]
+				(
+					isset($conflict[$plugin_meta['package']]) &&
+					version_compare(
+						$module_meta['version'],
+						$conflict[$plugin_meta['package']][1],
+						$conflict[$plugin_meta['package']][0]
+					)
+				) ||
+				(
+					isset($plugin_meta['conflict']) &&
+					($plugin_meta['conflict'] = self::dep_normal($plugin_meta['conflict'])) &&
+					isset($plugin_meta['conflict'][$name]) &&
+					version_compare(
+						$meta['version'],
+						$plugin_meta['conflict'][$name][1],
+						$plugin_meta['conflict'][$name][0]
+					)
 				)
 			) {
-				if ($return_p) {
+				if ($check_result_plugins) {
 					$Page->warning($L->dependencies_not_satisfied);
 				}
-				$return_p = false;
+				$check_result_plugins = false;
 				$Page->warning(
 					$L->conflict_plugin($plugin).
 					(
@@ -565,8 +571,8 @@ trait packages_manipulation {
 				);
 			}
 		}
-		$return = $return && $return_p;
-		unset($return_p, $plugin, $plugin_meta, $provide, $conflict);
+		$check_result = $check_result && $check_result_plugins;
+		unset($check_result_plugins, $plugin, $plugin_meta, $provide, $conflict);
 		/**
 		 * If some required packages missing
 		 */
@@ -582,7 +588,7 @@ trait packages_manipulation {
 				);
 			}
 		}
-		return $return && $return_r;
+		return $check_result && $return_r;
 	}
 	/**
 	 * Check backward dependencies (during uninstalling/disabling)
@@ -607,15 +613,15 @@ trait packages_manipulation {
 		if (!file_exists("$dir/meta.json")) {
 			return true;
 		}
-		$meta   = file_get_json("$dir/meta.json");
-		$return = true;
-		$Config = Config::instance();
-		$L      = Language::instance();
-		$Page   = Page::instance();
+		$meta         = file_get_json("$dir/meta.json");
+		$check_result = true;
+		$Config       = Config::instance();
+		$L            = Language::instance();
+		$Page         = Page::instance();
 		/**
 		 * Checking for backward dependencies of modules
 		 */
-		$return_m = true;
+		$check_result_modules = true;
 		foreach ($Config->components['modules'] as $module => $module_data) {
 			/**
 			 * If module uninstalled, disabled (in disable check mode), module name is the same as checking or meta.json file does not exists
@@ -645,19 +651,19 @@ trait packages_manipulation {
 					isset($meta['provide']) && array_intersect(array_keys($module_require), (array)$meta['provide'])
 				)
 			) {
-				if ($return_m) {
+				if ($check_result_modules) {
 					$Page->warning($L->dependencies_not_satisfied);
 				}
-				$return_m = false;
+				$check_result_modules = false;
 				$Page->warning($L->this_package_is_used_by_module($module));
 			}
 		}
-		$return = $return && $return_m;
-		unset($return_m, $module, $module_data, $module_require);
+		$check_result = $check_result && $check_result_modules;
+		unset($check_result_modules, $module, $module_data, $module_require);
 		/**
 		 * Checking for backward dependencies of plugins
 		 */
-		$return_p = true;
+		$check_result_plugins = true;
 		foreach ($Config->components['plugins'] as $plugin) {
 			if (
 				(
@@ -678,17 +684,17 @@ trait packages_manipulation {
 					isset($meta['provide']) && array_intersect(array_keys($plugin_require), (array)$meta['provide'])
 				)
 			) {
-				if ($return_p) {
+				if ($check_result_plugins) {
 					$Page->warning($L->dependencies_not_satisfied);
 				}
-				$return_p = false;
+				$check_result_plugins = false;
 				$Page->warning($L->this_package_is_used_by_plugin($plugin));
 			}
 		}
-		return $return && $return_p;
+		return $check_result && $check_result_plugins;
 	}
 	/**
-	 * Function for normalization of dependence structure
+	 * Function for normalization of dependencies structure
 	 *
 	 * @param array|string $dependence_structure
 	 *
