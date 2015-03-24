@@ -21,21 +21,22 @@ trait Singleton {
 		static $instance;
 		$class = get_called_class();
 		$request_specific_classes = ASYNC_HTTP_SERVER ? [
-			'cs\\Config',
 			'cs\\Event',
 			'cs\\Index',
 			'cs\\Language',
 			'cs\\Menu',
 			'cs\\Page',
 			'cs\\Page\\Meta',
-			'cs\\User'
+			'cs\\Route',
+			'cs\\Session'
 		] : [
 			'cs\\Event',
 			'cs\\Index',
 			'cs\\Menu',
 			'cs\\Page',
 			'cs\\Page\\Meta',
-			'cs\\User'
+			'cs\\Route',
+			'cs\\Session'
 		];
 		if (in_array($class, $request_specific_classes)) {
 			$request_id   = get_request_id();

@@ -87,9 +87,7 @@ class Request {
 		}
 		try {
 			try {
-				if (!ASYNC_HTTP_SERVER) {
-					Config::instance(true)->reinit();
-				}
+				Config::instance(true)->reinit();
 				Language::instance();
 				Index::instance();
 			} catch (\ExitException $e) {

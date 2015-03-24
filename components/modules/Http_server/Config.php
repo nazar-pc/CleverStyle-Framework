@@ -21,13 +21,5 @@ class Config extends Config_original {
 		 */
 		$this->init();
 		Event::instance()->fire('System/Config/after_init');
-		if (!file_exists(MODULES.'/'.$this->core['default_module'])) {
-			$this->core['default_module']	= 'System';
-			$this->save();
-		}
-		/**
-		 * Address routing
-		 */
-		$this->routing();
 	}
 }

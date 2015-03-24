@@ -139,10 +139,14 @@ namespace {
 	function _setcookie ($name, $value, $expire = 0, $httponly = false) {
 		static $path, $domain, $prefix, $secure;
 		$request_id = get_request_id();
-		if (!isset($_COOKIE[$request_id])) {
-			$_COOKIE[$request_id] = [];
+		if (ASYNC_HTTP_SERVER) {
+			if (!isset($_COOKIE[$request_id])) {
+				$_COOKIE[$request_id] = [];
+			}
+			$request_cookie = &$_COOKIE[$request_id];
+		} else {
+			$request_cookie = &$_COOKIE;
 		}
-		$request_cookie = &$_COOKIE[$request_id];
 		if (!isset($prefix)) {
 			$Config = Config::instance(true);
 			/**
@@ -187,10 +191,14 @@ namespace {
 	function _getcookie ($name) {
 		static $prefix;
 		$request_id = get_request_id();
-		if (!isset($_COOKIE[$request_id])) {
-			return false;
+		if (ASYNC_HTTP_SERVER) {
+			if (!isset($_COOKIE[$request_id])) {
+				return false;
+			}
+			$request_cookie = &$_COOKIE[$request_id];
+		} else {
+			$request_cookie = &$_COOKIE;
 		}
-		$request_cookie = &$_COOKIE[$request_id];
 		if (!isset($prefix)) {
 			$prefix = Config::instance(true)->core['cookie_prefix'] ?: '';
 		}
