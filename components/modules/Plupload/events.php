@@ -10,7 +10,7 @@
 namespace	cs;
 Event::instance()
 	->on(
-		'System/Config/after_init',
+		'System/Config/init/after',
 		function () {
 			switch (Config::instance()->components['modules']['Plupload']['active']) {
 				case 1:

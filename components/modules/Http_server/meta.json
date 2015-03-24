@@ -8,7 +8,7 @@
 	"license"          : "MIT License",
 	"provide"          : "http_server",
 	"require"          : [
-		"System=>1.94",
+		"System=>1.95",
 		"composer"
 	],
 	"require_composer" : {

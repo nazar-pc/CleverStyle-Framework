@@ -10,7 +10,7 @@
 		"MySQLi"
 	],
 	"provide"		: "file_upload",
-	"require"		: "System=>1.82",
+	"require"		: "System=>1.95",
 	"multilingual"	: [
 		"interface"
 	],

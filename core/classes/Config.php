@@ -9,9 +9,9 @@ namespace cs;
 
 /**
  * Provides next events:
- *  System/Config/before_init
+ *  System/Config/init/before
  *
- *  System/Config/after_init
+ *  System/Config/init/after
  *
  * @method static Config instance($check = false)
  */
@@ -127,11 +127,15 @@ class Config {
 			}
 			unset($part, $value);
 		}
+		Event::instance()->fire('System/Config/init/before');
+		// TODO Remove in future versions
 		Event::instance()->fire('System/Config/before_init');
 		/**
 		 * System initialization with current configuration
 		 */
 		$this->init();
+		Event::instance()->fire('System/Config/init/after');
+		// TODO Remove in future versions
 		Event::instance()->fire('System/Config/after_init');
 		if (!file_exists(MODULES.'/'.$this->core['default_module'])) {
 			$this->core['default_module']	= 'System';

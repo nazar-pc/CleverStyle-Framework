@@ -15,11 +15,11 @@ use
  */
 class Config extends Config_original {
 	function reinit () {
-		Event::instance()->fire('System/Config/before_init');
+		Event::instance()->fire('System/Config/init/before');
 		/**
 		 * System initialization with current configuration
 		 */
 		$this->init();
-		Event::instance()->fire('System/Config/after_init');
+		Event::instance()->fire('System/Config/init/after');
 	}
 }
