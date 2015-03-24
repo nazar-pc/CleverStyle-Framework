@@ -17,9 +17,8 @@ require __DIR__.'/functions.php';                //Inclusion of functions needed
 \cs\Singleton\clean_classes_cache();
 require __DIR__.'/Request.php';                  //Inclusion of Request class, used for http server requests processing
 require __DIR__.'/Singleton.php';                //Inclusion of `Singleton` trait, specific for http server
-if (!ASYNC_HTTP_SERVER) {
-	require __DIR__.'/Config.php';               //Inclusion of `cs\custom\Config` class, which is used instead original `cs\Config` for http server
-}
+require __DIR__.'/Config.php';                   //Inclusion of `cs\custom\Config` class, which is used instead original `cs\Config` for http server
+require __DIR__.'/User.php';                     //Inclusion of `cs\custom\User` class, which is used instead original `cs\User` for http server
 /**
  * Including of custom files
  */
