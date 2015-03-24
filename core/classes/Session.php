@@ -598,7 +598,7 @@ class Session {
 	 *
 	 * @return bool
 	 */
-	function del_session ($session_id = null) {
+	function del ($session_id = null) {
 		return $this->del_internal($session_id);
 	}
 	/**

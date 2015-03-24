@@ -10,9 +10,9 @@ namespace cs\modules\WebSockets;
 use
 	cs\Event;
 Event::instance()
-	->on('System/User/del_session/after', function ($data) {
+	->on('System/Session/del/after', function ($data) {
 		Server::instance()->close_by_session($data['id']);
 	})
-	->on('System/User/del_all_sessions', function ($data) {
+	->on('System/Session/del_all', function ($data) {
 		Server::instance()->close_by_user($data['id']);
 	});

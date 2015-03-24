@@ -9,6 +9,7 @@ namespace	cs\User;
 use
 	cs\Config,
 	cs\Language,
+	cs\Session,
 	cs\User,
 	h;
 
@@ -269,7 +270,7 @@ trait Data {
 				$this->data_set[$user][$item.'_hash']	= hash('sha224', $value);
 				unset($this->cache->{hash('sha224', $this->$item)});
 			} elseif ($item == 'password_hash' || ($item == 'status' && $value == 0)) {
-				$this->del_all_sessions($user);
+				Session::instance()->del_all($user);
 			}
 		}
 		return true;

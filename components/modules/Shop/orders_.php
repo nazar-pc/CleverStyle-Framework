@@ -13,12 +13,12 @@ use
 	cs\Language,
 	cs\Language\Prefix,
 	cs\Page,
-	cs\User;
+	cs\Session;
 
 $L              = new Prefix('shop_');
 $Language       = Language::instance();
 $Page           = Page::instance();
-$User           = User::instance();
+$Session           = Session::instance();
 $Categories     = Categories::instance();
 $Items          = Items::instance();
 $Orders         = Orders::instance();
@@ -26,10 +26,10 @@ $Order_statuses = Order_statuses::instance();
 $Shipping_types = Shipping_types::instance();
 $page           = @$_GET['page'] ?: 1;
 $count          = @$_GET['count'] ?: Config::instance()->module('Shop')->items_per_page;
-if ($User->user()) {
+if ($Session->user()) {
 	$orders       = $Orders->get($Orders->search(
 		[
-			'user' => $User->id
+			'user' => $Session->get_user()
 		] + (array)$_GET,
 		$page,
 		$count,
@@ -38,7 +38,7 @@ if ($User->user()) {
 	));
 	$orders_total = $Orders->search(
 		[
-			'user'        => $User->id,
+			'user'        => $Session->get_user(),
 			'total_count' => 1
 		] + (array)$_GET,
 		$page,
@@ -48,7 +48,7 @@ if ($User->user()) {
 	);
 } else {
 	$orders       = $Orders->get(
-		$User->get_session_data('shop_orders') ?: []
+		$Session->get_data('shop_orders') ?: []
 	);
 	$orders_total = count($orders);
 }
@@ -125,12 +125,12 @@ $Page->content(
 			},
 			$orders
 		) ?: false).
-		pages($page, ceil($orders_total / $count), function ($page) use ($User, $module_path, $orders_path) {
+		pages($page, ceil($orders_total / $count), function ($page) use ($Session, $module_path, $orders_path) {
 			$base_url = "$module_path/$orders_path/?";
 			return $base_url.http_build_query(array_merge(
 				[
 					'page' => $page,
-					'user' => $User->id
+					'user' => $Session->get_user()
 				] + (array)$_GET
 			));
 		}, true)

@@ -1,13 +1,13 @@
 <?php
 /**
- * @package		HybridAuth
- * @category	modules
- * @author		HybridAuth authors
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com> (integration with CleverStyle CMS)
- * @copyright	HybridAuth authors
- * @license		MIT License, see license.txt
+ * @package        HybridAuth
+ * @category       modules
+ * @author         HybridAuth authors
+ * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com> (integration with CleverStyle CMS)
+ * @copyright      HybridAuth authors
+ * @license        MIT License, see license.txt
  */
-namespace	cs\modules\HybridAuth;
+namespace cs\modules\HybridAuth;
 use
 	Hybrid_Auth,
 	cs\Cache,
@@ -16,18 +16,19 @@ use
 	cs\Event,
 	cs\Language,
 	cs\Page,
+	cs\Session,
 	cs\User;
 /**
  * Returns array of user id, that are contacts of specified user
  *
- * @param int		$user
+ * @param int $user
  *
  * @return int[]
  */
 function get_user_contacts ($user) {
-	$Cache	= Cache::instance();
-	$Config	= Config::instance();
-	$user	= (int)$user;
+	$Cache  = Cache::instance();
+	$Config = Config::instance();
+	$user   = (int)$user;
 	if (
 		!$user ||
 		$user == User::GUEST_ID ||
@@ -35,44 +36,48 @@ function get_user_contacts ($user) {
 	) {
 		return [];
 	}
-	if (!($data = $Cache->{"HybridAuth/contacts/$user"})) {
-		/**
-		 *	@var \cs\DB\_Abstract $cdb
-		 */
-		$cdb									= DB::instance()->{$Config->module('HybridAuth')->db('integration')};
-		$data									= $cdb->qfas([
-			"SELECT `i`.`id`
-			FROM `[prefix]users_social_integration` AS `i`
-			INNER JOIN `[prefix]users_social_integration_contacts` AS `c`
-			ON
-				`i`.`identifier`	= `c`.`identifier` AND
-				`i`.`provider`		= `c`.`provider`
-			INNER JOIN `[prefix]users` AS `u`
-			ON
-				`i`.`id`		= `u`.`id` AND
-				`u`.`status`	= '%s'
-			WHERE `c`.`id`	= '%s'
-			GROUP BY `i`.`id`",
-			User::STATUS_ACTIVE,
-			$user
-		]) ?: [];
-		$Cache->{"HybridAuth/contacts/$user"}	= $data;
-	}
-	return $data;
+	return $Cache->get(
+		"HybridAuth/contacts/$user",
+		function () use ($user) {
+			/**
+			 * @var \cs\DB\_Abstract $cdb
+			 */
+			$cdb = DB::instance()->{$Config->module('HybridAuth')->db('integration')};
+			return $cdb->qfas(
+				[
+					"SELECT `i`.`id`
+					FROM `[prefix]users_social_integration` AS `i`
+					INNER JOIN `[prefix]users_social_integration_contacts` AS `c`
+					ON
+						`i`.`identifier`	= `c`.`identifier` AND
+						`i`.`provider`		= `c`.`provider`
+					INNER JOIN `[prefix]users` AS `u`
+					ON
+						`i`.`id`		= `u`.`id` AND
+						`u`.`status`	= '%s'
+					WHERE `c`.`id`	= '%s'
+					GROUP BY `i`.`id`",
+					User::STATUS_ACTIVE,
+					$user
+				]
+			) ?: [];
+		}
+	);
 }
+
 /**
  * Updates user contacts for specified provider
  *
- * @param \Hybrid_User_Contact[]	$contacts
- * @param string					$provider
+ * @param \Hybrid_User_Contact[] $contacts
+ * @param string                 $provider
  */
 function update_user_contacts ($contacts, $provider) {
-	$Cache	= Cache::instance();
-	$id		= User::instance()->id;
+	$Cache = Cache::instance();
+	$id    = User::instance()->id;
 	/**
-	 *	@var \cs\DB\_Abstract $cdb
+	 * @var \cs\DB\_Abstract $cdb
 	 */
-	$cdb	= DB::instance()->{Config::instance()->module('HybridAuth')->db('integration')}();
+	$cdb = DB::instance()->{Config::instance()->module('HybridAuth')->db('integration')}();
 	$cdb->q(
 		"DELETE FROM `[prefix]users_social_integration_contacts`
 		WHERE
@@ -82,15 +87,15 @@ function update_user_contacts ($contacts, $provider) {
 		$provider
 	);
 	if (!empty($contacts)) {
-		$insert	= [];
-		$params	= [];
+		$insert = [];
+		$params = [];
 		foreach ($contacts as $contact) {
-			$insert[]	= "('%s', '%s', '%s')";
-			$params[]	= $id;
-			$params[]	= $provider;
-			$params[]	= $contact->identifier;
+			$insert[] = "('%s', '%s', '%s')";
+			$params[] = $id;
+			$params[] = $provider;
+			$params[] = $contact->identifier;
 		}
-		$insert	= implode(',', $insert);
+		$insert = implode(',', $insert);
 		$cdb->q(
 			"INSERT INTO `[prefix]users_social_integration_contacts`
 			(
@@ -103,8 +108,9 @@ function update_user_contacts ($contacts, $provider) {
 	}
 	unset($Cache->{"HybridAuth/contacts/$id"});
 }
+
 function add_session_after () {
-	$User	= User::instance();
+	$User = User::instance();
 	$User->set_data(
 		'HybridAuth_session',
 		array_merge(
@@ -113,22 +119,25 @@ function add_session_after () {
 		)
 	);
 }
+
 /**
  * Get HybridAuth instance with current configuration. Strongly recommended for usage
  *
- * @param null|string	$provider
- * @param null|string	$base_url
+ * @param null|string $provider
+ * @param null|string $base_url
  *
  * @return Hybrid_Auth
  */
 function get_hybridauth_instance ($provider = null, $base_url = null) {
 	require_once __DIR__.'/../Hybrid/Auth.php';
-	$Config			= Config::instance();
-	$User			= User::instance();
-	$HybridAuth		= new Hybrid_Auth([
-		'base_url'	=> $base_url ?: $Config->base_url()."/HybridAuth/$provider/endpoint/".md5($provider.$User->get_session_id()),
-		'providers'	=> $Config->module('HybridAuth')->providers
-	]);
+	$Config     = Config::instance();
+	$User       = User::instance();
+	$HybridAuth = new Hybrid_Auth(
+		[
+			'base_url'  => $base_url ?: $Config->base_url()."/HybridAuth/$provider/endpoint/".md5($provider.Session::instance()->get_id()),
+			'providers' => $Config->module('HybridAuth')->providers
+		]
+	);
 	if ($User->user() && current_module() != 'HybridAuth') {
 		$HybridAuth->restoreSessionData(serialize($User->get_data('HybridAuth_session')));
 	}

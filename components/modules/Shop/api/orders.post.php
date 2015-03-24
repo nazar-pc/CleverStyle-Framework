@@ -10,8 +10,9 @@ namespace cs\modules\Shop;
 use
 	cs\Config,
 	cs\Page,
-	cs\User,
-	cs\Route;
+	cs\Route,
+	cs\Session,
+	cs\User;
 
 if (
 	!isset(
@@ -29,11 +30,11 @@ if (
 	error_code(400);
 	return;
 }
-$Config = Config::instance();
-$User   = User::instance();
+$Config  = Config::instance();
+$Session = Session::instance();
 if (
 	!$Config->module('Shop')->allow_guests_orders &&
-	!$User->user()
+	!$Session->user()
 ) {
 	error_code(403);
 	return;
@@ -45,10 +46,10 @@ if (!$recalculated) {
 	return;
 }
 $id = $Orders->add(
-	$User->id,
+	$Session->get_user(),
 	$_POST['shipping_type'],
 	$recalculated['shipping']['price'],
-	@$_POST['shipping_username'] ?: $User->username(),
+	@$_POST['shipping_username'] ?: User::instance()->username($Session->get_user()),
 	$_POST['shipping_phone'],
 	$_POST['shipping_address'],
 	$_POST['payment_method'],
@@ -60,10 +61,10 @@ if (!$id) {
 	error_code(500);
 	return;
 }
-if (!$User->user()) {
-	$orders   = $User->get_session_data('shop_orders') ?: [];
+if (!$Session->user()) {
+	$orders   = $Session->get_data('shop_orders') ?: [];
 	$orders[] = $id;
-	$User->set_session_data('shop_orders', $orders);
+	$Session->set_data('shop_orders', $orders);
 	unset($orders);
 }
 $Items = Items::instance();

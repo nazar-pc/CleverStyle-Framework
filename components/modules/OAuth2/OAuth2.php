@@ -10,6 +10,7 @@ namespace	cs\modules\OAuth2;
 use
 	cs\Cache\Prefix,
 	cs\Config,
+	cs\Session,
 	cs\User,
 	cs\DB\Accessor,
 	cs\Singleton;
@@ -277,18 +278,18 @@ class OAuth2 {
 	/**
 	 * Adds new code for specified client, code is used to obtain token
 	 *
-	 * @param string		$client
-	 * @param string		$response_type	'code' or 'token'
-	 * @param string		$redirect_uri
+	 * @param string $client
+	 * @param string $response_type 'code' or 'token'
+	 * @param string $redirect_uri
 	 *
-	 * @return bool|string					<i>false</i> on failure or code for token access otherwise
+	 * @return bool|string                    <i>false</i> on failure or code for token access otherwise
 	 */
 	function add_code ($client, $response_type, $redirect_uri = '') {
-		$User	= User::instance();
-		$client	= $this->get_client($client);
+		$Session = Session::instance();
+		$client  = $this->get_client($client);
 		if (
 			(
-				!$this->guest_tokens && !$User->user()
+				!$this->guest_tokens && !$Session->user()
 			) ||
 			!$client ||
 			!$this->get_access($client['id'])
@@ -298,19 +299,19 @@ class OAuth2 {
 		/**
 		 * @var \cs\_SERVER $_SERVER
 		 */
-		$user_agent				= $_SERVER->user_agent;
-		$current_session		= $User->get_session_id();
-		$_SERVER->user_agent	= "OAuth2-$client[name]-$client[id]";
-		$User->add_session($User->id, false);
-		$new_session			= $User->get_session_id();
-		$_SERVER->user_agent	= $user_agent;
-		$User->load_session($current_session);
+		$user_agent          = $_SERVER->user_agent;
+		$current_session     = $Session->get_id();
+		$_SERVER->user_agent = "OAuth2-$client[name]-$client[id]";
+		$Session->add($Session->get_user(), false);
+		$new_session         = $Session->get_id();
+		$_SERVER->user_agent = $user_agent;
+		$Session->load($current_session);
 		unset($user_agent, $current_session);
 		for (
 			$i = 0;
-			$access_token	= md5(openssl_random_pseudo_bytes(1000)),
-			$refresh_token	= md5($access_token.openssl_random_pseudo_bytes(1000)),
-			$code			= md5($refresh_token.openssl_random_pseudo_bytes(1000));
+			$access_token = md5(openssl_random_pseudo_bytes(1000)),
+			$refresh_token = md5($access_token.openssl_random_pseudo_bytes(1000)),
+			$code = md5($refresh_token.openssl_random_pseudo_bytes(1000));
 			++$i
 		) {
 			if ($this->db_prime()->qf(
@@ -324,7 +325,7 @@ class OAuth2 {
 			)) {
 				continue;
 			}
-			$result	= $this->db_prime()->q(
+			$result = $this->db_prime()->q(
 				"INSERT INTO `[prefix]oauth2_clients_sessions`
 					(
 						`id`,
@@ -350,7 +351,7 @@ class OAuth2 {
 						'%s'
 					)",
 				$client['id'],
-				$User->id,
+				$Session->get_user(),
 				$new_session,
 				time(),
 				time() + $this->expiration,
@@ -507,7 +508,7 @@ class OAuth2 {
 			$access_token
 		)) {
 			unset($this->cache->{"tokens/$access_token"});
-			User::instance()->del_session($session);
+			Session::instance()->del($session);
 			return true;
 		}
 		return false;
@@ -515,31 +516,33 @@ class OAuth2 {
 	/**
 	 * Get new access_token with refresh_token
 	 *
-	 * @param string		$refresh_token
-	 * @param string		$client			Client id
-	 * @param string		$secret			Client secret
+	 * @param string $refresh_token
+	 * @param string $client Client id
+	 * @param string $secret Client secret
 	 *
-	 * @return array|bool					<i>false</i> on failure,
-	 * 										otherwise array ['access_token' => md5, 'refresh_token' => md5, 'expires_in' => seconds, 'token_type' => 'bearer']
+	 * @return array|bool                    <i>false</i> on failure,
+	 *                                        otherwise array ['access_token' => md5, 'refresh_token' => md5, 'expires_in' => seconds, 'token_type' => 'bearer']
 	 */
 	function refresh_token ($refresh_token, $client, $secret) {
-		$client	= $this->get_client($client);
+		$client = $this->get_client($client);
 		if (!is_md5($refresh_token) || !$client || $client['secret'] != $secret) {
 			return false;
 		}
-		$data	= $this->db_prime()->qf([
-			"SELECT
-				`user`,
-				`access_token`,
-				`session`
-			FROM `[prefix]oauth2_clients_sessions`
-			WHERE
-				`id`			= '%s' AND
-				`refresh_token`	= '%s'
-			LIMIT 1",
-			$client['id'],
-			$refresh_token
-		]);
+		$data = $this->db_prime()->qf(
+			[
+				"SELECT
+					`user`,
+					`access_token`,
+					`session`
+				FROM `[prefix]oauth2_clients_sessions`
+				WHERE
+					`id`			= '%s' AND
+					`refresh_token`	= '%s'
+				LIMIT 1",
+				$client['id'],
+				$refresh_token
+			]
+		);
 		if (!$data) {
 			return false;
 		}
@@ -553,14 +556,14 @@ class OAuth2 {
 			$refresh_token
 		);
 		unset($this->cache->{"tokens/$data[access_token]"});
-		$User	= User::instance();
-		$id		= $User->load_session($data['session']);
+		$Session = User::instance();
+		$id      = $Session->load($data['session']);
 		if ($id != $data['user']) {
 			return false;
 		}
-		$User->add_session($id);
-		$result	= $this->get_code($this->add_code($client['id'], 'code'), $client['id'], $client['secret']);
-		$User->del_session();
+		$Session->add($id);
+		$result = $this->get_code($this->add_code($client['id'], 'code'), $client['id'], $client['secret']);
+		$Session->del();
 		return $result;
 	}
 }

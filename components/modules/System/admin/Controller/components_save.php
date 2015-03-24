@@ -19,6 +19,7 @@ use
 	cs\Language,
 	cs\Page,
 	cs\Permission,
+	cs\Session,
 	cs\Text,
 	cs\User,
 	h;
@@ -249,7 +250,7 @@ trait components_save {
 		$db         = DB::instance();
 		$L          = Language::instance();
 		$Page       = Page::instance();
-		$User       = User::instance();
+		$Session    = Session::instance();
 		$Permission = Permission::instance();
 		$a          = Index::instance();
 		if (isset($_POST['update_modules_list'])) {
@@ -436,7 +437,7 @@ trait components_save {
 					}
 					$module_dir  = MODULES."/$module_name";
 					$old_version = file_get_json("$module_dir/meta.json")['version'];
-					if (!static::update_extract($module_dir, TEMP.'/'.$User->get_session_id().'_module_update.phar')) {
+					if (!static::update_extract($module_dir, TEMP.'/'.$Session->get_id().'_module_update.phar')) {
 						$Page->warning($L->module_files_unpacking_error);
 						break;
 					}
@@ -493,7 +494,7 @@ trait components_save {
 					);
 					$module_dir  = MODULES.'/System';
 					$old_version = file_get_json("$module_dir/meta.json")['version'];
-					if (!static::update_extract(DIR, TEMP.'/'.$User->get_session_id().'_update_system.phar', DIR.'/core', $module_dir)) {
+					if (!static::update_extract(DIR, TEMP.'/'.$Session->get_id().'_update_system.phar', DIR.'/core', $module_dir)) {
 						$Page->warning($L->system_files_unpacking_error);
 						break;
 					}
@@ -736,7 +737,7 @@ trait components_save {
 					}
 					$plugin_dir  = PLUGINS."/$plugin";
 					$old_version = file_get_json("$plugin_dir/meta.json")['version'];
-					if (!static::update_extract($plugin_dir, TEMP.'/'.User::instance()->get_session_id().'_plugin_update.phar.php')) {
+					if (!static::update_extract($plugin_dir, TEMP.'/'.Session::instance()->get_id().'_plugin_update.phar.php')) {
 						$Page->warning($L->plugin_files_unpacking_error);
 						break;
 					}

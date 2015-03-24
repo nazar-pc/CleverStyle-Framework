@@ -16,7 +16,7 @@ use
 
 Event::instance()
 	->on(
-		'System/User/del_all_sessions',
+		'System/Session/del_all',
 		function ($data) {
 			OAuth2::instance()->del_access(0, $data['id']);
 		}

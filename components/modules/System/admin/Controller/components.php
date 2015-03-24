@@ -19,6 +19,7 @@ use
 	cs\Page,
 	cs\Permission,
 	cs\Route,
+	cs\Session,
 	cs\Text,
 	cs\User,
 	h;
@@ -925,7 +926,7 @@ trait components {
 		$Config       = Config::instance();
 		$L            = Language::instance();
 		$Page         = Page::instance();
-		$User         = User::instance();
+		$Session      = Session::instance();
 		$a            = Index::instance();
 		$rc           = Route::instance()->route;
 		$a->buttons   = false;
@@ -987,7 +988,7 @@ trait components {
 							$rc[2]        = 'update';
 							$show_modules = false;
 							$Page->title($L->updating_of_module($module_name));
-							rename($tmp_file, $tmp_file = TEMP.'/'.$User->get_session_id().'_module_update.phar');
+							rename($tmp_file, $tmp_file = TEMP.'/'.$Session->get_id().'_module_update.phar');
 							$a->content(
 								h::{'h2.cs-center'}(
 									$L->update_module(
@@ -1160,7 +1161,7 @@ trait components {
 						break;
 					}
 					$Page->title($L->updating_of_system);
-					rename($tmp_file, $tmp_file = TEMP.'/'.$User->get_session_id().'_update_system.phar');
+					rename($tmp_file, $tmp_file = TEMP.'/'.$Session->get_id().'_update_system.phar');
 					$a->content(
 						h::{'h2.cs-center'}(
 							$L->update_system(
@@ -1793,7 +1794,7 @@ trait components {
 							}
 							$rc[2] = 'update';
 							$Page->title($L->updating_of_plugin($plugin));
-							rename($tmp_file, $tmp_file = TEMP.'/'.User::instance()->get_session_id().'_plugin_update.phar.php');
+							rename($tmp_file, $tmp_file = TEMP.'/'.Session::instance()->get_id().'_plugin_update.phar.php');
 							$a->content(
 								h::{'h2.cs-center'}(
 									$L->update_plugin(

@@ -10,19 +10,19 @@ namespace cs\modules\Shop;
 use
 	cs\Page,
 	cs\Route,
-	cs\User;
+	cs\Session;
 
-$Page   = Page::instance();
-$Route  = Route::instance();
-$User   = User::instance();
-$Orders = Orders::instance();
+$Page    = Page::instance();
+$Route   = Route::instance();
+$Session = Session::instance();
+$Orders  = Orders::instance();
 if (isset($Route->ids[0], $Route->path[1])) {
 	$order = $Orders->get($Route->ids[0]);
 	if (!$order) {
 		error_code(404);
 	} elseif (
-		$order['user'] != $User->id &&
-		!in_array($order['id'], $User->get_session_data('shop_orders'))
+		$order['user'] != $Session->get_user() &&
+		!in_array($order['id'], $Session->get_data('shop_orders'))
 	) {
 		error_code(403);
 	}
@@ -46,25 +46,27 @@ if (isset($Route->ids[0], $Route->path[1])) {
 	if (!$order) {
 		error_code(404);
 	} elseif (
-		$order['user'] != $User->id &&
-		!in_array($order['id'], $User->get_session_data('shop_orders'))
+		$order['user'] != $Session->get_user() &&
+		!in_array($order['id'], $Session->get_data('shop_orders'))
 	) {
 		error_code(403);
 	} else {
 		$Page->json($order);
 	}
-} elseif ($User->user()) {
+} elseif ($Session->user()) {
 	$Page->json(
 		$Orders->get(
-			$Orders->search([
-				'user' => $User->id
-			])
+			$Orders->search(
+				[
+					'user' => $Session->get_user()
+				]
+			)
 		)
 	);
 } else {
 	$Page->json(
 		$Orders->get(
-			$User->get_session_data('shop_orders') ?: []
+			$Session->get_data('shop_orders') ?: []
 		)
 	);
 }

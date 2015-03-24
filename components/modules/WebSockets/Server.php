@@ -20,6 +20,7 @@ use
 	cs\Core,
 	cs\Encryption,
 	cs\Event,
+	cs\Session,
 	cs\Singleton,
 	cs\User,
 	Exception,
@@ -159,8 +160,7 @@ class Server implements MessageComponentInterface {
 					]));
 					return;
 				}
-				$User    = User::instance();
-				$session = $User->get_session($details['session']);
+				$session = Session::instance()->get($details['session']);
 				/** @noinspection PhpUndefinedFieldInspection */
 				if (
 					$session['user_agent'] != $details['user_agent'] ||
@@ -180,7 +180,7 @@ class Server implements MessageComponentInterface {
 				$connection->user_id        = $session['user'];
 				$connection->session_id     = $session['id'];
 				$connection->session_expire = $session['expire'];
-				$connection->groups         = $User->get_groups($session['user']);
+				$connection->groups         = User::instance()->get_groups($session['user']);
 				$connection->send(_json_encode([
 					'Client/authentication',
 					'ok'

@@ -321,7 +321,7 @@ trait general {
 							break;
 						}
 						$Page->title($L->updating_of_theme($theme));
-						rename($tmp_file, $tmp_file = TEMP.'/'.User::instance()->get_session_id().'_theme_update.phar');
+						rename($tmp_file, $tmp_file = TEMP.'/'.Session::instance()->get_id().'_theme_update.phar');
 						$Index->content(
 							h::{'h2.cs-center'}(
 								$L->update_theme(
@@ -361,9 +361,9 @@ trait general {
 					if (!isset($_POST['update_theme'])) {
 						break;
 					}
-					$User      = User::instance();
+					$Session   = Session::instance();
 					$theme_dir = THEMES."/$_POST[update_theme]";
-					if (!static::update_extract($theme_dir, TEMP.'/'.$User->get_session_id().'_theme_update.phar')) {
+					if (!static::update_extract($theme_dir, TEMP.'/'.$Session->get_id().'_theme_update.phar')) {
 						$Page->warning($L->theme_files_unpacking_error);
 						break;
 					}

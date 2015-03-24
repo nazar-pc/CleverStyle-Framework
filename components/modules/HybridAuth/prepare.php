@@ -21,6 +21,7 @@ use
 	cs\Mail,
 	cs\Page,
 	cs\Route,
+	cs\Session,
 	cs\User;
 /**
  * Provides next events:
@@ -46,6 +47,7 @@ use
  */
 $Config		= Config::instance();
 $Index		= Index::instance();
+$Session	= Session::instance();
 $User		= User::instance();
 $rc			= Route::instance()->route;
 /**
@@ -73,7 +75,7 @@ if (
 		)
 	) ||
 	(
-		isset($rc[2]) && strpos($rc[2], md5($rc[0].$User->get_session_id())) !== 0
+		isset($rc[2]) && strpos($rc[2], md5($rc[0].$Session->get_id())) !== 0
 	)
 ) {
 	_header('Location: '.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
@@ -114,7 +116,7 @@ if (isset($rc[1]) && $rc[0] == 'merge_confirmation') {
 			$data['identifier'],
 			$data['profile']
 		);
-		$User->del_session_data('HybridAuth');
+		$Session->del_data('HybridAuth');
 		$HybridAuth		= get_hybridauth_instance($data['provider']);
 		$adapter		= $HybridAuth->getAdapter($data['provider']);
 		$User->set_data(
@@ -134,7 +136,7 @@ if (isset($rc[1]) && $rc[0] == 'merge_confirmation') {
 				'provider'	=> $data['provider']
 			]
 		);
-		$User->add_session($data['id']);
+		$Session->add($data['id']);
 		add_session_after();
 		Event::instance()->fire(
 			'HybridAuth/add_session/after',
@@ -180,7 +182,7 @@ if (!$Config->core['allow_user_registration']) {
  * If referer is internal address and not current authentication module - save referer
  */
 if (
-	!$User->get_session_data('HybridAuth') &&
+	!$Session->get_data('HybridAuth') &&
 	strpos($_SERVER->referer, $Config->base_url().'/HybridAuth') === false &&
 	strpos($_SERVER->referer, $Config->base_url()) === 0
 ) {
@@ -242,7 +244,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 					'provider'	=> $rc[0]
 				]
 			);
-			$User->add_session($id);
+			$Session->add($id);
 			add_session_after();
 			Event::instance()->fire(
 				'HybridAuth/add_session/after',
@@ -341,7 +343,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 							'provider'	=> $rc[0]
 						]
 					);
-					$User->add_session($user);
+					$Session->add($user);
 					unset($user);
 					add_session_after();
 					Event::instance()->fire(
@@ -408,7 +410,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 							'provider'	=> $rc[0]
 						]
 					);
-					$User->add_session($result['id']);
+					$Session->add($result['id']);
 					add_session_after();
 					Event::instance()->fire(
 						'HybridAuth/add_session/after',
@@ -448,7 +450,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 		 * If integrated service does not returns email - ask user for email
 		 */
 		} else {
-			$User->set_session_data(
+			$Session->set_data(
 				'HybridAuth',
 				[
 					'profile_info'	=> $profile_info,
@@ -481,7 +483,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 /**
  * If user specified email
  */
-} elseif ($HybridAuth_data = $User->get_session_data('HybridAuth')) {
+} elseif ($HybridAuth_data = $Session->get_data('HybridAuth')) {
 	/**
 	 * Try to register user
 	 */
@@ -553,7 +555,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 		 * Registration is successful and confirmation is not required
 		 */
 		} elseif ($result['reg_key'] === true) {
-			$User->del_session_data('HybridAuth');
+			$Session->del_data('HybridAuth');
 			$db->$db_id()->q(
 				"INSERT INTO `[prefix]users_social_integration`
 					(
@@ -600,7 +602,7 @@ if (isset($rc[1]) && $rc[1] == 'endpoint') {
 							'provider'	=> $rc[0]
 						]
 					);
-					$User->add_session($result['id']);
+					$Session->add($result['id']);
 					add_session_after();
 					Event::instance()->fire(
 						'HybridAuth/add_session/after',

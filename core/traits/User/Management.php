@@ -10,6 +10,7 @@ use
 	cs\Config,
 	cs\Core,
 	cs\Event,
+	cs\Session,
 	cs\User;
 
 /**
@@ -148,7 +149,7 @@ trait Management {
 				$this->set_groups([User::USER_GROUP_ID], $this->reg_id);
 			}
 			if (!$confirmation && $auto_sign_in && $Config->core['auto_sign_in_after_registration']) {
-				$this->add_session($this->reg_id);
+				Session::instance()->add($this->reg_id);
 			}
 			if (!Event::instance()->fire(
 				'System/User/registration/after',
@@ -215,7 +216,7 @@ trait Management {
 		$this->set_password($password, $this->reg_id);
 		$this->set('status', User::STATUS_ACTIVE, $this->reg_id);
 		$this->set_groups([User::USER_GROUP_ID], $this->reg_id);
-		$this->add_session($this->reg_id);
+		Session::instance()->add($this->reg_id);
 		if (!Event::instance()->fire(
 			'System/User/registration/confirmation/after',
 			[
@@ -239,7 +240,7 @@ trait Management {
 		if ($this->reg_id == 0) {
 			return;
 		}
-		$this->add_session(User::GUEST_ID);
+		Session::instance()->add(User::GUEST_ID);
 		$this->del_user($this->reg_id);
 		$this->reg_id = 0;
 	}
@@ -304,7 +305,7 @@ trait Management {
 			$current_user_id	= $this->id;
 			$this->set_password($password, $user, true);
 			if ($current_user_id == $user) {
-				$this->add_session($current_user_id);
+				Session::instance()->add($current_user_id);
 			}
 			return true;
 		}
@@ -318,7 +319,7 @@ trait Management {
 			$current_user_id	= $this->id;
 			$this->set_password($password, $user, true);
 			if ($current_user_id == $user) {
-				$this->add_session($current_user_id);
+				Session::instance()->add($current_user_id);
 			}
 		}
 		return true;
@@ -380,7 +381,7 @@ trait Management {
 		$password	= password_generate($Config->core['password_min_length'], $Config->core['password_min_strength']);
 		$this->set_password($password, $id);
 		$this->set('data', $data, $id);
-		$this->add_session($id);
+		Session::instance()->add($id);
 		return [
 			'id'		=> $id,
 			'password'	=> $password

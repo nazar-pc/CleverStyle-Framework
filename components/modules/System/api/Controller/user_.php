@@ -38,7 +38,7 @@ trait user_ {
 		}
 		$id = $User->id;
 		if ($User->set_password($_POST['new_password'], $id, true)) {
-			$User->add_session($id);
+			Session::instance()->add($id);
 			$Page->json('OK');
 		} else {
 			error_code(400);
@@ -199,7 +199,7 @@ trait user_ {
 			return;
 		}
 		if (isset($_POST['sign_out'])) {
-			$User->del_session();
+			Session::instance()->del();
 			/**
 			 * Hack for 403 after sign out in administration
 			 */
