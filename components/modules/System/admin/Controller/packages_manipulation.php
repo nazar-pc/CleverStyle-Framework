@@ -226,30 +226,18 @@ trait packages_manipulation {
 	/**
 	 * Check dependencies for new component (during installation/updating/enabling)
 	 *
-	 * @param string      $name Name of component
-	 * @param string      $type Type of component module|plugin
-	 * @param null|string $dir  Path to component (if null - component should be found among installed)
-	 * @param string      $mode Mode of checking for modules install|update|enable
+	 * @param array  $meta `meta.json` contents of target component
+	 * @param string $mode Mode of checking for modules install|update|enable
 	 *
 	 * @return bool
 	 */
-	static protected function check_dependencies ($name, $type, $dir = null, $mode = 'enable') {
-		if (!$dir) {
-			switch ($type) {
-				case 'module':
-					$dir = MODULES."/$name";
-					break;
-				case 'plugin':
-					$dir = PLUGINS."/$name";
-					break;
-				default:
-					return false;
-			}
-		}
-		if (!file_exists("$dir/meta.json")) {
+	static protected function check_dependencies ($meta, $mode = 'enable') {
+		/**
+		 * No `meta.json` - nothing to check, allow it
+		 */
+		if (!$meta) {
 			return true;
 		}
-		$meta              = file_get_json("$dir/meta.json");
 		$Config            = Config::instance();
 		$Core              = Core::instance();
 		$L                 = Language::instance();
@@ -281,7 +269,7 @@ trait packages_manipulation {
 					$mode == 'enable' && $module_data['active'] == 0
 				) ||
 				(
-					$module == $name && $type == 'module'
+					$module == $name && $meta['category'] == 'modules'
 				)
 			) {
 				/**
@@ -289,7 +277,7 @@ trait packages_manipulation {
 				 */
 				if (
 					$module == $name &&
-					$type == 'module' &&
+					$meta['category'] == 'modules' &&
 					$mode == 'update' &&
 					isset($meta['update_from']) &&
 					version_compare($meta['update_from_version'], $module_meta['version'], '>')
@@ -416,7 +404,7 @@ trait packages_manipulation {
 		foreach ($Config->components['plugins'] as $plugin) {
 			if (
 				(
-					$plugin == $name && $type == 'plugin'
+					$plugin == $name && $meta['category'] == 'plugins'
 				) ||
 				!file_exists(PLUGINS."/$plugin/meta.json")
 			) {
