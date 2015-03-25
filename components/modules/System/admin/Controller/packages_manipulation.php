@@ -226,9 +226,9 @@ trait packages_manipulation {
 	/**
 	 * Check dependencies for new component (during installation/updating/enabling)
 	 *
-	 * @param string      $name Name of new component
-	 * @param string      $type Type of new component module|plugin
-	 * @param null|string $dir  Path to new component (if null - component should be found among installed)
+	 * @param string      $name Name of component
+	 * @param string      $type Type of component module|plugin
+	 * @param null|string $dir  Path to component (if null - component should be found among installed)
 	 * @param string      $mode Mode of checking for modules install|update|enable
 	 *
 	 * @return bool
@@ -249,69 +249,18 @@ trait packages_manipulation {
 		if (!file_exists("$dir/meta.json")) {
 			return true;
 		}
-		$meta         = file_get_json("$dir/meta.json");
-		$Config       = Config::instance();
-		$Core         = Core::instance();
-		$L            = Language::instance();
-		$Page         = Page::instance();
-		$check_result = true;
-		if (isset($meta['db_support']) && !empty($meta['db_support'])) {
-			$check_result = false;
-			if (!in_array($Core->db_type, $meta['db_support'])) {
-				foreach ($Config->db as $database) {
-					if (isset($database['type']) && in_array($database['type'], $meta['db_support'])) {
-						$check_result = true;
-						break;
-					}
-				}
-				unset($database);
-			}
-			if (!$check_result) {
-				$Page->warning(
-					$L->compatible_databases_not_found(
-						implode('", "', $meta['db_support'])
-					)
-				);
-			} elseif (!$Config->core['simple_admin_mode']) {
-				$Page->success(
-					$L->compatible_databases(
-						implode('", "', $meta['db_support'])
-					)
-				);
-			}
-		}
-		if (isset($meta['storage_support']) && !empty($meta['storage_support'])) {
-			$return_s = false;
-			if (in_array($Core->storage_type, $meta['storage_support'])) {
-				$return_s = true;
-			} else {
-				foreach ($Config->storage as $storage) {
-					if (in_array($storage['connection'], $meta['storage_support'])) {
-						$return_s = true;
-						break;
-					}
-				}
-				unset($storage);
-			}
-			if (!$return_s) {
-				$Page->warning(
-					$L->compatible_storages_not_found(
-						implode('", "', $meta['storage_support'])
-					)
-				);
-			} elseif (!$Config->core['simple_admin_mode']) {
-				$Page->success(
-					$L->compatible_storages(
-						implode('", "', $meta['storage_support'])
-					)
-				);
-			}
-			$check_result = $check_result && $return_s;
-			unset($return_s);
-		}
-		$provide  = @(array)$meta['provide'] ?: [];
-		$require  = @$meta['require'] ? self::dep_normal($meta['require']) : [];
-		$conflict = @$meta['conflict'] ? self::dep_normal($meta['conflict']) : [];
+		$meta              = file_get_json("$dir/meta.json");
+		$Config            = Config::instance();
+		$Core              = Core::instance();
+		$L                 = Language::instance();
+		$Page              = Page::instance();
+		$check_result      = true;
+		$db_supported      = self::check_dependencies_db($meta['db_support']);
+		$storage_supported = self::check_dependencies_storage($meta['storage_support']);
+		$check_result      = $db_supported && $storage_supported;
+		$provide           = @(array)$meta['provide'] ?: [];
+		$require           = @$meta['require'] ? self::dep_normal($meta['require']) : [];
+		$conflict          = @$meta['conflict'] ? self::dep_normal($meta['conflict']) : [];
 		/**
 		 * Checking for compatibility with modules
 		 */
@@ -591,6 +540,94 @@ trait packages_manipulation {
 		return $check_result && $return_r;
 	}
 	/**
+	 * Check whether there is available supported DB engine
+	 *
+	 * @param string[] $db_support
+	 *
+	 * @return bool
+	 */
+	static protected function check_dependencies_db ($db_support) {
+		/**
+		 * Component doesn't support (and thus use) any DB engines, so we don't care what system have
+		 */
+		if (!$db_support) {
+			return true;
+		}
+		$Core         = Core::instance();
+		$Config       = Config::instance();
+		$L            = Language::instance();
+		$Page         = Page::instance();
+		$check_result = false;
+		if (!in_array($Core->db_type, $db_support)) {
+			foreach ($Config->db as $database) {
+				if (isset($database['type']) && in_array($database['type'], $db_support)) {
+					$check_result = true;
+					break;
+				}
+			}
+			unset($database);
+		}
+		if (!$check_result) {
+			$Page->warning(
+				$L->compatible_databases_not_found(
+					implode('", "', $db_support)
+				)
+			);
+		} elseif (!$Config->core['simple_admin_mode']) {
+			$Page->success(
+				$L->compatible_databases(
+					implode('", "', $db_support)
+				)
+			);
+		}
+		return $check_result;
+	}
+	/**
+	 * Check whether there is available supported Storage engine
+	 *
+	 * @param string[] $storage_support
+	 *
+	 * @return bool
+	 */
+	static protected function check_dependencies_storage ($storage_support) {
+		/**
+		 * Component doesn't support (and thus use) any Storage engines, so we don't care what system have
+		 */
+		if (!$storage_support) {
+			return true;
+		}
+		$Core         = Core::instance();
+		$Config       = Config::instance();
+		$L            = Language::instance();
+		$Page         = Page::instance();
+		$check_result = false;
+		if (in_array($Core->storage_type, $storage_support)) {
+			$check_result = true;
+		} else {
+			foreach ($Config->storage as $storage) {
+				if (in_array($storage['connection'], $storage_support)) {
+					$check_result = true;
+					break;
+				}
+			}
+			unset($storage);
+		}
+		if (!$check_result) {
+			$Page->warning(
+				$L->compatible_storages_not_found(
+					implode('", "', $storage_support)
+				)
+			);
+		} elseif (!$Config->core['simple_admin_mode']) {
+			$Page->success(
+				$L->compatible_storages(
+					implode('", "', $storage_support)
+				)
+			);
+		}
+		return $check_result;
+	}
+	/**
 	 * Check backward dependencies (during uninstalling/disabling)
 	 *
 	 * @param string $name Component name
@@ -692,6 +729,24 @@ trait packages_manipulation {
 			}
 		}
 		return $check_result && $check_result_plugins;
+	}
+	/**
+	 * Normalize structure of `meta.json`
+	 *
+	 * Addition necessary items if they are not present and casting some string values to arrays in order to decrease number of checks in further code
+	 *
+	 * @param array $meta
+	 *
+	 * @return array mixed
+	 */
+	static protected function normalize_meta ($meta) {
+		foreach (['db_support', 'storage_support', 'provide', 'require', 'conflict'] as $item) {
+			$meta[$item] = isset($meta[$item]) ? (array)$meta[$item] : [];
+		}
+		foreach (['require', 'conflict'] as $item) {
+			$meta[$item] = self::dep_normal($meta[$item]);
+		}
+		return $meta;
 	}
 	/**
 	 * Function for normalization of dependencies structure
