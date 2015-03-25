@@ -336,6 +336,7 @@ trait packages_manipulation {
 			if (file_exists(PLUGINS."/$plugin/meta.json")) {
 				$plugin_meta = file_get_json(PLUGINS."/$plugin/meta.json");
 			}
+			$plugin_meta = self::normalize_meta($plugin_meta);
 			/**
 			 * Do not compare components with itself
 			 */
@@ -366,7 +367,7 @@ trait packages_manipulation {
 			/**
 			 * Checking for conflict packages
 			 */
-			if (!self::check_dependencies_conflicts($meta, $plugin)) {
+			if (!self::check_dependencies_conflicts($meta, $plugin_meta)) {
 				$no_conflicts = false;
 			}
 		}
