@@ -1,7 +1,7 @@
 {
 	"package"				: "System",
 	"category"				: "modules",
-	"version"				: "1.96.3+build-951",
+	"version"				: "1.96.4+build-952",
 	"description"			: "Base system module of CleverStyle CMS",
 	"author"				: "Nazar Mokrynskyi",
 	"website"				: "cleverstyle.org/cms",

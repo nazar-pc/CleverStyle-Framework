@@ -238,6 +238,7 @@ trait packages_manipulation {
 		if (!$meta) {
 			return true;
 		}
+		$meta              = self::normalize_meta($meta);
 		$Config            = Config::instance();
 		$Core              = Core::instance();
 		$L                 = Language::instance();
@@ -246,9 +247,9 @@ trait packages_manipulation {
 		$db_supported      = self::check_dependencies_db($meta['db_support']);
 		$storage_supported = self::check_dependencies_storage($meta['storage_support']);
 		$check_result      = $db_supported && $storage_supported;
-		$provide           = @(array)$meta['provide'] ?: [];
-		$require           = @$meta['require'] ? self::dep_normal($meta['require']) : [];
-		$conflict          = @$meta['conflict'] ? self::dep_normal($meta['conflict']) : [];
+		$provide           = $meta['provide'];
+		$require           = $meta['require'];
+		$conflict          = $meta['conflict'];
 		/**
 		 * Checking for compatibility with modules
 		 */
@@ -269,14 +270,14 @@ trait packages_manipulation {
 					$mode == 'enable' && $module_data['active'] == 0
 				) ||
 				(
-					$module == $name && $meta['category'] == 'modules'
+					$module == $meta['package'] && $meta['category'] == 'modules'
 				)
 			) {
 				/**
 				 * If module updates, check update possibility from current version
 				 */
 				if (
-					$module == $name &&
+					$module == $meta['package'] &&
 					$meta['category'] == 'modules' &&
 					$mode == 'update' &&
 					isset($meta['update_from']) &&
@@ -368,11 +369,11 @@ trait packages_manipulation {
 				(
 					isset($module_meta['conflict']) &&
 					($module_meta['conflict'] = self::dep_normal($module_meta['conflict'])) &&
-					isset($module_meta['conflict'][$name]) &&
+					isset($module_meta['conflict'][$meta['package']]) &&
 					version_compare(
 						$meta['version'],
-						$module_meta['conflict'][$name][1],
-						$module_meta['conflict'][$name][0]
+						$module_meta['conflict'][$meta['package']][1],
+						$module_meta['conflict'][$meta['package']][0]
 					)
 				)
 			) {
@@ -404,7 +405,7 @@ trait packages_manipulation {
 		foreach ($Config->components['plugins'] as $plugin) {
 			if (
 				(
-					$plugin == $name && $meta['category'] == 'plugins'
+					$plugin == $meta['package'] && $meta['category'] == 'plugins'
 				) ||
 				!file_exists(PLUGINS."/$plugin/meta.json")
 			) {
@@ -484,11 +485,11 @@ trait packages_manipulation {
 				(
 					isset($plugin_meta['conflict']) &&
 					($plugin_meta['conflict'] = self::dep_normal($plugin_meta['conflict'])) &&
-					isset($plugin_meta['conflict'][$name]) &&
+					isset($plugin_meta['conflict'][$meta['package']]) &&
 					version_compare(
 						$meta['version'],
-						$plugin_meta['conflict'][$name][1],
-						$plugin_meta['conflict'][$name][0]
+						$plugin_meta['conflict'][$meta['package']][1],
+						$plugin_meta['conflict'][$meta['package']][0]
 					)
 				)
 			) {
@@ -614,6 +615,17 @@ trait packages_manipulation {
 			);
 		}
 		return $check_result;
+	}
+	/**
+	 * Check for update
+	 *
+	 * @param array $new_component_meta
+	 * @param array $existing_component_meta
+	 *
+	 * @return bool
+	 */
+	static protected function check_dependencies_update ($new_component_meta, $existing_component_meta) {
+		return true;
 	}
 	/**
 	 * Check backward dependencies (during uninstalling/disabling)
