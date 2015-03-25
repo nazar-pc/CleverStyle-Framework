@@ -1116,7 +1116,7 @@ trait components {
 					) {
 						break;
 					}
-					$check_dependencies = static::check_backward_dependencies($rc[3], 'module', 'uninstall');
+					$check_dependencies = static::check_backward_dependencies(@file_get_json(MODULES."/$rc[3]/meta.json"), 'uninstall');
 					if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 						break;
 					}
@@ -1357,7 +1357,7 @@ trait components {
 					break;
 				case 'disable':
 					$show_modules       = false;
-					$check_dependencies = static::check_backward_dependencies($rc[3], 'module', 'disable');
+					$check_dependencies = static::check_backward_dependencies(@file_get_json(MODULES."/$rc[3]/meta.json"), 'disable');
 					if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 						break;
 					}
@@ -1906,7 +1906,7 @@ trait components {
 						) {
 							break;
 						}
-						$check_dependencies = static::check_backward_dependencies($rc[3], 'plugin');
+						$check_dependencies = static::check_backward_dependencies(@file_get_json(PLUGINS."/$rc[3]/meta.json"));
 						if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 							break;
 						}

@@ -617,27 +617,19 @@ trait packages_manipulation {
 	/**
 	 * Check backward dependencies (during uninstalling/disabling)
 	 *
-	 * @param string $name Component name
-	 * @param string $type Component type module|plugin
+	 * @param array  $meta `meta.json` contents of target component
 	 * @param string $mode Mode of checking for modules uninstall|disable
 	 *
 	 * @return bool
 	 */
-	static protected function check_backward_dependencies ($name, $type = 'module', $mode = 'disable') {
-		switch ($type) {
-			case 'module':
-				$dir = MODULES."/$name";
-				break;
-			case 'plugin':
-				$dir = PLUGINS."/$name";
-				break;
-			default:
-				return false;
-		}
-		if (!file_exists("$dir/meta.json")) {
+	static protected function check_backward_dependencies ($meta, $mode = 'disable') {
+		/**
+		 * No `meta.json` - nothing to check, allow it
+		 */
+		if (!$meta) {
 			return true;
 		}
-		$meta         = file_get_json("$dir/meta.json");
+		$meta                   = self::normalize_meta($meta);
 		$check_result = true;
 		$Config       = Config::instance();
 		$L            = Language::instance();
@@ -658,7 +650,7 @@ trait packages_manipulation {
 					$mode == 'disable' && $module_data['active'] == 0
 				) ||
 				(
-					$module == $name && $type == 'module'
+					$module == $meta['package'] && $meta['category'] == 'modules'
 				) ||
 				!file_exists(MODULES."/$module/meta.json")
 			) {
@@ -691,7 +683,7 @@ trait packages_manipulation {
 		foreach ($Config->components['plugins'] as $plugin) {
 			if (
 				(
-					$plugin == $name && $type == 'plugin'
+					$plugin == $meta['name'] && $meta['category'] == 'plugins'
 				) ||
 				!file_exists(PLUGINS."/$plugin/meta.json")
 			) {
