@@ -250,6 +250,12 @@ trait packages_manipulation {
 		 */
 		foreach ($Config->components['modules'] as $module => $module_data) {
 			/**
+			 * If module uninstalled - we do not care about it
+			 */
+			if ($module_data['active'] == -1) {
+				continue;
+			}
+			/**
 			 * Stub for the case if there is no `meta.json`
 			 */
 			$module_meta = [
@@ -261,12 +267,6 @@ trait packages_manipulation {
 				$module_meta = file_get_json(MODULES."/$module/meta.json");
 			}
 			$module_meta = self::normalize_meta($module_meta);
-			/**
-			 * If module uninstalled - we do not care about it
-			 */
-			if ($module_data['active'] == -1) {
-				continue;
-			}
 			/**
 			 * Do not compare components with itself
 			 */
@@ -618,96 +618,83 @@ trait packages_manipulation {
 	 * Check backward dependencies (during uninstalling/disabling)
 	 *
 	 * @param array  $meta `meta.json` contents of target component
-	 * @param string $mode Mode of checking for modules uninstall|disable
 	 *
 	 * @return bool
 	 */
-	static protected function check_backward_dependencies ($meta, $mode = 'disable') {
+	static protected function check_backward_dependencies ($meta) {
 		/**
 		 * No `meta.json` - nothing to check, allow it
 		 */
 		if (!$meta) {
 			return true;
 		}
-		$meta                   = self::normalize_meta($meta);
-		$check_result = true;
-		$Config       = Config::instance();
-		$L            = Language::instance();
-		$Page         = Page::instance();
+		$meta              = self::normalize_meta($meta);
+		$Config            = Config::instance();
+		$L                 = Language::instance();
+		$Page              = Page::instance();
+		$required_by_other = false;
 		/**
 		 * Checking for backward dependencies of modules
 		 */
 		$check_result_modules = true;
 		foreach ($Config->components['modules'] as $module => $module_data) {
 			/**
-			 * If module uninstalled, disabled (in disable check mode), module name is the same as checking or meta.json file does not exists
-			 * Then skip this module
+			 * If module is not active, we compare module with itself or there is no `meta.json` - we do not care about it
 			 */
-			/** @noinspection NotOptimalIfConditionsInspection */
 			if (
-				$module_data['active'] == -1 ||
+				$module_data['active'] != 1 ||
 				(
-					$mode == 'disable' && $module_data['active'] == 0
-				) ||
-				(
-					$module == $meta['package'] && $meta['category'] == 'modules'
+					$meta['category'] == 'modules' &&
+					$meta['package'] == $module
 				) ||
 				!file_exists(MODULES."/$module/meta.json")
 			) {
 				continue;
 			}
-			$module_require = file_get_json(MODULES."/$module/meta.json");
-			if (!isset($module_require['require'])) {
-				continue;
-			}
-			$module_require = self::dep_normal($module_require['require']);
+			$module_meta = file_get_json(MODULES."/$module/meta.json");
+			$module_meta = self::normalize_meta($module_meta);
+			/**
+			 * Check if component provided something important here
+			 */
 			if (
-				isset($module_require[$meta['package']]) ||
-				(
-					isset($meta['provide']) && array_intersect(array_keys($module_require), (array)$meta['provide'])
-				)
+				isset($module_meta['require'][$meta['package']]) ||
+				array_intersect(array_keys($module_meta['require']), $meta['provide'])
 			) {
-				if ($check_result_modules) {
-					$Page->warning($L->dependencies_not_satisfied);
-				}
-				$check_result_modules = false;
+				$required_by_other = true;
 				$Page->warning($L->this_package_is_used_by_module($module));
 			}
 		}
-		$check_result = $check_result && $check_result_modules;
 		unset($check_result_modules, $module, $module_data, $module_require);
 		/**
 		 * Checking for backward dependencies of plugins
 		 */
-		$check_result_plugins = true;
 		foreach ($Config->components['plugins'] as $plugin) {
+			/**
+			 * If we compare plugin with itself or there is no `meta.json` - we do not care about it
+			 */
 			if (
 				(
-					$plugin == $meta['name'] && $meta['category'] == 'plugins'
+					$meta['category'] == 'plugins' &&
+					$meta['package'] == $plugin
 				) ||
 				!file_exists(PLUGINS."/$plugin/meta.json")
 			) {
 				continue;
 			}
-			$plugin_require = file_get_json(PLUGINS."/$plugin/meta.json");
-			if (!isset($plugin_require['require'])) {
-				continue;
-			}
-			$plugin_require = self::dep_normal($plugin_require['require']);
+			$plugin_meta = file_get_json(PLUGINS."/$plugin/meta.json");
+			$plugin_meta = self::normalize_meta($plugin_meta);
 			if (
-				isset($plugin_require[$meta['package']]) ||
-				(
-					isset($meta['provide']) && array_intersect(array_keys($plugin_require), (array)$meta['provide'])
-				)
+				isset($plugin_meta['require'][$meta['package']]) ||
+				array_intersect(array_keys($plugin_meta['require']), $meta['provide'])
 			) {
-				if ($check_result_plugins) {
-					$Page->warning($L->dependencies_not_satisfied);
-				}
-				$check_result_plugins = false;
+				$required_by_other = true;
 				$Page->warning($L->this_package_is_used_by_plugin($plugin));
 			}
 		}
-		return $check_result && $check_result_plugins;
+		if ($required_by_other) {
+			$Page->warning($L->dependencies_not_satisfied);
+		}
+		return !$required_by_other;
 	}
 	/**
 	 * Normalize structure of `meta.json`
