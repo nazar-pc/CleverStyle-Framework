@@ -981,7 +981,7 @@ trait components {
 							) {
 								break;
 							}
-							$check_dependencies = static::check_dependencies(@file_get_json("$tmp_dir/meta.json"), 'update');
+							$check_dependencies = static::check_dependencies(@file_get_json("$tmp_dir/meta.json"), true);
 							if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 								break;
 							}
@@ -1042,7 +1042,7 @@ trait components {
 					) {
 						break;
 					}
-					$check_dependencies = static::check_dependencies(@file_get_json(MODULES."/$rc[3]/meta.json"), 'install');
+					$check_dependencies = static::check_dependencies(@file_get_json(MODULES."/$rc[3]/meta.json"));
 					if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 						break;
 					}
@@ -1334,7 +1334,7 @@ trait components {
 					break;
 				case 'enable':
 					$show_modules       = false;
-					$check_dependencies = static::check_dependencies(@file_get_json(MODULES."/$rc[3]/meta.json"), 'enable');
+					$check_dependencies = static::check_dependencies(@file_get_json(MODULES."/$rc[3]/meta.json"));
 					if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 						break;
 					}

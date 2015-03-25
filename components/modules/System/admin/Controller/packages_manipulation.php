@@ -226,12 +226,12 @@ trait packages_manipulation {
 	/**
 	 * Check dependencies for new component (during installation/updating/enabling)
 	 *
-	 * @param array  $meta `meta.json` contents of target component
-	 * @param string $mode Mode of checking for modules install|update|enable
+	 * @param array $meta        `meta.json` contents of target component
+	 * @param bool  $update_mode Whether target component is module that is going to update previous version
 	 *
 	 * @return bool
 	 */
-	static protected function check_dependencies ($meta, $mode = 'enable') {
+	static protected function check_dependencies ($meta, $update_mode = false) {
 		/**
 		 * No `meta.json` - nothing to check, allow it
 		 */
@@ -275,7 +275,7 @@ trait packages_manipulation {
 				 * Unless it updates, in this case check whether update is possible from current version
 				 */
 				if (
-					$mode == 'update' &&
+					$update_mode &&
 					isset($meta['update_from']) &&
 					version_compare($meta['update_from_version'], $module_meta['version'], '>')
 				) {
@@ -572,47 +572,38 @@ trait packages_manipulation {
 		/**
 		 * Check whether two components conflict in any direction by direct conflicts
 		 */
+		return
+			self::check_dependencies_conflicts_one_step($new_meta, $existing_meta) &&
+			self::check_dependencies_conflicts_one_step($existing_meta, $new_meta);
+	}
+	/**
+	 * @param array $meta_from
+	 * @param array $meta_to
+	 *
+	 * @return bool
+	 */
+	static protected function check_dependencies_conflicts_one_step ($meta_from, $meta_to) {
+		/**
+		 * Check whether two components conflict in any direction by direct conflicts
+		 */
 		$L    = Language::instance();
 		$Page = Page::instance();
 		if (
-			isset($new_meta['conflict'][$existing_meta['package']]) &&
+			isset($meta_from['conflict'][$meta_to['package']]) &&
 			version_compare(
-				$existing_meta['version'],
-				$new_meta['conflict'][$existing_meta['package']][1],
-				$new_meta['conflict'][$existing_meta['package']][0]
+				$meta_to['version'],
+				$meta_from['conflict'][$meta_to['package']][1],
+				$meta_from['conflict'][$meta_to['package']][0]
 			)
 		) {
 			$Page->warning(
 				$L->package_is_incompatible_with(
-					$new_meta['package'],
-					$existing_meta['package'].
-					($new_meta['conflict'][$existing_meta['package']]
+					$meta_from['package'],
+					$meta_to['package'].
+					($meta_from['conflict'][$meta_to['package']]
 						? implode(
 							' ',
-							$new_meta['conflict'][$existing_meta['package']]
-						)
-						: ''
-					)
-				)
-			);
-			return false;
-		}
-		if (
-			isset($existing_meta['conflict'][$new_meta['package']]) &&
-			version_compare(
-				$new_meta['version'],
-				$existing_meta['conflict'][$new_meta['package']][1],
-				$existing_meta['conflict'][$new_meta['package']][0]
-			)
-		) {
-			$Page->warning(
-				$L->package_is_incompatible_with(
-					$existing_meta['package'],
-					$new_meta['package'].
-					($existing_meta['conflict'][$new_meta['package']]
-						? implode(
-							' ',
-							$existing_meta['conflict'][$new_meta['package']]
+							$meta_from['conflict'][$meta_to['package']]
 						)
 						: ''
 					)
