@@ -238,295 +238,165 @@ trait packages_manipulation {
 		if (!$meta) {
 			return true;
 		}
-		$meta              = self::normalize_meta($meta);
-		$Config            = Config::instance();
-		$Core              = Core::instance();
-		$L                 = Language::instance();
-		$Page              = Page::instance();
-		$check_result      = true;
-		$db_supported      = self::check_dependencies_db($meta['db_support']);
-		$storage_supported = self::check_dependencies_storage($meta['storage_support']);
-		$check_result      = $db_supported && $storage_supported;
-		$provide           = $meta['provide'];
-		$require           = $meta['require'];
-		$conflict          = $meta['conflict'];
+		$meta                   = self::normalize_meta($meta);
+		$Config                 = Config::instance();
+		$L                      = Language::instance();
+		$Page                   = Page::instance();
+		$already_provided       = false;
+		$satisfied_requirements = true;
+		$no_conflicts           = true;
 		/**
 		 * Checking for compatibility with modules
 		 */
-		$check_result_modules = true;
 		foreach ($Config->components['modules'] as $module => $module_data) {
 			/**
-			 * If module uninstalled, disabled (in enable check mode), module name is the same as checked or meta.json file absent
-			 * Then skip this module
+			 * Stub for the case if there is no `meta.json`
 			 */
-			if (!file_exists(MODULES."/$module/meta.json")) {
+			$module_meta = [
+				'package'  => $module,
+				'category' => 'modules',
+				'version'  => 0
+			];
+			if (file_exists(MODULES."/$module/meta.json")) {
+				$module_meta = file_get_json(MODULES."/$module/meta.json");
+			}
+			$module_meta = self::normalize_meta($module_meta);
+			/**
+			 * If module uninstalled - we do not care about it
+			 */
+			if ($module_data['active'] == -1) {
 				continue;
 			}
-			$module_meta = file_get_json(MODULES."/$module/meta.json");
-			/** @noinspection NotOptimalIfConditionsInspection */
-			if (
-				$module_data['active'] == -1 ||
-				(
-					$mode == 'enable' && $module_data['active'] == 0
-				) ||
-				(
-					$module == $meta['package'] && $meta['category'] == 'modules'
-				)
-			) {
+			/**
+			 * Do not compare components with itself
+			 */
+			if (self::check_dependencies_are_the_same($meta, $module_meta)) {
 				/**
-				 * If module updates, check update possibility from current version
+				 * Unless it updates, in this case check whether update is possible from current version
 				 */
 				if (
-					$module == $meta['package'] &&
-					$meta['category'] == 'modules' &&
 					$mode == 'update' &&
 					isset($meta['update_from']) &&
 					version_compare($meta['update_from_version'], $module_meta['version'], '>')
 				) {
-					if ($check_result_modules) {
-						$Page->warning($L->dependencies_not_satisfied);
-					}
 					$Page->warning(
 						$L->module_cant_be_updated_from_version_to_supported_only(
-							$module,
+							$module_meta['package'],
 							$module_meta['version'],
 							$meta['version'],
 							$meta['update_from_version']
 						)
 					);
+					$Page->warning($L->dependencies_not_satisfied);
 					return false;
 				}
 				continue;
 			}
 			/**
-			 * If some module already provides the same functionality
+			 * If module already provides the same functionality
 			 */
-			if (
-				!empty($provide) &&
-				isset($module_meta['provide']) &&
-				!empty($module_meta['provide']) &&
-				$intersect = array_intersect($provide, (array)$module_meta['provide'])
-			) {
-				if ($check_result_modules) {
-					$Page->warning($L->dependencies_not_satisfied);
-				}
-				$check_result_modules = false;
-				$Page->warning(
-					$L->module_already_provides_functionality(
-						$module,
-						implode('", "', $intersect)
-					)
-				);
+			if (self::check_dependencies_also_provided_by($meta, $module_meta)) {
+				$already_provided = true;
 			}
-			unset($intersect);
 			/**
 			 * Checking for required packages
 			 */
-			if (isset($require[$module_meta['package']])) {
-				if (
-				version_compare(
-					$module_meta['version'],
-					$require[$module_meta['package']][1],
-					$require[$module_meta['package']][0]
-				)
-				) {
-					unset($require[$module_meta['package']]);
-				} else {
-					if ($check_result_modules) {
-						$Page->warning($L->dependencies_not_satisfied);
-					}
-					$check_result_modules = false;
-					$Page->warning(
-						$L->unsatisfactory_version_of_the_module(
-							$module,
-							$require[$module_meta['package']][0].' '.$require[$module_meta['package']][1],
-							$module_meta['version']
-						)
-					);
-				}
+			if (self::check_dependencies_satisfies_required_package($meta, $module_meta)) {
+				unset($meta['require'][$module_meta['package']]);
+			} else {
+				$satisfied_requirements = false;
 			}
 			/**
-			 * Checking for required functionality
+			 * Cleaning provided required functionality
 			 */
-			if (isset($module_meta['provide'])) {
-				foreach ((array)$module_meta['provide'] as $p) {
-					unset($require[$p]);
-				}
-				unset($p);
+			foreach ($module_meta['provide'] as $p) {
+				unset($meta['require'][$p]);
 			}
+			unset($p);
 			/**
 			 * Checking for conflict packages
 			 */
-			if (
-				(
-					isset($conflict[$module_meta['package']]) &&
-					version_compare(
-						$module_meta['version'],
-						$conflict[$module_meta['package']][1],
-						$conflict[$module_meta['package']][0]
-					)
-				) ||
-				(
-					isset($module_meta['conflict']) &&
-					($module_meta['conflict'] = self::dep_normal($module_meta['conflict'])) &&
-					isset($module_meta['conflict'][$meta['package']]) &&
-					version_compare(
-						$meta['version'],
-						$module_meta['conflict'][$meta['package']][1],
-						$module_meta['conflict'][$meta['package']][0]
-					)
-				)
-			) {
-				if ($check_result_modules) {
-					$Page->warning($L->dependencies_not_satisfied);
-				}
-				$check_result_modules = false;
-				$Page->warning(
-					$L->conflict_module(
-						$module_meta['package'],
-						$module
-					).
-					(
-					$conflict[$module_meta['package']][1] != 0 ? $L->compatible_package_versions(
-						$require[$module_meta['package']][0].' '.$require[$module_meta['package']][1]
-					) : $L->package_is_incompatible(
-						$module_meta['package']
-					)
-					)
-				);
+			if (!self::check_dependencies_conflicts($meta, $module_meta)) {
+				$no_conflicts = false;
 			}
 		}
-		$check_result = $check_result && $check_result_modules;
-		unset($check_result_modules, $module, $module_data, $module_meta);
+		unset($module, $module_data, $module_meta);
 		/**
 		 * Checking for compatibility with plugins
 		 */
-		$check_result_plugins = true;
 		foreach ($Config->components['plugins'] as $plugin) {
-			if (
-				(
-					$plugin == $meta['package'] && $meta['category'] == 'plugins'
-				) ||
-				!file_exists(PLUGINS."/$plugin/meta.json")
-			) {
+			/**
+			 * Stub for the case if there is no `meta.json`
+			 */
+			$plugin_meta = [
+				'package'  => $plugin,
+				'category' => 'plugins',
+				'version'  => 0
+			];
+			if (file_exists(PLUGINS."/$plugin/meta.json")) {
+				$plugin_meta = file_get_json(PLUGINS."/$plugin/meta.json");
+			}
+			/**
+			 * Do not compare components with itself
+			 */
+			if (self::check_dependencies_are_the_same($meta, $plugin_meta)) {
 				continue;
 			}
-			$plugin_meta = file_get_json(PLUGINS."/$plugin/meta.json");
 			/**
 			 * If plugin already provides the same functionality
 			 */
-			if (
-				isset($plugin_meta['provide']) &&
-				$intersect = array_intersect($provide, (array)$plugin_meta['provide'])
-			) {
-				if ($check_result_plugins) {
-					$Page->warning($L->dependencies_not_satisfied);
-				}
-				$check_result_plugins = false;
-				$Page->warning(
-					$L->plugin_already_provides_functionality(
-						$plugin,
-						implode('", "', $intersect)
-					)
-				);
+			if (self::check_dependencies_also_provided_by($meta, $plugin_meta)) {
+				$already_provided = true;
 			}
-			unset($intersect);
 			/**
 			 * Checking for required packages
 			 */
-			if (isset($require[$plugin_meta['package']])) {
-				if (
-				version_compare(
-					$plugin_meta['version'],
-					$require[$plugin_meta['package']][1],
-					$require[$plugin_meta['package']][0]
-				)
-				) {
-					unset($require[$plugin_meta['package']]);
-				} else {
-					if ($check_result_plugins) {
-						$Page->warning($L->dependencies_not_satisfied);
-					}
-					$check_result_plugins = false;
-					$Page->warning(
-						$L->unsatisfactory_version_of_the_plugin(
-							$plugin,
-							$require[$plugin_meta['package']][0].' '.$require[$plugin_meta['package']][1],
-							$plugin_meta['version']
-						)
-					);
-				}
+			if (self::check_dependencies_satisfies_required_package($meta, $plugin_meta)) {
+				unset($meta['require'][$plugin_meta['package']]);
+			} else {
+				$satisfied_requirements = false;
 			}
 			/**
-			 * Checking for required functionality
+			 * Cleaning provided required functionality
 			 */
-			if (
-				!empty($require) &&
-				isset($plugin_meta['provide']) &&
-				!empty($plugin_meta['provide'])
-			) {
-				foreach ((array)$plugin_meta['provide'] as $p) {
-					unset($require[$p]);
-				}
-				unset($p);
+			foreach ($plugin_meta['provide'] as $p) {
+				unset($meta['require'][$p]);
 			}
+			unset($p);
 			/**
 			 * Checking for conflict packages
 			 */
-			if (
-				(
-					isset($conflict[$plugin_meta['package']]) &&
-					version_compare(
-						$module_meta['version'],
-						$conflict[$plugin_meta['package']][1],
-						$conflict[$plugin_meta['package']][0]
-					)
-				) ||
-				(
-					isset($plugin_meta['conflict']) &&
-					($plugin_meta['conflict'] = self::dep_normal($plugin_meta['conflict'])) &&
-					isset($plugin_meta['conflict'][$meta['package']]) &&
-					version_compare(
-						$meta['version'],
-						$plugin_meta['conflict'][$meta['package']][1],
-						$plugin_meta['conflict'][$meta['package']][0]
-					)
-				)
-			) {
-				if ($check_result_plugins) {
-					$Page->warning($L->dependencies_not_satisfied);
-				}
-				$check_result_plugins = false;
-				$Page->warning(
-					$L->conflict_plugin($plugin).
-					(
-					$conflict[$plugin_meta['package']][1] != 0 ? $L->compatible_package_versions(
-						$require[$plugin_meta['package']][0].' '.$require[$plugin_meta['package']][1]
-					) : $L->package_is_incompatible(
-						$plugin_meta['package']
-					)
-					)
-				);
+			if (!self::check_dependencies_conflicts($meta, $plugin)) {
+				$no_conflicts = false;
 			}
 		}
-		$check_result = $check_result && $check_result_plugins;
-		unset($check_result_plugins, $plugin, $plugin_meta, $provide, $conflict);
+		unset($plugin, $plugin_meta);
+		$missing_required_packages = false;
 		/**
 		 * If some required packages missing
 		 */
-		$return_r = true;
-		if (!empty($require)) {
-			foreach ($require as $package => $details) {
-				if ($return_r) {
-					$Page->warning($L->dependencies_not_satisfied);
-				}
-				$return_r = false;
+		if (!empty($meta['require'])) {
+			foreach ($meta['require'] as $package => $details) {
+				$missing_required_packages = true;
 				$Page->warning(
 					$L->package_or_functionality_not_found($details[1] ? "$package $details[0] $details[1]" : $package)
 				);
 			}
+			unset($package, $details);
 		}
-		return $check_result && $return_r;
+		$db_supported      = self::check_dependencies_db($meta['db_support']);
+		$storage_supported = self::check_dependencies_storage($meta['storage_support']);
+		$result            =
+			!$already_provided &&
+			$satisfied_requirements &&
+			$no_conflicts &&
+			!$missing_required_packages &&
+			$db_supported &&
+			$storage_supported;
+		if (!$result) {
+			$Page->warning($L->dependencies_not_satisfied);
+		}
+		return $result;
 	}
 	/**
 	 * Check whether there is available supported DB engine
@@ -617,14 +487,139 @@ trait packages_manipulation {
 		return $check_result;
 	}
 	/**
-	 * Check for update
+	 * Check if two both components are the same
 	 *
-	 * @param array $new_component_meta
-	 * @param array $existing_component_meta
+	 * @param array $new_meta      `meta.json` content of new component
+	 * @param array $existing_meta `meta.json` content of existing component
 	 *
 	 * @return bool
 	 */
-	static protected function check_dependencies_update ($new_component_meta, $existing_component_meta) {
+	static protected function check_dependencies_are_the_same ($new_meta, $existing_meta) {
+		return
+			$new_meta['package'] == $existing_meta['package'] &&
+			$new_meta['category'] == $existing_meta['category'];
+	}
+	/**
+	 * Check for functionality provided by other components
+	 *
+	 * @param array $new_meta      `meta.json` content of new component
+	 * @param array $existing_meta `meta.json` content of existing component
+	 *
+	 * @return bool
+	 */
+	static protected function check_dependencies_also_provided_by ($new_meta, $existing_meta) {
+		$intersected_functionality = array_intersect($new_meta['provide'], $existing_meta['provide']);
+		if (!$intersected_functionality) {
+			return true;
+		}
+		$L    = Language::instance();
+		$Page = Page::instance();
+		$key  = $existing_meta['category'] == 'modules' ? 'module_already_provides_functionality' : 'plugin_already_provides_functionality';
+		$Page->warning(
+			$L->$key(
+				$existing_meta['package'],
+				implode('", "', $intersected_functionality)
+			)
+		);
+		return false;
+	}
+	/**
+	 * Check whether other component is required and have satisfactory version
+	 *
+	 * @param array $new_meta      `meta.json` content of new component
+	 * @param array $existing_meta `meta.json` content of existing component
+	 *
+	 * @return bool
+	 */
+	static protected function check_dependencies_satisfies_required_package ($new_meta, $existing_meta) {
+		/**
+		 * If we are not interested in component - just exit, otherwise compare required version with actual present
+		 */
+		if (
+			!isset($new_meta['require'][$existing_meta['package']]) ||
+			version_compare(
+				$existing_meta['version'],
+				$new_meta['require'][$existing_meta['package']][1],
+				$new_meta['require'][$existing_meta['package']][0]
+			)
+		) {
+			return true;
+		}
+		$L    = Language::instance();
+		$Page = Page::instance();
+		$key  = $existing_meta['category'] == 'modules' ? 'unsatisfactory_version_of_the_module' : 'unsatisfactory_version_of_the_plugin';
+		$Page->warning(
+			$L->$key(
+				$existing_meta['package'],
+				implode(
+					' ',
+					$new_meta['require'][$existing_meta['package']]
+				),
+				$existing_meta['version']
+			)
+		);
+		return false;
+	}
+	/**
+	 * Check for if component conflicts other components
+	 *
+	 * @param array $new_meta      `meta.json` content of new component
+	 * @param array $existing_meta `meta.json` content of existing component
+	 *
+	 * @return bool
+	 */
+	static protected function check_dependencies_conflicts ($new_meta, $existing_meta) {
+		/**
+		 * Check whether two components conflict in any direction by direct conflicts
+		 */
+		$L    = Language::instance();
+		$Page = Page::instance();
+		if (
+			isset($new_meta['conflict'][$existing_meta['package']]) &&
+			version_compare(
+				$existing_meta['version'],
+				$new_meta['conflict'][$existing_meta['package']][1],
+				$new_meta['conflict'][$existing_meta['package']][0]
+			)
+		) {
+			$Page->warning(
+				$L->package_is_incompatible_with(
+					$new_meta['package'],
+					$existing_meta['package'].
+					($new_meta['conflict'][$existing_meta['package']]
+						? implode(
+							' ',
+							$new_meta['conflict'][$existing_meta['package']]
+						)
+						: ''
+					)
+				)
+			);
+			return false;
+		}
+		if (
+			isset($existing_meta['conflict'][$new_meta['package']]) &&
+			version_compare(
+				$new_meta['version'],
+				$existing_meta['conflict'][$new_meta['package']][1],
+				$existing_meta['conflict'][$new_meta['package']][0]
+			)
+		) {
+			$Page->warning(
+				$L->package_is_incompatible_with(
+					$existing_meta['package'],
+					$new_meta['package'].
+					($existing_meta['conflict'][$new_meta['package']]
+						? implode(
+							' ',
+							$existing_meta['conflict'][$new_meta['package']]
+						)
+						: ''
+					)
+				)
+			);
+			return false;
+		}
 		return true;
 	}
 	/**
