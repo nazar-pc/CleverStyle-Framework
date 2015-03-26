@@ -7,7 +7,6 @@
  * @license   MIT License, see license.txt
  */
 use
-	h,
 	cs\Config,
 	cs\Index;
 $Index               = Index::instance();

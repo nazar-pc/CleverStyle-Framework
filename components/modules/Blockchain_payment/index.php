@@ -83,6 +83,7 @@ if (isset($_GET['secret'])) {
 		return;
 	}
 	if ($transaction['confirmed']) {
+		$callback = '/';
 		Event::instance()->fire(
 			'System/payment/success',
 			[

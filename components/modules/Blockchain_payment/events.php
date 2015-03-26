@@ -9,8 +9,7 @@
 namespace cs\modules\Blockchain_payment;
 use
 	cs\Config,
-	cs\Event,
-	cs\Language\Prefix;
+	cs\Event;
 
 Event::instance()->on(
 	'System/Index/construct',
