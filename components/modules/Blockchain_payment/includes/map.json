@@ -1,0 +1,6 @@
+{
+	"Blockchain_payment" : [
+		"cs-blockchain-payment-pay/index.html",
+		"jquery.qrcode.min.js"
+	]
+}
