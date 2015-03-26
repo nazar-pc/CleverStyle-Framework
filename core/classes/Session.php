@@ -8,6 +8,10 @@
 /**
  * Provides next events:
  *
+ *  System/Session/init/before
+ *
+ *  System/Session/init/after
+ *
  *  System/Session/del/before
  *  ['id' => session_id]
  *
@@ -352,8 +356,8 @@ class Session {
 		$time    = time();
 		if (
 			!$session ||
-			$session['user_agent'] != $_SERVER->user_agent ||
 			$session['expire'] <= $time ||
+			$session['user_agent'] != $_SERVER->user_agent ||
 			!$User->get('id', $session['user']) ||
 			(
 				$Config->core['remember_user_ip'] &&
@@ -510,6 +514,7 @@ class Session {
 		/**
 		 * Generate hash in cycle, to obtain unique value
 		 */
+		/** @noinspection LoopWhichDoesNotLoopInspection */
 		while ($hash = md5(openssl_random_pseudo_bytes(1000))) {
 			if ($this->db_prime()->qf(
 				"SELECT `id`
