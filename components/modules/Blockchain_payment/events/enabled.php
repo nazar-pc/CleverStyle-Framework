@@ -17,8 +17,11 @@ Event::instance()
 		'System/payment/methods',
 		function ($data) {
 			if (
-				$data['currency'] == 'BTC' ||
-				in_array($data['currency'], file_get_json(__DIR__.'/../convertible_currencies.json'))
+				Config::instance()->module('Blockchain_payment')->bitcoin_address &&
+				(
+					$data['currency'] == 'BTC' ||
+					in_array($data['currency'], file_get_json(__DIR__.'/../convertible_currencies.json'))
+				)
 			) {
 				$L                                         = new Prefix('blockchain_payment_');
 				$data['methods']['blockchain_payment:btc'] = [
@@ -32,7 +35,7 @@ Event::instance()
 		'System/payment/execute',
 		function ($data) {
 			if ($data['payment_method'] != 'blockchain_payment:btc') {
-				return;
+				return true;
 			}
 			$id = Transactions::instance()->add(
 				$data['amount'],
