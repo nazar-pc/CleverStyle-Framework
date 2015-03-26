@@ -24,7 +24,8 @@
 }
 
 html /deep/ {
-	cs-table {
+	cs-table,
+	.cs-table {
 		@include cs-table-alignment;
 		border-collapse : collapse;
 		border-spacing  : 0;
@@ -43,7 +44,8 @@ html /deep/ {
 
 		&[list],
 		&[lines] {
-			> cs-table-row {
+			> cs-table-row,
+			> * > .cs-table-row {
 				border-bottom : 1px solid #ddd;
 			}
 		}
@@ -51,16 +53,20 @@ html /deep/ {
 		&[list],
 		&[hover] {
 			&[with-header] > cs-table-row:nth-child(n+2):hover,
-			&:not([with-header]) > cs-table-row:not([header]):hover {
+			&:not([with-header]) > cs-table-row:not([header]):hover,
+			&[with-header] > * > .cs-table-row:nth-child(n+2):hover,
+			&:not([with-header]) > * > .cs-table-row:not([header]):hover {
 				background-color : #f0f0f0;
 			}
 		}
 
-		&[with-header] > cs-table-row:first-of-type {
+		&[with-header] > cs-table-row:first-of-type,
+		&[with-header] > * > .cs-table-row:first-of-type {
 			@include cs-table-header;
 		}
 
-		&[right-left] > cs-table-row > cs-table-cell {
+		&[right-left] > cs-table-row > cs-table-cell,
+		&[right-left] > * > .cs-table-row > .cs-table-cell {
 			text-align : left;
 
 			&:nth-of-type(2n+1) {
@@ -69,7 +75,8 @@ html /deep/ {
 		}
 	}
 
-	cs-table-row {
+	cs-table-row,
+	.cs-table-row {
 		@include cs-table-alignment;
 		display        : table-row;
 		vertical-align : middle;
@@ -79,7 +86,8 @@ html /deep/ {
 		}
 	}
 
-	cs-table-cell {
+	cs-table-cell,
+	.cs-table-cell {
 		@include cs-table-alignment;
 		display : table-cell;
 		padding : 8px;
