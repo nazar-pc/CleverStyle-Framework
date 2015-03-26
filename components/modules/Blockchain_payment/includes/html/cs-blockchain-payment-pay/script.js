@@ -16,8 +16,7 @@
       publish: {
         description: '',
         address: '',
-        amount: 0,
-        label: ''
+        amount: 0
       },
       progress_text: L.blockchain_payment_waiting_for_payment,
       ready: function() {
@@ -27,7 +26,7 @@
           _this.text = L.blockchain_payment_scan_or_transfer(_this.amount, _this.address);
           $(_this.$.qr).qrcode({
             height: 512,
-            text: 'bitcoin:' + _this.address + '?amount=' + _this.amount + '&label=' + _this.label,
+            text: 'bitcoin:' + _this.address + '?amount=' + _this.amount,
             width: 512
           });
           return _this.update_status();

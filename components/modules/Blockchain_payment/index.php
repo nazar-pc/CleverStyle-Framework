@@ -102,7 +102,6 @@ if (isset($_GET['secret'])) {
 				'data-id'     => $transaction['id'],
 				'address'     => $transaction['input_address'],
 				'amount'      => $transaction['amount_btc'],
-				'label'       => urlencode("$transaction[module]/$transaction[purpose]"),
 				'description' => h::prepare_attr_value(_json_encode($transaction['description']))
 			]
 		)

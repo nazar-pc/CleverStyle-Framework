@@ -11,7 +11,6 @@ do (L = cs.Language) ->
 			description	: ''
 			address		: ''
 			amount		: 0
-			label		: ''
 		progress_text	: L.blockchain_payment_waiting_for_payment
 		ready			: ->
 			$ =>
@@ -19,7 +18,7 @@ do (L = cs.Language) ->
 				@text			= L.blockchain_payment_scan_or_transfer(@amount, @address)
 				$(@$.qr).qrcode(
 					height	: 512
-					text	: 'bitcoin:' + @address + '?amount=' + @amount + '&label=' + @label
+					text	: 'bitcoin:' + @address + '?amount=' + @amount
 					width	: 512
 				)
 				@update_status()
