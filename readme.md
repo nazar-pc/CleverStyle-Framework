@@ -9,6 +9,7 @@ But in parallel with core some components are developed:
 
 #### Modules
 
+ * **Blockchain payment** (payment method using Bitcoin as cryptocurrency and API of blockchain.info)
  * **Blogs** (simple blogging functionality)
  * **Comments** (adds comments functionality to other modules)
  * **Composer** ([Composer](https://github.com/composer/composer) integration into CleverStyle CMS, allows to specify composer dependencies in meta.json that will be installed automatically)
