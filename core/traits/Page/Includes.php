@@ -492,35 +492,26 @@ trait Includes {
 		$this->html_internal($includes['html'], 'file', true);
 	}
 	protected function add_includes_on_page_manually_added ($Config) {
-		$this->core_html[0] = implode('', array_unique($this->core_html[0]));
-		$this->core_html[1] = implode('', array_unique($this->core_html[1]));
-		$this->html[0]      = implode('', array_unique($this->html[0]));
-		$this->html[1]      = implode('', array_unique($this->html[1]));
-		$this->core_css[0]  = implode('', array_unique($this->core_css[0]));
-		$this->core_css[1]  = implode('', array_unique($this->core_css[1]));
-		$this->css[0]       = implode('', array_unique($this->css[0]));
-		$this->css[1]       = implode('', array_unique($this->css[1]));
-		$this->core_js[0]   = implode('', array_unique($this->core_js[0]));
-		$this->core_js[1]   = implode('', array_unique($this->core_js[1]));
-		$this->js[0]        = implode('', array_unique($this->js[0]));
-		$this->js[1]        = implode('', array_unique($this->js[1]));
+		foreach (['core_html', 'core_js', 'core_css', 'html', 'js', 'css'] as $type) {
+			foreach ($this->$type as &$elements) {
+				$elements = implode('', array_unique($elements));
+			}
+			unset($elements);
+		}
 		$this->Head .=
 			$this->core_config.
 			$this->config.
 			$this->core_css[0].$this->css[0].
-			h::style($this->core_css[1].$this->css[1] ?: false).
-			h::script($this->core_js[1].$this->js[1] ?: false);
-		if ($Config->core['put_js_after_body']) {
-			$this->post_Body .=
-				$this->core_js[0].$this->js[0].
-				$this->core_html[0].$this->html[0].
-				$this->core_html[1].$this->html[1];
-		} else {
-			$this->Head .=
-				$this->core_js[0].$this->js[0].
-				$this->core_html[0].$this->html[0].
-				$this->core_html[1].$this->html[1];
-		}
+			h::style($this->core_css[1].$this->css[1] ?: false);
+		$js_html_insert_to = $Config->core['put_js_after_body'] ? 'post_Body' : 'Head';
+		$js_html           =
+			$this->core_js[0].
+			h::script($this->core_js[1] ?: false).
+			$this->js[0].
+			h::script($this->js[1] ?: false).
+			$this->core_html[0].$this->html[0].
+			$this->core_html[1].$this->html[1];
+		$this->$js_html_insert_to .= $js_html;
 	}
 	/**
 	 * Getting of JavaScript and CSS files list to be included
@@ -550,20 +541,13 @@ trait Includes {
 		/**
 		 * Get includes of system and theme
 		 */
-		$includes = [
-			'css'  => array_merge(
-				$get_files(DIR.'/includes/css', $absolute ? true : 'includes/css'),
-				$get_files("$theme_dir/css", $absolute ? true : "$theme_pdir/css")
-			),
-			'js'   => array_merge(
-				$get_files(DIR.'/includes/js', $absolute ? true : 'includes/js'),
-				$get_files("$theme_dir/js", $absolute ? true : "$theme_pdir/js")
-			),
-			'html' => array_merge(
-				$get_files(DIR.'/includes/html', $absolute ? true : 'includes/html'),
-				$get_files("$theme_dir/html", $absolute ? true : "$theme_pdir/html")
-			)
-		];
+		$includes = [];
+		foreach (['html', 'js', 'css'] as $type) {
+			$includes[$type] = array_merge(
+				$get_files(DIR."/includes/$type", $absolute ? true : "includes/$type"),
+				$get_files("$theme_dir/$type", $absolute ? true : "$theme_pdir/$type")
+			);
+		}
 		unset($theme_dir, $theme_pdir);
 		$Config = Config::instance();
 		foreach ($Config->components['modules'] as $module_name => $module_data) {
@@ -576,41 +560,23 @@ trait Includes {
 			) {
 				continue;
 			}
-			/** @noinspection SlowArrayOperationsInLoopInspection */
-			$includes['css'] = array_merge(
-				$includes['css'],
-				$get_files(MODULES."/$module_name/includes/css", $absolute ? true : "components/modules/$module_name/includes/css")
-			);
-			/** @noinspection SlowArrayOperationsInLoopInspection */
-			$includes['js'] = array_merge(
-				$includes['js'],
-				$get_files(MODULES."/$module_name/includes/js", $absolute ? true : "components/modules/$module_name/includes/js")
-			);
-			/** @noinspection SlowArrayOperationsInLoopInspection */
-			$includes['html'] = array_merge(
-				$includes['html'],
-				$get_files(MODULES."/$module_name/includes/html", $absolute ? true : "components/modules/$module_name/includes/html")
-			);
+			foreach (['html', 'js', 'css'] as $type) {
+				/** @noinspection SlowArrayOperationsInLoopInspection */
+				$includes[$type] = array_merge(
+					$includes[$type],
+					$get_files(MODULES."/$module_name/includes/$type", $absolute ? true : "components/modules/$module_name/includes/$type")
+				);
+			}
 		}
-		unset($module_name, $module_data);
 		foreach ($Config->components['plugins'] as $plugin_name) {
-			/** @noinspection SlowArrayOperationsInLoopInspection */
-			$includes['css'] = array_merge(
-				$includes['css'],
-				$get_files(PLUGINS."/$plugin_name/includes/css", $absolute ? true : "components/plugins/$plugin_name/includes/css")
-			);
-			/** @noinspection SlowArrayOperationsInLoopInspection */
-			$includes['js'] = array_merge(
-				$includes['js'],
-				$get_files(PLUGINS."/$plugin_name/includes/js", $absolute ? true : "components/plugins/$plugin_name/includes/js")
-			);
-			/** @noinspection SlowArrayOperationsInLoopInspection */
-			$includes['html'] = array_merge(
-				$includes['html'],
-				$get_files(PLUGINS."/$plugin_name/includes/html", $absolute ? true : "components/plugins/$plugin_name/includes/html")
-			);
+			foreach (['html', 'js', 'css'] as $type) {
+				/** @noinspection SlowArrayOperationsInLoopInspection */
+				$includes[$type] = array_merge(
+					$includes[$type],
+					$get_files(PLUGINS."/$plugin_name/includes/$type", $absolute ? true : "components/plugins/$plugin_name/includes/$type")
+				);
+			}
 		}
-		unset($plugin_name);
 		return $includes;
 	}
 	/**
