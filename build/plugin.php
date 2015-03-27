@@ -51,6 +51,7 @@ $phar->addFromString(
 		array_flip($list)
 	)
 );
+//TODO remove in future versions
 $phar->addFromString('dir', $_POST['plugins'][0]);
 unset($list);
 if ($set_stub) {

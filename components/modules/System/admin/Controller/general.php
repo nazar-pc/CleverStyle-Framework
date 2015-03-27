@@ -16,6 +16,7 @@ use
 	cs\Index,
 	cs\Language,
 	cs\Page,
+	cs\Session,
 	cs\User,
 	h;
 
@@ -301,20 +302,20 @@ trait general {
 						break;
 					}
 					$tmp_dir = "phar://$tmp_file";
-					$theme   = file_get_contents("$tmp_dir/dir");
-					if (!$theme) {
-						unlink($tmp_file);
-						break;
-					}
-					/** @noinspection NotOptimalIfConditionsInspection */
-					if (!file_exists("$tmp_dir/meta.json") || file_get_json("$tmp_dir/meta.json")['category'] != 'themes') {
+					$meta    = file_exists("$tmp_dir/meta.json") ? file_get_json("$tmp_dir/meta.json") : false;
+					if (
+						!$meta ||
+						@$meta['category'] != 'themes' ||
+						!@$meta['package']
+					) {
 						$Page->warning($L->this_is_not_theme_installer_file);
 						unlink($tmp_file);
 						break;
 					}
+					$theme   = $meta['package'];
 					if (in_array($theme, $Config->core['themes'])) {
 						$current_version = file_get_json(THEMES."/$theme/meta.json")['version'];
-						$new_version     = file_get_json("$tmp_dir/meta.json")['version'];
+						$new_version     = $meta['version'];
 						if (!version_compare($current_version, $new_version, '<')) {
 							$Page->warning($L->update_theme_impossible_older_version($theme));
 							unlink($tmp_file);

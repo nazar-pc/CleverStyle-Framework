@@ -951,22 +951,22 @@ trait components {
 						if (!$tmp_file) {
 							break;
 						}
-						$tmp_dir     = "phar://$tmp_file";
-						$module_name = file_get_contents("$tmp_dir/dir");
-						if (!$module_name) {
-							unlink($tmp_file);
-							break;
-						}
-						$rc[3] = $module_name;
-						/** @noinspection NotOptimalIfConditionsInspection */
-						if (!file_exists("$tmp_dir/meta.json") || file_get_json("$tmp_dir/meta.json")['category'] != 'modules') {
+						$tmp_dir = "phar://$tmp_file";
+						$meta    = file_exists("$tmp_dir/meta.json") ? file_get_json("$tmp_dir/meta.json") : false;
+						if (
+							!$meta ||
+							@$meta['category'] != 'modules' ||
+							!@$meta['package']
+						) {
 							$Page->warning($L->this_is_not_module_installer_file);
 							unlink($tmp_file);
 							break;
 						}
+						$module_name = $meta['package'];
+						$rc[3]       = $module_name;
 						if (isset($Config->components['modules'][$module_name])) {
 							$current_version = file_get_json(MODULES."/$module_name/meta.json")['version'];
-							$new_version     = file_get_json("$tmp_dir/meta.json")['version'];
+							$new_version     = $meta['version'];
 							if (!version_compare($current_version, $new_version, '<')) {
 								$Page->warning($L->update_module_impossible_older_version($module_name));
 								unlink($tmp_file);
@@ -981,7 +981,7 @@ trait components {
 							) {
 								break;
 							}
-							$check_dependencies = static::check_dependencies(@file_get_json("$tmp_dir/meta.json"), true);
+							$check_dependencies = static::check_dependencies($meta, true);
 							if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 								break;
 							}
@@ -1020,7 +1020,7 @@ trait components {
 							'db'      => [],
 							'storage' => []
 						];
-						unset($module_name);
+						unset($meta, $module_name);
 						ksort($Config->components['modules'], SORT_STRING | SORT_FLAG_CASE);
 						$Config->save();
 					} elseif ($rc[3] == 'upload') {
@@ -1759,21 +1759,21 @@ trait components {
 							break;
 						}
 						$tmp_dir = "phar://$tmp_file";
-						$plugin  = file_get_contents("$tmp_dir/dir");
-						if (!$plugin) {
-							unlink($tmp_file);
-							break;
-						}
-						$rc[3] = $plugin;
-						/** @noinspection NotOptimalIfConditionsInspection */
-						if (!file_exists("$tmp_dir/meta.json") || file_get_json("$tmp_dir/meta.json")['category'] != 'plugins') {
+						$meta    = file_exists("$tmp_dir/meta.json") ? file_get_json("$tmp_dir/meta.json") : false;
+						if (
+							!$meta ||
+							@$meta['category'] != 'plugins' ||
+							!@$meta['package']
+						) {
 							$Page->warning($L->this_is_not_plugin_installer_file);
 							unlink($tmp_file);
 							break;
 						}
+						$plugin = $meta['package'];
+						$rc[3]  = $plugin;
 						if (in_array($plugin, $plugins)) {
 							$current_version = file_get_json(PLUGINS."/$plugin/meta.json")['version'];
-							$new_version     = file_get_json("$tmp_dir/meta.json")['version'];
+							$new_version     = $meta['version'];
 							if (!version_compare($current_version, $new_version, '<')) {
 								$Page->warning($L->update_plugin_impossible_older_version($plugin));
 								unlink($tmp_file);
@@ -1788,7 +1788,7 @@ trait components {
 							) {
 								break;
 							}
-							$check_dependencies = static::check_dependencies(@file_get_json("$tmp_dir/meta.json"));
+							$check_dependencies = static::check_dependencies($meta);
 							if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 								break;
 							}
@@ -1834,7 +1834,7 @@ trait components {
 							break;
 						}
 						$plugins[] = $plugin;
-						unset($tmp_file, $plugin);
+						unset($tmp_file, $meta, $plugin);
 					}
 					/** @noinspection NotOptimalIfConditionsInspection */
 					if (!in_array($rc[3], $Config->components['plugins']) && in_array($rc[3], $plugins)) {

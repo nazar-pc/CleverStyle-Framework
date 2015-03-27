@@ -48,6 +48,7 @@ $phar->addFromString(
 		array_flip($list)
 	)
 );
+//TODO remove in future versions
 $phar->addFromString('dir', $_POST['themes'][0]);
 unset($list);
 $meta = file_get_json("$theme_dir/meta.json");
