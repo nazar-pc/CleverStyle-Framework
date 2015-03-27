@@ -27,11 +27,11 @@ use
  * @property string $theme
  */
 trait Includes {
-	protected $core_html   = [0 => [], 1 => ''];
+	protected $core_html   = [0 => [], 1 => []];
 	protected $core_js     = [0 => [], 1 => []];
 	protected $core_css    = [0 => [], 1 => []];
 	protected $core_config = '';
-	protected $html        = [0 => [], 1 => ''];
+	protected $html        = [0 => [], 1 => []];
 	protected $js          = [0 => [], 1 => []];
 	protected $css         = [0 => [], 1 => []];
 	protected $config      = '';
@@ -493,7 +493,9 @@ trait Includes {
 	}
 	protected function add_includes_on_page_manually_added ($Config) {
 		$this->core_html[0] = implode('', array_unique($this->core_html[0]));
+		$this->core_html[1] = implode('', array_unique($this->core_html[1]));
 		$this->html[0]      = implode('', array_unique($this->html[0]));
+		$this->html[1]      = implode('', array_unique($this->html[1]));
 		$this->core_css[0]  = implode('', array_unique($this->core_css[0]));
 		$this->core_css[1]  = implode('', array_unique($this->core_css[1]));
 		$this->css[0]       = implode('', array_unique($this->css[0]));
