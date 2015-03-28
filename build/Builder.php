@@ -226,7 +226,7 @@ class Builder {
 			)
 		);
 		/**
-		 * Fixing of system files list (without components files), it is needed for future system updating
+		 * Fixation of system files list (without components files), it is needed for future system updating
 		 */
 		$phar->addFromString(
 			'fs/'.count($core_files),
