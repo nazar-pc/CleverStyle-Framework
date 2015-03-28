@@ -1,15 +1,15 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @subpackage	Installer
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package        CleverStyle CMS
+ * @subpackage     Installer
+ * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright      Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license        MIT License, see license.txt
  */
 if (version_compare(PHP_VERSION, '5.4', '<')) {
 	exit('CleverStyle CMS require PHP 5.4 or higher');
 }
-$cli	= PHP_SAPI == 'cli';
+$cli = PHP_SAPI == 'cli';
 /**
  * Path to installer dir
  */
@@ -19,18 +19,17 @@ if ($cli) {
 	define('DIR', __DIR__);
 }
 mb_internal_encoding('utf-8');
-define('ROOT',	getcwd());	//Path to site root
-$fs		= json_decode(file_get_contents(DIR.'/fs.json'), true);
+define('ROOT', getcwd());    //Path to site root
+$fs = json_decode(file_get_contents(DIR.'/fs.json'), true);
 /**
  * Fallback for PHP 5.5 hashing functions, that are not present in PHP 5.4
+ *
+ * @todo Remove in future versions
  */
 if (!defined('PASSWORD_DEFAULT')) {
 	require DIR.'/fs/'.$fs['core/thirdparty/password_compat.php'];
 }
 require DIR.'/fs/'.$fs['core/thirdparty/upf.php'];
-if (!defined('PASSWORD_DEFAULT')) {
-	require DIR.'/fs/'.$fs['core/thirdparty/password_compat.php'];
-}
 require DIR.'/fs/'.$fs['core/functions.php'];
 require DIR.'/fs/'.$fs['core/thirdparty/nazarpc/BananaHTML.php'];
 require DIR.'/fs/'.$fs['core/classes/h/Base.php'];
@@ -38,64 +37,64 @@ require DIR.'/fs/'.$fs['core/classes/h.php'];
 require DIR.'/install/functions.php';
 date_default_timezone_set('UTC');
 if ($cli) {
-	$help	= false;
+	$help = false;
 	for ($i = 1; $i < $argc; $i += 2) {
 		switch ($argv[$i]) {
 			case '-h':
-				$help	= true;
-			break;
+				$help = true;
+				break;
 			case '-sn':
 			case '-site_name':
 				$_POST['site_name'] = $argv[$i + 1];
-			break;
+				break;
 			case '-su':
 			case '-site_url':
 				$_POST['site_url'] = $argv[$i + 1];
-			break;
+				break;
 			case '-de':
 			case '-db_engine':
 				$_POST['db_engine'] = $argv[$i + 1];
-			break;
+				break;
 			case '-dh':
 			case '-db_host':
 				$_POST['db_host'] = $argv[$i + 1];
-			break;
+				break;
 			case '-dn':
 			case '-db_name':
 				$_POST['db_name'] = $argv[$i + 1];
-			break;
+				break;
 			case '-du':
 			case '-db_user':
 				$_POST['db_user'] = $argv[$i + 1];
-			break;
+				break;
 			case '-dp':
 			case '-db_password':
 				$_POST['db_password'] = $argv[$i + 1];
-			break;
+				break;
 			case '-dr':
 			case '-db_prefix':
 				$_POST['db_prefix'] = $argv[$i + 1];
-			break;
+				break;
 			case '-dc':
 			case '-db_charset':
 				$_POST['db_charset'] = $argv[$i + 1];
-			break;
+				break;
 			case '-t':
 			case '-timezone':
 				$_POST['timezone'] = $argv[$i + 1];
-			break;
+				break;
 			case '-l':
 			case '-language':
 				$_POST['language'] = $argv[$i + 1];
-			break;
+				break;
 			case '-ae':
 			case '-admin_email':
 				$_POST['admin_email'] = $argv[$i + 1];
-			break;
+				break;
 			case '-ap':
 			case '-admin_password':
 				$_POST['admin_password'] = $argv[$i + 1];
-			break;
+				break;
 		}
 	}
 	if (
@@ -112,7 +111,7 @@ if ($cli) {
 		)
 	) {
 		exit(
-'CleverStyle CMS installer
+		'CleverStyle CMS installer
 Installer is used for installation of CleverStyle CMS and built-in components from distributive.
 Usage: php CleverStyle_CMS.phar.php
          -site_name <site_name>
@@ -189,21 +188,27 @@ if (count(explode('/', $_SERVER['REQUEST_URI'])) > 3) {
 }
 header('Content-Type: text/html; charset=utf-8');
 header('Connection: close');
-echo	"<!doctype html>\n".
-		h::title('CleverStyle CMS $version$ Installation').
-		h::meta([
-			'charset'	=> 'utf-8'
-		]).
-		h::style(file_get_contents(DIR.'/install/style.css')).
-		h::header(
-			h::img([
-				'src'	=> 'data:image/png;charset=utf-8;base64,'.base64_encode(file_get_contents(DIR.'/install/logo.png'))
-			]).
-			h::h1('CleverStyle CMS $version$ Installation')
+$version = file_get_json(DIR.'/meta.json');
+echo
+	"<!doctype html>\n".
+	h::title("CleverStyle CMS $version Installation").
+	h::meta(
+		[
+			'charset' => 'utf-8'
+		]
+	).
+	h::style(file_get_contents(DIR.'/install/style.css')).
+	h::header(
+		h::img(
+			[
+				'src' => 'data:image/png;charset=utf-8;base64,'.base64_encode(file_get_contents(DIR.'/install/logo.png'))
+			]
 		).
-		h::section(
-			isset($_POST['site_name']) ? install_process($fs) : install_form()
-		).
-		h::footer(
-			'Copyright (c) 2011-2015, Nazar Mokrynskyi'
-		);
+		h::h1("CleverStyle CMS $version Installation")
+	).
+	h::section(
+		isset($_POST['site_name']) ? install_process($fs) : install_form()
+	).
+	h::footer(
+		'Copyright (c) 2011-2015, Nazar Mokrynskyi'
+	);

@@ -1133,28 +1133,30 @@ trait components {
 						break;
 					}
 					$tmp_dir = "phar://$tmp_file";
-					if (!file_exists("$tmp_dir/version") || !file_exists("$tmp_dir/themes.json")) {
+					if (
+						!file_exists("$tmp_dir/meta.json") ||
+						!file_exists("$tmp_dir/modules.json") ||
+						!file_exists("$tmp_dir/plugins.json") ||
+						!file_exists("$tmp_dir/themes.json")
+					) {
 						$Page->warning($L->this_is_not_system_installer_file);
 						unlink($tmp_file);
 						break;
 					}
+					$meta            = file_get_json("$tmp_dir/meta.json");
 					$current_version = file_get_json(MODULES.'/System/meta.json')['version'];
-					$new_version     = file_get_json("$tmp_dir/version");
-					if (!version_compare($current_version, $new_version, '<')) {
+					if (!version_compare($current_version, $meta['version'], '<')) {
 						$Page->warning($L->update_system_impossible_older_version);
 						unlink($tmp_file);
 						break;
 					}
-					$new_meta = file_get_json("$tmp_dir/fs.json")['components/modules/System/meta.json'];
-					$new_meta = file_get_json("$tmp_dir/fs/$new_meta");
-					if (isset($new_meta['update_from_version']) && version_compare($new_meta['update_from_version'], $current_version, '>')) {
+					if (isset($meta['update_from_version']) && version_compare($meta['update_from_version'], $current_version, '>')) {
 						$Page->warning(
-							$L->update_system_impossible_from_version_to($current_version, $new_version, $new_meta['update_from_version'])
+							$L->update_system_impossible_from_version_to($current_version, $meta['version'], $meta['update_from_version'])
 						);
 						unlink($tmp_file);
 						break;
 					}
-					unset($new_meta);
 					$rc[2]        = 'update_system';
 					$show_modules = false;
 					if (!Event::instance()->fire('admin/System/components/modules/update_system/prepare')) {
@@ -1166,11 +1168,12 @@ trait components {
 						h::{'h2.cs-center'}(
 							$L->update_system(
 								$current_version,
-								$new_version
+								$meta['version']
 							)
 						).
 						h::{'button.uk-button[type=submit]'}($L->yes)
 					);
+					unset($meta);
 					$rc[3]                 = 'System';
 					$a->cancel_button_back = true;
 					break;

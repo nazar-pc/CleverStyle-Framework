@@ -126,7 +126,6 @@ class Builder {
 		$plugins = $plugins ?: [];
 		$themes  = $themes ?: [];
 		$suffix  = $suffix ?: @$_POST['suffix'];
-		$version = file_get_json(DIR.'/components/modules/System/meta.json')['version'];
 		if (file_exists("$this->target/build.phar")) {
 			unlink("$this->target/build.phar");
 		}
@@ -262,12 +261,12 @@ class Builder {
 		 * Addition of supplementary files, that are needed directly for installation process: installer with GUI interface, readme, license, some additional
 		 * information about available languages, themes, current version of system
 		 */
-		$phar->addFromString(
-			'install.php',
-			str_replace('$version$', $version, file_get_contents(DIR.'/install.php'))
-		);
+		$phar->addFile(DIR.'/install.php', 'install.php');
 		$phar->addFromString('readme.html', $this->get_readme());
 		$phar->addFile(DIR.'/license.txt', 'license.txt');
+		$phar->addFile(DIR.'/components/modules/System/meta.json', 'meta.json');
+		$version = file_get_json(DIR.'/components/modules/System/meta.json')['version'];
+		//TODO Remove in future versions
 		$phar->addFromString(
 			'version',
 			"\"$version\""
