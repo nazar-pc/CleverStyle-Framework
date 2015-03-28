@@ -15,11 +15,17 @@ class Builder {
 	/**
 	 * @var string
 	 */
+	protected $root;
+	/**
+	 * @var string
+	 */
 	protected $target;
 	/**
+	 * @param string $root
 	 * @param string $target
 	 */
-	function __construct ($target) {
+	function __construct ($root, $target) {
+		$this->root   = $root;
 		$this->target = $target;
 	}
 	/**
@@ -49,15 +55,15 @@ class Builder {
 							function ($module) {
 								return [
 									$module,
-									file_exists(DIR."/components/modules/$module/meta.json") ? [
-										'title' => 'Version: '.file_get_json(DIR."/components/modules/$module/meta.json")['version']
+									file_exists("$this->root/components/modules/$module/meta.json") ? [
+										'title' => 'Version: '.file_get_json("$this->root/components/modules/$module/meta.json")['version']
 									] : [
 										'title' => 'No meta.json file found',
 										'disabled'
 									]
 								];
 							},
-							get_files_list(DIR.'/components/modules', '/[^System)]/', 'd')
+							get_files_list("$this->root/components/modules", '/[^System)]/', 'd')
 						)
 					),
 					h::{'select#plugins[name=plugins[]][size=20][multiple] option'}(
@@ -65,15 +71,15 @@ class Builder {
 							function ($plugin) {
 								return [
 									$plugin,
-									file_exists(DIR."/components/plugins/$plugin/meta.json") ? [
-										'title' => 'Version: '.file_get_json(DIR."/components/plugins/$plugin/meta.json")['version']
+									file_exists("$this->root/components/plugins/$plugin/meta.json") ? [
+										'title' => 'Version: '.file_get_json("$this->root/components/plugins/$plugin/meta.json")['version']
 									] : [
 										'title' => 'No meta.json file found',
 										'disabled'
 									]
 								];
 							},
-							get_files_list(DIR.'/components/plugins', false, 'd')
+							get_files_list("$this->root/components/plugins", false, 'd')
 						)
 					),
 					h::{'select#themes[name=themes[]][size=20][multiple] option'}(
@@ -81,15 +87,15 @@ class Builder {
 							function ($theme) {
 								return [
 									$theme,
-									file_exists(DIR."/themes/$theme/meta.json") ? [
-										'title' => 'Version: '.file_get_json(DIR."/themes/$theme/meta.json")['version']
+									file_exists("$this->root/themes/$theme/meta.json") ? [
+										'title' => 'Version: '.file_get_json("$this->root/themes/$theme/meta.json")['version']
 									] : [
 										'title' => 'No meta.json file found',
 										'disabled'
 									]
 								];
 							},
-							get_files_list(DIR.'/themes', '/[^CleverStyle)]/', 'd')
+							get_files_list("$this->root/themes", '/[^CleverStyle)]/', 'd')
 						)
 					)
 				]
@@ -130,8 +136,8 @@ class Builder {
 			unlink("$this->target/build.phar");
 		}
 		$phar   = new Phar("$this->target/build.phar");
-		$length = mb_strlen(DIR.'/');
-		foreach (get_files_list(DIR.'/install', false, 'f', true, true) as $file) {
+		$length = mb_strlen("$this->root/");
+		foreach (get_files_list("$this->root/install", false, 'f', true, true) as $file) {
 			$phar->addFile($file, mb_substr($file, $length));
 		}
 		unset($file);
@@ -140,19 +146,19 @@ class Builder {
 		 */
 		$core_files = $this->get_files(
 			[
-				DIR.'/components/modules/System',
-				DIR.'/components/blocks/.gitkept',
-				DIR.'/components/plugins/.gitkept',
-				DIR.'/core',
-				DIR.'/custom',
-				DIR.'/includes',
-				DIR.'/templates',
-				DIR.'/themes/CleverStyle',
-				DIR.'/composer.json',
-				DIR.'/composer.lock',
-				DIR.'/index.php',
-				DIR.'/license.txt',
-				DIR.'/Storage.php'
+				"$this->root/components/modules/System",
+				"$this->root/components/blocks/.gitkept",
+				"$this->root/components/plugins/.gitkept",
+				"$this->root/core",
+				"$this->root/custom",
+				"$this->root/includes",
+				"$this->root/templates",
+				"$this->root/themes/CleverStyle",
+				"$this->root/composer.json",
+				"$this->root/composer.lock",
+				"$this->root/index.php",
+				"$this->root/license.txt",
+				"$this->root/Storage.php"
 			]
 		);
 		/**
@@ -162,7 +168,7 @@ class Builder {
 		$modules          = array_filter(
 			$modules,
 			function ($module) use (&$components_files) {
-				return $this->get_component_files(DIR."/components/modules/$module", $components_files);
+				return $this->get_component_files("$this->root/components/modules/$module", $components_files);
 			}
 		);
 		asort($modules);
@@ -173,7 +179,7 @@ class Builder {
 		$plugins = array_filter(
 			$plugins,
 			function ($plugin) use (&$components_files) {
-				return $this->get_component_files(DIR."/components/plugins/$plugin", $components_files);
+				return $this->get_component_files("$this->root/components/plugins/$plugin", $components_files);
 			}
 		);
 		asort($plugins);
@@ -184,7 +190,7 @@ class Builder {
 		$themes   = array_filter(
 			$themes,
 			function ($theme) use (&$components_files) {
-				return $this->get_component_files(DIR."/themes/$theme", $components_files);
+				return $this->get_component_files("$this->root/themes/$theme", $components_files);
 			}
 		);
 		$themes[] = 'CleverStyle';
@@ -214,15 +220,15 @@ class Builder {
 			'languages.json',
 			_json_encode(
 				array_merge(
-					_mb_substr(get_files_list(DIR.'/core/languages', '/^.*?\.php$/i', 'f'), 0, -4) ?: [],
-					_mb_substr(get_files_list(DIR.'/core/languages', '/^.*?\.json$/i', 'f'), 0, -5) ?: []
+					_mb_substr(get_files_list("$this->root/core/languages", '/^.*?\.php$/i', 'f'), 0, -4) ?: [],
+					_mb_substr(get_files_list("$this->root/core/languages", '/^.*?\.json$/i', 'f'), 0, -5) ?: []
 				)
 			)
 		);
 		$phar->addFromString(
 			'db_engines.json',
 			_json_encode(
-				_mb_substr(get_files_list(DIR.'/core/engines/DB', '/^[^_].*?\.php$/i', 'f'), 0, -4)
+				_mb_substr(get_files_list("$this->root/core/engines/DB", '/^[^_].*?\.php$/i', 'f'), 0, -4)
 			)
 		);
 		/**
@@ -246,11 +252,11 @@ class Builder {
 		 */
 		$phar->addFromString('fs/'.count($core_files), $this->get_htaccess());
 		$core_files[] = '.htaccess';
-		$phar->addFile(DIR.'/config/main.php', 'fs/'.count($core_files));
+		$phar->addFile("$this->root/config/main.php", 'fs/'.count($core_files));
 		$core_files[] = 'config/main.php';
-		$phar->addFile(DIR.'/favicon.ico', 'fs/'.count($core_files));
+		$phar->addFile("$this->root/favicon.ico", 'fs/'.count($core_files));
 		$core_files[] = 'favicon.ico';
-		$phar->addFile(DIR.'/.gitignore', 'fs/'.count($core_files));
+		$phar->addFile("$this->root/.gitignore", 'fs/'.count($core_files));
 		$core_files[] = '.gitignore';
 		/**
 		 * Flip array to have direct access to files by name during extracting and installation, and fixing of files list for installation
@@ -266,11 +272,11 @@ class Builder {
 		 * Addition of supplementary files, that are needed directly for installation process: installer with GUI interface, readme, license, some additional
 		 * information about available languages, themes, current version of system
 		 */
-		$phar->addFile(DIR.'/install.php', 'install.php');
+		$phar->addFile("$this->root/install.php", 'install.php');
 		$phar->addFromString('readme.html', $this->get_readme());
-		$phar->addFile(DIR.'/license.txt', 'license.txt');
-		$phar->addFile(DIR.'/components/modules/System/meta.json', 'meta.json');
-		$version = file_get_json(DIR.'/components/modules/System/meta.json')['version'];
+		$phar->addFile("$this->root/license.txt", 'license.txt');
+		$phar->addFile("$this->root/components/modules/System/meta.json", 'meta.json');
+		$version = file_get_json("$this->root/components/modules/System/meta.json")['version'];
 		//TODO Remove in future versions
 		$phar->addFromString(
 			'version',
@@ -288,7 +294,7 @@ __HALT_COMPILER();"
 		);
 		unset($phar);
 		$suffix = $suffix ? "_$suffix" : '';
-		rename("$this->target/build.phar", DIR."/CleverStyle_CMS_$version$suffix.phar.php");
+		rename("$this->target/build.phar", "$this->target/CleverStyle_CMS_$version$suffix.phar.php");
 		return "Done! CleverStyle CMS $version";
 	}
 	/**
@@ -360,14 +366,14 @@ __HALT_COMPILER();"
 				'$image$'
 			],
 			[
-				file_get_json(DIR.'/components/modules/System/meta.json')['version'],
+				file_get_json("$this->root/components/modules/System/meta.json")['version'],
 				h::img(
 					[
-						'src' => 'data:image/png;charset=utf-8;base64,'.base64_encode(file_get_contents(DIR.'/install/logo.png'))
+						'src' => 'data:image/png;charset=utf-8;base64,'.base64_encode(file_get_contents("$this->root/install/logo.png"))
 					]
 				)
 			],
-			file_get_contents(DIR.'/readme.html')
+			file_get_contents("$this->root/readme.html")
 		);
 	}
 	/**
@@ -409,7 +415,7 @@ RewriteRule .* index.php
 		if ($module == 'System') {
 			return "Can't build module, System module is a part of core, it is not necessary to build it as separate module";
 		}
-		return $this->generic_package_creation(DIR."/components/modules/$module", $suffix);
+		return $this->generic_package_creation("$this->root/components/modules/$module", $suffix);
 	}
 	/**
 	 * @param string      $plugin
@@ -420,7 +426,7 @@ RewriteRule .* index.php
 	function plugin ($plugin, $suffix = null) {
 		$plugin = $plugin ?: $_POST['plugins'][0];
 		$suffix = $suffix ?: $_POST['suffix'];
-		return $this->generic_package_creation(DIR."/components/plugins/$plugin", $suffix);
+		return $this->generic_package_creation("$this->root/components/plugins/$plugin", $suffix);
 	}
 	/**
 	 * @param string      $theme
@@ -434,7 +440,7 @@ RewriteRule .* index.php
 		if ($theme == 'CleverStyle') {
 			return "Can't build theme, CleverStyle theme is a part of core, it is not necessary to build it as separate theme";
 		}
-		return $this->generic_package_creation(DIR."/themes/$theme", $suffix);
+		return $this->generic_package_creation("$this->root/themes/$theme", $suffix);
 	}
 	protected function generic_package_creation ($source_dir, $suffix = null) {
 		if (file_exists("$this->target/build.phar")) {
