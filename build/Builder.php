@@ -198,7 +198,7 @@ class Builder {
 			$components_files
 		);
 		/**
-		 * Addition files content into package
+		 * Addition of files into package
 		 */
 		foreach ($core_files as $index => &$file) {
 			$phar->addFile($file, "fs/$index");
@@ -226,12 +226,17 @@ class Builder {
 			)
 		);
 		/**
-		 * Fixing of system files list (without components files and core/fs.json file itself), it is needed for future system updating
+		 * Fixing of system files list (without components files), it is needed for future system updating
 		 */
 		$phar->addFromString(
 			'fs/'.count($core_files),
 			_json_encode(
-				array_flip(array_diff(array_slice($core_files, 0, -1), _substr($components_files, $length)))
+				array_flip(
+					array_diff(
+						$core_files,
+						_substr($components_files, $length)
+					)
+				)
 			)
 		);
 		$core_files[] = 'core/fs.json';
