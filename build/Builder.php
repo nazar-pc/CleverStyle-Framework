@@ -12,76 +12,91 @@ use
 	Phar;
 
 class Builder {
+	/**
+	 * @return string
+	 */
 	function form () {
-		echo
-			h::{'form[method=post]'}(
-				h::nav(
-					'Build: '.
-					h::{'radio.build-mode[name=mode]'}([
-						'value'		=> ['core', 'module', 'plugin', 'theme'],
-						'in'		=> ['Core', 'Module', 'Plugin', 'Theme'],
-						'onclick'	=> 'change_mode(this.value, this);'
-					])
-				).
-				h::{'table tr| td'}(
+		return h::{'form[method=post]'}(
+			h::nav(
+				'Build: '.
+				h::{'radio.build-mode[name=mode]'}(
 					[
-						'Modules',
-						'Plugins',
-						'Themes'
-					],
-					[
-						h::{'select#modules[name=modules[]][size=15][multiple] option'}(array_map(
+						'value'   => ['core', 'module', 'plugin', 'theme'],
+						'in'      => ['Core', 'Module', 'Plugin', 'Theme'],
+						'onclick' => 'change_mode(this.value, this);'
+					]
+				)
+			).
+			h::{'table tr| td'}(
+				[
+					'Modules',
+					'Plugins',
+					'Themes'
+				],
+				[
+					h::{'select#modules[name=modules[]][size=15][multiple] option'}(
+						array_map(
 							function ($module) {
 								return [
 									$module,
 									file_exists(DIR."/components/modules/$module/meta.json") ? [] : [
-										'title'		=> 'No meta.json file found',
+										'title' => 'No meta.json file found',
 										'disabled'
 									]
 								];
 							},
 							get_files_list(DIR.'/components/modules', '/[^System)]/', 'd')
-						)),
-						h::{'select#plugins[name=plugins[]][size=15][multiple] option'}(array_map(
+						)
+					),
+					h::{'select#plugins[name=plugins[]][size=15][multiple] option'}(
+						array_map(
 							function ($plugin) {
 								return [
 									$plugin,
 									file_exists(DIR."/components/plugins/$plugin/meta.json") ? false : [
-										'title'		=> 'No meta.json file found',
+										'title' => 'No meta.json file found',
 										'disabled'
 									]
 								];
 							},
 							get_files_list(DIR.'/components/plugins', false, 'd')
-						)),
-						h::{'select#themes[name=themes[]][size=15][multiple] option'}(array_map(
+						)
+					),
+					h::{'select#themes[name=themes[]][size=15][multiple] option'}(
+						array_map(
 							function ($theme) {
 								return [
 									$theme,
 									file_exists(DIR."/themes/$theme/meta.json") ? false : [
-										'title'		=> 'No meta.json file found',
+										'title' => 'No meta.json file found',
 										'disabled'
 									]
 								];
 							},
 							get_files_list(DIR.'/themes', '/[^CleverStyle)]/', 'd')
-						))
-					]
-				).
-				h::{'input[name=suffix]'}([
-					'placeholder'	=> 'Package file suffix'
-				]).
-				h::{'button.uk-button.license'}(
-					'License',
-					[
-						'onclick'	=> "window.open('license.txt', 'license', 'location=no')"
-					]
-				).
-				h::{'button.uk-button[type=submit]'}(
-					'Build'
-				)
-			);
+						)
+					)
+				]
+			).
+			h::{'input[name=suffix]'}(
+				[
+					'placeholder' => 'Package file suffix'
+				]
+			).
+			h::{'button.uk-button.license'}(
+				'License',
+				[
+					'onclick' => "window.open('license.txt', 'license', 'location=no')"
+				]
+			).
+			h::{'button.uk-button[type=submit]'}(
+				'Build'
+			)
+		);
 	}
+	/**
+	 * @return string
+	 */
 	function core () {
 		time_limit_pause();
 		$version = file_get_json(DIR.'/components/modules/System/meta.json')['version'];
@@ -240,9 +255,11 @@ class Builder {
 				],
 				[
 					$version,
-					h::img([
-						'src' => 'data:image/png;charset=utf-8;base64,'.base64_encode(file_get_contents(DIR.'/install/logo.png'))
-					])
+					h::img(
+						[
+							'src' => 'data:image/png;charset=utf-8;base64,'.base64_encode(file_get_contents(DIR.'/install/logo.png'))
+						]
+					)
 				],
 				file_get_contents(DIR.'/readme.html')
 			)
@@ -280,27 +297,27 @@ class Builder {
 		$phar->addFromString(
 			'fs/'.(count($list) - 1),
 			'AddDefaultCharset utf-8
-		Options -Indexes -Multiviews +FollowSymLinks
-		IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
+Options -Indexes -Multiviews +FollowSymLinks
+IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
 
-		RewriteEngine On
-		RewriteBase /
+RewriteEngine On
+RewriteBase /
 
-		<FilesMatch ".*/.*">
-			Options -FollowSymLinks
-		</FilesMatch>
-		<FilesMatch "\.(css|js|gif|jpg|jpeg|png|ico|eot|ttc|ttf|svg|svgz|woff)$">
-			RewriteEngine Off
-		</FilesMatch>
-		<Files license.txt>
-			RewriteEngine Off
-		</Files>
-		#<Files Storage.php>
-		#	RewriteEngine Off
-		#</Files>
+<FilesMatch ".*/.*">
+	Options -FollowSymLinks
+</FilesMatch>
+<FilesMatch "\.(css|js|gif|jpg|jpeg|png|ico|eot|ttc|ttf|svg|svgz|woff)$">
+	RewriteEngine Off
+</FilesMatch>
+<Files license.txt>
+	RewriteEngine Off
+</Files>
+#<Files Storage.php>
+#	RewriteEngine Off
+#</Files>
 
-		RewriteRule .* index.php
-		'
+RewriteRule .* index.php
+'
 		);
 		$list[] = 'config/main.php';
 		$phar->addFromString(
@@ -320,8 +337,11 @@ class Builder {
 		/**
 		 * Flip array to have direct access to files by name during extracting and installation, and fixing of files list for installation
 		 */
-		$phar->addFromString('fs.json', _json_encode(
-			array_flip($list))
+		$phar->addFromString(
+			'fs.json',
+			_json_encode(
+				array_flip($list)
+			)
 		);
 		unset($list);
 		/**
@@ -341,9 +361,11 @@ class Builder {
 				],
 				[
 					$version,
-					h::img([
-						'src' => 'data:image/png;charset=utf-8;base64,'.base64_encode(file_get_contents(DIR.'/install/logo.png'))
-					])
+					h::img(
+						[
+							'src' => 'data:image/png;charset=utf-8;base64,'.base64_encode(file_get_contents(DIR.'/install/logo.png'))
+						]
+					)
 				],
 				file_get_contents(DIR.'/readme.html')
 			)
@@ -364,7 +386,7 @@ class Builder {
 		);
 		unset($themes, $theme);
 		$phar->setStub(
-		"<?php
+			"<?php
 		if (PHP_SAPI == 'cli') {
 			Phar::mapPhar('cleverstyle_cms.phar');
 			include 'phar://cleverstyle_cms.phar/install.php';
@@ -376,22 +398,21 @@ class Builder {
 		unset($phar);
 		$suffix = @$_POST['suffix'] ? "_$_POST[suffix]" : '';
 		rename(DIR.'/build.phar', DIR."/CleverStyle_CMS_$version$suffix.phar.php");
-		echo "Done! CleverStyle CMS $version";
+		return "Done! CleverStyle CMS $version";
 	}
+	/**
+	 * @return string
+	 */
 	function module () {
 		time_limit_pause();
 		if (!isset($_POST['modules'][0])) {
-			echo 'Please, specify module name';
-			return;
+			return 'Please, specify module name';
 		} elseif ($_POST['modules'][0] == 'System') {
-			echo "Can't build module, System module is a part of core, it is not necessary to build it as separate module";
-			return;
+			return "Can't build module, System module is a part of core, it is not necessary to build it as separate module";
 		} elseif (!file_exists($mdir = DIR.'/components/modules/'.$_POST['modules'][0])) {
-			echo "Can't build module, module directory not found";
-			return;
+			return "Can't build module, module directory not found";
 		} elseif (!file_exists("$mdir/meta.json")) {
-			echo "Can't build module, meta information (meta.json) not found";
-			return;
+			return "Can't build module, meta information (meta.json) not found";
 		}
 		$version = file_get_json("$mdir/meta.json")['version'];
 		if (file_exists(DIR.'/build.phar')) {
@@ -443,19 +464,19 @@ class Builder {
 		unset($phar);
 		$suffix = @$_POST['suffix'] ? "_$_POST[suffix]" : '';
 		rename(DIR.'/build.phar', DIR.'/'.str_replace(' ', '_', 'module_'.$_POST['modules'][0])."_$version$suffix.phar.php");
-		echo "Done! Module {$_POST['modules'][0]} $version";
+		return "Done! Module {$_POST['modules'][0]} $version";
 	}
+	/**
+	 * @return string
+	 */
 	function plugin () {
 		time_limit_pause();
 		if (!isset($_POST['plugins'][0])) {
-			echo 'Please, specify plugin name';
-			return;
+			return 'Please, specify plugin name';
 		} elseif (!file_exists($plugin_dir = DIR.'/components/plugins/'.$_POST['plugins'][0])) {
-			echo "Can't build plugin, plugin directory not found";
-			return;
+			return "Can't build plugin, plugin directory not found";
 		} elseif (!file_exists("$plugin_dir/meta.json")) {
-			echo "Can't build plugin, meta information (meta.json) not found";
-			return;
+			return "Can't build plugin, meta information (meta.json) not found";
 		}
 		$version = file_get_json("$plugin_dir/meta.json")['version'];
 		if (file_exists(DIR.'/build.phar')) {
@@ -505,22 +526,21 @@ class Builder {
 		unset($phar);
 		$suffix = @$_POST['suffix'] ? "_$_POST[suffix]" : '';
 		rename(DIR.'/build.phar', DIR.'/'.str_replace(' ', '_', 'plugin_'.$_POST['plugins'][0])."_$version$suffix.phar.php");
-		echo "Done! Plugin {$_POST['plugins'][0]} $version";
+		return "Done! Plugin {$_POST['plugins'][0]} $version";
 	}
+	/**
+	 * @return string
+	 */
 	function theme () {
 		time_limit_pause();
 		if (!isset($_POST['themes'][0])) {
-			echo 'Please, specify theme name';
-			return;
+			return 'Please, specify theme name';
 		} elseif ($_POST['themes'][0] == 'CleverStyle') {
-			echo "Can't build theme, CleverStyle theme is a part of core, it is not necessary to build it as separate theme";
-			return;
+			return "Can't build theme, CleverStyle theme is a part of core, it is not necessary to build it as separate theme";
 		} elseif (!file_exists($theme_dir = DIR.'/themes/'.$_POST['themes'][0])) {
-			echo "Can't build theme, theme directory not found";
-			return;
+			return "Can't build theme, theme directory not found";
 		} elseif (!file_exists("$theme_dir/meta.json")) {
-			echo "Can't build theme, meta information (meta.json) not found";
-			return;
+			return "Can't build theme, meta information (meta.json) not found";
 		}
 		$version = file_get_json("$theme_dir/meta.json")['version'];
 		if (file_exists(DIR.'/build.phar')) {
@@ -560,6 +580,6 @@ class Builder {
 		unset($phar);
 		$suffix = @$_POST['suffix'] ? "_$_POST[suffix]" : '';
 		rename(DIR.'/build.phar', DIR.'/'.str_replace(' ', '_', 'theme_'.$_POST['themes'][0])."_$version$suffix.phar.php");
-		echo "Done! Theme {$_POST['themes'][0]} $version\n";
+		return "Done! Theme {$_POST['themes'][0]} $version\n";
 	}
 }

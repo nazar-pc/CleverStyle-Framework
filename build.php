@@ -75,8 +75,7 @@ Example:
 '
 		);
 	} else {
-		$Builder->$mode();
-		echo "\n";
+		echo $Builder->$mode()."\n";
 	}
 	return;
 }
@@ -110,11 +109,7 @@ echo
 		h::h1('CleverStyle CMS Builder')
 	).
 	h::section(
-		ob_wrapper(
-			function () use ($Builder, $mode) {
-				$Builder->$mode();
-			}
-		)
+		$Builder->$mode()
 	).
 	h::footer(
 		'Copyright (c) 2011-2015, Nazar Mokrynskyi'
