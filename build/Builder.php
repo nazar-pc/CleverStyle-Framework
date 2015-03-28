@@ -127,87 +127,82 @@ class Builder {
 		/**
 		 * Files to be included into installation package
 		 */
-		$files = $this->get_files(
+		$core_files = $this->get_files(
 			[
 				DIR.'/components/modules/System',
+				DIR.'/components/blocks/.gitkept',
+				DIR.'/components/plugins/.gitkept',
 				DIR.'/core',
 				DIR.'/custom',
 				DIR.'/includes',
 				DIR.'/templates',
 				DIR.'/themes/CleverStyle',
-				DIR.'/components/blocks/.gitkept',
-				DIR.'/components/plugins/.gitkept',
+				DIR.'/composer.json',
+				DIR.'/composer.lock',
 				DIR.'/index.php',
 				DIR.'/license.txt',
-				DIR.'/Storage.php',
-				DIR.'/composer.json',
-				DIR.'/composer.lock'
+				DIR.'/Storage.php'
 			]
 		);
 		/**
 		 * Add selected modules that should be built-in into package
 		 */
 		$components_files = [];
-		if (@$_POST['modules']) {
-			$modules = [];
-			foreach ($_POST['modules'] as $module) {
-				if ($this->get_component_files(DIR."/components/modules/$module", $components_files)) {
-					$modules[] = $module;
-				}
+		$modules          = [];
+		foreach (@$_POST['modules'] ?: [] as $module) {
+			if ($this->get_component_files(DIR."/components/modules/$module", $components_files)) {
+				$modules[] = $module;
 			}
-			unset($module);
-			$phar->addFromString('modules.json', _json_encode($modules));
 		}
+		asort($modules);
+		$phar->addFromString('modules.json', _json_encode($modules));
+		unset($module, $modules);
 		/**
 		 * Add selected plugins that should be built-in into package
 		 */
-		if (@$_POST['plugins']) {
-			$plugins = [];
-			foreach ($_POST['plugins'] as $plugin) {
-				if ($this->get_component_files(DIR."/components/plugins/$plugin", $components_files)) {
-					$plugins[] = $plugin;
-				}
+		$plugins = [];
+		foreach (@$_POST['plugins'] ?: [] as $plugin) {
+			if ($this->get_component_files(DIR."/components/plugins/$plugin", $components_files)) {
+				$plugins[] = $plugin;
 			}
-			unset($plugin);
-			$phar->addFromString('plugins.json', _json_encode($plugins));
 		}
+		asort($plugins);
+		$phar->addFromString('plugins.json', _json_encode($plugins));
+		unset($plugin, $plugins);
 		/**
 		 * Add selected themes that should be built-in into package
 		 */
-		if (@$_POST['themes']) {
-			$themes = [];
-			foreach ($_POST['themes'] as $theme) {
-				if ($this->get_component_files(DIR."/components/themes/$theme", $components_files)) {
-					$themes[] = $theme;
-				}
+		$themes = [];
+		foreach (@$_POST['themes'] ?: [] as $theme) {
+			if ($this->get_component_files(DIR."/components/themes/$theme", $components_files)) {
+				$themes[] = $theme;
 			}
-			unset($theme);
-			$phar->addFromString('themes.json', _json_encode($themes));
 		}
+		$themes[] = 'CleverStyle';
+		asort($themes);
+		$phar->addFromString('themes.json', _json_encode($themes));
+		unset($theme, $themes);
 		/**
 		 * Joining system and components files
 		 */
-		$files = array_merge(
-			$files,
+		$core_files = array_merge(
+			$core_files,
 			$components_files
 		);
 		/**
 		 * Addition files content into package
 		 */
-		$files = array_map(
-			function ($index, $file) use ($phar, $length) {
-				$phar->addFromString("fs/$index", file_get_contents($file));
-				return substr($file, $length);
-			},
-			array_keys($files),
-			$files
-		);
+		foreach ($core_files as $index => &$file) {
+			$phar->addFile($file, "fs/$index");
+			$file = substr($file, $length);
+		}
+		unset($index, $file);
 		/**
 		 * Addition of separate files into package
 		 */
-		$files[] = 'readme.html';
+		$core_files[] = 'readme.html';
 		$phar->addFromString(
-			'fs/'.(count($files) - 1),
+			'fs/'.(count($core_files) - 1),
 			str_replace(
 				[
 					'$version$',
@@ -242,20 +237,20 @@ class Builder {
 		/**
 		 * Fixing of system files list (without components files and core/fs.json file itself), it is needed for future system updating
 		 */
-		$files[] = 'core/fs.json';
+		$core_files[] = 'core/fs.json';
 		$phar->addFromString(
-			'fs/'.(count($files) - 1),
+			'fs/'.(count($core_files) - 1),
 			_json_encode(
-				array_flip(array_diff(array_slice($files, 0, -1), _substr($components_files, $length)))
+				array_flip(array_diff(array_slice($core_files, 0, -1), _substr($components_files, $length)))
 			)
 		);
 		unset($components_files, $length);
 		/**
 		 * Addition of files, that are needed only for installation
 		 */
-		$files[] = '.htaccess';
+		$core_files[] = '.htaccess';
 		$phar->addFromString(
-			'fs/'.(count($files) - 1),
+			'fs/'.(count($core_files) - 1),
 			'AddDefaultCharset utf-8
 Options -Indexes -Multiviews +FollowSymLinks
 IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
@@ -279,20 +274,20 @@ RewriteBase /
 RewriteRule .* index.php
 '
 		);
-		$files[] = 'config/main.php';
-		$phar->addFromString(
-			'fs/'.(count($files) - 1),
-			file_get_contents(DIR.'/config/main.php')
+		$core_files[] = 'config/main.php';
+		$phar->addFile(
+			DIR.'/config/main.php',
+			'fs/'.(count($core_files) - 1)
 		);
-		$files[] = 'favicon.ico';
-		$phar->addFromString(
-			'fs/'.(count($files) - 1),
-			file_get_contents(DIR.'/favicon.ico')
+		$core_files[] = 'favicon.ico';
+		$phar->addFile(
+			DIR.'/favicon.ico',
+			'fs/'.(count($core_files) - 1)
 		);
-		$files[] = '.gitignore';
-		$phar->addFromString(
-			'fs/'.(count($files) - 1),
-			file_get_contents(DIR.'/.gitignore')
+		$core_files[] = '.gitignore';
+		$phar->addFile(
+			DIR.'/.gitignore',
+			'fs/'.(count($core_files) - 1)
 		);
 		/**
 		 * Flip array to have direct access to files by name during extracting and installation, and fixing of files list for installation
@@ -300,10 +295,10 @@ RewriteRule .* index.php
 		$phar->addFromString(
 			'fs.json',
 			_json_encode(
-				array_flip($files)
+				array_flip($core_files)
 			)
 		);
-		unset($files);
+		unset($core_files);
 		/**
 		 * Addition of supplementary files, that are needed directly for installation process: installer with GUI interface, readme, license, some additional
 		 * information about available languages, themes, current version of system
@@ -330,16 +325,7 @@ RewriteRule .* index.php
 				file_get_contents(DIR.'/readme.html')
 			)
 		);
-		$phar->addFromString(
-			'license.txt',
-			file_get_contents(DIR.'/license.txt')
-		);
-		$themes = get_files_list(DIR.'/themes', false, 'd');
-		asort($themes);
-		$phar->addFromString(
-			'themes.json',
-			_json_encode($themes)
-		);
+		$phar->addFile(DIR.'/license.txt', 'license.txt');
 		$phar->addFromString(
 			'version',
 			"\"$version\""
@@ -463,16 +449,12 @@ RewriteRule .* index.php
 		$meta   = file_get_json("$source_dir/meta.json");
 		$phar   = new Phar("$this->target/build.phar");
 		$files  = get_files_list($source_dir, false, 'f', true, true, false, false, true);
-		$length = mb_strlen("$source_dir/");
-		$files  = array_map(
-			function ($index, $file) use ($phar, $length) {
-				$phar->addFromString("fs/$index", file_get_contents($file));
-				return mb_substr($file, $length);
-			},
-			array_keys($files),
-			$files
-		);
-		unset($length);
+		$length = strlen("$source_dir/");
+		foreach ($files as $index => &$file) {
+			$phar->addFile($file, "fs/$index");
+			$file = substr($file, $length);
+		}
+		unset($index, $file, $length);
 		/**
 		 * Flip array to have direct access to files by name during extraction
 		 */
@@ -483,15 +465,15 @@ RewriteRule .* index.php
 			)
 		);
 		unset($files);
-		$phar->addFromString('meta.json', _json_encode($meta));
+		$phar->addFile("$source_dir/meta.json", 'meta.json');
 		//TODO remove in future versions
 		$phar->addFromString('dir', $meta['package']);
 		$readme = false;
 		if (file_exists("$source_dir/readme.html")) {
-			$phar->addFromString('readme.html', file_get_contents("$source_dir/readme.html"));
+			$phar->addFile("$source_dir/readme.html", 'readme.html');
 			$readme = 'readme.html';
 		} elseif (file_exists("$source_dir/readme.txt")) {
-			$phar->addFromString('readme.txt', file_get_contents("$source_dir/readme.txt"));
+			$phar->addFile("$source_dir/readme.txt", 'readme.txt');
 			$readme = 'readme.txt';
 		}
 		if ($readme) {
