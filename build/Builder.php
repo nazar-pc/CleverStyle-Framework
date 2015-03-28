@@ -63,9 +63,14 @@ class Builder {
 									]
 								];
 							},
-							array_values(array_filter(get_files_list("$this->root/components/modules", false, 'd'), function ($module) {
-								return $module != 'System';
-							}))
+							array_values(
+								array_filter(
+									get_files_list("$this->root/components/modules", false, 'd'),
+									function ($module) {
+										return $module != 'System';
+									}
+								)
+							)
 						)
 					),
 					h::{'select#plugins[name=plugins[]][size=20][multiple] option'}(
@@ -97,9 +102,14 @@ class Builder {
 									]
 								];
 							},
-							array_values(array_filter(get_files_list("$this->root/themes", false, 'd'), function ($theme) {
-								return $theme != 'CleverStyle';
-							}))
+							array_values(
+								array_filter(
+									get_files_list("$this->root/themes", false, 'd'),
+									function ($theme) {
+										return $theme != 'CleverStyle';
+									}
+								)
+							)
 						)
 					)
 				]
@@ -136,9 +146,9 @@ class Builder {
 			unlink("$this->target/build.phar");
 		}
 		$phar   = new Phar("$this->target/build.phar");
-		$length = mb_strlen("$this->root/");
+		$length = strlen("$this->root/");
 		foreach (get_files_list("$this->root/install", false, 'f', true, true) as $file) {
-			$phar->addFile($file, mb_substr($file, $length));
+			$phar->addFile($file, substr($file, $length));
 		}
 		unset($file);
 		/**
@@ -220,15 +230,15 @@ class Builder {
 			'languages.json',
 			_json_encode(
 				array_merge(
-					_mb_substr(get_files_list("$this->root/core/languages", '/^.*?\.php$/i', 'f'), 0, -4) ?: [],
-					_mb_substr(get_files_list("$this->root/core/languages", '/^.*?\.json$/i', 'f'), 0, -5) ?: []
+					_substr(get_files_list("$this->root/core/languages", '/^.*?\.php$/i', 'f'), 0, -4) ?: [],
+					_substr(get_files_list("$this->root/core/languages", '/^.*?\.json$/i', 'f'), 0, -5) ?: []
 				)
 			)
 		);
 		$phar->addFromString(
 			'db_engines.json',
 			_json_encode(
-				_mb_substr(get_files_list("$this->root/core/engines/DB", '/^[^_].*?\.php$/i', 'f'), 0, -4)
+				_substr(get_files_list("$this->root/core/engines/DB", '/^[^_].*?\.php$/i', 'f'), 0, -4)
 			)
 		);
 		/**
@@ -347,9 +357,9 @@ __HALT_COMPILER();"
 		file_put_json(
 			"$component_root/fs.json",
 			array_values(
-				_mb_substr(
+				_substr(
 					$files,
-					mb_strlen("$component_root/")
+					strlen("$component_root/")
 				)
 			)
 		);
