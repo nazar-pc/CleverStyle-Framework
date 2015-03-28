@@ -129,13 +129,9 @@ class Builder {
 	 * @return string
 	 */
 	function core ($modules = [], $plugins = [], $themes = [], $suffix = null) {
-		$modules = $modules ?: @$_POST['modules'];
-		$plugins = $plugins ?: @$_POST['plugins'];
-		$themes  = $themes ?: @$_POST['themes'];
 		$modules = $modules ?: [];
 		$plugins = $plugins ?: [];
 		$themes  = $themes ?: [];
-		$suffix  = $suffix ?: @$_POST['suffix'];
 		if (file_exists("$this->target/build.phar")) {
 			unlink("$this->target/build.phar");
 		}
@@ -414,8 +410,6 @@ RewriteRule .* index.php
 	 * @return string
 	 */
 	function module ($module, $suffix = null) {
-		$module = $module ?: $_POST['modules'][0];
-		$suffix = $suffix ?: $_POST['suffix'];
 		if ($module == 'System') {
 			return "Can't build module, System module is a part of core, it is not necessary to build it as separate module";
 		}
@@ -428,8 +422,6 @@ RewriteRule .* index.php
 	 * @return string
 	 */
 	function plugin ($plugin, $suffix = null) {
-		$plugin = $plugin ?: $_POST['plugins'][0];
-		$suffix = $suffix ?: $_POST['suffix'];
 		return $this->generic_package_creation("$this->root/components/plugins/$plugin", $suffix);
 	}
 	/**
@@ -439,8 +431,6 @@ RewriteRule .* index.php
 	 * @return string
 	 */
 	function theme ($theme, $suffix = null) {
-		$theme  = $theme ?: $_POST['themes'][0];
-		$suffix = $suffix ?: $_POST['suffix'];
 		if ($theme == 'CleverStyle') {
 			return "Can't build theme, CleverStyle theme is a part of core, it is not necessary to build it as separate theme";
 		}

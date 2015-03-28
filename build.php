@@ -27,6 +27,10 @@ $Builder = new cs\Builder(DIR, DIR);
 $mode    = 'form';
 $cli     = PHP_SAPI == 'cli';
 if ($cli) {
+	$modules = [];
+	$plugins = [];
+	$themes  = [];
+	$suffix  = null;
 	for ($i = 1; $i < $argc; $i += 2) {
 		switch ($argv[$i]) {
 			case '-h':
@@ -36,22 +40,22 @@ if ($cli) {
 				$mode = $argv[$i + 1];
 				break;
 			case '-m':
-				$_POST['modules'] = explode(',', $argv[$i + 1]);
+				$modules = explode(',', $argv[$i + 1]);
 				break;
 			case '-p':
-				$_POST['plugins'] = explode(',', $argv[$i + 1]);
+				$plugins = explode(',', $argv[$i + 1]);
 				break;
 			case '-t':
-				$_POST['themes'] = explode(',', $argv[$i + 1]);
+				$themes = explode(',', $argv[$i + 1]);
 				break;
 			case '-s':
-				$_POST['suffix'] = $argv[$i + 1];
+				$suffix = $argv[$i + 1];
 				break;
 		}
 	}
-	if ($mode == 'form') {
-		exit(
-		'CleverStyle CMS builder
+	switch ($mode) {
+		case 'form':
+			echo 'CleverStyle CMS builder
 Builder is used for creating distributive of the CleverStyle CMS and its components.
 Usage: php build.php [-h] [-M <mode>] [-m <module>] [-p <plugin>] [-t <theme>] [-s <suffix>]
   -h - This information
@@ -72,22 +76,32 @@ Usage: php build.php [-h] [-M <mode>] [-m <module>] [-p <plugin>] [-t <theme>] [
 Example:
   php build.php -M core
   php build.php -M core -m Plupload,Static_pages
-  php build.php -M core -p TinyMCE -t DarkEnergy -s custom
-'
-		);
-	} else {
-		echo $Builder->$mode()."\n";
-	}
-	return;
-}
-if (isset($_POST['mode'])) {
-	switch ($_POST['mode']) {
+  php build.php -M core -p TinyMCE -t DarkEnergy -s custom';
+			break;
 		case 'core':
+			echo $Builder->core($modules, $plugins, $themes, $suffix);
+			break;
 		case 'module':
 		case 'plugin':
 		case 'theme':
-			$mode = $_POST['mode'];
+			echo $Builder->$mode(${$mode.'s'}[0], $suffix);
 	}
+	echo "\n";
+	return;
+}
+$content = '';
+$mode    = @$_POST['mode'] ?: $mode;
+switch ($mode) {
+	case 'form':
+		$content = $Builder->form();
+		break;
+	case 'core':
+		$content = $Builder->core(@$_POST['modules'], @$_POST['plugins'], @$_POST['themes'], @$_POST['suffix']);
+		break;
+	case 'module':
+	case 'plugin':
+	case 'theme':
+		$content = $Builder->$mode(@$_POST[$mode.'s'][0], @$_POST['suffix']);
 }
 echo
 	"<!doctype html>".
@@ -109,9 +123,7 @@ echo
 		h::{'img[src=build/includes/logo.png]'}().
 		h::h1('CleverStyle CMS Builder')
 	).
-	h::section(
-		$Builder->$mode()
-	).
+	h::section($content).
 	h::footer(
 		'Copyright (c) 2011-2015, Nazar Mokrynskyi'
 	);
