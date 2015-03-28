@@ -18,29 +18,23 @@ function change_mode (value, item) {
 		themes	= document.querySelector('#themes');
 	switch (value) {
 		case 'core':
-			modules.setAttribute('multiple', '');
 			modules.removeAttribute('disabled');
-			plugins.setAttribute('multiple', '');
 			plugins.removeAttribute('disabled');
-			themes.setAttribute('multiple', '');
 			themes.removeAttribute('disabled');
 		break;
 		case 'module':
-			modules.removeAttribute('multiple');
 			modules.removeAttribute('disabled');
 			modules.selectedIndex	= 0;
 			plugins.setAttribute('disabled', '');
 			themes.setAttribute('disabled', '');
 		break;
 		case 'plugin':
-			plugins.removeAttribute('multiple');
 			plugins.removeAttribute('disabled');
 			plugins.selectedIndex	= 0;
 			modules.setAttribute('disabled', '');
 			themes.setAttribute('disabled', '');
 		break;
 		case 'theme':
-			themes.removeAttribute('multiple');
 			themes.removeAttribute('disabled');
 			themes.selectedIndex	= 0;
 			modules.setAttribute('disabled', '');

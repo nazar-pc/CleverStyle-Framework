@@ -139,13 +139,18 @@ class Builder {
 	 * @return string
 	 */
 	function core ($modules = [], $plugins = [], $themes = [], $suffix = null) {
-		$modules = $modules ?: [];
-		$plugins = $plugins ?: [];
-		$themes  = $themes ?: [];
-		if (file_exists("$this->target/build.phar")) {
-			unlink("$this->target/build.phar");
+		$modules     = $modules ?: [];
+		$plugins     = $plugins ?: [];
+		$themes      = $themes ?: [];
+		$suffix      = $suffix ? "_$suffix" : '';
+		$version     = file_get_json("$this->root/components/modules/System/meta.json")['version'];
+		$target_file = "$this->target/CleverStyle_CMS_$version$suffix.phar.php";
+		if (file_exists($target_file)) {
+			unlink($target_file);
 		}
-		$phar   = new Phar("$this->target/build.phar");
+		$phar = new Phar($target_file);
+		unset($target_file);
+		$phar->startBuffering();
 		$length = strlen("$this->root/");
 		foreach (get_files_list("$this->root/install", false, 'f', true, true) as $file) {
 			$phar->addFile($file, substr($file, $length));
@@ -286,7 +291,6 @@ class Builder {
 		$phar->addFromString('readme.html', $this->get_readme());
 		$phar->addFile("$this->root/license.txt", 'license.txt');
 		$phar->addFile("$this->root/components/modules/System/meta.json", 'meta.json');
-		$version = file_get_json("$this->root/components/modules/System/meta.json")['version'];
 		//TODO Remove in future versions
 		$phar->addFromString(
 			'version',
@@ -302,9 +306,7 @@ if (PHP_SAPI == 'cli') {
 }
 __HALT_COMPILER();"
 		);
-		unset($phar);
-		$suffix = $suffix ? "_$suffix" : '';
-		rename("$this->target/build.phar", "$this->target/CleverStyle_CMS_$version$suffix.phar.php");
+		$phar->stopBuffering();
 		return "Done! CleverStyle CMS $version";
 	}
 	/**
@@ -447,15 +449,35 @@ RewriteRule .* index.php
 		return $this->generic_package_creation("$this->root/themes/$theme", $suffix);
 	}
 	protected function generic_package_creation ($source_dir, $suffix = null) {
-		if (file_exists("$this->target/build.phar")) {
-			unlink("$this->target/build.phar");
-		}
 		if (!file_exists("$source_dir/meta.json")) {
 			$component = basename($source_dir);
 			return "Can't build $component, meta information (meta.json) not found";
 		}
-		$meta   = file_get_json("$source_dir/meta.json");
-		$phar   = new Phar("$this->target/build.phar");
+		$meta = file_get_json("$source_dir/meta.json");
+		$type = '';
+		$Type = '';
+		switch ($meta['category']) {
+			case 'modules':
+				$type = 'module_';
+				$Type = 'Module';
+				break;
+			case 'plugins':
+				$type = 'plugins_';
+				$Type = 'Plugin';
+				break;
+			case 'themes':
+				$type = 'theme_';
+				$Type = 'Theme';
+				break;
+		}
+		$suffix      = $suffix ? "_$suffix" : '';
+		$target_file = "$this->target/$type$meta[package]_$meta[version]$suffix.phar.php";
+		if (file_exists($target_file)) {
+			unlink($target_file);
+		}
+		$phar = new Phar($target_file);
+		unset($target_file);
+		$phar->startBuffering();
 		$files  = get_files_list($source_dir, false, 'f', true, true, false, false, true);
 		$length = strlen("$source_dir/");
 		foreach ($files as $index => &$file) {
@@ -490,25 +512,7 @@ RewriteRule .* index.php
 			$phar->addFromString('index.html', isset($meta['description']) ? $meta['description'] : $meta['package']);
 			$phar->setStub("<?php Phar::webPhar(null, 'index.html'); __HALT_COMPILER();");
 		}
-		unset($readme, $phar);
-		$suffix = $suffix ? "_$suffix" : '';
-		$type   = '';
-		$Type   = '';
-		switch ($meta['category']) {
-			case 'modules':
-				$type = 'module_';
-				$Type = 'Module';
-				break;
-			case 'plugins':
-				$type = 'plugins_';
-				$Type = 'Plugin';
-				break;
-			case 'themes':
-				$type = 'theme_';
-				$Type = 'Theme';
-				break;
-		}
-		rename("$this->target/build.phar", "$this->target/$type$meta[package]_$meta[version]$suffix.phar.php");
+		$phar->stopBuffering();
 		return "Done! $Type $meta[package] $meta[version]";
 	}
 }

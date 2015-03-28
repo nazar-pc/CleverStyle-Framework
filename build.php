@@ -61,36 +61,40 @@ Usage: php build.php [-h] [-M <mode>] [-m <module>] [-p <plugin>] [-t <theme>] [
   -h - This information
   -M - Mode of builder, can be one of: core, module, plugin, theme
   -m - One or more modules names separated by coma
-       If mode is "core" - specified modules will be included in distributive
-       If mode is module - distributive of module will be created (only first module will be taken)
+       If mode is "core" - specified modules will be included into system distributive
+       If mode is module - distributive of each module will be created
        In other modes ignored
   -p - One or more plugins names separated by coma
-       If mode is "core" - specified plugins will be included in distributive
-       If mode is plugin - distributive of plugin will be created (only first plugin will be taken)
+       If mode is "core" - specified plugins will be included into system distributive
+       If mode is plugin - distributive of each plugin will be created
        In other modes ignored
   -t - One or more themes names separated by coma
-       If mode is "core" - specified themes will be included in distributive
-       If mode is theme - distributive of theme will be created (only first theme will be taken)
+       If mode is "core" - specified themes will be included into system distributive
+       If mode is theme - distributive each each theme will be created
        In other modes ignored
   -s - Suffix for distributive
 Example:
   php build.php -M core
   php build.php -M core -m Plupload,Static_pages
-  php build.php -M core -p TinyMCE -t DarkEnergy -s custom';
+  php build.php -M core -p TinyMCE -t DarkEnergy -s custom
+  php build.php -M module -m Plupload,Static_pages
+';
 			break;
 		case 'core':
-			echo $Builder->core($modules, $plugins, $themes, $suffix);
+			echo $Builder->core($modules, $plugins, $themes, $suffix)."\n";
 			break;
 		case 'module':
 		case 'plugin':
 		case 'theme':
-			echo $Builder->$mode(${$mode.'s'}[0], $suffix);
+			foreach (${$mode.'s'} as $component) {
+				echo $Builder->$mode($component, $suffix)."\n";
+			}
 	}
-	echo "\n";
 	return;
 }
 $content = '';
 $mode    = @$_POST['mode'] ?: $mode;
+
 switch ($mode) {
 	case 'form':
 		$content = $Builder->form();
@@ -101,7 +105,9 @@ switch ($mode) {
 	case 'module':
 	case 'plugin':
 	case 'theme':
-		$content = $Builder->$mode(@$_POST[$mode.'s'][0], @$_POST['suffix']);
+		foreach (@$_POST[$mode.'s'] as $component) {
+			$content .= $Builder->$mode($component, @$_POST['suffix']).h::br();
+		}
 }
 echo
 	"<!doctype html>".
