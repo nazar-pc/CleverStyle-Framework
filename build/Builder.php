@@ -111,14 +111,23 @@ class Builder {
 		);
 	}
 	/**
+	 * @param string[]    $modules
+	 * @param string[]    $plugins
+	 * @param string[]    $themes
+	 * @param null|string $suffix
+	 *
 	 * @return string
 	 */
-	function core () {
+	function core ($modules = [], $plugins = [], $themes = [], $suffix = null) {
+		$modules = $modules ?: $_POST['modules'];
+		$plugins = $plugins ?: $_POST['plugins'];
+		$themes  = $themes ?: $_POST['themes'];
+		$suffix  = $suffix ?: $_POST['suffix'];
 		$version = file_get_json(DIR.'/components/modules/System/meta.json')['version'];
-		if (file_exists(DIR.'/build.phar')) {
-			unlink(DIR.'/build.phar');
+		if (file_exists("$this->target/build.phar")) {
+			unlink("$this->target/build.phar");
 		}
-		$phar   = new Phar(DIR.'/build.phar');
+		$phar   = new Phar("$this->target/build.phar");
 		$length = mb_strlen(DIR.'/');
 		foreach (get_files_list(DIR.'/install', false, 'f', true, true) as $file) {
 			$phar->addFile($file, mb_substr($file, $length));
@@ -145,43 +154,40 @@ class Builder {
 			]
 		);
 		/**
-		 * Add selected modules that should be built-in into package
+		 * Add modules that should be built-in into package
 		 */
 		$components_files = [];
-		$modules          = [];
-		foreach (@$_POST['modules'] ?: [] as $module) {
-			if ($this->get_component_files(DIR."/components/modules/$module", $components_files)) {
-				$modules[] = $module;
+		$modules          = array_filter(
+			$modules,
+			function ($module) use (&$components_files) {
+				return $this->get_component_files(DIR."/components/modules/$module", $components_files);
 			}
-		}
+		);
 		asort($modules);
 		$phar->addFromString('modules.json', _json_encode($modules));
-		unset($module, $modules);
 		/**
-		 * Add selected plugins that should be built-in into package
+		 * Add plugins that should be built-in into package
 		 */
-		$plugins = [];
-		foreach (@$_POST['plugins'] ?: [] as $plugin) {
-			if ($this->get_component_files(DIR."/components/plugins/$plugin", $components_files)) {
-				$plugins[] = $plugin;
+		$plugins = array_filter(
+			$plugins,
+			function ($plugin) use (&$components_files) {
+				return $this->get_component_files(DIR."/components/plugins/$plugin", $components_files);
 			}
-		}
+		);
 		asort($plugins);
 		$phar->addFromString('plugins.json', _json_encode($plugins));
-		unset($plugin, $plugins);
 		/**
-		 * Add selected themes that should be built-in into package
+		 * Add themes that should be built-in into package
 		 */
-		$themes = [];
-		foreach (@$_POST['themes'] ?: [] as $theme) {
-			if ($this->get_component_files(DIR."/components/themes/$theme", $components_files)) {
-				$themes[] = $theme;
-			}
-		}
 		$themes[] = 'CleverStyle';
+		$themes   = array_filter(
+			$themes,
+			function ($theme) use (&$components_files) {
+				return $this->get_component_files(DIR."/themes/$theme", $components_files);
+			}
+		);
 		asort($themes);
 		$phar->addFromString('themes.json', _json_encode($themes));
-		unset($theme, $themes);
 		/**
 		 * Joining system and components files
 		 */
@@ -263,20 +269,19 @@ class Builder {
 			'version',
 			"\"$version\""
 		);
-		unset($themes, $theme);
 		$phar->setStub(
 			"<?php
-		if (PHP_SAPI == 'cli') {
-			Phar::mapPhar('cleverstyle_cms.phar');
-			include 'phar://cleverstyle_cms.phar/install.php';
-		} else {
-			Phar::webPhar(null, 'install.php');
-		}
-		__HALT_COMPILER();"
+if (PHP_SAPI == 'cli') {
+	Phar::mapPhar('cleverstyle_cms.phar');
+	include 'phar://cleverstyle_cms.phar/install.php';
+} else {
+	Phar::webPhar(null, 'install.php');
+}
+__HALT_COMPILER();"
 		);
 		unset($phar);
-		$suffix = @$_POST['suffix'] ? "_$_POST[suffix]" : '';
-		rename(DIR.'/build.phar', DIR."/CleverStyle_CMS_$version$suffix.phar.php");
+		$suffix = $suffix ? "_$suffix" : '';
+		rename("$this->target/build.phar", DIR."/CleverStyle_CMS_$version$suffix.phar.php");
 		return "Done! CleverStyle CMS $version";
 	}
 	/**
@@ -386,37 +391,43 @@ RewriteRule .* index.php
 ';
 	}
 	/**
-	 * @param string $module
+	 * @param string      $module
+	 * @param null|string $suffix
 	 *
 	 * @return string
 	 */
-	function module ($module) {
+	function module ($module, $suffix = null) {
 		$module = $module ?: $_POST['modules'][0];
+		$suffix = $suffix ?: $_POST['suffix'];
 		if ($module == 'System') {
 			return "Can't build module, System module is a part of core, it is not necessary to build it as separate module";
 		}
-		return $this->generic_package_creation(DIR."/components/modules/$module", @$_POST['suffix']);
+		return $this->generic_package_creation(DIR."/components/modules/$module", $suffix);
 	}
 	/**
-	 * @param string $plugin
+	 * @param string      $plugin
+	 * @param null|string $suffix
 	 *
 	 * @return string
 	 */
-	function plugin ($plugin) {
+	function plugin ($plugin, $suffix = null) {
 		$plugin = $plugin ?: $_POST['plugins'][0];
-		return $this->generic_package_creation(DIR."/components/plugins/$plugin", @$_POST['suffix']);
+		$suffix = $suffix ?: $_POST['suffix'];
+		return $this->generic_package_creation(DIR."/components/plugins/$plugin", $suffix);
 	}
 	/**
-	 * @param string $theme
+	 * @param string      $theme
+	 * @param null|string $suffix
 	 *
 	 * @return string
 	 */
-	function theme ($theme) {
-		$theme = $theme ?: $_POST['themes'][0];
+	function theme ($theme, $suffix = null) {
+		$theme  = $theme ?: $_POST['themes'][0];
+		$suffix = $suffix ?: $_POST['suffix'];
 		if ($theme == 'CleverStyle') {
 			return "Can't build theme, CleverStyle theme is a part of core, it is not necessary to build it as separate theme";
 		}
-		return $this->generic_package_creation(DIR."/themes/$theme", @$_POST['suffix']);
+		return $this->generic_package_creation(DIR."/themes/$theme", $suffix);
 	}
 	protected function generic_package_creation ($source_dir, $suffix = null) {
 		if (file_exists("$this->target/build.phar")) {
@@ -464,23 +475,23 @@ RewriteRule .* index.php
 		}
 		unset($readme, $phar);
 		$suffix = $suffix ? "_$suffix" : '';
-		$type   = 'CleverStyle_CMS';
-		$Type   = 'CleverStyle CMS';
+		$type   = '';
+		$Type   = '';
 		switch ($meta['category']) {
 			case 'modules':
-				$type = 'module';
+				$type = 'module_';
 				$Type = 'Module';
 				break;
 			case 'plugins':
-				$type = 'plugins';
+				$type = 'plugins_';
 				$Type = 'Plugin';
 				break;
 			case 'themes':
-				$type = 'theme';
+				$type = 'theme_';
 				$Type = 'Theme';
 				break;
 		}
-		rename("$this->target/build.phar", "$this->target/{$type}_$meta[package]_$meta[version]$suffix.phar.php");
+		rename("$this->target/build.phar", "$this->target/$type$meta[package]_$meta[version]$suffix.phar.php");
 		return "Done! $Type $meta[package] $meta[version]";
 	}
 }
