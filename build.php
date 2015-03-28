@@ -19,6 +19,7 @@ require_once DIR.'/core/classes/h/Base.php';
 require_once DIR.'/core/classes/h.php';
 require_once DIR.'/core/thirdparty/upf.php';
 require_once DIR.'/core/functions.php';
+time_limit_pause();
 date_default_timezone_set('UTC');
 header('Content-Type: text/html; charset=utf-8');
 header('Connection: close');

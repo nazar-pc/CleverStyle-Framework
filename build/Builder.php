@@ -417,55 +417,47 @@ RewriteRule .* index.php
 		return "Done! CleverStyle CMS $version";
 	}
 	/**
+	 * @param string $module
+	 *
 	 * @return string
 	 */
-	function module () {
-		time_limit_pause();
-		if (!isset($_POST['modules'][0])) {
-			return 'Please, specify module name';
-		} elseif ($_POST['modules'][0] == 'System') {
+	function module ($module) {
+		$module = $module ?: $_POST['modules'][0];
+		if ($module == 'System') {
 			return "Can't build module, System module is a part of core, it is not necessary to build it as separate module";
-		} elseif (!file_exists($mdir = DIR.'/components/modules/'.$_POST['modules'][0])) {
-			return "Can't build module, module directory not found";
-		} elseif (!file_exists("$mdir/meta.json")) {
-			return "Can't build module, meta information (meta.json) not found";
 		}
-		return $this->generic_package_creation(file_get_json("$mdir/meta.json"), $mdir, @$_POST['suffix']);
+		return $this->generic_package_creation(DIR."/components/modules/$module", @$_POST['suffix']);
 	}
 	/**
+	 * @param string $plugin
+	 *
 	 * @return string
 	 */
-	function plugin () {
-		time_limit_pause();
-		if (!isset($_POST['plugins'][0])) {
-			return 'Please, specify plugin name';
-		} elseif (!file_exists($plugin_dir = DIR.'/components/plugins/'.$_POST['plugins'][0])) {
-			return "Can't build plugin, plugin directory not found";
-		} elseif (!file_exists("$plugin_dir/meta.json")) {
-			return "Can't build plugin, meta information (meta.json) not found";
-		}
-		return $this->generic_package_creation(file_get_json("$plugin_dir/meta.json"), $plugin_dir, @$_POST['suffix']);
+	function plugin ($plugin) {
+		$plugin = $plugin ?: $_POST['plugins'][0];
+		return $this->generic_package_creation(DIR."/components/plugins/$plugin", @$_POST['suffix']);
 	}
 	/**
+	 * @param string $theme
+	 *
 	 * @return string
 	 */
-	function theme () {
-		time_limit_pause();
-		if (!isset($_POST['themes'][0])) {
-			return 'Please, specify theme name';
-		} elseif ($_POST['themes'][0] == 'CleverStyle') {
+	function theme ($theme) {
+		$theme = $theme ?: $_POST['themes'][0];
+		if ($theme == 'CleverStyle') {
 			return "Can't build theme, CleverStyle theme is a part of core, it is not necessary to build it as separate theme";
-		} elseif (!file_exists($theme_dir = DIR.'/themes/'.$_POST['themes'][0])) {
-			return "Can't build theme, theme directory not found";
-		} elseif (!file_exists("$theme_dir/meta.json")) {
-			return "Can't build theme, meta information (meta.json) not found";
 		}
-		return $this->generic_package_creation(file_get_json("$theme_dir/meta.json"), $theme_dir, @$_POST['suffix']);
+		return $this->generic_package_creation(DIR."/themes/$theme", @$_POST['suffix']);
 	}
-	protected function generic_package_creation ($meta, $source_dir, $suffix = null) {
+	protected function generic_package_creation ($source_dir, $suffix = null) {
 		if (file_exists("$this->target/build.phar")) {
 			unlink("$this->target/build.phar");
 		}
+		if (!file_exists("$source_dir/meta.json")) {
+			$component = basename($source_dir);
+			return "Can't build $component, meta information (meta.json) not found";
+		}
+		$meta   = file_get_json("$source_dir/meta.json");
 		$phar   = new Phar("$this->target/build.phar");
 		$list   = get_files_list($source_dir, false, 'f', true, true, false, false, true);
 		$length = mb_strlen("$source_dir/");
