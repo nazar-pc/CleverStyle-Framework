@@ -377,7 +377,7 @@ RewriteRule .* index.php
 				/** @noinspection SlowArrayOperationsInLoopInspection */
 				$files = array_merge(
 					$files,
-					get_files_list(DIR.'/components/modules/System', false, 'f', true, true, false, false, true)
+					get_files_list($s, false, 'f', true, true, false, false, true)
 				);
 			}
 		}
