@@ -119,10 +119,13 @@ class Builder {
 	 * @return string
 	 */
 	function core ($modules = [], $plugins = [], $themes = [], $suffix = null) {
-		$modules = $modules ?: $_POST['modules'];
-		$plugins = $plugins ?: $_POST['plugins'];
-		$themes  = $themes ?: $_POST['themes'];
-		$suffix  = $suffix ?: $_POST['suffix'];
+		$modules = $modules ?: @$_POST['modules'];
+		$plugins = $plugins ?: @$_POST['plugins'];
+		$themes  = $themes ?: @$_POST['themes'];
+		$modules = $modules ?: [];
+		$plugins = $plugins ?: [];
+		$themes  = $themes ?: [];
+		$suffix  = $suffix ?: @$_POST['suffix'];
 		$version = file_get_json(DIR.'/components/modules/System/meta.json')['version'];
 		if (file_exists("$this->target/build.phar")) {
 			unlink("$this->target/build.phar");
@@ -179,13 +182,13 @@ class Builder {
 		/**
 		 * Add themes that should be built-in into package
 		 */
-		$themes[] = 'CleverStyle';
 		$themes   = array_filter(
 			$themes,
 			function ($theme) use (&$components_files) {
 				return $this->get_component_files(DIR."/themes/$theme", $components_files);
 			}
 		);
+		$themes[] = 'CleverStyle';
 		asort($themes);
 		$phar->addFromString('themes.json', _json_encode($themes));
 		/**
