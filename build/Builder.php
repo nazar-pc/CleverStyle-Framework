@@ -200,25 +200,8 @@ class Builder {
 		/**
 		 * Addition of separate files into package
 		 */
+		$phar->addFromString('fs/'.count($core_files), $this->get_readme());
 		$core_files[] = 'readme.html';
-		$phar->addFromString(
-			'fs/'.(count($core_files) - 1),
-			str_replace(
-				[
-					'$version$',
-					'$image$'
-				],
-				[
-					$version,
-					h::img(
-						[
-							'src' => 'data:image/png;charset=utf-8;base64,'.base64_encode(file_get_contents(DIR.'/install/logo.png'))
-						]
-					)
-				],
-				file_get_contents(DIR.'/readme.html')
-			)
-		);
 		$phar->addFromString(
 			'languages.json',
 			_json_encode(
@@ -237,58 +220,25 @@ class Builder {
 		/**
 		 * Fixing of system files list (without components files and core/fs.json file itself), it is needed for future system updating
 		 */
-		$core_files[] = 'core/fs.json';
 		$phar->addFromString(
-			'fs/'.(count($core_files) - 1),
+			'fs/'.count($core_files),
 			_json_encode(
 				array_flip(array_diff(array_slice($core_files, 0, -1), _substr($components_files, $length)))
 			)
 		);
+		$core_files[] = 'core/fs.json';
 		unset($components_files, $length);
 		/**
 		 * Addition of files, that are needed only for installation
 		 */
+		$phar->addFromString('fs/'.count($core_files), $this->get_htaccess());
 		$core_files[] = '.htaccess';
-		$phar->addFromString(
-			'fs/'.(count($core_files) - 1),
-			'AddDefaultCharset utf-8
-Options -Indexes -Multiviews +FollowSymLinks
-IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
-
-RewriteEngine On
-RewriteBase /
-
-<FilesMatch ".*/.*">
-	Options -FollowSymLinks
-</FilesMatch>
-<FilesMatch "\.(css|js|gif|jpg|jpeg|png|ico|eot|ttc|ttf|svg|svgz|woff)$">
-	RewriteEngine Off
-</FilesMatch>
-<Files license.txt>
-	RewriteEngine Off
-</Files>
-#<Files Storage.php>
-#	RewriteEngine Off
-#</Files>
-
-RewriteRule .* index.php
-'
-		);
+		$phar->addFile(DIR.'/config/main.php', 'fs/'.count($core_files));
 		$core_files[] = 'config/main.php';
-		$phar->addFile(
-			DIR.'/config/main.php',
-			'fs/'.(count($core_files) - 1)
-		);
+		$phar->addFile(DIR.'/favicon.ico', 'fs/'.count($core_files));
 		$core_files[] = 'favicon.ico';
-		$phar->addFile(
-			DIR.'/favicon.ico',
-			'fs/'.(count($core_files) - 1)
-		);
+		$phar->addFile(DIR.'/.gitignore', 'fs/'.count($core_files));
 		$core_files[] = '.gitignore';
-		$phar->addFile(
-			DIR.'/.gitignore',
-			'fs/'.(count($core_files) - 1)
-		);
 		/**
 		 * Flip array to have direct access to files by name during extracting and installation, and fixing of files list for installation
 		 */
@@ -307,24 +257,7 @@ RewriteRule .* index.php
 			'install.php',
 			str_replace('$version$', $version, file_get_contents(DIR.'/install.php'))
 		);
-		$phar->addFromString(
-			'readme.html',
-			str_replace(
-				[
-					'$version$',
-					'$image$'
-				],
-				[
-					$version,
-					h::img(
-						[
-							'src' => 'data:image/png;charset=utf-8;base64,'.base64_encode(file_get_contents(DIR.'/install/logo.png'))
-						]
-					)
-				],
-				file_get_contents(DIR.'/readme.html')
-			)
-		);
+		$phar->addFromString('readme.html', $this->get_readme());
 		$phar->addFile(DIR.'/license.txt', 'license.txt');
 		$phar->addFromString(
 			'version',
@@ -385,7 +318,7 @@ RewriteRule .* index.php
 		/**
 		 * Components without meta.json also not allowed
 		 */
-		if (!file_exists("$component_root/fs.json")) {
+		if (!file_exists("$component_root/meta.json")) {
 			return false;
 		}
 		@unlink("$component_root/fs.json");
@@ -404,6 +337,53 @@ RewriteRule .* index.php
 		);
 		$files[] = "$component_root/fs.json";
 		return true;
+	}
+	/**
+	 * @return string
+	 */
+	protected function get_readme () {
+		return str_replace(
+			[
+				'$version$',
+				'$image$'
+			],
+			[
+				file_get_json(DIR.'/components/modules/System/meta.json')['version'],
+				h::img(
+					[
+						'src' => 'data:image/png;charset=utf-8;base64,'.base64_encode(file_get_contents(DIR.'/install/logo.png'))
+					]
+				)
+			],
+			file_get_contents(DIR.'/readme.html')
+		);
+	}
+	/**
+	 * @return string
+	 */
+	protected function get_htaccess () {
+		return 'AddDefaultCharset utf-8
+Options -Indexes -Multiviews +FollowSymLinks
+IndexIgnore *.php *.pl *.cgi *.htaccess *.htpasswd
+
+RewriteEngine On
+RewriteBase /
+
+<FilesMatch ".*/.*">
+	Options -FollowSymLinks
+</FilesMatch>
+<FilesMatch "\.(css|js|gif|jpg|jpeg|png|ico|eot|ttc|ttf|svg|svgz|woff)$">
+	RewriteEngine Off
+</FilesMatch>
+<Files license.txt>
+	RewriteEngine Off
+</Files>
+#<Files Storage.php>
+#	RewriteEngine Off
+#</Files>
+
+RewriteRule .* index.php
+';
 	}
 	/**
 	 * @param string $module
