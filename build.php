@@ -1,10 +1,10 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @subpackage	Builder
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package        CleverStyle CMS
+ * @subpackage     Builder
+ * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright      Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license        MIT License, see license.txt
  */
 if (version_compare(PHP_VERSION, '5.4', '<')) {
 	exit('CleverStyle CMS require PHP 5.4 or higher');
@@ -13,6 +13,7 @@ if (!Phar::canWrite()) {
 	exit("CleverStyle CMS Builder can't work, set, please, \"phar.readonly=off\" option in \"php.ini\"\n");
 }
 define('DIR', __DIR__);
+require_once DIR.'/build/Builder.php';
 require_once DIR.'/core/thirdparty/nazarpc/BananaHTML.php';
 require_once DIR.'/core/classes/h/Base.php';
 require_once DIR.'/core/classes/h.php';
@@ -21,44 +22,35 @@ require_once DIR.'/core/functions.php';
 date_default_timezone_set('UTC');
 header('Content-Type: text/html; charset=utf-8');
 header('Connection: close');
-$mode	= 'form';
-$cli	= PHP_SAPI == 'cli';
+$Builder = new cs\Builder;
+$mode    = 'form';
+$cli     = PHP_SAPI == 'cli';
 if ($cli) {
 	for ($i = 1; $i < $argc; $i += 2) {
 		switch ($argv[$i]) {
 			case '-h':
 				$mode = 'form';
-			break;
+				break;
 			case '-M':
 				$mode = $argv[$i + 1];
-			break;
+				break;
 			case '-m':
 				$_POST['modules'] = explode(',', $argv[$i + 1]);
-			break;
+				break;
 			case '-p':
 				$_POST['plugins'] = explode(',', $argv[$i + 1]);
-			break;
+				break;
 			case '-t':
 				$_POST['themes'] = explode(',', $argv[$i + 1]);
-			break;
+				break;
 			case '-s':
 				$_POST['suffix'] = $argv[$i + 1];
-			break;
+				break;
 		}
 	}
-} elseif (isset($_POST['mode'])) {
-	switch ($_POST['mode']) {
-		case 'core':
-		case 'module':
-		case 'plugin':
-		case 'theme':
-			$mode	= $_POST['mode'];
-	}
-}
-if ($cli) {
 	if ($mode == 'form') {
 		exit(
-'CleverStyle CMS builder
+		'CleverStyle CMS builder
 Builder is used for creating distributive of the CleverStyle CMS and its components.
 Usage: php build.php [-h] [-M <mode>] [-m <module>] [-p <plugin>] [-t <theme>] [-s <suffix>]
   -h - This information
@@ -83,31 +75,46 @@ Example:
 '
 		);
 	} else {
-		include DIR."/build/$mode.php";
+		$Builder->$mode();
 		echo "\n";
 	}
 	return;
+}
+if (isset($_POST['mode'])) {
+	switch ($_POST['mode']) {
+		case 'core':
+		case 'module':
+		case 'plugin':
+		case 'theme':
+			$mode = $_POST['mode'];
+	}
 }
 echo
 	"<!doctype html>".
 	h::title('CleverStyle CMS Builder').
 	h::{'meta[charset=utf-8]'}().
-	h::link([
-		'href'	=> 'build/includes/style.css',
-		'rel'	=> 'stylesheet'
-	]).
-	h::script([
-		'src'	=> 'build/includes/functions.js',
-		'level'	=> 0
-	])."\n".
+	h::link(
+		[
+			'href' => 'build/includes/style.css',
+			'rel'  => 'stylesheet'
+		]
+	).
+	h::script(
+		[
+			'src'   => 'build/includes/functions.js',
+			'level' => 0
+		]
+	)."\n".
 	h::header(
 		h::{'img[src=build/includes/logo.png]'}().
 		h::h1('CleverStyle CMS Builder')
 	).
 	h::section(
-		ob_wrapper(function () use ($mode) {
-			include DIR."/build/$mode.php";
-		})
+		ob_wrapper(
+			function () use ($Builder, $mode) {
+				$Builder->$mode();
+			}
+		)
 	).
 	h::footer(
 		'Copyright (c) 2011-2015, Nazar Mokrynskyi'
