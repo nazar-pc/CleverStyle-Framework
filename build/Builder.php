@@ -13,6 +13,16 @@ use
 
 class Builder {
 	/**
+	 * @var string
+	 */
+	protected $target;
+	/**
+	 * @param string $target
+	 */
+	function __construct ($target) {
+		$this->target = $target;
+	}
+	/**
 	 * @return string
 	 */
 	function form () {
@@ -39,7 +49,9 @@ class Builder {
 							function ($module) {
 								return [
 									$module,
-									file_exists(DIR."/components/modules/$module/meta.json") ? [] : [
+									file_exists(DIR."/components/modules/$module/meta.json") ? [
+										'title' => 'Version: '.file_get_json(DIR."/components/modules/$module/meta.json")['version']
+									] : [
 										'title' => 'No meta.json file found',
 										'disabled'
 									]
@@ -53,7 +65,9 @@ class Builder {
 							function ($plugin) {
 								return [
 									$plugin,
-									file_exists(DIR."/components/plugins/$plugin/meta.json") ? false : [
+									file_exists(DIR."/components/plugins/$plugin/meta.json") ? [
+										'title' => 'Version: '.file_get_json(DIR."/components/plugins/$plugin/meta.json")['version']
+									] : [
 										'title' => 'No meta.json file found',
 										'disabled'
 									]
@@ -67,7 +81,9 @@ class Builder {
 							function ($theme) {
 								return [
 									$theme,
-									file_exists(DIR."/themes/$theme/meta.json") ? false : [
+									file_exists(DIR."/themes/$theme/meta.json") ? [
+										'title' => 'Version: '.file_get_json(DIR."/themes/$theme/meta.json")['version']
+									] : [
 										'title' => 'No meta.json file found',
 										'disabled'
 									]
@@ -447,10 +463,10 @@ RewriteRule .* index.php
 		return $this->generic_package_creation(file_get_json("$theme_dir/meta.json"), $theme_dir, @$_POST['suffix']);
 	}
 	protected function generic_package_creation ($meta, $source_dir, $suffix = null) {
-		if (file_exists(DIR.'/build.phar')) {
-			unlink(DIR.'/build.phar');
+		if (file_exists("$this->target/build.phar")) {
+			unlink("$this->target/build.phar");
 		}
-		$phar   = new Phar(DIR.'/build.phar');
+		$phar   = new Phar("$this->target/build.phar");
 		$list   = get_files_list($source_dir, false, 'f', true, true, false, false, true);
 		$length = mb_strlen("$source_dir/");
 		$list   = array_map(
@@ -507,7 +523,7 @@ RewriteRule .* index.php
 				$Type = 'Theme';
 				break;
 		}
-		rename(DIR.'/build.phar', DIR."/{$type}_$meta[package]_$meta[version]$suffix.phar.php");
+		rename("$this->target/build.phar", "$this->target/{$type}_$meta[package]_$meta[version]$suffix.phar.php");
 		return "Done! $Type $meta[package] $meta[version]";
 	}
 }

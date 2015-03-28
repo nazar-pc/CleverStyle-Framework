@@ -22,7 +22,7 @@ require_once DIR.'/core/functions.php';
 date_default_timezone_set('UTC');
 header('Content-Type: text/html; charset=utf-8');
 header('Connection: close');
-$Builder = new cs\Builder;
+$Builder = new cs\Builder(DIR);
 $mode    = 'form';
 $cli     = PHP_SAPI == 'cli';
 if ($cli) {
