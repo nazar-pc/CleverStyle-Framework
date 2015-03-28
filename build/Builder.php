@@ -44,7 +44,7 @@ class Builder {
 					'Themes'
 				],
 				[
-					h::{'select#modules[name=modules[]][size=15][multiple] option'}(
+					h::{'select#modules[name=modules[]][size=20][multiple] option'}(
 						array_map(
 							function ($module) {
 								return [
@@ -60,7 +60,7 @@ class Builder {
 							get_files_list(DIR.'/components/modules', '/[^System)]/', 'd')
 						)
 					),
-					h::{'select#plugins[name=plugins[]][size=15][multiple] option'}(
+					h::{'select#plugins[name=plugins[]][size=20][multiple] option'}(
 						array_map(
 							function ($plugin) {
 								return [
@@ -76,7 +76,7 @@ class Builder {
 							get_files_list(DIR.'/components/plugins', false, 'd')
 						)
 					),
-					h::{'select#themes[name=themes[]][size=15][multiple] option'}(
+					h::{'select#themes[name=themes[]][size=20][multiple] option'}(
 						array_map(
 							function ($theme) {
 								return [
