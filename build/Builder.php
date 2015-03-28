@@ -63,7 +63,9 @@ class Builder {
 									]
 								];
 							},
-							get_files_list("$this->root/components/modules", '/[^System)]/', 'd')
+							array_values(array_filter(get_files_list("$this->root/components/modules", false, 'd'), function ($module) {
+								return $module != 'System';
+							}))
 						)
 					),
 					h::{'select#plugins[name=plugins[]][size=20][multiple] option'}(
@@ -95,7 +97,9 @@ class Builder {
 									]
 								];
 							},
-							get_files_list("$this->root/themes", '/[^CleverStyle)]/', 'd')
+							array_values(array_filter(get_files_list("$this->root/themes", false, 'd'), function ($theme) {
+								return $theme != 'CleverStyle';
+							}))
 						)
 					)
 				]
