@@ -414,57 +414,7 @@ RewriteRule .* index.php
 		} elseif (!file_exists("$mdir/meta.json")) {
 			return "Can't build module, meta information (meta.json) not found";
 		}
-		$version = file_get_json("$mdir/meta.json")['version'];
-		if (file_exists(DIR.'/build.phar')) {
-			unlink(DIR.'/build.phar');
-		}
-		$phar = new Phar(DIR.'/build.phar');
-		$phar->addFromString('meta.json', file_get_contents("$mdir/meta.json"));
-		$set_stub = false;
-		if (file_exists("$mdir/readme.html")) {
-			$phar->addFromString('readme.html', file_get_contents("$mdir/readme.html"));
-			$set_stub = 'readme.html';
-		} elseif (file_exists("$mdir/readme.txt")) {
-			$phar->addFromString('readme.txt', file_get_contents("$mdir/readme.txt"));
-			$set_stub = 'readme.txt';
-		}
-		$list   = array_merge(
-			get_files_list($mdir, false, 'f', true, true, false, false, true)
-		);
-		$length = mb_strlen("$mdir/");
-		$list   = array_map(
-			function ($index, $file) use ($phar, $length) {
-				$phar->addFromString("fs/$index", file_get_contents($file));
-				return mb_substr($file, $length);
-			},
-			array_keys($list),
-			$list
-		);
-		unset($length);
-		/**
-		 * Flip array to have direct access to files by name during extracting and installation
-		 */
-		$phar->addFromString(
-			'fs.json',
-			_json_encode(
-				array_flip($list)
-			)
-		);
-		//TODO remove in future versions
-		$phar->addFromString('dir', $_POST['modules'][0]);
-		unset($list);
-		if ($set_stub) {
-			$phar->setStub("<?php Phar::webPhar(null, '$set_stub'); __HALT_COMPILER();");
-		} else {
-			$meta = file_get_json("$mdir/meta.json");
-			$phar->addFromString('index.html', isset($meta['description']) ? $meta['description'] : $meta['package']);
-			unset($meta);
-			$phar->setStub("<?php Phar::webPhar(null, 'index.html'); __HALT_COMPILER();");
-		}
-		unset($phar);
-		$suffix = @$_POST['suffix'] ? "_$_POST[suffix]" : '';
-		rename(DIR.'/build.phar', DIR.'/'.str_replace(' ', '_', 'module_'.$_POST['modules'][0])."_$version$suffix.phar.php");
-		return "Done! Module {$_POST['modules'][0]} $version";
+		return $this->generic_package_creation(file_get_json("$mdir/meta.json"), $mdir, @$_POST['suffix']);
 	}
 	/**
 	 * @return string
@@ -478,55 +428,7 @@ RewriteRule .* index.php
 		} elseif (!file_exists("$plugin_dir/meta.json")) {
 			return "Can't build plugin, meta information (meta.json) not found";
 		}
-		$version = file_get_json("$plugin_dir/meta.json")['version'];
-		if (file_exists(DIR.'/build.phar')) {
-			unlink(DIR.'/build.phar');
-		}
-		$phar = new Phar(DIR.'/build.phar');
-		$phar->addFromString('meta.json', file_get_contents("$plugin_dir/meta.json"));
-		$set_stub = false;
-		if (file_exists("$plugin_dir/readme.html")) {
-			$phar->addFromString('readme.html', file_get_contents("$plugin_dir/readme.html"));
-			$set_stub = 'readme.html';
-		} elseif (file_exists("$plugin_dir/readme.txt")) {
-			$phar->addFromString('readme.txt', file_get_contents("$plugin_dir/readme.txt"));
-			$set_stub = 'readme.txt';
-		}
-		$list   = get_files_list($plugin_dir, false, 'f', true, true, false, false, true);
-		$length = mb_strlen("$plugin_dir/");
-		$list   = array_map(
-			function ($index, $file) use ($phar, $length) {
-				$phar->addFromString("fs/$index", file_get_contents($file));
-				return mb_substr($file, $length);
-			},
-			array_keys($list),
-			$list
-		);
-		unset($length);
-		/**
-		 * Flip array to have direct access to files by name during extracting and installation
-		 */
-		$phar->addFromString(
-			'fs.json',
-			_json_encode(
-				array_flip($list)
-			)
-		);
-		//TODO remove in future versions
-		$phar->addFromString('dir', $_POST['plugins'][0]);
-		unset($list);
-		if ($set_stub) {
-			$phar->setStub("<?php Phar::webPhar(null, '$set_stub'); __HALT_COMPILER();");
-		} else {
-			$meta = file_get_json("$plugin_dir/meta.json");
-			$phar->addFromString('index.html', isset($meta['description']) ? $meta['description'] : $meta['package']);
-			unset($meta);
-			$phar->setStub("<?php Phar::webPhar(null, 'index.html'); __HALT_COMPILER();");
-		}
-		unset($phar);
-		$suffix = @$_POST['suffix'] ? "_$_POST[suffix]" : '';
-		rename(DIR.'/build.phar', DIR.'/'.str_replace(' ', '_', 'plugin_'.$_POST['plugins'][0])."_$version$suffix.phar.php");
-		return "Done! Plugin {$_POST['plugins'][0]} $version";
+		return $this->generic_package_creation(file_get_json("$plugin_dir/meta.json"), $plugin_dir, @$_POST['suffix']);
 	}
 	/**
 	 * @return string
@@ -542,16 +444,15 @@ RewriteRule .* index.php
 		} elseif (!file_exists("$theme_dir/meta.json")) {
 			return "Can't build theme, meta information (meta.json) not found";
 		}
-		$version = file_get_json("$theme_dir/meta.json")['version'];
+		return $this->generic_package_creation(file_get_json("$theme_dir/meta.json"), $theme_dir, @$_POST['suffix']);
+	}
+	protected function generic_package_creation ($meta, $source_dir, $suffix = null) {
 		if (file_exists(DIR.'/build.phar')) {
 			unlink(DIR.'/build.phar');
 		}
-		$phar = new Phar(DIR.'/build.phar');
-		$phar->addFromString('meta.json', file_get_contents("$theme_dir/meta.json"));
-		$list   = array_merge(
-			get_files_list($theme_dir, false, 'f', true, true, false, false, true)
-		);
-		$length = mb_strlen("$theme_dir/");
+		$phar   = new Phar(DIR.'/build.phar');
+		$list   = get_files_list($source_dir, false, 'f', true, true, false, false, true);
+		$length = mb_strlen("$source_dir/");
 		$list   = array_map(
 			function ($index, $file) use ($phar, $length) {
 				$phar->addFromString("fs/$index", file_get_contents($file));
@@ -562,7 +463,7 @@ RewriteRule .* index.php
 		);
 		unset($length);
 		/**
-		 * Flip array to have direct access to files by name during extracting and installation
+		 * Flip array to have direct access to files by name during extraction
 		 */
 		$phar->addFromString(
 			'fs.json',
@@ -570,16 +471,43 @@ RewriteRule .* index.php
 				array_flip($list)
 			)
 		);
-		//TODO remove in future versions
-		$phar->addFromString('dir', $_POST['themes'][0]);
 		unset($list);
-		$meta = file_get_json("$theme_dir/meta.json");
-		$phar->addFromString('index.html', isset($meta['description']) ? $meta['description'] : $meta['package']);
-		unset($meta);
-		$phar->setStub("<?php Phar::webPhar(null, 'index.html'); __HALT_COMPILER();");
-		unset($phar);
-		$suffix = @$_POST['suffix'] ? "_$_POST[suffix]" : '';
-		rename(DIR.'/build.phar', DIR.'/'.str_replace(' ', '_', 'theme_'.$_POST['themes'][0])."_$version$suffix.phar.php");
-		return "Done! Theme {$_POST['themes'][0]} $version\n";
+		$phar->addFromString('meta.json', _json_encode($meta));
+		//TODO remove in future versions
+		$phar->addFromString('dir', $meta['package']);
+		$readme = false;
+		if (file_exists("$source_dir/readme.html")) {
+			$phar->addFromString('readme.html', file_get_contents("$source_dir/readme.html"));
+			$readme = 'readme.html';
+		} elseif (file_exists("$source_dir/readme.txt")) {
+			$phar->addFromString('readme.txt', file_get_contents("$source_dir/readme.txt"));
+			$readme = 'readme.txt';
+		}
+		if ($readme) {
+			$phar->setStub("<?php Phar::webPhar(null, '$readme'); __HALT_COMPILER();");
+		} else {
+			$phar->addFromString('index.html', isset($meta['description']) ? $meta['description'] : $meta['package']);
+			$phar->setStub("<?php Phar::webPhar(null, 'index.html'); __HALT_COMPILER();");
+		}
+		unset($readme, $phar);
+		$suffix = $suffix ? "_$suffix" : '';
+		$type   = 'CleverStyle_CMS';
+		$Type   = 'CleverStyle CMS';
+		switch ($meta['category']) {
+			case 'modules':
+				$type = 'module';
+				$Type = 'Module';
+				break;
+			case 'plugins':
+				$type = 'plugins';
+				$Type = 'Plugin';
+				break;
+			case 'themes':
+				$type = 'theme';
+				$Type = 'Theme';
+				break;
+		}
+		rename(DIR.'/build.phar', DIR."/{$type}_$meta[package]_$meta[version]$suffix.phar.php");
+		return "Done! $Type $meta[package] $meta[version]";
 	}
 }
