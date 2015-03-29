@@ -14,13 +14,21 @@ define('DIR', __DIR__);
 /**
  * Check whether current commit is newest in master branch
  */
-if (file_get_contents(DIR.'/.git/HEAD') != file_get_contents(DIR.'/.git/refs/heads/master')) {
+$on_master = in_array(
+	trim(file_get_contents(DIR.'/.git/HEAD')),
+	[
+		'ref: refs/heads/master',
+		trim(file_get_contents(DIR.'/.git/refs/heads/master'))
+	]
+);
+if (!$on_master) {
 	exit("Distributive is uploaded only when on master branch\n");
 }
 /**
  * Check whether commit is tagged - if so - we are dealing with release
  */
 $tag = exec('git describe --tags --exact-match HEAD 2>/dev/null');
+echo "Building packages...\n";
 ob_start();
 
 require_once DIR.'/build/Builder.php';
@@ -60,13 +68,21 @@ foreach ($plugins as $plugin) {
 foreach ($themes as $theme) {
 	$Builder->theme($theme);
 }
+
 if (ob_get_contents()) {
 	echo "Build failed:\n";
 	exit(ob_get_clean());
 }
+ob_end_clean();
+echo "Building finished, uploading to SourceForge...\n";
+
 exec('openssl enc -d -aes-256-cbc -in id_rsa.enc -out id_rsa -pass env:KEYPASS 2>/dev/null');
 chmod(DIR.'/id_rsa', 0600);
-exec("rsync -e 'ssh -o StrictHostKeyChecking=no -i id_rsa' --compress --delete --recursive --progress dist/ nazar-pc@frs.sourceforge.net:/home/frs/project/cleverstyle-cms/latest/");
+system(
+	"rsync -e 'ssh -o StrictHostKeyChecking=no -i id_rsa -o UserKnownHostsFile=/dev/null' --compress --delete --recursive --progress dist/ nazar-pc@frs.sourceforge.net:/home/frs/project/cleverstyle-cms/nightly/"
+);
 if ($tag) {
-	exec("rsync -e 'ssh -o StrictHostKeyChecking=no -i id_rsa' --compress --delete --recursive --progress dist/ nazar-pc@frs.sourceforge.net:/home/frs/project/cleverstyle-cms/$tag/");
+	system(
+		"rsync -e 'ssh -o StrictHostKeyChecking=no -i id_rsa -o UserKnownHostsFile=/dev/null' --compress --delete --recursive --progress dist/ nazar-pc@frs.sourceforge.net:/home/frs/project/cleverstyle-cms/$tag/"
+	);
 }
