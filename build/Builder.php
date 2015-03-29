@@ -27,6 +27,9 @@ class Builder {
 	function __construct ($root, $target) {
 		$this->root   = $root;
 		$this->target = $target;
+		if (!file_exists($target)) {
+			mkdir($target);
+		}
 	}
 	/**
 	 * @return string
@@ -187,7 +190,7 @@ class Builder {
 			}
 		);
 		asort($modules);
-		$phar->addFromString('modules.json', _json_encode($modules));
+		$phar->addFromString('modules.json', _json_encode(array_values($modules)));
 		/**
 		 * Add plugins that should be built-in into package
 		 */
@@ -210,7 +213,7 @@ class Builder {
 		);
 		$themes[] = 'CleverStyle';
 		asort($themes);
-		$phar->addFromString('themes.json', _json_encode($themes));
+		$phar->addFromString('themes.json', _json_encode(array_values($themes)));
 		/**
 		 * Joining system and components files
 		 */
