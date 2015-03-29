@@ -65,6 +65,7 @@ if (ob_get_contents()) {
 	exit(ob_get_clean());
 }
 exec('openssl enc -d -aes-256-cbc -in id_rsa.enc -out id_rsa -pass env:KEYPASS 2>/dev/null');
+chmod(DIR.'/id_rsa', 0600);
 exec("rsync -e 'ssh -o StrictHostKeyChecking=no -i id_rsa' --compress --delete --recursive --progress dist/ nazar-pc@frs.sourceforge.net:/home/frs/project/cleverstyle-cms/latest/");
 if ($tag) {
 	exec("rsync -e 'ssh -o StrictHostKeyChecking=no -i id_rsa' --compress --delete --recursive --progress dist/ nazar-pc@frs.sourceforge.net:/home/frs/project/cleverstyle-cms/$tag/");
