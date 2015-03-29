@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/nazar-pc/CleverStyle-CMS.png?branch=master)](https://travis-ci.org/nazar-pc/CleverStyle-CMS)
+[![Download CleverStyle CMS](https://img.shields.io/sourceforge/dt/cleverstyle-cms.svg)](https://sourceforge.net/projects/cleverstyle-cms/files/) [![Build Status](https://travis-ci.org/nazar-pc/CleverStyle-CMS.png?branch=master)](https://travis-ci.org/nazar-pc/CleverStyle-CMS)
 # What is this?
 
 CleverStyle CMS is simple, scalable, and fast content management system.
