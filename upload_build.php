@@ -9,14 +9,20 @@
 if (substr(PHP_VERSION, 0, 3) !== '5.6') {
 	exit("Distributive is uploaded only under PHP 5.6\n");
 }
-$branch = exec('git symbolic-ref --short HEAD');
-if ($branch != 'master') {
+define('DIR', __DIR__);
+
+/**
+ * Check whether current commit is newest in master branch
+ */
+if (file_get_contents(DIR.'/.git/HEAD') != file_get_contents(DIR.'/.git/refs/heads/master')) {
 	exit("Distributive is uploaded only when on master branch\n");
 }
+/**
+ * Check whether commit is tagged - if so - we are dealing with release
+ */
 $tag = exec('git describe --tags --exact-match HEAD 2>/dev/null');
 ob_start();
 
-define('DIR', __DIR__);
 require_once DIR.'/build/Builder.php';
 require_once DIR.'/core/thirdparty/nazarpc/BananaHTML.php';
 require_once DIR.'/core/classes/h/Base.php';
