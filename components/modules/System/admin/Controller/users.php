@@ -460,7 +460,7 @@ trait users {
 							[
 								$L->group,
 								$L->label
-							].
+							],
 							[
 								h::{'input[name=permission[group]]'}(),
 								h::{'input[name=permission[label]]'}()
@@ -487,7 +487,7 @@ trait users {
 								'&nbsp;id&nbsp;',
 								$L->group,
 								$L->label
-							].
+							],
 							[
 								$rc[3],
 								h::input(
