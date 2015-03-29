@@ -15,6 +15,7 @@ use
 	cs\Language,
 	cs\Page,
 	cs\Permission,
+	cs\Route,
 	cs\Text,
 	cs\User,
 	h;
