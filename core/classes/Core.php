@@ -119,7 +119,6 @@ AddEncoding gzip .html
 					]
 				)
 			);
-			exit;
 		}
 		return file_get_json_nocomments(DIR.'/config/main.json');
 	}
