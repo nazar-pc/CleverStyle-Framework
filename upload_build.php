@@ -7,7 +7,8 @@
  * @license        MIT License, see license.txt
  */
 if (substr(PHP_VERSION, 0, 3) !== '5.6') {
-	exit("Distributive is uploaded only under PHP 5.6\n");
+	echo 'Distributive is uploaded only under PHP 5.6';
+	return;
 }
 define('DIR', __DIR__);
 
@@ -22,7 +23,7 @@ $on_master = in_array(
 	]
 );
 if (!$on_master) {
-	exit("Distributive is uploaded only when on master branch\n");
+	echo 'Distributive is uploaded only when on master branch';
 }
 /**
  * Check whether commit is tagged - if so - we are dealing with release
@@ -71,7 +72,8 @@ foreach ($themes as $theme) {
 
 if (ob_get_contents()) {
 	echo "Build failed:\n";
-	exit(ob_get_clean());
+	ob_end_flush();
+	return;
 }
 ob_end_clean();
 echo "Building finished, uploading to SourceForge...\n";

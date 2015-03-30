@@ -12,7 +12,8 @@ namespace cs;
  * but do not call any class to leave that all for test cases, and unregisters shutdown function
  */
 if (version_compare(PHP_VERSION, '5.4', '<')) {
-	exit('CleverStyle CMS require PHP 5.4 or higher');
+	echo 'CleverStyle CMS require PHP 5.4 or higher';
+	return;
 }
 /**
  * Time of start of execution, is used as current time

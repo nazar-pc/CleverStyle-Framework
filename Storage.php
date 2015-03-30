@@ -22,41 +22,55 @@ if (
 	$KEY  = substr($data['key'], 0, 32);
 	unset($data['key']);
 	if (md5(_json_encode($data).$STORAGE_USER.$STORAGE_PASSWORD) !== $KEY) {
-		exit;
+		return;
 	}
 } else {
-	exit;
+	return;
 }
 
 switch ($data['function']) {
 	default:
-		exit;
+		return;
 	case 'get_files_list':
-		exit(_json_encode(get_files_list($data['dir'], $data['mask'], $data['mode'], $data['prefix_path'], $data['subfolders'], $data['sort'], $data['exclusion'], $data['system_files'], null, $data['limit'])));
+		echo _json_encode(get_files_list($data['dir'], $data['mask'], $data['mode'], $data['prefix_path'], $data['subfolders'], $data['sort'], $data['exclusion'], $data['system_files'], null, $data['limit']));
+		return;
 	case 'file':
-		exit(_json_encode(file($data['filename'], $data['flags'])));
+		echo _json_encode(file($data['filename'], $data['flags']));
+		return;
 	case 'file_get_contents':
-		exit(file_get_contents($data['filename'], $data['flags'], null, $data['offset'], $data['maxlen']));
+		echo file_get_contents($data['filename'], $data['flags'], null, $data['offset'], $data['maxlen']);
+		return;
 	case 'file_put_contents':
-		exit(file_put_contents($data['filename'], $data['data'], $data['flags']));
+		echo file_put_contents($data['filename'], $data['data'], $data['flags']);
+		return;
 	case 'copy':
-		exit(copy($data['source'], $data['dest']));
+		echo copy($data['source'], $data['dest']);
+		return;
 	case 'unlink':
-		exit(unlink($data['filename']));
+		echo unlink($data['filename']);
+		return;
 	case 'file_exists':
-		exit(file_exists($data['filename']));
+		echo file_exists($data['filename']);
+		return;
 	case 'move_uploaded_file':
-		exit(copy($data['filename'], $data['destination']));
+		echo copy($data['filename'], $data['destination']);
+		return;
 	case 'rename':
-		exit(rename($data['oldname'], $data['newname']));
+		echo rename($data['oldname'], $data['newname']);
+		return;
 	case 'mkdir':
-		exit(mkdir($data['pathname']));
+		echo mkdir($data['pathname']);
+		return;
 	case 'rmdir':
-		exit(rmdir($data['dirname']));
+		echo rmdir($data['dirname']);
+		return;
 	case 'is_file':
-		exit(is_file($data['filename']));
+		echo is_file($data['filename']);
+		return;
 	case 'is_dir':
-		exit(is_dir($data['filename']));
+		echo is_dir($data['filename']);
+		return;
 	case 'test':
-		exit('OK');
+		echo 'OK';
+		return;
 }

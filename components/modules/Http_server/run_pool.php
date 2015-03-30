@@ -8,7 +8,8 @@
  */
 namespace cs\modules\Http_server;
 if (version_compare(PHP_VERSION, '5.4', '<')) {
-	exit('CleverStyle CMS require PHP 5.4 or higher');
+	echo 'CleverStyle CMS require PHP 5.4 or higher';
+	return;
 }
 
 /**
@@ -40,16 +41,15 @@ for ($i = 1; isset($argv[$i]); ++$i) {
 	}
 }
 if (!isset($port)) {
-	exit(
-	'Http server for CleverStyle CMS
+	echo 'Http server for CleverStyle CMS
 Usage: php components/modules/Http_server/run_server.php -p <port> [-a]
   -p - Is used to specify on which port server should listen for incoming connections, can be number, range or
        coma-separated number or range (8080. 8080-8081 or 8080,8081,9000-9005)
   -a - Prepare server for asynchronous processing (decrease system optimizations, but might
        be useful if other code will benefit from this), using asynchronous code without this
        option will result in unpredictable behavior
-'
-	);
+';
+	return;
 }
 
 $ports = [];

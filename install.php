@@ -7,7 +7,8 @@
  * @license        MIT License, see license.txt
  */
 if (version_compare(PHP_VERSION, '5.4', '<')) {
-	exit('CleverStyle CMS require PHP 5.4 or higher');
+	echo 'CleverStyle CMS require PHP 5.4 or higher';
+	return;
 }
 $cli = PHP_SAPI == 'cli';
 /**
@@ -110,8 +111,7 @@ if ($cli) {
 			$_POST['admin_password']
 		)
 	) {
-		exit(
-		'CleverStyle CMS installer
+		echo 'CleverStyle CMS installer
 Installer is used for installation of CleverStyle CMS and built-in components from distributive.
 Usage: php CleverStyle_CMS.phar.php
          -site_name <site_name>
@@ -157,8 +157,8 @@ Usage: php CleverStyle_CMS.phar.php
   -admin_password - Password of first administrator
 Example:
   php CleverStyle_CMS.phar.php -sn Web-site -su http://web.site -dn web.site -du web.site -dp pass -ae admin@web.site -ap pass
-'
-		);
+';
+		return;
 	} else {
 		if (!isset($_POST['db_engine'])) {
 			$_POST['db_engine'] = 'MySQLi';
@@ -184,7 +184,8 @@ Example:
 	return;
 }
 if (count(explode('/', $_SERVER['REQUEST_URI'])) > 3) {
-	exit('Installation into subdirectory is not supported!');
+	echo 'Installation into subdirectory is not supported!';
+	return;
 }
 header('Content-Type: text/html; charset=utf-8');
 header('Connection: close');

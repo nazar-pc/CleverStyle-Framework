@@ -9,7 +9,8 @@
 use
 	cs\modules\Http_server\Request;
 if (version_compare(PHP_VERSION, '5.4', '<')) {
-	exit('CleverStyle CMS require PHP 5.4 or higher');
+	echo 'CleverStyle CMS require PHP 5.4 or higher';
+	return;
 }
 /**
  * Time of start of execution, is used as current time
@@ -49,15 +50,14 @@ $http->on('request', function (\React\Http\Request $request, \React\Http\Respons
 	);
 });
 if (!isset($port)) {
-	exit(
-'Http server for CleverStyle CMS
+	echo 'Http server for CleverStyle CMS
 Usage: php components/modules/Http_server/run_server.php -p <port> [-a]
   -p - Is used to specify on which port server should listen for incoming connections
   -a - Prepare server for asynchronous processing (decrease system optimizations, but might
        be useful if other code will benefit from this), using asynchronous code without this
        option will result in unpredictable behavior
-'
-	);
+';
+	return;
 }
 $socket->listen($port);
 $loop->run();

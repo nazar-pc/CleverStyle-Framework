@@ -25,7 +25,8 @@
  * * or MariaDB 5.5+
  */
 if (version_compare(PHP_VERSION, '5.4', '<')) {
-	exit('CleverStyle CMS require PHP 5.4 or higher');
+	echo 'CleverStyle CMS require PHP 5.4 or higher';
+	return;
 }
 if (version_compare(PHP_VERSION, '5.5', '<')) {
 	trigger_error(

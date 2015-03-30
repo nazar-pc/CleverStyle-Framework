@@ -7,10 +7,12 @@
  * @license        MIT License, see license.txt
  */
 if (version_compare(PHP_VERSION, '5.4', '<')) {
-	exit('CleverStyle CMS require PHP 5.4 or higher');
+	echo 'CleverStyle CMS require PHP 5.4 or higher';
+	return;
 }
 if (!Phar::canWrite()) {
-	exit("CleverStyle CMS Builder can't work, set, please, \"phar.readonly=off\" option in \"php.ini\"\n");
+	echo "CleverStyle CMS Builder can't work, set, please, \"phar.readonly=off\" option in \"php.ini\"";
+	return;
 }
 define('DIR', __DIR__);
 require_once DIR.'/build/Builder.php';
