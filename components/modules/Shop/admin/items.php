@@ -19,16 +19,19 @@ function make_url ($arguments) {
 }
 
 function make_header ($title, $field) {
-	$order_by = @$_GET['order_by'] ?: 'id';
+	$order_by = @$_GET['order_by'] ?: 'created';
+	$icon     = $order_by == $field ? h::icon(@$_GET['asc'] ? 'caret-up' : 'caret-down') : '';
+	$asc      = $order_by == $field ? !@$_GET['asc'] : false;
 	return h::a(
-		"$title ".
-		($order_by == $field ? h::icon(@$_GET['asc'] ? 'caret-up' : 'caret-down') : ''),
+		"$title $icon",
 		[
-			'href' => make_url([
-				'order_by' => $field,
-				'asc'      => $order_by == $field ? !@$_GET['asc'] : false,
-				'page'     => 1
-			])
+			'href' => make_url(
+				[
+					'order_by' => $field,
+					'asc'      => $asc,
+					'page'     => 1
+				]
+			)
 		]
 	);
 }
