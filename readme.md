@@ -1,4 +1,6 @@
-[![Download CleverStyle CMS](https://img.shields.io/sourceforge/dt/cleverstyle-cms.svg)](https://sourceforge.net/projects/cleverstyle-cms/files/) [![Build Status](https://travis-ci.org/nazar-pc/CleverStyle-CMS.png?branch=master)](https://travis-ci.org/nazar-pc/CleverStyle-CMS)
+[![Download CleverStyle CMS](https://img.shields.io/sourceforge/dt/cleverstyle-cms.svg?label=Downloads)](https://sourceforge.net/projects/cleverstyle-cms/files/)
+[![SensioLabsInsight](https://img.shields.io/sensiolabs/i/eacdd55b-4a0e-4429-add5-e6a01adb12af.svg?label=SLInsight)](https://insight.sensiolabs.com/projects/eacdd55b-4a0e-4429-add5-e6a01adb12af)
+[![Build Status](https://img.shields.io/travis/nazar-pc/CleverStyle-CMS/master.svg?label=Travis CI)](https://travis-ci.org/nazar-pc/CleverStyle-CMS)
 # What is this?
 
 CleverStyle CMS is simple, scalable, and fast content management system.
