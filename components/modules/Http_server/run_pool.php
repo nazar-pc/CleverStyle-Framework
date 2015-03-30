@@ -6,6 +6,7 @@
  * @copyright Copyright (c) 2015, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
+namespace cs\modules\Http_server;
 if (version_compare(PHP_VERSION, '5.4', '<')) {
 	exit('CleverStyle CMS require PHP 5.4 or higher');
 }
@@ -54,6 +55,7 @@ Usage: php components/modules/Http_server/run_server.php -p <port> [-a]
 $ports = [];
 foreach (explode(',', $port) as $p) {
 	if (strpos($p, '-') !== false) {
+		/** @noinspection SlowArrayOperationsInLoopInspection */
 		$ports = array_merge($ports, call_user_func_array('range', explode('-', $p)));
 	} else {
 		$ports[] = $p;
