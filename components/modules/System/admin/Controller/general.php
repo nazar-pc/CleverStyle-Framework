@@ -112,34 +112,34 @@ trait general {
 						[
 							"$L->mcrypt:",
 							[
-								check_mcrypt() ? $L->on : $L->off.h::icon('info-sign', ['data-title' => $L->mcrypt_warning]),
+								extension_loaded('mcrypt') ? $L->on : $L->off.h::icon('info-sign', ['data-title' => $L->mcrypt_warning]),
 								[
-									'class' => self::state(check_mcrypt())
+									'class' => self::state(extension_loaded('mcrypt'))
 								]
 							]
 						],
 						[
 							"$L->curl_lib:",
 							[
-								$L->get(curl()),
+								$L->get(extension_loaded('curl')),
 								[
-									'class' => self::state(curl())
+									'class' => self::state(extension_loaded('curl'))
 								]
 							]
 						],
 						[
 							"$L->apc_module:",
 							[
-								$L->get(apc()),
+								$L->get(extension_loaded('apc')),
 								[
-									'class' => version_compare(PHP_VERSION, '5.5', '>=') ? false : self::state(apc())
+									'class' => version_compare(PHP_VERSION, '5.5', '>=') ? false : self::state(extension_loaded('apc'))
 								]
 							]
 						],
 						[
 							"$L->memcached_module:",
 							[
-								$L->get(memcached())
+								$L->get(extension_loaded('memcached'))
 							]
 						]
 					)

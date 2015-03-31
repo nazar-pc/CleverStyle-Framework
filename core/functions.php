@@ -315,38 +315,6 @@ function get_timezones_list () {
 	return $timezones;
 }
 /**
- * Check existence of mcrypt
- *
- * @return bool
- */
-function check_mcrypt () {
-	return extension_loaded('mcrypt');
-}
-/**
- * Check existence of curl library
- *
- * @return bool
- */
-function curl () {
-	return extension_loaded('curl');
-}
-/**
- * Check existence of apc module
- *
- * @return bool
- */
-function apc () {
-	return extension_loaded('apc');
-}
-/**
- * Check existence of memcache module
- *
- * @return bool
- */
-function memcached () {
-	return extension_loaded('memcached');
-}
-/**
  * Get multilingual value from $Config->core array
  *
  * @param string $item

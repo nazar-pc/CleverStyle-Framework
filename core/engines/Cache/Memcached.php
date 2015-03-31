@@ -15,7 +15,7 @@ class Memcached extends _Abstract {
 	protected $memcached           = false;
 	protected $root_versions_cache = [];
 	function __construct () {
-		if (!memcached()) {
+		if (!extension_loaded('memcached')) {
 			return;
 		}
 		$this->memcached = new \Memcached(DOMAIN);

@@ -36,7 +36,7 @@ class Encryption {
 	 * Detection of encryption support
 	 */
 	protected function construct () {
-		if ($this->encrypt_support = check_mcrypt()) {
+		if ($this->encrypt_support = extension_loaded('mcrypt')) {
 			$Core      = Core::instance();
 			$this->key = $Core->key;
 		}

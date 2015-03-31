@@ -13,7 +13,7 @@ class APC extends _Abstract {
 	protected $apc;
 	protected $root_versions_cache = [];
 	function __construct () {
-		$this->apc = apc();
+		$this->apc = extension_loaded('apc');
 	}
 	/**
 	 * @inheritdoc

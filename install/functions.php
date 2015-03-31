@@ -319,7 +319,7 @@ function install_process ($fs, $argv = null) {
 }'
 			)
 		);
-	apc() && apc_clear_cache('user');
+	extension_loaded('apc') && apc_clear_cache('user');
 	if (!$main_config) {
 		return "Can't write base system configuration! Installation aborted.";
 	}
