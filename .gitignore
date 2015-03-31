@@ -1,11 +1,6 @@
-#Do not commit IDE settings
-.idea
-#Do not commit installer builds
-*.phar.php
-#Do not commit fs.json files of components
-components/*/*/fs.json
-#Do not commit configuration
+# Do not commit configuration
 config/main.json
-#do not commit files from storage directory
+# Do not commit files from storage directory
 storage/*/*
+# Except .htaccess, which should be commited
 !storage/*/.htaccess
