@@ -511,7 +511,7 @@ trait packages_manipulation {
 	static protected function check_dependencies_also_provided_by ($new_meta, $existing_meta) {
 		$intersected_functionality = array_intersect($new_meta['provide'], $existing_meta['provide']);
 		if (!$intersected_functionality) {
-			return true;
+			return false;
 		}
 		$L    = Language::instance();
 		$Page = Page::instance();
@@ -522,7 +522,7 @@ trait packages_manipulation {
 				implode('", "', $intersected_functionality)
 			)
 		);
-		return false;
+		return true;
 	}
 	/**
 	 * Check whether other component is required and have satisfactory version
