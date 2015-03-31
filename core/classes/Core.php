@@ -41,7 +41,8 @@ class Core {
 <ifModule mod_headers.c>
 	Header always append X-Frame-Options DENY
 	Header set Content-Type application/octet-stream
-</ifModule>'
+</ifModule>
+'
 			);
 		}
 		if (!is_dir(CACHE)) {
@@ -74,7 +75,7 @@ AddEncoding gzip .html
 			@mkdir(TEMP, 0775);
 			file_put_contents(
 				TEMP.'/.htaccess',
-				'Allow From All'
+				"Allow From All\n"
 			);
 		}
 		/**
