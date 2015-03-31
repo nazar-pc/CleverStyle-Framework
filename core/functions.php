@@ -138,10 +138,7 @@ function interface_off () {
  * @return string
  */
 function __ ($item, $arguments = null, $_ = null) {
-	static $L;
-	if (!isset($L)) {
-		$L = Language::instance();
-	}
+	$L = Language::instance();
 	if (func_num_args() > 1) {
 		return $L->format($item, array_slice(func_get_args(), 1));
 	} else {
