@@ -189,8 +189,8 @@ class Builder {
 				return $this->get_component_files("$this->root/components/modules/$module", $components_files);
 			}
 		);
-		asort($modules);
-		$phar->addFromString('modules.json', _json_encode(array_values($modules)));
+		sort($modules);
+		$phar->addFromString('modules.json', _json_encode($modules));
 		/**
 		 * Add plugins that should be built-in into package
 		 */
@@ -200,7 +200,7 @@ class Builder {
 				return $this->get_component_files("$this->root/components/plugins/$plugin", $components_files);
 			}
 		);
-		asort($plugins);
+		sort($plugins);
 		$phar->addFromString('plugins.json', _json_encode($plugins));
 		/**
 		 * Add themes that should be built-in into package
@@ -212,8 +212,8 @@ class Builder {
 			}
 		);
 		$themes[] = 'CleverStyle';
-		asort($themes);
-		$phar->addFromString('themes.json', _json_encode(array_values($themes)));
+		sort($themes);
+		$phar->addFromString('themes.json', _json_encode($themes));
 		/**
 		 * Joining system and components files
 		 */
