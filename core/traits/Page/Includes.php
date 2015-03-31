@@ -491,6 +491,9 @@ trait Includes {
 		 */
 		$this->html_internal($includes['html'], 'file', true);
 	}
+	/**
+	 * @param Config $Config
+	 */
 	protected function add_includes_on_page_manually_added ($Config) {
 		foreach (['core_html', 'core_js', 'core_css', 'html', 'js', 'css'] as $type) {
 			foreach ($this->$type as &$elements) {

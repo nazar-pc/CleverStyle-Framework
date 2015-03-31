@@ -132,16 +132,14 @@ function interface_off () {
 /**
  * Easy getting of translations
  *
+ * After `$item` there can be any necessary number of arguments here, for instance __('item', 'val1', 'val2', 'val3')
+ *
  * @param string $item
- * @param mixed  $arguments There can be any necessary number of arguments here
  *
  * @return string
  */
-function __ ($item, $arguments = null) {
-	static $L;
-	if (!isset($L)) {
-		$L = Language::instance();
-	}
+function __ ($item) {
+	$L = Language::instance();
 	if (func_num_args() > 1) {
 		return $L->format($item, array_slice(func_get_args(), 1));
 	} else {
@@ -259,16 +257,16 @@ function format_filesize ($size, $round = false) {
 	$L		= Language::instance();
 	$unit	= '';
 	if($size >= 1099511627776) {
-		$size = $size / 1099511627776;
+		$size /= 1099511627776;
 		$unit = " $L->TB";
 	} elseif($size >= 1073741824) {
-		$size = $size / 1073741824;
+		$size /= 1073741824;
 		$unit = " $L->GB";
 	} elseif ($size >= 1048576) {
-		$size = $size / 1048576;
+		$size /= 1048576;
 		$unit = " $L->MB";
 	} elseif ($size >= 1024) {
-		$size = $size / 1024;
+		$size /= 1024;
 		$unit = " $L->KB";
 	} else {
 		$size = "$size $L->Bytes";
@@ -307,7 +305,8 @@ function get_timezones_list () {
 			$timezones[$tz['key']] = $tz['value'];
 		}
 		unset($timezones_, $tz);
-		if (class_exists('\\cs\\Cache', false) && isset($Cache) && $Cache) {
+		/** @noinspection NotOptimalIfConditionsInspection */
+		if (isset($Cache) && $Cache) {
 			$Cache->timezones = $timezones;
 		}
 	}
@@ -357,7 +356,7 @@ function get_core_ml_text ($item) {
 	if (!$Config) {
 		return false;
 	}
-	return Text::instance()->process($Config->module('System')->db('texts'), $Config->core[$item], true, true);
+	return Text::instance()->process($Config->module('System')->db('texts'), $Config->core[$item], true);
 }
 /**
  * Pages navigation based on links
@@ -691,6 +690,7 @@ function functionality ($functionality) {
 			if (!isset($meta['provide'])) {
 				continue;
 			}
+			/** @noinspection SlowArrayOperationsInLoopInspection */
 			$functionality	= array_merge(
 				$functionality,
 				(array)$meta['provide']
@@ -705,6 +705,7 @@ function functionality ($functionality) {
 			if (!isset($meta['provide'])) {
 				continue;
 			}
+			/** @noinspection SlowArrayOperationsInLoopInspection */
 			$functionality	= array_merge(
 				$functionality,
 				(array)$meta['provide']

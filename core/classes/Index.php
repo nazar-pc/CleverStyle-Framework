@@ -368,6 +368,11 @@ class Index {
 		$this->controller_router_handler_internal($controller_class, $method_name, $required);
 		return !error_code();
 	}
+	/**
+	 * @param string $controller_class
+	 * @param string $method_name
+	 * @param bool   $required
+	 */
 	protected function controller_router_handler_internal ($controller_class, $method_name, $required) {
 		$included =
 			method_exists($controller_class, $method_name) &&
