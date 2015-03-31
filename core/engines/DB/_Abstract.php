@@ -107,11 +107,10 @@ abstract class _Abstract {
 				$params = (array)$params;
 				break;
 		}
-		if (!empty($params)) {
-			foreach ($params as &$param) {
-				$param = $this->s($param, false);
-			}
+		foreach ($params as &$param) {
+			$param = $this->s($param, false);
 		}
+		unset($param);
 		if (is_array($query) && !empty($query)) {
 			$time_from = microtime(true);
 			foreach ($query as &$q) {
