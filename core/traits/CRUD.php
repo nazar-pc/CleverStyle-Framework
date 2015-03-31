@@ -96,7 +96,7 @@ trait CRUD {
 						 * @var string $format
 						 */
 						$allowed_arguments = explode(',', $format);
-						if (array_search($argument, $allowed_arguments) === false) {
+						if (!in_array($argument, $allowed_arguments)) {
 							$argument = $allowed_arguments[0];
 						}
 						break;
@@ -104,6 +104,7 @@ trait CRUD {
 				/**
 				 * If field is multilingual - handle multilingual storing of value automatically
 				 */
+				/** @noinspection NotOptimalIfConditionsInspection */
 				if ($multilingual && isset($this->data_model_ml_group) && $this->data_model_ml_group) {
 					if ($id !== false) {
 						$argument = Text::instance()->set($this->cdb(), "$this->data_model_ml_group/$item", $id, $argument);
@@ -195,7 +196,9 @@ trait CRUD {
 		/**
 		 * If there are multilingual fields - handle multilingual getting of fields automatically
 		 */
+		/** @noinspection NotOptimalIfConditionsInspection */
 		if ($data && isset($this->data_model_ml_group) && $this->data_model_ml_group) {
+			/** @noinspection ForeachOnArrayComponentsInspection */
 			foreach (array_keys($this->data_model) as $field) {
 				if (strpos($this->data_model[$field], 'ml:') === 0) {
 					$data[$field] = Text::instance()->process($this->cdb(), $data[$field], true);
@@ -283,6 +286,7 @@ trait CRUD {
 			 * If there are multilingual fields - handle multilingual deleting of fields automatically
 			 */
 			if ($multilingual) {
+				/** @noinspection ForeachOnArrayComponentsInspection */
 				foreach (array_keys($this->data_model) as $field) {
 					if (strpos($this->data_model[$field], 'ml:') === 0) {
 						Text::instance()->del($this->cdb(), "$this->data_model_ml_group/$field", $i);

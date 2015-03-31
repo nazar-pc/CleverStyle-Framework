@@ -132,14 +132,17 @@ function interface_off () {
 /**
  * Easy getting of translations
  *
- * After `$item` there can be any necessary number of arguments here, for instance __('item', 'val1', 'val2', 'val3')
- *
  * @param string $item
+ * @param mixed  $arguments There can be any necessary number of arguments here
+ * @param mixed  $_
  *
  * @return string
  */
-function __ ($item) {
-	$L = Language::instance();
+function __ ($item, $arguments = null, $_ = null) {
+	static $L;
+	if (!isset($L)) {
+		$L = Language::instance();
+	}
 	if (func_num_args() > 1) {
 		return $L->format($item, array_slice(func_get_args(), 1));
 	} else {

@@ -119,6 +119,7 @@ class Superglobals_wrapper implements ArrayAccess, Iterator {
 		/**
 		 * Workaround with checking for object is for HHVM
 		 */
+		return is_object($this->requests[$request_id]) ? $this->requests[$request_id]->rewind() : reset($this->requests[$request_id]);
 	}
 	function __get ($index) {
 		$request_id = get_request_id();
