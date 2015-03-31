@@ -19,16 +19,16 @@ $on_master = in_array(
 	trim(file_get_contents(DIR.'/.git/HEAD')),
 	[
 		'ref: refs/heads/master',
-		trim(file_get_contents(DIR.'/.git/refs/heads/master'))
+		trim(@file_get_contents(DIR.'/.git/refs/heads/master'))
 	]
 );
-if (!$on_master) {
-	echo 'Distributive is uploaded only when on master branch';
-}
 /**
  * Check whether commit is tagged - if so - we are dealing with release
  */
 $tag = exec('git describe --tags --exact-match HEAD 2>/dev/null');
+if (!$on_master && !$tag) {
+	echo 'Distributive is uploaded only when on master branch or releases';
+}
 echo "Building packages...\n";
 ob_start();
 
@@ -80,11 +80,7 @@ echo "Building finished, uploading to SourceForge...\n";
 
 exec('openssl enc -d -aes-256-cbc -in id_rsa.enc -out id_rsa -pass env:KEYPASS 2>/dev/null');
 chmod(DIR.'/id_rsa', 0600);
+$target_directory = $tag ? "stable/$tag" : 'nightly';
 system(
-	"rsync -e 'ssh -o StrictHostKeyChecking=no -i id_rsa -o UserKnownHostsFile=/dev/null' --compress --delete --recursive --progress dist/ nazar-pc@frs.sourceforge.net:/home/frs/project/cleverstyle-cms/nightly/"
+	"rsync -e 'ssh -o StrictHostKeyChecking=no -i id_rsa -o UserKnownHostsFile=/dev/null' --compress --delete --recursive --progress dist/ nazar-pc@frs.sourceforge.net:/home/frs/project/cleverstyle-cms/$target_directory/"
 );
-if ($tag) {
-	system(
-		"rsync -e 'ssh -o StrictHostKeyChecking=no -i id_rsa -o UserKnownHostsFile=/dev/null' --compress --delete --recursive --progress dist/ nazar-pc@frs.sourceforge.net:/home/frs/project/cleverstyle-cms/stable/$tag/"
-	);
-}
