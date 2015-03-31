@@ -152,9 +152,9 @@ Possible partial compatibility breaking (very unlikely, but still possible):
 * `\cs\Config::update_clangs()` method removed
 * `\cs\Language::reload_core_config()` method removed
 * Encryption improvement, but will not be able to decode old encrypted data (not likely to have big impact):
- * Initial vector is random and returned with encrypted data
- * Blowfish changed in favor of Twofish
- * Good random key generated on installation with the help of `openssl_random_pseudo_bytes()`
+  * Initial vector is random and returned with encrypted data
+  * Blowfish changed in favor of Twofish
+  * Good random key generated on installation with the help of `openssl_random_pseudo_bytes()`
 * `\cs\User::get_session_user()` refactored to `::load_session()` which much better explains what function actually do
 
 Latest builds on [downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
@@ -214,23 +214,23 @@ New components:
 
 New features:
 * New events:
- * admin/System/components/modules/update/prepare
- * admin/System/components/modules/update_system/prepare
- * admin/System/components/modules/enable/prepare
- * admin/System/components/modules/disable/prepare
- * admin/System/components/modules/update/process/before
- * admin/System/components/modules/update/process/after
- * admin/System/components/modules/update_system/process/before
- * admin/System/components/modules/update_system/process/after
- * admin/System/components/modules/enable/process
- * admin/System/components/modules/disable/process
- * admin/System/components/plugins/update/prepare
- * admin/System/components/plugins/enable/prepare
- * admin/System/components/plugins/disable/prepare
- * admin/System/components/plugins/enable/process
- * admin/System/components/plugins/disable/process
- * admin/System/components/plugins/update/process/before
- * admin/System/components/plugins/update/process/before 
+  * admin/System/components/modules/update/prepare
+  * admin/System/components/modules/update_system/prepare
+  * admin/System/components/modules/enable/prepare
+  * admin/System/components/modules/disable/prepare
+  * admin/System/components/modules/update/process/before
+  * admin/System/components/modules/update/process/after
+  * admin/System/components/modules/update_system/process/before
+  * admin/System/components/modules/update_system/process/after
+  * admin/System/components/modules/enable/process
+  * admin/System/components/modules/disable/process
+  * admin/System/components/plugins/update/prepare
+  * admin/System/components/plugins/enable/prepare
+  * admin/System/components/plugins/disable/prepare
+  * admin/System/components/plugins/enable/process
+  * admin/System/components/plugins/disable/process
+  * admin/System/components/plugins/update/process/before
+  * admin/System/components/plugins/update/process/before 
 * Http server and WebSockets modules now depends on Composer module and does not include dependencies inside!
 
 Updates:
@@ -248,17 +248,17 @@ Fixes and small improvements:
 * Do not change working directory in Local storage engine
 * Photo gallery: Small fix in Photo gallery when all images failed to upload
 * Constants renamed:
- * STORAGE -> PUBLIC_STORAGE
- * PCACHE -> PUBLIC_CACHE
+  * STORAGE -> PUBLIC_STORAGE
+  * PCACHE -> PUBLIC_CACHE
 * Constants added:
- * STORAGE (now points to /storage)
+  * STORAGE (now points to /storage)
 
 Deprecations:
 * Deprecated events (use newer instead):
- * admin/System/components/modules/enable
- * admin/System/components/modules/disable
- * admin/System/components/plugins/enable
- * admin/System/components/plugins/disable
+  * admin/System/components/modules/enable
+  * admin/System/components/modules/disable
+  * admin/System/components/plugins/enable
+  * admin/System/components/plugins/disable
 
 Possible partial compatibility breaking (very unlikely, but still possible):
 * PCACHE and STORAGE constants renamed to new names, STORAGE constant now points to another directory (not likely to cause any problems)
@@ -267,7 +267,7 @@ Latest builds on [downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wi
 
 # 1.88.4+build-938: Better consistency in routing and improved security
 
-Major change in this release happening to routing. `\cs\Route` class introduced and now covers all routing functionality instead having part of it in `\cs\Config` and `\cs\Index` classes. Though, complete backward compatibility is present and will be kept until 2.0.
+Major change in this release happening to routing. `\cs\Route` class introduced and now covers all routing functionality instead of having part of it in `\cs\Config` and `\cs\Index` classes. Though, complete backward compatibility is present and will be kept until 2.0.
 
 This is the last or pre-last release before 2.0, be sure to keep your components up to date for easy and smooth upgrade to next major release!
 
@@ -278,13 +278,13 @@ New features:
 * Planned transition to Controller-based routing in System module
 * Big amount of code duplication removed using new generic methods for packages installation, updating and removal
 * New events:
- * System/Route/pre_routing_replace
- * System/Route/routing_replace
+  * System/Route/pre_routing_replace
+  * System/Route/routing_replace
 
 Updates:
 * New upstream version of TinyMCE:
- * new plugin `colorpicker` now included
- * table styling since now will be done with css rather than with attributes
+  * new plugin `colorpicker` now included
+  * table styling since now will be done with css rather than with attributes
 * New upstream version of UPF (also with security improvements)
 
 Fixes and small improvements:
@@ -309,10 +309,116 @@ Deprecations:
 * `\cs\Index::$route_path` property
 * `\cs\Index::$route_ids` property
 * Deprecated events (use newer instead):
- * System/Config/pre_routing_replace
- * System/Config/routing_replace
+  * System/Config/pre_routing_replace
+  * System/Config/routing_replace
 
 Possible partial compatibility breaking (very unlikely, but still possible):
 * None
 
 Latest builds on [downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
+
+# 1.110.0+build-985: Bitcoin payment, automated builds and lots of polishing all over the place
+
+Major change in this release happening to session management. `\cs\Session` class introduced and now covers all session management functionality instead of having everything in still large `\cs\User` class. Though, complete backward compatibility is present and will be kept until 2.0.
+
+Also this release brings new module Blockchain payment, this is actually first payment module, it integrates nicely with Shop module and any other if needed, and allows to accept payments in Bitcoin!
+
+This is not all yet, now all builds are automatic! This means that all stable builds will be kept as long, as you need them, also bleeding edge nightly builds are prepared after each commit just for you!
+
+One more thing here - if you are using PHP 5.5 - it is encouraged to upgrade to 5.5 or even better 5.6, because 5.4 support will be dropped in 2.0 release together with all deprecated functionality.
+
+Look at [SourceForge downloads page](https://sourceforge.net/projects/cleverstyle-cms/files/).
+
+This is the last or pre-last release before 2.0, be sure to keep your components up to date for easy and smooth upgrade to next major release!
+Update to 2.0 will be available only from 1.110.0+, update older releases to 1.110 before moving forward!
+
+New components:
+* New **Blockchain payment** module, pay for anything in Bitcoin
+
+New features:
+* Shop: Notion of currency added to Shop module
+* New events:
+  * System/Config/init/before
+  * System/Config/init/after
+  * System/Session/init/before
+  * System/Session/init/after
+  * System/Session/del/before
+  * System/Session/del/after
+  * System/Session/del_all
+* Now it is possible to use `.cs-table-*` classes in addition to custom elements with the same name
+* Since now after each commit new builds will be published on SourceForge
+
+Updates:
+* New upstream version of BananaHTML
+* New upstream version of WebComponents.js, thankfully, no patches needed this time
+* New upstream version of UIkit
+* New upstream version of UPF:
+  * Do not allow custom elements (with dash in name or regular elements with `is` property)
+
+Fixes and small improvements:
+* Throwing deprecated error on PHP 5.4 with recommendation to update to 5.5+
+* Run Travis CI tests on PHP 7, nightly builds currently, to be ready when it will be released officially as stable
+* Shop: Some events now passes `currency` together with other arguments in order to provide better context
+* Fix for `cs.config` when passing array there
+* Shop: Do not show "Pay now" for cash payment method
+* Shop: Additional parameter in payment confirmation event - callback, to avoid redirects when it is not desirable
+* Shop: Repeated payment confirmation will have no effect, so can be freely executed as many times as needed
+* Shop: Fix for "Pay later" button didn't work
+* Shop: Fix for bug when after successful payment order status didn't change (paid property worked fine)
+* Shop: Fix for wrong recalculation of available units
+* Big changes again: `\cs\Session` class introduced, all session-related work moved from `\cs\User` to new class
+* User-specific settings processing moved to event handler instead of doing it in session object
+* System core and components switched to using `\cs\Session` for session-related things and it's events
+* Http server: Http server updated according to new structure of System core
+* `release-notes.md` added in oder to avoid relying purely on GitHub releases
+* Http server: Disable memory cache for `\cs\User` class under http server
+* Hugely refactored, simplified and improved dependencies check
+* Now dependency check will account conflicts in both sides, not only from side of package that is going to be installed
+* `package` item in some modules updated to reflect real name of package directory
+* Fix for inclusion multiple inline Web Components
+* Inline scripts inclusion placed near file includes (placement depends on configuration)
+* Support of new `meta.json` option for hiding module in main menu
+* Do not use `/dir` file in module/plugin/theme distributive package, use `package` from `meta.json` file instead, but still keep file until 2.0 for backward compatibility
+* Force Travis CI to use container-based infrastructure
+* Build scripts moved info single class
+* DarkEnergy theme doesn't have hardcoded copyright anymore, `<!--bottom_blocks-->` might be used to specify it instead, also `<!--top_blocks-->` might be used to customize header
+* Do not use `/version` file in system core package anymore, keep for backward compatibility till 2.0
+* `meta.json` added to system core package root
+* Significantly faster build creation
+* Allowed building multiple modules, plugins and themes at once in corresponding mode
+* Fix for admin page not opening because of missing `\cs\Route` class import
+* Fixed forms for permissions addition and editing
+* Http server: Move some code in Http_server module into namespace
+* Actually no need for `exit` in Core class
+* Get rid of `exit`, we can actually replace them with `echo` + `return` statements
+* Files permissions updated
+* SensioLabInsight badge added, existing renamed and switched to SVG
+* Fix for incorrect detection of other components that provides the same functionality
+* Some tweaks suggested by SensioLabsInsight
+* `\cs\Language` instance caching removed from `__()` function
+* User-specific directories removed from .gitignore
+* Multiple unused variables removed
+* Multiple unused `use` statements removed
+* Photo gallery: Fix for potential bug with images deletion in Photo gallery module
+* `\cs\Mail` class refactoring
+* Avoid using `goto` in `\cs\Session`
+* Refactoring of `\cs\DB\MySQLi`
+* LOTS of smaller fixes all over the place
+
+Deprecations:
+* Deprecated events (use newer instead):
+  * System/Config/before_init
+  * System/Config/after_init
+  * System/User/del_session/before
+  * System/User/del_session/after
+  * System/User/del_all_sessions
+
+Possible partial compatibility breaking (very unlikely, but still possible):
+* Set of functions removed from global namespace because were used in one or two places only, and there was no need to add them into global namespace.
+  Removed functions:
+  * check_mcrypt
+  * curl
+  * apc
+  * memcached
+
+Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
