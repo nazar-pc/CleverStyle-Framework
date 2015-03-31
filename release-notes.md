@@ -325,7 +325,7 @@ Also this release brings new module Blockchain payment, this is actually first p
 
 This is not all yet, now all builds are automatic! This means that all stable builds will be kept as long, as you need them, also bleeding edge nightly builds are prepared after each commit just for you!
 
-One more thing here - if you are using PHP 5.5 - it is encouraged to upgrade to 5.5 or even better 5.6, because 5.4 support will be dropped in 2.0 release together with all deprecated functionality.
+One more thing here - if you are using PHP 5.4 - it is encouraged to upgrade to 5.5 or even better 5.6, because 5.4 support will be dropped in 2.0 release together with all deprecated functionality.
 
 Look at [SourceForge downloads page](https://sourceforge.net/projects/cleverstyle-cms/files/).
 
