@@ -36,7 +36,7 @@ $Index->content(
 			$L->action
 		]).
 		h::{'cs-table-row| cs-table-cell'}(array_map(
-			function ($item) use ($L, $Index) {
+			function ($item) use ($L) {
 				return [
 					$item['key'],
 					$item['title'],

@@ -79,7 +79,7 @@ $Page->content(
 		).
 		h::{'tr.cs-table-row'}(
 			array_map(
-				function ($transaction) use ($L, $Language, $Transactions) {
+				function ($transaction) use ($L, $Language) {
 					$created   = $transaction['created']
 						? $L->to_locale(
 							date($Language->{TIME - $transaction['created'] < 24 * 3600 ? '_time' : '_datetime_long'}, $transaction['created'])

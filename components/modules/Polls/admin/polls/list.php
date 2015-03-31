@@ -24,7 +24,7 @@ $Index->content(
 			$L->action
 		],
 		array_map(
-			function ($poll) use ($Index, $L) {
+			function ($poll) use ($L) {
 				return [
 					$poll['title'],
 					h::{'a.uk-button'}(

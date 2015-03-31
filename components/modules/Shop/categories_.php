@@ -63,7 +63,7 @@ if ($page == 1 && @$categories_tree[$current_category]) {
 				]
 			).
 			h::{'#description'}($category['description'] ?: false).
-			h::{'section#nested article[is=cs-shop-category-nested]'}(array_map(function ($category) use ($L, $all_categories, $module_path, $categories_path) {
+			h::{'section#nested article[is=cs-shop-category-nested]'}(array_map(function ($category) use ($all_categories, $module_path, $categories_path) {
 				$category = $all_categories[$category];
 				return
 					h::{'img#img'}([

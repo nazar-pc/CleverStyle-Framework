@@ -352,7 +352,7 @@ class Blogs {
 					function ($tag) use ($id, $L) {
 						return "($id, $tag, '$L->clang')";
 					},
-					$processed = $this->process_tags($tags)
+					$this->process_tags($tags)
 				)
 			)
 		);

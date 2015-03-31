@@ -174,7 +174,7 @@ class User {
 		 */
 		$key_data = Key::instance()->get(
 			$Config->module('System')->db('keys'),
-			$key = array_slice($rc, -1)[0],
+			array_slice($rc, -1)[0],
 			true
 		);
 		if (!is_array($key_data)) {

@@ -37,7 +37,6 @@ Event::instance()
 				foreach ($categories as $category) {
 					if (isset($structure['categories'][$category])) {
 						$structure				= $structure['categories'][$category];
-						$path[]					= $structure['path'];
 					}
 				}
 				unset($category);
