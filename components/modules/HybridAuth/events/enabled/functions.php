@@ -13,9 +13,6 @@ use
 	cs\Cache,
 	cs\Config,
 	cs\DB,
-	cs\Event,
-	cs\Language,
-	cs\Page,
 	cs\Session,
 	cs\User;
 /**
@@ -38,7 +35,7 @@ function get_user_contacts ($user) {
 	}
 	return $Cache->get(
 		"HybridAuth/contacts/$user",
-		function () use ($user) {
+		function () use ($user, $Config) {
 			/**
 			 * @var \cs\DB\_Abstract $cdb
 			 */

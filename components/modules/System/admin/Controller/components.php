@@ -9,7 +9,6 @@
  */
 namespace cs\modules\System\admin\Controller;
 use
-	cs\Cache,
 	cs\Config,
 	cs\Core,
 	cs\Event,

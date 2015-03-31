@@ -10,7 +10,6 @@
 namespace	cs\modules\HybridAuth;
 use
 	h,
-	cs\Cache,
 	cs\Config,
 	cs\DB,
 	cs\Event,

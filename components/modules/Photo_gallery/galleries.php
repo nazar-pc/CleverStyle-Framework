@@ -8,9 +8,9 @@
  */
 namespace cs\modules\Photo_gallery;
 
-use            h,
+use
+	h,
 	cs\Config,
-	cs\DB,
 	cs\Index,
 	cs\Language,
 	cs\Page,

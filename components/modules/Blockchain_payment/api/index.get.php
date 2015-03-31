@@ -8,7 +8,6 @@
  */
 namespace cs\modules\Blockchain_payment;
 use
-	cs\Config,
 	cs\Language,
 	cs\Page,
 	cs\Route,

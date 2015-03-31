@@ -9,12 +9,10 @@
 namespace cs\modules\Polls;
 
 use
-	cs\Config,
 	cs\Index,
 	cs\Language\Prefix,
 	cs\Page,
 	cs\Route,
-	cs\User,
 	h;
 
 $Index               = Index::instance();

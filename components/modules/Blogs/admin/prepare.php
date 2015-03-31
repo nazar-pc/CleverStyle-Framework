@@ -6,13 +6,13 @@
  * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-namespace	cs\modules\Blogs;
-use			h,
-			cs\Config,
-			cs\DB,
-			cs\Language,
-			cs\Page,
-			cs\User;
+namespace cs\modules\Blogs;
+use
+	h,
+	cs\Config,
+	cs\DB,
+	cs\Language,
+	cs\User;
 function get_sections_rows ($structure = null, $level = 0, &$content = null) {
 	$L			= Language::instance();
 	$root		= false;

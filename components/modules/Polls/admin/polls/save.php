@@ -9,7 +9,6 @@
 namespace cs\modules\Polls;
 
 use
-	cs\Config,
 	cs\Index;
 
 $Index   = Index::instance();

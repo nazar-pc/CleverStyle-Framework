@@ -8,8 +8,7 @@
  */
 namespace cs\modules\Composer;
 use
-	cs\Event,
-	cs\Page;
+	cs\Event;
 Event::instance()
 	->on('admin/System/components/modules/uninstall/process', function ($data) {
 		if ($data['name'] == 'Composer') {

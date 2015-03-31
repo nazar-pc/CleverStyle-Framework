@@ -10,8 +10,6 @@ namespace cs\modules\Polls;
 
 use
 	cs\Cache,
-	cs\Config,
-	cs\DB,
 	cs\Event,
 	cs\User;
 

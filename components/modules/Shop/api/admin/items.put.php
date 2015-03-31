@@ -8,7 +8,6 @@
  */
 namespace cs\modules\Shop;
 use
-	cs\Page,
 	cs\Route;
 
 $Route = Route::instance();

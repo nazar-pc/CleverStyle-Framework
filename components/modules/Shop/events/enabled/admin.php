@@ -8,7 +8,6 @@
  */
 namespace cs\modules\Shop;
 use
-	cs\Config,
 	cs\Event,
 	cs\Language\Prefix,
 	cs\Menu,

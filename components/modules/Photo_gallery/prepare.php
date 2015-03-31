@@ -9,7 +9,6 @@
 namespace cs\modules\Photo_gallery;
 
 use
-	cs\DB,
 	cs\Language,
 	cs\Page,
 	cs\User;

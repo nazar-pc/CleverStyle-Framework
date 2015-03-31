@@ -8,7 +8,6 @@
  */
 namespace	cs\modules\Photo_gallery;
 use
-	cs\Config,
 	cs\Page,
 	cs\User;
 if (!User::instance()->user()) {

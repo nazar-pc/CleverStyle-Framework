@@ -9,7 +9,6 @@
 namespace	cs\modules\Photo_gallery;
 use
 	h,
-	cs\DB,
 	cs\Index,
 	cs\Language,
 	cs\Page,

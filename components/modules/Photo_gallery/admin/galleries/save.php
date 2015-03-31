@@ -7,8 +7,8 @@
  * @license		MIT License, see license.txt
  */
 namespace	cs\modules\Photo_gallery;
-use			cs\Config,
-			cs\Index;
+use
+	cs\Index;
 $Index			= Index::instance();
 $Photo_gallery	= Photo_gallery::instance();
 if (isset($_POST['add'])) {

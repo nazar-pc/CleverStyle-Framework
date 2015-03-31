@@ -17,7 +17,6 @@ use
 	cs\Language,
 	cs\Page,
 	cs\Session,
-	cs\User,
 	h;
 
 trait general {

@@ -9,7 +9,6 @@
 namespace cs\modules\Shop;
 use
 	h,
-	cs\Config,
 	cs\Language,
 	cs\Language\Prefix,
 	cs\Page,

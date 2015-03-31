@@ -8,7 +8,6 @@
  */
 namespace cs\modules\Blockchain_payment;
 use
-	cs\Config,
 	cs\Event,
 	cs\Language\Prefix,
 	cs\Menu,

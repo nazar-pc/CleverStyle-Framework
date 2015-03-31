@@ -1,7 +1,7 @@
 {
 	"package"		: "Static_pages",
 	"category"		: "modules",
-	"version"		: "0.056.1+build-62",
+	"version"		: "0.056.2+build-63",
 	"description"	: "Creating of simple static pages with categories",
 	"author"		: "Nazar Mokrynskyi",
 	"website"		: "cleverstyle.org/cms",

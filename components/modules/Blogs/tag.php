@@ -9,7 +9,6 @@
 namespace cs\modules\Blogs;
 use            h,
 	cs\Config,
-	cs\DB,
 	cs\Event,
 	cs\Index,
 	cs\Language,

@@ -9,7 +9,6 @@
 namespace cs\modules\Blockchain_payment;
 use
 	h,
-	cs\Config,
 	cs\Index,
 	cs\Language,
 	cs\Language\Prefix,

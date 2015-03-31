@@ -8,10 +8,8 @@
  */
 namespace cs\modules\Polls;
 use
-	cs\Config,
 	cs\Index,
 	cs\Language\Prefix,
-	cs\User,
 	h;
 $Index			= Index::instance();
 $L				= new Prefix('polls_');

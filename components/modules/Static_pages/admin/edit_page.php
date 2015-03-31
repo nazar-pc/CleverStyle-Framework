@@ -9,7 +9,6 @@
 namespace	cs\modules\Static_pages;
 use
 	h,
-	cs\Config,
 	cs\Index,
 	cs\Language,
 	cs\Page,

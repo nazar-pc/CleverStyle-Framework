@@ -12,7 +12,6 @@
 use
 	cs\Cache,
 	cs\Config,
-	cs\DB,
 	cs\Index,
 	cs\Language,
 	cs\Page,

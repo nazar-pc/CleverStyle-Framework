@@ -11,7 +11,6 @@ use
 	cs\Config,
 	cs\Event,
 	cs\Language\Prefix,
-	cs\Page,
 	cs\Route,
 	cs\User;
 $Config = Config::instance();
