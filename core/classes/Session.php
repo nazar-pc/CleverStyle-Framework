@@ -452,7 +452,6 @@ class Session {
 		 * Load user data
 		 * Return point, runs if user is blocked, inactive, or disabled
 		 */
-		getting_user_data:
 		$data = User::instance()->get(
 			[
 				'login',
@@ -468,45 +467,41 @@ class Session {
 		if (is_array($data)) {
 			$L    = Language::instance();
 			$Page = Page::instance();
-			if ($data['status'] != User::STATUS_ACTIVE) {
-				if ($data['status'] == User::STATUS_INACTIVE) {
+			switch ($data['status']) {
+				case User::STATUS_INACTIVE:
 					/**
 					 * If user is disabled
 					 */
 					$Page->warning($L->your_account_disabled);
 					/**
-					 * Mark user as guest, load data again
+					 * Create guest session
 					 */
-					$user = User::GUEST_ID;
-					goto getting_user_data;
-				} else {
+					return $this->add(User::GUEST_ID);
+				case User::STATUS_NOT_ACTIVATED:
 					/**
 					 * If user is not active
 					 */
 					$Page->warning($L->your_account_is_not_active);
 					/**
-					 * Mark user as guest, load data again
+					 * Create guest session
 					 */
-					$user = User::GUEST_ID;
-					goto getting_user_data;
-				}
-			} elseif ($data['block_until'] > time()) {
+					return $this->add(User::GUEST_ID);
+			}
+			if ($data['block_until'] > time()) {
 				/**
 				 * If user if blocked
 				 */
 				$Page->warning($L->your_account_blocked_until.' '.date($L->_datetime, $data['block_until']));
 				/**
-				 * Mark user as guest, load data again
+				 * Create guest session
 				 */
-				$user = User::GUEST_ID;
-				goto getting_user_data;
+				return $this->add(User::GUEST_ID);
 			}
-		} elseif ($this->user_id != User::GUEST_ID) {
+		} else {
 			/**
-			 * If data was not loaded - mark user as guest, load data again
+			 * If data was not loaded - create guest session
 			 */
-			$user = User::GUEST_ID;
-			goto getting_user_data;
+			return $this->add(User::GUEST_ID);
 		}
 		unset($data);
 		$Config = Config::instance();
