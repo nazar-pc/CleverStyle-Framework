@@ -329,7 +329,7 @@ One more thing here - if you are using PHP 5.5 - it is encouraged to upgrade to 
 
 Look at [SourceForge downloads page](https://sourceforge.net/projects/cleverstyle-cms/files/).
 
-This is the last or pre-last release before 2.0, be sure to keep your components up to date for easy and smooth upgrade to next major release!
+This is the last release before 2.0, be sure to keep your components up to date for easy and smooth upgrade to next major release!
 Update to 2.0 will be available only from 1.110.0+, update older releases to 1.110 before moving forward!
 
 New components:
