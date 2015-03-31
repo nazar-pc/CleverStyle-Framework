@@ -82,28 +82,13 @@ class Mail extends PHPMailer {
 	 * @return bool
 	 */
 	function send_to ($email, $subject, $body, $body_text = null, $attachments = null, $reply_to = null, $signature = true) {
-		if (empty($email) || empty($subject) || empty($body)) {
+		if (!$email || !$subject || !$body) {
 			return false;
 		}
-		if (is_array($email)) {
-			if (count($email) == 2) {
-				$this->AddAddress($email[0], $email[1]);
-			} else {
-				foreach ($email as $m) {
-					if (is_array($m)) {
-						$this->AddAddress($m[0], $m[1]);
-					} else {
-						$this->AddAddress($m);
-					}
-				}
-			}
-		} else {
-			$email	= _trim(explode(',', $email));
-			foreach ($email as $e) {
-				$this->AddAddress($e);
-			}
-			unset($e, $email);
+		foreach ($this->normalize_email($email) as $e) {
+			$this->addAddress($e[0], $e[1]);
 		}
+		unset($e);
 		$this->Subject = $subject;
 		if ($signature === true) {
 			if ($signature = get_core_ml_text('mail_signature')) {
@@ -133,25 +118,39 @@ class Mail extends PHPMailer {
 		} elseif (is_string($attachments)) {
 			$this->AddStringAttachment($attachments, pathinfo($attachments, PATHINFO_FILENAME));
 		}
-		if (is_array($reply_to)) {
-			if (count($reply_to) == 2) {
-				$this->AddReplyTo($reply_to[0], $reply_to[1]);
-			} else {
-				foreach ($reply_to as $r) {
-					if (is_array($r)) {
-						$this->AddReplyTo($r[0], $r[1]);
-					} else {
-						$this->AddReplyTo($r);
-					}
-				}
-			}
-		} elseif (is_string($reply_to)) {
-			$this->AddReplyTo($reply_to);
+		foreach ($this->normalize_email($reply_to) as $r) {
+			$this->AddReplyTo($r[0], $r[1]);
 		}
+		unset($r);
 		$result = $this->Send();
 		$this->ClearAddresses();
 		$this->ClearAttachments();
 		$this->ClearReplyTos();
 		return $result;
+	}
+	/**
+	 * @param string $email
+	 *
+	 * @return string[][]
+	 */
+	protected function normalize_email ($email) {
+		if (!$email) {
+			return [];
+		}
+		if (is_array($email)) {
+			if (count($email) == 2) {
+				return [$email];
+			}
+			$emails = [];
+			foreach ($email as $m) {
+				$emails[] = is_array($m) ? $m : [$m, ''];
+			}
+			return $emails;
+		}
+		$email	= _trim(explode(',', $email));
+		foreach ($email as &$e) {
+			$e = [$e, ''];
+		}
+		return $email;
 	}
 }
