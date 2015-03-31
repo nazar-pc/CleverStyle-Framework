@@ -653,11 +653,11 @@ function xap ($in, $html = 'text', $iframe = false) {
 	} elseif ($html === true) {
 		$in = preg_replace(
 			'/
-				<[^a-z=>]*(link|script|object|applet|embed)[^>]*>?	# Open tag
+				<[^a-z=>]*(link|script|object|applet|embed|[a-z0-9]+-[a-z0-9]+)[^>]*>?	# Open tag
 				(
-					.*												# Some content
-					<\/[^>]*\\1[^>]*>								# Close tag (with reference for tag name to open tag)
-				)?													# Section is optional
+					.*																	# Some content
+					<\/[^>]*\\1[^>]*>													# Close tag (with reference for tag name to open tag)
+				)?																		# Section is optional
 			/xims',
 			'',
 			$in
@@ -717,7 +717,7 @@ function xap ($in, $html = 'text', $iframe = false) {
 			$in
 		);
 		$in = preg_replace(
-			'/<[^>]*\s(on[a-z]+|dynsrc|lowsrc|formaction)=[^>]*>?/ims',
+			'/<[^>]*\s(on[a-z]+|dynsrc|lowsrc|formaction|is)=[^>]*>?/ims',
 			'',
 			$in
 		);
