@@ -20,7 +20,7 @@ if (isset($_POST['edit_images'])) {
 	$Photo_gallery = Photo_gallery::instance();
 	foreach ($_POST['edit_images'] as $image => $data) {
 		$image = $Photo_gallery->get($image);
-		if ($image && $User->admin() || $image['user'] == $User->id) {
+		if ($image && ($User->admin() || $image['user'] == $User->id)) {
 			if (isset($data['delete']) && $data['delete']) {
 				$Photo_gallery->del($image['id']);
 			} else {
