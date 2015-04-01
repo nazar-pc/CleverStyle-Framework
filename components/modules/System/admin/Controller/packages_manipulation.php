@@ -163,32 +163,32 @@ trait packages_manipulation {
 		$Core   = Core::instance();
 		$Config = Config::instance();
 		$db     = DB::instance();
-		foreach (file_get_json("$target_directory/versions.json") as $version) {
+		$meta   = file_get_json("$target_directory/meta.json");
+		foreach ($meta['update_versions'] as $version) {
 			if (version_compare($old_version, $version, '<')) {
 				/**
 				 * PHP update script
 				 */
-				_include("$target_directory/meta/update/$version.php", true, false);
+				_include_once("$target_directory/meta/update/$version.php", false);
 				/**
 				 * Database update
 				 */
-				if ($db_array && file_exists("$target_directory/meta/db.json")) {
-					$db_json = file_get_json("$target_directory/meta/db.json");
+				if ($db_array) {
 					time_limit_pause();
-					foreach ($db_json as $database) {
-						if ($db_array[$database] == 0) {
+					foreach ($db_array as $db_name => $index) {
+						if ($index == 0) {
 							$db_type = $Core->db_type;
 						} else {
-							$db_type = $Config->db[$db_array[$database]]['type'];
+							$db_type = $Config->db[$index]['type'];
 						}
-						$sql_file = "$target_directory/meta/update_db/$database/$version/$db_type.sql";
-						if (isset($db_array[$database]) && file_exists($sql_file)) {
-							$db->{$db_array[$database]}()->q(
+						$sql_file = "$target_directory/meta/update_db/$db_name/$version/$db_type.sql";
+						if (file_exists($sql_file)) {
+							$db->$index()->q(
 								explode(';', file_get_contents($sql_file))
 							);
 						}
 					}
-					unset($db_json, $database, $db_type, $sql_file);
+					unset($db_name, $db_type, $sql_file);
 					time_limit_pause(false);
 				}
 			}
@@ -617,7 +617,7 @@ trait packages_manipulation {
 	/**
 	 * Check backward dependencies (during uninstalling/disabling)
 	 *
-	 * @param array  $meta `meta.json` contents of target component
+	 * @param array $meta `meta.json` contents of target component
 	 *
 	 * @return bool
 	 */

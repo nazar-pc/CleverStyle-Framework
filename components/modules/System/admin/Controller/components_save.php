@@ -317,11 +317,11 @@ trait components_save {
 						break;
 					}
 					$module_data['active'] = 0;
-					if (isset($_POST['db']) && is_array($_POST['db']) && file_exists(MODULES."/$module_name/meta/db.json")) {
+					$meta                  = file_get_json(MODULES."/$module_name/meta.json");
+					if (isset($_POST['db'], $meta['db']) && is_array($_POST['db'])) {
 						$module_data['db'] = $_POST['db'];
-						$db_json           = file_get_json(MODULES."/$module_name/meta/db.json");
 						time_limit_pause();
-						foreach ($db_json as $database) {
+						foreach ($meta['db'] as $database) {
 							if ($module_data['db'][$database] == 0) {
 								$db_type = $Core->db_type;
 							} else {
@@ -334,10 +334,10 @@ trait components_save {
 								);
 							}
 						}
-						unset($db_json, $database, $db_type, $sql_file);
+						unset($database, $db_type, $sql_file);
 						time_limit_pause(false);
 					}
-					if (isset($_POST['storage']) && is_array($_POST['storage'])) {
+					if (isset($_POST['storage'], $meta['storage']) && is_array($_POST['storage'])) {
 						$module_data['storage'] = $_POST['storage'];
 					}
 					if ($a->save()) {
@@ -379,23 +379,22 @@ trait components_save {
 						]
 					);
 					$Config->save();
-					if (isset($module_data['db']) && file_exists(MODULES."/$module_name/meta/db.json")) {
-						$db_json = file_get_json(MODULES."/$module_name/meta/db.json");
+					if (isset($module_data['db'])) {
 						time_limit_pause();
-						foreach ($db_json as $database) {
-							if ($module_data['db'][$database] == 0) {
+						foreach ($module_data['db'] as $db_name => $index) {
+							if ($index == 0) {
 								$db_type = $Core->db_type;
 							} else {
-								$db_type = $Config->db[$module_data['db'][$database]]['type'];
+								$db_type = $Config->db[$index]['type'];
 							}
-							$sql_file = MODULES."/$module_name/meta/uninstall_db/$database/$db_type.sql";
+							$sql_file = MODULES."/$module_name/meta/uninstall_db/$db_name/$db_type.sql";
 							if (file_exists($sql_file)) {
-								$db->{$module_data['db'][$database]}()->q(
+								$db->$index()->q(
 									explode(';', file_get_contents($sql_file))
 								);
 							}
 						}
-						unset($db_json, $database, $db_type, $sql_file);
+						unset($db_name, $db_type, $sql_file);
 						time_limit_pause(false);
 					}
 					$permissions_ids = array_merge(
@@ -444,7 +443,7 @@ trait components_save {
 					/**
 					 * Updating of module
 					 */
-					if ($active != -1 && file_exists("$module_dir/versions.json")) {
+					if ($active != -1 && isset(file_get_json("$module_dir/meta.json")['update_versions'])) {
 						static::update_php_sql(
 							$module_dir,
 							$old_version,
@@ -501,7 +500,7 @@ trait components_save {
 					/**
 					 * Updating of System
 					 */
-					if (file_exists("$module_dir/versions.json")) {
+					if (isset(file_get_json("$module_dir/meta.json")['update_versions'])) {
 						static::update_php_sql(
 							$module_dir,
 							$old_version,
@@ -730,7 +729,7 @@ trait components_save {
 					/**
 					 * Updating of plugin
 					 */
-					if (file_exists("$plugin_dir/versions.json")) {
+					if (isset(file_get_json("$plugin_dir/meta.json")['update_versions'])) {
 						static::update_php_sql(
 							$plugin_dir,
 							$old_version

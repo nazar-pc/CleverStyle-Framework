@@ -1,18 +1,21 @@
 {
 	"package"             : "Shop",
 	"category"            : "modules",
-	"version"             : "0.108.4+build-153",
+	"version"             : "0.109.0+build-154",
 	"description"         : "Shop functionality",
 	"author"              : "Nazar Mokrynskyi",
 	"website"             : "cleverstyle.org/cms",
 	"license"             : "MIT License",
 	"update_from_version" : "0.107",
+	"db"                  : [
+		"shop"
+	],
 	"db_support"          : [
 		"MySQLi"
 	],
 	"provide"             : "shop",
 	"require"             : [
-		"System>=2.0",
+		"System>=2.1",
 		"System<=3.0",
 		"fotorama"
 	],

@@ -1,17 +1,20 @@
 {
 	"package"      : "Content",
 	"category"     : "modules",
-	"version"      : "1.0.0+build-22",
+	"version"      : "1.1.0+build-23",
 	"description"  : "Simple content functionality. May be used by other components or stand-alone.",
 	"author"       : "Nazar Mokrynskyi",
 	"website"      : "cleverstyle.org/cms",
 	"license"      : "MIT License",
+	"db"           : [
+		"content"
+	],
 	"db_support"   : [
 		"MySQLi"
 	],
 	"provide"      : "content",
 	"require"      : [
-		"System>=2.0",
+		"System>=2.1",
 		"System<=3.0"
 	],
 	"optional"     : [

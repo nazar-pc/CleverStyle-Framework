@@ -1054,44 +1054,42 @@ trait components {
 								)
 							);
 						}
+						if ($Config->core['simple_admin_mode']) {
+							if (isset($meta['db'])) {
+								foreach ($meta['db'] as $database) {
+									$a->content(
+										h::{'input[type=hidden]'}(
+											[
+												'name'  => "db[$database]",
+												'value' => 0
+											]
+										)
+									);
+								}
+								unset($database);
+							}
+							if (isset($meta['storage'])) {
+								foreach ($meta['storage'] as $storage) {
+									$a->content(
+										h::{'input[type=hidden]'}(
+											[
+												'name'  => "storage[$storage]",
+												'value' => 0
+											]
+										)
+									);
+								}
+								unset($storage);
+							}
+						} else {
+							goto module_db_settings;
+							back_to_module_installation_1:
+							goto module_storage_settings;
+							back_to_module_installation_2:
+						}
 						unset($meta);
 					}
 					$a->cancel_button_back = true;
-					if ($Config->core['simple_admin_mode']) {
-						if (file_exists(MODULES."/$rc[3]/meta/db.json")) {
-							$db_json = file_get_json(MODULES."/$rc[3]/meta/db.json");
-							foreach ($db_json as $database) {
-								$a->content(
-									h::{'input[type=hidden]'}(
-										[
-											'name'  => "db[$database]",
-											'value' => 0
-										]
-									)
-								);
-							}
-							unset($db_json, $database);
-						}
-						if (file_exists(MODULES."/$rc[3]/meta/storage.json")) {
-							$storage_json = file_get_json(MODULES."/$rc[3]/meta/storage.json");
-							foreach ($storage_json as $storage) {
-								$a->content(
-									h::{'input[type=hidden]'}(
-										[
-											'name'  => "storage[$storage]",
-											'value' => 0
-										]
-									)
-								);
-							}
-							unset($storage_json, $storage);
-						}
-					} else {
-						goto module_db_settings;
-						back_to_module_installation_1:
-						goto module_storage_settings;
-						back_to_module_installation_2:
-					}
 					$a->content(
 						h::{'button.uk-button[type=submit]'}(
 							$L->{$check_dependencies ? 'install' : 'force_install_not_recommended'}
@@ -1222,46 +1220,43 @@ trait components {
 						$a->apply_button       = false;
 						$a->cancel_button_back = true;
 						module_db_settings:
-						if (file_exists(MODULES."/$rc[3]/meta/db.json")) {
-							$Core = Core::instance();
-							$dbs  = [0 => "$L->core_db ($Core->db_type)"];
-							foreach ($Config->db as $i => &$db_data) {
-								if ($i) {
-									$dbs[$i] = "$db_data[name] ($db_data[host] / $db_data[type])";
-								}
+						$Core = Core::instance();
+						$dbs  = [0 => "$L->core_db ($Core->db_type)"];
+						foreach ($Config->db as $i => &$db_data) {
+							if ($i) {
+								$dbs[$i] = "$db_data[name] ($db_data[host] / $db_data[type])";
 							}
-							unset($i, $db_data);
-							$db_list = [];
-							$db_json = file_get_json(MODULES."/$rc[3]/meta/db.json");
-							foreach ($db_json as $database) {
-								$db_list[] = [
-									$database,
-									h::select(
-										[
-											'in'    => array_values($dbs),
-											'value' => array_keys($dbs)
-										],
-										[
-											'name'     => "db[$database]",
-											'selected' => isset($Config->components['modules'][$rc[3]]['db'][$database]) ?
-												$Config->components['modules'][$rc[3]]['db'][$database] : 0,
-											'size'     => 5
-										]
-									)
-								];
-							}
-							unset($db_json, $dbs, $database);
-							$a->content(
-								h::{'cs-table[right-left][with-header] cs-table-row| cs-table-cell'}(
-									[
-										h::info('appointment_of_db'),
-										h::info('system_db')
-									],
-									$db_list
-								)
-							);
-							unset($db_list);
 						}
+						unset($i, $db_data);
+						$db_list = [];
+						foreach (file_get_json(MODULES."/$rc[3]/meta.json")['db'] as $database) {
+							$db_list[] = [
+								$database,
+								h::select(
+									[
+										'in'    => array_values($dbs),
+										'value' => array_keys($dbs)
+									],
+									[
+										'name'     => "db[$database]",
+										'selected' => isset($Config->components['modules'][$rc[3]]['db'][$database]) ?
+											$Config->components['modules'][$rc[3]]['db'][$database] : 0,
+										'size'     => 5
+									]
+								)
+							];
+						}
+						unset($dbs, $database);
+						$a->content(
+							h::{'cs-table[right-left][with-header] cs-table-row| cs-table-cell'}(
+								[
+									h::info('appointment_of_db'),
+									h::info('system_db')
+								],
+								$db_list
+							)
+						);
+						unset($db_list);
 						if ($rc[2] == 'install') {
 							goto back_to_module_installation_1;
 						}
@@ -1290,45 +1285,42 @@ trait components {
 						$a->apply_button       = false;
 						$a->cancel_button_back = true;
 						module_storage_settings:
-						if (file_exists(MODULES."/$rc[3]/meta/storage.json")) {
-							$storages = [0 => $L->core_storage];
-							foreach ($Config->storage as $i => &$storage_data) {
-								if ($i) {
-									$storages[$i] = "$storage_data[host] ($storage_data[connection])";
-								}
+						$storages = [0 => $L->core_storage];
+						foreach ($Config->storage as $i => &$storage_data) {
+							if ($i) {
+								$storages[$i] = "$storage_data[host] ($storage_data[connection])";
 							}
-							unset($i, $storage_data);
-							$storage_list = [];
-							$storage_json = file_get_json(MODULES."/$rc[3]/meta/storage.json");
-							foreach ($storage_json as $storage) {
-								$storage_list[] = [
-									$storage,
-									h::select(
-										[
-											'in'    => array_values($storages),
-											'value' => array_keys($storages)
-										],
-										[
-											'name'     => "storage[$storage]",
-											'selected' => isset($Config->components['modules'][$rc[3]]['storage'][$storage]) ?
-												$Config->components['modules'][$rc[3]]['storage'][$storage] : 0,
-											'size'     => 5
-										]
-									)
-								];
-							}
-							unset($storage_json, $storages, $storage);
-							$a->content(
-								h::{'cs-table[right-left][with-header] cs-table-row| cs-table-cell'}(
-									[
-										h::info('appointment_of_storage'),
-										h::info('system_storage')
-									],
-									$storage_list
-								)
-							);
-							unset($storage_list);
 						}
+						unset($i, $storage_data);
+						$storage_list = [];
+						foreach (file_get_json(MODULES."/$rc[3]/meta.json")['storage'] as $storage) {
+							$storage_list[] = [
+								$storage,
+								h::select(
+									[
+										'in'    => array_values($storages),
+										'value' => array_keys($storages)
+									],
+									[
+										'name'     => "storage[$storage]",
+										'selected' => isset($Config->components['modules'][$rc[3]]['storage'][$storage]) ?
+											$Config->components['modules'][$rc[3]]['storage'][$storage] : 0,
+										'size'     => 5
+									]
+								)
+							];
+						}
+						unset($storages, $storage);
+						$a->content(
+							h::{'cs-table[right-left][with-header] cs-table-row| cs-table-cell'}(
+								[
+									h::info('appointment_of_storage'),
+									h::info('system_storage')
+								],
+								$storage_list
+							)
+						);
+						unset($storage_list);
 						if ($rc[2] == 'install') {
 							goto back_to_module_installation_2;
 						}
@@ -1542,7 +1534,7 @@ trait components {
 				/**
 				 * DataBases settings
 				 */
-				if (!$Config->core['simple_admin_mode'] && file_exists(MODULES."/$module_name/meta/db.json") && count($Config->db) > 1) {
+				if (!$Config->core['simple_admin_mode'] && $module_data['db'] && count($Config->db) > 1) {
 					$action .= h::{'a.uk-button.cs-button-compact'}(
 						h::icon('database'),
 						[
@@ -1554,7 +1546,7 @@ trait components {
 				/**
 				 * Storages settings
 				 */
-				if (!$Config->core['simple_admin_mode'] && file_exists(MODULES."/$module_name/meta/storage.json") && count($Config->storage) > 1) {
+				if (!$Config->core['simple_admin_mode'] && $module_data['storage'] && count($Config->storage) > 1) {
 					$action .= h::{'a.uk-button.cs-button-compact'}(
 						h::icon('hdd-o'),
 						[
