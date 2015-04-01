@@ -136,7 +136,7 @@ This results in constant and predictable performance (no degradation with time),
  * REQUIRED: rewrite, headers
  * OPTIONAL: expires
 * or Nginx ([config sample](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Nginx-config-sample))
-* PHP 5.4+ with libraries:
+* PHP 5.5+ with libraries:
  * REQUIRED: Mcrypt, cURL
  * OPTIONAL: APCu, Memcached
 * or HHVM 3.3.2+ LTS or HHVM 3.4.1+

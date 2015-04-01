@@ -11,10 +11,6 @@ namespace cs;
  * This is custom loader that includes basic files and defines constants,
  * but do not call any class to leave that all for test cases, and unregisters shutdown function
  */
-if (version_compare(PHP_VERSION, '5.4', '<')) {
-	echo 'CleverStyle CMS require PHP 5.4 or higher';
-	return;
-}
 /**
  * Time of start of execution, is used as current time
  */
@@ -23,7 +19,7 @@ define('TIME', floor(MICROTIME));                    //Time in seconds (integer)
 define('DIR', realpath(__DIR__.'/../cscms.travis')); //Root directory
 chdir(DIR);
 
-require DIR.'/core/loader_base.php';     //Inclusion of loader base
+require DIR.'/core/loader_base.php';      //Inclusion of loader base
 require DIR.'/core/functions_global.php'; //Inclusion of functions that work with global state
 /**
  * Wrapper around default `$_SERVER` superglobal

@@ -1,15 +1,11 @@
 <?php
 /**
- * @package        CleverStyle CMS
- * @subpackage     Builder
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package    CleverStyle CMS
+ * @subpackage Builder
+ * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright  Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license    MIT License, see license.txt
  */
-if (version_compare(PHP_VERSION, '5.4', '<')) {
-	echo 'CleverStyle CMS require PHP 5.4 or higher';
-	return;
-}
 if (!Phar::canWrite()) {
 	echo "CleverStyle CMS Builder can't work, set, please, \"phar.readonly=off\" option in \"php.ini\"";
 	return;

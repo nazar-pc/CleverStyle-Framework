@@ -245,7 +245,7 @@
 		"KB"						: "КБ",
 		"Bytes"						: "Байт",
 		"curl_lib"					: "Бібліотека cURL",
-		"apc_module"				: "Модуль APC (Alternative PHP Cache)",
+		"apcu_module"				: "Модуль APCu",
 		"memcached_module"			: "Memcached модуль",
 		"cache_engine"				: "Рушій кешу",
 	//Components

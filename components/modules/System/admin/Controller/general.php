@@ -128,11 +128,11 @@ trait general {
 							]
 						],
 						[
-							"$L->apc_module:",
+							"$L->apcu_module:",
 							[
-								$L->get(extension_loaded('apc')),
+								$L->get(extension_loaded('apcu')),
 								[
-									'class' => version_compare(PHP_VERSION, '5.5', '>=') ? false : self::state(extension_loaded('apc'))
+									'class' => self::state(extension_loaded('apcu'))
 								]
 							]
 						],

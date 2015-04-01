@@ -51,13 +51,6 @@ class Session {
 	protected $is_bot   = false;
 	protected $is_guest = false;
 	/**
-	 * @deprecated
-	 * @todo Remove in future versions
-	 *
-	 * @var bool
-	 */
-	protected $is_system = false;
-	/**
 	 * @var Prefix
 	 */
 	protected $cache;
@@ -197,15 +190,13 @@ class Session {
 		Event::instance()->fire('System/Session/init/after');
 	}
 	/**
-	 * Updates information about who is user accessed by methods ::guest() ::bot() ::user() admin() ::system()
+	 * Updates information about who is user accessed by methods ::guest() ::bot() ::user() admin()
 	 */
 	protected function update_user_is () {
 		$this->is_guest = false;
 		$this->is_bot   = false;
 		$this->is_user  = false;
 		$this->is_admin = false;
-		//TODO Remove in future versions
-		$this->is_system = false;
 		if ($this->user_id == User::GUEST_ID) {
 			$this->is_guest = true;
 			return;
@@ -258,17 +249,6 @@ class Session {
 		return $this->is_bot;
 	}
 	/**
-	 * Is system
-	 *
-	 * @deprecated
-	 * @todo Remove in future versions
-	 *
-	 * @return bool
-	 */
-	function system () {
-		return $this->is_system;
-	}
-	/**
 	 * Returns id of current session
 	 *
 	 * @return bool|string
@@ -295,10 +275,6 @@ class Session {
 	 * @return bool|array
 	 */
 	function get ($session_id) {
-		if (func_num_args() == 0) {
-			trigger_error('calling User::get_session() without arguments is deprecated, use Session::get_id() instead', E_USER_DEPRECATED);
-			return $this->get_id();
-		}
 		if (!$session_id) {
 			if (!$this->session_id) {
 				$this->session_id = _getcookie('session');
@@ -620,13 +596,6 @@ class Session {
 				'id' => $session_id
 			]
 		);
-		//TODO Remove in future versions
-		Event::instance()->fire(
-			'System/User/del_session/before',
-			[
-				'id' => $session_id
-			]
-		);
 		unset($this->cache->$session_id);
 		$this->session_id = false;
 		_setcookie('session', '');
@@ -645,13 +614,6 @@ class Session {
 				'id' => $session_id
 			]
 		);
-		//TODO Remove in future versions
-		Event::instance()->fire(
-			'System/User/del_session/after',
-			[
-				'id' => $session_id
-			]
-		);
 		return $result;
 	}
 	/**
@@ -664,13 +626,6 @@ class Session {
 	function del_all ($user = false) {
 		Event::instance()->fire(
 			'System/Session/del_all',
-			[
-				'id' => $user
-			]
-		);
-		//TODO Remove in future versions
-		Event::instance()->fire(
-			'System/User/del_all_sessions',
 			[
 				'id' => $user
 			]

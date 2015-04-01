@@ -1,23 +1,27 @@
 {
-	"package"      : "OAuth2",
-	"category"     : "modules",
-	"version"      : "1.10.1+build-64",
-	"description"  : "Module provides realization of OAuth 2 authorization protocol (server side).",
-	"author"       : "Nazar Mokrynskyi",
-	"website"      : "cleverstyle.org/cms",
-	"license"      : "MIT License",
-	"db_support"   : [
+	"package"             : "OAuth2",
+	"category"            : "modules",
+	"version"             : "1.11.0+build-65",
+	"description"         : "Module provides realization of OAuth 2 authorization protocol (server side).",
+	"author"              : "Nazar Mokrynskyi",
+	"website"             : "cleverstyle.org/cms",
+	"license"             : "MIT License",
+	"update_from_version" : "1.10",
+	"db_support"          : [
 		"MySQLi"
 	],
-	"provide"      : "oauth2",
-	"require"      : "System=>1.94",
-	"multilingual" : [
+	"provide"             : "oauth2",
+	"require"             : [
+		"System>=2.0",
+		"System<=3.0"
+	],
+	"multilingual"        : [
 		"interface"
 	],
-	"languages"    : [
+	"languages"           : [
 		"English",
 		"Русский",
 		"Українська"
 	],
-	"hide_in_menu" : 1
+	"hide_in_menu"        : 1
 }

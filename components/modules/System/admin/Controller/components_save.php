@@ -586,13 +586,6 @@ trait components_save {
 					$module_data['active'] = 1;
 					$a->save();
 					clean_pcache();
-					//TODO remove in future versions
-					Event::instance()->fire(
-						'admin/System/components/modules/enable',
-						[
-							'name' => $module_name
-						]
-					);
 					Event::instance()->fire(
 						'admin/System/components/modules/enable/process',
 						[
@@ -609,13 +602,6 @@ trait components_save {
 					$module_data['active'] = 0;
 					$a->save();
 					clean_pcache();
-					//TODO remove in future versions
-					Event::instance()->fire(
-						'admin/System/components/modules/disable',
-						[
-							'name' => $module_name
-						]
-					);
 					Event::instance()->fire(
 						'admin/System/components/modules/disable/process',
 						[

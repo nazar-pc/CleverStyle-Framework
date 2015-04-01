@@ -92,6 +92,6 @@ class APC extends _Abstract {
 		if (!$this->apc) {
 			return false;
 		}
-		return version_compare(PHP_VERSION, '5.5', '>=') ? apc_clear_cache() : apc_clear_cache('user');
+		return apc_clear_cache();
 	}
 }

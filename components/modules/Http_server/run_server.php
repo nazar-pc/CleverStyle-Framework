@@ -8,10 +8,6 @@
  */
 use
 	cs\modules\Http_server\Request;
-if (version_compare(PHP_VERSION, '5.4', '<')) {
-	echo 'CleverStyle CMS require PHP 5.4 or higher';
-	return;
-}
 /**
  * Time of start of execution, is used as current time
  */

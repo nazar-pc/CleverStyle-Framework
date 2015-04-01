@@ -131,16 +131,6 @@ class DB {
 	 * @return	DB\_Abstract|False_class					Returns instance of False_class on failure
 	 */
 	function __get ($connection) {
-		if ($connection === 'queries') {
-			// TODO remove in future versions
-			trigger_error('DB::instance()->queries property is deprecated, use ->queries() method instead', E_USER_DEPRECATED);
-			return $this->queries();
-		}
-		if ($connection === 'time') {
-			// TODO remove in future versions
-			trigger_error('DB::instance()->time property is deprecated, use ->time() method instead', E_USER_DEPRECATED);
-			return $this->time();
-		}
 		return $this->db($connection);
 	}
 	/**

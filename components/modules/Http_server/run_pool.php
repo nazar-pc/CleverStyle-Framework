@@ -7,11 +7,6 @@
  * @license   MIT License, see license.txt
  */
 namespace cs\modules\Http_server;
-if (version_compare(PHP_VERSION, '5.4', '<')) {
-	echo 'CleverStyle CMS require PHP 5.4 or higher';
-	return;
-}
-
 /**
  * Running Http server in background on any platform
  *

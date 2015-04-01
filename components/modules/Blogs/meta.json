@@ -1,17 +1,21 @@
 {
-	"package"		: "Blogs",
-	"category"		: "modules",
-	"version"		: "0.114.2+build-135",
-	"description"	: "Adds blogging functionality. Comments module is required for comments functionality, Plupload or similar module is required for files uploading functionality.",
-	"author"		: "Nazar Mokrynskyi",
-	"website"		: "cleverstyle.org/cms",
-	"license"		: "MIT License",
-	"db_support"	: [
+	"package"             : "Blogs",
+	"category"            : "modules",
+	"version"             : "1.0.0+build-136",
+	"description"         : "Adds blogging functionality. Comments module is required for comments functionality, Plupload or similar module is required for files uploading functionality.",
+	"author"              : "Nazar Mokrynskyi",
+	"website"             : "cleverstyle.org/cms",
+	"license"             : "MIT License",
+	"update_from_version" : "0.114",
+	"db_support"          : [
 		"MySQLi"
 	],
-	"provide"		: "blogs",
-	"require"		: "System=>1.86",
-	"optional"		: [
+	"provide"             : "blogs",
+	"require"             : [
+		"System>=2.0",
+		"System<=3.0"
+	],
+	"optional"            : [
 		"Comments",
 		"Plupload",
 		"TinyMCE",
@@ -20,11 +24,11 @@
 		"simple_editor",
 		"inline_editor"
 	],
-	"multilingual"	: [
+	"multilingual"        : [
 		"interface",
 		"content"
 	],
-	"languages"		: [
+	"languages"           : [
 		"English",
 		"Русский",
 		"Українська"

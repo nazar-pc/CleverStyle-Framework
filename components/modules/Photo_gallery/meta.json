@@ -1,26 +1,28 @@
 {
-	"package"		: "Photo_gallery",
-	"category"		: "modules",
-	"version"		: "0.042.2+build-60",
-	"description"	: "Simple photo gallery, works standalone and integrates with other components (depends on Fotorama, SimpleImage and Plupload).",
-	"author"		: "Nazar Mokrynskyi",
-	"website"		: "cleverstyle.org/cms",
-	"license"		: "MIT License",
-	"db_support"	: [
+	"package"             : "Photo_gallery",
+	"category"            : "modules",
+	"version"             : "1.0.0+build-61",
+	"description"         : "Simple photo gallery, works standalone and integrates with other components (depends on Fotorama, SimpleImage and Plupload).",
+	"author"              : "Nazar Mokrynskyi",
+	"website"             : "cleverstyle.org/cms",
+	"license"             : "MIT License",
+	"update_from_version" : "0.42",
+	"db_support"          : [
 		"MySQLi"
 	],
-	"provide"		: "photo_gallery",
-	"require"		: [
-		"System>=1.86",
+	"provide"             : "photo_gallery",
+	"require"             : [
+		"System>=2.0",
+		"System<=3.0",
 		"Fotorama>=4.4.9",
 		"SimpleImage",
 		"file_upload"
 	],
-	"multilingual"	: [
+	"multilingual"        : [
 		"interface",
 		"content"
 	],
-	"languages"		: [
+	"languages"           : [
 		"English",
 		"Русский",
 		"Українська"

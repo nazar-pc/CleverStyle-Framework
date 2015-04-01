@@ -6,8 +6,8 @@
  * @copyright      Copyright (c) 2011-2015, Nazar Mokrynskyi
  * @license        MIT License, see license.txt
  */
-if (version_compare(PHP_VERSION, '5.4', '<')) {
-	echo 'CleverStyle CMS require PHP 5.4 or higher';
+if (version_compare(PHP_VERSION, '5.5', '<')) {
+	echo 'CleverStyle CMS require PHP 5.5 or higher';
 	return;
 }
 $cli = PHP_SAPI == 'cli';
@@ -22,14 +22,6 @@ if ($cli) {
 mb_internal_encoding('utf-8');
 define('ROOT', getcwd());    //Path to site root
 $fs = json_decode(file_get_contents(DIR.'/fs.json'), true);
-/**
- * Fallback for PHP 5.5 hashing functions, that are not present in PHP 5.4
- *
- * @todo Remove in future versions
- */
-if (!defined('PASSWORD_DEFAULT')) {
-	require DIR.'/fs/'.$fs['core/thirdparty/password_compat.php'];
-}
 require DIR.'/fs/'.$fs['core/thirdparty/upf.php'];
 require DIR.'/fs/'.$fs['core/functions.php'];
 require DIR.'/fs/'.$fs['core/thirdparty/nazarpc/BananaHTML.php'];

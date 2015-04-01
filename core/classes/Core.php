@@ -164,35 +164,6 @@ AddEncoding gzip .html
 		$this->set($item, $value);
 	}
 	/**
-	 * Sending system api request to all mirrors
-	 *
-	 * @deprecated
-	 * @todo Remove in future versions
-	 *
-	 * @param string	$path	Path for api request, for example <i>System/admin/setcookie<i>, where
-	 * 							<i>System</b> - module name, <i>admin/setcookie</b> - path to action file in current module api structure
-	 * @param mixed		$data	Any type of data, will be accessible through <i>$_POST['data']</b>
-	 *
-	 * @return array	Array <i>[mirror_url => result]</b> in case of successful connection, <i>false</b> on failure
-	 */
-	function api_request ($path, $data = '') {
-		$Config	= Config::instance(true);
-		$result	= [];
-		if ($Config && $Config->server['mirrors']['count'] > 1) {
-			foreach ($Config->server['mirrors']['http'] as $domain) {
-				if (!($domain == $Config->server['host'] && $Config->server['protocol'] == 'http')) {
-					$result["http://$domain"] = $this->send("http://$domain/api/$path", $data);
-				}
-			}
-			foreach ($Config->server['mirrors']['https'] as $domain) {
-				if (!($domain != $Config->server['host'] && $Config->server['protocol'] == 'https')) {
-					$result["https://$domain"] = $this->send("https://$domain/api/$path", $data);
-				}
-			}
-		}
-		return $result;
-	}
-	/**
 	 * Sending of api request to the specified host
 	 *
 	 * @param string	$url	With prefix <i>https://</b> (<i>http://</b> can be missed), and (if necessary) with port address

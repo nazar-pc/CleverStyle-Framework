@@ -1,14 +1,15 @@
 {
 	"package"          : "WebSockets",
 	"category"         : "modules",
-	"version"          : "0.27.2+build-43",
+	"version"          : "0.28.0+build-44",
 	"description"      : "WebSockets server based on Ratchet and React with client-side bindings as well",
 	"author"           : "Nazar Mokrynskyi",
 	"website"          : "cleverstyle.org/cms",
 	"license"          : "MIT License",
 	"provide"          : "websockets",
 	"require"          : [
-		"System=>1.94",
+		"System>=2.0",
+		"System<=3.0",
 		"composer"
 	],
 	"require_composer" : {

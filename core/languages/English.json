@@ -244,7 +244,7 @@
 		"KB"						: "KB",
 		"Bytes"						: "Bytes",
 		"curl_lib"					: "cURL library",
-		"apc_module"				: "APC (Alternative PHP Cache) module",
+		"apcu_module"				: "APCu module",
 		"memcached_module"			: "Memcached module",
 		"cache_engine"				: "Cache engine",
 	//Components

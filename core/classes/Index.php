@@ -42,20 +42,6 @@ class Index {
 	public $apply_button       = true;
 	public $cancel_button_back = false;
 	public $custom_buttons     = '';
-	/**
-	 * @deprecated
-	 * @todo Remove in future versions
-	 *
-	 * @var string[]
-	 */
-	public $route_path = [];
-	/**
-	 * @deprecated
-	 * @todo Remove in future versions
-	 *
-	 * @var int[]
-	 */
-	public    $route_ids = [];
 	protected $action;
 	/**
 	 * Appends to the end of title

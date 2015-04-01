@@ -87,25 +87,24 @@
 	</ul>
 	<h2>Requirements:</h2>
 	<ul>
-		<li>Unix-like operating system or Windows (not well tested, but should work anyway)</li>
-		<li>Apache2 or Nginx web server</li>
-		<li>
-			PHP 5.4+
+		<li>Unix-like operating system</li>
+		<li>or Windows (is not tested, but should also work)</li>
+		<li>Apache2 with modules:
 			<ul>
-				<li>Mcrypt library (recommended for encryption)</li>
-				<li>APC (Alternative PHP cache) module (recommended for system speed up with PHP 5.4)</li>
-				<li>Memcached (optionally for Memcached cache engine)</li>
+				<li>REQUIRED: rewrite, headers</li>
+				<li>OPTIONAL: expires</li>
 			</ul>
 		</li>
-		<li>
-			or HHVM 3.3.2+ LTS / HHVM 3.4.1+
-		</li>
-		<li>
-			MySQL Database server (MariaDB will work as well)
+		<li>or Nginx (<a href="https://github.com/nazar-pc/CleverStyle-CMS/wiki/Nginx-config-sample" target="_blank">config sample</a>)</li>
+		<li>PHP 5.5+ with libraries:
 			<ul>
-				<li>System may be extended to support other databases</li>
+				<li>REQUIRED: Mcrypt, cURL</li>
+				<li>OPTIONAL: APCu, Memcached</li>
 			</ul>
 		</li>
+		<li>or HHVM 3.3.2+ LTS or HHVM 3.4.1+</li>
+		<li>MySQL 5.5+</li>
+		<li>or MariaDB 5.5+</li>
 	</ul>
 </section>
 <footer>

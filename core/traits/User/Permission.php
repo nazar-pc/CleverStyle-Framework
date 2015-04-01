@@ -38,7 +38,7 @@ trait Permission {
 	 */
 	function get_permission ($group, $label, $user = false) {
 		$user			= (int)$user ?: $this->id;
-		if ($this->system() || $user == User::ROOT_ID) {
+		if ($user == User::ROOT_ID) {
 			return true;
 		}
 		if (!$user) {

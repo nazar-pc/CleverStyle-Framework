@@ -294,11 +294,6 @@ class Builder {
 		$phar->addFromString('readme.html', $this->get_readme());
 		$phar->addFile("$this->root/license.txt", 'license.txt');
 		$phar->addFile("$this->root/components/modules/System/meta.json", 'meta.json');
-		//TODO Remove in future versions
-		$phar->addFromString(
-			'version',
-			"\"$version\""
-		);
 		$phar->setStub(
 			"<?php
 if (PHP_SAPI == 'cli') {
@@ -499,8 +494,6 @@ RewriteRule .* index.php
 		);
 		unset($files);
 		$phar->addFile("$source_dir/meta.json", 'meta.json');
-		//TODO remove in future versions
-		$phar->addFromString('dir', $meta['package']);
 		$readme = false;
 		if (file_exists("$source_dir/readme.html")) {
 			$phar->addFile("$source_dir/readme.html", 'readme.html');

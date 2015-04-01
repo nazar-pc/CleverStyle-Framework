@@ -54,26 +54,6 @@ class Config {
 	 */
 	public $routing		= [];
 	/**
-	 * Deprecated, use method with the same name instead
-	 *
-	 * @deprecated
-	 * @todo Remove in future versions
-	 *
-	 * @var mixed[]
-	 */
-	public $server		= [
-		'raw_relative_address'	=> '',		//Raw page url (in browser's address bar)
-		'host'					=> '',		//Current domain
-		'relative_address'		=> '',		//Corrected page address (recommended for usage)
-		'protocol'				=> '',		//Page protocol (http/https)
-		'mirrors'				=> [		//Array of all domains, which allowed to access the site
-			'count'		=> 0,				//Total count
-			'http'		=> [],				//Insecure (http) domains
-			'https'		=> []				//Secure (https) domains
-		],
-		'mirror_index'			=> -1		//Index of current domain in mirrors list ('0' - main domain)
-	];
-	/**
 	 * Array of all domains, which allowed to access the site
 	 *
 	 * Contains keys:
@@ -89,25 +69,11 @@ class Config {
 		'https' => []
 	];
 	/**
-	 * @deprecated
-	 * @todo Remove in future versions
-	 *
-	 * @var bool
-	 */
-	public $can_be_admin	= true;
-	/**
 	 * Initialization state
 	 *
 	 * @var bool
 	 */
 	protected	$init	= false;
-	/**
-	 * @deprecated
-	 * @todo Remove in future versions
-	 *
-	 * @var array
-	 */
-	public		$route	= [];
 	/**
 	 * Loading of configuration, initialization of $Config, $Cache, $L and Page objects, Routing processing
 	 */
@@ -128,21 +94,15 @@ class Config {
 			unset($part, $value);
 		}
 		Event::instance()->fire('System/Config/init/before');
-		// TODO Remove in future versions
-		Event::instance()->fire('System/Config/before_init');
 		/**
 		 * System initialization with current configuration
 		 */
 		$this->init();
 		Event::instance()->fire('System/Config/init/after');
-		// TODO Remove in future versions
-		Event::instance()->fire('System/Config/after_init');
 		if (!file_exists(MODULES.'/'.$this->core['default_module'])) {
 			$this->core['default_module']	= 'System';
 			$this->save();
 		}
-		// TODO Remove in future versions
-		$this->can_be_admin = $this->can_be_admin();
 	}
 	/**
 	 * Engine initialization (or reinitialization if necessary)
@@ -179,8 +139,6 @@ class Config {
 			$this->mirrors[$protocol][] = $urls[0];
 		}
 		$this->mirrors['count'] = count($this->mirrors['http']) + count($this->mirrors['https']);
-		// TODO Remove in future versions
-		$this->server['mirrors'] = &$this->mirrors;
 	}
 	/**
 	 * Check user's IP address matches with elements of given list
@@ -214,18 +172,6 @@ class Config {
 			}
 		}
 		return false;
-	}
-	/**
-	 * @deprecated
-	 * @todo Remove in future versions
-	 *
-	 * @param string $raw_relative_address
-	 *
-	 * @return bool|\string[]
-	 */
-	function process_route ($raw_relative_address) {
-		trigger_error('Config::instance()->process_route() property is deprecated, use Route::instance()->process_route() class and method instead', E_USER_DEPRECATED);
-		return Route::instance()->process_route($raw_relative_address);
 	}
 	/**
 	 * Updating information about set of available themes

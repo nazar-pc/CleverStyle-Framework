@@ -1,11 +1,14 @@
 {
 	"package"     : "Composer",
 	"category"    : "modules",
-	"version"     : "0.11.1+build-14",
+	"version"     : "0.12.0+build-15",
 	"description" : "Composer integration into CleverStyle CMS, allows to specify composer dependencies in meta.json that will be installed automatically",
 	"author"      : "Nazar Mokrynskyi",
 	"website"     : "cleverstyle.org/cms",
 	"license"     : "MIT License",
 	"provide"     : "composer",
-	"require"     : "System>=1.58"
+	"require"     : [
+		"System>=2.0",
+		"System<=3.0"
+	]
 }

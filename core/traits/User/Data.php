@@ -15,6 +15,9 @@ use
 
 /**
  * Trait that contains all methods from <i>>cs\User</i> for working with user data
+ *
+ * @property \cs\Cache\Prefix $cache
+ * @property int              $id
  */
 trait Data {
 	/**
@@ -58,22 +61,6 @@ trait Data {
 	function get ($item, $user = false) {
 		if (is_scalar($item) && preg_match('/^[0-9]+$/', $item)) {
 			return new Properties($item);
-		}
-		/**
-		 * @var \cs\_SERVER $_SERVER
-		 */
-		/**
-		 * TODO: deprecated, remove in future version
-		 */
-		switch ($item) {
-			case 'user_agent':
-				trigger_error('Deprecated \cs\User::$user_agent usage, use $_SERVER->user_agent instead', E_USER_DEPRECATED);
-				return $_SERVER->user_agent;
-			case 'ip':
-			case 'forwarded_for':
-			case 'client_ip':
-				trigger_error('Deprecated \cs\User::$ip, ::$forwarded_for or ::$client_ip usage, use $_SERVER->remote_addr or $_SERVER->ip instead', E_USER_DEPRECATED);
-				return $_SERVER->ip;
 		}
 		$result	= $this->get_internal($item, $user);
 		if (!$this->memory_cache) {
@@ -524,14 +511,16 @@ trait Data {
 						unset($data_set[$i]);
 					}
 				}
+				unset($i, $val);
 				if (!empty($data)) {
 					$data		= implode(', ', $data);
 					$update[]	= "UPDATE `[prefix]users`
 						SET $data
 						WHERE `id` = '$id'";
-					unset($i, $val, $data);
 				}
+				unset($data);
 			}
+			unset($id, $data_set);
 			if (!empty($update)) {
 				$this->db_prime()->q($update);
 			}
@@ -546,22 +535,8 @@ trait Data {
 				$this->cache->$id	= $data;
 			}
 		}
-		$this->update_cache = [];
 		unset($id, $data);
+		$this->update_cache = [];
 		$this->data_set = [];
-	}
-	/**
-	 * Do not track checking
-	 *
-	 * @deprecated
-	 * @todo deprecated, remove in future versions
-	 *
-	 * @return bool	<b>true</b> if tracking is not desired, <b>false</b> otherwise
-	 */
-	function dnt () {
-		/**
-		 * @var \cs\_SERVER $_SERVER
-		 */
-		return $_SERVER->dnt;
 	}
 }

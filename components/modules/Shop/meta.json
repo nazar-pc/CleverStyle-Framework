@@ -1,20 +1,22 @@
 {
-	"package"		: "Shop",
-	"category"		: "modules",
-	"version"		: "0.107.3+build-152",
-	"description"	: "Shop functionality",
-	"author"		: "Nazar Mokrynskyi",
-	"website"		: "cleverstyle.org/cms",
-	"license"		: "MIT License",
-	"db_support"	: [
+	"package"             : "Shop",
+	"category"            : "modules",
+	"version"             : "0.108.4+build-153",
+	"description"         : "Shop functionality",
+	"author"              : "Nazar Mokrynskyi",
+	"website"             : "cleverstyle.org/cms",
+	"license"             : "MIT License",
+	"update_from_version" : "0.107",
+	"db_support"          : [
 		"MySQLi"
 	],
-	"provide"		: "shop",
-	"require"		: [
-		"System=>1.94",
+	"provide"             : "shop",
+	"require"             : [
+		"System>=2.0",
+		"System<=3.0",
 		"fotorama"
 	],
-	"optional"		: [
+	"optional"            : [
 		"Comments",
 		"Plupload",
 		"TinyMCE",
@@ -24,11 +26,11 @@
 		"inline_editor",
 		"payment"
 	],
-	"multilingual"	: [
+	"multilingual"        : [
 		"interface",
 		"content"
 	],
-	"languages"		: [
+	"languages"           : [
 		"English",
 		"Русский",
 		"Українська"

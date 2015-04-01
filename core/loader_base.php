@@ -5,14 +5,6 @@
  * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-/**
- * Fallback for PHP 5.5 hashing functions, that are not present in PHP 5.4
- *
- * @todo Remove in future versions
- */
-if (!defined('PASSWORD_DEFAULT')) {
-	require DIR.'/core/thirdparty/password_compat.php';
-}
 require DIR.'/core/thirdparty/upf.php';           //Inclusion of Useful PHP Functions
 _require_once(DIR.'/vendor/autoload.php', false); //Inclusion of composer's autoloader.php with user's dependencies
 require DIR.'/core/functions.php';                //Inclusion of general system functions and system autoloader
