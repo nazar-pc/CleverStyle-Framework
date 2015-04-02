@@ -26,7 +26,7 @@ trait CRUD_helpers {
 	 *
 	 * @return array|bool|int
 	 */
-	function search ($search_parameters = [], $page = 1, $count = 100, $order_by = 'id', $asc = false) {
+	protected function search ($search_parameters = [], $page = 1, $count = 100, $order_by = 'id', $asc = false) {
 		if (!isset($this->data_model[$order_by])) {
 			return false;
 		}
