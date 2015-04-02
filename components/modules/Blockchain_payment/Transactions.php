@@ -9,15 +9,17 @@
 namespace cs\modules\Blockchain_payment;
 use
 	cs\Config,
-	cs\CRUD,
+	cs\CRUD_helpers,
 	cs\Singleton;
 
 /**
  * @method static Transactions instance($check = false)
  */
 class Transactions {
+	use CRUD_helpers {
+		search as crud_search;
+	};
 	use
-		CRUD,
 		Singleton;
 
 	protected $data_model     = [
@@ -72,43 +74,7 @@ class Transactions {
 	 * @return array|bool|string
 	 */
 	function search ($search_parameters = [], $page = 1, $count = 100, $order_by = 'id', $asc = false) {
-		if (!isset($this->data_model[$order_by])) {
-			return false;
-		}
-		$where  = [];
-		$params = [];
-		foreach ($search_parameters as $key => $details) {
-			if (isset($this->data_model[$key])) {
-				$where[]  = "`$key` = '%s'";
-				$params[] = $details;
-			}
-		}
-		unset($key, $details);
-		$where = $where ? 'WHERE '.implode(' AND ', $where) : '';
-		if (@$search_parameters['total_count']) {
-			return $this->db()->qfs(
-				[
-					"SELECT COUNT(`id`)
-					FROM `$this->table`
-					$where",
-					$params
-				]
-			);
-		} else {
-			$params[] = ($page - 1) * $count;
-			$params[] = $count;
-			$asc      = $asc ? 'ASC' : 'DESC';
-			return $this->db()->qfas(
-				[
-					"SELECT `id`
-					FROM `$this->table`
-					$where
-					ORDER BY `$order_by` $asc
-					LIMIT %d, %d",
-					$params
-				]
-			);
-		}
+		return $this->crud_search($search_parameters, $page, $count, $order_by, $asc);
 	}
 	/**
 	 * Add new transaction

@@ -12,7 +12,7 @@ use
 	cs\Event,
 	cs\Language,
 	cs\User,
-	cs\CRUD,
+	cs\CRUD_helpers,
 	cs\Singleton;
 
 /**
@@ -59,8 +59,10 @@ use
  *  ]</code>
  */
 class Orders {
+	use CRUD_helpers {
+		search as crud_search;
+	};
 	use
-		CRUD,
 		Singleton;
 
 	const PAYMENT_METHOD_CASH = 'shop:cash';
@@ -224,43 +226,7 @@ class Orders {
 	 * @return array|bool|string
 	 */
 	function search ($search_parameters = [], $page = 1, $count = 20, $order_by = 'date', $asc = false) {
-		if (!isset($this->data_model[$order_by])) {
-			return false;
-		}
-		$where  = [];
-		$params = [];
-		foreach ($search_parameters as $key => $details) {
-			if (isset($this->data_model[$key])) {
-				$where[]  = "`$key` = '%s'";
-				$params[] = $details;
-			}
-		}
-		unset($key, $details);
-		$where = $where ? 'WHERE '.implode(' AND ', $where) : '';
-		if (@$search_parameters['total_count']) {
-			return $this->db()->qfs(
-				[
-					"SELECT COUNT(`id`)
-					FROM `$this->table`
-					$where",
-					$params
-				]
-			);
-		} else {
-			$params[] = ($page - 1) * $count;
-			$params[] = $count;
-			$asc      = $asc ? 'ASC' : 'DESC';
-			return $this->db()->qfas(
-				[
-					"SELECT `id`
-					FROM `$this->table`
-					$where
-					ORDER BY `$order_by` $asc
-					LIMIT %d, %d",
-					$params
-				]
-			);
-		}
+		return $this->crud_search($search_parameters, $page, $count, $order_by, $asc);
 	}
 	/**
 	 * Returns recalculated prices for items and shipping
@@ -418,9 +384,9 @@ class Orders {
 			$unit_price
 		);
 		if ($result && $this->reduce_in_stock_value) {
-			$Items            = Items::instance();
-			$item             = $Items->get($item);
-			$item['in_stock'] = $item['in_stock'] - $units;
+			$Items = Items::instance();
+			$item  = $Items->get($item);
+			$item['in_stock'] -= $units;
 			$Items->set(
 				$item['id'],
 				$item['category'],
@@ -651,10 +617,10 @@ class Orders {
 			$item
 		);
 		if ($result && $this->reduce_in_stock_value) {
-			$Items            = Items::instance();
-			$old_units        = array_column($items, 'units', 'item')[$item];
-			$item             = $Items->get($item);
-			$item['in_stock'] = $item['in_stock'] + $old_units;
+			$Items     = Items::instance();
+			$old_units = array_column($items, 'units', 'item')[$item];
+			$item      = $Items->get($item);
+			$item['in_stock'] += $old_units;
 			$Items->set(
 				$item['id'],
 				$item['category'],

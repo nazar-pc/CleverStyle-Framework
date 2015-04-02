@@ -310,10 +310,12 @@ class Items {
 						)";
 				if (is_array($details)) {
 					if (isset($details['from']) || isset($details['to'])) {
+						/** @noinspection NotOptimalIfConditionsInspection */
 						if (isset($details['from'])) {
 							$joins .= "AND `a$join_index`.`$field`	>= '%s'";
 							$join_params[] = $details['from'];
 						}
+						/** @noinspection NotOptimalIfConditionsInspection */
 						if (isset($details['to'])) {
 							$joins .= "AND `a$join_index`.`$field`	<= '%s'";
 							$join_params[] = $details['to'];
@@ -492,6 +494,7 @@ class Items {
 				`text_value`	!= ''"
 		);
 		foreach ($old_attributes as $old_attribute) {
+			/** @noinspection SlowArrayOperationsInLoopInspection */
 			$old_files = array_merge($old_files, find_links($old_attribute));
 		}
 		unset($old_attributes, $old_attribute);
@@ -534,6 +537,7 @@ class Items {
 						break;
 					case 'text_value':
 						$value_type['text'] = xap($value, true, true);
+						/** @noinspection SlowArrayOperationsInLoopInspection */
 						$new_files          = array_merge($new_files, find_links($value_type['text']));
 						$lang               = $L->clang;
 						break;
