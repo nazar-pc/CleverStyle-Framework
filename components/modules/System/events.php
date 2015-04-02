@@ -68,7 +68,6 @@ Event::instance()
 	->on(
 		'System/Session/init/after',
 		function () {
-			$Config  = Config::instance();
 			$Session = Session::instance();
 			$user_id = $Session->get_user();
 			/**
