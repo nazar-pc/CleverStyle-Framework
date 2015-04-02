@@ -16,6 +16,8 @@ use
 
 /**
  * Meta class for generation of various meta tags
+ *
+ * @method $this og(string $property, string|string[] $content)
  */
 class Meta {
 	use

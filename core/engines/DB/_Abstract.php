@@ -341,16 +341,10 @@ abstract class _Abstract {
 		}
 		$params = [];
 		if (is_array($query)) {
-			switch (count($query)) {
-				case 1:
-					$query = $query[0];
-					break;
-				case 2:
-					$params = $query[1];
-					break;
-				default:
-					$params = array_slice($query, 1);
+			if (count($query) > 1) {
+				$params = array_slice($query, 1);
 			}
+			$query = $query[0];
 		}
 		return [
 			$query,

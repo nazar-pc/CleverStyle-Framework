@@ -27,6 +27,7 @@ class FileSystem extends _Abstract {
 	 * @return string
 	 */
 	protected function get_absolute_path ($path) {
+		$path      = CACHE."/$path";
 		$path      = str_replace(['/', '\\'], '/', $path);
 		$parts     = array_filter(explode('/', $path), 'strlen');
 		$absolutes = [];
@@ -46,7 +47,7 @@ class FileSystem extends _Abstract {
 	 * @inheritdoc
 	 */
 	function get ($item) {
-		$path_in_filesystem = $this->get_absolute_path(CACHE."/$item");
+		$path_in_filesystem = $this->get_absolute_path($item);
 		if (strpos($path_in_filesystem, CACHE) !== 0) {
 			return false;
 		}
@@ -64,7 +65,7 @@ class FileSystem extends _Abstract {
 	 * @inheritdoc
 	 */
 	function set ($item, $data) {
-		$path_in_filesystem = $this->get_absolute_path(CACHE."/$item");
+		$path_in_filesystem = $this->get_absolute_path($item);
 		if (strpos($path_in_filesystem, CACHE) !== 0) {
 			return false;
 		}
@@ -130,7 +131,7 @@ class FileSystem extends _Abstract {
 	 * @inheritdoc
 	 */
 	function del ($item) {
-		$path_in_filesystem = $this->get_absolute_path(CACHE."/$item");
+		$path_in_filesystem = $this->get_absolute_path($item);
 		if (strpos($path_in_filesystem, CACHE) !== 0) {
 			return false;
 		}
@@ -164,7 +165,7 @@ class FileSystem extends _Abstract {
 				}
 				$files = get_files_list($new_path, false, 'fd');
 				foreach ($files as $file) {
-					$this->del($item.$random_id."/$file", false);
+					$this->del($item.$random_id."/$file");
 				}
 				unset($files, $file);
 				return @rmdir($new_path);
