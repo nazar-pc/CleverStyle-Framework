@@ -17,6 +17,9 @@ if ($module_data->security_key !== $rc[0]) {
 	error_code(400);
 	return;
 }
-Deferred_tasks::instance()->run(
-	isset($rc[1]) ? $rc[1] : false
-);
+$Deferred_tasks = Deferred_tasks::instance();
+if (isset($rc[1])) {
+	$Deferred_tasks->run_task($rc[1]);
+} else {
+	$Deferred_tasks->run_worker();
+}

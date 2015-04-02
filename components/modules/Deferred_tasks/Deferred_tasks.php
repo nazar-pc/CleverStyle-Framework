@@ -108,47 +108,43 @@ class Deferred_tasks {
 		return $this->delete_simple($id);
 	}
 	/**
-	 * Run tasks execution
+	 * Run specified task
 	 *
-	 * @param bool|int	$task
+	 * @param int $task
 	 */
-	function run ($task) {
+	function run_task ($task) {
+		$data = $this->get($task);
+		if (!$data) {
+			error_code(404);
+			return;
+		}
+		Event::instance()->fire(
+			"Deferred_tasks/$data[module]",
+			[
+				'id'   => $data['id'],
+				'data' => $data['data']
+			]
+		);
+		$this->del($data['id']);
+	}
+	/**
+	 * Run worker
+	 */
+	function run_worker () {
 		/**
-		 * If task is running
+		 * Disable time limit
 		 */
-		if ($task) {
-			$data	= $this->get($task);
-			if (!$data) {
-				error_code(404);
+		set_time_limit(0);
+		@ini_set('max_input_time', 900);
+		while ($this->runned_workers() < $this->max_number_of_workers) {
+			$id = $this->next_task();
+			if (!$id) {
 				return;
 			}
-			Event::instance()->fire(
-				"Deferred_tasks/$data[module]",
-				[
-					'id'		=> $data['id'],
-					'data'		=> $data['data']
-				]
-			);
-			$this->del($data['id']);
-		/**
-		 * If just worker is running
-		 */
-		} else {
-			/**
-			 * Disable time limit
-			 */
-			set_time_limit(0);
-			@ini_set('max_input_time', 900);
-			while ($this->runned_workers() < $this->max_number_of_workers) {
-				$id	= $this->next_task();
-				if (!$id) {
-					return;
-				}
-				if (!$this->started($id)) {
-					continue;
-				}
-				file_get_contents("$this->base_url/Deferred_tasks/$this->security_key/$id");
+			if (!$this->started($id)) {
+				continue;
 			}
+			file_get_contents("$this->base_url/Deferred_tasks/$this->security_key/$id");
 		}
 	}
 	/**
