@@ -429,7 +429,7 @@ class Photo_gallery {
 			$Cache->{"galleries/$id"},
 			$Cache->{'galleries/list'}
 		);
-		$images	= $this->cdb()->qfas([
+		$images	= $this->db()->qfas([
 			"SELECT `id`
 			FROM `[prefix]photo_gallery_images`
 			WHERE `gallery` = '%s'",
