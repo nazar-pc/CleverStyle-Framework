@@ -63,13 +63,13 @@ namespace {
 	/**
 	 * Send a raw HTTP header (similar to built-in function)
 	 *
-	 * @param string $string             There are two special-case header calls. The first is a header that starts with the string "HTTP/" (case is not significant),
-	 *                                   which will be used to figure out the HTTP status code to send. For example, if you have configured Apache to use a PHP script
-	 *                                   to handle requests for missing files (using the ErrorDocument directive),
-	 *                                   you may want to make sure that your script generates the proper status code.
-	 * @param bool   $replace            The optional replace parameter indicates whether the header should replace a previous similar header,
-	 *                                   or add a second header of the same type. By default it will replace
-	 * @param null   $http_response_code Forces the HTTP response code to the specified value
+	 * @param string   $string             There are two special-case header calls. The first is a header that starts with the string "HTTP/" (case is not
+	 *                                     significant), which will be used to figure out the HTTP status code to send. For example, if you have configured
+	 *                                     Apache to use a PHP script to handle requests for missing files (using the ErrorDocument directive), you may want to
+	 *                                     make sure that your script generates the proper status code.
+	 * @param bool     $replace            The optional replace parameter indicates whether the header should replace a previous similar header,
+	 *                                     or add a second header of the same type. By default it will replace
+	 * @param int|null $http_response_code Forces the HTTP response code to the specified value
 	 *
 	 * @return mixed
 	 */
@@ -113,7 +113,7 @@ namespace {
 	 */
 	function _http_response_code ($response_code = 0, $request_id = null) {
 		static $codes = [];
-		$request_id    = $request_id ?: get_request_id();
+		$request_id = $request_id ?: get_request_id();
 		if ($response_code == 0) {
 			if (isset($codes[$request_id])) {
 				$code = $codes[$request_id];
@@ -157,7 +157,7 @@ namespace {
 			$domain = $_SERVER->host;
 			$path   = '/';
 			if ($Config) {
-				$Route = Route::instance();
+				$Route  = Route::instance();
 				$prefix = $Config->core['cookie_prefix'];
 				$domain = $Config->core['cookie_domain'][$Route->mirror_index];
 				$path   = $Config->core['cookie_path'][$Route->mirror_index];
@@ -398,40 +398,44 @@ namespace cs\Singleton {
 	/**
 	 * Auto Loading of classes
 	 */
-	spl_autoload_register(function ($class) {
-		static $cache;
-		if (!isset($cache)) {
-			$cache = file_exists(CACHE.'/Http_server/classes/autoload') ? file_get_json(CACHE.'/Http_server/classes/autoload') : [];
-		}
-		if (isset($cache[$class])) {
-			return require_once $cache[$class];
-		}
-		$prepared_class_name = ltrim($class, '\\');
-		if (substr($prepared_class_name, 0, 3) == 'cs\\') {
-			$prepared_class_name = substr($prepared_class_name, 3);
-		}
-		$prepared_class_name = explode('\\', $prepared_class_name);
-		$namespace           = count($prepared_class_name) > 1 ? implode('/', array_slice($prepared_class_name, 0, -1)) : '';
-		$class_name          = array_pop($prepared_class_name);
-		/**
-		 * Try to load classes from different places. If not found in one place - try in another.
-		 */
-		if (
-			_require_once($file = DIR."/core/classes/$namespace/$class_name.php", false) ||    //Core classes
-			_require_once($file = DIR."/core/thirdparty/$namespace/$class_name.php", false) || //Third party classes
-			_require_once($file = DIR."/core/traits/$namespace/$class_name.php", false) ||     //Core traits
-			_require_once($file = ENGINES."/$namespace/$class_name.php", false) ||             //Core engines
-			_require_once($file = MODULES."/../$namespace/$class_name.php", false)             //Classes in modules and plugins
-		) {
-			$cache[$class] = realpath($file);
-			if (!is_dir(CACHE.'/Http_server/classes')) {
-				@mkdir(CACHE.'/Http_server/classes', 0770, true);
+	spl_autoload_register(
+		function ($class) {
+			static $cache;
+			if (!isset($cache)) {
+				$cache = file_exists(CACHE.'/Http_server/classes/autoload') ? file_get_json(CACHE.'/Http_server/classes/autoload') : [];
 			}
-			file_put_json(CACHE.'/Http_server/classes/autoload', $cache);
-			return true;
-		}
-		return false;
-	}, true, true);
+			if (isset($cache[$class])) {
+				return require_once $cache[$class];
+			}
+			$prepared_class_name = ltrim($class, '\\');
+			if (substr($prepared_class_name, 0, 3) == 'cs\\') {
+				$prepared_class_name = substr($prepared_class_name, 3);
+			}
+			$prepared_class_name = explode('\\', $prepared_class_name);
+			$namespace           = count($prepared_class_name) > 1 ? implode('/', array_slice($prepared_class_name, 0, -1)) : '';
+			$class_name          = array_pop($prepared_class_name);
+			/**
+			 * Try to load classes from different places. If not found in one place - try in another.
+			 */
+			if (
+				_require_once($file = DIR."/core/classes/$namespace/$class_name.php", false) ||    //Core classes
+				_require_once($file = DIR."/core/thirdparty/$namespace/$class_name.php", false) || //Third party classes
+				_require_once($file = DIR."/core/traits/$namespace/$class_name.php", false) ||     //Core traits
+				_require_once($file = ENGINES."/$namespace/$class_name.php", false) ||             //Core engines
+				_require_once($file = MODULES."/../$namespace/$class_name.php", false)             //Classes in modules and plugins
+			) {
+				$cache[$class] = realpath($file);
+				if (!is_dir(CACHE.'/Http_server/classes')) {
+					@mkdir(CACHE.'/Http_server/classes', 0770, true);
+				}
+				file_put_json(CACHE.'/Http_server/classes/autoload', $cache);
+				return true;
+			}
+			return false;
+		},
+		true,
+		true
+	);
 	/**
 	 * Clean cache of classes autoload and customization
 	 */

@@ -219,13 +219,13 @@ function code_header ($code) {
 /**
  * Send a raw HTTP header
  *
- * @param string $string             There are two special-case header calls. The first is a header that starts with the string "HTTP/" (case is not significant),
- *                                   which will be used to figure out the HTTP status code to send. For example, if you have configured Apache to use a PHP script
- *                                   to handle requests for missing files (using the ErrorDocument directive),
- *                                   you may want to make sure that your script generates the proper status code.
- * @param bool   $replace            The optional replace parameter indicates whether the header should replace a previous similar header,
- *                                   or add a second header of the same type. By default it will replace
- * @param null   $http_response_code Forces the HTTP response code to the specified value
+ * @param string   $string             There are two special-case header calls. The first is a header that starts with the string "HTTP/" (case is not
+ *                                     significant), which will be used to figure out the HTTP status code to send. For example, if you have configured Apache
+ *                                     to use a PHP script to handle requests for missing files (using the ErrorDocument directive), you may want to make sure
+ *                                     that your script generates the proper status code.
+ * @param bool     $replace            The optional replace parameter indicates whether the header should replace a previous similar header,
+ *                                     or add a second header of the same type. By default it will replace
+ * @param int|null $http_response_code Forces the HTTP response code to the specified value
  */
 function _header ($string, $replace = true, $http_response_code = null) {
 	header($string, $replace, $http_response_code);
