@@ -30,6 +30,9 @@ class Page {
 	public	$pre_Html	= '';
 	public	$Html 		= '';
 	public		$Description	= '';
+	/**
+	 * @var string|string[]
+	 */
 	public		$Title			= [];
 	public	$Head		= '';
 	public	$pre_Body	= '';
@@ -163,14 +166,14 @@ class Page {
 		/**
 		 * Forming page title
 		 */
-		$title = array_filter($this->Title, 'trim');
-		$title = $Config->core['title_reverse'] ? array_reverse($title) : $title;
-		$title = implode($Config->core['title_delimiter'] ?: '|', $title);
+		$this->Title = array_filter($this->Title, 'trim');
+		$this->Title = $Config->core['title_reverse'] ? array_reverse($this->Title) : $this->Title;
+		$this->Title = implode($Config->core['title_delimiter'] ?: '|', $this->Title);
 		/**
 		 * Forming <head> content
 		 */
 		$this->Head =
-			h::title($title).
+			h::title($this->Title).
 			h::meta(
 				[
 					'charset' => 'utf-8'
