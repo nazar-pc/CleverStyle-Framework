@@ -22,22 +22,23 @@ use
 	cs\Route,
 	cs\User;
 
-function error_redirect ($error, $description) {
-	_header(
-		'Location: '.http_build_url(
-			urldecode($_GET['redirect_uri']),
-			[
-				'error'             => $error,
-				'error_description' => $description,
-				'state'             => isset($_GET['state']) ? $_GET['state'] : false
-			]
-		),
-		true,
-		302
-	);
-	interface_off();
+if (!function_exists(__NAMESPACE__.'\\error_redirect')) {
+	function error_redirect ($error, $description) {
+		_header(
+			'Location: '.http_build_url(
+				urldecode($_GET['redirect_uri']),
+				[
+					'error'             => $error,
+					'error_description' => $description,
+					'state'             => isset($_GET['state']) ? $_GET['state'] : false
+				]
+			),
+			true,
+			302
+		);
+		interface_off();
+	}
 }
-
 $OAuth2 = OAuth2::instance();
 $Config = Config::instance();
 $Index  = Index::instance();
@@ -131,14 +132,12 @@ if ($_GET['response_type'] != 'guest_token') {
 			'invalid_request',
 			'response_type parameter required'
 		], true);
-		return;
 	}
 	if (!in_array($_GET['response_type'], ['code', 'token', 'guest_token'])) {
 		$Page->error([
 			'unsupported_response_type',
 			'Specified response_type is not supported, only "token" or "code" or "guest_token" types available'
 		], true);
-		return;
 	}
 }
 $User = User::instance();
