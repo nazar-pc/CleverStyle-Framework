@@ -12,7 +12,10 @@ use            cs\Core;
  * Support optionally base configuration option Core::instance()->memcached_host and Core::instance()->memcached_port
  */
 class Memcached extends _Abstract {
-	protected $memcached           = false;
+	/**
+	 * @var \Memcached
+	 */
+	protected $memcached;
 	protected $root_versions_cache = [];
 	function __construct () {
 		if (!extension_loaded('memcached')) {
