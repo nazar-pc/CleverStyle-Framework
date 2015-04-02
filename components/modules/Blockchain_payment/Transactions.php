@@ -18,7 +18,7 @@ use
 class Transactions {
 	use CRUD_helpers {
 		search as crud_search;
-	};
+	}
 	use
 		Singleton;
 

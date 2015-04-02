@@ -61,7 +61,7 @@ use
 class Orders {
 	use CRUD_helpers {
 		search as crud_search;
-	};
+	}
 	use
 		Singleton;
 
