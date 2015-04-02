@@ -556,13 +556,17 @@ class OAuth2 {
 			$refresh_token
 		);
 		unset($this->cache->{"tokens/$data[access_token]"});
-		$Session = User::instance();
+		$Session = Session::instance();
 		$id      = $Session->load($data['session']);
 		if ($id != $data['user']) {
 			return false;
 		}
 		$Session->add($id);
-		$result = $this->get_code($this->add_code($client['id'], 'code'), $client['id'], $client['secret']);
+		$code = $this->add_code($client['id'], 'code');
+		if (!$code) {
+			return false;
+		}
+		$result = $this->get_code($code, $client['id'], $client['secret']);
 		$Session->del();
 		return $result;
 	}
