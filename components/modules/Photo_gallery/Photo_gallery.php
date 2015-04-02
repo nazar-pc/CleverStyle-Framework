@@ -435,8 +435,10 @@ class Photo_gallery {
 			WHERE `gallery` = '%s'",
 			$id
 		]);
-		foreach ($images as $image) {
-			$this->del($image);
+		if ($images) {
+			foreach ((array)$images as $image) {
+				$this->del($image);
+			}
 		}
 		@$this->storage()->rmdir("Photo_gallery/$id");
 		return true;

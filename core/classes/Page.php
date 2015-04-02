@@ -155,7 +155,7 @@ class Page {
 	 * @return Page
 	 */
 	protected function prepare () {
-		$Config	= Config::instance(true);
+		$Config = Config::instance(true);
 		/**
 		 * Loading of template
 		 */
@@ -163,39 +163,39 @@ class Page {
 		/**
 		 * Forming page title
 		 */
-		foreach ($this->Title as $i => &$v) {
-			if (!($v = trim($v))) {
-				unset($this->Title[$i]);
-			}
-		}
-		$this->Title = $Config->core['title_reverse'] ? array_reverse($this->Title) : $this->Title;
-		$this->Title = implode($Config->core['title_delimiter'] ?: '|', $this->Title);
+		$title = array_filter($this->Title, 'trim');
+		$title = $Config->core['title_reverse'] ? array_reverse($title) : $title;
+		$title = implode($Config->core['title_delimiter'] ?: '|', $title);
 		/**
 		 * Forming <head> content
 		 */
-		$this->Head			=
-			h::title($this->Title).
+		$this->Head =
+			h::title($title).
 			h::meta(
 				[
-					'charset'	=> 'utf-8'
+					'charset' => 'utf-8'
 				],
 				$this->Description ? [
-					'name'		=> 'description',
-					'content'	=> $this->Description
+					'name'    => 'description',
+					'content' => $this->Description
 				] : false,
 				[
-					'name'		=> 'generator',
-					'content'	=> 'CleverStyle CMS by Mokrynskyi Nazar'
+					'name'    => 'generator',
+					'content' => 'CleverStyle CMS by Mokrynskyi Nazar'
 				]
 			).
-			h::base($Config ? [
-				'href' => $Config->base_url().'/'
-			] : false).
+			h::base(
+				$Config ? [
+					'href' => $Config->base_url().'/'
+				] : false
+			).
 			$this->Head.
-			h::link([
-				'rel'	=> 'shortcut icon',
-				'href'	=> $this->get_favicon_path()
-			]).
+			h::link(
+				[
+					'rel'  => 'shortcut icon',
+					'href' => $this->get_favicon_path()
+				]
+			).
 			h::link($this->link ?: false);
 		/**
 		 * Addition of CSS, JavaScript and Web Components includes
@@ -208,7 +208,7 @@ class Page {
 		/**
 		 * Substitution of information into template
 		 */
-		$this->Html			= str_replace(
+		$this->Html = str_replace(
 			[
 				'<!--pre_Html-->',
 				'<!--head-->',
@@ -221,18 +221,21 @@ class Page {
 				'<!--post_Body-->',
 				'<!--post_Html-->'
 			],
-			_rtrim([
-				$this->pre_Html,
-				$this->get_property_with_indentation('Head'),
-				$this->get_property_with_indentation('pre_Body'),
-				$this->get_property_with_indentation('Left'),
-				$this->get_property_with_indentation('Top'),
-				$this->get_property_with_indentation('Content'),
-				$this->get_property_with_indentation('Bottom'),
-				$this->get_property_with_indentation('Right'),
-				$this->get_property_with_indentation('post_Body'),
-				$this->post_Html
-			], "\t"),
+			_rtrim(
+				[
+					$this->pre_Html,
+					$this->get_property_with_indentation('Head'),
+					$this->get_property_with_indentation('pre_Body'),
+					$this->get_property_with_indentation('Left'),
+					$this->get_property_with_indentation('Top'),
+					$this->get_property_with_indentation('Content'),
+					$this->get_property_with_indentation('Bottom'),
+					$this->get_property_with_indentation('Right'),
+					$this->get_property_with_indentation('post_Body'),
+					$this->post_Html
+				],
+				"\t"
+			),
 			$this->Html
 		);
 		return $this;
