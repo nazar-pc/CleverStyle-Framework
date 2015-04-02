@@ -330,7 +330,13 @@ function install_process ($fs, $argv = null) {
 	if (!file_exists(DIR."/install/DB/$_POST[db_engine].sql")) {
 		return "Can't find system tables structure for selected database engine! Installation aborted.";
 	}
-	if (!$cdb->q(explode(';', file_get_contents(DIR."/install/DB/$_POST[db_engine].sql")))) {
+	if (!$cdb->q(
+		array_filter(
+			explode(';', file_get_contents(DIR."/install/DB/$_POST[db_engine].sql")),
+			'_trim'
+		)
+	)
+	) {
 		return "Can't import system tables structure for selected database engine! Installation aborted.";
 	}
 	/**

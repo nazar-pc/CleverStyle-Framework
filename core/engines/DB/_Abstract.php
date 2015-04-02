@@ -95,6 +95,9 @@ abstract class _Abstract {
 	 * @return bool|object|resource
 	 */
 	function q ($query, $params = [], $_ = null) {
+		if (!$query) {
+			return false;
+		}
 		$query = str_replace('[prefix]', $this->prefix, $query);
 		switch (func_num_args()) {
 			default:
@@ -111,7 +114,7 @@ abstract class _Abstract {
 			$param = $this->s($param, false);
 		}
 		unset($param);
-		if (is_array($query) && !empty($query)) {
+		if (is_array($query)) {
 			$time_from = microtime(true);
 			foreach ($query as &$q) {
 				$local_params = $params;
@@ -129,16 +132,13 @@ abstract class _Abstract {
 			$this->time += round(microtime(true) - $time_from, 6);
 			return $return;
 		}
-		if (!$query) {
-			return true;
-		}
-		$this->query['time'] = microtime(true);
+		$time_from           = microtime(true);
 		$this->query['text'] = empty($params) ? $query : vsprintf($query, $params);
 		if (DEBUG) {
 			$this->queries['text'][] = $this->query['text'];
 		}
 		$result              = $this->q_internal($this->query['text']);
-		$this->query['time'] = round(microtime(true) - $this->query['time'], 6);
+		$this->query['time'] = round(microtime(true) - $time_from, 6);
 		$this->time += $this->query['time'];
 		if (DEBUG) {
 			$this->queries['time'][] = $this->query['time'];
@@ -336,14 +336,21 @@ abstract class _Abstract {
 	 * @return array                        array(<b>$query</b>, <b>$params</b>)
 	 */
 	protected function q_prepare ($query) {
+		if (!$query) {
+			return false;
+		}
 		$params = [];
-		if (is_array($query) && !empty($query)) {
-			if (count($query) == 2) {
-				$params = $query[1];
-			} elseif (count($query) > 2) {
-				$params = array_slice($query, 1);
+		if (is_array($query)) {
+			switch (count($query)) {
+				case 1:
+					$query = $query[0];
+					break;
+				case 2:
+					$params = $query[1];
+					break;
+				default:
+					$params = array_slice($query, 1);
 			}
-			$query = $query[0];
 		}
 		return [
 			$query,
@@ -379,6 +386,7 @@ abstract class _Abstract {
 			$query   = $query[0].'VALUES'.$query[1].$query[2];
 			$params_ = [];
 			foreach ($params as $p) {
+				/** @noinspection SlowArrayOperationsInLoopInspection */
 				$params_ = array_merge($params_, (array)$p);
 			}
 			unset($p);

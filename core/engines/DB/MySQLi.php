@@ -57,8 +57,13 @@ class MySQLi extends _Abstract {
 	}
 	/**
 	 * @inheritdoc
+	 *
+	 * @return bool|\mysqli_result
 	 */
 	protected function q_internal ($query) {
+		if (!$query) {
+			return false;
+		}
 		$result_mode = $this->async && defined('MYSQLI_ASYNC') ? MYSQLI_ASYNC : MYSQLI_STORE_RESULT;
 		$result      = @$this->instance->query($query, $result_mode);
 		// In case of MySQL Client error - try to fix everything, but only once
@@ -95,6 +100,8 @@ class MySQLi extends _Abstract {
 	}
 	/**
 	 * @inheritdoc
+	 *
+	 * @param \mysqli_result $query_result
 	 */
 	function f ($query_result, $single_column = false, $array = false, $indexed = false) {
 		if (!is_object($query_result)) {
