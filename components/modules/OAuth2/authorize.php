@@ -127,7 +127,7 @@ if ($_GET['response_type'] != 'guest_token') {
 	}
 } else {
 	if (!isset($_GET['response_type'])) {
-		$Page->error_code([
+		$Page->error([
 			'invalid_request',
 			'response_type parameter required'
 		], true);
