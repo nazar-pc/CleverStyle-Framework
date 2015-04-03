@@ -45,7 +45,7 @@ class Module_Properties {
 	 * @return int
 	 */
 	function db ($db_name) {
-		return (string)$this->module_data['db'][$db_name];
+		return $this->module_data['db'][$db_name];
 	}
 	/**
 	 * Get storage id by name
@@ -76,7 +76,7 @@ class Module_Properties {
 	 * @return bool
 	 */
 	function __set ($item, $value) {
-		return $this->set_internal($item, $value);
+		$this->set_internal($item, $value);
 	}
 	/**
 	 * Get data item (or array of items) of module configuration

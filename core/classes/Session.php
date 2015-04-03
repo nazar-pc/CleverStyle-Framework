@@ -200,20 +200,19 @@ class Session {
 		if ($this->user_id == User::GUEST_ID) {
 			$this->is_guest = true;
 			return;
-		} else {
-			/**
-			 * Checking of user type
-			 */
-			$groups = User::instance()->get_groups($this->user_id) ?: [];
-			if (in_array(User::ADMIN_GROUP_ID, $groups)) {
-				$this->is_admin = Config::instance()->can_be_admin();
-				$this->is_user  = true;
-			} elseif (in_array(User::USER_GROUP_ID, $groups)) {
-				$this->is_user = true;
-			} elseif (in_array(User::BOT_GROUP_ID, $groups)) {
-				$this->is_guest = true;
-				$this->is_bot   = true;
-			}
+		}
+		/**
+		 * Checking of user type
+		 */
+		$groups = User::instance()->get_groups($this->user_id) ?: [];
+		if (in_array(User::ADMIN_GROUP_ID, $groups)) {
+			$this->is_admin = Config::instance()->can_be_admin();
+			$this->is_user  = true;
+		} elseif (in_array(User::USER_GROUP_ID, $groups)) {
+			$this->is_user = true;
+		} elseif (in_array(User::BOT_GROUP_ID, $groups)) {
+			$this->is_guest = true;
+			$this->is_bot   = true;
 		}
 	}
 	/**
@@ -255,14 +254,14 @@ class Session {
 	 */
 	function get_id () {
 		if ($this->user_id == User::GUEST_ID && $this->bot()) {
-			return '';
+			return false;
 		}
 		return $this->session_id;
 	}
 	/**
 	 * Returns user id of current session
 	 *
-	 * @return int
+	 * @return bool|int
 	 */
 	function get_user () {
 		return $this->user_id;
@@ -284,9 +283,6 @@ class Session {
 		if (!is_md5($session_id)) {
 			return false;
 		}
-		/**
-		 * @var \cs\_SERVER $_SERVER
-		 */
 		$session = $this->cache->get(
 			$session_id,
 			function () use ($session_id) {
@@ -330,6 +326,9 @@ class Session {
 		$User    = User::instance();
 		$session = $this->get($session_id);
 		$time    = time();
+		/**
+		 * @var \cs\_SERVER $_SERVER
+		 */
 		if (
 			!$session ||
 			$session['expire'] <= $time ||
@@ -354,45 +353,25 @@ class Session {
 		$session_id = $session['id'];
 		$update     = [];
 		/**
-		 * Updating last online time
+		 * Updating last online time and ip
 		 */
-		if (
-			$session['user'] != 0 &&
-			$User->get('last_online', $session['user']) < $time - $Config->core['online_time'] * $Config->core['update_ratio'] / 100
-		) {
-			/**
-			 * Updating last sign in time and ip
-			 */
-			if ($User->get('last_online', $session['user']) < $time - $Config->core['online_time']) {
-				$ip       = ip2hex($_SERVER->ip);
-				$update[] = "
-					UPDATE `[prefix]users`
-					SET
-						`last_sign_in`	= $time,
-						`last_ip`		= '$ip',
-						`last_online`	= $time
-					WHERE `id` =$session[user]";
-				$User->set(
-					[
-						'last_sign_in' => $time,
-						'last_ip'      => $ip,
-						'last_online'  => $time
-					],
-					null,
-					$session['user']
-				);
-				unset($ip);
-			} else {
-				$update[] = "
-					UPDATE `[prefix]users`
-					SET `last_online` = $time
-					WHERE `id` = $session[user]";
-				$User->set(
-					'last_online',
-					$time,
-					$session['user']
-				);
-			}
+		if ($User->get('last_online', $session['user']) < $time - $Config->core['online_time'] * $Config->core['update_ratio'] / 100) {
+			$ip       = ip2hex($_SERVER->ip);
+			$update[] = "
+				UPDATE `[prefix]users`
+				SET
+					`last_ip`		= '$ip',
+					`last_online`	= $time
+				WHERE `id` = $session[user]";
+			$User->set(
+				[
+					'last_ip'     => $ip,
+					'last_online' => $time
+				],
+				null,
+				$session['user']
+			);
+			unset($ip);
 		}
 		if ($session['expire'] - $time < $Config->core['session_expire'] * $Config->core['update_ratio'] / 100) {
 			$session['expire']        = $time + $Config->core['session_expire'];
@@ -501,6 +480,14 @@ class Session {
 			 */
 			$remote_addr = ip2hex($_SERVER->remote_addr);
 			$ip          = ip2hex($_SERVER->ip);
+			$expire_in   = $Config->core['session_expire'];
+			/**
+			 * Many guests open only one page, so create session only for 5 min
+			 */
+			if ($user == User::GUEST_ID) {
+				$expire_in = min($expire_in, 300);
+			}
+			$expire = $time + $expire_in;
 			$this->db_prime()->q(
 				"INSERT INTO `[prefix]sessions`
 					(
@@ -523,10 +510,7 @@ class Session {
 				$hash,
 				$user,
 				$time,
-				/**
-				 * Many guests open only one page, so create session only for 5 min
-				 */
-				$time + ($user != User::GUEST_ID || $Config->core['session_expire'] < 300 ? $Config->core['session_expire'] : 300),
+				$expire,
 				$_SERVER->user_agent,
 				$remote_addr,
 				$ip
@@ -537,7 +521,7 @@ class Session {
 					SET
 						`last_sign_in`	= $time,
 						`last_online`	= $time,
-						`last_ip`		= '$ip.'
+						`last_ip`		= '$ip'
 					WHERE `id` ='$user'"
 				);
 			}
@@ -545,12 +529,12 @@ class Session {
 			$this->cache->$hash = [
 				'id'          => $hash,
 				'user'        => $user,
-				'expire'      => $time + $Config->core['session_expire'],
+				'expire'      => $expire,
 				'user_agent'  => $_SERVER->user_agent,
 				'remote_addr' => $remote_addr,
 				'ip'          => $ip
 			];
-			_setcookie('session', $hash, $time + $Config->core['session_expire']);
+			_setcookie('session', $hash, $expire);
 			$this->load();
 			$this->update_user_is();
 			$ids_count = $this->db()->qfs(
@@ -575,13 +559,13 @@ class Session {
 	 * @return bool
 	 */
 	function del ($session_id = null) {
-		return $this->del_internal($session_id);
+		return (bool)$this->del_internal($session_id);
 	}
 	/**
 	 * Deletion of the session
 	 *
-	 * @param string $session_id
-	 * @param bool   $create_guest_session
+	 * @param string|null $session_id
+	 * @param bool        $create_guest_session
 	 *
 	 * @return bool
 	 */
@@ -614,7 +598,7 @@ class Session {
 				'id' => $session_id
 			]
 		);
-		return $result;
+		return (bool)$result;
 	}
 	/**
 	 * Deletion of all user sessions
@@ -624,13 +608,13 @@ class Session {
 	 * @return bool
 	 */
 	function del_all ($user = false) {
+		$user = $user ?: $this->user_id;
 		Event::instance()->fire(
 			'System/Session/del_all',
 			[
 				'id' => $user
 			]
 		);
-		$user     = $user ?: $this->user_id;
 		$sessions = $this->db_prime()->qfas(
 			"SELECT `id`
 			FROM `[prefix]sessions`
@@ -642,7 +626,7 @@ class Session {
 			}
 			unset($session);
 			$sessions = implode("','", $sessions);
-			return $this->db_prime()->q(
+			return (bool)$this->db_prime()->q(
 				"DELETE FROM `[prefix]sessions`
 				WHERE `id` IN('$sessions')"
 			);
