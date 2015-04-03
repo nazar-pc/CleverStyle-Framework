@@ -72,8 +72,6 @@ class Module_Properties {
 	 *
 	 * @param string	$item
 	 * @param mixed		$value
-	 *
-	 * @return bool
 	 */
 	function __set ($item, $value) {
 		$this->set_internal($item, $value);
