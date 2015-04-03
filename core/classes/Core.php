@@ -9,7 +9,7 @@ namespace	cs;
 use			h;
 /**
  * Core class.
- * Provides loading of base system configuration, API requests sending
+ * Provides loading of base system configuration
  *
  * @method static Core instance($check = false)
  */
@@ -128,7 +128,7 @@ AddEncoding gzip .html
 	 *
 	 * @param string		$item
 	 *
-	 * @return bool|string
+	 * @return false|string
 	 */
 	function get ($item) {
 		return isset($this->config[$item]) ? $this->config[$item] : false;
@@ -149,7 +149,7 @@ AddEncoding gzip .html
 	 *
 	 * @param string		$item
 	 *
-	 * @return bool|string
+	 * @return false|string
 	 */
 	function __get ($item) {
 		return $this->get($item);
@@ -162,58 +162,5 @@ AddEncoding gzip .html
 	 */
 	function __set ($item, $value) {
 		$this->set($item, $value);
-	}
-	/**
-	 * Sending of api request to the specified host
-	 *
-	 * @param string	$url	With prefix <i>https://</b> (<i>http://</b> can be missed), and (if necessary) with port address
-	 * @param mixed		$data	Any type of data, will be accessible through <i>$_POST['data']</b>
-	 *
-	 * @return bool|string		Result or <i>false</i> at error
-	 */
-	protected function send ($url, $data) {
-		if (!Config::instance(true)) {
-			return false;
-		}
-		$Key				= Key::instance();
-		$protocol			= 'http';
-		if (mb_strpos($url, '://') !== false) {
-			list($protocol,	$url) = explode('://', $url);
-		}
-		$database			= Config::instance()->module('System')->db('keys');
-		$key				= $Key->generate($database);
-		$url				.= "/$key";
-		$Key->add(
-			$database,
-			$key,
-			[
-				'url' => $url
-			],
-			time()+30
-		);
-		list($host, $url)	= explode('/', $url, 2);
-		$host				= explode(':', $host);
-		$socket				= fsockopen($host[0], isset($host[1]) ? $host[1] : ($protocol == 'http' ? 80 : 443), $errno, $errstr);
-		$host				= implode(':', $host);
-		if(!is_resource($socket)) {
-			trigger_error("#$errno $errstr", E_USER_WARNING);
-			return false;
-		}
-		$data = 'data='.urlencode(json_encode($data));
-		time_limit_pause();
-		fwrite(
-			$socket,
-			"POST /$url HTTP/1.1\r\n".
-			"Host: $host\r\n".
-			"Content-Type: application/x-www-form-urlencoded\r\n".
-			"Content-length:".strlen($data)."\r\n".
-			"Accept:*/*\r\n".
-			"User-agent: CleverStyle CMS\r\n\r\n".
-			"$data\r\n\r\n"
-		);
-		$return = explode("\r\n\r\n", stream_get_contents($socket), 2);
-		time_limit_pause(false);
-		fclose($socket);
-		return $return[1];
 	}
 }
