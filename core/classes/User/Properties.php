@@ -68,7 +68,7 @@ class Properties {
 	 *
 	 * @param string|string[]		$item
 	 *
-	 * @return false|bool|string
+	 * @return array|false|string
 	 */
 	function __get ($item) {
 		return User::instance()->get($item, $this->id);

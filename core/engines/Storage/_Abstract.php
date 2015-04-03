@@ -36,7 +36,7 @@ abstract class _Abstract {
 	 * @param    callable    $apply
 	 * @param    int|null    $limit
 	 *
-	 * @return    false|bool
+	 * @return    array|false
 	 */
 	abstract function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subfolders = false, $sort = false, $exclusion = false, $system_files = false, $apply = null, $limit = null);
 	/**
@@ -49,7 +49,7 @@ abstract class _Abstract {
 	 * @param string $filename
 	 * @param int    $flags
 	 *
-	 * @return false|bool
+	 * @return array|false
 	 */
 	abstract function file ($filename, $flags = null);
 	/**
