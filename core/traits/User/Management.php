@@ -31,7 +31,7 @@ trait Management {
 	 *
 	 * @param string		$search_phrase
 	 *
-	 * @return int[]|false
+	 * @return false|int[]
 	 */
 	function search_users ($search_phrase) {
 		$search_phrase = trim($search_phrase, "%\n");
