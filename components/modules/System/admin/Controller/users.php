@@ -665,7 +665,7 @@ trait users {
 		$Page           = Page::instance();
 		$User           = User::instance();
 		$a              = Index::instance();
-		$rc             = $Config->route;
+		$rc             = Route::instance()->route;
 		$search_columns = $User->get_users_columns();
 		if (isset($rc[2], $rc[3])) {
 			$is_bot = in_array(3, (array)$User->get_groups($rc[3]));

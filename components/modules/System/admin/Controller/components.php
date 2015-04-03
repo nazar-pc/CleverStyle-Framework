@@ -1534,7 +1534,7 @@ trait components {
 				/**
 				 * DataBases settings
 				 */
-				if (!$Config->core['simple_admin_mode'] && $module_data['db'] && count($Config->db) > 1) {
+				if (!$Config->core['simple_admin_mode'] && @$module_data['db'] && count($Config->db) > 1) {
 					$action .= h::{'a.uk-button.cs-button-compact'}(
 						h::icon('database'),
 						[
@@ -1546,7 +1546,7 @@ trait components {
 				/**
 				 * Storages settings
 				 */
-				if (!$Config->core['simple_admin_mode'] && $module_data['storage'] && count($Config->storage) > 1) {
+				if (!$Config->core['simple_admin_mode'] && @$module_data['storage'] && count($Config->storage) > 1) {
 					$action .= h::{'a.uk-button.cs-button-compact'}(
 						h::icon('hdd-o'),
 						[
