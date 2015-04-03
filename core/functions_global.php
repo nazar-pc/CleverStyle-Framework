@@ -129,12 +129,12 @@ function api_path ($api_path = null) {
  *
  * @param null|string $current_module
  *
- * @return bool
+ * @return string
  */
 function current_module ($current_module = null) {
 	static $stored_current_module = '';
 	if ($current_module !== null) {
-		$stored_current_module = (bool)$current_module;
+		$stored_current_module = $current_module;
 	}
 	return $stored_current_module;
 }

@@ -207,10 +207,10 @@ abstract class _Abstract {
 	 *
 	 * @abstract
 	 *
-	 * @param object|resource $query_result
-	 * @param bool            $single_column If <b>true</b> function will return not array with one element, but directly its value
-	 * @param bool            $array         If <b>true</b> returns array of associative arrays of all fetched rows
-	 * @param bool            $indexed       If <b>false</b> - associative array will be returned
+	 * @param false|object|resource $query_result
+	 * @param bool                  $single_column If <b>true</b> function will return not array with one element, but directly its value
+	 * @param bool                  $array         If <b>true</b> returns array of associative arrays of all fetched rows
+	 * @param bool                  $indexed       If <b>false</b> - associative array will be returned
 	 *
 	 * @return array|false|string
 	 */

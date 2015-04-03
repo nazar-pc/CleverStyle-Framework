@@ -181,8 +181,7 @@ class Permission {
 		if (!$id) {
 			return false;
 		}
-		$id = (array)$id;
-		$id = implode(',', _int($id));
+		$id = implode(',', (array)_int($id));
 		if ($this->db_prime()->q(
 			[
 				"DELETE FROM `[prefix]permissions`

@@ -284,7 +284,7 @@ namespace {
 	 *
 	 * @param null|string $current_module
 	 *
-	 * @return bool
+	 * @return string
 	 */
 	function current_module ($current_module = null) {
 		static $stored_current_module = [];

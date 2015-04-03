@@ -101,7 +101,7 @@ class MySQLi extends _Abstract {
 	/**
 	 * @inheritdoc
 	 *
-	 * @param \mysqli_result $query_result
+	 * @param false|\mysqli_result $query_result
 	 */
 	function f ($query_result, $single_column = false, $array = false, $indexed = false) {
 		if (!is_object($query_result)) {
