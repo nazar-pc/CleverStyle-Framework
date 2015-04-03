@@ -61,7 +61,7 @@ class Session {
 	protected function construct () {
 		$this->cache       = new Prefix('sessions');
 		$this->users_cache = new Prefix('users');
-		$this->initialize_session();
+		$this->initialize();
 	}
 	/**
 	 * Returns database index
@@ -76,111 +76,26 @@ class Session {
 	 *
 	 * Bots detection is also done here
 	 */
-	protected function initialize_session () {
+	protected function initialize () {
 		Event::instance()->fire('System/Session/init/before');
 		/**
 		 * If session exists
 		 */
-		$User = User::instance();
 		if (_getcookie('session')) {
 			$this->user_id = $this->load();
+		} elseif (!api_path()) {
 			/**
 			 * Try to detect bot, not necessary for API request
 			 */
-		} elseif (!api_path()) {
-			$Cache = $this->users_cache;
-			/**
-			 * Loading bots list
-			 */
-			$bots = $Cache->get(
-				'bots',
-				function () {
-					return $this->db()->qfa(
-						[
-							"SELECT
-								`u`.`id`,
-								`u`.`login`,
-								`u`.`email`
-							FROM `[prefix]users` AS `u`
-								INNER JOIN `[prefix]users_groups` AS `g`
-							ON `u`.`id` = `g`.`id`
-							WHERE
-								`g`.`group`		= '%s' AND
-								`u`.`status`	= '%s'",
-							User::BOT_GROUP_ID,
-							User::STATUS_ACTIVE
-						]
-					) ?: [];
-				}
-			);
-			/**
-			 * @var \cs\_SERVER $_SERVER
-			 */
-			/**
-			 * For bots: login is user agent, email is IP
-			 */
-			$bot_hash = hash('sha224', $_SERVER->user_agent.$_SERVER->ip);
-			/**
-			 * If list is not empty - try to find bot
-			 */
-			if (is_array($bots) && !empty($bots)) {
-				/**
-				 * Load data
-				 */
-				$this->user_id = $Cache->$bot_hash;
-				if ($this->user_id === false) {
-					/**
-					 * If no data - try to find bot in list of known bots
-					 */
-					foreach ($bots as $bot) {
-						if (
-							$bot['login'] &&
-							(
-								strpos($_SERVER->user_agent, $bot['login']) !== false ||
-								_preg_match($bot['login'], $_SERVER->user_agent)
-							)
-						) {
-							$this->user_id = $bot['id'];
-							break;
-						}
-						if (
-							$bot['email'] &&
-							(
-								$_SERVER->ip == $bot['email'] ||
-								_preg_match($bot['email'], $_SERVER->ip)
-							)
-						) {
-							$this->user_id = $bot['id'];
-							break;
-						}
-					}
-					unset($bots, $bot, $login, $email);
-					/**
-					 * If found id - this is bot
-					 */
-					if ($this->user_id) {
-						$Cache->$bot_hash = $this->user_id;
-						/**
-						 * Searching for last bot session, if exists - load it, otherwise create new one
-						 */
-						$last_session = $User->get_data('last_session', $this->user_id);
-						if ($last_session) {
-							$this->load($last_session);
-						}
-						if (!$last_session || $this->user_id == User::GUEST_ID) {
-							$this->add($this->user_id);
-							$User->set_data('last_session', $this->get_id(), $this->user_id);
-						}
-						unset($last_session);
-					}
-				}
-			}
-			unset($bots, $bot_hash);
+			$this->bots_detection();
 		}
+		/**
+		 * If session not found and visitor is not bot - create new session
+		 */
 		if (!$this->user_id) {
 			$this->user_id = User::GUEST_ID;
 			/**
-			 * Do not create session for API request
+			 * Do not create session for API requests
 			 */
 			if (!api_path()) {
 				$this->add();
@@ -188,6 +103,97 @@ class Session {
 		}
 		$this->update_user_is();
 		Event::instance()->fire('System/Session/init/after');
+	}
+	/**
+	 * Try to determine whether visitor is a known bot, bots have no sessions
+	 */
+	protected function bots_detection () {
+		$Cache = $this->users_cache;
+		/**
+		 * Loading bots list
+		 */
+		$bots = $Cache->get(
+			'bots',
+			function () {
+				return $this->db()->qfa(
+					[
+						"SELECT
+							`u`.`id`,
+							`u`.`login`,
+							`u`.`email`
+						FROM `[prefix]users` AS `u`
+							INNER JOIN `[prefix]users_groups` AS `g`
+						ON `u`.`id` = `g`.`id`
+						WHERE
+							`g`.`group`		= '%s' AND
+							`u`.`status`	= '%s'",
+						User::BOT_GROUP_ID,
+						User::STATUS_ACTIVE
+					]
+				) ?: [];
+			}
+		);
+		/**
+		 * If there are no known bots - exit from here
+		 */
+		if (!$bots) {
+			return;
+		}
+		/**
+		 * @var \cs\_SERVER $_SERVER
+		 */
+		/**
+		 * For bots: login is user agent, email is IP
+		 */
+		$bot_hash = hash('sha224', $_SERVER->user_agent.$_SERVER->ip);
+		/**
+		 * Load data
+		 */
+		$this->user_id = $Cache->$bot_hash;
+		/**
+		 * If bot found in cache - exit from here
+		 */
+		if ($this->user_id !== false) {
+			return;
+		}
+		/**
+		 * Try to find bot among known bots
+		 */
+		foreach ($bots as $bot) {
+			/**
+			 * Check user agent
+			 */
+			if (
+				$bot['login'] &&
+				(
+					strpos($_SERVER->user_agent, $bot['login']) !== false ||
+					_preg_match($bot['login'], $_SERVER->user_agent)
+				)
+			) {
+				$this->user_id = $bot['id'];
+				break;
+			}
+			/**
+			 * Check IP
+			 */
+			if (
+				$bot['email'] &&
+				(
+					$_SERVER->ip == $bot['email'] ||
+					_preg_match($bot['email'], $_SERVER->ip)
+				)
+			) {
+				$this->user_id = $bot['id'];
+				break;
+			}
+		}
+		unset($bots, $bot);
+		/**
+		 * If bot found - save it in cache
+		 */
+		if ($this->user_id) {
+			$Cache->$bot_hash = $this->user_id;
+		}
 	}
 	/**
 	 * Updates information about who is user accessed by methods ::guest() ::bot() ::user() admin()
@@ -394,7 +400,7 @@ class Session {
 	 * Create the session for the user with specified id
 	 *
 	 * @param false|int $user
-	 * @param bool     $delete_current_session
+	 * @param bool      $delete_current_session
 	 *
 	 * @return bool
 	 */
