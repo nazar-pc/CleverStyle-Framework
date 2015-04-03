@@ -222,7 +222,7 @@ class Index {
 		/**
 		 * If path not specified - take first from structure
 		 */
-		$code = $this->normalize_route_internal($path, $structure);
+		$code = $this->check_and_normalize_route_internal($path, $structure);
 		if ($code !== 200) {
 			error_code($code);
 			return;
@@ -236,7 +236,7 @@ class Index {
 		}
 		$this->sub_path_required = true;
 		$sub_path                = @$this->path[1];
-		$code                    = $this->normalize_route_internal($sub_path, $structure[$path]);
+		$code                    = $this->check_and_normalize_route_internal($sub_path, $structure[$path]);
 		if ($code !== 200) {
 			error_code($code);
 			return;
@@ -249,7 +249,7 @@ class Index {
 	 *
 	 * @return int HTTP status code
 	 */
-	protected function normalize_route_internal (&$path, $structure) {
+	protected function check_and_normalize_route_internal (&$path, $structure) {
 		/**
 		 * If path not specified - take first from structure
 		 */
