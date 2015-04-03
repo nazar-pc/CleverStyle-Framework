@@ -387,56 +387,6 @@ class Index {
 		}
 	}
 	/**
-	 * Page generation, blocks processing, adding of form with save/apply/cancel/reset and/or custom users buttons
-	 */
-	protected function render_page () {
-		$Page = Page::instance();
-		/**
-		 * Add generic Home or Module name title
-		 */
-		if (!$this->in_api) {
-			$L = Language::instance();
-			if ($this->in_admin) {
-				$Page->title($L->administration);
-			}
-			$Page->title(
-				$L->{home_page() ? 'home' : $this->module}
-			);
-		}
-		/**
-		 * If module consists of index.html only
-		 */
-		if (
-			!$this->in_admin &&
-			!$this->in_api &&
-			$this->module &&
-			file_exists(MODULES."/$this->module/index.html")
-		) {
-			ob_start();
-			_include(MODULES."/$this->module/index.html", false, false);
-			$Page->content(ob_get_clean());
-		} elseif (!error_code()) {
-			$this->check_and_normalize_route();
-			/** @noinspection NotOptimalIfConditionsInspection */
-			if (!error_code()) {
-				if (file_exists("$this->working_directory/Controller.php")) {
-					$this->controller_router(@$this->path[0], @$this->path[1]);
-				} else {
-					$this->files_router(@$this->path[0], @$this->path[1]);
-				}
-			}
-		}
-		if ($this->in_api) {
-			$Page->content($this->Content);
-			return;
-		}
-		$this->render_blocks();
-		if ($this->form) {
-			$this->form_wrapper();
-		}
-		$Page->content($this->Content);
-	}
-	/**
 	 * Wraps `cs\Index::$Content` with form and adds form buttons to the end of content
 	 */
 	protected function form_wrapper () {
@@ -514,6 +464,56 @@ class Index {
 		return $this->action ?: '';
 	}
 	/**
+	 * Page generation, blocks processing, adding of form with save/apply/cancel/reset and/or custom users buttons
+	 */
+	protected function render_page () {
+		$this->render_title();
+		$this->render_content();
+		if ($this->in_api) {
+			return;
+		}
+		if ($this->form) {
+			$this->form_wrapper();
+		}
+		$this->render_blocks();
+	}
+	protected function render_title () {
+		$Page = Page::instance();
+		/**
+		 * Add generic Home or Module name title
+		 */
+		if (!$this->in_api) {
+			$L = Language::instance();
+			if ($this->in_admin) {
+				$Page->title($L->administration);
+			}
+			$Page->title(
+				$L->{home_page() ? 'home' : $this->module}
+			);
+		}
+	}
+	protected function render_content () {
+		$Page = Page::instance();
+		/**
+		 * If module consists of index.html only
+		 */
+		if (file_exists("$this->working_directory/index.html")) {
+			ob_start();
+			_include("$this->working_directory/index.html", false, false);
+			$Page->content(ob_get_clean());
+			return;
+		}
+		$this->check_and_normalize_route();
+		if (!error_code()) {
+			$router = file_exists("$this->working_directory/Controller.php") ? 'controller_router' : 'files_router';
+			$this->$router(@$this->path[0], @$this->path[1]);
+		}
+		if (error_code()) {
+			$Page->error();
+		}
+		$Page->content($this->Content);
+	}
+	/**
 	 * Blocks processing
 	 */
 	protected function render_blocks () {
@@ -540,7 +540,7 @@ class Index {
 			) {
 				continue;
 			}
-			if (Event::instance()->fire(
+			if (!Event::instance()->fire(
 				'System/Index/block_render',
 				[
 					'index'        => $block['index'],
@@ -548,48 +548,53 @@ class Index {
 				]
 			)
 			) {
-				$block['title'] = $this->ml_process($block['title']);
-				switch ($block['type']) {
-					default:
-						$content = ob_wrapper(
-							function () use ($block) {
-								include BLOCKS."/block.$block[type].php";
-							}
-						);
-						break;
-					case 'html':
-					case 'raw_html':
-						$content = $this->ml_process($block['content']);
-						break;
-				}
-				$template = TEMPLATES.'/blocks/block.'.(
-					file_exists(TEMPLATES."/blocks/block.$block[template]") ? $block['template'] : 'default.html'
-					);
-				$content  = str_replace(
-					[
-						'<!--id-->',
-						'<!--title-->',
-						'<!--content-->'
-					],
-					[
-						$block['index'],
-						$block['title'],
-						$content
-					],
-					ob_wrapper(
-						function () use ($template) {
-							include $template;
+				/**
+				 * Block was rendered by event handler
+				 */
+				return;
+			}
+			$block['title'] = $this->ml_process($block['title']);
+			switch ($block['type']) {
+				default:
+					$block['content'] = ob_wrapper(
+						function () use ($block) {
+							include BLOCKS."/block.$block[type].php";
 						}
-					)
-				);
-				if ($block['position'] == 'floating') {
-					$Page->replace(
-						"<!--block#$block[index]-->",
-						$content
 					);
-				} else {
-					$blocks_array[$block['position']] .= $content;
-				}
+					break;
+				case 'html':
+				case 'raw_html':
+					$block['content'] = $this->ml_process($block['content']);
+					break;
+			}
+			/**
+			 * Template file will have access to `$block` variable, so it can use that
+			 */
+			$content = str_replace(
+				[
+					'<!--id-->',
+					'<!--title-->',
+					'<!--content-->'
+				],
+				[
+					$block['index'],
+					$block['title'],
+					$block['content']
+				],
+				ob_wrapper(
+					function () use ($block) {
+						$template = file_exists(TEMPLATES."/blocks/block.$block[template]") ? $block['template'] : 'default.html';
+						include TEMPLATES."/blocks/block.$template";
+					}
+				)
+			);
+			if ($block['position'] == 'floating') {
+				$Page->replace(
+					"<!--block#$block[index]-->",
+					$content
+				);
+			} else {
+				$blocks_array[$block['position']] .= $content;
 			}
 		}
 		$Page->Top .= $blocks_array['top'];
@@ -716,9 +721,6 @@ class Index {
 		}
 		Event::instance()->fire('System/Index/preload');
 		$this->render_page();
-		if (error_code()) {
-			$Page->error();
-		}
 		Event::instance()->fire('System/Index/postload');
 	}
 }
