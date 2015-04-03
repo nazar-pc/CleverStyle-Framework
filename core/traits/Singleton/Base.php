@@ -89,8 +89,7 @@ trait Base {
 				!file_exists(CUSTOM."/classes/$alias[path].php")
 			) {
 				clean_classes_cache();
-				$modified_classes = null;
-				$instance         = new $class;
+				$instance = new $class;
 				$instance->construct();
 				return $instance;
 			}

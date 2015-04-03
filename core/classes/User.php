@@ -42,7 +42,6 @@ namespace	cs;
 use
 	cs\Cache\Prefix,
 	cs\DB\Accessor,
-	cs\Permission\Any,
 	cs\User\Data as User_data,
 	cs\User\Group as User_group,
 	cs\User\Management as User_management,
@@ -75,7 +74,6 @@ class User {
 	use
 		Accessor,
 		Singleton,
-		Any,
 		User_data,
 		User_group,
 		User_management,
