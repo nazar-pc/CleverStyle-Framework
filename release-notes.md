@@ -422,3 +422,62 @@ Possible partial compatibility breaking (very unlikely, but still possible):
   * memcached
 
 Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
+
+# 2.4.2+build-1005: Code quality and bugs hunting
+
+This release is not so huge as previous, but extremely important, because it drops backward compatibility, even, partially, with last release, read on.
+
+Bad things first:
+* if you're running any old version - you need to update system to `1.110.0+build-985` first, then update all components (otherwise they will not be able to uninstall completely) and ensure you've read all release notes about releases newer that you currently use, modified your code accordingly and there are no errors and deprecated messages in log file
+* also right after upgrade to `2.4.2+build-1005` update all components
+
+Now exciting good news:
+* no redundant elements for backward compatibility!
+* better performance!
+* more static code analysis with SensioLabsInsights and Scrutinizer!
+* PHP 5.5 is the minimum supported version now and we can use new features inside system core!
+
+New components:
+* None
+
+New features:
+* `cs\CRUD_helpers` trait added to reduce code duplicating for trivial additional operations when using `cs\CRUD` trait (currently includes `search` method)
+* Scrutinizer badge added
+* Block templates now have access to `$block` variable, so they can render block as they like
+
+Updates:
+* New upstream version of UPF, dropped PHP 5.4 support
+
+Fixes and small improvements:
+* OAuth2: Fix for refresh_token in OAuth2 module
+* Deferred tasks: Split `\cs\modules\Deferred_tasks::run` method into two, because they both do not share any common code anyway
+* OAuth2: Unnecessary return statement removed, fixed potential error in Http server mode because of function redeclaration
+* Some refactoring of DB-related classes and usages
+* Fix for removing empty gallery
+* Simplification in `\cs\Page` class
+* Tiny fixes in `\cs\Config\Module_Properties`
+* Refactoring and fixes in `\cs\Session`, do not update `sign_in` time unless really sign in
+* Reformatting and simplification of `\cs\Permissions`
+* Refactoring and simplification of `\cs\User\Permission` trait
+* Dropped deprecated internal method in `\cs\Core` class
+* Huge PhpDoc update that will allow more precise static analysis:
+  * `bool` in multiple return types of PhpDoc sections in many cases replaced by `false` as more specific type
+  * some PhpDoc types corrected
+* Refactoring and simplification of `\cs\Index` class
+* Fixes for warnings on admin pages
+* Generally big amount of PhpDoc improvements and small fixes
+
+Deprecations:
+* Well, this is backward incompatible version:)
+
+Dropped backward compatibility:
+* All deprecated functionality was dropped
+* All components now require System of version >= 2.0, but < 3.0 since API will be backward-compatible for whole 2.x series
+* Dropped update support from System versions older than previous release, the same for all components
+* Dropped support for PHP 5.4
+* Meta information unification (sorry, no transitional version this time):
+  * `meta/db.json` contents of components now available as `db` field in `meta.json`
+  * `meta/storage.json` contents of components now available as `storage` field in `meta.json`
+  * `versions.json` contents of components now available as `update_versions` field in `meta.json`
+
+Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
