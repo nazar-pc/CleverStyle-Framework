@@ -47,8 +47,8 @@ class Permission {
 	 * @param null|string $label
 	 * @param string      $condition and|or
 	 *
-	 * @return array|bool            If only <b>$id</b> specified - result is array of permission data,
-	 *                                in other cases result will be array of arrays of corresponding permissions data.
+	 * @return array|false If only <b>$id</b> specified - result is array of permission data, in other cases result will be array of arrays of corresponding
+	 *                     permissions data
 	 */
 	function get ($id = null, $group = null, $label = null, $condition = 'and') {
 		$condition = $condition == 'or' ? 'OR' : 'AND';
@@ -118,7 +118,7 @@ class Permission {
 	 * @param string $group
 	 * @param string $label
 	 *
-	 * @return bool|int            Group id or <b>false</b> on failure
+	 * @return false|int Group id or <b>false</b> on failure
 	 */
 	function add ($group, $label) {
 		if ($this->db_prime()->q(

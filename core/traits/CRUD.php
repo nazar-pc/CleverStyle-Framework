@@ -122,7 +122,7 @@ trait CRUD {
 	 * @param callable[]|string[] $data_model
 	 * @param array               $arguments First element `id` can be omitted if it is autoincrement field
 	 *
-	 * @return bool|int|string                Id of created item on success (or specified primary key), `false` otherwise
+	 * @return false|int|string Id of created item on success (or specified primary key), `false` otherwise
 	 */
 	protected function create ($table, $data_model, $arguments) {
 		$insert_id = count($data_model) == count($arguments);
@@ -163,7 +163,7 @@ trait CRUD {
 	 *
 	 * @param array $arguments First element `id` can be omitted if it is autoincrement field
 	 *
-	 * @return bool|int            Id of created item on success, `false` otherwise
+	 * @return false|int Id of created item on success, `false` otherwise
 	 */
 	protected function create_simple ($arguments) {
 		return $this->create($this->table, $this->data_model, $arguments);
@@ -171,11 +171,11 @@ trait CRUD {
 	/**
 	 * Read item
 	 *
-	 * @param string              $table
-	 * @param callable[]|string[] $data_model
-	 * @param int|int[]           $id
+	 * @param string                    $table
+	 * @param callable[]|string[]       $data_model
+	 * @param int|int[]|string|string[] $id
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	protected function read ($table, $data_model, $id) {
 		if (is_array($id)) {
@@ -186,13 +186,15 @@ trait CRUD {
 		}
 		$columns      = "`".implode("`,`", array_keys($data_model))."`";
 		$first_column = array_keys($data_model)[0];
-		$data         = $this->db()->qf([
-			"SELECT $columns
-			FROM `$table`
-			WHERE `$first_column` = '%s'
-			LIMIT 1",
-			$id
-		]) ?: false;
+		$data         = $this->db()->qf(
+			[
+				"SELECT $columns
+				FROM `$table`
+				WHERE `$first_column` = '%s'
+				LIMIT 1",
+				$id
+			]
+		) ?: false;
 		/**
 		 * If there are multilingual fields - handle multilingual getting of fields automatically
 		 */
@@ -214,7 +216,7 @@ trait CRUD {
 	 *
 	 * @param int|int[] $id
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	protected function read_simple ($id) {
 		return $this->read($this->table, $this->data_model, $id);
@@ -231,12 +233,15 @@ trait CRUD {
 	protected function update ($table, $data_model, $arguments) {
 		$id = array_shift($arguments);
 		self::crud_arguments_preparation(array_slice($data_model, 1), $arguments, $id);
-		$columns      = implode(',', array_map(
-			function ($column) {
-				return "`$column` = '%s'";
-			},
-			array_keys($arguments)
-		));
+		$columns      = implode(
+			',',
+			array_map(
+				function ($column) {
+					return "`$column` = '%s'";
+				},
+				array_keys($arguments)
+			)
+		);
 		$arguments[]  = $id;
 		$first_column = array_keys($data_model)[0];
 		return (bool)$this->db_prime()->q(

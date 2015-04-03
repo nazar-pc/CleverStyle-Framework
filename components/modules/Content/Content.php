@@ -94,7 +94,7 @@ class Content {
 	 *
 	 * @param string|string[] $key
 	 *
-	 * @return bool|mixed
+	 * @return false|mixed
 	 */
 	function get ($key) {
 		if (is_array($key)) {
@@ -117,7 +117,7 @@ class Content {
 	/**
 	 * Get keys of all content items
 	 *
-	 * @return int[]|bool
+	 * @return int[]|false
 	 */
 	function get_all () {
 		return $this->db()->qfas(

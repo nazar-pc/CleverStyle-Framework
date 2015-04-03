@@ -19,7 +19,7 @@ trait packages_manipulation {
 	/**
 	 * @param string $file_name File key in `$_FILES` superglobal
 	 *
-	 * @return bool|string Path to file location if succeed or `false` on failure
+	 * @return false|string Path to file location if succeed or `false` on failure
 	 */
 	static protected function move_uploaded_file_to_tmp ($file_name) {
 		if (!isset($_FILES[$file_name]) || !$_FILES[$file_name]['tmp_name']) {

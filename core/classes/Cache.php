@@ -51,7 +51,7 @@ class Cache {
 	 * @param string		$item		May contain "/" symbols for cache structure, for example users/<i>user_id</i>
 	 * @param callable|null	$callback
 	 *
-	 * @return bool|mixed				Returns item on success of <b>false</b> on failure
+	 * @return false|mixed				Returns item on success of <b>false</b> on failure
 	 */
 	function get ($item, $callback = null) {
 		if (!$this->state) {
@@ -140,7 +140,7 @@ class Cache {
 	 *
 	 * @param string		$item	May contain "/" symbols for cache structure, for example users/<i>user_id</i>
 	 *
-	 * @return bool|mixed			Returns item on success of <b>false</b> on failure
+	 * @return false|mixed			Returns item on success of <b>false</b> on failure
 	 */
 	function __get ($item) {
 		return $this->get($item);
@@ -150,20 +150,16 @@ class Cache {
 	 *
 	 * @param string	$item	May contain "/" symbols for cache structure, for example users/<i>user_id</i>
 	 * @param mixed		$data
-	 *
-	 * @return bool
 	 */
 	function __set ($item, $data) {
-		return $this->set($item, $data);
+		$this->set($item, $data);
 	}
 	/**
 	 * Delete item from cache
 	 *
 	 * @param string	$item	May contain "/" symbols for cache structure, for example users/<i>user_id</i>
-	 *
-	 * @return bool
 	 */
 	function __unset ($item) {
-		return $this->del($item);
+		$this->del($item);
 	}
 }

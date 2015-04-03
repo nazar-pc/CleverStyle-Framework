@@ -14,7 +14,7 @@ abstract class _Abstract {
 	 *
 	 * @param string $item May contain "/" symbols for cache structure, for example users/<i>user_id</i>
 	 *
-	 * @return bool|mixed            Returns item on success of <b>false</b> on failure
+	 * @return false|mixed Returns item on success of <b>false</b> on failure
 	 */
 	abstract function get ($item);
 	/**

@@ -104,7 +104,7 @@ function error_code ($code = null) {
 function admin_path ($admin_path = null) {
 	static $stored_admin_path = false;
 	if ($admin_path !== null) {
-		$stored_admin_path = $admin_path;
+		$stored_admin_path = (bool)$admin_path;
 	}
 	return $stored_admin_path;
 }
@@ -119,7 +119,7 @@ function admin_path ($admin_path = null) {
 function api_path ($api_path = null) {
 	static $stored_api_path = false;
 	if ($api_path !== null) {
-		$stored_api_path = $api_path;
+		$stored_api_path = (bool)$api_path;
 	}
 	return $stored_api_path;
 }
@@ -134,7 +134,7 @@ function api_path ($api_path = null) {
 function current_module ($current_module = null) {
 	static $stored_current_module = '';
 	if ($current_module !== null) {
-		$stored_current_module = $current_module;
+		$stored_current_module = (bool)$current_module;
 	}
 	return $stored_current_module;
 }
@@ -149,7 +149,7 @@ function current_module ($current_module = null) {
 function home_page ($home_page = null) {
 	static $stored_home_page = false;
 	if ($home_page !== null) {
-		$stored_home_page = $home_page;
+		$stored_home_page = (bool)$home_page;
 	}
 	return $stored_home_page;
 }

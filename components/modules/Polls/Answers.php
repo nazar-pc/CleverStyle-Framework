@@ -61,7 +61,7 @@ class Answers {
 	 *
 	 * @param int|int[] $poll
 	 *
-	 * @return int|int[]|bool    Option id
+	 * @return int|int[]|false Option id
 	 */
 	function get ($poll) {
 		if (is_array($poll)) {

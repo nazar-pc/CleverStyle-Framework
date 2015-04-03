@@ -100,7 +100,7 @@ class Orders {
 	 *
 	 * @param int|int[] $id
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	function get ($id) {
 		$data = $this->read_simple($id);
@@ -223,7 +223,7 @@ class Orders {
 	 * @param string  $order_by
 	 * @param bool    $asc
 	 *
-	 * @return array|bool|string
+	 * @return array|false|string
 	 */
 	function search ($search_parameters = [], $page = 1, $count = 20, $order_by = 'date', $asc = false) {
 		return $this->crud_search($search_parameters, $page, $count, $order_by, $asc);
@@ -234,9 +234,9 @@ class Orders {
 	 * Using this event third party components may automatically apply different discounts for items and shipping based on user, number of units and other
 	 * things
 	 *
-	 * @param array    $items Array in form of [id => units]
-	 * @param int      $shipping_type
-	 * @param bool|int $user
+	 * @param array     $items Array in form of [id => units]
+	 * @param int       $shipping_type
+	 * @param false|int $user
 	 *
 	 * @return array   <pre>
 	 *  [
@@ -296,7 +296,7 @@ class Orders {
 	 * @param int    $status
 	 * @param string $comment
 	 *
-	 * @return bool|int Id of created item on success of <b>false</> on failure
+	 * @return false|int Id of created item on success of <b>false</> on failure
 	 *
 	 */
 	function add ($user, $shipping_type, $shipping_cost, $shipping_username, $shipping_phone, $shipping_address, $payment_method, $paid, $status, $comment) {

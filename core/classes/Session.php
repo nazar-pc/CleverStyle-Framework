@@ -250,7 +250,7 @@ class Session {
 	/**
 	 * Returns id of current session
 	 *
-	 * @return bool|string
+	 * @return false|string
 	 */
 	function get_id () {
 		if ($this->user_id == User::GUEST_ID && $this->bot()) {
@@ -261,7 +261,7 @@ class Session {
 	/**
 	 * Returns user id of current session
 	 *
-	 * @return bool|int
+	 * @return false|int
 	 */
 	function get_user () {
 		return $this->user_id;
@@ -271,7 +271,7 @@ class Session {
 	 *
 	 * @param null|string $session_id If `null` - loaded from `$this->session_id`, and if that also empty - from cookies
 	 *
-	 * @return bool|array
+	 * @return false|array
 	 */
 	function get ($session_id) {
 		if (!$session_id) {
@@ -393,7 +393,7 @@ class Session {
 	/**
 	 * Create the session for the user with specified id
 	 *
-	 * @param bool|int $user
+	 * @param false|int $user
 	 * @param bool     $delete_current_session
 	 *
 	 * @return bool
@@ -603,7 +603,7 @@ class Session {
 	/**
 	 * Deletion of all user sessions
 	 *
-	 * @param bool|int $user If not specified - current user assumed
+	 * @param false|int $user If not specified - current user assumed
 	 *
 	 * @return bool
 	 */
@@ -639,7 +639,7 @@ class Session {
 	 * @param string      $item
 	 * @param null|string $session_id
 	 *
-	 * @return bool|mixed
+	 * @return false|mixed
 	 *
 	 */
 	function get_data ($item, $session_id = null) {

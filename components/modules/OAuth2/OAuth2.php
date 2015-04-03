@@ -52,7 +52,7 @@ class OAuth2 {
 	 * @param string		$domain
 	 * @param int			$active
 	 *
-	 * @return bool|string			<i>false</i> on failure, id of created client otherwise
+	 * @return false|string			<i>false</i> on failure, id of created client otherwise
 	 */
 	function add_client ($name, $domain, $active) {
 		if (
@@ -103,7 +103,7 @@ class OAuth2 {
 	 *
 	 * @param string		$id
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	function get_client ($id) {
 		return $this->cache->get($id, function () use ($id) {
@@ -180,7 +180,7 @@ class OAuth2 {
 	/**
 	 * Get clients list in form of associative array
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	function clients_list () {
 		return $this->db()->qfa(
@@ -282,16 +282,16 @@ class OAuth2 {
 	 * @param string $response_type 'code' or 'token'
 	 * @param string $redirect_uri
 	 *
-	 * @return bool|string                    <i>false</i> on failure or code for token access otherwise
+	 * @return false|string                    <i>false</i> on failure or code for token access otherwise
 	 */
 	function add_code ($client, $response_type, $redirect_uri = '') {
 		$Session = Session::instance();
 		$client  = $this->get_client($client);
 		if (
+			!$client ||
 			(
 				!$this->guest_tokens && !$Session->user()
 			) ||
-			!$client ||
 			!$this->get_access($client['id'])
 		) {
 			return false;
@@ -373,7 +373,7 @@ class OAuth2 {
 	 * @param string		$secret			Client secret
 	 * @param string		$redirect_uri
 	 *
-	 * @return array|bool					<i>false</i> on failure, otherwise array
+	 * @return array|false					<i>false</i> on failure, otherwise array
 	 * 										['access_token' => md5, 'refresh_token' => md5, 'expires_in' => seconds, 'token_type' => 'bearer']<br>
 	 * 										<i>expires_in</i> may be negative
 	 */
@@ -426,7 +426,7 @@ class OAuth2 {
 	 *
 	 * @param string		$access_token
 	 *
-	 * @return array|bool					<i>false</i> on failure, array ['user' => id, 'session' => id, 'expire' => unix time, 'type' => 'code'|'token']
+	 * @return array|false					<i>false</i> on failure, array ['user' => id, 'session' => id, 'expire' => unix time, 'type' => 'code'|'token']
 	 */
 	function get_token ($access_token) {
 		if (!is_md5($access_token)) {
@@ -520,8 +520,7 @@ class OAuth2 {
 	 * @param string $client Client id
 	 * @param string $secret Client secret
 	 *
-	 * @return array|bool                    <i>false</i> on failure,
-	 *                                        otherwise array ['access_token' => md5, 'refresh_token' => md5, 'expires_in' => seconds, 'token_type' => 'bearer']
+	 * @return array|false <i>false</i> on failure, otherwise array ['access_token' => md5, 'refresh_token' => md5, 'expires_in' => seconds, 'token_type' => 'bearer']
 	 */
 	function refresh_token ($refresh_token, $client, $secret) {
 		$client = $this->get_client($client);

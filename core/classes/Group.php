@@ -54,7 +54,7 @@ class Group {
 	 * @param int					$group
 	 * @param bool|string			$item	If <b>false</b> - array will be returned, if title|description|data - corresponding item
 	 *
-	 * @return array|bool|mixed
+	 * @return array|false|mixed
 	 */
 	function get ($group, $item = false) {
 		$group	= (int)$group;
@@ -91,7 +91,7 @@ class Group {
 	 * @param string $title
 	 * @param string $description
 	 *
-	 * @return bool|int
+	 * @return false|int
 	 */
 	function add ($title, $description) {
 		$title			= xap($title, false);

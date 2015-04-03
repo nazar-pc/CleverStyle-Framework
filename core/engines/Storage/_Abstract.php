@@ -36,7 +36,7 @@ abstract class _Abstract {
 	 * @param    callable    $apply
 	 * @param    int|null    $limit
 	 *
-	 * @return    array|bool
+	 * @return    false|bool
 	 */
 	abstract function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subfolders = false, $sort = false, $exclusion = false, $system_files = false, $apply = null, $limit = null);
 	/**
@@ -49,7 +49,7 @@ abstract class _Abstract {
 	 * @param string $filename
 	 * @param int    $flags
 	 *
-	 * @return array|bool
+	 * @return false|bool
 	 */
 	abstract function file ($filename, $flags = null);
 	/**
@@ -62,7 +62,7 @@ abstract class _Abstract {
 	 * @param string $filename
 	 * @param int    $flags
 	 *
-	 * @return bool|string
+	 * @return false|string
 	 */
 	abstract function file_get_contents ($filename, $flags = null);
 	/**
@@ -76,7 +76,7 @@ abstract class _Abstract {
 	 * @param string $data
 	 * @param int    $flags
 	 *
-	 * @return bool|int
+	 * @return false|int
 	 */
 	abstract function file_put_contents ($filename, $data, $flags = null);
 	/**
@@ -201,7 +201,7 @@ abstract class _Abstract {
 	 *
 	 * @param string $source
 	 *
-	 * @return bool|string
+	 * @return false|string
 	 */
 	abstract function url_by_source ($source);
 	/**
@@ -213,7 +213,7 @@ abstract class _Abstract {
 	 *
 	 * @param string $url
 	 *
-	 * @return bool|string
+	 * @return false|string
 	 */
 	abstract function source_by_url ($url);
 	/**

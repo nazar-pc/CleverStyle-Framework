@@ -70,7 +70,7 @@ class Deferred_tasks {
 	 * @param int		$begin		Unix timestamp, task will not be executed until this time
 	 * @param int		$priority	Priority 0..2, higher number - higher priority
 	 *
-	 * @return bool|int				Id of created task or <i>false</i> on failure
+	 * @return false|int			Id of created task or <i>false</i> on failure
 	 */
 	function add ($module, $data, $expected, $begin = 0, $priority = 1) {
 		return $this->create_simple([
@@ -88,7 +88,7 @@ class Deferred_tasks {
 	 *
 	 * @param int			$id
 	 *
-	 * @return bool|mixed
+	 * @return false|mixed
 	 */
 	protected function get ($id) {
 		$data	= $this->read_simple($id) ?: false;
@@ -100,9 +100,9 @@ class Deferred_tasks {
 	/**
 	 * Delete task
 	 *
-	 * @param int			$id
+	 * @param int $id
 	 *
-	 * @return bool|mixed
+	 * @return false|mixed
 	 */
 	function del ($id) {
 		return $this->delete_simple($id);
@@ -191,7 +191,7 @@ class Deferred_tasks {
 	/**
 	 * Get id of next task that should be executed
 	 *
-	 * @return bool|int
+	 * @return false|int
 	 */
 	protected function next_task () {
 		return $this->db()->qfs([

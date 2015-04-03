@@ -215,7 +215,7 @@ class User {
 	 *
 	 * @param string|string[]		$item
 	 *
-	 * @return array|bool|string
+	 * @return array|false|string
 	 */
 	function __get ($item) {
 		if ($item == 'id') {

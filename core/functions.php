@@ -150,7 +150,7 @@ function __ ($item, $arguments = null, $_ = null) {
  *
  * @param string		$source
  *
- * @return bool|string
+ * @return false|string
  */
 function url_by_source ($source) {
 	$Config	= Config::instance(true);
@@ -168,7 +168,7 @@ function url_by_source ($source) {
  *
  * @param string		$url
  *
- * @return bool|string
+ * @return false|string
  */
 function source_by_url ($url) {
 	$Config	= Config::instance(true);
@@ -316,7 +316,7 @@ function get_timezones_list () {
  *
  * @param string $item
  *
- * @return bool|string
+ * @return false|string
  */
 function get_core_ml_text ($item) {
 	$Config	= Config::instance(true);
@@ -497,7 +497,7 @@ function pages ($page, $total, $url, $head_links = false) {
  * 											if string - it will be formatted with sprintf with one parameter - page number<br>
  * 											if callable - one parameter will be given, callable should return url string
  *
- * @return bool|string						<b>false</b> if single page, otherwise string, set of navigation buttons
+ * @return false|string						<b>false</b> if single page, otherwise string, set of navigation buttons
  */
 function pages_buttons ($page, $total, $url = false) {
 	if ($total == 1) {

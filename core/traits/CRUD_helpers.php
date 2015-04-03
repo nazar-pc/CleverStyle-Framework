@@ -24,7 +24,7 @@ trait CRUD_helpers {
 	 * @param string  $order_by
 	 * @param bool    $asc
 	 *
-	 * @return array|bool|int
+	 * @return array|false|int
 	 */
 	protected function search ($search_parameters = [], $page = 1, $count = 100, $order_by = 'id', $asc = false) {
 		if (!isset($this->data_model[$order_by])) {

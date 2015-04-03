@@ -21,7 +21,7 @@ class Text {
 	 * @param int|null		$id					Getting may be done with group and label or with id
 	 * @param bool			$store_in_cache		If <b>true</b> - text will be stored in cache
 	 *
-	 * @return bool|string
+	 * @return false|string
 	 */
 	function get ($database, $group, $label, $id = null, $store_in_cache = false) {
 		$Cache		= Cache::instance();
@@ -115,7 +115,7 @@ class Text {
 	 * @param string		$label
 	 * @param string		$text
 	 *
-	 * @return array[]|bool				Array of items ['id' => <i>id</i>, 'lang' => <i>lang</i>] on success, <i>false</i> otherwise
+	 * @return array[]|false				Array of items ['id' => <i>id</i>, 'lang' => <i>lang</i>] on success, <i>false</i> otherwise
 	 */
 	function search ($database, $group, $label, $text) {
 		return DB::instance()->$database->qfa([
@@ -142,7 +142,7 @@ class Text {
 	 * @param string		$label
 	 * @param string		$text
 	 *
-	 * @return bool|string				If multilingual support enabled or was enabled and then disabled but translations remains - returns {¶<i>id</i>}<br>
+	 * @return false|string				If multilingual support enabled or was enabled and then disabled but translations remains - returns {¶<i>id</i>}<br>
 	 * 									otherwise returns original text
 	 */
 	function set ($database, $group, $label, $text) {
@@ -296,7 +296,7 @@ class Text {
 	 * @param string|string[]		$data
 	 * @param bool					$store_in_cache		If <b>true</b> - text will be stored in cache
 	 *
-	 * @return bool|string|string[]
+	 * @return string|string[]
 	 */
 	function process ($database, $data, $store_in_cache = false) {
 		if (empty($data)) {

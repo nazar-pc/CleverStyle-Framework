@@ -168,8 +168,8 @@ class Route {
 	 *
 	 * @param string $raw_relative_address
 	 *
-	 * @return bool|string[]                            Relative address or <i>false</i> if access denied (occurs when admin access is limited by IP)
-	 *                                                    Array contains next elements: route, relative_address, ADMIN, API, MODULE, HOME
+	 * @return false|string[] Relative address or <i>false</i> if access denied (occurs when admin access is limited by IP). Array contains next elements:
+	 *                        route, relative_address, ADMIN, API, MODULE, HOME
 	 */
 	function process_route ($raw_relative_address) {
 		$Config = Config::instance();

@@ -53,7 +53,7 @@ class Encryption {
 	 * @param string      $data Data to be encrypted
 	 * @param bool|string $key  Key, if not specified - system key will be used
 	 *
-	 * @return bool|string
+	 * @return false|string
 	 */
 	function encrypt ($data, $key = false) {
 		if (!$this->encrypt_support) {
@@ -84,7 +84,7 @@ class Encryption {
 	 * @param string      $data Data to be decrypted
 	 * @param bool|string $key  Key, if not specified - system key will be used
 	 *
-	 * @return bool|mixed
+	 * @return false|mixed
 	 */
 	function decrypt ($data, $key = false) {
 		if (!$this->encrypt_support) {

@@ -56,7 +56,7 @@ class Transactions {
 	 *
 	 * @param int|int[] $id
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	function get ($id) {
 		return $this->read_simple($id);
@@ -71,7 +71,7 @@ class Transactions {
 	 * @param string  $order_by
 	 * @param bool    $asc
 	 *
-	 * @return array|bool|string
+	 * @return array|false|int
 	 */
 	function search ($search_parameters = [], $page = 1, $count = 100, $order_by = 'id', $asc = false) {
 		return $this->crud_search($search_parameters, $page, $count, $order_by, $asc);
@@ -86,7 +86,7 @@ class Transactions {
 	 * @param string $purpose
 	 * @param string $description
 	 *
-	 * @return bool|int Id of created transaction on success of <b>false</> on failure
+	 * @return false|int Id of created transaction on success of <b>false</> on failure
 	 *
 	 */
 	function add ($amount, $currency, $user, $module, $purpose, $description) {

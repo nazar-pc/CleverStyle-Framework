@@ -64,7 +64,7 @@ class Attributes {
 	 *
 	 * @param int|int[] $id
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	function get ($id) {
 		if (is_array($id)) {
@@ -121,7 +121,7 @@ class Attributes {
 	 * @param string       $title_internal
 	 * @param array|string $value
 	 *
-	 * @return bool|int Id of created attribute on success of <b>false</> on failure
+	 * @return false|int Id of created attribute on success of <b>false</> on failure
 	 */
 	function add ($type, $title, $title_internal, $value) {
 		$id = $this->create_simple([

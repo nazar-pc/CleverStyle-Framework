@@ -46,7 +46,7 @@ class Blogs {
 	 *
 	 * @param int|int[] $id
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	function get ($id) {
 		if (is_array($id)) {
@@ -233,7 +233,7 @@ class Blogs {
 	 * @param string[] $tags
 	 * @param bool     $draft
 	 *
-	 * @return bool|int                Id of created post on success of <b>false</> on failure
+	 * @return false|int Id of created post on success of <b>false</> on failure
 	 */
 	function add ($title, $path, $content, $sections, $tags, $draft) {
 		if (empty($tags) || empty($content)) {
@@ -521,7 +521,7 @@ class Blogs {
 	/**
 	 * Get array of sections in form [<i>id</i> => <i>title</i>]
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	function get_sections_list () {
 		$L = Language::instance();
@@ -545,7 +545,7 @@ class Blogs {
 	/**
 	 * Get array of sections structure
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	function get_sections_structure () {
 		$L = Language::instance();
@@ -597,7 +597,7 @@ class Blogs {
 	 *
 	 * @param int|int[] $id
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	function get_section ($id) {
 		if (is_array($id)) {
@@ -649,7 +649,7 @@ class Blogs {
 	 * @param string $title
 	 * @param string $path
 	 *
-	 * @return bool|int            Id of created section on success of <b>false</> on failure
+	 * @return false|int Id of created section on success of <b>false</> on failure
 	 */
 	function add_section ($parent, $title, $path) {
 		$parent = (int)$parent;
@@ -685,9 +685,8 @@ class Blogs {
 				$Cache->{'sections/structure'}
 			);
 			return $id;
-		} else {
-			return false;
 		}
+		return false;
 	}
 	/**
 	 * Set data of specified section
@@ -720,9 +719,8 @@ class Blogs {
 		) {
 			unset($this->cache->sections);
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 	/**
 	 * Delete specified section
@@ -816,7 +814,7 @@ class Blogs {
 	 *
 	 * @param string $tag_text
 	 *
-	 * @return bool|int
+	 * @return false|int
 	 */
 	function find_tag ($tag_text) {
 		return $this->db()->qfs([

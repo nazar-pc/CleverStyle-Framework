@@ -63,7 +63,7 @@ class Photo_gallery {
 	 *
 	 * @param int|int[]				$id
 	 *
-	 * @return array|array[]|bool
+	 * @return array|array[]|false
 	 */
 	function get ($id) {
 		if (is_array($id)) {
@@ -75,7 +75,7 @@ class Photo_gallery {
 		$L			= Language::instance();
 		$id			= (int)$id;
 		return $this->cache->get("images/$id/$L->clang", function () use ($id) {
-			if ($data = $this->db()->qf([
+			$data = $this->db()->qf([
 				"SELECT
 					`id`,
 					`gallery`,
@@ -89,7 +89,8 @@ class Photo_gallery {
 				WHERE `id` = '%s'
 				LIMIT 1",
 				$id
-			])) {
+			]);
+			if ($data) {
 				$data['title']			= $this->ml_process($data['title']);
 				$data['description']	= $this->ml_process($data['description']);
 			}
@@ -104,7 +105,7 @@ class Photo_gallery {
 	 * @param string	$title
 	 * @param string	$description
 	 *
-	 * @return bool|int					Id of created post on success of <b>false</> on failure
+	 * @return false|int				Id of created post on success of <b>false</> on failure
 	 */
 	function add ($original, $gallery, $title = '', $description = '') {
 		if (empty($original) || !$gallery) {
@@ -260,7 +261,7 @@ class Photo_gallery {
 	/**
 	 * Get array of galleries in form [<i>path</i> => <i>id</i>]
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	function get_galleries_list () {
 		$L		= Language::instance();
@@ -284,7 +285,7 @@ class Photo_gallery {
 	 *
 	 * @param int|int[]				$id
 	 *
-	 * @return array|array[]|bool
+	 * @return array|array[]|false
 	 */
 	function get_gallery ($id) {
 		if (is_array($id)) {
@@ -343,7 +344,7 @@ class Photo_gallery {
 	 * @param int		$active
 	 * @param string	$preview_image
 	 *
-	 * @return bool|int					Id of created gallery on success of <b>false</> on failure
+	 * @return false|int				Id of created gallery on success of <b>false</> on failure
 	 */
 	function add_gallery ($title, $path, $description, $active, $preview_image) {
 		if ($this->db_prime()->q(
@@ -356,9 +357,8 @@ class Photo_gallery {
 			$id		= $this->db_prime()->id();
 			$this->set_gallery($id, $title, $path, $description, $active, $preview_image);
 			return $id;
-		} else {
-			return false;
 		}
+		return false;
 	}
 	/**
 	 * Set data of specified gallery

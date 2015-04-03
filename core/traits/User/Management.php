@@ -31,11 +31,11 @@ trait Management {
 	 *
 	 * @param string		$search_phrase
 	 *
-	 * @return int[]|bool
+	 * @return int[]|false
 	 */
 	function search_users ($search_phrase) {
 		$search_phrase = trim($search_phrase, "%\n");
-		$found_users = $this->db()->qfas([
+		$found_users   = $this->db()->qfas([
 			"SELECT `id`
 			FROM `[prefix]users`
 			WHERE
@@ -61,7 +61,7 @@ trait Management {
 	 *												(is used for manual registration).
 	 * @param bool					$auto_sign_in	If <b>false</b> - no auto sign in, if <b>true</b> - according to system configuration
 	 *
-	 * @return array|bool|string					<b>exists</b>	- if user with such email is already registered<br>
+	 * @return array|false|string					<b>exists</b>	- if user with such email is already registered<br>
 	 * 												<b>error</b>	- if error occurred<br>
 	 * 												<b>false</b>	- if email is incorrect<br>
 	 * 												<b>array(<br>
@@ -178,7 +178,7 @@ trait Management {
 	 *
 	 * @param string		$reg_key
 	 *
-	 * @return array|bool				array('id' => <i>id</i>, 'email' => <i>email</i>, 'password' => <i>password</i>) or <b>false</b> on failure
+	 * @return array|false				array('id' => <i>id</i>, 'email' => <i>email</i>, 'password' => <i>password</i>) or <b>false</b> on failure
 	 */
 	function registration_confirmation ($reg_key) {
 		if (!is_md5($reg_key)) {
@@ -329,7 +329,7 @@ trait Management {
 	 *
 	 * @param int			$user
 	 *
-	 * @return bool|string			Key for confirmation or <b>false</b> on failure
+	 * @return false|string			Key for confirmation or <b>false</b> on failure
 	 */
 	function restore_password ($user) {
 		if ($user && $user != User::GUEST_ID) {
@@ -349,7 +349,7 @@ trait Management {
 	 *
 	 * @param string		$key
 	 *
-	 * @return array|bool			array('id' => <i>id</i>, 'password' => <i>password</i>) or <b>false</b> on failure
+	 * @return array|false			array('id' => <i>id</i>, 'password' => <i>password</i>) or <b>false</b> on failure
 	 */
 	function restore_password_confirmation ($key) {
 		if (!is_md5($key)) {
@@ -452,7 +452,7 @@ trait Management {
 	 * @param string	$user_agent	User Agent string or regular expression
 	 * @param string	$ip			IP string or regular expression
 	 *
-	 * @return bool|int				Bot <b>id</b> in DB or <b>false</b> on failure
+	 * @return false|int			Bot <b>id</b> in DB or <b>false</b> on failure
 	 */
 	function add_bot ($name, $user_agent, $ip) {
 		if ($this->db_prime()->q(
@@ -482,9 +482,8 @@ trait Management {
 				]
 			);
 			return $id;
-		} else {
-			return false;
 		}
+		return false;
 	}
 	/**
 	 * Set bot

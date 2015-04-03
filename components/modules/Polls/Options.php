@@ -47,7 +47,7 @@ class Options {
 	 * @param int    $poll
 	 * @param string $title
 	 *
-	 * @return bool|int
+	 * @return false|int
 	 */
 	function add ($poll, $title) {
 		$id = $this->create_simple([
@@ -66,7 +66,7 @@ class Options {
 	 *
 	 * @param int|int[] $id
 	 *
-	 * @return array|array[]|bool
+	 * @return array|array[]|false
 	 */
 	function get ($id) {
 		if (is_array($id)) {
@@ -88,7 +88,7 @@ class Options {
 	 * @param $poll
 	 * @param $title
 	 *
-	 * @return bool|int
+	 * @return false|int
 	 */
 	function set ($id, $poll, $title) {
 		$id   = (int)$id;
@@ -111,7 +111,7 @@ class Options {
 	 *
 	 * @param $id
 	 *
-	 * @return bool|int
+	 * @return false|int
 	 */
 	function update_votes ($id) {
 		$id = (int)$id;
@@ -138,7 +138,7 @@ class Options {
 	 *
 	 * @param $poll
 	 *
-	 * @return bool|int[]
+	 * @return false|int[]
 	 */
 	function get_all_for_poll ($poll) {
 		$poll = (int)$poll;

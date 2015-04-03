@@ -245,7 +245,7 @@ namespace {
 		$request_id = get_request_id();
 		if ($admin_path === -1) {
 			unset($stored_admin_path[$request_id]);
-			return;
+			return true;
 		}
 		if (!isset($stored_admin_path[$request_id])) {
 			$stored_admin_path[$request_id] = false;
@@ -268,7 +268,7 @@ namespace {
 		$request_id = get_request_id();
 		if ($api_path === -1) {
 			unset($stored_api_path[$request_id]);
-			return;
+			return true;
 		}
 		if (!isset($stored_api_path[$request_id])) {
 			$stored_api_path[$request_id] = false;
@@ -291,7 +291,7 @@ namespace {
 		$request_id = get_request_id();
 		if ($current_module === -1) {
 			unset($stored_current_module[$request_id]);
-			return;
+			return true;
 		}
 		if (!isset($stored_current_module[$request_id])) {
 			$stored_current_module[$request_id] = '';
@@ -314,7 +314,7 @@ namespace {
 		$request_id = get_request_id();
 		if ($home_page === -1) {
 			unset($stored_home_page[$request_id]);
-			return;
+			return true;
 		}
 		if (!isset($stored_home_page[$request_id])) {
 			$stored_home_page[$request_id] = false;

@@ -44,7 +44,7 @@ class Polls {
 	 *
 	 * @param string $title
 	 *
-	 * @return bool|int
+	 * @return false|int
 	 */
 	function add ($title) {
 		$id = $this->create_simple([
@@ -61,7 +61,7 @@ class Polls {
 	 *
 	 * @param int|int[] $id
 	 *
-	 * @return array|array[]|bool
+	 * @return array|array[]|false
 	 */
 	function get ($id) {
 		if (is_array($id)) {
@@ -82,7 +82,7 @@ class Polls {
 	 * @param int    $id
 	 * @param string $title
 	 *
-	 * @return bool|int
+	 * @return false|int
 	 */
 	function set ($id, $title) {
 		$id     = (int)$id;
@@ -125,8 +125,8 @@ class Polls {
 			$this->ml_del("Polls/polls/$id/options/title", $option);
 			unset($this->cache->{"options/$option"});
 		}
-		unset($option);
 		unset(
+			$option,
 			$this->cache->$id,
 			$this->cache->{"options/poll/$id"}
 		);
@@ -135,7 +135,7 @@ class Polls {
 	/**
 	 * Get id of add polls
 	 *
-	 * @return bool|int[]
+	 * @return false|int[]
 	 */
 	function get_all () {
 		return $this->cache->get('all', function () {

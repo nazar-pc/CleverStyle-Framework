@@ -260,10 +260,10 @@ class Server implements MessageComponentInterface {
 	/**
 	 * Send request to client
 	 *
-	 * @param string         $action
-	 * @param mixed          $details
-	 * @param int            $send_to Constants `self::SEND_TO*` should be used here
-	 * @param bool|int|int[] $target  Id or array of ids in case of response to one or several users or groups
+	 * @param string          $action
+	 * @param mixed           $details
+	 * @param int             $send_to Constants `self::SEND_TO*` should be used here
+	 * @param false|int|int[] $target  Id or array of ids in case of response to one or several users or groups
 	 */
 	function send_to_clients ($action, $details, $send_to, $target = false) {
 		$message = _json_encode([$action, $details, $send_to, $target]);
@@ -318,10 +318,10 @@ class Server implements MessageComponentInterface {
 	/**
 	 * Send request to client
 	 *
-	 * @param string         $action
-	 * @param mixed          $details
-	 * @param int            $send_to Constants `self::SEND_TO_*` should be used here
-	 * @param bool|int|int[] $target  Id or array of ids in case of response to one or several users or groups
+	 * @param string          $action
+	 * @param mixed           $details
+	 * @param int             $send_to Constants `self::SEND_TO_*` should be used here
+	 * @param false|int|int[] $target  Id or array of ids in case of response to one or several users or groups
 	 */
 	protected function send_to_clients_internal ($action, $details, $send_to, $target = false) {
 		$message = _json_encode([$action, $details]);

@@ -47,7 +47,7 @@ class Properties {
 	 *
 	 * @param string|string[]		$item
 	 *
-	 * @return bool|string|mixed[]
+	 * @return false|string|mixed[]
 	 */
 	function get ($item) {
 		return User::instance()->get($item, $this->id);
@@ -68,7 +68,7 @@ class Properties {
 	 *
 	 * @param string|string[]		$item
 	 *
-	 * @return array|bool|string
+	 * @return false|bool|string
 	 */
 	function __get ($item) {
 		return User::instance()->get($item, $this->id);
@@ -96,18 +96,16 @@ class Properties {
 	 *
 	 * @param array|string	$item
 	 * @param mixed|null	$value
-	 *
-	 * @return bool
 	 */
 	function __set ($item, $value = null) {
-		return User::instance()->set($item, $value, $this->id);
+		User::instance()->set($item, $value, $this->id);
 	}
 	/**
 	 * Getting additional data item(s) of specified user
 	 *
 	 * @param string|string[]		$item
 	 *
-	 * @return bool|string|mixed[]
+	 * @return false|string|mixed[]
 	 */
 	function get_data ($item) {
 		return User::instance()->get_data($item, $this->id);
@@ -128,7 +126,7 @@ class Properties {
 	 *
 	 * @param string|string[]		$item
 	 *
-	 * @return bool|string|string[]
+	 * @return bool
 	 */
 	function del_data ($item) {
 		return User::instance()->del_data($item, $this->id);

@@ -56,7 +56,7 @@ trait Data {
 	 * @param string|string[]					$item
 	 * @param bool|int 							$user	If not specified - current user assumed
 	 *
-	 * @return bool|string|mixed[]|Properties			If <i>$item</i> is integer - cs\User\Properties object will be returned
+	 * @return false|string|mixed[]|Properties			If <i>$item</i> is integer - cs\User\Properties object will be returned
 	 */
 	function get ($item, $user = false) {
 		if (is_scalar($item) && preg_match('/^[0-9]+$/', $item)) {
@@ -75,7 +75,7 @@ trait Data {
 	 * @param bool|int 				$user		If not specified - current user assumed
 	 * @param bool					$cache_only
 	 *
-	 * @return bool|string|mixed[]
+	 * @return false|string|mixed[]
 	 */
 	protected function get_internal ($item, $user = false, $cache_only = false) {
 		$user = (int)$user ?: $this->id;
@@ -144,7 +144,7 @@ trait Data {
 	 * @param mixed[]	$data
 	 * @param bool		$cache_only
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	protected function get_internal_one_item ($item, $user, &$data, $cache_only) {
 		if (!in_array($item, $this->users_columns)) {
@@ -268,7 +268,7 @@ trait Data {
 	 * @param string|string[]		$item
 	 * @param bool|int				$user	If not specified - current user assumed
 	 *
-	 * @return bool|string|mixed[]
+	 * @return false|string|mixed[]
 	 */
 	function get_data ($item, $user = false) {
 		$user	= (int)$user ?: $this->id;
@@ -424,7 +424,7 @@ trait Data {
 	 *
 	 * @param  string $login_hash	Login or email hash
 	 *
-	 * @return bool|int				User id if found and not guest, otherwise - boolean <i>false</i>
+	 * @return false|int			User id if found and not guest, otherwise - boolean <i>false</i>
 	 */
 	function get_id ($login_hash) {
 		if (!preg_match('/^[0-9a-z]{56}$/', $login_hash)) {

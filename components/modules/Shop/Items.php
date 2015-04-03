@@ -84,7 +84,7 @@ class Items {
 	 *
 	 * @param int|int[] $id
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	function get ($id) {
 		if (is_array($id)) {
@@ -221,7 +221,7 @@ class Items {
 	 * @param int|int[] $id
 	 * @param bool|int  $user
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	function get_for_user ($id, $user = false) {
 		if (is_array($id)) {
@@ -268,7 +268,7 @@ class Items {
 	 * @param string  $order_by
 	 * @param bool    $asc
 	 *
-	 * @return array|bool|string
+	 * @return array|false|string
 	 */
 	function search ($search_parameters = [], $page = 1, $count = 20, $order_by = 'id', $asc = false) {
 		if (!isset($this->data_model[$order_by])) {
@@ -411,7 +411,7 @@ class Items {
 	 * @param array[]  $videos
 	 * @param string[] $tags
 	 *
-	 * @return bool|int Id of created item on success of <b>false</> on failure
+	 * @return false|int Id of created item on success of <b>false</> on failure
 	 */
 	function add ($category, $price, $in_stock, $soon, $listed, $attributes, $images, $videos, $tags) {
 		$id = $this->create_simple([

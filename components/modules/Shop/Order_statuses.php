@@ -67,7 +67,7 @@ class Order_statuses {
 	 *
 	 * @param int|int[] $id
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	function get ($id) {
 		if (is_array($id)) {
@@ -126,7 +126,7 @@ class Order_statuses {
 	 * @param int    $send_update_status_email
 	 * @param string $comment
 	 *
-	 * @return bool|int Id of created item on success of <b>false</> on failure
+	 * @return false|int Id of created item on success of <b>false</> on failure
 	 *
 	 */
 	function add ($title, $type, $color, $send_update_status_email, $comment) {

@@ -49,7 +49,7 @@ class Key {
 	 * @param null|mixed  $data     Data to be stored with key
 	 * @param int         $expire   Timestamp of key expiration, if not specified - default system value will be used
 	 *
-	 * @return bool|string
+	 * @return false|string
 	 */
 	function add ($database, $key, $data = null, $expire = 0) {
 		if (!is_object($database)) {
@@ -103,7 +103,7 @@ class Key {
 	 * @param string $key      56 character [0-9a-z] key
 	 * @param bool   $get_data If <b>true</d> - stored data will be returned on success, otherwise boolean result of key existence will be returned
 	 *
-	 * @return bool|mixed
+	 * @return false|mixed
 	 */
 	function get ($database, $key, $get_data = false) {
 		if (!preg_match('/^[a-z0-9]{56}$/', $key)) {

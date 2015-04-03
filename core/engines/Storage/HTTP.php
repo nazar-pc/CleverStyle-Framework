@@ -27,7 +27,7 @@ class HTTP extends _Abstract {
 	/**
 	 * @param array $data Key => value array
 	 *
-	 * @return array|bool    Return array(headers, body)
+	 * @return array|false    Return array(headers, body)
 	 */
 	protected function request ($data) {
 		$socket = fsockopen($this->host[0], isset($this->host[1]) ? $this->host[1] : 80, $errno, $errstr);

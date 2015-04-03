@@ -62,7 +62,7 @@ class Shipping_types {
 	 *
 	 * @param int|int[] $id
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	function get ($id) {
 		if (is_array($id)) {
@@ -80,10 +80,10 @@ class Shipping_types {
 	/**
 	 * Get shipping type data for specific user (price might be adjusted, some shipping types may be restricted and so on)
 	 *
-	 * @param int|int[] $id
-	 * @param bool|int  $user
+	 * @param int|int[]  $id
+	 * @param false|int  $user
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	function get_for_user ($id, $user = false) {
 		if (is_array($id)) {
@@ -128,7 +128,7 @@ class Shipping_types {
 	 * @param string $title
 	 * @param string $description
 	 *
-	 * @return bool|int Id of created item on success of <b>false</> on failure
+	 * @return false|int Id of created item on success of <b>false</> on failure
 	 */
 	function add ($price, $phone_needed, $address_needed, $title, $description) {
 		$id = $this->create_simple([

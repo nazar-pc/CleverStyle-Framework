@@ -114,7 +114,7 @@ trait Permission {
 	 *
 	 * @param bool|int $user If not specified - current user assumed
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	function get_permissions ($user = false) {
 		$user = (int)$user ?: $this->id;

@@ -61,7 +61,7 @@ class Comments {
 	 *
 	 * @param int			$id Comment id
 	 *
-	 * @return array|bool		Array of comment data on success or <b>false</b> on failure
+	 * @return array|false		Array of comment data on success or <b>false</b> on failure
 	 */
 	function get ($id) {
 		$id	= (int)$id;
@@ -165,7 +165,7 @@ class Comments {
 	 * @param int			$id		Comment id
 	 * @param string		$text	New comment text
 	 *
-	 * @return array|bool			Array of comment data on success or <b>false</b> on failure
+	 * @return array|false			Array of comment data on success or <b>false</b> on failure
 	 */
 	function set ($id, $text) {
 		$text	= xap($text, true);
@@ -293,7 +293,7 @@ class Comments {
 	 * @param int			$item
 	 * @param int			$parent
 	 *
-	 * @return bool|array
+	 * @return false|array
 	 */
 	function tree_data ($item, $parent = 0) {
 		$Cache	= $this->cache;

@@ -42,7 +42,7 @@ class Static_pages {
 	 *
 	 * @param int			$id
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	function get ($id) {
 		$L		= Language::instance();
@@ -77,7 +77,7 @@ class Static_pages {
 	 * @param string	$content
 	 * @param int		$interface
 	 *
-	 * @return bool|int				Id of created page on success of <b>false</> on failure
+	 * @return false|int Id of created page on success of <b>false</> on failure
 	 */
 	function add ($category, $title, $path, $content, $interface) {
 		$category	= (int)$category;
@@ -174,7 +174,7 @@ class Static_pages {
 	/**
 	 * Get array of pages structure
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	function get_structure () {
 		$L		= Language::instance();
@@ -221,9 +221,9 @@ class Static_pages {
 	/**
 	 * Get data of specified category
 	 *
-	 * @param int			$id
+	 * @param int $id
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	function get_category ($id) {
 		$id				= (int)$id;
@@ -249,7 +249,7 @@ class Static_pages {
 	 * @param string	$title
 	 * @param string	$path
 	 *
-	 * @return bool|int			Id of created category on success of <b>false</> on failure
+	 * @return false|int		Id of created category on success of <b>false</> on failure
 	 */
 	function add_category ($parent, $title, $path) {
 		$parent	= (int)$parent;

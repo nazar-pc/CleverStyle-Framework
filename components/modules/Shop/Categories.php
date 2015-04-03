@@ -87,7 +87,7 @@ class Categories {
 	 *
 	 * @param int|int[] $id
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	function get ($id) {
 		if (is_array($id)) {
@@ -122,7 +122,7 @@ class Categories {
 	 * @param int|int[] $id
 	 * @param bool|int  $user
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	function get_for_user ($id, $user = false) {
 		if (is_array($id)) {
@@ -190,7 +190,7 @@ class Categories {
 	 * @param int    $visible               `Categories::VISIBLE` or `Categories::INVISIBLE`
 	 * @param int[]  $attributes            Array of attributes ids used in category
 	 *
-	 * @return bool|int Id of created category on success of <b>false</> on failure
+	 * @return false|int Id of created category on success of <b>false</> on failure
 	 */
 	function add ($parent, $title, $description, $title_attribute, $description_attribute, $image, $visible, $attributes) {
 		$id = $this->create_simple([

@@ -1,12 +1,13 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2013-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   CleverStyle CMS
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2013-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
-namespace	cs\DB;
-use			cs\DB;
+namespace cs\DB;
+use
+	cs\DB;
 /**
  * Accessor trait
  *
@@ -15,14 +16,14 @@ use			cs\DB;
 trait Accessor {
 	/**
 	 * Link to db object
-	 * @var bool|_Abstract
+	 * @var false|_Abstract
 	 */
-	private	$db			= false;
+	private $db = false;
 	/**
 	 * Link to primary db object
-	 * @var bool|_Abstract
+	 * @var false|_Abstract
 	 */
-	private	$db_prime	= false;
+	private $db_prime = false;
 	/**
 	 * Returns link to the object of db for reading (can be mirror of main DB)
 	 *

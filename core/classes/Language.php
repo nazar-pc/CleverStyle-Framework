@@ -96,7 +96,7 @@ class Language implements JsonSerializable {
 	 *
 	 * @param bool|string $url Relative url, `$_SERVER->request_uri` by default
 	 *
-	 * @return bool|string If there is language prefix - language will be returned, `false` otherwise
+	 * @return false|string If there is language prefix - language will be returned, `false` otherwise
 	 */
 	function url_language ($url = false) {
 		$url = $url ?: $_SERVER->request_uri;
@@ -116,7 +116,7 @@ class Language implements JsonSerializable {
 	 *
 	 * @param array $active_languages
 	 *
-	 * @return bool|string
+	 * @return false|string
 	 */
 	protected function check_accept_header ($active_languages) {
 		/**
@@ -144,7 +144,7 @@ class Language implements JsonSerializable {
 	 *
 	 * @param array $active_languages
 	 *
-	 * @return bool|string
+	 * @return false|string
 	 */
 	protected function check_locale_header ($active_languages) {
 		/**
@@ -168,7 +168,7 @@ class Language implements JsonSerializable {
 	/**
 	 * Get languages aliases
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	protected function get_aliases () {
 		return Cache::instance()->get('languages/aliases', function () {

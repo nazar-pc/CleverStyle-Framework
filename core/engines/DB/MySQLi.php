@@ -58,7 +58,7 @@ class MySQLi extends _Abstract {
 	/**
 	 * @inheritdoc
 	 *
-	 * @return bool|\mysqli_result
+	 * @return false|\mysqli_result
 	 */
 	protected function q_internal ($query) {
 		if (!$query) {

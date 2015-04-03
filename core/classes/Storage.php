@@ -135,7 +135,6 @@ class Storage {
 		} else {
 			$storage = $data;
 		}
-		unset($data);
 		if (is_array($storage)) {
 			$connection_class	= "\\cs\\Storage\\$storage[connection]";
 			$test				= new $connection_class($storage['url'], $storage['host'], $storage['user'], $storage['password']);

@@ -633,7 +633,7 @@ class Index {
 	 *
 	 * @param string $property
 	 *
-	 * @return bool|string
+	 * @return false|string
 	 */
 	function __get ($property) {
 		if ($property == 'action') {
