@@ -387,43 +387,127 @@ class Index {
 		}
 	}
 	/**
+	 * Get form action based on current module, path and other parameters
+	 *
+	 * @return string
+	 */
+	protected function get_action () {
+		if ($this->action === null) {
+			$this->action = ($this->in_admin ? 'admin/' : '')."$this->module";
+			if (isset($this->path[0])) {
+				$this->action .= '/'.$this->path[0];
+				if (isset($this->path[1])) {
+					$this->action .= '/'.$this->path[1];
+				}
+			}
+		}
+		return $this->action ?: '';
+	}
+	/**
+	 * Page generation, blocks processing, adding of form with save/apply/cancel/reset and/or custom users buttons
+	 */
+	protected function render_page () {
+		$this->render_title();
+		$this->render_content();
+		$Page = Page::instance();
+		if (!$this->in_api) {
+			if ($this->form) {
+				$this->form_wrapper();
+			}
+			$this->render_blocks();
+		}
+		$Page->content($this->Content);
+	}
+	/**
+	 * Render page title
+	 */
+	protected function render_title () {
+		$Page = Page::instance();
+		/**
+		 * Add generic Home or Module name title
+		 */
+		if (!$this->in_api) {
+			$L = Language::instance();
+			if ($this->in_admin) {
+				$Page->title($L->administration);
+			}
+			$Page->title(
+				$L->{home_page() ? 'home' : $this->module}
+			);
+		}
+	}
+	/**
+	 * Render page content (without blocks, just module content)
+	 *
+	 * @throws \ExitException
+	 */
+	protected function render_content () {
+		$Page = Page::instance();
+		/**
+		 * If module consists of index.html only
+		 */
+		if (file_exists("$this->working_directory/index.html")) {
+			ob_start();
+			_include("$this->working_directory/index.html", false, false);
+			$Page->content(ob_get_clean());
+			return;
+		}
+		$this->check_and_normalize_route();
+		if (!error_code()) {
+			$router = file_exists("$this->working_directory/Controller.php") ? 'controller_router' : 'files_router';
+			$this->$router(@$this->path[0], @$this->path[1]);
+		}
+		if (error_code()) {
+			$Page->error();
+		}
+	}
+	/**
 	 * Wraps `cs\Index::$Content` with form and adds form buttons to the end of content
 	 */
 	protected function form_wrapper () {
-		$Config        = Config::instance();
-		$L             = Language::instance();
+		/**
+		 * Render buttons
+		 */
+		if ($this->buttons) {
+			/**
+			 * Apply button
+			 */
+			if ($this->apply_button) {
+				$this->Content .= $this->form_button('apply', !Cache::instance()->cache_state());
+				/**
+				 * If cancel button does not work as back button - render it here
+				 */
+				if (!$this->cancel_button_back) {
+					$this->Content .= $this->form_button('cancel', !@Config::instance()->core['cache_not_saved']);
+				}
+			}
+			/**
+			 * Save button
+			 */
+			if ($this->save_button) {
+				$this->Content .= $this->form_button('save');
+			}
+		}
+		/**
+		 * If cancel button works as back button - render it here
+		 */
+		if ($this->cancel_button_back) {
+			$this->Content .= h::{'button.uk-button'}(
+				Language::instance()->cancel,
+				[
+					'name'    => 'cancel',
+					'type'    => 'button',
+					'onclick' => 'history.go(-1);'
+				]
+			);
+		}
 		$this->Content = h::form(
 			$this->Content.
-			//Apply button
-			($this->apply_button && $this->buttons ?
-				$this->form_button('apply', !Cache::instance()->cache_state())
-				: '').
-			//Save button
-			($this->save_button && $this->buttons ?
-				$this->form_button('save')
-				: '').
-			//Cancel button
-			($this->apply_button && $this->buttons && !$this->cancel_button_back ?
-				$this->form_button('cancel', !@$Config->core['cache_not_saved'])
-				: '').
-			($this->cancel_button_back ?
-				h::{'button.uk-button'}(
-					$L->cancel,
-					[
-						'name'    => 'cancel',
-						'type'    => 'button',
-						'onclick' => 'history.go(-1);'
-					]
-				)
-				: '').
 			$this->custom_buttons,
-			array_merge(
-				[
-					'enctype' => $this->file_upload ? 'multipart/form-data' : false,
-					'action'  => $this->get_action()
-				],
-				$this->form_attributes
-			)
+			$this->form_attributes + [
+				'enctype' => $this->file_upload ? 'multipart/form-data' : false,
+				'action'  => $this->get_action()
+			]
 		);
 	}
 	/**
@@ -447,74 +531,7 @@ class Index {
 		);
 	}
 	/**
-	 * Get form action based on current module, path and other parameters
-	 *
-	 * @return string
-	 */
-	protected function get_action () {
-		if ($this->action === null) {
-			$this->action = ($this->in_admin ? 'admin/' : '')."$this->module";
-			if (isset($this->path[0])) {
-				$this->action .= '/'.$this->path[0];
-				if (isset($this->path[1])) {
-					$this->action .= '/'.$this->path[1];
-				}
-			}
-		}
-		return $this->action ?: '';
-	}
-	/**
-	 * Page generation, blocks processing, adding of form with save/apply/cancel/reset and/or custom users buttons
-	 */
-	protected function render_page () {
-		$this->render_title();
-		$this->render_content();
-		if ($this->in_api) {
-			return;
-		}
-		if ($this->form) {
-			$this->form_wrapper();
-		}
-		$this->render_blocks();
-	}
-	protected function render_title () {
-		$Page = Page::instance();
-		/**
-		 * Add generic Home or Module name title
-		 */
-		if (!$this->in_api) {
-			$L = Language::instance();
-			if ($this->in_admin) {
-				$Page->title($L->administration);
-			}
-			$Page->title(
-				$L->{home_page() ? 'home' : $this->module}
-			);
-		}
-	}
-	protected function render_content () {
-		$Page = Page::instance();
-		/**
-		 * If module consists of index.html only
-		 */
-		if (file_exists("$this->working_directory/index.html")) {
-			ob_start();
-			_include("$this->working_directory/index.html", false, false);
-			$Page->content(ob_get_clean());
-			return;
-		}
-		$this->check_and_normalize_route();
-		if (!error_code()) {
-			$router = file_exists("$this->working_directory/Controller.php") ? 'controller_router' : 'files_router';
-			$this->$router(@$this->path[0], @$this->path[1]);
-		}
-		if (error_code()) {
-			$Page->error();
-		}
-		$Page->content($this->Content);
-	}
-	/**
-	 * Blocks processing
+	 * Blocks rendering
 	 */
 	protected function render_blocks () {
 		$blocks = Config::instance()->components['blocks'];
