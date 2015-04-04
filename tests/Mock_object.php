@@ -29,14 +29,18 @@ class Mock_object {
 		$this->properties	= $properties;
 		$this->methods		= $methods;
 	}
-	function __get ($property) {
+	function &__get ($property) {
 		if (!isset($this->properties[$property])) {
-			return null;
+			$null = null;
+			return $null;
 		}
 		return $this->properties[$property];
 	}
 	function __set ($property, $value) {
 		$this->properties[$property]	= $value;
+	}
+	function __isset($property) {
+		return isset($this->properties);
 	}
 	function __unset ($property) {
 		unset($this->properties[$property]);

@@ -104,7 +104,7 @@ class DB {
 		} elseif ($Config && !empty($Config->core) && $Config->core['db_balance'] && $mirrors = count($Config->db[$connection]['mirrors'])) {
 			$select = mt_rand(0, $Config->core['maindb_for_write'] ? $mirrors - 1 : $mirrors);
 			if ($select < $mirrors) {
-				$mirror = $Config->db[$connection]['mirrors'][--$select];
+				$mirror = $Config->db[$connection]['mirrors'][$select];
 				$mirror_connection = $this->connecting($mirror['name'], $mirror);
 				if (is_object($mirror_connection) && $mirror_connection->connected()) {
 					$this->mirrors[$connection] = $mirror_connection;

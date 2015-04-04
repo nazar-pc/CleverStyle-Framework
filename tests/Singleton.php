@@ -29,10 +29,6 @@ trait Singleton {
 	static private function instance_internal ($check = false, $replace_with = false) {
 		static $instance;
 		if ($replace_with !== false) {
-			if ($replace_with === null) {
-				unset($instance);
-				return False_class::instance();
-			}
 			$instance = $replace_with;
 			return $instance;
 		}
