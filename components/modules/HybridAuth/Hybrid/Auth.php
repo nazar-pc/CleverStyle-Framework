@@ -351,7 +351,7 @@ class Hybrid_Auth
 		Hybrid_Logger::info( "Enter Hybrid_Auth::redirect( $url, $mode )" );
 
 		if( $mode == "PHP" ){
-			header( "Location: $url" ) ;
+			_header( "Location: $url" ) ;
 		}
 		elseif( $mode == "JS" ){
 			echo '<html>';
@@ -366,7 +366,7 @@ class Hybrid_Auth
 			echo '</html>';
 		}
 
-		die();
+		throw new \ExitException;
 	}
 
 	// --------------------------------------------------------------------
