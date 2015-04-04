@@ -18,8 +18,8 @@ if (!$Cache->set('test', '111')) {
 if ($Cache->set('test', '111111') !== false) {
 	die('Size limit does not works');
 }
-echo 'Done';
 ?>
+Done
 --EXPECT--
 Done
 --CLEAN--

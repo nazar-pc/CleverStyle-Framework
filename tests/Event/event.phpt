@@ -38,8 +38,7 @@ $Event->fire('event/data_modification', [
 if ($test != 'failed') {
 	die('Event unsubscribing not working');
 }
-
-echo 'Done';
 ?>
+Done
 --EXPECT--
 Done

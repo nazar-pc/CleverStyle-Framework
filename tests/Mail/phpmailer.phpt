@@ -10,7 +10,7 @@ if (method_exists('PHPMailer', '__construct')) {
 if (!file_exists(DIR.'/core/thirdparty/SMTP.php')) {
 	die('File with SMTP class for PHPMailer should be named "SMTP.php"');
 }
-echo 'Done';
 ?>
+Done
 --EXPECT--
 Done

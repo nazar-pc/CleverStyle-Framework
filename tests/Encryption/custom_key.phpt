@@ -22,7 +22,7 @@ $decrypted	= $Encryption->decrypt($encrypted, $key);
 if ($decrypted !== $data) {
 	die('Decryption failed, different result returned');
 }
-echo 'Done';
 ?>
+Done
 --EXPECT--
 Done

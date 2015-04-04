@@ -19,8 +19,8 @@ if (!$Cache->set('test', 5)) {
 if ($Cache->test !== false) {
 	die('Value still exists');
 }
-echo 'Done';
 ?>
+Done
 --EXPECT--
 Done
 --CLEAN--

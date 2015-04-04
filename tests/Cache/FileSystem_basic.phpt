@@ -35,8 +35,8 @@ if ($Cache->cache_state() !== false) {
 if ($Cache->test !== false) {
 	die('Value still exists');
 }
-echo 'Done';
 ?>
+Done
 --EXPECT--
 Done
 --CLEAN--
