@@ -142,13 +142,14 @@ class MySQLi extends _Abstract {
 	}
 	/**
 	 * @inheritdoc
+	 *
+	 * @param false|\mysqli_result $query_result
 	 */
 	function free ($query_result) {
 		if (is_object($query_result)) {
-			return $query_result->free();
-		} else {
-			return false;
+			$query_result->free();
 		}
+		return true;
 	}
 	/**
 	 * @inheritdoc

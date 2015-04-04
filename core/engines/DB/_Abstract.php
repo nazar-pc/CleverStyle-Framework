@@ -419,8 +419,6 @@ abstract class _Abstract {
 	 * @abstract
 	 *
 	 * @param object|resource $query_result
-	 *
-	 * @return bool
 	 */
 	abstract function free ($query_result);
 	/**
