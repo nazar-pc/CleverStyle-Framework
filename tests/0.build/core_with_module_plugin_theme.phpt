@@ -1,5 +1,11 @@
 --TEST--
 Building distributive of system core with built-in module, plugin and theme
+--SKIPIF--
+<?php
+if (getenv('SKIP_SLOW_TESTS')) {
+	exit('skip slow test');
+}
+?>
 --INI--
 phar.readonly	= Off
 --ARGS--
