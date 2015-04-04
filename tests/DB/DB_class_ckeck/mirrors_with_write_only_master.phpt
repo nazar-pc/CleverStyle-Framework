@@ -7,7 +7,6 @@ include __DIR__.'/_bootstrap.php';
 $Config = Config::instance();
 
 $Config->core['db_balance'] = 1;
-/** @noinspection ForgottenDebugOutputInspection */
 var_dump(DB::instance()->db(2));
 ?>
 --EXPECT--

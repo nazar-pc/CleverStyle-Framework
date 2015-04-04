@@ -14,7 +14,6 @@ DB\Fake::$connected_fake = function () {
 	}
 	return $result;
 };
-/** @noinspection ForgottenDebugOutputInspection */
 var_dump(DB::instance()->db(0));
 ?>
 --EXPECT--

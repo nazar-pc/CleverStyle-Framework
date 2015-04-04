@@ -5,7 +5,6 @@ DB get instance for write
 namespace cs;
 include __DIR__.'/_bootstrap.php';
 
-/** @noinspection ForgottenDebugOutputInspection */
 var_dump(DB::instance()->db_prime(0));
 ?>
 --EXPECT--
