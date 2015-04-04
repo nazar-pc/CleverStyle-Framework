@@ -81,6 +81,7 @@ DB\Fake::$connected_fake          = function () {
 	}
 	return $result;
 };
+$Config->core['db_balance']       = 0;
 $Config->core['maindb_for_write'] = 0;
 var_dump(DB::instance()->db(0));
 ?>
