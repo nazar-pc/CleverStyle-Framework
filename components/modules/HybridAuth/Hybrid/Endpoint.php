@@ -2,81 +2,91 @@
 /**
 * HybridAuth
 * http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
-* (c) 2009-2014, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html
+* (c) 2009-2015, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html
 */
 
 /**
  * Hybrid_Endpoint class
  *
- * Hybrid_Endpoint class provides a simple way to handle the OpenID and OAuth endpoint.
+ * Provides a simple way to handle the OpenID and OAuth endpoint
  */
 class Hybrid_Endpoint {
-	public static $request = NULL;
-	public static $initDone = FALSE;
+	protected $request = NULL;
+	protected $initDone = FALSE;
 
 	/**
-	* Process the current request
-	*
-	* $request - The current request parameters. Leave as NULL to default to use $_REQUEST.
-	*/
-	public static function process( $request = NULL )
+	 * Process the current request
+	 *
+	 * @param array $request The current request parameters. Leave as NULL to default to use $_REQUEST.
+	 */
+	public function __construct( $request = NULL )
 	{
-		// Setup request variable
-		Hybrid_Endpoint::$request = $request;
-
-		if ( is_null(Hybrid_Endpoint::$request) ){
+		if ( is_null($request) ){
 			// Fix a strange behavior when some provider call back ha endpoint
 			// with /index.php?hauth.done={provider}?{args}...
-			// >here we need to recreate the $_REQUEST
+			// >here we need to parse $_SERVER[QUERY_STRING]
+			$request = $_REQUEST;
 			if ( strrpos( $_SERVER["QUERY_STRING"], '?' ) ) {
 				$_SERVER["QUERY_STRING"] = str_replace( "?", "&", $_SERVER["QUERY_STRING"] );
 
-				parse_str( $_SERVER["QUERY_STRING"], $_REQUEST );
+				parse_str( $_SERVER["QUERY_STRING"], $request );
 			}
-
-			Hybrid_Endpoint::$request = $_REQUEST;
 		}
 
+		// Setup request variable
+		$this->request = $request;
+
 		// If openid_policy requested, we return our policy document
-		if ( isset( Hybrid_Endpoint::$request["get"] ) && Hybrid_Endpoint::$request["get"] == "openid_policy" ) {
-			Hybrid_Endpoint::processOpenidPolicy();
+		if ( isset( $this->request["get"] ) && $this->request["get"] == "openid_policy" ) {
+			$this->processOpenidPolicy();
 		}
 
 		// If openid_xrds requested, we return our XRDS document
-		if ( isset( Hybrid_Endpoint::$request["get"] ) && Hybrid_Endpoint::$request["get"] == "openid_xrds" ) {
-			Hybrid_Endpoint::processOpenidXRDS();
+		if ( isset( $this->request["get"] ) && $this->request["get"] == "openid_xrds" ) {
+			$this->processOpenidXRDS();
 		}
 
 		// If we get a hauth.start
-		if ( isset( Hybrid_Endpoint::$request["hauth_start"] ) && Hybrid_Endpoint::$request["hauth_start"] ) {
-			Hybrid_Endpoint::processAuthStart();
+		if ( isset( $this->request["hauth_start"] ) && $this->request["hauth_start"] ) {
+			$this->processAuthStart();
 		}
 		// Else if hauth.done
-		elseif ( isset( Hybrid_Endpoint::$request["hauth_done"] ) && Hybrid_Endpoint::$request["hauth_done"] ) {
-			Hybrid_Endpoint::processAuthDone();
+		elseif ( isset( $this->request["hauth_done"] ) && $this->request["hauth_done"] ) {
+			$this->processAuthDone();
 		}
 		// Else we advertise our XRDS document, something supposed to be done from the Realm URL page
 		else {
-			Hybrid_Endpoint::processOpenidRealm();
+			$this->processOpenidRealm();
 		}
+	}
+	/**
+	 * Process the current request
+	 *
+	 * @param array $request The current request parameters. Leave as NULL to default to use $_REQUEST.
+	 */
+	public static function process( $request = NULL )
+	{
+		// Trick for PHP 5.2, because it doesn't support late static binding
+		$class = function_exists('get_called_class') ? get_called_class() : __CLASS__;
+		new $class( $request );
 	}
 
 	/**
-	* Process OpenID policy request
-	*/
-	public static function processOpenidPolicy()
+	 * Process OpenID policy request
+	 */
+	protected function processOpenidPolicy()
 	{
 		$output = file_get_contents( dirname(__FILE__) . "/resources/openid_policy.html" );
 		print $output;
-		throw new \ExitException;
+		die();
 	}
 
 	/**
-	* Process OpenID XRDS request
-	*/
-	public static function processOpenidXRDS()
+	 * Process OpenID XRDS request
+	 */
+	protected function processOpenidXRDS()
 	{
-		_header("Content-Type: application/xrds+xml");
+		header("Content-Type: application/xrds+xml");
 
 		$output = str_replace
 		(
@@ -88,13 +98,13 @@ class Hybrid_Endpoint {
 			file_get_contents( dirname(__FILE__) . "/resources/openid_xrds.xml" )
 		);
 		print $output;
-		throw new \ExitException;
+		die();
 	}
 
 	/**
-	* Process OpenID realm request
-	*/
-	public static function processOpenidRealm()
+	 * Process OpenID realm request
+	 */
+	protected function processOpenidRealm()
 	{
 		$output = str_replace
 		(
@@ -103,29 +113,29 @@ class Hybrid_Endpoint {
 			file_get_contents( dirname(__FILE__) . "/resources/openid_realm.html" )
 		);
 		print $output;
-		throw new \ExitException;
+		die();
 	}
 
 	/**
-	* define:endpoint step 3.
-	*/
-	public static function processAuthStart()
+	 * define:endpoint step 3.
+	 */
+	protected function processAuthStart()
 	{
-		Hybrid_Endpoint::authInit();
+		$this->authInit();
 
-		$provider_id = trim( strip_tags( Hybrid_Endpoint::$request["hauth_start"] ) );
+		$provider_id = trim( strip_tags( $this->request["hauth_start"] ) );
 
-		# check if page accessed directly
+		// check if page accessed directly
 		if( ! Hybrid_Auth::storage()->get( "hauth_session.$provider_id.hauth_endpoint" ) ) {
 			Hybrid_Logger::error( "Endpoint: hauth_endpoint parameter is not defined on hauth_start, halt login process!" );
 
 			throw new Hybrid_Exception( "You cannot access this page directly." );
 		}
 
-		# define:hybrid.endpoint.php step 2.
+		// define:hybrid.endpoint.php step 2.
 		$hauth = Hybrid_Auth::setup( $provider_id );
 
-		# if REQUESTed hauth_idprovider is wrong, session not created, etc.
+		// if REQUESTed hauth_idprovider is wrong, session not created, etc.
 		if( ! $hauth ) {
 			Hybrid_Logger::error( "Endpoint: Invalid parameter on hauth_start!" );
 
@@ -144,17 +154,17 @@ class Hybrid_Endpoint {
 			$hauth->returnToCallbackUrl();
 		}
 
-		throw new \ExitException;
+		die();
 	}
 
 	/**
-	* define:endpoint step 3.1 and 3.2
-	*/
-	public static function processAuthDone()
+	 * define:endpoint step 3.1 and 3.2
+	 */
+	protected function processAuthDone()
 	{
-		Hybrid_Endpoint::authInit();
+		$this->authInit();
 
-		$provider_id = trim( strip_tags( Hybrid_Endpoint::$request["hauth_done"] ) );
+		$provider_id = trim( strip_tags( $this->request["hauth_done"] ) );
 
 		$hauth = Hybrid_Auth::setup( $provider_id );
 
@@ -181,15 +191,15 @@ class Hybrid_Endpoint {
 		Hybrid_Logger::info( "Endpoint: job done. retrun to callback url." );
 
 		$hauth->returnToCallbackUrl();
-		throw new \ExitException;
+		die();
 	}
 
-	public static function authInit()
+	protected function authInit()
 	{
-		if ( ! Hybrid_Endpoint::$initDone) {
-			Hybrid_Endpoint::$initDone = TRUE;
+		if ( ! $this->initDone) {
+			$this->initDone = TRUE;
 
-			# Init Hybrid_Auth
+			// Init Hybrid_Auth
 			try {
                 if(!class_exists("Hybrid_Storage")){
                     require_once realpath( dirname( __FILE__ ) )  . "/Storage.php";
@@ -199,7 +209,6 @@ class Hybrid_Endpoint {
 
 				// Check if Hybrid_Auth session already exist
 				if ( ! $storage->config( "CONFIG" ) ) {
-                                        Hybrid_Logger::error( "Endpoint: Config storage not found when trying to init Hyrid_Auth. " );
 
 					throw new Hybrid_Exception( "You cannot access this page directly." );
 				}

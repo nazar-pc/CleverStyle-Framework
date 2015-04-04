@@ -2,7 +2,7 @@
 /**
 * HybridAuth
 * http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
-* (c) 2009-2014, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html
+* (c) 2009-2015, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html
 */
 
 /**
@@ -14,7 +14,7 @@
  */
 class Hybrid_Auth
 {
-	public static $version = "2.3.0-dev";
+	public static $version = "2.4.0";
 
 	public static $config  = array();
 
@@ -351,7 +351,7 @@ class Hybrid_Auth
 		Hybrid_Logger::info( "Enter Hybrid_Auth::redirect( $url, $mode )" );
 
 		if( $mode == "PHP" ){
-			_header( "Location: $url" ) ;
+			header( "Location: $url" ) ;
 		}
 		elseif( $mode == "JS" ){
 			echo '<html>';
@@ -366,7 +366,7 @@ class Hybrid_Auth
 			echo '</html>';
 		}
 
-		throw new \ExitException;
+		die();
 	}
 
 	// --------------------------------------------------------------------
@@ -376,6 +376,10 @@ class Hybrid_Auth
 	*/
 	public static function getCurrentUrl( $request_uri = true )
 	{
+		if (php_sapi_name() == 'cli') {
+			return '';
+		}
+
 		if(
 			isset( $_SERVER['HTTPS'] ) && ( $_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1 )
 		|| 	isset( $_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'

@@ -6,18 +6,18 @@
 */
 
 /**
- * Hybrid_Providers_GitHub 
+ * Hybrid_Providers_GitHub
  */
 class Hybrid_Providers_GitHub extends Hybrid_Provider_Model_OAuth2
-{ 
-	// default permissions  
+{
+	// default permissions
 	// (no scope) => public read-only access (includes public user profile info, public repo info, and gists).
 	public $scope = "";
 
 	/**
-	* IDp wrappers initializer 
+	* IDp wrappers initializer
 	*/
-	function initialize() 
+	function initialize()
 	{
 		parent::initialize();
 
@@ -32,17 +32,17 @@ class Hybrid_Providers_GitHub extends Hybrid_Provider_Model_OAuth2
 	*/
 	function getUserProfile()
 	{
-		$data = $this->api->api( "user" ); 
+		$data = $this->api->api( "user" );
 
 		if ( ! isset( $data->id ) ){
 			throw new Exception( "User profile request failed! {$this->providerId} returned an invalid response.", 6 );
 		}
 
-		$this->user->profile->identifier  = @ $data->id; 
+		$this->user->profile->identifier  = @ $data->id;
 		$this->user->profile->displayName = @ $data->name;
 		$this->user->profile->description = @ $data->bio;
 		$this->user->profile->photoURL    = @ $data->avatar_url;
-		$this->user->profile->profileURL  = @ $data->html_url; 
+		$this->user->profile->profileURL  = @ $data->html_url;
 		$this->user->profile->email       = @ $data->email;
 		$this->user->profile->webSiteURL  = @ $data->blog;
 		$this->user->profile->region      = @ $data->location;
@@ -57,9 +57,17 @@ class Hybrid_Providers_GitHub extends Hybrid_Provider_Model_OAuth2
 				$emails = $this->api->api("user/emails");
 
 				// fail gracefully, and let apps collect the email if not present
-				if (is_array($emails) && !empty($emails[0]->email))
-				{
-				    $this->user->profile->email = $emails[0]->email;
+				if (is_array($emails)) {
+					foreach ($emails as $email) {
+						if ($email instanceof stdClass
+							&& property_exists($email, 'primary')
+							&& true === $email->primary
+							&& property_exists($email, 'email')
+						) {
+							$this->user->profile->email = $email->email;
+							break;
+						}
+					}
 				}
 			}
 			catch( GithubApiException $e ){

@@ -209,7 +209,7 @@ class ViadeoRequest {
         return $this;
     }
 
-    // -- Execute the query ---------------------------------------------------
+    // -- Execute the query ---------------------------------------------------    
     public function execute() {
         return $this->api->execute($this);
     }
@@ -259,7 +259,7 @@ class ViadeoRequest {
 //
 //     // update my interests
 //     $me->put()->interests($me->interests . ", Coding")->x();
-//
+//     
 // ============================================================================
 class ViadeoGraphObject {
 
@@ -373,7 +373,7 @@ class ViadeoGraphObject {
 //      $VD->getAuthorizationURL();      // Return the URL for user redirection
 //      $VD->getAuthorizationURLPopup(); // Same thing but with popup layout
 //      $VD-authorize();                 // Helper, redirects user to the getAuthorizationURL()
-//                                       // Send _header('Location')
+//                                       // Send header('Location')
 //
 // OAuth 2.0 - step 2 :
 //
@@ -430,7 +430,7 @@ class ViadeoAPI {
         $this->config = $config;
         return $this;
     }
-
+ 
     public function setOption($name, $value) {
         $this->config[$name] = $value;
     }
@@ -478,7 +478,7 @@ class ViadeoAPI {
     public function setAccessToken($access_token) {
         $this->access_token = $access_token;
         if ($this->getConfigKey('store') === true) {
-            setrawcookie($this->getCookieName(),
+            setrawcookie($this->getCookieName(), 
                          '"access_token='.$access_token.'"', time() + 3600);
         }
         return $this;
@@ -552,7 +552,7 @@ class ViadeoAPI {
                 'client_id'       =>    self::getConfigKey('client_id', true),
                 'redirect_uri'    =>    self::getRedirectURI()
               ), $extras);
-        $url = self::$authorize_url . "?" . http_build_query($params, null, '&');
+        $url = self::$authorize_url . "?" . http_build_query($params, null, '&');        
         return $url;
     }
 
@@ -562,7 +562,7 @@ class ViadeoAPI {
     }
 
     public function authorize($extras = array()) {
-        _header("Location: " . self::getAuthorizationURL($extras));
+        header("Location: " . self::getAuthorizationURL($extras));
     }
 
     // -- OAuth2.0 step 2 -- exchange code with access_token ------------------

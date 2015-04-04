@@ -1,5 +1,23 @@
 {
 	"AOL"           : {},
+	"BeatsMusic"    : {
+		"keys" : [
+			"id",
+			"secret"
+		]
+	},
+	"BitBucket"     : {
+		"keys" : [
+			"key",
+			"secret"
+		]
+	},
+	"Citrix"        : {
+		"keys" : [
+			"id",
+			"secret"
+		]
+	},
 	"Deezer"        : {
 		"keys" : [
 			"id",
@@ -15,6 +33,24 @@
 	"DraugiemApi"   : {
 		"keys" : [
 			"key",
+			"secret"
+		]
+	},
+	"Dribbble"      : {
+		"keys" : [
+			"id",
+			"secret"
+		]
+	},
+	"Dropbox"       : {
+		"keys" : [
+			"id",
+			"secret"
+		]
+	},
+	"DrupalOAuth2"  : {
+		"keys" : [
+			"id",
 			"secret"
 		]
 	},
@@ -91,6 +127,12 @@
 		],
 		"info" : "Redirect Domain: {base_url}"
 	},
+	"MailChimp"     : {
+		"keys" : [
+			"id",
+			"secret"
+		]
+	},
 	"Mailru"        : {
 		"keys" : [
 			"id",
@@ -147,6 +189,18 @@
 			"secret"
 		]
 	},
+	"Rdio"          : {
+		"keys" : [
+			"key",
+			"secret"
+		]
+	},
+	"Rhapsody"      : {
+		"keys" : [
+			"key",
+			"secret"
+		]
+	},
 	"Sina"          : {
 		"keys" : [
 			"key",
@@ -156,6 +210,12 @@
 	"Skyrock"       : {
 		"keys" : [
 			"key",
+			"secret"
+		]
+	},
+	"SoundCloud"    : {
+		"keys" : [
+			"id",
 			"secret"
 		]
 	},
@@ -199,6 +259,12 @@
 			"secret"
 		],
 		"scope" : ""
+	},
+	"WordPress"     : {
+		"keys" : [
+			"id",
+			"secret"
+		]
 	},
 	"XING"          : {
 		"keys" : [
