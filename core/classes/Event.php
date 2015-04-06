@@ -54,9 +54,12 @@ class Event {
 			unset($this->callbacks[$event]);
 			return $this;
 		}
-		$this->callbacks[$event] = array_filter($this->callbacks[$event], function ($c) use ($callback) {
-			return $c !== $callback;
-		});
+		$this->callbacks[$event] = array_filter(
+			$this->callbacks[$event],
+			function ($c) use ($callback) {
+				return $c !== $callback;
+			}
+		);
 		return $this;
 	}
 	/**
