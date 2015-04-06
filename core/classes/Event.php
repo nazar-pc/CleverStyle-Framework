@@ -35,9 +35,6 @@ class Event {
 		if (!$event || !is_callable($callback)) {
 			return $this;
 		}
-		if (!isset($this->callbacks[$event])) {
-			$this->callbacks[$event] = [];
-		}
 		$this->callbacks[$event][] = $callback;
 		return $this;
 	}
@@ -73,9 +70,6 @@ class Event {
 	function once ($event, $callback) {
 		if (!$event || !is_callable($callback)) {
 			return $this;
-		}
-		if (!isset($this->callbacks[$event])) {
-			$this->callbacks[$event] = [];
 		}
 		$wrapped_callback = function () use (&$wrapped_callback, $event, $callback) {
 			$this->off($event, $wrapped_callback);
