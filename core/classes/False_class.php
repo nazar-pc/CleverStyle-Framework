@@ -1,13 +1,14 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   CleverStyle CMS
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
-namespace	cs;
-use			ArrayAccess,
-			SimpleXMLElement;
+namespace cs;
+use
+	ArrayAccess,
+	SimpleXMLElement;
 /**
  * False_class is used for chained calling, when some method may return false.
  *
@@ -17,7 +18,7 @@ use			ArrayAccess,
  *
  * Inherits SimpleXMLElement in order to be casted from object to boolean as <i>false</i>
  *
- * @property string	$error
+ * @property string $error
  */
 class False_class extends SimpleXMLElement implements ArrayAccess {
 	/**
@@ -28,14 +29,14 @@ class False_class extends SimpleXMLElement implements ArrayAccess {
 	static function instance () {
 		static $instance;
 		if (!isset($instance)) {
-			$instance	= new self('<?xml version=\'1.0\'?><cs></cs>');
+			$instance = new self('<?xml version=\'1.0\'?><cs></cs>');
 		}
 		return $instance;
 	}
 	/**
 	 * Getting any property
 	 *
-	 * @param string		$item
+	 * @param string $item
 	 *
 	 * @return False_class
 	 */
@@ -43,10 +44,20 @@ class False_class extends SimpleXMLElement implements ArrayAccess {
 		return $this;
 	}
 	/**
+	 * Getting any property
+	 *
+	 * @param string $item
+	 *
+	 * @return False_class
+	 */
+	function __isset ($item) {
+		return false;
+	}
+	/**
 	 * Calling of any method
 	 *
-	 * @param string	$method
-	 * @param mixed[]	$params
+	 * @param string  $method
+	 * @param mixed[] $params
 	 *
 	 * @return False_class
 	 */
@@ -82,9 +93,9 @@ class False_class extends SimpleXMLElement implements ArrayAccess {
 	/**
 	 * Set item
 	 */
-	public function offsetSet ($offset, $value) {}
+	public function offsetSet ($offset, $value) { }
 	/**
 	 * Delete item
 	 */
-	public function offsetUnset ($offset) {}
+	public function offsetUnset ($offset) { }
 }

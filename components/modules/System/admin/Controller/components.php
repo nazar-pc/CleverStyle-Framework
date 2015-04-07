@@ -11,6 +11,7 @@ namespace cs\modules\System\admin\Controller;
 use
 	cs\Config,
 	cs\Core,
+	cs\DB,
 	cs\Event,
 	cs\Group,
 	cs\Index,
@@ -866,13 +867,13 @@ trait components {
 							)
 						],
 						[
-							h::info('maindb_for_write'),
+							h::info('db_mirror_mode'),
 							h::radio(
 								[
-									'name'    => 'core[maindb_for_write]',
-									'checked' => $Config->core['maindb_for_write'],
-									'value'   => [0, 1],
-									'in'      => [$L->off, $L->on]
+									'name'    => 'core[db_mirror_mode]',
+									'checked' => $Config->core['db_mirror_mode'],
+									'value'   => [DB::MIRROR_MODE_MASTER_MASTER, DB::MIRROR_MODE_MASTER_SLAVE],
+									'in'      => [$L->master_master, $L->master_slave]
 								]
 							)
 						]

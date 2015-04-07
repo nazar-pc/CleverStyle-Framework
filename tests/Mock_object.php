@@ -1,12 +1,12 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @subpackage	Test
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2014-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package    CleverStyle CMS
+ * @subpackage Test
+ * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright  Copyright (c) 2014-2015, Nazar Mokrynskyi
+ * @license    MIT License, see license.txt
  */
-namespace	cs;
+namespace cs;
 /**
  * Mock object that accepts properties and methods in constructor and is used to simulate behavior of other class to some needed extent
  */
@@ -15,19 +15,19 @@ class Mock_object {
 	 * Properties of object will be actually stored here (both passed in constructor, and created later)
 	 * @var mixed[]
 	 */
-	protected	$properties	= [];
+	protected $properties = [];
 	/**
 	 * Methods of object will be actually stored here
 	 * @var callable[]|string[]
 	 */
-	protected	$methods	= [];
+	protected $methods = [];
 	/**
-	 * @param mixed[]				$properties
-	 * @param callable[]|string[]	$methods
+	 * @param mixed[]             $properties
+	 * @param callable[]|string[] $methods
 	 */
 	function __construct ($properties, $methods) {
-		$this->properties	= $properties;
-		$this->methods		= $methods;
+		$this->properties = $properties;
+		$this->methods    = $methods;
 	}
 	function &__get ($property) {
 		if (!isset($this->properties[$property])) {
@@ -37,10 +37,10 @@ class Mock_object {
 		return $this->properties[$property];
 	}
 	function __set ($property, $value) {
-		$this->properties[$property]	= $value;
+		$this->properties[$property] = $value;
 	}
-	function __isset($property) {
-		return isset($this->properties);
+	function __isset ($property) {
+		return isset($this->properties[$property]);
 	}
 	function __unset ($property) {
 		unset($this->properties[$property]);
@@ -49,7 +49,7 @@ class Mock_object {
 		if (!isset($this->methods[$method])) {
 			return null;
 		}
-		$method	= $this->methods[$method];
+		$method = $this->methods[$method];
 		if (is_callable($method)) {
 			return call_user_func_array($method, $arguments);
 		}

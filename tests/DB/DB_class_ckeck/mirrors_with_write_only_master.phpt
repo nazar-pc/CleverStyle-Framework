@@ -1,5 +1,5 @@
 --TEST--
-DB mirrors with write only master
+DB mirrors with write to master only
 --FILE--
 <?php
 namespace cs;

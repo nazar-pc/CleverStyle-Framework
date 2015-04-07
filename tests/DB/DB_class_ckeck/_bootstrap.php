@@ -12,8 +12,8 @@ include __DIR__.'/../_Fake_engine.php';
 Config::instance_stub(
 	[
 		'core' => [
-			'db_balance'       => 0,
-			'maindb_for_write' => 1
+			'db_balance'     => 0,
+			'db_mirror_mode' => 1
 		],
 		'db'   => [
 			0 => [

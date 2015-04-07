@@ -117,6 +117,7 @@ function install_process ($fs, $argv = null) {
 	require_once DIR.'/fs/'.$fs['core/classes/_SERVER.php'];
 	require_once DIR.'/fs/'.$fs['core/traits/Singleton/Base.php'];
 	require_once DIR.'/fs/'.$fs['core/traits/Singleton.php'];
+	require_once DIR.'/fs/'.$fs['core/classes/DB.php'];
 	require_once DIR.'/fs/'.$fs['core/engines/DB/_Abstract.php'];
 	require_once DIR.'/fs/'.$fs["core/engines/DB/$_POST[db_engine].php"];
 	require_once DIR.'/fs/'.$fs['core/classes/False_class.php'];
@@ -124,7 +125,7 @@ function install_process ($fs, $argv = null) {
 	/**
 	 * @var \cs\DB\_Abstract $cdb
 	 */
-	$cdb = "\\cs\\DB\\$_POST[db_engine]";
+	$cdb = "cs\\DB\\$_POST[db_engine]";
 	$cdb = new $cdb(
 		$_POST['db_name'],
 		$_POST['db_user'],
@@ -157,7 +158,7 @@ function install_process ($fs, $argv = null) {
 		'allow_change_language'             => 0,
 		'multilingual'                      => 0,
 		'db_balance'                        => 0,
-		'maindb_for_write'                  => 0,
+		'db_mirror_mode'                    => \cs\DB::MIRROR_MODE_MASTER_MASTER,
 		'active_languages'                  => [],
 		'cookie_domain'                     => [],
 		'cookie_path'                       => [],
