@@ -161,8 +161,8 @@ class DB {
 	/**
 	 * Processing of all DB request
 	 *
-	 * @param int        $database_id
-	 * @param array|bool $read_query
+	 * @param int  $database_id
+	 * @param bool $read_query
 	 *
 	 * @return DB\_Abstract|False_class
 	 */
