@@ -474,18 +474,18 @@ class Index {
 			 */
 			if ($this->apply_button) {
 				$this->Content .= $this->form_button('apply', !Cache::instance()->cache_state());
-				/**
-				 * If cancel button does not work as back button - render it here
-				 */
-				if (!$this->cancel_button_back) {
-					$this->Content .= $this->form_button('cancel', !@Config::instance()->core['cache_not_saved']);
-				}
 			}
 			/**
 			 * Save button
 			 */
 			if ($this->save_button) {
 				$this->Content .= $this->form_button('save');
+			}
+			/**
+			 * If cancel button does not work as back button - render it here
+			 */
+			if ($this->apply_button && !$this->cancel_button_back) {
+				$this->Content .= $this->form_button('cancel', !@Config::instance()->core['cache_not_saved']);
 			}
 		}
 		/**

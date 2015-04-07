@@ -121,7 +121,7 @@ class DB {
 	function __call ($method, $arguments) {
 		if (is_int($method) || $method == '0') {
 			return $this->db_prime($method);
-		} elseif (method_exists('\\cs\\DB\\_Abstract', $method)) {
+		} elseif (method_exists('cs\\DB\\_Abstract', $method)) {
 			return call_user_func_array([$this->db(0), $method], $arguments);
 		} else {
 			return False_class::instance();
