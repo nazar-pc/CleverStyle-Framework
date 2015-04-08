@@ -468,33 +468,24 @@ class Session {
 		$Config = Config::instance();
 		$time   = time();
 		/**
-		 * Generate hash in cycle, to obtain unique value
+		 * @var \cs\_SERVER $_SERVER
 		 */
-		/** @noinspection LoopWhichDoesNotLoopInspection */
-		while ($hash = md5(openssl_random_pseudo_bytes(1000))) {
-			if ($this->db_prime()->qf(
-				"SELECT `id`
-				FROM `[prefix]sessions`
-				WHERE `id` = '$hash'
-				LIMIT 1"
-			)
-			) {
-				continue;
-			}
-			/**
-			 * @var \cs\_SERVER $_SERVER
-			 */
-			$remote_addr = ip2hex($_SERVER->remote_addr);
-			$ip          = ip2hex($_SERVER->ip);
-			$expire_in   = $Config->core['session_expire'];
-			/**
-			 * Many guests open only one page, so create session only for 5 min
-			 */
-			if ($user == User::GUEST_ID) {
-				$expire_in = min($expire_in, 300);
-			}
-			$expire = $time + $expire_in;
-			$this->db_prime()->q(
+		$remote_addr = ip2hex($_SERVER->remote_addr);
+		$ip          = ip2hex($_SERVER->ip);
+		$expire_in   = $Config->core['session_expire'];
+		/**
+		 * Many guests open only one page, so create session only for 5 min
+		 */
+		if ($user == User::GUEST_ID) {
+			$expire_in = min($expire_in, 300);
+		}
+		$expire = $time + $expire_in;
+		/**
+		 * Create unique session
+		 */
+		do {
+			$hash     = md5(openssl_random_pseudo_bytes(1000));
+			$inserted = $this->db_prime()->q(
 				"INSERT INTO `[prefix]sessions`
 					(
 						`id`,
@@ -521,41 +512,36 @@ class Session {
 				$remote_addr,
 				$ip
 			);
-			if ($user != User::GUEST_ID) {
-				$this->db_prime()->q(
-					"UPDATE `[prefix]users`
-					SET
-						`last_sign_in`	= $time,
-						`last_online`	= $time,
-						`last_ip`		= '$ip'
-					WHERE `id` ='$user'"
-				);
-			}
-			$this->session_id   = $hash;
-			$this->cache->$hash = [
-				'id'          => $hash,
-				'user'        => $user,
-				'expire'      => $expire,
-				'user_agent'  => $_SERVER->user_agent,
-				'remote_addr' => $remote_addr,
-				'ip'          => $ip
-			];
-			_setcookie('session', $hash, $expire);
-			$this->load();
-			$this->update_user_is();
-			$ids_count = $this->db()->qfs(
-				"SELECT COUNT(`id`)
-				FROM `[prefix]sessions`"
+		} while (!$inserted);
+		if ($user != User::GUEST_ID) {
+			$this->db_prime()->q(
+				"UPDATE `[prefix]users`
+				SET
+					`last_sign_in`	= $time,
+					`last_online`	= $time,
+					`last_ip`		= '$ip'
+				WHERE `id` ='$user'"
 			);
-			if (($ids_count % $Config->core['inserts_limit']) == 0) {
-				$this->db_prime()->aq(
-					"DELETE FROM `[prefix]sessions`
-					WHERE `expire` < $time"
-				);
-			}
-			return true;
 		}
-		return false;
+		$this->session_id   = $hash;
+		$this->cache->$hash = [
+			'id'          => $hash,
+			'user'        => $user,
+			'expire'      => $expire,
+			'user_agent'  => $_SERVER->user_agent,
+			'remote_addr' => $remote_addr,
+			'ip'          => $ip
+		];
+		_setcookie('session', $hash, $expire);
+		$this->load();
+		$this->update_user_is();
+		/**
+		 * Delete old sessions using probability and system configuration of inserts limits and update ratio
+		 */
+		if (mt_rand(0, $Config->core['inserts_limit']) > $Config->core['inserts_limit'] / 100 * $Config->core['update_ratio'] / 5) {
+			$this->delete_old_sessions();
+		}
+		return true;
 	}
 	/**
 	 * Destroying of the session
@@ -605,6 +591,15 @@ class Session {
 			]
 		);
 		return (bool)$result;
+	}
+	/**
+	 * Delete all old sessions from DB
+	 */
+	protected function delete_old_sessions () {
+		$this->db_prime()->aq(
+			"DELETE FROM `[prefix]sessions`
+			WHERE `expire` < ".time()
+		);
 	}
 	/**
 	 * Deletion of all user sessions
