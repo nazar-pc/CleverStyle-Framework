@@ -1248,15 +1248,17 @@ trait components {
 							];
 						}
 						unset($dbs, $database);
-						$a->content(
-							h::{'cs-table[right-left][with-header] cs-table-row| cs-table-cell'}(
-								[
-									h::info('appointment_of_db'),
-									h::info('system_db')
-								],
-								$db_list
-							)
-						);
+						if ($db_list) {
+							$a->content(
+								h::{'cs-table[right-left][with-header] cs-table-row| cs-table-cell'}(
+									[
+										h::info('appointment_of_db'),
+										h::info('system_db')
+									],
+									$db_list
+								)
+							);
+						}
 						unset($db_list);
 						if ($rc[2] == 'install') {
 							goto back_to_module_installation_1;
@@ -1312,15 +1314,17 @@ trait components {
 							];
 						}
 						unset($storages, $storage);
-						$a->content(
-							h::{'cs-table[right-left][with-header] cs-table-row| cs-table-cell'}(
-								[
-									h::info('appointment_of_storage'),
-									h::info('system_storage')
-								],
-								$storage_list
-							)
-						);
+						if ($storage_list) {
+							$a->content(
+								h::{'cs-table[right-left][with-header] cs-table-row| cs-table-cell'}(
+									[
+										h::info('appointment_of_storage'),
+										h::info('system_storage')
+									],
+									$storage_list
+								)
+							);
+						}
 						unset($storage_list);
 						if ($rc[2] == 'install') {
 							goto back_to_module_installation_2;

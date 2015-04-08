@@ -194,7 +194,7 @@ function install_process ($fs, $argv = null) {
 		'ip_black_list'                     => [],
 		'ip_admin_list_only'                => 0,
 		'ip_admin_list'                     => [],
-		'simple_admin_mode'                 => 0,
+		'simple_admin_mode'                 => 1,
 		'default_module'                    => 'System'
 	];
 	$config['name'] = (string)$_POST['site_name'];
@@ -219,7 +219,7 @@ function install_process ($fs, $argv = null) {
 	$config['timezone']          = $_POST['timezone'];
 	$config['mail_from_name']    = 'Administrator of '.$config['name'];
 	$config['mail_from']         = $_POST['admin_email'];
-	$config['simple_admin_mode'] = @$_POST['mode'] ? 1 : 0;
+	$config['simple_admin_mode'] = !isset($_POST['mode']) || $_POST['mode'] ? 1 : 0;
 	/**
 	 * Extracting of engine's files
 	 */
