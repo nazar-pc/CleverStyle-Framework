@@ -538,7 +538,7 @@ class Session {
 		/**
 		 * Delete old sessions using probability and system configuration of inserts limits and update ratio
 		 */
-		if (mt_rand(0, $Config->core['inserts_limit']) > $Config->core['inserts_limit'] / 100 * $Config->core['update_ratio'] / 5) {
+		if (mt_rand(0, $Config->core['inserts_limit']) < $Config->core['inserts_limit'] / 100 * (100 - $Config->core['update_ratio']) / 5) {
 			$this->delete_old_sessions();
 		}
 		return true;
