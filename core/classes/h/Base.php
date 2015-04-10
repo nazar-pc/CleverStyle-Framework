@@ -181,13 +181,20 @@ abstract class Base extends BananaHTML {
 			}
 			unset($in['checked']);
 			$in['tag'] = 'input';
+			$button_class = 'uk-button';
+			if (in_array('checked', $in)) {
+				$button_class .= ' uk-active';
+			}
+			if (isset($item['class'])) {
+				$button_class .= " $in[class]";
+			}
 			return static::span(
 				static::label(
 					static::u_wrap($in),
 					[
 						'for'			=> $in['id'],
 						'data-title'	=> isset($in['data-title']) ? $in['data-title'] : false,
-						'class'			=> 'uk-button'.(in_array('checked', $in) ? ' uk-active' : '')
+						'class'			=> $button_class
 					]
 				),
 				[
@@ -249,11 +256,18 @@ abstract class Base extends BananaHTML {
 			if (isset($item['value'])) {
 				$item['value'] = prepare_attr_value($item['value']);
 			}
+			$button_class = 'uk-button';
+			if (isset($item['checked'])) {
+				$button_class .= ' uk-active';
+			}
+			if (isset($item['class'])) {
+				$button_class .= " $item[class]";
+			}
 			$temp .= static::label(
 				static::u_wrap($item),
 				[
 					'for'	=> $item['id'],
-					'class'	=> 'uk-button'.(isset($item['checked']) ? ' uk-active' : '')
+					'class'	=> $button_class
 				]
 			);
 		}
