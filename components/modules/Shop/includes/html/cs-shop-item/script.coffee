@@ -1,9 +1,9 @@
 ###*
- * @package       Shop
- * @order_status  modules
- * @author        Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright     Copyright (c) 2014-2015, Nazar Mokrynskyi
- * @license       MIT License, see license.txt
+ * @package   Shop
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2014-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
 ###
 Polymer(
 	characteristics_text	: cs.Language.shop_characteristics_text

@@ -1,10 +1,10 @@
 <?php
 /**
- * @package      Shop
- * @order_status modules
- * @author       Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright    Copyright (c) 2014-2015, Nazar Mokrynskyi
- * @license      MIT License, see license.txt
+ * @package   Shop
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2014-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs\modules\Shop;
 use
@@ -16,12 +16,11 @@ use
 
 include __DIR__.'/save.php';
 
-$L                   = new Prefix('shop_');
-$Config              = Config::instance();
-$Index               = Index::instance();
-$Page                = Page::instance();
-$module_data         = $Config->module('Shop');
-$Index->apply_button = false;
+$L           = new Prefix('shop_');
+$Config      = Config::instance();
+$Index       = Index::instance();
+$Page        = Page::instance();
+$module_data = $Config->module('Shop');
 $Page->title($L->general);
 $Order_statuses = Order_statuses::instance();
 $order_statuses = $Order_statuses->get($Order_statuses->get_all());

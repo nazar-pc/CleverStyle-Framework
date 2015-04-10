@@ -9,10 +9,9 @@
 use
 	cs\Config,
 	cs\Index;
-$Index               = Index::instance();
-$Index->apply_button = false;
-$Config              = Config::instance();
-$module_data         = $Config->module('Blockchain_payment');
+$Index       = Index::instance();
+$Config      = Config::instance();
+$module_data = $Config->module('Blockchain_payment');
 if (isset($_POST['bitcoin_address'], $_POST['bitcoin_address'])) {
 	$module_data->set(
 		[

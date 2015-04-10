@@ -1,13 +1,13 @@
 <?php
 /**
- * @package		Blogs
- * @category	modules
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   Blogs
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 
-namespace	cs\modules\Blogs;
+namespace cs\modules\Blogs;
 use
 	h,
 	cs\Config,
@@ -15,14 +15,13 @@ use
 	cs\Language,
 	cs\Page,
 	cs\Route;
-$Config						= Config::instance();
-$Index						= Index::instance();
-$L							= Language::instance();
+$Config = Config::instance();
+$Index  = Index::instance();
+$L      = Language::instance();
 Page::instance()->title($L->addition_of_posts_section);
-$Route						= Route::instance();
-$Index->apply_button		= false;
-$Index->cancel_button_back	= true;
-$Index->action				= 'admin/Blogs/browse_sections';
+$Route                     = Route::instance();
+$Index->cancel_button_back = true;
+$Index->action             = 'admin/Blogs/browse_sections';
 $Index->content(
 	h::{'h2.cs-center'}(
 		$L->addition_of_posts_section
@@ -37,7 +36,7 @@ $Index->content(
 			h::{'select[name=parent][size=5]'}(
 				get_sections_select_section(),
 				[
-					'selected'	=> isset($Route->route[1]) ? (int)$Route->route[1] : 0
+					'selected' => isset($Route->route[1]) ? (int)$Route->route[1] : 0
 				]
 			),
 			h::{'input[name=title]'}(),

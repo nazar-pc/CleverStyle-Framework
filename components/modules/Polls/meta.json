@@ -1,7 +1,7 @@
 {
 	"package"      : "Polls",
 	"category"     : "modules",
-	"version"      : "1.11.0+build-16",
+	"version"      : "1.11.1+build-17",
 	"description"  : "Polls",
 	"author"       : "Nazar Mokrynskyi",
 	"website"      : "cleverstyle.org/cms",

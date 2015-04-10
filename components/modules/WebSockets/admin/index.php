@@ -13,54 +13,63 @@ use
 	cs\Config,
 	cs\Index,
 	cs\Language\Prefix;
-$Index               = Index::instance();
-$Index->apply_button = false;
-$L                   = new Prefix('websockets_');
-$Config              = Config::instance();
-$module_data         = $Config->module('WebSockets');
+$Index       = Index::instance();
+$L           = new Prefix('websockets_');
+$Config      = Config::instance();
+$module_data = $Config->module('WebSockets');
 if (isset($_POST['start_server']) && !is_server_running()) {
 	file_get_contents(
 		$Config->base_url().'/WebSockets/'.$Config->module('WebSockets')->security_key,
 		null,
-		stream_context_create([
-			'http' => [
-				'timeout' => 0
+		stream_context_create(
+			[
+				'http' => [
+					'timeout' => 0
+				]
 			]
-		])
+		)
 	);
 	sleep(1);
 } elseif (isset($_POST['listen_port'], $_POST['listen_locally'])) {
-	$module_data->set([
-		'security_key'   => $_POST['security_key'],
-		'listen_port'    => (int)$_POST['listen_port'] ?: 8080,
-		'listen_locally' => (int)$_POST['listen_locally']
-	]);
+	$module_data->set(
+		[
+			'security_key'   => $_POST['security_key'],
+			'listen_port'    => (int)$_POST['listen_port'] ?: 8080,
+			'listen_locally' => (int)$_POST['listen_locally']
+		]
+	);
 	$Index->save(true);
 }
 $Index->content(
 	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
 		[
 			h::info('websockets_security_key'),
-			h::input([
-				'name'  => 'security_key',
-				'value' => $module_data->security_key
-			])
+			h::input(
+				[
+					'name'  => 'security_key',
+					'value' => $module_data->security_key
+				]
+			)
 		],
 		[
 			h::info('websockets_listen_port'),
-			h::input([
-				'name'  => 'listen_port',
-				'value' => $module_data->listen_port ?: 8080
-			])
+			h::input(
+				[
+					'name'  => 'listen_port',
+					'value' => $module_data->listen_port ?: 8080
+				]
+			)
 		],
 		[
 			h::info('websockets_listen_on'),
-			h::radio([
-				'name'    => 'listen_locally',
-				'checked' => $module_data->listen_locally,
-				'value'   => [1, 0],
-				'in'      => ['127.0.0.1', '0.0.0.0']
-			])
+			h::radio(
+				[
+					'name'    => 'listen_locally',
+					'checked' => $module_data->listen_locally,
+					'value'   => [1, 0],
+					'in'      => ['127.0.0.1', '0.0.0.0']
+				]
+			)
 		]
 	).
 	(is_server_running()
