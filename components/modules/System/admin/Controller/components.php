@@ -74,7 +74,6 @@ trait components {
 					break;
 				case 'add':
 					$form                  = false;
-					$a->apply_button       = false;
 					$a->cancel_button_back = true;
 					$a->form_attributes[]  = 'formnovalidate';
 					$Page->title($L->adding_a_block);
@@ -171,7 +170,6 @@ trait components {
 					break;
 				case 'edit':
 					$form                  = false;
-					$a->apply_button       = false;
 					$a->cancel_button_back = true;
 					$a->form_attributes[]  = 'formnovalidate';
 					$block                 = &$Config->components['blocks'][$id];
@@ -279,7 +277,6 @@ trait components {
 					break;
 				case 'permissions':
 					$form                  = false;
-					$a->apply_button       = false;
 					$a->cancel_button_back = true;
 					$permission            = Permission::instance()->get(null, 'Block', $Config->components['blocks'][$id]['index'])[0]['id'];
 					$groups                = Group::instance()->get_all();
@@ -409,6 +406,7 @@ trait components {
 			}
 		}
 		if ($form) {
+			$a->apply_button = true;
 			$a->custom_buttons .= h::{'button.uk-button.cs-reload-button'}(
 				$L->reset
 			);
@@ -518,7 +516,6 @@ trait components {
 		$db_id        = isset($route_ids[0]) ? $route_ids[0] : false;
 		$db_mirror_id = isset($route_ids[1]) ? $route_ids[1] : false;
 		if ($action) {
-			$a->apply_button       = false;
 			$a->cancel_button_back = true;
 			switch ($action) {
 				case 'edit':
@@ -743,8 +740,9 @@ trait components {
 					}
 			}
 		} else {
-			$db_list   = [];
-			$databases = $Config->db;
+			$a->apply_button = true;
+			$db_list         = [];
+			$databases       = $Config->db;
 			if (!empty($databases)) {
 				foreach ($databases as $i => &$db_data) {
 					$db_list[] = [
@@ -1218,7 +1216,6 @@ trait components {
 							break;
 						}
 						$a->buttons            = true;
-						$a->apply_button       = false;
 						$a->cancel_button_back = true;
 						module_db_settings:
 						$Core = Core::instance();
@@ -1285,7 +1282,6 @@ trait components {
 							break;
 						}
 						$a->buttons            = true;
-						$a->apply_button       = false;
 						$a->cancel_button_back = true;
 						module_storage_settings:
 						$storages = [0 => $L->core_storage];
@@ -2124,7 +2120,6 @@ trait components {
 		$a      = Index::instance();
 		$rc     = Route::instance()->route;
 		if (isset($rc[2])) {
-			$a->apply_button       = false;
 			$a->cancel_button_back = true;
 			switch ($rc[2]) {
 				case 'add':

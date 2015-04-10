@@ -293,7 +293,6 @@ class Controller {
 				$timezones   = get_timezones_list();
 				$Index->form = true;
 				$Index->form_attributes['class'] .= ' cs-center';
-				$Index->apply_button       = false;
 				$Index->cancel_button_back = true;
 				$Page->title($L->general);
 				$Index->content(

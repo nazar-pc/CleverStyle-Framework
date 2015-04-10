@@ -40,7 +40,7 @@ class Index {
 	];
 	public    $buttons            = true;
 	public    $save_button        = true;
-	public    $apply_button       = true;
+	public    $apply_button       = false;
 	public    $cancel_button_back = false;
 	public    $custom_buttons     = '';
 	protected $action;
@@ -697,7 +697,7 @@ class Index {
 		return false;
 	}
 	/**
-	 * Getter for `action` property (no other properties supported currently)
+	 * Setter for `action` property (no other properties supported currently)
 	 *
 	 * @param string $property
 	 * @param string $value
