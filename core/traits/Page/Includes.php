@@ -231,11 +231,12 @@ trait Includes {
 	 * @return \cs\Page
 	 */
 	protected function config_internal ($config_structure, $target, $core = false) {
-		$config = h::template(
-			'<!--'.str_replace('-', '- ', _json_encode($config_structure)).'-->',
+		$config = h::script(
+			_json_encode($config_structure),
 			[
 				'target' => $target,
 				'class'  => 'cs-config',
+				'type'   => 'application/json',
 				'level'  => 0
 			]
 		);

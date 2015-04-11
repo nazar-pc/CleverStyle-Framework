@@ -18,7 +18,7 @@
   [].forEach.call(document.head.querySelectorAll('.cs-config'), function(config) {
     var data, destination, target;
     target = config.getAttribute('target').split('.');
-    data = JSON.parse(config.innerHTML.substring(4, config.innerHTML.length - 3).replace('-  ', '-', 'g'));
+    data = JSON.parse(config.innerHTML);
     destination = window;
     target.forEach(function(target_part, i) {
       var index, value;
