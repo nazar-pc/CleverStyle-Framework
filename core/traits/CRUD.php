@@ -19,7 +19,8 @@ use
  * @property string $table
  */
 trait CRUD {
-	use    Accessor;
+	use
+		Accessor;
 	/**
 	 * @param callable[]|string[] $data_model
 	 * @param array               $arguments
