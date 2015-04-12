@@ -81,7 +81,7 @@ class Properties {
 	 * @return string
 	 */
 	function avatar ($size = null) {
-		return $this->avatar($size);
+		return User::instance()->avatar($size, $this->id);
 	}
 	/**
 	 * Get user name or login or email, depending on existing information
