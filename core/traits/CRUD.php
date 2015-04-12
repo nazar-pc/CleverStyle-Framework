@@ -121,7 +121,7 @@ trait CRUD {
 	 *
 	 * @param array $arguments First element `id` can be omitted if it is autoincrement field
 	 *
-	 * @return false|int Id of created item on success, `false` otherwise
+	 * @return false|int|string Id of created item on success, `false` otherwise
 	 */
 	protected function create ($arguments) {
 		//TODO remove in future versions
@@ -140,14 +140,14 @@ trait CRUD {
 	 * @return false|int|string Id of created item on success (or specified primary key), `false` otherwise
 	 */
 	private function create_internal ($table, $data_model, $arguments) {
-		$insert_id = count($data_model) == count($arguments);
+		$insert_id = count($data_model) == count($arguments) ? $arguments[0] : false;
 		self::crud_arguments_preparation(
-			$insert_id ? $data_model : array_slice($data_model, 1),
+			$insert_id !== false ? $data_model : array_slice($data_model, 1),
 			$arguments,
-			$insert_id ? $arguments[0] : false,
+			$insert_id,
 			$update_needed
 		);
-		$columns = "`".implode("`,`", array_keys($insert_id ? $data_model : array_slice($data_model, 1)))."`";
+		$columns = "`".implode("`,`", array_keys($insert_id !== false ? $data_model : array_slice($data_model, 1)))."`";
 		$values  = implode(',', array_fill(0, count($arguments), "'%s'"));
 		$return  = $this->db_prime()->q(
 			"INSERT INTO `$table`
@@ -161,7 +161,7 @@ trait CRUD {
 		if (!$return) {
 			return false;
 		}
-		$id = $insert_id ? $arguments[0] : $this->db_prime()->id();
+		$id = $insert_id !== false ? $insert_id : $this->db_prime()->id();
 		/**
 		 * If on creation request without specified primary key and multilingual fields present - update needed
 		 * after creation (there is no id before creation)
@@ -177,7 +177,7 @@ trait CRUD {
 	 *
 	 * @param array $arguments First element `id` can be omitted if it is autoincrement field
 	 *
-	 * @return false|int Id of created item on success, `false` otherwise
+	 * @return false|int|string Id of created item on success, `false` otherwise
 	 */
 	protected function create_simple ($arguments) {
 		return $this->create($arguments);
@@ -185,7 +185,7 @@ trait CRUD {
 	/**
 	 * Read item
 	 *
-	 * @param int|int[] $id
+	 * @param int|int[]|string|string[] $id
 	 *
 	 * @return array|false
 	 */
@@ -241,7 +241,7 @@ trait CRUD {
 	 * @deprecated
 	 * @todo remove in future versions
 	 *
-	 * @param int|int[] $id
+	 * @param int|int[]|string|string[] $id
 	 *
 	 * @return array|false
 	 */
@@ -332,7 +332,7 @@ trait CRUD {
 		$result       = true;
 		$multilingual = isset($this->data_model_ml_group) && $this->data_model_ml_group;
 		$first_column = array_keys($data_model)[0];
-		foreach (_int($id) as $i) {
+		foreach ($id as $i) {
 			$result =
 				$result &&
 				$this->db_prime()->q(
