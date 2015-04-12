@@ -118,13 +118,27 @@ trait CRUD {
 	/**
 	 * Create item
 	 *
+	 * @param array $arguments First element `id` can be omitted if it is autoincrement field
+	 *
+	 * @return false|int Id of created item on success, `false` otherwise
+	 */
+	protected function create ($arguments) {
+		//TODO remove in future versions
+		if (func_num_args() === 3) {
+			return call_user_func([$this, 'create_internal'], func_get_args());
+		}
+		return $this->create_internal($this->table, $this->data_model, $arguments);
+	}
+	/**
+	 * Create item
+	 *
 	 * @param string              $table
 	 * @param callable[]|string[] $data_model
 	 * @param array               $arguments First element `id` can be omitted if it is autoincrement field
 	 *
 	 * @return false|int|string Id of created item on success (or specified primary key), `false` otherwise
 	 */
-	protected function create ($table, $data_model, $arguments) {
+	private function create_internal ($table, $data_model, $arguments) {
 		$insert_id = count($data_model) == count($arguments);
 		self::crud_arguments_preparation(
 			$insert_id ? $data_model : array_slice($data_model, 1),
@@ -157,16 +171,29 @@ trait CRUD {
 		return $id;
 	}
 	/**
-	 * Wrapper for `::create()` method, when `$table` and `$data_model` arguments are expected to be a properties of class
-	 *
-	 * @see create
+	 * @deprecated
+	 * @todo remove in future versions
 	 *
 	 * @param array $arguments First element `id` can be omitted if it is autoincrement field
 	 *
 	 * @return false|int Id of created item on success, `false` otherwise
 	 */
 	protected function create_simple ($arguments) {
-		return $this->create($this->table, $this->data_model, $arguments);
+		return $this->create($arguments);
+	}
+	/**
+	 * Read item
+	 *
+	 * @param int|int[] $id
+	 *
+	 * @return array|false
+	 */
+	protected function read ($id) {
+		//TODO remove in future versions
+		if (func_num_args() === 3) {
+			return call_user_func([$this, 'read_internal'], func_get_args());
+		}
+		return $this->read_internal($this->table, $this->data_model, $id);
 	}
 	/**
 	 * Read item
@@ -177,10 +204,10 @@ trait CRUD {
 	 *
 	 * @return array|false
 	 */
-	protected function read ($table, $data_model, $id) {
+	private function read_internal ($table, $data_model, $id) {
 		if (is_array($id)) {
 			foreach ($id as &$i) {
-				$i = $this->read($table, $data_model, $i);
+				$i = $this->read_internal($table, $data_model, $i);
 			}
 			return $id;
 		}
@@ -210,16 +237,29 @@ trait CRUD {
 		return $data;
 	}
 	/**
-	 * Wrapper for `::read()` method, when `$table` and `$data_model` arguments are expected to be a properties of class
-	 *
-	 * @see read
+	 * @deprecated
+	 * @todo remove in future versions
 	 *
 	 * @param int|int[] $id
 	 *
 	 * @return array|false
 	 */
 	protected function read_simple ($id) {
-		return $this->read($this->table, $this->data_model, $id);
+		return $this->read($id);
+	}
+	/**
+	 * Update item
+	 *
+	 * @param array $arguments
+	 *
+	 * @return bool
+	 */
+	protected function update ($arguments) {
+		//TODO remove in future versions
+		if (func_num_args() === 3) {
+			return call_user_func([$this, 'update_internal'], func_get_args());
+		}
+		return $this->update_internal($this->table, $this->data_model, $arguments);
 	}
 	/**
 	 * Update item
@@ -230,7 +270,7 @@ trait CRUD {
 	 *
 	 * @return bool
 	 */
-	protected function update ($table, $data_model, $arguments) {
+	private function update_internal ($table, $data_model, $arguments) {
 		$id = array_shift($arguments);
 		self::crud_arguments_preparation(array_slice($data_model, 1), $arguments, $id);
 		$columns      = implode(
@@ -253,16 +293,29 @@ trait CRUD {
 		);
 	}
 	/**
-	 * Wrapper for `::update()` method, when `$table` and `$data_model` arguments are expected to be a properties of class
-	 *
-	 * @see update
+	 * @deprecated
+	 * @todo remove in future versions
 	 *
 	 * @param array $arguments
 	 *
 	 * @return bool
 	 */
 	protected function update_simple ($arguments) {
-		return $this->update($this->table, $this->data_model, $arguments);
+		return $this->update($arguments);
+	}
+	/**
+	 * Delete item
+	 *
+	 * @param int|int[]|string|string[] $id
+	 *
+	 * @return bool
+	 */
+	protected function delete ($id) {
+		//TODO remove in future versions
+		if (func_num_args() === 3) {
+			return call_user_func([$this, 'delete_internal'], func_get_args());
+		}
+		return $this->delete_internal($this->table, $this->data_model, $id);
 	}
 	/**
 	 * Delete item
@@ -273,7 +326,7 @@ trait CRUD {
 	 *
 	 * @return bool
 	 */
-	protected function delete ($table, $data_model, $id) {
+	private function delete_internal ($table, $data_model, $id) {
 		$id           = (array)$id;
 		$result       = true;
 		$multilingual = isset($this->data_model_ml_group) && $this->data_model_ml_group;
@@ -302,15 +355,14 @@ trait CRUD {
 		return $result;
 	}
 	/**
-	 * Wrapper for `::delete()` method, when `$table` argument is expected to be a property of class
-	 *
-	 * @see delete
+	 * @deprecated
+	 * @todo remove in future versions
 	 *
 	 * @param int|int[]|string|string[] $id
 	 *
 	 * @return bool
 	 */
 	protected function delete_simple ($id) {
-		return $this->delete($this->table, $this->data_model, $id);
+		return $this->delete($id);
 	}
 }
