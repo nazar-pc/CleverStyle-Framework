@@ -1,0 +1,23 @@
+{
+	"package"             : "Json_ld",
+	"category"            : "modules",
+	"version"             : "0.1.0+build-1",
+	"description"         : "Useful tools for simplifying generating of JSON-LD snippets",
+	"author"              : "Nazar Mokrynskyi",
+	"website"             : "cleverstyle.org/cms",
+	"license"             : "MIT License",
+	"provide"             : "json_ld",
+	"require"             : [
+		"System>=2.9.2",
+		"System<=3.0"
+	],
+	"multilingual"        : [
+		"interface",
+		"content"
+	],
+	"languages"           : [
+		"English",
+		"Русский",
+		"Українська"
+	]
+}
