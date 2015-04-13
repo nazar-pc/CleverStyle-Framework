@@ -256,15 +256,15 @@ class Blogs {
 		return $this->db()->qfas(
 			[
 				"SELECT `t`.`id`
-			FROM `[prefix]blogs_posts_tags` AS `t`
-				LEFT JOIN `[prefix]blogs_posts` AS `p`
-			ON `t`.`id` = `p`.`id`
-			WHERE
-				`t`.`tag`	= '%s' AND
-				`p`.`draft`	= 0 AND
-				`t`.`lang`	= '%s'
-			ORDER BY `p`.`date` DESC
-			LIMIT $from, $number",
+				FROM `[prefix]blogs_posts_tags` AS `t`
+					LEFT JOIN `[prefix]blogs_posts` AS `p`
+				ON `t`.`id` = `p`.`id`
+				WHERE
+					`t`.`tag`	= '%s' AND
+					`p`.`draft`	= 0 AND
+					`t`.`lang`	= '%s'
+				ORDER BY `p`.`date` DESC
+				LIMIT $from, $number",
 				$tag,
 				$lang
 			]
@@ -286,15 +286,15 @@ class Blogs {
 		return $this->db()->qfs(
 			[
 				"SELECT COUNT(`t`.`id`)
-			FROM `[prefix]blogs_posts_tags` AS `t`
-				LEFT JOIN `[prefix]blogs_posts` AS `p`
-			ON `t`.`id` = `p`.`id`
-			WHERE
-				`t`.`tag`	= '%s' AND
-				`p`.`draft`	= 0 AND
-				`t`.`lang`	= '%s'
-			ORDER BY `p`.`date` DESC
-			LIMIT $from, $number",
+				FROM `[prefix]blogs_posts_tags` AS `t`
+					LEFT JOIN `[prefix]blogs_posts` AS `p`
+				ON `t`.`id` = `p`.`id`
+				WHERE
+					`t`.`tag`	= '%s' AND
+					`p`.`draft`	= 0 AND
+					`t`.`lang`	= '%s'
+				ORDER BY `p`.`date` DESC
+				LIMIT $from, $number",
 				$tag,
 				$lang
 			]
@@ -542,12 +542,12 @@ class Blogs {
 		if (!$this->db_prime()->q(
 			[
 				"DELETE FROM `[prefix]blogs_posts`
-			WHERE `id` = $id
-			LIMIT 1",
+				WHERE `id` = $id
+				LIMIT 1",
 				"DELETE FROM `[prefix]blogs_posts_sections`
-			WHERE `id` = $id",
+				WHERE `id` = $id",
 				"DELETE FROM `[prefix]blogs_posts_tags`
-			WHERE `id` = $id"
+				WHERE `id` = $id"
 			]
 		)
 		) {
@@ -594,8 +594,8 @@ class Blogs {
 			function () {
 				return $this->db()->qfs(
 					"SELECT COUNT(`id`)
-				FROM `[prefix]blogs_posts`
-				WHERE `draft` = 0"
+					FROM `[prefix]blogs_posts`
+					WHERE `draft` = 0"
 				);
 			}
 		);
@@ -656,12 +656,12 @@ class Blogs {
 			$structure['posts'] = $this->db()->qfs(
 				[
 					"SELECT COUNT(`s`.`id`)
-				FROM `[prefix]blogs_posts_sections` AS `s`
-					LEFT JOIN `[prefix]blogs_posts` AS `p`
-				ON `s`.`id` = `p`.`id`
-				WHERE
-					`s`.`section`	= '%s' AND
-					`p`.`draft`		= 0",
+					FROM `[prefix]blogs_posts_sections` AS `s`
+						LEFT JOIN `[prefix]blogs_posts` AS `p`
+					ON `s`.`id` = `p`.`id`
+					WHERE
+						`s`.`section`	= '%s' AND
+						`p`.`draft`		= 0",
 					$structure['id']
 				]
 			);
@@ -669,10 +669,10 @@ class Blogs {
 		$sections              = $this->db()->qfa(
 			[
 				"SELECT
-				`id`,
-				`path`
-			FROM `[prefix]blogs_sections`
-			WHERE `parent` = '%s'",
+					`id`,
+					`path`
+				FROM `[prefix]blogs_sections`
+				WHERE `parent` = '%s'",
 				$parent
 			]
 		);
@@ -706,22 +706,22 @@ class Blogs {
 				$data              = $this->db()->qf(
 					[
 						"SELECT
-					`id`,
-					`title`,
-					`path`,
-					`parent`,
-					(
-						SELECT COUNT(`s`.`id`)
-						FROM `[prefix]blogs_posts_sections` AS `s`
-							LEFT JOIN `[prefix]blogs_posts` AS `p`
-						ON `s`.`id` = `p`.`id`
-						WHERE
-							`s`.`section`	= '%1\$s' AND
-							`p`.`draft`		= 0
-					) AS `posts`
-				FROM `[prefix]blogs_sections`
-				WHERE `id` = '%1\$s'
-				LIMIT 1",
+							`id`,
+							`title`,
+							`path`,
+							`parent`,
+							(
+								SELECT COUNT(`s`.`id`)
+								FROM `[prefix]blogs_posts_sections` AS `s`
+									LEFT JOIN `[prefix]blogs_posts` AS `p`
+								ON `s`.`id` = `p`.`id`
+								WHERE
+									`s`.`section`	= '%1\$s' AND
+									`p`.`draft`		= 0
+							) AS `posts`
+						FROM `[prefix]blogs_sections`
+						WHERE `id` = '%1\$s'
+						LIMIT 1",
 						$id
 					]
 				);
@@ -831,20 +831,20 @@ class Blogs {
 		$parent_section    = $this->db_prime()->qfs(
 			[
 				"SELECT `parent`
-			FROM `[prefix]blogs_sections`
-			WHERE `id` = '%s'
-			LIMIT 1",
+				FROM `[prefix]blogs_sections`
+				WHERE `id` = '%s'
+				LIMIT 1",
 				$id
 			]
 		);
 		$new_posts_section = $this->db_prime()->qfs(
 			[
 				"SELECT `id`
-			FROM `[prefix]blogs_sections`
-			WHERE
-				`parent` = '%s' AND
-				`id` != '%s'
-			LIMIT 1",
+				FROM `[prefix]blogs_sections`
+				WHERE
+					`parent` = '%s' AND
+					`id` != '%s'
+				LIMIT 1",
 				$parent_section,
 				$id
 			]
@@ -906,9 +906,9 @@ class Blogs {
 				return $this->db()->qfs(
 					[
 						"SELECT `text`
-				FROM `[prefix]blogs_tags`
-				WHERE `id` = '%s'
-				LIMIT 1",
+						FROM `[prefix]blogs_tags`
+						WHERE `id` = '%s'
+						LIMIT 1",
 						$id
 					]
 				);
@@ -926,9 +926,9 @@ class Blogs {
 		return $this->db()->qfs(
 			[
 				"SELECT `id`
-			FROM  `[prefix]blogs_tags`
-			WHERE `text` = '%s'
-			LIMIT 1",
+				FROM  `[prefix]blogs_tags`
+				WHERE `text` = '%s'
+				LIMIT 1",
 				trim(xap($tag_text))
 			]
 		);
