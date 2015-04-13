@@ -34,17 +34,14 @@ if (isset($_GET['section'])) {
 	$title[] = $section['title'];
 	$posts   = $Blogs->get_for_section($section['id'], 1, $number);
 } elseif (isset($_GET['tag'])) {
-	$tag = [
-		'id'   => (int)$_GET['tag'],
-		'text' => $Blogs->get_tag($_GET['tag'])
-	];
-	if (!$tag['text']) {
+	$tag = $Blogs->find_tag($_GET['tag']);
+	if (!$tag) {
 		error_code(404);
 		return;
 	}
 	$title[] = $L->tag;
-	$title[] = $tag['text'];
-	$posts   = $Blogs->get_for_tag($tag['id'], $L->clang, 1, $number);
+	$title[] = $Blogs->get_tag($tag);
+	$posts   = $Blogs->get_for_tag($tag, $L->clang, 1, $number);
 } else {
 	$posts = $Blogs->get_latest_posts(1, $number);
 }

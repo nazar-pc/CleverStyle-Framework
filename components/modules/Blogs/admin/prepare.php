@@ -177,7 +177,7 @@ function get_posts_rows ($page = 1) {
 								]
 							);
 						},
-						$Blogs->get_tag($post['tags'])
+						$post['tags']
 					)
 				),
 				h::a(

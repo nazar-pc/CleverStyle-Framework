@@ -15,7 +15,8 @@ use
 	cs\Text,
 	cs\User,
 	cs\DB\Accessor,
-	cs\Singleton;
+	cs\Singleton,
+	cs\modules\Json_ld\Json_ld;
 
 /**
  * @method static Blogs instance($check = false)
@@ -57,59 +58,68 @@ class Blogs {
 		}
 		$L        = Language::instance();
 		$id       = (int)$id;
-		$data     = $this->cache->get("posts/$id/$L->clang", function () use ($id, $L) {
-			$data = $this->db()->qf([
-				"SELECT
-					`id`,
-					`user`,
-					`date`,
-					`title`,
-					`path`,
-					`content`,
-					`draft`
-				FROM `[prefix]blogs_posts`
-				WHERE
-					`id` = '%s'
-				LIMIT 1",
-				$id
-			]);
-			if ($data) {
-				$data['title']         = $this->ml_process($data['title']);
-				$data['path']          = $this->ml_process($data['path']);
-				$data['content']       = $this->ml_process($data['content']);
-				$data['short_content'] = truncate(explode('<!-- pagebreak -->', $data['content'])[0]);
-				$data['sections']      = $this->db()->qfas(
-					"SELECT `section`
-					FROM `[prefix]blogs_posts_sections`
-					WHERE `id` = $id"
-				);
-				$data['tags']          = $this->db()->qfas([
-					"SELECT DISTINCT `tag`
-					FROM `[prefix]blogs_posts_tags`
-					WHERE
-						`id`	= $id AND
-						`lang`	= '%s'",
-					$L->clang
-				]);
-				if (!$data['tags']) {
-					$l            = $this->db()->qfs(
-						"SELECT `lang`
-						FROM `[prefix]blogs_posts_tags`
-						WHERE `id` = $id
-						LIMIT 1"
-					);
-					$data['tags'] = $this->db()->qfas(
-						"SELECT DISTINCT `tag`
-						FROM `[prefix]blogs_posts_tags`
+		$data     = $this->cache->get(
+			"posts/$id/$L->clang",
+			function () use ($id, $L) {
+				$data = $this->db()->qf(
+					[
+						"SELECT
+							`id`,
+							`user`,
+							`date`,
+							`title`,
+							`path`,
+							`content`,
+							`draft`
+						FROM `[prefix]blogs_posts`
 						WHERE
-							`id`	= $id AND
-							`lang`	= '$l'"
+							`id` = '%s'
+						LIMIT 1",
+						$id
+					]
+				);
+				if ($data) {
+					$data['title']         = $this->ml_process($data['title']);
+					$data['path']          = $this->ml_process($data['path']);
+					$data['content']       = $this->ml_process($data['content']);
+					$data['short_content'] = truncate(explode('<!-- pagebreak -->', $data['content'])[0]);
+					$data['sections']      = $this->db()->qfas(
+						"SELECT `section`
+						FROM `[prefix]blogs_posts_sections`
+						WHERE `id` = $id"
 					);
-					unset($l);
+					$data['tags']          = $this->get_tag(
+						$this->db()->qfas(
+							[
+								"SELECT DISTINCT `tag`
+								FROM `[prefix]blogs_posts_tags`
+								WHERE
+									`id`	= $id AND
+									`lang`	= '%s'",
+								$L->clang
+							]
+						) ?: []
+					);
+					if (!$data['tags']) {
+						$l            = $this->db()->qfs(
+							"SELECT `lang`
+							FROM `[prefix]blogs_posts_tags`
+							WHERE `id` = $id
+							LIMIT 1"
+						);
+						$data['tags'] = $this->db()->qfas(
+							"SELECT DISTINCT `tag`
+							FROM `[prefix]blogs_posts_tags`
+							WHERE
+								`id`	= $id AND
+								`lang`	= '$l'"
+						);
+						unset($l);
+					}
 				}
+				return $data;
 			}
-			return $data;
-		});
+		);
 		$Comments = null;
 		Event::instance()->fire(
 			'Comments/instance',
@@ -122,6 +132,69 @@ class Blogs {
 		 */
 		$data['comments_count'] = (int)(Config::instance()->module('Blogs')->enable_comments && $Comments ? $Comments->count($data['id']) : 0);
 		return $data;
+	}
+	/**
+	 * Get data of specified post
+	 *
+	 * @param int|int[] $id
+	 *
+	 * @return array|false
+	 */
+	function get_as_json_ld ($id) {
+		$post = $this->get($id);;
+		if (!$post) {
+			return false;
+		}
+		$base_structure = [
+			'@context' =>
+				[
+					'content'        => 'articleBody',
+					'title'          => 'headline',
+					'comments_count' => 'commentCount'
+				] + Json_ld::context_stub(isset($post[0]) ? $post[0] : $post)
+		];
+		if (isset($post[0])) {
+			$graph = [];
+			foreach ($post as $p) {
+				$graph[] = $this->get_as_json_ld_single_post($p);
+			}
+			return
+				$base_structure +
+				[
+					'@graph' => $graph
+				];
+		}
+		return
+			$base_structure +
+			$this->get_as_json_ld_single_post($post);
+	}
+	protected function get_as_json_ld_single_post ($post) {
+		if (preg_match_all('/<img[^>]src=["\'](.*)["\']/Uims', $post['content'], $images)) {
+			$images = $images[1];
+		}
+		$sections = [];
+		if ($post['sections'] != [0]) {
+			$sections = array_column(
+				$this->get_section($post['sections']),
+				'title'
+			);
+		}
+		$L           = Language::instance();
+		$base_url    = Config::instance()->base_url();
+		$module_path = path(Language::instance()->Blogs);
+		$url         = "$base_url/$module_path/$post[path]:$post[id]";
+		return
+			[
+				'@id'            => $url,
+				'@type'          => 'BlogPosting',
+				'articleSection' => $sections,
+				'author'         => Json_ld::Person($post['user']),
+				'datePublished'  => Json_ld::Date($post['date']),
+				'image'          => $images,
+				'inLanguage'     => $L->clang,
+				'keywords'       => $post['tags'],
+				'url'            => $url
+			] + $post;
 	}
 	/**
 	 * Get latest posts
@@ -180,8 +253,9 @@ class Blogs {
 	function get_for_tag ($tag, $lang, $page, $number) {
 		$number = (int)$number;
 		$from   = ($page - 1) * $number;
-		return $this->db()->qfas([
-			"SELECT `t`.`id`
+		return $this->db()->qfas(
+			[
+				"SELECT `t`.`id`
 			FROM `[prefix]blogs_posts_tags` AS `t`
 				LEFT JOIN `[prefix]blogs_posts` AS `p`
 			ON `t`.`id` = `p`.`id`
@@ -191,9 +265,10 @@ class Blogs {
 				`t`.`lang`	= '%s'
 			ORDER BY `p`.`date` DESC
 			LIMIT $from, $number",
-			$tag,
-			$lang
-		]) ?: [];
+				$tag,
+				$lang
+			]
+		) ?: [];
 	}
 	/**
 	 * Get count of posts for tag
@@ -208,8 +283,9 @@ class Blogs {
 	function get_for_tag_count ($tag, $lang, $page, $number) {
 		$number = (int)$number;
 		$from   = ($page - 1) * $number;
-		return $this->db()->qfs([
-			"SELECT COUNT(`t`.`id`)
+		return $this->db()->qfs(
+			[
+				"SELECT COUNT(`t`.`id`)
 			FROM `[prefix]blogs_posts_tags` AS `t`
 				LEFT JOIN `[prefix]blogs_posts` AS `p`
 			ON `t`.`id` = `p`.`id`
@@ -219,9 +295,10 @@ class Blogs {
 				`t`.`lang`	= '%s'
 			ORDER BY `p`.`date` DESC
 			LIMIT $from, $number",
-			$tag,
-			$lang
-		]) ?: 0;
+				$tag,
+				$lang
+			]
+		) ?: 0;
 	}
 	/**
 	 * Add new post
@@ -462,15 +539,17 @@ class Blogs {
 	 */
 	function del ($id) {
 		$id = (int)$id;
-		if (!$this->db_prime()->q([
-			"DELETE FROM `[prefix]blogs_posts`
+		if (!$this->db_prime()->q(
+			[
+				"DELETE FROM `[prefix]blogs_posts`
 			WHERE `id` = $id
 			LIMIT 1",
-			"DELETE FROM `[prefix]blogs_posts_sections`
+				"DELETE FROM `[prefix]blogs_posts_sections`
 			WHERE `id` = $id",
-			"DELETE FROM `[prefix]blogs_posts_tags`
+				"DELETE FROM `[prefix]blogs_posts_tags`
 			WHERE `id` = $id"
-		])
+			]
+		)
 		) {
 			return false;
 		}
@@ -510,13 +589,16 @@ class Blogs {
 	 * @return int
 	 */
 	function get_total_count () {
-		return $this->cache->get('total_count', function () {
-			return $this->db()->qfs(
-				"SELECT COUNT(`id`)
+		return $this->cache->get(
+			'total_count',
+			function () {
+				return $this->db()->qfs(
+					"SELECT COUNT(`id`)
 				FROM `[prefix]blogs_posts`
 				WHERE `draft` = 0"
-			);
-		});
+				);
+			}
+		);
 	}
 	/**
 	 * Get array of sections in form [<i>id</i> => <i>title</i>]
@@ -525,11 +607,14 @@ class Blogs {
 	 */
 	function get_sections_list () {
 		$L = Language::instance();
-		return $this->cache->get("sections/list/$L->clang", function () {
-			return $this->get_sections_list_internal(
-				$this->get_sections_structure()
-			);
-		});
+		return $this->cache->get(
+			"sections/list/$L->clang",
+			function () {
+				return $this->get_sections_list_internal(
+					$this->get_sections_structure()
+				);
+			}
+		);
 	}
 	private function get_sections_list_internal ($structure) {
 		if (!empty($structure['sections'])) {
@@ -549,9 +634,12 @@ class Blogs {
 	 */
 	function get_sections_structure () {
 		$L = Language::instance();
-		return $this->cache->get("sections/structure/$L->clang", function () {
-			return $this->get_sections_structure_internal();
-		});
+		return $this->cache->get(
+			"sections/structure/$L->clang",
+			function () {
+				return $this->get_sections_structure_internal();
+			}
+		);
 	}
 	private function get_sections_structure_internal ($parent = 0) {
 		$structure = [
@@ -565,25 +653,29 @@ class Blogs {
 			);
 		} else {
 			$structure['title'] = Language::instance()->root_section;
-			$structure['posts'] = $this->db()->qfs([
-				"SELECT COUNT(`s`.`id`)
+			$structure['posts'] = $this->db()->qfs(
+				[
+					"SELECT COUNT(`s`.`id`)
 				FROM `[prefix]blogs_posts_sections` AS `s`
 					LEFT JOIN `[prefix]blogs_posts` AS `p`
 				ON `s`.`id` = `p`.`id`
 				WHERE
 					`s`.`section`	= '%s' AND
 					`p`.`draft`		= 0",
-				$structure['id']
-			]);
+					$structure['id']
+				]
+			);
 		}
-		$sections              = $this->db()->qfa([
-			"SELECT
+		$sections              = $this->db()->qfa(
+			[
+				"SELECT
 				`id`,
 				`path`
 			FROM `[prefix]blogs_sections`
 			WHERE `parent` = '%s'",
-			$parent
-		]);
+				$parent
+			]
+		);
 		$structure['sections'] = [];
 		if (!empty($sections)) {
 			foreach ($sections as $section) {
@@ -608,9 +700,12 @@ class Blogs {
 		}
 		$L  = Language::instance();
 		$id = (int)$id;
-		return $this->cache->get("sections/$id/$L->clang", function () use ($id) {
-			$data              = $this->db()->qf([
-				"SELECT
+		return $this->cache->get(
+			"sections/$id/$L->clang",
+			function () use ($id) {
+				$data              = $this->db()->qf(
+					[
+						"SELECT
 					`id`,
 					`title`,
 					`path`,
@@ -627,20 +722,22 @@ class Blogs {
 				FROM `[prefix]blogs_sections`
 				WHERE `id` = '%1\$s'
 				LIMIT 1",
-				$id
-			]);
-			$data['title']     = $this->ml_process($data['title']);
-			$data['path']      = $this->ml_process($data['path']);
-			$data['full_path'] = [$data['path']];
-			$parent            = $data['parent'];
-			while ($parent != 0) {
-				$section             = $this->get_section($parent);
-				$data['full_path'][] = $section['path'];
-				$parent              = $section['parent'];
+						$id
+					]
+				);
+				$data['title']     = $this->ml_process($data['title']);
+				$data['path']      = $this->ml_process($data['path']);
+				$data['full_path'] = [$data['path']];
+				$parent            = $data['parent'];
+				while ($parent != 0) {
+					$section             = $this->get_section($parent);
+					$data['full_path'][] = $section['path'];
+					$parent              = $section['parent'];
+				}
+				$data['full_path'] = implode('/', array_reverse($data['full_path']));
+				return $data;
 			}
-			$data['full_path'] = implode('/', array_reverse($data['full_path']));
-			return $data;
-		});
+		);
 	}
 	/**
 	 * Add new section
@@ -731,23 +828,27 @@ class Blogs {
 	 */
 	function del_section ($id) {
 		$id                = (int)$id;
-		$parent_section    = $this->db_prime()->qfs([
-			"SELECT `parent`
+		$parent_section    = $this->db_prime()->qfs(
+			[
+				"SELECT `parent`
 			FROM `[prefix]blogs_sections`
 			WHERE `id` = '%s'
 			LIMIT 1",
-			$id
-		]);
-		$new_posts_section = $this->db_prime()->qfs([
-			"SELECT `id`
+				$id
+			]
+		);
+		$new_posts_section = $this->db_prime()->qfs(
+			[
+				"SELECT `id`
 			FROM `[prefix]blogs_sections`
 			WHERE
 				`parent` = '%s' AND
 				`id` != '%s'
 			LIMIT 1",
-			$parent_section,
-			$id
-		]);
+				$parent_section,
+				$id
+			]
+		);
 		if ($this->db_prime()->q(
 			[
 				"UPDATE `[prefix]blogs_sections`
@@ -799,15 +900,20 @@ class Blogs {
 			return $id;
 		}
 		$id = (int)$id;
-		return $this->cache->get("tags/$id", function () use ($id) {
-			return $this->db()->qfs([
-				"SELECT `text`
+		return $this->cache->get(
+			"tags/$id",
+			function () use ($id) {
+				return $this->db()->qfs(
+					[
+						"SELECT `text`
 				FROM `[prefix]blogs_tags`
 				WHERE `id` = '%s'
 				LIMIT 1",
-				$id
-			]);
-		});
+						$id
+					]
+				);
+			}
+		);
 	}
 	/**
 	 * Find tag by its text
@@ -817,13 +923,15 @@ class Blogs {
 	 * @return false|int
 	 */
 	function find_tag ($tag_text) {
-		return $this->db()->qfs([
-			"SELECT `id`
+		return $this->db()->qfs(
+			[
+				"SELECT `id`
 			FROM  `[prefix]blogs_tags`
 			WHERE `text` = '%s'
 			LIMIT 1",
-			trim(xap($tag_text))
-		]);
+				trim(xap($tag_text))
+			]
+		);
 	}
 	/**
 	 * Accepts array of string tags and returns corresponding array of id's of these tags, new tags will be added automatically
