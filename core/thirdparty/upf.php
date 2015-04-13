@@ -517,14 +517,14 @@ function _mb_strtoupper ($string) {
 	return mb_strtoupper($string, 'utf-8');
 }
 /**
- * Works similar to the system function, but adds JSON_UNESCAPED_UNICODE option
+ * Works similar to the system function, but adds JSON_UNESCAPED_UNICODE and JSON_UNESCAPED_SLASHES options
  *
  * @param mixed		$value
  *
  * @return bool|string
  */
 function _json_encode ($value) {
-	return @json_encode($value, JSON_UNESCAPED_UNICODE);
+	return @json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 }
 /**
  * Works similar to the system function, but always returns array, not object
