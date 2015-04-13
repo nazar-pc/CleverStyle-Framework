@@ -232,7 +232,7 @@ trait Includes {
 	 */
 	protected function config_internal ($config_structure, $target, $core = false) {
 		$config = h::script(
-			_json_encode($config_structure),
+			json_encode($config_structure, JSON_UNESCAPED_UNICODE),
 			[
 				'target' => $target,
 				'class'  => 'cs-config',
