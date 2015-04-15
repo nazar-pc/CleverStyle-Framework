@@ -63,7 +63,7 @@ trait Data {
 	 * @param string|string[] $item
 	 * @param bool|int        $user If not specified - current user assumed
 	 *
-	 * @return false|string|mixed[]|Properties            If <i>$item</i> is integer - cs\User\Properties object will be returned
+	 * @return false|string|mixed[]|Properties If <i>$item</i> is integer - cs\User\Properties object will be returned
 	 */
 	function get ($item, $user = false) {
 		if (is_scalar($item) && preg_match('/^[0-9]+$/', $item)) {
@@ -436,7 +436,7 @@ trait Data {
 	 *
 	 * @param  string $login_hash Login or email hash
 	 *
-	 * @return false|int            User id if found and not guest, otherwise - boolean <i>false</i>
+	 * @return false|int User id if found and not guest, otherwise - boolean <i>false</i>
 	 */
 	function get_id ($login_hash) {
 		if (!preg_match('/^[0-9a-z]{56}$/', $login_hash)) {
