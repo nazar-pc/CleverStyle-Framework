@@ -1,7 +1,7 @@
 {
 	"package"             : "Json_ld",
 	"category"            : "modules",
-	"version"             : "0.1.0+build-1",
+	"version"             : "0.1.1+build-2",
 	"description"         : "Useful tools for simplifying generating of JSON-LD snippets",
 	"author"              : "Nazar Mokrynskyi",
 	"website"             : "cleverstyle.org/cms",

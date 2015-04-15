@@ -50,7 +50,7 @@ class Json_ld {
 	static function Person ($user_id) {
 		$Config    = Config::instance();
 		$user_data = new User\Properties($user_id);
-		$url       = $Config->core_url()."profile/$user_data->login";
+		$url       = $Config->core_url()."/profile/$user_data->login";
 		return [
 			'@context' => self::SCHEMA_ORG,
 			'@id'      => $url,
