@@ -99,7 +99,7 @@ class Categories {
 		$L    = Language::instance();
 		$id   = (int)$id;
 		$data = $this->cache->get("$id/$L->clang", function () use ($id) {
-			$data               = $this->read_simple($id);
+			$data               = $this->read($id);
 			$data['attributes'] = $this->db()->qfas(
 				"SELECT `attribute`
 				FROM `{$this->table}_attributes`
@@ -193,7 +193,7 @@ class Categories {
 	 * @return false|int Id of created category on success of <b>false</> on failure
 	 */
 	function add ($parent, $title, $description, $title_attribute, $description_attribute, $image, $visible, $attributes) {
-		$id = $this->create_simple([
+		$id = $this->create([
 			$parent,
 			'',
 			'',
@@ -228,12 +228,12 @@ class Categories {
 	 */
 	function set ($id, $parent, $title, $description, $title_attribute, $description_attribute, $image, $visible, $attributes) {
 		$id   = (int)$id;
-		$data = $this->read_simple($id);
+		$data = $this->read($id);
 		if (!$data) {
 			return false;
 		}
 		$attributes = $this->clean_nonexistent_attributes($attributes);
-		$result     = $this->update_simple([
+		$result     = $this->update([
 			$id,
 			$parent,
 			trim($title),
@@ -301,7 +301,7 @@ class Categories {
 	 */
 	function del ($id) {
 		$id     = (int)$id;
-		$result = $this->delete_simple($id);
+		$result = $this->delete($id);
 		if ($result) {
 			$this->db_prime()->q(
 				"DELETE FROM `{$this->table}_attributes`

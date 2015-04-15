@@ -82,7 +82,7 @@ class Content {
 		unset($new_files);
 		$title   = $this->ml_set('Content/title', $key, xap($title));
 		$content = $this->ml_set('Content/content', $key, $content);
-		return $this->create_simple([
+		return $this->create([
 			$key,
 			$title,
 			$content,
@@ -105,7 +105,7 @@ class Content {
 		}
 		$cache_key = md5($key).'/'.Language::instance()->clang;
 		return $this->cache->get($cache_key, function () use ($key) {
-			$data = $this->read_simple($key);
+			$data = $this->read($key);
 			if (!$data) {
 				return false;
 			}
@@ -168,7 +168,7 @@ class Content {
 		unset($old_files, $new_files);
 		$title   = $this->ml_set('Content/title', $key, xap($title));
 		$content = $this->ml_set('Content/content', $key, $content);
-		$result  = $this->update_simple([
+		$result  = $this->update([
 			$key,
 			$title,
 			$content,
@@ -188,7 +188,7 @@ class Content {
 	 * @return bool
 	 */
 	function del ($key) {
-		if ($this->delete_simple($key)) {
+		if ($this->delete($key)) {
 			$this->ml_del('Content/title', $key);
 			$this->ml_del('Content/content', $key);
 			$cache_key = md5($key);

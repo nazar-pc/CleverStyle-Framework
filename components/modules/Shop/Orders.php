@@ -103,7 +103,7 @@ class Orders {
 	 * @return array|false
 	 */
 	function get ($id) {
-		$data = $this->read_simple($id);
+		$data = $this->read($id);
 		if (!$data) {
 			return false;
 		}
@@ -303,7 +303,7 @@ class Orders {
 	 *
 	 */
 	function add ($user, $shipping_type, $shipping_cost, $shipping_username, $shipping_phone, $shipping_address, $payment_method, $paid, $status, $comment) {
-		$id = $this->create_simple(
+		$id = $this->create(
 			[
 				$user,
 				time(),
@@ -435,8 +435,8 @@ class Orders {
 		$status,
 		$comment
 	) {
-		$order  = $this->read_simple($id);
-		$result = $this->update_simple(
+		$order  = $this->read($id);
+		$result = $this->update(
 			[
 				$id,
 				$user,
@@ -579,7 +579,7 @@ class Orders {
 	 * @return bool
 	 */
 	function del ($id) {
-		if ($this->delete_simple($id)) {
+		if ($this->delete($id)) {
 			$this->db_prime()->q(
 				"DELETE FROM `{$this->table}_history`
 				WHERE `id` = '%d'",

@@ -50,7 +50,7 @@ class Options {
 	 * @return false|int
 	 */
 	function add ($poll, $title) {
-		$id = $this->create_simple([
+		$id = $this->create([
 			$poll,
 			$title,
 			0
@@ -76,7 +76,7 @@ class Options {
 			return $id;
 		}
 		return $this->cache->get($id, function () use ($id) {
-			$data          = $this->read_simple($id);
+			$data          = $this->read($id);
 			$data['title'] = $this->ml_process($data['title']);
 			return $data;
 		});
@@ -94,7 +94,7 @@ class Options {
 		$id   = (int)$id;
 		$poll = (int)$poll;
 		$data = $this->get($id);
-		if ($this->update_simple([
+		if ($this->update([
 			$id,
 			$poll,
 			$this->ml_set("Polls/polls/$poll/options/title", $id, $title),

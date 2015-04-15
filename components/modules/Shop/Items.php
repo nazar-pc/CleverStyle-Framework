@@ -96,7 +96,7 @@ class Items {
 		$L    = Language::instance();
 		$id   = (int)$id;
 		$data = $this->cache->get("$id/$L->clang", function () use ($id, $L) {
-			$data = $this->read_simple($id);
+			$data = $this->read($id);
 			if (!$data) {
 				return false;
 			}
@@ -414,7 +414,7 @@ class Items {
 	 * @return false|int Id of created item on success of <b>false</> on failure
 	 */
 	function add ($category, $price, $in_stock, $soon, $listed, $attributes, $images, $videos, $tags) {
-		$id = $this->create_simple([
+		$id = $this->create([
 			time(),
 			$category,
 			$price,
@@ -453,7 +453,7 @@ class Items {
 		if (!$data) {
 			return false;
 		}
-		$result = $this->update_simple([
+		$result = $this->update([
 			$id,
 			$data['date'],
 			$category,
@@ -717,7 +717,7 @@ class Items {
 	 */
 	function del ($id) {
 		$id     = (int)$id;
-		$result = $this->delete_simple($id);
+		$result = $this->delete($id);
 		if ($result) {
 			$this->db_prime()->q([
 				"DELETE FROM `{$this->table}_attributes`

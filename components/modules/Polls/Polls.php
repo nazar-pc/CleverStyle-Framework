@@ -47,7 +47,7 @@ class Polls {
 	 * @return false|int
 	 */
 	function add ($title) {
-		$id = $this->create_simple([
+		$id = $this->create([
 			$title
 		]);
 		if ($id && $this->set($id, $title)) {
@@ -71,7 +71,7 @@ class Polls {
 			return $id;
 		}
 		return $this->cache->get($id, function () use ($id) {
-			$data          = $this->read_simple($id);
+			$data          = $this->read($id);
 			$data['title'] = $this->ml_process($data['title']);
 			return $data;
 		});
@@ -86,7 +86,7 @@ class Polls {
 	 */
 	function set ($id, $title) {
 		$id     = (int)$id;
-		$result = $this->update_simple([
+		$result = $this->update([
 			$id,
 			$this->ml_set('Polls/polls/title', $id, $title)
 		]);

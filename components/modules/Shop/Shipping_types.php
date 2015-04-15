@@ -74,7 +74,7 @@ class Shipping_types {
 		$L  = Language::instance();
 		$id = (int)$id;
 		return $this->cache->get("$id/$L->clang", function () use ($id) {
-			return $this->read_simple($id);
+			return $this->read($id);
 		});
 	}
 	/**
@@ -131,7 +131,7 @@ class Shipping_types {
 	 * @return false|int Id of created item on success of <b>false</> on failure
 	 */
 	function add ($price, $phone_needed, $address_needed, $title, $description) {
-		$id = $this->create_simple([
+		$id = $this->create([
 			$price,
 			$phone_needed,
 			$address_needed,
@@ -157,7 +157,7 @@ class Shipping_types {
 	 */
 	function set ($id, $price, $phone_needed, $address_needed, $title, $description) {
 		$id     = (int)$id;
-		$result = $this->update_simple([
+		$result = $this->update([
 			$id,
 			$price,
 			$phone_needed,
@@ -183,7 +183,7 @@ class Shipping_types {
 	 */
 	function del ($id) {
 		$id     = (int)$id;
-		$result = $this->delete_simple($id);
+		$result = $this->delete($id);
 		if ($result) {
 			unset(
 				$this->cache->$id,

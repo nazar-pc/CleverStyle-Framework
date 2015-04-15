@@ -76,7 +76,7 @@ class Attributes {
 		$L  = Language::instance();
 		$id = (int)$id;
 		return $this->cache->get("$id/$L->clang", function () use ($id) {
-			$data          = $this->read_simple($id);
+			$data          = $this->read($id);
 			$data['value'] = $data['value'] ? _json_decode($data['value']) : '';
 			return $data;
 		});
@@ -124,7 +124,7 @@ class Attributes {
 	 * @return false|int Id of created attribute on success of <b>false</> on failure
 	 */
 	function add ($type, $title, $title_internal, $value) {
-		$id = $this->create_simple([
+		$id = $this->create([
 			$type,
 			'',
 			'',
@@ -148,7 +148,7 @@ class Attributes {
 	 * @return bool
 	 */
 	function set ($id, $type, $title, $title_internal, $value) {
-		$result = $this->update_simple([
+		$result = $this->update([
 			$id,
 			$type,
 			trim($title),
@@ -173,7 +173,7 @@ class Attributes {
 	 */
 	function del ($id) {
 		$id     = (int)$id;
-		$result = $this->delete_simple($id);
+		$result = $this->delete($id);
 		if ($result) {
 			unset(
 				$this->cache->$id,

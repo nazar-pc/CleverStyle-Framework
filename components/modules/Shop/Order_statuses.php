@@ -79,7 +79,7 @@ class Order_statuses {
 		$L  = Language::instance();
 		$id = (int)$id;
 		return $this->cache->get("$id/$L->clang", function () use ($id) {
-			return $this->read_simple($id);
+			return $this->read($id);
 		});
 	}
 	/**
@@ -130,7 +130,7 @@ class Order_statuses {
 	 *
 	 */
 	function add ($title, $type, $color, $send_update_status_email, $comment) {
-		$id = $this->create_simple([
+		$id = $this->create([
 			$title,
 			$type,
 			$color,
@@ -156,7 +156,7 @@ class Order_statuses {
 	 */
 	function set ($id, $title, $type, $color, $send_update_status_email, $comment) {
 		$id     = (int)$id;
-		$result = $this->update_simple([
+		$result = $this->update([
 			$id,
 			$title,
 			$type,
@@ -182,7 +182,7 @@ class Order_statuses {
 	 */
 	function del ($id) {
 		$id     = (int)$id;
-		$result = $this->delete_simple($id);
+		$result = $this->delete($id);
 		if ($result) {
 			unset(
 				$this->cache->$id,

@@ -59,7 +59,7 @@ class Transactions {
 	 * @return array|false
 	 */
 	function get ($id) {
-		return $this->read_simple($id);
+		return $this->read($id);
 	}
 	/**
 	 * Transactions search
@@ -119,7 +119,7 @@ class Transactions {
 			return false;
 		}
 		$input_address = $blockchain_receive['input_address'];
-		return $this->create_simple(
+		return $this->create(
 			[
 				$amount,
 				$currency,
@@ -203,6 +203,6 @@ class Transactions {
 	 * @return bool
 	 */
 	function del ($id) {
-		return $this->delete_simple($id);
+		return $this->delete($id);
 	}
 }

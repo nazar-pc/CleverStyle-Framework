@@ -45,7 +45,7 @@ class Answers {
 		if ($User->guest()) {
 			return false;
 		}
-		$result = $this->create_simple([
+		$result = $this->create([
 			$poll,
 			$option,
 			$User->id
