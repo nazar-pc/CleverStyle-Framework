@@ -18,6 +18,10 @@ use
  *
  * @property \cs\Cache\Prefix $cache
  * @property int              $id
+ *
+ * @method \cs\DB\_Abstract db()
+ * @method \cs\DB\_Abstract db_prime()
+ * @method                  __finish()
  */
 trait Data {
 	/**
@@ -217,7 +221,7 @@ trait Data {
 			return false;
 		}
 		if (is_array($item)) {
-			foreach ($item as $i => &$v) {
+			foreach ($item as $i => $v) {
 				if ($i != 'id' && in_array($i, $this->users_columns)) {
 					$this->set($i, $v, $user);
 				}
@@ -287,7 +291,6 @@ trait Data {
 					$absent[]	= $i;
 				}
 			}
-			unset($i);
 			if ($absent) {
 				$absent					= implode(
 					',',
@@ -467,13 +470,20 @@ trait Data {
 	/**
 	 * Get user name or login or email, depending on existing information
 	 *
-	 * @param bool|int $user	If not specified - current user assumed
+	 * @param bool|int $user If not specified - current user assumed
 	 *
 	 * @return string
 	 */
 	function username ($user = false) {
-		$user = (int)$user ?: $this->id;
-		return $this->get('username', $user) ?: ($this->get('login', $user) ?: $this->get('email', $user));
+		$user     = (int)$user ?: $this->id;
+		$username = $this->get('username', $user);
+		if (!$username) {
+			$username = $this->get('login', $user);
+		}
+		if (!$username) {
+			$username = $this->get('email', $user);
+		}
+		return $username;
 	}
 	/**
 	 * Disable memory cache
@@ -503,15 +513,15 @@ trait Data {
 			$update = [];
 			foreach ($this->data_set as $id => &$data_set) {
 				$data = [];
-				foreach ($data_set as $i => &$val) {
+				foreach ($data_set as $i => $value) {
 					if ($i != 'id' && in_array($i, $this->users_columns)) {
-						$val	= xap($val, false);
-						$data[]	= "`$i` = ".$this->db_prime()->s($val);
+						$value	= xap($value, false);
+						$data[]	= "`$i` = ".$this->db_prime()->s($value);
 					} elseif ($i != 'id') {
 						unset($data_set[$i]);
 					}
 				}
-				unset($i, $val);
+				unset($i, $value);
 				if (!empty($data)) {
 					$data		= implode(', ', $data);
 					$update[]	= "UPDATE `[prefix]users`
@@ -529,7 +539,7 @@ trait Data {
 		/**
 		 * Updating users cache
 		 */
-		foreach ($this->data as $id => &$data) {
+		foreach ($this->data as $id => $data) {
 			if (isset($this->update_cache[$id]) && $this->update_cache[$id]) {
 				$data['id']			= $id;
 				$this->cache->$id	= $data;
