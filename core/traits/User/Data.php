@@ -403,7 +403,7 @@ trait Data {
 			);
 		}
 		unset($this->cache->{"data/$user"});
-		return $result;
+		return (bool)$result;
 	}
 	/**
 	 * Deletion of additional data item(s) of specified user
@@ -429,7 +429,7 @@ trait Data {
 				`item`	IN($item)"
 		);
 		unset($this->cache->{"data/$user"});
-		return $result;
+		return (bool)$result;
 	}
 	/**
 	 * Get user id by login or email hash (sha224) (hash from lowercase string)
