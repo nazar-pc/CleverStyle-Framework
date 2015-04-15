@@ -1,0 +1,49 @@
+<polymer-element name="cs-blogs-post" extends="article">
+	<template>
+		<header>
+			<template if="[[can_edit]]">
+				<a class="uk-button" data-uk-tooltip="{animation:true,delay:200}" href="/Blogs/edit_post/[[jsonld.id]]" title="[[edit_text]]">
+					<span class="uk-icon-pencil"></span>
+				</a>
+			</template>
+			<template if="[[can_delete]]">
+				<a class="uk-button" data-uk-tooltip="{animation:true,delay:200}" href="/admin/Blogs/delete_post/[[jsonld.id]]" title="[[delete_text]]">
+					<span class="uk-icon-trash-o"></span>
+				</a>
+			</template>
+			<h1 id="title"></h1>
+			<template if="[[jsonld.articleSection.length]]">
+				<p>
+					<span class=" uk-icon-bookmark"></span>
+					<template repeat="[[section, index in jsonld.articleSection]]">
+						<a href="[[jsonld.sections_paths[index]]]">[[section]]</a>
+					</template>
+				</p>
+			</template>
+		</header>
+		<div id="content"></div>
+		<footer>
+			<template if="[[jsonld.tags.length]]">
+				<p>
+					<span class=" uk-icon-tags"></span>
+					<template repeat="[[tag, index in jsonld.tags]]">
+						<a href="[[jsonld.tags_paths[index]]]" rel="tag">[[tag]]</a>
+					</template>
+				</p>
+			</template>
+			<hr>
+			<p>
+				<time>[[jsonld.datetime]]</time>
+				<a href="[[jsonld.author.url]]">
+					<span class="uk-icon-user"></span>
+					[[jsonld.author.name]]
+				</a>
+				<template if="[[comments_enabled]]">
+					<span class="uk-icon-comments"></span>
+					[[jsonld.comments_count]]
+				</template>
+			</p>
+		</footer>
+	</template>
+	<script src="script.js"></script>
+</polymer-element>

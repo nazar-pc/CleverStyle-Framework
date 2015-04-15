@@ -4,6 +4,7 @@
 	],
 	"Blogs"			: [
 		"general.css",
-		"general.js"
+		"general.js",
+		"cs-blogs-post/index.html"
 	]
 }

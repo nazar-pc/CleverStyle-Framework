@@ -5,20 +5,6 @@
  * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-.cs-blogs-post {
-	header h1 {
-		a {
-			opacity            : 0.3;
-			-webkit-transition : opacity .3s;
-			transition         : opacity .3s;
-		}
-
-		&:hover a {
-			opacity : 1;
-		}
-	}
-}
-
 .cs-blogs-post-preview-content {
 	text-align : left;
 }

@@ -150,7 +150,11 @@ class Blogs {
 				[
 					'content'        => 'articleBody',
 					'title'          => 'headline',
-					'comments_count' => 'commentCount'
+					'comments_count' => 'commentCount',
+					'tags'           => 'keywords',
+					'datetime'       => '',
+					'sections_paths' => '',
+					'tags_paths'     => ''
 				] + Json_ld::context_stub(isset($post[0]) ? $post[0] : $post)
 		];
 		if (isset($post[0])) {
@@ -179,10 +183,12 @@ class Blogs {
 				'title'
 			);
 		}
-		$L           = Language::instance();
-		$base_url    = Config::instance()->base_url();
-		$module_path = path(Language::instance()->Blogs);
-		$url         = "$base_url/$module_path/$post[path]:$post[id]";
+		$L            = Language::instance();
+		$base_url     = Config::instance()->base_url();
+		$module_path  = path($L->Blogs);
+		$section_path = "$base_url/$module_path/".path($L->section);
+		$tag_path     = "$base_url/$module_path/".path($L->tag);
+		$url          = "$base_url/$module_path/$post[path]:$post[id]";
 		return
 			[
 				'@id'            => $url,
@@ -192,8 +198,21 @@ class Blogs {
 				'datePublished'  => Json_ld::Date($post['date']),
 				'image'          => $images,
 				'inLanguage'     => $L->clang,
-				'keywords'       => $post['tags'],
-				'url'            => $url
+				'url'            => $url,
+				'datetime'       => $L->to_locale(date($L->_datetime_long, $post['date'] ?: TIME)),
+				'sections_paths' => array_map(
+					function ($section) use ($section_path) {
+						$section = $this->get_section($section);
+						return "$section_path/$section[full_path]";
+					},
+					$post['sections']
+				),
+				'tags_paths'     => array_map(
+					function ($tag) use ($tag_path) {
+						return "$tag_path/$tag";
+					},
+					$post['tags']
+				)
 			] + $post;
 	}
 	/**
