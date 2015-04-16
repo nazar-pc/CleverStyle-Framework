@@ -12,7 +12,6 @@ use
 	cs\Config,
 	cs\Event,
 	cs\Index,
-	cs\Language,
 	cs\Page\Meta,
 	cs\Page,
 	cs\Route,
