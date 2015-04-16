@@ -1,9 +1,9 @@
 <?php
 /**
- * @package        CleverStyle CMS
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package   CleverStyle CMS
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs;
 
@@ -94,7 +94,7 @@ class Language implements JsonSerializable {
 	/**
 	 * Does URL have language prefix
 	 *
-	 * @param bool|string $url Relative url, `$_SERVER->request_uri` by default
+	 * @param false|string $url Relative url, `$_SERVER->request_uri` by default
 	 *
 	 * @return false|string If there is language prefix - language will be returned, `false` otherwise
 	 */
@@ -171,20 +171,23 @@ class Language implements JsonSerializable {
 	 * @return array|false
 	 */
 	protected function get_aliases () {
-		return Cache::instance()->get('languages/aliases', function () {
-			$aliases      = [];
-			$aliases_list = _strtolower(get_files_list(LANGUAGES.'/aliases'));
-			foreach ($aliases_list as $alias) {
-				$aliases[$alias] = file_get_contents(LANGUAGES."/aliases/$alias");
+		return Cache::instance()->get(
+			'languages/aliases',
+			function () {
+				$aliases      = [];
+				$aliases_list = _strtolower(get_files_list(LANGUAGES.'/aliases'));
+				foreach ($aliases_list as $alias) {
+					$aliases[$alias] = file_get_contents(LANGUAGES."/aliases/$alias");
+				}
+				return $aliases;
 			}
-			return $aliases;
-		});
+		);
 	}
 	/**
 	 * Get translation
 	 *
-	 * @param string      $item
-	 * @param bool|string $language If specified - translation for specified language will be returned, otherwise for current
+	 * @param string       $item
+	 * @param false|string $language If specified - translation for specified language will be returned, otherwise for current
 	 *
 	 * @return string
 	 */
@@ -351,22 +354,16 @@ class Language implements JsonSerializable {
 			switch ($type) {
 				case 's':
 					return "$in $this->seconds";
-					break;
 				case 'm':
 					return "$in $this->minutes";
-					break;
 				case 'h':
 					return "$in $this->hours";
-					break;
 				case 'd':
 					return "$in $this->days";
-					break;
 				case 'M':
 					return "$in $this->months";
-					break;
 				case 'y':
 					return "$in $this->years";
-					break;
 			}
 		}
 		return $in;

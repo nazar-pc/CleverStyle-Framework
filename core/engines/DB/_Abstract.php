@@ -583,7 +583,7 @@ abstract class _Abstract {
 	/**
 	 * Connecting time
 	 *
-	 * @return int
+	 * @return float
 	 */
 	function connecting_time () {
 		return $this->connecting_time;

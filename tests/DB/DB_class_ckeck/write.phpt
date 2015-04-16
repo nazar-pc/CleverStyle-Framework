@@ -28,7 +28,7 @@ object(cs\DB\Fake)#8 (9) {
   ["connected":protected]=>
   bool(true)
   ["db_type":protected]=>
-  bool(false)
+  string(0) ""
   ["database":protected]=>
   NULL
   ["prefix":protected]=>
