@@ -16,9 +16,9 @@ abstract class _Abstract {
 	/**
 	 * DB type, may be used for constructing requests, accounting particular features of current DB (lowercase name)
 	 *
-	 * @var bool
+	 * @var string
 	 */
-	protected $db_type = false;
+	protected $db_type = '';
 	/**
 	 * Current DB
 	 *
@@ -59,7 +59,7 @@ abstract class _Abstract {
 	/**
 	 * Connection time
 	 *
-	 * @var int
+	 * @var float
 	 */
 	protected $connecting_time;
 	/**
