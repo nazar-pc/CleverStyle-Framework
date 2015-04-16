@@ -61,7 +61,7 @@ trait Data {
 	 * Get data item of specified user
 	 *
 	 * @param string|string[] $item
-	 * @param bool|int        $user If not specified - current user assumed
+	 * @param false|int       $user If not specified - current user assumed
 	 *
 	 * @return false|string|mixed[]|Properties If <i>$item</i> is integer - cs\User\Properties object will be returned
 	 */
@@ -79,7 +79,7 @@ trait Data {
 	 * Get data item of specified user
 	 *
 	 * @param string|string[] $item
-	 * @param bool|int        $user If not specified - current user assumed
+	 * @param false|int       $user If not specified - current user assumed
 	 * @param bool            $cache_only
 	 *
 	 * @return false|string|mixed[]
@@ -198,7 +198,7 @@ trait Data {
 	 *
 	 * @param array|string $item Item-value array may be specified for setting several items at once
 	 * @param mixed|null   $value
-	 * @param bool|int     $user If not specified - current user assumed
+	 * @param false|int    $user If not specified - current user assumed
 	 *
 	 * @return bool
 	 */
@@ -214,7 +214,7 @@ trait Data {
 	 *
 	 * @param array|string $item Item-value array may be specified for setting several items at once
 	 * @param mixed|null   $value
-	 * @param bool|int     $user If not specified - current user assumed
+	 * @param false|int    $user If not specified - current user assumed
 	 *
 	 * @return bool
 	 */
@@ -273,7 +273,7 @@ trait Data {
 	 * Getting additional data item(s) of specified user
 	 *
 	 * @param string|string[] $item
-	 * @param bool|int        $user If not specified - current user assumed
+	 * @param false|int       $user If not specified - current user assumed
 	 *
 	 * @return false|string|mixed[]
 	 */
@@ -353,7 +353,7 @@ trait Data {
 	 *
 	 * @param array|string $item Item-value array may be specified for setting several items at once
 	 * @param mixed|null   $value
-	 * @param bool|int     $user If not specified - current user assumed
+	 * @param false|int    $user If not specified - current user assumed
 	 *
 	 * @return bool
 	 */
@@ -409,7 +409,7 @@ trait Data {
 	 * Deletion of additional data item(s) of specified user
 	 *
 	 * @param string|string[] $item
-	 * @param bool|int        $user If not specified - current user assumed
+	 * @param false|int       $user If not specified - current user assumed
 	 *
 	 * @return bool
 	 */
@@ -464,8 +464,8 @@ trait Data {
 	/**
 	 * Get user avatar, if no one present - uses Gravatar
 	 *
-	 * @param int|null $size Avatar size, if not specified or resizing is not possible - original image is used
-	 * @param bool|int $user If not specified - current user assumed
+	 * @param int|null  $size Avatar size, if not specified or resizing is not possible - original image is used
+	 * @param false|int $user If not specified - current user assumed
 	 *
 	 * @return string
 	 */
@@ -485,7 +485,7 @@ trait Data {
 	/**
 	 * Get user name or login or email, depending on existing information
 	 *
-	 * @param bool|int $user If not specified - current user assumed
+	 * @param false|int $user If not specified - current user assumed
 	 *
 	 * @return string
 	 */

@@ -23,10 +23,10 @@ use
  * @method \cs\DB\_Abstract db()
  * @method \cs\DB\_Abstract db_prime()
  * @method false|int        get_id(string $login_hash)
- * @method bool             set_groups(int[] $groups, bool|int $user)
- * @method false|string     get(array|string $item, mixed|null $value, bool|int $user)
- * @method bool             set(array|string $item, mixed|null $value, bool|int $user)
- * @method bool             del_permissions_all(bool|int $user)
+ * @method bool             set_groups(int[] $groups, false|int $user = false)
+ * @method false|string     get(array|string $item, mixed|null $value, false|int $user = false)
+ * @method bool             set(array|string $item, mixed|null $value, false|int $user = false)
+ * @method bool             del_permissions_all(false|int $user = false)
  */
 trait Management {
 	/**
@@ -60,6 +60,9 @@ trait Management {
 				User::STATUS_NOT_ACTIVATED
 			]
 		);
+		if (!$found_users) {
+			return false;
+		}
 		return $found_users;
 	}
 	/**
@@ -285,9 +288,9 @@ trait Management {
 	/**
 	 * Proper password setting without any need to deal with low-level implementation
 	 *
-	 * @param string $new_password
-	 * @param bool   $user
-	 * @param bool   $already_prepared If true - assumed that `sha512(sha512(password) + public_key)` was applied to password
+	 * @param string    $new_password
+	 * @param false|int $user
+	 * @param bool      $already_prepared If true - assumed that `sha512(sha512(password) + public_key)` was applied to password
 	 *
 	 * @return bool
 	 */
@@ -307,9 +310,9 @@ trait Management {
 	/**
 	 * Proper password validation without any need to deal with low-level implementation
 	 *
-	 * @param string $password
-	 * @param bool   $user
-	 * @param bool   $already_prepared If true - assumed that `sha512(sha512(password) + public_key)` was applied to password
+	 * @param string    $password
+	 * @param false|int $user
+	 * @param bool      $already_prepared If true - assumed that `sha512(sha512(password) + public_key)` was applied to password
 	 *
 	 * @return bool
 	 */
@@ -544,7 +547,7 @@ trait Management {
 	/**
 	 * Returns array of user id, that are associated as contacts
 	 *
-	 * @param bool|int $user If not specified - current user assumed
+	 * @param false|int $user If not specified - current user assumed
 	 *
 	 * @return int[] Array of user id
 	 */

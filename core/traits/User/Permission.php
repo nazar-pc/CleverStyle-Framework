@@ -32,12 +32,11 @@ trait Permission {
 	 *
 	 * Rule: if not denied - allowed (users), if not allowed - denied (admins)
 	 *
-	 * @param string   $group Permission group
-	 * @param string   $label Permission label
-	 * @param bool|int $user  If not specified - current user assumed
+	 * @param string    $group Permission group
+	 * @param string    $label Permission label
+	 * @param false|int $user  If not specified - current user assumed
 	 *
-	 * @return bool                If permission exists - returns its state for specified user, otherwise for admin permissions returns <b>false</b> and for
-	 *                            others <b>true</b>
+	 * @return bool If permission exists - returns its state for specified user, otherwise for admin permissions returns <b>false</b> and for others <b>true</b>
 	 */
 	function get_permission ($group, $label, $user = false) {
 		$user = (int)$user ?: $this->id;
@@ -57,7 +56,6 @@ trait Permission {
 						foreach ($this->get_groups($user) ?: [] as $group_id) {
 							$permissions = $Group->get_permissions($group_id) ?: [] + $permissions;
 						}
-						unset($group_id);
 					}
 					$permissions = $this->get_permissions($user) ?: [] + $permissions;
 					return $permissions;
@@ -79,10 +77,10 @@ trait Permission {
 	/**
 	 * Set permission state for specified user
 	 *
-	 * @param string   $group Permission group
-	 * @param string   $label Permission label
-	 * @param int      $value 1 - allow, 0 - deny, -1 - undefined (remove permission, and use default value)
-	 * @param bool|int $user  If not specified - current user assumed
+	 * @param string    $group Permission group
+	 * @param string    $label Permission label
+	 * @param int       $value 1 - allow, 0 - deny, -1 - undefined (remove permission, and use default value)
+	 * @param false|int $user  If not specified - current user assumed
 	 *
 	 * @return bool
 	 */
@@ -100,9 +98,9 @@ trait Permission {
 	/**
 	 * Delete permission state for specified user
 	 *
-	 * @param string   $group Permission group
-	 * @param string   $label Permission label
-	 * @param bool|int $user  If not specified - current user assumed
+	 * @param string    $group Permission group
+	 * @param string    $label Permission label
+	 * @param false|int $user  If not specified - current user assumed
 	 *
 	 * @return bool
 	 */
@@ -112,7 +110,7 @@ trait Permission {
 	/**
 	 * Get array of all permissions states for specified user
 	 *
-	 * @param bool|int $user If not specified - current user assumed
+	 * @param false|int $user If not specified - current user assumed
 	 *
 	 * @return array|false
 	 */
@@ -126,8 +124,8 @@ trait Permission {
 	/**
 	 * Set user's permissions according to the given array
 	 *
-	 * @param array    $data
-	 * @param bool|int $user If not specified - current user assumed
+	 * @param array     $data
+	 * @param false|int $user If not specified - current user assumed
 	 *
 	 * @return bool
 	 */
@@ -141,7 +139,7 @@ trait Permission {
 	/**
 	 * Delete all user's permissions
 	 *
-	 * @param bool|int $user If not specified - current user assumed
+	 * @param false|int $user If not specified - current user assumed
 	 *
 	 * @return bool
 	 */
