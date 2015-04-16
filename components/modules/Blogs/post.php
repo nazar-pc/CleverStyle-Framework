@@ -69,6 +69,10 @@ $Meta
 	->article('tag', $post['tags']);
 array_map([$Meta, 'image'], $post['image']);
 $comments_enabled = $Config->module('Blogs')->enable_comments && $Comments;
+$is_admin         =
+	$User->admin() &&
+	$User->get_permission('admin/Blogs', 'index') &&
+	$User->get_permission('admin/Blogs', 'edit_post');
 Index::instance()->content(
 	h::{'article[is=cs-blogs-post]'}(
 		h::{'script[type=application/ld+json]'}(
@@ -76,11 +80,8 @@ Index::instance()->content(
 		),
 		[
 			'comments_enabled' => $comments_enabled,
-			'can_edit'         => $User->id == $post['user'],
-			'can_delete'       =>
-				$User->admin() &&
-				$User->get_permission('admin/Blogs', 'index') &&
-				$User->get_permission('admin/Blogs', 'edit_post')
+			'can_edit'         => $is_admin || $User->id == $post['user'],
+			'can_delete'       => $is_admin
 		]
 	).
 	($comments_enabled ? $Comments->block($post['id']) : '')
