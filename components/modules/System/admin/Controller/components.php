@@ -330,7 +330,7 @@ trait components {
 							WHERE `permission` = '%s'",
 							$permission
 						]
-					);
+					) ?: [];
 					$users_content = [];
 					foreach ($users_list as &$user) {
 						$value           = $user['value'];
@@ -1173,7 +1173,6 @@ trait components {
 					$rc[3]                 = 'System';
 					$a->cancel_button_back = true;
 					break;
-					break;
 				case 'default_module':
 					$show_modules = false;
 					$Page->title($L->setting_default_module($rc[3]));
@@ -1925,7 +1924,6 @@ trait components {
 						);
 					}
 					return;
-					break;
 				case 'remove':
 					$Page->title($L->complete_removal_of_plugin($_POST['remove_plugin']));
 					$a->content(
@@ -1950,7 +1948,6 @@ trait components {
 						)
 					);
 					return;
-					break;
 			}
 		}
 		unset($rc);
