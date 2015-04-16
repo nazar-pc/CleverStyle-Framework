@@ -55,7 +55,7 @@ class Json_ld {
 			'@context' => self::SCHEMA_ORG,
 			'@id'      => $url,
 			'@type'    => 'Person',
-			'name'     => $user_data->username,
+			'name'     => $user_data->username(),
 			'url'      => $url,
 			'image'    => $user_data->avatar()
 		];
