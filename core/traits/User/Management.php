@@ -19,6 +19,14 @@ use
  * @property int				$id
  * @property \cs\Cache\Prefix	$cache
  * @property string				$ip
+ *
+ * @method \cs\DB\_Abstract db()
+ * @method \cs\DB\_Abstract db_prime()
+ * @method false|int        get_id(string $login_hash)
+ * @method bool             set_groups(int[] $groups, bool|int $user)
+ * @method false|string     get(array|string $item, mixed|null $value, bool|int $user)
+ * @method bool             set(array|string $item, mixed|null $value, bool|int $user)
+ * @method bool             del_permissions_all(bool|int $user)
  */
 trait Management {
 	/**

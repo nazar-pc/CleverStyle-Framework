@@ -32,7 +32,6 @@ trait Group {
 		foreach ((array)_int($group) as $g) {
 			$groups[]	= $g;
 		}
-		unset($g);
 ;		return $this->set_groups($groups, $user);
 	}
 	/**
