@@ -1,24 +1,24 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2013-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   CleverStyle CMS
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2013-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 /**
  * Provides next events:<br>
  *
  *  System/User/Group/add
- *  ['id'	=> <i>group_id</i>]
+ *  ['id' => <i>group_id</i>]
  *
  *  System/User/Group/del/before
- *  ['id'	=> <i>group_id</i>]
+ *  ['id' => <i>group_id</i>]
  *
  *  System/User/Group/del/after
- *  ['id'	=> <i>group_id</i>]
+ *  ['id' => <i>group_id</i>]
  *
  */
-namespace	cs;
+namespace cs;
 use
 	cs\Cache\Prefix,
 	cs\DB\Accessor,
@@ -36,7 +36,7 @@ class Group {
 	/**
 	 * @var Prefix
 	 */
-	protected	$cache;
+	protected $cache;
 	/**
 	 * Returns database index
 	 *
@@ -46,44 +46,64 @@ class Group {
 		return Config::instance()->module('System')->db('users');
 	}
 	protected function construct () {
-		$this->cache	= new Prefix('groups');
+		$this->cache = new Prefix('groups');
 	}
 	/**
 	 * Get group data
 	 *
-	 * @param int					$group
-	 * @param bool|string			$item	If <b>false</b> - array will be returned, if title|description|data - corresponding item
+	 * @param int          $group
+	 * @param false|string $item If <b>false</b> - array will be returned, if title|description|data - corresponding item
 	 *
 	 * @return array|false|mixed
 	 */
 	function get ($group, $item = false) {
-		$group	= (int)$group;
+		$group = (int)$group;
 		if (!$group) {
 			return false;
 		}
-		$group_data = $this->cache->get($group, function () use ($group) {
-			$group_data = $this->db()->qf(
-				"SELECT
-					`id`,
-					`title`,
-					`description`,
-					`data`
-				FROM `[prefix]groups`
-				WHERE `id` = '$group'
-				LIMIT 1"
-			);
-			$group_data['data'] = _json_decode($group_data['data']);
-			return $group_data;
-		});
-		if ($item !== false) {
-			if (isset($group_data[$item])) {
-				return $group_data[$item];
-			} else {
-				return false;
+		$group_data = $this->cache->get(
+			$group,
+			function () use ($group) {
+				$group_data         = $this->db()->qf(
+					"SELECT
+						`id`,
+						`title`,
+						`description`,
+						`data`
+					FROM `[prefix]groups`
+					WHERE `id` = '$group'
+					LIMIT 1"
+				);
+				$group_data['data'] = _json_decode($group_data['data']);
+				return $group_data;
 			}
-		} else {
+		);
+		if ($item === false) {
 			return $group_data;
 		}
+		if (isset($group_data[$item])) {
+			return $group_data[$item];
+		}
+		return false;
+	}
+	/**
+	 * Get list of all groups
+	 *
+	 * @return array Every item in form of ['id' => <i>id</i>, 'title' => <i>title</i>, 'description' => <i>description</i>]
+	 */
+	function get_all () {
+		return $this->cache->get(
+			'all',
+			function () {
+				return $this->db()->qfa(
+					"SELECT
+						`id`,
+						`title`,
+						`description`
+					FROM `[prefix]groups`"
+				);
+			}
+		) ?: [];
 	}
 	/**
 	 * Add new group
@@ -94,8 +114,8 @@ class Group {
 	 * @return false|int
 	 */
 	function add ($title, $description) {
-		$title			= xap($title, false);
-		$description	= xap($description, false);
+		$title       = xap($title, false);
+		$description = xap($description, false);
 		if (!$title) {
 			return false;
 		}
@@ -110,13 +130,14 @@ class Group {
 				)",
 			$title,
 			$description
-		)) {
+		)
+		) {
 			unset($this->cache->all);
-			$id	= $this->db_prime()->id();
+			$id = $this->db_prime()->id();
 			Event::instance()->fire(
 				'System/User/Group/add',
 				[
-					'id'	=> $id
+					'id' => $id
 				]
 			);
 			return $id;
@@ -127,8 +148,8 @@ class Group {
 	/**
 	 * Set group data
 	 *
-	 * @param array	$data	May contain items title|description|data
-	 * @param int	$group
+	 * @param array $data May contain items title|description|data
+	 * @param int   $group
 	 *
 	 * @return bool
 	 */
@@ -147,9 +168,9 @@ class Group {
 		if (isset($data['data'])) {
 			$update[] = '`data` = '.$this->db_prime()->s(_json_encode($data['data']));
 		}
-		$update	= implode(', ', $update);
+		$update = implode(', ', $update);
 		if (!empty($update) && $this->db_prime()->q("UPDATE `[prefix]groups` SET $update WHERE `id` = '$group' LIMIT 1")) {
-			$Cache	= $this->cache;
+			$Cache = $this->cache;
 			unset(
 				$Cache->$group,
 				$Cache->all
@@ -162,7 +183,7 @@ class Group {
 	/**
 	 * Delete group
 	 *
-	 * @param int	$group
+	 * @param int $group
 	 *
 	 * @return bool
 	 */
@@ -171,16 +192,18 @@ class Group {
 		Event::instance()->fire(
 			'System/User/Group/del/before',
 			[
-				'id'	=> $group
+				'id' => $group
 			]
 		);
 		if ($group != 1 && $group != 2 && $group != 3) {
-			$return	= $this->db_prime()->q([
-				"DELETE FROM `[prefix]groups` WHERE `id` = $group",
-				"DELETE FROM `[prefix]users_groups` WHERE `group` = $group"
-			]);
+			$return = $this->db_prime()->q(
+				[
+					"DELETE FROM `[prefix]groups` WHERE `id` = $group",
+					"DELETE FROM `[prefix]users_groups` WHERE `group` = $group"
+				]
+			);
 			$this->del_permissions_all($group);
-			$Cache	= $this->cache;
+			$Cache = $this->cache;
 			unset(
 				Cache::instance()->{'users/groups'},
 				$Cache->$group,
@@ -189,7 +212,7 @@ class Group {
 			Event::instance()->fire(
 				'System/User/Group/del/after',
 				[
-					'id'	=> $group
+					'id' => $group
 				]
 			);
 			return (bool)$return;
@@ -198,25 +221,9 @@ class Group {
 		}
 	}
 	/**
-	 * Get list of all groups
-	 *
-	 * @return array|bool		Every item in form of array('id' => <i>id</i>, 'title' => <i>title</i>, 'description' => <i>description</i>)
-	 */
-	function get_all () {
-		return $this->cache->get('all', function () {
-			return $this->db()->qfa(
-				"SELECT
-					`id`,
-					`title`,
-					`description`
-				FROM `[prefix]groups`"
-			);
-		});
-	}
-	/**
 	 * Get group permissions
 	 *
-	 * @param int		$group
+	 * @param int $group
 	 *
 	 * @return array
 	 */
@@ -226,8 +233,8 @@ class Group {
 	/**
 	 * Set group permissions
 	 *
-	 * @param array	$data
-	 * @param int	$group
+	 * @param array $data
+	 * @param int   $group
 	 *
 	 * @return bool
 	 */
@@ -237,7 +244,7 @@ class Group {
 	/**
 	 * Delete all permissions of specified group
 	 *
-	 * @param int	$group
+	 * @param int $group
 	 *
 	 * @return bool
 	 */
