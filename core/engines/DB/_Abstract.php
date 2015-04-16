@@ -1,9 +1,9 @@
 <?php
 /**
- * @package        CleverStyle CMS
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package   CleverStyle CMS
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs\DB;
 abstract class _Abstract {
@@ -426,8 +426,8 @@ abstract class _Abstract {
 	/**
 	 * Get columns list of table
 	 *
-	 * @param string      $table
-	 * @param bool|string $like
+	 * @param string       $table
+	 * @param false|string $like
 	 *
 	 * @return false|string[]
 	 */
@@ -449,7 +449,7 @@ abstract class _Abstract {
 	/**
 	 * Get tables list
 	 *
-	 * @param bool $like
+	 * @param false|string $like
 	 *
 	 * @return false|string[]
 	 */
