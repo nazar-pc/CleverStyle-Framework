@@ -22,7 +22,7 @@ class Json_ld {
 	/**
 	 * @param array $data
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	static function context_stub ($data = []) {
 		$context = [
@@ -45,7 +45,7 @@ class Json_ld {
 	/**
 	 * @param int $user_id
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	static function Person ($user_id) {
 		$Config    = Config::instance();

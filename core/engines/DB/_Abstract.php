@@ -112,10 +112,10 @@ abstract class _Abstract {
 	 * @param string|string[] $query
 	 * @param array           $arguments
 	 *
-	 * @return array|bool
+	 * @return array|false
 	 */
 	protected function prepare_and_normalize_arguments ($query, $arguments) {
-		if (!$query) {
+		if (!$query || !$arguments) {
 			return false;
 		}
 		$query = str_replace('[prefix]', $this->prefix, $query);
@@ -123,8 +123,6 @@ abstract class _Abstract {
 			default:
 				$params = array_slice($arguments, 1);
 				break;
-			case 0:
-				return false;
 			case 1:
 				$params = [];
 				break;
