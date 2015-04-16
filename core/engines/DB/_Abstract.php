@@ -95,43 +95,75 @@ abstract class _Abstract {
 	 * @return false|object|resource
 	 */
 	function q ($query, $params = [], $_ = null) {
+		$normalized = $this->prepare_and_normalize_arguments($query, func_get_args());
+		if (!$normalized) {
+			return false;
+		}
+		list($query, $params) = $normalized;
+		/**
+		 * Executing multiple queries
+		 */
+		if (is_array($query)) {
+			return $this->execute_multiple($query, $params);
+		}
+		return $this->execute_single($query, $params);
+	}
+	/**
+	 * @param string|string[] $query
+	 * @param array           $arguments
+	 *
+	 * @return array|bool
+	 */
+	protected function prepare_and_normalize_arguments ($query, $arguments) {
 		if (!$query) {
 			return false;
 		}
 		$query = str_replace('[prefix]', $this->prefix, $query);
-		switch (func_num_args()) {
+		switch (count($arguments)) {
 			default:
-				$params = array_slice(func_get_args(), 1);
+				$params = array_slice($arguments, 1);
 				break;
 			case 0:
 				return false;
 			case 1:
+				$params = [];
+				break;
 			case 2:
-				$params = (array)$params;
+				$params = (array)$arguments[1];
 				break;
 		}
 		foreach ($params as &$param) {
 			$param = $this->s($param, false);
 		}
-		unset($param);
-		if (is_array($query)) {
-			$time_from = microtime(true);
-			foreach ($query as &$q) {
-				$local_params = $params;
-				if (is_array($q)) {
-					if (count($q) > 1) {
-						$local_params = array_slice($q, 1);
-					}
-					$q = $q[0];
-				}
-				$q = empty($local_params) ? $q : vsprintf($q, $local_params);
-			}
-			unset($local_params, $q);
-			$this->queries['num'] += count($query);
-			$return = $this->q_multi_internal($query);
-			$this->time += round(microtime(true) - $time_from, 6);
-			return $return;
+		return [
+			$query,
+			$params
+		];
+	}
+	/**
+	 * @param string[] $queries
+	 * @param string[] $params
+	 *
+	 * @return false|object|resource
+	 */
+	protected function execute_multiple ($queries, $params) {
+		$time_from = microtime(true);
+		foreach ($queries as &$q) {
+			$q = $params ? vsprintf($q, $params) : $q;
 		}
+		unset($q);
+		$this->queries['num'] += count($queries);
+		$result = $this->q_multi_internal($queries);
+		$this->time += round(microtime(true) - $time_from, 6);
+		return $result;
+	}
+	/**
+	 * @param string   $query
+	 * @param string[] $params
+	 *
+	 * @return false|object|resource
+	 */
+	protected function execute_single ($query, $params) {
 		$time_from           = microtime(true);
 		$this->query['text'] = empty($params) ? $query : vsprintf($query, $params);
 		if (DEBUG) {
