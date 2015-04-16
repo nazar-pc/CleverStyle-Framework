@@ -625,7 +625,6 @@ class Session {
 			foreach ($sessions as $session) {
 				unset($this->cache->$session);
 			}
-			unset($session);
 			$sessions = implode("','", $sessions);
 			return (bool)$this->db_prime()->q(
 				"DELETE FROM `[prefix]sessions`

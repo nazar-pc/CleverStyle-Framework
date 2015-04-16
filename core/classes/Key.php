@@ -1,9 +1,9 @@
 <?php
 /**
- * @package        CleverStyle CMS
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package   CleverStyle CMS
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs;
 
@@ -113,19 +113,21 @@ class Key {
 			$database = DB::instance()->$database();
 		}
 		$time   = time();
-		$result = $database->qf([
-			"SELECT
-				`id`,
-				`data`
-			FROM `[prefix]keys`
-			WHERE
-				(
-					`key`	= '$key'
-				) AND
-				`expire` >= $time
-			ORDER BY `id` DESC
-			LIMIT 1"
-		]);
+		$result = $database->qf(
+			[
+				"SELECT
+					`id`,
+					`data`
+				FROM `[prefix]keys`
+				WHERE
+					(
+						`key`	= '$key'
+					) AND
+					`expire` >= $time
+				ORDER BY `id` DESC
+				LIMIT 1"
+			]
+		);
 		$this->del($database, $key);
 		if (!$result || !is_array($result)) {
 			return false;
@@ -154,10 +156,8 @@ class Key {
 		return $database->q(
 			"DELETE FROM `[prefix]keys`
 			WHERE
-				(
-					`id`	= '$key' OR
-					`key`	= '$key'
-				)"
+				`id`	= '$key' OR
+				`key`	= '$key'"
 		);
 	}
 }

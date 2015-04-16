@@ -41,10 +41,10 @@ trait admin {
 			$value         = $User->db()->qfs(
 				[
 					"SELECT `value`
-		FROM `[prefix]users_permissions`
-		WHERE
-			`id`			= '%s' AND
-			`permission`	= '%s'",
+					FROM `[prefix]users_permissions`
+					WHERE
+						`id`			= '%s' AND
+						`permission`	= '%s'",
 					$user,
 					$permission
 				]
