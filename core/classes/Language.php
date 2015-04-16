@@ -396,9 +396,8 @@ class Language implements JsonSerializable {
 	 * Formatting data according to language locale (translating months names, days of week, etc.)
 	 *
 	 * @param string|string[] $data
-	 * @param bool            $short_may      When in date() or similar functions "M" format option is used, third month "May"
-	 *                                        have the same short textual representation as full, so, this option allows to
-	 *                                        specify, which exactly form of representation do you want
+	 * @param bool            $short_may When in date() or similar functions "M" format option is used, third month "May" have the same short textual
+	 *                                   representation as full, so, this option allows to specify, which exactly form of representation do you want
 	 *
 	 * @return string|string[]
 	 */
