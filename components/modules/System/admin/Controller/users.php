@@ -364,7 +364,7 @@ trait users {
 								'checked' => $Config->core['smtp'],
 								'value'   => [0, 1],
 								'in'      => [$L->off, $L->on],
-								'OnClick' => ["$('#smtp_form').parent().parent().hide();", "$('#smtp_form').parent().parent().show();"]
+								'OnClick' => ["$('#smtp_form').parent().parent().children().hide();", "$('#smtp_form').parent().parent().children().show();"]
 							]
 						)
 					],
