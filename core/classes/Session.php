@@ -110,9 +110,45 @@ class Session {
 	protected function bots_detection () {
 		$Cache = $this->users_cache;
 		/**
-		 * Loading bots list
+		 * @var \cs\_SERVER $_SERVER
 		 */
-		$bots = $Cache->get(
+		/**
+		 * For bots: login is user agent, email is IP
+		 */
+		$login    = $_SERVER->user_agent;
+		$email    = $_SERVER->ip;
+		$bot_hash = hash('sha224', $login.$email);
+		/**
+		 * If bot is cached
+		 */
+		$this->user_id = $Cache->$bot_hash;
+		/**
+		 * If bot found in cache - exit from here
+		 */
+		if ($this->user_id) {
+			return;
+		}
+		/**
+		 * Try to find bot among known bots
+		 */
+		foreach ($this->all_bots() as $bot) {
+			if ($this->is_this_bot($bot, $login, $email)) {
+				/**
+				 * If bot found - save it in cache
+				 */
+				$this->user_id    = $bot['id'];
+				$Cache->$bot_hash = $bot['id'];
+				return;
+			}
+		}
+	}
+	/**
+	 * Get list of all bots
+	 *
+	 * @return array
+	 */
+	protected function all_bots () {
+		return $this->users_cache->get(
 			'bots',
 			function () {
 				return $this->db()->qfa(
@@ -132,68 +168,33 @@ class Session {
 					]
 				) ?: [];
 			}
-		);
-		/**
-		 * If there are no known bots - exit from here
-		 */
-		if (!$bots) {
-			return;
-		}
-		/**
-		 * @var \cs\_SERVER $_SERVER
-		 */
-		/**
-		 * For bots: login is user agent, email is IP
-		 */
-		$bot_hash = hash('sha224', $_SERVER->user_agent.$_SERVER->ip);
-		/**
-		 * Load data
-		 */
-		$this->user_id = $Cache->$bot_hash;
-		/**
-		 * If bot found in cache - exit from here
-		 */
-		if ($this->user_id !== false) {
-			return;
-		}
-		/**
-		 * Try to find bot among known bots
-		 */
-		foreach ($bots as $bot) {
-			/**
-			 * Check user agent
-			 */
-			if (
+		) ?: [];
+	}
+	/**
+	 * Check whether user agent and IP (login and email for bots) corresponds to passed bot data
+	 *
+	 * @param array  $bot
+	 * @param string $login
+	 * @param string $email
+	 *
+	 * @return bool
+	 */
+	protected function is_this_bot ($bot, $login, $email) {
+		return
+			(
 				$bot['login'] &&
 				(
-					strpos($_SERVER->user_agent, $bot['login']) !== false ||
-					_preg_match($bot['login'], $_SERVER->user_agent)
+					strpos($login, $bot['login']) !== false ||
+					_preg_match($bot['login'], $login)
 				)
-			) {
-				$this->user_id = $bot['id'];
-				break;
-			}
-			/**
-			 * Check IP
-			 */
-			if (
+			) ||
+			(
 				$bot['email'] &&
 				(
-					$_SERVER->ip == $bot['email'] ||
-					_preg_match($bot['email'], $_SERVER->ip)
+					$email == $bot['email'] ||
+					_preg_match($bot['email'], $email)
 				)
-			) {
-				$this->user_id = $bot['id'];
-				break;
-			}
-		}
-		unset($bots, $bot);
-		/**
-		 * If bot found - save it in cache
-		 */
-		if ($this->user_id) {
-			$Cache->$bot_hash = $this->user_id;
-		}
+			);
 	}
 	/**
 	 * Updates information about who is user accessed by methods ::guest() ::bot() ::user() admin()
