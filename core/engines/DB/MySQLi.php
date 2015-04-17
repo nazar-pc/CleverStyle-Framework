@@ -110,23 +110,14 @@ class MySQLi extends _Abstract {
 		$result_type = $single_column || $indexed ? MYSQLI_NUM : MYSQLI_ASSOC;
 		if ($array) {
 			$result = [];
-			if ($single_column === false) {
-				while ($current = $query_result->fetch_array($result_type)) {
-					$result[] = $current;
-				}
-			} else {
-				while ($current = $query_result->fetch_array($result_type)) {
-					$result[] = $current[0];
-				}
+			while ($current = $query_result->fetch_array($result_type)) {
+				$result[] = $single_column ? $current[0] : $current;
 			}
 			$this->free($query_result);
 			return $result;
 		}
 		$result = $query_result->fetch_array($result_type);
-		if ($single_column) {
-			return is_array($result) ? $result[0] : false;
-		}
-		return $result;
+		return $single_column && $result ? $result[0] : $result;
 	}
 	/**
 	 * @inheritdoc
