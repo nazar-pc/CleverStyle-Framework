@@ -471,7 +471,7 @@ class Session {
 	 * @param false|int $user
 	 * @param bool      $delete_current_session
 	 *
-	 * @return false|string
+	 * @return false|string Session id on success, `false` otherwise
 	 */
 	function add ($user = false, $delete_current_session = true) {
 		$user = (int)$user ?: User::GUEST_ID;
