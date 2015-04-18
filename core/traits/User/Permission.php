@@ -18,6 +18,9 @@ use
  *
  * @property int              $id
  * @property \cs\Cache\Prefix $cache
+ *
+ * @method false|int[]        get_groups(false|int $user)
+ * @method bool               admin()
  */
 trait Permission {
 	use
