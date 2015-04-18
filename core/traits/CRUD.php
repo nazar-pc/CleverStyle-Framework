@@ -24,7 +24,7 @@ trait CRUD {
 	/**
 	 * @param callable[]|string[] $data_model
 	 * @param array               $arguments
-	 * @param bool|int            $id            On update id should be specified to work properly with multilingual fields
+	 * @param false|int           $id            On update id should be specified to work properly with multilingual fields
 	 * @param bool                $update_needed If on creation request without specified primary key and multilingual fields present - update needed
 	 *                                           after creation (there is no id before creation)
 	 */
