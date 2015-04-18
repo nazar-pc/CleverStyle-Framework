@@ -433,8 +433,14 @@ function _rtrim ($str, $charlist = " \t\n\r\0\x0B") {
  */
 function _substr ($string, $start, $length = null) {
 	if (is_array($string)) {
-		foreach ($string as &$s) {
-			$s = substr($s, $start, $length);
+		if ($length) {
+			foreach ($string as &$s) {
+				$s = substr($s, $start, $length);
+			}
+		} else {
+			foreach ($string as &$s) {
+				$s = substr($s, $start);
+			}
 		}
 		return $string;
 	}
