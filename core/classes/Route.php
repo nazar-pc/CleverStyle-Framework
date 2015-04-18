@@ -125,7 +125,6 @@ class Route {
 				$this->path[] = $item;
 			}
 		}
-		unset($item);
 		$this->relative_address = $processed_route['relative_address'];
 		admin_path($processed_route['ADMIN']);
 		api_path($processed_route['API']);
@@ -188,12 +187,10 @@ class Route {
 				'rc' => &$rc
 			]
 		);
-		if (!empty($Config->routing['in'])) {
-			foreach ($Config->routing['in'] as $i => $search) {
-				$rc = _preg_replace($search, $Config->routing['out'][$i], $rc) ?: str_replace($search, $Config->routing['out'][$i], $rc);
-			}
-			unset($i, $search);
+		foreach ($Config->routing['in'] as $i => $search) {
+			$rc = _preg_replace($search, $Config->routing['out'][$i], $rc) ?: str_replace($search, $Config->routing['out'][$i], $rc);
 		}
+		unset($i, $search);
 		Event::instance()->fire(
 			'System/Route/routing_replace',
 			[
@@ -203,73 +200,94 @@ class Route {
 		/**
 		 * Obtaining page path in form of array
 		 */
-		$rc = $rc ? explode('/', $rc) : [];
+		$rc    = $rc ? explode('/', $rc) : [];
+		$ADMIN = '';
+		$API   = '';
+		$HOME  = false;
 		/**
-		 * If url looks like admin page
+		 * If url is admin or API page - set corresponding variables to corresponding path prefix
 		 */
 		if (@mb_strtolower($rc[0]) == 'admin') {
 			if (!$Config->can_be_admin()) {
 				return false;
 			}
-			$ADMIN = true;
+			$ADMIN = 'admin/';
 			array_shift($rc);
-			/**
-			 * If url looks like API page
-			 */
 		} elseif (@mb_strtolower($rc[0]) == 'api') {
-			$API = true;
+			$API = 'api/';
 			array_shift($rc);
-		}
-		if (!isset($ADMIN)) {
-			$ADMIN = false;
-		}
-		if (!isset($API)) {
-			$API = false;
 		}
 		/**
 		 * Module detection
 		 */
-		$modules = array_keys(
-			array_filter(
-				$Config->components['modules'],
-				function ($module_data) use ($ADMIN) {
-					return $ADMIN || $module_data['active'] == 1;
-				}
-			)
-		);
-		$L       = Language::instance();
-		$modules = array_combine(
-			array_map(
-				function ($module) use ($L) {
-					return path($L->get($module));
-				},
-				$modules
-			),
-			$modules
-		);
-		if (@in_array($rc[0], array_values($modules))) {
-			$MODULE = array_shift($rc);
-		} elseif (@isset($modules[$rc[0]])) {
-			$MODULE = $modules[array_shift($rc)];
-		} else {
-			$MODULE = $ADMIN || $API || isset($rc[0]) ? 'System' : $Config->core['default_module'];
-			if (!$ADMIN && !$API && !isset($rc[1])) {
-				$HOME = true;
-			}
-		}
-		if (!isset($HOME)) {
-			$HOME = false;
-		}
+		$MODULE = $this->determine_page_module($rc, $HOME, $Config, $ADMIN, $API);
 		return [
 			'route'            => $rc,
 			'relative_address' => trim(
-				($ADMIN ? 'admin/' : '').($API ? 'api/' : '').$MODULE.'/'.implode('/', $rc),
+				$ADMIN.$API.$MODULE.'/'.implode('/', $rc),
 				'/'
 			),
-			'ADMIN'            => $ADMIN,
-			'API'              => $API,
+			'ADMIN'            => (bool)$ADMIN,
+			'API'              => (bool)$API,
 			'MODULE'           => $MODULE,
 			'HOME'             => $HOME
 		];
+	}
+	/**
+	 * Determine module of current page based on page path and system configuration
+	 *
+	 * @param array  $rc
+	 * @param bool   $HOME
+	 * @param Config $Config
+	 * @param bool   $ADMIN
+	 * @param bool   $API
+	 *
+	 * @return mixed|string
+	 */
+	protected function determine_page_module (&$rc, &$HOME, $Config, $ADMIN, $API) {
+		$modules = $this->get_modules($Config, $ADMIN);
+		if (@in_array($rc[0], array_values($modules))) {
+			return array_shift($rc);
+		}
+		if (@$modules[$rc[0]]) {
+			return $modules[array_shift($rc)];
+		}
+		$MODULE =
+			$ADMIN || $API || isset($rc[0])
+				? 'System'
+				: $Config->core['default_module'];
+		if (!$ADMIN && !$API && !isset($rc[1])) {
+			$HOME = true;
+		}
+		return $MODULE;
+	}
+	/**
+	 * Get array of modules
+	 *
+	 * @param Config $Config
+	 * @param bool   $ADMIN
+	 *
+	 * @return array Array of form [localized_module_name => module_name]
+	 */
+	protected function get_modules ($Config, $ADMIN) {
+		$modules = array_filter(
+			$Config->components['modules'],
+			function ($module_data) use ($ADMIN) {
+				/**
+				 * Skip uninstalled modules and modules that are disabled (on all pages except admin pages)
+				 */
+				return
+					(
+						$ADMIN &&
+						$module_data['active'] == 0
+					) ||
+					$module_data['active'] == 1;
+			}
+		);
+		$L       = Language::instance();
+		foreach ($modules as $module => &$localized_name) {
+			$localized_name = path($L->$module);
+		}
+		return array_flip($modules);
 	}
 }
