@@ -1,11 +1,11 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   CleverStyle CMS
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
-namespace	cs\h;
+namespace cs\h;
 use
 	nazarpc\BananaHTML,
 	cs\Config,
@@ -21,7 +21,7 @@ abstract class Base extends BananaHTML {
 	 *
 	 * @static
 	 *
-	 * @param string	$url
+	 * @param string $url
 	 *
 	 * @return string
 	 */
@@ -36,7 +36,7 @@ abstract class Base extends BananaHTML {
 	 *
 	 * @static
 	 *
-	 * @param string	$url
+	 * @param string $url
 	 *
 	 * @return string
 	 */
@@ -58,11 +58,13 @@ abstract class Base extends BananaHTML {
 			class_exists('\\cs\\Session', false) &&
 			$Session = Session::instance(true)
 		) {
-			return static::input([
-				'value'	=> $Session->get_id(),
-				'type'	=> 'hidden',
-				'name'	=> 'session'
-			]);
+			return static::input(
+				[
+					'value' => $Session->get_id(),
+					'type'  => 'hidden',
+					'name'  => 'session'
+				]
+			);
 		}
 		return '';
 	}
@@ -71,13 +73,13 @@ abstract class Base extends BananaHTML {
 	 *
 	 * @static
 	 *
-	 * @param array	$attributes
+	 * @param array $attributes
 	 */
 	protected static function pre_processing (&$attributes) {
 		if (isset($attributes['data-title']) && $attributes['data-title'] !== false) {
-			$attributes['title']	= static::prepare_attr_value($attributes['data-title']);
+			$attributes['title'] = static::prepare_attr_value($attributes['data-title']);
 			unset($attributes['data-title']);
-			$attributes['data-uk-tooltip']	= '{animation:true,delay:200}';
+			$attributes['data-uk-tooltip'] = '{animation:true,delay:200}';
 		}
 	}
 	/**
@@ -86,12 +88,12 @@ abstract class Base extends BananaHTML {
 	 * This function allows to store inner text of tags, that are sensitive to this operation (textarea, pre, code), and return some identifier.
 	 * Later, at page generation, this identifier will be replaced by original text again.
 	 *
-	 * @param string	$text
+	 * @param string $text
 	 *
 	 * @return string
 	 */
 	protected static function indentation_protection ($text) {
-		$uniqid	= uniqid('html_replace_');
+		$uniqid = uniqid('html_replace_');
 		Page::instance()->replace($uniqid, $text);
 		return $uniqid;
 	}
@@ -101,8 +103,8 @@ abstract class Base extends BananaHTML {
 	 *
 	 * @static
 	 *
-	 * @param array|string	$in
-	 * @param array			$data
+	 * @param array|string $in
+	 * @param array        $data
 	 *
 	 * @return mixed
 	 */
@@ -115,7 +117,7 @@ abstract class Base extends BananaHTML {
 		} elseif (is_array($in)) {
 			return static::__callStatic(__FUNCTION__, [$in, $data]);
 		}
-		$L		= Language::instance();
+		$L = Language::instance();
 		if (Config::instance(true)->core['show_tooltips']) {
 			return static::span($L->$in, array_merge(['data-title' => $L->{$in.'_info'}], $data));
 		} else {
@@ -127,8 +129,8 @@ abstract class Base extends BananaHTML {
 	 *
 	 * @static
 	 *
-	 * @param string	$class	Icon name in jQuery UI CSS Framework, fow example, <b>gear</b>, <b>note</b>
-	 * @param array		$data
+	 * @param string $class Icon name in jQuery UI CSS Framework, fow example, <b>gear</b>, <b>note</b>
+	 * @param array  $data
 	 *
 	 * @return mixed
 	 */
@@ -139,8 +141,8 @@ abstract class Base extends BananaHTML {
 		if ($class === false) {
 			return '';
 		}
-		@$data['class']	.= " uk-icon-$class";
-		$data['level']	= 0;
+		@$data['class'] .= " uk-icon-$class";
+		$data['level'] = 0;
 		return static::span($data).' ';
 	}
 	/**
@@ -148,8 +150,8 @@ abstract class Base extends BananaHTML {
 	 *
 	 * @static
 	 *
-	 * @param array|string	$in
-	 * @param array			$data
+	 * @param array|string $in
+	 * @param array        $data
 	 *
 	 * @return string
 	 */
@@ -158,8 +160,8 @@ abstract class Base extends BananaHTML {
 			return $return;
 		}
 		if (@is_array($in['name']) || @is_array($in['id'])) {
-			$items	= self::array_flip_3d($in);
-			$return	= '';
+			$items  = self::array_flip_3d($in);
+			$return = '';
 			foreach ($items as $item) {
 				$return .= static::checkbox($item);
 			}
@@ -170,7 +172,7 @@ abstract class Base extends BananaHTML {
 			}
 			$in['tag'] = 'input';
 			if (isset($in['value'], $in['checked']) && $in['value'] == $in['checked']) {
-				$in[]	= 'checked';
+				$in[] = 'checked';
 			}
 			unset($in['checked']);
 			if (isset($in['value'])) {
@@ -187,13 +189,13 @@ abstract class Base extends BananaHTML {
 				static::label(
 					static::u_wrap($in),
 					[
-						'for'			=> $in['id'],
-						'data-title'	=> isset($in['data-title']) ? $in['data-title'] : false,
-						'class'			=> $button_class
+						'for'        => $in['id'],
+						'data-title' => isset($in['data-title']) ? $in['data-title'] : false,
+						'class'      => $button_class
 					]
 				),
 				[
-					'data-uk-button-checkbox'	=> ''
+					'data-uk-button-checkbox' => ''
 				]
 			);
 		}
@@ -203,8 +205,8 @@ abstract class Base extends BananaHTML {
 	 *
 	 * @static
 	 *
-	 * @param array|string	$in
-	 * @param array			$data
+	 * @param array|string $in
+	 * @param array        $data
 	 *
 	 * @return string
 	 */
@@ -216,15 +218,15 @@ abstract class Base extends BananaHTML {
 			$in['checked'] = $in['value'][0];
 		}
 		if (isset($in['add']) && !is_array($in['add'])) {
-			$add = $in['add'];
+			$add       = $in['add'];
 			$in['add'] = [];
 			foreach ($in['in'] as $v) {
 				$in['add'][] = $add;
 			}
 			unset($add);
 		}
-		$checked		= $in['checked'];
-		$in['checked']	= [];
+		$checked       = $in['checked'];
+		$in['checked'] = [];
 		foreach ($in['value'] as $i => $v) {
 			$in['checked'][$i] = $v == $checked;
 		}
@@ -250,16 +252,16 @@ abstract class Base extends BananaHTML {
 			$content .= static::label(
 				static::u_wrap($item),
 				[
-					'for'	=> $item['id'],
-					'class'	=> $button_class
+					'for'   => $item['id'],
+					'class' => $button_class
 				]
 			);
 		}
 		return static::span(
 			$content,
 			[
-				'class'					=> 'uk-button-group',
-				'data-uk-button-radio'	=> ''
+				'class'                => 'uk-button-group',
+				'data-uk-button-radio' => ''
 			]
 		);
 	}
