@@ -99,49 +99,8 @@ class Meta {
 	 * Usually called by system itself, there is no need to call it manually
 	 */
 	function render () {
-		/**
-		 * Automatic generation of some information
-		 */
-		$Page		= Page::instance();
 		$og			= &$this->og_data;
-		if (!isset($og['title']) || empty($og['title'])) {
-			$this->og('title', $Page->Title);
-		}
-		if (
-			(
-				!isset($og['description']) || empty($og['description'])
-			) &&
-			$Page->Description
-		) {
-			$this->og('description', $Page->Description);
-		}
-		$Config		= Config::instance();
-		if (!isset($og['url']) || empty($og['url'])) {
-			$this->og('url', home_page() ? $Config->base_url() : ($Page->canonical_url ?: $Config->base_url().'/'.Route::instance()->relative_address));
-		}
-		if (!isset($og['site_name']) || empty($og['site_name'])) {
-			$this->og('site_name', get_core_ml_text('name'));
-		}
-		if (!isset($og['type']) || empty($og['type'])) {
-			$this->og('type', 'website');
-		}
-		if ($Config->core['multilingual']) {
-			$L	= Language::instance();
-			if (!isset($og['locale']) || empty($og['locale'])) {
-				$this->og('locale', $L->clocale);
-			}
-			if (
-				(
-					!isset($og['locale:alternate']) || empty($og['locale:alternate'])
-				) && count($Config->core['active_languages']) > 1
-			) {
-				foreach ($Config->core['active_languages'] as $lang) {
-					if ($lang != $L->clanguage) {
-						$this->og('locale:alternate', $L->get('clocale', $lang));
-					}
-				}
-			}
-		}
+		$this->fill_required_properties($og);
 		$prefix		= 'og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#';
 		$type		= explode('.', $this->og_type, 2)[0];
 		switch ($type) {
@@ -154,6 +113,7 @@ class Meta {
 				$prefix	.= " $type: http://ogp.me/ns/$type#";
 			break;
 		}
+		$Page		= Page::instance();
 		$Page->Head	=
 			$Page->Head.
 			implode('', $og).
@@ -165,6 +125,52 @@ class Meta {
 					'prefix'	=> $prefix.$this->head_prefix
 				]
 			);
+		}
+	}
+	/**
+	 * If type, title and other important properties were not specified - try to guess and fill them automatically
+	 *
+	 * @param array $og
+	 */
+	protected function fill_required_properties (&$og) {
+		$Page		= Page::instance();
+		if (!@$og['title']) {
+			$this->og('title', $Page->Title);
+		}
+		if (!@$og['description']) {
+			$this->og('description', $Page->Description);
+		}
+		$Config		= Config::instance();
+		if (!@$og['url']) {
+			/** @noinspection NestedTernaryOperatorInspection */
+			$this->og(
+				'url',
+				home_page()
+					? $Config->base_url()
+					: ($Page->canonical_url ?: $Config->base_url().'/'.Route::instance()->relative_address)
+			);
+		}
+		if (!@$og['site_name']) {
+			$this->og('site_name', get_core_ml_text('name'));
+		}
+		if (!@$og['type']) {
+			$this->og('type', 'website');
+		}
+		if ($Config->core['multilingual']) {
+			$L	= Language::instance();
+			if (!@$og['locale']) {
+				$this->og('locale', $L->clocale);
+			}
+			if (
+				!@$og['locale:alternate'] &&
+				count($Config->core['active_languages']) > 1
+			) {
+				foreach ($Config->core['active_languages'] as $lang) {
+					if ($lang != $L->clanguage) {
+						$this->og('locale:alternate', $L->get('clocale', $lang));
+					}
+				}
+			}
 		}
 	}
 }
