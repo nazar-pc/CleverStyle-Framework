@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		BananaHTML
- * @version		2.2.0
+ * @version		2.3.0
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
@@ -17,7 +17,7 @@ defined('XHTML_TAGS_STYLE') || define('XHTML_TAGS_STYLE', false);
  * This is class for HTML code rendering in accordance with the standards of HTML5, and with useful syntax extensions for simpler usage
  */
 class BananaHTML {
-	protected static	$known_unit_atributes = [	//Unit attributes, that have no value, or have the same value as name in xhtml style
+	protected static	$known_unit_attributes = [	//Unit attributes, that have no value, or have the same value as name in xhtml style
 			'async',
 			'defer',
 			'formnovalidate',
@@ -147,11 +147,16 @@ class BananaHTML {
 		}
 		ksort($data);
 		foreach ($data as $key => $value) {
+			if ($value === false) {
+				continue;
+			}
 			if (is_int($key)) {
 				unset($data[$key]);
 				$add	.= " $value".(XHTML_TAGS_STYLE ? "=$q$value$q" : '');
-			} elseif ($value !== false) {
-				$add			.= " $key=$q$value$q";
+			} elseif ($value === true) {
+				$add	.= " $key".(XHTML_TAGS_STYLE ? "=$q$key$q" : '');
+			} else {
+				$add	.= " $key=$q$value$q";
 			}
 		}
 		return true;
@@ -220,7 +225,7 @@ class BananaHTML {
 	 *
 	 * @static
 	 *
-	 * @param string		$in
+	 * @param array|string	$in
 	 * @param array			$data
 	 * @param string		$tag
 	 *
@@ -251,7 +256,7 @@ class BananaHTML {
 			$level &&
 			(
 				strpos($in, "\n") !== false ||
-				strpos($in, "<") !== false
+				strpos($in, '<') !== false
 			)
 		) {
 			$in		= $level ? "\n".static::level("$in\n", $level) : "\n$in\n";
@@ -769,13 +774,14 @@ class BananaHTML {
 			$array1['style'] .= $array3['style'];
 			unset($array3['class']);
 		}
+		/** @noinspection AdditionOperationOnArraysInspection */
 		return $array3 + $array2 + $array1;
 	}
 	/**
 	 * Analyze CSS selector for nester tags
 	 *
-	 * @param string	$in
-	 * @param int		$offset
+	 * @param array|string	$in
+	 * @param int			$offset
 	 *
 	 * @return bool			Returns <i>true</i> and changes <i>&$in</i> to array if nested tags detected
 	 */
@@ -878,13 +884,13 @@ class BananaHTML {
 					$data	= [$data];
 				}
 				foreach ($data[0] as $d) {
-					if (isset($d[0]) && static::is_array_indexed($d[0]) && !in_array($d[0][0], static::$known_unit_atributes)) {
+					if (isset($d[0]) && static::is_array_indexed($d[0]) && !in_array($d[0][0], static::$known_unit_attributes)) {
 						if (
 							isset($d[1]) &&
 							(
 								!is_array($d[1]) ||
 								(
-									static::is_array_indexed($d[1]) && !in_array($d[1][0], static::$known_unit_atributes)
+									static::is_array_indexed($d[1]) && !in_array($d[1][0], static::$known_unit_attributes)
 								)
 							)
 						) {
@@ -969,7 +975,7 @@ class BananaHTML {
 					!isset($data[1]) ||
 					!is_array($data[1]) ||
 					(
-						static::is_array_indexed($data[1]) && !in_array($data[1][0], static::$known_unit_atributes)
+						static::is_array_indexed($data[1]) && !in_array($data[1][0], static::$known_unit_attributes)
 					)
 				)
 			) {
@@ -993,7 +999,7 @@ class BananaHTML {
 						strpos($input, 'datalist') !== 0
 					) ||
 					(
-						static::is_array_indexed($data[0][0]) && !in_array($data[0][0][0], static::$known_unit_atributes)
+						static::is_array_indexed($data[0][0]) && !in_array($data[0][0][0], static::$known_unit_attributes)
 					)
 				)
 			) {
@@ -1012,7 +1018,7 @@ class BananaHTML {
 								$data[1]
 							]
 						);
-					} elseif (static::is_array_indexed($d[1]) && !in_array($d[1], static::$known_unit_atributes)) {
+					} elseif (static::is_array_indexed($d[1]) && !in_array($d[1], static::$known_unit_attributes)) {
 						$output			.= static::__callStatic(
 							$input,
 							[
@@ -1041,11 +1047,11 @@ class BananaHTML {
 			} elseif (
 				isset($data[1]) &&
 				!is_array($data[0]) &&
-				!in_array($data[0], static::$known_unit_atributes) &&
+				!in_array($data[0], static::$known_unit_attributes) &&
 				(
 					!is_array($data[1]) ||
 					(
-						static::is_array_indexed($data[1])  && !in_array($data[1][0], static::$known_unit_atributes)
+						static::is_array_indexed($data[1])  && !in_array($data[1][0], static::$known_unit_attributes)
 					)
 				)
 			) {
