@@ -350,15 +350,13 @@ __HALT_COMPILER();"
 			return false;
 		}
 		@unlink("$component_root/fs.json");
-		$files = array_merge(
-			$files,
-			get_files_list($component_root, false, 'f', true, true, false, false, true)
-		);
+		$local_files = get_files_list($component_root, false, 'f', true, true, false, false, true);
+		$files       = array_merge($files, $local_files);
 		file_put_json(
 			"$component_root/fs.json",
 			array_values(
 				_substr(
-					$files,
+					$local_files,
 					strlen("$component_root/")
 				)
 			)
@@ -476,6 +474,7 @@ RewriteRule .* index.php
 		$phar = new Phar($target_file);
 		unset($target_file);
 		$phar->startBuffering();
+		@unlink("$source_dir/fs.json");
 		$files  = get_files_list($source_dir, false, 'f', true, true, false, false, true);
 		$length = strlen("$source_dir/");
 		foreach ($files as $index => &$file) {
