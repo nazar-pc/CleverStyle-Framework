@@ -181,7 +181,7 @@ if (count(explode('/', $_SERVER['REQUEST_URI'])) > 3) {
 }
 header('Content-Type: text/html; charset=utf-8');
 header('Connection: close');
-$version = file_get_json(DIR.'/meta.json');
+$version = file_get_json(DIR.'/meta.json')['version'];
 echo
 	"<!doctype html>\n".
 	h::title("CleverStyle CMS $version Installation").
