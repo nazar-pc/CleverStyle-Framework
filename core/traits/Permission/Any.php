@@ -138,7 +138,7 @@ trait Any {
 		if ($type == 'group') {
 			unset(Cache::instance()->{'users/permissions'});
 		}
-		return $return;
+		return (bool)$return;
 	}
 	/**
 	 * @param int		$id
