@@ -154,19 +154,11 @@ abstract class Base extends BananaHTML {
 	 * @return string
 	 */
 	static function checkbox ($in = [], $data = []) {
-		if (isset($in['insert']) || isset($data['insert'])) {
-			return static::__callStatic(__FUNCTION__, func_get_args());
+		if (self::common_checkbox_radio_prepare($in, $data, __FUNCTION__, $return) !== false) {
+			return $return;
 		}
-		if ($in === false) {
-			return '';
-		}
-		$in	= static::input_merge($in, $data);
-		if (is_array_indexed($in) && is_array($in[0])) {
-			return static::__callStatic(__FUNCTION__, [$in, $data]);
-		}
-		$in['type'] = 'checkbox';
 		if (@is_array($in['name']) || @is_array($in['id'])) {
-			$items	= array_flip_3d($in);
+			$items	= self::array_flip_3d($in);
 			$return	= '';
 			foreach ($items as $item) {
 				$return .= static::checkbox($item);
@@ -176,11 +168,14 @@ abstract class Base extends BananaHTML {
 			if (!isset($in['id'])) {
 				$in['id'] = uniqid('input_');
 			}
+			$in['tag'] = 'input';
 			if (isset($in['value'], $in['checked']) && $in['value'] == $in['checked']) {
 				$in[]	= 'checked';
 			}
 			unset($in['checked']);
-			$in['tag'] = 'input';
+			if (isset($in['value'])) {
+				$in['value'] = self::prepare_attr_value($in['value']);
+			}
 			$button_class = 'uk-button';
 			if (in_array('checked', $in)) {
 				$button_class .= ' uk-active';
@@ -214,16 +209,8 @@ abstract class Base extends BananaHTML {
 	 * @return string
 	 */
 	static function radio ($in = [], $data = []) {
-		if (isset($in['insert']) || isset($data['insert'])) {
-			return static::__callStatic(__FUNCTION__, func_get_args());
-		}
-		if ($in === false) {
-			return '';
-		}
-		$in	= static::input_merge($in, $data);
-		$in['type'] = 'radio';
-		if (is_array_indexed($in) && is_array($in[0])) {
-			return static::__callStatic(__FUNCTION__, [$in, $data]);
+		if (self::common_checkbox_radio_prepare($in, $data, __FUNCTION__, $return) !== false) {
+			return $return;
 		}
 		if (!isset($in['checked'])) {
 			$in['checked'] = $in['value'][0];
@@ -239,31 +226,28 @@ abstract class Base extends BananaHTML {
 		$checked		= $in['checked'];
 		$in['checked']	= [];
 		foreach ($in['value'] as $i => $v) {
-			if ($v == $checked) {
-				$in['checked'][$i] = '';
-				break;
-			}
+			$in['checked'][$i] = $v == $checked;
 		}
 		unset($checked, $i, $v);
-		$items = array_flip_3d($in);
-		unset($in, $v, $i);
-		$temp = '';
+		$items = self::array_flip_3d($in);
+		unset($v, $i);
+		$content = '';
 		foreach ($items as $item) {
 			if (!isset($item['id'])) {
 				$item['id'] = uniqid('input_');
 			}
 			$item['tag'] = 'input';
 			if (isset($item['value'])) {
-				$item['value'] = prepare_attr_value($item['value']);
+				$item['value'] = self::prepare_attr_value($item['value']);
 			}
 			$button_class = 'uk-button';
-			if (isset($item['checked'])) {
+			if ($item['checked']) {
 				$button_class .= ' uk-active';
 			}
 			if (isset($item['class'])) {
 				$button_class .= " $item[class]";
 			}
-			$temp .= static::label(
+			$content .= static::label(
 				static::u_wrap($item),
 				[
 					'for'	=> $item['id'],
@@ -272,11 +256,34 @@ abstract class Base extends BananaHTML {
 			);
 		}
 		return static::span(
-			$temp,
+			$content,
 			[
 				'class'					=> 'uk-button-group',
 				'data-uk-button-radio'	=> ''
 			]
 		);
+	}
+	/**
+	 * @param array|string $in
+	 * @param array        $data
+	 * @param string       $type
+	 * @param string       $return
+	 *
+	 * @return bool|string
+	 */
+	protected function common_checkbox_radio_prepare (&$in, $data, $type, &$return) {
+		if (isset($in['insert']) || isset($data['insert'])) {
+			return static::__callStatic($type, func_get_args());
+		}
+		if ($in === false) {
+			return '';
+		}
+		$in = static::input_merge($in, $data);
+		/** @noinspection NotOptimalIfConditionsInspection */
+		if (is_array_indexed($in) && is_array($in[0])) {
+			return static::__callStatic($type, [$in, $data]);
+		}
+		$in['type'] = $type;
+		return false;
 	}
 }
