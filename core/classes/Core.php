@@ -1,12 +1,12 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   CleverStyle CMS
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
-namespace	cs;
-use			h;
+namespace cs;
+use            h;
 /**
  * Core class.
  * Provides loading of base system configuration
@@ -19,16 +19,16 @@ class Core {
 	 * Is object constructed
 	 * @var bool
 	 */
-	protected	$constructed		= false;
+	protected $constructed = false;
 	/**
 	 * @var mixed[]
 	 */
-	protected	$config				= [];
+	protected $config = [];
 	/**
 	 * Loading of base system configuration, creating of missing directories
 	 */
 	protected function construct () {
-		$this->config	= $this->load_config();
+		$this->config = $this->load_config();
 		_include_once(DIR.'/config/main.php', false);
 		defined('DEBUG') || define('DEBUG', false);
 		defined('DOMAIN') || define('DOMAIN', $this->config['domain']);
@@ -78,30 +78,37 @@ AddEncoding gzip .html
 				"Allow From All\n"
 			);
 		}
+		$this->fill_post_request();
+		$this->constructed = true;
+	}
+	/**
+	 * Fill `$_POST` and `$_REQUEST` when there is request method different than POST or if Content-Type is JSON
+	 */
+	protected function fill_post_request () {
 		/**
 		 * @var _SERVER $_SERVER
 		 */
 		/**
 		 * Support for JSON requests, filling $_POST array for request method different than POST
 		 */
-		if (isset($_SERVER->content_type)) {
-			if (preg_match('#^application/([^+\s]+\+)?json#', $_SERVER->content_type)) {
-				foreach (_json_decode(@file_get_contents('php://input')) ?: [] as $i => $v) {
-					$_POST[$i]    = $v;
-					$_REQUEST[$i] = $v;
-				}
-			} elseif (
-				strtolower($_SERVER->request_method) !== 'post' &&
-				strpos($_SERVER->content_type, 'application/x-www-form-urlencoded') === 0
-			) {
-				@parse_str(file_get_contents('php://input'), $POST);
-				foreach ($POST as $i => $v) {
-					$_POST[$i]    = $v;
-					$_REQUEST[$i] = $v;
-				}
+		if (!isset($_SERVER->content_type)) {
+			return;
+		}
+		if (preg_match('#^application/([^+\s]+\+)?json#', $_SERVER->content_type)) {
+			foreach (_json_decode(@file_get_contents('php://input')) ?: [] as $i => $v) {
+				$_POST[$i]    = $v;
+				$_REQUEST[$i] = $v;
+			}
+		} elseif (
+			strtolower($_SERVER->request_method) !== 'post' &&
+			strpos($_SERVER->content_type, 'application/x-www-form-urlencoded') === 0
+		) {
+			@parse_str(file_get_contents('php://input'), $POST);
+			foreach ($POST as $i => $v) {
+				$_POST[$i]    = $v;
+				$_REQUEST[$i] = $v;
 			}
 		}
-		$this->constructed	= true;
 	}
 	/**
 	 * Load main.json config file and return array of it contents
@@ -116,7 +123,7 @@ AddEncoding gzip .html
 				h::a(
 					'How to install CleverStyle CMS',
 					[
-						'href'	=> 'https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation'
+						'href' => 'https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation'
 					]
 				)
 			);
@@ -126,7 +133,7 @@ AddEncoding gzip .html
 	/**
 	 * Getting of base configuration parameter
 	 *
-	 * @param string		$item
+	 * @param string $item
 	 *
 	 * @return false|string
 	 */
@@ -136,8 +143,8 @@ AddEncoding gzip .html
 	/**
 	 * Setting of base configuration parameter (available only at object construction)
 	 *
-	 * @param string	$item
-	 * @param mixed		$value
+	 * @param string $item
+	 * @param mixed  $value
 	 */
 	function set ($item, $value) {
 		if (!$this->constructed) {
@@ -147,7 +154,7 @@ AddEncoding gzip .html
 	/**
 	 * Getting of base configuration parameter
 	 *
-	 * @param string		$item
+	 * @param string $item
 	 *
 	 * @return false|string
 	 */
@@ -157,8 +164,8 @@ AddEncoding gzip .html
 	/**
 	 * Setting of base configuration parameter (available only at object construction)
 	 *
-	 * @param string	$item
-	 * @param mixed		$value
+	 * @param string $item
+	 * @param mixed  $value
 	 */
 	function __set ($item, $value) {
 		$this->set($item, $value);
