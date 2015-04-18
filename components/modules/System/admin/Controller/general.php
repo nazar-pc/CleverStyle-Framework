@@ -396,7 +396,6 @@ trait general {
 						)
 					);
 					return;
-					break;
 				case 'remove_confirmed':
 					$theme = $_POST['remove_theme_confirmed'];
 					if ($theme == 'CleverStyle' || $theme == $Config->core['theme']) {

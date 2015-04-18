@@ -113,8 +113,8 @@ class DB {
 	/**
 	 * Get database instance for read queries or process implicit calls to methods of main database instance
 	 *
-	 * @param $method    $database_id
-	 * @param $arguments $mode
+	 * @param int|string $method
+	 * @param array      $arguments
 	 *
 	 * @return DB\_Abstract|False_class Returns instance of False_class on failure
 	 */

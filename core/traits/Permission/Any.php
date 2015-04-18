@@ -9,6 +9,9 @@ namespace	cs\Permission;
 use			cs\Cache;
 /**
  * Class Any with common methods for User and Group classes
+ *
+ * @method \cs\DB\_Abstract db()
+ * @method \cs\DB\_Abstract db_prime()
  */
 trait Any {
 	/**
@@ -108,12 +111,13 @@ trait Any {
 				}
 				unset($update);
 			}
+			/** @noinspection NotOptimalIfConditionsInspection */
 			if (!empty($data)) {
 				$insert	= [];
 				foreach ($data as $permission => $value) {
 					$insert[] = $id.', '.(int)$permission.', '.(int)(bool)$value;
 				}
-				unset($data, $permission, $value);
+				unset($permission, $value);
 				if (!empty($insert)) {
 					$insert	= implode('), (', $insert);
 					$return	= $return && $this->db_prime()->q(

@@ -186,7 +186,7 @@ class Language implements JsonSerializable {
 	/**
 	 * Get translation
 	 *
-	 * @param string       $item
+	 * @param bool|string  $item
 	 * @param false|string $language If specified - translation for specified language will be returned, otherwise for current
 	 *
 	 * @return string
