@@ -418,14 +418,15 @@ trait packages_manipulation {
 		$L            = Language::instance();
 		$Page         = Page::instance();
 		$check_result = false;
-		if (!in_array($Core->db_type, $db_support)) {
+		if (in_array($Core->db_type, $db_support)) {
+			$check_result = true;
+		} else {
 			foreach ($Config->db as $database) {
 				if (isset($database['type']) && in_array($database['type'], $db_support)) {
 					$check_result = true;
 					break;
 				}
 			}
-			unset($database);
 		}
 		if (!$check_result) {
 			$Page->warning(
