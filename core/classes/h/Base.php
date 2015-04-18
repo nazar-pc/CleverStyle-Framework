@@ -222,6 +222,8 @@ abstract class Base extends BananaHTML {
 		);
 	}
 	/**
+	 * @static
+	 *
 	 * @param array|string $in
 	 * @param array        $data
 	 * @param string       $type
@@ -245,6 +247,8 @@ abstract class Base extends BananaHTML {
 		return false;
 	}
 	/**
+	 * @static
+	 *
 	 * @param array  $item
 	 * @param string $button_class
 	 */

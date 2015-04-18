@@ -549,26 +549,23 @@ class Index {
 			'bottom' => ''
 		];
 		foreach ($blocks as $block) {
+			/**
+			 * If there is no need to show block or it was rendered by even handler - skip further processing
+			 */
 			if (
-				!$block['active'] ||
-				$block['start'] > time() ||
-				($block['expire'] && $block['expire'] < time()) ||
-				!(User::instance()->get_permission('Block', $block['index']))
-			) {
-				continue;
-			}
-			if (!Event::instance()->fire(
-				'System/Index/block_render',
-				[
-					'index'        => $block['index'],
-					'blocks_array' => &$blocks_array
-				]
-			)
+				!$this->should_block_be_rendered($block) ||
+				!Event::instance()->fire(
+					'System/Index/block_render',
+					[
+						'index'        => $block['index'],
+						'blocks_array' => &$blocks_array
+					]
+				)
 			) {
 				/**
 				 * Block was rendered by event handler
 				 */
-				return;
+				continue;
 			}
 			$block['title'] = $this->ml_process($block['title']);
 			switch ($block['type']) {
@@ -619,6 +616,28 @@ class Index {
 		$Page->Right .= $blocks_array['right'];
 		$Page->Bottom .= $blocks_array['bottom'];
 	}
+	/**
+	 * Check whether to render block or not based on its properties (active state, when start to show, when it expires and permissions)
+	 *
+	 * @param array $block
+	 *
+	 * @return bool
+	 */
+	protected function should_block_be_rendered ($block) {
+		return
+			$block['active'] &&
+			$block['start'] <= time() &&
+			(
+				!$block['expire'] ||
+				$block['expire'] >= time()
+			) &&
+			User::instance()->get_permission('Block', $block['index']);
+	}
+	/**
+	 * @param string $text
+	 *
+	 * @return string
+	 */
 	protected function ml_process ($text) {
 		return Text::instance()->process(Config::instance()->module('System')->db('texts'), $text, true);
 	}
