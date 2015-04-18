@@ -239,8 +239,8 @@ class Route {
 	 * @param array  $rc
 	 * @param bool   $HOME
 	 * @param Config $Config
-	 * @param bool   $ADMIN
-	 * @param bool   $API
+	 * @param string $ADMIN
+	 * @param string $API
 	 *
 	 * @return mixed|string
 	 */
