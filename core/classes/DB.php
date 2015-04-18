@@ -188,32 +188,9 @@ class DB {
 		if (isset($this->connections[$database_id])) {
 			return $this->connections[$database_id];
 		}
-		$Config = Config::instance();
-		$Core   = Core::instance();
-		$L      = Language::instance();
-		/**
-		 * Choose right mirror depending on system configuration
-		 */
-		$is_mirror    = false;
-		$mirror_index = $this->choose_mirror($database_id, $read_query);
-		if ($mirror_index === self::MASTER_MIRROR) {
-			if ($database_id == 0) {
-				$database_settings = [
-					'type'     => $Core->db_type,
-					'name'     => $Core->db_name,
-					'user'     => $Core->db_user,
-					'password' => $Core->db_password,
-					'host'     => $Core->db_host,
-					'charset'  => $Core->db_charset,
-					'prefix'   => $Core->db_prefix
-				];
-			} else {
-				$database_settings = $Config->db[$database_id];
-			}
-		} else {
-			$database_settings = $Config->db[$database_id]['mirrors'][$mirror_index];
-			$is_mirror         = true;
-		}
+		$Core = Core::instance();
+		$L    = Language::instance();
+		list($database_settings, $is_mirror) = $this->get_db_connection_settings($database_id, $read_query);
 		/**
 		 * Establish new connection
 		 *
@@ -252,6 +229,45 @@ class DB {
 			E_USER_ERROR
 		);
 		return False_class::instance();
+	}
+	/**
+	 * Get database connection settings, depending on query type and system configuration settings of main db or one of mirrors might be returned
+	 *
+	 * @param int  $database_id
+	 * @param bool $read_query
+	 *
+	 * @return array
+	 */
+	protected function get_db_connection_settings ($database_id, $read_query) {
+		$Config = Config::instance();
+		$Core   = Core::instance();
+		/**
+		 * Choose right mirror depending on system configuration
+		 */
+		$is_mirror    = false;
+		$mirror_index = $this->choose_mirror($database_id, $read_query);
+		if ($mirror_index === self::MASTER_MIRROR) {
+			if ($database_id == 0) {
+				$database_settings = [
+					'type'     => $Core->db_type,
+					'name'     => $Core->db_name,
+					'user'     => $Core->db_user,
+					'password' => $Core->db_password,
+					'host'     => $Core->db_host,
+					'charset'  => $Core->db_charset,
+					'prefix'   => $Core->db_prefix
+				];
+			} else {
+				$database_settings = $Config->db[$database_id];
+			}
+		} else {
+			$database_settings = $Config->db[$database_id]['mirrors'][$mirror_index];
+			$is_mirror         = true;
+		}
+		return [
+			$database_settings,
+			$is_mirror
+		];
 	}
 	/**
 	 * Choose index of DB mirrors among available
