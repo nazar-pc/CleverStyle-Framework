@@ -36,7 +36,7 @@ $ ->
 						</select>
 					</p>
 					<p class="cs-right">
-						<button class="uk-button">Save</button>
+						<button class="uk-button">#{L.content_save}</button>
 					</p>
 				</div></div>""")
 				key		= modal_body.find('[name=key]')
@@ -99,7 +99,7 @@ $ ->
 								</select>
 							</p>
 							<p class="cs-right">
-								<button class="uk-button">Save</button>
+								<button class="uk-button">#{L.content_save}</button>
 							</p>
 						</div></div>""")
 						title	= modal_body.find('[name=title]').val(data.title)

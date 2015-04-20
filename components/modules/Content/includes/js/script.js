@@ -20,7 +20,7 @@
     L = cs.Language;
     $('body').on('click', '.cs-content-add', function() {
       var content, key, modal_body, title, type;
-      modal_body = $("<div><div class=\"uk-form\">\n	<p>\n		<label>" + L.content_key + ":</label>\n		<input type=\"text\" name=\"key\">\n	</p>\n	<p>\n		<label>" + L.content_title + ":</label>\n		<input type=\"text\" name=\"title\">\n	</p>\n	<p>\n		<label>" + L.content_content + ":</label>\n		<textarea class=\"text\"></textarea>\n		<textarea class=\"html EDITOR\" id=\"cs-content-html-content\"></textarea>\n	</p>\n	<p>\n		<label>" + L.content_type + ":</label>\n		<select name=\"type\">\n			<option value=\"text\">text</option>\n			<option value=\"html\" id=\"cs-content-html-content\">html</option>\n		</select>\n	</p>\n	<p class=\"cs-right\">\n		<button class=\"uk-button\">Save</button>\n	</p>\n</div></div>");
+      modal_body = $("<div><div class=\"uk-form\">\n	<p>\n		<label>" + L.content_key + ":</label>\n		<input type=\"text\" name=\"key\">\n	</p>\n	<p>\n		<label>" + L.content_title + ":</label>\n		<input type=\"text\" name=\"title\">\n	</p>\n	<p>\n		<label>" + L.content_content + ":</label>\n		<textarea class=\"text\"></textarea>\n		<textarea class=\"html EDITOR\" id=\"cs-content-html-content\"></textarea>\n	</p>\n	<p>\n		<label>" + L.content_type + ":</label>\n		<select name=\"type\">\n			<option value=\"text\">text</option>\n			<option value=\"html\" id=\"cs-content-html-content\">html</option>\n		</select>\n	</p>\n	<p class=\"cs-right\">\n		<button class=\"uk-button\">" + L.content_save + "</button>\n	</p>\n</div></div>");
       key = modal_body.find('[name=key]');
       title = modal_body.find('[name=title]');
       content = modal_body.find('.text');
@@ -63,7 +63,7 @@
         type: 'get',
         success: function(data) {
           var content, modal_body, title, type;
-          modal_body = $("<div><div class=\"uk-form\">\n	<p>" + L.content_key + ": " + data.key + "</p>\n	<p>\n		<label>" + L.content_title + ":</label>\n		<input type=\"text\" name=\"title\">\n	</p>\n	<p>\n		<label>" + L.content_content + ":</label>\n		<textarea class=\"text\"></textarea>\n		<textarea class=\"html EDITOR\" id=\"cs-content-html-content\"></textarea>\n	</p>\n	<p>\n		<label>" + L.content_type + ":</label>\n		<select name=\"type\">\n			<option value=\"text\">text</option>\n			<option value=\"html\">html</option>\n		</select>\n	</p>\n	<p class=\"cs-right\">\n		<button class=\"uk-button\">Save</button>\n	</p>\n</div></div>");
+          modal_body = $("<div><div class=\"uk-form\">\n	<p>" + L.content_key + ": " + data.key + "</p>\n	<p>\n		<label>" + L.content_title + ":</label>\n		<input type=\"text\" name=\"title\">\n	</p>\n	<p>\n		<label>" + L.content_content + ":</label>\n		<textarea class=\"text\"></textarea>\n		<textarea class=\"html EDITOR\" id=\"cs-content-html-content\"></textarea>\n	</p>\n	<p>\n		<label>" + L.content_type + ":</label>\n		<select name=\"type\">\n			<option value=\"text\">text</option>\n			<option value=\"html\">html</option>\n		</select>\n	</p>\n	<p class=\"cs-right\">\n		<button class=\"uk-button\">" + L.content_save + "</button>\n	</p>\n</div></div>");
           title = modal_body.find('[name=title]').val(data.title);
           content = modal_body.find('textarea').val(data.content);
           modal_body.find("textarea:not(." + data.type + ")").hide();
