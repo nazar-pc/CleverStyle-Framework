@@ -147,6 +147,7 @@ class Hybrid_Endpoint {
 
 			$hauth->adapter->loginBegin();
 		}
+		catch ( \ExitException $e) {}
 		catch ( Exception $e ) {
 			Hybrid_Logger::error( "Exception:" . $e->getMessage(), $e );
 			Hybrid_Error::setError( $e->getMessage(), $e->getCode(), $e->getTraceAsString(), $e->getPrevious() );
