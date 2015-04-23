@@ -60,7 +60,6 @@ class Route {
 	 */
 	protected function construct () {
 		$Config = Config::instance();
-		$L      = Language::instance();
 		/**
 		 * @var _SERVER $_SERVER
 		 */
