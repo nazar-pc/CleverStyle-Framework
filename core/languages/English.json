@@ -645,12 +645,8 @@
 	"l_Sat"			: "Sat",
 
 //Error strings
-	"page_generation_aborted"	: "Page generation aborted",
-	"of_file"					: "of file",
-	"error"						: "Error",
-	"error_core_db"				: "Error connecting to core DB of site",
-	"error_db"					: "Error connecting to DB",
-	"mcrypt_warning"			: "WARNIING: library mcrypt not found, the site will not work with the maximum level of security, strongly recommended to install this library.",
-	"mirror_not_allowed"		: "Mirror is not allowed",
-	"error_storage"				: "Error connecting to storage"
+	"of_file"			: "of file",
+	"error"				: "Error",
+	"mcrypt_warning"	: "WARNIING: library mcrypt not found, the site will not work with the maximum level of security, strongly recommended to install this library.",
+	"error_storage"		: "Error connecting to storage"
 }

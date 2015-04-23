@@ -110,7 +110,7 @@ class Storage {
 			unset($this->$connection);
 			$this->failed_connections[$connection] = "$connection/$storage[host]/$storage[connection]";
 			unset($storage);
-			trigger_error(Language::instance()->error_storage.' '.$this->failed_connections[$connection], E_USER_WARNING);
+			trigger_error('Error connecting to storage '.$this->failed_connections[$connection], E_USER_WARNING);
 			$return			= False_class::instance();
 			$return->error	= 'Connection failed';
 			return $return;

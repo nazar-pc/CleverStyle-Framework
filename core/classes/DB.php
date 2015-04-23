@@ -189,7 +189,6 @@ class DB {
 			return $this->connections[$database_id];
 		}
 		$Core = Core::instance();
-		$L    = Language::instance();
 		list($database_settings, $is_mirror) = $this->get_db_connection_settings($database_id, $read_query);
 		/**
 		 * Establish new connection
@@ -205,7 +204,7 @@ class DB {
 			$database_settings['charset'],
 			$database_settings['prefix']
 		);
-		$connection_name = ($database_id == 0 ? "$L->core_db ($Core->db_type)" : $database_id)."/$database_settings[host]/$database_settings[type]";
+		$connection_name = ($database_id == 0 ? "Core DB ($Core->db_type)" : $database_id)."/$database_settings[host]/$database_settings[type]";
 		unset($engine_class, $database_settings);
 		/**
 		 * If successfully - add connection to the list of success connections and return instance of DB engine object
@@ -225,7 +224,7 @@ class DB {
 		 */
 		$this->failed_connections[$database_id] = $connection_name;
 		trigger_error(
-			$database_id == 0 ? $L->error_core_db : "$L->error_db $connection_name",
+			$database_id == 0 ? 'Error connecting to core DB of site' : "Error connecting to DB $connection_name",
 			E_USER_ERROR
 		);
 		return False_class::instance();
