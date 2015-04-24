@@ -1,12 +1,12 @@
 <?php
 /**
- * @package		Static Pages
- * @category	modules
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   Static Pages
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
-namespace	cs\modules\Static_pages;
+namespace cs\modules\Static_pages;
 use
 	cs\Cache,
 	cs\Event,
@@ -18,20 +18,20 @@ Event::instance()->on(
 			return true;
 		}
 		time_limit_pause();
-		$Static_pages	= Static_pages::instance();
-		$structure		= $Static_pages->get_structure();
+		$Pages      = Pages::instance();
+		$Categories = Categories::instance();
+		$structure  = $Pages->get_structure();
 		while (!empty($structure['categories'])) {
 			foreach ($structure['categories'] as $category) {
-				$Static_pages->del_category($category['id']);
+				$Categories->del($category['id']);
 			}
-			$structure	= $Static_pages->get_structure();
+			$structure = $Pages->get_structure();
 		}
 		unset($category);
 		if (!empty($structure['pages'])) {
 			foreach ($structure['pages'] as $page) {
-				$Static_pages->del($page);
+				$Pages->del($page);
 			}
-			unset($page);
 		}
 		unset(
 			$structure,

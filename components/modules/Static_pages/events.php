@@ -1,12 +1,12 @@
 <?php
 /**
- * @package		Static Pages
- * @category	modules
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   Static Pages
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
-namespace	cs\modules\Static_pages;
+namespace cs\modules\Static_pages;
 use
 	cs\Config,
 	cs\Event;
@@ -20,7 +20,7 @@ Event::instance()
 			) {
 				return;
 			}
-			$rc						= explode('/', $data['rc']);
+			$rc = explode('/', $data['rc']);
 			switch ($rc[0]) {
 				case 'admin':
 				case 'api':
@@ -30,20 +30,18 @@ Event::instance()
 						$rc = ['index'];
 					}
 			}
-			$Static_pages			= Static_pages::instance();
-			$structure				= $Static_pages->get_structure();
-			$categories				= array_slice($rc, 0, -1);
+			$structure  = Pages::instance()->get_structure();
+			$categories = array_slice($rc, 0, -1);
 			if (!empty($categories)) {
 				foreach ($categories as $category) {
 					if (isset($structure['categories'][$category])) {
-						$structure				= $structure['categories'][$category];
+						$structure = $structure['categories'][$category];
 					}
 				}
-				unset($category);
 			}
 			unset($categories);
 			if (isset($structure['pages'][array_slice($rc, -1)[0]])) {
-				$data['rc']	= 'Static_pages/'.$structure['pages'][array_slice($rc, -1)[0]];
+				$data['rc'] = 'Static_pages/'.$structure['pages'][array_slice($rc, -1)[0]];
 			}
 		}
 	)

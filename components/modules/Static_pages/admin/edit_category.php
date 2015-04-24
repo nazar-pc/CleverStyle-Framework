@@ -16,7 +16,7 @@ use
 $Index = Index::instance();
 $L     = Language::instance();
 $id    = (int)Route::instance()->route[1];
-$data  = Static_pages::instance()->get_category($id);
+$data  = Categories::instance()->get($id);
 Page::instance()->title($L->editing_of_page_category($data['title']));
 $Index->cancel_button_back = true;
 $Index->action             = 'admin/Static_pages';
