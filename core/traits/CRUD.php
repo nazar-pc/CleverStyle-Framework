@@ -34,7 +34,7 @@ trait CRUD {
 		$is_multilingual = $this->is_multilingual();
 		array_walk(
 			$arguments,
-			function (&$argument, $item) use ($data_model, $arguments, $id, $is_multilingual, &$update_needed) {
+			function (&$argument, $item) use ($data_model, $id, $is_multilingual, &$update_needed) {
 				$model = $data_model[$item];
 				if (is_callable($model)) {
 					$argument = $model($argument);
