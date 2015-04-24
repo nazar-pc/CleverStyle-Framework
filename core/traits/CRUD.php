@@ -16,6 +16,7 @@ use
  *
  * @property array  $data_model
  * @property string $data_model_ml_group
+ * @property string $data_model_files_tag_prefix
  * @property string $table
  */
 trait CRUD {
@@ -29,25 +30,26 @@ trait CRUD {
 	 *                                           after creation (there is no id before creation)
 	 */
 	private function crud_arguments_preparation ($data_model, &$arguments, $id = false, &$update_needed = false) {
-		$arguments = array_combine(array_keys($data_model), $arguments);
+		$arguments       = array_combine(array_keys($data_model), $arguments);
+		$is_multilingual = $this->is_multilingual();
 		array_walk(
 			$arguments,
-			function (&$argument, $item) use ($data_model, $arguments, $id, &$update_needed) {
+			function (&$argument, $item) use ($data_model, $arguments, $id, $is_multilingual, &$update_needed) {
 				$model = $data_model[$item];
 				if (is_callable($model)) {
 					$argument = $model($argument);
 					return;
 				}
-				$model        = explode(':', $model, 2);
-				$type         = $model[0];
-				$multilingual = false;
+				$model              = explode(':', $model, 2);
+				$type               = $model[0];
+				$multilingual_field = false;
 				/**
 				 * If field is multilingual
 				 */
 				if ($type == 'ml') {
-					$multilingual = true;
-					$model        = explode(':', $model[1], 2);
-					$type         = $model[0];
+					$multilingual_field = true;
+					$model              = explode(':', $model[1], 2);
+					$type               = $model[0];
 				}
 				if (isset($model[1])) {
 					$format = $model[1];
@@ -106,7 +108,7 @@ trait CRUD {
 				 * If field is multilingual - handle multilingual storing of value automatically
 				 */
 				/** @noinspection NotOptimalIfConditionsInspection */
-				if ($multilingual && isset($this->data_model_ml_group) && $this->data_model_ml_group) {
+				if ($multilingual_field && $is_multilingual) {
 					if ($id !== false) {
 						$argument = Text::instance()->set($this->cdb(), "$this->data_model_ml_group/$item", $id, $argument);
 					} else {
@@ -115,6 +117,18 @@ trait CRUD {
 				}
 			}
 		);
+	}
+	/**
+	 * @return bool
+	 */
+	private function is_multilingual () {
+		return isset($this->data_model_ml_group) && $this->data_model_ml_group;
+	}
+	/**
+	 * @return bool
+	 */
+	private function with_files_support () {
+		return isset($this->data_model_files_tag_prefix) && $this->data_model_files_tag_prefix;
 	}
 	/**
 	 * Create item
@@ -162,12 +176,13 @@ trait CRUD {
 			return false;
 		}
 		$id = $insert_id !== false ? $insert_id : $this->db_prime()->id();
+		$this->update_files_tags($id, [], $arguments);
 		/**
 		 * If on creation request without specified primary key and multilingual fields present - update needed
 		 * after creation (there is no id before creation)
 		 */
 		if ($update_needed) {
-			$this->update($table, $data_model, array_merge([$id], $arguments));
+			$this->update_internal($table, $data_model, array_merge([$id], $arguments), false);
 		}
 		return $id;
 	}
@@ -227,7 +242,7 @@ trait CRUD {
 		 * If there are multilingual fields - handle multilingual getting of fields automatically
 		 */
 		/** @noinspection NotOptimalIfConditionsInspection */
-		if ($data && isset($this->data_model_ml_group) && $this->data_model_ml_group) {
+		if ($data && $this->is_multilingual()) {
 			/** @noinspection ForeachOnArrayComponentsInspection */
 			foreach (array_keys($this->data_model) as $field) {
 				if (strpos($this->data_model[$field], 'ml:') === 0) {
@@ -268,12 +283,16 @@ trait CRUD {
 	 * @param string              $table
 	 * @param callable[]|string[] $data_model
 	 * @param array               $arguments
+	 * @param bool                $files_update
 	 *
 	 * @return bool
 	 */
-	private function update_internal ($table, $data_model, $arguments) {
+	private function update_internal ($table, $data_model, $arguments, $files_update = true) {
 		$id = array_shift($arguments);
 		self::crud_arguments_preparation(array_slice($data_model, 1), $arguments, $id);
+		if ($files_update) {
+			$data_before = $this->read_internal($table, $data_model, $id);
+		}
 		$columns      = implode(
 			',',
 			array_map(
@@ -285,13 +304,68 @@ trait CRUD {
 		);
 		$arguments[]  = $id;
 		$first_column = array_keys($data_model)[0];
-		return (bool)$this->db_prime()->q(
+		if (!$this->db_prime()->q(
 			"UPDATE `$table`
 			SET $columns
 			WHERE `$first_column` = '%s'
 			LIMIT 1",
 			$arguments
-		);
+		)
+		) {
+			return false;
+		}
+		if ($files_update) {
+			/** @noinspection PhpUndefinedVariableInspection */
+			$this->update_files_tags($id, $data_before, $arguments);
+		}
+		return true;
+	}
+	/**
+	 * @param int|string     $id
+	 * @param int[]|string[] $data_before
+	 * @param int[]|string[] $data_after
+	 */
+	private function update_files_tags ($id, $data_before, $data_after) {
+		if (!$this->with_files_support()) {
+			return;
+		}
+		$prefix    = $this->data_model_files_tag_prefix;
+		$clang     = Language::instance()->clang;
+		$tag       = "$prefix/$id/$clang";
+		$old_files = $this->find_urls($data_before ?: []);
+		$new_files = $this->find_urls($data_after ?: []);
+		if ($old_files || $new_files) {
+			foreach (array_diff($old_files, $new_files) as $file) {
+				Event::instance()->fire(
+					'System/upload_files/del_tag',
+					[
+						'tag' => $tag,
+						'url' => $file
+					]
+				);
+			}
+			foreach (array_diff($new_files, $old_files) as $file) {
+				Event::instance()->fire(
+					'System/upload_files/add_tag',
+					[
+						'tag' => $tag,
+						'url' => $file
+					]
+				);
+			}
+		}
+	}
+	/**
+	 * Find urls (any actually) in attributes values (wrapped with `"`, other quotes are not supported)
+	 *
+	 * @param string[] $data
+	 *
+	 * @return string[]
+	 */
+	private function find_urls ($data) {
+		return preg_match_all('/"(http[s]?:\/\/.+)"/Uims', implode(' ', $data), $files)
+			? array_unique($files[1])
+			: [];
 	}
 	/**
 	 * @deprecated
@@ -330,7 +404,7 @@ trait CRUD {
 	private function delete_internal ($table, $data_model, $id) {
 		$id           = (array)$id;
 		$result       = true;
-		$multilingual = isset($this->data_model_ml_group) && $this->data_model_ml_group;
+		$multilingual = $this->is_multilingual();
 		$first_column = array_keys($data_model)[0];
 		foreach ($id as $i) {
 			$result =
@@ -352,8 +426,23 @@ trait CRUD {
 					}
 				}
 			}
+			$this->delete_files_tags($i);
 		}
 		return $result;
+	}
+	/**
+	 * @param int|string $id
+	 */
+	private function delete_files_tags ($id) {
+		if (!$this->with_files_support()) {
+			return;
+		}
+		Event::instance()->fire(
+			'System/upload_files/del_tag',
+			[
+				'tag' => "$this->data_model_files_tag_prefix/$id%"
+			]
+		);
 	}
 	/**
 	 * @deprecated
