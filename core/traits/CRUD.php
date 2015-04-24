@@ -81,7 +81,12 @@ trait CRUD {
 						break;
 					case 'text':
 					case 'html':
-						$argument = xap($argument, $model[0] == 'text' ? 'text' : true);
+					case 'html_iframe':
+						$argument = xap(
+							$argument,
+							$type == 'text' ? 'text' : true,
+							$type == 'html_iframe'
+						);
 						/**
 						 * Truncation
 						 */
