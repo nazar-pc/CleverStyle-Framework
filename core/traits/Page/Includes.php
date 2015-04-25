@@ -648,21 +648,14 @@ trait Includes {
 					$functionalities
 				);
 			}
-			if (!file_exists(MODULES."/$module_name/includes/map.json")) {
-				continue;
+			if (file_exists(MODULES."/$module_name/includes/map.json")) {
+				$this->process_map(
+					file_get_json_nocomments(MODULES."/$module_name/includes/map.json"),
+					MODULES."/$module_name/includes",
+					$includes_map,
+					$all_includes
+				);
 			}
-			foreach (file_get_json_nocomments(MODULES."/$module_name/includes/map.json") as $path => $files) {
-				foreach ($files as $file) {
-					$extension                         = file_extension($file);
-					$file                              = MODULES."/$module_name/includes/$extension/$file";
-					$includes_map[$path][$extension][] = $file;
-					$all_includes[$extension]          = array_diff(
-						$all_includes[$extension],
-						[$file]
-					);
-				}
-			}
-			unset($path, $files, $file);
 		}
 		unset($module_name, $module_data);
 		foreach ($Config->components['plugins'] as $plugin_name) {
@@ -673,29 +666,21 @@ trait Includes {
 					$functionalities
 				);
 			}
-			if (!file_exists(PLUGINS."/$plugin_name/includes/map.json")) {
-				continue;
+			if (file_exists(PLUGINS."/$plugin_name/includes/map.json")) {
+				$this->process_map(
+					file_get_json_nocomments(PLUGINS."/$plugin_name/includes/map.json"),
+					PLUGINS."/$plugin_name/includes",
+					$includes_map,
+					$all_includes
+				);
 			}
-			foreach (file_get_json_nocomments(PLUGINS."/$plugin_name/includes/map.json") as $path => $files) {
-				foreach ($files as $file) {
-					$extension                         = file_extension($file);
-					$file                              = PLUGINS."/$plugin_name/includes/$extension/$file";
-					$includes_map[$path][$extension][] = $file;
-					$all_includes[$extension]          = array_diff(
-						$all_includes[$extension],
-						[$file]
-					);
-				}
-			}
-			unset($path, $files, $file);
 		}
 		unset($plugin_name);
 		/**
 		 * For consistency
 		 */
 		$includes_map[''] = $all_includes;
-		unset($all_includes);
-		$dependencies = $this->normalize_dependencies($dependencies, $functionalities);
+		$dependencies     = $this->normalize_dependencies($dependencies, $functionalities);
 		/**
 		 * Clean dependencies without files
 		 */
@@ -708,6 +693,7 @@ trait Includes {
 			unset($dependency);
 		}
 		unset($depends_on, $index);
+		$dependencies = array_map('array_values', $dependencies);
 	}
 	/**
 	 * Process meta information and corresponding entries to dependencies and functionalities
@@ -756,6 +742,35 @@ trait Includes {
 			unset($p);
 		}
 	}
+	/**
+	 * Process map structure, fill includes map and remove files from list of all includes (remaining files will be included on all pages)
+	 *
+	 * @param array  $map
+	 * @param string $includes_dir
+	 * @param array  $includes_map
+	 * @param array  $all_includes
+	 */
+	protected function process_map ($map, $includes_dir, &$includes_map, &$all_includes) {
+		foreach ($map as $path => $files) {
+			foreach ($files as $file) {
+				$extension                         = file_extension($file);
+				$file                              = "$includes_dir/$extension/$file";
+				$includes_map[$path][$extension][] = $file;
+				$all_includes[$extension]          = array_diff(
+					$all_includes[$extension],
+					[$file]
+				);
+			}
+		}
+	}
+	/**
+	 * Replace functionalities by real packages names, take into account recursive dependencies
+	 *
+	 * @param array $dependencies
+	 * @param array $functionalities
+	 *
+	 * @return array
+	 */
 	protected function normalize_dependencies ($dependencies, $functionalities) {
 		/**
 		 * First of all remove packages without any dependencies
@@ -792,7 +807,7 @@ trait Includes {
 		}
 		unset($depends_on, $dependency);
 		/**
-		 * Third round, process cyclic dependencies
+		 * Third round, process recursive dependencies
 		 */
 		foreach ($dependencies as &$depends_on) {
 			foreach ($depends_on as &$dependency) {
