@@ -618,8 +618,8 @@ trait Includes {
 		/**
 		 * Get all includes
 		 */
-		$all_includes    = $this->get_includes_list(true, $with_disabled);
-		$includes_map    = [];
+		$all_includes = $this->get_includes_list(true, $with_disabled);
+		$includes_map = [];
 		/**
 		 * Array [package => [list of packages it depends on]]
 		 */
@@ -642,7 +642,7 @@ trait Includes {
 				continue;
 			}
 			if (file_exists(MODULES."/$module_name/meta.json")) {
-				$this->process_dependencies(
+				$this->process_meta(
 					file_get_json(MODULES."/$module_name/meta.json"),
 					$dependencies,
 					$functionalities
@@ -667,7 +667,7 @@ trait Includes {
 		unset($module_name, $module_data);
 		foreach ($Config->components['plugins'] as $plugin_name) {
 			if (file_exists(PLUGINS."/$plugin_name/meta.json")) {
-				$this->process_dependencies(
+				$this->process_meta(
 					file_get_json(PLUGINS."/$plugin_name/meta.json"),
 					$dependencies,
 					$functionalities
@@ -695,40 +695,7 @@ trait Includes {
 		 */
 		$includes_map[''] = $all_includes;
 		unset($all_includes);
-		/**
-		 * Components can depend on each other - we need to find all dependencies and replace aliases by real names of components
-		 */
-		foreach ($dependencies as $component_name => &$depends_on) {
-			foreach ($depends_on as $index => &$dependency) {
-				if ($dependency == 'System') {
-					continue;
-				}
-				if (isset($functionalities[$dependency])) {
-					$dependency = $functionalities[$dependency];
-				}
-				/**
-				 * If dependency have its own dependencies, that are nor present in current component - add them and mark, that it is necessary
-				 * to iterate through array again
-				 */
-				if (
-					isset($dependencies[$dependency]) &&
-					$dependencies[$dependency] &&
-					array_diff($dependencies[$dependency], $depends_on)
-				) {
-					foreach (array_diff($dependencies[$dependency], $depends_on) as $new_dependency) {
-						$depends_on[] = $new_dependency;
-					}
-					unset($new_dependency);
-				}
-			}
-			unset($dependency);
-			if (empty($depends_on)) {
-				unset($dependencies[$component_name]);
-			} else {
-				$depends_on = array_unique($depends_on);
-			}
-		}
-		unset($functionalities, $component_name, $depends_on, $index);
+		$dependencies = $this->normalize_dependencies($dependencies, $functionalities);
 		/**
 		 * Clean dependencies without files
 		 */
@@ -749,14 +716,14 @@ trait Includes {
 	 * @param array $dependencies
 	 * @param array $functionalities
 	 */
-	protected function process_dependencies ($meta, &$dependencies, &$functionalities) {
+	protected function process_meta ($meta, &$dependencies, &$functionalities) {
 		$package = $meta['package'];
 		if (isset($meta['require'])) {
 			foreach ((array)$meta['require'] as $r) {
 				/**
 				 * Get only name of package or functionality
 				 */
-				$r = preg_split('/[=<>]/', $r, 2)[0];
+				$r                        = preg_split('/[=<>]/', $r, 2)[0];
 				$dependencies[$package][] = $r;
 			}
 		}
@@ -765,7 +732,7 @@ trait Includes {
 				/**
 				 * Get only name of package or functionality
 				 */
-				$o = preg_split('/[=<>]/', $o, 2)[0];
+				$o                        = preg_split('/[=<>]/', $o, 2)[0];
 				$dependencies[$package][] = $o;
 			}
 			unset($o);
@@ -788,6 +755,55 @@ trait Includes {
 			}
 			unset($p);
 		}
+	}
+	protected function normalize_dependencies ($dependencies, $functionalities) {
+		/**
+		 * First of all remove packages without any dependencies
+		 */
+		$dependencies = array_filter($dependencies);
+		/**
+		 * First round, process aliases among keys
+		 */
+		foreach (array_keys($dependencies) as $d) {
+			if (isset($functionalities[$d])) {
+				$package = $functionalities[$d];
+				/**
+				 * Add dependencies to existing package dependencies
+				 */
+				foreach ($dependencies[$d] as $dependency) {
+					$dependencies[$package][] = $dependency;
+				}
+				/**
+				 * Drop alias
+				 */
+				unset($dependencies[$d]);
+			}
+		}
+		unset($d, $dependency);
+		/**
+		 * Second round, process aliases among dependencies
+		 */
+		foreach ($dependencies as &$depends_on) {
+			foreach ($depends_on as &$dependency) {
+				if (isset($functionalities[$dependency])) {
+					$dependency = $functionalities[$dependency];
+				}
+			}
+		}
+		unset($depends_on, $dependency);
+		/**
+		 * Third round, process cyclic dependencies
+		 */
+		foreach ($dependencies as &$depends_on) {
+			foreach ($depends_on as &$dependency) {
+				if ($dependency != 'System' && isset($dependencies[$dependency])) {
+					foreach (array_diff($dependencies[$dependency], $depends_on) as $new_dependency) {
+						$depends_on[] = $new_dependency;
+					}
+				}
+			}
+		}
+		return array_map('array_unique', $dependencies);
 	}
 	/**
 	 * Creates cached version of given js and css files.<br>
