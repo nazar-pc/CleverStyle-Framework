@@ -4,6 +4,7 @@
     <option name="myLocal" value="true" />
     <inspection_tool class="AccessModifierPresentedInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="AdditionOperationOnArraysInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="AlterInForeachInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ArrayTypeOfParameterByDefaultValueInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CallableParameterUseCaseInTypeContextInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ClassMethodNameMatchesFieldNameInspection" enabled="false" level="WARNING" enabled_by_default="false" />
