@@ -618,10 +618,13 @@ trait Includes {
 		/**
 		 * Get all includes
 		 */
-		$all_includes         = $this->get_includes_list(true, $with_disabled);
-		$includes_map         = [];
-		$dependencies         = [];
-		$dependencies_aliases = [];
+		$all_includes    = $this->get_includes_list(true, $with_disabled);
+		$includes_map    = [];
+		/**
+		 * Array [package => [list of packages it depends on]]
+		 */
+		$dependencies    = [];
+		$functionalities = [];
 		/**
 		 * According to components's maps some files should be included only on specific pages.
 		 * Here we read this rules, and remove from whole includes list such items, that should be included only on specific pages.
@@ -639,35 +642,11 @@ trait Includes {
 				continue;
 			}
 			if (file_exists(MODULES."/$module_name/meta.json")) {
-				$meta = file_get_json_nocomments(MODULES."/$module_name/meta.json");
-				if (isset($meta['require'])) {
-					foreach ((array)$meta['require'] as $r) {
-						preg_match('/([^=<>]+)/', $r, $r);
-						$dependencies[$module_name][] = $r[0];
-					}
-					unset($r);
-				}
-				if (isset($meta['optional'])) {
-					foreach ((array)$meta['optional'] as $o) {
-						$dependencies[$module_name][] = $o;
-					}
-					unset($o);
-				}
-				if (isset($meta['provide'])) {
-					foreach ((array)$meta['provide'] as $p) {
-						/**
-						 * If provides sub-functionality of other component (Blog/post_patch) - inverse "providing" to "dependency"
-						 */
-						if (strpos($p, '/') !== false) {
-							$p                  = explode('/', $p)[0];
-							$dependencies[$p][] = $module_name;
-						} else {
-							$dependencies_aliases[$p] = $module_name;
-						}
-					}
-					unset($p);
-				}
-				unset($meta);
+				$this->process_dependencies(
+					file_get_json(MODULES."/$module_name/meta.json"),
+					$dependencies,
+					$functionalities
+				);
 			}
 			if (!file_exists(MODULES."/$module_name/includes/map.json")) {
 				continue;
@@ -688,35 +667,11 @@ trait Includes {
 		unset($module_name, $module_data);
 		foreach ($Config->components['plugins'] as $plugin_name) {
 			if (file_exists(PLUGINS."/$plugin_name/meta.json")) {
-				$meta = file_get_json_nocomments(PLUGINS."/$plugin_name/meta.json");
-				if (isset($meta['require'])) {
-					foreach ((array)$meta['require'] as $r) {
-						preg_match('/([^=<>]+)/', $r, $r);
-						$dependencies[$plugin_name][] = $r[0];
-					}
-					unset($r);
-				}
-				if (isset($meta['optional'])) {
-					foreach ((array)$meta['optional'] as $o) {
-						$dependencies[$plugin_name][] = $o;
-					}
-					unset($o);
-				}
-				if (isset($meta['provide'])) {
-					foreach ((array)$meta['provide'] as $p) {
-						/**
-						 * If provides sub-functionality of other component (Blog/post_patch) - inverse "providing" to "dependency"
-						 */
-						if (strpos($p, '/') !== false) {
-							$p                  = explode('/', $p)[0];
-							$dependencies[$p][] = $plugin_name;
-						} else {
-							$dependencies_aliases[$p] = $plugin_name;
-						}
-					}
-					unset($p);
-				}
-				unset($meta);
+				$this->process_dependencies(
+					file_get_json(PLUGINS."/$plugin_name/meta.json"),
+					$dependencies,
+					$functionalities
+				);
 			}
 			if (!file_exists(PLUGINS."/$plugin_name/includes/map.json")) {
 				continue;
@@ -748,8 +703,8 @@ trait Includes {
 				if ($dependency == 'System') {
 					continue;
 				}
-				if (isset($dependencies_aliases[$dependency])) {
-					$dependency = $dependencies_aliases[$dependency];
+				if (isset($functionalities[$dependency])) {
+					$dependency = $functionalities[$dependency];
 				}
 				/**
 				 * If dependency have its own dependencies, that are nor present in current component - add them and mark, that it is necessary
@@ -773,7 +728,7 @@ trait Includes {
 				$depends_on = array_unique($depends_on);
 			}
 		}
-		unset($dependencies_aliases, $component_name, $depends_on, $index);
+		unset($functionalities, $component_name, $depends_on, $index);
 		/**
 		 * Clean dependencies without files
 		 */
@@ -786,6 +741,53 @@ trait Includes {
 			unset($dependency);
 		}
 		unset($depends_on, $index);
+	}
+	/**
+	 * Process meta information and corresponding entries to dependencies and functionalities
+	 *
+	 * @param array $meta
+	 * @param array $dependencies
+	 * @param array $functionalities
+	 */
+	protected function process_dependencies ($meta, &$dependencies, &$functionalities) {
+		$package = $meta['package'];
+		if (isset($meta['require'])) {
+			foreach ((array)$meta['require'] as $r) {
+				/**
+				 * Get only name of package or functionality
+				 */
+				$r = preg_split('/[=<>]/', $r, 2)[0];
+				$dependencies[$package][] = $r;
+			}
+		}
+		if (isset($meta['optional'])) {
+			foreach ((array)$meta['optional'] as $o) {
+				/**
+				 * Get only name of package or functionality
+				 */
+				$o = preg_split('/[=<>]/', $o, 2)[0];
+				$dependencies[$package][] = $o;
+			}
+			unset($o);
+		}
+		if (isset($meta['provide'])) {
+			foreach ((array)$meta['provide'] as $p) {
+				/**
+				 * If provides sub-functionality for other component (for instance, `Blog/post_patch`) - inverse "providing" to "dependency"
+				 * Otherwise it is just functionality alias to package name
+				 */
+				if (strpos($p, '/') !== false) {
+					/**
+					 * Get name of package or functionality
+					 */
+					$p                  = explode('/', $p)[0];
+					$dependencies[$p][] = $package;
+				} else {
+					$functionalities[$p] = $package;
+				}
+			}
+			unset($p);
+		}
 	}
 	/**
 	 * Creates cached version of given js and css files.<br>
