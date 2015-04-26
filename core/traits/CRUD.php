@@ -294,10 +294,10 @@ trait CRUD {
 	 */
 	private function update_internal ($table, $data_model, $arguments, $files_update = true) {
 		$id = array_shift($arguments);
-		self::crud_arguments_preparation(array_slice($data_model, 1), $arguments, $id);
 		if ($files_update) {
 			$data_before = $this->read_internal($table, $data_model, $id);
 		}
+		self::crud_arguments_preparation(array_slice($data_model, 1), $arguments, $id);
 		$columns      = implode(
 			',',
 			array_map(
@@ -321,7 +321,7 @@ trait CRUD {
 		}
 		if ($files_update) {
 			/** @noinspection PhpUndefinedVariableInspection */
-			$this->update_files_tags($id, $data_before, $arguments);
+			$this->update_files_tags($id, $data_before, func_get_args()[2]);
 		}
 		return true;
 	}
