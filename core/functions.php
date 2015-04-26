@@ -631,55 +631,50 @@ function pages_buttons ($page, $total, $url = false) {
 	}
 	return h::{'button.uk-button[name=page]'}($output);
 }
+
 /**
  * Checks whether specified functionality available or not
  *
- * @param string|string[]	$functionality	One functionality or array of them
+ * @param string|string[] $functionality One functionality or array of them
  *
- * @return bool								<i>true</i> if all functionality available, <i>false</i> otherwise
+ * @return bool `true` if all functionality available, `false` otherwise
  */
 function functionality ($functionality) {
 	if (is_array($functionality)) {
-		$result	= true;
+		$result = true;
 		foreach ($functionality as $f) {
-			$result	= $result && functionality($f);
+			$result = $result && functionality($f);
 		}
 		return $result;
 	}
-	$all	= Cache::instance()->get("functionality", function () {
-		$functionality	= [];
-		$components		= Config::instance()->components;
-		foreach ($components['modules'] as $module => $module_data) {
-			if ($module_data['active'] != 1 || !file_exists(MODULES."/$module/meta.json")) {
-				continue;
+	$all = Cache::instance()->get(
+		"functionality",
+		function () {
+			$functionality = [];
+			$components    = Config::instance()->components;
+			foreach ($components['modules'] as $module => $module_data) {
+				if ($module_data['active'] != 1 || !file_exists(MODULES."/$module/meta.json")) {
+					continue;
+				}
+				$functionality[] = [$module];
+				$meta            = file_get_json(MODULES."/$module/meta.json");
+				if (isset($meta['provide'])) {
+					$functionality[] = (array)$meta['provide'];
+				}
 			}
-			$meta			= file_get_json(MODULES."/$module/meta.json");
-			if (!isset($meta['provide'])) {
-				continue;
+			foreach ($components['plugins'] as $plugin) {
+				if (!file_exists(PLUGINS."/$plugin/meta.json")) {
+					continue;
+				}
+				$functionality[] = [$plugin];
+				$meta            = file_get_json(PLUGINS."/$plugin/meta.json");
+				if (isset($meta['provide'])) {
+					$functionality[] = (array)$meta['provide'];
+				}
 			}
-			/** @noinspection SlowArrayOperationsInLoopInspection */
-			$functionality	= array_merge(
-				$functionality,
-				(array)$meta['provide']
-			);
+			return call_user_func_array('array_merge', $functionality);
 		}
-		unset($module, $module_data, $meta);
-		foreach ($components['plugins'] as $plugin) {
-			if (!file_exists(PLUGINS."/$plugin/meta.json")) {
-				continue;
-			}
-			$meta			= file_get_json(PLUGINS."/$plugin/meta.json");
-			if (!isset($meta['provide'])) {
-				continue;
-			}
-			/** @noinspection SlowArrayOperationsInLoopInspection */
-			$functionality	= array_merge(
-				$functionality,
-				(array)$meta['provide']
-			);
-		}
-		return $functionality;
-	});
+	);
 	return in_array($functionality, $all);
 }
 /**
