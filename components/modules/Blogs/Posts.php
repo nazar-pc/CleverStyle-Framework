@@ -12,9 +12,8 @@ use
 	cs\Cache\Prefix,
 	cs\Config,
 	cs\Language,
-	cs\Text,
 	cs\User,
-	cs\DB\Accessor,
+	cs\CRUD,
 	cs\Singleton,
 	cs\modules\Json_ld\Json_ld;
 
@@ -23,9 +22,22 @@ use
  */
 class Posts {
 	use
-		Accessor,
+		CRUD,
 		Singleton;
-
+	protected $data_model                  = [
+		'id'      => 'int:0',
+		'user'    => 'int:0',
+		'date'    => 'int:0',
+		'title'   => 'ml:text',
+		'path'    => 'ml:text',
+		'content' => 'ml:html',
+		'draft'   => 'int:0..1'
+	];
+	protected $table                       = '[prefix]blogs_posts';
+	protected $data_model_ml_group         = 'Blogs/posts';
+	protected $data_model_files_tag_prefix = 'Blogs/posts';
+	protected $table_sections              = '[prefix]blogs_posts_sections';
+	protected $table_tags                  = '[prefix]blogs_posts_tags';
 	/**
 	 * @var Prefix
 	 */
@@ -33,6 +45,9 @@ class Posts {
 
 	protected function construct () {
 		$this->cache = new Prefix('Blogs');
+		if (Config::instance()->module('Blogs')->allow_iframes_without_content) {
+			$this->data_model['content'] = 'ml:html_iframe';
+		}
 	}
 	/**
 	 * Returns database index
@@ -61,38 +76,19 @@ class Posts {
 		$data     = $this->cache->get(
 			"posts/$id/$L->clang",
 			function () use ($id, $L) {
-				$data = $this->db()->qf(
-					[
-						"SELECT
-							`id`,
-							`user`,
-							`date`,
-							`title`,
-							`path`,
-							`content`,
-							`draft`
-						FROM `[prefix]blogs_posts`
-						WHERE
-							`id` = '%s'
-						LIMIT 1",
-						$id
-					]
-				);
+				$data = $this->read($id);
 				if ($data) {
-					$data['title']         = $this->ml_process($data['title']);
-					$data['path']          = $this->ml_process($data['path']);
-					$data['content']       = $this->ml_process($data['content']);
 					$data['short_content'] = truncate(explode('<!-- pagebreak -->', $data['content'])[0]);
 					$data['sections']      = $this->db()->qfas(
 						"SELECT `section`
-						FROM `[prefix]blogs_posts_sections`
+						FROM `$this->table_sections`
 						WHERE `id` = $id"
 					);
 					$data['tags']          = $this->get_tag(
 						$this->db()->qfas(
 							[
 								"SELECT DISTINCT `tag`
-								FROM `[prefix]blogs_posts_tags`
+								FROM `$this->table_tags`
 								WHERE
 									`id`	= $id AND
 									`lang`	= '%s'",
@@ -103,18 +99,17 @@ class Posts {
 					if (!$data['tags']) {
 						$l            = $this->db()->qfs(
 							"SELECT `lang`
-							FROM `[prefix]blogs_posts_tags`
+							FROM `$this->table_tags`
 							WHERE `id` = $id
 							LIMIT 1"
 						);
 						$data['tags'] = $this->db()->qfas(
 							"SELECT DISTINCT `tag`
-							FROM `[prefix]blogs_posts_tags`
+							FROM `$this->table_tags`
 							WHERE
 								`id`	= $id AND
 								`lang`	= '$l'"
 						);
-						unset($l);
 					}
 				}
 				return $data;
@@ -130,7 +125,10 @@ class Posts {
 		/**
 		 * @var \cs\modules\Comments\Comments $Comments
 		 */
-		$data['comments_count'] = (int)(Config::instance()->module('Blogs')->enable_comments && $Comments ? $Comments->count($data['id']) : 0);
+		$data['comments_count'] =
+			Config::instance()->module('Blogs')->enable_comments && $Comments
+				? $Comments->count($data['id'])
+				: 0;
 		return $data;
 	}
 	/**
@@ -158,14 +156,13 @@ class Posts {
 				] + Json_ld::context_stub(isset($post[0]) ? $post[0] : $post)
 		];
 		if (isset($post[0])) {
-			$graph = [];
-			foreach ($post as $p) {
-				$graph[] = $this->get_as_json_ld_single_post($p);
-			}
 			return
 				$base_structure +
 				[
-					'@graph' => $graph
+					'@graph' => array_map(
+						[$this, 'get_as_json_ld_single_post'],
+						$post
+					)
 				];
 		}
 		return
@@ -229,7 +226,7 @@ class Posts {
 		$from   = ($page - 1) * $number;
 		return $this->db()->qfas(
 			"SELECT `id`
-			FROM `[prefix]blogs_posts`
+			FROM `$this->table`
 			WHERE `draft` = 0
 			ORDER BY `date` DESC
 			LIMIT $from, $number"
@@ -250,8 +247,8 @@ class Posts {
 		$from    = ($page - 1) * $number;
 		return $this->db()->qfas(
 			"SELECT `s`.`id`
-			FROM `[prefix]blogs_posts_sections` AS `s`
-				LEFT JOIN `[prefix]blogs_posts` AS `p`
+			FROM `$this->table_sections` AS `s`
+				LEFT JOIN `$this->table` AS `p`
 			ON `s`.`id` = `p`.`id`
 			WHERE
 				`s`.`section`	= $section AND
@@ -276,8 +273,8 @@ class Posts {
 		return $this->db()->qfas(
 			[
 				"SELECT `t`.`id`
-				FROM `[prefix]blogs_posts_tags` AS `t`
-					LEFT JOIN `[prefix]blogs_posts` AS `p`
+				FROM `$this->table_tags` AS `t`
+					LEFT JOIN `$this->table` AS `p`
 				ON `t`.`id` = `p`.`id`
 				WHERE
 					`t`.`tag`	= '%s' AND
@@ -302,8 +299,8 @@ class Posts {
 		return $this->db()->qfs(
 			[
 				"SELECT COUNT(`t`.`id`)
-				FROM `[prefix]blogs_posts_tags` AS `t`
-					LEFT JOIN `[prefix]blogs_posts` AS `p`
+				FROM `$this->table_tags` AS `t`
+					LEFT JOIN `$this->table` AS `p`
 				ON `t`.`id` = `p`.`id`
 				WHERE
 					`t`.`tag`	= '%s' AND
@@ -329,7 +326,7 @@ class Posts {
 		return $this->db()->qfas(
 			[
 				"SELECT `id`
-				FROM `[prefix]blogs_posts`
+				FROM `$this->table`
 				WHERE
 					`draft` = 1 AND
 					`user`	= '%s'
@@ -350,7 +347,7 @@ class Posts {
 		return $this->db()->qfs(
 			[
 				"SELECT COUNT(`id`)
-				FROM `[prefix]blogs_posts`
+				FROM `$this->table`
 				WHERE
 					`draft` = 1 AND
 					`user`	= '%s'",
@@ -381,44 +378,97 @@ class Posts {
 		if (empty($sections) || count($sections) > Config::instance()->module('Blogs')->max_sections) {
 			return false;
 		}
-		if ($this->db_prime()->q(
-			"INSERT INTO `[prefix]blogs_posts`
-				(
-					`user`,
-					`date`,
-					`draft`
-				)
-			VALUES
-				(
-					'%s',
-					'%s',
-					'%s'
-				)",
-			User::instance()->id,
-			$draft ? 0 : time(),
-			(int)(bool)$draft
-		)
-		) {
-			$id = $this->db_prime()->id();
-			if ($this->set_internal($id, $title, $path, $content, $sections, $tags, $draft, true)) {
-				return $id;
-			} else {
-				$this->db_prime()->q(
-					"DELETE FROM `[prefix]blogs_posts`
-					WHERE `id` = $id
-					LIMIT 1"
-				);
-				$this->db_prime()->q(
-					"DELETE FROM `[prefix]blogs_posts_sections`
-					WHERE `id` = $id"
-				);
-				$this->db_prime()->q(
-					"DELETE FROM `[prefix]blogs_posts_tags`
-					WHERE `id` = $id"
-				);
-			}
+		$id = $this->create(
+			[
+				User::instance()->id,
+				$draft ? 0 : time(),
+				$title,
+				path($path ?: $title),
+				$content,
+				(int)(bool)$draft
+			]
+		);
+		if ($id) {
+			$this->update_sections($id, $sections);
+			$this->update_tags($id, $tags);
+			$Cache = $this->cache;
+			unset(
+				$Cache->{"posts/$id"},
+				$Cache->sections,
+				$Cache->total_count
+			);
 		}
-		return false;
+		return $id;
+	}
+	/**
+	 * Remove existing sections and set as specified
+	 *
+	 * @param int   $id
+	 * @param int[] $sections Empty array to just remove all existing sections
+	 */
+	protected function update_sections ($id, $sections = []) {
+		$this->db_prime()->q(
+			"DELETE FROM `$this->table_sections`
+			WHERE `id` = %d",
+			$id
+		);
+		if (!$sections) {
+			return;
+		}
+		$id = (int)$id;
+		$this->db_prime()->insert(
+			"INSERT INTO `$this->table_sections`
+				(
+					`id`,
+					`section`
+				) VALUES (
+					$id,
+					%d
+				)",
+			array_unique($sections),
+			true
+		);
+	}
+	/**
+	 * Remove existing tags and set as specified
+	 *
+	 * @param int      $id
+	 * @param string[] $tags Empty array to just remove all existing tags
+	 */
+	protected function update_tags ($id, $tags = []) {
+		if (!$tags) {
+			$this->db_prime()->q(
+				"DELETE FROM `$this->table_tags`
+				WHERE
+					`id` = %d",
+				$id
+			);
+			return;
+		}
+		$L = Language::instance();
+		$this->db_prime()->q(
+			"DELETE FROM `$this->table_tags`
+			WHERE
+				`id`	= %d AND
+				`lang`	= '%s'",
+			$id,
+			$L->clang
+		);
+		$id = (int)$id;
+		$this->db_prime()->insert(
+			"INSERT INTO `$this->table_tags`
+				(
+					`id`,
+					`tag`,
+					`lang`
+				) VALUES (
+					$id,
+					%d,
+					'$L->clang'
+				)",
+			$this->process_tags($tags),
+			true
+		);
 	}
 	/**
 	 * Set data of specified post
@@ -434,159 +484,41 @@ class Posts {
 	 * @return bool
 	 */
 	function set ($id, $title, $path, $content, $sections, $tags, $draft) {
-		return $this->set_internal($id, $title, $path, $content, $sections, $tags, $draft);
-	}
-	/**
-	 * Set data of specified post
-	 *
-	 * @param int      $id
-	 * @param string   $title
-	 * @param string   $path
-	 * @param string   $content
-	 * @param int[]    $sections
-	 * @param string[] $tags
-	 * @param bool     $draft
-	 * @param bool     $add
-	 *
-	 * @return bool
-	 */
-	function set_internal ($id, $title, $path, $content, $sections, $tags, $draft, $add = false) {
 		if (empty($tags) || empty($content)) {
 			return false;
 		}
-		$Config      = Config::instance();
-		$L           = Language::instance();
-		$id          = (int)$id;
-		$path        = path(trim($path ?: $title));
-		$title       = xap(trim($title));
-		$module_data = $Config->module('Blogs');
-		$content     = xap($content, true, $module_data->allow_iframes_without_content);
-		$sections    = array_intersect(
+		if (empty($tags) || empty($content)) {
+			return false;
+		}
+		$sections = array_intersect(
 			array_keys(Sections::instance()->get_list()),
 			$sections
 		);
-		if (empty($sections) || count($sections) > $module_data->max_sections) {
+		if (empty($sections) || count($sections) > Config::instance()->module('Blogs')->max_sections) {
 			return false;
 		}
-		$sections = implode(
-			',',
-			array_unique(
-				array_map(
-					function ($section) use ($id) {
-						return "($id, $section)";
-					},
-					$sections
-				)
-			)
-		);
-		$tags     = array_unique($tags);
-		$tags     = implode(
-			',',
-			array_unique(
-				array_map(
-					function ($tag) use ($id, $L) {
-						return "($id, $tag, '$L->clang')";
-					},
-					$this->process_tags($tags)
-				)
-			)
-		);
-		$data     = $this->get($id);
-		if (!$this->db_prime()->q(
+		$old_data = $this->get($id);
+		$result   = $this->update(
 			[
-				"DELETE FROM `[prefix]blogs_posts_sections`
-				WHERE `id` = '%5\$s'",
-				"INSERT INTO `[prefix]blogs_posts_sections`
-					(`id`, `section`)
-				VALUES
-					$sections",
-				"UPDATE `[prefix]blogs_posts`
-				SET
-					`title`		= '%s',
-					`path`		= '%s',
-					`content`	= '%s',
-					`draft`		= '%s'
-				WHERE `id` = '%s'
-				LIMIT 1",
-				"DELETE FROM `[prefix]blogs_posts_tags`
-				WHERE
-					`id`	= '%5\$s' AND
-					`lang`	= '$L->clang'",
-				"INSERT INTO `[prefix]blogs_posts_tags`
-					(`id`, `tag`, `lang`)
-				VALUES
-					$tags"
-			],
-			$this->ml_set('Blogs/posts/title', $id, $title),
-			$this->ml_set('Blogs/posts/path', $id, $path),
-			$this->ml_set('Blogs/posts/content', $id, $content),
-			(int)(bool)$draft,
-			$id
-		)
-		) {
-			return false;
-		}
-		if ($add && $Config->core['multilingual']) {
-			foreach ($Config->core['active_languages'] as $lang) {
-				if ($lang != $L->clanguage) {
-					$lang = $L->get('clang', $lang);
-					$this->db_prime()->q(
-						"INSERT INTO `[prefix]blogs_posts_tags`
-							(`id`, `tag`, `lang`)
-						SELECT `id`, `tag`, '$lang'
-						FROM `[prefix]blogs_posts_tags`
-						WHERE
-							`id`	= $id AND
-							`lang`	= '$L->clang'"
-					);
-				}
-			}
-			unset($lang);
-		}
-		preg_match_all('/"(http[s]?:\/\/.*)"/Uims', $data['content'], $old_files);
-		preg_match_all('/"(http[s]?:\/\/.*)"/Uims', $content, $new_files);
-		$old_files = isset($old_files[1]) ? $old_files[1] : [];
-		$new_files = isset($new_files[1]) ? $new_files[1] : [];
-		if ($old_files || $new_files) {
-			foreach (array_diff($old_files, $new_files) as $file) {
-				Event::instance()->fire(
-					'System/upload_files/del_tag',
-					[
-						'tag' => "Blogs/posts/$id/$L->clang",
-						'url' => $file
-					]
-				);
-			}
-			unset($file);
-			foreach (array_diff($new_files, $old_files) as $file) {
-				Event::instance()->fire(
-					'System/upload_files/add_tag',
-					[
-						'tag' => "Blogs/posts/$id/$L->clang",
-						'url' => $file
-					]
-				);
-			}
-			unset($file);
-		}
-		unset($old_files, $new_files);
-		if ($data['draft'] == 1 && !$draft && $data['date'] == 0) {
-			$this->db_prime()->q(
-				"UPDATE `[prefix]blogs_posts`
-				SET `date` = '%s'
-				WHERE `id` = '%s'
-				LIMIT 1",
-				time(),
-				$id
+				$id,
+				$old_data['user'],
+				$old_data['draft'] == 1 && $old_data['date'] == 0 && !$draft ? time() : $old_data['date'],
+				$title,
+				path($path ?: $title),
+				$content,
+				(int)(bool)$draft
+			]
+		);
+		if ($result) {
+			$this->update_sections($id, $sections);
+			$this->update_tags($id, $tags);
+			$Cache = $this->cache;
+			unset(
+				$Cache->{"posts/$id"},
+				$Cache->sections
 			);
 		}
-		$Cache = $this->cache;
-		unset(
-			$Cache->{"posts/$id"},
-			$Cache->sections,
-			$Cache->total_count
-		);
-		return true;
+		return $result;
 	}
 	/**
 	 * Delete specified post
@@ -596,50 +528,32 @@ class Posts {
 	 * @return bool
 	 */
 	function del ($id) {
-		$id = (int)$id;
-		if (!$this->db_prime()->q(
-			[
-				"DELETE FROM `[prefix]blogs_posts`
-				WHERE `id` = $id
-				LIMIT 1",
-				"DELETE FROM `[prefix]blogs_posts_sections`
-				WHERE `id` = $id",
-				"DELETE FROM `[prefix]blogs_posts_tags`
-				WHERE `id` = $id"
-			]
-		)
-		) {
-			return false;
+		$id     = (int)$id;
+		$result = $this->delete($id);
+		if ($result) {
+			$this->update_sections($id, []);
+			$this->update_tags($id, []);
+			$Comments = null;
+			Event::instance()->fire(
+				'Comments/instance',
+				[
+					'Comments' => &$Comments
+				]
+			);
+			/**
+			 * @var \cs\modules\Comments\Comments $Comments
+			 */
+			if ($Comments) {
+				$Comments->del_all($id);
+			}
+			$Cache = $this->cache;
+			unset(
+				$Cache->{"posts/$id"},
+				$Cache->sections,
+				$Cache->total_count
+			);
 		}
-		$this->ml_del('Blogs/posts/title', $id);
-		$this->ml_del('Blogs/posts/path', $id);
-		$this->ml_del('Blogs/posts/content', $id);
-		Event::instance()->fire(
-			'System/upload_files/del_tag',
-			[
-				'tag' => "Blogs/posts/$id%"
-			]
-		);
-		$Comments = null;
-		Event::instance()->fire(
-			'Comments/instance',
-			[
-				'Comments' => &$Comments
-			]
-		);
-		/**
-		 * @var \cs\modules\Comments\Comments $Comments
-		 */
-		if ($Comments) {
-			$Comments->del_all($id);
-		}
-		$Cache = $this->cache;
-		unset(
-			$Cache->{"posts/$id"},
-			$Cache->sections,
-			$Cache->total_count
-		);
-		return true;
+		return $result;
 	}
 	/**
 	 * Get total count of posts
@@ -652,20 +566,11 @@ class Posts {
 			function () {
 				return $this->db()->qfs(
 					"SELECT COUNT(`id`)
-					FROM `[prefix]blogs_posts`
+					FROM `$this->table`
 					WHERE `draft` = 0"
 				);
 			}
 		);
-	}
-	private function ml_process ($text) {
-		return Text::instance()->process($this->cdb(), $text, true);
-	}
-	private function ml_set ($group, $label, $text) {
-		return Text::instance()->set($this->cdb(), $group, $label, $text);
-	}
-	private function ml_del ($group, $label) {
-		return Text::instance()->del($this->cdb(), $group, $label);
 	}
 	/**
 	 * Get tag text
@@ -722,7 +627,7 @@ class Posts {
 	 *
 	 * @return int[]
 	 */
-	private function process_tags ($tags) {
+	protected function process_tags ($tags) {
 		if (!$tags) {
 			return [];
 		}
