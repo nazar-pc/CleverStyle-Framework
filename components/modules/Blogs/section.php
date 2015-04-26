@@ -15,8 +15,7 @@ use
 	cs\Language,
 	cs\Page\Meta,
 	cs\Page,
-	cs\Route,
-	cs\User;
+	cs\Route;
 
 if (!Event::instance()->fire('Blogs/section')) {
 	return;
@@ -29,7 +28,6 @@ $Page     = Page::instance();
 $Posts    = Posts::instance();
 $Route    = Route::instance();
 $Sections = Sections::instance();
-$User     = User::instance();
 /**
  * At first - determine part of url and get sections list based on that path
  */
@@ -48,7 +46,6 @@ $sections = $Sections->get($sections);
 foreach ($sections as $section) {
 	$Page->title($section['title']);
 }
-$Page->title($L->latest_posts);
 /**
  * Now add link to Atom feed for posts from current section only
  */
@@ -78,13 +75,11 @@ if ($page > 1) {
  * Get posts for current page in JSON-LD structure format
  */
 $posts_per_page = $Config->module('Blogs')->posts_per_page;
-$posts          = $Posts->get_as_json_ld(
-	$Posts->get_for_section($section['id'], $page, $posts_per_page)
-);
+$posts          = $Posts->get_for_section($section['id'], $page, $posts_per_page);
 /**
  * Render posts page
  */
-if (empty($posts)) {
+if (!$posts) {
 	$Index->content(
 		h::{'p.cs-center'}($L->no_posts_yet)
 	);
@@ -95,28 +90,10 @@ if (empty($posts)) {
  */
 $base_url = $Config->base_url().'/'.path($L->Blogs).'/'.path($L->section)."/$section[full_path]";
 $Index->content(
-	h::{'cs-blogs-head-actions'}(
-		[
-			'admin'          => $User->admin() && $User->get_permission('admin/Blogs', 'index'),
-			'can_write_post' => $User->admin() || !$Config->module('Blogs')->new_posts_only_from_admins
-		]
-	).
-	h::{'section[is=cs-blogs-posts]'}(
-		h::{'script[type=application/ld+json]'}(
-			json_encode($posts, JSON_UNESCAPED_UNICODE)
-		),
-		[
-			'comments_enabled' => $Config->module('Blogs')->enable_comments && functionality('comments')
-		]
-	).
-	h::{'div.cs-center-all.uk-margin nav.uk-button-group'}(
-		pages(
-			$page,
-			ceil($section['posts'] / $posts_per_page),
-			function ($page) use ($base_url) {
-				return $base_url.($page > 1 ? "/$page" : '');
-			},
-			true
-		)
+	Helpers::posts_list(
+		$posts,
+		$section['posts'],
+		$page,
+		$base_url
 	)
 );

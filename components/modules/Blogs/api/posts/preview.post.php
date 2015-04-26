@@ -1,10 +1,10 @@
 <?php
 /**
- * @package        Blogs
- * @category       modules
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package   Blogs
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs\modules\Blogs;
 use
@@ -59,7 +59,7 @@ $Page->json(
 				implode(
 					', ',
 					array_map(
-						function ($section) use ($Posts, $Sections, $L, $module) {
+						function ($section) use ($Sections, $L, $module) {
 							$section = $Sections->get($section);
 							return h::a(
 								$section['title'],

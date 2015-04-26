@@ -291,18 +291,14 @@ class Posts {
 		) ?: [];
 	}
 	/**
-	 * Get count of posts for tag
+	 * Get number of posts for tag
 	 *
 	 * @param int    $tag
 	 * @param string $lang
-	 * @param int    $page
-	 * @param int    $number
 	 *
 	 * @return int
 	 */
-	function get_for_tag_count ($tag, $lang, $page, $number) {
-		$number = (int)$number;
-		$from   = ($page - 1) * $number;
+	function get_for_tag_count ($tag, $lang) {
 		return $this->db()->qfs(
 			[
 				"SELECT COUNT(`t`.`id`)
@@ -312,11 +308,53 @@ class Posts {
 				WHERE
 					`t`.`tag`	= '%s' AND
 					`p`.`draft`	= 0 AND
-					`t`.`lang`	= '%s'
-				ORDER BY `p`.`date` DESC
-				LIMIT $from, $number",
+					`t`.`lang`	= '%s'",
 				$tag,
 				$lang
+			]
+		) ?: 0;
+	}
+	/**
+	 * Get drafts
+	 *
+	 * @param int $user
+	 * @param int $page
+	 * @param int $number
+	 *
+	 * @return int[]
+	 */
+	function get_drafts ($user, $page, $number) {
+		$number = (int)$number;
+		$from   = ($page - 1) * $number;
+		return $this->db()->qfas(
+			[
+				"SELECT `id`
+				FROM `[prefix]blogs_posts`
+				WHERE
+					`draft` = 1 AND
+					`user`	= '%s'
+				ORDER BY `date` DESC
+				LIMIT $from, $number",
+				$user
+			]
+		) ?: [];
+	}
+	/**
+	 * Get number of drafts
+	 *
+	 * @param int $user
+	 *
+	 * @return int
+	 */
+	function get_drafts_count ($user) {
+		return $this->db()->qfs(
+			[
+				"SELECT COUNT(`id`)
+				FROM `[prefix]blogs_posts`
+				WHERE
+					`draft` = 1 AND
+					`user`	= '%s'",
+				$user
 			]
 		) ?: 0;
 	}

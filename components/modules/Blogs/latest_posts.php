@@ -1,10 +1,10 @@
 <?php
 /**
- * @package        Blogs
- * @category       modules
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package   Blogs
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs\modules\Blogs;
 use
@@ -20,50 +20,61 @@ use
 if (!Event::instance()->fire('Blogs/latest_posts')) {
 	return;
 }
-
 $Config = Config::instance();
 $Index  = Index::instance();
 $L      = Language::instance();
+$Meta   = Meta::instance();
 $Page   = Page::instance();
+$Posts  = Posts::instance();
 $Route  = Route::instance();
-$Page->title($L->latest_posts);
-$Page->atom('Blogs/atom.xml', $L->latest_posts);
-$module = path($L->Blogs);
 /**
- * Show administration, new post, draft actions
+ * Page title
  */
-head_actions();
-$Index->form    = true;
-$Index->buttons = false;
-$page           = isset($Route->route[1]) ? (int)$Route->route[1] : 1;
-$page           = $page > 0 ? $page : 1;
-$Page->canonical_url($Config->base_url()."/$module/".path($L->latest_posts).($page > 1 ? "/$page" : ''));
-Meta::instance()->blog();
+$Page->title($L->latest_posts);
+/**
+ * Now add link to Atom feed for latest posts
+ */
+$Page->atom('Blogs/atom.xml', $L->latest_posts);
+/**
+ * Set page of blog type (Open Graph protocol)
+ */
+$Meta->blog();
+/**
+ * Determine current page
+ */
+$page = max(
+	isset($Route->ids[0]) ? array_slice($Route->ids, -1)[0] : 1,
+	1
+);
+/**
+ * If this is not first page - show that in page title
+ */
 if ($page > 1) {
 	$Page->title($L->blogs_nav_page($page));
 }
-$number = $Config->module('Blogs')->posts_per_page;
-$Posts  = Posts::instance();
-$posts  = $Posts->get_latest_posts($page, $number);
-if (empty($posts)) {
+/**
+ * Get posts for current page in JSON-LD structure format
+ */
+$posts_per_page = $Config->module('Blogs')->posts_per_page;
+$posts          = $Posts->get_latest_posts($page, $posts_per_page);
+/**
+ * Render posts page
+ */
+if (!$posts) {
 	$Index->content(
 		h::{'p.cs-center'}($L->no_posts_yet)
 	);
+	return;
 }
+/**
+ * Base url (without page number)
+ */
+$base_url = $Config->base_url().'/'.path($L->Blogs).'/'.path($L->latest_posts);
 $Index->content(
-	h::{'section.cs-blogs-post-latest'}(
-		get_posts_list($posts)
-	).
-	(
-	$posts ? h::{'div.cs-center-all.uk-margin nav.uk-button-group'}(
-		pages(
-			$page,
-			ceil($Posts->get_total_count() / $number),
-			function ($page) use ($module, $L) {
-				return $page == 1 ? "$module/".path($L->latest_posts) : "$module/".path($L->latest_posts)."/$page";
-			},
-			true
-		)
-	) : ''
+	Helpers::posts_list(
+		$posts,
+		$Posts->get_total_count(),
+		$page,
+		$base_url
 	)
 );

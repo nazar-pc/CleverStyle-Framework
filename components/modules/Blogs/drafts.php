@@ -1,12 +1,12 @@
 <?php
 /**
- * @package		Blogs
- * @category	modules
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   Blogs
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
-namespace	cs\modules\Blogs;
+namespace cs\modules\Blogs;
 use
 	h,
 	cs\Config,
@@ -21,69 +21,51 @@ use
 if (!Event::instance()->fire('Blogs/drafts')) {
 	return;
 }
-
-$Config					= Config::instance();
-$module_data			= $Config->module('Blogs');
-$Index					= Index::instance();
-$L						= Language::instance();
-$Page					= Page::instance();
-$Route					= Route::instance();
-$User					= User::instance();
-if ($module_data->new_posts_only_from_admins && !$User->admin()) {
-	error_code(403);
-	return;
-}
+$Config = Config::instance();
+$Index  = Index::instance();
+$L      = Language::instance();
+$Page   = Page::instance();
+$Posts  = Posts::instance();
+$Route  = Route::instance();
+$User   = User::instance();
 $Page->title($L->drafts);
-$module					= path($L->Blogs);
-$Index->form			= true;
-$Index->buttons			= false;
-$page					= isset($Route->route[1]) ? (int)$Route->route[1] : 1;
-$page					= $page > 0 ? $page : 1;
+/**
+ * Determine current page
+ */
+$page = max(
+	isset($Route->ids[0]) ? array_slice($Route->ids, -1)[0] : 1,
+	1
+);
+/**
+ * If this is not first page - show that in page title
+ */
 if ($page > 1) {
 	$Page->title($L->blogs_nav_page($page));
 }
-$num					= $module_data->posts_per_page;
-$from					= ($page - 1) * $num;
-$cdb					= DB::instance()->{$module_data->db('posts')};
-$posts_count			= $cdb->qfs([
-	"SELECT COUNT(`id`)
-	FROM `[prefix]blogs_posts`
-	WHERE
-		`draft` = 1 AND
-		`user`	= '%s'
-	ORDER BY `date` DESC
-	LIMIT $from, $num",
-	$User->id
-]);
-$posts					= $cdb->qfas([
-	"SELECT `id`
-	FROM `[prefix]blogs_posts`
-	WHERE
-		`draft` = 1 AND
-		`user`	= '%s'
-	ORDER BY `date` DESC
-	LIMIT $from, $num",
-	$User->id
-]);
-if (empty($posts)) {
+/**
+ * Get posts for current page in JSON-LD structure format
+ */
+$posts_per_page = $Config->module('Blogs')->posts_per_page;
+$posts          = $Posts->get_drafts($User->id, $page, $posts_per_page);
+/**
+ * Render posts page
+ */
+if (!$posts) {
 	$Index->content(
 		h::{'p.cs-center'}($L->no_posts_yet)
 	);
+	return;
 }
+$posts_count = $Posts->get_drafts_count($User->id);
+/**
+ * Base url (without page number)
+ */
+$base_url = $Config->base_url().'/'.path($L->Blogs).'/'.path($L->drafts);
 $Index->content(
-	h::{'section.cs-blogs-post-latest'}(
-		get_posts_list($posts)
-	).
-	(
-		$posts ? h::{'div.cs-center-all.uk-margin nav.uk-button-group'}(
-			pages(
-				$page,
-				ceil($posts_count / $num),
-				function ($page) use ($module, $L) {
-					return $page == 1 ? "$module/".path($L->drafts) : "$module/".path($L->drafts)."/$page";
-				},
-				true
-			)
-		) : ''
+	Helpers::posts_list(
+		$posts,
+		$posts_count,
+		$page,
+		$base_url
 	)
 );
