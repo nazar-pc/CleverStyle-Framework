@@ -26,11 +26,11 @@ class Json_ld {
 	 */
 	static function context_stub ($data = []) {
 		$context = [
-			'@vocab' => self::SCHEMA_ORG
+			'@vocab' => self::SCHEMA_ORG.'/'
 		];
 		$context += array_combine(
 			array_keys($data),
-			array_fill(0, count($data), '')
+			array_fill(0, count($data), null)
 		);
 		return $context;
 	}
