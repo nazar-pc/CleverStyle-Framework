@@ -325,168 +325,135 @@ function get_core_ml_text ($item) {
 	}
 	return Text::instance()->process($Config->module('System')->db('texts'), $Config->core[$item], true);
 }
+
 /**
  * Pages navigation based on links
  *
- * @param int				$page		Current page
- * @param int				$total		Total pages number
- * @param callable|string	$url		if string - it will be formatted with sprintf with one parameter - page number<br>
- * 										if callable - one parameter will be given, callable should return url string
- * @param bool				$head_links	If <b>true</b> - links with rel="prev" and rel="next" will be added
+ * @param int             $page       Current page
+ * @param int             $total      Total pages number
+ * @param callable|string $url        if string - it will be formatted with sprintf with one parameter - page number<br>
+ *                                    if callable - one parameter will be given, callable should return url string
+ * @param bool            $head_links If <b>true</b> - links with rel="prev" and rel="next" will be added
  *
- * @return bool|string					<b>false</b> if single page, otherwise string, set of navigation links
+ * @return bool|string <b>false</b> if single page, otherwise string, set of navigation links
  */
 function pages ($page, $total, $url, $head_links = false) {
 	if ($total == 1) {
 		return false;
 	}
-	$Page	= Page::instance();
-	$output	= [];
+	$Page   = Page::instance();
+	$output = [];
 	if (is_callable($url)) {
-		$url_func	= $url;
+		$url_func = $url;
 	} else {
-		$original_url	= $url;
-		$url_func		= function ($page) use ($original_url) {
+		$original_url = $url;
+		$url_func     = function ($page) use ($original_url) {
 			return sprintf($original_url, $page);
 		};
 	}
-	$base_url	= Config::instance()->base_url();
-	$url		= function ($page) use ($url_func, $base_url) {
-		$url	= $url_func($page);
+	$base_url          = Config::instance()->base_url();
+	$url               = function ($page) use ($url_func, $base_url) {
+		$url = $url_func($page);
 		if (is_string($url) && strpos($url, 'http') !== 0) {
-			$url	= $base_url.'/'.ltrim($url, '/');
+			$url = ltrim($url, '/');
+			$url = "$base_url/$url";
 		}
 		return $url;
 	};
+	$render_head_links = function ($i) use ($Page, $page, $url) {
+		$href = is_callable($url) ? $url($i) : sprintf($url, $i);
+		switch ($i) {
+			case $page - 1:
+				$rel = 'prev';
+				break;
+			case $page + 1:
+				$rel = 'next';
+				break;
+			case $page:
+				$Page->canonical_url($href);
+			/**
+			 * This is not a mistake, break is not needed here
+			 */
+			default:
+				return;
+		}
+		$Page->link(
+			[
+				'href' => $href,
+				'rel'  => $rel
+			]
+		);
+	};
+	$render_page_item  = function ($i) use ($page, $url, $head_links, $render_head_links) {
+		if ($head_links) {
+			$render_head_links($i);
+		}
+		return [
+			$i,
+			[
+				'href'  => $i == $page ? false : $url($i),
+				'class' => $i == $page ? 'uk-button uk-button-primary uk-frozen' : 'uk-button'
+			]
+		];
+	};
 	if ($total <= 11) {
 		for ($i = 1; $i <= $total; ++$i) {
-			$output[]	= [
-				$i,
-				[
-					'href'	=> $i == $page ? false : $url($i),
-					'class'	=> $i == $page ? 'uk-button uk-button-primary uk-frozen' : 'uk-button'
-				]
-			];
-			if ($head_links && ($i == $page - 1 || $i == $page + 1)) {
-				$Page->link([
-					'href'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
-					'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
-				]);
-			}
+			$output[] = $render_page_item($i);
 		}
 	} else {
 		if ($page <= 5) {
 			for ($i = 1; $i <= 7; ++$i) {
-				$output[]	= [
-					$i,
-					[
-						'href'	=> $i == $page ? false : $url($i),
-						'class'	=> $i == $page ? 'uk-button uk-button-primary uk-frozen' : 'uk-button'
-					]
-				];
-				if ($head_links&& ($i == $page - 1 || $i == $page + 1)) {
-					$Page->link([
-						'href'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
-						'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
-					]);
-				}
+				$output[] = $render_page_item($i);
 			}
-			$output[]	= [
+			$output[] = [
 				'...',
 				[
-					'class'	=> 'uk-button uk-frozen'
+					'class' => 'uk-button uk-frozen'
 				]
 			];
 			for ($i = $total - 2; $i <= $total; ++$i) {
-				$output[]	= [
-					$i,
-					[
-						'href'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
-						'class'	=> 'uk-button'
-					]
-				];
+				$output[] = $render_page_item($i);
 			}
 		} elseif ($page >= $total - 4) {
 			for ($i = 1; $i <= 3; ++$i) {
-				$output[]	= [
-					$i,
-					[
-						'href'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
-						'class'	=> 'uk-button'
-					]
-				];
+				$output[] = $render_page_item($i);
 			}
-			$output[]	= [
+			$output[] = [
 				'...',
 				[
-					'class'	=> 'uk-button uk-frozen'
+					'class' => 'uk-button uk-frozen'
 				]
 			];
 			for ($i = $total - 6; $i <= $total; ++$i) {
-				$output[]	= [
-					$i,
-					[
-						'href'	=> $i == $page ? false : $url($i),
-						'class'	=> $i == $page ? 'uk-button uk-button-primary uk-frozen' : 'uk-button'
-					]
-				];
-				if ($head_links && ($i == $page - 1 || $i == $page + 1)) {
-					$Page->link([
-						'href'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
-						'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
-					]);
-				}
+				$output[] = $render_page_item($i);
 			}
 		} else {
 			for ($i = 1; $i <= 2; ++$i) {
-				$output[]	= [
-					$i,
-					[
-						'href'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
-						'class'	=> 'uk-button'
-					]
-				];
+				$output[] = $render_page_item($i);
 			}
-			$output[]	= [
+			$output[] = [
 				'...',
 				[
-					'class'	=> 'uk-button uk-frozen'
+					'class' => 'uk-button uk-frozen'
 				]
 			];
 			for ($i = $page - 1; $i <= $page + 3; ++$i) {
-				$output[]	= [
-					$i,
-					[
-						'href'	=> $i == $page ? false : $url($i),
-						'class'	=> $i == $page ? 'uk-button uk-button-primary uk-frozen' : 'uk-button'
-					]
-				];
-				if ($head_links && ($i == $page - 1 || $i == $page + 1)) {
-					$Page->link([
-						'href'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
-						'rel'	=> $i == $page - 1 ? 'prev' : ($i == $page + 1 ? 'next' : false)
-					]);
-				}
+				$output[] = $render_page_item($i);
 			}
-			$output[]	= [
+			$output[] = [
 				'...',
 				[
-					'class'	=> 'uk-button uk-frozen'
+					'class' => 'uk-button uk-frozen'
 				]
 			];
 			for ($i = $total - 1; $i <= $total; ++$i) {
-				$output[]	= [
-					$i,
-					[
-						'href'	=> is_callable($url) ? $url($i) : sprintf($url, $i),
-						'class'	=> 'uk-button'
-					]
-				];
+				$output[] = $render_page_item($i);
 			}
 		}
 	}
 	return h::a($output);
 }
+
 /**
  * Pages navigation based on buttons (for search forms, etc.)
  *
