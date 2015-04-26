@@ -409,14 +409,11 @@ abstract class _Abstract {
 				return false;
 			}
 			$query[1] .= str_repeat(",$query[1]", count($params) - 1);
-			$query   = $query[0].'VALUES'.$query[1].$query[2];
-			$params_ = [];
-			foreach ($params as $p) {
-				/** @noinspection SlowArrayOperationsInLoopInspection */
-				$params_ = array_merge($params_, (array)$p);
-			}
-			unset($p);
-			return (bool)$this->q($query, $params_);
+			$query = $query[0].'VALUES'.$query[1].$query[2];
+			return (bool)$this->q(
+				$query,
+				call_user_func_array('array_merge', _array($params))
+			);
 		} else {
 			$result = true;
 			foreach ($params as $p) {
