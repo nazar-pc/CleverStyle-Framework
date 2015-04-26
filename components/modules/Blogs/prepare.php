@@ -23,7 +23,7 @@ if (!api_path()) {
 				'value'	=> []
 			];
 			if ($structure === null) {
-				$structure			= Blogs::instance()->get_sections_structure();
+				$structure			= Sections::instance()->get_structure();
 				$list['in'][]		= Language::instance()->root_section;
 				$list['value'][]	= 0;
 			} else {
@@ -56,7 +56,8 @@ if (!api_path()) {
 			/**
 			 * @var \cs\modules\Comments\Comments $Comments
 			 */
-			$Blogs		= Blogs::instance();
+			$Posts		= Posts::instance();
+			$Sections	= Sections::instance();
 			$L			= Language::instance();
 			$Page		= Page::instance();
 			$User		= User::instance();
@@ -66,7 +67,7 @@ if (!api_path()) {
 				return '';
 			}
 			foreach ($posts as $post) {
-				$post			= $Blogs->get($post);
+				$post			= $Posts->get($post);
 				$short_content	= uniqid('post_content', true);
 				$Page->replace($short_content, $post['short_content']);
 				$content[]		= h::header(
@@ -79,8 +80,8 @@ if (!api_path()) {
 					($post['sections'] != [0] ? h::p(
 						h::icon('bookmark').
 						implode(', ', array_map(
-								function ($section) use ($Blogs, $L, $module) {
-									$section	= $Blogs->get_section($section);
+								function ($section) use ($Posts, $Sections, $L, $module) {
+									$section	= $Sections->get($section);
 									return h::a(
 										$section['title'],
 										[

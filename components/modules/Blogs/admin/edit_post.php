@@ -14,12 +14,12 @@ use
 	cs\Language,
 	cs\Page,
 	cs\Route;
-$Blogs						= Blogs::instance();
+$Posts						= Posts::instance();
 $Config						= Config::instance();
 $Index						= Index::instance();
 $L							= Language::instance();
 $Page						= Page::instance();
-$post						= $Blogs->get(Route::instance()->route[1]);
+$post						= $Posts->get(Route::instance()->route[1]);
 $Page->title(
 	$L->editing_of_post($post['title'])
 );

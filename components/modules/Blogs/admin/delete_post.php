@@ -13,7 +13,7 @@ use
 	cs\Language,
 	cs\Page,
 	cs\Route;
-$post						= Blogs::instance()->get(Route::instance()->route[1]);
+$post						= Posts::instance()->get(Route::instance()->route[1]);
 $Index						= Index::instance();
 $L							= Language::instance();
 Page::instance()->title($L->deletion_of_post($post['title']));

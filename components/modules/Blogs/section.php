@@ -24,7 +24,7 @@ $Config    = Config::instance();
 $Index     = Index::instance();
 $Page      = Page::instance();
 $rc        = array_slice(Route::instance()->route, 1);
-$structure = Blogs::instance()->get_sections_structure();
+$structure = Sections::instance()->get_structure();
 $path      = [];
 foreach ($rc as $path_) {
 	if ($structure['posts'] == 0 && isset($structure['sections'][$path_])) {
@@ -65,7 +65,7 @@ if ($page > 1) {
 	$Page->title($L->blogs_nav_page($page));
 }
 $number = $Config->module('Blogs')->posts_per_page;
-$posts  = Blogs::instance()->get_for_section($section, $page, $number);
+$posts  = Posts::instance()->get_for_section($section, $page, $number);
 if (empty($posts)) {
 	$Index->content(
 		h::{'p.cs-center'}($L->no_posts_yet)

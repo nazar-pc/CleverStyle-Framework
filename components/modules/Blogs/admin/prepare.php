@@ -18,7 +18,7 @@ function get_sections_rows ($structure = null, $level = 0, &$content = null) {
 	$root		= false;
 	$module		= path($L->Blogs);
 	if ($structure === null) {
-		$structure			= Blogs::instance()->get_sections_structure();
+		$structure			= Sections::instance()->get_structure();
 		$structure['title']	= $L->root_section;
 		$root				= true;
 		$content			= [];
@@ -80,7 +80,7 @@ function get_sections_select_post (&$disabled, $current = null, $structure = nul
 		'value'	=> []
 	];
 	if ($structure === null) {
-		$structure			= Blogs::instance()->get_sections_structure();
+		$structure			= Sections::instance()->get_structure();
 		$list['in'][]		= Language::instance()->root_section;
 		$list['value'][]	= 0;
 	} else {
@@ -106,7 +106,7 @@ function get_sections_select_section ($current = null, $structure = null, $level
 		'value'	=> []
 	];
 	if ($structure === null) {
-		$structure			= Blogs::instance()->get_sections_structure();
+		$structure			= Sections::instance()->get_structure();
 		$list['in'][]		= Language::instance()->root_section;
 		$list['value'][]	= 0;
 	} else {
@@ -126,7 +126,8 @@ function get_sections_select_section ($current = null, $structure = null, $level
 	return $list;
 }
 function get_posts_rows ($page = 1) {
-	$Blogs		= Blogs::instance();
+	$Posts		= Posts::instance();
+	$Sections	= Sections::instance();
 	$Config		= Config::instance();
 	$L			= Language::instance();
 	$User		= User::instance();
@@ -145,9 +146,9 @@ function get_posts_rows ($page = 1) {
 	$content	= [];
 	if ($posts) {
 		foreach ($posts as $post) {
-			$post		= $Blogs->get($post);
+			$post		= $Posts->get($post);
 			foreach ($post['sections'] as &$section) {
-				$section	= $section ? $Blogs->get_section($section) : [
+				$section	= $section ? $Sections->get($section) : [
 					'title'	=> $L->root_section
 				];
 				$section	= h::a(

@@ -43,8 +43,8 @@ if ($page > 1) {
 	$Page->title($L->blogs_nav_page($page));
 }
 $number = $Config->module('Blogs')->posts_per_page;
-$Blogs  = Blogs::instance();
-$posts  = $Blogs->get_latest_posts($page, $number);
+$Posts  = Posts::instance();
+$posts  = $Posts->get_latest_posts($page, $number);
 if (empty($posts)) {
 	$Index->content(
 		h::{'p.cs-center'}($L->no_posts_yet)
@@ -58,7 +58,7 @@ $Index->content(
 	$posts ? h::{'div.cs-center-all.uk-margin nav.uk-button-group'}(
 		pages(
 			$page,
-			ceil($Blogs->get_total_count() / $number),
+			ceil($Posts->get_total_count() / $number),
 			function ($page) use ($module, $L) {
 				return $page == 1 ? "$module/".path($L->latest_posts) : "$module/".path($L->latest_posts)."/$page";
 			},

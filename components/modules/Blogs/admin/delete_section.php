@@ -13,7 +13,7 @@ use
 	cs\Language,
 	cs\Page,
 	cs\Route;
-$section					= Blogs::instance()->get_section(Route::instance()->route[1]);
+$section					= Sections::instance()->get(Route::instance()->route[1]);
 $Index						= Index::instance();
 $L							= Language::instance();
 Page::instance()->title($L->deletion_of_posts_section($section['title']));

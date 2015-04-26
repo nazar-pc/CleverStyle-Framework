@@ -23,7 +23,7 @@ Page::instance()->title($L->browse_posts);
 $Route			= Route::instance();
 $page			= isset($Route->route[1]) ? (int)$Route->route[1] : 1;
 $page			= $page > 0 ? $page : 1;
-$total			= Blogs::instance()->get_total_count();
+$total			= Posts::instance()->get_total_count();
 $Index->content(
 	h::{'cs-table[center][list][with-header]'}(
 		h::{'cs-table-row cs-table-cell'}(

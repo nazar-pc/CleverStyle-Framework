@@ -16,7 +16,7 @@ use
 	cs\Page,
 	cs\Route;
 $Config  = Config::instance();
-$section = Blogs::instance()->get_section(Route::instance()->route[1]);
+$section = Sections::instance()->get(Route::instance()->route[1]);
 $Index   = Index::instance();
 $L       = Language::instance();
 Page::instance()->title($L->editing_of_posts_section($section['title']));

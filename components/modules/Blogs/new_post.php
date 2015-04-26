@@ -66,11 +66,11 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 				$save	= false;
 			}
 			if ($save) {
-				$Blogs	= Blogs::instance();
-				$id		= $Blogs->add($_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])), $draft);
+				$Posts	= Posts::instance();
+				$id		= $Posts->add($_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])), $draft);
 				if ($id) {
 					interface_off();
-					_header('Location: '.$Config->base_url()."/$module/".$Blogs->get($id)['path'].":$id");
+					_header('Location: '.$Config->base_url()."/$module/".$Posts->get($id)['path'].":$id");
 					return;
 				} else {
 					$Page->warning($L->post_adding_error);

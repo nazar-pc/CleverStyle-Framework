@@ -21,7 +21,7 @@ if (!Event::instance()->fire('Blogs/edit_post')) {
 	return;
 }
 
-$Blogs						= Blogs::instance();
+$Posts						= Posts::instance();
 $Config						= Config::instance();
 $module_data				= $Config->module('Blogs');
 $L							= Language::instance();
@@ -34,7 +34,7 @@ if ($module_data->new_posts_only_from_admins && !$User->admin()) {
 }
 if (
 	!isset($Route->route[1]) ||
-	!($post = $Blogs->get($Route->route[1]))
+	!($post = $Posts->get($Route->route[1]))
 ) {
 	error_code(404);
 	return;
@@ -78,7 +78,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 				$save	= false;
 			}
 			if ($save) {
-				if ($Blogs->set($post['id'], $_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])), $draft)) {
+				if ($Posts->set($post['id'], $_POST['title'], null, $_POST['content'], $_POST['sections'], _trim(explode(',', $_POST['tags'])), $draft)) {
 					interface_off();
 					_header('Location: '.$Config->base_url()."/$module/$post[path]:$post[id]");
 					return;
@@ -88,7 +88,7 @@ if (isset($_POST['title'], $_POST['sections'], $_POST['content'], $_POST['tags']
 			}
 		break;
 		case 'delete':
-			if ($Blogs->del($post['id'])) {
+			if ($Posts->del($post['id'])) {
 				interface_off();
 				_header('Location: '.$Config->base_url()."/$module");
 				return;

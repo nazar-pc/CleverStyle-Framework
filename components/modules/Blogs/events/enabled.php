@@ -36,7 +36,7 @@ Event::instance()
 			) {
 				return true;
 			}
-			if (Blogs::instance()->get($data['item'])) {
+			if (Posts::instance()->get($data['item'])) {
 				$Comments->set_module('Blogs');
 				$data['Comments'] = $Comments;
 			}

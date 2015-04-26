@@ -44,15 +44,15 @@ if ($page > 1) {
 	$Page->title($L->blogs_nav_page($page));
 }
 $number = $Config->module('Blogs')->posts_per_page;
-$Blogs  = Blogs::instance();
-$tag    = $Blogs->find_tag($rc[0]);
+$Posts  = Posts::instance();
+$tag    = $Posts->find_tag($rc[0]);
 if (!$tag) {
 	error_code(404);
 	return;
 }
 $tag = [
 	'id'   => $tag,
-	'text' => Blogs::instance()->get_tag($tag)
+	'text' => $Posts->get_tag($tag)
 ];
 $Page->title($tag['text']);
 $Page->title($L->latest_posts);
@@ -60,14 +60,14 @@ $Page->atom(
 	"Blogs/atom.xml/?tag=$tag[id]",
 	implode($Config->core['title_delimiter'], [$L->latest_posts, $L->tag, $tag['text']])
 );
-$posts_count = $Blogs->get_for_tag_count($tag['id'], $L->clang, $page, $number);
+$posts_count = $Posts->get_for_tag_count($tag['id'], $L->clang, $page, $number);
 if (!$posts_count) {
 	$Index->content(
 		h::{'p.cs-center'}($L->no_posts_yet)
 	);
 	return;
 }
-$posts = $Blogs->get_for_tag($tag['id'], $L->clang, $page, $number);
+$posts = $Posts->get_for_tag($tag['id'], $L->clang, $page, $number);
 $Index->content(
 	h::{'section.cs-blogs-post-latest'}(
 		get_posts_list($posts)

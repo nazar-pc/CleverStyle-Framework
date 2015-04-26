@@ -34,14 +34,14 @@ Event::instance()->fire(
 /**
  * @var \cs\modules\Comments\Comments $Comments
  */
-$Blogs   = Blogs::instance();
+$Posts   = Posts::instance();
 $rc      = Route::instance()->route;
 $post_id = (int)mb_substr($rc[1], mb_strrpos($rc[1], ':') + 1);
 if (!$post_id) {
 	error_code(404);
 	return;
 }
-$post = $Blogs->get_as_json_ld($post_id);
+$post = $Posts->get_as_json_ld($post_id);
 if (
 	!$post ||
 	(

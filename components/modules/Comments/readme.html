@@ -75,7 +75,7 @@ if ($Comments) {
 		)) {
 			return true;
 		}
-		if (\cs\modules\Blogs\Blogs::instance()->get($data['item'])) {
+		if (\cs\modules\Blogs\Posts::instance()->get($data['item'])) {
 			$data['Comments']->set_module('Blogs');
 		}
 		return false;

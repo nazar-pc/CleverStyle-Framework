@@ -14,36 +14,37 @@ use
 	cs\Page,
 	cs\User;
 
-$Config = Config::instance();
-$L      = Language::instance();
-$Page   = Page::instance();
-$User   = User::instance();
-$title  = [
+$Config   = Config::instance();
+$L        = Language::instance();
+$Page     = Page::instance();
+$User     = User::instance();
+$title    = [
 	get_core_ml_text('name'),
 	$L->Blogs
 ];
-$Blogs  = Blogs::instance();
-$number = $Config->module('Blogs')->posts_per_page;
+$Posts    = Posts::instance();
+$Sections = Sections::instance();
+$number   = $Config->module('Blogs')->posts_per_page;
 if (isset($_GET['section'])) {
-	$section = $Blogs->get_section($_GET['section']);
+	$section = $Sections->get($_GET['section']);
 	if (!$section) {
 		error_code(404);
 		return;
 	}
 	$title[] = $L->section;
 	$title[] = $section['title'];
-	$posts   = $Blogs->get_for_section($section['id'], 1, $number);
+	$posts   = $Posts->get_for_section($section['id'], 1, $number);
 } elseif (isset($_GET['tag'])) {
-	$tag = $Blogs->find_tag($_GET['tag']);
+	$tag = $Posts->find_tag($_GET['tag']);
 	if (!$tag) {
 		error_code(404);
 		return;
 	}
 	$title[] = $L->tag;
-	$title[] = $Blogs->get_tag($tag);
-	$posts   = $Blogs->get_for_tag($tag, $L->clang, 1, $number);
+	$title[] = $Posts->get_tag($tag);
+	$posts   = $Posts->get_for_tag($tag, $L->clang, 1, $number);
 } else {
-	$posts = $Blogs->get_latest_posts(1, $number);
+	$posts = $Posts->get_latest_posts(1, $number);
 }
 $title[]  = $L->latest_posts;
 $title    = implode($Config->core['title_delimiter'], $title);
@@ -74,8 +75,8 @@ $Page->content(
 		])).
 		h::updated(date('c')).
 		'<icon>'.get_favicon_path($Config->core['theme'])."</icon>\n".
-		h::entry(array_map(function ($post) use ($Blogs, $User, $base_url) {
-			$post = $Blogs->get($post);
+		h::entry(array_map(function ($post) use ($Posts, $Sections, $User, $base_url) {
+			$post = $Posts->get($post);
 			return
 				h::title($post['title']).
 				h::id("$base_url/Blogs/:$post[id]").
@@ -91,7 +92,7 @@ $Page->content(
 						'label' => h::prepare_attr_value($category['title']),
 						'level' => 0
 					];
-				}, $Blogs->get_section($post['sections']))).
+				}, $Sections->get($post['sections']))).
 				h::summary(
 					htmlentities($post['short_content']),
 					[
