@@ -14,17 +14,13 @@
   (function(L) {
     return Polymer({
       publish: {
-        can_edit: false,
-        can_delete: false,
+        post: {},
         comments_enabled: false
       },
-      edit_text: L.edit,
-      delete_text: L["delete"],
-      created: function() {
-        return this.jsonld = JSON.parse(this.querySelector('script').innerHTML);
-      },
       ready: function() {
-        return this.$.content.innerHTML = this.jsonld.content;
+        this.post.comments_enabled = this.comments_enabled;
+        this.post.read_more_text = cs.Language.read_more;
+        return this.$.short_content.innerHTML = this.post.short_content;
       }
     });
   })(cs.Language);

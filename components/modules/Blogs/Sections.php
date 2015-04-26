@@ -40,7 +40,6 @@ class Sections {
 	protected function cdb () {
 		return Config::instance()->module('Blogs')->db('posts');
 	}
-
 	/**
 	 * Get array of sections in form [<i>id</i> => <i>title</i>]
 	 *
@@ -179,6 +178,29 @@ class Sections {
 				return $data;
 			}
 		);
+	}
+	/**
+	 * Get sections ids for each section in full path
+	 *
+	 * @param string|string[] $path
+	 *
+	 * @return false|int[]
+	 */
+	function get_by_path ($path) {
+		if (!is_array($path)) {
+			$path = explode('/', $path);
+		}
+		$structure = $this->get_structure();
+		$ids       = [];
+		foreach ($path as $p) {
+			if (!isset($structure['sections'][$p])) {
+				break;
+			}
+			array_shift($path);
+			$structure = $structure['sections'][$p];
+			$ids[]     = $structure['id'];
+		}
+		return $ids ?: false;
 	}
 	/**
 	 * Add new section

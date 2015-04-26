@@ -1,0 +1,8 @@
+<polymer-element name="cs-blogs-posts" extends="section">
+	<template>
+		<template repeat="{{post in posts}}">
+			<article is="cs-blogs-posts-post" post="{{post}}" comments_enabled="{{comments_enabled}}"></article>
+		</template>
+	</template>
+	<script src="script.js"></script>
+</polymer-element>

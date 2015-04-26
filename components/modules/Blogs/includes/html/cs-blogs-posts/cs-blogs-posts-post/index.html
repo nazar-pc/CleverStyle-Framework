@@ -1,0 +1,43 @@
+<polymer-element name="cs-blogs-posts-post" extends="article">
+	<template>
+		<template bind="{{post}}">
+			<article>
+				<header>
+					<a href="{{url}}">
+						<h1>{{title}}</h1>
+					</a>
+					<template if="{{articleSection.length}}">
+						<p>
+							<span class=" uk-icon-bookmark"></span>
+							<template repeat="{{section, index in articleSection}}">
+								<a href="{{sections_paths[index]}}">{{section}}</a>
+							</template>
+						</p>
+					</template>
+				</header>
+				<div id="short_content"></div>
+				<footer>
+					<hr>
+					<p>
+						<time>{{datetime}}</time>
+						<a href="{{author.url}}">
+							<span class="uk-icon-user"></span>
+							{{author.name}}
+						</a>
+						<template if="{{comments_enabled}}">
+							<a href="{{url}}#comments">
+								<span class="uk-icon-comments"></span>
+								{{comments_count}}
+							</a>
+						</template>
+						<a href="{{url}}">
+							<span class="uk-icon-angle-double-right"></span>
+							{{read_more_text}}
+						</a>
+					</p>
+				</footer>
+			</article>
+		</template>
+	</template>
+	<script src="script.js"></script>
+</polymer-element>

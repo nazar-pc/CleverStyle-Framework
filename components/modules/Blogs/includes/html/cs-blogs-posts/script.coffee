@@ -8,13 +8,8 @@
 do (L = cs.Language) ->
 	Polymer(
 		publish		:
-			can_edit			: false
-			can_delete			: false
 			comments_enabled	: false
-		edit_text	: L.edit
-		delete_text	: L.delete
 		created		: ->
 			@jsonld = JSON.parse(@querySelector('script').innerHTML)
-		ready		: ->
-			@$.content.innerHTML	= @jsonld.content
+			@posts	= @jsonld['@graph']
 	);

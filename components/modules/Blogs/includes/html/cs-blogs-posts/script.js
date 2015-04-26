@@ -14,17 +14,11 @@
   (function(L) {
     return Polymer({
       publish: {
-        can_edit: false,
-        can_delete: false,
         comments_enabled: false
       },
-      edit_text: L.edit,
-      delete_text: L["delete"],
       created: function() {
-        return this.jsonld = JSON.parse(this.querySelector('script').innerHTML);
-      },
-      ready: function() {
-        return this.$.content.innerHTML = this.jsonld.content;
+        this.jsonld = JSON.parse(this.querySelector('script').innerHTML);
+        return this.posts = this.jsonld['@graph'];
       }
     });
   })(cs.Language);
