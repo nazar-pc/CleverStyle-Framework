@@ -368,14 +368,7 @@ class Posts {
 	 * @return false|int Id of created post on success of <b>false</> on failure
 	 */
 	function add ($title, $path, $content, $sections, $tags, $draft) {
-		if (empty($tags) || empty($content)) {
-			return false;
-		}
-		$sections = array_intersect(
-			array_keys(Sections::instance()->get_list()),
-			$sections
-		);
-		if (empty($sections) || count($sections) > Config::instance()->module('Blogs')->max_sections) {
+		if (!$this->check_arguments($content, $sections, $tags)) {
 			return false;
 		}
 		$id = $this->create(
@@ -399,6 +392,24 @@ class Posts {
 			);
 		}
 		return $id;
+	}
+	/**
+	 * @param string   $content
+	 * @param int[]    $sections
+	 * @param string[] $tags
+	 *
+	 * @return bool
+	 */
+	protected function check_arguments ($content, &$sections, $tags) {
+		if (empty($tags) || empty($content)) {
+			return false;
+		}
+		$sections = array_intersect(
+			array_keys(Sections::instance()->get_list()),
+			$sections
+		);
+		return
+			$sections && count($sections) <= Config::instance()->module('Blogs')->max_sections;
 	}
 	/**
 	 * Remove existing sections and set as specified
@@ -484,17 +495,7 @@ class Posts {
 	 * @return bool
 	 */
 	function set ($id, $title, $path, $content, $sections, $tags, $draft) {
-		if (empty($tags) || empty($content)) {
-			return false;
-		}
-		if (empty($tags) || empty($content)) {
-			return false;
-		}
-		$sections = array_intersect(
-			array_keys(Sections::instance()->get_list()),
-			$sections
-		);
-		if (empty($sections) || count($sections) > Config::instance()->module('Blogs')->max_sections) {
+		if (!$this->check_arguments($content, $sections, $tags)) {
 			return false;
 		}
 		$old_data = $this->get($id);
