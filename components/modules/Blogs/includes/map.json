@@ -5,6 +5,9 @@
 	"Blogs"			: [
 		"general.css",
 		"general.js",
-		"cs-blogs-post/index.html"
+		"cs-blogs-post/index.html",
+		"cs-blogs-posts/index.html",
+		"cs-blogs-posts/cs-blogs-posts-post/index.html",
+		"cs-blogs-head-actions/index.html"
 	]
 }

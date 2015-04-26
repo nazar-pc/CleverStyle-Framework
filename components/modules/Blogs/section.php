@@ -69,7 +69,7 @@ $page = max(
 	1
 );
 /**
- * If this is not first page - show that in URL
+ * If this is not first page - show that in page title
  */
 if ($page > 1) {
 	$Page->title($L->blogs_nav_page($page));

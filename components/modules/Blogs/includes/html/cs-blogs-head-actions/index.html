@@ -1,0 +1,22 @@
+<polymer-element name="cs-blogs-head-actions">
+	<template>
+		<p>
+			<template if="{{admin}}">
+				<a href="/admin/Blogs" class="uk-button" data-title="{{administration_text}}">
+					<span class="uk-icon uk-icon-gears"></span>
+				</a>
+			</template>
+			<template if="{{can_write_post}}">
+				<a href="/Blogs/new_post" class="uk-button">
+					<span class="uk-icon uk-icon-pencil"></span>
+					{{new_post_text}}
+				</a>
+				<a href="/Blogs/drafts" class="uk-button">
+					<span class="uk-icon uk-icon-archive"></span>
+					{{drafts_text}}
+				</a>
+			</template>
+		</p>
+	</template>
+	<script src="script.js"></script>
+</polymer-element>
