@@ -382,14 +382,7 @@ class Posts {
 			]
 		);
 		if ($id) {
-			$this->update_sections($id, $sections);
-			$this->update_tags($id, $tags);
-			$Cache = $this->cache;
-			unset(
-				$Cache->{"posts/$id"},
-				$Cache->sections,
-				$Cache->total_count
-			);
+			$this->final_updates_and_cache_cleanups($id, $sections, $tags);
 		}
 		return $id;
 	}
@@ -410,6 +403,21 @@ class Posts {
 		);
 		return
 			$sections && count($sections) <= Config::instance()->module('Blogs')->max_sections;
+	}
+	/**
+	 * @param int      $id
+	 * @param int[]    $sections
+	 * @param string[] $tags
+	 */
+	protected function final_updates_and_cache_cleanups ($id, $sections, $tags) {
+		$this->update_sections($id, $sections);
+		$this->update_tags($id, $tags);
+		$Cache = $this->cache;
+		unset(
+			$Cache->{"posts/$id"},
+			$Cache->sections,
+			$Cache->total_count
+		);
 	}
 	/**
 	 * Remove existing sections and set as specified
@@ -511,13 +519,7 @@ class Posts {
 			]
 		);
 		if ($result) {
-			$this->update_sections($id, $sections);
-			$this->update_tags($id, $tags);
-			$Cache = $this->cache;
-			unset(
-				$Cache->{"posts/$id"},
-				$Cache->sections
-			);
+			$this->final_updates_and_cache_cleanups($id, $sections, $tags);
 		}
 		return $result;
 	}
@@ -532,8 +534,6 @@ class Posts {
 		$id     = (int)$id;
 		$result = $this->delete($id);
 		if ($result) {
-			$this->update_sections($id, []);
-			$this->update_tags($id, []);
 			$Comments = null;
 			Event::instance()->fire(
 				'Comments/instance',
@@ -547,12 +547,7 @@ class Posts {
 			if ($Comments) {
 				$Comments->del_all($id);
 			}
-			$Cache = $this->cache;
-			unset(
-				$Cache->{"posts/$id"},
-				$Cache->sections,
-				$Cache->total_count
-			);
+			$this->final_updates_and_cache_cleanups($id, [], []);
 		}
 		return $result;
 	}
