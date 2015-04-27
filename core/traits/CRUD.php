@@ -169,7 +169,7 @@ trait CRUD {
 		$columns = "`".implode("`,`", array_keys($insert_id !== false ? $data_model : array_slice($data_model, 1)))."`";
 		$values  = implode(',', array_fill(0, count($arguments), "'%s'"));
 		$return  = $this->db_prime()->q(
-			"INSERT INTO `$table`
+			"INSERT IGNORE INTO `$table`
 				(
 					$columns
 				) VALUES (
@@ -177,10 +177,13 @@ trait CRUD {
 				)",
 			$arguments
 		);
-		if (!$return) {
+		$id      = $insert_id !== false ? $insert_id : $this->db_prime()->id();
+		/**
+		 * Id might be 0 if insertion failed or if we insert duplicate entry (which is fine since we use 'INSERT IGNORE'
+		 */
+		if (!$return || $id === 0) {
 			return false;
 		}
-		$id = $insert_id !== false ? $insert_id : $this->db_prime()->id();
 		$this->update_files_tags($id, [], $arguments);
 		/**
 		 * If on creation request without specified primary key and multilingual fields present - update needed
