@@ -108,6 +108,9 @@ trait CRUD {
 							$argument = $allowed_arguments[0];
 						}
 						break;
+					case 'json':
+						$argument = _json_encode($argument);
+						break;
 				}
 				/**
 				 * If field is multilingual - handle multilingual storing of value automatically
@@ -246,16 +249,18 @@ trait CRUD {
 				$id
 			]
 		) ?: false;
-		/**
-		 * If there are multilingual fields - handle multilingual getting of fields automatically
-		 */
-		/** @noinspection NotOptimalIfConditionsInspection */
-		if ($data && $this->is_multilingual()) {
-			/** @noinspection ForeachOnArrayComponentsInspection */
-			foreach (array_keys($this->data_model) as $field) {
-				if (strpos($this->data_model[$field], 'ml:') === 0) {
-					$data[$field] = Text::instance()->process($this->cdb(), $data[$field], true);
-				}
+		foreach (array_keys($this->data_model) as $field) {
+			/**
+			 * Handle multilingual fields automatically
+			 */
+			if (strpos($this->data_model[$field], 'ml:') === 0) {
+				$data[$field] = Text::instance()->process($this->cdb(), $data[$field], true);
+			}
+			/**
+			 * Decode JSON fields
+			 */
+			if (in_array($this->data_model[$field], ['json', 'ml:json'])) {
+				$data[$field] = _json_decode($data[$field]);
 			}
 		}
 		return $data;
