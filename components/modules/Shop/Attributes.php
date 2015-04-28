@@ -22,7 +22,8 @@ use
 class Attributes {
 	use
 		CRUD,
-		Singleton;
+		Singleton,
+		Common_actions;
 
 	const TYPE_INT_SET     = 1;
 	const TYPE_FLOAT_SET   = 2;
@@ -67,20 +68,7 @@ class Attributes {
 	 * @return array|false
 	 */
 	function get ($id) {
-		if (is_array($id)) {
-			foreach ($id as &$i) {
-				$i = $this->get($i);
-			}
-			return $id;
-		}
-		$L  = Language::instance();
-		$id = (int)$id;
-		return $this->cache->get(
-			"$id/$L->clang",
-			function () use ($id) {
-				return $this->read($id);
-			}
-		);
+		return $this->get_common($id);
 	}
 	/**
 	 * Get array of all attributes
@@ -88,15 +76,7 @@ class Attributes {
 	 * @return int[] Array of attributes ids
 	 */
 	function get_all () {
-		return $this->cache->get(
-			'all',
-			function () {
-				return $this->db()->qfas(
-					"SELECT `id`
-				FROM `$this->table`"
-				) ?: [];
-			}
-		);
+		return $this->get_all_common();
 	}
 	/**
 	 * Get array with attribute types ids as keys and string translations as values
@@ -128,19 +108,7 @@ class Attributes {
 	 * @return false|int Id of created attribute on success of <b>false</> on failure
 	 */
 	function add ($type, $title, $title_internal, $value) {
-		$id = $this->create(
-			[
-				$type,
-				'',
-				'',
-				''
-			]
-		);
-		if ($id) {
-			unset($this->cache->all);
-			$this->set($id, $type, $title, $title_internal, $value);
-		}
-		return $id;
+		return $this->add_common(func_get_args());
 	}
 	/**
 	 * Set data of specified attribute
@@ -154,23 +122,7 @@ class Attributes {
 	 * @return bool
 	 */
 	function set ($id, $type, $title, $title_internal, $value) {
-		$result = $this->update(
-			[
-				$id,
-				$type,
-				trim($title),
-				trim($title_internal),
-				xap($value)
-			]
-		);
-		if ($result) {
-			$L = Language::instance();
-			unset(
-				$this->cache->{"$id/$L->clang"},
-				$this->cache->all
-			);
-		}
-		return $result;
+		return $this->set_common(func_get_args());
 	}
 	/**
 	 * Delete specified attribute
@@ -180,15 +132,10 @@ class Attributes {
 	 * @return bool
 	 */
 	function del ($id) {
-		$id     = (int)$id;
-		$result = $this->delete($id);
-		if ($result) {
-			unset(
-				$this->cache->$id,
-				$this->cache->all,
-				Cache::instance()->{'Shop/categories'}
-			);
+		$return = $this->del_common($id);
+		if ($return) {
+			Cache::instance()->del('Shop/categories');
 		}
-		return $result;
+		return $return;
 	}
 }

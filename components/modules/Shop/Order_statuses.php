@@ -21,7 +21,8 @@ use
 class Order_statuses {
 	use
 		CRUD,
-		Singleton;
+		Singleton,
+		Common_actions;
 
 	const TYPE_OTHER            = 1;
 	const TYPE_CREATED          = 2;
@@ -70,17 +71,7 @@ class Order_statuses {
 	 * @return array|false
 	 */
 	function get ($id) {
-		if (is_array($id)) {
-			foreach ($id as &$i) {
-				$i = $this->get($i);
-			}
-			return $id;
-		}
-		$L  = Language::instance();
-		$id = (int)$id;
-		return $this->cache->get("$id/$L->clang", function () use ($id) {
-			return $this->read($id);
-		});
+		return $this->get_common($id);
 	}
 	/**
 	 * Get array of all order statuses
@@ -88,12 +79,7 @@ class Order_statuses {
 	 * @return int[] Array of order statuses ids
 	 */
 	function get_all () {
-		return $this->cache->get('all', function () {
-			return $this->db()->qfas(
-				"SELECT `id`
-				FROM `$this->table`"
-			) ?: [];
-		});
+		return $this->get_all_common();
 	}
 	/**
 	 * Get array with order status types ids as keys and string translations as values
@@ -130,17 +116,7 @@ class Order_statuses {
 	 *
 	 */
 	function add ($title, $type, $color, $send_update_status_email, $comment) {
-		$id = $this->create([
-			$title,
-			$type,
-			$color,
-			$send_update_status_email,
-			$comment
-		]);
-		if ($id) {
-			unset($this->cache->all);
-		}
-		return $id;
+		return $this->add_common(func_get_args());
 	}
 	/**
 	 * Set data of specified order status
@@ -155,23 +131,7 @@ class Order_statuses {
 	 * @return bool
 	 */
 	function set ($id, $title, $type, $color, $send_update_status_email, $comment) {
-		$id     = (int)$id;
-		$result = $this->update([
-			$id,
-			$title,
-			$type,
-			$color,
-			$send_update_status_email,
-			$comment
-		]);
-		if ($result) {
-			$L = Language::instance();
-			unset(
-				$this->cache->{"$id/$L->clang"},
-				$this->cache->all
-			);
-		}
-		return $result;
+		return $this->set_common(func_get_args());
 	}
 	/**
 	 * Delete specified order status
@@ -181,14 +141,6 @@ class Order_statuses {
 	 * @return bool
 	 */
 	function del ($id) {
-		$id     = (int)$id;
-		$result = $this->delete($id);
-		if ($result) {
-			unset(
-				$this->cache->$id,
-				$this->cache->all
-			);
-		}
-		return $result;
+		return $this->del_common($id);
 	}
 }

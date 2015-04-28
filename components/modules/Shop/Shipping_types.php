@@ -29,7 +29,8 @@ use
 class Shipping_types {
 	use
 		CRUD,
-		Singleton;
+		Singleton,
+		Common_actions;
 
 	protected $data_model          = [
 		'id'             => 'int',
@@ -65,23 +66,21 @@ class Shipping_types {
 	 * @return array|false
 	 */
 	function get ($id) {
-		if (is_array($id)) {
-			foreach ($id as &$i) {
-				$i = $this->get($i);
-			}
-			return $id;
-		}
-		$L  = Language::instance();
-		$id = (int)$id;
-		return $this->cache->get("$id/$L->clang", function () use ($id) {
-			return $this->read($id);
-		});
+		return $this->get_common($id);
+	}
+	/**
+	 * Get array of all shipping types
+	 *
+	 * @return int[] Array of shipping types ids
+	 */
+	function get_all () {
+		return $this->get_all_common();
 	}
 	/**
 	 * Get shipping type data for specific user (price might be adjusted, some shipping types may be restricted and so on)
 	 *
-	 * @param int|int[]  $id
-	 * @param false|int  $user
+	 * @param int|int[] $id
+	 * @param false|int $user
 	 *
 	 * @return array|false
 	 */
@@ -97,27 +96,17 @@ class Shipping_types {
 		}
 		$user = (int)$user ?: User::instance()->id;
 		$data = $this->get($id);
-		if (!Event::instance()->fire('Shop/Shipping_type/get_for_user', [
-			'data' => &$data,
-			'user' => $user
-		])
+		if (!Event::instance()->fire(
+			'Shop/Shipping_type/get_for_user',
+			[
+				'data' => &$data,
+				'user' => $user
+			]
+		)
 		) {
 			return false;
 		}
 		return $data;
-	}
-	/**
-	 * Get array of all shipping types
-	 *
-	 * @return int[] Array of shipping types ids
-	 */
-	function get_all () {
-		return $this->cache->get('all', function () {
-			return $this->db()->qfas(
-				"SELECT `id`
-				FROM `$this->table`"
-			) ?: [];
-		});
 	}
 	/**
 	 * Add new shipping type
@@ -131,17 +120,7 @@ class Shipping_types {
 	 * @return false|int Id of created item on success of <b>false</> on failure
 	 */
 	function add ($price, $phone_needed, $address_needed, $title, $description) {
-		$id = $this->create([
-			$price,
-			$phone_needed,
-			$address_needed,
-			$title,
-			$description
-		]);
-		if ($id) {
-			unset($this->cache->all);
-		}
-		return $id;
+		return $this->add_common(func_get_args());
 	}
 	/**
 	 * Set data of specified shipping type
@@ -156,23 +135,7 @@ class Shipping_types {
 	 * @return bool
 	 */
 	function set ($id, $price, $phone_needed, $address_needed, $title, $description) {
-		$id     = (int)$id;
-		$result = $this->update([
-			$id,
-			$price,
-			$phone_needed,
-			$address_needed,
-			$title,
-			$description
-		]);
-		if ($result) {
-			$L = Language::instance();
-			unset(
-				$this->cache->{"$id/$L->clang"},
-				$this->cache->all
-			);
-		}
-		return $result;
+		return $this->set_common(func_get_args());
 	}
 	/**
 	 * Delete specified shipping type
@@ -182,14 +145,6 @@ class Shipping_types {
 	 * @return bool
 	 */
 	function del ($id) {
-		$id     = (int)$id;
-		$result = $this->delete($id);
-		if ($result) {
-			unset(
-				$this->cache->$id,
-				$this->cache->all
-			);
-		}
-		return $result;
+		return $this->del_common($id);
 	}
 }
