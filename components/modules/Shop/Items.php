@@ -540,8 +540,8 @@ class Items {
 			$Attributes      = Attributes::instance();
 			$title_attribute = Categories::instance()->get($category)['title_attribute'];
 			foreach ($attributes as $attribute => &$value) {
-				$attribute = $Attributes->get($attribute);
-				if (!$attribute && $attribute != '0') {
+				$attribute_data = $Attributes->get($attribute);
+				if (!$attribute_data) {
 					unset($attributes[$attribute]);
 					continue;
 				}
@@ -551,7 +551,7 @@ class Items {
 					'text'    => ''
 				];
 				$lang       = '';
-				switch ($this->attribute_type_to_value_field($attribute['type'])) {
+				switch ($this->attribute_type_to_value_field($attribute_data['type'])) {
 					case 'numeric_value':
 						$value_type['numeric'] = $value;
 						break;
@@ -560,7 +560,7 @@ class Items {
 						/**
 						 * Multilingual feature only for title attribute
 						 */
-						if ($attribute['id'] == $title_attribute) {
+						if ($attribute_data['id'] == $title_attribute) {
 							$lang = $L->clang;
 						}
 						break;
@@ -572,7 +572,7 @@ class Items {
 						break;
 				}
 				$value = [
-					$attribute['id'],
+					$attribute_data['id'],
 					$value_type['numeric'],
 					$value_type['string'],
 					$value_type['text'],
@@ -656,28 +656,7 @@ class Items {
 		/**
 		 * Cleaning old files and registering new ones
 		 */
-		if ($old_files || $new_files) {
-			foreach (array_diff($old_files, $new_files) as $file) {
-				Event::instance()->fire(
-					'System/upload_files/del_tag',
-					[
-						'tag' => "Shop/items/$id/$L->clang",
-						'url' => $file
-					]
-				);
-			}
-			unset($file);
-			foreach (array_diff($new_files, $old_files) as $file) {
-				Event::instance()->fire(
-					'System/upload_files/add_tag',
-					[
-						'tag' => "Shop/items/$id/$L->clang",
-						'url' => $file
-					]
-				);
-			}
-			unset($file);
-		}
+		$this->update_files_tags("Shop/items/$id/$L->clang", $old_files, $new_files);
 		unset($old_files, $new_files);
 		/**
 		 * Tags processing

@@ -39,7 +39,7 @@ class Attributes {
 		'type'           => 'int',
 		'title'          => 'ml:text',
 		'title_internal' => 'ml:text',
-		'value'          => 'ml:'
+		'value'          => 'ml:json'
 	];
 	protected $data_model_ml_group = 'Shop/attributes';
 	protected $table               = '[prefix]shop_attributes';
@@ -75,11 +75,12 @@ class Attributes {
 		}
 		$L  = Language::instance();
 		$id = (int)$id;
-		return $this->cache->get("$id/$L->clang", function () use ($id) {
-			$data          = $this->read($id);
-			$data['value'] = $data['value'] ? _json_decode($data['value']) : '';
-			return $data;
-		});
+		return $this->cache->get(
+			"$id/$L->clang",
+			function () use ($id) {
+				return $this->read($id);
+			}
+		);
 	}
 	/**
 	 * Get array of all attributes
@@ -87,12 +88,15 @@ class Attributes {
 	 * @return int[] Array of attributes ids
 	 */
 	function get_all () {
-		return $this->cache->get('all', function () {
-			return $this->db()->qfas(
-				"SELECT `id`
+		return $this->cache->get(
+			'all',
+			function () {
+				return $this->db()->qfas(
+					"SELECT `id`
 				FROM `$this->table`"
-			) ?: [];
-		});
+				) ?: [];
+			}
+		);
 	}
 	/**
 	 * Get array with attribute types ids as keys and string translations as values
@@ -124,12 +128,14 @@ class Attributes {
 	 * @return false|int Id of created attribute on success of <b>false</> on failure
 	 */
 	function add ($type, $title, $title_internal, $value) {
-		$id = $this->create([
-			$type,
-			'',
-			'',
-			''
-		]);
+		$id = $this->create(
+			[
+				$type,
+				'',
+				'',
+				''
+			]
+		);
 		if ($id) {
 			unset($this->cache->all);
 			$this->set($id, $type, $title, $title_internal, $value);
@@ -148,13 +154,15 @@ class Attributes {
 	 * @return bool
 	 */
 	function set ($id, $type, $title, $title_internal, $value) {
-		$result = $this->update([
-			$id,
-			$type,
-			trim($title),
-			trim($title_internal),
-			is_array($value) ? _json_encode(xap($value)) : ''
-		]);
+		$result = $this->update(
+			[
+				$id,
+				$type,
+				trim($title),
+				trim($title_internal),
+				xap($value)
+			]
+		);
 		if ($result) {
 			$L = Language::instance();
 			unset(
