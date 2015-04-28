@@ -78,6 +78,12 @@ if (ob_get_contents()) {
 ob_end_clean();
 echo "Building finished, uploading to SourceForge...\n";
 
+exec('openssl enc -d -aes-256-cbc -in gpg.asc.enc -out gpg.asc -pass env:KEYPASS 2>/dev/null');
+exec('gpg --import gpg.asc');
+foreach (get_files_list(DIR.'/dist', false, 'f', true) as $file) {
+	exec("echo \$KEYPASS | gpg -abs $file");
+}
+
 exec('openssl enc -d -aes-256-cbc -in id_rsa.enc -out id_rsa -pass env:KEYPASS 2>/dev/null');
 chmod(DIR.'/id_rsa', 0600);
 $target_directory = $tag ? "stable/$tag" : 'nightly';
