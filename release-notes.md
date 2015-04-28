@@ -481,3 +481,122 @@ Dropped backward compatibility:
   * `versions.json` contents of components now available as `update_versions` field in `meta.json`
 
 Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
+
+# 2.28.0+build-1076: Semantics matters
+
+Significant amount of changes comparing to few previous releases.
+
+Starting from this release and onwards we'll move components towards using JSON-LD and Web Components. First module that works in such way on user side is Blogs.
+
+Also this release includes important fixes for some regressions that made it unable to install module that uses DB in simple mode because of incorrect dependencies resolution.
+
+As usual many small fixes and improvements, especially exiting improvements happened in `\cs\CRUD` trait that now supports JSON type, html with iframes and automatically handles files uploads + introduces new simplified interface.
+
+And the last important thing here: all new builds and git tags are [digitally signed](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages#digital-signature) now!
+
+New components:
+* New **Json_ld** plugin - simplifies some parts of JSON-LD generation
+* New **Tags** plugin - currently contains single trait, is used by other components in order to avoid code duplication
+
+New features:
+* `\cs\CRUD::*()` methods now work like `\cs\CRUD::*_simple()` which are now deprecated
+* New upstream version of BananaHTML:
+  * If boolean value specified for some attribute - `false` means no attribute and `true` means attribute without value (or with value as name in case of XHTML tags style)
+  * `$known_unit_atributes` had typo, refactored to `$known_unit_attributes`
+  * Some small types corrections
+* Blogs module now uses JSON-LD and Web Components to render semantic and highly customizable pages
+
+Updates:
+* New upstream version of UPF, `JSON_UNESCAPED_SLASHES` added to `_json_encode`
+* New build of patched Polymer:
+  * Applied patch for same name extending to latest upstream master
+  * Fixed inheritance if Chromium
+* New upstream version of UIkit
+
+Fixes and small improvements:
+* Rewrite of `\cs\DB` class
+* `maindb_for_write` system option replaced with `db_mirror_mode` that allows too choose from Master-Master or Master-Slave configuration
+* `\cs\False_class` updated to support more scenarios and reformatted
+* Small fix and reformatting of `\cs\Mock_object`
+* Restored buttons order in `\cs\Index` class
+* Dropped micro-optimization in `\cs\Cache`, reformatted
+* Do not show empty forms for db and storage selection during module installation
+* Use simple admin mode by default
+* Better performance of session creation
+* Support for additional classes in `h::radio()` and `h::checkbox()`
+* `\cs\Index::$apply_button` now defaults to `false`, as this value is used MUCH more often, not likely to cause backward incompatibility, but potentially can hide `apply` button somewhere
+* Simplification because of new default value of `\cs\Index::$apply_button`
+* Shop: Fixes for some header comments in Shop module's files
+* Use `script[type=application/json]` instead of `template` for user-side configs, also eliminates need for some pre- and post-processing
+* Fix for creation and deletion of items with not-numeric primary key in `\cs\CRUD` trait
+* PhpDoc improvements in `\cs\CRUD` trait
+* Fix for `\cs\User\Properties::avatar()` infinite loop
+* Blogs: New format of `tags` item of returned post data in `Blogs` module
+* Blogs: `\cs\modules\Blogs::get_as_json_ld()` method added
+* Blogs: Post page now uses JSON-LD and Web Components instead of server-side HTML markup
+* Blogs: More technical data returned with JSON-LD structure
+* Transition from using deprecated methods of `\cs\CRUD`
+* PhpDoc fixes, small tweaks and reformatting of `\cs\User\Data`
+* Return strictly boolean in `\cs\User\Data::set_data()` and `::del_data()`
+* More polishing with improved PhpDoc and reformatting for `\cs\User\*` traits
+* Reformatting of `\cs\Group`
+* `\cs\DB\_Abstract` trait refactored.
+* Simplifications and PhpDoc improvements in `\cs\Language`
+* PhpDoc fix and reformatting of `\cs\Language\Prefix`
+* Sacrifice a bit of performance (loop will not be too big to cause any measurable performance issues)  to make `\cs\DB\MySQLi::f()` code smaller and simpler
+* Huge refactoring of `\cs\Language::change()`, should be simpler to understand and easier to modify now
+* Fix for showing/hiding smtp settings in administration
+* Refactoring of `\cs\Mail::send_to()`
+* Improved signature formatting in HTML emails
+* Fixed attachments addition to emails sent
+* Huge refactoring of `\cs\Session` class, should be simpler and a bit faster now
+* Common code decoupled and simplified in `\cs\\h\Base::checkbox()` and `::radio()`
+* Reformatting of `\cs\Base`
+* Splitting `\cs\Core::constructor()` into 2 methods, reformatting
+* Splitting `\cs\DB::connecting()` into 2 methods
+* Fix for blocks were not rendered if previous block was rendered by event handler
+* Decision whether to render block decoupled into separate method
+* Splitting `\cs\Page\Meta::render()` into 2 methods
+* `\cs\Route::process_route()` refactoring
+* Fix in Builder that produced incorrect `fs.json` files for packages when building system core package with built-in components
+* Fix for displaying System version during installation process
+* Fix for database check during dependencies resolution at module installation
+* Content: Fix for untranslated save button in Content module
+* HybridAuth: Fix for HybridAuth catches `\ExitException` and unable to authenticate
+* Some low-level error messages now untranslated in order to be properly shown in log file
+* Old unused translations removed
+* `\cs\CRUD::$data_model_files_tag_prefix` added, allows extremely simple solution to maintain tags for uploaded files automatically
+* Added support for `html_iframe` in `\cs\CRUD` as possible type for data model
+* Static pages: `\cs\modules\Static_pages\Static_pages` splitted into `\cs\modules\Static_pages\Pages` and `\cs\modules\Static_pages\Categories`, both now uses `\cs\CRUD` which simplified code a lot
+* Static pages: Files uploaded through editor now are tagged by Static pages module
+* Refactoring of `\cs\Page\Includes`
+* `\cs\modules\Blogs\Blogs` splitted into `\cs\modules\Blogs\Posts`, `\cs\modules\Blogs\Sections` and `\cs\modules\Blogs\Tags`
+* `functionality()` function now account components names as functionalities as well (for convenience)
+* `pages()` function now sets canonical URL automatically, also it was reformatted and a bit simplified
+* Blogs: Section page of Blogs module now renders posts as Web Components using JSON-LD
+* Blogs: Section, tag, latest posts and drafts pages with posts list are now all rendered with JSON-LD and Web Components
+* Blogs: Helper class added instead of plain functions
+* Simplification in `\cs\DB\_Abstract`
+* Fix for files tags were not changed during update in `\cs\CRUD` when multilingual interface is used
+* Blogs: `\cs\modules\Blogs\Posts` uses `\cs\CRUD`
+* Use `INSERT IGNORE` in `\cs\CRUD` which is helpful in some cases
+* Tags plugin added - contains trait that will be used by other modules
+* Blogs: Blogs module now uses Tags plugin for tags management
+* Better PhpDoc types in `\cs\DB\_Abstract`
+* Shop: Shop module now also uses Tags plugin for tags management
+* Make more `\cs\CRUD` methods protected instead of private to allow their usage from outside
+* JSON data type support added to `\cs\CRUD`
+* Improved URLs detection in `\cs\CRUD`, now fields that contain URLs by themselves are supported
+* Shop: Shop module now uses some new features of `\cs\CRUD` trait
+* Shop: Few classes in Shop module had a lot of common functionality, now it is concentrated in single trait
+* Shop: `\cs\CRUD` use moved to `cs\modules\Shop\Common_actions` in Shop module
+* New upstream version of UIkit
+* Fix for Blockchain_payment module package name in `meta.json`
+
+Deprecations:
+* `\cs\CRUD::*_simple()` methods now deprecated, `\cs\CRUD::*()` methods should be used instead with the same syntax, full backward compatibility is present
+
+Possible partial compatibility breaking (very unlikely, but still possible):
+* Dropped support for 2-level arrays in `\cs\DB\_Abstract::q()` (very unlikely someone used this construction since it was not documented and looks too complex)
+
+Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
