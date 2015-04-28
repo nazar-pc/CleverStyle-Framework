@@ -13,7 +13,6 @@ use
 	cs\Event,
 	cs\Language,
 	cs\User,
-	cs\CRUD,
 	cs\Singleton;
 
 /**
@@ -28,7 +27,6 @@ use
  */
 class Shipping_types {
 	use
-		CRUD,
 		Singleton,
 		Common_actions;
 

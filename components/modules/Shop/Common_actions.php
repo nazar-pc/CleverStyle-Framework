@@ -8,8 +8,15 @@
  */
 namespace cs\modules\Shop;
 use
+	cs\CRUD,
 	cs\Language;
+/**
+ * @property \cs\Cache\Prefix $cache
+ * @property string           $table
+ */
 trait Common_actions {
+	use
+		CRUD;
 	/**
 	 * Get item
 	 *

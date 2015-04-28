@@ -12,7 +12,6 @@ use
 	cs\Config,
 	cs\Language,
 	cs\Language\Prefix as Language_prefix,
-	cs\CRUD,
 	cs\Singleton;
 
 /**
@@ -20,7 +19,6 @@ use
  */
 class Order_statuses {
 	use
-		CRUD,
 		Singleton,
 		Common_actions;
 
