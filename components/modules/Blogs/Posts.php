@@ -149,9 +149,9 @@ class Posts {
 					'title'          => 'headline',
 					'comments_count' => 'commentCount',
 					'tags'           => 'keywords',
-					'datetime'       => '',
-					'sections_paths' => '',
-					'tags_paths'     => ''
+					'datetime'       => null,
+					'sections_paths' => null,
+					'tags_paths'     => null
 				] + Json_ld::context_stub(isset($post[0]) ? $post[0] : $post)
 		];
 		if (isset($post[0])) {
