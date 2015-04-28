@@ -24,6 +24,7 @@ $title    = [
 ];
 $Posts    = Posts::instance();
 $Sections = Sections::instance();
+$Tags     = Tags::instance();
 $number   = $Config->module('Blogs')->posts_per_page;
 if (isset($_GET['section'])) {
 	$section = $Sections->get($_GET['section']);
@@ -35,14 +36,14 @@ if (isset($_GET['section'])) {
 	$title[] = $section['title'];
 	$posts   = $Posts->get_for_section($section['id'], 1, $number);
 } elseif (isset($_GET['tag'])) {
-	$tag = $Posts->find_tag($_GET['tag']);
+	$tag = $Tags->get($_GET['tag']);
 	if (!$tag) {
 		error_code(404);
 		return;
 	}
 	$title[] = $L->tag;
-	$title[] = $Posts->get_tag($tag);
-	$posts   = $Posts->get_for_tag($tag, $L->clang, 1, $number);
+	$title[] = $tag['text'];
+	$posts   = $Posts->get_for_tag($tag['id'], $L->clang, 1, $number);
 } else {
 	$posts = $Posts->get_latest_posts(1, $number);
 }
@@ -61,6 +62,7 @@ function get_favicon_path ($theme) {
 	}
 	return 'favicon.ico';
 }
+
 /**
  * @var \cs\_SERVER $_SERVER
  */
@@ -69,43 +71,65 @@ $Page->content(
 	h::feed(
 		h::title($title).
 		h::id($Config->core_url().$_SERVER->request_uri).
-		str_replace('>', '/>', h::link([
-			'href' => $Config->core_url().$_SERVER->request_uri,
-			'rel'  => 'self'
-		])).
+		str_replace(
+			'>',
+			'/>',
+			h::link(
+				[
+					'href' => $Config->core_url().$_SERVER->request_uri,
+					'rel'  => 'self'
+				]
+			)
+		).
 		h::updated(date('c')).
 		'<icon>'.get_favicon_path($Config->core['theme'])."</icon>\n".
-		h::entry(array_map(function ($post) use ($Posts, $Sections, $User, $base_url) {
-			$post = $Posts->get($post);
-			return
-				h::title($post['title']).
-				h::id("$base_url/Blogs/:$post[id]").
-				h::updated(date('c', $post['date'])).
-				h::published(date('c', $post['date'])).
-				str_replace('>', '/>', h::link([
-					'href' => "$base_url/Blogs/:$post[id]"
-				])).
-				h::{'author name'}($User->username($post['user'])).
-				h::category($post['sections'] == ['0'] ? false : array_map(function ($category) {
-					return [
-						'term'  => h::prepare_attr_value($category['title']),
-						'label' => h::prepare_attr_value($category['title']),
-						'level' => 0
-					];
-				}, $Sections->get($post['sections']))).
-				h::summary(
-					htmlentities($post['short_content']),
-					[
-						'type' => 'html'
-					]
-				).
-				h::content(
-					htmlentities($post['content']),
-					[
-						'type' => 'html'
-					]
-				);
-		}, $posts ?: [])),
+		h::entry(
+			array_map(
+				function ($post) use ($Posts, $Sections, $User, $base_url) {
+					$post = $Posts->get($post);
+					return
+						h::title($post['title']).
+						h::id("$base_url/Blogs/:$post[id]").
+						h::updated(date('c', $post['date'])).
+						h::published(date('c', $post['date'])).
+						str_replace(
+							'>',
+							'/>',
+							h::link(
+								[
+									'href' => "$base_url/Blogs/:$post[id]"
+								]
+							)
+						).
+						h::{'author name'}($User->username($post['user'])).
+						h::category(
+							$post['sections'] == ['0'] ? false : array_map(
+								function ($category) {
+									return [
+										'term'  => h::prepare_attr_value($category['title']),
+										'label' => h::prepare_attr_value($category['title']),
+										'level' => 0
+									];
+								},
+								$Sections->get($post['sections'])
+							)
+						).
+						h::summary(
+							htmlentities($post['short_content']),
+							[
+								'type' => 'html'
+							]
+						).
+						h::content(
+							htmlentities($post['content']),
+							[
+								'type' => 'html'
+							]
+						);
+				},
+				$posts ?: []
+			)
+		),
 		[
 			'xmlns'    => 'http://www.w3.org/2005/Atom',
 			'xml:lang' => $L->clang,

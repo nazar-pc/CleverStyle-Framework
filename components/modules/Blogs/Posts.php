@@ -84,17 +84,12 @@ class Posts {
 						FROM `$this->table_sections`
 						WHERE `id` = $id"
 					);
-					$data['tags']          = $this->get_tag(
-						$this->db()->qfas(
-							[
-								"SELECT DISTINCT `tag`
-								FROM `$this->table_tags`
-								WHERE
-									`id`	= $id AND
-									`lang`	= '%s'",
-								$L->clang
-							]
-						) ?: []
+					$data['tags']          = $this->db()->qfas(
+						"SELECT DISTINCT `tag`
+						FROM `$this->table_tags`
+						WHERE
+							`id`	= $id AND
+							`lang`	= '$L->clang'"
 					);
 					if (!$data['tags']) {
 						$l            = $this->db()->qfs(
@@ -111,6 +106,10 @@ class Posts {
 								`lang`	= '$l'"
 						);
 					}
+					$data['tags'] = array_column(
+						Tags::instance()->get($data['tags']),
+						'text'
+					);
 				}
 				return $data;
 			}
@@ -485,7 +484,7 @@ class Posts {
 					%d,
 					'$L->clang'
 				)",
-			$this->process_tags($tags),
+			Tags::instance()->add($tags),
 			true
 		);
 	}
@@ -566,91 +565,6 @@ class Posts {
 					WHERE `draft` = 0"
 				);
 			}
-		);
-	}
-	/**
-	 * Get tag text
-	 *
-	 * @param int|int[] $id
-	 *
-	 * @return string|string[]
-	 */
-	function get_tag ($id) {
-		if (is_array($id)) {
-			foreach ($id as &$i) {
-				$i = $this->get_tag($i);
-			}
-			return $id;
-		}
-		$id = (int)$id;
-		return $this->cache->get(
-			"tags/$id",
-			function () use ($id) {
-				return $this->db()->qfs(
-					[
-						"SELECT `text`
-						FROM `[prefix]blogs_tags`
-						WHERE `id` = '%s'
-						LIMIT 1",
-						$id
-					]
-				);
-			}
-		);
-	}
-	/**
-	 * Find tag by its text
-	 *
-	 * @param string $tag_text
-	 *
-	 * @return false|int
-	 */
-	function find_tag ($tag_text) {
-		return $this->db()->qfs(
-			[
-				"SELECT `id`
-				FROM  `[prefix]blogs_tags`
-				WHERE `text` = '%s'
-				LIMIT 1",
-				trim(xap($tag_text))
-			]
-		);
-	}
-	/**
-	 * Accepts array of string tags and returns corresponding array of id's of these tags, new tags will be added automatically
-	 *
-	 * @param string[] $tags
-	 *
-	 * @return int[]
-	 */
-	protected function process_tags ($tags) {
-		if (!$tags) {
-			return [];
-		}
-		$tags = xap($tags);
-		$cdb  = $this->db_prime();
-		$cdb->insert(
-			"INSERT IGNORE INTO `[prefix]blogs_tags`
-				(`text`)
-			VALUES
-				('%s')",
-			array_map(
-				function ($tag) {
-					return [$tag];
-				},
-				$tags
-			),
-			true
-		);
-		$in = [];
-		foreach ($tags as $tag) {
-			$in[] = $cdb->s($tag);
-		}
-		$in = implode(',', $in);
-		return $cdb->qfas(
-			"SELECT `id`
-			FROM `[prefix]blogs_tags`
-			WHERE `text` IN($in)"
 		);
 	}
 }

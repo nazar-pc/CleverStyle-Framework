@@ -26,6 +26,7 @@ $L      = Language::instance();
 $Meta   = Meta::instance();
 $Page   = Page::instance();
 $Posts  = Posts::instance();
+$Tags   = Tags::instance();
 $Route  = Route::instance();
 /**
  * If no tag specified
@@ -37,15 +38,12 @@ if (!isset($Route->path[1])) {
 /**
  * Find tag
  */
-$tag = $Posts->find_tag($Route->path[1]);
+$tag = $Tags->get_by_text($Route->path[1]);
 if (!$tag) {
 	error_code(404);
 	return;
 }
-$tag = [
-	'id'   => $tag,
-	'text' => $Posts->get_tag($tag)
-];
+$tag = $Tags->get($tag);
 /**
  * Add tag to page title
  */
