@@ -1,0 +1,14 @@
+{
+	"package"     : "Tags",
+	"category"    : "plugins",
+	"version"     : "1.0.0+build-1",
+	"description" : "Contains trait that is used for Tags creation and search by other modules",
+	"author"      : "Nazar Mokrynskyi",
+	"website"     : "cleverstyle.org/cms",
+	"license"     : "MIT License",
+	"provide"     : "tags_trait",
+	"require"     : [
+		"System>=2.23",
+		"System<=3.0"
+	]
+}

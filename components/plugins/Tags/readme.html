@@ -1,0 +1,7 @@
+<h3 style="text-align: center;">Tags trait</h3>
+<p>Expected table structure is very simple:</p>
+<ul>
+	<li><code>id</code> - integer autoincrement field, primary key</li>
+	<li><code>text</code> - varchar field, unique key</li>
+</ul>
+<p>Class that uses <code>Tags</code> trait should define protected <code>cdb()</code> method (for <code>\cs\DB\Accessor</code> trait), protected properties <code>$cache</code> with instance of <code>\cs\Cache\Prefix</code> and <code>$table</code> with string table name.</p>
