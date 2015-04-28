@@ -9,7 +9,7 @@ do (L = cs.Language) ->
 	Polymer(
 		publish		:
 			comments_enabled	: false
-		created		: ->
+		ready		: ->
 			@jsonld = JSON.parse(@querySelector('script').innerHTML)
 			@posts	= @jsonld['@graph']
 	);

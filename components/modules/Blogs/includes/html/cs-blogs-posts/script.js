@@ -16,7 +16,7 @@
       publish: {
         comments_enabled: false
       },
-      created: function() {
+      ready: function() {
         this.jsonld = JSON.parse(this.querySelector('script').innerHTML);
         return this.posts = this.jsonld['@graph'];
       }
