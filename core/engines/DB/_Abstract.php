@@ -332,7 +332,7 @@ abstract class _Abstract {
 	 * @param bool         $array   If <b>true</b> returns array of associative arrays of all fetched rows
 	 * @param bool         $indexed If <b>false</b> - associative array will be returned
 	 *
-	 * @return false|string
+	 * @return false|int|string
 	 */
 	function qfs ($query, $array = false, $indexed = false) {
 		list($query, $params) = $this->q_prepare($query);
@@ -349,7 +349,7 @@ abstract class _Abstract {
 	 * @param array|string $query   SQL query string, or you can put all parameters, that ::q() function can accept in form of array
 	 * @param bool         $indexed If <b>false</b> - associative array will be returned
 	 *
-	 * @return false|string[]
+	 * @return false|int[]|string[]
 	 */
 	function qfas ($query, $indexed = false) {
 		list($query, $params) = $this->q_prepare($query);
