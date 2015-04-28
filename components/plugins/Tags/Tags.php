@@ -87,8 +87,7 @@ trait Tags {
 		if (!$tags) {
 			return false;
 		}
-		$tags = array_filter(_trim(xap($tags)));
-		$tags = array_filter($tags);
+		$tags = array_unique(array_filter(_trim(xap($tags))));
 		if (!$tags) {
 			return false;
 		}

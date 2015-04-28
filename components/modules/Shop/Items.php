@@ -95,31 +95,14 @@ class Items {
 		}
 		$L    = Language::instance();
 		$id   = (int)$id;
-		$data = $this->cache->get("$id/$L->clang", function () use ($id, $L) {
-			$data = $this->read($id);
-			if (!$data) {
-				return false;
-			}
-			$data['attributes'] = $this->db()->qfa(
-				"SELECT
-					`attribute`,
-					`numeric_value`,
-					`string_value`,
-					`text_value`
-				FROM `{$this->table}_attributes`
-				WHERE
-					`id` = $id AND
-					(
-						`lang`	= '$L->clang' OR
-						`lang`	= ''
-					)"
-			) ?: [];
-			$category           = Categories::instance()->get($data['category']);
-			/**
-			 * If title attribute is not yet translated to current language
-			 */
-			if (!in_array($category['title_attribute'], array_column($data['attributes'], 'attribute'))) {
-				$data['attributes'][] = $this->db()->qf(
+		$data = $this->cache->get(
+			"$id/$L->clang",
+			function () use ($id, $L) {
+				$data = $this->read($id);
+				if (!$data) {
+					return false;
+				}
+				$data['attributes'] = $this->db()->qfa(
 					"SELECT
 						`attribute`,
 						`numeric_value`,
@@ -127,89 +110,115 @@ class Items {
 						`text_value`
 					FROM `{$this->table}_attributes`
 					WHERE
-						`id`		= $id AND
-						`attribute`	= $category[title_attribute]
-					LIMIT 1"
-				);
-			}
-			/**
-			 * If title attribute is not yet translated to current language
-			 */
-			if ($category['description_attribute'] && !in_array($category['description_attribute'], array_column($data['attributes'], 'attribute'))) {
-				$data['attributes'][] = $this->db()->qf(
-					"SELECT
-						`attribute`,
-						`numeric_value`,
-						`string_value`,
-						`text_value`
-					FROM `{$this->table}_attributes`
-					WHERE
-						`id`		= $id AND
-						`attribute`	= $category[description_attribute]
-					LIMIT 1"
-				);
-			}
-			$Attributes = Attributes::instance();
-			foreach ($data['attributes'] as $index => &$value) {
-				$attribute = $Attributes->get($value['attribute']);
-				if ($attribute) {
-					$value['value'] = $value[$this->attribute_type_to_value_field($attribute['type'])];
-				} else {
-					$value['value'] = $value['text_value'];
-					if (!strlen($value['value'])) {
-						$value['value'] = $value['string_value'];
-					}
-					if (!strlen($value['value'])) {
-						$value['value'] = $value['numeric_value'];
+						`id` = $id AND
+						(
+							`lang`	= '$L->clang' OR
+							`lang`	= ''
+						)"
+				) ?: [];
+				$category           = Categories::instance()->get($data['category']);
+				/**
+				 * If title attribute is not yet translated to current language
+				 */
+				if (!in_array($category['title_attribute'], array_column($data['attributes'], 'attribute'))) {
+					$data['attributes'][] = $this->db()->qf(
+						"SELECT
+							`attribute`,
+							`numeric_value`,
+							`string_value`,
+							`text_value`
+						FROM `{$this->table}_attributes`
+						WHERE
+							`id`		= $id AND
+							`attribute`	= $category[title_attribute]
+						LIMIT 1"
+					);
+				}
+				/**
+				 * If title attribute is not yet translated to current language
+				 */
+				if ($category['description_attribute'] && !in_array($category['description_attribute'], array_column($data['attributes'], 'attribute'))) {
+					$data['attributes'][] = $this->db()->qf(
+						"SELECT
+							`attribute`,
+							`numeric_value`,
+							`string_value`,
+							`text_value`
+						FROM `{$this->table}_attributes`
+						WHERE
+							`id`		= $id AND
+							`attribute`	= $category[description_attribute]
+						LIMIT 1"
+					);
+				}
+				$Attributes = Attributes::instance();
+				foreach ($data['attributes'] as $index => &$value) {
+					$attribute = $Attributes->get($value['attribute']);
+					if ($attribute) {
+						$value['value'] = $value[$this->attribute_type_to_value_field($attribute['type'])];
+					} else {
+						$value['value'] = $value['text_value'];
+						if (!strlen($value['value'])) {
+							$value['value'] = $value['string_value'];
+						}
+						if (!strlen($value['value'])) {
+							$value['value'] = $value['numeric_value'];
+						}
 					}
 				}
-			}
-			unset($index, $value, $attribute);
-			$data['attributes']  = array_column($data['attributes'], 'value', 'attribute');
-			$data['title']       = $data['attributes'][$category['title_attribute']];
-			$data['description'] = @$data['attributes'][$category['description_attribute']] ?: '';
-			$data['images']      = $this->db()->qfas(
-				"SELECT `image`
-				FROM `{$this->table}_images`
-				WHERE `id` = $id"
-			) ?: [];
-			$data['videos']      = $this->db()->qfa(
-				"SELECT
-					`video`,
-					`poster`,
-					`type`
-				FROM `{$this->table}_videos`
-				WHERE `id` = $id"
-			) ?: [];
-			$data['tags']        = $this->db()->qfas(
-				"SELECT DISTINCT `tag`
-				FROM `{$this->table}_tags`
-				WHERE
-					`id`	= $id AND
-					`lang`	= '$L->clang'"
-			) ?: [];
-			if (!$data['tags']) {
-				$l            = $this->db()->qfs(
-					"SELECT `lang`
-					FROM `{$this->table}_tags`
-					WHERE `id` = $id
-					LIMIT 1"
-				);
-				$data['tags'] = $this->db()->qfas(
+				unset($index, $value, $attribute);
+				$data['attributes']  = array_column($data['attributes'], 'value', 'attribute');
+				$data['title']       = $data['attributes'][$category['title_attribute']];
+				$data['description'] = @$data['attributes'][$category['description_attribute']] ?: '';
+				$data['images']      = $this->db()->qfas(
+					"SELECT `image`
+					FROM `{$this->table}_images`
+					WHERE `id` = $id"
+				) ?: [];
+				$data['videos']      = $this->db()->qfa(
+					"SELECT
+						`video`,
+						`poster`,
+						`type`
+					FROM `{$this->table}_videos`
+					WHERE `id` = $id"
+				) ?: [];
+				$data['tags']        = $this->db()->qfas(
 					"SELECT DISTINCT `tag`
 					FROM `{$this->table}_tags`
 					WHERE
 						`id`	= $id AND
-						`lang`	= '$l'"
+						`lang`	= '$L->clang'"
 				) ?: [];
-				unset($l);
+				if (!$data['tags']) {
+					$l            = $this->db()->qfs(
+						"SELECT `lang`
+						FROM `{$this->table}_tags`
+						WHERE `id` = $id
+						LIMIT 1"
+					);
+					$data['tags'] = $this->db()->qfas(
+						"SELECT DISTINCT `tag`
+						FROM `{$this->table}_tags`
+						WHERE
+							`id`	= $id AND
+							`lang`	= '$l'"
+					) ?: [];
+					unset($l);
+				}
+				$data['tags'] = array_column(
+					Tags::instance()->get($data['tags']),
+					'text'
+				);
+				return $data;
 			}
-			$data['tags'] = Tags::instance()->get($data['tags']);
-			return $data;
-		});
-		if (!Event::instance()->fire('Shop/Items/get', [
-			'data' => &$data
-		])
+		);
+		if (!Event::instance()->fire(
+			'Shop/Items/get',
+			[
+				'data' => &$data
+			]
+		)
 		) {
 			return false;
 		}
@@ -235,10 +244,13 @@ class Items {
 		}
 		$user = (int)$user ?: User::instance()->id;
 		$data = $this->get($id);
-		if (!Event::instance()->fire('Shop/Items/get_for_user', [
-			'data' => &$data,
-			'user' => $user
-		])
+		if (!Event::instance()->fire(
+			'Shop/Items/get_for_user',
+			[
+				'data' => &$data,
+				'user' => $user
+			]
+		)
 		) {
 			return false;
 		}
@@ -250,19 +262,22 @@ class Items {
 	 * @return int[] Array of items ids
 	 */
 	function get_all () {
-		return $this->cache->get('all', function () {
-			return $this->db()->qfas(
-				"SELECT `id`
+		return $this->cache->get(
+			'all',
+			function () {
+				return $this->db()->qfas(
+					"SELECT `id`
 				FROM `$this->table`"
-			) ?: [];
-		});
+				) ?: [];
+			}
+		);
 	}
 	/**
 	 * Items search
 	 *
 	 * @param mixed[] $search_parameters Array in form [attribute => value], [attribute => [value, value]], [attribute => [from => value, to => value]],
-	 *                                   [property => value], [tag] or mixed; if `total_count => 1` element is present - total number of found rows will be returned
-	 *                                   instead of rows themselves
+	 *                                   [property => value], [tag] or mixed; if `total_count => 1` element is present - total number of found rows will be
+	 *                                   returned instead of rows themselves
 	 * @param int     $page
 	 * @param int     $count
 	 * @param string  $order_by
@@ -348,27 +363,31 @@ class Items {
 		unset($key, $details, $join_index, $field);
 		$where = $where ? 'WHERE '.implode(' AND ', $where) : '';
 		if (@$search_parameters['total_count']) {
-			return $this->db()->qfs([
-				"SELECT COUNT(DISTINCT `i`.`id`)
-				FROM `$this->table` AS `i`
-				$joins
-				$where",
-				array_merge($join_params, $where_params)
-			]);
+			return $this->db()->qfs(
+				[
+					"SELECT COUNT(DISTINCT `i`.`id`)
+					FROM `$this->table` AS `i`
+					$joins
+					$where",
+					array_merge($join_params, $where_params)
+				]
+			);
 		} else {
 			$where_params[] = ($page - 1) * $count;
 			$where_params[] = $count;
 			$asc            = $asc ? 'ASC' : 'DESC';
-			return $this->db()->qfas([
-				"SELECT `i`.`id`
-				FROM `$this->table` AS `i`
-				$joins
-				$where
-				GROUP BY `i`.`id`
-				ORDER BY `i`.`$order_by` $asc
-				LIMIT %d, %d",
-				array_merge($join_params, $where_params)
-			]);
+			return $this->db()->qfas(
+				[
+					"SELECT `i`.`id`
+					FROM `$this->table` AS `i`
+					$joins
+					$where
+					GROUP BY `i`.`id`
+					ORDER BY `i`.`$order_by` $asc
+					LIMIT %d, %d",
+					array_merge($join_params, $where_params)
+				]
+			);
 		}
 	}
 	/**
@@ -414,19 +433,24 @@ class Items {
 	 * @return false|int Id of created item on success of <b>false</> on failure
 	 */
 	function add ($category, $price, $in_stock, $soon, $listed, $attributes, $images, $videos, $tags) {
-		$id = $this->create([
-			time(),
-			$category,
-			$price,
-			$in_stock,
-			$soon && !$in_stock ? 1 : 0,
-			$listed
-		]);
+		$id = $this->create(
+			[
+				time(),
+				$category,
+				$price,
+				$in_stock,
+				$soon && !$in_stock ? 1 : 0,
+				$listed
+			]
+		);
 		if ($id) {
 			unset($this->cache->all);
-			Event::instance()->fire('Shop/Items/add', [
-				'id' => $id
-			]);
+			Event::instance()->fire(
+				'Shop/Items/add',
+				[
+					'id' => $id
+				]
+			);
 			$this->set($id, $category, $price, $in_stock, $soon, $listed, $attributes, $images, $videos, $tags);
 		}
 		return $id;
@@ -453,21 +477,26 @@ class Items {
 		if (!$data) {
 			return false;
 		}
-		$result = $this->update([
-			$id,
-			$data['date'],
-			$category,
-			$price,
-			$in_stock,
-			$soon && !$in_stock ? 1 : 0,
-			$listed
-		]);
+		$result = $this->update(
+			[
+				$id,
+				$data['date'],
+				$category,
+				$price,
+				$in_stock,
+				$soon && !$in_stock ? 1 : 0,
+				$listed
+			]
+		);
 		if (!$result) {
 			return false;
 		}
-		$images    = array_filter($images, function ($image) {
-			return filter_var($image, FILTER_VALIDATE_URL);
-		});
+		$images    = array_filter(
+			$images,
+			function ($image) {
+				return filter_var($image, FILTER_VALIDATE_URL);
+			}
+		);
 		$videos    = $this->prepare_videos($videos);
 		$old_data  = $this->get($id);
 		$old_files = array_merge(
@@ -538,8 +567,8 @@ class Items {
 					case 'text_value':
 						$value_type['text'] = xap($value, true, true);
 						/** @noinspection SlowArrayOperationsInLoopInspection */
-						$new_files          = array_merge($new_files, find_links($value_type['text']));
-						$lang               = $L->clang;
+						$new_files = array_merge($new_files, find_links($value_type['text']));
+						$lang      = $L->clang;
 						break;
 				}
 				$value = [
@@ -659,9 +688,7 @@ class Items {
 				`id`	= $id AND
 				`lang`	= '$L->clang'"
 		);
-		$Tags = Tags::instance();
-		$tags = array_unique($tags);
-		$tags = $Tags->process($tags);
+		$tags = Tags::instance()->add($tags);
 		$cdb->insert(
 			"INSERT INTO `{$this->table}_tags`
 				(`id`, `tag`, `lang`)
@@ -673,9 +700,12 @@ class Items {
 			$this->cache->{"$id/$L->clang"},
 			$this->cache->all
 		);
-		Event::instance()->fire('Shop/Items/set', [
-			'id' => $id
-		]);
+		Event::instance()->fire(
+			'Shop/Items/set',
+			[
+				'id' => $id
+			]
+		);
 		return true;
 	}
 	/**
@@ -719,14 +749,16 @@ class Items {
 		$id     = (int)$id;
 		$result = $this->delete($id);
 		if ($result) {
-			$this->db_prime()->q([
-				"DELETE FROM `{$this->table}_attributes`
-				WHERE `id` = $id",
-				"DELETE FROM `{$this->table}_images`
-				WHERE `id` = $id",
-				"DELETE FROM `{$this->table}_tags`
-				WHERE `id` = $id"
-			]);
+			$this->db_prime()->q(
+				[
+					"DELETE FROM `{$this->table}_attributes`
+					WHERE `id` = $id",
+					"DELETE FROM `{$this->table}_images`
+					WHERE `id` = $id",
+					"DELETE FROM `{$this->table}_tags`
+					WHERE `id` = $id"
+				]
+			);
 			Event::instance()->fire(
 				'System/upload_files/del_tag',
 				[
@@ -737,9 +769,12 @@ class Items {
 				$this->cache->$id,
 				$this->cache->all
 			);
-			Event::instance()->fire('Shop/Items/del', [
-				'id' => $id
-			]);
+			Event::instance()->fire(
+				'Shop/Items/del',
+				[
+					'id' => $id
+				]
+			);
 		}
 		return $result;
 	}
