@@ -338,7 +338,7 @@ trait CRUD {
 	 * @param int[]|string[] $data_before
 	 * @param int[]|string[] $data_after
 	 */
-	protected function find_update_files_tags ($id, $data_before, $data_after) {
+	private function find_update_files_tags ($id, $data_before, $data_after) {
 		if (!$this->with_files_support()) {
 			return;
 		}
