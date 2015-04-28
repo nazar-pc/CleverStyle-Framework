@@ -184,7 +184,7 @@ trait CRUD {
 		if (!$return || $id === 0) {
 			return false;
 		}
-		$this->update_files_tags($id, [], $arguments);
+		$this->find_update_files_tags($id, [], $arguments);
 		/**
 		 * If on creation request without specified primary key and multilingual fields present - update needed
 		 * after creation (there is no id before creation)
@@ -324,7 +324,7 @@ trait CRUD {
 		}
 		if ($files_update) {
 			/** @noinspection PhpUndefinedVariableInspection */
-			$this->update_files_tags($id, $data_before, func_get_args()[2]);
+			$this->find_update_files_tags($id, $data_before, func_get_args()[2]);
 		}
 		return true;
 	}
@@ -333,15 +333,36 @@ trait CRUD {
 	 * @param int[]|string[] $data_before
 	 * @param int[]|string[] $data_after
 	 */
-	private function update_files_tags ($id, $data_before, $data_after) {
+	protected function find_update_files_tags ($id, $data_before, $data_after) {
 		if (!$this->with_files_support()) {
 			return;
 		}
-		$prefix    = $this->data_model_files_tag_prefix;
-		$clang     = Language::instance()->clang;
-		$tag       = "$prefix/$id/$clang";
-		$old_files = $this->find_urls($data_before ?: []);
-		$new_files = $this->find_urls($data_after ?: []);
+		$prefix = $this->data_model_files_tag_prefix;
+		$clang  = Language::instance()->clang;
+		$this->update_files_tags(
+			"$prefix/$id/$clang",
+			$this->find_urls($data_before ?: []),
+			$this->find_urls($data_after ?: [])
+		);
+	}
+	/**
+	 * Find urls (any actually) in attributes values (wrapped with `"`, other quotes are not supported)
+	 *
+	 * @param string[] $data
+	 *
+	 * @return string[]
+	 */
+	protected function find_urls ($data) {
+		return preg_match_all('/"(http[s]?:\/\/.+)"/Uims', implode(' ', $data), $files)
+			? array_unique($files[1])
+			: [];
+	}
+	/**
+	 * @param string   $tag
+	 * @param string[] $old_files
+	 * @param string[] $new_files
+	 */
+	protected function update_files_tags ($tag, $old_files, $new_files) {
 		if ($old_files || $new_files) {
 			foreach (array_diff($old_files, $new_files) as $file) {
 				Event::instance()->fire(
@@ -362,18 +383,6 @@ trait CRUD {
 				);
 			}
 		}
-	}
-	/**
-	 * Find urls (any actually) in attributes values (wrapped with `"`, other quotes are not supported)
-	 *
-	 * @param string[] $data
-	 *
-	 * @return string[]
-	 */
-	private function find_urls ($data) {
-		return preg_match_all('/"(http[s]?:\/\/.+)"/Uims', implode(' ', $data), $files)
-			? array_unique($files[1])
-			: [];
 	}
 	/**
 	 * @deprecated
