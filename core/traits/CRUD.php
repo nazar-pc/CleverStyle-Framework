@@ -351,16 +351,27 @@ trait CRUD {
 		);
 	}
 	/**
-	 * Find urls (any actually) in attributes values (wrapped with `"`, other quotes are not supported)
+	 * Find URLs (any actually) in attributes values (wrapped with `"`, other quotes are not supported) or if field itself is URL
 	 *
 	 * @param string[] $data
 	 *
 	 * @return string[]
 	 */
 	protected function find_urls ($data) {
-		return preg_match_all('/"(http[s]?:\/\/.+)"/Uims', implode(' ', $data), $files)
-			? array_unique($files[1])
-			: [];
+		/**
+		 * At first we search URLs among attributes values, then whether some field looks like URL itself
+		 */
+		return array_merge(
+			preg_match_all('/"((http[s]?:)?\/\/.+)"/Uims', implode(' ', $data), $files)
+				? array_unique($files[1])
+				: [],
+			array_filter(
+				$data,
+				function ($data) {
+					return preg_match('/^(http[s]?:)?\/\/.+$/Uims', $data);
+				}
+			)
+		);
 	}
 	/**
 	 * @param string   $tag
