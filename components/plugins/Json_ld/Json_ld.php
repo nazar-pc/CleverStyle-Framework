@@ -1,13 +1,13 @@
 <?php
 /**
  * @package   Json_ld
- * @category  modules
+ * @category  plugins
  * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright Copyright (c) 2015, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
 
-namespace cs\modules\Json_ld;
+namespace cs\plugins\Json_ld;
 use
 	cs\Config,
 	cs\User;
