@@ -5,11 +5,12 @@ Debug mode check using FileSystem cache engine
 namespace cs;
 define('DEBUG', true);
 include __DIR__.'/../custom_loader.php';
-Core::instance_stub([
-	'cache_engine'	=> 'FileSystem',
-	'cache_size'	=> 1
-]);
-$Cache	= Cache::instance();
+Core::instance_stub(
+	[
+		'cache_engine' => 'FileSystem'
+	]
+);
+$Cache = Cache::instance();
 if ($Cache->cache_state()) {
 	die('::cache_state() failed');
 }

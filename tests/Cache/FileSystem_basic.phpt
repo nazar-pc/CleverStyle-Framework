@@ -4,15 +4,16 @@ Basic features using FileSystem cache engine
 <?php
 namespace cs;
 include __DIR__.'/../custom_loader.php';
-Core::instance_stub([
-	'cache_engine'	=> 'FileSystem',
-	'cache_size'	=> 1
-]);
-$Cache	= Cache::instance();
+Core::instance_stub(
+	[
+		'cache_engine' => 'FileSystem'
+	]
+);
+$Cache = Cache::instance();
 if (!$Cache->cache_state()) {
 	die('Cache state check failed');
 }
-$value	= uniqid('cache', true);
+$value = uniqid('cache', true);
 if (!$Cache->set('test', $value)) {
 	die('::set() failed');
 }
