@@ -216,7 +216,7 @@ trait users {
 							$Group->get($rc[3], 'title')
 						)
 					);
-					list ($tabs, $tabs_content) = static::render_permissions_form($Group->get_permissions($rc[3]));
+					list ($tabs, $tabs_content) = static::render_permissions_form($Group->get_permissions($rc[3]) ?: []);
 					$a->content(
 						h::{'h2.cs-center'}(
 							$L->permissions_for_group(
@@ -1047,7 +1047,7 @@ trait users {
 							$User->username($rc[3])
 						)
 					);
-					list ($tabs, $tabs_content) = static::render_permissions_form($User->get_permissions($rc[3]), true);
+					list ($tabs, $tabs_content) = static::render_permissions_form($User->get_permissions($rc[3]) ?: [], true);
 					$a->content(
 						h::{'h2.cs-center'}(
 							$L->{$is_bot ? 'permissions_for_bot' : 'permissions_for_user'}(
