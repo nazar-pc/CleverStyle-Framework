@@ -34,8 +34,10 @@ But in parallel with core some components are developed:
 #### Plugins
 
  * **Fotorama** (integration of [Fotorama](https://github.com/artpolikarpov/fotorama) jQuery gallery into CleverStyle CMS)
- * **SimpleImage** (integration of [SimpleImage](https://github.com/claviska/SimpleImage) class into CleverStyle CMS)
+ * **Json_ld** (simplifies some parts of JSON-LD generation)
  * **Prism** (integration of [Prism](http://prismjs.com/index.html) syntax highlighter into CleverStyle CMS)
+ * **SimpleImage** (integration of [SimpleImage](https://github.com/claviska/SimpleImage) class into CleverStyle CMS)
+ * **Tags** (currently contains single trait, is used by other components in order to avoid code duplication)
  * **TinyMCE** (integration of [TinyMCE](https://github.com/tinymce/tinymce) WYSIWYG Editor for providing simpler content editing)
 
 #### Themes
