@@ -109,7 +109,6 @@ trait users {
 		);
 	}
 	static function users_groups () {
-		$Config = Config::instance();
 		$L      = Language::instance();
 		$Page   = Page::instance();
 		$Group  = Group::instance();
