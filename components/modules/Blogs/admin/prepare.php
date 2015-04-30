@@ -193,7 +193,7 @@ function get_posts_rows ($page = 1) {
 					[
 						h::icon('pencil'),
 						[
-							'href'			=> "admin/Blogs/edit_post/$post[id]",
+							'href'			=> "Blogs/edit_post/$post[id]",
 							'data-title'	=> $L->edit
 						]
 					],
