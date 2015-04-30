@@ -212,62 +212,12 @@ trait users {
 						break;
 					}
 					$a->cancel_button_back = true;
-					$permissions           = Permission::instance()->get_all();
-					$group_permissions     = $Group->get_permissions($rc[3]);
-					$tabs                  = [];
-					$tabs_content          = '';
-					$blocks                = [];
-					foreach ($Config->components['blocks'] as $block) {
-						$blocks[$block['index']] = $block['title'];
-					}
-					unset($block);
-					foreach ($permissions as $group => $list) {
-						$tabs[]  = h::a(
-							$group,
-							[
-								'href' => '#permissions_group_'.strtr($group, '/', '_')
-							]
-						);
-						$content = [];
-						foreach ($list as $label => $id) {
-							$content[] = h::cs_table_cell(
-								$group == 'Block' ? Text::instance()->process($Config->module('System')->db('texts'), $blocks[$label]) : $label,
-								h::radio(
-									[
-										'name'    => "permission[$id]",
-										'checked' => isset($group_permissions[$id]) ? $group_permissions[$id] : -1,
-										'value'   => [-1, 0, 1],
-										'in'      => [$L->not_specified, $L->deny, $L->allow]
-									]
-								)
-							);
-						}
-						if (count($list) % 2) {
-							$content[] = h::cs_table_cell().h::cs_table_cell();
-						}
-						$count    = count($content);
-						$content_ = [];
-						for ($i = 0; $i < $count; $i += 2) {
-							$content_[] = $content[$i].$content[$i + 1];
-						}
-						$tabs_content .= h::div(
-							h::{'p.cs-left'}(
-								h::{'button.uk-button.cs-permissions-invert'}($L->invert).
-								h::{'button.uk-button.cs-permissions-deny-all'}($L->deny_all).
-								h::{'button.uk-button.cs-permissions-allow-all'}($L->allow_all)
-							).
-							h::{'cs-table[right-left] cs-table-row'}($content_),
-							[
-								'id' => 'permissions_group_'.strtr($group, '/', '_')
-							]
-						);
-					}
-					unset($content, $content_, $count, $i, $permissions, $group, $list, $label, $id, $blocks);
 					$Page->title(
 						$L->permissions_for_group(
 							$Group->get($rc[3], 'title')
 						)
 					);
+					list ($tabs, $tabs_content) = static::render_permissions_form($Group->get_permissions($rc[3]));
 					$a->content(
 						h::{'h2.cs-center'}(
 							$L->permissions_for_group(
@@ -347,6 +297,73 @@ trait users {
 				)
 			);
 		}
+	}
+	/**
+	 * @param array $current_permissions
+	 * @param bool  $for_user
+	 *
+	 * @return array
+	 */
+	static function render_permissions_form ($current_permissions, $for_user = false) {
+		$Config       = Config::instance();
+		$L            = Language::instance();
+		$permissions  = Permission::instance()->get_all();
+		$tabs         = [];
+		$tabs_content = '';
+		$blocks       = [];
+		foreach ($Config->components['blocks'] as $block) {
+			$blocks[$block['index']] = $block['title'];
+		}
+		unset($block);
+		foreach ($permissions as $group => $list) {
+			$tabs[]  = h::a(
+				$group,
+				[
+					'href' => '#permissions_group_'.strtr($group, '/', '_')
+				]
+			);
+			$content = [];
+			foreach ($list as $label => $id) {
+				$content[] = h::cs_table_cell(
+					$group == 'Block' ? Text::instance()->process($Config->module('System')->db('texts'), $blocks[$label]) : $label,
+					h::radio(
+						[
+							'name'    => "permission[$id]",
+							'checked' => isset($current_permissions[$id]) ? $current_permissions[$id] : -1,
+							'value'   => [-1, 0, 1],
+							'in'      => [
+								$for_user ? $L->inherited.' ('.(isset($user_permissions[$id]) && !$user_permissions[$id] ? '-' : '+').')' : $L->not_specified,
+								$L->deny,
+								$L->allow
+							]
+						]
+					)
+				);
+			}
+			if (count($list) % 2) {
+				$content[] = h::cs_table_cell().h::cs_table_cell();
+			}
+			$count    = count($content);
+			$content_ = [];
+			for ($i = 0; $i < $count; $i += 2) {
+				$content_[] = $content[$i].$content[$i + 1];
+			}
+			$tabs_content .= h::div(
+				h::{'p.cs-left'}(
+					h::{'button.uk-button.cs-permissions-invert'}($L->invert).
+					h::{'button.uk-button.cs-permissions-deny-all'}($L->deny_all).
+					h::{'button.uk-button.cs-permissions-allow-all'}($L->allow_all)
+				).
+				h::{'cs-table[right-left] cs-table-row'}($content_),
+				[
+					'id' => 'permissions_group_'.strtr($group, '/', '_')
+				]
+			);
+		}
+		return [
+			$tabs,
+			$tabs_content
+		];
 	}
 	static function users_mail () {
 		$Config              = Config::instance();
@@ -1026,66 +1043,12 @@ trait users {
 						break;
 					}
 					$a->cancel_button_back = true;
-					$permissions           = Permission::instance()->get_all();
-					$user_permissions      = $User->get_permissions($rc[3]);
-					$tabs                  = [];
-					$tabs_content          = '';
-					$blocks                = [];
-					foreach ($Config->components['blocks'] as $block) {
-						$blocks[$block['index']] = $block['title'];
-					}
-					unset($block);
-					foreach ($permissions as $group => $list) {
-						$tabs[]  = h::a(
-							$group,
-							[
-								'href' => '#permissions_group_'.strtr($group, '/', '_')
-							]
-						);
-						$content = [];
-						foreach ($list as $label => $id) {
-							$content[] = h::cs_table_cell(
-								$group != 'Block' ? $label : Text::instance()->process($Config->module('System')->db('texts'), $blocks[$label]),
-								h::radio(
-									[
-										'name'    => "permission[$id]",
-										'checked' => isset($user_permissions[$id]) ? $user_permissions[$id] : -1,
-										'value'   => [-1, 0, 1],
-										'in'      => [
-											$L->inherited.' ('.(isset($user_permissions[$id]) && !$user_permissions[$id] ? '-' : '+').')',
-											$L->deny,
-											$L->allow
-										]
-									]
-								)
-							);
-						}
-						if (count($list) % 2) {
-							$content[] = h::cs_table_cell().h::cs_table_cell();
-						}
-						$count    = count($content);
-						$content_ = [];
-						for ($i = 0; $i < $count; $i += 2) {
-							$content_[] = $content[$i].$content[$i + 1];
-						}
-						$tabs_content .= h::div(
-							h::{'p.cs-left'}(
-								h::{'button.uk-button.cs-permissions-invert'}($L->invert).
-								h::{'button.uk-button.cs-permissions-deny-all'}($L->deny_all).
-								h::{'button.uk-button.cs-permissions-allow-all'}($L->allow_all)
-							).
-							h::{'cs-table[right-left] cs-table-row'}($content_),
-							[
-								'id' => 'permissions_group_'.strtr($group, '/', '_')
-							]
-						);
-					}
-					unset($content, $content_, $count, $i, $permissions, $group, $list, $label, $id, $blocks);
 					$Page->title(
 						$L->{$is_bot ? 'permissions_for_bot' : 'permissions_for_user'}(
 							$User->username($rc[3])
 						)
 					);
+					list ($tabs, $tabs_content) = static::render_permissions_form($User->get_permissions($rc[3]), true);
 					$a->content(
 						h::{'h2.cs-center'}(
 							$L->{$is_bot ? 'permissions_for_bot' : 'permissions_for_user'}(
