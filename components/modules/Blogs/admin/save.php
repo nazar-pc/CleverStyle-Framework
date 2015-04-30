@@ -9,9 +9,8 @@
 namespace cs\modules\Blogs;
 use
 	cs\Config,
-	cs\Index,
-	cs\Language,
-	cs\Page;
+	cs\Index;
+
 if (!isset($_POST['mode'])) {
 	return;
 }
