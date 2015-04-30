@@ -6,19 +6,10 @@
  * @license   MIT License, see license.txt
  */
 namespace cs\Cache;
-use
-	cs\Config,
-	cs\Core,
-	cs\Language;
 /**
  * Provides cache functionality based on file system structure.
- * Require base configuration option Core::instance()->cache_size with maximum allowed cache size in MB, 0 means without limitation (is not recommended)
  */
 class FileSystem extends _Abstract {
-	protected $cache_size;
-	function __construct () {
-		$this->cache_size = Core::instance()->cache_size * 1024 * 1024;
-	}
 	/**
 	 * Like realpath() but works even if files does not exists
 	 *
@@ -48,17 +39,18 @@ class FileSystem extends _Abstract {
 	 */
 	function get ($item) {
 		$path_in_filesystem = $this->get_absolute_path($item);
-		if (strpos($path_in_filesystem, CACHE) !== 0) {
+		if (
+			strpos($path_in_filesystem, CACHE) !== 0 ||
+			!is_file($path_in_filesystem)
+		) {
 			return false;
 		}
-		if (is_file($path_in_filesystem) && is_readable($path_in_filesystem) && $cache = file_get_contents($path_in_filesystem, FILE_BINARY)) {
-			if (($cache = @_json_decode($cache)) !== false) {
-				return $cache;
-			} else {
-				unlink($path_in_filesystem);
-				return false;
-			}
+		$cache = file_get_contents($path_in_filesystem, FILE_BINARY);
+		$cache = @_json_decode($cache);
+		if ($cache !== false) {
+			return $cache;
 		}
+		unlink($path_in_filesystem);
 		return false;
 	}
 	/**
@@ -78,54 +70,10 @@ class FileSystem extends _Abstract {
 			unset($path);
 		}
 		if (!file_exists($path_in_filesystem) || is_writable($path_in_filesystem)) {
-			if ($this->cache_size > 0) {
-				$dsize = strlen($data);
-				if ($dsize > $this->cache_size) {
-					return false;
-				}
-				if (file_exists($path_in_filesystem)) {
-					$dsize -= filesize($path_in_filesystem);
-				}
-				$cache_size_file = fopen(CACHE.'/size', 'c+b');
-				$time            = microtime(true);
-				while (!flock($cache_size_file, LOCK_EX | LOCK_NB)) {
-					if ($time < microtime(true) - .5) {
-						fclose($cache_size_file);
-						return false;
-					}
-					usleep(1000);
-				}
-				unset($time);
-				$cache_size = (int)stream_get_contents($cache_size_file);
-				$cache_size += $dsize;
-				if ($cache_size > $this->cache_size) {
-					$cache_list = get_files_list(CACHE, false, 'f', true, true, 'date|desc');
-					foreach ($cache_list as $file) {
-						$cache_size -= filesize($file);
-						unlink($file);
-						$disk_size = $this->cache_size * 2 / 3;
-						if ($cache_size <= $disk_size * Config::instance()->core['update_ratio'] / 100) {
-							break;
-						}
-					}
-					unset($cache_list, $file);
-				}
-				if (($return = file_put_contents($path_in_filesystem, $data, LOCK_EX | FILE_BINARY)) !== false) {
-					ftruncate($cache_size_file, 0);
-					fseek($cache_size_file, 0);
-					fwrite($cache_size_file, $cache_size > 0 ? $cache_size : 0);
-				}
-				flock($cache_size_file, LOCK_UN);
-				fclose($cache_size_file);
-				return $return;
-			} else {
-				return file_put_contents($path_in_filesystem, $data, LOCK_EX | FILE_BINARY);
-			}
-		} else {
-			$L = Language::instance();
-			trigger_error("$L->file $path_in_filesystem $L->not_writable", E_USER_WARNING);
-			return false;
+			return file_put_contents($path_in_filesystem, $data, LOCK_EX | FILE_BINARY);
 		}
+		trigger_error("File $path_in_filesystem not available for writing", E_USER_WARNING);
+		return false;
 	}
 	/**
 	 * @inheritdoc
@@ -135,68 +83,42 @@ class FileSystem extends _Abstract {
 		if (strpos($path_in_filesystem, CACHE) !== 0) {
 			return false;
 		}
-		if (is_writable($path_in_filesystem)) {
-			if (is_dir($path_in_filesystem)) {
-				/**
-				 * Rename to random name in order to immediately invalidate nested elements, actual deletion done right after this
-				 */
-				$random_id = uniqid();
-				$new_path  = $path_in_filesystem.$random_id;
-				rename($path_in_filesystem, $new_path);
-				/**
-				 * Speed-up of files deletion
-				 */
-				if (!($this->cache_size > 0)) {
-					get_files_list(
-						$new_path,
-						false,
-						'f',
-						true,
-						true,
-						false,
-						true,
-						false,
-						function ($file) {
-							if (is_writable($file)) {
-								@unlink($file);
-							}
-						}
-					);
-				}
-				$files = get_files_list($new_path, false, 'fd');
-				foreach ($files as $file) {
-					$this->del($item.$random_id."/$file");
-				}
-				unset($files, $file);
-				return @rmdir($new_path);
-			}
-			if ($this->cache_size > 0) {
-				$cache_size_file = fopen(CACHE.'/size', 'c+b');
-				$time            = microtime(true);
-				while (!flock($cache_size_file, LOCK_EX | LOCK_NB)) {
-					if ($time < microtime(true) - .5) {
-						fclose($cache_size_file);
-						return false;
-					}
-					usleep(1000);
-				}
-				unset($time);
-				$cache_size = (int)stream_get_contents($cache_size_file);
-				$cache_size -= filesize($path_in_filesystem);
-				if (@unlink($path_in_filesystem)) {
-					ftruncate($cache_size_file, 0);
-					fseek($cache_size_file, 0);
-					fwrite($cache_size_file, $cache_size > 0 ? $cache_size : 0);
-				}
-				flock($cache_size_file, LOCK_UN);
-				fclose($cache_size_file);
-			} else {
-				@unlink($path_in_filesystem);
-			}
-		} elseif (file_exists($path_in_filesystem)) {
-			return false;
+		if (!file_exists($path_in_filesystem)) {
+			return true;
 		}
-		return true;
+		if (is_dir($path_in_filesystem)) {
+			/**
+			 * Rename to random name in order to immediately invalidate nested elements, actual deletion done right after this
+			 */
+			$random_id = uniqid();
+			$new_path  = $path_in_filesystem.$random_id;
+			rename($path_in_filesystem, $new_path);
+			/**
+			 * Speed-up of files deletion
+			 */
+			get_files_list(
+				$new_path,
+				false,
+				'f',
+				true,
+				true,
+				false,
+				true,
+				false,
+				function ($file) {
+					if (is_writable($file)) {
+						@unlink($file);
+					}
+				}
+			);
+			$files = get_files_list($new_path, false, 'fd');
+			foreach ($files as $file) {
+				$this->del($item.$random_id."/$file");
+			}
+			unset($files, $file);
+			return @rmdir($new_path);
+		}
+		return @unlink($path_in_filesystem);
 	}
 	/**
 	 * @inheritdoc
@@ -230,6 +152,9 @@ class FileSystem extends _Abstract {
 				}
 			}
 		);
+		/**
+		 * Then remove all renamed directories
+		 */
 		foreach ($dirs_to_rm as $dir) {
 			get_files_list(
 				$dir,

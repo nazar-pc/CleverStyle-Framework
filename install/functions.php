@@ -308,8 +308,6 @@ function install_process ($fs, $argv = null) {
 	"language"			: "@language",
 //Cache engine
 	"cache_engine"		: "FileSystem",
-//Cache size in MB for FileSystem storage engine
-	"cache_size"		: "100",
 //Settings of Memcached cache engine
 	"memcache_host"		: "127.0.0.1",
 	"memcache_port"		: "11211",
