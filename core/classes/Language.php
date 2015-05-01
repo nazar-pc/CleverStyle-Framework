@@ -444,15 +444,15 @@ class Language implements JsonSerializable {
 			}
 			return $data;
 		}
-		if (!$short_may) {
-			$data = str_replace('May', 'May_long', $data);
+		if ($short_may) {
+			$data = str_replace('May', 'May_short', $data);
 		}
 		$from = [
 			'January',
 			'February',
 			'March',
 			'April',
-			'May_long',
+			'May_short',
 			'June',
 			'July',
 			'August',
