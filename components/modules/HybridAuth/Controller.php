@@ -131,16 +131,11 @@ class Controller {
 					]
 				);
 				unset($HybridAuth, $adapter);
-				if ($User->id != User::GUEST_ID) {
-					$existing_data	= $User->get(array_keys($data['profile_info']), $data['id']);
-					foreach ($data['profile_info'] as $item => $value) {
-						if (!$existing_data[$item] || $existing_data[$item] != $value) {
-							$User->set($item, $value, $data['id']);
-						}
-					}
-					unset($existing_data, $item, $value);
-					update_user_contacts($data['contacts'], $data['provider']);
-				}
+				static::update_data(
+					$data['contacts'],
+					$data['provider'],
+					$data['profile_info']
+				);
 				_header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
 				_setcookie('HybridAuth_referer', '');
 				$Index->content(
@@ -216,7 +211,7 @@ class Controller {
 						)
 					) && $User->get('status', $id) == User::STATUS_ACTIVE
 				) {
-					static::add_session_check_contacts(
+					static::add_session_and_update_data(
 						$id,
 						$adapter,
 						$rc[0],
@@ -275,7 +270,7 @@ class Controller {
 							if ($User->get('status', $user) == User::STATUS_NOT_ACTIVATED) {
 								$User->set('status', User::STATUS_ACTIVE, $user);
 							}
-							static::add_session_check_contacts(
+							static::add_session_and_update_data(
 								$user,
 								$adapter,
 								$rc[0],
@@ -307,7 +302,7 @@ class Controller {
 							$L->reg_success_mail(get_core_ml_text('name')),
 							$body
 						)) {
-							static::add_session_check_contacts(
+							static::add_session_and_update_data(
 								$result['id'],
 								$adapter,
 								$rc[0],
@@ -463,7 +458,7 @@ class Controller {
 						$L->reg_success_mail(get_core_ml_text('name')),
 						$body
 					)) {
-						static::add_session_check_contacts(
+						static::add_session_and_update_data(
 							$result['id'],
 							$adapter,
 							$rc[0],
@@ -496,15 +491,11 @@ class Controller {
 					$L->reg_need_confirmation_mail(get_core_ml_text('name')),
 					$body
 				)) {
-					$contacts		= $HybridAuth_data['contacts'];
-					$existing_data	= $User->get(array_keys($profile_info), $User->id);
-					foreach ($profile_info as $item => $value) {
-						if (!$existing_data[$item] || $existing_data[$item] != $value) {
-							$User->set($item, $value, $User->id);
-						}
-					}
-					unset($existing_data, $item, $value);
-					update_user_contacts($contacts, $rc[0]);
+					static::update_data(
+						$HybridAuth_data['contacts'],
+						$rc[0],
+						$profile_info
+					);
 					_setcookie('HybridAuth_referer', '');
 					$Index->content($L->reg_confirmation);
 				} else {
@@ -530,7 +521,7 @@ class Controller {
 	 * @param array                    $profile_info
 	 *
 	 */
-	protected static function add_session_check_contacts ($user_id, $adapter, $provider, $profile_info) {
+	protected static function add_session_and_update_data ($user_id, $adapter, $provider, $profile_info) {
 		Event::instance()->fire(
 			'HybridAuth/add_session/before',
 			[
@@ -547,26 +538,41 @@ class Controller {
 				'provider' => $provider
 			]
 		);
-		$Config = Config::instance();
-		$User   = User::instance();
-		if ($User->id != User::GUEST_ID) {
+		$Config   = Config::instance();
+		$contacts = [];
+		if ($Config->module('HybridAuth')->enable_contacts_detection) {
+			try {
+				$contacts = $adapter->getUserContacts();
+			} catch (Exception $e) {
+				unset($e);
+			}
+		}
+		static::update_data(
+			$contacts,
+			$provider,
+			$profile_info
+		);
+		$redirect_to = _getcookie('HybridAuth_referer') ?: $Config->base_url();
+		_header("Location: $redirect_to");
+		_setcookie('HybridAuth_referer', '');
+		code_header(301);
+	}
+	/**
+	 * @param array  $contacts
+	 * @param string $provider
+	 * @param array  $profile_info
+	 */
+	protected static function update_data ($contacts, $provider, $profile_info) {
+		$User    = User::instance();
+		$user_id = $User->id;
+		if ($user_id != User::GUEST_ID) {
 			$existing_data = $User->get(array_keys($profile_info), $user_id);
 			foreach ($profile_info as $item => $value) {
 				if (!$existing_data[$item] || $existing_data[$item] != $value) {
 					$User->set($item, $value, $user_id);
 				}
 			}
-			if ($Config->module('HybridAuth')->enable_contacts_detection) {
-				try {
-					update_user_contacts($adapter->getUserContacts(), $provider);
-				} catch (Exception $e) {
-					unset($e);
-				}
-			}
+			update_user_contacts($contacts, $provider);
 		}
-		$redirect_to = _getcookie('HybridAuth_referer') ?: $Config->base_url();
-		_header("Location: $redirect_to");
-		_setcookie('HybridAuth_referer', '');
-		code_header(301);
 	}
 }
