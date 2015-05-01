@@ -15,7 +15,6 @@ use
 	cs\Event,
 	cs\Index,
 	cs\Key,
-	cs\DB,
 	cs\Language,
 	cs\Mail,
 	cs\Page,

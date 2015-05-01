@@ -63,7 +63,7 @@ trait Data {
 	 * @param string|string[] $item
 	 * @param false|int       $user If not specified - current user assumed
 	 *
-	 * @return false|string|mixed[]|Properties If <i>$item</i> is integer - cs\User\Properties object will be returned
+	 * @return false|int|string|mixed[]|Properties If <i>$item</i> is integer - cs\User\Properties object will be returned
 	 */
 	function get ($item, $user = false) {
 		if (is_scalar($item) && preg_match('/^[0-9]+$/', $item)) {
@@ -82,7 +82,7 @@ trait Data {
 	 * @param false|int       $user If not specified - current user assumed
 	 * @param bool            $cache_only
 	 *
-	 * @return false|string|mixed[]
+	 * @return false|int|string|mixed[]
 	 */
 	protected function get_internal ($item, $user = false, $cache_only = false) {
 		$user = (int)$user ?: $this->id;
@@ -151,7 +151,7 @@ trait Data {
 	 * @param mixed[] $data
 	 * @param bool    $cache_only
 	 *
-	 * @return array|false
+	 * @return false|int|string
 	 */
 	protected function get_internal_one_item ($item, $user, &$data, $cache_only) {
 		if (!in_array($item, $this->users_columns)) {
@@ -196,9 +196,9 @@ trait Data {
 	/**
 	 * Set data item of specified user
 	 *
-	 * @param array|string $item Item-value array may be specified for setting several items at once
-	 * @param mixed|null   $value
-	 * @param false|int    $user If not specified - current user assumed
+	 * @param array|string    $item Item-value array may be specified for setting several items at once
+	 * @param int|null|string $value
+	 * @param false|int       $user If not specified - current user assumed
 	 *
 	 * @return bool
 	 */
@@ -212,9 +212,9 @@ trait Data {
 	/**
 	 * Set data item of specified user
 	 *
-	 * @param array|string $item Item-value array may be specified for setting several items at once
-	 * @param mixed|null   $value
-	 * @param false|int    $user If not specified - current user assumed
+	 * @param array|string    $item Item-value array may be specified for setting several items at once
+	 * @param int|null|string $value
+	 * @param false|int       $user If not specified - current user assumed
 	 *
 	 * @return bool
 	 */

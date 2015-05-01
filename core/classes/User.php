@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   CleverStyle CMS
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 /**
  * Provides next events:
@@ -12,33 +12,33 @@
  *  System/User/construct/after
  *
  *  System/User/registration/before
- *  ['email'	=> <i>email</i>]
+ *  ['email' => <i>email</i>]
  *
  *  System/User/registration/after
- *  ['id'	=> <i>user_id</i>]
+ *  ['id' => <i>user_id</i>]
  *
  *  System/User/registration/confirmation/before
- *  ['reg_key'	=> <i>reg_key</i>]
+ *  ['reg_key' => <i>reg_key</i>]
  *
  *  System/User/registration/confirmation/after
- *  ['id'	=> <i>user_id</i>]
+ *  ['id' => <i>user_id</i>]
  *
  *  System/User/del/before
- *  ['id'	=> <i>user_id</i>]
+ *  ['id' => <i>user_id</i>]
  *
  *  System/User/del/after
- *  ['id'	=> <i>user_id</i>]
+ *  ['id' => <i>user_id</i>]
  *
  *  System/User/add_bot
- *  ['id'	=> <i>bot_id</i>]
+ *  ['id' => <i>bot_id</i>]
  *
  *  System/User/get_contacts
  *  [
- *  	'id'		=> <i>user_id</i>,
- *  	'contacts'	=> <i>&$contacts</i>	//Array of user id
+ *    'id'       => <i>user_id</i>,
+ *    'contacts' => <i>&$contacts</i> //Array of user id
  *  ]
  */
-namespace	cs;
+namespace cs;
 use
 	cs\Cache\Prefix,
 	cs\DB\Accessor,
@@ -49,24 +49,24 @@ use
 /**
  * Class for users manipulating
  *
- * @property	int		$id
- * @property	string	$login
- * @property	string	$login_hash		sha224 hash
- * @property	string	$username
- * @property	string	$password_hash	sha512 hash
- * @property	string	$email
- * @property	string	$email_hash		sha224 hash
- * @property	string	$language
- * @property	string	$timezone
- * @property	int		$reg_date		unix timestamp
- * @property	string	$reg_ip			hex value, obtained by function ip2hex()
- * @property	string	$reg_key		random md5 hash, generated during registration
- * @property	int		$status			'-1' - not activated (for example after registration), 0 - inactive, 1 - active
- * @property	int		$block_until	unix timestamp
- * @property	int		$last_sign_in	unix timestamp
- * @property	string	$last_ip		hex value, obtained by function ip2hex()
- * @property	int		$last_online	unix timestamp
- * @property	string	$avatar
+ * @property int    $id
+ * @property string $login
+ * @property string $login_hash    sha224 hash
+ * @property string $username
+ * @property string $password_hash sha512 hash
+ * @property string $email
+ * @property string $email_hash    sha224 hash
+ * @property string $language
+ * @property string $timezone
+ * @property int    $reg_date      unix timestamp
+ * @property string $reg_ip        hex value, obtained by function ip2hex()
+ * @property string $reg_key       random md5 hash, generated during registration
+ * @property int    $status        '-1' - not activated (for example after registration), 0 - inactive, 1 - active
+ * @property int    $block_until   unix timestamp
+ * @property int    $last_sign_in  unix timestamp
+ * @property string $last_ip       hex value, obtained by function ip2hex()
+ * @property int    $last_online   unix timestamp
+ * @property string $avatar
  *
  * @method static User instance($check = false)
  */
@@ -81,39 +81,39 @@ class User {
 	/**
 	 * Id of system guest user
 	 */
-	const		GUEST_ID				= 1;
+	const GUEST_ID = 1;
 	/**
 	 * Id of first, primary system administrator
 	 */
-	const		ROOT_ID					= 2;
+	const ROOT_ID = 2;
 	/**
 	 * Id of system group for administrators
 	 */
-	const		ADMIN_GROUP_ID			= 1;
+	const ADMIN_GROUP_ID = 1;
 	/**
 	 * Id of system group for users
 	 */
-	const		USER_GROUP_ID			= 2;
+	const USER_GROUP_ID = 2;
 	/**
 	 * Id of system group for bots
 	 */
-	const		BOT_GROUP_ID			= 3;
+	const BOT_GROUP_ID = 3;
 	/**
 	 * Status of active user
 	 */
-	const		STATUS_ACTIVE			= 1;
+	const STATUS_ACTIVE = 1;
 	/**
 	 * Status of inactive user
 	 */
-	const		STATUS_INACTIVE			= 0;
+	const STATUS_INACTIVE = 0;
 	/**
 	 * Status of not activated user
 	 */
-	const		STATUS_NOT_ACTIVATED	= -1;
+	const STATUS_NOT_ACTIVATED = -1;
 	/**
 	 * @var Prefix
 	 */
-	protected	$cache;
+	protected $cache;
 	/**
 	 * Returns database index
 	 *
@@ -123,7 +123,7 @@ class User {
 		return Config::instance()->module('System')->db('users');
 	}
 	protected function construct () {
-		$this->cache	= new Prefix('users');
+		$this->cache = new Prefix('users');
 		Event::instance()->fire('System/User/construct/before');
 		$this->initialize_data();
 		/**
@@ -135,37 +135,39 @@ class User {
 	/**
 	 * Check number of sign in attempts (is used by system)
 	 *
-	 * @param bool|string	$login_hash	Hash (sha224) from login (hash from lowercase string)
+	 * @param bool|string $login_hash Hash (sha224) from login (hash from lowercase string)
 	 *
-	 * @return int						Number of attempts
+	 * @return int                        Number of attempts
 	 */
 	function get_sign_in_attempts_count ($login_hash = false) {
 		$login_hash = $login_hash ?: (isset($_POST['login']) ? $_POST['login'] : false);
 		if (!preg_match('/^[0-9a-z]{56}$/', $login_hash)) {
 			return false;
 		}
-		$time	= time();
+		$time = time();
 		/**
 		 * @var \cs\_SERVER $_SERVER
 		 */
-		return $this->db()->qfs([
-			"SELECT COUNT(`expire`)
-			FROM `[prefix]sign_ins`
-			WHERE
-				`expire` > $time AND
-				(
-					`login_hash`	= '%s' OR
-					`ip`			= '%s'
-				)",
-			$login_hash,
-			ip2hex($_SERVER->ip)
-		]);
+		return $this->db()->qfs(
+			[
+				"SELECT COUNT(`expire`)
+				FROM `[prefix]sign_ins`
+				WHERE
+					`expire` > $time AND
+					(
+						`login_hash`	= '%s' OR
+						`ip`			= '%s'
+					)",
+				$login_hash,
+				ip2hex($_SERVER->ip)
+			]
+		);
 	}
 	/**
 	 * Process sign in result (is used by system)
 	 *
-	 * @param bool $success
-	 * @param bool|string	$login_hash	Hash (sha224) from login (hash from lowercase string)
+	 * @param bool        $success
+	 * @param bool|string $login_hash Hash (sha224) from login (hash from lowercase string)
 	 */
 	function sign_in_result ($success, $login_hash = false) {
 		$login_hash = $login_hash ?: (isset($_POST['login']) ? $_POST['login'] : false);
@@ -175,8 +177,8 @@ class User {
 		/**
 		 * @var \cs\_SERVER $_SERVER
 		 */
-		$ip		= ip2hex($_SERVER->ip);
-		$time	= time();
+		$ip   = ip2hex($_SERVER->ip);
+		$time = time();
 		if ($success) {
 			$this->db_prime()->q(
 				"DELETE FROM `[prefix]sign_ins`
@@ -189,7 +191,7 @@ class User {
 				$ip
 			);
 		} else {
-			$Config	= Config::instance();
+			$Config = Config::instance();
 			$this->db_prime()->q(
 				"INSERT INTO `[prefix]sign_ins`
 					(
@@ -213,9 +215,9 @@ class User {
 	/**
 	 * Get data item of current user
 	 *
-	 * @param string|string[]		$item
+	 * @param string|string[] $item
 	 *
-	 * @return array|false|string
+	 * @return array|false|int|string
 	 */
 	function __get ($item) {
 		if ($item == 'id') {
@@ -226,8 +228,8 @@ class User {
 	/**
 	 * Set data item of current user
 	 *
-	 * @param array|string	$item	Item-value array may be specified for setting several items at once
-	 * @param mixed|null	$value
+	 * @param array|int|string $item Item-value array may be specified for setting several items at once
+	 * @param mixed|null       $value
 	 *
 	 * @return bool
 	 */
