@@ -217,7 +217,7 @@ class User {
 	 *
 	 * @param string|string[] $item
 	 *
-	 * @return array|false|int|string
+	 * @return false|int|mixed[]|string|User\Properties If <i>$item</i> is integer - cs\User\Properties object will be returned
 	 */
 	function __get ($item) {
 		if ($item == 'id') {

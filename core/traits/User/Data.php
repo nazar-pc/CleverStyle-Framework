@@ -63,7 +63,7 @@ trait Data {
 	 * @param string|string[] $item
 	 * @param false|int       $user If not specified - current user assumed
 	 *
-	 * @return false|int|string|mixed[]|Properties If <i>$item</i> is integer - cs\User\Properties object will be returned
+	 * @return false|int|mixed[]|string|Properties If <i>$item</i> is integer - cs\User\Properties object will be returned
 	 */
 	function get ($item, $user = false) {
 		if (is_scalar($item) && preg_match('/^[0-9]+$/', $item)) {
