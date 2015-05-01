@@ -2,9 +2,8 @@
 /**
  * @package   HybridAuth
  * @category  modules
- * @author    HybridAuth authors
- * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com> (integration with CleverStyle CMS)
- * @copyright HybridAuth authors
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
 namespace	cs\modules\HybridAuth;
@@ -89,7 +88,7 @@ class Controller {
 		 * Merging confirmation
 		 */
 		$db_id		= $Config->module('HybridAuth')->db('integration');
-		$db			= DB::instance();
+		$Social_integration = Social_integration::instance();
 		$Key		= Key::instance();
 		$L			= Language::instance();
 		if (isset($rc[1]) && $rc[0] == 'merge_confirmation') {
@@ -97,22 +96,7 @@ class Controller {
 			 * If confirmation key is valid - make merging
 			 */
 			if ($data = $Key->get($db_id, $rc[1], true)) {
-				$db->$db_id()->q(
-					"INSERT INTO `[prefix]users_social_integration`
-						(
-							`id`,
-							`provider`,
-							`identifier`,
-							`profile`
-						) VALUES (
-							'%s',
-							'%s',
-							'%s',
-							'%s'
-						)
-					ON DUPLICATE KEY UPDATE
-						`id`		= VALUES(`id`),
-						`profile`	= VALUES(`profile`)",
+				$Social_integration->add(
 					$data['id'],
 					$data['provider'],
 					$data['identifier'],
@@ -227,16 +211,10 @@ class Controller {
 				 */
 				if (
 					(
-						$id	= $db->$db_id->qfs([
-							"SELECT `id`
-							FROM `[prefix]users_social_integration`
-							WHERE
-								`provider`		= '%s' AND
-								`identifier`	= '%s'
-							LIMIT 1",
+						$id	= $Social_integration->find_integration(
 							$rc[0],
 							$profile->identifier
-						])
+						)
 					) && $User->get('status', $id) == User::STATUS_ACTIVE
 				) {
 					Event::instance()->fire(
@@ -317,19 +295,7 @@ class Controller {
 						 */
 						} elseif ($result == 'exists') {
 							$user	= $User->get_id(hash('sha224', $email));
-							$db->$db_id()->q(
-								"INSERT INTO `[prefix]users_social_integration`
-									(
-										`id`,
-										`provider`,
-										`identifier`,
-										`profile`
-									) VALUES (
-										'%s',
-										'%s',
-										'%s',
-										'%s'
-									)",
+							$Social_integration->add(
 								$user,
 								$rc[0],
 								$profile->identifier,
@@ -369,19 +335,7 @@ class Controller {
 							code_header(301);
 							return;
 						}
-						$db->$db_id()->q(
-							"INSERT INTO `[prefix]users_social_integration`
-								(
-									`id`,
-									`provider`,
-									`identifier`,
-									`profile`
-								) VALUES (
-									'%s',
-									'%s',
-									'%s',
-									'%s'
-								)",
+						$Social_integration->add(
 							$result['id'],
 							$rc[0],
 							$profile->identifier,
@@ -558,19 +512,7 @@ class Controller {
 				 */
 				} elseif ($result['reg_key'] === true) {
 					$Session->del_data('HybridAuth');
-					$db->$db_id()->q(
-						"INSERT INTO `[prefix]users_social_integration`
-							(
-								`id`,
-								`provider`,
-								`identifier`,
-								`profile`
-							) VALUES (
-								'%s',
-								'%s',
-								'%s',
-								'%s'
-							)",
+					$Social_integration->add(
 						$result['id'],
 						$rc[0],
 						$HybridAuth_data['identifier'],
@@ -672,19 +614,7 @@ class Controller {
 						_setcookie('HybridAuth_referer', '');
 					}
 				}
-				$db->$db_id()->q(
-					"INSERT INTO `[prefix]users_social_integration`
-						(
-							`id`,
-							`provider`,
-							`identifier`,
-							`profile`
-						) VALUES (
-							'%s',
-							'%s',
-							'%s',
-							'%s'
-						)",
+				$Social_integration->add(
 					$result['id'],
 					$rc[0],
 					$HybridAuth_data['identifier'],
