@@ -237,10 +237,35 @@ class Controller {
 				 * If integrated service returns email
 				 */
 				if ($email) {
+					$adapter = $HybridAuth->getAdapter($rc[0]);
 					/**
-					 * Try to register user
+					 * Search for user with such email
 					 */
-					$adapter		= $HybridAuth->getAdapter($rc[0]);
+					$user = $User->get_id(hash('sha224', $email));
+					/**
+					 * If email is already registered - make merge of accounts and login
+					 */
+					if ($user) {
+						$Social_integration->add(
+							$user,
+							$rc[0],
+							$profile->identifier,
+							$profile->profileURL
+						);
+						if ($User->get('status', $user) == User::STATUS_NOT_ACTIVATED) {
+							$User->set('status', User::STATUS_ACTIVE, $user);
+						}
+						static::add_session_and_update_data(
+							$user,
+							$adapter,
+							$rc[0],
+							$profile_info
+						);
+						return;
+					}
+					/**
+					 * If user doesn't exists - try to register user
+					 */
 					if (!Event::instance()->fire(
 						'HybridAuth/registration/before',
 						[
@@ -252,72 +277,48 @@ class Controller {
 					)) {
 						return;
 					}
-					if ($result		= $User->registration($email, false, false)) {
-						if ($result == 'error') {
-							$Index->content($L->reg_server_error);
-							return;
-						/**
-						 * If email is already registered - make merge of accounts and login
-						 */
-						} elseif ($result == 'exists') {
-							$user	= $User->get_id(hash('sha224', $email));
-							$Social_integration->add(
-								$user,
-								$rc[0],
-								$profile->identifier,
-								$profile->profileURL
-							);
-							if ($User->get('status', $user) == User::STATUS_NOT_ACTIVATED) {
-								$User->set('status', User::STATUS_ACTIVE, $user);
-							}
-							static::add_session_and_update_data(
-								$user,
-								$adapter,
-								$rc[0],
-								$profile_info
-							);
-							return;
-						}
-						$Social_integration->add(
-							$result['id'],
-							$rc[0],
-							$profile->identifier,
-							$profile->profileURL
-						);
-						/**
-						 * Registration is successful, confirmation is not needed
-						 */
-						$body	= $L->reg_success_mail_body(
-							isset($profile_info['username']) ? $profile_info['username'] : strstr($email, '@', true),
-							get_core_ml_text('name'),
-							$Config->base_url().'/profile/settings',
-							$User->get('login', $result['id']),
-							$result['password']
-						);
-						/**
-						 * Send notification email
-						 */
-						if ($Mail->send_to(
-							$email,
-							$L->reg_success_mail(get_core_ml_text('name')),
-							$body
-						)) {
-							static::add_session_and_update_data(
-								$result['id'],
-								$adapter,
-								$rc[0],
-								$profile_info
-							);
-						} else {
-							$User->registration_cancel();
-							$Page->title($L->sending_reg_mail_error_title);
-							$Page->warning($L->sending_reg_mail_error);
-							_header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
-							_setcookie('HybridAuth_referer', '');
-						}
-					} else {
+					$result = $User->registration($email, false, false);
+					if (!$result || $result == 'error') {
 						$Page->title($L->reg_server_error);
 						$Page->warning($L->reg_server_error);
+						_header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
+						_setcookie('HybridAuth_referer', '');
+						return;
+					}
+					$Social_integration->add(
+						$result['id'],
+						$rc[0],
+						$profile->identifier,
+						$profile->profileURL
+					);
+					/**
+					 * Registration is successful, confirmation is not needed
+					 */
+					$body	= $L->reg_success_mail_body(
+						isset($profile_info['username']) ? $profile_info['username'] : strstr($email, '@', true),
+						get_core_ml_text('name'),
+						$Config->base_url().'/profile/settings',
+						$User->get('login', $result['id']),
+						$result['password']
+					);
+					/**
+					 * Send notification email
+					 */
+					if ($Mail->send_to(
+						$email,
+						$L->reg_success_mail(get_core_ml_text('name')),
+						$body
+					)) {
+						static::add_session_and_update_data(
+							$result['id'],
+							$adapter,
+							$rc[0],
+							$profile_info
+						);
+					} else {
+						$User->registration_cancel();
+						$Page->title($L->sending_reg_mail_error_title);
+						$Page->warning($L->sending_reg_mail_error);
 						_header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
 						_setcookie('HybridAuth_referer', '');
 					}
