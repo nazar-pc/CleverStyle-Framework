@@ -488,6 +488,7 @@ class Controller {
 			Page::instance()->error();
 			throw new \ExitException;
 		}
+		return $code;
 	}
 	/**
 	 * @throws \ExitException
