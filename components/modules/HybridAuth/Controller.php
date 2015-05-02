@@ -191,29 +191,13 @@ class Controller {
 		if ($User->get('status', $data['id']) == User::STATUS_NOT_ACTIVATED) {
 			$User->set('status', User::STATUS_ACTIVE, $data['id']);
 		}
-		Event::instance()->fire(
-			'HybridAuth/add_session/before',
-			[
-				'adapter'  => $adapter,
-				'provider' => $data['provider']
-			]
-		);
-		$Session->add($data['id']);
-		add_session_after();
-		Event::instance()->fire(
-			'HybridAuth/add_session/after',
-			[
-				'adapter'  => $adapter,
-				'provider' => $data['provider']
-			]
-		);
-		unset($HybridAuth, $adapter);
-		self::update_data(
-			$data['contacts'],
+		self::add_session_and_update_data(
+			$data['id'],
+			$adapter,
 			$data['provider'],
-			$data['profile_info']
+			$data['profile_info'],
+			true
 		);
-		self::redirect(true);
 		$Index->content(
 			$L->hybridauth_merging_confirmed_successfully($L->{$data['provider']})
 		);
@@ -581,9 +565,10 @@ class Controller {
 	 * @param \Hybrid_Provider_Adapter $adapter
 	 * @param string                   $provider
 	 * @param array                    $profile_info
+	 * @param bool                     $redirect_with_delay
 	 *
 	 */
-	protected static function add_session_and_update_data ($user_id, $adapter, $provider, $profile_info) {
+	protected static function add_session_and_update_data ($user_id, $adapter, $provider, $profile_info, $redirect_with_delay = false) {
 		Event::instance()->fire(
 			'HybridAuth/add_session/before',
 			[
@@ -614,7 +599,7 @@ class Controller {
 			$provider,
 			$profile_info
 		);
-		self::redirect();
+		self::redirect($redirect_with_delay);
 	}
 	/**
 	 * @param array  $contacts
