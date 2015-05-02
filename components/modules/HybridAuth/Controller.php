@@ -183,11 +183,7 @@ class Controller {
 		if ($User->get('status', $data['id']) == User::STATUS_NOT_ACTIVATED) {
 			$User->set('status', User::STATUS_ACTIVE, $data['id']);
 		}
-		self::add_session_and_update_data(
-			$data['id'],
-			$data['provider'],
-			true
-		);
+		self::add_session_and_update_data($data['id'], $data['provider'], true);
 		$Index->content(
 			$L->hybridauth_merging_confirmed_successfully($L->{$data['provider']})
 		);
@@ -239,18 +235,15 @@ class Controller {
 			/**
 			 * Check whether this account was already registered in system. If registered - make login
 			 */
+			$user = $Social_integration->find_integration(
+				$provider,
+				$profile->identifier
+			);
 			if (
-				(
-				$id = $Social_integration->find_integration(
-					$provider,
-					$profile->identifier
-				)
-				) && $User->get('status', $id) == User::STATUS_ACTIVE
+				$user &&
+				$User->get('status', $user) == User::STATUS_ACTIVE
 			) {
-				self::add_session_and_update_data(
-					$id,
-					$provider
-				);
+				self::add_session_and_update_data($user, $provider);
 				return false;
 			}
 			$email = $profile->emailVerified ?: $profile->email;
@@ -275,10 +268,7 @@ class Controller {
 					if ($User->get('status', $user) == User::STATUS_NOT_ACTIVATED) {
 						$User->set('status', User::STATUS_ACTIVE, $user);
 					}
-					self::add_session_and_update_data(
-						$user,
-						$provider
-					);
+					self::add_session_and_update_data($user, $provider);
 					return false;
 				}
 				/**
@@ -585,10 +575,7 @@ class Controller {
 			$body
 		)
 		) {
-			self::add_session_and_update_data(
-				$user_id,
-				$provider
-			);
+			self::add_session_and_update_data($user_id, $provider);
 		} else {
 			$User->registration_cancel();
 			Page::instance()
