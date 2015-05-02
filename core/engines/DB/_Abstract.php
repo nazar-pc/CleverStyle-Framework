@@ -363,7 +363,7 @@ abstract class _Abstract {
 	 *
 	 * @param array|string|string[] $query
 	 *
-	 * @return array                        array(<b>$query</b>, <b>$params</b>)
+	 * @return array|false [<b>$query</b>, <b>$params</b>]
 	 */
 	protected function q_prepare ($query) {
 		if (!$query) {
