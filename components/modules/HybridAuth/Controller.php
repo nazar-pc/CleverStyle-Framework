@@ -123,7 +123,7 @@ class Controller {
 		 * If user did not specified email
 		 */
 		if (!isset($_POST['email'])) {
-			self::email_not_specified($provider, $Social_integration, $Session, $User, $Index, $L, $Config, $Page);
+			self::email_not_specified($provider, $Social_integration, $Session, $User, $Index, $L, $Page);
 			return;
 		}
 		/**
@@ -180,7 +180,6 @@ class Controller {
 		);
 		$Session->del_data('HybridAuth');
 		$HybridAuth = get_hybridauth_instance($data['provider']);
-		$adapter    = $HybridAuth->getAdapter($data['provider']);
 		$User->set_data(
 			'HybridAuth_session',
 			array_merge(
@@ -193,9 +192,7 @@ class Controller {
 		}
 		self::add_session_and_update_data(
 			$data['id'],
-			$adapter,
 			$data['provider'],
-			$data['profile_info'],
 			true
 		);
 		$Index->content(
@@ -223,32 +220,17 @@ class Controller {
 	 * @param User               $User
 	 * @param Index              $Index
 	 * @param Language           $L
-	 * @param Config             $Config
 	 * @param Page               $Page
 	 *
 	 * @return bool
 	 */
-	protected static function email_not_specified ($provider, $Social_integration, $Session, $User, $Index, $L, $Config, $Page) {
+	protected static function email_not_specified ($provider, $Social_integration, $Session, $User, $Index, $L, $Page) {
 		try {
 			$HybridAuth = get_hybridauth_instance($provider);
-			$adapter    = $HybridAuth->authenticate($provider);
 			/**
 			 * @var \Hybrid_User_Profile $profile
 			 */
-			$profile      = $adapter->getUserProfile();
-			$profile_info = [
-				'username' => $profile->displayName,
-				'avatar'   => $profile->photoURL
-			];
-			/**
-			 * Remove empty fields
-			 */
-			foreach ($profile_info as $item => $value) {
-				if (!$value) {
-					unset($profile_info[$item]);
-				}
-			}
-			unset($item, $value);
+			$profile = $HybridAuth->authenticate($provider)->getUserProfile();
 			/**
 			 * Check whether this account was already registered in system. If registered - make login
 			 */
@@ -260,33 +242,17 @@ class Controller {
 				)
 				) && $User->get('status', $id) == User::STATUS_ACTIVE
 			) {
-				static::add_session_and_update_data(
+				self::add_session_and_update_data(
 					$id,
-					$adapter,
-					$provider,
-					$profile_info
+					$provider
 				);
 				return false;
 			}
 			$email = $profile->emailVerified ?: $profile->email;
 			/**
-			 * @var \Hybrid_User_Contact[] $contacts
-			 */
-			$contacts = [];
-			if ($Config->module('HybridAuth')->enable_contacts_detection) {
-				try {
-					$contacts = $adapter->getUserContacts();
-				} catch (\ExitException $e) {
-					throw $e;
-				} catch (Exception $e) {
-					unset($e);
-				}
-			}
-			/**
 			 * If integrated service returns email
 			 */
 			if ($email) {
-				$adapter = $HybridAuth->getAdapter($provider);
 				/**
 				 * Search for user with such email
 				 */
@@ -304,11 +270,9 @@ class Controller {
 					if ($User->get('status', $user) == User::STATUS_NOT_ACTIVATED) {
 						$User->set('status', User::STATUS_ACTIVE, $user);
 					}
-					static::add_session_and_update_data(
+					self::add_session_and_update_data(
 						$user,
-						$adapter,
-						$provider,
-						$profile_info
+						$provider
 					);
 					return false;
 				}
@@ -343,13 +307,7 @@ class Controller {
 				/**
 				 * Registration is successful, confirmation is not needed
 				 */
-				static::finish_registration_send_email(
-					$result['id'],
-					$result['password'],
-					$adapter,
-					$provider,
-					$profile_info
-				);
+				self::finish_registration_send_email($result['id'], $result['password'], $provider);
 				/**
 				 * If integrated service does not returns email - ask user for email
 				 */
@@ -357,11 +315,9 @@ class Controller {
 				$Session->set_data(
 					'HybridAuth',
 					[
-						'profile_info' => $profile_info,
-						'contacts'     => $contacts,
-						'provider'     => $provider,
-						'identifier'   => $profile->identifier,
-						'profile'      => $profile->profileURL
+						'provider'   => $provider,
+						'identifier' => $profile->identifier,
+						'profile'    => $profile->profileURL
 					]
 				);
 				self::email_form($Index, $L);
@@ -402,7 +358,6 @@ class Controller {
 	 * @param Language           $L
 	 * @param Config             $Config
 	 * @param Page               $Page
-	 * @param array              $HybridAuth_data
 	 *
 	 * @return bool
 	 */
@@ -487,29 +442,12 @@ class Controller {
 				$HybridAuth_data['identifier'],
 				$HybridAuth_data['profile']
 			);
-			$profile_info = $HybridAuth_data['profile_info'];
-			try {
-				$HybridAuth = get_hybridauth_instance($provider);
-				$adapter    = $HybridAuth->getAdapter($provider);
-				self::finish_registration_send_email(
-					$result['id'],
-					$result['password'],
-					$adapter,
-					$provider,
-					$profile_info
-				);
-			} catch (\ExitException $e) {
-				throw $e;
-			} catch (Exception $e) {
-				trigger_error($e->getMessage());
-				self::redirect(true);
-			}
+			self::finish_registration_send_email($result['id'], $result['password'], $provider);
 		} else {
-			$profile_info = $HybridAuth_data['profile_info'];
-			$body         = $L->reg_need_confirmation_mail_body(
-				isset($profile_info['username']) ? $profile_info['username'] : strstr($result['email'], '@', true),
+			$body = $L->reg_need_confirmation_mail_body(
+				self::get_adapter($provider)->getUserProfile()->displayName ?: strstr($result['email'], '@', true),
 				get_core_ml_text('name'),
-				"$core_url/HybridAuth/merge_confirmation/$result[reg_key]",
+				"$core_url/profile/registration_confirmation/$result[reg_key]",
 				$L->time($Config->core['registration_confirmation_time'], 'd')
 			);
 			if ($Mail->send_to(
@@ -518,11 +456,7 @@ class Controller {
 				$body
 			)
 			) {
-				self::update_data(
-					$HybridAuth_data['contacts'],
-					$provider,
-					$profile_info
-				);
+				self::update_data($provider);
 				_setcookie('HybridAuth_referer', '');
 				$Index->content($L->reg_confirmation);
 			} else {
@@ -561,14 +495,15 @@ class Controller {
 		}
 	}
 	/**
-	 * @param int                      $user_id
-	 * @param \Hybrid_Provider_Adapter $adapter
-	 * @param string                   $provider
-	 * @param array                    $profile_info
-	 * @param bool                     $redirect_with_delay
+	 * @throws \ExitException
+	 *
+	 * @param int    $user_id
+	 * @param string $provider
+	 * @param bool   $redirect_with_delay
 	 *
 	 */
-	protected static function add_session_and_update_data ($user_id, $adapter, $provider, $profile_info, $redirect_with_delay = false) {
+	protected static function add_session_and_update_data ($user_id, $provider, $redirect_with_delay = false) {
+		$adapter = self::get_adapter($provider);
 		Event::instance()->fire(
 			'HybridAuth/add_session/before',
 			[
@@ -585,54 +520,52 @@ class Controller {
 				'provider' => $provider
 			]
 		);
-		$Config   = Config::instance();
-		$contacts = [];
-		if ($Config->module('HybridAuth')->enable_contacts_detection) {
-			try {
-				$contacts = $adapter->getUserContacts();
-			} catch (Exception $e) {
-				unset($e);
-			}
-		}
-		self::update_data(
-			$contacts,
-			$provider,
-			$profile_info
-		);
+		self::update_data($provider);
 		self::redirect($redirect_with_delay);
 	}
 	/**
-	 * @param array  $contacts
 	 * @param string $provider
-	 * @param array  $profile_info
 	 */
-	protected static function update_data ($contacts, $provider, $profile_info) {
+	protected static function update_data ($provider) {
 		$User    = User::instance();
 		$user_id = $User->id;
 		if ($user_id != User::GUEST_ID) {
+			$adapter       = self::get_adapter($provider);
+			$profile       = $adapter->getUserProfile();
+			$profile_info  = [
+				'username' => $profile->displayName,
+				'avatar'   => $profile->photoURL
+			];
+			$profile_info  = array_filter($profile_info);
 			$existing_data = $User->get(array_keys($profile_info), $user_id);
 			foreach ($profile_info as $item => $value) {
 				if (!$existing_data[$item] || $existing_data[$item] != $value) {
 					$User->set($item, $value, $user_id);
 				}
 			}
-			update_user_contacts($contacts, $provider);
+			if (Config::instance()->module('HybridAuth')->enable_contacts_detection) {
+				$contacts = [];
+				try {
+					$contacts = $adapter->getUserContacts();
+				} catch (Exception $e) {
+					unset($e);
+				}
+				update_user_contacts($contacts, $provider);
+			}
 		}
 	}
 	/**
-	 * @param int                      $user_id
-	 * @param string                   $password
-	 * @param \Hybrid_Provider_Adapter $adapter
-	 * @param string                   $provider
-	 * @param array                    $profile_info
+	 * @param int    $user_id
+	 * @param string $password
+	 * @param string $provider
 	 */
-	protected static function finish_registration_send_email ($user_id, $password, $adapter, $provider, $profile_info) {
+	protected static function finish_registration_send_email ($user_id, $password, $provider) {
 		$L         = Language::instance();
 		$User      = User::instance();
 		$user_data = $User->$user_id;
 		$base_url  = Config::instance()->base_url();
 		$body      = $L->reg_success_mail_body(
-			isset($profile_info['username']) ? $profile_info['username'] : $user_data->username(),
+			self::get_adapter($provider)->getUserProfile()->displayName ?: $user_data->username(),
 			get_core_ml_text('name'),
 			"$base_url/profile/settings",
 			$user_data->login,
@@ -649,9 +582,7 @@ class Controller {
 		) {
 			self::add_session_and_update_data(
 				$user_id,
-				$adapter,
-				$provider,
-				$profile_info
+				$provider
 			);
 		} else {
 			$User->registration_cancel();
@@ -660,5 +591,26 @@ class Controller {
 				->warning($L->sending_reg_mail_error);
 			self::redirect(true);
 		}
+	}
+	/**
+	 * @throws \ExitException
+	 *
+	 * @param string $provider
+	 *
+	 * @return \Hybrid_Provider_Adapter
+	 */
+	protected static function get_adapter ($provider) {
+		try {
+			$HybridAuth = get_hybridauth_instance($provider);
+			$adapter    = $HybridAuth->getAdapter($provider);
+		} catch (\ExitException $e) {
+			throw $e;
+		} catch (Exception $e) {
+			trigger_error($e->getMessage());
+			error_code(500);
+			Page::instance()->error();
+		}
+		/** @noinspection PhpUndefinedVariableInspection */
+		return $adapter;
 	}
 }
