@@ -45,11 +45,11 @@ use
  */
 class Controller {
 	static function index () {
-		$rc = Route::instance()->route;
+		$route = Route::instance()->route;
 		/**
 		 * This should be present in any case, if not - exit from here
 		 */
-		if (!isset($rc[0])) {
+		if (!isset($route[0])) {
 			self::redirect();
 			return;
 		}
@@ -57,23 +57,20 @@ class Controller {
 		$Index              = Index::instance();
 		$Session            = Session::instance();
 		$User               = User::instance();
-		$db_id              = $Config->module('HybridAuth')->db('integration');
 		$Social_integration = Social_integration::instance();
-		$Key                = Key::instance();
 		$L                  = Language::instance();
 		/**
 		 * Confirmation of accounts merging
 		 */
-		if ($rc[0] == 'merge_confirmation') {
-			self::merge_confirmation($rc, $Key, $db_id, $Social_integration, $Session, $User, $Index, $L);
+		if ($route[0] == 'merge_confirmation') {
+			self::merge_confirmation($route, $Social_integration, $Session, $User, $Index, $L);
 			return;
 		}
-		$provider = $rc[0];
+		$provider = $route[0];
 		/**
-		 * Authenticated users are not allowed to sign in, also provider should exist and be enabled, `$rc[1]` should be present as well
+		 * Authenticated users are not allowed to sign in, also provider should exist and be enabled
 		 */
 		if (
-			!isset($rc[1]) ||
 			$User->user() ||
 			!@$Config->module('HybridAuth')->providers[$provider]['enabled']
 		) {
@@ -108,13 +105,13 @@ class Controller {
 		/**
 		 * Handle authentication endpoint
 		 */
-		if ($rc[1] == 'endpoint') {
+		if (isset($route[1]) && $route[1] == 'endpoint') {
 			/**
 			 * `$rc[2]` should be present and contain special hash for security reasons (this is called as callback from provider)
 			 */
 			if (
-				!isset($rc[2]) ||
-				strpos($rc[2], md5($provider.$Session->get_id())) !== 0
+				!isset($route[2]) ||
+				strpos($route[2], md5($provider.$Session->get_id())) !== 0
 			) {
 				self::redirect();
 				return;
@@ -126,13 +123,13 @@ class Controller {
 		 * If user did not specified email
 		 */
 		if (!isset($_POST['email'])) {
-			self::email_not_specified($rc, $Social_integration, $Session, $User, $Index, $L, $Config, $Page);
+			self::email_not_specified($provider, $Social_integration, $Session, $User, $Index, $L, $Config, $Page);
 			return;
 		}
 		/**
 		 * If user specified email
 		 */
-		self::email_was_specified($rc, $Key, $db_id, $Social_integration, $Session, $User, $Index, $L, $Config, $Page);
+		self::email_was_specified($provider, $Social_integration, $Session, $User, $Index, $L, $Config, $Page);
 	}
 	/**
 	 * Redirect to referer or home page
@@ -153,77 +150,90 @@ class Controller {
 		}
 	}
 	/**
-	 * @param string[]           $rc
-	 * @param Key                $Key
-	 * @param int                $db_id
+	 * @param string[]           $route
 	 * @param Social_integration $Social_integration
 	 * @param Session            $Session
 	 * @param User               $User
 	 * @param Index              $Index
 	 * @param Language           $L
 	 */
-	protected static function merge_confirmation ($rc, $Key, $db_id, $Social_integration, $Session, $User, $Index, $L) {
-		if (!isset($rc[1])) {
+	protected static function merge_confirmation ($route, $Social_integration, $Session, $User, $Index, $L) {
+		if (!isset($route[1])) {
 			self::redirect();
+		}
+		/**
+		 * Check confirmation code
+		 */
+		$data = self::get_data_by_confirmation_code($route[1]);
+		if (!$data) {
+			$Index->content($L->hybridauth_merge_confirm_code_invalid);
+			return;
 		}
 		/**
 		 * If confirmation key is valid - make merging
 		 */
-		if ($data = $Key->get($db_id, $rc[1], true)) {
-			$Social_integration->add(
-				$data['id'],
-				$data['provider'],
-				$data['identifier'],
-				$data['profile']
-			);
-			$Session->del_data('HybridAuth');
-			$HybridAuth = get_hybridauth_instance($data['provider']);
-			$adapter    = $HybridAuth->getAdapter($data['provider']);
-			$User->set_data(
-				'HybridAuth_session',
-				array_merge(
-					$User->get_data('HybridAuth_session') ?: [],
-					unserialize($HybridAuth->getSessionData())
-				)
-			);
-			if ($User->get('status', $data['id']) == User::STATUS_NOT_ACTIVATED) {
-				$User->set('status', User::STATUS_ACTIVE, $data['id']);
-			}
-			Event::instance()->fire(
-				'HybridAuth/add_session/before',
-				[
-					'adapter'  => $adapter,
-					'provider' => $data['provider']
-				]
-			);
-			$Session->add($data['id']);
-			add_session_after();
-			Event::instance()->fire(
-				'HybridAuth/add_session/after',
-				[
-					'adapter'  => $adapter,
-					'provider' => $data['provider']
-				]
-			);
-			unset($HybridAuth, $adapter);
-			self::update_data(
-				$data['contacts'],
-				$data['provider'],
-				$data['profile_info']
-			);
-			self::redirect(true);
-			$Index->content(
-				$L->hybridauth_merging_confirmed_successfully($L->{$data['provider']})
-			);
-			unset($data);
-		} else {
-			$Index->content($L->hybridauth_merge_confirm_code_invalid);
+		$Social_integration->add(
+			$data['id'],
+			$data['provider'],
+			$data['identifier'],
+			$data['profile']
+		);
+		$Session->del_data('HybridAuth');
+		$HybridAuth = get_hybridauth_instance($data['provider']);
+		$adapter    = $HybridAuth->getAdapter($data['provider']);
+		$User->set_data(
+			'HybridAuth_session',
+			array_merge(
+				$User->get_data('HybridAuth_session') ?: [],
+				unserialize($HybridAuth->getSessionData())
+			)
+		);
+		if ($User->get('status', $data['id']) == User::STATUS_NOT_ACTIVATED) {
+			$User->set('status', User::STATUS_ACTIVE, $data['id']);
 		}
+		Event::instance()->fire(
+			'HybridAuth/add_session/before',
+			[
+				'adapter'  => $adapter,
+				'provider' => $data['provider']
+			]
+		);
+		$Session->add($data['id']);
+		add_session_after();
+		Event::instance()->fire(
+			'HybridAuth/add_session/after',
+			[
+				'adapter'  => $adapter,
+				'provider' => $data['provider']
+			]
+		);
+		unset($HybridAuth, $adapter);
+		self::update_data(
+			$data['contacts'],
+			$data['provider'],
+			$data['profile_info']
+		);
+		self::redirect(true);
+		$Index->content(
+			$L->hybridauth_merging_confirmed_successfully($L->{$data['provider']})
+		);
+	}
+	/**
+	 * @param string $code
+	 *
+	 * @return false|array
+	 */
+	protected static function get_data_by_confirmation_code ($code) {
+		return Key::instance()->get(
+			Config::instance()->module('HybridAuth')->db('integration'),
+			$code,
+			true
+		);
 	}
 	/**
 	 * @throws \ExitException
 	 *
-	 * @param string[]           $rc
+	 * @param string             $provider
 	 * @param Social_integration $Social_integration
 	 * @param Session            $Session
 	 * @param User               $User
@@ -234,10 +244,10 @@ class Controller {
 	 *
 	 * @return bool
 	 */
-	protected static function email_not_specified ($rc, $Social_integration, $Session, $User, $Index, $L, $Config, $Page) {
+	protected static function email_not_specified ($provider, $Social_integration, $Session, $User, $Index, $L, $Config, $Page) {
 		try {
-			$HybridAuth = get_hybridauth_instance($rc[0]);
-			$adapter    = $HybridAuth->authenticate($rc[0]);
+			$HybridAuth = get_hybridauth_instance($provider);
+			$adapter    = $HybridAuth->authenticate($provider);
 			/**
 			 * @var \Hybrid_User_Profile $profile
 			 */
@@ -261,7 +271,7 @@ class Controller {
 			if (
 				(
 				$id = $Social_integration->find_integration(
-					$rc[0],
+					$provider,
 					$profile->identifier
 				)
 				) && $User->get('status', $id) == User::STATUS_ACTIVE
@@ -269,7 +279,7 @@ class Controller {
 				static::add_session_and_update_data(
 					$id,
 					$adapter,
-					$rc[0],
+					$provider,
 					$profile_info
 				);
 				return false;
@@ -292,7 +302,7 @@ class Controller {
 			 * If integrated service returns email
 			 */
 			if ($email) {
-				$adapter = $HybridAuth->getAdapter($rc[0]);
+				$adapter = $HybridAuth->getAdapter($provider);
 				/**
 				 * Search for user with such email
 				 */
@@ -303,7 +313,7 @@ class Controller {
 				if ($user) {
 					$Social_integration->add(
 						$user,
-						$rc[0],
+						$provider,
 						$profile->identifier,
 						$profile->profileURL
 					);
@@ -313,7 +323,7 @@ class Controller {
 					static::add_session_and_update_data(
 						$user,
 						$adapter,
-						$rc[0],
+						$provider,
 						$profile_info
 					);
 					return false;
@@ -324,7 +334,7 @@ class Controller {
 				if (!Event::instance()->fire(
 					'HybridAuth/registration/before',
 					[
-						'provider'   => $rc[0],
+						'provider'   => $provider,
 						'email'      => $email,
 						'identifier' => $profile->identifier,
 						'profile'    => $profile->profileURL
@@ -342,7 +352,7 @@ class Controller {
 				}
 				$Social_integration->add(
 					$result['id'],
-					$rc[0],
+					$provider,
 					$profile->identifier,
 					$profile->profileURL
 				);
@@ -353,7 +363,7 @@ class Controller {
 					$result['id'],
 					$result['password'],
 					$adapter,
-					$rc[0],
+					$provider,
 					$profile_info
 				);
 				/**
@@ -365,7 +375,7 @@ class Controller {
 					[
 						'profile_info' => $profile_info,
 						'contacts'     => $contacts,
-						'provider'     => $rc[0],
+						'provider'     => $provider,
 						'identifier'   => $profile->identifier,
 						'profile'      => $profile->profileURL
 					]
@@ -400,9 +410,7 @@ class Controller {
 	/**
 	 * @throws \ExitException
 	 *
-	 * @param string[]           $rc
-	 * @param Key                $Key
-	 * @param int                $db_id
+	 * @param string             $provider
 	 * @param Social_integration $Social_integration
 	 * @param Session            $Session
 	 * @param User               $User
@@ -414,19 +422,19 @@ class Controller {
 	 *
 	 * @return bool
 	 */
-	protected static function email_was_specified ($rc, $Key, $db_id, $Social_integration, $Session, $User, $Index, $L, $Config, $Page) {
+	protected static function email_was_specified ($provider, $Social_integration, $Session, $User, $Index, $L, $Config, $Page) {
 		$HybridAuth_data = $Session->get_data('HybridAuth');
 		if (!$HybridAuth_data) {
 			self::redirect();
 		}
-		$Mail            = Mail::instance();
+		$Mail = Mail::instance();
 		/**
 		 * Try to register user
 		 */
 		if (!Event::instance()->fire(
 			'HybridAuth/registration/before',
 			[
-				'provider'   => $rc[0],
+				'provider'   => $provider,
 				'email'      => strtolower($_POST['email']),
 				'identifier' => $HybridAuth_data['identifier'],
 				'profile'    => $HybridAuth_data['profile']
@@ -435,7 +443,8 @@ class Controller {
 		) {
 			return false;
 		}
-		$result = $User->registration($_POST['email']);
+		$core_url = $Config->core_url();
+		$result   = $User->registration($_POST['email']);
 		if ($result === false) {
 			$Page->title($L->please_type_correct_email);
 			$Page->warning($L->please_type_correct_email);
@@ -456,17 +465,12 @@ class Controller {
 			$id                    = $User->get_id(hash('sha224', strtolower($_POST['email'])));
 			$HybridAuth_data['id'] = $id;
 			_setcookie('HybridAuth_referer', '');
-			$confirm_key = $Key->add(
-				$db_id,
-				false,
-				$HybridAuth_data,
-				TIME + $Config->core['registration_confirmation_time'] * 86400
-			);
-			$body        = $L->hybridauth_merge_confirmation_mail_body(
+			$confirmation_code = self::set_data_generate_confirmation_code($HybridAuth_data);
+			$body              = $L->hybridauth_merge_confirmation_mail_body(
 				$User->username($id) ?: strstr($_POST['email'], '@', true),
 				get_core_ml_text('name'),
-				$L->{$rc[0]},
-				$Config->core_url().'/HybridAuth/merge_confirmation/'.$confirm_key,
+				$L->$provider,
+				"$core_url/HybridAuth/merge_confirmation/$confirmation_code",
 				$L->time($Config->core['registration_confirmation_time'], 'd')
 			);
 			if ($Mail->send_to(
@@ -478,7 +482,7 @@ class Controller {
 				_setcookie('HybridAuth_referer', '');
 				$Index->content(
 					h::p(
-						$L->hybridauth_merge_confirmation($L->{$rc[0]})
+						$L->hybridauth_merge_confirmation($L->$provider)
 					)
 				);
 			} else {
@@ -495,19 +499,19 @@ class Controller {
 			$Session->del_data('HybridAuth');
 			$Social_integration->add(
 				$result['id'],
-				$rc[0],
+				$provider,
 				$HybridAuth_data['identifier'],
 				$HybridAuth_data['profile']
 			);
 			$profile_info = $HybridAuth_data['profile_info'];
 			try {
-				$HybridAuth = get_hybridauth_instance($rc[0]);
-				$adapter    = $HybridAuth->getAdapter($rc[0]);
+				$HybridAuth = get_hybridauth_instance($provider);
+				$adapter    = $HybridAuth->getAdapter($provider);
 				self::finish_registration_send_email(
 					$result['id'],
 					$result['password'],
 					$adapter,
-					$rc[0],
+					$provider,
 					$profile_info
 				);
 			} catch (\ExitException $e) {
@@ -521,7 +525,7 @@ class Controller {
 			$body         = $L->reg_need_confirmation_mail_body(
 				isset($profile_info['username']) ? $profile_info['username'] : strstr($result['email'], '@', true),
 				get_core_ml_text('name'),
-				$Config->core_url().'/profile/registration_confirmation/'.$result['reg_key'],
+				"$core_url/HybridAuth/merge_confirmation/$result[reg_key]",
 				$L->time($Config->core['registration_confirmation_time'], 'd')
 			);
 			if ($Mail->send_to(
@@ -532,7 +536,7 @@ class Controller {
 			) {
 				self::update_data(
 					$HybridAuth_data['contacts'],
-					$rc[0],
+					$provider,
 					$profile_info
 				);
 				_setcookie('HybridAuth_referer', '');
@@ -546,11 +550,31 @@ class Controller {
 		}
 		$Social_integration->add(
 			$result['id'],
-			$rc[0],
+			$provider,
 			$HybridAuth_data['identifier'],
 			$HybridAuth_data['profile']
 		);
 		return true;
+	}
+	/**
+	 * @throws \ExitException
+	 *
+	 * @param array $data
+	 *
+	 * @return false|string
+	 */
+	protected static function set_data_generate_confirmation_code ($data) {
+		$code = Key::instance()->add(
+			Config::instance()->module('HybridAuth')->db('integration'),
+			false,
+			$data,
+			TIME + Config::instance()->core['registration_confirmation_time'] * 86400
+		);
+		if (!$code) {
+			error_code(500);
+			Page::instance()->error();
+			throw new \ExitException;
+		}
 	}
 	/**
 	 * @param int                      $user_id
