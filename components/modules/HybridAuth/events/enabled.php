@@ -119,7 +119,7 @@ Event::instance()->on(
 	function ($data) {
 		$data['contacts']	= array_unique(array_merge(
 			$data['contacts'],
-			get_user_contacts($data['id'])
+			Social_integration::instance()->get_contacts($data['id'])
 		));
 	}
 );

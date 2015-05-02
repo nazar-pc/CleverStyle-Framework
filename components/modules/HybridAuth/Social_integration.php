@@ -8,7 +8,9 @@
  */
 namespace cs\modules\HybridAuth;
 use
+	cs\Cache,
 	cs\Config,
+	cs\User,
 	cs\DB\Accessor,
 	cs\Singleton;
 /**
@@ -18,12 +20,6 @@ class Social_integration {
 	use
 		Accessor,
 		Singleton;
-	protected $data_model = [
-		'id'         => 'int:0',
-		'provider'   => 'text',
-		'identifier' => 'text',
-		'profile'    => 'text'
-	];
 	protected function cdb () {
 		return Config::instance()->module('HybridAuth')->db('integration');
 	}
@@ -81,5 +77,82 @@ class Social_integration {
 				$identifier
 			]
 		);
+	}
+	/**
+	 * Returns array of user id, that are contacts of specified user
+	 *
+	 * @param int $user_id
+	 *
+	 * @return int[]
+	 */
+	function get_contacts ($user_id) {
+		$user_id = (int)$user_id;
+		if (
+			!$user_id ||
+			$user_id == User::GUEST_ID ||
+			!Config::instance()->module('HybridAuth')->enable_contacts_detection
+		) {
+			return [];
+		}
+		return Cache::instance()->get(
+			"HybridAuth/contacts/$user_id",
+			function () use ($user_id) {
+				return $this->db()->qfas(
+					[
+						"SELECT `i`.`id`
+						FROM `[prefix]users_social_integration` AS `i`
+						INNER JOIN `[prefix]users_social_integration_contacts` AS `c`
+						ON
+							`i`.`identifier`	= `c`.`identifier` AND
+							`i`.`provider`		= `c`.`provider`
+						INNER JOIN `[prefix]users` AS `u`
+						ON
+							`i`.`id`		= `u`.`id` AND
+							`u`.`status`	= '%s'
+						WHERE `c`.`id`	= '%s'
+						GROUP BY `i`.`id`",
+						User::STATUS_ACTIVE,
+						$user_id
+					]
+				) ?: [];
+			}
+		);
+	}
+	/**
+	 * Set user contacts for specified provider
+	 *
+	 * @param int                    $user_id
+	 * @param \Hybrid_User_Contact[] $contacts
+	 * @param string                 $provider
+	 */
+	function set_contacts ($user_id, $contacts, $provider) {
+		$this->db_prime()->q(
+			"DELETE FROM `[prefix]users_social_integration_contacts`
+			WHERE
+				`id`		= '%s' AND
+				`provider`	= '%s'",
+			$user_id,
+			$provider
+		);
+		if ($contacts) {
+			$identifiers = [];
+			foreach ($contacts as $contact) {
+				$identifiers[] = $contact->identifier;
+			}
+			$this->db_prime()->insert(
+				"INSERT INTO `[prefix]users_social_integration_contacts`
+				(
+					`id`,
+					`provider`,
+					`identifier`
+				) VALUES (
+					'$user_id',
+					'$provider',
+					'%s'
+				)",
+				$identifiers
+			);
+		}
+		Cache::instance()->del("HybridAuth/contacts/$user_id");
 	}
 }

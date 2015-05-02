@@ -179,14 +179,7 @@ class Controller {
 			$data['profile']
 		);
 		$Session->del_data('HybridAuth');
-		$HybridAuth = get_hybridauth_instance($data['provider']);
-		$User->set_data(
-			'HybridAuth_session',
-			array_merge(
-				$User->get_data('HybridAuth_session') ?: [],
-				unserialize($HybridAuth->getSessionData())
-			)
-		);
+		self::save_hybridauth_session();
 		if ($User->get('status', $data['id']) == User::STATUS_NOT_ACTIVATED) {
 			$User->set('status', User::STATUS_ACTIVE, $data['id']);
 		}
@@ -197,6 +190,19 @@ class Controller {
 		);
 		$Index->content(
 			$L->hybridauth_merging_confirmed_successfully($L->{$data['provider']})
+		);
+	}
+	/**
+	 * Save HybridAuth session in user's data in order to restore it next time when calling `get_hybridauth_instance()`
+	 */
+	protected static function save_hybridauth_session () {
+		$User = User::instance();
+		$User->set_data(
+			'HybridAuth_session',
+			array_merge(
+				$User->get_data('HybridAuth_session') ?: [],
+				unserialize(get_hybridauth_instance()->getSessionData())
+			)
 		);
 	}
 	/**
@@ -226,11 +232,10 @@ class Controller {
 	 */
 	protected static function email_not_specified ($provider, $Social_integration, $Session, $User, $Index, $L, $Page) {
 		try {
-			$HybridAuth = get_hybridauth_instance($provider);
 			/**
 			 * @var \Hybrid_User_Profile $profile
 			 */
-			$profile = $HybridAuth->authenticate($provider)->getUserProfile();
+			$profile = get_hybridauth_instance($provider)->authenticate($provider)->getUserProfile();
 			/**
 			 * Check whether this account was already registered in system. If registered - make login
 			 */
@@ -512,7 +517,7 @@ class Controller {
 			]
 		);
 		Session::instance()->add($user_id);
-		add_session_after();
+		self::save_hybridauth_session();
 		Event::instance()->fire(
 			'HybridAuth/add_session/after',
 			[
@@ -550,7 +555,7 @@ class Controller {
 				} catch (Exception $e) {
 					unset($e);
 				}
-				update_user_contacts($contacts, $provider);
+				Social_integration::instance()->set_contacts($user_id, $contacts, $provider);
 			}
 		}
 	}
@@ -601,8 +606,7 @@ class Controller {
 	 */
 	protected static function get_adapter ($provider) {
 		try {
-			$HybridAuth = get_hybridauth_instance($provider);
-			$adapter    = $HybridAuth->getAdapter($provider);
+			$adapter = get_hybridauth_instance($provider)->getAdapter($provider);
 		} catch (\ExitException $e) {
 			throw $e;
 		} catch (Exception $e) {
