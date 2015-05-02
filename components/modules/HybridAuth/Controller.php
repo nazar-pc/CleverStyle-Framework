@@ -25,22 +25,22 @@ use
  * Provides next events:
  *  HybridAuth/registration/before
  *  [
- *   'provider'        => provider        //Provider name
- *   'email'        => email        //Email
- *   'identifier'    => identifier    //Identifier given by provider
- *   'profile'        => profile        //Profile url
+ *   'provider'   => provider   //Provider name
+ *   'email'      => email      //Email
+ *   'identifier' => identifier //Identifier given by provider
+ *   'profile'    => profile    //Profile url
  *  ]
  *
  *  HybridAuth/add_session/before
  *  [
- *   'adapter'    => $Adapter        //instance of Hybrid_Provider_Adapter
- *   'provider'    => provider        //Provider name
+ *   'adapter'  => $Adapter //instance of Hybrid_Provider_Adapter
+ *   'provider' => provider //Provider name
  *  ]
  *
  *  HybridAuth/add_session/after
  *  [
- *   'adapter'    => $Adapter        //instance of Hybrid_Provider_Adapter
- *   'provider'    => provider        //Provider name
+ *   'adapter'  => $Adapter //instance of Hybrid_Provider_Adapter
+ *   'provider' => provider //Provider name
  *  ]
  */
 class Controller {
@@ -78,10 +78,7 @@ class Controller {
 				isset($rc[2]) && strpos($rc[2], md5($rc[0].$Session->get_id())) !== 0
 			)
 		) {
-			_header('Location: '.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
-			code_header(301);
-			interface_off();
-			return;
+			self::redirect();
 		}
 		/**
 		 * Merging confirmation
@@ -135,6 +132,24 @@ class Controller {
 			 */
 		} elseif ($HybridAuth_data = $Session->get_data('HybridAuth')) {
 			self::email_was_specified($rc, $Key, $db_id, $Social_integration, $Session, $User, $Index, $L, $Config, $Page, $HybridAuth_data);
+		}
+	}
+	/**
+	 * Redirect to referer or home page
+	 *
+	 * @throws \ExitException
+	 *
+	 * @param bool $with_delay If `true` - redirect will be made in 5 seconds after page load
+	 */
+	protected static function redirect ($with_delay = false) {
+		$redirect_to = _getcookie('HybridAuth_referer') ?: Config::instance()->base_url();
+		$action      = $with_delay ? 'Refresh: 5; url=' : 'Location: ';
+		_header($action.$redirect_to);
+		_setcookie('HybridAuth_referer', '');
+		if (!$with_delay) {
+			code_header(301);
+			interface_off();
+			throw new \ExitException;
 		}
 	}
 	/**
@@ -194,8 +209,7 @@ class Controller {
 				$data['provider'],
 				$data['profile_info']
 			);
-			_header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
-			_setcookie('HybridAuth_referer', '');
+			self::redirect(true);
 			$Index->content(
 				$L->hybridauth_merging_confirmed_successfully($L->{$data['provider']})
 			);
@@ -321,8 +335,7 @@ class Controller {
 				if (!$result || $result == 'error') {
 					$Page->title($L->reg_server_error);
 					$Page->warning($L->reg_server_error);
-					_header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
-					_setcookie('HybridAuth_referer', '');
+					self::redirect(true);
 					return false;
 				}
 				$Social_integration->add(
@@ -361,8 +374,7 @@ class Controller {
 			throw $e;
 		} catch (Exception $e) {
 			trigger_error($e->getMessage());
-			_header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
-			_setcookie('HybridAuth_referer', '');
+			self::redirect(true);
 		}
 		return true;
 	}
@@ -426,8 +438,7 @@ class Controller {
 		} elseif ($result == 'error') {
 			$Page->title($L->reg_server_error);
 			$Page->warning($L->reg_server_error);
-			_header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
-			_setcookie('HybridAuth_referer', '');
+			self::redirect(true);
 			return false;
 			/**
 			 * If email is already registered
@@ -436,9 +447,8 @@ class Controller {
 			/**
 			 * Send merging confirmation email
 			 */
-			$id                         = $User->get_id(hash('sha224', strtolower($_POST['email'])));
-			$HybridAuth_data['id']      = $id;
-			$HybridAuth_data['referer'] = _getcookie('HybridAuth_referer') ?: $Config->base_url();
+			$id                    = $User->get_id(hash('sha224', strtolower($_POST['email'])));
+			$HybridAuth_data['id'] = $id;
 			_setcookie('HybridAuth_referer', '');
 			$confirm_key = $Key->add(
 				$db_id,
@@ -469,7 +479,7 @@ class Controller {
 				$User->registration_cancel();
 				$Page->title($L->sending_reg_mail_error_title);
 				$Page->warning($L->sending_reg_mail_error);
-				_header('Refresh: 5; url='.$HybridAuth_data['referer']);
+				self::redirect(true);
 			}
 			return false;
 			/**
@@ -498,8 +508,7 @@ class Controller {
 				throw $e;
 			} catch (Exception $e) {
 				trigger_error($e->getMessage());
-				_header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
-				_setcookie('HybridAuth_referer', '');
+				self::redirect(true);
 			}
 		} else {
 			$profile_info = $HybridAuth_data['profile_info'];
@@ -526,8 +535,7 @@ class Controller {
 				$User->registration_cancel();
 				$Page->title($L->sending_reg_mail_error_title);
 				$Page->warning($L->sending_reg_mail_error);
-				_header('Refresh: 5; url='.(_getcookie('HybridAuth_referer') ?: $Config->base_url()));
-				_setcookie('HybridAuth_referer', '');
+				self::redirect(true);
 			}
 		}
 		$Social_integration->add(
@@ -576,10 +584,7 @@ class Controller {
 			$provider,
 			$profile_info
 		);
-		$redirect_to = _getcookie('HybridAuth_referer') ?: $Config->base_url();
-		_header("Location: $redirect_to");
-		_setcookie('HybridAuth_referer', '');
-		code_header(301);
+		self::redirect();
 	}
 	/**
 	 * @param array  $contacts
@@ -638,9 +643,7 @@ class Controller {
 			Page::instance()
 				->title($L->sending_reg_mail_error_title)
 				->warning($L->sending_reg_mail_error);
-			$redirect_to = _getcookie('HybridAuth_referer') ?: $base_url;
-			_header("Refresh: 5; url=$redirect_to");
-			_setcookie('HybridAuth_referer', '');
+			self::redirect(true);
 		}
 	}
 }
