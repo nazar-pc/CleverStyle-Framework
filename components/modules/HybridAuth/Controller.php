@@ -109,17 +109,17 @@ class Controller {
 		 * Handle authentication endpoint
 		 */
 		if ($rc[1] == 'endpoint') {
+			/**
+			 * `$rc[2]` should be present and contain special hash for security reasons (this is called as callback from provider)
+			 */
+			if (
+				!isset($rc[2]) ||
+				strpos($rc[2], md5($provider.$Session->get_id())) !== 0
+			) {
+				self::redirect();
+				return;
+			}
 			Hybrid_Endpoint::process($_REQUEST);
-			return;
-		}
-		/**
-		 * If user is registered, provider not found or this is request for final authentication and session does not corresponds - return user to the base url
-		 */
-		if (
-			isset($rc[2]) &&
-			strpos($rc[2], md5($rc[0].$Session->get_id())) !== 0
-		) {
-			self::redirect();
 			return;
 		}
 		/**
@@ -127,12 +127,12 @@ class Controller {
 		 */
 		if (!isset($_POST['email'])) {
 			self::email_not_specified($rc, $Social_integration, $Session, $User, $Index, $L, $Config, $Page);
-			/**
-			 * If user specified email
-			 */
-		} elseif ($HybridAuth_data = $Session->get_data('HybridAuth')) {
-			self::email_was_specified($rc, $Key, $db_id, $Social_integration, $Session, $User, $Index, $L, $Config, $Page, $HybridAuth_data);
+			return;
 		}
+		/**
+		 * If user specified email
+		 */
+		self::email_was_specified($rc, $Key, $db_id, $Social_integration, $Session, $User, $Index, $L, $Config, $Page);
 	}
 	/**
 	 * Redirect to referer or home page
@@ -414,8 +414,12 @@ class Controller {
 	 *
 	 * @return bool
 	 */
-	protected static function email_was_specified ($rc, $Key, $db_id, $Social_integration, $Session, $User, $Index, $L, $Config, $Page, $HybridAuth_data) {
-		$Mail = Mail::instance();
+	protected static function email_was_specified ($rc, $Key, $db_id, $Social_integration, $Session, $User, $Index, $L, $Config, $Page) {
+		$HybridAuth_data = $Session->get_data('HybridAuth');
+		if (!$HybridAuth_data) {
+			self::redirect();
+		}
+		$Mail            = Mail::instance();
 		/**
 		 * Try to register user
 		 */
