@@ -45,54 +45,44 @@ use
  */
 class Controller {
 	static function index () {
-		$Config  = Config::instance();
-		$Index   = Index::instance();
-		$Session = Session::instance();
-		$User    = User::instance();
-		$rc      = Route::instance()->route;
+		$rc = Route::instance()->route;
 		/**
-		 * If user is registered, provider not found or this is request for final authentication and session does not corresponds - return user to the base url
+		 * This should be present in any case, if not - exit from here
 		 */
-		if (
-			(
-				$User->user() &&
-				(
-					!isset($rc[0]) ||
-					$rc[0] != 'merge_confirmation'
-				)
-			) ||
-			!(
-				isset($rc[0]) &&
-				(
-					(
-						isset($Config->module('HybridAuth')->providers[$rc[0]]) &&
-						$Config->module('HybridAuth')->providers[$rc[0]]['enabled']
-					) ||
-					(
-						$rc[0] == 'merge_confirmation' &&
-						isset($rc[1])
-					)
-				)
-			) ||
-			(
-				isset($rc[2]) && strpos($rc[2], md5($rc[0].$Session->get_id())) !== 0
-			)
-		) {
+		if (!isset($rc[0])) {
 			self::redirect();
+			return;
 		}
-		/**
-		 * Merging confirmation
-		 */
+		$Config             = Config::instance();
+		$Index              = Index::instance();
+		$Session            = Session::instance();
+		$User               = User::instance();
 		$db_id              = $Config->module('HybridAuth')->db('integration');
 		$Social_integration = Social_integration::instance();
 		$Key                = Key::instance();
 		$L                  = Language::instance();
-		if (isset($rc[1]) && $rc[0] == 'merge_confirmation') {
-			self::merge_confirmation($rc, $Key, $db_id, $Social_integration, $Session, $User, $Index, $L, $Config);
+		/**
+		 * Confirmation of accounts merging
+		 */
+		if ($rc[0] == 'merge_confirmation') {
+			self::merge_confirmation($rc, $Key, $db_id, $Social_integration, $Session, $User, $Index, $L);
+			return;
+		}
+		$provider = $rc[0];
+		/**
+		 * Authenticated users are not allowed to sign in, also provider should exist and be enabled, `$rc[1]` should be present as well
+		 */
+		if (
+			!isset($rc[1]) ||
+			$User->user() ||
+			!@$Config->module('HybridAuth')->providers[$provider]['enabled']
+		) {
+			self::redirect();
 			return;
 		}
 		/**
 		 * If registration is not allowed - show corresponding error
+		 * @TODO allow sign in, but not registration, should be moved in different place
 		 */
 		$Page = Page::instance();
 		if (!$Config->core['allow_user_registration']) {
@@ -104,29 +94,39 @@ class Controller {
 		 * @var \cs\_SERVER $_SERVER
 		 */
 		/**
-		 * If referer is internal address and not current authentication module - save referer
+		 * If referer is internal website address, but not HybridAuth module - save referer to cookie
 		 */
 		if (
 			!$Session->get_data('HybridAuth') &&
-			strpos($_SERVER->referer, $Config->base_url().'/HybridAuth') === false &&
-			strpos($_SERVER->referer, $Config->base_url()) === 0
+			strpos($_SERVER->referer, $Config->base_url()) === 0 &&
+			strpos($_SERVER->referer, $Config->base_url().'/HybridAuth') === false
 		) {
 			_setcookie('HybridAuth_referer', $_SERVER->referer);
 		}
 		require_once __DIR__.'/Hybrid/Auth.php';
+		require_once __DIR__.'/Hybrid/Endpoint.php';
 		/**
-		 * Authentication endpoint
+		 * Handle authentication endpoint
 		 */
-		if (isset($rc[1]) && $rc[1] == 'endpoint') {
-			require_once __DIR__.'/Hybrid/Endpoint.php';
+		if ($rc[1] == 'endpoint') {
 			Hybrid_Endpoint::process($_REQUEST);
-			/**
-			 * If user did not specified email
-			 */
-		} elseif (!isset($_POST['email'])) {
-			if (!self::email_not_specified($rc, $Social_integration, $Session, $User, $Index, $L, $Config, $Page)) {
-				return;
-			}
+			return;
+		}
+		/**
+		 * If user is registered, provider not found or this is request for final authentication and session does not corresponds - return user to the base url
+		 */
+		if (
+			isset($rc[2]) &&
+			strpos($rc[2], md5($rc[0].$Session->get_id())) !== 0
+		) {
+			self::redirect();
+			return;
+		}
+		/**
+		 * If user did not specified email
+		 */
+		if (!isset($_POST['email'])) {
+			self::email_not_specified($rc, $Social_integration, $Session, $User, $Index, $L, $Config, $Page);
 			/**
 			 * If user specified email
 			 */
@@ -161,9 +161,11 @@ class Controller {
 	 * @param User               $User
 	 * @param Index              $Index
 	 * @param Language           $L
-	 * @param Config             $Config
 	 */
-	protected static function merge_confirmation ($rc, $Key, $db_id, $Social_integration, $Session, $User, $Index, $L, $Config) {
+	protected static function merge_confirmation ($rc, $Key, $db_id, $Social_integration, $Session, $User, $Index, $L) {
+		if (!isset($rc[1])) {
+			self::redirect();
+		}
 		/**
 		 * If confirmation key is valid - make merging
 		 */
