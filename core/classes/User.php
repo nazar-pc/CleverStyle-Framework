@@ -135,12 +135,11 @@ class User {
 	/**
 	 * Check number of sign in attempts (is used by system)
 	 *
-	 * @param bool|string $login_hash Hash (sha224) from login (hash from lowercase string)
+	 * @param string $login_hash Hash (sha224) from login (hash from lowercase string)
 	 *
-	 * @return int                        Number of attempts
+	 * @return int Number of attempts
 	 */
-	function get_sign_in_attempts_count ($login_hash = false) {
-		$login_hash = $login_hash ?: (isset($_POST['login']) ? $_POST['login'] : false);
+	function get_sign_in_attempts_count ($login_hash) {
 		if (!preg_match('/^[0-9a-z]{56}$/', $login_hash)) {
 			return false;
 		}
@@ -166,11 +165,10 @@ class User {
 	/**
 	 * Process sign in result (is used by system)
 	 *
-	 * @param bool        $success
-	 * @param bool|string $login_hash Hash (sha224) from login (hash from lowercase string)
+	 * @param bool   $success
+	 * @param string $login_hash Hash (sha224) from login (hash from lowercase string)
 	 */
-	function sign_in_result ($success, $login_hash = false) {
-		$login_hash = $login_hash ?: (isset($_POST['login']) ? $_POST['login'] : false);
+	function sign_in_result ($success, $login_hash) {
 		if (!preg_match('/^[0-9a-z]{56}$/', $login_hash)) {
 			return;
 		}

@@ -156,8 +156,8 @@ trait user_ {
 		$User   = User::instance();
 		if (!$User->guest()) {
 			return;
-		} elseif ($Config->core['sign_in_attempts_block_count'] && $User->get_sign_in_attempts_count() >= $Config->core['sign_in_attempts_block_count']) {
-			$User->sign_in_result(false);
+		} elseif ($Config->core['sign_in_attempts_block_count'] && $User->get_sign_in_attempts_count(@$_POST['login']) >= $Config->core['sign_in_attempts_block_count']) {
+			$User->sign_in_result(false, @$_POST['login']);
 			error_code(403);
 			$Page->error("$L->sign_in_attempts_ends_try_after ".format_time($Config->core['sign_in_attempts_block_time']));
 			return;
@@ -177,16 +177,16 @@ trait user_ {
 				return;
 			}
 			Session::instance()->add($id);
-			$User->sign_in_result(true);
+			$User->sign_in_result(true, $_POST['login']);
 		} else {
-			$User->sign_in_result(false);
+			$User->sign_in_result(false, @$_POST['login']);
 			error_code(400);
 			$content = $L->auth_error_sign_in;
 			if (
 				$Config->core['sign_in_attempts_block_count'] &&
-				$User->get_sign_in_attempts_count() >= $Config->core['sign_in_attempts_block_count'] * 2 / 3
+				$User->get_sign_in_attempts_count(@$_POST['login']) >= $Config->core['sign_in_attempts_block_count'] * 2 / 3
 			) {
-				$content .= " $L->sign_in_attempts_left ".($Config->core['sign_in_attempts_block_count'] - $User->get_sign_in_attempts_count());
+				$content .= " $L->sign_in_attempts_left ".($Config->core['sign_in_attempts_block_count'] - $User->get_sign_in_attempts_count(@$_POST['login']));
 			}
 			$Page->error($content);
 			unset($content);
