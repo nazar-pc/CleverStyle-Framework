@@ -10,9 +10,7 @@
 namespace cs\modules\HybridAuth;
 use
 	Hybrid_Auth,
-	cs\Cache,
 	cs\Config,
-	cs\DB,
 	cs\Session,
 	cs\User;
 
