@@ -126,7 +126,7 @@ class Controller {
 		/**
 		 * If user specified email
 		 */
-		self::email_was_specified($provider, $Social_integration, $User, $Index, $L, $Config, $Page);
+		self::email_was_specified($provider, $Social_integration, $User, $Index, $L, $Config);
 	}
 	/**
 	 * Redirect to referer or home page
@@ -265,11 +265,7 @@ class Controller {
 		 * If user doesn't exists - try to register user
 		 */
 		$result = self::try_to_register($provider, $email, false);
-		if (!$result || $result == 'error') {
-			$Page
-				->title($L->reg_server_error)
-				->warning($L->reg_server_error);
-			self::redirect(true);
+		if (!$result) {
 			return;
 		}
 		$Social_integration->add($result['id'], $provider, $profile->identifier, $profile->profileURL);
@@ -303,11 +299,11 @@ class Controller {
 	 *
 	 * @param string $provider
 	 * @param string $email
-	 * @param bool   $confirmation_needed
+	 * @param bool   $email_from_user
 	 *
 	 * @return array|false|string
 	 */
-	protected static function try_to_register ($provider, $email, $confirmation_needed) {
+	protected static function try_to_register ($provider, $email, $email_from_user) {
 		$profile = self::authenticate_hybridauth($provider);
 		if (!Event::instance()->fire(
 			'HybridAuth/registration/before',
@@ -321,11 +317,25 @@ class Controller {
 		) {
 			return false;
 		}
-		$User = User::instance();
-		if ($confirmation_needed) {
-			return $User->registration($email);
+		$L      = Language::instance();
+		$Page   = Page::instance();
+		$User   = User::instance();
+		$result = $email_from_user ? $User->registration($email) : $User->registration($email, false, false);
+		if (!$result && $email_from_user) {
+			$Page
+				->title($L->please_type_correct_email)
+				->warning($L->please_type_correct_email);
+			self::email_form(Index::instance(), $L);
+			return false;
 		}
-		return $User->registration($email, false, false);
+		if (!$result || $result == 'error') {
+			$Page
+				->title($L->reg_server_error)
+				->warning($L->reg_server_error);
+			self::redirect(true);
+			return false;
+		}
+		return $result;
 	}
 	/**
 	 * @param Index    $Index
@@ -353,26 +363,14 @@ class Controller {
 	 * @param Index              $Index
 	 * @param Language           $L
 	 * @param Config             $Config
-	 * @param Page               $Page
 	 */
-	protected static function email_was_specified ($provider, $Social_integration, $User, $Index, $L, $Config, $Page) {
+	protected static function email_was_specified ($provider, $Social_integration, $User, $Index, $L, $Config) {
 		$profile = self::authenticate_hybridauth($provider);
 		/**
 		 * Try to register user
 		 */
 		$result = self::try_to_register($provider, $_POST['email'], true);
 		if (!$result) {
-			$Page
-				->title($L->please_type_correct_email)
-				->warning($L->please_type_correct_email);
-			self::email_form($Index, $L);
-			return;
-		}
-		if ($result == 'error') {
-			$Page
-				->title($L->reg_server_error)
-				->warning($L->reg_server_error);
-			self::redirect(true);
 			return;
 		}
 		$core_url = $Config->core_url();
@@ -441,6 +439,15 @@ class Controller {
 			$Index->content($L->reg_confirmation);
 		}
 	}
+	/**
+	 * @throws \ExitException
+	 *
+	 * @param string $email
+	 * @param string $title
+	 * @param string $body
+	 *
+	 * @return bool
+	 */
 	protected static function send_registration_mail ($email, $title, $body) {
 		$result = Mail::instance()->send_to($email, $title, $body);
 		/**
