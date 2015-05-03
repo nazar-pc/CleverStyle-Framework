@@ -55,7 +55,6 @@ class Controller {
 		}
 		$Config             = Config::instance();
 		$Index              = Index::instance();
-		$Session            = Session::instance();
 		$User               = User::instance();
 		$Social_integration = Social_integration::instance();
 		$L                  = Language::instance();
@@ -63,7 +62,7 @@ class Controller {
 		 * Confirmation of accounts merging
 		 */
 		if ($route[0] == 'merge_confirmation') {
-			self::merge_confirmation($route, $Social_integration, $Session, $User, $Index, $L);
+			self::merge_confirmation($route, $Social_integration, $User, $Index, $L);
 			return;
 		}
 		$provider = $route[0];
@@ -88,13 +87,10 @@ class Controller {
 			return;
 		}
 		/**
+		 * If referer is internal website address, but not HybridAuth module - save referer to cookie
 		 * @var \cs\_SERVER $_SERVER
 		 */
-		/**
-		 * If referer is internal website address, but not HybridAuth module - save referer to cookie
-		 */
 		if (
-			!$Session->get_data('HybridAuth') &&
 			strpos($_SERVER->referer, $Config->base_url()) === 0 &&
 			strpos($_SERVER->referer, $Config->base_url().'/HybridAuth') === false
 		) {
@@ -111,7 +107,7 @@ class Controller {
 			 */
 			if (
 				!isset($route[2]) ||
-				strpos($route[2], md5($provider.$Session->get_id())) !== 0
+				strpos($route[2], md5($provider.Session::instance()->get_id())) !== 0
 			) {
 				self::redirect();
 				return;
@@ -123,13 +119,13 @@ class Controller {
 		 * If user did not specified email
 		 */
 		if (!isset($_POST['email'])) {
-			self::email_not_specified($provider, $Social_integration, $Session, $User, $Index, $L, $Page);
+			self::email_not_specified($provider, $Social_integration, $User, $Index, $L, $Page);
 			return;
 		}
 		/**
 		 * If user specified email
 		 */
-		self::email_was_specified($provider, $Social_integration, $Session, $User, $Index, $L, $Config, $Page);
+		self::email_was_specified($provider, $Social_integration, $User, $Index, $L, $Config, $Page);
 	}
 	/**
 	 * Redirect to referer or home page
@@ -152,12 +148,11 @@ class Controller {
 	/**
 	 * @param string[]           $route
 	 * @param Social_integration $Social_integration
-	 * @param Session            $Session
 	 * @param User               $User
 	 * @param Index              $Index
 	 * @param Language           $L
 	 */
-	protected static function merge_confirmation ($route, $Social_integration, $Session, $User, $Index, $L) {
+	protected static function merge_confirmation ($route, $Social_integration, $User, $Index, $L) {
 		if (!isset($route[1])) {
 			self::redirect();
 		}
@@ -178,7 +173,6 @@ class Controller {
 			$data['identifier'],
 			$data['profile']
 		);
-		$Session->del_data('HybridAuth');
 		self::save_hybridauth_session();
 		if ($User->get('status', $data['id']) == User::STATUS_NOT_ACTIVATED) {
 			$User->set('status', User::STATUS_ACTIVE, $data['id']);
@@ -218,7 +212,6 @@ class Controller {
 	 *
 	 * @param string             $provider
 	 * @param Social_integration $Social_integration
-	 * @param Session            $Session
 	 * @param User               $User
 	 * @param Index              $Index
 	 * @param Language           $L
@@ -226,7 +219,7 @@ class Controller {
 	 *
 	 * @return bool
 	 */
-	protected static function email_not_specified ($provider, $Social_integration, $Session, $User, $Index, $L, $Page) {
+	protected static function email_not_specified ($provider, $Social_integration, $User, $Index, $L, $Page) {
 		try {
 			/**
 			 * @var \Hybrid_User_Profile $profile
@@ -307,14 +300,6 @@ class Controller {
 				 * If integrated service does not returns email - ask user for email
 				 */
 			} else {
-				$Session->set_data(
-					'HybridAuth',
-					[
-						'provider'   => $provider,
-						'identifier' => $profile->identifier,
-						'profile'    => $profile->profileURL
-					]
-				);
 				self::email_form($Index, $L);
 			}
 		} catch (\ExitException $e) {
@@ -347,7 +332,6 @@ class Controller {
 	 *
 	 * @param string             $provider
 	 * @param Social_integration $Social_integration
-	 * @param Session            $Session
 	 * @param User               $User
 	 * @param Index              $Index
 	 * @param Language           $L
@@ -356,12 +340,12 @@ class Controller {
 	 *
 	 * @return bool
 	 */
-	protected static function email_was_specified ($provider, $Social_integration, $Session, $User, $Index, $L, $Config, $Page) {
-		$HybridAuth_data = $Session->get_data('HybridAuth');
-		if (!$HybridAuth_data) {
-			self::redirect();
-		}
-		$Mail = Mail::instance();
+	protected static function email_was_specified ($provider, $Social_integration, $User, $Index, $L, $Config, $Page) {
+		/**
+		 * @var \Hybrid_User_Profile $profile
+		 */
+		$profile = get_hybridauth_instance($provider)->authenticate($provider)->getUserProfile();
+		$Mail    = Mail::instance();
 		/**
 		 * Try to register user
 		 */
@@ -370,8 +354,8 @@ class Controller {
 			[
 				'provider'   => $provider,
 				'email'      => strtolower($_POST['email']),
-				'identifier' => $HybridAuth_data['identifier'],
-				'profile'    => $HybridAuth_data['profile']
+				'identifier' => $profile->identifier,
+				'profile'    => $profile->profileURL
 			]
 		)
 		) {
@@ -430,12 +414,11 @@ class Controller {
 			 * Registration is successful and confirmation is not required
 			 */
 		} elseif ($result['reg_key'] === true) {
-			$Session->del_data('HybridAuth');
 			$Social_integration->add(
 				$result['id'],
 				$provider,
-				$HybridAuth_data['identifier'],
-				$HybridAuth_data['profile']
+				$profile->identifier,
+				$profile->profileURL
 			);
 			self::finish_registration_send_email($result['id'], $result['password'], $provider);
 		} else {
@@ -464,8 +447,8 @@ class Controller {
 		$Social_integration->add(
 			$result['id'],
 			$provider,
-			$HybridAuth_data['identifier'],
-			$HybridAuth_data['profile']
+			$profile->identifier,
+			$profile->profileURL
 		);
 		return true;
 	}
