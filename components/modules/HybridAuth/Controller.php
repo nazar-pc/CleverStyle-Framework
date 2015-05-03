@@ -82,8 +82,9 @@ class Controller {
 		 */
 		$Page = Page::instance();
 		if (!$Config->core['allow_user_registration']) {
-			$Page->title($L->registration_prohibited);
-			$Page->warning($L->registration_prohibited);
+			$Page
+				->title($L->registration_prohibited)
+				->warning($L->registration_prohibited);
 			return;
 		}
 		/**
@@ -245,71 +246,71 @@ class Controller {
 				self::add_session_and_update_data($user, $provider);
 				return;
 			}
-			$email = $profile->emailVerified ?: $profile->email;
+			$email = strtolower($profile->emailVerified ?: $profile->email);
 			/**
-			 * If integrated service returns email
+			 * If integrated service does not returns email - ask user for email
 			 */
-			if ($email) {
-				/**
-				 * Search for user with such email
-				 */
-				$user = $User->get_id(hash('sha224', $email));
-				/**
-				 * If email is already registered - merge social profile with main account
-				 */
-				if ($user) {
-					self::add_integration_create_session(
-						$user,
-						$provider,
-						$profile->identifier,
-						$profile->profileURL
-					);
-					return;
-				}
-				/**
-				 * If user doesn't exists - try to register user
-				 */
-				if (!Event::instance()->fire(
-					'HybridAuth/registration/before',
-					[
-						'provider'   => $provider,
-						'email'      => $email,
-						'identifier' => $profile->identifier,
-						'profile'    => $profile->profileURL
-					]
-				)
-				) {
-					return;
-				}
-				$result = $User->registration($email, false, false);
-				if (!$result || $result == 'error') {
-					$Page->title($L->reg_server_error);
-					$Page->warning($L->reg_server_error);
-					self::redirect(true);
-					return;
-				}
-				$Social_integration->add(
-					$result['id'],
+			if (!$email) {
+				self::email_form($Index, $L);
+				return;
+			}
+			/**
+			 * Search for user with such email
+			 */
+			$user = $User->get_id(hash('sha224', $email));
+			/**
+			 * If email is already registered - merge social profile with main account
+			 */
+			if ($user) {
+				self::add_integration_create_session(
+					$user,
 					$provider,
 					$profile->identifier,
 					$profile->profileURL
 				);
-				/**
-				 * Registration is successful, confirmation is not needed
-				 */
-				self::finish_registration_send_email($result['id'], $result['password'], $provider);
-				/**
-				 * If integrated service does not returns email - ask user for email
-				 */
-			} else {
-				self::email_form($Index, $L);
+				return;
 			}
+			/**
+			 * If user doesn't exists - try to register user
+			 */
+			if (!Event::instance()->fire(
+				'HybridAuth/registration/before',
+				[
+					'provider'   => $provider,
+					'email'      => $email,
+					'identifier' => $profile->identifier,
+					'profile'    => $profile->profileURL
+				]
+			)
+			) {
+				return;
+			}
+			$result = $User->registration($email, false, false);
+			if (!$result || $result == 'error') {
+				$Page
+					->title($L->reg_server_error)
+					->warning($L->reg_server_error);
+				self::redirect(true);
+				return;
+			}
+			$Social_integration->add(
+				$result['id'],
+				$provider,
+				$profile->identifier,
+				$profile->profileURL
+			);
+			/**
+			 * Registration is successful, confirmation is not needed
+			 */
+			self::finish_registration_send_email($result['id'], $result['password'], $provider);
 		} catch (\ExitException $e) {
 			throw $e;
 		} catch (Exception $e) {
 			trigger_error($e->getMessage());
 			self::redirect(true);
 		}
+	}
+	protected static function try_to_register () {
 	}
 	/**
 	 * @param Index    $Index
@@ -359,20 +360,22 @@ class Controller {
 		) {
 			return;
 		}
-		$core_url = $Config->core_url();
-		$result   = $User->registration($_POST['email']);
-		if ($result === false) {
-			$Page->title($L->please_type_correct_email);
-			$Page->warning($L->please_type_correct_email);
+		$result = $User->registration($_POST['email']);
+		if (!$result) {
+			$Page
+				->title($L->please_type_correct_email)
+				->warning($L->please_type_correct_email);
 			self::email_form($Index, $L);
 			return;
 		}
 		if ($result == 'error') {
-			$Page->title($L->reg_server_error);
-			$Page->warning($L->reg_server_error);
+			$Page
+				->title($L->reg_server_error)
+				->warning($L->reg_server_error);
 			self::redirect(true);
 			return;
 		}
+		$core_url = $Config->core_url();
 		/**
 		 * If email is already registered
 		 */
