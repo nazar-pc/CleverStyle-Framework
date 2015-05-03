@@ -62,7 +62,7 @@ class Controller {
 		 * Confirmation of accounts merging
 		 */
 		if ($route[0] == 'merge_confirmation') {
-			self::merge_confirmation($route, $Social_integration, $User, $Index, $L);
+			self::merge_confirmation($route, $Index, $L);
 			return;
 		}
 		$provider = $route[0];
@@ -146,13 +146,11 @@ class Controller {
 		}
 	}
 	/**
-	 * @param string[]           $route
-	 * @param Social_integration $Social_integration
-	 * @param User               $User
-	 * @param Index              $Index
-	 * @param Language           $L
+	 * @param string[] $route
+	 * @param Index    $Index
+	 * @param Language $L
 	 */
-	protected static function merge_confirmation ($route, $Social_integration, $User, $Index, $L) {
+	protected static function merge_confirmation ($route, $Index, $L) {
 		if (!isset($route[1])) {
 			self::redirect();
 		}
@@ -165,22 +163,35 @@ class Controller {
 			return;
 		}
 		/**
-		 * If confirmation key is valid - make merging
+		 * If confirmation key is valid  - merge social profile with main account
 		 */
-		$Social_integration->add(
+		self::add_integration_create_session(
 			$data['id'],
 			$data['provider'],
 			$data['identifier'],
 			$data['profile']
 		);
 		self::save_hybridauth_session();
-		if ($User->get('status', $data['id']) == User::STATUS_NOT_ACTIVATED) {
-			$User->set('status', User::STATUS_ACTIVE, $data['id']);
-		}
-		self::add_session_and_update_data($data['id'], $data['provider'], true);
 		$Index->content(
 			$L->hybridauth_merging_confirmed_successfully($L->{$data['provider']})
 		);
+	}
+	/**
+	 * @param int    $id
+	 * @param string $provider
+	 * @param string $identifier
+	 * @param string $profile
+	 */
+	protected static function add_integration_create_session ($id, $provider, $identifier, $profile) {
+		Social_integration::instance()->add($id, $provider, $identifier, $profile);
+		$User = User::instance();
+		/**
+		 * If user was not activated before - activate him
+		 */
+		if ($User->get('status', $id) == User::STATUS_NOT_ACTIVATED) {
+			$User->set('status', User::STATUS_ACTIVE, $id);
+		}
+		self::add_session_and_update_data($id, $provider, true);
 	}
 	/**
 	 * Save HybridAuth session in user's data in order to restore it next time when calling `get_hybridauth_instance()`
@@ -216,8 +227,6 @@ class Controller {
 	 * @param Index              $Index
 	 * @param Language           $L
 	 * @param Page               $Page
-	 *
-	 * @return bool
 	 */
 	protected static function email_not_specified ($provider, $Social_integration, $User, $Index, $L, $Page) {
 		try {
@@ -228,16 +237,13 @@ class Controller {
 			/**
 			 * Check whether this account was already registered in system. If registered - make login
 			 */
-			$user = $Social_integration->find_integration(
-				$provider,
-				$profile->identifier
-			);
+			$user = $Social_integration->find_integration($provider, $profile->identifier);
 			if (
 				$user &&
 				$User->get('status', $user) == User::STATUS_ACTIVE
 			) {
 				self::add_session_and_update_data($user, $provider);
-				return false;
+				return;
 			}
 			$email = $profile->emailVerified ?: $profile->email;
 			/**
@@ -249,20 +255,16 @@ class Controller {
 				 */
 				$user = $User->get_id(hash('sha224', $email));
 				/**
-				 * If email is already registered - make merge of accounts and login
+				 * If email is already registered - merge social profile with main account
 				 */
 				if ($user) {
-					$Social_integration->add(
+					self::add_integration_create_session(
 						$user,
 						$provider,
 						$profile->identifier,
 						$profile->profileURL
 					);
-					if ($User->get('status', $user) == User::STATUS_NOT_ACTIVATED) {
-						$User->set('status', User::STATUS_ACTIVE, $user);
-					}
-					self::add_session_and_update_data($user, $provider);
-					return false;
+					return;
 				}
 				/**
 				 * If user doesn't exists - try to register user
@@ -277,14 +279,14 @@ class Controller {
 					]
 				)
 				) {
-					return false;
+					return;
 				}
 				$result = $User->registration($email, false, false);
 				if (!$result || $result == 'error') {
 					$Page->title($L->reg_server_error);
 					$Page->warning($L->reg_server_error);
 					self::redirect(true);
-					return false;
+					return;
 				}
 				$Social_integration->add(
 					$result['id'],
@@ -308,7 +310,6 @@ class Controller {
 			trigger_error($e->getMessage());
 			self::redirect(true);
 		}
-		return true;
 	}
 	/**
 	 * @param Index    $Index
@@ -337,15 +338,12 @@ class Controller {
 	 * @param Language           $L
 	 * @param Config             $Config
 	 * @param Page               $Page
-	 *
-	 * @return bool
 	 */
 	protected static function email_was_specified ($provider, $Social_integration, $User, $Index, $L, $Config, $Page) {
 		/**
 		 * @var \Hybrid_User_Profile $profile
 		 */
 		$profile = get_hybridauth_instance($provider)->authenticate($provider)->getUserProfile();
-		$Mail    = Mail::instance();
 		/**
 		 * Try to register user
 		 */
@@ -359,7 +357,7 @@ class Controller {
 			]
 		)
 		) {
-			return false;
+			return;
 		}
 		$core_url = $Config->core_url();
 		$result   = $User->registration($_POST['email']);
@@ -367,31 +365,32 @@ class Controller {
 			$Page->title($L->please_type_correct_email);
 			$Page->warning($L->please_type_correct_email);
 			self::email_form($Index, $L);
-			return false;
-		} elseif ($result == 'error') {
+			return;
+		}
+		if ($result == 'error') {
 			$Page->title($L->reg_server_error);
 			$Page->warning($L->reg_server_error);
 			self::redirect(true);
-			return false;
-			/**
-			 * If email is already registered
-			 */
-		} elseif ($result == 'exists') {
+			return;
+		}
+		/**
+		 * If email is already registered
+		 */
+		if ($result == 'exists') {
 			/**
 			 * Send merging confirmation email
 			 */
 			$id                    = $User->get_id(hash('sha224', strtolower($_POST['email'])));
 			$HybridAuth_data['id'] = $id;
-			_setcookie('HybridAuth_referer', '');
-			$confirmation_code = self::set_data_generate_confirmation_code($HybridAuth_data);
-			$body              = $L->hybridauth_merge_confirmation_mail_body(
+			$confirmation_code     = self::set_data_generate_confirmation_code($HybridAuth_data);
+			$body                  = $L->hybridauth_merge_confirmation_mail_body(
 				$User->username($id) ?: strstr($_POST['email'], '@', true),
 				get_core_ml_text('name'),
 				$L->$provider,
 				"$core_url/HybridAuth/merge_confirmation/$confirmation_code",
 				$L->time($Config->core['registration_confirmation_time'], 'd')
 			);
-			if ($Mail->send_to(
+			if (self::send_registration_mail(
 				$_POST['email'],
 				$L->hybridauth_merge_confirmation_mail_title(get_core_ml_text('name')),
 				$body
@@ -403,17 +402,13 @@ class Controller {
 						$L->hybridauth_merge_confirmation($L->$provider)
 					)
 				);
-			} else {
-				$User->registration_cancel();
-				$Page->title($L->sending_reg_mail_error_title);
-				$Page->warning($L->sending_reg_mail_error);
-				self::redirect(true);
 			}
-			return false;
-			/**
-			 * Registration is successful and confirmation is not required
-			 */
-		} elseif ($result['reg_key'] === true) {
+			return;
+		}
+		/**
+		 * Registration is successful and confirmation is not required
+		 */
+		if ($result['reg_key'] === true) {
 			$Social_integration->add(
 				$result['id'],
 				$provider,
@@ -421,36 +416,42 @@ class Controller {
 				$profile->profileURL
 			);
 			self::finish_registration_send_email($result['id'], $result['password'], $provider);
-		} else {
-			$body = $L->reg_need_confirmation_mail_body(
-				self::get_adapter($provider)->getUserProfile()->displayName ?: strstr($result['email'], '@', true),
-				get_core_ml_text('name'),
-				"$core_url/profile/registration_confirmation/$result[reg_key]",
-				$L->time($Config->core['registration_confirmation_time'], 'd')
-			);
-			if ($Mail->send_to(
-				$_POST['email'],
-				$L->reg_need_confirmation_mail(get_core_ml_text('name')),
-				$body
-			)
-			) {
-				self::update_data($provider);
-				_setcookie('HybridAuth_referer', '');
-				$Index->content($L->reg_confirmation);
-			} else {
-				$User->registration_cancel();
-				$Page->title($L->sending_reg_mail_error_title);
-				$Page->warning($L->sending_reg_mail_error);
-				self::redirect(true);
-			}
+			return;
 		}
-		$Social_integration->add(
-			$result['id'],
-			$provider,
-			$profile->identifier,
-			$profile->profileURL
+		/**
+		 * Registration is successful, but confirmation is needed
+		 */
+		$body = $L->reg_need_confirmation_mail_body(
+			self::get_adapter($provider)->getUserProfile()->displayName ?: strstr($result['email'], '@', true),
+			get_core_ml_text('name'),
+			"$core_url/profile/registration_confirmation/$result[reg_key]",
+			$L->time($Config->core['registration_confirmation_time'], 'd')
 		);
-		return true;
+		if (self::send_registration_mail(
+			$_POST['email'],
+			$L->reg_need_confirmation_mail(get_core_ml_text('name')),
+			$body
+		)
+		) {
+			self::update_data($provider);
+			_setcookie('HybridAuth_referer', '');
+			$Index->content($L->reg_confirmation);
+		}
+	}
+	protected static function send_registration_mail ($email, $title, $body) {
+		$result = Mail::instance()->send_to($email, $title, $body);
+		/**
+		 * If mail sending failed - cancel registration, show error message and redirect to referrer page
+		 */
+		if (!$result) {
+			User::instance()->registration_cancel();
+			$L = Language::instance();
+			Page::instance()
+				->title($L->sending_reg_mail_error_title)
+				->warning($L->sending_reg_mail_error);
+			self::redirect(true);
+		}
+		return $result;
 	}
 	/**
 	 * @throws \ExitException
@@ -553,19 +554,13 @@ class Controller {
 		/**
 		 * Send notification email
 		 */
-		if (Mail::instance()->send_to(
+		if (self::send_registration_mail(
 			$user_data->email,
 			$L->reg_success_mail(get_core_ml_text('name')),
 			$body
 		)
 		) {
 			self::add_session_and_update_data($user_id, $provider);
-		} else {
-			$User->registration_cancel();
-			Page::instance()
-				->title($L->sending_reg_mail_error_title)
-				->warning($L->sending_reg_mail_error);
-			self::redirect(true);
 		}
 	}
 	/**
