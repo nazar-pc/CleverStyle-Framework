@@ -230,87 +230,102 @@ class Controller {
 	 * @param Page               $Page
 	 */
 	protected static function email_not_specified ($provider, $Social_integration, $User, $Index, $L, $Page) {
+		$profile = self::authenticate_hybridauth($provider);
+		/**
+		 * Check whether this account was already registered in system. If registered - make login
+		 */
+		$user = $Social_integration->find_integration($provider, $profile->identifier);
+		if (
+			$user &&
+			$User->get('status', $user) == User::STATUS_ACTIVE
+		) {
+			self::add_session_and_update_data($user, $provider);
+			return;
+		}
+		$email = strtolower($profile->emailVerified ?: $profile->email);
+		/**
+		 * If integrated service does not returns email - ask user for email
+		 */
+		if (!$email) {
+			self::email_form($Index, $L);
+			return;
+		}
+		/**
+		 * Search for user with such email
+		 */
+		$user = $User->get_id(hash('sha224', $email));
+		/**
+		 * If email is already registered - merge social profile with main account
+		 */
+		if ($user) {
+			self::add_integration_create_session($user, $provider, $profile->identifier, $profile->profileURL);
+			return;
+		}
+		/**
+		 * If user doesn't exists - try to register user
+		 */
+		$result = self::try_to_register($provider, $email, false);
+		if (!$result || $result == 'error') {
+			$Page
+				->title($L->reg_server_error)
+				->warning($L->reg_server_error);
+			self::redirect(true);
+			return;
+		}
+		$Social_integration->add($result['id'], $provider, $profile->identifier, $profile->profileURL);
+		/**
+		 * Registration is successful, confirmation is not needed
+		 */
+		self::finish_registration_send_email($result['id'], $result['password'], $provider);
+	}
+	/**
+	 * Returns profile
+	 *
+	 * @throws \ExitException
+	 *
+	 * @param string $provider
+	 *
+	 * @return \Hybrid_User_Profile
+	 */
+	protected static function authenticate_hybridauth ($provider) {
 		try {
-			/**
-			 * @var \Hybrid_User_Profile $profile
-			 */
-			$profile = get_hybridauth_instance($provider)->authenticate($provider)->getUserProfile();
-			/**
-			 * Check whether this account was already registered in system. If registered - make login
-			 */
-			$user = $Social_integration->find_integration($provider, $profile->identifier);
-			if (
-				$user &&
-				$User->get('status', $user) == User::STATUS_ACTIVE
-			) {
-				self::add_session_and_update_data($user, $provider);
-				return;
-			}
-			$email = strtolower($profile->emailVerified ?: $profile->email);
-			/**
-			 * If integrated service does not returns email - ask user for email
-			 */
-			if (!$email) {
-				self::email_form($Index, $L);
-				return;
-			}
-			/**
-			 * Search for user with such email
-			 */
-			$user = $User->get_id(hash('sha224', $email));
-			/**
-			 * If email is already registered - merge social profile with main account
-			 */
-			if ($user) {
-				self::add_integration_create_session(
-					$user,
-					$provider,
-					$profile->identifier,
-					$profile->profileURL
-				);
-				return;
-			}
-			/**
-			 * If user doesn't exists - try to register user
-			 */
-			if (!Event::instance()->fire(
-				'HybridAuth/registration/before',
-				[
-					'provider'   => $provider,
-					'email'      => $email,
-					'identifier' => $profile->identifier,
-					'profile'    => $profile->profileURL
-				]
-			)
-			) {
-				return;
-			}
-			$result = $User->registration($email, false, false);
-			if (!$result || $result == 'error') {
-				$Page
-					->title($L->reg_server_error)
-					->warning($L->reg_server_error);
-				self::redirect(true);
-				return;
-			}
-			$Social_integration->add(
-				$result['id'],
-				$provider,
-				$profile->identifier,
-				$profile->profileURL
-			);
-			/**
-			 * Registration is successful, confirmation is not needed
-			 */
-			self::finish_registration_send_email($result['id'], $result['password'], $provider);
+			return get_hybridauth_instance($provider)->authenticate($provider)->getUserProfile();
 		} catch (\ExitException $e) {
 			throw $e;
 		} catch (Exception $e) {
 			trigger_error($e->getMessage());
 			self::redirect(true);
+			throw new \ExitException;
 		}
 	}
-	protected static function try_to_register () {
+	/**
+	 * @throws \ExitException
+	 *
+	 * @param string $provider
+	 * @param string $email
+	 * @param bool   $confirmation_needed
+	 *
+	 * @return array|false|string
+	 */
+	protected static function try_to_register ($provider, $email, $confirmation_needed) {
+		$profile = self::authenticate_hybridauth($provider);
+		if (!Event::instance()->fire(
+			'HybridAuth/registration/before',
+			[
+				'provider'   => $provider,
+				'email'      => $email,
+				'identifier' => $profile->identifier,
+				'profile'    => $profile->profileURL
+			]
+		)
+		) {
+			return false;
+		}
+		$User = User::instance();
+		if ($confirmation_needed) {
+			return $User->registration($email);
+		}
+		return $User->registration($email, false, false);
 	}
 	/**
 	 * @param Index    $Index
@@ -341,26 +356,11 @@ class Controller {
 	 * @param Page               $Page
 	 */
 	protected static function email_was_specified ($provider, $Social_integration, $User, $Index, $L, $Config, $Page) {
-		/**
-		 * @var \Hybrid_User_Profile $profile
-		 */
-		$profile = get_hybridauth_instance($provider)->authenticate($provider)->getUserProfile();
+		$profile = self::authenticate_hybridauth($provider);
 		/**
 		 * Try to register user
 		 */
-		if (!Event::instance()->fire(
-			'HybridAuth/registration/before',
-			[
-				'provider'   => $provider,
-				'email'      => strtolower($_POST['email']),
-				'identifier' => $profile->identifier,
-				'profile'    => $profile->profileURL
-			]
-		)
-		) {
-			return;
-		}
-		$result = $User->registration($_POST['email']);
+		$result = self::try_to_register($provider, $_POST['email'], true);
 		if (!$result) {
 			$Page
 				->title($L->please_type_correct_email)
@@ -575,7 +575,7 @@ class Controller {
 	 */
 	protected static function get_adapter ($provider) {
 		try {
-			$adapter = get_hybridauth_instance($provider)->getAdapter($provider);
+			return get_hybridauth_instance($provider)->getAdapter($provider);
 		} catch (\ExitException $e) {
 			throw $e;
 		} catch (Exception $e) {
@@ -583,7 +583,5 @@ class Controller {
 			error_code(500);
 			Page::instance()->error();
 		}
-		/** @noinspection PhpUndefinedVariableInspection */
-		return $adapter;
 	}
 }
