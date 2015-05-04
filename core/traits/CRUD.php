@@ -51,9 +51,10 @@ trait CRUD {
 					$model              = explode(':', $model[1], 2);
 					$type               = $model[0];
 				}
-				if (isset($model[1])) {
-					$format = $model[1];
-				}
+				/**
+				 * @var string $format
+				 */
+				$format = isset($model[1]) ? $model[1] : null;
 				switch ($type) {
 					case 'int':
 					case 'float':
@@ -61,21 +62,20 @@ trait CRUD {
 						/**
 						 * Ranges processing
 						 */
-						if (isset($format)) {
+						if ($format !== null) {
+							/**
+							 * After this `$format[0]` will contain minimum and `$format[1]` if exists - maximum
+							 */
 							$format = explode('..', $format);
-							$min    = $format[0];
-							if (isset($format[1])) {
-								$max = $format[1];
-							}
 							/**
 							 * Minimum
 							 */
-							$argument = max($argument, $min);
+							$argument = max($argument, $format[0]);
 							/**
 							 * Maximum
 							 */
-							if (isset($max)) {
-								$argument = min($argument, $max);
+							if (isset($format[1])) {
+								$argument = min($argument, $format[1]);
 							}
 						}
 						break;
@@ -90,19 +90,15 @@ trait CRUD {
 						/**
 						 * Truncation
 						 */
-						if (isset($format)) {
-							$format = explode(':', $format);
-							$length = $format[0];
-							if (isset($format[1])) {
-								$ending = $format[1];
-							}
-							$argument = truncate($argument, $length, isset($ending) ? $ending : '...', true);
+						if ($format !== null) {
+							/**
+							 * After this `$format[0]` will contain length to truncation and `$format[1]` if exists - ending
+							 */
+							$format   = explode(':', $format);
+							$argument = truncate($argument, $format[0], isset($format[1]) ? $format[1] : '...', true);
 						}
 						break;
 					case 'set':
-						/**
-						 * @var string $format
-						 */
 						$allowed_arguments = explode(',', $format);
 						if (!in_array($argument, $allowed_arguments)) {
 							$argument = $allowed_arguments[0];
@@ -115,7 +111,6 @@ trait CRUD {
 				/**
 				 * If field is multilingual - handle multilingual storing of value automatically
 				 */
-				/** @noinspection NotOptimalIfConditionsInspection */
 				if ($multilingual_field && $is_multilingual) {
 					if ($id !== false) {
 						$argument = Text::instance()->set($this->cdb(), "$this->data_model_ml_group/$item", $id, $argument);
