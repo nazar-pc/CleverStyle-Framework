@@ -28,98 +28,102 @@ trait CRUD {
 	 * @param false|int           $id            On update id should be specified to work properly with multilingual fields
 	 * @param bool                $update_needed If on creation request without specified primary key and multilingual fields present - update needed
 	 *                                           after creation (there is no id before creation)
+	 *
+	 * @return array
 	 */
-	private function crud_arguments_preparation ($data_model, &$arguments, $id = false, &$update_needed = false) {
-		$arguments       = array_combine(array_keys($data_model), $arguments);
-		$is_multilingual = $this->is_multilingual();
-		array_walk(
-			$arguments,
-			function (&$argument, $item) use ($data_model, $id, $is_multilingual, &$update_needed) {
-				$model = $data_model[$item];
-				if (is_callable($model)) {
-					$argument = $model($argument);
-					return;
-				}
-				$model              = explode(':', $model, 2);
+	private function crud_arguments_preparation ($data_model, $arguments, $id = false, &$update_needed = false) {
+		$arguments = array_combine(array_keys($data_model), $arguments);
+		foreach ($arguments as $item => &$argument) {
+			$model = $data_model[$item];
+			if (is_callable($model)) {
+				$argument = $model($argument);
+				continue;
+			}
+			$model              = explode(':', $model, 2);
+			$type               = $model[0];
+			$multilingual_field = false;
+			/**
+			 * If field is multilingual
+			 */
+			if ($type == 'ml') {
+				$multilingual_field = true;
+				$model              = explode(':', $model[1], 2);
 				$type               = $model[0];
-				$multilingual_field = false;
-				/**
-				 * If field is multilingual
-				 */
-				if ($type == 'ml') {
-					$multilingual_field = true;
-					$model              = explode(':', $model[1], 2);
-					$type               = $model[0];
-				}
-				/**
-				 * @var string $format
-				 */
-				$format = isset($model[1]) ? $model[1] : null;
-				switch ($type) {
-					case 'int':
-					case 'float':
-						$argument = $type == 'int' ? (int)$argument : (float)$argument;
-						/**
-						 * Ranges processing
-						 */
-						if ($format !== null) {
-							/**
-							 * After this `$format[0]` will contain minimum and `$format[1]` if exists - maximum
-							 */
-							$format = explode('..', $format);
-							/**
-							 * Minimum
-							 */
-							$argument = max($argument, $format[0]);
-							/**
-							 * Maximum
-							 */
-							if (isset($format[1])) {
-								$argument = min($argument, $format[1]);
-							}
-						}
-						break;
-					case 'text':
-					case 'html':
-					case 'html_iframe':
-						$argument = xap(
-							$argument,
-							$type == 'text' ? 'text' : true,
-							$type == 'html_iframe'
-						);
-						/**
-						 * Truncation
-						 */
-						if ($format !== null) {
-							/**
-							 * After this `$format[0]` will contain length to truncation and `$format[1]` if exists - ending
-							 */
-							$format   = explode(':', $format);
-							$argument = truncate($argument, $format[0], isset($format[1]) ? $format[1] : '...', true);
-						}
-						break;
-					case 'set':
-						$allowed_arguments = explode(',', $format);
-						if (!in_array($argument, $allowed_arguments)) {
-							$argument = $allowed_arguments[0];
-						}
-						break;
-					case 'json':
-						$argument = _json_encode($argument);
-						break;
-				}
-				/**
-				 * If field is multilingual - handle multilingual storing of value automatically
-				 */
-				if ($multilingual_field && $is_multilingual) {
-					if ($id !== false) {
-						$argument = Text::instance()->set($this->cdb(), "$this->data_model_ml_group/$item", $id, $argument);
-					} else {
-						$update_needed = true;
-					}
+			}
+			$argument = self::crud_argument_preparation(
+				$type,
+				isset($model[1]) ? $model[1] : null,
+				$argument
+			);
+			/**
+			 * If field is multilingual - handle multilingual storing of value automatically
+			 */
+			if ($multilingual_field && $this->is_multilingual()) {
+				if ($id !== false) {
+					$argument = Text::instance()->set($this->cdb(), "$this->data_model_ml_group/$item", $id, $argument);
+				} else {
+					$update_needed = true;
 				}
 			}
-		);
+		}
+		return $arguments;
+	}
+	/**
+	 * @param string $type
+	 * @param mixed  $format
+	 * @param mixed  $argument
+	 *
+	 * @return float|int|mixed|string|\string[]
+	 */
+	private function crud_argument_preparation ($type, $format, $argument) {
+		switch ($type) {
+			case 'int':
+			case 'float':
+				$argument = $type == 'int' ? (int)$argument : (float)$argument;
+				/**
+				 * Ranges processing
+				 */
+				if ($format !== null) {
+					/**
+					 * After this `$format[0]` will contain minimum and `$format[1]` if exists - maximum
+					 */
+					$format   = explode('..', $format);
+					$argument = max($argument, $format[0]);
+					if (isset($format[1])) {
+						$argument = min($argument, $format[1]);
+					}
+				}
+				break;
+			case 'text':
+			case 'html':
+			case 'html_iframe':
+				$argument = xap(
+					$argument,
+					$type == 'text' ? 'text' : true,
+					$type == 'html_iframe'
+				);
+				/**
+				 * Truncation
+				 */
+				if ($format !== null) {
+					/**
+					 * After this `$format[0]` will contain length to truncation and `$format[1]` if exists - ending
+					 */
+					$format   = explode(':', $format);
+					$argument = truncate($argument, $format[0], isset($format[1]) ? $format[1] : '...', true);
+				}
+				break;
+			case 'set':
+				$allowed_arguments = explode(',', $format);
+				if (!in_array($argument, $allowed_arguments)) {
+					$argument = $allowed_arguments[0];
+				}
+				break;
+			case 'json':
+				$argument = _json_encode($argument);
+				break;
+		}
+		return $argument;
 	}
 	/**
 	 * @return bool
@@ -157,38 +161,38 @@ trait CRUD {
 	 * @return false|int|string Id of created item on success (or specified primary key), `false` otherwise
 	 */
 	private function create_internal ($table, $data_model, $arguments) {
-		$insert_id = count($data_model) == count($arguments) ? $arguments[0] : false;
-		self::crud_arguments_preparation(
+		$insert_id          = count($data_model) == count($arguments) ? $arguments[0] : false;
+		$prepared_arguments = self::crud_arguments_preparation(
 			$insert_id !== false ? $data_model : array_slice($data_model, 1),
 			$arguments,
 			$insert_id,
 			$update_needed
 		);
-		$columns = "`".implode("`,`", array_keys($insert_id !== false ? $data_model : array_slice($data_model, 1)))."`";
-		$values  = implode(',', array_fill(0, count($arguments), "'%s'"));
-		$return  = $this->db_prime()->q(
+		$columns            = "`".implode("`,`", array_keys($insert_id !== false ? $data_model : array_slice($data_model, 1)))."`";
+		$values             = implode(',', array_fill(0, count($prepared_arguments), "'%s'"));
+		$return             = $this->db_prime()->q(
 			"INSERT IGNORE INTO `$table`
 				(
 					$columns
 				) VALUES (
 					$values
 				)",
-			$arguments
+			$prepared_arguments
 		);
-		$id      = $insert_id !== false ? $insert_id : $this->db_prime()->id();
+		$id                 = $insert_id !== false ? $insert_id : $this->db_prime()->id();
 		/**
 		 * Id might be 0 if insertion failed or if we insert duplicate entry (which is fine since we use 'INSERT IGNORE'
 		 */
 		if (!$return || $id === 0) {
 			return false;
 		}
-		$this->find_update_files_tags($id, [], $arguments);
+		$this->find_update_files_tags($id, [], $prepared_arguments);
 		/**
 		 * If on creation request without specified primary key and multilingual fields present - update needed
 		 * after creation (there is no id before creation)
 		 */
 		if ($update_needed) {
-			$this->update_internal($table, $data_model, array_merge([$id], $arguments), false);
+			$this->update_internal($table, $data_model, array_merge([$id], $prepared_arguments), false);
 		}
 		return $id;
 	}
@@ -296,35 +300,36 @@ trait CRUD {
 	 * @return bool
 	 */
 	private function update_internal ($table, $data_model, $arguments, $files_update = true) {
-		$id = array_shift($arguments);
+		$prepared_arguments = $arguments;
+		$id                 = array_shift($prepared_arguments);
 		if ($files_update) {
 			$data_before = $this->read_internal($table, $data_model, $id);
 		}
-		self::crud_arguments_preparation(array_slice($data_model, 1), $arguments, $id);
-		$columns      = implode(
+		$prepared_arguments   = self::crud_arguments_preparation(array_slice($data_model, 1), $prepared_arguments, $id);
+		$columns              = implode(
 			',',
 			array_map(
 				function ($column) {
 					return "`$column` = '%s'";
 				},
-				array_keys($arguments)
+				array_keys($prepared_arguments)
 			)
 		);
-		$arguments[]  = $id;
-		$first_column = array_keys($data_model)[0];
+		$prepared_arguments[] = $id;
+		$first_column         = array_keys($data_model)[0];
 		if (!$this->db_prime()->q(
 			"UPDATE `$table`
 			SET $columns
 			WHERE `$first_column` = '%s'
 			LIMIT 1",
-			$arguments
+			$prepared_arguments
 		)
 		) {
 			return false;
 		}
 		if ($files_update) {
 			/** @noinspection PhpUndefinedVariableInspection */
-			$this->find_update_files_tags($id, $data_before, func_get_args()[2]);
+			$this->find_update_files_tags($id, $data_before, $arguments);
 		}
 		return true;
 	}
@@ -363,7 +368,7 @@ trait CRUD {
 			array_filter(
 				$data,
 				function ($data) {
-					return preg_match('/^(http[s]?:)?\/\/.+$/Uims', $data);
+					return is_array($data) ? $this->find_urls($data) : preg_match('/^(http[s]?:)?\/\/.+$/Uims', $data);
 				}
 			)
 		);
