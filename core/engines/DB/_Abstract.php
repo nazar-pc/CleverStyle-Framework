@@ -412,7 +412,13 @@ abstract class _Abstract {
 			$query = $query[0].'VALUES'.$query[1].$query[2];
 			return (bool)$this->q(
 				$query,
-				call_user_func_array('array_merge', _array($params))
+				call_user_func_array(
+					'array_merge',
+					array_map(
+						'array_values',
+						_array($params)
+					)
+				)
 			);
 		} else {
 			$result = true;
