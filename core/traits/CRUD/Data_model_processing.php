@@ -206,19 +206,42 @@ trait Data_model_processing {
 	 */
 	protected function find_urls ($data) {
 		/**
-		 * At first we search URLs among attributes values, then whether some field looks like URL itself
+		 * At first we search URLs among attributes values, then whether some field looks like URL itself, and lastly do recursive scan
 		 */
 		return array_merge(
-			preg_match_all('/"((http[s]?:)?\/\/.+)"/Uims', implode(' ', $data), $files)
+			preg_match_all('/"((http[s]?:)?\/\/.+)"/Uims', $this->recursive_implode(' ', $data), $files)
 				? array_unique($files[1])
 				: [],
 			array_filter(
 				$data,
 				function ($data) {
-					return is_array($data) ? $this->find_urls($data) : preg_match('/^(http[s]?:)?\/\/.+$/Uims', $data);
+					return !is_array($data) && preg_match('/^(http[s]?:)?\/\/.+$/Uims', $data);
 				}
-			)
+			),
+			$data ? call_user_func_array(
+				'array_merge',
+				array_map(
+					function ($data) {
+						return is_array($data) ? $this->find_urls($data) : [];
+					},
+					array_values($data)
+				)
+			) : []
 		);
+	}
+	/**
+	 * @param string $glue
+	 * @param array  $pieces
+	 *
+	 * @return string
+	 */
+	protected function recursive_implode ($glue, $pieces) {
+		foreach ($pieces as &$p) {
+			if (is_array($p)) {
+				$p = $this->recursive_implode($glue, $p);
+			}
+		}
+		return implode($glue, $pieces);
 	}
 	/**
 	 * @param string   $tag
