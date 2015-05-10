@@ -53,16 +53,48 @@ class Items {
 
 	const DEFAULT_IMAGE = 'components/modules/Shop/includes/img/no-image.svg';
 
-	protected $data_model = [
-		'id'       => 'int',
-		'date'     => 'int',
-		'category' => 'int',
-		'price'    => 'float',
-		'in_stock' => 'int',
-		'soon'     => 'int:0..1',
-		'listed'   => 'int:0..1'
+	protected $data_model                  = [
+		'id'         => 'int',
+		'date'       => 'int',
+		'category'   => 'int',
+		'price'      => 'float',
+		'in_stock'   => 'int',
+		'soon'       => 'int:0..1',
+		'listed'     => 'int:0..1',
+		'attributes' => [
+			'data_model' => [
+				'id'            => 'int',
+				'attribute'     => 'int',
+				'numeric_value' => 'float',
+				'string_value'  => 'text',
+				'text_value'    => 'html',
+				'lang'          => 'text' // Some attributes are language-dependent, some aren't, so we'll handle that manually
+			]
+		],
+		'images'     => [
+			'data_model' => [
+				'id'    => 'int',
+				'image' => 'text'
+			]
+		],
+		'videos'     => [
+			'data_model' => [
+				'id'     => 'int',
+				'video'  => 'text',
+				'poster' => 'text',
+				'type'   => 'text'
+			]
+		],
+		'tags'       => [
+			'data_model'     => [
+				'id'  => 'int',
+				'tag' => 'html'
+			],
+			'language_field' => 'lang'
+		]
 	];
-	protected $table      = '[prefix]shop_items';
+	protected $table                       = '[prefix]shop_items';
+	protected $data_model_files_tag_prefix = 'Shop/items';
 	/**
 	 * @var Prefix
 	 */
@@ -102,114 +134,11 @@ class Items {
 				if (!$data) {
 					return false;
 				}
-				$data['attributes'] = $this->db()->qfa(
-					"SELECT
-						`attribute`,
-						`numeric_value`,
-						`string_value`,
-						`text_value`
-					FROM `{$this->table}_attributes`
-					WHERE
-						`id` = $id AND
-						(
-							`lang`	= '$L->clang' OR
-							`lang`	= ''
-						)"
-				) ?: [];
-				$category           = Categories::instance()->get($data['category']);
-				/**
-				 * If title attribute is not yet translated to current language
-				 */
-				if (!in_array($category['title_attribute'], array_column($data['attributes'], 'attribute'))) {
-					$data['attributes'][] = $this->db()->qf(
-						"SELECT
-							`attribute`,
-							`numeric_value`,
-							`string_value`,
-							`text_value`
-						FROM `{$this->table}_attributes`
-						WHERE
-							`id`		= $id AND
-							`attribute`	= $category[title_attribute]
-						LIMIT 1"
-					);
-				}
-				/**
-				 * If title attribute is not yet translated to current language
-				 */
-				if ($category['description_attribute'] && !in_array($category['description_attribute'], array_column($data['attributes'], 'attribute'))) {
-					$data['attributes'][] = $this->db()->qf(
-						"SELECT
-							`attribute`,
-							`numeric_value`,
-							`string_value`,
-							`text_value`
-						FROM `{$this->table}_attributes`
-						WHERE
-							`id`		= $id AND
-							`attribute`	= $category[description_attribute]
-						LIMIT 1"
-					);
-				}
-				$Attributes = Attributes::instance();
-				foreach ($data['attributes'] as $index => &$value) {
-					$attribute = $Attributes->get($value['attribute']);
-					if ($attribute) {
-						$value['value'] = $value[$this->attribute_type_to_value_field($attribute['type'])];
-					} else {
-						$value['value'] = $value['text_value'];
-						if (!strlen($value['value'])) {
-							$value['value'] = $value['string_value'];
-						}
-						if (!strlen($value['value'])) {
-							$value['value'] = $value['numeric_value'];
-						}
-					}
-				}
-				unset($index, $value, $attribute);
-				$data['attributes']  = array_column($data['attributes'], 'value', 'attribute');
+				$data['attributes']  = $this->read_attributes_processing($data['attributes'], $L->clang);
+				$category            = Categories::instance()->get($data['category']);
 				$data['title']       = $data['attributes'][$category['title_attribute']];
 				$data['description'] = @$data['attributes'][$category['description_attribute']] ?: '';
-				$data['images']      = $this->db()->qfas(
-					"SELECT `image`
-					FROM `{$this->table}_images`
-					WHERE `id` = $id"
-				) ?: [];
-				$data['videos']      = $this->db()->qfa(
-					"SELECT
-						`video`,
-						`poster`,
-						`type`
-					FROM `{$this->table}_videos`
-					WHERE `id` = $id"
-				) ?: [];
-				$data['tags']        = $this->db()->qfas(
-					"SELECT DISTINCT `tag`
-					FROM `{$this->table}_tags`
-					WHERE
-						`id`	= $id AND
-						`lang`	= '$L->clang'"
-				) ?: [];
-				if (!$data['tags']) {
-					$l            = $this->db()->qfs(
-						"SELECT `lang`
-						FROM `{$this->table}_tags`
-						WHERE `id` = $id
-						LIMIT 1"
-					);
-					$data['tags'] = $this->db()->qfas(
-						"SELECT DISTINCT `tag`
-						FROM `{$this->table}_tags`
-						WHERE
-							`id`	= $id AND
-							`lang`	= '$l'"
-					) ?: [];
-					unset($l);
-				}
-				$data['tags'] = array_column(
-					Tags::instance()->get($data['tags']),
-					'text'
-				);
+				$data['tags']        = $this->read_tags_processing($data['tags']);
 				return $data;
 			}
 		);
@@ -223,6 +152,64 @@ class Items {
 			return false;
 		}
 		return $data;
+	}
+	/**
+	 * Transform normalized attributes structure back into simple initial structure
+	 *
+	 * @param array  $attributes
+	 * @param string $clang
+	 *
+	 * @return array
+	 */
+	protected function read_attributes_processing ($attributes, $clang) {
+		/**
+		 * Select language-independent attributes and ones that are set for current language
+		 */
+		$filtered_attributes = array_filter(
+			$attributes,
+			function ($attribute) use ($clang) {
+				return !$attribute['lang'] || $attribute['lang'] == $clang;
+			}
+		);
+		$existing_attributes = array_column($filtered_attributes, 'attribute');
+		/**
+		 * Now fill other existing attributes that are missing for current language
+		 */
+		foreach ($attributes as $attribute) {
+			if (!in_array($attribute['attribute'], $existing_attributes)) {
+				$existing_attributes[] = $attribute['attribute'];
+				$filtered_attributes[] = $attribute;
+			}
+		}
+		/**
+		 * We have attributes of different types, so, here is normalization for that
+		 */
+		$Attributes = Attributes::instance();
+		foreach ($filtered_attributes as &$value) {
+			$attribute = $Attributes->get($value['attribute']);
+			if ($attribute) {
+				$value['value'] = $value[$this->attribute_type_to_value_field($attribute['type'])];
+			} else {
+				$value['value'] = $value['text_value'];
+				if (!strlen($value['value'])) {
+					$value['value'] = $value['string_value'];
+				}
+				if (!strlen($value['value'])) {
+					$value['value'] = $value['numeric_value'];
+				}
+			}
+		}
+		return array_column($filtered_attributes, 'value', 'attribute');
+	}
+	/**
+	 * Transform tags ids back into array of strings
+	 *
+	 * @param int[] $tags
+	 *
+	 * @return string[]
+	 */
+	protected function read_tags_processing ($tags) {
+		return array_column(Tags::instance()->get($tags) ?: [], 'text');
 	}
 	/**
 	 * Get item data for specific user (price might be adjusted, some items may be restricted and so on)
@@ -433,6 +420,7 @@ class Items {
 	 * @return false|int Id of created item on success of <b>false</> on failure
 	 */
 	function add ($category, $price, $in_stock, $soon, $listed, $attributes, $images, $videos, $tags) {
+		$L  = Language::instance();
 		$id = $this->create(
 			[
 				time(),
@@ -440,7 +428,11 @@ class Items {
 				$price,
 				$in_stock,
 				$soon && !$in_stock ? 1 : 0,
-				$listed
+				$listed,
+				$this->prepare_attributes($attributes, $category, $L->clang),
+				$this->prepare_images($images),
+				$this->prepare_videos($videos),
+				$this->prepare_tags($tags)
 			]
 		);
 		if ($id) {
@@ -451,241 +443,75 @@ class Items {
 					'id' => $id
 				]
 			);
-			$this->set($id, $category, $price, $in_stock, $soon, $listed, $attributes, $images, $videos, $tags);
 		}
 		return $id;
 	}
 	/**
-	 * Set data of specified item
+	 * Normalize attributes array structure
 	 *
-	 * @param int      $id
-	 * @param int      $category
-	 * @param float    $price
-	 * @param int      $in_stock
-	 * @param int      $soon
-	 * @param int      $listed
-	 * @param array    $attributes
-	 * @param string[] $images
-	 * @param array[]  $videos
-	 * @param string[] $tags
+	 * @param array  $attributes
+	 * @param int    $category
+	 * @param string $clang
 	 *
-	 * @return bool
+	 * @return array
 	 */
-	function set ($id, $category, $price, $in_stock, $soon, $listed, $attributes, $images, $videos, $tags) {
-		$id   = (int)$id;
-		$data = $this->get($id);
-		if (!$data) {
-			return false;
+	protected function prepare_attributes ($attributes, $category, $clang) {
+		$Attributes      = Attributes::instance();
+		$title_attribute = Categories::instance()->get($category)['title_attribute'];
+		foreach ($attributes as $attribute => &$value) {
+			$attribute_data = $Attributes->get($attribute);
+			if (!$attribute_data) {
+				unset($attributes[$attribute]);
+				continue;
+			}
+			$value_type = [
+				'numeric' => 0,
+				'string'  => '',
+				'text'    => ''
+			];
+			$lang       = '';
+			switch ($this->attribute_type_to_value_field($attribute_data['type'])) {
+				case 'numeric_value':
+					$value_type['numeric'] = $value;
+					break;
+				case 'string_value':
+					$value_type['string'] = xap($value);
+					/**
+					 * Multilingual feature only for title attribute
+					 */
+					if ($attribute_data['id'] == $title_attribute) {
+						$lang = $clang;
+					}
+					break;
+				case 'text_value':
+					$value_type['text'] = xap($value, true, true);
+					$lang               = $clang;
+					break;
+			}
+			$value = [
+				$attribute_data['id'],
+				$value_type['numeric'],
+				$value_type['string'],
+				$value_type['text'],
+				$lang
+			];
 		}
-		$result = $this->update(
-			[
-				$id,
-				$data['date'],
-				$category,
-				$price,
-				$in_stock,
-				$soon && !$in_stock ? 1 : 0,
-				$listed
-			]
-		);
-		if (!$result) {
-			return false;
-		}
-		$images    = array_filter(
+		return array_values($attributes);
+	}
+	/**
+	 * Filter images to remove non-URL elements
+	 *
+	 * @param array $images
+	 *
+	 * @return array
+	 */
+	protected function prepare_images ($images) {
+		return array_filter(
 			$images,
 			function ($image) {
 				return filter_var($image, FILTER_VALIDATE_URL);
 			}
 		);
-		$videos    = $this->prepare_videos($videos);
-		$old_data  = $this->get($id);
-		$old_files = array_merge(
-			$old_data['images'],
-			array_column($old_data['videos'], 'video'),
-			array_column($old_data['videos'], 'poster')
-		);
-		$new_files = array_merge(
-			$images,
-			$videos ? array_column($videos, 0) : [],
-			$videos ? array_column($videos, 1) : []
-		);
-		$cdb       = $this->db_prime();
-		/**
-		 * Attributes processing
-		 */
-		$L              = Language::instance();
-		$old_attributes = $cdb->qfas(
-			"SELECT `text_value`
-			FROM `{$this->table}_attributes`
-			WHERE
-				`id`			= $id AND
-				`lang`			= '$L->clang' AND
-				`text_value`	!= ''"
-		);
-		foreach ($old_attributes as $old_attribute) {
-			/** @noinspection SlowArrayOperationsInLoopInspection */
-			$old_files = array_merge($old_files, find_links($old_attribute));
-		}
-		unset($old_attributes, $old_attribute);
-		$cdb->q(
-			"DELETE FROM `{$this->table}_attributes`
-			WHERE
-				`id`	= $id AND
-				(
-					`lang`	= '$L->clang' OR
-					`lang`	= ''
-				)"
-		);
-		if ($attributes) {
-			$Attributes      = Attributes::instance();
-			$title_attribute = Categories::instance()->get($category)['title_attribute'];
-			foreach ($attributes as $attribute => &$value) {
-				$attribute_data = $Attributes->get($attribute);
-				if (!$attribute_data) {
-					unset($attributes[$attribute]);
-					continue;
-				}
-				$value_type = [
-					'numeric' => 0,
-					'string'  => '',
-					'text'    => ''
-				];
-				$lang       = '';
-				switch ($this->attribute_type_to_value_field($attribute_data['type'])) {
-					case 'numeric_value':
-						$value_type['numeric'] = $value;
-						break;
-					case 'string_value':
-						$value_type['string'] = xap($value);
-						/**
-						 * Multilingual feature only for title attribute
-						 */
-						if ($attribute_data['id'] == $title_attribute) {
-							$lang = $L->clang;
-						}
-						break;
-					case 'text_value':
-						$value_type['text'] = xap($value, true, true);
-						/** @noinspection SlowArrayOperationsInLoopInspection */
-						$new_files = array_merge($new_files, find_links($value_type['text']));
-						$lang      = $L->clang;
-						break;
-				}
-				$value = [
-					$attribute_data['id'],
-					$value_type['numeric'],
-					$value_type['string'],
-					$value_type['text'],
-					$lang
-				];
-			}
-			unset($title_attribute, $attribute, $value, $value_type);
-			/**
-			 * @var array[] $attributes
-			 */
-			$cdb->insert(
-				"INSERT INTO `{$this->table}_attributes`
-					(
-						`id`,
-						`attribute`,
-						`numeric_value`,
-						`string_value`,
-						`text_value`,
-						`lang`
-					)
-				VALUES
-					(
-						$id,
-						'%s',
-						'%d',
-						'%s',
-						'%s',
-						'%s'
-					)",
-				$attributes
-			);
-		}
-		/**
-		 * Images processing
-		 */
-		$cdb->q(
-			"DELETE FROM `{$this->table}_images`
-			WHERE `id` = $id"
-		);
-		if ($images) {
-			$cdb->insert(
-				"INSERT INTO `{$this->table}_images`
-					(
-						`id`,
-						`image`
-					)
-				VALUES
-					(
-						$id,
-						'%s'
-					)",
-				xap($images)
-			);
-		}
-		/**
-		 * Videos processing
-		 */
-		$cdb->q(
-			"DELETE FROM `{$this->table}_videos`
-			WHERE `id` = $id"
-		);
-		if ($videos) {
-			$cdb->insert(
-				"INSERT INTO `{$this->table}_videos`
-					(
-						`id`,
-						`video`,
-						`poster`,
-						`type`
-					)
-				VALUES
-					(
-						$id,
-						'%s',
-						'%s',
-						'%s'
-					)",
-				xap($videos)
-			);
-		}
-		/**
-		 * Cleaning old files and registering new ones
-		 */
-		$this->update_files_tags("Shop/items/$id/$L->clang", $old_files, $new_files);
-		unset($old_files, $new_files);
-		/**
-		 * Tags processing
-		 */
-		$cdb->q(
-			"DELETE FROM `{$this->table}_tags`
-			WHERE
-				`id`	= $id AND
-				`lang`	= '$L->clang'"
-		);
-		$tags = Tags::instance()->add($tags);
-		$cdb->insert(
-			"INSERT INTO `{$this->table}_tags`
-				(`id`, `tag`, `lang`)
-			VALUES
-				($id, '%d', '$L->clang')",
-			$tags
-		);
-		unset(
-			$this->cache->{"$id/$L->clang"},
-			$this->cache->all
-		);
-		Event::instance()->fire(
-			'Shop/Items/set',
-			[
-				'id' => $id
-			]
-		);
-		return true;
 	}
 	/**
 	 * Normalize videos array structure
@@ -718,6 +544,71 @@ class Items {
 		return $videos;
 	}
 	/**
+	 * Transform array of string tags into array of their ids
+	 *
+	 * @param string[] $tags
+	 *
+	 * @return int[]
+	 */
+	protected function prepare_tags ($tags) {
+		return Tags::instance()->add($tags) ?: [];
+	}
+	/**
+	 * Set data of specified item
+	 *
+	 * @param int      $id
+	 * @param int      $category
+	 * @param float    $price
+	 * @param int      $in_stock
+	 * @param int      $soon
+	 * @param int      $listed
+	 * @param array    $attributes
+	 * @param string[] $images
+	 * @param array[]  $videos
+	 * @param string[] $tags
+	 *
+	 * @return bool
+	 */
+	function set ($id, $category, $price, $in_stock, $soon, $listed, $attributes, $images, $videos, $tags) {
+		$id   = (int)$id;
+		$data = $this->get($id);
+		if (!$data) {
+			return false;
+		}
+		$L      = Language::instance();
+		$result = $this->update(
+			[
+				$id,
+				$data['date'],
+				$category,
+				$price,
+				$in_stock,
+				$soon && !$in_stock ? 1 : 0,
+				$listed,
+				$this->prepare_attributes($attributes, $category, $L->clang),
+				$this->prepare_images($images),
+				$this->prepare_videos($videos),
+				$this->prepare_tags($tags)
+			]
+		);
+		if ($result) {
+			/**
+			 * Attributes processing
+			 */
+			unset(
+				$this->cache->{"$id/$L->clang"},
+				$this->cache->all
+			);
+			Event::instance()->fire(
+				'Shop/Items/set',
+				[
+					'id' => $id
+				]
+			);
+		}
+		return $result;
+	}
+	/**
 	 * Delete specified item
 	 *
 	 * @param int $id
@@ -728,22 +619,6 @@ class Items {
 		$id     = (int)$id;
 		$result = $this->delete($id);
 		if ($result) {
-			$this->db_prime()->q(
-				[
-					"DELETE FROM `{$this->table}_attributes`
-					WHERE `id` = $id",
-					"DELETE FROM `{$this->table}_images`
-					WHERE `id` = $id",
-					"DELETE FROM `{$this->table}_tags`
-					WHERE `id` = $id"
-				]
-			);
-			Event::instance()->fire(
-				'System/upload_files/del_tag',
-				[
-					'tag' => "Shop/items/$id%"
-				]
-			);
 			unset(
 				$this->cache->$id,
 				$this->cache->all
