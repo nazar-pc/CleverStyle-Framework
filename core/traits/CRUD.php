@@ -217,14 +217,15 @@ trait CRUD {
 		return $data;
 	}
 	/**
-	 * @param int|string $id
-	 * @param string     $table
-	 * @param array      $model
+	 * @param int|string  $id
+	 * @param string      $table
+	 * @param array       $model
+	 * @param null|string $force_clang
 	 *
 	 * @return array
 	 */
-	private function read_joined_table ($id, $table, $model) {
-		$clang                    = $this->db()->s(Language::instance()->clang, false);
+	private function read_joined_table ($id, $table, $model, $force_clang = null) {
+		$clang                    = $force_clang ?: $this->db()->s(Language::instance()->clang, false);
 		$id_field                 = array_keys($model['data_model'])[0];
 		$language_field_condition = isset($model['language_field'])
 			? "AND `$model[language_field]` = '$clang'"
@@ -233,7 +234,7 @@ trait CRUD {
 		$rows                     = $this->db_prime()->qfa(
 			[
 				"SELECT $fields
-				FROm `{$this->table}_$table`
+				FROM `{$this->table}_$table`
 				WHERE
 						`$id_field`	= '%s'
 						$language_field_condition",
@@ -241,6 +242,24 @@ trait CRUD {
 			]
 		) ?: [];
 		$language_field           = isset($model['language_field']) ? $model['language_field'] : null;
+		/**
+		 * If no rows found for current language - find another language that should contain some rows
+		 */
+		if (!$rows) {
+			$new_clang = $this->db_prime()->qfs(
+				[
+					"SELECT `$language_field`
+					FROM `{$this->table}_$table`
+					WHERE `$id_field`	= '%s'
+					LIMIT 1",
+					$id
+				]
+			);
+			if ($new_clang && $new_clang != $clang) {
+				return $this->read_joined_table($id, $table, $model, $force_clang);
+			}
+			return [];
+		}
 		foreach ($rows as &$row) {
 			/**
 			 * Drop language and id field since they are used internally, not specified by user

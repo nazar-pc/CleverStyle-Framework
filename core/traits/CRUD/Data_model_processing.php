@@ -12,14 +12,16 @@ use
 	cs\Text;
 
 /**
- * @method int cdb()
- *
  * @property array  $data_model
  * @property string $data_model_ml_group
  * @property string $data_model_files_tag_prefix
  * @property string $table
  */
 trait Data_model_processing {
+	/**
+	 * @return int
+	 */
+	abstract protected function cdb ();
 	/**
 	 * @param callable[]|string[] $data_model
 	 * @param array               $arguments
