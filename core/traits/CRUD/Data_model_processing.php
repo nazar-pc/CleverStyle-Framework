@@ -84,6 +84,9 @@ trait Data_model_processing {
 	 * @return array
 	 */
 	private function prepare_joined_tables_model ($structure, $arguments) {
+		if (!$arguments) {
+			return [];
+		}
 		$new_structure = [
 			'id_field' => array_keys($structure['data_model'])[0],
 			'fields'   => array_slice($structure['data_model'], 1),
@@ -101,7 +104,7 @@ trait Data_model_processing {
 			/**
 			 * Both associative and indexed arrays are supported - that is why we determine key for array
 			 */
-			$key = $arguments_assoc ? $field_name : array_search($field_name, $new_structure['fields']);
+			$key = $arguments_assoc ? $field_name : array_search($field_name, array_keys($new_structure['fields']));
 			foreach ($arguments as $index => $arguments_local) {
 				$new_structure['data'][$index][$field_name] = $this->crud_argument_preparation($type, $format, $arguments_local[$key]);
 			}

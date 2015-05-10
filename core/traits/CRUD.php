@@ -109,7 +109,7 @@ trait CRUD {
 		 * Now walk through all tables and insert new valued
 		 */
 		foreach ($joined_tables as $table => $model) {
-			if (!$model['data']) {
+			if (!@$model['data']) {
 				continue;
 			}
 			$fields = "`$model[id_field]`, ";
