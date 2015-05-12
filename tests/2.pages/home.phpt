@@ -21,7 +21,7 @@ shutdown_function();
 	<link href="/themes/CleverStyle/img/favicon.ico" rel="shortcut icon">
 	<script class="cs-config" target="cs" type="application/json">{"base_url":"http:\/\/cscms.travis","current_base_url":"http:\/\/cscms.travis\/System","public_key":"%s","module":"System","in_admin":0,"is_admin":0,"is_user":0,"is_guest":1,"debug":0,"cookie_prefix":"","cookie_domain":"cscms.travis","cookie_path":"\/","protocol":"http","route":[],"route_path":["blank"],"route_ids":[]}</script>
 	<script class="cs-config" target="cs.rules_text" type="application/json">""</script>
-	<link href="/storage/pcache/_CleverStyle_en.css?%s" rel="stylesheet" shim-shadowdom="">
+	<link href="/storage/pcache/_CleverStyle_en.css?%s" rel="stylesheet" shim-shadowdom>
 	<meta content="Web-site | Home" property="og:title">
 	<meta content="http://cscms.travis" property="og:url">
 	<meta content="Web-site" property="og:site_name">

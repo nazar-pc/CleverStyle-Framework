@@ -190,7 +190,7 @@ trait Includes {
 					[
 						'href'           => $add,
 						'rel'            => 'stylesheet',
-						'shim-shadowdom' => ''
+						'shim-shadowdom' => true
 					]
 				);
 			} elseif ($mode == 'code') {
@@ -202,7 +202,7 @@ trait Includes {
 					[
 						'href'           => $add,
 						'rel'            => 'stylesheet',
-						'shim-shadowdom' => ''
+						'shim-shadowdom' => true
 					]
 				);
 			} elseif ($mode == 'code') {
