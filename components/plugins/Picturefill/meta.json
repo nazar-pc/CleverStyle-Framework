@@ -1,0 +1,10 @@
+{
+	"package"     : "Picturefill",
+	"category"    : "plugins",
+	"version"     : "2.3.1-cs1",
+	"description" : "A responsive image polyfill for <picture>, srcset, sizes, and more",
+	"author"      : "Scott Jehl",
+	"website"     : "https://github.com/scottjehl/picturefill",
+	"license"     : "MIT License",
+	"provide"     : "picturefill"
+}
