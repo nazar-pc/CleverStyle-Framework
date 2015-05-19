@@ -530,7 +530,7 @@ class DraugiemApi {
 		<body>
 			<form name="cookieFix" method="get" action="">
 				<?php foreach($_GET as $key=>$val){
-					echo '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($val).'" />';
+					echo '<input type="hidden" name="',htmlspecialchars($key),'" value="',htmlspecialchars($val),'" />';
 				} ?>
 				<input type="hidden" name="dr_cookie_fix" value="1" />
 				<noscript><input type="submit" value="Continue" /></noscript>

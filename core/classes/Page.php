@@ -143,8 +143,8 @@ class Page {
 			!_include("$theme_dir/closed.html", false, false)
 		) {
 			echo
-				"<!doctype html>\n".
-				h::title(get_core_ml_text('closed_title')).
+				"<!doctype html>\n",
+				h::title(get_core_ml_text('closed_title')),
 				get_core_ml_text('closed_text');
 		} else {
 			_include("$theme_dir/index.php", false, false) || _include("$theme_dir/index.html");
@@ -474,8 +474,8 @@ class Page {
 				!_include(THEMES."/$this->theme/error.html", false, false) &&
 				!_include(THEMES."/$this->theme/error.php", false, false)
 			) {
-				echo "<!doctype html>\n".
-					h::title(code_header($error)).
+				echo "<!doctype html>\n",
+					h::title(code_header($error)),
 					($error_description ?: $error);
 			}
 			$this->Content	= ob_get_clean();

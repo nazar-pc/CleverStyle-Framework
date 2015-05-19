@@ -183,14 +183,14 @@ header('Content-Type: text/html; charset=utf-8');
 header('Connection: close');
 $version = file_get_json(DIR.'/meta.json')['version'];
 echo
-	"<!doctype html>\n".
-	h::title("CleverStyle CMS $version Installation").
+	"<!doctype html>\n",
+	h::title("CleverStyle CMS $version Installation"),
 	h::meta(
 		[
 			'charset' => 'utf-8'
 		]
-	).
-	h::style(file_get_contents(DIR.'/install/style.css')).
+	),
+	h::style(file_get_contents(DIR.'/install/style.css')),
 	h::header(
 		h::img(
 			[

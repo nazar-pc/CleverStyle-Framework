@@ -163,11 +163,11 @@ class SMTP
                     ENT_QUOTES,
                     'UTF-8'
                 )
-                . "<br>\n";
+                , "<br>\n";
                 break;
             case 'echo':
             default:
-                echo gmdate('Y-m-d H:i:s')."\t".trim($str)."\n";
+                echo gmdate('Y-m-d H:i:s'),"\t",trim($str),"\n";
         }
     }
 

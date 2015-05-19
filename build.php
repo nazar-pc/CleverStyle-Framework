@@ -79,13 +79,13 @@ Example:
 ';
 			break;
 		case 'core':
-			echo $Builder->core($modules, $plugins, $themes, $suffix)."\n";
+			echo $Builder->core($modules, $plugins, $themes, $suffix),"\n";
 			break;
 		case 'module':
 		case 'plugin':
 		case 'theme':
 			foreach (${$mode.'s'} as $component) {
-				echo $Builder->$mode($component, $suffix)."\n";
+				echo $Builder->$mode($component, $suffix),"\n";
 			}
 	}
 	return;
@@ -108,15 +108,15 @@ switch ($mode) {
 		}
 }
 echo
-	"<!doctype html>".
-	h::title('CleverStyle CMS Builder').
-	h::{'meta[charset=utf-8]'}().
+	"<!doctype html>",
+	h::title('CleverStyle CMS Builder'),
+	h::{'meta[charset=utf-8]'}(),
 	h::link(
 		[
 			'href' => 'build/includes/style.css',
 			'rel'  => 'stylesheet'
 		]
-	).
+	),
 	h::script(
 		[
 			'src'   => 'build/includes/functions.js',

@@ -304,7 +304,7 @@ Extra dirs  : ";
 		echo "{$test_dir}\n              ";
 	}
 	echo "
-VALGRIND    : " . ($leak_check ? $valgrind_header : 'Not used') . "
+VALGRIND    : " , ($leak_check ? $valgrind_header : 'Not used') , "
 =====================================================================
 ";
 }
@@ -326,10 +326,10 @@ function save_or_mail_results()
 			echo "\nYou may have found a problem in PHP.";
 		}
 		echo "\nThis report can be automatically sent to the PHP QA team at\n";
-		echo QA_REPORTS_PAGE . " and http://news.php.net/php.qa.reports\n";
+		echo QA_REPORTS_PAGE , " and http://news.php.net/php.qa.reports\n";
 		echo "This gives us a better understanding of PHP's behavior.\n";
 		echo "If you don't want to send the report immediately you can choose\n";
-		echo "option \"s\" to save it.	You can then email it to ". PHP_QA_EMAIL . " later.\n";
+		echo "option \"s\" to save it.	You can then email it to ", PHP_QA_EMAIL , " later.\n";
 		echo "Do you want to send this report now? [Yns]: ";
 		flush();
 
@@ -435,7 +435,7 @@ function save_or_mail_results()
 					echo "\nThe test script was unable to automatically send the report to PHP's QA Team\n";
 				}
 
-				echo "Please send " . $output_file . " to " . PHP_QA_EMAIL . " manually, thank you.\n";
+				echo "Please send " , $output_file , " to " , PHP_QA_EMAIL , " manually, thank you.\n";
 			} elseif (!getenv('NO_INTERACTION') && !TRAVIS_CI) {
 				fwrite($fp, "\nThank you for helping to make PHP better.\n");
 				fclose($fp);
@@ -664,7 +664,7 @@ if (isset($argc) && $argc > 1) {
 					$html_output = is_resource($html_file);
 					break;
 				case '--version':
-					echo '$Id$' . "\n";
+					echo '$Id$' , "\n";
 					exit(1);
 
 				default:
@@ -1008,7 +1008,7 @@ function mail_qa_team($data, $compression, $status = false)
 
 	$php_version = urlencode(TESTED_PHP_VERSION);
 
-	echo "\nPosting to ". QA_SUBMISSION_PAGE . "\n";
+	echo "\nPosting to ", QA_SUBMISSION_PAGE , "\n";
 	fwrite($fs, "POST " . $path . "?status=$status&version=$php_version HTTP/1.1\r\n");
 	fwrite($fs, "Host: " . $host . "\r\n");
 	fwrite($fs, "User-Agent: QA Browser 0.1\r\n");
@@ -1058,12 +1058,12 @@ function error_report($testname, $logname, $tested)
 
 	switch (strtoupper(getenv('TEST_PHP_ERROR_STYLE'))) {
 		case 'MSVC':
-			echo $testname . "(1) : $tested\n";
-			echo $logname . "(1) :  $tested\n";
+			echo $testname , "(1) : $tested\n";
+			echo $logname , "(1) :  $tested\n";
 			break;
 		case 'EMACS':
-			echo $testname . ":1: $tested\n";
-			echo $logname . ":1:  $tested\n";
+			echo $testname , ":1: $tested\n";
+			echo $logname , ":1:  $tested\n";
 			break;
 	}
 }
@@ -1177,7 +1177,7 @@ function show_file_block($file, $block, $section = null)
 			$section = strtoupper($file);
 		}
 
-		echo "\n========" . $section . "========\n";
+		echo "\n========" , $section , "========\n";
 		echo rtrim($block);
 		echo "\n========DONE========\n";
 	}
@@ -1806,11 +1806,11 @@ TEST $file
 	}
 
 	if ($DETAILED) echo "
-CONTENT_LENGTH  = " . $env['CONTENT_LENGTH'] . "
-CONTENT_TYPE    = " . $env['CONTENT_TYPE'] . "
-PATH_TRANSLATED = " . $env['PATH_TRANSLATED'] . "
-QUERY_STRING    = " . $env['QUERY_STRING'] . "
-REDIRECT_STATUS = " . $env['REDIRECT_STATUS'] . "
+CONTENT_LENGTH  = " , $env['CONTENT_LENGTH'] , "
+CONTENT_TYPE    = " , $env['CONTENT_TYPE'] , "
+PATH_TRANSLATED = " , $env['PATH_TRANSLATED'] , "
+QUERY_STRING    = " , $env['QUERY_STRING'] , "
+REDIRECT_STATUS = " , $env['REDIRECT_STATUS'] . "
 REQUEST_METHOD  = " . $env['REQUEST_METHOD'] . "
 SCRIPT_FILENAME = " . $env['SCRIPT_FILENAME'] . "
 HTTP_COOKIE     = " . $env['HTTP_COOKIE'] . "
@@ -2502,7 +2502,7 @@ function show_start($start_time)
 		fwrite($html_file, "<table>\n");
 	}
 
-	echo "TIME START " . date('Y-m-d H:i:s', $start_time) . "\n=====================================================================\n";
+	echo "TIME START " , date('Y-m-d H:i:s', $start_time) , "\n=====================================================================\n";
 }
 
 function show_end($end_time)
@@ -2514,7 +2514,7 @@ function show_end($end_time)
 		fwrite($html_file, "<h2>Time End: " . date('Y-m-d H:i:s', $end_time) . "</h2>\n");
 	}
 
-	echo "=====================================================================\nTIME END " . date('Y-m-d H:i:s', $end_time) . "\n";
+	echo "=====================================================================\nTIME END " , date('Y-m-d H:i:s', $end_time) , "\n";
 }
 
 function show_summary()
