@@ -391,10 +391,10 @@ class SaeTOAuthV2 {
 			echo "=====post data======\r\n";
 			var_dump($postfields);
 
-			echo '=====info====='."\r\n";
+			echo '=====info=====',"\r\n";
 			print_r( curl_getinfo($ci) );
 
-			echo '=====$response====='."\r\n";
+			echo '=====$response=====',"\r\n";
 			print_r( $response );
 		}
 		curl_close ($ci);

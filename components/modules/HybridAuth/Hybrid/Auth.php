@@ -357,7 +357,7 @@ class Hybrid_Auth
 			echo '<html>';
 			echo '<head>';
 			echo '<script type="text/javascript">';
-			echo 'function redirect(){ window.top.location.href="' . $url . '"; }';
+			echo 'function redirect(){ window.top.location.href="' , $url , '"; }';
 			echo '</script>';
 			echo '</head>';
 			echo '<body onload="redirect()">';
