@@ -84,7 +84,10 @@ class MySQLi extends _Abstract {
 		$return = @$this->instance->multi_query($query);
 		/** @noinspection LoopWhichDoesNotLoopInspection */
 		while ($this->instance->more_results() && $this->instance->next_result()) {
-			//Nothing, just finish multi_query
+			$result = $this->instance->use_result();
+			if (is_object($result)) {
+				$result->free();
+			}
 		}
 		return $return;
 	}

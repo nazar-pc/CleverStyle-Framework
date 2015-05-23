@@ -11,23 +11,6 @@ Language::instance();
 Index::instance();
 shutdown_function(true);
 shutdown_function();
-// Travis-CI have randomly occurring error in this test, let's dump some data if error happens
-$data = User::instance()->get(
-	[
-		'username',
-		'login',
-		'reg_date',
-		'status',
-		'block_until'
-	],
-	2
-);
-if ($data['status'] == User::STATUS_INACTIVE) {
-	var_dump($data);
-	var_dump(DB::instance());
-	var_dump(file_get_contents(CACHE.'/users/2'));
-	var_dump(file_get_contents(CACHE.'/users/columns'));
-}
 ?>
 --EXPECTF--
 <!doctype html>
