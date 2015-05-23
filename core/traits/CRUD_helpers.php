@@ -17,7 +17,9 @@ trait CRUD_helpers {
 	/**
 	 * Generic search
 	 *
-	 * @param mixed[] $search_parameters Array in form [attribute => value];
+	 * @param mixed[] $search_parameters Array in form [attribute => value];<br>
+	 *                                   Or [attribute => [value1, value2, value3]];<br>
+	 *                                   Or [attribute => [from => a, to => b]];<br>
 	 *                                   if `total_count => 1` element is present - total number of found rows will be returned instead of rows themselves
 	 * @param int     $page
 	 * @param int     $count
@@ -33,9 +35,32 @@ trait CRUD_helpers {
 		$where  = [];
 		$params = [];
 		foreach ($search_parameters as $key => $details) {
-			if (isset($this->data_model[$key])) {
+			if (!isset($this->data_model[$key])) {
+				continue;
+			}
+			if (!is_scalar($details)) {
 				$where[]  = "`$key` = '%s'";
 				$params[] = $details;
+			} elseif (is_array($details) && $details) {
+				if (is_array_indexed($details)) {
+					$where_tmp = [];
+					foreach ($details as $d) {
+						/** @noinspection DisconnectedForeachInstructionInspection */
+						$where_tmp[] = "`$key` = '%s'";
+						$params[]    = $d;
+					}
+					$where[] = '('.implode(' OR ', $where_tmp).')';
+					unset($where_tmp, $d);
+					continue;
+				}
+				if (isset($details['from'])) {
+					$where[]  = "`$key` => '%s'";
+					$params[] = $details['from'];
+				}
+				if (isset($details['to'])) {
+					$where[]  = "`$key` <= '%s'";
+					$params[] = $details['to'];
+				}
 			}
 		}
 		unset($key, $details);
@@ -49,20 +74,19 @@ trait CRUD_helpers {
 					$params
 				]
 			);
-		} else {
-			$params[] = ($page - 1) * $count;
-			$params[] = $count;
-			$asc      = $asc ? 'ASC' : 'DESC';
-			return $this->db()->qfas(
-				[
-					"SELECT `id`
-					FROM `$this->table`
-					$where
-					ORDER BY `$order_by` $asc
-					LIMIT %d, %d",
-					$params
-				]
-			);
 		}
+		$params[] = ($page - 1) * $count;
+		$params[] = $count;
+		$asc      = $asc ? 'ASC' : 'DESC';
+		return $this->db()->qfas(
+			[
+				"SELECT `id`
+				FROM `$this->table`
+				$where
+				ORDER BY `$order_by` $asc
+				LIMIT %d, %d",
+				$params
+			]
+		);
 	}
 }
