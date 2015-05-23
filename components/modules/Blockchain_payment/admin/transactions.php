@@ -130,9 +130,9 @@ $Page->content(
 							h::br().
 							"$L->destination_address: ".
 							h::{'a[target=_blank]'}(
-								$transaction['destination'],
+								$transaction['destination_address'],
 								[
-									'href' => "https://blockchain.info/address/$transaction[destination]"
+									'href' => "https://blockchain.info/address/$transaction[destination_address]"
 								]
 							).
 							" $L->intermediate_address: ".
