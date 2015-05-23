@@ -56,7 +56,7 @@ trait CRUD_helpers {
 					"SELECT COUNT(`t`.`id`)
 					FROM `$this->table` AS `t`
 					$where",
-					$where_params
+					array_merge($join_params, $where_params)
 				]
 			);
 		}
@@ -71,7 +71,7 @@ trait CRUD_helpers {
 				$where
 				ORDER BY `t`.`$order_by` $asc
 				LIMIT %d, %d",
-				$where_params
+				array_merge($join_params, $where_params)
 			]
 		);
 	}
