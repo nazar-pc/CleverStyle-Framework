@@ -66,20 +66,12 @@ class Controller {
 			return;
 		} elseif ($data['status'] == User::STATUS_INACTIVE) {
 			$Page->warning(
-				h::tr(
-					[
-						$L->account_disabled
-					]
-				)
+				$L->account_disabled
 			);
 			return;
 		} elseif ($data['block_until'] > TIME) {
 			$Page->warning(
-				h::tr(
-					[
-						$L->account_temporarily_blocked
-					]
-				)
+				$L->account_temporarily_blocked
 			);
 		}
 		$name = $data['username'] ? $data['username'].($data['username'] != $data['login'] ? ' aka '.$data['login'] : '') : $data['login'];
