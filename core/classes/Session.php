@@ -191,7 +191,7 @@ class Session {
 			(
 				$bot['email'] &&
 				(
-					$email == $bot['email'] ||
+					$email === $bot['email'] ||
 					_preg_match($bot['email'], $email)
 				)
 			);
@@ -403,13 +403,13 @@ class Session {
 		 */
 		return
 			$session_data['expire'] > time() &&
-			$session_data['user_agent'] == $_SERVER->user_agent &&
+			$session_data['user_agent'] === $_SERVER->user_agent &&
 			$this->is_user_active($session_data['user']) &&
 			(
 				!Config::instance()->core['remember_user_ip'] ||
 				(
-					$session_data['remote_addr'] == ip2hex($_SERVER->remote_addr) &&
-					$session_data['ip'] == ip2hex($_SERVER->ip)
+					$session_data['remote_addr'] === ip2hex($_SERVER->remote_addr) &&
+					$session_data['ip'] === ip2hex($_SERVER->ip)
 				)
 			);
 	}
