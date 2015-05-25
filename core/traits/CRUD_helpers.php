@@ -48,13 +48,29 @@ trait CRUD_helpers {
 				$this->search_conditions('t', $key, $details, $where, $where_params);
 			}
 		}
-		unset($key, $details);
+		return $this->search_do('t', @$search_parameters['total_count'], $where, $where_params, $joins, $join_params, $page, $count, $order_by, $asc);
+	}
+	/**
+	 * @param string   $table_alias
+	 * @param bool     $total_count
+	 * @param string[] $where
+	 * @param array    $where_params
+	 * @param string   $joins
+	 * @param array    $join_params
+	 * @param int      $page
+	 * @param int      $count
+	 * @param string   $order_by
+	 * @param bool     $asc
+	 *
+	 * @return false|int|\int[]|string|\string[]
+	 */
+	private function search_do ($table_alias, $total_count, $where, $where_params, $joins, $join_params, $page, $count, $order_by, $asc) {
 		$where = $where ? 'WHERE '.implode(' AND ', $where) : '';
-		if (isset($search_parameters['total_count']) && $search_parameters['total_count']) {
+		if ($total_count) {
 			return $this->db()->qfs(
 				[
-					"SELECT COUNT(`t`.`id`)
-					FROM `$this->table` AS `t`
+					"SELECT COUNT(`$table_alias`.`id`)
+					FROM `$this->table` AS `$table_alias`
 					$where",
 					array_merge($join_params, $where_params)
 				]
@@ -66,8 +82,8 @@ trait CRUD_helpers {
 		$asc            = $asc ? 'ASC' : 'DESC';
 		return $this->db()->qfas(
 			[
-				"SELECT `t`.`id`
-				FROM `$this->table` AS `t`
+				"SELECT `$table_alias`.`id`
+				FROM `$this->table` AS `$table_alias`
 				$joins
 				$where
 				ORDER BY $order_by $asc
@@ -77,14 +93,14 @@ trait CRUD_helpers {
 		);
 	}
 	/**
-	 * @param string $table_alias
-	 * @param string $key
-	 * @param array  $details
-	 * @param array  $where
-	 * @param array  $where_params
+	 * @param string   $table_alias
+	 * @param string   $key
+	 * @param array    $details
+	 * @param string[] $where
+	 * @param array    $where_params
 	 */
 	private function search_conditions ($table_alias, $key, $details, &$where, &$where_params) {
-		if (!is_scalar($details)) {
+		if (is_scalar($details)) {
 			$where[]        = "`$table_alias`.`$key` = '%s'";
 			$where_params[] = $details;
 		} elseif (is_array($details) && $details) {

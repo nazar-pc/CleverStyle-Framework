@@ -13,7 +13,7 @@ use
 	cs\Event,
 	cs\Language,
 	cs\User,
-	cs\CRUD,
+	cs\CRUD_helpers,
 	cs\Singleton;
 
 /**
@@ -47,8 +47,10 @@ use
  *  ]</code>
  */
 class Items {
+	use CRUD_helpers {
+		search as crud_search;
+	}
 	use
-		CRUD,
 		Singleton;
 
 	const DEFAULT_IMAGE = 'components/modules/Shop/includes/img/no-image.svg';
@@ -347,35 +349,7 @@ class Items {
 				}
 			}
 		}
-		unset($key, $details, $join_index, $field);
-		$where = $where ? 'WHERE '.implode(' AND ', $where) : '';
-		if (@$search_parameters['total_count']) {
-			return $this->db()->qfs(
-				[
-					"SELECT COUNT(DISTINCT `i`.`id`)
-					FROM `$this->table` AS `i`
-					$joins
-					$where",
-					array_merge($join_params, $where_params)
-				]
-			);
-		} else {
-			$where_params[] = ($page - 1) * $count;
-			$where_params[] = $count;
-			$asc            = $asc ? 'ASC' : 'DESC';
-			return $this->db()->qfas(
-				[
-					"SELECT `i`.`id`
-					FROM `$this->table` AS `i`
-					$joins
-					$where
-					GROUP BY `i`.`id`
-					ORDER BY `i`.`$order_by` $asc
-					LIMIT %d, %d",
-					array_merge($join_params, $where_params)
-				]
-			);
-		}
+		return $this->search_do('i', @$search_parameters['total_count'], $where, $where_params, $joins, $join_params, $page, $count, $order_by, $asc);
 	}
 	/**
 	 * @param int $type
