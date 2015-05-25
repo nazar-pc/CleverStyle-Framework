@@ -25,20 +25,31 @@ abstract class _Abstract {
 	 *
 	 * @see get_files_list()
 	 *
-	 * @param    string      $dir
-	 * @param    bool|string $mask
-	 * @param    string      $mode
-	 * @param    bool|string $prefix_path
-	 * @param    bool        $subfolders
-	 * @param    bool        $sort
-	 * @param    bool|string $exclusion
-	 * @param    bool        $system_files
-	 * @param    callable    $apply
-	 * @param    int|null    $limit
+	 * @param    string        $dir
+	 * @param    bool|string   $mask
+	 * @param    string        $mode
+	 * @param    bool|string   $prefix_path
+	 * @param    bool          $subfolders
+	 * @param    bool          $sort
+	 * @param    bool|string   $exclusion
+	 * @param    bool          $system_files
+	 * @param    callable|null $apply
+	 * @param    int|null      $limit
 	 *
 	 * @return    array|false
 	 */
-	abstract function get_files_list ($dir, $mask = false, $mode = 'f', $prefix_path = false, $subfolders = false, $sort = false, $exclusion = false, $system_files = false, $apply = null, $limit = null);
+	abstract function get_files_list (
+		$dir,
+		$mask = false,
+		$mode = 'f',
+		$prefix_path = false,
+		$subfolders = false,
+		$sort = false,
+		$exclusion = false,
+		$system_files = false,
+		$apply = null,
+		$limit = null
+	);
 	/**
 	 * Reads entire file into an array
 	 *
@@ -46,8 +57,8 @@ abstract class _Abstract {
 	 *
 	 * @see file()
 	 *
-	 * @param string $filename
-	 * @param int    $flags
+	 * @param string   $filename
+	 * @param int|null $flags
 	 *
 	 * @return array|false
 	 */
@@ -59,8 +70,8 @@ abstract class _Abstract {
 	 *
 	 * @see file_get_contents()
 	 *
-	 * @param string $filename
-	 * @param int    $flags
+	 * @param string   $filename
+	 * @param int|null $flags
 	 *
 	 * @return false|string
 	 */
@@ -72,9 +83,9 @@ abstract class _Abstract {
 	 *
 	 * @see file_put_contents()
 	 *
-	 * @param string $filename
-	 * @param string $data
-	 * @param int    $flags
+	 * @param string   $filename
+	 * @param string   $data
+	 * @param int|null $flags
 	 *
 	 * @return false|int
 	 */

@@ -106,6 +106,9 @@ class OAuth2 {
 	 * @return array|false
 	 */
 	function get_client ($id) {
+		if (!is_md5($id)) {
+			return false;
+		}
 		return $this->cache->get($id, function () use ($id) {
 			return $this->db()->qf([
 				"SELECT *

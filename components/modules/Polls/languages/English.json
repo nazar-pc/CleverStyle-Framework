@@ -6,6 +6,7 @@
 	"polls_add"                     : "Add",
 	"polls_edit"                    : "Edit",
 	"polls_delete"                  : "Delete",
+	"polls_yes"                     : "Yes",
 	"polls_new_poll"                : "New poll",
 	"polls_poll_title"              : "Poll title",
 	"polls_answers_one_per_line"    : "Answers, one per line",

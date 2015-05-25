@@ -1,17 +1,16 @@
 <?php
 /**
- * @package        Polls
- * @category       modules
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2014-2015, Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package   Polls
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2014-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs\modules\Polls;
 
 use
 	cs\Cache\Prefix,
 	cs\Config,
-	cs\Text,
 	cs\CRUD,
 	cs\Singleton;
 
@@ -20,6 +19,7 @@ use
  */
 class Options {
 	use
+		Common_actions,
 		CRUD,
 		Singleton;
 
@@ -27,16 +27,17 @@ class Options {
 	 * @var Prefix
 	 */
 	protected $cache;
-	protected $table      = '[prefix]polls_options';
-	protected $data_model = [
+	protected $data_model          = [
 		'id'    => 'int',
 		'poll'  => 'int',
-		'title' => 'string',
+		'title' => 'ml:string',
 		'votes' => 'int'
 	];
+	protected $table               = '[prefix]polls_options';
+	protected $data_model_ml_group = 'Polls/options';
 
 	protected function construct () {
-		$this->cache = new Prefix('polls/options');
+		$this->cache = new Prefix('Polls/options');
 	}
 	protected function cdb () {
 		return Config::instance()->module('Polls')->db('polls');
@@ -50,12 +51,8 @@ class Options {
 	 * @return false|int
 	 */
 	function add ($poll, $title) {
-		$id = $this->create([
-			$poll,
-			$title,
-			0
-		]);
-		if ($id && $this->set($id, $poll, $title)) {
+		$id = $this->create([$poll, $title, 0]);
+		if ($id) {
 			unset($this->cache->{"poll/$poll"});
 			return $id;
 		}
@@ -69,17 +66,7 @@ class Options {
 	 * @return array|array[]|false
 	 */
 	function get ($id) {
-		if (is_array($id)) {
-			foreach ($id as &$i) {
-				$i = $this->get($i);;
-			}
-			return $id;
-		}
-		return $this->cache->get($id, function () use ($id) {
-			$data          = $this->read($id);
-			$data['title'] = $this->ml_process($data['title']);
-			return $data;
-		});
+		return $this->get_common($id);
 	}
 	/**
 	 * Set option
@@ -92,19 +79,28 @@ class Options {
 	 */
 	function set ($id, $poll, $title) {
 		$id   = (int)$id;
-		$poll = (int)$poll;
 		$data = $this->get($id);
-		if ($this->update([
-			$id,
-			$poll,
-			$this->ml_set("Polls/polls/$poll/options/title", $id, $title),
-			$data['votes']
-		])
-		) {
+		if ($this->update([$id, $poll, $title, $data['votes']])) {
 			unset($this->cache->$id);
 			return true;
 		}
 		return false;
+	}
+	/**
+	 * Del option
+	 *
+	 * @param int|int[] $id
+	 *
+	 * @return bool
+	 */
+	function del ($id) {
+		$return = $this->delete($id);
+		if ($return) {
+			foreach (_int((array)$id) as $i) {
+				unset($this->cache->$i);
+			}
+		}
+		return $return;
 	}
 	/**
 	 * Update count of votes
@@ -142,18 +138,15 @@ class Options {
 	 */
 	function get_all_for_poll ($poll) {
 		$poll = (int)$poll;
-		return $this->cache->get("poll/$poll", function () use ($poll) {
-			return $this->db()->qfas(
-				"SELECT `id`
-				FROM `$this->table`
-				WHERE `poll` = $poll"
-			);
-		});
-	}
-	private function ml_process ($text, $auto_translation = false) {
-		return Text::instance()->process($this->cdb(), $text, $auto_translation, true);
-	}
-	private function ml_set ($group, $label, $text) {
-		return Text::instance()->set($this->cdb(), $group, $label, $text);
+		return $this->cache->get(
+			"poll/$poll",
+			function () use ($poll) {
+				return $this->db()->qfas(
+					"SELECT `id`
+					FROM `$this->table`
+					WHERE `poll` = $poll"
+				);
+			}
+		);
 	}
 }

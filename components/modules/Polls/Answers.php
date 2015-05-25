@@ -1,10 +1,10 @@
 <?php
 /**
- * @package        Polls
- * @category       modules
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2014-2015, Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package   Polls
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2014-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs\modules\Polls;
 
@@ -22,12 +22,12 @@ class Answers {
 		CRUD,
 		Singleton;
 
-	protected $table      = '[prefix]polls_options_answers';
 	protected $data_model = [
 		'id'     => 'int',
 		'option' => 'int',
 		'user'   => 'int'
 	];
+	protected $table      = '[prefix]polls_options_answers';
 
 	protected function cdb () {
 		return Config::instance()->module('Polls')->db('polls');
@@ -45,11 +45,7 @@ class Answers {
 		if ($User->guest()) {
 			return false;
 		}
-		$result = $this->create([
-			$poll,
-			$option,
-			$User->id
-		]);
+		$result = $this->create([$poll, $option, $User->id]);
 		if ($result) {
 			Options::instance()->update_votes($option);
 			return true;
@@ -70,15 +66,17 @@ class Answers {
 			}
 			return $poll;
 		}
-		return $this->db()->qfs([
-			"SELECT `option`
-			FROM `$this->table`
-			WHERE
-				`id`	= '%s' AND
-				`user`	= '%s'
-			LIMIT 1",
-			$poll,
-			User::instance()->id
-		]);
+		return $this->db()->qfs(
+			[
+				"SELECT `option`
+				FROM `$this->table`
+				WHERE
+					`id`	= '%s' AND
+					`user`	= '%s'
+				LIMIT 1",
+				$poll,
+				User::instance()->id
+			]
+		);
 	}
 }

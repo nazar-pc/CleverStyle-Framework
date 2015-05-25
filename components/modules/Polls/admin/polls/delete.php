@@ -15,9 +15,11 @@ use
 	cs\Route,
 	h;
 
-$Index = Index::instance();
-$L     = new Prefix('polls_');
-$poll  = Polls::instance()->get(Route::instance()->ids[0]);
+$Index                     = Index::instance();
+$Index->buttons            = false;
+$Index->cancel_button_back = true;
+$L                         = new Prefix('polls_');
+$poll                      = Polls::instance()->get(Route::instance()->ids[0]);
 Page::instance()->title(
 	$L->deleting_of_poll($poll['title'])
 );

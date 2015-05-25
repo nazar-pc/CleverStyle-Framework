@@ -34,6 +34,6 @@ if (isset($_POST['add'])) {
 	$Index->save(true);
 } elseif (isset($_POST['delete'])) {
 	$Index->save(
-		$Polls->del($$_POST['delete'])
+		$Polls->del($_POST['delete'])
 	);
 }
