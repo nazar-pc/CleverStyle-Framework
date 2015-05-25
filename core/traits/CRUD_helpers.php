@@ -62,6 +62,7 @@ trait CRUD_helpers {
 		}
 		$where_params[] = ($page - 1) * $count;
 		$where_params[] = $count;
+		$order_by       = $this->search_order_by($order_by, $joins, $join_index);
 		$asc            = $asc ? 'ASC' : 'DESC';
 		return $this->db()->qfas(
 			[
@@ -69,7 +70,7 @@ trait CRUD_helpers {
 				FROM `$this->table` AS `t`
 				$joins
 				$where
-				ORDER BY `t`.`$order_by` $asc
+				ORDER BY $order_by $asc
 				LIMIT %d, %d",
 				array_merge($join_params, $where_params)
 			]
@@ -141,5 +142,44 @@ trait CRUD_helpers {
 					`j$join_index`.`lang`	= ''
 				)";
 		}
+	}
+	/**
+	 * @param string $order_by
+	 * @param string $joins
+	 * @param int    $join_index
+	 *
+	 * @return string
+	 */
+	private function search_order_by ($order_by, &$joins, &$join_index) {
+		$order_by = explode(':', $order_by);
+		if (!isset($this->data_model[$order_by[0]])) {
+			/**
+			 * Non-existing field
+			 */
+			$order_by = ['id'];
+		} elseif (isset($order_by[1])) {
+			/**
+			 * Non-existing field in joined table
+			 */
+			if (!isset($this->data_model[$order_by[0]]['data_model'][$order_by[1]])) {
+				$order_by = ['id'];
+			}
+		} elseif (isset($this->data_model[$order_by[0]]['data_model'])) {
+			/**
+			 * Default field in joined table
+			 */
+			$order_by[1] = array_keys($this->data_model[$order_by[0]]['data_model'])[1];
+		}
+		if (isset($order_by[1])) {
+			++$join_index;
+			$joins .=
+				"INNER JOIN `{$this->table}_$order_by[0]` AS `j$join_index`
+				ON
+					`t`.`id`	= `j$join_index`.`id`";
+			$order_by = "`j$join_index`.`$order_by[1]`";
+		} else {
+			$order_by = "`t`.`$order_by[0]`";
+		}
+		return $order_by;
 	}
 }
