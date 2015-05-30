@@ -28,6 +28,7 @@ $on_master = in_array(
 $tag = exec('git describe --tags --exact-match HEAD 2>/dev/null');
 if (!$on_master && !$tag) {
 	echo 'Distributive is uploaded only when on master branch or releases';
+	return;
 }
 echo "Building packages...\n";
 ob_start();
