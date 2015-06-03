@@ -1,4 +1,4 @@
-/* http://prismjs.com/download.html?themes=prism-okaidia&languages=markup+twig+css+css-extras+clike+eiffel+javascript+java+php+php-extras+coffeescript+scss+bash+c+cpp+python+julia+sql+groovy+http+ruby+rip+gherkin+csharp+go+nsis+aspnet+scala+haskell+swift+objectivec+autohotkey+ini+latex+apacheconf+git+scheme+nasm+perl+handlebars+matlab+less+r+lolcode+fortran+erlang+haml+jade+pascal+applescript+rust+dart+powershell+smarty+actionscript+markdown&plugins=line-highlight+line-numbers+file-highlight */
+/* http://prismjs.com/download.html?themes=prism-okaidia&languages=markup+css+clike+javascript+actionscript+apacheconf+applescript+aspnet+autohotkey+bash+c+csharp+cpp+coffeescript+css-extras+dart+eiffel+erlang+fortran+gherkin+git+go+groovy+haml+handlebars+haskell+http+ini+jade+java+julia+latex+less+lolcode+markdown+matlab+nasm+nsis+objectivec+pascal+perl+php+php-extras+powershell+python+r+rip+ruby+rust+scss+scala+scheme+smarty+sql+swift+twig&plugins=line-highlight+line-numbers+file-highlight */
 /**
  * okaidia theme for JavaScript, CSS and HTML
  * Loosely based on Monokai textmate theme by http://www.monokai.nl/
@@ -93,7 +93,8 @@ pre[class*="language-"] {
 }
 
 .token.atrule,
-.token.attr-value {
+.token.attr-value,
+.token.function {
 	color: #e6db74;
 }
 
@@ -135,9 +136,9 @@ pre[data-line] {
 	background: -webkit-linear-gradient(left, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
 	background: -o-linear-gradient(left, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
 	background: linear-gradient(left, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
-	
+
 	pointer-events: none;
-	
+
 	line-height: inherit;
 	white-space: pre;
 }
@@ -159,7 +160,7 @@ pre[data-line] {
 		text-shadow: none;
 		box-shadow: 0 1px white;
 	}
-	
+
 	.line-highlight[data-end]:after {
 		content: attr(data-end);
 		top: auto;
