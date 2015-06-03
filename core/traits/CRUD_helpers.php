@@ -43,7 +43,7 @@ trait CRUD_helpers {
 				continue;
 			}
 			if (isset($this->data_model[$key]['data_model'])) {
-				$this->search_conditions_join_table($key, $details, $joins, $join_params, $join_index);
+				$this->search_conditions_join_table('t', $key, $details, $joins, $join_params, $join_index);
 			} else {
 				$this->search_conditions('t', $key, $details, $where, $where_params);
 			}
@@ -78,7 +78,7 @@ trait CRUD_helpers {
 		}
 		$where_params[] = ($page - 1) * $count;
 		$where_params[] = $count;
-		$order_by       = $this->search_order_by($order_by, $joins, $join_index);
+		$order_by       = $this->search_order_by($table_alias, $order_by, $joins, $join_index);
 		$asc            = $asc ? 'ASC' : 'DESC';
 		return $this->db()->qfas(
 			[
@@ -125,13 +125,14 @@ trait CRUD_helpers {
 		}
 	}
 	/**
+	 * @param string $table_alias
 	 * @param string $table
 	 * @param array  $details
 	 * @param string $joins
 	 * @param array  $join_params
 	 * @param int    $join_index
 	 */
-	private function search_conditions_join_table ($table, $details, &$joins, &$join_params, &$join_index) {
+	private function search_conditions_join_table ($table_alias, $table, $details, &$joins, &$join_params, &$join_index) {
 		$data_model    = $this->data_model[$table];
 		$join_params[] = $table;
 		if (is_scalar($details)) {
@@ -143,7 +144,7 @@ trait CRUD_helpers {
 		$joins .=
 			"INNER JOIN `{$this->table}_$table` AS `j$join_index`
 			ON
-				`t`.`id`	= `j$join_index`.`id`";
+				`$table_alias`.`id`	= `j$join_index`.`id`";
 		foreach ($details as $field => $value) {
 			$where_tmp = [];
 			$this->search_conditions("j$join_index", $field, $value, $where_tmp, $join_params);
@@ -160,13 +161,14 @@ trait CRUD_helpers {
 		}
 	}
 	/**
+	 * @param string $table_alias
 	 * @param string $order_by
 	 * @param string $joins
 	 * @param int    $join_index
 	 *
 	 * @return string
 	 */
-	private function search_order_by ($order_by, &$joins, &$join_index) {
+	private function search_order_by ($table_alias, $order_by, &$joins, &$join_index) {
 		$order_by = explode(':', $order_by);
 		if (!isset($this->data_model[$order_by[0]])) {
 			/**
@@ -191,10 +193,10 @@ trait CRUD_helpers {
 			$joins .=
 				"INNER JOIN `{$this->table}_$order_by[0]` AS `j$join_index`
 				ON
-					`t`.`id`	= `j$join_index`.`id`";
+					`$table_alias`.`id`	= `j$join_index`.`id`";
 			$order_by = "`j$join_index`.`$order_by[1]`";
 		} else {
-			$order_by = "`t`.`$order_by[0]`";
+			$order_by = "`$table_alias`.`$order_by[0]`";
 		}
 		return $order_by;
 	}
