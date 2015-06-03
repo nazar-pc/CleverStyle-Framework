@@ -200,7 +200,7 @@ trait Data_model_processing {
 	/**
 	 * Find URLs (any actually) in attributes values (wrapped with `"`, other quotes are not supported) or if field itself is URL
 	 *
-	 * @param string[] $data
+	 * @param array $data
 	 *
 	 * @return string[]
 	 */
