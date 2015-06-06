@@ -600,3 +600,87 @@ Possible partial compatibility breaking (very unlikely, but still possible):
 * Dropped support for 2-level arrays in `\cs\DB\_Abstract::q()` (very unlikely someone used this construction since it was not documented and looks too complex)
 
 Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
+
+# 2.43.0+build-1113: Write less, do more
+
+The main feature of this release is further extension of already functional `\cs\CRUD` trait. Now in addition to simple CRUD operations, files tags handling (was improved also), multilingual strings handling even more advanced feature was added: joined tables.
+Joined tables allow to make CRUD operations on tables that are tightly connected to main table, such as:
+* post tags
+* shop item attributes
+* shop item images
+
+Now you can manage things of such kind automatically together with fields from main table just by specifying all such tables in common data model, read [updated documentation](https://github.com/nazar-pc/CleverStyle-CMS/wiki/CRUD) for more details of implementation.
+Obviously, `\cs\CRUD_helpers::search()` supports joined tables as well, allowing creation of most common queries even including joined tables very easily and naturally.
+
+Second important thing is basically rewrite of HybridAuth integration, now code is much simpler, better structured and reliable. Also some small fixes and new features were introduced.
+
+There are also various other fixes and fresh upstream versions of third-party components, enjoy!
+
+New components:
+* Picturefill plugin added
+
+New features:
+* Support for nested arrays in `\cs\CRUD::find_urls()` method
+* `\cs\CRUD` can now handle even more work with added joined tables support
+* Extended search options (intervals and multiple options) in `\cs\CRUD_helpers` trait
+* `search` method in `\cs\CRUD_helpers` trait now supports joined tables
+* `search` method in `\cs\CRUD_helpers` trait now supports joined tables in `$order_by` using `:`
+
+Updates:
+* New upstream version of UIkit
+* New upstream version of WebComponents.js
+* New upstream version of PHPMailer
+* New upstream version of jsSHA
+* New upstream version of html5sortable
+* New upstream version of fotorama
+* New upstream build (no exact version) of Prism
+* New upstream build of Composer
+* New upstream version of TinyMCE
+* New upstream version of Plupload
+
+Fixes and small improvements:
+* FileSystem cache doesn't support size limitation anymore - it caused huge performance hit and made code much more complex
+* Also corresponding cache-related low-level error messages now untranslated in order to be properly shown in log file
+* Blogs: Drop posts editing from administration, it just duplicates user-side interface where administrator already have access
+* Code for rendering permissions form decoupled into separate method
+* HybridAuth: `prepare.php` renamed into `Controller.php` into `::index()` method, no code logic changes
+* HybridAuth: `\cs\modules\HybridAuth\Social_integration` class added, DB queries unified and moved there from controller
+* HybridAuth: Session setting and contacts updating code decoupled into separate method because it was duplicated many times
+* HybridAuth: Data updating decoupled into separate method because it is even more common
+* HybridAuth: Some refactoring and rearrangement - check for user existence first before registration
+* HybridAuth: Email sending code decoupled into separate method
+* HybridAuth: Splitted long method into few separate, `goto` replaced by separate method, code logic shouldn't be affected
+* HybridAuth: Redirect code decoupled into separate method, some comments reformatting
+* HybridAuth: More tweaks, less arguments in methods
+* HybridAuth: Simplification and generalization in merge confirmation
+* HybridAuth: More simplification regarding adapter handling, profile information and contacts update
+* HybridAuth: Simplifications, less plain functions
+* Do not use `$_POST['login']` directly in `\cs\User` anymore, not likely to break anything, but still possible
+* HybridAuth: More simplification - no need to store HybridAuth data in user's session
+* HybridAuth: More common code decoupled
+* HybridAuth: Allow to sign in, but not register or merge account if registration is disabled on system level
+* Simplification in `\cs\CRUD`
+* Some code rearrangement in `\cs\CRUD`
+* Data model processing part of `\cs\CRUD` trait decoupled into separate trait
+* Support for language fallback in `\cs\CRUD` when using joined tables
+* Shop: `\cs\modules\Shop\Items` now uses latest features of `\cs\CRUD` to reduce boilerplate code and total code complexity
+* Fix files tags setting for complex data models
+* Make markup a bit nicer)
+* Fix for `Commands out of sync; you can't run this command now` error which happened in Travis CI tests
+* `search_do()` method decoupled from `search()` method in `\cs\CRUD_helpers` trait
+* Shop: New `search_do()` method is now used by `\cs\modules\Shop\Items`
+* Simplifications in Polls module using some new CRUD features
+* Small other fixes
+* Docker shield added
+* Translations updates
+* Fix for building and uploading packages on non-master branch
+* Fix for `\cs\CRUD_helpers` methods sometimes didn't honour `$table_alias`
+* Shop: Items search fix in Shop module
+
+Deprecations:
+* None
+
+Possible partial compatibility breaking (very unlikely, but still possible):
+* `$_POST['login']` is not used directly in `\cs\User` anymore, not likely to break anything, but still possible
+
+Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
