@@ -309,8 +309,8 @@ class Items {
 						`i`.`id`					= `a$join_index`.`id` AND
 						`a$join_index`.`attribute`	= '%s' AND
 						(
-							`a$join_index`.`id`.`lang`	= '$L->clang' OR
-							`a$join_index`.`id`.`lang`	= ''
+							`a$join_index`.`lang`	= '$L->clang' OR
+							`a$join_index`.`lang`	= ''
 						)";
 				if (is_array($details)) {
 					if (isset($details['from']) || isset($details['to'])) {
