@@ -59,7 +59,7 @@ function install_form () {
 			).
 			h::{'tr.expert td'}(
 				'Database charset:',
-				h::{'input[name=db_charset][value=utf8]'}()
+				h::{'input[name=db_charset][value=utf8mb4]'}()
 			).
 			h::{'tr td'}(
 				'Timezone:',

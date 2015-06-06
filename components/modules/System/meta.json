@@ -1,7 +1,7 @@
 {
 	"package"             : "System",
 	"category"            : "modules",
-	"version"             : "2.43.0+build-1113",
+	"version"             : "2.44.0+build-1114",
 	"description"         : "Base system module of CleverStyle CMS",
 	"author"              : "Nazar Mokrynskyi",
 	"website"             : "cleverstyle.org/cms",
@@ -9,12 +9,13 @@
 	"update_from_version" : "1.110",
 	"update_versions"     : [
 		"2.5",
-		"2.29"
+		"2.29",
+		"2.44"
 	],
 	"db"                  : [
 		"keys",
-		"users",
-		"texts"
+		"texts",
+		"users"
 	],
 	"db_support"          : [
 		"MySQLi"

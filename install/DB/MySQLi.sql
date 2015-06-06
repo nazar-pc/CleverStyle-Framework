@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS `[prefix]config` (
   `components` mediumtext NOT NULL,
   `replace` mediumtext NOT NULL,
   `routing` mediumtext NOT NULL,
-  PRIMARY KEY (`domain`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Settings';
+  PRIMARY KEY (`domain`(191))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='Settings';
 
 CREATE TABLE IF NOT EXISTS `[prefix]groups` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT COMMENT 'WARNING: Never delete first 3 groups!',
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]groups` (
   `description` text NOT NULL,
   `data` mediumtext NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 INSERT INTO `[prefix]groups` (`title`, `description`) VALUES ('Administrators', 'Administrators'), ('Users', 'Users'), ('Bots', 'Bots');
 
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]groups_permissions` (
   `value` tinyint(1) unsigned NOT NULL,
   KEY `id` (`id`),
   KEY `permission` (`permission`,`value`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 INSERT INTO `[prefix]groups_permissions` (`id`, `permission`, `value`) VALUES (1, 2, 1), (2, 2, 0), (3, 2, 0);
 
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]keys` (
   PRIMARY KEY (`id`),
   KEY `key` (`key`(32)),
   KEY `expire` (`expire`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Temporary keys';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='Temporary keys';
 
 CREATE TABLE IF NOT EXISTS `[prefix]sign_ins` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]sign_ins` (
   `ip` varchar(32) NOT NULL,
   PRIMARY KEY (`expire`,`login_hash`,`ip`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]permissions` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]permissions` (
   PRIMARY KEY (`id`),
   KEY `label` (`label`(255)),
   KEY `group` (`group`(255))
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 INSERT INTO `[prefix]permissions` (`label`, `group`) VALUES ('index', 'admin/System'), ('index', 'api/System');
 
@@ -65,20 +65,20 @@ CREATE TABLE IF NOT EXISTS `[prefix]sessions` (
   `created` bigint(20) unsigned NOT NULL,
   `expire` bigint(20) unsigned NOT NULL,
   `user_agent` varchar(255) NOT NULL,
-  `remote_addr` varchar(32) COLLATE utf8_unicode_ci NOT NULL COMMENT 'hex value, obtained by function ip2hex()',
-  `ip` varchar(32) COLLATE utf8_unicode_ci NOT NULL COMMENT 'hex value, obtained by function ip2hex()',
+  `remote_addr` varchar(32) NOT NULL COMMENT 'hex value, obtained by function ip2hex()',
+  `ip` varchar(32) NOT NULL COMMENT 'hex value, obtained by function ip2hex()',
   `data` mediumtext NOT NULL,
-  PRIMARY KEY (`id`,`expire`,`user_agent`,`remote_addr`,`ip`),
+  PRIMARY KEY (`id`(32),`expire`,`user_agent`(191),`remote_addr`(32),`ip`(32)),
   KEY `user` (`user`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]texts` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `label` varchar(1024) NOT NULL,
   `group` varchar(1024) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `label` (`label`(255),`group`(255))
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+  KEY `label` (`label`(191),`group`(191))
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]texts_data` (
   `id` bigint(20) NOT NULL COMMENT 'id from texts table',
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]texts_data` (
   PRIMARY KEY (`id`,`lang`),
   KEY `id_` (`id_`),
   KEY `text_md5` (`text_md5`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'WARNING: Never delete first 2 users!',
@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]users` (
   KEY `status` (`status`),
   KEY `last_sign_in` (`last_sign_in`),
   KEY `last_online` (`last_online`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 INSERT INTO `[prefix]users` (`login`, `login_hash`, `status`) VALUES ('guest', '5cf371cef0648f2656ddc13b773aa642251267dbd150597506e96c3a', '1');
 
@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]users_data` (
   `value` mediumtext NOT NULL,
   PRIMARY KEY (`id`,`item`(255)),
   KEY `item` (`item`(255))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]users_groups` (
   `id` int(10) unsigned NOT NULL COMMENT 'User id',
@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]users_groups` (
   KEY `id` (`id`),
   KEY `group` (`group`),
   KEY `priority` (`priority`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 INSERT INTO `[prefix]users_groups` (`id`, `group`, `priority`) VALUES (2, 1, 0), (2, 2, 1);
 
@@ -148,4 +148,4 @@ CREATE TABLE IF NOT EXISTS `[prefix]users_permissions` (
   `value` tinyint(1) unsigned NOT NULL,
   KEY `id` (`id`),
   KEY `permission` (`permission`,`value`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
