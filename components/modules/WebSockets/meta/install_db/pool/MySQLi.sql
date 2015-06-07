@@ -3,4 +3,4 @@ CREATE TABLE IF NOT EXISTS `[prefix]websockets_pool` (
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8;
 
 ALTER TABLE `[prefix]websockets_pool`
-ADD PRIMARY KEY (`address`);
+ADD PRIMARY KEY (`address`(191));
