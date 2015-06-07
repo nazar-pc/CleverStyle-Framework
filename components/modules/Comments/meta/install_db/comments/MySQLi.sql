@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS `[prefix]comments` (
 	`lang` varchar(2) NOT NULL COMMENT 'Language of original message',
 	PRIMARY KEY (`id`),
 	KEY `parent` (`parent`),
-	KEY `module` (`module`,`item`,`lang`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	KEY `module` (`module`(191),`item`,`lang`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;

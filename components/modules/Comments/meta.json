@@ -1,11 +1,14 @@
 {
 	"package"      : "Comments",
 	"category"     : "modules",
-	"version"      : "1.1.1+build-41",
+	"version"      : "1.2.0+build-42",
 	"description"  : "Adds comments functionality to other modules",
 	"author"       : "Nazar Mokrynskyi",
 	"website"      : "cleverstyle.org/cms",
 	"license"      : "MIT License",
+	"update_versions" : [
+		"1.2"
+	],
 	"db"           : [
 		"comments"
 	],
