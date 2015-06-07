@@ -313,7 +313,7 @@
 		"update_system_impossible_from_version_to"		: "System can't be updated from version %1$s to %2$s. This package can update version %3$s and newer. If you want to get version %2$s - try to update current version at least to %3$s.",
 		"update_system_impossible_older_version"		: "System can't be updated, because proposed version is older, than installed",
 		"updating_of_system"							: "Updating of system",
-		"update_system"									: "Are you sure want to updates system from version %s to version %s?",
+		"update_system"									: "Are you sure want to update system from version %s to version %s?",
 		"system_files_unpacking_error"					: "An error occurred during unpacking of system files",
 		//Plugins
 		"plugins"										: "Plugins",
