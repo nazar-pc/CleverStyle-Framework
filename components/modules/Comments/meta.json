@@ -1,34 +1,34 @@
 {
-	"package"      : "Comments",
-	"category"     : "modules",
-	"version"      : "1.2.0+build-42",
-	"description"  : "Adds comments functionality to other modules",
-	"author"       : "Nazar Mokrynskyi",
-	"website"      : "cleverstyle.org/cms",
-	"license"      : "MIT License",
+	"package"         : "Comments",
+	"category"        : "modules",
+	"version"         : "1.2.0+build-42",
+	"description"     : "Adds comments functionality to other modules",
+	"author"          : "Nazar Mokrynskyi",
+	"website"         : "cleverstyle.org/cms",
+	"license"         : "MIT License",
 	"update_versions" : [
 		"1.2"
 	],
-	"db"           : [
+	"db"              : [
 		"comments"
 	],
-	"db_support"   : [
+	"db_support"      : [
 		"MySQLi"
 	],
-	"provide"      : "comments",
-	"require"      : [
+	"provide"         : "comments",
+	"require"         : [
 		"System>=2.1",
 		"System<=3.0"
 	],
-	"optional"     : [
+	"optional"        : [
 		"TinyMCE",
 		"simple_editor"
 	],
-	"multilingual" : [
+	"multilingual"    : [
 		"interface",
 		"content"
 	],
-	"languages"    : [
+	"languages"       : [
 		"English",
 		"Русский",
 		"Українська"

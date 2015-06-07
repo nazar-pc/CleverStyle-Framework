@@ -7,7 +7,7 @@
 	"website"             : "cleverstyle.org/cms",
 	"license"             : "MIT License",
 	"update_from_version" : "0.114",
-	"update_versions" : [
+	"update_versions"     : [
 		"2.7"
 	],
 	"db"                  : [
