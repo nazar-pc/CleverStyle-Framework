@@ -1,27 +1,30 @@
 {
-	"package"      : "HybridAuth",
-	"category"     : "modules",
-	"version"      : "2.4.0+git-cs28",
-	"description"  : "Module for integration with social networks. Includes Git version of HybridAuth 2.2.2 will all available providers.",
-	"author"       : "HybridAuth authors",
-	"website"      : "hybridauth.sourceforge.net",
-	"license"      : "MIT License",
-	"db"           : [
+	"package"         : "HybridAuth",
+	"category"        : "modules",
+	"version"         : "2.4.0+git-cs29",
+	"description"     : "Module for integration with social networks. Includes Git version of HybridAuth 2.2.2 will all available providers.",
+	"author"          : "HybridAuth authors",
+	"website"         : "hybridauth.sourceforge.net",
+	"license"         : "MIT License",
+	"update_versions" : [
+		"2.4.0+git-cs29"
+	],
+	"db"              : [
 		"integration"
 	],
-	"db_support"   : [
+	"db_support"      : [
 		"MySQLi"
 	],
-	"provide"      : "social_integration",
-	"require"      : [
+	"provide"         : "social_integration",
+	"require"         : [
 		"System>=2.1",
 		"System<=3.0"
 	],
-	"multilingual" : [
+	"multilingual"    : [
 		"interface",
 		"content"
 	],
-	"languages"    : [
+	"languages"       : [
 		"English",
 		"Русский",
 		"Українська"
