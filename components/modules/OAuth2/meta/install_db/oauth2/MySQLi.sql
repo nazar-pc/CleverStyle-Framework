@@ -5,13 +5,13 @@ CREATE TABLE IF NOT EXISTS `[prefix]oauth2_clients` (
 	`domain` varchar(255) NOT NULL,
 	`active` tinyint(1) unsigned NOT NULL DEFAULT '0',
 	PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]oauth2_clients_grant_access` (
 	`id` varchar(32) NOT NULL,
 	`user` int(10) unsigned NOT NULL COMMENT 'User id',
 	PRIMARY KEY (`id`,`user`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]oauth2_clients_sessions` (
 	`id` varchar(32) NOT NULL COMMENT 'Client id',
@@ -31,4 +31,4 @@ CREATE TABLE IF NOT EXISTS `[prefix]oauth2_clients_sessions` (
 	KEY `expire` (`expire`),
 	KEY `session` (`session`),
 	KEY `code` (`code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
