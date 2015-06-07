@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_attributes` (
 	`title` varchar(1024) NOT NULL,
 	`title_internal` varchar(1024) NOT NULL,
 	`value` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]shop_categories` (
 	`id` int(11) NOT NULL,
@@ -15,12 +15,12 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_categories` (
 	`description_attribute` int(11) NOT NULL DEFAULT '0',
 	`image` varchar(1024) NOT NULL,
 	`visible` tinyint(1) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]shop_categories_attributes` (
 	`id` int(11) NOT NULL COMMENT 'Category id',
 	`attribute` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]shop_items` (
 	`id` int(11) NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_items` (
 	`in_stock` int(11) NOT NULL DEFAULT '0' COMMENT 'How much items are in in stock',
 	`soon` tinyint(1) NOT NULL,
 	`listed` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]shop_items_attributes` (
 	`id` int(11) NOT NULL COMMENT 'Item id',
@@ -39,25 +39,25 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_items_attributes` (
 	`string_value` varchar(1024) NOT NULL,
 	`text_value` text NOT NULL,
 	`lang` varchar(2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]shop_items_images` (
 	`id` int(11) NOT NULL COMMENT 'Item id',
 	`image` varchar(1024) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]shop_items_tags` (
 	`id` int(11) NOT NULL COMMENT 'Item id',
 	`tag` int(11) NOT NULL,
 	`lang` varchar(2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]shop_items_videos` (
 	`id` int(11) NOT NULL COMMENT 'Post id',
 	`video` varchar(1024) NOT NULL,
 	`poster` varchar(1024) NOT NULL,
 	`type` varchar(255) NOT NULL COMMENT 'Defined and processed in code'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]shop_orders` (
 	`id` bigint(20) NOT NULL,
@@ -72,14 +72,14 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_orders` (
 	`paid` bigint(20) NOT NULL COMMENT 'Payment date',
 	`status` tinyint(4) NOT NULL,
 	`comment` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]shop_orders_history` (
 	`id` bigint(20) NOT NULL,
 	`date` bigint(20) NOT NULL,
 	`status` tinyint(4) NOT NULL,
 	`comment` text NOT NULL COMMENT 'Can be used for emails'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]shop_orders_items` (
 	`id` bigint(20) NOT NULL COMMENT 'Order id',
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_orders_items` (
 	`units` int(11) NOT NULL,
 	`price` float NOT NULL COMMENT 'Total price for all units (may include discount)',
 	`unit_price` float NOT NULL COMMENT 'Original price of one unit'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]shop_order_statuses` (
 	`id` int(11) NOT NULL,
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_order_statuses` (
 	`color` varchar(255) NOT NULL,
 	`send_update_status_email` tinyint(1) NOT NULL,
 	`comment` text NOT NULL COMMENT 'Can be used for emails'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]shop_shipping_types` (
 	`id` tinyint(4) NOT NULL,
@@ -105,20 +105,20 @@ CREATE TABLE IF NOT EXISTS `[prefix]shop_shipping_types` (
 	`address_needed` tinyint(1) NOT NULL,
 	`title` varchar(1024) NOT NULL,
 	`description` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]shop_tags` (
 	`id` int(11) NOT NULL,
 	`text` varchar(1024) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]texts` (
 	`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 	`label` varchar(1024) NOT NULL,
 	`group` varchar(1024) NOT NULL,
 	PRIMARY KEY (`id`),
-	KEY `label` (`label`(255),`group`(255))
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+	KEY `label` (`label`(191),`group`(191))
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]texts_data` (
 	`id` bigint(20) NOT NULL COMMENT 'id from texts table',
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]texts_data` (
 	`text` mediumtext NOT NULL,
 	PRIMARY KEY (`id`,`lang`),
 	KEY `id_` (`id_`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 ALTER TABLE `[prefix]shop_attributes`
 ADD PRIMARY KEY (`id`), ADD KEY `type` (`type`), ADD KEY `title_internal` (`title_internal`(255));
@@ -169,7 +169,7 @@ ALTER TABLE `[prefix]shop_shipping_types`
 ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `[prefix]shop_tags`
-ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `text` (`text`(255));
+ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `text` (`text`(191));
 
 ALTER TABLE `[prefix]shop_attributes`
 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
