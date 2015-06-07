@@ -12,4 +12,4 @@ CREATE TABLE IF NOT EXISTS `[prefix]deferred_tasks_tasks` (
 	KEY `started` (`started`),
 	KEY `expected` (`expected`),
 	KEY `priority` (`priority`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
