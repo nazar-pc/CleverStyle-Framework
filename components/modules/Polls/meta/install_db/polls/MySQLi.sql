@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]polls` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`title` varchar(1024) NOT NULL,
 	PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]polls_options` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]polls_options` (
 	`votes` int(11) NOT NULL,
 	PRIMARY KEY (`id`),
 	KEY `poll` (`poll`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]polls_options_answers` (
 	`id` int(11) NOT NULL,
@@ -19,4 +19,4 @@ CREATE TABLE IF NOT EXISTS `[prefix]polls_options_answers` (
 	`user` int(11) NOT NULL,
 	PRIMARY KEY (`id`,`user`),
 	KEY `option` (`option`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
