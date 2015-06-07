@@ -7,9 +7,9 @@ CREATE TABLE IF NOT EXISTS `[prefix]photo_gallery_galleries` (
 	`preview_image` set('first','last') NOT NULL,
 	`order` int(4) unsigned NOT NULL DEFAULT '0',
 	PRIMARY KEY (`id`),
-	UNIQUE KEY `path` (`path`),
+	UNIQUE KEY `path` (`path`(191)),
 	KEY `order` (`order`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]photo_gallery_images` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -24,4 +24,4 @@ CREATE TABLE IF NOT EXISTS `[prefix]photo_gallery_images` (
 	KEY `gallery` (`gallery`),
 	KEY `user` (`user`),
 	KEY `date` (`date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
