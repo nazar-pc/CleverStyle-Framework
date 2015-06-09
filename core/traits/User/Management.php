@@ -325,7 +325,7 @@ trait Management {
 		/**
 		 * TODO This is fallback for smooth upgrade of old passwords, will be removed in future
 		 */
-		if (password_get_info($password_hash)['algo'] === 0 && $password == $password_hash) {
+		if (password_get_info($password_hash)['algo'] === 0 && $password === $password_hash) {
 			$current_user_id = $this->id;
 			$this->set_password($password, $user, true);
 			if ($current_user_id == $user) {
