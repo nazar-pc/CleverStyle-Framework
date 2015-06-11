@@ -11,6 +11,8 @@ use
 /**
  * Class Any with common methods for User and Group classes
  *
+ * @property Cache $cache
+ *
  * @method \cs\DB\_Abstract db()
  * @method \cs\DB\_Abstract db_prime()
  */
@@ -92,7 +94,7 @@ trait Any {
 		$return = true;
 		if ($delete) {
 			$delete = implode(', ', $delete);
-			$return = $this->db_prime()->q(
+			$return = (bool)$this->db_prime()->q(
 				"DELETE FROM `$table`
 				WHERE
 					`id`			= '$id' AND
@@ -118,8 +120,10 @@ trait Any {
 					$insert_update
 				);
 		}
-		unset($insert_update);
-		unset($this->cache->{"permissions/$id"});
+		unset(
+			$insert_update,
+			$this->cache->{"permissions/$id"}
+		);
 		if ($type == 'group') {
 			unset(Cache::instance()->{'users/permissions'});
 		}

@@ -75,7 +75,7 @@ trait Group {
 			return false;
 		}
 		if (!$groups) {
-			return $this->db_prime()->q(
+			return (bool)$this->db_prime()->q(
 				"DELETE FROM `[prefix]users_groups`
 				WHERE
 					`id`	='$user'"
