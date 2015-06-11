@@ -95,8 +95,8 @@ trait Any {
 			$return = $this->db_prime()->q(
 				"DELETE FROM `$table`
 				WHERE
-					`id` = '$id' AND
-					`permission` IN ($delete)"
+					`id`			= '$id' AND
+					`permission`	IN ($delete)"
 			);
 		}
 		unset($delete);
@@ -118,6 +118,7 @@ trait Any {
 					$insert_update
 				);
 		}
+		unset($insert_update);
 		unset($this->cache->{"permissions/$id"});
 		if ($type == 'group') {
 			unset(Cache::instance()->{'users/permissions'});
