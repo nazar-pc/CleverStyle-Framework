@@ -74,63 +74,44 @@ trait Group {
 		if (!$user) {
 			return false;
 		}
-		if (!empty($groups) && is_array_indexed($groups)) {
-			foreach ($groups as $i => &$group) {
-				if (!($group = (int)$group)) {
-					unset($groups[$i]);
-				}
-			}
-			unset($i, $group);
-		}
-		$existing = $this->get_groups($user);
-		$return   = true;
-		$insert   = array_diff($groups, $existing);
-		$delete   = array_diff($existing, $groups);
-		unset($existing);
-		if (!empty($delete)) {
-			$delete = implode(', ', $delete);
-			$return =
-				$return &&
-				$this->db_prime()->q(
-					"DELETE FROM `[prefix]users_groups`
-					WHERE
-						`id`	='$user' AND
-						`group`	IN ($delete)"
-				);
-		}
-		unset($delete);
-		if (!empty($insert)) {
-			foreach ($insert as &$i) {
-				$i = [$user, $i];
-			}
-			unset($i);
-			$return =
-				$return &&
-				$this->db_prime()->insert(
-					"INSERT INTO `[prefix]users_groups`
-						(
-							`id`,
-							`group`
-						) VALUES (
-							'%s',
-							'%s'
-						)",
-					$insert
-				);
-		}
-		unset($insert);
-		$update = [];
-		foreach ($groups as $i => $group) {
-			$update[] =
-				"UPDATE `[prefix]users_groups`
-				SET `priority` = '$i'
+		if (!$groups) {
+			return $this->db_prime()->q(
+				"DELETE FROM `[prefix]users_groups`
 				WHERE
-					`id`	= '$user' AND
-					`group`	= '$group'
-				LIMIT 1";
+					`id`	='$user'"
+			);
 		}
-		$return = $return && $this->db_prime()->q($update);
-		$Cache  = $this->cache;
+		$groups          = _int($groups);
+		$groups_imploded = implode(', ', $groups);
+		$return          = $this->db_prime()->q(
+			"DELETE FROM `[prefix]users_groups`
+			WHERE
+				`id`	= '$user' AND
+				`group`	NOT IN ($groups_imploded)"
+		);
+		unset($groups_imploded);
+		$insert_update = [];
+		foreach ($groups as $priority => $group) {
+			$insert_update[] = [$group, $priority];
+		}
+		$return =
+			$return &&
+			$this->db_prime()->insert(
+				"INSERT INTO `[prefix]users_groups`
+					(
+						`id`,
+						`group`,
+						`priority`
+					) VALUES (
+						'$user',
+						'%d',
+						'%d'
+					)
+				ON DUPLICATE KEY UPDATE `priority` = VALUES(`priority`)",
+				$insert_update
+			);
+		unset($insert_update);
+		$Cache = $this->cache;
 		unset(
 			$Cache->{"groups/$user"},
 			$Cache->{"permissions/$user"}

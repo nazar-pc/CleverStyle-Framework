@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]users_groups` (
   `id` int(10) unsigned NOT NULL COMMENT 'User id',
   `group` smallint(5) unsigned NOT NULL COMMENT 'Group id',
   `priority` smallint(5) unsigned NOT NULL COMMENT 'Lower priority is more important',
-  KEY `id` (`id`),
+  PRIMARY KEY (`id`,`group`),
   KEY `group` (`group`),
   KEY `priority` (`priority`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
