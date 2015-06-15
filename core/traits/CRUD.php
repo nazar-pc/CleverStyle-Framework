@@ -176,7 +176,7 @@ trait CRUD {
 		$columns      = array_filter(
 			$data_model,
 			function ($column) {
-				return !isset($column['data_model']);
+				return !is_array($column) || !isset($column['data_model']);
 			}
 		);
 		$columns      = "`".implode("`,`", array_keys($columns))."`";
