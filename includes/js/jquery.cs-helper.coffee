@@ -78,6 +78,12 @@ do ($=jQuery, UI = UIkit) ->
 					when 'show' then modal.show()
 					when 'hide' then modal.hide()
 				$this.get()
+		###*
+		 * Tooltips processing inside element, useful with shadowRoot (its content will not be visible for UIkit's tooltip out of the box)
+		###
+		tooltips_inside	: () ->
+			@find('[data-uk-tooltip]').each ->
+				UIkit.tooltip(@, UIkit.Utils.options($(@).attr('data-uk-tooltip')))
 	###*
 	 * cs helper registration or running (if no parameters specified)
 	 *

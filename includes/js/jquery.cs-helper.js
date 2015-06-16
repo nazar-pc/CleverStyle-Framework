@@ -84,6 +84,15 @@
           }
           return $this.get();
         });
+      },
+
+      /**
+      		 * Tooltips processing inside element, useful with shadowRoot (its content will not be visible for UIkit's tooltip out of the box)
+       */
+      tooltips_inside: function() {
+        return this.find('[data-uk-tooltip]').each(function() {
+          return UIkit.tooltip(this, UIkit.Utils.options($(this).attr('data-uk-tooltip')));
+        });
       }
     };
 
