@@ -56,7 +56,7 @@ do ($=jQuery, UI = UIkit) ->
 							.wrapInner('<div />')
 							.children()
 					content
-						.addClass('uk-modal-dialog uk-modal-dialog-slide')
+						.addClass('uk-modal-dialog')
 					if $this.is('[data-modal-frameless]')
 						content
 							.addClass('uk-modal-dialog-frameless')
