@@ -84,17 +84,17 @@
         });
         return this.modules = modules;
       },
+      domReady: function() {
+        return $(this.shadowRoot).cs().tooltips_inside();
+      },
       generic_modal: function(event, detail, sender) {
-        var $sender, content, index, key, large, module, overflow, tag;
+        var $sender, index, key, module, tag;
         $sender = $(sender);
         index = $sender.closest('[data-module-index]').data('module-index');
         module = this.modules[index];
         key = $sender.data('modal-type');
         tag = module[key].type === 'txt' ? 'pre' : 'div';
-        content = module[key].content || module[key];
-        large = key === 'info' ? '' : 'uk-modal-dialog-large';
-        overflow = key === 'info' ? '' : 'uk-overflow-container';
-        return $("<div class=\"uk-modal-dialog " + large + "\">\n	<div class=\"" + overflow + "\">\n		<" + tag + ">" + content + "</" + tag + ">\n	</div>\n</div>").appendTo('body').cs().modal('show').on('hide.uk.modal', function() {
+        return $("<div class=\"uk-modal-dialog uk-modal-dialog-large\">\n	<div class=\"uk-overflow-container\">\n		<" + tag + ">" + module[key].content + "</" + tag + ">\n	</div>\n</div>").appendTo('body').cs().modal('show').on('hide.uk.modal', function() {
           return $(this).remove();
         });
       }

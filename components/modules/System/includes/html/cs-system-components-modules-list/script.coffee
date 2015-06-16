@@ -66,19 +66,18 @@ do (L = cs.Language) ->
 							if meta.languages then meta.languages.join(', ') else L.none
 						)
 			@modules = modules
+		domReady		: ->
+			$(@shadowRoot).cs().tooltips_inside()
 		generic_modal	: (event, detail, sender) ->
-			$sender		= $(sender)
-			index		= $sender.closest('[data-module-index]').data('module-index')
-			module		= @modules[index]
-			key			= $sender.data('modal-type')
-			tag			= if module[key].type == 'txt' then 'pre' else 'div'
-			content		= module[key].content || module[key]
-			large		= if key == 'info' then '' else 'uk-modal-dialog-large'
-			overflow	= if key == 'info' then '' else 'uk-overflow-container'
+			$sender	= $(sender)
+			index	= $sender.closest('[data-module-index]').data('module-index')
+			module	= @modules[index]
+			key		= $sender.data('modal-type')
+			tag		= if module[key].type == 'txt' then 'pre' else 'div'
 			$(
-				"""<div class="uk-modal-dialog #{large}">
-					<div class="#{overflow}">
-						<#{tag}>#{content}</#{tag}>
+				"""<div class="uk-modal-dialog uk-modal-dialog-large">
+					<div class="uk-overflow-container">
+						<#{tag}>#{module[key].content}</#{tag}>
 					</div>
 				</div>"""
 			)
