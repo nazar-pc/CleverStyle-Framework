@@ -1,0 +1,3 @@
+<FilesMatch "\.html$">
+	RewriteEngine Off
+</FilesMatch>

@@ -1,6 +1,7 @@
 {
-	"admin/System"	: [
+	"admin/System" : [
 		"general.js",
-		"functions.js"
+		"functions.js",
+		"cs-system-components-modules-list/index.html"
 	]
 }

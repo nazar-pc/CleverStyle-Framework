@@ -1,0 +1,81 @@
+<polymer-element name="cs-system-components-modules-list">
+	<template>
+		<cs-table center list with-header>
+			<cs-table-row>
+				<cs-table-cell>{{translations.module_name}}</cs-table-cell>
+				<cs-table-cell>{{translations.state}}</cs-table-cell>
+				<cs-table-cell>{{translations.action}}</cs-table-cell>
+			</cs-table-row>
+			<template repeat="{{module, index in modules}}">
+				<cs-table-row data-module-index="{{index}}">
+					<cs-table-cell class="{{module.class}}">
+						<a href="admin/{{module.name}}">{{module.name_localized}}</a>
+					</cs-table-cell>
+					<cs-table-cell class="{{module.class}}">
+						<template if="{{module.info}}">
+							<span class="uk-button cs-button-compact uk-icon-info-circle" on-click="{{generic_modal}}" data-modal-type="info" data-uk-tooltip="{animation:true,delay:200}" title="{{translations.information_about_module}}, {{translations.click_to_view_details}}"></span>
+						</template>
+						<span class="{{module.icon}}" data-uk-tooltip="{animation:true,delay:200}" title="{{module.icon_text}}"></span>
+						<template if="{{module.api}}">
+							<template if="{{!module.api.type}}">
+								<span class="uk-icon-link" data-uk-tooltip="{animation:true,delay:200}" title="{{translations.api_exists}}"></span>
+							</template>
+							<template if="{{module.api.type}}">
+								<span class="uk-button cs-button-compact uk-icon-link" on-click="{{generic_modal}}" data-modal-type="api" data-uk-tooltip="{animation:true,delay:200}" title="{{translations.api_exists}}, {{translations.click_to_view_details}}"></span>
+							</template>
+						</template>
+						<template if="{{module.readme}}">
+							<span class="uk-button cs-button-compact uk-icon-book" on-click="{{generic_modal}}" data-modal-type="readme" data-uk-tooltip="{animation:true,delay:200}" title="{{translations.information_about_module}}, {{translations.click_to_view_details}}"></span>
+						</template>
+						<template if="{{module.license}}">
+							<span class="uk-button cs-button-compact uk-icon-legal" on-click="{{generic_modal}}" data-modal-type="license" data-uk-tooltip="{animation:true,delay:200}" title="{{translations.license}}, {{translations.click_to_view_details}}"></span>
+						</template>
+					</cs-table-cell>
+					<cs-table-cell class="{{module.class}}" left="">
+						<template if="{{module.can_be_set_as_default}}">
+							<a class="uk-button cs-button-compact" data-uk-tooltip="{animation:true,delay:200}" href="admin/System/components/modules/default_module/{{module.name}}" title="{{translations.make_default_module}}">
+								<span class="uk-icon-home"></span>
+							</a>
+						</template>
+						<template if="{{module.db_settings}}">
+							<a class="uk-button cs-button-compact" data-uk-tooltip="{animation:true,delay:200}" href="admin/System/components/modules/db/{{module.name}}" title="{{translations.databases}}">
+								<span class="uk-icon-database"></span>
+							</a>
+						</template>
+						<template if="{{module.storage_settings}}">
+							<a class="uk-button cs-button-compact" data-uk-tooltip="{animation:true,delay:200}" href="admin/System/components/modules/storage/{{module.name}}" title="{{translations.storages}}">
+								<span class="uk-icon-hdd-o"></span>
+							</a>
+						</template>
+						<template if="{{module.administration}}">
+							<a class="uk-button cs-button-compact" data-uk-tooltip="{animation:true,delay:200}" href="admin/{{module.name}}" title="{{translations.module_admin_page}}">
+								<span class="uk-icon-sliders"></span>
+							</a>
+						</template>
+						<template if="{{module.active == 1}}">
+							<a class="uk-button cs-button-compact" data-uk-tooltip="{animation:true,delay:200}" href="admin/System/components/modules/disable/{{module.name}}" title="{{translations.disable}}">
+								<span class="uk-icon-minus"></span>
+							</a>
+						</template>
+						<template if="{{module.active == 0}}">
+							<a class="uk-button cs-button-compact" data-uk-tooltip="{animation:true,delay:200}" href="admin/System/components/modules/enable/{{module.name}}" title="{{translations.enable}}">
+								<span class="uk-icon-check"></span> {{translations.enable}}
+							</a>
+						</template>
+						<template if="{{module.active != -1}}">
+							<a class="uk-button cs-button-compact" data-uk-tooltip="{animation:true,delay:200}" href="admin/System/components/modules/uninstall/{{module.name}}" title="{{translations.uninstall}}">
+								<span class="uk-icon-trash"></span>
+							</a>
+						</template>
+						<template if="{{module.active == -1}}">
+							<a class="uk-button cs-button-compact" data-uk-tooltip="{animation:true,delay:200}" href="admin/System/components/modules/install/{{module.name}}" title="{{translations.install}}">
+								<span class="uk-icon-download"></span> {{translations.install}}
+							</a>
+						</template>
+					</cs-table-cell>
+				</cs-table-row>
+			</template>
+		</cs-table>
+	</template>
+	<script src="script.js"></script>
+</polymer-element>

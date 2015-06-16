@@ -26,7 +26,6 @@ use
 
 trait components {
 	static function components_blocks (
-		/** @noinspection PhpUnusedParameterInspection */
 		$route_ids,
 		$route_path
 	) {
@@ -503,7 +502,6 @@ trait components {
 		return Text::instance()->process($Config->module('System')->db('texts'), $Config->components['blocks'][$id]['content']);
 	}
 	static function components_databases (
-		/** @noinspection PhpUnusedParameterInspection */
 		$route_ids,
 		$route_path
 	) {
@@ -1421,240 +1419,68 @@ trait components {
 		$a->file_upload = true;
 		$modules_list   = [];
 		foreach ($Config->components['modules'] as $module_name => &$module_data) {
-			/**
-			 * If module if enabled or disabled
-			 */
-			$addition_state = $action = '';
-			$admin_link     = false;
-			/**
-			 * Notice about API existence
-			 */
-			if (is_dir(MODULES."/$module_name/api")) {
-				if (
-					file_exists($file = MODULES."/$module_name/api/readme.txt") ||
-					file_exists($file = MODULES."/$module_name/api/readme.html")
-				) {
-					$tag    = substr($file, -3) == 'txt' ? 'pre' : 'div';
-					$uniqid = uniqid('module_info_');
-					$modal  = "#{$module_name}_api.uk-modal .uk-modal-dialog.uk-modal-dialog-large";
-					$Page->post_Body .= h::$modal(
-						h::{'.uk-modal-caption'}("$module_name » $L->api").
-						h::$tag($uniqid)
-					);
-					$Page->replace(
-						$uniqid,
-						$tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)
-					);
-				}
-				$addition_state .= h::icon(
-					'link',
-					[
-						'data-title'    => $L->api_exists.h::br().(file_exists($file) ? $L->click_to_view_details : ''),
-						'data-uk-modal' => "{target : '#{$module_name}_api'}",
-						'class'         => file_exists($file) ? 'uk-button cs-button-compact' : false
-					]
-				);
-				unset($file, $tag, $uniqid, $modal);
-			}
-			/**
-			 * Information about module
-			 */
-			if (
-				file_exists($file = MODULES."/$module_name/readme.txt") ||
-				file_exists($file = MODULES."/$module_name/readme.html")
-			) {
-				$tag    = substr($file, -3) == 'txt' ? 'pre' : 'div';
-				$uniqid = uniqid('module_info_');
-				$modal  = "#{$module_name}_readme.uk-modal .uk-modal-dialog.uk-modal-dialog-large";
-				$Page->post_Body .= h::$modal(
-					h::{'.uk-modal-caption'}("$module_name » $L->information_about_module").
-					h::$tag($uniqid)
-				);
-				$Page->replace(
-					$uniqid,
-					$tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)
-				);
-				$addition_state .= h::{'icon.uk-button.cs-button-compact'}(
-					'exclamation',
-					[
-						'data-title'    => $L->information_about_module.h::br().$L->click_to_view_details,
-						'data-uk-modal' => "{target : '#{$module_name}_readme'}"
-					]
-				);
-			}
-			unset($file, $tag, $uniqid, $modal);
-			/**
-			 * License
-			 */
-			if (
-				file_exists($file = MODULES."/$module_name/license.txt") ||
-				file_exists($file = MODULES."/$module_name/license.html")
-			) {
-				$tag    = substr($file, -3) == 'txt' ? 'pre' : 'div';
-				$uniqid = uniqid('module_info_');
-				$modal  = "#{$module_name}_license.uk-modal .uk-modal-dialog.uk-modal-dialog-large";
-				$Page->post_Body .= h::$modal(
-					h::{'.uk-modal-caption'}("$module_name » $L->license").
-					h::$tag($uniqid)
-				);
-				$Page->replace(
-					$uniqid,
-					$tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)
-				);
-				$addition_state .= h::{'icon.uk-button.cs-button-compact'}(
-					'legal',
-					[
-						'data-title'    => $L->license.h::br().$L->click_to_view_details,
-						'data-uk-modal' => "{target : '#{$module_name}_license'}"
-					]
-				);
-			}
-			unset($file, $tag, $uniqid, $modal);
-			if ($module_data['active'] != -1) {
-				/**
-				 * Setting default module
-				 */
-				if (
+			$module = [
+				'active'                => $module_data['active'],
+				'name'                  => $module_name,
+				'is_default'            => $module_name == $Config->core['default_module'],
+				'can_be_set_as_default' =>
 					$module_data['active'] == 1 &&
 					$module_name != $Config->core['default_module'] &&
 					(
 						file_exists(MODULES."/$module_name/index.php") ||
 						file_exists(MODULES."/$module_name/index.html") ||
 						file_exists(MODULES."/$module_name/index.json")
-					)
-				) {
-					$action .= h::{'a.uk-button.cs-button-compact'}(
-						h::icon('home'),
-						[
-							'href'       => "$a->action/default_module/$module_name",
-							'data-title' => $L->make_default_module
-						]
-					);
-				}
-				/**
-				 * DataBases settings
-				 */
-				if (!$Config->core['simple_admin_mode'] && @$module_data['db'] && count($Config->db) > 1) {
-					$action .= h::{'a.uk-button.cs-button-compact'}(
-						h::icon('database'),
-						[
-							'href'       => "$a->action/db/$module_name",
-							'data-title' => $L->databases
-						]
-					);
-				}
-				/**
-				 * Storages settings
-				 */
-				if (!$Config->core['simple_admin_mode'] && @$module_data['storage'] && count($Config->storage) > 1) {
-					$action .= h::{'a.uk-button.cs-button-compact'}(
-						h::icon('hdd-o'),
-						[
-							'href'       => "$a->action/storage/$module_name",
-							'data-title' => $L->storages
-						]
-					);
-				}
-				if ($module_name != 'System') {
-					/**
-					 * Link to the module admin page
-					 */
-					if (file_exists(MODULES."/$module_name/admin/index.php") || file_exists(MODULES."/$module_name/admin/index.json")) {
-						$action .= h::{'a.uk-button.cs-button-compact'}(
-							h::icon('sliders'),
-							[
-								'href'       => "admin/$module_name",
-								'data-title' => $L->module_admin_page
-							]
-						);
-						$admin_link = true;
-					}
-					if ($module_name != $Config->core['default_module']) {
-						$action .= h::{'a.uk-button.cs-button-compact'}(
-								$module_data['active'] == 1 ? h::icon('minus') : h::icon('check')." $L->enable",
-								[
-									'href'       => $a->action.($module_data['active'] == 1 ? '/disable/' : '/enable/').$module_name,
-									'data-title' => $module_data['active'] == 1 ? $L->disable : false
-								]
-							).
-								   h::{'a.uk-button.cs-button-compact'}(
-									   h::icon('trash-o'),
-									   [
-										   'href'       => "$a->action/uninstall/$module_name",
-										   'data-title' => $L->uninstall
-									   ]
-								   );
-					}
-				}
-				/**
-				 * If module uninstalled or not installed yet
-				 */
-			} else {
-				$action .= h::{'a.uk-button.cs-button-compact'}(
-					h::icon('download')." $L->install",
-					[
-						'href' => "$a->action/install/$module_name"
-					]
-				);
-			}
-			$module_info = false;
-			if (file_exists(MODULES."/$module_name/meta.json")) {
-				$module_meta = file_get_json(MODULES."/$module_name/meta.json");
-				$module_info = $L->module_info(
-					$module_meta['package'],
-					$module_meta['version'],
-					$module_meta['description'],
-					$module_meta['author'],
-					isset($module_meta['website']) ? $module_meta['website'] : $L->none,
-					$module_meta['license'],
-					isset($module_meta['db_support']) ? implode(', ', $module_meta['db_support']) : $L->none,
-					isset($module_meta['storage_support']) ? implode(', ', $module_meta['storage_support']) : $L->none,
-					isset($module_meta['provide']) ? implode(', ', (array)$module_meta['provide']) : $L->none,
-					isset($module_meta['require']) ? implode(', ', (array)$module_meta['require']) : $L->none,
-					isset($module_meta['conflict']) ? implode(', ', (array)$module_meta['conflict']) : $L->none,
-					isset($module_meta['optional']) ? implode(', ', (array)$module_meta['optional']) : $L->none,
-					isset($module_meta['multilingual']) && in_array('interface', $module_meta['multilingual']) ? $L->yes : $L->no,
-					isset($module_meta['multilingual']) && in_array('content', $module_meta['multilingual']) ? $L->yes : $L->no,
-					isset($module_meta['languages']) ? implode(', ', $module_meta['languages']) : $L->none
-				);
-			}
-			unset($module_meta);
-			$modules_list[] = [
-				[
-					h::a(
-						$L->$module_name,
-						[
-							'href'       => $admin_link ? "admin/$module_name" : false,
-							'data-title' => $module_info
-						]
 					),
-					h::icon(
-						$module_data['active'] == 1 ? (
-						$module_name == $Config->core['default_module'] ? 'home' : 'check'
-						) : (
-						$module_data['active'] == 0 ? 'minus' : 'times'
-						),
-						[
-							'data-title' => $module_data['active'] == 1 ? (
-							$module_name == $Config->core['default_module'] ? $L->default_module : $L->enabled
-							) : (
-							$module_data['active'] == 0 ? $L->disabled : "$L->uninstalled ($L->not_installed)"
-							)
-						]
-					).
-					$addition_state,
-					[
-						$action,
-						[
-							'left' => ''
-						]
-					]
-				],
-				[
-					'class' => $module_data['active'] == 1 ? 'uk-alert-success' : ($module_data['active'] == -1 ? 'uk-alert-danger' : 'uk-alert-warning')
-				]
+				'db_settings'           => !$Config->core['simple_admin_mode'] && @$module_data['db'] && count($Config->db) > 1,
+				'storage_settings'      => !$Config->core['simple_admin_mode'] && @$module_data['storage'] && count($Config->storage) > 1,
+				'administration'        => file_exists(MODULES."/$module_name/admin/index.php") || file_exists(MODULES."/$module_name/admin/index.json")
 			];
-			unset($module_info);
+			/**
+			 * Check if API available
+			 */
+			if (is_dir(MODULES."/$module_name/api")) {
+				$module['api'] = [];
+				if (
+					file_exists($file = MODULES."/$module_name/api/readme.txt") ||
+					file_exists($file = MODULES."/$module_name/api/readme.html")
+				) {
+					$module['api'] = [
+						'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
+						'content' => file_get_contents($file)
+					];
+				}
+				unset($file);
+			}
+			/**
+			 * Check if readme available
+			 */
+			if (
+				file_exists($file = MODULES."/$module_name/readme.txt") ||
+				file_exists($file = MODULES."/$module_name/readme.html")
+			) {
+				$module['readme'] = [
+					'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
+					'content' => file_get_contents($file)
+				];
+			}
+			unset($file);
+			/**
+			 * Check if license available
+			 */
+			if (
+				file_exists($file = MODULES."/$module_name/license.txt") ||
+				file_exists($file = MODULES."/$module_name/license.html")
+			) {
+				$module['license'] = [
+					'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
+					'content' => file_get_contents($file)
+				];
+			}
+			unset($file);
+			if (file_exists(MODULES."/$module_name/meta.json")) {
+				$module['meta'] = file_get_json(MODULES."/$module_name/meta.json");
+			}
+			$modules_list[] = $module;
 		}
 		unset($module_data);
 		$modules_for_removal = array_keys(
@@ -1666,13 +1492,8 @@ trait components {
 			)
 		);
 		$a->content(
-			static::list_center_table(
-				[
-					$L->module_name,
-					$L->state,
-					$L->action
-				],
-				$modules_list
+			h::{'cs-system-components-modules-list script[type=application/json]'}(
+				json_encode($modules_list, JSON_UNESCAPED_UNICODE)
 			).
 			h::p(
 				h::{'input[type=file][name=upload_module]'}().
@@ -1692,9 +1513,7 @@ trait components {
 					]
 				)
 			).
-			(
-			$modules_for_removal
-				? h::p(
+			($modules_for_removal ? h::p(
 				h::{'select[name=remove_module]'}($modules_for_removal).
 				h::{'button.uk-button[type=submit]'}(
 					h::icon('trash-o').$L->complete_module_removal,
@@ -1702,9 +1521,7 @@ trait components {
 						'formaction' => "$a->action/remove"
 					]
 				)
-			)
-				: ''
-			).
+			) : '').
 			h::{'button.uk-button[type=submit]'}(
 				h::icon('refresh').$L->update_modules_list,
 				[
