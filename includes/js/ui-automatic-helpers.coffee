@@ -6,7 +6,7 @@
 ###
 $ ->
 	window.no_ui_selector		= '.cs-no-ui'
-	ui_automatic_helpers_update = (element) ->
+	ui_automatic_helpers_update	= (element) ->
 		element.filter('.cs-tabs:not(.uk-tab)').cs().tabs()
 		element.find('.cs-tabs:not(.uk-tab)').cs().tabs()
 
