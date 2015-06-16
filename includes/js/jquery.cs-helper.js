@@ -54,20 +54,23 @@
         return this.each(function() {
           var $this, content, modal;
           $this = $(this);
+          if ($this.hasClass('uk-modal-dialog')) {
+            $this = $this.wrap('<div/>').parent();
+          }
           if (!$this.data('modal')) {
             content = $this.children();
             if (!content.length) {
-              content = $this.wrapInner('<div />').children();
+              content = $this.wrapInner('<div/>').children();
             }
             content.addClass('uk-modal-dialog');
             if ($this.is('[data-modal-frameless]')) {
               content.addClass('uk-modal-dialog-frameless');
             }
             if ($this.attr('title')) {
-              $('<h3 />').html($this.attr('title')).prependTo(content);
+              $('<h3/>').html($this.attr('title')).prependTo(content);
             }
             if (content.attr('title')) {
-              $('<h3 />').html(content.attr('title')).prependTo(content);
+              $('<h3/>').html(content.attr('title')).prependTo(content);
             }
             $this.addClass('uk-modal').data('modal', UI.modal($this));
           }

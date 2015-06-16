@@ -49,11 +49,13 @@ do ($=jQuery, UI = UIkit) ->
 			mode	= mode || 'init'
 			@.each ->
 				$this	= $(@)
+				if $this.hasClass('uk-modal-dialog')
+					$this	= $this.wrap('<div/>').parent()
 				if !$this.data('modal')
 					content	= $this.children()
 					if !content.length
 						content	= $this
-							.wrapInner('<div />')
+							.wrapInner('<div/>')
 							.children()
 					content
 						.addClass('uk-modal-dialog')
@@ -61,11 +63,11 @@ do ($=jQuery, UI = UIkit) ->
 						content
 							.addClass('uk-modal-dialog-frameless')
 					if $this.attr('title')
-						$('<h3 />')
+						$('<h3/>')
 							.html($this.attr('title'))
 							.prependTo(content)
 					if content.attr('title')
-						$('<h3 />')
+						$('<h3/>')
 							.html(content.attr('title'))
 							.prependTo(content)
 					$this
