@@ -51,7 +51,7 @@
           return this;
         }
         mode = mode || 'init';
-        return this.each(function() {
+        return this.map(function() {
           var $this, content, modal;
           $this = $(this);
           if ($this.hasClass('uk-modal-dialog')) {
@@ -77,10 +77,12 @@
           modal = $this.data('modal');
           switch (mode) {
             case 'show':
-              return modal.show();
+              modal.show();
+              break;
             case 'hide':
-              return modal.hide();
+              modal.hide();
           }
+          return $this.get();
         });
       }
     };

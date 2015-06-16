@@ -47,7 +47,7 @@ do ($=jQuery, UI = UIkit) ->
 			if !@.length
 				return @
 			mode	= mode || 'init'
-			@.each ->
+			@map ->
 				$this	= $(@)
 				if $this.hasClass('uk-modal-dialog')
 					$this	= $this.wrap('<div/>').parent()
@@ -77,7 +77,7 @@ do ($=jQuery, UI = UIkit) ->
 				switch mode
 					when 'show' then modal.show()
 					when 'hide' then modal.hide()
-
+				$this.get()
 	###*
 	 * cs helper registration or running (if no parameters specified)
 	 *
