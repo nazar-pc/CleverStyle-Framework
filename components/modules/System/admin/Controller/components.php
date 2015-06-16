@@ -1482,7 +1482,7 @@ trait components {
 			}
 			$modules_list[] = $module;
 		}
-		unset($module_data);
+		unset($module_name, $module_data, $module);
 		$modules_for_removal = array_keys(
 			array_filter(
 				$Config->components['modules'],
@@ -1771,117 +1771,43 @@ trait components {
 		$a->buttons     = false;
 		$a->file_upload = true;
 		$plugins_list   = [];
-		if (!empty($plugins)) {
-			foreach ($plugins as $plugin) {
-				$addition_state = $action = '';
-				/**
-				 * Information about plugin
-				 */
-				if (
-					file_exists($file = PLUGINS."/$plugin/readme.txt") ||
-					file_exists($file = PLUGINS."/$plugin/readme.html")
-				) {
-					$tag    = substr($file, -3) == 'txt' ? 'pre' : 'div';
-					$uniqid = uniqid('plugin_info_');
-					$modal  = "#{$plugin}_readme.uk-modal .uk-modal-dialog.uk-modal-dialog-large";
-					$Page->post_Body .= h::$modal(
-						h::{'.uk-modal-caption'}("$plugin » $L->information_about_plugin").
-						h::$tag($uniqid)
-					);
-					$Page->replace(
-						$uniqid,
-						$tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)
-					);
-					$addition_state .= h::{'icon.uk-button.cs-button-compact'}(
-						'exclamation',
-						[
-							'data-title'    => $L->information_about_plugin.h::br().$L->click_to_view_details,
-							'data-uk-modal' => "{target : '#{$plugin}_readme'}"
-						]
-					);
-					unset($uniqid);
-				}
-				unset($tag, $file);
-				/**
-				 * License
-				 */
-				if (
-					file_exists($file = PLUGINS."/$plugin/license.txt") ||
-					file_exists($file = PLUGINS."/$plugin/license.html")
-				) {
-					$tag    = substr($file, -3) == 'txt' ? 'pre' : 'div';
-					$uniqid = uniqid('plugin_info_');
-					$modal  = "#{$plugin}_license.uk-modal .uk-modal-dialog.uk-modal-dialog-large";
-					$Page->post_Body .= h::$modal(
-						h::{'.uk-modal-caption'}("$plugin » $L->license").
-						h::$tag($uniqid)
-					);
-					$Page->replace(
-						$uniqid,
-						$tag == 'pre' ? prepare_attr_value(file_get_contents($file)) : file_get_contents($file)
-					);
-					$addition_state .= h::{'icon.uk-button.cs-button-compact'}(
-						'legal',
-						[
-							'data-title'    => $L->license.h::br().$L->click_to_view_details,
-							'data-uk-modal' => "{target : '#{$plugin}_license'}"
-						]
-					);
-				}
-				unset($tag, $file);
-				$state = in_array($plugin, $Config->components['plugins']);
-				$action .= h::{'a.uk-button.cs-button-compact'}(
-					h::icon($state ? 'minus' : 'check'),
-					[
-						'href'       => $a->action.($state ? '/disable/' : '/enable/').$plugin,
-						'data-title' => $state ? $L->disable : $L->enable
-					]
-				);
-				$plugin_info = false;
-				if (file_exists(PLUGINS."/$plugin/meta.json")) {
-					$plugin_meta = file_get_json(PLUGINS."/$plugin/meta.json");
-					$plugin_info = $L->plugin_info(
-						$plugin_meta['package'],
-						$plugin_meta['version'],
-						$plugin_meta['description'],
-						$plugin_meta['author'],
-						isset($plugin_meta['website']) ? $plugin_meta['website'] : $L->none,
-						$plugin_meta['license'],
-						isset($plugin_meta['provide']) ? implode(', ', (array)$plugin_meta['provide']) : $L->none,
-						isset($plugin_meta['require']) ? implode(', ', (array)$plugin_meta['require']) : $L->none,
-						isset($plugin_meta['conflict']) ? implode(', ', (array)$plugin_meta['conflict']) : $L->none,
-						isset($plugin_meta['optional']) ? implode(', ', (array)$plugin_meta['optional']) : $L->none,
-						isset($plugin_meta['multilingual']) && in_array('interface', $plugin_meta['multilingual']) ? $L->yes : $L->no,
-						isset($plugin_meta['multilingual']) && in_array('content', $plugin_meta['multilingual']) ? $L->yes : $L->no,
-						isset($plugin_meta['languages']) ? implode(', ', $plugin_meta['languages']) : $L->none
-					);
-				}
-				unset($plugin_meta);
-				$plugins_list[] = [
-					[
-						h::span(
-							$L->$plugin,
-							[
-								'data-title' => $plugin_info
-							]
-						),
-						h::icon(
-							$state ? 'check' : 'minus',
-							[
-								'data-title' => $state ? $L->enabled : $L->disabled
-							]
-						).
-						$addition_state,
-						$action
-					],
-					[
-						'class' => $state ? 'uk-alert-success' : 'uk-alert-warning'
-					]
+		foreach ($plugins as $plugin_name) {
+			$plugin = [
+				'active' => in_array($plugin_name, $Config->components['plugins']),
+				'name'   => $plugin_name
+			];
+			/**
+			 * Check if readme available
+			 */
+			if (
+				file_exists($file = PLUGINS."/$plugin_name/readme.txt") ||
+				file_exists($file = PLUGINS."/$plugin_name/readme.html")
+			) {
+				$plugin['readme'] = [
+					'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
+					'content' => file_get_contents($file)
 				];
-				unset($plugin_info);
 			}
-			unset($plugin, $state, $addition_state, $action);
+			unset($file);
+			/**
+			 * Check if license available
+			 */
+			if (
+				file_exists($file = PLUGINS."/$plugin_name/license.txt") ||
+				file_exists($file = PLUGINS."/$plugin_name/license.html")
+			) {
+				$plugin['license'] = [
+					'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
+					'content' => file_get_contents($file)
+				];
+			}
+			unset($file);
+			if (file_exists(PLUGINS."/$plugin_name/meta.json")) {
+				$plugin['meta'] = file_get_json(PLUGINS."/$plugin_name/meta.json");
+			}
+			$plugins_list[] = $plugin;
 		}
+		unset($plugin_name, $plugin);
 		$plugins_for_removal = array_values(
 			array_filter(
 				$plugins,
@@ -1891,13 +1817,8 @@ trait components {
 			)
 		);
 		$a->content(
-			static::list_center_table(
-				[
-					$L->plugin_name,
-					$L->state,
-					$L->action
-				],
-				$plugins_list
+			h::{'cs-system-components-plugins-list script[type=application/json]'}(
+				json_encode($plugins_list, JSON_UNESCAPED_UNICODE)
 			).
 			h::p(
 				h::{'input[type=file][name=upload_plugin]'}(
@@ -1912,9 +1833,7 @@ trait components {
 					]
 				)
 			).
-			(
-			$plugins_for_removal
-				? h::p(
+			($plugins_for_removal ? h::p(
 				h::{'select[name=remove_plugin]'}($plugins_for_removal).
 				h::{'button.uk-button[type=submit]'}(
 					h::icon('trash-o').$L->complete_plugin_removal,
@@ -1922,9 +1841,7 @@ trait components {
 						'formaction' => "$a->action/remove"
 					]
 				)
-			)
-				: ''
-			)
+			) : '')
 		);
 	}
 	static function components_storages () {
