@@ -46,13 +46,13 @@ $ ->
 				type	= modal_body.find('[name=type]')
 				type.change ->
 					if type.val() == 'text'
-						typeof window.editor_deinitialization == 'function' && editor_deinitialization('cs-content-html-content')
+						typeof window.editor_deinitialization == 'function' && editor_deinitialization($('cs-content-html-content'))
 						modal_body.find('.html').hide()
 						content	= modal_body.find('.text').show().val(content.val())
 					else
 						modal_body.find('.text').hide()
 						content	= modal_body.find('.html').show().val(content.val())
-						typeof window.editor_reinitialization == 'function' && editor_reinitialization('cs-content-html-content')
+						typeof window.editor_reinitialization == 'function' && editor_reinitialization($('cs-content-html-content'))
 				modal_body
 					.appendTo('body')
 					.cs().modal('show')
@@ -108,14 +108,14 @@ $ ->
 						type	= modal_body.find('[name=type]').val(data.type)
 						type.change ->
 							if type.val() == 'text'
-								typeof window.editor_deinitialization == 'function' && editor_deinitialization('cs-content-html-content')
+								typeof window.editor_deinitialization == 'function' && editor_deinitialization($('cs-content-html-content'))
 								modal_body.find('.html').hide()
 								content	= modal_body.find('.text').show().val(content.val())
 							else
 								console.log ''
 								modal_body.find('.text').hide()
 								content	= modal_body.find('.html').show().val(content.val())
-								typeof window.editor_reinitialization == 'function' && editor_reinitialization('cs-content-html-content')
+								typeof window.editor_reinitialization == 'function' && editor_reinitialization($('cs-content-html-content'))
 						modal_body
 							.appendTo('body')
 							.cs().modal('show')

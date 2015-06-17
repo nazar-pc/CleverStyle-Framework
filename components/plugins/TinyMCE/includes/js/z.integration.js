@@ -108,21 +108,21 @@ $(function () {
 		}
 	]);
 });
-function editor_deinitialization (id) {
-	$('#' + id).tinymce().remove();
+function editor_deinitialization (textarea) {
+	$(textarea).tinymce().remove();
 }
-function editor_reinitialization (id) {
-	var	textarea	= $('#' + id);
-	if (textarea.hasClass('EDITOR')) {
-		textarea.tinymce(tinymce.editor_config).load();
-	} else if (textarea.hasClass('SIMPLE_EDITOR')) {
-		textarea.tinymce(tinymce.simple_editor_config).load();
-	} else if (textarea.hasClass('INLINE_EDITOR')) {
-		textarea.tinymce(tinymce.inline_editor_config).load();
-	} else if (textarea.hasClass('SIMPLE_INLINE_EDITOR')) {
-		textarea.tinymce(tinymce.simple_inline_editor_config).load();
+function editor_reinitialization (textarea) {
+	var	$textarea	= $(textarea);
+	if ($textarea.hasClass('EDITOR')) {
+		$textarea.tinymce(tinymce.editor_config).load();
+	} else if ($textarea.hasClass('SIMPLE_EDITOR')) {
+		$textarea.tinymce(tinymce.simple_editor_config).load();
+	} else if ($textarea.hasClass('INLINE_EDITOR')) {
+		$textarea.tinymce(tinymce.inline_editor_config).load();
+	} else if ($textarea.hasClass('SIMPLE_INLINE_EDITOR')) {
+		$textarea.tinymce(tinymce.simple_inline_editor_config).load();
 	}
 }
-function editor_focus (id) {
-	$('#' + id).tinymce().focus();
+function editor_focus (textarea) {
+	$(textarea).tinymce().focus();
 }

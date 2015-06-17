@@ -6,7 +6,6 @@
  * @license		MIT License, see license.txt
  */
 $(function () {
-	var	L	= cs.Language;
 	$('body').on(
 		'click',
 		'.cs-comments-comment-write-send',
@@ -28,18 +27,12 @@ $(function () {
 				'parent',
 				$(this).parent('article').prop('id').replace('comment_', '')
 			).val('');
-			typeof window.editor_deinitialization === 'function' && editor_deinitialization(
-				textarea.prop('id')
-			);
+			typeof window.editor_deinitialization === 'function' && editor_deinitialization(textarea);
 			$(this).after(
 				$('.cs-comments-comment-write')
 			);
-			typeof window.editor_reinitialization === 'function' && editor_reinitialization(
-				textarea.prop('id')
-			);
-			typeof window.editor_focus === 'function' && editor_focus(
-				textarea.prop('id')
-			);
+			typeof window.editor_reinitialization === 'function' && editor_reinitialization(textarea);
+			typeof window.editor_focus === 'function' && editor_focus(textarea);
 			$('.cs-comments-comment-write-cancel').show();
 			$('.cs-comments-add-comment').hide();
 		}
@@ -54,18 +47,12 @@ $(function () {
 				'id',
 				parent.prop('id').replace('comment_', '')
 			).val(text.html());
-			typeof window.editor_deinitialization === 'function' && editor_deinitialization(
-				textarea.prop('id')
-			);
+			typeof window.editor_deinitialization === 'function' && editor_deinitialization(textarea);
 			text.after(
 				$('.cs-comments-comment-write')
 			);
-			typeof window.editor_reinitialization === 'function' && editor_reinitialization(
-				textarea.prop('id')
-			);
-			typeof window.editor_focus === 'function' && editor_focus(
-				textarea.prop('id')
-			);
+			typeof window.editor_reinitialization === 'function' && editor_reinitialization(textarea);
+			typeof window.editor_focus === 'function' && editor_focus(textarea);
 			$('.cs-comments-comment-write-edit, .cs-comments-comment-write-cancel').show();
 			$('.cs-comments-comment-write-send').hide();
 		}
@@ -153,16 +140,12 @@ $(function () {
 			.data('parent', 0)
 			.data('id', 0)
 			.val('');
-		typeof window.editor_deinitialization === 'function' && editor_deinitialization(
-			textarea.prop('id')
-		);
+		typeof window.editor_deinitialization === 'function' && editor_deinitialization(textarea);
 		$('.cs-comments-add-comment, .cs-comments-comment-write-send').show();
 		$('.cs-comments-comment-write-edit, .cs-comments-comment-write-cancel').hide();
 		$('.cs-comments-comments').next().after(
 			$('.cs-comments-comment-write')
 		);
-		typeof window.editor_reinitialization === 'function' && editor_reinitialization(
-			textarea.prop('id')
-		);
+		typeof window.editor_reinitialization === 'function' && editor_reinitialization(textarea);
 	}
 });
