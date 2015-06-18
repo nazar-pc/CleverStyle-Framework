@@ -112,6 +112,9 @@
       connect_to_parent_form: function() {
         return this.each(function() {
           var $form, element, results;
+          if (WebComponents.flags.shadow) {
+            return;
+          }
           element = this;
           results = [];
           while (true) {

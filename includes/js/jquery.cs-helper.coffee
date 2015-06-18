@@ -97,6 +97,9 @@ do ($=jQuery, UI = UIkit) ->
 		###
 		connect_to_parent_form	: ->
 			@each ->
+				# Hack: If ShadowDOM was emulated - we are fine already, this is necessary only for native ShadowDOM
+				if WebComponents.flags.shadow
+					return
 				element	= @
 				loop
 					if element.tagName == 'FORM'
