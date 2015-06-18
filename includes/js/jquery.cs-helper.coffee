@@ -101,15 +101,24 @@ do ($=jQuery, UI = UIkit) ->
 				loop
 					if element.tagName == 'FORM'
 						$form	= $(element)
-						$form.submit =>
-							# Sometimes request might be dropped, so we need to remove old elements
-							$form.find('[name]').each ->
-								if @manually_connected
-									$(@).remove()
-							$(@).find('[name]').each ->
-								$this	= $(@)
-								$this.clone(true, true).insertAfter($this.hide())
-								$this.appendTo($form)[0].manually_connected = true
+						$form.submit (e) =>
+							if !@form_processed_once
+								e.preventDefault()
+								@form_processed_once	= true
+								$(@).find('[name]').each ->
+									$this	= $(@)
+									if @type == 'file'
+										$this.clone(true, true).insertAfter($this.hide())
+										$this.appendTo($form)
+									else
+										if (@type == 'checkbox' || @type == 'radio') && !$this.is(':checked')
+											return
+										$form.append(
+											$('<input type="hidden"/>')
+												.attr('name', @name)
+												.val($this.val())
+										)
+								$form.submit()
 						break
 					element	= element.host || element.parentNode
 					if !element
