@@ -238,5 +238,8 @@ cs.xor_string				= (string1, string2) ->
 cs.async_call				= (functions, timeout) ->
 	timeout	= timeout || 0
 	for own i of functions
-		setTimeout functions[i], timeout
+		do (func = functions[i]) ->
+			setTimeout (->
+				requestAnimationFrame(func)
+			), timeout
 	return
