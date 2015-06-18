@@ -77,10 +77,10 @@
 				</cs-table-cell>
 			</cs-table-row>
 		</cs-table>
-		<div hidden class="html">
+		<div hidden?="{{json.block_data.type != 'html'}}" class="html">
 			<textarea class="EDITOR" name="block[html]"></textarea>
 		</div>
-		<div hidden class="raw_html">
+		<div hidden?="{{json.block_data.type != 'raw_html'}}" class="raw_html">
 			<textarea name="block[raw_html]"></textarea>
 		</div>
 	</template>
