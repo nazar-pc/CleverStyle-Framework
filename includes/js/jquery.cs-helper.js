@@ -91,7 +91,17 @@
        */
       tooltips_inside: function() {
         this.find('[data-uk-tooltip]').each(function() {
-          return UIkit.tooltip(this, UIkit.Utils.options($(this).attr('data-uk-tooltip')));
+          return UI.tooltip(this, UI.Utils.options($(this).attr('data-uk-tooltip')));
+        });
+        return this;
+      },
+
+      /**
+      		 * Enabling radio buttons inside ShadowDOM, should be called on element.shadowRoot
+       */
+      radio_buttons_inside: function() {
+        this.find('[data-uk-button-radio]').each(function() {
+          return UI.buttonRadio(this, UI.Utils.options($(this).attr('data-uk-button-radio')));
         });
         return this;
       },

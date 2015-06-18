@@ -83,7 +83,14 @@ do ($=jQuery, UI = UIkit) ->
 		###
 		tooltips_inside			: ->
 			@find('[data-uk-tooltip]').each ->
-				UIkit.tooltip(@, UIkit.Utils.options($(@).attr('data-uk-tooltip')))
+				UI.tooltip(@, UI.Utils.options($(@).attr('data-uk-tooltip')))
+			@
+		###*
+		 * Enabling radio buttons inside ShadowDOM, should be called on element.shadowRoot
+		###
+		radio_buttons_inside	: ->
+			@find('[data-uk-button-radio]').each ->
+				UI.buttonRadio(@, UI.Utils.options($(@).attr('data-uk-button-radio')))
 			@
 		###*
 		 * Connecting form elements in ShadowDOM to form element higher in DOM tree, should be called on element.shadowRoot
