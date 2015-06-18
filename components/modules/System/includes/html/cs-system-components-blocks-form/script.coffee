@@ -38,6 +38,7 @@ do (L = cs.Language) ->
 			@expire_never_class			= get_active_class(!json.block_data.expire.state)
 			@expire_as_specified_class	= get_active_class(json.block_data.expire.state)
 			@json						= json
+			$(@shadowRoot).find('textarea').val(json.block_data.content || '')
 		domReady			: ->
 			$(@shadowRoot)
 				.cs().tooltips_inside()

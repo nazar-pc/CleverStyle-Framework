@@ -53,7 +53,8 @@
         this.active_no_class = get_active_class(!json.block_data.active);
         this.expire_never_class = get_active_class(!json.block_data.expire.state);
         this.expire_as_specified_class = get_active_class(json.block_data.expire.state);
-        return this.json = json;
+        this.json = json;
+        return $(this.shadowRoot).find('textarea').val(json.block_data.content || '');
       },
       domReady: function() {
         $(this.shadowRoot).cs().tooltips_inside().cs().radio_buttons_inside().cs().connect_to_parent_form();

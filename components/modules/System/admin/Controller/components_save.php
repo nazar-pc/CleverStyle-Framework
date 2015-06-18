@@ -51,10 +51,12 @@ trait components_save {
 						$block_new['title']
 					);
 					$block['active']   = $block_new['active'];
+					$block['type']     = $block_new['type'];
 					$block['template'] = $block_new['template'];
 					$block['start']    = $block_new['start'];
 					$block['start']    = strtotime($block_new['start']);
 					$block['expire']   = 0;
+					$block['content']  = '';
 					if ($block_new['expire']['state']) {
 						$block['expire'] = strtotime($block_new['expire']['date']);
 					}
@@ -72,8 +74,6 @@ trait components_save {
 							$block['index'],
 							$block_new['raw_html']
 						);
-					} elseif ($_POST['mode'] == 'add') {
-						$block['content'] = '';
 					}
 					if ($_POST['mode'] == 'add') {
 						$Config->components['blocks'][] = $block;

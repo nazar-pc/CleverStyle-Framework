@@ -86,10 +86,10 @@ trait components {
 									'types'      => array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4)),
 									'templates'  => _mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6),
 									'block_data' => [
-										'start' => date('Y-m-d\TH:i', TIME),
+										'start'  => date('Y-m-d\TH:i', TIME),
 										'expire' => [
-											'date' => date('Y-m-d\TH:i', TIME),
-											'state' => 0
+											'date'  => date('Y-m-d\TH:i', TIME),
+											'state' => false
 										]
 									]
 								],
@@ -109,99 +109,31 @@ trait components {
 						h::{'h2.cs-center'}(
 							$L->editing_a_block(static::get_block_title($id))
 						).
-						static::vertical_table(
-							[
-								h::info('block_title'),
-								h::input(
-									[
-										'name'  => 'block[title]',
-										'value' => static::get_block_title($id)
-									]
-								)
-							],
-							[
-								h::info('block_active'),
-								h::{'div radio'}(
-									[
-										'name'    => 'block[active]',
-										'checked' => $block['active'],
-										'value'   => [1, 0],
-										'in'      => [$L->yes, $L->no]
-									]
-								)
-							],
-							[
-								h::info('block_template'),
-								h::select(
-									[
-										'in' => _mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6)
-									],
-									[
-										'name'     => 'block[template]',
-										'selected' => $block['template'],
-										'size'     => 5
-									]
-								)
-							],
-							[
-								h::info('block_start'),
-								h::{'input[type=datetime-local]'}(
-									[
-										'name'  => 'block[start]',
-										'value' => date('Y-m-d\TH:i', $block['start'] ?: TIME)
-									]
-								)
-							],
-							[
-								h::info('block_expire'),
-								h::radio(
-									[
-										'name'    => 'block[expire][state]',
-										'checked' => $block['expire'] != 0,
-										'value'   => [0, 1],
-										'in'      => [$L->never, $L->as_specified]
-									]
-								).
-								h::br(2).
-								h::{'input[type=datetime-local]'}(
-									[
-										'name'  => 'block[expire][date]',
-										'value' => date('Y-m-d\TH:i', $block['expire'] ?: TIME)
-									]
-								)
-							]
-						).
-						(
-						$block['type'] == 'html'
-							? h::{'textarea.EDITOR'}(
-							static::get_block_content($id),
-							[
-								'name' => 'block[html]'
-							]
-						)
-							: (
-						$block['type'] == 'raw_html' ? h::textarea(
-							static::get_block_content($id),
-							[
-								'name' => 'block[raw_html]'
-							]
-						) : ''
-						)
-						).
-						h::{'input[type=hidden]'}(
-							[
+						h::{'cs-system-components-blocks-form script[type=application/json]'}(
+							json_encode(
 								[
-									[
-										'name'  => 'block[id]',
-										'value' => $id
+									'types'      => array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4)),
+									'templates'  => _mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6),
+									'block_data' => [
+										'title'    => static::get_block_title($id),
+										'type'     => $block['type'],
+										'active'   => $block['active'],
+										'template' => $block['template'],
+										'start'    => date('Y-m-d\TH:i', $block['start'] ?: TIME),
+										'expire'   => [
+											'date'  => date('Y-m-d\TH:i', $block['expire'] ?: TIME),
+											'state' => $block['expire'] != 0
+										],
+										'content'  => static::get_block_content($id)
 									]
 								],
-								[
-									[
-										'name'  => 'mode',
-										'value' => $action
-									]
-								]
+								JSON_UNESCAPED_UNICODE
+							)
+						).
+						h::{'input[type=hidden][name=mode][value=edit]'}().
+						h::{'input[type=hidden][name=block[id]]'}(
+							[
+								'value' => $id
 							]
 						)
 					);
