@@ -124,13 +124,12 @@
                       return $(this).remove();
                     }
                   });
-                  $(_this).find('[name]').each(function() {
+                  return $(_this).find('[name]').each(function() {
                     var $this;
                     $this = $(this);
                     $this.clone(true, true).insertAfter($this.hide());
                     return $this.appendTo($form)[0].manually_connected = true;
                   });
-                  return false;
                 };
               })(this));
               break;

@@ -110,7 +110,6 @@ do ($=jQuery, UI = UIkit) ->
 								$this	= $(@)
 								$this.clone(true, true).insertAfter($this.hide())
 								$this.appendTo($form)[0].manually_connected = true
-							false
 						break
 					element	= element.host || element.parentNode
 					if !element
