@@ -9,25 +9,25 @@
 			<template repeat="{{plugin, index in plugins}}">
 				<cs-table-row data-plugin-index="{{index}}">
 					<cs-table-cell class="{{plugin.class}}">
-						<a href="admin/{{plugin.name}}" data-uk-tooltip="{animation:true,delay:200}" title="{{plugin.info}}">{{plugin.name_localized}}</a>
+						<a href="admin/{{plugin.name}}" data-uk-tooltip="[[tooltip_animation]]" title="{{plugin.info}}">{{plugin.name_localized}}</a>
 					</cs-table-cell>
 					<cs-table-cell class="{{plugin.class}}">
-						<span class="{{plugin.icon}}" data-uk-tooltip="{animation:true,delay:200}" title="{{plugin.icon_text}}"></span>
+						<span class="{{plugin.icon}}" data-uk-tooltip="[[tooltip_animation]]" title="{{plugin.icon_text}}"></span>
 						<template if="{{plugin.readme}}">
-							<span class="uk-button cs-button-compact uk-icon-book" on-click="{{generic_modal}}" data-modal-type="readme" data-uk-tooltip="{animation:true,delay:200}" title="{{translations.information_about_plugin}}, {{translations.click_to_view_details}}"></span>
+							<span class="uk-button cs-button-compact uk-icon-book" on-click="{{generic_modal}}" data-modal-type="readme" data-uk-tooltip="[[tooltip_animation]]" title="{{translations.information_about_plugin}}, {{translations.click_to_view_details}}"></span>
 						</template>
 						<template if="{{plugin.license}}">
-							<span class="uk-button cs-button-compact uk-icon-legal" on-click="{{generic_modal}}" data-modal-type="license" data-uk-tooltip="{animation:true,delay:200}" title="{{translations.license}}, {{translations.click_to_view_details}}"></span>
+							<span class="uk-button cs-button-compact uk-icon-legal" on-click="{{generic_modal}}" data-modal-type="license" data-uk-tooltip="[[tooltip_animation]]" title="{{translations.license}}, {{translations.click_to_view_details}}"></span>
 						</template>
 					</cs-table-cell>
 					<cs-table-cell class="{{plugin.class}}">
 						<template if="{{plugin.active == 1}}">
-							<a class="uk-button cs-button-compact" data-uk-tooltip="{animation:true,delay:200}" href="admin/System/components/plugins/disable/{{plugin.name}}" title="{{translations.disable}}">
+							<a class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" href="admin/System/components/plugins/disable/{{plugin.name}}" title="{{translations.disable}}">
 								<span class="uk-icon-minus"></span>
 							</a>
 						</template>
 						<template if="{{plugin.active == 0}}">
-							<a class="uk-button cs-button-compact" data-uk-tooltip="{animation:true,delay:200}" href="admin/System/components/plugins/enable/{{plugin.name}}" title="{{translations.enable}}">
+							<a class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" href="admin/System/components/plugins/enable/{{plugin.name}}" title="{{translations.enable}}">
 								<span class="uk-icon-check"></span> {{translations.enable}}
 							</a>
 						</template>

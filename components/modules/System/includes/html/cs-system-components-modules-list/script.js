@@ -12,6 +12,7 @@
 (function() {
   (function(L) {
     return Polymer({
+      tooltip_animation: '{animation:true,delay:200}',
       translations: {
         module_name: L.module_name,
         state: L.state,

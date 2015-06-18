@@ -8,7 +8,8 @@
 ###
 do (L = cs.Language) ->
 	Polymer(
-		translations	:
+		tooltip_animation	:'{animation:true,delay:200}'
+		translations		:
 			plugin_name					: L.plugin_name
 			state						: L.state
 			information_about_plugin	: L.information_about_plugin
@@ -17,8 +18,8 @@ do (L = cs.Language) ->
 			action						: L.action
 			enable						: L.enable
 			disable						: L.disable
-		plugins			: []
-		ready			: ->
+		plugins				: []
+		ready				: ->
 			plugins = JSON.parse(@querySelector('script').innerHTML)
 			plugins.forEach (plugin) ->
 				plugin.class			= if plugin.active then 'uk-alert-success' else 'uk-alert-warning'
@@ -45,9 +46,9 @@ do (L = cs.Language) ->
 							if meta.languages then meta.languages.join(', ') else L.none
 						)
 			@plugins = plugins
-		domReady		: ->
+		domReady			: ->
 			$(@shadowRoot).cs().tooltips_inside()
-		generic_modal	: (event, detail, sender) ->
+		generic_modal		: (event, detail, sender) ->
 			$sender	= $(sender)
 			index	= $sender.closest('[data-plugin-index]').data('plugin-index')
 			plugin	= @plugins[index]

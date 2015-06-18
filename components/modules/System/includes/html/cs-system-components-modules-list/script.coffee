@@ -8,7 +8,8 @@
 ###
 do (L = cs.Language) ->
 	Polymer(
-		translations	:
+		tooltip_animation	:'{animation:true,delay:200}'
+		translations		:
 			module_name					: L.module_name
 			state						: L.state
 			api_exists					: L.api_exists
@@ -24,8 +25,8 @@ do (L = cs.Language) ->
 			disable						: L.disable
 			install						: L.install
 			uninstall					: L.uninstall
-		modules			: []
-		ready			: ->
+		modules				: []
+		ready				: ->
 			modules = JSON.parse(@querySelector('script').innerHTML)
 			modules.forEach (module) ->
 				module.class			=
@@ -66,9 +67,9 @@ do (L = cs.Language) ->
 							if meta.languages then meta.languages.join(', ') else L.none
 						)
 			@modules = modules
-		domReady		: ->
+		domReady			: ->
 			$(@shadowRoot).cs().tooltips_inside()
-		generic_modal	: (event, detail, sender) ->
+		generic_modal		: (event, detail, sender) ->
 			$sender	= $(sender)
 			index	= $sender.closest('[data-module-index]').data('module-index')
 			module	= @modules[index]

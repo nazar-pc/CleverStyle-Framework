@@ -80,91 +80,23 @@ trait components {
 						h::{'h2.cs-center'}(
 							$L->adding_a_block
 						).
-						static::vertical_table(
-							[
-								h::info('block_type'),
-								h::select(
-									array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4)),
-									[
-										'name'     => 'block[type]',
-										'size'     => 5,
-										'onchange' => 'cs.block_switch_textarea(this)'
+						h::{'cs-system-components-blocks-form script[type=application/json]'}(
+							json_encode(
+								[
+									'types'      => array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4)),
+									'templates'  => _mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6),
+									'block_data' => [
+										'start' => date('Y-m-d\TH:i', TIME),
+										'expire' => [
+											'date' => date('Y-m-d\TH:i', TIME),
+											'state' => 0
+										]
 									]
-								)
-							],
-							[
-								h::info('block_title'),
-								h::input(
-									[
-										'name' => 'block[title]'
-									]
-								)
-							],
-							[
-								h::info('block_active'),
-								h::{'div radio'}(
-									[
-										'name'  => 'block[active]',
-										'value' => [1, 0],
-										'in'    => [$L->yes, $L->no]
-									]
-								)
-							],
-							[
-								h::info('block_template'),
-								h::select(
-									_mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6),
-									[
-										'name' => 'block[template]',
-										'size' => 5
-									]
-								)
-							],
-							[
-								h::info('block_start'),
-								h::{'input[type=datetime-local]'}(
-									[
-										'name'  => 'block[start]',
-										'value' => date('Y-m-d\TH:i', TIME)
-									]
-								)
-							],
-							[
-								h::info('block_expire'),
-								h::radio(
-									[
-										'name'  => 'block[expire][state]',
-										'value' => [0, 1],
-										'in'    => [$L->never, $L->as_specified]
-									]
-								).
-								h::br(2).
-								h::{'input[type=datetime-local]'}(
-									[
-										'name'  => 'block[expire][date]',
-										'value' => date('Y-m-d\TH:i', TIME)
-									]
-								)
-							]
+								],
+								JSON_UNESCAPED_UNICODE
+							)
 						).
-						h::{'div#cs-block-content-html textarea.EDITOR'}(
-							'',
-							[
-								'name' => 'block[html]'
-							]
-						).
-						h::{'div#cs-block-content-raw-html[style=display:none;] textarea'}(
-							'',
-							[
-								'name' => 'block[raw_html]'
-							]
-						).
-						h::{'input[type=hidden]'}(
-							[
-								'name'  => 'mode',
-								'value' => $action
-							]
-						)
+						h::{'input[type=hidden][name=mode][value=add]'}()
 					);
 					break;
 				case 'edit':
