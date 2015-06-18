@@ -11,7 +11,7 @@ do ($=jQuery, UI = UIkit) ->
 		 *
 		 * Required DOM structure *+*, where first element contains list of tabs, and second element content of each tab, plugin must be applied to the first element
 		###
-		tabs			: ->
+		tabs					: ->
 			if !@.length
 				return @
 			@.each ->
@@ -43,7 +43,7 @@ do ($=jQuery, UI = UIkit) ->
 		 * Required DOM structure * > *, plugin must be applied to the root element
 		 * If child element is not present - content will be automatically wrapped with <div>
 		###
-		modal			: (mode) ->
+		modal					: (mode) ->
 			if !@.length
 				return @
 			mode	= mode || 'init'
@@ -79,11 +79,35 @@ do ($=jQuery, UI = UIkit) ->
 					when 'hide' then modal.hide()
 				$this.get()
 		###*
-		 * Tooltips processing inside element, useful with shadowRoot (its content will not be visible for UIkit's tooltip out of the box)
+		 * Enabling tooltips inside ShadowDOM, should be called on element.shadowRoot
 		###
-		tooltips_inside	: () ->
+		tooltips_inside			: ->
 			@find('[data-uk-tooltip]').each ->
 				UIkit.tooltip(@, UIkit.Utils.options($(@).attr('data-uk-tooltip')))
+			@
+		###*
+		 * Connecting form elements in ShadowDOM to form element higher in DOM tree, should be called on element.shadowRoot
+		###
+		connect_to_parent_form	: ->
+			@each ->
+				element	= @
+				loop
+					if element.tagName == 'FORM'
+						$form	= $(element)
+						$form.submit =>
+							# Sometimes request might be dropped, so we need to remove old elements
+							$form.find('[name]').each ->
+								if @manually_connected
+									$(@).remove()
+							$(@).find('[name]').each ->
+								$this	= $(@)
+								$this.clone(true, true).insertAfter($this.hide())
+								$this.appendTo($form)[0].manually_connected = true
+							false
+						break
+					element	= element.host || element.parentNode
+					if !element
+						break
 	###*
 	 * cs helper registration or running (if no parameters specified)
 	 *

@@ -87,11 +87,52 @@
       },
 
       /**
-      		 * Tooltips processing inside element, useful with shadowRoot (its content will not be visible for UIkit's tooltip out of the box)
+      		 * Enabling tooltips inside ShadowDOM, should be called on element.shadowRoot
        */
       tooltips_inside: function() {
-        return this.find('[data-uk-tooltip]').each(function() {
+        this.find('[data-uk-tooltip]').each(function() {
           return UIkit.tooltip(this, UIkit.Utils.options($(this).attr('data-uk-tooltip')));
+        });
+        return this;
+      },
+
+      /**
+      		 * Connecting form elements in ShadowDOM to form element higher in DOM tree, should be called on element.shadowRoot
+       */
+      connect_to_parent_form: function() {
+        return this.each(function() {
+          var $form, element, results;
+          element = this;
+          results = [];
+          while (true) {
+            if (element.tagName === 'FORM') {
+              $form = $(element);
+              $form.submit((function(_this) {
+                return function() {
+                  $form.find('[name]').each(function() {
+                    if (this.manually_connected) {
+                      return $(this).remove();
+                    }
+                  });
+                  $(_this).find('[name]').each(function() {
+                    var $this;
+                    $this = $(this);
+                    $this.clone(true, true).insertAfter($this.hide());
+                    return $this.appendTo($form)[0].manually_connected = true;
+                  });
+                  return false;
+                };
+              })(this));
+              break;
+            }
+            element = element.host || element.parentNode;
+            if (!element) {
+              break;
+            } else {
+              results.push(void 0);
+            }
+          }
+          return results;
         });
       }
     };
