@@ -2,8 +2,8 @@
 	"admin/System" : [
 		"general.js",
 		"functions.js",
-		"cs-system-components-modules-list/index.html",
-		"cs-system-components-plugins-list/index.html",
-		"cs-system-components-blocks-form/index.html"
+		"cs-system-admin-components-modules-list/index.html",
+		"cs-system-admin-components-plugins-list/index.html",
+		"cs-system-admin-components-blocks-form/index.html"
 	]
 }
