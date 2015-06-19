@@ -529,7 +529,7 @@ class Session {
 		 * Create unique session
 		 */
 		do {
-			$hash     = md5(openssl_random_pseudo_bytes(1000));
+			$hash     = md5(random_bytes(1000));
 			$inserted = $this->db_prime()->q(
 				"INSERT INTO `[prefix]sessions`
 					(

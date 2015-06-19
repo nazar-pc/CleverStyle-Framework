@@ -90,7 +90,7 @@ class Transactions {
 	 *
 	 */
 	function add ($amount, $currency, $user, $module, $purpose, $description) {
-		while ($secret = hash('sha512', openssl_random_pseudo_bytes(1000))) {
+		while ($secret = hash('sha512', random_bytes(1000))) {
 			if ($this->db_prime()->qf(
 				"SELECT `id`
 				FROM `$this->table`

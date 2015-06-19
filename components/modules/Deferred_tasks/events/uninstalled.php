@@ -14,9 +14,8 @@ Event::instance()->on(
 			return;
 		}
 		Config::instance()->module('Deferred_tasks')->set([
-			'security_key'			=> hash('sha224', openssl_random_pseudo_bytes(1000)),
+			'security_key'			=> hash('sha224', random_bytes(1000)),
 			'max_number_of_workers'	=> 5
 		]);
-		return;
 	}
 );

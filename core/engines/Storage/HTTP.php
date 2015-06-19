@@ -150,9 +150,9 @@ class HTTP extends _Abstract {
 	 * @inheritdoc
 	 */
 	function move_uploaded_file ($filename, $destination) {
-		$temp = md5(openssl_random_pseudo_bytes(1000));
+		$temp = md5(random_bytes(1000));
 		while (file_exists(TEMP."/$temp")) {
-			$temp = md5(openssl_random_pseudo_bytes(1000));
+			$temp = md5(random_bytes(1000));
 		}
 		time_limit_pause();
 		if (move_uploaded_file($filename, TEMP."/$temp") === false) {

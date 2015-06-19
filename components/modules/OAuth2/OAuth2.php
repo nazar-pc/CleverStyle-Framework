@@ -64,7 +64,7 @@ class OAuth2 {
 		/**
 		 * Generate hash in cycle, to obtain unique value
 		 */
-		for ($i = 0; $id = md5(openssl_random_pseudo_bytes(1000)); ++$i) {
+		for ($i = 0; $id = md5(random_bytes(1000)); ++$i) {
 			if ($this->db_prime()->qf(
 				"SELECT `id`
 				FROM `[prefix]oauth2_clients`
@@ -89,7 +89,7 @@ class OAuth2 {
 						'%s'
 					)",
 				$id,
-				md5(openssl_random_pseudo_bytes(1000)),
+				md5(random_bytes(1000)),
 				xap($name),
 				xap($domain),
 				(int)(bool)$active
@@ -312,9 +312,9 @@ class OAuth2 {
 		unset($user_agent, $current_session);
 		for (
 			$i = 0;
-			$access_token = md5(openssl_random_pseudo_bytes(1000)),
-			$refresh_token = md5($access_token.openssl_random_pseudo_bytes(1000)),
-			$code = md5($refresh_token.openssl_random_pseudo_bytes(1000));
+			$access_token = md5(random_bytes(1000)),
+			$refresh_token = md5($access_token.random_bytes(1000)),
+			$code = md5($refresh_token.random_bytes(1000));
 			++$i
 		) {
 			if ($this->db_prime()->qf(

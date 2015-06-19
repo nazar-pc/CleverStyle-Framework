@@ -45,7 +45,7 @@ trait packages_manipulation {
 		if ($_FILES[$file_name]['error'] != UPLOAD_ERR_OK) {
 			return false;
 		}
-		$tmp_name = TEMP.'/'.md5(openssl_random_pseudo_bytes(1000)).'.phar';
+		$tmp_name = TEMP.'/'.md5(random_bytes(1000)).'.phar';
 		return move_uploaded_file($_FILES[$file_name]['tmp_name'], $tmp_name) ? $tmp_name : false;
 	}
 	/**

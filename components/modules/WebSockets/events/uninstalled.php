@@ -14,10 +14,9 @@ Event::instance()->on(
 			return;
 		}
 		Config::instance()->module('WebSockets')->set([
-			'security_key'   => hash('sha224', openssl_random_pseudo_bytes(100)),
+			'security_key'   => hash('sha224', random_bytes(100)),
 			'listen_port'    => 8080,
 			'listen_locally' => 1
 		]);
-		return;
 	}
 );

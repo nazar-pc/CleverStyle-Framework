@@ -25,7 +25,7 @@ class Key {
 			$database = DB::instance()->$database();
 		}
 		while (true) {
-			$key  = hash('sha224', openssl_random_pseudo_bytes(1000));
+			$key  = hash('sha224', random_bytes(1000));
 			$time = time();
 			if (!$database->qfs(
 				"SELECT `id`

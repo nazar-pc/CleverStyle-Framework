@@ -31,7 +31,7 @@ class Request {
 	function __construct ($request, $response) {
 		$this->request      = $request;
 		$this->response     = $response;
-		$this->__request_id = ASYNC_HTTP_SERVER ? md5(openssl_random_pseudo_bytes(100)) : 1;
+		$this->__request_id = ASYNC_HTTP_SERVER ? md5(random_bytes(100)) : 1;
 	}
 	/**
 	 * @param string $data

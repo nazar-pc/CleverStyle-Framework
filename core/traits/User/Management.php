@@ -127,7 +127,7 @@ trait Management {
 		/**
 		 * @var \cs\_SERVER $_SERVER
 		 */
-		$reg_key      = md5(openssl_random_pseudo_bytes(1000));
+		$reg_key      = md5(random_bytes(1000));
 		$confirmation = $confirmation && $Config->core['require_registration_confirmation'];
 		if ($this->db_prime()->q(
 			"INSERT INTO `[prefix]users` (
@@ -357,7 +357,7 @@ trait Management {
 	 */
 	function restore_password ($user) {
 		if ($user && $user != User::GUEST_ID) {
-			$reg_key = md5(openssl_random_pseudo_bytes(1000));
+			$reg_key = md5(random_bytes(1000));
 			if ($this->set('reg_key', $reg_key, $user)) {
 				$data                  = $this->get('data', $user);
 				$data['restore_until'] = time() + Config::instance()->core['registration_confirmation_time'] * 86400;

@@ -144,7 +144,7 @@ class Photo_gallery {
 						'url'	=> $original
 					]
 				);
-				$hash		= md5(openssl_random_pseudo_bytes(1000));
+				$hash		= md5(random_bytes(1000));
 				$tmp_file	= TEMP.'/'.User::instance()->id."_$hash";
 				try {
 					$SimpleImage	= new SimpleImage($original);
