@@ -7,14 +7,7 @@
 ###
 L	= cs.Language
 Polymer(
-	shipping_type_text	: L.shop_shipping_type
-	total_price_text	: L.shop_total_price
-	discount_text		: L.shop_discount
-	shipping_cost_text	: L.shop_shipping_cost
-	for_payment_text	: L.shop_for_payment
-	phone_text			: L.shop_shipping_phone
-	address_text		: L.shop_shipping_address
-	pay_now_text		: L.shop_pay_now
+	L					: L
 	paid				: true
 	ready				: ->
 		$this						= $(@)

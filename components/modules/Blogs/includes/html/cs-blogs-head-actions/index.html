@@ -3,18 +3,18 @@
 		<template if="{{admin || can_write_post}}">
 			<p>
 				<template if="{{admin}}">
-					<a href="/admin/Blogs" class="uk-button" data-title="{{administration_text}}">
+					<a href="/admin/Blogs" class="uk-button" data-uk-tooltip="{animation:true,delay:200}" title="[[L.administration]]">
 						<span class="uk-icon uk-icon-gears"></span>
 					</a>
 				</template>
 				<template if="{{can_write_post}}">
 					<a href="/Blogs/new_post" class="uk-button">
 						<span class="uk-icon uk-icon-pencil"></span>
-						{{new_post_text}}
+						[[L.new_post]]
 					</a>
 					<a href="/Blogs/drafts" class="uk-button">
 						<span class="uk-icon uk-icon-archive"></span>
-						{{drafts_text}}
+						[[L.drafts]]
 					</a>
 				</template>
 			</p>

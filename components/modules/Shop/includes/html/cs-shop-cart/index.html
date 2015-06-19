@@ -4,7 +4,7 @@
 		<content select="#items"></content>
 		<div class="uk-form uk-form-stacked uk-margin-top">
 			<p class="uk-form-row">
-				<label class="uk-form-label">{{shipping_type_text}}</label>
+				<label class="uk-form-label">[[L.shop_shipping_type]]</label>
 				<select id="shipping_type">
 					<template repeat="{{shipping_types}}">
 						<option value="{{id}}">{{title}}</option>
@@ -15,23 +15,23 @@
 				{{shipping_type_details.description}}
 			</p>
 			<p class="uk-form-row">
-				<label class="uk-form-label">{{shipping_username_text}}</label>
+				<label class="uk-form-label">[[L.shop_shipping_username]]</label>
 				<input type="text" value="{{shipping_username}}" class="uk-form-width-large">
 			</p>
 			<p class="uk-form-row" hidden?="{{shipping_type_details.phone_needed != 1}}">
-				<label class="uk-form-label">{{phone_text}}</label>
+				<label class="uk-form-label">[[L.shop_phone]]</label>
 				<input type="text" value="{{phone}}" class="uk-form-width-large">
 			</p>
 			<p class="uk-form-row" hidden?="{{shipping_type_details.address_needed != 1}}">
-				<label class="uk-form-label">{{address_text}}</label>
+				<label class="uk-form-label">[[L.shop_address]]</label>
 				<textarea value="{{address}}" class="uk-form-width-large"></textarea>
 			</p>
 			<p class="uk-form-row">
-				<label class="uk-form-label">{{comment_text}}</label>
+				<label class="uk-form-label">[[L.shop_comment]]</label>
 				<textarea value="{{comment}}" class="uk-form-width-large"></textarea>
 			</p>
 			<p class="uk-form-row" hidden?="{{payment_methods.length == 1}}">
-				<label class="uk-form-label">{{payment_method_text}}</label>
+				<label class="uk-form-label">[[L.shop_payment_method]]</label>
 				<select id="payment_method">
 					<template repeat="{{details, index in payment_methods}}">
 						<option value="{{index}}">{{details.title}}</option>
@@ -40,11 +40,11 @@
 			</p>
 			<p class="uk-form-row" id="payment_method_description"></p>
 			<template if="{{!registration_required}}">
-				<button type="button" class="uk-button" on-click="{{finish_order}}">{{finish_order_text}}</button>
+				<button type="button" class="uk-button" on-click="[[L.shop_finish_order]]">[[L.finish_order]]</button>
 			</template>
 			<template if="{{registration_required}}">
-				<p class="uk-alert uk-alert-warning">{{register_to_finish_order_text}}</p>
-				<button type="button" class="uk-button" disabled>{{finish_order_text}}</button>
+				<p class="uk-alert uk-alert-warning">[[L.shop_register_to_finish_order]]</p>
+				<button type="button" class="uk-button" disabled>[[L.shop_finish_order]]</button>
 			</template>
 		</div>
 	</template>

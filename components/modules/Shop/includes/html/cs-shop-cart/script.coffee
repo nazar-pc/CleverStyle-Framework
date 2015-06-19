@@ -11,14 +11,7 @@ Polymer(
 	shipping_types					: cs.shop.shipping_types
 	shipping_type					: cart.params.shipping_type || 0
 	shipping_type_details			: {}
-	shipping_type_text				: L.shop_shipping_type
 	shipping_cost_formatted			: ''
-	shipping_username_text			: L.shop_shipping_username
-	phone_text						: L.shop_shipping_phone
-	address_text					: L.shop_shipping_address
-	comment_text					: L.shop_comment
-	payment_method_text				: L.shop_payment_method
-	finish_order_text				: L.shop_finish_order
 	shipping_username				: cart.params.shipping_username || ''
 	phone							: cart.params.phone || ''
 	address							: cart.params.address || ''
@@ -29,7 +22,6 @@ Polymer(
 			details.method	= method
 			details
 	registration_required			: !cs.is_user && !cs.shop.settings.allow_guests_orders
-	register_to_finish_order_text	: L.shop_register_to_finish_order
 	created						: ->
 		@shipping_username	= @shipping_username || (if cs.is_user then @getAttribute('username') else '')
 	domReady						: ->

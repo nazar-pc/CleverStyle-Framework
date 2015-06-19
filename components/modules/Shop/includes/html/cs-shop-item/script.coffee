@@ -6,8 +6,8 @@
  * @license   MIT License, see license.txt
 ###
 Polymer(
-	characteristics_text	: cs.Language.shop_characteristics_text
-	ready					: ->
+	L		: cs.Language
+	ready	: ->
 		@header_title	= @querySelector('h1').innerHTML
 		$this			= $(@)
 		@item_id		= $this.data('id')

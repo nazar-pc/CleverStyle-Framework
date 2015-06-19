@@ -1,7 +1,7 @@
 {
 	"package"             : "Shop",
 	"category"            : "modules",
-	"version"             : "0.118.0+build-170",
+	"version"             : "0.119.0+build-171",
 	"description"         : "Shop functionality",
 	"author"              : "Nazar Mokrynskyi",
 	"website"             : "cleverstyle.org/cms",
@@ -18,7 +18,7 @@
 	],
 	"provide"             : "shop",
 	"require"             : [
-		"System>=2.37",
+		"System>=2.58",
 		"System<=3.0",
 		"Tags>=1.0",
 		"Tags<2.0",

@@ -1,10 +1,10 @@
 <polymer-element name="cs-shop-add-to-cart">
 	<template>
 		<div class="uk-button-group" hidden?="{{!in_cart}}">
-			<button type="button" class="uk-button uk-button-primary" on-click="{{add}}">[[add_to_cart_text]]</button>
-			<a href="/Shop/cart" class="uk-button" title="[[already_in_cart_text]]" id="in_cart">{{in_cart}} </a>
+			<button type="button" class="uk-button uk-button-primary" on-click="{{add}}">[[L.shop_add_to_cart]]</button>
+			<a href="/Shop/cart" class="uk-button" title="[[L.shop_already_in_cart]]" id="in_cart">{{in_cart}} </a>
 		</div>
-		<button type="button" class="uk-button uk-button-primary" on-click="{{add}}" hidden?="{{!!in_cart}}">[[add_to_cart_text]]</button>
+		<button type="button" class="uk-button uk-button-primary" on-click="{{add}}" hidden?="{{!!in_cart}}">[[L.shop_add_to_cart]]</button>
 	</template>
 	<script src="script.js"></script>
 </polymer-element>

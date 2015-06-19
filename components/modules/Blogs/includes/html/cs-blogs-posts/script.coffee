@@ -5,11 +5,11 @@
  * @copyright Copyright (c) 2015, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
 ###
-do (L = cs.Language) ->
-	Polymer(
-		publish		:
-			comments_enabled	: false
-		ready		: ->
-			@jsonld = JSON.parse(@querySelector('script').innerHTML)
-			@posts	= @jsonld['@graph']
-	);
+L = cs.Language
+Polymer(
+	publish		:
+		comments_enabled	: false
+	ready		: ->
+		@jsonld = JSON.parse(@querySelector('script').innerHTML)
+		@posts	= @jsonld['@graph']
+);
