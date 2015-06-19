@@ -247,11 +247,9 @@ class Page {
 	 * @return string
 	 */
 	protected function get_favicon_path () {
-		$theme_favicon	= "$this->theme/img/favicon";
-		if (file_exists(THEMES."/$theme_favicon.png")) {
-			return "themes/$theme_favicon.png";
-		} elseif (file_exists(THEMES."/$theme_favicon.ico")) {
-			return "themes/$theme_favicon.ico";
+		$file = file_exists_with_extension(THEMES."/$this->theme/img/favicon", ['png', 'ico']);
+		if ($file) {
+			return str_replace(THEMES, 'themes', $file);
 		}
 		return 'favicon.ico';
 	}

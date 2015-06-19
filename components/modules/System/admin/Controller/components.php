@@ -55,15 +55,9 @@ trait components {
 					$a->content(
 						h::{'h2.cs-center'}(
 							$L->sure_to_delete_block(static::get_block_title($id)).
-							h::{'input[type=hidden]'}(
+							h::{'input[type=hidden][name=mode][value=delete]'}().
+							h::{'input[type=hidden][name=block[id]]'}(
 								[
-									'name'  => 'mode',
-									'value' => 'delete'
-								]
-							).
-							h::{'input[type=hidden]'}(
-								[
-									'name'  => 'id',
 									'value' => $id
 								]
 							)
@@ -1290,24 +1284,18 @@ trait components {
 				'can_be_set_as_default' =>
 					$module_data['active'] == 1 &&
 					$module_name != $Config->core['default_module'] &&
-					(
-						file_exists(MODULES."/$module_name/index.php") ||
-						file_exists(MODULES."/$module_name/index.html") ||
-						file_exists(MODULES."/$module_name/index.json")
-					),
+					file_exists_with_extension(MODULES."/$module_name/index", ['php', 'html', 'json']),
 				'db_settings'           => !$Config->core['simple_admin_mode'] && @$module_data['db'] && count($Config->db) > 1,
 				'storage_settings'      => !$Config->core['simple_admin_mode'] && @$module_data['storage'] && count($Config->storage) > 1,
-				'administration'        => file_exists(MODULES."/$module_name/admin/index.php") || file_exists(MODULES."/$module_name/admin/index.json")
+				'administration'        => file_exists_with_extension(MODULES."/$module_name/admin/index", ['php', 'json'])
 			];
 			/**
 			 * Check if API available
 			 */
 			if (is_dir(MODULES."/$module_name/api")) {
 				$module['api'] = [];
-				if (
-					file_exists($file = MODULES."/$module_name/api/readme.txt") ||
-					file_exists($file = MODULES."/$module_name/api/readme.html")
-				) {
+				$file = file_exists_with_extension(MODULES."/$module_name/api/readme", ['txt', 'html']);
+				if ($file) {
 					$module['api'] = [
 						'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
 						'content' => file_get_contents($file)
@@ -1318,10 +1306,8 @@ trait components {
 			/**
 			 * Check if readme available
 			 */
-			if (
-				file_exists($file = MODULES."/$module_name/readme.txt") ||
-				file_exists($file = MODULES."/$module_name/readme.html")
-			) {
+			$file = file_exists_with_extension(MODULES."/$module_name/readme", ['txt', 'html']);
+			if ($file) {
 				$module['readme'] = [
 					'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
 					'content' => file_get_contents($file)
@@ -1331,10 +1317,8 @@ trait components {
 			/**
 			 * Check if license available
 			 */
-			if (
-				file_exists($file = MODULES."/$module_name/license.txt") ||
-				file_exists($file = MODULES."/$module_name/license.html")
-			) {
+			$file = file_exists_with_extension(MODULES."/$module_name/license", ['txt', 'html']);
+			if ($file) {
 				$module['license'] = [
 					'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
 					'content' => file_get_contents($file)
@@ -1643,10 +1627,8 @@ trait components {
 			/**
 			 * Check if readme available
 			 */
-			if (
-				file_exists($file = PLUGINS."/$plugin_name/readme.txt") ||
-				file_exists($file = PLUGINS."/$plugin_name/readme.html")
-			) {
+			$file = file_exists_with_extension(PLUGINS."/$plugin_name/readme", ['txt', 'html']);
+			if ($file) {
 				$plugin['readme'] = [
 					'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
 					'content' => file_get_contents($file)
@@ -1656,10 +1638,8 @@ trait components {
 			/**
 			 * Check if license available
 			 */
-			if (
-				file_exists($file = PLUGINS."/$plugin_name/license.txt") ||
-				file_exists($file = PLUGINS."/$plugin_name/license.html")
-			) {
+			$file = file_exists_with_extension(PLUGINS."/$plugin_name/license", ['txt', 'html']);
+			if ($file) {
 				$plugin['license'] = [
 					'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
 					'content' => file_get_contents($file)
