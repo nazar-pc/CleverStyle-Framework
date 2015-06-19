@@ -135,17 +135,6 @@ cs.blocks_toggle			= (position) ->
 		items.slideDown('fast')
 		container.data('mode', 'open')
 	return
-###*
- * For textarea in blocks editing
- *
- * @param item
-###
-cs.block_switch_textarea	= (item) ->
-	$('#cs-block-content-html, #cs-block-content-raw-html').hide()
-	switch $(item).val()
-		when 'html' then $('#cs-block-content-html').show()
-		when 'raw_html' then $('#cs-block-content-raw-html').show()
-	return
 cs.test_email_sending		= () ->
 	email = prompt(L.email)
 	if email
