@@ -291,17 +291,22 @@ function get_files_list (
 function file_extension ($filename) {
 	return mb_substr(mb_strrchr($filename, '.'), 1);
 }
-if (!function_exists('is_unicode')) {
-	/**
-	 * Checks whether string is unicode or not
-	 *
-	 * @param string $s
-	 *
-	 * @return bool
-	 */
-	function is_unicode ($s) {
-		return mb_check_encoding($s, 'utf-8');
+/**
+ * Function takes base filename and possible file extensions, returns filename of first file found in filesystem
+ *
+ * @param string   $base_filename Base filename without `.` at the end
+ * @param string[] $possible_extensions
+ *
+ * @return false|string
+ */
+function file_exists_with_extension ($base_filename, $possible_extensions) {
+	foreach ($possible_extensions as $extension) {
+		$file = "$base_filename.$extension";
+		if (file_exists($file)) {
+			return $file;
+		}
 	}
+	return false;
 }
 /**
  * Protecting against null byte injection
@@ -1335,4 +1340,19 @@ function _array ($in) {
 		);
 	}
 	return (array)$in;
+}
+/**
+ * Fallback for function from PHP7
+ */
+if (!function_exists('random_bytes')) {
+	/**
+	 * Generates cryptographically secure pseudo-random bytes
+	 *
+	 * @param int $length
+	 *
+	 * @return string
+	 */
+	function random_bytes ($length) {
+		return openssl_random_pseudo_bytes ($length);
+	}
 }
