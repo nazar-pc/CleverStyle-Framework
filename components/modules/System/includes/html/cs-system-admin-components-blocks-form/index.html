@@ -3,36 +3,36 @@
 		<cs-table right-left class="uk-form">
 			<cs-table-row>
 				<cs-table-cell>
-					<span data-uk-tooltip="[[tooltip_animation]]" title="{{translations.block_type_info}}">{{translations.block_type}}</span>
+					<span data-uk-tooltip="[[tooltip_animation]]" title="[[L.block_type_info]]">[[L.block_type]]</span>
 				</cs-table-cell>
 				<cs-table-cell>
-					<select name="block[type]" on-change="{{type_change}}" size="5">
-						<template repeat="{{type in json.types}}">
-							<option selected?="{{type == json.block_data.type}}" value="{{type}}">{{type}}</option>
+					<select name="block[type]" on-change="[[type_change]]" size="5">
+						<template repeat="[[type in json.types]]">
+							<option selected?="[[type == json.block_data.type]]" value="[[type]]">[[type]]</option>
 						</template>
 					</select>
 				</cs-table-cell>
 			</cs-table-row>
 			<cs-table-row>
 				<cs-table-cell>
-					<span data-uk-tooltip="[[tooltip_animation]]" title="{{translations.block_title_info}}">{{translations.block_title}}</span>
+					<span data-uk-tooltip="[[tooltip_animation]]" title="[[L.block_title_info]]">[[L.block_title]]</span>
 				</cs-table-cell>
 				<cs-table-cell>
-					<input name="block[title]" type="text" value="{{json.block_data.title}}">
+					<input name="block[title]" type="text" value="[[json.block_data.title]]">
 				</cs-table-cell>
 			</cs-table-row>
 			<cs-table-row>
 				<cs-table-cell>
-					<span data-uk-tooltip="[[tooltip_animation]]" title="{{translations.block_active_info}}">{{translations.block_active}}</span>
+					<span data-uk-tooltip="[[tooltip_animation]]" title="[[L.block_active_info]]">[[L.block_active]]</span>
 				</cs-table-cell>
 				<cs-table-cell>
 					<div>
 						<span class="uk-button-group" data-uk-button-radio>
-							<label class="uk-button {{active_yes_class}}">
-								<input checked?="{{json.block_data.active}}" name="block[active]" type="radio" value="1"> {{translations.yes}}
+							<label class="uk-button [[active_yes_class]]">
+								<input checked?="[[json.block_data.active]]" name="block[active]" type="radio" value="1"> [[L.yes]]
 							</label>
-							<label class="uk-button {{active_no_class}}">
-								<input checked?="{{!json.block_data.active}}" name="block[active]" type="radio" value="0"> {{translations.no}}
+							<label class="uk-button [[active_no_class]]">
+								<input checked?="[[!json.block_data.active]]" name="block[active]" type="radio" value="0"> [[L.no]]
 							</label>
 						</span>
 					</div>
@@ -40,47 +40,47 @@
 			</cs-table-row>
 			<cs-table-row>
 				<cs-table-cell>
-					<span data-uk-tooltip="[[tooltip_animation]]" title="{{translations.block_template_info}}">{{translations.block_template}}</span>
+					<span data-uk-tooltip="[[tooltip_animation]]" title="[[L.block_template_info]]">[[L.block_template]]</span>
 				</cs-table-cell>
 				<cs-table-cell>
 					<select name="block[template]" size="5">
-						<template repeat="{{template in json.templates}}">
-							<option selected?="{{template == json.block_data.template}}" value="{{template}}">{{template}}</option>
+						<template repeat="[[template in json.templates]]">
+							<option selected?="[[template == json.block_data.template]]" value="[[template]]">[[template]]</option>
 						</template>
 					</select>
 				</cs-table-cell>
 			</cs-table-row>
 			<cs-table-row>
 				<cs-table-cell>
-					<span data-uk-tooltip="[[tooltip_animation]]" title="{{translations.block_start_info}}">{{translations.block_start}}</span>
+					<span data-uk-tooltip="[[tooltip_animation]]" title="[[L.block_start_info]]">[[L.block_start]]</span>
 				</cs-table-cell>
 				<cs-table-cell>
-					<input name="block[start]" type="datetime-local" value="{{json.block_data.start}}">
+					<input name="block[start]" type="datetime-local" value="[[json.block_data.start]]">
 				</cs-table-cell>
 			</cs-table-row>
 			<cs-table-row>
 				<cs-table-cell>
-					<span data-uk-tooltip="[[tooltip_animation]]" title="{{translations.block_expire_info}}">{{translations.block_expire}}</span>
+					<span data-uk-tooltip="[[tooltip_animation]]" title="[[L.block_expire_info]]">[[L.block_expire]]</span>
 				</cs-table-cell>
 				<cs-table-cell>
 					<span class="uk-button-group" data-uk-button-radio>
-						<label class="uk-button {{expire_never_class}}">
-							<input checked?="{{!json.block_data.expire.state}}" name="block[expire][state]" type="radio" value="0"> {{translations.never}}
+						<label class="uk-button [[expire_never_class]]">
+							<input checked?="[[!json.block_data.expire.state]]" name="block[expire][state]" type="radio" value="0"> [[L.never]]
 						</label>
-						<label class="uk-button {{expire_as_specified_class}}">
-							<input checked?="{{json.block_data.expire.state}}" name="block[expire][state]" type="radio" value="1"> {{translations.as_specified}}
+						<label class="uk-button [[expire_as_specified_class]]">
+							<input checked?="[[json.block_data.expire.state]]" name="block[expire][state]" type="radio" value="1"> [[L.as_specified]]
 						</label>
 					</span>
 					<br>
 					<br>
-					<input name="block[expire][date]" type="datetime-local" value="{{json.block_data.expire.date}}">
+					<input name="block[expire][date]" type="datetime-local" value="[[json.block_data.expire.date]]">
 				</cs-table-cell>
 			</cs-table-row>
 		</cs-table>
-		<div hidden?="{{json.block_data.type != 'html'}}" class="html uk-form">
+		<div hidden?="[[json.block_data.type != 'html']]" class="html uk-form">
 			<textarea class="EDITOR" name="block[html]"></textarea>
 		</div>
-		<div hidden?="{{json.block_data.type != 'raw_html'}}" class="raw_html uk-form">
+		<div hidden?="[[json.block_data.type != 'raw_html']]" class="raw_html uk-form">
 			<textarea name="block[raw_html]"></textarea>
 		</div>
 	</template>

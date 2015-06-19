@@ -13,25 +13,9 @@
   (function(L) {
     return Polymer({
       tooltip_animation: '{animation:true,delay:200}',
-      translations: {
-        module_name: L.module_name,
-        state: L.state,
-        api_exists: L.api_exists,
-        information_about_module: L.information_about_module,
-        license: L.license,
-        click_to_view_details: L.click_to_view_details,
-        action: L.action,
-        make_default_module: L.make_default_module,
-        databases: L.databases,
-        storages: L.storages,
-        module_admin_page: L.module_admin_page,
-        enable: L.enable,
-        disable: L.disable,
-        install: L.install,
-        uninstall: L.uninstall
-      },
+      L: L,
       modules: [],
-      ready: function() {
+      created: function() {
         var modules;
         modules = JSON.parse(this.querySelector('script').innerHTML);
         modules.forEach(function(module) {
@@ -78,9 +62,7 @@
             if (!meta) {
               return;
             }
-            return $(function() {
-              return module.info = L.module_info(meta["package"], meta.version, meta.description, meta.author, meta.website || L.none, meta.license, meta.db_support ? meta.db_support.join(', ') : L.none, meta.storage_support ? meta.storage_support.join(', ') : L.none, meta.provide ? [].concat(meta.provide).join(', ') : L.none, meta.require ? [].concat(meta.require).join(', ') : L.none, meta.conflict ? [].concat(meta.conflict).join(', ') : L.none, meta.optional ? [].concat(meta.optional).join(', ') : L.none, meta.multilingual && meta.multilingual.indexOf('interface') !== -1 ? L.yes : L.no, meta.multilingual && meta.multilingual.indexOf('content') !== -1 ? L.yes : L.no, meta.languages ? meta.languages.join(', ') : L.none);
-            });
+            return module.info = L.module_info(meta["package"], meta.version, meta.description, meta.author, meta.website || L.none, meta.license, meta.db_support ? meta.db_support.join(', ') : L.none, meta.storage_support ? meta.storage_support.join(', ') : L.none, meta.provide ? [].concat(meta.provide).join(', ') : L.none, meta.require ? [].concat(meta.require).join(', ') : L.none, meta.conflict ? [].concat(meta.conflict).join(', ') : L.none, meta.optional ? [].concat(meta.optional).join(', ') : L.none, meta.multilingual && meta.multilingual.indexOf('interface') !== -1 ? L.yes : L.no, meta.multilingual && meta.multilingual.indexOf('content') !== -1 ? L.yes : L.no, meta.languages ? meta.languages.join(', ') : L.none);
           })(module.meta);
         });
         return this.modules = modules;

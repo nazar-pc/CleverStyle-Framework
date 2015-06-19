@@ -13,18 +13,9 @@
   (function(L) {
     return Polymer({
       tooltip_animation: '{animation:true,delay:200}',
-      translations: {
-        plugin_name: L.plugin_name,
-        state: L.state,
-        information_about_plugin: L.information_about_plugin,
-        license: L.license,
-        click_to_view_details: L.click_to_view_details,
-        action: L.action,
-        enable: L.enable,
-        disable: L.disable
-      },
+      L: L,
       plugins: [],
-      ready: function() {
+      created: function() {
         var plugins;
         plugins = JSON.parse(this.querySelector('script').innerHTML);
         plugins.forEach(function(plugin) {
@@ -36,9 +27,7 @@
             if (!meta) {
               return;
             }
-            return $(function() {
-              return plugin.info = L.plugin_info(meta["package"], meta.version, meta.description, meta.author, meta.website || L.none, meta.license, meta.provide ? [].concat(meta.provide).join(', ') : L.none, meta.require ? [].concat(meta.require).join(', ') : L.none, meta.conflict ? [].concat(meta.conflict).join(', ') : L.none, meta.optional ? [].concat(meta.optional).join(', ') : L.none, meta.multilingual && meta.multilingual.indexOf('interface') !== -1 ? L.yes : L.no, meta.multilingual && meta.multilingual.indexOf('content') !== -1 ? L.yes : L.no, meta.languages ? meta.languages.join(', ') : L.none);
-            });
+            return plugin.info = L.plugin_info(meta["package"], meta.version, meta.description, meta.author, meta.website || L.none, meta.license, meta.provide ? [].concat(meta.provide).join(', ') : L.none, meta.require ? [].concat(meta.require).join(', ') : L.none, meta.conflict ? [].concat(meta.conflict).join(', ') : L.none, meta.optional ? [].concat(meta.optional).join(', ') : L.none, meta.multilingual && meta.multilingual.indexOf('interface') !== -1 ? L.yes : L.no, meta.multilingual && meta.multilingual.indexOf('content') !== -1 ? L.yes : L.no, meta.languages ? meta.languages.join(', ') : L.none);
           })(plugin.meta);
         });
         return this.plugins = plugins;

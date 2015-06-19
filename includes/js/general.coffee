@@ -4,8 +4,20 @@
  * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
 ###
+L	= cs.Language
+for own key, translation of L
+	L[key]		= (do (translation) ->
+		result	= ->
+			vsprintf(translation, Array::slice.call(arguments))
+		result.toString	= ->
+			translation
+		result
+	)
+L.get		= (key) ->
+	L[key].toString()
+L.format	= (key) ->
+	vsprintf(L[key].toString(), Array::slice.call(arguments, 1))
 $ ->
-	L	= cs.Language
 	$.ajaxSetup
 		type	: 'post'
 		data	:
@@ -15,18 +27,6 @@ $ ->
 				alert(JSON.parse(xhr.responseText).error_description)
 			else
 				alert(L.connection_error)
-	for own key, translation of L
-		L[key]		= (do (translation) ->
-			result	= ->
-				vsprintf(translation, Array::slice.call(arguments))
-			result.toString	= ->
-				translation
-			result
-		)
-	L.get		= (key) ->
-		L[key].toString()
-	L.format	= (key) ->
-		vsprintf(L[key].toString(), Array::slice.call(arguments, 1))
 	$('.cs-header-sign-in-slide').click ->
 		$('.cs-header-guest-form').removeClass('active')
 		$('.cs-header-sign-in-form').addClass('active')

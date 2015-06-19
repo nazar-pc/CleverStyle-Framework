@@ -9,24 +9,9 @@
 do (L = cs.Language) ->
 	Polymer(
 		tooltip_animation	:'{animation:true,delay:200}'
-		translations		:
-			module_name					: L.module_name
-			state						: L.state
-			api_exists					: L.api_exists
-			information_about_module	: L.information_about_module
-			license						: L.license
-			click_to_view_details		: L.click_to_view_details
-			action						: L.action
-			make_default_module			: L.make_default_module
-			databases					: L.databases
-			storages					: L.storages
-			module_admin_page			: L.module_admin_page
-			enable						: L.enable
-			disable						: L.disable
-			install						: L.install
-			uninstall					: L.uninstall
+		L					: L
 		modules				: []
-		ready				: ->
+		created				: ->
 			modules = JSON.parse(@querySelector('script').innerHTML)
 			modules.forEach (module) ->
 				module.class			=
@@ -48,24 +33,23 @@ do (L = cs.Language) ->
 				do (meta = module.meta) ->
 					if !meta
 						return
-					$ ->
-						module.info	= L.module_info(
-							meta.package,
-							meta.version,
-							meta.description,
-							meta.author,
-							meta.website || L.none,
-							meta.license,
-							if meta.db_support then meta.db_support.join(', ') else L.none,
-							if meta.storage_support then meta.storage_support.join(', ') else L.none,
-							if meta.provide then [].concat(meta.provide).join(', ') else L.none,
-							if meta.require then [].concat(meta.require).join(', ') else L.none,
-							if meta.conflict then [].concat(meta.conflict).join(', ') else L.none,
-							if meta.optional then [].concat(meta.optional).join(', ') else L.none,
-							if meta.multilingual && meta.multilingual.indexOf('interface') != -1 then L.yes else L.no,
-							if meta.multilingual && meta.multilingual.indexOf('content') != -1 then L.yes else L.no,
-							if meta.languages then meta.languages.join(', ') else L.none
-						)
+					module.info	= L.module_info(
+						meta.package,
+						meta.version,
+						meta.description,
+						meta.author,
+						meta.website || L.none,
+						meta.license,
+						if meta.db_support then meta.db_support.join(', ') else L.none,
+						if meta.storage_support then meta.storage_support.join(', ') else L.none,
+						if meta.provide then [].concat(meta.provide).join(', ') else L.none,
+						if meta.require then [].concat(meta.require).join(', ') else L.none,
+						if meta.conflict then [].concat(meta.conflict).join(', ') else L.none,
+						if meta.optional then [].concat(meta.optional).join(', ') else L.none,
+						if meta.multilingual && meta.multilingual.indexOf('interface') != -1 then L.yes else L.no,
+						if meta.multilingual && meta.multilingual.indexOf('content') != -1 then L.yes else L.no,
+						if meta.languages then meta.languages.join(', ') else L.none
+					)
 			@modules = modules
 		domReady			: ->
 			$(@shadowRoot).cs().tooltips_inside()
