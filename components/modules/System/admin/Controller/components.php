@@ -74,7 +74,7 @@ trait components {
 						h::{'h2.cs-center'}(
 							$L->adding_a_block
 						).
-						h::{'cs-system-components-blocks-form script[type=application/json]'}(
+						h::{'cs-system-components-blocks-form.uk-display-block.uk-margin-bottom script[type=application/json]'}(
 							json_encode(
 								[
 									'types'      => array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4)),
@@ -103,7 +103,7 @@ trait components {
 						h::{'h2.cs-center'}(
 							$L->editing_a_block(static::get_block_title($id))
 						).
-						h::{'cs-system-components-blocks-form script[type=application/json]'}(
+						h::{'cs-system-components-blocks-form.uk-display-block.uk-margin-bottom script[type=application/json]'}(
 							json_encode(
 								[
 									'types'      => array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4)),
