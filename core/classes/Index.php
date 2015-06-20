@@ -95,7 +95,7 @@ class Index {
 	 *
 	 * @var string[]
 	 */
-	protected $controller_path = [];
+	protected $controller_path = ['index'];
 	/**
 	 * Detecting module folder including of admin/api request type, including prepare file, including of plugins
 	 *
@@ -219,34 +219,29 @@ class Index {
 		if (!$structure) {
 			return;
 		}
-		/**
-		 * First level path routing
-		 */
-		$path = @$this->path[0];
-		/**
-		 * If path not specified - take first from structure
-		 */
-		$code = $this->check_and_normalize_route_internal($path, $structure);
-		if ($code !== 200) {
-			error_code($code);
-			return;
+		for ($nesting_level = 0; $structure; ++$nesting_level) {
+			/**
+			 * Next level of routing path
+			 */
+			$path = @$this->path[$nesting_level];
+			/**
+			 * If path not specified - take first from structure
+			 */
+			$code = $this->check_and_normalize_route_internal($path, $structure);
+			if ($code !== 200) {
+				error_code($code);
+				return;
+			}
+			$this->path[$nesting_level] = $path;
+			/**
+			 * Fill paths array intended for controller's usage
+			 */
+			$this->controller_path[] = $path;
+			/**
+			 * If nested structure is not available - wr'll not go into next iteration of thi cycle
+			 */
+			$structure = @$structure[$path];
 		}
-		$this->path[0]           = $path;
-		$this->controller_path[] = $path;
-		/**
-		 * If there is second level routing in structure - handle that
-		 */
-		if (!@$structure[$path]) {
-			return;
-		}
-		$sub_path = @$this->path[1];
-		$code     = $this->check_and_normalize_route_internal($sub_path, $structure[$path]);
-		if ($code !== 200) {
-			error_code($code);
-			return;
-		}
-		$this->path[1]           = $sub_path;
-		$this->controller_path[] = $sub_path;
 	}
 	/**
 	 * @param string $path
@@ -259,6 +254,9 @@ class Index {
 		 * If path not specified - take first from structure
 		 */
 		if (!$path) {
+			/**
+			 * We need exact paths for API request and less strict mode for other cases
+			 */
 			if (api_path()) {
 				return 404;
 			}
@@ -273,19 +271,13 @@ class Index {
 	}
 	/**
 	 * Include files necessary for module page rendering
-	 *
-	 * @param string $path
-	 * @param string $sub_path
 	 */
-	protected function files_router ($path, $sub_path) {
-		if (!$this->files_router_handler($this->working_directory, 'index', !$path)) {
-			return;
-		}
-		if (!isset($this->controller_path[0]) || !$this->files_router_handler($this->working_directory, $path, !$sub_path)) {
-			return;
-		}
-		if (!isset($this->controller_path[1]) || !$this->files_router_handler("$this->working_directory/$path", $sub_path)) {
-			return;
+	protected function files_router () {
+		foreach ($this->controller_path as $index => $path) {
+			$next_exists = isset($this->controller_path[$index + 1]);
+			if (!$this->files_router_handler($this->working_directory, $path, !$next_exists)) {
+				return;
+			}
 		}
 	}
 	/**
@@ -321,11 +313,8 @@ class Index {
 	}
 	/**
 	 * Call methods necessary for module page rendering
-	 *
-	 * @param string $path
-	 * @param string $sub_path
 	 */
-	protected function controller_router ($path, $sub_path) {
+	protected function controller_router () {
 		$suffix = '';
 		if ($this->in_admin) {
 			$suffix = '\\admin';
@@ -333,14 +322,17 @@ class Index {
 			$suffix = '\\api';
 		}
 		$controller_class = "cs\\modules\\$this->module$suffix\\Controller";
-		if (!$this->controller_router_handler($controller_class, 'index', !$path)) {
-			return;
-		}
-		if (!isset($this->controller_path[0]) || !$this->controller_router_handler($controller_class, $path, !$sub_path)) {
-			return;
-		}
-		if (!isset($this->controller_path[1]) || !$this->controller_router_handler($controller_class, $path.'_'.$sub_path)) {
-			return;
+		foreach ($this->controller_path as $index => $path) {
+			/**
+			 * Starting from index 2 we need to maintain underscore-separated string that includes all paths from index 1 and till current
+			 */
+			if ($index > 1) {
+				$path = implode('_', array_slice($this->controller_path, 1, $index));
+			}
+			$next_exists = isset($this->controller_path[$index + 1]);
+			if (!$this->controller_router_handler($controller_class, $path, !$next_exists)) {
+				return;
+			}
 		}
 	}
 	/**
@@ -460,7 +452,7 @@ class Index {
 		$this->check_and_normalize_route();
 		if (!error_code()) {
 			$router = file_exists("$this->working_directory/Controller.php") ? 'controller_router' : 'files_router';
-			$this->$router(@$this->path[0], @$this->path[1]);
+			$this->$router();
 		}
 		if (error_code()) {
 			$Page->error();
