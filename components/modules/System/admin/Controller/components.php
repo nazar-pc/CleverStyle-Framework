@@ -25,10 +25,7 @@ use
 	h;
 
 trait components {
-	static function components_blocks (
-		$route_ids,
-		$route_path
-	) {
+	static function components_blocks ($route_ids, $route_path) {
 		$Config = Config::instance();
 		$L      = Language::instance();
 		$Page   = Page::instance();
@@ -359,10 +356,7 @@ trait components {
 		$Config = Config::instance();
 		return Text::instance()->process($Config->module('System')->db('texts'), $Config->components['blocks'][$id]['content']);
 	}
-	static function components_databases (
-		$route_ids,
-		$route_path
-	) {
+	static function components_databases ($route_ids, $route_path) {
 		$Config       = Config::instance();
 		$Core         = Core::instance();
 		$L            = Language::instance();

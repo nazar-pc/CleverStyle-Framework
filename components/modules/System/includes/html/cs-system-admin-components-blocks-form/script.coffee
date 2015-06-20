@@ -7,7 +7,7 @@
  * @license    MIT License, see license.txt
 ###
 get_active_class	= (is_active) -> if is_active then 'uk-active' else ''
-L = cs.Language
+L					= cs.Language
 Polymer(
 	tooltip_animation	:'{animation:true,delay:200}'
 	L					: L
@@ -22,7 +22,8 @@ Polymer(
 		@expire_never_class			= get_active_class(!json.block_data.expire.state)
 		@expire_as_specified_class	= get_active_class(json.block_data.expire.state)
 		@json						= json
-		$(@shadowRoot).find('textarea').val(json.block_data.content)
+	ready				: ->
+		$(@shadowRoot).find('textarea').val(@json.block_data.content)
 	domReady			: ->
 		$(@shadowRoot)
 			.cs().tooltips_inside()
