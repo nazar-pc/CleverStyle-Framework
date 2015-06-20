@@ -72,8 +72,6 @@ class Index {
 	protected $request_method;
 	protected $working_directory = '';
 	protected $called_once       = false;
-	protected $path_required     = false;
-	protected $sub_path_required = false;
 	/**
 	 * Reference to Route::instance()->route
 	 *
@@ -92,6 +90,12 @@ class Index {
 	 * @var int[]
 	 */
 	protected $ids = [];
+	/**
+	 * Path that will be used by controller to render page
+	 *
+	 * @var string[]
+	 */
+	protected $controller_path = [];
 	/**
 	 * Detecting module folder including of admin/api request type, including prepare file, including of plugins
 	 *
@@ -141,6 +145,7 @@ class Index {
 		$this->request_method = strtolower($_SERVER->request_method);
 		if (!preg_match('/^[a-z]+$/', $this->request_method)) {
 			error_code(400);
+			throw new \ExitException;
 		}
 	}
 	/**
@@ -214,7 +219,6 @@ class Index {
 		if (!$structure) {
 			return;
 		}
-		$this->path_required = true;
 		/**
 		 * First level path routing
 		 */
@@ -227,21 +231,22 @@ class Index {
 			error_code($code);
 			return;
 		}
-		$this->path[0] = $path;
+		$this->path[0]           = $path;
+		$this->controller_path[] = $path;
 		/**
 		 * If there is second level routing in structure - handle that
 		 */
 		if (!@$structure[$path]) {
 			return;
 		}
-		$this->sub_path_required = true;
-		$sub_path                = @$this->path[1];
-		$code                    = $this->check_and_normalize_route_internal($sub_path, $structure[$path]);
+		$sub_path = @$this->path[1];
+		$code     = $this->check_and_normalize_route_internal($sub_path, $structure[$path]);
 		if ($code !== 200) {
 			error_code($code);
 			return;
 		}
-		$this->path[1] = $sub_path;
+		$this->path[1]           = $sub_path;
+		$this->controller_path[] = $sub_path;
 	}
 	/**
 	 * @param string $path
@@ -276,10 +281,10 @@ class Index {
 		if (!$this->files_router_handler($this->working_directory, 'index', !$path)) {
 			return;
 		}
-		if (!$this->path_required || !$this->files_router_handler($this->working_directory, $path, !$sub_path)) {
+		if (!isset($this->controller_path[0]) || !$this->files_router_handler($this->working_directory, $path, !$sub_path)) {
 			return;
 		}
-		if (!$this->sub_path_required || !$this->files_router_handler("$this->working_directory/$path", $sub_path)) {
+		if (!isset($this->controller_path[1]) || !$this->files_router_handler("$this->working_directory/$path", $sub_path)) {
 			return;
 		}
 	}
@@ -331,10 +336,10 @@ class Index {
 		if (!$this->controller_router_handler($controller_class, 'index', !$path)) {
 			return;
 		}
-		if (!$this->path_required || !$this->controller_router_handler($controller_class, $path, !$sub_path)) {
+		if (!isset($this->controller_path[0]) || !$this->controller_router_handler($controller_class, $path, !$sub_path)) {
 			return;
 		}
-		if (!$this->sub_path_required || !$this->controller_router_handler($controller_class, $path.'_'.$sub_path)) {
+		if (!isset($this->controller_path[1]) || !$this->controller_router_handler($controller_class, $path.'_'.$sub_path)) {
 			return;
 		}
 	}
