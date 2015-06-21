@@ -8,34 +8,6 @@
  */
 
 (function() {
-  var L, key, translation,
-    hasProp = {}.hasOwnProperty;
-
-  L = cs.Language;
-
-  for (key in L) {
-    if (!hasProp.call(L, key)) continue;
-    translation = L[key];
-    L[key] = (function(translation) {
-      var result;
-      result = function() {
-        return vsprintf(translation, Array.prototype.slice.call(arguments));
-      };
-      result.toString = function() {
-        return translation;
-      };
-      return result;
-    })(translation);
-  }
-
-  L.get = function(key) {
-    return L[key].toString();
-  };
-
-  L.format = function(key) {
-    return vsprintf(L[key].toString(), Array.prototype.slice.call(arguments, 1));
-  };
-
   $(function() {
     $.ajaxSetup({
       type: 'post',
