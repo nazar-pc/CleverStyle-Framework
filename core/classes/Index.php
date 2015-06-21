@@ -238,7 +238,7 @@ class Index {
 			 */
 			$this->controller_path[] = $path;
 			/**
-			 * If nested structure is not available - wr'll not go into next iteration of thi cycle
+			 * If nested structure is not available - we'll not go into next iteration of this cycle
 			 */
 			$structure = @$structure[$path];
 		}
@@ -254,13 +254,13 @@ class Index {
 		 * If path not specified - take first from structure
 		 */
 		if (!$path) {
+			$path = isset($structure[0]) ? $structure[0] : array_keys($structure)[0];
 			/**
-			 * We need exact paths for API request and less strict mode for other cases
+			 * We need exact paths for API request (or `_` ending if available) and less strict mode for other cases that allows go deeper automatically
 			 */
-			if (api_path()) {
+			if ($path !== '_' && api_path()) {
 				return 404;
 			}
-			$path = isset($structure[0]) ? $structure[0] : array_keys($structure)[0];
 		} elseif (!isset($structure[$path]) && !in_array($path, $structure)) {
 			return 404;
 		}
