@@ -219,7 +219,7 @@ class Index {
 		if (!$structure) {
 			return;
 		}
-		for ($nesting_level = 0; $structure || isset($this->path[$nesting_level]); ++$nesting_level) {
+		for ($nesting_level = 0; $structure; ++$nesting_level) {
 			/**
 			 * Next level of routing path
 			 */
@@ -402,6 +402,8 @@ class Index {
 	}
 	/**
 	 * Page generation, blocks processing, adding of form with save/apply/cancel/reset and/or custom users buttons
+	 *
+	 * @throws \ExitException
 	 */
 	protected function render_page () {
 		$this->render_title();
@@ -725,6 +727,8 @@ class Index {
 	}
 	/**
 	 * Executes plugins processing, blocks and module page generation
+	 *
+	 * @throws \ExitException
 	 */
 	function __finish () {
 		/**
