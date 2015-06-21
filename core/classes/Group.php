@@ -198,7 +198,7 @@ class Group {
 			foreach ($group as &$g) {
 				$g = $this->del($g);
 			}
-			return array_filter($group);
+			return (bool)array_filter($group);
 		}
 		$group = (int)$group;
 		Event::instance()->fire(
