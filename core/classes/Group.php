@@ -51,12 +51,18 @@ class Group {
 	/**
 	 * Get group data
 	 *
-	 * @param int          $group
+	 * @param int|int[]    $group
 	 * @param false|string $item If <b>false</b> - array will be returned, if title|description|data - corresponding item
 	 *
-	 * @return array|false|mixed
+	 * @return array|array[]|false|mixed
 	 */
 	function get ($group, $item = false) {
+		if (is_array($group)) {
+			foreach ($group as &$g) {
+				$g = $this->get($g, $item);
+			}
+			return $group;
+		}
 		$group = (int)$group;
 		if (!$group) {
 			return false;
@@ -183,11 +189,17 @@ class Group {
 	/**
 	 * Delete group
 	 *
-	 * @param int $group
+	 * @param int|int[] $group
 	 *
 	 * @return bool
 	 */
 	function del ($group) {
+		if (is_array($group)) {
+			foreach ($group as &$g) {
+				$g = $this->del($g);
+			}
+			return array_filter($group);
+		}
 		$group = (int)$group;
 		Event::instance()->fire(
 			'System/User/Group/del/before',
