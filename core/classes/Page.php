@@ -439,23 +439,24 @@ class Page {
 			return;
 		}
 		$this->error_showed	= true;
-		if (!error_code()) {
-			error_code(500);
+		$error = error_code();
+		if (!$error) {
+			error_code($error = 500);
 		}
 		/**
 		 * Hack for 403 after sign out in administration
 		 */
-		if (!api_path() && error_code() == 403 && _getcookie('sign_out')) {
+		if ($error == 403 && !api_path() && _getcookie('sign_out')) {
 			_header('Location: /', true, 302);
 			$this->Content	= '';
 			throw new \ExitException;
 		}
 		interface_off();
-		$error	= code_header(error_code());
+		$error_description	= code_header($error);
 		if (is_array($custom_text)) {
 			list($error, $error_description)	= $custom_text;
-		} else {
-			$error_description	= $custom_text ?: $error;
+		} elseif ($custom_text) {
+			$error_description	= $custom_text;
 		}
 		if ($json || api_path()) {
 			if ($json) {
@@ -473,7 +474,7 @@ class Page {
 				!_include(THEMES."/$this->theme/error.php", false, false)
 			) {
 				echo "<!doctype html>\n".
-					h::title(code_header($error)).
+					h::title($error_description).
 					($error_description ?: $error);
 			}
 			$this->Content	= ob_get_clean();

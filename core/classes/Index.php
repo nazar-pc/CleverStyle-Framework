@@ -219,7 +219,7 @@ class Index {
 		if (!$structure) {
 			return;
 		}
-		for ($nesting_level = 0; $structure; ++$nesting_level) {
+		for ($nesting_level = 0; $structure || isset($this->path[$nesting_level]); ++$nesting_level) {
 			/**
 			 * Next level of routing path
 			 */
