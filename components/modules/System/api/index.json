@@ -1,21 +1,26 @@
 {
-	"user"		: [
+	"user"     : [
 		"sign_in",
 		"sign_out",
 		"registration",
 		"change_password",
 		"restore_password"
 	],
-	"admin"		: [
-		"blocks_search_users",
-		"cache",
-		"databases_test",
-		"storages_test",
-		"email_sending_test"
-	],
-	"profile"	: [
+	"admin"    : {
+		"blocks_search_users" : [],
+		"cache"               : [],
+		"databases_test"      : [],
+		"email_sending_test"  : [],
+		"groups"              : [],
+		"permissions"         : [
+			"for_item"
+		],
+		"storages_test"       : [],
+		"users"               : []
+	},
+	"profile"  : [
 		"profile",
 		"contacts"
 	],
-	"profiles"	: []
+	"profiles" : []
 }
