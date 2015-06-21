@@ -59,16 +59,20 @@ trait packages_manipulation {
 	static protected function install_extract ($target_directory, $source_phar) {
 		$tmp_dir = "phar://$source_phar";
 		$fs      = file_get_json("$tmp_dir/fs.json");
-		$extract = array_product(
+		$extract = array_filter(
 			array_map(
 				function ($index, $file) use ($tmp_dir, $target_directory) {
 					if (
 						!file_exists(dirname("$target_directory/$file")) &&
 						!mkdir(dirname("$target_directory/$file"), 0770, true)
 					) {
-						return 0;
+						return false;
 					}
-					return (int)copy("$tmp_dir/fs/$index", "$target_directory/$file");
+					/**
+					 * TODO: copy() + file_exists() is a hack for HHVM, when bug fixed upstream (copying of empty files) this should be simplified
+					 */
+					copy("$tmp_dir/fs/$index", "$target_directory/$file");
+					return file_exists("$target_directory/$file");
 				},
 				$fs,
 				array_keys($fs)
@@ -103,16 +107,20 @@ trait packages_manipulation {
 		 */
 		$tmp_dir = "phar://$source_phar";
 		$fs      = file_get_json("$tmp_dir/fs.json");
-		$extract = array_product(
+		$extract = array_filter(
 			array_map(
 				function ($index, $file) use ($tmp_dir, $target_directory) {
 					if (
 						!file_exists(dirname("$target_directory/$file")) &&
 						!mkdir(dirname("$target_directory/$file"), 0770, true)
 					) {
-						return 0;
+						return false;
 					}
-					return (int)copy("$tmp_dir/fs/$index", "$target_directory/$file");
+					/**
+					 * TODO: copy() + file_exists() is a hack for HHVM, when bug fixed upstream (copying of empty files) this should be simplified
+					 */
+					copy("$tmp_dir/fs/$index", "$target_directory/$file");
+					return file_exists("$target_directory/$file");
 				},
 				$fs,
 				array_keys($fs)

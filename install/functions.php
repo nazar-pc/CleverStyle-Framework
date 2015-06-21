@@ -223,20 +223,20 @@ function install_process ($fs, $argv = null) {
 	/**
 	 * Extracting of engine's files
 	 */
-	$extract = array_product(
+	$extract = array_filter(
 		array_map(
 			function ($index, $file) {
 				if (
 					!file_exists(dirname(ROOT."/$file")) &&
 					!mkdir(dirname(ROOT."/$file"), 0770, true)
 				) {
-					return 0;
+					return false;
 				}
 				/**
 				 * TODO: copy() + file_exists() is a hack for HHVM, when bug fixed upstream (copying of empty files) this should be simplified
 				 */
 				copy(DIR."/fs/$index", ROOT."/$file");
-				return (int)file_exists(ROOT."/$file");
+				return file_exists(ROOT."/$file");
 			},
 			$fs,
 			array_keys($fs)
