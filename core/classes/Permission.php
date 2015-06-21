@@ -52,12 +52,7 @@ class Permission {
 	 */
 	function get ($id = null, $group = null, $label = null, $condition = 'and') {
 		$condition = $condition == 'or' ? 'OR' : 'AND';
-		if (
-			$group !== null &&
-			$group &&
-			$label !== null &&
-			$label
-		) {
+		if ($group !== null && $label !== null) {
 			return $this->db()->qfa(
 				[
 					"SELECT
@@ -72,7 +67,7 @@ class Permission {
 					$label
 				]
 			);
-		} /** @noinspection NotOptimalIfConditionsInspection */ elseif ($group !== null && $group) {
+		} /** @noinspection NotOptimalIfConditionsInspection */ elseif ($group !== null) {
 			return $this->db()->qfa(
 				[
 					"SELECT
@@ -84,7 +79,7 @@ class Permission {
 					$group
 				]
 			);
-		} /** @noinspection NotOptimalIfConditionsInspection */ elseif ($label !== null && $label) {
+		} /** @noinspection NotOptimalIfConditionsInspection */ elseif ($label !== null) {
 			return $this->db()->qfa(
 				[
 					"SELECT
