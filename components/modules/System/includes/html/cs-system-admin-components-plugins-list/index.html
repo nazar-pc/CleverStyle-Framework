@@ -7,11 +7,16 @@
 				<cs-table-cell>[[L.action]]</cs-table-cell>
 			</cs-table-row>
 			<template repeat="[[plugin, index in plugins]]">
-				<cs-table-row data-plugin-index="{{index}}">
-					<cs-table-cell class="[[plugin.class]]">
-						<a href="/admin/[[plugin.name]]" data-uk-tooltip="[[tooltip_animation]]" title="[[plugin.info]]">[[plugin.name_localized]]</a>
+				<cs-table-row data-plugin-index="{{index}}" class="[[plugin.class]]">
+					<cs-table-cell>
+						<template if="[[plugin.info]]">
+							<a href="/admin/[[plugin.name]]" data-uk-tooltip="[[tooltip_animation]]" title="[[plugin.info]]">[[plugin.name_localized]]</a>
+						</template>
+						<template if="[[!plugin.info]]">
+							<a href="/admin/[[plugin.name]]">[[plugin.name_localized]]</a>
+						</template>
 					</cs-table-cell>
-					<cs-table-cell class="[[plugin.class]]">
+					<cs-table-cell>
 						<span class="[[plugin.icon]]" data-uk-tooltip="[[tooltip_animation]]" title="[[plugin.icon_text]]"></span>
 						<template if="[[plugin.readme]]">
 							<span class="uk-button cs-button-compact uk-icon-book" on-click="[[generic_modal]]" data-modal-type="readme" data-uk-tooltip="[[tooltip_animation]]" title="[[L.information_about_plugin]], [[L.click_to_view_details]]"></span>
@@ -20,7 +25,7 @@
 							<span class="uk-button cs-button-compact uk-icon-legal" on-click="[[generic_modal]]" data-modal-type="license" data-uk-tooltip="[[tooltip_animation]]" title="[[L.license]], [[L.click_to_view_details]]"></span>
 						</template>
 					</cs-table-cell>
-					<cs-table-cell class="[[plugin.class]]">
+					<cs-table-cell>
 						<template if="[[plugin.active == 1]]">
 							<a class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" href="/admin/System/components/plugins/disable/[[plugin.name]]" title="[[L.disable]]">
 								<span class="uk-icon-minus"></span>
