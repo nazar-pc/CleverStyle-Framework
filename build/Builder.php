@@ -255,7 +255,7 @@ class Builder {
 		$phar->addFromString(
 			'fs/'.count($core_files),
 			_json_encode(
-				array_flip(
+				array_values(
 					array_diff(
 						$core_files,
 						_substr($components_files, $length)
