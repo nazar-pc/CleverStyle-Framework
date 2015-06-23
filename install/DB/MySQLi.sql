@@ -39,22 +39,13 @@ CREATE TABLE IF NOT EXISTS `[prefix]keys` (
   KEY `expire` (`expire`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='Temporary keys';
 
-CREATE TABLE IF NOT EXISTS `[prefix]sign_ins` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `expire` bigint(20) NOT NULL,
-  `login_hash` varchar(56) NOT NULL,
-  `ip` varchar(32) NOT NULL,
-  PRIMARY KEY (`expire`,`login_hash`,`ip`),
-  UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
-
 CREATE TABLE IF NOT EXISTS `[prefix]permissions` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `label` varchar(1024) NOT NULL,
   `group` varchar(1024) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `label` (`label`(255)),
-  KEY `group` (`group`(255))
+  KEY `label` (`label`(191)),
+  KEY `group` (`group`(191))
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 INSERT INTO `[prefix]permissions` (`label`, `group`) VALUES ('index', 'admin/System'), ('index', 'api/System');
@@ -71,6 +62,15 @@ CREATE TABLE IF NOT EXISTS `[prefix]sessions` (
   PRIMARY KEY (`id`(32),`expire`,`user_agent`(191),`remote_addr`(32),`ip`(32)),
   KEY `user` (`user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `[prefix]sign_ins` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `expire` bigint(20) NOT NULL,
+  `login_hash` varchar(56) NOT NULL,
+  `ip` varchar(32) NOT NULL,
+  PRIMARY KEY (`expire`,`login_hash`,`ip`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]texts` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -127,8 +127,8 @@ CREATE TABLE IF NOT EXISTS `[prefix]users_data` (
   `id` int(10) unsigned NOT NULL COMMENT 'User id',
   `item` varchar(1024) NOT NULL,
   `value` mediumtext NOT NULL,
-  PRIMARY KEY (`id`,`item`(255)),
-  KEY `item` (`item`(255))
+  PRIMARY KEY (`id`,`item`(191)),
+  KEY `item` (`item`(191))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `[prefix]users_groups` (
