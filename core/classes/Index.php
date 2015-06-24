@@ -274,6 +274,12 @@ class Index {
 	 */
 	protected function files_router () {
 		foreach ($this->controller_path as $index => $path) {
+			/**
+			 * Starting from index 2 we need to maintain slash-separated string that includes all paths from index 1 and till current
+			 */
+			if ($index > 1) {
+				$path = implode('/', array_slice($this->controller_path, 1, $index));
+			}
 			$next_exists = isset($this->controller_path[$index + 1]);
 			if (!$this->files_router_handler($this->working_directory, $path, !$next_exists)) {
 				return;
