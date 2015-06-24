@@ -112,7 +112,6 @@ class Request {
 	protected function bootstrap () {
 		_header('Content-Type: text/html; charset=utf-8');
 		_header('Vary: Content-Language,User-Agent,Cookie');
-		_header('Connection: close');
 	}
 	/**
 	 * Various cleanups after processing of current request to free used memory

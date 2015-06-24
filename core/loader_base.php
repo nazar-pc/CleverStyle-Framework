@@ -14,7 +14,6 @@ error_reporting(E_ALL);
 header('Content-Type: text/html; charset=utf-8');
 header('Vary: Content-Language,User-Agent,Cookie');
 mb_internal_encoding('utf-8');
-header('Connection: close');
 /**
  * Defining of basic constants with paths to system directories
  */
