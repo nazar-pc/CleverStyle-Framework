@@ -36,29 +36,44 @@ unset(
 );
 $Page->content(
 	h::{'section[is=cs-shop-item]'}(
-		h::{'#images img'}(array_map(function ($image) {
-			return [
-				'src' => $image
-			];
-		}, $item['images'] ?: Items::DEFAULT_IMAGE)).
-		h::{'#videos a'}(array_map(function ($video) {
-			return [
-				$video['poster'] ? h::img([
-					'src' => $video['poster']
-				]) : '',
-				[
-					'href' => $video['video']
-				]
-			];
-		}, $item['videos']) ?: false).
+		h::{'#images'}(
+			implode(
+				'',
+				array_map(
+					function ($image) {
+						return h::img(['src' => $image]);
+					},
+					$item['images'] ?: Items::DEFAULT_IMAGE
+				)
+			)
+		).
+		h::{'#videos a'}(
+			array_map(
+				function ($video) {
+					$content = $video['poster'] ? h::img(['src' => $video['poster']]) : '';
+					return [
+						$content,
+						[
+							'href' => $video['video']
+						]
+					];
+				},
+				$item['videos']
+			) ?: false
+		).
 		h::h1($item['title']).
 		h::{'#description'}($item['description']).
-		h::{'#attributes table tr| td'}(array_map(function ($attribute) use ($item, $Attributes) {
-			return [
-				$Attributes->get($attribute)['title'],
-				$item['attributes'][$attribute]
-			];
-		}, array_keys($item['attributes'])) ?: false),
+		h::{'#attributes table tr| td'}(
+			array_map(
+				function ($attribute) use ($item, $Attributes) {
+					return [
+						$Attributes->get($attribute)['title'],
+						$item['attributes'][$attribute]
+					];
+				},
+				array_keys($item['attributes'])
+			) ?: false
+		),
 		[
 			'data-id'       => $item['id'],
 			'data-date'     => $item['date'],
