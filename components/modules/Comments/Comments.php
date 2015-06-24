@@ -274,7 +274,7 @@ class Comments {
 		}
 		$count	= 0;
 		foreach ($data as &$d) {
-			$count	+= $this->count_internal($d['comments'], $count) + 1;
+			$count	+= $this->count_internal($d['comments']) + 1;
 		}
 		return $count;
 	}

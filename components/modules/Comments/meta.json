@@ -1,7 +1,7 @@
 {
 	"package"         : "Comments",
 	"category"        : "modules",
-	"version"         : "1.3.0+build-43",
+	"version"         : "1.3.1+build-44",
 	"description"     : "Adds comments functionality to other modules",
 	"author"          : "Nazar Mokrynskyi",
 	"website"         : "cleverstyle.org/cms",

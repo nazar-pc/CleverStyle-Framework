@@ -10,7 +10,6 @@
 namespace cs\modules\System\api\Controller;
 use
 	cs\Cache,
-	cs\Config,
 	cs\DB,
 	cs\Group,
 	cs\Language,

@@ -204,7 +204,7 @@ class Content {
 		return false;
 	}
 	private function ml_process ($text) {
-		return Text::instance()->process($this->cdb(), $text, false, true);
+		return Text::instance()->process($this->cdb(), $text, false);
 	}
 	private function ml_set ($group, $label, $text) {
 		return Text::instance()->set($this->cdb(), $group, $label, $text);
