@@ -107,6 +107,17 @@
       },
 
       /**
+      		 * Enabling tabs inside ShadowDOM, should be called on element.shadowRoot
+       */
+      tabs_inside: function() {
+        this.find('[data-uk-tab]').each(function() {
+          return UI.tab(this, UI.Utils.options($(this).attr('data-uk-tab')));
+        });
+        this.find('.cs-tabs:not(.uk-tab)').cs().tabs();
+        return this;
+      },
+
+      /**
       		 * Connecting form elements in ShadowDOM to form element higher in DOM tree, should be called on element.shadowRoot
        */
       connect_to_parent_form: function() {

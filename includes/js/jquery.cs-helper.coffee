@@ -93,6 +93,14 @@ do ($=jQuery, UI = UIkit) ->
 				UI.buttonRadio(@, UI.Utils.options($(@).attr('data-uk-button-radio')))
 			@
 		###*
+		 * Enabling tabs inside ShadowDOM, should be called on element.shadowRoot
+		###
+		tabs_inside	: ->
+			@find('[data-uk-tab]').each ->
+				UI.tab(@, UI.Utils.options($(@).attr('data-uk-tab')))
+			@find('.cs-tabs:not(.uk-tab)').cs().tabs()
+			@
+		###*
 		 * Connecting form elements in ShadowDOM to form element higher in DOM tree, should be called on element.shadowRoot
 		###
 		connect_to_parent_form	: ->
