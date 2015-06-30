@@ -1,0 +1,94 @@
+%polymer-element(name="cs-system-admin-permissions-for-item")
+	%template
+		%template#control-buttons
+			%button.uk-button(on-click="[[invert]]" type="button") [[L.invert]]
+			%button.uk-button(on-click="[[allow_all]]" type="button") [[L.allow_all]]
+			%button.uk-button(on-click="[[deny_all]]" type="button") [[L.deny_all]]
+		/ for groups
+		%template#inner-radio-groups
+			%span.uk-button-group(data-uk-button-radio)
+				/ inherited
+				%template(if="[[permissions.groups[group.id] == -1 || permissions.groups[group.id] == undefined]]")
+					%label.uk-button.uk-active
+						%input(checked name="groups[{{group.id}}]" type="radio" value="-1")/
+						[[L.inherited]]
+				%template(if="[[permissions.groups[group.id] != -1 && permissions.groups[group.id] != undefined]]")
+					%label.uk-button
+						%input(name="groups[{{group.id}}]" type="radio" value="-1")/
+						[[L.inherited]]
+				/ deny
+				%template(if="[[permissions.groups[group.id] == 0]]")
+					%label.uk-button.uk-active
+						%input(checked name="groups[{{group.id}}]" type="radio" value="0")/
+						[[L.deny]]
+				%template(if="[[permissions.groups[group.id] != 0]]")
+					%label.uk-button
+						%input(name="groups[{{group.id}}]" type="radio" value="0")/
+						[[L.deny]]
+				/ allow
+				%template(if="[[permissions.groups[group.id] == 1]]")
+					%label.uk-button.uk-active
+						%input(checked name="groups[{{group.id}}]" type="radio" value="1")/
+						[[L.allow]]
+				%template(if="[[permissions.groups[group.id] != 1]]")
+					%label.uk-button
+						%input(name="groups[{{group.id}}]" type="radio" value="1")/
+						[[L.allow]]
+		/ the same, but for user
+		%template#inner-radio-users
+			%span.uk-button-group(data-uk-button-radio)
+				/ inherited
+				%template(if="[[permissions.users[user.id] == -1 || permissions.users[user.id] == undefined]]")
+					%label.uk-button.uk-active
+						%input(checked name="users[{{user.id}}]" type="radio" value="-1")/
+						[[L.inherited]]
+				%template(if="[[permissions.users[user.id] != -1 && permissions.users[user.id] != undefined]]")
+					%label.uk-button
+						%input(name="users[{{user.id}}]" type="radio" value="-1")/
+						[[L.inherited]]
+				/ deny
+				%template(if="[[permissions.users[user.id] == 0]]")
+					%label.uk-button.uk-active
+						%input(checked name="users[{{user.id}}]" type="radio" value="0")/
+						[[L.deny]]
+				%template(if="[[permissions.users[user.id] != 0]]")
+					%label.uk-button
+						%input(name="users[{{user.id}}]" type="radio" value="0")/
+						[[L.deny]]
+				/ allow
+				%template(if="[[permissions.users[user.id] == 1]]")
+					%label.uk-button.uk-active
+						%input(checked name="users[{{user.id}}]" type="radio" value="1")/
+						[[L.allow]]
+				%template(if="[[permissions.users[user.id] != 1]]")
+					%label.uk-button
+						%input(name="users[{{user.id}}]" type="radio" value="1")/
+						[[L.allow]]
+		%template#users-list
+			%cs-table-row
+				%cs-table-cell(data-uk-tooltip="[[tooltip_animation]]" title="[[user.email]]") [[user.username || user.login]]
+				%cs-table-cell
+					%template(bind ref="inner-radio-users")
+		%ul.cs-tabs
+			%li [[L.groups]]
+			%li [[L.users]]
+		%form#form.uk-form
+			%div
+				%p.cs-left
+					%template(bind ref="control-buttons")
+				%cs-table(right-left)
+					%template(repeat="{{group in groups}}")
+						%cs-table-row
+							%cs-table-cell(data-uk-tooltip="[[tooltip_animation]]" title="[[group.description]]") [[group.title]]
+							%cs-table-cell
+								%template(bind ref="inner-radio-groups")
+			%div
+				%p.cs-left
+					%template(bind ref="control-buttons")
+				%cs-table#users(right-left)
+					%template(repeat="{{user in users}}" ref="users-list")
+				%input#search(autocomplete="off" placeholder="[[L.type_username_or_email_press_enter]]]" type="search")/
+				%cs-table#search-results(right-left)
+					%template(repeat="{{user in found_users}}" ref="users-list")
+		%button.uk-button(on-click="[[save]]" type="button") [[L.save]]
+	%script(src="script.js")
