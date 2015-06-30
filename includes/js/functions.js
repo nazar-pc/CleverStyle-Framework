@@ -328,4 +328,31 @@
     }
   };
 
+
+  /**
+   * Observe for inserted nodes using `MutationObserver` if available and `addEventListener('DOMNodeInserted', ...)` otherwise
+   *
+   * @param {Node}		timeout
+   * @param {function[]}	callback	Will be called with either directly on inserted node(s) or on some of its parent(s) as argument
+   */
+
+  cs.observe_inserts_on = function(target, callback) {
+    if (MutationObserver) {
+      return (new MutationObserver(function(mutations) {
+        return mutations.forEach(function(mutation) {
+          if (mutation.addedNodes.length) {
+            return callback(mutation.addedNodes);
+          }
+        });
+      })).observe(target, {
+        childList: true,
+        subtree: true
+      });
+    } else {
+      return target.addEventListener('DOMNodeInserted', function() {
+        return callback(target);
+      }, false);
+    }
+  };
+
 }).call(this);

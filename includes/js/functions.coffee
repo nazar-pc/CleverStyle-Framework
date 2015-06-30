@@ -243,3 +243,28 @@ cs.async_call				= (functions, timeout) ->
 				requestAnimationFrame(func)
 			), timeout
 	return
+###*
+ * Observe for inserted nodes using `MutationObserver` if available and `addEventListener('DOMNodeInserted', ...)` otherwise
+ *
+ * @param {Node}		timeout
+ * @param {function[]}	callback	Will be called with either directly on inserted node(s) or on some of its parent(s) as argument
+###
+cs.observe_inserts_on		= (target, callback) ->
+	if MutationObserver
+		(
+			new MutationObserver (mutations) ->
+				mutations.forEach (mutation) ->
+					if mutation.addedNodes.length
+						callback(mutation.addedNodes)
+		).observe(
+			target
+			childList	: true
+			subtree		: true
+		)
+	else
+		target.addEventListener(
+			'DOMNodeInserted'
+			->
+				callback(target)
+			false
+		)
