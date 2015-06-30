@@ -1,0 +1,132 @@
+<polymer-element name="cs-system-admin-permissions-for-item">
+	<template>
+		<template id="control-buttons">
+			<button type="button" class="uk-button" on-click="[[invert]]">[[L.invert]]</button>
+			<button type="button" class="uk-button" on-click="[[allow_all]]">[[L.allow_all]]</button>
+			<button type="button" class="uk-button" on-click="[[deny_all]]">[[L.deny_all]]</button>
+		</template>
+		<template id="inner-radio-groups">
+			<span class="uk-button-group" data-uk-button-radio="">
+				<!-- inherited -->
+				<template if="[[permissions.groups[group.id] == -1 || permissions.groups[group.id] == undefined]]">
+					<label class="uk-button uk-active">
+						<input checked name="groups[{{group.id}}]" type="radio" value="-1"> [[L.inherited]]
+					</label>
+				</template>
+				<template if="[[permissions.groups[group.id] != -1 && permissions.groups[group.id] != undefined]]">
+					<label class="uk-button">
+						<input name="groups[{{group.id}}]" type="radio" value="-1"> [[L.inherited]]
+					</label>
+				</template>
+				<!-- deny -->
+				<template if="[[permissions.groups[group.id] == 0]]">
+					<label class="uk-button uk-active">
+						<input checked name="groups[{{group.id}}]" type="radio" value="0"> [[L.deny]]
+					</label>
+				</template>
+				<template if="[[permissions.groups[group.id] != 0]]">
+					<label class="uk-button">
+						<input name="groups[{{group.id}}]" type="radio" value="0"> [[L.deny]]
+					</label>
+				</template>
+				<!-- allow -->
+				<template if="[[permissions.groups[group.id] == 1]]">
+					<label class="uk-button uk-active">
+						<input checked name="groups[{{group.id}}]" type="radio" value="1"> [[L.allow]]
+					</label>
+				</template>
+				<template if="[[permissions.groups[group.id] != 1]]">
+					<label class="uk-button">
+						<input name="groups[{{group.id}}]" type="radio" value="1"> [[L.allow]]
+					</label>
+				</template>
+			</span>
+		</template>
+		<template id="inner-radio-users">
+			<span class="uk-button-group" data-uk-button-radio="">
+				<!-- inherited -->
+				<template if="[[permissions.users[user.id] == -1 || permissions.users[user.id] == undefined]]">
+					<label class="uk-button uk-active">
+						<input checked name="users[{{user.id}}]" type="radio" value="-1"> [[L.inherited]]
+					</label>
+				</template>
+				<template if="[[permissions.users[user.id] != -1 && permissions.users[user.id] != undefined]]">
+					<label class="uk-button">
+						<input name="users[{{user.id}}]" type="radio" value="-1"> [[L.inherited]]
+					</label>
+				</template>
+				<!-- deny -->
+				<template if="[[permissions.users[user.id] == 0]]">
+					<label class="uk-button uk-active">
+						<input checked name="users[{{user.id}}]" type="radio" value="0"> [[L.deny]]
+					</label>
+				</template>
+				<template if="[[permissions.users[user.id] != 0]]">
+					<label class="uk-button">
+						<input name="users[{{user.id}}]" type="radio" value="0"> [[L.deny]]
+					</label>
+				</template>
+				<!-- allow -->
+				<template if="[[permissions.users[user.id] == 1]]">
+					<label class="uk-button uk-active">
+						<input checked name="users[{{user.id}}]" type="radio" value="1"> [[L.allow]]
+					</label>
+				</template>
+				<template if="[[permissions.users[user.id] != 1]]">
+					<label class="uk-button">
+						<input name="users[{{user.id}}]" type="radio" value="1"> [[L.allow]]
+					</label>
+				</template>
+			</span>
+		</template>
+		<ul class="cs-tabs">
+			<li>[[L.groups]]</li>
+			<li>[[L.users]]</li>
+		</ul>
+		<form id="form" class="uk-form">
+			<div>
+				<p class="cs-left">
+					<template bind ref="control-buttons"></template>
+				</p>
+				<cs-table right-left>
+					<template repeat="{{group in groups}}">
+						<cs-table-row>
+							<cs-table-cell data-uk-tooltip="[[tooltip_animation]]" title="[[group.description]]">[[group.title]]</cs-table-cell>
+							<cs-table-cell>
+								<template bind ref="inner-radio-groups"></template>
+							</cs-table-cell>
+						</cs-table-row>
+					</template>
+				</cs-table>
+			</div>
+			<div>
+				<p class="cs-left">
+					<template bind ref="control-buttons"></template>
+				</p>
+				<cs-table id="users" right-left>
+					<template repeat="{{user in users}}">
+						<cs-table-row>
+							<cs-table-cell data-uk-tooltip="[[tooltip_animation]]" title="[[user.email]]">[[user.username || user.login]]</cs-table-cell>
+							<cs-table-cell>
+								<template bind ref="inner-radio-users"></template>
+							</cs-table-cell>
+						</cs-table-row>
+					</template>
+				</cs-table>
+				<input autocomplete="off" id="search" placeholder="[[L.type_username_or_email_press_enter]]]" type="search">
+				<cs-table id="search-results" right-left>
+					<template repeat="{{user in found_users}}">
+						<cs-table-row>
+							<cs-table-cell data-uk-tooltip="[[tooltip_animation]]" title="[[user.email]]">[[user.username || user.login]]</cs-table-cell>
+							<cs-table-cell>
+								<template bind ref="inner-radio-users"></template>
+							</cs-table-cell>
+						</cs-table-row>
+					</template>
+				</cs-table>
+			</div>
+		</form>
+		<button type="button" class="uk-button" on-click="[[save]]">[[L.save]]</button>
+	</template>
+	<script src="script.js"></script>
+</polymer-element>

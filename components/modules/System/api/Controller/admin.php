@@ -26,50 +26,6 @@ trait admin {
 			error_code(403);
 		}
 	}
-	static function admin_blocks_search_users_get () {
-		$L           = Language::instance();
-		$Page        = Page::instance();
-		$User        = User::instance();
-		$users_list  = $User->search_users($_GET['search_phrase']) ?: [];
-		$found_users = explode(',', $_GET['found_users']);
-		$permission  = (int)$_GET['permission'];
-		$content     = [];
-		foreach ($users_list as $user) {
-			if (in_array($user, $found_users)) {
-				continue;
-			}
-			$found_users[] = $user;
-			$value         = $User->db()->qfs(
-				[
-					"SELECT `value`
-					FROM `[prefix]users_permissions`
-					WHERE
-						`id`			= '%s' AND
-						`permission`	= '%s'",
-					$user,
-					$permission
-				]
-			);
-			$content[]     = [
-				$User->username($user),
-				h::radio(
-					[
-						'name'    => 'users['.$user.']',
-						'checked' => $value !== false ? $value : -1,
-						'value'   => [-1, 0, 1],
-						'in'      => [
-							$L->inherited.' ('.($value !== false && !$value ? '-' : '+').')',
-							$L->deny,
-							$L->allow
-						]
-					]
-				)
-			];
-		}
-		$Page->json(
-			h::{'cs-table[right-left] cs-table-row| cs-table-cell'}($content)
-		);
-	}
 	static function admin_cache_delete () {
 		$Cache = Cache::instance();
 		$Page  = Page::instance();
@@ -188,7 +144,44 @@ trait admin {
 				'id'
 			);
 		}
-		Page::instance()->json($data);
+		Page::instance()->json(
+			[
+				'groups' => (object)$data['groups'],
+				'users'  => (object)$data['users']
+			]
+		);
+	}
+	static function admin_permissions_for_item_post () {
+		if (!isset($_POST['group'], $_POST['label'])) {
+			error_code(400);
+			return;
+		}
+		$Group      = Group::instance();
+		$Permission = Permission::instance();
+		$User       = User::instance();
+		$permission = $Permission->get(null, $_POST['group'], $_POST['label']);
+		// We'll create permission if needed
+		$permission = $permission
+			? $permission[0]['id']
+			: $Permission->add($_POST['group'], $_POST['label']);
+		if (!$permission) {
+			error_code(500);
+			return;
+		}
+		$result = true;
+		if (isset($_POST['groups'])) {
+			foreach ($_POST['groups'] as $group => $value) {
+				$result = $result && $Group->set_permissions([$permission => $value], $group);
+			}
+		}
+		if (isset($_POST['users'])) {
+			foreach ($_POST['users'] as $user => $value) {
+				$result = $result && $User->set_permissions([$permission => $value], $user);
+			}
+		}
+		if (!$result) {
+			error_code(500);
+		}
 	}
 	static function admin_storages_test_get () {
 		$Storage = Storage::instance();

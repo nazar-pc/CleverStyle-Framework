@@ -109,27 +109,6 @@ trait components_save {
 						$a->save();
 					}
 					break;
-				case 'permissions':
-					if (isset($_POST['block'], $_POST['block']['id'], $Config->components['blocks'][$_POST['block']['id']])) {
-						$permission = $Permission->get(
-							null,
-							'Block',
-							$Config->components['blocks'][$_POST['block']['id']]['index']
-						)[0]['id'];
-						$result     = true;
-						if (isset($_POST['groups'])) {
-							foreach ($_POST['groups'] as $group => $value) {
-								$result = $result && Group::instance()->set_permissions([$permission => $value], $group);
-							}
-						}
-						if (isset($_POST['users'])) {
-							foreach ($_POST['users'] as $user => $value) {
-								$result = $result && User::instance()->set_permissions([$permission => $value], $user);
-							}
-						}
-						$a->save($result);
-					}
-					break;
 			}
 		} elseif (isset($_POST['apply']) || isset($_POST['save'])) {
 			$_POST['position'] = _json_decode($_POST['position']);

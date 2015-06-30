@@ -129,134 +129,6 @@ trait components {
 						)
 					);
 					break;
-				case 'permissions':
-					$form                  = false;
-					$a->cancel_button_back = true;
-					$permission            = Permission::instance()->get(null, 'Block', $Config->components['blocks'][$id]['index'])[0]['id'];
-					$groups                = Group::instance()->get_all();
-					$groups_content        = [];
-					foreach ($groups as $group) {
-						$group_permission = $User->db()->qfs(
-							[
-								"SELECT `value`
-								FROM `[prefix]groups_permissions`
-								WHERE
-									`id`			= '%s' AND
-									`permission`	= '%s'",
-								$group['id'],
-								$permission
-							]
-						);
-						$groups_content[] = h::cs_table_cell(
-							[
-								$group['title'],
-								[
-									'data-title' => $group['description']
-								]
-							],
-							h::radio(
-								[
-									'name'    => "groups[$group[id]]",
-									'checked' => $group_permission === false ? -1 : $group_permission,
-									'value'   => [-1, 0, 1],
-									'in'      => [$L->inherited, $L->deny, $L->allow]
-								]
-							)
-						);
-					}
-					unset($groups, $group, $group_permission);
-					if (count($groups_content) % 2) {
-						$groups_content[] = h::cs_table_cell().h::cs_table_cell();
-					}
-					$count    = count($groups_content);
-					$content_ = [];
-					for ($i = 0; $i < $count; $i += 2) {
-						$content_[] = $groups_content[$i].$groups_content[$i + 1];
-					}
-					$groups_content = $content_;
-					unset($count, $content_);
-					$users_list    = $User->db()->qfa(
-						[
-							"SELECT
-								`id`,
-								`value`
-							FROM `[prefix]users_permissions`
-							WHERE `permission` = '%s'",
-							$permission
-						]
-					) ?: [];
-					$users_content = [];
-					foreach ($users_list as &$user) {
-						$value           = $user['value'];
-						$user            = $user['id'];
-						$users_content[] = h::cs_table_cell(
-							$User->username($user),
-							h::radio(
-								[
-									'name'    => 'users['.$user.']',
-									'checked' => $value,
-									'value'   => [-1, 0, 1],
-									'in'      => [$L->inherited, $L->deny, $L->allow]
-								]
-							)
-						);
-					}
-					unset($user, $value);
-					$Page->title($L->permissions_for_block(static::get_block_title($id)));
-					$a->content(
-						h::{'h2.cs-center'}(
-							$L->permissions_for_block(static::get_block_title($id))
-						).
-						h::{'ul.cs-tabs li'}(
-							$L->groups,
-							$L->users
-						).
-						h::{'div div'}(
-							h::{'p.cs-left'}(
-								h::{'button.uk-button.cs-permissions-invert'}($L->invert).
-								h::{'button.uk-button.cs-permissions-allow-all'}($L->allow_all).
-								h::{'button.uk-button.cs-permissions-deny-all'}($L->deny_all)
-							).
-							h::{'cs-table[right-left] cs-table-row'}($groups_content),
-							h::{'p.cs-left'}(
-								h::{'button.uk-button.cs-permissions-invert'}($L->invert).
-								h::{'button.uk-button.cs-permissions-allow-all'}($L->allow_all).
-								h::{'button.uk-button.cs-permissions-deny-all'}($L->deny_all)
-							).
-							h::{'cs-table#cs-block-users-changed-permissions[right-left] cs-table-row'}($users_content).
-							h::{'input#block_users_search[type=search]'}(
-								[
-									'autocomplete' => 'off',
-									'permission'   => $permission,
-									'placeholder'  => $L->type_username_or_email_press_enter,
-									'style'        => 'width: 100%'
-								]
-							).
-							h::{'div#block_users_search_results'}()
-						).
-						h::{'input#cs-block-users-search-found[type=hidden]'}(
-							[
-								'value' => implode(',', $users_list)
-							]
-						).
-						h::br().
-						h::{'input[type=hidden]'}(
-							[
-								[
-									[
-										'name'  => 'block[id]',
-										'value' => $id
-									]
-								],
-								[
-									[
-										'name'  => 'mode',
-										'value' => $action
-									]
-								]
-							]
-						)
-					);
 			}
 		}
 		if ($form) {
@@ -284,9 +156,8 @@ trait components {
 								]
 							],
 							[
-								h::{'div icon'}('key'),
+								h::{'div.cs-blocks-permissions icon'}('key'),
 								[
-									'href'       => "$a->action/permissions/$id",
 									'data-title' => $L->edit_permissions
 								]
 							],
@@ -306,8 +177,10 @@ trait components {
 							]
 						),
 						[
-							'data-id' => $id,
-							'class'   => $block['active'] ? 'uk-button-success' : 'uk-button-default'
+							'data-id'          => $id,
+							'data-index'       => $block['index'],
+							'data-block-title' => h::prepare_attr_value(static::get_block_title($id)),
+							'class'            => $block['active'] ? 'uk-button-success' : 'uk-button-default'
 						]
 					);
 					unset($block_data);
@@ -1288,7 +1161,7 @@ trait components {
 			 */
 			if (is_dir(MODULES."/$module_name/api")) {
 				$module['api'] = [];
-				$file = file_exists_with_extension(MODULES."/$module_name/api/readme", ['txt', 'html']);
+				$file          = file_exists_with_extension(MODULES."/$module_name/api/readme", ['txt', 'html']);
 				if ($file) {
 					$module['api'] = [
 						'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
