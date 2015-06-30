@@ -16,7 +16,6 @@ use
 	cs\Index,
 	cs\Language,
 	cs\Page,
-	cs\Permission,
 	cs\Route,
 	cs\Session,
 	cs\Text,

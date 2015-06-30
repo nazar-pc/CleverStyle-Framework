@@ -14,14 +14,12 @@ use
 	cs\Core,
 	cs\DB,
 	cs\Event,
-	cs\Group,
 	cs\Index,
 	cs\Language,
 	cs\Page,
 	cs\Permission,
 	cs\Session,
 	cs\Text,
-	cs\User,
 	h;
 
 trait components_save {

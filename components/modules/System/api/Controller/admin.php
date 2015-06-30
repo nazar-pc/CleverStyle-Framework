@@ -12,14 +12,12 @@ use
 	cs\Cache,
 	cs\DB,
 	cs\Group,
-	cs\Language,
 	cs\Mail,
 	cs\Page,
 	cs\Permission,
 	cs\Route,
 	cs\Storage,
-	cs\User,
-	h;
+	cs\User;
 trait admin {
 	static function admin () {
 		if (!User::instance()->admin()) {
