@@ -6,7 +6,7 @@
 			<button type="button" class="uk-button" on-click="[[deny_all]]">[[L.deny_all]]</button>
 		</template>
 		<template id="inner-radio-groups">
-			<span class="uk-button-group" data-uk-button-radio="">
+			<span class="uk-button-group" data-uk-button-radio>
 				<!-- inherited -->
 				<template if="[[permissions.groups[group.id] == -1 || permissions.groups[group.id] == undefined]]">
 					<label class="uk-button uk-active">
@@ -43,7 +43,7 @@
 			</span>
 		</template>
 		<template id="inner-radio-users">
-			<span class="uk-button-group" data-uk-button-radio="">
+			<span class="uk-button-group" data-uk-button-radio>
 				<!-- inherited -->
 				<template if="[[permissions.users[user.id] == -1 || permissions.users[user.id] == undefined]]">
 					<label class="uk-button uk-active">
