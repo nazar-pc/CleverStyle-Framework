@@ -13,7 +13,6 @@ use
 	cs\Core,
 	cs\DB,
 	cs\Event,
-	cs\Group,
 	cs\Index,
 	cs\Language,
 	cs\Page,
@@ -21,7 +20,6 @@ use
 	cs\Route,
 	cs\Session,
 	cs\Text,
-	cs\User,
 	h;
 
 trait components {
@@ -29,7 +27,6 @@ trait components {
 		$Config = Config::instance();
 		$L      = Language::instance();
 		$Page   = Page::instance();
-		$User   = User::instance();
 		$a      = Index::instance();
 		$action = isset($route_path[2]) ? $route_path[2] : null;
 		$id     = isset($route_ids[0]) ? $route_ids[0] : 0;
