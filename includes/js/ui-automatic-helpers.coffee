@@ -19,8 +19,6 @@ $ ->
 			.autosize()
 	ui_automatic_helpers_update($('body'))
 	do ->
-		MutationObserver		= window.MutationObserver || window.WebKitMutationObserver
-		eventListenerSupported	= window.addEventListener;
 		if MutationObserver
 			(
 				new MutationObserver (mutations) ->
@@ -32,7 +30,7 @@ $ ->
 				childList	: true
 				subtree		: true
 			)
-		else if eventListenerSupported
+		else
 			document.body.addEventListener(
 				'DOMNodeInserted'
 				->

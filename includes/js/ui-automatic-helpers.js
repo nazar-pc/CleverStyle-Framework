@@ -22,9 +22,6 @@
     };
     ui_automatic_helpers_update($('body'));
     return (function() {
-      var MutationObserver, eventListenerSupported;
-      MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-      eventListenerSupported = window.addEventListener;
       if (MutationObserver) {
         return (new MutationObserver(function(mutations) {
           return mutations.forEach(function(mutation) {
@@ -36,7 +33,7 @@
           childList: true,
           subtree: true
         });
-      } else if (eventListenerSupported) {
+      } else {
         return document.body.addEventListener('DOMNodeInserted', function() {
           return ui_automatic_helpers_update($('body'));
         }, false);
