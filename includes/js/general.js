@@ -15,11 +15,9 @@
         session: cs.getcookie('session')
       },
       error: function(xhr) {
-        if (xhr.responseText) {
-          return alert(JSON.parse(xhr.responseText).error_description);
-        } else {
-          return alert(L.connection_error);
-        }
+        return UIkit.notify(xhr.responseText ? JSON.parse(xhr.responseText).error_description : L.connection_error, {
+          status: 'warning'
+        });
       }
     });
     $('.cs-header-sign-in-slide').click(function() {

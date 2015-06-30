@@ -10,10 +10,13 @@ $ ->
 		data	:
 			session	: cs.getcookie('session')
 		error	: (xhr) ->
-			if xhr.responseText
-				alert(JSON.parse(xhr.responseText).error_description)
-			else
-				alert(L.connection_error)
+			UIkit.notify(
+				if xhr.responseText
+					JSON.parse(xhr.responseText).error_description
+				else
+					L.connection_error
+				status	: 'warning'
+			)
 	$('.cs-header-sign-in-slide').click ->
 		$('.cs-header-guest-form').removeClass('active')
 		$('.cs-header-sign-in-form').addClass('active')
