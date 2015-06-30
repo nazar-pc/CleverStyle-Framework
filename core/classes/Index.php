@@ -381,7 +381,7 @@ class Index {
 			}
 		);
 		if ($methods) {
-			$methods = _strtoupper(_substr($methods, strlen($method_name) + 1, -4));
+			$methods = _strtoupper(_substr($methods, strlen($method_name) + 1));
 			$methods = implode(', ', $methods);
 			_header("Allow: $methods");
 			error_code(405);
