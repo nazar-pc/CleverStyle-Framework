@@ -19,11 +19,6 @@ use
 	cs\Storage,
 	cs\User;
 trait admin {
-	static function admin () {
-		if (!User::instance()->admin()) {
-			error_code(403);
-		}
-	}
 	static function admin_cache_delete () {
 		$Cache = Cache::instance();
 		$Page  = Page::instance();
