@@ -71,7 +71,22 @@ trait Permission {
 			if (isset($this->permissions[$user][$permission])) {
 				return (bool)$this->permissions[$user][$permission];
 			} else {
-				return $this->admin() ? true : strpos($group, 'admin/') !== 0;
+				$group_exploded = explode('/', $group);
+				/**
+				 * Default permissions values:
+				 *
+				 * - only administrators have access to `admin/*` URLs by default
+				 * - only administrators have access to `api/{module}/admin/*` URLs by default
+				 * - all other URLs are available to everyone by default
+				 */
+				return $this->admin()
+					? true
+					:
+					$group_exploded[0] !== 'admin' &&
+					(
+						$group_exploded[0] !== 'api' ||
+						@$group_exploded[2] !== 'admin'
+					);
 			}
 		} else {
 			return true;
