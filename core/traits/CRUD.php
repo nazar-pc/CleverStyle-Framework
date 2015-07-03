@@ -194,7 +194,7 @@ trait CRUD {
 			return false;
 		}
 		foreach ($this->data_model as $field => $model) {
-			if (isset($model['data_model'])) {
+			if (is_array($model) && isset($model['data_model'])) {
 				$data[$field] = $this->read_joined_table($id, $field, $model);
 				continue;
 			}
