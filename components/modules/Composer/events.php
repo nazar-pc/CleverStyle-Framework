@@ -17,6 +17,9 @@ Event::instance()->on(
 		switch (Config::instance()->components['modules']['Composer']['active']) {
 			case 1:
 				require __DIR__.'/events/enabled.php';
+				if (admin_path() && current_module() == 'Composer') {
+					require __DIR__.'/events/enabled/admin.php';
+				}
 			case 0:
 				require __DIR__.'/events/installed.php';
 		}

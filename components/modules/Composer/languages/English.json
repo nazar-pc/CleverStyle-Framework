@@ -3,6 +3,9 @@
 	"composer_updated_successfully"  : "Updated successfully",
 	"composer_update_failed"         : "Update failed",
 	"composer_dependencies_conflict" : "Update failed, dependencies conflict",
-	"composer_last_log"              : "Log of last execution",
-	"composer_composer_updating"     : "Composer updating (might take few minutes)"
+	"composer_last_log"              : "Log of last execution:",
+	"composer_composer_updating"     : "Composer updating (might take few minutes)",
+	"composer_general"               : "General",
+	"composer_auth_json"             : "auth.json",
+	"composer_auth_json_contents"    : "auth.json contents:"
 }

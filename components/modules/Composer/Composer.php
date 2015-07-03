@@ -24,6 +24,7 @@ use
  *  Composer/generate_composer_json
  *  [
  *   'composer_json' => &$composer_json //`composer.json` structure that will be used for dependencies installation, might be modified
+ *   'auth_json'     => &$auth_json     //`auth.json` structure that will be used for auth credentials during dependencies installation, might be modified
  *  ]
  *
  *  Composer/Composer
@@ -73,15 +74,18 @@ class Composer {
 		$description = '';
 		$this->prepare($storage);
 		$composer_json = $this->generate_composer_json($component_name, $component_type, $mode);
+		$auth_json     = _json_decode(Config::instance()->module('Composer')->auth_json ?: '[]');
 		$Event         = Event::instance();
 		$Event->fire(
 			'Composer/generate_composer_json',
 			[
-				'composer_json' => &$composer_json
+				'composer_json' => &$composer_json,
+				'auth_json'     => &$auth_json
 			]
 		);
 		if ($composer_json['repositories']) {
-			file_put_json("$storage/tmp/composer.json", $composer_json);
+			$this->file_put_json("$storage/tmp/composer.json", $composer_json);
+			$this->file_put_json("$storage/tmp/auth.json", $auth_json);
 			if (
 				$this->force_update ||
 				!file_exists("$storage/composer.json") ||
@@ -103,7 +107,9 @@ class Composer {
 						'command'       => 'update',
 						'--working-dir' => "$storage/tmp",
 						'--no-dev'      => true,
-						'--ansi'        => true
+						'--ansi'        => true,
+						'--prefer-dist' => true,
+						'-vvv'          => true
 					]
 				);
 				$output             = new BufferedOutput;
@@ -131,6 +137,15 @@ class Composer {
 			'code'        => $status_code,
 			'description' => $description
 		];
+	}
+	/**
+	 * @param string $filename
+	 * @param array  $data
+	 *
+	 * @return int
+	 */
+	protected function file_put_json ($filename, $data) {
+		return file_put_contents($filename, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
 	}
 	/**
 	 * @param string $storage

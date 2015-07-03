@@ -33,7 +33,7 @@ if (isset($_POST['force_update'])) {
 if (file_exists(DIR.'/storage/Composer/last_execution.log')) {
 	require_once __DIR__.'/../ansispan.php';
 	$Index->content(
-		h::p($L->last_log.':').
+		h::p($L->last_log).
 		h::pre(
 			ansispan(file_get_contents(DIR.'/storage/Composer/last_execution.log')),
 			[

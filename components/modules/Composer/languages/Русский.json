@@ -3,6 +3,9 @@
 	"composer_updated_successfully"  : "Обновлено успешно",
 	"composer_update_failed"         : "Обновление не удалось",
 	"composer_dependencies_conflict" : "Обновление не удалось, конфликт зависимостей",
-	"composer_last_log"              : "Журнал последнего выполнения",
-	"composer_composer_updating"     : "Обновление composer (может занять несколько минут)"
+	"composer_last_log"              : "Журнал последнего выполнения:",
+	"composer_composer_updating"     : "Обновление composer (может занять несколько минут)",
+	"composer_general"               : "Общее",
+	"composer_auth_json"             : "auth.json",
+	"composer_auth_json_contents"    : "Содержимое auth.json:"
 }
