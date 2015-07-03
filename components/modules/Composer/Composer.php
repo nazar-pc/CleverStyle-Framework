@@ -64,12 +64,14 @@ class Composer {
 			) {
 				$this->force_update = false;
 				$application        = new Application;
-				$input              = new ArrayInput([
-					'command'       => 'update',
-					'--working-dir' => "$storage/tmp",
-					'--ansi',
-					'--no-dev'
-				]);
+				$input              = new ArrayInput(
+					[
+						'command'       => 'update',
+						'--working-dir' => "$storage/tmp",
+						'--ansi',
+						'--no-dev'
+					]
+				);
 				$output             = new BufferedOutput;
 				$application->setAutoExit(false);
 				$status_code = $application->run($input, $output);
@@ -96,6 +98,9 @@ class Composer {
 			'description' => $description
 		];
 	}
+	/**
+	 * @param string $storage
+	 */
 	protected function prepare ($storage) {
 		if (!is_dir($storage)) {
 			@mkdir($storage, 0770);
@@ -109,6 +114,13 @@ class Composer {
 		@ini_set('memory_limit', '512M');
 		@unlink("$storage/last_execution.log");
 	}
+	/**
+	 * @param string $component_name
+	 * @param int    $component_type `self::COMPONENT_MODULE` or `self::COMPONENT_PLUGIN`
+	 * @param int    $mode           `self::MODE_ADD` or `self::MODE_DELETE`
+	 *
+	 * @return array Resulting `composer.json` structure in form of array
+	 */
 	protected function generate_composer_json ($component_name, $component_type, $mode) {
 		$composer = [
 			'repositories' => [],
@@ -161,29 +173,40 @@ class Composer {
 		}
 		return $composer;
 	}
+	/**
+	 * @param array $composer
+	 * @param array $meta
+	 */
 	protected function generate_package (&$composer, $meta) {
 		if (!isset($meta['version'], $meta['require_composer'])) {
 			return;
 		}
-		$package                       = "$meta[category]/$meta[package]";
-		$composer['repositories'][]    = [
-			'type'    => 'package',
-			'package' => [
-				'name'    => $package,
-				'version' => $meta['version'],
-				'require' => $meta['require_composer'],
-				'dist'    => [
-					'url'  => __DIR__.'/empty.zip',
-					'type' => 'zip'
-				]
+		$package_name                       = "$meta[category]/$meta[package]";
+		$package                            = [
+			'name'    => $package_name,
+			'version' => $meta['version'],
+			'require' => $meta['require_composer'],
+			'dist'    => [
+				'url'  => __DIR__.'/empty.zip',
+				'type' => 'zip'
 			]
 		];
-		$composer['require'][$package] = $meta['version'];
+		$composer['repositories'][]         = [
+			'type'    => 'package',
+			'package' => $package
+		];
+		$composer['require'][$package_name] = $meta['version'];
 	}
+	/**
+	 * @param string $storage
+	 */
 	protected function cleanup ($storage) {
 		$this->rmdir_recursive("$storage/home");
 		$this->rmdir_recursive("$storage/tmp");
 	}
+	/**
+	 * @param string $dir
+	 */
 	protected function rmdir_recursive ($dir) {
 		if (!is_dir($dir)) {
 			return;
