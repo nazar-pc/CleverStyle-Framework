@@ -11,7 +11,6 @@ use
 	cs\Config,
 	cs\Event,
 	cs\Singleton,
-	Composer\Console\Application,
 	Symfony\Component\Console\Input\ArrayInput,
 	Symfony\Component\Console\Output\BufferedOutput;
 /**
@@ -24,7 +23,12 @@ use
  *
  *  Composer/generate_composer_json
  *  [
- *   'composer' => &$composer //`composer.json` structure that will be used for dependencies installation, might be modified
+ *   'composer_json' => &$composer_json //`composer.json` structure that will be used for dependencies installation, might be modified
+ *  ]
+ *
+ *  Composer/Composer
+ *  [
+ *   'Composer' => $Composer //Instance of `\Composer\Composer`, so that it is possible, for instance, to inject some plugins manually
  *  ]
  */
 class Composer {
@@ -68,22 +72,32 @@ class Composer {
 		$status_code = 0;
 		$description = '';
 		$this->prepare($storage);
-		$composer = $this->generate_composer_json($component_name, $component_type, $mode);
-		Event::instance()->fire(
+		$composer_json = $this->generate_composer_json($component_name, $component_type, $mode);
+		$Event         = Event::instance();
+		$Event->fire(
 			'Composer/generate_composer_json',
 			[
-				'composer' => &$composer
+				'composer_json' => &$composer_json
 			]
 		);
-		if ($composer['repositories']) {
-			file_put_json("$storage/tmp/composer.json", $composer);
+		if ($composer_json['repositories']) {
+			file_put_json("$storage/tmp/composer.json", $composer_json);
 			if (
 				$this->force_update ||
 				!file_exists("$storage/composer.json") ||
 				md5_file("$storage/tmp/composer.json") != md5_file("$storage/composer.json")
 			) {
 				$this->force_update = false;
-				$application        = new Application;
+				$application        = new Application(
+					function ($Composer) use ($Event) {
+						$Event->fire(
+							'Composer/Composer',
+							[
+								'Composer' => $Composer
+							]
+						);
+					}
+				);
 				$input              = new ArrayInput(
 					[
 						'command'       => 'update',
@@ -198,7 +212,7 @@ class Composer {
 	 * @param array $meta
 	 */
 	protected function generate_package (&$composer, $meta) {
-		if (!isset($meta['require_composer'])) {
+		if (!isset($meta['version'])) {
 			return;
 		}
 		$package_name = "$meta[category]/$meta[package]";
