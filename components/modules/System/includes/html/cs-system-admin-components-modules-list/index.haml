@@ -1,0 +1,59 @@
+%polymer-element(name="cs-system-admin-components-modules-list")
+	%template
+		%cs-table(center list with-header)
+			%cs-table-row
+				%cs-table-cell [[L.module_name]]
+				%cs-table-cell [[L.state]]
+				%cs-table-cell [[L.action]]
+			%template(repeat="[[module, index in modules]]")
+				%cs-table-row(class="[[module.class]]" data-module-index="{{index}}")
+					%cs-table-cell
+						%template(if="[[module.info]]")
+							%template(if="[[module.administration]]")
+								%a(data-uk-tooltip="[[tooltip_animation]]" href="/admin/[[module.name]]" title="[[module.info]]") [[module.name_localized]]
+							%template(if="[[!module.administration]]")
+								%span(data-uk-tooltip="[[tooltip_animation]]" title="[[module.info]]") [[module.name_localized]]
+						%template(if="[[!module.info]]")
+							%template(if="[[module.administration]]")
+								%a(href="/admin/[[module.name]]") [[module.name_localized]]
+							%template(if="[[!module.administration]]")
+								%span [[module.name_localized]]
+					%cs-table-cell
+						%span(class="[[module.icon]]" data-uk-tooltip="[[tooltip_animation]]" title="[[module.icon_text]]")
+						%template(if="[[module.api]]")
+							%template(if="[[!module.api.type]]")
+								%span.uk-icon-link(data-uk-tooltip="[[tooltip_animation]]" title="[[L.api_exists]]")
+							%template(if="[[module.api.type]]")
+								%span.uk-button.cs-button-compact.uk-icon-link(data-modal-type="api" data-uk-tooltip="[[tooltip_animation]]" on-click="[[generic_modal]]" title="[[L.api_exists]], [[L.click_to_view_details]]")
+						%template(if="[[module.readme]]")
+							%span.uk-button.cs-button-compact.uk-icon-book(data-modal-type="readme" data-uk-tooltip="[[tooltip_animation]]" on-click="[[generic_modal]]" title="[[L.information_about_module]], [[L.click_to_view_details]]")
+						%template(if="[[module.license]]")
+							%span.uk-button.cs-button-compact.uk-icon-legal(data-modal-type="license" data-uk-tooltip="[[tooltip_animation]]" on-click="[[generic_modal]]" title="[[L.license]], [[L.click_to_view_details]]")
+					%cs-table-cell(left)
+						%template(if="[[module.can_be_set_as_default]]")
+							%a.uk-button.cs-button-compact(data-uk-tooltip="[[tooltip_animation]]" href="/admin/System/components/modules/default_module/[[module.name]]" title="[[L.make_default_module]]")
+								%span.uk-icon-home
+						%template(if="[[module.db_settings]]")
+							%a.uk-button.cs-button-compact(data-uk-tooltip="[[tooltip_animation]]" href="/admin/System/components/modules/db/[[module.name]]" title="[[L.databases]]")
+								%span.uk-icon-database
+						%template(if="[[module.storage_settings]]")
+							%a.uk-button.cs-button-compact(data-uk-tooltip="[[tooltip_animation]]" href="/admin/System/components/modules/storage/[[module.name]]" title="[[L.storages]]")
+								%span.uk-icon-hdd-o
+						%template(if="[[module.administration]]")
+							%a.uk-button.cs-button-compact(data-uk-tooltip="[[tooltip_animation]]" href="/admin/[[module.name]]" title="[[L.module_admin_page]]")
+								%span.uk-icon-sliders
+						%template(if="[[module.active == 1]]")
+							%a.uk-button.cs-button-compact(data-uk-tooltip="[[tooltip_animation]]" href="/admin/System/components/modules/disable/[[module.name]]" title="[[L.disable]]")
+								%span.uk-icon-minus
+						%template(if="[[module.active == 0]]")
+							%a.uk-button.cs-button-compact(data-uk-tooltip="[[tooltip_animation]]" href="/admin/System/components/modules/enable/[[module.name]]" title="[[L.enable]]")
+								%span.uk-icon-check
+								[[L.enable]]
+						%template(if="[[module.active != -1]]")
+							%a.uk-button.cs-button-compact(data-uk-tooltip="[[tooltip_animation]]" href="/admin/System/components/modules/uninstall/[[module.name]]" title="[[L.uninstall]]")
+								%span.uk-icon-trash
+						%template(if="[[module.active == -1]]")
+							%a.uk-button.cs-button-compact(data-uk-tooltip="[[tooltip_animation]]" href="/admin/System/components/modules/install/[[module.name]]" title="[[L.install]]")
+								%span.uk-icon-download
+								[[L.install]]
+	%script(src="script.js")
