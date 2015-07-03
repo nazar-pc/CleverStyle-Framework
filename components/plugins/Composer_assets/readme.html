@@ -1,0 +1,22 @@
+<h3 style="text-align: center;">Bower and NPM packages support through Composer, allows to specify dependencies in meta.json that will be installed automatically</h3>
+<p>This module uses <a href="https://github.com/francoispluchino/composer-asset-plugin">fxp/composer-asset-plugin</a> for integrating Bower and NPM packages support with Composer.</p>
+<p>Since many Bower packages use LESS and SCSS preprocessors - <a href="https://github.com/oyejorge/less.php">oyejorge/less.php</a> and <a href="https://github.com/leafo/scssphp">leafo/scssphp</a> are used to convert them into CSS.</p>
+<p>To use this module you need to make few modifications in your component's <i>meta.json</i>:</p>
+<ul>
+	<li>Add dependency on <i>composer_assets</i> functionality</li>
+	<li>Mention required packages in <i>require_bower</i> or <i>require_npm</i> for Bower and NPM packages correspondingly in the same way as in <i>dependencies</i> of regular <i>bower.json</i> or <i>package.json</i></li>
+	<li>Even though NPM is supported (to some extent), Bower is preferred if available, since designed for frontend and integrates much better</li>
+</ul>
+<pre>
+	<code>
+{
+	..
+	"require"       : "composer_assets",
+	"require_bower" : {
+		"animate.css" : "~3.3.0"
+	},
+	..
+}
+	</code>
+</pre>
+<p>NOTE: do not forget to specify other required fields of <i>meta.json</i> as specified <a href="https://github.com/nazar-pc/CleverStyle-CMS/wiki/Module-architecture#metajson">in documentation</a>.</p>

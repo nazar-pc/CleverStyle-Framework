@@ -34,6 +34,7 @@ But in parallel with core some components are developed:
 
 #### Plugins
 
+ * **Composer assets** (Bower and NPM packages support through Composer)
  * **Fotorama** (integration of [Fotorama](https://github.com/artpolikarpov/fotorama) jQuery gallery into CleverStyle CMS)
  * **Json_ld** (simplifies some parts of JSON-LD generation)
  * **Picturefill** (integration of [Picturefill](https://github.com/scottjehl/picturefill) polyfill into CleverStyle CMS)
