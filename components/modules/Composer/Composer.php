@@ -9,10 +9,24 @@
 namespace cs\modules\Composer;
 use
 	cs\Config,
+	cs\Event,
 	cs\Singleton,
 	Composer\Console\Application,
 	Symfony\Component\Console\Input\ArrayInput,
 	Symfony\Component\Console\Output\BufferedOutput;
+/**
+ * Provides next events:
+ *  Composer/generate_package
+ *  [
+ *   'package' => &$package, //Composer package generated, might be modified
+ *   'meta'    => $meta      //Parsed `meta.json` for component, package is generated for
+ *  ]
+ *
+ *  Composer/generate_composer_json
+ *  [
+ *   'composer' => &$composer //`composer.json` structure that will be used for dependencies installation, might be modified
+ *  ]
+ */
 class Composer {
 	use
 		Singleton;
@@ -55,6 +69,12 @@ class Composer {
 		$description = '';
 		$this->prepare($storage);
 		$composer = $this->generate_composer_json($component_name, $component_type, $mode);
+		Event::instance()->fire(
+			'Composer/generate_composer_json',
+			[
+				'composer' => &$composer
+			]
+		);
 		if ($composer['repositories']) {
 			file_put_json("$storage/tmp/composer.json", $composer);
 			if (
@@ -68,8 +88,8 @@ class Composer {
 					[
 						'command'       => 'update',
 						'--working-dir' => "$storage/tmp",
-						'--ansi',
-						'--no-dev'
+						'--no-dev'      => true,
+						'--ansi'        => true
 					]
 				);
 				$output             = new BufferedOutput;
@@ -178,19 +198,29 @@ class Composer {
 	 * @param array $meta
 	 */
 	protected function generate_package (&$composer, $meta) {
-		if (!isset($meta['version'], $meta['require_composer'])) {
+		if (!isset($meta['require_composer'])) {
 			return;
 		}
-		$package_name                       = "$meta[category]/$meta[package]";
-		$package                            = [
+		$package_name = "$meta[category]/$meta[package]";
+		$package      = [
 			'name'    => $package_name,
 			'version' => $meta['version'],
-			'require' => $meta['require_composer'],
+			'require' => isset($meta['require_composer']) ? $meta['require_composer'] : [],
 			'dist'    => [
 				'url'  => __DIR__.'/empty.zip',
 				'type' => 'zip'
 			]
 		];
+		Event::instance()->fire(
+			'Composer/generate_package',
+			[
+				'package' => &$package,
+				'meta'    => $meta
+			]
+		);
+		if (!$package['require']) {
+			return;
+		}
 		$composer['repositories'][]         = [
 			'type'    => 'package',
 			'package' => $package
