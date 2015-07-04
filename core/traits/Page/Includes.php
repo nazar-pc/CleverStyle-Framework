@@ -624,7 +624,7 @@ trait Includes {
 	 *
 	 * @param bool $with_disabled
 	 *
-	 * @return array [$dependencies, $includes_map]
+	 * @return array[] [$dependencies, $includes_map]
 	 */
 	protected function includes_dependencies_and_map ($with_disabled = false) {
 		/**
@@ -692,7 +692,14 @@ trait Includes {
 		 * For consistency
 		 */
 		$includes_map[''] = $all_includes;
-		$dependencies     = $this->normalize_dependencies($dependencies, $functionalities);
+		Event::instance()->fire(
+			'System/Page/includes_dependencies_and_map',
+			[
+				'dependencies' => &$dependencies,
+				'includes_map' => &$includes_map
+			]
+		);
+		$dependencies = $this->normalize_dependencies($dependencies, $functionalities);
 		/**
 		 * Clean dependencies without files
 		 */
@@ -707,13 +714,6 @@ trait Includes {
 		unset($depends_on, $index);
 		$dependencies = array_map('array_values', $dependencies);
 		$dependencies = array_filter($dependencies);
-		Event::instance()->fire(
-			'System/Page/includes_dependencies_and_map',
-			[
-				'dependencies' => &$dependencies,
-				'includes_map' => &$includes_map
-			]
-		);
 		return [$dependencies, $includes_map];
 	}
 	/**
