@@ -131,26 +131,23 @@
           while (true) {
             if (element.tagName === 'FORM') {
               $form = $(element);
-              $form.submit((function(_this) {
+              $form.one('submit', (function(_this) {
                 return function(e) {
-                  if (!_this.form_processed_once) {
-                    e.preventDefault();
-                    _this.form_processed_once = true;
-                    $(_this).find('[name]').each(function() {
-                      var $this;
-                      $this = $(this);
-                      if (this.type === 'file') {
-                        $this.clone(true, true).insertAfter($this.hide());
-                        return $this.appendTo($form);
-                      } else {
-                        if ((this.type === 'checkbox' || this.type === 'radio') && !$this.is(':checked')) {
-                          return;
-                        }
-                        return $form.append($('<input type="hidden"/>').attr('name', this.name).val($this.val()));
+                  e.preventDefault();
+                  $(_this).find('[name]').each(function() {
+                    var $this;
+                    $this = $(this);
+                    if (this.type === 'file') {
+                      $this.clone(true, true).insertAfter($this.hide());
+                      return $this.appendTo($form);
+                    } else {
+                      if ((this.type === 'checkbox' || this.type === 'radio') && !$this.is(':checked')) {
+                        return;
                       }
-                    });
-                    return $form.submit();
-                  }
+                      return $form.append($('<input type="hidden"/>').attr('name', this.name).val($this.val()));
+                    }
+                  });
+                  return $form.submit();
                 };
               })(this));
               break;

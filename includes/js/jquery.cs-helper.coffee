@@ -112,10 +112,10 @@ do ($=jQuery, UI = UIkit) ->
 				loop
 					if element.tagName == 'FORM'
 						$form	= $(element)
-						$form.submit (e) =>
-							if !@form_processed_once
+						$form.one(
+							'submit'
+							(e) =>
 								e.preventDefault()
-								@form_processed_once	= true
 								$(@).find('[name]').each ->
 									$this	= $(@)
 									if @type == 'file'
@@ -130,6 +130,7 @@ do ($=jQuery, UI = UIkit) ->
 												.val($this.val())
 										)
 								$form.submit()
+						)
 						break
 					element	= element.host || element.parentNode
 					if !element
