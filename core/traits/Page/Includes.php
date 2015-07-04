@@ -17,7 +17,19 @@ use
 	h;
 
 /**
- * Open Graph functionality for <i>cs\Page</i> class
+ * Provides next events:
+ *  System/Page/external_sign_in_list
+ *  [
+ *    'list' => &$list //Reference to the list of external sign in systems, actually handled by theme itself, not this class
+ *  ]
+ *
+ *  System/Page/includes_dependencies_and_map
+ *  [
+ *    'dependencies' => &$dependencies,
+ *    'includes_map' => &$includes_map
+ *  ]
+ *
+ * Includes management for `cs\Page` class
  *
  * @property string $Title
  * @property string $Description
@@ -399,7 +411,7 @@ trait Includes {
 	}
 	protected function add_includes_on_page_without_compression ($Config) {
 		if ($Config) {
-			$this->includes_dependencies_and_map($dependencies, $includes_map, admin_path());
+			list($dependencies, $includes_map) = $this->includes_dependencies_and_map(admin_path());
 			/**
 			 * Add system includes
 			 */
@@ -589,7 +601,7 @@ trait Includes {
 	 * @return \cs\Page
 	 */
 	protected function rebuild_cache () {
-		$this->includes_dependencies_and_map($dependencies, $includes_map);
+		list($dependencies, $includes_map) = $this->includes_dependencies_and_map();
 		$structure = [];
 		foreach ($includes_map as $filename_prefix => $includes) {
 			$filename_prefix             = str_replace('/', '+', $filename_prefix);
@@ -610,11 +622,11 @@ trait Includes {
 	/**
 	 * Get dependencies of components between each other (only that contains some styles and scripts) and mapping styles and scripts to URL paths
 	 *
-	 * @param array $dependencies
-	 * @param array $includes_map
-	 * @param bool  $with_disabled
+	 * @param bool $with_disabled
+	 *
+	 * @return array [$dependencies, $includes_map]
 	 */
-	protected function includes_dependencies_and_map (&$dependencies, &$includes_map, $with_disabled = false) {
+	protected function includes_dependencies_and_map ($with_disabled = false) {
 		/**
 		 * Get all includes
 		 */
@@ -694,6 +706,15 @@ trait Includes {
 		}
 		unset($depends_on, $index);
 		$dependencies = array_map('array_values', $dependencies);
+		$dependencies = array_filter($dependencies);
+		Event::instance()->fire(
+			'System/Page/includes_dependencies_and_map',
+			[
+				'dependencies' => &$dependencies,
+				'includes_map' => &$includes_map
+			]
+		);
+		return [$dependencies, $includes_map];
 	}
 	/**
 	 * Process meta information and corresponding entries to dependencies and functionalities

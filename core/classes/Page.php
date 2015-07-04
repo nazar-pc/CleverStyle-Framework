@@ -12,12 +12,12 @@ use
 	cs\Page\Meta;
 
 /**
- * Provides next events:<br>
+ * Provides next events:
  *  System/Page/pre_display
  *  System/Page/rebuild_cache
- *  ['key'	=> &$key]		//Reference to the key, that will be appended to all css and js files, can be changed to reflect JavaScript and CSS changes
- *  System/Page/external_sign_in_list
- *  ['list'	=> &$list]		//Reference to the list of external sign in systems, actually handled by theme itself, not this class
+ *  [
+ *    'key' => &$key //Reference to the key, that will be appended to all css and js files, can be changed to reflect JavaScript and CSS changes
+ *  ]
  *
  * @method static Page instance($check = false)
  */
