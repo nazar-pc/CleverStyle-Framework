@@ -11,8 +11,7 @@ use
 	h,
 	cs\Config,
 	cs\Index,
-	cs\Language\Prefix,
-	cs\Page;
+	cs\Language\Prefix;
 
 $Index       = Index::instance();
 $L           = new Prefix('composer_');
