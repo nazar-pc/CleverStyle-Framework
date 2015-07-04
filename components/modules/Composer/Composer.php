@@ -127,7 +127,7 @@ class Composer {
 				$description = $output->fetch();
 				file_put_contents("$storage/last_execution.log", $description);
 				if ($status_code == 0) {
-					$this->rmdir_recursive("$storage/vendor");
+					rmdir_recursive("$storage/vendor");
 					@unlink("$storage/composer.json");
 					@unlink("$storage/composer.lock");
 					rename("$storage/tmp/vendor", "$storage/vendor");
@@ -144,7 +144,7 @@ class Composer {
 				}
 			}
 		} else {
-			$this->rmdir_recursive("$storage/vendor");
+			rmdir_recursive("$storage/vendor");
 			@unlink("$storage/composer.json");
 			@unlink("$storage/composer.lock");
 		}
@@ -171,9 +171,9 @@ class Composer {
 		if (!is_dir($storage)) {
 			@mkdir($storage, 0770);
 		}
-		$this->rmdir_recursive("$storage/home");
+		rmdir_recursive("$storage/home");
 		@mkdir("$storage/home", 0770);
-		$this->rmdir_recursive("$storage/tmp");
+		rmdir_recursive("$storage/tmp");
 		@mkdir("$storage/tmp", 0770);
 		putenv("COMPOSER_HOME=$storage/home");
 		@ini_set('display_errors', 1);
@@ -277,33 +277,7 @@ class Composer {
 	 * @param string $storage
 	 */
 	protected function cleanup ($storage) {
-		$this->rmdir_recursive("$storage/home");
-		$this->rmdir_recursive("$storage/tmp");
-	}
-	/**
-	 * @param string $dir
-	 */
-	protected function rmdir_recursive ($dir) {
-		if (!is_dir($dir)) {
-			return;
-		}
-		get_files_list(
-			$dir,
-			false,
-			'fd',
-			true,
-			true,
-			false,
-			false,
-			true,
-			function ($item) {
-				if (is_dir($item)) {
-					@rmdir($item);
-				} else {
-					@unlink($item);
-				}
-			}
-		);
-		@rmdir($dir);
+		rmdir_recursive("$storage/home");
+		rmdir_recursive("$storage/tmp");
 	}
 }
