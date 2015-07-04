@@ -309,6 +309,36 @@ function file_exists_with_extension ($base_filename, $possible_extensions) {
 	return false;
 }
 /**
+ * Recursively remove directory
+ *
+ * @param string $dirname Path to directory
+ *
+ * @return bool
+ */
+function rmdir_recursive ($dirname) {
+	if (!is_dir($dirname)) {
+		return true;
+	}
+	get_files_list(
+		$dirname,
+		false,
+		'fd',
+		true,
+		true,
+		false,
+		false,
+		true,
+		function ($item) {
+			if (is_dir($item)) {
+				@rmdir($item);
+			} else {
+				@unlink($item);
+			}
+		}
+	);
+	return @rmdir($dirname);
+}
+/**
  * Protecting against null byte injection
  *
  * @param string|string[]	$in
