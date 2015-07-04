@@ -31,6 +31,16 @@ use
  *  [
  *   'Composer' => $Composer //Instance of `\Composer\Composer`, so that it is possible, for instance, to inject some plugins manually
  *  ]
+ *
+ *  Composer/updated
+ *  [
+ *   'composer_json' => $composer_json, //`composer.json` structure that was used for dependencies installation
+ *   'composer_lock' => $composer_lock  //`composer.lock` structure that was generated during dependencies installation
+ *   'composer_root' => $composer_root  //Path to directory where dependencies were installed, and where `composer.json` and `composer.lock` are located
+ *  ]
+ */
+/**
+ * @method static Composer instance($check = false)
  */
 class Composer {
 	use
@@ -124,6 +134,14 @@ class Composer {
 					rename("$storage/tmp/vendor", "$storage/vendor");
 					rename("$storage/tmp/composer.json", "$storage/composer.json");
 					rename("$storage/tmp/composer.lock", "$storage/composer.lock");
+					$Event->fire(
+						'Composer/updated',
+						[
+							'composer_json' => file_get_json("$storage/composer.json"),
+							'composer_lock' => file_get_json("$storage/composer.lock"),
+							'composer_root' => $storage
+						]
+					);
 				}
 			}
 		} else {
