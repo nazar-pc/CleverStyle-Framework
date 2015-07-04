@@ -57,9 +57,9 @@ trait packages_manipulation {
 	 * @return bool
 	 */
 	static protected function install_extract ($target_directory, $source_phar) {
-		$tmp_dir = "phar://$source_phar";
-		$fs      = file_get_json("$tmp_dir/fs.json");
-		$extract = array_filter(
+		$tmp_dir   = "phar://$source_phar";
+		$fs        = file_get_json("$tmp_dir/fs.json");
+		$extracted = array_filter(
 			array_map(
 				function ($index, $file) use ($tmp_dir, $target_directory) {
 					if (
@@ -79,10 +79,11 @@ trait packages_manipulation {
 			)
 		);
 		unlink($source_phar);
-		if ($extract) {
+		if (count($extracted) === count($fs)) {
 			file_put_json("$target_directory/fs.json", array_keys($fs));
+			return true;
 		}
-		return (bool)$extract;
+		return false;
 	}
 	/**
 	 * Generic extraction of files from phar distributive for CleverStyle CMS (system and components update)
@@ -105,9 +106,9 @@ trait packages_manipulation {
 		/**
 		 * Extracting new versions of files
 		 */
-		$tmp_dir = "phar://$source_phar";
-		$fs      = file_get_json("$tmp_dir/fs.json");
-		$extract = array_filter(
+		$tmp_dir   = "phar://$source_phar";
+		$fs        = file_get_json("$tmp_dir/fs.json");
+		$extracted = array_filter(
 			array_map(
 				function ($index, $file) use ($tmp_dir, $target_directory) {
 					if (
@@ -128,7 +129,7 @@ trait packages_manipulation {
 		);
 		unlink($source_phar);
 		unset($tmp_dir);
-		if (!$extract) {
+		if (count($extracted) === count($fs)) {
 			return false;
 		}
 		unset($extract);

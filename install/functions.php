@@ -223,7 +223,7 @@ function install_process ($fs, $argv = null) {
 	/**
 	 * Extracting of engine's files
 	 */
-	$extract = array_filter(
+	$extracted = array_filter(
 		array_map(
 			function ($index, $file) {
 				if (
@@ -243,7 +243,7 @@ function install_process ($fs, $argv = null) {
 		)
 	);
 	if (
-		!$extract ||
+		count($extracted) !== count($fs) ||
 		!(file_exists(ROOT.'/storage') || mkdir(ROOT.'/storage', 0770)) ||
 		!file_put_contents(ROOT.'/storage/.htaccess', "Deny from all\nRewriteEngine Off\n<Files *>\n\tSetHandler default-handler\n</Files>")
 	) {
