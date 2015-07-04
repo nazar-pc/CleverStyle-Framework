@@ -323,6 +323,6 @@ class Includes_processing {
 	 * @return bool
 	 */
 	protected static function need_shimming ($content) {
-		return preg_match('/shim-shadowdom/Uims', $content);
+		return stripos($content, 'shim-shadowdom') !== false;
 	}
 }

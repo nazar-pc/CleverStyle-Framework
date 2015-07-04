@@ -18,15 +18,15 @@ use
 
 /**
  * Provides next events:
- *  System/Page/external_sign_in_list
- *  [
- *    'list' => &$list //Reference to the list of external sign in systems, actually handled by theme itself, not this class
- *  ]
- *
  *  System/Page/includes_dependencies_and_map
  *  [
  *    'dependencies' => &$dependencies,
  *    'includes_map' => &$includes_map
+ *  ]
+ *
+ *  System/Page/rebuild_cache
+ *  [
+ *    'key' => &$key //Reference to the key, that will be appended to all css and js files, can be changed to reflect JavaScript and CSS changes
  *  ]
  *
  * Includes management for `cs\Page` class
