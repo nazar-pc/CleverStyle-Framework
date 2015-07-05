@@ -11,8 +11,7 @@ use
 	cs\Config,
 	cs\Event,
 	cs\Singleton,
-	Symfony\Component\Console\Input\ArrayInput,
-	Symfony\Component\Console\Output\BufferedOutput;
+	Symfony\Component\Console\Input\ArrayInput;
 /**
  * Provides next events:
  *  Composer/generate_package
@@ -121,11 +120,11 @@ class Composer {
 						'-vvv'          => true
 					]
 				);
-				$output             = new BufferedOutput;
+				$output             = new Output;
+				$output->set_stream(fopen("$storage/last_execution.log", 'w'));
 				$application->setAutoExit(false);
 				$status_code = $application->run($input, $output);
 				$description = $output->fetch();
-				file_put_contents("$storage/last_execution.log", $description);
 				if ($status_code == 0) {
 					rmdir_recursive("$storage/vendor");
 					@unlink("$storage/composer.json");

@@ -1,15 +1,15 @@
 <polymer-element name="cs-composer">
-	<template>
-		<h2 class="cs-center">{{composer_updating_text}}</h2>
-		<template if="{{!status}}">
-			<h1 class="cs-center">
-				<i class="uk-icon-spin uk-icon-spinner"></i>
-			</h1>
-		</template>
-		<template if="{{status}}">
-			<h3 class="cs-center">{{status}}</h3>
-		</template>
-		<pre style="background: #1a1a1a; display: none;" id="result"></pre>
-	</template>
-	<script src="script.js"></script>
+  <template>
+    <h2 class="cs-center">{{L.composer_composer_updating}}</h2>
+    <template if="{{!status}}">
+      <h1 class="cs-center">
+        <i class="uk-icon-spin uk-icon-spinner"></i>
+      </h1>
+    </template>
+    <template if="{{status}}">
+      <h3 class="cs-center">{{status}}</h3>
+    </template>
+    <pre id="result" style="background: #1a1a1a"></pre>
+  </template>
+  <script src="script.js"></script>
 </polymer-element>

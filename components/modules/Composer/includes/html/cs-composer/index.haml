@@ -1,0 +1,10 @@
+%polymer-element(name="cs-composer")
+	%template
+		%h2.cs-center {{L.composer_composer_updating}}
+		%template(if="{{!status}}")
+			%h1.cs-center
+				%i.uk-icon-spin.uk-icon-spinner
+		%template(if="{{status}}")
+			%h3.cs-center {{status}}
+		%pre#result(style="background: #1a1a1a")
+	%script(src="script.js")

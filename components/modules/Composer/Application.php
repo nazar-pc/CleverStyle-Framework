@@ -8,9 +8,9 @@
  */
 namespace cs\modules\Composer;
 use
-	Composer\Console\Application as ComposerApplication;
+	Composer\Console\Application as Composer_application;
 
-class Application extends ComposerApplication {
+class Application extends Composer_application {
 	/**
 	 * @var callable
 	 */

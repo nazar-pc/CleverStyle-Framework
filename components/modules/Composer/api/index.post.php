@@ -10,7 +10,7 @@ namespace cs\modules\Composer;
 use
 	cs\Page,
 	cs\User;
-if (!isset($_POST['name'], $_POST['type'])) {
+if (!isset($_POST['force']) && !isset($_POST['name'], $_POST['type'])) {
 	error_code(400);
 	return;
 }
@@ -19,8 +19,14 @@ if (!User::instance()->admin()) {
 	return;
 }
 require_once __DIR__.'/../ansispan.php';
-$result = Composer::instance()->update($_POST['name'], $_POST['type'], Composer::MODE_ADD);
-Page::instance()->json([
-	'code'        => $result['code'],
-	'description' => ansispan($result['description'])
-]);
+if (isset($_POST['force']) && $_POST['force']) {
+	$result = Composer::instance()->force_update();
+} else {
+	$result = Composer::instance()->update($_POST['name'], $_POST['type'], Composer::MODE_ADD);
+}
+Page::instance()->json(
+	[
+		'code'        => $result['code'],
+		'description' => ansispan($result['description'])
+	]
+);

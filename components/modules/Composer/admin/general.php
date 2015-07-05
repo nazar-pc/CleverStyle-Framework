@@ -15,21 +15,6 @@ use
 $Index          = Index::instance();
 $Index->buttons = false;
 $L              = new Prefix('composer_');
-if (isset($_POST['force_update'])) {
-	$result = Composer::instance()->force_update();
-	$Page   = Page::instance();
-	switch ($result['code']) {
-		case 0:
-			$Page->success($L->updated_successfully);
-			break;
-		case 1:
-			$Page->warning($L->update_failed);
-			break;
-		case 2:
-			$Page->warning($L->dependencies_conflict);
-			break;
-	}
-}
 if (file_exists(DIR.'/storage/Composer/last_execution.log')) {
 	require_once __DIR__.'/../ansispan.php';
 	$Index->content(
@@ -37,11 +22,17 @@ if (file_exists(DIR.'/storage/Composer/last_execution.log')) {
 		h::pre(
 			ansispan(file_get_contents(DIR.'/storage/Composer/last_execution.log')),
 			[
-				'style' => 'background:#1a1a1a'
+				'style' => 'background: #1a1a1a'
 			]
 		)
 	);
 }
+Page::instance()->config(
+	[
+		'force' => true
+	],
+	'cs.composer'
+);
 $Index->content(
-	h::{'p.cs-center button.uk-button[type=submit][name=force_update]'}($L->force_update)
+	h::{'p.cs-center button.uk-button.cs-composer-admin-force-update'}($L->force_update)
 );

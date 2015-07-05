@@ -1,5 +1,5 @@
 {
-	"admin/System/components" : [
+	"admin" : [
 		"script.js",
 		"cs-composer/index.html"
 	]
