@@ -41,7 +41,13 @@ if ($page['interface']) {
 		$Page->Title[1] = $page['title'];
 	}
 	$Page->Description = description($page['content']);
-	$canonical_url     = $Config->base_url();
+	$Meta              = Meta::instance();
+	$Meta->article();
+	if (preg_match_all('/<img[^>]*src=[\'"]([^\'"]+)[\'"]/i', $page['content'], $images)) {
+		$Meta->image($images[1]);
+	}
+	unset($images);
+	$canonical_url = $Config->base_url();
 	if (home_page()) {
 		$Page->canonical_url($canonical_url);
 	} else {
@@ -57,7 +63,6 @@ if ($page['interface']) {
 		$canonical_url   = $Config->base_url().'/'.implode('/', $canonical_url);
 		$Page->canonical_url($canonical_url);
 	}
-	Meta::instance()->article();
 	$is_admin = $User->admin();
 	if (isset($_GET['edit'])) {
 		if (!$is_admin) {
