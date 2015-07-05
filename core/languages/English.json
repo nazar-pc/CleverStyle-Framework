@@ -14,7 +14,7 @@
 
 //Common
 	"home"						: "Home",
-	"page_footer_info"			: "Page generated in %s, %s query(s) in DB in %s, maximal memory consumption %s",
+	"page_footer_info"			: "Page generated in %s, %s query(s) in DB in %s, memory consumption %s",
 	"hidden"					: "Hidden",
 	"add"						: "Add",
 	"delete"					: "Delete",
