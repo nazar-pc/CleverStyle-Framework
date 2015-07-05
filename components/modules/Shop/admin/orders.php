@@ -15,19 +15,19 @@ use
 	cs\Language\Prefix,
 	cs\Page,
 	cs\User;
-function make_url ($arguments) {
+$make_url = function ($arguments) {
 	$base_url = 'admin/Shop/orders/?';
 	return $base_url.http_build_query(array_merge((array)$_GET, $arguments));
-}
+};
 
-function make_header ($title, $field) {
+$make_header = function ($title, $field) use ($make_url) {
 	$order_by = @$_GET['order_by'] ?: 'created';
 	$icon     = $order_by == $field ? h::icon(@$_GET['asc'] ? 'caret-up' : 'caret-down') : '';
 	$asc      = $order_by == $field ? !@$_GET['asc'] : false;
 	return h::a(
 		"$title $icon",
 		[
-			'href' => make_url(
+			'href' => $make_url(
 				[
 					'order_by' => $field,
 					'asc'      => $asc,
@@ -36,7 +36,7 @@ function make_header ($title, $field) {
 			)
 		]
 	);
-}
+};
 
 Index::instance()->buttons = false;
 $L                         = new Prefix('shop_');
@@ -49,13 +49,15 @@ $Order_statuses            = Order_statuses::instance();
 $Shipping_types            = Shipping_types::instance();
 $page                      = @$_GET['page'] ?: 1;
 $count                     = @$_GET['count'] ?: Config::instance()->module('Shop')->items_per_page_admin;
-$orders                    = $Orders->get($Orders->search(
-	(array)$_GET,
-	$page,
-	$count,
-	@$_GET['order_by'] ?: 'date',
-	@$_GET['asc']
-));
+$orders                    = $Orders->get(
+	$Orders->search(
+		(array)$_GET,
+		$page,
+		$count,
+		@$_GET['order_by'] ?: 'date',
+		@$_GET['asc']
+	)
+);
 $orders_total              = $Orders->search(
 	[
 		'total_count' => 1
@@ -72,94 +74,107 @@ $Page->content(
 	h::{'h3.uk-lead.cs-center'}($L->orders).
 	h::{'cs-table[list][with-header]'}(
 		h::{'cs-table-row cs-table-cell'}(
-			make_header('id', 'id'),
-			make_header($L->datetime, 'date'),
-			make_header($L->user, 'user'),
+			$make_header('id', 'id'),
+			$make_header($L->datetime, 'date'),
+			$make_header($L->user, 'user'),
 			$L->order_items,
-			make_header($L->shipping_type, 'shipping_type'),
-			make_header($L->status, 'status'),
+			$make_header($L->shipping_type, 'shipping_type'),
+			$make_header($L->status, 'status'),
 			$L->comment,
 			$L->action
 		).
-		h::{'cs-table-row'}(array_map(
-			function ($order) use ($L, $Language, $Categories, $Items, $Order_statuses, $Orders, $Shipping_types, $module_path, $items_path) {
-				$order_status = $Order_statuses->get($order['status']);
-				$date         = $L->to_locale(
-					date($Language->{TIME - $order['date'] < 24 * 3600 ? '_time' : '_datetime_long'}, $order['date'])
-				);
-				$username     = User::instance()->username($order['user']);
-				return h::cs_table_cell(
-					[
-						$order['id'],
-						$date,
-						h::a(
-							$username." ($order[shipping_username]) ".h::br().$order['shipping_phone'],
-							[
-								'href' => "admin/Shop/orders/?user=$order[user]"
-							]
-						),
-						implode(
-							h::br(),
-							array_map(
-								function ($item) use ($Categories, $Items, $module_path, $items_path) {
-									$item = $Items->get($item['item']);
-									return h::a(
-										$item['title'],
-										[
-											'href'   => "$module_path/$items_path/".path($Categories->get($item['category'])['title']).'/'.path($item['title']).":$item[id]",
-											'target' => '_blank'
-										]
-									);
-								},
-								$Orders->get_items($order['id'])
+		h::{'cs-table-row'}(
+			array_map(
+				function ($order) use ($L, $Language, $Categories, $Items, $Order_statuses, $Orders, $Shipping_types, $module_path, $items_path) {
+					$order_status = $Order_statuses->get($order['status']);
+					$date         = $L->to_locale(
+						date($Language->{TIME - $order['date'] < 24 * 3600 ? '_time' : '_datetime_long'}, $order['date'])
+					);
+					$username     = User::instance()->username($order['user']);
+					return h::cs_table_cell(
+						[
+							$order['id'],
+							$date,
+							h::a(
+								$username." ($order[shipping_username]) ".h::br().$order['shipping_phone'],
+								[
+									'href' => "admin/Shop/orders/?user=$order[user]"
+								]
+							),
+							implode(
+								h::br(),
+								array_map(
+									function ($item) use ($Categories, $Items, $module_path, $items_path) {
+										$item = $Items->get($item['item']);
+										return h::a(
+											$item['title'],
+											[
+												'href'   => "$module_path/$items_path/".
+															path($Categories->get($item['category'])['title']).
+															'/'.
+															path($item['title']).
+															":$item[id]",
+												'target' => '_blank'
+											]
+										);
+									},
+									$Orders->get_items($order['id'])
+								)
+							),
+							h::a(
+								$Shipping_types->get($order['shipping_type'])['title'],
+								[
+									'href' => "admin/Shop/orders/?shipping_type=$order[shipping_type]"
+								]
+							),
+							h::a(
+								$order_status['title'],
+								[
+									'href' => "admin/Shop/orders/?status=$order[status]"
+								]
+							),
+							nl2br($order['comment']),
+							h::{'button.uk-button.cs-shop-order-statuses-history'}(
+								$L->statuses_history,
+								[
+									'data-id' => $order['id']
+								]
+							).
+							h::{'button.uk-button.cs-shop-order-edit'}(
+								$L->edit,
+								[
+									'data-id'       => $order['id'],
+									'data-username' => $username,
+									'data-date'     => $date
+								]
+							).
+							h::{'button.uk-button.cs-shop-order-delete'}(
+								$L->delete,
+								[
+									'data-id' => $order['id']
+								]
 							)
-						),
-						h::a(
-							$Shipping_types->get($order['shipping_type'])['title'],
-							[
-								'href' => "admin/Shop/orders/?shipping_type=$order[shipping_type]"
-							]
-						),
-						h::a(
-							$order_status['title'],
-							[
-								'href' => "admin/Shop/orders/?status=$order[status]"
-							]
-						),
-						nl2br($order['comment']),
-						h::{'button.uk-button.cs-shop-order-statuses-history'}(
-							$L->statuses_history,
-							[
-								'data-id' => $order['id']
-							]
-						).
-						h::{'button.uk-button.cs-shop-order-edit'}(
-							$L->edit,
-							[
-								'data-id'       => $order['id'],
-								'data-username' => $username,
-								'data-date'     => $date
-							]
-						).
-						h::{'button.uk-button.cs-shop-order-delete'}(
-							$L->delete,
-							[
-								'data-id' => $order['id']
-							]
-						)
-					],
-					[
-						'style' => $order_status['color'] ? "background: $order_status[color]" : ''
-					]
-				);
-			},
-			$orders
-		) ?: false)
+						],
+						[
+							'style' => $order_status['color'] ? "background: $order_status[color]" : ''
+						]
+					);
+				},
+				$orders
+			) ?: false
+		)
 	).
-	pages($page, ceil($orders_total / $count), function ($page) {
-		return make_url([
-			'page' => $page
-		]);
-	}, true).
+	pages(
+		$page,
+		ceil($orders_total / $count),
+		function ($page) use ($make_url) {
+			return $make_url(
+				[
+					'page' => $page
+				]
+			);
+		},
+		true
+	).
 	h::{'p button.uk-button.cs-shop-order-add'}($L->add)
 );
