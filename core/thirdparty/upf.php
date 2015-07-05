@@ -468,18 +468,16 @@ function _rtrim ($str, $charlist = " \t\n\r\0\x0B") {
  */
 function _substr ($string, $start, $length = null) {
 	if (is_array($string)) {
-		if ($length) {
-			foreach ($string as &$s) {
-				$s = substr($s, $start, $length);
-			}
-		} else {
-			foreach ($string as &$s) {
-				$s = substr($s, $start);
-			}
+		foreach ($string as &$s) {
+			$s = _substr($s, $start, $length);
 		}
 		return $string;
 	}
-	return substr($string, $start, $length);
+	if ($length) {
+		return substr($string, $start, $length);
+	} else {
+		return substr($string, $start);
+	}
 }
 /**
  * Like system function, but accept arrays of strings
@@ -493,11 +491,15 @@ function _substr ($string, $start, $length = null) {
 function _mb_substr ($string, $start, $length = null) {
 	if (is_array($string)) {
 		foreach ($string as &$s) {
-			$s = mb_substr($s, $start, $length, 'utf-8');
+			$s = _mb_substr($s, $start, $length);
 		}
 		return $string;
 	}
-	return mb_substr($string, $start, $length, 'utf-8');
+	if ($length) {
+		return mb_substr($string, $start, $length);
+	} else {
+		return mb_substr($string, $start);
+	}
 }
 /**
  * Like system function, but accept arrays of strings
