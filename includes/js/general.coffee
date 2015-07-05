@@ -5,6 +5,7 @@
  * @license		MIT License, see license.txt
 ###
 $ ->
+	L	= cs.Language
 	$.ajaxSetup
 		type	: 'post'
 		data	:

@@ -9,6 +9,8 @@
 
 (function() {
   $(function() {
+    var L;
+    L = cs.Language;
     $.ajaxSetup({
       type: 'post',
       data: {
