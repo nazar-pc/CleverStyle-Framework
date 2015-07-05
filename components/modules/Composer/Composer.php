@@ -82,7 +82,8 @@ class Composer {
 		$description = '';
 		$this->prepare($storage);
 		$composer_json = $this->generate_composer_json($component_name, $component_type, $mode);
-		$auth_json     = _json_decode(Config::instance()->module('Composer')->auth_json ?: '[]');
+		$Config        = Config::instance();
+		$auth_json     = _json_decode($Config->module('Composer')->auth_json ?: '[]');
 		$Event         = Event::instance();
 		$Event->fire(
 			'Composer/generate_composer_json',
@@ -110,6 +111,7 @@ class Composer {
 						);
 					}
 				);
+				$verbosity          = !DEBUG && $Config->core['simple_admin_mode'] ? '-vv' : '-vvv';
 				$input              = new ArrayInput(
 					[
 						'command'       => 'update',
@@ -117,7 +119,7 @@ class Composer {
 						'--no-dev'      => true,
 						'--ansi'        => true,
 						'--prefer-dist' => true,
-						'-vvv'          => true
+						$verbosity      => true
 					]
 				);
 				$output             = new Output;
