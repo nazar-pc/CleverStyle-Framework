@@ -356,7 +356,7 @@ trait Includes {
 		$current_url           = str_replace('/', '+', Route::instance()->relative_address);
 		foreach ($structure as $filename_prefix => $hashes) {
 			$prefix_module = explode('+', $filename_prefix);
-			$prefix_module = $prefix_module[0] != 'admin' ? $prefix_module[0] : $prefix_module[1];
+			$prefix_module = $prefix_module[0] != 'admin' ? $prefix_module[0] : (@$prefix_module[1] ?: '');
 			$is_dependency = false;
 			if (
 				(
@@ -431,7 +431,7 @@ trait Includes {
 					continue;
 				}
 				$prefix_module = explode('+', $url);
-				$prefix_module = $prefix_module[0] != 'admin' ? $prefix_module[0] : $prefix_module[1];
+				$prefix_module = $prefix_module[0] != 'admin' ? $prefix_module[0] : (@$prefix_module[1] ?: '');
 				$is_dependency = false;
 				if (
 					mb_strpos($current_url, $url) === 0 ||
