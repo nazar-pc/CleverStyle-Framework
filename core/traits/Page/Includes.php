@@ -312,7 +312,7 @@ trait Includes {
 		 * If CSS and JavaScript compression enabled
 		 */
 		if ($Config->core['cache_compress_js_css'] && !admin_path()) {
-			$this->add_includes_on_page_with_compression();
+			$includes = $this->get_includes_for_page_with_compression();
 		} else {
 			/**
 			 * Language translation is added explicitly only when compression is disabled, otherwise it will be in compressed JS file
@@ -321,12 +321,18 @@ trait Includes {
 			 * @var \cs\Page $this
 			 */
 			$this->config_internal(Language::instance(), 'cs.Language', true);
-			$this->add_includes_on_page_without_compression($Config);
+			$includes = $this->get_includes_for_page_without_compression($Config);
 		}
+		$this->css_internal($includes['css'], 'file', true);
+		$this->js_internal($includes['js'], 'file', true);
+		$this->html_internal($includes['html'], 'file', true);
 		$this->add_includes_on_page_manually_added($Config);
 		return $this;
 	}
-	protected function add_includes_on_page_with_compression () {
+	/**
+	 * @return array[]
+	 */
+	protected function get_includes_for_page_with_compression () {
 		/**
 		 * Current cache checking
 		 */
@@ -356,6 +362,7 @@ trait Includes {
 		$current_url           = str_replace('/', '+', Route::instance()->relative_address);
 		foreach ($structure as $filename_prefix => $hashes) {
 			$prefix_module = explode('+', $filename_prefix);
+			/** @noinspection NestedTernaryOperatorInspection */
 			$prefix_module = $prefix_module[0] != 'admin' ? $prefix_module[0] : (@$prefix_module[1] ?: '');
 			$is_dependency = false;
 			if (
@@ -381,35 +388,14 @@ trait Includes {
 			unset($prefix_module, $is_dependency);
 		}
 		unset($dependencies, $structure, $filename_prefix, $hashes);
-		$this->css_internal(
-			array_merge(
-				$system_includes['css'],
-				$dependencies_includes['css'],
-				$includes['css']
-			),
-			'file',
-			true
-		);
-		$this->js_internal(
-			array_merge(
-				$system_includes['js'],
-				$dependencies_includes['js'],
-				$includes['js']
-			),
-			'file',
-			true
-		);
-		$this->html_internal(
-			array_merge(
-				$system_includes['html'],
-				$dependencies_includes['html'],
-				$includes['html']
-			),
-			'file',
-			true
-		);
+		return array_merge_recursive($system_includes, $dependencies_includes, $includes);
 	}
-	protected function add_includes_on_page_without_compression ($Config) {
+	/**
+	 * @param Config $Config
+	 *
+	 * @return array[]
+	 */
+	protected function get_includes_for_page_without_compression ($Config) {
 		if ($Config) {
 			list($dependencies, $includes_map) = $this->includes_dependencies_and_map(admin_path());
 			/**
@@ -431,6 +417,7 @@ trait Includes {
 					continue;
 				}
 				$prefix_module = explode('+', $url);
+				/** @noinspection NestedTernaryOperatorInspection */
 				$prefix_module = $prefix_module[0] != 'admin' ? $prefix_module[0] : (@$prefix_module[1] ?: '');
 				$is_dependency = false;
 				if (
@@ -442,67 +429,20 @@ trait Includes {
 					)
 				) {
 					if ($is_dependency) {
-						/** @noinspection SlowArrayOperationsInLoopInspection */
-						$dependencies_includes['css'] = array_merge($dependencies_includes['css'], @$local_includes['css'] ?: []);
-						/** @noinspection SlowArrayOperationsInLoopInspection */
-						$dependencies_includes['js'] = array_merge($dependencies_includes['js'], @$local_includes['js'] ?: []);
-						/** @noinspection SlowArrayOperationsInLoopInspection */
-						$dependencies_includes['html'] = array_merge($dependencies_includes['html'], @$local_includes['html'] ?: []);
+						$dependencies_includes = array_merge_recursive($dependencies_includes, $local_includes);
 					} else {
-						/** @noinspection SlowArrayOperationsInLoopInspection */
-						$includes['css'] = array_merge($includes['css'], @$local_includes['css'] ?: []);
-						/** @noinspection SlowArrayOperationsInLoopInspection */
-						$includes['js'] = array_merge($includes['js'], @$local_includes['js'] ?: []);
-						/** @noinspection SlowArrayOperationsInLoopInspection */
-						$includes['html'] = array_merge($includes['html'], @$local_includes['html'] ?: []);
+						$includes = array_merge_recursive($includes, $local_includes);
 					}
 				}
 			}
 			unset($current_url, $dependencies, $url, $local_includes, $prefix_module, $is_dependency);
-			$includes['css']  = array_merge(
-				$includes_map['']['css'] ?: [],
-				$dependencies_includes['css'] ?: [],
-				$includes['css'] ?: []
-			);
-			$includes['js']   = array_merge(
-				$includes_map['']['js'] ?: [],
-				$dependencies_includes['js'] ?: [],
-				$includes['js'] ?: []
-			);
-			$includes['html'] = array_merge(
-				$includes_map['']['html'] ?: [],
-				$dependencies_includes['html'] ?: [],
-				$includes['html'] ?: []
-			);
+			$includes = array_merge_recursive($includes_map[''], $dependencies_includes, $includes);
 			unset($dependencies_includes);
-			$root_strlen = strlen(DIR.'/');
-			foreach ($includes['css'] as &$file) {
-				$file = substr($file, $root_strlen);
-			}
-			unset($file);
-			foreach ($includes['js'] as &$file) {
-				$file = substr($file, $root_strlen);
-			}
-			unset($file);
-			foreach ($includes['html'] as &$file) {
-				$file = substr($file, $root_strlen);
-			}
-			unset($root_strlen, $file);
+			$includes = _substr($includes, strlen(DIR.'/'));
 		} else {
 			$includes = $this->get_includes_list();
 		}
-		/**
-		 * Including of CSS
-		 */
-		$this->css_internal($includes['css'], 'file', true);
-		/**
-		 * Including of JavaScript
-		 */
-		$this->js_internal($includes['js'], 'file', true);
-		/**
-		 * Including of Web Components
-		 */
-		$this->html_internal($includes['html'], 'file', true);
+		return $includes;
 	}
 	/**
 	 * @param Config $Config
