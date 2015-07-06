@@ -127,9 +127,9 @@ if ($cli) {
 			$_POST['admin_password']
 		)
 	) {
-		echo 'CleverStyle CMS installer
+		echo "CleverStyle CMS installer
 Installer is used for installation of CleverStyle CMS and built-in components from distributive.
-Usage: php CleverStyle_CMS.phar.php
+Usage: php $argv[0]
          -site_name <site_name>
          -site_url <site_url>
          -db_name <db_name>
@@ -175,9 +175,11 @@ Usage: php CleverStyle_CMS.phar.php
   -admin_email    - Email of first, primary administrator
   -ap
   -admin_password - Password of first administrator
-Example:
-  php CleverStyle_CMS.phar.php -sn Web-site -su http://web.site -dn web.site -du web.site -dp pass -ae admin@web.site -ap pass
-';
+Examples:
+  php $argv[0] -sn Web-site -su http://web.site -dn web.site -du web.site -dp pass -ae admin@web.site -ap pass
+  php $argv[0] -i
+  php $argv[0] -sn Web-site -i
+";
 		return;
 	} else {
 		if (!isset($_POST['db_engine'])) {
