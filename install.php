@@ -30,10 +30,12 @@ require DIR.'/fs/'.$fs['core/classes/h.php'];
 require DIR.'/install/functions.php';
 date_default_timezone_set('UTC');
 if ($cli) {
-	$help = false;
+	$help        = false;
+	$interactive = false;
 	for ($i = 1; $i < $argc; $i += 2) {
 		switch ($argv[$i]) {
 			case '-h':
+			case '-help':
 				$help = true;
 				break;
 			case '-sn':
@@ -88,6 +90,28 @@ if ($cli) {
 			case '-admin_password':
 				$_POST['admin_password'] = $argv[$i + 1];
 				break;
+			case '-i':
+			case '-interactive':
+				$interactive = true;
+				break;
+		}
+	}
+	if ($interactive) {
+		echo "CleverStyle CMS installer, interactive mode\n";
+		$required_parameters = [
+			'site_name'      => 'Site name',
+			'site_url'       => 'Site URL',
+			'db_name'        => 'Database name',
+			'db_user'        => 'Database user',
+			'db_password'    => 'Database password',
+			'admin_email'    => 'Email of administrator',
+			'admin_password' => 'Password of administrator'
+		];
+		foreach ($required_parameters as $parameter => $description) {
+			if (!isset($_POST[$parameter])) {
+				echo "$description: ";
+				$_POST[$parameter] = substr(fgets(STDIN), 0, -1);
+			}
 		}
 	}
 	if (
@@ -113,14 +137,18 @@ Usage: php CleverStyle_CMS.phar.php
          -db_password <db_password>
          -admin_email <admin_email>
          -admin_password <admin_password>
-         [-h]
+         [-help]
+         [-interactive]
          [-db_engine <db_engine>]
          [-db_host <db_host>]
          [-db_prefix <db_prefix>]
          [-db_charset <db_charset>]
          [-timezone <timezone>]
          [-language <language>]
-  -h              - This information
+  -h
+  -help           - This information
+  -i
+  -interactive    - Interactive mode (can be combined with other options, will ask only required)
   -sn
   -site_name      - Name of future site, in case of few words, do not forget to take into quotes
   -su
