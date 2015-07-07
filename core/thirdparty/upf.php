@@ -944,7 +944,7 @@ function password_check ($password, $min_length = 4) {
 				++$strength;
 			}
 		}
-		if (preg_match_all('/[^0-9a-z~!@#\$%\^&\*\(\)\-_=+\|\/;:,\.\?\[\]\{\}]]+/i', $password, $match)) {
+		if (preg_match_all('/[^0-9a-z~!@#\$%\^&\*\(\)\-_=+\|\/;:,\.\?\[\]\{\}]+/i', $password, $match)) {
 			++$strength;
 			if (count($match[0]) > 1) {
 				++$strength;
@@ -1009,7 +1009,7 @@ function password_generate ($length = 10, $strength = 5) {
 	$size		= count($symbols)-1;
 	while (true) {
 		for ($i = 0; $i < $length; ++$i) {
-			$password[]	= $symbols[rand(0, $size)];
+			$password[]	= $symbols[mt_rand(0, $size)];
 		}
 		shuffle($password);
 		if (password_check(implode('', $password)) == $strength) {
