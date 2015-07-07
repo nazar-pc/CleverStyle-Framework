@@ -925,28 +925,28 @@ function hex2ip ($hex, $mode = 6) {
  * 					<b>7</b> - as 5, but + special symbols, which can't be found on usual keyboard or non-latin letter (more than one symbol)<br>
  */
 function password_check ($password, $min_length = 4) {
-	$password	= preg_replace('/\s+/', ' ', $password);
-	$strength	= 0;
-	if(strlen($password) >= $min_length) {
-		if(preg_match('/[~!@#\$%\^&\*\(\)\-_=+\|\\/;:,\.\?\[\]\{\}]+/', $password, $match)) {
+	$password = preg_replace('/\s+/', ' ', $password);
+	$strength = 0;
+	if (strlen($password) >= $min_length) {
+		if (preg_match('/[~!@#\$%\^&\*\(\)\-_=+\|\/;:,\.\?\[\]\{\}]+/', $password, $match)) {
 			$strength = 4;
 			if (strlen(implode('', $match)) > 1) {
 				++$strength;
 			}
 		} else {
-			if(preg_match('/[A-Z]+/', $password)) {
+			if (preg_match('/[A-Z]+/', $password)) {
 				++$strength;
 			}
-			if(preg_match('/[a-z]+/', $password)) {
+			if (preg_match('/[a-z]+/', $password)) {
 				++$strength;
 			}
-			if(preg_match('/[0-9]+/', $password)) {
+			if (preg_match('/[0-9]+/', $password)) {
 				++$strength;
 			}
 		}
-		if (preg_match('/[^[0-9a-z~!@#\$%\^&\*\(\)\-_=+\|\\/;:,\.\?\[\]\{\}]]+/i', $password, $match)) {
+		if (preg_match_all('/[^0-9a-z~!@#\$%\^&\*\(\)\-_=+\|\/;:,\.\?\[\]\{\}]]+/i', $password, $match)) {
 			++$strength;
-			if (strlen(implode('', $match)) > 1) {
+			if (count($match[0]) > 1) {
 				++$strength;
 			}
 		}
