@@ -253,7 +253,6 @@ function install_process ($fs, $argv = null) {
 	 * Basic system configuration
 	 */
 	$public_key  = hash('sha512', random_bytes(1000));
-	$td          = mcrypt_module_open(MCRYPT_TWOFISH, '', MCRYPT_MODE_CBC, '');
 	$main_config = file_exists(ROOT.'/config') && file_put_contents(
 			ROOT.'/config/main.json',
 			str_replace(
@@ -282,7 +281,7 @@ function install_process ($fs, $argv = null) {
 					$_POST['db_prefix'],
 					$_POST['db_charset'],
 					$_POST['language'],
-					substr(hash('sha512', random_bytes(1000)), 0, mcrypt_enc_get_key_size($td)),
+					hash('sha512', random_bytes(1000)),
 					$public_key
 				],
 				'{
@@ -311,7 +310,7 @@ function install_process ($fs, $argv = null) {
 //Settings of Memcached cache engine
 	"memcache_host"		: "127.0.0.1",
 	"memcache_port"		: "11211",
-//Will be truncated if necessary
+//Default encryption key
 	"key"				: "@key",
 //Any length
 	"public_key"		: "@public_key"

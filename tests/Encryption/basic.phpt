@@ -15,7 +15,7 @@ $data		= [
 ];
 $encrypted	= $Encryption->encrypt($data);
 if ($encrypted === $data) {
-	die('Encryption not working, probably, mcrypt is not available');
+	die('Encryption not working, probably, OpenSSL is not available');
 }
 $decrypted	= $Encryption->decrypt($encrypted);
 if ($decrypted !== $data) {

@@ -230,7 +230,7 @@
 		"max_file_uploads"			: "Maximum number of uploaded files at once",
 		"allow_url_fopen"			: "URL-wrappers support",
 		"display_errors"			: "Display errors",
-		"mcrypt"					: "Mcrypt library",
+		"openssl"					: "OpenSSL library",
 		"php_ini_settings"			: "php.ini settings",
 		"indefinite"				: "Indefinite",
 		"server_type"				: "Server type",
@@ -645,6 +645,6 @@
 //Error strings
 	"of_file"			: "of file",
 	"error"				: "Error",
-	"mcrypt_warning"	: "WARNIING: library mcrypt not found, the site will not work with the maximum level of security, strongly recommended to install this library.",
+	"openssl_warning"	: "WARNIING: library OpenSSL not found, the site will not work with the maximum level of security, strongly recommended to install this library.",
 	"error_storage"		: "Error connecting to storage"
 }

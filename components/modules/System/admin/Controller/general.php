@@ -110,11 +110,11 @@ trait general {
 					"$L->php_components:",
 					h::{'cs-table cs-table-row| cs-table-cell'}(
 						[
-							"$L->mcrypt:",
+							"$L->openssl:",
 							[
-								extension_loaded('mcrypt') ? $L->on : $L->off.h::icon('info-sign', ['data-title' => $L->mcrypt_warning]),
+								extension_loaded('openssl') ? $L->on : $L->off.h::icon('info-sign', ['data-title' => $L->openssl_warning]),
 								[
-									'class' => self::state(extension_loaded('mcrypt'))
+									'class' => self::state(extension_loaded('openssl'))
 								]
 							]
 						],

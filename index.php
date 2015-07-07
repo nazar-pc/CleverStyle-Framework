@@ -16,7 +16,6 @@
  * * or Nginx
  * * PHP 5.5+
  *  PHP libraries MUST be present:
- *  * Mcrypt
  *  * cURL
  *  Optional PHP libraries:
  *  * APCu, Memcached
