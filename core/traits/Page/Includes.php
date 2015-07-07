@@ -346,7 +346,13 @@ trait Includes {
 		unset($data);
 		$current_module = current_module();
 		/**
-		 * Narrow the dependence to current module only
+		 * Current URL based on controller path (it better represents how page was rendered)
+		 */
+		$current_url = Index::instance()->controller_path;
+		$current_url = array_slice($current_url, 1);
+		$current_url = (admin_path() ? 'admin+' : '')."$current_module+".implode('+', $current_url);
+		/**
+		 * Narrow the dependencies to current module only
 		 */
 		$dependencies          = isset($dependencies[$current_module]) ? $dependencies[$current_module] : [];
 		$system_includes       = [
@@ -360,7 +366,6 @@ trait Includes {
 			'html' => []
 		];
 		$dependencies_includes = $includes;
-		$current_url           = str_replace('/', '+', Route::instance()->relative_address);
 		foreach ($structure as $filename_prefix => $hashes) {
 			$prefix_module = explode('+', $filename_prefix);
 			/** @noinspection NestedTernaryOperatorInspection */
@@ -408,11 +413,16 @@ trait Includes {
 				'html' => []
 			];
 			$dependencies_includes = $includes;
-			$current_url           = Route::instance()->relative_address;
+			$current_module        = current_module();
 			/**
-			 * Narrow the dependence to current module only
+			 * Current URL based on controller path (it better represents how page was rendered)
 			 */
-			$dependencies = isset($dependencies[current_module()]) ? $dependencies[current_module()] : [];
+			$current_url = array_slice(Index::instance()->controller_path, 1);
+			$current_url = (admin_path() ? 'admin/' : '')."$current_module/".implode('/', $current_url);
+			/**
+			 * Narrow the dependencies to current module only
+			 */
+			$dependencies = isset($dependencies[$current_module]) ? $dependencies[$current_module] : [];
 			foreach ($includes_map as $url => $local_includes) {
 				if (!$url) {
 					continue;

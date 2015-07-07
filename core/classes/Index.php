@@ -24,7 +24,8 @@ use
  *
  * @method static Index instance($check = false)
  *
- * @property string $action    Form action
+ * @property string   $action             Form action
+ * @property string[] $controller_path    Path that will be used by controller to render page
  */
 class Index {
 	use    Singleton;
@@ -708,15 +709,18 @@ class Index {
 		return $this->in_admin;
 	}
 	/**
-	 * Getter for `action` property (no other properties supported currently)
+	 * Getter for `action` and `controller_path` properties (no other properties supported currently)
 	 *
 	 * @param string $property
 	 *
-	 * @return false|string
+	 * @return false|string|string[]
 	 */
 	function __get ($property) {
-		if ($property == 'action') {
-			return $this->get_action();
+		switch ($property) {
+			case 'action':
+				return $this->get_action();
+			case 'controller_path';
+				return $this->controller_path;
 		}
 		return false;
 	}
