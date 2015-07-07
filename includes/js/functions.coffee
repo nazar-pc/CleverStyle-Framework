@@ -178,6 +178,9 @@ cs.change_password			= (current_password, new_password, success, error) ->
 	else if current_password == new_password
 		alert(L.current_new_password_equal)
 		return
+	else if cs.password_check(new_password) < cs.password_min_strength
+		alert(L.password_too_easy)
+		return
 	current_password	= cs.hash('sha512', cs.hash('sha512', String(current_password)) + cs.public_key)
 	new_password		= cs.hash('sha512', cs.hash('sha512', String(new_password)) + cs.public_key)
 	$.ajax
@@ -201,17 +204,45 @@ cs.change_password			= (current_password, new_password, success, error) ->
 		error	: ->
 			error()
 ###*
- * Encodes data with MIME base64
+ * Check password strength
  *
- * @param {string} str
-###
-cs.base64_encode			= (str) -> window.btoa(str)
-###*
- * Encodes data with MIME base64
+ * @param	string	password
+ * @param	int		min_length
  *
- * @param {string} str
+ * @return	int		In range [0..7]<br><br>
+ * 					<b>0</b> - short password<br>
+ * 					<b>1</b> - numbers<br>
+ *  				<b>2</b> - numbers + letters<br>
+ * 					<b>3</b> - numbers + letters in different registers<br>
+ * 		 			<b>4</b> - numbers + letters in different registers + special symbol on usual keyboard +=/^ and others<br>
+ * 					<b>5</b> - numbers + letters in different registers + special symbols (more than one)<br>
+ * 					<b>6</b> - as 5, but + special symbol, which can't be found on usual keyboard or non-latin letter<br>
+ * 					<b>7</b> - as 5, but + special symbols, which can't be found on usual keyboard or non-latin letter (more than one symbol)<br>
 ###
-cs.base64_decode			= (str) -> window.atob(str)
+cs.password_check			= (password, min_length) ->
+	password	= new String(password)
+	min_length	= min_length || 4
+	password	= password.replace(/\s+/g, ' ')
+	$strength	= 0
+	if password.length >= min_length
+		matches	= password.match(/[~!@#\$%\^&\*\(\)\-_=+\|\\/;:,\.\?\[\]\{\}]/g)
+		if matches
+			$strength = 4
+			if matches.length > 1
+				++$strength
+		else
+			if /[A-Z]+/.test(password)
+				++$strength
+			if /[a-z]+/.test(password)
+				++$strength
+			if /[0-9]+/.test(password)
+				++$strength
+		matches	= password.match(/[^0-9a-z~!@#\$%\^&\*\(\)\-_=+\|\\/;:,\.\?\[\]\{\}]/ig)
+		if matches
+			++$strength
+			if matches.length > 1
+				++$strength
+	$strength
 ###*
  * Bitwise XOR operation for 2 strings
  *
