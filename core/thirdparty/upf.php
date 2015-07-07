@@ -928,9 +928,9 @@ function password_check ($password, $min_length = 4) {
 	$password = preg_replace('/\s+/', ' ', $password);
 	$strength = 0;
 	if (strlen($password) >= $min_length) {
-		if (preg_match('/[~!@#\$%\^&\*\(\)\-_=+\|\/;:,\.\?\[\]\{\}]+/', $password, $match)) {
+		if (preg_match_all('/[~!@#\$%\^&\*\(\)\-_=+\|\/;:,\.\?\[\]\{\}]/', $password, $match)) {
 			$strength = 4;
-			if (strlen(implode('', $match)) > 1) {
+			if (count($match[0]) > 1) {
 				++$strength;
 			}
 		} else {
