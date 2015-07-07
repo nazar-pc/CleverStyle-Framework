@@ -134,6 +134,7 @@
               $form.one('submit', (function(_this) {
                 return function(e) {
                   e.preventDefault();
+                  e.stopImmediatePropagation();
                   $(_this).find('[name]').each(function() {
                     var $this;
                     $this = $(this);

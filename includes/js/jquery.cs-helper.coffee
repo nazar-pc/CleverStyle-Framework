@@ -116,6 +116,7 @@ do ($=jQuery, UI = UIkit) ->
 							'submit'
 							(e) =>
 								e.preventDefault()
+								e.stopImmediatePropagation()
 								$(@).find('[name]').each ->
 									$this	= $(@)
 									if @type == 'file'
