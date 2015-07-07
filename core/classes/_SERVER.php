@@ -132,7 +132,7 @@ class _SERVER implements ArrayAccess, Iterator {
 	 * @return bool
 	 */
 	protected function secure ($SERVER) {
-		return isset($SERVER['HTTPS']) ? $SERVER['HTTPS'] !== 'off' : (
+		return isset($SERVER['HTTPS']) && $SERVER['HTTPS'] ? $SERVER['HTTPS'] !== 'off' : (
 			isset($SERVER['HTTP_X_FORWARDED_PROTO']) && $SERVER['HTTP_X_FORWARDED_PROTO'] === 'https'
 		);
 	}
