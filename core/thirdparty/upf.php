@@ -944,7 +944,7 @@ function password_check ($password, $min_length = 4) {
 				++$strength;
 			}
 		}
-		if (preg_match_all('/[^0-9a-z~!@#\$%\^&\*\(\)\-_=+\|\/;:,\.\?\[\]\{\}]+/i', $password, $match)) {
+		if (preg_match_all('/[^0-9a-z~!@#\$%\^&\*\(\)\-_=+\|\/;:,\.\?\[\]\{\}]/i', $password, $match)) {
 			++$strength;
 			if (count($match[0]) > 1) {
 				++$strength;
