@@ -19,7 +19,7 @@ do ->
 			'Client/authentication'
 			session		: cs.getcookie('session')
 			user_agent	: navigator.userAgent
-			language	: cs.Language.clanguage
+			language	: cs.Language.clanguage.toString()
 		)
 		while messages_pool.length
 			cs.WebSockets.send(messages_pool.shift())

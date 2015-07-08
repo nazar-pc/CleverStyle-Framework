@@ -24,7 +24,7 @@ if (isset($_POST['start_server']) && !is_server_running()) {
 		stream_context_create(
 			[
 				'http' => [
-					'timeout' => 0
+					'timeout' => 5
 				]
 			]
 		)
@@ -68,6 +68,15 @@ $Index->content(
 					'checked' => $module_data->listen_locally,
 					'value'   => [1, 0],
 					'in'      => ['127.0.0.1', '0.0.0.0']
+				]
+			)
+		],
+		[
+			h::info('websockets_dns_server'),
+			h::input(
+				[
+					'name'  => 'dns_server',
+					'value' => $module_data->dns_server ?: '127.0.0.1'
 				]
 			)
 		]

@@ -13,10 +13,13 @@ Event::instance()->on(
 		if ($data['name'] != 'WebSockets') {
 			return;
 		}
-		Config::instance()->module('WebSockets')->set([
-			'security_key'   => hash('sha224', random_bytes(100)),
-			'listen_port'    => 8080,
-			'listen_locally' => 1
-		]);
+		Config::instance()->module('WebSockets')->set(
+			[
+				'security_key'   => hash('sha224', random_bytes(100)),
+				'listen_port'    => 8080,
+				'listen_locally' => 1,
+				'dns_server'     => '127.0.0.1'
+			]
+		);
 	}
 );

@@ -27,7 +27,8 @@ class Pool {
 	function get_all () {
 		return $this->db_prime()->qfas(
 			"SELECT `address`
-			FROM `[prefix]websockets_pool`"
+			FROM `[prefix]websockets_pool`
+			ORDER BY `date` ASC"
 		) ?: [];
 	}
 	function get_master () {
@@ -43,10 +44,13 @@ class Pool {
 		return $this->db_prime()->q(
 			"INSERT IGNORE INTO `[prefix]websockets_pool`
 			(
+				`date`,
 				`address`
 			) VALUES (
+				'%s',
 				'%s'
 			)",
+			time(),
 			$server_address
 		);
 	}

@@ -8,14 +8,15 @@
  */
 namespace cs\modules\WebSockets;
 use
-	React\EventLoop\Factory as Loop_factory,
 	Ratchet\Client\Factory as Client_factory,
+	Ratchet\Client\WebSocket as Client_websocket,
 	Ratchet\ConnectionInterface,
 	Ratchet\Http\HttpServer,
 	Ratchet\MessageComponentInterface,
 	Ratchet\Server\IoServer,
-	Ratchet\Client\WebSocket as Client_websocket,
 	Ratchet\WebSocket\WsServer,
+	React\Dns\Resolver\Factory as Dns_factory,
+	React\EventLoop\Factory as Loop_factory,
 	cs\Config,
 	cs\Core,
 	cs\Encryption,
@@ -25,6 +26,9 @@ use
 	cs\User,
 	Exception,
 	SplObjectStorage;
+/**
+ * @method static Server instance($check = false)
+ */
 class Server implements MessageComponentInterface {
 	use
 		Singleton;
@@ -33,7 +37,8 @@ class Server implements MessageComponentInterface {
 	const SEND_TO_SPECIFIC_USERS   = 3;
 	const SEND_TO_USERS_GROUP      = 4;
 	/**
-	 * Each object additionally will have properties `user_id`, `session_id`, `session_expire` and `user_groups` with user id and ids of user groups correspondingly
+	 * Each object additionally will have properties `user_id`, `session_id`, `session_expire` and `user_groups` with user id and ids of user groups
+	 * correspondingly
 	 *
 	 * @var ConnectionInterface[]|SplObjectStorage
 	 */
@@ -62,6 +67,14 @@ class Server implements MessageComponentInterface {
 	 * @var IoServer
 	 */
 	protected $io_server;
+	/**
+	 * @var \React\EventLoop\LoopInterface
+	 */
+	protected $loop;
+	/**
+	 * @var Client_factory
+	 */
+	protected $client_connector;
 	/**
 	 * @var int
 	 */
@@ -98,10 +111,18 @@ class Server implements MessageComponentInterface {
 		// Disable all versions except RFC6455, which is supported by all modern browsers
 		$ws_server->disableVersion(0);
 		$ws_server->disableVersion(6);
-		$this->io_server = IoServer::factory(
+		$this->io_server        = IoServer::factory(
 			new HttpServer($ws_server),
 			$this->listen_port,
 			$this->listen_locally ? '127.0.0.1' : '0.0.0.0'
+		);
+		$this->loop             = $this->io_server->loop;
+		$this->client_connector = new Client_factory(
+			$this->loop,
+			(new Dns_factory)->create(
+				Config::instance()->module('WebSockets')->dns_server ?: '127.0.0.1',
+				$this->loop
+			)
 		);
 		$this->connect_to_master();
 		// Since we may work with a lot of different users - disable this cache in order to not run out of memory
@@ -132,7 +153,7 @@ class Server implements MessageComponentInterface {
 			 * Connection to master server as server (by default all connections considered as clients)
 			 */
 			case 'Server/connect':
-				if (Encryption::instance()->decrypt($details) == Core::instance()->public_key) {
+				if (Encryption::instance()->decrypt(base64_decode($details)) === Core::instance()->public_key) {
 					$this->clients->detach($connection);
 					$this->servers->attach($connection);
 					return;
@@ -154,10 +175,14 @@ class Server implements MessageComponentInterface {
 				return;
 			case 'Client/authentication':
 				if (!isset($details['session'], $details['user_agent'], $details['language'])) {
-					$connection->send(_json_encode([
-						'Client/authentication:error',
-						$this->compose_error(400)
-					]));
+					$connection->send(
+						_json_encode(
+							[
+								'Client/authentication:error',
+								$this->compose_error(400)
+							]
+						)
+					);
 					return;
 				}
 				$session = Session::instance()->get($details['session']);
@@ -169,10 +194,14 @@ class Server implements MessageComponentInterface {
 						$session['ip'] != ip2hex($connection->remoteAddress)
 					)
 				) {
-					$connection->send(_json_encode([
-						'Client/authentication:error',
-						$this->compose_error(403)
-					]));
+					$connection->send(
+						_json_encode(
+							[
+								'Client/authentication:error',
+								$this->compose_error(403)
+							]
+						)
+					);
 					$connection->close();
 					return;
 				}
@@ -181,10 +210,14 @@ class Server implements MessageComponentInterface {
 				$connection->session_id     = $session['id'];
 				$connection->session_expire = $session['expire'];
 				$connection->groups         = User::instance()->get_groups($session['user']);
-				$connection->send(_json_encode([
-					'Client/authentication',
-					'ok'
-				]));
+				$connection->send(
+					_json_encode(
+						[
+							'Client/authentication',
+							'ok'
+						]
+					)
+				);
 		}
 		if ($from_master) {
 			$this->send_to_clients_internal($action, $details, $send_to, $target);
@@ -199,12 +232,15 @@ class Server implements MessageComponentInterface {
 			isset($connection->user_id)
 		) {
 			/** @noinspection PhpUndefinedFieldInspection */
-			Event::instance()->fire("WebSockets/$action", [
-				'details'  => $details,
-				'language' => $connection->language,
-				'user'     => $connection->user_id,
-				'session'  => $connection->session_id
-			]);
+			Event::instance()->fire(
+				"WebSockets/$action",
+				[
+					'details'  => $details,
+					'language' => $connection->language,
+					'user'     => $connection->user_id,
+					'session'  => $connection->session_id
+				]
+			);
 		}
 	}
 	/**
@@ -290,11 +326,13 @@ class Server implements MessageComponentInterface {
 				file_get_contents(
 					$Config->base_url().'/WebSockets/'.$Config->module('WebSockets')->security_key,
 					null,
-					stream_context_create([
-						'http' => [
-							'timeout' => 1
+					stream_context_create(
+						[
+							'http' => [
+								'timeout' => 5
+							]
 						]
-					])
+					)
 				);
 			}
 			// Wait while server will start
@@ -418,22 +456,45 @@ class Server implements MessageComponentInterface {
 		$this->pool->add($this->public_address);
 		$master = $this->pool->get_master();
 		if ($master && $master != $this->public_address) {
-			$connector = new Client_factory($this->io_server->loop);
-			$connector($master)->then(
+			call_user_func($this->client_connector, $master)->then(
 				function (Client_websocket $connection) use (&$last_trial) {
 					$last_trial                 = '';
 					$this->connection_to_master = $connection;
-					$connection->on('message', function ($message) use ($connection) {
-						$this->onMessage($connection, $message);
-					});
-					$connection->on('error', function () use ($connection) {
-						$connection->close();
-					});
-					$connection->on('close', function () {
-						$this->connection_to_master = null;
-						sleep(1);
-						$this->connect_to_master();
-					});
+					$connection->on(
+						'message',
+						function ($message) use ($connection) {
+							$this->onMessage($connection, $message);
+						}
+					);
+					$connection->on(
+						'error',
+						function () use ($connection) {
+							$connection->close();
+						}
+					);
+					$connection->on(
+						'close',
+						function () {
+							$this->connection_to_master = null;
+							$this->loop->addTimer(
+								1,
+								function () {
+									$this->connect_to_master();
+								}
+							);
+						}
+					);
+					/**
+					 * Tell master that we are server also, not regular client
+					 */
+					$connection->send(
+						_json_encode(
+							[
+								'Server/connect',
+								base64_encode(Encryption::instance()->encrypt(Core::instance()->public_key))
+							]
+						)
+					);
 				},
 				function () use ($master, &$last_trial) {
 					if ($last_trial == $master) {
@@ -441,13 +502,35 @@ class Server implements MessageComponentInterface {
 					} else {
 						$last_trial = $master;
 					}
-					sleep(1);
+					$this->loop->addTimer(
+						1,
+						function () {
+							$this->connect_to_master();
+						}
+					);
 					$this->connect_to_master();
 				}
 			);
 		} else {
 			$last_trial = '';
+			/**
+			 * Sometimes other servers may loose connection with master server, so new master will be selected and we need to handle this nicely
+			 */
+			$this->loop->addTimer(
+				30,
+				function () {
+					$this->connect_to_master();
+				}
+			);
 		}
+	}
+	/**
+	 * Get event loop instance
+	 *
+	 * @return \React\EventLoop\LoopInterface
+	 */
+	function get_loop () {
+		return $this->loop;
 	}
 	/**
 	 * @param ConnectionInterface $connection

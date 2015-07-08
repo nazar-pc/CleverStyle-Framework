@@ -25,7 +25,7 @@ use
 	cs\Event,
 	cs\modules\WebSockets\Server;
 // Register actions
-Event::instance()->on('WebSockets/register_action', function () {
+Event::instance()->on('WebSockets/register_actions', function () {
 	// If `hello` action from user
 		Event::instance()->on('WebSockets/hello', function ($data) {
 		$Server = Server::instance();
