@@ -87,6 +87,12 @@ class Server implements MessageComponentInterface {
 	 * @var bool
 	 */
 	protected $remember_session_ip;
+	/**
+	 * @var string[]
+	 */
+	protected $reserved_events = [
+		'register_actions'
+	];
 	protected function construct () {
 		$Config                    = Config::instance();
 		$this->listen_port         = $Config->module('WebSockets')->listen_port;
@@ -128,7 +134,7 @@ class Server implements MessageComponentInterface {
 		// Since we may work with a lot of different users - disable this cache in order to not run out of memory
 		User::instance()->disable_memory_cache();
 		Event::instance()->fire('WebSockets/register_actions');
-		$this->io_server->run();
+		$this->loop->run();
 	}
 	/**
 	 * @param ConnectionInterface $connection
@@ -218,6 +224,7 @@ class Server implements MessageComponentInterface {
 						]
 					)
 				);
+				return;
 		}
 		if ($from_master) {
 			$this->send_to_clients_internal($action, $details, $send_to, $target);
@@ -228,8 +235,8 @@ class Server implements MessageComponentInterface {
 			}
 			$this->send_to_clients_internal($action, $details, $send_to, $target);
 		} elseif (
-			$action != 'register_actions' &&
-			isset($connection->user_id)
+			isset($connection->user_id) &&
+			!in_array($action, $this->reserved_events, true)
 		) {
 			/** @noinspection PhpUndefinedFieldInspection */
 			Event::instance()->fire(
@@ -263,7 +270,7 @@ class Server implements MessageComponentInterface {
 		}
 		list($action, $details) = $decoded_message;
 		$send_to = isset($decoded_message[2]) ? $decoded_message[2] : 0;
-		$target  = isset($decoded_message[3]) ? $decoded_message[4] : false;
+		$target  = isset($decoded_message[3]) ? $decoded_message[3] : false;
 		return true;
 	}
 	/**
