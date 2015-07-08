@@ -32,10 +32,26 @@ use
 class Server implements MessageComponentInterface {
 	use
 		Singleton;
-	const SEND_TO_ALL              = 1;
+	/**
+	 * Message will be delivered to everyone
+	 */
+	const SEND_TO_ALL = 1;
+	/**
+	 * Message will be delivered to registered users only
+	 */
 	const SEND_TO_REGISTERED_USERS = 2;
+	/**
+	 * Message will be delivered to users, specified in target (might be array of users)
+	 */
 	const SEND_TO_SPECIFIC_USERS   = 3;
+	/**
+	 * Message will be delivered to users from group, specified in target (might be array of groups)
+	 */
 	const SEND_TO_USERS_GROUP      = 4;
+	/**
+	 * Message will be delivered to users whose connection objects have property with certain value, target should be an array with format [property, value]
+	 */
+	const SEND_TO_FILTER           = 5;
 	/**
 	 * Each object additionally will have properties `user_id`, `session_id`, `session_expire` and `user_groups` with user id and ids of user groups
 	 * correspondingly
@@ -354,10 +370,10 @@ class Server implements MessageComponentInterface {
 	/**
 	 * Send request to client
 	 *
-	 * @param string          $action
-	 * @param mixed           $details
-	 * @param int             $send_to Constants `self::SEND_TO_*` should be used here
-	 * @param false|int|int[] $target  Id or array of ids in case of response to one or several users or groups
+	 * @param string                  $action
+	 * @param mixed                   $details
+	 * @param int                     $send_to Constants `self::SEND_TO_*` should be used here
+	 * @param false|int|int[]|mixed[] $target  Id or array of ids in case of response to one or several users or groups
 	 */
 	protected function send_to_clients_internal ($action, $details, $send_to, $target = false) {
 		$message = _json_encode([$action, $details]);
@@ -407,6 +423,14 @@ class Server implements MessageComponentInterface {
 				$target = (array)$target;
 				foreach ($this->clients as $client) {
 					if (isset($client->user_groups) && array_intersect($client->user_groups, $target)) {
+						$this->send_to_client_if_not_expire($client, $message);
+					}
+				}
+				break;
+			case self::SEND_TO_FILTER:
+				list($property, $value) = $target;
+				foreach ($this->clients as $client) {
+					if (isset($client->$property) && $client->$property === $value) {
 						$this->send_to_client_if_not_expire($client, $message);
 					}
 				}
