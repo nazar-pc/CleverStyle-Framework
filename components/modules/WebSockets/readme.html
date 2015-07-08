@@ -13,9 +13,23 @@ There are two ways to run WebSockets server:
 <p>One more note here: WebSockets server might be started automatically if sending data to client will be initiated on server side (please, do not rely on this in production).</p>
 
 <h4 style="text-align: center;">Usage on server</h4>
-<p>On server event <code>WebSockets/register_actions</code> will be dispatched, modules should subscribe to event and subscribe any other WebSockets-related actions at this moment.</p>
 <p>When request comes from client, event <code>WebSockets/action</code> will be dispatched, where <code>action</code> is action that came from user.</p>
-<p>Callback will receive as argument array with fields <code>details</code> (what came from client), <code>language</code> (to handle multilingual features), <code>user</code> (user id) and <code>session</code> (current session id of user).</p>
+<p>Callback will receive as argument array with fields:</p>
+<dl>
+	<dt><code>action</code></dt>
+	<dd>action that came from client</dd>
+	<dt><code>details</code></dt>
+	<dd>message for action that came from client</dd>
+	<dt><code>language</code></dt>
+	<dd>to handle multilingual features</dd>
+	<dt><code>user</code></dt>
+	<dd>user id</dd>
+	<dt><code>session</code></dt>
+	<dd>session id</dd>
+	<dt><code>connection</code></dt>
+	<dd>internal connection object (implements <code>\Ratchet\ConnectionInterface</code>)</dd>
+</dl>
+<p>NOTE: There is one specific action <code>authenticate</code>, that might be interesting and is dispatched during initial connection of client.</p>
 <p>To send response back to client (or clients) <code>\cs\modules\WebSockets\Server::instance()->send_to_clients($action, $details, $response_to, $target = false)</code> method is used</p>
 <p>Example:</p>
 <pre>
@@ -25,30 +39,30 @@ use
 	cs\Event,
 	cs\modules\WebSockets\Server;
 // Register actions
-Event::instance()->on('WebSockets/register_actions', function () {
-	// If `hello` action from user
-		Event::instance()->on('WebSockets/hello', function ($data) {
-		$Server = Server::instance();
-		// Send `hello` action back to the same user with the same content
-		if ($data['details']) {
-			$Server->send_to_clients(
-				'hello',
-				$data['details'],
-				Server::SEND_TO_SPECIFIC_USERS,
-				$data['user']
-			);
-		} else {
-			$Server->send_to_clients(
-				'hello:error',
-				$Server->compose_error(
-					400,
-					'No hello message:('
-				),
-				Server::SEND_TO_SPECIFIC_USERS,
-				$data['user']
-			);
-		}
-	});
+Event::instance()->on('WebSockets/message', function ($data) {
+	if ($data['action'] !== 'hello') {
+		return;
+	}
+	$Server = Server::instance();
+	// Send `hello` action back to the same user with the same content
+	if ($data['details']) {
+		$Server->send_to_clients(
+			'hello',
+			$data['details'],
+			Server::SEND_TO_SPECIFIC_USERS,
+			$data['user'] // Back to the same user
+		);
+	} else {
+		$Server->send_to_clients(
+			'hello:error',
+			$Server->compose_error(
+				400,
+				'No hello message:('
+			),
+			Server::SEND_TO_SPECIFIC_USERS,
+			$data['user'] // Back to the same user
+		);
+	}
 });
 ?>
 	</code>

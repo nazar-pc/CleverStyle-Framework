@@ -87,12 +87,6 @@ class Server implements MessageComponentInterface {
 	 * @var bool
 	 */
 	protected $remember_session_ip;
-	/**
-	 * @var string[]
-	 */
-	protected $reserved_events = [
-		'register_actions'
-	];
 	protected function construct () {
 		$Config                    = Config::instance();
 		$this->listen_port         = $Config->module('WebSockets')->listen_port;
@@ -133,7 +127,6 @@ class Server implements MessageComponentInterface {
 		$this->connect_to_master();
 		// Since we may work with a lot of different users - disable this cache in order to not run out of memory
 		User::instance()->disable_memory_cache();
-		Event::instance()->fire('WebSockets/register_actions');
 		$this->loop->run();
 	}
 	/**
@@ -224,7 +217,6 @@ class Server implements MessageComponentInterface {
 						]
 					)
 				);
-				return;
 		}
 		if ($from_master) {
 			$this->send_to_clients_internal($action, $details, $send_to, $target);
@@ -234,18 +226,17 @@ class Server implements MessageComponentInterface {
 				return;
 			}
 			$this->send_to_clients_internal($action, $details, $send_to, $target);
-		} elseif (
-			isset($connection->user_id) &&
-			!in_array($action, $this->reserved_events, true)
-		) {
+		} elseif (isset($connection->user_id)) {
 			/** @noinspection PhpUndefinedFieldInspection */
 			Event::instance()->fire(
-				"WebSockets/$action",
+				"WebSockets/message",
 				[
-					'details'  => $details,
-					'language' => $connection->language,
-					'user'     => $connection->user_id,
-					'session'  => $connection->session_id
+					'action'     => $action,
+					'details'    => $details,
+					'language'   => $connection->language,
+					'user'       => $connection->user_id,
+					'session'    => $connection->session_id,
+					'connection' => $connection
 				]
 			);
 		}
