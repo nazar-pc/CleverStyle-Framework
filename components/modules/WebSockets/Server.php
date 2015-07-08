@@ -43,15 +43,15 @@ class Server implements MessageComponentInterface {
 	/**
 	 * Message will be delivered to users, specified in target (might be array of users)
 	 */
-	const SEND_TO_SPECIFIC_USERS   = 3;
+	const SEND_TO_SPECIFIC_USERS = 3;
 	/**
 	 * Message will be delivered to users from group, specified in target (might be array of groups)
 	 */
-	const SEND_TO_USERS_GROUP      = 4;
+	const SEND_TO_USERS_GROUP = 4;
 	/**
 	 * Message will be delivered to users whose connection objects have property with certain value, target should be an array with format [property, value]
 	 */
-	const SEND_TO_FILTER           = 5;
+	const SEND_TO_FILTER = 5;
 	/**
 	 * Each object additionally will have properties `user_id`, `session_id`, `session_expire` and `user_groups` with user id and ids of user groups
 	 * correspondingly
@@ -74,11 +74,12 @@ class Server implements MessageComponentInterface {
 	 */
 	protected $pool;
 	/**
-	 * Public address to WebSockets server in format wss://server/WebSockets or ws://server/WebSockets
+	 * Address to WebSockets server in format wss://server/WebSockets or ws://server/WebSockets, so that one WebSockets server can reach another (in case of
+	 * several servers)
 	 *
 	 * @var string
 	 */
-	protected $public_address;
+	protected $address;
 	/**
 	 * @var IoServer
 	 */
@@ -112,7 +113,7 @@ class Server implements MessageComponentInterface {
 		/**
 		 * @var \cs\_SERVER $_SERVER
 		 */
-		$this->public_address = ($_SERVER->secure ? 'wss' : 'ws')."://$_SERVER->host/WebSockets";
+		$this->address = ($_SERVER->secure ? 'wss' : 'ws')."://$_SERVER->host/WebSockets";
 	}
 	/**
 	 * Run WebSockets server
@@ -475,9 +476,9 @@ class Server implements MessageComponentInterface {
 	protected function connect_to_master () {
 		static $last_trial = '';
 		// Add server to connections pool and connect to master if any
-		$this->pool->add($this->public_address);
+		$this->pool->add($this->address);
 		$master = $this->pool->get_master();
-		if ($master && $master != $this->public_address) {
+		if ($master && $master != $this->address) {
 			call_user_func($this->client_connector, $master)->then(
 				function (Client_websocket $connection) use (&$last_trial) {
 					$last_trial                 = '';
@@ -570,6 +571,6 @@ class Server implements MessageComponentInterface {
 		$connection->close();
 	}
 	function __destruct () {
-		$this->pool->del($this->public_address);
+		$this->pool->del($this->address);
 	}
 }
