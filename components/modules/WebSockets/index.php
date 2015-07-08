@@ -11,7 +11,7 @@ use
 	cs\Config,
 	cs\Route;
 if (PHP_SAPI == 'cli') {
-	Server::instance()->run();
+	Server::instance()->run(isset($_GET['address']) ? $_GET['address'] : null);
 } else {
 	interface_off();
 	$Config      = Config::instance();

@@ -18,8 +18,6 @@ use
 	React\Dns\Resolver\Factory as Dns_factory,
 	React\EventLoop\Factory as Loop_factory,
 	cs\Config,
-	cs\Core,
-	cs\Encryption,
 	cs\Event,
 	cs\Session,
 	cs\Singleton,
@@ -97,19 +95,32 @@ class Server implements MessageComponentInterface {
 	 */
 	protected $listen_port;
 	/**
-	 * @var bool
+	 * @var string
 	 */
 	protected $listen_locally;
+	/**
+	 * @var string
+	 */
+	protected $dns_server;
+	/**
+	 * @var string
+	 */
+	protected $security_key;
 	/**
 	 * @var bool
 	 */
 	protected $remember_session_ip;
 	protected function construct () {
 		$Config                    = Config::instance();
-		$this->listen_port         = $Config->module('WebSockets')->listen_port;
-		$this->listen_locally      = $Config->module('WebSockets')->listen_locally;
+		$module_data               = $Config->module('WebSockets');
+		$this->listen_port         = $module_data->listen_port;
+		$this->listen_locally      = $module_data->listen_locally ? '127.0.0.1' : '0.0.0.0';
+		$this->dns_server          = $module_data->dns_server ?: '127.0.0.1';
+		$this->dns_server          = $module_data->security_key;
 		$this->remember_session_ip = $Config->core['remember_user_ip'];
 		$this->pool                = Pool::instance();
+		$this->clients             = new SplObjectStorage;
+		$this->servers             = new SplObjectStorage;
 		/**
 		 * @var \cs\_SERVER $_SERVER
 		 */
@@ -117,12 +128,13 @@ class Server implements MessageComponentInterface {
 	}
 	/**
 	 * Run WebSockets server
+	 *
+	 * @param null|string $address
 	 */
-	function run () {
+	function run ($address = null) {
+		$this->address = $address ?: $this->address;
 		@ini_set('error_log', LOGS.'/WebSockets-server.log');
-		$this->clients = new SplObjectStorage;
-		$this->servers = new SplObjectStorage;
-		$ws_server     = new WsServer($this);
+		$ws_server = new WsServer($this);
 		// No encoding check - better performance, browsers do this anyway
 		$ws_server->setEncodingChecks(false);
 		// Disable all versions except RFC6455, which is supported by all modern browsers
@@ -131,13 +143,13 @@ class Server implements MessageComponentInterface {
 		$this->io_server        = IoServer::factory(
 			new HttpServer($ws_server),
 			$this->listen_port,
-			$this->listen_locally ? '127.0.0.1' : '0.0.0.0'
+			$this->listen_locally
 		);
 		$this->loop             = $this->io_server->loop;
 		$this->client_connector = new Client_factory(
 			$this->loop,
 			(new Dns_factory)->create(
-				Config::instance()->module('WebSockets')->dns_server ?: '127.0.0.1',
+				$this->dns_server,
 				$this->loop
 			)
 		);
@@ -168,23 +180,25 @@ class Server implements MessageComponentInterface {
 			/**
 			 * Connection to master server as server (by default all connections considered as clients)
 			 */
-			case 'Server/connect':
-				if (Encryption::instance()->decrypt(base64_decode($details)) === Core::instance()->public_key) {
+			case "Server/connect:$this->security_key":
+				/**
+				 * Under certain circumstances it may happen so that one server become available through multiple addresses,
+				 * in this case we need to remove one of them from list of pools
+				 */
+				if ($details['from_slave'] === $this->address) {
+					$this->pool->del($details['to_master']);
+					$connection->close();
+				} else {
 					$this->clients->detach($connection);
 					$this->servers->attach($connection);
-					return;
 				}
-				$connection->close();
 				return;
 			/**
 			 * Internal connection from application
 			 */
-			case 'Application/Internal':
+			case "Application/Internal:$this->security_key":
 				/** @noinspection PhpUndefinedFieldInspection */
-				if (
-					$connection->remoteAddress == '127.0.0.1' &&
-					$this->parse_message($details, $action_, $details_, $send_to_, $target_)
-				) {
+				if ($this->parse_message($details, $action_, $details_, $send_to_, $target_)) {
 					$connection->close();
 					$this->send_to_clients($action_, $details_, $send_to_, $target_);
 				}
@@ -192,12 +206,7 @@ class Server implements MessageComponentInterface {
 			case 'Client/authentication':
 				if (!isset($details['session'], $details['user_agent'], $details['language'])) {
 					$connection->send(
-						_json_encode(
-							[
-								'Client/authentication:error',
-								$this->compose_error(400)
-							]
-						)
+						_json_encode(['Client/authentication:error', $this->compose_error(400)])
 					);
 					return;
 				}
@@ -211,12 +220,7 @@ class Server implements MessageComponentInterface {
 					)
 				) {
 					$connection->send(
-						_json_encode(
-							[
-								'Client/authentication:error',
-								$this->compose_error(403)
-							]
-						)
+						_json_encode(['Client/authentication:error', $this->compose_error(403)])
 					);
 					$connection->close();
 					return;
@@ -227,12 +231,7 @@ class Server implements MessageComponentInterface {
 				$connection->session_expire = $session['expire'];
 				$connection->groups         = User::instance()->get_groups($session['user']);
 				$connection->send(
-					_json_encode(
-						[
-							'Client/authentication',
-							'ok'
-						]
-					)
+					_json_encode(['Client/authentication', 'ok'])
 				);
 		}
 		if ($from_master) {
@@ -330,43 +329,24 @@ class Server implements MessageComponentInterface {
 			$this->send_to_clients_internal($action, $details, $send_to, $target);
 			return;
 		}
-		/**
-		 * Is server not running at all - run it
-		 */
-		if (!is_server_running()) {
-			if (is_exec_available()) {
-				cross_platform_server_in_background();
-			} else {
-				$Config = Config::instance();
-				file_get_contents(
-					$Config->base_url().'/WebSockets/'.$Config->module('WebSockets')->security_key,
-					null,
-					stream_context_create(
-						[
-							'http' => [
-								'timeout' => 5
-							]
-						]
-					)
-				);
-			}
-			// Wait while server will start
-			sleep(1);
+		$servers = $this->pool->get_all();
+		if ($servers) {
+			shuffle($servers);
+			$loop      = Loop_factory::create();
+			$connector = new Client_factory($loop);
+			$connector($servers[0])->then(
+				function (Client_websocket $connection) use ($message) {
+					$connection->send(
+						_json_encode(["Application/Internal:$this->security_key", $message])
+					);
+					// Connection will be closed by server itself, no need to stop loop here
+				},
+				function () use ($loop) {
+					$loop->stop();
+				}
+			);
+			$loop->run();
 		}
-		$loop      = Loop_factory::create();
-		$connector = new Client_factory($loop);
-		$connector("ws://127.0.0.1:$this->listen_port")->then(
-			function (Client_websocket $connection) use ($message) {
-				$connection->send(
-					_json_encode(['Application/Internal', $message])
-				);
-				// Connection will be closed by server itself, no need to stop loop here
-			},
-			function () use ($loop) {
-				$loop->stop();
-			}
-		);
-		$loop->run();
 	}
 	/**
 	 * Send request to client
@@ -374,7 +354,7 @@ class Server implements MessageComponentInterface {
 	 * @param string                  $action
 	 * @param mixed                   $details
 	 * @param int                     $send_to Constants `self::SEND_TO_*` should be used here
-	 * @param false|int|int[]|mixed[] $target  Id or array of ids in case of response to one or several users or groups
+	 * @param false|int|int[]|mixed[] $target  Id or array of ids in case of response to one or several users or groups, [property, value] for filter
 	 */
 	protected function send_to_clients_internal ($action, $details, $send_to, $target = false) {
 		$message = _json_encode([$action, $details]);
@@ -480,7 +460,7 @@ class Server implements MessageComponentInterface {
 		$master = $this->pool->get_master();
 		if ($master && $master != $this->address) {
 			call_user_func($this->client_connector, $master)->then(
-				function (Client_websocket $connection) use (&$last_trial) {
+				function (Client_websocket $connection) use (&$last_trial, $master) {
 					$last_trial                 = '';
 					$this->connection_to_master = $connection;
 					$connection->on(
@@ -513,13 +493,16 @@ class Server implements MessageComponentInterface {
 					$connection->send(
 						_json_encode(
 							[
-								'Server/connect',
-								base64_encode(Encryption::instance()->encrypt(Core::instance()->public_key))
+								"Server/connect:$this->security_key",
+								[
+									'to_master'  => $master,
+									'from_slave' => $this->address
+								]
 							]
 						)
 					);
 				},
-				function () use ($master, &$last_trial) {
+				function () use (&$last_trial, $master) {
 					if ($last_trial == $master) {
 						$this->pool->del($master);
 					} else {

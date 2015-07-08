@@ -3,14 +3,18 @@
 <p>It is highly recommended to have working <code>exec()</code> function in PHP (otherwise fallback will be used, but not guaranteed to work) and Nginx should be configured properly (<a href="https://github.com/nazar-pc/CleverStyle-CMS/wiki/Nginx-config-sample">Nginx config sample</a>).</p>
 There are two ways to run WebSockets server:
 <dl>
-	<dt>CLI (recommended): <code>php components/modules/WebSockets/supervisor.php 'php components/modules/WebSockets/start_cli.php https://example.com/WebServer'</code></dt>
-	<dd>Where <code>https://example.com</code> is web-site address, server should be running on every physical server if there are few of them</dd>
-	<dt>Web: open <code>https://example.com/WebServer/security_key</code></dt>
+	<dt>CLI (recommended): <code>php components/modules/WebSockets/supervisor.php 'php components/modules/WebSockets/start_cli.php https://example.com'</code></dt>
+	<dd>Where <code>https://example.com</code> is web-site address</dd>
+	<dt>CLI (multiple servers): <code>php components/modules/WebSockets/supervisor.php 'php components/modules/WebSockets/start_cli.php https://example.com wss://server_address'</code></dt>
+	<dd>
+		Similar to previous, but with additional parameter <code>wss://server_address</code>, where <code>server_address</code> should be an address via which one WebSockets server can reach another, for instance, it can be IP address of the server inside private network, also it might contain port number and path if needed.<br>
+		Can be running on as many servers as needed.
+	</dd>
+	<dt>Web: open <code>https://example.com/WebSockets/security_key</code></dt>
 	<dd>Where <code>https://example.com</code> is web-site address, server should be running on every physical server if there are few of them.</dd>
 	<dd>And <code>security_key</code> should be replaced by security key from module settings.</dd>
 </dl>
 <p>Web will automatically switch to CLI if available. Also instead of <code>supervisor.php</code> you can use any other supervisor you like, no details here - you should know what to do.</p>
-<p>One more note here: WebSockets server might be started automatically if sending data to client will be initiated on server side (please, do not rely on this in production).</p>
 
 <h4 style="text-align: center;">Usage on server</h4>
 <p>When request comes from client, event <code>WebSockets/action</code> will be dispatched, where <code>action</code> is action that came from user.</p>
