@@ -122,6 +122,11 @@ class _SERVER implements ArrayAccess, Iterator {
 				}
 			}
 		}
+		if (preg_replace('/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/', '', $host) !== '') {
+			code_header(400);
+			trigger_error("Invalid host", E_USER_ERROR);
+			throw new \ExitException;
+		}
 		return $host.($port ? ":$port" : '');
 	}
 	/**
