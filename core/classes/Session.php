@@ -399,17 +399,19 @@ class Session {
 	 */
 	protected function is_good_session ($session_data) {
 		/**
+		 * md5() as protection against timing attacks
+		 *
 		 * @var \cs\_SERVER $_SERVER
 		 */
 		return
 			$session_data['expire'] > time() &&
-			$session_data['user_agent'] === $_SERVER->user_agent &&
+			md5($session_data['user_agent']) == md5($_SERVER->user_agent) &&
 			$this->is_user_active($session_data['user']) &&
 			(
 				!Config::instance()->core['remember_user_ip'] ||
 				(
-					$session_data['remote_addr'] === ip2hex($_SERVER->remote_addr) &&
-					$session_data['ip'] === ip2hex($_SERVER->ip)
+					md5($session_data['remote_addr']) == md5(ip2hex($_SERVER->remote_addr)) &&
+					md5($session_data['ip']) == md5(ip2hex($_SERVER->ip))
 				)
 			);
 	}
