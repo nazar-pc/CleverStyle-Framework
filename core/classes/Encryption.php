@@ -12,12 +12,18 @@ namespace cs;
  *
  * Provides encryption and decryption functionality
  *
+ * @deprecated
+ * @todo remove in future versions
+ *
  * @method static Encryption instance($check = false)
  */
 class Encryption {
 	use Singleton;
 	/**
 	 * Whether encryption is supported
+	 *
+	 * @deprecated
+	 * @todo remove in future versions
 	 *
 	 * @return bool
 	 */
@@ -26,6 +32,9 @@ class Encryption {
 	}
 	/**
 	 * Encryption of data
+	 *
+	 * @deprecated
+	 * @todo remove in future versions
 	 *
 	 * @param mixed       $data        Data to be encrypted
 	 * @param bool|string $key         Key, if not specified - system key will be used
@@ -52,6 +61,9 @@ class Encryption {
 	}
 	/**
 	 * Decryption of data
+	 *
+	 * @deprecated
+	 * @todo remove in future versions
 	 *
 	 * @param string      $data         Data to be decrypted
 	 * @param bool|string $key          Key, if not specified - system key will be used
