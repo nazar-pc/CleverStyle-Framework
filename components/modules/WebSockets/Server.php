@@ -293,15 +293,15 @@ class Server implements MessageComponentInterface {
 		}
 	}
 	/**
-	 * Compose error, arguments similar to `code_header()`
+	 * Compose error
 	 *
-	 * @param int         $error_code
-	 * @param null|string $error_message String representation of status code code
+	 * @param int         $error_code    HTTP status code
+	 * @param null|string $error_message String representation of status code
 	 *
 	 * @return array Array to be passed as details to `::send_to_clients()`
 	 */
 	function compose_error ($error_code, $error_message = null) {
-		$error_message = $error_message ?: code_header($error_code);
+		$error_message = $error_message ?: status_code($error_code);
 		return [
 			$error_code,
 			$error_message

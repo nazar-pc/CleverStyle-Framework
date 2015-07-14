@@ -155,68 +155,6 @@ function home_page ($home_page = null) {
 }
 
 /**
- * Sends header with string representation of http status code, for example "404 Not Found" for corresponding server protocol
- *
- * @param int $code Status code number
- *
- * @return null|string String representation of status code code
- */
-function code_header ($code) {
-	$string_code = null;
-	switch ($code) {
-		case 201:
-			$string_code = '201 Created';
-			break;
-		case 202:
-			$string_code = '202 Accepted';
-			break;
-		case 301:
-			$string_code = '301 Moved Permanently';
-			break;
-		case 302:
-			$string_code = '302 Found';
-			break;
-		case 303:
-			$string_code = '303 See Other';
-			break;
-		case 307:
-			$string_code = '307 Temporary Redirect';
-			break;
-		case 400:
-			$string_code = '400 Bad Request';
-			break;
-		case 403:
-			$string_code = '403 Forbidden';
-			break;
-		case 404:
-			$string_code = '404 Not Found';
-			break;
-		case 405:
-			$string_code = '405 Method Not Allowed';
-			break;
-		case 409:
-			$string_code = '409 Conflict';
-			break;
-		case 429:
-			$string_code = '429 Too Many Requests';
-			break;
-		case 500:
-			$string_code = '500 Internal Server Error';
-			break;
-		case 501:
-			$string_code = '501 Not Implemented';
-			break;
-		case 503:
-			$string_code = '503 Service Unavailable';
-			break;
-	}
-	if ($string_code) {
-		header("$_SERVER[SERVER_PROTOCOL] $string_code", true, (int)$code);
-	}
-	return $string_code;
-}
-
-/**
  * Send a raw HTTP header
  *
  * @param string   $string             There are two special-case header calls. The first is a header that starts with the string "HTTP/" (case is not

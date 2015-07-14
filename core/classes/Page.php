@@ -134,7 +134,7 @@ class Page {
 		if (
 			!Config::instance()->core['site_mode'] &&
 			!User::instance(true)->admin() &&
-			code_header(503) &&
+			status_code(503) &&
 			!_include("$theme_dir/closed.php", false, false) &&
 			!_include("$theme_dir/closed.html", false, false)
 		) {
@@ -448,7 +448,7 @@ class Page {
 			throw new \ExitException;
 		}
 		interface_off();
-		$error_description	= code_header($error);
+		$error_description	= status_code($error);
 		if (is_array($custom_text)) {
 			list($error, $error_description)	= $custom_text;
 		} elseif ($custom_text) {

@@ -72,7 +72,7 @@ foreach ($recalculated['items'] as $item) {
 	$item_data = $Items->get($item['id']);
 	$Orders->add_item($id, $item['id'], $item['units'], $item['price'], $item_data['price']);
 }
-code_header(201);
+status_code(201);
 Page::instance()->json(
 	$Config->core_url().'/'.Route::instance()->relative_address."/$id"
 );

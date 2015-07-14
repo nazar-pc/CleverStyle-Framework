@@ -326,6 +326,98 @@ function get_core_ml_text ($item) {
 	return Text::instance()->process($Config->module('System')->db('texts'), $Config->core[$item], true);
 }
 
+if (!function_exists('code_header')) {
+	/**
+	 * Sends header with string representation of http status code, for example "404 Not Found" for corresponding server protocol
+	 *
+	 * @deprecated
+	 * @todo remove in future versions
+	 *
+	 * @param int $code Status code
+	 *
+	 * @return null|string String representation of status code code
+	 */
+	function code_header ($code) {
+		return status_code($code);
+	}
+}
+
+/**
+ * Sends header with string representation of http status code, for example "404 Not Found" for corresponding server protocol
+ *
+ * @param int $code Status code
+ *
+ * @return null|string String representation of status code code
+ */
+function status_code ($code) {
+	$string_code = status_code_string($code);
+	if (!$string_code) {
+		return null;
+	}
+	_header("$_SERVER[SERVER_PROTOCOL] $string_code", true, (int)$code);
+	return $string_code;
+}
+
+/**
+ * String representation of HTTP status code
+ *
+ * @param int $code
+ *
+ * @return null|string
+ */
+function status_code_string ($code){
+	switch ($code) {
+		case 201:
+			$string_code = '201 Created';
+			break;
+		case 202:
+			$string_code = '202 Accepted';
+			break;
+		case 301:
+			$string_code = '301 Moved Permanently';
+			break;
+		case 302:
+			$string_code = '302 Found';
+			break;
+		case 303:
+			$string_code = '303 See Other';
+			break;
+		case 307:
+			$string_code = '307 Temporary Redirect';
+			break;
+		case 400:
+			$string_code = '400 Bad Request';
+			break;
+		case 403:
+			$string_code = '403 Forbidden';
+			break;
+		case 404:
+			$string_code = '404 Not Found';
+			break;
+		case 405:
+			$string_code = '405 Method Not Allowed';
+			break;
+		case 409:
+			$string_code = '409 Conflict';
+			break;
+		case 429:
+			$string_code = '429 Too Many Requests';
+			break;
+		case 500:
+			$string_code = '500 Internal Server Error';
+			break;
+		case 501:
+			$string_code = '501 Not Implemented';
+			break;
+		case 503:
+			$string_code = '503 Service Unavailable';
+			break;
+		default:
+			return null;
+	}
+	return $string_code;
+}
+
 /**
  * Pages navigation based on links
  *

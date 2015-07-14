@@ -31,7 +31,7 @@ if (!$id) {
 	error_code(500);
 	return;
 }
-code_header(201);
+status_code(201);
 $Config = Config::instance();
 Page::instance()->json(
 	$Config->core_url().'/'.Route::instance()->relative_address."/$id"

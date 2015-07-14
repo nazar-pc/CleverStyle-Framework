@@ -69,7 +69,7 @@ if (!$client['active']) {
 	 */
 	if ($_GET['response_type'] != 'guest_token') {
 		if (!isset($_GET['redirect_uri'])) {
-			code_header(400);
+			status_code(400);
 			$Page->error([
 				'invalid_request',
 				'Inactive client_id, redirect_uri parameter required'
@@ -82,7 +82,7 @@ if (!$client['active']) {
 				error_redirect('access_denied', 'Inactive client id');
 				return;
 			} else {
-				code_header(400);
+				status_code(400);
 				$Page->error([
 					'invalid_request',
 					'Inactive client_id, redirect_uri parameter required'
@@ -90,7 +90,7 @@ if (!$client['active']) {
 			}
 		}
 	} else {
-		code_header(400);
+		status_code(400);
 		$Page->error([
 			'invalid_request',
 			'inactive client_id'
@@ -102,7 +102,7 @@ if (!$client['active']) {
  */
 if ($_GET['response_type'] != 'guest_token') {
 	if (!isset($_GET['redirect_uri'])) {
-		code_header(400);
+		status_code(400);
 		$Page->error([
 			'invalid_request',
 			'redirect_uri parameter required'
@@ -111,7 +111,7 @@ if ($_GET['response_type'] != 'guest_token') {
 		urldecode($_GET['redirect_uri']) != $Config->base_url().'/OAuth2/blank/' &&
 		!preg_match("/^[^\/]+:\/\/$client[domain]/", urldecode($_GET['redirect_uri']))
 	) {
-		code_header(400);
+		status_code(400);
 		$Page->error([
 			'invalid_request',
 			'redirect_uri parameter invalid'
@@ -143,7 +143,7 @@ if ($_GET['response_type'] != 'guest_token') {
 $User = User::instance();
 if (!$User->user()) {
 	if ($_GET['response_type'] != 'guest_token') {
-		code_header(403);
+		status_code(403);
 		if (Event::instance()->fire('OAuth2/custom_sign_in_page')) {
 			$Page->Content = '';
 			$Page->warning($L->you_are_not_logged_in);

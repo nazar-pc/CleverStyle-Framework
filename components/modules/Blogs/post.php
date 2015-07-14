@@ -52,7 +52,7 @@ if (
 	return;
 }
 if ($post['path'] != mb_substr($rc[1], 0, mb_strrpos($rc[1], ':'))) {
-	code_header(303);
+	status_code(303);
 	_header("Location: $post[url]");
 	return;
 }

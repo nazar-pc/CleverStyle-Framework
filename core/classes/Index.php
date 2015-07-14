@@ -755,7 +755,7 @@ class Index {
 		 */
 		if (!$Config->core['site_mode']) {
 			if ($this->closed_site($Config, $this->in_api)) {
-				code_header(503);
+				status_code(503);
 				return;
 			}
 			/**

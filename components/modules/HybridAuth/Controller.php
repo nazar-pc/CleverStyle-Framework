@@ -130,7 +130,7 @@ class Controller {
 		_header($action.$redirect_to);
 		_setcookie('HybridAuth_referer', '');
 		if (!$with_delay) {
-			code_header(301);
+			status_code(301);
 			interface_off();
 			throw new \ExitException;
 		}
