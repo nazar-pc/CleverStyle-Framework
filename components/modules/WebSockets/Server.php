@@ -301,11 +301,8 @@ class Server implements MessageComponentInterface {
 	 * @return array Array to be passed as details to `::send_to_clients()`
 	 */
 	function compose_error ($error_code, $error_message = null) {
-		$error_message = $error_message ?: status_code($error_code);
-		return [
-			$error_code,
-			$error_message
-		];
+		$error_message = $error_message ?: status_code_string($error_code);
+		return [$error_code, $error_message];
 	}
 	/**
 	 * Send request to client
