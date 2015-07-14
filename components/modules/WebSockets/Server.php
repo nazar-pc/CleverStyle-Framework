@@ -542,6 +542,23 @@ class Server implements MessageComponentInterface {
 	 * @param ConnectionInterface $connection
 	 */
 	function onClose (ConnectionInterface $connection) {
+		/**
+		 * Generate pseudo-event when client is disconnected
+		 */
+		if (isset($connection->user_id) && $this->clients->contains($connection)) {
+			/** @noinspection PhpUndefinedFieldInspection */
+			Event::instance()->fire(
+				"WebSockets/message",
+				[
+					'action'     => 'Client/disconnection',
+					'details'    => null,
+					'language'   => $connection->language,
+					'user'       => $connection->user_id,
+					'session'    => $connection->session_id,
+					'connection' => $connection
+				]
+			);
+		}
 		// The connection is closed, remove it, as we can no longer send it messages
 		$this->clients->detach($connection);
 		$this->servers->detach($connection);

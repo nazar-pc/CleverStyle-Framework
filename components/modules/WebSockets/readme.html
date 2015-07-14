@@ -17,7 +17,7 @@ There are two ways to run WebSockets server:
 <p>Web will automatically switch to CLI if available. Also instead of <code>supervisor.php</code> you can use any other supervisor you like, no details here - you should know what to do.</p>
 
 <h4 style="text-align: center;">Usage on server</h4>
-<p>When request comes from client, event <code>WebSockets/action</code> will be dispatched, where <code>action</code> is action that came from user.</p>
+<p>When request comes from client, event <code>WebSockets/message</code> will be dispatched, where <code>action</code> is action that came from user.</p>
 <p>Callback will receive as argument array with fields:</p>
 <dl>
 	<dt><code>action</code></dt>
@@ -33,7 +33,13 @@ There are two ways to run WebSockets server:
 	<dt><code>connection</code></dt>
 	<dd>internal connection object (implements <code>\Ratchet\ConnectionInterface</code>)</dd>
 </dl>
-<p>NOTE: There is one specific action <code>authenticate</code>, that might be interesting and is dispatched during initial connection of client.</p>
+<p>NOTE: There is two specific system actions:</p>
+<dl>
+	<dt>Client/authentication</dt>
+	<dd>Is generated when user passes authentication, useful as real connection event when we know who is actually connected</dd>
+	<dt>Client/disconnection</dt>
+	<dd>Is generated when connection to client closes by any reason</dd>
+</dl>
 <p>To send response back to client (or clients) <code>\cs\modules\WebSockets\Server::instance()->send_to_clients($action, $details, $response_to, $target = false)</code> method is used</p>
 <p>Example:</p>
 <pre>
