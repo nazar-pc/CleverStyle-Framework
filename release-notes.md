@@ -684,3 +684,139 @@ Possible partial compatibility breaking (very unlikely, but still possible):
 * `$_POST['login']` is not used directly in `\cs\User` anymore, not likely to break anything, but still possible
 
 Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
+
+# 2.86.0+build-1210: Bower and NPM support, Emoji, powerful WebSockets
+
+One cool thing in this release is transition from `utf8` to `uf8mb4`, which is correct version of UTF8 and now you can use whole range of symbols, including emoji without any problems.
+
+Another thing is reducing amount of backend code that deals with UI, instead few WebComponents were created for administration UI alongside with new API endpoints, more work in this direction will be done in future releases.
+
+Major advancements were done in WebSockets module bringing incredible flexibility, simple server start and reliable support for multi-servers setup.
+
+Last but not least major feature of this release is new **Composer assets**, which brings extremely simple support for Bower and NPM packages that can now be specified as components dependencies for frontend alongside with Composer dependencies for backend.
+Of course, automatic minification, compression, vulcanization and dependencies management works for Bower and NPM assets flawlessly!
+LESS and SCSS styles are also supported, since Bower encourages to specify non-minified versions in package manifest.
+
+New components:
+* **Composer assets** plugin added for Bower and NPM packages support in CleverStyle CMS
+
+New features:
+* `utf8mb4` as DB encoding to support emoji and other symbols
+* Modules list is not rendered on server anymore, everything moved to client
+* Plugins list now also rendered on client side
+* Block addition form is now rendered on client-side
+* Block type changing is now possible
+* Block editing form rendering is now also on client side
+* New JS helpers added to work with form elements inside ShadowDOM nicely:
+  * `$().cs().tooltips_inside()`
+  * `$().cs().radio_buttons_inside()`
+  * `$().cs().tabs_inside()`
+  * `$().cs().connect_to_parent_form()`
+* Infinite route nesting levels support implemented
+* `_` stubs support in `index.json` for API endpoints
+* Changing block's permissions is now in modal window instead of separate page, also it is generic and might be used in other places
+* Small advancement: `api/{module}/admin/*` URLs are now restricted to administrators only by default just like `admin/*` (no need for additional checks anymore)
+* Composer: Composer module now works in interactive mode, meaning it shows current progress almost real time
+* Check for password strength on client size (during password change)
+
+Updates:
+* New upstream version of UPF
+* New upstream version of jsSHA
+* New upstream version of WebComponents.js
+
+Fixes and small improvements:
+* Simplification of permissions management, less DB request on change
+* Fix for situation when user might have duplicated groups
+* Simplification of users groups management
+* CRUD trait fix when setting data model value as `Closure` object
+* UIkit themes fixes
+* `uk-modal-dialog-slide` class is not used in UIkit anymore
+* More flexible modal wrapper
+* Fix for inclusion order of UIkit and its components
+* Using `file_exists_with_extension()` where relevant
+* Switching from `openssl_random_pseudo_bytes()` to `random_bytes()`
+* Unused JS function removed
+* Translations initialization on earlier stage, allows to use in Polymer elements even on `created` stage
+* Simpler access to translations in some components
+* Now it is possible to get/delete multiple groups with single call
+* Simplification in `\cs\Permissions` class
+* Simplification of files extraction checks, fixes for HHVM in packages installation/extraction similarly to system installation
+* Moved language initialization on frontend to even earlier stage, fixes Polymer elements in administration UI
+* More API endpoints for administrator, will be used in future to move more features to UI instead of rendering on server side
+* Fix for simple modal helper bug with non-pixel width size specified
+* Small fix to System distributive package generation
+* Some pieces of unused code removed
+* Do not force to close connection
+* Fix fo files-based routing
+* Fotorama: Fix for fotorama and youtube video going fullscreen (reported upstream as https://github.com/artpolikarpov/fotorama/pull/410)
+* Shop: Fix for only one image was shown on item page in Shop module
+* https://github.com/uikit/uikit/pull/1304 applied on top of current minified build in order to fix UIkit tabs in ShadowDOM.
+* https://github.com/uikit/uikit/pull/1364 applied on top of current minified build in order to fix UIkit tooltips with empty title
+* Use UIkit.notify instead of alert to show AJAX errors
+* `WebKitMutationObserver` dropped since it is supported by all modern webkit browsers
+* Observing for DOM nodes inserting decoupled into separate function
+* Fix for contents of `Allow` header when `405 Method Not Allowed` error happens with controller-based routing
+* API for setting permissions of some item (by specified label and group)
+* HAML added to code style config
+* Experimental HAML as primary markup for Polymer elements, because it is too long otherwise
+* Composer: Composer events added:
+  * Composer/generate_package
+  * Composer/generate_composer_json
+  * Composer/Composer
+  * Composer/updated
+* Composer: Added hacked Composer application, how can catch and work with Composer instance
+* Fix for `\cs\CRUD` not reading data if there is closure as element of data model
+* Composer: Composer is now running in debug mode to output any errors that might happen
+* Composer: Added possibility to configure `auth.json` for Composer (primary to raise GitHub's API rate limit)
+* Composer: `auth.json` can be modified through `Composer/generate_composer_json` event
+* Composer: `composer.json` now contains formatted source instead of single line
+* New event added:
+  * System/Page/includes_dependencies_and_map
+* Some simplification and reducing of code duplication in `\cs\Page\Includes`
+* Shop: Fixes for operating under Http server module
+* Composer: Composer log verbosity depending on system configuration
+* Static pages: Automatic Open Graph tags with images for Static Pages module
+* Translations update
+* Interactive installation mode added to CLI
+* Help in installer with current file name instead of generic one
+* Using information from controller render for frontend inclusions, since it gives more correct information about how page was rendered
+* Encryption improvements, but will not be able to decode old encrypted data (not likely to have big impact):
+  * much simple and straightforward implementation
+  * using of OpenSSL instead of Mcrypt (we do not depend on it anymore as it is not maintained for a very long time)
+  * configurable encryption method
+  * default encryption method changed to `aes-256-cbc` (will not be able to decrypt previously encrypted data)
+* HTTP request was incorrectly determined as HTTPS under HHVM
+* WebSockets: Fixed connection between two servers
+* WebSockets: Added option for specifying DNS server (defaults to 127.0.0.1)
+* WebSockets: Updated DB structure, now we track order of new servers addition to servers pool
+* WebSockets: Fixed frontend authentication because properties of `cs.Language` are objects, not strings
+* WebSockets: Other tweaks, code reformatting
+* WebSockets: Fix for message target parsing
+* WebSockets: Event `WebSockets/register_actions` was dropped
+* WebSockets: Events `WebSockets/$action` replaced by single `WebSockets/message`, also access to `$connection` was added
+* WebSockets: Readme updated and extended
+* WebSockets: Added possibility to send message for users, that are specified with filter (this feature is much more flexible than anything before)
+* WebSockets: Dropped automatic server start on message sending - it makes no sense since no one listening
+* WebSockets: Dropped `safe_mode` check since it was removed in PHP 5.4
+* WebSockets: Added possibility to specify address for server so that other servers may reach it also (useful for multi-server setups)
+* WebSockets: Changed format of server running, a bit simpler now
+* WebSockets: WebSockets are no longer assumed to be running on `127.0.0.1`, real servers pool is used instead
+* WebSockets: Duplicated addresses of single server in pool now handled nicely
+* Additional check for host correctness in `$_SERVER` wrapper
+* Additional protection against timing attacks  when working with sessions
+* Fix for `Vary` header, should be `Accept-Language` instead of `Content-Language`
+* WebSockets: Disconnection event added
+* Added contributing file that points to new page on wiki with explanations how to setup everything and send patch back
+* New functions `status_code()` and `status_code_string()` introduced, both doesn't interact with global environment directly, but through `_header()` instead
+* Long keys in installer now uses two dashed, not one, namely `--help` instead of `-help`, however, old way is kept for backward compatibility until 3.0
+* Long keys support for builder
+* Other smaller fixes and improvements
+
+Deprecations:
+* `\cs\Encryption` class is deprecated now and will be dropped in 3.0: it is not used by any standard component or by system core itself, so there is no need for it here
+* `code_header()` function deprecated (use `status_code()` instead, it does exactly the same and have the same arguments)
+
+Possible partial compatibility breaking (very unlikely, but still possible):
+* TinyMCE: TinyMCE methods for re-initialization accept DOM element as argument instead of ID
+
+Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
