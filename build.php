@@ -32,21 +32,27 @@ if ($cli) {
 	for ($i = 1; $i < $argc; $i += 2) {
 		switch ($argv[$i]) {
 			case '-h':
+			case '--help':
 				$mode = 'form';
 				break;
 			case '-M':
+			case '--mode':
 				$mode = $argv[$i + 1];
 				break;
 			case '-m':
+			case '--modules':
 				$modules = explode(',', $argv[$i + 1]);
 				break;
 			case '-p':
+			case '--plugins':
 				$plugins = explode(',', $argv[$i + 1]);
 				break;
 			case '-t':
+			case '--themes':
 				$themes = explode(',', $argv[$i + 1]);
 				break;
 			case '-s':
+			case '--suffix':
 				$suffix = $argv[$i + 1];
 				break;
 		}
@@ -56,21 +62,27 @@ if ($cli) {
 			echo 'CleverStyle CMS builder
 Builder is used for creating distributive of the CleverStyle CMS and its components.
 Usage: php build.php [-h] [-M <mode>] [-m <module>] [-p <plugin>] [-t <theme>] [-s <suffix>]
-  -h - This information
-  -M - Mode of builder, can be one of: core, module, plugin, theme
-  -m - One or more modules names separated by coma
+  -h
+  --help    - This information
+  -M
+  --mode    - Mode of builder, can be one of: core, module, plugin, theme
+  -m
+  --modules - One or more modules names separated by coma
        If mode is "core" - specified modules will be included into system distributive
        If mode is module - distributive of each module will be created
        In other modes ignored
-  -p - One or more plugins names separated by coma
+  -p
+  --plugins - One or more plugins names separated by coma
        If mode is "core" - specified plugins will be included into system distributive
        If mode is plugin - distributive of each plugin will be created
        In other modes ignored
-  -t - One or more themes names separated by coma
+  -t
+  --themes  - One or more themes names separated by coma
        If mode is "core" - specified themes will be included into system distributive
        If mode is theme - distributive each each theme will be created
        In other modes ignored
-  -s - Suffix for distributive
+  -s
+  --suffix  - Suffix for distributive
 Example:
   php build.php -M core
   php build.php -M core -m Plupload,Static_pages
