@@ -129,7 +129,7 @@ trait packages_manipulation {
 		);
 		unlink($source_phar);
 		unset($tmp_dir);
-		if (count($extracted) === count($fs)) {
+		if (count($extracted) !== count($fs)) {
 			return false;
 		}
 		unset($extract);
