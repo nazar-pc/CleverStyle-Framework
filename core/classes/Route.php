@@ -101,7 +101,7 @@ class Route {
 		 */
 		if (mb_strpos($processed_route['relative_address'], 'System/redirect/') === 0) {
 			if ($this->is_referer_local($Config)) {
-				_header('Location: '.substr($this->raw_relative_address, 16));
+				_header('Location: '.substr($processed_route['relative_address'], 16));
 			} else {
 				error_code(400);
 				Page::instance()->error();
