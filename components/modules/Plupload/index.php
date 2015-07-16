@@ -85,7 +85,10 @@ if (!$User->user()) {
  * Getting instances of storage and database
  */
 $storage			= Storage::instance()->{$module_data->storage('files')};
-$cdb				= DB::instance()->{$module_data->db('files')}();
+/**
+ * @var DB\_Abstract $cdb
+ */
+$cdb				= DB::instance()->db_prime($module_data->db('files'));
 if (!$storage || !$cdb) {
 	$Page->json([
 		'jsonrpc'	=> '2.0',
@@ -112,7 +115,7 @@ $destination_file	.= date('/H');
 if (!$storage->file_exists($destination_file)) {
 	$storage->mkdir($destination_file);
 }
-$destination_file	.= '/'.$User->id.date('_is').uniqid();
+$destination_file	.= "/$User->id".uniqid(date('_is'), true);
 require_once __DIR__.'/Mime/Mime.php';
 $destination_file	.= '.'.Mime::guessExtension($_FILES['file']['tmp_name'], $_FILES['file']['name']);
 if (!$storage->copy($_FILES['file']['tmp_name'], $destination_file)) {
