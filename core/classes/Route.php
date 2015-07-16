@@ -95,19 +95,19 @@ class Route {
 		 * Remove trailing slashes
 		 */
 		$this->raw_relative_address = trim($this->raw_relative_address, ' /\\');
+		$processed_route            = $this->process_route($this->raw_relative_address);
 		/**
 		 * Redirection processing
 		 */
-		if (mb_strpos($this->raw_relative_address, 'redirect/') === 0) {
+		if (mb_strpos($processed_route['relative_address'], 'System/redirect/') === 0) {
 			if ($this->is_referer_local($Config)) {
-				_header('Location: '.substr($this->raw_relative_address, 9));
+				_header('Location: '.substr($this->raw_relative_address, 16));
 			} else {
 				error_code(400);
 				Page::instance()->error();
 			}
 			throw new \ExitException;
 		}
-		$processed_route = $this->process_route($this->raw_relative_address);
 		if (!$processed_route) {
 			error_code(403);
 			Page::instance()->error();
