@@ -143,7 +143,7 @@ class Sections {
 		return $this->cache->get(
 			"sections/$id/$L->clang",
 			function () use ($id) {
-				$data              = $this->db()->qf(
+				$data = $this->db()->qf(
 					[
 						"SELECT
 							`id`,
@@ -165,16 +165,18 @@ class Sections {
 						$id
 					]
 				);
-				$data['title']     = $this->ml_process($data['title']);
-				$data['path']      = $this->ml_process($data['path']);
-				$data['full_path'] = [$data['path']];
-				$parent            = $data['parent'];
-				while ($parent != 0) {
-					$section             = $this->get($parent);
-					$data['full_path'][] = $section['path'];
-					$parent              = $section['parent'];
+				if ($data) {
+					$data['title']     = $this->ml_process($data['title']);
+					$data['path']      = $this->ml_process($data['path']);
+					$data['full_path'] = [$data['path']];
+					$parent            = $data['parent'];
+					while ($parent != 0) {
+						$section             = $this->get($parent);
+						$data['full_path'][] = $section['path'];
+						$parent              = $section['parent'];
+					}
+					$data['full_path'] = implode('/', array_reverse($data['full_path']));
 				}
-				$data['full_path'] = implode('/', array_reverse($data['full_path']));
 				return $data;
 			}
 		);
