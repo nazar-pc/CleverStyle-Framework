@@ -6,9 +6,9 @@
 ###
 document.removeEventListener('DOMContentLoaded', Prism.highlightAll)
 Prism.highlightAll = (async, callback) ->
-	elements = document.querySelectorAll('code[class*="language-"], [class*="language-"] code, code[class*="lang-"], [class*="lang-"] code')
+	elements = document.querySelectorAll('html /deep/ code[class*="language-"], html /deep/ [class*="language-"] code, html /deep/ code[class*="lang-"], html /deep/ [class*="lang-"] code')
 	for element in elements
-		if element.matches('[contenteditable=true] *') || element.matches('.INLINE_EDITOR *')
+		if element.matches('html /deep/ [contenteditable=true] *') || element.matches('html /deep/ .INLINE_EDITOR *')
 			continue
 		(
 			if element.parentNode.tagName == 'PRE'
@@ -17,4 +17,4 @@ Prism.highlightAll = (async, callback) ->
 				element
 		).classList.add('line-numbers')
 		Prism.highlightElement(element, async == true, callback);
-document.addEventListener('DOMContentLoaded', Prism.highlightAll)
+$ Prism.highlightAll
