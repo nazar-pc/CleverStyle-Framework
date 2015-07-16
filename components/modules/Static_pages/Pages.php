@@ -26,7 +26,7 @@ class Pages {
 		'category'  => 'int',
 		'title'     => 'ml:text',
 		'path'      => 'ml:text',
-		'content'   => null,
+		'content'   => 'ml:',
 		'interface' => 'int:0..1'
 	];
 	protected $table                       = '[prefix]static_pages';
