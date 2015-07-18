@@ -5,7 +5,7 @@
  * @license		MIT License, see license.txt
 ###
 ###
- # Fix for jQuery "ready" event, trigger it after "WebComponentsReady" event triggered by Polymer Platform
+ # Fix for jQuery "ready" event, trigger it after "WebComponentsReady" event triggered by WebComponents.js
 ###
 do ($ = jQuery) ->
 	ready_original	= $.fn.ready
