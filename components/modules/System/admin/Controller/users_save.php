@@ -49,11 +49,6 @@ trait users_save {
 						);
 					}
 					break;
-				case 'permissions':
-					$Index->save(
-						$Group->set_permissions($_POST['permission'], $_POST['id'])
-					);
-					break;
 			}
 		}
 	}

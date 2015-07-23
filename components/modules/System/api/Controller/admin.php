@@ -93,6 +93,24 @@ trait admin {
 		}
 		$Page->json($result);
 	}
+	static function admin_groups_permissions_get ($route_ids) {
+		if (!isset($route_ids[0])) {
+			error_code(400);
+			return;
+		}
+		Page::instance()->json(
+			Group::instance()->get_permissions($route_ids[0]) ?: []
+		);
+	}
+	static function admin_groups_permissions_post ($route_ids) {
+		if (!isset($route_ids[0], $_POST['permissions'])) {
+			error_code(400);
+			return;
+		}
+		if (!Group::instance()->set_permissions($_POST['permissions'], $route_ids[0])) {
+			error_code(500);
+		}
+	}
 	static function admin_permissions___get ($route_ids) {
 		$Permission = Permission::instance();
 		if (isset($route_ids[0])) {

@@ -10,7 +10,10 @@
 		"cache"              : [],
 		"databases_test"     : [],
 		"email_sending_test" : [],
-		"groups"             : [],
+		"groups"             : [
+			"_",
+			"permissions"
+		],
 		"permissions"        : [
 			"_",
 			"for_item"
