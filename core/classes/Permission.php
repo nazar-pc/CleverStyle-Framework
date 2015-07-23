@@ -221,7 +221,7 @@ class Permission {
 					}
 					$all_permissions = [];
 					foreach ($data as $item) {
-						$all_permissions[$item['group']][$item['label']] = $item['id'];
+						$all_permissions[$item['group']][$item['label']] = (int)$item['id'];
 					}
 					return $all_permissions;
 				}
