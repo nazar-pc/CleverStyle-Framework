@@ -25,7 +25,7 @@
           var $this, content;
           $this = $(this);
           content = $this.next();
-          $this.addClass('uk-tab').attr('data-uk-tab', '').children().each(function() {
+          $this.addClass('uk-tab').attr('data-uk-tab', '').children(':not(template)').each(function() {
             var li;
             li = $(this);
             if (!li.children('a').length) {
@@ -36,7 +36,7 @@
             connect: content,
             animation: 'fade'
           }));
-          return content.addClass('uk-switcher uk-margin').children(':first').addClass('uk-active');
+          return content.addClass('uk-switcher uk-margin').children(':not(template):first').addClass('uk-active');
         });
       },
 

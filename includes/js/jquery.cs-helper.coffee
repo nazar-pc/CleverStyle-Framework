@@ -20,7 +20,7 @@ do ($=jQuery, UI = UIkit) ->
 				$this
 					.addClass('uk-tab')
 					.attr('data-uk-tab', '')
-					.children()
+					.children(':not(template)')
 						.each ->
 							li	= $(@)
 							if !li.children('a').length
@@ -35,7 +35,7 @@ do ($=jQuery, UI = UIkit) ->
 					))
 				content
 					.addClass('uk-switcher uk-margin')
-					.children(':first')
+					.children(':not(template):first')
 						.addClass('uk-active')
 		###*
 		 * Dialog with UIkit
