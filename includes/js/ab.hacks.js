@@ -7,13 +7,12 @@
  * @license		MIT License, see license.txt
  */
 
-
-/*
-  * Fix for jQuery "ready" event, trigger it after "WebComponentsReady" event triggered by WebComponents.js
- */
-
 (function() {
   (function($) {
+
+    /*
+    	  * Fix for jQuery "ready" event, trigger it after "WebComponentsReady" event triggered by WebComponents.js
+     */
     var functions, ready, ready_original;
     ready_original = $.fn.ready;
     functions = [];
@@ -21,7 +20,7 @@
     $.fn.ready = function(fn) {
       return functions.push(fn);
     };
-    return document.addEventListener('WebComponentsReady', function() {
+    document.addEventListener('WebComponentsReady', function() {
       if (!ready) {
         ready = true;
         $.fn.ready = ready_original;
@@ -30,6 +29,18 @@
         });
         return functions = [];
       }
+    });
+    return $(function() {
+      var registerOuterClick__original;
+      registerOuterClick__original = UIkit.components.dropdown.prototype.registerOuterClick;
+      return UIkit.components.dropdown.prototype.registerOuterClick = function() {
+        if (this.element[0].matches(':host *')) {
+          $(this.element[0]).find('li').one('click', function(e) {
+            return UIkit.$html.trigger("click.outer.dropdown", e);
+          });
+        }
+        return registerOuterClick__original.call(this);
+      };
     });
   })(jQuery);
 

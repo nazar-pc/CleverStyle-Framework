@@ -4,10 +4,10 @@
  * @copyright	Copyright (c) 2014-2015, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
 ###
-###
- # Fix for jQuery "ready" event, trigger it after "WebComponentsReady" event triggered by WebComponents.js
-###
 do ($ = jQuery) ->
+	###
+	 # Fix for jQuery "ready" event, trigger it after "WebComponentsReady" event triggered by WebComponents.js
+	###
 	ready_original	= $.fn.ready
 	functions		= []
 	ready			= false
@@ -21,3 +21,12 @@ do ($ = jQuery) ->
 				$(fn)
 			functions	= []
 	)
+	# Fix for UIkit dropdown not closed under Shadow DOM when clicked on some selected item
+	$ ->
+		registerOuterClick__original	= UIkit.components.dropdown.prototype.registerOuterClick
+		UIkit.components.dropdown.prototype.registerOuterClick	= ->
+			if @element[0].matches(':host *')
+				$(@element[0]).find('li').one('click', (e) ->
+					UIkit.$html.trigger("click.outer.dropdown", e)
+				)
+			registerOuterClick__original.call(@)
