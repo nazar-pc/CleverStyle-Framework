@@ -237,7 +237,7 @@ class Group {
 	 *
 	 * @param int $group
 	 *
-	 * @return array
+	 * @return int[]|false
 	 */
 	function get_permissions ($group) {
 		return $this->get_any_permissions($group, 'group');

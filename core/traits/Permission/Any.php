@@ -21,7 +21,7 @@ trait Any {
 	 * @param int    $id
 	 * @param string $type
 	 *
-	 * @return array|false
+	 * @return int[]|false
 	 */
 	protected function get_any_permissions ($id, $type) {
 		$id = (int)$id;
