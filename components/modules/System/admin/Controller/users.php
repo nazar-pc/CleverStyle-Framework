@@ -109,11 +109,11 @@ trait users {
 		);
 	}
 	static function users_groups () {
-		$L      = Language::instance();
-		$Page   = Page::instance();
-		$Group  = Group::instance();
-		$a      = Index::instance();
-		$rc     = Route::instance()->route;
+		$L     = Language::instance();
+		$Page  = Page::instance();
+		$Group = Group::instance();
+		$a     = Index::instance();
+		$rc    = Route::instance()->route;
 		if (isset($rc[2])) {
 			switch ($rc[2]) {
 				case 'add':
@@ -1037,34 +1037,6 @@ trait users {
 						h::{'button.uk-button[type=submit]'}($L->yes)
 					);
 					break;
-				case 'permissions':
-					if (!isset($rc[3]) || $rc[3] == User::ROOT_ID) {
-						break;
-					}
-					$a->cancel_button_back = true;
-					$Page->title(
-						$L->{$is_bot ? 'permissions_for_bot' : 'permissions_for_user'}(
-							$User->username($rc[3])
-						)
-					);
-					list ($tabs, $tabs_content) = static::render_permissions_form($User->get_permissions($rc[3]) ?: [], true);
-					$a->content(
-						h::{'h2.cs-center'}(
-							$L->{$is_bot ? 'permissions_for_bot' : 'permissions_for_user'}(
-								$User->username($rc[3])
-							)
-						).
-						h::{'ul.cs-tabs li'}($tabs).
-						h::div($tabs_content).
-						h::br().
-						h::{'input[type=hidden]'}(
-							[
-								'name'  => 'id',
-								'value' => $rc[3]
-							]
-						)
-					);
-					break;
 				case 'groups':
 					if ($is_bot || !isset($rc[3]) || $rc[3] == User::ROOT_ID) {
 						break;
@@ -1312,10 +1284,9 @@ trait users {
 									 ) : ''
 								 ).
 								 (!$is_root ?
-									 h::{'a.uk-button.cs-button-compact'}(
+									 h::{'div.uk-button.cs-button-compact.cs-users-permissions'}(
 										 h::icon('key'),
 										 [
-											 'href'       => "$a->action/permissions/$id",
 											 'data-title' => $L->{$is_bot ? 'edit_bot_permissions' : 'edit_user_permissions'}
 										 ]
 									 ) : '-'
@@ -1352,7 +1323,10 @@ trait users {
 					$users_list[] = [
 						array_values([$buttons, $type] + $user_data),
 						[
-							'class' => $is_active ? 'uk-alert-success' : ($status == User::STATUS_INACTIVE ? 'uk-alert-warning' : false)
+							'class'         => $is_active ? 'uk-alert-success' : ($status == User::STATUS_INACTIVE ? 'uk-alert-warning' : false),
+							'data-id'       => $id,
+							'data-username' => h::prepare_attr_value($User->username($id)),
+							'data-bot'      => $is_bot
 						]
 					];
 				}

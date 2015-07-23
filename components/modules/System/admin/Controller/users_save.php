@@ -222,16 +222,6 @@ trait users_save {
 					}
 				}
 				break;
-			case 'permissions':
-				if (isset($_POST['id'], $_POST['permission'])) {
-					if ($_POST['id'] == User::ROOT_ID) {
-						break;
-					}
-					$Index->save(
-						$User->set_permissions($_POST['permission'], $_POST['id'])
-					);
-				}
-				break;
 			case 'groups':
 				if (isset($_POST['user'], $_POST['user']['id'], $_POST['user']['groups']) && $_POST['user']['groups']) {
 					$user_id = (int)$_POST['user']['id'];

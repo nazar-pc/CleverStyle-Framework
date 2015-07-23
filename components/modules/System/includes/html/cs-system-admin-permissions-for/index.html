@@ -1,0 +1,74 @@
+<polymer-element name="cs-system-admin-permissions-for">
+  <template>
+    <template id="control-buttons">
+      <button class="uk-button" on-click="[[invert]]" type="button">[[L.invert]]</button>
+      <button class="uk-button" on-click="[[allow_all]]" type="button">[[L.allow_all]]</button>
+      <button class="uk-button" on-click="[[deny_all]]" type="button">[[L.deny_all]]</button>
+    </template>
+    <template id="inner-radio">
+      <span class="uk-button-group" data-uk-button-radio>
+        <!-- inherited -->
+        <template if="[[permissions[label.id] == -1 || permissions[label.id] == undefined]]">
+          <label class="uk-button uk-active">
+            <input checked name="permissions[{{label.id}}]" type="radio" value="-1">
+            [[L.inherited]]
+          </label>
+        </template>
+        <template if="[[permissions[label.id] != -1 && permissions[label.id] != undefined]]">
+          <label class="uk-button">
+            <input name="permissions[{{label.id}}]" type="radio" value="-1">
+            [[L.inherited]]
+          </label>
+        </template>
+        <!-- deny -->
+        <template if="[[permissions[label.id] == 0]]">
+          <label class="uk-button uk-active">
+            <input checked name="permissions[{{label.id}}]" type="radio" value="0">
+            [[L.deny]]
+          </label>
+        </template>
+        <template if="[[permissions[label.id] != 0]]">
+          <label class="uk-button">
+            <input name="permissions[{{label.id}}]" type="radio" value="0">
+            [[L.deny]]
+          </label>
+        </template>
+        <!-- allow -->
+        <template if="[[permissions[label.id] == 1]]">
+          <label class="uk-button uk-active">
+            <input checked name="permissions[{{label.id}}]" type="radio" value="1">
+            [[L.allow]]
+          </label>
+        </template>
+        <template if="[[permissions[label.id] != 1]]">
+          <label class="uk-button">
+            <input name="permissions[{{label.id}}]" type="radio" value="1">
+            [[L.allow]]
+          </label>
+        </template>
+      </span>
+    </template>
+    <form class="uk-form" id="form">
+      <template repeat="{{all_permissions as permission}}">
+        <legend>[[permission.group]]</legend>
+        <div>
+          <p class="cs-left">
+            <template bind ref="control-buttons"></template>
+          </p>
+          <cs-table right-left>
+            <template repeat="[[permission.labels as label]]">
+              <cs-table-row>
+                <cs-table-cell>[[label.name]]</cs-table-cell>
+                <cs-table-cell>
+                  <template bind ref="inner-radio"></template>
+                </cs-table-cell>
+              </cs-table-row>
+            </template>
+          </cs-table>
+        </div>
+      </template>
+    </form>
+    <button class="uk-button" on-click="[[save]]" type="button">[[L.save]]</button>
+  </template>
+  <script src="script.js"></script>
+</polymer-element>

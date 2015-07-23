@@ -93,6 +93,19 @@ trait admin {
 		}
 		$Page->json($result);
 	}
+	static function admin_permissions___get ($route_ids) {
+		$Permission = Permission::instance();
+		if (isset($route_ids[0])) {
+			$result = $Permission->get($route_ids[0]);
+			if (!$result) {
+				error_code(404);
+				return;
+			}
+		} else {
+			$result = $Permission->get_all();
+		}
+		Page::instance()->json($result);
+	}
 	static function admin_permissions_for_item_get () {
 		if (!isset($_GET['group'], $_GET['label'])) {
 			error_code(400);
@@ -187,7 +200,7 @@ trait admin {
 			(int)$result
 		);
 	}
-	static function admin_users_get ($route_ids) {
+	static function admin_users___get ($route_ids) {
 		$User    = User::instance();
 		$Page    = Page::instance();
 		$columns = array_filter(
@@ -215,5 +228,23 @@ trait admin {
 			return;
 		}
 		$Page->json($result);
+	}
+	static function admin_users_permissions_get ($route_ids) {
+		if (!isset($route_ids[0])) {
+			error_code(400);
+			return;
+		}
+		Page::instance()->json(
+			User::instance()->get_permissions($route_ids[0]) ?: []
+		);
+	}
+	static function admin_users_permissions_post ($route_ids) {
+		if (!isset($route_ids[0], $_POST['permissions'])) {
+			error_code(400);
+			return;
+		}
+		if (!User::instance()->set_permissions($_POST['permissions'], $route_ids[0])) {
+			error_code(500);
+		}
 	}
 }

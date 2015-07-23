@@ -1,0 +1,49 @@
+%polymer-element(name="cs-system-admin-permissions-for")
+	%template
+		%template#control-buttons
+			%button.uk-button(on-click="[[invert]]" type="button") [[L.invert]]
+			%button.uk-button(on-click="[[allow_all]]" type="button") [[L.allow_all]]
+			%button.uk-button(on-click="[[deny_all]]" type="button") [[L.deny_all]]
+		%template#inner-radio
+			%span.uk-button-group(data-uk-button-radio)
+				/ inherited
+				%template(if="[[permissions[label.id] == -1 || permissions[label.id] == undefined]]")
+					%label.uk-button.uk-active
+						%input(checked name="permissions[{{label.id}}]" type="radio" value="-1")/
+						[[L.inherited]]
+				%template(if="[[permissions[label.id] != -1 && permissions[label.id] != undefined]]")
+					%label.uk-button
+						%input(name="permissions[{{label.id}}]" type="radio" value="-1")/
+						[[L.inherited]]
+				/ deny
+				%template(if="[[permissions[label.id] == 0]]")
+					%label.uk-button.uk-active
+						%input(checked name="permissions[{{label.id}}]" type="radio" value="0")/
+						[[L.deny]]
+				%template(if="[[permissions[label.id] != 0]]")
+					%label.uk-button
+						%input(name="permissions[{{label.id}}]" type="radio" value="0")/
+						[[L.deny]]
+				/ allow
+				%template(if="[[permissions[label.id] == 1]]")
+					%label.uk-button.uk-active
+						%input(checked name="permissions[{{label.id}}]" type="radio" value="1")/
+						[[L.allow]]
+				%template(if="[[permissions[label.id] != 1]]")
+					%label.uk-button
+						%input(name="permissions[{{label.id}}]" type="radio" value="1")/
+						[[L.allow]]
+		%form#form.uk-form
+			%template(repeat="{{all_permissions as permission}}")
+				%legend [[permission.group]]
+				%div
+					%p.cs-left
+						%template(bind ref="control-buttons")
+					%cs-table(right-left)
+						%template(repeat="[[permission.labels as label]]")
+							%cs-table-row
+								%cs-table-cell [[label.name]]
+								%cs-table-cell
+									%template(bind ref="inner-radio")
+		%button.uk-button(on-click="[[save]]" type="button") [[L.save]]
+	%script(src="script.js")

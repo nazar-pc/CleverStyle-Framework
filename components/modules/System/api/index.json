@@ -7,15 +7,19 @@
 		"restore_password"
 	],
 	"admin"    : {
-		"cache"               : [],
-		"databases_test"      : [],
-		"email_sending_test"  : [],
-		"groups"              : [],
-		"permissions"         : [
+		"cache"              : [],
+		"databases_test"     : [],
+		"email_sending_test" : [],
+		"groups"             : [],
+		"permissions"        : [
+			"_",
 			"for_item"
 		],
-		"storages_test"       : [],
-		"users"               : []
+		"storages_test"      : [],
+		"users"              : [
+			"_",
+			"permissions"
+		]
 	},
 	"profile"  : [
 		"profile",
