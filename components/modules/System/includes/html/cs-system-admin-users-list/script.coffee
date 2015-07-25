@@ -48,7 +48,6 @@ Polymer(
 				user.type		= L[type]
 				user.type_info	= L[type + '_info']
 		@users	= data.users
-		console.log @users
 	domReady			: ->
 		$(@shadowRoot).cs().tooltips_inside()
 	edit_permissions	: (event, detail, sender) ->

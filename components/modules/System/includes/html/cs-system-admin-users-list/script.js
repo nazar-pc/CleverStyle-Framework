@@ -69,8 +69,7 @@
           return user.type_info = L[type + '_info'];
         })();
       });
-      this.users = data.users;
-      return console.log(this.users);
+      return this.users = data.users;
     },
     domReady: function() {
       return $(this.shadowRoot).cs().tooltips_inside();
