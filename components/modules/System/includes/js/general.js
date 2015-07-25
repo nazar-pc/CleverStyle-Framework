@@ -73,14 +73,6 @@
           return $(this).data('id');
         }).get()));
       });
-      $('.cs-users-permissions').click(function() {
-        var $user, id, title, title_key;
-        $user = $(this).closest('[data-id]');
-        id = $user.data('id');
-        title_key = $user.is('[data-bot]') ? 'permissions_for_bot' : 'permissions_for_user';
-        title = cs.Language[title_key]($user.data('username'));
-        return $.cs.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-permissions-for user=\"" + id + "\" for=\"user\"/>");
-      });
       $('.cs-groups-permissions').click(function() {
         var $group, id, title;
         $group = $(this).closest('[data-id]');

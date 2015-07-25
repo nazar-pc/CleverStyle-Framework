@@ -1148,97 +1148,32 @@ trait users {
 				);
 				unset($from);
 			}
-			$users_list = [];
+			$users_list  = [];
 			if (isset($users_ids) && is_array($users_ids)) {
 				foreach ($users_ids as $id) {
-					$is_guest  = $id == User::GUEST_ID;
-					$is_root   = $id == User::ROOT_ID;
 					$groups    = (array)$User->get_groups($id);
-					$is_bot    = in_array(User::BOT_GROUP_ID, $groups);
-					$status    = $User->get('status', $id);
-					$is_active = $status == User::STATUS_ACTIVE;
-					$buttons   = (!$is_guest && !$is_root && !$is_bot ?
-							h::{'a.uk-button.cs-button-compact'}(
-								h::icon('pencil'),
-								[
-									'href'       => "$a->action/edit_raw/$id",
-									'data-title' => $L->edit_raw_user_data
-								]
-							) : ''
-								 ).
-								 (!$is_guest && !$is_root && (!$is_bot || !$Config->core['simple_admin_mode']) ?
-									 h::{'a.uk-button.cs-button-compact'}(
-										 h::icon('sliders'),
-										 [
-											 'href'       => "$a->action/edit/$id",
-											 'data-title' => $L->{$is_bot ? 'edit_bot_information' : 'edit_user_information'}
-										 ]
-									 ) : ''
-								 ).
-								 (!$is_guest && !$is_root ?
-									 h::{'a.uk-button.cs-button-compact'}(
-										 h::icon($is_active ? 'minus' : 'check'),
-										 [
-											 'href'       => "$a->action/".($is_active ? 'deactivate' : 'activate')."/$id",
-											 'data-title' => $L->{($is_active ? 'de' : '').'activate_'.($is_bot ? 'bot' : 'user')}
-										 ]
-									 ) : ''
-								 ).
-								 (!$is_guest && !$is_root && !$is_bot ?
-									 h::{'a.uk-button.cs-button-compact'}(
-										 h::icon('group'),
-										 [
-											 'href'       => "$a->action/groups/$id",
-											 'data-title' => $L->edit_user_groups
-										 ]
-									 ) : ''
-								 ).
-								 (!$is_root ?
-									 h::{'div.uk-button.cs-button-compact.cs-users-permissions'}(
-										 h::icon('key'),
-										 [
-											 'data-title' => $L->{$is_bot ? 'edit_bot_permissions' : 'edit_user_permissions'}
-										 ]
-									 ) : '-'
-								 );
-					$user_data = $User->get($columns, $id);
-					if ($is_root && isset($user_data['password_hash'])) {
+					$user_data = $User->get(
+						array_unique(array_merge($columns, ['status'])),
+						$id
+					);
+					if ($id == User::ROOT_ID && isset($user_data['password_hash'])) {
 						$user_data['password_hash'] = '*****';
 					}
 					if (isset($user_data['reg_ip'])) {
 						$user_data['reg_ip'] = hex2ip($user_data['reg_ip'], 10);
-						if ($user_data['reg_ip'][1]) {
-							$user_data['reg_ip'] = $user_data['reg_ip'][0].h::br().$user_data['reg_ip'][1];
-						} else {
-							$user_data['reg_ip'] = $user_data['reg_ip'][0];
-						}
 					}
 					if (isset($user_data['last_ip'])) {
 						$user_data['last_ip'] = hex2ip($user_data['last_ip'], 10);
-						if ($user_data['last_ip'][1]) {
-							$user_data['last_ip'] = $user_data['last_ip'][0].h::br().$user_data['last_ip'][1];
-						} else {
-							$user_data['last_ip'] = $user_data['last_ip'][0];
-						}
 					}
-					if (in_array(User::ADMIN_GROUP_ID, $groups)) {
-						$type = h::info('a');
-					} elseif (in_array(User::USER_GROUP_ID, $groups)) {
-						$type = h::info('u');
-					} elseif ($is_bot) {
-						$type = h::info('b');
-					} else {
-						$type = h::info('g');
-					}
-					$users_list[] = [
-						array_values([$buttons, $type] + $user_data),
+					$users_list[] =
+						$user_data +
 						[
-							'class'         => $is_active ? 'uk-alert-success' : ($status == User::STATUS_INACTIVE ? 'uk-alert-warning' : false),
-							'data-id'       => $id,
-							'data-username' => h::prepare_attr_value($User->username($id)),
-							'data-bot'      => $is_bot
-						]
-					];
+							'is_user'       => in_array(User::USER_GROUP_ID, $groups),
+							'is_bot'        => in_array(User::BOT_GROUP_ID, $groups),
+							'is_admin'      => in_array(User::ADMIN_GROUP_ID, $groups),
+							'edit_raw_data' => !$Config->core['simple_admin_mode'],
+							'username'      => $User->username($id)
+						];
 				}
 			}
 			unset($id, $buttons, $user_data, $users_ids, $is_guest, $is_root, $is_bot);
@@ -1295,9 +1230,14 @@ trait users {
 					h::{'button.uk-button[type=submit]'}($L->search),
 					pages_buttons($page, $total_pages)
 				).
-				static::list_center_table(
-					array_merge([$L->action, ''], $columns),
-					$users_list
+				h::{'cs-system-admin-users-list script[type=application/json]'}(
+					json_encode(
+						[
+							'columns' => array_values($columns),
+							'users'   => $users_list
+						],
+						JSON_UNESCAPED_UNICODE
+					)
 				).
 				h::{'p.cs-left'}(
 					pages_buttons($page, $total_pages),

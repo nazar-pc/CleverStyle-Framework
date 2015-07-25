@@ -1,0 +1,35 @@
+%polymer-element(name="cs-system-admin-users-list")
+	%template
+		%cs-table(center list with-header)
+			%cs-table-row
+				%cs-table-cell [[L.action]]
+				%cs-table-cell &nbsp;
+				%template(repeat="{{column in columns}}")
+					%cs-table-cell [[column]]
+			%template(repeat="{{user, index in users}}")
+				%cs-table-row(class="[[user.class]]" data-user-index="{{index}}")
+					%cs-table-cell
+						%template(if="[[user.is_root]]") -
+						%template(if="[[!user.is_root]]")
+							%template(if="[[user.edit_raw_data && !user.is_guest && !user.is_bot]]")
+								%a.uk-button.cs-button-compact(href="/admin/System/users/users/edit_raw/[[user.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.edit_raw_user_data]]")
+									.uk-icon-pencil
+							%template(if="[[!user.is_guest]]")
+								%a.uk-button.cs-button-compact(href="/admin/System/users/users/edit/[[user.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.edit_user_information]]")
+									.uk-icon-sliders
+							%template(if="{{user.is_active && !user.is_guest}}")
+								%a.uk-button.cs-button-compact(href="/admin/System/users/users/deactivate/[[user.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.deactivate_user]]")
+									.uk-icon-minus
+							%template(if="{{!user.is_active && !user.is_guest}}")
+								%a.uk-button.cs-button-compact(href="/admin/System/users/users/activate/[[user.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.activate_user]]")
+									.uk-icon-check
+							%template(if="{{!user.is_guest && !user.is_bot}}")
+								%a.uk-button.cs-button-compact(href="/admin/System/users/users/groups/[[user.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.edit_user_groups]]")
+									.uk-icon-group
+							.uk-button.cs-button-compact(data-uk-tooltip="[[tooltip_animation]]" on-click="{{edit_permissions}}" title="[[L.edit_user_permissions]]")
+								.uk-icon-key
+					%cs-table-cell
+						%span(data-uk-tooltip="[[tooltip_animation]]" title="[[user.type_info]]") [[user.type]]
+					%template(repeat="[[column in user.columns]]")
+						%cs-table-cell [[column]]
+	%script(src="script.js")

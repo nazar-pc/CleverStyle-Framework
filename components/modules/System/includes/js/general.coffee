@@ -87,17 +87,6 @@ $ ->
 						)
 					)
 			)
-		$('.cs-users-permissions').click ->
-			$user		= $(@).closest('[data-id]')
-			id			= $user.data('id')
-			title_key	= if $user.is('[data-bot]') then 'permissions_for_bot' else 'permissions_for_user'
-			title		= cs.Language[title_key](
-				$user.data('username')
-			)
-			$.cs.simple_modal("""
-				<h2>#{title}</h2>
-				<cs-system-admin-permissions-for user="#{id}" for="user"/>
-			""")
 		$('.cs-groups-permissions').click ->
 			$group		= $(@).closest('[data-id]')
 			id			= $group.data('id')
