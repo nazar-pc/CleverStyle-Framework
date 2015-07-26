@@ -436,7 +436,6 @@ trait users {
 			$a->buttons       = false;
 			$permissions      = $Permission->get_all();
 			$permissions_list = [];
-			$count            = 0;
 			$blocks           = [];
 			foreach ($Config->components['blocks'] as $block) {
 				$blocks[$block['index']] = $block['title'];
@@ -444,42 +443,17 @@ trait users {
 			unset($block);
 			foreach ($permissions as $group => $list) {
 				foreach ($list as $label => $id) {
-					++$count;
 					$permissions_list[] = [
-						h::{'a.uk-button.cs-button-compact'}(
-							h::icon('pencil'),
-							[
-								'href'       => "$a->action/edit/$id",
-								'data-title' => $L->edit
-							]
-						).
-						h::{'a.uk-button.cs-button-compact'}(
-							h::icon('trash-o'),
-							[
-								'href'       => "$a->action/delete/$id",
-								'data-title' => $L->delete
-							]
-						),
-						$id,
-						h::span($group),
-						h::span(
-							$label,
-							[
-								'data-title' => $group == 'Block' ? Text::instance()->process($Config->module('System')->db('texts'), $blocks[$label]) : false
-							]
-						)
+						'id'          => $id,
+						'group'       => $group,
+						'label'       => $label,
+						'description' => $group == 'Block' ? Text::instance()->process($Config->module('System')->db('texts'), $blocks[$label]) : ''
 					];
 				}
 			}
 			$a->content(
-				static::list_center_table(
-					[
-						$L->action,
-						'id',
-						$L->group,
-						$L->label
-					],
-					$permissions_list
+				h::{'cs-system-admin-permissions-list script[type=application/json]'}(
+					json_encode($permissions_list, JSON_UNESCAPED_UNICODE)
 				).
 				h::{'p.cs-left a.uk-button'}(
 					$L->add_permission,

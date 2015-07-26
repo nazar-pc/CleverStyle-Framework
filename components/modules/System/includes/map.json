@@ -8,6 +8,7 @@
 		"cs-system-admin-permissions-for/index.html",
 		"cs-system-admin-permissions-for-item/index.html",
 		"cs-system-admin-groups-list/index.html",
+		"cs-system-admin-permissions-list/index.html",
 		"cs-system-admin-users-list/index.html"
 	]
 }

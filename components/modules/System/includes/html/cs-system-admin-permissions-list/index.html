@@ -1,0 +1,28 @@
+<polymer-element name="cs-system-admin-permissions-list">
+  <template>
+    <cs-table center list with-header>
+      <cs-table-row>
+        <cs-table-cell>[[L.action]]</cs-table-cell>
+        <cs-table-cell>id</cs-table-cell>
+        <cs-table-cell>[[L.group]]</cs-table-cell>
+        <cs-table-cell>[[L.label]]</cs-table-cell>
+      </cs-table-row>
+      <template repeat="{{permission, index in permissions}}">
+        <cs-table-row data-permission-index="{{index}}">
+          <cs-table-cell>
+            <a class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" href="/admin/System/users/permissions/edit/[[permission.id]]" title="[[L.edit]]">
+              <div class="uk-icon-pencil"></div>
+            </a>
+            <a class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" href="/admin/System/users/permissions/delete/[[permission.id]]" title="[[L.delete]]">
+              <div class="uk-icon-trash-o"></div>
+            </a>
+          </cs-table-cell>
+          <cs-table-cell>[[permission.id]]</cs-table-cell>
+          <cs-table-cell>[[permission.group]]</cs-table-cell>
+          <cs-table-cell data-uk-tooltip="[[tooltip_animation]]" title="[[permission.description]]">[[permission.label]]</cs-table-cell>
+        </cs-table-row>
+      </template>
+    </cs-table>
+  </template>
+  <script src="script.js"></script>
+</polymer-element>
