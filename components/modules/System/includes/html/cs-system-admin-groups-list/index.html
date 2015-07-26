@@ -1,0 +1,33 @@
+<polymer-element name="cs-system-admin-groups-list">
+  <template>
+    <cs-table center list with-header>
+      <cs-table-row>
+        <cs-table-cell>[[L.action]]</cs-table-cell>
+        <cs-table-cell>id</cs-table-cell>
+        <cs-table-cell>[[L.group_name]]</cs-table-cell>
+        <cs-table-cell>[[L.group_description]]</cs-table-cell>
+      </cs-table-row>
+      <template repeat="{{group, index in groups}}">
+        <cs-table-row data-group-index="{{index}}">
+          <cs-table-cell>
+            <a class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" href="/admin/System/users/groups/edit/[[group.id]]" title="[[L.edit_group_information]]">
+              <div class="uk-icon-pencil"></div>
+            </a>
+            <template if="{{group.allow_to_delete}}">
+              <a class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" href="/admin/System/users/groups/delete/[[group.id]]" title="[[L.delete]]">
+                <div class="uk-icon-trash-o"></div>
+              </a>
+            </template>
+            <div class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" on-click="{{edit_permissions}}" title="[[L.edit_group_permissions]]">
+              <div class="uk-icon-key"></div>
+            </div>
+          </cs-table-cell>
+          <cs-table-cell>[[group.id]]</cs-table-cell>
+          <cs-table-cell>[[group.title]]</cs-table-cell>
+          <cs-table-cell>[[group.description]]</cs-table-cell>
+        </cs-table-row>
+      </template>
+    </cs-table>
+  </template>
+  <script src="script.js"></script>
+</polymer-element>

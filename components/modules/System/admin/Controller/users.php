@@ -221,49 +221,16 @@ trait users {
 			$groups_list = [];
 			foreach ($groups_ids as $id) {
 				$id            = $id['id'];
-				$group_data    = $Group->get($id);
-				$groups_list[] = [
+				$groups_list[] =
+					$Group->get($id) +
 					[
-						h::{'a.uk-button.cs-button-compact'}(
-							h::icon('pencil'),
-							[
-								'href'       => "$a->action/edit/$id",
-								'data-title' => $L->edit_group_information
-							]
-						).
-						($id != User::ADMIN_GROUP_ID && $id != User::USER_GROUP_ID && $id != User::BOT_GROUP_ID ? h::{'a.uk-button.cs-button-compact'}(
-							h::icon('trash-o'),
-							[
-								'href'       => "$a->action/delete/$id",
-								'data-title' => $L->delete
-							]
-						) : '').
-						h::{'div.uk-button.cs-button-compact.cs-groups-permissions'}(
-							h::icon('key'),
-							[
-								'data-title' => $L->edit_group_permissions
-							]
-						),
-						$id,
-						$group_data['title'],
-						$group_data['description']
-					],
-					[
-						'data-id'   => $id,
-						'data-name' => h::prepare_attr_value($group_data['title'])
-					]
-				];
+						'allow_to_delete' => $id != User::ADMIN_GROUP_ID && $id != User::USER_GROUP_ID && $id != User::BOT_GROUP_ID
+					];
 			}
 			unset($id, $group_data, $groups_ids);
 			$a->content(
-				static::list_center_table(
-					[
-						$L->action,
-						'id',
-						$L->group_name,
-						$L->group_description
-					],
-					$groups_list
+				h::{'cs-system-admin-groups-list script[type=application/json]'}(
+					json_encode($groups_list, JSON_UNESCAPED_UNICODE)
 				).
 				h::{'p.cs-left a.uk-button'}(
 					$L->add_group,
@@ -1148,7 +1115,7 @@ trait users {
 				);
 				unset($from);
 			}
-			$users_list  = [];
+			$users_list = [];
 			if (isset($users_ids) && is_array($users_ids)) {
 				foreach ($users_ids as $id) {
 					$groups    = (array)$User->get_groups($id);
