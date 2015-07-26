@@ -217,17 +217,11 @@ trait users {
 			);
 		} else {
 			$a->buttons  = false;
-			$groups_ids  = $Group->get_all();
-			$groups_list = [];
-			foreach ($groups_ids as $id) {
-				$id            = $id['id'];
-				$groups_list[] =
-					$Group->get($id) +
-					[
-						'allow_to_delete' => $id != User::ADMIN_GROUP_ID && $id != User::USER_GROUP_ID && $id != User::BOT_GROUP_ID
-					];
+			$groups_list = $Group->get_all();
+			foreach ($groups_list as &$group) {
+				$group['allow_to_delete'] = $group['id'] != User::ADMIN_GROUP_ID && $group['id'] != User::USER_GROUP_ID && $group['id'] != User::BOT_GROUP_ID;
 			}
-			unset($id, $group_data, $groups_ids);
+			unset($group);
 			$a->content(
 				h::{'cs-system-admin-groups-list script[type=application/json]'}(
 					json_encode($groups_list, JSON_UNESCAPED_UNICODE)
