@@ -34,7 +34,7 @@
       var registerOuterClick__original;
       registerOuterClick__original = UIkit.components.dropdown.prototype.registerOuterClick;
       return UIkit.components.dropdown.prototype.registerOuterClick = function() {
-        if (this.element[0].matches(':host *')) {
+        if (!WebComponents.flags.shadow && this.element[0].matches(':host *')) {
           $(this.element[0]).find('li').one('click', function(e) {
             return UIkit.$html.trigger("click.outer.dropdown", e);
           });

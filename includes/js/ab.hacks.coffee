@@ -25,7 +25,7 @@ do ($ = jQuery) ->
 	$ ->
 		registerOuterClick__original	= UIkit.components.dropdown.prototype.registerOuterClick
 		UIkit.components.dropdown.prototype.registerOuterClick	= ->
-			if @element[0].matches(':host *')
+			if !WebComponents.flags.shadow && @element[0].matches(':host *')
 				$(@element[0]).find('li').one('click', (e) ->
 					UIkit.$html.trigger("click.outer.dropdown", e)
 				)
