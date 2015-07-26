@@ -19,10 +19,45 @@
     L: L,
     permissions: [],
     created: function() {
-      return this.permissions = JSON.parse(this.querySelector('script').innerHTML);
+      return $.when($.getJSON('api/System/admin/blocks'), $.getJSON('api/System/admin/permissions')).done((function(_this) {
+        return function(blocks, permissions) {
+          var group, id, index_to_title, label, labels, permissions_list, ref;
+          index_to_title = {};
+          blocks[0].forEach(function(block) {
+            return index_to_title[block.index] = block.title;
+          });
+          permissions_list = [];
+          ref = permissions[0];
+          for (group in ref) {
+            labels = ref[group];
+            for (label in labels) {
+              id = labels[label];
+              permissions_list.push({
+                id: id,
+                group: group,
+                label: label,
+                description: group === 'Block' ? index_to_title[label] : ''
+              });
+            }
+          }
+          return _this.permissions = permissions_list;
+        };
+      })(this));
     },
     domReady: function() {
-      return $(this.shadowRoot).cs().tooltips_inside();
+      var timeout;
+      timeout = null;
+      return cs.observe_inserts_on(this.shadowRoot, (function(_this) {
+        return function() {
+          if (timeout) {
+            clearTimeout(timeout);
+          }
+          return timeout = setTimeout((function() {
+            timeout = null;
+            return $(_this.shadowRoot).cs().tooltips_inside();
+          }), 100);
+        };
+      })(this));
     }
   });
 

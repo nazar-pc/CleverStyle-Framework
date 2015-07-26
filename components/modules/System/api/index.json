@@ -7,6 +7,7 @@
 		"restore_password"
 	],
 	"admin"    : {
+		"blocks"             : [],
 		"cache"              : [],
 		"databases_test"     : [],
 		"email_sending_test" : [],

@@ -12,7 +12,32 @@ Polymer(
 	L					: L
 	permissions			: []
 	created				: ->
-		@permissions	= JSON.parse(@querySelector('script').innerHTML)
+		$.when(
+			$.getJSON('api/System/admin/blocks')
+			$.getJSON('api/System/admin/permissions')
+		).done (blocks, permissions) =>
+			index_to_title	= {}
+			blocks[0].forEach (block) ->
+				index_to_title[block.index] = block.title
+			permissions_list	= []
+			for group, labels of permissions[0]
+				for label, id of labels
+					permissions_list.push(
+						id			: id
+						group		: group
+						label		: label
+						description	: if group == 'Block' then index_to_title[label] else ''
+					)
+			@permissions	= permissions_list
 	domReady			: ->
-		$(@shadowRoot).cs().tooltips_inside()
+		timeout	= null
+		cs.observe_inserts_on(@shadowRoot, =>
+			if timeout
+				clearTimeout(timeout)
+			timeout = setTimeout (=>
+				timeout	= null
+				$(@shadowRoot).cs().tooltips_inside()
+			), 100
+		)
+
 )

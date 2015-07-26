@@ -1,19 +1,24 @@
 %polymer-element(name="cs-system-admin-permissions-list")
 	%template
-		%cs-table(center list with-header)
-			%cs-table-row
-				%cs-table-cell [[L.action]]
-				%cs-table-cell id
-				%cs-table-cell [[L.group]]
-				%cs-table-cell [[L.label]]
-			%template(repeat="{{permission, index in permissions}}")
-				%cs-table-row(data-permission-index="{{index}}")
-					%cs-table-cell
-						%a.uk-button.cs-button-compact(href="/admin/System/users/permissions/edit/[[permission.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.edit]]")
-							.uk-icon-pencil
-						%a.uk-button.cs-button-compact(href="/admin/System/users/permissions/delete/[[permission.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.delete]]")
-							.uk-icon-trash-o
-					%cs-table-cell [[permission.id]]
-					%cs-table-cell [[permission.group]]
-					%cs-table-cell(data-uk-tooltip="[[tooltip_animation]]" title="[[permission.description]]") [[permission.label]]
+		%template(if="{{!permissions.length}}")
+			%h2.uk-text-center.uk-icon-spin.uk-icon-spinner
+		%template(if="{{permissions.length}}")
+			%cs-table(center list with-header)
+				%cs-table-row
+					%cs-table-cell [[L.action]]
+					%cs-table-cell id
+					%cs-table-cell [[L.group]]
+					%cs-table-cell [[L.label]]
+				%template(repeat="{{permission, index in permissions}}")
+					%cs-table-row(data-permission-index="{{index}}")
+						%cs-table-cell
+							%a.uk-button.cs-button-compact(href="/admin/System/users/permissions/edit/[[permission.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.edit]]")
+								.uk-icon-pencil
+							%a.uk-button.cs-button-compact(href="/admin/System/users/permissions/delete/[[permission.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.delete]]")
+								.uk-icon-trash-o
+						%cs-table-cell [[permission.id]]
+						%cs-table-cell [[permission.group]]
+						%cs-table-cell(data-uk-tooltip="[[tooltip_animation]]" title="[[permission.description]]") [[permission.label]]
+			%p.cs-left
+				%a.uk-button(href="admin/System/users/permissions/add") [[L.add_permission
 	%script(src="script.js")

@@ -433,34 +433,9 @@ trait users {
 				)
 			);
 		} else {
-			$a->buttons       = false;
-			$permissions      = $Permission->get_all();
-			$permissions_list = [];
-			$blocks           = [];
-			foreach ($Config->components['blocks'] as $block) {
-				$blocks[$block['index']] = $block['title'];
-			}
-			unset($block);
-			foreach ($permissions as $group => $list) {
-				foreach ($list as $label => $id) {
-					$permissions_list[] = [
-						'id'          => $id,
-						'group'       => $group,
-						'label'       => $label,
-						'description' => $group == 'Block' ? Text::instance()->process($Config->module('System')->db('texts'), $blocks[$label]) : ''
-					];
-				}
-			}
+			$a->buttons = false;
 			$a->content(
-				h::{'cs-system-admin-permissions-list script[type=application/json]'}(
-					json_encode($permissions_list, JSON_UNESCAPED_UNICODE)
-				).
-				h::{'p.cs-left a.uk-button'}(
-					$L->add_permission,
-					[
-						'href' => "admin/System/$rc[0]/$rc[1]/add"
-					]
-				)
+				h::cs_system_admin_permissions_list()
 			);
 		}
 	}

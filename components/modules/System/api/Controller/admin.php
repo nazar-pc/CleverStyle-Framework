@@ -10,6 +10,7 @@
 namespace cs\modules\System\api\Controller;
 use
 	cs\Cache,
+	cs\Config,
 	cs\DB,
 	cs\Group,
 	cs\Mail,
@@ -17,8 +18,20 @@ use
 	cs\Permission,
 	cs\Route,
 	cs\Storage,
+	cs\Text,
 	cs\User;
 trait admin {
+	static function admin_blocks_get () {
+		$Config = Config::instance();
+		$Text   = Text::instance();
+		$db_id  = $Config->module('System')->db('texts');
+		$blocks = $Config->components['blocks'];
+		foreach ($blocks as &$block) {
+			$block['title']   = $Text->process($db_id, $block['title'], true);
+			$block['content'] = $block['content'] ? $Text->process($db_id, $block['content'], true) : '';
+		}
+		Page::instance()->json($blocks ?: []);
+	}
 	static function admin_cache_delete () {
 		$Cache = Cache::instance();
 		$Page  = Page::instance();
