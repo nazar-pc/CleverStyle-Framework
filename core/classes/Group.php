@@ -196,24 +196,27 @@ class Group {
 	function del ($group) {
 		if (is_array($group)) {
 			foreach ($group as &$g) {
-				$g = $this->del($g);
+				$g = (int)$this->del($g);
 			}
-			return (bool)array_filter($group);
+			return (bool)array_product($group);
 		}
 		$group = (int)$group;
+		if (in_array($group, [User::ADMIN_GROUP_ID, User::USER_GROUP_ID, User::BOT_GROUP_ID])) {
+			return false;
+		}
 		Event::instance()->fire(
 			'System/User/Group/del/before',
 			[
 				'id' => $group
 			]
 		);
-		if ($group != 1 && $group != 2 && $group != 3) {
-			$return = $this->db_prime()->q(
-				[
-					"DELETE FROM `[prefix]groups` WHERE `id` = $group",
-					"DELETE FROM `[prefix]users_groups` WHERE `group` = $group"
-				]
-			);
+		$result = $this->db_prime()->q(
+			[
+				"DELETE FROM `[prefix]groups` WHERE `id` = $group",
+				"DELETE FROM `[prefix]users_groups` WHERE `group` = $group"
+			]
+		);
+		if ($result) {
 			$this->del_permissions_all($group);
 			$Cache = $this->cache;
 			unset(
@@ -227,10 +230,8 @@ class Group {
 					'id' => $group
 				]
 			);
-			return (bool)$return;
-		} else {
-			return false;
 		}
+		return (bool)$result;
 	}
 	/**
 	 * Get group permissions
