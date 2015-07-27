@@ -83,9 +83,7 @@
         data: $(this.$.form).serialize() + '&' + default_data,
         type: 'post',
         success: function() {
-          return UIkit.notify(L.changes_saved.toString(), {
-            status: 'success'
-          });
+          return UIkit.notify(L.changes_saved.toString(), 'success');
         }
       });
     },

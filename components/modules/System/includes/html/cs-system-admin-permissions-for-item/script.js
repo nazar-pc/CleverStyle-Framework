@@ -69,9 +69,7 @@
               return !$shadowRoot.find("[name='users[" + user + "]']").length;
             });
             if (!found_users.length) {
-              UIkit.notify('404 Not Found', {
-                status: 'warning'
-              });
+              UIkit.notify('404 Not Found', 'warning');
               return;
             }
             return $.getJSON('api/System/admin/users', {
@@ -114,9 +112,7 @@
         data: $(this.$.form).serialize() + '&label=' + this.label + '&group=' + this.group + '&' + default_data,
         type: 'post',
         success: function() {
-          return UIkit.notify(L.changes_saved.toString(), {
-            status: 'success'
-          });
+          return UIkit.notify(L.changes_saved.toString(), 'success');
         }
       });
     },

@@ -57,10 +57,7 @@ Polymer(
 							# Ignore already shown users in search results
 							!$shadowRoot.find("[name='users[#{user}]']").length
 						if !found_users.length
-							UIkit.notify(
-								'404 Not Found'
-								status	: 'warning'
-							)
+							UIkit.notify('404 Not Found', 'warning')
 							return
 						$.getJSON(
 							'api/System/admin/users'
@@ -93,10 +90,7 @@ Polymer(
 			data	: $(@$.form).serialize() + '&label=' + @label + '&group=' + @group + '&' + default_data
 			type	: 'post'
 			success	: ->
-				UIkit.notify(
-					L.changes_saved.toString()
-					status	: 'success'
-				)
+				UIkit.notify(L.changes_saved.toString(), 'success')
 		)
 	invert				: (event, detail, sender) ->
 		$(sender).closest('div')

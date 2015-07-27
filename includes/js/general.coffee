@@ -15,8 +15,8 @@ $ ->
 				if xhr.responseText
 					JSON.parse(xhr.responseText).error_description
 				else
-					L.connection_error
-				status	: 'warning'
+					L.connection_error.toString()
+				'warning'
 			)
 	$('.cs-header-sign-in-slide').click ->
 		$('.cs-header-guest-form').removeClass('active')

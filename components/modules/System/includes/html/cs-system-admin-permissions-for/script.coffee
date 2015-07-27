@@ -48,10 +48,7 @@ Polymer(
 			data	: $(@$.form).serialize() + '&' + default_data
 			type	: 'post'
 			success	: ->
-				UIkit.notify(
-					L.changes_saved.toString()
-					status	: 'success'
-				)
+				UIkit.notify(L.changes_saved.toString(), 'success')
 		)
 	invert					: (event, detail, sender) ->
 		$(sender).closest('div')
