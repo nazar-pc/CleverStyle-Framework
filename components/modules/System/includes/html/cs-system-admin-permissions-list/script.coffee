@@ -39,5 +39,22 @@ Polymer(
 				$(@shadowRoot).cs().tooltips_inside()
 			), 100
 		)
-
+	delete_permission	: (event, detail, sender) ->
+		$sender		= $(sender)
+		index		= $sender.closest('[data-permission-index]').data('permission-index')
+		permission	= @permissions[index]
+		UIkit.modal.confirm(
+			"""
+				<p>#{L.sure_delete_permission(permission.group + '/' + permission.label)}</p>
+				<p class="uk-alert uk-alert-danger">#{L.changing_settings_warning}</p>
+			"""
+			=>
+				$.ajax(
+					url		: 'api/System/admin/permissions/' + permission.id
+					type	: 'delete'
+					success	: =>
+						UIkit.notify(L.changes_saved.toString(), 'success')
+						@permissions.splice(index, 1)
+				)
+		)
 )

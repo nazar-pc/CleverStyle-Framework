@@ -542,7 +542,6 @@
 		"add_permission"						: "Добавить разрешение",
 		"adding_permission"						: "Добавление разрешения",
 		"editing_permission"					: "Редактирование разрешения %s",
-		"deletion_of_permission"				: "Удаление разрешения %s",
 		//Security
 		"security"						: "Безопасность",
 		"key_expire"					: "Ключ истекает через",

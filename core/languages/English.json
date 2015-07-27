@@ -541,7 +541,6 @@
 		"add_permission"						: "Add permission",
 		"adding_permission"						: "Adding permission",
 		"editing_permission"					: "Editing of permission %s",
-		"deletion_of_permission"				: "Deletion of permission %s",
 		//Security
 		"security"						: "Security",
 		"key_expire"					: "Key expires after",

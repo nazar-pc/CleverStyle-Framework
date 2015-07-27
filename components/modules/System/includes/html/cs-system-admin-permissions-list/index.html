@@ -17,9 +17,9 @@
               <a class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" href="/admin/System/users/permissions/edit/[[permission.id]]" title="[[L.edit]]">
                 <div class="uk-icon-pencil"></div>
               </a>
-              <a class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" href="/admin/System/users/permissions/delete/[[permission.id]]" title="[[L.delete]]">
+              <div class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" on-click="[[delete_permission]]" title="[[L.delete]]">
                 <div class="uk-icon-trash-o"></div>
-              </a>
+              </div>
             </cs-table-cell>
             <cs-table-cell>[[permission.id]]</cs-table-cell>
             <cs-table-cell>[[permission.group]]</cs-table-cell>

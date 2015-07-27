@@ -543,7 +543,6 @@
 		"add_permission"						: "Додати дозвіл",
 		"adding_permission"						: "Додавання дозволу",
 		"editing_permission"					: "Редагування дозволу %s",
-		"deletion_of_permission"				: "Видалення дозволу %s",
 		//Security
 		"security"						: "Безпека",
 		"key_expire"					: "Ключ закінчується через",

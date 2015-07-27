@@ -137,6 +137,15 @@ trait admin {
 		}
 		Page::instance()->json($result);
 	}
+	static function admin_permissions___delete ($route_ids) {
+		if (!isset($route_ids[0])) {
+			error_code(400);
+			return;
+		}
+		if (!Permission::instance()->del($route_ids[0])) {
+			error_code(500);
+		}
+	}
 	static function admin_permissions_for_item_get () {
 		if (!isset($_GET['group'], $_GET['label'])) {
 			error_code(400);

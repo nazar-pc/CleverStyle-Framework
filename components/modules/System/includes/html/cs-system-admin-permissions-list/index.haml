@@ -14,7 +14,7 @@
 						%cs-table-cell
 							%a.uk-button.cs-button-compact(href="/admin/System/users/permissions/edit/[[permission.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.edit]]")
 								.uk-icon-pencil
-							%a.uk-button.cs-button-compact(href="/admin/System/users/permissions/delete/[[permission.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.delete]]")
+							.uk-button.cs-button-compact(on-click="[[delete_permission]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.delete]]")
 								.uk-icon-trash-o
 						%cs-table-cell [[permission.id]]
 						%cs-table-cell [[permission.group]]

@@ -14,7 +14,7 @@
 						%template(if="{{group.allow_to_delete}}")
 							%a.uk-button.cs-button-compact(href="/admin/System/users/groups/delete/[[group.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.delete]]")
 								.uk-icon-trash-o
-						.uk-button.cs-button-compact(data-uk-tooltip="[[tooltip_animation]]" on-click="{{edit_permissions}}" title="[[L.edit_group_permissions]]")
+						.uk-button.cs-button-compact(data-uk-tooltip="[[tooltip_animation]]" on-click="[[edit_permissions]]" title="[[L.edit_group_permissions]]")
 							.uk-icon-key
 					%cs-table-cell [[group.id]]
 					%cs-table-cell [[group.title]]

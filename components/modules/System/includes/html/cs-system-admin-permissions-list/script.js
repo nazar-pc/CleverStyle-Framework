@@ -58,6 +58,24 @@
           }), 100);
         };
       })(this));
+    },
+    delete_permission: function(event, detail, sender) {
+      var $sender, index, permission;
+      $sender = $(sender);
+      index = $sender.closest('[data-permission-index]').data('permission-index');
+      permission = this.permissions[index];
+      return UIkit.modal.confirm("<p>" + (L.sure_delete_permission(permission.group + '/' + permission.label)) + "</p>\n<p class=\"uk-alert uk-alert-danger\">" + L.changing_settings_warning + "</p>", (function(_this) {
+        return function() {
+          return $.ajax({
+            url: 'api/System/admin/permissions/' + permission.id,
+            type: 'delete',
+            success: function() {
+              UIkit.notify(L.changes_saved.toString(), 'success');
+              return _this.permissions.splice(index, 1);
+            }
+          });
+        };
+      })(this));
     }
   });
 

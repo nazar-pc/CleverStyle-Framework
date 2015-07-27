@@ -69,11 +69,6 @@ trait users_save {
 					$Permission->set($_POST['permission']['id'], $_POST['permission']['group'], $_POST['permission']['label'])
 				);
 				break;
-			case 'delete':
-				$Index->save(
-					$Permission->del($_POST['id'])
-				);
-				break;
 		}
 	}
 	static function users_users_save () {

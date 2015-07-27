@@ -328,7 +328,6 @@ trait users {
 		);
 	}
 	static function users_permissions () {
-		$Config     = Config::instance();
 		$L          = Language::instance();
 		$Page       = Page::instance();
 		$Permission = Permission::instance();
@@ -396,30 +395,6 @@ trait users {
 								'value' => $rc[3]
 							]
 						)
-					);
-					$Page->warning($L->changing_settings_warning);
-					break;
-				case 'delete':
-					if (!isset($rc[3])) {
-						break;
-					}
-					$a->buttons            = false;
-					$a->cancel_button_back = true;
-					$permission            = $Permission->get($rc[3]);
-					$Page->title(
-						$L->deletion_of_permission("$permission[group]/$permission[label]")
-					);
-					$a->content(
-						h::{'h2.cs-center'}(
-							$L->sure_delete_permission("$permission[group]/$permission[label]")
-						).
-						h::{'input[type=hidden]'}(
-							[
-								'name'  => 'id',
-								'value' => $rc[3]
-							]
-						).
-						h::{'button.uk-button[type=submit]'}($L->yes)
 					);
 					$Page->warning($L->changing_settings_warning);
 					break;
