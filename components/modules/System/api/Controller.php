@@ -16,6 +16,12 @@ use
 class Controller {
 	use
 		admin,
+		admin\blocks,
+		admin\cache,
+		admin\databases,
+		admin\groups,
+		admin\permissions,
+		admin\users,
 		profile,
 		profiles,
 		user_;
