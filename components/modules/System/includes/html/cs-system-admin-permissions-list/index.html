@@ -14,7 +14,7 @@
         <template repeat="{{permission, index in permissions}}">
           <cs-table-row data-permission-index="{{index}}">
             <cs-table-cell>
-              <a class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" href="/admin/System/users/permissions/edit/[[permission.id]]" title="[[L.edit]]">
+              <a class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" on-click="[[edit_permission]]" title="[[L.edit]]">
                 <div class="uk-icon-pencil"></div>
               </a>
               <div class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" on-click="[[delete_permission]]" title="[[L.delete]]">
@@ -28,7 +28,7 @@
         </template>
       </cs-table>
       <p class="cs-left">
-        <a class="uk-button" href="/admin/System/users/permissions/add">[[L.add_permission]]</a>
+        <a class="uk-button" on-click="[[add_permission]]">[[L.add_permission]]</a>
       </p>
     </template>
   </template>

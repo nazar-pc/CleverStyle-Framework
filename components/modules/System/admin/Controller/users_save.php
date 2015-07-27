@@ -52,25 +52,6 @@ trait users_save {
 			}
 		}
 	}
-	static function users_permissions_save () {
-		if (!isset($_POST['mode'])) {
-			return;
-		}
-		$Index      = Index::instance();
-		$Permission = Permission::instance();
-		switch ($_POST['mode']) {
-			case 'add':
-				$Index->save(
-					(bool)$Permission->add($_POST['permission']['group'], $_POST['permission']['label'])
-				);
-				break;
-			case 'edit':
-				$Index->save(
-					$Permission->set($_POST['permission']['id'], $_POST['permission']['group'], $_POST['permission']['label'])
-				);
-				break;
-		}
-	}
 	static function users_users_save () {
 		if (!isset($_POST['mode'])) {
 			return;

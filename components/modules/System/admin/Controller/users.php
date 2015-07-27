@@ -328,91 +328,11 @@ trait users {
 		);
 	}
 	static function users_permissions () {
-		$L          = Language::instance();
-		$Page       = Page::instance();
-		$Permission = Permission::instance();
 		$a          = Index::instance();
-		$rc         = Route::instance()->route;
-		if (isset($rc[2])) {
-			switch ($rc[2]) {
-				case 'add':
-					$a->cancel_button_back = true;
-					$Page->title($L->adding_permission);
-					$a->content(
-						h::{'h2.cs-center'}(
-							$L->adding_permission
-						).
-						static::horizontal_table(
-							[
-								$L->group,
-								$L->label
-							],
-							[
-								h::{'input[name=permission[group]]'}(),
-								h::{'input[name=permission[label]]'}()
-							]
-						)
-					);
-					break;
-				case 'edit':
-					if (!isset($rc[3])) {
-						break;
-					}
-					$a->cancel_button_back = true;
-					$permission            = $Permission->get($rc[3]);
-					$Page->title(
-						$L->editing_permission("$permission[group]/$permission[label]")
-					);
-					$a->content(
-						h::{'h2.cs-center'}(
-							$L->editing_permission("$permission[group]/$permission[label]")
-						).
-						static::horizontal_table(
-							[
-								'&nbsp;id&nbsp;',
-								$L->group,
-								$L->label
-							],
-							[
-								$rc[3],
-								h::input(
-									[
-										'name'  => 'permission[group]',
-										'value' => $permission['group']
-									]
-								),
-								h::input(
-									[
-										'name'  => 'permission[label]',
-										'value' => $permission['label']
-									]
-								)
-							]
-						).
-						h::{'input[type=hidden]'}(
-							[
-								'name'  => 'permission[id]',
-								'value' => $rc[3]
-							]
-						)
-					);
-					$Page->warning($L->changing_settings_warning);
-					break;
-			}
-			$a->content(
-				h::{'input[type=hidden]'}(
-					[
-						'name'  => 'mode',
-						'value' => $rc[2]
-					]
-				)
-			);
-		} else {
-			$a->buttons = false;
-			$a->content(
-				h::cs_system_admin_permissions_list()
-			);
-		}
+		$a->buttons = false;
+		$a->content(
+			h::cs_system_admin_permissions_list()
+		);
 	}
 	static function users_security () {
 		$Config = Config::instance();

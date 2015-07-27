@@ -19,6 +19,9 @@
     L: L,
     permissions: [],
     created: function() {
+      return this.reload();
+    },
+    reload: function() {
       return $.when($.getJSON('api/System/admin/blocks'), $.getJSON('api/System/admin/permissions')).done((function(_this) {
         return function(blocks, permissions) {
           var group, id, index_to_title, label, labels, permissions_list, ref;
@@ -59,12 +62,30 @@
         };
       })(this));
     },
+    add_permission: function() {
+      return $.cs.simple_modal("<h3>" + L.adding_permission + "</h3>\n<p class=\"uk-alert uk-alert-danger\">" + L.changing_settings_warning + "</p>\n<cs-system-admin-permissions-form/>").on('hide.uk.modal', (function(_this) {
+        return function() {
+          return _this.reload();
+        };
+      })(this));
+    },
+    edit_permission: function(event, detail, sender) {
+      var $sender, index, permission;
+      $sender = $(sender);
+      index = $sender.closest('[data-permission-index]').data('permission-index');
+      permission = this.permissions[index];
+      return $.cs.simple_modal("<h3>" + (L.editing_permission(permission.group + '/' + permission.label)) + "</h3>\n<p class=\"uk-alert uk-alert-danger\">" + L.changing_settings_warning + "</p>\n<cs-system-admin-permissions-form permission_id=\"" + permission.id + "\" label=\"" + permission.label + "\" group=\"" + permission.group + "\"/>").on('hide.uk.modal', (function(_this) {
+        return function() {
+          return _this.reload();
+        };
+      })(this));
+    },
     delete_permission: function(event, detail, sender) {
       var $sender, index, permission;
       $sender = $(sender);
       index = $sender.closest('[data-permission-index]').data('permission-index');
       permission = this.permissions[index];
-      return UIkit.modal.confirm("<p>" + (L.sure_delete_permission(permission.group + '/' + permission.label)) + "</p>\n<p class=\"uk-alert uk-alert-danger\">" + L.changing_settings_warning + "</p>", (function(_this) {
+      return UIkit.modal.confirm("<h3>" + (L.sure_delete_permission(permission.group + '/' + permission.label)) + "</h3>\n<p class=\"uk-alert uk-alert-danger\">" + L.changing_settings_warning + "</p>", (function(_this) {
         return function() {
           return $.ajax({
             url: 'api/System/admin/permissions/' + permission.id,

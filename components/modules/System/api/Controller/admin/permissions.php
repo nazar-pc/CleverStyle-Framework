@@ -27,6 +27,24 @@ trait permissions {
 		}
 		Page::instance()->json($result);
 	}
+	static function admin_permissions___post () {
+		if (!isset($_POST['group'], $_POST['label'])) {
+			error_code(400);
+			return;
+		}
+		if (!Permission::instance()->add($_POST['group'], $_POST['label'])) {
+			error_code(500);
+		}
+	}
+	static function admin_permissions___put ($route_ids) {
+		if (!isset($route_ids[0], $_POST['group'], $_POST['label'])) {
+			error_code(400);
+			return;
+		}
+		if (!Permission::instance()->set($route_ids[0], $_POST['group'], $_POST['label'])) {
+			error_code(500);
+		}
+	}
 	static function admin_permissions___delete ($route_ids) {
 		if (!isset($route_ids[0])) {
 			error_code(400);

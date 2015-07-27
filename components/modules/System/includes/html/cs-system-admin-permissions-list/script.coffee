@@ -12,6 +12,8 @@ Polymer(
 	L					: L
 	permissions			: []
 	created				: ->
+		@reload()
+	reload				: ->
 		$.when(
 			$.getJSON('api/System/admin/blocks')
 			$.getJSON('api/System/admin/permissions')
@@ -39,13 +41,36 @@ Polymer(
 				$(@shadowRoot).cs().tooltips_inside()
 			), 100
 		)
+	add_permission		: ->
+		$.cs.simple_modal("""
+			<h3>#{L.adding_permission}</h3>
+			<p class="uk-alert uk-alert-danger">#{L.changing_settings_warning}</p>
+			<cs-system-admin-permissions-form/>
+		""").on(
+			'hide.uk.modal'
+			=>
+				@reload()
+		)
+	edit_permission		: (event, detail, sender) ->
+		$sender		= $(sender)
+		index		= $sender.closest('[data-permission-index]').data('permission-index')
+		permission	= @permissions[index]
+		$.cs.simple_modal("""
+			<h3>#{L.editing_permission(permission.group + '/' + permission.label)}</h3>
+			<p class="uk-alert uk-alert-danger">#{L.changing_settings_warning}</p>
+			<cs-system-admin-permissions-form permission_id="#{permission.id}" label="#{permission.label}" group="#{permission.group}"/>
+		""").on(
+			'hide.uk.modal'
+			=>
+				@reload()
+		)
 	delete_permission	: (event, detail, sender) ->
 		$sender		= $(sender)
 		index		= $sender.closest('[data-permission-index]').data('permission-index')
 		permission	= @permissions[index]
 		UIkit.modal.confirm(
 			"""
-				<p>#{L.sure_delete_permission(permission.group + '/' + permission.label)}</p>
+				<h3>#{L.sure_delete_permission(permission.group + '/' + permission.label)}</h3>
 				<p class="uk-alert uk-alert-danger">#{L.changing_settings_warning}</p>
 			"""
 			=>
