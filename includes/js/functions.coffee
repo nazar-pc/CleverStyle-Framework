@@ -261,6 +261,24 @@ cs.xor_string				= (string1, string2) ->
 		string1	= string1.replaceAt(j, String.fromCharCode(string1.charCodeAt(j) ^ string2.charCodeAt(pos)))
 	string1
 ###*
+ * Prepare text to be used as value for html attribute value
+ *
+ * @param {string}|{string}[] string
+ *
+ * @return {string}|{string}[]
+###
+cs.prepare_attr_value		= (string) ->
+	if string instanceof Array
+		for s in string.slice(0)
+			cs.prepare_attr_value(s)
+	else
+		string
+			.replace(/&/g, '&amp;')
+			.replace(/'/g, '&apos;')
+			.replace(/"/g, '&quot;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+###*
  * Asynchronous execution of array of the functions
  *
  * @param {function[]}	functions

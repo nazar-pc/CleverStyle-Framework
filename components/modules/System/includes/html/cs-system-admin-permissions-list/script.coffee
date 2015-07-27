@@ -58,7 +58,7 @@ Polymer(
 		$.cs.simple_modal("""
 			<h3>#{L.editing_permission(permission.group + '/' + permission.label)}</h3>
 			<p class="uk-alert uk-alert-danger">#{L.changing_settings_warning}</p>
-			<cs-system-admin-permissions-form permission_id="#{permission.id}" label="#{permission.label}" group="#{permission.group}"/>
+			<cs-system-admin-permissions-form permission_id="#{permission.id}" label="#{cs.prepare_attr_value(permission.label)}" group="#{cs.prepare_attr_value(permission.group)}"/>
 		""").on(
 			'hide.uk.modal'
 			=>

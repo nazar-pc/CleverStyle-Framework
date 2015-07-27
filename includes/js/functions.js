@@ -342,6 +342,30 @@
 
 
   /**
+   * Prepare text to be used as value for html attribute value
+   *
+   * @param {string}|{string}[] string
+   *
+   * @return {string}|{string}[]
+   */
+
+  cs.prepare_attr_value = function(string) {
+    var k, len, ref, results, s;
+    if (string instanceof Array) {
+      ref = string.slice(0);
+      results = [];
+      for (k = 0, len = ref.length; k < len; k++) {
+        s = ref[k];
+        results.push(cs.prepare_attr_value(s));
+      }
+      return results;
+    } else {
+      return string.replace(/&/g, '&amp;').replace(/'/g, '&apos;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+  };
+
+
+  /**
    * Asynchronous execution of array of the functions
    *
    * @param {function[]}	functions
