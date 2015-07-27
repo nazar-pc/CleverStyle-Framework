@@ -7,7 +7,7 @@
  * @copyright  Copyright (c) 2015, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-namespace cs\modules\System\api\Controller\admin;
+namespace cs\modules\System\api\Controller;
 use
 	cs\Mail,
 	cs\Page,
