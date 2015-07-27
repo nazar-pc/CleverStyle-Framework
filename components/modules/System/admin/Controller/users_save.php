@@ -14,7 +14,6 @@ use
 	cs\Index,
 	cs\Language,
 	cs\Page,
-	cs\Permission,
 	cs\User;
 
 trait users_save {
