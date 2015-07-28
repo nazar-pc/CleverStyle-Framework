@@ -10,19 +10,71 @@
  */
 
 (function() {
-  var L;
+  var ADMIN_GROUP_ID, BOT_GROUP_ID, L, USER_GROUP_ID;
 
   L = cs.Language;
+
+  ADMIN_GROUP_ID = 1;
+
+  USER_GROUP_ID = 2;
+
+  BOT_GROUP_ID = 3;
 
   Polymer({
     tooltip_animation: '{animation:true,delay:200}',
     L: L,
     groups: [],
     created: function() {
-      return this.groups = JSON.parse(this.querySelector('script').innerHTML);
+      return this.reload();
+    },
+    reload: function() {
+      return $.getJSON('api/System/admin/groups', (function(_this) {
+        return function(groups) {
+          groups.forEach(function(group) {
+            return group.allow_to_delete = group.id != ADMIN_GROUP_ID && group.id != ADMIN_GROUP_ID || group.id != ADMIN_GROUP_ID;
+          });
+          return _this.groups = groups;
+        };
+      })(this));
     },
     domReady: function() {
       return $(this.shadowRoot).cs().tooltips_inside();
+    },
+    add_group: function() {
+      return $.cs.simple_modal("<h3>" + L.adding_a_group + "</h3>\n<cs-system-admin-groups-form/>").on('hide.uk.modal', (function(_this) {
+        return function() {
+          return _this.reload();
+        };
+      })(this));
+    },
+    edit_group: function(event, detail, sender) {
+      var $sender, group, index;
+      $sender = $(sender);
+      index = $sender.closest('[data-group-index]').data('group-index');
+      group = this.groups[index];
+      return $.cs.simple_modal("<h3>" + (L.editing_of_group(group.title)) + "</h3>\n<cs-system-admin-groups-form group_id=\"" + group.id + "\" group_title=\"" + (cs.prepare_attr_value(group.title)) + "\" description=\"" + (cs.prepare_attr_value(group.description)) + "\"/>").on('hide.uk.modal', (function(_this) {
+        return function() {
+          return _this.reload();
+        };
+      })(this));
+    },
+    delete_group: function(event, detail, sender) {
+      var $sender, group, index;
+      $sender = $(sender);
+      index = $sender.closest('[data-group-index]').data('group-index');
+      group = this.groups[index];
+      return UIkit.modal.confirm("<h3>" + (L.sure_delete_group(group.title)) + "</h3>", (function(_this) {
+        return function() {
+          return $.ajax({
+            url: 'api/System/admin/groups/' + group.id,
+            type: 'delete',
+            success: function() {
+              UIkit.notify(L.changes_saved.toString(), 'success');
+              return _this.groups.splice(index, 1);
+            }
+          });
+        };
+      })(this));
     },
     edit_permissions: function(event, detail, sender) {
       var $sender, group, index, title;

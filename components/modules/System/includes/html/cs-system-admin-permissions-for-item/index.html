@@ -111,6 +111,11 @@
           <template bind ref="control-buttons"></template>
         </p>
         <cs-table right-left>
+          <template if="{{!groups.length}}">
+            <h2 class="uk-text-center">
+              <div class="uk-icon-spin uk-icon-spinner"></div>
+            </h2>
+          </template>
           <template repeat="{{group in groups}}">
             <cs-table-row>
               <cs-table-cell data-uk-tooltip="[[tooltip_animation]]" title="[[group.description]]">[[group.title]]</cs-table-cell>

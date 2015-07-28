@@ -532,7 +532,6 @@
 		"not_specified"				: "Not specified",
 		"adding_a_group"			: "Adding a group",
 		"editing_of_group"			: "Editing of group %s",
-		"deletion_of_group"			: "Deletion of group %s",
 		//Permissions
 		"permissions"							: "Permissions",
 		"label"									: "Label",

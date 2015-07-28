@@ -533,7 +533,6 @@
 		"not_specified"				: "Не указано",
 		"adding_a_group"			: "Добавление группы",
 		"editing_of_group"			: "Редактирование группы %s",
-		"deletion_of_group"			: "Удаление группы %s",
 		//Permissions
 		"permissions"							: "Разрешения",
 		"label"									: "Метка",

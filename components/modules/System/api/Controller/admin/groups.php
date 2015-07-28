@@ -12,7 +12,7 @@ use
 	cs\Group,
 	cs\Page;
 trait groups {
-	static function admin_groups_get ($route_ids) {
+	static function admin_groups___get ($route_ids) {
 		$Group = Group::instance();
 		$Page  = Page::instance();
 		if (isset($route_ids[0])) {
@@ -29,6 +29,33 @@ trait groups {
 			return;
 		}
 		$Page->json($result);
+	}
+	static function admin_groups___post () {
+		if (!isset($_POST['title'], $_POST['description'])) {
+			error_code(400);
+			return;
+		}
+		if (!Group::instance()->add($_POST['title'], $_POST['description'])) {
+			error_code(500);
+		}
+	}
+	static function admin_groups___put ($route_ids) {
+		if (!isset($route_ids[0], $_POST['title'], $_POST['description'])) {
+			error_code(400);
+			return;
+		}
+		if (!Group::instance()->set($route_ids[0], $_POST['title'], $_POST['description'])) {
+			error_code(500);
+		}
+	}
+	static function admin_groups___delete ($route_ids) {
+		if (!isset($route_ids[0])) {
+			error_code(400);
+			return;
+		}
+		if (!Group::instance()->del($route_ids[0])) {
+			error_code(500);
+		}
 	}
 	static function admin_groups_permissions_get ($route_ids) {
 		if (!isset($route_ids[0])) {

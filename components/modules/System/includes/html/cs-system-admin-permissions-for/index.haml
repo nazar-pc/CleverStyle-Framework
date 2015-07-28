@@ -33,6 +33,9 @@
 					%label.uk-button
 						%input(name="permissions[{{label.id}}]" type="radio" value="1")/
 						[[L.allow]]
+		%template(if="{{!all_permissions.length}}")
+			%h2.uk-text-center
+				.uk-icon-spin.uk-icon-spinner
 		%form#form.uk-form
 			%template(repeat="{{all_permissions as permission}}")
 				%legend [[permission.group]]

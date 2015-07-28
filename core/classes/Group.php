@@ -26,6 +26,8 @@ use
 /**
  * Class for groups manipulating
  *
+ * @todo Remove data field from Groups DB table
+ *
  * @method static Group instance($check = false)
  */
 class Group {
@@ -70,17 +72,15 @@ class Group {
 		$group_data = $this->cache->get(
 			$group,
 			function () use ($group) {
-				$group_data         = $this->db()->qf(
+				$group_data = $this->db()->qf(
 					"SELECT
 						`id`,
 						`title`,
-						`description`,
-						`data`
+						`description`
 					FROM `[prefix]groups`
 					WHERE `id` = '$group'
 					LIMIT 1"
 				);
-				$group_data['data'] = _json_decode($group_data['data']);
 				return $group_data;
 			}
 		);
@@ -154,37 +154,36 @@ class Group {
 	/**
 	 * Set group data
 	 *
-	 * @param array $data May contain items title|description|data
-	 * @param int   $group
+	 * @param int    $group
+	 * @param string $title
+	 * @param string $description
 	 *
 	 * @return bool
 	 */
-	function set ($data, $group) {
+	function set ($group, $title, $description) {
 		$group = (int)$group;
 		if (!$group) {
 			return false;
 		}
-		$update = [];
-		if (isset($data['title'])) {
-			$update[] = '`title` = '.$this->db_prime()->s(xap($data['title'], false));
-		}
-		if (isset($data['description'])) {
-			$update[] = '`description` = '.$this->db_prime()->s(xap($data['description'], false));
-		}
-		if (isset($data['data'])) {
-			$update[] = '`data` = '.$this->db_prime()->s(_json_encode($data['data']));
-		}
-		$update = implode(', ', $update);
-		if (!empty($update) && $this->db_prime()->q("UPDATE `[prefix]groups` SET $update WHERE `id` = '$group' LIMIT 1")) {
+		$result = $this->db_prime()->q(
+			"UPDATE `[prefix]groups`
+			SET
+				`title`			= '%s',
+				`description`	= '%s'
+			WHERE `id` = '%d'
+			LIMIT 1",
+			xap($title, false),
+			xap($description, false),
+			$group
+		);
+		if ($result) {
 			$Cache = $this->cache;
 			unset(
 				$Cache->$group,
 				$Cache->all
 			);
-			return true;
-		} else {
-			return false;
 		}
+		return (bool)$result;
 	}
 	/**
 	 * Delete group

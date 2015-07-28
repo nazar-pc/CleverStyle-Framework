@@ -77,6 +77,9 @@
 				%p.cs-left
 					%template(bind ref="control-buttons")
 				%cs-table(right-left)
+					%template(if="{{!groups.length}}")
+						%h2.uk-text-center
+							.uk-icon-spin.uk-icon-spinner
 					%template(repeat="{{group in groups}}")
 						%cs-table-row
 							%cs-table-cell(data-uk-tooltip="[[tooltip_animation]]" title="[[group.description]]") [[group.title]]

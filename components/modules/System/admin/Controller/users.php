@@ -107,131 +107,11 @@ trait users {
 		);
 	}
 	static function users_groups () {
-		$L     = Language::instance();
-		$Page  = Page::instance();
-		$Group = Group::instance();
-		$a     = Index::instance();
-		$rc    = Route::instance()->route;
-		if (isset($rc[2])) {
-			switch ($rc[2]) {
-				case 'add':
-					$a->cancel_button_back = true;
-					$Page->title($L->adding_a_group);
-					$a->content(
-						h::{'h2.cs-center'}(
-							$L->adding_a_group
-						).
-						static::horizontal_table(
-							[
-								$L->group_name,
-								$L->group_description
-							],
-							[
-								h::{'input[name=group[title]]'}(),
-								h::{'input[name=group[description]]'}()
-							]
-						)
-					);
-					break;
-				case 'edit':
-					if (!isset($rc[3])) {
-						break;
-					}
-					$a->cancel_button_back = true;
-					$group_data            = $Group->get($rc[3]);
-					$Page->title(
-						$L->editing_of_group($group_data['title'])
-					);
-					$a->content(
-						h::{'h2.cs-center'}(
-							$L->editing_of_group($group_data['title'])
-						).
-						static::horizontal_table(
-							[
-								'&nbsp;id&nbsp;',
-								$L->group_name,
-								$L->group_description,
-								'data'
-							],
-							[
-								$rc[3],
-								h::input(
-									[
-										'name'  => 'group[title]',
-										'value' => $group_data['title']
-									]
-								),
-								h::input(
-									[
-										'name'  => 'group[description]',
-										'value' => $group_data['description']
-									]
-								),
-								h::{'textarea[name=group[data]]'}(
-									$group_data['data']
-								)
-							]
-						).
-						h::{'input[type=hidden]'}(
-							[
-								'name'  => 'group[id]',
-								'value' => $rc[3]
-							]
-						)
-					);
-					break;
-				case 'delete':
-					if (!isset($rc[3])) {
-						break;
-					}
-					$a->buttons            = false;
-					$a->cancel_button_back = true;
-					$group                 = $Group->get($rc[3]);
-					$Page->title(
-						$L->deletion_of_group($group['title'])
-					);
-					$a->content(
-						h::{'h2.cs-center'}(
-							$L->sure_delete_group($group['title'])
-						).
-						h::{'input[type=hidden]'}(
-							[
-								'name'  => 'id',
-								'value' => $rc[3]
-							]
-						).
-						h::{'button.uk-button[type=submit]'}($L->yes)
-					);
-					$Page->warning($L->changing_settings_warning);
-					break;
-			}
-			$a->content(
-				h::{'input[type=hidden]'}(
-					[
-						'name'  => 'mode',
-						'value' => $rc[2]
-					]
-				)
-			);
-		} else {
-			$a->buttons  = false;
-			$groups_list = $Group->get_all();
-			foreach ($groups_list as &$group) {
-				$group['allow_to_delete'] = $group['id'] != User::ADMIN_GROUP_ID && $group['id'] != User::USER_GROUP_ID && $group['id'] != User::BOT_GROUP_ID;
-			}
-			unset($group);
-			$a->content(
-				h::{'cs-system-admin-groups-list script[type=application/json]'}(
-					json_encode($groups_list, JSON_UNESCAPED_UNICODE)
-				).
-				h::{'p.cs-left a.uk-button'}(
-					$L->add_group,
-					[
-						'href' => "admin/System/$rc[0]/$rc[1]/add"
-					]
-				)
-			);
-		}
+		$a       = Index::instance();
+		$a->form = false;
+		$a->content(
+			h::cs_system_admin_groups_list()
+		);
 	}
 	static function users_mail () {
 		$Config              = Config::instance();
@@ -326,8 +206,8 @@ trait users {
 		);
 	}
 	static function users_permissions () {
-		$a          = Index::instance();
-		$a->buttons = false;
+		$a       = Index::instance();
+		$a->form = false;
 		$a->content(
 			h::cs_system_admin_permissions_list()
 		);

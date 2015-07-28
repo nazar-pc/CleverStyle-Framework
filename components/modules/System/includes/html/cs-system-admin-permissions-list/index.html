@@ -1,7 +1,9 @@
 <polymer-element name="cs-system-admin-permissions-list">
   <template>
     <template if="{{!permissions.length}}">
-      <h2 class="uk-text-center uk-icon-spin uk-icon-spinner"></h2>
+      <h2 class="uk-text-center">
+        <div class="uk-icon-spin uk-icon-spinner"></div>
+      </h2>
     </template>
     <template if="{{permissions.length}}">
       <cs-table center list with-header>
@@ -28,7 +30,7 @@
         </template>
       </cs-table>
       <p class="cs-left">
-        <div class="uk-button" on-click="[[add_permission]]">[[L.add_permission]]</div>
+        <button class="uk-button" on-click="[[add_permission]]" type="button">[[L.add_permission]]</button>
       </p>
     </template>
   </template>

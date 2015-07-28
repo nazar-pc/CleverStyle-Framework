@@ -1,7 +1,8 @@
 %polymer-element(name="cs-system-admin-permissions-list")
 	%template
 		%template(if="{{!permissions.length}}")
-			%h2.uk-text-center.uk-icon-spin.uk-icon-spinner
+			%h2.uk-text-center
+				.uk-icon-spin.uk-icon-spinner
 		%template(if="{{permissions.length}}")
 			%cs-table(center list with-header)
 				%cs-table-row
@@ -20,5 +21,5 @@
 						%cs-table-cell [[permission.group]]
 						%cs-table-cell(data-uk-tooltip="[[tooltip_animation]]" title="[[permission.description]]") [[permission.label]]
 			%p.cs-left
-				.uk-button(on-click="[[add_permission]]") [[L.add_permission]]
+				%button.uk-button(on-click="[[add_permission]]" type="button") [[L.add_permission]]
 	%script(src="script.js")

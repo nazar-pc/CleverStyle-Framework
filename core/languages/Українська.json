@@ -534,7 +534,6 @@
 		"not_specified"				: "Не вказано",
 		"adding_a_group"			: "Додавання групи",
 		"editing_of_group"			: "Редагування групи %s",
-		"deletion_of_group"			: "Видалення групи %s",
 		//Permissions
 		"permissions"							: "Дозволи",
 		"label"									: "Мітка",

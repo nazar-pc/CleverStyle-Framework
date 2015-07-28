@@ -48,6 +48,11 @@
         </template>
       </span>
     </template>
+    <template if="{{!all_permissions.length}}">
+      <h2 class="uk-text-center">
+        <div class="uk-icon-spin uk-icon-spinner"></div>
+      </h2>
+    </template>
     <form class="uk-form" id="form">
       <template repeat="{{all_permissions as permission}}">
         <legend>[[permission.group]]</legend>

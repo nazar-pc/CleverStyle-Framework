@@ -10,47 +10,12 @@
 namespace cs\modules\System\admin\Controller;
 use
 	cs\Config,
-	cs\Group,
 	cs\Index,
 	cs\Language,
 	cs\Page,
 	cs\User;
 
 trait users_save {
-	static function users_groups_save () {
-		if (!isset($_POST['mode'])) {
-			return;
-		}
-		$Index = Index::instance();
-		$Group = Group::instance();
-		if (isset($_POST['mode'])) {
-			switch ($_POST['mode']) {
-				case 'add':
-					$Index->save(
-						(bool)$Group->add($_POST['group']['title'], $_POST['group']['description'])
-					);
-					break;
-				case 'edit':
-					$Index->save(
-						$Group->set($_POST['group'], $_POST['group']['id'])
-					);
-					break;
-				case 'delete':
-					$id = (int)$_POST['id'];
-					// Three primary groups should not be deleted
-					if (
-						$id != User::ADMIN_GROUP_ID &&
-						$id != User::USER_GROUP_ID &&
-						$id != User::BOT_GROUP_ID
-					) {
-						$Index->save(
-							$Group->del($_POST['id'])
-						);
-					}
-					break;
-			}
-		}
-	}
 	static function users_users_save () {
 		if (!isset($_POST['mode'])) {
 			return;
