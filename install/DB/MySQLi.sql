@@ -13,7 +13,6 @@ CREATE TABLE IF NOT EXISTS `[prefix]groups` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT COMMENT 'WARNING: Never delete first 3 groups!',
   `title` varchar(1024) NOT NULL,
   `description` text NOT NULL,
-  `data` mediumtext NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
