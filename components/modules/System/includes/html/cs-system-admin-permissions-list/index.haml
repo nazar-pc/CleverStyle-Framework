@@ -12,7 +12,7 @@
 				%template(repeat="{{permission, index in permissions}}")
 					%cs-table-row(data-permission-index="{{index}}")
 						%cs-table-cell
-							%a.uk-button.cs-button-compact(on-click="[[edit_permission]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.edit]]")
+							.uk-button.cs-button-compact(on-click="[[edit_permission]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.edit]]")
 								.uk-icon-pencil
 							.uk-button.cs-button-compact(on-click="[[delete_permission]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.delete]]")
 								.uk-icon-trash-o
@@ -20,5 +20,5 @@
 						%cs-table-cell [[permission.group]]
 						%cs-table-cell(data-uk-tooltip="[[tooltip_animation]]" title="[[permission.description]]") [[permission.label]]
 			%p.cs-left
-				%a.uk-button(on-click="[[add_permission]]") [[L.add_permission]]
+				.uk-button(on-click="[[add_permission]]") [[L.add_permission]]
 	%script(src="script.js")
