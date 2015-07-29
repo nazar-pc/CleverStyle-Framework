@@ -225,33 +225,20 @@ trait Data {
 		}
 		if (is_array($item)) {
 			foreach ($item as $i => $v) {
-				if ($i != 'id' && in_array($i, $this->users_columns)) {
+				if ($i !== 'id' && in_array($i, $this->users_columns)) {
 					$this->set($i, $v, $user);
 				}
 			}
-		} elseif ($item != 'id' && in_array($item, $this->users_columns)) {
-			if (in_array($item, ['login_hash', 'email_hash'])) {
-				return true;
+		} elseif (in_array($item, $this->users_columns, true)) {
+			if (!$this->set_internal_allowed($user, $item, $value)) {
+				return false;
 			}
-			if ($item == 'login' || $item == 'email') {
-				$value = mb_strtolower($value);
-				/** @noinspection NotOptimalIfConditionsInspection */
-				if ($item == 'email' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
-					return false;
-				}
-				if ($this->get_id(hash('sha224', $value)) !== false) {
-					return false;
-				}
-			} elseif ($item == 'language') {
-				$L = Language::instance();
-				if ($user == $this->id) {
-					$L->change($value);
-					$value = $value ? $L->clanguage : '';
-				}
+			if ($item === 'language') {
+				$value = $value ? Language::instance()->get('clanguage', $value) : '';
 			} elseif ($item == 'avatar') {
 				if (
-					$value &&
-					strpos($value, 'http') === false
+					strpos($value, 'http://') !== 0 &&
+					strpos($value, 'https://') !== 0
 				) {
 					$value = '';
 				}
@@ -259,13 +246,41 @@ trait Data {
 			$this->update_cache[$user]    = true;
 			$this->data[$user][$item]     = $value;
 			$this->data_set[$user][$item] = $value;
-			if ($item == 'login' || $item == 'email') {
+			if ($item === 'login' || $item === 'email') {
+				$old_value                            = $this->get($item.'_hash', $user);
 				$this->data[$user][$item.'_hash']     = hash('sha224', $value);
 				$this->data_set[$user][$item.'_hash'] = hash('sha224', $value);
-				unset($this->cache->{hash('sha224', $this->$item)});
-			} elseif ($item == 'password_hash' || ($item == 'status' && $value == 0)) {
+				unset($this->cache->$old_value);
+			} elseif ($item === 'password_hash' || ($item === 'status' && $value == 0)) {
 				Session::instance()->del_all($user);
 			}
+		}
+		return true;
+	}
+	/**
+	 * Check whether setting specified item to specified value for specified user is allowed
+	 *
+	 * @param int    $user
+	 * @param string $item
+	 * @param string $value
+	 *
+	 * @return bool
+	 */
+	protected function set_internal_allowed ($user, $item, $value) {
+		if (
+			in_array($user, [User::GUEST_ID, User::ROOT_ID], true) ||
+			!in_array($item, $this->users_columns, true) ||
+			in_array($item, ['id', 'login_hash', 'email_hash'], true)
+		) {
+			return false;
+		}
+		if ($item === 'login' || $item === 'email') {
+			$value = mb_strtolower($value);
+			/** @noinspection NotOptimalIfConditionsInspection */
+			if ($item === 'email' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+				return false;
+			}
+			return !$this->get_id(hash('sha224', $value));
 		}
 		return true;
 	}
