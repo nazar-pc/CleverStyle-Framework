@@ -278,6 +278,9 @@ trait Data {
 			if ($item === 'email' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
 				return false;
 			}
+			if ($value === $this->get($item, $user)) {
+				return true;
+			}
 			return !$this->get_id(hash('sha224', $value));
 		}
 		return true;
