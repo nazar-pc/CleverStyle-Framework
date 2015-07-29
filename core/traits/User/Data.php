@@ -267,9 +267,9 @@ trait Data {
 	 */
 	protected function set_internal_allowed ($user, $item, $value) {
 		if (
-			in_array($user, [User::GUEST_ID, User::ROOT_ID], true) ||
-			!in_array($item, $this->users_columns, true) ||
-			in_array($item, ['id'], true)
+			$user === User::GUEST_ID ||
+			$item === 'id' ||
+			!in_array($item, $this->users_columns, true)
 		) {
 			return false;
 		}
