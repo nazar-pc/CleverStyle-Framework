@@ -95,7 +95,7 @@ trait users {
 			$Page->error($L->email_occupied);
 			return;
 		}
-		if (!$User->set($user_data, $user_id)) {
+		if (!$User->set($user_data, null, $user_id)) {
 			error_code(500);
 			return;
 		}
