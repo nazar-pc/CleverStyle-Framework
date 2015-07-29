@@ -280,56 +280,6 @@ trait users {
 		if (isset($rc[2], $rc[3])) {
 			$is_bot = in_array(3, (array)$User->get_groups($rc[3]));
 			switch ($rc[2]) {
-				case 'edit_raw':
-					if ($is_bot || $rc[3] == User::GUEST_ID || $rc[3] == User::ROOT_ID) {
-						break;
-					}
-					$a->cancel_button_back = true;
-					$content               = $content_ = '';
-					$user_data             = $User->get($search_columns, $rc[3]);
-					foreach ($search_columns as $i => $column) {
-						$content_ .= h::cs_table_cell(
-							$column,
-							$column == 'data'
-								? h::textarea(
-								$user_data[$column],
-								[
-									'name' => "user[$column]"
-								]
-							)
-								: h::input(
-								[
-									'name'  => "user[$column]",
-									'value' => $user_data[$column],
-									$column == 'id' ? 'readonly' : false
-								]
-							)
-						);
-						if ($i % 2) {
-							$content .= h::cs_table_row(
-								$content_
-							);
-							$content_ = '';
-						}
-					}
-					if ($content_ != '') {
-						$content .= h::cs_table_row(
-							$content_
-						);
-					}
-					unset($i, $column, $content_);
-					$Page->title(
-						$L->editing_raw_data_of_user($User->username($rc[3]))
-					);
-					$a->content(
-						h::{'h2.cs-center'}(
-							$L->editing_raw_data_of_user(
-								$User->username($rc[3])
-							)
-						).
-						h::{'cs-table[right-left]'}($content)
-					);
-					break;
 				case 'edit':
 					$a->cancel_button_back = true;
 					if (!$is_bot) {
@@ -811,11 +761,10 @@ trait users {
 					$users_list[] =
 						$user_data +
 						[
-							'is_user'       => in_array(User::USER_GROUP_ID, $groups),
-							'is_bot'        => in_array(User::BOT_GROUP_ID, $groups),
-							'is_admin'      => in_array(User::ADMIN_GROUP_ID, $groups),
-							'edit_raw_data' => !$Config->core['simple_admin_mode'],
-							'username'      => $User->username($id)
+							'is_user'  => in_array(User::USER_GROUP_ID, $groups),
+							'is_bot'   => in_array(User::BOT_GROUP_ID, $groups),
+							'is_admin' => in_array(User::ADMIN_GROUP_ID, $groups),
+							'username' => $User->username($id)
 						];
 				}
 			}

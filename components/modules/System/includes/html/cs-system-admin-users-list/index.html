@@ -13,11 +13,6 @@
           <cs-table-cell>
             <template if="[[user.is_root]]">-</template>
             <template if="[[!user.is_root]]">
-              <template if="[[user.edit_raw_data && !user.is_guest && !user.is_bot]]">
-                <a class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" href="/admin/System/users/users/edit_raw/[[user.id]]" title="[[L.edit_raw_user_data]]">
-                  <div class="uk-icon-pencil"></div>
-                </a>
-              </template>
               <template if="[[!user.is_guest]]">
                 <a class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" href="/admin/System/users/users/edit/[[user.id]]" title="[[L.edit_user_information]]">
                   <div class="uk-icon-sliders"></div>

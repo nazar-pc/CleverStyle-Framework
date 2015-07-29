@@ -514,7 +514,6 @@
 		"adding_a_user"						: "Додавання користувача",
 		"adding_a_bot"						: "Додавання бота",
 		"editing_of_user_information"		: "Редагування інформації користувача %s",
-		"editing_raw_data_of_user"			: "Редагування необроблених даних користувача %s",
 		"editing_of_bot_information"		: "Редагування інформації бота %s",
 		"user_alredy_exists"				: "Користувач з таким email вже існує",
 		//Groups

@@ -11,9 +11,6 @@
 					%cs-table-cell
 						%template(if="[[user.is_root]]") -
 						%template(if="[[!user.is_root]]")
-							%template(if="[[user.edit_raw_data && !user.is_guest && !user.is_bot]]")
-								%a.uk-button.cs-button-compact(href="/admin/System/users/users/edit_raw/[[user.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.edit_raw_user_data]]")
-									.uk-icon-pencil
 							%template(if="[[!user.is_guest]]")
 								%a.uk-button.cs-button-compact(href="/admin/System/users/users/edit/[[user.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.edit_user_information]]")
 									.uk-icon-sliders

@@ -513,7 +513,6 @@
 		"adding_a_user"						: "Добавление пользователя",
 		"adding_a_bot"						: "Добавление бота",
 		"editing_of_user_information"		: "Редактирование информации пользователя %s",
-		"editing_raw_data_of_user"			: "Редактирование необработанных данных пользователя %s",
 		"editing_of_bot_information"		: "Редактирование информации бота %s",
 		"user_alredy_exists"				: "Пользователь с таким email уже существует",
 		//Groups

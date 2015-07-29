@@ -229,31 +229,30 @@ trait Data {
 					$this->set($i, $v, $user);
 				}
 			}
-		} elseif (in_array($item, $this->users_columns, true)) {
-			if (!$this->set_internal_allowed($user, $item, $value)) {
-				return false;
+		}
+		if (!$this->set_internal_allowed($user, $item, $value)) {
+			return false;
+		}
+		if ($item === 'language') {
+			$value = $value ? Language::instance()->get('clanguage', $value) : '';
+		} elseif ($item == 'avatar') {
+			if (
+				strpos($value, 'http://') !== 0 &&
+				strpos($value, 'https://') !== 0
+			) {
+				$value = '';
 			}
-			if ($item === 'language') {
-				$value = $value ? Language::instance()->get('clanguage', $value) : '';
-			} elseif ($item == 'avatar') {
-				if (
-					strpos($value, 'http://') !== 0 &&
-					strpos($value, 'https://') !== 0
-				) {
-					$value = '';
-				}
-			}
-			$this->update_cache[$user]    = true;
-			$this->data[$user][$item]     = $value;
-			$this->data_set[$user][$item] = $value;
-			if ($item === 'login' || $item === 'email') {
-				$old_value                            = $this->get($item.'_hash', $user);
-				$this->data[$user][$item.'_hash']     = hash('sha224', $value);
-				$this->data_set[$user][$item.'_hash'] = hash('sha224', $value);
-				unset($this->cache->$old_value);
-			} elseif ($item === 'password_hash' || ($item === 'status' && $value == 0)) {
-				Session::instance()->del_all($user);
-			}
+		}
+		$this->update_cache[$user]    = true;
+		$this->data[$user][$item]     = $value;
+		$this->data_set[$user][$item] = $value;
+		if (in_array($item, ['login', 'email'], true)) {
+			$old_value                            = $this->get($item.'_hash', $user);
+			$this->data[$user][$item.'_hash']     = hash('sha224', $value);
+			$this->data_set[$user][$item.'_hash'] = hash('sha224', $value);
+			unset($this->cache->$old_value);
+		} elseif ($item === 'password_hash' || ($item === 'status' && $value == 0)) {
+			Session::instance()->del_all($user);
 		}
 		return true;
 	}
@@ -270,13 +269,12 @@ trait Data {
 		if (
 			in_array($user, [User::GUEST_ID, User::ROOT_ID], true) ||
 			!in_array($item, $this->users_columns, true) ||
-			in_array($item, ['id', 'login_hash', 'email_hash'], true)
+			in_array($item, ['id'], true)
 		) {
 			return false;
 		}
-		if ($item === 'login' || $item === 'email') {
+		if (in_array($item, ['login', 'email'], true)) {
 			$value = mb_strtolower($value);
-			/** @noinspection NotOptimalIfConditionsInspection */
 			if ($item === 'email' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
 				return false;
 			}

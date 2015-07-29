@@ -26,18 +26,6 @@ trait users_save {
 		$Page   = Page::instance();
 		$User   = User::instance();
 		switch ($_POST['mode']) {
-			case 'edit_raw':
-				$id = (int)$_POST['user']['id'];
-				if (
-					$id != User::GUEST_ID &&
-					$id != User::ROOT_ID &&
-					!in_array(User::BOT_GROUP_ID, (array)$User->get_groups($id))
-				) {
-					$User->set($_POST['user'], null, $id);
-					$User->__finish();
-					$Index->save(true);
-				}
-				break;
 			case 'edit':
 				if (isset($_POST['user'])) {
 					$id = (int)$_POST['user']['id'];
