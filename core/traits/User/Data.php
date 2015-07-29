@@ -224,11 +224,11 @@ trait Data {
 			return false;
 		}
 		if (is_array($item)) {
+			$result = true;
 			foreach ($item as $i => $v) {
-				if ($i !== 'id' && in_array($i, $this->users_columns)) {
-					$this->set($i, $v, $user);
-				}
+				$result = $result && $this->set($i, $v, $user);
 			}
+			return $result;
 		}
 		if (!$this->set_internal_allowed($user, $item, $value)) {
 			return false;
