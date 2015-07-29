@@ -23,12 +23,16 @@ trait users {
 			}
 		);
 		if (isset($route_ids[0])) {
-			$result = $User->get($columns, $route_ids[0]);
+			$result = static::admin_users___get_post_process(
+				$User->get($columns, $route_ids[0])
+			);
 		} elseif (isset($_GET['ids'])) {
 			$ids    = _int(explode(',', $_GET['ids']));
 			$result = [];
 			foreach ($ids as $id) {
-				$result[] = $User->get($columns, $id);
+				$result[] = static::admin_users___get_post_process(
+					$User->get($columns, $id)
+				);
 			}
 		} elseif (isset($_GET['search'])) {
 			$result = _int($User->search_users($_GET['search']));
@@ -41,6 +45,15 @@ trait users {
 			return;
 		}
 		$Page->json($result);
+	}
+	static protected function admin_users___get_post_process ($data) {
+		$L                              = Language::instance();
+		$data['reg_date_formatted']     = $data['reg_date'] ? date($L->_date, $data['reg_date']) : $L->undefined;
+		$data['reg_ip_formatted']       = hex2ip($data['reg_ip'], 10);
+		$data['last_sign_in_formatted'] = $data['last_sign_in'] ? date($L->_datetime, $data['last_sign_in']) : $L->undefined;
+		$data['last_ip_formatted']      = hex2ip($data['last_ip'], 10);
+		$data['last_online_formatted']  = $data['last_online'] ? date($L->_datetime, $data['last_online']) : $L->undefined;
+		return $data;
 	}
 	static function admin_users___patch ($route_ids) {
 		if (!isset($route_ids[0], $_POST['user'])) {

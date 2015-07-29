@@ -20,6 +20,7 @@
 			"for_item"
 		],
 		"storages_test"      : [],
+		"timezones"          : [],
 		"users"              : [
 			"_",
 			"permissions"

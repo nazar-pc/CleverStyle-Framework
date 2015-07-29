@@ -33,4 +33,9 @@ trait admin {
 			(int)$result
 		);
 	}
+	static function timezones_get () {
+		Page::instance()->json(
+			get_timezones_list()
+		);
+	}
 }
