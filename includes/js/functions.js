@@ -153,7 +153,7 @@
 
   cs.registration = function(email) {
     if (!email) {
-      alert(L.please_type_your_email);
+      UIkit.modal.confirm(L.please_type_your_email);
       return;
     }
     email = String(email).toLowerCase();
@@ -187,7 +187,7 @@
 
   cs.restore_password = function(email) {
     if (!email) {
-      alert(L.please_type_your_email);
+      UIkit.modal.alert(L.please_type_your_email);
       return;
     }
     email = String(email).toLowerCase();
@@ -220,16 +220,19 @@
 
   cs.change_password = function(current_password, new_password, success, error) {
     if (!current_password) {
-      alert(L.please_type_current_password);
+      UIkit.modal.alert(L.please_type_current_password);
       return;
     } else if (!new_password) {
-      alert(L.please_type_new_password);
+      UIkit.modal.alert(L.please_type_new_password);
       return;
     } else if (current_password === new_password) {
-      alert(L.current_new_password_equal);
+      UIkit.modal.alert(L.current_new_password_equal);
+      return;
+    } else if (String(new_password).length < cs.password_min_length) {
+      UIkit.modal.alert(L.password_too_short);
       return;
     } else if (cs.password_check(new_password) < cs.password_min_strength) {
-      alert(L.password_too_easy);
+      UIkit.modal.alert(L.password_too_easy);
       return;
     }
     current_password = cs.hash('sha512', cs.hash('sha512', String(current_password)) + cs.public_key);
@@ -247,13 +250,13 @@
           if (success) {
             return success();
           } else {
-            return alert(L.password_changed_successfully);
+            return UIkit.modal.alert(L.password_changed_successfully);
           }
         } else {
           if (error) {
             return error();
           } else {
-            return alert(result);
+            return UIkit.modal.alert(result);
           }
         }
       },

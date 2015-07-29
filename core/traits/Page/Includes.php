@@ -293,6 +293,7 @@ trait Includes {
 				'is_admin'              => (int)$User->admin(),
 				'is_user'               => (int)$User->user(),
 				'is_guest'              => (int)$User->guest(),
+				'password_min_length'   => (int)$Config->core['password_min_length'],
 				'password_min_strength' => (int)$Config->core['password_min_strength'],
 				'debug'                 => (int)DEBUG,
 				'cookie_prefix'         => $Config->core['cookie_prefix'],
