@@ -280,46 +280,6 @@ trait users {
 		if (isset($rc[2], $rc[3])) {
 			$is_bot = in_array(3, (array)$User->get_groups($rc[3]));
 			switch ($rc[2]) {
-				case 'add':
-					$a->cancel_button_back = true;
-					$Page->title($L->adding_a_user);
-					$a->content(
-						h::{'h2.cs-center'}(
-							$L->adding_a_user
-						).
-						h::{'p.cs-center input'}(
-							[
-								'name'        => 'email',
-								'placeholder' => $L->email
-							]
-						)
-					);
-					break;
-				case 'add_bot':
-					$a->cancel_button_back = true;
-					$Page->title($L->adding_a_bot);
-					$a->content(
-						h::{'h2.cs-center'}(
-							$L->adding_a_bot
-						).
-						static::vertical_table(
-							[
-								[
-									$L->bot_name,
-									h::{'input[name=name]'}()
-								],
-								[
-									h::info('bot_user_agent'),
-									h::{'input[name=user_agent]'}()
-								],
-								[
-									h::info('bot_ip'),
-									h::{'input[name=ip]'}()
-								]
-							]
-						)
-					);
-					break;
 				case 'edit_raw':
 					if ($is_bot || $rc[3] == User::GUEST_ID || $rc[3] == User::ROOT_ID) {
 						break;
@@ -923,19 +883,7 @@ trait users {
 					)
 				).
 				h::{'p.cs-left'}(
-					pages_buttons($page, $total_pages),
-					h::{'a.uk-button'}(
-						$L->add_user,
-						[
-							'href' => 'admin/System/users/users/add/0'
-						]
-					).
-					h::{'a.uk-button'}(
-						$L->add_bot,
-						[
-							'href' => 'admin/System/users/users/add_bot/0'
-						]
-					)
+					pages_buttons($page, $total_pages)
 				)
 			);
 		}

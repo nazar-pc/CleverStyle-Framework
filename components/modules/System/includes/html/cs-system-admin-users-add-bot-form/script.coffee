@@ -9,18 +9,15 @@
 L	= cs.Language
 Polymer(
 	L		: L
-	publish	:
-		permission_id	: null
-		group			: ''
-		label			: ''
 	save	: ->
 		$.ajax(
-			url		: 'api/System/admin/permissions' + (if @permission_id then '/' + @permission_id else '')
-			type	: if @permission_id then 'put' else 'post'
+			url		: 'api/System/admin/users'
+			type	: 'post'
 			data	:
-				id		: @permission_id
-				group	: @group
-				label	: @label
+				name		: @name
+				user_agent	: @user_agent
+				ip			: @ip
+				type		: 'bot'
 			success	: ->
 				UIkit.notify(L.changes_saved.toString(), 'success')
 		)

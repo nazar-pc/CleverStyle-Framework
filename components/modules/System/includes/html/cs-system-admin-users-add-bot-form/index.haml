@@ -1,0 +1,12 @@
+%polymer-element(name="cs-system-admin-users-add-bot-form")
+	%template
+		.uk-form.uk-form-stacked
+			%label.uk-form-label [[L.bot_name]]
+			%input(type="text" value="{{name}}")
+			%label.uk-form-label [[L.bot_user_agent]]
+			%input(type="text" value="{{user_agent}}")
+			%label.uk-form-label [[L.bot_ip]]
+			%input(type="text" value="{{ip}}")
+			%p
+				%button.uk-button.uk-button-primary(on-click="[[save]]") [[L.save]]
+	%script(src="script.js")

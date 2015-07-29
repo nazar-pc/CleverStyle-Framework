@@ -30,11 +30,9 @@
           title: this.group_title,
           description: this.description
         },
-        success: (function(_this) {
-          return function() {
-            return UIkit.notify(L.changes_saved.toString(), 'success');
-          };
-        })(this)
+        success: function() {
+          return UIkit.notify(L.changes_saved.toString(), 'success');
+        }
       });
     }
   });

@@ -26,21 +26,6 @@ trait users_save {
 		$Page   = Page::instance();
 		$User   = User::instance();
 		switch ($_POST['mode']) {
-			case 'add':
-				if ($_POST['email']) {
-					$result = $User->registration($_POST['email'], false, false);
-					if ($Index->save(is_array($result))) {
-						$Page->success($L->user_was_added($User->get('login', $result['id']), $result['password']));
-					} else {
-						$Page->warning($L->user_alredy_exists);
-					}
-				}
-				break;
-			case 'add_bot':
-				if ($_POST['name'] && ($_POST['user_agent'] || $_POST['ip'])) {
-					$Index->save((bool)$User->add_bot($_POST['name'], $_POST['user_agent'], $_POST['ip']));
-				}
-				break;
 			case 'edit_raw':
 				$id = (int)$_POST['user']['id'];
 				if (

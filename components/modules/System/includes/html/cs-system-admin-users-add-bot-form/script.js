@@ -16,19 +16,15 @@
 
   Polymer({
     L: L,
-    publish: {
-      permission_id: null,
-      group: '',
-      label: ''
-    },
     save: function() {
       return $.ajax({
-        url: 'api/System/admin/permissions' + (this.permission_id ? '/' + this.permission_id : ''),
-        type: this.permission_id ? 'put' : 'post',
+        url: 'api/System/admin/users',
+        type: 'post',
         data: {
-          id: this.permission_id,
-          group: this.group,
-          label: this.label
+          name: this.name,
+          user_agent: this.user_agent,
+          ip: this.ip,
+          type: 'bot'
         },
         success: function() {
           return UIkit.notify(L.changes_saved.toString(), 'success');

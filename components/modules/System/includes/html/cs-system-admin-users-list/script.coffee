@@ -50,6 +50,24 @@ Polymer(
 		@users	= data.users
 	domReady			: ->
 		$(@shadowRoot).cs().tooltips_inside()
+	add_user			: ->
+		$.cs.simple_modal("""
+			<h3>#{L.adding_a_user}</h3>
+			<cs-system-admin-users-add-user-form/>
+		""").on(
+			'hide.uk.modal'
+			=>
+				location.reload()
+		)
+	add_bot				: ->
+		$.cs.simple_modal("""
+			<h3>#{L.adding_a_bot}</h3>
+			<cs-system-admin-users-add-bot-form/>
+		""").on(
+			'hide.uk.modal'
+			=>
+				location.reload()
+		)
 	edit_permissions	: (event, detail, sender) ->
 		$sender		= $(sender)
 		index		= $sender.closest('[data-user-index]').data('user-index')

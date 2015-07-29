@@ -32,4 +32,7 @@
 						%span(data-uk-tooltip="[[tooltip_animation]]" title="[[user.type_info]]") [[user.type]]
 					%template(repeat="[[column in user.columns]]")
 						%cs-table-cell [[column]]
+		%p.cs-left
+			%button.uk-button(on-click="[[add_user]]" type="button") [[L.add_user]]
+			%button.uk-button(on-click="[[add_bot]]" type="button") [[L.add_bot]]
 	%script(src="script.js")

@@ -16,22 +16,16 @@
 
   Polymer({
     L: L,
-    publish: {
-      permission_id: null,
-      group: '',
-      label: ''
-    },
     save: function() {
       return $.ajax({
-        url: 'api/System/admin/permissions' + (this.permission_id ? '/' + this.permission_id : ''),
-        type: this.permission_id ? 'put' : 'post',
+        url: 'api/System/admin/users',
+        type: 'post',
         data: {
-          id: this.permission_id,
-          group: this.group,
-          label: this.label
+          email: this.email,
+          type: 'user'
         },
-        success: function() {
-          return UIkit.notify(L.changes_saved.toString(), 'success');
+        success: function(result) {
+          return UIkit.modal.alert("<p class=\"uk-alert uk-alert-success\">" + (L.user_was_added(result.login, result.password)) + "</p>");
         }
       });
     }

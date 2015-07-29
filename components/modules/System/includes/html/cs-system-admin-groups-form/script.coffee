@@ -21,7 +21,7 @@ Polymer(
 				id			: @group_id
 				title		: @group_title
 				description	: @description
-			success	: =>
+			success	: ->
 				UIkit.notify(L.changes_saved.toString(), 'success')
 		)
 )

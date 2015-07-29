@@ -35,7 +35,9 @@ trait groups {
 			error_code(400);
 			return;
 		}
-		if (!Group::instance()->add($_POST['title'], $_POST['description'])) {
+		if (Group::instance()->add($_POST['title'], $_POST['description'])) {
+			status_code(201);
+		} else {
 			error_code(500);
 		}
 	}

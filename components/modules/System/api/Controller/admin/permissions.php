@@ -32,7 +32,9 @@ trait permissions {
 			error_code(400);
 			return;
 		}
-		if (!Permission::instance()->add($_POST['group'], $_POST['label'])) {
+		if (Permission::instance()->add($_POST['group'], $_POST['label'])) {
+			status_code(201);
+		} else {
 			error_code(500);
 		}
 	}

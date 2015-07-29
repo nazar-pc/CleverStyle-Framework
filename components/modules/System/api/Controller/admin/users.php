@@ -41,6 +41,36 @@ trait users {
 		}
 		$Page->json($result);
 	}
+	static function admin_users___post () {
+		if (!isset($_POST['type'])) {
+			error_code(400);
+			return;
+		}
+		$User = User::instance();
+		$Page = Page::instance();
+		if ($_POST['type'] === 'user' && isset($_POST['email'])) {
+			$result = $User->registration($_POST['email'], false, false);
+			if (!$result) {
+				error_code(500);
+				return;
+			}
+			status_code(201);
+			$Page->json(
+				[
+					'login'    => $User->get('login', $result['id']),
+					'password' => $result['password']
+				]
+			);
+		} elseif ($_POST['type'] === 'bot' && isset($_POST['name'], $_POST['user_agent'], $_POST['ip'])) {
+			if ($User->add_bot($_POST['name'], $_POST['user_agent'], $_POST['ip'])) {
+				status_code(201);
+			} else {
+				error_code(500);
+			}
+		} else {
+			error_code(400);
+		}
+	}
 	static function admin_users_permissions_get ($route_ids) {
 		if (!isset($route_ids[0])) {
 			error_code(400);

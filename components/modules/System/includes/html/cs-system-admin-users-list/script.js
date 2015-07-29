@@ -74,6 +74,20 @@
     domReady: function() {
       return $(this.shadowRoot).cs().tooltips_inside();
     },
+    add_user: function() {
+      return $.cs.simple_modal("<h3>" + L.adding_a_user + "</h3>\n<cs-system-admin-users-add-user-form/>").on('hide.uk.modal', (function(_this) {
+        return function() {
+          return location.reload();
+        };
+      })(this));
+    },
+    add_bot: function() {
+      return $.cs.simple_modal("<h3>" + L.adding_a_bot + "</h3>\n<cs-system-admin-users-add-bot-form/>").on('hide.uk.modal', (function(_this) {
+        return function() {
+          return location.reload();
+        };
+      })(this));
+    },
     edit_permissions: function(event, detail, sender) {
       var $sender, index, title, title_key, user;
       $sender = $(sender);
