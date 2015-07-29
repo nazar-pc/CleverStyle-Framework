@@ -249,7 +249,7 @@ class Controller {
 			)
 			) {
 				if ($user_data['login'] != $User->get('login')) {
-					$Page->warning($L->login_occupied_or_is_not_valid);
+					$Page->warning($L->login_occupied);
 				}
 				unset($user_data['login']);
 			}

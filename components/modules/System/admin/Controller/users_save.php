@@ -94,7 +94,7 @@ trait users_save {
 						$user_data['login_hash'] = hash('sha224', $user_data['login']);
 					} else {
 						if ($user_data['login'] != $User->get('login', $id)) {
-							$Page->warning($L->login_occupied_or_is_not_valid);
+							$Page->warning($L->login_occupied);
 						}
 						unset($user_data['login']);
 					}
