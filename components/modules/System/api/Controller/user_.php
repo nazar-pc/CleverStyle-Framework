@@ -156,7 +156,10 @@ trait user_ {
 		$User   = User::instance();
 		if (!$User->guest()) {
 			return;
-		} elseif ($Config->core['sign_in_attempts_block_count'] && $User->get_sign_in_attempts_count(@$_POST['login']) >= $Config->core['sign_in_attempts_block_count']) {
+		} elseif (
+			$Config->core['sign_in_attempts_block_count'] &&
+			$User->get_sign_in_attempts_count(@$_POST['login']) >= $Config->core['sign_in_attempts_block_count']
+		) {
 			$User->sign_in_result(false, @$_POST['login']);
 			error_code(403);
 			$Page->error("$L->sign_in_attempts_ends_try_after ".format_time($Config->core['sign_in_attempts_block_time']));
@@ -167,13 +170,22 @@ trait user_ {
 			$id &&
 			$User->validate_password(@$_POST['password'], $id, true)
 		) {
-			if ($User->get('status', $id) == User::STATUS_NOT_ACTIVATED) {
+			$status      = $User->get('status', $id);
+			$block_until = $User->get('block_until', $id);
+			file_put_contents(DIR.'/test', var_export($block_until, true)."\n".time());
+			if ($status == User::STATUS_NOT_ACTIVATED) {
 				error_code(403);
 				$Page->error($L->your_account_is_not_active);
 				return;
-			} elseif ($User->get('status', $id) == User::STATUS_INACTIVE) {
+			} elseif ($status == User::STATUS_INACTIVE) {
 				error_code(403);
 				$Page->error($L->your_account_disabled);
+				return;
+			} elseif ($block_until > time()) {
+				error_code(403);
+				$Page->error(
+					$L->your_account_blocked_until.' '.date($L->_datetime, $block_until)
+				);
 				return;
 			}
 			Session::instance()->add($id);
