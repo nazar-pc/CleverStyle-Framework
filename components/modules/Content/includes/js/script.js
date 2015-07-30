@@ -72,7 +72,6 @@
               modal_body.find('.html').hide();
               return content = modal_body.find('.text').show().val(content.val());
             } else {
-              console.log('');
               modal_body.find('.text').hide();
               content = modal_body.find('.html').show().val(content.val());
               return typeof window.editor_reinitialization === 'function' && editor_reinitialization($('cs-content-html-content'));
