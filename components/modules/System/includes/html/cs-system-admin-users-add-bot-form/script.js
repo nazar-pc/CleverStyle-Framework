@@ -15,6 +15,7 @@
   L = cs.Language;
 
   Polymer({
+    tooltip_animation: '{animation:true,delay:200}',
     L: L,
     save: function() {
       return $.ajax({

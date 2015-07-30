@@ -8,8 +8,9 @@
 ###
 L	= cs.Language
 Polymer(
-	L		: L
-	save	: ->
+	tooltip_animation	:'{animation:true,delay:200}'
+	L					: L
+	save				: ->
 		$.ajax(
 			url		: 'api/System/admin/users'
 			type	: 'post'

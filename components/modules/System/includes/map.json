@@ -11,8 +11,10 @@
 		"cs-system-admin-groups-list/index.html",
 		"cs-system-admin-permissions-form/index.html",
 		"cs-system-admin-permissions-list/index.html",
-		"cs-system-admin-users-add-user-form/index.html",
 		"cs-system-admin-users-add-bot-form/index.html",
+		"cs-system-admin-users-add-user-form/index.html",
+		"cs-system-admin-users-edit-bot-form/index.html",
+		"cs-system-admin-users-edit-user-form/index.html",
 		"cs-system-admin-users-list/index.html"
 	]
 }

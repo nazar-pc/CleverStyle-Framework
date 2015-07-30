@@ -12,8 +12,8 @@
 						%template(if="[[user.is_root]]") -
 						%template(if="[[!user.is_root]]")
 							%template(if="[[!user.is_guest]]")
-								%a.uk-button.cs-button-compact(href="/admin/System/users/users/edit/[[user.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.edit_user_information]]")
-									.uk-icon-sliders
+								%a.uk-button.cs-button-compact(on-click="[[edit_user]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.edit_user_information]]")
+									.uk-icon-pencil
 							%template(if="{{user.is_active && !user.is_guest}}")
 								%a.uk-button.cs-button-compact(href="/admin/System/users/users/deactivate/[[user.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.deactivate_user]]")
 									.uk-icon-minus

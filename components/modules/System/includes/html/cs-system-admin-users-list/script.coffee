@@ -56,7 +56,7 @@ Polymer(
 			<cs-system-admin-users-add-user-form/>
 		""").on(
 			'hide.uk.modal'
-			=>
+			->
 				location.reload()
 		)
 	add_bot				: ->
@@ -65,9 +65,37 @@ Polymer(
 			<cs-system-admin-users-add-bot-form/>
 		""").on(
 			'hide.uk.modal'
-			=>
+			->
 				location.reload()
 		)
+	edit_user			: (event, detail, sender) ->
+		$sender		= $(sender)
+		index		= $sender.closest('[data-user-index]').data('user-index')
+		user		= @users[index]
+		if user.is_bot
+			title		= L.editing_of_bot_information(
+				user.username || user.login
+			)
+			$.cs.simple_modal("""
+				<h2>#{title}</h2>
+				<cs-system-admin-users-edit-bot-form user_id="#{user.id}"/>
+			""").on(
+				'hide.uk.modal'
+				->
+					location.reload()
+			)
+		else
+			title		= L.editing_of_user_information(
+				user.username || user.login
+			)
+			$.cs.simple_modal("""
+				<h2>#{title}</h2>
+				<cs-system-admin-users-edit-user-form user_id="#{user.id}"/>
+			""").on(
+				'hide.uk.modal'
+				->
+					location.reload()
+			)
 	edit_permissions	: (event, detail, sender) ->
 		$sender		= $(sender)
 		index		= $sender.closest('[data-user-index]').data('user-index')

@@ -60,17 +60,12 @@ trait users {
 			error_code(400);
 			return;
 		}
-		$columns_allowed_to_edit = [
-			'login',
-			'username',
-			'email',
-			'language',
-			'timezone',
-			'status',
-			'block_until',
-			'avatar'
-		];
+		$User                    = User::instance();
 		$user_id                 = (int)$route_ids[0];
+		$is_bot                  = in_array(User::BOT_GROUP_ID, $User->get_groups($user_id));
+		$columns_allowed_to_edit = $is_bot
+			? ['login', 'username', 'email', 'status']
+			: ['login', 'username', 'email', 'language', 'timezone', 'status', 'block_until', 'avatar'];
 		$user_data               = array_filter(
 			$_POST['user'],
 			function ($item) use ($columns_allowed_to_edit) {
@@ -82,13 +77,12 @@ trait users {
 			$d = xap($d, false);
 		}
 		unset($d);
-		if (!$user_data && !isset($_POST['user']['password'])) {
+		if (!$user_data && ($is_bot || !isset($_POST['user']['password']))) {
 			error_code(400);
 			return;
 		}
 		$L    = Language::instance();
 		$Page = Page::instance();
-		$User = User::instance();
 		if (
 			isset($user_data['login']) &&
 			$user_data['login'] !== $User->get('login', $user_id) &&
@@ -111,7 +105,7 @@ trait users {
 			error_code(500);
 			return;
 		}
-		if (isset($_POST['user']['password']) && !$User->set_password($_POST['user']['password'], $user_id)) {
+		if (!$is_bot && isset($_POST['user']['password']) && !$User->set_password($_POST['user']['password'], $user_id)) {
 			error_code(500);
 		}
 	}

@@ -1,0 +1,59 @@
+<polymer-element name="cs-system-admin-users-edit-bot-form">
+  <template>
+    <template if="{{!user_data.id}}">
+      <h2 class="uk-text-center">
+        <div class="uk-icon-spin uk-icon-spinner"></div>
+      </h2>
+    </template>
+    <template if="{{user_data.id}}">
+      <div class="uk-form uk-form-stacked">
+        <label class="uk-form-label">[[L.bot_name]]</label>
+        <input type="text" value="{{user_data.username}}">
+        <label class="uk-form-label" data-uk-tooltip="[[tooltip_animation]]" title="[[L.bot_user_agent_info]]">[[L.bot_user_agent]]</label>
+        <input type="text" value="{{user_data.login}}">
+        <label class="uk-form-label" data-uk-tooltip="[[tooltip_animation]]" title="[[L.bot_ip_info]]">[[L.bot_ip]]</label>
+        <input type="text" value="{{user_data.email}}">
+        <label class="uk-form-label">[[L.status]]</label>
+        <div class="uk-button-group" data-uk-button-radio on-click="{{status_change}}">
+          <!-- Not activated -->
+          <template if="[[user_data.status == -1]]">
+            <div class="uk-button uk-active">
+              <input checked type="radio" value="-1">[[L.is_not_activated]]</input>
+            </div>
+          </template>
+          <template if="[[user_data.status != -1]]">
+            <div class="uk-button">
+              <input type="radio" value="-1">[[L.is_not_activated]]</input>
+            </div>
+          </template>
+          <!-- Inactive -->
+          <template if="[[user_data.status == 0]]">
+            <div class="uk-button uk-active">
+              <input checked type="radio" value="0">[[L.inactive]]</input>
+            </div>
+          </template>
+          <template if="[[user_data.status != 0]]">
+            <div class="uk-button">
+              <input type="radio" value="0">[[L.inactive]]</input>
+            </div>
+          </template>
+          <!-- Active -->
+          <template if="[[user_data.status == 1]]">
+            <div class="uk-button uk-active">
+              <input checked type="radio" value="1">[[L.active]]</input>
+            </div>
+          </template>
+          <template if="[[user_data.status != 1]]">
+            <div class="uk-button">
+              <input type="radio" value="1">[[L.active]]</input>
+            </div>
+          </template>
+        </div>
+        <p>
+          <button class="uk-button uk-button-primary" on-click="[[save]]">[[L.save]]</button>
+        </p>
+      </div>
+    </template>
+  </template>
+  <script src="script.js"></script>
+</polymer-element>

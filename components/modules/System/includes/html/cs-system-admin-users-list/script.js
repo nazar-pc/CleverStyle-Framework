@@ -75,18 +75,31 @@
       return $(this.shadowRoot).cs().tooltips_inside();
     },
     add_user: function() {
-      return $.cs.simple_modal("<h3>" + L.adding_a_user + "</h3>\n<cs-system-admin-users-add-user-form/>").on('hide.uk.modal', (function(_this) {
-        return function() {
-          return location.reload();
-        };
-      })(this));
+      return $.cs.simple_modal("<h3>" + L.adding_a_user + "</h3>\n<cs-system-admin-users-add-user-form/>").on('hide.uk.modal', function() {
+        return location.reload();
+      });
     },
     add_bot: function() {
-      return $.cs.simple_modal("<h3>" + L.adding_a_bot + "</h3>\n<cs-system-admin-users-add-bot-form/>").on('hide.uk.modal', (function(_this) {
-        return function() {
+      return $.cs.simple_modal("<h3>" + L.adding_a_bot + "</h3>\n<cs-system-admin-users-add-bot-form/>").on('hide.uk.modal', function() {
+        return location.reload();
+      });
+    },
+    edit_user: function(event, detail, sender) {
+      var $sender, index, title, user;
+      $sender = $(sender);
+      index = $sender.closest('[data-user-index]').data('user-index');
+      user = this.users[index];
+      if (user.is_bot) {
+        title = L.editing_of_bot_information(user.username || user.login);
+        return $.cs.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-edit-bot-form user_id=\"" + user.id + "\"/>").on('hide.uk.modal', function() {
           return location.reload();
-        };
-      })(this));
+        });
+      } else {
+        title = L.editing_of_user_information(user.username || user.login);
+        return $.cs.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-edit-user-form user_id=\"" + user.id + "\"/>").on('hide.uk.modal', function() {
+          return location.reload();
+        });
+      }
     },
     edit_permissions: function(event, detail, sender) {
       var $sender, index, title, title_key, user;

@@ -21,6 +21,7 @@ use
  *
  * @method \cs\DB\_Abstract db()
  * @method \cs\DB\_Abstract db_prime()
+ * @method false|int[]        get_groups(false|int $user)
  * @method                  __finish()
  */
 trait Data {
@@ -275,7 +276,11 @@ trait Data {
 		}
 		if (in_array($item, ['login', 'email'], true)) {
 			$value = mb_strtolower($value);
-			if ($item === 'email' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+			if (
+				$item === 'email' &&
+				!filter_var($value, FILTER_VALIDATE_EMAIL) &&
+				!in_array(User::BOT_GROUP_ID, $this->get_groups($user))
+			) {
 				return false;
 			}
 			if ($value === $this->get($item, $user)) {

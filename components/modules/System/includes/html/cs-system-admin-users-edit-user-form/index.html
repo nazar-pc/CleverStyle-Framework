@@ -1,0 +1,101 @@
+<polymer-element name="cs-system-admin-users-edit-user-form">
+  <template>
+    <link href="style.css" rel="stylesheet">
+    <template if="{{!user_data.id}}">
+      <h2 class="uk-text-center">
+        <div class="uk-icon-spin uk-icon-spinner"></div>
+      </h2>
+    </template>
+    <template if="{{user_data.id}}">
+      <div class="uk-form uk-form-stacked">
+        <label class="uk-form-label">id</label>
+        <p>[[user_data.id]]</p>
+        <label class="uk-form-label">[[L.registration_date]]</label>
+        <p>[[user_data.reg_date_formatted]]</p>
+        <label class="uk-form-label">[[L.registration_ip]]</label>
+        <p>{{user_data.reg_ip_formatted[0]}}</p>
+        <template if="{{user_data.reg_ip_formatted[1]}}">
+          <p>{{user_data.reg_ip_formatted[1]}}</p>
+        </template>
+        <label class="uk-form-label">[[L.last_sign_in]]</label>
+        <p>[[user_data.last_sign_in_formatted]]</p>
+        <label class="uk-form-label">[[L.last_ip]]</label>
+        <p>{{user_data.last_ip_formatted[0]}}</p>
+        <template if="{{user_data.last_ip_formatted[1]}}">
+          <p>{{user_data.last_ip_formatted[1]}}</p>
+        </template>
+        <label class="uk-form-label">[[L.last_online]]</label>
+        <p>[[user_data.last_online_formatted]]</p>
+        <label class="uk-form-label">[[L.login]]</label>
+        <input type="text" value="{{user_data.login}}">
+        <label class="uk-form-label">[[L.username]]</label>
+        <input type="text" value="{{user_data.username}}">
+        <label class="uk-form-label">[[L.email]]</label>
+        <input type="email" value="{{user_data.email}}">
+        <label class="uk-form-label">
+          [[L.password_only_for_changing]]
+        </label>
+        <div class="uk-form-icon uk-width-1-1">
+          <div class="uk-icon-lock cs-pointer" on-click="[[show_password]]"></div>
+          <input id="password" type="password" value="{{user_data.password}}">
+        </div>
+        <label class="uk-form-label">[[L.language]]</label>
+        <select name="{{user_data.language" size="5">
+          <template repeat="{{language in languages}}">
+            <option selected?="[[language.clanguage == user_data.language]]" value="[[language.clanguage]]">[[language.description]]</option>
+          </template>
+        </select>
+        <label class="uk-form-label">[[L.timezone]]</label>
+        <select name="{{user_data.timezone" size="7">
+          <template repeat="{{timezone in timezones}}">
+            <option selected?="[[timezone.timezone == user_data.timezone]]" value="[[timezone.timezone]]">[[timezone.description]]</option>iption]]
+          </template>
+        </select>
+        <label class="uk-form-label">[[L.status]]</label>
+        <div class="uk-button-group" data-uk-button-radio on-click="{{status_change}}">
+          <!-- Not activated -->
+          <template if="[[user_data.status == -1]]">
+            <div class="uk-button uk-active">
+              <input checked type="radio" value="-1">[[L.is_not_activated]]</input>
+            </div>
+          </template>
+          <template if="[[user_data.status != -1]]">
+            <div class="uk-button">
+              <input type="radio" value="-1">[[L.is_not_activated]]</input>
+            </div>
+          </template>
+          <!-- Inactive -->
+          <template if="[[user_data.status == 0]]">
+            <div class="uk-button uk-active">
+              <input checked type="radio" value="0">[[L.inactive]]</input>
+            </div>
+          </template>
+          <template if="[[user_data.status != 0]]">
+            <div class="uk-button">
+              <input type="radio" value="0">[[L.inactive]]</input>
+            </div>
+          </template>
+          <!-- Active -->
+          <template if="[[user_data.status == 1]]">
+            <div class="uk-button uk-active">
+              <input checked type="radio" value="1">[[L.active]]</input>
+            </div>
+          </template>
+          <template if="[[user_data.status != 1]]">
+            <div class="uk-button">
+              <input type="radio" value="1">[[L.active]]</input>
+            </div>
+          </template>
+        </div>
+        <label class="uk-form-label" data-uk-tooltip="[[tooltip_animation]]" title="[[L.block_until_info]]">[[L.block_until]]</label>
+        <input type="datetime-local" value="{{block_until}}">
+        <label class="uk-form-label">[[L.avatar]]</label>
+        <input type="text" value="{{user_data.avatar}}">
+        <p>
+          <button class="uk-button uk-button-primary" on-click="[[save]]">[[L.save]]</button>
+        </p>
+      </div>
+    </template>
+  </template>
+  <script src="script.js"></script>
+</polymer-element>
