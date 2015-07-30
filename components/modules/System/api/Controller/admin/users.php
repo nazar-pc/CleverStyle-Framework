@@ -63,7 +63,6 @@ trait users {
 		$columns_allowed_to_edit = [
 			'login',
 			'username',
-			'password',
 			'email',
 			'language',
 			'timezone',

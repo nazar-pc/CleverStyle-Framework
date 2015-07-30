@@ -9,6 +9,7 @@
  */
 namespace cs\modules\System\api\Controller;
 use
+	cs\Config,
 	cs\Mail,
 	cs\Page,
 	cs\Storage;
@@ -22,6 +23,11 @@ trait admin {
 			error_code(500);
 		}
 	}
+	static function admin_languages_get () {
+		Page::instance()->json(
+			Config::instance()->core['active_languages']
+		);
+	}
 	static function admin_storages_test_get () {
 		$Storage = Storage::instance();
 		if (isset($_GET['index'])) {
@@ -33,7 +39,7 @@ trait admin {
 			(int)$result
 		);
 	}
-	static function timezones_get () {
+	static function admin_timezones_get () {
 		Page::instance()->json(
 			get_timezones_list()
 		);

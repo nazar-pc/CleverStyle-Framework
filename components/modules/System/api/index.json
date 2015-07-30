@@ -11,6 +11,7 @@
 		"cache"              : [],
 		"databases_test"     : [],
 		"email_sending_test" : [],
+		"languages"          : [],
 		"groups"             : [
 			"_",
 			"permissions"
