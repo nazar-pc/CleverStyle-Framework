@@ -309,10 +309,20 @@ class Index {
 		if ($included || !$required) {
 			return;
 		}
-		if ($methods = get_files_list($dir, "/^$basename\\.[a-z]+\\.php$/")) {
-			$methods = _strtoupper(_substr($methods, strlen($basename) + 1, -4));
-			$methods = implode(', ', $methods);
-			_header("Allow: $methods");
+		$methods = get_files_list($dir, "/^$basename\\.[a-z]+\\.php$/");
+		$methods = _strtoupper(_substr($methods, strlen($basename) + 1, -4));
+		$this->method_handler_not_found($methods);
+	}
+	/**
+	 * If HTTP method handler not found we generate either `501 Not Implemented` if other methods are supported or `404 Not Found` if handlers for others
+	 * methods also doesn't exist
+	 *
+	 * @param string[] $available_methods
+	 */
+	protected function method_handler_not_found ($available_methods) {
+		if ($available_methods) {
+			$available_methods = implode(', ', $available_methods);
+			_header("Allow: $available_methods");
 			if ($this->request_method !== 'options') {
 				error_code(501);
 			}
@@ -383,16 +393,8 @@ class Index {
 				return preg_match("/^{$method_name}_[a-z]+$/", $method);
 			}
 		);
-		if ($methods) {
-			$methods = _strtoupper(_substr($methods, strlen($method_name) + 1));
-			$methods = implode(', ', $methods);
-			_header("Allow: $methods");
-			if ($this->request_method !== 'options') {
-				error_code(501);
-			}
-		} else {
-			error_code(404);
-		}
+		$methods = _strtoupper(_substr($methods, strlen($method_name) + 1));
+		$this->method_handler_not_found($methods);
 	}
 	/**
 	 * Get form action based on current module, path and other parameters
