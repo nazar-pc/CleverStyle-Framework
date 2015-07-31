@@ -313,7 +313,9 @@ class Index {
 			$methods = _strtoupper(_substr($methods, strlen($basename) + 1, -4));
 			$methods = implode(', ', $methods);
 			_header("Allow: $methods");
-			error_code(405);
+			if ($this->request_method !== 'options') {
+				error_code(501);
+			}
 		} else {
 			error_code(404);
 		}
@@ -385,7 +387,9 @@ class Index {
 			$methods = _strtoupper(_substr($methods, strlen($method_name) + 1));
 			$methods = implode(', ', $methods);
 			_header("Allow: $methods");
-			error_code(405);
+			if ($this->request_method !== 'options') {
+				error_code(501);
+			}
 		} else {
 			error_code(404);
 		}
