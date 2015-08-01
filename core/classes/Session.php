@@ -361,7 +361,7 @@ class Session {
 	/**
 	 * Load session by id and return id of session owner (user), update session expiration
 	 *
-	 * @param null|string $session_id If not specified - loaded from `$this->session_id`, and if that also empty - from cookies
+	 * @param false|null|string $session_id If not specified - loaded from `$this->session_id`, and if that also empty - from cookies
 	 *
 	 * @return int User id
 	 */

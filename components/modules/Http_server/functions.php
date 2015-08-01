@@ -186,7 +186,7 @@ namespace {
 	 *
 	 * @param $name
 	 *
-	 * @return bool
+	 * @return false|string
 	 */
 	function _getcookie ($name) {
 		static $prefix;

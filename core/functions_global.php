@@ -64,7 +64,7 @@ function _setcookie ($name, $value, $expire = 0, $httponly = false) {
  *
  * @param $name
  *
- * @return bool
+ * @return false|string
  */
 function _getcookie ($name) {
 	static $prefix;
