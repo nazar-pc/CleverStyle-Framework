@@ -43,9 +43,9 @@ class Session {
 	/**
 	 * Id of current session
 	 *
-	 * @var bool|string
+	 * @var string
 	 */
-	protected $session_id = false;
+	protected $session_id;
 	/**
 	 * User id of current session
 	 *
@@ -280,7 +280,7 @@ class Session {
 		if ($this->user_id == User::GUEST_ID && $this->bot()) {
 			return false;
 		}
-		return $this->session_id;
+		return $this->session_id ?: false;
 	}
 	/**
 	 * Returns user id of current session
