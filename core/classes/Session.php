@@ -654,7 +654,17 @@ class Session {
 		if (!is_md5($session_id)) {
 			return false;
 		}
-		$data = $this->cache->get(
+		$data = $this->get_data_internal($session_id);
+		return isset($data[$item]) ? $data[$item] : false;
+	}
+	/**
+	 * @param string $session_id
+	 *
+	 * @return array
+	 *
+	 */
+	protected function get_data_internal ($session_id) {
+		return $this->cache->get(
 			"data/$session_id",
 			function () use ($session_id) {
 				return _json_decode(
@@ -670,7 +680,6 @@ class Session {
 				) ?: false;
 			}
 		) ?: [];
-		return isset($data[$item]) ? $data[$item] : false;
 	}
 	/**
 	 * Store data with session
@@ -687,22 +696,7 @@ class Session {
 		if (!is_md5($session_id)) {
 			return false;
 		}
-		$data        = $this->cache->get(
-			"data/$session_id",
-			function () use ($session_id) {
-				return _json_decode(
-					$this->db()->qfs(
-						[
-							"SELECT `data`
-							FROM `[prefix]sessions`
-							WHERE `id` = '%s'
-							LIMIT 1",
-							$session_id
-						]
-					)
-				) ?: false;
-			}
-		) ?: [];
+		$data        = $this->get_data_internal($session_id);
 		$data[$item] = $value;
 		if ($this->db()->q(
 			"UPDATE `[prefix]sessions`
@@ -732,22 +726,7 @@ class Session {
 		if (!is_md5($session_id)) {
 			return false;
 		}
-		$data = $this->cache->get(
-			"data/$session_id",
-			function () use ($session_id) {
-				return _json_decode(
-					$this->db()->qfs(
-						[
-							"SELECT `data`
-							FROM `[prefix]sessions`
-							WHERE `id` = '%s'
-							LIMIT 1",
-							$session_id
-						]
-					)
-				) ?: false;
-			}
-		) ?: [];
+		$data = $this->get_data_internal($session_id);
 		if (!isset($data[$item])) {
 			return true;
 		}
