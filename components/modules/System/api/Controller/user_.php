@@ -172,7 +172,6 @@ trait user_ {
 		) {
 			$status      = $User->get('status', $id);
 			$block_until = $User->get('block_until', $id);
-			file_put_contents(DIR.'/test', var_export($block_until, true)."\n".time());
 			if ($status == User::STATUS_NOT_ACTIVATED) {
 				error_code(403);
 				$Page->error($L->your_account_is_not_active);
