@@ -25,6 +25,24 @@ trait Data_model_processing {
 	/**
 	 * @param callable[]|string[] $data_model
 	 * @param array               $arguments
+	 *
+	 * @return array
+	 */
+	private function fix_arguments_order ($data_model, $arguments) {
+		if (is_array_indexed($arguments)) {
+			return $arguments;
+		}
+		$arguments_ = [];
+		foreach (array_keys($data_model) as $argument) {
+			if (isset($arguments[$argument])) {
+				$arguments_[] = $arguments[$argument];
+			}
+		}
+		return $arguments_;
+	}
+	/**
+	 * @param callable[]|string[] $data_model
+	 * @param array               $arguments
 	 * @param false|int           $id            On update id should be specified to work properly with multilingual fields
 	 * @param bool                $update_needed If on creation request without specified primary key and multilingual fields present - update needed
 	 *                                           after creation (there is no id before creation)

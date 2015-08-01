@@ -43,6 +43,7 @@ trait CRUD {
 	 * @return false|int|string Id of created item on success (or specified primary key), `false` otherwise
 	 */
 	private function create_internal ($table, $data_model, $arguments) {
+		$arguments = self::fix_arguments_order($data_model, $arguments);
 		$insert_id = count($data_model) == count($arguments) ? $arguments[0] : false;
 		list($prepared_arguments, $joined_tables) = self::crud_arguments_preparation(
 			$insert_id !== false ? $data_model : array_slice($data_model, 1),
@@ -320,6 +321,7 @@ trait CRUD {
 	 * @return bool
 	 */
 	private function update_internal ($table, $data_model, $arguments, $files_update = true) {
+		$arguments          = self::fix_arguments_order($data_model, $arguments);
 		$prepared_arguments = $arguments;
 		$id                 = array_shift($prepared_arguments);
 		if ($files_update) {
