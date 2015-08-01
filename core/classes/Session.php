@@ -305,7 +305,7 @@ class Session {
 		return $session_data;
 	}
 	/**
-	 * @param string $session_id
+	 * @param null|string $session_id
 	 *
 	 * @return false|array
 	 */
