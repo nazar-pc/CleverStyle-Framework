@@ -12,14 +12,20 @@
  *
  *  System/Session/init/after
  *
+ *  System/Session/load
+ *  ['session_data' => $session_data]
+ *
+ *  System/Session/add
+ *  ['session_data' => $session_data]
+ *
  *  System/Session/del/before
- *  ['id' => session_id]
+ *  ['id' => $session_id]
  *
  *  System/Session/del/after
- *  ['id' => session_id]
+ *  ['id' => $session_id]
  *
  *  System/Session/del_all
- *  ['id' => user_id]
+ *  ['id' => $user_id]
  */
 namespace cs;
 use
@@ -34,6 +40,7 @@ class Session {
 	use
 		Accessor,
 		Singleton;
+	const INITIAL_SESSION_EXPIRATION = 300;
 	/**
 	 * Id of current session
 	 *
@@ -319,7 +326,7 @@ class Session {
 		return $session;
 	}
 	/**
-	 * Load session by id and return id of session owner (user), updates last_sign_in, last_ip and last_online information
+	 * Load session by id and return id of session owner (user), update session expiration
 	 *
 	 * @param null|string $session_id If not specified - loaded from `$this->session_id`, and if that also empty - from cookies
 	 *
@@ -338,42 +345,23 @@ class Session {
 		 * Updating last online time and ip
 		 */
 		$Config = Config::instance();
-		$User   = User::instance();
 		$time   = time();
-		$update = [];
-		if ($User->get('last_online', $session_data['user']) < $time - $Config->core['online_time'] * $Config->core['update_ratio'] / 100) {
-			/**
-			 * @var \cs\_SERVER $_SERVER
-			 */
-			$ip       = ip2hex($_SERVER->ip);
-			$update[] = "
-				UPDATE `[prefix]users`
-				SET
-					`last_ip`		= '$ip',
-					`last_online`	= $time
-				WHERE `id` = $session_data[user]";
-			$User->set(
-				[
-					'last_ip'     => $ip,
-					'last_online' => $time
-				],
-				null,
-				$session_data['user']
-			);
-			unset($ip);
-		}
 		if ($session_data['expire'] - $time < $Config->core['session_expire'] * $Config->core['update_ratio'] / 100) {
-			$session_data['expire']             = $time + $Config->core['session_expire'];
-			$update[]                           = "
-				UPDATE `[prefix]sessions`
+			$session_data['expire'] = $time + $Config->core['session_expire'];
+			$this->db_prime()->q(
+				"UPDATE `[prefix]sessions`
 				SET `expire` = $session_data[expire]
 				WHERE `id` = '$session_data[id]'
-				LIMIT 1";
-			$this->cache->{$session_data['id']} = $session_data;
+				LIMIT 1"
+			);
+			$this->cache->set($session_data['id'], $session_data);
 		}
-		if (!empty($update)) {
-			$this->db_prime()->q($update);
-		}
+		Event::instance()->fire(
+			'System/Session/load',
+			[
+				'session_data' => $session_data
+			]
+		);
 		return $this->load_initialization($session_data['id'], $session_data['user']);
 	}
 	/**
@@ -434,7 +422,6 @@ class Session {
 				'timezone',
 				'status',
 				'block_until',
-				'last_online',
 				'avatar'
 			],
 			$user
@@ -487,18 +474,6 @@ class Session {
 			return $this->add(User::GUEST_ID);
 		}
 		$session_data = $this->create_unique_session($user);
-		if ($user != User::GUEST_ID) {
-			$this->db_prime()->q(
-				"UPDATE `[prefix]users`
-				SET
-					`last_sign_in`	= %d,
-					`last_online`	= %d,
-					`last_ip`		= '$session_data[ip]'
-				WHERE `id` ='$user'",
-				time(),
-				time()
-			);
-		}
 		_setcookie('session', $session_data['id'], $session_data['expire']);
 		$this->load_initialization($session_data['id'], $session_data['user']);
 		/**
@@ -508,6 +483,12 @@ class Session {
 		if (mt_rand(0, $Config->core['inserts_limit']) < $Config->core['inserts_limit'] / 100 * (100 - $Config->core['update_ratio']) / 5) {
 			$this->delete_old_sessions();
 		}
+		Event::instance()->fire(
+			'System/Session/add',
+			[
+				'session_data' => $session_data
+			]
+		);
 		return $session_data['id'];
 	}
 	/**
@@ -525,7 +506,7 @@ class Session {
 		/**
 		 * Many guests open only one page (or do not store any cookies), so create guest session only for 5 minutes max initially
 		 */
-		$expire_in = $user == User::GUEST_ID ? min($Config->core['session_expire'], 300) : $Config->core['session_expire'];
+		$expire_in = $user == User::GUEST_ID ? min($Config->core['session_expire'], self::INITIAL_SESSION_EXPIRATION) : $Config->core['session_expire'];
 		$expire    = time() + $expire_in;
 		/**
 		 * Create unique session

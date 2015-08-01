@@ -14,14 +14,6 @@
 				%p {{user_data.reg_ip_formatted[0]}}
 				%template(if="{{user_data.reg_ip_formatted[1]}}")
 					%p {{user_data.reg_ip_formatted[1]}}
-				%label.uk-form-label [[L.last_sign_in]]
-				%p [[user_data.last_sign_in_formatted]]
-				%label.uk-form-label [[L.last_ip]]
-				%p {{user_data.last_ip_formatted[0]}}
-				%template(if="{{user_data.last_ip_formatted[1]}}")
-					%p {{user_data.last_ip_formatted[1]}}
-				%label.uk-form-label [[L.last_online]]
-				%p [[user_data.last_online_formatted]]
 				%label.uk-form-label [[L.login]]
 				%input(type="text" value="{{user_data.login}}")
 				%label.uk-form-label [[L.username]]

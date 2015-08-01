@@ -275,9 +275,8 @@ trait Management {
 				"SELECT `id`
 				FROM `[prefix]users`
 				WHERE
-					`last_sign_in`	= 0 AND
-					`status`		= '%s' AND
-					`reg_date`		< $reg_date",
+					`status`	= '%s' AND
+					`reg_date`	< $reg_date",
 				User::STATUS_NOT_ACTIVATED
 			]
 		);

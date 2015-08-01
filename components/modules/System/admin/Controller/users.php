@@ -27,7 +27,6 @@ trait users {
 		$Index->content(
 			static::vertical_table(
 				static::core_input('session_expire', 'number', null, false, 1, false, $L->seconds),
-				static::core_input('online_time', 'number', null, false, 1, false, $L->seconds),
 				[
 					h::info('sign_in_attempts_block_count'),
 					h::{'input[type=number]'}(
@@ -493,9 +492,6 @@ trait users {
 					}
 					if (isset($user_data['reg_ip'])) {
 						$user_data['reg_ip'] = hex2ip($user_data['reg_ip'], 10);
-					}
-					if (isset($user_data['last_ip'])) {
-						$user_data['last_ip'] = hex2ip($user_data['last_ip'], 10);
 					}
 					$users_list[] =
 						$user_data +

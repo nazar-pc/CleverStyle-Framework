@@ -189,7 +189,6 @@ function install_process ($fs, $argv = null) {
 		'mail_from'                         => '',
 		'rules'                             => '',
 		'show_tooltips'                     => 1,
-		'online_time'                       => 300,
 		'remember_user_ip'                  => 0,
 		'ip_black_list'                     => [],
 		'ip_admin_list_only'                => 0,

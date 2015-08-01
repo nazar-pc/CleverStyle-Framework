@@ -424,8 +424,6 @@
 		//General
 		"session_expire"							: "Session expires after",
 		"session_expire_info"						: "Specifies the time after which user session is obsolete",
-		"online_time"								: "Online time",
-		"online_time_info"							: "Time since last opened page, during which the user is considered still present on site",
 		"sign_in_attempts_block_count"				: "Failed sign in attempts before blocking",
 		"sign_in_attempts_block_count_info"			: "After a specified number of unsuccessful login attempts ability to sign in will be temporarily locked to complication of password guessing. To remove the restrictions, enter 0.",
 		"sign_in_attempts_block_time"				: "Time lock after failed sign in attempts",
@@ -461,9 +459,6 @@
 		"activate_user"						: "Activate user",
 		"registration_date"					: "Registration date",
 		"registration_ip"					: "Registration IP",
-		"last_sign_in"						: "Last sign in",
-		"last_ip"							: "Last sign in IP",
-		"last_online"						: "The last time was on site",
 		"username"							: "User name",
 		"password_only_for_changing"		: "Password (enter only if you want to change)",
 		"status"							: "Status",

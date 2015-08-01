@@ -63,9 +63,6 @@ use
  * @property string $reg_key       random md5 hash, generated during registration
  * @property int    $status        '-1' - not activated (for example after registration), 0 - inactive, 1 - active
  * @property int    $block_until   unix timestamp
- * @property int    $last_sign_in  unix timestamp
- * @property string $last_ip       hex value, obtained by function ip2hex()
- * @property int    $last_online   unix timestamp
  * @property string $avatar
  *
  * @method static User instance($check = false)

@@ -50,9 +50,6 @@ trait users {
 		$L                              = Language::instance();
 		$data['reg_date_formatted']     = $data['reg_date'] ? date($L->_date, $data['reg_date']) : $L->undefined;
 		$data['reg_ip_formatted']       = hex2ip($data['reg_ip'], 10);
-		$data['last_sign_in_formatted'] = $data['last_sign_in'] ? date($L->_datetime, $data['last_sign_in']) : $L->undefined;
-		$data['last_ip_formatted']      = hex2ip($data['last_ip'], 10);
-		$data['last_online_formatted']  = $data['last_online'] ? date($L->_datetime, $data['last_online']) : $L->undefined;
 		return $data;
 	}
 	static function admin_users___patch ($route_ids) {

@@ -105,9 +105,6 @@ CREATE TABLE IF NOT EXISTS `[prefix]users` (
   `reg_key` varchar(32) NOT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '-1' COMMENT '''-1'' - not activated (for example after registration), 0 - inactive, 1 - active',
   `block_until` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `last_sign_in` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `last_ip` varchar(32) NOT NULL COMMENT 'hex value, obtained by function ip2hex()',
-  `last_online` bigint(20) unsigned NOT NULL DEFAULT '0',
   `avatar` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `login` (`login`(5),`username`(5),`email`(5)),
@@ -115,9 +112,7 @@ CREATE TABLE IF NOT EXISTS `[prefix]users` (
   KEY `password_hash` (`password_hash`(5)),
   KEY `email_hash` (`email_hash`(5)),
   KEY `language` (`language`(3)),
-  KEY `status` (`status`),
-  KEY `last_sign_in` (`last_sign_in`),
-  KEY `last_online` (`last_online`)
+  KEY `status` (`status`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 INSERT INTO `[prefix]users` (`login`, `login_hash`, `status`) VALUES ('guest', '5cf371cef0648f2656ddc13b773aa642251267dbd150597506e96c3a', '1');
