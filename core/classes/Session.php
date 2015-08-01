@@ -293,7 +293,7 @@ class Session {
 	/**
 	 * Returns session details by session id
 	 *
-	 * @param null|string $session_id If `null` - loaded from `$this->session_id`, and if that also empty - from cookies
+	 * @param false|null|string $session_id If `null` - loaded from `$this->session_id`, and if that also empty - from cookies
 	 *
 	 * @return false|array
 	 */
@@ -305,7 +305,7 @@ class Session {
 		return $session_data;
 	}
 	/**
-	 * @param null|string $session_id
+	 * @param false|null|string $session_id
 	 *
 	 * @return false|array
 	 */
