@@ -32,19 +32,6 @@ $ ->
 				.find(':radio[value=0]')
 				.prop('checked', true)
 				.change()
-		$('#cs-users-search-columns li').click ->
-			$this = $(@)
-			if $this.hasClass('uk-button-primary')
-				$this.removeClass('uk-button-primary')
-			else
-				$this.addClass('uk-button-primary')
-			$('#cs-users-search-selected-columns').val(
-				$this.parent().children('.uk-button-primary')
-					.map ->
-						$.trim(@.innerHTML)
-					.get()
-					.join(';')
-			)
 		$('.cs-blocks-permissions').click ->
 			$block	= $(@).closest('[data-index]')
 			index	= $block.data('index')

@@ -32,10 +32,10 @@
     search_limit: 20,
     search_columns: [],
     search_modes: [],
+    all_columns: [],
     columns: ['id', 'login', 'username', 'email'],
-    users_ids: [],
     users: [],
-    ready: function() {
+    created: function() {
       $.ajax({
         url: 'api/System/admin/users',
         type: 'search_options',
@@ -43,19 +43,16 @@
           return function(search_options) {
             var column, i, len, ref, search_columns;
             search_columns = [];
-            search_columns.push({
-              value: '',
-              label: L.all_columns.toString()
-            });
             ref = search_options.columns;
             for (i = 0, len = ref.length; i < len; i++) {
               column = ref[i];
               search_columns.push({
-                value: column,
-                label: column
+                name: column,
+                selected: _this.columns.indexOf(column) !== -1
               });
             }
             _this.search_columns = search_columns;
+            _this.all_columns = search_options.columns;
             return _this.search_modes = search_options.modes;
           };
         })(this)
@@ -63,6 +60,7 @@
       return this.search();
     },
     search: function() {
+      this.users = [];
       return $.ajax({
         url: 'api/System/admin/users',
         type: 'search',
@@ -76,8 +74,6 @@
         success: (function(_this) {
           return function(data) {
             if (!data.count) {
-              _this.users_ids = [];
-              _this.users = [];
               return;
             }
             data.users.forEach(function(user) {
@@ -129,6 +125,25 @@
     },
     workarounds: function(target) {
       return $(target).cs().tabs_inside().cs().tooltips_inside();
+    },
+    toggle_search_column: function(event, detail, sender) {
+      var column, index;
+      index = $(sender).data('column-index');
+      column = this.search_columns[index];
+      column.selected = !column.selected;
+      this.columns = (function() {
+        var i, len, ref, results;
+        ref = this.search_columns;
+        results = [];
+        for (i = 0, len = ref.length; i < len; i++) {
+          column = ref[i];
+          if (column.selected) {
+            results.push(column.name);
+          }
+        }
+        return results;
+      }).call(this);
+      return this.search();
     },
     add_user: function() {
       return $.cs.simple_modal("<h3>" + L.adding_a_user + "</h3>\n<cs-system-admin-users-add-user-form/>").on('hide.uk.modal', this.search.bind(this));

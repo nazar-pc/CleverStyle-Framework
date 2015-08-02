@@ -448,7 +448,6 @@
 		"search"							: "Search",
 		"column"							: "Column",
 		"show_columns"						: "Show columns",
-		"show_columns_info"					: "To select several columns, use the Ctrl key",
 		"search_mode"						: "Search mode",
 		"search_text"						: "Search text",
 		"items"								: "Items",

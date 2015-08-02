@@ -52,9 +52,9 @@ trait users {
 			error_code(400);
 			return;
 		}
-		$User                    = User::instance();
-		$user_id                 = (int)$route_ids[0];
-		$is_bot                  = in_array(User::BOT_GROUP_ID, $User->get_groups($user_id));
+		$User    = User::instance();
+		$user_id = (int)$route_ids[0];
+		$is_bot  = in_array(User::BOT_GROUP_ID, $User->get_groups($user_id));
 		if ($is_bot && !@$_POST['user']['login'] && !@$_POST['user']['email']) {
 			error_code(400);
 			return;
@@ -308,11 +308,13 @@ trait users {
 				'REGEXP',
 				'NOT REGEXP'
 			],
-			'columns' => array_filter(
-				User::instance()->get_users_columns(),
-				function ($column) {
-					return $column !== 'password_hash';
-				}
+			'columns' => array_values(
+				array_filter(
+					User::instance()->get_users_columns(),
+					function ($column) {
+						return $column !== 'password_hash';
+					}
+				)
 			)
 		];
 	}

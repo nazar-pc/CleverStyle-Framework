@@ -12,43 +12,41 @@ STATUS_INACTIVE	= 0
 GUEST_ID		= 1
 ROOT_ID			= 2
 Polymer(
-	tooltip_animation	:'{animation:true,delay:200}'
-	L					: L
-	search_column		: ''
-	search_mode			: 'LIKE'
-	search_text			: ''
-	search_page			: 1
-	search_limit		: 20
-	search_columns		: []
-	search_modes		: []
-	columns				: [
+	tooltip_animation		:'{animation:true,delay:200}'
+	L						: L
+	search_column			: ''
+	search_mode				: 'LIKE'
+	search_text				: ''
+	search_page				: 1
+	search_limit			: 20
+	search_columns			: []
+	search_modes			: []
+	all_columns				: []
+	columns					: [
 		'id'
 		'login'
 		'username'
 		'email'
 	]
-	users_ids			: []
-	users				: []
-	ready				: ->
+	users					: []
+	created					: ->
 		$.ajax(
 			url		: 'api/System/admin/users'
 			type	: 'search_options'
 			success	: (search_options) =>
 				search_columns	= []
-				search_columns.push(
-					value	: ''
-					label	: L.all_columns.toString()
-				)
 				for column in search_options.columns
 					search_columns.push(
-						value	: column
-						label	: column
+						name		: column
+						selected	: @columns.indexOf(column) != -1
 					)
 				@search_columns	= search_columns
+				@all_columns	= search_options.columns
 				@search_modes	= search_options.modes
 		)
 		@search()
-	search				: ->
+	search					: ->
+		@users	= []
 		$.ajax(
 			url		: 'api/System/admin/users'
 			type	: 'search'
@@ -60,8 +58,6 @@ Polymer(
 				limit	: @search_limit
 			success	: (data) =>
 				if !data.count
-					@users_ids	= []
-					@users		= []
 					return
 				data.users.forEach (user) =>
 					user.class		=
@@ -93,14 +89,20 @@ Polymer(
 						user.type_info	= L[type + '_info']
 				@users	= data.users
 		)
-	domReady			: ->
+	domReady				: ->
 		@workarounds(@shadowRoot)
 		cs.observe_inserts_on(@shadowRoot, @workarounds)
-	workarounds			: (target) ->
+	workarounds				: (target) ->
 		$(target)
 			.cs().tabs_inside()
 			.cs().tooltips_inside()
-	add_user			: ->
+	toggle_search_column	: (event, detail, sender) ->
+		index			= $(sender).data('column-index')
+		column			= @search_columns[index]
+		column.selected = !column.selected
+		@columns		= (column.name for column in @search_columns when column.selected)
+		@search()
+	add_user				: ->
 		$.cs.simple_modal("""
 			<h3>#{L.adding_a_user}</h3>
 			<cs-system-admin-users-add-user-form/>
@@ -108,7 +110,7 @@ Polymer(
 			'hide.uk.modal'
 			@search.bind(@)
 		)
-	add_bot				: ->
+	add_bot					: ->
 		$.cs.simple_modal("""
 			<h3>#{L.adding_a_bot}</h3>
 			<cs-system-admin-users-add-bot-form/>
@@ -116,7 +118,7 @@ Polymer(
 			'hide.uk.modal'
 			@search.bind(@)
 		)
-	edit_user			: (event, detail, sender) ->
+	edit_user				: (event, detail, sender) ->
 		$sender		= $(sender)
 		index		= $sender.closest('[data-user-index]').data('user-index')
 		user		= @users[index]
@@ -142,7 +144,7 @@ Polymer(
 				'hide.uk.modal'
 				@search.bind(@)
 			)
-	edit_permissions	: (event, detail, sender) ->
+	edit_permissions		: (event, detail, sender) ->
 		$sender		= $(sender)
 		index		= $sender.closest('[data-user-index]').data('user-index')
 		user		= @users[index]

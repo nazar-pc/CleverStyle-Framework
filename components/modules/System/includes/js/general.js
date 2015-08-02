@@ -28,18 +28,6 @@
       $('.cs-permissions-deny-all').click(function() {
         return $(this).parentsUntil('div').find(':radio[value=0]').prop('checked', true).change();
       });
-      $('#cs-users-search-columns li').click(function() {
-        var $this;
-        $this = $(this);
-        if ($this.hasClass('uk-button-primary')) {
-          $this.removeClass('uk-button-primary');
-        } else {
-          $this.addClass('uk-button-primary');
-        }
-        return $('#cs-users-search-selected-columns').val($this.parent().children('.uk-button-primary').map(function() {
-          return $.trim(this.innerHTML);
-        }).get().join(';'));
-      });
       $('.cs-blocks-permissions').click(function() {
         var $block, index, title;
         $block = $(this).closest('[data-index]');

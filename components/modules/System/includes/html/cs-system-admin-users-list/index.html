@@ -3,13 +3,14 @@
     <div class="uk-form">
       <ul class="cs-tabs">
         <li>[[L.search]]</li>
-        <li data-uk-tooltip="[[tooltip_animation]]" title="[[L.edit_user_information]]">[[L.show_columns]]</li>
+        <li>[[L.show_columns]]</li>
       </ul>
       <div>
         <div>
           <select value="{{search_column}}">
-            <template repeat="{{column in search_columns}}">
-              <option selected?="[[column.value == search_column]]" value="[[column.value]]">[[column.label]]</option>
+            <option selected value="">[[L.all_columns]]</option>
+            <template repeat="{{column in all_columns}}">
+              <option value="[[column]]">[[column]]</option>
             </template>
           </select>
           [[L.search_mode]]
@@ -22,7 +23,16 @@
           [[L.items]]
           <input min="1" type="number" value="{{search_limit}}">
         </div>
-        <div>TODO</div>
+        <ul class="uk-padding-remove">
+          <template repeat="{{column, index in search_columns}}">
+            <template if="{{column.selected}}">
+              <li class="cs-pointer uk-button uk-margin-bottom uk-button-primary" data-column-index="{{index}}" on-click="{{toggle_search_column}}">[[column.name]]</li>
+            </template>
+            <template if="{{!column.selected}}">
+              <li class="cs-pointer uk-button uk-margin-bottom" data-column-index="{{index}}" on-click="{{toggle_search_column}}">[[column.name]]</li>
+            </template>
+          </template>
+        </ul>
       </div>
       <input id="cs-users-search-selected-columns" type="hidden" value="{{search_text}}">
       <hr>
