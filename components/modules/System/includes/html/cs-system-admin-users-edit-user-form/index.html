@@ -47,34 +47,40 @@
           <!-- Not activated -->
           <template if="[[user_data.status == -1]]">
             <div class="uk-button uk-active">
-              <input checked type="radio" value="-1">[[L.is_not_activated]]</input>
+              <input checked type="radio" value="-1">
+              [[L.is_not_activated]]
             </div>
           </template>
           <template if="[[user_data.status != -1]]">
             <div class="uk-button">
-              <input type="radio" value="-1">[[L.is_not_activated]]</input>
+              <input type="radio" value="-1">
+              [[L.is_not_activated]]
             </div>
           </template>
           <!-- Inactive -->
           <template if="[[user_data.status == 0]]">
             <div class="uk-button uk-active">
-              <input checked type="radio" value="0">[[L.inactive]]</input>
+              <input checked type="radio" value="0">
+              [[L.inactive]]
             </div>
           </template>
           <template if="[[user_data.status != 0]]">
             <div class="uk-button">
-              <input type="radio" value="0">[[L.inactive]]</input>
+              <input type="radio" value="0">
+              [[L.inactive]]
             </div>
           </template>
           <!-- Active -->
           <template if="[[user_data.status == 1]]">
             <div class="uk-button uk-active">
-              <input checked type="radio" value="1">[[L.active]]</input>
+              <input checked type="radio" value="1">
+              [[L.active]]
             </div>
           </template>
           <template if="[[user_data.status != 1]]">
             <div class="uk-button">
-              <input type="radio" value="1">[[L.active]]</input>
+              <input type="radio" value="1">
+              [[L.active]]
             </div>
           </template>
         </div>

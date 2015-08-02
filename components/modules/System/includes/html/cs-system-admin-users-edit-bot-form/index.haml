@@ -6,34 +6,40 @@
 		%template(if="{{user_data.id}}")
 			.uk-form.uk-form-stacked
 				%label.uk-form-label [[L.bot_name]]
-				%input(type="text" value="{{user_data.username}}")
+				%input(type="text" value="{{user_data.username}}")/
 				%label.uk-form-label(data-uk-tooltip="[[tooltip_animation]]" title="[[L.bot_user_agent_info]]") [[L.bot_user_agent]]
-				%input(type="text" value="{{user_data.login}}")
+				%input(type="text" value="{{user_data.login}}")/
 				%label.uk-form-label(data-uk-tooltip="[[tooltip_animation]]" title="[[L.bot_ip_info]]") [[L.bot_ip]]
-				%input(type="text" value="{{user_data.email}}")
+				%input(type="text" value="{{user_data.email}}")/
 				%label.uk-form-label [[L.status]]
 				.uk-button-group(data-uk-button-radio on-click="{{status_change}}")
 					/ Not activated
 					%template(if="[[user_data.status == -1]]")
 						.uk-button.uk-active
-							%input(checked type="radio" value="-1") [[L.is_not_activated]]
+							%input(checked type="radio" value="-1")/
+							[[L.is_not_activated]]
 					%template(if="[[user_data.status != -1]]")
 						.uk-button
-							%input(type="radio" value="-1") [[L.is_not_activated]]
+							%input(type="radio" value="-1")/
+							[[L.is_not_activated]]
 					/ Inactive
 					%template(if="[[user_data.status == 0]]")
 						.uk-button.uk-active
-							%input(checked type="radio" value="0") [[L.inactive]]
+							%input(checked type="radio" value="0")/
+							[[L.inactive]]
 					%template(if="[[user_data.status != 0]]")
 						.uk-button
-							%input(type="radio" value="0") [[L.inactive]]
+							%input(type="radio" value="0")/
+							[[L.inactive]]
 					/ Active
 					%template(if="[[user_data.status == 1]]")
 						.uk-button.uk-active
-							%input(checked type="radio" value="1") [[L.active]]
+							%input(checked type="radio" value="1")/
+							[[L.active]]
 					%template(if="[[user_data.status != 1]]")
 						.uk-button
-							%input(type="radio" value="1") [[L.active]]
+							%input(type="radio" value="1")/
+							[[L.active]]
 				%p
 					%button.uk-button.uk-button-primary(on-click="[[save]]") [[L.save]]
 	%script(src="script.js")

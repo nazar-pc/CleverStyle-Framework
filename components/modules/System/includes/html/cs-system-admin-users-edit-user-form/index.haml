@@ -15,16 +15,16 @@
 				%template(if="{{user_data.reg_ip_formatted[1]}}")
 					%p {{user_data.reg_ip_formatted[1]}}
 				%label.uk-form-label [[L.login]]
-				%input(type="text" value="{{user_data.login}}")
+				%input(type="text" value="{{user_data.login}}")/
 				%label.uk-form-label [[L.username]]
-				%input(type="text" value="{{user_data.username}}")
+				%input(type="text" value="{{user_data.username}}")/
 				%label.uk-form-label [[L.email]]
-				%input(type="email" value="{{user_data.email}}")
+				%input(type="email" value="{{user_data.email}}")/
 				%label.uk-form-label
 					[[L.password_only_for_changing]]
 				.uk-form-icon.uk-width-1-1
 					.uk-icon-lock.cs-pointer(on-click="[[show_password]]")
-					%input(id="password" type="password" value="{{user_data.password}}")
+					%input(id="password" type="password" value="{{user_data.password}}")/
 				%label.uk-form-label [[L.language]]
 				%select(name="{{user_data.language" size="5")
 					%template(repeat="{{language in languages}}")
@@ -38,28 +38,34 @@
 					/ Not activated
 					%template(if="[[user_data.status == -1]]")
 						.uk-button.uk-active
-							%input(checked type="radio" value="-1") [[L.is_not_activated]]
+							%input(checked type="radio" value="-1")/
+							[[L.is_not_activated]]
 					%template(if="[[user_data.status != -1]]")
 						.uk-button
-							%input(type="radio" value="-1") [[L.is_not_activated]]
+							%input(type="radio" value="-1")/
+							[[L.is_not_activated]]
 					/ Inactive
 					%template(if="[[user_data.status == 0]]")
 						.uk-button.uk-active
-							%input(checked type="radio" value="0") [[L.inactive]]
+							%input(checked type="radio" value="0")/
+							[[L.inactive]]
 					%template(if="[[user_data.status != 0]]")
 						.uk-button
-							%input(type="radio" value="0") [[L.inactive]]
+							%input(type="radio" value="0")/
+							[[L.inactive]]
 					/ Active
 					%template(if="[[user_data.status == 1]]")
 						.uk-button.uk-active
-							%input(checked type="radio" value="1") [[L.active]]
+							%input(checked type="radio" value="1")/
+							[[L.active]]
 					%template(if="[[user_data.status != 1]]")
 						.uk-button
-							%input(type="radio" value="1") [[L.active]]
+							%input(type="radio" value="1")/
+							[[L.active]]
 				%label.uk-form-label(data-uk-tooltip="[[tooltip_animation]]" title="[[L.block_until_info]]") [[L.block_until]]
-				%input(type="datetime-local" value="{{block_until}}")
+				%input(type="datetime-local" value="{{block_until}}")/
 				%label.uk-form-label [[L.avatar]]
-				%input(type="text" value="{{user_data.avatar}}")
+				%input(type="text" value="{{user_data.avatar}}")/
 				%p
 					%button.uk-button.uk-button-primary(on-click="[[save]]") [[L.save]]
 	%script(src="script.js")
