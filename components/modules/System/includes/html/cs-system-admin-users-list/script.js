@@ -35,6 +35,7 @@
     all_columns: [],
     columns: ['id', 'login', 'username', 'email'],
     users: [],
+    users_count: 0,
     created: function() {
       $.ajax({
         url: 'api/System/admin/users',
@@ -60,7 +61,7 @@
       return this.search();
     },
     search: function() {
-      this.users = [];
+      this.users_count = 0;
       return $.ajax({
         url: 'api/System/admin/users',
         type: 'search',
@@ -73,7 +74,9 @@
         },
         success: (function(_this) {
           return function(data) {
+            _this.users_count = data.count;
             if (!data.count) {
+              _this.users = [];
               return;
             }
             data.users.forEach(function(user) {
@@ -124,7 +127,7 @@
       return cs.observe_inserts_on(this.shadowRoot, this.workarounds);
     },
     workarounds: function(target) {
-      return $(target).cs().tabs_inside().cs().tooltips_inside();
+      return $(target).cs().pagination_inside().cs().tabs_inside().cs().tooltips_inside();
     },
     toggle_search_column: function(event, detail, sender) {
       var column, index;
@@ -143,6 +146,31 @@
         }
         return results;
       }).call(this);
+      this.search_page = 1;
+      return this.search();
+    },
+    page_click: function(event, detail, sender) {
+      return $(sender).one('select.uk.pagination', (function(_this) {
+        return function(event, pageIndex) {
+          _this.search_page = pageIndex + 1;
+          return _this.search();
+        };
+      })(this));
+    },
+    search_columnChanged: function() {
+      this.search_page = 1;
+      return this.search();
+    },
+    search_modeChanged: function() {
+      this.search_page = 1;
+      return this.search();
+    },
+    search_textChanged: function() {
+      clearTimeout(this.search_text_timeout);
+      return this.search_text_timeout = setTimeout(this.search.bind(this), 300);
+    },
+    search_limitChanged: function() {
+      this.search_page = 1;
       return this.search();
     },
     add_user: function() {

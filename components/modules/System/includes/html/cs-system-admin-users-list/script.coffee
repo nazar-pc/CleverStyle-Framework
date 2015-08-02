@@ -29,6 +29,7 @@ Polymer(
 		'email'
 	]
 	users					: []
+	users_count				: 0
 	created					: ->
 		$.ajax(
 			url		: 'api/System/admin/users'
@@ -46,7 +47,8 @@ Polymer(
 		)
 		@search()
 	search					: ->
-		@users	= []
+		# Hack to force re-rendering pages navigation
+		@users_count	= 0
 		$.ajax(
 			url		: 'api/System/admin/users'
 			type	: 'search'
@@ -57,7 +59,9 @@ Polymer(
 				page	: @search_page
 				limit	: @search_limit
 			success	: (data) =>
+				@users_count	= data.count
 				if !data.count
+					@users	= []
 					return
 				data.users.forEach (user) =>
 					user.class		=
@@ -94,6 +98,7 @@ Polymer(
 		cs.observe_inserts_on(@shadowRoot, @workarounds)
 	workarounds				: (target) ->
 		$(target)
+			.cs().pagination_inside()
 			.cs().tabs_inside()
 			.cs().tooltips_inside()
 	toggle_search_column	: (event, detail, sender) ->
@@ -101,6 +106,24 @@ Polymer(
 		column			= @search_columns[index]
 		column.selected = !column.selected
 		@columns		= (column.name for column in @search_columns when column.selected)
+		@search_page	= 1
+		@search()
+	page_click				: (event, detail, sender) ->
+		$(sender).one('select.uk.pagination', (event, pageIndex) =>
+			@search_page	= pageIndex + 1
+			@search()
+		)
+	search_columnChanged	: ->
+		@search_page	= 1
+		@search()
+	search_modeChanged		: ->
+		@search_page	= 1
+		@search()
+	search_textChanged		: ->
+		clearTimeout(@search_text_timeout)
+		@search_text_timeout	= setTimeout(@search.bind(@), 300)
+	search_limitChanged		: ->
+		@search_page	= 1
 		@search()
 	add_user				: ->
 		$.cs.simple_modal("""

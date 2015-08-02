@@ -90,8 +90,18 @@
       		 * Enabling tooltips inside ShadowDOM, should be called on element.shadowRoot
        */
       tooltips_inside: function() {
-        this.find('[data-uk-tooltip]').each(function() {
+        this.find('[data-uk-tooltip]').add(this.filter('[data-uk-tooltip]')).each(function() {
           return UI.tooltip(this, UI.Utils.options($(this).attr('data-uk-tooltip')));
+        });
+        return this;
+      },
+
+      /**
+      		 * Enabling dynamic pagination inside ShadowDOM, should be called on element.shadowRoot
+       */
+      pagination_inside: function() {
+        this.find('[data-uk-pagination]').add(this.filter('[data-uk-pagination]')).each(function() {
+          return UI.pagination(this, UI.Utils.options($(this).attr('data-uk-pagination')));
         });
         return this;
       },
@@ -100,7 +110,7 @@
       		 * Enabling radio buttons inside ShadowDOM, should be called on element.shadowRoot
        */
       radio_buttons_inside: function() {
-        this.find('[data-uk-button-radio]').each(function() {
+        this.find('[data-uk-button-radio]').add(this.filter('[data-uk-button-radio]')).each(function() {
           return UI.buttonRadio(this, UI.Utils.options($(this).attr('data-uk-button-radio')));
         });
         return this;
@@ -110,7 +120,7 @@
       		 * Enabling tabs inside ShadowDOM, should be called on element.shadowRoot
        */
       tabs_inside: function() {
-        this.find('[data-uk-tab]').each(function() {
+        this.find('[data-uk-tab]').add(this.filter('[data-uk-tab]')).each(function() {
           return UI.tab(this, UI.Utils.options($(this).attr('data-uk-tab')));
         });
         this.find('.cs-tabs:not(.uk-tab)').cs().tabs();
