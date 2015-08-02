@@ -144,7 +144,7 @@ class Index {
 		 * @var _SERVER $_SERVER
 		 */
 		$this->request_method = strtolower($_SERVER->request_method);
-		if (!preg_match('/^[a-z]+$/', $this->request_method)) {
+		if (!preg_match('/^[a-z_]+$/', $this->request_method)) {
 			error_code(400);
 			throw new \ExitException;
 		}
