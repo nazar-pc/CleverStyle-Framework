@@ -1,34 +1,58 @@
 %polymer-element(name="cs-system-admin-users-list")
 	%template
-		%cs-table(center list with-header)
-			%cs-table-row
-				%cs-table-cell [[L.action]]
-				%cs-table-cell &nbsp;
-				%template(repeat="{{column in columns}}")
-					%cs-table-cell [[column]]
-			%template(repeat="{{user, index in users}}")
-				%cs-table-row(class="[[user.class]]" data-user-index="{{index}}")
-					%cs-table-cell
-						%template(if="[[user.is_root]]") -
-						%template(if="[[!user.is_root]]")
-							%template(if="[[!user.is_guest]]")
-								%a.uk-button.cs-button-compact(on-click="[[edit_user]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.edit_user_information]]")
-									.uk-icon-pencil
-							%template(if="{{user.is_active && !user.is_guest}}")
-								%a.uk-button.cs-button-compact(href="/admin/System/users/users/deactivate/[[user.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.deactivate_user]]")
-									.uk-icon-minus
-							%template(if="{{!user.is_active && !user.is_guest}}")
-								%a.uk-button.cs-button-compact(href="/admin/System/users/users/activate/[[user.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.activate_user]]")
-									.uk-icon-check
-							%template(if="{{!user.is_guest && !user.is_bot}}")
-								%a.uk-button.cs-button-compact(href="/admin/System/users/users/groups/[[user.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.edit_user_groups]]")
-									.uk-icon-group
-							.uk-button.cs-button-compact(data-uk-tooltip="[[tooltip_animation]]" on-click="[[edit_permissions]]" title="[[L.edit_user_permissions]]")
-								.uk-icon-key
-					%cs-table-cell
-						%span(data-uk-tooltip="[[tooltip_animation]]" title="[[user.type_info]]") [[user.type]]
-					%template(repeat="[[column in user.columns]]")
+		.uk-form
+			%ul.cs-tabs
+				%li [[L.search]]
+				%li(data-uk-tooltip="[[tooltip_animation]]" title="[[L.edit_user_information]]") [[L.show_columns]]
+			%div
+				%div
+					%select(value="{{search_column}}")
+						%template(repeat="{{column in search_columns}}")
+							<option selected?="[[column.value == search_column]]" value="[[column.value]]">[[column.label]]</option>
+					[[L.search_mode]]
+					%select(value="{{search_mode}}")
+						%template(repeat="{{mode in search_modes}}")
+							<option selected?="[[mode == search_mode]]" value="[[mode]]">[[mode]]</option>
+					%input.uk-form-width-medium(value="{{search_text}}" placeholder="[[L.search_text]]" type="text")/
+					[[L.items]]
+					%input(min="1" type="number" value="{{search_limit}}")
+				%div TODO
+			%input#cs-users-search-selected-columns(value="{{search_text}}" type="hidden")/
+			%hr/
+			%p.cs-left
+				%button.uk-button(on-click="{{search}}" type="button") [[L.search]]
+			%cs-table(center list with-header)
+				%cs-table-row
+					%cs-table-cell [[L.action]]
+					%cs-table-cell &nbsp;
+					%template(repeat="{{column in columns}}")
 						%cs-table-cell [[column]]
+				%template(repeat="{{user, index in users}}")
+					%cs-table-row(class="[[user.class]]" data-user-index="{{index}}")
+						%cs-table-cell
+							%template(if="[[user.is_root]]") -
+							%template(if="[[!user.is_root]]")
+								%template(if="[[!user.is_guest]]")
+									%a.uk-button.cs-button-compact(on-click="[[edit_user]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.edit_user_information]]")
+										.uk-icon-pencil
+								%template(if="{{user.is_active && !user.is_guest}}")
+									%a.uk-button.cs-button-compact(href="/admin/System/users/users/deactivate/[[user.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.deactivate_user]]")
+										.uk-icon-minus
+								%template(if="{{!user.is_active && !user.is_guest}}")
+									%a.uk-button.cs-button-compact(href="/admin/System/users/users/activate/[[user.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.activate_user]]")
+										.uk-icon-check
+								%template(if="{{!user.is_guest && !user.is_bot}}")
+									%a.uk-button.cs-button-compact(href="/admin/System/users/users/groups/[[user.id]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.edit_user_groups]]")
+										.uk-icon-group
+								.uk-button.cs-button-compact(data-uk-tooltip="[[tooltip_animation]]" on-click="[[edit_permissions]]" title="[[L.edit_user_permissions]]")
+									.uk-icon-key
+						%cs-table-cell
+							%span(data-uk-tooltip="[[tooltip_animation]]" title="[[user.type_info]]") [[user.type]]
+						%template(repeat="[[column in user.columns]]")
+							%cs-table-cell [[column]]
+		%template(if="{{!users.length}}")
+			%h2.uk-text-center
+				.uk-icon-spin.uk-icon-spinner
 		%p.cs-left
 			%button.uk-button(on-click="[[add_user]]" type="button") [[L.add_user]]
 			%button.uk-button(on-click="[[add_bot]]" type="button") [[L.add_bot]]

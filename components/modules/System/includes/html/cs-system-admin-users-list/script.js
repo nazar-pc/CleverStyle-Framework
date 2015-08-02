@@ -25,64 +25,116 @@
   Polymer({
     tooltip_animation: '{animation:true,delay:200}',
     L: L,
-    columns: [],
+    search_column: '',
+    search_mode: 'LIKE',
+    search_text: '',
+    search_page: 1,
+    search_limit: 20,
+    search_columns: [],
+    search_modes: [],
+    columns: ['id', 'login', 'username', 'email'],
+    users_ids: [],
     users: [],
-    created: function() {
-      var data;
-      data = JSON.parse(this.querySelector('script').innerHTML);
-      this.columns = data.columns;
-      data.users.forEach(function(user) {
-        var column;
-        user["class"] = (function() {
-          switch (parseInt(user.status)) {
-            case STATUS_ACTIVE:
-              return 'uk-alert-success';
-            case STATUS_INACTIVE:
-              return 'uk-alert-warning';
-            default:
-              return '';
-          }
-        })();
-        user.is_active = user.status == STATUS_ACTIVE;
-        user.is_guest = user.id == GUEST_ID;
-        user.is_root = user.id == ROOT_ID;
-        user.columns = (function() {
-          var i, len, ref, results;
-          ref = data.columns;
-          results = [];
-          for (i = 0, len = ref.length; i < len; i++) {
-            column = ref[i];
-            results.push((function(value) {
-              if (value instanceof Array) {
-                return value.join(', ');
-              } else {
-                return value;
-              }
-            })(user[column]));
-          }
-          return results;
-        })();
-        return (function() {
-          var type;
-          type = user.is_root || user.is_admin ? 'a' : user.is_user ? 'u' : user.is_bot ? 'b' : 'g';
-          user.type = L[type];
-          return user.type_info = L[type + '_info'];
-        })();
+    ready: function() {
+      $.ajax({
+        url: 'api/System/admin/users',
+        type: 'search_options',
+        success: (function(_this) {
+          return function(search_options) {
+            var column, i, len, ref, search_columns;
+            search_columns = [];
+            search_columns.push({
+              value: '',
+              label: L.all_columns.toString()
+            });
+            ref = search_options.columns;
+            for (i = 0, len = ref.length; i < len; i++) {
+              column = ref[i];
+              search_columns.push({
+                value: column,
+                label: column
+              });
+            }
+            _this.search_columns = search_columns;
+            return _this.search_modes = search_options.modes;
+          };
+        })(this)
       });
-      return this.users = data.users;
+      return this.search();
+    },
+    search: function() {
+      return $.ajax({
+        url: 'api/System/admin/users',
+        type: 'search',
+        data: {
+          column: this.search_column,
+          mode: this.search_mode,
+          text: this.search_text,
+          page: this.search_page,
+          limit: this.search_limit
+        },
+        success: (function(_this) {
+          return function(data) {
+            if (!data.count) {
+              _this.users_ids = [];
+              _this.users = [];
+              return;
+            }
+            data.users.forEach(function(user) {
+              var column;
+              user["class"] = (function() {
+                switch (parseInt(user.status)) {
+                  case STATUS_ACTIVE:
+                    return 'uk-alert-success';
+                  case STATUS_INACTIVE:
+                    return 'uk-alert-warning';
+                  default:
+                    return '';
+                }
+              })();
+              user.is_active = user.status == STATUS_ACTIVE;
+              user.is_guest = user.id == GUEST_ID;
+              user.is_root = user.id == ROOT_ID;
+              user.columns = (function() {
+                var i, len, ref, results;
+                ref = this.columns;
+                results = [];
+                for (i = 0, len = ref.length; i < len; i++) {
+                  column = ref[i];
+                  results.push((function(value) {
+                    if (value instanceof Array) {
+                      return value.join(', ');
+                    } else {
+                      return value;
+                    }
+                  })(user[column]));
+                }
+                return results;
+              }).call(_this);
+              return (function() {
+                var type;
+                type = user.is_root || user.is_admin ? 'a' : user.is_user ? 'u' : user.is_bot ? 'b' : 'g';
+                user.type = L[type];
+                return user.type_info = L[type + '_info'];
+              })();
+            });
+            return _this.users = data.users;
+          };
+        })(this)
+      });
     },
     domReady: function() {
-      return $(this.shadowRoot).cs().tooltips_inside();
+      this.workarounds(this.shadowRoot);
+      return cs.observe_inserts_on(this.shadowRoot, this.workarounds);
+    },
+    workarounds: function(target) {
+      return $(target).cs().tabs_inside().cs().tooltips_inside();
     },
     add_user: function() {
-      return $.cs.simple_modal("<h3>" + L.adding_a_user + "</h3>\n<cs-system-admin-users-add-user-form/>").on('hide.uk.modal', function() {
-        return location.reload();
-      });
+      return $.cs.simple_modal("<h3>" + L.adding_a_user + "</h3>\n<cs-system-admin-users-add-user-form/>").on('hide.uk.modal', this.search.bind(this));
     },
     add_bot: function() {
-      return $.cs.simple_modal("<h3>" + L.adding_a_bot + "</h3>\n<cs-system-admin-users-add-bot-form/>").on('hide.uk.modal', function() {
-        return location.reload();
-      });
+      return $.cs.simple_modal("<h3>" + L.adding_a_bot + "</h3>\n<cs-system-admin-users-add-bot-form/>").on('hide.uk.modal', this.search.bind(this));
     },
     edit_user: function(event, detail, sender) {
       var $sender, index, title, user;
@@ -91,14 +143,10 @@
       user = this.users[index];
       if (user.is_bot) {
         title = L.editing_of_bot_information(user.username || user.login);
-        return $.cs.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-edit-bot-form user_id=\"" + user.id + "\"/>").on('hide.uk.modal', function() {
-          return location.reload();
-        });
+        return $.cs.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-edit-bot-form user_id=\"" + user.id + "\"/>").on('hide.uk.modal', this.search.bind(this));
       } else {
         title = L.editing_of_user_information(user.username || user.login);
-        return $.cs.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-edit-user-form user_id=\"" + user.id + "\"/>").on('hide.uk.modal', function() {
-          return location.reload();
-        });
+        return $.cs.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-edit-user-form user_id=\"" + user.id + "\"/>").on('hide.uk.modal', this.search.bind(this));
       }
     },
     edit_permissions: function(event, detail, sender) {
