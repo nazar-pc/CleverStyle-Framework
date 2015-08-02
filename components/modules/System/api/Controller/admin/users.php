@@ -47,9 +47,9 @@ trait users {
 		$Page->json($result);
 	}
 	static protected function admin_users___get_post_process ($data) {
-		$L                              = Language::instance();
-		$data['reg_date_formatted']     = $data['reg_date'] ? date($L->_date, $data['reg_date']) : $L->undefined;
-		$data['reg_ip_formatted']       = hex2ip($data['reg_ip'], 10);
+		$L                          = Language::instance();
+		$data['reg_date_formatted'] = $data['reg_date'] ? date($L->_date, $data['reg_date']) : $L->undefined;
+		$data['reg_ip_formatted']   = hex2ip($data['reg_ip'], 10);
 		return $data;
 	}
 	static function admin_users___patch ($route_ids) {
@@ -135,6 +135,161 @@ trait users {
 		} else {
 			error_code(400);
 		}
+	}
+	static function admin_users___search () {
+		if (!isset($_POST['mode'], $_POST['column'], $_POST['text'], $_POST['page'], $_POST['limit'])) {
+			error_code(400);
+			return;
+		}
+		$mode           = $_POST['mode'];
+		$column         = $_POST['column'];
+		$text           = $_POST['text'];
+		$page           = (int)$_POST['page'];
+		$limit          = (int)$_POST['limit'];
+		$search_options = static::admin_users___search_options_get();
+		if (
+			!in_array($mode, $search_options['modes']) ||
+			(
+				$column !== '' &&
+				!in_array($column, $search_options['columns'])
+			)
+		) {
+			error_code(400);
+			return;
+		}
+		$cdb   = User::instance()->db();
+		$where = static::admin_users___search_prepare_where($mode, $text, $column ?: $search_options['columns'], $cdb);
+		$count = $cdb->qfs(
+			[
+				"SELECT COUNT(`id`)
+				FROM `[prefix]users`
+				WHERE
+					(
+						$where
+					) AND
+					`status` != '%s'",
+				User::STATUS_NOT_ACTIVATED
+			]
+		);
+		if (!$count) {
+			error_code(404);
+			return;
+		}
+		$ids = $cdb->qfas(
+			[
+				"SELECT `id`
+				FROM `[prefix]users`
+				WHERE
+					(
+						$where
+					) AND
+					`status` != '%s'
+				ORDER BY `id`
+				LIMIT %d, %d",
+				User::STATUS_NOT_ACTIVATED,
+				($page - 1) * $limit,
+				$limit
+			]
+		);
+		Page::instance()->json(
+			[
+				'count' => $count,
+				'ids'   => $ids
+			]
+		);
+	}
+	/**
+	 * @param string           $mode
+	 * @param string           $text
+	 * @param string|string[]  $column
+	 * @param \cs\DB\_Abstract $cdb
+	 *
+	 * @return string
+	 */
+	static protected function admin_users___search_prepare_where ($mode, $text, $column, $cdb) {
+		$where = '1';
+		if ($text && $mode) {
+			switch ($mode) {
+				case '=':
+				case '!=':
+				case '>':
+				case '<':
+				case '>=':
+				case '<=':
+				case 'LIKE':
+				case 'NOT LIKE':
+				case 'REGEXP':
+				case 'NOT REGEXP':
+					$where = static::admin_users___search_prepare_where_compose(
+						"`%s` $mode %s",
+						$column,
+						$cdb->s($text)
+					);
+					break;
+				case 'IN':
+				case 'NOT IN':
+					$where = static::admin_users___search_prepare_where_compose(
+						"`%s` $mode (%s)",
+						$column,
+						implode(
+							", ",
+							$cdb->s(
+								_trim(
+									_trim(explode(',', $text), "'")
+								)
+							)
+						)
+					);
+					break;
+			}
+		}
+		return $where;
+	}
+	/**
+	 * @param string          $where
+	 * @param string|string[] $column
+	 * @param string          $text
+	 *
+	 * @return string
+	 */
+	static protected function admin_users___search_prepare_where_compose ($where, $column, $text) {
+		if (is_array($column)) {
+			$return = [];
+			foreach ($column as $c) {
+				$return[] = sprintf($where, $c, $text);
+			}
+			return '('.implode(' OR ', $return).')';
+		}
+		return sprintf($where, $column, $text);
+	}
+	static function admin_users___search_options () {
+		Page::instance()->json(
+			static::admin_users___search_options_get()
+		);
+	}
+	/*
+	 * @return string[][]
+	 */
+	static protected function admin_users___search_options_get () {
+		return [
+			'modes'   => [
+				'=',
+				'!=',
+				'>',
+				'<',
+				'>=',
+				'<=',
+				'LIKE',
+				'NOT LIKE',
+				'IN',
+				'NOT IN',
+				'IS NULL',
+				'IS NOT NULL',
+				'REGEXP',
+				'NOT REGEXP'
+			],
+			'columns' => User::instance()->get_users_columns()
+		];
 	}
 	static function admin_users_permissions_get ($route_ids) {
 		if (!isset($route_ids[0])) {
