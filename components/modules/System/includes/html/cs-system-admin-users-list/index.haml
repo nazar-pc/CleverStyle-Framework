@@ -32,7 +32,6 @@
 							%li.cs-pointer.uk-button.uk-margin-bottom.uk-button-primary(on-click="{{toggle_search_column}}" data-column-index="{{index}}") [[column.name]]
 						%template(if="{{!column.selected}}")
 							%li.cs-pointer.uk-button.uk-margin-bottom(on-click="{{toggle_search_column}}" data-column-index="{{index}}") [[column.name]]
-			%input#cs-users-search-selected-columns(value="{{search_text}}" type="hidden")/
 			%hr/
 			%template(bind ref="pagination")
 			%cs-table(center list with-header)

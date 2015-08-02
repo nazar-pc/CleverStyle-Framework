@@ -142,9 +142,9 @@ Polymer(
 			@search.bind(@)
 		)
 	edit_user				: (event, detail, sender) ->
-		$sender		= $(sender)
-		index		= $sender.closest('[data-user-index]').data('user-index')
-		user		= @users[index]
+		$sender	= $(sender)
+		index	= $sender.closest('[data-user-index]').data('user-index')
+		user	= @users[index]
 		if user.is_bot
 			title		= L.editing_of_bot_information(
 				user.username || user.login
