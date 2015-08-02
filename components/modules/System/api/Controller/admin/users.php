@@ -16,12 +16,7 @@ trait users {
 	static function admin_users___get ($route_ids) {
 		$User    = User::instance();
 		$Page    = Page::instance();
-		$columns = array_filter(
-			$User->get_users_columns(),
-			function ($column) {
-				return $column !== 'password_hash';
-			}
-		);
+		$columns = static::admin_users___search_options_get()['columns'];
 		if (isset($route_ids[0])) {
 			$result = static::admin_users___get_post_process(
 				$User->get($columns, $route_ids[0])
@@ -60,6 +55,10 @@ trait users {
 		$User                    = User::instance();
 		$user_id                 = (int)$route_ids[0];
 		$is_bot                  = in_array(User::BOT_GROUP_ID, $User->get_groups($user_id));
+		if ($is_bot && !@$_POST['user']['login'] && !@$_POST['user']['email']) {
+			error_code(400);
+			return;
+		}
 		$columns_allowed_to_edit = $is_bot
 			? ['login', 'username', 'email', 'status']
 			: ['login', 'username', 'email', 'language', 'timezone', 'status', 'block_until', 'avatar'];
@@ -159,16 +158,20 @@ trait users {
 		}
 		$cdb   = User::instance()->db();
 		$where = static::admin_users___search_prepare_where($mode, $text, $column ?: $search_options['columns'], $cdb);
+		/**
+		 * Deleted users do not have any email, login or password, all of them are empty strings
+		 */
+		$where =
+			"$where AND
+			(
+				`login`	!= `password_hash` OR
+				`email`	!= `password_hash`
+			)";
 		$count = $cdb->qfs(
 			[
 				"SELECT COUNT(`id`)
 				FROM `[prefix]users`
-				WHERE
-					(
-						$where
-					) AND
-					`status` != '%s'",
-				User::STATUS_NOT_ACTIVATED
+				WHERE $where"
 			]
 		);
 		if (!$count) {
@@ -179,14 +182,9 @@ trait users {
 			[
 				"SELECT `id`
 				FROM `[prefix]users`
-				WHERE
-					(
-						$where
-					) AND
-					`status` != '%s'
+				WHERE $where
 				ORDER BY `id`
 				LIMIT %d, %d",
-				User::STATUS_NOT_ACTIVATED,
 				($page - 1) * $limit,
 				$limit
 			]
@@ -194,7 +192,7 @@ trait users {
 		Page::instance()->json(
 			[
 				'count' => $count,
-				'ids'   => $ids
+				'users' => static::admin_users___search_get($ids, $search_options['columns'])
 			]
 		);
 	}
@@ -262,6 +260,28 @@ trait users {
 		}
 		return sprintf($where, $column, $text);
 	}
+	/**
+	 * @param int[]    $users
+	 * @param string[] $columns
+	 *
+	 * @return array[]
+	 */
+	static protected function admin_users___search_get ($users, $columns) {
+		$User = User::instance();
+		foreach ($users as &$user) {
+			$groups         = (array)$User->get_groups($user);
+			$user           =
+				$User->get($columns, $user) +
+				[
+					'is_user'  => in_array(User::USER_GROUP_ID, $groups),
+					'is_bot'   => in_array(User::BOT_GROUP_ID, $groups),
+					'is_admin' => in_array(User::ADMIN_GROUP_ID, $groups),
+					'username' => $User->username($user)
+				];
+			$user['reg_ip'] = hex2ip($user['reg_ip'], 10);
+		}
+		return $users;
+	}
 	static function admin_users___search_options () {
 		Page::instance()->json(
 			static::admin_users___search_options_get()
@@ -288,7 +308,12 @@ trait users {
 				'REGEXP',
 				'NOT REGEXP'
 			],
-			'columns' => User::instance()->get_users_columns()
+			'columns' => array_filter(
+				User::instance()->get_users_columns(),
+				function ($column) {
+					return $column !== 'password_hash';
+				}
+			)
 		];
 	}
 	static function admin_users_permissions_get ($route_ids) {
