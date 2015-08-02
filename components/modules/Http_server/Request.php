@@ -40,51 +40,11 @@ class Request {
 		$this->bootstrap();
 		$request    = $this->request;
 		$request_id = $this->__request_id;
-		$SERVER     = [
-			'SERVER_SOFTWARE' => 'ReactPHP'
-		];
-		foreach ($request->getHeaders() as $key => $value) {
-			if ($key == 'Content-Type') {
-				$SERVER['CONTENT_TYPE'] = $value;
-			} elseif ($key == 'Cookie') {
-				$value  = _trim(explode(';', $value));
-				$value  = array_map(function ($cookie) {
-					return explode('=', $cookie);
-				}, $value);
-				$COOKIE = array_column($value, 1, 0);
-			} else {
-				$SERVER['HTTP_'.strtoupper(strtr($key, '-', '_'))] = $value;
-			}
-		}
-		$SERVER['REQUEST_METHOD']  = $request->getMethod();
-		$SERVER['REQUEST_URI']     = $request->getPath();
-		$SERVER['QUERY_STRING']    = http_build_query($request->getQuery());
-		$SERVER['REMOTE_ADDR']     = $request->remoteAddress;
-		$GET[$request_id]          = $request->getQuery();
-		$SERVER['SERVER_PROTOCOL'] = 'HTTP/'.$request->getHttpVersion();
-		if (isset($SERVER['CONTENT_TYPE'])) {
-			if (strpos($SERVER['CONTENT_TYPE'], 'application/x-www-form-urlencoded') === 0) {
-				parse_str($data, $POST);
-			} elseif (preg_match('#^application/([^+\s]+\+)?json#', $SERVER['CONTENT_TYPE'])) {
-				$POST[$request_id] = json_decode($data, true);
-			}
-		}
+		$this->fill_superglobals(
+			$this->prepare_superglobals($request, $data, $request_id),
+			$request_id
+		);
 		ob_start();
-		$COOKIE = isset($COOKIE) ? $COOKIE : [];
-		$POST   = isset($POST) ? $POST : [];
-		if (ASYNC_HTTP_SERVER) {
-			$_SERVER[$request_id]  = new _SERVER($SERVER);
-			$_COOKIE[$request_id]  = $COOKIE;
-			$_GET[$request_id]     = $GET;
-			$_POST[$request_id]    = $POST;
-			$_REQUEST[$request_id] = $POST + $GET;
-		} else {
-			$_SERVER  = new _SERVER($SERVER);
-			$_COOKIE  = $COOKIE;
-			$_GET     = $GET;
-			$_POST    = $POST;
-			$_REQUEST = $POST + $GET;
-		}
 		try {
 			try {
 				Config::instance(true)->reinit();
@@ -100,11 +60,77 @@ class Request {
 			}
 		} catch (\Exception $e) {
 		}
-		$response = $this->response;
-		$response->writeHead(_http_response_code(0, $request_id), _header(null));
-		$response->end(ob_get_clean());
+		$this->response->writeHead(_http_response_code(0, $request_id), _header(null));
+		$this->response->end(ob_get_clean());
 		$this->cleanup();
 		$request->close();
+	}
+	/**
+	 * @param \React\HTTP\Request $request
+	 * @param string              $data
+	 * @param int|string          $request_id
+	 *
+	 * @return array
+	 */
+	protected function prepare_superglobals ($request, $data, $request_id) {
+		$SERVER = [
+			'SERVER_SOFTWARE' => 'ReactPHP'
+		];
+		$COOKIE = [];
+		$POST   = [];
+		foreach ($request->getHeaders() as $key => $value) {
+			if ($key == 'Content-Type') {
+				$SERVER['CONTENT_TYPE'] = $value;
+			} elseif ($key == 'Cookie') {
+				$value = _trim(explode(';', $value));
+				foreach ($value as $c) {
+					$c             = explode('=', $c);
+					$COOKIE[$c[0]] = $c[1];
+				}
+				unset($c);
+			} else {
+				$key                 = strtoupper(str_replace('-', '_', $key));
+				$SERVER["HTTP_$key"] = $value;
+			}
+		}
+		$SERVER['REQUEST_METHOD']  = $request->getMethod();
+		$SERVER['REQUEST_URI']     = $request->getPath();
+		$SERVER['QUERY_STRING']    = http_build_query($request->getQuery());
+		$SERVER['REMOTE_ADDR']     = $request->remoteAddress;
+		$GET                       = $request->getQuery();
+		$SERVER['SERVER_PROTOCOL'] = 'HTTP/'.$request->getHttpVersion();
+		if (isset($SERVER['CONTENT_TYPE'])) {
+			if (strpos($SERVER['CONTENT_TYPE'], 'application/x-www-form-urlencoded') === 0) {
+				parse_str($data, $POST);
+			} elseif (preg_match('#^application/([^+\s]+\+)?json#', $SERVER['CONTENT_TYPE'])) {
+				$POST[$request_id] = json_decode($data, true);
+			}
+		}
+		return [
+			'SERVER' => $SERVER,
+			'COOKIE' => $COOKIE,
+			'GET'    => $GET,
+			'POST'   => $POST
+		];
+	}
+	/**
+	 * @param array      $SUPERGLOBALS
+	 * @param int|string $request_id
+	 */
+	protected function fill_superglobals ($SUPERGLOBALS, $request_id) {
+		if (ASYNC_HTTP_SERVER) {
+			$_SERVER[$request_id]  = new _SERVER($SUPERGLOBALS['SERVER']);
+			$_COOKIE[$request_id]  = $SUPERGLOBALS['COOKIE'];
+			$_GET[$request_id]     = $SUPERGLOBALS['GET'];
+			$_POST[$request_id]    = $SUPERGLOBALS['POST'];
+			$_REQUEST[$request_id] = $SUPERGLOBALS['POST'] + $SUPERGLOBALS['GET'];
+		} else {
+			$_SERVER = new _SERVER($SUPERGLOBALS['SERVER']);
+			$_COOKIE  = $SUPERGLOBALS['COOKIE'];
+			$_GET     = $SUPERGLOBALS['GET'];
+			$_POST    = $SUPERGLOBALS['POST'];
+			$_REQUEST = $SUPERGLOBALS['POST'] + $SUPERGLOBALS['GET'];
+		}
 	}
 	/**
 	 * Various preparations before processing of current request
