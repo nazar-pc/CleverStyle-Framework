@@ -24,6 +24,9 @@ Event::instance()
 					$data['package']['require']["npm-asset/$package"] = $version;
 				}
 			}
+			if ($data['meta']['package'] === 'Composer_assets') {
+				$data['package']['replace'] = file_get_json(__DIR__.'/packages_bundled_with_system.json');
+			}
 		}
 	)
 	->on(
@@ -54,21 +57,10 @@ Event::instance()
 			} else {
 				rmdir_recursive($composer_assets_dir);
 				mkdir($composer_assets_dir, 0770);
-				$dependencies    = [];
-				$includes_map    = [];
-				$ignore_packages = file_get_json(__DIR__.'/ignore_packages.json');
+				$dependencies = [];
+				$includes_map = [];
 				foreach ($composer_lock['packages'] as $package) {
 					$package_name = $package['name'];
-					/**
-					 * Ignore packages already bundled with system core
-					 */
-					if (in_array(
-						strtolower(explode('/', $package_name)[1]),
-						$ignore_packages,
-						true
-					)) {
-						continue;
-					}
 					/**
 					 * System package, for consistency with system's internals prefix should be removed in dependencies
 					 */
