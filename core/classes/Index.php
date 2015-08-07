@@ -12,8 +12,8 @@ use
  * Provides next events:
  *  System/Index/block_render
  *  [
- *      'index'           => $index,           //Block index
- *      'blocks_array'    => &$blocks_array    //Reference to array in form ['top' => '', 'left' => '', 'right' => '', 'bottom' => '']
+ *      'index'           => $index,        //Block index
+ *      'blocks_array'    => &$blocks_array //Reference to array in form ['top' => '', 'left' => '', 'right' => '', 'bottom' => '']
  *  ]
  *
  *  System/Index/construct
@@ -74,12 +74,6 @@ class Index {
 	protected $working_directory = '';
 	protected $called_once       = false;
 	/**
-	 * Reference to Route::instance()->route
-	 *
-	 * @var array
-	 */
-	protected $route = [];
-	/**
 	 * Reference to Route::instance()->path
 	 *
 	 * @var string[]
@@ -103,11 +97,10 @@ class Index {
 	 * @throws \ExitException
 	 */
 	function construct () {
-		$Config      = Config::instance();
-		$Route       = Route::instance();
-		$this->route = &$Route->route;
-		$this->path  = &$Route->path;
-		$this->ids   = &$Route->ids;
+		$Config     = Config::instance();
+		$Route      = Route::instance();
+		$this->path = &$Route->path;
+		$this->ids  = &$Route->ids;
 		if ($this->closed_site($Config, api_path())) {
 			return;
 		}
@@ -167,7 +160,7 @@ class Index {
 		return
 			!$in_api ||
 			$this->module != 'System' ||
-			$this->route !== ['user', 'sign_in'];
+			Route::instance()->route !== ['user', 'sign_in'];
 	}
 	/**
 	 * Store permission group for further checks, check whether user allowed to access `index` permission label of this group
