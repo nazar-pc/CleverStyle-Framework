@@ -25,8 +25,6 @@ use
 /**
  * Class for groups manipulating
  *
- * @todo Remove data field from Groups DB table
- *
  * @method static Group instance($check = false)
  */
 class Group {
