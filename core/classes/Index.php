@@ -304,7 +304,7 @@ class Index {
 		}
 		$methods = get_files_list($dir, "/^$basename\\.[a-z]+\\.php$/");
 		$methods = _strtoupper(_substr($methods, strlen($basename) + 1, -4));
-		$this->method_handler_not_found($methods);
+		$this->handler_not_found($methods);
 	}
 	/**
 	 * If HTTP method handler not found we generate either `501 Not Implemented` if other methods are supported or `404 Not Found` if handlers for others
@@ -312,7 +312,7 @@ class Index {
 	 *
 	 * @param string[] $available_methods
 	 */
-	protected function method_handler_not_found ($available_methods) {
+	protected function handler_not_found ($available_methods) {
 		if ($available_methods) {
 			$available_methods = implode(', ', $available_methods);
 			_header("Allow: $available_methods");
@@ -357,7 +357,7 @@ class Index {
 	 * @return bool
 	 */
 	protected function controller_router_handler ($controller_class, $method_name, $required = true) {
-		$method_name = strtr($method_name, '.', '_');
+		$method_name = str_replace('.', '_', $method_name);
 		$this->controller_router_handler_internal($controller_class, $method_name, $required);
 		return !error_code();
 	}
@@ -387,7 +387,7 @@ class Index {
 			}
 		);
 		$methods = _strtoupper(_substr($methods, strlen($method_name) + 1));
-		$this->method_handler_not_found($methods);
+		$this->handler_not_found($methods);
 	}
 	/**
 	 * Get form action based on current module, path and other parameters
