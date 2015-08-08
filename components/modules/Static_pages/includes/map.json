@@ -1,6 +1,3 @@
 {
-	"Static_pages"	: [
-		"style.css",
-		"script.js"
-	]
+	"Static_pages" : "*"
 }

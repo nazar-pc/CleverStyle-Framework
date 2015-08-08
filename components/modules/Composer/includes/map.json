@@ -1,6 +1,3 @@
 {
-	"admin" : [
-		"script.js",
-		"cs-composer/index.html"
-	]
+	"admin" : "*"
 }

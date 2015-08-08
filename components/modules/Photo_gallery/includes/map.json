@@ -1,6 +1,3 @@
 {
-	"Photo_gallery"	: [
-		"general.css",
-		"general.js"
-	]
+	"Photo_gallery" : "*"
 }

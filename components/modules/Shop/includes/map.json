@@ -1,24 +1,9 @@
 {
 	"admin/Shop"   : [
-		"admin/attributes.js",
-		"admin/categories.js",
-		"admin/items.js",
-		"admin/order_statuses.js",
-		"admin/orders.js",
-		"admin/shipping_types.js"
+		"admin/*"
 	],
 	"Shop"         : [
-		"cs-shop-add-to-cart/index.html",
-		"cs-shop-cart/cs-shop-cart-item/index.html",
-		"cs-shop-cart/index.html",
-		"cs-shop-categories/cs-shop-category-nested/index.html",
-		"cs-shop-categories/cs-shop-category/index.html",
-		"cs-shop-category-items/cs-shop-category-item/index.html",
-		"cs-shop-empty-cart/index.html",
-		"cs-shop-item/index.html",
-		"cs-shop-orders/cs-shop-order/cs-shop-order-item/index.html",
-		"cs-shop-orders/cs-shop-order/index.html",
-		"cs-shop-orders/index.html",
+		"cs-shop-*",
 		"cart.js"
 	],
 	"Shop/orders_" : [

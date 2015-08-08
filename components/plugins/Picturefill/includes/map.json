@@ -1,7 +1,3 @@
 {
-	"Picturefill" : [
-		"picturefill.min.js",
-		"cs-picturefill-img/index.html",
-		"cs-picturefill-picture/index.html"
-	]
+	"Picturefill" : "*"
 }

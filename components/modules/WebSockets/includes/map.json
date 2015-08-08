@@ -1,5 +1,3 @@
 {
-	"WebSockets" : [
-		"WebSockets.js"
-	]
+	"WebSockets" : "*"
 }

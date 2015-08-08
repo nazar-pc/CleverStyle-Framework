@@ -1,6 +1,3 @@
 {
-	"Fotorama"	: [
-		"style.css",
-		"fotorama.js"
-	]
+	"Fotorama" : "*"
 }
