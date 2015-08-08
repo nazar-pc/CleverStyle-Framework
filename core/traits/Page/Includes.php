@@ -494,15 +494,7 @@ trait Includes {
 		$theme_pdir = "themes/$this->theme";
 		$get_files  = function ($dir, $prefix_path) {
 			$extension = basename($dir);
-			$list      = get_files_list(
-				$dir,
-				"/(.*)\\.$extension/i",
-				'f',
-				$prefix_path,
-				true,
-				false,
-				'!include'
-			) ?: [];
+			$list      = get_files_list($dir, "/.*\\.$extension$/i", 'f', $prefix_path, true, 'name', '!include') ?: [];
 			sort($list);
 			return $list;
 		};
@@ -725,14 +717,32 @@ trait Includes {
 	 */
 	protected function process_map ($map, $includes_dir, &$includes_map, &$all_includes) {
 		foreach ($map as $path => $files) {
-			foreach ($files as $file) {
-				$extension                         = file_extension($file);
-				$file                              = "$includes_dir/$extension/$file";
-				$includes_map[$path][$extension][] = $file;
-				$all_includes[$extension]          = array_diff(
-					$all_includes[$extension],
-					[$file]
-				);
+			foreach ((array)$files as $file) {
+				$extension = file_extension($file);
+				switch ($extension) {
+					case 'css':
+					case 'js':
+					case 'html':
+						$file                              = "$includes_dir/$extension/$file";
+						$includes_map[$path][$extension][] = $file;
+						$all_includes[$extension]          = array_diff($all_includes[$extension], [$file]);
+						break;
+					default:
+						$file = rtrim($file, '*');
+						/**
+						 * Wildcard support, it is possible to specify just path prefix and all files with this prefix will be included
+						 */
+						foreach (['css', 'js', 'html'] as $extension) {
+							$base_path   = "$includes_dir/$extension/$file";
+							$found_files = get_files_list("$includes_dir/$extension", "/.*\\.$extension$/i", 'f', true, true, 'name', '!include') ?: [];
+							foreach ($found_files as $f) {
+								if (strpos($f, $base_path) === 0) {
+									$includes_map[$path][$extension][] = $f;
+									$all_includes[$extension]          = array_diff($all_includes[$extension], [$f]);
+								}
+							}
+						}
+				}
 			}
 		}
 	}

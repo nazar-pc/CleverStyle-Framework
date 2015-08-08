@@ -2,19 +2,6 @@
 	"admin/System" : [
 		"general.js",
 		"functions.js",
-		"cs-system-admin-components-blocks-form/index.html",
-		"cs-system-admin-components-modules-list/index.html",
-		"cs-system-admin-components-plugins-list/index.html",
-		"cs-system-admin-permissions-for/index.html",
-		"cs-system-admin-permissions-for-item/index.html",
-		"cs-system-admin-groups-form/index.html",
-		"cs-system-admin-groups-list/index.html",
-		"cs-system-admin-permissions-form/index.html",
-		"cs-system-admin-permissions-list/index.html",
-		"cs-system-admin-users-add-bot-form/index.html",
-		"cs-system-admin-users-add-user-form/index.html",
-		"cs-system-admin-users-edit-bot-form/index.html",
-		"cs-system-admin-users-edit-user-form/index.html",
-		"cs-system-admin-users-list/index.html"
+		"cs-system-admin-*"
 	]
 }
