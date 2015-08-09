@@ -820,3 +820,85 @@ Possible partial compatibility breaking (very unlikely, but still possible):
 * TinyMCE: TinyMCE methods for re-initialization accept DOM element as argument instead of ID
 
 Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
+
+# 2.119.0+build-1286: No frontend on backend
+
+CleverStyle CMS never had usual templates on backend, but used HTML generation instead. That worked to some degree, but now there are much better Web Components for that!
+This release brings significantly extended API for administration actions, many thing now done purely on frontend with Web Components interacting with server through API, the rest of things will migrate to this approach in further releases.
+Such transition not only clearly separates backend code from frontend, but also improves backend code quality, which in nice thing.
+
+Also there are few nice features like associative arrays support in `\cs\CRUD`, wildcard syntax support in `map.json` and multiple improvements to JS helpers to deal with UIkit components and other things under Shadow DOM.
+
+This is likely last release from 2.x series, 3.x is coming with new awesome features, large updates and dropped deprecated functionality!
+
+New components:
+* None
+
+New features:
+* Added automatic support for `OPTIONS` request method, even if it is not defined (works like for unsupported method, but responses with status code 200 instead of 501)
+* New events:
+  * System/Session/load
+  * System/Session/add
+* `\cs\CRUD` now can accept associative arrays of arguments, not only indexed with proper order
+* Allow underscore in HTTP request method
+* Wildcards support in `map.json` (more details in [updated documentation](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Module-architecture#includesmapjson))
+* Composer assets: Ignore packages on earlier stage, this improves installation time and slightly simplifies runtime
+
+Updates:
+* New upstream version of WebComponents.js
+
+Fixes and small improvements:
+* Ignore templates in tabs helper
+* UIkit hacked to ignore templates inside switcher component, reported upstream as https://github.com/uikit/uikit/pull/1405
+* UIkit hacked to support `.uk-tab > li > a` without any attributes, reported upstream as https://github.com/uikit/uikit/pull/1406
+* Added UIkit hack to make dropdown working under Shadow DOM
+* User's permissions editing form is rendered purely on frontend, necessary API endpoints added
+* Users list rendered on client side
+* Groups list rendered on client side
+* Dropdown flickering fix
+* Permissions list rendered on client side using data from API
+* New API endpoint for getting list of blocks
+* UIkit modal buttons translation
+* Permission deletion done via API on frontend
+* Splitting API controller into more traits
+* Permissions addition and editing now done through API on frontend
+* `cs.prepare_attr_value()` function added on frontend similar to `h::cs.prepare_attr_value()` on backend
+* Small fixes and tweaks in `cs\Groups::del()`
+* Groups addition, editing and deletion now done through API on frontend
+* Groups management API extended
+* Nice load animations added to some Web Components
+* Significantly simplified `\cs\Group` class using CRUD features
+* Users and bots addition now done on frontend through API
+* Status code for groups and permissions addition changed from 200 to 201
+* Stricter check during changing users data, some refactoring
+* Fix for login hash was remaining in cache after login change, which might cause unexpected issues
+* Raw user data editing removed
+* Proper handling of setting array of user's data
+* Check on frontend not only strength, but also length of the password
+* API for user data changing added
+* Timezones api endpoint, formatted data added to users api endpoint
+* Typos in translations
+* Check if user is blocked at sign in time
+* Languages getting API
+* Fix for user password setting through API
+* Users and bots editing now done on frontend through API
+* If there is not handler for request method, respond `501 Not Implemented`, rather than `405 Method Not Allowed`
+* Handling unknown HTTP methods decoupled into separate method
+* `\cs\Session` now uses `\cs\CRUD` trait to simplify many things
+* API endpoints for users searching in administration
+* Missing slashes for inputs in HAML files
+* Users API fixes and improvements
+* Users list now rendered on frontend through API
+* Http server: Refactoring of request class
+* Fix for user's permissions getting and setting
+* Refactoring of `cs\Index` class, routing methods decoupled into `cs\Index\Router` trait
+
+Deprecations:
+* None
+
+Possible partial compatibility breaking (very unlikely, but still possible):
+* `\cs\Group::get()` signature changed, rarely used argument dropped
+* `\cs\Group::set()` method signature changed, group data will be dropped and not available anymore
+* `data` column dropped from groups table
+
+Latest builds on [SourceForge downloads page](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Download-installation-packages) ([details about installation process](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation)) or download source code and [build it yourself](https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installer-builder)
