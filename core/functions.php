@@ -326,22 +326,6 @@ function get_core_ml_text ($item) {
 	return Text::instance()->process($Config->module('System')->db('texts'), $Config->core[$item], true);
 }
 
-if (!function_exists('code_header')) {
-	/**
-	 * Sends header with string representation of http status code, for example "404 Not Found" for corresponding server protocol
-	 *
-	 * @deprecated
-	 * @todo remove in future versions
-	 *
-	 * @param int $code Status code
-	 *
-	 * @return null|string String representation of status code code
-	 */
-	function code_header ($code) {
-		return status_code($code);
-	}
-}
-
 /**
  * Sends header with string representation of http status code, for example "404 Not Found" for corresponding server protocol
  *

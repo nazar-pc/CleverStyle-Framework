@@ -29,84 +29,68 @@ require DIR.'/fs/'.$fs['core/classes/h/Base.php'];
 require DIR.'/fs/'.$fs['core/classes/h.php'];
 require DIR.'/install/functions.php';
 date_default_timezone_set('UTC');
-// TODO remove in future versions long keys with single dash, like `-help`, modern version `--help` should be used instead
 if ($cli) {
 	$help        = false;
 	$interactive = false;
 	for ($i = 1; $i < $argc; $i += 2) {
 		switch ($argv[$i]) {
 			case '-h':
-			case '-help':
 			case '--help':
 				$help = true;
 				break;
 			case '-sn':
-			case '-site_name':
 			case '--site_name':
 				$_POST['site_name'] = $argv[$i + 1];
 				break;
 			case '-su':
-			case '-site_url':
 			case '--site_url':
 				$_POST['site_url'] = $argv[$i + 1];
 				break;
 			case '-de':
-			case '-db_engine':
 			case '--db_engine':
 				$_POST['db_engine'] = $argv[$i + 1];
 				break;
 			case '-dh':
-			case '-db_host':
 			case '--db_host':
 				$_POST['db_host'] = $argv[$i + 1];
 				break;
 			case '-dn':
-			case '-db_name':
 			case '--db_name':
 				$_POST['db_name'] = $argv[$i + 1];
 				break;
 			case '-du':
-			case '-db_user':
 			case '--db_user':
 				$_POST['db_user'] = $argv[$i + 1];
 				break;
 			case '-dp':
-			case '-db_password':
 			case '--db_password':
 				$_POST['db_password'] = $argv[$i + 1];
 				break;
 			case '-dr':
-			case '-db_prefix':
 			case '--db_prefix':
 				$_POST['db_prefix'] = $argv[$i + 1];
 				break;
 			case '-dc':
-			case '-db_charset':
 			case '--db_charset':
 				$_POST['db_charset'] = $argv[$i + 1];
 				break;
 			case '-t':
-			case '-timezone':
 			case '--timezone':
 				$_POST['timezone'] = $argv[$i + 1];
 				break;
 			case '-l':
-			case '-language':
 			case '--language':
 				$_POST['language'] = $argv[$i + 1];
 				break;
 			case '-ae':
-			case '-admin_email':
 			case '--admin_email':
 				$_POST['admin_email'] = $argv[$i + 1];
 				break;
 			case '-ap':
-			case '-admin_password':
 			case '--admin_password':
 				$_POST['admin_password'] = $argv[$i + 1];
 				break;
 			case '-i':
-			case '-interactive':
 			case '--interactive':
 				$interactive = true;
 				break;
