@@ -4,6 +4,7 @@
  * @copyright	Copyright (c) 2014-2015, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
 ###
+window.Polymer	= dom : 'shadow'
 ###
  # Load configuration from special template elements
 ###

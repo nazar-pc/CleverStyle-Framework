@@ -7,14 +7,17 @@
  * @license		MIT License, see license.txt
  */
 
-
-/*
-  * Load configuration from special template elements
- */
-
 (function() {
   var L, key, translation,
     hasProp = {}.hasOwnProperty;
+
+  window.Polymer = {
+    dom: 'shadow'
+
+    /*
+      * Load configuration from special template elements
+     */
+  };
 
   [].forEach.call(document.head.querySelectorAll('.cs-config'), function(config) {
     var data, destination, target;

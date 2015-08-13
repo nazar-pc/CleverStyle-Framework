@@ -8,10 +8,10 @@
 ###
 L = cs.Language
 Polymer(
-	tooltip_animation	:'{animation:true,delay:200}'
-	L					: L
-	modules				: []
-	created				: ->
+	'is'				: 'cs-system-admin-components-modules-list'
+	properties			:
+		tooltip_animation	:'{animation:true,delay:200}'
+	ready				: ->
 		modules = JSON.parse(@querySelector('script').innerHTML)
 		modules.forEach (module) ->
 			module.class			=
@@ -51,10 +51,12 @@ Polymer(
 					if meta.languages then meta.languages.join(', ') else L.none
 				)
 		@modules = modules
-	domReady			: ->
-		$(@shadowRoot).cs().tooltips_inside()
-	generic_modal		: (event, detail, sender) ->
-		$sender	= $(sender)
+		@workarounds(@shadowRoot)
+		cs.observe_inserts_on(@shadowRoot, @workarounds)
+	workarounds				: (target) ->
+		$(target).cs().tooltips_inside()
+	generic_modal		: (e) ->
+		$sender	= $(e.currentTarget)
 		index	= $sender.closest('[data-module-index]').data('module-index')
 		module	= @modules[index]
 		key		= $sender.data('modal-type')

@@ -30,3 +30,19 @@ do ($ = jQuery) ->
 					UIkit.$html.trigger("click.outer.dropdown", e)
 				)
 			registerOuterClick__original.call(@)
+###*
+ * Simplified access to translations in Polymer elements
+###
+Polymer.Base._addFeature(
+	behaviors : [
+		properties	:
+			L :
+				type  : Object,
+				value : cs.Language
+		__			: (key) ->
+			if arguments.length == 1
+				cs.Language.get(key)
+			else
+				cs.Language.format.apply(cs.Language, arguments)
+	]
+)

@@ -15,10 +15,11 @@
   L = cs.Language;
 
   Polymer({
-    tooltip_animation: '{animation:true,delay:200}',
-    L: L,
-    modules: [],
-    created: function() {
+    'is': 'cs-system-admin-components-modules-list',
+    properties: {
+      tooltip_animation: '{animation:true,delay:200}'
+    },
+    ready: function() {
       var modules;
       modules = JSON.parse(this.querySelector('script').innerHTML);
       modules.forEach(function(module) {
@@ -68,14 +69,16 @@
           return module.info = L.module_info(meta["package"], meta.version, meta.description, meta.author, meta.website || L.none, meta.license, meta.db_support ? meta.db_support.join(', ') : L.none, meta.storage_support ? meta.storage_support.join(', ') : L.none, meta.provide ? [].concat(meta.provide).join(', ') : L.none, meta.require ? [].concat(meta.require).join(', ') : L.none, meta.conflict ? [].concat(meta.conflict).join(', ') : L.none, meta.optional ? [].concat(meta.optional).join(', ') : L.none, meta.multilingual && meta.multilingual.indexOf('interface') !== -1 ? L.yes : L.no, meta.multilingual && meta.multilingual.indexOf('content') !== -1 ? L.yes : L.no, meta.languages ? meta.languages.join(', ') : L.none);
         })(module.meta);
       });
-      return this.modules = modules;
+      this.modules = modules;
+      this.workarounds(this.shadowRoot);
+      return cs.observe_inserts_on(this.shadowRoot, this.workarounds);
     },
-    domReady: function() {
-      return $(this.shadowRoot).cs().tooltips_inside();
+    workarounds: function(target) {
+      return $(target).cs().tooltips_inside();
     },
-    generic_modal: function(event, detail, sender) {
+    generic_modal: function(e) {
       var $sender, index, key, module, tag;
-      $sender = $(sender);
+      $sender = $(e.currentTarget);
       index = $sender.closest('[data-module-index]').data('module-index');
       module = this.modules[index];
       key = $sender.data('modal-type');
