@@ -44,24 +44,4 @@
     });
   })(jQuery);
 
-  Polymer.Base._addFeature({
-    behaviors: [
-      {
-        properties: {
-          L: {
-            type: Object,
-            value: cs.Language
-          }
-        },
-        __: function(key) {
-          if (arguments.length === 1) {
-            return cs.Language.get(key);
-          } else {
-            return cs.Language.format.apply(cs.Language, arguments);
-          }
-        }
-      }
-    ]
-  });
-
 }).call(this);
