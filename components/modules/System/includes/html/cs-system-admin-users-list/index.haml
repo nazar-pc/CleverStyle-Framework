@@ -51,7 +51,7 @@
 								.uk-button.cs-button-compact(data-uk-tooltip$="[[tooltip_animation]]" on-click="edit_permissions" title$="[[L.edit_user_permissions]]")
 									.uk-icon-key
 						%cs-table-cell
-							%span(data-uk-tooltip$="[[tooltip_animation]]" title$="[[user.type_info]]"} [[user.type]]
+							%span(data-uk-tooltip$="[[tooltip_animation]]" title$="[[user.type_info]]") [[user.type]]
 						%template(is="dom-repeat" items="[[user.columns]]" as="column")
 							%cs-table-cell [[column]]
 		%template(is="dom-if" if="[[!users.length]]")

@@ -1,0 +1,99 @@
+<dom-module id="cs-system-admin-users-list">
+  <template>
+    <template id="pagination">
+      <p class="cs-left">
+        <template if="{{users.length && users_count > search_limit}}" is="dom-if">
+          <ul class="uk-pagination" data-uk-pagination="{items:{{users_count}}, itemsOnPage:{{search_limit}}, currentPage:{{search_page}}}" on-click="page_click"></ul>
+        </template>
+        <!-- Stub to avoid table jumping when selecting pages or changing number of elements per page -->
+        <template if="{{users.length > users_count}}" is="dom-if">
+          <ul class="uk-pagination">
+            <li>
+              <span>&nbsp;</span>
+            </li>
+          </ul>
+        </template>
+      </p>
+    </template>
+    <div class="uk-form">
+      <ul class="cs-tabs">
+        <li>[[L.search]]</li>
+        <li>[[L.show_columns]]</li>
+      </ul>
+      <div>
+        <div>
+          <select value="[[search_column::change]]">
+            <option selected value="">[[L.all_columns]]</option>
+            <template as="column" is="dom-repeat" items="[[all_columns]]">
+              <option value="[[column]]">[[column]]</option>
+            </template>
+          </select>
+          <span>[[L.search_mode]]</span>
+          <select value="{{search_mode::change}}">
+            <template as="mode" is="dom-repeat" items="[[search_modes]]">
+              <option selected="[[equal(mode, search_mode)]]" value="[[mode]]">[[mode]]</option>
+            </template>
+          </select>
+          <input class="uk-form-width-medium" placeholder="[[L.search_text]]" type="text" value="{{search_text::input}}">
+          <span>[[L.items]]</span>
+          <input min="1" step="1" type="number" value="{{search_limit::input}}">
+        </div>
+        <ul class="uk-padding-remove">
+          <template as="column" is="dom-repeat" items="[[search_columns]]">
+            <li class$="[[if(column.selected, 'uk-button-primary', '', 'cs-pointer uk-button uk-margin-bottom ')]]" data-column-index$="[[index]]" on-click="toggle_search_column">[[column.name]]</li>
+          </template>
+        </ul>
+      </div>
+      <hr>
+      <template bind ref="pagination"></template>
+      <cs-table center list with-header>
+        <cs-table-row>
+          <cs-table-cell>[[L.action]]</cs-table-cell>
+          <cs-table-cell>&nbsp;</cs-table-cell>
+          <template as="column" is="dom-repeat" items="[[columns]]">
+            <cs-table-cell>[[column]]</cs-table-cell>
+          </template>
+        </cs-table-row>
+        <template as="user" is="dom-repeat" items="[[users]]">
+          <cs-table-row class$="[[user.class]]" data-user-index$="[[index]]">
+            <cs-table-cell>
+              <template if="[[user.is_root]]" is="dom-if">-</template>
+              <template if="[[!user.is_root]]" is="dom-if">
+                <template if="[[!user.is_guest]]" is="dom-if">
+                  <a class="uk-button cs-button-compact" data-uk-tooltip$="[[tooltip_animation]]" on-click="edit_user" title$="[[L.edit_user_information]]">
+                    <div class="uk-icon-pencil"></div>
+                  </a>
+                </template>
+                <template if="[[!or(user.is_guest, user.is_bot)]]" is="dom-if">
+                  <a class="uk-button cs-button-compact" data-uk-tooltip$="[[tooltip_animation]]" href$="[[concat('/admin/System/users/users/groups/', user.id)]]" title="[[L.edit_user_groups]]">
+                    <div class="uk-icon-group"></div>
+                  </a>
+                </template>
+                <div class="uk-button cs-button-compact" data-uk-tooltip$="[[tooltip_animation]]" on-click="edit_permissions" title$="[[L.edit_user_permissions]]">
+                  <div class="uk-icon-key"></div>
+                </div>
+              </template>
+            </cs-table-cell>
+            <cs-table-cell>
+              <span data-uk-tooltip$="[[tooltip_animation]]" title$="[[user.type_info]]">[[user.type]]</span>
+            </cs-table-cell>
+            <template as="column" is="dom-repeat" items="[[user.columns]]">
+              <cs-table-cell>[[column]]</cs-table-cell>
+            </template>
+          </cs-table-row>
+        </template>
+      </cs-table>
+    </div>
+    <template if="[[!users.length]]" is="dom-if">
+      <h2 class="uk-text-center">
+        <div class="uk-icon-spin uk-icon-spinner"></div>
+      </h2>
+    </template>
+    <template bind ref="pagination"></template>
+    <p class="cs-left">
+      <button class="uk-button" on-click="add_user" type="button">[[L.add_user]]</button>
+      <button class="uk-button" on-click="add_bot" type="button">[[L.add_bot]]</button>
+    </p>
+  </template>
+  <script src="script.js"></script>
+</dom-module>
