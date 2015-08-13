@@ -1,45 +1,46 @@
-<polymer-element name="cs-system-admin-components-plugins-list">
-	<template>
-		<cs-table center list with-header>
-			<cs-table-row>
-				<cs-table-cell>[[L.plugin_name]]</cs-table-cell>
-				<cs-table-cell>[[L.state]]</cs-table-cell>
-				<cs-table-cell>[[L.action]]</cs-table-cell>
-			</cs-table-row>
-			<template repeat="[[plugin, index in plugins]]">
-				<cs-table-row data-plugin-index="{{index}}" class="[[plugin.class]]">
-					<cs-table-cell>
-						<template if="[[plugin.info]]">
-							<a href="/admin/[[plugin.name]]" data-uk-tooltip="[[tooltip_animation]]" title="[[plugin.info]]">[[plugin.name_localized]]</a>
-						</template>
-						<template if="[[!plugin.info]]">
-							<a href="/admin/[[plugin.name]]">[[plugin.name_localized]]</a>
-						</template>
-					</cs-table-cell>
-					<cs-table-cell>
-						<span class="[[plugin.icon]]" data-uk-tooltip="[[tooltip_animation]]" title="[[plugin.icon_text]]"></span>
-						<template if="[[plugin.readme]]">
-							<span class="uk-button cs-button-compact uk-icon-book" on-click="[[generic_modal]]" data-modal-type="readme" data-uk-tooltip="[[tooltip_animation]]" title="[[L.information_about_plugin]], [[L.click_to_view_details]]"></span>
-						</template>
-						<template if="[[plugin.license]]">
-							<span class="uk-button cs-button-compact uk-icon-legal" on-click="[[generic_modal]]" data-modal-type="license" data-uk-tooltip="[[tooltip_animation]]" title="[[L.license]], [[L.click_to_view_details]]"></span>
-						</template>
-					</cs-table-cell>
-					<cs-table-cell>
-						<template if="[[plugin.active == 1]]">
-							<a class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" href="/admin/System/components/plugins/disable/[[plugin.name]]" title="[[L.disable]]">
-								<span class="uk-icon-minus"></span>
-							</a>
-						</template>
-						<template if="[[plugin.active == 0]]">
-							<a class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" href="/admin/System/components/plugins/enable/[[plugin.name]]" title="[[L.enable]]">
-								<span class="uk-icon-check"></span> [[L.enable]]
-							</a>
-						</template>
-					</cs-table-cell>
-				</cs-table-row>
-			</template>
-		</cs-table>
-	</template>
-	<script src="script.js"></script>
-</polymer-element>
+<dom-module id="cs-system-admin-components-plugins-list">
+  <template>
+    <cs-table center="" list="" with-header="">
+      <cs-table-row>
+        <cs-table-cell>[[L.plugin_name]]</cs-table-cell>
+        <cs-table-cell>[[L.state]]</cs-table-cell>
+        <cs-table-cell>[[L.action]]</cs-table-cell>
+      </cs-table-row>
+      <template as="plugin" is="dom-repeat" items="[[plugins]]">
+        <cs-table-row class$="[[plugin.class]]" data-plugin-index$="[[index]]">
+          <cs-table-cell>
+            <template if="[[plugin.info]]" is="dom-if">
+              <a data-uk-tooltip$="[[tooltip_animation]]" href$="[[concat('/admin/', plugin.name)]]" title$="[[plugin.info]]">[[plugin.name_localized]]</a>
+            </template>
+            <template if="[[!plugin.info]]" is="dom-if">
+              <a href$="[[concat('/admin/', plugin.name)]]">[[plugin.name_localized]]</a>
+            </template>
+          </cs-table-cell>
+          <cs-table-cell>
+            <span class$="[[plugin.icon]]" data-uk-tooltip$="[[tooltip_animation]]" title$="[[plugin.icon_text]]"></span>
+            <template if="[[plugin.readme]]" is="dom-if">
+              <span class="uk-button cs-button-compact uk-icon-book" data-modal-type="readme" data-uk-tooltip$="[[tooltip_animation]]" on-click="generic_modal" title$="[[concat(L.information_about_plugin, '<br>', L.click_to_view_details)]]"></span>
+            </template>
+            <template if="[[plugin.license]]" is="dom-if">
+              <span class="uk-button cs-button-compact uk-icon-legal" data-modal-type="license" data-uk-tooltip$="[[tooltip_animation]]" on-click="generic_modal" title$="[[concat(L.license, '<br>', L.click_to_view_details)]]"></span>
+            </template>
+          </cs-table-cell>
+          <cs-table-cell>
+            <template if="[[equal(plugin.active, 1)]]" is="dom-if">
+              <a class="uk-button cs-button-compact" data-uk-tooltip$="[[tooltip_animation]]" href$="[[concat('/admin/System/components/plugins/disable/', plugin.name)]]" title$="[[L.disable]]">
+                <span class="uk-icon-minus"></span>
+              </a>
+            </template>
+            <template if="[[equal(plugin.active, 0)]]" is="dom-if">
+              <a class="uk-button cs-button-compact" data-uk-tooltip$="[[tooltip_animation]]" href$="[[concat('/admin/System/components/plugins/enable/', plugin.name)]]" title$="[[L.enable]]">
+                <span class="uk-icon-check"></span>
+                <span>[[L.enable]]</span>
+              </a>
+            </template>
+          </cs-table-cell>
+        </cs-table-row>
+      </template>
+    </cs-table>
+  </template>
+  <script src="script.js"></script>
+</dom-module>

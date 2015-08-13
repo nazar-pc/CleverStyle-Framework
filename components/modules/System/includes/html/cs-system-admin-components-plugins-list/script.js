@@ -15,12 +15,13 @@
   L = cs.Language;
 
   Polymer({
-    tooltip_animation: '{animation:true,delay:200}',
-    L: L,
-    plugins: [],
-    created: function() {
+    'is': 'cs-system-admin-components-plugins-list',
+    properties: {
+      tooltip_animation: '{animation:true,delay:200}'
+    },
+    ready: function() {
       var plugins;
-      plugins = JSON.parse(this.querySelector('script').innerHTML);
+      plugins = JSON.parse(this.querySelector('script').textContent);
       plugins.forEach(function(plugin) {
         plugin["class"] = plugin.active ? 'uk-alert-success' : 'uk-alert-warning';
         plugin.icon = plugin.active ? 'uk-icon-check' : 'uk-icon-minus';
@@ -33,14 +34,16 @@
           return plugin.info = L.plugin_info(meta["package"], meta.version, meta.description, meta.author, meta.website || L.none, meta.license, meta.provide ? [].concat(meta.provide).join(', ') : L.none, meta.require ? [].concat(meta.require).join(', ') : L.none, meta.conflict ? [].concat(meta.conflict).join(', ') : L.none, meta.optional ? [].concat(meta.optional).join(', ') : L.none, meta.multilingual && meta.multilingual.indexOf('interface') !== -1 ? L.yes : L.no, meta.multilingual && meta.multilingual.indexOf('content') !== -1 ? L.yes : L.no, meta.languages ? meta.languages.join(', ') : L.none);
         })(plugin.meta);
       });
-      return this.plugins = plugins;
+      this.plugins = plugins;
+      this.workarounds(this.shadowRoot);
+      return cs.observe_inserts_on(this.shadowRoot, this.workarounds);
     },
-    domReady: function() {
-      return $(this.shadowRoot).cs().tooltips_inside();
+    workarounds: function(target) {
+      return $(target).cs().tooltips_inside();
     },
-    generic_modal: function(event, detail, sender) {
+    generic_modal: function(e) {
       var $sender, index, key, plugin, tag;
-      $sender = $(sender);
+      $sender = $(e.currentTarget);
       index = $sender.closest('[data-plugin-index]').data('plugin-index');
       plugin = this.plugins[index];
       key = $sender.data('modal-type');

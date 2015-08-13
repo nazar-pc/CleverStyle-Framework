@@ -8,11 +8,11 @@
 ###
 L = cs.Language
 Polymer(
-	'is'				: 'cs-system-admin-components-modules-list'
-	properties			:
+	'is'			: 'cs-system-admin-components-modules-list'
+	properties		:
 		tooltip_animation	:'{animation:true,delay:200}'
-	ready				: ->
-		modules = JSON.parse(@querySelector('script').innerHTML)
+	ready			: ->
+		modules = JSON.parse(@querySelector('script').textContent)
 		modules.forEach (module) ->
 			module.class			=
 				switch module.active
@@ -53,9 +53,9 @@ Polymer(
 		@modules = modules
 		@workarounds(@shadowRoot)
 		cs.observe_inserts_on(@shadowRoot, @workarounds)
-	workarounds				: (target) ->
+	workarounds		: (target) ->
 		$(target).cs().tooltips_inside()
-	generic_modal		: (e) ->
+	generic_modal	: (e) ->
 		$sender	= $(e.currentTarget)
 		index	= $sender.closest('[data-module-index]').data('module-index')
 		module	= @modules[index]
@@ -72,4 +72,4 @@ Polymer(
 			.cs().modal('show')
 			.on 'hide.uk.modal', ->
 				$(@).remove()
-);
+)

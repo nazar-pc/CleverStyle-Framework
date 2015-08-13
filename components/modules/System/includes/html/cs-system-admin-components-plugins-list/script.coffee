@@ -8,11 +8,11 @@
 ###
 L = cs.Language
 Polymer(
-	tooltip_animation	:'{animation:true,delay:200}'
-	L					: L
-	plugins				: []
-	created				: ->
-		plugins = JSON.parse(@querySelector('script').innerHTML)
+	'is'			: 'cs-system-admin-components-plugins-list'
+	properties		:
+		tooltip_animation	:'{animation:true,delay:200}'
+	ready			: ->
+		plugins = JSON.parse(@querySelector('script').textContent)
 		plugins.forEach (plugin) ->
 			plugin.class			= if plugin.active then 'uk-alert-success' else 'uk-alert-warning'
 			plugin.icon				= if plugin.active then 'uk-icon-check' else 'uk-icon-minus'
@@ -37,10 +37,12 @@ Polymer(
 					if meta.languages then meta.languages.join(', ') else L.none
 				)
 		@plugins = plugins
-	domReady			: ->
-		$(@shadowRoot).cs().tooltips_inside()
-	generic_modal		: (event, detail, sender) ->
-		$sender	= $(sender)
+		@workarounds(@shadowRoot)
+		cs.observe_inserts_on(@shadowRoot, @workarounds)
+	workarounds		: (target) ->
+		$(target).cs().tooltips_inside()
+	generic_modal	: (e) ->
+		$sender	= $(e.currentTarget)
 		index	= $sender.closest('[data-plugin-index]').data('plugin-index')
 		plugin	= @plugins[index]
 		key		= $sender.data('modal-type')

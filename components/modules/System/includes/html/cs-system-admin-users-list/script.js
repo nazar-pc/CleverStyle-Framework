@@ -23,20 +23,27 @@
   ROOT_ID = 2;
 
   Polymer({
-    tooltip_animation: '{animation:true,delay:200}',
-    L: L,
-    search_column: '',
-    search_mode: 'LIKE',
-    search_text: '',
-    search_page: 1,
-    search_limit: 20,
-    search_columns: [],
-    search_modes: [],
-    all_columns: [],
-    columns: ['id', 'login', 'username', 'email'],
-    users: [],
-    users_count: 0,
-    created: function() {
+    'is': 'cs-system-admin-users-list',
+    properties: {
+      tooltip_animation: '{animation:true,delay:200}',
+      search_column: '',
+      search_mode: 'LIKE',
+      search_text: {
+        observer: 'search_textChanged',
+        type: String,
+        value: ''
+      },
+      search_page: 1,
+      search_limit: 20,
+      search_columns: [],
+      search_modes: [],
+      all_columns: [],
+      columns: ['id', 'login', 'username', 'email'],
+      users: [],
+      users_count: 0
+    },
+    observers: ['restart_search(search_column, search_mode, search_limit)'],
+    ready: function() {
       $.ajax({
         url: 'api/System/admin/users',
         type: 'search_options',
@@ -61,8 +68,8 @@
       return this.search();
     },
     search: function() {
-      this.users_count = 0;
-      return $.ajax({
+      this.set('users_count', 0);
+      $.ajax({
         url: 'api/System/admin/users',
         type: 'search',
         data: {
@@ -74,9 +81,9 @@
         },
         success: (function(_this) {
           return function(data) {
-            _this.users_count = data.count;
+            _this.set('users_count', data.count);
             if (!data.count) {
-              _this.users = [];
+              _this.set('users', []);
               return;
             }
             data.users.forEach(function(user) {
@@ -91,7 +98,6 @@
                     return '';
                 }
               })();
-              user.is_active = user.status == STATUS_ACTIVE;
               user.is_guest = user.id == GUEST_ID;
               user.is_root = user.id == ROOT_ID;
               user.columns = (function() {
@@ -117,24 +123,22 @@
                 return user.type_info = L[type + '_info'];
               })();
             });
-            return _this.users = data.users;
+            return _this.set('users', data.users);
           };
         })(this)
       });
-    },
-    domReady: function() {
       this.workarounds(this.shadowRoot);
       return cs.observe_inserts_on(this.shadowRoot, this.workarounds);
     },
     workarounds: function(target) {
       return $(target).cs().pagination_inside().cs().tabs_inside().cs().tooltips_inside();
     },
-    toggle_search_column: function(event, detail, sender) {
+    toggle_search_column: function(e) {
       var column, index;
-      index = $(sender).data('column-index');
+      index = $(e.currentTarget).data('column-index');
       column = this.search_columns[index];
-      column.selected = !column.selected;
-      this.columns = (function() {
+      this.set(['search_columns', index, 'selected'], !column.selected);
+      this.set('columns', (function() {
         var i, len, ref, results;
         ref = this.search_columns;
         results = [];
@@ -145,33 +149,24 @@
           }
         }
         return results;
-      }).call(this);
-      this.search_page = 1;
-      return this.search();
+      }).call(this));
+      return this.restart_search();
     },
-    page_click: function(event, detail, sender) {
-      return $(sender).one('select.uk.pagination', (function(_this) {
+    page_click: function(e) {
+      return $(e.currentTarget).one('select.uk.pagination', (function(_this) {
         return function(event, pageIndex) {
           _this.search_page = pageIndex + 1;
           return _this.search();
         };
       })(this));
     },
-    search_columnChanged: function() {
-      this.search_page = 1;
-      return this.search();
-    },
-    search_modeChanged: function() {
+    restart_search: function() {
       this.search_page = 1;
       return this.search();
     },
     search_textChanged: function() {
       clearTimeout(this.search_text_timeout);
-      return this.search_text_timeout = setTimeout(this.search.bind(this), 300);
-    },
-    search_limitChanged: function() {
-      this.search_page = 1;
-      return this.search();
+      return this.search_text_timeout = setTimeout(this.restart_search.bind(this), 300);
     },
     add_user: function() {
       return $.cs.simple_modal("<h3>" + L.adding_a_user + "</h3>\n<cs-system-admin-users-add-user-form/>").on('hide.uk.modal', this.search.bind(this));
@@ -179,9 +174,9 @@
     add_bot: function() {
       return $.cs.simple_modal("<h3>" + L.adding_a_bot + "</h3>\n<cs-system-admin-users-add-bot-form/>").on('hide.uk.modal', this.search.bind(this));
     },
-    edit_user: function(event, detail, sender) {
+    edit_user: function(e) {
       var $sender, index, title, user;
-      $sender = $(sender);
+      $sender = $(e.currentTarget);
       index = $sender.closest('[data-user-index]').data('user-index');
       user = this.users[index];
       if (user.is_bot) {
@@ -192,9 +187,9 @@
         return $.cs.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-edit-user-form user_id=\"" + user.id + "\"/>").on('hide.uk.modal', this.search.bind(this));
       }
     },
-    edit_permissions: function(event, detail, sender) {
+    edit_permissions: function(e) {
       var $sender, index, title, title_key, user;
-      $sender = $(sender);
+      $sender = $(e.currentTarget);
       index = $sender.closest('[data-user-index]').data('user-index');
       user = this.users[index];
       title_key = user.is_bot ? 'permissions_for_bot' : 'permissions_for_user';

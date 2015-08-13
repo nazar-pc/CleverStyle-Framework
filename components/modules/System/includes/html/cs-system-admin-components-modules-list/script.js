@@ -21,7 +21,7 @@
     },
     ready: function() {
       var modules;
-      modules = JSON.parse(this.querySelector('script').innerHTML);
+      modules = JSON.parse(this.querySelector('script').textContent);
       modules.forEach(function(module) {
         module["class"] = (function() {
           switch (module.active) {
