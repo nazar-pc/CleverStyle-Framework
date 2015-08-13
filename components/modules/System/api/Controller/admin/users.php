@@ -178,6 +178,7 @@ trait users {
 			error_code(404);
 			return;
 		}
+		$where = str_replace('%', '%%', $where);
 		$ids = $cdb->qfas(
 			[
 				"SELECT `id`
