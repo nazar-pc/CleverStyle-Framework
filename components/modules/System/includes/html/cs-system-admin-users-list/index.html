@@ -1,20 +1,5 @@
 <dom-module id="cs-system-admin-users-list">
   <template>
-    <template id="pagination">
-      <p class="cs-left">
-        <template if="{{users.length && users_count > search_limit}}" is="dom-if">
-          <ul class="uk-pagination" data-uk-pagination="{items:{{users_count}}, itemsOnPage:{{search_limit}}, currentPage:{{search_page}}}" on-click="page_click"></ul>
-        </template>
-        <!-- Stub to avoid table jumping when selecting pages or changing number of elements per page -->
-        <template if="{{users.length > users_count}}" is="dom-if">
-          <ul class="uk-pagination">
-            <li>
-              <span>&nbsp;</span>
-            </li>
-          </ul>
-        </template>
-      </p>
-    </template>
     <div class="uk-form">
       <ul class="cs-tabs">
         <li>[[L.search]]</li>
@@ -45,7 +30,12 @@
         </ul>
       </div>
       <hr>
-      <template bind ref="pagination"></template>
+      <div class="uk-margin cs-left" hidden$="[[!show_pagination]]">
+        <ul class="uk-pagination" data-uk-pagination="{items:1, itemsOnPage: 1, currentPage:1}" id="pagination-top"></ul>
+      </div>
+      <h2 class="uk-text-center" hidden$="[[!searching]]">
+        <div class="uk-icon-spin uk-icon-spinner"></div>
+      </h2>
       <cs-table center list with-header>
         <cs-table-row>
           <cs-table-cell>[[L.action]]</cs-table-cell>
@@ -84,12 +74,9 @@
         </template>
       </cs-table>
     </div>
-    <template if="[[!users.length]]" is="dom-if">
-      <h2 class="uk-text-center">
-        <div class="uk-icon-spin uk-icon-spinner"></div>
-      </h2>
-    </template>
-    <template bind ref="pagination"></template>
+    <div class="uk-margin cs-left" hidden$="[[!show_pagination]]">
+      <ul class="uk-pagination" data-uk-pagination="{items:1, itemsOnPage: 1, currentPage:1}" id="pagination-bottom"></ul>
+    </div>
     <p class="cs-left">
       <button class="uk-button" on-click="add_user" type="button">[[L.add_user]]</button>
       <button class="uk-button" on-click="add_bot" type="button">[[L.add_bot]]</button>

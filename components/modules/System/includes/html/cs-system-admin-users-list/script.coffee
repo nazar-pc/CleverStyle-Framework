@@ -21,7 +21,10 @@ Polymer(
 			observer	: 'search_textChanged'
 			type		: String
 			value		: ''
-		search_page			: 1
+		search_page			:
+			observer	: 'search'
+			type		: Number
+			value		: 1
 		search_limit		: 20
 		search_columns		: []
 		search_modes		: []
@@ -34,8 +37,12 @@ Polymer(
 		]
 		users				: []
 		users_count			: 0
+		show_pagination		:
+			type		: Boolean
+			computed	: 'show_pagination_(users_count, search_limit, search_page)'
+		searching			: false
 	observers				: [
-		'restart_search(search_column, search_mode, search_limit)'
+		'search_again(search_column, search_mode, search_limit)'
 	]
 	ready					: ->
 		$.ajax(
@@ -51,22 +58,35 @@ Polymer(
 				@search_columns	= search_columns
 				@all_columns	= search_options.columns
 				@search_modes	= search_options.modes
+				@searching()
 		)
-		@search()
+		$(@$['pagination-top'], @$['pagination-bottom'])
+			.on('select.uk.pagination', (e, pageIndex) =>
+				@search_page	= pageIndex + 1
+			)
 	search					: ->
-		# Hack to force re-rendering pages navigation
-		@set('users_count', 0)
+		if !@search_modes || @searching
+			return
+		searching_timeout = setTimeout (=>
+			@searching	= true
+		), 200
 		$.ajax(
-			url		: 'api/System/admin/users'
-			type	: 'search'
-			data	:
+			url			: 'api/System/admin/users'
+			type		: 'search'
+			data		:
 				column	: @search_column
 				mode	: @search_mode
 				text	: @search_text
 				page	: @search_page
 				limit	: @search_limit
-			success	: (data) =>
-				@set('users_count', data.count)
+			complete	: (jqXHR, textStatus) =>
+				clearTimeout(searching_timeout)
+				@searching	= false
+				if !textStatus
+					@set('users', [])
+					@users_count	= 0
+			success		: (data) =>
+				@users_count	= data.count
 				if !data.count
 					@set('users', [])
 					return
@@ -111,18 +131,25 @@ Polymer(
 		column			= @search_columns[index]
 		@set(['search_columns', index, 'selected'], !column.selected)
 		@set('columns', column.name for column in @search_columns when column.selected)
-		@restart_search()
-	page_click				: (e) ->
-		$(e.currentTarget).one('select.uk.pagination', (event, pageIndex) =>
-			@search_page	= pageIndex + 1
+		@search_again()
+	search_again			: ->
+		if @search_page > 1
+			# Will execute search implicitly
+			@search_page	= 1
+		else
 			@search()
-		)
-	restart_search			: ->
-		@search_page	= 1
-		@search()
 	search_textChanged		: ->
 		clearTimeout(@search_text_timeout)
-		@search_text_timeout	= setTimeout(@restart_search.bind(@), 300)
+		@search_text_timeout	= setTimeout(@search_again.bind(@), 300)
+	show_pagination_		: (users_count, search_limit, search_page) ->
+		[
+			UIkit.pagination(@$['pagination-top'])
+			UIkit.pagination(@$['pagination-bottom'])
+		].forEach (p) =>
+			p.pages			= Math.ceil(users_count / search_limit)
+			p.currentPage	= search_page - 1
+			p.render()
+		parseInt(users_count) > parseInt(search_limit)
 	add_user				: ->
 		$.cs.simple_modal("""
 			<h3>#{L.adding_a_user}</h3>

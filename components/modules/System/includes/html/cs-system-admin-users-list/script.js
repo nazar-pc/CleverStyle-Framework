@@ -33,16 +33,25 @@
         type: String,
         value: ''
       },
-      search_page: 1,
+      search_page: {
+        observer: 'search',
+        type: Number,
+        value: 1
+      },
       search_limit: 20,
       search_columns: [],
       search_modes: [],
       all_columns: [],
       columns: ['id', 'login', 'username', 'email'],
       users: [],
-      users_count: 0
+      users_count: 0,
+      show_pagination: {
+        type: Boolean,
+        computed: 'show_pagination_(users_count, search_limit, search_page)'
+      },
+      searching: false
     },
-    observers: ['restart_search(search_column, search_mode, search_limit)'],
+    observers: ['search_again(search_column, search_mode, search_limit)'],
     ready: function() {
       $.ajax({
         url: 'api/System/admin/users',
@@ -61,14 +70,27 @@
             }
             _this.search_columns = search_columns;
             _this.all_columns = search_options.columns;
-            return _this.search_modes = search_options.modes;
+            _this.search_modes = search_options.modes;
+            return _this.searching();
           };
         })(this)
       });
-      return this.search();
+      return $(this.$['pagination-top'], this.$['pagination-bottom']).on('select.uk.pagination', (function(_this) {
+        return function(e, pageIndex) {
+          return _this.search_page = pageIndex + 1;
+        };
+      })(this));
     },
     search: function() {
-      this.set('users_count', 0);
+      var searching_timeout;
+      if (!this.search_modes || this.searching) {
+        return;
+      }
+      searching_timeout = setTimeout(((function(_this) {
+        return function() {
+          return _this.searching = true;
+        };
+      })(this)), 200);
       $.ajax({
         url: 'api/System/admin/users',
         type: 'search',
@@ -79,9 +101,19 @@
           page: this.search_page,
           limit: this.search_limit
         },
+        complete: (function(_this) {
+          return function(jqXHR, textStatus) {
+            clearTimeout(searching_timeout);
+            _this.searching = false;
+            if (!textStatus) {
+              _this.set('users', []);
+              return _this.users_count = 0;
+            }
+          };
+        })(this),
         success: (function(_this) {
           return function(data) {
-            _this.set('users_count', data.count);
+            _this.users_count = data.count;
             if (!data.count) {
               _this.set('users', []);
               return;
@@ -150,23 +182,28 @@
         }
         return results;
       }).call(this));
-      return this.restart_search();
+      return this.search_again();
     },
-    page_click: function(e) {
-      return $(e.currentTarget).one('select.uk.pagination', (function(_this) {
-        return function(event, pageIndex) {
-          _this.search_page = pageIndex + 1;
-          return _this.search();
-        };
-      })(this));
-    },
-    restart_search: function() {
-      this.search_page = 1;
-      return this.search();
+    search_again: function() {
+      if (this.search_page > 1) {
+        return this.search_page = 1;
+      } else {
+        return this.search();
+      }
     },
     search_textChanged: function() {
       clearTimeout(this.search_text_timeout);
-      return this.search_text_timeout = setTimeout(this.restart_search.bind(this), 300);
+      return this.search_text_timeout = setTimeout(this.search_again.bind(this), 300);
+    },
+    show_pagination_: function(users_count, search_limit, search_page) {
+      [UIkit.pagination(this.$['pagination-top']), UIkit.pagination(this.$['pagination-bottom'])].forEach((function(_this) {
+        return function(p) {
+          p.pages = Math.ceil(users_count / search_limit);
+          p.currentPage = search_page - 1;
+          return p.render();
+        };
+      })(this));
+      return parseInt(users_count) > parseInt(search_limit);
     },
     add_user: function() {
       return $.cs.simple_modal("<h3>" + L.adding_a_user + "</h3>\n<cs-system-admin-users-add-user-form/>").on('hide.uk.modal', this.search.bind(this));

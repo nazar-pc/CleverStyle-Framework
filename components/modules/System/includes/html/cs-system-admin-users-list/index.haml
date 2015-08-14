@@ -1,14 +1,5 @@
 %dom-module(id="cs-system-admin-users-list")
 	%template
-		%template#pagination
-			%p.cs-left
-				%template(is="dom-if" if="{{users.length && users_count > search_limit}}")
-					%ul.uk-pagination(on-click="page_click" data-uk-pagination="{items:{{users_count}}, itemsOnPage:{{search_limit}}, currentPage:{{search_page}}}")
-				/ Stub to avoid table jumping when selecting pages or changing number of elements per page
-				%template(is="dom-if" if="{{users.length > users_count}}")
-					%ul.uk-pagination
-						%li
-							%span &nbsp;
 		.uk-form
 			%ul.cs-tabs
 				%li [[L.search]]
@@ -30,7 +21,11 @@
 					%template(is="dom-repeat" items="[[search_columns]]" as="column")
 						%li(on-click="toggle_search_column" data-column-index$="[[index]]" class$="[[if(column.selected, 'uk-button-primary', '', 'cs-pointer uk-button uk-margin-bottom ')]]") [[column.name]]
 			%hr/
-			%template(bind ref="pagination")
+			-# should be reference %template#pagination
+			.uk-margin.cs-left(hidden$="[[!show_pagination]]")
+				%ul.uk-pagination#pagination-top(data-uk-pagination="{items:1, itemsOnPage: 1, currentPage:1}")
+			%h2.uk-text-center(hidden$="[[!searching]]")
+				.uk-icon-spin.uk-icon-spinner
 			%cs-table(center list with-header)
 				%cs-table-row
 					%cs-table-cell [[L.action]]
@@ -54,10 +49,9 @@
 							%span(data-uk-tooltip$="[[tooltip_animation]]" title$="[[user.type_info]]") [[user.type]]
 						%template(is="dom-repeat" items="[[user.columns]]" as="column")
 							%cs-table-cell [[column]]
-		%template(is="dom-if" if="[[!users.length]]")
-			%h2.uk-text-center
-				.uk-icon-spin.uk-icon-spinner
-		%template(bind ref="pagination")
+		-# should be reference %template#pagination
+		.uk-margin.cs-left(hidden$="[[!show_pagination]]")
+			%ul.uk-pagination#pagination-bottom(data-uk-pagination="{items:1, itemsOnPage: 1, currentPage:1}")
 		%p.cs-left
 			%button.uk-button(on-click="add_user" type="button") [[L.add_user]]
 			%button.uk-button(on-click="add_bot" type="button") [[L.add_bot]]
