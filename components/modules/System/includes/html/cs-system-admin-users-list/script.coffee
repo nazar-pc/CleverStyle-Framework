@@ -13,6 +13,7 @@ GUEST_ID		= 1
 ROOT_ID			= 2
 Polymer(
 	'is'					: 'cs-system-admin-users-list'
+	behaviors				: [cs.Polymer.behaviors.Language]
 	properties				:
 		tooltip_animation	:'{animation:true,delay:200}'
 		search_column		: ''
@@ -41,6 +42,7 @@ Polymer(
 			type		: Boolean
 			computed	: 'show_pagination_(users_count, search_limit, search_page)'
 		searching			: false
+		searching_loader	: false
 	observers				: [
 		'search_again(search_column, search_mode, search_limit)'
 	]
@@ -58,7 +60,7 @@ Polymer(
 				@search_columns	= search_columns
 				@all_columns	= search_options.columns
 				@search_modes	= search_options.modes
-				@searching()
+				@search()
 		)
 		$(@$['pagination-top'], @$['pagination-bottom'])
 			.on('select.uk.pagination', (e, pageIndex) =>
@@ -67,8 +69,9 @@ Polymer(
 	search					: ->
 		if !@search_modes || @searching
 			return
-		searching_timeout = setTimeout (=>
-			@searching	= true
+		@searching			= true
+		searching_timeout	= setTimeout (=>
+			@searching_loader	= true
 		), 200
 		$.ajax(
 			url			: 'api/System/admin/users'
@@ -81,7 +84,8 @@ Polymer(
 				limit	: @search_limit
 			complete	: (jqXHR, textStatus) =>
 				clearTimeout(searching_timeout)
-				@searching	= false
+				@searching			= false
+				@searching_loader	= false
 				if !textStatus
 					@set('users', [])
 					@users_count	= 0

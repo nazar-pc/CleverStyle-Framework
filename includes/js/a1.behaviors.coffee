@@ -7,10 +7,16 @@
 ###*
  * Simplified access to translations in Polymer elements
 ###
-Polymer.Base._addFeature(
-	behaviors : [
+cs.Polymer	= cs.Polymer || {}
+(->
+	# This will add `Language` property (and its short alias `L`) alongside with `__()` method which can be used for formatted translations
+	@Language	=
 		properties	:
-			L :
+			L			:
+				readOnly	: true
+				type  		: Object
+				value		: cs.Language
+			Language	:
 				readOnly	: true
 				type  		: Object
 				value		: cs.Language
@@ -19,5 +25,4 @@ Polymer.Base._addFeature(
 				cs.Language.get(key)
 			else
 				cs.Language.format.apply(cs.Language, arguments)
-	]
-)
+).call(cs.Polymer.behaviors = {})

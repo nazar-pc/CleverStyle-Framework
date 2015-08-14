@@ -24,6 +24,7 @@
 
   Polymer({
     'is': 'cs-system-admin-users-list',
+    behaviors: [cs.Polymer.behaviors.Language],
     properties: {
       tooltip_animation: '{animation:true,delay:200}',
       search_column: '',
@@ -49,7 +50,8 @@
         type: Boolean,
         computed: 'show_pagination_(users_count, search_limit, search_page)'
       },
-      searching: false
+      searching: false,
+      searching_loader: false
     },
     observers: ['search_again(search_column, search_mode, search_limit)'],
     ready: function() {
@@ -71,7 +73,7 @@
             _this.search_columns = search_columns;
             _this.all_columns = search_options.columns;
             _this.search_modes = search_options.modes;
-            return _this.searching();
+            return _this.search();
           };
         })(this)
       });
@@ -86,9 +88,10 @@
       if (!this.search_modes || this.searching) {
         return;
       }
+      this.searching = true;
       searching_timeout = setTimeout(((function(_this) {
         return function() {
-          return _this.searching = true;
+          return _this.searching_loader = true;
         };
       })(this)), 200);
       $.ajax({
@@ -105,6 +108,7 @@
           return function(jqXHR, textStatus) {
             clearTimeout(searching_timeout);
             _this.searching = false;
+            _this.searching_loader = false;
             if (!textStatus) {
               _this.set('users', []);
               return _this.users_count = 0;

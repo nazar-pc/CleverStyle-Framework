@@ -5,39 +5,38 @@
  * @license   MIT License, see license.txt
 ###
 ###
- # Load configuration from special template elements
+ # Events system similar to one found on backend, including available methods and arguments order
 ###
-callbacks = {}
-e =
-	'on'  : (event, callback) ->
+(->
+	callbacks	= {}
+	@on			= (event, callback) ->
 		if !event || !callback
-			return e
+			return @
 		if !callbacks[event]
 			callbacks[event] = []
 		callbacks[event].push(callback)
-		e
-	'off' : (event, callback) ->
+		@
+	@off		= (event, callback) ->
 		if !callbacks[event]
-			return e
+			return @
 		if !callback
 			delete callbacks[event]
-			return e
+			return @
 		callbacks[event] = callbacks[event].filter (c) ->
 			c != callback
-		e
-	once  : (event, callback) ->
+		@
+	@once		= (event, callback) ->
 		if !event || !callback
-			return e
-		callback_ = ->
-			e.off(event, callback_)
+			return @
+		callback_ = =>
+			@off(event, callback_)
 			callback.apply(callback, arguments)
-		e.on(event, callback_)
-	fire  : (event, param1, _) ->
+		@on(event, callback_)
+	@fire		= (event, params...) ->
 		if !event || !callbacks[event]
 			return true
-		args = Array::slice.call(arguments, 1)
 		for callback, index in callbacks[event]
-			if callback.apply(callback, args) == false
+			if callback.apply(callback, params) == false
 				return false
 		true
-cs.Event = e
+).call(cs.Event = {})

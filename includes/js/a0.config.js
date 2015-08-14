@@ -15,7 +15,7 @@
     dom: 'shadow'
 
     /*
-      * Load configuration from special template elements
+      * Load configuration from special script elements
      */
   };
 
