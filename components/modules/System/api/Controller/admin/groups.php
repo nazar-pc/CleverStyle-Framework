@@ -22,7 +22,9 @@ trait groups {
 				explode(',', $_GET['ids'])
 			);
 		} else {
-			$result = $Group->get_all();
+			$result = $Group->get(
+				$Group->get_all()
+			);
 		}
 		if (!$result) {
 			error_code(404);

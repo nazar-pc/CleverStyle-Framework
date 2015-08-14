@@ -21,24 +21,29 @@
   BOT_GROUP_ID = 3;
 
   Polymer({
-    tooltip_animation: '{animation:true,delay:200}',
-    L: L,
-    groups: [],
-    created: function() {
-      return this.reload();
+    'is': 'cs-system-admin-groups-list',
+    behaviors: [cs.Polymer.behaviors.Language],
+    properties: {
+      tooltip_animation: '{animation:true,delay:200}',
+      groups: []
+    },
+    ready: function() {
+      this.reload();
+      this.workarounds(this.shadowRoot);
+      return cs.observe_inserts_on(this.shadowRoot, this.workarounds);
+    },
+    workarounds: function(target) {
+      return $(target).cs().tooltips_inside();
     },
     reload: function() {
       return $.getJSON('api/System/admin/groups', (function(_this) {
         return function(groups) {
           groups.forEach(function(group) {
-            return group.allow_to_delete = group.id != ADMIN_GROUP_ID && group.id != ADMIN_GROUP_ID || group.id != ADMIN_GROUP_ID;
+            return group.allow_to_delete = group.id != ADMIN_GROUP_ID && group.id != USER_GROUP_ID && group.id != BOT_GROUP_ID;
           });
           return _this.groups = groups;
         };
       })(this));
-    },
-    domReady: function() {
-      return $(this.shadowRoot).cs().tooltips_inside();
     },
     add_group: function() {
       return $.cs.simple_modal("<h3>" + L.adding_a_group + "</h3>\n<cs-system-admin-groups-form/>").on('hide.uk.modal', (function(_this) {
@@ -47,22 +52,18 @@
         };
       })(this));
     },
-    edit_group: function(event, detail, sender) {
-      var $sender, group, index;
-      $sender = $(sender);
-      index = $sender.closest('[data-group-index]').data('group-index');
-      group = this.groups[index];
+    edit_group: function(e) {
+      var group;
+      group = e.model.group;
       return $.cs.simple_modal("<h3>" + (L.editing_of_group(group.title)) + "</h3>\n<cs-system-admin-groups-form group_id=\"" + group.id + "\" group_title=\"" + (cs.prepare_attr_value(group.title)) + "\" description=\"" + (cs.prepare_attr_value(group.description)) + "\"/>").on('hide.uk.modal', (function(_this) {
         return function() {
           return _this.reload();
         };
       })(this));
     },
-    delete_group: function(event, detail, sender) {
-      var $sender, group, index;
-      $sender = $(sender);
-      index = $sender.closest('[data-group-index]').data('group-index');
-      group = this.groups[index];
+    delete_group: function(e) {
+      var group;
+      group = e.model.group;
       return UIkit.modal.confirm("<h3>" + (L.sure_delete_group(group.title)) + "</h3>", (function(_this) {
         return function() {
           return $.ajax({
@@ -70,17 +71,15 @@
             type: 'delete',
             success: function() {
               UIkit.notify(L.changes_saved.toString(), 'success');
-              return _this.groups.splice(index, 1);
+              return _this.groups.splice(e.model.index, 1);
             }
           });
         };
       })(this));
     },
-    edit_permissions: function(event, detail, sender) {
-      var $sender, group, index, title;
-      $sender = $(sender);
-      index = $sender.closest('[data-group-index]').data('group-index');
-      group = this.groups[index];
+    edit_permissions: function(e) {
+      var group, title;
+      group = e.model.group;
       title = L.permissions_for_group(group.title);
       return $.cs.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-permissions-for group=\"" + group.id + "\" for=\"group\"/>");
     }

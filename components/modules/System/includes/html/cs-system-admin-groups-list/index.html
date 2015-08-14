@@ -1,43 +1,37 @@
-<polymer-element name="cs-system-admin-groups-list">
+<dom-module id="cs-system-admin-groups-list">
   <template>
-    <template if="{{!groups.length}}">
-      <h2 class="uk-text-center">
-        <div class="uk-icon-spin uk-icon-spinner"></div>
-      </h2>
-    </template>
-    <template if="{{groups.length}}">
-      <cs-table center list with-header>
-        <cs-table-row>
-          <cs-table-cell>[[L.action]]</cs-table-cell>
-          <cs-table-cell>id</cs-table-cell>
-          <cs-table-cell>[[L.group_name]]</cs-table-cell>
-          <cs-table-cell>[[L.group_description]]</cs-table-cell>
+    <h2 class="uk-text-center" hidden$="[[groups.length]]">
+      <div class="uk-icon-spin uk-icon-spinner"></div>
+    </h2>
+    <cs-table center hidden$="[[!groups.length]]" list with-header>
+      <cs-table-row>
+        <cs-table-cell>[[L.action]]</cs-table-cell>
+        <cs-table-cell>id</cs-table-cell>
+        <cs-table-cell>[[L.group_name]]</cs-table-cell>
+        <cs-table-cell>[[L.group_description]]</cs-table-cell>
+      </cs-table-row>
+      <template as="group" is="dom-repeat" items="[[groups]]">
+        <cs-table-row data-group-index$="[[index]]">
+          <cs-table-cell>
+            <div class="uk-button cs-button-compact" data-uk-tooltip$="[[tooltip_animation]]" on-click="edit_group" title$="[[L.edit_group_information]]">
+              <div class="uk-icon-pencil"></div>
+            </div>
+            <div class="uk-button cs-button-compact" data-uk-tooltip$="[[tooltip_animation]]" hidden$="[[!group.allow_to_delete]]" on-click="delete_group" title$="[[L.delete]]">
+              <div class="uk-icon-trash-o"></div>
+            </div>
+            <div class="uk-button cs-button-compact" data-uk-tooltip$="[[tooltip_animation]]" on-click="edit_permissions" title$="[[L.edit_group_permissions]]">
+              <div class="uk-icon-key"></div>
+            </div>
+          </cs-table-cell>
+          <cs-table-cell>[[group.id]]</cs-table-cell>
+          <cs-table-cell>[[group.title]]</cs-table-cell>
+          <cs-table-cell>[[group.description]]</cs-table-cell>
         </cs-table-row>
-        <template repeat="{{group, index in groups}}">
-          <cs-table-row data-group-index="{{index}}">
-            <cs-table-cell>
-              <div class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" on-click="[[edit_group]]" title="[[L.edit_group_information]]">
-                <div class="uk-icon-pencil"></div>
-              </div>
-              <template if="{{group.allow_to_delete}}">
-                <div class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" on-click="[[delete_group]]" title="[[L.delete]]">
-                  <div class="uk-icon-trash-o"></div>
-                </div>
-              </template>
-              <div class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" on-click="[[edit_permissions]]" title="[[L.edit_group_permissions]]">
-                <div class="uk-icon-key"></div>
-              </div>
-            </cs-table-cell>
-            <cs-table-cell>[[group.id]]</cs-table-cell>
-            <cs-table-cell>[[group.title]]</cs-table-cell>
-            <cs-table-cell>[[group.description]]</cs-table-cell>
-          </cs-table-row>
-        </template>
-      </cs-table>
-      <p class="cs-left">
-        <button class="uk-button" on-click="[[add_group]]" type="button">[[L.add_group]]</button>
-      </p>
-    </template>
+      </template>
+    </cs-table>
+    <p class="cs-left">
+      <button class="uk-button" on-click="add_group" type="button">[[L.add_group]]</button>
+    </p>
   </template>
   <script src="script.js"></script>
-</polymer-element>
+</dom-module>

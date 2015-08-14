@@ -66,6 +66,13 @@ Polymer(
 			.on('select.uk.pagination', (e, pageIndex) =>
 				@search_page	= pageIndex + 1
 			)
+		@workarounds(@shadowRoot)
+		cs.observe_inserts_on(@shadowRoot, @workarounds)
+	workarounds				: (target) ->
+		$(target)
+			.cs().pagination_inside()
+			.cs().tabs_inside()
+			.cs().tooltips_inside()
 	search					: ->
 		if !@search_modes || @searching
 			return
@@ -123,13 +130,6 @@ Polymer(
 						user.type_info	= L[type + '_info']
 				@set('users', data.users)
 		)
-		@workarounds(@shadowRoot)
-		cs.observe_inserts_on(@shadowRoot, @workarounds)
-	workarounds				: (target) ->
-		$(target)
-			.cs().pagination_inside()
-			.cs().tabs_inside()
-			.cs().tooltips_inside()
 	toggle_search_column	: (e) ->
 		index			= $(e.currentTarget).data('column-index')
 		column			= @search_columns[index]
