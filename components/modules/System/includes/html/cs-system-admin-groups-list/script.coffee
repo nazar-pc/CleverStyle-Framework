@@ -26,7 +26,7 @@ Polymer(
 		$.getJSON('api/System/admin/groups', (groups) =>
 			groups.forEach (group) ->
 				group.allow_to_delete	= `group.id != ADMIN_GROUP_ID && group.id != USER_GROUP_ID && group.id != BOT_GROUP_ID`
-			@groups	= groups
+			@set('groups', groups)
 		)
 	add_group			: ->
 		$.cs.simple_modal("""
@@ -59,7 +59,7 @@ Polymer(
 					type	: 'delete'
 					success	: =>
 						UIkit.notify(L.changes_saved.toString(), 'success')
-						@groups.splice(e.model.index, 1)
+						@splice('groups', e.model.index, 1)
 				)
 		)
 	edit_permissions	: (e) ->

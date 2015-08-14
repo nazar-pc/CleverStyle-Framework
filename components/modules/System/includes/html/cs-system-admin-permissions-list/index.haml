@@ -1,25 +1,23 @@
-%polymer-element(name="cs-system-admin-permissions-list")
+%dom-module(id="cs-system-admin-permissions-list")
 	%template
-		%template(if="{{!permissions.length}}")
-			%h2.uk-text-center
-				.uk-icon-spin.uk-icon-spinner
-		%template(if="{{permissions.length}}")
-			%cs-table(center list with-header)
+		%h2.uk-text-center(hidden$="[[permissions.length]]")
+			.uk-icon-spin.uk-icon-spinner
+		%cs-table(center list with-header hidden$="[[!permissions.length]]")
+			%cs-table-row
+				%cs-table-cell [[L.action]]
+				%cs-table-cell id
+				%cs-table-cell [[L.group]]
+				%cs-table-cell [[L.label]]
+			%template(is="dom-repeat" items="[[permissions]]" as="permission")
 				%cs-table-row
-					%cs-table-cell [[L.action]]
-					%cs-table-cell id
-					%cs-table-cell [[L.group]]
-					%cs-table-cell [[L.label]]
-				%template(repeat="{{permission, index in permissions}}")
-					%cs-table-row(data-permission-index="{{index}}")
-						%cs-table-cell
-							.uk-button.cs-button-compact(on-click="[[edit_permission]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.edit]]")
-								.uk-icon-pencil
-							.uk-button.cs-button-compact(on-click="[[delete_permission]]" data-uk-tooltip="[[tooltip_animation]]" title="[[L.delete]]")
-								.uk-icon-trash-o
-						%cs-table-cell [[permission.id]]
-						%cs-table-cell [[permission.group]]
-						%cs-table-cell(data-uk-tooltip="[[tooltip_animation]]" title="[[permission.description]]") [[permission.label]]
-			%p.cs-left
-				%button.uk-button(on-click="[[add_permission]]" type="button") [[L.add_permission]]
+					%cs-table-cell
+						.uk-button.cs-button-compact(on-click="edit_permission" data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.edit]]")
+							.uk-icon-pencil
+						.uk-button.cs-button-compact(on-click="delete_permission" data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.delete]]")
+							.uk-icon-trash-o
+					%cs-table-cell [[permission.id]]
+					%cs-table-cell [[permission.group]]
+					%cs-table-cell(data-uk-tooltip$="[[tooltip_animation]]" title$="[[permission.description]]") [[permission.label]]
+		%p.cs-left
+			%button.uk-button(on-click="add_permission" type="button") [[L.add_permission]]
 	%script(src="script.js")

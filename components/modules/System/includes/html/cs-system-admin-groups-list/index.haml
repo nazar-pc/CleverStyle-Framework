@@ -9,7 +9,7 @@
 				%cs-table-cell [[L.group_name]]
 				%cs-table-cell [[L.group_description]]
 			%template(is="dom-repeat" items="[[groups]]" as="group")
-				%cs-table-row(data-group-index$="[[index]]")
+				%cs-table-row
 					%cs-table-cell
 						.uk-button.cs-button-compact(on-click="edit_group" data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.edit_group_information]]")
 							.uk-icon-pencil

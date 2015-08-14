@@ -41,7 +41,7 @@
           groups.forEach(function(group) {
             return group.allow_to_delete = group.id != ADMIN_GROUP_ID && group.id != USER_GROUP_ID && group.id != BOT_GROUP_ID;
           });
-          return _this.groups = groups;
+          return _this.set('groups', groups);
         };
       })(this));
     },
@@ -71,7 +71,7 @@
             type: 'delete',
             success: function() {
               UIkit.notify(L.changes_saved.toString(), 'success');
-              return _this.groups.splice(e.model.index, 1);
+              return _this.splice('groups', e.model.index, 1);
             }
           });
         };

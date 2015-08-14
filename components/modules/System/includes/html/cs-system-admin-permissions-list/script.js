@@ -15,11 +15,30 @@
   L = cs.Language;
 
   Polymer({
-    tooltip_animation: '{animation:true,delay:200}',
-    L: L,
-    permissions: [],
-    created: function() {
-      return this.reload();
+    'is': 'cs-system-admin-permissions-list',
+    behaviors: [cs.Polymer.behaviors.Language],
+    properties: {
+      tooltip_animation: '{animation:true,delay:200}',
+      permissions: []
+    },
+    ready: function() {
+      this.reload();
+      return this.workarounds(this.shadowRoot);
+    },
+    workarounds: function(target) {
+      var timeout;
+      timeout = null;
+      return cs.observe_inserts_on(target, (function(_this) {
+        return function() {
+          if (timeout) {
+            clearTimeout(timeout);
+          }
+          return timeout = setTimeout((function() {
+            timeout = null;
+            return $(target).cs().tooltips_inside();
+          }), 100);
+        };
+      })(this));
     },
     reload: function() {
       return $.when($.getJSON('api/System/admin/blocks'), $.getJSON('api/System/admin/permissions')).done((function(_this) {
@@ -43,22 +62,7 @@
               });
             }
           }
-          return _this.permissions = permissions_list;
-        };
-      })(this));
-    },
-    domReady: function() {
-      var timeout;
-      timeout = null;
-      return cs.observe_inserts_on(this.shadowRoot, (function(_this) {
-        return function() {
-          if (timeout) {
-            clearTimeout(timeout);
-          }
-          return timeout = setTimeout((function() {
-            timeout = null;
-            return $(_this.shadowRoot).cs().tooltips_inside();
-          }), 100);
+          return _this.set('permissions', permissions_list);
         };
       })(this));
     },
@@ -69,22 +73,18 @@
         };
       })(this));
     },
-    edit_permission: function(event, detail, sender) {
-      var $sender, index, permission;
-      $sender = $(sender);
-      index = $sender.closest('[data-permission-index]').data('permission-index');
-      permission = this.permissions[index];
+    edit_permission: function(e) {
+      var permission;
+      permission = e.model.permission;
       return $.cs.simple_modal("<h3>" + (L.editing_permission(permission.group + '/' + permission.label)) + "</h3>\n<p class=\"uk-alert uk-alert-danger\">" + L.changing_settings_warning + "</p>\n<cs-system-admin-permissions-form permission_id=\"" + permission.id + "\" label=\"" + (cs.prepare_attr_value(permission.label)) + "\" group=\"" + (cs.prepare_attr_value(permission.group)) + "\"/>").on('hide.uk.modal', (function(_this) {
         return function() {
           return _this.reload();
         };
       })(this));
     },
-    delete_permission: function(event, detail, sender) {
-      var $sender, index, permission;
-      $sender = $(sender);
-      index = $sender.closest('[data-permission-index]').data('permission-index');
-      permission = this.permissions[index];
+    delete_permission: function(e) {
+      var permission;
+      permission = e.model.permission;
       return UIkit.modal.confirm("<h3>" + (L.sure_delete_permission(permission.group + '/' + permission.label)) + "</h3>\n<p class=\"uk-alert uk-alert-danger\">" + L.changing_settings_warning + "</p>", (function(_this) {
         return function() {
           return $.ajax({
@@ -92,7 +92,7 @@
             type: 'delete',
             success: function() {
               UIkit.notify(L.changes_saved.toString(), 'success');
-              return _this.permissions.splice(index, 1);
+              return _this.splice('permissions', e.model.index, 1);
             }
           });
         };

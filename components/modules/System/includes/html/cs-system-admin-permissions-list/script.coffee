@@ -8,11 +8,24 @@
 ###
 L	= cs.Language
 Polymer(
-	tooltip_animation	:'{animation:true,delay:200}'
-	L					: L
-	permissions			: []
-	created				: ->
+	'is'				: 'cs-system-admin-permissions-list'
+	behaviors			: [cs.Polymer.behaviors.Language]
+	properties			:
+		tooltip_animation	:'{animation:true,delay:200}'
+		permissions			: []
+	ready				: ->
 		@reload()
+		@workarounds(@shadowRoot)
+	workarounds				: (target) ->
+		timeout	= null
+		cs.observe_inserts_on(target, =>
+			if timeout
+				clearTimeout(timeout)
+			timeout = setTimeout (=>
+				timeout	= null
+				$(target).cs().tooltips_inside()
+			), 100
+		)
 	reload				: ->
 		$.when(
 			$.getJSON('api/System/admin/blocks')
@@ -30,17 +43,7 @@ Polymer(
 						label		: label
 						description	: if group == 'Block' then index_to_title[label] else ''
 					)
-			@permissions	= permissions_list
-	domReady			: ->
-		timeout	= null
-		cs.observe_inserts_on(@shadowRoot, =>
-			if timeout
-				clearTimeout(timeout)
-			timeout = setTimeout (=>
-				timeout	= null
-				$(@shadowRoot).cs().tooltips_inside()
-			), 100
-		)
+			@set('permissions', permissions_list)
 	add_permission		: ->
 		$.cs.simple_modal("""
 			<h3>#{L.adding_permission}</h3>
@@ -51,10 +54,8 @@ Polymer(
 			=>
 				@reload()
 		)
-	edit_permission		: (event, detail, sender) ->
-		$sender		= $(sender)
-		index		= $sender.closest('[data-permission-index]').data('permission-index')
-		permission	= @permissions[index]
+	edit_permission		: (e) ->
+		permission	= e.model.permission
 		$.cs.simple_modal("""
 			<h3>#{L.editing_permission(permission.group + '/' + permission.label)}</h3>
 			<p class="uk-alert uk-alert-danger">#{L.changing_settings_warning}</p>
@@ -64,10 +65,8 @@ Polymer(
 			=>
 				@reload()
 		)
-	delete_permission	: (event, detail, sender) ->
-		$sender		= $(sender)
-		index		= $sender.closest('[data-permission-index]').data('permission-index')
-		permission	= @permissions[index]
+	delete_permission	: (e) ->
+		permission	= e.model.permission
 		UIkit.modal.confirm(
 			"""
 				<h3>#{L.sure_delete_permission(permission.group + '/' + permission.label)}</h3>
@@ -79,7 +78,7 @@ Polymer(
 					type	: 'delete'
 					success	: =>
 						UIkit.notify(L.changes_saved.toString(), 'success')
-						@permissions.splice(index, 1)
+						@splice('permissions', e.model.index, 1)
 				)
 		)
 )

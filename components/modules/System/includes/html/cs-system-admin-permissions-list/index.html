@@ -1,38 +1,34 @@
-<polymer-element name="cs-system-admin-permissions-list">
+<dom-module id="cs-system-admin-permissions-list">
   <template>
-    <template if="{{!permissions.length}}">
-      <h2 class="uk-text-center">
-        <div class="uk-icon-spin uk-icon-spinner"></div>
-      </h2>
-    </template>
-    <template if="{{permissions.length}}">
-      <cs-table center list with-header>
+    <h2 class="uk-text-center" hidden$="[[permissions.length]]">
+      <div class="uk-icon-spin uk-icon-spinner"></div>
+    </h2>
+    <cs-table center hidden$="[[!permissions.length]]" list with-header>
+      <cs-table-row>
+        <cs-table-cell>[[L.action]]</cs-table-cell>
+        <cs-table-cell>id</cs-table-cell>
+        <cs-table-cell>[[L.group]]</cs-table-cell>
+        <cs-table-cell>[[L.label]]</cs-table-cell>
+      </cs-table-row>
+      <template as="permission" is="dom-repeat" items="[[permissions]]">
         <cs-table-row>
-          <cs-table-cell>[[L.action]]</cs-table-cell>
-          <cs-table-cell>id</cs-table-cell>
-          <cs-table-cell>[[L.group]]</cs-table-cell>
-          <cs-table-cell>[[L.label]]</cs-table-cell>
+          <cs-table-cell>
+            <div class="uk-button cs-button-compact" data-uk-tooltip$="[[tooltip_animation]]" on-click="edit_permission" title$="[[L.edit]]">
+              <div class="uk-icon-pencil"></div>
+            </div>
+            <div class="uk-button cs-button-compact" data-uk-tooltip$="[[tooltip_animation]]" on-click="delete_permission" title$="[[L.delete]]">
+              <div class="uk-icon-trash-o"></div>
+            </div>
+          </cs-table-cell>
+          <cs-table-cell>[[permission.id]]</cs-table-cell>
+          <cs-table-cell>[[permission.group]]</cs-table-cell>
+          <cs-table-cell data-uk-tooltip$="[[tooltip_animation]]" title$="[[permission.description]]">[[permission.label]]</cs-table-cell>
         </cs-table-row>
-        <template repeat="{{permission, index in permissions}}">
-          <cs-table-row data-permission-index="{{index}}">
-            <cs-table-cell>
-              <div class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" on-click="[[edit_permission]]" title="[[L.edit]]">
-                <div class="uk-icon-pencil"></div>
-              </div>
-              <div class="uk-button cs-button-compact" data-uk-tooltip="[[tooltip_animation]]" on-click="[[delete_permission]]" title="[[L.delete]]">
-                <div class="uk-icon-trash-o"></div>
-              </div>
-            </cs-table-cell>
-            <cs-table-cell>[[permission.id]]</cs-table-cell>
-            <cs-table-cell>[[permission.group]]</cs-table-cell>
-            <cs-table-cell data-uk-tooltip="[[tooltip_animation]]" title="[[permission.description]]">[[permission.label]]</cs-table-cell>
-          </cs-table-row>
-        </template>
-      </cs-table>
-      <p class="cs-left">
-        <button class="uk-button" on-click="[[add_permission]]" type="button">[[L.add_permission]]</button>
-      </p>
-    </template>
+      </template>
+    </cs-table>
+    <p class="cs-left">
+      <button class="uk-button" on-click="add_permission" type="button">[[L.add_permission]]</button>
+    </p>
   </template>
   <script src="script.js"></script>
-</polymer-element>
+</dom-module>
