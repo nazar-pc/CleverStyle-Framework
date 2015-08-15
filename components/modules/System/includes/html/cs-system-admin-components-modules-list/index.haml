@@ -49,7 +49,7 @@
 							%a.uk-button.cs-button-compact(data-uk-tooltip$="[[tooltip_animation]]" href$="[[concat('/admin/System/components/modules/enable/', module.name)]]" title$="[[L.enable]]")
 								%span.uk-icon-check
 								%span [[L.enable]]
-						%template(is="dom-if" if="[[notEqual(module.active, '-1')]]")
+						%template(is="dom-if" if="[[!equal(module.active, '-1')]]")
 							%a.uk-button.cs-button-compact(data-uk-tooltip$="[[tooltip_animation]]" href$="[[concat('/admin/System/components/modules/uninstall/', module.name)]]" title$="[[L.uninstall]]")
 								%span.uk-icon-trash
 						%template(is="dom-if" if="[[equal(module.active, '-1')]]")

@@ -1,13 +1,13 @@
-%polymer-element(name="cs-system-admin-groups-form")
+%dom-module(id="cs-system-admin-groups-form")
 	%template
 		.uk-form.uk-form-stacked
-			%template(if="{{group_id}}")
+			%template(is="dom-if" if="[[group_id]]")
 				%label.uk-form-label id
 				%p [[group_id]]
 			%label.uk-form-label [[L.group_name]]
-			%input(type="text" value="{{group_title}}")/
+			%input(type="text" value="{{group_title::input}}")/
 			%label.uk-form-label [[L.group_description]]
-			%input(type="text" value="{{description}}")/
+			%input(type="text" value="{{description::input}}")/
 			%p
-				%button.uk-button.uk-button-primary(on-click="[[save]]") [[L.save]]
+				%button.uk-button.uk-button-primary(on-click="save" disabled$="[[!group_title]]") [[L.save]]
 	%script(src="script.js")

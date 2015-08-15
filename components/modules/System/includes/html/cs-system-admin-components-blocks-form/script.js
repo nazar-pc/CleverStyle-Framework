@@ -30,7 +30,7 @@
     },
     ready: function() {
       var editor, json;
-      json = JSON.parse(this.querySelector('script').innerHTML);
+      json = JSON.parse(this.querySelector('script').textContent);
       json.block_data.type = json.block_data.type || json.types[0];
       json.block_data.template = json.block_data.template || json.templates[0];
       if (json.block_data.active === void 0) {

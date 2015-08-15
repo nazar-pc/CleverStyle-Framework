@@ -8,9 +8,10 @@
 ###
 L	= cs.Language
 Polymer(
-	L		: L
-	publish	:
-		group_id	: null
+	'is'		: 'cs-system-admin-groups-form'
+	behaviors	: [cs.Polymer.behaviors.Language]
+	properties	:
+		group_id	: Number
 		group_title	: ''
 		description	: ''
 	save	: ->

@@ -75,7 +75,7 @@
                 <span>[[L.enable]]</span>
               </a>
             </template>
-            <template if="[[notEqual(module.active, '-1')]]" is="dom-if">
+            <template if="[[!equal(module.active, '-1')]]" is="dom-if">
               <a class="uk-button cs-button-compact" data-uk-tooltip$="[[tooltip_animation]]" href$="[[concat('/admin/System/components/modules/uninstall/', module.name)]]" title$="[[L.uninstall]]">
                 <span class="uk-icon-trash"></span>
               </a>

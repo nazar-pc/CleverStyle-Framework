@@ -14,7 +14,7 @@ Polymer(
 	properties			:
 		tooltip_animation	:'{animation:true,delay:200}'
 	ready				: ->
-		json = JSON.parse(@querySelector('script').innerHTML)
+		json = JSON.parse(@querySelector('script').textContent)
 		json.block_data.type		= json.block_data.type || json.types[0]
 		json.block_data.template	= json.block_data.template || json.templates[0]
 		if json.block_data.active == undefined

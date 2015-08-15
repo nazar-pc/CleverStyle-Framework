@@ -1,18 +1,18 @@
-<polymer-element name="cs-system-admin-groups-form">
+<dom-module id="cs-system-admin-groups-form">
   <template>
     <div class="uk-form uk-form-stacked">
-      <template if="{{group_id}}">
+      <template if="[[group_id]]" is="dom-if">
         <label class="uk-form-label">id</label>
         <p>[[group_id]]</p>
       </template>
       <label class="uk-form-label">[[L.group_name]]</label>
-      <input type="text" value="{{group_title}}">
+      <input type="text" value="{{group_title::input}}">
       <label class="uk-form-label">[[L.group_description]]</label>
-      <input type="text" value="{{description}}">
+      <input type="text" value="{{description::input}}">
       <p>
-        <button class="uk-button uk-button-primary" on-click="[[save]]">[[L.save]]</button>
+        <button class="uk-button uk-button-primary" disabled$="[[!group_title]]" on-click="save">[[L.save]]</button>
       </p>
     </div>
   </template>
   <script src="script.js"></script>
-</polymer-element>
+</dom-module>
