@@ -1,0 +1,58 @@
+%dom-module#cs-system-admin-components-blocks-form
+	%template
+		%cs-table.uk-form(right-left)
+			%cs-table-row
+				%cs-table-cell
+					%span(data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.block_type_info]]") [[L.block_type]]
+				%cs-table-cell
+					%select(name="block[type]" on-change="type_change" size="5")
+						%template(is="dom-repeat" items="[[json.types]]" as="type")
+							%option(selected$="[[equal(type, json.block_data.type)]]" value$="[[type]]") [[type]]
+			%cs-table-row
+				%cs-table-cell
+					%span(data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.block_title_info]]") [[L.block_title]]
+				%cs-table-cell
+					%input(name="block[title]" type="text" value$="[[json.block_data.title]]")/
+			%cs-table-row
+				%cs-table-cell
+					%span(data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.block_active_info]]") [[L.block_active]]
+				%cs-table-cell
+					%div
+						%span.uk-button-group(data-uk-button-radio)
+							%label(class$="[[if(json.block_data.active, ' uk-active', '', 'uk-button')]]")
+								%input(name="block[active]" type="radio" value="1" checked$="[[json.block_data.active]]")/
+								%span [[L.yes]]
+							%label(class$="[[if(json.block_data.active, '', ' uk-active', 'uk-button')]]")
+								%input(name="block[active]" type="radio" value="0" checked$="[[!json.block_data.active]]")/
+								%span [[L.no]]
+			%cs-table-row
+				%cs-table-cell
+					%span(data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.block_template_info]]") [[L.block_template]]
+				%cs-table-cell
+					%select(name="block[template]" size="5")
+						%template(is="dom-repeat" items="[[json.templates]]" as="template")
+							%option(selected$="[[equal(template, json.block_data.template)]]" value$="[[template]]") [[template]]
+			%cs-table-row
+				%cs-table-cell
+					%span(data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.block_start_info]]") [[L.block_start]]
+				%cs-table-cell
+					%input(name="block[start]" type="datetime-local" value$="[[json.block_data.start]]")/
+			%cs-table-row
+				%cs-table-cell
+					%span(data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.block_expire_info]]") [[L.block_expire]]
+				%cs-table-cell
+					%span.uk-button-group(data-uk-button-radio)
+						%label(class$="[[if(json.block_data.expire.state, '', ' uk-active', 'uk-button')]]")
+							%input(name="block[expire][state]" type="radio" value="0" checked$="[[!json.block_data.expire.state]]")/
+							%span [[L.never]]
+						%label(class$="[[if(json.block_data.expire.state, ' uk-active', '', 'uk-button')]]")
+							%input(name="block[expire][state]" type="radio" value="1" checked$="[[json.block_data.expire.state]]")/
+							%span [[L.as_specified]]
+					%br/
+					%br/
+					%input(name="block[expire][date]" type="datetime-local" value$="[[json.block_data.expire.date]]")/
+		.html.uk-form(hidden$="[[!equal(json.block_data.type, 'html')]]")
+			%textarea.EDITOR(name="block[html]")
+		.raw_html.uk-form(hidden$="[[!equal(json.block_data.type, 'raw_html')]]")
+			%textarea(name="block[raw_html]")
+	%script(src="script.js")

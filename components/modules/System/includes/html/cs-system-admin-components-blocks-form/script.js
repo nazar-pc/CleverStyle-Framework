@@ -23,28 +23,31 @@
   L = cs.Language;
 
   Polymer({
-    tooltip_animation: '{animation:true,delay:200}',
-    L: L,
-    created: function() {
-      var json;
+    'is': 'cs-system-admin-components-blocks-form',
+    behaviors: [cs.Polymer.behaviors.Language],
+    properties: {
+      tooltip_animation: '{animation:true,delay:200}'
+    },
+    ready: function() {
+      var editor, json;
       json = JSON.parse(this.querySelector('script').innerHTML);
       json.block_data.type = json.block_data.type || json.types[0];
       json.block_data.template = json.block_data.template || json.templates[0];
       if (json.block_data.active === void 0) {
         json.block_data.active = 1;
+      } else {
+        json.block_data.active = parseInt(json.block_data.active);
       }
-      this.active_yes_class = get_active_class(json.block_data.active);
-      this.active_no_class = get_active_class(!json.block_data.active);
-      this.expire_never_class = get_active_class(!json.block_data.expire.state);
-      this.expire_as_specified_class = get_active_class(json.block_data.expire.state);
-      return this.json = json;
+      this.json = json;
+      $(this.shadowRoot).find('textarea').val(this.json.block_data.content);
+      editor = this.shadowRoot.querySelector('.EDITOR');
+      $(editor).after('<content select=".editor-container"/>');
+      $('<div class="editor-container"><div></div></div>').appendTo(this).children().append(editor);
+      this.workarounds(this.shadowRoot);
+      return cs.observe_inserts_on(this.shadowRoot, this.workarounds);
     },
-    ready: function() {
-      return $(this.shadowRoot).find('textarea').val(this.json.block_data.content);
-    },
-    domReady: function() {
-      $(this.shadowRoot).cs().tooltips_inside().cs().radio_buttons_inside().cs().connect_to_parent_form();
-      return $(this.shadowRoot.querySelector('.EDITOR')).after('<content select=".editor-container"/>').appendTo(this).wrap('<div class="editor-container"/>').wrap('<div/>');
+    workarounds: function(target) {
+      return $(target).cs().tooltips_inside().cs().radio_buttons_inside().cs().connect_to_parent_form();
     },
     type_change: function() {
       var type;
