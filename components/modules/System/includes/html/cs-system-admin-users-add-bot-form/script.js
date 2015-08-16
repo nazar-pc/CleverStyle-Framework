@@ -15,8 +15,18 @@
   L = cs.Language;
 
   Polymer({
-    tooltip_animation: '{animation:true,delay:200}',
-    L: L,
+    'is': 'cs-system-admin-users-add-bot-form',
+    behaviors: [cs.Polymer.behaviors.Language],
+    properties: {
+      can_save: {
+        type: Boolean,
+        computed: 'can_save_(name, user_agent, ip)'
+      },
+      name: '',
+      user_agent: '',
+      ip: '',
+      tooltip_animation: '{animation:true,delay:200}'
+    },
     save: function() {
       return $.ajax({
         url: 'api/System/admin/users',
@@ -31,6 +41,9 @@
           return UIkit.notify(L.changes_saved.toString(), 'success');
         }
       });
+    },
+    can_save_: function(name, user_agent, ip) {
+      return name && (user_agent || ip);
     }
   });
 
