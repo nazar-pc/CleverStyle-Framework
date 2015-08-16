@@ -43,8 +43,9 @@ Polymer(
 			computed	: 'show_pagination_(users_count, search_limit, search_page)'
 		searching			: false
 		searching_loader	: false
+		_initialized		: true
 	observers				: [
-		'search_again(search_column, search_mode, search_limit)'
+		'search_again(search_column, search_mode, search_limit, _initialized)'
 	]
 	ready					: ->
 		$.ajax(
@@ -60,7 +61,6 @@ Polymer(
 				@search_columns	= search_columns
 				@all_columns	= search_options.columns
 				@search_modes	= search_options.modes
-				@search()
 		)
 		$(@$['pagination-top'], @$['pagination-bottom'])
 			.on('select.uk.pagination', (e, pageIndex) =>
@@ -74,7 +74,7 @@ Polymer(
 			.cs().tabs_inside()
 			.cs().tooltips_inside()
 	search					: ->
-		if !@search_modes || @searching
+		if @searching || @_initialized == undefined
 			return
 		@searching			= true
 		searching_timeout	= setTimeout (=>
@@ -143,6 +143,8 @@ Polymer(
 		else
 			@search()
 	search_textChanged		: ->
+		if @_initialized == undefined
+			return
 		clearTimeout(@search_text_timeout)
 		@search_text_timeout	= setTimeout(@search_again.bind(@), 300)
 	show_pagination_		: (users_count, search_limit, search_page) ->

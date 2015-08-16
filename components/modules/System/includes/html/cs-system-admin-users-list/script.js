@@ -51,9 +51,10 @@
         computed: 'show_pagination_(users_count, search_limit, search_page)'
       },
       searching: false,
-      searching_loader: false
+      searching_loader: false,
+      _initialized: true
     },
-    observers: ['search_again(search_column, search_mode, search_limit)'],
+    observers: ['search_again(search_column, search_mode, search_limit, _initialized)'],
     ready: function() {
       $.ajax({
         url: 'api/System/admin/users',
@@ -72,8 +73,7 @@
             }
             _this.search_columns = search_columns;
             _this.all_columns = search_options.columns;
-            _this.search_modes = search_options.modes;
-            return _this.search();
+            return _this.search_modes = search_options.modes;
           };
         })(this)
       });
@@ -90,7 +90,7 @@
     },
     search: function() {
       var searching_timeout;
-      if (!this.search_modes || this.searching) {
+      if (this.searching || this._initialized === void 0) {
         return;
       }
       this.searching = true;
@@ -196,6 +196,9 @@
       }
     },
     search_textChanged: function() {
+      if (this._initialized === void 0) {
+        return;
+      }
       clearTimeout(this.search_text_timeout);
       return this.search_text_timeout = setTimeout(this.search_again.bind(this), 300);
     },
