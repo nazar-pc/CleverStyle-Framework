@@ -8,8 +8,11 @@
 ###
 L	= cs.Language
 Polymer(
-	L		: L
-	save	: ->
+	'is'		: 'cs-system-admin-users-add-user-form'
+	behaviors	: [cs.Polymer.behaviors.Language]
+	properties	:
+		email	: ''
+	save		: ->
 		$.ajax(
 			url		: 'api/System/admin/users'
 			type	: 'post'

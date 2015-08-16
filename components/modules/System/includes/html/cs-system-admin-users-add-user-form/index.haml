@@ -1,8 +1,8 @@
-%polymer-element(name="cs-system-admin-users-add-user-form")
+%dom-module(id="cs-system-admin-users-add-user-form")
 	%template
 		.uk-form.uk-form-stacked
 			%label.uk-form-label [[L.email]]
-			%input(type="email" value="{{email}}")/
+			%input(type="email" value="{{email::input}}")/
 			%p
-				%button.uk-button.uk-button-primary(on-click="[[save]]") [[L.save]]
+				%button.uk-button.uk-button-primary(on-click="save" disabled$="[[!email]]") [[L.save]]
 	%script(src="script.js")

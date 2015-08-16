@@ -1,12 +1,12 @@
-<polymer-element name="cs-system-admin-users-add-user-form">
+<dom-module id="cs-system-admin-users-add-user-form">
   <template>
     <div class="uk-form uk-form-stacked">
       <label class="uk-form-label">[[L.email]]</label>
-      <input type="email" value="{{email}}">
+      <input type="email" value="{{email::input}}">
       <p>
-        <button class="uk-button uk-button-primary" on-click="[[save]]">[[L.save]]</button>
+        <button class="uk-button uk-button-primary" disabled$="[[!email]]" on-click="save">[[L.save]]</button>
       </p>
     </div>
   </template>
   <script src="script.js"></script>
-</polymer-element>
+</dom-module>
