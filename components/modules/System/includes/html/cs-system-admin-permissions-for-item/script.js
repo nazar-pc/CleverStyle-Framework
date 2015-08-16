@@ -15,16 +15,17 @@
   L = cs.Language;
 
   Polymer({
-    publish: {
+    'is': 'cs-system-admin-permissions-for-item',
+    behaviors: [cs.Polymer.behaviors.Language],
+    properties: {
+      tooltip_animation: '{animation:true,delay:200}',
       group: '',
-      label: ''
+      label: '',
+      permissions: {},
+      users: [],
+      found_users: [],
+      groups: []
     },
-    tooltip_animation: '{animation:true,delay:200}',
-    L: L,
-    permissions: {},
-    users: [],
-    found_users: [],
-    groups: [],
     ready: function() {
       var $search, $shadowRoot;
       $.when($.getJSON('api/System/admin/permissions/for_item', {
@@ -33,8 +34,8 @@
       }), $.getJSON('api/System/admin/groups')).done((function(_this) {
         return function(permissions, groups) {
           var user;
-          _this.permissions = permissions[0];
-          _this.groups = groups[0];
+          _this.set('permissions', permissions[0]);
+          _this.set('groups', groups[0]);
           if (!Object.keys(_this.permissions.users).length) {
             return;
           }
@@ -48,7 +49,7 @@
               return results;
             }).call(_this)).join(',')
           }, function(users) {
-            return _this.users = users;
+            return _this.set('users', users);
           });
         };
       })(this));
@@ -61,7 +62,8 @@
           if (event.which !== 13 || !text) {
             return;
           }
-          $shadowRoot.find('cs-table-row.changed').removeClass('changed').appendTo(_this.$.users);
+          $shadowRoot.find('cs-table-row.changed').removeClass('changed').clone().appendTo(_this.$.users);
+          _this.set('found_users', []);
           return $.getJSON('api/System/admin/users', {
             search: text
           }, function(found_users) {
@@ -75,7 +77,7 @@
             return $.getJSON('api/System/admin/users', {
               ids: found_users.join(',')
             }, function(users) {
-              return _this.found_users = users;
+              return _this.set('found_users', users);
             });
           });
         };
@@ -84,11 +86,9 @@
           return event.which !== 13;
         };
       })(this));
-      return $(this.$['search-results']).on('change', ':radio', function() {
+      $(this.$['search-results']).on('change', ':radio', function() {
         return $(this).closest('cs-table-row').addClass('changed');
       });
-    },
-    domReady: function() {
       this.workarounds(this.shadowRoot);
       return cs.observe_inserts_on(this.shadowRoot, this.workarounds);
     },
@@ -103,7 +103,7 @@
         results = [];
         for (key in ref) {
           value = ref[key];
-          results.push(key + "=" + value);
+          results.push(key + '=' + value);
         }
         return results;
       })()).join('&');
@@ -116,14 +116,37 @@
         }
       });
     },
-    invert: function(event, detail, sender) {
-      return $(sender).closest('div').find(':radio:not(:checked)[value!=-1]').parent().click();
+    invert: function(e) {
+      return $(e.currentTarget).closest('div').find(':radio:not(:checked)[value!=-1]').parent().click();
     },
-    allow_all: function(event, detail, sender) {
-      return $(sender).closest('div').find(':radio[value=1]').parent().click();
+    allow_all: function(e) {
+      return $(e.currentTarget).closest('div').find(':radio[value=1]').parent().click();
     },
-    deny_all: function(event, detail, sender) {
-      return $(sender).closest('div').find(':radio[value=0]').parent().click();
+    deny_all: function(e) {
+      return $(e.currentTarget).closest('div').find(':radio[value=0]').parent().click();
+    },
+    permission_state: function(type, id, expected) {
+      var permission;
+      permission = this.permissions[type][id];
+      return permission == expected || (expected == '-1' && permission === void 0);
+    },
+    permission_class: function(type, id, expected) {
+      return 'uk-button' + (this.permission_state(type, id, expected) ? ' uk-active' : '');
+    },
+    group_permission_state: function(id, expected) {
+      return this.permission_state('groups', id, expected);
+    },
+    group_permission_class: function(id, expected) {
+      return this.permission_class('groups', id, expected);
+    },
+    user_permission_state: function(id, expected) {
+      return this.permission_state('users', id, expected);
+    },
+    user_permission_class: function(id, expected) {
+      return this.permission_class('users', id, expected);
+    },
+    username: function(user) {
+      return user.username || user.login;
     }
   });
 
