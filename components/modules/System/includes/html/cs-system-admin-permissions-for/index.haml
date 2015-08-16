@@ -1,52 +1,29 @@
-%polymer-element(name="cs-system-admin-permissions-for")
+%dom-module(id="cs-system-admin-permissions-for")
 	%template
-		%template#control-buttons
-			%button.uk-button(on-click="[[invert]]" type="button") [[L.invert]]
-			%button.uk-button(on-click="[[allow_all]]" type="button") [[L.allow_all]]
-			%button.uk-button(on-click="[[deny_all]]" type="button") [[L.deny_all]]
-		%template#inner-radio
-			%span.uk-button-group(data-uk-button-radio)
-				/ inherited
-				%template(if="[[permissions[label.id] == -1 || permissions[label.id] == undefined]]")
-					%label.uk-button.uk-active
-						%input(checked name="permissions[{{label.id}}]" type="radio" value="-1")/
-						[[L.inherited]]
-				%template(if="[[permissions[label.id] != -1 && permissions[label.id] != undefined]]")
-					%label.uk-button
-						%input(name="permissions[{{label.id}}]" type="radio" value="-1")/
-						[[L.inherited]]
-				/ deny
-				%template(if="[[permissions[label.id] == 0]]")
-					%label.uk-button.uk-active
-						%input(checked name="permissions[{{label.id}}]" type="radio" value="0")/
-						[[L.deny]]
-				%template(if="[[permissions[label.id] != 0]]")
-					%label.uk-button
-						%input(name="permissions[{{label.id}}]" type="radio" value="0")/
-						[[L.deny]]
-				/ allow
-				%template(if="[[permissions[label.id] == 1]]")
-					%label.uk-button.uk-active
-						%input(checked name="permissions[{{label.id}}]" type="radio" value="1")/
-						[[L.allow]]
-				%template(if="[[permissions[label.id] != 1]]")
-					%label.uk-button
-						%input(name="permissions[{{label.id}}]" type="radio" value="1")/
-						[[L.allow]]
-		%template(if="{{!all_permissions.length}}")
-			%h2.uk-text-center
-				.uk-icon-spin.uk-icon-spinner
+		%h2.uk-text-center(hidden$="[[all_permissions.length]]")
+			.uk-icon-spin.uk-icon-spinner
 		%form#form.uk-form
-			%template(repeat="{{all_permissions as permission}}")
+			%template(is="dom-repeat" items="[[all_permissions]]" as="permission")
 				%legend [[permission.group]]
 				%div
 					%p.cs-left
-						%template(bind ref="control-buttons")
+						%button.uk-button(on-click="invert" type="button") [[L.invert]]
+						%button.uk-button(on-click="allow_all" type="button") [[L.allow_all]]
+						%button.uk-button(on-click="deny_all" type="button") [[L.deny_all]]
 					%cs-table(right-left)
-						%template(repeat="[[permission.labels as label]]")
+						%template(is="dom-repeat" items="[[permission.labels]]" as="label")
 							%cs-table-row
 								%cs-table-cell [[label.name]]
 								%cs-table-cell
-									%template(bind ref="inner-radio")
-		%button.uk-button(on-click="[[save]]" type="button") [[L.save]]
+									%span.uk-button-group(data-uk-button-radio)
+										%label(class$="[[permission_class(label.id, '-1')]]")
+											%input(type="radio" value="-1" checked$="[[permission_state(label.id, '-1')]]" name$="[[concat('permissions[', label.id, ']')]]")/
+											%span [[L.inherited]]
+										%label(class$="[[permission_class(label.id, 0)]]")
+											%input(type="radio" value="0" checked$="[[permission_state(label.id, 0)]]" name$="[[concat('permissions[', label.id, ']')]]")/
+											%span [[L.deny]]
+										%label(class$="[[permission_class(label.id, 1)]]")
+											%input(type="radio" value="1" checked$="[[permission_state(label.id, 1)]]" name$="[[concat('permissions[', label.id, ']')]]")/
+											%span [[L.allow]]
+		%button.uk-button(on-click="save" type="button") [[L.save]]
 	%script(src="script.js")

@@ -15,16 +15,21 @@
   L = cs.Language;
 
   Polymer({
-    publish: {
-      'for': '',
+    'is': 'cs-system-admin-permissions-for',
+    behaviors: [cs.Polymer.behaviors.Language],
+    properties: {
+      'for': {
+        type: String,
+        value: ''
+      },
       group: '',
-      user: ''
+      user: '',
+      tooltip_animation: '{animation:true,delay:200}'
     },
-    tooltip_animation: '{animation:true,delay:200}',
-    L: L,
     all_permissions: {},
     permissions: {},
     ready: function() {
+      var workarounds_timeout;
       $.when($.getJSON('api/System/admin/permissions'), $.getJSON("api/System/admin/" + this["for"] + "s/" + this[this["for"]] + "/permissions")).done((function(_this) {
         return function(all_permissions, permissions) {
           var group, id, label, labels;
@@ -55,16 +60,18 @@
           return _this.permissions = permissions[0];
         };
       })(this));
-      return $(this.$['search-results']).on('change', ':radio', function() {
+      $(this.$['search-results']).on('change', ':radio', function() {
         return $(this).closest('cs-table-row').addClass('changed');
       });
-    },
-    all_permissionsChanged: function() {
-      return setTimeout(((function(_this) {
+      workarounds_timeout = null;
+      return this.addEventListener('dom-change', (function(_this) {
         return function() {
-          return $(_this.shadowRoot).cs().radio_buttons_inside().cs().tabs_inside();
+          clearTimeout(workarounds_timeout);
+          return workarounds_timeout = setTimeout((function() {
+            return $(_this.shadowRoot).cs().radio_buttons_inside().cs().tabs_inside();
+          }), 100);
         };
-      })(this)), 500);
+      })(this));
     },
     save: function() {
       var default_data, key, value;
@@ -74,7 +81,7 @@
         results = [];
         for (key in ref) {
           value = ref[key];
-          results.push(key + "=" + value);
+          results.push(key + '=' + value);
         }
         return results;
       })()).join('&');
@@ -87,14 +94,22 @@
         }
       });
     },
-    invert: function(event, detail, sender) {
-      return $(sender).closest('div').find(':radio:not(:checked)[value!=-1]').parent().click();
+    invert: function(e) {
+      return $(e.currentTarget).closest('div').find(':radio:not(:checked)[value!=-1]').parent().click();
     },
-    allow_all: function(event, detail, sender) {
-      return $(sender).closest('div').find(':radio[value=1]').parent().click();
+    allow_all: function(e) {
+      return $(e.currentTarget).closest('div').find(':radio[value=1]').parent().click();
     },
-    deny_all: function(event, detail, sender) {
-      return $(sender).closest('div').find(':radio[value=0]').parent().click();
+    deny_all: function(e) {
+      return $(e.currentTarget).closest('div').find(':radio[value=0]').parent().click();
+    },
+    permission_state: function(id, expected) {
+      var permission;
+      permission = this.permissions[id];
+      return permission == expected || (expected == '-1' && permission === void 0);
+    },
+    permission_class: function(id, expected) {
+      return 'uk-button' + (this.permission_state(id, expected) ? ' uk-active' : '');
     }
   });
 

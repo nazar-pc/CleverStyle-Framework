@@ -8,15 +8,18 @@
 ###
 L	= cs.Language
 Polymer(
-	publish					:
-		'for'	: ''
+	'is'				: 'cs-system-admin-permissions-for'
+	behaviors			: [cs.Polymer.behaviors.Language]
+	properties			:
+		'for'	:
+			type	: String
+			value	: ''
 		group	: ''
 		user	: ''
-	tooltip_animation		:'{animation:true,delay:200}'
-	L						: L
-	all_permissions			: {}
-	permissions				: {}
-	ready					: ->
+		tooltip_animation		:'{animation:true,delay:200}'
+	all_permissions		: {}
+	permissions			: {}
+	ready				: ->
 		$.when(
 			$.getJSON('api/System/admin/permissions')
 			$.getJSON("api/System/admin/#{@for}s/#{@[@for]}/permissions")
@@ -35,14 +38,17 @@ Polymer(
 			->
 				$(@).closest('cs-table-row').addClass('changed')
 		)
-	all_permissionsChanged	: ->
-		setTimeout (=>
-			$(@shadowRoot)
-				.cs().radio_buttons_inside()
-				.cs().tabs_inside()
-		), 500
-	save					: ->
-		default_data	= ("#{key}=#{value}" for key, value of $.ajaxSettings.data).join('&')
+		workarounds_timeout	= null
+		@addEventListener('dom-change', =>
+			clearTimeout(workarounds_timeout)
+			workarounds_timeout	= setTimeout (=>
+				$(@shadowRoot)
+					.cs().radio_buttons_inside()
+					.cs().tabs_inside()
+			), 100
+		)
+	save				: ->
+		default_data	= (key + '=' + value for key, value of $.ajaxSettings.data).join('&')
 		$.ajax(
 			url		: "api/System/admin/#{@for}s/#{@[@for]}/permissions"
 			data	: $(@$.form).serialize() + '&' + default_data
@@ -50,19 +56,28 @@ Polymer(
 			success	: ->
 				UIkit.notify(L.changes_saved.toString(), 'success')
 		)
-	invert					: (event, detail, sender) ->
-		$(sender).closest('div')
+	invert				: (e) ->
+		$(e.currentTarget).closest('div')
 			.find(':radio:not(:checked)[value!=-1]')
 				.parent()
 					.click()
-	allow_all				: (event, detail, sender) ->
-		$(sender).closest('div')
+	allow_all			: (e) ->
+		$(e.currentTarget).closest('div')
 			.find(':radio[value=1]')
 				.parent()
 					.click()
-	deny_all				: (event, detail, sender) ->
-		$(sender).closest('div')
+	deny_all			: (e) ->
+		$(e.currentTarget).closest('div')
 			.find(':radio[value=0]')
 				.parent()
 					.click()
+	permission_state	: (id, expected) ->
+		permission	= @permissions[id]
+		`permission == expected` ||
+		(
+			`expected == '-1'` &&
+			permission == undefined
+		)
+	permission_class	: (id, expected) ->
+		'uk-button' + (if @permission_state(id, expected) then ' uk-active' else '')
 )
