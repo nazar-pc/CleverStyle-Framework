@@ -15,18 +15,26 @@
   L = cs.Language;
 
   Polymer({
-    tooltip_animation: '{animation:true,delay:200}',
-    L: L,
-    publish: {
-      user_id: -1
+    'is': 'cs-system-admin-users-edit-user-form',
+    behaviors: [cs.Polymer.behaviors.Language],
+    properties: {
+      user_id: -1,
+      user_data: {
+        type: Object,
+        value: {}
+      },
+      languages: [],
+      timezones: [],
+      block_until: {
+        type: String,
+        observer: 'block_until_'
+      },
+      tooltip_animation: '{animation:true,delay:200}'
     },
-    languages: [],
-    timezones: [],
-    user_data: {},
     ready: function() {
-      return $.when($.getJSON('api/System/admin/languages'), $.getJSON('api/System/admin/timezones'), $.getJSON('api/System/admin/users/' + this.user_id)).done((function(_this) {
+      $.when($.getJSON('api/System/admin/languages'), $.getJSON('api/System/admin/timezones'), $.getJSON('api/System/admin/users/' + this.user_id)).done((function(_this) {
         return function(languages, timezones, data) {
-          var description, i, language, languages_list, len, ref, ref1, timezone, timezones_list;
+          var block_until, description, i, language, languages_list, len, ref, ref1, timezone, timezones_list;
           languages_list = [];
           languages_list.push({
             clanguage: '',
@@ -53,10 +61,10 @@
               description: description
             });
           }
-          _this.languages = languages_list;
-          _this.timezones = timezones_list;
-          _this.block_until = (function() {
-            var block_until, date, z;
+          _this.set('languages', languages_list);
+          _this.set('timezones', timezones_list);
+          block_until = (function() {
+            var date, z;
             block_until = data[0].block_until;
             date = new Date;
             if (parseInt(block_until)) {
@@ -67,32 +75,32 @@
             };
             return date.getFullYear() + '-' + z(date.getMonth() + 1) + '-' + z(date.getDate()) + 'T' + z(date.getHours()) + ':' + z(date.getMinutes());
           })();
-          return _this.user_data = data[0];
+          _this.set('block_until', block_until);
+          return _this.set('user_data', data[0]);
         };
       })(this));
-    },
-    domReady: function() {
       this.workarounds(this.shadowRoot);
       return cs.observe_inserts_on(this.shadowRoot, this.workarounds);
     },
     workarounds: function(target) {
       return $(target).cs().radio_buttons_inside().cs().tooltips_inside();
     },
-    status_change: function(event) {
-      return this.user_data.status = $(event.target).children('input').val();
+    status_change: function(e) {
+      return this.set('user_data.status', $(e.currentTarget).children('input').val());
     },
-    show_password: function(event, details, sender) {
-      var element;
-      element = this.shadowRoot.querySelector('#password');
-      if (element.type === 'password') {
-        element.type = 'text';
-        return $(sender).removeClass('uk-icon-lock').addClass('uk-icon-unlock');
+    show_password: function(e) {
+      var $lock, password;
+      $lock = $(e.currentTarget);
+      password = $lock.next()[0];
+      if (password.type === 'password') {
+        password.type = 'text';
+        return $lock.removeClass('uk-icon-lock').addClass('uk-icon-unlock');
       } else {
-        element.type = 'password';
-        return $(sender).removeClass('uk-icon-unlock').addClass('uk-icon-lock');
+        password.type = 'password';
+        return $lock.removeClass('uk-icon-unlock').addClass('uk-icon-lock');
       }
     },
-    block_untilChanged: function() {
+    block_until_: function() {
       var block_until, date;
       block_until = this.block_until;
       date = new Date;
@@ -103,7 +111,15 @@
       date.setMinutes(block_until.substr(14, 2));
       date.setSeconds(0);
       date.setMilliseconds(0);
-      return this.user_data.block_until = date.getTime() / 1000;
+      return this.set('user_data.block_until', date.getTime() / 1000);
+    },
+    status_state: function(expected) {
+      var status;
+      status = this.user_data.status;
+      return status == expected;
+    },
+    status_class: function(expected) {
+      return 'uk-button' + (this.status_state(expected) ? ' uk-active' : '');
     },
     save: function() {
       return $.ajax({

@@ -1,71 +1,52 @@
-%polymer-element(name="cs-system-admin-users-edit-user-form")
+%dom-module(id="cs-system-admin-users-edit-user-form")
+	%link(rel="import" href="style.css" type="css")
 	%template
-		%link(rel="stylesheet" href="style.css")
-		%template(if="{{!user_data.id}}")
-			%h2.uk-text-center
-				.uk-icon-spin.uk-icon-spinner
-		%template(if="{{user_data.id}}")
+		%h2.uk-text-center(hidden$="[[user_data.id]]")
+			.uk-icon-spin.uk-icon-spinner
+		%template(is="dom-if" if="{{user_data.id}}")
 			.uk-form.uk-form-stacked
 				%label.uk-form-label id
 				%p [[user_data.id]]
 				%label.uk-form-label [[L.registration_date]]
 				%p [[user_data.reg_date_formatted]]
 				%label.uk-form-label [[L.registration_ip]]
-				%p {{user_data.reg_ip_formatted[0]}}
-				%template(if="{{user_data.reg_ip_formatted[1]}}")
-					%p {{user_data.reg_ip_formatted[1]}}
+				%p [[user_data.reg_ip_formatted.0]]
+				%template(is="dom-if" if="[[user_data.reg_ip_formatted.1]]")
+					%p [[user_data.reg_ip_formatted.1]]
 				%label.uk-form-label [[L.login]]
-				%input(type="text" value="{{user_data.login}}")/
+				%input(type="text" value="{{user_data.login::input}}")/
 				%label.uk-form-label [[L.username]]
-				%input(type="text" value="{{user_data.username}}")/
+				%input(type="text" value="{{user_data.username::input}}")/
 				%label.uk-form-label [[L.email]]
-				%input(type="email" value="{{user_data.email}}")/
+				%input(type="email" value="{{user_data.email::input}}")/
 				%label.uk-form-label
-					[[L.password_only_for_changing]]
+					%span [[L.password_only_for_changing]]
 				.uk-form-icon.uk-width-1-1
-					.uk-icon-lock.cs-pointer(on-click="[[show_password]]")
-					%input(id="password" type="password" value="{{user_data.password}}")/
+					.uk-icon-lock.cs-pointer(on-click="show_password")
+					%input(id="password" type="password" value="{{user_data.password::input}}")/
 				%label.uk-form-label [[L.language]]
-				%select(name="{{user_data.language" size="5")
-					%template(repeat="{{language in languages}}")
-						<option selected?="[[language.clanguage == user_data.language]]" value="[[language.clanguage]]">[[language.description]]</option>
+				%select(value="{{user_data.language::change}}" size="5")
+					%template(is="dom-repeat" items="[[languages]]" as="language")
+						%option(value="[[language.clanguage]]" selected$="[[equal(language.clanguage, user_data.language)]]") [[language.description]]
 				%label.uk-form-label [[L.timezone]]
-				%select(name="{{user_data.timezone" size="7")
-					%template(repeat="{{timezone in timezones}}")
-						<option selected?="[[timezone.timezone == user_data.timezone]]" value="[[timezone.timezone]]">[[timezone.description]]</option>iption]]
+				%select(value="{{user_data.timezone::change}}" size="7")
+					%template(is="dom-repeat" items="[[timezones]]" as="timezone")
+						%option(value="[[timezone.timezone]]" selected$="[[equal(timezone.timezone, user_data.timezone)]]") [[timezone.description]]
 				%label.uk-form-label [[L.status]]
-				.uk-button-group(data-uk-button-radio on-click="{{status_change}}")
-					/ Not activated
-					%template(if="[[user_data.status == -1]]")
-						.uk-button.uk-active
-							%input(checked type="radio" value="-1")/
-							[[L.is_not_activated]]
-					%template(if="[[user_data.status != -1]]")
-						.uk-button
-							%input(type="radio" value="-1")/
-							[[L.is_not_activated]]
-					/ Inactive
-					%template(if="[[user_data.status == 0]]")
-						.uk-button.uk-active
-							%input(checked type="radio" value="0")/
-							[[L.inactive]]
-					%template(if="[[user_data.status != 0]]")
-						.uk-button
-							%input(type="radio" value="0")/
-							[[L.inactive]]
-					/ Active
-					%template(if="[[user_data.status == 1]]")
-						.uk-button.uk-active
-							%input(checked type="radio" value="1")/
-							[[L.active]]
-					%template(if="[[user_data.status != 1]]")
-						.uk-button
-							%input(type="radio" value="1")/
-							[[L.active]]
+				.uk-button-group(data-uk-button-radio)
+					%label(on-click="status_change" class$="[[status_class('-1')]]")
+						%input(checked$="[[status_state('-1')]]" type="radio" value="-1")/
+						%span [[L.is_not_activated]]
+					%label(on-click="status_change" class$="[[status_class(0)]]")
+						%input(checked$="[[status_state(0)]]" type="radio" value="0")/
+						%span [[L.inactive]]
+					%label(on-click="status_change" class$="[[status_class(1)]]")
+						%input(checked$="[[status_state(1)]]" type="radio" value="1")/
+						%span [[L.active]]
 				%label.uk-form-label(data-uk-tooltip="[[tooltip_animation]]" title="[[L.block_until_info]]") [[L.block_until]]
-				%input(type="datetime-local" value="{{block_until}}")/
+				%input(type="datetime-local" value="{{block_until::input}}")/
 				%label.uk-form-label [[L.avatar]]
-				%input(type="text" value="{{user_data.avatar}}")/
+				%input(type="text" value="{{user_data.avatar::input}}")/
 				%p
-					%button.uk-button.uk-button-primary(on-click="[[save]]") [[L.save]]
+					%button.uk-button.uk-button-primary(on-click="save") [[L.save]]
 	%script(src="script.js")

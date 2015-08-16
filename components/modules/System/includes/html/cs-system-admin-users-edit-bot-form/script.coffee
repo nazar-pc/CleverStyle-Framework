@@ -30,10 +30,7 @@ Polymer(
 			.cs().radio_buttons_inside()
 			.cs().tooltips_inside()
 	status_change		: (e) ->
-		@set(
-			['user_data', 'status'],
-			$(e.currentTarget).children('input').val()
-		)
+		@set('user_data.status', $(e.currentTarget).children('input').val())
 	save			: ->
 		$.ajax(
 			url		: 'api/System/admin/users/' + @user_id

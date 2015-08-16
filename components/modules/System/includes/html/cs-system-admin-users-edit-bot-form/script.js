@@ -42,7 +42,7 @@
       return $(target).cs().radio_buttons_inside().cs().tooltips_inside();
     },
     status_change: function(e) {
-      return this.set(['user_data', 'status'], $(e.currentTarget).children('input').val());
+      return this.set('user_data.status', $(e.currentTarget).children('input').val());
     },
     save: function() {
       return $.ajax({

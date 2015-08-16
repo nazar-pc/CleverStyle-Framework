@@ -8,14 +8,20 @@
 ###
 L	= cs.Language
 Polymer(
-	tooltip_animation	:'{animation:true,delay:200}'
-	L					: L
-	publish				:
-		user_id	: -1
-	languages			: []
-	timezones			: []
-	user_data			: {}
-	ready				: ->
+	'is'			: 'cs-system-admin-users-edit-user-form'
+	behaviors		: [cs.Polymer.behaviors.Language]
+	properties		:
+		user_id				: -1
+		user_data			:
+			type	: Object
+			value	: {}
+		languages			: []
+		timezones			: []
+		block_until			:
+			type		: String
+			observer	: 'block_until_'
+		tooltip_animation	:'{animation:true,delay:200}'
+	ready			: ->
 		$.when(
 			$.getJSON('api/System/admin/languages')
 			$.getJSON('api/System/admin/timezones')
@@ -41,9 +47,9 @@ Polymer(
 					timezone	: timezone
 					description	: description
 				)
-			@languages		= languages_list
-			@timezones		= timezones_list
-			@block_until	= do ->
+			@set('languages', languages_list)
+			@set('timezones', timezones_list)
+			block_until	= do ->
 				block_until	= data[0].block_until
 				date		= new Date
 				if parseInt(block_until)
@@ -51,25 +57,26 @@ Polymer(
 				z	= (number) ->
 					('0' + number).substr(-2)
 				date.getFullYear() + '-' + z(date.getMonth() + 1) + '-' + z(date.getDate()) + 'T' + z(date.getHours()) + ':' + z(date.getMinutes())
-			@user_data		= data[0]
-	domReady			: ->
+			@set('block_until', block_until)
+			@set('user_data', data[0])
 		@workarounds(@shadowRoot)
 		cs.observe_inserts_on(@shadowRoot, @workarounds)
-	workarounds			: (target) ->
+	workarounds		: (target) ->
 		$(target)
 			.cs().radio_buttons_inside()
 			.cs().tooltips_inside()
-	status_change		: (event) ->
-		@user_data.status	= $(event.target).children('input').val()
-	show_password		: (event, details, sender) ->
-		element	= @shadowRoot.querySelector('#password')
-		if element.type == 'password'
-			element.type	= 'text'
-			$(sender).removeClass('uk-icon-lock').addClass('uk-icon-unlock')
+	status_change	: (e) ->
+		@set('user_data.status', $(e.currentTarget).children('input').val())
+	show_password	: (e) ->
+		$lock		= $(e.currentTarget)
+		password	= $lock.next()[0]
+		if password.type == 'password'
+			password.type	= 'text'
+			$lock.removeClass('uk-icon-lock').addClass('uk-icon-unlock')
 		else
-			element.type	= 'password'
-			$(sender).removeClass('uk-icon-unlock').addClass('uk-icon-lock')
-	block_untilChanged	: ->
+			password.type	= 'password'
+			$lock.removeClass('uk-icon-unlock').addClass('uk-icon-lock')
+	block_until_	: ->
 		block_until	= @block_until
 		date		= new Date
 		date.setFullYear(block_until.substr(0, 4))
@@ -79,8 +86,13 @@ Polymer(
 		date.setMinutes(block_until.substr(14, 2))
 		date.setSeconds(0)
 		date.setMilliseconds(0)
-		@user_data.block_until = date.getTime() / 1000
-	save				: ->
+		@set('user_data.block_until', date.getTime() / 1000)
+	status_state	: (expected) ->
+		status	= @user_data.status
+		`status == expected`
+	status_class	: (expected) ->
+		'uk-button' + (if @status_state(expected) then ' uk-active' else '')
+	save			: ->
 		$.ajax(
 			url		: 'api/System/admin/users/' + @user_id
 			type	: 'patch'
