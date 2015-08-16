@@ -15,28 +15,34 @@
   L = cs.Language;
 
   Polymer({
-    tooltip_animation: '{animation:true,delay:200}',
-    L: L,
-    publish: {
-      user_id: -1
+    'is': 'cs-system-admin-users-edit-bot-form',
+    behaviors: [cs.Polymer.behaviors.Language],
+    properties: {
+      can_save: {
+        type: Boolean,
+        computed: 'can_save_(user_data.*)'
+      },
+      user_id: -1,
+      user_data: {
+        type: Object,
+        value: {}
+      },
+      tooltip_animation: '{animation:true,delay:200}'
     },
-    user_data: {},
     ready: function() {
-      return $.getJSON('api/System/admin/users/' + this.user_id, (function(_this) {
+      $.getJSON('api/System/admin/users/' + this.user_id, (function(_this) {
         return function(data) {
-          return _this.user_data = data;
+          return _this.set('user_data', data);
         };
       })(this));
-    },
-    domReady: function() {
       this.workarounds(this.shadowRoot);
       return cs.observe_inserts_on(this.shadowRoot, this.workarounds);
     },
     workarounds: function(target) {
       return $(target).cs().radio_buttons_inside().cs().tooltips_inside();
     },
-    status_change: function(event) {
-      return this.user_data.status = $(event.target).children('input').val();
+    status_change: function(e) {
+      return this.set(['user_data', 'status'], $(e.currentTarget).children('input').val());
     },
     save: function() {
       return $.ajax({
@@ -49,6 +55,17 @@
           return UIkit.notify(L.changes_saved.toString(), 'success');
         }
       });
+    },
+    status_state: function(expected) {
+      var status;
+      status = this.user_data.status;
+      return status == expected;
+    },
+    status_class: function(expected) {
+      return 'uk-button' + (this.status_state(expected) ? ' uk-active' : '');
+    },
+    can_save_: function() {
+      return this.user_data.username && (this.user_data.login || this.user_data.email);
     }
   });
 

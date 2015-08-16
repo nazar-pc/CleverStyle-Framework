@@ -1,45 +1,26 @@
-%polymer-element(name="cs-system-admin-users-edit-bot-form")
+%dom-module(id="cs-system-admin-users-edit-bot-form")
 	%template
-		%template(if="{{!user_data.id}}")
-			%h2.uk-text-center
-				.uk-icon-spin.uk-icon-spinner
-		%template(if="{{user_data.id}}")
+		%h2.uk-text-center(hidden$="[[user_data.id]]")
+			.uk-icon-spin.uk-icon-spinner
+		%template(is="dom-if" if="[[user_data.id]]")
 			.uk-form.uk-form-stacked
 				%label.uk-form-label [[L.bot_name]]
-				%input(type="text" value="{{user_data.username}}")/
-				%label.uk-form-label(data-uk-tooltip="[[tooltip_animation]]" title="[[L.bot_user_agent_info]]") [[L.bot_user_agent]]
-				%input(type="text" value="{{user_data.login}}")/
-				%label.uk-form-label(data-uk-tooltip="[[tooltip_animation]]" title="[[L.bot_ip_info]]") [[L.bot_ip]]
-				%input(type="text" value="{{user_data.email}}")/
+				%input(type="text" value="{{user_data.username::input}}")/
+				%label.uk-form-label(data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.bot_user_agent_info]]") [[L.bot_user_agent]]
+				%input(type="text" value="{{user_data.login::input}}")/
+				%label.uk-form-label(data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.bot_ip_info]]") [[L.bot_ip]]
+				%input(type="text" value="{{user_data.email::input}}")/
 				%label.uk-form-label [[L.status]]
-				.uk-button-group(data-uk-button-radio on-click="{{status_change}}")
-					/ Not activated
-					%template(if="[[user_data.status == -1]]")
-						.uk-button.uk-active
-							%input(checked type="radio" value="-1")/
-							[[L.is_not_activated]]
-					%template(if="[[user_data.status != -1]]")
-						.uk-button
-							%input(type="radio" value="-1")/
-							[[L.is_not_activated]]
-					/ Inactive
-					%template(if="[[user_data.status == 0]]")
-						.uk-button.uk-active
-							%input(checked type="radio" value="0")/
-							[[L.inactive]]
-					%template(if="[[user_data.status != 0]]")
-						.uk-button
-							%input(type="radio" value="0")/
-							[[L.inactive]]
-					/ Active
-					%template(if="[[user_data.status == 1]]")
-						.uk-button.uk-active
-							%input(checked type="radio" value="1")/
-							[[L.active]]
-					%template(if="[[user_data.status != 1]]")
-						.uk-button
-							%input(type="radio" value="1")/
-							[[L.active]]
+				.uk-button-group(data-uk-button-radio)
+					%label(on-click="status_change" class$="[[status_class('-1')]]")
+						%input(checked$="[[status_state('-1')]]" type="radio" value="-1")/
+						%span [[L.is_not_activated]]
+					%label(on-click="status_change" class$="[[status_class(0)]]")
+						%input(checked$="[[status_state(0)]]" type="radio" value="0")/
+						%span [[L.inactive]]
+					%label(on-click="status_change" class$="[[status_class(1)]]")
+						%input(checked$="[[status_state(1)]]" type="radio" value="1")/
+						%span [[L.active]]
 				%p
-					%button.uk-button.uk-button-primary(on-click="[[save]]") [[L.save]]
+					%button.uk-button.uk-button-primary(on-click="save" disabled$="[[!can_save]]") [[L.save]]
 	%script(src="script.js")
