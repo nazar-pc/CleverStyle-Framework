@@ -1,13 +1,13 @@
-%polymer-element(name="cs-system-admin-permissions-form")
+%dom-module(id="cs-system-admin-permissions-form")
 	%template
 		.uk-form.uk-form-stacked
-			%template(if="{{permission_id}}")
+			%template(is="dom-if" if="[[permission_id]]")
 				%label.uk-form-label id
 				%p [[permission_id]]
 			%label.uk-form-label [[L.group]]
-			%input(type="text" value="{{group}}")/
+			%input(type="text" value="{{group::input}}")/
 			%label.uk-form-label [[L.label]]
-			%input(type="text" value="{{label}}")/
+			%input(type="text" value="{{label::input}}")/
 			%p
-				%button.uk-button.uk-button-primary(on-click="[[save]]") [[L.save]]
+				%button.uk-button.uk-button-primary(on-click="save" disabled$="[[!and(group, label)]]") [[L.save]]
 	%script(src="script.js")

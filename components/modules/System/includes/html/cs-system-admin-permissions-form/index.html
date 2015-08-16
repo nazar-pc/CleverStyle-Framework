@@ -1,18 +1,18 @@
-<polymer-element name="cs-system-admin-permissions-form">
+<dom-module id="cs-system-admin-permissions-form">
   <template>
     <div class="uk-form uk-form-stacked">
-      <template if="{{permission_id}}">
+      <template if="[[permission_id]]" is="dom-if">
         <label class="uk-form-label">id</label>
         <p>[[permission_id]]</p>
       </template>
       <label class="uk-form-label">[[L.group]]</label>
-      <input type="text" value="{{group}}">
+      <input type="text" value="{{group::input}}">
       <label class="uk-form-label">[[L.label]]</label>
-      <input type="text" value="{{label}}">
+      <input type="text" value="{{label::input}}">
       <p>
-        <button class="uk-button uk-button-primary" on-click="[[save]]">[[L.save]]</button>
+        <button class="uk-button uk-button-primary" disabled$="[[!and(group, label)]]" on-click="save">[[L.save]]</button>
       </p>
     </div>
   </template>
   <script src="script.js"></script>
-</polymer-element>
+</dom-module>

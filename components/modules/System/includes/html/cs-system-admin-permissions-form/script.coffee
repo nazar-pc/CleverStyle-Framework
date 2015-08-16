@@ -8,9 +8,10 @@
 ###
 L	= cs.Language
 Polymer(
-	L		: L
-	publish	:
-		permission_id	: null
+	'is'	: 'cs-system-admin-permissions-form'
+	behaviors		: [cs.Polymer.behaviors.Language]
+	properties		:
+		permission_id	: Number
 		group			: ''
 		label			: ''
 	save	: ->
