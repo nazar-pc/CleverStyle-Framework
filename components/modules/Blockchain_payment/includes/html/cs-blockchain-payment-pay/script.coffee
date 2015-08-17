@@ -7,15 +7,17 @@
 ###
 L = cs.Language
 Polymer(
-	publish			:
-		description	: ''
-		address		: ''
-		amount		: 0
-	progress_text	: L.blockchain_payment_waiting_for_payment
+	properties		:
+		description		: ''
+		address			: ''
+		amount			: Number
+		progress_text	:
+			type	: string
+			value	: L.blockchain_payment_waiting_for_payment
 	ready			: ->
 		$ =>
-			@description	= JSON.parse(@description)
-			@text			= L.blockchain_payment_scan_or_transfer(@amount, @address)
+			@set('description', JSON.parse(@description))
+			@set('text', L.blockchain_payment_scan_or_transfer(@amount, @address))
 			$(@$.qr).qrcode(
 				height	: 512
 				text	: 'bitcoin:' + @address + '?amount=' + @amount
@@ -31,7 +33,7 @@ Polymer(
 					location.reload()
 					return
 				if parseInt(data.paid)
-					@progress_text	= L.blockchain_payment_waiting_for_confirmations
+					@set('progress_text', L.blockchain_payment_waiting_for_confirmations)
 				setTimeout (=>
 					@update_status()
 				), 5000
