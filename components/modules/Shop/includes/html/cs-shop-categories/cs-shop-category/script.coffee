@@ -6,8 +6,12 @@
  * @license   MIT License, see license.txt
 ###
 Polymer(
-	ready : ->
+	'is'		: 'cs-shop-category'
+	'extends'	: 'article'
+	properties	:
+		href	: String
+	ready		: ->
 		@$.img.innerHTML	= @querySelector('#img').outerHTML
-		@href				= @querySelector('#link').href
+		@set('href', @querySelector('#link').href)
 		$(@querySelector('#nested')).addClass('uk-grid uk-grid-small uk-grid-width-1-4 uk-width-1-1')
 );

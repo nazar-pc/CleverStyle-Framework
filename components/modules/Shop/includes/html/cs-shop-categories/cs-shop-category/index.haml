@@ -1,0 +1,11 @@
+%dom-module(id="cs-shop-category")
+	%template
+		.uk-grid.uk-margin-top
+			.uk-width-3-10
+				%a#img.uk-thumbnail.uk-thumbnail-expand(href="[[href]]")
+			.uk-width-7-10
+				%content(select="h1")
+				%content(select="#description")
+				%div(horizontal="" layout="")
+					%content(select="#nested")
+	%script(src="script.js")

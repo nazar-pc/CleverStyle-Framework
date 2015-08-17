@@ -11,20 +11,23 @@
 (function() {
   (function(cart, L) {
     return Polymer({
-      in_cart: 0,
-      L: L,
-      domReady: function() {
+      'is': 'cs-shop-add-to-cart',
+      behaviors: [cs.Polymer.behaviors.Language],
+      properties: {
+        in_cart: 0
+      },
+      ready: function() {
         var $this;
         $this = $(this);
-        this.item_id = $this.data('id');
-        this.in_cart = cart.get(this.item_id);
+        this.set('item_id', $this.data('id'));
+        this.set('in_cart', cart.get(this.item_id));
         return UIkit.tooltip(this.$.in_cart, {
           animation: true,
           delay: 200
         });
       },
       add: function() {
-        return this.in_cart = cart.add(this.item_id);
+        return this.set('in_cart', cart.add(this.item_id));
       }
     });
   })(cs.shop.cart, cs.Language);

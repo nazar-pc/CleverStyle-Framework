@@ -1,17 +1,17 @@
-<polymer-element name="cs-shop-category" extends="article">
-	<template>
-		<div class="uk-grid uk-margin-top">
-			<div class="uk-width-3-10">
-				<a href="{{href}}" class="uk-thumbnail uk-thumbnail-expand" id="img"></a>
-			</div>
-			<div class="uk-width-7-10">
-				<content select="h1"></content>
-				<content select="#description"></content>
-				<div layout horizontal>
-					<content select="#nested"></content>
-				</div>
-			</div>
-		</div>
-	</template>
-	<script src="script.js"></script>
-</polymer-element>
+<dom-module id="cs-shop-category">
+  <template>
+    <div class="uk-grid uk-margin-top">
+      <div class="uk-width-3-10">
+        <a class="uk-thumbnail uk-thumbnail-expand" href="[[href]]" id="img"></a>
+      </div>
+      <div class="uk-width-7-10">
+        <content select="h1"></content>
+        <content select="#description"></content>
+        <div horizontal="" layout="">
+          <content select="#nested"></content>
+        </div>
+      </div>
+    </div>
+  </template>
+  <script src="script.js"></script>
+</dom-module>

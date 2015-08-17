@@ -7,17 +7,19 @@
 ###
 do (cart = cs.shop.cart, L = cs.Language) ->
 	Polymer(
-		in_cart		: 0
-		L			: L
-		domReady	: ->
+		'is'		: 'cs-shop-add-to-cart'
+		behaviors	: [cs.Polymer.behaviors.Language]
+		properties	:
+			in_cart		: 0
+		ready		: ->
 			$this		= $(@)
-			@item_id	= $this.data('id')
-			@in_cart	= cart.get(@item_id)
+			@set('item_id', $this.data('id'))
+			@set('in_cart', cart.get(@item_id))
 			UIkit.tooltip(
 				@$.in_cart
 				animation	: true
 				delay		: 200
 			)
 		add			: ->
-			@in_cart	= cart.add(@item_id)
+			@set('in_cart', cart.add(@item_id))
 	);

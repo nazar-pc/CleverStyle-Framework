@@ -1,0 +1,13 @@
+%dom-module(id="cs-shop-category-item")
+	%template
+		.uk-grid.uk-margin-top
+			.uk-width-3-10
+				%a#img.uk-thumbnail.uk-thumbnail-expand(href="[[href]]")
+			.uk-width-7-10
+				%content(select="h1")
+				%p.uk-text-large
+					%span.uk-text-primary [[price]]
+					%cs-shop-add-to-cart(data-id="[[item_id]]")
+					%span [[concat('(', in_stock, ' in stock)')]]
+				%content(select="#description")
+	%script(src="script.js")

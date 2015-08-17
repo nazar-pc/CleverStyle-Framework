@@ -6,11 +6,15 @@
  * @license   MIT License, see license.txt
 ###
 Polymer(
-	ready : ->
+	'is'		: 'cs-shop-category-item'
+	'extends'	: 'article'
+	properties	:
+		href		: String
+		price		: String
+		item_id		: Number
+		in_stock	: String
+	ready		: ->
 		@$.img.innerHTML	= @querySelector('#img').outerHTML
-		@href				= @querySelector('#link').href
-		$this				= $(@)
-		@item_id			= $this.data('id')
-		@price				= sprintf(cs.shop.settings.price_formatting, $this.data('price'))
-		@in_stock			= $this.data('in_stock')
+		@set('href', @querySelector('#link').href)
+		@set('price', sprintf(cs.shop.settings.price_formatting, @price))
 );

@@ -1,0 +1,7 @@
+%dom-module(id="cs-shop-add-to-cart")
+	%template
+		.uk-button-group(hidden$="[[!in_cart]]")
+			%button.uk-button.uk-button-primary(on-click="add" type="button") [[L.shop_add_to_cart]]
+			%a#in_cart.uk-button(href="/Shop/cart" title="[[L.shop_already_in_cart]]") [[in_cart]]
+		%button.uk-button.uk-button-primary(on-click="add" type="button" hidden$="[[and(in_cart)]]") [[L.shop_add_to_cart]]
+	%script(src="script.js")

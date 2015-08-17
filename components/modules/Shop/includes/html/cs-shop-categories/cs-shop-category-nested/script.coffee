@@ -6,8 +6,14 @@
  * @license   MIT License, see license.txt
 ###
 Polymer(
-	ready : ->
+	'is'		: 'cs-shop-category-nested'
+	'extends'	: 'article'
+	properties	:
+		href			: String
+		category_title	: String
+	ready		: ->
 		$(@$.img).prepend(@querySelector('#img').outerHTML)
-		@href	= @querySelector('#link').href
-		@title	= @querySelector('#link').innerHTML
-);
+		link	= @querySelector('#link')
+		@set('href', link.href)
+		@set('category_title', link.textContent)
+)
