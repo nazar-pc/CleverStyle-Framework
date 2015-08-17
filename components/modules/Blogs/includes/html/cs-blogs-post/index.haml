@@ -1,0 +1,30 @@
+%dom-module(id="cs-blogs-post")
+	%template
+		%header
+			%a.uk-button(href="[[concat('/Blogs/edit_post/', jsonld.id)]]" data-uk-tooltip="{animation:true,delay:200}" title="[[L.edit]]" hidden$="[[!can_edit]]")
+				%span.uk-icon-pencil
+			%a.uk-button(href="[[concat('/admin/Blogs/delete_post/', jsonld.id)]]" data-uk-tooltip="{animation:true,delay:200}" title="[[L.delete]]" hidden$="[[!can_delete]]")
+				%span.uk-icon-trash-o
+			%h1 [[jsonld.title]]
+			%template(is="dom-if" if="[[jsonld.articleSection.length]]")
+				%p
+					%span.uk-icon-bookmark
+					%template(is="dom-repeat" items="[[jsonld.articleSection]]" as="section")
+						%a(href="[[sections_path(index)]]") [[section]]
+		#content
+		%footer
+			%template(is="dom-if" if="[[jsonld.tags.length]]")
+				%p
+					%span.uk-icon-tags
+					%template(is="dom-repeat" items="[[jsonld.tags]]" as="tag")
+						%a(href="[[tags_path(index)]]" rel="tag") [[tag]]
+			%hr/
+			%p
+				%time [[jsonld.datetime]]
+				%a(href="[[jsonld.author.url]]")
+					%span.uk-icon-user
+					%span [[jsonld.author.name]]
+				%template(is="dom-if" if="[[comments_enabled]]")
+					%span.uk-icon-comments
+					%span [[jsonld.comments_count]]
+	%script(src="script.js")

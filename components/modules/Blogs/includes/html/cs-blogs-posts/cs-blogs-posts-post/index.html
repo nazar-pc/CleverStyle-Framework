@@ -1,43 +1,41 @@
-<polymer-element name="cs-blogs-posts-post" extends="article">
-	<template>
-		<template bind="{{post}}">
-			<article>
-				<header>
-					<a href="{{url}}">
-						<h1>{{title}}</h1>
-					</a>
-					<template if="{{articleSection.length}}">
-						<p>
-							<span class=" uk-icon-bookmark"></span>
-							<template repeat="{{section, index in articleSection}}">
-								<a href="{{sections_paths[index]}}">{{section}}</a>
-							</template>
-						</p>
-					</template>
-				</header>
-				<div id="short_content"></div>
-				<footer>
-					<hr>
-					<p>
-						<time>{{datetime}}</time>
-						<a href="{{author.url}}">
-							<span class="uk-icon-user"></span>
-							{{author.name}}
-						</a>
-						<template if="{{comments_enabled}}">
-							<a href="{{url}}#comments">
-								<span class="uk-icon-comments"></span>
-								{{comments_count}}
-							</a>
-						</template>
-						<a href="{{url}}">
-							<span class="uk-icon-angle-double-right"></span>
-							{{read_more_text}}
-						</a>
-					</p>
-				</footer>
-			</article>
-		</template>
-	</template>
-	<script src="script.js"></script>
-</polymer-element>
+<dom-module id="cs-blogs-posts-post">
+  <template>
+    <article>
+      <header>
+        <a href="[[post.url]]">
+          <h1>[[post.title]]</h1>
+        </a>
+        <template if="[[post.articleSection.length]]" is="dom-if">
+          <p>
+            <span class="uk-icon-bookmark"></span>
+            <template as="section" is="dom-repeat" items="[[post.articleSection]]">
+              <a href="[[sections_path(index)]]">[[section]]</a>
+            </template>
+          </p>
+        </template>
+      </header>
+      <div id="short_content"></div>
+      <footer>
+        <hr>
+        <p>
+          <time>[[post.datetime]]</time>
+          <a href="[[post.author.url]]">
+            <span class="uk-icon-user"></span>
+            <span>[[post.author.name]]</span>
+          </a>
+          <template if="[[comments_enabled]]" is="dom-if">
+            <a href="[[post.url]]#comments">
+              <span class="uk-icon-comments"></span>
+              <span>[[post.comments_count]]</span>
+            </a>
+          </template>
+          <a href="[[post.url]]">
+            <span class="uk-icon-angle-double-right"></span>
+            <span>[[L.read_more]]</span>
+          </a>
+        </p>
+      </footer>
+    </article>
+  </template>
+  <script src="script.js"></script>
+</dom-module>

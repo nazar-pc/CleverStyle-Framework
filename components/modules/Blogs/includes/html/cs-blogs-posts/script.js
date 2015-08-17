@@ -9,12 +9,10 @@
  */
 
 (function() {
-  var L;
-
-  L = cs.Language;
-
   Polymer({
-    publish: {
+    'is': 'cs-blogs-posts',
+    'extends': 'section',
+    properties: {
       comments_enabled: false
     },
     ready: function() {

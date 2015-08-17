@@ -1,0 +1,13 @@
+%dom-module(id="cs-blogs-head-actions")
+	%template
+		%p(hidden$="[[!or(admin, can_write_post)]]")
+			%a.uk-button(data-uk-tooltip="{animation:true,delay:200}" href="/admin/Blogs" title$="[[L.administration]]" hidden$="[[!admin]]")
+				%span.uk-icon.uk-icon-gears
+			%template(is="dom-if" if="[[can_write_post]]")
+				%a.uk-button(href="/Blogs/new_post")
+					%span.uk-icon.uk-icon-pencil
+					%span [[L.new_post]]
+				%a.uk-button(href="/Blogs/drafts")
+					%span.uk-icon.uk-icon-archive
+					%span [[L.drafts]]
+	%script(src="script.js")

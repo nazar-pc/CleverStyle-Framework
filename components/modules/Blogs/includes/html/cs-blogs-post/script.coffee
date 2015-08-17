@@ -7,14 +7,19 @@
 ###
 L = cs.Language
 Polymer(
-	publish	:
+	'is'			: 'cs-blogs-post'
+	'extends'		: 'article'
+	behaviors		: [cs.Polymer.behaviors.Language]
+	properties		:
 		can_edit			: false
 		can_delete			: false
 		comments_enabled	: false
-	L		: L
-	created	: ->
+	ready			: ->
 		@jsonld = JSON.parse(@querySelector('script').innerHTML)
-	ready	: ->
 		@$.content.innerHTML	= @jsonld.content
 		$(@shadowRoot).cs().tooltips_inside()
+	sections_path	: (index) ->
+		@jsonld.sections_paths[index]
+	tags_path		: (index) ->
+		@jsonld.tags_paths[index]
 );

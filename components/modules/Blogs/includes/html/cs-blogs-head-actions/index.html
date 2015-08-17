@@ -1,24 +1,20 @@
-<polymer-element name="cs-blogs-head-actions">
-	<template>
-		<template if="{{admin || can_write_post}}">
-			<p>
-				<template if="{{admin}}">
-					<a href="/admin/Blogs" class="uk-button" data-uk-tooltip="{animation:true,delay:200}" title="[[L.administration]]">
-						<span class="uk-icon uk-icon-gears"></span>
-					</a>
-				</template>
-				<template if="{{can_write_post}}">
-					<a href="/Blogs/new_post" class="uk-button">
-						<span class="uk-icon uk-icon-pencil"></span>
-						[[L.new_post]]
-					</a>
-					<a href="/Blogs/drafts" class="uk-button">
-						<span class="uk-icon uk-icon-archive"></span>
-						[[L.drafts]]
-					</a>
-				</template>
-			</p>
-		</template>
-	</template>
-	<script src="script.js"></script>
-</polymer-element>
+<dom-module id="cs-blogs-head-actions">
+  <template>
+    <p hidden$="[[!or(admin, can_write_post)]]">
+      <a class="uk-button" data-uk-tooltip="{animation:true,delay:200}" hidden$="[[!admin]]" href="/admin/Blogs" title$="[[L.administration]]">
+        <span class="uk-icon uk-icon-gears"></span>
+      </a>
+      <template if="[[can_write_post]]" is="dom-if">
+        <a class="uk-button" href="/Blogs/new_post">
+          <span class="uk-icon uk-icon-pencil"></span>
+          <span>[[L.new_post]]</span>
+        </a>
+        <a class="uk-button" href="/Blogs/drafts">
+          <span class="uk-icon uk-icon-archive"></span>
+          <span>[[L.drafts]]</span>
+        </a>
+      </template>
+    </p>
+  </template>
+  <script src="script.js"></script>
+</dom-module>

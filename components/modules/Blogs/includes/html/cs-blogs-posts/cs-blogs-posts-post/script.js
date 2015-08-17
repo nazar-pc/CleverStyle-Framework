@@ -9,19 +9,19 @@
  */
 
 (function() {
-  var L;
-
-  L = cs.Language;
-
   Polymer({
-    publish: {
+    'is': 'cs-blogs-posts-post',
+    'extends': 'article',
+    behaviors: [cs.Polymer.behaviors.Language],
+    properties: {
       post: {},
       comments_enabled: false
     },
     ready: function() {
-      this.post.comments_enabled = this.comments_enabled;
-      this.post.read_more_text = cs.Language.read_more;
       return this.$.short_content.innerHTML = this.post.short_content;
+    },
+    sections_path: function(index) {
+      return this.post.sections_paths[index];
     }
   });
 

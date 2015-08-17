@@ -1,0 +1,27 @@
+%dom-module(id="cs-blogs-posts-post")
+	%template
+		%article
+			%header
+				%a(href="[[post.url]]")
+					%h1 [[post.title]]
+				%template(is="dom-if" if="[[post.articleSection.length]]")
+					%p
+						%span.uk-icon-bookmark
+						%template(is="dom-repeat" items="[[post.articleSection]]" as="section")
+							%a(href="[[sections_path(index)]]") [[section]]
+			#short_content
+			%footer
+				%hr/
+				%p
+					%time [[post.datetime]]
+					%a(href="[[post.author.url]]")
+						%span.uk-icon-user
+						%span [[post.author.name]]
+					%template(is="dom-if" if="[[comments_enabled]]")
+						%a(href="[[post.url]]#comments")
+							%span.uk-icon-comments
+							%span [[post.comments_count]]
+					%a(href="[[post.url]]")
+						%span.uk-icon-angle-double-right
+						%span [[L.read_more]]
+	%script(src="script.js")

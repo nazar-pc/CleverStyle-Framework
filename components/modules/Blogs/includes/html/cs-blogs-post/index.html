@@ -1,49 +1,45 @@
-<polymer-element name="cs-blogs-post" extends="article">
-	<template>
-		<header>
-			<template if="{{can_edit}}">
-				<a class="uk-button" data-uk-tooltip="{animation:true,delay:200}" href="/Blogs/edit_post/{{jsonld.id}}" title="[[L.edit]]">
-					<span class="uk-icon-pencil"></span>
-				</a>
-			</template>
-			<template if="{{can_delete}}">
-				<a class="uk-button" data-uk-tooltip="{animation:true,delay:200}" href="/admin/Blogs/delete_post/{{jsonld.id}}" title="[[L.delete]]">
-					<span class="uk-icon-trash-o"></span>
-				</a>
-			</template>
-			<h1>{{jsonld.title}}</h1>
-			<template if="{{jsonld.articleSection.length}}">
-				<p>
-					<span class=" uk-icon-bookmark"></span>
-					<template repeat="{{section, index in jsonld.articleSection}}">
-						<a href="{{jsonld.sections_paths[index]}}">{{section}}</a>
-					</template>
-				</p>
-			</template>
-		</header>
-		<div id="content"></div>
-		<footer>
-			<template if="{{jsonld.tags.length}}">
-				<p>
-					<span class=" uk-icon-tags"></span>
-					<template repeat="{{tag, index in jsonld.tags}}">
-						<a href="{{jsonld.tags_paths[index]}}" rel="tag">{{tag}}</a>
-					</template>
-				</p>
-			</template>
-			<hr>
-			<p>
-				<time>{{jsonld.datetime}}</time>
-				<a href="{{jsonld.author.url}}">
-					<span class="uk-icon-user"></span>
-					{{jsonld.author.name}}
-				</a>
-				<template if="{{comments_enabled}}">
-					<span class="uk-icon-comments"></span>
-					{{jsonld.comments_count}}
-				</template>
-			</p>
-		</footer>
-	</template>
-	<script src="script.js"></script>
-</polymer-element>
+<dom-module id="cs-blogs-post">
+  <template>
+    <header>
+      <a class="uk-button" data-uk-tooltip="{animation:true,delay:200}" hidden$="[[!can_edit]]" href="[[concat('/Blogs/edit_post/', jsonld.id)]]" title="[[L.edit]]">
+        <span class="uk-icon-pencil"></span>
+      </a>
+      <a class="uk-button" data-uk-tooltip="{animation:true,delay:200}" hidden$="[[!can_delete]]" href="[[concat('/admin/Blogs/delete_post/', jsonld.id)]]" title="[[L.delete]]">
+        <span class="uk-icon-trash-o"></span>
+      </a>
+      <h1>[[jsonld.title]]</h1>
+      <template if="[[jsonld.articleSection.length]]" is="dom-if">
+        <p>
+          <span class="uk-icon-bookmark"></span>
+          <template as="section" is="dom-repeat" items="[[jsonld.articleSection]]">
+            <a href="[[sections_path(index)]]">[[section]]</a>
+          </template>
+        </p>
+      </template>
+    </header>
+    <div id="content"></div>
+    <footer>
+      <template if="[[jsonld.tags.length]]" is="dom-if">
+        <p>
+          <span class="uk-icon-tags"></span>
+          <template as="tag" is="dom-repeat" items="[[jsonld.tags]]">
+            <a href="[[tags_path(index)]]" rel="tag">[[tag]]</a>
+          </template>
+        </p>
+      </template>
+      <hr>
+      <p>
+        <time>[[jsonld.datetime]]</time>
+        <a href="[[jsonld.author.url]]">
+          <span class="uk-icon-user"></span>
+          <span>[[jsonld.author.name]]</span>
+        </a>
+        <template if="[[comments_enabled]]" is="dom-if">
+          <span class="uk-icon-comments"></span>
+          <span>[[jsonld.comments_count]]</span>
+        </template>
+      </p>
+    </footer>
+  </template>
+  <script src="script.js"></script>
+</dom-module>

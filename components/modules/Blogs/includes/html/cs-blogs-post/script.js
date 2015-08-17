@@ -14,18 +14,24 @@
   L = cs.Language;
 
   Polymer({
-    publish: {
+    'is': 'cs-blogs-post',
+    'extends': 'article',
+    behaviors: [cs.Polymer.behaviors.Language],
+    properties: {
       can_edit: false,
       can_delete: false,
       comments_enabled: false
     },
-    L: L,
-    created: function() {
-      return this.jsonld = JSON.parse(this.querySelector('script').innerHTML);
-    },
     ready: function() {
+      this.jsonld = JSON.parse(this.querySelector('script').innerHTML);
       this.$.content.innerHTML = this.jsonld.content;
       return $(this.shadowRoot).cs().tooltips_inside();
+    },
+    sections_path: function(index) {
+      return this.jsonld.sections_paths[index];
+    },
+    tags_path: function(index) {
+      return this.jsonld.tags_paths[index];
     }
   });
 

@@ -14,11 +14,12 @@
   L = cs.Language;
 
   Polymer({
-    publish: {
+    'is': 'cs-blogs-head-actions',
+    behaviors: [cs.Polymer.behaviors.Language],
+    properties: {
       admin: false,
       can_write_post: false
     },
-    L: L,
     ready: function() {
       return $(this.shadowRoot).cs().tooltips_inside();
     }
