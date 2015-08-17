@@ -55,7 +55,7 @@
                   </a>
                 </template>
                 <template if="[[!or(user.is_guest, user.is_bot)]]" is="dom-if">
-                  <a class="uk-button cs-button-compact" data-uk-tooltip$="[[tooltip_animation]]" href$="[[concat('/admin/System/users/users/groups/', user.id)]]" title="[[L.edit_user_groups]]">
+                  <a class="uk-button cs-button-compact" data-uk-tooltip$="[[tooltip_animation]]" href="[[concat('/admin/System/users/users/groups/', user.id)]]" title="[[L.edit_user_groups]]">
                     <div class="uk-icon-group"></div>
                   </a>
                 </template>
