@@ -31,14 +31,14 @@ $Route  = Route::instance();
 /**
  * If no tag specified
  */
-if (!isset($Route->path[1])) {
+if (!isset($Route->route[1])) {
 	error_code(404);
 	return;
 }
 /**
  * Find tag
  */
-$tag = $Tags->get_by_text($Route->path[1]);
+$tag = $Tags->get_by_text($Route->route[1]);
 if (!$tag) {
 	error_code(404);
 	return;
@@ -64,7 +64,7 @@ $Meta->blog();
  * Determine current page
  */
 $page = max(
-	isset($Route->ids[0]) ? array_slice($Route->ids, -1)[0] : 1,
+	isset($Route->route[2]) ? $Route->route[2] : 1,
 	1
 );
 /**
@@ -91,7 +91,7 @@ $posts_count = $Posts->get_for_tag_count($tag['id'], $L->clang);
 /**
  * Base url (without page number)
  */
-$base_url = $Config->base_url().'/'.path($L->Blogs).'/'.path($L->tag).'/'.$Route->path[1];
+$base_url = $Config->base_url().'/'.path($L->Blogs).'/'.path($L->tag).'/'.$Route->route[1];
 $Index->content(
 	Helpers::posts_list(
 		$posts,
