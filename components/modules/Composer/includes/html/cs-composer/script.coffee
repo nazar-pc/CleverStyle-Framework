@@ -8,8 +8,9 @@
 L			= cs.Language
 MODE_DELETE	= 2
 Polymer(
-	L		: L
-	ready	: ->
+	'is'		: 'cs-composer'
+	behaviors	: [cs.Polymer.behaviors.Language]
+	ready		: ->
 		$.ajax(
 			url		: 'api/Composer'
 			type	: if cs.composer.mode == MODE_DELETE then 'delete' else 'post'
@@ -18,11 +19,12 @@ Polymer(
 				type	: cs.composer.type
 				force	: cs.composer.force
 			success	: (result) =>
-				@status =
+				status =
 					switch result.code
 						when 0 then L.composer_updated_successfully
 						when 1 then L.composer_update_failed
 						when 2 then L.composer_dependencies_conflict
+				@set('status', status)
 				if result.description
 					$(@$.result)
 						.show()

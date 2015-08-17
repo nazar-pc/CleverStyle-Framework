@@ -16,7 +16,8 @@
   MODE_DELETE = 2;
 
   Polymer({
-    L: L,
+    'is': 'cs-composer',
+    behaviors: [cs.Polymer.behaviors.Language],
     ready: function() {
       $.ajax({
         url: 'api/Composer',
@@ -28,7 +29,8 @@
         },
         success: (function(_this) {
           return function(result) {
-            _this.status = (function() {
+            var status;
+            status = (function() {
               switch (result.code) {
                 case 0:
                   return L.composer_updated_successfully;
@@ -38,6 +40,7 @@
                   return L.composer_dependencies_conflict;
               }
             })();
+            _this.set('status', status);
             if (result.description) {
               $(_this.$.result).show().html(result.description);
             }

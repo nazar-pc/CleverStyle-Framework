@@ -1,15 +1,11 @@
-<polymer-element name="cs-composer">
+<dom-module id="cs-composer">
   <template>
-    <h2 class="cs-center">{{L.composer_composer_updating}}</h2>
-    <template if="{{!status}}">
-      <h1 class="cs-center">
-        <i class="uk-icon-spin uk-icon-spinner"></i>
-      </h1>
-    </template>
-    <template if="{{status}}">
-      <h3 class="cs-center">{{status}}</h3>
-    </template>
+    <h2 class="cs-center">[[L.composer_composer_updating]]</h2>
+    <h1 class="cs-center" hidden$="[[status]]">
+      <i class="uk-icon-spin uk-icon-spinner"></i>
+    </h1>
+    <h3 class="cs-center" hidden$="[[!status]]">[[status]]</h3>
     <pre id="result" style="background: #1a1a1a"></pre>
   </template>
   <script src="script.js"></script>
-</polymer-element>
+</dom-module>
