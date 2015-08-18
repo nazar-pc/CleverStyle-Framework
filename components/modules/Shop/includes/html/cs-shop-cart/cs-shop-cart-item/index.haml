@@ -1,0 +1,15 @@
+%dom-module(id="cs-shop-cart-item")
+	%template
+		.uk-grid.uk-grid-small.uk-margin-top
+			.uk-width-1-10
+				%a#img.uk-thumbnail.uk-thumbnail-expand(href="[[href]]")
+			.uk-grid.uk-grid-small.uk-grid-width-1-1.uk-form
+				.uk-text-large
+					%a(href="[[href]]") [[item_title]]
+					\:
+					%input.uk-form-width-small(min="0" type="number" value="{{units::input}}")/
+					%span [[concat('x ', unit_price_formatted, ' = ', price_formatted)]]
+					%span#discount
+				%div
+					%content(select="#description")
+	%script(src="script.js")

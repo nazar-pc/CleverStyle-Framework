@@ -1,52 +1,51 @@
-<polymer-element name="cs-shop-cart">
-	<template>
-		<h1 id="h1" class="uk-text-center"></h1>
-		<content select="#items"></content>
-		<div class="uk-form uk-form-stacked uk-margin-top">
-			<p class="uk-form-row">
-				<label class="uk-form-label">[[L.shop_shipping_type]]</label>
-				<select id="shipping_type">
-					<template repeat="{{shipping_types}}">
-						<option value="{{id}}">{{title}}</option>
-					</template>
-				</select> ({{shipping_cost_formatted}})
-			</p>
-			<p class="uk-form-row" hidden?="{{!shipping_type_details.description}}">
-				{{shipping_type_details.description}}
-			</p>
-			<p class="uk-form-row">
-				<label class="uk-form-label">[[L.shop_shipping_username]]</label>
-				<input type="text" value="{{shipping_username}}" class="uk-form-width-large">
-			</p>
-			<p class="uk-form-row" hidden?="{{shipping_type_details.phone_needed != 1}}">
-				<label class="uk-form-label">[[L.shop_phone]]</label>
-				<input type="text" value="{{phone}}" class="uk-form-width-large">
-			</p>
-			<p class="uk-form-row" hidden?="{{shipping_type_details.address_needed != 1}}">
-				<label class="uk-form-label">[[L.shop_address]]</label>
-				<textarea value="{{address}}" class="uk-form-width-large"></textarea>
-			</p>
-			<p class="uk-form-row">
-				<label class="uk-form-label">[[L.shop_comment]]</label>
-				<textarea value="{{comment}}" class="uk-form-width-large"></textarea>
-			</p>
-			<p class="uk-form-row" hidden?="{{payment_methods.length == 1}}">
-				<label class="uk-form-label">[[L.shop_payment_method]]</label>
-				<select id="payment_method">
-					<template repeat="{{details, index in payment_methods}}">
-						<option value="{{index}}">{{details.title}}</option>
-					</template>
-				</select>
-			</p>
-			<p class="uk-form-row" id="payment_method_description"></p>
-			<template if="{{!registration_required}}">
-				<button type="button" class="uk-button" on-click="[[L.shop_finish_order]]">[[L.finish_order]]</button>
-			</template>
-			<template if="{{registration_required}}">
-				<p class="uk-alert uk-alert-warning">[[L.shop_register_to_finish_order]]</p>
-				<button type="button" class="uk-button" disabled>[[L.shop_finish_order]]</button>
-			</template>
-		</div>
-	</template>
-	<script src="script.js"></script>
-</polymer-element>
+<dom-module id="cs-shop-cart">
+  <template>
+    <h1 class="uk-text-center" id="h1"></h1>
+    <content select="#items"></content>
+    <div class="uk-form uk-form-stacked uk-margin-top">
+      <p class="uk-form-row">
+        <label class="uk-form-label">[[L.shop_shipping_type]]</label>
+        <select value="{{shipping_type::change}}">
+          <template as="type" is="dom-repeat" items="[[shipping_types]]">
+            <option selected$="[[equal(type.id, shipping_type)]]" value="[[type.id]]">[[type.title]]</option>
+          </template>
+        </select>
+        <span>[[concat('(', shipping_cost_formatted, ')')]]</span>
+      </p>
+      <p class="uk-form-row" hidden$="[[!shipping_type_details.description]]">[[shipping_type_details.description]]</p>
+      <p class="uk-form-row">
+        <label class="uk-form-label">[[L.shop_shipping_username]]</label>
+        <input class="uk-form-width-large" type="text" value="{{shipping_username::input}}">
+      </p>
+      <p class="uk-form-row" hidden$="[[!equal(shipping_type_details.phone_needed, 1)]]">
+        <label class="uk-form-label">[[L.shop_phone]]</label>
+        <input class="uk-form-width-large" type="text" value="{{phone::input}}">
+      </p>
+      <p class="uk-form-row" hidden$="[[!equal(shipping_type_details.address_needed, 1)]]">
+        <label class="uk-form-label">[[L.shop_address]]</label>
+        <textarea class="uk-form-width-large" value="{{address::input}}"></textarea>
+      </p>
+      <p class="uk-form-row">
+        <label class="uk-form-label">[[L.shop_comment]]</label>
+        <textarea class="uk-form-width-large" value="{{comment::input}}"></textarea>
+      </p>
+      <p class="uk-form-row" hidden$="[[equal(payment_methods.length, 1)]]">
+        <label class="uk-form-label">[[L.shop_payment_method]]</label>
+        <select value="{{payment_method::change}}">
+          <template as="details" is="dom-repeat" items="[[payment_methods]]">
+            <option value="[[details.method]]">[[details.title]]</option>
+          </template>
+        </select>
+      </p>
+      <p class="uk-form-row" id="payment_method_description"></p>
+      <template if="[[!registration_required]]" is="dom-if">
+        <button class="uk-button uk-button-primary" on-click="finish_order" type="button">[[L.shop_finish_order]]</button>
+      </template>
+      <template if="[[registration_required]]" is="dom-if">
+        <p class="uk-alert uk-alert-warning">[[L.shop_register_to_finish_order]]</p>
+        <button class="uk-button" disabled type="button">[[L.shop_finish_order]]</button>
+      </template>
+    </div>
+  </template>
+  <script src="script.js"></script>
+</dom-module>

@@ -1,0 +1,36 @@
+%dom-module(id="cs-shop-cart")
+	%template
+		%h1#h1.uk-text-center
+		%content(select="#items")
+		.uk-form.uk-form-stacked.uk-margin-top
+			%p.uk-form-row
+				%label.uk-form-label [[L.shop_shipping_type]]
+				%select(value="{{shipping_type::change}}")
+					%template(is="dom-repeat" items="[[shipping_types]]" as="type")
+						%option(value="[[type.id]]" selected$="[[equal(type.id, shipping_type)]]") [[type.title]]
+				%span [[concat('(', shipping_cost_formatted, ')')]]
+			%p.uk-form-row(hidden$="[[!shipping_type_details.description]]") [[shipping_type_details.description]]
+			%p.uk-form-row
+				%label.uk-form-label [[L.shop_shipping_username]]
+				%input.uk-form-width-large(type="text" value="{{shipping_username::input}}")/
+			%p.uk-form-row(hidden$="[[!equal(shipping_type_details.phone_needed, 1)]]")
+				%label.uk-form-label [[L.shop_phone]]
+				%input.uk-form-width-large(type="text" value="{{phone::input}}")/
+			%p.uk-form-row(hidden$="[[!equal(shipping_type_details.address_needed, 1)]]")
+				%label.uk-form-label [[L.shop_address]]
+				%textarea.uk-form-width-large(value="{{address::input}}")
+			%p.uk-form-row
+				%label.uk-form-label [[L.shop_comment]]
+				%textarea.uk-form-width-large(value="{{comment::input}}")
+			%p.uk-form-row(hidden$="[[equal(payment_methods.length, 1)]]")
+				%label.uk-form-label [[L.shop_payment_method]]
+				%select(value="{{payment_method::change}}")
+					%template(is="dom-repeat" items="[[payment_methods]]" as="details")
+						%option(value="[[details.method]]") [[details.title]]
+			%p#payment_method_description.uk-form-row
+			%template(is="dom-if" if="[[!registration_required]]")
+				%button.uk-button.uk-button-primary(on-click="finish_order" type="button") [[L.shop_finish_order]]
+			%template(is="dom-if" if="[[registration_required]]")
+				%p.uk-alert.uk-alert-warning [[L.shop_register_to_finish_order]]
+				%button.uk-button(disabled type="button") [[L.shop_finish_order]]
+	%script(src="script.js")

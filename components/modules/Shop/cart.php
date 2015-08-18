@@ -54,9 +54,9 @@ $Page->content(
 					).
 					h::{'#description'}(truncate($item['description'], 200) ?: false),
 					[
-						'data-id'         => $item['id'],
-						'data-unit-price' => $item['price'],
-						'data-units'      => $units
+						'item_id'    => $item['id'],
+						'unit_price' => $item['price'],
+						'units'      => $units
 					]
 				];
 			},

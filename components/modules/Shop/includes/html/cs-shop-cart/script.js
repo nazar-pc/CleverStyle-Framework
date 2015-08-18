@@ -9,76 +9,100 @@
  */
 
 (function() {
-  var L, cart, details, method;
+  var L, cart, details, method, params, shop;
 
   L = cs.Language;
 
-  cart = cs.shop.cart;
+  shop = cs.shop;
+
+  cart = shop.cart;
+
+  params = cart.params;
 
   Polymer({
-    shipping_types: cs.shop.shipping_types,
-    shipping_type: cart.params.shipping_type || 0,
-    shipping_type_details: {},
-    shipping_cost_formatted: '',
-    shipping_username: cart.params.shipping_username || '',
-    phone: cart.params.phone || '',
-    address: cart.params.address || '',
-    comment: cart.params.comment || '',
-    payment_method: 0,
-    payment_methods: (function() {
-      var ref, results;
-      ref = cs.shop.payment_methods;
-      results = [];
-      for (method in ref) {
-        details = ref[method];
-        details.method = method;
-        results.push(details);
-      }
-      return results;
-    })(),
-    registration_required: !cs.is_user && !cs.shop.settings.allow_guests_orders,
-    created: function() {
-      return this.shipping_username = this.shipping_username || (cs.is_user ? this.getAttribute('username') : '');
+    'is': 'cs-shop-cart',
+    behaviors: [cs.Polymer.behaviors.Language],
+    properties: {
+      shipping_types: shop.shipping_types,
+      shipping_type: {
+        observer: 'shipping_type_changed',
+        type: Number,
+        value: params.shipping_type || shop.shipping_types[0].id
+      },
+      shipping_type_details: Object,
+      shipping_cost_formatted: '',
+      shipping_username: {
+        observer: 'shipping_username_changed',
+        type: String,
+        value: params.shipping_username || ''
+      },
+      phone: {
+        observer: 'phone_changed',
+        type: String,
+        value: params.phone || ''
+      },
+      address: {
+        observer: 'address_changed',
+        type: String,
+        value: params.address || ''
+      },
+      comment: {
+        observer: 'comment_changed',
+        type: String,
+        value: params.comment || ''
+      },
+      payment_method: {
+        observer: 'payment_method_changed',
+        type: String,
+        value: Object.keys(shop.payment_methods)[0]
+      },
+      payment_methods: {
+        type: Object,
+        value: (function() {
+          var ref, results;
+          ref = shop.payment_methods;
+          results = [];
+          for (method in ref) {
+            details = ref[method];
+            details.method = method;
+            results.push(details);
+          }
+          return results;
+        })()
+      },
+      registration_required: !cs.is_user && !shop.settings.allow_guests_orders
     },
-    domReady: function() {
-      var $payment_method, $shipping_type;
+    ready: function() {
+      this.set('shipping_username', this.shipping_username || (cs.is_user ? this.getAttribute('username') : ''));
       this.$.h1.innerHTML = this.querySelector('h1').innerHTML;
-      $(this.shadowRoot).find('textarea').autosize();
-      $shipping_type = $(this.$.shipping_type);
-      $shipping_type.val(this.shipping_type || this.shipping_types[0].id).change((function(_this) {
-        return function() {
-          return _this.shipping_types.forEach(function(shipping_type) {
-            if (shipping_type.id === $shipping_type.val()) {
-              _this.shipping_type = shipping_type.id;
-              cart.params.shipping_type = _this.shipping_type;
-              _this.shipping_type_details = shipping_type;
-              _this.shipping_cost_formatted = sprintf(cs.shop.settings.price_formatting, shipping_type.price);
-              return false;
-            }
-          });
+      return $(this.shadowRoot).find('textarea').autosize();
+    },
+    shipping_type_changed: function(shipping_type_selected) {
+      params.shipping_type = shipping_type_selected;
+      return shop.shipping_types.forEach((function(_this) {
+        return function(shipping_type) {
+          if (shipping_type.id === shipping_type_selected) {
+            _this.set('shipping_type_details', shipping_type);
+            _this.set('shipping_cost_formatted', sprintf(shop.settings.price_formatting, shipping_type.price));
+            return false;
+          }
         };
-      })(this)).change();
-      $payment_method = $(this.$.payment_method);
-      return $payment_method.val(this.payment_method).change((function(_this) {
-        return function() {
-          var payment_method;
-          payment_method = _this.payment_methods[$payment_method.val()];
-          _this.payment_method = payment_method.method;
-          return _this.$.payment_method_description.innerHTML = payment_method.description;
-        };
-      })(this)).change();
+      })(this));
     },
-    shipping_usernameChanged: function() {
-      return cart.params.shipping_username = this.shipping_username;
+    payment_method_changed: function(payment_method_selected) {
+      return this.$.payment_method_description.innerHTML = shop.payment_methods[payment_method_selected].description;
     },
-    phoneChanged: function() {
-      return cart.params.phone = this.phone;
+    shipping_username_changed: function() {
+      return params.shipping_username = this.shipping_username;
     },
-    addressChanged: function() {
-      return cart.params.address = this.address;
+    phone_changed: function() {
+      return params.phone = this.phone;
     },
-    commentChanged: function() {
-      return cart.params.comment = this.comment;
+    address_changed: function() {
+      return params.address = this.address;
+    },
+    comment_changed: function() {
+      return params.comment = this.comment;
     },
     finish_order: function() {
       return $.ajax({
@@ -91,12 +115,12 @@
           shipping_address: this.shipping_type_details.address_needed ? this.address : '',
           payment_method: this.payment_method,
           comment: this.comment,
-          items: cs.shop.cart.get_all()
+          items: cart.get_all()
         },
         success: (function(_this) {
           return function(result) {
             var id, modal;
-            cs.shop.cart.clean();
+            cart.clean();
             if (_this.payment_method === 'shop:cash') {
               return $.cs.simple_modal("<h1 class=\"uk-text-center\">" + L.shop_thanks_for_order + "</h1>").on('hide.uk.modal', function() {
                 return location.href = 'Shop/orders_';

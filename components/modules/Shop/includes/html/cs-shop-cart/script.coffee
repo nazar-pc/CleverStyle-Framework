@@ -6,55 +6,68 @@
  * @license   MIT License, see license.txt
 ###
 L		= cs.Language
-cart	= cs.shop.cart
+shop	= cs.shop
+cart	= shop.cart
+params	= cart.params
 Polymer(
-	shipping_types					: cs.shop.shipping_types
-	shipping_type					: cart.params.shipping_type || 0
-	shipping_type_details			: {}
-	shipping_cost_formatted			: ''
-	shipping_username				: cart.params.shipping_username || ''
-	phone							: cart.params.phone || ''
-	address							: cart.params.address || ''
-	comment							: cart.params.comment || ''
-	payment_method					: 0
-	payment_methods					:
-		for method, details of cs.shop.payment_methods
-			details.method	= method
-			details
-	registration_required			: !cs.is_user && !cs.shop.settings.allow_guests_orders
-	created						: ->
-		@shipping_username	= @shipping_username || (if cs.is_user then @getAttribute('username') else '')
-	domReady						: ->
+	'is'						: 'cs-shop-cart'
+	behaviors					: [cs.Polymer.behaviors.Language]
+	properties					:
+		shipping_types			: shop.shipping_types
+		shipping_type			:
+			observer	: 'shipping_type_changed'
+			type		: Number
+			value		: params.shipping_type || shop.shipping_types[0].id
+		shipping_type_details	: Object
+		shipping_cost_formatted	: ''
+		shipping_username		:
+			observer	: 'shipping_username_changed'
+			type		: String
+			value		: params.shipping_username || ''
+		phone					:
+			observer	: 'phone_changed'
+			type		: String
+			value		: params.phone || ''
+		address					:
+			observer	: 'address_changed'
+			type		: String
+			value		: params.address || ''
+		comment					:
+			observer	: 'comment_changed'
+			type		: String
+			value		: params.comment || ''
+		payment_method			:
+			observer	: 'payment_method_changed'
+			type		: String
+			value		: Object.keys(shop.payment_methods)[0]
+		payment_methods			:
+			type	: Object
+			value	:
+				for method, details of shop.payment_methods
+					details.method	= method
+					details
+		registration_required	: !cs.is_user && !shop.settings.allow_guests_orders
+	ready						: ->
+		@set('shipping_username', @shipping_username || (if cs.is_user then @getAttribute('username') else ''))
 		@$.h1.innerHTML	= @querySelector('h1').innerHTML
 		$(@shadowRoot).find('textarea').autosize()
-		$shipping_type			= $(@$.shipping_type)
-		$shipping_type
-			.val(@shipping_type || @shipping_types[0].id)
-			.change =>
-				@shipping_types.forEach (shipping_type) =>
-					if shipping_type.id == $shipping_type.val()
-						@shipping_type				= shipping_type.id
-						cart.params.shipping_type	= @shipping_type
-						@shipping_type_details		= shipping_type
-						@shipping_cost_formatted	= sprintf(cs.shop.settings.price_formatting, shipping_type.price)
-						return false
-			.change()
-		$payment_method			= $(@$.payment_method)
-		$payment_method
-			.val(@payment_method)
-			.change =>
-				payment_method							= @payment_methods[$payment_method.val()]
-				@payment_method							= payment_method.method
-				@$.payment_method_description.innerHTML	= payment_method.description
-			.change()
-	shipping_usernameChanged	: ->
-		cart.params.shipping_username	= @shipping_username
-	phoneChanged				: ->
-		cart.params.phone	= @phone
-	addressChanged				: ->
-		cart.params.address	= @address
-	commentChanged				: ->
-		cart.params.comment	= @comment
+	shipping_type_changed		: (shipping_type_selected) ->
+		params.shipping_type	= shipping_type_selected
+		shop.shipping_types.forEach (shipping_type) =>
+			if shipping_type.id == shipping_type_selected
+				@set('shipping_type_details', shipping_type)
+				@set('shipping_cost_formatted', sprintf(shop.settings.price_formatting, shipping_type.price))
+				return false
+	payment_method_changed		: (payment_method_selected) ->
+		@$.payment_method_description.innerHTML	= shop.payment_methods[payment_method_selected].description
+	shipping_username_changed	: ->
+		params.shipping_username	= @shipping_username
+	phone_changed				: ->
+		params.phone	= @phone
+	address_changed				: ->
+		params.address	= @address
+	comment_changed				: ->
+		params.comment	= @comment
 	finish_order				: ->
 		$.ajax(
 			url		: 'api/Shop/orders'
@@ -66,9 +79,9 @@ Polymer(
 				shipping_address	: if @shipping_type_details.address_needed then @address else ''
 				payment_method		: @payment_method
 				comment				: @comment
-				items				: cs.shop.cart.get_all()
+				items				: cart.get_all()
 			success	: (result) =>
-				cs.shop.cart.clean()
+				cart.clean()
 				if @payment_method == 'shop:cash' # Default payment method (Orders::PAYMENT_METHOD_CASH)
 					$.cs.simple_modal("""
 						<h1 class="uk-text-center">#{L.shop_thanks_for_order}</h1>
