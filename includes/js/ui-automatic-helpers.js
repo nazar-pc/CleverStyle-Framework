@@ -19,8 +19,7 @@
       if ($element.is(no_ui_selector) || $element.closest(no_ui_selector).length) {
         return;
       }
-      $element.filter('textarea:not(.cs-no-resize, .autosizejs)').autosize();
-      return $element.find("textarea:not(" + no_ui_selector + ", .cs-no-resize, .autosizejs)").autosize();
+      return autosize($element.filter('textarea:not(.cs-no-resize, .autosizejs)').add($element.find("textarea:not(" + no_ui_selector + ", .cs-no-resize, .autosizejs)")));
     };
     return (function() {
       var body;

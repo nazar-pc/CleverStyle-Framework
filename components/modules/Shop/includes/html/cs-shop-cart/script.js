@@ -75,7 +75,7 @@
       this.shipping_type = this.shipping_type || shop.shipping_types[0].id;
       this.payment_method = this.payment_methods[0].method;
       this.set('shipping_username', this.shipping_username || (cs.is_user ? this.getAttribute('username') : ''));
-      return $(this.shadowRoot).find('textarea').autosize();
+      return autosize(this.shadowRoot.querySelectorAll('textarea'));
     },
     shipping_type_changed: function(shipping_type_selected) {
       params.shipping_type = shipping_type_selected;

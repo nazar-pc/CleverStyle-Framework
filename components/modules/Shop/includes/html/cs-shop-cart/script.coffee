@@ -52,7 +52,7 @@ Polymer(
 		@shipping_type	= @shipping_type || shop.shipping_types[0].id
 		@payment_method	= @payment_methods[0].method
 		@set('shipping_username', @shipping_username || (if cs.is_user then @getAttribute('username') else ''))
-		$(@shadowRoot).find('textarea').autosize()
+		autosize(@shadowRoot.querySelectorAll('textarea'))
 	shipping_type_changed		: (shipping_type_selected) ->
 		params.shipping_type	= shipping_type_selected
 		shop.shipping_types.forEach (shipping_type) =>
