@@ -1,21 +1,21 @@
-<polymer-element name="cs-shop-item" extends="section">
-	<template>
-		<div class="uk-grid uk-grid-divider uk-grid-small uk-grid-width-1-2">
-			<h1 class="uk-margin-bottom uk-width-1-1">{{header_title}}</h1>
-			<div id="images"></div>
-			<div class="uk-width-1-2">
-				<p class="uk-text-large">
-					<span class="uk-text-primary">{{price}}</span>
-					<cs-shop-add-to-cart data-id="{{item_id}}"></cs-shop-add-to-cart>
-					({{in_stock}} in stock)
-				</p>
-				<content select="#description"></content>
-			</div>
-		</div>
-		<template if="{{show_attributes}}">
-			<h2 class="uk-margin-top">[[L.shop_characteristics]]</h2>
-			<content select="#attributes"></content>
-		</template>
-	</template>
-	<script src="script.js"></script>
-</polymer-element>
+<dom-module id="cs-shop-item">
+  <template>
+    <div class="uk-grid uk-grid-divider uk-grid-small uk-grid-width-1-2">
+      <h1 class="uk-margin-bottom uk-width-1-1">[[header_title]]</h1>
+      <div id="images"></div>
+      <div class="uk-width-1-2">
+        <p class="uk-text-large">
+          <span class="uk-text-primary">[[price]]</span>
+          <cs-shop-add-to-cart item_id="[[item_id]]"></cs-shop-add-to-cart>
+          <span>[[concat('(', in_stock, ' in stock)')]]</span>
+        </p>
+        <content select="#description"></content>
+      </div>
+    </div>
+    <template if="[[show_attributes]]">
+      <h2 class="uk-margin-top">[[L.shop_characteristics]]</h2>
+      <content select="#attributes"></content>
+    </template>
+  </template>
+  <script src="script.js"></script>
+</dom-module>

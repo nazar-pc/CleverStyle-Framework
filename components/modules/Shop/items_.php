@@ -75,11 +75,11 @@ $Page->content(
 			) ?: false
 		),
 		[
-			'data-id'       => $item['id'],
-			'data-date'     => $item['date'],
-			'data-price'    => $item['price'],
-			'data-in_stock' => $item['in_stock'],
-			'data-soon'     => $item['soon']
+			'item_id'  => $item['id'],
+			'date'     => $item['date'],
+			'price'    => $item['price'],
+			'in_stock' => $item['in_stock'],
+			'soon'     => $item['soon']
 		]
 	)
 );

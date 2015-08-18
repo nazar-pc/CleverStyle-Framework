@@ -6,14 +6,18 @@
  * @license   MIT License, see license.txt
 ###
 Polymer(
-	L		: cs.Language
-	ready	: ->
-		@header_title	= @querySelector('h1').innerHTML
-		$this			= $(@)
-		@item_id		= $this.data('id')
-		@price			= sprintf(cs.shop.settings.price_formatting, $this.data('price'))
-		@in_stock		= $this.data('in_stock')
-		attributes		= $(@querySelector('#attributes'))
+	'is'		: 'cs-shop-item'
+	'extends'	: 'section'
+	behaviors	: [cs.Polymer.behaviors.Language]
+	properties	:
+		header_title	: ''
+		item_id			: Number
+		price			: String
+		in_stock		: Number
+	ready		: ->
+		@set('header_title', @querySelector('h1').textContent)
+		@set('price', sprintf(cs.shop.settings.price_formatting, @price))
+		attributes	= $(@querySelector('#attributes'))
 		if attributes.length
 			@show_attributes	= true
 			attributes

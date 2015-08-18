@@ -129,6 +129,7 @@ foreach ($items as &$item) {
 		h::{'#description'}(truncate($item['description'], 200) ?: false),
 		[
 			'item_id'  => $item['id'],
+			'date'     => $item['date'],
 			'price'    => $item['price'],
 			'in_stock' => $item['in_stock'],
 			'soon'     => $item['soon']

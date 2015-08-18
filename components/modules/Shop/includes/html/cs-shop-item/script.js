@@ -10,20 +10,26 @@
 
 (function() {
   Polymer({
-    L: cs.Language,
+    'is': 'cs-shop-item',
+    'extends': 'section',
+    behaviors: [cs.Polymer.behaviors.Language],
+    properties: {
+      header_title: '',
+      item_id: Number,
+      price: String,
+      in_stock: Number
+    },
     ready: function() {
-      var $this, attributes;
-      this.header_title = this.querySelector('h1').innerHTML;
-      $this = $(this);
-      this.item_id = $this.data('id');
-      this.price = sprintf(cs.shop.settings.price_formatting, $this.data('price'));
-      this.in_stock = $this.data('in_stock');
+      var attributes;
+      this.set('header_title', this.querySelector('h1').textContent);
+      this.set('price', sprintf(cs.shop.settings.price_formatting, this.price));
       attributes = $(this.querySelector('#attributes'));
       if (attributes.length) {
         this.show_attributes = true;
         attributes.find('table').addClass('uk-table uk-table-hover').find('td:first-of-type').addClass('uk-text-bold');
       }
       return $(this.$.images).append($(this.querySelectorAll('#videos > a')).each(function() {
+        var $this;
         $this = $(this);
         if ($this.children('img')) {
           return $this.attr('data-video', 'true');

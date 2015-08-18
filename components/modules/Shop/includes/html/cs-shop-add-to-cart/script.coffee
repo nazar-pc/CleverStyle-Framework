@@ -10,10 +10,9 @@ do (cart = cs.shop.cart, L = cs.Language) ->
 		'is'		: 'cs-shop-add-to-cart'
 		behaviors	: [cs.Polymer.behaviors.Language]
 		properties	:
+			item_id		: Number
 			in_cart		: 0
 		ready		: ->
-			$this		= $(@)
-			@set('item_id', $this.data('id'))
 			@set('in_cart', cart.get(@item_id))
 			UIkit.tooltip(
 				@$.in_cart

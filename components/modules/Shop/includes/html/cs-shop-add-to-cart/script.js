@@ -14,12 +14,10 @@
       'is': 'cs-shop-add-to-cart',
       behaviors: [cs.Polymer.behaviors.Language],
       properties: {
+        item_id: Number,
         in_cart: 0
       },
       ready: function() {
-        var $this;
-        $this = $(this);
-        this.set('item_id', $this.data('id'));
         this.set('in_cart', cart.get(this.item_id));
         return UIkit.tooltip(this.$.in_cart, {
           animation: true,
