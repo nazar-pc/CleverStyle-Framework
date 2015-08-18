@@ -16,9 +16,9 @@ $ ->
 			return
 
 		autosize(
-			$element.filter('textarea:not(.cs-no-resize, .autosizejs)')
+			$element.filter('textarea:not(.cs-no-resize, [data-autosize-on])')
 			.add(
-				$element.find("textarea:not(#{no_ui_selector}, .cs-no-resize, .autosizejs)")
+				$element.find("textarea:not(#{no_ui_selector}, .cs-no-resize, [data-autosize-on])")
 			)
 		)
 	do ->
