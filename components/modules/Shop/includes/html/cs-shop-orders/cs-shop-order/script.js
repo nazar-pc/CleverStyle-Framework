@@ -14,49 +14,42 @@
   L = cs.Language;
 
   Polymer({
-    L: L,
-    paid: true,
+    'is': 'cs-shop-order',
+    behaviors: [cs.Polymer.behaviors.Language],
+    properties: {
+      order_id: Number,
+      date: Number,
+      date_formatted: String,
+      shipping_cost: Number,
+      for_payment: Number,
+      payment_method: String,
+      paid: Boolean
+    },
     ready: function() {
-      var $this, discount, ref, ref1, ref2, shipping_type, total_price;
-      $this = $(this);
-      this.paid = $this.data('paid');
-      this.show_pay_now = !this.paid && $this.data('payment_method') !== 'shop:cash';
-      this.order_number = sprintf(L.shop_order_number, $this.data('id'));
-      this.order_date = $this.data('date-formatted');
-      this.order_status = $this.children('#order_status').text();
-      shipping_type = $this.children('#shipping_type');
-      this.shipping_type = shipping_type.text();
-      this.shipping_cost = $this.data('shipping_cost');
+      var discount, ref, ref1, ref2, total_price;
+      this.show_pay_now = !this.paid && this.payment_method !== 'shop:cash';
+      this.order_number = sprintf('' + L.shop_order_number, this.order_id);
+      this.order_status = this.querySelector('#order_status').textContent;
+      this.shipping_type = this.querySelector('#shipping_type').textContent;
       this.shipping_cost_formatted = sprintf(cs.shop.settings.price_formatting, this.shipping_cost);
       total_price = 0;
       discount = 0;
-      $this.find('cs-shop-order-item').each(function() {
-        var $item, price, unit_price, units;
-        $item = $(this);
-        units = $item.data('units');
-        unit_price = $item.data('unit-price');
-        price = $item.data('price');
-        total_price += units * unit_price;
-        return discount += (units * unit_price) - price;
+      $(this).find('cs-shop-order-item').each(function() {
+        total_price += this.units * this.unit_price;
+        return discount += (this.units * this.unit_price) - this.price;
       });
       this.total_price_formatted = sprintf(cs.shop.settings.price_formatting, total_price);
       this.discount_formatted = discount ? sprintf(cs.shop.settings.price_formatting, discount) : '';
-      this.for_payment_formatted = sprintf(cs.shop.settings.price_formatting, $this.data('for_payment'));
-      this.phone = ((ref = this.querySelector('#phone')) != null ? ref.innerHTML : void 0) || '';
-      this.address = $.trim(((ref1 = this.querySelector('#address')) != null ? ref1.innerHTML : void 0) || '').replace(/\n/g, '<br>');
-      return this.comment = $.trim(((ref2 = this.querySelector('#comment')) != null ? ref2.innerHTML : void 0) || '').replace(/\n/g, '<br>');
-    },
-    phoneChanged: function() {
-      return this.$.phone.innerHTML = this.phone;
-    },
-    addressChanged: function() {
-      return this.$.address.innerHTML = this.address;
-    },
-    commentChanged: function() {
-      return this.$.comment.innerHTML = this.comment;
+      this.for_payment_formatted = sprintf(cs.shop.settings.price_formatting, this.for_payment);
+      this.phone = ((ref = this.querySelector('#phone')) != null ? ref.textContent : void 0) || '';
+      this.$.phone.textContent = this.phone;
+      this.address = $.trim(((ref1 = this.querySelector('#address')) != null ? ref1.textContent : void 0) || '').replace(/\n/g, '<br>');
+      this.$.address.textContent = this.address;
+      this.comment = $.trim(((ref2 = this.querySelector('#comment')) != null ? ref2.textContent : void 0) || '').replace(/\n/g, '<br>');
+      return this.$.comment.textContent = this.comment;
     },
     pay: function() {
-      return location.href = 'Shop/pay/' + $(this).data('id');
+      return location.href = 'Shop/pay/' + this.order_id;
     }
   });
 

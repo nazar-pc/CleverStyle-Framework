@@ -1,0 +1,22 @@
+%dom-module(id="cs-shop-order")
+	%template
+		.uk-text-large
+			%span [[concat(order_number, ': ', order_status)]]
+			%template(if="[[show_pay_now]]")
+				%button.uk-button.uk-button-primary(on-click="pay" type="button") [[L.pay_now]]
+		%div [[date_formatted]]
+		%content(select="#items")
+		%p [[concat(L.shop_shipping_type, ': ', shipping_type, ' (', shipping_cost_formatted, ')')]]
+		%p [[concat(L.shop_total_price, ': ', total_price_formatted)]]
+		%p(hidden$="[[!discount_formatted]]") [[concat(L.shop_discount, ': ', discount_formatted)]]
+		%p [[concat(L.shop_shipping_cost, ': ', shipping_cost_formatted)]]
+		%p.uk-text-bold [[concat(L.shop_for_payment, ': ', for_payment_formatted)]]
+		%p(hidden$="[[!phone]]")
+			%span [[concat(L.shop_phone, ':')]]
+			%span#phone
+		%p(hidden$="[[!address]]")
+			%span [[concat(L.shop_address, ':')]]
+			%span#address
+		%blockquote#comment
+		%hr.uk-article-divider/
+	%script(src="script.js")

@@ -9,7 +9,7 @@
  */
 
 (function() {
-  var L, cart, details, method, params, shop;
+  var L, cart, params, shop;
 
   L = cs.Language;
 
@@ -23,11 +23,11 @@
     'is': 'cs-shop-cart',
     behaviors: [cs.Polymer.behaviors.Language],
     properties: {
-      shipping_types: shop.shipping_types,
+      shipping_types: [],
       shipping_type: {
         observer: 'shipping_type_changed',
         type: Number,
-        value: params.shipping_type || shop.shipping_types[0].id
+        value: params.shipping_type
       },
       shipping_type_details: Object,
       shipping_cost_formatted: '',
@@ -53,28 +53,28 @@
       },
       payment_method: {
         observer: 'payment_method_changed',
-        type: String,
-        value: Object.keys(shop.payment_methods)[0]
+        type: String
       },
-      payment_methods: {
-        type: Object,
-        value: (function() {
-          var ref, results;
-          ref = shop.payment_methods;
-          results = [];
-          for (method in ref) {
-            details = ref[method];
-            details.method = method;
-            results.push(details);
-          }
-          return results;
-        })()
-      },
+      payment_methods: [],
       registration_required: !cs.is_user && !shop.settings.allow_guests_orders
     },
     ready: function() {
+      var details, method;
+      this.set('shipping_types', shop.shipping_types);
+      this.set('payment_methods', (function() {
+        var ref, results;
+        ref = shop.payment_methods;
+        results = [];
+        for (method in ref) {
+          details = ref[method];
+          details.method = method;
+          results.push(details);
+        }
+        return results;
+      })());
+      this.shipping_type = this.shipping_type || shop.shipping_types[0].id;
+      this.payment_method = this.payment_methods[0].method;
       this.set('shipping_username', this.shipping_username || (cs.is_user ? this.getAttribute('username') : ''));
-      this.$.h1.innerHTML = this.querySelector('h1').innerHTML;
       return $(this.shadowRoot).find('textarea').autosize();
     },
     shipping_type_changed: function(shipping_type_selected) {

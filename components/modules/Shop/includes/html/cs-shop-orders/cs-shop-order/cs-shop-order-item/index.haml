@@ -1,0 +1,13 @@
+%dom-module(id="cs-shop-order-item")
+	%template
+		.uk-grid.uk-grid-small.uk-margin-top
+			.uk-width-1-10
+				%a#img.uk-thumbnail.uk-thumbnail-expand
+			.uk-grid.uk-grid-small.uk-grid-width-1-1
+				.uk-text-large
+					%a#link [[item_title]]
+					%span [[concat(': ', units, ' x ', unit_price_formatted, ' = ', price_formatted)]]
+					%span#discount
+				%div
+					%content(select="#description")
+	%script(src="script.js")

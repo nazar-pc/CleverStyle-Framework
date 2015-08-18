@@ -6,6 +6,6 @@
  * @license   MIT License, see license.txt
 ###
 Polymer(
-	ready : ->
-		@$.h1.innerHTML	= @querySelector('h1').innerHTML
+	'is'		: 'cs-shop-orders'
+	behaviors	: [cs.Polymer.behaviors.Language]
 );

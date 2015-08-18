@@ -1,18 +1,20 @@
-<polymer-element name="cs-shop-order-item">
-	<template>
-		<div class="uk-grid uk-grid-small uk-margin-top">
-			<div class="uk-width-1-10">
-				<a class="uk-thumbnail uk-thumbnail-expand" id="img"></a>
-			</div>
-			<div class="uk-grid uk-grid-small uk-grid-width-1-1">
-				<div class="uk-text-large">
-					<a id="link">{{item_title}}</a>: {{units}} x {{unit_price_formatted}} = {{price_formatted}} <span id="discount"></span>
-				</div>
-				<div>
-					<content select="#description"></content>
-				</div>
-			</div>
-		</div>
-	</template>
-	<script src="script.js"></script>
-</polymer-element>
+<dom-module id="cs-shop-order-item">
+  <template>
+    <div class="uk-grid uk-grid-small uk-margin-top">
+      <div class="uk-width-1-10">
+        <a class="uk-thumbnail uk-thumbnail-expand" id="img"></a>
+      </div>
+      <div class="uk-grid uk-grid-small uk-grid-width-1-1">
+        <div class="uk-text-large">
+          <a id="link">[[item_title]]</a>
+          <span>[[concat(': ', units, ' x ', unit_price_formatted, ' = ', price_formatted)]]</span>
+          <span id="discount"></span>
+        </div>
+        <div>
+          <content select="#description"></content>
+        </div>
+      </div>
+    </div>
+  </template>
+  <script src="script.js"></script>
+</dom-module>

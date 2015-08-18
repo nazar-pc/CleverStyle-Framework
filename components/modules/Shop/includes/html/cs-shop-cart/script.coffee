@@ -13,11 +13,11 @@ Polymer(
 	'is'						: 'cs-shop-cart'
 	behaviors					: [cs.Polymer.behaviors.Language]
 	properties					:
-		shipping_types			: shop.shipping_types
+		shipping_types			: []
 		shipping_type			:
 			observer	: 'shipping_type_changed'
 			type		: Number
-			value		: params.shipping_type || shop.shipping_types[0].id
+			value		: params.shipping_type
 		shipping_type_details	: Object
 		shipping_cost_formatted	: ''
 		shipping_username		:
@@ -39,17 +39,19 @@ Polymer(
 		payment_method			:
 			observer	: 'payment_method_changed'
 			type		: String
-			value		: Object.keys(shop.payment_methods)[0]
-		payment_methods			:
-			type	: Object
-			value	:
-				for method, details of shop.payment_methods
-					details.method	= method
-					details
+		payment_methods			: []
 		registration_required	: !cs.is_user && !shop.settings.allow_guests_orders
 	ready						: ->
+		@set('shipping_types', shop.shipping_types)
+		@set(
+			'payment_methods'
+			for method, details of shop.payment_methods
+				details.method	= method
+				details
+		)
+		@shipping_type	= @shipping_type || shop.shipping_types[0].id
+		@payment_method	= @payment_methods[0].method
 		@set('shipping_username', @shipping_username || (if cs.is_user then @getAttribute('username') else ''))
-		@$.h1.innerHTML	= @querySelector('h1').innerHTML
 		$(@shadowRoot).find('textarea').autosize()
 	shipping_type_changed		: (shipping_type_selected) ->
 		params.shipping_type	= shipping_type_selected

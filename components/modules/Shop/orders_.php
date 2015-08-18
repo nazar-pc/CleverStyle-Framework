@@ -84,10 +84,10 @@ $Page->content(
 									).
 									h::{'#description'}(truncate($item_data['description'], 100) ?: false),
 									[
-										'data-id'         => $item_data['id'],
-										'data-price'      => $item['price'],
-										'data-unit-price' => $item['unit_price'],
-										'data-units'      => $item['units']
+										'item_id'    => $item_data['id'],
+										'price'      => $item['price'],
+										'unit_price' => $item['unit_price'],
+										'units'      => $item['units']
 									]
 								];
 							},
@@ -113,13 +113,13 @@ $Page->content(
 						h::{'#comment'}($order['comment'] ?: false)
 					],
 					[
-						'data-id'             => $order['id'],
-						'data-date'           => $order['date'],
-						'data-date-formatted' => h::prepare_attr_value($date),
-						'data-shipping_cost'  => $order['shipping_cost'],
-						'data-for_payment'    => $order['for_payment'],
-						'data-payment_method' => $order['payment_method'],
-						'data-paid'           => $order['paid']
+						'order_id'       => $order['id'],
+						'date'           => $order['date'],
+						'date_formatted' => h::prepare_attr_value($date),
+						'shipping_cost'  => $order['shipping_cost'],
+						'for_payment'    => $order['for_payment'],
+						'payment_method' => $order['payment_method'],
+						'paid'           => $order['paid']
 					]
 				];
 			},
