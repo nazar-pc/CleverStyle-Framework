@@ -3,7 +3,7 @@ Basic features using APC cache engine
 --SKIPIF--
 <?php
 if (PHP_VERSION_ID >= 70000) {
-	exit('APC is not working under PHP7 yet');
+	exit('Skipped: APC is not working under PHP7 yet');
 }
 ?>
 --INI--

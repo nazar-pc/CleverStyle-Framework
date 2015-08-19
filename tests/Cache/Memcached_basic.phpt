@@ -3,7 +3,7 @@ Basic features using Memcached cache engine
 --SKIPIF--
 <?php
 if (PHP_VERSION_ID >= 70000) {
-	exit('Memcached is not working under PHP7 yet');
+	exit('Skipped: Memcached is not working under PHP7 yet');
 }
 ?>
 --FILE--
