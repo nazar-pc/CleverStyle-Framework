@@ -209,6 +209,8 @@ class Includes_processing {
 	 * @return string
 	 */
 	protected static function html_process_links_and_styles (&$data, $file, $base_filename, $destination) {
+		// Drop Polymer inclusion, since it is already present
+		$data = str_replace('<link rel="import" href="../polymer/polymer.html">', '', $data);
 		if (!preg_match_all('/<link(.*)>|<style(.*)<\/style>/Uims', $data, $links_and_styles)) {
 			return;
 		}

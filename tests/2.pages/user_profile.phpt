@@ -105,7 +105,7 @@ shutdown_function();
 					<div class="cs-profile-avatar">
 						<img alt="admin" src="/includes/img/guest.svg" title="admin">
 					</div>
-					<div flex>
+					<div>
 						<h1>Profile of user admin</h1>
 						<cs-table right-left>
 							<cs-table-row>
