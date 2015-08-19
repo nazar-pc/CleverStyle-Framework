@@ -81,7 +81,7 @@ class Controller {
 			->profile('username', $name)
 			->image($User->avatar(256, $id));
 		$Page->content(
-			h::{'div[layout][horizontal]'}(
+			h::{'div.cs-profile-block'}(
 				h::{'div.cs-profile-avatar img'}(
 					[
 						'src'   => $User->avatar(128, $id),
@@ -89,7 +89,7 @@ class Controller {
 						'title' => $name
 					]
 				).
-				h::{'div[flex]'}(
+				h::div(
 					h::h1(
 						$L->profile_of_user($name)
 					).

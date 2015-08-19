@@ -1,4 +1,5 @@
 %dom-module(id="cs-shop-category")
+	%link(rel="import" href="style.css" type="css")
 	%template
 		.uk-grid.uk-margin-top
 			.uk-width-3-10
@@ -6,6 +7,6 @@
 			.uk-width-7-10
 				%content(select="h1")
 				%content(select="#description")
-				%div(horizontal="" layout="")
+				.nested-categories
 					%content(select="#nested")
 	%script(src="script.js")

@@ -329,9 +329,9 @@ trait users {
 								'data-title' => $L->user_groups_info
 							]
 						).
-						h::{'div[layout][horizontal]'}(
-							h::{'ul#cs-users-groups-list-selected[flex]'}($groups_selected).
-							h::{'ul#cs-users-groups-list[flex]'}($groups_list)
+						h::{'div'}(
+							h::{'ul#cs-users-groups-list-selected'}($groups_selected).
+							h::{'ul#cs-users-groups-list'}($groups_list)
 						).
 						h::{'input[type=hidden]'}(
 							[

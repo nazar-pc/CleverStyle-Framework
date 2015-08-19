@@ -101,7 +101,7 @@ shutdown_function();
 		</aside>
 		<div id="main_content">
 			<div>
-				<div layout horizontal>
+				<div class="cs-profile-block">
 					<div class="cs-profile-avatar">
 						<img alt="admin" src="/includes/img/guest.svg" title="admin">
 					</div>
