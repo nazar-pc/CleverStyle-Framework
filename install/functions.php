@@ -266,7 +266,6 @@ function install_process ($fs, $argv = null) {
 					'@db_prefix',
 					'@db_charset',
 					'@language',
-					'@key',
 					'@public_key'
 				],
 				[
@@ -280,7 +279,6 @@ function install_process ($fs, $argv = null) {
 					$_POST['db_prefix'],
 					$_POST['db_charset'],
 					$_POST['language'],
-					hash('sha512', random_bytes(1000)),
 					$public_key
 				],
 				'{
@@ -309,8 +307,6 @@ function install_process ($fs, $argv = null) {
 //Settings of Memcached cache engine
 	"memcache_host"		: "127.0.0.1",
 	"memcache_port"		: "11211",
-//Default encryption key
-	"key"				: "@key",
 //Any length
 	"public_key"		: "@public_key"
 }'
