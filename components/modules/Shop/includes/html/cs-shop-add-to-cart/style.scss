@@ -5,6 +5,7 @@
  * @copyright Copyright (c) 2015, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-.nested-categories {
-	@apply(--layout-horizontal);
+// Hack, only needed for UIkit
+button[hidden] {
+	display : none !important;
 }
