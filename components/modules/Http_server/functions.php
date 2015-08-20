@@ -157,10 +157,12 @@ namespace {
 			$domain = $_SERVER->host;
 			$path   = '/';
 			if ($Config) {
-				$Route  = Route::instance();
-				$prefix = $Config->core['cookie_prefix'];
-				$domain = $Config->core['cookie_domain'][$Route->mirror_index];
-				$path   = $Config->core['cookie_path'][$Route->mirror_index];
+				$Route          = Route::instance();
+				$prefix         = $Config->core['cookie_prefix'];
+				$cookie_domains = $Config->core['cookie_domain'];
+				$cookie_paths   = $Config->core['cookie_path'];
+				$domain         = isset($cookie_domains[$Route->mirror_index]) ? $cookie_domains[$Route->mirror_index] : $cookie_domains[0];
+				$path           = isset($cookie_paths[$Route->mirror_index]) ? $cookie_paths[$Route->mirror_index] : $cookie_paths[0];
 			}
 		}
 		if ($value === '') {
