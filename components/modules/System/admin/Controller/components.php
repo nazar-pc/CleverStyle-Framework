@@ -1208,8 +1208,8 @@ trait components {
 			).
 			h::p(
 				h::{'input[type=file][name=upload_module]'}().
-				h::{'button.uk-button[type=submit]'}(
-					h::icon('upload').$L->upload_and_install_update_module,
+				h::{'button[is=cs-button][icon=upload][type=submit]'}(
+					$L->upload_and_install_update_module,
 					[
 						'formaction' => "$a->action/install/upload"
 					]
@@ -1217,8 +1217,8 @@ trait components {
 			).
 			h::p(
 				h::{'input[type=file][name=upload_system]'}().
-				h::{'button.uk-button[type=submit]'}(
-					h::icon('upload').$L->upload_and_update_system,
+				h::{'button[is=cs-button][icon=upload][type=submit]'}(
+					$L->upload_and_update_system,
 					[
 						'formaction' => "$a->action/update_system"
 					]
@@ -1226,15 +1226,15 @@ trait components {
 			).
 			($modules_for_removal ? h::p(
 				h::{'select[name=remove_module]'}($modules_for_removal).
-				h::{'button.uk-button[type=submit]'}(
-					h::icon('trash-o').$L->complete_module_removal,
+				h::{'button[is=cs-button][icon=trash][type=submit]'}(
+					$L->complete_module_removal,
 					[
 						'formaction' => "$a->action/remove"
 					]
 				)
 			) : '').
-			h::{'button.uk-button[type=submit]'}(
-				h::icon('refresh').$L->update_modules_list,
+			h::{'button[is=cs-button][icon=refresh][type=submit]'}(
+				$L->update_modules_list,
 				[
 					'data-title' => $L->update_modules_list_info,
 					'name'       => 'update_modules_list'

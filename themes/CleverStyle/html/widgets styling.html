@@ -1,0 +1,67 @@
+<style is="custom-style" _is="xxx">
+	:root {
+		--text-color-base                   : #444;
+		--text-color-base-disabled          : #5c5c5c;
+		--text-color-primary                : #fafafa;
+		--text-color-primary-disabled       : #e0e0e0;
+		--background-color-base             : #e6e6e6;
+		--background-color-base-disabled    : #b3b3b3;
+		--background-color-primary          : #1f8dd6;
+		--background-color-primary-disabled : #186ca1;
+
+		--cs-global : {
+			box-sizing  : border-box;
+			color       : inherit;
+			font-family : inherit;
+			font-size   : inherit;
+			line-height : inherit;
+		};
+
+		--cs-button : {
+			background-color : var(--background-color-base);
+			padding          : .5em 1em;
+		};
+
+		--cs-button-hover : {
+			background-image : linear-gradient(transparent, rgba(0, 0, 0, 0.05) 40%, rgba(0, 0, 0, 0.1));
+		};
+
+		--cs-button-active : {
+			box-shadow : 0 0 0 .1em rgba(0, 0, 0, .15) inset, 0 0 .5em rgba(0, 0, 0, .2) inset;
+		};
+
+		--cs-button-disabled : {
+			background-color : var(--background-color-base-disabled);
+			background-image : none !important;
+			box-shadow       : none !important;
+			color            : var(--text-color-base-disabled);
+		}
+
+		--cs-button-empty : {
+			height  : 1.8em;
+			padding : 0;
+			width   : 1.8em;
+		};
+
+		--cs-button-icon : {
+			margin-right : .6em;
+		};
+
+		--cs-button-primary : {
+			background-color : var(--background-color-primary);
+			color            : var(--text-color-primary);
+		}
+
+		--cs-button-primary-disabled : {
+			background-color : var(--background-color-primary-disabled);
+			color            : var(--text-color-primary-disabled);
+		}
+	}
+
+	html,
+	body {
+		color       : var(--text-color-base);
+		font-family : 'Helvetica Neue', Helvetica, Arial, sans-serif;
+		font-size   : 13px;
+	}
+</style>

@@ -1,0 +1,10 @@
+%dom-module(id="cs-icon")
+	%link(rel="import" href="style.css" type="css")
+	%template
+		%template(is="dom-if" if="[[multiple_icons]]")
+			%span.fa-stack
+				%template(is="dom-repeat" items="[[icon_class(icon, flipX, flipY, mono, rotate, spin, spinStep)]]")
+					%i(class$="[[item]]")
+		%template(is="dom-if" if="[[!multiple_icons]]")
+			%i(class$="[[icon_class(icon, flipX, flipY, mono, rotate, spin, spinStep)]]")
+	%script(src="script.js")

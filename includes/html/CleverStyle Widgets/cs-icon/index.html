@@ -1,0 +1,16 @@
+<dom-module id="cs-icon">
+  <link href="style.css" rel="import" type="css">
+  <template>
+    <template if="[[multiple_icons]]" is="dom-if">
+      <span class="fa-stack">
+        <template is="dom-repeat" items="[[icon_class(icon, flipX, flipY, mono, rotate, spin, spinStep)]]">
+          <i class$="[[item]]"></i>
+        </template>
+      </span>
+    </template>
+    <template if="[[!multiple_icons]]" is="dom-if">
+      <i class$="[[icon_class(icon, flipX, flipY, mono, rotate, spin, spinStep)]]"></i>
+    </template>
+  </template>
+  <script src="script.js"></script>
+</dom-module>

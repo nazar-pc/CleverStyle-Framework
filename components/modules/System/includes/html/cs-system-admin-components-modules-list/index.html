@@ -33,14 +33,14 @@
                 <span class="uk-icon-link" data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.api_exists]]"></span>
               </template>
               <template if="[[module.api.type]]" is="dom-if">
-                <span class="uk-button cs-button-compact uk-icon-link" data-modal-type="api" data-uk-tooltip$="[[tooltip_animation]]" on-click="generic_modal" title$="[[concat(L.api_exists, '<br>', L.click_to_view_details)]]"></span>
+                <button data-modal-type="api" data-uk-tooltip$="[[tooltip_animation]]" icon="link" is="cs-button" on-click="generic_modal" title$="[[concat(L.api_exists, '<br>', L.click_to_view_details)]]" type="button"></button>
               </template>
             </template>
             <template if="[[module.readme]]" is="dom-if">
-              <span class="uk-button cs-button-compact uk-icon-book" data-modal-type="readme" data-uk-tooltip$="[[tooltip_animation]]" on-click="generic_modal" title$="[[concat(L.information_about_module, '<br>', L.click_to_view_details)]]"></span>
+              <button data-modal-type="readme" data-uk-tooltip$="[[tooltip_animation]]" icon="book" is="cs-button" on-click="generic_modal" title$="[[concat(L.information_about_module, '<br>', L.click_to_view_details)]]" type="button"></button>
             </template>
             <template if="[[module.license]]" is="dom-if">
-              <span class="uk-button cs-button-compact uk-icon-legal" data-modal-type="license" data-uk-tooltip$="[[tooltip_animation]]" on-click="generic_modal" title$="[[concat(L.license, '<br>', L.click_to_view_details)]]"></span>
+              <button data-modal-type="license" data-uk-tooltip$="[[tooltip_animation]]" icon="legal" is="cs-button" on-click="generic_modal" title$="[[concat(L.license, '<br>', L.click_to_view_details)]]" type="button"></button>
             </template>
           </cs-table-cell>
           <cs-table-cell left>

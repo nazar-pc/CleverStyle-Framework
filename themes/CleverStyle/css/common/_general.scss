@@ -45,7 +45,6 @@ html /deep/ {
 		}
 	}
 
-	button,
 	.cs-pointer {
 		cursor : pointer;
 	}
@@ -58,17 +57,6 @@ html /deep/ {
 		&:hover {
 			text-decoration : none;
 		}
-	}
-
-	button, input, select, textarea {
-		color     : inherit;
-		font-size : 100%;
-		margin    : 0;
-	}
-
-	button,
-	.cs-disable-selection {
-		@include disable-selection;
 	}
 
 	.cs-button-compact {
