@@ -15,6 +15,8 @@ do ($ = jQuery) ->
 		functions.push(fn)
 	document.addEventListener('WebComponentsReady', ->
 		if !ready
+			# Since we may use some CSS variables and mixins, lets update styles to make sure we didn't skip any styles
+			Polymer.updateStyles()
 			ready		= true;
 			$.fn.ready	= ready_original
 			functions.forEach (fn) ->

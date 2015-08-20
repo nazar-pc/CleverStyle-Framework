@@ -22,6 +22,7 @@
     };
     document.addEventListener('WebComponentsReady', function() {
       if (!ready) {
+        Polymer.updateStyles();
         ready = true;
         $.fn.ready = ready_original;
         functions.forEach(function(fn) {
