@@ -58,7 +58,7 @@ trait layout_elements {
 			}
 			return [
 				$info_item !== false ? h::info($info_item ?: $item) : $L->$item,
-				h::input(
+				h::{'input[is=cs-input-text]'}(
 					[
 						'name'  => "core[$item]",
 						'value' => $value,

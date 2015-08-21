@@ -38,9 +38,7 @@ class Index {
 
 	public    $form               = false;
 	public    $file_upload        = false;
-	public    $form_attributes    = [
-		'class' => 'uk-form'
-	];
+	public    $form_attributes    = [];
 	public    $buttons            = true;
 	public    $save_button        = true;
 	public    $apply_button       = false;

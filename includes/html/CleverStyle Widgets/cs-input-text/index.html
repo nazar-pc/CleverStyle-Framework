@@ -1,0 +1,36 @@
+<style is="custom-style">
+	body /deep/ input[is=cs-input-text] {
+		background-color : #fff;
+		border           : none;
+		color            : inherit;
+		vertical-align   : middle;
+
+		@apply (--cs-global);
+		@apply (--cs-input-text);
+	}
+
+	body /deep/ input[is=cs-input-text]:active {
+		@apply (--cs-input-text-active);
+	}
+
+	body /deep/ input[is=cs-input-text]:focus {
+		outline : none;
+
+		@apply (--cs-input-text-hover);
+		@apply (--cs-input-text-focus);
+	}
+
+	body /deep/ input[is=cs-input-text]:hover {
+		@apply (--cs-input-text-hover);
+	}
+
+	body /deep/ input[is=cs-input-text][disabled] {
+		cursor : not-allowed;
+		@apply (--cs-input-text-disabled);
+	}
+
+	body /deep/ input[is=cs-input-text][readonly] {
+		@apply (--cs-input-text-readonly);
+	}
+</style>
+<script src="script.js"></script>

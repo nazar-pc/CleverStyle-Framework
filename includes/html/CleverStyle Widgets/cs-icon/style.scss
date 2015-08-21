@@ -7,9 +7,10 @@
 @import 'font-awesome.min';
 
 :host {
-	color       : inherit;
-	display     : inline-block;
-	line-height : 1em;
+	color          : inherit;
+	display        : inline-block;
+	line-height    : 1em;
+	vertical-align : middle;
 
 	@apply (--cs-global);
 	@apply (--cs-icon);
