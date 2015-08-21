@@ -110,7 +110,7 @@ $ ->
 						</p>"""
 					else
 						"""<p>
-							#{attribute.title}: <textarea name="attributes[#{attribute.id}]"></textarea>
+							#{attribute.title}: <textarea is="cs-textarea" autosize name="attributes[#{attribute.id}]"></textarea>
 						</p>"""
 			attributes_list	= attributes_list.join('')
 			$this.parent().next().html("""
@@ -226,7 +226,7 @@ $ ->
 							<option value="iframe">#{L.shop_iframe_url_or_embed_code}</option>
 							<option value="direct_url">#{L.shop_direct_video_url}</option>
 						</select>
-						<textarea name="videos[video][]" placeholder="#{L.shop_url_or_code}" class="video-video uk-form-width-large" rows="3"></textarea>
+						<textarea is="cs-textarea" autosize name="videos[video][]" placeholder="#{L.shop_url_or_code}" class="video-video uk-form-width-large" rows="3"></textarea>
 						<input name="videos[poster][]" class="video-poster" placeholder="#{L.shop_video_poster}">
 						<button type="button" class="delete-video uk-button"><i class="uk-icon-close"></i></button>
 						<span class="uk-progress uk-progress-striped uk-active uk-hidden uk-display-block">

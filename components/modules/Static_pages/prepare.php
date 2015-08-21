@@ -89,7 +89,7 @@ if ($page['interface']) {
 						? h::{'div.cs-static-pages-page-content.INLINE_EDITOR'}(
 							$page['content']
 						)
-						: h::{'textarea.cs-static-pages-page-content.EDITOR[name=content][required]'}(
+						: h::{'textarea.cs-static-pages-page-content.EDITOR[is=cs-textarea][autosize]name=content][required]'}(
 							$page['content']
 						)
 					)

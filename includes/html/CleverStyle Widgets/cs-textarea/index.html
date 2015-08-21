@@ -5,7 +5,7 @@
 	 * @copyright Copyright (c) 2014-2015, Nazar Mokrynskyi
 	 * @license   MIT License, see license.txt
 	 */
-	body /deep/ input[is=cs-input-text] {
+	body /deep/ textarea[is=cs-textarea] {
 		background-color : #fff;
 		border           : none;
 		color            : inherit;
@@ -13,35 +13,44 @@
 
 		@apply (--cs-global);
 		@apply (--cs-input-text);
+		@apply (--cs-textarea);
 	}
 
-	body /deep/ input[is=cs-input-text][full-width] {
+	body /deep/ textarea[is=cs-textarea][full-width] {
 		width : 100%;
 	}
 
-	body /deep/ input[is=cs-input-text]:active {
+	body /deep/ textarea[is=cs-textarea]:active {
 		@apply (--cs-input-text-active);
+		@apply (--cs-textarea-active);
 	}
 
-	body /deep/ input[is=cs-input-text]:focus {
+	body /deep/ textarea[is=cs-textarea]:focus {
 		outline : none;
 
 		@apply (--cs-input-text-hover);
+		@apply (--cs-textarea-hover);
 		@apply (--cs-input-text-focus);
+		@apply (--cs-textarea-focus);
 	}
 
-	body /deep/ input[is=cs-input-text]:hover {
+	body /deep/ textarea[is=cs-textarea]:hover {
 		@apply (--cs-input-text-hover);
+		@apply (--cs-textarea-hover);
 	}
 
-	body /deep/ input[is=cs-input-text][disabled] {
+	body /deep/ textarea[is=cs-textarea][disabled] {
 		cursor : not-allowed;
 
 		@apply (--cs-input-text-disabled);
+		@apply (--cs-textarea-disabled);
 	}
 
-	body /deep/ input[is=cs-input-text][readonly] {
+	body /deep/ textarea[is=cs-textarea][readonly] {
+		cursor : not-allowed;
+
 		@apply (--cs-input-text-readonly);
+		@apply (--cs-textarea-readonly);
 	}
 </style>
 <script src="script.js"></script>

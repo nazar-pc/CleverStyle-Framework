@@ -46,7 +46,7 @@ $Index->content(
 	h::{'p input[name=add[title]]'}([
 		'placeholder' => $L->poll_title
 	]).
-	h::{'p textarea[name=add[options]]'}([
+	h::{'p textarea[is=cs-textarea][autosize][name=add[options]]'}([
 		'placeholder' => $L->answers_one_per_line
 	])
 );

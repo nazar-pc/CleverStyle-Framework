@@ -25,8 +25,8 @@ $ ->
 					</p>
 					<p>
 						<label>#{L.content_content}:</label>
-						<textarea class="text"></textarea>
-						<textarea class="html EDITOR" id="cs-content-html-content"></textarea>
+						<textarea is="cs-textarea" autosize class="text"></textarea>
+						<textarea is="cs-textarea" autosize class="html EDITOR" id="cs-content-html-content"></textarea>
 					</p>
 					<p>
 						<label>#{L.content_type}:</label>
@@ -88,8 +88,8 @@ $ ->
 							</p>
 							<p>
 								<label>#{L.content_content}:</label>
-								<textarea class="text"></textarea>
-								<textarea class="html EDITOR" id="cs-content-html-content"></textarea>
+								<textarea is="cs-textarea" autosize class="text"></textarea>
+								<textarea is="cs-textarea" autosize class="html EDITOR" id="cs-content-html-content"></textarea>
 							</p>
 							<p>
 								<label>#{L.content_type}:</label>

@@ -5,22 +5,11 @@
  * @license		MIT License, see license.txt
 ###
 $ ->
-	window.no_ui_selector		= '.cs-no-ui'
 	ui_automatic_helpers_update	= (element) ->
 		$element	= $(element)
 
 		$element.filter('.cs-tabs:not(.uk-tab)').cs().tabs()
 		$element.find('.cs-tabs:not(.uk-tab)').cs().tabs()
-
-		if $element.is(no_ui_selector) || $element.closest(no_ui_selector).length
-			return
-
-		autosize(
-			$element.filter('textarea:not(.cs-no-resize, [data-autosize-on])')
-			.add(
-				$element.find("textarea:not(#{no_ui_selector}, .cs-no-resize, [data-autosize-on])")
-			)
-		)
 	do ->
 		body	= document.querySelector('body')
 		ui_automatic_helpers_update(body)

@@ -567,13 +567,13 @@ trait general {
 							h::info('routing_out')
 						],
 						[
-							h::textarea(
+							h::{'textarea[is=cs-textarea][autosize]'}(
 								$Config->routing['in'],
 								[
 									'name' => 'routing[in]'
 								]
 							),
-							h::textarea(
+							h::{'textarea[is=cs-textarea][autosize]'}(
 								$Config->routing['out'],
 								[
 									'name' => 'routing[out]'
@@ -590,13 +590,13 @@ trait general {
 							h::info('replace_out')
 						],
 						[
-							h::textarea(
+							h::{'textarea[is=cs-textarea][autosize]'}(
 								$Config->replace['in'],
 								[
 									'name' => 'replace[in]'
 								]
 							),
-							h::textarea(
+							h::{'textarea[is=cs-textarea][autosize]'}(
 								$Config->replace['out'],
 								[
 									'name' => 'replace[out]'

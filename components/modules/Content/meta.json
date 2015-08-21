@@ -1,7 +1,7 @@
 {
 	"package"         : "Content",
 	"category"        : "modules",
-	"version"         : "1.4.2+build-30",
+	"version"         : "1.5.0+build-31",
 	"description"     : "Simple content functionality. May be used by other components or stand-alone.",
 	"author"          : "Nazar Mokrynskyi",
 	"website"         : "cleverstyle.org/cms",
@@ -17,8 +17,8 @@
 	],
 	"provide"         : "content",
 	"require"         : [
-		"System>=2.9",
-		"System<=3.0"
+		"System>=3.12",
+		"System<4.0"
 	],
 	"optional"        : [
 		"Plupload",

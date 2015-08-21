@@ -1,16 +1,15 @@
 /**
- * @package		TinyMCE
- * @category	plugins
- * @author		Moxiecode Systems AB
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com> (integration into CleverStyle CMS)
- * @copyright	Moxiecode Systems AB
- * @license		GNU Lesser General Public License 2.1, see license.txt
+ * @package        TinyMCE
+ * @category    plugins
+ * @author        Moxiecode Systems AB
+ * @author        Nazar Mokrynskyi <nazar@mokrynskyi.com> (integration into CleverStyle CMS)
+ * @copyright    Moxiecode Systems AB
+ * @license        GNU Lesser General Public License 2.1, see license.txt
  */
-tinymce.baseURL	= '/components/plugins/TinyMCE/includes/js';
+tinymce.baseURL = '/components/plugins/TinyMCE/includes/js';
 $(function () {
-	window.no_ui_selector	+= ', .mce-tinymce';
 	var uploader_callback;
-	var uploader	= cs.file_upload ? cs.file_upload(
+	var uploader                        = cs.file_upload ? cs.file_upload(
 		null,
 		function (files) {
 			tinymce.uploader_dialog.cs().modal('hide');
@@ -18,7 +17,7 @@ $(function () {
 			if (files.length) {
 				uploader_callback(files[0]);
 			}
-			uploader_callback	= undefined;
+			uploader_callback = undefined;
 		},
 		function (error) {
 			tinymce.uploader_dialog.cs().modal('hide');
@@ -26,7 +25,7 @@ $(function () {
 		},
 		function (file) {
 			if (!tinymce.uploader_dialog) {
-				tinymce.uploader_dialog		= $('<div title="Uploading..." class="cs-center"></div>')
+				tinymce.uploader_dialog = $('<div title="Uploading..." class="cs-center"></div>')
 					.html('<div><div class="uk-progress uk-progress-striped uk-active"><div class="uk-progress-bar"></div></div></div>')
 					.appendTo('body')
 					.cs().modal('show')
@@ -35,49 +34,49 @@ $(function () {
 			tinymce.uploader_dialog.find('.uk-progress-bar').width((file.percent ? file.percent : 1) + '%');
 		}
 	) : false;
-	var base_config			= {
-		doctype					: '<!doctype html>',
-		theme					: cs.tinymce && cs.tinymce.theme !== undefined ? cs.tinymce.theme : 'modern',
-		skin					: cs.tinymce && cs.tinymce.skin !== undefined ? cs.tinymce.skin : 'lightgray',
-		language				: cs.Language.clang !== undefined ? cs.Language.clang : 'en',
-		menubar					: false,
-		plugins					: 'advlist anchor charmap code colorpicker contextmenu fullscreen hr image link lists media nonbreaking noneditable pagebreak paste preview searchreplace tabfocus table textcolor visualblocks visualchars wordcount',
-		resize					: 'both',
-		toolbar_items_size		: 'small',
-		width					: '100%',
-		convert_urls			: false,
-		remove_script_host		: false,
-		relative_urls			: false,
-		table_style_by_css		: true,
-		file_picker_callback	: uploader ? function (callback) {
-			uploader_callback	= callback;
+	var base_config                     = {
+		doctype              : '<!doctype html>',
+		theme                : cs.tinymce && cs.tinymce.theme !== undefined ? cs.tinymce.theme : 'modern',
+		skin                 : cs.tinymce && cs.tinymce.skin !== undefined ? cs.tinymce.skin : 'lightgray',
+		language             : cs.Language.clang !== undefined ? cs.Language.clang : 'en',
+		menubar              : false,
+		plugins              : 'advlist anchor charmap code colorpicker contextmenu fullscreen hr image link lists media nonbreaking noneditable pagebreak paste preview searchreplace tabfocus table textcolor visualblocks visualchars wordcount',
+		resize               : 'both',
+		toolbar_items_size   : 'small',
+		width                : '100%',
+		convert_urls         : false,
+		remove_script_host   : false,
+		relative_urls        : false,
+		table_style_by_css   : true,
+		file_picker_callback : uploader ? function (callback) {
+			uploader_callback = callback;
 			uploader.browse();
 		} : null
 	};
-	tinymce.editor_config	= $.extend(
+	tinymce.editor_config               = $.extend(
 		{
-			toolbar1	: 'styleselect fontselect fontsizeselect | alignleft aligncenter alignright alignjustify | bold italic underline strikethrough superscript subscript | forecolor backcolor',
-			toolbar2	: 'undo redo | bullist numlist outdent indent blockquote | link unlink anchor image media charmap hr nonbreaking pagebreak | visualchars visualblocks | searchreplace | fullscreen preview code'
+			toolbar1 : 'styleselect fontselect fontsizeselect | alignleft aligncenter alignright alignjustify | bold italic underline strikethrough superscript subscript | forecolor backcolor',
+			toolbar2 : 'undo redo | bullist numlist outdent indent blockquote | link unlink anchor image media charmap hr nonbreaking pagebreak | visualchars visualblocks | searchreplace | fullscreen preview code'
 		},
 		base_config
 	);
-	tinymce.simple_editor_config	= $.extend(
+	tinymce.simple_editor_config        = $.extend(
 		{
-			toolbar	: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | link image media | code'
+			toolbar : 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | link image media | code'
 		},
 		base_config
 	);
-	tinymce.inline_editor_config	= $.extend(
+	tinymce.inline_editor_config        = $.extend(
 		{
-			inline	: true,
-			menubar	: false
+			inline  : true,
+			menubar : false
 		},
 		tinymce.editor_config
 	);
-	tinymce.simple_inline_editor_config	= $.extend(
+	tinymce.simple_inline_editor_config = $.extend(
 		{
-			inline	: true,
-			menubar	: false
+			inline  : true,
+			menubar : false
 		},
 		tinymce.simple_editor_config
 	);
@@ -112,7 +111,7 @@ function editor_deinitialization (textarea) {
 	$(textarea).tinymce().remove();
 }
 function editor_reinitialization (textarea) {
-	var	$textarea	= $(textarea);
+	var $textarea = $(textarea);
 	if ($textarea.hasClass('EDITOR')) {
 		$textarea.tinymce(tinymce.editor_config).load();
 	} else if ($textarea.hasClass('SIMPLE_EDITOR')) {

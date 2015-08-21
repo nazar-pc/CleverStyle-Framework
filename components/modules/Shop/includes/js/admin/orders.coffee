@@ -62,7 +62,7 @@ $ ->
 				#{L.shop_shipping_phone}: <input name="shipping_phone">
 			</p>
 			<p>
-				#{L.shop_shipping_address}: <textarea name="shipping_address"></textarea>
+				#{L.shop_shipping_address}: <textarea is="cs-textarea" autosize name="shipping_address"></textarea>
 			</p>
 			<p>
 				#{L.shop_payment_method}: <select name="payment_method" required>#{payment_methods_list}</select>
@@ -76,7 +76,7 @@ $ ->
 				#{L.shop_status}: <select name="status" required>#{order_statuses}</select>
 			</p>
 			<p>
-				#{L.shop_comment}: <textarea name="comment"></textarea>
+				#{L.shop_comment}: <textarea is="cs-textarea" autosize name="comment"></textarea>
 			</p>
 			<p>
 				<button class="uk-button" type="submit">#{action}</button>

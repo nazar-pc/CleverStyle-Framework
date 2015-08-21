@@ -82,10 +82,10 @@
       </cs-table-row>
     </cs-table>
     <div class="html uk-form" hidden$="[[!equal(json.block_data.type, 'html')]]">
-      <textarea class="EDITOR" name="block[html]"></textarea>
+      <textarea autosize class="EDITOR" is="cs-textarea" name="block[html]"></textarea>
     </div>
     <div class="raw_html uk-form" hidden$="[[!equal(json.block_data.type, 'raw_html')]]">
-      <textarea name="block[raw_html]"></textarea>
+      <textarea autosize is="cs-textarea" name="block[raw_html]"></textarea>
     </div>
   </template>
   <script src="script.js"></script>

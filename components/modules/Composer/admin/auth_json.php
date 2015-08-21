@@ -24,5 +24,5 @@ if (isset($_POST['auth_json'])) {
 
 $Index->content(
 	h::p($L->auth_json_contents).
-	h::{'p textarea[name=auth_json]'}($module_data->auth_json ?: '')
+	h::{'p textarea[is=cs-textarea][autosize][name=auth_json]'}($module_data->auth_json ?: '')
 );

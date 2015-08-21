@@ -53,7 +53,7 @@ $ ->
 				#{L.shop_title}: <input name="title" required>
 			</p>
 			<p>
-				#{L.shop_description}: <textarea name="description"></textarea>
+				#{L.shop_description}: <textarea is="cs-textarea" autosize name="description"></textarea>
 			</p>
 			<p class="image uk-hidden">
 				#{L.shop_image}:

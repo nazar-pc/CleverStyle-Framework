@@ -17,9 +17,9 @@ Polymer(
 		multiple_icons	:
 			computed	: '_multiple_icons(icon)'
 			type		: Boolean
-	_multiple_icons		: (icon) ->
+	_multiple_icons : (icon) ->
 		icon.split(' ').length > 1
-	icon_class			: (icon, flipX, flipY, mono, rotate, spin, spinStep) ->
+	icon_class : (icon, flipX, flipY, mono, rotate, spin, spinStep) ->
 		icons			= icon.split(' ')
 		multiple_icons	= icons.length > 1
 		icons_classes	= for icon, index in icons
@@ -39,9 +39,8 @@ Polymer(
 			if multiple_icons
 				icon_class.push(`index ? 'fa-stack-1x fa-inverse' : 'fa-stack-2x'`)
 			icon_class.join(' ')
-		ret = if multiple_icons
+		if multiple_icons
 			icons_classes
 		else
 			icons_classes[0]
-		ret
 )

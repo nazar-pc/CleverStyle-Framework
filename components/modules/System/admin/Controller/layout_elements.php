@@ -96,7 +96,7 @@ trait layout_elements {
 		}
 		return [
 			h::info($info_item ?: $item),
-			h::textarea(
+			h::{'textarea[is=cs-textarea][autosize]'}(
 				$content,
 				[
 					'name'  => "core[$item]",

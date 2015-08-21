@@ -29,7 +29,7 @@ $ ->
 				<label><input type="radio" name="send_update_status_email" value="0"> #{L.no}</label>
 			</p>
 			<p>
-				#{L.shop_comment_used_in_email}: <textarea name="comment"></textarea>
+				#{L.shop_comment_used_in_email}: <textarea is="cs-textarea" autosize name="comment"></textarea>
 			</p>
 			<p>
 				<button class="uk-button" type="submit">#{action}</button>

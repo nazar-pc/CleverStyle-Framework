@@ -143,7 +143,7 @@ $Index->content(
 			(
 				functionality('inline_editor') ? h::{'div.cs-blogs-new-post-content.INLINE_EDITOR'}(
 					$content
-				) : h::{'textarea.cs-blogs-new-post-content.EDITOR[name=content][required]'}(
+				) : h::{'textarea.cs-blogs-new-post-content.EDITOR[is=cs-textarea][autosize][name=content][required]'}(
 					isset($_POST['content']) ? $_POST['content'] : $post['content']
 				)
 			).

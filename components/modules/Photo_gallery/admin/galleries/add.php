@@ -34,7 +34,7 @@ $Index->content(
 		[
 			h::{'input[name=add[title]]'}(),
 			($Config->core['simple_admin_mode'] ? false : h::{'input[name=add[path]]'}()),
-			h::{'textarea[name=add[description]]'}(),
+			h::{'textarea[is=cs-textarea][name=add[description]]'}(),
 			h::{'radio[name=add[active]][checked=1]'}(
 				[
 					'value' => [0, 1],

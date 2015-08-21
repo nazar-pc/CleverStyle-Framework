@@ -28,7 +28,7 @@ $Index->content(
 				'placeholder'	=> $L->feedback_email,
 				'value'			=> $User->user() ? $User->email : (isset($_POST['email']) ? $_POST['email'] : '')
 			]),
-			h::{'textarea[name=text][required]'}([
+			h::{'textarea[is=cs-textarea][autosize][name=text][required]'}([
 				'placeholder'	=> $L->feedback_text,
 				'value'			=> isset($_POST['text']) ? $_POST['text'] : ''
 			]),

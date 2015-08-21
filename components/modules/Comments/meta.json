@@ -1,7 +1,7 @@
 {
 	"package"         : "Comments",
 	"category"        : "modules",
-	"version"         : "1.4.0+build-45",
+	"version"         : "1.5.0+build-46",
 	"description"     : "Adds comments functionality to other modules",
 	"author"          : "Nazar Mokrynskyi",
 	"website"         : "cleverstyle.org/cms",
@@ -17,8 +17,8 @@
 	],
 	"provide"         : "comments",
 	"require"         : [
-		"System>=2.119",
-		"System<=3.0"
+		"System>=3.12",
+		"System<4.0"
 	],
 	"optional"        : [
 		"TinyMCE",

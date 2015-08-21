@@ -15,7 +15,7 @@ Polymer(
 			reflectToAttribute	: true
 			type				: Boolean
 		icon	: String
-	ready		: ->
+	ready : ->
 		if !@childNodes.length
 			@empty = true
 )

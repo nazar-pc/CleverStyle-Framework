@@ -49,7 +49,7 @@ $Index->content(
 				]
 			)
 			),
-			h::{'textarea[name=edit[description]]'}($gallery['description']),
+			h::{'textarea[is=cs-textarea][name=edit[description]]'}($gallery['description']),
 			h::{'radio[name=edit[active]]'}(
 				[
 					'value'   => [0, 1],

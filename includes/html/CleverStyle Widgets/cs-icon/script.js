@@ -27,7 +27,7 @@
       return icon.split(' ').length > 1;
     },
     icon_class: function(icon, flipX, flipY, mono, rotate, spin, spinStep) {
-      var icon_class, icons, icons_classes, index, multiple_icons, ret;
+      var icon_class, icons, icons_classes, index, multiple_icons;
       icons = icon.split(' ');
       multiple_icons = icons.length > 1;
       icons_classes = (function() {
@@ -61,8 +61,11 @@
         }
         return results;
       })();
-      ret = multiple_icons ? icons_classes : icons_classes[0];
-      return ret;
+      if (multiple_icons) {
+        return icons_classes;
+      } else {
+        return icons_classes[0];
+      }
     }
   });
 

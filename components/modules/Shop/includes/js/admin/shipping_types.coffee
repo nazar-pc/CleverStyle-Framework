@@ -27,7 +27,7 @@ $ ->
 				<label><input type="radio" name="address_needed" value="0"> #{L.no}</label>
 			</p>
 			<p>
-				#{L.shop_description}: <textarea name="description"></textarea>
+				#{L.shop_description}: <textarea is="cs-textarea" autosize name="description"></textarea>
 			</p>
 			<p>
 				<button class="uk-button" type="submit">#{action}</button>

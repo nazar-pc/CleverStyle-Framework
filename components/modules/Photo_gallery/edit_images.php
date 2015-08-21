@@ -49,7 +49,7 @@ $Index->content(
 							]
 						).
 						h::p($L->photo_gallery_image_description).
-						h::textarea(
+						h::{'textarea[is=cs-textarea][autosize]'}(
 							$image['description'],
 							[
 								'name' => "edit_images[$image[id]][description]"

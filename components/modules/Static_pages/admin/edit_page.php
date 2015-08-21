@@ -60,7 +60,7 @@ $Index->content(
 	h::{'cs-table[center][with-header] cs-table-row| cs-table-cell'}(
 		[
 			$L->content,
-			h::{'textarea[name=content]'}(
+			h::{'textarea[is=cs-textarea][autosize][name=content]'}(
 				$data['content'],
 				[
 					'class' => $data['interface'] ? 'EDITOR' : ''

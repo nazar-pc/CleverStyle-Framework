@@ -1,15 +1,15 @@
 {
 	"package"      : "Cron",
 	"category"     : "modules",
-	"version"      : "1.0.1+build-12",
+	"version"      : "1.1.0+build-13",
 	"description"  : "Module for tasks scheduling with the help of crontab. Module uses shell_exec() function, it should be allowed for execution.",
 	"author"       : "Nazar Mokrynskyi",
 	"website"      : "cleverstyle.org/cms",
 	"license"      : "MIT License",
 	"provide"      : "scheduled_tasks",
 	"require"      : [
-		"System>=2.0",
-		"System<=3.0"
+		"System>=3.12",
+		"System<4.0"
 	],
 	"multilingual" : [
 		"interface"

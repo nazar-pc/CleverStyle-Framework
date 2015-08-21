@@ -9,13 +9,19 @@
 
 (function() {
   Polymer({
-    'is': 'cs-input-text',
-    'extends': 'input',
+    'is': 'cs-textarea',
+    'extends': 'textarea',
     properties: {
+      autosize: {
+        observer: 'autosize_changed',
+        reflectToAttribute: true,
+        type: Boolean
+      },
       fullWidth: {
         reflectToAttribute: true,
         type: Boolean
-      }
+      },
+      initialized: Boolean
     },
     ready: function() {
       this.addEventListener('change', (function(_this) {
@@ -28,6 +34,26 @@
           return _this.fire('value-changed');
         };
       })(this));
+    },
+    attached: function() {
+      this.initialized = true;
+      return this._do_autosizing();
+    },
+    autosize_changed: function() {
+      return this._do_autosizing();
+    },
+    _do_autosizing: function() {
+      if (!this.initialized) {
+        return;
+      }
+      if (autosize) {
+        if (this.autosize) {
+          autosize(this);
+          return autosize.update(this);
+        } else {
+          return autosize.destroy(this);
+        }
+      }
     }
   });
 

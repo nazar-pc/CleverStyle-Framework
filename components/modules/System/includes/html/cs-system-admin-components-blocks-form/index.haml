@@ -52,7 +52,7 @@
 					%br/
 					%input(name="block[expire][date]" type="datetime-local" value$="[[json.block_data.expire.date]]")/
 		.html.uk-form(hidden$="[[!equal(json.block_data.type, 'html')]]")
-			%textarea.EDITOR(name="block[html]")
+			%textarea.EDITOR(is="cs-textarea" autosize name="block[html]")
 		.raw_html.uk-form(hidden$="[[!equal(json.block_data.type, 'raw_html')]]")
-			%textarea(name="block[raw_html]")
+			%textarea(is="cs-textarea" autosize name="block[raw_html]")
 	%script(src="script.js")

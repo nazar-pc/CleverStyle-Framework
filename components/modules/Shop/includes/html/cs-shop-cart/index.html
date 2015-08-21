@@ -23,11 +23,11 @@
       </p>
       <p class="uk-form-row" hidden$="[[!equal(shipping_type_details.address_needed, 1)]]">
         <label class="uk-form-label">[[L.shop_address]]</label>
-        <textarea class="uk-form-width-large" value="{{address::input}}"></textarea>
+        <textarea autosize class="uk-form-width-large" is="cs-textarea" value="{{address::input}}"></textarea>
       </p>
       <p class="uk-form-row">
         <label class="uk-form-label">[[L.shop_comment]]</label>
-        <textarea class="uk-form-width-large" value="{{comment::input}}"></textarea>
+        <textarea autosize class="uk-form-width-large" is="cs-textarea" value="{{comment::input}}"></textarea>
       </p>
       <p class="uk-form-row" hidden$="[[equal(payment_methods.length, 1)]]">
         <label class="uk-form-label">[[L.shop_payment_method]]</label>

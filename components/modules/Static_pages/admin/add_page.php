@@ -51,7 +51,7 @@ $Index->content(
 	h::{'cs-table[center][with-header] cs-table-row| cs-table-cell'}(
 		[
 			$L->content,
-			h::{'textarea.EDITOR[name=content]'}()
+			h::{'textarea.EDITOR[cs-textarea][autosize][name=content]'}()
 		]
 	).
 	h::{'input[type=hidden][name=mode][value=add_page]'}()

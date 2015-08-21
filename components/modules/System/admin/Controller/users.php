@@ -235,7 +235,7 @@ trait users {
 					],
 					[
 						h::info('ip_black_list'),
-						h::textarea(
+						h::{'textarea[is=cs-textarea][autosize]'}(
 							$Config->core['ip_black_list'],
 							[
 								'name' => 'core[ip_black_list]'
@@ -255,7 +255,7 @@ trait users {
 					],
 					[
 						h::info('ip_admin_list'),
-						h::textarea(
+						h::{'textarea[is=cs-textarea][autosize]'}(
 							$Config->core['ip_admin_list'],
 							[
 								'name' => 'core[ip_admin_list]'

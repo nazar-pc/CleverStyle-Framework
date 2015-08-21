@@ -7,7 +7,11 @@
 Polymer(
 	'is'		: 'cs-input-text'
 	'extends'	: 'input'
-	ready		: ->
+	properties	:
+		fullWidth	:
+			reflectToAttribute	: true
+			type				: Boolean
+	ready : ->
 		@addEventListener('change', =>
 			@fire('value-changed')
 		)

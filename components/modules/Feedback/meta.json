@@ -1,15 +1,15 @@
 {
 	"package"      : "Feedback",
 	"category"     : "modules",
-	"version"      : "1.1.0+build-12",
+	"version"      : "1.2.0+build-13",
 	"description"  : "Simple feedback module, sends message to admin's email",
 	"author"       : "Nazar Mokrynskyi",
 	"website"      : "cleverstyle.org/cms",
 	"license"      : "MIT License",
 	"provide"      : "feedback",
 	"require"      : [
-		"System>=2.119",
-		"System<=3.0"
+		"System>=3.12",
+		"System<4.0"
 	],
 	"multilingual" : [
 		"interface"

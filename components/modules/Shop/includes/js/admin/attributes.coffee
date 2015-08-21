@@ -19,7 +19,7 @@ $ ->
 				#{L.shop_attribute_type}: <select name="type" required>#{types}</select>
 			</p>
 			<p>
-				#{L.shop_possible_values}: <textarea name="value"></textarea>
+				#{L.shop_possible_values}: <textarea is="cs-textarea" autosize name="value"></textarea>
 			</p>
 			<p>
 				#{L.shop_title}: <input name="title" required>
