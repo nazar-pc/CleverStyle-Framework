@@ -17,8 +17,6 @@ Polymer(
 		multiple_icons	:
 			computed	: '_multiple_icons(icon)'
 			type		: Boolean
-	ready				: ->
-		@textContent = ''
 	_multiple_icons		: (icon) ->
 		icon.split(' ').length > 1
 	icon_class			: (icon, flipX, flipY, mono, rotate, spin, spinStep) ->

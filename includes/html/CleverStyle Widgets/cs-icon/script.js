@@ -23,9 +23,6 @@
         type: Boolean
       }
     },
-    ready: function() {
-      return this.textContent = '';
-    },
     _multiple_icons: function(icon) {
       return icon.split(' ').length > 1;
     },
