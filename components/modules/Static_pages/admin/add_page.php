@@ -31,7 +31,7 @@ $Index->content(
 			h::info('page_interface')
 		],
 		[
-			h::{'select[name=category][size=5]'}(
+			h::{'select[is=cs-select][name=category][size=5]'}(
 				get_categories_list(),
 				[
 					'selected' => isset($Route->route[1]) ? (int)$Route->route[1] : 0

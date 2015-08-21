@@ -30,7 +30,7 @@ $Index->content(
 			h::info('category_path')
 		],
 		[
-			h::{'select[name=parent][size=5]'}(
+			h::{'select[is=cs-select][name=parent][size=5]'}(
 				get_categories_list(),
 				[
 					'selected' => isset($Route->route[1]) ? (int)$Route->route[1] : 0

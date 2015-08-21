@@ -6,7 +6,7 @@
           <span data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.block_type_info]]">[[L.block_type]]</span>
         </cs-table-cell>
         <cs-table-cell>
-          <select name="block[type]" on-change="type_change" size="5">
+          <select is="cs-select" name="block[type]" on-change="type_change" size="5">
             <template as="type" is="dom-repeat" items="[[json.types]]">
               <option selected$="[[equal(type, json.block_data.type)]]" value$="[[type]]">[[type]]</option>
             </template>
@@ -45,7 +45,7 @@
           <span data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.block_template_info]]">[[L.block_template]]</span>
         </cs-table-cell>
         <cs-table-cell>
-          <select name="block[template]" size="5">
+          <select is="cs-select" name="block[template]" size="5">
             <template as="template" is="dom-repeat" items="[[json.templates]]">
               <option selected$="[[equal(template, json.block_data.template)]]" value$="[[template]]">[[template]]</option>
             </template>

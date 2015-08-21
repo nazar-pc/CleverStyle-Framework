@@ -30,7 +30,7 @@ $ ->
 					</p>
 					<p>
 						<label>#{L.content_type}:</label>
-						<select name="type">
+						<select is="cs-select" name="type">
 							<option value="text">text</option>
 							<option value="html" id="cs-content-html-content">html</option>
 						</select>
@@ -93,7 +93,7 @@ $ ->
 							</p>
 							<p>
 								<label>#{L.content_type}:</label>
-								<select name="type">
+								<select is="cs-select" name="type">
 									<option value="text">text</option>
 									<option value="html">html</option>
 								</select>

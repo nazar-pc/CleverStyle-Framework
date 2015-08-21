@@ -64,7 +64,7 @@
         return results;
       })();
       categories_list = categories_list.join('');
-      modal = $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_category + ": <select name=\"category\" required>" + categories_list + "</select>\n	</p>\n	<div></div>\n</form>", false, 1200);
+      modal = $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_category + ": <select is=\"cs-select\" name=\"category\" required>" + categories_list + "</select>\n	</p>\n	<div></div>\n</form>", false, 1200);
       modal.item_data = {};
       modal.update_item_data = function() {
         var attribute, item, ref, value;
@@ -139,7 +139,7 @@
               })();
               values = values.join('');
               color = attribute.type === color_set_attribute_type ? "<input type=\"color\">" : '';
-              results.push("<p>\n	" + attribute.title + ":\n	<select name=\"attributes[" + attribute.id + "]\">\n		<option value=\"\">" + L.none + "</option>\n		" + values + "\n	</select>\n	" + color + "\n</p>");
+              results.push("<p>\n	" + attribute.title + ":\n	<select is=\"cs-select\" name=\"attributes[" + attribute.id + "]\">\n		<option value=\"\">" + L.none + "</option>\n		" + values + "\n	</select>\n	" + color + "\n</p>");
             } else if (string_attribute_types.indexOf(attribute.type) !== -1) {
               results.push("<p>\n	" + attribute.title + ": <input name=\"attributes[" + attribute.id + "]\">\n</p>");
             } else {
@@ -212,7 +212,7 @@
         modal.add_videos = function(videos) {
           videos.forEach(function(video) {
             var added_video, video_poster, video_video;
-            videos_container.append("<p>\n	<i class=\"uk-icon-sort uk-sortable-moving handle\"></i>\n	<select name=\"videos[type][]\" class=\"video-type\">\n		<option value=\"supported_video\">" + L.shop_youtube_vimeo_url + "</option>\n		<option value=\"iframe\">" + L.shop_iframe_url_or_embed_code + "</option>\n		<option value=\"direct_url\">" + L.shop_direct_video_url + "</option>\n	</select>\n	<textarea is=\"cs-textarea\" autosize name=\"videos[video][]\" placeholder=\"" + L.shop_url_or_code + "\" class=\"video-video uk-form-width-large\" rows=\"3\"></textarea>\n	<input name=\"videos[poster][]\" class=\"video-poster\" placeholder=\"" + L.shop_video_poster + "\">\n	<button type=\"button\" class=\"delete-video uk-button\"><i class=\"uk-icon-close\"></i></button>\n	<span class=\"uk-progress uk-progress-striped uk-active uk-hidden uk-display-block\">\n		<span class=\"uk-progress-bar\"></span>\n	</span>\n</p>");
+            videos_container.append("<p>\n	<i class=\"uk-icon-sort uk-sortable-moving handle\"></i>\n	<select is=\"cs-select\" name=\"videos[type][]\" class=\"video-type\">\n		<option value=\"supported_video\">" + L.shop_youtube_vimeo_url + "</option>\n		<option value=\"iframe\">" + L.shop_iframe_url_or_embed_code + "</option>\n		<option value=\"direct_url\">" + L.shop_direct_video_url + "</option>\n	</select>\n	<textarea is=\"cs-textarea\" autosize name=\"videos[video][]\" placeholder=\"" + L.shop_url_or_code + "\" class=\"video-video uk-form-width-large\" rows=\"3\"></textarea>\n	<input name=\"videos[poster][]\" class=\"video-poster\" placeholder=\"" + L.shop_video_poster + "\">\n	<button type=\"button\" class=\"delete-video uk-button\"><i class=\"uk-icon-close\"></i></button>\n	<span class=\"uk-progress uk-progress-striped uk-active uk-hidden uk-display-block\">\n		<span class=\"uk-progress-bar\"></span>\n	</span>\n</p>");
             added_video = videos_container.children('p:last');
             video_video = added_video.find('.video-video').val(video.video);
             video_poster = added_video.find('.video-poster').val(video.poster);

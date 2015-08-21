@@ -21,7 +21,7 @@ $ ->
 				#{L.shop_color}: <input name="color"><input type="color">
 			</p>
 			<p>
-				#{L.shop_order_status_type}: <select name="type" required>#{types}</select>
+				#{L.shop_order_status_type}: <select is="cs-select" name="type" required>#{types}</select>
 			</p>
 			<p>
 				#{L.shop_send_update_status_email}:

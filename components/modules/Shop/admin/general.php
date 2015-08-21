@@ -29,7 +29,7 @@ $Index->content(
 	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
 		[
 			$L->currency,
-			h::{'select[name=currency]'}(
+			h::{'select[is=cs-select][name=currency]'}(
 				h::optgroup(
 					[
 						'in'    => array_values(
@@ -115,7 +115,7 @@ $Index->content(
 		],
 		[
 			h::info('shop_default_order_status'),
-			h::{'select[name=default_order_status]'}(
+			h::{'select[is=cs-select][name=default_order_status]'}(
 				[
 					'in'    => array_column($order_statuses, 'title'),
 					'value' => array_column($order_statuses, 'id')
@@ -127,7 +127,7 @@ $Index->content(
 		],
 		[
 			h::info('shop_default_paid_order_status'),
-			h::{'select[name=default_paid_order_status]'}(
+			h::{'select[is=cs-select][name=default_paid_order_status]'}(
 				[
 					'in'    => array_column($order_statuses, 'title'),
 					'value' => array_column($order_statuses, 'id')

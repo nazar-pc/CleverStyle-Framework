@@ -5,7 +5,7 @@
 				%cs-table-cell
 					%span(data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.block_type_info]]") [[L.block_type]]
 				%cs-table-cell
-					%select(name="block[type]" on-change="type_change" size="5")
+					%select(is="cs-select" name="block[type]" on-change="type_change" size="5")
 						%template(is="dom-repeat" items="[[json.types]]" as="type")
 							%option(selected$="[[equal(type, json.block_data.type)]]" value$="[[type]]") [[type]]
 			%cs-table-row
@@ -29,7 +29,7 @@
 				%cs-table-cell
 					%span(data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.block_template_info]]") [[L.block_template]]
 				%cs-table-cell
-					%select(name="block[template]" size="5")
+					%select(is="cs-select" name="block[template]" size="5")
 						%template(is="dom-repeat" items="[[json.templates]]" as="template")
 							%option(selected$="[[equal(template, json.block_data.template)]]" value$="[[template]]") [[template]]
 			%cs-table-row

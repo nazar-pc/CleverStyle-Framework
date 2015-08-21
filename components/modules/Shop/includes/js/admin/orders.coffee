@@ -50,7 +50,7 @@ $ ->
 				<button type="button" class="add-item uk-button">#{L.shop_add_item}</button>
 			</p>
 			<p>
-				#{L.shop_shipping_type}: <select name="shipping_type" required>#{shipping_types_list}</select>
+				#{L.shop_shipping_type}: <select is="cs-select" name="shipping_type" required>#{shipping_types_list}</select>
 			</p>
 			<p>
 				#{L.shop_shipping_cost}: <input name="shipping_cost"> (<span id="shipping_cost"></span>)
@@ -65,7 +65,7 @@ $ ->
 				#{L.shop_shipping_address}: <textarea is="cs-textarea" autosize name="shipping_address"></textarea>
 			</p>
 			<p>
-				#{L.shop_payment_method}: <select name="payment_method" required>#{payment_methods_list}</select>
+				#{L.shop_payment_method}: <select is="cs-select" name="payment_method" required>#{payment_methods_list}</select>
 			</p>
 			<p>
 				#{L.shop_paid}:
@@ -73,7 +73,7 @@ $ ->
 				<label><input type="radio" name="paid" value="0" checked> #{L.shop_no}</label>
 			</p>
 			<p>
-				#{L.shop_status}: <select name="status" required>#{order_statuses}</select>
+				#{L.shop_status}: <select is="cs-select" name="status" required>#{order_statuses}</select>
 			</p>
 			<p>
 				#{L.shop_comment}: <textarea is="cs-textarea" autosize name="comment"></textarea>

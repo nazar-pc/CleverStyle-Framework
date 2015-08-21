@@ -427,7 +427,7 @@ trait general {
 				]
 			).
 			h::p(
-				h::{'input[type=file][name=upload_theme]'}().
+				h::{'input[is=cs-input-text][compact][type=file][name=upload_theme]'}().
 				h::{'button.uk-button[type=submit][name=action][value=upload]'}(
 					h::icon('upload').$L->upload_and_install_update_theme,
 					[
@@ -438,7 +438,7 @@ trait general {
 			(
 			$themes_for_removal
 				? h::p(
-				h::{'select[name=remove_theme]'}($themes_for_removal).
+				h::{'select[is=cs-select][name=remove_theme][compact]'}($themes_for_removal).
 				h::{'button.uk-button[type=submit][name=action][value=remove]'}(
 					h::icon('trash-o').$L->complete_theme_removal,
 					[
@@ -529,7 +529,7 @@ trait general {
 				!$sa ? static::core_input('cookie_prefix') : false,
 				[
 					h::info('timezone'),
-					h::select(
+					h::{'select[is=cs-select]'}(
 						[
 							'in'    => array_keys($timezones),
 							'value' => array_values($timezones)

@@ -6,12 +6,12 @@
 				%li [[L.show_columns]]
 			%div
 				%div
-					%select(value="[[search_column::change]]")
+					%select(is="cs-select" value="[[search_column::change]]")
 						%option(selected value="") [[L.all_columns]]
 						%template(is="dom-repeat" items="[[all_columns]]" as="column")
 							%option(value="[[column]]") [[column]]
 					%span [[L.search_mode]]
-					%select(value="{{search_mode::change}}")
+					%select(is="cs-select" value="{{search_mode::change}}")
 						%template(is="dom-repeat" items="[[search_modes]]" as="mode")
 							<option selected="[[equal(mode, search_mode)]]" value="[[mode]]">[[mode]]</option>
 					%input.uk-form-width-medium(value="{{search_text::input}}" placeholder="[[L.search_text]]" type="text")/

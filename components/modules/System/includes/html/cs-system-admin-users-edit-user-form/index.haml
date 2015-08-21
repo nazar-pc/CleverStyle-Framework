@@ -25,11 +25,11 @@
 					.uk-icon-lock.cs-pointer(on-click="show_password")
 					%input(id="password" type="password" value="{{user_data.password::input}}")/
 				%label.uk-form-label [[L.language]]
-				%select(value="{{user_data.language::change}}" size="5")
+				%select(is="cs-select" value="{{user_data.language::change}}" size="5")
 					%template(is="dom-repeat" items="[[languages]]" as="language")
 						%option(value="[[language.clanguage]]" selected$="[[equal(language.clanguage, user_data.language)]]") [[language.description]]
 				%label.uk-form-label [[L.timezone]]
-				%select(value="{{user_data.timezone::change}}" size="7")
+				%select(is="cs-select" value="{{user_data.timezone::change}}" size="7")
 					%template(is="dom-repeat" items="[[timezones]]" as="timezone")
 						%option(value="[[timezone.timezone]]" selected$="[[equal(timezone.timezone, user_data.timezone)]]") [[timezone.description]]
 				%label.uk-form-label [[L.status]]

@@ -92,7 +92,7 @@ $sections					= get_sections_select_post($disabled);
 if (count($sections['in']) > 1) {
 	$sections	= [
 		$L->post_section,
-		h::{'select.cs-blogs-new-post-sections[size=7][required]'}(
+		h::{'select.cs-blogs-new-post-sections[is=cs-select][size=7][required]'}(
 			$sections,
 			[
 				'name'		=> 'sections[]',

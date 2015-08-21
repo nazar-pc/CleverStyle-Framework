@@ -16,7 +16,7 @@ $ ->
 		$.cs.simple_modal("""<form>
 			<h3 class="cs-center">#{title}</h3>
 			<p>
-				#{L.shop_attribute_type}: <select name="type" required>#{types}</select>
+				#{L.shop_attribute_type}: <select is="cs-select" name="type" required>#{types}</select>
 			</p>
 			<p>
 				#{L.shop_possible_values}: <textarea is="cs-textarea" autosize name="value"></textarea>

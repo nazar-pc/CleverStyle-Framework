@@ -281,7 +281,7 @@ trait components {
 							[
 								h::info($action == 'add' ? 'db_mirror' : false),
 								$action == 'add'
-									? h::select(
+									? h::{'select[is=cs-select]'}(
 									[
 										'in'    => $dbsname,
 										'value' => $dbs
@@ -305,7 +305,7 @@ trait components {
 							],
 							[
 								h::info('db_type'),
-								h::select(
+								h::{'select[is=cs-select]'}(
 									[
 										'in' => _mb_substr(get_files_list(ENGINES.'/DB', '/^[^_].*?\.php$/i', 'f'), 0, -4)
 									],
@@ -948,7 +948,7 @@ trait components {
 						foreach (file_get_json(MODULES."/$rc[3]/meta.json")['db'] as $database) {
 							$db_list[] = [
 								$database,
-								h::select(
+								h::{'select[is=cs-select]'}(
 									[
 										'in'    => array_values($dbs),
 										'value' => array_keys($dbs)
@@ -1013,7 +1013,7 @@ trait components {
 						foreach (file_get_json(MODULES."/$rc[3]/meta.json")['storage'] as $storage) {
 							$storage_list[] = [
 								$storage,
-								h::select(
+								h::{'select[is=cs-select]'}(
 									[
 										'in'    => array_values($storages),
 										'value' => array_keys($storages)
@@ -1207,7 +1207,7 @@ trait components {
 				json_encode($modules_list, JSON_UNESCAPED_UNICODE)
 			).
 			h::p(
-				h::{'input[type=file][name=upload_module]'}().
+				h::{'input[is=cs-input-text][compact][type=file][name=upload_module]'}().
 				h::{'button[is=cs-button][icon=upload][type=submit]'}(
 					$L->upload_and_install_update_module,
 					[
@@ -1216,7 +1216,7 @@ trait components {
 				)
 			).
 			h::p(
-				h::{'input[type=file][name=upload_system]'}().
+				h::{'input[is=cs-input-text][compact][type=file][name=upload_system]'}().
 				h::{'button[is=cs-button][icon=upload][type=submit]'}(
 					$L->upload_and_update_system,
 					[
@@ -1225,7 +1225,7 @@ trait components {
 				)
 			).
 			($modules_for_removal ? h::p(
-				h::{'select[name=remove_module]'}($modules_for_removal).
+				h::{'select[is=cs-select][name=remove_module][compact]'}($modules_for_removal).
 				h::{'button[is=cs-button][icon=trash][type=submit]'}(
 					$L->complete_module_removal,
 					[
@@ -1528,7 +1528,7 @@ trait components {
 				json_encode($plugins_list, JSON_UNESCAPED_UNICODE)
 			).
 			h::p(
-				h::{'input[type=file][name=upload_plugin]'}(
+				h::{'input[is=cs-input-text][compact][type=file][name=upload_plugin]'}(
 					[
 						'style' => 'position: relative;'
 					]
@@ -1541,7 +1541,7 @@ trait components {
 				)
 			).
 			($plugins_for_removal ? h::p(
-				h::{'select[name=remove_plugin]'}($plugins_for_removal).
+				h::{'select[is=cs-select][name=remove_plugin][compact]'}($plugins_for_removal).
 				h::{'button.uk-button[type=submit]'}(
 					h::icon('trash-o').$L->complete_plugin_removal,
 					[
@@ -1599,7 +1599,7 @@ trait components {
 							],
 							[
 								h::info('storage_connection'),
-								h::select(
+								h::{'select[is=cs-select]'}(
 									[
 										'in' => _mb_substr(get_files_list(ENGINES.'/Storage', '/^[^_].*?\.php$/i', 'f'), 0, -4)
 									],

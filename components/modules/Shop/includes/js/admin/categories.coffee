@@ -44,7 +44,7 @@ $ ->
 			<h3 class="cs-center">#{title}</h3>
 			<p>
 				#{L.shop_parent_category}:
-				<select name="parent" required>
+				<select is="cs-select" name="parent" required>
 					<option value="0">#{L.none}</option>
 					#{categories}
 				</select>
@@ -71,14 +71,14 @@ $ ->
 				<button type="button" class="set-image uk-button">#{L.shop_set_image}</button>
 			</p>
 			<p>
-				#{L.shop_category_attributes}: <select name="attributes[]" multiple required>#{attributes}</select>
+				#{L.shop_category_attributes}: <select is="cs-select" name="attributes[]" multiple required>#{attributes}</select>
 			</p>
 			<p>
-				#{L.shop_title_attribute}: <select name="title_attribute" required>#{attributes}</select>
+				#{L.shop_title_attribute}: <select is="cs-select" name="title_attribute" required>#{attributes}</select>
 			</p>
 			<p>
 				#{L.shop_description_attribute}:
-				<select name="description_attribute" required>
+				<select is="cs-select" name="description_attribute" required>
 					<option value="0">#{L.none}</option>
 					#{attributes}
 				</select>

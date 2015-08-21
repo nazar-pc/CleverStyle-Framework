@@ -25,7 +25,7 @@
         return results;
       })();
       types = types.join('');
-      return $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_attribute_type + ": <select name=\"type\" required>" + types + "</select>\n	</p>\n	<p>\n		" + L.shop_possible_values + ": <textarea is=\"cs-textarea\" autosize name=\"value\"></textarea>\n	</p>\n	<p>\n		" + L.shop_title + ": <input name=\"title\" required>\n	</p>\n	<p>\n		" + L.shop_title_internal + ": <input name=\"title_internal\" required>\n	</p>\n	<p>\n		<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n	</p>\n</form>");
+      return $.cs.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_attribute_type + ": <select is=\"cs-select\" name=\"type\" required>" + types + "</select>\n	</p>\n	<p>\n		" + L.shop_possible_values + ": <textarea is=\"cs-textarea\" autosize name=\"value\"></textarea>\n	</p>\n	<p>\n		" + L.shop_title + ": <input name=\"title\" required>\n	</p>\n	<p>\n		" + L.shop_title_internal + ": <input name=\"title_internal\" required>\n	</p>\n	<p>\n		<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n	</p>\n</form>");
     };
     return $('html').on('mousedown', '.cs-shop-attribute-add', function() {
       return $.getJSON('api/Shop/admin/attributes/types', function(types) {

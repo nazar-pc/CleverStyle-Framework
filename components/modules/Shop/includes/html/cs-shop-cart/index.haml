@@ -5,7 +5,7 @@
 		.uk-form.uk-form-stacked.uk-margin-top
 			%p.uk-form-row
 				%label.uk-form-label [[L.shop_shipping_type]]
-				%select(value="{{shipping_type::change}}")
+				%select(is="cs-select" value="{{shipping_type::change}}")
 					%template(is="dom-repeat" items="[[shipping_types]]" as="type")
 						%option(value="[[type.id]]" selected$="[[equal(type.id, shipping_type)]]") [[type.title]]
 				%span [[concat('(', shipping_cost_formatted, ')')]]
@@ -24,7 +24,7 @@
 				%textarea.uk-form-width-large(is="cs-textarea" autosize value="{{comment::input}}")
 			%p.uk-form-row(hidden$="[[equal(payment_methods.length, 1)]]")
 				%label.uk-form-label [[L.shop_payment_method]]
-				%select(value="{{payment_method::change}}")
+				%select(is="cs-select" value="{{payment_method::change}}")
 					%template(is="dom-repeat" items="[[payment_methods]]" as="details")
 						%option(value="[[details.method]]") [[details.title]]
 			%p#payment_method_description.uk-form-row

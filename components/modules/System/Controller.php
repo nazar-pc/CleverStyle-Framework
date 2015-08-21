@@ -312,7 +312,7 @@ class Controller {
 						],
 						[
 							$L->language,
-							h::select(
+							h::{'select[is=cs-select]'}(
 								[
 									'in'    => array_merge([$L->system_default], $Config->core['active_languages']),
 									'value' => array_merge([''], $Config->core['active_languages'])
@@ -326,7 +326,7 @@ class Controller {
 						],
 						[
 							$L->timezone,
-							h::select(
+							h::{'select[is=cs-select]'}(
 								[
 									'in'    => array_merge(["$L->system_default ({$Config->core['timezone']})"], array_keys($timezones)),
 									'value' => array_merge([''], array_values($timezones))

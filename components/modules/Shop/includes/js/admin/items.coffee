@@ -43,7 +43,7 @@ $ ->
 		modal			= $.cs.simple_modal("""<form>
 			<h3 class="cs-center">#{title}</h3>
 			<p>
-				#{L.shop_category}: <select name="category" required>#{categories_list}</select>
+				#{L.shop_category}: <select is="cs-select" name="category" required>#{categories_list}</select>
 			</p>
 			<div></div>
 		</form>""", false, 1200)
@@ -98,7 +98,7 @@ $ ->
 								''
 						"""<p>
 							#{attribute.title}:
-							<select name="attributes[#{attribute.id}]">
+							<select is="cs-select" name="attributes[#{attribute.id}]">
 								<option value="">#{L.none}</option>
 								#{values}
 							</select>
@@ -221,7 +221,7 @@ $ ->
 				videos.forEach (video) ->
 					videos_container.append("""<p>
 						<i class="uk-icon-sort uk-sortable-moving handle"></i>
-						<select name="videos[type][]" class="video-type">
+						<select is="cs-select" name="videos[type][]" class="video-type">
 							<option value="supported_video">#{L.shop_youtube_vimeo_url}</option>
 							<option value="iframe">#{L.shop_iframe_url_or_embed_code}</option>
 							<option value="direct_url">#{L.shop_direct_video_url}</option>

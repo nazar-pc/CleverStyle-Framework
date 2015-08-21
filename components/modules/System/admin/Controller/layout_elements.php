@@ -108,7 +108,7 @@ trait layout_elements {
 	static protected function core_select ($items_array, $item, $id = null, $info_item = null, $multiple = false, $size = 5) {
 		return [
 			h::info($info_item ?: $item),
-			h::select(
+			h::{'select[is=cs-select]'}(
 				$items_array,
 				[
 					'name'     => "core[$item]".($multiple ? '[]' : ''),

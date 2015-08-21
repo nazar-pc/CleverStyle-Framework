@@ -32,7 +32,7 @@ $Index->content(
 			h::info('page_interface')
 		],
 		[
-			h::{'select[name=category][size=5]'}(
+			h::{'select[is=cs-select][name=category][size=5]'}(
 				get_categories_list(),
 				[
 					'selected' => $data['category']

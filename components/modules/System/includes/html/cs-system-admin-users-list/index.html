@@ -7,14 +7,14 @@
       </ul>
       <div>
         <div>
-          <select value="[[search_column::change]]">
+          <select is="cs-select" value="[[search_column::change]]">
             <option selected value="">[[L.all_columns]]</option>
             <template as="column" is="dom-repeat" items="[[all_columns]]">
               <option value="[[column]]">[[column]]</option>
             </template>
           </select>
           <span>[[L.search_mode]]</span>
-          <select value="{{search_mode::change}}">
+          <select is="cs-select" value="{{search_mode::change}}">
             <template as="mode" is="dom-repeat" items="[[search_modes]]">
               <option selected="[[equal(mode, search_mode)]]" value="[[mode]]">[[mode]]</option>
             </template>

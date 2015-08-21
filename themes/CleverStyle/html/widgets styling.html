@@ -14,7 +14,9 @@
 		--form-element-inner-shadow         : 0 0 .5em rgba(0, 0, 0, .2) inset;
 		--form-element-height               : 2.5em;
 		--form-textarea-height              : 4em;
-		--form-element-padding              : .5em 1em;
+		--form-element-padding-vertical     : .5em;
+		--form-element-padding-horizontal   : 1em;
+		--form-element-padding              : var(--form-element-padding-vertical) var(--form-element-padding-horizontal);
 		--form-element-width                : 30em;
 
 		--cs-global : {
@@ -92,6 +94,24 @@
 			height     : var(--form-textarea-height);
 			min-height : var(--form-textarea-height);
 		};
+
+		--cs-select : {
+			padding : 0 var(--form-element-padding-horizontal);
+		};
+
+
+		--cs-select-option : {
+			margin  : 0 -var(--form-element-padding-horizontal);
+			padding : var(--form-element-padding);
+		};
+
+		--cs-select-optgroup : {
+			padding-bottom : 0;
+		};
+
+		--cs-select-optgroup-first-option : {
+			margin-top : var(--form-element-padding-vertical)
+		}
 	}
 
 	html,

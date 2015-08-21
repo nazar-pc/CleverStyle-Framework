@@ -2,7 +2,7 @@
 	/**
 	 * @package   CleverStyle Widgets
 	 * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
-	 * @copyright Copyright (c) 2014-2015, Nazar Mokrynskyi
+	 * @copyright Copyright (c) 2015, Nazar Mokrynskyi
 	 * @license   MIT License, see license.txt
 	 */
 	body /deep/ input[is=cs-input-text] {
@@ -13,6 +13,10 @@
 
 		@apply (--cs-global);
 		@apply (--cs-input-text);
+	}
+
+	body /deep/ input[is=cs-input-text][compact] {
+		width : auto;
 	}
 
 	body /deep/ input[is=cs-input-text][full-width] {

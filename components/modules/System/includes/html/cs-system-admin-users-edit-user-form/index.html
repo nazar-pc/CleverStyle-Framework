@@ -29,13 +29,13 @@
           <input id="password" type="password" value="{{user_data.password::input}}">
         </div>
         <label class="uk-form-label">[[L.language]]</label>
-        <select size="5" value="{{user_data.language::change}}">
+        <select is="cs-select" size="5" value="{{user_data.language::change}}">
           <template as="language" is="dom-repeat" items="[[languages]]">
             <option selected$="[[equal(language.clanguage, user_data.language)]]" value="[[language.clanguage]]">[[language.description]]</option>
           </template>
         </select>
         <label class="uk-form-label">[[L.timezone]]</label>
-        <select size="7" value="{{user_data.timezone::change}}">
+        <select is="cs-select" size="7" value="{{user_data.timezone::change}}">
           <template as="timezone" is="dom-repeat" items="[[timezones]]">
             <option selected$="[[equal(timezone.timezone, user_data.timezone)]]" value="[[timezone.timezone]]">[[timezone.description]]</option>
           </template>

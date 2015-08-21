@@ -1,0 +1,81 @@
+<style is="custom-style">
+	/**
+	 * @package   CleverStyle Widgets
+	 * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+	 * @copyright Copyright (c) 2015, Nazar Mokrynskyi
+	 * @license   MIT License, see license.txt
+	 */
+	body /deep/ select[is=cs-select] {
+		background-color : #fff;
+		border           : none;
+		color            : inherit;
+		vertical-align   : middle;
+
+		@apply (--cs-global);
+		@apply (--cs-input-text);
+		@apply (--cs-select);
+	}
+
+	body /deep/ select[is=cs-select][compact] {
+		width : auto;
+	}
+
+	body /deep/ select[is=cs-select][full-width] {
+		width : 100%;
+	}
+
+	body /deep/ select[is=cs-select][size]:not([size='0']):not([size='1']) {
+		height : auto;
+	}
+
+	body /deep/ select[is=cs-select]:active {
+		@apply (--cs-input-text-active);
+		@apply (--cs-select-active);
+	}
+
+	body /deep/ select[is=cs-select]:focus {
+		outline : none;
+
+		@apply (--cs-input-text-hover);
+		@apply (--cs-select-hover);
+		@apply (--cs-input-text-focus);
+		@apply (--cs-select-focus);
+	}
+
+	body /deep/ select[is=cs-select]:hover {
+		@apply (--cs-input-text-hover);
+		@apply (--cs-select-hover);
+	}
+
+	body /deep/ select[is=cs-select][disabled] {
+		cursor : not-allowed;
+
+		@apply (--cs-input-text-disabled);
+		@apply (--cs-select-disabled);
+	}
+
+	body /deep/ select[is=cs-select][readonly] {
+		cursor : not-allowed;
+
+		@apply (--cs-input-text-readonly);
+		@apply (--cs-select-readonly);
+	}
+
+	body /deep/ select[is=cs-select] option {
+		@apply (--cs-select-option);
+	}
+
+	body /deep/ select[is=cs-select] option[selected] {
+		@apply (--cs-select-option-selected);
+	}
+
+	body /deep/ select[is=cs-select] > optgroup {
+		@apply (--cs-select-option);
+		@apply (--cs-select-optgroup);
+	}
+
+	body /deep/ select[is=cs-select] > optgroup > option:first-child {
+		@apply (--cs-select-optgroup-first-option);
+	}
+</style>
+<script src="script.js"></script>
