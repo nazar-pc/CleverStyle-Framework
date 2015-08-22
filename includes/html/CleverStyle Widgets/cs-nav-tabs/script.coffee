@@ -24,8 +24,6 @@ Polymer(
 	active_changed : ->
 		buttons = @querySelectorAll('button')
 		for button, index in buttons
-			if index == @active
-				button.active = true
-			else
-				button.active = false
+			button.active = index == @active
+		return
 )

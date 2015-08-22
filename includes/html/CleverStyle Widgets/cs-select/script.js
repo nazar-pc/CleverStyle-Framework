@@ -26,7 +26,9 @@
       return document.addEventListener('WebComponentsReady', scroll_once);
     },
     _scroll_to_selected: function() {
-      return this.scrollTop = this.selectedOptions[0].offsetHeight * (this.selectedIndex - Math.floor(this.size / 2)) + this._number_of_optgroups();
+      if (this.size > 1) {
+        return this.scrollTop = this.selectedOptions[0].offsetHeight * (this.selectedIndex - Math.floor(this.size / 2)) + this._number_of_optgroups();
+      }
     },
     _number_of_optgroups: function() {
       var count, optgroup;

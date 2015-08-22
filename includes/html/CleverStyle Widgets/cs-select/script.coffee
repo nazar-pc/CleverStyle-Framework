@@ -21,7 +21,8 @@ Polymer(
 			document.removeEventListener('WebComponentsReady', scroll_once)
 		document.addEventListener('WebComponentsReady', scroll_once)
 	_scroll_to_selected : ->
-		@scrollTop = @selectedOptions[0].offsetHeight * (@selectedIndex - Math.floor(@size / 2)) + @_number_of_optgroups()
+		if @size > 1
+			@scrollTop = @selectedOptions[0].offsetHeight * (@selectedIndex - Math.floor(@size / 2)) + @_number_of_optgroups()
 	_number_of_optgroups : ->
 		optgroup	= @selectedOptions[0].parentNode
 		count		= 0

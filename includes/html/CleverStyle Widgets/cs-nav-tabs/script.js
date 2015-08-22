@@ -39,18 +39,12 @@
       return results;
     },
     active_changed: function() {
-      var button, buttons, i, index, len, results;
+      var button, buttons, i, index, len;
       buttons = this.querySelectorAll('button');
-      results = [];
       for (index = i = 0, len = buttons.length; i < len; index = ++i) {
         button = buttons[index];
-        if (index === this.active) {
-          results.push(button.active = true);
-        } else {
-          results.push(button.active = false);
-        }
+        button.active = index === this.active;
       }
-      return results;
     }
   });
 
