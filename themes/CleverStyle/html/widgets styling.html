@@ -7,9 +7,9 @@
 		--text-font-base                    : 'Helvetica Neue', Helvetica, Arial, sans-serif;
 		--text-size-base                    : 13px;
 		--background-color-base             : #e6e6e6;
-		--background-color-base-disabled    : #b3b3b3;
+		--background-color-base-disabled    : #cccccc;
 		--background-color-primary          : #1f8dd6;
-		--background-color-primary-disabled : #186ca1;
+		--background-color-primary-disabled : #5886a1;
 		--form-element-border-shadow        : 0 0 0 .1em rgba(0, 0, 0, .15) inset;
 		--form-element-inner-shadow         : 0 0 .5em rgba(0, 0, 0, .2) inset;
 		--form-element-height               : 2.5em;
@@ -26,6 +26,8 @@
 			font-size   : inherit;
 			line-height : inherit;
 		};
+
+		/* Button */
 
 		--cs-button : {
 			background-color : var(--background-color-base);
@@ -68,6 +70,8 @@
 			color            : var(--text-color-primary-disabled);
 		}
 
+		/* Input text */
+
 		--cs-input-text : {
 			border     : none;
 			box-shadow : var(--form-element-border-shadow);
@@ -90,6 +94,8 @@
 			color : var(--text-color-base-disabled);
 		};
 
+		/* Textarea */
+
 		--cs-textarea : {
 			height     : var(--form-textarea-height);
 			min-height : var(--form-textarea-height);
@@ -98,7 +104,6 @@
 		--cs-select : {
 			padding : 0 var(--form-element-padding-horizontal);
 		};
-
 
 		--cs-select-option : {
 			margin  : 0 -var(--form-element-padding-horizontal);
@@ -111,6 +116,28 @@
 
 		--cs-select-optgroup-first-option : {
 			margin-top : var(--form-element-padding-vertical)
+		}
+
+		/* Label button */
+
+		--cs-label-button : {
+			background-color : var(--background-color-base-disabled);
+			color            : var(--text-color-base-disabled);
+		}
+
+		--cs-label-button-active : {
+			background-color : var(--background-color-base);
+			color            : var(--text-color-base);
+		}
+
+		--cs-label-button-primary : {
+			background-color : var(--background-color-primary-disabled);
+			color            : var(--text-color-primary-disabled);
+		}
+
+		--cs-label-button-primary-active : {
+			background-color : var(--background-color-primary);
+			color            : var(--text-color-primary);
 		}
 	}
 

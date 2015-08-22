@@ -167,18 +167,13 @@ abstract class Base extends BananaHTML {
 			}
 			return $return;
 		} else {
-			self::common_checkbox_radio_post($in, $button_class);
-			return static::span(
-				static::label(
-					static::u_wrap($in),
-					[
-						'for'        => $in['id'],
-						'data-title' => isset($in['data-title']) ? $in['data-title'] : false,
-						'class'      => $button_class
-					]
-				),
+			self::common_checkbox_radio_post($in);
+			return static::label(
+				static::u_wrap($in),
 				[
-					'data-uk-button-checkbox' => ''
+					'data-title' => isset($in['data-title']) ? $in['data-title'] : false,
+					//TODO cs-label-checkbox should be here
+					'class'      => isset($item['class']) ? $item['class'] : false
 				]
 			);
 		}
@@ -203,23 +198,17 @@ abstract class Base extends BananaHTML {
 		$items   = self::array_flip_3d($in);
 		$content = '';
 		foreach ($items as $item) {
-			self::common_checkbox_radio_post($item, $button_class);
+			self::common_checkbox_radio_post($item);
 			$content .= static::label(
 				static::u_wrap($item),
 				[
-					'for'        => $item['id'],
 					'data-title' => isset($item['data-title']) ? $item['data-title'] : false,
-					'class'      => $button_class
+					'is'         => 'cs-label-button',
+					'class'      => isset($item['class']) ? $item['class'] : false
 				]
 			);
 		}
-		return static::span(
-			$content,
-			[
-				'class'                => 'uk-button-group',
-				'data-uk-button-radio' => ''
-			]
-		);
+		return $content;
 	}
 	/**
 	 * @static
@@ -249,26 +238,15 @@ abstract class Base extends BananaHTML {
 	/**
 	 * @static
 	 *
-	 * @param array  $item
-	 * @param string $button_class
+	 * @param array $item
 	 */
-	protected static function common_checkbox_radio_post (&$item, &$button_class) {
-		$item['tag']  = 'input';
-		$button_class = 'uk-button';
-		if (!isset($item['id'])) {
-			$item['id'] = uniqid('input_');
-		}
+	protected static function common_checkbox_radio_post (&$item) {
+		$item['tag'] = 'input';
 		if (isset($item['value'], $item['checked'])) {
 			$item['checked'] = $item['value'] == $item['checked'];
-			if ($item['checked']) {
-				$button_class .= ' uk-active';
-			}
 		}
 		if (isset($item['value'])) {
 			$item['value'] = self::prepare_attr_value($item['value']);
-		}
-		if (isset($item['class'])) {
-			$button_class .= " $item[class]";
 		}
 	}
 }
