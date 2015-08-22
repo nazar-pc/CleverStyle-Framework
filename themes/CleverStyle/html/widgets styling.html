@@ -10,8 +10,9 @@
 		--background-color-base-disabled    : #cccccc;
 		--background-color-primary          : #1f8dd6;
 		--background-color-primary-disabled : #5886a1;
-		--form-element-border-shadow        : 0 0 0 .1em rgba(0, 0, 0, .15) inset;
-		--form-element-inner-shadow         : 0 0 .5em rgba(0, 0, 0, .2) inset;
+		--form-element-hover-gradient       : linear-gradient(transparent, rgba(0, 0, 0, .05) 40%, rgba(0, 0, 0, .1));
+		--form-element-box-shadow           : 0 0 0 .1em rgba(0, 0, 0, .15) inset;
+		--form-element-inner-box-shadow     : 0 0 .5em rgba(0, 0, 0, .2) inset;
 		--form-element-height               : 2.5em;
 		--form-textarea-height              : 4em;
 		--form-button-empty-size            : 1.8em;
@@ -19,6 +20,7 @@
 		--form-element-padding-horizontal   : 1em;
 		--form-element-padding              : var(--form-element-padding-vertical) var(--form-element-padding-horizontal);
 		--form-element-width                : 30em;
+		--tabs-border                       : .1em solid var(--background-color-base);
 
 		--cs-global : {
 			box-sizing  : border-box;
@@ -37,11 +39,11 @@
 		};
 
 		--cs-button-hover : {
-			background-image : linear-gradient(transparent, rgba(0, 0, 0, .05) 40%, rgba(0, 0, 0, .1));
+			background-image : var(--form-element-hover-gradient);
 		};
 
 		--cs-button-active : {
-			box-shadow : var(--form-element-border-shadow), var(--form-element-inner-shadow);
+			box-shadow : var(--form-element-box-shadow), var(--form-element-inner-box-shadow);
 		};
 
 		--cs-button-disabled : {
@@ -75,7 +77,7 @@
 
 		--cs-input-text : {
 			border     : none;
-			box-shadow : var(--form-element-border-shadow);
+			box-shadow : var(--form-element-box-shadow);
 			height     : var(--form-element-height);
 			max-width  : 100%;
 			padding    : 0 var(--form-element-padding-horizontal);
@@ -83,7 +85,7 @@
 		};
 
 		--cs-input-text-focus : {
-			box-shadow : var(--form-element-border-shadow), var(--form-element-inner-shadow);
+			box-shadow : var(--form-element-box-shadow), var(--form-element-inner-box-shadow);
 		};
 
 		--cs-input-text-disabled : {
@@ -164,7 +166,7 @@
 		}
 
 		--cs-label-switcher-focus-icon : {
-			box-shadow : var(--form-element-border-shadow), var(--form-element-inner-shadow);
+			box-shadow : var(--form-element-box-shadow), var(--form-element-inner-box-shadow);
 		}
 
 		--cs-label-switcher-active-icon : {
@@ -181,6 +183,19 @@
 			line-height : var(--form-button-empty-size);
 			text-align  : center;
 		};
+
+		--cs-tabs : {
+			border-bottom : var(--tabs-border);
+		}
+
+		--cs-tabs-tab : {
+			background-color : transparent;
+		}
+
+		--cs-tabs-tab-active : {
+			background-color : var(--background-color-base);
+			box-shadow       : none !important;
+		}
 	}
 
 	html,
