@@ -492,19 +492,19 @@ trait general {
 					h::{'div#clean_pcache'}()
 				],
 				[
-					h::{'input[style=width:auto;]'}(
+					h::{'input[is=cs-input-text][compact]'}(
 						[
 							'placeholder' => $L->partial_cache_cleaning,
 							'style'       => $Config->core['simple_admin_mode'] ? 'display:none;' : false
 						]
 					).
-					h::{'button.uk-button'}(
+					h::{'button[is=cs-button]'}(
 						$L->clean_settings_cache,
 						Cache::instance()->cache_state() ? [
 							'onMouseDown' => "cs.admin_cache('#clean_cache', '{$Config->base_url()}/api/System/admin/cache/clean_cache', $(this).prev().val());"
 						] : ['disabled']
 					),
-					h::{'button.uk-button'}(
+					h::{'button[is=cs-button]'}(
 						$L->clean_scripts_styles_cache,
 						$Config->core['cache_compress_js_css'] ? [
 							'onMouseDown' => "cs.admin_cache('#clean_pcache', '{$Config->base_url()}/api/System/admin/cache/clean_pcache');"

@@ -29,7 +29,7 @@ trait users {
 				static::core_input('session_expire', 'number', null, false, 1, false, $L->seconds),
 				[
 					h::info('sign_in_attempts_block_count'),
-					h::{'input[type=number]'}(
+					h::{'input[is=cs-input-text][type=number]'}(
 						[
 							'name'     => 'core[sign_in_attempts_block_count]',
 							'value'    => $Config->core['sign_in_attempts_block_count'],

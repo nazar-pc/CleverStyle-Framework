@@ -294,7 +294,7 @@ class Index {
 		 * If cancel button works as back button - render it here
 		 */
 		if ($this->cancel_button_back) {
-			$this->Content .= h::{'button.uk-button'}(
+			$this->Content .= h::{'button[is=cs-button]'}(
 				Language::instance()->cancel,
 				[
 					'name'    => 'cancel',
@@ -322,7 +322,7 @@ class Index {
 	 */
 	protected function form_button ($name, $disabled = false) {
 		$L = Language::instance();
-		return h::{'button.uk-button'}(
+		return h::{'button[is=cs-button]'}(
 			$L->$name,
 			[
 				'name'       => $name,
