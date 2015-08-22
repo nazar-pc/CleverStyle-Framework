@@ -21,6 +21,10 @@
         reflectToAttribute: true,
         type: Boolean
       },
+      focus: {
+        reflectToAttribute: true,
+        type: Boolean
+      },
       last: {
         reflectToAttribute: true,
         type: Boolean
@@ -31,11 +35,9 @@
       var fn, i, input, inputs, len, ref, ref1;
       (function(_this) {
         return (function() {
-          var next_node, ref, ref1;
+          var next_node, ref;
           next_node = _this.nextSibling;
-          console.log((ref = next_node.nextSibling) != null ? ref.getAttribute('is') : void 0);
-          console.log(_this.is);
-          if (next_node.nodeType === Node.TEXT_NODE && ((ref1 = next_node.nextSibling) != null ? ref1.getAttribute('is') : void 0) === _this.is) {
+          if (next_node.nodeType === Node.TEXT_NODE && ((ref = next_node.nextSibling) != null ? ref.getAttribute('is') : void 0) === _this.is) {
             return next_node.parentNode.removeChild(next_node);
           }
         });
@@ -61,6 +63,16 @@
       if (((ref1 = this.nextElementSibling) != null ? ref1.getAttribute('is') : void 0) !== this.is) {
         this.last = true;
       }
+      this.local_input.addEventListener('focus', (function(_this) {
+        return function() {
+          return _this.focus = true;
+        };
+      })(this));
+      this.local_input.addEventListener('blur', (function(_this) {
+        return function() {
+          return _this.focus = false;
+        };
+      })(this));
     },
     active_changed: function() {
       if (this.local_input.type === 'radio') {

@@ -19,9 +19,17 @@
 	@apply (--cs-button);
 	@apply (--cs-label-button);
 }
+
 // Hack: `:host` is here only because of Polymer unable to handle pure `::content` properly
 :host ::content input {
-	display : none;
+	// Just `display: none` is not working here, because it will break focus support
+	height    : 0;
+	margin    : 0;
+	width     : 0;
+
+	// Hack: Firefox ignores zero size, so we need some more hacks
+	position  : absolute;
+	transform : scale(0);
 }
 
 :host([first]) {
@@ -38,6 +46,7 @@
 	@apply (--cs-label-button-active);
 }
 
+:host([focus]),
 :host(:focus) {
 	outline : none;
 
@@ -80,6 +89,7 @@
 	@apply (--cs-label-button-primary-active);
 }
 
+:host([primary][focus]),
 :host([primary]:focus) {
 	outline : none;
 

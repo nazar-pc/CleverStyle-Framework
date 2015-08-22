@@ -20,7 +20,10 @@
         reflectToAttribute: true,
         type: Boolean
       },
-      icon: String
+      icon: {
+        reflectToAttribute: true,
+        type: String
+      }
     },
     ready: function() {
       if (!this.childNodes.length) {

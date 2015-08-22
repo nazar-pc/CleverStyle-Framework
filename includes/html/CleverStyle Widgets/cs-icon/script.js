@@ -11,13 +11,40 @@
   Polymer({
     'is': 'cs-icon',
     properties: {
-      icon: String,
-      flipX: false,
-      flipY: false,
-      mono: false,
-      rotate: 0,
-      spin: false,
-      spinStep: false,
+      icon: {
+        reflectToAttribute: true,
+        type: String
+      },
+      flipX: {
+        reflectToAttribute: true,
+        type: Boolean,
+        value: false
+      },
+      flipY: {
+        reflectToAttribute: true,
+        type: Boolean,
+        value: false
+      },
+      mono: {
+        reflectToAttribute: true,
+        type: Boolean,
+        value: false
+      },
+      rotate: {
+        reflectToAttribute: true,
+        type: Number,
+        value: false
+      },
+      spin: {
+        reflectToAttribute: true,
+        type: Boolean,
+        value: false
+      },
+      spinStep: {
+        reflectToAttribute: true,
+        type: Boolean,
+        value: false
+      },
       multiple_icons: {
         computed: '_multiple_icons(icon)',
         type: Boolean
