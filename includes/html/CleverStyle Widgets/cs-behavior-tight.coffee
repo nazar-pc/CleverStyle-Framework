@@ -4,12 +4,9 @@
  * @copyright Copyright (c) 2015, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
 ###
-Polymer(
-	'is'		: 'cs-input-text'
-	'extends'	: 'input'
-	behaviors	: [
-		Polymer.cs.behaviors.value
-		Polymer.cs.behaviors.tight
-		Polymer.cs.behaviors.size
-	]
-)
+Polymer.cs.behaviors.tigh =
+	properties :
+		tight		: Boolean
+	ready : ->
+		if @tight && @nextSibling.nodeType == Node.TEXT_NODE
+			@nextSibling.parentNode.removeChild(@nextSibling)

@@ -7,22 +7,16 @@
 Polymer(
 	'is'		: 'cs-textarea'
 	'extends'	: 'textarea'
+	behaviors	: [
+		Polymer.cs.behaviors.value
+		Polymer.cs.behaviors.size
+	]
 	properties	:
 		autosize	:
 			observer			: 'autosize_changed'
 			reflectToAttribute	: true
 			type				: Boolean
-		fullWidth	:
-			reflectToAttribute	: true
-			type				: Boolean
 		initialized	: Boolean
-	ready : ->
-		@addEventListener('change', =>
-			@fire('value-changed')
-		)
-		@addEventListener('input', =>
-			@fire('value-changed')
-		)
 	attached : ->
 		@initialized = true
 		@_do_autosizing()

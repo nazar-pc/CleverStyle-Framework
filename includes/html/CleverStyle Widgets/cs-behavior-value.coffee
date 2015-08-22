@@ -4,12 +4,11 @@
  * @copyright Copyright (c) 2015, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
 ###
-Polymer(
-	'is'		: 'cs-input-text'
-	'extends'	: 'input'
-	behaviors	: [
-		Polymer.cs.behaviors.value
-		Polymer.cs.behaviors.tight
-		Polymer.cs.behaviors.size
-	]
-)
+Polymer.cs.behaviors.value =
+	ready : ->
+		@addEventListener('change', =>
+			@fire('value-changed')
+		)
+		@addEventListener('input', =>
+			@fire('value-changed')
+		)

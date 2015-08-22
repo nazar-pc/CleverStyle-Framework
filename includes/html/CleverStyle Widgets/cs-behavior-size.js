@@ -8,10 +8,17 @@
  */
 
 (function() {
-  Polymer({
-    'is': 'cs-input-text',
-    'extends': 'input',
-    behaviors: [Polymer.cs.behaviors.value, Polymer.cs.behaviors.tight, Polymer.cs.behaviors.size]
-  });
+  Polymer.cs.behaviors.size = {
+    properties: {
+      compact: {
+        reflectToAttribute: true,
+        type: Boolean
+      },
+      fullWidth: {
+        reflectToAttribute: true,
+        type: Boolean
+      }
+    }
+  };
 
 }).call(this);

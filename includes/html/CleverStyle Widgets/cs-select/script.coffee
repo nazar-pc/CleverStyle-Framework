@@ -7,21 +7,14 @@
 Polymer(
 	'is'		: 'cs-select'
 	'extends'	: 'select'
+	behaviors	: [
+		Polymer.cs.behaviors.value
+		Polymer.cs.behaviors.tight
+		Polymer.cs.behaviors.size
+	]
 	properties	:
-		compact		:
-			reflectToAttribute	: true
-			type				: Boolean
-		fullWidth	:
-			reflectToAttribute	: true
-			type				: Boolean
 		initialized	: Boolean
-		tight		: Boolean
 	ready : ->
-		if @tight && @nextSibling.nodeType == Node.TEXT_NODE
-			@nextSibling.parentNode.removeChild(@nextSibling)
-		@addEventListener('change', =>
-			@fire('value-changed')
-		)
 		# We need to scroll because oof possible changed height of `option`, so that `option[selected]` will not be visible
 		scroll_once	= =>
 			@_scroll_to_selected()

@@ -11,29 +11,14 @@
   Polymer({
     'is': 'cs-textarea',
     'extends': 'textarea',
+    behaviors: [Polymer.cs.behaviors.value, Polymer.cs.behaviors.size],
     properties: {
       autosize: {
         observer: 'autosize_changed',
         reflectToAttribute: true,
         type: Boolean
       },
-      fullWidth: {
-        reflectToAttribute: true,
-        type: Boolean
-      },
       initialized: Boolean
-    },
-    ready: function() {
-      this.addEventListener('change', (function(_this) {
-        return function() {
-          return _this.fire('value-changed');
-        };
-      })(this));
-      return this.addEventListener('input', (function(_this) {
-        return function() {
-          return _this.fire('value-changed');
-        };
-      })(this));
     },
     attached: function() {
       this.initialized = true;

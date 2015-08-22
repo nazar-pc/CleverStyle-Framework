@@ -11,28 +11,12 @@
   Polymer({
     'is': 'cs-select',
     'extends': 'select',
+    behaviors: [Polymer.cs.behaviors.value, Polymer.cs.behaviors.tight, Polymer.cs.behaviors.size],
     properties: {
-      compact: {
-        reflectToAttribute: true,
-        type: Boolean
-      },
-      fullWidth: {
-        reflectToAttribute: true,
-        type: Boolean
-      },
-      initialized: Boolean,
-      tight: Boolean
+      initialized: Boolean
     },
     ready: function() {
       var scroll_once;
-      if (this.tight && this.nextSibling.nodeType === Node.TEXT_NODE) {
-        this.nextSibling.parentNode.removeChild(this.nextSibling);
-      }
-      this.addEventListener('change', (function(_this) {
-        return function() {
-          return _this.fire('value-changed');
-        };
-      })(this));
       scroll_once = (function(_this) {
         return function() {
           _this._scroll_to_selected();

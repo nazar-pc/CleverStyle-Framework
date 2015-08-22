@@ -8,10 +8,6 @@
  */
 
 (function() {
-  Polymer.cs = Polymer.cs || {};
-
-  Polymer.cs.behaviors = Polymer.cs.behaviors || {};
-
   Polymer.cs.behaviors.button = {
     properties: {
       active: {
