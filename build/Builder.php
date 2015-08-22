@@ -122,13 +122,13 @@ class Builder {
 					'placeholder' => 'Package file suffix'
 				]
 			).
-			h::{'button.uk-button.license'}(
+			h::{'button.license'}(
 				'License',
 				[
 					'onclick' => "window.open('license.txt', 'license', 'location=no')"
 				]
 			).
-			h::{'button.uk-button[type=submit]'}(
+			h::{'button[type=submit]'}(
 				'Build'
 			)
 		);

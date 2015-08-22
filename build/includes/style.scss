@@ -78,15 +78,28 @@ section {
 
 	table select,
 	input {
-		border    : none;
-		font-size : 14px;
-		padding   : 3px;
-		width     : 256px;
+		background : #fff;
+		border     : none;
+		color      : #000;
+		font-size  : 14px;
+		padding    : 0;
+		width      : 256px;
+	}
+
+	table select {
+		option {
+			padding : 2px 5px;
+		}
+
+		&[disabled] option {
+			color : #808080;
+		}
 	}
 
 	input {
-		margin : 3px;
-		width  : 769px;
+		margin  : 3px;
+		padding : 3px;
+		width   : 769px;
 	}
 
 	button {
