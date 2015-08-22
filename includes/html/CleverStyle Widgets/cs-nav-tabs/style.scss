@@ -5,20 +5,13 @@
  * @license   MIT License, see license.txt
  */
 :host {
-	border                 : none;
-	display                : flex !important;
-	display                : -ms-flexbox;
-	display                : -webkit-flex;
-	flex-direction         : row;
-	-ms-flex-direction     : row;
-	-webkit-flex-direction : row;
-	user-select            : none;
-	-moz-user-select       : none;
-	-ms-user-select        : none;
-	-webkit-touch-callout  : none;
-	-webkit-user-select    : none;
-	vertical-align         : middle;
+	border         : none;
+	display        : flex;
+	display        : -ms-flexbox;
+	display        : -webkit-flex;
+	vertical-align : middle;
 
+	@apply (--cs-no-selection);
 	@apply (--cs-global);
 	@apply (--cs-tabs);
 }

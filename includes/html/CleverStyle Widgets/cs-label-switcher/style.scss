@@ -5,16 +5,12 @@
  * @license   MIT License, see license.txt
  */
 :host {
-	border                : none;
-	cursor                : pointer;
-	display               : inline-block;
-	user-select           : none;
-	-moz-user-select      : none;
-	-ms-user-select       : none;
-	-webkit-touch-callout : none;
-	-webkit-user-select   : none;
-	vertical-align        : middle;
+	border         : none;
+	cursor         : pointer;
+	display        : inline-block;
+	vertical-align : middle;
 
+	@apply (--cs-no-selection);
 	@apply (--cs-global);
 	@apply (--cs-label-switcher);
 
