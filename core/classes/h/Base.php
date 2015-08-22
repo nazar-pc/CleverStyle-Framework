@@ -172,7 +172,7 @@ abstract class Base extends BananaHTML {
 				static::u_wrap($in),
 				[
 					'data-title' => isset($in['data-title']) ? $in['data-title'] : false,
-					//TODO cs-label-checkbox should be here
+					'is'         => 'cs-label-switcher',
 					'class'      => isset($item['class']) ? $item['class'] : false
 				]
 			);
