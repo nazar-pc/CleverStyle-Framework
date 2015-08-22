@@ -8,7 +8,7 @@
  */
 
 (function() {
-  Polymer.cs.behaviors.tigh = {
+  Polymer.cs.behaviors.tight = {
     properties: {
       tight: Boolean
     },
