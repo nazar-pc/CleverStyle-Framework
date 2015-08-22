@@ -18,6 +18,7 @@ Polymer(
 		last	:
 			reflectToAttribute	: true
 			type				: Boolean
+		value	: String
 	ready : ->
 		do =>
 			next_node	= @nextSibling

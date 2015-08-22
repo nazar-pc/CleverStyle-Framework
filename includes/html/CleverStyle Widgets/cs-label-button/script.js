@@ -24,7 +24,8 @@
       last: {
         reflectToAttribute: true,
         type: Boolean
-      }
+      },
+      value: String
     },
     ready: function() {
       var fn, i, input, inputs, len, ref, ref1;
