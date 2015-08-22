@@ -1207,7 +1207,7 @@ trait components {
 				json_encode($modules_list, JSON_UNESCAPED_UNICODE)
 			).
 			h::p(
-				h::{'input[is=cs-input-text][compact][type=file][name=upload_module]'}().
+				h::{'input[is=cs-input-text][compact][tight][type=file][name=upload_module]'}().
 				h::{'button[is=cs-button][icon=upload][type=submit]'}(
 					$L->upload_and_install_update_module,
 					[
@@ -1216,7 +1216,7 @@ trait components {
 				)
 			).
 			h::p(
-				h::{'input[is=cs-input-text][compact][type=file][name=upload_system]'}().
+				h::{'input[is=cs-input-text][compact][tight][type=file][name=upload_system]'}().
 				h::{'button[is=cs-button][icon=upload][type=submit]'}(
 					$L->upload_and_update_system,
 					[
@@ -1225,7 +1225,7 @@ trait components {
 				)
 			).
 			($modules_for_removal ? h::p(
-				h::{'select[is=cs-select][name=remove_module][compact]'}($modules_for_removal).
+				h::{'select[is=cs-select][tight][name=remove_module][compact]'}($modules_for_removal).
 				h::{'button[is=cs-button][icon=trash][type=submit]'}(
 					$L->complete_module_removal,
 					[
@@ -1528,22 +1528,18 @@ trait components {
 				json_encode($plugins_list, JSON_UNESCAPED_UNICODE)
 			).
 			h::p(
-				h::{'input[is=cs-input-text][compact][type=file][name=upload_plugin]'}(
-					[
-						'style' => 'position: relative;'
-					]
-				).
-				h::{'button.uk-button[type=submit]'}(
-					h::icon('upload').$L->upload_and_install_update_plugin,
+				h::{'input[is=cs-input-text][compact][tight][type=file][name=upload_plugin]'}().
+				h::{'button[is=cs-button][icon=upload][type=submit]'}(
+					$L->upload_and_install_update_plugin,
 					[
 						'formaction' => "$a->action/enable/upload"
 					]
 				)
 			).
 			($plugins_for_removal ? h::p(
-				h::{'select[is=cs-select][name=remove_plugin][compact]'}($plugins_for_removal).
-				h::{'button.uk-button[type=submit]'}(
-					h::icon('trash-o').$L->complete_plugin_removal,
+				h::{'select[is=cs-select][tight][name=remove_plugin][compact]'}($plugins_for_removal).
+				h::{'button[is=cs-button][icon=trash][type=submit]'}(
+					$L->complete_plugin_removal,
 					[
 						'formaction' => "$a->action/remove"
 					]

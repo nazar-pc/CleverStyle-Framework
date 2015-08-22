@@ -66,7 +66,7 @@ trait general {
 						'title' => "$L->system » $L->license"
 					]
 				).
-				h::{'button#cs-system-license-open.uk-button'}(
+				h::{'button#cs-system-license-open[is=cs-button]'}(
 					h::icon('legal').$L->license,
 					[
 						'data-uk-modal' => "{target:'#cs-system-license'}"
@@ -341,7 +341,7 @@ trait general {
 						$Index->buttons            = false;
 						$Index->cancel_button_back = true;
 						$Index->content(
-							h::{'button.uk-button[type=submit][name=action][value=update]'}($L->yes)
+							h::{'button[is=cs-button][type=submit][name=action][value=update]'}($L->yes)
 						);
 						return;
 					}
@@ -387,7 +387,7 @@ trait general {
 					$Index->buttons            = false;
 					$Index->cancel_button_back = true;
 					$Index->content(
-						h::{'button.uk-button[type=submit][name=action][value=remove_confirmed]'}($L->yes).
+						h::{'button[is=cs-button][type=submit][name=action][value=remove_confirmed]'}($L->yes).
 						h::{'input[type=hidden]'}(
 							[
 								'name'  => 'remove_theme_confirmed',
@@ -427,9 +427,9 @@ trait general {
 				]
 			).
 			h::p(
-				h::{'input[is=cs-input-text][compact][type=file][name=upload_theme]'}().
-				h::{'button.uk-button[type=submit][name=action][value=upload]'}(
-					h::icon('upload').$L->upload_and_install_update_theme,
+				h::{'input[is=cs-input-text][compact][tight][type=file][name=upload_theme]'}().
+				h::{'button[is=cs-button][icon=upload][type=submit][name=action][value=upload]'}(
+					$L->upload_and_install_update_theme,
 					[
 						'formaction' => $Index->action
 					]
@@ -438,9 +438,9 @@ trait general {
 			(
 			$themes_for_removal
 				? h::p(
-				h::{'select[is=cs-select][name=remove_theme][compact]'}($themes_for_removal).
-				h::{'button.uk-button[type=submit][name=action][value=remove]'}(
-					h::icon('trash-o').$L->complete_theme_removal,
+				h::{'select[is=cs-select][compact][tight][name=remove_theme]'}($themes_for_removal).
+				h::{'button[is=cs-button][icon=trash][type=submit][name=action][value=remove]'}(
+					$L->complete_theme_removal,
 					[
 						'formaction' => $Index->action
 					]
@@ -492,7 +492,7 @@ trait general {
 					h::{'div#clean_pcache'}()
 				],
 				[
-					h::{'input[is=cs-input-text][compact]'}(
+					h::{'input[is=cs-input-text][compact][tight]'}(
 						[
 							'placeholder' => $L->partial_cache_cleaning,
 							'style'       => $Config->core['simple_admin_mode'] ? 'display:none;' : false

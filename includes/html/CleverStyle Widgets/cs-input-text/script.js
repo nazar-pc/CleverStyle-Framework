@@ -19,9 +19,13 @@
       fullWidth: {
         reflectToAttribute: true,
         type: Boolean
-      }
+      },
+      tight: Boolean
     },
     ready: function() {
+      if (this.tight && this.nextSibling.nodeType === Node.TEXT_NODE) {
+        this.nextSibling.parentNode.removeChild(this.nextSibling);
+      }
       this.addEventListener('change', (function(_this) {
         return function() {
           return _this.fire('value-changed');

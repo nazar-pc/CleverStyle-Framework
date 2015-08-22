@@ -15,7 +15,10 @@ Polymer(
 			reflectToAttribute	: true
 			type				: Boolean
 		initialized	: Boolean
+		tight		: Boolean
 	ready : ->
+		if @tight && @nextSibling.nodeType == Node.TEXT_NODE
+			@nextSibling.parentNode.removeChild(@nextSibling)
 		@addEventListener('change', =>
 			@fire('value-changed')
 		)
