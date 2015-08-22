@@ -4,20 +4,19 @@
  * @copyright Copyright (c) 2015, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
 ###
-Polymer(
-	'is'		: 'cs-label-button'
-	'extends'	: 'label'
-	behaviors	: [Polymer.cs.behaviors.label]
+Polymer.cs					= Polymer.cs || {}
+Polymer.cs.behaviors		= Polymer.cs.behaviors || {}
+Polymer.cs.behaviors.button	=
 	properties	:
-		first	:
+		active	:
 			reflectToAttribute	: true
 			type				: Boolean
-		last	:
+		empty	:
 			reflectToAttribute	: true
 			type				: Boolean
-	ready		: ->
-		if @previousElementSibling?.is != @is
-			@first = true
-		if @nextElementSibling?.getAttribute('is') != @is
-			@last = true
-)
+		icon	:
+			reflectToAttribute	: true
+			type				: String
+	ready : ->
+		if !@childNodes.length
+			@empty = true

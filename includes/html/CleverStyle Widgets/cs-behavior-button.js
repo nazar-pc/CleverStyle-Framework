@@ -8,29 +8,30 @@
  */
 
 (function() {
-  Polymer({
-    'is': 'cs-label-button',
-    'extends': 'label',
-    behaviors: [Polymer.cs.behaviors.label],
+  Polymer.cs = Polymer.cs || {};
+
+  Polymer.cs.behaviors = Polymer.cs.behaviors || {};
+
+  Polymer.cs.behaviors.button = {
     properties: {
-      first: {
+      active: {
         reflectToAttribute: true,
         type: Boolean
       },
-      last: {
+      empty: {
         reflectToAttribute: true,
         type: Boolean
+      },
+      icon: {
+        reflectToAttribute: true,
+        type: String
       }
     },
     ready: function() {
-      var ref, ref1;
-      if (((ref = this.previousElementSibling) != null ? ref.is : void 0) !== this.is) {
-        this.first = true;
-      }
-      if (((ref1 = this.nextElementSibling) != null ? ref1.getAttribute('is') : void 0) !== this.is) {
-        return this.last = true;
+      if (!this.childNodes.length) {
+        return this.empty = true;
       }
     }
-  });
+  };
 
 }).call(this);

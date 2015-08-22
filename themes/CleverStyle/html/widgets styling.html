@@ -14,7 +14,8 @@
 		--form-element-inner-shadow         : 0 0 .5em rgba(0, 0, 0, .2) inset;
 		--form-element-height               : 2.5em;
 		--form-textarea-height              : 4em;
-		--form-element-padding-vertical     : .5em;
+		--form-button-empty-size            : 1.8em;
+		--form-element-padding-vertical     : .6em;
 		--form-element-padding-horizontal   : 1em;
 		--form-element-padding              : var(--form-element-padding-vertical) var(--form-element-padding-horizontal);
 		--form-element-width                : 30em;
@@ -32,7 +33,7 @@
 		--cs-button : {
 			background-color : var(--background-color-base);
 			height           : var(--form-element-height);
-			padding          : var(--form-element-padding);
+			padding          : 0 var(--form-element-padding-horizontal);
 		};
 
 		--cs-button-hover : {
@@ -51,9 +52,9 @@
 		}
 
 		--cs-button-empty : {
-			height  : 1.8em;
+			height  : var(--form-button-empty-size);
 			padding : 0;
-			width   : 1.8em;
+			width   : var(--form-button-empty-size);
 		};
 
 		--cs-button-icon : {
@@ -77,7 +78,7 @@
 			box-shadow : var(--form-element-border-shadow);
 			height     : var(--form-element-height);
 			max-width  : 100%;
-			padding    : var(--form-element-padding);
+			padding    : 0 var(--form-element-padding-horizontal);
 			width      : var(--form-element-width);
 		};
 
@@ -140,6 +141,14 @@
 			color            : var(--text-color-primary);
 		}
 
+		/** Label button */
+
+		--cs-label-button : {
+			padding : var(--form-element-padding);
+		}
+
+		/* Label switcher */
+
 		--cs-label-switcher : {
 			height  : var(--form-element-height);
 			padding : var(--form-element-padding);
@@ -161,6 +170,17 @@
 		--cs-label-switcher-active-icon : {
 			opacity : 1 !important;
 		}
+
+		/* Link button */
+
+		--cs-link-button : {
+			padding : var(--form-element-padding);
+		}
+
+		--cs-link-button-empty : {
+			line-height : var(--form-button-empty-size);
+			text-align  : center;
+		};
 	}
 
 	html,

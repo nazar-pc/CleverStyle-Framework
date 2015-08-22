@@ -15,15 +15,12 @@
 					%cs-table-cell
 						%span(class$="[[plugin.icon]]" data-uk-tooltip$="[[tooltip_animation]]" title$="[[plugin.icon_text]]")
 						%template(is="dom-if" if="[[plugin.readme]]")
-							%span.uk-button.cs-button-compact.uk-icon-book(data-modal-type="readme" data-uk-tooltip$="[[tooltip_animation]]" on-click="generic_modal" title$="[[concat(L.information_about_plugin, '<br>', L.click_to_view_details)]]")
+							%button(is="cs-button" icon="book" type="button" data-modal-type="readme" data-uk-tooltip$="[[tooltip_animation]]" on-click="generic_modal" title$="[[concat(L.information_about_plugin, '<br>', L.click_to_view_details)]]")
 						%template(is="dom-if" if="[[plugin.license]]")
-							%span.uk-button.cs-button-compact.uk-icon-legal(data-modal-type="license" data-uk-tooltip$="[[tooltip_animation]]" on-click="generic_modal" title$="[[concat(L.license, '<br>', L.click_to_view_details)]]")
+							%button(is="cs-button" icon="legal" type="button" data-modal-type="license" data-uk-tooltip$="[[tooltip_animation]]" on-click="generic_modal" title$="[[concat(L.license, '<br>', L.click_to_view_details)]]")
 					%cs-table-cell
 						%template(is="dom-if" if="[[equal(plugin.active, 1)]]")
-							%a.uk-button.cs-button-compact(href="[[concat('/admin/System/components/plugins/disable/', plugin.name)]]" data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.disable]]")
-								%span.uk-icon-minus
+							%a(is="cs-link-button" icon="minus" href="[[concat('/admin/System/components/plugins/disable/', plugin.name)]]" data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.disable]]")
 						%template(is="dom-if" if="[[equal(plugin.active, 0)]]")
-							%a.uk-button.cs-button-compact(href="[[concat('/admin/System/components/plugins/enable/', plugin.name)]]" data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.enable]]")
-								%span.uk-icon-check
-								%span [[L.enable]]
+							%a(is="cs-link-button" icon="check" href="[[concat('/admin/System/components/plugins/enable/', plugin.name)]]" data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.enable]]") [[L.enable]]
 	%script(src="script.js")

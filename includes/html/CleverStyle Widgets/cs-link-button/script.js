@@ -9,9 +9,9 @@
 
 (function() {
   Polymer({
-    'is': 'cs-label-switcher',
-    'extends': 'label',
-    behaviors: [Polymer.cs.behaviors.label]
+    'is': 'cs-link-button',
+    'extends': 'a',
+    behaviors: [Polymer.cs.behaviors.button]
   });
 
 }).call(this);

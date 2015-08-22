@@ -5,7 +5,7 @@
  * @license   MIT License, see license.txt
 ###
 Polymer(
-	'is'		: 'cs-button'
-	'extends'	: 'button'
+	'is'		: 'cs-link-button'
+	'extends'	: 'a'
 	behaviors	: [Polymer.cs.behaviors.button]
 )

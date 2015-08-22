@@ -48,14 +48,14 @@ trait general {
 		$Index->form  = false;
 		$Index->content(
 			h::{'div.cs-right'}(
-				h::{'a.uk-button[target=_blank]'}(
+				h::{'a[is=cs-link-button][target=_blank]'}(
 					'phpinfo()',
 					[
 						'href' => "$Index->action/phpinfo"
 					]
 				).
-				h::{'a.uk-button[target=_blank]'}(
-					h::icon('info').$L->information_about_system,
+				h::{'a[is=cs-link-button][icon=info][target=_blank]'}(
+					$L->information_about_system,
 					[
 						'href' => "$Index->action/readme.html"
 					]
@@ -66,8 +66,8 @@ trait general {
 						'title' => "$L->system » $L->license"
 					]
 				).
-				h::{'button#cs-system-license-open[is=cs-button]'}(
-					h::icon('legal').$L->license,
+				h::{'button#cs-system-license-open[is=cs-button][icon=legal]'}(
+					$L->license,
 					[
 						'data-uk-modal' => "{target:'#cs-system-license'}"
 					]

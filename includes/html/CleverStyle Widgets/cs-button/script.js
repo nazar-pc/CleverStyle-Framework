@@ -11,25 +11,7 @@
   Polymer({
     'is': 'cs-button',
     'extends': 'button',
-    properties: {
-      active: {
-        reflectToAttribute: true,
-        type: Boolean
-      },
-      empty: {
-        reflectToAttribute: true,
-        type: Boolean
-      },
-      icon: {
-        reflectToAttribute: true,
-        type: String
-      }
-    },
-    ready: function() {
-      if (!this.childNodes.length) {
-        return this.empty = true;
-      }
-    }
+    behaviors: [Polymer.cs.behaviors.button]
   });
 
 }).call(this);

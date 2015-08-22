@@ -1150,7 +1150,9 @@ trait components {
 					file_exists_with_extension(MODULES."/$module_name/index", ['php', 'html', 'json']),
 				'db_settings'           => !$Config->core['simple_admin_mode'] && @$module_data['db'] && count($Config->db) > 1,
 				'storage_settings'      => !$Config->core['simple_admin_mode'] && @$module_data['storage'] && count($Config->storage) > 1,
-				'administration'        => file_exists_with_extension(MODULES."/$module_name/admin/index", ['php', 'json'])
+				'administration'        =>
+					$module_data['active'] != -1 &&
+					file_exists_with_extension(MODULES."/$module_name/admin/index", ['php', 'json'])
 			];
 			/**
 			 * Check if API available
