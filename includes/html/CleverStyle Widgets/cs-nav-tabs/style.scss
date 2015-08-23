@@ -13,64 +13,64 @@
 
 	@apply (--cs-no-selection);
 	@apply (--cs-global);
-	@apply (--cs-tabs);
+	@apply (--cs-nav-tabs);
 }
 
 // Hack: `:host` is here only because of Polymer unable to handle pure `::content` properly
-:host ::content button {
+:host ::content > :not(template) {
 	& {
-		@apply (--cs-tabs-tab);
+		@apply (--cs-nav-tabs-tab);
 	}
 	&:active,
 	&[active] {
-		@apply (--cs-tabs-tab-active);
+		@apply (--cs-nav-tabs-tab-active);
 	}
 
 	&:focus {
-		@apply (--cs-tabs-tab-hover);
-		@apply (--cs-tabs-tab-focus);
+		@apply (--cs-nav-tabs-tab-hover);
+		@apply (--cs-nav-tabs-tab-focus);
 	}
 
 	&:hover {
-		@apply (--cs-tabs-tab-hover);
+		@apply (--cs-nav-tabs-tab-hover);
 	}
 
 	&[disabled] {
-		@apply (--cs-tabs-tab-disabled);
+		@apply (--cs-nav-tabs-tab-disabled);
 	}
 
 	/* Empty button, for instance, with icon inside, but empty content */
 	&:empty,
 	&[empty] {
-		@apply (--cs-tabs-tab-empty);
+		@apply (--cs-nav-tabs-tab-empty);
 	}
 
 	/* Button with icon */
 	&[icon]:not(:empty):not([empty]) cs-icon {
-		@apply (--cs-tabs-tab-icon);
+		@apply (--cs-nav-tabs-tab-icon);
 	}
 
 	/* The only non-default button type is primary button */
 
 	&[primary] {
-		@apply (--cs-tabs-tab-primary);
+		@apply (--cs-nav-tabs-tab-primary);
 	}
 
 	&[primary]:active,
 	&[primary][active] {
-		@apply (--cs-tabs-tab-primary-active);
+		@apply (--cs-nav-tabs-tab-primary-active);
 	}
 
 	&[primary]:focus {
-		@apply (--cs-tabs-tab-primary-hover);
-		@apply (--cs-tabs-tab-primary-focus);
+		@apply (--cs-nav-tabs-tab-primary-hover);
+		@apply (--cs-nav-tabs-tab-primary-focus);
 	}
 
 	&[primary]:hover {
-		@apply (--cs-tabs-tab-primary-hover);
+		@apply (--cs-nav-tabs-tab-primary-hover);
 	}
 
 	&[primary][disabled] {
-		@apply (--cs-tabs-tab-primary-disabled);
+		@apply (--cs-nav-tabs-tab-primary-disabled);
 	}
 }

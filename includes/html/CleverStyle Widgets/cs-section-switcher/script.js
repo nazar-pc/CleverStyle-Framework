@@ -9,8 +9,8 @@
 
 (function() {
   Polymer({
-    'is': 'cs-nav-tabs',
-    'extends': 'nav',
+    'is': 'cs-section-switcher',
+    'extends': 'section',
     properties: {
       active: {
         observer: 'active_changed',
@@ -18,8 +18,6 @@
       }
     },
     ready: function() {
-      this.addEventListener('tap', this.click.bind(this));
-      this.addEventListener('click', this.click.bind(this));
       return (function(_this) {
         return function() {
           var element, i, len, ref;
@@ -34,26 +32,8 @@
         };
       })(this)();
     },
-    click: function(e) {
-      var element, i, index, len, ref;
-      ref = this.children;
-      for (index = i = 0, len = ref.length; i < len; index = ++i) {
-        element = ref[index];
-        if (element.tagName === 'TEMPLATE') {
-          continue;
-        }
-        if (element === e.target) {
-          this.active = index;
-          if (this.active) {
-            element.setAttribute('active', '');
-          } else {
-            element.removeAttribute('active');
-          }
-        }
-      }
-    },
     active_changed: function() {
-      var element, i, index, len, ref, ref1;
+      var element, i, index, len, ref;
       ref = this.children;
       for (index = i = 0, len = ref.length; i < len; index = ++i) {
         element = ref[index];
@@ -66,9 +46,6 @@
         } else {
           element.removeAttribute('active');
         }
-      }
-      if (((ref1 = this.nextElementSibling) != null ? ref1.is : void 0) === 'cs-section-switcher') {
-        this.nextElementSibling.active = this.active;
       }
     }
   });

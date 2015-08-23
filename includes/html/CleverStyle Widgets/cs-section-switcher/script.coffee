@@ -5,32 +5,19 @@
  * @license   MIT License, see license.txt
 ###
 Polymer(
-	'is'		: 'cs-nav-tabs'
-	'extends'	: 'nav'
+	'is'		: 'cs-section-switcher'
+	'extends'	: 'section'
 	properties	:
 		active	:
 			observer	: 'active_changed'
 			type		: Number
 	ready : ->
-		@addEventListener('tap', @click.bind(@))
-		@addEventListener('click', @click.bind(@))
 		do =>
 			for element in @children
 				if element.active
 					return
 			@active = 0
 			return
-	click : (e) ->
-		for element, index in @children
-			if element.tagName == 'TEMPLATE'
-				continue
-			if element == e.target
-				@active = index
-				if @active
-					element.setAttribute('active', '')
-				else
-					element.removeAttribute('active')
-		return
 	active_changed : ->
 		for element, index in @children
 			if element.tagName == 'TEMPLATE'
@@ -40,7 +27,5 @@ Polymer(
 				element.setAttribute('active', '')
 			else
 				element.removeAttribute('active')
-		if @nextElementSibling?.is == 'cs-section-switcher'
-			@nextElementSibling.active = @active
 		return
 )
