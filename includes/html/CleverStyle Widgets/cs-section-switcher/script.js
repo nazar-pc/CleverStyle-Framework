@@ -12,7 +12,7 @@
     'is': 'cs-section-switcher',
     'extends': 'section',
     properties: {
-      active: {
+      selected: {
         observer: 'active_changed',
         type: Number
       }
@@ -28,7 +28,7 @@
               return;
             }
           }
-          _this.active = 0;
+          _this.selected = 0;
         };
       })(this)();
     },
@@ -40,8 +40,8 @@
         if (element.tagName === 'TEMPLATE') {
           continue;
         }
-        element.active = index === this.active;
-        if (index === this.active) {
+        element.active = index === this.selected;
+        if (index === this.selected) {
           element.setAttribute('active', '');
         } else {
           element.removeAttribute('active');

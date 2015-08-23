@@ -1,54 +1,53 @@
 %dom-module(id="cs-system-admin-users-list")
 	%template
-		.uk-form
-			%ul.cs-tabs
-				%li [[L.search]]
-				%li [[L.show_columns]]
+		%nav(is="cs-nav-tabs")
+			%button(is="cs-button") [[L.search]]
+			%button(is="cs-button") [[L.show_columns]]
+		%section(is="cs-section-switcher")
 			%div
-				%div
-					%select(is="cs-select" value="[[search_column::change]]")
-						%option(selected value="") [[L.all_columns]]
-						%template(is="dom-repeat" items="[[all_columns]]" as="column")
-							%option(value="[[column]]") [[column]]
-					%span [[L.search_mode]]
-					%select(is="cs-select" value="{{search_mode::change}}")
-						%template(is="dom-repeat" items="[[search_modes]]" as="mode")
-							<option selected="[[equal(mode, search_mode)]]" value="[[mode]]">[[mode]]</option>
-					%input.uk-form-width-medium(value="{{search_text::input}}" placeholder="[[L.search_text]]" type="text")/
-					%span [[L.items]]
-					%input(min="1" step="1" type="number" value="{{search_limit::input}}")
-				%ul.uk-padding-remove
-					%template(is="dom-repeat" items="[[search_columns]]" as="column")
-						%li(on-click="toggle_search_column" data-column-index$="[[index]]" class$="[[if(column.selected, 'uk-button-primary', '', 'cs-pointer uk-button uk-margin-bottom ')]]") [[column.name]]
-			%hr/
-			-# should be reference %template#pagination
-			.uk-margin.cs-left(hidden$="[[!show_pagination]]")
-				%ul.uk-pagination#pagination-top(data-uk-pagination="{items:1, itemsOnPage: 1, currentPage:1}")
-			%h2.uk-text-center(hidden$="[[!searching_loader]]")
-				.uk-icon-spin.uk-icon-spinner
-			%cs-table(center list with-header)
-				%cs-table-row
-					%cs-table-cell [[L.action]]
-					%cs-table-cell &nbsp;
-					%template(is="dom-repeat" items="[[columns]]" as="column")
+				%select(is="cs-select" compact value="[[search_column::change]]")
+					%option(selected value="") [[L.all_columns]]
+					%template(is="dom-repeat" items="[[all_columns]]" as="column")
+						%option(value="[[column]]") [[column]]
+				%span [[L.search_mode]]
+				%select(is="cs-select" compact value="{{search_mode::change}}")
+					%template(is="dom-repeat" items="[[search_modes]]" as="mode")
+						%option(value="[[mode]]" selected$="[[equal(mode, search_mode)]]") [[mode]]
+				%input(is="cs-input-text" value="{{search_text::input}}" placeholder="[[L.search_text]]" type="text")/
+				%span [[L.items]]
+				%input(is="cs-input-text" compact min="1" step="1" type="number" value="{{search_limit::input}}")
+			%ul.uk-padding-remove
+				%template(is="dom-repeat" items="[[search_columns]]" as="column")
+					%li(on-click="toggle_search_column" data-column-index$="[[index]]" class$="[[if(column.selected, 'uk-button-primary', '', 'cs-pointer uk-button uk-margin-bottom ')]]") [[column.name]]
+		%hr/
+		-# should be reference %template#pagination
+		.uk-margin.cs-left(hidden$="[[!show_pagination]]")
+			%ul.uk-pagination#pagination-top(data-uk-pagination="{items:1, itemsOnPage: 1, currentPage:1}")
+		%h2.uk-text-center(hidden$="[[!searching_loader]]")
+			.uk-icon-spin.uk-icon-spinner
+		%cs-table(center list with-header)
+			%cs-table-row
+				%cs-table-cell [[L.action]]
+				%cs-table-cell &nbsp;
+				%template(is="dom-repeat" items="[[columns]]" as="column")
+					%cs-table-cell [[column]]
+			%template(is="dom-repeat" items="[[users]]" as="user")
+				%cs-table-row(class$="[[user.class]]" data-user-index$="[[index]]")
+					%cs-table-cell
+						%template(is="dom-if" if="[[user.is_root]]") -
+						%template(is="dom-if" if="[[!user.is_root]]")
+							%template(is="dom-if" if="[[!user.is_guest]]")
+								%a.uk-button.cs-button-compact(on-click="edit_user" data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.edit_user_information]]")
+									.uk-icon-pencil
+							%template(is="dom-if" if="[[!or(user.is_guest, user.is_bot)]]")
+								%a.uk-button.cs-button-compact(href="[[concat('/admin/System/users/users/groups/', user.id)]]" data-uk-tooltip$="[[tooltip_animation]]" title="[[L.edit_user_groups]]")
+									.uk-icon-group
+							.uk-button.cs-button-compact(data-uk-tooltip$="[[tooltip_animation]]" on-click="edit_permissions" title$="[[L.edit_user_permissions]]")
+								.uk-icon-key
+					%cs-table-cell
+						%span(data-uk-tooltip$="[[tooltip_animation]]" title$="[[user.type_info]]") [[user.type]]
+					%template(is="dom-repeat" items="[[user.columns]]" as="column")
 						%cs-table-cell [[column]]
-				%template(is="dom-repeat" items="[[users]]" as="user")
-					%cs-table-row(class$="[[user.class]]" data-user-index$="[[index]]")
-						%cs-table-cell
-							%template(is="dom-if" if="[[user.is_root]]") -
-							%template(is="dom-if" if="[[!user.is_root]]")
-								%template(is="dom-if" if="[[!user.is_guest]]")
-									%a.uk-button.cs-button-compact(on-click="edit_user" data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.edit_user_information]]")
-										.uk-icon-pencil
-								%template(is="dom-if" if="[[!or(user.is_guest, user.is_bot)]]")
-									%a.uk-button.cs-button-compact(href="[[concat('/admin/System/users/users/groups/', user.id)]]" data-uk-tooltip$="[[tooltip_animation]]" title="[[L.edit_user_groups]]")
-										.uk-icon-group
-								.uk-button.cs-button-compact(data-uk-tooltip$="[[tooltip_animation]]" on-click="edit_permissions" title$="[[L.edit_user_permissions]]")
-									.uk-icon-key
-						%cs-table-cell
-							%span(data-uk-tooltip$="[[tooltip_animation]]" title$="[[user.type_info]]") [[user.type]]
-						%template(is="dom-repeat" items="[[user.columns]]" as="column")
-							%cs-table-cell [[column]]
 		-# should be reference %template#pagination
 		.uk-margin.cs-left(hidden$="[[!show_pagination]]")
 			%ul.uk-pagination#pagination-bottom(data-uk-pagination="{items:1, itemsOnPage: 1, currentPage:1}")

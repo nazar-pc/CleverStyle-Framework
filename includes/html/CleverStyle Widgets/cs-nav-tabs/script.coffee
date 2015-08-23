@@ -8,7 +8,7 @@ Polymer(
 	'is'		: 'cs-nav-tabs'
 	'extends'	: 'nav'
 	properties	:
-		active	:
+		selected	:
 			observer	: 'active_changed'
 			type		: Number
 	ready : ->
@@ -18,14 +18,19 @@ Polymer(
 			for element in @children
 				if element.active
 					return
-			@active = 0
+			@selected = 0
 			return
 	click : (e) ->
+		target = do =>
+			for path, index in e.path
+				if path == @
+					# `-3` because `-1` is Shadow Root and `-2` is `<content>` element
+					return e.path[index - 3]
 		for element, index in @children
 			if element.tagName == 'TEMPLATE'
 				continue
-			if element == e.target
-				@active = index
+			if element == target
+				@selected = index
 				element.setAttribute('active', '')
 			else
 				element.removeAttribute('active')
@@ -34,12 +39,12 @@ Polymer(
 		for element, index in @children
 			if element.tagName == 'TEMPLATE'
 				continue
-			element.active = index == @active
-			if index == @active
+			element.active = index == @selected
+			if index == @selected
 				element.setAttribute('active', '')
 			else
 				element.removeAttribute('active')
 		if @nextElementSibling?.is == 'cs-section-switcher'
-			@nextElementSibling.active = @active
+			@nextElementSibling.selected = @selected
 		return
 )

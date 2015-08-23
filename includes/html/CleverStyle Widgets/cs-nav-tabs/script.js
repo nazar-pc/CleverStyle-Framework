@@ -12,7 +12,7 @@
     'is': 'cs-nav-tabs',
     'extends': 'nav',
     properties: {
-      active: {
+      selected: {
         observer: 'active_changed',
         type: Number
       }
@@ -30,20 +30,32 @@
               return;
             }
           }
-          _this.active = 0;
+          _this.selected = 0;
         };
       })(this)();
     },
     click: function(e) {
-      var element, i, index, len, ref;
+      var element, i, index, len, ref, target;
+      target = (function(_this) {
+        return function() {
+          var i, index, len, path, ref;
+          ref = e.path;
+          for (index = i = 0, len = ref.length; i < len; index = ++i) {
+            path = ref[index];
+            if (path === _this) {
+              return e.path[index - 3];
+            }
+          }
+        };
+      })(this)();
       ref = this.children;
       for (index = i = 0, len = ref.length; i < len; index = ++i) {
         element = ref[index];
         if (element.tagName === 'TEMPLATE') {
           continue;
         }
-        if (element === e.target) {
-          this.active = index;
+        if (element === target) {
+          this.selected = index;
           element.setAttribute('active', '');
         } else {
           element.removeAttribute('active');
@@ -58,15 +70,15 @@
         if (element.tagName === 'TEMPLATE') {
           continue;
         }
-        element.active = index === this.active;
-        if (index === this.active) {
+        element.active = index === this.selected;
+        if (index === this.selected) {
           element.setAttribute('active', '');
         } else {
           element.removeAttribute('active');
         }
       }
       if (((ref1 = this.nextElementSibling) != null ? ref1.is : void 0) === 'cs-section-switcher') {
-        this.nextElementSibling.active = this.active;
+        this.nextElementSibling.selected = this.selected;
       }
     }
   });
