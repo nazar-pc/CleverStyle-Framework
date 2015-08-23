@@ -8,9 +8,10 @@ body {
 	transition : opacity ease-in 0.2s;
 
 	&[unresolved] {
-		cursor   : wait;
-		display  : block;
-		opacity  : 0;
-		overflow : hidden;
+		cursor      : wait;
+		display     : block;
+		opacity     : 0;
+		overflow    : hidden;
+		will-change : opacity;
 	}
 }
