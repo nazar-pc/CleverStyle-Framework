@@ -44,11 +44,9 @@
         }
         if (element === e.target) {
           this.active = index;
-          if (this.active) {
-            element.setAttribute('active', '');
-          } else {
-            element.removeAttribute('active');
-          }
+          element.setAttribute('active', '');
+        } else {
+          element.removeAttribute('active');
         }
       }
     },

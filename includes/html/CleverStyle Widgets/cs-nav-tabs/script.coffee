@@ -26,10 +26,9 @@ Polymer(
 				continue
 			if element == e.target
 				@active = index
-				if @active
-					element.setAttribute('active', '')
-				else
-					element.removeAttribute('active')
+				element.setAttribute('active', '')
+			else
+				element.removeAttribute('active')
 		return
 	active_changed : ->
 		for element, index in @children
