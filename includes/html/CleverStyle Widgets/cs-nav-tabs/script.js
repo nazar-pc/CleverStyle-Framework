@@ -13,7 +13,8 @@
     'extends': 'nav',
     properties: {
       selected: {
-        observer: 'active_changed',
+        notify: true,
+        observer: 'selected_changed',
         type: Number
       }
     },
@@ -48,6 +49,9 @@
           }
         };
       })(this)();
+      if (!target) {
+        return;
+      }
       ref = this.children;
       for (index = i = 0, len = ref.length; i < len; index = ++i) {
         element = ref[index];
@@ -62,7 +66,7 @@
         }
       }
     },
-    active_changed: function() {
+    selected_changed: function() {
       var element, i, index, len, ref, ref1;
       ref = this.children;
       for (index = i = 0, len = ref.length; i < len; index = ++i) {

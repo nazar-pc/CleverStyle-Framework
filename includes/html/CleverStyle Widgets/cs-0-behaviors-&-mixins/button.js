@@ -11,6 +11,7 @@
   Polymer.cs.behaviors.button = {
     properties: {
       active: {
+        notify: true,
         reflectToAttribute: true,
         type: Boolean
       },
@@ -21,6 +22,10 @@
       icon: {
         reflectToAttribute: true,
         type: String
+      },
+      primary: {
+        reflectToAttribute: true,
+        type: Boolean
       }
     },
     ready: function() {

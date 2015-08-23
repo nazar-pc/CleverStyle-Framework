@@ -13,7 +13,8 @@
     'extends': 'section',
     properties: {
       selected: {
-        observer: 'active_changed',
+        notify: true,
+        observer: 'selected_changed',
         type: Number
       }
     },
@@ -32,7 +33,7 @@
         };
       })(this)();
     },
-    active_changed: function() {
+    selected_changed: function() {
       var element, i, index, len, ref;
       ref = this.children;
       for (index = i = 0, len = ref.length; i < len; index = ++i) {

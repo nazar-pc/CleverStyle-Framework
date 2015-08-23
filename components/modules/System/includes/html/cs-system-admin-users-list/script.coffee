@@ -131,7 +131,7 @@ Polymer(
 				@set('users', data.users)
 		)
 	toggle_search_column	: (e) ->
-		index			= $(e.currentTarget).data('column-index')
+		index			= e.model.index
 		column			= @search_columns[index]
 		@set(['search_columns', index, 'selected'], !column.selected)
 		@set('columns', column.name for column in @search_columns when column.selected)

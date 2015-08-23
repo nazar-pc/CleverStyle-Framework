@@ -9,7 +9,8 @@ Polymer(
 	'extends'	: 'section'
 	properties	:
 		selected	:
-			observer	: 'active_changed'
+			notify		: true
+			observer	: 'selected_changed'
 			type		: Number
 	ready : ->
 		do =>
@@ -18,7 +19,7 @@ Polymer(
 					return
 			@selected = 0
 			return
-	active_changed : ->
+	selected_changed : ->
 		for element, index in @children
 			if element.tagName == 'TEMPLATE'
 				continue

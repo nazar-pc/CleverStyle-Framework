@@ -171,7 +171,7 @@
     },
     toggle_search_column: function(e) {
       var column, index;
-      index = $(e.currentTarget).data('column-index');
+      index = e.model.index;
       column = this.search_columns[index];
       this.set(['search_columns', index, 'selected'], !column.selected);
       this.set('columns', (function() {

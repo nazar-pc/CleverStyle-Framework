@@ -6,34 +6,34 @@
     </nav>
     <section is="cs-section-switcher">
       <div>
-        <select compact is="cs-select" value="[[search_column::change]]">
+        <select compact is="cs-select" value="[[search_column]]">
           <option selected value="">[[L.all_columns]]</option>
           <template as="column" is="dom-repeat" items="[[all_columns]]">
             <option value="[[column]]">[[column]]</option>
           </template>
         </select>
         <span>[[L.search_mode]]</span>
-        <select compact is="cs-select" value="{{search_mode::change}}">
+        <select compact is="cs-select" value="{{search_mode}}">
           <template as="mode" is="dom-repeat" items="[[search_modes]]">
             <option selected$="[[equal(mode, search_mode)]]" value="[[mode]]">[[mode]]</option>
           </template>
         </select>
-        <input is="cs-input-text" placeholder="[[L.search_text]]" type="text" value="{{search_text::input}}">
+        <input is="cs-input-text" placeholder="[[L.search_text]]" type="text" value="{{search_text}}">
         <span>[[L.items]]</span>
-        <input compact is="cs-input-text" min="1" step="1" type="number" value="{{search_limit::input}}">
+        <input compact is="cs-input-text" min="1" step="1" type="number" value="{{search_limit}}">
       </div>
-      <ul class="uk-padding-remove">
+      <div>
         <template as="column" is="dom-repeat" items="[[search_columns]]">
-          <li class$="[[if(column.selected, 'uk-button-primary', '', 'cs-pointer uk-button uk-margin-bottom ')]]" data-column-index$="[[index]]" on-click="toggle_search_column">[[column.name]]</li>
+          <button is="cs-button" on-click="toggle_search_column" primary="[[column.selected]]">[[column.name]]</button>
         </template>
-      </ul>
+      </div>
     </section>
     <hr>
     <div class="uk-margin cs-left" hidden$="[[!show_pagination]]">
       <ul class="uk-pagination" data-uk-pagination="{items:1, itemsOnPage: 1, currentPage:1}" id="pagination-top"></ul>
     </div>
     <h2 class="uk-text-center" hidden$="[[!searching_loader]]">
-      <div class="uk-icon-spin uk-icon-spinner"></div>
+      <cs-icon icon="spinner" spin></cs-icon>
     </h2>
     <cs-table center list with-header>
       <cs-table-row>
@@ -49,18 +49,12 @@
             <template if="[[user.is_root]]" is="dom-if">-</template>
             <template if="[[!user.is_root]]" is="dom-if">
               <template if="[[!user.is_guest]]" is="dom-if">
-                <a class="uk-button cs-button-compact" data-uk-tooltip$="[[tooltip_animation]]" on-click="edit_user" title$="[[L.edit_user_information]]">
-                  <div class="uk-icon-pencil"></div>
-                </a>
+                <a data-uk-tooltip$="[[tooltip_animation]]" icon="pencil" is="cs-link-button" on-click="edit_user" title$="[[L.edit_user_information]]"></a>
               </template>
               <template if="[[!or(user.is_guest, user.is_bot)]]" is="dom-if">
-                <a class="uk-button cs-button-compact" data-uk-tooltip$="[[tooltip_animation]]" href="[[concat('/admin/System/users/users/groups/', user.id)]]" title="[[L.edit_user_groups]]">
-                  <div class="uk-icon-group"></div>
-                </a>
+                <a data-uk-tooltip$="[[tooltip_animation]]" href="[[concat('/admin/System/users/users/groups/', user.id)]]" icon="group" is="cs-link-button" title="[[L.edit_user_groups]]"></a>
               </template>
-              <div class="uk-button cs-button-compact" data-uk-tooltip$="[[tooltip_animation]]" on-click="edit_permissions" title$="[[L.edit_user_permissions]]">
-                <div class="uk-icon-key"></div>
-              </div>
+              <button data-uk-tooltip$="[[tooltip_animation]]" icon="key" is="cs-button" on-click="edit_permissions" title$="[[L.edit_user_permissions]]"></button>
             </template>
           </cs-table-cell>
           <cs-table-cell>
@@ -76,8 +70,8 @@
       <ul class="uk-pagination" data-uk-pagination="{items:1, itemsOnPage: 1, currentPage:1}" id="pagination-bottom"></ul>
     </div>
     <p class="cs-left">
-      <button class="uk-button" on-click="add_user" type="button">[[L.add_user]]</button>
-      <button class="uk-button" on-click="add_bot" type="button">[[L.add_bot]]</button>
+      <button is="cs-button" on-click="add_user" type="button">[[L.add_user]]</button>
+      <button is="cs-button" on-click="add_bot" type="button">[[L.add_bot]]</button>
     </p>
   </template>
   <script src="script.js"></script>

@@ -9,7 +9,8 @@ Polymer(
 	'extends'	: 'nav'
 	properties	:
 		selected	:
-			observer	: 'active_changed'
+			notify		: true
+			observer	: 'selected_changed'
 			type		: Number
 	ready : ->
 		@addEventListener('tap', @click.bind(@))
@@ -26,6 +27,8 @@ Polymer(
 				if path == @
 					# `-3` because `-1` is Shadow Root and `-2` is `<content>` element
 					return e.path[index - 3]
+		if !target
+			return
 		for element, index in @children
 			if element.tagName == 'TEMPLATE'
 				continue
@@ -35,7 +38,7 @@ Polymer(
 			else
 				element.removeAttribute('active')
 		return
-	active_changed : ->
+	selected_changed : ->
 		for element, index in @children
 			if element.tagName == 'TEMPLATE'
 				continue

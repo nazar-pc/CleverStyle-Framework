@@ -5,26 +5,26 @@
 			%button(is="cs-button") [[L.show_columns]]
 		%section(is="cs-section-switcher")
 			%div
-				%select(is="cs-select" compact value="[[search_column::change]]")
+				%select(is="cs-select" compact value="[[search_column]]")
 					%option(selected value="") [[L.all_columns]]
 					%template(is="dom-repeat" items="[[all_columns]]" as="column")
 						%option(value="[[column]]") [[column]]
 				%span [[L.search_mode]]
-				%select(is="cs-select" compact value="{{search_mode::change}}")
+				%select(is="cs-select" compact value="{{search_mode}}")
 					%template(is="dom-repeat" items="[[search_modes]]" as="mode")
 						%option(value="[[mode]]" selected$="[[equal(mode, search_mode)]]") [[mode]]
-				%input(is="cs-input-text" value="{{search_text::input}}" placeholder="[[L.search_text]]" type="text")/
+				%input(is="cs-input-text" value="{{search_text}}" placeholder="[[L.search_text]]" type="text")/
 				%span [[L.items]]
-				%input(is="cs-input-text" compact min="1" step="1" type="number" value="{{search_limit::input}}")
-			%ul.uk-padding-remove
+				%input(is="cs-input-text" compact min="1" step="1" type="number" value="{{search_limit}}")
+			%div
 				%template(is="dom-repeat" items="[[search_columns]]" as="column")
-					%li(on-click="toggle_search_column" data-column-index$="[[index]]" class$="[[if(column.selected, 'uk-button-primary', '', 'cs-pointer uk-button uk-margin-bottom ')]]") [[column.name]]
+					%button(is="cs-button" on-click="toggle_search_column" primary="[[column.selected]]") [[column.name]]
 		%hr/
 		-# should be reference %template#pagination
 		.uk-margin.cs-left(hidden$="[[!show_pagination]]")
 			%ul.uk-pagination#pagination-top(data-uk-pagination="{items:1, itemsOnPage: 1, currentPage:1}")
 		%h2.uk-text-center(hidden$="[[!searching_loader]]")
-			.uk-icon-spin.uk-icon-spinner
+			%cs-icon(icon="spinner" spin)
 		%cs-table(center list with-header)
 			%cs-table-row
 				%cs-table-cell [[L.action]]
@@ -37,13 +37,10 @@
 						%template(is="dom-if" if="[[user.is_root]]") -
 						%template(is="dom-if" if="[[!user.is_root]]")
 							%template(is="dom-if" if="[[!user.is_guest]]")
-								%a.uk-button.cs-button-compact(on-click="edit_user" data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.edit_user_information]]")
-									.uk-icon-pencil
+								%a(is="cs-link-button" icon="pencil" on-click="edit_user" data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.edit_user_information]]")
 							%template(is="dom-if" if="[[!or(user.is_guest, user.is_bot)]]")
-								%a.uk-button.cs-button-compact(href="[[concat('/admin/System/users/users/groups/', user.id)]]" data-uk-tooltip$="[[tooltip_animation]]" title="[[L.edit_user_groups]]")
-									.uk-icon-group
-							.uk-button.cs-button-compact(data-uk-tooltip$="[[tooltip_animation]]" on-click="edit_permissions" title$="[[L.edit_user_permissions]]")
-								.uk-icon-key
+								%a(is="cs-link-button" icon="group" href="[[concat('/admin/System/users/users/groups/', user.id)]]" data-uk-tooltip$="[[tooltip_animation]]" title="[[L.edit_user_groups]]")
+							%button(is="cs-button" icon="key" data-uk-tooltip$="[[tooltip_animation]]" on-click="edit_permissions" title$="[[L.edit_user_permissions]]")
 					%cs-table-cell
 						%span(data-uk-tooltip$="[[tooltip_animation]]" title$="[[user.type_info]]") [[user.type]]
 					%template(is="dom-repeat" items="[[user.columns]]" as="column")
@@ -52,6 +49,6 @@
 		.uk-margin.cs-left(hidden$="[[!show_pagination]]")
 			%ul.uk-pagination#pagination-bottom(data-uk-pagination="{items:1, itemsOnPage: 1, currentPage:1}")
 		%p.cs-left
-			%button.uk-button(on-click="add_user" type="button") [[L.add_user]]
-			%button.uk-button(on-click="add_bot" type="button") [[L.add_bot]]
+			%button(is="cs-button" on-click="add_user" type="button") [[L.add_user]]
+			%button(is="cs-button" on-click="add_bot" type="button") [[L.add_bot]]
 	%script(src="script.js")

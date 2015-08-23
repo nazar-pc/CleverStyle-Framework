@@ -11,6 +11,7 @@
   Polymer.cs.behaviors.label = {
     properties: {
       active: {
+        notify: true,
         observer: 'active_changed',
         reflectToAttribute: true,
         type: Boolean
@@ -19,7 +20,10 @@
         reflectToAttribute: true,
         type: Boolean
       },
-      value: String
+      value: {
+        notify: true,
+        type: String
+      }
     },
     ready: function() {
       var fn, i, input, inputs, len;

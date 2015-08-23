@@ -7,13 +7,16 @@
 Polymer.cs.behaviors.label =
 	properties	:
 		active	:
+			notify				: true
 			observer			: 'active_changed'
 			reflectToAttribute	: true
 			type				: Boolean
 		focus	:
 			reflectToAttribute	: true
 			type				: Boolean
-		value	: String
+		value	:
+			notify	: true
+			type	: String
 	ready : ->
 		do =>
 			next_node	= @nextSibling
