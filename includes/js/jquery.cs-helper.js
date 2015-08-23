@@ -13,34 +13,6 @@
     helpers = {
 
       /**
-      		 * Tabs with UIkit
-      		 *
-      		 * Required DOM structure *+*, where first element contains list of tabs, and second element content of each tab, plugin must be applied to the first element
-       */
-      tabs: function() {
-        if (!this.length) {
-          return this;
-        }
-        return this.each(function() {
-          var $this, content;
-          $this = $(this);
-          content = $this.next();
-          $this.addClass('uk-tab').attr('data-uk-tab', '').children(':not(template)').each(function() {
-            var li;
-            li = $(this);
-            if (!li.children('a').length) {
-              return li.wrapInner('<a />');
-            }
-          }).first().addClass('uk-active');
-          $this.data('tab', UI.tab($this, {
-            connect: content,
-            animation: 'fade'
-          }));
-          return content.addClass('uk-switcher uk-margin').children(':not(template):first').addClass('uk-active');
-        });
-      },
-
-      /**
       		 * Dialog with UIkit
       		 *
       		 * Required DOM structure * > *, plugin must be applied to the root element
@@ -113,17 +85,6 @@
         this.find('[data-uk-button-radio]').add(this.filter('[data-uk-button-radio]')).each(function() {
           return UI.buttonRadio(this, UI.Utils.options($(this).attr('data-uk-button-radio')));
         });
-        return this;
-      },
-
-      /**
-      		 * Enabling tabs inside ShadowDOM, should be called on element.shadowRoot
-       */
-      tabs_inside: function() {
-        this.find('[data-uk-tab]').add(this.filter('[data-uk-tab]')).each(function() {
-          return UI.tab(this, UI.Utils.options($(this).attr('data-uk-tab')));
-        });
-        this.find('.cs-tabs:not(.uk-tab)').cs().tabs();
         return this;
       },
 

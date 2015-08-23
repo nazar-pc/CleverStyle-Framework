@@ -84,7 +84,6 @@ Polymer(
 		$(target)
 			.cs().tooltips_inside()
 			.cs().radio_buttons_inside()
-			.cs().tabs_inside()
 	save					: ->
 		default_data	= (key + '=' + value for key, value of $.ajaxSettings.data).join('&')
 		$.ajax(

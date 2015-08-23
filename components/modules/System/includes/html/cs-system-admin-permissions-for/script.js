@@ -68,7 +68,7 @@
         return function() {
           clearTimeout(workarounds_timeout);
           return workarounds_timeout = setTimeout((function() {
-            return $(_this.shadowRoot).cs().radio_buttons_inside().cs().tabs_inside();
+            return $(_this.shadowRoot).cs().radio_buttons_inside();
           }), 100);
         };
       })(this));

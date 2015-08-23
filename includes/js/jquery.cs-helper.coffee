@@ -7,37 +7,6 @@
 do ($=jQuery, UI = UIkit) ->
 	helpers	=
 		###*
-		 * Tabs with UIkit
-		 *
-		 * Required DOM structure *+*, where first element contains list of tabs, and second element content of each tab, plugin must be applied to the first element
-		###
-		tabs					: ->
-			if !@.length
-				return @
-			@.each ->
-				$this	= $(@)
-				content	= $this.next()
-				$this
-					.addClass('uk-tab')
-					.attr('data-uk-tab', '')
-					.children(':not(template)')
-						.each ->
-							li	= $(@)
-							if !li.children('a').length
-								li.wrapInner('<a />')
-						.first()
-							.addClass('uk-active')
-				$this
-					.data('tab', UI.tab(
-						$this
-						connect		: content
-						animation	: 'fade'
-					))
-				content
-					.addClass('uk-switcher uk-margin')
-					.children(':not(template):first')
-						.addClass('uk-active')
-		###*
 		 * Dialog with UIkit
 		 *
 		 * Required DOM structure * > *, plugin must be applied to the root element
@@ -98,14 +67,6 @@ do ($=jQuery, UI = UIkit) ->
 		radio_buttons_inside	: ->
 			@find('[data-uk-button-radio]').add(@filter('[data-uk-button-radio]')).each ->
 				UI.buttonRadio(@, UI.Utils.options($(@).attr('data-uk-button-radio')))
-			@
-		###*
-		 * Enabling tabs inside ShadowDOM, should be called on element.shadowRoot
-		###
-		tabs_inside	: ->
-			@find('[data-uk-tab]').add(@filter('[data-uk-tab]')).each ->
-				UI.tab(@, UI.Utils.options($(@).attr('data-uk-tab')))
-			@find('.cs-tabs:not(.uk-tab)').cs().tabs()
 			@
 		###*
 		 * Connecting form elements in ShadowDOM to form element higher in DOM tree, should be called on element.shadowRoot

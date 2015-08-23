@@ -86,7 +86,7 @@
       return cs.observe_inserts_on(this.shadowRoot, this.workarounds);
     },
     workarounds: function(target) {
-      return $(target).cs().pagination_inside().cs().tabs_inside().cs().tooltips_inside();
+      return $(target).cs().pagination_inside().cs().tooltips_inside();
     },
     search: function() {
       var searching_timeout;

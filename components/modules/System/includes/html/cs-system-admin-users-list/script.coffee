@@ -71,7 +71,6 @@ Polymer(
 	workarounds				: (target) ->
 		$(target)
 			.cs().pagination_inside()
-			.cs().tabs_inside()
 			.cs().tooltips_inside()
 	search					: ->
 		if @searching || @_initialized == undefined

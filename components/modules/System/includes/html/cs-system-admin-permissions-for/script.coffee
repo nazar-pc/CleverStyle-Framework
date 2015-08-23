@@ -44,7 +44,6 @@ Polymer(
 			workarounds_timeout	= setTimeout (=>
 				$(@shadowRoot)
 					.cs().radio_buttons_inside()
-					.cs().tabs_inside()
 			), 100
 		)
 	save				: ->

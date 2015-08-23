@@ -93,7 +93,7 @@
       return cs.observe_inserts_on(this.shadowRoot, this.workarounds);
     },
     workarounds: function(target) {
-      return $(target).cs().tooltips_inside().cs().radio_buttons_inside().cs().tabs_inside();
+      return $(target).cs().tooltips_inside().cs().radio_buttons_inside();
     },
     save: function() {
       var default_data, key, value;
