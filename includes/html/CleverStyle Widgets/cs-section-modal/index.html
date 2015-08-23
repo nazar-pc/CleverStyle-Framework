@@ -1,0 +1,19 @@
+<style is="custom-style">
+	body {
+		@apply (--cs-section-modal-body);
+	}
+
+	body[modal-opened] {
+		@apply (--cs-section-modal-body-open);
+	}
+</style>
+<dom-module id="cs-section-modal">
+	<link href="style.css" rel="import" type="css">
+	<template>
+		<div class="overlay" on-click="close"></div>
+		<div class="content">
+			<content></content>
+		</div>
+	</template>
+	<script src="script.js"></script>
+</dom-module>

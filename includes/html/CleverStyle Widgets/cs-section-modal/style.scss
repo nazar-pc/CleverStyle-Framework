@@ -1,0 +1,63 @@
+/**
+ * @package   CleverStyle Widgets
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
+ */
+
+:host {
+	display  : none;
+	height   : 100vh;
+	left     : 0;
+	position : fixed;
+	top      : 0;
+	width    : 100vw;
+	z-index  : 499;
+
+	@apply (--cs-global);
+	@apply (--cs-section-modal);
+}
+
+.overlay {
+	display  : none;
+	height   : 100vh;
+	left     : 0;
+	position : fixed;
+	top      : 0;
+	width    : 100vw;
+	z-index  : 500;
+
+	@apply (--cs-section-modal-overlay);
+}
+
+.content {
+	display    : none;
+	max-height : 95vh;
+	max-width  : 95vw;
+	overflow   : auto;
+	z-index    : 1000;
+
+	@apply (--cs-section-modal-content);
+}
+
+:host([transparent]) .content {
+	background : transparent;
+}
+
+:host([opened]) {
+	display : block;
+
+	@apply (--cs-section-modal-open);
+
+	.overlay {
+		display : block;
+
+		@apply (--cs-section-modal-overlay-open);
+	}
+
+	.content {
+		display : block;
+
+		@apply (--cs-section-modal-content-open);
+	}
+}

@@ -21,7 +21,14 @@
 		--form-element-padding              : var(--form-element-padding-vertical) var(--form-element-padding-horizontal);
 		--form-element-width                : 30em;
 		--tabs-border                       : .1em solid var(--background-color-base);
-		--cs-block-padding                  : 1em;
+		--block-padding                     : 1em;
+		--blur-radius                       : .5em;
+		--transition-duration               : .3s;
+		--transition-duration-half          : .1s;
+		--overlay-background                : rgba(0, 0, 0, .3);
+		--content-background                : #fff;
+		--content-padding                   : 2em;
+		--content-translate                 : 10vh;
 
 		--cs-global : {
 			box-sizing  : border-box;
@@ -52,7 +59,7 @@
 			background-image : none !important;
 			box-shadow       : none !important;
 			color            : var(--text-color-base-disabled);
-		}
+		};
 
 		--cs-button-empty : {
 			height  : var(--form-button-empty-size);
@@ -67,12 +74,12 @@
 		--cs-button-primary : {
 			background-color : var(--background-color-primary);
 			color            : var(--text-color-primary);
-		}
+		};
 
 		--cs-button-primary-disabled : {
 			background-color : var(--background-color-primary-disabled);
 			color            : var(--text-color-primary-disabled);
-		}
+		};
 
 		/* Input text */
 
@@ -119,63 +126,63 @@
 
 		--cs-select-optgroup-first-option : {
 			margin-top : var(--form-element-padding-vertical)
-		}
+		};
 
 		/* Label button */
 
 		--cs-label-button : {
 			background-color : var(--background-color-base-disabled);
 			color            : var(--text-color-base-disabled);
-		}
+		};
 
 		--cs-label-button-active : {
 			background-color : var(--background-color-base);
 			color            : var(--text-color-base);
-		}
+		};
 
 		--cs-label-button-primary : {
 			background-color : var(--background-color-primary-disabled);
 			color            : var(--text-color-primary-disabled);
-		}
+		};
 
 		--cs-label-button-primary-active : {
 			background-color : var(--background-color-primary);
 			color            : var(--text-color-primary);
-		}
+		};
 
 		--cs-label-button : {
 			padding : var(--form-element-padding);
-		}
+		};
 
 		/* Label switcher */
 
 		--cs-label-switcher : {
 			height  : var(--form-element-height);
 			padding : var(--form-element-padding);
-		}
+		};
 
 		--cs-label-switcher-icon : {
 			font-size : 1.2em;
 			opacity   : .1;
-		}
+		};
 
 		--cs-label-switcher-hover-icon : {
 			opacity : .2;
-		}
+		};
 
 		--cs-label-switcher-focus-icon : {
 			box-shadow : var(--form-element-box-shadow), var(--form-element-inner-box-shadow);
-		}
+		};
 
 		--cs-label-switcher-active-icon : {
 			opacity : 1 !important;
-		}
+		};
 
 		/* Link button */
 
 		--cs-link-button : {
 			padding : var(--form-element-padding);
-		}
+		};
 
 		--cs-link-button-empty : {
 			line-height : var(--form-button-empty-size);
@@ -186,20 +193,81 @@
 
 		--cs-nav-tabs : {
 			border-bottom : var(--tabs-border);
-		}
+		};
 
 		--cs-nav-tabs-tab : {
 			background-color : transparent;
-		}
+		};
 
 		--cs-nav-tabs-tab-active : {
 			background-color : var(--background-color-base);
 			box-shadow       : none !important;
-		}
+		};
 
 		--cs-section-switcher-block : {
-			padding : var(--cs-block-padding)
-		}
+			padding : var(--block-padding)
+		};
+
+		 /* Modal */
+
+		--cs-section-modal : {
+			display:flex !important;
+			opacity           : 0;
+			transform         : scale(0);
+			-webkit-transform : scale(0);
+			transition        : opacity var(--transition-duration) var(--transition-duration-half), transform 0s var(--transition-duration), -webkit-transform 0s var(--transition-duration);
+			will-change       : opacity;
+
+			@apply (--layout);
+			@apply (--layout-center-center);
+		 };
+
+		--cs-section-modal-open : {
+			opacity           : 1;
+			transform         : scale(1);
+			-webkit-transform : scale(1);
+			transition        : opacity var(--transition-duration), transform 0s, -webkit-transform 0s;
+
+			@apply (--layout);
+			@apply (--layout-center-center);
+		};
+
+		--cs-section-modal-body : {
+			filter         : blur(0);
+			-webkit-filter : blur(0);
+			transition     : filter var(--transition-duration) var(--transition-duration), -webkit-filter var(--transition-duration) var(--transition-duration);
+			will-change    : filter;
+		};
+
+		--cs-section-modal-body-open : {
+			filter         : blur(var(--blur-radius));
+			-webkit-filter : blur(var(--blur-radius));
+			overflow       : hidden;
+		};
+
+		--cs-section-modal-overlay : {
+			display    : block;
+			background : var(--overlay-background);
+		};
+
+		--cs-section-modal-content : {
+			background          : var(--content-background);
+			display             : block;
+			opacity             : 0;
+			padding             : var(--content-padding);
+			transform           : translateY(var(--content-translate));
+			-webkit-transform   : translateY(var(--content-translate));
+			transition          : var(--transition-duration) var(--transition-duration-half);
+			transition-property : opacity, transform, -webkit-transform;
+			will-change         : opacity, transform, -webkit-transform;
+		};
+
+		--cs-section-modal-content-open : {
+			opacity           : 1;
+			transform         : translateY(0);
+			-webkit-transform : translateY(0);
+			transition        : var(--transition-duration);
+		};
 	}
 
 	html,
