@@ -14,7 +14,7 @@
     properties: {
       selected: {
         notify: true,
-        observer: 'selected_changed',
+        observer: '_selected_changed',
         type: Number
       }
     },
@@ -66,7 +66,7 @@
         }
       }
     },
-    selected_changed: function() {
+    _selected_changed: function() {
       var element, i, index, len, ref, ref1;
       ref = this.children;
       for (index = i = 0, len = ref.length; i < len; index = ++i) {

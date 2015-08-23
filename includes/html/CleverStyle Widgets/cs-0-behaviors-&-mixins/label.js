@@ -12,7 +12,7 @@
     properties: {
       active: {
         notify: true,
-        observer: 'active_changed',
+        observer: '_active_changed',
         reflectToAttribute: true,
         type: Boolean
       },
@@ -62,7 +62,7 @@
         };
       })(this));
     },
-    active_changed: function() {
+    _active_changed: function() {
       if (this.local_input.type === 'radio') {
         if (this.active) {
           return this.click();

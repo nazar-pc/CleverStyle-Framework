@@ -10,7 +10,7 @@ Polymer(
 	properties	:
 		selected	:
 			notify		: true
-			observer	: 'selected_changed'
+			observer	: '_selected_changed'
 			type		: Number
 	ready : ->
 		@addEventListener('tap', @click.bind(@))
@@ -38,7 +38,7 @@ Polymer(
 			else
 				element.removeAttribute('active')
 		return
-	selected_changed : ->
+	_selected_changed : ->
 		for element, index in @children
 			if element.tagName == 'TEMPLATE'
 				continue

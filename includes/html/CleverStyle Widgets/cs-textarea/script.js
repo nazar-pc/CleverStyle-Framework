@@ -14,7 +14,7 @@
     behaviors: [Polymer.cs.behaviors.value, Polymer.cs.behaviors.size],
     properties: {
       autosize: {
-        observer: 'autosize_changed',
+        observer: '_autosize_changed',
         reflectToAttribute: true,
         type: Boolean
       },
@@ -24,7 +24,7 @@
       this.initialized = true;
       return this._do_autosizing();
     },
-    autosize_changed: function() {
+    _autosize_changed: function() {
       return this._do_autosizing();
     },
     _do_autosizing: function() {

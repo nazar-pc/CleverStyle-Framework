@@ -13,14 +13,14 @@ Polymer(
 	]
 	properties	:
 		autosize	:
-			observer			: 'autosize_changed'
+			observer			: '_autosize_changed'
 			reflectToAttribute	: true
 			type				: Boolean
 		initialized	: Boolean
 	attached : ->
 		@initialized = true
 		@_do_autosizing()
-	autosize_changed : ->
+	_autosize_changed : ->
 		@_do_autosizing()
 	_do_autosizing : ->
 		if !@initialized

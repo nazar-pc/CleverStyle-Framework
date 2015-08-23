@@ -8,7 +8,7 @@ Polymer.cs.behaviors.label =
 	properties	:
 		active	:
 			notify				: true
-			observer			: 'active_changed'
+			observer			: '_active_changed'
 			reflectToAttribute	: true
 			type				: Boolean
 		focus	:
@@ -40,7 +40,7 @@ Polymer.cs.behaviors.label =
 			@focus = false
 		)
 		return
-	active_changed : ->
+	_active_changed : ->
 		if @local_input.type == 'radio'
 			# Simulate regular click for simplicity
 			if @active
