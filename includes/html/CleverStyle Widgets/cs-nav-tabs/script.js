@@ -20,17 +20,30 @@
     ready: function() {
       this.addEventListener('tap', this.click.bind(this));
       this.addEventListener('click', this.click.bind(this));
-      if (!this.querySelector('button[active]')) {
-        return this.active = 0;
-      }
+      return (function(_this) {
+        return function() {
+          var element, i, len, ref;
+          ref = _this.children;
+          for (i = 0, len = ref.length; i < len; i++) {
+            element = ref[i];
+            if (element.active) {
+              return;
+            }
+          }
+          _this.active = 0;
+        };
+      })(this)();
     },
     click: function(e) {
-      var button, buttons, i, index, len, results;
-      buttons = this.querySelectorAll('button');
+      var element, i, index, len, ref, results;
+      ref = this.children;
       results = [];
-      for (index = i = 0, len = buttons.length; i < len; index = ++i) {
-        button = buttons[index];
-        if (button === e.target) {
+      for (index = i = 0, len = ref.length; i < len; index = ++i) {
+        element = ref[index];
+        if (element.tagName === 'TEMPLATE') {
+          continue;
+        }
+        if (element === e.target) {
           results.push(this.active = index);
         } else {
           results.push(void 0);
@@ -39,11 +52,14 @@
       return results;
     },
     active_changed: function() {
-      var button, buttons, i, index, len;
-      buttons = this.querySelectorAll('button');
-      for (index = i = 0, len = buttons.length; i < len; index = ++i) {
-        button = buttons[index];
-        button.active = index === this.active;
+      var element, i, index, len, ref;
+      ref = this.children;
+      for (index = i = 0, len = ref.length; i < len; index = ++i) {
+        element = ref[index];
+        if (element.tagName === 'TEMPLATE') {
+          continue;
+        }
+        element.active = index === this.active;
       }
     }
   });

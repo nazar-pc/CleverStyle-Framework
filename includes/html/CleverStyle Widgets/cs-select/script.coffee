@@ -12,8 +12,6 @@ Polymer(
 		Polymer.cs.behaviors.tight
 		Polymer.cs.behaviors.size
 	]
-	properties	:
-		initialized	: Boolean
 	ready : ->
 		# We need to scroll because oof possible changed height of `option`, so that `option[selected]` will not be visible
 		scroll_once	= =>

@@ -14,16 +14,22 @@ Polymer(
 	ready : ->
 		@addEventListener('tap', @click.bind(@))
 		@addEventListener('click', @click.bind(@))
-		if !@querySelector('button[active]')
+		do =>
+			for element in @children
+				if element.active
+					return
 			@active = 0
+			return
 	click : (e) ->
-		buttons = @querySelectorAll('button')
-		for button, index in buttons
-			if button == e.target
+		for element, index in @children
+			if element.tagName == 'TEMPLATE'
+				continue
+			if element == e.target
 				@active = index
 	active_changed : ->
-		buttons = @querySelectorAll('button')
-		for button, index in buttons
-			button.active = index == @active
+		for element, index in @children
+			if element.tagName == 'TEMPLATE'
+				continue
+			element.active = index == @active
 		return
 )

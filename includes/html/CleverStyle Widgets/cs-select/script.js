@@ -12,9 +12,6 @@
     'is': 'cs-select',
     'extends': 'select',
     behaviors: [Polymer.cs.behaviors.value, Polymer.cs.behaviors.tight, Polymer.cs.behaviors.size],
-    properties: {
-      initialized: Boolean
-    },
     ready: function() {
       var scroll_once;
       scroll_once = (function(_this) {

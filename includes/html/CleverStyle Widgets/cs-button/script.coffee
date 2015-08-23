@@ -7,5 +7,8 @@
 Polymer(
 	'is'		: 'cs-button'
 	'extends'	: 'button'
-	behaviors	: [Polymer.cs.behaviors.button]
+	behaviors	: [
+		Polymer.cs.behaviors.button
+		Polymer.cs.behaviors.tight
+	]
 )
