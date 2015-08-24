@@ -23,14 +23,19 @@ Polymer(
 		@_esc_handler	= (e) =>
 			if e.keyCode == 27 # Esc
 				@close()
+			return
+		return
 	attached : ->
 		document.addEventListener('keydown', @_esc_handler)
 		body.parentNode.appendChild(@)
 		setTimeout (=>
 			@style.display = ''
+			return
 		), 100
+		return
 	detached : ->
 		document.removeEventListener('keydown', @_esc_handler)
+		return
 	_opened_changed : ->
 		body.modalOpened = body.modalOpened || 0
 		if @opened
@@ -47,6 +52,7 @@ Polymer(
 			@fire('close')
 			if !body.modalOpened
 				document.body.removeAttribute('modal-opened')
+		return
 	open : ->
 		if !@opened
 			@opened = true

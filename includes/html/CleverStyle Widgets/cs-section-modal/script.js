@@ -30,10 +30,10 @@
     },
     created: function() {
       this.style.display = 'none';
-      return this._esc_handler = (function(_this) {
+      this._esc_handler = (function(_this) {
         return function(e) {
           if (e.keyCode === 27) {
-            return _this.close();
+            _this.close();
           }
         };
       })(this);
@@ -41,14 +41,14 @@
     attached: function() {
       document.addEventListener('keydown', this._esc_handler);
       body.parentNode.appendChild(this);
-      return setTimeout(((function(_this) {
+      setTimeout(((function(_this) {
         return function() {
-          return _this.style.display = '';
+          _this.style.display = '';
         };
       })(this)), 100);
     },
     detached: function() {
-      return document.removeEventListener('keydown', this._esc_handler);
+      document.removeEventListener('keydown', this._esc_handler);
     },
     _opened_changed: function() {
       body.modalOpened = body.modalOpened || 0;
@@ -59,12 +59,12 @@
         }
         ++body.modalOpened;
         this.fire('open');
-        return document.body.setAttribute('modal-opened', '');
+        document.body.setAttribute('modal-opened', '');
       } else {
         --body.modalOpened;
         this.fire('close');
         if (!body.modalOpened) {
-          return document.body.removeAttribute('modal-opened');
+          document.body.removeAttribute('modal-opened');
         }
       }
     },
