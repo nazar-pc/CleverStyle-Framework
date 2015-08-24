@@ -22,13 +22,21 @@
 		--form-element-width                : 30em;
 		--tabs-border                       : .1em solid var(--background-color-base);
 		--block-padding                     : 1em;
-		--blur-radius                       : .5em;
+		--modal-blur-radius                 : 1em;
 		--transition-duration               : .3s;
 		--transition-duration-half          : .1s;
-		--overlay-background                : rgba(0, 0, 0, .3);
-		--content-background                : #fff;
-		--content-padding                   : 2em;
-		--content-translate                 : 10vh;
+		--modal-overlay-background          : rgba(0, 0, 0, .3);
+		--modal-content-background          : #fff;
+		--modal-content-padding             : 2em;
+		--modal-content-translate           : 10vh;
+		--tooltip-background                : rgba(0, 0, 0, .9);
+		--tooltip-color                     : #a3a3a3;
+		--tooltip-padding                   : .5em;
+		--tooltip-max-height                : 40vh;
+		--tooltip-max-width                 : 40vw;
+		--tooltip-arrow-height              : .5em;
+		--tooltip-arrow-width               : 1em;
+		--tooltip-offset                    : 1.5em;
 
 		--cs-global : {
 			box-sizing  : border-box;
@@ -226,7 +234,7 @@
 			opacity           : 1;
 			transform         : scale(1);
 			-webkit-transform : scale(1);
-			transition        : opacity var(--transition-duration), transform 0s, -webkit-transform 0s;
+			transition        : opacity var(--transition-duration);
 
 			@apply (--layout);
 			@apply (--layout-center-center);
@@ -239,23 +247,23 @@
 		};
 
 		--cs-section-modal-body-open : {
-			filter         : blur(var(--blur-radius));
-			-webkit-filter : blur(var(--blur-radius));
+			filter         : blur(var(--modal-blur-radius));
+			-webkit-filter : blur(var(--modal-blur-radius));
 			overflow       : hidden;
 		};
 
 		--cs-section-modal-overlay : {
 			display    : block;
-			background : var(--overlay-background);
+			background : var(--modal-overlay-background);
 		};
 
 		--cs-section-modal-content : {
-			background          : var(--content-background);
+			background          : var(--modal-content-background);
 			display             : block;
 			opacity             : 0;
-			padding             : var(--content-padding);
-			transform           : translateY(var(--content-translate));
-			-webkit-transform   : translateY(var(--content-translate));
+			padding             : var(--modal-content-padding);
+			transform           : translateY(var(--modal-content-translate));
+			-webkit-transform   : translateY(var(--modal-content-translate));
 			transition          : var(--transition-duration) var(--transition-duration-half);
 			transition-property : opacity, transform, -webkit-transform;
 			will-change         : opacity, transform, -webkit-transform;
@@ -266,6 +274,63 @@
 			transform         : translateY(0);
 			-webkit-transform : translateY(0);
 			transition        : var(--transition-duration);
+		};
+
+		/* Tooltip */
+
+		--cs-tooltip : {
+			background        : var(--tooltip-background);
+			color             : var(--tooltip-color);
+			margin-top        : -var(--tooltip-arrow-height);
+			opacity           : 0;
+			transform         : scale(0);
+			-webkit-transform : scale(0);
+			transition        : opacity var(--transition-duration-half) var(--transition-duration-half), transform 0s var(--transition-duration), -webkit-transform 0s var(--transition-duration);
+			will-change       : opacity, transform, -webkit-transform;
+
+			@apply (--layout);
+			@apply (--layout-center);
+		};
+
+		--cs-tooltip-top : {
+			margin-bottom     : -var(--tooltip-arrow-height);
+			margin-top        : 0;
+		};
+
+		--cs-tooltip-show : {
+			opacity           : 1;
+			transform         : scale(1);
+			-webkit-transform : scale(1);
+			transition        : opacity var(--transition-duration);
+
+			@apply (--layout);
+			@apply (--layout-center);
+		};
+
+		--cs-tooltip-show-quick : {
+			transform         : scale(1);
+			-webkit-transform : scale(1);
+			transition        : none;
+		};
+
+		--cs-tooltip-content : {
+			max-height : var(--tooltip-max-height);
+			max-width  : var(--tooltip-max-width);
+			padding    : var(--tooltip-padding);
+		}
+
+		--cs-tooltip-arrow : {
+			border-style : solid;
+			border-width : var(--tooltip-arrow-height) var(--tooltip-arrow-width) 0 var(--tooltip-arrow-width);
+			border-color : var(--tooltip-background) transparent transparent transparent;
+			bottom       : -var(--tooltip-arrow-height);
+		};
+
+		--cs-tooltip-arrow-top : {
+			border-width : 0 var(--tooltip-arrow-width) var(--tooltip-arrow-height) var(--tooltip-arrow-width);
+			border-color : transparent transparent var(--tooltip-background) transparent;
+			bottom       : auto;
+			top          : -var(--tooltip-arrow-height);
 		};
 	}
 

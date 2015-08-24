@@ -12,7 +12,7 @@
 	position : fixed;
 	top      : 0;
 	width    : 100vw;
-	z-index  : 499;
+	z-index  : 400;
 
 	@apply (--cs-global);
 	@apply (--cs-section-modal);
@@ -35,7 +35,7 @@
 	max-height : 95vh;
 	max-width  : 95vw;
 	overflow   : auto;
-	z-index    : 1000;
+	z-index    : 600;
 
 	@apply (--cs-section-modal-content);
 }

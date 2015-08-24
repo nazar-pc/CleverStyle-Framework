@@ -28,6 +28,7 @@ Polymer.cs.behaviors.button =
 	ready : ->
 		if !@childNodes.length
 			@empty = true
+		return
 	_bind_changed : ->
 		if @bind
 			# Yeah, a bit tricky here:)
@@ -63,6 +64,10 @@ Polymer.cs.behaviors.button =
 							else
 								# New parent, lets reconfigure observer again
 								observer.observe(bind_element.parentNode, {childList : true})
+							return
 						), 1000
+					return
+				return
 			)
 			observer.observe(bind_element.parentNode, {childList : true, subtree: false})
+		return

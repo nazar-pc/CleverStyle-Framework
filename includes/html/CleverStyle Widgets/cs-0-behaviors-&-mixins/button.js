@@ -38,7 +38,7 @@
     },
     ready: function() {
       if (!this.childNodes.length) {
-        return this.empty = true;
+        this.empty = true;
       }
     },
     _bind_changed: function() {
@@ -50,7 +50,7 @@
         this.addEventListener('click', action);
         this.addEventListener('tap', action);
         observer = new MutationObserver(function(mutations) {
-          return mutations.forEach(function(mutation) {
+          mutations.forEach(function(mutation) {
             var i, len, node, ref;
             if (!mutation.removedNodes) {
               return;
@@ -65,9 +65,9 @@
               setTimeout((function() {
                 if (!bind_element.parentNode) {
                   this.removeEventListener('click', action);
-                  return this.removeEventListener('tap', action);
+                  this.removeEventListener('tap', action);
                 } else {
-                  return observer.observe(bind_element.parentNode, {
+                  observer.observe(bind_element.parentNode, {
                     childList: true
                   });
                 }
@@ -75,7 +75,7 @@
             }
           });
         });
-        return observer.observe(bind_element.parentNode, {
+        observer.observe(bind_element.parentNode, {
           childList: true,
           subtree: false
         });
