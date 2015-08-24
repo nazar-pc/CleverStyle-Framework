@@ -13,34 +13,42 @@
     /*
     	  * Fix for jQuery "ready" event, trigger it after "WebComponentsReady" event triggered by WebComponents.js
      */
-    var functions, ready, ready_original;
-    ready_original = $.fn.ready;
-    functions = [];
-    ready = false;
-    $.fn.ready = function(fn) {
-      return functions.push(fn);
-    };
-    document.addEventListener('WebComponentsReady', function() {
-      if (!ready) {
-        Polymer.updateStyles();
-        ready = true;
-        $.fn.ready = ready_original;
-        functions.forEach(function(fn) {
-          return $(fn);
-        });
-        return functions = [];
-      }
-    });
+    (function() {
+      var functions, ready, ready_callback, ready_original;
+      ready_original = $.fn.ready;
+      functions = [];
+      ready = false;
+      $.fn.ready = function(fn) {
+        functions.push(fn);
+      };
+      ready_callback = function() {
+        if (!ready) {
+          document.removeEventListener('WebComponentsReady', ready_callback);
+          Polymer.updateStyles();
+          ready = true;
+          $.fn.ready = ready_original;
+          $(function() {
+            var fn, i, len;
+            for (i = 0, len = functions.length; i < len; i++) {
+              fn = functions[i];
+              fn();
+            }
+            functions = [];
+          });
+        }
+      };
+      document.addEventListener('WebComponentsReady', ready_callback);
+    })();
     return $(function() {
       var registerOuterClick__original;
       registerOuterClick__original = UIkit.components.dropdown.prototype.registerOuterClick;
-      return UIkit.components.dropdown.prototype.registerOuterClick = function() {
+      UIkit.components.dropdown.prototype.registerOuterClick = function() {
         if (!WebComponents.flags.shadow && this.element[0].matches(':host *')) {
           $(this.element[0]).find('li').one('click', function(e) {
-            return UIkit.$html.trigger("click.outer.dropdown", e);
+            UIkit.$html.trigger("click.outer.dropdown", e);
           });
         }
-        return registerOuterClick__original.call(this);
+        registerOuterClick__original.call(this);
       };
     });
   })(jQuery);

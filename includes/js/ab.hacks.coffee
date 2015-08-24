@@ -8,21 +8,28 @@ do ($ = jQuery) ->
 	###
 	 # Fix for jQuery "ready" event, trigger it after "WebComponentsReady" event triggered by WebComponents.js
 	###
-	ready_original	= $.fn.ready
-	functions		= []
-	ready			= false
-	$.fn.ready = (fn) ->
-		functions.push(fn)
-	document.addEventListener('WebComponentsReady', ->
-		if !ready
-			# Since we may use some CSS variables and mixins, lets update styles to make sure we didn't skip any styles
-			Polymer.updateStyles()
-			ready		= true;
-			$.fn.ready	= ready_original
-			functions.forEach (fn) ->
-				$(fn)
-			functions	= []
-	)
+	do ->
+		ready_original	= $.fn.ready
+		functions		= []
+		ready			= false
+		$.fn.ready		= (fn) ->
+			functions.push(fn)
+			return
+		ready_callback	= ->
+			if !ready
+				document.removeEventListener('WebComponentsReady', ready_callback)
+				# Since we may use some CSS variables and mixins, lets update styles to make sure we didn't skip any styles
+				Polymer.updateStyles()
+				ready		= true;
+				$.fn.ready	= ready_original
+				$(->
+					fn() for fn in functions
+					functions	= []
+					return
+				)
+			return
+		document.addEventListener('WebComponentsReady', ready_callback)
+		return
 	# Fix for UIkit dropdown not closed under Shadow DOM when clicked on some selected item
 	$ ->
 		registerOuterClick__original	= UIkit.components.dropdown.prototype.registerOuterClick
@@ -30,5 +37,8 @@ do ($ = jQuery) ->
 			if !WebComponents.flags.shadow && @element[0].matches(':host *')
 				$(@element[0]).find('li').one('click', (e) ->
 					UIkit.$html.trigger("click.outer.dropdown", e)
+					return
 				)
 			registerOuterClick__original.call(@)
+			return
+		return
