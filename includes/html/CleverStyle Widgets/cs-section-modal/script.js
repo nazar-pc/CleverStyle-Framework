@@ -8,11 +8,19 @@
  */
 
 (function() {
+  var body;
+
+  body = document.body;
+
   Polymer({
     'is': 'cs-section-modal',
     'extends': 'section',
     behaviors: [Polymer.cs.behaviors["this"]],
     properties: {
+      content: {
+        observer: '_content_changed',
+        type: String
+      },
       opened: {
         observer: '_opened_changed',
         reflectToAttribute: true,
@@ -27,20 +35,28 @@
       return this.style.display = 'none';
     },
     attached: function() {
-      document.body.parentNode.appendChild(this);
+      body.parentNode.appendChild(this);
       return setTimeout(((function(_this) {
         return function() {
           return _this.style.display = '';
         };
       })(this)), 100);
     },
+    _content_changed: function() {
+      return this.innerHTML = this.content;
+    },
     _opened_changed: function() {
+      body.modalOpened = body.modalOpened || 0;
       if (this.opened) {
         this.fire('open');
-        return document.body.setAttribute('modal-opened', '');
+        document.body.setAttribute('modal-opened', '');
+        return ++body.modalOpened;
       } else {
         this.fire('close');
-        return document.body.removeAttribute('modal-opened');
+        --body.modalOpened;
+        if (!body.modalOpened) {
+          return document.body.removeAttribute('modal-opened');
+        }
       }
     },
     open: function() {
