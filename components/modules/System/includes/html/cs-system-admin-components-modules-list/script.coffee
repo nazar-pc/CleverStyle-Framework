@@ -31,6 +31,12 @@ Polymer(
 					when 0 then L.disabled
 					when 1 then (if module.is_default then L.default_module else L.enabled)
 			module.name_localized	= L[module.name] || module.name.replace('_', ' ')
+			do ->
+				for prop in ['api', 'license', 'readme']
+					if module[prop]?.type
+						tag						= if module[prop].type == 'txt' then 'pre' else 'div'
+						module[prop].content	= "<#{tag}>#{module[prop].content}</#{tag}>"
+				return
 			do (meta = module.meta) ->
 				if !meta
 					return
@@ -55,21 +61,4 @@ Polymer(
 			return
 		@modules = modules
 		return
-	generic_modal	: (e) ->
-		$sender	= $(e.currentTarget)
-		index	= $sender.closest('[data-module-index]').data('module-index')
-		module	= @modules[index]
-		key		= $sender.data('modal-type')
-		tag		= if module[key].type == 'txt' then 'pre' else 'div'
-		$(
-			"""<div class="uk-modal-dialog uk-modal-dialog-large">
-				<div class="uk-overflow-container">
-					<#{tag}>#{module[key].content}</#{tag}>
-				</div>
-			</div>"""
-		)
-			.appendTo('body')
-			.cs().modal('show')
-			.on 'hide.uk.modal', ->
-				$(@).remove()
 )

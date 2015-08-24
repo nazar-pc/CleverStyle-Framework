@@ -7,30 +7,35 @@
         <cs-table-cell>[[L.action]]</cs-table-cell>
       </cs-table-row>
       <template as="plugin" is="dom-repeat" items="[[plugins]]">
-        <cs-table-row class$="[[plugin.class]]" data-plugin-index$="[[index]]">
+        <cs-table-row class$="[[plugin.class]]">
           <cs-table-cell>
             <template if="[[plugin.info]]" is="dom-if">
-              <a data-uk-tooltip$="[[tooltip_animation]]" href="[[concat('/admin/', plugin.name)]]" title$="[[plugin.info]]">[[plugin.name_localized]]</a>
+              <a href="[[concat('/admin/', plugin.name)]]" tooltip="[[plugin.info]]">
+                <span>[[plugin.name_localized]]</span>
+                <cs-tooltip></cs-tooltip>
+              </a>
             </template>
             <template if="[[!plugin.info]]" is="dom-if">
               <a href="[[concat('/admin/', plugin.name)]]">[[plugin.name_localized]]</a>
             </template>
           </cs-table-cell>
           <cs-table-cell>
-            <span class$="[[plugin.icon]]" data-uk-tooltip$="[[tooltip_animation]]" title$="[[plugin.icon_text]]"></span>
+            <cs-icon icon="[[plugin.icon]]" tooltip="[[plugin.icon_text]]"></cs-icon>
             <template if="[[plugin.readme]]" is="dom-if">
-              <button data-modal-type="readme" data-uk-tooltip$="[[tooltip_animation]]" icon="book" is="cs-button" on-click="generic_modal" title$="[[concat(L.information_about_plugin, '<br>', L.click_to_view_details)]]" type="button"></button>
+              <button action="open" bind="[[plugin.readme.modal]]" icon="book" is="cs-button" tooltip="[[concat(L.information_about_plugin, '<br>', L.click_to_view_details)]]" type="button"></button>
+              <section content="[[plugin.readme.content]]" is="cs-section-modal" this="{{plugin.readme.modal}}"></section>
             </template>
             <template if="[[plugin.license]]" is="dom-if">
-              <button data-modal-type="license" data-uk-tooltip$="[[tooltip_animation]]" icon="legal" is="cs-button" on-click="generic_modal" title$="[[concat(L.license, '<br>', L.click_to_view_details)]]" type="button"></button>
+              <button action="open" bind="[[plugin.license.modal]]" icon="legal" is="cs-button" tooltip="[[concat(L.license, '<br>', L.click_to_view_details)]]" type="button"></button>
+              <section content="[[plugin.license.content]]" is="cs-section-modal" this="{{plugin.license.modal}}"></section>
             </template>
           </cs-table-cell>
           <cs-table-cell>
             <template if="[[equal(plugin.active, 1)]]" is="dom-if">
-              <a data-uk-tooltip$="[[tooltip_animation]]" href="[[concat('/admin/System/components/plugins/disable/', plugin.name)]]" icon="minus" is="cs-link-button" title$="[[L.disable]]"></a>
+              <a href="[[concat('/admin/System/components/plugins/disable/', plugin.name)]]" icon="minus" is="cs-link-button" tooltip="[[L.disable]]"></a>
             </template>
             <template if="[[equal(plugin.active, 0)]]" is="dom-if">
-              <a data-uk-tooltip$="[[tooltip_animation]]" href="[[concat('/admin/System/components/plugins/enable/', plugin.name)]]" icon="check" is="cs-link-button" title$="[[L.enable]]">[[L.enable]]</a>
+              <a href="[[concat('/admin/System/components/plugins/enable/', plugin.name)]]" icon="check" is="cs-link-button" tooltip="[[L.enable]]">[[L.enable]]</a>
             </template>
           </cs-table-cell>
         </cs-table-row>

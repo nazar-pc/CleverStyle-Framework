@@ -17,41 +17,33 @@
   Polymer({
     'is': 'cs-system-admin-components-plugins-list',
     behaviors: [cs.Polymer.behaviors.Language],
-    properties: {
-      tooltip_animation: '{animation:true,delay:200}'
-    },
     ready: function() {
       var plugins;
       plugins = JSON.parse(this.querySelector('script').textContent);
       plugins.forEach(function(plugin) {
         plugin["class"] = plugin.active ? 'uk-alert-success' : 'uk-alert-warning';
-        plugin.icon = plugin.active ? 'uk-icon-check' : 'uk-icon-minus';
+        plugin.icon = plugin.active ? 'check' : 'minus';
         plugin.icon_text = plugin.active ? L.enabled : L.disabled;
         plugin.name_localized = L[plugin.name] || plugin.name.replace('_', ' ');
-        return (function(meta) {
+        (function() {
+          var i, len, prop, ref, ref1, tag;
+          ref = ['license', 'readme'];
+          for (i = 0, len = ref.length; i < len; i++) {
+            prop = ref[i];
+            if ((ref1 = plugin[prop]) != null ? ref1.type : void 0) {
+              tag = plugin[prop].type === 'txt' ? 'pre' : 'div';
+              plugin[prop].content = "<" + tag + ">" + plugin[prop].content + "</" + tag + ">";
+            }
+          }
+        })();
+        (function(meta) {
           if (!meta) {
             return;
           }
-          return plugin.info = L.plugin_info(meta["package"], meta.version, meta.description, meta.author, meta.website || L.none, meta.license, meta.provide ? [].concat(meta.provide).join(', ') : L.none, meta.require ? [].concat(meta.require).join(', ') : L.none, meta.conflict ? [].concat(meta.conflict).join(', ') : L.none, meta.optional ? [].concat(meta.optional).join(', ') : L.none, meta.multilingual && meta.multilingual.indexOf('interface') !== -1 ? L.yes : L.no, meta.multilingual && meta.multilingual.indexOf('content') !== -1 ? L.yes : L.no, meta.languages ? meta.languages.join(', ') : L.none);
+          plugin.info = L.plugin_info(meta["package"], meta.version, meta.description, meta.author, meta.website || L.none, meta.license, meta.provide ? [].concat(meta.provide).join(', ') : L.none, meta.require ? [].concat(meta.require).join(', ') : L.none, meta.conflict ? [].concat(meta.conflict).join(', ') : L.none, meta.optional ? [].concat(meta.optional).join(', ') : L.none, meta.multilingual && meta.multilingual.indexOf('interface') !== -1 ? L.yes : L.no, meta.multilingual && meta.multilingual.indexOf('content') !== -1 ? L.yes : L.no, meta.languages ? meta.languages.join(', ') : L.none);
         })(plugin.meta);
       });
       this.plugins = plugins;
-      this.workarounds(this.shadowRoot);
-      return cs.observe_inserts_on(this.shadowRoot, this.workarounds);
-    },
-    workarounds: function(target) {
-      return $(target).cs().tooltips_inside();
-    },
-    generic_modal: function(e) {
-      var $sender, index, key, plugin, tag;
-      $sender = $(e.currentTarget);
-      index = $sender.closest('[data-plugin-index]').data('plugin-index');
-      plugin = this.plugins[index];
-      key = $sender.data('modal-type');
-      tag = plugin[key].type === 'txt' ? 'pre' : 'div';
-      return $("<div class=\"uk-modal-dialog uk-modal-dialog-large\">\n	<div class=\"uk-overflow-container\">\n		<" + tag + ">" + plugin[key].content + "</" + tag + ">\n	</div>\n</div>").appendTo('body').cs().modal('show').on('hide.uk.modal', function() {
-        return $(this).remove();
-      });
     }
   });
 

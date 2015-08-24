@@ -10,15 +10,19 @@ L = cs.Language
 Polymer(
 	'is'			: 'cs-system-admin-components-plugins-list'
 	behaviors		: [cs.Polymer.behaviors.Language]
-	properties		:
-		tooltip_animation	:'{animation:true,delay:200}'
 	ready			: ->
 		plugins = JSON.parse(@querySelector('script').textContent)
 		plugins.forEach (plugin) ->
 			plugin.class			= if plugin.active then 'uk-alert-success' else 'uk-alert-warning'
-			plugin.icon				= if plugin.active then 'uk-icon-check' else 'uk-icon-minus'
-			plugin.icon_text		= if plugin.active then L.enabled else L.disabled
+			plugin.icon				= `plugin.active ? 'check' : 'minus'`
+			plugin.icon_text		= `plugin.active ? L.enabled : L.disabled`
 			plugin.name_localized	= L[plugin.name] || plugin.name.replace('_', ' ')
+			do ->
+				for prop in ['license', 'readme']
+					if plugin[prop]?.type
+						tag						= if plugin[prop].type == 'txt' then 'pre' else 'div'
+						plugin[prop].content	= "<#{tag}>#{plugin[prop].content}</#{tag}>"
+				return
 			do (meta = plugin.meta) ->
 				if !meta
 					return
@@ -37,26 +41,8 @@ Polymer(
 					if meta.multilingual && meta.multilingual.indexOf('content') != -1 then L.yes else L.no,
 					if meta.languages then meta.languages.join(', ') else L.none
 				)
+				return
+			return
 		@plugins = plugins
-		@workarounds(@shadowRoot)
-		cs.observe_inserts_on(@shadowRoot, @workarounds)
-	workarounds		: (target) ->
-		$(target).cs().tooltips_inside()
-	generic_modal	: (e) ->
-		$sender	= $(e.currentTarget)
-		index	= $sender.closest('[data-plugin-index]').data('plugin-index')
-		plugin	= @plugins[index]
-		key		= $sender.data('modal-type')
-		tag		= if plugin[key].type == 'txt' then 'pre' else 'div'
-		$(
-			"""<div class="uk-modal-dialog uk-modal-dialog-large">
-				<div class="uk-overflow-container">
-					<#{tag}>#{plugin[key].content}</#{tag}>
-				</div>
-			</div>"""
-		)
-			.appendTo('body')
-			.cs().modal('show')
-			.on 'hide.uk.modal', ->
-				$(@).remove()
+		return
 );

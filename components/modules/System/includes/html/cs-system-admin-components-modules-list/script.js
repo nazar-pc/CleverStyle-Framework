@@ -63,6 +63,17 @@
           }
         })();
         module.name_localized = L[module.name] || module.name.replace('_', ' ');
+        (function() {
+          var i, len, prop, ref, ref1, tag;
+          ref = ['api', 'license', 'readme'];
+          for (i = 0, len = ref.length; i < len; i++) {
+            prop = ref[i];
+            if ((ref1 = module[prop]) != null ? ref1.type : void 0) {
+              tag = module[prop].type === 'txt' ? 'pre' : 'div';
+              module[prop].content = "<" + tag + ">" + module[prop].content + "</" + tag + ">";
+            }
+          }
+        })();
         (function(meta) {
           if (!meta) {
             return;
@@ -71,17 +82,6 @@
         })(module.meta);
       });
       this.modules = modules;
-    },
-    generic_modal: function(e) {
-      var $sender, index, key, module, tag;
-      $sender = $(e.currentTarget);
-      index = $sender.closest('[data-module-index]').data('module-index');
-      module = this.modules[index];
-      key = $sender.data('modal-type');
-      tag = module[key].type === 'txt' ? 'pre' : 'div';
-      return $("<div class=\"uk-modal-dialog uk-modal-dialog-large\">\n	<div class=\"uk-overflow-container\">\n		<" + tag + ">" + module[key].content + "</" + tag + ">\n	</div>\n</div>").appendTo('body').cs().modal('show').on('hide.uk.modal', function() {
-        return $(this).remove();
-      });
     }
   });
 

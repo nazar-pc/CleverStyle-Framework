@@ -7,7 +7,7 @@
         <cs-table-cell>[[L.action]]</cs-table-cell>
       </cs-table-row>
       <template as="module" is="dom-repeat" items="[[modules]]">
-        <cs-table-row class$="[[module.class]]" data-module-index$="[[index]]">
+        <cs-table-row class$="[[module.class]]">
           <cs-table-cell>
             <template if="[[module.info]]" is="dom-if">
               <template if="[[module.administration]]" is="dom-if">
@@ -39,14 +39,17 @@
                 <cs-icon icon="link" tooltip="[[L.api_exists]]"></cs-icon>
               </template>
               <template if="[[module.api.type]]" is="dom-if">
-                <button data-modal-type="api" icon="link" is="cs-button" on-click="generic_modal" tooltip="[[concat(L.api_exists, '<br>', L.click_to_view_details)]]" type="button"></button>
+                <button action="open" bind="[[module.api.modal]]" icon="link" is="cs-button" tooltip="[[concat(L.api_exists, '<br>', L.click_to_view_details)]]" type="button"></button>
+                <section content="[[module.api.content]]" is="cs-section-modal" this="{{module.api.modal}}"></section>
               </template>
             </template>
             <template if="[[module.readme]]" is="dom-if">
-              <button data-modal-type="readme" icon="book" is="cs-button" on-click="generic_modal" tooltip="[[concat(L.information_about_module, '<br>', L.click_to_view_details)]]" type="button"></button>
+              <button action="open" bind="[[module.readme.modal]]" icon="book" is="cs-button" tooltip="[[concat(L.information_about_module, '<br>', L.click_to_view_details)]]" type="button"></button>
+              <section content="[[module.readme.content]]" is="cs-section-modal" this="{{module.readme.modal}}"></section>
             </template>
             <template if="[[module.license]]" is="dom-if">
-              <button data-modal-type="license" icon="legal" is="cs-button" on-click="generic_modal" tooltip="[[concat(L.license, '<br>', L.click_to_view_details)]]" type="button"></button>
+              <button action="open" bind="[[module.license.modal]]" icon="legal" is="cs-button" tooltip="[[concat(L.license, '<br>', L.click_to_view_details)]]" type="button"></button>
+              <section content="[[module.license.content]]" is="cs-section-modal" this="{{module.license.modal}}"></section>
             </template>
           </cs-table-cell>
           <cs-table-cell left>
