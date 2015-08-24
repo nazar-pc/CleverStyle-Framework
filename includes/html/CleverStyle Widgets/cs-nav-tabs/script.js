@@ -19,8 +19,8 @@
       }
     },
     ready: function() {
-      this.addEventListener('tap', this.click.bind(this));
-      this.addEventListener('click', this.click.bind(this));
+      this.addEventListener('tap', this._click.bind(this));
+      this.addEventListener('click', this._click.bind(this));
       return (function(_this) {
         return function() {
           var element, i, len, ref;
@@ -35,7 +35,7 @@
         };
       })(this)();
     },
-    click: function(e) {
+    _click: function(e) {
       var element, i, index, len, ref, target;
       target = (function(_this) {
         return function() {

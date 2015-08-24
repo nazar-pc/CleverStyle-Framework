@@ -10,10 +10,18 @@
 (function() {
   Polymer.cs.behaviors.button = {
     properties: {
+      action: {
+        type: String,
+        value: 'button_action'
+      },
       active: {
         notify: true,
         reflectToAttribute: true,
         type: Boolean
+      },
+      bind: {
+        observer: '_bind_changed',
+        type: Object
       },
       empty: {
         reflectToAttribute: true,
@@ -31,6 +39,46 @@
     ready: function() {
       if (!this.childNodes.length) {
         return this.empty = true;
+      }
+    },
+    _bind_changed: function() {
+      var action, bind_element, observer;
+      if (this.bind) {
+        bind_element = this.bind;
+        this.bind = null;
+        action = bind_element[this.action].bind(bind_element);
+        this.addEventListener('click', action);
+        this.addEventListener('tap', action);
+        observer = new MutationObserver(function(mutations) {
+          return mutations.forEach(function(mutation) {
+            var i, len, node, ref;
+            if (!mutation.removedNodes) {
+              return;
+            }
+            ref = mutation.removedNodes;
+            for (i = 0, len = ref.length; i < len; i++) {
+              node = ref[i];
+              if (node !== bind_element) {
+                return;
+              }
+              observer.disconnect();
+              setTimeout((function() {
+                if (!bind_element.parentNode) {
+                  this.removeEventListener('click', action);
+                  return this.removeEventListener('tap', action);
+                } else {
+                  return observer.observe(bind_element.parentNode, {
+                    childList: true
+                  });
+                }
+              }), 1000);
+            }
+          });
+        });
+        return observer.observe(bind_element.parentNode, {
+          childList: true,
+          subtree: false
+        });
       }
     }
   };

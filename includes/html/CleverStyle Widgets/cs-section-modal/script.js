@@ -11,6 +11,7 @@
   Polymer({
     'is': 'cs-section-modal',
     'extends': 'section',
+    behaviors: [Polymer.cs.behaviors["this"]],
     properties: {
       opened: {
         observer: '_opened_changed',
