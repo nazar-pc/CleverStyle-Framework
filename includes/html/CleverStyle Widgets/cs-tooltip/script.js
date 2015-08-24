@@ -39,26 +39,26 @@
         parent.addEventListener('mouseenter', show);
         parent.addEventListener('pointerenter', show);
         parent.addEventListener('mouseleave', hide);
-        return parent.addEventListener('pointerleave', hide);
+        parent.addEventListener('pointerleave', hide);
       } else {
         this.addEventListener('mouseenter', (function(_this) {
           return function() {
-            return _this.show = true;
+            _this.show = true;
           };
         })(this));
         this.addEventListener('pointerenter', (function(_this) {
           return function() {
-            return _this.show = true;
+            _this.show = true;
           };
         })(this));
         this.addEventListener('mouseleave', (function(_this) {
           return function() {
-            return _this.show = false;
+            _this.show = false;
           };
         })(this));
-        return this.addEventListener('pointerleave', (function(_this) {
+        this.addEventListener('pointerleave', (function(_this) {
           return function() {
-            return _this.show = false;
+            _this.show = false;
           };
         })(this));
       }
@@ -80,10 +80,10 @@
       this.top = tooltip_position.arrow_top;
       this.$.arrow.style.left = -tooltip_position.arrow_left_offset + 'px';
       this.$.arrow.style.right = tooltip_position.arrow_left_offset + 'px';
-      return this.show = true;
+      this.show = true;
     },
     hide: function() {
-      return this.show = false;
+      this.show = false;
     },
     _get_tooltip_size: function() {
       var tooltip_size;

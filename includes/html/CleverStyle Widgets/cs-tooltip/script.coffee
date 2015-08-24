@@ -31,16 +31,21 @@ Polymer(
 		else
 			@addEventListener('mouseenter', =>
 				@show	= true
+				return
 			)
 			@addEventListener('pointerenter', =>
 				@show	= true
+				return
 			)
 			@addEventListener('mouseleave', =>
 				@show	= false
+				return
 			)
 			@addEventListener('pointerleave', =>
 				@show	= false
+				return
 			)
+		return
 	_initialize_tooltip : ->
 		if !tooltip_element
 			tooltip_element = document.createElement('cs-tooltip')
@@ -56,8 +61,10 @@ Polymer(
 		@$.arrow.style.left		= -tooltip_position.arrow_left_offset + 'px'
 		@$.arrow.style.right	= tooltip_position.arrow_left_offset + 'px'
 		@show					= true
+		return
 	hide : ->
 		@show	= false
+		return
 	_get_tooltip_size : ->
 		@style.left		= -innerWidth
 		@style.top		= -innerHeight
