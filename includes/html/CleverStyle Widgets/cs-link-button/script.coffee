@@ -10,5 +10,6 @@ Polymer(
 	behaviors	: [
 		Polymer.cs.behaviors.button
 		Polymer.cs.behaviors.this
+		Polymer.cs.behaviors.tooltip
 	]
 )

@@ -10,6 +10,7 @@ Polymer(
 	behaviors	: [
 		Polymer.cs.behaviors.size
 		Polymer.cs.behaviors.this
+		Polymer.cs.behaviors.tooltip
 		Polymer.cs.behaviors.value
 	]
 	properties	:

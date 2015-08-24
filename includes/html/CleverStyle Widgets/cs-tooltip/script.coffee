@@ -4,9 +4,9 @@
  * @copyright Copyright (c) 2015, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
 ###
-tooltip_element	= null
 Polymer(
-	'is'	: 'cs-tooltip'
+	'is'		: 'cs-tooltip'
+	behaviors	: [Polymer.cs.behaviors.tooltip]
 	properties	:
 		show		:
 			reflectToAttribute	: true
@@ -21,13 +21,7 @@ Polymer(
 		parent	= @parentNode
 		if parent.tagName != 'HTML'
 			parent.removeChild(@)
-			@_initialize_tooltip()
-			show	= tooltip_element.show.bind(tooltip_element, parent)
-			hide	= tooltip_element.hide.bind(tooltip_element, parent)
-			parent.addEventListener('mouseenter', show)
-			parent.addEventListener('pointerenter', show)
-			parent.addEventListener('mouseleave', hide)
-			parent.addEventListener('pointerleave', hide)
+			@_tooltip_for_element(parent)
 		else
 			document.addEventListener('keydown',(e)  =>
 				if e.keyCode == 27 && @show # Esc
@@ -50,12 +44,7 @@ Polymer(
 				return
 			)
 		return
-	_initialize_tooltip : ->
-		if !tooltip_element
-			tooltip_element = document.createElement('cs-tooltip')
-			document.body.parentNode.appendChild(tooltip_element)
-		return
-	show : (element) ->
+	_show : (element) ->
 		if @innerHTML != element.tooltip
 			@innerHTML = element.tooltip
 		tooltip_position		= @_get_tooltip_position(element)
@@ -66,7 +55,7 @@ Polymer(
 		@$.arrow.style.right	= tooltip_position.arrow_left_offset + 'px'
 		@show					= true
 		return
-	hide : ->
+	_hide : ->
 		@show	= false
 		return
 	_get_tooltip_size : ->

@@ -8,12 +8,9 @@
  */
 
 (function() {
-  var tooltip_element;
-
-  tooltip_element = null;
-
   Polymer({
     'is': 'cs-tooltip',
+    behaviors: [Polymer.cs.behaviors.tooltip],
     properties: {
       show: {
         reflectToAttribute: true,
@@ -29,17 +26,11 @@
       }
     },
     attached: function() {
-      var hide, parent, show;
+      var parent;
       parent = this.parentNode;
       if (parent.tagName !== 'HTML') {
         parent.removeChild(this);
-        this._initialize_tooltip();
-        show = tooltip_element.show.bind(tooltip_element, parent);
-        hide = tooltip_element.hide.bind(tooltip_element, parent);
-        parent.addEventListener('mouseenter', show);
-        parent.addEventListener('pointerenter', show);
-        parent.addEventListener('mouseleave', hide);
-        parent.addEventListener('pointerleave', hide);
+        this._tooltip_for_element(parent);
       } else {
         document.addEventListener('keydown', (function(_this) {
           return function(e) {
@@ -70,13 +61,7 @@
         })(this));
       }
     },
-    _initialize_tooltip: function() {
-      if (!tooltip_element) {
-        tooltip_element = document.createElement('cs-tooltip');
-        document.body.parentNode.appendChild(tooltip_element);
-      }
-    },
-    show: function(element) {
+    _show: function(element) {
       var tooltip_position;
       if (this.innerHTML !== element.tooltip) {
         this.innerHTML = element.tooltip;
@@ -89,7 +74,7 @@
       this.$.arrow.style.right = tooltip_position.arrow_left_offset + 'px';
       this.show = true;
     },
-    hide: function() {
+    _hide: function() {
       this.show = false;
     },
     _get_tooltip_size: function() {

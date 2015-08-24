@@ -11,7 +11,7 @@
   Polymer({
     'is': 'cs-input-text',
     'extends': 'input',
-    behaviors: [Polymer.cs.behaviors.size, Polymer.cs.behaviors.tight, Polymer.cs.behaviors["this"], Polymer.cs.behaviors.value]
+    behaviors: [Polymer.cs.behaviors.size, Polymer.cs.behaviors.tight, Polymer.cs.behaviors["this"], Polymer.cs.behaviors.tooltip, Polymer.cs.behaviors.value]
   });
 
 }).call(this);

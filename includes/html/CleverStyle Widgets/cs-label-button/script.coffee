@@ -10,6 +10,7 @@ Polymer(
 	behaviors	: [
 		Polymer.cs.behaviors.label
 		Polymer.cs.behaviors.this
+		Polymer.cs.behaviors.tooltip
 	]
 	properties	:
 		first	:

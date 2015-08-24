@@ -37,14 +37,14 @@
         module.icon = (function() {
           switch (module.active) {
             case -1:
-              return 'uk-icon-times';
+              return 'times';
             case 0:
-              return 'uk-icon-minus';
+              return 'minus';
             case 1:
               if (module.is_default) {
-                return 'uk-icon-home';
+                return 'home';
               } else {
-                return 'uk-icon-check';
+                return 'check';
               }
           }
         })();
@@ -63,19 +63,14 @@
           }
         })();
         module.name_localized = L[module.name] || module.name.replace('_', ' ');
-        return (function(meta) {
+        (function(meta) {
           if (!meta) {
             return;
           }
-          return module.info = L.module_info(meta["package"], meta.version, meta.description, meta.author, meta.website || L.none, meta.license, meta.db_support ? meta.db_support.join(', ') : L.none, meta.storage_support ? meta.storage_support.join(', ') : L.none, meta.provide ? [].concat(meta.provide).join(', ') : L.none, meta.require ? [].concat(meta.require).join(', ') : L.none, meta.conflict ? [].concat(meta.conflict).join(', ') : L.none, meta.optional ? [].concat(meta.optional).join(', ') : L.none, meta.multilingual && meta.multilingual.indexOf('interface') !== -1 ? L.yes : L.no, meta.multilingual && meta.multilingual.indexOf('content') !== -1 ? L.yes : L.no, meta.languages ? meta.languages.join(', ') : L.none);
+          module.info = L.module_info(meta["package"], meta.version, meta.description, meta.author, meta.website || L.none, meta.license, meta.db_support ? meta.db_support.join(', ') : L.none, meta.storage_support ? meta.storage_support.join(', ') : L.none, meta.provide ? [].concat(meta.provide).join(', ') : L.none, meta.require ? [].concat(meta.require).join(', ') : L.none, meta.conflict ? [].concat(meta.conflict).join(', ') : L.none, meta.optional ? [].concat(meta.optional).join(', ') : L.none, meta.multilingual && meta.multilingual.indexOf('interface') !== -1 ? L.yes : L.no, meta.multilingual && meta.multilingual.indexOf('content') !== -1 ? L.yes : L.no, meta.languages ? meta.languages.join(', ') : L.none);
         })(module.meta);
       });
       this.modules = modules;
-      this.workarounds(this.shadowRoot);
-      return cs.observe_inserts_on(this.shadowRoot, this.workarounds);
-    },
-    workarounds: function(target) {
-      return $(target).cs().tooltips_inside();
     },
     generic_modal: function(e) {
       var $sender, index, key, module, tag;

@@ -22,9 +22,9 @@ Polymer(
 					when 1 then 'uk-alert-success'
 			module.icon				=
 				switch module.active
-					when -1 then 'uk-icon-times'
-					when 0 then 'uk-icon-minus'
-					when 1 then (if module.is_default then 'uk-icon-home' else 'uk-icon-check')
+					when -1 then 'times'
+					when 0 then 'minus'
+					when 1 then (if module.is_default then 'home' else 'check')
 			module.icon_text		=
 				switch module.active
 					when -1 then L.uninstalled
@@ -51,11 +51,10 @@ Polymer(
 					if meta.multilingual && meta.multilingual.indexOf('content') != -1 then L.yes else L.no,
 					if meta.languages then meta.languages.join(', ') else L.none
 				)
+				return
+			return
 		@modules = modules
-		@workarounds(@shadowRoot)
-		cs.observe_inserts_on(@shadowRoot, @workarounds)
-	workarounds		: (target) ->
-		$(target).cs().tooltips_inside()
+		return
 	generic_modal	: (e) ->
 		$sender	= $(e.currentTarget)
 		index	= $sender.closest('[data-module-index]').data('module-index')

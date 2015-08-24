@@ -11,7 +11,7 @@
   Polymer({
     'is': 'cs-textarea',
     'extends': 'textarea',
-    behaviors: [Polymer.cs.behaviors.size, Polymer.cs.behaviors["this"], Polymer.cs.behaviors.value],
+    behaviors: [Polymer.cs.behaviors.size, Polymer.cs.behaviors["this"], Polymer.cs.behaviors.tooltip, Polymer.cs.behaviors.value],
     properties: {
       autosize: {
         observer: '_autosize_changed',

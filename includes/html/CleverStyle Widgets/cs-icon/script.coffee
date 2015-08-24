@@ -6,7 +6,10 @@
 ###
 Polymer(
 	'is'				: 'cs-icon'
-	behaviors			: [Polymer.cs.behaviors.this]
+	behaviors			: [
+		Polymer.cs.behaviors.this
+		Polymer.cs.behaviors.tooltip
+	]
 	properties			:
 		icon			:
 			reflectToAttribute	: true
