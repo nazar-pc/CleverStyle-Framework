@@ -17,10 +17,7 @@
     'extends': 'section',
     behaviors: [Polymer.cs.behaviors["this"]],
     properties: {
-      content: {
-        observer: '_content_changed',
-        type: String
-      },
+      content: String,
       opened: {
         observer: '_opened_changed',
         reflectToAttribute: true,
@@ -32,9 +29,17 @@
       }
     },
     created: function() {
-      return this.style.display = 'none';
+      this.style.display = 'none';
+      return this._esc_handler = (function(_this) {
+        return function(e) {
+          if (e.keyCode === 27) {
+            return _this.close();
+          }
+        };
+      })(this);
     },
     attached: function() {
+      document.addEventListener('keydown', this._esc_handler);
       body.parentNode.appendChild(this);
       return setTimeout(((function(_this) {
         return function() {
@@ -42,29 +47,37 @@
         };
       })(this)), 100);
     },
-    _content_changed: function() {
-      return this.innerHTML = this.content;
+    detached: function() {
+      return document.removeEventListener('keydown', this._esc_handler);
     },
     _opened_changed: function() {
       body.modalOpened = body.modalOpened || 0;
       if (this.opened) {
+        if (this.content) {
+          this.innerHTML = this.content;
+          this.content = null;
+        }
+        ++body.modalOpened;
         this.fire('open');
-        document.body.setAttribute('modal-opened', '');
-        return ++body.modalOpened;
+        return document.body.setAttribute('modal-opened', '');
       } else {
-        this.fire('close');
         --body.modalOpened;
+        this.fire('close');
         if (!body.modalOpened) {
           return document.body.removeAttribute('modal-opened');
         }
       }
     },
     open: function() {
-      this.opened = true;
+      if (!this.opened) {
+        this.opened = true;
+      }
       return this;
     },
     close: function() {
-      this.opened = false;
+      if (this.opened) {
+        this.opened = false;
+      }
       return this;
     }
   });
