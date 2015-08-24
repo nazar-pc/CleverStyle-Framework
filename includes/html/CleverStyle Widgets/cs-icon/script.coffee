@@ -6,6 +6,7 @@
 ###
 Polymer(
 	'is'				: 'cs-icon'
+	behaviors			: [Polymer.cs.behaviors.this]
 	properties			:
 		icon			:
 			reflectToAttribute	: true

@@ -8,8 +8,9 @@ Polymer(
 	'is'		: 'cs-textarea'
 	'extends'	: 'textarea'
 	behaviors	: [
-		Polymer.cs.behaviors.value
 		Polymer.cs.behaviors.size
+		Polymer.cs.behaviors.this
+		Polymer.cs.behaviors.value
 	]
 	properties	:
 		autosize	:

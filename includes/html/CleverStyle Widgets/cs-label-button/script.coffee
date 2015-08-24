@@ -7,7 +7,10 @@
 Polymer(
 	'is'		: 'cs-label-button'
 	'extends'	: 'label'
-	behaviors	: [Polymer.cs.behaviors.label]
+	behaviors	: [
+		Polymer.cs.behaviors.label
+		Polymer.cs.behaviors.this
+	]
 	properties	:
 		first	:
 			reflectToAttribute	: true

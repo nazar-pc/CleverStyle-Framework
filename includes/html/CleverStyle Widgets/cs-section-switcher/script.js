@@ -11,6 +11,7 @@
   Polymer({
     'is': 'cs-section-switcher',
     'extends': 'section',
+    behaviors: [Polymer.cs.behaviors["this"]],
     properties: {
       selected: {
         notify: true,

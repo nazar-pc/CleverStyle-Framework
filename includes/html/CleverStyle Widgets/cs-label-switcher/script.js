@@ -11,7 +11,7 @@
   Polymer({
     'is': 'cs-label-switcher',
     'extends': 'label',
-    behaviors: [Polymer.cs.behaviors.label]
+    behaviors: [Polymer.cs.behaviors.label, Polymer.cs.behaviors["this"]]
   });
 
 }).call(this);

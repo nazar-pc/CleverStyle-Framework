@@ -8,9 +8,10 @@ Polymer(
 	'is'		: 'cs-select'
 	'extends'	: 'select'
 	behaviors	: [
-		Polymer.cs.behaviors.value
-		Polymer.cs.behaviors.tight
 		Polymer.cs.behaviors.size
+		Polymer.cs.behaviors.tight
+		Polymer.cs.behaviors.this
+		Polymer.cs.behaviors.value
 	]
 	ready : ->
 		# We need to scroll because oof possible changed height of `option`, so that `option[selected]` will not be visible

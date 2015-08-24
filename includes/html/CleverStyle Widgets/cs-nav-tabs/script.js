@@ -11,6 +11,7 @@
   Polymer({
     'is': 'cs-nav-tabs',
     'extends': 'nav',
+    behaviors: [Polymer.cs.behaviors["this"]],
     properties: {
       selected: {
         notify: true,

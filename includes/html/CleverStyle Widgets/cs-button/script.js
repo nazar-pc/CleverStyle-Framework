@@ -11,7 +11,7 @@
   Polymer({
     'is': 'cs-button',
     'extends': 'button',
-    behaviors: [Polymer.cs.behaviors.button, Polymer.cs.behaviors.tight]
+    behaviors: [Polymer.cs.behaviors.button, Polymer.cs.behaviors.tight, Polymer.cs.behaviors["this"]]
   });
 
 }).call(this);
