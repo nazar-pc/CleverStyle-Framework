@@ -41,6 +41,13 @@
         parent.addEventListener('mouseleave', hide);
         parent.addEventListener('pointerleave', hide);
       } else {
+        document.addEventListener('keydown', (function(_this) {
+          return function(e) {
+            if (e.keyCode === 27 && _this.show) {
+              return _this.show = false;
+            }
+          };
+        })(this));
         this.addEventListener('mouseenter', (function(_this) {
           return function() {
             _this.show = true;

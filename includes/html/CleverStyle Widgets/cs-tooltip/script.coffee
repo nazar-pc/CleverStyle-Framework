@@ -29,6 +29,10 @@ Polymer(
 			parent.addEventListener('mouseleave', hide)
 			parent.addEventListener('pointerleave', hide)
 		else
+			document.addEventListener('keydown',(e)  =>
+				if e.keyCode == 27 && @show # Esc
+					@show = false
+			)
 			@addEventListener('mouseenter', =>
 				@show	= true
 				return
