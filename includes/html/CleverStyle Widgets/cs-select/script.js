@@ -24,7 +24,7 @@
     },
     _scroll_to_selected: function() {
       var option_height;
-      if (this.size > 1) {
+      if (this.size > 1 && this.selectedOptions[0]) {
         option_height = this.selectedOptions[0].getBoundingClientRect().height;
         return this.scrollTop = option_height * (this.selectedIndex - Math.floor(this.size / 2)) + this._number_of_optgroups();
       }
