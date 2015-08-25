@@ -19,6 +19,12 @@
     'extends': 'section',
     behaviors: [Polymer.cs.behaviors["this"], Polymer.cs.behaviors.tooltip],
     properties: {
+      autoOpen: {
+        type: Boolean
+      },
+      autoDestroy: {
+        type: Boolean
+      },
       opened: {
         observer: '_opened_changed',
         reflectToAttribute: true,
@@ -37,6 +43,11 @@
           }
         };
       })(this);
+    },
+    attached: function() {
+      if (this.autoOpen) {
+        return this.open();
+      }
     },
     _opened_changed: function() {
       if (!this._attached_to_html) {
@@ -59,6 +70,9 @@
         this.fire('close');
         if (!body.modalOpened) {
           document.body.removeAttribute('modal-opened');
+        }
+        if (this.autoDestroy) {
+          this.parentNode.removeChild(this);
         }
       }
     },

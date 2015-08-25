@@ -14,6 +14,10 @@ Polymer(
 		Polymer.cs.behaviors.tooltip
 	]
 	properties	:
+		autoOpen	:
+			type				: Boolean
+		autoDestroy	:
+			type				: Boolean
 		opened		:
 			observer			: '_opened_changed'
 			reflectToAttribute	: true
@@ -27,6 +31,9 @@ Polymer(
 				@close()
 			return
 		return
+	attached : ->
+		if @autoOpen
+			@open()
 	_opened_changed : ->
 		if !@_attached_to_html
 			@_attached_to_html	= true
@@ -48,6 +55,8 @@ Polymer(
 			@fire('close')
 			if !body.modalOpened
 				document.body.removeAttribute('modal-opened')
+			if @autoDestroy
+				@parentNode.removeChild(@)
 		return
 	open : ->
 		if !@opened
