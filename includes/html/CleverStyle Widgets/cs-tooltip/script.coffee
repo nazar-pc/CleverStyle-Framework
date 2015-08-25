@@ -45,7 +45,7 @@ Polymer(
 			)
 		return
 	_show : (element) ->
-		if !element.tooltip
+		if !element.tooltip || @show
 			return
 		if @innerHTML != element.tooltip
 			@innerHTML = element.tooltip
@@ -58,7 +58,8 @@ Polymer(
 		@show					= true
 		return
 	_hide : ->
-		@show	= false
+		if @show
+			@show	= false
 		return
 	_get_tooltip_size : ->
 		@style.left		= -innerWidth

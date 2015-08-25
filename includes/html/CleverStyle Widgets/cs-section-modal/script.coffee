@@ -5,6 +5,7 @@
  * @license   MIT License, see license.txt
 ###
 body	= document.body
+html	= body.parentNode
 Polymer(
 	'is'		: 'cs-section-modal'
 	'extends'	: 'section'
@@ -22,26 +23,18 @@ Polymer(
 			reflectToAttribute	: true
 			type				: Boolean
 	created : ->
-		@style.display	= 'none'
 		@_esc_handler	= (e) =>
 			if e.keyCode == 27 # Esc
 				@close()
 			return
 		return
-	attached : ->
-		document.addEventListener('keydown', @_esc_handler)
-		body.parentNode.appendChild(@)
-		setTimeout (=>
-			@style.display = ''
-			return
-		), 100
-		return
-	detached : ->
-		document.removeEventListener('keydown', @_esc_handler)
-		return
 	_opened_changed : ->
+		if !@_attached_to_html
+			@_attached_to_html	= true
+			body.parentNode.appendChild(@)
 		body.modalOpened = body.modalOpened || 0
 		if @opened
+			document.addEventListener('keydown', @_esc_handler)
 			# Actually insert content only when needed
 			if @content
 				@innerHTML	= @content
@@ -51,6 +44,7 @@ Polymer(
 			@fire('open')
 			document.body.setAttribute('modal-opened', '')
 		else
+			document.removeEventListener('keydown', @_esc_handler)
 			--body.modalOpened
 			@fire('close')
 			if !body.modalOpened
@@ -58,7 +52,13 @@ Polymer(
 		return
 	open : ->
 		if !@opened
-			@opened = true
+			if !@_attached_to_html
+				@_attached_to_html	= true
+				body.parentNode.appendChild(@)
+				# Put modal opening into stack of functions to call
+				setTimeout(@open.bind(@), 0)
+			else
+				@opened = true
 		@
 	close : ->
 		if @opened

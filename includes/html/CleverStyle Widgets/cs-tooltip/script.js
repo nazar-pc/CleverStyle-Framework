@@ -63,7 +63,7 @@
     },
     _show: function(element) {
       var tooltip_position;
-      if (!element.tooltip) {
+      if (!element.tooltip || this.show) {
         return;
       }
       if (this.innerHTML !== element.tooltip) {
@@ -78,7 +78,9 @@
       this.show = true;
     },
     _hide: function() {
-      this.show = false;
+      if (this.show) {
+        this.show = false;
+      }
     },
     _get_tooltip_size: function() {
       var tooltip_size;

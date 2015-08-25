@@ -8,9 +8,11 @@
  */
 
 (function() {
-  var body;
+  var body, html;
 
   body = document.body;
+
+  html = body.parentNode;
 
   Polymer({
     'is': 'cs-section-modal',
@@ -29,7 +31,6 @@
       }
     },
     created: function() {
-      this.style.display = 'none';
       this._esc_handler = (function(_this) {
         return function(e) {
           if (e.keyCode === 27) {
@@ -38,21 +39,14 @@
         };
       })(this);
     },
-    attached: function() {
-      document.addEventListener('keydown', this._esc_handler);
-      body.parentNode.appendChild(this);
-      setTimeout(((function(_this) {
-        return function() {
-          _this.style.display = '';
-        };
-      })(this)), 100);
-    },
-    detached: function() {
-      document.removeEventListener('keydown', this._esc_handler);
-    },
     _opened_changed: function() {
+      if (!this._attached_to_html) {
+        this._attached_to_html = true;
+        body.parentNode.appendChild(this);
+      }
       body.modalOpened = body.modalOpened || 0;
       if (this.opened) {
+        document.addEventListener('keydown', this._esc_handler);
         if (this.content) {
           this.innerHTML = this.content;
           this.content = null;
@@ -61,6 +55,7 @@
         this.fire('open');
         document.body.setAttribute('modal-opened', '');
       } else {
+        document.removeEventListener('keydown', this._esc_handler);
         --body.modalOpened;
         this.fire('close');
         if (!body.modalOpened) {
@@ -70,7 +65,13 @@
     },
     open: function() {
       if (!this.opened) {
-        this.opened = true;
+        if (!this._attached_to_html) {
+          this._attached_to_html = true;
+          body.parentNode.appendChild(this);
+          setTimeout(this.open.bind(this), 0);
+        } else {
+          this.opened = true;
+        }
       }
       return this;
     },
