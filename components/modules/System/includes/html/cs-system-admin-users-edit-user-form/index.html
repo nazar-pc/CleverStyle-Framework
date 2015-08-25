@@ -2,7 +2,7 @@
   <link href="style.css" rel="import" type="css">
   <template>
     <h2 class="uk-text-center" hidden$="[[user_data.id]]">
-      <div class="uk-icon-spin uk-icon-spinner"></div>
+      <cs-icon icon="spinner" spin></cs-icon>
     </h2>
     <template if="{{user_data.id}}" is="dom-if">
       <div class="uk-form uk-form-stacked">
@@ -42,8 +42,8 @@
         </select>
         <label class="uk-form-label">[[L.status]]</label>
         <div class="uk-button-group" data-uk-button-radio>
-          <label class$="[[status_class('-1')]]" on-click="status_change">
-            <input checked$="[[status_state('-1')]]" type="radio" value="-1">
+          <label class$="[[status_class(-1)]]" on-click="status_change">
+            <input checked$="[[status_state(-1)]]" type="radio" value="-1">
             <span>[[L.is_not_activated]]</span>
           </label>
           <label class$="[[status_class(0)]]" on-click="status_change">
@@ -55,7 +55,10 @@
             <span>[[L.active]]</span>
           </label>
         </div>
-        <label class="uk-form-label" data-uk-tooltip="[[tooltip_animation]]" title="[[L.block_until_info]]">[[L.block_until]]</label>
+        <label class="uk-form-label" tooltip="[[L.block_until_info]]">
+          <span>[[L.block_until]]</span>
+          <cs-tooltip></cs-tooltip>
+        </label>
         <input type="datetime-local" value="{{block_until::input}}">
         <label class="uk-form-label">[[L.avatar]]</label>
         <input type="text" value="{{user_data.avatar::input}}">

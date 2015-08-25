@@ -25,9 +25,6 @@
   Polymer({
     'is': 'cs-system-admin-components-blocks-form',
     behaviors: [cs.Polymer.behaviors.Language],
-    properties: {
-      tooltip_animation: '{animation:true,delay:200}'
-    },
     ready: function() {
       var editor, json;
       json = JSON.parse(this.querySelector('script').textContent);

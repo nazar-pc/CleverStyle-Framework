@@ -24,8 +24,7 @@
       },
       name: '',
       user_agent: '',
-      ip: '',
-      tooltip_animation: '{animation:true,delay:200}'
+      ip: ''
     },
     save: function() {
       return $.ajax({

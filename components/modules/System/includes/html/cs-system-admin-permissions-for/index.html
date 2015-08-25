@@ -1,7 +1,7 @@
 <dom-module id="cs-system-admin-permissions-for">
   <template>
     <h2 class="uk-text-center" hidden$="[[all_permissions.length]]">
-      <div class="uk-icon-spin uk-icon-spinner"></div>
+      <cs-icon icon="spinner" spin></cs-icon>
     </h2>
     <form class="uk-form" id="form">
       <template as="permission" is="dom-repeat" items="[[all_permissions]]">
@@ -18,8 +18,8 @@
                 <cs-table-cell>[[label.name]]</cs-table-cell>
                 <cs-table-cell>
                   <span class="uk-button-group" data-uk-button-radio>
-                    <label class$="[[permission_class(label.id, '-1')]]">
-                      <input checked$="[[permission_state(label.id, '-1')]]" name$="[[concat('permissions[', label.id, ']')]]" type="radio" value="-1">
+                    <label class$="[[permission_class(label.id, -1)]]">
+                      <input checked$="[[permission_state(label.id, -1)]]" name$="[[concat('permissions[', label.id, ']')]]" type="radio" value="-1">
                       <span>[[L.inherited]]</span>
                     </label>
                     <label class$="[[permission_class(label.id, 0)]]">

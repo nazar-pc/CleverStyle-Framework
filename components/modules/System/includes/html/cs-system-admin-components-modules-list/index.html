@@ -71,10 +71,10 @@
             <template if="[[equal(module.active, 0)]]" is="dom-if">
               <a href="[[concat('/admin/System/components/modules/enable/', module.name)]]" icon="check" is="cs-link-button" tooltip="[[L.enable]]">[[L.enable]]</a>
             </template>
-            <template if="[[!equal(module.active, '-1')]]" is="dom-if">
+            <template if="[[!equal(module.active, -1)]]" is="dom-if">
               <a href="[[concat('/admin/System/components/modules/uninstall/', module.name)]]" icon="trash" is="cs-link-button" tooltip="[[L.uninstall]]"></a>
             </template>
-            <template if="[[equal(module.active, '-1')]]" is="dom-if">
+            <template if="[[equal(module.active, -1)]]" is="dom-if">
               <a href="[[concat('/admin/System/components/modules/install/', module.name)]]" icon="download" is="cs-link-button" tooltip="[[L.install]]">[[L.install]]</a>
             </template>
           </cs-table-cell>

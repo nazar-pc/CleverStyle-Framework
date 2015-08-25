@@ -49,16 +49,19 @@
             <template if="[[user.is_root]]" is="dom-if">-</template>
             <template if="[[!user.is_root]]" is="dom-if">
               <template if="[[!user.is_guest]]" is="dom-if">
-                <a data-uk-tooltip$="[[tooltip_animation]]" icon="pencil" is="cs-link-button" on-click="edit_user" title$="[[L.edit_user_information]]"></a>
+                <a icon="pencil" is="cs-link-button" on-click="edit_user" tooltip="[[L.edit_user_information]]"></a>
               </template>
               <template if="[[!or(user.is_guest, user.is_bot)]]" is="dom-if">
-                <a data-uk-tooltip$="[[tooltip_animation]]" href="[[concat('/admin/System/users/users/groups/', user.id)]]" icon="group" is="cs-link-button" title="[[L.edit_user_groups]]"></a>
+                <a href="[[concat('/admin/System/users/users/groups/', user.id)]]" icon="group" is="cs-link-button" tooltip="[[L.edit_user_groups]]"></a>
               </template>
-              <button data-uk-tooltip$="[[tooltip_animation]]" icon="key" is="cs-button" on-click="edit_permissions" title$="[[L.edit_user_permissions]]"></button>
+              <button icon="key" is="cs-button" on-click="edit_permissions" tooltip="[[L.edit_user_permissions]]"></button>
             </template>
           </cs-table-cell>
           <cs-table-cell>
-            <span data-uk-tooltip$="[[tooltip_animation]]" title$="[[user.type_info]]">[[user.type]]</span>
+            <span tooltip="[[user.type_info]]">
+              <span>[[user.type]]</span>
+              <cs-tooltip></cs-tooltip>
+            </span>
           </cs-table-cell>
           <template as="column" is="dom-repeat" items="[[user.columns]]">
             <cs-table-cell>[[column]]</cs-table-cell>

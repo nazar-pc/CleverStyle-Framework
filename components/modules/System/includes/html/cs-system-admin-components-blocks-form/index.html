@@ -3,7 +3,10 @@
     <cs-table class="uk-form" right-left>
       <cs-table-row>
         <cs-table-cell>
-          <span data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.block_type_info]]">[[L.block_type]]</span>
+          <span tooltip="[[L.block_type_info]]">
+            <span>[[L.block_type]]</span>
+            <cs-tooltip></cs-tooltip>
+          </span>
         </cs-table-cell>
         <cs-table-cell>
           <select is="cs-select" name="block[type]" on-change="type_change" size="5">
@@ -15,7 +18,10 @@
       </cs-table-row>
       <cs-table-row>
         <cs-table-cell>
-          <span data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.block_title_info]]">[[L.block_title]]</span>
+          <span tooltip="[[L.block_title_info]]">
+            <span>[[L.block_title]]</span>
+            <cs-tooltip></cs-tooltip>
+          </span>
         </cs-table-cell>
         <cs-table-cell>
           <input name="block[title]" type="text" value$="[[json.block_data.title]]">
@@ -23,7 +29,10 @@
       </cs-table-row>
       <cs-table-row>
         <cs-table-cell>
-          <span data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.block_active_info]]">[[L.block_active]]</span>
+          <span tooltip="[[L.block_active_info]]">
+            <span>[[L.block_active]]</span>
+            <cs-tooltip></cs-tooltip>
+          </span>
         </cs-table-cell>
         <cs-table-cell>
           <div>
@@ -42,7 +51,10 @@
       </cs-table-row>
       <cs-table-row>
         <cs-table-cell>
-          <span data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.block_template_info]]">[[L.block_template]]</span>
+          <span tooltip="[[L.block_template_info]]">
+            <span>[[L.block_template]]</span>
+            <cs-tooltip></cs-tooltip>
+          </span>
         </cs-table-cell>
         <cs-table-cell>
           <select is="cs-select" name="block[template]" size="5">
@@ -54,7 +66,10 @@
       </cs-table-row>
       <cs-table-row>
         <cs-table-cell>
-          <span data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.block_start_info]]">[[L.block_start]]</span>
+          <span tooltip="[[L.block_start_info]]">
+            <span>[[L.block_start]]</span>
+            <cs-tooltip></cs-tooltip>
+          </span>
         </cs-table-cell>
         <cs-table-cell>
           <input name="block[start]" type="datetime-local" value$="[[json.block_data.start]]">
@@ -62,7 +77,10 @@
       </cs-table-row>
       <cs-table-row>
         <cs-table-cell>
-          <span data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.block_expire_info]]">[[L.block_expire]]</span>
+          <span tooltip="[[L.block_expire_info]]">
+            <span>[[L.block_expire]]</span>
+            <cs-tooltip></cs-tooltip>
+          </span>
         </cs-table-cell>
         <cs-table-cell>
           <span class="uk-button-group" data-uk-button-radio>

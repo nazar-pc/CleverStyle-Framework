@@ -24,7 +24,7 @@
                 </cs-table-cell>
                 <cs-table-cell>
                   <label is="cs-label-button">
-                    <input checked="[[group_permission_state(group.id, '-1')]]" name$="[[concat('groups[', group.id, ']')]]" type="radio" value="-1">
+                    <input checked="[[group_permission_state(group.id, -1)]]" name$="[[concat('groups[', group.id, ']')]]" type="radio" value="-1">
                     <span>[[L.inherited]]</span>
                   </label>
                   <label is="cs-label-button">
@@ -55,7 +55,7 @@
                 </cs-table-cell>
                 <cs-table-cell>
                   <label is="cs-label-button">
-                    <input checked="[[user_permission_state(user.id, '-1')]]" name$="[[concat('users[', user.id, ']')]]" type="radio" value="-1">
+                    <input checked="[[user_permission_state(user.id, -1)]]" name$="[[concat('users[', user.id, ']')]]" type="radio" value="-1">
                     <span>[[L.inherited]]</span>
                   </label>
                   <label is="cs-label-button">
@@ -80,7 +80,7 @@
                 </cs-table-cell>
                 <cs-table-cell>
                   <label is="cs-label-button">
-                    <input checked="[[user_permission_state(user.id, '-1')]]" name$="[[concat('users[', user.id, ']')]]" type="radio" value="-1">
+                    <input checked="[[user_permission_state(user.id, -1)]]" name$="[[concat('users[', user.id, ']')]]" type="radio" value="-1">
                     <span>[[L.inherited]]</span>
                   </label>
                   <label is="cs-label-button">

@@ -23,8 +23,7 @@
         value: ''
       },
       group: '',
-      user: '',
-      tooltip_animation: '{animation:true,delay:200}'
+      user: ''
     },
     all_permissions: {},
     permissions: {},

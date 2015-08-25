@@ -26,8 +26,7 @@
       user_data: {
         type: Object,
         value: {}
-      },
-      tooltip_animation: '{animation:true,delay:200}'
+      }
     },
     ready: function() {
       $.getJSON('api/System/admin/users/' + this.user_id, (function(_this) {
@@ -40,9 +39,6 @@
     },
     workarounds: function(target) {
       return $(target).cs().radio_buttons_inside().cs().tooltips_inside();
-    },
-    status_change: function(e) {
-      return this.set('user_data.status', $(e.currentTarget).children('input').val());
     },
     save: function() {
       return $.ajax({
@@ -60,9 +56,6 @@
       var status;
       status = this.user_data.status;
       return status == expected;
-    },
-    status_class: function(expected) {
-      return 'uk-button' + (this.status_state(expected) ? ' uk-active' : '');
     },
     can_save_: function() {
       return this.user_data.username && (this.user_data.login || this.user_data.email);

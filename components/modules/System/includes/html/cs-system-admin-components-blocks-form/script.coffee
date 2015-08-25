@@ -11,8 +11,6 @@ L					= cs.Language
 Polymer(
 	'is'				: 'cs-system-admin-components-blocks-form'
 	behaviors			: [cs.Polymer.behaviors.Language]
-	properties			:
-		tooltip_animation	:'{animation:true,delay:200}'
 	ready				: ->
 		json = JSON.parse(@querySelector('script').textContent)
 		json.block_data.type		= json.block_data.type || json.types[0]

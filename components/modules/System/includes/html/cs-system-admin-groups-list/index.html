@@ -1,7 +1,7 @@
 <dom-module id="cs-system-admin-groups-list">
   <template>
     <h2 class="uk-text-center" hidden$="[[groups.length]]">
-      <div class="uk-icon-spin uk-icon-spinner"></div>
+      <cs-icon icon="spinner" spin></cs-icon>
     </h2>
     <cs-table center hidden$="[[!groups.length]]" list with-header>
       <cs-table-row>
@@ -13,15 +13,9 @@
       <template as="group" is="dom-repeat" items="[[groups]]">
         <cs-table-row>
           <cs-table-cell>
-            <div class="uk-button cs-button-compact" data-uk-tooltip$="[[tooltip_animation]]" on-click="edit_group" title$="[[L.edit_group_information]]">
-              <div class="uk-icon-pencil"></div>
-            </div>
-            <div class="uk-button cs-button-compact" data-uk-tooltip$="[[tooltip_animation]]" hidden$="[[!group.allow_to_delete]]" on-click="delete_group" title$="[[L.delete]]">
-              <div class="uk-icon-trash-o"></div>
-            </div>
-            <div class="uk-button cs-button-compact" data-uk-tooltip$="[[tooltip_animation]]" on-click="edit_permissions" title$="[[L.edit_group_permissions]]">
-              <div class="uk-icon-key"></div>
-            </div>
+            <button icon="pencil" is="cs-button" on-click="edit_group" tooltip="[[L.edit_group_information]]"></button>
+            <button icon="key" is="cs-button" on-click="edit_permissions" tooltip="[[L.edit_group_permissions]]"></button>
+            <button hidden$="[[!group.allow_to_delete]]" icon="trash" is="cs-button" on-click="delete_group" tooltip="[[L.delete]]"></button>
           </cs-table-cell>
           <cs-table-cell>[[group.id]]</cs-table-cell>
           <cs-table-cell>[[group.title]]</cs-table-cell>

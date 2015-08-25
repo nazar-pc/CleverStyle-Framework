@@ -26,7 +26,6 @@
     'is': 'cs-system-admin-users-list',
     behaviors: [cs.Polymer.behaviors.Language],
     properties: {
-      tooltip_animation: '{animation:true,delay:200}',
       search_column: '',
       search_mode: 'LIKE',
       search_text: {

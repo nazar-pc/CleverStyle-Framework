@@ -1,7 +1,7 @@
 %dom-module(id="cs-system-admin-permissions-list")
 	%template
 		%h2.uk-text-center(hidden$="[[permissions.length]]")
-			.uk-icon-spin.uk-icon-spinner
+			%cs-icon(icon="spinner" spin)
 		%cs-table(center list with-header hidden$="[[!permissions.length]]")
 			%cs-table-row
 				%cs-table-cell [[L.action]]
@@ -11,13 +11,13 @@
 			%template(is="dom-repeat" items="[[permissions]]" as="permission")
 				%cs-table-row
 					%cs-table-cell
-						.uk-button.cs-button-compact(on-click="edit_permission" data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.edit]]")
-							.uk-icon-pencil
-						.uk-button.cs-button-compact(on-click="delete_permission" data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.delete]]")
-							.uk-icon-trash-o
+						%button(is="cs-button" on-click="edit_permission" icon="pencil" tooltip="[[L.edit]]")
+						%button(is="cs-button" on-click="delete_permission" icon="trash" tooltip="[[L.delete]]")
 					%cs-table-cell [[permission.id]]
 					%cs-table-cell [[permission.group]]
-					%cs-table-cell(data-uk-tooltip$="[[tooltip_animation]]" title$="[[permission.description]]") [[permission.label]]
+					%cs-table-cell(tooltip="[[permission.description]]")
+						%span [[permission.label]]
+						%cs-tooltip
 		%p.cs-left
-			%button.uk-button(on-click="add_permission" type="button") [[L.add_permission]]
+			%button(is="cs-button" on-click="add_permission" type="button") [[L.add_permission]]
 	%script(src="script.js")

@@ -2,7 +2,7 @@
 	%link(rel="import" href="style.css" type="css")
 	%template
 		%h2.uk-text-center(hidden$="[[user_data.id]]")
-			.uk-icon-spin.uk-icon-spinner
+			%cs-icon(icon="spinner" spin)
 		%template(is="dom-if" if="{{user_data.id}}")
 			.uk-form.uk-form-stacked
 				%label.uk-form-label id
@@ -34,8 +34,8 @@
 						%option(value="[[timezone.timezone]]" selected$="[[equal(timezone.timezone, user_data.timezone)]]") [[timezone.description]]
 				%label.uk-form-label [[L.status]]
 				.uk-button-group(data-uk-button-radio)
-					%label(on-click="status_change" class$="[[status_class('-1')]]")
-						%input(checked$="[[status_state('-1')]]" type="radio" value="-1")/
+					%label(on-click="status_change" class$="[[status_class(-1)]]")
+						%input(checked$="[[status_state(-1)]]" type="radio" value="-1")/
 						%span [[L.is_not_activated]]
 					%label(on-click="status_change" class$="[[status_class(0)]]")
 						%input(checked$="[[status_state(0)]]" type="radio" value="0")/
@@ -43,7 +43,9 @@
 					%label(on-click="status_change" class$="[[status_class(1)]]")
 						%input(checked$="[[status_state(1)]]" type="radio" value="1")/
 						%span [[L.active]]
-				%label.uk-form-label(data-uk-tooltip="[[tooltip_animation]]" title="[[L.block_until_info]]") [[L.block_until]]
+				%label.uk-form-label(tooltip="[[L.block_until_info]]")
+					%span [[L.block_until]]
+					%cs-tooltip
 				%input(type="datetime-local" value="{{block_until::input}}")/
 				%label.uk-form-label [[L.avatar]]
 				%input(type="text" value="{{user_data.avatar::input}}")/

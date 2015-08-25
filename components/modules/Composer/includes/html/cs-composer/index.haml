@@ -2,7 +2,7 @@
 	%template
 		%h2.cs-center [[L.composer_composer_updating]]
 		%h1.cs-center(hidden$="[[status]]")
-			%i.uk-icon-spin.uk-icon-spinner
+			%cs-icon(icon="spinner" spin)
 		%h3.cs-center(hidden$="[[!status]]") [[status]]
 		%pre#result(style="background: #1a1a1a")
 	%script(src="script.js")

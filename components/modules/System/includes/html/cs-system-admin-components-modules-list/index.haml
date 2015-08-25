@@ -49,8 +49,8 @@
 							%a(is="cs-link-button" icon="minus" href="[[concat('/admin/System/components/modules/disable/', module.name)]]" tooltip="[[L.disable]]")
 						%template(is="dom-if" if="[[equal(module.active, 0)]]")
 							%a(is="cs-link-button" icon="check" href="[[concat('/admin/System/components/modules/enable/', module.name)]]" tooltip="[[L.enable]]") [[L.enable]]
-						%template(is="dom-if" if="[[!equal(module.active, '-1')]]")
+						%template(is="dom-if" if="[[!equal(module.active, -1)]]")
 							%a(is="cs-link-button" icon="trash" href="[[concat('/admin/System/components/modules/uninstall/', module.name)]]" tooltip="[[L.uninstall]]")
-						%template(is="dom-if" if="[[equal(module.active, '-1')]]")
+						%template(is="dom-if" if="[[equal(module.active, -1)]]")
 							%a(is="cs-link-button" icon="download" href="[[concat('/admin/System/components/modules/install/', module.name)]]" tooltip="[[L.install]]") [[L.install]]
 	%script(src="script.js")

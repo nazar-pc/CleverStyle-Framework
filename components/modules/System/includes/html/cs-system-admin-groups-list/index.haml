@@ -1,7 +1,7 @@
 %dom-module(id="cs-system-admin-groups-list")
 	%template
 		%h2.uk-text-center(hidden$="[[groups.length]]")
-			.uk-icon-spin.uk-icon-spinner
+			%cs-icon(icon="spinner" spin)
 		%cs-table(center list with-header hidden$="[[!groups.length]]")
 			%cs-table-row
 				%cs-table-cell [[L.action]]
@@ -11,12 +11,9 @@
 			%template(is="dom-repeat" items="[[groups]]" as="group")
 				%cs-table-row
 					%cs-table-cell
-						.uk-button.cs-button-compact(on-click="edit_group" data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.edit_group_information]]")
-							.uk-icon-pencil
-						.uk-button.cs-button-compact(on-click="delete_group" data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.delete]]" hidden$="[[!group.allow_to_delete]]")
-							.uk-icon-trash-o
-						.uk-button.cs-button-compact(on-click="edit_permissions" data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.edit_group_permissions]]")
-							.uk-icon-key
+						%button(is="cs-button" on-click="edit_group" icon="pencil" tooltip="[[L.edit_group_information]]")
+						%button(is="cs-button" on-click="edit_permissions" icon="key" tooltip="[[L.edit_group_permissions]]")
+						%button(is="cs-button" on-click="delete_group" icon="trash" tooltip="[[L.delete]]" hidden$="[[!group.allow_to_delete]]")
 					%cs-table-cell [[group.id]]
 					%cs-table-cell [[group.title]]
 					%cs-table-cell [[group.description]]

@@ -16,7 +16,6 @@ Polymer(
 			value	: ''
 		group	: ''
 		user	: ''
-		tooltip_animation		:'{animation:true,delay:200}'
 	all_permissions		: {}
 	permissions			: {}
 	ready				: ->

@@ -37,12 +37,14 @@
 						%template(is="dom-if" if="[[user.is_root]]") -
 						%template(is="dom-if" if="[[!user.is_root]]")
 							%template(is="dom-if" if="[[!user.is_guest]]")
-								%a(is="cs-link-button" icon="pencil" on-click="edit_user" data-uk-tooltip$="[[tooltip_animation]]" title$="[[L.edit_user_information]]")
+								%a(is="cs-link-button" icon="pencil" on-click="edit_user" tooltip="[[L.edit_user_information]]")
 							%template(is="dom-if" if="[[!or(user.is_guest, user.is_bot)]]")
-								%a(is="cs-link-button" icon="group" href="[[concat('/admin/System/users/users/groups/', user.id)]]" data-uk-tooltip$="[[tooltip_animation]]" title="[[L.edit_user_groups]]")
-							%button(is="cs-button" icon="key" data-uk-tooltip$="[[tooltip_animation]]" on-click="edit_permissions" title$="[[L.edit_user_permissions]]")
+								%a(is="cs-link-button" icon="group" href="[[concat('/admin/System/users/users/groups/', user.id)]]" tooltip="[[L.edit_user_groups]]")
+							%button(is="cs-button" icon="key" on-click="edit_permissions" tooltip="[[L.edit_user_permissions]]")
 					%cs-table-cell
-						%span(data-uk-tooltip$="[[tooltip_animation]]" title$="[[user.type_info]]") [[user.type]]
+						%span(tooltip="[[user.type_info]]")
+							%span [[user.type]]
+							%cs-tooltip
 					%template(is="dom-repeat" items="[[user.columns]]" as="column")
 						%cs-table-cell [[column]]
 		-# should be reference %template#pagination

@@ -1,7 +1,7 @@
 <dom-module id="cs-system-admin-permissions-list">
   <template>
     <h2 class="uk-text-center" hidden$="[[permissions.length]]">
-      <div class="uk-icon-spin uk-icon-spinner"></div>
+      <cs-icon icon="spinner" spin></cs-icon>
     </h2>
     <cs-table center hidden$="[[!permissions.length]]" list with-header>
       <cs-table-row>
@@ -13,21 +13,20 @@
       <template as="permission" is="dom-repeat" items="[[permissions]]">
         <cs-table-row>
           <cs-table-cell>
-            <div class="uk-button cs-button-compact" data-uk-tooltip$="[[tooltip_animation]]" on-click="edit_permission" title$="[[L.edit]]">
-              <div class="uk-icon-pencil"></div>
-            </div>
-            <div class="uk-button cs-button-compact" data-uk-tooltip$="[[tooltip_animation]]" on-click="delete_permission" title$="[[L.delete]]">
-              <div class="uk-icon-trash-o"></div>
-            </div>
+            <button icon="pencil" is="cs-button" on-click="edit_permission" tooltip="[[L.edit]]"></button>
+            <button icon="trash" is="cs-button" on-click="delete_permission" tooltip="[[L.delete]]"></button>
           </cs-table-cell>
           <cs-table-cell>[[permission.id]]</cs-table-cell>
           <cs-table-cell>[[permission.group]]</cs-table-cell>
-          <cs-table-cell data-uk-tooltip$="[[tooltip_animation]]" title$="[[permission.description]]">[[permission.label]]</cs-table-cell>
+          <cs-table-cell tooltip="[[permission.description]]">
+            <span>[[permission.label]]</span>
+            <cs-tooltip></cs-tooltip>
+          </cs-table-cell>
         </cs-table-row>
       </template>
     </cs-table>
     <p class="cs-left">
-      <button class="uk-button" on-click="add_permission" type="button">[[L.add_permission]]</button>
+      <button is="cs-button" on-click="add_permission" type="button">[[L.add_permission]]</button>
     </p>
   </template>
   <script src="script.js"></script>

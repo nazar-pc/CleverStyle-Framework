@@ -26,10 +26,9 @@
       languages: [],
       timezones: [],
       block_until: {
-        type: String,
-        observer: 'block_until_'
-      },
-      tooltip_animation: '{animation:true,delay:200}'
+        observer: '_block_until',
+        type: String
+      }
     },
     ready: function() {
       $.when($.getJSON('api/System/admin/languages'), $.getJSON('api/System/admin/timezones'), $.getJSON('api/System/admin/users/' + this.user_id)).done((function(_this) {
@@ -100,7 +99,7 @@
         return $lock.removeClass('uk-icon-unlock').addClass('uk-icon-lock');
       }
     },
-    block_until_: function() {
+    _block_until: function() {
       var block_until, date;
       block_until = this.block_until;
       date = new Date;

@@ -17,7 +17,6 @@ Polymer(
 		name				: ''
 		user_agent			: ''
 		ip					: ''
-		tooltip_animation	:'{animation:true,delay:200}'
 	save				: ->
 		$.ajax(
 			url		: 'api/System/admin/users'

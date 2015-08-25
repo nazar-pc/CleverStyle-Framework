@@ -18,7 +18,6 @@
     'is': 'cs-system-admin-permissions-list',
     behaviors: [cs.Polymer.behaviors.Language],
     properties: {
-      tooltip_animation: '{animation:true,delay:200}',
       permissions: []
     },
     ready: function() {

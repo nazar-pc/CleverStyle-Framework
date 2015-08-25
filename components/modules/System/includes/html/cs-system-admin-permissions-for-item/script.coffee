@@ -11,7 +11,6 @@ Polymer(
 	'is'					: 'cs-system-admin-permissions-for-item'
 	behaviors				: [cs.Polymer.behaviors.Language]
 	properties				:
-		tooltip_animation	:'{animation:true,delay:200}'
 		group				: ''
 		label				: ''
 		permissions			: {}

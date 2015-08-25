@@ -18,9 +18,8 @@ Polymer(
 		languages			: []
 		timezones			: []
 		block_until			:
+			observer	: '_block_until'
 			type		: String
-			observer	: 'block_until_'
-		tooltip_animation	:'{animation:true,delay:200}'
 	ready			: ->
 		$.when(
 			$.getJSON('api/System/admin/languages')
@@ -76,7 +75,7 @@ Polymer(
 		else
 			password.type	= 'password'
 			$lock.removeClass('uk-icon-unlock').addClass('uk-icon-lock')
-	block_until_	: ->
+	_block_until	: ->
 		block_until	= @block_until
 		date		= new Date
 		date.setFullYear(block_until.substr(0, 4))

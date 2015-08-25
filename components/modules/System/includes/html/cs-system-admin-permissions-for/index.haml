@@ -1,7 +1,7 @@
 %dom-module(id="cs-system-admin-permissions-for")
 	%template
 		%h2.uk-text-center(hidden$="[[all_permissions.length]]")
-			.uk-icon-spin.uk-icon-spinner
+			%cs-icon(icon="spinner" spin)
 		%form#form.uk-form
 			%template(is="dom-repeat" items="[[all_permissions]]" as="permission")
 				%legend [[permission.group]]
@@ -16,8 +16,8 @@
 								%cs-table-cell [[label.name]]
 								%cs-table-cell
 									%span.uk-button-group(data-uk-button-radio)
-										%label(class$="[[permission_class(label.id, '-1')]]")
-											%input(type="radio" value="-1" checked$="[[permission_state(label.id, '-1')]]" name$="[[concat('permissions[', label.id, ']')]]")/
+										%label(class$="[[permission_class(label.id, -1)]]")
+											%input(type="radio" value="-1" checked$="[[permission_state(label.id, -1)]]" name$="[[concat('permissions[', label.id, ']')]]")/
 											%span [[L.inherited]]
 										%label(class$="[[permission_class(label.id, 0)]]")
 											%input(type="radio" value="0" checked$="[[permission_state(label.id, 0)]]" name$="[[concat('permissions[', label.id, ']')]]")/

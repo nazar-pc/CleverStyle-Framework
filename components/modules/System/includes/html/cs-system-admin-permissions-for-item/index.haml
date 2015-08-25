@@ -20,7 +20,7 @@
 									%cs-tooltip
 								%cs-table-cell
 									%label(is="cs-label-button")
-										%input(type="radio" value="-1" checked="[[group_permission_state(group.id, '-1')]]" name$="[[concat('groups[', group.id, ']')]]")/
+										%input(type="radio" value="-1" checked="[[group_permission_state(group.id, -1)]]" name$="[[concat('groups[', group.id, ']')]]")/
 										%span [[L.inherited]]
 									%label(is="cs-label-button")
 										%input(type="radio" value="0" checked="[[group_permission_state(group.id, 0)]]" name$="[[concat('groups[', group.id, ']')]]")/
@@ -42,7 +42,7 @@
 									%cs-tooltip
 								%cs-table-cell
 									%label(is="cs-label-button")
-										%input(type="radio" value="-1" checked="[[user_permission_state(user.id, '-1')]]" name$="[[concat('users[', user.id, ']')]]")/
+										%input(type="radio" value="-1" checked="[[user_permission_state(user.id, -1)]]" name$="[[concat('users[', user.id, ']')]]")/
 										%span [[L.inherited]]
 									%label(is="cs-label-button")
 										%input(type="radio" value="0" checked="[[user_permission_state(user.id, 0)]]" name$="[[concat('users[', user.id, ']')]]")/
@@ -60,7 +60,7 @@
 									%cs-tooltip
 								%cs-table-cell
 									%label(is="cs-label-button")
-										%input(type="radio" value="-1" checked="[[user_permission_state(user.id, '-1')]]" name$="[[concat('users[', user.id, ']')]]")/
+										%input(type="radio" value="-1" checked="[[user_permission_state(user.id, -1)]]" name$="[[concat('users[', user.id, ']')]]")/
 										%span [[L.inherited]]
 									%label(is="cs-label-button")
 										%input(type="radio" value="0" checked="[[user_permission_state(user.id, 0)]]" name$="[[concat('users[', user.id, ']')]]")/

@@ -10,8 +10,6 @@ L = cs.Language
 Polymer(
 	'is'			: 'cs-system-admin-components-modules-list'
 	behaviors		: [cs.Polymer.behaviors.Language]
-	properties		:
-		tooltip_animation	:'{animation:true,delay:200}'
 	ready			: ->
 		modules = JSON.parse(@querySelector('script').textContent)
 		modules.forEach (module) ->
