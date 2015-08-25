@@ -19,7 +19,6 @@
     'extends': 'section',
     behaviors: [Polymer.cs.behaviors["this"], Polymer.cs.behaviors.tooltip],
     properties: {
-      content: String,
       opened: {
         observer: '_opened_changed',
         reflectToAttribute: true,

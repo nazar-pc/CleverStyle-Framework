@@ -6,11 +6,7 @@
 ###
 tooltip_element = null
 Polymer.cs.behaviors.tooltip =
-	properties :
-		tooltip	:
-			observer	: '_tooltip_changed'
-			type		: String
-	_tooltip_changed : ->
+	attached : ->
 		if @tooltip
 			@_tooltip_for_element(@)
 		return

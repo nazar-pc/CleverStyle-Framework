@@ -13,13 +13,7 @@
   tooltip_element = null;
 
   Polymer.cs.behaviors.tooltip = {
-    properties: {
-      tooltip: {
-        observer: '_tooltip_changed',
-        type: String
-      }
-    },
-    _tooltip_changed: function() {
+    attached: function() {
       if (this.tooltip) {
         this._tooltip_for_element(this);
       }
