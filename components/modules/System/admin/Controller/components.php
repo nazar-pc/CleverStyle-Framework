@@ -49,13 +49,13 @@ trait components {
 						h::{'h2.cs-center'}(
 							$L->sure_to_delete_block(static::get_block_title($id)).
 							h::{'input[type=hidden][name=mode][value=delete]'}().
-							h::{'input[type=hidden][name=block[id]]'}(
+							h::{'input[type=hidden][name=id]'}(
 								[
 									'value' => $id
 								]
 							)
 						).
-						h::{'button.uk-button[type=submit]'}($L->yes)
+						h::{'button[is=cs-button][type=submit]'}($L->yes)
 					);
 					break;
 				case 'add':
