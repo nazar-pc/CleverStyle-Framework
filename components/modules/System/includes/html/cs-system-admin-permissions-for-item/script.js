@@ -130,20 +130,11 @@
       permission = this.permissions[type][id];
       return permission == expected || (expected == '-1' && permission === void 0);
     },
-    permission_class: function(type, id, expected) {
-      return 'uk-button' + (this.permission_state(type, id, expected) ? ' uk-active' : '');
-    },
     group_permission_state: function(id, expected) {
       return this.permission_state('groups', id, expected);
     },
-    group_permission_class: function(id, expected) {
-      return this.permission_class('groups', id, expected);
-    },
     user_permission_state: function(id, expected) {
       return this.permission_state('users', id, expected);
-    },
-    user_permission_class: function(id, expected) {
-      return this.permission_class('users', id, expected);
     },
     username: function(user) {
       return user.username || user.login;

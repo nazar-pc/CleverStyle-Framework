@@ -25,7 +25,7 @@
         type: String
       }
     },
-    ready: function() {
+    attached: function() {
       var fn, i, input, inputs, len;
       (function(_this) {
         return (function() {

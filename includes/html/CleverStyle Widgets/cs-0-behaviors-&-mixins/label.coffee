@@ -17,7 +17,8 @@ Polymer.cs.behaviors.label =
 		value	:
 			notify	: true
 			type	: String
-	ready : ->
+	# TODO: Should be `ready` according to Polymer docs, but not working as expected (see https://github.com/Polymer/polymer/issues/2075)
+	attached : ->
 		do =>
 			next_node	= @nextSibling
 			if next_node.nodeType == Node.TEXT_NODE && next_node.nextSibling?.getAttribute('is') == @is

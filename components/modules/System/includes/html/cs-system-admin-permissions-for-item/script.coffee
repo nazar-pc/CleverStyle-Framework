@@ -115,16 +115,10 @@ Polymer(
 			`expected == '-1'` &&
 			permission == undefined
 		)
-	permission_class		: (type, id, expected) ->
-		'uk-button' + (if @permission_state(type, id, expected) then ' uk-active' else '')
 	group_permission_state	: (id, expected) ->
 		@permission_state('groups', id, expected)
-	group_permission_class	: (id, expected) ->
-		@permission_class('groups', id, expected)
 	user_permission_state	: (id, expected) ->
 		@permission_state('users', id, expected)
-	user_permission_class	: (id, expected) ->
-		@permission_class('users', id, expected)
 	username				: (user) ->
 		user.username || user.login
 )
