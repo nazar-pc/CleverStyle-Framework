@@ -82,7 +82,7 @@
       return cs.observe_inserts_on(this.shadowRoot, this.workarounds);
     },
     workarounds: function(target) {
-      return $(target).cs().radio_buttons_inside().cs().tooltips_inside();
+      return $(target).cs().radio_buttons_inside();
     },
     status_change: function(e) {
       return this.set('user_data.status', $(e.currentTarget).children('input').val());

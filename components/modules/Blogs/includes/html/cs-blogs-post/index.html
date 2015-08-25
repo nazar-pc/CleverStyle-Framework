@@ -1,12 +1,8 @@
 <dom-module id="cs-blogs-post">
   <template>
     <header>
-      <a class="uk-button" data-uk-tooltip="{animation:true,delay:200}" hidden$="[[!can_edit]]" href="[[concat('/Blogs/edit_post/', jsonld.id)]]" title="[[L.edit]]">
-        <span class="uk-icon-pencil"></span>
-      </a>
-      <a class="uk-button" data-uk-tooltip="{animation:true,delay:200}" hidden$="[[!can_delete]]" href="[[concat('/admin/Blogs/delete_post/', jsonld.id)]]" title="[[L.delete]]">
-        <span class="uk-icon-trash-o"></span>
-      </a>
+      <a hidden$="[[!can_edit]]" href="[[concat('/Blogs/edit_post/', jsonld.id)]]" icon="pencil" is="cs-link-button" tooltip="[[L.edit]]"></a>
+      <a hidden$="[[!can_delete]]" href="[[concat('/admin/Blogs/delete_post/', jsonld.id)]]" icon="trash" is="cs-link-button" tooltip="[[L.delete]]"></a>
       <h1>[[jsonld.title]]</h1>
       <template if="[[jsonld.articleSection.length]]" is="dom-if">
         <p>

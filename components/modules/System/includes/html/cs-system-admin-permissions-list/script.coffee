@@ -14,17 +14,6 @@ Polymer(
 		permissions	: []
 	ready				: ->
 		@reload()
-		@workarounds(@shadowRoot)
-	workarounds				: (target) ->
-		timeout	= null
-		cs.observe_inserts_on(target, =>
-			if timeout
-				clearTimeout(timeout)
-			timeout = setTimeout (=>
-				timeout	= null
-				$(target).cs().tooltips_inside()
-			), 100
-		)
 	reload				: ->
 		$.when(
 			$.getJSON('api/System/admin/blocks')

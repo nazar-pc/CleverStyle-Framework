@@ -85,14 +85,9 @@
           return event.which !== 13;
         };
       })(this));
-      $(this.$['search-results']).on('change', ':radio', function() {
+      return $(this.$['search-results']).on('change', ':radio', function() {
         return $(this).closest('cs-table-row').addClass('changed');
       });
-      this.workarounds(this.shadowRoot);
-      return cs.observe_inserts_on(this.shadowRoot, this.workarounds);
-    },
-    workarounds: function(target) {
-      return $(target).cs().tooltips_inside().cs().radio_buttons_inside();
     },
     save: function() {
       var default_data, key, value;

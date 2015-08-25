@@ -48,13 +48,6 @@ do ($=jQuery, UI = UIkit) ->
 					when 'hide' then modal.hide()
 				$this.get()
 		###*
-		 * Enabling tooltips inside ShadowDOM, should be called on element.shadowRoot
-		###
-		tooltips_inside			: ->
-			@find('[data-uk-tooltip]').add(@filter('[data-uk-tooltip]')).each ->
-				UI.tooltip(@, UI.Utils.options($(@).attr('data-uk-tooltip')))
-			@
-		###*
 		 * Enabling dynamic pagination inside ShadowDOM, should be called on element.shadowRoot
 		###
 		pagination_inside	: ->

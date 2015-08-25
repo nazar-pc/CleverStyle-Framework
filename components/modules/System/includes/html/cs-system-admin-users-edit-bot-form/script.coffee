@@ -22,12 +22,6 @@ Polymer(
 		$.getJSON('api/System/admin/users/' + @user_id, (data) =>
 			@set('user_data', data)
 		)
-		@workarounds(@shadowRoot)
-		cs.observe_inserts_on(@shadowRoot, @workarounds)
-	workarounds		: (target) ->
-		$(target)
-			.cs().radio_buttons_inside()
-			.cs().tooltips_inside()
 	save			: ->
 		$.ajax(
 			url		: 'api/System/admin/users/' + @user_id
@@ -37,9 +31,6 @@ Polymer(
 			success	: ->
 				UIkit.notify(L.changes_saved.toString(), 'success')
 		)
-	status_state	: (expected) ->
-		status	= @user_data.status
-		`status == expected`
 	can_save_		: ->
 		@user_data.username && (@user_data.login || @user_data.email)
 )

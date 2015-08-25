@@ -29,16 +29,11 @@
       }
     },
     ready: function() {
-      $.getJSON('api/System/admin/users/' + this.user_id, (function(_this) {
+      return $.getJSON('api/System/admin/users/' + this.user_id, (function(_this) {
         return function(data) {
           return _this.set('user_data', data);
         };
       })(this));
-      this.workarounds(this.shadowRoot);
-      return cs.observe_inserts_on(this.shadowRoot, this.workarounds);
-    },
-    workarounds: function(target) {
-      return $(target).cs().radio_buttons_inside().cs().tooltips_inside();
     },
     save: function() {
       return $.ajax({
@@ -51,11 +46,6 @@
           return UIkit.notify(L.changes_saved.toString(), 'success');
         }
       });
-    },
-    status_state: function(expected) {
-      var status;
-      status = this.user_data.status;
-      return status == expected;
     },
     can_save_: function() {
       return this.user_data.username && (this.user_data.login || this.user_data.email);

@@ -77,12 +77,6 @@ Polymer(
 			->
 				$(@).closest('cs-table-row').addClass('changed')
 		)
-		@workarounds(@shadowRoot)
-		cs.observe_inserts_on(@shadowRoot, @workarounds)
-	workarounds				: (target) ->
-		$(target)
-			.cs().tooltips_inside()
-			.cs().radio_buttons_inside()
 	save					: ->
 		default_data	= (key + '=' + value for key, value of $.ajaxSettings.data).join('&')
 		$.ajax(

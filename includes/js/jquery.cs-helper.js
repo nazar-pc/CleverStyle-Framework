@@ -59,16 +59,6 @@
       },
 
       /**
-      		 * Enabling tooltips inside ShadowDOM, should be called on element.shadowRoot
-       */
-      tooltips_inside: function() {
-        this.find('[data-uk-tooltip]').add(this.filter('[data-uk-tooltip]')).each(function() {
-          return UI.tooltip(this, UI.Utils.options($(this).attr('data-uk-tooltip')));
-        });
-        return this;
-      },
-
-      /**
       		 * Enabling dynamic pagination inside ShadowDOM, should be called on element.shadowRoot
        */
       pagination_inside: function() {

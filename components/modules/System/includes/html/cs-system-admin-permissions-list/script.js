@@ -21,23 +21,7 @@
       permissions: []
     },
     ready: function() {
-      this.reload();
-      return this.workarounds(this.shadowRoot);
-    },
-    workarounds: function(target) {
-      var timeout;
-      timeout = null;
-      return cs.observe_inserts_on(target, (function(_this) {
-        return function() {
-          if (timeout) {
-            clearTimeout(timeout);
-          }
-          return timeout = setTimeout((function() {
-            timeout = null;
-            return $(target).cs().tooltips_inside();
-          }), 100);
-        };
-      })(this));
+      return this.reload();
     },
     reload: function() {
       return $.when($.getJSON('api/System/admin/blocks'), $.getJSON('api/System/admin/permissions')).done((function(_this) {

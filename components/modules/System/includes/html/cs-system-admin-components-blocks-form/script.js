@@ -44,7 +44,7 @@
       return cs.observe_inserts_on(this.shadowRoot, this.workarounds);
     },
     workarounds: function(target) {
-      return $(target).cs().tooltips_inside().cs().radio_buttons_inside().cs().connect_to_parent_form();
+      return $(target).cs().radio_buttons_inside().cs().connect_to_parent_form();
     },
     type_change: function() {
       var type;

@@ -1,10 +1,8 @@
 %dom-module(id="cs-blogs-post")
 	%template
 		%header
-			%a.uk-button(href="[[concat('/Blogs/edit_post/', jsonld.id)]]" data-uk-tooltip="{animation:true,delay:200}" title="[[L.edit]]" hidden$="[[!can_edit]]")
-				%span.uk-icon-pencil
-			%a.uk-button(href="[[concat('/admin/Blogs/delete_post/', jsonld.id)]]" data-uk-tooltip="{animation:true,delay:200}" title="[[L.delete]]" hidden$="[[!can_delete]]")
-				%span.uk-icon-trash-o
+			%a(is="cs-link-button" icon="pencil" href="[[concat('/Blogs/edit_post/', jsonld.id)]]" tooltip="[[L.edit]]" hidden$="[[!can_edit]]")
+			%a(is="cs-link-button" icon="trash" href="[[concat('/admin/Blogs/delete_post/', jsonld.id)]]" tooltip="[[L.delete]]" hidden$="[[!can_delete]]")
 			%h1 [[jsonld.title]]
 			%template(is="dom-if" if="[[jsonld.articleSection.length]]")
 				%p

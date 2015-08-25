@@ -1,18 +1,10 @@
 <dom-module id="cs-blogs-head-actions">
   <template>
     <p hidden$="[[!or(admin, can_write_post)]]">
-      <a class="uk-button" data-uk-tooltip="{animation:true,delay:200}" hidden$="[[!admin]]" href="/admin/Blogs" title$="[[L.administration]]">
-        <span class="uk-icon uk-icon-gears"></span>
-      </a>
+      <a hidden$="[[!admin]]" href="/admin/Blogs" icon="gears" is="cs-link-button" tooltip="[[L.administration]]"></a>
       <template if="[[can_write_post]]" is="dom-if">
-        <a class="uk-button" href="/Blogs/new_post">
-          <span class="uk-icon uk-icon-pencil"></span>
-          <span>[[L.new_post]]</span>
-        </a>
-        <a class="uk-button" href="/Blogs/drafts">
-          <span class="uk-icon uk-icon-archive"></span>
-          <span>[[L.drafts]]</span>
-        </a>
+        <a href="/Blogs/new_post" icon="pencil" is="cs-link-button">[[L.new_post]]</a>
+        <a href="/Blogs/drafts" icon="archive" is="cs-link-button">[[L.drafts]]</a>
       </template>
     </p>
   </template>

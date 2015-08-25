@@ -15,9 +15,8 @@ Polymer(
 		can_delete			: false
 		comments_enabled	: false
 	ready			: ->
-		@jsonld = JSON.parse(@querySelector('script').innerHTML)
+		@jsonld					= JSON.parse(@querySelector('script').innerHTML)
 		@$.content.innerHTML	= @jsonld.content
-		$(@shadowRoot).cs().tooltips_inside()
 	sections_path	: (index) ->
 		@jsonld.sections_paths[index]
 	tags_path		: (index) ->

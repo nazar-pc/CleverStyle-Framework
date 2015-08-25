@@ -17,10 +17,6 @@ Polymer(
 		groups				: []
 	ready				: ->
 		@reload()
-		@workarounds(@shadowRoot)
-		cs.observe_inserts_on(@shadowRoot, @workarounds)
-	workarounds			: (target) ->
-		$(target).cs().tooltips_inside()
 	reload				: ->
 		$.getJSON('api/System/admin/groups', (groups) =>
 			groups.forEach (group) ->

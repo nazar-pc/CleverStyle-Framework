@@ -33,7 +33,6 @@ Polymer(
 		cs.observe_inserts_on(@shadowRoot, @workarounds)
 	workarounds			: (target) ->
 		$(target)
-			.cs().tooltips_inside()
 			.cs().radio_buttons_inside()
 			.cs().connect_to_parent_form()
 	type_change			: ->

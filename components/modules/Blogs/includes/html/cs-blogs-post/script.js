@@ -24,8 +24,7 @@
     },
     ready: function() {
       this.jsonld = JSON.parse(this.querySelector('script').innerHTML);
-      this.$.content.innerHTML = this.jsonld.content;
-      return $(this.shadowRoot).cs().tooltips_inside();
+      return this.$.content.innerHTML = this.jsonld.content;
     },
     sections_path: function(index) {
       return this.jsonld.sections_paths[index];

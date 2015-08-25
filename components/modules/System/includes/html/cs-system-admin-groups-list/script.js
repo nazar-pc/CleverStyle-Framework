@@ -27,12 +27,7 @@
       groups: []
     },
     ready: function() {
-      this.reload();
-      this.workarounds(this.shadowRoot);
-      return cs.observe_inserts_on(this.shadowRoot, this.workarounds);
-    },
-    workarounds: function(target) {
-      return $(target).cs().tooltips_inside();
+      return this.reload();
     },
     reload: function() {
       return $.getJSON('api/System/admin/groups', (function(_this) {

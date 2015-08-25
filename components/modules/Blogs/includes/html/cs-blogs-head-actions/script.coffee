@@ -12,6 +12,4 @@ Polymer(
 	properties	:
 		admin			: false
 		can_write_post	: false
-	ready		: ->
-		$(@shadowRoot).cs().tooltips_inside()
 );

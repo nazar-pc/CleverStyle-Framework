@@ -63,7 +63,6 @@ Polymer(
 	workarounds		: (target) ->
 		$(target)
 			.cs().radio_buttons_inside()
-			.cs().tooltips_inside()
 	status_change	: (e) ->
 		@set('user_data.status', $(e.currentTarget).children('input').val())
 	show_password	: (e) ->

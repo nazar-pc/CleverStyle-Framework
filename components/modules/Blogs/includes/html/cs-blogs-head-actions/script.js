@@ -19,9 +19,6 @@
     properties: {
       admin: false,
       can_write_post: false
-    },
-    ready: function() {
-      return $(this.shadowRoot).cs().tooltips_inside();
     }
   });
 
