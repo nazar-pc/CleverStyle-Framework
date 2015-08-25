@@ -25,14 +25,20 @@ Polymer.cs.behaviors.label =
 				next_node.parentNode.removeChild(next_node)
 		@local_input	= @querySelector('input')
 		@active			= @local_input.checked
-		inputs			= @.parentNode.querySelectorAll('input[name="' + @local_input.name + '"]')
+		if @local_input.name
+			inputs	= @parentNode.querySelectorAll('input[name="' + @local_input.name + '"]')
+		else
+			inputs	= @_inputs_around()
 		for input in inputs
 			do (input = input) =>
 				input.addEventListener('change', =>
-					@value	= input.value
-					@active	= @local_input.checked
+					@value					= input.value
+					@active					= @local_input.value == input.value
+					@local_input.checked	= @local_input.value == input.value
 					return
 				)
+				if input.checked
+					@value	= input.value
 				return
 		@local_input.addEventListener('focus', =>
 			@focus = true
@@ -41,6 +47,26 @@ Polymer.cs.behaviors.label =
 			@focus = false
 		)
 		return
+	_inputs_around : ->
+		inputs	= []
+		inputs.push(@local_input)
+		label	= @
+		while label = label.previousElementSibling
+			if label.tagName != 'LABEL'
+				break
+			input	= label.querySelector('input')
+			if !input
+				break
+			inputs.push(input)
+		label	= @
+		while label = label.nextElementSibling
+			if label.tagName != 'LABEL'
+				break
+			input	= label.querySelector('input')
+			if !input
+				break
+			inputs.push(input)
+		inputs
 	_active_changed : ->
 		if @local_input.type == 'radio'
 			# Simulate regular click for simplicity

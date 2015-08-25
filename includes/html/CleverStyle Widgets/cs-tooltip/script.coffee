@@ -45,6 +45,8 @@ Polymer(
 			)
 		return
 	_show : (element) ->
+		if !element.tooltip
+			return
 		if @innerHTML != element.tooltip
 			@innerHTML = element.tooltip
 		tooltip_position		= @_get_tooltip_position(element)

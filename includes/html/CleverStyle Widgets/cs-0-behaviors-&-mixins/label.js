@@ -38,13 +38,21 @@
       })(this)();
       this.local_input = this.querySelector('input');
       this.active = this.local_input.checked;
-      inputs = this.parentNode.querySelectorAll('input[name="' + this.local_input.name + '"]');
+      if (this.local_input.name) {
+        inputs = this.parentNode.querySelectorAll('input[name="' + this.local_input.name + '"]');
+      } else {
+        inputs = this._inputs_around();
+      }
       fn = (function(_this) {
         return function(input) {
           input.addEventListener('change', function() {
             _this.value = input.value;
-            _this.active = _this.local_input.checked;
+            _this.active = _this.local_input.value === input.value;
+            _this.local_input.checked = _this.local_input.value === input.value;
           });
+          if (input.checked) {
+            _this.value = input.value;
+          }
         };
       })(this);
       for (i = 0, len = inputs.length; i < len; i++) {
@@ -61,6 +69,34 @@
           return _this.focus = false;
         };
       })(this));
+    },
+    _inputs_around: function() {
+      var input, inputs, label;
+      inputs = [];
+      inputs.push(this.local_input);
+      label = this;
+      while (label = label.previousElementSibling) {
+        if (label.tagName !== 'LABEL') {
+          break;
+        }
+        input = label.querySelector('input');
+        if (!input) {
+          break;
+        }
+        inputs.push(input);
+      }
+      label = this;
+      while (label = label.nextElementSibling) {
+        if (label.tagName !== 'LABEL') {
+          break;
+        }
+        input = label.querySelector('input');
+        if (!input) {
+          break;
+        }
+        inputs.push(input);
+      }
+      return inputs;
     },
     _active_changed: function() {
       if (this.local_input.type === 'radio') {

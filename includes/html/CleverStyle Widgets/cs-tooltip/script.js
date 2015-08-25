@@ -63,6 +63,9 @@
     },
     _show: function(element) {
       var tooltip_position;
+      if (!element.tooltip) {
+        return;
+      }
       if (this.innerHTML !== element.tooltip) {
         this.innerHTML = element.tooltip;
       }
