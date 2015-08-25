@@ -21,9 +21,13 @@ Polymer(
 			document.removeEventListener('WebComponentsReady', scroll_once)
 		document.addEventListener('WebComponentsReady', scroll_once)
 	_scroll_to_selected : ->
+		option_height	= @querySelector('option').getBoundingClientRect().height
 		if @size > 1 && @selectedOptions[0]
-			option_height	= @selectedOptions[0].getBoundingClientRect().height
-			@scrollTop		= option_height * (@selectedIndex - Math.floor(@size / 2)) + @_number_of_optgroups()
+			@scrollTop	= option_height * (@selectedIndex - Math.floor(@size / 2)) + @_number_of_optgroups()
+		select_height	= @getBoundingClientRect().height
+		# Do not use `overflow-y : auto` all the time, because it will cause cropped options on the right or horizontal scroll in Chromium
+		if select_height >= option_height * (@querySelectorAll('option').length + @querySelectorAll('optgroup').length)
+			@style.overflowY = 'auto'
 	_number_of_optgroups : ->
 		optgroup	= @selectedOptions[0].parentNode
 		count		= 0

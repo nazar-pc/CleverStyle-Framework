@@ -23,10 +23,14 @@
       return document.addEventListener('WebComponentsReady', scroll_once);
     },
     _scroll_to_selected: function() {
-      var option_height;
+      var option_height, select_height;
+      option_height = this.querySelector('option').getBoundingClientRect().height;
       if (this.size > 1 && this.selectedOptions[0]) {
-        option_height = this.selectedOptions[0].getBoundingClientRect().height;
-        return this.scrollTop = option_height * (this.selectedIndex - Math.floor(this.size / 2)) + this._number_of_optgroups();
+        this.scrollTop = option_height * (this.selectedIndex - Math.floor(this.size / 2)) + this._number_of_optgroups();
+      }
+      select_height = this.getBoundingClientRect().height;
+      if (select_height >= option_height * (this.querySelectorAll('option').length + this.querySelectorAll('optgroup').length)) {
+        return this.style.overflowY = 'auto';
       }
     },
     _number_of_optgroups: function() {
