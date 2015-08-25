@@ -7,23 +7,22 @@
 				%legend [[permission.group]]
 				%div
 					%p.cs-left
-						%button.uk-button(on-click="invert" type="button") [[L.invert]]
-						%button.uk-button(on-click="allow_all" type="button") [[L.allow_all]]
-						%button.uk-button(on-click="deny_all" type="button") [[L.deny_all]]
+						%button(is="cs-button" on-click="invert" type="button") [[L.invert]]
+						%button(is="cs-button" on-click="allow_all" type="button") [[L.allow_all]]
+						%button(is="cs-button" on-click="deny_all" type="button") [[L.deny_all]]
 					%cs-table(right-left)
 						%template(is="dom-repeat" items="[[permission.labels]]" as="label")
 							%cs-table-row
 								%cs-table-cell [[label.name]]
 								%cs-table-cell
-									%span.uk-button-group(data-uk-button-radio)
-										%label(class$="[[permission_class(label.id, -1)]]")
-											%input(type="radio" value="-1" checked$="[[permission_state(label.id, -1)]]" name$="[[concat('permissions[', label.id, ']')]]")/
-											%span [[L.inherited]]
-										%label(class$="[[permission_class(label.id, 0)]]")
-											%input(type="radio" value="0" checked$="[[permission_state(label.id, 0)]]" name$="[[concat('permissions[', label.id, ']')]]")/
-											%span [[L.deny]]
-										%label(class$="[[permission_class(label.id, 1)]]")
-											%input(type="radio" value="1" checked$="[[permission_state(label.id, 1)]]" name$="[[concat('permissions[', label.id, ']')]]")/
-											%span [[L.allow]]
-		%button.uk-button(on-click="save" type="button") [[L.save]]
+									%label(is="cs-label-button")
+										%input(type="radio" value="-1" checked="[[permission_state(label.id, -1)]]" name$="[[concat('permissions[', label.id, ']')]]")/
+										%span [[L.inherited]]
+									%label(is="cs-label-button")
+										%input(type="radio" value="0" checked="[[permission_state(label.id, 0)]]" name$="[[concat('permissions[', label.id, ']')]]")/
+										%span [[L.deny]]
+									%label(is="cs-label-button")
+										%input(type="radio" value="1" checked="[[permission_state(label.id, 1)]]" name$="[[concat('permissions[', label.id, ']')]]")/
+										%span [[L.allow]]
+		%button(is="cs-button" primary on-click="save" type="button") [[L.save]]
 	%script(src="script.js")

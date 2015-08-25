@@ -8,29 +8,27 @@
         <legend>[[permission.group]]</legend>
         <div>
           <p class="cs-left">
-            <button class="uk-button" on-click="invert" type="button">[[L.invert]]</button>
-            <button class="uk-button" on-click="allow_all" type="button">[[L.allow_all]]</button>
-            <button class="uk-button" on-click="deny_all" type="button">[[L.deny_all]]</button>
+            <button is="cs-button" on-click="invert" type="button">[[L.invert]]</button>
+            <button is="cs-button" on-click="allow_all" type="button">[[L.allow_all]]</button>
+            <button is="cs-button" on-click="deny_all" type="button">[[L.deny_all]]</button>
           </p>
           <cs-table right-left>
             <template as="label" is="dom-repeat" items="[[permission.labels]]">
               <cs-table-row>
                 <cs-table-cell>[[label.name]]</cs-table-cell>
                 <cs-table-cell>
-                  <span class="uk-button-group" data-uk-button-radio>
-                    <label class$="[[permission_class(label.id, -1)]]">
-                      <input checked$="[[permission_state(label.id, -1)]]" name$="[[concat('permissions[', label.id, ']')]]" type="radio" value="-1">
-                      <span>[[L.inherited]]</span>
-                    </label>
-                    <label class$="[[permission_class(label.id, 0)]]">
-                      <input checked$="[[permission_state(label.id, 0)]]" name$="[[concat('permissions[', label.id, ']')]]" type="radio" value="0">
-                      <span>[[L.deny]]</span>
-                    </label>
-                    <label class$="[[permission_class(label.id, 1)]]">
-                      <input checked$="[[permission_state(label.id, 1)]]" name$="[[concat('permissions[', label.id, ']')]]" type="radio" value="1">
-                      <span>[[L.allow]]</span>
-                    </label>
-                  </span>
+                  <label is="cs-label-button">
+                    <input checked="[[permission_state(label.id, -1)]]" name$="[[concat('permissions[', label.id, ']')]]" type="radio" value="-1">
+                    <span>[[L.inherited]]</span>
+                  </label>
+                  <label is="cs-label-button">
+                    <input checked="[[permission_state(label.id, 0)]]" name$="[[concat('permissions[', label.id, ']')]]" type="radio" value="0">
+                    <span>[[L.deny]]</span>
+                  </label>
+                  <label is="cs-label-button">
+                    <input checked="[[permission_state(label.id, 1)]]" name$="[[concat('permissions[', label.id, ']')]]" type="radio" value="1">
+                    <span>[[L.allow]]</span>
+                  </label>
                 </cs-table-cell>
               </cs-table-row>
             </template>
@@ -38,7 +36,7 @@
         </div>
       </template>
     </form>
-    <button class="uk-button" on-click="save" type="button">[[L.save]]</button>
+    <button is="cs-button" on-click="save" primary type="button">[[L.save]]</button>
   </template>
   <script src="script.js"></script>
 </dom-module>

@@ -16,52 +16,50 @@
           <p>[[user_data.reg_ip_formatted.1]]</p>
         </template>
         <label class="uk-form-label">[[L.login]]</label>
-        <input type="text" value="{{user_data.login::input}}">
+        <input is="cs-input-text" type="text" value="{{user_data.login}}">
         <label class="uk-form-label">[[L.username]]</label>
-        <input type="text" value="{{user_data.username::input}}">
+        <input is="cs-input-text" type="text" value="{{user_data.username}}">
         <label class="uk-form-label">[[L.email]]</label>
-        <input type="email" value="{{user_data.email::input}}">
+        <input is="cs-input-text" type="email" value="{{user_data.email}}">
         <label class="uk-form-label">
           <span>[[L.password_only_for_changing]]</span>
         </label>
         <div class="uk-form-icon uk-width-1-1">
           <div class="uk-icon-lock cs-pointer" on-click="show_password"></div>
-          <input id="password" type="password" value="{{user_data.password::input}}">
+          <input id="password" is="cs-input-text" type="password" value="{{user_data.password}}">
         </div>
         <label class="uk-form-label">[[L.language]]</label>
-        <select is="cs-select" size="5" value="{{user_data.language::change}}">
+        <select is="cs-select" size="5" value="{{user_data.language}}">
           <template as="language" is="dom-repeat" items="[[languages]]">
             <option selected$="[[equal(language.clanguage, user_data.language)]]" value="[[language.clanguage]]">[[language.description]]</option>
           </template>
         </select>
         <label class="uk-form-label">[[L.timezone]]</label>
-        <select is="cs-select" size="7" value="{{user_data.timezone::change}}">
+        <select is="cs-select" size="7" value="{{user_data.timezone}}">
           <template as="timezone" is="dom-repeat" items="[[timezones]]">
             <option selected$="[[equal(timezone.timezone, user_data.timezone)]]" value="[[timezone.timezone]]">[[timezone.description]]</option>
           </template>
         </select>
         <label class="uk-form-label">[[L.status]]</label>
-        <div class="uk-button-group" data-uk-button-radio>
-          <label class$="[[status_class(-1)]]" on-click="status_change">
-            <input checked$="[[status_state(-1)]]" type="radio" value="-1">
-            <span>[[L.is_not_activated]]</span>
-          </label>
-          <label class$="[[status_class(0)]]" on-click="status_change">
-            <input checked$="[[status_state(0)]]" type="radio" value="0">
-            <span>[[L.inactive]]</span>
-          </label>
-          <label class$="[[status_class(1)]]" on-click="status_change">
-            <input checked$="[[status_state(1)]]" type="radio" value="1">
-            <span>[[L.active]]</span>
-          </label>
-        </div>
+        <label is="cs-label-button" value="{{user_data.status}}">
+          <input checked="[[equal(user_data.status, -1)]]" type="radio" value="-1">
+          <span>[[L.is_not_activated]]</span>
+        </label>
+        <label is="cs-label-button">
+          <input checked="[[equal(user_data.status, 0)]]" type="radio" value="0">
+          <span>[[L.inactive]]</span>
+        </label>
+        <label is="cs-label-button">
+          <input checked="[[equal(user_data.status, 1)]]" type="radio" value="1">
+          <span>[[L.active]]</span>
+        </label>
         <label class="uk-form-label" tooltip="[[L.block_until_info]]">
           <span>[[L.block_until]]</span>
           <cs-tooltip></cs-tooltip>
         </label>
-        <input type="datetime-local" value="{{block_until::input}}">
+        <input is="cs-input-text" type="datetime-local" value="{{block_until}}">
         <label class="uk-form-label">[[L.avatar]]</label>
-        <input type="text" value="{{user_data.avatar::input}}">
+        <input is="cs-input-text" type="text" value="{{user_data.avatar}}">
         <p>
           <button class="uk-button uk-button-primary" on-click="save">[[L.save]]</button>
         </p>

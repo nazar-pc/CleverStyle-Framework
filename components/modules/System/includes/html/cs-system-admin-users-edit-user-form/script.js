@@ -31,7 +31,7 @@
       }
     },
     ready: function() {
-      $.when($.getJSON('api/System/admin/languages'), $.getJSON('api/System/admin/timezones'), $.getJSON('api/System/admin/users/' + this.user_id)).done((function(_this) {
+      return $.when($.getJSON('api/System/admin/languages'), $.getJSON('api/System/admin/timezones'), $.getJSON('api/System/admin/users/' + this.user_id)).done((function(_this) {
         return function(languages, timezones, data) {
           var block_until, description, i, language, languages_list, len, ref, ref1, timezone, timezones_list;
           languages_list = [];
@@ -78,14 +78,6 @@
           return _this.set('user_data', data[0]);
         };
       })(this));
-      this.workarounds(this.shadowRoot);
-      return cs.observe_inserts_on(this.shadowRoot, this.workarounds);
-    },
-    workarounds: function(target) {
-      return $(target).cs().radio_buttons_inside();
-    },
-    status_change: function(e) {
-      return this.set('user_data.status', $(e.currentTarget).children('input').val());
     },
     show_password: function(e) {
       var $lock, password;
@@ -111,14 +103,6 @@
       date.setSeconds(0);
       date.setMilliseconds(0);
       return this.set('user_data.block_until', date.getTime() / 1000);
-    },
-    status_state: function(expected) {
-      var status;
-      status = this.user_data.status;
-      return status == expected;
-    },
-    status_class: function(expected) {
-      return 'uk-button' + (this.status_state(expected) ? ' uk-active' : '');
     },
     save: function() {
       return $.ajax({

@@ -55,13 +55,6 @@ do ($=jQuery, UI = UIkit) ->
 				UI.pagination(@, UI.Utils.options($(@).attr('data-uk-pagination')))
 			@
 		###*
-		 * Enabling radio buttons inside ShadowDOM, should be called on element.shadowRoot
-		###
-		radio_buttons_inside	: ->
-			@find('[data-uk-button-radio]').add(@filter('[data-uk-button-radio]')).each ->
-				UI.buttonRadio(@, UI.Utils.options($(@).attr('data-uk-button-radio')))
-			@
-		###*
 		 * Connecting form elements in ShadowDOM to form element higher in DOM tree, should be called on element.shadowRoot
 		###
 		connect_to_parent_form	: ->

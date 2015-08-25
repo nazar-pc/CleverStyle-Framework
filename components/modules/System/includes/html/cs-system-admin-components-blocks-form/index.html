@@ -35,18 +35,14 @@
           </span>
         </cs-table-cell>
         <cs-table-cell>
-          <div>
-            <span class="uk-button-group" data-uk-button-radio>
-              <label class$="[[if(json.block_data.active, ' uk-active', '', 'uk-button')]]">
-                <input checked$="[[json.block_data.active]]" name="block[active]" type="radio" value="1">
-                <span>[[L.yes]]</span>
-              </label>
-              <label class$="[[if(json.block_data.active, '', ' uk-active', 'uk-button')]]">
-                <input checked$="[[!json.block_data.active]]" name="block[active]" type="radio" value="0">
-                <span>[[L.no]]</span>
-              </label>
-            </span>
-          </div>
+          <label is="cs-label-button">
+            <input checked="[[json.block_data.active]]" name="block[active]" type="radio" value="1">
+            <span>[[L.yes]]</span>
+          </label>
+          <label is="cs-label-button">
+            <input checked="[[!json.block_data.active]]" name="block[active]" type="radio" value="0">
+            <span>[[L.no]]</span>
+          </label>
         </cs-table-cell>
       </cs-table-row>
       <cs-table-row>
@@ -83,16 +79,14 @@
           </span>
         </cs-table-cell>
         <cs-table-cell>
-          <span class="uk-button-group" data-uk-button-radio>
-            <label class$="[[if(json.block_data.expire.state, '', ' uk-active', 'uk-button')]]">
-              <input checked$="[[!json.block_data.expire.state]]" name="block[expire][state]" type="radio" value="0">
-              <span>[[L.never]]</span>
-            </label>
-            <label class$="[[if(json.block_data.expire.state, ' uk-active', '', 'uk-button')]]">
-              <input checked$="[[json.block_data.expire.state]]" name="block[expire][state]" type="radio" value="1">
-              <span>[[L.as_specified]]</span>
-            </label>
-          </span>
+          <label is="cs-label-button">
+            <input checked="[[!json.block_data.expire.state]]" name="block[expire][state]" type="radio" value="0">
+            <span>[[L.never]]</span>
+          </label>
+          <label is="cs-label-button">
+            <input checked="[[json.block_data.expire.state]]" name="block[expire][state]" type="radio" value="1">
+            <span>[[L.as_specified]]</span>
+          </label>
           <br>
           <br>
           <input name="block[expire][date]" type="datetime-local" value$="[[json.block_data.expire.date]]">

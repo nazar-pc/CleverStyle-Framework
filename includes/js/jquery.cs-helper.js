@@ -69,16 +69,6 @@
       },
 
       /**
-      		 * Enabling radio buttons inside ShadowDOM, should be called on element.shadowRoot
-       */
-      radio_buttons_inside: function() {
-        this.find('[data-uk-button-radio]').add(this.filter('[data-uk-button-radio]')).each(function() {
-          return UI.buttonRadio(this, UI.Utils.options($(this).attr('data-uk-button-radio')));
-        });
-        return this;
-      },
-
-      /**
       		 * Connecting form elements in ShadowDOM to form element higher in DOM tree, should be called on element.shadowRoot
        */
       connect_to_parent_form: function() {

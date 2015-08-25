@@ -23,14 +23,12 @@
 						%span [[L.block_active]]
 						%cs-tooltip
 				%cs-table-cell
-					%div
-						%span.uk-button-group(data-uk-button-radio)
-							%label(class$="[[if(json.block_data.active, ' uk-active', '', 'uk-button')]]")
-								%input(name="block[active]" type="radio" value="1" checked$="[[json.block_data.active]]")/
-								%span [[L.yes]]
-							%label(class$="[[if(json.block_data.active, '', ' uk-active', 'uk-button')]]")
-								%input(name="block[active]" type="radio" value="0" checked$="[[!json.block_data.active]]")/
-								%span [[L.no]]
+					%label(is="cs-label-button")
+						%input(name="block[active]" type="radio" value="1" checked="[[json.block_data.active]]")/
+						%span [[L.yes]]
+					%label(is="cs-label-button")
+						%input(name="block[active]" type="radio" value="0" checked="[[!json.block_data.active]]")/
+						%span [[L.no]]
 			%cs-table-row
 				%cs-table-cell
 					%span(tooltip="[[L.block_template_info]]")
@@ -53,13 +51,12 @@
 						%span [[L.block_expire]]
 						%cs-tooltip
 				%cs-table-cell
-					%span.uk-button-group(data-uk-button-radio)
-						%label(class$="[[if(json.block_data.expire.state, '', ' uk-active', 'uk-button')]]")
-							%input(name="block[expire][state]" type="radio" value="0" checked$="[[!json.block_data.expire.state]]")/
-							%span [[L.never]]
-						%label(class$="[[if(json.block_data.expire.state, ' uk-active', '', 'uk-button')]]")
-							%input(name="block[expire][state]" type="radio" value="1" checked$="[[json.block_data.expire.state]]")/
-							%span [[L.as_specified]]
+					%label(is="cs-label-button")
+						%input(name="block[expire][state]" type="radio" value="0" checked="[[!json.block_data.expire.state]]")/
+						%span [[L.never]]
+					%label(is="cs-label-button")
+						%input(name="block[expire][state]" type="radio" value="1" checked="[[json.block_data.expire.state]]")/
+						%span [[L.as_specified]]
 					%br/
 					%br/
 					%input(name="block[expire][date]" type="datetime-local" value$="[[json.block_data.expire.date]]")/

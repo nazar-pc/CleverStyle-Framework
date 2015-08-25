@@ -58,13 +58,6 @@ Polymer(
 				date.getFullYear() + '-' + z(date.getMonth() + 1) + '-' + z(date.getDate()) + 'T' + z(date.getHours()) + ':' + z(date.getMinutes())
 			@set('block_until', block_until)
 			@set('user_data', data[0])
-		@workarounds(@shadowRoot)
-		cs.observe_inserts_on(@shadowRoot, @workarounds)
-	workarounds		: (target) ->
-		$(target)
-			.cs().radio_buttons_inside()
-	status_change	: (e) ->
-		@set('user_data.status', $(e.currentTarget).children('input').val())
 	show_password	: (e) ->
 		$lock		= $(e.currentTarget)
 		password	= $lock.next()[0]
@@ -85,11 +78,6 @@ Polymer(
 		date.setSeconds(0)
 		date.setMilliseconds(0)
 		@set('user_data.block_until', date.getTime() / 1000)
-	status_state	: (expected) ->
-		status	= @user_data.status
-		`status == expected`
-	status_class	: (expected) ->
-		'uk-button' + (if @status_state(expected) then ' uk-active' else '')
 	save			: ->
 		$.ajax(
 			url		: 'api/System/admin/users/' + @user_id

@@ -28,8 +28,7 @@
     all_permissions: {},
     permissions: {},
     ready: function() {
-      var workarounds_timeout;
-      $.when($.getJSON('api/System/admin/permissions'), $.getJSON("api/System/admin/" + this["for"] + "s/" + this[this["for"]] + "/permissions")).done((function(_this) {
+      return $.when($.getJSON('api/System/admin/permissions'), $.getJSON("api/System/admin/" + this["for"] + "s/" + this[this["for"]] + "/permissions")).done((function(_this) {
         return function(all_permissions, permissions) {
           var group, id, label, labels;
           _this.all_permissions = (function() {
@@ -57,18 +56,6 @@
             return results;
           })();
           return _this.permissions = permissions[0];
-        };
-      })(this));
-      $(this.$['search-results']).on('change', ':radio', function() {
-        return $(this).closest('cs-table-row').addClass('changed');
-      });
-      workarounds_timeout = null;
-      return this.addEventListener('dom-change', (function(_this) {
-        return function() {
-          clearTimeout(workarounds_timeout);
-          return workarounds_timeout = setTimeout((function() {
-            return $(_this.shadowRoot).cs().radio_buttons_inside();
-          }), 100);
         };
       })(this));
     },
@@ -106,9 +93,6 @@
       var permission;
       permission = this.permissions[id];
       return permission == expected || (expected == '-1' && permission === void 0);
-    },
-    permission_class: function(id, expected) {
-      return 'uk-button' + (this.permission_state(id, expected) ? ' uk-active' : '');
     }
   });
 

@@ -31,20 +31,6 @@ Polymer(
 							name	: label
 							id		: id
 			@permissions		= permissions[0]
-		$(@$['search-results']).on(
-			'change'
-			':radio'
-			->
-				$(@).closest('cs-table-row').addClass('changed')
-		)
-		workarounds_timeout	= null
-		@addEventListener('dom-change', =>
-			clearTimeout(workarounds_timeout)
-			workarounds_timeout	= setTimeout (=>
-				$(@shadowRoot)
-					.cs().radio_buttons_inside()
-			), 100
-		)
 	save				: ->
 		default_data	= (key + '=' + value for key, value of $.ajaxSettings.data).join('&')
 		$.ajax(
@@ -76,6 +62,4 @@ Polymer(
 			`expected == '-1'` &&
 			permission == undefined
 		)
-	permission_class	: (id, expected) ->
-		'uk-button' + (if @permission_state(id, expected) then ' uk-active' else '')
 )
