@@ -117,23 +117,9 @@ cs.registration				= (email) ->
 		type	: 'post'
 		success	: (result) ->
 			if result == 'reg_confirmation'
-				$('<div>' + L.reg_confirmation + '</div>')
-					.appendTo('body')
-					.cs().modal('show')
-					.on(
-						'hide.uk.modal'
-						->
-							$(this).remove()
-					)
+				cs.ui.simple_modal('<div>' + L.reg_confirmation + '</div>')
 			else if result == 'reg_success'
-				$('<div>' + L.reg_success + '</div>')
-					.appendTo('body')
-					.cs().modal('show')
-					.on(
-						'hide.uk.modal'
-						->
-							location.reload()
-					)
+				cs.ui.simple_modal('<div>' + L.reg_success + '</div>')
 ###*
  * Password restoring
  *
@@ -152,14 +138,7 @@ cs.restore_password			= (email) ->
 		type	: 'post'
 		success	: (result) ->
 			if result == 'OK'
-				$('<div>' + L.restore_password_confirmation + '</div>')
-					.appendTo('body')
-					.cs().modal('show')
-					.on(
-						'hide.uk.modal'
-						->
-							$(this).remove()
-					)
+				cs.ui.simple_modal('<div>' + L.restore_password_confirmation + '</div>')
 ###*
  * Password changing
  *
@@ -324,19 +303,29 @@ do ->
 	cs.ui	= cs.ui || {}
 	ui		= cs.ui
 	###*
-	 * Simple modal dialog that will be destroyed after closing
+	 * Modal dialog
+	 *
+	 * @param {HTMLElement}|{jQuery}|{String} content
+     *
+	 * @return {HTMLElement}
+	###
+	ui.modal = (content) ->
+		modal				= document.createElement('section', 'cs-section-modal')
+		if typeof content == 'string'
+			modal.innerHTML = content
+		else
+			modal.appendChild(`content instanceof jQuery ? content[0] : content`)
+		document.documentElement.appendChild(modal)
+		modal
+	###*
+	 * Simple modal dialog that will be opened automatically and destroyed after closing
 	 *
 	 * @param {HTMLElement}|{jQuery}|{String} content
      *
 	 * @return {HTMLElement}
 	###
 	ui.simple_modal = (content) ->
-		modal				= document.createElement('section', 'cs-section-modal')
-		if typeof content == 'string'
-			modal.innerHTML = content
-		else
-			modal.appendChild(`content instanceof jQuery ? content[0] : content`)
-		modal.autoOpen		= true
+		modal				= ui.modal(content)
 		modal.autoDestroy	= true
-		document.documentElement.appendChild(modal)
+		modal.open()
 		modal

@@ -5,7 +5,7 @@
 	 * @copyright Copyright (c) 2015, Nazar Mokrynskyi
 	 * @license   MIT License, see license.txt
 	 */
-	body /deep/ input[is=cs-input-text] {
+	html /deep/ input[is=cs-input-text] {
 		background-color : #fff;
 		border           : none;
 		color            : inherit;
@@ -15,36 +15,36 @@
 		@apply (--cs-input-text);
 	}
 
-	body /deep/ input[is=cs-input-text][compact] {
+	html /deep/ input[is=cs-input-text][compact] {
 		width : auto;
 	}
 
-	body /deep/ input[is=cs-input-text][full-width] {
+	html /deep/ input[is=cs-input-text][full-width] {
 		width : 100%;
 	}
 
-	body /deep/ input[is=cs-input-text]:active {
+	html /deep/ input[is=cs-input-text]:active {
 		@apply (--cs-input-text-active);
 	}
 
-	body /deep/ input[is=cs-input-text]:focus {
+	html /deep/ input[is=cs-input-text]:focus {
 		outline : none;
 
 		@apply (--cs-input-text-hover);
 		@apply (--cs-input-text-focus);
 	}
 
-	body /deep/ input[is=cs-input-text]:hover {
+	html /deep/ input[is=cs-input-text]:hover {
 		@apply (--cs-input-text-hover);
 	}
 
-	body /deep/ input[is=cs-input-text][disabled] {
+	html /deep/ input[is=cs-input-text][disabled] {
 		cursor : not-allowed;
 
 		@apply (--cs-input-text-disabled);
 	}
 
-	body /deep/ input[is=cs-input-text][readonly] {
+	html /deep/ input[is=cs-input-text][readonly] {
 		@apply (--cs-input-text-readonly);
 	}
 </style>

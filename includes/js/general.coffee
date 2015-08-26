@@ -86,27 +86,17 @@ $ ->
 		if !cs.rules_text
 			cs.registration $('.cs-header-registration-email').val()
 			return
-		modal	= $("""
-				<div title="#{L.rules_agree}">
-					<div>
-						#{cs.rules_text}
-						<p class="cs-right">
-							<button class="cs-registration-continue uk-button uk-button-primary">#{L.yes}</button>
-						</p>
-					</div>
-				</div>
-			""")
-			.appendTo('body')
-			.cs().modal('show')
-			.on(
-				'hide.uk.modal'
-				->
-					$(this).remove()
-			)
-		modal
+		$modal = $(cs.ui.simple_modal("""
+			<h2>#{L.rules_agree}</h2>
+			<p>#{cs.rules_text}</p>
+			<p class="cs-right">
+				<button is="cs-button" primary class="cs-registration-continue">#{L.yes}</button>
+			</p>
+		"""))
+		$modal
 			.find('.cs-registration-continue')
 			.click ->
-				modal.cs().modal('close').remove()
+				$modal[0].close()
 				cs.registration $('.cs-header-registration-email').val()
 	$('.cs-header-restore-password-process').click ->
 		cs.restore_password $('.cs-header-restore-password-email').val()

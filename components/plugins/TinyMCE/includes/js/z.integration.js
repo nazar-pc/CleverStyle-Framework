@@ -12,26 +12,24 @@ $(function () {
 	var uploader                        = cs.file_upload ? cs.file_upload(
 		null,
 		function (files) {
-			tinymce.uploader_dialog.cs().modal('hide');
-			tinymce.uploader_dialog.remove();
+			tinymce.uploader_dialog.close();
 			if (files.length) {
 				uploader_callback(files[0]);
 			}
 			uploader_callback = undefined;
 		},
 		function (error) {
-			tinymce.uploader_dialog.cs().modal('hide');
+			tinymce.uploader_dialog.close();
 			alert(error.message);
 		},
 		function (file) {
 			if (!tinymce.uploader_dialog) {
-				tinymce.uploader_dialog = $('<div title="Uploading..." class="cs-center"></div>')
-					.html('<div><div class="uk-progress uk-progress-striped uk-active"><div class="uk-progress-bar"></div></div></div>')
-					.appendTo('body')
-					.cs().modal('show')
-					.css('z-index', 100000);
+				// TODO: This propress doesn't work in modal under Shadow DOM because of `body /deep/ *` seletors
+				tinymce.uploader_dialog              = cs.ui.modal('<div class="uk-progress uk-progress-striped uk-active"><div class="uk-progress-bar"></div></div>');
+				tinymce.uploader_dialog.style.zIndex = 100000;
+				tinymce.uploader_dialog.open();
 			}
-			tinymce.uploader_dialog.find('.uk-progress-bar').width((file.percent ? file.percent : 1) + '%');
+			$(tinymce.uploader_dialog).find('.uk-progress-bar').width((file.percent ? file.percent : 1) + '%');
 		}
 	) : false;
 	var base_config                     = {

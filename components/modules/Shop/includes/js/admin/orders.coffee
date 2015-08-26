@@ -224,15 +224,9 @@ $ ->
 						</tr>
 						#{comment}
 					"""
-				$("""<div class="uk-modal">
-					<div class="uk-modal-dialog uk-modal-dialog-large">
-						<table class="uk-table">#{content}</table>
-					</div>
-				</div>""")
-					.appendTo('body')
-					.cs().modal('show')
-					.on 'hide.uk.modal', ->
-						$(@).remove()
+				cs.ui.simple_modal("""
+					<table class="uk-table">#{content}</table>
+				""")
 	)
 		.on('mousedown', '.cs-shop-order-edit', ->
 			$this		= $(@)

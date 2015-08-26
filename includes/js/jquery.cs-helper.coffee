@@ -7,47 +7,6 @@
 do ($=jQuery, UI = UIkit) ->
 	helpers	=
 		###*
-		 * Dialog with UIkit
-		 *
-		 * Required DOM structure * > *, plugin must be applied to the root element
-		 * If child element is not present - content will be automatically wrapped with <div>
-		###
-		modal					: (mode) ->
-			if !@.length
-				return @
-			mode	= mode || 'init'
-			@map ->
-				$this	= $(@)
-				if $this.hasClass('uk-modal-dialog')
-					$this	= $this.wrap('<div/>').parent()
-				if !$this.data('modal')
-					content	= $this.children()
-					if !content.length
-						content	= $this
-							.wrapInner('<div/>')
-							.children()
-					content
-						.addClass('uk-modal-dialog')
-					if $this.is('[data-modal-frameless]')
-						content
-							.addClass('uk-modal-dialog-frameless')
-					if $this.attr('title')
-						$('<h3/>')
-							.html($this.attr('title'))
-							.prependTo(content)
-					if content.attr('title')
-						$('<h3/>')
-							.html(content.attr('title'))
-							.prependTo(content)
-					$this
-						.addClass('uk-modal')
-						.data('modal', UI.modal($this))
-				modal	= $this.data('modal')
-				switch mode
-					when 'show' then modal.show()
-					when 'hide' then modal.hide()
-				$this.get()
-		###*
 		 * Enabling dynamic pagination inside ShadowDOM, should be called on element.shadowRoot
 		###
 		pagination_inside	: ->

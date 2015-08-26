@@ -208,9 +208,7 @@
           comment = status.comment ? "<tr style=\"" + color + "\">\n	<td colspan=\"2\" style=\"white-space:pre\">" + status.comment + "</td>\n</tr>" : '';
           return content += "<tr style=\"" + color + "\">\n	<td><i class=\"uk-icon-calendar\"></i> " + status.date_formatted + "</td>\n	<td>" + (order_status != null ? order_status.title : void 0) + "</td>\n</tr>\n" + comment;
         });
-        return $("<div class=\"uk-modal\">\n	<div class=\"uk-modal-dialog uk-modal-dialog-large\">\n		<table class=\"uk-table\">" + content + "</table>\n	</div>\n</div>").appendTo('body').cs().modal('show').on('hide.uk.modal', function() {
-          return $(this).remove();
-        });
+        return cs.ui.simple_modal("<table class=\"uk-table\">" + content + "</table>");
       });
     }).on('mousedown', '.cs-shop-order-edit', function() {
       var $this, date, id, username;

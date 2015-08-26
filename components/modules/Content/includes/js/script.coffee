@@ -14,14 +14,14 @@ $ ->
 			'click'
 			'.cs-content-add'
 			->
-				modal_body	= $("""<div><div class="uk-form">
+				modal_body	= $("""<div>
 					<p>
 						<label>#{L.content_key}:</label>
-						<input type="text" name="key">
+						<input is="cs-input-text" type="text" name="key" tooltip="ddd">
 					</p>
 					<p>
 						<label>#{L.content_title}:</label>
-						<input type="text" name="title">
+						<input is="cs-input-text" type="text" name="title">
 					</p>
 					<p>
 						<label>#{L.content_content}:</label>
@@ -36,9 +36,10 @@ $ ->
 						</select>
 					</p>
 					<p class="cs-right">
-						<button class="uk-button">#{L.content_save}</button>
+						<button is="cs-button" primary>#{L.content_save}</button>
 					</p>
-				</div></div>""")
+				</div>""")
+				modal_body.appendTo(document.body)
 				key		= modal_body.find('[name=key]')
 				title	= modal_body.find('[name=title]')
 				content	= modal_body.find('.text')
@@ -53,11 +54,7 @@ $ ->
 						modal_body.find('.text').hide()
 						content	= modal_body.find('.html').show().val(content.val())
 						typeof window.editor_reinitialization == 'function' && editor_reinitialization($('cs-content-html-content'))
-				modal_body
-					.appendTo('body')
-					.cs().modal('show')
-					.on 'hide.uk.modal', ->
-						$(@).remove()
+				cs.ui.simple_modal(modal_body)
 				modal_body.find('button').click ->
 					$.ajax(
 						url		: 'api/Content'
@@ -80,11 +77,11 @@ $ ->
 					url		: "api/Content/#{key}"
 					type	: 'get'
 					success	: (data) ->
-						modal_body	= $("""<div><div class="uk-form">
+						modal_body	= $("""<div class="uk-form">
 							<p>#{L.content_key}: #{data.key}</p>
 							<p>
 								<label>#{L.content_title}:</label>
-								<input type="text" name="title">
+								<input is="cs-input-text" type="text" name="title">
 							</p>
 							<p>
 								<label>#{L.content_content}:</label>
@@ -101,7 +98,7 @@ $ ->
 							<p class="cs-right">
 								<button class="uk-button">#{L.content_save}</button>
 							</p>
-						</div></div>""")
+						</div>""")
 						title	= modal_body.find('[name=title]').val(data.title)
 						content	= modal_body.find('textarea').val(data.content)
 						modal_body.find("textarea:not(.#{data.type})").hide()
@@ -115,11 +112,7 @@ $ ->
 								modal_body.find('.text').hide()
 								content	= modal_body.find('.html').show().val(content.val())
 								typeof window.editor_reinitialization == 'function' && editor_reinitialization($('cs-content-html-content'))
-						modal_body
-							.appendTo('body')
-							.cs().modal('show')
-							.on 'hide.uk.modal', ->
-								$(@).remove()
+						cs.ui.simple_modal(modal_body)
 						modal_body.find('button').click ->
 							$.ajax(
 								url		: "api/Content/#{key}"

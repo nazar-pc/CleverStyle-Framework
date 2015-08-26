@@ -5,7 +5,7 @@
 	 * @copyright Copyright (c) 2015, Nazar Mokrynskyi
 	 * @license   MIT License, see license.txt
 	 */
-	body /deep/ textarea[is=cs-textarea] {
+	html /deep/ textarea[is=cs-textarea] {
 		background-color : #fff;
 		border           : none;
 		color            : inherit;
@@ -16,16 +16,16 @@
 		@apply (--cs-textarea);
 	}
 
-	body /deep/ textarea[is=cs-textarea][full-width] {
+	html /deep/ textarea[is=cs-textarea][full-width] {
 		width : 100%;
 	}
 
-	body /deep/ textarea[is=cs-textarea]:active {
+	html /deep/ textarea[is=cs-textarea]:active {
 		@apply (--cs-input-text-active);
 		@apply (--cs-textarea-active);
 	}
 
-	body /deep/ textarea[is=cs-textarea]:focus {
+	html /deep/ textarea[is=cs-textarea]:focus {
 		outline : none;
 
 		@apply (--cs-input-text-hover);
@@ -34,19 +34,19 @@
 		@apply (--cs-textarea-focus);
 	}
 
-	body /deep/ textarea[is=cs-textarea]:hover {
+	html /deep/ textarea[is=cs-textarea]:hover {
 		@apply (--cs-input-text-hover);
 		@apply (--cs-textarea-hover);
 	}
 
-	body /deep/ textarea[is=cs-textarea][disabled] {
+	html /deep/ textarea[is=cs-textarea][disabled] {
 		cursor : not-allowed;
 
 		@apply (--cs-input-text-disabled);
 		@apply (--cs-textarea-disabled);
 	}
 
-	body /deep/ textarea[is=cs-textarea][readonly] {
+	html /deep/ textarea[is=cs-textarea][readonly] {
 		cursor : not-allowed;
 
 		@apply (--cs-input-text-readonly);

@@ -166,13 +166,9 @@
       type: 'post',
       success: function(result) {
         if (result === 'reg_confirmation') {
-          return $('<div>' + L.reg_confirmation + '</div>').appendTo('body').cs().modal('show').on('hide.uk.modal', function() {
-            return $(this).remove();
-          });
+          return cs.ui.simple_modal('<div>' + L.reg_confirmation + '</div>');
         } else if (result === 'reg_success') {
-          return $('<div>' + L.reg_success + '</div>').appendTo('body').cs().modal('show').on('hide.uk.modal', function() {
-            return location.reload();
-          });
+          return cs.ui.simple_modal('<div>' + L.reg_success + '</div>');
         }
       }
     });
@@ -200,9 +196,7 @@
       type: 'post',
       success: function(result) {
         if (result === 'OK') {
-          return $('<div>' + L.restore_password_confirmation + '</div>').appendTo('body').cs().modal('show').on('hide.uk.modal', function() {
-            return $(this).remove();
-          });
+          return cs.ui.simple_modal('<div>' + L.restore_password_confirmation + '</div>');
         }
       }
     });
@@ -422,13 +416,13 @@
     ui = cs.ui;
 
     /**
-    	 * Simple modal dialog that will be destroyed after closing
+    	 * Modal dialog
     	 *
     	 * @param {HTMLElement}|{jQuery}|{String} content
         *
     	 * @return {HTMLElement}
      */
-    return ui.simple_modal = function(content) {
+    ui.modal = function(content) {
       var modal;
       modal = document.createElement('section', 'cs-section-modal');
       if (typeof content === 'string') {
@@ -436,9 +430,22 @@
       } else {
         modal.appendChild(content instanceof jQuery ? content[0] : content);
       }
-      modal.autoOpen = true;
-      modal.autoDestroy = true;
       document.documentElement.appendChild(modal);
+      return modal;
+    };
+
+    /**
+    	 * Simple modal dialog that will be opened automatically and destroyed after closing
+    	 *
+    	 * @param {HTMLElement}|{jQuery}|{String} content
+        *
+    	 * @return {HTMLElement}
+     */
+    return ui.simple_modal = function(content) {
+      var modal;
+      modal = ui.modal(content);
+      modal.autoDestroy = true;
+      modal.open();
       return modal;
     };
   })();

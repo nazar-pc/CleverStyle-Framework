@@ -24,42 +24,29 @@
 			<dd>If specified - it will be possible to drop file on specified element to start file uploading; if not specified - <code>button</code> assumed</dd>
 		</dl>
 		<p>Example (TinyMCE plugin):</p>
-		<pre>cs.file_upload ? function (field_name) {
-	if (!tinymce.uploader_dialog) {
-		tinymce.uploader_dialog		= $('&lt;div title="Uploading..." class="cs-center"&gt;&lt;/div&gt;')
-			.html('&lt;div style="margin-left: -10%; width: 20%;"&gt;&lt;div class="uk-progress uk-progress-striped uk-active"&gt;&lt;div class="uk-progress-bar"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;')
-			.appendTo('body')
-			.cs().modal()
-			.css('z-index', 100000);
+		<pre>var uploader_callback;
+var uploader = cs.file_upload ? cs.file_upload(
+	null,
+	function (files) {
+		tinymce.uploader_dialog.close();
+		if (files.length) {
+			uploader_callback(files[0]);
+		}
+		uploader_callback = undefined;
+	},
+	function (error) {
+		tinymce.uploader_dialog.close();
+		alert(error.message);
+	},
+	function (file) {
+		if (!tinymce.uploader_dialog) {
+			tinymce.uploader_dialog              = cs.ui.modal('&lt;div class="uk-progress uk-progress-striped uk-active">&lt;div class="uk-progress-bar">&lt;/div>&lt;/div>');
+			tinymce.uploader_dialog.style.zIndex = 100000;
+			tinymce.uploader_dialog.open();
+		}
+		$(tinymce.uploader_dialog).find('.uk-progress-bar').width((file.percent ? file.percent : 1) + '%');
 	}
-	var uploader	= cs.file_upload(
-		null,
-		function (files) {
-			tinymce.uploader_dialog.cs().modal('hide');
-			if (files.length) {
-				$('#' + field_name).val(files[0]);
-			}
-		},
-		function (error) {
-			tinymce.uploader_dialog.cs().modal('hide');
-			alert(error.message);
-		},
-		function (file) {
-			tinymce.uploader_dialog.find('.uk-progress-bar').width((file.percent ? file.percent : 1) + '%');
-			tinymce.uploader_dialog.cs().modal('show');
-		}
-	);
-	uploader.browse();
-	/**
-	 * Destroy uploader instance on upload dialog closing
-	 */
-	var destroy_uploader = setInterval(function () {
-		if (!$('#mce-modal-block').length) {
-			uploader.destroy();
-			clearInterval(destroy_uploader);
-		}
-	}, 1000);
-} : null</pre>
+) : false;</pre>
 	</li>
 </ul>
 
