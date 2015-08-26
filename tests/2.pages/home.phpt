@@ -36,47 +36,29 @@ shutdown_function();
 			<div class="cs-header-guest-form active">
 				<b>Hello, Guest!</b>
 				<div>
-					<button class="uk-button cs-button-compact cs-header-sign-in-slide" type="button">
-						<span class=" uk-icon-sign-in"></span> Sign in
-					</button>
-					<button class="uk-button cs-button-compact cs-header-registration-slide" data-uk-tooltip="{animation:true,delay:200}" title="Quick registration form" type="button">
-						<span class=" uk-icon-pencil"></span> Sign up
-					</button>
+					<button class="cs-header-sign-in-slide" icon="sign-in" is="cs-button" type="button">Sign in</button>
+					<button class="cs-header-registration-slide" data-uk-tooltip="{animation:true,delay:200}" icon="pencil" is="cs-button" title="Quick registration form" type="button">Sign up</button>
 				</div>
 			</div>
 			<div class="cs-header-restore-password-form">
 				<input autocapitalize="off" autocorrect="off" class="cs-header-restore-password-email" placeholder="Login or e-mail" tabindex="1" type="text">
 				<br>
-				<button class="uk-button cs-button-compact cs-header-restore-password-process" tabindex="2" type="button">
-					<span class=" uk-icon-question"></span> Restore password
-				</button>
-				<button class="uk-button cs-button-compact cs-header-back" data-uk-tooltip="{animation:true,delay:200}" title="Back" type="button">
-					<span class=" uk-icon-chevron-down"></span>
-				</button>
+				<button class="cs-header-restore-password-process" icon="question" is="cs-button" tabindex="2" type="button">Restore password</button>
+				<button class="cs-header-back" data-uk-tooltip="{animation:true,delay:200}" icon="chevron-down" is="cs-button" title="Back" type="button">&nbsp;</button>
 			</div>
 			<div class="cs-header-registration-form">
 				<input autocapitalize="off" autocorrect="off" class="cs-header-registration-email" placeholder="Email" type="email">
 				<br>
-				<button class="uk-button cs-button-compact cs-header-registration-process" type="button">
-					<span class=" uk-icon-pencil"></span> Sign up
-				</button>
-				<button class="uk-button cs-button-compact cs-header-back" data-uk-tooltip="{animation:true,delay:200}" title="Back" type="button">
-					<span class=" uk-icon-chevron-down"></span>
-				</button>
+				<button class="cs-header-registration-process" icon="pencil" is="cs-button" type="button">Sign up</button>
+				<button class="cs-header-back" data-uk-tooltip="{animation:true,delay:200}" icon="chevron-down" is="cs-button" title="Back" type="button">&nbsp;</button>
 			</div>
 			<form class="cs-header-sign-in-form" method="post">
 				<input autocapitalize="off" autocorrect="off" class="cs-header-sign-in-email" placeholder="Login or e-mail" type="text">
 				<input class="cs-header-user-password" placeholder="Password" type="password">
 				<br>
-				<button class="uk-button cs-button-compact" type="submit">
-					<span class=" uk-icon-sign-in"></span> Sign in
-				</button>
-				<button class="uk-button cs-button-compact cs-header-back" data-uk-tooltip="{animation:true,delay:200}" title="Back" type="button">
-					<span class=" uk-icon-chevron-down"></span>
-				</button>
-				<button class="uk-button cs-button-compact cs-header-restore-password-slide" data-uk-tooltip="{animation:true,delay:200}" title="Restore password" type="button">
-					<span class=" uk-icon-question"></span>
-				</button>
+				<button icon="sign-in" is="cs-button" type="submit">Sign in</button>
+				<button class="cs-header-back" data-uk-tooltip="{animation:true,delay:200}" icon="chevron-down" is="cs-button" title="Back" type="button">&nbsp;</button>
+				<button class="cs-header-restore-password-slide" data-uk-tooltip="{animation:true,delay:200}" icon="question" is="cs-button" title="Restore password" type="button">&nbsp;</button>
 				<input name="session" type="hidden" value="%s">
 			</form>
 		</div>
