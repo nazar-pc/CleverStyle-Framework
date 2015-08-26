@@ -57,7 +57,7 @@
 
   cs.db_test = function(index, mirror_index) {
     var modal;
-    modal = $.cs.simple_modal("<div>\n	<h3 class=\"cs-center\">" + L.test_connection + "</h3>\n	<div class=\"uk-progress uk-progress-striped uk-active\">\n		<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n	</div>\n</div>");
+    modal = $(cs.ui.simple_modal("<div>\n	<h3 class=\"cs-center\">" + L.test_connection + "</h3>\n	<div class=\"uk-progress uk-progress-striped uk-active\">\n		<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n	</div>\n</div>"));
     return $.ajax({
       url: 'api/System/admin/databases_test',
       data: index !== void 0 ? {
@@ -99,7 +99,7 @@
 
   cs.storage_test = function(index) {
     var modal;
-    modal = $.cs.simple_modal("<div>\n	<h3 class=\"cs-center\">" + L.test_connection + "</h3>\n	<div class=\"uk-progress uk-progress-striped uk-active\">\n		<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n	</div>\n</div>");
+    modal = $(cs.ui.simple_modal("<div>\n	<h3 class=\"cs-center\">" + L.test_connection + "</h3>\n	<div class=\"uk-progress uk-progress-striped uk-active\">\n		<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n	</div>\n</div>"));
     return $.ajax({
       url: 'api/System/admin/storages_test',
       data: index !== void 0 ? {

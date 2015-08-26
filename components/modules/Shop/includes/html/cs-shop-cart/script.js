@@ -122,12 +122,12 @@
             var id, modal;
             cart.clean();
             if (_this.payment_method === 'shop:cash') {
-              return $.cs.simple_modal("<h1 class=\"uk-text-center\">" + L.shop_thanks_for_order + "</h1>").on('hide.uk.modal', function() {
+              return $(cs.ui.simple_modal("<h1 class=\"uk-text-center\">" + L.shop_thanks_for_order + "</h1>")).on('close', function() {
                 return location.href = 'Shop/orders_';
               });
             } else {
               id = result.split('/').pop();
-              modal = $.cs.simple_modal("<h1 class=\"uk-text-center\">" + L.shop_thanks_for_order + "</h1>\n<p class=\"uk-text-center\">\n	<button type=\"button\" class=\"uk-button uk-button-primary pay-now\">" + L.shop_pay_now + "</button>\n	<button type=\"button\" class=\"uk-button pay-later\">" + L.shop_pay_later + "</button>\n</p>").on('hide.uk.modal', function() {
+              modal = $(cs.ui.simple_modal("<h1 class=\"uk-text-center\">" + L.shop_thanks_for_order + "</h1>\n<p class=\"uk-text-center\">\n	<button is=\"cs-button\" primary type=\"button\" class=\"pay-now\">" + L.shop_pay_now + "</button>\n	<button is=\"cs-button\" type=\"button\" class=\"pay-later\">" + L.shop_pay_later + "</button>\n</p>")).on('close', function() {
                 return location.href = 'Shop/orders_';
               });
               modal.find('.pay-now').click(function() {

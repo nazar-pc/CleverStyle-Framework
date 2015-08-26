@@ -40,13 +40,13 @@ $ ->
 			for key in keys
 				categories_list_[key]
 		categories_list	= categories_list.join('')
-		modal			= $.cs.simple_modal("""<form>
+		modal			= cs.ui.simple_modal("""<form>
 			<h3 class="cs-center">#{title}</h3>
 			<p>
 				#{L.shop_category}: <select is="cs-select" name="category" required>#{categories_list}</select>
 			</p>
 			<div></div>
-		</form>""", false, 1200)
+		</form>""")
 		modal.item_data			= {}
 		modal.update_item_data	= ->
 			item	= modal.item_data

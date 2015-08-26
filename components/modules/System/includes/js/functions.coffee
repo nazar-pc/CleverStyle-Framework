@@ -46,12 +46,12 @@ cs.admin_cache				= (element, action, partial_path) ->
  * @param {int}	mirror_index
 ###
 cs.db_test					= (index, mirror_index) ->
-	modal	= $.cs.simple_modal("""<div>
+	modal	= $(cs.ui.simple_modal("""<div>
 		<h3 class="cs-center">#{L.test_connection}</h3>
 		<div class="uk-progress uk-progress-striped uk-active">
 			<div class="uk-progress-bar" style="width:100%"></div>
 		</div>
-	</div>""")
+	</div>"""))
 	$.ajax(
 		url		: 'api/System/admin/databases_test'
 		data	:
@@ -87,12 +87,12 @@ cs.db_test					= (index, mirror_index) ->
  * @param {int}	index
 ###
 cs.storage_test				= (index) ->
-	modal	= $.cs.simple_modal("""<div>
+	modal	= $(cs.ui.simple_modal("""<div>
 		<h3 class="cs-center">#{L.test_connection}</h3>
 		<div class="uk-progress uk-progress-striped uk-active">
 			<div class="uk-progress-bar" style="width:100%"></div>
 		</div>
-	</div>""")
+	</div>"""))
 	$.ajax(
 		url		: 'api/System/admin/storages_test'
 		data	:

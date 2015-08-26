@@ -154,21 +154,15 @@ Polymer(
 			p.render()
 		parseInt(users_count) > parseInt(search_limit)
 	add_user				: ->
-		$.cs.simple_modal("""
+		$(cs.ui.simple_modal("""
 			<h3>#{L.adding_a_user}</h3>
 			<cs-system-admin-users-add-user-form/>
-		""").on(
-			'hide.uk.modal'
-			@search.bind(@)
-		)
+		""")).on('hide.uk.modal', @search.bind(@))
 	add_bot					: ->
-		$.cs.simple_modal("""
+		$(cs.ui.simple_modal("""
 			<h3>#{L.adding_a_bot}</h3>
 			<cs-system-admin-users-add-bot-form/>
-		""").on(
-			'hide.uk.modal'
-			@search.bind(@)
-		)
+		""")).on('hide.uk.modal', @search.bind(@))
 	edit_user				: (e) ->
 		$sender	= $(e.currentTarget)
 		index	= $sender.closest('[data-user-index]').data('user-index')
@@ -177,24 +171,18 @@ Polymer(
 			title		= L.editing_of_bot_information(
 				user.username || user.login
 			)
-			$.cs.simple_modal("""
+			$(cs.ui.simple_modal("""
 				<h2>#{title}</h2>
 				<cs-system-admin-users-edit-bot-form user_id="#{user.id}"/>
-			""").on(
-				'hide.uk.modal'
-				@search.bind(@)
-			)
+			""")).on('hide.uk.modal', @search.bind(@))
 		else
 			title		= L.editing_of_user_information(
 				user.username || user.login
 			)
-			$.cs.simple_modal("""
+			$(cs.ui.simple_modal("""
 				<h2>#{title}</h2>
 				<cs-system-admin-users-edit-user-form user_id="#{user.id}"/>
-			""").on(
-				'hide.uk.modal'
-				@search.bind(@)
-			)
+			""")).on('hide.uk.modal', @search.bind(@))
 	edit_permissions		: (e) ->
 		$sender		= $(e.currentTarget)
 		index		= $sender.closest('[data-user-index]').data('user-index')
@@ -203,7 +191,7 @@ Polymer(
 		title		= L[title_key](
 			user.username || user.login
 		)
-		$.cs.simple_modal("""
+		cs.ui.simple_modal("""
 			<h2>#{title}</h2>
 			<cs-system-admin-permissions-for user="#{user.id}" for="user"/>
 		""")

@@ -12,7 +12,7 @@ $ ->
 			for index, type of types
 				"""<option value="#{index}">#{type}</option>"""
 		types	= types.join('')
-		modal	=$.cs.simple_modal("""<form>
+		modal	= $(cs.ui.simple_modal("""<form>
 			<h3 class="cs-center">#{title}</h3>
 			<p>
 				#{L.shop_title}: <input name="title" required>
@@ -34,7 +34,7 @@ $ ->
 			<p>
 				<button class="uk-button" type="submit">#{action}</button>
 			</p>
-		</form>""")
+		</form>"""))
 		modal.find('[type=color]').change ->
 			$this	= $(@)
 			$this.prev().val(

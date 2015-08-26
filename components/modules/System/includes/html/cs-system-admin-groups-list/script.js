@@ -40,7 +40,7 @@
       })(this));
     },
     add_group: function() {
-      return $.cs.simple_modal("<h3>" + L.adding_a_group + "</h3>\n<cs-system-admin-groups-form/>").on('hide.uk.modal', (function(_this) {
+      return $(cs.ui.simple_modal("<h3>" + L.adding_a_group + "</h3>\n<cs-system-admin-groups-form/>")).on('close', (function(_this) {
         return function() {
           return _this.reload();
         };
@@ -49,7 +49,7 @@
     edit_group: function(e) {
       var group;
       group = e.model.group;
-      return $.cs.simple_modal("<h3>" + (L.editing_of_group(group.title)) + "</h3>\n<cs-system-admin-groups-form group_id=\"" + group.id + "\" group_title=\"" + (cs.prepare_attr_value(group.title)) + "\" description=\"" + (cs.prepare_attr_value(group.description)) + "\"/>").on('hide.uk.modal', (function(_this) {
+      return $(cs.ui.simple_modal("<h3>" + (L.editing_of_group(group.title)) + "</h3>\n<cs-system-admin-groups-form group_id=\"" + group.id + "\" group_title=\"" + (cs.prepare_attr_value(group.title)) + "\" description=\"" + (cs.prepare_attr_value(group.description)) + "\"/>")).on('close', (function(_this) {
         return function() {
           return _this.reload();
         };
@@ -75,7 +75,7 @@
       var group, title;
       group = e.model.group;
       title = L.permissions_for_group(group.title);
-      return $.cs.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-permissions-for group=\"" + group.id + "\" for=\"group\"/>");
+      return cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-permissions-for group=\"" + group.id + "\" for=\"group\"/>");
     }
   });
 

@@ -37,7 +37,7 @@ $ ->
 			for method, details of payment_methods
 				"""<option value="#{method}">#{details.title}</option>"""
 		payment_methods_list	= payment_methods_list.join('')
-		modal					= $.cs.simple_modal("""<form>
+		modal					= $(cs.ui.simple_modal("""<form>
 			<h3 class="cs-center">#{title}</h3>
 			<p class="uk-hidden">
 				#{L.shop_datetime}: <span class="date"></span>
@@ -81,7 +81,7 @@ $ ->
 			<p>
 				<button class="uk-button" type="submit">#{action}</button>
 			</p>
-		</form>""", false, 1200)
+		</form>"""))
 		do ->
 			timeout = 0
 			modal.find('[name=user]').keyup ->

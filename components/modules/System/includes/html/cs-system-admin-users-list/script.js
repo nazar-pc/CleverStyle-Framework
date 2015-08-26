@@ -212,10 +212,10 @@
       return parseInt(users_count) > parseInt(search_limit);
     },
     add_user: function() {
-      return $.cs.simple_modal("<h3>" + L.adding_a_user + "</h3>\n<cs-system-admin-users-add-user-form/>").on('hide.uk.modal', this.search.bind(this));
+      return $(cs.ui.simple_modal("<h3>" + L.adding_a_user + "</h3>\n<cs-system-admin-users-add-user-form/>")).on('hide.uk.modal', this.search.bind(this));
     },
     add_bot: function() {
-      return $.cs.simple_modal("<h3>" + L.adding_a_bot + "</h3>\n<cs-system-admin-users-add-bot-form/>").on('hide.uk.modal', this.search.bind(this));
+      return $(cs.ui.simple_modal("<h3>" + L.adding_a_bot + "</h3>\n<cs-system-admin-users-add-bot-form/>")).on('hide.uk.modal', this.search.bind(this));
     },
     edit_user: function(e) {
       var $sender, index, title, user;
@@ -224,10 +224,10 @@
       user = this.users[index];
       if (user.is_bot) {
         title = L.editing_of_bot_information(user.username || user.login);
-        return $.cs.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-edit-bot-form user_id=\"" + user.id + "\"/>").on('hide.uk.modal', this.search.bind(this));
+        return $(cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-edit-bot-form user_id=\"" + user.id + "\"/>")).on('hide.uk.modal', this.search.bind(this));
       } else {
         title = L.editing_of_user_information(user.username || user.login);
-        return $.cs.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-edit-user-form user_id=\"" + user.id + "\"/>").on('hide.uk.modal', this.search.bind(this));
+        return $(cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-users-edit-user-form user_id=\"" + user.id + "\"/>")).on('hide.uk.modal', this.search.bind(this));
       }
     },
     edit_permissions: function(e) {
@@ -237,7 +237,7 @@
       user = this.users[index];
       title_key = user.is_bot ? 'permissions_for_bot' : 'permissions_for_user';
       title = L[title_key](user.username || user.login);
-      return $.cs.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-permissions-for user=\"" + user.id + "\" for=\"user\"/>");
+      return cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-permissions-for user=\"" + user.id + "\" for=\"user\"/>");
     }
   });
 

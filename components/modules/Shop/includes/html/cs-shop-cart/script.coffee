@@ -85,22 +85,24 @@ Polymer(
 			success	: (result) =>
 				cart.clean()
 				if @payment_method == 'shop:cash' # Default payment method (Orders::PAYMENT_METHOD_CASH)
-					$.cs.simple_modal("""
-						<h1 class="uk-text-center">#{L.shop_thanks_for_order}</h1>
-					""")
-					.on 'hide.uk.modal', ->
+					$(
+						cs.ui.simple_modal("""
+							<h1 class="uk-text-center">#{L.shop_thanks_for_order}</h1>
+						""")
+					).on('close', ->
 						location.href	= 'Shop/orders_'
+					)
 				else
 					id		= result.split('/').pop()
-					modal	= $.cs.simple_modal("""
+					modal	= $(cs.ui.simple_modal("""
 						<h1 class="uk-text-center">#{L.shop_thanks_for_order}</h1>
 						<p class="uk-text-center">
-							<button type="button" class="uk-button uk-button-primary pay-now">#{L.shop_pay_now}</button>
-							<button type="button" class="uk-button pay-later">#{L.shop_pay_later}</button>
+							<button is="cs-button" primary type="button" class="pay-now">#{L.shop_pay_now}</button>
+							<button is="cs-button" type="button" class="pay-later">#{L.shop_pay_later}</button>
 						</p>
-					""")
-					.on 'hide.uk.modal', ->
+					""")).on('close', ->
 						location.href	= 'Shop/orders_'
+					)
 					modal.find('.pay-now').click ->
 						location.href	= "Shop/pay/#{id}"
 					modal.find('.pay-later').click ->

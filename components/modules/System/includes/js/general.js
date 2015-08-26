@@ -33,7 +33,7 @@
         $block = $(this).closest('[data-index]');
         index = $block.data('index');
         title = cs.Language.permissions_for_block($block.data('block-title'));
-        return $.cs.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-permissions-for-item label=\"" + index + "\" group=\"Block\"/>");
+        return cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-permissions-for-item label=\"" + index + "\" group=\"Block\"/>");
       });
       $('#cs-top-blocks-items, #cs-left-blocks-items, #cs-floating-blocks-items, #cs-right-blocks-items, #cs-bottom-blocks-items').sortable({
         connectWith: '.cs-blocks-items',

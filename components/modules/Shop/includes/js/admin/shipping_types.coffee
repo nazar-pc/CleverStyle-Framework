@@ -8,7 +8,7 @@
 $ ->
 	L = cs.Language
 	make_modal = (title, action) ->
-		$.cs.simple_modal("""<form>
+		cs.ui.simple_modal("""<form>
 			<h3 class="cs-center">#{title}</h3>
 			<p>
 				#{L.shop_title}: <input name="title" required>

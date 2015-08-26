@@ -33,25 +33,21 @@ Polymer(
 					)
 			@set('permissions', permissions_list)
 	add_permission		: ->
-		$.cs.simple_modal("""
+		$(cs.ui.simple_modal("""
 			<h3>#{L.adding_permission}</h3>
 			<p class="uk-alert uk-alert-danger">#{L.changing_settings_warning}</p>
 			<cs-system-admin-permissions-form/>
-		""").on(
-			'hide.uk.modal'
-			=>
-				@reload()
+		""")).on('close', =>
+			@reload()
 		)
 	edit_permission		: (e) ->
 		permission	= e.model.permission
-		$.cs.simple_modal("""
+		$(cs.ui.simple_modal("""
 			<h3>#{L.editing_permission(permission.group + '/' + permission.label)}</h3>
 			<p class="uk-alert uk-alert-danger">#{L.changing_settings_warning}</p>
 			<cs-system-admin-permissions-form permission_id="#{permission.id}" label="#{cs.prepare_attr_value(permission.label)}" group="#{cs.prepare_attr_value(permission.group)}"/>
-		""").on(
-			'hide.uk.modal'
-			=>
-				@reload()
+		""")).on('close', =>
+			@reload()
 		)
 	delete_permission	: (e) ->
 		permission	= e.model.permission

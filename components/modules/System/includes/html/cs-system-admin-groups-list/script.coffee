@@ -24,23 +24,19 @@ Polymer(
 			@set('groups', groups)
 		)
 	add_group			: ->
-		$.cs.simple_modal("""
+		$(cs.ui.simple_modal("""
 			<h3>#{L.adding_a_group}</h3>
 			<cs-system-admin-groups-form/>
-		""").on(
-			'hide.uk.modal'
-			=>
-				@reload()
+		""")).on('close', =>
+			@reload()
 		)
 	edit_group			: (e) ->
 		group	= e.model.group
-		$.cs.simple_modal("""
+		$(cs.ui.simple_modal("""
 			<h3>#{L.editing_of_group(group.title)}</h3>
 			<cs-system-admin-groups-form group_id="#{group.id}" group_title="#{cs.prepare_attr_value(group.title)}" description="#{cs.prepare_attr_value(group.description)}"/>
-		""").on(
-			'hide.uk.modal'
-			=>
-				@reload()
+		""")).on('close', =>
+			@reload()
 		)
 	delete_group		: (e) ->
 		group	= e.model.group
@@ -60,7 +56,7 @@ Polymer(
 	edit_permissions	: (e) ->
 		group	= e.model.group
 		title	= L.permissions_for_group(group.title)
-		$.cs.simple_modal("""
+		cs.ui.simple_modal("""
 			<h2>#{title}</h2>
 			<cs-system-admin-permissions-for group="#{group.id}" for="group"/>
 		""")

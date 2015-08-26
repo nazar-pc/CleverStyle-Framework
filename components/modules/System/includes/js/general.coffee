@@ -38,7 +38,7 @@ $ ->
 			title	= cs.Language.permissions_for_block(
 				$block.data('block-title')
 			)
-			$.cs.simple_modal("""
+			cs.ui.simple_modal("""
 				<h2>#{title}</h2>
 				<cs-system-admin-permissions-for-item label="#{index}" group="Block"/>
 			""")

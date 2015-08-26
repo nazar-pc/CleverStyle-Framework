@@ -104,26 +104,3 @@ do ($=jQuery, UI = UIkit) ->
 		for name, func of helpers
 			public_helpers[name] = func.bind(@)
 		public_helpers
-	$.cs	=
-		###*
-		 * Simple wrapper around $(...).cs().modal() with inner form
-		 *
-		 * All content will be inserted into modal form, optionally it is possible to add close button and set width
-		 *
-		 * @return jQuery Root modal element, it is possible to use .cs().modal() on it and listen for events
-		###
-		simple_modal	: (content, close = false, width) ->
-			style	= if width then ' style="width:' + (if /^[0-9]+$/.test(width) then width + 'px;' else width) + '"' else ''
-			close	= if close then """<a class="uk-modal-close uk-close"></a>""" else ''
-			$("""
-				<div>
-					<div class="uk-form"#{style}>
-						#{close}
-						#{content}
-					</div>
-				</div>
-			""")
-				.appendTo('body')
-				.cs().modal('show')
-				.on 'hide.uk.modal', ->
-					$(@).remove()

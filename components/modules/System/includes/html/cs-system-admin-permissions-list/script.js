@@ -50,7 +50,7 @@
       })(this));
     },
     add_permission: function() {
-      return $.cs.simple_modal("<h3>" + L.adding_permission + "</h3>\n<p class=\"uk-alert uk-alert-danger\">" + L.changing_settings_warning + "</p>\n<cs-system-admin-permissions-form/>").on('hide.uk.modal', (function(_this) {
+      return $(cs.ui.simple_modal("<h3>" + L.adding_permission + "</h3>\n<p class=\"uk-alert uk-alert-danger\">" + L.changing_settings_warning + "</p>\n<cs-system-admin-permissions-form/>")).on('close', (function(_this) {
         return function() {
           return _this.reload();
         };
@@ -59,7 +59,7 @@
     edit_permission: function(e) {
       var permission;
       permission = e.model.permission;
-      return $.cs.simple_modal("<h3>" + (L.editing_permission(permission.group + '/' + permission.label)) + "</h3>\n<p class=\"uk-alert uk-alert-danger\">" + L.changing_settings_warning + "</p>\n<cs-system-admin-permissions-form permission_id=\"" + permission.id + "\" label=\"" + (cs.prepare_attr_value(permission.label)) + "\" group=\"" + (cs.prepare_attr_value(permission.group)) + "\"/>").on('hide.uk.modal', (function(_this) {
+      return $(cs.ui.simple_modal("<h3>" + (L.editing_permission(permission.group + '/' + permission.label)) + "</h3>\n<p class=\"uk-alert uk-alert-danger\">" + L.changing_settings_warning + "</p>\n<cs-system-admin-permissions-form permission_id=\"" + permission.id + "\" label=\"" + (cs.prepare_attr_value(permission.label)) + "\" group=\"" + (cs.prepare_attr_value(permission.group)) + "\"/>")).on('close', (function(_this) {
         return function() {
           return _this.reload();
         };

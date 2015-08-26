@@ -40,7 +40,7 @@ $ ->
 			for key in keys
 				categories_[key]
 		categories	= categories.join('')
-		modal		= $.cs.simple_modal("""<form>
+		modal		= $(cs.ui.simple_modal("""<form>
 			<h3 class="cs-center">#{title}</h3>
 			<p>
 				#{L.shop_parent_category}:
@@ -91,7 +91,7 @@ $ ->
 			<p>
 				<button class="uk-button" type="submit">#{action}</button>
 			</p>
-		</form>""")
+		</form>"""))
 		modal.set_image	= (image) ->
 			modal.find('[name=image]').val(image)
 			if image

@@ -122,7 +122,7 @@
     	 * @param {string}		name
     	 * @param {function}	helper
      */
-    $.fn.cs = function(name, helper) {
+    return $.fn.cs = function(name, helper) {
       var func, public_helpers;
       if (name && helper) {
         helpers[name] = helper;
@@ -134,27 +134,6 @@
         public_helpers[name] = func.bind(this);
       }
       return public_helpers;
-    };
-    return $.cs = {
-
-      /**
-      		 * Simple wrapper around $(...).cs().modal() with inner form
-      		 *
-      		 * All content will be inserted into modal form, optionally it is possible to add close button and set width
-      		 *
-      		 * @return jQuery Root modal element, it is possible to use .cs().modal() on it and listen for events
-       */
-      simple_modal: function(content, close, width) {
-        var style;
-        if (close == null) {
-          close = false;
-        }
-        style = width ? ' style="width:' + (/^[0-9]+$/.test(width) ? width + 'px;' : width) + '"' : '';
-        close = close ? "<a class=\"uk-modal-close uk-close\"></a>" : '';
-        return $("<div>\n	<div class=\"uk-form\"" + style + ">\n		" + close + "\n		" + content + "\n	</div>\n</div>").appendTo('body').cs().modal('show').on('hide.uk.modal', function() {
-          return $(this).remove();
-        });
-      }
     };
   })(jQuery, UIkit);
 

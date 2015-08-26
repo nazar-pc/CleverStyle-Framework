@@ -13,7 +13,7 @@ $ ->
 			for index, type of types
 				"""<option value="#{index}">#{type}</option>"""
 		types		= types.join('')
-		$.cs.simple_modal("""<form>
+		cs.ui.simple_modal("""<form>
 			<h3 class="cs-center">#{title}</h3>
 			<p>
 				#{L.shop_attribute_type}: <select is="cs-select" name="type" required>#{types}</select>
@@ -22,13 +22,13 @@ $ ->
 				#{L.shop_possible_values}: <textarea is="cs-textarea" autosize name="value"></textarea>
 			</p>
 			<p>
-				#{L.shop_title}: <input name="title" required>
+				#{L.shop_title}: <input is="cs-input-title" name="title" required>
 			</p>
 			<p>
-				#{L.shop_title_internal}: <input name="title_internal" required>
+				#{L.shop_title_internal}: <input is="cs-input-title" name="title_internal" required>
 			</p>
 			<p>
-				<button class="uk-button" type="submit">#{action}</button>
+				<button is="cs-button" type="submit">#{action}</button>
 			</p>
 		</form>""")
 	$('html')
