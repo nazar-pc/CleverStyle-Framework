@@ -393,7 +393,7 @@
   /**
    * Observe for inserted nodes using `MutationObserver` if available and `addEventListener('DOMNodeInserted', ...)` otherwise
    *
-   * @param {Node}		timeout
+   * @param {Number}		timeout
    * @param {function[]}	callback	Will be called with either directly on inserted node(s) or on some of its parent(s) as argument
    */
 
@@ -424,12 +424,18 @@
     /**
     	 * Simple modal dialog that will be destroyed after closing
     	 *
+    	 * @param {HTMLElement}|{jQuery}|{String} content
+        *
     	 * @return {HTMLElement}
      */
     return ui.simple_modal = function(content) {
       var modal;
       modal = document.createElement('section', 'cs-section-modal');
-      modal.innerHTML = content;
+      if (typeof content === 'string') {
+        modal.innerHTML = content;
+      } else {
+        modal.appendChild(content instanceof jQuery ? content[0] : content);
+      }
       modal.autoOpen = true;
       modal.autoDestroy = true;
       document.body.parentNode.appendChild(modal);

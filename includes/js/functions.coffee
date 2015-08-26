@@ -298,7 +298,7 @@ cs.async_call				= (functions, timeout) ->
 ###*
  * Observe for inserted nodes using `MutationObserver` if available and `addEventListener('DOMNodeInserted', ...)` otherwise
  *
- * @param {Node}		timeout
+ * @param {Number}		timeout
  * @param {function[]}	callback	Will be called with either directly on inserted node(s) or on some of its parent(s) as argument
 ###
 cs.observe_inserts_on		= (target, callback) ->
@@ -326,11 +326,16 @@ do ->
 	###*
 	 * Simple modal dialog that will be destroyed after closing
 	 *
+	 * @param {HTMLElement}|{jQuery}|{String} content
+     *
 	 * @return {HTMLElement}
 	###
 	ui.simple_modal = (content) ->
 		modal				= document.createElement('section', 'cs-section-modal')
-		modal.innerHTML		= content
+		if typeof content == 'string'
+			modal.innerHTML = content
+		else
+			modal.appendChild(`content instanceof jQuery ? content[0] : content`)
 		modal.autoOpen		= true
 		modal.autoDestroy	= true
 		document.body.parentNode.appendChild(modal)
