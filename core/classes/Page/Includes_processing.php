@@ -47,6 +47,10 @@ class Includes_processing {
 		 */
 		$data	= str_replace(';}', '}', $data);
 		/**
+		 * Duplicated semicolons
+		 */
+		$data	= preg_replace('/;+/m', ';', $data);
+		/**
 		 * Minify repeated colors declarations
 		 */
 		$data	= preg_replace('/#([0-9a-f])\1([0-9a-f])\2([0-9a-f])\3/is', '#$1$2$3', $data);
@@ -221,9 +225,42 @@ class Includes_processing {
 		$dir							= dirname($file);
 		foreach ($links_and_styles[1] as $index => $link) {
 			/**
+			 * Check for custom styles `is="custom-style"` - we'll skip them
+			 */
+			if (preg_match('/^[^>]*is="custom-style"[^>]*>/Uim', $links_and_styles[2][$index])) {
+				$content = explode('>', $links_and_styles[2][$index], 2)[1];
+				$data    = str_replace(
+					$content,
+					static::css($content, $file),
+					$data
+				);
+				continue;
+			}
+			/**
+			 * If content is plain CSS
+			 */
+			if (mb_strpos($links_and_styles[0][$index], '</style>') > 0) {
+				$links_and_styles_to_replace[]	= $links_and_styles[0][$index];
+				$shim							= $shim || static::need_shimming($links_and_styles[0][$index]);
+				$styles_content					.= static::css(
+					explode('>', $links_and_styles[2][$index], 2)[1],
+					$file
+				);
+				continue;
+			}
+			if (!static::has_relative_href($link, $url, $dir)) {
+				continue;
+			}
+			$import = preg_match('/rel\s*=\s*[\'"]import[\'"]/Uim', $link);
+			/**
+			 * CSS imports are available in Polymer alongside with HTML imports
+			 */
+			$css_import = $import && preg_match('/type\s*=\s*[\'"]css[\'"]/Uim', $link);
+			$stylesheet = preg_match('/rel\s*=\s*[\'"]stylesheet[\'"]/Uim', $link);
+			/**
 			 * If content is link to CSS file
 			 */
-			if (static::has_relative_href($link, $url, $dir, 'stylesheet')) {
+			if ($css_import || $stylesheet) {
 				$links_and_styles_to_replace[]	= $links_and_styles[0][$index];
 				$shim							= $shim || static::need_shimming($links_and_styles[0][$index]);
 				$styles_content					.= static::css(
@@ -233,23 +270,13 @@ class Includes_processing {
 			/**
 			 * If content is HTML import
 			 */
-			} elseif (static::has_relative_href($link, $url, $dir, 'import')) {
+			} elseif ($import) {
 				$links_and_styles_to_replace[]	= $links_and_styles[0][$index];
 				$imports_content				.= static::html(
 					file_get_contents("$dir/$url"),
 					"$dir/$url",
 					"$base_filename-".basename($url, '.html'),
 					$destination
-				);
-			/**
-			 * If content is plain CSS
-			 */
-			} elseif (mb_strpos($links_and_styles[0][$index], '</style>') !== -1) {
-				$links_and_styles_to_replace[]	= $links_and_styles[0][$index];
-				$shim							= $shim || static::need_shimming($links_and_styles[0][$index]);
-				$styles_content					.= static::css(
-					explode('>', $links_and_styles[2][$index], 2)[1],
-					$file
 				);
 			}
 		}
@@ -293,14 +320,12 @@ class Includes_processing {
 	 * @param string $link
 	 * @param string $url
 	 * @param string $dir
-	 * @param string $rel
 	 *
 	 * @return bool
 	 */
-	protected static function has_relative_href ($link, &$url, $dir, $rel) {
+	protected static function has_relative_href ($link, &$url, $dir) {
 		$result =
 			$link &&
-			preg_match('/rel\s*=\s*[\'"]'.$rel.'[\'"]/Uims', $link) &&
 			preg_match('/href\s*=\s*[\'"](.*)[\'"]/Uims', $link, $url);
 		if ($result && static::is_relative_path_and_exists($url[1], $dir)) {
 			$url = $url[1];
