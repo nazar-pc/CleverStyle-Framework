@@ -14,8 +14,8 @@ $ ->
 			.parent()
 			.find('button[type=submit]')
 			.on('click.cs-composer', ->
-				cs.composer.modal = $.cs.simple_modal('<cs-composer/>', false, '90vw')
+				cs.composer.modal = cs.ui.simple_modal('<cs-composer/>')
 				false
 			)
 	$('.cs-composer-admin-force-update').click ->
-		cs.composer.modal = $.cs.simple_modal('<cs-composer/>', false, '90vw')
+		cs.composer.modal = cs.ui.simple_modal('<cs-composer/>')

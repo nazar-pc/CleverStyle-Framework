@@ -320,3 +320,18 @@ cs.observe_inserts_on		= (target, callback) ->
 				callback(target)
 			false
 		)
+do ->
+	cs.ui	= cs.ui || {}
+	ui		= cs.ui
+	###*
+	 * Simple modal dialog that will be destroyed after closing
+	 *
+	 * @return {HTMLElement}
+	###
+	ui.simple_modal = (content) ->
+		modal				= document.createElement('section', 'cs-section-modal')
+		modal.innerHTML		= content
+		modal.autoOpen		= true
+		modal.autoDestroy	= true
+		document.body.parentNode.appendChild(modal)
+		modal

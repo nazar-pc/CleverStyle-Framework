@@ -18,6 +18,9 @@
   Polymer({
     'is': 'cs-composer',
     behaviors: [cs.Polymer.behaviors.Language],
+    properties: {
+      status: Number
+    },
     ready: function() {
       $.ajax({
         url: 'api/Composer',
@@ -40,13 +43,13 @@
                   return L.composer_dependencies_conflict;
               }
             })();
-            _this.set('status', status);
+            _this.status = status;
             if (result.description) {
               $(_this.$.result).show().html(result.description);
             }
             if (!result.code && !cs.composer.force) {
               setTimeout((function() {
-                return cs.composer.modal.trigger('hide');
+                return cs.composer.modal.close();
               }), 2000);
             }
             return cs.composer.button.off('click.cs-composer').click();
@@ -55,19 +58,19 @@
       });
       return setTimeout(((function(_this) {
         return function() {
-          return _this.update_progress();
+          return _this._update_progress();
         };
       })(this)), 1000);
     },
-    update_progress: function() {
+    _update_progress: function() {
       return $.getJSON('api/Composer', (function(_this) {
         return function(data) {
-          if (_this.status || !_this.offsetHeight) {
+          if (_this.status || !cs.composer.modal.opened) {
             return;
           }
           $(_this.$.result).show().html(data);
           return setTimeout((function() {
-            return _this.update_progress();
+            return _this._update_progress();
           }), 1000);
         };
       })(this));

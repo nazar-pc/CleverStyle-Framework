@@ -14,11 +14,11 @@
       return;
     }
     cs.composer.button = $('input[type=hidden]').filter('[name=module], [name=plugin]').parent().find('button[type=submit]').on('click.cs-composer', function() {
-      cs.composer.modal = $.cs.simple_modal('<cs-composer/>', false, '90vw');
+      cs.composer.modal = cs.ui.simple_modal('<cs-composer/>');
       return false;
     });
     return $('.cs-composer-admin-force-update').click(function() {
-      return cs.composer.modal = $.cs.simple_modal('<cs-composer/>', false, '90vw');
+      return cs.composer.modal = cs.ui.simple_modal('<cs-composer/>');
     });
   });
 

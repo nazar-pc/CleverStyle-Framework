@@ -416,4 +416,25 @@
     }
   };
 
+  (function() {
+    var ui;
+    cs.ui = cs.ui || {};
+    ui = cs.ui;
+
+    /**
+    	 * Simple modal dialog that will be destroyed after closing
+    	 *
+    	 * @return {HTMLElement}
+     */
+    return ui.simple_modal = function(content) {
+      var modal;
+      modal = document.createElement('section', 'cs-section-modal');
+      modal.innerHTML = content;
+      modal.autoOpen = true;
+      modal.autoDestroy = true;
+      document.body.parentNode.appendChild(modal);
+      return modal;
+    };
+  })();
+
 }).call(this);
