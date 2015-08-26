@@ -3,7 +3,7 @@
     <div class="uk-text-large">
       <span>[[concat(order_number, ': ', order_status)]]</span>
       <template if="[[show_pay_now]]">
-        <button class="uk-button uk-button-primary" on-click="pay" type="button">[[L.pay_now]]</button>
+        <button is="cs-button" on-click="pay" primary type="button">[[L.pay_now]]</button>
       </template>
     </div>
     <div>[[date_formatted]]</div>

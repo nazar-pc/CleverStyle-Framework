@@ -2,10 +2,10 @@
   <link href="style.css" rel="import" type="css">
   <template>
     <div class="uk-button-group" hidden$="[[!in_cart]]">
-      <button class="uk-button uk-button-primary" on-click="add" type="button">[[L.shop_add_to_cart]]</button>
+      <button is="cs-button" on-click="add" primary type="button">[[L.shop_add_to_cart]]</button>
       <a class="uk-button" href="/Shop/cart" id="in_cart" title="[[L.shop_already_in_cart]]">[[in_cart]]</a>
     </div>
-    <button class="uk-button uk-button-primary" hidden$="[[and(in_cart)]]" on-click="add" type="button">[[L.shop_add_to_cart]]</button>
+    <button hidden$="[[and(in_cart)]]" is="cs-button" on-click="add" primary type="button">[[L.shop_add_to_cart]]</button>
   </template>
   <script src="script.js"></script>
 </dom-module>

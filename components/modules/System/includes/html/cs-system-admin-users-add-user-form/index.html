@@ -4,7 +4,7 @@
       <label class="uk-form-label">[[L.email]]</label>
       <input type="email" value="{{email::input}}">
       <p>
-        <button class="uk-button uk-button-primary" disabled$="[[!email]]" on-click="save">[[L.save]]</button>
+        <button disabled$="[[!email]]" is="cs-button" on-click="save" primary>[[L.save]]</button>
       </p>
     </div>
   </template>

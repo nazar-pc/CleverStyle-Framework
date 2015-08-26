@@ -33,20 +33,16 @@ $Index->content(
 							'href'	=> "$module/$gallery[path]"
 						]
 					),
-					h::{'a.uk-button.cs-button-compact'}(
+					h::{'a[cs-link-button][icon=pencil][level=0]'}(
 						[
-							h::icon('pencil'),
-							[
-								'href'			=> "admin/Photo_gallery/galleries/edit/$gallery[id]",
-								'data-title'	=> $L->edit
-							]
-						],
+							'href'			=> "admin/Photo_gallery/galleries/edit/$gallery[id]",
+							'data-title'	=> $L->edit
+						]
+					).
+					h::{'a[cs-link-button][icon=trash][level=0]'}(
 						[
-							h::icon('trash-o'),
-							[
-								'href'			=> "admin/Photo_gallery/galleries/delete/$gallery[id]",
-								'data-title'	=> $L->delete
-							]
+							'href'			=> "admin/Photo_gallery/galleries/delete/$gallery[id]",
+							'data-title'	=> $L->delete
 						]
 					)
 				];
@@ -54,7 +50,7 @@ $Index->content(
 			array_values($Photo_gallery->get_galleries_list())
 		)
 	).
-	h::{'p.cs-left a.uk-button'}(
+	h::{'p.cs-left a[is=cs-link-button]'}(
 		$L->photo_gallery_add_gallery,
 		[
 			'href'	=> 'admin/Photo_gallery/galleries/add'

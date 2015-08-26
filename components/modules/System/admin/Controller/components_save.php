@@ -321,7 +321,7 @@ trait components_save {
 						$Page->notice(
 							h::{'p.cs-center'}(
 								"$L->module_installed_but_not_enabled ".
-								h::{'a.uk-button'}(
+								h::{'a[is=cs-link-button]'}(
 									$L->enable_module($module_name),
 									[
 										'href' => "admin/System/components/modules/enable/$module_name"

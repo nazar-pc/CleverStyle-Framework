@@ -25,13 +25,13 @@ $Index->content(
 			function ($poll) use ($L) {
 				return [
 					$poll['title'],
-					h::{'a.uk-button'}(
+					h::{'a[is=cs-link-button]'}(
 						$L->edit,
 						[
 							'href' => "admin/Polls/polls/edit/$poll[id]"
 						]
 					).
-					h::{'a.uk-button'}(
+					h::{'a[is=cs-link-button]'}(
 						$L->delete,
 						[
 							'href' => "admin/Polls/polls/delete/$poll[id]"
@@ -50,4 +50,4 @@ $Index->content(
 		'placeholder' => $L->answers_one_per_line
 	])
 );
-$Index->custom_buttons = h::{'button.uk-button[type=submit]'}($L->add);
+$Index->custom_buttons = h::{'button[is=cs-button][type=submit]'}($L->add);

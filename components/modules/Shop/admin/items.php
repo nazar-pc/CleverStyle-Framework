@@ -96,13 +96,13 @@ $Page->content(
 									'href' => "admin/Shop/items/?listed=$item[listed]"
 								]
 							),
-							h::{'button.uk-button.cs-shop-item-edit'}(
+							h::{'button.cs-shop-item-edit[is=cs-button]'}(
 								$L->edit,
 								[
 									'data-id' => $item['id']
 								]
 							).
-							h::{'button.uk-button.cs-shop-item-delete'}(
+							h::{'button.cs-shop-item-delete[is=cs-button]'}(
 								$L->delete,
 								[
 									'data-id' => $item['id']
@@ -130,5 +130,5 @@ $Page->content(
 		},
 		true
 	).
-	h::{'p button.uk-button.cs-shop-item-add'}($L->add)
+	h::{'p button.cs-shop-item-add[is=cs-button]'}($L->add)
 );

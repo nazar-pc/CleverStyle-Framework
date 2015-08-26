@@ -4,5 +4,5 @@
 			%label.uk-form-label [[L.email]]
 			%input(type="email" value="{{email::input}}")/
 			%p
-				%button.uk-button.uk-button-primary(on-click="save" disabled$="[[!email]]") [[L.save]]
+				%button(is="cs-button" primary on-click="save" disabled$="[[!email]]") [[L.save]]
 	%script(src="script.js")

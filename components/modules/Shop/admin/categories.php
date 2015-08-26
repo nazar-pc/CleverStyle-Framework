@@ -58,13 +58,13 @@ $Page->content(
 					$Attributes->get($category['title_attribute'])['title_internal'],
 					@$Attributes->get($category['description_attribute'])['title_internal'] ?: '',
 					h::icon($category['visible'] ? 'check' : 'minus'),
-					h::{'button.uk-button.cs-shop-category-edit'}(
+					h::{'button.cs-shop-category-edit[is=cs-button]'}(
 						$L->edit,
 						[
 							'data-id' => $category['id']
 						]
 					).
-					h::{'button.uk-button.cs-shop-category-delete'}(
+					h::{'button.cs-shop-category-delete[is=cs-button]'}(
 						$L->delete,
 						[
 							'data-id' => $category['id']
@@ -75,5 +75,5 @@ $Page->content(
 			$all_categories
 		) ?: false)
 	).
-	h::{'p button.uk-button.cs-shop-category-add'}($L->add)
+	h::{'p button.cs-shop-category-add[is=cs-button]'}($L->add)
 );

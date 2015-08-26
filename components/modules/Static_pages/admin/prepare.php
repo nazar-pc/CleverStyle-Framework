@@ -42,38 +42,33 @@ function get_categories_rows ($structure = null, $level = 0, $parent_categories 
 					'class' => "cs-static-pages-padding-left-$level"
 				]
 			],
-			h::{'a.uk-button.cs-button-compact'}(
+			h::{'a[cs-link-button][icon=plus][level=0]'}(
 				[
-					h::icon('plus'),
-					[
-						'href'       => "admin/Static_pages/add_category/$structure[id]",
-						'data-title' => $L->add_subcategory
-					]
-				],
-				[
-					h::icon('file-text'),
-					[
-						'href'       => "admin/Static_pages/add_page/$structure[id]",
-						'data-title' => $L->add_page
-					]
+					'href'       => "admin/Static_pages/add_category/$structure[id]",
+					'data-title' => $L->add_subcategory
 				]
 			).
-			(!$root ? h::{'a.uk-button.cs-button-compact'}(
+			h::{'a[cs-link-button][icon=file-[level=0]text]'}(
 				[
-					h::icon('pencil'),
+					'href'       => "admin/Static_pages/add_page/$structure[id]",
+					'data-title' => $L->add_page
+				]
+			).
+			(!$root ?
+				h::{'a[cs-link-button][icon=pencil][level=0]'}(
 					[
 						'href'       => "admin/Static_pages/edit_category/$structure[id]",
 						'data-title' => $L->edit
 					]
-				],
-				[
-					h::icon('trash-o'),
+				).
+				h::{'a[cs-link-button][icon=trash][level=0]'}(
 					[
 						'href'       => "admin/Static_pages/delete_category/$structure[id]",
 						'data-title' => $L->delete
 					]
-				]
-			) : false)
+				)
+				: false
+			)
 		]
 	];
 	if (!empty($structure['categories'])) {
@@ -144,20 +139,16 @@ function get_pages_rows () {
 						'class' => 'cs-static-pages-padding-left-0'
 					]
 				],
-				h::{'a.uk-button.cs-button-compact'}(
+				h::{'a[cs-link-button][icon=file-text][level=0]'}(
 					[
-						h::icon('file-text'),
-						[
-							'href'       => "admin/Static_pages/edit_page/$page[id]",
-							'data-title' => $L->edit
-						]
-					],
+						'href'       => "admin/Static_pages/edit_page/$page[id]",
+						'data-title' => $L->edit
+					]
+				).
+				h::{'a[cs-link-button][icon=trash][level=0]'}(
 					[
-						h::icon('trash-o'),
-						[
-							'href'       => "admin/Static_pages/delete_page/$page[id]",
-							'data-title' => $L->delete
-						]
+						'href'       => "admin/Static_pages/delete_page/$page[id]",
+						'data-title' => $L->delete
 					]
 				)
 			];

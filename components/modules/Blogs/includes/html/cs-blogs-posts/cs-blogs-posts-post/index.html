@@ -7,7 +7,7 @@
         </a>
         <template if="[[post.articleSection.length]]" is="dom-if">
           <p>
-            <span class="uk-icon-bookmark"></span>
+            <cs-icon icon="bookmark"></cs-icon>
             <template as="section" is="dom-repeat" items="[[post.articleSection]]">
               <a href="[[sections_path(index)]]">[[section]]</a>
             </template>
@@ -20,17 +20,17 @@
         <p>
           <time>[[post.datetime]]</time>
           <a href="[[post.author.url]]">
-            <span class="uk-icon-user"></span>
+            <cs-icon icon="user"></cs-icon>
             <span>[[post.author.name]]</span>
           </a>
           <template if="[[comments_enabled]]" is="dom-if">
             <a href="[[post.url]]#comments">
-              <span class="uk-icon-comments"></span>
+              <cs-icon icon="comments"></cs-icon>
               <span>[[post.comments_count]]</span>
             </a>
           </template>
           <a href="[[post.url]]">
-            <span class="uk-icon-angle-double-right"></span>
+            <cs-icon icon="angle-double-right"></cs-icon>
             <span>[[L.read_more]]</span>
           </a>
         </p>

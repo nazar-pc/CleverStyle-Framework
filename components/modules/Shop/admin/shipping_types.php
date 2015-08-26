@@ -41,13 +41,13 @@ $Page->content(
 					$shipping_type['price'],
 					h::icon($shipping_type['phone_needed'] ? 'check' : 'minus'),
 					h::icon($shipping_type['address_needed'] ? 'check' : 'minus'),
-					h::{'button.uk-button.cs-shop-shipping-type-edit'}(
+					h::{'button.cs-shop-shipping-type-edit[is=cs-button]'}(
 						$L->edit,
 						[
 							'data-id' => $shipping_type['id']
 						]
 					).
-					h::{'button.uk-button.cs-shop-shipping-type-delete'}(
+					h::{'button.cs-shop-shipping-type-delete[is=cs-button]'}(
 						$L->delete,
 						[
 							'data-id' => $shipping_type['id']
@@ -58,5 +58,5 @@ $Page->content(
 			$all_shipping_types
 		) ?: false)
 	).
-	h::{'p button.uk-button.cs-shop-shipping-type-add'}($L->add)
+	h::{'p button.cs-shop-shipping-type-add[is=cs-button]'}($L->add)
 );

@@ -29,8 +29,8 @@
 						%option(value="[[details.method]]") [[details.title]]
 			%p#payment_method_description.uk-form-row
 			%template(is="dom-if" if="[[!registration_required]]")
-				%button.uk-button.uk-button-primary(on-click="finish_order" type="button") [[L.shop_finish_order]]
+				%button(is="cs-button" primary on-click="finish_order" type="button") [[L.shop_finish_order]]
 			%template(is="dom-if" if="[[registration_required]]")
 				%p.uk-alert.uk-alert-warning [[L.shop_register_to_finish_order]]
-				%button.uk-button(disabled type="button") [[L.shop_finish_order]]
+				%button(is="cs-button" disabled type="button") [[L.shop_finish_order]]
 	%script(src="script.js")

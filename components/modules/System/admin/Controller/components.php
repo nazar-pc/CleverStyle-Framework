@@ -129,7 +129,7 @@ trait components {
 		}
 		if ($form) {
 			$a->apply_button = true;
-			$a->custom_buttons .= h::{'button.uk-button.cs-reload-button'}(
+			$a->custom_buttons .= h::{'button.cs-reload-button[is=cs-button]'}(
 				$L->reset
 			);
 			$blocks_array = [
@@ -207,7 +207,7 @@ trait components {
 						h::cs_table_cell().$blocks_array['bottom'].h::cs_table_cell()
 					]
 				).
-				h::{'p.cs-left a.uk-button'}(
+				h::{'p.cs-left a[is=cs-link-button]'}(
 					"$L->add $L->block",
 					[
 						'href' => "$a->action/add"
@@ -388,7 +388,7 @@ trait components {
 						)
 							: ''
 						).
-						h::{'button.uk-button'}(
+						h::{'button[is=cs-button]'}(
 							$L->test_connection,
 							[
 								'onMouseDown' => "cs.db_test();"
@@ -454,7 +454,7 @@ trait components {
 									]
 								) : '')
 							).
-							h::{'button.uk-button[type=submit]'}($L->yes)
+							h::{'button[is=cs-button][type=submit]'}($L->yes)
 						);
 					}
 			}
@@ -467,34 +467,28 @@ trait components {
 					$db_list[] = [
 						[
 							[
-								h::{'a.uk-button.cs-button-compact'}(
+								h::{'a[is=cs-link-button][icon=plus][level=0]'}(
 									[
-										h::icon('plus'),
-										[
-											'href'       => "$a->action/add/$i",
-											'data-title' => "$L->add $L->mirror $L->of_db"
-										]
-									],
-									$i ? [
-										h::icon('pencil'),
-										[
-											'href'       => "$a->action/edit/$i",
-											'data-title' => "$L->edit $L->db"
-										]
-									] : false,
-									$i ? [
-										h::icon('trash-o'),
-										[
-											'href'       => "$a->action/delete/$i",
-											'data-title' => $L->delete.' '.$L->db
-										]
-									] : false,
+										'href'       => "$a->action/add/$i",
+										'data-title' => "$L->add $L->mirror $L->of_db"
+									]
+								).
+								($i ? h::{'a[is=cs-link-button][icon=pencil][level=0]'}(
 									[
-										h::icon('signal'),
-										[
-											'onMouseDown' => "cs.db_test($i);",
-											'data-title'  => $L->test_connection
-										]
+										'href'       => "$a->action/edit/$i",
+										'data-title' => "$L->edit $L->db"
+									]
+								) : false).
+								($i ? h::{'a[is=cs-link-button][icon=trash][level=0]'}(
+									[
+										'href'       => "$a->action/delete/$i",
+										'data-title' => $L->delete.' '.$L->db
+									]
+								) : false).
+								h::{'a[is=cs-link-button][icon=signal][level=0]'}(
+									[
+										'onMouseDown' => "cs.db_test($i);",
+										'data-title'  => $L->test_connection
 									]
 								),
 								[
@@ -516,27 +510,22 @@ trait components {
 						if (is_array($mirror) && !empty($mirror)) {
 							$db_list[] = [
 								[
-									h::{'a.uk-button.cs-button-compact'}(
+									h::{'a[is=cs-link-button][icon=pencil][level=0]'}(
 										[
-											h::icon('pencil'),
-											[
-												'href'       => "$a->action/edit/$i/$m",
-												'data-title' => "$L->edit $L->mirror $L->of_db"
-											]
-										],
+											'href'       => "$a->action/edit/$i/$m",
+											'data-title' => "$L->edit $L->mirror $L->of_db"
+										]
+									).
+									h::{'a[is=cs-link-button][icon=trash][level=0]'}(
 										[
-											h::icon('trash-o'),
-											[
-												'href'       => "$a->action/delete/$i/$m",
-												'data-title' => "$L->delete $L->mirror $L->of_db"
-											]
-										],
+											'href'       => "$a->action/delete/$i/$m",
+											'data-title' => "$L->delete $L->mirror $L->of_db"
+										]
+									).
+									h::{'a[is=cs-link-button][icon=signal][level=0]'}(
 										[
-											h::icon('signal'),
-											[
-												'onMouseDown' => "cs.db_test($i, $m);",
-												'data-title'  => $L->test_connection
-											]
+											'onMouseDown' => "cs.db_test($i, $m);",
+											'data-title'  => $L->test_connection
 										]
 									),
 									[
@@ -596,7 +585,7 @@ trait components {
 						]
 					]
 				).
-				h::{'p a.uk-button'}(
+				h::{'p a[is=cs-link-button]'}(
 					$L->add_database,
 					[
 						'href' => "$a->action/add"
@@ -717,7 +706,7 @@ trait components {
 							);
 							$a->cancel_button_back = true;
 							$a->content(
-								h::{'button.uk-button[type=submit]'}($L->{$check_dependencies ? $L->yes : 'force_update_not_recommended'})
+								h::{'button[is=cs-button][type=submit]'}($L->{$check_dependencies ? $L->yes : 'force_update_not_recommended'})
 							);
 							break;
 						}
@@ -809,7 +798,7 @@ trait components {
 					}
 					$a->cancel_button_back = true;
 					$a->content(
-						h::{'button.uk-button[type=submit]'}(
+						h::{'button[is=cs-button][type=submit]'}(
 							$L->{$check_dependencies ? 'install' : 'force_install_not_recommended'}
 						)
 					);
@@ -837,7 +826,7 @@ trait components {
 					}
 					$a->cancel_button_back = true;
 					$a->content(
-						h::{'button.uk-button[type=submit]'}(
+						h::{'button[is=cs-button][type=submit]'}(
 							$L->{$check_dependencies ? 'uninstall' : 'force_uninstall_not_recommended'}
 						)
 					);
@@ -886,7 +875,7 @@ trait components {
 								$meta['version']
 							)
 						).
-						h::{'button.uk-button[type=submit]'}($L->yes)
+						h::{'button[is=cs-button][type=submit]'}($L->yes)
 					);
 					unset($meta);
 					$rc[3]                 = 'System';
@@ -911,7 +900,7 @@ trait components {
 					}
 					$a->cancel_button_back = true;
 					$a->content(
-						h::{'button.uk-button[type=submit]'}($L->yes)
+						h::{'button[is=cs-button][type=submit]'}($L->yes)
 					);
 					break;
 				case 'db':
@@ -1065,7 +1054,7 @@ trait components {
 					);
 					$a->cancel_button_back = true;
 					$a->content(
-						h::{'button.uk-button[type=submit]'}($L->{$check_dependencies ? 'yes' : 'force_enable_not_recommended'})
+						h::{'button[is=cs-button][type=submit]'}($L->{$check_dependencies ? 'yes' : 'force_enable_not_recommended'})
 					);
 					break;
 				case 'disable':
@@ -1088,7 +1077,7 @@ trait components {
 					);
 					$a->cancel_button_back = true;
 					$a->content(
-						h::{'button.uk-button[type=submit]'}($L->{$check_dependencies ? 'yes' : 'force_disable_not_recommended'})
+						h::{'button[is=cs-button][type=submit]'}($L->{$check_dependencies ? 'yes' : 'force_disable_not_recommended'})
 					);
 					break;
 				case 'remove':
@@ -1101,7 +1090,7 @@ trait components {
 					);
 					$a->cancel_button_back = true;
 					$a->content(
-						h::{'button.uk-button[type=submit]'}($L->yes)
+						h::{'button[is=cs-button][type=submit]'}($L->yes)
 					);
 					$rc[3] = $_POST['remove_module'];
 					break;
@@ -1342,7 +1331,7 @@ trait components {
 							);
 							$a->cancel_button_back = true;
 							$a->content(
-								h::{'button.uk-button[type=submit]'}($L->{$check_dependencies ? $L->yes : 'force_update_not_recommended'})
+								h::{'button[is=cs-button][type=submit]'}($L->{$check_dependencies ? $L->yes : 'force_update_not_recommended'})
 							);
 							return;
 						}
@@ -1394,7 +1383,7 @@ trait components {
 						}
 						$a->cancel_button_back = true;
 						$a->content(
-							h::{'button.uk-button[type=submit]'}(
+							h::{'button[is=cs-button][type=submit]'}(
 								$L->{$check_dependencies ? 'enable' : 'force_enable_not_recommended'}
 							).
 							h::{'input[type=hidden]'}(
@@ -1436,7 +1425,7 @@ trait components {
 						}
 						$a->cancel_button_back = true;
 						$a->content(
-							h::{'button.uk-button[type=submit]'}(
+							h::{'button[is=cs-button][type=submit]'}(
 								$L->{$check_dependencies ? 'disable' : 'force_disable_not_recommended'}
 							).
 							h::{'input[type=hidden]'}(
@@ -1463,7 +1452,7 @@ trait components {
 					);
 					$a->cancel_button_back = true;
 					$a->content(
-						h::{'button.uk-button[type=submit]'}($L->yes).
+						h::{'button[is=cs-button][type=submit]'}($L->yes).
 						h::{'input[type=hidden]'}(
 							[
 								'name'  => 'mode',
@@ -1643,7 +1632,7 @@ trait components {
 						)
 							: ''
 						).
-						h::{'button.uk-button'}(
+						h::{'button[is=cs-button]'}(
 							$L->test_connection,
 							[
 								'onMouseDown' => "cs.storage_test();"
@@ -1687,7 +1676,7 @@ trait components {
 									]
 								)
 							).
-							h::{'button.uk-button[type=submit]'}($L->yes)
+							h::{'button[is=cs-button][type=submit]'}($L->yes)
 						);
 					}
 			}
@@ -1701,22 +1690,19 @@ trait components {
 					$storages_list[] = [
 						[
 							($i ?
-								h::{'a.uk-button.cs-button-compact'}(
-									h::icon('pencil'),
+								h::{'a[is=cs-link-button][icon=pencil][level=0]'}(
 									[
 										'href'       => "$a->action/edit/$i",
 										'data-title' => "$L->edit $L->storage"
 									]
 								).
-								h::{'a.uk-button.cs-button-compact'}(
-									h::icon('trash-o'),
+								h::{'a[is=cs-link-button][icon=trash][level=0]'}(
 									[
 										'href'       => "$a->action/delete/$i",
 										'data-title' => "$L->delete $L->storage"
 									]
 								).
-								h::{'a.uk-button.cs-button-compact'}(
-									h::icon('signal'),
+								h::{'a[is=cs-link-button][icon=signal][level=0]'}(
 									[
 										'onMouseDown' => "cs.storage_test($i);",
 										'data-title'  => $L->test_connection
@@ -1753,7 +1739,7 @@ trait components {
 					],
 					$storages_list
 				).
-				h::{'p a.uk-button'}(
+				h::{'p a[is=cs-link-button]'}(
 					$L->add_storage,
 					[
 						'href' => "admin/System/$rc[0]/$rc[1]/add"

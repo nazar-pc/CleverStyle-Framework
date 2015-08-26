@@ -9,5 +9,5 @@
 			%label.uk-form-label [[L.group_description]]
 			%input(type="text" value="{{description::input}}")/
 			%p
-				%button.uk-button.uk-button-primary(on-click="save" disabled$="[[!group_title]]") [[L.save]]
+				%button(is="cs-button" primary on-click="save" disabled$="[[!group_title]]") [[L.save]]
 	%script(src="script.js")

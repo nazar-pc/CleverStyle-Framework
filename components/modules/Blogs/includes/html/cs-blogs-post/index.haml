@@ -6,23 +6,23 @@
 			%h1 [[jsonld.title]]
 			%template(is="dom-if" if="[[jsonld.articleSection.length]]")
 				%p
-					%span.uk-icon-bookmark
+					%cs-icon(icon="bookmark")
 					%template(is="dom-repeat" items="[[jsonld.articleSection]]" as="section")
 						%a(href="[[sections_path(index)]]") [[section]]
 		#content
 		%footer
 			%template(is="dom-if" if="[[jsonld.tags.length]]")
 				%p
-					%span.uk-icon-tags
+					%cs-icon(icon="tags")
 					%template(is="dom-repeat" items="[[jsonld.tags]]" as="tag")
 						%a(href="[[tags_path(index)]]" rel="tag") [[tag]]
 			%hr/
 			%p
 				%time [[jsonld.datetime]]
 				%a(href="[[jsonld.author.url]]")
-					%span.uk-icon-user
+					%cs-icon(icon="user")
 					%span [[jsonld.author.name]]
 				%template(is="dom-if" if="[[comments_enabled]]")
-					%span.uk-icon-comments
+					%cs-icon(icon="comments")
 					%span [[jsonld.comments_count]]
 	%script(src="script.js")

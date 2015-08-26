@@ -32,7 +32,7 @@ $Index->content(
 				'placeholder'	=> $L->feedback_text,
 				'value'			=> isset($_POST['text']) ? $_POST['text'] : ''
 			]),
-			h::{'button.uk-button[type=submit]'}($L->feedback_send)
+			h::{'button[is=cs-button][type=submit]'}($L->feedback_send)
 		])
 	)
 );

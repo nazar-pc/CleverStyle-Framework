@@ -263,13 +263,13 @@ class Controller {
 			default:
 				$Index->content(
 					h::p(
-						h::{'a.uk-button'}(
+						h::{'a[is=cs-link-button]'}(
 							$L->general,
 							[
 								'href' => "$Index->action/".path($L->general)
 							]
 						).
-						h::{'a.uk-button'}(
+						h::{'a[is=cs-link-button]'}(
 							$L->change_password,
 							[
 								'href' => "$Index->action/".path($L->change_password)
@@ -370,7 +370,7 @@ class Controller {
 							h::{'input.cs-profile-new-password[type=password]'}()
 						]
 					).
-					h::{'button.uk-button.cs-profile-change-password'}(
+					h::{'button.cs-profile-change-password[is=cs-button]'}(
 						$L->change_password
 					)
 				);

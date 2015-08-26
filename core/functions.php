@@ -672,7 +672,7 @@ function pages_buttons ($page, $total, $url = false) {
 			}
 		}
 	}
-	return h::{'button.uk-button[name=page]'}($output);
+	return h::{'button[is=cs-button][name=page]'}($output);
 }
 
 /**

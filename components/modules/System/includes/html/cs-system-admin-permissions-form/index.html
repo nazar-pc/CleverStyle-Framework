@@ -10,7 +10,7 @@
       <label class="uk-form-label">[[L.label]]</label>
       <input type="text" value="{{label::input}}">
       <p>
-        <button class="uk-button uk-button-primary" disabled$="[[!and(group, label)]]" on-click="save">[[L.save]]</button>
+        <button disabled$="[[!and(group, label)]]" is="cs-button" on-click="save" primary>[[L.save]]</button>
       </p>
     </div>
   </template>

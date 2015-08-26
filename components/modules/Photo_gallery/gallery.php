@@ -26,8 +26,8 @@ $gallery       = $Photo_gallery->get_gallery(Route::instance()->route[1]);
 $User          = User::instance();
 if ($User->user()) {
 	$Index->content(
-		h::{'p.cs-left a.uk-button.cs-button-compact.cs-photo-gallery-add-images'}(
-			h::icon('plus').$L->photo_gallery_add_image,
+		h::{'p.cs-left a.cs-photo-gallery-add-images[is=cs-link-button][icon=plus]'}(
+			$L->photo_gallery_add_image,
 			[
 				'data-gallery' => $gallery['id']
 			]

@@ -41,13 +41,13 @@ $Page->content(
 						$order_status['title'],
 						$order_status_types[$order_status['type']],
 						h::icon($order_status['send_update_status_email'] ? 'check' : 'minus'),
-						h::{'button.uk-button.cs-shop-order-status-edit'}(
+						h::{'button.cs-shop-order-status-edit[is=cs-button]'}(
 							$L->edit,
 							[
 								'data-id' => $order_status['id']
 							]
 						).
-						h::{'button.uk-button.cs-shop-order-status-delete'}(
+						h::{'button.cs-shop-order-status-delete[is=cs-button]'}(
 							$L->delete,
 							[
 								'data-id' => $order_status['id']
@@ -62,5 +62,5 @@ $Page->content(
 			$all_order_statuses
 		) ?: false)
 	).
-	h::{'p button.uk-button.cs-shop-order-status-add'}($L->add)
+	h::{'p button.cs-shop-order-status-add[is=cs-button]'}($L->add)
 );

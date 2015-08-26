@@ -134,13 +134,13 @@ $Page->content(
 								]
 							),
 							nl2br($order['comment']),
-							h::{'button.uk-button.cs-shop-order-statuses-history'}(
+							h::{'button.cs-shop-order-statuses-history[is=cs-button]'}(
 								$L->statuses_history,
 								[
 									'data-id' => $order['id']
 								]
 							).
-							h::{'button.uk-button.cs-shop-order-edit'}(
+							h::{'button.cs-shop-order-edit[is=cs-button]'}(
 								$L->edit,
 								[
 									'data-id'       => $order['id'],
@@ -148,7 +148,7 @@ $Page->content(
 									'data-date'     => $date
 								]
 							).
-							h::{'button.uk-button.cs-shop-order-delete'}(
+							h::{'button.cs-shop-order-delete[is=cs-button]'}(
 								$L->delete,
 								[
 									'data-id' => $order['id']
@@ -176,5 +176,5 @@ $Page->content(
 		},
 		true
 	).
-	h::{'p button.uk-button.cs-shop-order-add'}($L->add)
+	h::{'p button.cs-shop-order-add[is=cs-button]'}($L->add)
 );

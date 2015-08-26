@@ -338,7 +338,7 @@ class Controller {
 	protected function email_form ($Index, $L) {
 		$Index->form           = true;
 		$Index->buttons        = false;
-		$Index->custom_buttons = h::{'button.uk-button[type=submit]'}($L->submit);
+		$Index->custom_buttons = h::{'button[is=cs-button][type=submit]'}($L->submit);
 		$Index->content(
 			h::{'p.cs-center'}(
 				$L->please_type_your_email.':'.

@@ -39,11 +39,11 @@
       </p>
       <p class="uk-form-row" id="payment_method_description"></p>
       <template if="[[!registration_required]]" is="dom-if">
-        <button class="uk-button uk-button-primary" on-click="finish_order" type="button">[[L.shop_finish_order]]</button>
+        <button is="cs-button" on-click="finish_order" primary type="button">[[L.shop_finish_order]]</button>
       </template>
       <template if="[[registration_required]]" is="dom-if">
         <p class="uk-alert uk-alert-warning">[[L.shop_register_to_finish_order]]</p>
-        <button class="uk-button" disabled type="button">[[L.shop_finish_order]]</button>
+        <button disabled is="cs-button" type="button">[[L.shop_finish_order]]</button>
       </template>
     </div>
   </template>

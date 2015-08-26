@@ -6,7 +6,7 @@
       <h1>[[jsonld.title]]</h1>
       <template if="[[jsonld.articleSection.length]]" is="dom-if">
         <p>
-          <span class="uk-icon-bookmark"></span>
+          <cs-icon icon="bookmark"></cs-icon>
           <template as="section" is="dom-repeat" items="[[jsonld.articleSection]]">
             <a href="[[sections_path(index)]]">[[section]]</a>
           </template>
@@ -17,7 +17,7 @@
     <footer>
       <template if="[[jsonld.tags.length]]" is="dom-if">
         <p>
-          <span class="uk-icon-tags"></span>
+          <cs-icon icon="tags"></cs-icon>
           <template as="tag" is="dom-repeat" items="[[jsonld.tags]]">
             <a href="[[tags_path(index)]]" rel="tag">[[tag]]</a>
           </template>
@@ -27,11 +27,11 @@
       <p>
         <time>[[jsonld.datetime]]</time>
         <a href="[[jsonld.author.url]]">
-          <span class="uk-icon-user"></span>
+          <cs-icon icon="user"></cs-icon>
           <span>[[jsonld.author.name]]</span>
         </a>
         <template if="[[comments_enabled]]" is="dom-if">
-          <span class="uk-icon-comments"></span>
+          <cs-icon icon="comments"></cs-icon>
           <span>[[jsonld.comments_count]]</span>
         </template>
       </p>

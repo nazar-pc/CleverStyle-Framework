@@ -142,13 +142,13 @@ $Index->content(
 	(
 		!$sections ? h::{'input[type=hidden][name=sections[]][value=0]'}() : ''
 	).
-	h::{'button.uk-button.cs-blogs-post-preview'}(
+	h::{'button.cs-blogs-post-preview[is=cs-button]'}(
 		$L->preview
 	).
-	h::{'button.uk-button[type=submit][name=mode][value=publish]'}(
+	h::{'button[is=cs-button][type=submit][name=mode][value=publish]'}(
 		$L->publish
 	).
-	h::{'button.uk-button[type=submit][name=mode][value=draft]'}(
+	h::{'button[is=cs-button][type=submit][name=mode][value=draft]'}(
 		$L->to_drafts
 	)
 );

@@ -24,7 +24,7 @@ $Index->content(
 	h::{'h2.cs-center'}(
 		$L->sure_to_delete_client($client['name'])
 	).
-	h::{'button.uk-button[type=submit]'}($L->yes).
+	h::{'button[is=cs-button][type=submit]'}($L->yes).
 	h::{'input[type=hidden][name=id]'}([
 		'value'	=> $client['id']
 	]).

@@ -96,10 +96,10 @@ if ($page['interface']) {
 				]
 			).
 			h::{'p.cs-center'}(
-				h::{'button.uk-button.cs-static-pages-page-save[type=submit][name=save]'}(
+				h::{'button.cs-static-pages-page-save[is=cs-button][type=submit][name=save]'}(
 					$L->save
 				).
-				h::{'button.uk-button'}(
+				h::{'button[is=cs-button]'}(
 					$L->cancel,
 					[
 						'onclick' => 'history.go(-1);'
@@ -110,22 +110,19 @@ if ($page['interface']) {
 	} else {
 		$Page->content(
 			h::p(
-				$is_admin ? h::{'a.uk-button'}(
-					[
-						h::icon('pencil'),
+				$is_admin ?
+					h::{'a[is=cs-link-button][icon=pencil][level=0]'}(
 						[
 							'href'       => "$canonical_url?edit",
 							'data-title' => $L->edit
 						]
-					],
-					[
-						h::icon('trash-o'),
+					).
+					h::{'a[is=cs-link-button][icon=trash][level=0]'}(
 						[
 							'href'       => "admin/Pages/delete_page/$page[id]",
 							'data-title' => $L->delete
 						]
-					]
-				) : false
+					) : false
 			).
 			h::section($page['content'])
 		);

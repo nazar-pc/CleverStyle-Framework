@@ -3,7 +3,7 @@
 		.uk-text-large
 			%span [[concat(order_number, ': ', order_status)]]
 			%template(if="[[show_pay_now]]")
-				%button.uk-button.uk-button-primary(on-click="pay" type="button") [[L.pay_now]]
+				%button(is="cs-button" primary on-click="pay" type="button") [[L.pay_now]]
 		%div [[date_formatted]]
 		%content(select="#items")
 		%p [[concat(L.shop_shipping_type, ': ', shipping_type, ' (', shipping_cost_formatted, ')')]]

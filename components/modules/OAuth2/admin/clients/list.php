@@ -36,22 +36,16 @@ $Index->content(
 							$client['name'],
 							h::{'input{disabled]'}($client['id']),
 							h::{'input{disabled]'}($client['secret']),
-							h::{'a.uk-button.cs-button-compact'}(
+							h::{'a[cs-link-button][icon=pencil][level=0]'}(
 								[
-									h::icon('pencil'),
-									[
-										'href'       => "admin/OAuth2/clients/edit/$client[id]",
-										'data-title' => $L->edit
-									]
+									'href'       => "admin/OAuth2/clients/edit/$client[id]",
+									'data-title' => $L->edit
 								]
 							).
-							h::{'a.uk-button.cs-button-compact'}(
+							h::{'a[cs-link-button][icon=trash][level=0]'}(
 								[
-									h::icon('trash-o'),
-									[
-										'href'       => "admin/OAuth2/clients/delete/$client[id]",
-										'data-title' => $L->delete
-									]
+									'href'       => "admin/OAuth2/clients/delete/$client[id]",
+									'data-title' => $L->delete
 								]
 							)
 						],
@@ -98,7 +92,7 @@ $Index->content(
 			).$L->seconds
 		]
 	).
-	h::{'p.cs-left a.uk-button'}(
+	h::{'p.cs-left a[is=cs-link-button]'}(
 		[
 			$L->add_client,
 			[
