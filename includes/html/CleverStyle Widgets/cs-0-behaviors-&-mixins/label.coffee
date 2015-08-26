@@ -17,35 +17,38 @@ Polymer.cs.behaviors.label =
 		value	:
 			notify	: true
 			type	: String
-	# TODO: Should be `ready` according to Polymer docs, but not working as expected (see https://github.com/Polymer/polymer/issues/2075)
+	# TODO: Should be `ready` according to Polymer docs, but not working as expected (see https://github.com/Polymer/polymer/issues/2366)
 	attached : ->
-		do =>
-			next_node	= @nextSibling
-			if next_node.nodeType == Node.TEXT_NODE && next_node.nextSibling?.getAttribute('is') == @is
-				next_node.parentNode.removeChild(next_node)
-		@local_input	= @querySelector('input')
-		@active			= @local_input.checked
-		if @local_input.name
-			inputs	= @parentNode.querySelectorAll('input[name="' + @local_input.name + '"]')
-		else
-			inputs	= @_inputs_around()
-		for input in inputs
-			do (input = input) =>
-				input.addEventListener('change', =>
-					@value					= input.value
-					@active					= @local_input.value == input.value
-					@local_input.checked	= @local_input.value == input.value
+		# Micro optimization
+		requestAnimationFrame =>
+			do =>
+				next_node	= @nextSibling
+				if next_node.nodeType == Node.TEXT_NODE && next_node.nextSibling?.getAttribute('is') == @is
+					next_node.parentNode.removeChild(next_node)
+			@local_input	= @querySelector('input')
+			@active			= @local_input.checked
+			if @local_input.name
+				inputs	= @parentNode.querySelectorAll('input[name="' + @local_input.name + '"]')
+			else
+				inputs	= @_inputs_around()
+			for input in inputs
+				do (input = input) =>
+					input.addEventListener('change', =>
+						@value					= input.value
+						@active					= @local_input.value == input.value
+						@local_input.checked	= @local_input.value == input.value
+						return
+					)
+					if input.checked
+						@value	= input.value
 					return
-				)
-				if input.checked
-					@value	= input.value
-				return
-		@local_input.addEventListener('focus', =>
-			@focus = true
-		)
-		@local_input.addEventListener('blur', =>
-			@focus = false
-		)
+			@local_input.addEventListener('focus', =>
+				@focus = true
+			)
+			@local_input.addEventListener('blur', =>
+				@focus = false
+			)
+			return
 		return
 	_inputs_around : ->
 		inputs	= []
@@ -68,6 +71,9 @@ Polymer.cs.behaviors.label =
 			inputs.push(input)
 		inputs
 	_active_changed : ->
+		# If checked state is already correct - skip, just micro optimization
+		if @local_input.checked == @active
+			return
 		if @local_input.type == 'radio'
 			# Simulate regular click for simplicity
 			if @active

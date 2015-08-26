@@ -338,5 +338,5 @@ do ->
 			modal.appendChild(`content instanceof jQuery ? content[0] : content`)
 		modal.autoOpen		= true
 		modal.autoDestroy	= true
-		document.body.parentNode.appendChild(modal)
+		document.documentElement.appendChild(modal)
 		modal

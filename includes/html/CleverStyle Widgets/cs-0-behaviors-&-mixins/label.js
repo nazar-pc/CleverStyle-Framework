@@ -26,47 +26,43 @@
       }
     },
     attached: function() {
-      var fn, i, input, inputs, len;
-      (function(_this) {
-        return (function() {
-          var next_node, ref;
-          next_node = _this.nextSibling;
-          if (next_node.nodeType === Node.TEXT_NODE && ((ref = next_node.nextSibling) != null ? ref.getAttribute('is') : void 0) === _this.is) {
-            return next_node.parentNode.removeChild(next_node);
+      requestAnimationFrame((function(_this) {
+        return function() {
+          var fn, i, input, inputs, len;
+          (function() {
+            var next_node, ref;
+            next_node = _this.nextSibling;
+            if (next_node.nodeType === Node.TEXT_NODE && ((ref = next_node.nextSibling) != null ? ref.getAttribute('is') : void 0) === _this.is) {
+              return next_node.parentNode.removeChild(next_node);
+            }
+          })();
+          _this.local_input = _this.querySelector('input');
+          _this.active = _this.local_input.checked;
+          if (_this.local_input.name) {
+            inputs = _this.parentNode.querySelectorAll('input[name="' + _this.local_input.name + '"]');
+          } else {
+            inputs = _this._inputs_around();
           }
-        });
-      })(this)();
-      this.local_input = this.querySelector('input');
-      this.active = this.local_input.checked;
-      if (this.local_input.name) {
-        inputs = this.parentNode.querySelectorAll('input[name="' + this.local_input.name + '"]');
-      } else {
-        inputs = this._inputs_around();
-      }
-      fn = (function(_this) {
-        return function(input) {
-          input.addEventListener('change', function() {
-            _this.value = input.value;
-            _this.active = _this.local_input.value === input.value;
-            _this.local_input.checked = _this.local_input.value === input.value;
+          fn = function(input) {
+            input.addEventListener('change', function() {
+              _this.value = input.value;
+              _this.active = _this.local_input.value === input.value;
+              _this.local_input.checked = _this.local_input.value === input.value;
+            });
+            if (input.checked) {
+              _this.value = input.value;
+            }
+          };
+          for (i = 0, len = inputs.length; i < len; i++) {
+            input = inputs[i];
+            fn(input);
+          }
+          _this.local_input.addEventListener('focus', function() {
+            return _this.focus = true;
           });
-          if (input.checked) {
-            _this.value = input.value;
-          }
-        };
-      })(this);
-      for (i = 0, len = inputs.length; i < len; i++) {
-        input = inputs[i];
-        fn(input);
-      }
-      this.local_input.addEventListener('focus', (function(_this) {
-        return function() {
-          return _this.focus = true;
-        };
-      })(this));
-      this.local_input.addEventListener('blur', (function(_this) {
-        return function() {
-          return _this.focus = false;
+          _this.local_input.addEventListener('blur', function() {
+            return _this.focus = false;
+          });
         };
       })(this));
     },
@@ -99,6 +95,9 @@
       return inputs;
     },
     _active_changed: function() {
+      if (this.local_input.checked === this.active) {
+        return;
+      }
       if (this.local_input.type === 'radio') {
         if (this.active) {
           return this.click();

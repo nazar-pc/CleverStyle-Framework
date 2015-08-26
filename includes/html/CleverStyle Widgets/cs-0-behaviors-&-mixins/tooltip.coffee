@@ -7,8 +7,9 @@
 tooltip_element = null
 Polymer.cs.behaviors.tooltip =
 	attached : ->
-		if @tooltip
-			@_tooltip_for_element(@)
+		requestAnimationFrame =>
+			if @tooltip
+				@_tooltip_for_element(@)
 		return
 	_tooltip_for_element : (element) ->
 		if @_tooltip_binding_added
@@ -25,5 +26,5 @@ Polymer.cs.behaviors.tooltip =
 	_initialize_tooltip : ->
 		if !tooltip_element
 			tooltip_element = document.createElement('cs-tooltip')
-			document.body.parentNode.appendChild(tooltip_element)
+			document.documentElement.appendChild(tooltip_element)
 		return

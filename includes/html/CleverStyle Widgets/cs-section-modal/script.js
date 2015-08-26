@@ -12,7 +12,7 @@
 
   body = document.body;
 
-  html = body.parentNode;
+  html = document.documentElement;
 
   Polymer({
     'is': 'cs-section-modal',
@@ -59,7 +59,7 @@
     _opened_changed: function() {
       if (!this._attached_to_html) {
         this._attached_to_html = true;
-        body.parentNode.appendChild(this);
+        html.appendChild(this);
       }
       body.modalOpened = body.modalOpened || 0;
       if (this.opened) {
@@ -85,7 +85,7 @@
         if (!this._attached_to_html) {
           this._attached_to_html = true;
           if (this.parentNode.tagName !== 'HTML') {
-            body.parentNode.appendChild(this);
+            html.appendChild(this);
           }
           setTimeout(this.open.bind(this), 0);
         } else {

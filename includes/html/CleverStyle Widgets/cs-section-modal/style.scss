@@ -18,7 +18,7 @@
 	@apply (--cs-section-modal);
 }
 
-.overlay {
+#overlay {
 	display  : none;
 	height   : 100vh;
 	left     : 0;
@@ -30,7 +30,7 @@
 	@apply (--cs-section-modal-overlay);
 }
 
-.content {
+#content {
 	display    : none;
 	max-height : 95vh;
 	max-width  : 95vw;
@@ -40,7 +40,7 @@
 	@apply (--cs-section-modal-content);
 }
 
-:host([transparent]) .content {
+:host([transparent]) #content {
 	background : transparent;
 }
 
@@ -49,13 +49,13 @@
 
 	@apply (--cs-section-modal-open);
 
-	.overlay {
+	#overlay {
 		display : block;
 
 		@apply (--cs-section-modal-overlay-open);
 	}
 
-	.content {
+	#content {
 		display : block;
 
 		@apply (--cs-section-modal-content-open);

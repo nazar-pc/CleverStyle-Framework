@@ -14,9 +14,13 @@
 
   Polymer.cs.behaviors.tooltip = {
     attached: function() {
-      if (this.tooltip) {
-        this._tooltip_for_element(this);
-      }
+      requestAnimationFrame((function(_this) {
+        return function() {
+          if (_this.tooltip) {
+            return _this._tooltip_for_element(_this);
+          }
+        };
+      })(this));
     },
     _tooltip_for_element: function(element) {
       var hide, show;
@@ -35,7 +39,7 @@
     _initialize_tooltip: function() {
       if (!tooltip_element) {
         tooltip_element = document.createElement('cs-tooltip');
-        document.body.parentNode.appendChild(tooltip_element);
+        document.documentElement.appendChild(tooltip_element);
       }
     }
   };

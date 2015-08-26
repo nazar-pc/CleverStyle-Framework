@@ -438,7 +438,7 @@
       }
       modal.autoOpen = true;
       modal.autoDestroy = true;
-      document.body.parentNode.appendChild(modal);
+      document.documentElement.appendChild(modal);
       return modal;
     };
   })();

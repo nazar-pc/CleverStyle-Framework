@@ -5,7 +5,7 @@
  * @license   MIT License, see license.txt
 ###
 body	= document.body
-html	= body.parentNode
+html	= document.documentElement
 Polymer(
 	'is'		: 'cs-section-modal'
 	'extends'	: 'section'
@@ -41,7 +41,7 @@ Polymer(
 	_opened_changed : ->
 		if !@_attached_to_html
 			@_attached_to_html	= true
-			body.parentNode.appendChild(@)
+			html.appendChild(@)
 		body.modalOpened = body.modalOpened || 0
 		if @opened
 			document.addEventListener('keydown', @_esc_handler)
@@ -65,7 +65,7 @@ Polymer(
 			if !@_attached_to_html
 				@_attached_to_html	= true
 				if @parentNode.tagName != 'HTML'
-					body.parentNode.appendChild(@)
+					html.appendChild(@)
 				# Put modal opening into stack of functions to call
 				setTimeout(@open.bind(@), 0)
 			else
