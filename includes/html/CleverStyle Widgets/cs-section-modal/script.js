@@ -43,6 +43,13 @@
           }
         };
       })(this);
+      this.addEventListener('transitionend', (function(_this) {
+        return function() {
+          if (!_this.opened && _this.autoDestroy) {
+            return _this.parentNode.removeChild(_this);
+          }
+        };
+      })(this));
     },
     attached: function() {
       if (this.autoOpen) {
@@ -71,16 +78,15 @@
         if (!body.modalOpened) {
           document.body.removeAttribute('modal-opened');
         }
-        if (this.autoDestroy) {
-          this.parentNode.removeChild(this);
-        }
       }
     },
     open: function() {
       if (!this.opened) {
         if (!this._attached_to_html) {
           this._attached_to_html = true;
-          body.parentNode.appendChild(this);
+          if (this.parentNode.tagName !== 'HTML') {
+            body.parentNode.appendChild(this);
+          }
           setTimeout(this.open.bind(this), 0);
         } else {
           this.opened = true;

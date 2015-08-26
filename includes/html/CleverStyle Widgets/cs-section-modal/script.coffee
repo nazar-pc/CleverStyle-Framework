@@ -30,6 +30,10 @@ Polymer(
 			if e.keyCode == 27 # Esc
 				@close()
 			return
+		@addEventListener('transitionend', =>
+			if !@opened && @autoDestroy
+				@parentNode.removeChild(@)
+		)
 		return
 	attached : ->
 		if @autoOpen
@@ -55,14 +59,13 @@ Polymer(
 			@fire('close')
 			if !body.modalOpened
 				document.body.removeAttribute('modal-opened')
-			if @autoDestroy
-				@parentNode.removeChild(@)
 		return
 	open : ->
 		if !@opened
 			if !@_attached_to_html
 				@_attached_to_html	= true
-				body.parentNode.appendChild(@)
+				if @parentNode.tagName != 'HTML'
+					body.parentNode.appendChild(@)
 				# Put modal opening into stack of functions to call
 				setTimeout(@open.bind(@), 0)
 			else
