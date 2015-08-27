@@ -209,6 +209,7 @@ class Includes_processing {
 	static function html ($data, $file, $base_filename, $destination) {
 		static::html_process_scripts($data, $file, $base_filename, $destination);
 		static::html_process_links_and_styles($data, $file, $base_filename, $destination);
+		$data = preg_replace("/\n+/", "\n", $data);
 		return $data;
 	}
 	/**
@@ -239,6 +240,7 @@ class Includes_processing {
 				$scripts_content .= "$script[1];\n";
 			}
 		}
+		$scripts_content = static::js($scripts_content);
 		if (!$scripts_to_replace) {
 			return;
 		}
