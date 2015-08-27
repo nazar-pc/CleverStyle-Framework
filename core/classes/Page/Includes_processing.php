@@ -80,17 +80,19 @@ class Includes_processing {
 			'/url\((.*?)\)|@import[\s\t\n\r]*[\'"](.*?)[\'"]/',
 			function ($match) use ($dir) {
 				$link = trim($match[1], '\'" ');
+				$link = explode('?', $link, 2)[0];;
 				if (!static::is_relative_path_and_exists($link, $dir)) {
 					return $match[0];
 				}
 				/**
 				 * Do not inline files bigger than 4 KiB
 				 */
+				$content = file_get_contents("$dir/$link");
 				if (filesize("$dir/$link") > 4096) {
 					$path_relatively_to_the_root = str_replace(getcwd(), '', realpath("$dir/$link"));
+					$path_relatively_to_the_root .= '?'.substr(md5($content), 0, 5);
 					return str_replace($match[1], $path_relatively_to_the_root, $match[0]);
 				}
-				$content = file_get_contents("$dir/$link");
 				switch (file_extension($link)) {
 					case 'jpeg':
 					case 'jpe':
