@@ -83,6 +83,13 @@ class Includes_processing {
 				if (!static::is_relative_path_and_exists($link, $dir)) {
 					return $match[0];
 				}
+				/**
+				 * Do not inline files bigger than 4 KiB
+				 */
+				if (filesize("$dir/$link") > 4096) {
+					$path_relatively_to_the_root = str_replace(getcwd(), '', realpath("$dir/$link"));
+					return str_replace($match[1], $path_relatively_to_the_root, $match[0]);
+				}
 				$content = file_get_contents("$dir/$link");
 				switch (file_extension($link)) {
 					case 'jpeg':
@@ -146,7 +153,7 @@ class Includes_processing {
 		/**
 		 * Set of symbols that are safe to be concatenated without new line with anything else
 		 */
-		$regexp = '[:;,.+\-*\/{}?><^\'"\[\]=&]';
+		$regexp = '[:;,.+\-*\/{}?><^\'"\[\]=&\(\)]';
 		foreach ($data as $index => &$d) {
 			$next_line = isset($data[$index + 1]) ? trim($data[$index + 1]) : '';
 			/**
