@@ -314,7 +314,10 @@ do ->
 		if typeof content == 'string'
 			modal.innerHTML = content
 		else
-			modal.appendChild(`content instanceof jQuery ? content[0] : content`)
+			if content instanceof jQuery
+				content.appendTo(modal)
+			else
+				modal.appendChild(content)
 		document.documentElement.appendChild(modal)
 		modal
 	###*
