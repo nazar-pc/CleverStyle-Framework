@@ -325,9 +325,9 @@ class Index {
 		return h::{'button[is=cs-button]'}(
 			$L->$name,
 			[
-				'name'       => $name,
-				'type'       => 'submit',
-				'data-title' => $L->{$name.'_info'},
+				'name'    => $name,
+				'type'    => 'submit',
+				'tooltip' => $L->{$name.'_info'},
 				$disabled ? 'disabled' : false
 			]
 		);

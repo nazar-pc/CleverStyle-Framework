@@ -44,27 +44,27 @@ function get_categories_rows ($structure = null, $level = 0, $parent_categories 
 			],
 			h::{'a[cs-link-button][icon=plus][level=0]'}(
 				[
-					'href'       => "admin/Static_pages/add_category/$structure[id]",
-					'data-title' => $L->add_subcategory
+					'href'    => "admin/Static_pages/add_category/$structure[id]",
+					'tooltip' => $L->add_subcategory
 				]
 			).
 			h::{'a[cs-link-button][icon=file-[level=0]text]'}(
 				[
-					'href'       => "admin/Static_pages/add_page/$structure[id]",
-					'data-title' => $L->add_page
+					'href'    => "admin/Static_pages/add_page/$structure[id]",
+					'tooltip' => $L->add_page
 				]
 			).
 			(!$root ?
 				h::{'a[cs-link-button][icon=pencil][level=0]'}(
 					[
-						'href'       => "admin/Static_pages/edit_category/$structure[id]",
-						'data-title' => $L->edit
+						'href'    => "admin/Static_pages/edit_category/$structure[id]",
+						'tooltip' => $L->edit
 					]
 				).
 				h::{'a[cs-link-button][icon=trash][level=0]'}(
 					[
-						'href'       => "admin/Static_pages/delete_category/$structure[id]",
-						'data-title' => $L->delete
+						'href'    => "admin/Static_pages/delete_category/$structure[id]",
+						'tooltip' => $L->delete
 					]
 				)
 				: false
@@ -141,14 +141,14 @@ function get_pages_rows () {
 				],
 				h::{'a[cs-link-button][icon=file-text][level=0]'}(
 					[
-						'href'       => "admin/Static_pages/edit_page/$page[id]",
-						'data-title' => $L->edit
+						'href'    => "admin/Static_pages/edit_page/$page[id]",
+						'tooltip' => $L->edit
 					]
 				).
 				h::{'a[cs-link-button][icon=trash][level=0]'}(
 					[
-						'href'       => "admin/Static_pages/delete_page/$page[id]",
-						'data-title' => $L->delete
+						'href'    => "admin/Static_pages/delete_page/$page[id]",
+						'tooltip' => $L->delete
 					]
 				)
 			];

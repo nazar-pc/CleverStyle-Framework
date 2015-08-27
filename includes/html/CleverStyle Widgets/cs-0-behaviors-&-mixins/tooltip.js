@@ -13,6 +13,9 @@
   tooltip_element = null;
 
   Polymer.cs.behaviors.tooltip = {
+    properties: {
+      tooltip: String
+    },
     attached: function() {
       requestAnimationFrame((function(_this) {
         return function() {

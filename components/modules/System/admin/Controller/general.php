@@ -112,7 +112,7 @@ trait general {
 						[
 							"$L->openssl:",
 							[
-								extension_loaded('openssl') ? $L->on : $L->off.h::icon('info-sign', ['data-title' => $L->openssl_warning]),
+								extension_loaded('openssl') ? $L->on : $L->off.' '.h::icon('info-circle', ['tooltip' => $L->openssl_warning]),
 								[
 									'class' => self::state(extension_loaded('openssl'))
 								]

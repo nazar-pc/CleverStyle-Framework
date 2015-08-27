@@ -141,9 +141,9 @@ abstract class Base extends BananaHTML {
 		if ($class === false) {
 			return '';
 		}
-		@$data['class'] .= " uk-icon-$class";
+		$data['icon']  = $class;
 		$data['level'] = 0;
-		return static::span($data).' ';
+		return static::cs_icon($data).' ';
 	}
 	/**
 	 * Rendering of input[type=checkbox] with automatic adding labels and necessary classes

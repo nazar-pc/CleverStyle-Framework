@@ -52,7 +52,7 @@ echo $Menu->get_menu();
 <ul class="uk-subnav uk-subnav-pill">
 	<li class="uk-active" data-uk-dropdown="">
 		<a href="System/section1">
-			Section 1 <span class=" uk-icon-caret-down"></span>
+			Section 1 <cs-icon icon="caret-down"></cs-icon>
 		</a>
 		<div class="uk-dropdown uk-dropdown-small">
 			<ul class="uk-nav uk-nav-dropdown">

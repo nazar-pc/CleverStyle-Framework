@@ -6,6 +6,8 @@
 ###
 tooltip_element = null
 Polymer.cs.behaviors.tooltip =
+	properties	:
+		tooltip	: String
 	attached : ->
 		requestAnimationFrame =>
 			if @tooltip

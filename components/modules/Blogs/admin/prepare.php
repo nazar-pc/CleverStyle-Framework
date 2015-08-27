@@ -43,21 +43,21 @@ function get_sections_rows ($structure = null, $level = 0, &$content = null) {
 		],
 		h::{'a[is=cs-link-button][icon=plus][level=0]'}(
 			[
-				'href'			=> "admin/Blogs/add_section/$structure[id]",
-				'data-title'	=> $L->add_subsection
+				'href'		=> "admin/Blogs/add_section/$structure[id]",
+				'tooltip'	=> $L->add_subsection
 			]
 		).
 		(!$root
 			? h::{'a[is=cs-link-button][icon=pencil][level=0]'}(
 				[
-					'href'			=> "admin/Blogs/edit_section/$structure[id]",
-					'data-title'	=> $L->edit
+					'href'		=> "admin/Blogs/edit_section/$structure[id]",
+					'tooltip'	=> $L->edit
 				]
 			).
 			h::{'a[is=cs-link-button][icon=trash][level=0]'}(
 				[
-					'href'			=> "admin/Blogs/delete_section/$structure[id]",
-					'data-title'	=> $L->delete
+					'href'		=> "admin/Blogs/delete_section/$structure[id]",
+					'tooltip'	=> $L->delete
 				]
 			)
 			: false
@@ -161,14 +161,14 @@ function get_posts_rows ($page = 1) {
 				date($L->_datetime, $post['date']),
 				h::{'a[is=cs-link-button][icon=pencil][level=0]'}(
 					[
-						'href'			=> "Blogs/edit_post/$post[id]",
-						'data-title'	=> $L->edit
+						'href'		=> "Blogs/edit_post/$post[id]",
+						'tooltip'	=> $L->edit
 					]
 				).
 				h::{'a[is=cs-link-button][icon=trash][level=0]'}(
 					[
-						'href'			=> "admin/Blogs/delete_post/$post[id]",
-						'data-title'	=> $L->delete
+						'href'		=> "admin/Blogs/delete_post/$post[id]",
+						'tooltip'	=> $L->delete
 					]
 				)
 			];

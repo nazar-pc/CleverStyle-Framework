@@ -469,26 +469,26 @@ trait components {
 							[
 								h::{'a[is=cs-link-button][icon=plus][level=0]'}(
 									[
-										'href'       => "$a->action/add/$i",
-										'data-title' => "$L->add $L->mirror $L->of_db"
+										'href'    => "$a->action/add/$i",
+										'tooltip' => "$L->add $L->mirror $L->of_db"
 									]
 								).
 								($i ? h::{'a[is=cs-link-button][icon=pencil][level=0]'}(
 									[
-										'href'       => "$a->action/edit/$i",
-										'data-title' => "$L->edit $L->db"
+										'href'    => "$a->action/edit/$i",
+										'tooltip' => "$L->edit $L->db"
 									]
 								) : false).
 								($i ? h::{'a[is=cs-link-button][icon=trash][level=0]'}(
 									[
-										'href'       => "$a->action/delete/$i",
-										'data-title' => $L->delete.' '.$L->db
+										'href'    => "$a->action/delete/$i",
+										'tooltip' => $L->delete.' '.$L->db
 									]
 								) : false).
 								h::{'a[is=cs-link-button][icon=signal][level=0]'}(
 									[
 										'onMouseDown' => "cs.db_test($i);",
-										'data-title'  => $L->test_connection
+										'tooltip'     => $L->test_connection
 									]
 								),
 								[
@@ -512,20 +512,20 @@ trait components {
 								[
 									h::{'a[is=cs-link-button][icon=pencil][level=0]'}(
 										[
-											'href'       => "$a->action/edit/$i/$m",
-											'data-title' => "$L->edit $L->mirror $L->of_db"
+											'href'    => "$a->action/edit/$i/$m",
+											'tooltip' => "$L->edit $L->mirror $L->of_db"
 										]
 									).
 									h::{'a[is=cs-link-button][icon=trash][level=0]'}(
 										[
-											'href'       => "$a->action/delete/$i/$m",
-											'data-title' => "$L->delete $L->mirror $L->of_db"
+											'href'    => "$a->action/delete/$i/$m",
+											'tooltip' => "$L->delete $L->mirror $L->of_db"
 										]
 									).
 									h::{'a[is=cs-link-button][icon=signal][level=0]'}(
 										[
 											'onMouseDown' => "cs.db_test($i, $m);",
-											'data-title'  => $L->test_connection
+											'tooltip'     => $L->test_connection
 										]
 									),
 									[
@@ -1227,8 +1227,8 @@ trait components {
 			h::{'button[is=cs-button][icon=refresh][type=submit]'}(
 				$L->update_modules_list,
 				[
-					'data-title' => $L->update_modules_list_info,
-					'name'       => 'update_modules_list'
+					'tooltip' => $L->update_modules_list_info,
+					'name'    => 'update_modules_list'
 				]
 			)
 		);
@@ -1692,20 +1692,20 @@ trait components {
 							($i ?
 								h::{'a[is=cs-link-button][icon=pencil][level=0]'}(
 									[
-										'href'       => "$a->action/edit/$i",
-										'data-title' => "$L->edit $L->storage"
+										'href'    => "$a->action/edit/$i",
+										'tooltip' => "$L->edit $L->storage"
 									]
 								).
 								h::{'a[is=cs-link-button][icon=trash][level=0]'}(
 									[
-										'href'       => "$a->action/delete/$i",
-										'data-title' => "$L->delete $L->storage"
+										'href'    => "$a->action/delete/$i",
+										'tooltip' => "$L->delete $L->storage"
 									]
 								).
 								h::{'a[is=cs-link-button][icon=signal][level=0]'}(
 									[
 										'onMouseDown' => "cs.storage_test($i);",
-										'data-title'  => $L->test_connection
+										'tooltip'     => $L->test_connection
 									]
 								) : '-'),
 							[

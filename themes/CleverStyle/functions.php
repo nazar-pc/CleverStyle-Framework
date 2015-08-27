@@ -1,12 +1,12 @@
 <?php
 /**
- * @package		ClevereStyle CMS
- * @subpackage	CleverStyle theme
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2014-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package    ClevereStyle CMS
+ * @subpackage CleverStyle theme
+ * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright  Copyright (c) 2014-2015, Nazar Mokrynskyi
+ * @license    MIT License, see license.txt
  */
-namespace	cs\themes\CleverStyle;
+namespace cs\themes\CleverStyle;
 use
 	cs\Config,
 	cs\DB,
@@ -21,10 +21,10 @@ use
  * @return string[]
  */
 function get_main_menu () {
-	$Config				= Config::instance();
-	$L					= Language::instance();
-	$User				= User::instance();
-	$main_menu_items	= [];
+	$Config          = Config::instance();
+	$L               = Language::instance();
+	$User            = User::instance();
+	$main_menu_items = [];
 	/**
 	 * Administration item if allowed
 	 */
@@ -71,23 +71,24 @@ function get_main_menu () {
 	}
 	return $main_menu_items;
 }
+
 /**
  * Getting header information about user, sign in/sign up forms, etc.
  *
  * @return string
  */
 function get_header_info () {
-	$L		= Language::instance();
-	$User	= User::instance(true);
+	$L    = Language::instance();
+	$User = User::instance(true);
 	if ($User->user()) {
-		$content	= h::{'div.cs-header-user-block.active'}(
+		$content = h::{'div.cs-header-user-block.active'}(
 			h::b(
 				"$L->hello, ".$User->username().'! '.
 				h::{'icon.cs-header-sign-out-process'}(
 					'sign-out',
 					[
-						'style'			=> 'cursor: pointer;',
-						'data-title'	=> $L->sign_out
+						'style'      => 'cursor: pointer;',
+						'data-title' => $L->sign_out
 					]
 				)
 			).
@@ -95,27 +96,27 @@ function get_header_info () {
 				h::a(
 					$L->profile,
 					[
-						'href'	=> path($L->profile)."/$User->login"
+						'href' => path($L->profile)."/$User->login"
 					]
 				).
 				' | '.
 				h::a(
 					$L->settings,
 					[
-						'href'	=> path($L->profile).'/'.path($L->settings)
+						'href' => path($L->profile).'/'.path($L->settings)
 					]
 				)
 			)
 		);
 	} else {
-		$external_systems_list		= '';
+		$external_systems_list = '';
 		Event::instance()->fire(
 			'System/Page/external_sign_in_list',
 			[
-				'list'	=> &$external_systems_list
+				'list' => &$external_systems_list
 			]
 		);
-		$content	=
+		$content =
 			h::{'div.cs-header-guest-form.active'}(
 				h::b("$L->hello, $L->guest!").
 				h::div(
@@ -125,64 +126,72 @@ function get_header_info () {
 					h::{'button.cs-header-registration-slide[is=cs-button][icon=pencil]'}(
 						$L->sign_up,
 						[
-							'data-title'	=> $L->quick_registration_form
+							'tooltip' => $L->quick_registration_form
 						]
 					)
 				)
 			).
 			h::{'div.cs-header-restore-password-form'}(
-				h::{'input.cs-header-restore-password-email[tabindex=1]'}([
-					'placeholder'		=> $L->login_or_email,
-					'autocapitalize'	=> 'off',
-					'autocorrect'		=> 'off'
-				]).
+				h::{'input.cs-header-restore-password-email[tabindex=1]'}(
+					[
+						'placeholder'    => $L->login_or_email,
+						'autocapitalize' => 'off',
+						'autocorrect'    => 'off'
+					]
+				).
 				h::br().
 				h::{'button.cs-header-restore-password-process[tabindex=2][is=cs-button][icon=question]'}(
 					$L->restore_password
 				).
 				h::{'button.cs-header-back[is=cs-button][icon=chevron-down]'}(
 					[
-						'data-title'	=> $L->back
+						'tooltip' => $L->back
 					]
 				)
 			).
 			h::{'div.cs-header-registration-form'}(
-				h::{'input.cs-header-registration-email[type=email]'}([
-					'placeholder'		=> $L->email,
-					'autocapitalize'	=> 'off',
-					'autocorrect'		=> 'off'
-				]).
+				h::{'input.cs-header-registration-email[type=email]'}(
+					[
+						'placeholder'    => $L->email,
+						'autocapitalize' => 'off',
+						'autocorrect'    => 'off'
+					]
+				).
 				h::br().
 				h::{'button.cs-header-registration-process[is=cs-button][icon=pencil]'}(
 					$L->sign_up
 				).
 				h::{'button.cs-header-back[is=cs-button][icon=chevron-down]'}(
 					[
-						'data-title'	=> $L->back
+						'tooltip' => $L->back
 					]
 				)
 			).
 			h::{'form.cs-header-sign-in-form'}(
-				h::{'input.cs-header-sign-in-email'}([
-					'placeholder'		=> $L->login_or_email,
-					'autocapitalize'	=> 'off',
-					'autocorrect'		=> 'off'
-				]).
-				h::{'input.cs-header-user-password[type=password]'}([
-					'placeholder'	=> $L->password
-				]).
+				h::{'input.cs-header-sign-in-email'}(
+					[
+						'placeholder'    => $L->login_or_email,
+						'autocapitalize' => 'off',
+						'autocorrect'    => 'off'
+					]
+				).
+				h::{'input.cs-header-user-password[type=password]'}(
+					[
+						'placeholder' => $L->password
+					]
+				).
 				h::br().
 				h::{'button[type=submit][is=cs-button][icon=sign-in]'}(
 					$L->sign_in
 				).
 				h::{'button.cs-header-back[is=cs-button][icon=chevron-down]'}(
 					[
-						'data-title'	=> $L->back
+						'tooltip' => $L->back
 					]
 				).
 				h::{'button.cs-header-restore-password-slide[is=cs-button][icon=question]'}(
 					[
-						'data-title'	=> $L->restore_password
+						'tooltip' => $L->restore_password
 					]
 				)
 			).
@@ -190,6 +199,7 @@ function get_header_info () {
 	}
 	return $content;
 }
+
 /**
  * Getting footer information
  *
@@ -203,8 +213,8 @@ function get_footer () {
 	Event::instance()->on(
 		'System/Page/display',
 		function () {
-			$Page		= Page::instance();
-			$Page->Html	= str_replace(
+			$Page       = Page::instance();
+			$Page->Html = str_replace(
 				[
 					'<!--generate time-->',
 					'<!--peak memory usage-->'
