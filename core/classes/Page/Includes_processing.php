@@ -299,7 +299,6 @@ class Includes_processing {
 		if (!preg_match_all('/<link(.*)>|<style(.*)<\/style>/Uims', $data, $links_and_styles)) {
 			return;
 		}
-		$shim                        = false;
 		$styles_content              = '';
 		$imports_content             = '';
 		$links_and_styles_to_replace = [];
@@ -322,7 +321,6 @@ class Includes_processing {
 			 */
 			if (mb_strpos($links_and_styles[0][$index], '</style>') > 0) {
 				$links_and_styles_to_replace[] = $links_and_styles[0][$index];
-				$shim                          = $shim || static::need_shimming($links_and_styles[0][$index]);
 				$styles_content .= static::css(
 					explode('>', $links_and_styles[2][$index], 2)[1],
 					$file
@@ -343,7 +341,6 @@ class Includes_processing {
 			 */
 			if ($css_import || $stylesheet) {
 				$links_and_styles_to_replace[] = $links_and_styles[0][$index];
-				$shim                          = $shim || static::need_shimming($links_and_styles[0][$index]);
 				$styles_content .= static::css(
 					file_get_contents("$dir/$url"),
 					"$dir/$url"
@@ -364,7 +361,6 @@ class Includes_processing {
 		if (!$links_and_styles_to_replace) {
 			return;
 		}
-		$shim = $shim ? ' shim-shadowdom' : '';
 		/**
 		 * If there is destination - put contents into the file, and put link to it, otherwise put minified content back
 		 */
@@ -381,15 +377,16 @@ class Includes_processing {
 			// Replace first link or style with combined file
 			$data = str_replace(
 				$links_and_styles_to_replace[0],
-				"<link rel=\"stylesheet\" href=\"$base_filename.css?$content_md5\"$shim>",
+				"<link rel=\"import\" type=\"css\" href=\"$base_filename.css?$content_md5\">",
 				$data
 			);
 		} else {
-			// Replace first link or style with combined content
-			$data = str_replace(
-				$links_and_styles_to_replace[0],
-				"<style$shim>$styles_content</style>",
-				$data
+			// Replace first `<template>` with combined content
+			$data = preg_replace(
+				'/<template>/',
+				"$0<style>$styles_content</style>",
+				$data,
+				1
 			);
 		}
 		// Remove the rest of links and styles
@@ -424,13 +421,5 @@ class Includes_processing {
 	 */
 	protected static function is_relative_path_and_exists ($path, $dir) {
 		return !preg_match('#^(http://|https://|ftp://|/)#i', $path) && file_exists("$dir/$path");
-	}
-	/**
-	 * @param string $content
-	 *
-	 * @return bool
-	 */
-	protected static function need_shimming ($content) {
-		return stripos($content, 'shim-shadowdom') !== false;
 	}
 }
