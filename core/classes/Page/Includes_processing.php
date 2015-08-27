@@ -150,10 +150,6 @@ class Includes_processing {
 		foreach ($data as $index => &$d) {
 			$next_line = isset($data[$index + 1]) ? trim($data[$index + 1]) : '';
 			/**
-			 * Ends with single-line comment
-			 */
-			$d = preg_replace('#//[^\'"]+$#', '', $d);
-			/**
 			 * Remove starting and trailing spaces
 			 */
 			$d = trim($d);
@@ -182,14 +178,20 @@ class Includes_processing {
 			) {
 				$d .= "\n";
 			}
-			/**
-			 * End of multi-line comment
-			 */
-			if ($comment && mb_substr($d, -2) === '*/') {
-				$d       = '';
-				$comment = false;
-			} elseif ($comment) {
+			if ($comment) {
+				/**
+				 * End of multi-line comment
+				 */
+				if (mb_substr($d, -2) === '*/') {
+					$d       = '';
+					$comment = false;
+				}
 				$d = '';
+			} else {
+				/**
+				 * Ends with single-line comment
+				 */
+				$d = preg_replace('#\s+//[^\'"]+$#', '', $d);
 			}
 		}
 		$data = implode('', $data);
