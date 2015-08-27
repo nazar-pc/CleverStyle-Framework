@@ -822,27 +822,30 @@ trait Includes {
 				if (!file_exists($file)) {
 					continue;
 				}
-				/**
-				 * Insert external elements into resulting css file.
-				 * It is needed, because those files will not be copied into new destination of resulting css file.
-				 */
-				if ($extension == 'css') {
-					$files_content .= Includes_processing::css(
-						file_get_contents($file),
-						$file
-					);
+				switch ($extension) {
+					/**
+					 * Insert external elements into resulting css file.
+					 * It is needed, because those files will not be copied into new destination of resulting css file.
+					 */
+					case 'css':
+						$files_content .= Includes_processing::css(
+							file_get_contents($file),
+							$file
+						);
+						break;
 					/**
 					 * Combine css and js files for Web Component into resulting files in order to optimize loading process
 					 */
-				} elseif ($extension == 'html') {
-					$files_content .= Includes_processing::html(
-						file_get_contents($file),
-						$file,
-						"$filename_prefix$this->pcache_basename-".basename($file).'+'.substr(md5($file), 0, 5),
-						$destination
-					);
-				} else {
-					$files_content .= file_get_contents($file).";\n";
+					case 'html':
+						$files_content .= Includes_processing::html(
+							file_get_contents($file),
+							$file,
+							"$filename_prefix$this->pcache_basename-".basename($file).'+'.substr(md5($file), 0, 5),
+							$destination
+						);
+						break;
+					case 'js':
+						$files_content .= Includes_processing::js(file_get_contents($file));
 				}
 			}
 			if ($filename_prefix == '' && $extension == 'js') {

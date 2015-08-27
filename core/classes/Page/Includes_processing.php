@@ -128,6 +128,74 @@ class Includes_processing {
 		return $data;
 	}
 	/**
+	 * Simple and fast JS minification
+	 *
+	 * @param string $data
+	 *
+	 * @return string
+	 */
+	static function js ($data) {
+		/**
+		 * Split into array of lines
+		 */
+		$data = explode("\n", $data);
+		/**
+		 * Flag that is `true` when inside comment
+		 */
+		$comment = false;
+		/**
+		 * Set of symbols that are safe to be concatenated without new line with anything else
+		 */
+		$regexp = '[:;,.+\-*\/{}?><^\'"\[\]=&]';
+		foreach ($data as $index => &$d) {
+			$next_line = isset($data[$index + 1]) ? trim($data[$index + 1]) : '';
+			/**
+			 * Ends with single-line comment
+			 */
+			$d = preg_replace('#//[^\'"]+$#', '', $d);
+			/**
+			 * Remove starting and trailing spaces
+			 */
+			$d = trim($d);
+			/**
+			 * Remove single-line comments
+			 */
+			if (mb_strpos($d, '//') === 0) {
+				$d = '';
+				continue;
+			}
+			/**
+			 * Starts with multi-line comment
+			 */
+			if (mb_strpos($d, '/*') === 0) {
+				$comment = true;
+			}
+			/**
+			 * Add new line at the end if only needed
+			 */
+			if (
+				$d &&
+				$next_line &&
+				!$comment &&
+				!preg_match("/$regexp\$/", $d) &&
+				!preg_match("/^$regexp/", $next_line)
+			) {
+				$d .= "\n";
+			}
+			/**
+			 * End of multi-line comment
+			 */
+			if ($comment && mb_substr($d, -2) === '*/') {
+				$d       = '';
+				$comment = false;
+			} elseif ($comment) {
+				$d = '';
+			}
+		}
+		$data = implode('', $data);
+		return trim($data, ';').';';
+	}
+	/**
 	 * Analyses file for scripts and styles, combines them into resulting files in order to optimize loading process
 	 * (files with combined scripts and styles will be created)
 	 *
