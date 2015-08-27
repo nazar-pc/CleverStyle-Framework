@@ -4,10 +4,10 @@
       <h1 class="uk-margin-bottom uk-width-1-1">[[header_title]]</h1>
       <div id="images"></div>
       <div class="uk-width-1-2">
-        <p class="uk-text-large">
-          <span class="uk-text-primary">[[price]]</span>
+        <p>
+          <span class="uk-text-primary uk-text-large">[[price]]</span>
           <cs-shop-add-to-cart item_id="[[item_id]]"></cs-shop-add-to-cart>
-          <span>[[concat('(', in_stock, ' in stock)')]]</span>
+          <span class="uk-text-large">[[concat('(', in_stock, ' in stock)')]]</span>
         </p>
         <content select="#description"></content>
       </div>

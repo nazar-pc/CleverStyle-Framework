@@ -58,7 +58,7 @@ $Index->content(
 		)
 	).
 	(
-		$total ? h::{'div.cs-center-all.uk-margin nav.uk-button-group'}(
+		$total ? h::{'div.cs-center-all.uk-margin nav[is=cs-nav-button-group]'}(
 			pages(
 				$page,
 				ceil($total / $Config->module('Blogs')->posts_per_page),

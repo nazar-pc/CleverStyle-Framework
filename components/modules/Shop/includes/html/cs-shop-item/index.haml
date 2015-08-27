@@ -4,10 +4,10 @@
 			%h1.uk-margin-bottom.uk-width-1-1 [[header_title]]
 			#images
 			.uk-width-1-2
-				%p.uk-text-large
-					%span.uk-text-primary [[price]]
+				%p
+					%span.uk-text-primary.uk-text-large [[price]]
 					%cs-shop-add-to-cart(item_id="[[item_id]]")
-					%span [[concat('(', in_stock, ' in stock)')]]
+					%span.uk-text-large [[concat('(', in_stock, ' in stock)')]]
 				%content(select="#description")
 		%template(if="[[show_attributes]]")
 			%h2.uk-margin-top [[L.shop_characteristics]]

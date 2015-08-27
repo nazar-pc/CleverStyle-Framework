@@ -1,10 +1,10 @@
 <dom-module id="cs-shop-add-to-cart">
   <link href="style.css" rel="import" type="css">
   <template>
-    <div class="uk-button-group" hidden$="[[!in_cart]]">
+    <nav hidden$="[[!in_cart]]" is="cs-nav-button-group">
       <button is="cs-button" on-click="add" primary type="button">[[L.shop_add_to_cart]]</button>
-      <a class="uk-button" href="/Shop/cart" id="in_cart" title="[[L.shop_already_in_cart]]">[[in_cart]]</a>
-    </div>
+      <a href="/Shop/cart" id="in_cart" is="cs-link-button" title="[[L.shop_already_in_cart]]">[[in_cart]]</a>
+    </nav>
     <button hidden$="[[and(in_cart)]]" is="cs-button" on-click="add" primary type="button">[[L.shop_add_to_cart]]</button>
   </template>
   <script src="script.js"></script>

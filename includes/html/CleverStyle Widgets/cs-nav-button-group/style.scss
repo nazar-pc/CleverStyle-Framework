@@ -1,0 +1,22 @@
+/**
+ * @package   CleverStyle Widgets
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
+ */
+:host {
+	display : flex;
+	display : -ms-flexbox;
+	display : -webkit-flex;
+
+	@apply (--cs-no-selection);
+	@apply (--cs-global);
+	@apply (--cs-nav-button-group);
+}
+
+// Hack: `:host` is here only because of Polymer unable to handle pure `::content` properly
+:host ::content > :not(template) {
+	& {
+		@apply (--cs-nav-button-group-button);
+	}
+}

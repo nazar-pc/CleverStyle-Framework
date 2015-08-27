@@ -1,0 +1,1 @@
+:host{display:flex;display:-ms-flexbox;display:-webkit-flex;@apply (--cs-no-selection);;@apply (--cs-global);;@apply (--cs-nav-button-group);}:host ::content>:not(template){@apply (--cs-nav-button-group-button);}
