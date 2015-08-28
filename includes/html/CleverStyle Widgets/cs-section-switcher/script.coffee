@@ -23,6 +23,7 @@ Polymer(
 					return
 			@selected = 0
 			return
+		return
 	_selected_changed : ->
 		for element, index in @children
 			if element.tagName == 'TEMPLATE'

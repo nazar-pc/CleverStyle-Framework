@@ -16,16 +16,18 @@ Polymer(
 			notify		: true
 			observer	: '_selected_changed'
 			type		: Number
+	listeners	: {
+		tap		: '_tap'
+	}
 	ready : ->
-		@addEventListener('tap', @_click.bind(@))
-		@addEventListener('click', @_click.bind(@))
 		do =>
 			for element in @children
 				if element.active
 					return
 			@selected = 0
 			return
-	_click : (e) ->
+		return
+	_tap : (e) ->
 		target = do =>
 			for path, index in e.path
 				if path == @

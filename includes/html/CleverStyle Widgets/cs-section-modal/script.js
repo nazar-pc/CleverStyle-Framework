@@ -35,6 +35,9 @@
         type: Boolean
       }
     },
+    listeners: {
+      transitionend: '_transitionend'
+    },
     created: function() {
       this._esc_handler = (function(_this) {
         return function(e) {
@@ -43,17 +46,15 @@
           }
         };
       })(this);
-      this.addEventListener('transitionend', (function(_this) {
-        return function() {
-          if (!_this.opened && _this.autoDestroy) {
-            return _this.parentNode.removeChild(_this);
-          }
-        };
-      })(this));
     },
     attached: function() {
       if (this.autoOpen) {
-        return this.open();
+        this.open();
+      }
+    },
+    _transitionend: function() {
+      if (!this.opened && this.autoDestroy) {
+        this.parentNode.removeChild(this);
       }
     },
     _opened_changed: function() {

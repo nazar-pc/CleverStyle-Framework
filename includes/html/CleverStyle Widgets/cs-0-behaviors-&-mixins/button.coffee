@@ -25,6 +25,8 @@ Polymer.cs.behaviors.button =
 		primary	:
 			reflectToAttribute	: true
 			type				: Boolean
+	listeners	:
+		tap	: '_tap'
 	ready : ->
 		@empty = !@childNodes.length
 		return
@@ -36,10 +38,7 @@ Polymer.cs.behaviors.button =
 			@bind			= null
 			# Well, we can't bind method of other object to property of current one without losing `this` inside that method
 			# That is why we bind element itself to `bind` property and method name to `action` (`button_action` method assumed by default)
-			action	= bind_element[@action].bind(bind_element)
-			# Add events listeners
-			@addEventListener('click', action)
-			@addEventListener('tap', action)
+			@_tap	= bind_element[@action].bind(bind_element)
 			# Also in order to avoid memory leaks we need to know when bind element is detached from DOM
 			# If it is detached after one second - we'll drop binding
 			observer	= 		(new MutationObserver (mutations) ->
@@ -55,11 +54,10 @@ Polymer.cs.behaviors.button =
 						observer.disconnect()
 						# Wait a second
 						setTimeout (->
-							# If no parent node -> element is still detached -> drop all event listeners to avoid any connections with that element
+							# If no parent node -> element is still detached -> drop binded method to avoid any connections with that element
 							# and thus memory leaks
 							if !bind_element.parentNode
-								@removeEventListener('click', action)
-								@removeEventListener('tap', action)
+								@_tap = ->
 							else
 								# New parent, lets reconfigure observer again
 								observer.observe(bind_element.parentNode, {childList : true})
@@ -70,3 +68,4 @@ Polymer.cs.behaviors.button =
 			)
 			observer.observe(bind_element.parentNode, {childList : true, subtree: false})
 		return
+	_tap : ->

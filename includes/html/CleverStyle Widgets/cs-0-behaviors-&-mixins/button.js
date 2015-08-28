@@ -36,17 +36,18 @@
         type: Boolean
       }
     },
+    listeners: {
+      tap: '_tap'
+    },
     ready: function() {
       this.empty = !this.childNodes.length;
     },
     _bind_changed: function() {
-      var action, bind_element, observer;
+      var bind_element, observer;
       if (this.bind) {
         bind_element = this.bind;
         this.bind = null;
-        action = bind_element[this.action].bind(bind_element);
-        this.addEventListener('click', action);
-        this.addEventListener('tap', action);
+        this._tap = bind_element[this.action].bind(bind_element);
         observer = new MutationObserver(function(mutations) {
           mutations.forEach(function(mutation) {
             var i, len, node, ref;
@@ -62,8 +63,7 @@
               observer.disconnect();
               setTimeout((function() {
                 if (!bind_element.parentNode) {
-                  this.removeEventListener('click', action);
-                  this.removeEventListener('tap', action);
+                  this._tap = function() {};
                 } else {
                   observer.observe(bind_element.parentNode, {
                     childList: true
@@ -78,7 +78,8 @@
           subtree: false
         });
       }
-    }
+    },
+    _tap: function() {}
   };
 
 }).call(this);

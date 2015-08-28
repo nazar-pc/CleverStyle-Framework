@@ -25,19 +25,23 @@ Polymer(
 		transparent	:
 			reflectToAttribute	: true
 			type				: Boolean
+	listeners	: {
+		transitionend	: '_transitionend'
+	}
 	created : ->
 		@_esc_handler	= (e) =>
 			if e.keyCode == 27 # Esc
 				@close()
 			return
-		@addEventListener('transitionend', =>
-			if !@opened && @autoDestroy
-				@parentNode.removeChild(@)
-		)
 		return
 	attached : ->
 		if @autoOpen
 			@open()
+		return
+	_transitionend : ->
+		if !@opened && @autoDestroy
+			@parentNode.removeChild(@)
+		return
 	_opened_changed : ->
 		if !@_attached_to_html
 			@_attached_to_html	= true

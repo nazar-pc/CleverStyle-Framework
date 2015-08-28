@@ -20,7 +20,7 @@
           return document.removeEventListener('WebComponentsReady', scroll_once);
         };
       })(this);
-      return document.addEventListener('WebComponentsReady', scroll_once);
+      document.addEventListener('WebComponentsReady', scroll_once);
     },
     _scroll_to_selected: function() {
       var option_height, select_height;
@@ -30,7 +30,7 @@
       }
       select_height = this.getBoundingClientRect().height;
       if (select_height >= option_height * (this.querySelectorAll('option').length + this.querySelectorAll('optgroup').length)) {
-        return this.style.overflowY = 'auto';
+        this.style.overflowY = 'auto';
       }
     },
     _number_of_optgroups: function() {

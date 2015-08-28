@@ -15,11 +15,12 @@ Polymer(
 		Polymer.cs.behaviors.value
 	]
 	ready : ->
-		# We need to scroll because oof possible changed height of `option`, so that `option[selected]` will not be visible
+		# We need to scroll because of possible changed height of `option`, so that `option[selected]` will not be visible
 		scroll_once	= =>
 			@_scroll_to_selected()
 			document.removeEventListener('WebComponentsReady', scroll_once)
 		document.addEventListener('WebComponentsReady', scroll_once)
+		return
 	_scroll_to_selected : ->
 		option_height	= @querySelector('option').getBoundingClientRect().height
 		if @size > 1 && @selectedOptions[0]
@@ -28,6 +29,7 @@ Polymer(
 		# Do not use `overflow-y : auto` all the time, because it will cause cropped options on the right or horizontal scroll in Chromium
 		if select_height >= option_height * (@querySelectorAll('option').length + @querySelectorAll('optgroup').length)
 			@style.overflowY = 'auto'
+		return
 	_number_of_optgroups : ->
 		optgroup	= @selectedOptions[0].parentNode
 		count		= 0

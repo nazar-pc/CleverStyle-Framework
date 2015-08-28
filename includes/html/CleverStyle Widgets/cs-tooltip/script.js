@@ -29,6 +29,12 @@
         type: Boolean
       }
     },
+    listeners: {
+      mouseenter: '_set_show',
+      pointerenter: '_set_show',
+      mouseleave: '_unset_show',
+      pointerleave: '_unset_show'
+    },
     attached: function() {
       var parent;
       parent = this.parentNode;
@@ -43,27 +49,13 @@
             }
           };
         })(this));
-        this.addEventListener('mouseenter', (function(_this) {
-          return function() {
-            _this.show = true;
-          };
-        })(this));
-        this.addEventListener('pointerenter', (function(_this) {
-          return function() {
-            _this.show = true;
-          };
-        })(this));
-        this.addEventListener('mouseleave', (function(_this) {
-          return function() {
-            _this.show = false;
-          };
-        })(this));
-        this.addEventListener('pointerleave', (function(_this) {
-          return function() {
-            _this.show = false;
-          };
-        })(this));
       }
+    },
+    _set_show: function() {
+      this.show = true;
+    },
+    _unset_show: function() {
+      this.show = false;
     },
     _show: function(element) {
       var tooltip_position;

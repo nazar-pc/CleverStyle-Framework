@@ -19,11 +19,12 @@
         type: Number
       }
     },
+    listeners: {
+      tap: '_tap'
+    },
     ready: function() {
-      this.addEventListener('tap', this._click.bind(this));
-      this.addEventListener('click', this._click.bind(this));
-      return (function(_this) {
-        return function() {
+      (function(_this) {
+        return (function() {
           var element, i, len, ref;
           ref = _this.children;
           for (i = 0, len = ref.length; i < len; i++) {
@@ -33,10 +34,10 @@
             }
           }
           _this.selected = 0;
-        };
+        });
       })(this)();
     },
-    _click: function(e) {
+    _tap: function(e) {
       var element, i, index, len, ref, target;
       target = (function(_this) {
         return function() {

@@ -20,8 +20,8 @@
       }
     },
     ready: function() {
-      return (function(_this) {
-        return function() {
+      (function(_this) {
+        return (function() {
           var element, i, len, ref;
           ref = _this.children;
           for (i = 0, len = ref.length; i < len; i++) {
@@ -31,7 +31,7 @@
             }
           }
           _this.selected = 0;
-        };
+        });
       })(this)();
     },
     _selected_changed: function() {

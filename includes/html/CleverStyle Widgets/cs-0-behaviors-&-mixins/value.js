@@ -9,17 +9,12 @@
 
 (function() {
   Polymer.cs.behaviors.value = {
-    ready: function() {
-      this.addEventListener('change', (function(_this) {
-        return function() {
-          return _this.fire('value-changed');
-        };
-      })(this));
-      return this.addEventListener('input', (function(_this) {
-        return function() {
-          return _this.fire('value-changed');
-        };
-      })(this));
+    listeners: {
+      change: '_changed',
+      input: '_changed'
+    },
+    _changed: function() {
+      this.fire('value-changed');
     }
   };
 

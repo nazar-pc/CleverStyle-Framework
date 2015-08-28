@@ -25,7 +25,7 @@
 		--block-padding                     : 1em;
 		--modal-blur-radius                 : 1em;
 		--transition-duration               : .3s;
-		--transition-duration-half          : .1s;
+		--transition-duration-half          : .15s;
 		--modal-overlay-background          : rgba(0, 0, 0, .3);
 		--modal-content-background          : #fff;
 		--modal-content-padding             : 2em;
@@ -38,6 +38,11 @@
 		--tooltip-arrow-height              : .4em;
 		--tooltip-arrow-width               : .7em;
 		--tooltip-offset                    : 1.5em;
+		--notify-shadow                     : 0 0 2em .3em rgba(0, 0, 0, .2);
+		--notify-transition-duration        : .5s;
+		--notify-translate                  : 50vh;
+		--notify-content-padding            : 1em 2.5em 1em 1em;
+		--notify-icon-padding               : 1em;
 
 		--cs-global : {
 			box-sizing  : border-box;
@@ -376,6 +381,78 @@
 		--cs-progress-bar-primary : {
 			/* Stupid IE 10 */
 			color : var(--background-color-primary);
+		}
+
+		/* Notify */
+
+		--cs-notify : {
+			display     : inline-block;
+			padding     : var(--block-padding);
+			transition  : all var(--notify-transition-duration) cubic-bezier(0.47, 0, 0.75, 0.72); /* In - Sine */
+			will-change : transform, -webkit-transform;
+		}
+
+		--cs-notify-content : {
+			background  : var(--modal-content-background);
+			box-shadow  : var(--notify-shadow);
+			max-height  : var(--notify-translate);
+			overflow    : hidden;
+			padding     : var(--block-padding);
+			transition  : all var(--transition-duration) var(--transition-duration-half);
+		}
+
+		--cs-notify-content-icon-hover : {
+			padding     : var(--notify-content-padding);
+			transition  : all var(--transition-duration);
+		}
+
+		--cs-notify-icon : {
+			cursor            : pointer;
+			opacity           : 0;
+			padding           : var(--notify-icon-padding);
+			right             : 0;
+			top               : 0;
+			transform         : scale(0);
+			-webkit-transform : scale(0);
+			transition        : all var(--transition-duration-half);
+		}
+
+		--cs-notify-icon-hover : {
+			opacity           : 1;
+			transform         : scale(1);
+			-webkit-transform : scale(1);
+			transition        : all var(--transition-duration-half) var(--transition-duration);
+		}
+
+		--cs-notify-content-success : {
+			background : #f2fae3;
+			color      : #659f13;
+		}
+
+		--cs-notify-content-warning : {
+			background : #fffceb;
+			color      : #e28327;
+		}
+
+		--cs-notify-content-error : {
+			background : #fff1f0;
+			color      : #d85030;
+		}
+
+		--cs-notify-bottom : {
+			transform         : translateY(var(--notify-translate));
+			-webkit-transform : translateY(var(--notify-translate));
+		}
+
+		--cs-notify-top : {
+			transform         : translateY(-var(--notify-translate));
+			-webkit-transform : translateY(-var(--notify-translate));
+		}
+
+		--cs-notify-show : {
+			transform         : translateY(0);
+			-webkit-transform : translateY(0);
+			transition        : all var(--notify-transition-duration) cubic-bezier(0.39, 0.58, 0.57, 1); /* Out - Sine */
 		}
 	}
 

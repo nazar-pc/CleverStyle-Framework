@@ -18,6 +18,12 @@ Polymer(
 		top			:
 			reflectToAttribute	: true
 			type				: Boolean
+	listeners	: {
+		mouseenter		: '_set_show'
+		pointerenter	: '_set_show'
+		mouseleave		: '_unset_show'
+		pointerleave	: '_unset_show'
+	}
 	attached : ->
 		parent	= @parentNode
 		if parent.tagName != 'HTML'
@@ -28,22 +34,12 @@ Polymer(
 				if e.keyCode == 27 && @show # Esc
 					@show = false
 			)
-			@addEventListener('mouseenter', =>
-				@show	= true
-				return
-			)
-			@addEventListener('pointerenter', =>
-				@show	= true
-				return
-			)
-			@addEventListener('mouseleave', =>
-				@show	= false
-				return
-			)
-			@addEventListener('pointerleave', =>
-				@show	= false
-				return
-			)
+		return
+	_set_show : ->
+		@show = true
+		return
+	_unset_show : ->
+		@show = false
 		return
 	_show : (element) ->
 		if !element.tooltip || @show
