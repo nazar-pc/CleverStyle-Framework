@@ -38,6 +38,10 @@
         type: Number,
         value: 1
       },
+      search_pages: {
+        computed: '_search_pages(users_count, search_limit)',
+        type: Number
+      },
       search_limit: 20,
       search_columns: [],
       search_modes: [],
@@ -46,8 +50,8 @@
       users: [],
       users_count: 0,
       show_pagination: {
-        type: Boolean,
-        computed: 'show_pagination_(users_count, search_limit, search_page)'
+        computed: '_show_pagination(users_count, search_limit)',
+        type: Boolean
       },
       searching: false,
       searching_loader: false,
@@ -55,7 +59,7 @@
     },
     observers: ['search_again(search_column, search_mode, search_limit, _initialized)'],
     ready: function() {
-      $.ajax({
+      return $.ajax({
         url: 'api/System/admin/users',
         type: 'search_options',
         success: (function(_this) {
@@ -76,16 +80,6 @@
           };
         })(this)
       });
-      $(this.$['pagination-top'], this.$['pagination-bottom']).on('select.uk.pagination', (function(_this) {
-        return function(e, pageIndex) {
-          return _this.search_page = pageIndex + 1;
-        };
-      })(this));
-      this.workarounds(this.shadowRoot);
-      return cs.observe_inserts_on(this.shadowRoot, this.workarounds);
-    },
-    workarounds: function(target) {
-      return $(target).cs().pagination_inside();
     },
     search: function() {
       var searching_timeout;
@@ -201,15 +195,11 @@
       clearTimeout(this.search_text_timeout);
       return this.search_text_timeout = setTimeout(this.search_again.bind(this), 300);
     },
-    show_pagination_: function(users_count, search_limit, search_page) {
-      [UIkit.pagination(this.$['pagination-top']), UIkit.pagination(this.$['pagination-bottom'])].forEach((function(_this) {
-        return function(p) {
-          p.pages = Math.ceil(users_count / search_limit);
-          p.currentPage = search_page - 1;
-          return p.render();
-        };
-      })(this));
+    _show_pagination: function(users_count, search_limit) {
       return parseInt(users_count) > parseInt(search_limit);
+    },
+    _search_pages: function(users_count, search_limit) {
+      return Math.ceil(users_count / search_limit);
     },
     add_user: function() {
       return $(cs.ui.simple_modal("<h3>" + L.adding_a_user + "</h3>\n<cs-system-admin-users-add-user-form/>")).on('hide.uk.modal', this.search.bind(this));

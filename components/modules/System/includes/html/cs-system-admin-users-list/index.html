@@ -29,8 +29,8 @@
       </div>
     </section>
     <hr>
-    <div class="uk-margin cs-left" hidden$="[[!show_pagination]]">
-      <ul class="uk-pagination" data-uk-pagination="{items:1, itemsOnPage: 1, currentPage:1}" id="pagination-top"></ul>
+    <div class="uk-margin cs-center" hidden$="[[!show_pagination]]">
+      <nav is="cs-nav-pagination" page="{{search_page}}" pages="[[search_pages]]"></nav>
     </div>
     <h2 class="uk-text-center" hidden$="[[!searching_loader]]">
       <cs-icon icon="spinner" spin></cs-icon>
@@ -69,8 +69,8 @@
         </cs-table-row>
       </template>
     </cs-table>
-    <div class="uk-margin cs-left" hidden$="[[!show_pagination]]">
-      <ul class="uk-pagination" data-uk-pagination="{items:1, itemsOnPage: 1, currentPage:1}" id="pagination-bottom"></ul>
+    <div class="uk-margin cs-center" hidden$="[[!show_pagination]]">
+      <nav is="cs-nav-pagination" page="{{search_page}}" pages="[[search_pages]]"></nav>
     </div>
     <p class="cs-left">
       <button is="cs-button" on-click="add_user" type="button">[[L.add_user]]</button>

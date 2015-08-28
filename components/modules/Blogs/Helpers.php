@@ -44,7 +44,7 @@ class Helpers {
 					'comments_enabled' => $module_data->enable_comments && functionality('comments')
 				]
 			).
-			h::{'div.cs-center-all.uk-margin nav[is=cs-nav-button-group]'}(
+			h::{'div.cs-center-all.uk-margin nav[is=cs-nav-pagination]'}(
 				pages(
 					$page,
 					ceil($posts_count / $module_data->posts_per_page),

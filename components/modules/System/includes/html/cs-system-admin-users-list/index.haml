@@ -21,8 +21,8 @@
 					%button(is="cs-button" on-click="toggle_search_column" primary="[[column.selected]]") [[column.name]]
 		%hr/
 		-# should be reference %template#pagination
-		.uk-margin.cs-left(hidden$="[[!show_pagination]]")
-			%ul.uk-pagination#pagination-top(data-uk-pagination="{items:1, itemsOnPage: 1, currentPage:1}")
+		.uk-margin.cs-center(hidden$="[[!show_pagination]]")
+			%nav(is="cs-nav-pagination" page="{{search_page}}" pages="[[search_pages]]")
 		%h2.uk-text-center(hidden$="[[!searching_loader]]")
 			%cs-icon(icon="spinner" spin)
 		%cs-table(center list with-header)
@@ -48,8 +48,8 @@
 					%template(is="dom-repeat" items="[[user.columns]]" as="column")
 						%cs-table-cell [[column]]
 		-# should be reference %template#pagination
-		.uk-margin.cs-left(hidden$="[[!show_pagination]]")
-			%ul.uk-pagination#pagination-bottom(data-uk-pagination="{items:1, itemsOnPage: 1, currentPage:1}")
+		.uk-margin.cs-center(hidden$="[[!show_pagination]]")
+			%nav(is="cs-nav-pagination" page="{{search_page}}" pages="[[search_pages]]")
 		%p.cs-left
 			%button(is="cs-button" on-click="add_user" type="button") [[L.add_user]]
 			%button(is="cs-button" on-click="add_bot" type="button") [[L.add_bot]]

@@ -5,26 +5,25 @@
  * @license   MIT License, see license.txt
  */
 :host {
-	display : flex;
-	display : -ms-flexbox;
-	display : -webkit-flex;
+	display : inline-block;
 
 	@apply (--cs-no-selection);
 	@apply (--cs-global);
-	@apply (--cs-nav-button-group);
+	@apply (--cs-nav-pagination);
 }
 
 // Hack: `:host` is here only because of Polymer unable to handle pure `::content` properly
-:host ::content > :not(template) {
+:host ::content > :not(template),
+:not(template) {
 	& {
-		@apply (--cs-nav-button-group-button);
+		@apply (--cs-nav-pagination-button);
 	}
 
 	&[first] {
-		@apply (--cs-nav-button-group-button);
+		@apply (--cs-nav-pagination-button);
 	}
 
 	&[last] {
-		@apply (--cs-nav-button-group-button);
+		@apply (--cs-nav-pagination-button);
 	}
 }

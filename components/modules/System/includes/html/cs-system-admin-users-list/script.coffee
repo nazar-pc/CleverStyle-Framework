@@ -25,6 +25,9 @@ Polymer(
 			observer	: 'search'
 			type		: Number
 			value		: 1
+		search_pages		:
+			computed	: '_search_pages(users_count, search_limit)'
+			type		: Number
 		search_limit		: 20
 		search_columns		: []
 		search_modes		: []
@@ -38,15 +41,15 @@ Polymer(
 		users				: []
 		users_count			: 0
 		show_pagination		:
+			computed	: '_show_pagination(users_count, search_limit)'
 			type		: Boolean
-			computed	: 'show_pagination_(users_count, search_limit, search_page)'
 		searching			: false
 		searching_loader	: false
 		_initialized		: true
 	observers				: [
 		'search_again(search_column, search_mode, search_limit, _initialized)'
 	]
-	ready					: ->
+	ready : ->
 		$.ajax(
 			url		: 'api/System/admin/users'
 			type	: 'search_options'
@@ -61,16 +64,7 @@ Polymer(
 				@all_columns	= search_options.columns
 				@search_modes	= search_options.modes
 		)
-		$(@$['pagination-top'], @$['pagination-bottom'])
-			.on('select.uk.pagination', (e, pageIndex) =>
-				@search_page	= pageIndex + 1
-			)
-		@workarounds(@shadowRoot)
-		cs.observe_inserts_on(@shadowRoot, @workarounds)
-	workarounds				: (target) ->
-		$(target)
-			.cs().pagination_inside()
-	search					: ->
+	search : ->
 		if @searching || @_initialized == undefined
 			return
 		@searching			= true
@@ -127,43 +121,38 @@ Polymer(
 						user.type_info	= L[type + '_info']
 				@set('users', data.users)
 		)
-	toggle_search_column	: (e) ->
+	toggle_search_column : (e) ->
 		index			= e.model.index
 		column			= @search_columns[index]
 		@set(['search_columns', index, 'selected'], !column.selected)
 		@set('columns', column.name for column in @search_columns when column.selected)
 		@search_again()
-	search_again			: ->
+	search_again : ->
 		if @search_page > 1
 			# Will execute search implicitly
 			@search_page	= 1
 		else
 			@search()
-	search_textChanged		: ->
+	search_textChanged : ->
 		if @_initialized == undefined
 			return
 		clearTimeout(@search_text_timeout)
 		@search_text_timeout	= setTimeout(@search_again.bind(@), 300)
-	show_pagination_		: (users_count, search_limit, search_page) ->
-		[
-			UIkit.pagination(@$['pagination-top'])
-			UIkit.pagination(@$['pagination-bottom'])
-		].forEach (p) =>
-			p.pages			= Math.ceil(users_count / search_limit)
-			p.currentPage	= search_page - 1
-			p.render()
+	_show_pagination : (users_count, search_limit) ->
 		parseInt(users_count) > parseInt(search_limit)
-	add_user				: ->
+	_search_pages : (users_count, search_limit) ->
+		Math.ceil(users_count / search_limit)
+	add_user : ->
 		$(cs.ui.simple_modal("""
 			<h3>#{L.adding_a_user}</h3>
 			<cs-system-admin-users-add-user-form/>
 		""")).on('hide.uk.modal', @search.bind(@))
-	add_bot					: ->
+	add_bot : ->
 		$(cs.ui.simple_modal("""
 			<h3>#{L.adding_a_bot}</h3>
 			<cs-system-admin-users-add-bot-form/>
 		""")).on('hide.uk.modal', @search.bind(@))
-	edit_user				: (e) ->
+	edit_user : (e) ->
 		$sender	= $(e.currentTarget)
 		index	= $sender.closest('[data-user-index]').data('user-index')
 		user	= @users[index]
@@ -183,7 +172,7 @@ Polymer(
 				<h2>#{title}</h2>
 				<cs-system-admin-users-edit-user-form user_id="#{user.id}"/>
 			""")).on('hide.uk.modal', @search.bind(@))
-	edit_permissions		: (e) ->
+	edit_permissions : (e) ->
 		$sender		= $(e.currentTarget)
 		index		= $sender.closest('[data-user-index]').data('user-index')
 		user		= @users[index]

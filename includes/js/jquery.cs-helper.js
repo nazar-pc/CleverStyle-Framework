@@ -13,16 +13,6 @@
     helpers = {
 
       /**
-      		 * Enabling dynamic pagination inside ShadowDOM, should be called on element.shadowRoot
-       */
-      pagination_inside: function() {
-        this.find('[data-uk-pagination]').add(this.filter('[data-uk-pagination]')).each(function() {
-          return UI.pagination(this, UI.Utils.options($(this).attr('data-uk-pagination')));
-        });
-        return this;
-      },
-
-      /**
       		 * Connecting form elements in ShadowDOM to form element higher in DOM tree, should be called on element.shadowRoot
        */
       connect_to_parent_form: function() {

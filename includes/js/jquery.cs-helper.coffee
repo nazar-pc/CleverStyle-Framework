@@ -7,13 +7,6 @@
 do ($=jQuery, UI = UIkit) ->
 	helpers	=
 		###*
-		 * Enabling dynamic pagination inside ShadowDOM, should be called on element.shadowRoot
-		###
-		pagination_inside	: ->
-			@find('[data-uk-pagination]').add(@filter('[data-uk-pagination]')).each ->
-				UI.pagination(@, UI.Utils.options($(@).attr('data-uk-pagination')))
-			@
-		###*
 		 * Connecting form elements in ShadowDOM to form element higher in DOM tree, should be called on element.shadowRoot
 		###
 		connect_to_parent_form	: ->
