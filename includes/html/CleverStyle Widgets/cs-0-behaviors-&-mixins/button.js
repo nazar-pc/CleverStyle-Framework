@@ -37,9 +37,7 @@
       }
     },
     ready: function() {
-      if (!this.childNodes.length) {
-        this.empty = true;
-      }
+      this.empty = !this.childNodes.length;
     },
     _bind_changed: function() {
       var action, bind_element, observer;

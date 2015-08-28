@@ -26,8 +26,7 @@ Polymer.cs.behaviors.button =
 			reflectToAttribute	: true
 			type				: Boolean
 	ready : ->
-		if !@childNodes.length
-			@empty = true
+		@empty = !@childNodes.length
 		return
 	_bind_changed : ->
 		if @bind

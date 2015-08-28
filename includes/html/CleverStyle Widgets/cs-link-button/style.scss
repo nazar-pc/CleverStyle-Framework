@@ -43,15 +43,17 @@
 	@apply (--cs-link-button-disabled);
 }
 
-/* Empty button, for instance, with icon inside, but empty content */
-:host(:empty),
-:host([empty]) {
-	@apply (--cs-button-empty);
-	@apply (--cs-link-button-empty);
+/* Compact button, for instance, with icon inside, but empty content */
+:host(:empty:not([force-fullsize])),
+:host([empty]:not([force-fullsize])),
+:host([force-compact]) {
+	@apply (--cs-button-compact);
+	@apply (--cs-link-button-compact);
 }
 
 /* Button with icon */
-:host([icon]:not(:empty):not([empty])) cs-icon {
+:host([icon]:not(:empty):not([empty])) cs-icon,
+:host([icon][force-fullsize]) cs-icon {
 	@apply (--cs-button-icon);
 	@apply (--cs-link-button-icon);
 }
