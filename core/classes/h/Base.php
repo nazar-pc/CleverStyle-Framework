@@ -76,10 +76,12 @@ abstract class Base extends BananaHTML {
 	 * @param array $attributes
 	 */
 	protected static function pre_processing (&$attributes) {
-		if (isset($attributes['data-title']) && $attributes['data-title'] !== false) {
-			$attributes['title'] = static::prepare_attr_value($attributes['data-title']);
-			unset($attributes['data-title']);
-			$attributes['data-uk-tooltip'] = '{animation:true,delay:200}';
+		if (isset($attributes['tooltip']) && $attributes['tooltip'] !== false) {
+			$attributes['tooltip'] = static::prepare_attr_value($attributes['tooltip']);
+			// Do not apply to custom elements
+			if (!isset($attributes['is']) && strpos($attributes['tag'], '-') === false) {
+				$attributes['in'] = isset($attributes['in']) ? $attributes['in'].static::cs_tooltip() : static::cs_tooltip();
+			}
 		}
 	}
 	/**
@@ -119,7 +121,12 @@ abstract class Base extends BananaHTML {
 		}
 		$L = Language::instance();
 		if (Config::instance(true)->core['show_tooltips']) {
-			return static::span($L->$in, array_merge(['data-title' => $L->{$in.'_info'}], $data));
+			return static::span(
+				$L->$in,
+				[
+					'tooltip' => $L->{$in.'_info'}
+				] + $data
+			);
 		} else {
 			return static::span($L->$in, $data);
 		}
@@ -171,9 +178,8 @@ abstract class Base extends BananaHTML {
 			return static::label(
 				static::u_wrap($in),
 				[
-					'data-title' => isset($in['data-title']) ? $in['data-title'] : false,
-					'is'         => 'cs-label-switcher',
-					'class'      => isset($item['class']) ? $item['class'] : false
+					'is'    => 'cs-label-switcher',
+					'class' => isset($item['class']) ? $item['class'] : false
 				]
 			);
 		}
@@ -202,9 +208,8 @@ abstract class Base extends BananaHTML {
 			$content .= static::label(
 				static::u_wrap($item),
 				[
-					'data-title' => isset($item['data-title']) ? $item['data-title'] : false,
-					'is'         => 'cs-label-button',
-					'class'      => isset($item['class']) ? $item['class'] : false
+					'is'    => 'cs-label-button',
+					'class' => isset($item['class']) ? $item['class'] : false
 				]
 			);
 		}

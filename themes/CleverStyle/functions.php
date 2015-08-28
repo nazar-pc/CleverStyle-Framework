@@ -87,8 +87,8 @@ function get_header_info () {
 				h::{'icon.cs-header-sign-out-process'}(
 					'sign-out',
 					[
-						'style'      => 'cursor: pointer;',
-						'data-title' => $L->sign_out
+						'style'   => 'cursor: pointer;',
+						'tooltip' => $L->sign_out
 					]
 				)
 			).

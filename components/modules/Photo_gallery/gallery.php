@@ -45,9 +45,14 @@ $images_titles = array_filter(array_column(array_slice($images, 0, 10), 'title')
 $Page          = Page::instance();
 $Page->title($gallery['title']);
 if (isset($images[0])) {
-	Meta::instance()->image(array_map(function ($image) {
-		return $image['original'];
-	}, $images));
+	Meta::instance()->image(
+		array_map(
+			function ($image) {
+				return $image['original'];
+			},
+			$images
+		)
+	);
 }
 if ($images_titles) {
 	$Page->Description = description($gallery['description']);
@@ -57,40 +62,42 @@ $module = path($L->Photo_gallery);
 $Page->canonical_url("{$Config->base_url()}/$module/$gallery[path]");
 $Index->content(
 	h::{'section.cs-photo-gallery-images.fotorama'}(
-		h::div(array_map(
-			function ($image) use ($L, $User) {
-				$controls = '';
-				if ($User->admin() || $image['user'] == $User->id) {
-					$controls = h::{'a.cs-photo-gallery-image-control'}(
-						[
-							'&nbsp;'.h::icon('pencil'),
+		h::div(
+			array_map(
+				function ($image) use ($L, $User) {
+					$controls = '';
+					if ($User->admin() || $image['user'] == $User->id) {
+						$controls = h::{'a.cs-photo-gallery-image-control'}(
 							[
-								'href'       => "Photo_gallery/edit_images/$image[id]",
-								'data-title' => $L->edit,
-								'data-image' => $image['id']
-							]
-						],
-						[
-							'&nbsp;'.h::icon('trash-o'),
+								'&nbsp;'.h::icon('pencil'),
+								[
+									'href'       => "Photo_gallery/edit_images/$image[id]",
+									'tooltip'    => $L->edit,
+									'data-image' => $image['id']
+								]
+							],
 							[
-								'data-title' => $L->delete,
-								'class'      => 'cs-photo-gallery-image-delete',
-								'data-image' => $image['id']
+								'&nbsp;'.h::icon('trash'),
+								[
+									'tooltip'    => $L->delete,
+									'class'      => 'cs-photo-gallery-image-delete',
+									'data-image' => $image['id']
+								]
 							]
+						);
+					}
+					return [
+						$controls,
+						[
+							'data-caption' => $image['title'] ?: false,
+							'data-img'     => $image['original'],
+							'data-thumb'   => $image['preview']
 						]
-					);
-				}
-				return [
-					$controls,
-					[
-						'data-caption' => $image['title'] ?: false,
-						'data-img'     => $image['original'],
-						'data-thumb'   => $image['preview']
-					]
-				];
-			},
-			$images
-		)),
+					];
+				},
+				$images
+			)
+		),
 		[
 			'data-allow-full-screen' => 'native',
 			'data-controlsonstart'   => 'false',

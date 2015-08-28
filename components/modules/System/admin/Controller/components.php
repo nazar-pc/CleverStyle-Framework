@@ -147,28 +147,28 @@ trait components {
 							[
 								h::{'div icon'}('pencil'),
 								[
-									'href'       => "$a->action/edit/$id",
-									'data-title' => $L->edit
+									'href'    => "$a->action/edit/$id",
+									'tooltip' => $L->edit
 								]
 							],
 							[
 								h::{'div.cs-blocks-permissions icon'}('key'),
 								[
-									'data-title' => $L->edit_permissions
+									'tooltip' => $L->edit_permissions
 								]
 							],
 							[
 								h::{'div icon'}($block['active'] ? 'minus' : 'check'),
 								[
-									'href'       => "$a->action/".($block['active'] ? 'disable' : 'enable')."/$id",
-									'data-title' => $L->{$block['active'] ? 'disable' : 'enable'}
+									'href'    => "$a->action/".($block['active'] ? 'disable' : 'enable')."/$id",
+									'tooltip' => $L->{$block['active'] ? 'disable' : 'enable'}
 								]
 							],
 							[
-								h::{'div icon'}('trash-o'),
+								h::{'div icon'}('trash'),
 								[
-									'href'       => "$a->action/delete/$id",
-									'data-title' => $L->delete
+									'href'    => "$a->action/delete/$id",
+									'tooltip' => $L->delete
 								]
 							]
 						),

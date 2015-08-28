@@ -269,11 +269,11 @@ trait users {
 		);
 	}
 	static function users_users () {
-		$L              = Language::instance();
-		$Page           = Page::instance();
-		$User           = User::instance();
-		$a              = Index::instance();
-		$rc             = Route::instance()->route;
+		$L    = Language::instance();
+		$Page = Page::instance();
+		$User = User::instance();
+		$a    = Index::instance();
+		$rc   = Route::instance()->route;
 		if (isset($rc[2], $rc[3])) {
 			$is_bot = in_array(3, (array)$User->get_groups($rc[3]));
 			switch ($rc[2]) {
@@ -297,8 +297,8 @@ trait users {
 							$groups_selected .= h::{'li.uk-button-success'}(
 								$group['title'],
 								[
-									'data-id'    => $group['id'],
-									'data-title' => $group['description']
+									'data-id' => $group['id'],
+									'tooltip' => $group['description']
 								]
 							);
 						}
@@ -311,8 +311,8 @@ trait users {
 							$groups_list .= h::{'li.uk-button-default'}(
 								$group['title'],
 								[
-									'data-id'    => $group['id'],
-									'data-title' => $group['description']
+									'data-id' => $group['id'],
+									'tooltip' => $group['description']
 								]
 							);
 						}
@@ -326,7 +326,7 @@ trait users {
 								$User->username($rc[3])
 							),
 							[
-								'data-title' => $L->user_groups_info
+								'tooltip' => $L->user_groups_info
 							]
 						).
 						h::{'div'}(

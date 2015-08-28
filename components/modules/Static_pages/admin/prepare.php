@@ -31,7 +31,7 @@ function get_categories_rows ($structure = null, $level = 0, $parent_categories 
 					h::{'b.cs-static-pages-count'}(
 						count($structure['pages']),
 						[
-							'data-title' => $L->pages_in_category
+							'tooltip' => $L->pages_in_category
 						]
 					),
 					[

@@ -33,45 +33,49 @@ if (count($galleries) > 1) {
 	}
 	unset($galleries_titles);
 	$Index->content(
-		h::{'section.cs-photo-gallery-galleries article'}(array_map(
-			function ($gallery) use ($L, $User, $module) {
-				$controls = '';
-				if ($User->admin()) {
-					$controls = h::{'a.cs-photo-gallery-gallery-control'}(
-						[
-							h::icon('pencil'),
+		h::{'section.cs-photo-gallery-galleries article'}(
+			array_map(
+				function ($gallery) use ($L, $User, $module) {
+					$controls = '';
+					if ($User->admin()) {
+						$controls = h::{'a.cs-photo-gallery-gallery-control'}(
 							[
-								'href'       => "admin/Photo_gallery/galleries/edit/$gallery[id]",
-								'data-title' => $L->edit
-							]
-						],
-						[
-							h::icon('trash-o'),
+								h::icon('pencil'),
+								[
+									'href'    => "admin/Photo_gallery/galleries/edit/$gallery[id]",
+									'tooltip' => $L->edit
+								]
+							],
 							[
-								'href'       => "admin/Photo_gallery/galleries/delete/$gallery[id]",
-								'data-title' => $L->delete
+								h::icon('trash'),
+								[
+									'href'    => "admin/Photo_gallery/galleries/delete/$gallery[id]",
+									'tooltip' => $L->delete
+								]
 							]
-						]
-					);
-				}
-				return h::header(
-					h::a(
-						h::img([
-							'src'   => $gallery['preview'] ?: 'components/modules/Photo_gallery/includes/img/empty.gif',
-							'title' => $gallery['title'],
-							'alt'   => $gallery['title']
-						]),
-						[
-							'href' => "$module/$gallery[path]"
-						]
+						);
+					}
+					return h::header(
+						h::a(
+							h::img(
+								[
+									'src'   => $gallery['preview'] ?: 'components/modules/Photo_gallery/includes/img/empty.gif',
+									'title' => $gallery['title'],
+									'alt'   => $gallery['title']
+								]
+							),
+							[
+								'href' => "$module/$gallery[path]"
+							]
+						).
+						h::p($gallery['title'] ?: false).
+						$controls
 					).
-					h::p($gallery['title'] ?: false).
-					$controls
-				).
-				h::footer($gallery['description'] ?: false);
-			},
-			$galleries
-		))
+						   h::footer($gallery['description'] ?: false);
+				},
+				$galleries
+			)
+		)
 	);
 } elseif (count($galleries) == 1) {
 	interface_off();

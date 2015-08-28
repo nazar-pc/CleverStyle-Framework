@@ -30,7 +30,7 @@ function get_sections_rows ($structure = null, $level = 0, &$content = null) {
 				h::{'b.cs-blogs-posts-count'}(
 					(empty($structure['sections']) ? ' '.$structure['posts'] : ''),
 					[
-						'data-title'	=> $L->posts_in_section
+						'tooltip' => $L->posts_in_section
 					]
 				),
 				[
