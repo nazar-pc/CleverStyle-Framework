@@ -18,8 +18,9 @@ Polymer.cs.behaviors.tooltip =
 			return
 		@_tooltip_binding_added = true
 		@_initialize_tooltip()
-		show	= tooltip_element._show.bind(tooltip_element, element)
-		hide	= tooltip_element._hide.bind(tooltip_element, element)
+		element.tooltip	= element.tooltip || element.getAttribute('tooltip')
+		show			= tooltip_element._show.bind(tooltip_element, element)
+		hide			= tooltip_element._hide.bind(tooltip_element, element)
 		element.addEventListener('mouseenter', show)
 		element.addEventListener('pointerenter', show)
 		element.addEventListener('mouseleave', hide)

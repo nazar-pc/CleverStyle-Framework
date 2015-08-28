@@ -32,6 +32,7 @@
       }
       this._tooltip_binding_added = true;
       this._initialize_tooltip();
+      element.tooltip = element.tooltip || element.getAttribute('tooltip');
       show = tooltip_element._show.bind(tooltip_element, element);
       hide = tooltip_element._hide.bind(tooltip_element, element);
       element.addEventListener('mouseenter', show);

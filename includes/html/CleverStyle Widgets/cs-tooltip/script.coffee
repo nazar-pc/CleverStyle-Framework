@@ -84,12 +84,13 @@ Polymer(
 			tooltip_position.top		+= element_position.bottom + element_position.height
 		# Calculation of horizontal position
 		left_offset	= element_position.left + (element_position.width / 2) - (tooltip_size.width / 2)
-		if left_offset > 0
-			tooltip_position.left += left_offset
+		if left_offset >= 0
+			if left_offset + tooltip_size.width <= innerWidth
+				tooltip_position.left += left_offset
+			else
+				tooltip_position.left				+= innerWidth - tooltip_size.width
+				tooltip_position.arrow_left_offset	= innerWidth - (tooltip_size.width / 2) - element_position.left - (element_position.width / 2)
 		else
-			console.log tooltip_size.width / 2
-			console.log element_position.left
-			console.log element_position.width
 			tooltip_position.arrow_left_offset	= (tooltip_size.width / 2) - element_position.left - (element_position.width / 2)
 		tooltip_position
 )
