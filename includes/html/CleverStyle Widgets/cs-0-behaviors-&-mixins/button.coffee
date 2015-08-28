@@ -41,8 +41,8 @@ Polymer.cs.behaviors.button =
 			@_tap	= bind_element[@action].bind(bind_element)
 			# Also in order to avoid memory leaks we need to know when bind element is detached from DOM
 			# If it is detached after one second - we'll drop binding
-			observer	= 		(new MutationObserver (mutations) ->
-				mutations.forEach (mutation) ->
+			observer	= (new MutationObserver (mutations) =>
+				mutations.forEach (mutation) =>
 					# Only removed nodes are interesting
 					if !mutation.removedNodes
 						return
@@ -53,7 +53,7 @@ Polymer.cs.behaviors.button =
 						# Disconnect observer, since we are not interested in old parent node anymore
 						observer.disconnect()
 						# Wait a second
-						setTimeout (->
+						setTimeout (=>
 							# If no parent node -> element is still detached -> drop binded method to avoid any connections with that element
 							# and thus memory leaks
 							if !bind_element.parentNode

@@ -10,5 +10,6 @@ Polymer.cs.behaviors.this =
 			notify		: true
 			readOnly	: true
 			type		: Object
-	ready : ->
-		@_setThis(@)
+	attached : ->
+		if !@this
+			@_setThis(@)

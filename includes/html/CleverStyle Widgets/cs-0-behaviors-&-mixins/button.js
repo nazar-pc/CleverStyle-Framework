@@ -48,31 +48,33 @@
         bind_element = this.bind;
         this.bind = null;
         this._tap = bind_element[this.action].bind(bind_element);
-        observer = new MutationObserver(function(mutations) {
-          mutations.forEach(function(mutation) {
-            var i, len, node, ref;
-            if (!mutation.removedNodes) {
-              return;
-            }
-            ref = mutation.removedNodes;
-            for (i = 0, len = ref.length; i < len; i++) {
-              node = ref[i];
-              if (node !== bind_element) {
+        observer = new MutationObserver((function(_this) {
+          return function(mutations) {
+            mutations.forEach(function(mutation) {
+              var i, len, node, ref;
+              if (!mutation.removedNodes) {
                 return;
               }
-              observer.disconnect();
-              setTimeout((function() {
-                if (!bind_element.parentNode) {
-                  this._tap = function() {};
-                } else {
-                  observer.observe(bind_element.parentNode, {
-                    childList: true
-                  });
+              ref = mutation.removedNodes;
+              for (i = 0, len = ref.length; i < len; i++) {
+                node = ref[i];
+                if (node !== bind_element) {
+                  return;
                 }
-              }), 1000);
-            }
-          });
-        });
+                observer.disconnect();
+                setTimeout((function() {
+                  if (!bind_element.parentNode) {
+                    _this._tap = function() {};
+                  } else {
+                    observer.observe(bind_element.parentNode, {
+                      childList: true
+                    });
+                  }
+                }), 1000);
+              }
+            });
+          };
+        })(this));
         observer.observe(bind_element.parentNode, {
           childList: true,
           subtree: false

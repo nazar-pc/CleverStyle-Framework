@@ -16,8 +16,10 @@
         type: Object
       }
     },
-    ready: function() {
-      return this._setThis(this);
+    attached: function() {
+      if (!this["this"]) {
+        return this._setThis(this);
+      }
     }
   };
 
