@@ -13,14 +13,12 @@ $ ->
 			q	= q.split('=')
 			switch q[0]
 				when 'paid_success'
-					UIkit.notify(
+					cs.ui.notify(
 						L.shop_paid_success_notification(q[1])
-						status	: 'success'
-						timeout	: 0
+						'success'
 					)
 				when 'paid_error'
-					UIkit.notify(
+					cs.ui.notify(
 						L.shop_paid_error_notification(q[1])
-						status	: 'danger'
-						timeout	: 0
+						'error'
 					)

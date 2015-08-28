@@ -23,6 +23,6 @@ Polymer(
 				group	: @group
 				label	: @label
 			success	: ->
-				UIkit.notify(L.changes_saved.toString(), 'success')
+				cs.ui.notify(L.changes_saved.toString(), 'success', 5000)
 		)
 )

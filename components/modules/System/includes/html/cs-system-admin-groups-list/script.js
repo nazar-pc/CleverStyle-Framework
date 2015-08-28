@@ -64,7 +64,7 @@
             url: 'api/System/admin/groups/' + group.id,
             type: 'delete',
             success: function() {
-              UIkit.notify(L.changes_saved.toString(), 'success');
+              cs.ui.notify(L.changes_saved.toString(), 'success', 5000);
               return _this.splice('groups', e.model.index, 1);
             }
           });

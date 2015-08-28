@@ -32,7 +32,7 @@
           description: this.description
         },
         success: function() {
-          return UIkit.notify(L.changes_saved.toString(), 'success');
+          return cs.ui.notify(L.changes_saved.toString(), 'success', 5000);
         }
       });
     }

@@ -17,7 +17,7 @@
         session: cs.getcookie('session')
       },
       error: function(xhr) {
-        return UIkit.notify(xhr.responseText ? JSON.parse(xhr.responseText).error_description : L.connection_error.toString(), 'warning');
+        return cs.ui.notify(xhr.responseText ? JSON.parse(xhr.responseText).error_description : L.connection_error.toString(), 'warning', 5000);
       }
     });
     UIkit.modal.labels.Ok = L.yes.toString();

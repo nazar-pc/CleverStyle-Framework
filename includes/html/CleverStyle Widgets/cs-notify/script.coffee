@@ -14,6 +14,9 @@ Polymer(
 			reflectToAttribute	: true
 			type				: Boolean
 		content	: String
+		error	:
+			reflectToAttribute	: true
+			type				: Boolean
 		left	:
 			reflectToAttribute	: true
 			type				: Boolean
@@ -26,8 +29,14 @@ Polymer(
 		show	:
 			reflectToAttribute	: true
 			type				: Boolean
+		success	:
+			reflectToAttribute	: true
+			type				: Boolean
 		timeout	: Number
 		top		:
+			reflectToAttribute	: true
+			type				: Boolean
+		warning	:
 			reflectToAttribute	: true
 			type				: Boolean
 	listeners	: {
@@ -37,10 +46,10 @@ Polymer(
 	attached : ->
 		@last_node = @parentNode
 		if @parentNode.tagName != 'HTML'
-			if !@bottom && !@top
-				@top	= true
 			document.documentElement.appendChild(@)
 			return
+		if !@bottom && !@top
+			@top	= true
 		# Put notify opening into stack of functions to call
 		setTimeout(@_show.bind(@), 0)
 		return

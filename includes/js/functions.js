@@ -9,7 +9,8 @@
 
 (function() {
   var L,
-    hasProp = {}.hasOwnProperty;
+    hasProp = {}.hasOwnProperty,
+    slice = [].slice;
 
   L = cs.Language;
 
@@ -445,12 +446,46 @@
         *
     	 * @return {HTMLElement}
      */
-    return ui.simple_modal = function(content) {
+    ui.simple_modal = function(content) {
       var modal;
       modal = ui.modal(content);
       modal.autoDestroy = true;
       modal.open();
       return modal;
+    };
+
+    /**
+    	 * Notify
+    	 *
+    	 * @param {HTMLElement}|{jQuery}|{String} content
+        *
+    	 * @return {HTMLElement}
+     */
+    return ui.notify = function() {
+      var content, k, len, notify, option, options;
+      content = arguments[0], options = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+      notify = document.createElement('cs-notify');
+      if (typeof content === 'string') {
+        notify.innerHTML = content;
+      } else {
+        if (content instanceof jQuery) {
+          content.appendTo(notify);
+        } else {
+          notify.appendChild(content);
+        }
+      }
+      for (k = 0, len = options.length; k < len; k++) {
+        option = options[k];
+        switch (typeof option) {
+          case 'string':
+            notify[option] = true;
+            break;
+          case 'number':
+            notify.timeout = option;
+        }
+      }
+      document.documentElement.appendChild(notify);
+      return notify;
     };
   })();
 

@@ -27,7 +27,7 @@ Polymer(
 				ip			: @ip
 				type		: 'bot'
 			success	: ->
-				UIkit.notify(L.changes_saved.toString(), 'success')
+				cs.ui.notify(L.changes_saved.toString(), 'success', 5000)
 		)
 	can_save_			: (name, user_agent, ip) ->
 		name && (user_agent || ip)

@@ -310,7 +310,7 @@ do ->
 	 * @return {HTMLElement}
 	###
 	ui.modal = (content) ->
-		modal				= document.createElement('section', 'cs-section-modal')
+		modal = document.createElement('section', 'cs-section-modal')
 		if typeof content == 'string'
 			modal.innerHTML = content
 		else
@@ -332,3 +332,27 @@ do ->
 		modal.autoDestroy	= true
 		modal.open()
 		modal
+	###*
+	 * Notify
+	 *
+	 * @param {HTMLElement}|{jQuery}|{String} content
+     *
+	 * @return {HTMLElement}
+	###
+	ui.notify = (content, options...) ->
+		notify = document.createElement('cs-notify')
+		if typeof content == 'string'
+			notify.innerHTML = content
+		else
+			if content instanceof jQuery
+				content.appendTo(notify)
+			else
+				notify.appendChild(content)
+		for option in options
+			switch typeof option
+				when 'string'
+					notify[option] = true
+				when 'number'
+					notify.timeout = option
+		document.documentElement.appendChild(notify)
+		notify

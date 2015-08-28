@@ -21,6 +21,10 @@
         type: Boolean
       },
       content: String,
+      error: {
+        reflectToAttribute: true,
+        type: Boolean
+      },
       left: {
         reflectToAttribute: true,
         type: Boolean
@@ -37,8 +41,16 @@
         reflectToAttribute: true,
         type: Boolean
       },
+      success: {
+        reflectToAttribute: true,
+        type: Boolean
+      },
       timeout: Number,
       top: {
+        reflectToAttribute: true,
+        type: Boolean
+      },
+      warning: {
         reflectToAttribute: true,
         type: Boolean
       }
@@ -50,11 +62,11 @@
     attached: function() {
       this.last_node = this.parentNode;
       if (this.parentNode.tagName !== 'HTML') {
-        if (!this.bottom && !this.top) {
-          this.top = true;
-        }
         document.documentElement.appendChild(this);
         return;
+      }
+      if (!this.bottom && !this.top) {
+        this.top = true;
       }
       setTimeout(this._show.bind(this), 0);
     },

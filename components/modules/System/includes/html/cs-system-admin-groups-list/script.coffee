@@ -49,7 +49,7 @@ Polymer(
 					url		: 'api/System/admin/groups/' + group.id
 					type	: 'delete'
 					success	: =>
-						UIkit.notify(L.changes_saved.toString(), 'success')
+						cs.ui.notify(L.changes_saved.toString(), 'success', 5000)
 						@splice('groups', e.model.index, 1)
 				)
 		)

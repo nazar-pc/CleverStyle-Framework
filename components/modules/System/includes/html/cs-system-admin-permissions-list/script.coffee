@@ -61,7 +61,7 @@ Polymer(
 					url		: 'api/System/admin/permissions/' + permission.id
 					type	: 'delete'
 					success	: =>
-						UIkit.notify(L.changes_saved.toString(), 'success')
+						cs.ui.notify(L.changes_saved.toString(), 'success', 5000)
 						@splice('permissions', e.model.index, 1)
 				)
 		)

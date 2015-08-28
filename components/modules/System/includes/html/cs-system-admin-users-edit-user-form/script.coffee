@@ -85,6 +85,6 @@ Polymer(
 			data	:
 				user	: @user_data
 			success	: ->
-				UIkit.notify(L.changes_saved.toString(), 'success')
+				cs.ui.notify(L.changes_saved.toString(), 'success', 5000)
 		)
 )
