@@ -40,13 +40,13 @@ $ ->
 			for key in keys
 				categories_list_[key]
 		categories_list	= categories_list.join('')
-		modal			= cs.ui.simple_modal("""<form>
+		modal			= $(cs.ui.simple_modal("""<form>
 			<h3 class="cs-center">#{title}</h3>
 			<p>
 				#{L.shop_category}: <select is="cs-select" name="category" required>#{categories_list}</select>
 			</p>
 			<div></div>
-		</form>""")
+		</form>"""))
 		modal.item_data			= {}
 		modal.update_item_data	= ->
 			item	= modal.item_data
@@ -93,7 +93,7 @@ $ ->
 						values = values.join('')
 						color	=
 							if attribute.type == color_set_attribute_type
-								"""<input type="color">"""
+								"""<input is="cs-input-text" type="color">"""
 							else
 								''
 						"""<p>
@@ -106,7 +106,7 @@ $ ->
 						</p>"""
 					else if string_attribute_types.indexOf(attribute.type) != -1
 						"""<p>
-							#{attribute.title}: <input name="attributes[#{attribute.id}]">
+							#{attribute.title}: <input is="cs-input-text" name="attributes[#{attribute.id}]">
 						</p>"""
 					else
 						"""<p>
@@ -115,39 +115,37 @@ $ ->
 			attributes_list	= attributes_list.join('')
 			$this.parent().next().html("""
 				<p>
-					#{L.shop_price}: <input name="price" type="number" value="0" required>
+					#{L.shop_price}: <input is="cs-input-text" name="price" type="number" value="0" required>
 				</p>
 				<p>
-					#{L.shop_in_stock}: <input name="in_stock" type="number" value="1" step="1">
+					#{L.shop_in_stock}: <input is="cs-input-text" name="in_stock" type="number" value="1" step="1">
 				</p>
 				<p>
 					#{L.shop_available_soon}:
-					<label><input type="radio" name="soon" value="1"> #{L.shop_yes}</label>
-					<label><input type="radio" name="soon" value="0" checked> #{L.shop_no}</label>
+					<label is="cs-label-button"><input type="radio" name="soon" value="1"> #{L.shop_yes}</label>
+					<label is="cs-label-button"><input type="radio" name="soon" value="0" checked> #{L.shop_no}</label>
 				</p>
 				<p>
 					#{L.shop_listed}:
-					<label><input type="radio" name="listed" value="1" checked> #{L.shop_yes}</label>
-					<label><input type="radio" name="listed" value="0"> #{L.shop_no}</label>
+					<label is="cs-label-button"><input type="radio" name="listed" value="1" checked> #{L.shop_yes}</label>
+					<label is="cs-label-button"><input type="radio" name="listed" value="0"> #{L.shop_no}</label>
 				</p>
 				<p>
 					<span class="images uk-display-block"></span>
-					<span class="uk-progress uk-progress-striped uk-active uk-hidden uk-display-block">
-						<span class="uk-progress-bar"></span>
-					</span>
-					<button type="button" class="add-images uk-button">#{L.shop_add_images}</button>
+					<button is="cs-button" tight type="button" class="add-images">#{L.shop_add_images}</button>
+					<progress is="cs-progress" hidden></progress>
 					<input type="hidden" name="images">
 				</p>
 				<p>
 					<div class="videos"></div>
-					<button type="button" class="add-video uk-button">#{L.shop_add_video}</button>
+					<button is="cs-button" type="button" class="add-video">#{L.shop_add_video}</button>
 				</p>
 				#{attributes_list}
 				<p>
-					#{L.shop_tags}: <input name="tags" placeholder="shop, high quality, e-commerce">
+					#{L.shop_tags}: <input is="cs-input-text" name="tags" placeholder="shop, high quality, e-commerce">
 				</p>
 				<p>
-					<button class="uk-button" type="submit">#{action}</button>
+					<button is="cs-button" primary type="submit">#{action}</button>
 				</p>
 			""")
 			images_container	= modal.find('.images')
@@ -180,17 +178,18 @@ $ ->
 				modal.update_images()
 			if cs.file_upload
 				do ->
-					progress	= modal.find('.add-images').prev()
+					progress	= modal.find('.add-images').next()[0]
 					uploader	= cs.file_upload(
 						modal.find('.add-images')
 						(images) ->
-							progress.addClass('uk-hidden').children().width(0)
+							progress.hidden = true
 							modal.add_images(images)
 						(error) ->
-							progress.addClass('uk-hidden').children().width(0)
+							progress.hidden = true
 							alert error.message
 						(percents) ->
-							progress.removeClass('uk-hidden').children().width(percents + '%')
+							progress.value	= percents
+							progress.hidden	= false
 						true
 					)
 					modal.on 'hide.uk.modal', ->
@@ -227,11 +226,9 @@ $ ->
 							<option value="direct_url">#{L.shop_direct_video_url}</option>
 						</select>
 						<textarea is="cs-textarea" autosize name="videos[video][]" placeholder="#{L.shop_url_or_code}" class="video-video uk-form-width-large" rows="3"></textarea>
-						<input name="videos[poster][]" class="video-poster" placeholder="#{L.shop_video_poster}">
-						<button type="button" class="delete-video uk-button"><i class="uk-icon-close"></i></button>
-						<span class="uk-progress uk-progress-striped uk-active uk-hidden uk-display-block">
-							<span class="uk-progress-bar"></span>
-						</span>
+						<input is="cs-input-text" name="videos[poster][]" class="video-poster" placeholder="#{L.shop_video_poster}">
+						<button is="cs-button" icon="close" type="button" class="delete-video"></button>
+						<progress is="cs-progress" hidden full-width></progress>
 					</p>""")
 					added_video		= videos_container.children('p:last')
 					video_video		= added_video.find('.video-video').val(video.video)
@@ -239,37 +236,39 @@ $ ->
 					if cs.file_upload
 						do ->
 							video_video.after("""
-								&nbsp;<button type="button" class="uk-button"><i class="uk-icon-upload"></i></button>
+								&nbsp;<button is="cs-button" type="button"><i class="uk-icon-upload"></i></button>
 							""")
-							progress	= video_video.parent().find('.uk-progress')
+							progress	= video_video.parent().find('progress')[0]
 							uploader	= cs.file_upload(
 								video_video.next()
 								(video) ->
-									progress.addClass('uk-hidden').children().width(0)
+									progress.hidden = true
 									video_video.val(video[0])
 								(error) ->
-									progress.addClass('uk-hidden').children().width(0)
+									progress.hidden = true
 									alert error.message
 								(percents) ->
-									progress.removeClass('uk-hidden').children().width(percents + '%')
+									progress.value	= percents
+									progress.hidden	= false
 							)
 							modal.on 'hide.uk.modal', ->
 								uploader.destroy()
 						do ->
 							video_poster.after("""
-								&nbsp;<button type="button" class="uk-button"><i class="uk-icon-upload"></i></button>
+								&nbsp;<button is="cs-button" type="button"><i class="uk-icon-upload"></i></button>
 							""")
-							progress	= video_video.parent().find('.uk-progress')
+							progress	= video_video.parent().find('progress')[0]
 							uploader	= cs.file_upload(
 								video_poster.next()
 								(poster) ->
-									progress.addClass('uk-hidden').children().width(0)
+									progress.hidden = true
 									video_poster.val(poster[0])
 								(error) ->
-									progress.addClass('uk-hidden').children().width(0)
+									progress.hidden = true
 									alert error.message
 								(percents) ->
-									progress.removeClass('uk-hidden').children().width(percents + '%')
+									progress.value	= percents
+									progress.hidden	= false
 							)
 							modal.on 'hide.uk.modal', ->
 								uploader.destroy()
@@ -293,6 +292,7 @@ $ ->
 				->
 					$this		= $(@)
 					container	= $this.parent()
+					console.log container
 					switch $this.val()
 						when 'supported_video'
 							container.find('.video-video').next('button').hide()

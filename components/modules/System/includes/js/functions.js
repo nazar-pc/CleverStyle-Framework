@@ -34,7 +34,7 @@
    */
 
   cs.admin_cache = function(element, action, partial_path) {
-    $(element).html("<div class=\"uk-progress uk-progress-striped uk-active\">\n	<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n</div>");
+    $(element).html("<progress is=\"cs-progress\" infinite></progress>");
     $.ajax({
       url: action,
       data: {
@@ -57,7 +57,7 @@
 
   cs.db_test = function(index, mirror_index) {
     var modal;
-    modal = $(cs.ui.simple_modal("<div>\n	<h3 class=\"cs-center\">" + L.test_connection + "</h3>\n	<div class=\"uk-progress uk-progress-striped uk-active\">\n		<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n	</div>\n</div>"));
+    modal = $(cs.ui.simple_modal("<div>\n	<h3 class=\"cs-center\">" + L.test_connection + "</h3>\n	<progress is=\"cs-progress\" infinite></progress>\n</div>"));
     return $.ajax({
       url: 'api/System/admin/databases_test',
       data: index !== void 0 ? {
@@ -82,10 +82,10 @@
           status = 'danger';
         }
         result = result ? L.success : L.failed;
-        return modal.find('.uk-progress').replaceWith("<p class=\"cs-center uk-alert uk-alert-" + status + "\" style=text-transform:capitalize;\">" + result + "</p>");
+        return modal.find('progress').replaceWith("<p class=\"cs-center uk-alert uk-alert-" + status + "\" style=text-transform:capitalize;\">" + result + "</p>");
       },
       error: function() {
-        return modal.find('.uk-progress').replaceWith("<p class=\"cs-center uk-alert uk-alert-danger\" style=text-transform:capitalize;\">" + L.failed + "</p>");
+        return modal.find('progress').replaceWith("<p class=\"cs-center uk-alert uk-alert-danger\" style=text-transform:capitalize;\">" + L.failed + "</p>");
       }
     });
   };
@@ -99,7 +99,7 @@
 
   cs.storage_test = function(index) {
     var modal;
-    modal = $(cs.ui.simple_modal("<div>\n	<h3 class=\"cs-center\">" + L.test_connection + "</h3>\n	<div class=\"uk-progress uk-progress-striped uk-active\">\n		<div class=\"uk-progress-bar\" style=\"width:100%\"></div>\n	</div>\n</div>"));
+    modal = $(cs.ui.simple_modal("<div>\n	<h3 class=\"cs-center\">" + L.test_connection + "</h3>\n	<progress is=\"cs-progress\" infinite></progress>\n</div>"));
     return $.ajax({
       url: 'api/System/admin/storages_test',
       data: index !== void 0 ? {
@@ -122,10 +122,10 @@
           status = 'danger';
         }
         result = result ? L.success : L.failed;
-        return modal.find('.uk-progress').replaceWith("<p class=\"cs-center uk-alert uk-alert-" + status + "\" style=text-transform:capitalize;\">" + result + "</p>");
+        return modal.find('progress').replaceWith("<p class=\"cs-center uk-alert uk-alert-" + status + "\" style=text-transform:capitalize;\">" + result + "</p>");
       },
       error: function() {
-        return modal.find('.uk-progress').replaceWith("<p class=\"cs-center uk-alert uk-alert-danger\" style=text-transform:capitalize;\">" + L.failed + "</p>");
+        return modal.find('progress').replaceWith("<p class=\"cs-center uk-alert uk-alert-danger\" style=text-transform:capitalize;\">" + L.failed + "</p>");
       }
     });
   };

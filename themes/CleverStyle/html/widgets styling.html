@@ -336,6 +336,44 @@
 			border-width : 0 var(--tooltip-arrow-width) var(--tooltip-arrow-height) var(--tooltip-arrow-width);
 			border-color : transparent transparent var(--tooltip-background) transparent;
 		};
+
+		/* Progress */
+
+		--cs-progress : {
+			/* Stupid IE 10 */
+			color   : var(--background-color-base-disabled);
+			padding : 0;
+			width   : var(--form-element-width);
+		}
+
+		--cs-progress-text : {
+			color         : var(--text-color-base);
+			display       : block;
+			height        : var(--form-element-height);
+			line-height   : var(--form-element-height);
+			margin-bottom : -var(--form-element-height);
+		}
+
+		--cs-progress-bar : {
+			/* Stupid IE 10 */
+			color      : var(--background-color-base);
+			padding    : 0;
+			transition : width var(--transition-duration-half) ease-out;
+		}
+
+		--cs-progress-primary : {
+			/* Stupid IE 10 */
+			color : var(--background-color-primary-disabled);
+		}
+
+		--cs-progress-text-primary : {
+			color : var(--text-color-primary);
+		}
+
+		--cs-progress-bar-primary : {
+			/* Stupid IE 10 */
+			color : var(--background-color-primary);
+		}
 	}
 
 	html,

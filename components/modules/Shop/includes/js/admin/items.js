@@ -64,7 +64,7 @@
         return results;
       })();
       categories_list = categories_list.join('');
-      modal = cs.ui.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_category + ": <select is=\"cs-select\" name=\"category\" required>" + categories_list + "</select>\n	</p>\n	<div></div>\n</form>");
+      modal = $(cs.ui.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_category + ": <select is=\"cs-select\" name=\"category\" required>" + categories_list + "</select>\n	</p>\n	<div></div>\n</form>"));
       modal.item_data = {};
       modal.update_item_data = function() {
         var attribute, item, ref, value;
@@ -138,10 +138,10 @@
                 return results1;
               })();
               values = values.join('');
-              color = attribute.type === color_set_attribute_type ? "<input type=\"color\">" : '';
+              color = attribute.type === color_set_attribute_type ? "<input is=\"cs-input-text\" type=\"color\">" : '';
               results.push("<p>\n	" + attribute.title + ":\n	<select is=\"cs-select\" name=\"attributes[" + attribute.id + "]\">\n		<option value=\"\">" + L.none + "</option>\n		" + values + "\n	</select>\n	" + color + "\n</p>");
             } else if (string_attribute_types.indexOf(attribute.type) !== -1) {
-              results.push("<p>\n	" + attribute.title + ": <input name=\"attributes[" + attribute.id + "]\">\n</p>");
+              results.push("<p>\n	" + attribute.title + ": <input is=\"cs-input-text\" name=\"attributes[" + attribute.id + "]\">\n</p>");
             } else {
               results.push("<p>\n	" + attribute.title + ": <textarea is=\"cs-textarea\" autosize name=\"attributes[" + attribute.id + "]\"></textarea>\n</p>");
             }
@@ -149,7 +149,7 @@
           return results;
         })();
         attributes_list = attributes_list.join('');
-        $this.parent().next().html("<p>\n	" + L.shop_price + ": <input name=\"price\" type=\"number\" value=\"0\" required>\n</p>\n<p>\n	" + L.shop_in_stock + ": <input name=\"in_stock\" type=\"number\" value=\"1\" step=\"1\">\n</p>\n<p>\n	" + L.shop_available_soon + ":\n	<label><input type=\"radio\" name=\"soon\" value=\"1\"> " + L.shop_yes + "</label>\n	<label><input type=\"radio\" name=\"soon\" value=\"0\" checked> " + L.shop_no + "</label>\n</p>\n<p>\n	" + L.shop_listed + ":\n	<label><input type=\"radio\" name=\"listed\" value=\"1\" checked> " + L.shop_yes + "</label>\n	<label><input type=\"radio\" name=\"listed\" value=\"0\"> " + L.shop_no + "</label>\n</p>\n<p>\n	<span class=\"images uk-display-block\"></span>\n	<span class=\"uk-progress uk-progress-striped uk-active uk-hidden uk-display-block\">\n		<span class=\"uk-progress-bar\"></span>\n	</span>\n	<button type=\"button\" class=\"add-images uk-button\">" + L.shop_add_images + "</button>\n	<input type=\"hidden\" name=\"images\">\n</p>\n<p>\n	<div class=\"videos\"></div>\n	<button type=\"button\" class=\"add-video uk-button\">" + L.shop_add_video + "</button>\n</p>\n" + attributes_list + "\n<p>\n	" + L.shop_tags + ": <input name=\"tags\" placeholder=\"shop, high quality, e-commerce\">\n</p>\n<p>\n	<button class=\"uk-button\" type=\"submit\">" + action + "</button>\n</p>");
+        $this.parent().next().html("<p>\n	" + L.shop_price + ": <input is=\"cs-input-text\" name=\"price\" type=\"number\" value=\"0\" required>\n</p>\n<p>\n	" + L.shop_in_stock + ": <input is=\"cs-input-text\" name=\"in_stock\" type=\"number\" value=\"1\" step=\"1\">\n</p>\n<p>\n	" + L.shop_available_soon + ":\n	<label is=\"cs-label-button\"><input type=\"radio\" name=\"soon\" value=\"1\"> " + L.shop_yes + "</label>\n	<label is=\"cs-label-button\"><input type=\"radio\" name=\"soon\" value=\"0\" checked> " + L.shop_no + "</label>\n</p>\n<p>\n	" + L.shop_listed + ":\n	<label is=\"cs-label-button\"><input type=\"radio\" name=\"listed\" value=\"1\" checked> " + L.shop_yes + "</label>\n	<label is=\"cs-label-button\"><input type=\"radio\" name=\"listed\" value=\"0\"> " + L.shop_no + "</label>\n</p>\n<p>\n	<span class=\"images uk-display-block\"></span>\n	<button is=\"cs-button\" tight type=\"button\" class=\"add-images\">" + L.shop_add_images + "</button>\n	<progress is=\"cs-progress\" hidden></progress>\n	<input type=\"hidden\" name=\"images\">\n</p>\n<p>\n	<div class=\"videos\"></div>\n	<button is=\"cs-button\" type=\"button\" class=\"add-video\">" + L.shop_add_video + "</button>\n</p>\n" + attributes_list + "\n<p>\n	" + L.shop_tags + ": <input is=\"cs-input-text\" name=\"tags\" placeholder=\"shop, high quality, e-commerce\">\n</p>\n<p>\n	<button is=\"cs-button\" primary type=\"submit\">" + action + "</button>\n</p>");
         images_container = modal.find('.images');
         modal.update_images = function() {
           var images;
@@ -173,15 +173,16 @@
         if (cs.file_upload) {
           (function() {
             var progress, uploader;
-            progress = modal.find('.add-images').prev();
+            progress = modal.find('.add-images').next()[0];
             uploader = cs.file_upload(modal.find('.add-images'), function(images) {
-              progress.addClass('uk-hidden').children().width(0);
+              progress.hidden = true;
               return modal.add_images(images);
             }, function(error) {
-              progress.addClass('uk-hidden').children().width(0);
+              progress.hidden = true;
               return alert(error.message);
             }, function(percents) {
-              return progress.removeClass('uk-hidden').children().width(percents + '%');
+              progress.value = percents;
+              return progress.hidden = false;
             }, true);
             return modal.on('hide.uk.modal', function() {
               return uploader.destroy();
@@ -212,23 +213,24 @@
         modal.add_videos = function(videos) {
           videos.forEach(function(video) {
             var added_video, video_poster, video_video;
-            videos_container.append("<p>\n	<i class=\"uk-icon-sort uk-sortable-moving handle\"></i>\n	<select is=\"cs-select\" name=\"videos[type][]\" class=\"video-type\">\n		<option value=\"supported_video\">" + L.shop_youtube_vimeo_url + "</option>\n		<option value=\"iframe\">" + L.shop_iframe_url_or_embed_code + "</option>\n		<option value=\"direct_url\">" + L.shop_direct_video_url + "</option>\n	</select>\n	<textarea is=\"cs-textarea\" autosize name=\"videos[video][]\" placeholder=\"" + L.shop_url_or_code + "\" class=\"video-video uk-form-width-large\" rows=\"3\"></textarea>\n	<input name=\"videos[poster][]\" class=\"video-poster\" placeholder=\"" + L.shop_video_poster + "\">\n	<button type=\"button\" class=\"delete-video uk-button\"><i class=\"uk-icon-close\"></i></button>\n	<span class=\"uk-progress uk-progress-striped uk-active uk-hidden uk-display-block\">\n		<span class=\"uk-progress-bar\"></span>\n	</span>\n</p>");
+            videos_container.append("<p>\n	<i class=\"uk-icon-sort uk-sortable-moving handle\"></i>\n	<select is=\"cs-select\" name=\"videos[type][]\" class=\"video-type\">\n		<option value=\"supported_video\">" + L.shop_youtube_vimeo_url + "</option>\n		<option value=\"iframe\">" + L.shop_iframe_url_or_embed_code + "</option>\n		<option value=\"direct_url\">" + L.shop_direct_video_url + "</option>\n	</select>\n	<textarea is=\"cs-textarea\" autosize name=\"videos[video][]\" placeholder=\"" + L.shop_url_or_code + "\" class=\"video-video uk-form-width-large\" rows=\"3\"></textarea>\n	<input is=\"cs-input-text\" name=\"videos[poster][]\" class=\"video-poster\" placeholder=\"" + L.shop_video_poster + "\">\n	<button is=\"cs-button\" icon=\"close\" type=\"button\" class=\"delete-video\"></button>\n	<progress is=\"cs-progress\" hidden full-width></progress>\n</p>");
             added_video = videos_container.children('p:last');
             video_video = added_video.find('.video-video').val(video.video);
             video_poster = added_video.find('.video-poster').val(video.poster);
             if (cs.file_upload) {
               (function() {
                 var progress, uploader;
-                video_video.after("&nbsp;<button type=\"button\" class=\"uk-button\"><i class=\"uk-icon-upload\"></i></button>");
-                progress = video_video.parent().find('.uk-progress');
+                video_video.after("&nbsp;<button is=\"cs-button\" type=\"button\"><i class=\"uk-icon-upload\"></i></button>");
+                progress = video_video.parent().find('progress')[0];
                 uploader = cs.file_upload(video_video.next(), function(video) {
-                  progress.addClass('uk-hidden').children().width(0);
+                  progress.hidden = true;
                   return video_video.val(video[0]);
                 }, function(error) {
-                  progress.addClass('uk-hidden').children().width(0);
+                  progress.hidden = true;
                   return alert(error.message);
                 }, function(percents) {
-                  return progress.removeClass('uk-hidden').children().width(percents + '%');
+                  progress.value = percents;
+                  return progress.hidden = false;
                 });
                 return modal.on('hide.uk.modal', function() {
                   return uploader.destroy();
@@ -236,16 +238,17 @@
               })();
               (function() {
                 var progress, uploader;
-                video_poster.after("&nbsp;<button type=\"button\" class=\"uk-button\"><i class=\"uk-icon-upload\"></i></button>");
-                progress = video_video.parent().find('.uk-progress');
+                video_poster.after("&nbsp;<button is=\"cs-button\" type=\"button\"><i class=\"uk-icon-upload\"></i></button>");
+                progress = video_video.parent().find('progress')[0];
                 uploader = cs.file_upload(video_poster.next(), function(poster) {
-                  progress.addClass('uk-hidden').children().width(0);
+                  progress.hidden = true;
                   return video_poster.val(poster[0]);
                 }, function(error) {
-                  progress.addClass('uk-hidden').children().width(0);
+                  progress.hidden = true;
                   return alert(error.message);
                 }, function(percents) {
-                  return progress.removeClass('uk-hidden').children().width(percents + '%');
+                  progress.value = percents;
+                  return progress.hidden = false;
                 });
                 return modal.on('hide.uk.modal', function() {
                   return uploader.destroy();
@@ -272,6 +275,7 @@
           var container;
           $this = $(this);
           container = $this.parent();
+          console.log(container);
           switch ($this.val()) {
             case 'supported_video':
               container.find('.video-video').next('button').hide();

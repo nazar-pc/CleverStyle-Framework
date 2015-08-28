@@ -24,12 +24,13 @@ $(function () {
 		},
 		function (file) {
 			if (!tinymce.uploader_dialog) {
-				// TODO: This propress doesn't work in modal under Shadow DOM because of `body /deep/ *` seletors
-				tinymce.uploader_dialog              = cs.ui.modal('<div class="uk-progress uk-progress-striped uk-active"><div class="uk-progress-bar"></div></div>');
+				var progress                         = document.createElement('progress', 'cs-progress');
+				tinymce.uploader_dialog              = cs.ui.modal(progress);
+				tinymce.uploader_dialog.progress     = progress;
 				tinymce.uploader_dialog.style.zIndex = 100000;
 				tinymce.uploader_dialog.open();
 			}
-			$(tinymce.uploader_dialog).find('.uk-progress-bar').width((file.percent ? file.percent : 1) + '%');
+			tinymce.uploader_dialog.progress.value = file.percent || 1;
 		}
 	) : false;
 	var base_config                     = {

@@ -501,7 +501,7 @@ trait general {
 					h::{'button[is=cs-button]'}(
 						$L->clean_settings_cache,
 						Cache::instance()->cache_state() ? [
-							'onMouseDown' => "cs.admin_cache('#clean_cache', '{$Config->base_url()}/api/System/admin/cache/clean_cache', $(this).prev().val());"
+							'onMouseDown' => "cs.admin_cache('#clean_cache', '{$Config->base_url()}/api/System/admin/cache/clean_cache', this.previousElementSibling.value);"
 						] : ['disabled']
 					),
 					h::{'button[is=cs-button]'}(

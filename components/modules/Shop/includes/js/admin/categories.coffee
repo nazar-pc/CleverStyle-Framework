@@ -65,10 +65,8 @@ $ ->
 				<input type="hidden" name="image">
 			</p>
 			<p>
-				<span class="uk-progress uk-progress-striped uk-active uk-hidden uk-display-block">
-					<span class="uk-progress-bar"></span>
-				</span>
-				<button type="button" class="set-image uk-button">#{L.shop_set_image}</button>
+				<button is="cs-button" tight type="button" class="set-image">#{L.shop_set_image}</button>
+				<progress is="cs-progress" hidden></progress>
 			</p>
 			<p>
 				#{L.shop_category_attributes}: <select is="cs-select" name="attributes[]" multiple required>#{attributes}</select>
@@ -107,17 +105,18 @@ $ ->
 			modal.set_image('')
 		if cs.file_upload
 			do ->
-				progress	= modal.find('.set-image').prev()
+				progress	= modal.find('.set-image').next()[0]
 				uploader	= cs.file_upload(
 					modal.find('.set-image')
 					(image) ->
-						progress.addClass('uk-hidden').children().width(0)
+						progress.hidden = true
 						modal.set_image(image[0])
 					(error) ->
-						progress.addClass('uk-hidden').children().width(0)
+						progress.hidden = true
 						alert error.message
 					(percents) ->
-						progress.removeClass('uk-hidden').children().width(percents + '%')
+						progress.value	= percents
+						progress.hidden	= false
 				)
 				modal.on 'hide.uk.modal', ->
 					uploader.destroy()

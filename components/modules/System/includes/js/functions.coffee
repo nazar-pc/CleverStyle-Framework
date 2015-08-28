@@ -22,9 +22,7 @@ value_by_name				= (name) ->
 ###
 cs.admin_cache				= (element, action, partial_path) ->
 	$(element).html """
-		<div class="uk-progress uk-progress-striped uk-active">
-			<div class="uk-progress-bar" style="width:100%"></div>
-		</div>
+		<progress is="cs-progress" infinite></progress>
 	"""
 	$.ajax
 		url		: action
@@ -48,9 +46,7 @@ cs.admin_cache				= (element, action, partial_path) ->
 cs.db_test					= (index, mirror_index) ->
 	modal	= $(cs.ui.simple_modal("""<div>
 		<h3 class="cs-center">#{L.test_connection}</h3>
-		<div class="uk-progress uk-progress-striped uk-active">
-			<div class="uk-progress-bar" style="width:100%"></div>
-		</div>
+		<progress is="cs-progress" infinite></progress>
 	</div>"""))
 	$.ajax(
 		url		: 'api/System/admin/databases_test'
@@ -74,11 +70,11 @@ cs.db_test					= (index, mirror_index) ->
 				status = 'danger'
 			result = if result then L.success else L.failed
 			modal
-				.find('.uk-progress')
+				.find('progress')
 				.replaceWith("""<p class="cs-center uk-alert uk-alert-#{status}" style=text-transform:capitalize;">#{result}</p>""")
 		error	: ->
 			modal
-				.find('.uk-progress')
+				.find('progress')
 				.replaceWith("""<p class="cs-center uk-alert uk-alert-danger" style=text-transform:capitalize;">#{L.failed}</p>""")
 	)
 ###*
@@ -89,9 +85,7 @@ cs.db_test					= (index, mirror_index) ->
 cs.storage_test				= (index) ->
 	modal	= $(cs.ui.simple_modal("""<div>
 		<h3 class="cs-center">#{L.test_connection}</h3>
-		<div class="uk-progress uk-progress-striped uk-active">
-			<div class="uk-progress-bar" style="width:100%"></div>
-		</div>
+		<progress is="cs-progress" infinite></progress>
 	</div>"""))
 	$.ajax(
 		url		: 'api/System/admin/storages_test'
@@ -113,11 +107,11 @@ cs.storage_test				= (index) ->
 				status = 'danger'
 			result = if result then L.success else L.failed
 			modal
-				.find('.uk-progress')
+				.find('progress')
 				.replaceWith("""<p class="cs-center uk-alert uk-alert-#{status}" style=text-transform:capitalize;">#{result}</p>""")
 		error	: ->
 			modal
-				.find('.uk-progress')
+				.find('progress')
 				.replaceWith("""<p class="cs-center uk-alert uk-alert-danger" style=text-transform:capitalize;">#{L.failed}</p>""")
 	)
 ###*
