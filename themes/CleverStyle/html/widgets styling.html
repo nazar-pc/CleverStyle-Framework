@@ -43,6 +43,12 @@
 		--notify-translate                  : 50vh;
 		--notify-content-padding            : 1em 2.5em 1em 1em;
 		--notify-icon-padding               : 1em;
+		--success-background                : #f2fae3;
+		--success-color                     : #659f13;
+		--warning-background                : #fffceb;
+		--warning-color                     : #e28327;
+		--error-background                  : #fff1f0;
+		--error-color                       : #d85030;
 
 		--cs-global : {
 			box-sizing  : border-box;
@@ -425,18 +431,18 @@
 		}
 
 		--cs-notify-content-success : {
-			background : #f2fae3;
-			color      : #659f13;
+			background : var(--success-background);
+			color      : var(--success-color);
 		}
 
 		--cs-notify-content-warning : {
-			background : #fffceb;
-			color      : #e28327;
+			background : var(--warning-background);
+			color      : var(--warning-color);
 		}
 
 		--cs-notify-content-error : {
-			background : #fff1f0;
-			color      : #d85030;
+			background : var(--error-background);
+			color      : var(--error-color);
 		}
 
 		--cs-notify-bottom : {
