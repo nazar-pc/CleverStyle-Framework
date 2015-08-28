@@ -21,9 +21,9 @@ Polymer(
 		Polymer.cs.behaviors.tooltip
 	]
 	observers	: [
-		'refresh(page, pages)'
+		'_refresh(page, pages)'
 	]
-	refresh : (page, pages) ->
+	_refresh : (page, pages) ->
 		if !page || !pages
 			return
 		pages_list	= []
@@ -58,6 +58,15 @@ Polymer(
 			active		: i == page
 			disabled	: !i
 		)
-	set_page : (e) ->
+	_set_page : (e) ->
 		@page = e.model.item.text
+		return
+	next : ->
+		if @page < @pages
+			@page++
+		return
+	prev : ->
+		if @page > 1
+			@page--
+		return
 )

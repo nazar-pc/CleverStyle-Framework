@@ -24,8 +24,8 @@
       pages_list: Array
     },
     behaviors: [Polymer.cs.behaviors["this"], Polymer.cs.behaviors.tooltip],
-    observers: ['refresh(page, pages)'],
-    refresh: function(page, pages) {
+    observers: ['_refresh(page, pages)'],
+    _refresh: function(page, pages) {
       var i, j, k, l, m, n, o, p, pages_list, q, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8, render_one;
       if (!page || !pages) {
         return;
@@ -76,8 +76,18 @@
         disabled: !i
       });
     },
-    set_page: function(e) {
-      return this.page = e.model.item.text;
+    _set_page: function(e) {
+      this.page = e.model.item.text;
+    },
+    next: function() {
+      if (this.page < this.pages) {
+        this.page++;
+      }
+    },
+    prev: function() {
+      if (this.page > 1) {
+        this.page--;
+      }
     }
   });
 

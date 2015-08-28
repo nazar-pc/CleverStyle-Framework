@@ -3,7 +3,7 @@
   <template>
     <content></content>
     <template is="dom-repeat" items="[[pages_list]]">
-      <button disabled="[[item.disabled]]" first$="[[item.first]]" is="cs-button" last$="[[item.last]]" on-click="set_page" primary="[[item.active]]">[[item.text]]</button>
+      <button disabled="[[item.disabled]]" first$="[[item.first]]" is="cs-button" last$="[[item.last]]" on-click="_set_page" primary="[[item.active]]">[[item.text]]</button>
     </template>
   </template>
   <script src="script.js"></script>

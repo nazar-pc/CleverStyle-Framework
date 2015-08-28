@@ -5,5 +5,5 @@
 		%content
 		-# Render pages if any
 		%template(is="dom-repeat" items="[[pages_list]]")
-			%button(is="cs-button" primary="[[item.active]]" disabled="[[item.disabled]]" on-click="set_page" first$="[[item.first]]" last$="[[item.last]]") [[item.text]]
+			%button(is="cs-button" primary="[[item.active]]" disabled="[[item.disabled]]" on-click="_set_page" first$="[[item.first]]" last$="[[item.last]]") [[item.text]]
 	%script(src="script.js")
