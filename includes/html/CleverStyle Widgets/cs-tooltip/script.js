@@ -8,6 +8,10 @@
  */
 
 (function() {
+  var html;
+
+  html = document.documentElement;
+
   Polymer({
     'is': 'cs-tooltip',
     behaviors: [Polymer.cs.behaviors.tooltip],
@@ -84,8 +88,8 @@
     },
     _get_tooltip_size: function() {
       var tooltip_size;
-      this.style.left = -innerWidth;
-      this.style.top = -innerHeight;
+      this.style.left = -html.clientWidth;
+      this.style.top = -html.clientHeight;
       this.showQuick = true;
       tooltip_size = this.getBoundingClientRect();
       this.showQuick = false;
@@ -109,11 +113,11 @@
       }
       left_offset = element_position.left + (element_position.width / 2) - (tooltip_size.width / 2);
       if (left_offset >= 0) {
-        if (left_offset + tooltip_size.width <= innerWidth) {
+        if (left_offset + tooltip_size.width <= html.clientWidth) {
           tooltip_position.left += left_offset;
         } else {
-          tooltip_position.left += innerWidth - tooltip_size.width;
-          tooltip_position.arrow_left_offset = innerWidth - (tooltip_size.width / 2) - element_position.left - (element_position.width / 2);
+          tooltip_position.left += html.clientWidth - tooltip_size.width;
+          tooltip_position.arrow_left_offset = html.clientWidth - (tooltip_size.width / 2) - element_position.left - (element_position.width / 2);
         }
       } else {
         tooltip_position.arrow_left_offset = (tooltip_size.width / 2) - element_position.left - (element_position.width / 2);
