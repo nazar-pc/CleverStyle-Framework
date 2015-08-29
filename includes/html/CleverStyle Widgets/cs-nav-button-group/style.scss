@@ -5,21 +5,28 @@
  * @license   MIT License, see license.txt
  */
 :host {
-	display : flex;
-	display : -ms-flexbox;
-	display : -webkit-flex;
+	display        : inline-block;
+	vertical-align : middle;
 
 	@apply (--cs-no-selection);
 	@apply (--cs-global);
 	@apply (--cs-nav-button-group);
 }
 
-:host([vertical]) {
+#content {
+	display : flex;
+	display : -ms-flexbox;
+	display : -webkit-flex;
+
+	@apply (--cs-nav-button-group-content);
+}
+
+:host([vertical]) #content {
 	flex-direction         : column;
 	-ms-flex-direction     : column;
 	-webkit-flex-direction : column;
 
-	@apply (--cs-nav-button-group-vertical);
+	@apply (--cs-nav-button-group-content-vertical);
 }
 
 // Hack: `:host` is here only because of Polymer unable to handle pure `::content` properly
