@@ -31,6 +31,10 @@
         reflectToAttribute: true,
         type: String
       },
+      iconAfter: {
+        reflectToAttribute: true,
+        type: String
+      },
       primary: {
         reflectToAttribute: true,
         type: Boolean

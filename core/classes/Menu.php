@@ -53,10 +53,7 @@ class Menu {
 			// Render as button without `href` attribute
 			unset($item[1]['href']);
 			$content .=
-				h::{'button[is=cs-button]'}(
-					$item[0].' '.h::icon('caret-down'),
-					$item[1]
-				).
+				h::{'button[is=cs-button][icon-after=caret-down]'}($item[0], $item[1]).
 				$dropdown;
 		}
 		return $content;

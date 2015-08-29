@@ -33,13 +33,7 @@ echo $Menu->get_menu();
 ?>
 --EXPECT--
 <nav is="cs-nav-button-group">
-	<button is="cs-button" primary type="button">
-		Section 1 <cs-icon icon="caret-down"></cs-icon>
-	</button>
-	<button is="cs-button" type="button">
-		Section 2 <cs-icon icon="caret-down"></cs-icon>
-	</button>
-	<button is="cs-button" type="button">
-		Section 3 <cs-icon icon="caret-down"></cs-icon>
-	</button>
+	<button icon-after="caret-down" is="cs-button" primary type="button">Section 1</button>
+	<button icon-after="caret-down" is="cs-button" type="button">Section 2</button>
+	<button icon-after="caret-down" is="cs-button" type="button">Section 3</button>
 </nav>

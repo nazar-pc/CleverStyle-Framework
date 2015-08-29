@@ -6,23 +6,26 @@
 ###
 Polymer.cs.behaviors.button =
 	properties	:
-		action	:
+		action		:
 			type	: String
 			value	: 'button_action'
-		active	:
+		active		:
 			notify				: true
 			reflectToAttribute	: true
 			type				: Boolean
-		bind	:
+		bind		:
 			observer	: '_bind_changed'
 			type		: Object
-		empty	:
+		empty		:
 			reflectToAttribute	: true
 			type				: Boolean
-		icon	:
+		icon		:
 			reflectToAttribute	: true
 			type				: String
-		primary	:
+		iconAfter	:
+			reflectToAttribute	: true
+			type				: String
+		primary		:
 			reflectToAttribute	: true
 			type				: Boolean
 	listeners	:

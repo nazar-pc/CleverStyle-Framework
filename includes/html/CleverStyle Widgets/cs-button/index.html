@@ -5,6 +5,9 @@
       <cs-icon icon="[[icon]]" mono></cs-icon>
     </template>
     <content></content>
+    <template if="[[iconAfter]]" is="dom-if">
+      <cs-icon icon="[[iconAfter]]" mono></cs-icon>
+    </template>
   </template>
   <script src="script.js"></script>
 </dom-module>

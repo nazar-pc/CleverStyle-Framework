@@ -49,6 +49,11 @@
 	@apply (--cs-button-icon);
 }
 
+:host([icon-after]:not(:empty):not([empty])) cs-icon,
+:host([icon-after][force-fullsize]) cs-icon {
+	@apply (--cs-button-icon-after);
+}
+
 /* The only non-default button type is primary button */
 
 :host([primary]) {

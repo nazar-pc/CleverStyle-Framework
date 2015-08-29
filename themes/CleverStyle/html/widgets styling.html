@@ -15,8 +15,9 @@
 		--form-element-inner-box-shadow     : 0 0 .5em rgba(0, 0, 0, .2) inset;
 		--form-element-height               : 2.5em;
 		--form-textarea-height              : 4em;
-		--form-button-compact-size          : 1.8em;
-		--form-button-compact-padding       : .1em .2em;
+		--button-compact-size               : 1.8em;
+		--button-compact-padding            : .1em .2em;
+		--button-icon-offset                : .6em;
 		--form-element-padding-vertical     : .6em;
 		--form-element-padding-horizontal   : 1em;
 		--form-element-padding              : var(--form-element-padding-vertical) var(--form-element-padding-horizontal);
@@ -86,14 +87,19 @@
 
 		--cs-button-compact : {
 			height     : auto;
-			min-height : var(--form-button-compact-size);
-			min-width  : var(--form-button-compact-size);
-			padding    : var(--form-button-compact-padding);
+			min-height : var(--button-compact-size);
+			min-width  : var(--button-compact-size);
+			padding    : var(--button-compact-padding);
 			width      : auto;
 		};
 
 		--cs-button-icon : {
-			margin-right : .6em;
+			margin-right : var(--button-icon-offset);
+		};
+
+		--cs-button-icon-after : {
+			margin-left  : var(--button-icon-offset);
+			margin-right : auto;
 		};
 
 		--cs-button-primary : {
@@ -214,7 +220,7 @@
 		};
 
 		--cs-link-button-compact : {
-			line-height : var(--form-button-compact-size);
+			line-height : var(--button-compact-size);
 			text-align  : center;
 		};
 
