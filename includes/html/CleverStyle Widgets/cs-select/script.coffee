@@ -22,7 +22,10 @@ Polymer(
 		document.addEventListener('WebComponentsReady', scroll_once)
 		return
 	_scroll_to_selected : ->
-		option_height	= @querySelector('option').getBoundingClientRect().height
+		option			= @querySelector('option')
+		if !option
+			return
+		option_height	= option.getBoundingClientRect().height
 		if @size > 1 && @selectedOptions[0]
 			@scrollTop	= option_height * (@selectedIndex - Math.floor(@size / 2)) + @_number_of_optgroups()
 		select_height	= @getBoundingClientRect().height

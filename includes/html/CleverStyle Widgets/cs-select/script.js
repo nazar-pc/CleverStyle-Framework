@@ -23,8 +23,12 @@
       document.addEventListener('WebComponentsReady', scroll_once);
     },
     _scroll_to_selected: function() {
-      var option_height, select_height;
-      option_height = this.querySelector('option').getBoundingClientRect().height;
+      var option, option_height, select_height;
+      option = this.querySelector('option');
+      if (!option) {
+        return;
+      }
+      option_height = option.getBoundingClientRect().height;
       if (this.size > 1 && this.selectedOptions[0]) {
         this.scrollTop = option_height * (this.selectedIndex - Math.floor(this.size / 2)) + this._number_of_optgroups();
       }
