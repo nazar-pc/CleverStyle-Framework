@@ -6,36 +6,40 @@ namespace cs;
 include __DIR__.'/../custom_loader.php';
 current_module('System');
 Event::instance_stub();
-$Menu	= Menu::instance();
+$Menu = Menu::instance();
 $Menu->add_section_item(
 	'System',
 	'Section 1',
-	"System/section1",
 	[
-		'class'	=> 'uk-active'
+		'href'    => "System/section1",
+		'primary' => true
 	]
 );
 $Menu->add_section_item(
 	'System',
 	'Section 2',
-	"System/section2"
+	[
+		'href' => "System/section2"
+	]
 );
 $Menu->add_section_item(
 	'System',
 	'Section 3',
-	"System/section3"
+	[
+		'href' => "System/section3"
+	]
 );
 echo $Menu->get_menu();
 ?>
 --EXPECT--
-<ul class="uk-subnav uk-subnav-pill">
-	<li class="uk-active" data-uk-dropdown="">
-		<a href="System/section1">Section 1</a>
-	</li>
-	<li data-uk-dropdown="">
-		<a href="System/section2">Section 2</a>
-	</li>
-	<li data-uk-dropdown="">
-		<a href="System/section3">Section 3</a>
-	</li>
-</ul>
+<nav is="cs-nav-button-group">
+	<button is="cs-button" primary type="button">
+		Section 1 <cs-icon icon="caret-down"></cs-icon>
+	</button>
+	<button is="cs-button" type="button">
+		Section 2 <cs-icon icon="caret-down"></cs-icon>
+	</button>
+	<button is="cs-button" type="button">
+		Section 3 <cs-icon icon="caret-down"></cs-icon>
+	</button>
+</nav>

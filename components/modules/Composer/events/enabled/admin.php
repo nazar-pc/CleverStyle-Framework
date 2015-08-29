@@ -12,23 +12,23 @@ use
 Event::instance()->on(
 	'admin/System/Menu',
 	function () {
-		$L		= new Prefix('composer_');
-		$Menu	= Menu::instance();
-		$route	= Route::instance()->path;
+		$L     = new Prefix('composer_');
+		$Menu  = Menu::instance();
+		$route = Route::instance()->path;
 		$Menu->add_item(
 			'Composer',
 			$L->general,
-			'admin/Composer',
 			[
-				'class'	=> $route[0] == 'general' ? 'uk-active' : false
+				'href'    => 'admin/Composer',
+				'primary' => $route[0] == 'general'
 			]
 		);
 		$Menu->add_item(
 			'Composer',
 			$L->auth_json,
-			'admin/Composer/auth_json',
 			[
-				'class'	=> $route[0] == 'auth_json' ? 'uk-active' : false
+				'href'    => 'admin/Composer/auth_json',
+				'primary' => $route[0] == 'auth_json'
 			]
 		);
 		Page::instance()->title(

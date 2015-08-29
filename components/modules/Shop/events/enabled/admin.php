@@ -1,10 +1,10 @@
 <?php
 /**
- * @package    Shop
- * @attribute  modules
- * @author     Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright  Copyright (c) 2014-2015, Nazar Mokrynskyi
- * @license    MIT License, see license.txt
+ * @package   Shop
+ * @attribute modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2014-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs\modules\Shop;
 use
@@ -14,15 +14,15 @@ use
 	cs\Route;
 if (!function_exists(__NAMESPACE__.'\\add_menu_section_item')) {
 	function add_menu_section_item ($section) {
-		$L		= new Prefix('shop_');
-		$Menu	= Menu::instance();
-		$route	= Route::instance()->path;
+		$L     = new Prefix('shop_');
+		$Menu  = Menu::instance();
+		$route = Route::instance()->path;
 		$Menu->add_item(
 			'Shop',
 			$L->$section,
-			"admin/Shop/$section",
 			[
-				'class'	=> isset($route[0]) && $route[0] == $section ? 'uk-active' : false
+				'href'    => "admin/Shop/$section",
+				'primary' => isset($route[0]) && $route[0] == $section
 			]
 		);
 	}

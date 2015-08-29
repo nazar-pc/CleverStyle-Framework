@@ -6,72 +6,70 @@ namespace cs;
 include __DIR__.'/../custom_loader.php';
 current_module('System');
 Event::instance_stub();
-$Menu	= Menu::instance();
+$Menu = Menu::instance();
 $Menu->add_section_item(
 	'System',
 	'Section 1',
-	"System/section1",
 	[
-		'class'	=> 'uk-active'
+		'href'    => "System/section1",
+		'primary' => 'uk-active'
 	]
 );
 $Menu->add_item(
 	'System',
 	'Section 1 item 1',
-	"System/section1/item1",
 	[
-		'class'	=> 'uk-active'
+		'href'    => "System/section1/item1",
+		'primary' => true
 	]
 );
 $Menu->add_item(
 	'System',
 	'Section 1 item 2',
-	"System/section1/item2"
+	[
+		'href' => "System/section1/item2"
+	]
 );
 $Menu->add_item(
 	'System',
 	'Section 1 item 3',
-	"System/section1/item3",
 	[
-		'class'	=> 'uk-active'
+		'href'    => "System/section1/item3",
+		'primary' => true
 	]
 );
 $Menu->add_section_item(
 	'System',
 	'Section 2',
-	"System/section2"
+	[
+		'href' => "System/section2"
+	]
 );
 $Menu->add_section_item(
 	'System',
 	'Section 3',
-	"System/section3"
+	[
+		'href' => "System/section3"
+	]
 );
 echo $Menu->get_menu();
 ?>
 --EXPECT--
-<ul class="uk-subnav uk-subnav-pill">
-	<li class="uk-active" data-uk-dropdown="">
-		<a href="System/section1">
-			Section 1 <cs-icon icon="caret-down"></cs-icon>
-		</a>
-		<div class="uk-dropdown uk-dropdown-small">
-			<ul class="uk-nav uk-nav-dropdown">
-				<li class="uk-active">
-					<a href="System/section1/item1">Section 1 item 1</a>
-				</li>
-				<li>
-					<a href="System/section1/item2">Section 1 item 2</a>
-				</li>
-				<li class="uk-active">
-					<a href="System/section1/item3">Section 1 item 3</a>
-				</li>
-			</ul>
-		</div>
-	</li>
-	<li data-uk-dropdown="">
-		<a href="System/section2">Section 2</a>
-	</li>
-	<li data-uk-dropdown="">
-		<a href="System/section3">Section 3</a>
-	</li>
-</ul>
+<nav is="cs-nav-button-group">
+	<button is="cs-button" primary="uk-active" type="button">
+		Section 1 <cs-icon icon="caret-down"></cs-icon>
+	</button>
+	<nav is="cs-nav-dropdown">
+		<nav vertical is="cs-nav-button-group">
+			<a href="System/section1/item1" is="cs-link-button" primary>Section 1 item 1</a>
+			<a href="System/section1/item2" is="cs-link-button">Section 1 item 2</a>
+			<a href="System/section1/item3" is="cs-link-button" primary>Section 1 item 3</a>
+		</nav>
+	</nav>
+	<button is="cs-button" type="button">
+		Section 2 <cs-icon icon="caret-down"></cs-icon>
+	</button>
+	<button is="cs-button" type="button">
+		Section 3 <cs-icon icon="caret-down"></cs-icon>
+	</button>
+</nav>

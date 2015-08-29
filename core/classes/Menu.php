@@ -34,7 +34,7 @@ class Menu {
 		} else {
 			$content = $this->render_items($current_module);
 		}
-		return h::{'ul.uk-subnav.uk-subnav-pill'}($content ?: false);
+		return h::{'nav[is=cs-nav-button-group]'}($content ?: false);
 	}
 	/**
 	 * Render sections (automatically includes nested items)
@@ -45,12 +45,19 @@ class Menu {
 	 */
 	protected function render_sections ($module) {
 		$content = '';
-		foreach ($this->section_items[$module] as $href => $item) {
-			$inner = $this->render_items($module, $href);
-			if ($inner) {
-				$inner = h::{'div.uk-dropdown.uk-dropdown-small ul.uk-nav.uk-nav-dropdown'}($inner);
+		foreach ($this->section_items[$module] as $item) {
+			$dropdown = $this->render_items($module, $item[1]['href']);
+			if ($dropdown) {
+				$dropdown = h::{'nav[is=cs-nav-dropdown] nav[is=cs-nav-button-group][vertical]'}($dropdown);
 			}
-			$content .= $this->render_single_item_common('li[data-uk-dropdown=]', $item[0], $href, $item[1], $inner);
+			// Render as button without `href` attribute
+			unset($item[1]['href']);
+			$content .=
+				h::{'button[is=cs-button]'}(
+					$item[0].' '.h::icon('caret-down'),
+					$item[1]
+				).
+				$dropdown;
 		}
 		return $content;
 	}
@@ -66,64 +73,32 @@ class Menu {
 		if (!isset($this->items[$module])) {
 			return '';
 		}
-		$items = $this->items[$module];
 		$content = '';
-		$element = 'li';
-		/**
-		 * If there are no nested elements
-		 */
-		if (!$base_href) {
-			$element .= '[data-uk-dropdown=]';
-		}
-		foreach ($items as $href => $item) {
+		foreach ($this->items[$module] as $item) {
 			/**
 			 * Nested items for parent
 			 */
-			if ($base_href && strpos($href, $base_href) !== 0) {
+			if ($base_href && strpos($item[1]['href'], $base_href) !== 0) {
 				continue;
 			}
-			$content .= $this->render_single_item_common($element, $item[0], $href, $item[1]);
+			$content .= h::{'a[is=cs-link-button]'}(
+				$item[0],
+				$item[1]
+			);
 		}
 		return $content;
-	}
-	/**
-	 * Generic method for rendering elements both for sections and nested items (basically, `li` with `a` inside)
-	 *
-	 * @param string $element
-	 * @param string $title
-	 * @param string $href
-	 * @param array  $arguments
-	 * @param string $content
-	 *
-	 * @return mixed
-	 */
-	protected function render_single_item_common ($element, $title, $href, $arguments, $content = '') {
-		if ($content) {
-			$title .= ' '.h::icon('caret-down');
-		}
-		return h::$element(
-			h::a(
-				$title,
-				[
-					'href' => $href
-				]
-			).
-			$content,
-			$arguments
-		);
 	}
 	/**
 	 * Add second-level item into menu
 	 *
 	 * All third-level items which start with the same `$href` will be inside this second-level menu item
 	 *
-	 * @param string      $module
-	 * @param string      $title
-	 * @param bool|string $href
-	 * @param array       $attributes
+	 * @param string $module
+	 * @param string $title
+	 * @param array  $attributes
 	 */
-	function add_section_item ($module, $title, $href = false, $attributes = []) {
-		$this->section_items[$module][$href] = [
+	function add_section_item ($module, $title, $attributes = []) {
+		$this->section_items[$module][] = [
 			$title,
 			$attributes
 		];
@@ -131,13 +106,12 @@ class Menu {
 	/**
 	 * Add third-level item into menu (second-level when there is corresponding section items)
 	 *
-	 * @param string      $module
-	 * @param string      $title
-	 * @param bool|string $href
-	 * @param array       $attributes
+	 * @param string $module
+	 * @param string $title
+	 * @param array  $attributes
 	 */
-	function add_item ($module, $title, $href = false, $attributes = []) {
-		$this->items[$module][$href] = [
+	function add_item ($module, $title, $attributes = []) {
+		$this->items[$module][] = [
 			$title,
 			$attributes
 		];

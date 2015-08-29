@@ -14,15 +14,15 @@ use
 	cs\Route;
 if (!function_exists(__NAMESPACE__.'\\add_menu_section_item')) {
 	function add_menu_section_item ($section) {
-		$L		= new Prefix('blockchain_payment_');
-		$Menu	= Menu::instance();
-		$route	= Route::instance()->path;
+		$L     = new Prefix('blockchain_payment_');
+		$Menu  = Menu::instance();
+		$route = Route::instance()->path;
 		$Menu->add_item(
 			'Blockchain_payment',
 			$L->$section,
-			"admin/Blockchain_payment/$section",
 			[
-				'class'	=> isset($route[0]) && $route[0] == $section ? 'uk-active' : false
+				'href'    => "admin/Blockchain_payment/$section",
+				'primary' => isset($route[0]) && $route[0] == $section
 			]
 		);
 	}
