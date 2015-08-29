@@ -68,7 +68,7 @@
     delete_permission: function(e) {
       var permission;
       permission = e.model.permission;
-      return UIkit.modal.confirm("<h3>" + (L.sure_delete_permission(permission.group + '/' + permission.label)) + "</h3>\n<p class=\"uk-alert uk-alert-danger\">" + L.changing_settings_warning + "</p>", (function(_this) {
+      return cs.ui.confirm("<h3>" + (L.sure_delete_permission(permission.group + '/' + permission.label)) + "</h3>\n<p class=\"uk-alert uk-alert-danger\">" + L.changing_settings_warning + "</p>", (function(_this) {
         return function() {
           return $.ajax({
             url: 'api/System/admin/permissions/' + permission.id,

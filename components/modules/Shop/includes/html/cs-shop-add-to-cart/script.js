@@ -18,11 +18,7 @@
         in_cart: 0
       },
       ready: function() {
-        this.set('in_cart', cart.get(this.item_id));
-        return UIkit.tooltip(this.$.in_cart, {
-          animation: true,
-          delay: 200
-        });
+        return this.set('in_cart', cart.get(this.item_id));
       },
       add: function() {
         return this.set('in_cart', cart.add(this.item_id));

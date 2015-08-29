@@ -51,7 +51,7 @@ Polymer(
 		)
 	delete_permission	: (e) ->
 		permission	= e.model.permission
-		UIkit.modal.confirm(
+		cs.ui.confirm(
 			"""
 				<h3>#{L.sure_delete_permission(permission.group + '/' + permission.label)}</h3>
 				<p class="uk-alert uk-alert-danger">#{L.changing_settings_warning}</p>

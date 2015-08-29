@@ -30,15 +30,3 @@ do ($ = jQuery) ->
 			return
 		document.addEventListener('WebComponentsReady', ready_callback)
 		return
-	# Fix for UIkit dropdown not closed under Shadow DOM when clicked on some selected item
-	$ ->
-		registerOuterClick__original	= UIkit.components.dropdown.prototype.registerOuterClick
-		UIkit.components.dropdown.prototype.registerOuterClick	= ->
-			if !WebComponents.flags.shadow && @element[0].matches(':host *')
-				$(@element[0]).find('li').one('click', (e) ->
-					UIkit.$html.trigger("click.outer.dropdown", e)
-					return
-				)
-			registerOuterClick__original.call(@)
-			return
-		return

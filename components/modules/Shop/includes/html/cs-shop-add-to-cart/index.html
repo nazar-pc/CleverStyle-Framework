@@ -3,7 +3,7 @@
   <template>
     <nav hidden$="[[!in_cart]]" is="cs-nav-button-group">
       <button is="cs-button" on-click="add" primary type="button">[[L.shop_add_to_cart]]</button>
-      <a href="/Shop/cart" id="in_cart" is="cs-link-button" title="[[L.shop_already_in_cart]]">[[in_cart]]</a>
+      <a href="/Shop/cart" id="in_cart" is="cs-link-button" tooltip="[[L.shop_already_in_cart]]">[[in_cart]]</a>
     </nav>
     <button hidden$="[[and(in_cart)]]" is="cs-button" on-click="add" primary type="button">[[L.shop_add_to_cart]]</button>
   </template>

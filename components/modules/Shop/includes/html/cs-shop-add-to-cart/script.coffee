@@ -14,11 +14,6 @@ do (cart = cs.shop.cart, L = cs.Language) ->
 			in_cart		: 0
 		ready		: ->
 			@set('in_cart', cart.get(@item_id))
-			UIkit.tooltip(
-				@$.in_cart
-				animation	: true
-				delay		: 200
-			)
 		add			: ->
 			@set('in_cart', cart.add(@item_id))
 	);

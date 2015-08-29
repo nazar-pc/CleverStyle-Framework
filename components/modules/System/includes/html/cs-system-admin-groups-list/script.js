@@ -58,7 +58,7 @@
     delete_group: function(e) {
       var group;
       group = e.model.group;
-      return UIkit.modal.confirm("<h3>" + (L.sure_delete_group(group.title)) + "</h3>", (function(_this) {
+      return cs.ui.confirm("<h3>" + (L.sure_delete_group(group.title)) + "</h3>", (function(_this) {
         return function() {
           return $.ajax({
             url: 'api/System/admin/groups/' + group.id,

@@ -1,10 +1,10 @@
 ###*
- * @package		UIkit Helper
+ * @package		CleverStyle CMS
  * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
  * @copyright	Copyright (c) 2013-2015, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
 ###
-do ($=jQuery, UI = UIkit) ->
+do ($=jQuery) ->
 	helpers	=
 		###*
 		 * Connecting form elements in ShadowDOM to form element higher in DOM tree, should be called on element.shadowRoot

@@ -20,7 +20,7 @@ Polymer(
 				email	: @email
 				type	: 'user'
 			success	: (result) ->
-				UIkit.modal.alert("""
+				cs.ui.alert("""
 					<p class="uk-alert uk-alert-success">#{L.user_was_added(result.login, result.password)}</p>
 				""")
 		)

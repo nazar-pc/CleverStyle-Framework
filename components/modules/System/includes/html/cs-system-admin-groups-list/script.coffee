@@ -40,7 +40,7 @@ Polymer(
 		)
 	delete_group		: (e) ->
 		group	= e.model.group
-		UIkit.modal.confirm(
+		cs.ui.confirm(
 			"""
 				<h3>#{L.sure_delete_group(group.title)}</h3>
 			"""

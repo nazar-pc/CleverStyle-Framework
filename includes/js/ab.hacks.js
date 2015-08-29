@@ -13,7 +13,7 @@
     /*
     	  * Fix for jQuery "ready" event, trigger it after "WebComponentsReady" event triggered by WebComponents.js
      */
-    (function() {
+    return (function() {
       var functions, ready, ready_callback, ready_original;
       ready_original = $.fn.ready;
       functions = [];
@@ -39,18 +39,6 @@
       };
       document.addEventListener('WebComponentsReady', ready_callback);
     })();
-    return $(function() {
-      var registerOuterClick__original;
-      registerOuterClick__original = UIkit.components.dropdown.prototype.registerOuterClick;
-      UIkit.components.dropdown.prototype.registerOuterClick = function() {
-        if (!WebComponents.flags.shadow && this.element[0].matches(':host *')) {
-          $(this.element[0]).find('li').one('click', function(e) {
-            UIkit.$html.trigger("click.outer.dropdown", e);
-          });
-        }
-        registerOuterClick__original.call(this);
-      };
-    });
   })(jQuery);
 
 }).call(this);

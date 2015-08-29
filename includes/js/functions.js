@@ -154,7 +154,7 @@
 
   cs.registration = function(email) {
     if (!email) {
-      UIkit.modal.confirm(L.please_type_your_email);
+      cs.ui.confirm(L.please_type_your_email);
       return;
     }
     email = String(email).toLowerCase();
@@ -184,7 +184,7 @@
 
   cs.restore_password = function(email) {
     if (!email) {
-      UIkit.modal.alert(L.please_type_your_email);
+      cs.ui.alert(L.please_type_your_email);
       return;
     }
     email = String(email).toLowerCase();
@@ -215,19 +215,19 @@
 
   cs.change_password = function(current_password, new_password, success, error) {
     if (!current_password) {
-      UIkit.modal.alert(L.please_type_current_password);
+      cs.ui.alert(L.please_type_current_password);
       return;
     } else if (!new_password) {
-      UIkit.modal.alert(L.please_type_new_password);
+      cs.ui.alert(L.please_type_new_password);
       return;
     } else if (current_password === new_password) {
-      UIkit.modal.alert(L.current_new_password_equal);
+      cs.ui.alert(L.current_new_password_equal);
       return;
     } else if (String(new_password).length < cs.password_min_length) {
-      UIkit.modal.alert(L.password_too_short);
+      cs.ui.alert(L.password_too_short);
       return;
     } else if (cs.password_check(new_password) < cs.password_min_strength) {
-      UIkit.modal.alert(L.password_too_easy);
+      cs.ui.alert(L.password_too_easy);
       return;
     }
     current_password = cs.hash('sha512', cs.hash('sha512', String(current_password)) + cs.public_key);
@@ -245,13 +245,13 @@
           if (success) {
             return success();
           } else {
-            return UIkit.modal.alert(L.password_changed_successfully);
+            return cs.ui.alert(L.password_changed_successfully);
           }
         } else {
           if (error) {
             return error();
           } else {
-            return UIkit.modal.alert(result);
+            return cs.ui.alert(result);
           }
         }
       },
@@ -426,7 +426,7 @@
     ui.modal = function(content) {
       var modal;
       modal = document.createElement('section', 'cs-section-modal');
-      if (typeof content === 'string') {
+      if (typeof content === 'string' || content instanceof Function) {
         modal.innerHTML = content;
       } else {
         if (content instanceof jQuery) {
@@ -450,6 +450,65 @@
       var modal;
       modal = ui.modal(content);
       modal.autoDestroy = true;
+      modal.open();
+      return modal;
+    };
+
+    /**
+    	 * Alert modal
+    	 *
+    	 * @param {HTMLElement}|{jQuery}|{String} content
+        *
+    	 * @return {HTMLElement}
+     */
+    ui.alert = function(content) {
+      var modal, ok;
+      if (typeof content === 'string' || content instanceof Function) {
+        content = "<p>" + content + "</p>";
+      }
+      modal = ui.modal(content);
+      modal.autoDestroy = true;
+      modal.manualClose = true;
+      ok = document.createElement('button', 'cs-button');
+      ok.innerText = 'OK';
+      ok.primary = true;
+      ok.action = 'close';
+      ok.bind = modal;
+      modal.appendChild(ok);
+      modal.open();
+      return modal;
+    };
+
+    /**
+    	 * Confirm modal
+    	 *
+    	 * @param {HTMLElement}|{jQuery}|{String} content
+    	 * @param {Function}                      callback
+        *
+    	 * @return {HTMLElement}
+     */
+    ui.confirm = function(content, callback) {
+      var cancel, modal, ok;
+      if (typeof content === 'string' || content instanceof Function) {
+        content = "<p>" + content + "</p>";
+      }
+      modal = ui.modal(content);
+      modal.autoDestroy = true;
+      modal.manualClose = true;
+      ok = document.createElement('button', 'cs-button');
+      ok.innerText = 'OK';
+      ok.primary = true;
+      ok.action = 'close';
+      ok.bind = modal;
+      ok.addEventListener('click', function() {
+        return callback();
+      });
+      modal.appendChild(ok);
+      cancel = document.createElement('button', 'cs-button');
+      cancel.innerText = L.cancel;
+      cancel.action = 'close';
+      cancel.bind = modal;
+      modal.appendChild(cancel);
       modal.open();
       return modal;
     };
