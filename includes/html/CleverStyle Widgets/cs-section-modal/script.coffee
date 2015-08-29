@@ -19,16 +19,18 @@ Polymer(
 			type				: Boolean
 		autoDestroy	: Boolean
 		autoOpen	: Boolean
+		manualClose	: Boolean
 		opened		:
 			observer			: '_opened_changed'
 			reflectToAttribute	: true
 			type				: Boolean
 	listeners	: {
 		transitionend	: '_transitionend'
+		'overlay.tap'	: '_overlay_tap'
 	}
 	created : ->
 		@_esc_handler	= (e) =>
-			if e.keyCode == 27 # Esc
+			if e.keyCode == 27 && !@manualClose # Esc
 				@close()
 			return
 		return
@@ -43,6 +45,9 @@ Polymer(
 		if !@opened && @autoDestroy
 			@parentNode.removeChild(@)
 		return
+	_overlay_tap : ->
+		if !@manualClose
+			@close()
 	_opened_changed : ->
 		if !@_attached_to_html
 			@_attached_to_html	= true

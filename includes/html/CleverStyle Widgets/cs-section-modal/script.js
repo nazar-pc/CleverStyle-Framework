@@ -25,6 +25,7 @@
       },
       autoDestroy: Boolean,
       autoOpen: Boolean,
+      manualClose: Boolean,
       opened: {
         observer: '_opened_changed',
         reflectToAttribute: true,
@@ -32,12 +33,13 @@
       }
     },
     listeners: {
-      transitionend: '_transitionend'
+      transitionend: '_transitionend',
+      'overlay.tap': '_overlay_tap'
     },
     created: function() {
       this._esc_handler = (function(_this) {
         return function(e) {
-          if (e.keyCode === 27) {
+          if (e.keyCode === 27 && !_this.manualClose) {
             _this.close();
           }
         };
@@ -55,6 +57,11 @@
     _transitionend: function() {
       if (!this.opened && this.autoDestroy) {
         this.parentNode.removeChild(this);
+      }
+    },
+    _overlay_tap: function() {
+      if (!this.manualClose) {
+        return this.close();
       }
     },
     _opened_changed: function() {
