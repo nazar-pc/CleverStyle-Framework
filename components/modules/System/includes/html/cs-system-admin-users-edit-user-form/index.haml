@@ -21,9 +21,8 @@
 				%input(is="cs-input-text" type="email" value="{{user_data.email}}")/
 				%label.uk-form-label
 					%span [[L.password_only_for_changing]]
-				.uk-form-icon.uk-width-1-1
-					.uk-icon-lock.cs-pointer(on-click="show_password")
-					%input(is="cs-input-text" id="password" type="password" value="{{user_data.password}}")/
+				%cs-icon(icon="lock" on-click="show_password")
+				%input(is="cs-input-text" id="password" type="password" value="{{user_data.password}}")/
 				%label.uk-form-label [[L.language]]
 				%select(is="cs-select" value="{{user_data.language}}" size="5")
 					%template(is="dom-repeat" items="[[languages]]" as="language")

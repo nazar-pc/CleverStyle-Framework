@@ -41,48 +41,22 @@ $ ->
 		return false
 	$('.cs-header-sign-out-process').click ->
 		cs.sign_out()
-	$('.cs-show-password').click ->
-		$this	= $(this)
-		pass_input = $this
-			.parent()
-				.next()
-					.children('input')
-		if pass_input.prop('type') == 'password'
-			pass_input.prop('type', 'text')
-			$this
-				.addClass('uk-icon-unlock-alt')
-				.removeClass('uk-icon-lock')
-		else
-			pass_input.prop('type', 'password')
-			$this
-				.addClass('uk-icon-lock')
-				.removeClass('uk-icon-unlock-alt')
 	$('#current_password').click ->
-		$this		= $(this)
 		password	= $('.cs-profile-current-password')
 		if password.prop('type') == 'password'
 			password.prop('type', 'text')
-			$this
-				.addClass('uk-icon-unlock-alt')
-				.removeClass('uk-icon-lock')
+			this.icon = 'unlock'
 		else
 			password.prop('type', 'password')
-			$this
-				.addClass('uk-icon-lock')
-				.removeClass('uk-icon-unlock-alt')
+			this.icon = 'lock'
 	$('#new_password').click ->
-		$this		= $(this)
 		password	= $('.cs-profile-new-password')
 		if password.prop('type') == 'password'
 			password.prop('type', 'text')
-			$this
-				.addClass('uk-icon-unlock-alt')
-				.removeClass('uk-icon-lock')
+			this.icon = 'unlock'
 		else
 			password.prop('type', 'password')
-			$this
-				.addClass('uk-icon-lock')
-				.removeClass('uk-icon-unlock-alt')
+			this.icon = 'lock'
 	$('.cs-header-registration-process').click ->
 		if !cs.rules_text
 			cs.registration $('.cs-header-registration-email').val()

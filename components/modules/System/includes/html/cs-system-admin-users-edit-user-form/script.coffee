@@ -59,14 +59,14 @@ Polymer(
 			@set('block_until', block_until)
 			@set('user_data', data[0])
 	show_password	: (e) ->
-		$lock		= $(e.currentTarget)
-		password	= $lock.next()[0]
+		lock		= e.currentTarget
+		password	= lock.nextElementSibling
 		if password.type == 'password'
 			password.type	= 'text'
-			$lock.removeClass('uk-icon-lock').addClass('uk-icon-unlock')
+			lock.icon		= 'unlock'
 		else
 			password.type	= 'password'
-			$lock.removeClass('uk-icon-unlock').addClass('uk-icon-lock')
+			lock.icon		= 'lock'
 	_block_until	: ->
 		block_until	= @block_until
 		date		= new Date

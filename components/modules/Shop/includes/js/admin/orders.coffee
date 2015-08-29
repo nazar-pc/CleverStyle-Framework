@@ -43,23 +43,23 @@ $ ->
 				#{L.shop_datetime}: <span class="date"></span>
 			</p>
 			<p>
-				#{L.shop_user}: <span class="username"></span>, id: <input name="user" required>
+				#{L.shop_user}: <span class="username"></span>, id: <input is="cs-input-text" compact name="user" required>
 			</p>
 			<p>
 				<div class="items"></div>
-				<button type="button" class="add-item uk-button">#{L.shop_add_item}</button>
+				<button is="cs-button" class="add-item">#{L.shop_add_item}</button>
 			</p>
 			<p>
 				#{L.shop_shipping_type}: <select is="cs-select" name="shipping_type" required>#{shipping_types_list}</select>
 			</p>
 			<p>
-				#{L.shop_shipping_cost}: <input name="shipping_cost"> (<span id="shipping_cost"></span>)
+				#{L.shop_shipping_cost}: <input is="cs-input-text" name="shipping_cost"> (<span id="shipping_cost"></span>)
 			</p>
 			<p>
-				#{L.shop_shipping_username}: <input name="shipping_username">
+				#{L.shop_shipping_username}: <input is="cs-input-text" name="shipping_username">
 			</p>
 			<p>
-				#{L.shop_shipping_phone}: <input name="shipping_phone">
+				#{L.shop_shipping_phone}: <input is="cs-input-text" name="shipping_phone">
 			</p>
 			<p>
 				#{L.shop_shipping_address}: <textarea is="cs-textarea" autosize name="shipping_address"></textarea>
@@ -69,8 +69,8 @@ $ ->
 			</p>
 			<p>
 				#{L.shop_paid}:
-				<label><input type="radio" name="paid" value="1"> #{L.shop_yes}</label>
-				<label><input type="radio" name="paid" value="0" checked> #{L.shop_no}</label>
+				<label is="cs-label-button"><input type="radio" name="paid" value="1"> #{L.shop_yes}</label>
+				<label is="cs-label-button"><input type="radio" name="paid" value="0" checked> #{L.shop_no}</label>
 			</p>
 			<p>
 				#{L.shop_status}: <select is="cs-select" name="status" required>#{order_statuses}</select>
@@ -79,7 +79,7 @@ $ ->
 				#{L.shop_comment}: <textarea is="cs-textarea" autosize name="comment"></textarea>
 			</p>
 			<p>
-				<button class="uk-button" type="submit">#{action}</button>
+				<button is="cs-button" primary type="submit">#{action}</button>
 			</p>
 		</form>"""))
 		do ->
@@ -105,12 +105,12 @@ $ ->
 				callback	= (item_data) ->
 					total_price	= item_data.price * item.units
 					items_container.append("""<p>
-						#{L.shop_item}: <input value="-" class="title uk-form-blank" readonly>
-						id: <input name="items[item][]" value="#{item.item}" class="uk-form-width-small" required>
-						#{L.shop_unit_price} <input name="items[unit_price][]" value="#{item.unit_price}" class="uk-form-width-small" required> (<span class="unit-price">#{item_data.price}</span>)
-						#{L.shop_units} <input name="items[units][]" value="#{item.units}" class="uk-form-width-mini" required>
-						#{L.shop_total_price} <input name="items[price][]" value="#{item.price}" class="uk-form-width-small" required> (<span class="item-price" data-original-price="#{item_data.price}">#{total_price}</span>)
-						<button type="button" class="delete-item uk-button"><i class="uk-icon-close"></i></button>
+						#{L.shop_item}: <input is="cs-input-text" compact value="-" class="title" readonly>
+						id: <input is="cs-input-text" compact name="items[item][]" value="#{item.item}" required>
+						#{L.shop_unit_price} <input is="cs-input-text" compact name="items[unit_price][]" value="#{item.unit_price}" required> (<span class="unit-price">#{item_data.price}</span>)
+						#{L.shop_units} <input is="cs-input-text" compact name="items[units][]" value="#{item.units}" required>
+						#{L.shop_total_price} <input is="cs-input-text" compact name="items[price][]" value="#{item.price}" required> (<span class="item-price" data-original-price="#{item_data.price}">#{total_price}</span>)
+						<button is="cs-button" icon="close" type="button" class="delete-item"></button>
 					</p>""")
 					items_container.children(':last').find('.title').val(item_data.title)
 				if item.item
@@ -219,7 +219,7 @@ $ ->
 							''
 					content			+= """
 						<tr style="#{color}">
-							<td><i class="uk-icon-calendar"></i> #{status.date_formatted}</td>
+							<td><cs-icon icon="calendar"></cs-icon> #{status.date_formatted}</td>
 							<td>#{order_status?.title}</td>
 						</tr>
 						#{comment}

@@ -49,40 +49,26 @@
     $('.cs-header-sign-out-process').click(function() {
       return cs.sign_out();
     });
-    $('.cs-show-password').click(function() {
-      var $this, pass_input;
-      $this = $(this);
-      pass_input = $this.parent().next().children('input');
-      if (pass_input.prop('type') === 'password') {
-        pass_input.prop('type', 'text');
-        return $this.addClass('uk-icon-unlock-alt').removeClass('uk-icon-lock');
-      } else {
-        pass_input.prop('type', 'password');
-        return $this.addClass('uk-icon-lock').removeClass('uk-icon-unlock-alt');
-      }
-    });
     $('#current_password').click(function() {
-      var $this, password;
-      $this = $(this);
+      var password;
       password = $('.cs-profile-current-password');
       if (password.prop('type') === 'password') {
         password.prop('type', 'text');
-        return $this.addClass('uk-icon-unlock-alt').removeClass('uk-icon-lock');
+        return this.icon = 'unlock';
       } else {
         password.prop('type', 'password');
-        return $this.addClass('uk-icon-lock').removeClass('uk-icon-unlock-alt');
+        return this.icon = 'lock';
       }
     });
     $('#new_password').click(function() {
-      var $this, password;
-      $this = $(this);
+      var password;
       password = $('.cs-profile-new-password');
       if (password.prop('type') === 'password') {
         password.prop('type', 'text');
-        return $this.addClass('uk-icon-unlock-alt').removeClass('uk-icon-lock');
+        return this.icon = 'unlock';
       } else {
         password.prop('type', 'password');
-        return $this.addClass('uk-icon-lock').removeClass('uk-icon-unlock-alt');
+        return this.icon = 'lock';
       }
     });
     $('.cs-header-registration-process').click(function() {

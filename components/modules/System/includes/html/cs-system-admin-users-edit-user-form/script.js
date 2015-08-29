@@ -80,15 +80,15 @@
       })(this));
     },
     show_password: function(e) {
-      var $lock, password;
-      $lock = $(e.currentTarget);
-      password = $lock.next()[0];
+      var lock, password;
+      lock = e.currentTarget;
+      password = lock.nextElementSibling;
       if (password.type === 'password') {
         password.type = 'text';
-        return $lock.removeClass('uk-icon-lock').addClass('uk-icon-unlock');
+        return lock.icon = 'unlock';
       } else {
         password.type = 'password';
-        return $lock.removeClass('uk-icon-unlock').addClass('uk-icon-lock');
+        return lock.icon = 'lock';
       }
     },
     _block_until: function() {

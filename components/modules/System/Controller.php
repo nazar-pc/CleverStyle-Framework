@@ -363,11 +363,11 @@ class Controller {
 					h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
 						[
 							"$L->current_password ".h::{'icon#current_password.cs-pointer'}('lock'),
-							h::{'input.cs-profile-current-password[type=password]'}()
+							h::{'input.cs-profile-current-password[is=cs-input-text][type=password]'}()
 						],
 						[
 							"$L->new_password ".h::{'icon#new_password.cs-pointer'}('lock'),
-							h::{'input.cs-profile-new-password[type=password]'}()
+							h::{'input.cs-profile-new-password[is=cs-input-text][type=password]'}()
 						]
 					).
 					h::{'button.cs-profile-change-password[is=cs-button]'}(

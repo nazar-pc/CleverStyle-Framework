@@ -219,7 +219,7 @@ $ ->
 			modal.add_videos	= (videos) ->
 				videos.forEach (video) ->
 					videos_container.append("""<p>
-						<i class="uk-icon-sort uk-sortable-moving handle"></i>
+						<cs-icon icon="sort" class="handle"></cs-icon>
 						<select is="cs-select" name="videos[type][]" class="video-type">
 							<option value="supported_video">#{L.shop_youtube_vimeo_url}</option>
 							<option value="iframe">#{L.shop_iframe_url_or_embed_code}</option>
@@ -236,7 +236,7 @@ $ ->
 					if cs.file_upload
 						do ->
 							video_video.after("""
-								&nbsp;<button is="cs-button" type="button"><i class="uk-icon-upload"></i></button>
+								&nbsp;<button is="cs-button" type="button" icon="upload"></button>
 							""")
 							progress	= video_video.parent().find('progress')[0]
 							uploader	= cs.file_upload(
@@ -255,7 +255,7 @@ $ ->
 								uploader.destroy()
 						do ->
 							video_poster.after("""
-								&nbsp;<button is="cs-button" type="button"><i class="uk-icon-upload"></i></button>
+								&nbsp;<button is="cs-button" type="button" icon="upload"></button>
 							""")
 							progress	= video_video.parent().find('progress')[0]
 							uploader	= cs.file_upload(

@@ -24,10 +24,8 @@
         <label class="uk-form-label">
           <span>[[L.password_only_for_changing]]</span>
         </label>
-        <div class="uk-form-icon uk-width-1-1">
-          <div class="uk-icon-lock cs-pointer" on-click="show_password"></div>
-          <input id="password" is="cs-input-text" type="password" value="{{user_data.password}}">
-        </div>
+        <cs-icon icon="lock" on-click="show_password"></cs-icon>
+        <input id="password" is="cs-input-text" type="password" value="{{user_data.password}}">
         <label class="uk-form-label">[[L.language]]</label>
         <select is="cs-select" size="5" value="{{user_data.language}}">
           <template as="language" is="dom-repeat" items="[[languages]]">
