@@ -14,15 +14,13 @@ Polymer(
 		Polymer.cs.behaviors.tooltip
 	]
 	properties	:
-		autoOpen	:
-			type				: Boolean
-		autoDestroy	:
-			type				: Boolean
-		opened		:
-			observer			: '_opened_changed'
+		asIs		:
 			reflectToAttribute	: true
 			type				: Boolean
-		transparent	:
+		autoDestroy	: Boolean
+		autoOpen	: Boolean
+		opened		:
+			observer			: '_opened_changed'
 			reflectToAttribute	: true
 			type				: Boolean
 	listeners	: {

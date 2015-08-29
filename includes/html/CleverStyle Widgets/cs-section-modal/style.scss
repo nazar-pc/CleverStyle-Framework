@@ -40,8 +40,8 @@
 	@apply (--cs-section-modal-content);
 }
 
-:host([transparent]) #content {
-	background : transparent;
+:host([as-is]) #content {
+	@apply (--cs-section-modal-content-as-is);
 }
 
 :host([opened]) {
