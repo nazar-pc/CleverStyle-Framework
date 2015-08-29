@@ -12,7 +12,7 @@ $base-color				: #ddd;
 //Body background
 $body-bg				: #131313;
 
-$left-column : 25%;
+$left-column : 20%;
 
 html {
 	font       : {
@@ -81,7 +81,15 @@ body {
 #bottom_blocks {
 	border-left : .1rem solid #323232;
 	margin-left : $left-column;
-	padding     : 0 1rem;
+	padding     : 0 15% 0 1rem;
+}
+
+.uk-offcanvas.uk-active {
+	left : auto;
+
+	> .uk-offcanvas-bar {
+		width : 15%;
+	}
 }
 
 h1, h2, h3, h4, h5, h6 {

@@ -60,17 +60,11 @@ trait general {
 						'href' => "$Index->action/readme.html"
 					]
 				).
-				h::{'div#cs-system-license.uk-modal pre.uk-modal-dialog.uk-modal-dialog-large.cs-left'}(
-					file_get_contents(DIR.'/license.txt'),
-					[
-						'title' => "$L->system » $L->license"
-					]
+				h::{'button[is=cs-button][icon=legal]'}(
+					$L->license
 				).
-				h::{'button#cs-system-license-open[is=cs-button][icon=legal]'}(
-					$L->license,
-					[
-						'data-uk-modal' => "{target:'#cs-system-license'}"
-					]
+				h::{'section[is=cs-section-modal] pre'}(
+					file_get_contents(DIR.'/license.txt')
 				)
 			).
 			static::vertical_table(

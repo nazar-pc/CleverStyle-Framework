@@ -21,7 +21,6 @@ $avatar		= User::instance()->avatar(90);
 <!--pre_Body-->
 	<header>
 		<h1><a href="/"><?=get_core_ml_text('name')?></a></h1>
-		<nav data-uk-offcanvas="{target:'body > nav'}">Menu <span class="uk-icon uk-icon-reorder"></span></nav>
 	</header>
 	<aside id="left_blocks">
 <!--left_blocks-->
@@ -38,8 +37,8 @@ $avatar		= User::instance()->avatar(90);
 	<footer>
 		<?=CleverStyle\get_footer()?>
 	</footer>
-	<nav class="uk-offcanvas">
-		<div class="uk-offcanvas-bar uk-offcanvas-bar-flip">
+	<nav class="uk-offcanvas uk-active" style="">
+		<div class="uk-offcanvas-bar uk-offcanvas-bar-flip uk-offcanvas-bar-show" style="width: 15%;">
 			<div class="uk-panel uk-form cs-tenebris-offcanvas-user-block">
 				<img alt="" src="<?=$avatar?>" class="uk-thumbnail">
 				<?=CleverStyle\get_header_info()?>
