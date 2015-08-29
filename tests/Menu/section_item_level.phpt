@@ -12,7 +12,7 @@ $Menu->add_section_item(
 	'Section 1',
 	[
 		'href'    => "System/section1",
-		'primary' => 'uk-active'
+		'primary' => true
 	]
 );
 $Menu->add_item(
@@ -54,11 +54,11 @@ $Menu->add_section_item(
 );
 echo $Menu->get_menu();
 ?>
---EXPECT--
+--EXPECTF--
 <nav is="cs-nav-button-group">
-	<button icon-after="caret-down" is="cs-button" primary="uk-active" type="button">Section 1</button>
+	<button icon-after="caret-down" is="cs-button" primary type="button">Section 1</button>
 	<nav is="cs-nav-dropdown">
-		<nav vertical is="cs-nav-button-group">
+		<nav%sis="cs-nav-button-group"%S>
 			<a href="System/section1/item1" is="cs-link-button" primary>Section 1 item 1</a>
 			<a href="System/section1/item2" is="cs-link-button">Section 1 item 2</a>
 			<a href="System/section1/item3" is="cs-link-button" primary>Section 1 item 3</a>
