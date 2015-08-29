@@ -49,6 +49,7 @@
 		--warning-color                     : #e28327;
 		--error-background                  : #fff1f0;
 		--error-color                       : #d85030;
+		--dropdown-translate                : 1em;
 
 		--cs-global : {
 			box-sizing  : border-box;
@@ -464,6 +465,37 @@
 			transform         : translateY(0);
 			-webkit-transform : translateY(0);
 			transition        : all var(--notify-transition-duration) cubic-bezier(0.39, 0.58, 0.57, 1); /* Out - Sine */
+		}
+
+		/* Dropdown */
+
+		--cs-nav-dropdown : {
+			display           : block;
+			margin-top        : var(--dropdown-translate);
+			opacity           : 0;
+			transform         : scale(0);
+			-webkit-transform : scale(0);
+			transition        : margin-top var(--transition-duration), opacity var(--transition-duration), transform 0s var(--transition-duration), -webkit-transform 0s var(--transition-duration);
+		}
+
+		--cs-nav-dropdown-open : {
+			margin-top        : 0;
+			opacity           : 1;
+			transform         : scale(1);
+			-webkit-transform : scale(1);
+			transition        : margin-top var(--transition-duration), opacity var(--transition-duration);
+		}
+
+		--cs-nav-dropdown-content : {
+			background : var(--modal-content-background);
+			box-shadow : var(--notify-shadow);
+			padding    : var(--tooltip-padding);
+		}
+
+		--cs-nav-dropdown-content-as-is : {
+			background : transparent;
+			box-shadow : none;
+			padding    : 0;
 		}
 	}
 
