@@ -5,9 +5,15 @@
  * @license   MIT License, see license.txt
 ###
 Polymer(
-	'is'		: 'cs-nav-pagination'
-	'extends'	: 'nav'
-	properties	:
+	'is'			: 'cs-nav-pagination'
+	'extends'		: 'nav'
+	behaviors		: [
+		Polymer.cs.behaviors.this
+		Polymer.cs.behaviors.tooltip
+	]
+	hostAttributes	:
+		role	: 'group'
+	properties		:
 		page		:
 			notify				: true
 			reflectToAttribute	: true
@@ -16,11 +22,7 @@ Polymer(
 			reflectToAttribute	: true
 			type				: Number
 		pages_list	: Array
-	behaviors	: [
-		Polymer.cs.behaviors.this
-		Polymer.cs.behaviors.tooltip
-	]
-	observers	: [
+	observers		: [
 		'_refresh(page, pages)'
 	]
 	_refresh : (page, pages) ->

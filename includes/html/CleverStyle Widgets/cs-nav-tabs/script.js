@@ -12,6 +12,9 @@
     'is': 'cs-nav-tabs',
     'extends': 'nav',
     behaviors: [Polymer.cs.behaviors["this"], Polymer.cs.behaviors.tooltip],
+    hostAttributes: {
+      role: 'group'
+    },
     properties: {
       selected: {
         notify: true,

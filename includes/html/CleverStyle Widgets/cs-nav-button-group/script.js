@@ -11,7 +11,10 @@
   Polymer({
     'is': 'cs-nav-button-group',
     'extends': 'nav',
-    behaviors: [Polymer.cs.behaviors["this"], Polymer.cs.behaviors.tooltip]
+    behaviors: [Polymer.cs.behaviors["this"], Polymer.cs.behaviors.tooltip],
+    hostAttributes: {
+      role: 'group'
+    }
   });
 
 }).call(this);

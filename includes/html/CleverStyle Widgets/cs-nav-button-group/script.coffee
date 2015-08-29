@@ -5,10 +5,12 @@
  * @license   MIT License, see license.txt
 ###
 Polymer(
-	'is'		: 'cs-nav-button-group'
-	'extends'	: 'nav'
-	behaviors	: [
+	'is'			: 'cs-nav-button-group'
+	'extends'		: 'nav'
+	behaviors		: [
 		Polymer.cs.behaviors.this
 		Polymer.cs.behaviors.tooltip
 	]
+	hostAttributes	:
+		role	: 'group'
 )

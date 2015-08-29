@@ -5,18 +5,20 @@
  * @license   MIT License, see license.txt
 ###
 Polymer(
-	'is'		: 'cs-nav-tabs'
-	'extends'	: 'nav'
-	behaviors	: [
+	'is'			: 'cs-nav-tabs'
+	'extends'		: 'nav'
+	behaviors		: [
 		Polymer.cs.behaviors.this
 		Polymer.cs.behaviors.tooltip
 	]
-	properties	:
+	hostAttributes	:
+		role	: 'group'
+	properties		:
 		selected	:
 			notify		: true
 			observer	: '_selected_changed'
 			type		: Number
-	listeners	: {
+	listeners		: {
 		tap		: '_tap'
 	}
 	ready : ->

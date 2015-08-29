@@ -5,14 +5,16 @@
  * @license   MIT License, see license.txt
 ###
 Polymer(
-	'is'		: 'cs-label-button'
-	'extends'	: 'label'
-	behaviors	: [
+	'is'			: 'cs-label-button'
+	'extends'		: 'label'
+	behaviors		: [
 		Polymer.cs.behaviors.label
 		Polymer.cs.behaviors.this
 		Polymer.cs.behaviors.tooltip
 	]
-	properties	:
+	hostAttributes	:
+		role	: 'button'
+	properties		:
 		first	:
 			reflectToAttribute	: true
 			type				: Boolean

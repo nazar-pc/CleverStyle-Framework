@@ -12,6 +12,9 @@
     'is': 'cs-label-button',
     'extends': 'label',
     behaviors: [Polymer.cs.behaviors.label, Polymer.cs.behaviors["this"], Polymer.cs.behaviors.tooltip],
+    hostAttributes: {
+      role: 'button'
+    },
     properties: {
       first: {
         reflectToAttribute: true,

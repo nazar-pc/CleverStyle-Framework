@@ -11,6 +11,10 @@
   Polymer({
     'is': 'cs-nav-pagination',
     'extends': 'nav',
+    behaviors: [Polymer.cs.behaviors["this"], Polymer.cs.behaviors.tooltip],
+    hostAttributes: {
+      role: 'group'
+    },
     properties: {
       page: {
         notify: true,
@@ -23,7 +27,6 @@
       },
       pages_list: Array
     },
-    behaviors: [Polymer.cs.behaviors["this"], Polymer.cs.behaviors.tooltip],
     observers: ['_refresh(page, pages)'],
     _refresh: function(page, pages) {
       var i, j, k, l, m, n, o, p, pages_list, q, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8, render_one;
