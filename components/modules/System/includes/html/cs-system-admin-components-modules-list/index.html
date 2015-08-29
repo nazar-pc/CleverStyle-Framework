@@ -9,27 +9,17 @@
       <template as="module" is="dom-repeat" items="[[modules]]">
         <cs-table-row class$="[[module.class]]">
           <cs-table-cell>
-            <template if="[[module.info]]" is="dom-if">
-              <template if="[[module.administration]]" is="dom-if">
-                <a href="[[concat('/admin/', module.name)]]" tooltip="[[module.info]]">
-                  <span>[[module.name_localized]]</span>
-                  <cs-tooltip></cs-tooltip>
-                </a>
-              </template>
-              <template if="[[!module.administration]]" is="dom-if">
-                <span tooltip="[[module.info]]">
-                  <span>[[module.name_localized]]</span>
-                  <cs-tooltip></cs-tooltip>
-                </span>
-              </template>
-            </template>
-            <template if="[[!module.info]]" is="dom-if">
-              <template if="[[module.administration]]" is="dom-if">
-                <a href="[[concat('/admin/', module.name)]]">[[module.name_localized]]</a>
-              </template>
-              <template if="[[!module.administration]]" is="dom-if">
+            <template if="[[module.administration]]" is="dom-if">
+              <a href="[[concat('/admin/', module.name)]]" tooltip="[[module.info]]">
                 <span>[[module.name_localized]]</span>
-              </template>
+                <cs-tooltip></cs-tooltip>
+              </a>
+            </template>
+            <template if="[[!module.administration]]" is="dom-if">
+              <span tooltip="[[module.info]]">
+                <span>[[module.name_localized]]</span>
+                <cs-tooltip></cs-tooltip>
+              </span>
             </template>
           </cs-table-cell>
           <cs-table-cell>
@@ -69,13 +59,13 @@
               <a href="[[concat('/admin/System/components/modules/disable/', module.name)]]" icon="minus" is="cs-link-button" tooltip="[[L.disable]]"></a>
             </template>
             <template if="[[equal(module.active, 0)]]" is="dom-if">
-              <a href="[[concat('/admin/System/components/modules/enable/', module.name)]]" icon="check" is="cs-link-button" tooltip="[[L.enable]]">[[L.enable]]</a>
+              <a force-compact href="[[concat('/admin/System/components/modules/enable/', module.name)]]" icon="check" is="cs-link-button" tooltip="[[L.enable]]">[[L.enable]]</a>
             </template>
             <template if="[[!equal(module.active, -1)]]" is="dom-if">
               <a href="[[concat('/admin/System/components/modules/uninstall/', module.name)]]" icon="trash" is="cs-link-button" tooltip="[[L.uninstall]]"></a>
             </template>
             <template if="[[equal(module.active, -1)]]" is="dom-if">
-              <a href="[[concat('/admin/System/components/modules/install/', module.name)]]" icon="download" is="cs-link-button" tooltip="[[L.install]]">[[L.install]]</a>
+              <a force-compact href="[[concat('/admin/System/components/modules/install/', module.name)]]" icon="download" is="cs-link-button" tooltip="[[L.install]]">[[L.install]]</a>
             </template>
           </cs-table-cell>
         </cs-table-row>

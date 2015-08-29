@@ -101,7 +101,7 @@
         tooltip_position.top += element_position.top - tooltip_size.height;
       } else {
         tooltip_position.arrow_top = true;
-        tooltip_position.top += element_position.bottom + element_position.height;
+        tooltip_position.top += element_position.bottom;
       }
       left_offset = element_position.left + (element_position.width / 2) - (tooltip_size.width / 2);
       if (left_offset >= 0) {

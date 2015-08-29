@@ -8,20 +8,14 @@
 			%template(is="dom-repeat" items="[[modules]]" as="module")
 				%cs-table-row(class$="[[module.class]]")
 					%cs-table-cell
-						%template(is="dom-if" if="[[module.info]]")
-							%template(is="dom-if" if="[[module.administration]]")
-								%a(href="[[concat('/admin/', module.name)]]" tooltip="[[module.info]]")
-									%span [[module.name_localized]]
-									%cs-tooltip
-							%template(is="dom-if" if="[[!module.administration]]")
-								%span(tooltip="[[module.info]]")
-									%span [[module.name_localized]]
-									%cs-tooltip
-						%template(is="dom-if" if="[[!module.info]]")
-							%template(is="dom-if" if="[[module.administration]]")
-								%a(href="[[concat('/admin/', module.name)]]") [[module.name_localized]]
-							%template(is="dom-if" if="[[!module.administration]]")
+						%template(is="dom-if" if="[[module.administration]]")
+							%a(href="[[concat('/admin/', module.name)]]" tooltip="[[module.info]]")
 								%span [[module.name_localized]]
+								%cs-tooltip
+						%template(is="dom-if" if="[[!module.administration]]")
+							%span(tooltip="[[module.info]]")
+								%span [[module.name_localized]]
+								%cs-tooltip
 					%cs-table-cell
 						%cs-icon(icon="[[module.icon]]" tooltip="[[module.icon_text]]")
 						%template(is="dom-if" if="[[module.api]]")
@@ -48,9 +42,9 @@
 						%template(is="dom-if" if="[[equal(module.active, 1)]]")
 							%a(is="cs-link-button" icon="minus" href="[[concat('/admin/System/components/modules/disable/', module.name)]]" tooltip="[[L.disable]]")
 						%template(is="dom-if" if="[[equal(module.active, 0)]]")
-							%a(is="cs-link-button" icon="check" href="[[concat('/admin/System/components/modules/enable/', module.name)]]" tooltip="[[L.enable]]") [[L.enable]]
+							%a(is="cs-link-button" icon="check" href="[[concat('/admin/System/components/modules/enable/', module.name)]]" tooltip="[[L.enable]]" force-compact) [[L.enable]]
 						%template(is="dom-if" if="[[!equal(module.active, -1)]]")
 							%a(is="cs-link-button" icon="trash" href="[[concat('/admin/System/components/modules/uninstall/', module.name)]]" tooltip="[[L.uninstall]]")
 						%template(is="dom-if" if="[[equal(module.active, -1)]]")
-							%a(is="cs-link-button" icon="download" href="[[concat('/admin/System/components/modules/install/', module.name)]]" tooltip="[[L.install]]") [[L.install]]
+							%a(is="cs-link-button" icon="download" href="[[concat('/admin/System/components/modules/install/', module.name)]]" tooltip="[[L.install]]" force-compact) [[L.install]]
 	%script(src="script.js")
