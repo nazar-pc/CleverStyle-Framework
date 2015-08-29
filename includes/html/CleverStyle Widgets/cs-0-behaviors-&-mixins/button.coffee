@@ -30,7 +30,7 @@ Polymer.cs.behaviors.button =
 			type				: Boolean
 	listeners	:
 		tap	: '_tap'
-	append : ->
+	attached : ->
 		@empty = !@childNodes.length
 		return
 	_bind_changed : ->

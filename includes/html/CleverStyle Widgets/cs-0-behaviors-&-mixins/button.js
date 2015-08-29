@@ -43,7 +43,7 @@
     listeners: {
       tap: '_tap'
     },
-    append: function() {
+    attached: function() {
       this.empty = !this.childNodes.length;
     },
     _bind_changed: function() {
