@@ -13,4 +13,8 @@ Polymer(
 	]
 	hostAttributes	:
 		role	: 'group'
+	properties		:
+		vertical	:
+			reflectToAttribute	: true
+			type				: Boolean
 )

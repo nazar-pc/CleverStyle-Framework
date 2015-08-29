@@ -14,6 +14,14 @@
 	@apply (--cs-nav-button-group);
 }
 
+:host([vertical]) {
+	flex-direction         : column;
+	-ms-flex-direction     : column;
+	-webkit-flex-direction : column;
+
+	@apply (--cs-nav-button-group-vertical);
+}
+
 // Hack: `:host` is here only because of Polymer unable to handle pure `::content` properly
 :host ::content > :not(template) {
 	& {
@@ -26,5 +34,19 @@
 
 	&[last] {
 		@apply (--cs-nav-button-group-button);
+	}
+}
+
+:host([vertical]) ::content > :not(template) {
+	& {
+		@apply (--cs-nav-button-group-button-vertical);
+	}
+
+	&[first] {
+		@apply (--cs-nav-button-group-button-vertical);
+	}
+
+	&[last] {
+		@apply (--cs-nav-button-group-button-vertical);
 	}
 }

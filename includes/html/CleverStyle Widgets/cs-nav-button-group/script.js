@@ -14,6 +14,12 @@
     behaviors: [Polymer.cs.behaviors["this"], Polymer.cs.behaviors.tooltip],
     hostAttributes: {
       role: 'group'
+    },
+    properties: {
+      vertical: {
+        reflectToAttribute: true,
+        type: Boolean
+      }
     }
   });
 
