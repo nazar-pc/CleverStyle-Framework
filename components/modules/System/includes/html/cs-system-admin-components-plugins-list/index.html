@@ -22,12 +22,12 @@
           <cs-table-cell>
             <cs-icon icon="[[plugin.icon]]" tooltip="[[plugin.icon_text]]"></cs-icon>
             <template if="[[plugin.readme]]" is="dom-if">
-              <button action="open" bind="[[plugin.readme.modal]]" icon="book" is="cs-button" tooltip="[[concat(L.information_about_plugin, '<br>', L.click_to_view_details)]]" type="button"></button>
-              <section content="[[plugin.readme.content]]" is="cs-section-modal" this="{{plugin.readme.modal}}"></section>
+              <button icon="book" is="cs-button" tooltip="[[concat(L.information_about_plugin, '<br>', L.click_to_view_details)]]" type="button"></button>
+              <section content="[[plugin.readme.content]]" is="cs-section-modal"></section>
             </template>
             <template if="[[plugin.license]]" is="dom-if">
-              <button action="open" bind="[[plugin.license.modal]]" icon="legal" is="cs-button" tooltip="[[concat(L.license, '<br>', L.click_to_view_details)]]" type="button"></button>
-              <section content="[[plugin.license.content]]" is="cs-section-modal" this="{{plugin.license.modal}}"></section>
+              <button icon="legal" is="cs-button" tooltip="[[concat(L.license, '<br>', L.click_to_view_details)]]" type="button"></button>
+              <section content="[[plugin.license.content]]" is="cs-section-modal"></section>
             </template>
           </cs-table-cell>
           <cs-table-cell>

@@ -44,6 +44,10 @@
       })(this);
     },
     attached: function() {
+      if (!this._attached_to_html && this.previousElementSibling.tagName === 'BUTTON') {
+        this.previousElementSibling.action = 'open';
+        this.previousElementSibling.bind = this;
+      }
       if (this.autoOpen) {
         this.open();
       }

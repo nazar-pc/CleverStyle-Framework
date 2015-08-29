@@ -33,6 +33,9 @@ Polymer(
 			return
 		return
 	attached : ->
+		if !@_attached_to_html && @previousElementSibling.tagName == 'BUTTON'
+			@previousElementSibling.action	= 'open'
+			@previousElementSibling.bind	= @
 		if @autoOpen
 			@open()
 		return

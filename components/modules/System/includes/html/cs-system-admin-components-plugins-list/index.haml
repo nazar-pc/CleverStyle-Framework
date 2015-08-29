@@ -17,11 +17,11 @@
 					%cs-table-cell
 						%cs-icon(icon="[[plugin.icon]]" tooltip="[[plugin.icon_text]]")
 						%template(is="dom-if" if="[[plugin.readme]]")
-							%button(is="cs-button" icon="book" type="button" bind="[[plugin.readme.modal]]" action="open" tooltip="[[concat(L.information_about_plugin, '<br>', L.click_to_view_details)]]")
-							%section(is="cs-section-modal" this="{{plugin.readme.modal}}" content="[[plugin.readme.content]]")
+							%button(is="cs-button" icon="book" type="button" tooltip="[[concat(L.information_about_plugin, '<br>', L.click_to_view_details)]]")
+							%section(is="cs-section-modal" content="[[plugin.readme.content]]")
 						%template(is="dom-if" if="[[plugin.license]]")
-							%button(is="cs-button" icon="legal" type="button" bind="[[plugin.license.modal]]" action="open" tooltip="[[concat(L.license, '<br>', L.click_to_view_details)]]")
-							%section(is="cs-section-modal" this="{{plugin.license.modal}}" content="[[plugin.license.content]]")
+							%button(is="cs-button" icon="legal" type="button" tooltip="[[concat(L.license, '<br>', L.click_to_view_details)]]")
+							%section(is="cs-section-modal" content="[[plugin.license.content]]")
 					%cs-table-cell
 						%template(is="dom-if" if="[[equal(plugin.active, 1)]]")
 							%a(is="cs-link-button" icon="minus" href="[[concat('/admin/System/components/plugins/disable/', plugin.name)]]" tooltip="[[L.disable]]")

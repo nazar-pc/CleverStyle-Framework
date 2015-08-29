@@ -39,17 +39,17 @@
                 <cs-icon icon="link" tooltip="[[L.api_exists]]"></cs-icon>
               </template>
               <template if="[[module.api.type]]" is="dom-if">
-                <button action="open" bind="[[module.api.modal]]" icon="link" is="cs-button" tooltip="[[concat(L.api_exists, '<br>', L.click_to_view_details)]]" type="button"></button>
-                <section content="[[module.api.content]]" is="cs-section-modal" this="{{module.api.modal}}"></section>
+                <button icon="link" is="cs-button" tooltip="[[concat(L.api_exists, '<br>', L.click_to_view_details)]]" type="button"></button>
+                <section content="[[module.api.content]]" is="cs-section-modal"></section>
               </template>
             </template>
             <template if="[[module.readme]]" is="dom-if">
-              <button action="open" bind="[[module.readme.modal]]" icon="book" is="cs-button" tooltip="[[concat(L.information_about_module, '<br>', L.click_to_view_details)]]" type="button"></button>
-              <section content="[[module.readme.content]]" is="cs-section-modal" this="{{module.readme.modal}}"></section>
+              <button icon="book" is="cs-button" tooltip="[[concat(L.information_about_module, '<br>', L.click_to_view_details)]]" type="button"></button>
+              <section content="[[module.readme.content]]" is="cs-section-modal"></section>
             </template>
             <template if="[[module.license]]" is="dom-if">
-              <button action="open" bind="[[module.license.modal]]" icon="legal" is="cs-button" tooltip="[[concat(L.license, '<br>', L.click_to_view_details)]]" type="button"></button>
-              <section content="[[module.license.content]]" is="cs-section-modal" this="{{module.license.modal}}"></section>
+              <button icon="legal" is="cs-button" tooltip="[[concat(L.license, '<br>', L.click_to_view_details)]]" type="button"></button>
+              <section content="[[module.license.content]]" is="cs-section-modal"></section>
             </template>
           </cs-table-cell>
           <cs-table-cell left>
