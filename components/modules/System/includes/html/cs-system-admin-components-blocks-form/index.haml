@@ -1,6 +1,6 @@
 %dom-module#cs-system-admin-components-blocks-form
 	%template
-		%cs-table.uk-form(right-left)
+		%cs-table(right-left)
 			%cs-table-row
 				%cs-table-cell
 					%span(tooltip="[[L.block_type_info]]")
@@ -16,7 +16,7 @@
 						%span [[L.block_title]]
 						%cs-tooltip
 				%cs-table-cell
-					%input(name="block[title]" type="text" value$="[[json.block_data.title]]")/
+					%input(is="cs-input-text" name="block[title]" type="text" value$="[[json.block_data.title]]")/
 			%cs-table-row
 				%cs-table-cell
 					%span(tooltip="[[L.block_active_info]]")
@@ -44,7 +44,7 @@
 						%span [[L.block_start]]
 						%cs-tooltip
 				%cs-table-cell
-					%input(name="block[start]" type="datetime-local" value$="[[json.block_data.start]]")/
+					%input(is="cs-input-text" name="block[start]" type="datetime-local" value$="[[json.block_data.start]]")/
 			%cs-table-row
 				%cs-table-cell
 					%span(tooltip="[[L.block_expire_info]]")
@@ -59,9 +59,9 @@
 						%span [[L.as_specified]]
 					%br/
 					%br/
-					%input(name="block[expire][date]" type="datetime-local" value$="[[json.block_data.expire.date]]")/
-		.html.uk-form(hidden$="[[!equal(json.block_data.type, 'html')]]")
+					%input(is="cs-input-text" name="block[expire][date]" type="datetime-local" value$="[[json.block_data.expire.date]]")/
+		.html(hidden$="[[!equal(json.block_data.type, 'html')]]")
 			%textarea.EDITOR(is="cs-textarea" autosize name="block[html]")
-		.raw_html.uk-form(hidden$="[[!equal(json.block_data.type, 'raw_html')]]")
+		.raw_html(hidden$="[[!equal(json.block_data.type, 'raw_html')]]")
 			%textarea(is="cs-textarea" autosize name="block[raw_html]")
 	%script(src="script.js")

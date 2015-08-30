@@ -1,13 +1,13 @@
 %dom-module(id="cs-system-admin-groups-form")
 	%template
-		.uk-form.uk-form-stacked
+		%form(is="cs-form")
 			%template(is="dom-if" if="[[group_id]]")
-				%label.uk-form-label id
-				%p [[group_id]]
-			%label.uk-form-label [[L.group_name]]
-			%input(type="text" value="{{group_title::input}}")/
-			%label.uk-form-label [[L.group_description]]
-			%input(type="text" value="{{description::input}}")/
-			%p
-				%button(is="cs-button" primary on-click="save" disabled$="[[!group_title]]") [[L.save]]
+				%label id
+				%input(is="cs-input-text" readonly value="[[group_id]]")
+			%label [[L.group_name]]
+			%input(is="cs-input-text" type="text" value="{{group_title}}")/
+			%label [[L.group_description]]
+			%input(is="cs-input-text" type="text" value="{{description}}")/
+			%div
+				%button(is="cs-button" type="button" primary on-click="save" disabled$="[[!group_title]]") [[L.save]]
 	%script(src="script.js")

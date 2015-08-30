@@ -1,18 +1,18 @@
 <dom-module id="cs-system-admin-groups-form">
   <template>
-    <div class="uk-form uk-form-stacked">
+    <form is="cs-form">
       <template if="[[group_id]]" is="dom-if">
-        <label class="uk-form-label">id</label>
-        <p>[[group_id]]</p>
+        <label>id</label>
+        <input is="cs-input-text" readonly value="[[group_id]]">
       </template>
-      <label class="uk-form-label">[[L.group_name]]</label>
-      <input type="text" value="{{group_title::input}}">
-      <label class="uk-form-label">[[L.group_description]]</label>
-      <input type="text" value="{{description::input}}">
-      <p>
-        <button disabled$="[[!group_title]]" is="cs-button" on-click="save" primary>[[L.save]]</button>
-      </p>
-    </div>
+      <label>[[L.group_name]]</label>
+      <input is="cs-input-text" type="text" value="{{group_title}}">
+      <label>[[L.group_description]]</label>
+      <input is="cs-input-text" type="text" value="{{description}}">
+      <div>
+        <button disabled$="[[!group_title]]" is="cs-button" on-click="save" primary type="button">[[L.save]]</button>
+      </div>
+    </form>
   </template>
   <script src="script.js"></script>
 </dom-module>

@@ -5,63 +5,63 @@
       <cs-icon icon="spinner" spin></cs-icon>
     </h2>
     <template if="{{user_data.id}}" is="dom-if">
-      <div class="uk-form uk-form-stacked">
-        <label class="uk-form-label">id</label>
-        <p>[[user_data.id]]</p>
-        <label class="uk-form-label">[[L.registration_date]]</label>
-        <p>[[user_data.reg_date_formatted]]</p>
-        <label class="uk-form-label">[[L.registration_ip]]</label>
-        <p>[[user_data.reg_ip_formatted.0]]</p>
+      <form is="cs-form">
+        <label>id</label>
+        <input is="cs-input-text" readonly value="[[user_data.id]]">
+        <label>[[L.registration_date]]</label>
+        <input is="cs-input-text" readonly value="[[user_data.reg_date_formatted]]">
+        <label>[[L.registration_ip]]</label>
+        <input is="cs-input-text" readonly value="[[user_data.reg_ip_formatted.0]]">
         <template if="[[user_data.reg_ip_formatted.1]]" is="dom-if">
-          <p>[[user_data.reg_ip_formatted.1]]</p>
+          <input class="cs-margin-bottom" is="cs-input-text" readonly value="[[user_data.reg_ip_formatted.1]]">
         </template>
-        <label class="uk-form-label">[[L.login]]</label>
+        <label>[[L.login]]</label>
         <input is="cs-input-text" type="text" value="{{user_data.login}}">
-        <label class="uk-form-label">[[L.username]]</label>
+        <label>[[L.username]]</label>
         <input is="cs-input-text" type="text" value="{{user_data.username}}">
-        <label class="uk-form-label">[[L.email]]</label>
+        <label>[[L.email]]</label>
         <input is="cs-input-text" type="email" value="{{user_data.email}}">
-        <label class="uk-form-label">
-          <span>[[L.password_only_for_changing]]</span>
-        </label>
+        <label>[[L.password_only_for_changing]]</label>
         <cs-icon icon="lock" on-click="show_password"></cs-icon>
         <input id="password" is="cs-input-text" type="password" value="{{user_data.password}}">
-        <label class="uk-form-label">[[L.language]]</label>
+        <label>[[L.language]]</label>
         <select is="cs-select" size="5" value="{{user_data.language}}">
           <template as="language" is="dom-repeat" items="[[languages]]">
             <option selected$="[[equal(language.clanguage, user_data.language)]]" value="[[language.clanguage]]">[[language.description]]</option>
           </template>
         </select>
-        <label class="uk-form-label">[[L.timezone]]</label>
+        <label>[[L.timezone]]</label>
         <select is="cs-select" size="7" value="{{user_data.timezone}}">
           <template as="timezone" is="dom-repeat" items="[[timezones]]">
             <option selected$="[[equal(timezone.timezone, user_data.timezone)]]" value="[[timezone.timezone]]">[[timezone.description]]</option>
           </template>
         </select>
-        <label class="uk-form-label">[[L.status]]</label>
-        <label is="cs-label-button" value="{{user_data.status}}">
-          <input checked="[[equal(user_data.status, -1)]]" type="radio" value="-1">
-          <span>[[L.is_not_activated]]</span>
-        </label>
-        <label is="cs-label-button">
-          <input checked="[[equal(user_data.status, 0)]]" type="radio" value="0">
-          <span>[[L.inactive]]</span>
-        </label>
-        <label is="cs-label-button">
-          <input checked="[[equal(user_data.status, 1)]]" type="radio" value="1">
-          <span>[[L.active]]</span>
-        </label>
-        <label class="uk-form-label" tooltip="[[L.block_until_info]]">
+        <label>[[L.status]]</label>
+        <nav is="cs-nav-button-group">
+          <label is="cs-label-button" value="{{user_data.status}}">
+            <input checked="[[equal(user_data.status, -1)]]" type="radio" value="-1">
+            <span>[[L.is_not_activated]]</span>
+          </label>
+          <label is="cs-label-button">
+            <input checked="[[equal(user_data.status, 0)]]" type="radio" value="0">
+            <span>[[L.inactive]]</span>
+          </label>
+          <label is="cs-label-button">
+            <input checked="[[equal(user_data.status, 1)]]" type="radio" value="1">
+            <span>[[L.active]]</span>
+          </label>
+        </nav>
+        <label tooltip="[[L.block_until_info]]">
           <span>[[L.block_until]]</span>
           <cs-tooltip></cs-tooltip>
         </label>
         <input is="cs-input-text" type="datetime-local" value="{{block_until}}">
-        <label class="uk-form-label">[[L.avatar]]</label>
+        <label>[[L.avatar]]</label>
         <input is="cs-input-text" type="text" value="{{user_data.avatar}}">
-        <p>
-          <button is="cs-button" on-click="save" primary>[[L.save]]</button>
-        </p>
-      </div>
+        <div>
+          <button is="cs-button" on-click="save" primary type="button">[[L.save]]</button>
+        </div>
+      </form>
     </template>
   </template>
   <script src="script.js"></script>

@@ -5,14 +5,12 @@
       <div>
         <a class="uk-thumbnail uk-thumbnail-expand" href="[[href]]" id="img"></a>
       </div>
-      <div class="uk-form">
-        <div class="uk-text-large">
-          <a href="[[href]]">[[item_title]]</a>
-          :
-          <input class="uk-form-width-small" min="0" type="number" value="{{units::input}}">
-          <span>[[concat('x ', unit_price_formatted, ' = ', price_formatted)]]</span>
-          <span id="discount"></span>
-        </div>
+      <div>
+        <a class="cs-text-lead" href="[[href]]">[[item_title]]</a>
+        :
+        <input compact is="cs-input-text" min="0" type="number" value="{{units}}">
+        <span class="cs-text-lead">[[concat('x ', unit_price_formatted, ' = ', price_formatted)]]</span>
+        <span class="cs-text-lead" id="discount"></span>
         <div>
           <content select="#description"></content>
         </div>

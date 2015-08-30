@@ -1,0 +1,37 @@
+/**
+ * @package   CleverStyle Widgets
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
+ */
+:host {
+	display                : flex;
+	display                : -ms-flexbox;
+	display                : -webkit-flex;
+	flex-direction         : column;
+	-ms-flex-direction     : column;
+	-webkit-flex-direction : column;
+
+	@apply (--cs-no-selection);
+	@apply (--cs-global);
+	@apply (--cs-form);
+}
+
+// Hack: `:host` is here only because of Polymer unable to handle pure `::content` properly
+:host ::content {
+	legend {
+		@apply (--cs-form-legend);
+	}
+
+	> label {
+		@apply (--cs-form-label);
+
+		& + * {
+			@apply (--cs-form-after-label);
+		}
+
+		&[hidden] + * {
+			display : none;
+		}
+	}
+}

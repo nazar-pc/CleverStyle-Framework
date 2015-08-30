@@ -225,7 +225,7 @@ $ ->
 							<option value="iframe">#{L.shop_iframe_url_or_embed_code}</option>
 							<option value="direct_url">#{L.shop_direct_video_url}</option>
 						</select>
-						<textarea is="cs-textarea" autosize name="videos[video][]" placeholder="#{L.shop_url_or_code}" class="video-video uk-form-width-large" rows="3"></textarea>
+						<textarea is="cs-textarea" autosize name="videos[video][]" placeholder="#{L.shop_url_or_code}" class="video-video" rows="3"></textarea>
 						<input is="cs-input-text" name="videos[poster][]" class="video-poster" placeholder="#{L.shop_video_poster}">
 						<button is="cs-button" icon="close" type="button" class="delete-video"></button>
 						<progress is="cs-progress" hidden full-width></progress>

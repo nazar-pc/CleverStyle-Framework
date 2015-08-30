@@ -9,36 +9,29 @@ if !cs.is_admin
 	return
 $ ->
 	L	= cs.Language
+	# TODO HTML editor below not working
 	$('body')
 		.on(
 			'click'
 			'.cs-content-add'
 			->
-				modal_body	= $("""<div>
-					<p>
-						<label>#{L.content_key}:</label>
-						<input is="cs-input-text" type="text" name="key" tooltip="ddd">
-					</p>
-					<p>
-						<label>#{L.content_title}:</label>
-						<input is="cs-input-text" type="text" name="title">
-					</p>
-					<p>
-						<label>#{L.content_content}:</label>
-						<textarea is="cs-textarea" autosize class="text"></textarea>
-						<textarea is="cs-textarea" autosize class="html EDITOR" id="cs-content-html-content"></textarea>
-					</p>
-					<p>
-						<label>#{L.content_type}:</label>
-						<select is="cs-select" name="type">
-							<option value="text">text</option>
-							<option value="html" id="cs-content-html-content">html</option>
-						</select>
-					</p>
-					<p class="cs-text-right">
-						<button is="cs-button" primary>#{L.content_save}</button>
-					</p>
-				</div>""")
+				modal_body	= $("""<form is="cs-form">
+					<label>#{L.content_key}</label>
+					<input is="cs-input-text" type="text" name="key">
+					<label>#{L.content_title}</label>
+					<input is="cs-input-text" type="text" name="title">
+					<label>#{L.content_content}</label>
+					<textarea is="cs-textarea" autosize class="text"></textarea>
+					<textarea is="cs-textarea" autosize class="html EDITOR cs-margin-bottom" id="cs-content-html-content"></textarea>
+					<label>#{L.content_type}</label>
+					<select is="cs-select" name="type">
+						<option value="text">text</option>
+						<option value="html" id="cs-content-html-content">html</option>
+					</select>
+					<div>
+						<button is="cs-button" type="button" primary>#{L.content_save}</button>
+					</div>
+				</form>""")
 				modal_body.appendTo(document.body)
 				key		= modal_body.find('[name=key]')
 				title	= modal_body.find('[name=title]')
@@ -73,32 +66,28 @@ $ ->
 			'.cs-content-edit'
 			->
 				key = $(@).data('key')
+				# TODO HTML editor below not working
 				$.ajax(
 					url		: "api/Content/#{key}"
 					type	: 'get'
 					success	: (data) ->
-						modal_body	= $("""<div class="uk-form">
-							<p>#{L.content_key}: #{data.key}</p>
-							<p>
-								<label>#{L.content_title}:</label>
-								<input is="cs-input-text" type="text" name="title">
-							</p>
-							<p>
-								<label>#{L.content_content}:</label>
-								<textarea is="cs-textarea" autosize class="text"></textarea>
-								<textarea is="cs-textarea" autosize class="html EDITOR" id="cs-content-html-content"></textarea>
-							</p>
-							<p>
-								<label>#{L.content_type}:</label>
-								<select is="cs-select" name="type">
-									<option value="text">text</option>
-									<option value="html">html</option>
-								</select>
-							</p>
-							<p class="cs-text-right">
-								<button is="cs-button" primary>#{L.content_save}</button>
-							</p>
-						</div>""")
+						modal_body	= $("""<form is="cs-form">
+							<label>#{L.content_key}</label>
+							<input is="cs-input-text" readonly value="#{data.key}">
+							<label>#{L.content_title}</label>
+							<input is="cs-input-text" type="text" name="title">
+							<label>#{L.content_content}</label>
+							<textarea is="cs-textarea" autosize class="text"></textarea>
+							<textarea is="cs-textarea" autosize class="html EDITOR cs-margin-bottom" id="cs-content-html-content"></textarea>
+							<label>#{L.content_type}</label>
+							<select is="cs-select" name="type">
+								<option value="text">text</option>
+								<option value="html">html</option>
+							</select>
+							<div>
+								<button is="cs-button" type="button" primary>#{L.content_save}</button>
+							</div>
+						</form>""")
 						title	= modal_body.find('[name=title]').val(data.title)
 						content	= modal_body.find('textarea').val(data.content)
 						modal_body.find("textarea:not(.#{data.type})").hide()

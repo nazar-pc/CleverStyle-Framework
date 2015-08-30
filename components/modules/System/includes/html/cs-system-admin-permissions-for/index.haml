@@ -2,7 +2,7 @@
 	%template
 		%h2.cs-text-center(hidden$="[[all_permissions.length]]")
 			%cs-icon(icon="spinner" spin)
-		%form#form.uk-form
+		%form#form(is="cs-form")
 			%template(is="dom-repeat" items="[[all_permissions]]" as="permission")
 				%legend [[permission.group]]
 				%div
@@ -15,14 +15,15 @@
 							%cs-table-row
 								%cs-table-cell [[label.name]]
 								%cs-table-cell
-									%label(is="cs-label-button")
-										%input(type="radio" value="-1" checked="[[permission_state(label.id, -1)]]" name$="[[concat('permissions[', label.id, ']')]]")/
-										%span [[L.inherited]]
-									%label(is="cs-label-button")
-										%input(type="radio" value="0" checked="[[permission_state(label.id, 0)]]" name$="[[concat('permissions[', label.id, ']')]]")/
-										%span [[L.deny]]
-									%label(is="cs-label-button")
-										%input(type="radio" value="1" checked="[[permission_state(label.id, 1)]]" name$="[[concat('permissions[', label.id, ']')]]")/
-										%span [[L.allow]]
+									%nav(is="cs-nav-button-group")
+										%label(is="cs-label-button")
+											%input(type="radio" value="-1" checked="[[permission_state(label.id, -1)]]" name$="[[concat('permissions[', label.id, ']')]]")/
+											%span [[L.inherited]]
+										%label(is="cs-label-button")
+											%input(type="radio" value="0" checked="[[permission_state(label.id, 0)]]" name$="[[concat('permissions[', label.id, ']')]]")/
+											%span [[L.deny]]
+										%label(is="cs-label-button")
+											%input(type="radio" value="1" checked="[[permission_state(label.id, 1)]]" name$="[[concat('permissions[', label.id, ']')]]")/
+											%span [[L.allow]]
 		%button(is="cs-button" primary on-click="save" type="button") [[L.save]]
 	%script(src="script.js")

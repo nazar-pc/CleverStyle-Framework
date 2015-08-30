@@ -1,8 +1,8 @@
 %dom-module(id="cs-system-admin-users-add-user-form")
 	%template
-		.uk-form.uk-form-stacked
-			%label.uk-form-label [[L.email]]
-			%input(type="email" value="{{email::input}}")/
+		%form(is="cs-form")
+			%label [[L.email]]
+			%input(is="cs-input-text" type="email" value="{{email}}")/
 			%p
-				%button(is="cs-button" primary on-click="save" disabled$="[[!email]]") [[L.save]]
+				%button(is="cs-button" type="button" primary on-click="save" disabled$="[[!email]]") [[L.save]]
 	%script(src="script.js")

@@ -51,6 +51,7 @@
 		--error-background                  : #fff1f0;
 		--error-color                       : #d85030;
 		--dropdown-translate                : 1em;
+		--form-legend-border                : .1em solid #ddd;
 
 		--cs-global : {
 			box-sizing  : border-box;
@@ -501,6 +502,23 @@
 			background : transparent;
 			box-shadow : none;
 			padding    : 0;
+		}
+
+		/* Form */
+
+		--cs-form-legend : {
+			border-bottom : var(--form-legend-border);
+			font-size     : 1.4em;
+			margin-bottom : var(--block-padding);
+		}
+
+		--cs-form-label : {
+			font-weight   : bold;
+			margin-bottom : var(--block-padding);
+		}
+
+		--cs-form-after-label : {
+			margin-bottom : var(--block-padding);
 		}
 	}
 

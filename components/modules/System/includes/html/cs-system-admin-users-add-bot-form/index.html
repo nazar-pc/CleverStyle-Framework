@@ -1,22 +1,22 @@
 <dom-module id="cs-system-admin-users-add-bot-form">
   <template>
-    <div class="uk-form uk-form-stacked">
-      <label class="uk-form-label">[[L.bot_name]]</label>
+    <form is="cs-form">
+      <label>[[L.bot_name]]</label>
       <input is="cs-input-text" type="text" value="{{name}}">
-      <label class="uk-form-label" tooltip="[[L.bot_user_agent_info]]">
+      <label tooltip="[[L.bot_user_agent_info]]">
         <span>[[L.bot_user_agent]]</span>
         <cs-tooltip></cs-tooltip>
       </label>
       <input is="cs-input-text" type="text" value="{{user_agent}}">
-      <label class="uk-form-label" tooltip="[[L.bot_ip_info]]">
+      <label tooltip="[[L.bot_ip_info]]">
         <span>[[L.bot_ip]]</span>
         <cs-tooltip></cs-tooltip>
       </label>
       <input is="cs-input-text" type="text" value="{{ip}}">
-      <p>
+      <div>
         <button disabled="[[!can_save]]" is="cs-button" on-click="save" primary>[[L.save]]</button>
-      </p>
-    </div>
+      </div>
+    </form>
   </template>
   <script src="script.js"></script>
 </dom-module>

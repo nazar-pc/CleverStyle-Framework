@@ -1,12 +1,12 @@
 <dom-module id="cs-system-admin-users-add-user-form">
   <template>
-    <div class="uk-form uk-form-stacked">
-      <label class="uk-form-label">[[L.email]]</label>
-      <input type="email" value="{{email::input}}">
+    <form is="cs-form">
+      <label>[[L.email]]</label>
+      <input is="cs-input-text" type="email" value="{{email}}">
       <p>
-        <button disabled$="[[!email]]" is="cs-button" on-click="save" primary>[[L.save]]</button>
+        <button disabled$="[[!email]]" is="cs-button" on-click="save" primary type="button">[[L.save]]</button>
       </p>
-    </div>
+    </form>
   </template>
   <script src="script.js"></script>
 </dom-module>
