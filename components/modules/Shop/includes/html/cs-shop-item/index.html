@@ -1,9 +1,12 @@
 <dom-module id="cs-shop-item">
+  <link href="style.css" rel="import" type="css">
   <template>
-    <div class="uk-grid uk-grid-divider uk-grid-small uk-grid-width-1-2">
-      <h1 class="cs-margin-bottom uk-width-1-1">[[header_title]]</h1>
-      <div id="images"></div>
-      <div class="uk-width-1-2">
+    <h1>[[header_title]]</h1>
+    <div id="content">
+      <div>
+        <div id="images"></div>
+      </div>
+      <div class="cs-padding-left" id="div">
         <p>
           <span class="uk-text-primary uk-text-large">[[price]]</span>
           <cs-shop-add-to-cart item_id="[[item_id]]"></cs-shop-add-to-cart>

@@ -1,9 +1,10 @@
 %dom-module(id="cs-shop-cart-item")
+	%link(rel="import" href="style.css" type="css")
 	%template
-		.uk-grid.uk-grid-small.cs-margin-top
-			.uk-width-1-10
+		#content.cs-margin-top
+			%div
 				%a#img.uk-thumbnail.uk-thumbnail-expand(href="[[href]]")
-			.uk-grid.uk-grid-small.uk-grid-width-1-1.uk-form
+			.uk-form
 				.uk-text-large
 					%a(href="[[href]]") [[item_title]]
 					\:

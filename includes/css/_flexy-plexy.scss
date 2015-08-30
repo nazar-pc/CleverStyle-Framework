@@ -1,0 +1,63 @@
+/**
+ * @package   Flexy-plexy grid system
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
+ */
+@mixin flexy-plexy($gutter-width, $rows...) {
+	@at-root (without: media) {
+		display                 : flex;
+		display                 : -ms-flexbox;
+		display                 : -webkit-flex;
+		flex-wrap               : wrap;
+		-ms-flex-wrap           : wrap;
+		-webkit-flex-wrap       : wrap;
+
+		> :not(template):not(script):not(style) {
+			box-sizing : border-box !important;
+		}
+	}
+
+	$items-counter : 0;
+
+	@each $row-columns in $rows {
+		$columns-in-row : length($row-columns);
+		$index : 1;
+		$index-offset : 0;
+		$offset-selector : '';
+		$total-row-width : 0;
+
+		@if $items-counter {
+			$index-offset : $items-counter;
+		}
+
+		@each $grow in $row-columns {
+			$total-row-width : $total-row-width + $grow;
+			$offset-selector : $offset-selector + ' ~ :not(template):not(script):not(style)';
+		}
+
+		@each $column-width in $row-columns {
+			$flex-width : $column-width + ' / ' + $total-row-width + ' * 100%';
+			$margin-right : 0;
+
+			@if $index != $columns-in-row {
+				$flex-width : $flex-width + ' - ' + $gutter-width;
+				$margin-right : $gutter-width;
+			}
+
+			$flex-width : #{'calc(' + $flex-width + ')'};
+
+			& > :not(template):not(script):not(style):nth-of-type(#{$columns-in-row + 'n + ' + ($index-offset + $index)}) {
+				margin-right : $margin-right;
+				width        : $flex-width;
+
+				#{'& ' + $offset-selector} {
+					margin-top : $gutter-width;
+				}
+			}
+
+			$index : $index + 1;
+			$items-counter : $items-counter + 1;
+		}
+	}
+}

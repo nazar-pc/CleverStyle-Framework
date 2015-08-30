@@ -1,10 +1,10 @@
 %dom-module(id="cs-shop-category")
 	%link(rel="import" href="style.css" type="css")
 	%template
-		.uk-grid.cs-margin-top
-			.uk-width-3-10
+		#content.cs-margin-top
+			%div
 				%a#img.uk-thumbnail.uk-thumbnail-expand(href="[[href]]")
-			.uk-width-7-10
+			%div
 				%content(select="h1")
 				%content(select="#description")
 				.nested-categories

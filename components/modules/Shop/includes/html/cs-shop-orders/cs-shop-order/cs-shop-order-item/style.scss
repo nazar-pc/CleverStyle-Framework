@@ -1,0 +1,12 @@
+/**
+ * @package   Shop
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
+ */
+@import '../../../../../../../../includes/css/flexy-plexy';
+
+#content {
+	@include flexy-plexy(.5em, 1 9);
+}

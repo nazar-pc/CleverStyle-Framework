@@ -17,8 +17,7 @@
     },
     ready: function() {
       this.$.img.innerHTML = this.querySelector('#img').outerHTML;
-      this.set('href', this.querySelector('#link').href);
-      return $(this.querySelector('#nested')).addClass('uk-grid uk-grid-small uk-grid-width-1-4 uk-width-1-1');
+      return this.set('href', this.querySelector('#link').href);
     }
   });
 

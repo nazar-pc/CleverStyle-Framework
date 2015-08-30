@@ -1,10 +1,11 @@
 <dom-module id="cs-shop-category-item">
+  <link href="style.css" rel="import" type="css">
   <template>
-    <div class="uk-grid cs-margin-top">
-      <div class="uk-width-3-10">
+    <div class="cs-margin-top" id="content">
+      <div>
         <a class="uk-thumbnail uk-thumbnail-expand" href="[[href]]" id="img"></a>
       </div>
-      <div class="uk-width-7-10">
+      <div>
         <content select="h1"></content>
         <p>
           <span class="uk-text-primary uk-text-large">[[price]]</span>

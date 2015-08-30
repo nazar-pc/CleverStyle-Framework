@@ -13,5 +13,4 @@ Polymer(
 	ready		: ->
 		@$.img.innerHTML	= @querySelector('#img').outerHTML
 		@set('href', @querySelector('#link').href)
-		$(@querySelector('#nested')).addClass('uk-grid uk-grid-small uk-grid-width-1-4 uk-width-1-1')
 );

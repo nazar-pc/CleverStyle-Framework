@@ -1,9 +1,10 @@
 %dom-module(id="cs-shop-order-item")
+	%link(rel="import" href="style.css" type="css")
 	%template
-		.uk-grid.uk-grid-small.cs-margin-top
-			.uk-width-1-10
+		#content.cs-margin-top
+			%div
 				%a#img.uk-thumbnail.uk-thumbnail-expand
-			.uk-grid.uk-grid-small.uk-grid-width-1-1
+			%div
 				.uk-text-large
 					%a#link [[item_title]]
 					%span [[concat(': ', units, ' x ', unit_price_formatted, ' = ', price_formatted)]]

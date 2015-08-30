@@ -5,7 +5,8 @@
  * @copyright	Copyright (c) 2014-2015, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-@import "common_config";
+@import 'common_config';
+@import '../../../includes/css/flexy-plexy';
 
 html {
 	background         : #161616;
@@ -16,18 +17,43 @@ html {
 }
 
 body {
-	margin-left : -5px !important;
-	margin-top  : 5px !important;
-	width       : 100%;
+	display           : flex;
+	display           : -ms-flexbox;
+	display           : -webkit-flex;
+	flex-wrap         : wrap;
+	-ms-flex-wrap     : wrap;
+	-webkit-flex-wrap : wrap;
+	margin-left       : -5px !important;
+	margin-top        : 5px !important;
+	width             : 100%;
 
 	@media (max-width : 959px) {
-		> aside:first-child > :nth-child(n+2) {
-			display : none;
+		> aside {
+			margin-right : 0;
+			width        : 100%;
+
+			&:first-child > :nth-child(n+2) {
+				display : none;
+			}
 		}
+
+		> section {
+			width : 100%;
+		}
+	}
+
+	> aside {
+		margin-right : 1em;
+		width        : calc(20% - 1em);
+	}
+
+	> section {
+		width : 80%;
 	}
 
 	> footer {
 		text-align : center;
+		width      : 100%;
 
 		strong {
 			display     : block;
@@ -47,6 +73,7 @@ body {
 .cs-mobile-menu {
 	background : #262626;
 	color      : #b7b7b7;
+	width      : 100%;
 
 	cs-icon {
 		font-size : 2.5em;

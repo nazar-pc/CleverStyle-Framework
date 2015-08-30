@@ -1,9 +1,11 @@
 %dom-module(id="cs-shop-item")
+	%link(rel="import" href="style.css" type="css")
 	%template
-		.uk-grid.uk-grid-divider.uk-grid-small.uk-grid-width-1-2
-			%h1.cs-margin-bottom.uk-width-1-1 [[header_title]]
-			#images
-			.uk-width-1-2
+		%h1 [[header_title]]
+		#content
+			%div
+				#images
+			#div.cs-padding-left
 				%p
 					%span.uk-text-primary.uk-text-large [[price]]
 					%cs-shop-add-to-cart(item_id="[[item_id]]")
