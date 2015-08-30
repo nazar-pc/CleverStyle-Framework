@@ -86,7 +86,7 @@ trait CRUD {
 		 * At first we remove all old data
 		 */
 		foreach ($this->data_model as $table => $model) {
-			if (!isset($model['data_model'])) {
+			if (!is_array($model) || !isset($model['data_model'])) {
 				continue;
 			}
 			$id_field                 = array_keys($model['data_model'])[0];
