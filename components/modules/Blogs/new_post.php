@@ -107,7 +107,7 @@ if (count($sections['in']) > 1) {
 	$sections	= false;
 }
 $Index->content(
-	h::{'h2.cs-center'}(
+	h::{'h2.cs-text-center'}(
 		$L->new_post
 	).
 	h::{'div.cs-blogs-post-preview-content'}().

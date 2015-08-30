@@ -34,5 +34,5 @@ Page::instance()->config(
 	'cs.composer'
 );
 $Index->content(
-	h::{'p.cs-center button.cs-composer-admin-force-update[is=cs-button]'}($L->force_update)
+	h::{'p.cs-text-center button.cs-composer-admin-force-update[is=cs-button]'}($L->force_update)
 );

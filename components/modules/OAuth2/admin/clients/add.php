@@ -18,7 +18,7 @@ Page::instance()->title($L->addition_of_client);
 $Index->cancel_button_back = true;
 $Index->action             = 'admin/OAuth2/clients/list';
 $Index->content(
-	h::{'h2d.cs-center'}(
+	h::{'h2d.cs-text-center'}(
 		$L->addition_of_client
 	).
 	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(

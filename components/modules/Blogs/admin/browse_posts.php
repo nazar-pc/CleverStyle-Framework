@@ -58,7 +58,7 @@ $Index->content(
 		)
 	).
 	(
-		$total ? h::{'div.cs-center-all.uk-margin navnav[is=cs-nav-pagination]'}(
+		$total ? h::{'.cs-block-margin.cs-text-center.cs-margin navnav[is=cs-nav-pagination]'}(
 			pages(
 				$page,
 				ceil($total / $Config->module('Blogs')->posts_per_page),

@@ -45,7 +45,7 @@ cs.admin_cache				= (element, action, partial_path) ->
 ###
 cs.db_test					= (index, mirror_index) ->
 	modal	= $(cs.ui.simple_modal("""<div>
-		<h3 class="cs-center">#{L.test_connection}</h3>
+		<h3 class="cs-text-center">#{L.test_connection}</h3>
 		<progress is="cs-progress" infinite></progress>
 	</div>"""))
 	$.ajax(
@@ -71,11 +71,11 @@ cs.db_test					= (index, mirror_index) ->
 			result = if result then L.success else L.failed
 			modal
 				.find('progress')
-				.replaceWith("""<p class="cs-center uk-alert uk-alert-#{status}" style=text-transform:capitalize;">#{result}</p>""")
+				.replaceWith("""<p class="cs-text-center uk-alert uk-alert-#{status}" style=text-transform:capitalize;">#{result}</p>""")
 		error	: ->
 			modal
 				.find('progress')
-				.replaceWith("""<p class="cs-center uk-alert uk-alert-danger" style=text-transform:capitalize;">#{L.failed}</p>""")
+				.replaceWith("""<p class="cs-text-center uk-alert uk-alert-danger" style=text-transform:capitalize;">#{L.failed}</p>""")
 	)
 ###*
  * Send request for storage connection testing
@@ -84,7 +84,7 @@ cs.db_test					= (index, mirror_index) ->
 ###
 cs.storage_test				= (index) ->
 	modal	= $(cs.ui.simple_modal("""<div>
-		<h3 class="cs-center">#{L.test_connection}</h3>
+		<h3 class="cs-text-center">#{L.test_connection}</h3>
 		<progress is="cs-progress" infinite></progress>
 	</div>"""))
 	$.ajax(
@@ -108,11 +108,11 @@ cs.storage_test				= (index) ->
 			result = if result then L.success else L.failed
 			modal
 				.find('progress')
-				.replaceWith("""<p class="cs-center uk-alert uk-alert-#{status}" style=text-transform:capitalize;">#{result}</p>""")
+				.replaceWith("""<p class="cs-text-center uk-alert uk-alert-#{status}" style=text-transform:capitalize;">#{result}</p>""")
 		error	: ->
 			modal
 				.find('progress')
-				.replaceWith("""<p class="cs-center uk-alert uk-alert-danger" style=text-transform:capitalize;">#{L.failed}</p>""")
+				.replaceWith("""<p class="cs-text-center uk-alert uk-alert-danger" style=text-transform:capitalize;">#{L.failed}</p>""")
 	)
 ###*
  * Toggling of blocks group in admin page

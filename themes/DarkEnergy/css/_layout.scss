@@ -10,13 +10,14 @@
 html {
 	background         : #161616;
 	font-family        : $base-font-family;
+	font-size          : 16px !important; // TODO remove `!important`
 	transition         : transform 1s, width 1s;
 	-webkit-transition : -webkit-transform 1s, width 1s;
 }
 
 body {
-	font-family : $base-font-family;
 	margin-left : -5px !important;
+	margin-top  : 5px !important;
 	width       : 100%;
 
 	@media (max-width : 959px) {
@@ -41,6 +42,22 @@ body {
 	-webkit-transform        : scale($zoom);
 	-webkit-transform-origin : 0 0 0;
 	width                    : (100% / $zoom);
+}
+
+.cs-mobile-menu {
+	background : #262626;
+	color      : #b7b7b7;
+
+	cs-icon {
+		font-size : 2.5em;
+		margin    : 5px;
+	}
+}
+
+@media (min-width : 960px) {
+	.cs-mobile-menu {
+		display : none;
+	}
 }
 
 @media (min-width : 1921px) {

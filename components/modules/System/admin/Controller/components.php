@@ -46,7 +46,7 @@ trait components {
 					$a->cancel_button_back = true;
 					$Page->title($L->deletion_of_block(static::get_block_title($id)));
 					$a->content(
-						h::{'h2.cs-center'}(
+						h::{'h2.cs-text-center'}(
 							$L->sure_to_delete_block(static::get_block_title($id)).
 							h::{'input[type=hidden][name=mode][value=delete]'}().
 							h::{'input[type=hidden][name=id]'}(
@@ -64,10 +64,10 @@ trait components {
 					$a->form_attributes[]  = 'formnovalidate';
 					$Page->title($L->adding_a_block);
 					$a->content(
-						h::{'h2.cs-center'}(
+						h::{'h2.cs-text-center'}(
 							$L->adding_a_block
 						).
-						h::{'cs-system-admin-components-blocks-form.uk-display-block.uk-margin-bottom script[type=application/json]'}(
+						h::{'cs-system-admin-components-blocks-form.uk-display-block.cs-margin-bottom script[type=application/json]'}(
 							json_encode(
 								[
 									'types'      => array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4)),
@@ -93,10 +93,10 @@ trait components {
 					$block                 = &$Config->components['blocks'][$id];
 					$Page->title($L->editing_a_block(static::get_block_title($id)));
 					$a->content(
-						h::{'h2.cs-center'}(
+						h::{'h2.cs-text-center'}(
 							$L->editing_a_block(static::get_block_title($id))
 						).
-						h::{'cs-system-admin-components-blocks-form.uk-display-block.uk-margin-bottom script[type=application/json]'}(
+						h::{'cs-system-admin-components-blocks-form.uk-display-block.cs-margin-bottom script[type=application/json]'}(
 							json_encode(
 								[
 									'types'      => array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4)),
@@ -207,7 +207,7 @@ trait components {
 						h::cs_table_cell().$blocks_array['bottom'].h::cs_table_cell()
 					]
 				).
-				h::{'p.cs-left a[is=cs-link-button]'}(
+				h::{'p.cs-text-left a[is=cs-link-button]'}(
 					"$L->add $L->block",
 					[
 						'href' => "$a->action/add"
@@ -274,7 +274,7 @@ trait components {
 					 */
 					$Page->title($action == 'edit' ? $L->editing_the_database($name) : $L->addition_of_db);
 					$a->content(
-						h::{'h2.cs-center'}(
+						h::{'h2.cs-text-center'}(
 							$action == 'edit' ? $L->editing_the_database($name) : $L->addition_of_db
 						).
 						static::vertical_table(
@@ -429,7 +429,7 @@ trait components {
 						unset($parent_db);
 						$Page->title($L->deletion_of_database($name));
 						$a->content(
-							h::{'h2.cs-center'}(
+							h::{'h2.cs-text-center'}(
 								$L->sure_to_delete.' '.$name.
 								h::{'input[type=hidden]'}(
 									[
@@ -492,7 +492,7 @@ trait components {
 									]
 								),
 								[
-									'class' => 'cs-left-all'
+									'class' => 'cs-text-left'
 								]
 							],
 							$i ? $db_data['host'] : $Core->db_host,
@@ -529,7 +529,7 @@ trait components {
 										]
 									),
 									[
-										'class' => 'cs-right-all'
+										'class' => 'cs-text-right'
 									]
 								],
 								$mirror['host'],
@@ -696,7 +696,7 @@ trait components {
 							$Page->title($L->updating_of_module($module_name));
 							rename($tmp_file, $tmp_file = TEMP.'/'.$Session->get_id().'_module_update.phar');
 							$a->content(
-								h::{'h2.cs-center'}(
+								h::{'h2.cs-text-center'}(
 									$L->update_module(
 										$module_name,
 										$current_version,
@@ -735,7 +735,7 @@ trait components {
 					$show_modules = false;
 					$Page->title($L->installation_of_module($rc[3]));
 					$a->content(
-						h::{'h2.cs-center'}(
+						h::{'h2.cs-text-center'}(
 							$L->installation_of_module($rc[3])
 						)
 					);
@@ -807,7 +807,7 @@ trait components {
 					$show_modules = false;
 					$Page->title($L->uninstallation_of_module($rc[3]));
 					$a->content(
-						h::{'h2.cs-center'}(
+						h::{'h2.cs-text-center'}(
 							$L->uninstallation_of_module($rc[3])
 						)
 					);
@@ -869,7 +869,7 @@ trait components {
 					$Page->title($L->updating_of_system);
 					rename($tmp_file, $tmp_file = TEMP.'/'.$Session->get_id().'_update_system.phar');
 					$a->content(
-						h::{'h2.cs-center'}(
+						h::{'h2.cs-text-center'}(
 							$L->update_system(
 								$current_version,
 								$meta['version']
@@ -885,7 +885,7 @@ trait components {
 					$show_modules = false;
 					$Page->title($L->setting_default_module($rc[3]));
 					$a->content(
-						h::{'h2.cs-center'}(
+						h::{'h2.cs-text-center'}(
 							$L->setting_default_module($rc[3])
 						)
 					);
@@ -909,7 +909,7 @@ trait components {
 						$Page->warning($L->changing_settings_warning);
 						$Page->title($L->db_settings_for_module($rc[3]));
 						$a->content(
-							h::{'h2.cs-center'}(
+							h::{'h2.cs-text-center'}(
 								$L->db_settings_for_module($rc[3])
 							)
 						);
@@ -975,7 +975,7 @@ trait components {
 						$Page->warning($L->changing_settings_warning);
 						$Page->title($L->storage_settings_for_module($rc[3]));
 						$a->content(
-							h::{'h2.cs-center'}(
+							h::{'h2.cs-text-center'}(
 								$L->storage_settings_for_module($rc[3])
 							)
 						);
@@ -1048,7 +1048,7 @@ trait components {
 					);
 					$Page->title($L->enabling_of_module($rc[3]));
 					$a->content(
-						h::{'h2.cs-center'}(
+						h::{'h2.cs-text-center'}(
 							$L->enable_module($rc[3])
 						)
 					);
@@ -1071,7 +1071,7 @@ trait components {
 					);
 					$Page->title($L->disabling_of_module($rc[3]));
 					$a->content(
-						h::{'h2.cs-center'}(
+						h::{'h2.cs-text-center'}(
 							$L->disable_module($rc[3])
 						)
 					);
@@ -1084,7 +1084,7 @@ trait components {
 					$show_modules = false;
 					$Page->title($L->complete_removal_of_module($_POST['remove_module']));
 					$a->content(
-						h::{'h2.cs-center'}(
+						h::{'h2.cs-text-center'}(
 							$L->completely_remove_module($_POST['remove_module'])
 						)
 					);
@@ -1309,7 +1309,7 @@ trait components {
 							$Page->title($L->updating_of_plugin($plugin));
 							rename($tmp_file, $tmp_file = TEMP.'/'.Session::instance()->get_id().'_plugin_update.phar.php');
 							$a->content(
-								h::{'h2.cs-center'}(
+								h::{'h2.cs-text-center'}(
 									$L->update_plugin(
 										$plugin,
 										$current_version,
@@ -1353,7 +1353,7 @@ trait components {
 					if (!in_array($rc[3], $Config->components['plugins']) && in_array($rc[3], $plugins)) {
 						$Page->title($L->enabling_of_plugin($rc[3]));
 						$a->content(
-							h::{'h2.cs-center'}(
+							h::{'h2.cs-text-center'}(
 								$L->enabling_of_plugin($rc[3])
 							)
 						);
@@ -1406,7 +1406,7 @@ trait components {
 					if (in_array($rc[3], $Config->components['plugins'])) {
 						$Page->title($L->disabling_of_plugin($rc[3]));
 						$a->content(
-							h::{'h2.cs-center'}(
+							h::{'h2.cs-text-center'}(
 								$L->disabling_of_plugin($rc[3])
 							)
 						);
@@ -1446,7 +1446,7 @@ trait components {
 				case 'remove':
 					$Page->title($L->complete_removal_of_plugin($_POST['remove_plugin']));
 					$a->content(
-						h::{'h2.cs-center'}(
+						h::{'h2.cs-text-center'}(
 							$L->completely_remove_plugin($_POST['remove_plugin'])
 						)
 					);
@@ -1561,7 +1561,7 @@ trait components {
 							$L->adding_of_storage
 					);
 					$a->content(
-						h::{'h2.cs-center'}(
+						h::{'h2.cs-text-center'}(
 							$rc[2] == 'edit' ? $L->editing_of_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']) :
 								$L->adding_of_storage
 						).
@@ -1660,7 +1660,7 @@ trait components {
 						$a->action = "admin/System/$rc[0]/$rc[1]";
 						$Page->title($L->deletion_of_storage($Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection']));
 						$a->content(
-							h::{'h2.cs-center'}(
+							h::{'h2.cs-text-center'}(
 								$L->sure_to_delete.' '.$L->storage.' '.
 								$Config->storage[$rc[3]]['host'].'/'.$Config->storage[$rc[3]]['connection'].'?'.
 								h::{'input[type=hidden]'}(

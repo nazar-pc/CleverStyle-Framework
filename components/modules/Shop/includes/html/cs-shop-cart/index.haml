@@ -1,8 +1,8 @@
 %dom-module(id="cs-shop-cart")
 	%template
-		%h1.uk-text-center [[L.shop_your_cart]]
+		%h1.cs-text-center [[L.shop_your_cart]]
 		%content(select="#items")
-		.uk-form.uk-form-stacked.uk-margin-top
+		.uk-form.uk-form-stacked.cs-margin-top
 			%p.uk-form-row
 				%label.uk-form-label [[L.shop_shipping_type]]
 				%select(is="cs-select" value="{{shipping_type::change}}")

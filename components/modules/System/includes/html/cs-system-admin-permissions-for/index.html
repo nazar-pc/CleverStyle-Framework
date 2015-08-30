@@ -1,13 +1,13 @@
 <dom-module id="cs-system-admin-permissions-for">
   <template>
-    <h2 class="uk-text-center" hidden$="[[all_permissions.length]]">
+    <h2 class="cs-text-center" hidden$="[[all_permissions.length]]">
       <cs-icon icon="spinner" spin></cs-icon>
     </h2>
     <form class="uk-form" id="form">
       <template as="permission" is="dom-repeat" items="[[all_permissions]]">
         <legend>[[permission.group]]</legend>
         <div>
-          <p class="cs-left">
+          <p class="cs-text-left">
             <button is="cs-button" on-click="invert" type="button">[[L.invert]]</button>
             <button is="cs-button" on-click="allow_all" type="button">[[L.allow_all]]</button>
             <button is="cs-button" on-click="deny_all" type="button">[[L.deny_all]]</button>

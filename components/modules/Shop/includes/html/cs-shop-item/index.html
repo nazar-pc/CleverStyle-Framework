@@ -1,7 +1,7 @@
 <dom-module id="cs-shop-item">
   <template>
     <div class="uk-grid uk-grid-divider uk-grid-small uk-grid-width-1-2">
-      <h1 class="uk-margin-bottom uk-width-1-1">[[header_title]]</h1>
+      <h1 class="cs-margin-bottom uk-width-1-1">[[header_title]]</h1>
       <div id="images"></div>
       <div class="uk-width-1-2">
         <p>
@@ -13,7 +13,7 @@
       </div>
     </div>
     <template if="[[show_attributes]]">
-      <h2 class="uk-margin-top">[[L.shop_characteristics]]</h2>
+      <h2 class="cs-margin-top">[[L.shop_characteristics]]</h2>
       <content select="#attributes"></content>
     </template>
   </template>

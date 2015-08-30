@@ -38,8 +38,8 @@ $ ->
 				"""<option value="#{method}">#{details.title}</option>"""
 		payment_methods_list	= payment_methods_list.join('')
 		modal					= $(cs.ui.simple_modal("""<form>
-			<h3 class="cs-center">#{title}</h3>
-			<p class="uk-hidden">
+			<h3 class="cs-text-center">#{title}</h3>
+			<p hidden>
 				#{L.shop_datetime}: <span class="date"></span>
 			</p>
 			<p>
@@ -259,7 +259,7 @@ $ ->
 					)
 					return false
 				order	= order[0]
-				modal.find('.date').html(date).parent().show()
+				modal.find('.date').html(date).parent().removeAttr('hidden')
 				modal.find('.username').html(username)
 				modal.find('[name=user]').val(order.user)
 				modal.find('[name=shipping_phone]').val(order.shipping_phone)

@@ -41,7 +41,7 @@ $ ->
 				categories_list_[key]
 		categories_list	= categories_list.join('')
 		modal			= $(cs.ui.simple_modal("""<form>
-			<h3 class="cs-center">#{title}</h3>
+			<h3 class="cs-text-center">#{title}</h3>
 			<p>
 				#{L.shop_category}: <select is="cs-select" name="category" required>#{categories_list}</select>
 			</p>
@@ -172,7 +172,7 @@ $ ->
 						<a href="#{image}" target="_blank" class="uk-thumbnail uk-thumbnail-mini">
 							<img src="#{image}">
 							<br>
-							<button type="button" class="remove-image uk-button uk-button-danger uk-button-mini uk-width-1-1">#{L.shop_remove_image}</button>
+							<button is="cs-button" force-compact type="button" class="remove-image uk-width-1-1">#{L.shop_remove_image}</button>
 						</a>
 					</span>""")
 				modal.update_images()

@@ -1,6 +1,6 @@
 <dom-module id="cs-system-admin-groups-list">
   <template>
-    <h2 class="uk-text-center" hidden$="[[groups.length]]">
+    <h2 class="cs-text-center" hidden$="[[groups.length]]">
       <cs-icon icon="spinner" spin></cs-icon>
     </h2>
     <cs-table center hidden$="[[!groups.length]]" list with-header>
@@ -23,7 +23,7 @@
         </cs-table-row>
       </template>
     </cs-table>
-    <p class="cs-left">
+    <p class="cs-text-left">
       <button is="cs-button" on-click="add_group" type="button">[[L.add_group]]</button>
     </p>
   </template>

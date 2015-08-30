@@ -1,12 +1,12 @@
 %dom-module(id="cs-system-admin-permissions-for")
 	%template
-		%h2.uk-text-center(hidden$="[[all_permissions.length]]")
+		%h2.cs-text-center(hidden$="[[all_permissions.length]]")
 			%cs-icon(icon="spinner" spin)
 		%form#form.uk-form
 			%template(is="dom-repeat" items="[[all_permissions]]" as="permission")
 				%legend [[permission.group]]
 				%div
-					%p.cs-left
+					%p.cs-text-left
 						%button(is="cs-button" on-click="invert" type="button") [[L.invert]]
 						%button(is="cs-button" on-click="allow_all" type="button") [[L.allow_all]]
 						%button(is="cs-button" on-click="deny_all" type="button") [[L.deny_all]]

@@ -73,7 +73,7 @@ if ($page['interface']) {
 		$Index->buttons = false;
 		$Index->action  = $canonical_url;
 		$Index->content(
-			h::{'h2.cs-center'}(
+			h::{'h2.cs-text-center'}(
 				$L->editing_of_page($page['title'])
 			).
 			h::{'cs-table.cs-static-pages-page-form[right-left] cs-table-row| cs-table-cell'}(
@@ -95,7 +95,7 @@ if ($page['interface']) {
 					)
 				]
 			).
-			h::{'p.cs-center'}(
+			h::{'p.cs-text-center'}(
 				h::{'button.cs-static-pages-page-save[is=cs-button][type=submit][name=save]'}(
 					$L->save
 				).

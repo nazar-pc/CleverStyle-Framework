@@ -47,7 +47,7 @@ trait general {
 		$hhvm_version = defined('HHVM_VERSION') ? HHVM_VERSION : false;
 		$Index->form  = false;
 		$Index->content(
-			h::{'div.cs-right'}(
+			h::{'div.cs-text-right'}(
 				h::{'a[is=cs-link-button][target=_blank]'}(
 					'phpinfo()',
 					[
@@ -318,7 +318,7 @@ trait general {
 						$Page->title($L->updating_of_theme($theme));
 						rename($tmp_file, $tmp_file = TEMP.'/'.Session::instance()->get_id().'_theme_update.phar');
 						$Index->content(
-							h::{'h2.cs-center'}(
+							h::{'h2.cs-text-center'}(
 								$L->update_theme(
 									$theme,
 									$current_version,
@@ -374,7 +374,7 @@ trait general {
 					}
 					$Page->title($L->complete_removal_of_theme($_POST['remove_theme']));
 					$Index->content(
-						h::{'h2.cs-center'}(
+						h::{'h2.cs-text-center'}(
 							$L->completely_remove_theme($_POST['remove_theme'])
 						)
 					);

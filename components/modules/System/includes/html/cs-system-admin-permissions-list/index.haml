@@ -1,6 +1,6 @@
 %dom-module(id="cs-system-admin-permissions-list")
 	%template
-		%h2.uk-text-center(hidden$="[[permissions.length]]")
+		%h2.cs-text-center(hidden$="[[permissions.length]]")
 			%cs-icon(icon="spinner" spin)
 		%cs-table(center list with-header hidden$="[[!permissions.length]]")
 			%cs-table-row
@@ -18,6 +18,6 @@
 					%cs-table-cell(tooltip="[[permission.description]]")
 						%span [[permission.label]]
 						%cs-tooltip
-		%p.cs-left
+		%p.cs-text-left
 			%button(is="cs-button" on-click="add_permission" type="button") [[L.add_permission]]
 	%script(src="script.js")

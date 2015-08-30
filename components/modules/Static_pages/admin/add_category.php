@@ -20,7 +20,7 @@ Page::instance()->title($L->addition_of_page_category);
 $Index->cancel_button_back = true;
 $Index->action             = 'admin/Static_pages';
 $Index->content(
-	h::{'h2.cs-center'}(
+	h::{'h2.cs-text-center'}(
 		$L->addition_of_page_category
 	).
 	h::{'cs-table[center] cs-table-row| cs-table-cell'}(

@@ -24,7 +24,7 @@ usort($all_attributes, function ($attr1, $attr2) {
 	return $attr1['title_internal'] > $attr2['title_internal'] ? 1 : -1;
 });
 $Page->content(
-	h::{'h3.uk-lead.cs-center'}($L->attributes).
+	h::{'h3.cs-text-center'}($L->attributes).
 	h::{'cs-table[list][with-header]'}(
 		h::{'cs-table-row cs-table-cell'}(
 			'id',

@@ -26,7 +26,7 @@ $Page->title(
 $Index->action             = 'admin/Polls/polls';
 $Index->cancel_button_back = true;
 $Index->content(
-	h::{'h2.cs-center'}($L->editing_of_poll($poll['title'])).
+	h::{'h2.cs-text-center'}($L->editing_of_poll($poll['title'])).
 	h::{'cs-table[right-left] cs-table-row cs_table_cell'}(
 		$L->poll_title,
 		h::{'input[name=edit[title]]'}(

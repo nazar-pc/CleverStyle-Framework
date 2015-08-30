@@ -83,7 +83,7 @@ $posts          = $Posts->get_for_tag($tag['id'], $L->clang, $page, $posts_per_p
  */
 if (!$posts) {
 	$Index->content(
-		h::{'p.cs-center'}($L->no_posts_yet)
+		h::{'p.cs-text-center'}($L->no_posts_yet)
 	);
 	return;
 }

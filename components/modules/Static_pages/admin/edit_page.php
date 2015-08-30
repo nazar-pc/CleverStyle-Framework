@@ -21,7 +21,7 @@ Page::instance()->title($L->editing_of_page($data['title']));
 $Index->cancel_button_back = true;
 $Index->action             = 'admin/Static_pages';
 $Index->content(
-	h::{'h2.cs-center'}(
+	h::{'h2.cs-text-center'}(
 		$L->editing_of_page($data['title'])
 	).
 	h::{'cs-table[center][with-header] cs-table-row| cs-table-cell'}(

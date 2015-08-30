@@ -21,7 +21,7 @@ Page::instance()->title($L->editing_of_client($client['name']));
 $Index->cancel_button_back = true;
 $Index->action             = 'admin/OAuth2/clients/list';
 $Index->content(
-	h::{'h2.cs-center'}(
+	h::{'h2.cs-text-center'}(
 		$L->editing_of_client($client['name'])
 	).
 	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(

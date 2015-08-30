@@ -28,8 +28,8 @@ $Index->content(
 			get_categories_rows()
 		)
 	).
-	h::{'p.cs-left'}($L->index_page_path).
-	h::{'p.cs-left a[is=cs-link-button]'}(
+	h::{'p.cs-text-left'}($L->index_page_path).
+	h::{'p.cs-text-left a[is=cs-link-button]'}(
 		[
 			$L->add_category,
 			[

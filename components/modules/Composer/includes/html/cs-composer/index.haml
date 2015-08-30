@@ -1,8 +1,8 @@
 %dom-module(id="cs-composer")
 	%template
-		%h2.cs-center [[L.composer_composer_updating]]
-		%h1.cs-center(hidden$="[[status]]")
+		%h2.cs-text-center [[L.composer_composer_updating]]
+		%h1.cs-text-center(hidden$="[[status]]")
 			%cs-icon(icon="spinner" spin)
-		%h3.cs-center(hidden$="[[!status]]") [[status]]
+		%h3.cs-text-center(hidden$="[[!status]]") [[status]]
 		%pre#result(style="background: #1a1a1a")
 	%script(src="script.js")

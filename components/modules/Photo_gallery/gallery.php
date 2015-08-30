@@ -26,7 +26,7 @@ $gallery       = $Photo_gallery->get_gallery(Route::instance()->route[1]);
 $User          = User::instance();
 if ($User->user()) {
 	$Index->content(
-		h::{'p.cs-left a.cs-photo-gallery-add-images[is=cs-link-button][icon=plus]'}(
+		h::{'p.cs-text-left a.cs-photo-gallery-add-images[is=cs-link-button][icon=plus]'}(
 			$L->photo_gallery_add_image,
 			[
 				'data-gallery' => $gallery['id']
@@ -36,7 +36,7 @@ if ($User->user()) {
 }
 if (!$gallery['images']) {
 	$Index->content(
-		h::{'p.cs-center'}($L->photo_gallery_gallery_empty)
+		h::{'p.cs-text-center'}($L->photo_gallery_gallery_empty)
 	);
 	return;
 }

@@ -9,7 +9,7 @@
 namespace cs;
 use            h;
 Index::instance()->content(
-	h::{'p.cs-center'}(Language::instance()->crontab_content).
+	h::{'p.cs-text-center'}(Language::instance()->crontab_content).
 	h::{'textarea[is=cs-textarea][autosize][name=tasks]'}(
 		isset($_POST['tasks']) ? $_POST['tasks'] : shell_exec('crontab -l')
 	).

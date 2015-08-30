@@ -18,7 +18,7 @@ $User			= User::instance();
 $Page->css('components/modules/Feedback/includes/css/general.css');
 $Index->content(
 	h::{'section.cs-feedback-form article'}(
-		h::{'header h2.cs-center'}($L->Feedback).
+		h::{'header h2.cs-text-center'}($L->Feedback).
 		h::{'cs-table[center] cs-table-row| cs-table-cell'}([
 			h::{'input[name=name][required]'}([
 				'placeholder'	=> $L->feedback_name,

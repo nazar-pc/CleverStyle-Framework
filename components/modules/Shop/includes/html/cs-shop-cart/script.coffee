@@ -87,7 +87,7 @@ Polymer(
 				if @payment_method == 'shop:cash' # Default payment method (Orders::PAYMENT_METHOD_CASH)
 					$(
 						cs.ui.simple_modal("""
-							<h1 class="uk-text-center">#{L.shop_thanks_for_order}</h1>
+							<h1 class="cs-text-center">#{L.shop_thanks_for_order}</h1>
 						""")
 					).on('close', ->
 						location.href	= 'Shop/orders_'
@@ -95,8 +95,8 @@ Polymer(
 				else
 					id		= result.split('/').pop()
 					modal	= $(cs.ui.simple_modal("""
-						<h1 class="uk-text-center">#{L.shop_thanks_for_order}</h1>
-						<p class="uk-text-center">
+						<h1 class="cs-text-center">#{L.shop_thanks_for_order}</h1>
+						<p class="cs-text-center">
 							<button is="cs-button" primary type="button" class="pay-now">#{L.shop_pay_now}</button>
 							<button is="cs-button" type="button" class="pay-later">#{L.shop_pay_later}</button>
 						</p>

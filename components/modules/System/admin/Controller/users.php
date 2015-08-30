@@ -321,7 +321,7 @@ trait users {
 						$L->user_groups($User->username($rc[3]))
 					);
 					$a->content(
-						h::{'h2.cs-center'}(
+						h::{'h2.cs-text-center'}(
 							$L->user_groups(
 								$User->username($rc[3])
 							),

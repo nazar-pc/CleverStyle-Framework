@@ -13,7 +13,7 @@ $ ->
 				"""<option value="#{index}">#{type}</option>"""
 		types	= types.join('')
 		modal	= $(cs.ui.simple_modal("""<form>
-			<h3 class="cs-center">#{title}</h3>
+			<h3 class="cs-text-center">#{title}</h3>
 			<p>
 				#{L.shop_title}: <input name="title" required>
 			</p>
@@ -25,14 +25,14 @@ $ ->
 			</p>
 			<p>
 				#{L.shop_send_update_status_email}:
-				<label><input type="radio" name="send_update_status_email" value="1" checked> #{L.yes}</label>
-				<label><input type="radio" name="send_update_status_email" value="0"> #{L.no}</label>
+				<label is="cs-label-button"><input type="radio" name="send_update_status_email" value="1" checked> #{L.yes}</label>
+				<label is="cs-label-button"><input type="radio" name="send_update_status_email" value="0"> #{L.no}</label>
 			</p>
 			<p>
 				#{L.shop_comment_used_in_email}: <textarea is="cs-textarea" autosize name="comment"></textarea>
 			</p>
 			<p>
-				<button class="uk-button" type="submit">#{action}</button>
+				<button is="cs-button" primary type="submit">#{action}</button>
 			</p>
 		</form>"""))
 		modal.find('[type=color]').change ->

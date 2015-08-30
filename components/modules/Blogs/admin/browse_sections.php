@@ -31,7 +31,7 @@ $Index->content(
 			get_sections_rows()
 		)
 	).
-	h::{'p.cs-left a[is=cs-link-button]'}(
+	h::{'p.cs-text-left a[is=cs-link-button]'}(
 		$L->add_section,
 		[
 			'href'	=> 'admin/Blogs/add_section'

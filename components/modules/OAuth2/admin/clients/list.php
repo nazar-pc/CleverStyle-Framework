@@ -18,7 +18,7 @@ $L     = new Prefix('oauth2_');
 Page::instance()->title($L->list_of_client);
 $module_data = Config::instance()->module('OAuth2');
 $Index->content(
-	h::{'h2.cs-center'}(
+	h::{'h2.cs-text-center'}(
 		$L->list_of_clients
 	).
 	h::{'cs-table[list][center][with-header]'}(
@@ -92,7 +92,7 @@ $Index->content(
 			).$L->seconds
 		]
 	).
-	h::{'p.cs-left a[is=cs-link-button]'}(
+	h::{'p.cs-text-left a[is=cs-link-button]'}(
 		[
 			$L->add_client,
 			[

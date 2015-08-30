@@ -75,7 +75,7 @@
         cs.registration($('.cs-header-registration-email').val());
         return;
       }
-      $modal = $(cs.ui.simple_modal("<h2>" + L.rules_agree + "</h2>\n<p>" + cs.rules_text + "</p>\n<p class=\"cs-right\">\n	<button is=\"cs-button\" primary class=\"cs-registration-continue\">" + L.yes + "</button>\n</p>"));
+      $modal = $(cs.ui.simple_modal("<h2>" + L.rules_agree + "</h2>\n<p>" + cs.rules_text + "</p>\n<p class=\"cs-text-right\">\n	<button is=\"cs-button\" primary class=\"cs-registration-continue\">" + L.yes + "</button>\n</p>"));
       return $modal.find('.cs-registration-continue').click(function() {
         $modal[0].close();
         return cs.registration($('.cs-header-registration-email').val());

@@ -41,7 +41,7 @@ $ ->
 				categories_[key]
 		categories	= categories.join('')
 		modal		= $(cs.ui.simple_modal("""<form>
-			<h3 class="cs-center">#{title}</h3>
+			<h3 class="cs-text-center">#{title}</h3>
 			<p>
 				#{L.shop_parent_category}:
 				<select is="cs-select" name="parent" required>
@@ -50,17 +50,17 @@ $ ->
 				</select>
 			</p>
 			<p>
-				#{L.shop_title}: <input name="title" required>
+				#{L.shop_title}: <input is="cs-input-text" name="title" required>
 			</p>
 			<p>
 				#{L.shop_description}: <textarea is="cs-textarea" autosize name="description"></textarea>
 			</p>
-			<p class="image uk-hidden">
+			<p class="image" hidden>
 				#{L.shop_image}:
 				<a target="_blank" class="uk-thumbnail">
 					<img>
 					<br>
-					<button type="button" class="remove-image uk-button uk-button-danger uk-width-1-1">#{L.shop_remove_image}</button>
+					<button is="cs-button" force-compact type="button" class="remove-image uk-width-1-1">#{L.shop_remove_image}</button>
 				</a>
 				<input type="hidden" name="image">
 			</p>
@@ -69,7 +69,7 @@ $ ->
 				<progress is="cs-progress" hidden></progress>
 			</p>
 			<p>
-				#{L.shop_category_attributes}: <select is="cs-select" name="attributes[]" multiple required>#{attributes}</select>
+				#{L.shop_category_attributes}: <select is="cs-select" name="attributes[]" multiple required size="5">#{attributes}</select>
 			</p>
 			<p>
 				#{L.shop_title_attribute}: <select is="cs-select" name="title_attribute" required>#{attributes}</select>
@@ -83,24 +83,24 @@ $ ->
 			</p>
 			<p>
 				#{L.shop_visible}:
-				<label><input type="radio" name="visible" value="1" checked> #{L.yes}</label>
-				<label><input type="radio" name="visible" value="0"> #{L.no}</label>
+				<label is="cs-label-button"><input type="radio" name="visible" value="1" checked> #{L.yes}</label>
+				<label is="cs-label-button"><input type="radio" name="visible" value="0"> #{L.no}</label>
 			</p>
 			<p>
-				<button class="uk-button" type="submit">#{action}</button>
+				<button is="cs-button" primary type="submit">#{action}</button>
 			</p>
 		</form>"""))
 		modal.set_image	= (image) ->
 			modal.find('[name=image]').val(image)
 			if image
 				modal.find('.image')
-					.removeClass('uk-hidden')
+					.removeAttr('hidden')
 					.find('a')
 						.attr('href', image)
 						.find('img')
 							.attr('src', image)
 			else
-				modal.find('.image').addClass('uk-hidden')
+				modal.find('.image').attr('hidden')
 		modal.find('.remove-image').click ->
 			modal.set_image('')
 		if cs.file_upload

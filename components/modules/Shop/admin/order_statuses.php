@@ -24,7 +24,7 @@ usort($all_order_statuses, function ($order_status1, $order_status2) {
 	return $order_status1['title'] > $order_status2['title'] ? 1 : -1;
 });
 $Page->content(
-	h::{'h3.uk-lead.cs-center'}($L->order_statuses).
+	h::{'h3.cs-text-center'}($L->order_statuses).
 	h::{'cs-table[list][with-header]'}(
 		h::{'cs-table-row cs-table-cell'}(
 			'id',

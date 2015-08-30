@@ -10,7 +10,7 @@ namespace cs;
 use            h;
 include __DIR__.'/save.php';
 Index::instance()->content(
-	h::{'p.cs-center'}('Shortname').
+	h::{'p.cs-text-center'}('Shortname').
 	h::{'p input[name=shortname]'}(
 		[
 			'value' => Config::instance()->module('Disqus')->shortname ?: ''

@@ -64,7 +64,7 @@ $items_total = $Items->search(
 	@$_GET['asc']
 );
 $Page->content(
-	h::{'h3.uk-lead.cs-center'}($L->items).
+	h::{'h3.cs-text-center'}($L->items).
 	h::{'cs-table[list][with-header]'}(
 		h::{'cs-table-row cs-table-cell'}(
 			$make_header('id', 'id'),

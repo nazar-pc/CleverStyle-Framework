@@ -62,7 +62,7 @@ $posts          = $Posts->get_latest_posts($page, $posts_per_page);
  */
 if (!$posts) {
 	$Index->content(
-		h::{'p.cs-center'}($L->no_posts_yet)
+		h::{'p.cs-text-center'}($L->no_posts_yet)
 	);
 	return;
 }

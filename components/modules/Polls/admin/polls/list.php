@@ -42,7 +42,7 @@ $Index->content(
 			$Polls->get($Polls->get_all())
 		)
 	).
-	h::{'h2.cs-center'}($L->new_poll).
+	h::{'h2.cs-text-center'}($L->new_poll).
 	h::{'p input[name=add[title]]'}([
 		'placeholder' => $L->poll_title
 	]).

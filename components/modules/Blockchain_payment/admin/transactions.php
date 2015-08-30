@@ -64,7 +64,7 @@ $transactions_total        = $Transactions->search(
 );
 $Page->title($L->transactions);
 $Page->content(
-	h::{'h3.uk-lead.cs-center'}($L->transactions).
+	h::{'h3.cs-text-center'}($L->transactions).
 	h::{'table.cs-table[list][with-header]'}(
 		h::{'tr.cs-table-row td.cs-table-cell'}(
 			make_header('id', 'id'),

@@ -1,6 +1,6 @@
 <dom-module id="cs-system-admin-permissions-list">
   <template>
-    <h2 class="uk-text-center" hidden$="[[permissions.length]]">
+    <h2 class="cs-text-center" hidden$="[[permissions.length]]">
       <cs-icon icon="spinner" spin></cs-icon>
     </h2>
     <cs-table center hidden$="[[!permissions.length]]" list with-header>
@@ -25,7 +25,7 @@
         </cs-table-row>
       </template>
     </cs-table>
-    <p class="cs-left">
+    <p class="cs-text-left">
       <button is="cs-button" on-click="add_permission" type="button">[[L.add_permission]]</button>
     </p>
   </template>

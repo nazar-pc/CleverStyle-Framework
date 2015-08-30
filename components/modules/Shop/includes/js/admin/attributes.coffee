@@ -14,7 +14,7 @@ $ ->
 				"""<option value="#{index}">#{type}</option>"""
 		types		= types.join('')
 		cs.ui.simple_modal("""<form>
-			<h3 class="cs-center">#{title}</h3>
+			<h3 class="cs-text-center">#{title}</h3>
 			<p>
 				#{L.shop_attribute_type}: <select is="cs-select" name="type" required>#{types}</select>
 			</p>

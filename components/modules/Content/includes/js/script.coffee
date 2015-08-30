@@ -35,7 +35,7 @@ $ ->
 							<option value="html" id="cs-content-html-content">html</option>
 						</select>
 					</p>
-					<p class="cs-right">
+					<p class="cs-text-right">
 						<button is="cs-button" primary>#{L.content_save}</button>
 					</p>
 				</div>""")
@@ -95,8 +95,8 @@ $ ->
 									<option value="html">html</option>
 								</select>
 							</p>
-							<p class="cs-right">
-								<button class="uk-button">#{L.content_save}</button>
+							<p class="cs-text-right">
+								<button is="cs-button" primary>#{L.content_save}</button>
 							</p>
 						</div>""")
 						title	= modal_body.find('[name=title]').val(data.title)
@@ -144,7 +144,7 @@ $ ->
 		mousemove_timeout	= 0
 		showed_button		= false
 		show_edit_button	= (key, x, y, container) ->
-			button = $("""<button class="uk-button cs-content-edit" data-key="#{key}">#{L.content_edit}</button>""")
+			button = $("""<button is="cs-button" class="cs-content-edit" data-key="#{key}">#{L.content_edit}</button>""")
 				.css('position', 'absolute')
 				.offset(
 					top		: y

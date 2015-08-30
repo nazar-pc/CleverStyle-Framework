@@ -23,7 +23,7 @@ Page::instance()->title($L->photo_gallery_editing_of_gallery($gallery['title']))
 $Index->cancel_button_back = true;
 $Index->action             = 'admin/Photo_gallery/galleries/browse';
 $Index->content(
-	h::{'h2.cs-center'}(
+	h::{'h2.cs-text-center'}(
 		$L->photo_gallery_editing_of_gallery($gallery['title'])
 	).
 	h::{'cs-table[center] cs-table-row| cs-table-cell'}(

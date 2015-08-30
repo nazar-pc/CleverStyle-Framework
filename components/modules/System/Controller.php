@@ -284,11 +284,11 @@ class Controller {
 				unset($columns);
 				$timezones   = get_timezones_list();
 				$Index->form = true;
-				$Index->form_attributes['class'] .= ' cs-center';
+				$Index->form_attributes['class'] .= ' cs-text-center';
 				$Index->cancel_button_back = true;
 				$Page->title($L->general);
 				$Index->content(
-					h::{'h2.cs-center'}(
+					h::{'h2.cs-text-center'}(
 						$L->general_settings
 					).
 					h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
@@ -352,12 +352,12 @@ class Controller {
 				break;
 			case 'change_password':
 				$Index->form = true;
-				$Index->form_attributes['class'] .= ' cs-center';
+				$Index->form_attributes['class'] .= ' cs-text-center';
 				$Index->buttons            = false;
 				$Index->cancel_button_back = true;
 				$Page->title($L->password_changing);
 				$Index->content(
-					h::{'h2.cs-center'}(
+					h::{'h2.cs-text-center'}(
 						$L->password_changing
 					).
 					h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(

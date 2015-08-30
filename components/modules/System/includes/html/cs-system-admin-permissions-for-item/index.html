@@ -7,13 +7,13 @@
     <form id="form">
       <section is="cs-section-switcher" selected="[[selected_tab]]">
         <div>
-          <p class="cs-left">
+          <p class="cs-text-left">
             <button is="cs-button" on-click="invert" type="button">[[L.invert]]</button>
             <button is="cs-button" on-click="allow_all" type="button">[[L.allow_all]]</button>
             <button is="cs-button" on-click="deny_all" type="button">[[L.deny_all]]</button>
           </p>
           <cs-table right-left>
-            <h2 class="uk-text-center" hidden$="[[groups.length]]">
+            <h2 class="cs-text-center" hidden$="[[groups.length]]">
               <cs-icon icon="spinner" spin></cs-icon>
             </h2>
             <template as="group" is="dom-repeat" items="[[groups]]">
@@ -41,7 +41,7 @@
           </cs-table>
         </div>
         <div>
-          <p class="cs-left">
+          <p class="cs-text-left">
             <button is="cs-button" on-click="invert" type="button">[[L.invert]]</button>
             <button is="cs-button" on-click="allow_all" type="button">[[L.allow_all]]</button>
             <button is="cs-button" on-click="deny_all" type="button">[[L.deny_all]]</button>

@@ -58,12 +58,4 @@ html /deep/ {
 			text-decoration : none;
 		}
 	}
-
-	.cs-button-compact {
-		padding : .2em .3em !important;
-	}
-
-	@include cs-align(left);
-	@include cs-align(center);
-	@include cs-align(right);
 }

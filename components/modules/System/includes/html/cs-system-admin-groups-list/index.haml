@@ -1,6 +1,6 @@
 %dom-module(id="cs-system-admin-groups-list")
 	%template
-		%h2.uk-text-center(hidden$="[[groups.length]]")
+		%h2.cs-text-center(hidden$="[[groups.length]]")
 			%cs-icon(icon="spinner" spin)
 		%cs-table(center list with-header hidden$="[[!groups.length]]")
 			%cs-table-row
@@ -17,6 +17,6 @@
 					%cs-table-cell [[group.id]]
 					%cs-table-cell [[group.title]]
 					%cs-table-cell [[group.description]]
-		%p.cs-left
+		%p.cs-text-left
 			%button(is="cs-button" on-click="add_group" type="button") [[L.add_group]]
 	%script(src="script.js")

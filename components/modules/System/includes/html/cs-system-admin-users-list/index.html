@@ -29,10 +29,10 @@
       </div>
     </section>
     <hr>
-    <div class="uk-margin cs-center" hidden$="[[!show_pagination]]">
+    <div class="cs-margin cs-text-center" hidden$="[[!show_pagination]]">
       <nav is="cs-nav-pagination" page="{{search_page}}" pages="[[search_pages]]"></nav>
     </div>
-    <h2 class="uk-text-center" hidden$="[[!searching_loader]]">
+    <h2 class="cs-text-center" hidden$="[[!searching_loader]]">
       <cs-icon icon="spinner" spin></cs-icon>
     </h2>
     <cs-table center list with-header>
@@ -69,10 +69,10 @@
         </cs-table-row>
       </template>
     </cs-table>
-    <div class="uk-margin cs-center" hidden$="[[!show_pagination]]">
+    <div class="cs-margin cs-text-center" hidden$="[[!show_pagination]]">
       <nav is="cs-nav-pagination" page="{{search_page}}" pages="[[search_pages]]"></nav>
     </div>
-    <p class="cs-left">
+    <p class="cs-text-left">
       <button is="cs-button" on-click="add_user" type="button">[[L.add_user]]</button>
       <button is="cs-button" on-click="add_bot" type="button">[[L.add_bot]]</button>
     </p>

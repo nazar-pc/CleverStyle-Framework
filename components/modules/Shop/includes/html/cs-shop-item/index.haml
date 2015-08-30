@@ -1,7 +1,7 @@
 %dom-module(id="cs-shop-item")
 	%template
 		.uk-grid.uk-grid-divider.uk-grid-small.uk-grid-width-1-2
-			%h1.uk-margin-bottom.uk-width-1-1 [[header_title]]
+			%h1.cs-margin-bottom.uk-width-1-1 [[header_title]]
 			#images
 			.uk-width-1-2
 				%p
@@ -10,6 +10,6 @@
 					%span.uk-text-large [[concat('(', in_stock, ' in stock)')]]
 				%content(select="#description")
 		%template(if="[[show_attributes]]")
-			%h2.uk-margin-top [[L.shop_characteristics]]
+			%h2.cs-margin-top [[L.shop_characteristics]]
 			%content(select="#attributes")
 	%script(src="script.js")

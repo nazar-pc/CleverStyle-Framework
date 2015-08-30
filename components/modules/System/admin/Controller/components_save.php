@@ -319,7 +319,7 @@ trait components_save {
 					}
 					if ($a->save()) {
 						$Page->notice(
-							h::{'p.cs-center'}(
+							h::{'p.cs-text-center'}(
 								"$L->module_installed_but_not_enabled ".
 								h::{'a[is=cs-link-button]'}(
 									$L->enable_module($module_name),

@@ -21,7 +21,7 @@ $Index->buttons				= false;
 $Index->cancel_button_back	= true;
 $Index->action				= 'admin/Blogs/browse_posts';
 $Index->content(
-	h::{'h2.cs-center'}(
+	h::{'h2.cs-text-center'}(
 		$L->sure_to_delete_post($post['title'])
 	).
 	h::{'button[is=cs-button][type=submit]'}($L->yes).

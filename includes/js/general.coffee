@@ -62,7 +62,7 @@ $ ->
 		$modal = $(cs.ui.simple_modal("""
 			<h2>#{L.rules_agree}</h2>
 			<p>#{cs.rules_text}</p>
-			<p class="cs-right">
+			<p class="cs-text-right">
 				<button is="cs-button" primary class="cs-registration-continue">#{L.yes}</button>
 			</p>
 		"""))

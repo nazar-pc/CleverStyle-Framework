@@ -23,7 +23,7 @@ $Route                     = Route::instance();
 $Index->cancel_button_back = true;
 $Index->action             = 'admin/Blogs/browse_sections';
 $Index->content(
-	h::{'h2.cs-center'}(
+	h::{'h2.cs-text-center'}(
 		$L->addition_of_posts_section
 	).
 	h::{'cs-table[center][with-header] cs-table-row| cs-table-cell'}(

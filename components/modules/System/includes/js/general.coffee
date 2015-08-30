@@ -42,7 +42,7 @@ $ ->
 				<h2>#{title}</h2>
 				<cs-system-admin-permissions-for-item label="#{index}" group="Block"/>
 			""")
-		$('#cs-top-blocks-items, #cs-left-blocks-items, #cs-floating-blocks-items, #cs-right-blocks-items, #cs-bottom-blocks-items')
+		$('#cs-top-blocks-items, #cs-text-left-blocks-items, #cs-floating-blocks-items, #cs-text-right-blocks-items, #cs-bottom-blocks-items')
 			.sortable
 				connectWith	: '.cs-blocks-items'
 				items		: 'li:not(:first)'
@@ -55,7 +55,7 @@ $ ->
 								.map ->
 									$(@).data('id')
 								.get()
-							left		: $('#cs-left-blocks-items li:not(:first)')
+							left		: $('#cs-text-left-blocks-items li:not(:first)')
 								.map ->
 									$(@).data('id')
 								.get()
@@ -63,7 +63,7 @@ $ ->
 								.map ->
 									$(@).data('id')
 								.get()
-							right		: $('#cs-right-blocks-items li:not(:first)')
+							right		: $('#cs-text-right-blocks-items li:not(:first)')
 								.map ->
 									$(@).data('id')
 								.get()

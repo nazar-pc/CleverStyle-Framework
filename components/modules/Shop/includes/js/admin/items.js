@@ -64,7 +64,7 @@
         return results;
       })();
       categories_list = categories_list.join('');
-      modal = $(cs.ui.simple_modal("<form>\n	<h3 class=\"cs-center\">" + title + "</h3>\n	<p>\n		" + L.shop_category + ": <select is=\"cs-select\" name=\"category\" required>" + categories_list + "</select>\n	</p>\n	<div></div>\n</form>"));
+      modal = $(cs.ui.simple_modal("<form>\n	<h3 class=\"cs-text-center\">" + title + "</h3>\n	<p>\n		" + L.shop_category + ": <select is=\"cs-select\" name=\"category\" required>" + categories_list + "</select>\n	</p>\n	<div></div>\n</form>"));
       modal.item_data = {};
       modal.update_item_data = function() {
         var attribute, item, ref, value;
@@ -166,7 +166,7 @@
         };
         modal.add_images = function(images) {
           images.forEach(function(image) {
-            return images_container.append("<span>\n	<a href=\"" + image + "\" target=\"_blank\" class=\"uk-thumbnail uk-thumbnail-mini\">\n		<img src=\"" + image + "\">\n		<br>\n		<button type=\"button\" class=\"remove-image uk-button uk-button-danger uk-button-mini uk-width-1-1\">" + L.shop_remove_image + "</button>\n	</a>\n</span>");
+            return images_container.append("<span>\n	<a href=\"" + image + "\" target=\"_blank\" class=\"uk-thumbnail uk-thumbnail-mini\">\n		<img src=\"" + image + "\">\n		<br>\n		<button is=\"cs-button\" force-compact type=\"button\" class=\"remove-image uk-width-1-1\">" + L.shop_remove_image + "</button>\n	</a>\n</span>");
           });
           return modal.update_images();
         };

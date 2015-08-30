@@ -6,12 +6,12 @@
 		%form#form
 			%section(is="cs-section-switcher" selected="[[selected_tab]]")
 				%div
-					%p.cs-left
+					%p.cs-text-left
 						%button(is="cs-button" on-click="invert" type="button") [[L.invert]]
 						%button(is="cs-button" on-click="allow_all" type="button") [[L.allow_all]]
 						%button(is="cs-button" on-click="deny_all" type="button") [[L.deny_all]]
 					%cs-table(right-left)
-						%h2.uk-text-center(hidden$="[[groups.length]]")
+						%h2.cs-text-center(hidden$="[[groups.length]]")
 							%cs-icon(icon="spinner" spin)
 						%template(is="dom-repeat" items="[[groups]]" as="group")
 							%cs-table-row
@@ -29,7 +29,7 @@
 										%input(type="radio" value="1" checked="[[group_permission_state(group.id, 1)]]" name$="[[concat('groups[', group.id, ']')]]")/
 										%span [[L.allow]]
 				%div
-					%p.cs-left
+					%p.cs-text-left
 						%button(is="cs-button" on-click="invert" type="button") [[L.invert]]
 						%button(is="cs-button" on-click="allow_all" type="button") [[L.allow_all]]
 						%button(is="cs-button" on-click="deny_all" type="button") [[L.deny_all]]

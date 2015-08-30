@@ -23,7 +23,7 @@ Page::instance()->title($L->editing_of_posts_section($section['title']));
 $Index->cancel_button_back = true;
 $Index->action             = 'admin/Blogs/browse_sections';
 $Index->content(
-	h::{'h2.cs-center'}(
+	h::{'h2.cs-text-center'}(
 		$L->editing_of_posts_section($section['title'])
 	).
 	h::{'cs-table[center][with-header] cs-table-row| cs-table-cell'}(
