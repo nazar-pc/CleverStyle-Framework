@@ -139,7 +139,7 @@ trait packages_manipulation {
 		 */
 		foreach (
 			array_diff(
-				file_get_json("$fs_location_directory/fs.json"),
+				file_get_json("$fs_location_directory/fs_backup.json"),
 				$fs
 			) as $file
 		) {
