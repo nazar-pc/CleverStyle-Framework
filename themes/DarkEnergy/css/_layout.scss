@@ -17,43 +17,20 @@ html {
 }
 
 body {
-	display           : flex;
-	display           : -ms-flexbox;
-	display           : -webkit-flex;
-	flex-wrap         : wrap;
-	-ms-flex-wrap     : wrap;
-	-webkit-flex-wrap : wrap;
-	margin-left       : -5px !important;
-	margin-top        : 5px !important;
-	width             : 100%;
+	padding : 5px !important;
+
+	@include flexy-plexy(1rem child, 2 8, 1);
 
 	@media (max-width : 959px) {
-		> aside {
-			margin-right : 0;
-			width        : 100%;
+		@include flexy-plexy(1rem child, 1);
 
-			&:first-child > :nth-child(n+2) {
-				display : none;
-			}
+		> aside:first-child > :nth-child(n+2) {
+			display : none;
 		}
-
-		> section {
-			width : 100%;
-		}
-	}
-
-	> aside {
-		margin-right : 1em;
-		width        : calc(20% - 1em);
-	}
-
-	> section {
-		width : 80%;
 	}
 
 	> footer {
 		text-align : center;
-		width      : 100%;
 
 		strong {
 			display     : block;

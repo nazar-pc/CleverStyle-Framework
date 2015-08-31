@@ -4,14 +4,14 @@
  * @copyright Copyright (c) 2015, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
  */
-@mixin flexy-plexy($gutter-width, $rows...) {
+@mixin flexy-plexy($options, $rows...) {
 	@at-root (without: media) {
-		display                 : flex;
-		display                 : -ms-flexbox;
-		display                 : -webkit-flex;
-		flex-wrap               : wrap;
-		-ms-flex-wrap           : wrap;
-		-webkit-flex-wrap       : wrap;
+		display           : flex;
+		display           : -ms-flexbox;
+		display           : -webkit-flex;
+		flex-wrap         : wrap;
+		-ms-flex-wrap     : wrap;
+		-webkit-flex-wrap : wrap;
 
 		> :not(template):not(script):not(style) {
 			box-sizing : border-box !important;
@@ -19,21 +19,24 @@
 	}
 
 	$items-counter : 0;
+	$gutter-width : nth($options, 1);
+	$include-selector : 'nth-of-type';
+	$exclude-selector : ':not(template):not(script):not(style)';
+
+	@if length($options) > 1 and nth($options, 2) == child {
+		$include-selector : 'nth-child';
+	}
 
 	@each $row-columns in $rows {
 		$columns-in-row : length($row-columns);
 		$index : 1;
-		$index-offset : 0;
+		$index-offset : $items-counter;
 		$offset-selector : '';
 		$total-row-width : 0;
 
-		@if $items-counter {
-			$index-offset : $items-counter;
-		}
-
 		@each $grow in $row-columns {
 			$total-row-width : $total-row-width + $grow;
-			$offset-selector : $offset-selector + ' ~ :not(template):not(script):not(style)';
+			$offset-selector : $offset-selector + ' ~ ' + $exclude-selector;
 		}
 
 		@each $column-width in $row-columns {
@@ -47,17 +50,24 @@
 
 			$flex-width : #{'calc(' + $flex-width + ')'};
 
-			& > :not(template):not(script):not(style):nth-of-type(#{$columns-in-row + 'n + ' + ($index-offset + $index)}) {
+			> #{$exclude-selector + ':' + $include-selector + '(' + $columns-in-row + 'n + ' + ($index-offset + $index) + ')'} {
 				margin-right : $margin-right;
 				width        : $flex-width;
 
-				#{'& ' + $offset-selector} {
-					margin-top : $gutter-width;
+				// This ugly `if` can be replaced with simple `display: if($column-width > 0, initial, none)`, but stupid IE doesn't understand `initial`...
+				@if $column-width == 0 {
+					&:not(#{':' + $include-selector + '(' + $columns-in-row + 'n + ' + ($index-offset + $index + $columns-in-row) + ')'}) {
+						display : none;
+					}
 				}
 			}
 
 			$index : $index + 1;
 			$items-counter : $items-counter + 1;
 		}
+	}
+
+	> #{$exclude-selector + ':' + $include-selector + '(' + 'n + ' + (length(nth($rows, 1)) + 1) + ')'} {
+		margin-top : $gutter-width;
 	}
 }
