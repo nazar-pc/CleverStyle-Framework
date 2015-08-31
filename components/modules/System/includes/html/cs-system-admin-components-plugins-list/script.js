@@ -21,7 +21,7 @@
       var plugins;
       plugins = JSON.parse(this.querySelector('script').textContent);
       plugins.forEach(function(plugin) {
-        plugin["class"] = plugin.active ? 'uk-alert-success' : 'uk-alert-warning';
+        plugin["class"] = plugin.active ? 'cs-block-success cs-text-success' : 'cs-block-warning cs-text-warning';
         plugin.icon = plugin.active ? 'check' : 'minus';
         plugin.icon_text = plugin.active ? L.enabled : L.disabled;
         plugin.name_localized = L[plugin.name] || plugin.name.replace('_', ' ');

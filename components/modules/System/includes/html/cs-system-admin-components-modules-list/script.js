@@ -24,11 +24,11 @@
         module["class"] = (function() {
           switch (module.active) {
             case -1:
-              return 'uk-alert-danger';
+              return 'cs-block-error cs-text-error';
             case 0:
-              return 'uk-alert-warning';
+              return 'cs-block-warning cs-text-warning';
             case 1:
-              return 'uk-alert-success';
+              return 'cs-block-success cs-text-success';
           }
         })();
         module.icon = (function() {

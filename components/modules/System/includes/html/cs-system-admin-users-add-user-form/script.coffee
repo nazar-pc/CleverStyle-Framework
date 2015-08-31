@@ -21,7 +21,7 @@ Polymer(
 				type	: 'user'
 			success	: (result) ->
 				cs.ui.alert("""
-					<p class="uk-alert uk-alert-success">#{L.user_was_added(result.login, result.password)}</p>
+					<p class="cs-block-success cs-text-success">#{L.user_was_added(result.login, result.password)}</p>
 				""")
 		)
 )

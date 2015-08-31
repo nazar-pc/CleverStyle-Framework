@@ -1,8 +1,8 @@
 <dom-module id="cs-shop-order">
   <template>
-    <div class="uk-text-large">
+    <div class="cs-text-lead">
       <span>[[concat(order_number, ': ', order_status)]]</span>
-      <template if="[[show_pay_now]]">
+      <template if="[[show_pay_now]]" is="dom-if">
         <button is="cs-button" on-click="pay" primary type="button">[[L.pay_now]]</button>
       </template>
     </div>
@@ -12,7 +12,7 @@
     <p>[[concat(L.shop_total_price, ': ', total_price_formatted)]]</p>
     <p hidden$="[[!discount_formatted]]">[[concat(L.shop_discount, ': ', discount_formatted)]]</p>
     <p>[[concat(L.shop_shipping_cost, ': ', shipping_cost_formatted)]]</p>
-    <p class="uk-text-bold">[[concat(L.shop_for_payment, ': ', for_payment_formatted)]]</p>
+    <p class="cs-text-bold">[[concat(L.shop_for_payment, ': ', for_payment_formatted)]]</p>
     <p hidden$="[[!phone]]">
       <span>[[concat(L.shop_phone, ':')]]</span>
       <span id="phone"></span>

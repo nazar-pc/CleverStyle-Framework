@@ -1,8 +1,8 @@
 %dom-module(id="cs-shop-order")
 	%template
-		.uk-text-large
+		.cs-text-lead
 			%span [[concat(order_number, ': ', order_status)]]
-			%template(if="[[show_pay_now]]")
+			%template(is="dom-if" if="[[show_pay_now]]")
 				%button(is="cs-button" primary on-click="pay" type="button") [[L.pay_now]]
 		%div [[date_formatted]]
 		%content(select="#items")
@@ -10,7 +10,7 @@
 		%p [[concat(L.shop_total_price, ': ', total_price_formatted)]]
 		%p(hidden$="[[!discount_formatted]]") [[concat(L.shop_discount, ': ', discount_formatted)]]
 		%p [[concat(L.shop_shipping_cost, ': ', shipping_cost_formatted)]]
-		%p.uk-text-bold [[concat(L.shop_for_payment, ': ', for_payment_formatted)]]
+		%p.cs-text-bold [[concat(L.shop_for_payment, ': ', for_payment_formatted)]]
 		%p(hidden$="[[!phone]]")
 			%span [[concat(L.shop_phone, ':')]]
 			%span#phone

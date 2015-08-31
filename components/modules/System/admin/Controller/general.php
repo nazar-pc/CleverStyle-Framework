@@ -249,7 +249,7 @@ trait general {
 		);
 	}
 	static private function state ($state) {
-		return $state ? 'uk-alert-success' : 'uk-alert-danger';
+		return $state ? 'cs-block-success cs-text-success' : 'cs-block-error cs-text-error';
 	}
 	/**
 	 * Returns server type

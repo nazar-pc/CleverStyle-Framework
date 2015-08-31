@@ -125,9 +125,9 @@
               user["class"] = (function() {
                 switch (parseInt(user.status)) {
                   case STATUS_ACTIVE:
-                    return 'uk-alert-success';
+                    return 'cs-block-success cs-text-success';
                   case STATUS_INACTIVE:
-                    return 'uk-alert-warning';
+                    return 'cs-block-warning cs-text-warning';
                   default:
                     return '';
                 }

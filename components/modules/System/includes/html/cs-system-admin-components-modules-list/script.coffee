@@ -15,9 +15,9 @@ Polymer(
 		modules.forEach (module) ->
 			module.class			=
 				switch module.active
-					when -1 then 'uk-alert-danger'
-					when 0 then 'uk-alert-warning'
-					when 1 then 'uk-alert-success'
+					when -1 then 'cs-block-error cs-text-error'
+					when 0 then 'cs-block-warning cs-text-warning'
+					when 1 then 'cs-block-success cs-text-success'
 			module.icon				=
 				switch module.active
 					when -1 then 'times'

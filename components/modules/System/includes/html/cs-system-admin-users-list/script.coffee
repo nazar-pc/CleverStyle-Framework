@@ -95,8 +95,8 @@ Polymer(
 				data.users.forEach (user) =>
 					user.class		=
 						switch parseInt(user.status)
-							when STATUS_ACTIVE then 'uk-alert-success'
-							when STATUS_INACTIVE then 'uk-alert-warning'
+							when STATUS_ACTIVE then 'cs-block-success cs-text-success'
+							when STATUS_INACTIVE then 'cs-block-warning cs-text-warning'
 							else ''
 					user.is_guest	= `user.id == GUEST_ID`
 					user.is_root	= `user.id == ROOT_ID`

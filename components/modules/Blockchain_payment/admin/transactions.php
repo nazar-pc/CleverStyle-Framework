@@ -95,7 +95,7 @@ $Page->content(
 						)
 						: '-';
 					$username  = User::instance()->username($transaction['user']);
-					$class     = $transaction['confirmed'] ? 'uk-alert-success' : ($transaction['paid'] ? 'uk-alert-warning' : 'uk-alert-danger');
+					$class     = $transaction['confirmed'] ? 'cs-block-success cs-text-success' : ($transaction['paid'] ? 'cs-block-warning cs-text-warning' : 'cs-block-error cs-text-error');
 					$tag       = "td.cs-table-cell.$class";
 					return [
 						[

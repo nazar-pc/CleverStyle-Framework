@@ -32,9 +32,9 @@ cs.admin_cache				= (element, action, partial_path) ->
 		success	: (result) ->
 			$(element).html(
 				if result
-					"""<p class="uk-alert uk-alert-success">#{L.done}</p>"""
+					"""<p class="cs-block-success cs-text-success">#{L.done}</p>"""
 				else
-					"""<p class="uk-alert uk-alert-danger">#{L.error}</p>"""
+					"""<p class="cs-block-errorcs-text-error">#{L.error}</p>"""
 			)
 	return
 ###*
@@ -67,15 +67,15 @@ cs.db_test					= (index, mirror_index) ->
 			if result
 				status = 'success'
 			else
-				status = 'danger'
+				status = 'error'
 			result = if result then L.success else L.failed
 			modal
 				.find('progress')
-				.replaceWith("""<p class="cs-text-center uk-alert uk-alert-#{status}" style=text-transform:capitalize;">#{result}</p>""")
+				.replaceWith("""<p class="cs-text-center cs-block-#{status} cs-text-#{status}" style=text-transform:capitalize;">#{result}</p>""")
 		error	: ->
 			modal
 				.find('progress')
-				.replaceWith("""<p class="cs-text-center uk-alert uk-alert-danger" style=text-transform:capitalize;">#{L.failed}</p>""")
+				.replaceWith("""<p class="cs-text-center cs-block-error cs-text-error" style=text-transform:capitalize;">#{L.failed}</p>""")
 	)
 ###*
  * Send request for storage connection testing
@@ -104,15 +104,15 @@ cs.storage_test				= (index) ->
 			if result
 				status = 'success'
 			else
-				status = 'danger'
+				status = 'error'
 			result = if result then L.success else L.failed
 			modal
 				.find('progress')
-				.replaceWith("""<p class="cs-text-center uk-alert uk-alert-#{status}" style=text-transform:capitalize;">#{result}</p>""")
+				.replaceWith("""<p class="cs-text-center cs-block-#{status} cs-text-#{status}" style=text-transform:capitalize;">#{result}</p>""")
 		error	: ->
 			modal
 				.find('progress')
-				.replaceWith("""<p class="cs-text-center uk-alert uk-alert-danger" style=text-transform:capitalize;">#{L.failed}</p>""")
+				.replaceWith("""<p class="cs-text-center cs-block-error cs-text-error" style=text-transform:capitalize;">#{L.failed}</p>""")
 	)
 ###*
  * Toggling of blocks group in admin page

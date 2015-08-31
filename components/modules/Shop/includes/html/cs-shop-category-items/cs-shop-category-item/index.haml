@@ -7,8 +7,8 @@
 			%div
 				%content(select="h1")
 				%p
-					%span.uk-text-primary.uk-text-large [[price]]
+					%span.cs-text-primary.cs-text-lead [[price]]
 					%cs-shop-add-to-cart(item_id="[[item_id]]")
-					%span.uk-text-large [[concat('(', in_stock, ' in stock)')]]
+					%span.cs-text-lead [[concat('(', in_stock, ' in stock)')]]
 				%content(select="#description")
 	%script(src="script.js")

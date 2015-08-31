@@ -82,14 +82,14 @@ $ ->
 				'sortupdate'
 				->
 					$('#cs-users-groups-list')
-						.find('.uk-alert-success')
-						.removeClass('uk-alert-success')
-						.addClass('uk-alert-warning')
+						.find('.cs-block-success')
+						.removeClass('cs-block-success cs-text-success')
+						.addClass('cs-block-warning cs-text-warning')
 					selected	= $('#cs-users-groups-list-selected')
 					selected
-						.find('.uk-alert-warning')
-						.removeClass('uk-alert-warning')
-						.addClass('uk-alert-success')
+						.find('.cs-block-warning')
+						.removeClass('cs-block-warning cs-text-warning')
+						.addClass('cs-block-success cs-text-success')
 					$('#cs-user-groups').val(
 						JSON.stringify(
 							selected

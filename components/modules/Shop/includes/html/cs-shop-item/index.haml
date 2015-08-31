@@ -7,11 +7,11 @@
 				#images
 			#div.cs-padding-left
 				%p
-					%span.uk-text-primary.uk-text-large [[price]]
+					%span.cs-text-primary.cs-text-lead [[price]]
 					%cs-shop-add-to-cart(item_id="[[item_id]]")
-					%span.uk-text-large [[concat('(', in_stock, ' in stock)')]]
+					%span.cs-text-lead [[concat('(', in_stock, ' in stock)')]]
 				%content(select="#description")
-		%template(if="[[show_attributes]]")
+		%template(is="dom-if" if="[[show_attributes]]")
 			%h2.cs-margin-top [[L.shop_characteristics]]
 			%content(select="#attributes")
 	%script(src="script.js")

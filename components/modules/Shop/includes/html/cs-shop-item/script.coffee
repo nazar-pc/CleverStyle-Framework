@@ -24,7 +24,7 @@ Polymer(
 				.find('table')
 					.addClass('uk-table uk-table-hover')
 					.find('td:first-of-type')
-						.addClass('uk-text-bold')
+						.addClass('cs-text-bold')
 		$(@$.images)
 			.append(
 				$(@querySelectorAll('#videos > a')).each ->

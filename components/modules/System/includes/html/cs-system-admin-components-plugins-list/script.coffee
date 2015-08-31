@@ -13,7 +13,7 @@ Polymer(
 	ready			: ->
 		plugins = JSON.parse(@querySelector('script').textContent)
 		plugins.forEach (plugin) ->
-			plugin.class			= if plugin.active then 'uk-alert-success' else 'uk-alert-warning'
+			plugin.class			= if plugin.active then 'cs-block-success cs-text-success' else 'cs-block-warning cs-text-warning'
 			plugin.icon				= `plugin.active ? 'check' : 'minus'`
 			plugin.icon_text		= `plugin.active ? L.enabled : L.disabled`
 			plugin.name_localized	= L[plugin.name] || plugin.name.replace('_', ' ')

@@ -42,7 +42,7 @@
       },
       type: 'delete',
       success: function(result) {
-        return $(element).html(result ? "<p class=\"uk-alert uk-alert-success\">" + L.done + "</p>" : "<p class=\"uk-alert uk-alert-danger\">" + L.error + "</p>");
+        return $(element).html(result ? "<p class=\"cs-block-success cs-text-success\">" + L.done + "</p>" : "<p class=\"cs-block-errorcs-text-error\">" + L.error + "</p>");
       }
     });
   };
@@ -79,13 +79,13 @@
         if (result) {
           status = 'success';
         } else {
-          status = 'danger';
+          status = 'error';
         }
         result = result ? L.success : L.failed;
-        return modal.find('progress').replaceWith("<p class=\"cs-text-center uk-alert uk-alert-" + status + "\" style=text-transform:capitalize;\">" + result + "</p>");
+        return modal.find('progress').replaceWith("<p class=\"cs-text-center cs-block-" + status + " cs-text-" + status + "\" style=text-transform:capitalize;\">" + result + "</p>");
       },
       error: function() {
-        return modal.find('progress').replaceWith("<p class=\"cs-text-center uk-alert uk-alert-danger\" style=text-transform:capitalize;\">" + L.failed + "</p>");
+        return modal.find('progress').replaceWith("<p class=\"cs-text-center cs-block-error cs-text-error\" style=text-transform:capitalize;\">" + L.failed + "</p>");
       }
     });
   };
@@ -119,13 +119,13 @@
         if (result) {
           status = 'success';
         } else {
-          status = 'danger';
+          status = 'error';
         }
         result = result ? L.success : L.failed;
-        return modal.find('progress').replaceWith("<p class=\"cs-text-center uk-alert uk-alert-" + status + "\" style=text-transform:capitalize;\">" + result + "</p>");
+        return modal.find('progress').replaceWith("<p class=\"cs-text-center cs-block-" + status + " cs-text-" + status + "\" style=text-transform:capitalize;\">" + result + "</p>");
       },
       error: function() {
-        return modal.find('progress').replaceWith("<p class=\"cs-text-center uk-alert uk-alert-danger\" style=text-transform:capitalize;\">" + L.failed + "</p>");
+        return modal.find('progress').replaceWith("<p class=\"cs-text-center cs-block-error cs-text-error\" style=text-transform:capitalize;\">" + L.failed + "</p>");
       }
     });
   };

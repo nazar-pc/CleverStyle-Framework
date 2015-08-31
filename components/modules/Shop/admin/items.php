@@ -110,7 +110,7 @@ $Page->content(
 							)
 						],
 						[
-							'class' => $item['listed'] ? 'uk-alert-success' : ($item['in_stock'] || $item['soon'] ? 'uk-alert-warning' : 'uk-alert-danger')
+							'class' => $item['listed'] ? 'cs-block-success cs-text-success' : ($item['in_stock'] || $item['soon'] ? 'cs-block-warning cs-text-warning' : 'cs-block-error cs-text-error')
 						]
 					);
 				},

@@ -66,9 +66,9 @@
         items: 'li:not(:first)'
       }).on('sortupdate', function() {
         var selected;
-        $('#cs-users-groups-list').find('.uk-alert-success').removeClass('uk-alert-success').addClass('uk-alert-warning');
+        $('#cs-users-groups-list').find('.cs-block-success').removeClass('cs-block-success cs-text-success').addClass('cs-block-warning cs-text-warning');
         selected = $('#cs-users-groups-list-selected');
-        selected.find('.uk-alert-warning').removeClass('uk-alert-warning').addClass('uk-alert-success');
+        selected.find('.cs-block-warning').removeClass('cs-block-warning cs-text-warning').addClass('cs-block-success cs-text-success');
         return $('#cs-user-groups').val(JSON.stringify(selected.children('li:not(:first)').map(function() {
           return $(this).data('id');
         }).get()));

@@ -382,7 +382,7 @@ class Page {
 	 * @return Page
 	 */
 	function success ($success_text) {
-		return $this->top_message($success_text, 'success cs-text-lead');
+		return $this->top_message($success_text, 'success');
 	}
 	/**
 	 * Display notice message
@@ -392,7 +392,7 @@ class Page {
 	 * @return Page
 	 */
 	function notice ($notice_text) {
-		return $this->top_message($notice_text, 'warning cs-text-lead');
+		return $this->top_message($notice_text, 'warning');
 	}
 	/**
 	 * Display warning message
@@ -402,7 +402,7 @@ class Page {
 	 * @return Page
 	 */
 	function warning ($warning_text) {
-		return $this->top_message($warning_text, 'danger cs-text-lead');
+		return $this->top_message($warning_text, 'error');
 	}
 	/**
 	 * Generic method for 3 methods above
@@ -416,7 +416,7 @@ class Page {
 		$this->Top .= h::div(
 			$message,
 			[
-				'class'	=> "cs-text-center uk-alert uk-alert-$class_ending"
+				'class'	=> "cs-text-center cs-text-lead cs-block-$class_ending cs-text-$class_ending"
 			]
 		);
 		return $this;

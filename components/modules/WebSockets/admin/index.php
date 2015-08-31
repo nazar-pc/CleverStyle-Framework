@@ -82,7 +82,7 @@ $Index->content(
 		]
 	).
 	(is_server_running()
-		? h::{'p.uk-alert.uk-alert-success'}($L->server_is_running)
-		: h::{'p.uk-alert.uk-alert-warning'}("$L->server_is_not_running. ".h::{'button[is=cs-button][name=start_server][type=submit]'}($L->start_server))
+		? h::{'p.cs-block-success.cs-text-success'}($L->server_is_running)
+		: h::{'p.cs-block-warning.cs-text-warning'}("$L->server_is_not_running. ".h::{'button[is=cs-button][name=start_server][type=submit]'}($L->start_server))
 	)
 );
