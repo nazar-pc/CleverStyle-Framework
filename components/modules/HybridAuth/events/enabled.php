@@ -54,10 +54,7 @@ Event::instance()->on(
 		};
 		$data['list'] = h::{'nav.cs-hybrid-auth-providers-list[is=cs-nav-dropdown] nav[is=cs-nav-button-group][vertical]'}(
 			h::p(
-				$L->or_sign_in_with,
-				[
-					'class' => 'uk-nav-header'
-				]
+				$L->or_sign_in_with
 			).
 			h::{'a[is=cs-link-button]'}(
 				array_map(

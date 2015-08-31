@@ -17,8 +17,8 @@ if (!function_exists(__NAMESPACE__.'\\level')) {
 		return trim(h::level($in, $level))."\n";
 	}
 }
-$main_menu	= h::{'ul.uk-navbar-nav[level=0] li[level=0]'}(
-	get_main_menu()
+$main_menu	= h::nav(
+	implode('', get_main_menu())
 );
 $submenu	= admin_path() ? Menu::instance()->get_menu() : '';
 $avatar		= User::instance()->avatar();
@@ -26,13 +26,15 @@ $avatar		= User::instance()->avatar();
 <!--pre_Html--><!--head-->
 <body unresolved>
 <!--pre_Body-->
-	<header class="uk-navbar uk-navbar-attached">
-		<div class="uk-navbar-content uk-navbar-flip">
-			<img alt="" src="<?=$avatar?>">
-			<?=level(get_header_info(), 3)?>
+	<header>
+		<div>
+			<a href="/" class="cs-text-lead"><?=get_core_ml_text('name')?></a>
+			<?=level($main_menu, 3)?>
+			<aside>
+				<img alt="" src="<?=$avatar?>">
+				<?=level(get_header_info(), 4)?>
+			</aside>
 		</div>
-		<a href="/" class="uk-navbar-brand"><?=get_core_ml_text('name')?></a>
-		<?=level($main_menu, 2)?>
 		<hr>
 		<?=level($submenu, 2)?>
 	</header>
