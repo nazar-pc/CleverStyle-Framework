@@ -55,12 +55,12 @@ $ ->
 			<p>
 				#{L.shop_description}: <textarea is="cs-textarea" autosize name="description"></textarea>
 			</p>
-			<p class="image" hidden>
+			<p class="image" hidden style="width: 150px">
 				#{L.shop_image}:
-				<a target="_blank" class="uk-thumbnail">
+				<a target="_blank">
 					<img>
 					<br>
-					<button is="cs-button" force-compact type="button" class="remove-image uk-width-1-1">#{L.shop_remove_image}</button>
+					<button is="cs-button" force-compact type="button" class="remove-image" style="width: 100%">#{L.shop_remove_image}</button>
 				</a>
 				<input type="hidden" name="image">
 			</p>

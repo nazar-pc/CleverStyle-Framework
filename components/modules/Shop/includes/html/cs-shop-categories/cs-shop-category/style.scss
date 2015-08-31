@@ -11,13 +11,26 @@
 	@apply (--layout-horizontal);
 }
 
+::content h1 {
+	margin-top : 0;
+}
+
+
 #content {
 	@include flexy-plexy(1em, 3 7)
 }
+
 // Hack: `:host` is here only because of Polymer unable to handle pure `::content` properly
 :host ::content #nested {
 	margin-top : 1em;
 	width      : 100%;
 
 	@include flexy-plexy(.51em, 1 1 1 1)
+}
+
+#img img {
+	background : #fff;
+	border     : 1px solid #e5e5e5;
+	padding    : .3em;
+	width      : 100%;
 }

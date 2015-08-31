@@ -1,7 +1,9 @@
 <dom-module id="cs-shop-category-nested">
+  <link href="style.css" rel="import" type="css">
   <template>
-    <a class="uk-thumbnail uk-thumbnail-expand cs-margin-top" href="[[href]]" id="img"></a>
-    <div class="uk-thumbnail-caption">[[category_title]]</div>
+    <a class="cs-margin-top cs-text-center" href="[[href]]" id="img">
+      <div class="cs-padding-top">[[category_title]]</div>
+    </a>
   </template>
   <script src="script.js"></script>
 </dom-module>

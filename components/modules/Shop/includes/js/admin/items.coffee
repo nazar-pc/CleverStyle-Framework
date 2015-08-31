@@ -160,7 +160,7 @@ $ ->
 				images_container
 					.sortable(
 						forcePlaceholderSize	: true
-						placeholder				: '<a class="uk-thumbnail uk-thumbnail-mini"></a>'
+						placeholder				: '<button is="cs-button" icon="map-pin" style="vertical-align: top">'
 					)
 					.on(
 						'sortupdate'
@@ -168,13 +168,11 @@ $ ->
 					)
 			modal.add_images	= (images) ->
 				images.forEach (image) ->
-					images_container.append("""<span>
-						<a href="#{image}" target="_blank" class="uk-thumbnail uk-thumbnail-mini">
-							<img src="#{image}">
-							<br>
-							<button is="cs-button" force-compact type="button" class="remove-image uk-width-1-1">#{L.shop_remove_image}</button>
-						</a>
-					</span>""")
+					images_container.append("""<a href="#{image}" target="_blank" style="display: inline-block; padding: .5em; width: 150px">
+						<img src="#{image}">
+						<br>
+						<button is="cs-button" force-compact type="button" class="remove-image" style="width: 100%">#{L.shop_remove_image}</button>
+					</a>""")
 				modal.update_images()
 			if cs.file_upload
 				do ->

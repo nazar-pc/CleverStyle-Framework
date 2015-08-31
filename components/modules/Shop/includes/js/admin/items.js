@@ -161,12 +161,12 @@
           images_container.sortable('destroy');
           return images_container.sortable({
             forcePlaceholderSize: true,
-            placeholder: '<a class="uk-thumbnail uk-thumbnail-mini"></a>'
+            placeholder: '<button is="cs-button" icon="map-pin" style="vertical-align: top">'
           }).on('sortupdate', modal.update_images);
         };
         modal.add_images = function(images) {
           images.forEach(function(image) {
-            return images_container.append("<span>\n	<a href=\"" + image + "\" target=\"_blank\" class=\"uk-thumbnail uk-thumbnail-mini\">\n		<img src=\"" + image + "\">\n		<br>\n		<button is=\"cs-button\" force-compact type=\"button\" class=\"remove-image uk-width-1-1\">" + L.shop_remove_image + "</button>\n	</a>\n</span>");
+            return images_container.append("<a href=\"" + image + "\" target=\"_blank\" style=\"display: inline-block; padding: .5em; width: 150px\">\n	<img src=\"" + image + "\">\n	<br>\n	<button is=\"cs-button\" force-compact type=\"button\" class=\"remove-image\" style=\"width: 100%\">" + L.shop_remove_image + "</button>\n</a>");
           });
           return modal.update_images();
         };
