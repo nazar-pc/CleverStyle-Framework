@@ -6,5 +6,5 @@
  * @license    MIT License, see license.txt
 ###
 document.querySelector('.cs-mobile-menu').addEventListener('click', ->
-	$(@).nextAll().toggleClass('uk-display-block')
+	$(@).nextAll().toggle()
 )

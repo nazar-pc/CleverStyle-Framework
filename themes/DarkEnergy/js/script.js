@@ -10,7 +10,7 @@
 
 (function() {
   document.querySelector('.cs-mobile-menu').addEventListener('click', function() {
-    return $(this).nextAll().toggleClass('uk-display-block');
+    return $(this).nextAll().toggle();
   });
 
 }).call(this);

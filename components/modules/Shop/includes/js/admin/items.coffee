@@ -131,7 +131,7 @@ $ ->
 					<label is="cs-label-button"><input type="radio" name="listed" value="0"> #{L.shop_no}</label>
 				</p>
 				<p>
-					<span class="images uk-display-block"></span>
+					<span class="images" style="display: block"></span>
 					<button is="cs-button" tight type="button" class="add-images">#{L.shop_add_images}</button>
 					<progress is="cs-progress" hidden></progress>
 					<input type="hidden" name="images">
