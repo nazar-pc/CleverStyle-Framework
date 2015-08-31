@@ -14,24 +14,6 @@ $ ->
 			$(@)
 				.find("option[value='" + $('#change_language').val() + "']")
 				.prop('selected', true)
-		$('.cs-permissions-invert').click ->
-			$(@)
-				.parentsUntil('div')
-				.find(':radio:not(:checked)[value!=-1]')
-				.prop('checked', true)
-				.change()
-		$('.cs-permissions-allow-all').click ->
-			$(@)
-				.parentsUntil('div')
-				.find(':radio[value=1]')
-				.prop('checked', true)
-				.change()
-		$('.cs-permissions-deny-all').click ->
-			$(@)
-				.parentsUntil('div')
-				.find(':radio[value=0]')
-				.prop('checked', true)
-				.change()
 		$('.cs-blocks-permissions').click ->
 			$block	= $(@).closest('[data-index]')
 			index	= $block.data('index')
@@ -45,32 +27,18 @@ $ ->
 		$('#cs-top-blocks-items, #cs-left-blocks-items, #cs-floating-blocks-items, #cs-right-blocks-items, #cs-bottom-blocks-items')
 			.sortable
 				connectWith	: '.cs-blocks-items'
-				items		: 'li:not(:first)'
+				items		: 'li:not(:first)',
+				placeholder	: '<li class="cs-block-primary">'
 			.on(
 				'sortupdate'
 				->
 					$('#cs-blocks-position').val(
 						JSON.stringify(
-							top			: $('#cs-top-blocks-items li:not(:first)')
-								.map ->
-									$(@).data('id')
-								.get()
-							left		: $('#cs-left-blocks-items li:not(:first)')
-								.map ->
-									$(@).data('id')
-								.get()
-							floating	: $('#cs-floating-blocks-items li:not(:first)')
-								.map ->
-									$(@).data('id')
-								.get()
-							right		: $('#cs-right-blocks-items li:not(:first)')
-								.map ->
-									$(@).data('id')
-								.get()
-							bottom		: $('#cs-bottom-blocks-items li:not(:first)')
-								.map ->
-									$(@).data('id')
-								.get()
+							top			: $('#cs-top-blocks-items li:not(:first)').map(-> @dataset.id).get()
+							left		: $('#cs-left-blocks-items li:not(:first)').map(-> @dataset.id).get()
+							floating	: $('#cs-floating-blocks-items li:not(:first)').map(-> @dataset.id).get()
+							right		: $('#cs-right-blocks-items li:not(:first)').map(-> @dataset.id).get()
+							bottom		: $('#cs-bottom-blocks-items li:not(:first)').map(-> @dataset.id).get()
 						)
 					)
 			)
@@ -78,6 +46,7 @@ $ ->
 			.sortable
 				connectWith	: '#cs-users-groups-list, #cs-users-groups-list-selected'
 				items		: 'li:not(:first)'
+				placeholder	: '<li class="cs-block-primary">'
 			.on(
 				'sortupdate'
 				->
@@ -94,8 +63,7 @@ $ ->
 						JSON.stringify(
 							selected
 								.children('li:not(:first)')
-								.map ->
-									$(@).data('id')
+								.map(-> @dataset.id)
 								.get()
 						)
 					)

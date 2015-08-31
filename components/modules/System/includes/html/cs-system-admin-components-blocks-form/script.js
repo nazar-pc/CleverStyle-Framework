@@ -10,15 +10,7 @@
  */
 
 (function() {
-  var L, get_active_class;
-
-  get_active_class = function(is_active) {
-    if (is_active) {
-      return 'uk-active';
-    } else {
-      return '';
-    }
-  };
+  var L;
 
   L = cs.Language;
 

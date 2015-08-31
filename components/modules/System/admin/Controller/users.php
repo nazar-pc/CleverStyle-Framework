@@ -285,16 +285,16 @@ trait users {
 					$Group                 = Group::instance();
 					$user_groups           = array_reverse($User->get_groups($rc[3]));
 					$all_groups            = $Group->get_all();
-					$groups_selected       = h::{'li.uk-button-primary'}(
+					$groups_selected       = h::{'li.cs-block-primary.cs-text.primary'}(
 						$L->selected_groups
 					);
-					$groups_list           = h::{'li.uk-button-primary'}(
+					$groups_list           = h::{'li.cs-block-primary.cs-text.primary'}(
 						$L->other_groups
 					);
 					if (is_array($user_groups) && !empty($user_groups)) {
 						foreach ($user_groups as $group) {
 							$group = $Group->get($group);
-							$groups_selected .= h::{'li.uk-button-success'}(
+							$groups_selected .= h::{'li.cs-block-success.cs-text-success'}(
 								$group['title'],
 								[
 									'data-id' => $group['id'],
@@ -308,7 +308,7 @@ trait users {
 							if ($group['id'] == User::BOT_GROUP_ID || in_array($group['id'], $user_groups)) {
 								continue;
 							}
-							$groups_list .= h::{'li.uk-button-default'}(
+							$groups_list .= h::{'li.cs-block-warning.cs-text-warning'}(
 								$group['title'],
 								[
 									'data-id' => $group['id'],

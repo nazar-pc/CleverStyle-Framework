@@ -1,0 +1,58 @@
+/**
+ * @package   CleverStyle CMS
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
+ */
+.cs-blocks-items-groups {
+	width : 33%;
+}
+
+.cs-blocks-items {
+	list-style-type : none;
+	margin          : 0;
+
+	li {
+		margin : 0 .5rem .5rem .5rem;
+
+		&:nth-child(n+2) {
+			cursor : move;
+		}
+	}
+}
+
+.cs-blocks-items-title {
+	float         : left;
+	height        : 16px;
+	margin-right  : -64px;
+	overflow      : hidden;
+	padding-right : 64px;
+	text-align    : left;
+	text-overflow : ellipsis;
+	white-space   : nowrap;
+	width         : 100%;
+
+	& ~ a {
+		cursor  : pointer;
+		display : inline-block;
+	}
+}
+
+#cs-users-groups-list,
+#cs-users-groups-list-selected {
+	cursor          : move;
+	list-style-type : none;
+
+	li {
+		margin  : .5rem 0;
+	}
+}
+
+form {
+	text-align : center;
+
+	> :not(.cs-text-center) {
+		text-align : left;
+	}
+}
+

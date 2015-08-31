@@ -176,7 +176,7 @@ trait components {
 							'data-id'          => $id,
 							'data-index'       => $block['index'],
 							'data-block-title' => h::prepare_attr_value(static::get_block_title($id)),
-							'class'            => $block['active'] ? 'uk-button-success' : 'uk-button-default'
+							'class'            => $block['active'] ? 'cs-block-success cs-text-success' : 'cs-block-warning cs-text-warning'
 						]
 					);
 					unset($block_data);
@@ -185,11 +185,8 @@ trait components {
 			}
 			foreach ($blocks_array as $position => &$content) {
 				$content = h::{'cs-table-cell.cs-blocks-items-groups ul.cs-blocks-items'}(
-					h::{'li.uk-button-primary'}(
-						$L->{"{$position}_blocks"},
-						[
-							'onClick' => "cs.blocks_toggle('$position');"
-						]
+					h::{'li.cs-block-primary.cs-text-primary'}(
+						$L->{"{$position}_blocks"}
 					).
 					$content,
 					[

@@ -6,7 +6,6 @@
  * @copyright  Copyright (c) 2015, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
 ###
-get_active_class	= (is_active) -> if is_active then 'uk-active' else ''
 L					= cs.Language
 Polymer(
 	'is'				: 'cs-system-admin-components-blocks-form'

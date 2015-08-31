@@ -22,7 +22,6 @@ $main_menu	= h::{'ul.uk-navbar-nav[level=0] li[level=0]'}(
 );
 $submenu	= admin_path() ? Menu::instance()->get_menu() : '';
 $avatar		= User::instance()->avatar();
-$body_class	= admin_path() ? ' class="cs-admin-page"' : '';
 ?><!doctype html>
 <!--pre_Html--><!--head-->
 <body unresolved>
@@ -37,7 +36,7 @@ $body_class	= admin_path() ? ' class="cs-admin-page"' : '';
 		<hr>
 		<?=level($submenu, 2)?>
 	</header>
-	<div id="body"<?=$body_class?>>
+	<div id="body">
 		<aside id="left_blocks">
 <!--left_blocks-->
 		</aside>
