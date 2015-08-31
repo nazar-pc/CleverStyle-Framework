@@ -21,15 +21,8 @@ html /deep/ {
 	}
 
 	a {
-		line-height : normal;
-
 		&:focus {
 			outline : none;
 		}
-	}
-
-	.uk-table table:not(.uk-table) th,
-	.uk-table table:not(.uk-table) td {
-		border-bottom : none;
 	}
 }

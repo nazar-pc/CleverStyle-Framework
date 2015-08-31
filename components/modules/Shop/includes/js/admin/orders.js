@@ -208,7 +208,7 @@
           comment = status.comment ? "<tr style=\"" + color + "\">\n	<td colspan=\"2\" style=\"white-space:pre\">" + status.comment + "</td>\n</tr>" : '';
           return content += "<tr style=\"" + color + "\">\n	<td><cs-icon icon=\"calendar\"></cs-icon> " + status.date_formatted + "</td>\n	<td>" + (order_status != null ? order_status.title : void 0) + "</td>\n</tr>\n" + comment;
         });
-        return cs.ui.simple_modal("<table class=\"uk-table\">" + content + "</table>");
+        return cs.ui.simple_modal("<table class=\"cs-table\" list>" + content + "</table>");
       });
     }).on('mousedown', '.cs-shop-order-edit', function() {
       var $this, date, id, username;

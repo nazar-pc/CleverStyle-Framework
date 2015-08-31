@@ -225,7 +225,7 @@ $ ->
 						#{comment}
 					"""
 				cs.ui.simple_modal("""
-					<table class="uk-table">#{content}</table>
+					<table class="cs-table" list>#{content}</table>
 				""")
 	)
 		.on('mousedown', '.cs-shop-order-edit', ->
