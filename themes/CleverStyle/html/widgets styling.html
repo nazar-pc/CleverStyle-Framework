@@ -64,15 +64,17 @@
 		/* Button */
 
 		--cs-button : {
-			background-color : var(--background-color-base);
-			color            : var(--text-color-base);
+			background-color : var(--background-color-base) !important;
+			box-sizing       : border-box;
+			color            : var(--text-color-base) !important;
 			height           : var(--form-element-height);
 			padding          : 0 var(--form-element-padding-horizontal);
+			text-align       : center;
 		};
 
 		--cs-button-hover : {
-			color            : var(--text-color-base);
-			background-image : var(--form-element-hover-gradient);
+			color            : var(--text-color-base) !important;
+			background-image : var(--form-element-hover-gradient) !important;
 		};
 
 		--cs-button-active : {
@@ -80,10 +82,10 @@
 		};
 
 		--cs-button-disabled : {
-			background-color : var(--background-color-base-disabled);
+			background-color : var(--background-color-base-disabled) !important;
 			background-image : none !important;
 			box-shadow       : none !important;
-			color            : var(--text-color-base-disabled);
+			color            : var(--text-color-base-disabled) !important;
 		};
 
 		--cs-button-compact : {
@@ -104,17 +106,17 @@
 		};
 
 		--cs-button-primary : {
-			background-color : var(--background-color-primary);
-			color            : var(--text-color-primary);
+			background-color : var(--background-color-primary) !important;
+			color            : var(--text-color-primary) !important;
 		};
 
 		--cs-button-primary-hover : {
-			color : var(--text-color-primary);
+			color : var(--text-color-primary) !important;
 		};
 
 		--cs-button-primary-disabled : {
-			background-color : var(--background-color-primary-disabled);
-			color            : var(--text-color-primary-disabled);
+			background-color : var(--background-color-primary-disabled) !important;
+			color            : var(--text-color-primary-disabled) !important;
 		};
 
 		/* Input text */
