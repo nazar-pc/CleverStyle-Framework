@@ -23,6 +23,7 @@ shutdown_function();
 	<script class="cs-config" target="cs" type="application/json">{"base_url":"http:\/\/cscms.travis","current_base_url":"http:\/\/cscms.travis\/System","public_key":"%s","module":"System","in_admin":0,"is_admin":0,"is_user":0,"is_guest":1,"password_min_length":4,"password_min_strength":%d,"debug":0,"cookie_prefix":"","cookie_domain":"cscms.travis","cookie_path":"\/","protocol":"http","route":["profile","info","admin"],"route_path":["profile","info","admin"],"route_ids":[]}</script>
 	<script class="cs-config" target="cs.rules_text" type="application/json">""</script>
 	<link href="/storage/pcache/_CleverStyle_en.css?%s" rel="stylesheet" shim-shadowdom>
+	<link href="/storage/pcache/System+profile_CleverStyle_en.css?00f07" rel="stylesheet" shim-shadowdom>
 	<meta content="profile" property="og:type">
 	<meta content="admin" property="profile:username">
 	<meta content="/includes/img/guest.svg" property="og:image">
