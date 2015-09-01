@@ -20,6 +20,6 @@
 	color : var(--cs-icon-inverse-color);
 }
 
-:host([icon*=' ']) .fa-stack {
+.fa-stack {
 	font-size : .5em;
 }
