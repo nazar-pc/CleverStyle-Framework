@@ -5,10 +5,7 @@
  * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
  * @license		MIT License, see license.txt
  */
-@import "common_config";
 
-//Text color
-$base-color : #444;
 //Body background
 $body-bg : #666;
 //Main background
@@ -17,22 +14,9 @@ $base-bg : #fff;
 $left-column : 15%;
 $right-column : 15%;
 
-html {
-	font       : {
-		family : $base-font-family;
-		size   : $base-font-size;
-	}
-}
-
 //Whole body
 body {
 	background-color : $body-bg;
-	color            : $base-color;
-	font       : {
-		family : $base-font-family;
-		size   : $base-font-size;
-	}
-	margin           : 0;
 	padding          : 0;
 	width            : 100%;
 }

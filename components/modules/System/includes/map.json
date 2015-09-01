@@ -1,8 +1,11 @@
 {
-	"admin/System" : [
+	"admin/System"   : [
 		"admin.css",
 		"general.js",
 		"functions.js",
 		"cs-system-admin-*"
+	],
+	"System/profile" : [
+		"profile.css"
 	]
 }
