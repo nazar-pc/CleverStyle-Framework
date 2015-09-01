@@ -60,16 +60,17 @@
 				color         : inherit;
 				font-weight   : normal;
 				margin-bottom : 2rem;
+				margin-top    : 0;
 
 				@apply(--cs-heading);
 			}
 
-			* + h1,
-			* + h2,
-			* + h3,
-			* + h4,
-			* + h5,
-			* + h6 {
+			:not(style):not(script):not(template) + h1,
+			:not(style):not(script):not(template) + h2,
+			:not(style):not(script):not(template) + h3,
+			:not(style):not(script):not(template) + h4,
+			:not(style):not(script):not(template) + h5,
+			:not(style):not(script):not(template) + h6 {
 				margin-top : 2rem;
 			}
 
@@ -87,15 +88,15 @@
 				margin-bottom : 1rem;
 			}
 
-			* + p,
-			* + ul,
-			* + ol,
-			* + dl,
-			* + blockquote,
-			* + pre,
-			* + address,
-			* + fieldset,
-			* + figure {
+			:not(style):not(script):not(template) + p,
+			:not(style):not(script):not(template) + ul,
+			:not(style):not(script):not(template) + ol,
+			:not(style):not(script):not(template) + dl,
+			:not(style):not(script):not(template) + blockquote,
+			:not(style):not(script):not(template) + pre,
+			:not(style):not(script):not(template) + address,
+			:not(style):not(script):not(template) + fieldset,
+			:not(style):not(script):not(template) + figure {
 				margin-top : 1rem;
 			}
 
