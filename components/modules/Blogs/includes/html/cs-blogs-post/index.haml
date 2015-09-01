@@ -1,5 +1,6 @@
 %dom-module(id="cs-blogs-post")
 	%template
+		%style(include="basic-styles")
 		%header
 			%a(is="cs-link-button" icon="pencil" href="[[concat('/Blogs/edit_post/', jsonld.id)]]" tooltip="[[L.edit]]" hidden$="[[!can_edit]]")
 			%a(is="cs-link-button" icon="trash" href="[[concat('/admin/Blogs/delete_post/', jsonld.id)]]" tooltip="[[L.delete]]" hidden$="[[!can_delete]]")

@@ -1,5 +1,6 @@
 <dom-module id="cs-blogs-posts">
   <template>
+    <style include="basic-styles"></style>
     <template as="post" is="dom-repeat" items="[[posts]]">
       <article comments_enabled="[[comments_enabled]]" is="cs-blogs-posts-post" post="[[post]]"></article>
     </template>

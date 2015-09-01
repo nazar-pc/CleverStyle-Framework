@@ -11,6 +11,8 @@ Polymer(
 	properties	:
 		href	: String
 	ready		: ->
-		@$.img.innerHTML	= @querySelector('#img').outerHTML
+		do (img = @querySelector('#img')) =>
+			@$.img.src		= img.src
+			@$.img.title	= img.title
 		@set('href', @querySelector('#link').href)
 );

@@ -19,7 +19,12 @@
     },
     ready: function() {
       var discount, href;
-      this.$.img.innerHTML = this.querySelector('#img').outerHTML;
+      (function(_this) {
+        return (function(img) {
+          _this.$.img.src = img.src;
+          return _this.$.img.title = img.title;
+        });
+      })(this)(this.querySelector('#img'));
       href = this.querySelector('#link').href;
       if (href) {
         this.$.img.href = href;

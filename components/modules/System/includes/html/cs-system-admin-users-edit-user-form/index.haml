@@ -1,5 +1,6 @@
 %dom-module(id="cs-system-admin-users-edit-user-form")
 	%template
+		%style(include="advanced-styles")
 		%h2.cs-text-center(hidden$="[[user_data.id]]")
 			%cs-icon(icon="spinner" spin)
 		%template(is="dom-if" if="{{user_data.id}}")

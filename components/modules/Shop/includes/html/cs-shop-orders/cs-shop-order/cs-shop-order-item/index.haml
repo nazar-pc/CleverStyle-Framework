@@ -1,9 +1,11 @@
 %dom-module(id="cs-shop-order-item")
 	%link(rel="import" href="style.css" type="css")
 	%template
+		%style(include="advanced-styles")
 		#content.cs-margin-top
 			%div
-				%a#img
+				%a
+					%img#img
 			%div
 				.cs-text-lead
 					%a#link [[item_title]]

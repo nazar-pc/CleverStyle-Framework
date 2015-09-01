@@ -19,7 +19,12 @@
       in_stock: String
     },
     ready: function() {
-      this.$.img.innerHTML = this.querySelector('#img').outerHTML;
+      (function(_this) {
+        return (function(img) {
+          _this.$.img.src = img.src;
+          return _this.$.img.title = img.title;
+        });
+      })(this)(this.querySelector('#img'));
       this.set('href', this.querySelector('#link').href);
       return this.set('price', sprintf(cs.shop.settings.price_formatting, this.price));
     }

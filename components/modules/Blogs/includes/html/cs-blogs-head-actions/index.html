@@ -1,5 +1,6 @@
 <dom-module id="cs-blogs-head-actions">
   <template>
+    <style include="basic-styles"></style>
     <p hidden$="[[!or(admin, can_write_post)]]">
       <a hidden$="[[!admin]]" href="/admin/Blogs" icon="gears" is="cs-link-button" tooltip="[[L.administration]]"></a>
       <template if="[[can_write_post]]" is="dom-if">

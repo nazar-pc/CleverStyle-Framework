@@ -1,5 +1,6 @@
 %dom-module(id="cs-system-admin-permissions-list")
 	%template
+		%style(include="advanced-styles")
 		%h2.cs-text-center(hidden$="[[permissions.length]]")
 			%cs-icon(icon="spinner" spin)
 		%cs-table(center list with-header hidden$="[[!permissions.length]]")

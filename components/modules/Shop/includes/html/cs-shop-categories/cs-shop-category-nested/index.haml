@@ -1,6 +1,8 @@
 %dom-module(id="cs-shop-category-nested")
 	%link(rel="import" href="style.css" type="css")
 	%template
-		%a#img.cs-margin-top.cs-text-center(href="[[href]]")
+		%style(include="advanced-styles")
+		%a.cs-margin-top.cs-text-center(href="[[href]]")
+			%img#img
 			.cs-padding-top [[category_title]]
 	%script(src="script.js")

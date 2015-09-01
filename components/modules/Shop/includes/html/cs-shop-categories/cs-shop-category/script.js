@@ -16,7 +16,12 @@
       href: String
     },
     ready: function() {
-      this.$.img.innerHTML = this.querySelector('#img').outerHTML;
+      (function(_this) {
+        return (function(img) {
+          _this.$.img.src = img.src;
+          return _this.$.img.title = img.title;
+        });
+      })(this)(this.querySelector('#img'));
       return this.set('href', this.querySelector('#link').href);
     }
   });

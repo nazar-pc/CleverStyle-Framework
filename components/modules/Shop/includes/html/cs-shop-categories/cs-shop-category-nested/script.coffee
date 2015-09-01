@@ -12,7 +12,9 @@ Polymer(
 		href			: String
 		category_title	: String
 	ready		: ->
-		$(@$.img).prepend(@querySelector('#img').outerHTML)
+		do (img = @querySelector('#img')) =>
+			@$.img.src		= img.src
+			@$.img.title	= img.title
 		link	= @querySelector('#link')
 		@set('href', link.href)
 		@set('category_title', link.textContent)

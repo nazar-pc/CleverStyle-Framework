@@ -27,7 +27,12 @@
     observers: ['units_changed(item_id, units)'],
     ready: function() {
       var link;
-      this.$.img.innerHTML = this.querySelector('#img').outerHTML;
+      (function(_this) {
+        return (function(img) {
+          _this.$.img.src = img.src;
+          return _this.$.img.title = img.title;
+        });
+      })(this)(this.querySelector('#img'));
       link = this.querySelector('#link');
       this.href = link.href;
       this.item_title = link.textContent;

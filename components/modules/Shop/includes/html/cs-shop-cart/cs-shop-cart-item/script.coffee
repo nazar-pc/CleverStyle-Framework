@@ -19,7 +19,9 @@ Polymer(
 		'units_changed(item_id, units)'
 	]
 	ready			: ->
-		@$.img.innerHTML		= @querySelector('#img').outerHTML
+		do (img = @querySelector('#img')) =>
+			@$.img.src		= img.src
+			@$.img.title	= img.title
 		link					= @querySelector('#link')
 		@href					= link.href
 		@item_title				= link.textContent

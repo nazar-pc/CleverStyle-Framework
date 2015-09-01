@@ -1,5 +1,6 @@
 <dom-module id="cs-shop-order">
   <template>
+    <style include="advanced-styles"></style>
     <div class="cs-text-lead">
       <span>[[concat(order_number, ': ', order_status)]]</span>
       <template if="[[show_pay_now]]" is="dom-if">

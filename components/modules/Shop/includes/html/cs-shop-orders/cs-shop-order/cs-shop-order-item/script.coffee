@@ -13,7 +13,9 @@ Polymer(
 		unit_price	: Number
 		units		: Number
 	ready		: ->
-		@$.img.innerHTML		= @querySelector('#img').outerHTML
+		do (img = @querySelector('#img')) =>
+			@$.img.src		= img.src
+			@$.img.title	= img.title
 		href					= @querySelector('#link').href
 		if href
 			@$.img.href		= href
