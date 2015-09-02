@@ -59,7 +59,7 @@ Polymer(
 		return
 	_transitionend : ->
 		if !@show
-			@parentNode.removeChild(@)
+			@parentNode?.removeChild(@)
 		if @timeout
 			setTimeout(@_hide.bind(@), @timeout * 1000)
 			@timeout = 0

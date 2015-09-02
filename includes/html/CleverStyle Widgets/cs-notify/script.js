@@ -76,8 +76,11 @@
       }
     },
     _transitionend: function() {
+      var ref;
       if (!this.show) {
-        this.parentNode.removeChild(this);
+        if ((ref = this.parentNode) != null) {
+          ref.removeChild(this);
+        }
       }
       if (this.timeout) {
         setTimeout(this._hide.bind(this), this.timeout * 1000);
