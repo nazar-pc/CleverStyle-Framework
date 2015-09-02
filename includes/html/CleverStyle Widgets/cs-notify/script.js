@@ -126,7 +126,6 @@
       this._for_similar((function(_this) {
         return function(child) {
           if (parseFloat(child.style[interesting_margin] || 0) > parseFloat(_this.style[interesting_margin] || 0)) {
-            console.log('unshift');
             return child._unshift();
           }
         };

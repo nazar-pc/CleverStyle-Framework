@@ -99,7 +99,6 @@ Polymer(
 			if (
 				parseFloat(child.style[interesting_margin] || 0) > parseFloat(@style[interesting_margin] || 0)
 			)
-				console.log 'unshift'
 				child._unshift()
 		@fire('hide')
 		return
