@@ -32,7 +32,7 @@
           (function() {
             var next_node, ref;
             next_node = _this.nextSibling;
-            if (next_node.nodeType === Node.TEXT_NODE && ((ref = next_node.nextSibling) != null ? ref.getAttribute('is') : void 0) === _this.is) {
+            if (next_node.nodeType === Node.TEXT_NODE && ((ref = next_node.nextSibling) != null ? typeof ref.getAttribute === "function" ? ref.getAttribute('is') : void 0 : void 0) === _this.is) {
               return next_node.parentNode.removeChild(next_node);
             }
           })();

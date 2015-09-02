@@ -23,7 +23,7 @@ Polymer.cs.behaviors.label =
 		requestAnimationFrame =>
 			do =>
 				next_node	= @nextSibling
-				if next_node.nodeType == Node.TEXT_NODE && next_node.nextSibling?.getAttribute('is') == @is
+				if next_node.nodeType == Node.TEXT_NODE && next_node.nextSibling?.getAttribute?('is') == @is
 					next_node.parentNode.removeChild(next_node)
 			@local_input	= @querySelector('input')
 			@active			= @local_input.checked

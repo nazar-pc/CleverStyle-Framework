@@ -47,7 +47,7 @@
 	@apply (--cs-label-switcher-hover);
 	@apply (--cs-label-switcher-focus);
 
-	cs-icon {
+	&:not(:active):not([active]) cs-icon {
 		@apply (--cs-label-switcher-hover-icon);
 		@apply (--cs-label-switcher-focus-icon);
 	}
@@ -56,7 +56,7 @@
 :host(:hover) {
 	@apply (--cs-label-switcher-hover);
 
-	cs-icon {
+	&:not(:active):not([active]) cs-icon {
 		@apply (--cs-label-switcher-hover-icon);
 	}
 }
