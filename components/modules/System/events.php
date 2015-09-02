@@ -91,7 +91,7 @@ Event::instance()
 			/**
 			 * Security check
 			 */
-			if (!isset($_REQUEST['session']) || $_REQUEST['session'] != $Session->get_id()) {
+			if (!isset($_POST['session']) || $_POST['session'] != $Session->get_id()) {
 				foreach (array_keys((array)$_POST) as $key) {
 					unset($_POST[$key], $_REQUEST[$key]);
 				}
