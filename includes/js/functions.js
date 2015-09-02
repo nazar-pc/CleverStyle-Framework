@@ -470,7 +470,7 @@
       modal.autoDestroy = true;
       modal.manualClose = true;
       ok = document.createElement('button', 'cs-button');
-      ok.innerText = 'OK';
+      ok.innerHTML = 'OK';
       ok.primary = true;
       ok.action = 'close';
       ok.bind = modal;
@@ -496,7 +496,7 @@
       modal.autoDestroy = true;
       modal.manualClose = true;
       ok = document.createElement('button', 'cs-button');
-      ok.innerText = 'OK';
+      ok.innerHTML = 'OK';
       ok.primary = true;
       ok.action = 'close';
       ok.bind = modal;
@@ -505,7 +505,7 @@
       });
       modal.appendChild(ok);
       cancel = document.createElement('button', 'cs-button');
-      cancel.innerText = L.cancel;
+      cancel.innerHTML = L.cancel;
       cancel.action = 'close';
       cancel.bind = modal;
       modal.appendChild(cancel);
