@@ -44,13 +44,11 @@
 }
 
 /* Button with icon */
-:host([icon]:not(:empty):not([empty])) cs-icon,
-:host([icon][force-fullsize]) cs-icon {
+:host([icon]:not(:empty):not([empty])) cs-icon {
 	@apply (--cs-button-icon);
 }
 
-:host([icon-after]:not(:empty):not([empty])) cs-icon,
-:host([icon-after][force-fullsize]) cs-icon {
+:host([icon-after]:not(:empty):not([empty])) cs-icon {
 	@apply (--cs-button-icon-after);
 }
 
