@@ -519,7 +519,6 @@ trait general {
 				static::core_input('name', 'text', 'site_name'),
 				!$sa ? static::core_textarea('url') : false,
 				!$sa ? static::core_textarea('cookie_domain') : false,
-				!$sa ? static::core_textarea('cookie_path') : false,
 				!$sa ? static::core_input('cookie_prefix') : false,
 				[
 					h::info('timezone'),

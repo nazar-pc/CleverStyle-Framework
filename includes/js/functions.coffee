@@ -43,7 +43,7 @@ cs.hash						= (algo, data) ->
 cs.setcookie				= (name, value, expires) ->
 	name	= cs.cookie_prefix + name
 	options	=
-		path	: cs.cookie_path
+		path	: '/'
 		domain	: cs.cookie_domain
 		secure	: cs.protocol == 'https'
 	if !value

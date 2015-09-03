@@ -73,7 +73,6 @@ class Controller {
 								break;
 							case 'url':
 							case 'cookie_domain':
-							case 'cookie_path':
 							case 'ip_black_list':
 							case 'ip_admin_list':
 								$value = _trim(explode("\n", $value));

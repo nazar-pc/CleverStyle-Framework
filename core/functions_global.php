@@ -26,7 +26,7 @@ use
  * @return bool
  */
 function _setcookie ($name, $value, $expire = 0, $httponly = false) {
-	static $path, $domain, $prefix, $secure;
+	static $domain, $prefix, $secure;
 	if (!isset($prefix)) {
 		$Config = Config::instance(true);
 		$prefix = '';
@@ -35,14 +35,11 @@ function _setcookie ($name, $value, $expire = 0, $httponly = false) {
 		 */
 		$secure = $_SERVER->secure;
 		$domain = $_SERVER->host;
-		$path   = '/';
 		if ($Config) {
 			$Route          = Route::instance();
 			$prefix         = $Config->core['cookie_prefix'];
 			$cookie_domains = $Config->core['cookie_domain'];
-			$cookie_paths   = $Config->core['cookie_path'];
 			$domain         = isset($cookie_domains[$Route->mirror_index]) ? $cookie_domains[$Route->mirror_index] : $cookie_domains[0];
-			$path           = isset($cookie_paths[$Route->mirror_index]) ? $cookie_paths[$Route->mirror_index] : $cookie_paths[0];
 		}
 	}
 	if ($value === '') {
@@ -54,7 +51,7 @@ function _setcookie ($name, $value, $expire = 0, $httponly = false) {
 		$prefix.$name,
 		$value,
 		$expire,
-		$path,
+		'/',
 		$domain,
 		$secure,
 		$httponly

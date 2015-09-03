@@ -133,8 +133,6 @@
 		"url_info"						: "Full address to which the available main page of your site (one per line in case of several physical mirrors). Address should not contain the final slash, but it must be prefixed http:// or https://<br><br>Example:<br>http://example.com<br>https://example.com/subfolder<br><br>ATTENTION: If you are an experienced administrator, and your domain is the site in some way refers to the multiple IPv4 or IPv6 addresses (for example, load balancing), then in order for the system to distinguish between the physical location of sites, please, enter all IP addresses, separating them by semicolon (final semicolon is not needed, the http:// or https:// prefix will be used from the beginning of the line).<br><br>Example:<br>http://example.com;123.255.221.321;234.222.123.123;1234:4567:abcd::1",
 		"cookie_domain"					: "Cookies domain",
 		"cookie_domain_info"			: "Cookies of the site will be set for this domain (one per line in case of several physical mirrors)",
-		"cookie_path"					: "Cookies path",
-		"cookie_path_info"				: "Path relative to the domain name for which cookies should be set (one per line in case of several physical mirrors).<br><br>By default, for the root directory \"/\" - a single slash.<br><br>If the site is in a subfolder, then part of the complete address without domain and prefix is likely to be required path, the end of the path requires a slash",
 		"cookie_prefix"					: "Сookies prefix",
 		"cookie_prefix_info"			: "Is used when you need to host multiple sites on one domain. The prefix allows you to separate cookies from different sites.",
 		"timezone"						: "Timezone",

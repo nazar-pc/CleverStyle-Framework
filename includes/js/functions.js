@@ -72,7 +72,7 @@
     var date, options;
     name = cs.cookie_prefix + name;
     options = {
-      path: cs.cookie_path,
+      path: '/',
       domain: cs.cookie_domain,
       secure: cs.protocol === 'https'
     };

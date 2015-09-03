@@ -298,7 +298,6 @@ trait Includes {
 				'debug'                 => (int)DEBUG,
 				'cookie_prefix'         => $Config->core['cookie_prefix'],
 				'cookie_domain'         => $Config->core['cookie_domain'][$Route->mirror_index],
-				'cookie_path'           => $Config->core['cookie_path'][$Route->mirror_index],
 				'protocol'              => $_SERVER->protocol,
 				'route'                 => $Route->route,
 				'route_path'            => $Route->path,

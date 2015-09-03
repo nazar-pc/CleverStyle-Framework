@@ -161,7 +161,6 @@ function install_process ($fs, $argv = null) {
 		'db_mirror_mode'                    => \cs\DB::MIRROR_MODE_MASTER_MASTER,
 		'active_languages'                  => [],
 		'cookie_domain'                     => [],
-		'cookie_path'                       => [],
 		'languages'                         => [],
 		'inserts_limit'                     => 1000,
 		'key_expire'                        => 120,
@@ -213,7 +212,6 @@ function install_process ($fs, $argv = null) {
 	$config['theme']            = in_array('CleverStyle', $config['themes']) ? 'CleverStyle' : $config['themes'][0];
 	$url                        = explode('/', explode('//', $url)[1], 2);
 	$config['cookie_domain'][]  = explode(':', $url[0])[0];
-	$config['cookie_path'][]    = isset($url[1]) && $url[1] ? '/'.trim($url[1], '/').'/' : '/';
 	unset($url);
 	$config['timezone']          = $_POST['timezone'];
 	$config['mail_from_name']    = 'Administrator of '.$config['name'];
