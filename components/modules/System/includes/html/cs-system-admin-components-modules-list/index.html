@@ -11,64 +11,36 @@
       <template as="module" is="dom-repeat" items="[[modules]]">
         <cs-table-row class$="[[module.class]]">
           <cs-table-cell>
-            <template if="[[module.administration]]" is="dom-if">
-              <a href="[[concat('/admin/', module.name)]]" tooltip="[[module.info]]">
-                <span>[[module.name_localized]]</span>
-                <cs-tooltip></cs-tooltip>
-              </a>
-            </template>
-            <template if="[[!module.administration]]" is="dom-if">
-              <span tooltip="[[module.info]]">
-                <span>[[module.name_localized]]</span>
-                <cs-tooltip></cs-tooltip>
-              </span>
-            </template>
+            <a hidden$="[[!module.administration]]" href="[[concat('/admin/', module.name)]]" tooltip="[[module.info]]">
+              <span>[[module.name_localized]]</span>
+              <cs-tooltip></cs-tooltip>
+            </a>
+            <span hidden$="[[module.administration]]" tooltip="[[module.info]]">
+              <span>[[module.name_localized]]</span>
+              <cs-tooltip></cs-tooltip>
+            </span>
           </cs-table-cell>
           <cs-table-cell>
             <cs-icon icon="[[module.icon]]" tooltip="[[module.icon_text]]"></cs-icon>
             <template if="[[module.api]]" is="dom-if">
-              <template if="[[!module.api.type]]" is="dom-if">
-                <cs-icon icon="link" tooltip="[[L.api_exists]]"></cs-icon>
-              </template>
-              <template if="[[module.api.type]]" is="dom-if">
-                <button icon="link" is="cs-button" tooltip="[[concat(L.api_exists, '<br>', L.click_to_view_details)]]" type="button"></button>
-                <section content="[[module.api.content]]" is="cs-section-modal"></section>
-              </template>
+              <cs-icon hidden$="[[module.api.type]]" icon="link" tooltip="[[L.api_exists]]"></cs-icon>
+              <button hidden$="[[!module.api.type]]" icon="link" is="cs-button" tooltip="[[concat(L.api_exists, '<br>', L.click_to_view_details)]]" type="button"></button>
+              <section content="[[module.api.content]]" is="cs-section-modal"></section>
             </template>
-            <template if="[[module.readme]]" is="dom-if">
-              <button icon="book" is="cs-button" tooltip="[[concat(L.information_about_module, '<br>', L.click_to_view_details)]]" type="button"></button>
-              <section content="[[module.readme.content]]" is="cs-section-modal"></section>
-            </template>
-            <template if="[[module.license]]" is="dom-if">
-              <button icon="legal" is="cs-button" tooltip="[[concat(L.license, '<br>', L.click_to_view_details)]]" type="button"></button>
-              <section content="[[module.license.content]]" is="cs-section-modal"></section>
-            </template>
+            <button hidden$="[[!module.readme]]" icon="book" is="cs-button" tooltip="[[concat(L.information_about_module, '<br>', L.click_to_view_details)]]" type="button"></button>
+            <section content="[[module.readme.content]]" is="cs-section-modal"></section>
+            <button hidden$="[[!module.license]]" icon="legal" is="cs-button" tooltip="[[concat(L.license, '<br>', L.click_to_view_details)]]" type="button"></button>
+            <section content="[[module.license.content]]" is="cs-section-modal"></section>
           </cs-table-cell>
           <cs-table-cell left>
-            <template if="[[module.can_be_set_as_default]]" is="dom-if">
-              <a href="[[concat('/admin/System/components/modules/default_module/', module.name)]]" icon="home" is="cs-link-button" tooltip="[[L.make_default_module]]"></a>
-            </template>
-            <template if="[[module.db_settings]]" is="dom-if">
-              <a href="[[concat('/admin/System/components/modules/db/', module.name)]]" icon="database" is="cs-link-button" tooltip="[[L.databases]]"></a>
-            </template>
-            <template if="[[module.storage_settings]]" is="dom-if">
-              <a href="[[concat('/admin/System/components/modules/storage/', module.name)]]" icon="hdd-o" is="cs-link-button" tooltip="[[L.storages]]"></a>
-            </template>
-            <template if="[[module.administration]]" is="dom-if">
-              <a href="[[concat('/admin/', module.name)]]" icon="sliders" is="cs-link-button" tooltip="[[L.module_admin_page]]"></a>
-            </template>
-            <template if="[[equal(module.active, 1)]]" is="dom-if">
-              <a href="[[concat('/admin/System/components/modules/disable/', module.name)]]" icon="minus" is="cs-link-button" tooltip="[[L.disable]]"></a>
-            </template>
-            <template if="[[equal(module.active, 0)]]" is="dom-if">
-              <a force-compact href="[[concat('/admin/System/components/modules/enable/', module.name)]]" icon="check" is="cs-link-button" tooltip="[[L.enable]]">[[L.enable]]</a>
-            </template>
-            <template if="[[!equal(module.active, -1)]]" is="dom-if">
-              <a href="[[concat('/admin/System/components/modules/uninstall/', module.name)]]" icon="trash" is="cs-link-button" tooltip="[[L.uninstall]]"></a>
-            </template>
-            <template if="[[equal(module.active, -1)]]" is="dom-if">
-              <a force-compact href="[[concat('/admin/System/components/modules/install/', module.name)]]" icon="download" is="cs-link-button" tooltip="[[L.install]]">[[L.install]]</a>
-            </template>
+            <a hidden$="[[!module.can_be_set_as_default]]" href="[[concat('/admin/System/components/modules/default_module/', module.name)]]" icon="home" is="cs-link-button" tooltip="[[L.make_default_module]]"></a>
+            <a hidden$="[[!module.db_settings]]" href="[[concat('/admin/System/components/modules/db/', module.name)]]" icon="database" is="cs-link-button" tooltip="[[L.databases]]"></a>
+            <a hidden$="[[!module.storage_settings]]" href="[[concat('/admin/System/components/modules/storage/', module.name)]]" icon="hdd-o" is="cs-link-button" tooltip="[[L.storages]]"></a>
+            <a hidden$="[[!module.administration]]" href="[[concat('/admin/', module.name)]]" icon="sliders" is="cs-link-button" tooltip="[[L.module_admin_page]]"></a>
+            <a hidden$="[[!equal(module.active, 1)]]" href="[[concat('/admin/System/components/modules/disable/', module.name)]]" icon="minus" is="cs-link-button" tooltip="[[L.disable]]"></a>
+            <a force-compact hidden$="[[!equal(module.active, 0)]]" href="[[concat('/admin/System/components/modules/enable/', module.name)]]" icon="check" is="cs-link-button" tooltip="[[L.enable]]">[[L.enable]]</a>
+            <a hidden$="[[equal(module.active, -1)]]" href="[[concat('/admin/System/components/modules/uninstall/', module.name)]]" icon="trash" is="cs-link-button" tooltip="[[L.uninstall]]"></a>
+            <a force-compact hidden$="[[!equal(module.active, -1)]]" href="[[concat('/admin/System/components/modules/install/', module.name)]]" icon="download" is="cs-link-button" tooltip="[[L.install]]">[[L.install]]</a>
           </cs-table-cell>
         </cs-table-row>
       </template>
