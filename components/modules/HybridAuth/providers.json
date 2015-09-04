@@ -213,6 +213,12 @@
 			"secret"
 		]
 	},
+	"Slack"         : {
+		"keys" : [
+			"id",
+			"secret"
+		]
+	},
 	"SoundCloud"    : {
 		"keys" : [
 			"id",
@@ -240,12 +246,6 @@
 		],
 		"info" : "Callback URL: {base_url}/HybridAuth/{provider}?auth.done={provider}"
 	},
-	"Viadeo"        : {
-		"keys" : [
-			"key",
-			"secret"
-		]
-	},
 	"Vimeo"         : {
 		"keys" : [
 			"key",
@@ -260,6 +260,7 @@
 		],
 		"scope" : ""
 	},
+	"WarGaming"     : {},
 	"WordPress"     : {
 		"keys" : [
 			"id",
@@ -267,6 +268,12 @@
 		]
 	},
 	"XING"          : {
+		"keys" : [
+			"key",
+			"secret"
+		]
+	},
+	"Xuite"          : {
 		"keys" : [
 			"key",
 			"secret"
