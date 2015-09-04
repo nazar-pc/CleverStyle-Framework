@@ -19,9 +19,9 @@ Polymer(
 			$.getJSON('api/System/admin/blocks')
 			$.getJSON('api/System/admin/permissions')
 		).done (blocks, permissions) =>
-			index_to_title	= {}
+			block_index_to_title	= {}
 			blocks[0].forEach (block) ->
-				index_to_title[block.index] = block.title
+				block_index_to_title[block.index] = block.title
 			permissions_list	= []
 			for group, labels of permissions[0]
 				for label, id of labels
@@ -29,7 +29,7 @@ Polymer(
 						id			: id
 						group		: group
 						label		: label
-						description	: if group == 'Block' then index_to_title[label] else ''
+						description	: if group == 'Block' then block_index_to_title[label] else ''
 					)
 			@set('permissions', permissions_list)
 	add_permission		: ->

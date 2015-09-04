@@ -14,7 +14,9 @@
 					%table.cs-table(right-left)
 						%template(is="dom-repeat" items="[[permission.labels]]" as="label")
 							%tr
-								%td [[label.name]]
+								%td
+									%span [[label.name]]
+									%sup [[label.description]]
 								%td
 									%nav(is="cs-nav-button-group")
 										%label(is="cs-label-button")

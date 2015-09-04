@@ -16,7 +16,10 @@
           <table class="cs-table" right-left>
             <template as="label" is="dom-repeat" items="[[permission.labels]]">
               <tr>
-                <td>[[label.name]]</td>
+                <td>
+                  <span>[[label.name]]</span>
+                  <sup>[[label.description]]</sup>
+                </td>
                 <td>
                   <nav is="cs-nav-button-group">
                     <label is="cs-label-button">

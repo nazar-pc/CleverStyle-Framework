@@ -26,10 +26,10 @@
     reload: function() {
       return $.when($.getJSON('api/System/admin/blocks'), $.getJSON('api/System/admin/permissions')).done((function(_this) {
         return function(blocks, permissions) {
-          var group, id, index_to_title, label, labels, permissions_list, ref;
-          index_to_title = {};
+          var block_index_to_title, group, id, label, labels, permissions_list, ref;
+          block_index_to_title = {};
           blocks[0].forEach(function(block) {
-            return index_to_title[block.index] = block.title;
+            return block_index_to_title[block.index] = block.title;
           });
           permissions_list = [];
           ref = permissions[0];
@@ -41,7 +41,7 @@
                 id: id,
                 group: group,
                 label: label,
-                description: group === 'Block' ? index_to_title[label] : ''
+                description: group === 'Block' ? block_index_to_title[label] : ''
               });
             }
           }

@@ -20,16 +20,21 @@ Polymer(
 	permissions			: {}
 	ready				: ->
 		$.when(
+			$.getJSON('api/System/admin/blocks')
 			$.getJSON('api/System/admin/permissions')
 			$.getJSON("api/System/admin/#{@for}s/#{@[@for]}/permissions")
-		).done (all_permissions, permissions) =>
+		).done (blocks, all_permissions, permissions) =>
+			block_index_to_title	= {}
+			blocks[0].forEach (block) ->
+				block_index_to_title[block.index] = block.title
 			@all_permissions	=
 				for group, labels of all_permissions[0]
 					group	: group
 					labels	:
 						for label, id of labels
-							name	: label
-							id		: id
+							name		: label
+							id			: id
+							description	: if group == 'Block' then block_index_to_title[label] else ''
 			@permissions		= permissions[0]
 	save				: ->
 		default_data	= (key + '=' + value for key, value of $.ajaxSettings.data).join('&')

@@ -28,9 +28,13 @@
     all_permissions: {},
     permissions: {},
     ready: function() {
-      return $.when($.getJSON('api/System/admin/permissions'), $.getJSON("api/System/admin/" + this["for"] + "s/" + this[this["for"]] + "/permissions")).done((function(_this) {
-        return function(all_permissions, permissions) {
-          var group, id, label, labels;
+      return $.when($.getJSON('api/System/admin/blocks'), $.getJSON('api/System/admin/permissions'), $.getJSON("api/System/admin/" + this["for"] + "s/" + this[this["for"]] + "/permissions")).done((function(_this) {
+        return function(blocks, all_permissions, permissions) {
+          var block_index_to_title, group, id, label, labels;
+          block_index_to_title = {};
+          blocks[0].forEach(function(block) {
+            return block_index_to_title[block.index] = block.title;
+          });
           _this.all_permissions = (function() {
             var ref, results;
             ref = all_permissions[0];
@@ -46,7 +50,8 @@
                     id = labels[label];
                     results1.push({
                       name: label,
-                      id: id
+                      id: id,
+                      description: group === 'Block' ? block_index_to_title[label] : ''
                     });
                   }
                   return results1;
