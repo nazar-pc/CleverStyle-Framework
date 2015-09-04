@@ -20,7 +20,7 @@ $Index->content(
 	h::{'table.cs-table[right-left] tr| td'}(
 		[
 			h::info('posts_per_page'),
-			h::{'input[type=number][min=1]'}(
+			h::{'input[is=cs-input-text][type=number][min=1]'}(
 				[
 					'name'  => 'general[posts_per_page]',
 					'value' => $module_data->posts_per_page
@@ -29,7 +29,7 @@ $Index->content(
 		],
 		[
 			h::info('maximum_number_of_sections_for_post'),
-			h::{'input[type=number][min=1]'}(
+			h::{'input[is=cs-input-text][type=number][min=1]'}(
 				[
 					'name'  => 'general[max_sections]',
 					'value' => $module_data->max_sections

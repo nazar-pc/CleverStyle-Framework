@@ -26,29 +26,25 @@ $Index->content(
 	h::{'h2.cs-text-center'}(
 		$L->editing_of_posts_section($section['title'])
 	).
-	h::{'table.cs-table[center] tr'}(
-		h::th(
-			$L->parent_section,
-			$L->section_title,
-			($Config->core['simple_admin_mode'] ? false : h::info('section_path'))
-		),
-		h::td(
-			h::{'select[is=cs-select][name=parent][size=5]'}(
-				get_sections_select_section($section['id']),
-				[
-					'selected' => $section['parent']
-				]
-			),
-			h::{'input[name=title]'}(
-				[
-					'value' => $section['title']
-				]
-			),
-			($Config->core['simple_admin_mode'] ? false : h::{'input[name=path]'}(
-				[
-					'value' => $section['path']
-				]
-			))
+	h::label($L->parent_section).
+	h::{'select[is=cs-select][name=parent][size=5]'}(
+		get_sections_select_section($section['id']),
+		[
+			'selected' => $section['parent']
+		]
+	).
+	h::label($L->section_title).
+	h::{'input[is=cs-input-text][name=title]'}(
+		[
+			'value' => $section['title']
+		]
+	).
+	($Config->core['simple_admin_mode'] ? false :
+		h::{'label info'}('section_path').
+		h::{'input[is=cs-input-text][name=path]'}(
+			[
+				'value' => $section['path']
+			]
 		)
 	).
 	h::{'input[type=hidden][name=id]'}(
@@ -56,5 +52,6 @@ $Index->content(
 			'value' => $section['id']
 		]
 	).
-	h::{'input[type=hidden][name=mode][value=edit_section]'}()
+	h::{'input[type=hidden][name=mode][value=edit_section]'}().
+	h::br()
 );

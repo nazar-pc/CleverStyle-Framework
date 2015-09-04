@@ -4,6 +4,6 @@
 		%p(hidden$="[[!or(admin, can_write_post)]]")
 			%a(is="cs-link-button" icon="gears" href="/admin/Blogs" tooltip="[[L.administration]]" hidden$="[[!admin]]")
 			%template(is="dom-if" if="[[can_write_post]]")
-				%a(is="cs-link-button" icon="pencil" href="/Blogs/new_post") [[L.new_post]]
-				%a(is="cs-link-button" icon="archive" href="/Blogs/drafts") [[L.drafts]]
+				%a(is="cs-link-button" icon="pencil" force-compact href="/Blogs/new_post") [[L.new_post]]
+				%a(is="cs-link-button" icon="archive" force-compact href="/Blogs/drafts") [[L.drafts]]
 	%script(src="script.js")

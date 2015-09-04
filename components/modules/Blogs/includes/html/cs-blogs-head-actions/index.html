@@ -4,8 +4,8 @@
     <p hidden$="[[!or(admin, can_write_post)]]">
       <a hidden$="[[!admin]]" href="/admin/Blogs" icon="gears" is="cs-link-button" tooltip="[[L.administration]]"></a>
       <template if="[[can_write_post]]" is="dom-if">
-        <a href="/Blogs/new_post" icon="pencil" is="cs-link-button">[[L.new_post]]</a>
-        <a href="/Blogs/drafts" icon="archive" is="cs-link-button">[[L.drafts]]</a>
+        <a force-compact href="/Blogs/new_post" icon="pencil" is="cs-link-button">[[L.new_post]]</a>
+        <a force-compact href="/Blogs/drafts" icon="archive" is="cs-link-button">[[L.drafts]]</a>
       </template>
     </p>
   </template>
