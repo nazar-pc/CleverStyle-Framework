@@ -94,7 +94,7 @@ shutdown_function();
 					</div>
 					<div>
 						<h1>Profile of user admin</h1>
-						<table class="cs-table" right-left>
+						<table%sclass="cs-table"%S>
 							<tr>
 								<td>
 									<h2>Registration date:</h2>
