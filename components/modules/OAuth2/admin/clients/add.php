@@ -18,26 +18,18 @@ Page::instance()->title($L->addition_of_client);
 $Index->cancel_button_back = true;
 $Index->action             = 'admin/OAuth2/clients/list';
 $Index->content(
-	h::{'h2d.cs-text-center'}(
+	h::{'h2.cs-text-center'}(
 		$L->addition_of_client
 	).
-	h::{'table.cs-table[right-left] tr| td'}(
+	h::label($L->client_name).
+	h::{'input[is=cs-input-text][name=name]'}().
+	h::label($L->client_domain).
+	h::{'input[is=cs-input-text][name=domain]'}().
+	h::label($L->active).
+	h::{'div radio[name=active][checked=1]'}(
 		[
-			$L->client_name,
-			h::{'input[name=name]'}()
-		],
-		[
-			$L->client_domain,
-			h::{'input[name=domain]'}()
-		],
-		[
-			$L->active,
-			h::{'td radio[name=active][checked=1]'}(
-				[
-					'value' => [0, 1],
-					'in'    => [$L->no, $L->yes]
-				]
-			)
+			'value' => [0, 1],
+			'in'    => [$L->no, $L->yes]
 		]
 	).
 	h::{'input[type=hidden][name=mode][value=add]'}()

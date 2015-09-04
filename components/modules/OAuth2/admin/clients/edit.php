@@ -24,40 +24,30 @@ $Index->content(
 	h::{'h2.cs-text-center'}(
 		$L->editing_of_client($client['name'])
 	).
-	h::{'table.cs-table[right-left] tr| td'}(
+	h::label($L->client_name).
+	h::{'input[is=cs-input-text][name=name]'}(
 		[
-			$L->client_name,
-			h::{'input[name=name]'}(
-				[
-					'value' => $client['name']
-				]
-			)
-		],
+			'value' => $client['name']
+		]
+	).
+	h::label('client_secret').
+	h::{'input[is=cs-input-text][name=secret]'}(
 		[
-			'client_secret',
-			h::{'input[name=secret]'}(
-				[
-					'value' => $client['secret']
-				]
-			)
-		],
+			'value' => $client['secret']
+		]
+	).
+	h::label($L->client_domain).
+	h::{'input[is=cs-input-text][name=domain]'}(
 		[
-			$L->client_domain,
-			h::{'input[name=domain]'}(
-				[
-					'value' => $client['domain']
-				]
-			)
-		],
+			'value' => $client['domain']
+		]
+	).
+	h::label($L->active).
+	h::{'div radio[name=active]'}(
 		[
-			$L->active,
-			h::{'radio[name=active]'}(
-				[
-					'checked' => $client['active'],
-					'value'   => [0, 1],
-					'in'      => [$L->no, $L->yes]
-				]
-			)
+			'checked' => $client['active'],
+			'value'   => [0, 1],
+			'in'      => [$L->no, $L->yes]
 		]
 	).
 	h::{'input[type=hidden][name=id]'}(

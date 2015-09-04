@@ -9,6 +9,7 @@
 /**
  * Provides next events:<br>
  *  OAuth2/custom_sign_in_page
+ *  OAuth2/custom_allow_access_page
  */
 namespace cs\modules\OAuth2;
 
@@ -180,15 +181,17 @@ if (isset($_POST['mode'])) {
 	}
 }
 if (!$OAuth2->get_access($client['id'])) {
-	$Index->form    = true;
-	$Index->buttons = false;
-	$Page->success(
-		$L->client_want_access_your_account($client['name'])
-	);
-	$Index->action         = $Config->base_url().'/'.Route::instance()->raw_relative_address;
-	$Index->custom_buttons =
-		h::{'button[is=cs-button][type=submit][name=mode][value=allow]'}($L->allow).
-		h::{'button[is=cs-button][type=submit][mode=mode][value=deny]'}($L->deny);
+	if (Event::instance()->fire('OAuth2/custom_allow_access_page')) {
+		$Index->form    = true;
+		$Index->buttons = false;
+		$Page->success(
+			$L->client_want_access_your_account($client['name'])
+		);
+		$Index->action         = $Config->base_url().'/'.Route::instance()->raw_relative_address;
+		$Index->custom_buttons =
+			h::{'button[is=cs-button][type=submit][name=mode][value=allow]'}($L->allow).
+			h::{'button[is=cs-button][type=submit][mode=mode][value=deny]'}($L->deny);
+	}
 	return;
 }
 $code = $OAuth2->add_code($client['id'], $_GET['response_type'], $redirect_uri);

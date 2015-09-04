@@ -8,7 +8,8 @@
  */
 
 namespace cs\modules\OAuth2;
-use            h,
+use
+	h,
 	cs\Config,
 	cs\Index,
 	cs\Language\Prefix,
@@ -34,15 +35,23 @@ $Index->content(
 					return [
 						[
 							$client['name'],
-							h::{'input{disabled]'}($client['id']),
-							h::{'input{disabled]'}($client['secret']),
-							h::{'a[cs-link-button][icon=pencil][level=0]'}(
+							h::{'input[is=cs-input-text][full-width][readonly]'}(
+								[
+									'value' => $client['id']
+								]
+							),
+							h::{'input[is=cs-input-text][full-width][readonly]'}(
+								[
+									'value' => $client['secret']
+								]
+							),
+							h::{'a[is=cs-link-button][icon=pencil][level=0]'}(
 								[
 									'href'    => "admin/OAuth2/clients/edit/$client[id]",
 									'tooltip' => $L->edit
 								]
 							).
-							h::{'a[cs-link-button][icon=trash][level=0]'}(
+							h::{'a[is=cs-link-button][icon=trash][level=0]'}(
 								[
 									'href'    => "admin/OAuth2/clients/delete/$client[id]",
 									'tooltip' => $L->delete
@@ -83,7 +92,7 @@ $Index->content(
 		],
 		[
 			h::info('oauth2_expiration'),
-			h::{'input[type=number]'}(
+			h::{'input[is=cs-input-text][compact][type=number]'}(
 				[
 					'name'  => 'general[expiration]',
 					'value' => $module_data->expiration,
