@@ -16,7 +16,7 @@
 		@apply (--cs-form-legend);
 	}
 
-	> label {
+	> label:not([is]) {
 		display : block;
 
 		@apply (--cs-form-label);
