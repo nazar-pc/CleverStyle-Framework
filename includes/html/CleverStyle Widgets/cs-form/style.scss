@@ -5,13 +5,6 @@
  * @license   MIT License, see license.txt
  */
 :host {
-	display                : flex;
-	display                : -ms-flexbox;
-	display                : -webkit-flex;
-	flex-direction         : column;
-	-ms-flex-direction     : column;
-	-webkit-flex-direction : column;
-
 	@apply (--cs-no-selection);
 	@apply (--cs-global);
 	@apply (--cs-form);
@@ -24,6 +17,8 @@
 	}
 
 	> label {
+		display : block;
+
 		@apply (--cs-form-label);
 
 		& + * {
