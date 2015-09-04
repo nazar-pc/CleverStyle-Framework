@@ -3,20 +3,20 @@
 		%style(include="advanced-styles")
 		%h2.cs-text-center(hidden$="[[permissions.length]]")
 			%cs-icon(icon="spinner" spin)
-		%cs-table(center list with-header hidden$="[[!permissions.length]]")
-			%cs-table-row
-				%cs-table-cell [[L.action]]
-				%cs-table-cell id
-				%cs-table-cell [[L.group]]
-				%cs-table-cell [[L.label]]
+		%table.cs-table(center list hidden$="[[!permissions.length]]")
+			%tr
+				%th [[L.action]]
+				%th id
+				%th [[L.group]]
+				%th [[L.label]]
 			%template(is="dom-repeat" items="[[permissions]]" as="permission")
-				%cs-table-row
-					%cs-table-cell
+				%tr
+					%td
 						%button(is="cs-button" on-click="edit_permission" icon="pencil" tooltip="[[L.edit]]")
 						%button(is="cs-button" on-click="delete_permission" icon="trash" tooltip="[[L.delete]]")
-					%cs-table-cell [[permission.id]]
-					%cs-table-cell [[permission.group]]
-					%cs-table-cell(tooltip="[[permission.description]]")
+					%td [[permission.id]]
+					%td [[permission.group]]
+					%td(tooltip="[[permission.description]]")
 						%span [[permission.label]]
 						%cs-tooltip
 		%p.cs-text-left

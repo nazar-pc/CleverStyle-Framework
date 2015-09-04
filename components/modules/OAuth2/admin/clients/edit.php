@@ -24,7 +24,7 @@ $Index->content(
 	h::{'h2.cs-text-center'}(
 		$L->editing_of_client($client['name'])
 	).
-	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+	h::{'table.cs-table[right-left] tr| td'}(
 		[
 			$L->client_name,
 			h::{'input[name=name]'}(

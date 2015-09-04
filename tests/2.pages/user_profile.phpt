@@ -94,16 +94,16 @@ shutdown_function();
 					</div>
 					<div>
 						<h1>Profile of user admin</h1>
-						<cs-table right-left>
-							<cs-table-row>
-								<cs-table-cell>
+						<table class="cs-table" right-left>
+							<tr>
+								<td>
 									<h2>Registration date:</h2>
-								</cs-table-cell>
-								<cs-table-cell>
+								</td>
+								<td>
 									<h2>%d %s %d</h2>
-								</cs-table-cell>
-							</cs-table-row>
-						</cs-table>
+								</td>
+							</tr>
+						</table>
 					</div>
 				</div>
 

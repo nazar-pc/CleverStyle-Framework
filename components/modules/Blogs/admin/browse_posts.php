@@ -25,8 +25,8 @@ $page			= isset($Route->route[1]) ? (int)$Route->route[1] : 1;
 $page			= $page > 0 ? $page : 1;
 $total			= Posts::instance()->get_total_count();
 $Index->content(
-	h::{'cs-table[center][list][with-header]'}(
-		h::{'cs-table-row cs-table-cell'}(
+	h::{'table.cs-table[center][list]'}(
+		h::{'tr th'}(
 			[
 				$L->post_title,
 				[
@@ -53,7 +53,7 @@ $Index->content(
 			],
 			$L->action
 		).
-		h::{'cs-table-row| cs-table-cell'}(
+		h::{'tr| td'}(
 			get_posts_rows($page)
 		)
 	).

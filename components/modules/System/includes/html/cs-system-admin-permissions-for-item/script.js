@@ -61,7 +61,7 @@
           if (event.which !== 13 || !text) {
             return;
           }
-          $shadowRoot.find('cs-table-row.changed').removeClass('changed').clone().appendTo(_this.$.users);
+          $shadowRoot.find('tr.changed').removeClass('changed').clone().appendTo(_this.$.users);
           _this.set('found_users', []);
           return $.getJSON('api/System/admin/users', {
             search: text
@@ -86,7 +86,7 @@
         };
       })(this));
       return $(this.$['search-results']).on('change', ':radio', function() {
-        return $(this).closest('cs-table-row').addClass('changed');
+        return $(this).closest('tr').addClass('changed');
       });
     },
     save: function() {

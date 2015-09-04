@@ -26,7 +26,7 @@ $Order_statuses = Order_statuses::instance();
 $order_statuses = $Order_statuses->get($Order_statuses->get_all());
 $currencies     = file_get_json(__DIR__.'/../currencies_codes.json');
 $Index->content(
-	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+	h::{'table.cs-table[right-left] tr| td'}(
 		[
 			$L->currency,
 			h::{'select[is=cs-select][name=currency]'}(

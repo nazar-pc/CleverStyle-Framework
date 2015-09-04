@@ -76,7 +76,7 @@ if ($page['interface']) {
 			h::{'h2.cs-text-center'}(
 				$L->editing_of_page($page['title'])
 			).
-			h::{'cs-table.cs-static-pages-page-form[right-left] cs-table-row| cs-table-cell'}(
+			h::{'table.cs-table.cs-static-pages-page-form[right-left] tr| td'}(
 				[
 					$L->page_title,
 					h::{'h1.cs-static-pages-page-title[contenteditable=true]'}(

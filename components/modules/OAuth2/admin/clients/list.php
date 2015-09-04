@@ -21,14 +21,14 @@ $Index->content(
 	h::{'h2.cs-text-center'}(
 		$L->list_of_clients
 	).
-	h::{'cs-table[list][center][with-header]'}(
-		h::{'cs-table-row cs-table-cell'}(
+	h::{'table.cs-table[list][center]'}(
+		h::{'tr th'}(
 			$L->client_name,
 			'client_id',
 			'client_secret',
 			$L->action
 		).
-		h::{'cs-table-row| cs-table-cell'}(
+		h::{'tr| td'}(
 			array_map(
 				function ($client) use ($L) {
 					return [
@@ -58,7 +58,7 @@ $Index->content(
 			) ?: false
 		)
 	).
-	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+	h::{'table.cs-table[right-left] tr| td'}(
 		[
 			h::info('oauth2_allow_guest_tokens'),
 			h::radio(

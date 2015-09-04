@@ -14,8 +14,8 @@ $Index			= Index::instance();
 $L				= Language::instance();
 $Index->buttons	= false;
 $Index->content(
-	h::{'cs-table[list][with-header]'}(
-		h::{'cs-table-row cs-table-cell'}(
+	h::{'table.cs-table[list]'}(
+		h::{'tr th'}(
 			[
 				$L->pages_category,
 				[
@@ -24,7 +24,7 @@ $Index->content(
 			],
 			$L->action
 		).
-		h::{'cs-table-row| cs-table-cell'}(
+		h::{'tr| td'}(
 			get_categories_rows()
 		)
 	).

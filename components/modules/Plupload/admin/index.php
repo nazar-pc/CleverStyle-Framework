@@ -13,7 +13,7 @@ include __DIR__.'/save.php';
 $Config = Config::instance();
 $L      = Language::instance();
 Index::instance()->content(
-	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+	h::{'table.cs-table[right-left] tr| td'}(
 		[
 			$L->upload_limit.' (b, kb, mb, gb)',
 			h::{'input[name=max_file_size]'}(

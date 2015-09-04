@@ -36,17 +36,17 @@
     <h2 class="cs-text-center" hidden$="[[!searching_loader]]">
       <cs-icon icon="spinner" spin></cs-icon>
     </h2>
-    <cs-table center list with-header>
-      <cs-table-row>
-        <cs-table-cell>[[L.action]]</cs-table-cell>
-        <cs-table-cell>&nbsp;</cs-table-cell>
+    <table center class="cs-table" list>
+      <tr>
+        <th>[[L.action]]</th>
+        <th>&nbsp;</th>
         <template as="column" is="dom-repeat" items="[[columns]]">
-          <cs-table-cell>[[column]]</cs-table-cell>
+          <th>[[column]]</th>
         </template>
-      </cs-table-row>
+      </tr>
       <template as="user" is="dom-repeat" items="[[users]]">
-        <cs-table-row class$="[[user.class]]" data-user-index$="[[index]]">
-          <cs-table-cell>
+        <tr class$="[[user.class]]" data-user-index$="[[index]]">
+          <td>
             <template if="[[user.is_root]]" is="dom-if">-</template>
             <template if="[[!user.is_root]]" is="dom-if">
               <template if="[[!user.is_guest]]" is="dom-if">
@@ -57,19 +57,19 @@
               </template>
               <button icon="key" is="cs-button" on-click="edit_permissions" tooltip="[[L.edit_user_permissions]]"></button>
             </template>
-          </cs-table-cell>
-          <cs-table-cell>
+          </td>
+          <td>
             <span tooltip="[[user.type_info]]">
               <span>[[user.type]]</span>
               <cs-tooltip></cs-tooltip>
             </span>
-          </cs-table-cell>
+          </td>
           <template as="column" is="dom-repeat" items="[[user.columns]]">
-            <cs-table-cell>[[column]]</cs-table-cell>
+            <td>[[column]]</td>
           </template>
-        </cs-table-row>
+        </tr>
       </template>
-    </cs-table>
+    </table>
     <div class="cs-margin cs-text-center" hidden$="[[!show_pagination]]">
       <nav is="cs-nav-pagination" page="{{search_page}}" pages="[[search_pages]]"></nav>
     </div>

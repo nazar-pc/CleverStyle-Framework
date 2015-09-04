@@ -24,8 +24,8 @@ usort($all_shipping_types, function ($shipping_type1, $shipping_type2) {
 });
 $Page->content(
 	h::{'h3.cs-text-center'}($L->shipping_types).
-	h::{'cs-table[list][with-header]'}(
-		h::{'cs-table-row cs-table-cell'}(
+	h::{'table.cs-table[list]'}(
+		h::{'tr th'}(
 			'id',
 			"$L->title ".h::icon('caret-down'),
 			$L->price,
@@ -33,7 +33,7 @@ $Page->content(
 			$L->address_needed,
 			$L->action
 		).
-		h::{'cs-table-row| cs-table-cell'}(array_map(
+		h::{'tr| td'}(array_map(
 			function ($shipping_type) use ($L) {
 				return [
 					$shipping_type['id'],

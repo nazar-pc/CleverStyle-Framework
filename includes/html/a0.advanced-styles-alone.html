@@ -142,6 +142,53 @@
 			.cs-cursor-pointer {
 				cursor : pointer;
 			}
+
+			/* Table */
+
+			.cs-table {
+				border-collapse : collapse;
+				border-spacing  : 0;
+				display         : table;
+				margin-bottom   : 15px;
+				width           : 100%
+			}
+
+			.cs-table[center] {
+				text-align : center !important
+			}
+
+			.cs-table[left] {
+				text-align : left !important
+			}
+
+			.cs-table[right] {
+				text-align : right !important
+			}
+
+			.cs-table[list] > * > tr {
+				border-bottom : 1px solid #ddd
+			}
+
+			.cs-table[list] > * > tr:nth-child(n+2):hover {
+				background-color : #f0f0f0
+			}
+
+			.cs-table th {
+				font-weight    : bold;
+				text-transform : uppercase
+			}
+
+			.cs-table[right-left] > * > tr > *:nth-of-type(2n+1) {
+				text-align : right
+			}
+
+			.cs-table[right-left] > * > tr > *:nth-of-type(2n+2) {
+				text-align : left
+			}
+
+			.cs-table > * > tr > * {
+				padding : .5em
+			}
 		</style>
 	</template>
 </dom-module>

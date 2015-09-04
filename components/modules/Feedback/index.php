@@ -19,7 +19,7 @@ $Page->css('components/modules/Feedback/includes/css/general.css');
 $Index->content(
 	h::{'section.cs-feedback-form article'}(
 		h::{'header h2.cs-text-center'}($L->Feedback).
-		h::{'cs-table[center] cs-table-row| cs-table-cell'}([
+		h::{'table.cs-table[center] tr| td'}([
 			h::{'input[name=name][required]'}([
 				'placeholder'	=> $L->feedback_name,
 				'value'			=> $User->user() ? $User->username() : (isset($_POST['name']) ? $_POST['name'] : '')

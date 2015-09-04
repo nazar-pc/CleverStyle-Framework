@@ -23,7 +23,7 @@ $Index->content(
 	h::{'h2.cs-text-center'}(
 		$L->addition_of_page_category
 	).
-	h::{'cs-table[center] cs-table-row| cs-table-cell'}(
+	h::{'table.cs-table[center] tr| td'}(
 		[
 			$L->parent_category,
 			$L->category_title,

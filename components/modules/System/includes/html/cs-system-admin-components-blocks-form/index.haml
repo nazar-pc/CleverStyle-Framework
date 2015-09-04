@@ -1,57 +1,58 @@
 %dom-module#cs-system-admin-components-blocks-form
 	%link(rel="import" href="style.css" type="css")
 	%template
-		%cs-table(right-left)
-			%cs-table-row
-				%cs-table-cell
+		%style(include="advanced-styles-alone")
+		%table.cs-table(right-left)
+			%tr
+				%td
 					%span(tooltip="[[L.block_type_info]]")
 						%span [[L.block_type]]
 						%cs-tooltip
-				%cs-table-cell
+				%td
 					%select(is="cs-select" name="block[type]" on-change="type_change" size="5")
 						%template(is="dom-repeat" items="[[json.types]]" as="type")
 							%option(selected$="[[equal(type, json.block_data.type)]]" value$="[[type]]") [[type]]
-			%cs-table-row
-				%cs-table-cell
+			%tr
+				%td
 					%span(tooltip="[[L.block_title_info]]")
 						%span [[L.block_title]]
 						%cs-tooltip
-				%cs-table-cell
+				%td
 					%input(is="cs-input-text" name="block[title]" type="text" value$="[[json.block_data.title]]")/
-			%cs-table-row
-				%cs-table-cell
+			%tr
+				%td
 					%span(tooltip="[[L.block_active_info]]")
 						%span [[L.block_active]]
 						%cs-tooltip
-				%cs-table-cell
+				%td
 					%label(is="cs-label-button")
 						%input(name="block[active]" type="radio" value="1" checked="[[json.block_data.active]]")/
 						%span [[L.yes]]
 					%label(is="cs-label-button")
 						%input(name="block[active]" type="radio" value="0" checked="[[!json.block_data.active]]")/
 						%span [[L.no]]
-			%cs-table-row
-				%cs-table-cell
+			%tr
+				%td
 					%span(tooltip="[[L.block_template_info]]")
 						%span [[L.block_template]]
 						%cs-tooltip
-				%cs-table-cell
+				%td
 					%select(is="cs-select" name="block[template]" size="5")
 						%template(is="dom-repeat" items="[[json.templates]]" as="template")
 							%option(selected$="[[equal(template, json.block_data.template)]]" value$="[[template]]") [[template]]
-			%cs-table-row
-				%cs-table-cell
+			%tr
+				%td
 					%span(tooltip="[[L.block_start_info]]")
 						%span [[L.block_start]]
 						%cs-tooltip
-				%cs-table-cell
+				%td
 					%input(is="cs-input-text" name="block[start]" type="datetime-local" value$="[[json.block_data.start]]")/
-			%cs-table-row
-				%cs-table-cell
+			%tr
+				%td
 					%span(tooltip="[[L.block_expire_info]]")
 						%span [[L.block_expire]]
 						%cs-tooltip
-				%cs-table-cell
+				%td
 					%label(is="cs-label-button")
 						%input(name="block[expire][state]" type="radio" value="0" checked="[[!json.block_data.expire.state]]")/
 						%span [[L.never]]

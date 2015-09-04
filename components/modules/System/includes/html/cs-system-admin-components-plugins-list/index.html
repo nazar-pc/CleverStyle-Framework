@@ -2,15 +2,15 @@
   <link href="style.css" rel="import" type="css">
   <template>
     <style include="advanced-styles"></style>
-    <cs-table center="" list="" with-header="">
-      <cs-table-row>
-        <cs-table-cell>[[L.plugin_name]]</cs-table-cell>
-        <cs-table-cell>[[L.state]]</cs-table-cell>
-        <cs-table-cell>[[L.action]]</cs-table-cell>
-      </cs-table-row>
+    <table center class="cs-table" list>
+      <tr>
+        <th>[[L.plugin_name]]</th>
+        <th>[[L.state]]</th>
+        <th>[[L.action]]</th>
+      </tr>
       <template as="plugin" is="dom-repeat" items="[[plugins]]">
-        <cs-table-row class$="[[plugin.class]]">
-          <cs-table-cell>
+        <tr class$="[[plugin.class]]">
+          <td>
             <template if="[[plugin.info]]" is="dom-if">
               <a href="[[concat('/admin/', plugin.name)]]" tooltip="[[plugin.info]]">
                 <span>[[plugin.name_localized]]</span>
@@ -20,8 +20,8 @@
             <template if="[[!plugin.info]]" is="dom-if">
               <a href="[[concat('/admin/', plugin.name)]]">[[plugin.name_localized]]</a>
             </template>
-          </cs-table-cell>
-          <cs-table-cell>
+          </td>
+          <td>
             <cs-icon icon="[[plugin.icon]]" tooltip="[[plugin.icon_text]]"></cs-icon>
             <template if="[[plugin.readme]]" is="dom-if">
               <button icon="book" is="cs-button" tooltip="[[concat(L.information_about_plugin, '<br>', L.click_to_view_details)]]" type="button"></button>
@@ -31,18 +31,18 @@
               <button icon="legal" is="cs-button" tooltip="[[concat(L.license, '<br>', L.click_to_view_details)]]" type="button"></button>
               <section content="[[plugin.license.content]]" is="cs-section-modal"></section>
             </template>
-          </cs-table-cell>
-          <cs-table-cell>
+          </td>
+          <td>
             <template if="[[equal(plugin.active, 1)]]" is="dom-if">
               <a href="[[concat('/admin/System/components/plugins/disable/', plugin.name)]]" icon="minus" is="cs-link-button" tooltip="[[L.disable]]"></a>
             </template>
             <template if="[[equal(plugin.active, 0)]]" is="dom-if">
-              <a href="[[concat('/admin/System/components/plugins/enable/', plugin.name)]]" icon="check" is="cs-link-button" tooltip="[[L.enable]]">[[L.enable]]</a>
+              <a force-compact href="[[concat('/admin/System/components/plugins/enable/', plugin.name)]]" icon="check" is="cs-link-button" tooltip="[[L.enable]]">[[L.enable]]</a>
             </template>
-          </cs-table-cell>
-        </cs-table-row>
+          </td>
+        </tr>
       </template>
-    </cs-table>
+    </table>
   </template>
   <script src="script.js"></script>
 </dom-module>

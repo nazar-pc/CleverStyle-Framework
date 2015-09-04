@@ -41,10 +41,10 @@
 		float : right;
 	}
 
-	&page-form cs-table-cell {
+	&page-form td {
 		.INLINE_EDITOR,
 		[contenteditable=true] {
-			outline : #333333 dotted 1px
+			outline : #333 dotted 1px
 		}
 	}
 }

@@ -10,13 +10,12 @@
 }
 
 .cs-blogs-post-form {
-
-	cs-table-cell {
+	td {
 		vertical-align : top !important;
 
 		.INLINE_EDITOR,
 		[contenteditable=true] {
-			outline : #333333 dotted 1px;
+			outline : #333 dotted 1px;
 		}
 	}
 }

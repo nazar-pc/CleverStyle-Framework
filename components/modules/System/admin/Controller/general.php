@@ -102,7 +102,7 @@ trait general {
 				],
 				[
 					"$L->php_components:",
-					h::{'cs-table cs-table-row| cs-table-cell'}(
+					h::{'table.cs-table tr| td'}(
 						[
 							"$L->openssl:",
 							[
@@ -144,7 +144,7 @@ trait general {
 				],
 				[
 					"$L->properties $Core->db_type:",
-					h::{'cs-table cs-table-row| cs-table-cell'}(
+					h::{'table.cs-table tr| td'}(
 						[
 							"$L->host:",
 							$Core->db_host
@@ -179,7 +179,7 @@ trait general {
 				],
 				[
 					"$L->php_ini_settings:",
-					h::{'cs-table cs-table-row| cs-table-cell'}(
+					h::{'table.cs-table tr| td'}(
 						[
 							"$L->allow_file_upload:",
 							[
@@ -554,7 +554,7 @@ trait general {
 				static::core_input('simple_admin_mode', 'radio'),
 				!$sa ? [
 					h::info('routing'),
-					h::{'cs-table[center] cs-table-row| cs-table-cell'}(
+					h::{'table.cs-table[center] tr| td'}(
 						[
 							h::info('routing_in'),
 							h::info('routing_out')
@@ -577,7 +577,7 @@ trait general {
 				] : false,
 				!$sa ? [
 					h::info('replace'),
-					h::{'cs-table[center] cs-table-row| cs-table-cell'}(
+					h::{'table.cs-table[center] tr| td'}(
 						[
 							h::info('replace_in'),
 							h::info('replace_out')

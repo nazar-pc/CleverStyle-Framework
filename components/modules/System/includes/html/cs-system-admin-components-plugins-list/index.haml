@@ -2,21 +2,21 @@
 	%link(rel="import" href="style.css" type="css")
 	%template
 		%style(include="advanced-styles")
-		%cs-table(center="" list="" with-header="")
-			%cs-table-row
-				%cs-table-cell [[L.plugin_name]]
-				%cs-table-cell [[L.state]]
-				%cs-table-cell [[L.action]]
+		%table.cs-table(center list)
+			%tr
+				%th [[L.plugin_name]]
+				%th [[L.state]]
+				%th [[L.action]]
 			%template(is="dom-repeat" items="[[plugins]]" as="plugin")
-				%cs-table-row(class$="[[plugin.class]]")
-					%cs-table-cell
+				%tr(class$="[[plugin.class]]")
+					%td
 						%template(is="dom-if" if="[[plugin.info]]")
 							%a(href="[[concat('/admin/', plugin.name)]]" tooltip="[[plugin.info]]")
 								%span [[plugin.name_localized]]
 								%cs-tooltip
 						%template(is="dom-if" if="[[!plugin.info]]")
 							%a(href="[[concat('/admin/', plugin.name)]]") [[plugin.name_localized]]
-					%cs-table-cell
+					%td
 						%cs-icon(icon="[[plugin.icon]]" tooltip="[[plugin.icon_text]]")
 						%template(is="dom-if" if="[[plugin.readme]]")
 							%button(is="cs-button" icon="book" type="button" tooltip="[[concat(L.information_about_plugin, '<br>', L.click_to_view_details)]]")
@@ -24,9 +24,9 @@
 						%template(is="dom-if" if="[[plugin.license]]")
 							%button(is="cs-button" icon="legal" type="button" tooltip="[[concat(L.license, '<br>', L.click_to_view_details)]]")
 							%section(is="cs-section-modal" content="[[plugin.license.content]]")
-					%cs-table-cell
+					%td
 						%template(is="dom-if" if="[[equal(plugin.active, 1)]]")
 							%a(is="cs-link-button" icon="minus" href="[[concat('/admin/System/components/plugins/disable/', plugin.name)]]" tooltip="[[L.disable]]")
 						%template(is="dom-if" if="[[equal(plugin.active, 0)]]")
-							%a(is="cs-link-button" icon="check" href="[[concat('/admin/System/components/plugins/enable/', plugin.name)]]" tooltip="[[L.enable]]") [[L.enable]]
+							%a(is="cs-link-button" icon="check" href="[[concat('/admin/System/components/plugins/enable/', plugin.name)]]" tooltip="[[L.enable]]" force-compact) [[L.enable]]
 	%script(src="script.js")

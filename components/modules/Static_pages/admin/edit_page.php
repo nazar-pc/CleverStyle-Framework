@@ -24,14 +24,14 @@ $Index->content(
 	h::{'h2.cs-text-center'}(
 		$L->editing_of_page($data['title'])
 	).
-	h::{'cs-table[center][with-header] cs-table-row| cs-table-cell'}(
-		[
+	h::{'table.cs-table[center] tr'}(
+		h::th(
 			$L->category,
 			$L->page_title,
 			h::info('page_path'),
 			h::info('page_interface')
-		],
-		[
+		),
+		h::tr(
 			h::{'select[is=cs-select][name=category][size=5]'}(
 				get_categories_list(),
 				[
@@ -55,9 +55,9 @@ $Index->content(
 					'in'      => [$L->off, $L->on]
 				]
 			)
-		]
+		)
 	).
-	h::{'cs-table[center][with-header] cs-table-row| cs-table-cell'}(
+	h::{'table.cs-table[center] tr| td'}(
 		[
 			$L->content,
 			h::{'textarea[is=cs-textarea][autosize][name=content]'}(

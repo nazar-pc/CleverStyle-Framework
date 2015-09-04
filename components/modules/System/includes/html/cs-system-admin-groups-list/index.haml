@@ -1,22 +1,23 @@
 %dom-module(id="cs-system-admin-groups-list")
 	%template
+		%style(include="advanced-styles-alone")
 		%h2.cs-text-center(hidden$="[[groups.length]]")
 			%cs-icon(icon="spinner" spin)
-		%cs-table(center list with-header hidden$="[[!groups.length]]")
-			%cs-table-row
-				%cs-table-cell [[L.action]]
-				%cs-table-cell id
-				%cs-table-cell [[L.group_name]]
-				%cs-table-cell [[L.group_description]]
+		%table.cs-table(center list hidden$="[[!groups.length]]")
+			%tr
+				%th [[L.action]]
+				%th id
+				%th [[L.group_name]]
+				%th [[L.group_description]]
 			%template(is="dom-repeat" items="[[groups]]" as="group")
-				%cs-table-row
-					%cs-table-cell
+				%tr
+					%td
 						%button(is="cs-button" on-click="edit_group" icon="pencil" tooltip="[[L.edit_group_information]]")
 						%button(is="cs-button" on-click="edit_permissions" icon="key" tooltip="[[L.edit_group_permissions]]")
 						%button(is="cs-button" on-click="delete_group" icon="trash" tooltip="[[L.delete]]" hidden$="[[!group.allow_to_delete]]")
-					%cs-table-cell [[group.id]]
-					%cs-table-cell [[group.title]]
-					%cs-table-cell [[group.description]]
+					%td [[group.id]]
+					%td [[group.title]]
+					%td [[group.description]]
 		%p.cs-text-left
 			%button(is="cs-button" on-click="add_group" type="button") [[L.add_group]]
 	%script(src="script.js")

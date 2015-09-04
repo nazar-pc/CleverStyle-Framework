@@ -22,7 +22,7 @@ if (isset($_POST['bitcoin_address'], $_POST['bitcoin_address'])) {
 	$Index->save(true);
 }
 $Index->content(
-	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+	h::{'table.cs-table[right-left] tr| td'}(
 		[
 			h::info('blockchain_payment_bitcoin_address'),
 			h::input(

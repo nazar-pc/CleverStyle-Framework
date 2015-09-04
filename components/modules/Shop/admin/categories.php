@@ -41,8 +41,8 @@ usort($all_categories, function ($cat1, $cat2) {
 });
 $Page->content(
 	h::{'h3.cs-text-center'}($L->categories).
-	h::{'cs-table[list][with-header]'}(
-		h::{'cs-table-row cs-table-cell'}(
+	h::{'table.cs-table[list]'}(
+		h::{'tr th'}(
 			'id',
 			"$L->title ".h::icon('caret-down'),
 			$L->title_attribute,
@@ -50,7 +50,7 @@ $Page->content(
 			$L->visible,
 			$L->action
 		).
-		h::{'cs-table-row| cs-table-cell'}(array_map(
+		h::{'tr| td'}(array_map(
 			function ($category) use ($L, $Attributes) {
 				return [
 					$category['id'],

@@ -65,8 +65,8 @@ $items_total = $Items->search(
 );
 $Page->content(
 	h::{'h3.cs-text-center'}($L->items).
-	h::{'cs-table[list][with-header]'}(
-		h::{'cs-table-row cs-table-cell'}(
+	h::{'table.cs-table[list]'}(
+		h::{'tr th'}(
 			$make_header('id', 'id'),
 			$L->title,
 			$make_header($L->category, 'category'),
@@ -75,10 +75,10 @@ $Page->content(
 			$make_header($L->listed, 'listed'),
 			$L->action
 		).
-		h::cs_table_row(
+		h::tr(
 			array_map(
 				function ($item) use ($L, $Categories, $module_data) {
-					return h::cs_table_cell(
+					return h::td(
 						[
 							$item['id'],
 							$item['title'],

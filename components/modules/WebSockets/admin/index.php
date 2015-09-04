@@ -41,7 +41,7 @@ if (isset($_POST['start_server']) && !is_server_running()) {
 	$Index->save(true);
 }
 $Index->content(
-	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+	h::{'table.cs-table[right-left] tr| td'}(
 		[
 			h::info('websockets_security_key'),
 			h::input(

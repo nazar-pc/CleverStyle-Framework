@@ -25,17 +25,17 @@ usort($all_order_statuses, function ($order_status1, $order_status2) {
 });
 $Page->content(
 	h::{'h3.cs-text-center'}($L->order_statuses).
-	h::{'cs-table[list][with-header]'}(
-		h::{'cs-table-row cs-table-cell'}(
+	h::{'table.cs-table[list]'}(
+		h::{'tr th'}(
 			'id',
 			"$L->title ".h::icon('caret-down'),
 			$L->order_status_type,
 			$L->send_update_status_email,
 			$L->action
 		).
-		h::{'cs-table-row'}(array_map(
+		h::tr(array_map(
 			function ($order_status) use ($L, $order_status_types) {
-				return h::cs_table_cell(
+				return h::td(
 					[
 						$order_status['id'],
 						$order_status['title'],

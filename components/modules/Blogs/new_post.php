@@ -111,7 +111,7 @@ $Index->content(
 		$L->new_post
 	).
 	h::{'div.cs-blogs-post-preview-content'}().
-	h::{'cs-table.cs-blogs-post-form[right-left] cs-table-row| cs-table-cell'}(
+	h::{'table.cs-table.cs-blogs-post-form[right-left] tr| td'}(
 		[
 			$L->post_title,
 			h::{'h1.cs-blogs-new-post-title[contenteditable=true][level=0]'}(

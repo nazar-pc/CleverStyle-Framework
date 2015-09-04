@@ -26,15 +26,15 @@
 			%nav(is="cs-nav-pagination" page="{{search_page}}" pages="[[search_pages]]")
 		%h2.cs-text-center(hidden$="[[!searching_loader]]")
 			%cs-icon(icon="spinner" spin)
-		%cs-table(center list with-header)
-			%cs-table-row
-				%cs-table-cell [[L.action]]
-				%cs-table-cell &nbsp;
+		%table.cs-table(center list)
+			%tr
+				%th [[L.action]]
+				%th &nbsp;
 				%template(is="dom-repeat" items="[[columns]]" as="column")
-					%cs-table-cell [[column]]
+					%th [[column]]
 			%template(is="dom-repeat" items="[[users]]" as="user")
-				%cs-table-row(class$="[[user.class]]" data-user-index$="[[index]]")
-					%cs-table-cell
+				%tr(class$="[[user.class]]" data-user-index$="[[index]]")
+					%td
 						%template(is="dom-if" if="[[user.is_root]]") -
 						%template(is="dom-if" if="[[!user.is_root]]")
 							%template(is="dom-if" if="[[!user.is_guest]]")
@@ -42,12 +42,12 @@
 							%template(is="dom-if" if="[[!or(user.is_guest, user.is_bot)]]")
 								%a(is="cs-link-button" icon="group" href="[[concat('/admin/System/users/users/groups/', user.id)]]" tooltip="[[L.edit_user_groups]]")
 							%button(is="cs-button" icon="key" on-click="edit_permissions" tooltip="[[L.edit_user_permissions]]")
-					%cs-table-cell
+					%td
 						%span(tooltip="[[user.type_info]]")
 							%span [[user.type]]
 							%cs-tooltip
 					%template(is="dom-repeat" items="[[user.columns]]" as="column")
-						%cs-table-cell [[column]]
+						%td [[column]]
 		-# should be reference %template#pagination
 		.cs-margin.cs-text-center(hidden$="[[!show_pagination]]")
 			%nav(is="cs-nav-pagination" page="{{search_page}}" pages="[[search_pages]]")

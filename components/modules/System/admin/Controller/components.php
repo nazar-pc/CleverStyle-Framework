@@ -184,7 +184,7 @@ trait components {
 				unset($id, $block);
 			}
 			foreach ($blocks_array as $position => &$content) {
-				$content = h::{'cs-table-cell.cs-blocks-items-groups ul.cs-blocks-items'}(
+				$content = h::{'td.cs-blocks-items-groups ul.cs-blocks-items'}(
 					h::{'li.cs-block-primary.cs-text-primary'}(
 						$L->{"{$position}_blocks"}
 					).
@@ -197,11 +197,11 @@ trait components {
 			}
 			unset($position, $content);
 			$a->content(
-				h::{'cs-table cs-table-row'}(
+				h::{'table.cs-table tr'}(
 					[
-						h::cs_table_cell().$blocks_array['top'].h::cs_table_cell(),
+						h::td().$blocks_array['top'].h::td(),
 						"$blocks_array[left]$blocks_array[floating]$blocks_array[right]",
-						h::cs_table_cell().$blocks_array['bottom'].h::cs_table_cell()
+						h::td().$blocks_array['bottom'].h::td()
 					]
 				).
 				h::{'p.cs-text-left a[is=cs-link-button]'}(
@@ -951,7 +951,7 @@ trait components {
 						unset($dbs, $database);
 						if ($db_list) {
 							$a->content(
-								h::{'cs-table[right-left][with-header] cs-table-row| cs-table-cell'}(
+								h::{'table.cs-table[right-left] tr| td'}(
 									[
 										h::info('appointment_of_db'),
 										h::info('system_db')
@@ -1016,7 +1016,7 @@ trait components {
 						unset($storages, $storage);
 						if ($storage_list) {
 							$a->content(
-								h::{'cs-table[right-left][with-header] cs-table-row| cs-table-cell'}(
+								h::{'table.cs-table[right-left] tr| td'}(
 									[
 										h::info('appointment_of_storage'),
 										h::info('system_storage')

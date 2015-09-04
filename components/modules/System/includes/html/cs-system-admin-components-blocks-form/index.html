@@ -1,41 +1,42 @@
 <dom-module id="cs-system-admin-components-blocks-form">
   <link href="style.css" rel="import" type="css">
   <template>
-    <cs-table right-left>
-      <cs-table-row>
-        <cs-table-cell>
+    <style include="advanced-styles-alone"></style>
+    <table class="cs-table" right-left>
+      <tr>
+        <td>
           <span tooltip="[[L.block_type_info]]">
             <span>[[L.block_type]]</span>
             <cs-tooltip></cs-tooltip>
           </span>
-        </cs-table-cell>
-        <cs-table-cell>
+        </td>
+        <td>
           <select is="cs-select" name="block[type]" on-change="type_change" size="5">
             <template as="type" is="dom-repeat" items="[[json.types]]">
               <option selected$="[[equal(type, json.block_data.type)]]" value$="[[type]]">[[type]]</option>
             </template>
           </select>
-        </cs-table-cell>
-      </cs-table-row>
-      <cs-table-row>
-        <cs-table-cell>
+        </td>
+      </tr>
+      <tr>
+        <td>
           <span tooltip="[[L.block_title_info]]">
             <span>[[L.block_title]]</span>
             <cs-tooltip></cs-tooltip>
           </span>
-        </cs-table-cell>
-        <cs-table-cell>
+        </td>
+        <td>
           <input is="cs-input-text" name="block[title]" type="text" value$="[[json.block_data.title]]">
-        </cs-table-cell>
-      </cs-table-row>
-      <cs-table-row>
-        <cs-table-cell>
+        </td>
+      </tr>
+      <tr>
+        <td>
           <span tooltip="[[L.block_active_info]]">
             <span>[[L.block_active]]</span>
             <cs-tooltip></cs-tooltip>
           </span>
-        </cs-table-cell>
-        <cs-table-cell>
+        </td>
+        <td>
           <label is="cs-label-button">
             <input checked="[[json.block_data.active]]" name="block[active]" type="radio" value="1">
             <span>[[L.yes]]</span>
@@ -44,42 +45,42 @@
             <input checked="[[!json.block_data.active]]" name="block[active]" type="radio" value="0">
             <span>[[L.no]]</span>
           </label>
-        </cs-table-cell>
-      </cs-table-row>
-      <cs-table-row>
-        <cs-table-cell>
+        </td>
+      </tr>
+      <tr>
+        <td>
           <span tooltip="[[L.block_template_info]]">
             <span>[[L.block_template]]</span>
             <cs-tooltip></cs-tooltip>
           </span>
-        </cs-table-cell>
-        <cs-table-cell>
+        </td>
+        <td>
           <select is="cs-select" name="block[template]" size="5">
             <template as="template" is="dom-repeat" items="[[json.templates]]">
               <option selected$="[[equal(template, json.block_data.template)]]" value$="[[template]]">[[template]]</option>
             </template>
           </select>
-        </cs-table-cell>
-      </cs-table-row>
-      <cs-table-row>
-        <cs-table-cell>
+        </td>
+      </tr>
+      <tr>
+        <td>
           <span tooltip="[[L.block_start_info]]">
             <span>[[L.block_start]]</span>
             <cs-tooltip></cs-tooltip>
           </span>
-        </cs-table-cell>
-        <cs-table-cell>
+        </td>
+        <td>
           <input is="cs-input-text" name="block[start]" type="datetime-local" value$="[[json.block_data.start]]">
-        </cs-table-cell>
-      </cs-table-row>
-      <cs-table-row>
-        <cs-table-cell>
+        </td>
+      </tr>
+      <tr>
+        <td>
           <span tooltip="[[L.block_expire_info]]">
             <span>[[L.block_expire]]</span>
             <cs-tooltip></cs-tooltip>
           </span>
-        </cs-table-cell>
-        <cs-table-cell>
+        </td>
+        <td>
           <label is="cs-label-button">
             <input checked="[[!json.block_data.expire.state]]" name="block[expire][state]" type="radio" value="0">
             <span>[[L.never]]</span>
@@ -91,9 +92,9 @@
           <br>
           <br>
           <input is="cs-input-text" name="block[expire][date]" type="datetime-local" value$="[[json.block_data.expire.date]]">
-        </cs-table-cell>
-      </cs-table-row>
-    </cs-table>
+        </td>
+      </tr>
+    </table>
     <div class="html" hidden$="[[!equal(json.block_data.type, 'html')]]">
       <textarea autosize class="EDITOR" is="cs-textarea" name="block[html]"></textarea>
     </div>

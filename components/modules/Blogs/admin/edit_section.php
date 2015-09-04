@@ -26,13 +26,13 @@ $Index->content(
 	h::{'h2.cs-text-center'}(
 		$L->editing_of_posts_section($section['title'])
 	).
-	h::{'cs-table[center][with-header] cs-table-row| cs-table-cell'}(
-		[
+	h::{'table.cs-table[center] tr'}(
+		h::th(
 			$L->parent_section,
 			$L->section_title,
 			($Config->core['simple_admin_mode'] ? false : h::info('section_path'))
-		],
-		[
+		),
+		h::td(
 			h::{'select[is=cs-select][name=parent][size=5]'}(
 				get_sections_select_section($section['id']),
 				[
@@ -49,7 +49,7 @@ $Index->content(
 					'value' => $section['path']
 				]
 			))
-		]
+		)
 	).
 	h::{'input[type=hidden][name=id]'}(
 		[

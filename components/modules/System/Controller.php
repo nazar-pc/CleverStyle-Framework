@@ -93,7 +93,7 @@ class Controller {
 					h::h1(
 						$L->profile_of_user($name)
 					).
-					h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+					h::{'table.cs-table[right-left] tr| td'}(
 						[
 							$data['reg_date']
 								? [
@@ -291,7 +291,7 @@ class Controller {
 					h::{'h2.cs-text-center'}(
 						$L->general_settings
 					).
-					h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+					h::{'table.cs-table[right-left] tr| td'}(
 						[
 							$L->login,
 							h::input(
@@ -360,7 +360,7 @@ class Controller {
 					h::{'h2.cs-text-center'}(
 						$L->password_changing
 					).
-					h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+					h::{'table.cs-table[right-left] tr| td'}(
 						[
 							"$L->current_password ".h::{'icon#current_password.cs-cursor-pointer'}('lock'),
 							h::{'input.cs-profile-current-password[is=cs-input-text][type=password]'}()

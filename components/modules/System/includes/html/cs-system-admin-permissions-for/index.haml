@@ -11,11 +11,11 @@
 						%button(is="cs-button" on-click="invert" type="button") [[L.invert]]
 						%button(is="cs-button" on-click="allow_all" type="button") [[L.allow_all]]
 						%button(is="cs-button" on-click="deny_all" type="button") [[L.deny_all]]
-					%cs-table(right-left)
+					%table.cs-table(right-left)
 						%template(is="dom-repeat" items="[[permission.labels]]" as="label")
-							%cs-table-row
-								%cs-table-cell [[label.name]]
-								%cs-table-cell
+							%tr
+								%td [[label.name]]
+								%td
 									%nav(is="cs-nav-button-group")
 										%label(is="cs-label-button")
 											%input(type="radio" value="-1" checked="[[permission_state(label.id, -1)]]" name$="[[concat('permissions[', label.id, ']')]]")/

@@ -21,7 +21,7 @@ $Index->content(
 	h::{'h2d.cs-text-center'}(
 		$L->addition_of_client
 	).
-	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+	h::{'table.cs-table[right-left] tr| td'}(
 		[
 			$L->client_name,
 			h::{'input[name=name]'}()
@@ -32,7 +32,7 @@ $Index->content(
 		],
 		[
 			$L->active,
-			h::{'cs-table-cell radio[name=active][checked=1]'}(
+			h::{'td radio[name=active][checked=1]'}(
 				[
 					'value' => [0, 1],
 					'in'    => [$L->no, $L->yes]

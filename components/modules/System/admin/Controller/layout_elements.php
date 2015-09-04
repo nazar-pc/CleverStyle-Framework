@@ -20,7 +20,7 @@ trait layout_elements {
 	 * @return string
 	 */
 	static protected function vertical_table ($rows) {
-		return h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(func_get_args());
+		return h::{'table.cs-table[right-left] tr| td'}(func_get_args());
 	}
 	/**
 	 * @param string[] $header_columns
@@ -29,7 +29,7 @@ trait layout_elements {
 	 * @return string
 	 */
 	static protected function horizontal_table ($header_columns, $columns) {
-		return h::{'cs-table[center][with-header] cs-table-row| cs-table-cell'}($header_columns, $columns);
+		return h::{'table.cs-table[center] tr| td'}($header_columns, $columns);
 	}
 	/**
 	 * @param string[]   $header_columns
@@ -38,9 +38,9 @@ trait layout_elements {
 	 * @return string
 	 */
 	static protected function list_center_table ($header_columns, $rows) {
-		return h::{'cs-table[center][list][with-header]'}(
-			h::{'cs-table-row cs-table-cell'}($header_columns).
-			h::{'cs-table-row| cs-table-cell'}($rows ? [$rows] : false)
+		return h::{'table.cs-table[center][list]'}(
+			h::{'tr th'}($header_columns).
+			h::{'tr| td'}($rows ? [$rows] : false)
 		);
 	}
 	static protected function core_input ($item, $type = 'text', $info_item = null, $disabled = false, $min = false, $max = false, $post_text = '') {

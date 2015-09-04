@@ -26,7 +26,7 @@ $Index->content(
 	h::{'h2.cs-text-center'}(
 		$L->photo_gallery_editing_of_gallery($gallery['title'])
 	).
-	h::{'cs-table[center] cs-table-row| cs-table-cell'}(
+	h::{'table.cs-table[center] tr| td'}(
 		[
 			$L->photo_gallery_gallery_title,
 			($Config->core['simple_admin_mode'] ? false : h::info('photo_gallery_gallery_path')),

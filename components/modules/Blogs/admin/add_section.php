@@ -26,13 +26,13 @@ $Index->content(
 	h::{'h2.cs-text-center'}(
 		$L->addition_of_posts_section
 	).
-	h::{'cs-table[center][with-header] cs-table-row| cs-table-cell'}(
-		[
+	h::{'table.cs-table[center]'}(
+		h::{'tr th'}(
 			$L->parent_section,
 			$L->section_title,
 			($Config->core['simple_admin_mode'] ? false : h::info('section_path'))
-		],
-		[
+		).
+		h::{'tr| td'}(
 			h::{'select[is=cs-select][name=parent][size=5]'}(
 				get_sections_select_section(),
 				[
@@ -41,7 +41,7 @@ $Index->content(
 			),
 			h::{'input[name=title]'}(),
 			($Config->core['simple_admin_mode'] ? false : h::{'input[name=path]'}())
-		]
+		)
 	).
 	h::{'input[type=hidden][name=mode][value=add_section]'}()
 );

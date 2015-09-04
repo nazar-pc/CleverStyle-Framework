@@ -24,13 +24,13 @@ $Index->content(
 	h::{'h2.cs-text-center'}(
 		$L->editing_of_page_category($data['title'])
 	).
-	h::{'cs-table[center][with-header] cs-table-row| cs-table-cell'}(
-		[
+	h::{'table.cs-table[center] tr'}(
+		h::th(
 			$L->parent_category,
 			$L->category_title,
 			h::info('category_path')
-		],
-		[
+		).
+		h::td(
 			h::{'select[is=cs-select][name=parent][size=5]'}(
 				get_categories_list($id),
 				[
@@ -47,7 +47,7 @@ $Index->content(
 					'value' => $data['path']
 				]
 			)
-		]
+		)
 	).
 	h::{'input[type=hidden][name=id]'}(
 		[

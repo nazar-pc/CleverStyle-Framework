@@ -13,11 +13,11 @@
             <button is="cs-button" on-click="allow_all" type="button">[[L.allow_all]]</button>
             <button is="cs-button" on-click="deny_all" type="button">[[L.deny_all]]</button>
           </p>
-          <cs-table right-left>
+          <table class="cs-table" right-left>
             <template as="label" is="dom-repeat" items="[[permission.labels]]">
-              <cs-table-row>
-                <cs-table-cell>[[label.name]]</cs-table-cell>
-                <cs-table-cell>
+              <tr>
+                <td>[[label.name]]</td>
+                <td>
                   <nav is="cs-nav-button-group">
                     <label is="cs-label-button">
                       <input checked="[[permission_state(label.id, -1)]]" name$="[[concat('permissions[', label.id, ']')]]" type="radio" value="-1">
@@ -32,10 +32,10 @@
                       <span>[[L.allow]]</span>
                     </label>
                   </nav>
-                </cs-table-cell>
-              </cs-table-row>
+                </td>
+              </tr>
             </template>
-          </cs-table>
+          </table>
         </div>
       </template>
     </form>

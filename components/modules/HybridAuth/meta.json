@@ -1,7 +1,7 @@
 {
 	"package"         : "HybridAuth",
 	"category"        : "modules",
-	"version"         : "2.4.0+git-cs33",
+	"version"         : "2.4.0+git-cs34",
 	"description"     : "Module for integration with social networks. Includes Git version of HybridAuth 2.2.2 will all available providers.",
 	"author"          : "HybridAuth authors",
 	"website"         : "hybridauth.sourceforge.net",
@@ -17,7 +17,7 @@
 	],
 	"provide"         : "social_integration",
 	"require"         : [
-		"System>=3.39",
+		"System>=3.55",
 		"System<=3.0"
 	],
 	"multilingual"    : [

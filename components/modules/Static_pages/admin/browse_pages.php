@@ -17,8 +17,8 @@ $L				= Language::instance();
 $rc				= Route::instance()->route;
 $Index->buttons	= false;
 $Index->content(
-	h::{'cs-table[list][with-header]'}(
-		h::{'cs-table-row cs-table-cell'}(
+	h::{'table.cs-table[list]'}(
+		h::{'tr th'}(
 			[
 				$L->page_title,
 				[
@@ -27,7 +27,7 @@ $Index->content(
 			],
 			$L->action
 		).
-		h::{'cs-table-row| cs-table-cell'}(
+		h::{'tr| td'}(
 			get_pages_rows()
 		)
 	).

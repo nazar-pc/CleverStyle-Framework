@@ -16,12 +16,12 @@ $L				= new Prefix('polls_');
 $Polls			= Polls::instance();
 $Index->buttons	= false;
 $Index->content(
-	h::{'cs-table[list][with-header] cs-table-row| cs-table-cell'}(
-		[
+	h::{'table.cs-table[list]'}(
+		h::{'tr| th'}(
 			$L->poll,
 			$L->action
-		],
-		array_map(
+		).
+		h::{'tr| td'}(array_map(
 			function ($poll) use ($L) {
 				return [
 					$poll['title'],
@@ -40,7 +40,7 @@ $Index->content(
 				];
 			},
 			$Polls->get($Polls->get_all())
-		)
+		))
 	).
 	h::{'h2.cs-text-center'}($L->new_poll).
 	h::{'p input[name=add[title]]'}([

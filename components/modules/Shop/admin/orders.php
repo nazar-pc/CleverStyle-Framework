@@ -72,8 +72,8 @@ $items_path                = path($L->items);
 $Page->title($L->orders);
 $Page->content(
 	h::{'h3.cs-text-center'}($L->orders).
-	h::{'cs-table[list][with-header]'}(
-		h::{'cs-table-row cs-table-cell'}(
+	h::{'table.cs-table[list]'}(
+		h::{'tr th'}(
 			$make_header('id', 'id'),
 			$make_header($L->datetime, 'date'),
 			$make_header($L->user, 'user'),
@@ -83,7 +83,7 @@ $Page->content(
 			$L->comment,
 			$L->action
 		).
-		h::{'cs-table-row'}(
+		h::tr(
 			array_map(
 				function ($order) use ($L, $Language, $Categories, $Items, $Order_statuses, $Orders, $Shipping_types, $module_path, $items_path) {
 					$order_status = $Order_statuses->get($order['status']);
@@ -91,7 +91,7 @@ $Page->content(
 						date($Language->{TIME - $order['date'] < 24 * 3600 ? '_time' : '_datetime_long'}, $order['date'])
 					);
 					$username     = User::instance()->username($order['user']);
-					return h::cs_table_cell(
+					return h::td(
 						[
 							$order['id'],
 							$date,

@@ -15,7 +15,7 @@ $L                = Language::instance();
 $providers_config = $Config->module('HybridAuth')->providers;
 $providers        = file_get_json(__DIR__.'/../providers.json');
 Index::instance()->content(
-	h::{'cs-table[right-left] cs-table-row cs-table-cell'}(
+	h::{'table.cs-table[right-left] tr td'}(
 		h::info('enable_contacts_detection'),
 		h::radio(
 			[
@@ -26,21 +26,21 @@ Index::instance()->content(
 			]
 		)
 	).
-	h::{'cs-table[list][center][with-header] cs-table-row| cs-table-cell'}(
-		[
+	h::{'table.cs-table[list][center]'}(
+		h::{'tr th'}(
 			$L->provider,
 			$L->settings,
 			$L->state
-		],
-		array_map(
+		).
+		h::{'tr| td'}(array_map(
 			function ($provider, $provider_data) use ($L, $providers_config, $Config) {
 				$content = '';
 				if (isset($provider_data['keys'])) {
 					foreach ($provider_data['keys'] as $key) {
-						$content .= h::{'cs-table-row cs-table-cell'}(
+						$content .= h::{'tr td'}(
 							[
 								ucfirst($key),
-								h::input(
+								h::{'input[is=cs-input-text]'}(
 									[
 										'name'  => "providers[$provider][keys][$key]",
 										'value' => @$providers_config[$provider]['keys'][$key] ?: ''
@@ -52,13 +52,13 @@ Index::instance()->content(
 				}
 				return [
 					$L->$provider,
-					h::{'cs-table[right-left]'}(
+					h::{'table.cs-table[right-left]'}(
 						$content.
 						(
-						isset($provider_data['scope']) ? h::{'cs-table-row cs-table-cell'}(
+						isset($provider_data['scope']) ? h::{'tr td'}(
 							[
 								'Scope',
-								h::input(
+								h::{'input[is=cs-input-text]'}(
 									[
 										'name'  => "providers[$provider][scope]",
 										'value' => @$providers_config[$provider]['scope'] ?: $provider_data['scope']
@@ -69,7 +69,7 @@ Index::instance()->content(
 						).
 						(
 						isset($provider_data['trustForwarded'])
-							? h::{'cs-table-row cs-table-cell input'}(
+							? h::{'tr td input[is=cs-input-text]'}(
 							[
 								'name'  => "providers[$provider][trustForwarded]",
 								'value' => 1,
@@ -78,11 +78,11 @@ Index::instance()->content(
 						)
 							: ''
 						).
-						h::{'cs-table-row'}(
+						h::tr(
 							isset($provider_data['info'])
 								?
-								h::{'cs-table-cell'}().
-								h::{'cs-table-cell[left]'}(
+								h::td().
+								h::{'td[left]'}(
 									str_replace(
 										[
 											'{base_url}',
@@ -110,6 +110,6 @@ Index::instance()->content(
 			},
 			array_keys($providers),
 			$providers
-		)
+		))
 	)
 );

@@ -19,12 +19,12 @@ Page::instance()->title($L->photo_gallery_browse_galleries);
 $Photo_gallery = Photo_gallery::instance();
 $module        = path($L->Photo_gallery);
 $Index->content(
-	h::{'cs-table[list][with-header] cs-table-row| cs-table-cell'}(
-		[
+	h::{'table.cs-table[list]'}(
+		h::{'tr th'}(
 			$L->photo_gallery_galleries,
 			$L->action
-		],
-		array_map(
+		).
+		h::{'tr| td'}(array_map(
 			function ($gallery) use ($Photo_gallery, $L, $module) {
 				$gallery = $Photo_gallery->get_gallery($gallery);
 				return [
@@ -49,7 +49,7 @@ $Index->content(
 				];
 			},
 			array_values($Photo_gallery->get_galleries_list())
-		)
+		))
 	).
 	h::{'p.cs-text-left a[is=cs-link-button]'}(
 		$L->photo_gallery_add_gallery,

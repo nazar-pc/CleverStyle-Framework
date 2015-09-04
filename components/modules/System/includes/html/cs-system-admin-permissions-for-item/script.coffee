@@ -46,7 +46,7 @@ Polymer(
 				# Only handle Enter button and if there is some text
 				if event.which != 13 || !text
 					return
-				$shadowRoot.find('cs-table-row.changed')
+				$shadowRoot.find('tr.changed')
 					.removeClass('changed')
 					.clone()
 					.appendTo(@$.users)
@@ -75,7 +75,7 @@ Polymer(
 			'change'
 			':radio'
 			->
-				$(@).closest('cs-table-row').addClass('changed')
+				$(@).closest('tr').addClass('changed')
 		)
 	save					: ->
 		default_data	= (key + '=' + value for key, value of $.ajaxSettings.data).join('&')

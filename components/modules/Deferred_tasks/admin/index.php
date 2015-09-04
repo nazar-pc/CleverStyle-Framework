@@ -17,7 +17,7 @@ $Index       = Index::instance();
 $L           = new Prefix('deferred_tasks_');
 $base_url    = $Config->base_url();
 $Index->content(
-	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+	h::{'table.cs-table[right-left] tr| td'}(
 		[
 			h::info('deferred_tasks_security_key'),
 			h::{'input[name=general[security_key]]'}(

@@ -26,7 +26,7 @@
       attributes = $(this.querySelector('#attributes'));
       if (attributes.length) {
         this.show_attributes = true;
-        attributes.find('table').addClass('cs-table').attr('hover', '').find('td:first-of-type').addClass('cs-text-bold');
+        attributes.find('table').addClass('cs-table').attr('list', '').find('td:first-of-type').addClass('cs-text-bold');
       }
       return $(this.$.images).append($(this.querySelectorAll('#videos > a')).each(function() {
         var $this;

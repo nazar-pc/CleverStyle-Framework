@@ -17,7 +17,7 @@ $Index       = Index::instance();
 $L           = Language::instance();
 Page::instance()->title($L->general);
 $Index->content(
-	h::{'cs-table[right-left] cs-table-row| cs-table-cell'}(
+	h::{'table.cs-table[right-left] tr| td'}(
 		[
 			h::info('posts_per_page'),
 			h::{'input[type=number][min=1]'}(

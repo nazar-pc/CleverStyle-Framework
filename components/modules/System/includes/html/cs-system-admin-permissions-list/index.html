@@ -4,28 +4,28 @@
     <h2 class="cs-text-center" hidden$="[[permissions.length]]">
       <cs-icon icon="spinner" spin></cs-icon>
     </h2>
-    <cs-table center hidden$="[[!permissions.length]]" list with-header>
-      <cs-table-row>
-        <cs-table-cell>[[L.action]]</cs-table-cell>
-        <cs-table-cell>id</cs-table-cell>
-        <cs-table-cell>[[L.group]]</cs-table-cell>
-        <cs-table-cell>[[L.label]]</cs-table-cell>
-      </cs-table-row>
+    <table center class="cs-table" hidden$="[[!permissions.length]]" list>
+      <tr>
+        <th>[[L.action]]</th>
+        <th>id</th>
+        <th>[[L.group]]</th>
+        <th>[[L.label]]</th>
+      </tr>
       <template as="permission" is="dom-repeat" items="[[permissions]]">
-        <cs-table-row>
-          <cs-table-cell>
+        <tr>
+          <td>
             <button icon="pencil" is="cs-button" on-click="edit_permission" tooltip="[[L.edit]]"></button>
             <button icon="trash" is="cs-button" on-click="delete_permission" tooltip="[[L.delete]]"></button>
-          </cs-table-cell>
-          <cs-table-cell>[[permission.id]]</cs-table-cell>
-          <cs-table-cell>[[permission.group]]</cs-table-cell>
-          <cs-table-cell tooltip="[[permission.description]]">
+          </td>
+          <td>[[permission.id]]</td>
+          <td>[[permission.group]]</td>
+          <td tooltip="[[permission.description]]">
             <span>[[permission.label]]</span>
             <cs-tooltip></cs-tooltip>
-          </cs-table-cell>
-        </cs-table-row>
+          </td>
+        </tr>
       </template>
-    </cs-table>
+    </table>
     <p class="cs-text-left">
       <button is="cs-button" on-click="add_permission" type="button">[[L.add_permission]]</button>
     </p>

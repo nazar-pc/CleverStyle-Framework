@@ -23,7 +23,7 @@ Polymer(
 			attributes
 				.find('table')
 					.addClass('cs-table')
-					.attr('hover', '')
+					.attr('list', '')
 					.find('td:first-of-type')
 						.addClass('cs-text-bold')
 		$(@$.images)

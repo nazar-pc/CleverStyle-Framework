@@ -25,15 +25,15 @@ usort($all_attributes, function ($attr1, $attr2) {
 });
 $Page->content(
 	h::{'h3.cs-text-center'}($L->attributes).
-	h::{'cs-table[list][with-header]'}(
-		h::{'cs-table-row cs-table-cell'}(
+	h::{'table.cs-table[list]'}(
+		h::{'tr th'}(
 			'id',
 			"$L->title_internal ".h::icon('caret-down'),
 			$L->title,
 			$L->attribute_type,
 			$L->action
 		).
-		h::{'cs-table-row| cs-table-cell'}(array_map(
+		h::{'tr| td'}(array_map(
 			function ($attribute) use ($L, $attribute_types) {
 				return [
 					$attribute['id'],
