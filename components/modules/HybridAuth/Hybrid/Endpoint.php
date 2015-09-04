@@ -79,7 +79,7 @@ class Hybrid_Endpoint {
 	protected function processOpenidPolicy() {
 		$output = file_get_contents(dirname(__FILE__) . "/resources/openid_policy.html");
 		print $output;
-		throw new \ExitException;
+		throw new \cs\ExitException;
 	}
 
 	/**
@@ -93,7 +93,7 @@ class Hybrid_Endpoint {
 						array("<", ">", "\"", "'", "&"), array("&lt;", "&gt;", "&quot;", "&apos;", "&amp;"), Hybrid_Auth::getCurrentUrl(false)
 				), file_get_contents(dirname(__FILE__) . "/resources/openid_xrds.xml"));
 		print $output;
-		throw new \ExitException;
+		throw new \cs\ExitException;
 	}
 
 	/**
@@ -105,7 +105,7 @@ class Hybrid_Endpoint {
 				. "?get=openid_xrds&v="
 				. Hybrid_Auth::$version, file_get_contents(dirname(__FILE__) . "/resources/openid_realm.html"));
 		print $output;
-		throw new \ExitException;
+		throw new \cs\ExitException;
 	}
 
 	/**
@@ -139,7 +139,7 @@ class Hybrid_Endpoint {
 
 			$hauth->adapter->loginBegin();
 		}
-		catch (\ExitException $e) {}
+		catch (\cs\ExitException $e) {}
 		catch (Exception $e) {
 			Hybrid_Logger::error("Exception:" . $e->getMessage(), $e);
 			Hybrid_Error::setError($e->getMessage(), $e->getCode(), $e->getTraceAsString(), $e->getPrevious());
@@ -147,7 +147,7 @@ class Hybrid_Endpoint {
 			$hauth->returnToCallbackUrl();
 		}
 
-		throw new \ExitException;
+		throw new \cs\ExitException;
 	}
 
 	/**
@@ -183,7 +183,7 @@ class Hybrid_Endpoint {
 		Hybrid_Logger::info("Endpoint: job done. return to callback url.");
 
 		$hauth->returnToCallbackUrl();
-		throw new \ExitException;
+		throw new \cs\ExitException;
 	}
 
 	/**

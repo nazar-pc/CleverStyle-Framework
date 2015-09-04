@@ -374,7 +374,7 @@ class Hybrid_Auth {
 			echo '</html>';
 		}
 
-		throw new \ExitException;
+		throw new \cs\ExitException;
 	}
 
 	/**

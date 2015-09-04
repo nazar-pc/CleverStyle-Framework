@@ -89,7 +89,7 @@ class Route {
 		if ($this->mirror_index === -1) {
 			status_code(400);
 			trigger_error("Mirror $_SERVER->host not allowed", E_USER_ERROR);
-			throw new \ExitException;
+			throw new ExitException;
 		}
 		/**
 		 * Remove trailing slashes
@@ -106,7 +106,7 @@ class Route {
 				error_code(400);
 				Page::instance()->error();
 			}
-			throw new \ExitException;
+			throw new ExitException;
 		}
 		if (!$processed_route) {
 			error_code(403);

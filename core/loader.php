@@ -25,7 +25,7 @@ unset($custom);
 try {
 	Language::instance();
 	Index::instance();
-} catch (\ExitException $e) {}
+} catch (ExitException $e) {}
 try {
 	shutdown_function();
-} catch (\ExitException $e) {}
+} catch (ExitException $e) {}

@@ -428,7 +428,7 @@ class Page {
 	 *                                                or array with two elements: [error, error_description]
 	 * @param bool                 $json              Force JSON return format
 	 *
-	 * @throws \ExitException
+	 * @throws ExitException
 	 */
 	function error ($custom_text = null, $json = false) {
 		if ($this->error_showed) {
@@ -445,7 +445,7 @@ class Page {
 		if ($error == 403 && !api_path() && _getcookie('sign_out')) {
 			_header('Location: /', true, 302);
 			$this->Content	= '';
-			throw new \ExitException;
+			throw new ExitException;
 		}
 		interface_off();
 		$error_description	= status_code($error);
@@ -476,7 +476,7 @@ class Page {
 			$this->Content	= ob_get_clean();
 		}
 		$this->__finish();
-		throw new \ExitException;
+		throw new ExitException;
 	}
 	/**
 	 * Page generation

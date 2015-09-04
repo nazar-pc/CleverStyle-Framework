@@ -13,6 +13,7 @@ use
 	Hybrid_Endpoint,
 	cs\Config,
 	cs\Event,
+	cs\ExitException,
 	cs\Index,
 	cs\Key,
 	cs\Language,
@@ -120,7 +121,7 @@ class Controller {
 	/**
 	 * Redirect to referer or home page
 	 *
-	 * @throws \ExitException
+	 * @throws ExitException
 	 *
 	 * @param bool $with_delay If `true` - redirect will be made in 5 seconds after page load
 	 */
@@ -132,7 +133,7 @@ class Controller {
 		if (!$with_delay) {
 			status_code(301);
 			interface_off();
-			throw new \ExitException;
+			throw new ExitException;
 		}
 	}
 	/**
@@ -209,7 +210,7 @@ class Controller {
 		);
 	}
 	/**
-	 * @throws \ExitException
+	 * @throws ExitException
 	 *
 	 * @param string             $provider
 	 * @param Social_integration $Social_integration
@@ -271,7 +272,7 @@ class Controller {
 	/**
 	 * Returns profile
 	 *
-	 * @throws \ExitException
+	 * @throws ExitException
 	 *
 	 * @param string $provider
 	 *
@@ -280,16 +281,16 @@ class Controller {
 	protected static function authenticate_hybridauth ($provider) {
 		try {
 			return get_hybridauth_instance($provider)->authenticate($provider)->getUserProfile();
-		} catch (\ExitException $e) {
+		} catch (ExitException $e) {
 			throw $e;
 		} catch (Exception $e) {
 			trigger_error($e->getMessage());
 			self::redirect(true);
-			throw new \ExitException;
+			throw new ExitException;
 		}
 	}
 	/**
-	 * @throws \ExitException
+	 * @throws ExitException
 	 *
 	 * @param string $provider
 	 * @param string $email
@@ -349,7 +350,7 @@ class Controller {
 		);
 	}
 	/**
-	 * @throws \ExitException
+	 * @throws ExitException
 	 *
 	 * @param string             $provider
 	 * @param Social_integration $Social_integration
@@ -421,7 +422,7 @@ class Controller {
 		}
 	}
 	/**
-	 * @throws \ExitException
+	 * @throws ExitException
 	 *
 	 * @param string $email
 	 * @param string $title
@@ -445,7 +446,7 @@ class Controller {
 		return $result;
 	}
 	/**
-	 * @throws \ExitException
+	 * @throws ExitException
 	 *
 	 * @param array $data
 	 *
@@ -461,12 +462,12 @@ class Controller {
 		if (!$code) {
 			error_code(500);
 			Page::instance()->error();
-			throw new \ExitException;
+			throw new ExitException;
 		}
 		return $code;
 	}
 	/**
-	 * @throws \ExitException
+	 * @throws ExitException
 	 *
 	 * @param int    $user_id
 	 * @param string $provider
@@ -551,7 +552,7 @@ class Controller {
 		}
 	}
 	/**
-	 * @throws \ExitException
+	 * @throws ExitException
 	 *
 	 * @param string $provider
 	 *
@@ -560,7 +561,7 @@ class Controller {
 	protected static function get_adapter ($provider) {
 		try {
 			return get_hybridauth_instance($provider)->getAdapter($provider);
-		} catch (\ExitException $e) {
+		} catch (ExitException $e) {
 			throw $e;
 		} catch (Exception $e) {
 			trigger_error($e->getMessage());

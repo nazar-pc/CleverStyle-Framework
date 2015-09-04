@@ -133,7 +133,7 @@ class DB {
 	 *
 	 * @return DB\_Abstract|False_class
 	 *
-	 * @throws \ExitException
+	 * @throws ExitException
 	 */
 	protected function generic_connecting ($database_id, $read_query) {
 		if (!is_int($database_id) && $database_id != '0') {
@@ -154,7 +154,7 @@ class DB {
 		 */
 		if (!$connection) {
 			error_code(500);
-			throw new \ExitException;
+			throw new ExitException;
 		}
 		return $connection;
 	}

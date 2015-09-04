@@ -93,7 +93,7 @@ class Index {
 	/**
 	 * Detecting module folder including of admin/api request type, including prepare file, including of plugins
 	 *
-	 * @throws \ExitException
+	 * @throws ExitException
 	 */
 	function construct () {
 		$Config     = Config::instance();
@@ -112,11 +112,11 @@ class Index {
 		}
 		if (!is_dir($this->working_directory)) {
 			error_code(404);
-			throw new \ExitException;
+			throw new ExitException;
 		}
 		if (!$this->check_permission('index')) {
 			error_code(403);
-			throw new \ExitException;
+			throw new ExitException;
 		}
 		$this->in_admin = admin_path();
 		$this->form     = $this->in_admin;
@@ -135,7 +135,7 @@ class Index {
 		$this->request_method = strtolower($_SERVER->request_method);
 		if (!preg_match('/^[a-z_]+$/', $this->request_method)) {
 			error_code(400);
-			throw new \ExitException;
+			throw new ExitException;
 		}
 	}
 	/**
@@ -210,7 +210,7 @@ class Index {
 	/**
 	 * Page generation, blocks processing, adding of form with save/apply/cancel/reset and/or custom users buttons
 	 *
-	 * @throws \ExitException
+	 * @throws ExitException
 	 */
 	protected function render_page () {
 		$this->render_title();
@@ -245,7 +245,7 @@ class Index {
 	/**
 	 * Render page content (without blocks, just module content)
 	 *
-	 * @throws \ExitException
+	 * @throws ExitException
 	 */
 	protected function render_content () {
 		$Page = Page::instance();
@@ -534,7 +534,7 @@ class Index {
 	/**
 	 * Executes plugins processing, blocks and module page generation
 	 *
-	 * @throws \ExitException
+	 * @throws ExitException
 	 */
 	function __finish () {
 		/**

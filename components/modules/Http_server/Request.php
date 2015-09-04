@@ -10,6 +10,7 @@ namespace cs\modules\Http_server;
 use
 	cs\_SERVER,
 	cs\Config,
+	cs\ExitException,
 	cs\Language,
 	cs\Index,
 	cs\Page,
@@ -50,13 +51,13 @@ class Request {
 				Config::instance(true)->reinit();
 				Language::instance();
 				Index::instance();
-			} catch (\ExitException $e) {
+			} catch (ExitException $e) {
 			}
 			try {
 				Index::instance(true)->__finish();
 				Page::instance()->__finish();
 				User::instance(true)->__finish();
-			} catch (\ExitException $e) {
+			} catch (ExitException $e) {
 			}
 		} catch (\Exception $e) {
 		}

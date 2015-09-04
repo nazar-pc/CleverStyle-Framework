@@ -48,7 +48,7 @@ class Hybrid_Providers_Twitter extends Hybrid_Provider_Model_OAuth1 {
 			$response = json_encode($responseObj);
 			_header("Content-Type: application/json", true, 200);
 			echo $response;
-			throw new \ExitException;
+			throw new \cs\ExitException;
 		}
 		$tokens = $this->api->requestToken($this->endpoint);
 
