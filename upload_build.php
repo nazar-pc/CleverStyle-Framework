@@ -30,6 +30,10 @@ if (!$on_master && !$tag) {
 	echo 'Distributive is uploaded only when on master branch or releases';
 	return;
 }
+if (!preg_match('/^\d+\.\d+\.\d+\+build-\d+$/', $tag)) {
+	echo 'Only regular releases are uploaded, other tags ignored';
+	return;
+}
 echo "Building packages...\n";
 ob_start();
 
