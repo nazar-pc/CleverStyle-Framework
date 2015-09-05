@@ -416,7 +416,7 @@ class Page {
 		$this->Top .= h::div(
 			$message,
 			[
-				'class'	=> "cs-text-center cs-text-lead cs-block-$class_ending cs-text-$class_ending"
+				'class'	=> "cs-text-center cs-block-$class_ending cs-text-$class_ending"
 			]
 		);
 		return $this;
