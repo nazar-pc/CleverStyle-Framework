@@ -20,11 +20,11 @@ $Index->content(
 	h::{'section.cs-feedback-form article'}(
 		h::{'header h2.cs-text-center'}($L->Feedback).
 		h::{'table.cs-table[center] tr| td'}([
-			h::{'input[name=name][required]'}([
+			h::{'input[is=cs-input-text][name=name][required]'}([
 				'placeholder'	=> $L->feedback_name,
 				'value'			=> $User->user() ? $User->username() : (isset($_POST['name']) ? $_POST['name'] : '')
 			]),
-			h::{'input[type=email][name=email][required]'}([
+			h::{'input[is=cs-input-text][type=email][name=email][required]'}([
 				'placeholder'	=> $L->feedback_email,
 				'value'			=> $User->user() ? $User->email : (isset($_POST['email']) ? $_POST['email'] : '')
 			]),
