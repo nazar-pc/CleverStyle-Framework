@@ -1,6 +1,6 @@
 {
 	"admin/Shop"   : [
-		"admin/*"
+		"admin*"
 	],
 	"Shop"         : [
 		"cs-shop-*",
