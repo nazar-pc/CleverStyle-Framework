@@ -10,26 +10,23 @@
 namespace cs;
 use            h;
 include __DIR__.'/save.php';
-$Config = Config::instance();
-$L      = Language::instance();
-Index::instance()->content(
-	h::{'table.cs-table[right-left] tr| td'}(
+$Config                       = Config::instance();
+$L                            = Language::instance();
+$Index                        = Index::instance();
+$Index->form_attributes['is'] = 'cs-form';
+$Index->content(
+	h::label("$L->upload_limit (b, kb, mb, gb)").
+	h::{'input[is=cs-input-text][compact][name=max_file_size]'}(
 		[
-			$L->upload_limit.' (b, kb, mb, gb)',
-			h::{'input[name=max_file_size]'}(
-				[
-					'value' => $Config->module('Plupload')->max_file_size
-				]
-			)
-		],
-		[
-			h::info('plupload_confirmation_time'),
-			h::{'input[name=confirmation_time]'}(
-				[
-					'value' => $Config->module('Plupload')->confirmation_time
-				]
-			).
-			$L->seconds
+			'value' => $Config->module('Plupload')->max_file_size
 		]
-	)
+	).
+	h::{'label info'}('plupload_confirmation_time').
+	h::{'input[is=cs-input-text][compact][name=confirmation_time]'}(
+		[
+			'value' => $Config->module('Plupload')->confirmation_time
+		]
+	).
+	$L->seconds.
+	h::br()
 );
