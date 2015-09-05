@@ -936,7 +936,8 @@ trait components {
 						unset($i, $db_data);
 						$db_list = [];
 						if (file_exists(MODULES."/$rc[3]/meta.json")) {
-							foreach (file_get_json(MODULES."/$rc[3]/meta.json")['db'] as $database) {
+							$meta = file_get_json(MODULES."/$rc[3]/meta.json");
+							foreach (isset($meta['db']) ? $meta['db'] : [] as $database) {
 								$db_list[] = [
 									$database,
 									h::{'select[is=cs-select]'}(
@@ -1003,7 +1004,8 @@ trait components {
 						unset($i, $storage_data);
 						$storage_list = [];
 						if (file_exists(MODULES."/$rc[3]/meta.json")) {
-							foreach (file_get_json(MODULES."/$rc[3]/meta.json")['storage'] as $storage) {
+							$meta = file_get_json(MODULES."/$rc[3]/meta.json");
+							foreach (isset($meta['storage']) ? $meta['storage'] : [] as $storage) {
 								$storage_list[] = [
 									$storage,
 									h::{'select[is=cs-select]'}(
