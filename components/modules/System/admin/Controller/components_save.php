@@ -294,7 +294,7 @@ trait components_save {
 						break;
 					}
 					$module_data['active'] = 0;
-					$meta                  = file_get_json(MODULES."/$module_name/meta.json");
+					$meta                  = file_exists(MODULES."/$module_name/meta.json") ? file_get_json(MODULES."/$module_name/meta.json") : null;
 					if (isset($_POST['db'], $meta['db']) && is_array($_POST['db'])) {
 						$module_data['db'] = $_POST['db'];
 						time_limit_pause();

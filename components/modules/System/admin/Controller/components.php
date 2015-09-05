@@ -745,12 +745,13 @@ trait components {
 					) {
 						break;
 					}
-					$check_dependencies = static::check_dependencies(@file_get_json(MODULES."/$rc[3]/meta.json"));
-					if (!$check_dependencies && $Config->core['simple_admin_mode']) {
-						break;
-					}
+					$check_dependencies = true;
 					if (file_exists(MODULES."/$rc[3]/meta.json")) {
-						$meta = file_get_json(MODULES."/$rc[3]/meta.json");
+						$meta               = file_get_json(MODULES."/$rc[3]/meta.json");
+						$check_dependencies = static::check_dependencies($meta);
+						if (!$check_dependencies && $Config->core['simple_admin_mode']) {
+							break;
+						}
 						if (isset($meta['optional'])) {
 							$Page->success(
 								$L->for_complete_feature_set(
@@ -817,9 +818,12 @@ trait components {
 					) {
 						break;
 					}
-					$check_dependencies = static::check_backward_dependencies(@file_get_json(MODULES."/$rc[3]/meta.json"));
-					if (!$check_dependencies && $Config->core['simple_admin_mode']) {
-						break;
+					$check_dependencies = true;
+					if (file_exists(MODULES."/$rc[3]/meta.json")) {
+						$check_dependencies = static::check_backward_dependencies(file_get_json(MODULES."/$rc[3]/meta.json"));
+						if (!$check_dependencies && $Config->core['simple_admin_mode']) {
+							break;
+						}
 					}
 					$a->cancel_button_back = true;
 					$a->content(
@@ -1033,9 +1037,12 @@ trait components {
 					break;
 				case 'enable':
 					$show_modules       = false;
-					$check_dependencies = static::check_dependencies(@file_get_json(MODULES."/$rc[3]/meta.json"));
-					if (!$check_dependencies && $Config->core['simple_admin_mode']) {
-						break;
+					$check_dependencies = true;
+					if (file_exists(MODULES."/$rc[3]/meta.json")) {
+						$check_dependencies = static::check_dependencies(file_get_json(MODULES."/$rc[3]/meta.json"));
+						if (!$check_dependencies && $Config->core['simple_admin_mode']) {
+							break;
+						}
 					}
 					Event::instance()->fire(
 						'admin/System/components/modules/enable/prepare',
@@ -1056,9 +1063,12 @@ trait components {
 					break;
 				case 'disable':
 					$show_modules       = false;
-					$check_dependencies = static::check_backward_dependencies(@file_get_json(MODULES."/$rc[3]/meta.json"));
-					if (!$check_dependencies && $Config->core['simple_admin_mode']) {
-						break;
+					$check_dependencies = true;
+					if (file_exists(MODULES."/$rc[3]/meta.json")) {
+						$check_dependencies = static::check_backward_dependencies(file_get_json(MODULES."/$rc[3]/meta.json"));
+						if (!$check_dependencies && $Config->core['simple_admin_mode']) {
+							break;
+						}
 					}
 					Event::instance()->fire(
 						'admin/System/components/modules/disable/prepare',
@@ -1363,12 +1373,13 @@ trait components {
 						) {
 							break;
 						}
-						$check_dependencies = static::check_dependencies(@file_get_json(PLUGINS."/$rc[3]/meta.json"));
-						if (!$check_dependencies && $Config->core['simple_admin_mode']) {
-							break;
-						}
+						$check_dependencies = true;
 						if (file_exists(PLUGINS."/$rc[3]/meta.json")) {
-							$meta = file_get_json(PLUGINS."/$rc[3]/meta.json");
+							$meta               = file_get_json(PLUGINS."/$rc[3]/meta.json");
+							$check_dependencies = static::check_dependencies($meta);
+							if (!$check_dependencies && $Config->core['simple_admin_mode']) {
+								break;
+							}
 							if (isset($meta['optional'])) {
 								$Page->success(
 									$L->for_complete_feature_set(
@@ -1416,9 +1427,12 @@ trait components {
 						) {
 							break;
 						}
-						$check_dependencies = static::check_backward_dependencies(@file_get_json(PLUGINS."/$rc[3]/meta.json"));
-						if (!$check_dependencies && $Config->core['simple_admin_mode']) {
-							break;
+						$check_dependencies = true;
+						if (file_exists(PLUGINS."/$rc[3]/meta.json")) {
+							$check_dependencies = static::check_backward_dependencies(file_get_json(PLUGINS."/$rc[3]/meta.json"));
+							if (!$check_dependencies && $Config->core['simple_admin_mode']) {
+								break;
+							}
 						}
 						$a->cancel_button_back = true;
 						$a->content(
