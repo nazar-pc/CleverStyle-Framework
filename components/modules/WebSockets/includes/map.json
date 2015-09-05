@@ -1,3 +1,4 @@
 {
-	"WebSockets" : "*"
+	"admin/WebSockets" : "admin.css",
+	"WebSockets"       : "WebSockets.js"
 }

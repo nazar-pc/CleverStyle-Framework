@@ -40,45 +40,36 @@ if (isset($_POST['start_server']) && !is_server_running()) {
 	);
 	$Index->save(true);
 }
+$Index->form_attributes['is'] = 'cs-form';
 $Index->content(
-	h::{'table.cs-table[right-left] tr| td'}(
+	h::{'label info'}('websockets_security_key').
+	h::{'input[is=cs-input-text]'}(
 		[
-			h::info('websockets_security_key'),
-			h::input(
-				[
-					'name'  => 'security_key',
-					'value' => $module_data->security_key
-				]
-			)
-		],
+			'name'  => 'security_key',
+			'value' => $module_data->security_key
+		]
+	).
+	h::{'label info'}('websockets_listen_port').
+	h::{'input[is=cs-input-text]'}(
 		[
-			h::info('websockets_listen_port'),
-			h::input(
-				[
-					'name'  => 'listen_port',
-					'value' => $module_data->listen_port ?: 8080
-				]
-			)
-		],
+			'name'  => 'listen_port',
+			'value' => $module_data->listen_port ?: 8080
+		]
+	).
+	h::{'label info'}('websockets_listen_on').
+	h::{'div radio'}(
 		[
-			h::info('websockets_listen_on'),
-			h::radio(
-				[
-					'name'    => 'listen_locally',
-					'checked' => $module_data->listen_locally,
-					'value'   => [1, 0],
-					'in'      => ['127.0.0.1', '0.0.0.0']
-				]
-			)
-		],
+			'name'    => 'listen_locally',
+			'checked' => $module_data->listen_locally,
+			'value'   => [1, 0],
+			'in'      => ['127.0.0.1', '0.0.0.0']
+		]
+	).
+	h::{'label info'}('websockets_dns_server').
+	h::{'input[is=cs-input-text]'}(
 		[
-			h::info('websockets_dns_server'),
-			h::input(
-				[
-					'name'  => 'dns_server',
-					'value' => $module_data->dns_server ?: '127.0.0.1'
-				]
-			)
+			'name'  => 'dns_server',
+			'value' => $module_data->dns_server ?: '127.0.0.1'
 		]
 	).
 	(is_server_running()
