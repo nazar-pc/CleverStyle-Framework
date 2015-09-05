@@ -26,19 +26,17 @@ $Page->title(
 $Index->action             = 'admin/Polls/polls';
 $Index->cancel_button_back = true;
 $Index->content(
-	h::{'h2.cs-text-center'}($L->editing_of_poll($poll['title'])).
-	h::{'table.cs-table[right-left] tr td'}(
-		$L->poll_title,
-		h::{'input[name=edit[title]]'}(
-			[
-				'value' => $poll['title']
-			]
-		)
+	h::h2($L->editing_of_poll($poll['title'])).
+	h::{'input[is=cs-input-text][name=edit[title]]'}(
+		[
+			'value'       => $poll['title'],
+			'placeholder' => $L->poll_title
+		]
 	).
 	h::p(
 		array_map(
 			function ($option) {
-				return h::{'input'}(
+				return h::{'input[is=cs-input-text]'}(
 					[
 						'value' => $option['title'],
 						'name'  => "edit[options][$option[id]]"

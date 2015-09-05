@@ -11,43 +11,49 @@ use
 	cs\Index,
 	cs\Language\Prefix,
 	h;
-$Index			= Index::instance();
-$L				= new Prefix('polls_');
-$Polls			= Polls::instance();
-$Index->buttons	= false;
+$Index          = Index::instance();
+$L              = new Prefix('polls_');
+$Polls          = Polls::instance();
+$Index->buttons = false;
 $Index->content(
 	h::{'table.cs-table[list]'}(
-		h::{'tr| th'}(
+		h::{'tr th'}(
 			$L->poll,
 			$L->action
 		).
-		h::{'tr| td'}(array_map(
-			function ($poll) use ($L) {
-				return [
-					$poll['title'],
-					h::{'a[is=cs-link-button]'}(
-						$L->edit,
-						[
-							'href' => "admin/Polls/polls/edit/$poll[id]"
-						]
-					).
-					h::{'a[is=cs-link-button]'}(
-						$L->delete,
-						[
-							'href' => "admin/Polls/polls/delete/$poll[id]"
-						]
-					)
-				];
-			},
-			$Polls->get($Polls->get_all())
-		))
+		h::{'tr| td'}(
+			array_map(
+				function ($poll) use ($L) {
+					return [
+						$poll['title'],
+						h::{'a[is=cs-link-button][icon=pencil][level=0]'}(
+							[
+								'href'    => "admin/Polls/polls/edit/$poll[id]",
+								'tooltip' => $L->edit
+							]
+						).
+						h::{'a[is=cs-link-button][icon=trash][level=0]'}(
+							[
+								'href'    => "admin/Polls/polls/delete/$poll[id]",
+								'tooltip' => $L->delete
+							]
+						)
+					];
+				},
+				$Polls->get($Polls->get_all())
+			)
+		)
 	).
-	h::{'h2.cs-text-center'}($L->new_poll).
-	h::{'p input[name=add[title]]'}([
-		'placeholder' => $L->poll_title
-	]).
-	h::{'p textarea[is=cs-textarea][autosize][name=add[options]]'}([
-		'placeholder' => $L->answers_one_per_line
-	])
+	h::h2($L->new_poll).
+	h::{'p input[is=cs-input-text][name=add[title]]'}(
+		[
+			'placeholder' => $L->poll_title
+		]
+	).
+	h::{'p textarea[is=cs-textarea][autosize][name=add[options]]'}(
+		[
+			'placeholder' => $L->answers_one_per_line
+		]
+	)
 );
 $Index->custom_buttons = h::{'button[is=cs-button][type=submit]'}($L->add);

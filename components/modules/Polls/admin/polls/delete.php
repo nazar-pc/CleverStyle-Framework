@@ -25,7 +25,7 @@ Page::instance()->title(
 );
 $Index->action = 'admin/Polls/polls';
 $Index->content(
-	h::{'h2.cs-text-center'}($L->deleting_of_poll($poll['title'])).
+	h::h2($L->deleting_of_poll($poll['title'])).
 	h::{'button[is=cs-button][type=submit][name=delete]'}(
 		$L->yes,
 		[
