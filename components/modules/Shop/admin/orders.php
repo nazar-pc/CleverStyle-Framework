@@ -71,7 +71,7 @@ $module_path               = path($L->shop);
 $items_path                = path($L->items);
 $Page->title($L->orders);
 $Page->content(
-	h::{'h3.cs-text-center'}($L->orders).
+	h::{'h2.cs-text-center'}($L->orders).
 	h::{'table.cs-table[list]'}(
 		h::{'tr th'}(
 			$make_header('id', 'id'),

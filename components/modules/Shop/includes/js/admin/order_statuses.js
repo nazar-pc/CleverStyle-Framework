@@ -24,11 +24,12 @@
         return results;
       })();
       types = types.join('');
-      modal = $(cs.ui.simple_modal("<form>\n	<h3 class=\"cs-text-center\">" + title + "</h3>\n	<p>\n		" + L.shop_title + ": <input name=\"title\" required>\n	</p>\n	<p>\n		" + L.shop_color + ": <input name=\"color\"><input type=\"color\">\n	</p>\n	<p>\n		" + L.shop_order_status_type + ": <select is=\"cs-select\" name=\"type\" required>" + types + "</select>\n	</p>\n	<p>\n		" + L.shop_send_update_status_email + ":\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"send_update_status_email\" value=\"1\" checked> " + L.yes + "</label>\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"send_update_status_email\" value=\"0\"> " + L.no + "</label>\n	</p>\n	<p>\n		" + L.shop_comment_used_in_email + ": <textarea is=\"cs-textarea\" autosize name=\"comment\"></textarea>\n	</p>\n	<p>\n		<button is=\"cs-button\" primary type=\"submit\">" + action + "</button>\n	</p>\n</form>"));
+      modal = $(cs.ui.simple_modal("<form is=\"cs-form\">\n	<h3 class=\"cs-text-center\">" + title + "</h3>\n	<label>" + L.shop_title + "</label>\n	<input is=\"cs-input-text\" name=\"title\" required>\n	<label>" + L.shop_color + "</label>\n	<input is=\"cs-input-text\" name=\"color\"><br>\n	<input is=\"cs-input-text\" type=\"color\">\n	<label>" + L.shop_order_status_type + "</label>\n	<select is=\"cs-select\" name=\"type\" required>" + types + "</select>\n	<label>" + L.shop_send_update_status_email + "</label>\n	<div>\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"send_update_status_email\" value=\"1\" checked> " + L.yes + "</label>\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"send_update_status_email\" value=\"0\"> " + L.no + "</label>\n	</div>\n	<label>" + L.shop_comment_used_in_email + "</label>\n	<textarea is=\"cs-textarea\" autosize name=\"comment\"></textarea>\n	<br>\n	<button is=\"cs-button\" primary type=\"submit\">" + action + "</button>\n</form>"));
       modal.find('[type=color]').change(function() {
-        var $this;
-        $this = $(this);
-        return $this.prev().val($this.val());
+        return modal.find('[name=color]').val($(this).val());
+      });
+      modal.find('[name=color]').change(function() {
+        return modal.find('[type=color]').val($(this).val());
       });
       return modal;
     };

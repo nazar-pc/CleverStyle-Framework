@@ -13,12 +13,12 @@
     var L, make_modal;
     L = cs.Language;
     make_modal = function(title, action) {
-      return cs.ui.simple_modal("<form>\n	<h3 class=\"cs-text-center\">" + title + "</h3>\n	<p>\n		" + L.shop_title + ": <input name=\"title\" required>\n	</p>\n	<p>\n		" + L.shop_price + ": <input name=\"price\" type=\"number\" min=\"0\" value=\"0\" required>\n	</p>\n	<p>\n		" + L.shop_phone_needed + ":\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"phone_needed\" value=\"1\" checked> " + L.yes + "</label>\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"phone_needed\" value=\"0\"> " + L.no + "</label>\n	</p>\n	<p>\n		" + L.shop_address_needed + ":\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"address_needed\" value=\"1\" checked> " + L.yes + "</label>\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"address_needed\" value=\"0\"> " + L.no + "</label>\n	</p>\n	<p>\n		" + L.shop_description + ": <textarea is=\"cs-textarea\" autosize name=\"description\"></textarea>\n	</p>\n	<p>\n		<button is=\"cs-button\" primary type=\"submit\">" + action + "</button>\n	</p>\n</form>");
+      return $(cs.ui.simple_modal("<form is=\"cs-form\">\n	<h3 class=\"cs-text-center\">" + title + "</h3>\n	<label>" + L.shop_title + "</label>\n	<input is=\"cs-input-text\" name=\"title\" required>\n	<label>" + L.shop_price + "</label>\n	<input is=\"cs-input-text\" name=\"price\" type=\"number\" min=\"0\" value=\"0\" required>\n	<label>" + L.shop_phone_needed + "</label>\n	<div>\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"phone_needed\" value=\"1\" checked> " + L.yes + "</label>\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"phone_needed\" value=\"0\"> " + L.no + "</label>\n	</div>\n	<label>" + L.shop_address_needed + "</label>\n	<div>\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"address_needed\" value=\"1\" checked> " + L.yes + "</label>\n		<label is=\"cs-label-button\"><input type=\"radio\" name=\"address_needed\" value=\"0\"> " + L.no + "</label>\n	</div>\n	<label>" + L.shop_description + "</label>\n	<textarea is=\"cs-textarea\" autosize name=\"description\"></textarea>\n	<br>\n	<button is=\"cs-button\" primary type=\"submit\">" + action + "</button>\n</form>"));
     };
     return $('html').on('mousedown', '.cs-shop-shipping-type-add', function() {
-      var modal;
-      modal = make_modal(L.shop_shipping_type_addition, L.shop_add);
-      return modal.find('form').submit(function() {
+      var $modal;
+      $modal = make_modal(L.shop_shipping_type_addition, L.shop_add);
+      return $modal.find('form').submit(function() {
         $.ajax({
           url: 'api/Shop/admin/shipping_types',
           type: 'post',
@@ -34,9 +34,9 @@
       var id;
       id = $(this).data('id');
       return $.getJSON("api/Shop/admin/shipping_types/" + id, function(shipping_type) {
-        var modal;
-        modal = make_modal(L.shop_shipping_type_edition, L.shop_edit);
-        modal.find('form').submit(function() {
+        var $modal;
+        $modal = make_modal(L.shop_shipping_type_edition, L.shop_edit);
+        $modal.find('form').submit(function() {
           $.ajax({
             url: "api/Shop/admin/shipping_types/" + id,
             type: 'put',
@@ -48,11 +48,11 @@
           });
           return false;
         });
-        modal.find('[name=title]').val(shipping_type.title);
-        modal.find('[name=price]').val(shipping_type.price);
-        modal.find("[name=phone_needed][value=" + shipping_type.phone_needed + "]").prop('checked', true);
-        modal.find("[name=address_needed][value=" + shipping_type.address_needed + "]").prop('checked', true);
-        return modal.find('[name=description]').val(shipping_type.description);
+        $modal.find('[name=title]').val(shipping_type.title);
+        $modal.find('[name=price]').val(shipping_type.price);
+        $modal.find("[name=phone_needed][value=" + shipping_type.phone_needed + "]").prop('checked', true);
+        $modal.find("[name=address_needed][value=" + shipping_type.address_needed + "]").prop('checked', true);
+        return $modal.find('[name=description]').val(shipping_type.description);
       });
     }).on('mousedown', '.cs-shop-shipping-type-delete', function() {
       var id;

@@ -13,34 +13,29 @@ $ ->
 			for index, type of types
 				"""<option value="#{index}">#{type}</option>"""
 		types		= types.join('')
-		cs.ui.simple_modal("""<form>
+		cs.ui.simple_modal("""<form is="cs-form">
 			<h3 class="cs-text-center">#{title}</h3>
-			<p>
-				#{L.shop_attribute_type}: <select is="cs-select" name="type" required>#{types}</select>
-			</p>
-			<p>
-				#{L.shop_possible_values}: <textarea is="cs-textarea" autosize name="value"></textarea>
-			</p>
-			<p>
-				#{L.shop_title}: <input is="cs-input-title" name="title" required>
-			</p>
-			<p>
-				#{L.shop_title_internal}: <input is="cs-input-title" name="title_internal" required>
-			</p>
-			<p>
-				<button is="cs-button" type="submit">#{action}</button>
-			</p>
+			<label>#{L.shop_attribute_type}</label>
+			<select is="cs-select" name="type" required>#{types}</select>
+			<label>#{L.shop_possible_values}</label>
+			<textarea is="cs-textarea" autosize name="value"></textarea>
+			<label>#{L.shop_title}</label>
+			<input is="cs-input-text" name="title" required>
+			<label>#{L.shop_title_internal}</label>
+			<input is="cs-input-text" name="title_internal" required>
+			<br>
+			<button is="cs-button" primary type="submit">#{action}</button>
 		</form>""")
 	$('html')
 		.on('mousedown', '.cs-shop-attribute-add', ->
 			$.getJSON('api/Shop/admin/attributes/types', (types) ->
-				modal	= make_modal(types, L.shop_attribute_addition, L.shop_add)
-				modal
+				$modal	= $(make_modal(types, L.shop_attribute_addition, L.shop_add))
+				$modal
 					.on('submit', 'form', ->
-						type = modal.find('[name=type]').val()
+						type = $modal.find('[name=type]').val()
 						value =
 							if set_attribute_types.indexOf(parseInt(type)) != -1
-								modal.find('[name=value]').val().split('\n')
+								$modal.find('[name=value]').val().split('\n')
 							else
 								''
 						$.ajax(
@@ -48,8 +43,8 @@ $ ->
 							type    : 'post'
 							data    :
 								type           : type
-								title          : modal.find('[name=title]').val()
-								title_internal : modal.find('[name=title_internal]').val()
+								title          : $modal.find('[name=title]').val()
+								title_internal : $modal.find('[name=title_internal]').val()
 								value          : value
 							success : ->
 								alert(L.shop_added_successfully)
@@ -73,13 +68,13 @@ $ ->
 				$.getJSON('api/Shop/admin/attributes/types')
 				$.getJSON("api/Shop/admin/attributes/#{id}")
 			).done (types, attribute) ->
-				modal	= make_modal(types[0], L.shop_attribute_edition, L.shop_edit)
-				modal
+				$modal	= $(make_modal(types[0], L.shop_attribute_edition, L.shop_edit))
+				$modal
 					.on('submit', 'form', ->
-						type = modal.find('[name=type]').val()
+						type = $modal.find('[name=type]').val()
 						value =
 							if set_attribute_types.indexOf(parseInt(type)) != -1
-								modal.find('[name=value]').val().split('\n')
+								$modal.find('[name=value]').val().split('\n')
 							else
 								''
 						$.ajax(
@@ -87,8 +82,8 @@ $ ->
 							type    : 'put'
 							data    :
 								type           : type
-								title          : modal.find('[name=title]').val()
-								title_internal : modal.find('[name=title_internal]').val()
+								title          : $modal.find('[name=title]').val()
+								title_internal : $modal.find('[name=title_internal]').val()
 								value          : value
 							success : ->
 								alert(L.shop_edited_successfully)
@@ -105,10 +100,10 @@ $ ->
 							value_container.hide()
 				)
 				attribute	= attribute[0]
-				modal.find('[name=type]').val(attribute.type).change()
-				modal.find('[name=value]').val(if attribute.value then attribute.value.join('\n') else '')
-				modal.find('[name=title]').val(attribute.title)
-				modal.find('[name=title_internal]').val(attribute.title_internal)
+				$modal.find('[name=type]').val(attribute.type).change()
+				$modal.find('[name=value]').val(if attribute.value then attribute.value.join('\n') else '')
+				$modal.find('[name=title]').val(attribute.title)
+				$modal.find('[name=title_internal]').val(attribute.title_internal)
 		)
 		.on('mousedown', '.cs-shop-attribute-delete', ->
 			id = $(@).data('id')

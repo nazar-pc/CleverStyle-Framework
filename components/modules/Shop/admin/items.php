@@ -64,7 +64,7 @@ $items_total = $Items->search(
 	@$_GET['asc']
 );
 $Page->content(
-	h::{'h3.cs-text-center'}($L->items).
+	h::{'h2.cs-text-center'}($L->items).
 	h::{'table.cs-table[list]'}(
 		h::{'tr th'}(
 			$make_header('id', 'id'),
@@ -75,10 +75,10 @@ $Page->content(
 			$make_header($L->listed, 'listed'),
 			$L->action
 		).
-		h::tr(
+		h::{'tr| td'}(
 			array_map(
 				function ($item) use ($L, $Categories, $module_data) {
-					return h::td(
+					return [
 						[
 							$item['id'],
 							$item['title'],
@@ -110,9 +110,10 @@ $Page->content(
 							)
 						],
 						[
-							'class' => $item['listed'] ? 'cs-block-success cs-text-success' : ($item['in_stock'] || $item['soon'] ? 'cs-block-warning cs-text-warning' : 'cs-block-error cs-text-error')
+							'class' => $item['listed'] ? 'cs-block-success cs-text-success' :
+								($item['in_stock'] || $item['soon'] ? 'cs-block-warning cs-text-warning' : 'cs-block-error cs-text-error')
 						]
-					);
+					];
 				},
 				$items
 			) ?: false

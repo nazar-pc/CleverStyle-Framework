@@ -311,6 +311,7 @@ $ ->
 				$.getJSON('api/Shop/admin/categories')
 			).done (attributes, categories) ->
 				modal = make_modal(attributes[0], categories[0], L.shop_item_addition, L.shop_add)
+				modal.find("[name=category]").change()
 				modal.find('form').submit ->
 					$.ajax(
 						url     : 'api/Shop/admin/items'

@@ -40,7 +40,7 @@ usort($all_categories, function ($cat1, $cat2) {
 	return $cat1['title'] > $cat2['title'] ? 1 : -1;
 });
 $Page->content(
-	h::{'h3.cs-text-center'}($L->categories).
+	h::{'h2.cs-text-center'}($L->categories).
 	h::{'table.cs-table[list]'}(
 		h::{'tr th'}(
 			'id',

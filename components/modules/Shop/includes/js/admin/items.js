@@ -296,6 +296,7 @@
       return $.when($.getJSON('api/Shop/admin/attributes'), $.getJSON('api/Shop/admin/categories')).done(function(attributes, categories) {
         var modal;
         modal = make_modal(attributes[0], categories[0], L.shop_item_addition, L.shop_add);
+        modal.find("[name=category]").change();
         return modal.find('form').submit(function() {
           $.ajax({
             url: 'api/Shop/admin/items',

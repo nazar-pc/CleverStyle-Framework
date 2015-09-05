@@ -70,7 +70,7 @@ $Index->content(
 		],
 		[
 			$L->price_formatting,
-			h::{'input[name=price_formatting][required]'}(
+			h::{'input[is=cs-input-text][name=price_formatting][required]'}(
 				[
 					'value'       => $module_data->price_formatting,
 					'placeholder' => '$%s USD'
@@ -79,7 +79,7 @@ $Index->content(
 		],
 		[
 			$L->items_per_page,
-			h::{'input[name=items_per_page][required][type=number][min=1]'}(
+			h::{'input[is=cs-input-text][name=items_per_page][required][type=number][min=1]'}(
 				[
 					'value' => $module_data->items_per_page
 				]
@@ -87,7 +87,7 @@ $Index->content(
 		],
 		[
 			$L->items_per_page_admin,
-			h::{'input[name=items_per_page_admin][required][type=number][min=1]'}(
+			h::{'input[is=cs-input-text][name=items_per_page_admin][required][type=number][min=1]'}(
 				[
 					'value' => $module_data->items_per_page_admin
 				]

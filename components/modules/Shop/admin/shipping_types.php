@@ -23,7 +23,7 @@ usort($all_shipping_types, function ($shipping_type1, $shipping_type2) {
 	return $shipping_type1['title'] > $shipping_type2['title'] ? 1 : -1;
 });
 $Page->content(
-	h::{'h3.cs-text-center'}($L->shipping_types).
+	h::{'h2.cs-text-center'}($L->shipping_types).
 	h::{'table.cs-table[list]'}(
 		h::{'tr th'}(
 			'id',

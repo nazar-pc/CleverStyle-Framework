@@ -12,33 +12,32 @@ $ ->
 			for index, type of types
 				"""<option value="#{index}">#{type}</option>"""
 		types	= types.join('')
-		modal	= $(cs.ui.simple_modal("""<form>
+		modal	= $(cs.ui.simple_modal("""<form is="cs-form">
 			<h3 class="cs-text-center">#{title}</h3>
-			<p>
-				#{L.shop_title}: <input name="title" required>
-			</p>
-			<p>
-				#{L.shop_color}: <input name="color"><input type="color">
-			</p>
-			<p>
-				#{L.shop_order_status_type}: <select is="cs-select" name="type" required>#{types}</select>
-			</p>
-			<p>
-				#{L.shop_send_update_status_email}:
+			<label>#{L.shop_title}</label>
+			<input is="cs-input-text" name="title" required>
+			<label>#{L.shop_color}</label>
+			<input is="cs-input-text" name="color"><br>
+			<input is="cs-input-text" type="color">
+			<label>#{L.shop_order_status_type}</label>
+			<select is="cs-select" name="type" required>#{types}</select>
+			<label>#{L.shop_send_update_status_email}</label>
+			<div>
 				<label is="cs-label-button"><input type="radio" name="send_update_status_email" value="1" checked> #{L.yes}</label>
 				<label is="cs-label-button"><input type="radio" name="send_update_status_email" value="0"> #{L.no}</label>
-			</p>
-			<p>
-				#{L.shop_comment_used_in_email}: <textarea is="cs-textarea" autosize name="comment"></textarea>
-			</p>
-			<p>
-				<button is="cs-button" primary type="submit">#{action}</button>
-			</p>
+			</div>
+			<label>#{L.shop_comment_used_in_email}</label>
+			<textarea is="cs-textarea" autosize name="comment"></textarea>
+			<br>
+			<button is="cs-button" primary type="submit">#{action}</button>
 		</form>"""))
 		modal.find('[type=color]').change ->
-			$this	= $(@)
-			$this.prev().val(
-				$this.val()
+			modal.find('[name=color]').val(
+				$(@).val()
+			)
+		modal.find('[name=color]').change ->
+			modal.find('[type=color]').val(
+				$(@).val()
 			)
 		modal
 	$('html')

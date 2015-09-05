@@ -25,23 +25,23 @@
         return results;
       })();
       types = types.join('');
-      return cs.ui.simple_modal("<form>\n	<h3 class=\"cs-text-center\">" + title + "</h3>\n	<p>\n		" + L.shop_attribute_type + ": <select is=\"cs-select\" name=\"type\" required>" + types + "</select>\n	</p>\n	<p>\n		" + L.shop_possible_values + ": <textarea is=\"cs-textarea\" autosize name=\"value\"></textarea>\n	</p>\n	<p>\n		" + L.shop_title + ": <input is=\"cs-input-title\" name=\"title\" required>\n	</p>\n	<p>\n		" + L.shop_title_internal + ": <input is=\"cs-input-title\" name=\"title_internal\" required>\n	</p>\n	<p>\n		<button is=\"cs-button\" type=\"submit\">" + action + "</button>\n	</p>\n</form>");
+      return cs.ui.simple_modal("<form is=\"cs-form\">\n	<h3 class=\"cs-text-center\">" + title + "</h3>\n	<label>" + L.shop_attribute_type + "</label>\n	<select is=\"cs-select\" name=\"type\" required>" + types + "</select>\n	<label>" + L.shop_possible_values + "</label>\n	<textarea is=\"cs-textarea\" autosize name=\"value\"></textarea>\n	<label>" + L.shop_title + "</label>\n	<input is=\"cs-input-text\" name=\"title\" required>\n	<label>" + L.shop_title_internal + "</label>\n	<input is=\"cs-input-text\" name=\"title_internal\" required>\n	<br>\n	<button is=\"cs-button\" primary type=\"submit\">" + action + "</button>\n</form>");
     };
     return $('html').on('mousedown', '.cs-shop-attribute-add', function() {
       return $.getJSON('api/Shop/admin/attributes/types', function(types) {
-        var modal;
-        modal = make_modal(types, L.shop_attribute_addition, L.shop_add);
-        return modal.on('submit', 'form', function() {
+        var $modal;
+        $modal = $(make_modal(types, L.shop_attribute_addition, L.shop_add));
+        return $modal.on('submit', 'form', function() {
           var type, value;
-          type = modal.find('[name=type]').val();
-          value = set_attribute_types.indexOf(parseInt(type)) !== -1 ? modal.find('[name=value]').val().split('\n') : '';
+          type = $modal.find('[name=type]').val();
+          value = set_attribute_types.indexOf(parseInt(type)) !== -1 ? $modal.find('[name=value]').val().split('\n') : '';
           $.ajax({
             url: 'api/Shop/admin/attributes',
             type: 'post',
             data: {
               type: type,
-              title: modal.find('[name=title]').val(),
-              title_internal: modal.find('[name=title_internal]').val(),
+              title: $modal.find('[name=title]').val(),
+              title_internal: $modal.find('[name=title_internal]').val(),
               value: value
             },
             success: function() {
@@ -65,19 +65,19 @@
       var id;
       id = $(this).data('id');
       return $.when($.getJSON('api/Shop/admin/attributes/types'), $.getJSON("api/Shop/admin/attributes/" + id)).done(function(types, attribute) {
-        var modal;
-        modal = make_modal(types[0], L.shop_attribute_edition, L.shop_edit);
-        modal.on('submit', 'form', function() {
+        var $modal;
+        $modal = $(make_modal(types[0], L.shop_attribute_edition, L.shop_edit));
+        $modal.on('submit', 'form', function() {
           var type, value;
-          type = modal.find('[name=type]').val();
-          value = set_attribute_types.indexOf(parseInt(type)) !== -1 ? modal.find('[name=value]').val().split('\n') : '';
+          type = $modal.find('[name=type]').val();
+          value = set_attribute_types.indexOf(parseInt(type)) !== -1 ? $modal.find('[name=value]').val().split('\n') : '';
           $.ajax({
             url: "api/Shop/admin/attributes/" + id,
             type: 'put',
             data: {
               type: type,
-              title: modal.find('[name=title]').val(),
-              title_internal: modal.find('[name=title_internal]').val(),
+              title: $modal.find('[name=title]').val(),
+              title_internal: $modal.find('[name=title_internal]').val(),
               value: value
             },
             success: function() {
@@ -97,10 +97,10 @@
           }
         });
         attribute = attribute[0];
-        modal.find('[name=type]').val(attribute.type).change();
-        modal.find('[name=value]').val(attribute.value ? attribute.value.join('\n') : '');
-        modal.find('[name=title]').val(attribute.title);
-        return modal.find('[name=title_internal]').val(attribute.title_internal);
+        $modal.find('[name=type]').val(attribute.type).change();
+        $modal.find('[name=value]').val(attribute.value ? attribute.value.join('\n') : '');
+        $modal.find('[name=title]').val(attribute.title);
+        return $modal.find('[name=title_internal]').val(attribute.title_internal);
       });
     }).on('mousedown', '.cs-shop-attribute-delete', function() {
       var id;
