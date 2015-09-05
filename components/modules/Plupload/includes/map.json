@@ -1,9 +1,9 @@
 {
 	"admin/Plupload" : "admin.css",
 	"Plupload"       : [
-		"i18n*",
 		"a.moxie*",
 		"b.plupload*",
+		"i18n*",
 		"integration.js"
 	]
 }
