@@ -29,8 +29,7 @@
 	@apply (--cs-nav-button-group-content-vertical);
 }
 
-// Hack: `:host` is here only because of Polymer unable to handle pure `::content` properly
-:host ::content > :not(template) {
+::content > :not(template) {
 	& {
 		@apply (--cs-nav-button-group-button);
 	}

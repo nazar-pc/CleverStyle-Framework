@@ -26,8 +26,7 @@
 	}
 }
 
-// Hack: `:host` is here only because of Polymer unable to handle pure `::content` properly
-:host ::content #nested {
+::content #nested {
 	margin-top : 1em;
 	width      : 100%;
 

@@ -16,8 +16,7 @@
 	@apply (--cs-label-button);
 }
 
-// Hack: `:host` is here only because of Polymer unable to handle pure `::content` properly
-:host ::content input {
+::content input {
 	// Just `display: none` is not working here, because it will break focus support
 	height    : 0;
 	margin    : 0;

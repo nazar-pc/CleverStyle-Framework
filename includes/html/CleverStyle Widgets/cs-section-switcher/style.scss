@@ -9,8 +9,7 @@
 	@apply (--cs-section-switcher);
 }
 
-// Hack: `:host` is here only because of Polymer unable to handle pure `::content` properly
-:host ::content > :not(template) {
+::content > :not(template) {
 	& {
 		@apply (--cs-section-switcher-block);
 	}
