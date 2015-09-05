@@ -38,22 +38,21 @@ if (count($galleries) > 1) {
 				function ($gallery) use ($L, $User, $module) {
 					$controls = '';
 					if ($User->admin()) {
-						$controls = h::{'a.cs-photo-gallery-gallery-control'}(
-							[
-								h::icon('pencil'),
+						$controls =
+							h::{'a.cs-photo-gallery-gallery-control[is=cs-link-button][level=0]'}(
 								[
 									'href'    => "admin/Photo_gallery/galleries/edit/$gallery[id]",
+									'icon'    => 'pencil',
 									'tooltip' => $L->edit
 								]
-							],
-							[
-								h::icon('trash'),
+							).
+							h::{'a.cs-photo-gallery-gallery-control[is=cs-link-button][level=0]'}(
 								[
 									'href'    => "admin/Photo_gallery/galleries/delete/$gallery[id]",
+									'icon'    => 'trash',
 									'tooltip' => $L->delete
 								]
-							]
-						);
+							);
 					}
 					return h::header(
 						h::a(

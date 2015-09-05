@@ -67,24 +67,23 @@ $Index->content(
 				function ($image) use ($L, $User) {
 					$controls = '';
 					if ($User->admin() || $image['user'] == $User->id) {
-						$controls = h::{'a.cs-photo-gallery-image-control'}(
-							[
-								'&nbsp;'.h::icon('pencil'),
+						$controls =
+							h::{'a.cs-photo-gallery-image-control[is=cs-link-button][level=0]'}(
 								[
 									'href'       => "Photo_gallery/edit_images/$image[id]",
+									'icon'       => 'pencil',
 									'tooltip'    => $L->edit,
 									'data-image' => $image['id']
 								]
-							],
-							[
-								'&nbsp;'.h::icon('trash'),
+							).
+							h::{'a.cs-photo-gallery-image-control[is=cs-link-button][level=0]'}(
 								[
+									'icon'       => 'trash',
 									'tooltip'    => $L->delete,
 									'class'      => 'cs-photo-gallery-image-delete',
 									'data-image' => $image['id']
 								]
-							]
-						);
+							);
 					}
 					return [
 						$controls,

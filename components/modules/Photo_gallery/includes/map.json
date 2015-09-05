@@ -1,3 +1,7 @@
 {
-	"Photo_gallery" : "*"
+	"admin/Photo_gallery" : "admin.css",
+	"Photo_gallery"       : [
+		"general.css",
+		"general.js"
+	]
 }

@@ -18,10 +18,10 @@ $Index = Index::instance();
 $L     = Language::instance();
 $User  = User::instance();
 Page::instance()->title($L->photo_gallery_images_editing);
-$Photo_gallery       = Photo_gallery::instance();
-$images              = $Photo_gallery->get(explode(',', Route::instance()->route[1])) ?: [];
-$Index->form         = true;
-$Index->action       = path($L->Photo_gallery).($images ? '/'.$Photo_gallery->get_gallery($images[0]['gallery'])['path'] : '');
+$Photo_gallery = Photo_gallery::instance();
+$images        = $Photo_gallery->get(explode(',', Route::instance()->route[1])) ?: [];
+$Index->form   = true;
+$Index->action = path($L->Photo_gallery).($images ? '/'.$Photo_gallery->get_gallery($images[0]['gallery'])['path'] : '');
 $Index->content(
 	h::{'section.cs-photo-gallery-edit-images article'}(
 		array_map(
@@ -41,14 +41,14 @@ $Index->content(
 						]
 					).
 					h::div(
-						h::p($L->photo_gallery_image_title).
-						h::input(
+						h::label($L->photo_gallery_image_title).
+						h::{'input[is=cs-input-text]'}(
 							[
 								'name'  => "edit_images[$image[id]][title]",
 								'value' => $image['title']
 							]
 						).
-						h::p($L->photo_gallery_image_description).
+						h::label($L->photo_gallery_image_description).
 						h::{'textarea[is=cs-textarea][autosize]'}(
 							$image['description'],
 							[
