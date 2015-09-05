@@ -25,10 +25,10 @@ if (isset($_POST['simple_insert'])) {
 	$module_data->simple_insert = $_POST['simple_insert'];
 	$Index->save(true);
 }
-
+$Index->form_attributes['is'] = 'cs-form';
 $Index->content(
 	h::{'table.cs-table[center][list]'}(
-		h::{'tr td'}(
+		h::{'tr th'}(
 			[
 				$L->key,
 				$L->title,
@@ -62,15 +62,14 @@ $Index->content(
 		)
 	).
 	h::{'p button.cs-content-add[is=cs-button]'}($L->add).
-	h::{'table.cs-table[right-left] tr td'}(
-		h::info('content_simple_insert'),
-		h::radio(
-			[
-				'name'    => 'simple_insert',
-				'value'   => [0, 1],
-				'in'      => [$L->no, $L->yes],
-				'checked' => $module_data->simple_insert
-			]
-		)
-	)
+	h::{'label info'}('content_simple_insert').
+	h::{'div radio'}(
+		[
+			'name'    => 'simple_insert',
+			'value'   => [0, 1],
+			'in'      => [$L->no, $L->yes],
+			'checked' => $module_data->simple_insert
+		]
+	).
+	h::br()
 );
