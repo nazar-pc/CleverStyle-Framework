@@ -60,7 +60,11 @@ Event::instance()
 	->on(
 		'System/Index/construct',
 		function () {
-			switch (Config::instance()->components['modules']['Blogs']['active']) {
+			$Config = Config::instance();
+			if (!isset($Config->components['modules']['Blogs'])) {
+				return;
+			}
+			switch ($Config->components['modules']['Blogs']['active']) {
 				case -1:
 					if (!admin_path()) {
 						return;

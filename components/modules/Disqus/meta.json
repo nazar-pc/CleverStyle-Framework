@@ -1,7 +1,7 @@
 {
 	"package"     : "Disqus",
 	"category"    : "modules",
-	"version"     : "1.5.0+build-11",
+	"version"     : "1.5.1+build-12",
 	"description" : "Integration of Disqus commenting service, adds comments functionality to other modules",
 	"author"      : "Nazar Mokrynskyi",
 	"website"     : "cleverstyle.org/cms",

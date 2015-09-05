@@ -12,7 +12,11 @@ Event::instance()
 	->on(
 		'System/Config/init/after',
 		function () {
-			switch (Config::instance()->components['modules']['Plupload']['active']) {
+			$Config = Config::instance();
+			if (!isset($Config->components['modules']['Plupload'])) {
+				return;
+			}
+			switch ($Config->components['modules']['Plupload']['active']) {
 				case 1:
 					require __DIR__.'/events/enabled.php';
 			}
@@ -24,7 +28,11 @@ Event::instance()
 			if (!admin_path()) {
 				return;
 			}
-			switch (Config::instance()->components['modules']['Plupload']['active']) {
+			$Config = Config::instance();
+			if (!isset($Config->components['modules']['Plupload'])) {
+				return;
+			}
+			switch ($Config->components['modules']['Plupload']['active']) {
 				case -1:
 					require __DIR__.'/events/uninstalled.php';
 				break;

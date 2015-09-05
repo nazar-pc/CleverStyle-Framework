@@ -14,7 +14,11 @@ _require_once(STORAGE.'/Composer/vendor/autoload.php', false);
 Event::instance()->on(
 	'System/Index/construct',
 	function () {
-		switch (Config::instance()->components['modules']['Composer']['active']) {
+		$Config = Config::instance();
+		if (!isset($Config->components['modules']['Composer'])) {
+			return;
+		}
+		switch ($Config->components['modules']['Composer']['active']) {
 			case 1:
 				require __DIR__.'/events/enabled.php';
 				if (admin_path() && current_module() == 'Composer') {

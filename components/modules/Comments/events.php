@@ -10,7 +10,11 @@ namespace	cs;
 Event::instance()->on(
 	'System/Index/construct',
 	function () {
-		switch (Config::instance()->components['modules']['Comments']['active']) {
+		$Config = Config::instance();
+		if (!isset($Config->components['modules']['Comments'])) {
+			return;
+		}
+		switch ($Config->components['modules']['Comments']['active']) {
 			case 1:
 				require __DIR__.'/events/enabled.php';
 			default:

@@ -10,7 +10,11 @@ namespace	cs;
 Event::instance()->on(
 	'System/Index/construct',
 	function () {
-		switch (Config::instance()->components['modules']['Deferred_tasks']['active']) {
+		$Config = Config::instance();
+		if (!isset($Config->components['modules']['Deferred_tasks'])) {
+			return;
+		}
+		switch ($Config->components['modules']['Deferred_tasks']['active']) {
 			case -1:
 				if (!admin_path()) {
 					return;

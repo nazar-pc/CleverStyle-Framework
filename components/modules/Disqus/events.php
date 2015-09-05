@@ -10,7 +10,11 @@ namespace	cs;
 Event::instance()->on(
 	'System/Index/construct',
 	function () {
-		switch (Config::instance()->components['modules']['Disqus']['active']) {
+		$Config = Config::instance();
+		if (!isset($Config->components['modules']['Disqus'])) {
+			return;
+		}
+		switch ($Config->components['modules']['Disqus']['active']) {
 			case 1:
 				require __DIR__.'/events/enabled.php';
 		}

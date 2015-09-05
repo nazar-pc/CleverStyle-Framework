@@ -10,7 +10,11 @@ namespace cs;
 Event::instance()->on(
 	'System/User/construct/after',
 	function () {
-		switch (Config::instance()->components['modules']['HybridAuth']['active']) {
+		$Config = Config::instance();
+		if (!isset($Config->components['modules']['HybridAuth'])) {
+			return;
+		}
+		switch ($Config->components['modules']['HybridAuth']['active']) {
 			case 1:
 				require __DIR__.'/events/enabled.php';
 				require_once __DIR__.'/events/enabled/functions.php';
@@ -23,7 +27,11 @@ Event::instance()->on(
 		if (!admin_path()) {
 			return;
 		}
-		switch (Config::instance()->components['modules']['HybridAuth']['active']) {
+		$Config = Config::instance();
+		if (!isset($Config->components['modules']['HybridAuth'])) {
+			return;
+		}
+		switch ($Config->components['modules']['HybridAuth']['active']) {
 			case -1:
 				require __DIR__.'/events/uninstalled.php';
 				break;

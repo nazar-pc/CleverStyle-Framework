@@ -11,7 +11,11 @@ namespace cs;
 Event::instance()->on(
 	'System/Index/construct',
 	function () {
-		switch (Config::instance()->components['modules']['Polls']['active']) {
+		$Config = Config::instance();
+		if (!isset($Config->components['modules']['Polls'])) {
+			return;
+		}
+		switch ($Config->components['modules']['Polls']['active']) {
 			case 0:
 			case 1:
 				if (!admin_path()) {

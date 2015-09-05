@@ -45,7 +45,11 @@ Event::instance()
 	->on(
 		'System/Index/construct',
 		function () {
-			switch (Config::instance()->components['modules']['Shop']['active']) {
+			$Config = Config::instance();
+			if (!isset($Config->components['modules']['Shop'])) {
+				return;
+			}
+			switch ($Config->components['modules']['Shop']['active']) {
 				case -1:
 					if (!admin_path()) {
 						return;

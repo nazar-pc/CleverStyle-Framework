@@ -51,7 +51,11 @@ Event::instance()
 			if (!admin_path()) {
 				return;
 			}
-			switch (Config::instance()->components['modules']['Static_pages']['active']) {
+			$Config = Config::instance();
+			if (!isset($Config->components['modules']['Static_pages'])) {
+				return;
+			}
+			switch ($Config->components['modules']['Static_pages']['active']) {
 				case 0:
 				case 1:
 					require __DIR__.'/events/installed.php';

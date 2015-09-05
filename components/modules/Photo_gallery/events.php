@@ -1,10 +1,10 @@
 <?php
 /**
- * @package        Photo gallery
- * @category       modules
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2013-2015, Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package   Photo gallery
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2013-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs\modules\Photo_gallery;
 
@@ -44,7 +44,11 @@ Event::instance()
 	->on(
 		'System/Index/construct',
 		function () {
-			switch (Config::instance()->components['modules']['Photo_gallery']['active']) {
+			$Config = Config::instance();
+			if (!isset($Config->components['modules']['Photo_gallery'])) {
+				return;
+			}
+			switch ($Config->components['modules']['Photo_gallery']['active']) {
 				case 1:
 				case 0:
 					if (!admin_path()) {

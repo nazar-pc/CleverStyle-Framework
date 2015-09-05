@@ -14,7 +14,11 @@ use
 Event::instance()->on(
 	'System/Index/construct',
 	function () {
-		switch (Config::instance()->components['modules']['Blockchain_payment']['active']) {
+		$Config = Config::instance();
+		if (!isset($Config->components['modules']['Blockchain_payment'])) {
+			return;
+		}
+		switch ($Config->components['modules']['Blockchain_payment']['active']) {
 			case -1:
 				if (!admin_path()) {
 					return;
