@@ -21,27 +21,23 @@ if (isset($_POST['bitcoin_address'], $_POST['bitcoin_address'])) {
 	);
 	$Index->save(true);
 }
+$Index->form_attributes['is'] = 'cs-form';
 $Index->content(
-	h::{'table.cs-table[right-left] tr| td'}(
+	h::{'label info'}('blockchain_payment_bitcoin_address').
+	h::{'input[is=cs-input-text]'}(
 		[
-			h::info('blockchain_payment_bitcoin_address'),
-			h::input(
-				[
-					'name'  => 'bitcoin_address',
-					'value' => $module_data->bitcoin_address
-				]
-			)
-		],
-		[
-			h::info('blockchain_payment_confirmations_required'),
-			h::input(
-				[
-					'name'  => 'confirmations_required',
-					'value' => $module_data->confirmations_required,
-					'type'  => 'number',
-					'min'   => 1
-				]
-			)
+			'name'  => 'bitcoin_address',
+			'value' => $module_data->bitcoin_address
 		]
-	)
+	).
+	h::{'label info'}('blockchain_payment_confirmations_required').
+	h::{'input[is=cs-input-text]'}(
+		[
+			'name'  => 'confirmations_required',
+			'value' => $module_data->confirmations_required,
+			'type'  => 'number',
+			'min'   => 1
+		]
+	).
+	h::br()
 );

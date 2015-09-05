@@ -64,7 +64,7 @@ $transactions_total        = $Transactions->search(
 );
 $Page->title($L->transactions);
 $Page->content(
-	h::{'h3.cs-text-center'}($L->transactions).
+	h::{'h2.cs-text-center'}($L->transactions).
 	h::{'table.cs-table[list]'}(
 		h::{'tr th'}(
 			make_header('id', 'id'),
@@ -95,7 +95,7 @@ $Page->content(
 						)
 						: '-';
 					$username  = User::instance()->username($transaction['user']);
-					$class     = $transaction['confirmed'] ? 'cs-block-success cs-text-success' : ($transaction['paid'] ? 'cs-block-warning cs-text-warning' : 'cs-block-error cs-text-error');
+					$class     = $transaction['confirmed'] ? 'cs-block-success.cs-text-success' : ($transaction['paid'] ? 'cs-block-warning.cs-text-warning' : 'cs-block-error.cs-text-error');
 					$tag       = "td.$class";
 					return [
 						[
