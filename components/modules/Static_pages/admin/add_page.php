@@ -20,7 +20,7 @@ Page::instance()->title($L->adding_of_page);
 $Index->cancel_button_back = true;
 $Index->action             = 'admin/Static_pages';
 $Index->content(
-	h::{'h2.cs-text-center'}(
+	h::h2(
 		$L->adding_of_page
 	).
 	h::{'table.cs-table[center] tr'}(
@@ -31,14 +31,14 @@ $Index->content(
 			h::info('page_interface')
 		),
 		h::td(
-			h::{'select[is=cs-select][name=category][size=5]'}(
+			h::{'select[is=cs-select][full-width][name=category][size=5]'}(
 				get_categories_list(),
 				[
 					'selected' => isset($Route->route[1]) ? (int)$Route->route[1] : 0
 				]
 			),
-			h::{'input[name=title]'}(),
-			h::{'input[name=path]'}(),
+			h::{'input[is=cs-input-text][full-width][name=title]'}(),
+			h::{'input[is=cs-input-text][full-width][name=path]'}(),
 			h::{'div radio[name=interface]'}(
 				[
 					'checked' => 1,
@@ -48,11 +48,9 @@ $Index->content(
 			)
 		)
 	).
-	h::{'table.cs-table[center] tr| td'}(
-		[
-			$L->content,
-			h::{'textarea.EDITOR[cs-textarea][autosize][name=content]'}()
-		]
+	h::{'table.cs-table[center] tr'}(
+		h::th($L->content),
+		h::{'td textarea.EDITOR[cs-textarea][autosize][name=content]'}()
 	).
 	h::{'input[type=hidden][name=mode][value=add_page]'}()
 );

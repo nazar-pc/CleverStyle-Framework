@@ -21,7 +21,7 @@ Page::instance()->title($L->editing_of_page($data['title']));
 $Index->cancel_button_back = true;
 $Index->action             = 'admin/Static_pages';
 $Index->content(
-	h::{'h2.cs-text-center'}(
+	h::h2(
 		$L->editing_of_page($data['title'])
 	).
 	h::{'table.cs-table[center] tr'}(
@@ -31,19 +31,19 @@ $Index->content(
 			h::info('page_path'),
 			h::info('page_interface')
 		),
-		h::tr(
-			h::{'select[is=cs-select][name=category][size=5]'}(
+		h::td(
+			h::{'select[is=cs-select][full-width][name=category][size=5]'}(
 				get_categories_list(),
 				[
 					'selected' => $data['category']
 				]
 			),
-			h::{'input[name=title]'}(
+			h::{'input[is=cs-input-text][full-width][name=title]'}(
 				[
 					'value' => $data['title']
 				]
 			),
-			h::{'input[name=path]'}(
+			h::{'input[is=cs-input-text][full-width][name=path]'}(
 				[
 					'value' => $data['path']
 				]
@@ -57,16 +57,14 @@ $Index->content(
 			)
 		)
 	).
-	h::{'table.cs-table[center] tr| td'}(
-		[
-			$L->content,
-			h::{'textarea[is=cs-textarea][autosize][name=content]'}(
-				$data['content'],
-				[
-					'class' => $data['interface'] ? 'EDITOR' : ''
-				]
-			)
-		]
+	h::{'table.cs-table[center] tr'}(
+		h::th($L->content),
+		h::{'td textarea[is=cs-textarea][autosize][name=content]'}(
+			$data['content'],
+			[
+				'class' => $data['interface'] ? 'EDITOR' : ''
+			]
+		)
 	).
 	h::{'input[type=hidden][name=id]'}(
 		[

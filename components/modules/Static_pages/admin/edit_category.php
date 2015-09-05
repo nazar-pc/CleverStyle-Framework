@@ -18,41 +18,35 @@ $L     = Language::instance();
 $id    = (int)Route::instance()->route[1];
 $data  = Categories::instance()->get($id);
 Page::instance()->title($L->editing_of_page_category($data['title']));
-$Index->cancel_button_back = true;
-$Index->action             = 'admin/Static_pages';
+$Index->cancel_button_back    = true;
+$Index->action                = 'admin/Static_pages';
+$Index->form_attributes['is'] = 'cs-form';
 $Index->content(
-	h::{'h2.cs-text-center'}(
-		$L->editing_of_page_category($data['title'])
+	h::h2($L->editing_of_page_category($data['title'])).
+	h::label($L->parent_category).
+	h::{'select[is=cs-select][name=parent][size=5]'}(
+		get_categories_list($id),
+		[
+			'selected' => $data['parent']
+		]
 	).
-	h::{'table.cs-table[center] tr'}(
-		h::th(
-			$L->parent_category,
-			$L->category_title,
-			h::info('category_path')
-		).
-		h::td(
-			h::{'select[is=cs-select][name=parent][size=5]'}(
-				get_categories_list($id),
-				[
-					'selected' => $data['parent']
-				]
-			),
-			h::{'input[name=title]'}(
-				[
-					'value' => $data['title']
-				]
-			),
-			h::{'input[name=path]'}(
-				[
-					'value' => $data['path']
-				]
-			)
-		)
+	h::label($L->category_title).
+	h::{'input[is=cs-input-text][name=title]'}(
+		[
+			'value' => $data['title']
+		]
+	).
+	h::{'label info'}('category_path').
+	h::{'input[is=cs-input-text][name=path]'}(
+		[
+			'value' => $data['path']
+		]
 	).
 	h::{'input[type=hidden][name=id]'}(
 		[
 			'value' => $id
 		]
 	).
-	h::{'input[type=hidden][name=mode][value=edit_category]'}()
+	h::{'input[type=hidden][name=mode][value=edit_category]'}().
+	h::br()
 );

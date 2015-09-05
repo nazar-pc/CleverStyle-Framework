@@ -48,7 +48,7 @@ function get_categories_rows ($structure = null, $level = 0, $parent_categories 
 					'tooltip' => $L->add_subcategory
 				]
 			).
-			h::{'a[is=cs-link-button][icon=file-[level=0]text]'}(
+			h::{'a[is=cs-link-button][icon=file-text][level=0]'}(
 				[
 					'href'    => "admin/Static_pages/add_page/$structure[id]",
 					'tooltip' => $L->add_page
