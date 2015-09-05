@@ -935,24 +935,26 @@ trait components {
 						}
 						unset($i, $db_data);
 						$db_list = [];
-						foreach (file_get_json(MODULES."/$rc[3]/meta.json")['db'] as $database) {
-							$db_list[] = [
-								$database,
-								h::{'select[is=cs-select]'}(
-									[
-										'in'    => array_values($dbs),
-										'value' => array_keys($dbs)
-									],
-									[
-										'name'     => "db[$database]",
-										'selected' => isset($Config->components['modules'][$rc[3]]['db'][$database]) ?
-											$Config->components['modules'][$rc[3]]['db'][$database] : 0,
-										'size'     => 5
-									]
-								)
-							];
+						if (file_exists(MODULES."/$rc[3]/meta.json")) {
+							foreach (file_get_json(MODULES."/$rc[3]/meta.json")['db'] as $database) {
+								$db_list[] = [
+									$database,
+									h::{'select[is=cs-select]'}(
+										[
+											'in'    => array_values($dbs),
+											'value' => array_keys($dbs)
+										],
+										[
+											'name'     => "db[$database]",
+											'selected' => isset($Config->components['modules'][$rc[3]]['db'][$database]) ?
+												$Config->components['modules'][$rc[3]]['db'][$database] : 0,
+											'size'     => 5
+										]
+									)
+								];
+							}
+							unset($dbs, $database);
 						}
-						unset($dbs, $database);
 						if ($db_list) {
 							$a->content(
 								h::{'table.cs-table[right-left] tr| td'}(
@@ -1000,24 +1002,26 @@ trait components {
 						}
 						unset($i, $storage_data);
 						$storage_list = [];
-						foreach (file_get_json(MODULES."/$rc[3]/meta.json")['storage'] as $storage) {
-							$storage_list[] = [
-								$storage,
-								h::{'select[is=cs-select]'}(
-									[
-										'in'    => array_values($storages),
-										'value' => array_keys($storages)
-									],
-									[
-										'name'     => "storage[$storage]",
-										'selected' => isset($Config->components['modules'][$rc[3]]['storage'][$storage]) ?
-											$Config->components['modules'][$rc[3]]['storage'][$storage] : 0,
-										'size'     => 5
-									]
-								)
-							];
+						if (file_exists(MODULES."/$rc[3]/meta.json")) {
+							foreach (file_get_json(MODULES."/$rc[3]/meta.json")['storage'] as $storage) {
+								$storage_list[] = [
+									$storage,
+									h::{'select[is=cs-select]'}(
+										[
+											'in'    => array_values($storages),
+											'value' => array_keys($storages)
+										],
+										[
+											'name'     => "storage[$storage]",
+											'selected' => isset($Config->components['modules'][$rc[3]]['storage'][$storage]) ?
+												$Config->components['modules'][$rc[3]]['storage'][$storage] : 0,
+											'size'     => 5
+										]
+									)
+								];
+							}
+							unset($storages, $storage);
 						}
-						unset($storages, $storage);
 						if ($storage_list) {
 							$a->content(
 								h::{'table.cs-table[right-left] tr| td'}(
