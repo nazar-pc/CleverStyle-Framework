@@ -7,13 +7,17 @@
  * @license   MIT License, see license.txt
  */
 namespace cs;
-use            h;
+use
+	h;
 include __DIR__.'/save.php';
-Index::instance()->content(
-	h::{'p.cs-text-center'}('Shortname').
-	h::{'p input[name=shortname]'}(
+$Index                        = Index::instance();
+$Index->form_attributes['is'] = 'cs-form';
+$Index->content(
+	h::label('Shortname').
+	h::{'input[is=cs-input-text][name=shortname]'}(
 		[
 			'value' => Config::instance()->module('Disqus')->shortname ?: ''
 		]
-	)
+	).
+	h::br()
 );
