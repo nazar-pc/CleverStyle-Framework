@@ -453,6 +453,28 @@ trait Includes {
 		} else {
 			$includes = $this->get_includes_list();
 		}
+		$includes = $this->add_versions_hash($includes);
+		return $includes;
+	}
+	protected function add_versions_hash ($includes) {
+		$content = '';
+		foreach (get_files_list(MODULES, false, 'd') as $module) {
+			if (file_exists(MODULES."/$module/meta.json")) {
+				$content .= file_get_contents(MODULES."/$module/meta.json");
+			}
+		}
+		foreach (get_files_list(PLUGINS, false, 'd') as $plugin) {
+			if (file_exists(PLUGINS."/$plugin/meta.json")) {
+				$content .= file_get_contents(PLUGINS."/$plugin/meta.json");
+			}
+		}
+		$hash = substr(md5($content), 0, 5);
+		foreach ($includes as &$files) {
+			foreach ($files as &$file) {
+				$file .= "?$hash";
+			}
+			unset($file);
+		}
 		return $includes;
 	}
 	/**
