@@ -11,15 +11,17 @@
 		"cache"              : [],
 		"databases_test"     : [],
 		"email_sending_test" : [],
-		"languages"          : [],
 		"groups"             : [
 			"_",
 			"permissions"
 		],
+		"languages"          : [],
+		"modules"            : [],
 		"permissions"        : [
 			"_",
 			"for_item"
 		],
+		"plugins"            : [],
 		"storages_test"      : [],
 		"timezones"          : [],
 		"users"              : [

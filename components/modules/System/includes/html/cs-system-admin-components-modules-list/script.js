@@ -18,67 +18,69 @@
     'is': 'cs-system-admin-components-modules-list',
     behaviors: [cs.Polymer.behaviors.Language],
     ready: function() {
-      var modules;
-      modules = JSON.parse(this.querySelector('script').textContent);
-      modules.forEach(function(module) {
-        module["class"] = (function() {
-          switch (module.active) {
-            case -1:
-              return 'cs-block-error cs-text-error';
-            case 0:
-              return 'cs-block-warning cs-text-warning';
-            case 1:
-              return 'cs-block-success cs-text-success';
-          }
-        })();
-        module.icon = (function() {
-          switch (module.active) {
-            case -1:
-              return 'times';
-            case 0:
-              return 'minus';
-            case 1:
-              if (module.is_default) {
-                return 'home';
-              } else {
-                return 'check';
+      $.getJSON('api/System/admin/modules', (function(_this) {
+        return function(modules) {
+          modules.forEach(function(module) {
+            module["class"] = (function() {
+              switch (module.active) {
+                case -1:
+                  return 'cs-block-error cs-text-error';
+                case 0:
+                  return 'cs-block-warning cs-text-warning';
+                case 1:
+                  return 'cs-block-success cs-text-success';
               }
-          }
-        })();
-        module.icon_text = (function() {
-          switch (module.active) {
-            case -1:
-              return L.uninstalled;
-            case 0:
-              return L.disabled;
-            case 1:
-              if (module.is_default) {
-                return L.default_module;
-              } else {
-                return L.enabled;
+            })();
+            module.icon = (function() {
+              switch (module.active) {
+                case -1:
+                  return 'times';
+                case 0:
+                  return 'minus';
+                case 1:
+                  if (module.is_default) {
+                    return 'home';
+                  } else {
+                    return 'check';
+                  }
               }
-          }
-        })();
-        module.name_localized = L[module.name] || module.name.replace('_', ' ');
-        (function() {
-          var i, len, prop, ref, ref1, tag;
-          ref = ['api', 'license', 'readme'];
-          for (i = 0, len = ref.length; i < len; i++) {
-            prop = ref[i];
-            if ((ref1 = module[prop]) != null ? ref1.type : void 0) {
-              tag = module[prop].type === 'txt' ? 'pre' : 'div';
-              module[prop].content = "<" + tag + ">" + module[prop].content + "</" + tag + ">";
-            }
-          }
-        })();
-        (function(meta) {
-          if (!meta) {
-            return;
-          }
-          module.info = L.module_info(meta["package"], meta.version, meta.description, meta.author, meta.website || L.none, meta.license, meta.db_support ? meta.db_support.join(', ') : L.none, meta.storage_support ? meta.storage_support.join(', ') : L.none, meta.provide ? [].concat(meta.provide).join(', ') : L.none, meta.require ? [].concat(meta.require).join(', ') : L.none, meta.conflict ? [].concat(meta.conflict).join(', ') : L.none, meta.optional ? [].concat(meta.optional).join(', ') : L.none, meta.multilingual && meta.multilingual.indexOf('interface') !== -1 ? L.yes : L.no, meta.multilingual && meta.multilingual.indexOf('content') !== -1 ? L.yes : L.no, meta.languages ? meta.languages.join(', ') : L.none);
-        })(module.meta);
-      });
-      this.modules = modules;
+            })();
+            module.icon_text = (function() {
+              switch (module.active) {
+                case -1:
+                  return L.uninstalled;
+                case 0:
+                  return L.disabled;
+                case 1:
+                  if (module.is_default) {
+                    return L.default_module;
+                  } else {
+                    return L.enabled;
+                  }
+              }
+            })();
+            module.name_localized = L[module.name] || module.name.replace('_', ' ');
+            (function() {
+              var i, len, prop, ref, ref1, tag;
+              ref = ['api', 'license', 'readme'];
+              for (i = 0, len = ref.length; i < len; i++) {
+                prop = ref[i];
+                if ((ref1 = module[prop]) != null ? ref1.type : void 0) {
+                  tag = module[prop].type === 'txt' ? 'pre' : 'div';
+                  module[prop].content = "<" + tag + ">" + module[prop].content + "</" + tag + ">";
+                }
+              }
+            })();
+            (function(meta) {
+              if (!meta) {
+                return;
+              }
+              module.info = L.module_info(meta["package"], meta.version, meta.description, meta.author, meta.website || L.none, meta.license, meta.db_support ? meta.db_support.join(', ') : L.none, meta.storage_support ? meta.storage_support.join(', ') : L.none, meta.provide ? [].concat(meta.provide).join(', ') : L.none, meta.require ? [].concat(meta.require).join(', ') : L.none, meta.conflict ? [].concat(meta.conflict).join(', ') : L.none, meta.optional ? [].concat(meta.optional).join(', ') : L.none, meta.multilingual && meta.multilingual.indexOf('interface') !== -1 ? L.yes : L.no, meta.multilingual && meta.multilingual.indexOf('content') !== -1 ? L.yes : L.no, meta.languages ? meta.languages.join(', ') : L.none);
+            })(module.meta);
+          });
+          _this.set('modules', modules);
+        };
+      })(this));
     }
   });
 

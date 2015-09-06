@@ -1139,65 +1139,7 @@ trait components {
 		if (!$show_modules) {
 			return;
 		}
-		$a->file_upload = true;
-		$modules_list   = [];
-		foreach ($Config->components['modules'] as $module_name => &$module_data) {
-			$module = [
-				'active'                => $module_data['active'],
-				'name'                  => $module_name,
-				'is_default'            => $module_name == $Config->core['default_module'],
-				'can_be_set_as_default' =>
-					$module_data['active'] == 1 &&
-					$module_name != $Config->core['default_module'] &&
-					file_exists_with_extension(MODULES."/$module_name/index", ['php', 'html', 'json']),
-				'db_settings'           => !$Config->core['simple_admin_mode'] && @$module_data['db'] && count($Config->db) > 1,
-				'storage_settings'      => !$Config->core['simple_admin_mode'] && @$module_data['storage'] && count($Config->storage) > 1,
-				'administration'        =>
-					$module_data['active'] != -1 &&
-					file_exists_with_extension(MODULES."/$module_name/admin/index", ['php', 'json'])
-			];
-			/**
-			 * Check if API available
-			 */
-			if (is_dir(MODULES."/$module_name/api")) {
-				$module['api'] = [];
-				$file          = file_exists_with_extension(MODULES."/$module_name/api/readme", ['txt', 'html']);
-				if ($file) {
-					$module['api'] = [
-						'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
-						'content' => file_get_contents($file)
-					];
-				}
-				unset($file);
-			}
-			/**
-			 * Check if readme available
-			 */
-			$file = file_exists_with_extension(MODULES."/$module_name/readme", ['txt', 'html']);
-			if ($file) {
-				$module['readme'] = [
-					'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
-					'content' => file_get_contents($file)
-				];
-			}
-			unset($file);
-			/**
-			 * Check if license available
-			 */
-			$file = file_exists_with_extension(MODULES."/$module_name/license", ['txt', 'html']);
-			if ($file) {
-				$module['license'] = [
-					'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
-					'content' => file_get_contents($file)
-				];
-			}
-			unset($file);
-			if (file_exists(MODULES."/$module_name/meta.json")) {
-				$module['meta'] = file_get_json(MODULES."/$module_name/meta.json");
-			}
-			$modules_list[] = $module;
-		}
-		unset($module_name, $module_data, $module);
+		$a->file_upload      = true;
 		$modules_for_removal = array_keys(
 			array_filter(
 				$Config->components['modules'],
@@ -1207,9 +1149,7 @@ trait components {
 			)
 		);
 		$a->content(
-			h::{'cs-system-admin-components-modules-list script[type=application/json]'}(
-				json_encode($modules_list, JSON_UNESCAPED_UNICODE)
-			).
+			h::{'cs-system-admin-components-modules-list'}().
 			h::p(
 				h::{'input[is=cs-input-text][compact][tight][type=file][name=upload_module]'}().
 				h::{'button[is=cs-button][icon=upload][type=submit]'}(
@@ -1487,42 +1427,8 @@ trait components {
 			}
 		}
 		unset($rc);
-		$a->buttons     = false;
-		$a->file_upload = true;
-		$plugins_list   = [];
-		foreach ($plugins as $plugin_name) {
-			$plugin = [
-				'active' => in_array($plugin_name, $Config->components['plugins']),
-				'name'   => $plugin_name
-			];
-			/**
-			 * Check if readme available
-			 */
-			$file = file_exists_with_extension(PLUGINS."/$plugin_name/readme", ['txt', 'html']);
-			if ($file) {
-				$plugin['readme'] = [
-					'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
-					'content' => file_get_contents($file)
-				];
-			}
-			unset($file);
-			/**
-			 * Check if license available
-			 */
-			$file = file_exists_with_extension(PLUGINS."/$plugin_name/license", ['txt', 'html']);
-			if ($file) {
-				$plugin['license'] = [
-					'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
-					'content' => file_get_contents($file)
-				];
-			}
-			unset($file);
-			if (file_exists(PLUGINS."/$plugin_name/meta.json")) {
-				$plugin['meta'] = file_get_json(PLUGINS."/$plugin_name/meta.json");
-			}
-			$plugins_list[] = $plugin;
-		}
-		unset($plugin_name, $plugin);
+		$a->buttons          = false;
+		$a->file_upload      = true;
 		$plugins_for_removal = array_values(
 			array_filter(
 				$plugins,
@@ -1532,9 +1438,7 @@ trait components {
 			)
 		);
 		$a->content(
-			h::{'cs-system-admin-components-plugins-list script[type=application/json]'}(
-				json_encode($plugins_list, JSON_UNESCAPED_UNICODE)
-			).
+			h::{'cs-system-admin-components-plugins-list'}().
 			h::p(
 				h::{'input[is=cs-input-text][compact][tight][type=file][name=upload_plugin]'}().
 				h::{'button[is=cs-button][icon=upload][type=submit]'}(
