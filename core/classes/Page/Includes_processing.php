@@ -134,7 +134,7 @@ class Includes_processing {
 			},
 			$data
 		);
-		return $data;
+		return trim($data);
 	}
 	/**
 	 * Simple and fast JS minification
@@ -305,25 +305,18 @@ class Includes_processing {
 		$dir                         = dirname($file);
 		foreach ($links_and_styles[1] as $index => $link) {
 			/**
-			 * Check for custom styles `is="custom-style"` - we'll skip them
+			 * Check for custom styles `is="custom-style"` or styles includes `include=".."` - we'll skip them
+			 * Or if content is plain CSS
 			 */
-			if (preg_match('/^[^>]*is="custom-style"[^>]*>/Uim', $links_and_styles[2][$index])) {
+			if (
+				preg_match('/^[^>]*(is="custom-style"|include=)[^>]*>/Uim', $links_and_styles[2][$index]) ||
+				mb_strpos($links_and_styles[0][$index], '</style>') > 0
+			) {
 				$content = explode('>', $links_and_styles[2][$index], 2)[1];
 				$data    = str_replace(
 					$content,
 					static::css($content, $file),
 					$data
-				);
-				continue;
-			}
-			/**
-			 * If content is plain CSS
-			 */
-			if (mb_strpos($links_and_styles[0][$index], '</style>') > 0) {
-				$links_and_styles_to_replace[] = $links_and_styles[0][$index];
-				$styles_content .= static::css(
-					explode('>', $links_and_styles[2][$index], 2)[1],
-					$file
 				);
 				continue;
 			}
