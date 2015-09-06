@@ -43,10 +43,6 @@ class Includes_processing {
 		 */
 		$data = preg_replace('/\s(and|or)\(/s', ' $1 (', $data);
 		/**
-		 * Remove unnecessary trailing semicolons
-		 */
-		$data = str_replace(';}', '}', $data);
-		/**
 		 * Duplicated semicolons
 		 */
 		$data = preg_replace('/;+/m', ';', $data);
