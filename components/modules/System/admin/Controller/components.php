@@ -132,85 +132,17 @@ trait components {
 			$a->custom_buttons .= h::{'button.cs-reload-button[is=cs-button]'}(
 				$L->reset
 			);
-			$blocks_array = [
-				'top'      => '',
-				'left'     => '',
-				'floating' => '',
-				'right'    => '',
-				'bottom'   => ''
-			];
-			if (!empty($Config->components['blocks'])) {
-				foreach ($Config->components['blocks'] as $id => $block) {
-					$blocks_array[$block['position']] .= h::li(
-						h::{'div.cs-blocks-items-title'}("#$block[index] ".static::get_block_title($id)).
-						h::a(
-							[
-								h::{'div icon'}('pencil'),
-								[
-									'href'    => "$a->action/edit/$id",
-									'tooltip' => $L->edit
-								]
-							],
-							[
-								h::{'div.cs-blocks-permissions icon'}('key'),
-								[
-									'tooltip' => $L->edit_permissions
-								]
-							],
-							[
-								h::{'div icon'}($block['active'] ? 'minus' : 'check'),
-								[
-									'href'    => "$a->action/".($block['active'] ? 'disable' : 'enable')."/$id",
-									'tooltip' => $L->{$block['active'] ? 'disable' : 'enable'}
-								]
-							],
-							[
-								h::{'div icon'}('trash'),
-								[
-									'href'    => "$a->action/delete/$id",
-									'tooltip' => $L->delete
-								]
-							]
-						),
-						[
-							'data-id'          => $id,
-							'data-index'       => $block['index'],
-							'data-block-title' => h::prepare_attr_value(static::get_block_title($id)),
-							'class'            => $block['active'] ? 'cs-block-success cs-text-success' : 'cs-block-warning cs-text-warning'
-						]
-					);
-					unset($block_data);
-				}
-				unset($id, $block);
-			}
-			foreach ($blocks_array as $position => &$content) {
-				$content = h::{'td.cs-blocks-items-groups ul.cs-blocks-items'}(
-					h::{'li.cs-block-primary.cs-text-primary'}(
-						$L->{"{$position}_blocks"}
-					).
-					$content,
-					[
-						'data-mode' => 'open',
-						'id'        => "cs-{$position}-blocks-items"
-					]
-				);
-			}
-			unset($position, $content);
 			$a->content(
-				h::{'table.cs-table tr'}(
-					[
-						h::td().$blocks_array['top'].h::td(),
-						"$blocks_array[left]$blocks_array[floating]$blocks_array[right]",
-						h::td().$blocks_array['bottom'].h::td()
-					]
+				h::{'template[is=dom-bind]'}(
+					h::{'cs-system-admin-components-blocks-list[positions={{positions}}]'}().
+					h::{'input#cs-blocks-position[type=hidden][name=position][value=[[positions]]]'}()
 				).
 				h::{'p.cs-text-left a[is=cs-link-button]'}(
 					"$L->add $L->block",
 					[
 						'href' => "$a->action/add"
 					]
-				).
-				h::{'input#cs-blocks-position[type=hidden][name=position]'}()
+				)
 			);
 		}
 	}
