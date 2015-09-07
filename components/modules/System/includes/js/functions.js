@@ -130,26 +130,6 @@
     });
   };
 
-
-  /**
-   * Toggling of blocks group in admin page
-   *
-   * @param {string}	position
-   */
-
-  cs.blocks_toggle = function(position) {
-    var container, items;
-    container = $("#cs-" + position + "-blocks-items");
-    items = container.children('li:not(:first)');
-    if (container.data('mode') === 'open') {
-      items.slideUp('fast');
-      container.data('mode', 'close');
-    } else {
-      items.slideDown('fast');
-      container.data('mode', 'open');
-    }
-  };
-
   cs.test_email_sending = function() {
     var email;
     email = prompt(L.email);

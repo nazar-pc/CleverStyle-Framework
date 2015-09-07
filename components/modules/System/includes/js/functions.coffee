@@ -114,21 +114,6 @@ cs.storage_test				= (index) ->
 				.find('progress')
 				.replaceWith("""<p class="cs-text-center cs-block-error cs-text-error" style=text-transform:capitalize;">#{L.failed}</p>""")
 	)
-###*
- * Toggling of blocks group in admin page
- *
- * @param {string}	position
-###
-cs.blocks_toggle			= (position) ->
-	container	= $("#cs-#{position}-blocks-items")
-	items		= container.children('li:not(:first)')
-	if container.data('mode') == 'open'
-		items.slideUp('fast')
-		container.data('mode', 'close')
-	else
-		items.slideDown('fast')
-		container.data('mode', 'open')
-	return
 cs.test_email_sending		= () ->
 	email = prompt(L.email)
 	if email
