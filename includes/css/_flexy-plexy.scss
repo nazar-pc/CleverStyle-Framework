@@ -23,6 +23,10 @@
 	$include-selector : 'nth-of-type';
 	$exclude-selector : ':not(template):not(script):not(style)';
 
+	@if ($gutter-width == 0) {
+		$gutter-width : 0px;
+	}
+
 	@if length($options) > 1 and nth($options, 2) == child {
 		$include-selector : 'nth-child';
 	}
