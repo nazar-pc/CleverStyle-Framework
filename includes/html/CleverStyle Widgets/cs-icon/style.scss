@@ -16,6 +16,10 @@
 	@apply (--cs-icon);
 }
 
+.fa {
+	vertical-align : middle;
+}
+
 .fa-inverse {
 	color : var(--cs-icon-inverse-color);
 }
