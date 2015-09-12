@@ -99,6 +99,37 @@ trait blocks {
 			array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4))
 		);
 	}
+	static function admin_blocks_update_order () {
+		if (!isset($_POST['order']) || !is_array($_POST['order'])) {
+			error_code();
+			return;
+		}
+		$Config           = Config::instance();
+		$blocks           = $Config->components['blocks'];
+		$indexed_blocks   = array_combine(
+			array_column($blocks, 'index'),
+			$blocks
+		);
+		$new_blocks_order = [];
+		$all_indexes      = [];
+		foreach ($_POST['order'] as $position => $indexes) {
+			foreach ($indexes as $order => $index) {
+				$all_indexes[]      = $index;
+				$block              = $indexed_blocks[$index];
+				$block['position']  = $position;
+				$new_blocks_order[] = $block;
+			}
+		}
+		foreach ($blocks as $block) {
+			if (!in_array($block['index'], $all_indexes)) {
+				$new_blocks_order[] = $block;
+			}
+		}
+		$Config->components['blocks'] = $new_blocks_order;
+		if (!$Config->save()) {
+			error_code(500);
+		}
+	}
 	/**
 	 * @param array     $block_new
 	 * @param false|int $index Index of existing block, if not specified - new block being added
@@ -115,7 +146,7 @@ trait blocks {
 			'index'    => substr(TIME, 3)
 		];
 		if ($index) {
-			$block = static::get_block_by_index($index);
+			$block = &static::get_block_by_index($index);
 			if (!$block) {
 				error_code(404);
 				return;
@@ -147,7 +178,7 @@ trait blocks {
 	 *
 	 * @return array|false
 	 */
-	protected static function get_block_by_index ($index) {
+	protected static function & get_block_by_index ($index) {
 		foreach (Config::instance()->components['blocks'] as &$block) {
 			if ($block['index'] == $index) {
 				return $block;

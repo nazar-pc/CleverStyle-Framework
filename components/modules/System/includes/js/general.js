@@ -14,9 +14,6 @@
       if (!cs.in_admin) {
         return;
       }
-      $('.cs-reload-button').click(function() {
-        return location.reload();
-      });
       $('#change_active_languages').change(function() {
         return $(this).find("option[value='" + $('#change_language').val() + "']").prop('selected', true);
       });

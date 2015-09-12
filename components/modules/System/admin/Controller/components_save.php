@@ -22,44 +22,6 @@ use
 	h;
 
 trait components_save {
-	static function components_blocks_save () {
-		$Config = Config::instance();
-		$a      = Index::instance();
-		if (isset($_POST['apply']) || isset($_POST['save'])) {
-			$_POST['position'] = _json_decode($_POST['position']);
-			if (is_array($_POST['position'])) {
-				$blocks_array = [];
-				foreach ($_POST['position'] as $position => $items) {
-					foreach ($items as $item) {
-						switch ($position) {
-							default:
-								$position = 'floating';
-								break;
-							case 'top':
-							case 'left':
-							case 'floating':
-							case 'right':
-							case 'bottom':
-								break;
-						}
-						$Config->components['blocks'][$item]['position'] = $position;
-						$blocks_array[]                                  = $Config->components['blocks'][$item];
-					}
-				}
-				$Config->components['blocks'] = [];
-				$Config->components['blocks'] = $blocks_array;
-				unset($blocks_array, $position, $items, $item);
-				/** @noinspection NotOptimalIfConditionsInspection */
-				if (isset($_POST['save'])) {
-					$a->save();
-				} else {
-					$a->apply();
-				}
-			}
-		} elseif (isset($_POST['cancel'])) {
-			$a->cancel();
-		}
-	}
 	static function components_databases_save () {
 		if (!isset($_POST['mode'])) {
 			return;

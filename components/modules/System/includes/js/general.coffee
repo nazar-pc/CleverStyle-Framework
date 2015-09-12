@@ -9,8 +9,6 @@ $ ->
 	requestAnimationFrame ->
 		if !cs.in_admin
 			return
-		$('.cs-reload-button').click ->
-			location.reload()
 		$('#change_active_languages').change ->
 			$(@)
 				.find("option[value='" + $('#change_language').val() + "']")

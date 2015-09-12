@@ -13,9 +13,6 @@ Polymer(
 	properties	:
 		blocks			: Object
 		blocks_count	: Number
-		positions		:
-			notify	: true
-			type	: String
 	ready : !->
 		blocks <~! $.getJSON('api/System/admin/blocks', _)
 		@blocks_count	= blocks.length
@@ -26,7 +23,6 @@ Polymer(
 			right		: []
 			bottom		: []
 		for block, index in blocks
-			block.order	= index
 			blocks_grouped[block.position].push(block)
 		@set('blocks', blocks_grouped)
 		@_init_sortable()
@@ -42,15 +38,22 @@ Polymer(
 				items		: 'div:not(:first)',
 				placeholder	: '<div class="cs-block-primary">'
 			)
-			.on('sortupdate', !~>
+			.on('sortupdate', !->
 				get_indexes	= ->
-					$group.filter("[group=#it]").children('div:not(:first)').map(-> @order).get()
-				@positions = JSON.stringify(
+					$group.filter("[group=#it]").children('div:not(:first)').map(-> @index).get()
+				order	=
 					top			: get_indexes('top')
 					left		: get_indexes('left')
 					floating	: get_indexes('floating')
 					right		: get_indexes('right')
 					bottom		: get_indexes('bottom')
+				$.ajax(
+					url		: 'api/System/admin/blocks'
+					type	: 'update_order'
+					data	:
+						order	: order
+					success	: !->
+						cs.ui.notify(L.changes_saved, 'success', 5)
 				)
 			)
 	_status_class : (active) ->

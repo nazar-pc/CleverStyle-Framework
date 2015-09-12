@@ -15,11 +15,7 @@
     behaviors: [cs.Polymer.behaviors.Language],
     properties: {
       blocks: Object,
-      blocks_count: Number,
-      positions: {
-        notify: true,
-        type: String
-      }
+      blocks_count: Number
     },
     ready: function(){
       var this$ = this;
@@ -36,7 +32,6 @@
         for (i$ = 0, len$ = blocks.length; i$ < len$; ++i$) {
           index = i$;
           block = blocks[i$];
-          block.order = index;
           blocks_grouped[block.position].push(block);
         }
         this$.set('blocks', blocks_grouped);
@@ -44,7 +39,7 @@
       });
     },
     _init_sortable: function(){
-      var $shadowRoot, $group, this$ = this;
+      var $shadowRoot, $group;
       $shadowRoot = $(this.shadowRoot);
       if ($shadowRoot.find('[group] > div:not(:first)').length < this.blocks_count) {
         setTimeout(this._init_sortable.bind(this), 100);
@@ -56,18 +51,28 @@
         items: 'div:not(:first)',
         placeholder: '<div class="cs-block-primary">'
       }).on('sortupdate', function(){
-        var get_indexes;
+        var get_indexes, order;
         get_indexes = function(it){
           return $group.filter("[group=" + it + "]").children('div:not(:first)').map(function(){
-            return this.order;
+            return this.index;
           }).get();
         };
-        this$.positions = JSON.stringify({
+        order = {
           top: get_indexes('top'),
           left: get_indexes('left'),
           floating: get_indexes('floating'),
           right: get_indexes('right'),
           bottom: get_indexes('bottom')
+        };
+        $.ajax({
+          url: 'api/System/admin/blocks',
+          type: 'update_order',
+          data: {
+            order: order
+          },
+          success: function(){
+            cs.ui.notify(L.changes_saved, 'success', 5);
+          }
         });
       });
     },

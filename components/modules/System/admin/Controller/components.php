@@ -22,17 +22,10 @@ use
 
 trait components {
 	static function components_blocks () {
-		$L               = Language::instance();
-		$a               = Index::instance();
-		$a->apply_button = true;
-		$a->custom_buttons .= h::{'button.cs-reload-button[is=cs-button]'}(
-			$L->reset
-		);
-		$a->content(
-			h::{'template[is=dom-bind]'}(
-				h::{'cs-system-admin-components-blocks-list[positions={{positions}}]'}().
-				h::{'input#cs-blocks-position[type=hidden][name=position][value=[[positions]]]'}()
-			)
+		$Index       = Index::instance();
+		$Index->form = false;
+		$Index->content(
+			h::cs_system_admin_components_blocks_list()
 		);
 	}
 	static function components_databases ($route_ids, $route_path) {
