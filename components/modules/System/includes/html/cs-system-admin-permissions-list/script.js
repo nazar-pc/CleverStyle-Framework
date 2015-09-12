@@ -74,7 +74,7 @@
             url: 'api/System/admin/permissions/' + permission.id,
             type: 'delete',
             success: function() {
-              cs.ui.notify(L.changes_saved.toString(), 'success', 5000);
+              cs.ui.notify(L.changes_saved, 'success', 5);
               return _this.splice('permissions', e.model.index, 1);
             }
           });

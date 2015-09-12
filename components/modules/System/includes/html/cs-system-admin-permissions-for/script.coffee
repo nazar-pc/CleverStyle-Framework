@@ -43,7 +43,7 @@ Polymer(
 			data	: $(@$.form).serialize() + '&' + default_data
 			type	: 'post'
 			success	: ->
-				cs.ui.notify(L.changes_saved.toString(), 'success', 5000)
+				cs.ui.notify(L.changes_saved, 'success', 5)
 		)
 	invert				: (e) ->
 		$(e.currentTarget).closest('div')

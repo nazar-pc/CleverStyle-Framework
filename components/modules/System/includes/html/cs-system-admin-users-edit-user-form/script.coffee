@@ -85,6 +85,6 @@ Polymer(
 			data	:
 				user	: @user_data
 			success	: ->
-				cs.ui.notify(L.changes_saved.toString(), 'success', 5000)
+				cs.ui.notify(L.changes_saved, 'success', 5)
 		)
 )

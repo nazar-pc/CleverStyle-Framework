@@ -81,7 +81,7 @@
         data: $(this.$.form).serialize() + '&' + default_data,
         type: 'post',
         success: function() {
-          return cs.ui.notify(L.changes_saved.toString(), 'success', 5000);
+          return cs.ui.notify(L.changes_saved, 'success', 5);
         }
       });
     },

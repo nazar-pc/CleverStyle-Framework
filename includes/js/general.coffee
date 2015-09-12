@@ -17,7 +17,7 @@ $ ->
 				else
 					L.connection_error.toString()
 				'warning'
-				5000
+				5
 			)
 	$('.cs-header-sign-in-slide').click ->
 		$('.cs-header-guest-form').removeClass('active')

@@ -17,7 +17,7 @@
         session: cs.getcookie('session')
       },
       error: function(xhr) {
-        return cs.ui.notify(xhr.responseText ? JSON.parse(xhr.responseText).error_description : L.connection_error.toString(), 'warning', 5000);
+        return cs.ui.notify(xhr.responseText ? JSON.parse(xhr.responseText).error_description : L.connection_error.toString(), 'warning', 5);
       }
     });
     $('.cs-header-sign-in-slide').click(function() {

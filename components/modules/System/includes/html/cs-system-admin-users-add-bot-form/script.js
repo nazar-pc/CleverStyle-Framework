@@ -37,7 +37,7 @@
           type: 'bot'
         },
         success: function() {
-          return cs.ui.notify(L.changes_saved.toString(), 'success', 5000);
+          return cs.ui.notify(L.changes_saved, 'success', 5);
         }
       });
     },
