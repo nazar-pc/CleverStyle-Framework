@@ -31,6 +31,22 @@
         };
       })(this);
       document.addEventListener('WebComponentsReady', scroll_once);
+      (function(_this) {
+        return (function() {
+          var callback, timeout;
+          timeout = null;
+          callback = function() {
+            clearTimeout(timeout);
+            return timeout = setTimeout((function() {
+              _this.removeEventListener(callback);
+              if (_this.selected) {
+                return _this._selected_changed(_this.selected);
+              }
+            }), 100);
+          };
+          return _this.addEventListener('dom-change', callback);
+        });
+      })(this)();
     },
     _scroll_to_selected: function() {
       var option, option_height, select_height;

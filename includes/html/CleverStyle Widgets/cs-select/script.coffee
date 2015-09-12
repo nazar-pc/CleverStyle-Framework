@@ -27,6 +27,17 @@ Polymer(
 			@_scroll_to_selected()
 			document.removeEventListener('WebComponentsReady', scroll_once)
 		document.addEventListener('WebComponentsReady', scroll_once)
+		# Hack to work nicely with `dom-repeat`-created options inside
+		do =>
+			timeout		= null
+			callback	= =>
+				clearTimeout(timeout)
+				timeout	= setTimeout (=>
+					@removeEventListener(callback)
+					if @selected
+						@_selected_changed(@selected)
+				), 100
+			@addEventListener('dom-change', callback)
 		return
 	_scroll_to_selected : ->
 		option			= @querySelector('option')
