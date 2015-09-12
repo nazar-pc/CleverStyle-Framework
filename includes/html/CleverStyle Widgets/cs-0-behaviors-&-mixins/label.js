@@ -22,6 +22,7 @@
       },
       value: {
         notify: true,
+        observer: '_value_changed',
         type: String
       }
     },
@@ -37,17 +38,19 @@
             }
           })();
           _this.local_input = _this.querySelector('input');
+          _this.local_input.label = _this;
           _this.active = _this.local_input.checked;
-          if (_this.local_input.name) {
-            inputs = _this.parentNode.querySelectorAll('input[name="' + _this.local_input.name + '"]');
-          } else {
-            inputs = _this._inputs_around();
+          inputs = _this._get_inputs();
+          if (_this.value !== void 0) {
+            _this._value_changed(_this.value);
           }
           fn = function(input) {
+            var $this;
+            $this = _this;
             input.addEventListener('change', function() {
               _this.value = input.value;
-              _this.active = _this.local_input.value === input.value;
-              _this.local_input.checked = _this.local_input.value === input.value;
+              _this.active = $this.local_input.value == input.value;
+              _this.local_input.checked = $this.local_input.value == input.value;
             });
             if (input.checked) {
               _this.value = input.value;
@@ -65,6 +68,13 @@
           });
         };
       })(this));
+    },
+    _get_inputs: function() {
+      if (this.local_input.name) {
+        return this.parentNode.querySelectorAll('input[name="' + this.local_input.name + '"]');
+      } else {
+        return this._inputs_around();
+      }
     },
     _inputs_around: function() {
       var input, inputs, label;
@@ -100,10 +110,24 @@
       }
       if (this.local_input.type === 'radio') {
         if (this.active) {
-          return this.click();
+          this.click();
         }
       } else {
-        return this.local_input.checked = this.active;
+        this.local_input.checked = this.active;
+      }
+    },
+    _value_changed: function(value) {
+      var i, input, len, ref, ref1, state;
+      if (this.local_input) {
+        ref = this._get_inputs();
+        for (i = 0, len = ref.length; i < len; i++) {
+          input = ref[i];
+          state = input.value == value;
+          input.checked = state;
+          if ((ref1 = input.label) != null) {
+            ref1.active = state;
+          }
+        }
       }
     }
   };
