@@ -19,13 +19,13 @@ trait blocks {
 		$Page   = Page::instance();
 		$Text   = Text::instance();
 		$db_id  = $Config->module('System')->db('texts');
-		$blocks = $Config->components['blocks'];
-		foreach ($blocks as &$block) {
-			$block['title']   = $Text->process($db_id, $block['title'], true);
-			$block['content'] = $block['content'] ? $Text->process($db_id, $block['content'], true) : '';
-		}
-		unset($block);
 		if (!isset($route_ids[0])) {
+			$blocks = $Config->components['blocks'];
+			foreach ($blocks as &$block) {
+				$block['title']   = $Text->process($db_id, $block['title'], true);
+				$block['content'] = $block['content'] ? $Text->process($db_id, $block['content'], true) : '';
+			}
+			unset($block);
 			$Page->json($blocks ?: []);
 			return;
 		}
@@ -36,7 +36,7 @@ trait blocks {
 		}
 		$Page->json(
 			[
-				'title'    => $block['title'],
+				'title'    => $Text->process($db_id, $block['title'], true),
 				'type'     => $block['type'],
 				'active'   => (int)$block['active'],
 				'template' => $block['template'],
@@ -45,10 +45,9 @@ trait blocks {
 					'date'  => date('Y-m-d\TH:i', $block['expire'] ?: TIME),
 					'state' => (int)($block['expire'] != 0)
 				],
-				'content'  => $block['content']
+				'content'  => $Text->process($db_id, $block['content'], true)
 			]
 		);
-		error_code(404);
 	}
 	static function admin_blocks_post () {
 		static::save_block_data($_POST);
