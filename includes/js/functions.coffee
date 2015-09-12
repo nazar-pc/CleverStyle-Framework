@@ -392,7 +392,7 @@ do ->
 	###
 	ui.notify = (content, options...) ->
 		notify = document.createElement('cs-notify')
-		if typeof content == 'string'
+		if typeof content == 'string' || content instanceof Function
 			notify.innerHTML = content
 		else
 			if content instanceof jQuery

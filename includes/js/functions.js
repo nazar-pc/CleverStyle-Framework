@@ -524,7 +524,7 @@
       var content, k, len, notify, option, options;
       content = arguments[0], options = 2 <= arguments.length ? slice.call(arguments, 1) : [];
       notify = document.createElement('cs-notify');
-      if (typeof content === 'string') {
+      if (typeof content === 'string' || content instanceof Function) {
         notify.innerHTML = content;
       } else {
         if (content instanceof jQuery) {
