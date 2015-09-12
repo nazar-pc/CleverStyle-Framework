@@ -26,7 +26,7 @@ $(function () {
 			if (!tinymce.uploader_dialog) {
 				var progress                         = document.createElement('progress', 'cs-progress');
 				tinymce.uploader_dialog              = cs.ui.modal(progress);
-				tinymce.uploader_dialog.progress     = progress;
+				tinymce.uploader_dsialog.progress    = progress;
 				tinymce.uploader_dialog.style.zIndex = 100000;
 				tinymce.uploader_dialog.open();
 			}
@@ -50,7 +50,16 @@ $(function () {
 		file_picker_callback : uploader ? function (callback) {
 			uploader_callback = callback;
 			uploader.browse();
-		} : null
+		} : null,
+		setup                : function (editor) {
+			editor.on('change', function () {
+				editor.save();
+				var textarea = editor.getElement(),
+					event    = document.createEvent('Event');
+				event.initEvent('change', false, true);
+				textarea.dispatchEvent(event);
+			});
+		}
 	};
 	tinymce.editor_config               = $.extend(
 		{
