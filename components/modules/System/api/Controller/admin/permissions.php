@@ -78,7 +78,7 @@ trait permissions {
 						FROM `[prefix]groups_permissions`
 						WHERE
 							`permission`	= '%s'",
-						$permission[0]['id']
+						$permission['id']
 					]
 				) ?: [],
 				'value',
@@ -93,7 +93,7 @@ trait permissions {
 						FROM `[prefix]users_permissions`
 						WHERE
 							`permission`	= '%s'",
-						$permission[0]['id']
+						$permission['id']
 					]
 				) ?: [],
 				'value',
