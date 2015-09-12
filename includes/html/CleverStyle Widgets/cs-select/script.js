@@ -12,6 +12,16 @@
     'is': 'cs-select',
     'extends': 'select',
     behaviors: [Polymer.cs.behaviors.size, Polymer.cs.behaviors.tight, Polymer.cs.behaviors["this"], Polymer.cs.behaviors.tooltip, Polymer.cs.behaviors.value],
+    listeners: {
+      'value-changed': '_value_changed'
+    },
+    properties: {
+      selected: {
+        notify: true,
+        observer: '_selected_changed',
+        type: Object
+      }
+    },
     ready: function() {
       var scroll_once;
       scroll_once = (function(_this) {
@@ -48,6 +58,25 @@
         }
       }
       return count;
+    },
+    _value_changed: function() {
+      var selected;
+      selected = [];
+      [].slice.call(this.selectedOptions).forEach(function(option) {
+        return selected.push(option.value);
+      });
+      if (!this.multiple) {
+        selected = selected[0] || void 0;
+      }
+      return this.set('selected', selected);
+    },
+    _selected_changed: function(selected) {
+      if (selected === void 0) {
+        return;
+      }
+      return [].slice.call(this.querySelectorAll('option')).forEach(function(option) {
+        return option.selected = selected && selected.indexOf(option.value) !== -1;
+      });
     }
   });
 

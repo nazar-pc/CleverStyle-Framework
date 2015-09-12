@@ -14,6 +14,13 @@ Polymer(
 		Polymer.cs.behaviors.tooltip
 		Polymer.cs.behaviors.value
 	]
+	listeners	:
+		'value-changed'	: '_value_changed'
+	properties	:
+		selected	:
+			notify		: true
+			observer	: '_selected_changed'
+			type		: Object
 	ready : ->
 		# We need to scroll because of possible changed height of `option`, so that `option[selected]` will not be visible
 		scroll_once	= =>
@@ -41,4 +48,16 @@ Polymer(
 				++count
 				optgroup = optgroup.previousElementSibling
 		count
+	_value_changed : ->
+		selected	= []
+		[].slice.call(@selectedOptions).forEach (option) ->
+			selected.push(option.value)
+		if !@multiple
+			selected	= selected[0] || undefined
+		@set('selected', selected)
+	_selected_changed : (selected) ->
+		if selected == undefined
+			return
+		[].slice.call(@querySelectorAll('option')).forEach (option) ->
+			option.selected	= selected && selected.indexOf(option.value) != -1
 )

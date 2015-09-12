@@ -5,10 +5,9 @@
  * @license   MIT License, see license.txt
 ###
 Polymer.cs.behaviors.value =
-	listeners	: {
+	listeners	:
 		change	: '_changed'
 		input	: '_changed'
-	}
 	_changed : ->
 		@fire('value-changed')
 		return
