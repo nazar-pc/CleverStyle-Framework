@@ -9,7 +9,7 @@ mixin blocks-container (position)
 					= ' '
 					a(is="cs-link-button" icon="key" tooltip="[[L.edit_permissions]]" on-click="_block_permissions")
 					= ' '
-					a(is="cs-link-button" icon="trash" tooltip="[[L.delete]]" href="[[concat('admin/System/components/blocks/delete/', item.index)]]")
+					a(is="cs-link-button" icon="trash" tooltip="[[L.delete]]" on-click="_delete_block")
 dom-module(id="cs-system-admin-components-blocks-list")
 	link(rel="import" href="style.css" type="css")
 	template

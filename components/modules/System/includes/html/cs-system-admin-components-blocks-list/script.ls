@@ -79,4 +79,17 @@ Polymer(
 		""")).on('close', !~>
 			@_reload()
 		)
+	_delete_block : (e) !->
+		title	= L.sure_to_delete_block(e.model.item.title)
+		cs.ui.confirm(
+			"<h3>#title</h3>"
+			!~>
+				$.ajax(
+					url		: 'api/System/admin/blocks/' + e.model.item.index
+					type	: 'delete'
+					success	: !~>
+						cs.ui.notify(L.changes_saved, 'success', 5)
+						@_reload()
+				)
+		)
 )

@@ -18,60 +18,22 @@ use
 	cs\Page,
 	cs\Route,
 	cs\Session,
-	cs\Text,
 	h;
 
 trait components {
-	static function components_blocks ($route_ids, $route_path) {
-		$Config = Config::instance();
-		$L      = Language::instance();
-		$Page   = Page::instance();
-		$a      = Index::instance();
-		$action = isset($route_path[2]) ? $route_path[2] : null;
-		$id     = isset($route_ids[0]) ? $route_ids[0] : 0;
-		$form   = true;
-		if ($action == 'add' || isset($id, $Config->components['blocks'][$id])) {
-			switch ($action) {
-				case 'delete':
-					$form                  = false;
-					$a->buttons            = false;
-					$a->cancel_button_back = true;
-					$Page->title($L->deletion_of_block(static::get_block_title($id)));
-					$a->content(
-						h::{'h2.cs-text-center'}(
-							$L->sure_to_delete_block(static::get_block_title($id)).
-							h::{'input[type=hidden][name=mode][value=delete]'}().
-							h::{'input[type=hidden][name=id]'}(
-								[
-									'value' => $id
-								]
-							)
-						).
-						h::{'button[is=cs-button][type=submit]'}($L->yes)
-					);
-					break;
-			}
-		}
-		if ($form) {
-			$a->apply_button = true;
-			$a->custom_buttons .= h::{'button.cs-reload-button[is=cs-button]'}(
-				$L->reset
-			);
-			$a->content(
-				h::{'template[is=dom-bind]'}(
-					h::{'cs-system-admin-components-blocks-list[positions={{positions}}]'}().
-					h::{'input#cs-blocks-position[type=hidden][name=position][value=[[positions]]]'}()
-				)
-			);
-		}
-	}
-	static private function get_block_title ($id) {
-		$Config = Config::instance();
-		return Text::instance()->process($Config->module('System')->db('texts'), $Config->components['blocks'][$id]['title']);
-	}
-	static private function get_block_content ($id) {
-		$Config = Config::instance();
-		return Text::instance()->process($Config->module('System')->db('texts'), $Config->components['blocks'][$id]['content']);
+	static function components_blocks () {
+		$L               = Language::instance();
+		$a               = Index::instance();
+		$a->apply_button = true;
+		$a->custom_buttons .= h::{'button.cs-reload-button[is=cs-button]'}(
+			$L->reset
+		);
+		$a->content(
+			h::{'template[is=dom-bind]'}(
+				h::{'cs-system-admin-components-blocks-list[positions={{positions}}]'}().
+				h::{'input#cs-blocks-position[type=hidden][name=position][value=[[positions]]]'}()
+			)
+		);
 	}
 	static function components_databases ($route_ids, $route_path) {
 		$Config       = Config::instance();

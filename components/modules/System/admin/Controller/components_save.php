@@ -19,46 +19,13 @@ use
 	cs\Page,
 	cs\Permission,
 	cs\Session,
-	cs\Text,
 	h;
 
 trait components_save {
 	static function components_blocks_save () {
-		$Config     = Config::instance();
-		$Text       = Text::instance();
-		$Permission = Permission::instance();
-		$a          = Index::instance();
-		if (isset($_POST['mode'])) {
-			switch ($_POST['mode']) {
-				case 'delete':
-					if (isset($_POST['id'], $Config->components['blocks'][$_POST['id']])) {
-						$block = &$Config->components['blocks'][$_POST['id']];
-						$Permission->del(
-							$Permission->get(
-								null,
-								'Block',
-								$block['index']
-							)[0]['id']
-						);
-						$Text->del(
-							$Config->module('System')->db('texts'),
-							'System/Config/blocks/title',
-							$block['index']
-						);
-						$Text->del(
-							$Config->module('System')->db('texts'),
-							'System/Config/blocks/content',
-							$block['index']
-						);
-						unset(
-							$block,
-							$Config->components['blocks'][$_POST['id']]
-						);
-						$a->save();
-					}
-					break;
-			}
-		} elseif (isset($_POST['apply']) || isset($_POST['save'])) {
+		$Config = Config::instance();
+		$a      = Index::instance();
+		if (isset($_POST['apply']) || isset($_POST['save'])) {
 			$_POST['position'] = _json_decode($_POST['position']);
 			if (is_array($_POST['position'])) {
 				$blocks_array = [];

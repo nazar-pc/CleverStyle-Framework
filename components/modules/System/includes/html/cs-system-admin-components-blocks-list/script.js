@@ -98,6 +98,20 @@
       $(cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-components-blocks-form index=\"" + e.model.item.index + "\"/>")).on('close', function(){
         this$._reload();
       });
+    },
+    _delete_block: function(e){
+      var title, this$ = this;
+      title = L.sure_to_delete_block(e.model.item.title);
+      cs.ui.confirm("<h3>" + title + "</h3>", function(){
+        $.ajax({
+          url: 'api/System/admin/blocks/' + e.model.item.index,
+          type: 'delete',
+          success: function(){
+            cs.ui.notify(L.changes_saved, 'success', 5);
+            this$._reload();
+          }
+        });
+      });
     }
   });
 }).call(this);
