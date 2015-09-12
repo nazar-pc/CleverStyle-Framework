@@ -32,14 +32,6 @@ trait components {
 		$form   = true;
 		if ($action == 'add' || isset($id, $Config->components['blocks'][$id])) {
 			switch ($action) {
-				case 'enable':
-					$Config->components['blocks'][$id]['active'] = 1;
-					$a->save();
-					break;
-				case 'disable':
-					$Config->components['blocks'][$id]['active'] = 0;
-					$a->save();
-					break;
 				case 'delete':
 					$form                  = false;
 					$a->buttons            = false;
@@ -58,73 +50,6 @@ trait components {
 						h::{'button[is=cs-button][type=submit]'}($L->yes)
 					);
 					break;
-				case 'add':
-					$form                  = false;
-					$a->cancel_button_back = true;
-					$a->form_attributes[]  = 'formnovalidate';
-					$Page->title($L->adding_a_block);
-					$a->content(
-						h::{'h2.cs-text-center'}(
-							$L->adding_a_block
-						).
-						h::{'cs-system-admin-components-blocks-form script[type=application/json]'}(
-							json_encode(
-								[
-									'types'      => array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4)),
-									'templates'  => _mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6),
-									'block_data' => [
-										'start'  => date('Y-m-d\TH:i', TIME),
-										'expire' => [
-											'date'  => date('Y-m-d\TH:i', TIME),
-											'state' => false
-										]
-									]
-								],
-								JSON_UNESCAPED_UNICODE
-							)
-						).
-						h::{'input[type=hidden][name=mode][value=add]'}()
-					);
-					break;
-				case 'edit':
-					$form                  = false;
-					$a->cancel_button_back = true;
-					$a->form_attributes[]  = 'formnovalidate';
-					$block                 = &$Config->components['blocks'][$id];
-					$Page->title($L->editing_a_block(static::get_block_title($id)));
-					$a->content(
-						h::{'h2.cs-text-center'}(
-							$L->editing_a_block(static::get_block_title($id))
-						).
-						h::{'cs-system-admin-components-blocks-form script[type=application/json]'}(
-							json_encode(
-								[
-									'types'      => array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4)),
-									'templates'  => _mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6),
-									'block_data' => [
-										'title'    => static::get_block_title($id),
-										'type'     => $block['type'],
-										'active'   => $block['active'],
-										'template' => $block['template'],
-										'start'    => date('Y-m-d\TH:i', $block['start'] ?: TIME),
-										'expire'   => [
-											'date'  => date('Y-m-d\TH:i', $block['expire'] ?: TIME),
-											'state' => $block['expire'] != 0
-										],
-										'content'  => static::get_block_content($id)
-									]
-								],
-								JSON_UNESCAPED_UNICODE
-							)
-						).
-						h::{'input[type=hidden][name=mode][value=edit]'}().
-						h::{'input[type=hidden][name=block[id]]'}(
-							[
-								'value' => $id
-							]
-						)
-					);
-					break;
 			}
 		}
 		if ($form) {
@@ -136,12 +61,6 @@ trait components {
 				h::{'template[is=dom-bind]'}(
 					h::{'cs-system-admin-components-blocks-list[positions={{positions}}]'}().
 					h::{'input#cs-blocks-position[type=hidden][name=position][value=[[positions]]]'}()
-				).
-				h::{'p.cs-text-left a[is=cs-link-button]'}(
-					"$L->add $L->block",
-					[
-						'href' => "$a->action/add"
-					]
 				)
 			);
 		}

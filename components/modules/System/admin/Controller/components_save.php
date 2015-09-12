@@ -30,56 +30,6 @@ trait components_save {
 		$a          = Index::instance();
 		if (isset($_POST['mode'])) {
 			switch ($_POST['mode']) {
-				case 'add':
-				case 'edit':
-					$block_new = &$_POST['block'];
-					if ($_POST['mode'] == 'add') {
-						$block = [
-							'position' => 'floating',
-							'type'     => xap($block_new['type']),
-							'index'    => substr(TIME, 3)
-						];
-					} else {
-						$block = &$Config->components['blocks'][$block_new['id']];
-					}
-					$block['title']    = $Text->set(
-						$Config->module('System')->db('texts'),
-						'System/Config/blocks/title',
-						$block['index'],
-						$block_new['title']
-					);
-					$block['active']   = $block_new['active'];
-					$block['type']     = $block_new['type'];
-					$block['template'] = $block_new['template'];
-					$block['start']    = $block_new['start'];
-					$block['start']    = strtotime($block_new['start']);
-					$block['expire']   = 0;
-					$block['content']  = '';
-					if ($block_new['expire']['state']) {
-						$block['expire'] = strtotime($block_new['expire']['date']);
-					}
-					if ($block['type'] == 'html') {
-						$block['content'] = $Text->set(
-							$Config->module('System')->db('texts'),
-							'System/Config/blocks/content',
-							$block['index'],
-							xap($block_new['html'], true)
-						);
-					} elseif ($block['type'] == 'raw_html') {
-						$block['content'] = $Text->set(
-							$Config->module('System')->db('texts'),
-							'System/Config/blocks/content',
-							$block['index'],
-							$block_new['raw_html']
-						);
-					}
-					if ($_POST['mode'] == 'add') {
-						$Config->components['blocks'][] = $block;
-						$Permission->add('Block', $block['index']);
-					}
-					unset($block, $block_new);
-					$a->save();
-					break;
 				case 'delete':
 					if (isset($_POST['id'], $Config->components['blocks'][$_POST['id']])) {
 						$block = &$Config->components['blocks'][$_POST['id']];

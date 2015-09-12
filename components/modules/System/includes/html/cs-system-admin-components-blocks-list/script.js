@@ -36,7 +36,7 @@
         for (i$ = 0, len$ = blocks.length; i$ < len$; ++i$) {
           index = i$;
           block = blocks[i$];
-          block.index = index;
+          block.order = index;
           blocks_grouped[block.position].push(block);
         }
         this$.set('blocks', blocks_grouped);
@@ -59,7 +59,7 @@
         var get_indexes;
         get_indexes = function(it){
           return $group.filter("[group=" + it + "]").children('div:not(:first)').map(function(){
-            return this.index;
+            return this.order;
           }).get();
         };
         this$.positions = JSON.stringify({
@@ -78,10 +78,26 @@
         return 'cs-block-warning cs-text-warning';
       }
     },
+    _reload: function(){
+      location.reload();
+    },
     _block_permissions: function(e){
       var title;
-      title = cs.Language.permissions_for_block(e.model.item.title);
+      title = L.permissions_for_block(e.model.item.title);
       cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-permissions-for-item label=\"" + e.model.item.index + "\" group=\"Block\"/>");
+    },
+    _add_block: function(){
+      var this$ = this;
+      $(cs.ui.simple_modal("<h2>" + L.adding_a_block + "</h2>\n<cs-system-admin-components-blocks-form/>")).on('close', function(){
+        this$._reload();
+      });
+    },
+    _edit_block: function(e){
+      var title, this$ = this;
+      title = L.editing_a_block(e.model.item.title);
+      $(cs.ui.simple_modal("<h2>" + title + "</h2>\n<cs-system-admin-components-blocks-form index=\"" + e.model.item.index + "\"/>")).on('close', function(){
+        this$._reload();
+      });
     }
   });
 }).call(this);

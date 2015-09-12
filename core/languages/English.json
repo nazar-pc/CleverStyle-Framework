@@ -337,7 +337,7 @@
 		"complete_plugin_removal"						: "Complete plugin removal",
 		//Blocks
 		"blocks"								: "Blocks",
-		"block"									: "Block",
+		"add_block"								: "Add block",
 		"top_blocks"							: "Top blocks",
 		"left_blocks"							: "Left blocks",
 		"floating_blocks"						: "Floating blocks",

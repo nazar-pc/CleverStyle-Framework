@@ -8,7 +8,7 @@
  */
 @import '../../../../../../includes/css/flexy-plexy';
 
-:host {
+#grid {
 	@include flexy-plexy(2em, 1 1 1);
 
 	> div {

@@ -339,7 +339,7 @@
 		"complete_plugin_removal"						: "Повне видалення плагіна",
 		//Blocks
 		"blocks"								: "Блоки",
-		"block"									: "Блок",
+		"add_block"								: "Додати блок",
 		"top_blocks"							: "Верхні блоки",
 		"left_blocks"							: "Ліві блоки",
 		"floating_blocks"						: "Плаваючі блоки",

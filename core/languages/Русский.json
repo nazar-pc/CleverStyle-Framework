@@ -338,7 +338,7 @@
 		"complete_plugin_removal"						: "Полное удаление плагина",
 		//Blocks
 		"blocks"								: "Блоки",
-		"block"									: "Блок",
+		"add_block"								: "Добавить блок",
 		"top_blocks"							: "Верхние блоки",
 		"left_blocks"							: "Левые блоки",
 		"floating_blocks"						: "Плавающие блоки",

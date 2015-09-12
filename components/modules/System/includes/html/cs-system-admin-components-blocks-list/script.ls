@@ -26,7 +26,7 @@ Polymer(
 			right		: []
 			bottom		: []
 		for block, index in blocks
-			block.index	= index
+			block.order	= index
 			blocks_grouped[block.position].push(block)
 		@set('blocks', blocks_grouped)
 		@_init_sortable()
@@ -44,7 +44,7 @@ Polymer(
 			)
 			.on('sortupdate', !~>
 				get_indexes	= ->
-					$group.filter("[group=#it]").children('div:not(:first)').map(-> @index).get()
+					$group.filter("[group=#it]").children('div:not(:first)').map(-> @order).get()
 				@positions = JSON.stringify(
 					top			: get_indexes('top')
 					left		: get_indexes('left')
@@ -55,10 +55,28 @@ Polymer(
 			)
 	_status_class : (active) ->
 		if active ~= 1 then 'cs-block-success cs-text-success' else 'cs-block-warning cs-text-warning'
+	_reload : !->
+		# TODO proper reload
+		location.reload()
 	_block_permissions : (e) !->
-		title	= cs.Language.permissions_for_block(e.model.item.title)
+		title	= L.permissions_for_block(e.model.item.title)
 		cs.ui.simple_modal("""
 			<h2>#title</h2>
 			<cs-system-admin-permissions-for-item label="#{e.model.item.index}" group="Block"/>
 		""")
+	_add_block : !->
+		$(cs.ui.simple_modal("""
+			<h2>#{L.adding_a_block}</h2>
+			<cs-system-admin-components-blocks-form/>
+		""")).on('close', !~>
+			@_reload()
+		)
+	_edit_block : (e) !->
+		title	= L.editing_a_block(e.model.item.title)
+		$(cs.ui.simple_modal("""
+			<h2>#title</h2>
+			<cs-system-admin-components-blocks-form index="#{e.model.item.index}"/>
+		""")).on('close', !~>
+			@_reload()
+		)
 )
