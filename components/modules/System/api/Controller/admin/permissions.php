@@ -68,7 +68,7 @@ trait permissions {
 			'groups' => [],
 			'users'  => []
 		];
-		if (isset($permission)) {
+		if ($permission) {
 			$data['groups'] = array_column(
 				$User->db()->qfa(
 					[
@@ -78,7 +78,7 @@ trait permissions {
 						FROM `[prefix]groups_permissions`
 						WHERE
 							`permission`	= '%s'",
-						$permission['id']
+						$permission[0]['id']
 					]
 				) ?: [],
 				'value',
@@ -93,7 +93,7 @@ trait permissions {
 						FROM `[prefix]users_permissions`
 						WHERE
 							`permission`	= '%s'",
-						$permission['id']
+						$permission[0]['id']
 					]
 				) ?: [],
 				'value',
