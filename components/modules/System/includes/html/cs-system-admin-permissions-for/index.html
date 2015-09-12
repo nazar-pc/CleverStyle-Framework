@@ -9,9 +9,9 @@
         <legend>[[permission.group]]</legend>
         <div>
           <p class="cs-text-left">
-            <button is="cs-button" on-click="invert" type="button">[[L.invert]]</button>
-            <button is="cs-button" on-click="allow_all" type="button">[[L.allow_all]]</button>
-            <button is="cs-button" on-click="deny_all" type="button">[[L.deny_all]]</button>
+            <button is="cs-button" on-tap="invert" type="button">[[L.invert]]</button>
+            <button is="cs-button" on-tap="allow_all" type="button">[[L.allow_all]]</button>
+            <button is="cs-button" on-tap="deny_all" type="button">[[L.deny_all]]</button>
           </p>
           <table class="cs-table" right-left>
             <template as="label" is="dom-repeat" items="[[permission.labels]]">
@@ -42,7 +42,7 @@
         </div>
       </template>
     </form>
-    <button is="cs-button" on-click="save" primary type="button">[[L.save]]</button>
+    <button is="cs-button" on-tap="save" primary type="button">[[L.save]]</button>
   </template>
   <script src="script.js"></script>
 </dom-module>

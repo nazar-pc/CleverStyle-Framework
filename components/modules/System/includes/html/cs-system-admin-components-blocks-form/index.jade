@@ -67,5 +67,5 @@ dom-module#cs-system-admin-components-blocks-form
 			textarea.EDITOR(is="cs-textarea" autosize full-width rows="5" name="block[html]" value="{{block.content}}")
 		.raw_html(hidden$="[[!equal(block.type, 'raw_html')]]")
 			textarea(is="cs-textarea" autosize full-width rows="5" name="block[raw_html]" value="{{block.content}}")
-		button(is="cs-button" type="button" primary on-click="_save" class="cs-margin-top") [[L.save]]
+		button(is="cs-button" type="button" primary on-tap="_save" class="cs-margin-top") [[L.save]]
 	script(src="script.js")

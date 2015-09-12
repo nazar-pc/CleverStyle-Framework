@@ -9,5 +9,5 @@
 			%label [[L.label]]
 			%input(is="cs-input-text" type="text" value="{{label}}")/
 			%div
-				%button(is="cs-button" type="button" primary on-click="save" disabled$="[[!and(group, label)]]") [[L.save]]
+				%button(is="cs-button" type="button" primary on-tap="save" disabled$="[[!and(group, label)]]") [[L.save]]
 	%script(src="script.js")

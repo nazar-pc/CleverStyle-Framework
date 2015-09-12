@@ -4,7 +4,7 @@
     <div class="cs-text-lead">
       <span>[[concat(order_number, ': ', order_status)]]</span>
       <template if="[[show_pay_now]]" is="dom-if">
-        <button is="cs-button" on-click="pay" primary type="button">[[L.pay_now]]</button>
+        <button is="cs-button" on-tap="pay" primary type="button">[[L.pay_now]]</button>
       </template>
     </div>
     <div>[[date_formatted]]</div>

@@ -27,5 +27,5 @@
 						%input(checked="[[equal(user_data.status, 1)]]" type="radio" value="1")/
 						%span [[L.active]]
 				%div
-					%button(is="cs-button" type="button" primary on-click="save" disabled$="[[!can_save]]") [[L.save]]
+					%button(is="cs-button" type="button" primary on-tap="save" disabled$="[[!can_save]]") [[L.save]]
 	%script(src="script.js")

@@ -12,13 +12,13 @@
 			%template(is="dom-repeat" items="[[permissions]]" as="permission")
 				%tr
 					%td
-						%button(is="cs-button" on-click="edit_permission" icon="pencil" tooltip="[[L.edit]]")
-						%button(is="cs-button" on-click="delete_permission" icon="trash" tooltip="[[L.delete]]")
+						%button(is="cs-button" on-tap="edit_permission" icon="pencil" tooltip="[[L.edit]]")
+						%button(is="cs-button" on-tap="delete_permission" icon="trash" tooltip="[[L.delete]]")
 					%td [[permission.id]]
 					%td [[permission.group]]
 					%td
 						%span [[permission.label]]
 						%sup [[permission.description]]
 		%p.cs-text-left
-			%button(is="cs-button" on-click="add_permission" type="button") [[L.add_permission]]
+			%button(is="cs-button" on-tap="add_permission" type="button") [[L.add_permission]]
 	%script(src="script.js")

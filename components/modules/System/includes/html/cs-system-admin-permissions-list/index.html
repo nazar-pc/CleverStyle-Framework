@@ -14,8 +14,8 @@
       <template as="permission" is="dom-repeat" items="[[permissions]]">
         <tr>
           <td>
-            <button icon="pencil" is="cs-button" on-click="edit_permission" tooltip="[[L.edit]]"></button>
-            <button icon="trash" is="cs-button" on-click="delete_permission" tooltip="[[L.delete]]"></button>
+            <button icon="pencil" is="cs-button" on-tap="edit_permission" tooltip="[[L.edit]]"></button>
+            <button icon="trash" is="cs-button" on-tap="delete_permission" tooltip="[[L.delete]]"></button>
           </td>
           <td>[[permission.id]]</td>
           <td>[[permission.group]]</td>
@@ -27,7 +27,7 @@
       </template>
     </table>
     <p class="cs-text-left">
-      <button is="cs-button" on-click="add_permission" type="button">[[L.add_permission]]</button>
+      <button is="cs-button" on-tap="add_permission" type="button">[[L.add_permission]]</button>
     </p>
   </template>
   <script src="script.js"></script>

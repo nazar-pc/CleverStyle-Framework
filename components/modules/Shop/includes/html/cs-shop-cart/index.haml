@@ -26,7 +26,7 @@
 			#payment_method_description.cs-margin-bottom
 			%div
 				%template(is="dom-if" if="[[!registration_required]]")
-					%button(is="cs-button" primary on-click="finish_order" type="button") [[L.shop_finish_order]]
+					%button(is="cs-button" primary on-tap="finish_order" type="button") [[L.shop_finish_order]]
 				%template(is="dom-if" if="[[registration_required]]")
 					%p.cs-block-warning.cs-text-warning [[L.shop_register_to_finish_order]]
 					%button(is="cs-button" disabled type="button") [[L.shop_finish_order]]

@@ -21,7 +21,7 @@
 				%input(is="cs-input-text" type="email" value="{{user_data.email}}")/
 				%label [[L.password_only_for_changing]]
 				-# TODO fix icon positioning
-				%cs-icon(icon="lock" on-click="show_password")
+				%cs-icon(icon="lock" on-tap="show_password")
 				%input(is="cs-input-text" id="password" type="password" value="{{user_data.password}}")/
 				%label [[L.language]]
 				%select(is="cs-select" value="{{user_data.language}}" size="5")
@@ -49,5 +49,5 @@
 				%label [[L.avatar]]
 				%input(is="cs-input-text" type="text" value="{{user_data.avatar}}")/
 				%div
-					%button(is="cs-button" type="button" primary on-click="save") [[L.save]]
+					%button(is="cs-button" type="button" primary on-tap="save") [[L.save]]
 	%script(src="script.js")

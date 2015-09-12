@@ -31,7 +31,7 @@
       <div class="cs-margin-bottom" id="payment_method_description"></div>
       <div>
         <template if="[[!registration_required]]" is="dom-if">
-          <button is="cs-button" on-click="finish_order" primary type="button">[[L.shop_finish_order]]</button>
+          <button is="cs-button" on-tap="finish_order" primary type="button">[[L.shop_finish_order]]</button>
         </template>
         <template if="[[registration_required]]" is="dom-if">
           <p class="cs-block-warning cs-text-warning">[[L.shop_register_to_finish_order]]</p>

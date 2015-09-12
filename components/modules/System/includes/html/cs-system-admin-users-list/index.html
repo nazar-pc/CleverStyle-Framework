@@ -25,7 +25,7 @@
       </div>
       <div>
         <template as="column" is="dom-repeat" items="[[search_columns]]">
-          <button is="cs-button" on-click="toggle_search_column" primary="[[column.selected]]">[[column.name]]</button>
+          <button is="cs-button" on-tap="toggle_search_column" primary="[[column.selected]]">[[column.name]]</button>
         </template>
       </div>
     </section>
@@ -50,12 +50,12 @@
             <template if="[[user.is_root]]" is="dom-if">-</template>
             <template if="[[!user.is_root]]" is="dom-if">
               <template if="[[!user.is_guest]]" is="dom-if">
-                <a icon="pencil" is="cs-link-button" on-click="edit_user" tooltip="[[L.edit_user_information]]"></a>
+                <a icon="pencil" is="cs-link-button" on-tap="edit_user" tooltip="[[L.edit_user_information]]"></a>
               </template>
               <template if="[[!or(user.is_guest, user.is_bot)]]" is="dom-if">
                 <a href="[[concat('/admin/System/users/users/groups/', user.id)]]" icon="group" is="cs-link-button" tooltip="[[L.edit_user_groups]]"></a>
               </template>
-              <button icon="key" is="cs-button" on-click="edit_permissions" tooltip="[[L.edit_user_permissions]]"></button>
+              <button icon="key" is="cs-button" on-tap="edit_permissions" tooltip="[[L.edit_user_permissions]]"></button>
             </template>
           </td>
           <td>
@@ -74,8 +74,8 @@
       <nav is="cs-nav-pagination" page="{{search_page}}" pages="[[search_pages]]"></nav>
     </div>
     <p class="cs-text-left">
-      <button is="cs-button" on-click="add_user" type="button">[[L.add_user]]</button>
-      <button is="cs-button" on-click="add_bot" type="button">[[L.add_bot]]</button>
+      <button is="cs-button" on-tap="add_user" type="button">[[L.add_user]]</button>
+      <button is="cs-button" on-tap="add_bot" type="button">[[L.add_bot]]</button>
     </p>
   </template>
   <script src="script.js"></script>

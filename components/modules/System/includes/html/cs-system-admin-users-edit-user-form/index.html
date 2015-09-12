@@ -22,7 +22,7 @@
         <label>[[L.email]]</label>
         <input is="cs-input-text" type="email" value="{{user_data.email}}">
         <label>[[L.password_only_for_changing]]</label>
-        <cs-icon icon="lock" on-click="show_password"></cs-icon>
+        <cs-icon icon="lock" on-tap="show_password"></cs-icon>
         <input id="password" is="cs-input-text" type="password" value="{{user_data.password}}">
         <label>[[L.language]]</label>
         <select is="cs-select" size="5" value="{{user_data.language}}">
@@ -59,7 +59,7 @@
         <label>[[L.avatar]]</label>
         <input is="cs-input-text" type="text" value="{{user_data.avatar}}">
         <div>
-          <button is="cs-button" on-click="save" primary type="button">[[L.save]]</button>
+          <button is="cs-button" on-tap="save" primary type="button">[[L.save]]</button>
         </div>
       </form>
     </template>

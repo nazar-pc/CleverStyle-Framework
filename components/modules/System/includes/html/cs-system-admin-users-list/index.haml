@@ -19,7 +19,7 @@
 				%input(is="cs-input-text" compact min="1" step="1" type="number" value="{{search_limit}}")
 			%div
 				%template(is="dom-repeat" items="[[search_columns]]" as="column")
-					%button(is="cs-button" on-click="toggle_search_column" primary="[[column.selected]]") [[column.name]]
+					%button(is="cs-button" on-tap="toggle_search_column" primary="[[column.selected]]") [[column.name]]
 		%hr/
 		-# should be reference %template#pagination
 		.cs-margin.cs-text-center(hidden$="[[!show_pagination]]")
@@ -38,10 +38,10 @@
 						%template(is="dom-if" if="[[user.is_root]]") -
 						%template(is="dom-if" if="[[!user.is_root]]")
 							%template(is="dom-if" if="[[!user.is_guest]]")
-								%a(is="cs-link-button" icon="pencil" on-click="edit_user" tooltip="[[L.edit_user_information]]")
+								%a(is="cs-link-button" icon="pencil" on-tap="edit_user" tooltip="[[L.edit_user_information]]")
 							%template(is="dom-if" if="[[!or(user.is_guest, user.is_bot)]]")
 								%a(is="cs-link-button" icon="group" href="[[concat('/admin/System/users/users/groups/', user.id)]]" tooltip="[[L.edit_user_groups]]")
-							%button(is="cs-button" icon="key" on-click="edit_permissions" tooltip="[[L.edit_user_permissions]]")
+							%button(is="cs-button" icon="key" on-tap="edit_permissions" tooltip="[[L.edit_user_permissions]]")
 					%td
 						%span(tooltip="[[user.type_info]]")
 							%span [[user.type]]
@@ -52,6 +52,6 @@
 		.cs-margin.cs-text-center(hidden$="[[!show_pagination]]")
 			%nav(is="cs-nav-pagination" page="{{search_page}}" pages="[[search_pages]]")
 		%p.cs-text-left
-			%button(is="cs-button" on-click="add_user" type="button") [[L.add_user]]
-			%button(is="cs-button" on-click="add_bot" type="button") [[L.add_bot]]
+			%button(is="cs-button" on-tap="add_user" type="button") [[L.add_user]]
+			%button(is="cs-button" on-tap="add_bot" type="button") [[L.add_bot]]
 	%script(src="script.js")
