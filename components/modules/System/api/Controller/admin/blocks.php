@@ -29,26 +29,25 @@ trait blocks {
 			$Page->json($blocks ?: []);
 			return;
 		}
-		foreach ($blocks as $block) {
-			if ($block['index'] != $route_ids[0]) {
-				continue;
-			}
-			$Page->json(
-				[
-					'title'    => $block['title'],
-					'type'     => $block['type'],
-					'active'   => (int)$block['active'],
-					'template' => $block['template'],
-					'start'    => date('Y-m-d\TH:i', $block['start'] ?: TIME),
-					'expire'   => [
-						'date'  => date('Y-m-d\TH:i', $block['expire'] ?: TIME),
-						'state' => (int)($block['expire'] != 0)
-					],
-					'content'  => $block['content']
-				]
-			);
+		$block = static::get_block_by_index($route_ids[0]);
+		if (!$block) {
+			error_code(404);
 			return;
 		}
+		$Page->json(
+			[
+				'title'    => $block['title'],
+				'type'     => $block['type'],
+				'active'   => (int)$block['active'],
+				'template' => $block['template'],
+				'start'    => date('Y-m-d\TH:i', $block['start'] ?: TIME),
+				'expire'   => [
+					'date'  => date('Y-m-d\TH:i', $block['expire'] ?: TIME),
+					'state' => (int)($block['expire'] != 0)
+				],
+				'content'  => $block['content']
+			]
+		);
 		error_code(404);
 	}
 	static function admin_blocks_post () {
@@ -117,12 +116,8 @@ trait blocks {
 			'index'    => substr(TIME, 3)
 		];
 		if ($index) {
-			foreach ($Config->components['blocks'] as &$block) {
-				if ($block['index'] == $index) {
-					break;
-				}
-			}
-			if ($block['index'] != $index) {
+			$block = static::get_block_by_index($index);
+			if (!$block) {
 				error_code(404);
 				return;
 			}
@@ -147,5 +142,18 @@ trait blocks {
 		if (!$Config->save()) {
 			error_code(500);
 		}
+	}
+	/**
+	 * @param int $index
+	 *
+	 * @return array|false
+	 */
+	protected static function get_block_by_index ($index) {
+		foreach (Config::instance()->components['blocks'] as &$block) {
+			if ($block['index'] == $index) {
+				return $block;
+			}
+		}
+		return false;
 	}
 }
