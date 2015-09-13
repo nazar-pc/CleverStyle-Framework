@@ -45,7 +45,6 @@ Event::instance()
 				return;
 			}
 			$OAuth2     = OAuth2::instance();
-			$Page       = Page::instance();
 			$token_data = $OAuth2->get_token($access_token);
 			if (!$token_data) {
 				$e = new ExitException(

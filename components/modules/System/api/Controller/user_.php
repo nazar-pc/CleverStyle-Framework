@@ -127,7 +127,6 @@ trait user_ {
 	static function user_sign_in () {
 		$Config = Config::instance();
 		$L      = Language::instance();
-		$Page   = Page::instance();
 		$User   = User::instance();
 		if (!$User->guest()) {
 			return;

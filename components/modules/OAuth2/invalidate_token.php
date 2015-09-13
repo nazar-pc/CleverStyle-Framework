@@ -8,8 +8,7 @@
  */
 namespace cs\modules\OAuth2;
 use
-	cs\ExitException,
-	cs\Page;
+	cs\ExitException;
 
 _header('Cache-Control: no-store');
 _header('Pragma: no-cache');

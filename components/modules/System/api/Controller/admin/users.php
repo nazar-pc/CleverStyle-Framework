@@ -73,8 +73,7 @@ trait users {
 		if (!$user_data && ($is_bot || !isset($_POST['user']['password']))) {
 			throw new ExitException(400);
 		}
-		$L    = Language::instance();
-		$Page = Page::instance();
+		$L = Language::instance();
 		if (
 			isset($user_data['login']) &&
 			$user_data['login'] !== $User->get('login', $user_id) &&
