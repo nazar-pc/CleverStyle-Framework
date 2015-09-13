@@ -17,9 +17,9 @@ class ExitException extends Exception {
 	/**
 	 * ExitException constructor.
 	 *
-	 * @param int|string     $message Error message (or code if no message)
-	 * @param int            $code    HTTP status code
-	 * @param Exception|null $previous
+	 * @param int|string|string[] $message Error message (or code if no message)
+	 * @param int                 $code    HTTP status code
+	 * @param Exception|null      $previous
 	 */
 	function __construct ($message = '', $code = 0, Exception $previous = null) {
 		$this->previous = $previous;
