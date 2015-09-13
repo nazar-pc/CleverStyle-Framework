@@ -8,20 +8,18 @@
  */
 namespace cs\modules\Content;
 use
+	cs\ExitException,
 	cs\User,
 	cs\Route;
 
 if (!User::instance()->admin()) {
-	error_code(403);
-	return;
+	throw new ExitException(403);
 }
 $Route = Route::instance();
 if (!isset($Route->route[0])) {
-	error_code(400);
-	return;
+	throw new ExitException(400);
 }
 $result = Content::instance()->del($Route->route[0]);
 if (!$result) {
-	error_code(500);
-	return;
+	throw new ExitException(500);
 }

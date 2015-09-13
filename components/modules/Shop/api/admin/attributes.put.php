@@ -8,6 +8,7 @@
  */
 namespace cs\modules\Shop;
 use
+	cs\ExitException,
 	cs\Route;
 
 $Route = Route::instance();
@@ -17,9 +18,9 @@ if (!isset(
 	$_POST['title'],
 	$_POST['title_internal'],
 	$_POST['value']
-)) {
-	error_code(400);
-	return;
+)
+) {
+	throw new ExitException(400);
 }
 $result = Attributes::instance()->set(
 	$Route->ids[0],
@@ -29,6 +30,5 @@ $result = Attributes::instance()->set(
 	$_POST['value']
 );
 if (!$result) {
-	error_code(500);
-	return;
+	throw new ExitException(500);
 }

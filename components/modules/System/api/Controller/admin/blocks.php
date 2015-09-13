@@ -10,6 +10,7 @@
 namespace cs\modules\System\api\Controller\admin;
 use
 	cs\Config,
+	cs\ExitException,
 	cs\Page,
 	cs\Permission,
 	cs\Text;
@@ -31,8 +32,7 @@ trait blocks {
 		}
 		$block = static::get_block_by_index($route_ids[0]);
 		if (!$block) {
-			error_code(404);
-			return;
+			throw new ExitException(404);
 		}
 		$Page->json(
 			[
@@ -54,15 +54,13 @@ trait blocks {
 	}
 	static function admin_blocks_put ($route_ids) {
 		if (!$route_ids[0]) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		static::save_block_data($_POST, $route_ids[0]);
 	}
 	static function admin_blocks_delete ($route_ids) {
 		if (!$route_ids[0]) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		$Config     = Config::instance();
 		$db_id      = $Config->module('System')->db('texts');
@@ -76,8 +74,7 @@ trait blocks {
 		}
 		/** @noinspection PhpUndefinedVariableInspection */
 		if ($block['index'] != $route_ids[0]) {
-			error_code(404);
-			return;
+			throw new ExitException(404);
 		}
 		$block_permission = $Permission->get(null, 'Block', $block['index']);
 		if ($block_permission) {
@@ -86,7 +83,7 @@ trait blocks {
 		$Text->del($db_id, 'System/Config/blocks/title', $block['index']);
 		$Text->del($db_id, 'System/Config/blocks/content', $block['index']);
 		if (!$Config->save()) {
-			error_code(500);
+			throw new ExitException(500);
 		}
 	}
 	static function admin_blocks_templates () {
@@ -101,8 +98,7 @@ trait blocks {
 	}
 	static function admin_blocks_update_order () {
 		if (!isset($_POST['order']) || !is_array($_POST['order'])) {
-			error_code();
-			return;
+			throw new ExitException(400);
 		}
 		$Config           = Config::instance();
 		$blocks           = $Config->components['blocks'];
@@ -127,14 +123,16 @@ trait blocks {
 		}
 		$Config->components['blocks'] = $new_blocks_order;
 		if (!$Config->save()) {
-			error_code(500);
+			throw new ExitException(500);
 		}
 	}
 	/**
-	 * @param array     $block_new
-	 * @param false|int $index Index of existing block, if not specified - new block being added
+	 * @param array          $block_new
+	 * @param bool|false|int $index Index of existing block, if not specified - new block being added
 	 *
 	 * @return bool
+	 *
+	 * @throws ExitException
 	 */
 	protected static function save_block_data ($block_new, $index = false) {
 		$Config = Config::instance();
@@ -148,8 +146,7 @@ trait blocks {
 		if ($index) {
 			$block = &static::get_block_by_index($index);
 			if (!$block) {
-				error_code(404);
-				return;
+				throw new ExitException(404);
 			}
 		}
 		$block['title']    = $Text->set($db_id, 'System/Config/blocks/title', $block['index'], $block_new['title']);
@@ -170,7 +167,7 @@ trait blocks {
 			Permission::instance()->add('Block', $block['index']);
 		}
 		if (!$Config->save()) {
-			error_code(500);
+			throw new ExitException(500);
 		}
 	}
 	/**

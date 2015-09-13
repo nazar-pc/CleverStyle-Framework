@@ -8,15 +8,14 @@
  */
 namespace cs\modules\Composer;
 use
+	cs\ExitException,
 	cs\Page,
 	cs\User;
 if (!isset($_POST['force']) && !isset($_POST['name'], $_POST['type'])) {
-	error_code(400);
-	return;
+	throw new ExitException(400);
 }
 if (!User::instance()->admin()) {
-	error_code(403);
-	return;
+	throw new ExitException(403);
 }
 require_once __DIR__.'/../ansispan.php';
 if (isset($_POST['force']) && $_POST['force']) {

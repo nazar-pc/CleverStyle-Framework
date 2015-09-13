@@ -8,17 +8,16 @@
  */
 namespace cs\modules\Content;
 use
+	cs\ExitException,
 	cs\Page,
 	cs\Route;
 
 $Route = Route::instance();
 if (!isset($Route->route[0])) {
-	error_code(400);
-	return;
+	throw new ExitException(400);
 }
 $content = Content::instance()->get($Route->route[0]);
 if (!$content) {
-	error_code(404);
-	return;
+	throw new ExitException(404);
 }
 Page::instance()->json($content);

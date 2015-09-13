@@ -8,25 +8,24 @@
  */
 namespace cs\modules\Shop;
 use
+	cs\ExitException,
 	cs\Route;
 
 $Route = Route::instance();
 if (!isset($Route->ids[0])) {
-	error_code(400);
-	return;
+	throw new ExitException(400);
 }
 $Orders   = Orders::instance();
 $order_id = $Route->ids[0];
 if (isset($Route->path[2]) && $Route->path[2] == 'items') {
 	if (!isset($_POST['items']) || empty($_POST['items'])) {
-		error_code(400);
-		return;
+		throw new ExitException(400);
 	}
 	$existing_items = array_column($Orders->get_items($order_id), 'item');
 	$result         = true;
 	foreach ($existing_items as $item) {
 		if (!in_array($item, $_POST['items']['item'])) {
-			$result	= $Orders->del_item($order_id, $item) && $result;
+			$result = $Orders->del_item($order_id, $item) && $result;
 		}
 	}
 	unset($item);
@@ -52,8 +51,7 @@ if (isset($Route->path[2]) && $Route->path[2] == 'items') {
 		$_POST['comment']
 	)
 	) {
-		error_code(400);
-		return;
+		throw new ExitException(400);
 	}
 	$result = $Orders->set(
 		$order_id,
@@ -70,6 +68,5 @@ if (isset($Route->path[2]) && $Route->path[2] == 'items') {
 	);
 }
 if (!$result) {
-	error_code(500);
-	return;
+	throw new ExitException(500);
 }

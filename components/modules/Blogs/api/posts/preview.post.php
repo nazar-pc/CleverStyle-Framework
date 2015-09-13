@@ -10,14 +10,14 @@ namespace cs\modules\Blogs;
 use
 	h,
 	cs\Config,
+	cs\ExitException,
 	cs\Language,
 	cs\Page,
 	cs\User;
 $Config = Config::instance();
 $User   = User::instance();
 if (!$User->user()) {
-	error_code(403);
-	return;
+	throw new ExitException(403);
 }
 $L    = Language::instance();
 $Page = Page::instance();

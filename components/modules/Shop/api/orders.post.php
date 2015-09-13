@@ -9,6 +9,7 @@
 namespace cs\modules\Shop;
 use
 	cs\Config,
+	cs\ExitException,
 	cs\Page,
 	cs\Route,
 	cs\Session,
@@ -27,8 +28,7 @@ if (
 	empty($_POST['items']) ||
 	!is_array($_POST['items'])
 ) {
-	error_code(400);
-	return;
+	throw new ExitException(400);
 }
 $Config  = Config::instance();
 $Session = Session::instance();
@@ -36,14 +36,12 @@ if (
 	!$Config->module('Shop')->allow_guests_orders &&
 	!$Session->user()
 ) {
-	error_code(403);
-	return;
+	throw new ExitException(403);
 }
 $Orders       = Orders::instance();
 $recalculated = $Orders->get_recalculated_cart_prices($_POST['items'], $_POST['shipping_type']);
 if (!$recalculated) {
-	error_code(400);
-	return;
+	throw new ExitException(400);
 }
 $id = $Orders->add(
 	$Session->get_user(),
@@ -58,8 +56,7 @@ $id = $Orders->add(
 	$_POST['comment']
 );
 if (!$id) {
-	error_code(500);
-	return;
+	throw new ExitException(500);
 }
 if (!$Session->user()) {
 	$orders   = $Session->get_data('shop_orders') ?: [];

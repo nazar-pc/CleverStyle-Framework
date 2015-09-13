@@ -10,6 +10,7 @@
 namespace cs\modules\System\api\Controller;
 use
 	cs\Config,
+	cs\ExitException,
 	cs\Language,
 	cs\Mail,
 	cs\Page,
@@ -21,28 +22,21 @@ trait user_ {
 		$Page = Page::instance();
 		$User = User::instance();
 		if (!isset($_POST['current_password'], $_POST['new_password'])) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		if (!$User->user()) {
-			error_code(403);
-			return;
+			throw new ExitException(403);
 		} elseif (!$_POST['new_password']) {
-			error_code(400);
-			$Page->error($L->please_type_new_password);
-			return;
+			throw new ExitException($L->please_type_new_password, 400);
 		} elseif (!$User->validate_password($_POST['current_password'], $User->id, true)) {
-			error_code(400);
-			$Page->error($L->wrong_current_password);
-			return;
+			throw new ExitException($L->wrong_current_password, 400);
 		}
 		$id = $User->id;
 		if ($User->set_password($_POST['new_password'], $id, true)) {
 			Session::instance()->add($id);
 			$Page->json('OK');
 		} else {
-			error_code(400);
-			$Page->error($L->change_password_server_error);
+			throw new ExitException($L->change_password_server_error, 400);
 		}
 	}
 	static function user_registration () {
@@ -51,34 +45,23 @@ trait user_ {
 		$Page   = Page::instance();
 		$User   = User::instance();
 		if (!isset($_POST['email'])) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		} elseif (!$User->guest()) {
 			$Page->json('reload');
 			return;
 		} elseif (!$Config->core['allow_user_registration']) {
-			error_code(403);
-			$Page->error($L->registration_prohibited);
-			return;
+			throw new ExitException($L->registration_prohibited, 403);
 		} elseif (empty($_POST['email'])) {
-			error_code(400);
-			$Page->error($L->please_type_your_email);
-			return;
+			throw new ExitException($L->please_type_your_email, 400);
 		}
 		$_POST['email'] = mb_strtolower($_POST['email']);
 		$result         = $User->registration($_POST['email']);
 		if ($result === false) {
-			error_code(400);
-			$Page->error($L->please_type_correct_email);
-			return;
+			throw new ExitException($L->please_type_correct_email, 400);
 		} elseif ($result == 'error') {
-			error_code(500);
-			$Page->error($L->reg_server_error);
-			return;
+			throw new ExitException($L->reg_server_error, 500);
 		} elseif ($result == 'exists') {
-			error_code(400);
-			$Page->error($L->reg_error_exists);
-			return;
+			throw new ExitException($L->reg_error_exists, 400);
 		}
 		$confirm = $result['reg_key'] !== true;
 		if ($confirm) {
@@ -106,8 +89,7 @@ trait user_ {
 			$Page->json($confirm ? 'reg_confirmation' : 'reg_success');
 		} else {
 			$User->registration_cancel();
-			error_code(500);
-			$Page->error($L->sending_reg_mail_error);
+			throw new ExitException($L->sending_reg_mail_error, 500);
 		}
 	}
 	static function user_restore_password () {
@@ -116,19 +98,13 @@ trait user_ {
 		$Page   = Page::instance();
 		$User   = User::instance();
 		if (!isset($_POST['email'])) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		} elseif (!$User->guest()) {
-			error_code(403);
-			return;
+			throw new ExitException(403);
 		} elseif (!$_POST['email']) {
-			error_code(400);
-			$Page->error($L->please_type_your_email);
-			return;
+			throw new ExitException($L->please_type_your_email, 400);
 		} elseif (!($id = $User->get_id(mb_strtolower($_POST['email'])))) {
-			error_code(400);
-			$Page->error($L->user_with_such_login_email_not_found);
-			return;
+			throw new ExitException($L->user_with_such_login_email_not_found, 400);
 		}
 		if (
 			($key = $User->restore_password($id)) &&
@@ -145,8 +121,7 @@ trait user_ {
 		) {
 			$Page->json('OK');
 		} else {
-			error_code(500);
-			$Page->error($L->restore_password_server_error);
+			throw new ExitException($L->restore_password_server_error, 500);
 		}
 	}
 	static function user_sign_in () {
@@ -161,9 +136,7 @@ trait user_ {
 			$User->get_sign_in_attempts_count(@$_POST['login']) >= $Config->core['sign_in_attempts_block_count']
 		) {
 			$User->sign_in_result(false, @$_POST['login']);
-			error_code(403);
-			$Page->error("$L->sign_in_attempts_ends_try_after ".format_time($Config->core['sign_in_attempts_block_time']));
-			return;
+			throw new ExitException("$L->sign_in_attempts_ends_try_after ".format_time($Config->core['sign_in_attempts_block_time']), 403);
 		}
 		$id = $User->get_id(@$_POST['login']);
 		if (
@@ -173,25 +146,16 @@ trait user_ {
 			$status      = $User->get('status', $id);
 			$block_until = $User->get('block_until', $id);
 			if ($status == User::STATUS_NOT_ACTIVATED) {
-				error_code(403);
-				$Page->error($L->your_account_is_not_active);
-				return;
+				throw new ExitException($L->your_account_is_not_active, 403);
 			} elseif ($status == User::STATUS_INACTIVE) {
-				error_code(403);
-				$Page->error($L->your_account_disabled);
-				return;
+				throw new ExitException($L->your_account_disabled, 403);
 			} elseif ($block_until > time()) {
-				error_code(403);
-				$Page->error(
-					$L->your_account_blocked_until.' '.date($L->_datetime, $block_until)
-				);
-				return;
+				throw new ExitException($L->your_account_blocked_until.' '.date($L->_datetime, $block_until), 403);
 			}
 			Session::instance()->add($id);
 			$User->sign_in_result(true, $_POST['login']);
 		} else {
 			$User->sign_in_result(false, @$_POST['login']);
-			error_code(400);
 			$content = $L->auth_error_sign_in;
 			if (
 				$Config->core['sign_in_attempts_block_count'] &&
@@ -199,8 +163,7 @@ trait user_ {
 			) {
 				$content .= " $L->sign_in_attempts_left ".($Config->core['sign_in_attempts_block_count'] - $User->get_sign_in_attempts_count(@$_POST['login']));
 			}
-			$Page->error($content);
-			unset($content);
+			throw new ExitException($content, 400);
 		}
 	}
 	static function user_sign_out () {

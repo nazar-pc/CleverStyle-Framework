@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package   CleverStyle CMS
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs;
 
@@ -16,43 +16,44 @@ namespace cs;
  * @method static Config instance($check = false)
  */
 class Config {
-	use	Singleton;
+	use
+		Singleton;
 	/**
 	 * Most of general configuration properties
 	 *
 	 * @var mixed[]
 	 */
-	public $core		= [];
+	public $core = [];
 	/**
 	 * Configuration of databases, except the main database, parameters of which are stored in configuration file
 	 *
 	 * @var mixed[]
 	 */
-	public $db			= [];
+	public $db = [];
 	/**
 	 * Configuration of storages, except the main storage, parameters of which are stored in configuration file
 	 *
 	 * @var mixed[]
 	 */
-	public $storage		= [];
+	public $storage = [];
 	/**
 	 * Internal structure of components parameters
 	 *
 	 * @var mixed[]
 	 */
-	public $components	= [];
+	public $components = [];
 	/**
 	 * Replacing rules, that are used to replace text on pages
 	 *
 	 * @var mixed[]
 	 */
-	public $replace		= [];
+	public $replace = [];
 	/**
 	 * Replacing rules, they are applied to current route, every rule is applied only once
 	 *
 	 * @var mixed[]
 	 */
-	public $routing		= [];
+	public $routing = [];
 	/**
 	 * Array of all domains, which allowed to access the site
 	 *
@@ -73,9 +74,11 @@ class Config {
 	 *
 	 * @var bool
 	 */
-	protected	$init	= false;
+	protected $init = false;
 	/**
 	 * Loading of configuration, initialization of $Config, $Cache, $L and Page objects, Routing processing
+	 *
+	 * @throws ExitException
 	 */
 	protected function construct () {
 		/**
@@ -100,16 +103,18 @@ class Config {
 		$this->init();
 		Event::instance()->fire('System/Config/init/after');
 		if (!file_exists(MODULES.'/'.$this->core['default_module'])) {
-			$this->core['default_module']	= 'System';
+			$this->core['default_module'] = 'System';
 			$this->save();
 		}
 	}
 	/**
 	 * Engine initialization (or reinitialization if necessary)
+	 *
+	 * @throws ExitException
 	 */
 	protected function init () {
 		Language::instance()->init();
-		$Page	= Page::instance();
+		$Page = Page::instance();
 		$Page->init(
 			get_core_ml_text('name'),
 			$this->core['theme']
@@ -118,9 +123,7 @@ class Config {
 			$Page->replace($this->replace['in'], $this->replace['out']);
 			$this->init = true;
 			if ($this->check_ip($this->core['ip_black_list'])) {
-				error_code(403);
-				$Page->error();
-				return;
+				throw new ExitException(403);
 			}
 		}
 		/**
@@ -135,7 +138,7 @@ class Config {
 	protected function fill_mirrors () {
 		foreach ($this->core['url'] as $i => $address) {
 			list($protocol, $urls) = explode('://', $address, 2);
-			$urls                           = explode(';', $urls);
+			$urls                       = explode(';', $urls);
 			$this->mirrors[$protocol][] = $urls[0];
 		}
 		$this->mirrors['count'] = count($this->mirrors['http']) + count($this->mirrors['https']);
@@ -143,7 +146,7 @@ class Config {
 	/**
 	 * Check user's IP address matches with elements of given list
 	 *
-	 * @param string[]	$ips
+	 * @param string[] $ips
 	 *
 	 * @return bool
 	 */
@@ -177,7 +180,7 @@ class Config {
 	 * Updating information about set of available themes
 	 */
 	function reload_themes () {
-		$this->core['themes']	= get_files_list(THEMES, false, 'd');
+		$this->core['themes'] = get_files_list(THEMES, false, 'd');
 		asort($this->core['themes']);
 	}
 	/**
@@ -196,21 +199,25 @@ class Config {
 	 * Reloading of settings cache
 	 *
 	 * @return bool
+	 *
+	 * @throws ExitException
 	 */
 	protected function load_config_from_db () {
-		$result = DB::instance()->qf([
-			"SELECT
-				`core`,
-				`db`,
-				`storage`,
-				`components`,
-				`replace`,
-				`routing`
-			FROM `[prefix]config`
-			WHERE `domain` = '%s'
-			LIMIT 1",
-			DOMAIN
-		]);
+		$result = DB::instance()->qf(
+			[
+				"SELECT
+					`core`,
+					`db`,
+					`storage`,
+					`components`,
+					`replace`,
+					`routing`
+				FROM `[prefix]config`
+				WHERE `domain` = '%s'
+				LIMIT 1",
+				DOMAIN
+			]
+		);
 		if (is_array($result)) {
 			foreach ($result as $part => $value) {
 				$this->$part = _json_decode($value);
@@ -228,6 +235,8 @@ class Config {
 	 * Applying settings without saving changes into db
 	 *
 	 * @return bool
+	 *
+	 * @throws ExitException
 	 */
 	function apply () {
 		return $this->apply_internal();
@@ -238,6 +247,8 @@ class Config {
 	 * @param bool $cache_not_saved_mark
 	 *
 	 * @return bool
+	 *
+	 * @throws ExitException
 	 */
 	protected function apply_internal ($cache_not_saved_mark = true) {
 		if ($cache_not_saved_mark) {
@@ -268,12 +279,14 @@ class Config {
 	 * Saving settings
 	 *
 	 * @return bool
+	 *
+	 * @throws ExitException
 	 */
 	function save () {
 		if (isset($this->core['cache_not_saved'])) {
 			unset($this->core['cache_not_saved']);
 		}
-		$cdb	= DB::instance()->db_prime(0);
+		$cdb = DB::instance()->db_prime(0);
 		if ($cdb->q(
 			"UPDATE `[prefix]config`
 			SET
@@ -292,7 +305,8 @@ class Config {
 			_json_encode($this->replace),
 			_json_encode($this->routing),
 			DOMAIN
-		)) {
+		)
+		) {
 			$this->apply_internal(false);
 			return true;
 		}
@@ -300,6 +314,8 @@ class Config {
 	}
 	/**
 	 * Canceling of applied settings
+	 *
+	 * @throws ExitException
 	 */
 	function cancel () {
 		unset(Cache::instance()->config);
@@ -318,10 +334,10 @@ class Config {
 		/**
 		 * @var _SERVER $_SERVER
 		 */
-		$base_url	= "$_SERVER->protocol://$_SERVER->host";
-		$L			= Language::instance();
+		$base_url = "$_SERVER->protocol://$_SERVER->host";
+		$L        = Language::instance();
 		if ($L->url_language()) {
-			$base_url	.= "/$L->clang";
+			$base_url .= "/$L->clang";
 		}
 		return $base_url;
 	}

@@ -11,6 +11,7 @@ use
 	h,
 	cs\Config,
 	cs\Event,
+	cs\ExitException,
 	cs\Index,
 	cs\Page\Meta,
 	cs\Page,
@@ -38,8 +39,7 @@ $Posts   = Posts::instance();
 $rc      = Route::instance()->route;
 $post_id = (int)mb_substr($rc[1], mb_strrpos($rc[1], ':') + 1);
 if (!$post_id) {
-	error_code(404);
-	return;
+	throw new ExitException(404);
 }
 $post = $Posts->get_as_json_ld($post_id);
 if (
@@ -48,8 +48,7 @@ if (
 		$post['draft'] && $post['user'] != $User->id
 	)
 ) {
-	error_code(404);
-	return;
+	throw new ExitException(404);
 }
 if ($post['path'] != mb_substr($rc[1], 0, mb_strrpos($rc[1], ':'))) {
 	status_code(303);

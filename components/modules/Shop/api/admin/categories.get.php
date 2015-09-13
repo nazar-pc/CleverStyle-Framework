@@ -8,6 +8,7 @@
  */
 namespace cs\modules\Shop;
 use
+	cs\ExitException,
 	cs\Page,
 	cs\Route;
 
@@ -17,14 +18,14 @@ $Categories = Categories::instance();
 if (isset($_GET['ids'])) {
 	$categories = $Categories->get(explode(',', $_GET['ids']));
 	if (!$categories) {
-		error_code(404);
+		throw new ExitException(404);
 	} else {
 		$Page->json($categories);
 	}
 } elseif (isset($Route->ids[0])) {
 	$category = $Categories->get($Route->ids[0]);
 	if (!$category) {
-		error_code(404);
+		throw new ExitException(404);
 	} else {
 		$Page->json($category);
 	}

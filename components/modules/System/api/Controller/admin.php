@@ -10,17 +10,17 @@
 namespace cs\modules\System\api\Controller;
 use
 	cs\Config,
+	cs\ExitException,
 	cs\Mail,
 	cs\Page,
 	cs\Storage;
 trait admin {
 	static function admin_email_sending_test_get () {
 		if (!isset($_GET['email'])) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		if (!Mail::instance()->send_to($_GET['email'], 'Email testing on '.get_core_ml_text('name'), 'Test email')) {
-			error_code(500);
+			throw new ExitException(500);
 		}
 	}
 	static function admin_languages_get () {

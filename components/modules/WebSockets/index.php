@@ -9,6 +9,7 @@
 namespace cs\modules\WebSockets;
 use
 	cs\Config,
+	cs\ExitException,
 	cs\Route;
 if (PHP_SAPI == 'cli') {
 	Server::instance()->run(isset($_GET['address']) ? $_GET['address'] : null);
@@ -18,8 +19,7 @@ if (PHP_SAPI == 'cli') {
 	$module_data = $Config->module('WebSockets');
 	$rc          = Route::instance()->route;
 	if ($module_data->security_key !== @$rc[0]) {
-		error_code(400);
-		return;
+		throw new ExitException(400);
 	}
 	if (is_server_running()) {
 		echo 'Server already running';
@@ -41,11 +41,13 @@ if (PHP_SAPI == 'cli') {
 				file_get_contents(
 					$Config->base_url().'/WebSockets/'.$Config->module('WebSockets')->security_key.'/supervised',
 					null,
-					stream_context_create([
-						'http' => [
-							'timeout' => 0
+					stream_context_create(
+						[
+							'http' => [
+								'timeout' => 0
+							]
 						]
-					])
+					)
 				);
 			}
 		} else {

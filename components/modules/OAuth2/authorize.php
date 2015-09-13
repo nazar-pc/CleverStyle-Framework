@@ -1,10 +1,10 @@
 <?php
 /**
- * @package        OAuth2
- * @category       modules
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package   OAuth2
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 /**
  * Provides next events:<br>
@@ -12,11 +12,11 @@
  *  OAuth2/custom_allow_access_page
  */
 namespace cs\modules\OAuth2;
-
 use
 	h,
 	cs\Config,
 	cs\Event,
+	cs\ExitException,
 	cs\Index,
 	cs\Language\Prefix,
 	cs\Page,
@@ -58,11 +58,15 @@ if (!$client) {
 	return;
 }
 if (!$client['domain']) {
-	error_code(400);
-	$Page->error([
-		'unauthorized_client',
-		'Request method is not authored'
-	]);
+	$e = new ExitException(
+		[
+			'unauthorized_client',
+			'Request method is not authored'
+		],
+		400
+	);
+	$e->setJson();
+	throw $e;
 }
 if (!$client['active']) {
 	/**
@@ -71,10 +75,12 @@ if (!$client['active']) {
 	if ($_GET['response_type'] != 'guest_token') {
 		if (!isset($_GET['redirect_uri'])) {
 			status_code(400);
-			$Page->error([
-				'invalid_request',
-				'Inactive client_id, redirect_uri parameter required'
-			]);
+			$Page->error(
+				[
+					'invalid_request',
+					'Inactive client_id, redirect_uri parameter required'
+				]
+			);
 		} else {
 			if (
 				urldecode($_GET['redirect_uri']) != $Config->base_url().'/OAuth2/blank/' &&
@@ -84,18 +90,23 @@ if (!$client['active']) {
 				return;
 			} else {
 				status_code(400);
-				$Page->error([
-					'invalid_request',
-					'Inactive client_id, redirect_uri parameter required'
-				]);
+				$Page->error(
+					[
+						'invalid_request',
+						'Inactive client_id, redirect_uri parameter required'
+					]
+				);
 			}
 		}
 	} else {
 		status_code(400);
-		$Page->error([
-			'invalid_request',
-			'inactive client_id'
-		], true);
+		$Page->error(
+			[
+				'invalid_request',
+				'inactive client_id'
+			],
+			true
+		);
 	}
 }
 /**
@@ -104,19 +115,23 @@ if (!$client['active']) {
 if ($_GET['response_type'] != 'guest_token') {
 	if (!isset($_GET['redirect_uri'])) {
 		status_code(400);
-		$Page->error([
-			'invalid_request',
-			'redirect_uri parameter required'
-		]);
+		$Page->error(
+			[
+				'invalid_request',
+				'redirect_uri parameter required'
+			]
+		);
 	} elseif (
 		urldecode($_GET['redirect_uri']) != $Config->base_url().'/OAuth2/blank/' &&
 		!preg_match("/^[^\/]+:\/\/$client[domain]/", urldecode($_GET['redirect_uri']))
 	) {
 		status_code(400);
-		$Page->error([
-			'invalid_request',
-			'redirect_uri parameter invalid'
-		]);
+		$Page->error(
+			[
+				'invalid_request',
+				'redirect_uri parameter invalid'
+			]
+		);
 	}
 	$redirect_uri = urldecode($_GET['redirect_uri']);
 	if (!isset($_GET['response_type'])) {
@@ -129,16 +144,22 @@ if ($_GET['response_type'] != 'guest_token') {
 	}
 } else {
 	if (!isset($_GET['response_type'])) {
-		$Page->error([
-			'invalid_request',
-			'response_type parameter required'
-		], true);
+		$Page->error(
+			[
+				'invalid_request',
+				'response_type parameter required'
+			],
+			true
+		);
 	}
 	if (!in_array($_GET['response_type'], ['code', 'token', 'guest_token'])) {
-		$Page->error([
-			'unsupported_response_type',
-			'Specified response_type is not supported, only "token" or "code" or "guest_token" types available'
-		], true);
+		$Page->error(
+			[
+				'unsupported_response_type',
+				'Specified response_type is not supported, only "token" or "code" or "guest_token" types available'
+			],
+			true
+		);
 	}
 }
 $User = User::instance();
@@ -244,19 +265,27 @@ switch ($_GET['response_type']) {
 		_header('Pragma: no-cache');
 		interface_off();
 		if ($User->user()) {
-			error_code(403);
-			$Page->error([
-				'access_denied',
-				'Only guests, not users allowed to access this response_type'
-			], true);
+			$e = new ExitException(
+				[
+					'access_denied',
+					'Only guests, not users allowed to access this response_type'
+				],
+				403
+			);
+			$e->setJson();
+			throw $e;
 		}
 		$code = $OAuth2->add_code($client['id'], 'token', urldecode($_GET['redirect_uri']));
 		if (!$code) {
-			error_code(500);
-			$Page->error([
-				'server_error',
-				"Server can't generate code, try later"
-			], true);
+			$e = new ExitException(
+				[
+					'server_error',
+					"Server can't generate code, try later"
+				],
+				500
+			);
+			$e->setJson();
+			throw $e;
 		}
 		$token_data = $OAuth2->get_code($code, $client['id'], $client['secret'], urldecode($_GET['redirect_uri']));
 		if ($token_data) {
@@ -264,10 +293,14 @@ switch ($_GET['response_type']) {
 			$Page->json($token_data);
 			return;
 		} else {
-			error_code(500);
-			$Page->error([
-				'server_error',
-				"Server can't get token data, try later"
-			], true);
+			$e = new ExitException(
+				[
+					'server_error',
+					"Server can't get token data, try later"
+				],
+				500
+			);
+			$e->setJson();
+			throw $e;
 		}
 }

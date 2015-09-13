@@ -9,6 +9,7 @@
  */
 namespace cs\modules\System\api\Controller\admin;
 use
+	cs\ExitException,
 	cs\Group,
 	cs\Page,
 	cs\Permission,
@@ -19,8 +20,7 @@ trait permissions {
 		if (isset($route_ids[0])) {
 			$result = $Permission->get($route_ids[0]);
 			if (!$result) {
-				error_code(404);
-				return;
+				throw new ExitException(404);
 			}
 		} else {
 			$result = $Permission->get_all();
@@ -29,37 +29,33 @@ trait permissions {
 	}
 	static function admin_permissions___post () {
 		if (!isset($_POST['group'], $_POST['label'])) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		if (Permission::instance()->add($_POST['group'], $_POST['label'])) {
 			status_code(201);
 		} else {
-			error_code(500);
+			throw new ExitException(500);
 		}
 	}
 	static function admin_permissions___put ($route_ids) {
 		if (!isset($route_ids[0], $_POST['group'], $_POST['label'])) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		if (!Permission::instance()->set($route_ids[0], $_POST['group'], $_POST['label'])) {
-			error_code(500);
+			throw new ExitException(500);
 		}
 	}
 	static function admin_permissions___delete ($route_ids) {
 		if (!isset($route_ids[0])) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		if (!Permission::instance()->del($route_ids[0])) {
-			error_code(500);
+			throw new ExitException(500);
 		}
 	}
 	static function admin_permissions_for_item_get () {
 		if (!isset($_GET['group'], $_GET['label'])) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		$User       = User::instance();
 		$Permission = Permission::instance();
@@ -109,8 +105,7 @@ trait permissions {
 	}
 	static function admin_permissions_for_item_post () {
 		if (!isset($_POST['group'], $_POST['label'])) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		$Group      = Group::instance();
 		$Permission = Permission::instance();
@@ -121,8 +116,7 @@ trait permissions {
 			? $permission[0]['id']
 			: $Permission->add($_POST['group'], $_POST['label']);
 		if (!$permission) {
-			error_code(500);
-			return;
+			throw new ExitException(500);
 		}
 		$result = true;
 		if (isset($_POST['groups'])) {
@@ -136,7 +130,7 @@ trait permissions {
 			}
 		}
 		if (!$result) {
-			error_code(500);
+			throw new ExitException(500);
 		}
 	}
 }

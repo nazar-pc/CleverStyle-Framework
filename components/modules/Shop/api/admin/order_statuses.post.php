@@ -9,6 +9,7 @@
 namespace cs\modules\Shop;
 use
 	cs\Config,
+	cs\ExitException,
 	cs\Page,
 	cs\Route;
 
@@ -18,9 +19,9 @@ if (!isset(
 	$_POST['color'],
 	$_POST['send_update_status_email'],
 	$_POST['comment']
-)) {
-	error_code(400);
-	return;
+)
+) {
+	throw new ExitException(400);
 }
 $id = Order_statuses::instance()->add(
 	$_POST['title'],
@@ -30,8 +31,7 @@ $id = Order_statuses::instance()->add(
 	$_POST['comment']
 );
 if (!$id) {
-	error_code(500);
-	return;
+	throw new ExitException(500);
 }
 status_code(201);
 $Config = Config::instance();

@@ -9,6 +9,7 @@
  */
 namespace cs\modules\System\api\Controller;
 use
+	cs\ExitException,
 	cs\Page,
 	cs\Route,
 	cs\User;
@@ -16,8 +17,7 @@ trait profiles {
 	static function profiles_get () {
 		$User = User::instance();
 		if ($User->guest()) {
-			error_code(403);
-			return;
+			throw new ExitException(403);
 		}
 		$fields = [
 			'id',
@@ -38,8 +38,7 @@ trait profiles {
 				$id = array_intersect($id, $User->get_contacts())
 				)
 			) {
-				error_code(403);
-				$Page->error('User is not in your contacts');
+				throw new ExitException('User is not in your contacts', 403);
 			}
 			if ($single) {
 				$Page->json($User->get($fields, $id[0]));
@@ -54,8 +53,7 @@ trait profiles {
 				);
 			}
 		} else {
-			error_code(400);
-			$Page->error('Specified ids are expected');
+			throw new ExitException('Specified ids are expected', 400);
 		}
 	}
 }

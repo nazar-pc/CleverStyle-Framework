@@ -19,13 +19,31 @@ foreach (glob(CUSTOM.'/*.php') ?: [] as $custom) {
 	include $custom;
 }
 unset($custom);
-/**
- * System running
- */
 try {
-	Language::instance();
-	Index::instance();
-} catch (ExitException $e) {}
-try {
-	shutdown_function();
-} catch (ExitException $e) {}
+	try {
+		/**
+		 * System running
+		 */
+		try {
+			Language::instance();
+			Index::instance();
+		} catch (ExitException $e) {
+			if ($e->getCode()) {
+				throw $e;
+			}
+		}
+		try {
+			shutdown_function();
+		} catch (ExitException $e) {
+			if ($e->getCode()) {
+				throw $e;
+			}
+		}
+	} catch (ExitException $e) {
+		if ($e->getCode() >= 400) {
+			error_code($e->getCode());
+			Page::instance()->error($e->getMessage() ?: null, $e->getJson());
+		}
+	}
+} catch (ExitException $e) {
+}

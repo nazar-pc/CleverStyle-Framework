@@ -11,6 +11,7 @@ use
 	h,
 	cs\Config,
 	cs\Event,
+	cs\ExitException,
 	cs\Index,
 	cs\Language,
 	cs\Page\Meta,
@@ -35,8 +36,7 @@ $sections = $Sections->get_by_path(
 	array_slice($Route->path, 1)
 );
 if (!$sections) {
-	error_code(400);
-	return;
+	throw new ExitException(400);
 }
 $sections = $Sections->get($sections);
 /**

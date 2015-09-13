@@ -7,26 +7,33 @@
  * @license        MIT License, see license.txt
  */
 namespace cs\modules\OAuth2;
-
 use
+	cs\ExitException,
 	cs\Page;
 
 _header('Cache-Control: no-store');
 _header('Pragma: no-cache');
-$Page   = Page::instance();
 $OAuth2 = OAuth2::instance();
 if (!isset($_POST['access_token'])) {
-	error_code(400);
-	$Page->error([
-		'invalid_request',
-		'access_token parameter required'
-	], true);
+	$e = new ExitException(
+		[
+			'invalid_request',
+			'access_token parameter required'
+		],
+		400
+	);
+	$e->getJson();
+	throw $e;
 }
 if (!$OAuth2->del_token($_POST['access_token'])) {
-	error_code(500);
-	$Page->error([
-		'server_error',
-		"Server can't invalidate token, try later"
-	], true);
+	$e = new ExitException(
+		[
+			'server_error',
+			"Server can't invalidate token, try later"
+		],
+		500
+	);
+	$e->getJson();
+	throw $e;
 }
 interface_off();

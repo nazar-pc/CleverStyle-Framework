@@ -8,6 +8,7 @@
  */
 namespace cs\modules\Shop;
 use
+	cs\ExitException,
 	cs\Page,
 	cs\Route;
 
@@ -17,14 +18,14 @@ $Shipping_types = Shipping_types::instance();
 if (isset($_GET['ids'])) {
 	$shipping_types = $Shipping_types->get(explode(',', $Route->ids[0]));
 	if (!$shipping_types) {
-		error_code(404);
+		throw new ExitException(404);
 	} else {
 		$Page->json($shipping_types);
 	}
 } elseif (isset($Route->ids[0])) {
 	$shipping_type = $Shipping_types->get($Route->ids[0]);
 	if (!$shipping_type) {
-		error_code(404);
+		throw new ExitException(404);
 	} else {
 		$Page->json($shipping_type);
 	}

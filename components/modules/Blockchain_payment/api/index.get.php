@@ -8,6 +8,7 @@
  */
 namespace cs\modules\Blockchain_payment;
 use
+	cs\ExitException,
 	cs\Language,
 	cs\Page,
 	cs\Route,
@@ -21,17 +22,14 @@ $Page->title(
 $Transactions = Transactions::instance();
 $Route        = Route::instance();
 if (!isset($Route->ids[0])) {
-	error_code(400);
-	return;
+	throw new ExitException(400);
 }
 $transaction = $Transactions->get($Route->ids[0]);
 if (!$transaction) {
-	error_code(404);
-	return;
+	throw new ExitException(404);
 }
 if ($transaction['user'] != User::instance()->id) {
-	error_code(403);
-	return;
+	throw new ExitException(403);
 }
 $Page->json(
 	[

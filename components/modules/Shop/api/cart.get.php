@@ -17,17 +17,17 @@
 
 namespace cs\modules\Shop;
 use
+	cs\ExitException,
 	cs\Page;
 
 $items         = @$_GET['items'];
 $shipping_type = @$_GET['shipping_type'];
 if (!$items || !$shipping_type) {
-	error_code(400);
-	return;
+	throw new ExitException(400);
 }
 $shipping_type = Shipping_types::instance()->get_for_user($shipping_type);
 if (!$shipping_type) {
-	error_code(404);
+	throw new ExitException(404);
 }
 Page::instance()->json(
 	Orders::instance()->get_recalculated_cart_prices($items, $shipping_type['id'])

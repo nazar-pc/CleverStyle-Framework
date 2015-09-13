@@ -11,6 +11,7 @@ namespace cs\modules\System;
 use
 	cs\Config,
 	cs\Event,
+	cs\ExitException,
 	cs\Index,
 	cs\Language,
 	cs\Mail,
@@ -46,9 +47,7 @@ class Controller {
 		$User = User::instance();
 		$rc   = Route::instance()->route;
 		if (!isset($rc[1], $rc[2]) || !($id = $User->get_id(hash('sha224', $rc[2])))) {
-			error_code(404);
-			$Page->error();
-			return;
+			throw new ExitException(404);
 		}
 		$data = $User->get(
 			[
@@ -61,9 +60,7 @@ class Controller {
 			$id
 		);
 		if ($data['status'] == User::STATUS_NOT_ACTIVATED) {
-			error_code(404);
-			$Page->error();
-			return;
+			throw new ExitException(404);
 		} elseif ($data['status'] == User::STATUS_INACTIVE) {
 			$Page->warning(
 				$L->account_disabled
@@ -213,9 +210,7 @@ class Controller {
 		$Route  = Route::instance();
 		$User   = User::instance();
 		if (!$User->user()) {
-			error_code(403);
-			$Page->error();
-			return;
+			throw new ExitException(403);
 		}
 		$columns = [
 			'login',

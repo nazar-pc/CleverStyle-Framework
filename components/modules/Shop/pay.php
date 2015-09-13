@@ -10,6 +10,7 @@ namespace cs\modules\Shop;
 use
 	cs\Config,
 	cs\Event,
+	cs\ExitException,
 	cs\Language\Prefix,
 	cs\Route,
 	cs\User;
@@ -18,8 +19,7 @@ $L      = new Prefix('shop_');
 $Orders = Orders::instance();
 $order  = $Orders->get(@Route::instance()->ids[0]);
 if (!$order || $order['user'] != User::instance()->id) {
-	error_code(404);
-	return;
+	throw new ExitException(404);
 }
 interface_off();
 if ($order['paid'] || $order['payment_method'] == Orders::PAYMENT_METHOD_CASH) {

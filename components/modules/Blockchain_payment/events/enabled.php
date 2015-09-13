@@ -10,6 +10,7 @@ namespace cs\modules\Blockchain_payment;
 use
 	cs\Config,
 	cs\Event,
+	cs\ExitException,
 	cs\Language\Prefix;
 
 Event::instance()
@@ -46,8 +47,7 @@ Event::instance()
 				$data['description']
 			);
 			if (!$id) {
-				error_code(500);
-				return false;
+				throw new ExitException(500);
 			}
 			_header('Location: '.Config::instance()->base_url()."/Blockchain_payment/$id", true, 307);
 			return false;

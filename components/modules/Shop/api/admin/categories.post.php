@@ -9,6 +9,7 @@
 namespace cs\modules\Shop;
 use
 	cs\Config,
+	cs\ExitException,
 	cs\Page,
 	cs\Route;
 
@@ -21,9 +22,9 @@ if (!isset(
 	$_POST['image'],
 	$_POST['visible'],
 	$_POST['attributes']
-)) {
-	error_code(400);
-	return;
+)
+) {
+	throw new ExitException(400);
 }
 $id = Categories::instance()->add(
 	$_POST['parent'],
@@ -36,8 +37,7 @@ $id = Categories::instance()->add(
 	$_POST['attributes']
 );
 if (!$id) {
-	error_code(500);
-	return;
+	throw new ExitException(500);
 }
 status_code(201);
 $Config = Config::instance();

@@ -111,12 +111,10 @@ class Index {
 			$this->working_directory .= '/api';
 		}
 		if (!is_dir($this->working_directory)) {
-			error_code(404);
-			throw new ExitException;
+			throw new ExitException(404);
 		}
 		if (!$this->check_permission('index')) {
-			error_code(403);
-			throw new ExitException;
+			throw new ExitException(403);
 		}
 		$this->in_admin = admin_path();
 		$this->form     = $this->in_admin;
@@ -134,8 +132,7 @@ class Index {
 		 */
 		$this->request_method = strtolower($_SERVER->request_method);
 		if (!preg_match('/^[a-z_]+$/', $this->request_method)) {
-			error_code(400);
-			throw new ExitException;
+			throw new ExitException(400);
 		}
 	}
 	/**
@@ -259,9 +256,6 @@ class Index {
 			return;
 		}
 		$this->execute_router();
-		if (error_code()) {
-			$Page->error();
-		}
 	}
 	/**
 	 * Wraps `cs\Index::$Content` with form and adds form buttons to the end of content
@@ -558,9 +552,6 @@ class Index {
 			 * Warning about closed site
 			 */
 			$Page->warning(get_core_ml_text('closed_title'));
-		}
-		if (error_code()) {
-			$Page->error();
 		}
 		Event::instance()->fire('System/Index/preload');
 		$this->render_page();

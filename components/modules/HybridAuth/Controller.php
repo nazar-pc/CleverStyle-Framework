@@ -121,9 +121,9 @@ class Controller {
 	/**
 	 * Redirect to referer or home page
 	 *
-	 * @throws ExitException
-	 *
 	 * @param bool $with_delay If `true` - redirect will be made in 5 seconds after page load
+	 *
+	 * @throws ExitException
 	 */
 	protected static function redirect ($with_delay = false) {
 		$redirect_to = _getcookie('HybridAuth_referer') ?: Config::instance()->base_url();
@@ -210,13 +210,13 @@ class Controller {
 		);
 	}
 	/**
-	 * @throws ExitException
-	 *
 	 * @param string             $provider
 	 * @param Social_integration $Social_integration
 	 * @param User               $User
 	 * @param Index              $Index
 	 * @param Language           $L
+	 *
+	 * @throws ExitException
 	 */
 	protected static function email_not_specified ($provider, $Social_integration, $User, $Index, $L) {
 		$profile = self::authenticate_hybridauth($provider);
@@ -272,11 +272,11 @@ class Controller {
 	/**
 	 * Returns profile
 	 *
-	 * @throws ExitException
-	 *
 	 * @param string $provider
 	 *
 	 * @return \Hybrid_User_Profile
+	 *
+	 * @throws ExitException
 	 */
 	protected static function authenticate_hybridauth ($provider) {
 		try {
@@ -350,14 +350,14 @@ class Controller {
 		);
 	}
 	/**
-	 * @throws ExitException
-	 *
 	 * @param string             $provider
 	 * @param Social_integration $Social_integration
 	 * @param User               $User
 	 * @param Index              $Index
 	 * @param Language           $L
 	 * @param Config             $Config
+	 *
+	 * @throws ExitException
 	 */
 	protected static function email_was_specified ($provider, $Social_integration, $User, $Index, $L, $Config) {
 		$profile = self::authenticate_hybridauth($provider);
@@ -422,13 +422,13 @@ class Controller {
 		}
 	}
 	/**
-	 * @throws ExitException
-	 *
 	 * @param string $email
 	 * @param string $title
 	 * @param string $body
 	 *
 	 * @return bool
+	 *
+	 * @throws ExitException
 	 */
 	protected static function send_registration_mail ($email, $title, $body) {
 		$result = Mail::instance()->send_to($email, $title, $body);
@@ -446,11 +446,11 @@ class Controller {
 		return $result;
 	}
 	/**
-	 * @throws ExitException
-	 *
 	 * @param array $data
 	 *
 	 * @return false|string
+	 *
+	 * @throws ExitException
 	 */
 	protected static function set_data_generate_confirmation_code ($data) {
 		$code = Key::instance()->add(
@@ -460,19 +460,16 @@ class Controller {
 			TIME + Config::instance()->core['registration_confirmation_time'] * 86400
 		);
 		if (!$code) {
-			error_code(500);
-			Page::instance()->error();
-			throw new ExitException;
+			throw new ExitException(500);
 		}
 		return $code;
 	}
 	/**
-	 * @throws ExitException
-	 *
 	 * @param int    $user_id
 	 * @param string $provider
 	 * @param bool   $redirect_with_delay
 	 *
+	 * @throws ExitException
 	 */
 	protected static function add_session_and_update_data ($user_id, $provider, $redirect_with_delay = false) {
 		$adapter = self::get_adapter($provider);
@@ -552,11 +549,11 @@ class Controller {
 		}
 	}
 	/**
-	 * @throws ExitException
-	 *
 	 * @param string $provider
 	 *
 	 * @return \Hybrid_Provider_Adapter
+	 *
+	 * @throws ExitException
 	 */
 	protected static function get_adapter ($provider) {
 		try {
@@ -565,8 +562,7 @@ class Controller {
 			throw $e;
 		} catch (Exception $e) {
 			trigger_error($e->getMessage());
-			error_code(500);
-			Page::instance()->error();
+			throw new ExitException(500);
 		}
 	}
 }

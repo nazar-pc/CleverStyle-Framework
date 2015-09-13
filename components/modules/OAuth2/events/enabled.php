@@ -1,16 +1,17 @@
 <?php
 /**
- * @package        OAuth2
- * @category       modules
- * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright      Copyright (c) 2011-2013, Nazar Mokrynskyi
- * @license        MIT License, see license.txt
+ * @package   OAuth2
+ * @category  modules
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2011-2013, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
  */
 namespace cs\modules\OAuth2;
 
 use
 	cs\Config,
 	cs\Event,
+	cs\ExitException,
 	cs\Page,
 	cs\User;
 
@@ -47,25 +48,37 @@ Event::instance()
 			$Page       = Page::instance();
 			$token_data = $OAuth2->get_token($access_token);
 			if (!$token_data) {
-				error_code(403);
-				$Page->error([
-					'access_denied',
-					'access_token expired'
-				]);
+				$e = new ExitException(
+					[
+						'access_denied',
+						'access_token expired'
+					],
+					403
+				);
+				$e->getJson();
+				throw $e;
 			}
 			$client = $OAuth2->get_client($token_data['client_id']);
 			if (!$client) {
-				error_code(400);
-				$Page->error([
-					'access_denied',
-					'Invalid client id'
-				]);
+				$e = new ExitException(
+					[
+						'access_denied',
+						'Invalid client id'
+					],
+					400
+				);
+				$e->getJson();
+				throw $e;
 			} elseif (!$client['active']) {
-				error_code(403);
-				$Page->error([
-					'access_denied',
-					'Inactive client id'
-				]);
+				$e = new ExitException(
+					[
+						'access_denied',
+						'Inactive client id'
+					],
+					403
+				);
+				$e->getJson();
+				throw $e;
 			}
 			if ($token_data['type'] == 'token') {
 				// TODO: add some mark if this is client-side only token, so that it can be accounted by components
@@ -83,11 +96,15 @@ Event::instance()
 					'System/User/construct/after',
 					function () {
 						if (!User::instance()->user()) {
-							error_code(403);
-							Page::instance()->error([
-								'access_denied',
-								'Guest tokens disabled'
-							]);
+							$e = new ExitException(
+								[
+									'access_denied',
+									'Guest tokens disabled'
+								],
+								403
+							);
+							$e->getJson();
+							throw $e;
 						}
 					}
 				);

@@ -50,8 +50,7 @@ Event::instance()
 						$rc[2] = $rc[1];
 						$rc[1] = 'post';
 					} else {
-						error_code(404);
-						return;
+						throw new ExitException(404);
 					}
 			}
 			$data['rc'] = implode('/', $rc);

@@ -8,6 +8,7 @@
  */
 namespace cs\modules\Shop;
 use
+	cs\ExitException,
 	cs\Route;
 
 $Route = Route::instance();
@@ -21,9 +22,9 @@ if (!isset(
 	$_POST['image'],
 	$_POST['visible'],
 	$_POST['attributes']
-)) {
-	error_code(400);
-	return;
+)
+) {
+	throw new ExitException(400);
 }
 $result = Categories::instance()->set(
 	$Route->ids[0],
@@ -37,6 +38,5 @@ $result = Categories::instance()->set(
 	$_POST['attributes']
 );
 if (!$result) {
-	error_code(500);
-	return;
+	throw new ExitException(500);
 }

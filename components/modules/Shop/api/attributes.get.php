@@ -8,6 +8,7 @@
  */
 namespace cs\modules\Shop;
 use
+	cs\ExitException,
 	cs\Page,
 	cs\Route;
 
@@ -17,14 +18,14 @@ $Attributes = Attributes::instance();
 if (isset($_GET['ids'])) {
 	$attributes = $Attributes->get(explode(',', $_GET['ids']));
 	if (!$attributes) {
-		error_code(404);
+		throw new ExitException(404);
 	} else {
 		$Page->json($attributes);
 	}
 } elseif (isset($Route->ids[0])) {
 	$attribute = $Attributes->get($Route->ids[0]);
 	if (!$attribute) {
-		error_code(404);
+		throw new ExitException(404);
 	} else {
 		$Page->json($attribute);
 	}
@@ -33,5 +34,5 @@ if (isset($_GET['ids'])) {
 		$Attributes->get_type_to_name_array()
 	);
 } else {
-	error_code(400);
+	throw new ExitException(400);
 }

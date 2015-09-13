@@ -48,16 +48,29 @@ class Request {
 		ob_start();
 		try {
 			try {
-				Config::instance(true)->reinit();
-				Language::instance();
-				Index::instance();
+				try {
+					Config::instance(true)->reinit();
+					Language::instance();
+					Index::instance();
+				} catch (ExitException $e) {
+					if ($e->getCode()) {
+						throw $e;
+					}
+				}
+				try {
+					Index::instance(true)->__finish();
+					Page::instance()->__finish();
+					User::instance(true)->__finish();
+				} catch (ExitException $e) {
+					if ($e->getCode()) {
+						throw $e;
+					}
+				}
 			} catch (ExitException $e) {
-			}
-			try {
-				Index::instance(true)->__finish();
-				Page::instance()->__finish();
-				User::instance(true)->__finish();
-			} catch (ExitException $e) {
+				if ($e->getCode() >= 400) {
+					error_code($e->getCode());
+					Page::instance()->error($e->getMessage() ?: null, $e->getJson());
+				}
 			}
 		} catch (\Exception $e) {
 		}
@@ -126,7 +139,7 @@ class Request {
 			$_POST[$request_id]    = $SUPERGLOBALS['POST'];
 			$_REQUEST[$request_id] = $SUPERGLOBALS['POST'] + $SUPERGLOBALS['GET'];
 		} else {
-			$_SERVER = new _SERVER($SUPERGLOBALS['SERVER']);
+			$_SERVER  = new _SERVER($SUPERGLOBALS['SERVER']);
 			$_COOKIE  = $SUPERGLOBALS['COOKIE'];
 			$_GET     = $SUPERGLOBALS['GET'];
 			$_POST    = $SUPERGLOBALS['POST'];

@@ -153,8 +153,7 @@ class DB {
 		 * If failed twice - show error
 		 */
 		if (!$connection) {
-			error_code(500);
-			throw new ExitException;
+			throw new ExitException(500);
 		}
 		return $connection;
 	}

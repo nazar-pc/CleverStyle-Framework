@@ -10,6 +10,7 @@ namespace cs\modules\Static_pages;
 use
 	h,
 	cs\Config,
+	cs\ExitException,
 	cs\Index,
 	cs\Language,
 	cs\Page\Meta,
@@ -28,8 +29,7 @@ $Page       = Page::instance();
 $User       = User::instance();
 if (isset($_POST['save'])) {
 	if (!$User->get_permission('admin/Pages', 'edit_page')) {
-		error_code(403);
-		return;
+		throw new ExitException(403);
 	}
 	$Index->save(
 		$Pages->set($page['id'], $page['category'], $_POST['title'], $page['path'], $_POST['content'], $page['interface'])
@@ -66,8 +66,7 @@ if ($page['interface']) {
 	$is_admin = $User->admin();
 	if (isset($_GET['edit'])) {
 		if (!$is_admin) {
-			error_code(404);
-			return;
+			throw new ExitException(404);
 		}
 		$Index->form    = true;
 		$Index->buttons = false;

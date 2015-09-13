@@ -11,6 +11,7 @@ namespace cs\modules\Photo_gallery;
 use
 	cs\Config,
 	cs\Event,
+	cs\ExitException,
 	cs\Language;
 
 Event::instance()
@@ -33,8 +34,7 @@ Event::instance()
 				$Photo_gallery = Photo_gallery::instance();
 				$galleries     = $Photo_gallery->get_galleries_list();
 				if (!isset($galleries[$rc[2]])) {
-					error_code(404);
-					return;
+					throw new ExitException(404);
 				}
 				$rc[2] = $galleries[$rc[2]];
 			}

@@ -6,6 +6,7 @@
  * @license   MIT License, see license.txt
  */
 namespace cs\Index;
+use cs\ExitException;
 /**
  * @property bool     $module          Name of current module
  * @property bool     $in_api          Whether current page is api
@@ -21,6 +22,8 @@ trait Router {
 	 * Execute router
 	 *
 	 * Depending on module, files-based or controller-based router might be used
+	 *
+	 * @throws ExitException
 	 */
 	protected function execute_router () {
 		$this->check_and_normalize_route();
@@ -31,6 +34,8 @@ trait Router {
 	}
 	/**
 	 * Normalize route path and fill `cs\Index::$route_path` and `cs\Index::$route_ids` properties
+	 *
+	 * @throws ExitException
 	 */
 	protected function check_and_normalize_route () {
 		if (!file_exists("$this->working_directory/index.json")) {
@@ -48,11 +53,7 @@ trait Router {
 			/**
 			 * If path not specified - take first from structure
 			 */
-			$code = $this->check_and_normalize_route_internal($path, $structure);
-			if ($code !== 200) {
-				error_code($code);
-				return;
-			}
+			$this->check_and_normalize_route_internal($path, $structure);
 			$this->path[$nesting_level] = $path;
 			/**
 			 * Fill paths array intended for controller's usage
@@ -68,7 +69,7 @@ trait Router {
 	 * @param string $path
 	 * @param array  $structure
 	 *
-	 * @return int HTTP status code
+	 * @throws ExitException
 	 */
 	protected function check_and_normalize_route_internal (&$path, $structure) {
 		/**
@@ -80,15 +81,14 @@ trait Router {
 			 * We need exact paths for API request (or `_` ending if available) and less strict mode for other cases that allows go deeper automatically
 			 */
 			if ($path !== '_' && api_path()) {
-				return 404;
+				throw new ExitException(404);
 			}
 		} elseif (!isset($structure[$path]) && !in_array($path, $structure)) {
-			return 404;
+			throw new ExitException(404);
 		}
 		if (!$this->check_permission($path)) {
-			return 403;
+			throw new ExitException(403);
 		}
-		return 200;
 	}
 	/**
 	 * Include files necessary for module page rendering
@@ -138,6 +138,8 @@ trait Router {
 	 * methods also doesn't exist
 	 *
 	 * @param string[] $available_methods
+	 *
+	 * @throws ExitException
 	 */
 	protected function handler_not_found ($available_methods) {
 		if ($available_methods) {
@@ -147,7 +149,7 @@ trait Router {
 				error_code(501);
 			}
 		} else {
-			error_code(404);
+			throw new ExitException(404);
 		}
 	}
 	/**

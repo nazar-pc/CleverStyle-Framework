@@ -11,6 +11,7 @@ use
 	h,
 	cs\Config,
 	cs\Event,
+	cs\ExitException,
 	cs\Index,
 	cs\Language,
 	cs\Page\Meta,
@@ -32,16 +33,14 @@ $Route  = Route::instance();
  * If no tag specified
  */
 if (!isset($Route->route[1])) {
-	error_code(404);
-	return;
+	throw new ExitException(404);
 }
 /**
  * Find tag
  */
 $tag = $Tags->get_by_text($Route->route[1]);
 if (!$tag) {
-	error_code(404);
-	return;
+	throw new ExitException(404);
 }
 $tag = $Tags->get($tag);
 /**

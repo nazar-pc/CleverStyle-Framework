@@ -8,6 +8,7 @@
  */
 namespace cs\modules\Shop;
 use
+	cs\ExitException,
 	cs\Route;
 
 $Route = Route::instance();
@@ -21,9 +22,9 @@ if (!isset(
 	$_POST['attributes'],
 	$_POST['images'],
 	$_POST['tags']
-)) {
-	error_code(400);
-	return;
+)
+) {
+	throw new ExitException(400);
 }
 $result = Items::instance()->set(
 	$Route->ids[0],
@@ -38,6 +39,5 @@ $result = Items::instance()->set(
 	_trim(explode(',', $_POST['tags']))
 );
 if (!$result) {
-	error_code(500);
-	return;
+	throw new ExitException(500);
 }

@@ -8,6 +8,7 @@
  */
 namespace cs\modules\Shop;
 use
+	cs\ExitException,
 	cs\Page,
 	cs\Route;
 
@@ -17,7 +18,7 @@ $Order_statuses = Order_statuses::instance();
 if (isset($Route->ids[0])) {
 	$order_status = $Order_statuses->get($Route->ids[0]);
 	if (!$order_status) {
-		error_code(404);
+		throw new ExitException(404);
 	} else {
 		$Page->json($order_status);
 	}

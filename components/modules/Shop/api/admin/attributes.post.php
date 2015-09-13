@@ -9,6 +9,7 @@
 namespace cs\modules\Shop;
 use
 	cs\Config,
+	cs\ExitException,
 	cs\Page,
 	cs\Route;
 
@@ -17,9 +18,9 @@ if (!isset(
 	$_POST['title'],
 	$_POST['title_internal'],
 	$_POST['value']
-)) {
-	error_code(400);
-	return;
+)
+) {
+	throw new ExitException(400);
 }
 $id = Attributes::instance()->add(
 	$_POST['type'],
@@ -28,8 +29,7 @@ $id = Attributes::instance()->add(
 	$_POST['value']
 );
 if (!$id) {
-	error_code(500);
-	return;
+	throw new ExitException(500);
 }
 status_code(201);
 $Config = Config::instance();

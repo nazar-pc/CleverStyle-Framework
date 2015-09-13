@@ -11,6 +11,7 @@ use
 	h,
 	cs\Config,
 	cs\Event,
+	cs\ExitException,
 	cs\Language,
 	cs\Page,
 	cs\Route,
@@ -33,21 +34,18 @@ if (isset($_GET['secret'])) {
 		]
 	);
 	if (!$id) {
-		error_code(400);
-		return;
+		throw new ExitException(400);
 	}
 	$transaction = $Transactions->get($id[0]);
 	if (!$transaction) {
-		error_code(404);
-		return;
+		throw new ExitException(404);
 	}
 	if (
 		$transaction['input_address'] != $_GET['input_address'] ||
 		$transaction['destination_address'] != $_GET['destination_address'] ||
 		$transaction['amount'] > $_GET['value'] / 100000000
 	) {
-		error_code(400);
-		return;
+		throw new ExitException(400);
 	}
 	$Transactions->set_as_paid(
 		$transaction['id'],
@@ -70,17 +68,14 @@ if (isset($_GET['secret'])) {
 } else {
 	$Route = Route::instance();
 	if (!isset($Route->ids[0])) {
-		error_code(400);
-		return;
+		throw new ExitException(400);
 	}
 	$transaction = $Transactions->get($Route->ids[0]);
 	if (!$transaction) {
-		error_code(404);
-		return;
+		throw new ExitException(404);
 	}
 	if ($transaction['user'] != User::instance()->id) {
-		error_code(403);
-		return;
+		throw new ExitException(403);
 	}
 	if ($transaction['confirmed']) {
 		$callback = '/';

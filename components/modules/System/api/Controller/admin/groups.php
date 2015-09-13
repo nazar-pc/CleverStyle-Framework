@@ -9,6 +9,7 @@
  */
 namespace cs\modules\System\api\Controller\admin;
 use
+	cs\ExitException,
 	cs\Group,
 	cs\Page;
 trait groups {
@@ -27,44 +28,39 @@ trait groups {
 			);
 		}
 		if (!$result) {
-			error_code(404);
-			return;
+			throw new ExitException(404);
 		}
 		$Page->json($result);
 	}
 	static function admin_groups___post () {
 		if (!isset($_POST['title'], $_POST['description'])) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		if (Group::instance()->add($_POST['title'], $_POST['description'])) {
 			status_code(201);
 		} else {
-			error_code(500);
+			throw new ExitException(500);
 		}
 	}
 	static function admin_groups___put ($route_ids) {
 		if (!isset($route_ids[0], $_POST['title'], $_POST['description'])) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		if (!Group::instance()->set($route_ids[0], $_POST['title'], $_POST['description'])) {
-			error_code(500);
+			throw new ExitException(500);
 		}
 	}
 	static function admin_groups___delete ($route_ids) {
 		if (!isset($route_ids[0])) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		if (!Group::instance()->del($route_ids[0])) {
-			error_code(500);
+			throw new ExitException(500);
 		}
 	}
 	static function admin_groups_permissions_get ($route_ids) {
 		if (!isset($route_ids[0])) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		Page::instance()->json(
 			Group::instance()->get_permissions($route_ids[0]) ?: []
@@ -72,11 +68,10 @@ trait groups {
 	}
 	static function admin_groups_permissions_post ($route_ids) {
 		if (!isset($route_ids[0], $_POST['permissions'])) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		if (!Group::instance()->set_permissions($_POST['permissions'], $route_ids[0])) {
-			error_code(500);
+			throw new ExitException(500);
 		}
 	}
 }

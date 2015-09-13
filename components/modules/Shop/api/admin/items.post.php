@@ -9,6 +9,7 @@
 namespace cs\modules\Shop;
 use
 	cs\Config,
+	cs\ExitException,
 	cs\Page,
 	cs\Route;
 
@@ -21,9 +22,9 @@ if (!isset(
 	$_POST['attributes'],
 	$_POST['images'],
 	$_POST['tags']
-)) {
-	error_code(400);
-	return;
+)
+) {
+	throw new ExitException(400);
 }
 $id = Items::instance()->add(
 	$_POST['category'],
@@ -37,8 +38,7 @@ $id = Items::instance()->add(
 	_trim(explode(',', $_POST['tags']))
 );
 if (!$id) {
-	error_code(500);
-	return;
+	throw new ExitException(500);
 }
 status_code(201);
 $Config = Config::instance();

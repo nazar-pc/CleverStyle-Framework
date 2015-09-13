@@ -9,6 +9,7 @@
 namespace cs\modules\Shop;
 use
 	cs\Config,
+	cs\ExitException,
 	cs\Page,
 	cs\Route;
 
@@ -18,9 +19,9 @@ if (!isset(
 	$_POST['address_needed'],
 	$_POST['title'],
 	$_POST['description']
-)) {
-	error_code(400);
-	return;
+)
+) {
+	throw new ExitException(400);
 }
 $id = Shipping_types::instance()->add(
 	$_POST['price'],
@@ -30,8 +31,7 @@ $id = Shipping_types::instance()->add(
 	$_POST['description']
 );
 if (!$id) {
-	error_code(500);
-	return;
+	throw new ExitException(500);
 }
 status_code(201);
 $Config = Config::instance();

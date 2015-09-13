@@ -8,6 +8,7 @@
  */
 namespace cs\modules\Shop;
 use
+	cs\ExitException,
 	cs\Page,
 	cs\Route,
 	cs\Session;
@@ -19,12 +20,12 @@ $Orders  = Orders::instance();
 if (isset($Route->ids[0], $Route->path[1])) {
 	$order = $Orders->get($Route->ids[0]);
 	if (!$order) {
-		error_code(404);
+		throw new ExitException(404);
 	} elseif (
 		$order['user'] != $Session->get_user() &&
 		!in_array($order['id'], $Session->get_data('shop_orders'))
 	) {
-		error_code(403);
+		throw new ExitException(403);
 	}
 	switch ($Route->path[1]) {
 		/**
@@ -44,12 +45,12 @@ if (isset($Route->ids[0], $Route->path[1])) {
 } elseif (isset($Route->ids[0])) {
 	$order = $Orders->get($Route->ids[0]);
 	if (!$order) {
-		error_code(404);
+		throw new ExitException(404);
 	} elseif (
 		$order['user'] != $Session->get_user() &&
 		!in_array($order['id'], $Session->get_data('shop_orders'))
 	) {
-		error_code(403);
+		throw new ExitException(403);
 	} else {
 		$Page->json($order);
 	}

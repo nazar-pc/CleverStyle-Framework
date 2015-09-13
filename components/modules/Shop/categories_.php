@@ -10,13 +10,14 @@ namespace cs\modules\Shop;
 use
 	h,
 	cs\Config,
+	cs\ExitException,
 	cs\Language\Prefix,
 	cs\Page,
 	cs\Route;
 $Config          = Config::instance();
 $L               = new Prefix('shop_');
 $Page            = Page::instance();
-$Route = Route::instance();
+$Route           = Route::instance();
 $Categories      = Categories::instance();
 $all_categories  = $Categories->get_for_user($Categories->get_all());
 $all_categories  = array_combine(array_column($all_categories, 'id'), $all_categories);
@@ -42,8 +43,7 @@ if (isset($all_categories[$current_category])) {
 } elseif ($current_category === 0) {
 	$canonical_url = "{$Config->base_url()}/$module_path";
 } else {
-	error_code(404);
-	return;
+	throw new ExitException(404);
 }
 $Page->canonical_url($canonical_url);
 $page = (int)@$_GET['page'] ?: 1;
@@ -52,10 +52,12 @@ if ($page == 1 && @$categories_tree[$current_category]) {
 	foreach ($categories_tree[$current_category] as $category) {
 		$category                            = $all_categories[$category];
 		$categories_list[$category['title']] =
-			h::{'img#img'}([
-				'src'   => $category['image'] ?: Items::DEFAULT_IMAGE,
-				'title' => h::prepare_attr_value($category['title'])
-			]).
+			h::{'img#img'}(
+				[
+					'src'   => $category['image'] ?: Items::DEFAULT_IMAGE,
+					'title' => h::prepare_attr_value($category['title'])
+				]
+			).
 			h::{'h1 a#link'}(
 				$category['title'],
 				[
@@ -63,20 +65,27 @@ if ($page == 1 && @$categories_tree[$current_category]) {
 				]
 			).
 			h::{'#description'}($category['description'] ?: false).
-			h::{'section#nested article[is=cs-shop-category-nested]'}(array_map(function ($category) use ($all_categories, $module_path, $categories_path) {
-				$category = $all_categories[$category];
-				return
-					h::{'img#img'}([
-						'src'   => $category['image'] ?: Items::DEFAULT_IMAGE,
-						'title' => h::prepare_attr_value($category['title'])
-					]).
-					h::{'h1 a#link'}(
-						$category['title'],
-						[
-							'href' => "$module_path/$categories_path/".path($category['title']).":$category[id]"
-						]
-					);
-			}, @$categories_tree[$category['id']] ?: []) ?: false);
+			h::{'section#nested article[is=cs-shop-category-nested]'}(
+				array_map(
+					function ($category) use ($all_categories, $module_path, $categories_path) {
+						$category = $all_categories[$category];
+						return
+							h::{'img#img'}(
+								[
+									'src'   => $category['image'] ?: Items::DEFAULT_IMAGE,
+									'title' => h::prepare_attr_value($category['title'])
+								]
+							).
+							h::{'h1 a#link'}(
+								$category['title'],
+								[
+									'href' => "$module_path/$categories_path/".path($category['title']).":$category[id]"
+								]
+							);
+					},
+					@$categories_tree[$category['id']] ?: []
+				) ?: false
+			);
 	}
 	ksort($categories_list);
 	$Page->content(
@@ -89,16 +98,18 @@ if (!$current_category) {
 }
 $count = (int)@$_GET['count'] ?: $Config->module('Shop')->items_per_page;
 $Items = Items::instance();
-$items = $Items->get($Items->search(
-	[
-		'listed'   => 1,
-		'category' => $current_category
-	] + (array)$_GET,
-	$page,
-	$count,
-	@$_GET['order_by'] ?: 'id',
-	@$_GET['asc']
-));
+$items = $Items->get(
+	$Items->search(
+		[
+			'listed'   => 1,
+			'category' => $current_category
+		] + (array)$_GET,
+		$page,
+		$count,
+		@$_GET['order_by'] ?: 'id',
+		@$_GET['asc']
+	)
+);
 if (!$items) {
 	return;
 }
@@ -116,10 +127,12 @@ $items_total     = $Items->search(
 $base_items_path = "$module_path/".path($L->items).'/'.path($all_categories[$current_category]['title']).'/';
 foreach ($items as &$item) {
 	$item = [
-		h::{'img#img'}([
-			'src'   => @$item['images'][0] ?: Items::DEFAULT_IMAGE,
-			'title' => h::prepare_attr_value($item['title'])
-		]).
+		h::{'img#img'}(
+			[
+				'src'   => @$item['images'][0] ?: Items::DEFAULT_IMAGE,
+				'title' => h::prepare_attr_value($item['title'])
+			]
+		).
 		h::{'h1 a#link'}(
 			$item['title'],
 			[
@@ -139,7 +152,12 @@ foreach ($items as &$item) {
 unset($item);
 $Page->content(
 	h::{'section[is=cs-shop-category-items] article[is=cs-shop-category-item]'}(array_values($items)).
-	pages($page, ceil($items_total / $count), function ($page) use ($canonical_url) {
-		return "$canonical_url/?page=$page";
-	}, true)
+	pages(
+		$page,
+		ceil($items_total / $count),
+		function ($page) use ($canonical_url) {
+			return "$canonical_url/?page=$page";
+		},
+		true
+	)
 );

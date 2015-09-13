@@ -8,13 +8,13 @@
  */
 namespace cs\modules\Shop;
 use
+	cs\ExitException,
 	cs\Route;
 
 $Route = Route::instance();
 if (!isset($Route->ids[0])) {
-	error_code(400);
-	return;
+	throw new ExitException(400);
 }
 if (!Orders::instance()->del($Route->ids[0])) {
-	error_code(500);
+	throw new ExitException(500);
 }

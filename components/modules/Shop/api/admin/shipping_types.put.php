@@ -8,6 +8,7 @@
  */
 namespace cs\modules\Shop;
 use
+	cs\ExitException,
 	cs\Route;
 
 $Route = Route::instance();
@@ -18,9 +19,9 @@ if (!isset(
 	$_POST['address_needed'],
 	$_POST['title'],
 	$_POST['description']
-)) {
-	error_code(400);
-	return;
+)
+) {
+	throw new ExitException(400);
 }
 $result = Shipping_types::instance()->set(
 	$Route->ids[0],
@@ -31,6 +32,5 @@ $result = Shipping_types::instance()->set(
 	$_POST['description']
 );
 if (!$result) {
-	error_code(500);
-	return;
+	throw new ExitException(500);
 }

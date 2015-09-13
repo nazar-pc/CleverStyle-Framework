@@ -57,6 +57,8 @@ class Route {
 	public $ids = [];
 	/**
 	 * Loading of configuration, initialization of $Config, $Cache, $L and Page objects, Routing processing
+	 *
+	 * @throws ExitException
 	 */
 	protected function construct () {
 		$Config = Config::instance();
@@ -102,16 +104,13 @@ class Route {
 		if (mb_strpos($processed_route['relative_address'], 'System/redirect/') === 0) {
 			if ($this->is_referer_local($Config)) {
 				_header('Location: '.substr($processed_route['relative_address'], 16));
+				throw new ExitException;
 			} else {
-				error_code(400);
-				Page::instance()->error();
+				throw new ExitException(400);
 			}
-			throw new ExitException;
 		}
 		if (!$processed_route) {
-			error_code(403);
-			Page::instance()->error();
-			return;
+			throw new ExitException(403);
 		}
 		$this->route = $processed_route['route'];
 		/**

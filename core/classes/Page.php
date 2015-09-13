@@ -470,7 +470,7 @@ class Page {
 				!_include(THEMES."/$this->theme/error.php", false, false)
 			) {
 				echo "<!doctype html>\n".
-					h::title($error_description).
+					h::title($error).
 					($error_description ?: $error);
 			}
 			$this->Content	= ob_get_clean();

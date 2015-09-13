@@ -8,6 +8,7 @@
  */
 namespace cs\modules\Shop;
 use
+	cs\ExitException,
 	cs\Route;
 
 $Route = Route::instance();
@@ -18,9 +19,9 @@ if (!isset(
 	$_POST['color'],
 	$_POST['send_update_status_email'],
 	$_POST['comment']
-)) {
-	error_code(400);
-	return;
+)
+) {
+	throw new ExitException(400);
 }
 $result = Order_statuses::instance()->set(
 	$Route->ids[0],
@@ -31,6 +32,5 @@ $result = Order_statuses::instance()->set(
 	$_POST['comment']
 );
 if (!$result) {
-	error_code(500);
-	return;
+	throw new ExitException(500);
 }

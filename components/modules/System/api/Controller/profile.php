@@ -9,13 +9,14 @@
  */
 namespace cs\modules\System\api\Controller;
 use
+	cs\ExitException,
 	cs\Page,
 	cs\User;
 trait profile {
 	static function profile_get () {
 		$User = User::instance();
 		if ($User->guest()) {
-			error_code(403);
+			throw new ExitException(403);
 		}
 	}
 	static function profile_profile_get () {

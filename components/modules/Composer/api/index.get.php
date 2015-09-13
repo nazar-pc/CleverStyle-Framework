@@ -8,11 +8,11 @@
  */
 namespace cs\modules\Composer;
 use
+	cs\ExitException,
 	cs\Page,
 	cs\User;
 if (!User::instance()->admin()) {
-	error_code(403);
-	return;
+	throw new ExitException(403);
 }
 $log_file = STORAGE.'/Composer/last_execution.log';
 if (file_exists($log_file)) {

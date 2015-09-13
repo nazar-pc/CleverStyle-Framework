@@ -9,6 +9,7 @@
  */
 namespace cs\modules\System\api\Controller\admin;
 use
+	cs\ExitException,
 	cs\Language,
 	cs\Page,
 	cs\User;
@@ -32,12 +33,10 @@ trait users {
 		} elseif (isset($_GET['search'])) {
 			$result = _int($User->search_users($_GET['search']));
 		} else {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		if (!$result) {
-			error_code(404);
-			return;
+			throw new ExitException(404);
 		}
 		$Page->json($result);
 	}
@@ -49,15 +48,13 @@ trait users {
 	}
 	static function admin_users___patch ($route_ids) {
 		if (!isset($route_ids[0], $_POST['user'])) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		$User    = User::instance();
 		$user_id = (int)$route_ids[0];
 		$is_bot  = in_array(User::BOT_GROUP_ID, $User->get_groups($user_id));
 		if ($is_bot && !@$_POST['user']['login'] && !@$_POST['user']['email']) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		$columns_allowed_to_edit = $is_bot
 			? ['login', 'username', 'email', 'status']
@@ -74,8 +71,7 @@ trait users {
 		}
 		unset($d);
 		if (!$user_data && ($is_bot || !isset($_POST['user']['password']))) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		$L    = Language::instance();
 		$Page = Page::instance();
@@ -84,39 +80,32 @@ trait users {
 			$user_data['login'] !== $User->get('login', $user_id) &&
 			$User->get_id(hash('sha224', $user_data['login']))
 		) {
-			error_code(400);
-			$Page->error($L->login_occupied);
-			return;
+			throw new ExitException($L->login_occupied, 400);
 		}
 		if (
 			isset($user_data['email']) &&
 			$user_data['email'] !== $User->get('email', $user_id) &&
 			$User->get_id(hash('sha224', $user_data['email']))
 		) {
-			error_code(400);
-			$Page->error($L->email_occupied);
-			return;
+			throw new ExitException($L->email_occupied, 400);
 		}
 		if (!$User->set($user_data, null, $user_id)) {
-			error_code(500);
-			return;
+			throw new ExitException(500);
 		}
 		if (!$is_bot && isset($_POST['user']['password']) && !$User->set_password($_POST['user']['password'], $user_id)) {
-			error_code(500);
+			throw new ExitException(500);
 		}
 	}
 	static function admin_users___post () {
 		if (!isset($_POST['type'])) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		$User = User::instance();
 		$Page = Page::instance();
 		if ($_POST['type'] === 'user' && isset($_POST['email'])) {
 			$result = $User->registration($_POST['email'], false, false);
 			if (!$result) {
-				error_code(500);
-				return;
+				throw new ExitException(500);
 			}
 			status_code(201);
 			$Page->json(
@@ -129,16 +118,15 @@ trait users {
 			if ($User->add_bot($_POST['name'], $_POST['user_agent'], $_POST['ip'])) {
 				status_code(201);
 			} else {
-				error_code(500);
+				throw new ExitException(500);
 			}
 		} else {
-			error_code(400);
+			throw new ExitException(400);
 		}
 	}
 	static function admin_users___search () {
 		if (!isset($_POST['mode'], $_POST['column'], $_POST['text'], $_POST['page'], $_POST['limit'])) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		$mode           = $_POST['mode'];
 		$column         = $_POST['column'];
@@ -153,8 +141,7 @@ trait users {
 				!in_array($column, $search_options['columns'])
 			)
 		) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		$cdb   = User::instance()->db();
 		$where = static::admin_users___search_prepare_where($mode, $text, $column ?: $search_options['columns'], $cdb);
@@ -175,11 +162,10 @@ trait users {
 			]
 		);
 		if (!$count) {
-			error_code(404);
-			return;
+			throw new ExitException(404);
 		}
 		$where = str_replace('%', '%%', $where);
-		$ids = $cdb->qfas(
+		$ids   = $cdb->qfas(
 			[
 				"SELECT `id`
 				FROM `[prefix]users`
@@ -321,8 +307,7 @@ trait users {
 	}
 	static function admin_users_permissions_get ($route_ids) {
 		if (!isset($route_ids[0])) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		Page::instance()->json(
 			User::instance()->get_permissions($route_ids[0]) ?: []
@@ -330,11 +315,10 @@ trait users {
 	}
 	static function admin_users_permissions_post ($route_ids) {
 		if (!isset($route_ids[0], $_POST['permissions'])) {
-			error_code(400);
-			return;
+			throw new ExitException(400);
 		}
 		if (!User::instance()->set_permissions($_POST['permissions'], $route_ids[0])) {
-			error_code(500);
+			throw new ExitException(500);
 		}
 	}
 }

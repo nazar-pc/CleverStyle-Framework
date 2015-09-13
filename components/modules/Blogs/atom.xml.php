@@ -10,6 +10,7 @@ namespace cs\modules\Blogs;
 use
 	h,
 	cs\Config,
+	cs\ExitException,
 	cs\Language,
 	cs\Page,
 	cs\User;
@@ -29,8 +30,7 @@ $number   = $Config->module('Blogs')->posts_per_page;
 if (isset($_GET['section'])) {
 	$section = $Sections->get($_GET['section']);
 	if (!$section) {
-		error_code(404);
-		return;
+		throw new ExitException(404);
 	}
 	$title[] = $L->section;
 	$title[] = $section['title'];
@@ -38,8 +38,7 @@ if (isset($_GET['section'])) {
 } elseif (isset($_GET['tag'])) {
 	$tag = $Tags->get($_GET['tag']);
 	if (!$tag) {
-		error_code(404);
-		return;
+		throw new ExitException(404);
 	}
 	$title[] = $L->tag;
 	$title[] = $tag['text'];

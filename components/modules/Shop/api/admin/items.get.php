@@ -8,23 +8,24 @@
  */
 namespace cs\modules\Shop;
 use
+	cs\ExitException,
 	cs\Page,
 	cs\Route;
 
-$Page       = Page::instance();
-$Route      = Route::instance();
+$Page  = Page::instance();
+$Route = Route::instance();
 $Items = Items::instance();
 if (isset($_GET['ids'])) {
 	$items = $Items->get(explode(',', $_GET['ids']));
 	if (!$items) {
-		error_code(404);
+		throw new ExitException(404);
 	} else {
 		$Page->json($items);
 	}
 } elseif (isset($Route->ids[0])) {
 	$item = $Items->get($Route->ids[0]);
 	if (!$item) {
-		error_code(404);
+		throw new ExitException(404);
 	} else {
 		$Page->json($item);
 	}

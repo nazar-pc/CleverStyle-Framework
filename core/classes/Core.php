@@ -114,18 +114,20 @@ AddEncoding gzip .html
 	 * Load main.json config file and return array of it contents
 	 *
 	 * @return array
+	 *
+	 * @throws ExitException
 	 */
 	protected function load_config () {
 		if (!file_exists(DIR.'/config/main.json')) {
-			error_code(500);
-			Page::instance()->error(
+			throw new ExitException(
 				h::p('Config file not found, is system installed properly?').
 				h::a(
 					'How to install CleverStyle CMS',
 					[
 						'href' => 'https://github.com/nazar-pc/CleverStyle-CMS/wiki/Installation'
 					]
-				)
+				),
+				500
 			);
 		}
 		return file_get_json_nocomments(DIR.'/config/main.json');
