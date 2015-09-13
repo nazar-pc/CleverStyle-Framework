@@ -12,7 +12,6 @@ use
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
-	cs\Page,
 	cs\User;
 
 Event::instance()
