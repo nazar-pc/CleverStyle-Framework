@@ -53,7 +53,7 @@ Event::instance()
 					],
 					403
 				);
-				$e->getJson();
+				$e->setJson();
 				throw $e;
 			}
 			$client = $OAuth2->get_client($token_data['client_id']);
@@ -65,7 +65,7 @@ Event::instance()
 					],
 					400
 				);
-				$e->getJson();
+				$e->setJson();
 				throw $e;
 			} elseif (!$client['active']) {
 				$e = new ExitException(
@@ -75,7 +75,7 @@ Event::instance()
 					],
 					403
 				);
-				$e->getJson();
+				$e->setJson();
 				throw $e;
 			}
 			if ($token_data['type'] == 'token') {
@@ -101,7 +101,7 @@ Event::instance()
 								],
 								403
 							);
-							$e->getJson();
+							$e->setJson();
 							throw $e;
 						}
 					}

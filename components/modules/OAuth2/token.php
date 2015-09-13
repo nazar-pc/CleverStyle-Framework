@@ -30,7 +30,7 @@ if (!isset($_POST['grant_type'])) {
 		],
 		400
 	);
-	$e->getJson();
+	$e->setJson();
 	throw $e;
 }
 if (!isset($_POST['client_id'])) {
@@ -41,7 +41,7 @@ if (!isset($_POST['client_id'])) {
 		],
 		400
 	);
-	$e->getJson();
+	$e->setJson();
 	throw $e;
 }
 if (!isset($_POST['client_secret'])) {
@@ -52,7 +52,7 @@ if (!isset($_POST['client_secret'])) {
 		],
 		400
 	);
-	$e->getJson();
+	$e->setJson();
 	throw $e;
 }
 $OAuth2 = OAuth2::instance();
@@ -65,7 +65,7 @@ if (!$client) {
 		],
 		400
 	);
-	$e->getJson();
+	$e->setJson();
 	throw $e;
 }
 if (!$client['active']) {
@@ -76,7 +76,7 @@ if (!$client['active']) {
 		],
 		400
 	);
-	$e->getJson();
+	$e->setJson();
 	throw $e;
 }
 if ($_POST['client_secret'] != $client['secret']) {
@@ -87,7 +87,7 @@ if ($_POST['client_secret'] != $client['secret']) {
 		],
 		400
 	);
-	$e->getJson();
+	$e->setJson();
 	throw $e;
 }
 if (!$client['domain']) {
@@ -98,7 +98,7 @@ if (!$client['domain']) {
 		],
 		400
 	);
-	$e->getJson();
+	$e->setJson();
 	throw $e;
 }
 if ($_POST['grant_type'] == 'authorization_code') {
@@ -110,7 +110,7 @@ if ($_POST['grant_type'] == 'authorization_code') {
 			],
 			400
 		);
-		$e->getJson();
+		$e->setJson();
 		throw $e;
 	} elseif (
 		urldecode($_POST['redirect_uri']) != $Config->base_url().'/OAuth2/blank/' &&
@@ -123,7 +123,7 @@ if ($_POST['grant_type'] == 'authorization_code') {
 			],
 			400
 		);
-		$e->getJson();
+		$e->setJson();
 		throw $e;
 	}
 }
@@ -135,7 +135,7 @@ if (!in_array($_POST['grant_type'], ['authorization_code', 'refresh_token', 'gue
 		],
 		400
 	);
-	$e->getJson();
+	$e->setJson();
 	throw $e;
 }
 /**
@@ -151,7 +151,7 @@ switch ($_POST['grant_type']) {
 				],
 				400
 			);
-			$e->getJson();
+			$e->setJson();
 			throw $e;
 		}
 		$token_data = $OAuth2->get_code($_POST['code'], $client['id'], $client['secret'], urldecode($_POST['redirect_uri']));
@@ -188,7 +188,7 @@ switch ($_POST['grant_type']) {
 				],
 				400
 			);
-			$e->getJson();
+			$e->setJson();
 			throw $e;
 		}
 		$token_data = $OAuth2->refresh_token($_POST['refresh_token'], $client['id'], $client['secret']);
@@ -237,7 +237,7 @@ switch ($_POST['grant_type']) {
 				],
 				500
 			);
-			$e->getJson();
+			$e->setJson();
 			throw $e;
 		}
 		$token_data = $OAuth2->get_code($code, $client['id'], $client['secret'], '');
@@ -253,7 +253,7 @@ switch ($_POST['grant_type']) {
 				],
 				500
 			);
-			$e->getJson();
+			$e->setJson();
 			throw $e;
 		}
 }

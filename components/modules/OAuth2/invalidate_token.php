@@ -21,7 +21,7 @@ if (!isset($_POST['access_token'])) {
 		],
 		400
 	);
-	$e->getJson();
+	$e->setJson();
 	throw $e;
 }
 if (!$OAuth2->del_token($_POST['access_token'])) {
@@ -32,7 +32,7 @@ if (!$OAuth2->del_token($_POST['access_token'])) {
 		],
 		500
 	);
-	$e->getJson();
+	$e->setJson();
 	throw $e;
 }
 interface_off();
