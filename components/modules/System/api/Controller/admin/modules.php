@@ -33,39 +33,15 @@ trait modules {
 			/**
 			 * Check if API available
 			 */
-			if (is_dir(MODULES."/$module_name/api")) {
-				$module['api'] = [];
-				$file          = file_exists_with_extension(MODULES."/$module_name/api/readme", ['txt', 'html']);
-				if ($file) {
-					$module['api'] = [
-						'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
-						'content' => file_get_contents($file)
-					];
-				}
-				unset($file);
-			}
+			static::check_module_feature_availability($module, 'readme', 'api');
 			/**
 			 * Check if readme available
 			 */
-			$file = file_exists_with_extension(MODULES."/$module_name/readme", ['txt', 'html']);
-			if ($file) {
-				$module['readme'] = [
-					'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
-					'content' => file_get_contents($file)
-				];
-			}
-			unset($file);
+			static::check_module_feature_availability($module, 'readme');
 			/**
 			 * Check if license available
 			 */
-			$file = file_exists_with_extension(MODULES."/$module_name/license", ['txt', 'html']);
-			if ($file) {
-				$module['license'] = [
-					'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
-					'content' => file_get_contents($file)
-				];
-			}
-			unset($file);
+			static::check_module_feature_availability($module, 'license');
 			if (file_exists(MODULES."/$module_name/meta.json")) {
 				$module['meta'] = file_get_json(MODULES."/$module_name/meta.json");
 			}
@@ -73,5 +49,24 @@ trait modules {
 		}
 		unset($module_name, $module_data, $module);
 		Page::instance()->json($modules_list);
+	}
+	/**
+	 * @param array  $module
+	 * @param string $feature
+	 * @param string $dir
+	 */
+	protected static function check_module_feature_availability (&$module, $feature, $dir = '') {
+		/**
+		 * Check if feature available
+		 */
+		$file = file_exists_with_extension(MODULES."/$module[name]/$dir/$feature", ['txt', 'html']);
+		if ($file) {
+			$module[$dir ?: $feature] = [
+				'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
+				'content' => file_get_contents($file)
+			];
+		} elseif ($dir && is_dir(MODULES."/$module[name]/$dir")) {
+			$module[$dir ?: $feature] = [];
+		}
 	}
 }
