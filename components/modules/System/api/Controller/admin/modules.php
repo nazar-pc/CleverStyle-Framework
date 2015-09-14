@@ -10,9 +10,11 @@
 namespace cs\modules\System\api\Controller\admin;
 use
 	cs\Config,
+	cs\Event,
+	cs\ExitException,
 	cs\Page;
 trait modules {
-	static function admin_modules_get () {
+	static function admin_modules___get () {
 		$Config       = Config::instance();
 		$modules_list = [];
 		foreach ($Config->components['modules'] as $module_name => &$module_data) {
@@ -67,6 +69,34 @@ trait modules {
 			];
 		} elseif ($dir && is_dir(MODULES."/$module[name]/$dir")) {
 			$module[$dir ?: $feature] = [];
+		}
+	}
+	static function admin_modules_default_module_get () {
+		Page::instance()->json(
+			Config::instance()->core['default_module']
+		);
+	}
+	static function admin_modules_default_module_post () {
+		if (!isset($_POST['module'])) {
+			throw new ExitException(400);
+		}
+		$module_name = $_POST['module'];
+		$Config      = Config::instance();
+		if (!in_array($module_name, $Config->components['modules'])) {
+			throw new ExitException(404);
+		}
+		if (!Event::instance()->fire(
+			'admin/System/components/modules/default_module/process',
+			[
+				'name' => $module_name
+			]
+		)
+		) {
+			throw new ExitException(500);
+		}
+		$Config->core['default_module'] = $module_name;
+		if (!$Config->save()) {
+			throw new ExitException(500);
 		}
 	}
 }
