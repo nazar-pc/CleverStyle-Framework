@@ -158,8 +158,8 @@ switch ($_POST['grant_type']) {
 		if (!$token_data) {
 			$e = new ExitException(
 				[
-					'server_error',
-					"Server can't get token data, try later"
+					'access_denied',
+					"Server can't get token data, check parameters and try again"
 				],
 				403
 			);
