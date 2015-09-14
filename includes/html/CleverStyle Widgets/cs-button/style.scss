@@ -14,6 +14,18 @@
 	@apply (--cs-button);
 }
 
+#content {
+	align-items             : center;
+	-ms-flex-align          : center;
+	-webkit-align-items     : center;
+	display                 : flex;
+	display                 : -ms-flexbox;
+	display                 : -webkit-flex;
+	justify-content         : center;
+	-ms-flex-pack           : center;
+	-webkit-justify-content : center;
+}
+
 :host(:active),
 :host([active]) {
 	@apply (--cs-button-active);
@@ -36,9 +48,13 @@
 	@apply (--cs-button-disabled);
 }
 
-/* Compact button, for instance, with icon inside, but empty content */
+/* Empty button, with icon inside, but empty content */
 :host(:empty:not([force-fullsize])),
-:host([empty]:not([force-fullsize])),
+:host([empty]:not([force-fullsize])) {
+	@apply (--cs-button-empty);
+}
+
+/* Compact button */
 :host([force-compact]) {
 	@apply (--cs-button-compact);
 }

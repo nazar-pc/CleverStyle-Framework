@@ -123,13 +123,13 @@
 				@apply(--cs-link);
 			}
 
-			a:focus {
+			a:not([is]):focus {
 				outline : none;
 
 				@apply(--cs-link-focus);
 			}
 
-			a:hover {
+			a:not([is]):hover {
 				color           : inherit;
 				text-decoration : none;
 

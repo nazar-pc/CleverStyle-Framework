@@ -102,11 +102,16 @@
 		};
 
 		--cs-button-compact: {
-			height     : auto;
+			height  : auto;
+			padding : var(--button-compact-padding);
+			width   : auto;
+		};
+
+		--cs-button-empty: {
 			min-height : var(--button-compact-size);
 			min-width  : var(--button-compact-size);
-			padding    : var(--button-compact-padding);
-			width      : auto;
+
+			@apply(--cs-button-compact);
 		};
 
 		--cs-button-icon: {
