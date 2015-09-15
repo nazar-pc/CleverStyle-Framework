@@ -363,7 +363,6 @@
 		"type_username_or_email_press_enter"	: "Enter username of email, press Enter",
 		"adding_a_block"						: "Block addition",
 		"editing_a_block"						: "Editing of block %s",
-		"deletion_of_block"						: "Deletion of block %s",
 		//Databases
 		"databases"				: "Databases",
 		"db"					: "DB",

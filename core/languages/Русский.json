@@ -364,7 +364,6 @@
 		"type_username_or_email_press_enter"	: "Введите имя пользователя или email, нажмите Enter",
 		"adding_a_block"						: "Добавление блока",
 		"editing_a_block"						: "Редактирование блока %s",
-		"deletion_of_block"						: "Удаление блока %s",
 		//Databases
 		"databases"				: "Базы данных",
 		"db"					: "БД",

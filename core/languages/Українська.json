@@ -365,7 +365,6 @@
 		"type_username_or_email_press_enter"	: "Введіть ім'я користувача або email, натисніть Enter",
 		"adding_a_block"						: "Додавання блоку",
 		"editing_a_block"						: "Редагування блоку %s",
-		"deletion_of_block"						: "Видалення блоку %s",
 		//Databases
 		"databases"				: "Бази даних",
 		"db"					: "БД",
