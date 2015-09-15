@@ -74,7 +74,16 @@
         });
         this$.set('modules', modules);
       });
-    },
+    }
+    /**
+     * Provides next events:
+     *
+     *  admin/System/components/modules/default/before
+     *  {name : module_name}
+     *
+     *  admin/System/components/modules/default/after
+     *  {name : module_name}
+     */,
     _set_as_default: function(e){
       var this$ = this;
       cs.Event.fire('admin/System/components/modules/default/before', {

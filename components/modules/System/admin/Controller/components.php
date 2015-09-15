@@ -416,9 +416,6 @@ trait components {
 	 *
 	 *  admin/System/components/modules/update_system/prepare
 	 *
-	 *  admin/System/components/modules/default_module/prepare
-	 *  ['name' => module_name]
-	 *
 	 *  admin/System/components/modules/db/prepare
 	 *  ['name' => module_name]
 	 *

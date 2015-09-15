@@ -84,7 +84,7 @@ trait components_save {
 	 *  admin/System/components/modules/update_system/process/after
 	 *  ['name'    => module_name]
 	 *
-	 *  admin/System/components/modules/default_module/process
+	 *  admin/System/components/modules/default
 	 *  ['name'    => module_name]
 	 *
 	 *  admin/System/components/modules/db/process
