@@ -688,28 +688,6 @@ trait components {
 					$rc[3]                 = 'System';
 					$a->cancel_button_back = true;
 					break;
-				case 'default_module':
-					$show_modules = false;
-					$Page->title($L->setting_default_module($rc[3]));
-					$a->content(
-						h::{'h2.cs-text-center'}(
-							$L->setting_default_module($rc[3])
-						)
-					);
-					if (!Event::instance()->fire(
-						'admin/System/components/modules/default_module/prepare',
-						[
-							'name' => $rc[3]
-						]
-					)
-					) {
-						break;
-					}
-					$a->cancel_button_back = true;
-					$a->content(
-						h::{'button[is=cs-button][type=submit]'}($L->yes)
-					);
-					break;
 				case 'db':
 					$show_modules = false;
 					if (count($Config->db) > 1) {

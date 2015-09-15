@@ -8,53 +8,35 @@
  * @license    MIT License, see license.txt
  */
 (function(){
-  var L;
+  var L, active_switch;
   L = cs.Language;
+  active_switch = function(uninstalled, disabled, enabled){
+    switch (this.active) {
+    case -1:
+      return uninstalled;
+    case 0:
+      return disabled;
+    case 1:
+      return enabled;
+    }
+  };
   Polymer({
     'is': 'cs-system-admin-components-modules-list',
     behaviors: [cs.Polymer.behaviors.Language],
     ready: function(){
+      return this.reload();
+    },
+    reload: function(){
       var this$ = this;
       return $.getJSON('api/System/admin/modules', function(modules){
         modules.forEach(function(module){
-          module['class'] = (function(){
-            switch (module.active) {
-            case -1:
-              return 'cs-block-error cs-text-error';
-            case 0:
-              return 'cs-block-warning cs-text-warning';
-            case 1:
-              return 'cs-block-success cs-text-success';
-            }
-          }());
-          module.icon = (function(){
-            switch (module.active) {
-            case -1:
-              return 'times';
-            case 0:
-              return 'minus';
-            case 1:
-              if (module.is_default) {
-                return 'home';
-              } else {
-                return 'check';
-              }
-            }
-          }());
-          module.icon_text = (function(){
-            switch (module.active) {
-            case -1:
-              return L.uninstalled;
-            case 0:
-              return L.disabled;
-            case 1:
-              if (module.is_default) {
-                return L.default_module;
-              } else {
-                return L.enabled;
-              }
-            }
-          }());
+          var active_switch_local;
+          active_switch_local = active_switch.bind(module);
+          module['class'] = active_switch_local('cs-block-error cs-text-error', 'cs-block-warning cs-text-warning', 'cs-block-success cs-text-success');
+          module.icon = active_switch_local('times', 'minus', module.is_default ? 'home' : 'check');
+          module.icon_text = active_switch_local(L.uninstalled, L.disabled, module.is_default
+            ? L.default_module
+            : L.enabled);
           module.name_localized = L[module.name] || module.name.replace('_', ' ');
           (function(){
             var i$, ref$, len$, prop, ref1$, tag;
@@ -91,6 +73,27 @@
           }
         });
         this$.set('modules', modules);
+      });
+    },
+    _set_as_default: function(e){
+      var this$ = this;
+      cs.Event.fire('admin/System/components/modules/default/before', {
+        name: e.model.module.name
+      }).then(function(){
+        $.ajax({
+          url: 'api/System/admin/modules/default',
+          type: 'put',
+          data: {
+            module: e.model.module.name
+          },
+          success: function(){
+            this$.reload();
+            cs.ui.notify(L.changes_saved, 'success', 5);
+            cs.Event.fire('admin/System/components/modules/default/after', {
+              name: e.model.module.name
+            });
+          }
+        });
       });
     }
   });

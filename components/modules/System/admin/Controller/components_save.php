@@ -378,29 +378,6 @@ trait components_save {
 						]
 					);
 					break;
-				case 'default_module':
-					if (
-						$module_data['active'] != 1 ||
-						$module_name == $Config->core['default_module'] ||
-						!(
-							file_exists(MODULES."/$module_name/index.php") ||
-							file_exists(MODULES."/$module_name/index.html") ||
-							file_exists(MODULES."/$module_name/index.json")
-						)
-					) {
-						break;
-					}
-					if (Event::instance()->fire(
-						'admin/System/components/modules/default_module/process',
-						[
-							'name' => $module_name
-						]
-					)
-					) {
-						$Config->core['default_module'] = $module_name;
-						$a->save();
-					}
-					break;
 				case 'db':
 					/** @noinspection NotOptimalIfConditionsInspection */
 					if (

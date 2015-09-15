@@ -18,7 +18,7 @@
 		"languages"          : [],
 		"modules"            : [
 			"_",
-			"default_module"
+			"default"
 		],
 		"permissions"        : [
 			"_",
