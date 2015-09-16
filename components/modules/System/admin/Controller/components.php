@@ -905,14 +905,6 @@ trait components {
 			return;
 		}
 		$a->file_upload      = true;
-		$modules_for_removal = array_keys(
-			array_filter(
-				$Config->components['modules'],
-				function ($module_data) {
-					return $module_data['active'] == '-1';
-				}
-			)
-		);
 		$a->content(
 			h::{'cs-system-admin-components-modules-list'}().
 			h::p(
@@ -933,15 +925,6 @@ trait components {
 					]
 				)
 			).
-			($modules_for_removal ? h::p(
-				h::{'select[is=cs-select][tight][name=remove_module][compact]'}($modules_for_removal).
-				h::{'button[is=cs-button][icon=trash][type=submit]'}(
-					$L->complete_module_removal,
-					[
-						'formaction' => "$a->action/remove"
-					]
-				)
-			) : '').
 			h::{'button[is=cs-button][icon=refresh][type=submit]'}(
 				$L->update_modules_list,
 				[
