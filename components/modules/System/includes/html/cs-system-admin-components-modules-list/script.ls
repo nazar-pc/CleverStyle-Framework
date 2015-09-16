@@ -89,15 +89,6 @@ Polymer(
 						name	: e.model.module.name
 					)
 			)
-	/**
-	 * Provides next events:
-	 *
-	 *  admin/System/components/modules/default/before
-	 *  {name : module_name}
-	 *
-	 *  admin/System/components/modules/default/after
-	 *  {name : module_name}
-	 */
 	_remove_completely : (e) !->
 		<~! cs.ui.confirm(L.completely_remove_module(e.model.module.name), _)
 		$.ajax(

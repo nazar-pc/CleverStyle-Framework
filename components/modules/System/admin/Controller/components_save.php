@@ -580,16 +580,6 @@ trait components_save {
 					unset($Cache->functionality);
 					clean_classes_cache();
 					break;
-				case 'remove':
-					if (in_array($plugin, $Config->components['plugins'])) {
-						break;
-					}
-					if (rmdir_recursive(PLUGINS."/$plugin")) {
-						$Index->save();
-					} else {
-						$Index->save(false);
-					}
-					break;
 			}
 		}
 	}

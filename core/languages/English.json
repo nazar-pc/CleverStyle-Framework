@@ -331,7 +331,6 @@
 		"updating_of_plugin"							: "Updating of plugin %s",
 		"update_plugin_impossible_older_version"		: "Plugin %s already installed, but can't be updated, because proposed version is older, than installed",
 		"update_plugin"									: "Plugin %s already installed. Are you sure want to update plugin from version %s to version %s?",
-		"complete_removal_of_plugin"					: "Complete removal of plugin %s",
 		"completely_remove_plugin"						: "Remove plugin %s completely?",
 		"complete_plugin_removal"						: "Complete plugin removal",
 		//Blocks

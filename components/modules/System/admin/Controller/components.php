@@ -1148,43 +1148,11 @@ trait components {
 						);
 					}
 					return;
-				case 'remove':
-					$Page->title($L->complete_removal_of_plugin($_POST['remove_plugin']));
-					$a->content(
-						h::{'h2.cs-text-center'}(
-							$L->completely_remove_plugin($_POST['remove_plugin'])
-						)
-					);
-					$a->cancel_button_back = true;
-					$a->content(
-						h::{'button[is=cs-button][type=submit]'}($L->yes).
-						h::{'input[type=hidden]'}(
-							[
-								'name'  => 'mode',
-								'value' => $rc[2]
-							]
-						).
-						h::{'input[type=hidden]'}(
-							[
-								'name'  => 'plugin',
-								'value' => $_POST['remove_plugin']
-							]
-						)
-					);
-					return;
 			}
 		}
 		unset($rc);
 		$a->buttons          = false;
 		$a->file_upload      = true;
-		$plugins_for_removal = array_values(
-			array_filter(
-				$plugins,
-				function ($plugin) use ($Config) {
-					return !in_array($plugin, $Config->components['plugins']);
-				}
-			)
-		);
 		$a->content(
 			h::{'cs-system-admin-components-plugins-list'}().
 			h::p(
@@ -1195,16 +1163,7 @@ trait components {
 						'formaction' => "$a->action/enable/upload"
 					]
 				)
-			).
-			($plugins_for_removal ? h::p(
-				h::{'select[is=cs-select][tight][name=remove_plugin][compact]'}($plugins_for_removal).
-				h::{'button[is=cs-button][icon=trash][type=submit]'}(
-					$L->complete_plugin_removal,
-					[
-						'formaction' => "$a->action/remove"
-					]
-				)
-			) : '')
+			)
 		);
 	}
 	static function components_storages () {

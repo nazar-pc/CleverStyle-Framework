@@ -22,8 +22,11 @@
     'is': 'cs-system-admin-components-plugins-list',
     behaviors: [cs.Polymer.behaviors.Language],
     ready: function(){
+      this.reload();
+    },
+    reload: function(){
       var this$ = this;
-      $.getJSON('api/System/admin/plugins', function(plugins){
+      return $.getJSON('api/System/admin/plugins', function(plugins){
         plugins.forEach(function(plugin){
           var active_switch_local;
           active_switch_local = active_switch.bind(plugin);
@@ -62,6 +65,22 @@
           }
         });
         this$.set('plugins', plugins);
+      });
+    },
+    _remove_completely: function(e){
+      var this$ = this;
+      cs.ui.confirm(L.completely_remove_plugin(e.model.plugin.name), function(){
+        $.ajax({
+          url: 'api/System/admin/plugins',
+          type: 'delete',
+          data: {
+            plugin: e.model.plugin.name
+          },
+          success: function(){
+            this$.reload();
+            cs.ui.notify(L.changes_saved, 'success', 5);
+          }
+        });
       });
     }
   });

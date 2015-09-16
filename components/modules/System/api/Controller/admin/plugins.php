@@ -10,6 +10,7 @@
 namespace cs\modules\System\api\Controller\admin;
 use
 	cs\Config,
+	cs\ExitException,
 	cs\Page;
 trait plugins {
 	/**
@@ -27,25 +28,11 @@ trait plugins {
 			/**
 			 * Check if readme available
 			 */
-			$file = file_exists_with_extension(PLUGINS."/$plugin_name/readme", ['txt', 'html']);
-			if ($file) {
-				$plugin['readme'] = [
-					'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
-					'content' => file_get_contents($file)
-				];
-			}
-			unset($file);
+			static::check_plugin_feature_availability($plugin, 'readme');
 			/**
 			 * Check if license available
 			 */
-			$file = file_exists_with_extension(PLUGINS."/$plugin_name/license", ['txt', 'html']);
-			if ($file) {
-				$plugin['license'] = [
-					'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
-					'content' => file_get_contents($file)
-				];
-			}
-			unset($file);
+			static::check_plugin_feature_availability($plugin, 'license');
 			if (file_exists(PLUGINS."/$plugin_name/meta.json")) {
 				$plugin['meta'] = file_get_json(PLUGINS."/$plugin_name/meta.json");
 			}
@@ -53,5 +40,42 @@ trait plugins {
 		}
 		unset($plugin_name, $plugin);
 		Page::instance()->json($plugins_list);
+	}
+	/**
+	 * @param array  $plugin
+	 * @param string $feature
+	 */
+	protected static function check_plugin_feature_availability (&$plugin, $feature) {
+		/**
+		 * Check if feature available
+		 */
+		$file = file_exists_with_extension(MODULES."/$plugin[name]/$feature", ['txt', 'html']);
+		if ($file) {
+			$plugin[$feature] = [
+				'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
+				'content' => file_get_contents($file)
+			];
+		}
+	}
+	/**
+	 * Delete plugin completely
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_plugins_delete () {
+		if (!isset($_POST['plugin'])) {
+			throw new ExitException(400);
+		}
+		$plugin = $_POST['plugin'];
+		$Config = Config::instance();
+		if (
+			!is_dir(PLUGINS."/$plugin") ||
+			in_array($plugin, $Config->components['plugins'])
+		) {
+			throw new ExitException(400);
+		}
+		if (!rmdir_recursive(PLUGINS."/$plugin")) {
+			throw new ExitException(500);
+		}
 	}
 }

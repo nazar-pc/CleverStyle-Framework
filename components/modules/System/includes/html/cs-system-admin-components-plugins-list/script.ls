@@ -15,6 +15,8 @@ Polymer(
 	'is'		: 'cs-system-admin-components-plugins-list'
 	behaviors	: [cs.Polymer.behaviors.Language]
 	ready : !->
+		@reload()
+	reload : ->
 		plugins <~! $.getJSON('api/System/admin/plugins', _)
 		plugins.forEach (plugin) !->
 			active_switch_local		= active_switch.bind(plugin)
@@ -45,4 +47,15 @@ Polymer(
 						if @languages then @languages.join(', ') else L.none
 					)
 		@set('plugins', plugins)
+	_remove_completely : (e) !->
+		<~! cs.ui.confirm(L.completely_remove_plugin(e.model.plugin.name), _)
+		$.ajax(
+			url		: 'api/System/admin/plugins'
+			type	: 'delete'
+			data	:
+				plugin	: e.model.plugin.name
+			success	: !~>
+				@reload()
+				cs.ui.notify(L.changes_saved, 'success', 5)
+		)
 )

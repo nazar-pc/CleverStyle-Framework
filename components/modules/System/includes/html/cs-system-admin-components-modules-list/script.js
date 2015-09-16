@@ -104,16 +104,7 @@
           }
         });
       });
-    }
-    /**
-     * Provides next events:
-     *
-     *  admin/System/components/modules/default/before
-     *  {name : module_name}
-     *
-     *  admin/System/components/modules/default/after
-     *  {name : module_name}
-     */,
+    },
     _remove_completely: function(e){
       var this$ = this;
       cs.ui.confirm(L.completely_remove_module(e.model.module.name), function(){
