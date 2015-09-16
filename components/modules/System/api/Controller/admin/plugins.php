@@ -49,7 +49,7 @@ trait plugins {
 		/**
 		 * Check if feature available
 		 */
-		$file = file_exists_with_extension(MODULES."/$plugin[name]/$feature", ['txt', 'html']);
+		$file = file_exists_with_extension(PLUGINS."/$plugin[name]/$feature", ['txt', 'html']);
 		if ($file) {
 			$plugin[$feature] = [
 				'type'    => substr($file, -3) == 'txt' ? 'txt' : 'html',
