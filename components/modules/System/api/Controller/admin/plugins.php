@@ -21,7 +21,7 @@ trait plugins {
 		$plugins_list = [];
 		foreach ($plugins as $plugin_name) {
 			$plugin = [
-				'active' => in_array($plugin_name, $Config->components['plugins']),
+				'active' => (int)in_array($plugin_name, $Config->components['plugins']),
 				'name'   => $plugin_name
 			];
 			/**

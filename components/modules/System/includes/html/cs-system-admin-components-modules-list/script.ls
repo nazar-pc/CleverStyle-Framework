@@ -41,7 +41,7 @@ Polymer(
 				for prop in ['api', 'license', 'readme']
 					if module[prop]?.type
 						tag						= if module[prop].type == 'txt' then 'pre' else 'div'
-						module[prop].content	= "<#{tag}>#{module[prop].content}</#{tag}>"
+						module[prop].content	= "<#tag>#{module[prop].content}</#tag>"
 			if module.meta
 				module.info	= let (@ = module.meta)
 					L.module_info(

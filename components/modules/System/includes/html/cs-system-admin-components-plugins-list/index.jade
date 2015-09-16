@@ -1,0 +1,28 @@
+dom-module#cs-system-admin-components-plugins-list
+	link(rel="import" href="style.css" type="css")
+	template
+		style(include="advanced-styles")
+		table.cs-table(center list)
+			tr
+				th [[L.plugin_name]]
+				th [[L.state]]
+				th [[L.action]]
+			template(is="dom-repeat" items="[[plugins]]" as="plugin")
+				tr(class$="[[plugin.class]]")
+					td
+						a(href="[[concat('/admin/', plugin.name)]]" tooltip="[[plugin.info]]" hidden$="[[!plugin.info]]")
+							span [[plugin.name_localized]]
+							cs-tooltip
+						a(href="[[concat('/admin/', plugin.name)]]" hidden$="[[and(plugin.info)]]") [[plugin.name_localized]]
+					td
+						cs-icon(icon="[[plugin.icon]]" tooltip="[[plugin.icon_text]]")
+						= ' '
+						button(is="cs-button" icon="book" type="button" tooltip="[[concat(L.information_about_plugin, '<br>', L.click_to_view_details)]]" hidden$="[[!plugin.readme]]")
+						section(is="cs-section-modal" content="[[plugin.readme.content]]")
+						= ' '
+						button(is="cs-button" icon="legal" type="button" tooltip="[[concat(L.license, '<br>', L.click_to_view_details)]]" hidden$="[[!plugin.license]]")
+						section(is="cs-section-modal" content="[[plugin.license.content]]")
+					td
+						a(is="cs-link-button" icon="minus" href="[[concat('/admin/System/components/plugins/disable/', plugin.name)]]" tooltip="[[L.disable]]" hidden$="[[equal(plugin.active, 0)]]")
+						a(is="cs-link-button" icon="check" href="[[concat('/admin/System/components/plugins/enable/', plugin.name)]]" force-compact hidden$="[[equal(plugin.active, 1)]]") [[L.enable]]
+	script(src="script.js")
