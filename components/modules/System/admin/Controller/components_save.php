@@ -444,17 +444,6 @@ trait components_save {
 					);
 					clean_classes_cache();
 					break;
-				case 'remove':
-					if ($module_name == 'System' || $module_data['active'] != '-1') {
-						break;
-					}
-					if (static::recursive_directory_removal(MODULES."/$module_name")) {
-						unset($Config->components['modules'][$module_name]);
-						$a->save();
-					} else {
-						$a->save(false);
-					}
-					break;
 			}
 		}
 	}
@@ -595,7 +584,7 @@ trait components_save {
 					if (in_array($plugin, $Config->components['plugins'])) {
 						break;
 					}
-					if (static::recursive_directory_removal(PLUGINS."/$plugin")) {
+					if (rmdir_recursive(PLUGINS."/$plugin")) {
 						$Index->save();
 					} else {
 						$Index->save(false);

@@ -42,7 +42,9 @@ dom-module(id="cs-system-admin-components-modules-list")
 						= ' '
 						a(is="cs-link-button" icon="check" href="[[concat('/admin/System/components/modules/enable/', module.name)]]" tooltip="[[L.enable]]" force-compact hidden$="[[!equal(module.active, 0)]]") [[L.enable]]
 						= ' '
+						a(is="cs-link-button" icon="download" href="[[concat('/admin/System/components/modules/install/', module.name)]]" tooltip="[[L.install]]" force-compact hidden$="[[!equal(module.active, -1)]]") [[L.install]]
+						= ' '
 						a(is="cs-link-button" icon="trash" href="[[concat('/admin/System/components/modules/uninstall/', module.name)]]" tooltip="[[L.uninstall]]" hidden$="[[equal(module.active, -1)]]")
 						= ' '
-						a(is="cs-link-button" icon="download" href="[[concat('/admin/System/components/modules/install/', module.name)]]" tooltip="[[L.install]]" force-compact hidden$="[[!equal(module.active, -1)]]") [[L.install]]
+						a(is="cs-link-button" icon="trash" on-tap="_remove_completely" tooltip="[[L.complete_module_removal]]" hidden$="[[!equal(module.active, -1)]]")
 	script(src="script.js")

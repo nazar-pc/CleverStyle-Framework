@@ -395,7 +395,7 @@ trait general {
 					if ($theme == 'CleverStyle' || $theme == $Config->core['theme']) {
 						break;
 					}
-					if (static::recursive_directory_removal(THEMES."/$theme")) {
+					if (rmdir_recursive(THEMES."/$theme")) {
 						$Index->save();
 					} else {
 						$Index->save(false);

@@ -874,32 +874,16 @@ trait components {
 						h::{'button[is=cs-button][type=submit]'}($L->{$check_dependencies ? 'yes' : 'force_disable_not_recommended'})
 					);
 					break;
-				case 'remove':
-					$show_modules = false;
-					$Page->title($L->complete_removal_of_module($_POST['remove_module']));
-					$a->content(
-						h::{'h2.cs-text-center'}(
-							$L->completely_remove_module($_POST['remove_module'])
-						)
-					);
-					$a->cancel_button_back = true;
-					$a->content(
-						h::{'button[is=cs-button][type=submit]'}($L->yes)
-					);
-					$rc[3] = $_POST['remove_module'];
-					break;
 			}
 			switch ($rc[2]) {
 				case 'install':
 				case 'uninstall':
 				case 'update':
 				case 'update_system':
-				case 'default_module':
 				case 'db':
 				case 'storage':
 				case 'enable':
 				case 'disable':
-				case 'remove':
 					$a->content(
 						h::{'input[type=hidden]'}(
 							[

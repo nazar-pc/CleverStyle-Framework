@@ -204,35 +204,6 @@ trait packages_manipulation {
 		}
 	}
 	/**
-	 * @param string $target_directory
-	 *
-	 * @return bool
-	 */
-	static protected function recursive_directory_removal ($target_directory) {
-		$ok = true;
-		get_files_list(
-			$target_directory,
-			false,
-			'fd',
-			true,
-			true,
-			false,
-			false,
-			true,
-			function ($item) use (&$ok) {
-				if (is_writable($item)) {
-					is_dir($item) ? rmdir($item) : unlink($item);
-				} else {
-					$ok = false;
-				}
-			}
-		);
-		if ($ok) {
-			rmdir($target_directory);
-		}
-		return $ok;
-	}
-	/**
 	 * Check dependencies for new component (during installation/updating/enabling)
 	 *
 	 * @param array $meta        `meta.json` contents of target component

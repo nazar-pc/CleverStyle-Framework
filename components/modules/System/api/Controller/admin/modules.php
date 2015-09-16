@@ -71,6 +71,29 @@ trait modules {
 			$module[$dir ?: $feature] = [];
 		}
 	}
+	static function admin_modules___delete () {
+		if (!isset($_POST['module'])) {
+			throw new ExitException(400);
+		}
+		$module_name = $_POST['module'];
+		$Config      = Config::instance();
+		if (!isset($Config->components['modules'][$module_name])) {
+			throw new ExitException(404);
+		}
+		if (
+			$module_name == 'System' ||
+			$Config->components['modules'][$module_name]['active'] != '-1'
+		) {
+			throw new ExitException(400);
+		}
+		if (!rmdir_recursive(MODULES."/$module_name")) {
+			throw new ExitException(500);
+		}
+		unset($Config->components['modules'][$module_name]);
+		if (!$Config->save()) {
+			throw new ExitException(500);
+		}
+	}
 	static function admin_modules_default_get () {
 		Page::instance()->json(
 			Config::instance()->core['default_module']
