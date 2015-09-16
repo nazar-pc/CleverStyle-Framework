@@ -167,8 +167,8 @@ trait blocks {
 		}
 	}
 	/**
-	 * @param array          $block_new
-	 * @param bool|false|int $index Index of existing block, if not specified - new block being added
+	 * @param array     $block_new
+	 * @param false|int $index Index of existing block, if not specified - new block being added
 	 *
 	 * @return bool
 	 *

@@ -22,8 +22,7 @@ class ExitException extends Exception {
 	 * @param Exception|null      $previous
 	 */
 	function __construct ($message = '', $code = 0, Exception $previous = null) {
-		$this->previous = $previous;
-		$this->code     = $code;
+		parent::__construct('', 0, $previous);
 		if (is_numeric($message) && !$code) {
 			$this->code = $message;
 		} else {
