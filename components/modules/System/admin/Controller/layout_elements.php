@@ -19,7 +19,7 @@ trait layout_elements {
 	 *
 	 * @return string
 	 */
-	static protected function vertical_table ($rows) {
+	protected static function vertical_table ($rows) {
 		return h::{'table.cs-table[right-left] tr| td'}(func_get_args());
 	}
 	/**
@@ -28,7 +28,7 @@ trait layout_elements {
 	 *
 	 * @return string
 	 */
-	static protected function horizontal_table ($header_columns, $columns) {
+	protected static function horizontal_table ($header_columns, $columns) {
 		return h::{'table.cs-table[center] tr| td'}($header_columns, $columns);
 	}
 	/**
@@ -37,13 +37,13 @@ trait layout_elements {
 	 *
 	 * @return string
 	 */
-	static protected function list_center_table ($header_columns, $rows) {
+	protected static function list_center_table ($header_columns, $rows) {
 		return h::{'table.cs-table[center][list]'}(
 			h::{'tr th'}($header_columns).
 			h::{'tr| td'}($rows ? [$rows] : false)
 		);
 	}
-	static protected function core_input ($item, $type = 'text', $info_item = null, $disabled = false, $min = false, $max = false, $post_text = '') {
+	protected static function core_input ($item, $type = 'text', $info_item = null, $disabled = false, $min = false, $max = false, $post_text = '') {
 		$Config = Config::instance();
 		$L      = Language::instance();
 		if ($type != 'radio') {
@@ -84,7 +84,7 @@ trait layout_elements {
 			];
 		}
 	}
-	static protected function core_textarea ($item, $editor = null, $info_item = null) {
+	protected static function core_textarea ($item, $editor = null, $info_item = null) {
 		switch ($item) {
 			default:
 				$content = Config::instance()->core[$item];
@@ -105,7 +105,7 @@ trait layout_elements {
 			)
 		];
 	}
-	static protected function core_select ($items_array, $item, $id = null, $info_item = null, $multiple = false, $size = 5) {
+	protected static function core_select ($items_array, $item, $id = null, $info_item = null, $multiple = false, $size = 5) {
 		return [
 			h::info($info_item ?: $item),
 			h::{'select[is=cs-select]'}(

@@ -12,6 +12,9 @@ use
 	cs\DB,
 	cs\Page;
 trait databases {
+	/**
+	 * Test database connection
+	 */
 	static function admin_databases_test_get () {
 		$db = DB::instance();
 		if (isset($_GET['mirror_index'])) {

@@ -79,7 +79,7 @@
       return $.ajax({
         url: "api/System/admin/" + this["for"] + "s/" + this[this["for"]] + "/permissions",
         data: $(this.$.form).serialize() + '&' + default_data,
-        type: 'post',
+        type: 'put',
         success: function() {
           return cs.ui.notify(L.changes_saved, 'success', 5);
         }

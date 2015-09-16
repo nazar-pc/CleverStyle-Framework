@@ -15,6 +15,15 @@ use
 	cs\Permission,
 	cs\Text;
 trait blocks {
+	/**
+	 * Get array of blocks data or data of specific block if id specified
+	 *
+	 * If block id specified - extended form of data will be returned
+	 *
+	 * @param int[] $route_ids
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_blocks_get ($route_ids) {
 		$Config = Config::instance();
 		$Page   = Page::instance();
@@ -49,15 +58,34 @@ trait blocks {
 			]
 		);
 	}
+	/**
+	 * Add new block
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_blocks_post () {
 		static::save_block_data($_POST);
 	}
+	/**
+	 * Update block's data
+	 *
+	 * @param int[] $route_ids
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_blocks_put ($route_ids) {
 		if (!$route_ids[0]) {
 			throw new ExitException(400);
 		}
 		static::save_block_data($_POST, $route_ids[0]);
 	}
+	/**
+	 * Delete block
+	 *
+	 * @param int[] $route_ids
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_blocks_delete ($route_ids) {
 		if (!$route_ids[0]) {
 			throw new ExitException(400);
@@ -86,16 +114,28 @@ trait blocks {
 			throw new ExitException(500);
 		}
 	}
+	/**
+	 * Get array of available block templates
+	 */
 	static function admin_blocks_templates () {
 		Page::instance()->json(
 			_mb_substr(get_files_list(TEMPLATES.'/blocks', '/^block\..*?\.(php|html)$/i', 'f'), 6)
 		);
 	}
+	/**
+	 * Get array of available block types
+	 */
 	static function admin_blocks_types () {
 		Page::instance()->json(
 			array_merge(['html', 'raw_html'], _mb_substr(get_files_list(BLOCKS, '/^block\..*?\.php$/i', 'f'), 6, -4))
 		);
 	}
+	/**
+	 * Update blocks order
+	 *
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_blocks_update_order () {
 		if (!isset($_POST['order']) || !is_array($_POST['order'])) {
 			throw new ExitException(400);

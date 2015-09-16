@@ -41,7 +41,7 @@ Polymer(
 		$.ajax(
 			url		: "api/System/admin/#{@for}s/#{@[@for]}/permissions"
 			data	: $(@$.form).serialize() + '&' + default_data
-			type	: 'post'
+			type	: 'put'
 			success	: ->
 				cs.ui.notify(L.changes_saved, 'success', 5)
 		)

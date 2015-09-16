@@ -13,6 +13,9 @@ use
 	cs\Page,
 	cs\Route;
 trait cache {
+	/**
+	 * Clear system or static cache
+	 */
 	static function admin_cache_delete () {
 		$Cache = System_cache::instance();
 		$Page  = Page::instance();

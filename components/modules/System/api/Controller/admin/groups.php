@@ -13,6 +13,13 @@ use
 	cs\Group,
 	cs\Page;
 trait groups {
+	/**
+	 * Get array of groups data or data of specific group if id specified or data of several specified groups if specified in ids query parameter
+	 *
+	 * @param int[] $route_ids
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_groups___get ($route_ids) {
 		$Group = Group::instance();
 		$Page  = Page::instance();
@@ -32,6 +39,11 @@ trait groups {
 		}
 		$Page->json($result);
 	}
+	/**
+	 * Add new group
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_groups___post () {
 		if (!isset($_POST['title'], $_POST['description'])) {
 			throw new ExitException(400);
@@ -42,6 +54,13 @@ trait groups {
 			throw new ExitException(500);
 		}
 	}
+	/**
+	 * Update group's data
+	 *
+	 * @param int[] $route_ids
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_groups___put ($route_ids) {
 		if (!isset($route_ids[0], $_POST['title'], $_POST['description'])) {
 			throw new ExitException(400);
@@ -50,6 +69,13 @@ trait groups {
 			throw new ExitException(500);
 		}
 	}
+	/**
+	 * Delete group
+	 *
+	 * @param int[] $route_ids
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_groups___delete ($route_ids) {
 		if (!isset($route_ids[0])) {
 			throw new ExitException(400);
@@ -58,6 +84,13 @@ trait groups {
 			throw new ExitException(500);
 		}
 	}
+	/**
+	 * Get group's permissions
+	 *
+	 * @param int[] $route_ids
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_groups_permissions_get ($route_ids) {
 		if (!isset($route_ids[0])) {
 			throw new ExitException(400);
@@ -66,7 +99,14 @@ trait groups {
 			Group::instance()->get_permissions($route_ids[0]) ?: []
 		);
 	}
-	static function admin_groups_permissions_post ($route_ids) {
+	/**
+	 * Update group's permissions
+	 *
+	 * @param int[] $route_ids
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_groups_permissions_put ($route_ids) {
 		if (!isset($route_ids[0], $_POST['permissions'])) {
 			throw new ExitException(400);
 		}

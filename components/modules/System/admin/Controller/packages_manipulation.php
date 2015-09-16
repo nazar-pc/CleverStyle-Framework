@@ -21,7 +21,7 @@ trait packages_manipulation {
 	 *
 	 * @return false|string Path to file location if succeed or `false` on failure
 	 */
-	static protected function move_uploaded_file_to_tmp ($file_name) {
+	protected static function move_uploaded_file_to_tmp ($file_name) {
 		if (!isset($_FILES[$file_name]) || !$_FILES[$file_name]['tmp_name']) {
 			return false;
 		}
@@ -56,7 +56,7 @@ trait packages_manipulation {
 	 *
 	 * @return bool
 	 */
-	static protected function install_extract ($target_directory, $source_phar) {
+	protected static function install_extract ($target_directory, $source_phar) {
 		$tmp_dir   = "phar://$source_phar";
 		$fs        = file_get_json("$tmp_dir/fs.json");
 		$extracted = array_filter(
@@ -95,7 +95,7 @@ trait packages_manipulation {
 	 *
 	 * @return bool
 	 */
-	static protected function update_extract ($target_directory, $source_phar, $fs_location_directory = null, $meta_location_directory = null) {
+	protected static function update_extract ($target_directory, $source_phar, $fs_location_directory = null, $meta_location_directory = null) {
 		$fs_location_directory   = $fs_location_directory ?: $target_directory;
 		$meta_location_directory = $meta_location_directory ?: $target_directory;
 		/**
@@ -168,7 +168,7 @@ trait packages_manipulation {
 	 * @param string     $old_version
 	 * @param array|null $db_array `$module_data['db']` if module or system
 	 */
-	static protected function update_php_sql ($target_directory, $old_version, $db_array = null) {
+	protected static function update_php_sql ($target_directory, $old_version, $db_array = null) {
 		$Core   = Core::instance();
 		$Config = Config::instance();
 		$db     = DB::instance();
@@ -211,7 +211,7 @@ trait packages_manipulation {
 	 *
 	 * @return bool
 	 */
-	static protected function check_dependencies ($meta, $update_mode = false) {
+	protected static function check_dependencies ($meta, $update_mode = false) {
 		/**
 		 * No `meta.json` - nothing to check, allow it
 		 */
@@ -386,7 +386,7 @@ trait packages_manipulation {
 	 *
 	 * @return bool
 	 */
-	static protected function check_dependencies_db ($db_support) {
+	protected static function check_dependencies_db ($db_support) {
 		/**
 		 * Component doesn't support (and thus use) any DB engines, so we don't care what system have
 		 */
@@ -430,7 +430,7 @@ trait packages_manipulation {
 	 *
 	 * @return bool
 	 */
-	static protected function check_dependencies_storage ($storage_support) {
+	protected static function check_dependencies_storage ($storage_support) {
 		/**
 		 * Component doesn't support (and thus use) any Storage engines, so we don't care what system have
 		 */
@@ -476,7 +476,7 @@ trait packages_manipulation {
 	 *
 	 * @return bool
 	 */
-	static protected function check_dependencies_are_the_same ($new_meta, $existing_meta) {
+	protected static function check_dependencies_are_the_same ($new_meta, $existing_meta) {
 		return
 			$new_meta['package'] == $existing_meta['package'] &&
 			$new_meta['category'] == $existing_meta['category'];
@@ -489,7 +489,7 @@ trait packages_manipulation {
 	 *
 	 * @return bool
 	 */
-	static protected function check_dependencies_also_provided_by ($new_meta, $existing_meta) {
+	protected static function check_dependencies_also_provided_by ($new_meta, $existing_meta) {
 		$intersected_functionality = array_intersect($new_meta['provide'], $existing_meta['provide']);
 		if (!$intersected_functionality) {
 			return false;
@@ -513,7 +513,7 @@ trait packages_manipulation {
 	 *
 	 * @return bool
 	 */
-	static protected function check_dependencies_satisfies_required_package ($new_meta, $existing_meta) {
+	protected static function check_dependencies_satisfies_required_package ($new_meta, $existing_meta) {
 		/**
 		 * If we are not interested in component - just exit, otherwise compare required version with actual present
 		 */
@@ -550,7 +550,7 @@ trait packages_manipulation {
 	 *
 	 * @return bool
 	 */
-	static protected function check_dependencies_conflicts ($new_meta, $existing_meta) {
+	protected static function check_dependencies_conflicts ($new_meta, $existing_meta) {
 		/**
 		 * Check whether two components conflict in any direction by direct conflicts
 		 */
@@ -564,7 +564,7 @@ trait packages_manipulation {
 	 *
 	 * @return bool
 	 */
-	static protected function check_dependencies_conflicts_one_step ($meta_from, $meta_to) {
+	protected static function check_dependencies_conflicts_one_step ($meta_from, $meta_to) {
 		/**
 		 * Check whether two components conflict in any direction by direct conflicts
 		 */
@@ -602,7 +602,7 @@ trait packages_manipulation {
 	 *
 	 * @return bool
 	 */
-	static protected function check_backward_dependencies ($meta) {
+	protected static function check_backward_dependencies ($meta) {
 		/**
 		 * No `meta.json` - nothing to check, allow it
 		 */
@@ -686,7 +686,7 @@ trait packages_manipulation {
 	 *
 	 * @return array mixed
 	 */
-	static protected function normalize_meta ($meta) {
+	protected static function normalize_meta ($meta) {
 		foreach (['db_support', 'storage_support', 'provide', 'require', 'conflict'] as $item) {
 			$meta[$item] = isset($meta[$item]) ? (array)$meta[$item] : [];
 		}
@@ -702,7 +702,7 @@ trait packages_manipulation {
 	 *
 	 * @return array
 	 */
-	static protected function dep_normal ($dependence_structure) {
+	protected static function dep_normal ($dependence_structure) {
 		$return = [];
 		foreach ((array)$dependence_structure as $d) {
 			preg_match('/^([^<=>!]+)([<=>!]*)(.*)$/', $d, $d);

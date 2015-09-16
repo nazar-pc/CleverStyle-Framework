@@ -12,6 +12,9 @@ use
 	cs\Config,
 	cs\Page;
 trait plugins {
+	/**
+	 * Get array of plugins in extended form
+	 */
 	static function admin_plugins_get () {
 		$Config       = Config::instance();
 		$plugins      = get_files_list(PLUGINS, false, 'd');

@@ -14,6 +14,16 @@ use
 	cs\Page,
 	cs\User;
 trait users {
+	/**
+	 * Get user's data or data of several specified groups if specified in ids query parameter or allows to search for users by login or email (users id will
+	 * be returned)
+	 *
+	 * Data will be pre-processed with `reg_date_formatted` and `reg_ip_formatted` keys added
+	 *
+	 * @param int[] $route_ids
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_users___get ($route_ids) {
 		$User    = User::instance();
 		$Page    = Page::instance();
@@ -40,12 +50,19 @@ trait users {
 		}
 		$Page->json($result);
 	}
-	static protected function admin_users___get_post_process ($data) {
+	protected static function admin_users___get_post_process ($data) {
 		$L                          = Language::instance();
 		$data['reg_date_formatted'] = $data['reg_date'] ? date($L->_date, $data['reg_date']) : $L->undefined;
 		$data['reg_ip_formatted']   = hex2ip($data['reg_ip'], 10);
 		return $data;
 	}
+	/**
+	 * Update user's data
+	 *
+	 * @param int[] $route_ids
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_users___patch ($route_ids) {
 		if (!isset($route_ids[0], $_POST['user'])) {
 			throw new ExitException(400);
@@ -95,6 +112,11 @@ trait users {
 			throw new ExitException(500);
 		}
 	}
+	/**
+	 * Add new user or bot (different parameters required depending on `type` parameter)
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_users___post () {
 		if (!isset($_POST['type'])) {
 			throw new ExitException(400);
@@ -123,6 +145,11 @@ trait users {
 			throw new ExitException(400);
 		}
 	}
+	/**
+	 * Advanced search for users (users data will be returned similar to GET method)
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_users___search () {
 		if (!isset($_POST['mode'], $_POST['column'], $_POST['text'], $_POST['page'], $_POST['limit'])) {
 			throw new ExitException(400);
@@ -190,7 +217,7 @@ trait users {
 	 *
 	 * @return string
 	 */
-	static protected function admin_users___search_prepare_where ($mode, $text, $column, $cdb) {
+	protected static function admin_users___search_prepare_where ($mode, $text, $column, $cdb) {
 		$where = '1';
 		if ($text && $mode) {
 			switch ($mode) {
@@ -236,7 +263,7 @@ trait users {
 	 *
 	 * @return string
 	 */
-	static protected function admin_users___search_prepare_where_compose ($where, $column, $text) {
+	protected static function admin_users___search_prepare_where_compose ($where, $column, $text) {
 		if (is_array($column)) {
 			$return = [];
 			foreach ($column as $c) {
@@ -252,7 +279,7 @@ trait users {
 	 *
 	 * @return array[]
 	 */
-	static protected function admin_users___search_get ($users, $columns) {
+	protected static function admin_users___search_get ($users, $columns) {
 		$User = User::instance();
 		foreach ($users as &$user) {
 			$groups         = (array)$User->get_groups($user);
@@ -268,6 +295,9 @@ trait users {
 		}
 		return $users;
 	}
+	/**
+	 * Get available search options
+	 */
 	static function admin_users___search_options () {
 		Page::instance()->json(
 			static::admin_users___search_options_get()
@@ -276,7 +306,7 @@ trait users {
 	/*
 	 * @return string[][]
 	 */
-	static protected function admin_users___search_options_get () {
+	protected static function admin_users___search_options_get () {
 		return [
 			'modes'   => [
 				'=',
@@ -304,6 +334,13 @@ trait users {
 			)
 		];
 	}
+	/**
+	 * Get user's permissions
+	 *
+	 * @param int[] $route_ids
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_users_permissions_get ($route_ids) {
 		if (!isset($route_ids[0])) {
 			throw new ExitException(400);
@@ -312,7 +349,14 @@ trait users {
 			User::instance()->get_permissions($route_ids[0]) ?: []
 		);
 	}
-	static function admin_users_permissions_post ($route_ids) {
+	/**
+	 * Update user's permissions
+	 *
+	 * @param int[] $route_ids
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_users_permissions_put ($route_ids) {
 		if (!isset($route_ids[0], $_POST['permissions'])) {
 			throw new ExitException(400);
 		}

@@ -14,6 +14,9 @@ use
 	cs\ExitException,
 	cs\Page;
 trait modules {
+	/**
+	 * Getting list of all modules data in extended form
+	 */
 	static function admin_modules___get () {
 		$Config       = Config::instance();
 		$modules_list = [];
@@ -71,6 +74,11 @@ trait modules {
 			$module[$dir ?: $feature] = [];
 		}
 	}
+	/**
+	 * Delete module completely
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_modules___delete () {
 		if (!isset($_POST['module'])) {
 			throw new ExitException(400);
@@ -94,11 +102,19 @@ trait modules {
 			throw new ExitException(500);
 		}
 	}
+	/**
+	 * Get current default module
+	 */
 	static function admin_modules_default_get () {
 		Page::instance()->json(
 			Config::instance()->core['default_module']
 		);
 	}
+	/**
+	 * Set current default module
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_modules_default_put () {
 		if (!isset($_POST['module'])) {
 			throw new ExitException(400);

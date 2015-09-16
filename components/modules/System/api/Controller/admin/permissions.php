@@ -15,6 +15,13 @@ use
 	cs\Permission,
 	cs\User;
 trait permissions {
+	/**
+	 * Get array of permissions data or data of specific permission if id specified
+	 *
+	 * @param int[] $route_ids
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_permissions___get ($route_ids) {
 		$Permission = Permission::instance();
 		if (isset($route_ids[0])) {
@@ -27,6 +34,11 @@ trait permissions {
 		}
 		Page::instance()->json($result);
 	}
+	/**
+	 * Add new permission
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_permissions___post () {
 		if (!isset($_POST['group'], $_POST['label'])) {
 			throw new ExitException(400);
@@ -37,6 +49,13 @@ trait permissions {
 			throw new ExitException(500);
 		}
 	}
+	/**
+	 * Update permission's data
+	 *
+	 * @param int[] $route_ids
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_permissions___put ($route_ids) {
 		if (!isset($route_ids[0], $_POST['group'], $_POST['label'])) {
 			throw new ExitException(400);
@@ -45,6 +64,13 @@ trait permissions {
 			throw new ExitException(500);
 		}
 	}
+	/**
+	 * Delete permission
+	 *
+	 * @param int[] $route_ids
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_permissions___delete ($route_ids) {
 		if (!isset($route_ids[0])) {
 			throw new ExitException(400);
@@ -53,6 +79,11 @@ trait permissions {
 			throw new ExitException(500);
 		}
 	}
+	/**
+	 * Get permissions for specific item
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_permissions_for_item_get () {
 		if (!isset($_GET['group'], $_GET['label'])) {
 			throw new ExitException(400);
@@ -103,6 +134,11 @@ trait permissions {
 			]
 		);
 	}
+	/**
+	 * Get permissions for specific item
+	 *
+	 * @throws ExitException
+	 */
 	static function admin_permissions_for_item_post () {
 		if (!isset($_POST['group'], $_POST['label'])) {
 			throw new ExitException(400);
