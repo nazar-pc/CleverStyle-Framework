@@ -598,24 +598,22 @@ class Packages_manipulation {
 		return true;
 	}
 	/**
-	 * Check backward dependencies (during uninstalling/disabling)
+	 * Check whether package is currently used by any other package (during uninstalling/disabling)
 	 *
 	 * @param array $meta `meta.json` contents of target component
 	 *
-	 * @return bool
+	 * @return string[][] Empty array if dependencies are fine or array with optional keys `modules` and `plugins` that contain array of dependent packages
 	 */
-	static function check_backward_dependencies ($meta) {
+	static function get_dependent_packages ($meta) {
 		/**
 		 * No `meta.json` - nothing to check, allow it
 		 */
 		if (!$meta) {
-			return true;
+			return [];
 		}
-		$meta              = self::normalize_meta($meta);
-		$Config            = Config::instance();
-		$L                 = Language::instance();
-		$Page              = Page::instance();
-		$required_by_other = false;
+		$meta    = self::normalize_meta($meta);
+		$Config  = Config::instance();
+		$used_by = [];
 		/**
 		 * Checking for backward dependencies of modules
 		 */
@@ -643,8 +641,7 @@ class Packages_manipulation {
 				isset($module_meta['require'][$meta['package']]) ||
 				array_intersect(array_keys($module_meta['require']), $meta['provide'])
 			) {
-				$required_by_other = true;
-				$Page->warning($L->this_package_is_used_by_module($module));
+				$used_by['modules'][] = $module;
 			}
 		}
 		unset($check_result_modules, $module, $module_data, $module_require);
@@ -670,14 +667,10 @@ class Packages_manipulation {
 				isset($plugin_meta['require'][$meta['package']]) ||
 				array_intersect(array_keys($plugin_meta['require']), $meta['provide'])
 			) {
-				$required_by_other = true;
-				$Page->warning($L->this_package_is_used_by_plugin($plugin));
+				$used_by['plugins'][] = $plugin;
 			}
 		}
-		if ($required_by_other) {
-			$Page->warning($L->dependencies_not_satisfied);
-		}
-		return !$required_by_other;
+		return $used_by;
 	}
 	/**
 	 * Normalize structure of `meta.json`

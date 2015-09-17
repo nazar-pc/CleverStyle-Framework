@@ -622,17 +622,20 @@ trait components {
 					) {
 						break;
 					}
-					$check_dependencies = true;
+					$dependent_packages = [];
 					if (file_exists(MODULES."/$rc[3]/meta.json")) {
-						$check_dependencies = Packages_manipulation::check_backward_dependencies(file_get_json(MODULES."/$rc[3]/meta.json"));
-						if (!$check_dependencies && $Config->core['simple_admin_mode']) {
-							break;
+						$dependent_packages = Packages_manipulation::get_dependent_packages(file_get_json(MODULES."/$rc[3]/meta.json"));
+						if ($dependent_packages) {
+							static::print_dependent_packages($dependent_packages);
+							if ($Config->core['simple_admin_mode']) {
+								break;
+							}
 						}
 					}
 					$a->cancel_button_back = true;
 					$a->content(
 						h::{'button[is=cs-button][type=submit]'}(
-							$L->{$check_dependencies ? 'uninstall' : 'force_uninstall_not_recommended'}
+							$L->{!$dependent_packages ? 'uninstall' : 'force_uninstall_not_recommended'}
 						)
 					);
 					break;
@@ -851,11 +854,14 @@ trait components {
 					break;
 				case 'disable':
 					$show_modules       = false;
-					$check_dependencies = true;
+					$dependent_packages = [];
 					if (file_exists(MODULES."/$rc[3]/meta.json")) {
-						$check_dependencies = Packages_manipulation::check_backward_dependencies(file_get_json(MODULES."/$rc[3]/meta.json"));
-						if (!$check_dependencies && $Config->core['simple_admin_mode']) {
-							break;
+						$dependent_packages = Packages_manipulation::get_dependent_packages(file_get_json(MODULES."/$rc[3]/meta.json"));
+						if ($dependent_packages) {
+							static::print_dependent_packages($dependent_packages);
+							if ($Config->core['simple_admin_mode']) {
+								break;
+							}
 						}
 					}
 					Event::instance()->fire(
@@ -872,7 +878,7 @@ trait components {
 					);
 					$a->cancel_button_back = true;
 					$a->content(
-						h::{'button[is=cs-button][type=submit]'}($L->{$check_dependencies ? 'yes' : 'force_disable_not_recommended'})
+						h::{'button[is=cs-button][type=submit]'}($L->{!$dependent_packages ? 'yes' : 'force_disable_not_recommended'})
 					);
 					break;
 			}
@@ -934,6 +940,20 @@ trait components {
 				]
 			)
 		);
+	}
+	/**
+	 * @param string[][] $dependent_packages
+	 */
+	protected static function print_dependent_packages ($dependent_packages) {
+		$L    = Language::instance();
+		$Page = Page::instance();
+		foreach ($dependent_packages as $type => $packages) {
+			$translation_key = $type == 'modules' ? 'this_package_is_used_by_module' : 'this_package_is_used_by_plugin';
+			foreach ($packages as $package) {
+				$Page->warning($L->$translation_key($package));
+			}
+		}
+		$Page->warning($L->dependencies_not_satisfied);
 	}
 	/**
 	 * Provides next events:
@@ -1122,17 +1142,20 @@ trait components {
 						) {
 							break;
 						}
-						$check_dependencies = true;
+						$dependent_packages = [];
 						if (file_exists(PLUGINS."/$rc[3]/meta.json")) {
-							$check_dependencies = Packages_manipulation::check_backward_dependencies(file_get_json(PLUGINS."/$rc[3]/meta.json"));
-							if (!$check_dependencies && $Config->core['simple_admin_mode']) {
-								break;
+							$dependent_packages = Packages_manipulation::get_dependent_packages(file_get_json(PLUGINS."/$rc[3]/meta.json"));
+							if ($dependent_packages) {
+								static::print_dependent_packages($dependent_packages);
+								if ($Config->core['simple_admin_mode']) {
+									break;
+								}
 							}
 						}
 						$a->cancel_button_back = true;
 						$a->content(
 							h::{'button[is=cs-button][type=submit]'}(
-								$L->{$check_dependencies ? 'disable' : 'force_disable_not_recommended'}
+								$L->{!$dependent_packages ? 'disable' : 'force_disable_not_recommended'}
 							).
 							h::{'input[type=hidden]'}(
 								[
