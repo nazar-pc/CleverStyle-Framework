@@ -48,12 +48,11 @@ Polymer(
 					)
 		@set('plugins', plugins)
 	_remove_completely : (e) !->
-		<~! cs.ui.confirm(L.completely_remove_plugin(e.model.plugin.name), _)
+		plugin = e.model.plugin.name
+		<~! cs.ui.confirm(L.completely_remove_plugin(plugin), _)
 		$.ajax(
-			url		: 'api/System/admin/plugins'
+			url		: 'api/System/admin/plugins/' + plugin
 			type	: 'delete'
-			data	:
-				plugin	: e.model.plugin.name
 			success	: !~>
 				@reload()
 				cs.ui.notify(L.changes_saved, 'success', 5)

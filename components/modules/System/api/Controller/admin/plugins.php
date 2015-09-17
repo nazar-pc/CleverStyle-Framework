@@ -11,12 +11,49 @@ namespace cs\modules\System\api\Controller\admin;
 use
 	cs\Config,
 	cs\ExitException,
-	cs\Page;
+	cs\Page,
+	cs\modules\System\Packages_manipulation;
 trait plugins {
 	/**
-	 * Get array of plugins in extended form
+	 * @param int[]    $route_ids
+	 * @param string[] $route_path
+	 *
+	 * @throws ExitException
 	 */
-	static function admin_plugins_get () {
+	static function admin_plugins_get ($route_ids, $route_path) {
+		if (isset($route_path[3])) {
+			switch ($route_path[3]) {
+				/**
+				 * Get dependent packages for plugin
+				 */
+				case 'dependent_packages':
+					static::get_dependent_packages_for_plugin($route_path[2]);
+					break;
+				default:
+					throw new ExitException(400);
+			}
+			return;
+		}
+		/**
+		 * Get array of plugins in extended form
+		 */
+		static::get_plugins_list();
+	}
+	/**
+	 * @param string $plugin
+	 *
+	 * @throws ExitException
+	 */
+	protected static function get_dependent_packages_for_plugin ($plugin) {
+		if (!in_array($plugin, Config::instance()->components['plugins'])) {
+			throw new ExitException(404);
+		}
+		$meta_file = PLUGINS."/$plugin/meta.json";
+		Page::instance()->json(
+			file_exists($meta_file) ? Packages_manipulation::get_dependent_packages(file_get_json($meta_file)) : []
+		);
+	}
+	protected static function get_plugins_list () {
 		$Config       = Config::instance();
 		$plugins      = get_files_list(PLUGINS, false, 'd');
 		$plugins_list = [];

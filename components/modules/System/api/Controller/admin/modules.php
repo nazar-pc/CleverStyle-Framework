@@ -12,12 +12,54 @@ use
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
-	cs\Page;
+	cs\Page,
+	cs\modules\System\Packages_manipulation;
 trait modules {
 	/**
-	 * Getting list of all modules data in extended form
+	 * @param int[]    $route_ids
+	 * @param string[] $route_path
+	 *
+	 * @throws ExitException
 	 */
-	static function admin_modules___get () {
+	static function admin_modules_get ($route_ids, $route_path) {
+		if (isset($route_path[3])) {
+			switch ($route_path[3]) {
+				/**
+				 * Get dependent packages for module
+				 */
+				case 'dependent_packages':
+					static::get_dependent_packages_for_module($route_path[2]);
+					break;
+				default:
+					throw new ExitException(400);
+			}
+		} elseif (isset($route_path[2]) && $route_path[2] == 'default') {
+			/**
+			 * Get current default module
+			 */
+			static::get_default_module();
+		} else {
+			/**
+			 * Get array of modules in extended form
+			 */
+			static::get_modules_list();
+		}
+	}
+	/**
+	 * @param string $module
+	 *
+	 * @throws ExitException
+	 */
+	protected static function get_dependent_packages_for_module ($module) {
+		if (!in_array($module, Config::instance()->components['plugins'])) {
+			throw new ExitException(404);
+		}
+		$meta_file = MODULES."/$module/meta.json";
+		Page::instance()->json(
+			file_exists($meta_file) ? Packages_manipulation::get_dependent_packages(file_get_json($meta_file)) : []
+		);
+	}
+	protected static function get_modules_list () {
 		$Config       = Config::instance();
 		$modules_list = [];
 		foreach ($Config->components['modules'] as $module_name => &$module_data) {
@@ -74,16 +116,24 @@ trait modules {
 			$module[$dir ?: $feature] = [];
 		}
 	}
+	protected static function get_default_module () {
+		Page::instance()->json(
+			Config::instance()->core['default_module']
+		);
+	}
 	/**
 	 * Delete module completely
 	 *
+	 * @param int[]    $route_ids
+	 * @param string[] $route_path
+	 *
 	 * @throws ExitException
 	 */
-	static function admin_modules___delete () {
-		if (!isset($_POST['module'])) {
+	static function admin_modules_delete ($route_ids, $route_path) {
+		if (!isset($route_path[2])) {
 			throw new ExitException(400);
 		}
-		$module_name = $_POST['module'];
+		$module_name = $route_path[2];
 		$Config      = Config::instance();
 		if (!isset($Config->components['modules'][$module_name])) {
 			throw new ExitException(404);
@@ -103,34 +153,40 @@ trait modules {
 		}
 	}
 	/**
-	 * Get current default module
-	 */
-	static function admin_modules_default_get () {
-		Page::instance()->json(
-			Config::instance()->core['default_module']
-		);
-	}
-	/**
 	 * Set current default module
+	 *
+	 * @param int[]    $route_ids
+	 * @param string[] $route_path
 	 *
 	 * @throws ExitException
 	 */
-	static function admin_modules_default_put () {
-		if (!isset($_POST['module'])) {
+	static function admin_modules_put ($route_ids, $route_path) {
+		if (isset($route_path[2]) && $route_path[2] == 'default') {
+			if (!isset($_POST['module'])) {
+				throw new ExitException(400);
+			}
+			static::set_default_module($_POST['module']);
+		} else {
 			throw new ExitException(400);
 		}
-		$module_name = $_POST['module'];
-		$Config      = Config::instance();
-		if (!isset($Config->components['modules'][$module_name])) {
+	}
+	/**
+	 * @param string $module
+	 *
+	 * @throws ExitException
+	 */
+	protected static function set_default_module ($module) {
+		$Config = Config::instance();
+		if (!isset($Config->components['modules'][$module])) {
 			throw new ExitException(404);
 		}
 		if (
-			$module_name == $Config->core['default_module'] ||
-			$Config->components['modules'][$module_name]['active'] != 1 ||
+			$module == $Config->core['default_module'] ||
+			$Config->components['modules'][$module]['active'] != 1 ||
 			!(
-				file_exists(MODULES."/$module_name/index.php") ||
-				file_exists(MODULES."/$module_name/index.html") ||
-				file_exists(MODULES."/$module_name/index.json")
+				file_exists(MODULES."/$module/index.php") ||
+				file_exists(MODULES."/$module/index.html") ||
+				file_exists(MODULES."/$module/index.json")
 			)
 		) {
 			throw new ExitException(400);
@@ -138,13 +194,13 @@ trait modules {
 		if (!Event::instance()->fire(
 			'admin/System/components/modules/default',
 			[
-				'name' => $module_name
+				'name' => $module
 			]
 		)
 		) {
 			throw new ExitException(500);
 		}
-		$Config->core['default_module'] = $module_name;
+		$Config->core['default_module'] = $module;
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}

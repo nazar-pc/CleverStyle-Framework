@@ -106,14 +106,12 @@
       });
     },
     _remove_completely: function(e){
-      var this$ = this;
-      cs.ui.confirm(L.completely_remove_module(e.model.module.name), function(){
+      var module, this$ = this;
+      module = e.model.module.name;
+      cs.ui.confirm(L.completely_remove_module(module), function(){
         $.ajax({
-          url: 'api/System/admin/modules',
+          url: 'api/System/admin/modules/' + module,
           type: 'delete',
-          data: {
-            module: e.model.module.name
-          },
           success: function(){
             this$.reload();
             cs.ui.notify(L.changes_saved, 'success', 5);

@@ -16,10 +16,7 @@
 			"permissions"
 		],
 		"languages"          : [],
-		"modules"            : [
-			"_",
-			"default"
-		],
+		"modules"            : [],
 		"permissions"        : [
 			"_",
 			"for_item"

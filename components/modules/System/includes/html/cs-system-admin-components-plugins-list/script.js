@@ -68,14 +68,12 @@
       });
     },
     _remove_completely: function(e){
-      var this$ = this;
-      cs.ui.confirm(L.completely_remove_plugin(e.model.plugin.name), function(){
+      var plugin, this$ = this;
+      plugin = e.model.plugin.name;
+      cs.ui.confirm(L.completely_remove_plugin(plugin), function(){
         $.ajax({
-          url: 'api/System/admin/plugins',
+          url: 'api/System/admin/plugins/' + plugin,
           type: 'delete',
-          data: {
-            plugin: e.model.plugin.name
-          },
           success: function(){
             this$.reload();
             cs.ui.notify(L.changes_saved, 'success', 5);
