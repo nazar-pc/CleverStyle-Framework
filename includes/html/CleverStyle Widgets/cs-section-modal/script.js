@@ -55,8 +55,11 @@
       }
     },
     _transitionend: function() {
+      var ref;
       if (!this.opened && this.autoDestroy) {
-        this.parentNode.removeChild(this);
+        if ((ref = this.parentNode) != null) {
+          ref.removeChild(this);
+        }
       }
     },
     _overlay_tap: function() {

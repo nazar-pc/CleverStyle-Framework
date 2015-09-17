@@ -463,8 +463,11 @@
      */
     ui.alert = function(content) {
       var modal, ok;
-      if (typeof content === 'string' || content instanceof Function) {
-        content = "<p>" + content + "</p>";
+      if (content instanceof Function) {
+        content = content.toString();
+      }
+      if (typeof content === 'string' && content.indexOf('<') === -1) {
+        content = "<h3>" + content + "</h3>";
       }
       modal = ui.modal(content);
       modal.autoDestroy = true;
@@ -474,6 +477,7 @@
       ok.primary = true;
       ok.action = 'close';
       ok.bind = modal;
+      modal.ok = ok;
       modal.appendChild(ok);
       modal.open();
       return modal;
@@ -483,14 +487,18 @@
     	 * Confirm modal
     	 *
     	 * @param {HTMLElement}|{jQuery}|{String} content
-    	 * @param {Function}                      callback
+    	 * @param {Function}                      ok_callback
+    	 * @param {Function}                      cancel_callback
         *
     	 * @return {HTMLElement}
      */
-    ui.confirm = function(content, callback) {
+    ui.confirm = function(content, ok_callback, cancel_callback) {
       var cancel, modal, ok;
-      if (typeof content === 'string' || content instanceof Function) {
-        content = "<p>" + content + "</p>";
+      if (content instanceof Function) {
+        content = content.toString();
+      }
+      if (typeof content === 'string' && content.indexOf('<') === -1) {
+        content = "<h3>" + content + "</h3>";
       }
       modal = ui.modal(content);
       modal.autoDestroy = true;
@@ -501,13 +509,18 @@
       ok.action = 'close';
       ok.bind = modal;
       ok.addEventListener('click', function() {
-        return callback();
+        ok_callback();
       });
+      modal.ok = ok;
       modal.appendChild(ok);
       cancel = document.createElement('button', 'cs-button');
       cancel.innerHTML = L.cancel;
       cancel.action = 'close';
       cancel.bind = modal;
+      cancel.addEventListener('click', function() {
+        cancel_callback();
+      });
+      modal.cancel = cancel;
       modal.appendChild(cancel);
       modal.open();
       return modal;

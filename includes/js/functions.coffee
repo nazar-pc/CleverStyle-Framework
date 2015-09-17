@@ -340,8 +340,10 @@ do ->
 	 * @return {HTMLElement}
 	###
 	ui.alert = (content) ->
-		if typeof content == 'string' || content instanceof Function
-			content = "<p>#{content}</p>"
+		if content instanceof Function
+			content = content.toString()
+		if typeof content == 'string' && content.indexOf('<') == -1
+			content = "<h3>#{content}</h3>"
 		modal				= ui.modal(content)
 		modal.autoDestroy	= true
 		modal.manualClose	= true
@@ -350,6 +352,7 @@ do ->
 		ok.primary			= true
 		ok.action			= 'close'
 		ok.bind				= modal
+		modal.ok			= ok
 		modal.appendChild(ok)
 		modal.open()
 		modal
@@ -357,13 +360,16 @@ do ->
 	 * Confirm modal
 	 *
 	 * @param {HTMLElement}|{jQuery}|{String} content
-	 * @param {Function}                      callback
+	 * @param {Function}                      ok_callback
+	 * @param {Function}                      cancel_callback
      *
 	 * @return {HTMLElement}
 	###
-	ui.confirm = (content, callback) ->
-		if typeof content == 'string' || content instanceof Function
-			content = "<p>#{content}</p>"
+	ui.confirm = (content, ok_callback, cancel_callback) ->
+		if content instanceof Function
+			content = content.toString()
+		if typeof content == 'string' && content.indexOf('<') == -1
+			content = "<h3>#{content}</h3>"
 		modal				= ui.modal(content)
 		modal.autoDestroy	= true
 		modal.manualClose	= true
@@ -373,13 +379,20 @@ do ->
 		ok.action			= 'close'
 		ok.bind				= modal
 		ok.addEventListener('click', ->
-			callback()
+			ok_callback()
+			return
 		)
+		modal.ok			= ok
 		modal.appendChild(ok)
 		cancel				= document.createElement('button', 'cs-button')
 		cancel.innerHTML	= L.cancel
 		cancel.action		= 'close'
 		cancel.bind			= modal
+		cancel.addEventListener('click', ->
+			cancel_callback()
+			return
+		)
+		modal.cancel		= cancel
 		modal.appendChild(cancel)
 		modal.open()
 		modal

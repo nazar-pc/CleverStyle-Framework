@@ -43,7 +43,7 @@ Polymer(
 		return
 	_transitionend : ->
 		if !@opened && @autoDestroy
-			@parentNode.removeChild(@)
+			@parentNode?.removeChild(@)
 		return
 	_overlay_tap : ->
 		if !@manualClose
