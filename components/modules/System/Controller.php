@@ -372,7 +372,7 @@ class Controller {
 				break;
 		}
 	}
-	function robots_txt () {
+	static function robots_txt () {
 		interface_off();
 		$text = file_get_contents(__DIR__.'/robots.txt');
 		Event::instance()->fire(
