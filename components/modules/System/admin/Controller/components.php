@@ -18,7 +18,8 @@ use
 	cs\Page,
 	cs\Route,
 	cs\Session,
-	h;
+	h,
+	cs\modules\System\Packages_manipulation;
 
 trait components {
 	static function components_blocks () {
@@ -453,7 +454,7 @@ trait components {
 			switch ($rc[2]) {
 				case 'install':
 					if ($rc[3] == 'upload') {
-						$tmp_file = static::move_uploaded_file_to_tmp('upload_module');
+						$tmp_file = Packages_manipulation::move_uploaded_file_to_tmp('upload_module');
 						if (!$tmp_file) {
 							break;
 						}
@@ -487,7 +488,7 @@ trait components {
 							) {
 								break;
 							}
-							$check_dependencies = static::check_dependencies($meta, true);
+							$check_dependencies = Packages_manipulation::check_dependencies($meta, true);
 							if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 								break;
 							}
@@ -515,7 +516,7 @@ trait components {
 							unlink($tmp_file);
 							break;
 						}
-						$extract = static::install_extract(MODULES."/$module_name", $tmp_file);
+						$extract = Packages_manipulation::install_extract(MODULES."/$module_name", $tmp_file);
 						unset($tmp_file, $tmp_dir);
 						if (!$extract) {
 							$Page->warning($L->module_files_unpacking_error);
@@ -551,7 +552,7 @@ trait components {
 					$check_dependencies = true;
 					if (file_exists(MODULES."/$rc[3]/meta.json")) {
 						$meta               = file_get_json(MODULES."/$rc[3]/meta.json");
-						$check_dependencies = static::check_dependencies($meta);
+						$check_dependencies = Packages_manipulation::check_dependencies($meta);
 						if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 							break;
 						}
@@ -623,7 +624,7 @@ trait components {
 					}
 					$check_dependencies = true;
 					if (file_exists(MODULES."/$rc[3]/meta.json")) {
-						$check_dependencies = static::check_backward_dependencies(file_get_json(MODULES."/$rc[3]/meta.json"));
+						$check_dependencies = Packages_manipulation::check_backward_dependencies(file_get_json(MODULES."/$rc[3]/meta.json"));
 						if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 							break;
 						}
@@ -636,7 +637,7 @@ trait components {
 					);
 					break;
 				case 'update_system':
-					$tmp_file = static::move_uploaded_file_to_tmp('upload_system');
+					$tmp_file = Packages_manipulation::move_uploaded_file_to_tmp('upload_system');
 					if (!$tmp_file) {
 						break;
 					}
@@ -826,7 +827,7 @@ trait components {
 					$show_modules       = false;
 					$check_dependencies = true;
 					if (file_exists(MODULES."/$rc[3]/meta.json")) {
-						$check_dependencies = static::check_dependencies(file_get_json(MODULES."/$rc[3]/meta.json"));
+						$check_dependencies = Packages_manipulation::check_dependencies(file_get_json(MODULES."/$rc[3]/meta.json"));
 						if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 							break;
 						}
@@ -852,7 +853,7 @@ trait components {
 					$show_modules       = false;
 					$check_dependencies = true;
 					if (file_exists(MODULES."/$rc[3]/meta.json")) {
-						$check_dependencies = static::check_backward_dependencies(file_get_json(MODULES."/$rc[3]/meta.json"));
+						$check_dependencies = Packages_manipulation::check_backward_dependencies(file_get_json(MODULES."/$rc[3]/meta.json"));
 						if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 							break;
 						}
@@ -904,7 +905,7 @@ trait components {
 		if (!$show_modules) {
 			return;
 		}
-		$a->file_upload      = true;
+		$a->file_upload = true;
 		$a->content(
 			h::{'cs-system-admin-components-modules-list'}().
 			h::p(
@@ -968,7 +969,7 @@ trait components {
 			switch ($rc[2]) {
 				case 'enable':
 					if ($rc[3] == 'upload') {
-						$tmp_file = static::move_uploaded_file_to_tmp('upload_plugin');
+						$tmp_file = Packages_manipulation::move_uploaded_file_to_tmp('upload_plugin');
 						if (!$tmp_file) {
 							break;
 						}
@@ -1002,7 +1003,7 @@ trait components {
 							) {
 								break;
 							}
-							$check_dependencies = static::check_dependencies($meta);
+							$check_dependencies = Packages_manipulation::check_dependencies($meta);
 							if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 								break;
 							}
@@ -1041,7 +1042,7 @@ trait components {
 							unlink($tmp_file);
 							break;
 						}
-						$extract = static::install_extract(PLUGINS."/$plugin", $tmp_file);
+						$extract = Packages_manipulation::install_extract(PLUGINS."/$plugin", $tmp_file);
 						unset($tmp_dir);
 						if (!$extract) {
 							$Page->warning($L->plugin_files_unpacking_error);
@@ -1070,7 +1071,7 @@ trait components {
 						$check_dependencies = true;
 						if (file_exists(PLUGINS."/$rc[3]/meta.json")) {
 							$meta               = file_get_json(PLUGINS."/$rc[3]/meta.json");
-							$check_dependencies = static::check_dependencies($meta);
+							$check_dependencies = Packages_manipulation::check_dependencies($meta);
 							if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 								break;
 							}
@@ -1123,7 +1124,7 @@ trait components {
 						}
 						$check_dependencies = true;
 						if (file_exists(PLUGINS."/$rc[3]/meta.json")) {
-							$check_dependencies = static::check_backward_dependencies(file_get_json(PLUGINS."/$rc[3]/meta.json"));
+							$check_dependencies = Packages_manipulation::check_backward_dependencies(file_get_json(PLUGINS."/$rc[3]/meta.json"));
 							if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 								break;
 							}
@@ -1151,8 +1152,8 @@ trait components {
 			}
 		}
 		unset($rc);
-		$a->buttons          = false;
-		$a->file_upload      = true;
+		$a->buttons     = false;
+		$a->file_upload = true;
 		$a->content(
 			h::{'cs-system-admin-components-plugins-list'}().
 			h::p(

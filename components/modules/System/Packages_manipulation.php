@@ -7,21 +7,23 @@
  * @copyright  Copyright (c) 2015, Nazar Mokrynskyi
  * @license    MIT License, see license.txt
  */
-namespace cs\modules\System\admin\Controller;
+namespace cs\modules\System;
 use
 	cs\Config,
 	cs\Core,
 	cs\DB,
 	cs\Language,
 	cs\Page;
-
-trait packages_manipulation {
+/**
+ * Utility functions, necessary during packages manipulation (installation/uninstallation, enabling/disabling)
+ */
+class Packages_manipulation {
 	/**
 	 * @param string $file_name File key in `$_FILES` superglobal
 	 *
 	 * @return false|string Path to file location if succeed or `false` on failure
 	 */
-	protected static function move_uploaded_file_to_tmp ($file_name) {
+	static function move_uploaded_file_to_tmp ($file_name) {
 		if (!isset($_FILES[$file_name]) || !$_FILES[$file_name]['tmp_name']) {
 			return false;
 		}
@@ -56,7 +58,7 @@ trait packages_manipulation {
 	 *
 	 * @return bool
 	 */
-	protected static function install_extract ($target_directory, $source_phar) {
+	static function install_extract ($target_directory, $source_phar) {
 		$tmp_dir   = "phar://$source_phar";
 		$fs        = file_get_json("$tmp_dir/fs.json");
 		$extracted = array_filter(
@@ -95,7 +97,7 @@ trait packages_manipulation {
 	 *
 	 * @return bool
 	 */
-	protected static function update_extract ($target_directory, $source_phar, $fs_location_directory = null, $meta_location_directory = null) {
+	static function update_extract ($target_directory, $source_phar, $fs_location_directory = null, $meta_location_directory = null) {
 		$fs_location_directory   = $fs_location_directory ?: $target_directory;
 		$meta_location_directory = $meta_location_directory ?: $target_directory;
 		/**
@@ -168,7 +170,7 @@ trait packages_manipulation {
 	 * @param string     $old_version
 	 * @param array|null $db_array `$module_data['db']` if module or system
 	 */
-	protected static function update_php_sql ($target_directory, $old_version, $db_array = null) {
+	static function update_php_sql ($target_directory, $old_version, $db_array = null) {
 		$Core   = Core::instance();
 		$Config = Config::instance();
 		$db     = DB::instance();
@@ -211,7 +213,7 @@ trait packages_manipulation {
 	 *
 	 * @return bool
 	 */
-	protected static function check_dependencies ($meta, $update_mode = false) {
+	static function check_dependencies ($meta, $update_mode = false) {
 		/**
 		 * No `meta.json` - nothing to check, allow it
 		 */
@@ -602,7 +604,7 @@ trait packages_manipulation {
 	 *
 	 * @return bool
 	 */
-	protected static function check_backward_dependencies ($meta) {
+	static function check_backward_dependencies ($meta) {
 		/**
 		 * No `meta.json` - nothing to check, allow it
 		 */

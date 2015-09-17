@@ -22,7 +22,7 @@ use
 	cs\modules\System\admin\Controller\components_save,
 	cs\modules\System\admin\Controller\users_save,
 	cs\modules\System\admin\Controller\layout_elements,
-	cs\modules\System\admin\Controller\packages_manipulation;
+	cs\modules\System\Packages_manipulation;
 
 class Controller {
 	use
@@ -31,8 +31,7 @@ class Controller {
 		users,
 		components_save,
 		users_save,
-		layout_elements,
-		packages_manipulation;
+		layout_elements;
 	static function index (
 		/** @noinspection PhpUnusedParameterInspection */
 		$route_ids,

@@ -17,7 +17,8 @@ use
 	cs\Language,
 	cs\Page,
 	cs\Session,
-	h;
+	h,
+	cs\modules\System\Packages_manipulation;
 
 trait general {
 	static function general_about_server (
@@ -291,7 +292,7 @@ trait general {
 		if (isset($_POST['action'])) {
 			switch ($_POST['action']) {
 				case 'upload':
-					$tmp_file = static::move_uploaded_file_to_tmp('upload_theme');
+					$tmp_file = Packages_manipulation::move_uploaded_file_to_tmp('upload_theme');
 					if (!$tmp_file) {
 						break;
 					}
@@ -344,7 +345,7 @@ trait general {
 						unlink($tmp_file);
 						break;
 					}
-					$extract = static::install_extract(THEMES."/$theme", $tmp_file);
+					$extract = Packages_manipulation::install_extract(THEMES."/$theme", $tmp_file);
 					unset($tmp_file, $tmp_dir, $theme);
 					if (!$extract) {
 						$Page->warning($L->theme_files_unpacking_error);
@@ -358,7 +359,7 @@ trait general {
 					}
 					$Session   = Session::instance();
 					$theme_dir = THEMES."/$_POST[update_theme]";
-					if (!static::update_extract($theme_dir, TEMP.'/'.$Session->get_id().'_theme_update.phar')) {
+					if (!Packages_manipulation::update_extract($theme_dir, TEMP.'/'.$Session->get_id().'_theme_update.phar')) {
 						$Page->warning($L->theme_files_unpacking_error);
 						break;
 					}

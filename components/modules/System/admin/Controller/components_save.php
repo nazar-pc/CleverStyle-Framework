@@ -19,7 +19,8 @@ use
 	cs\Page,
 	cs\Permission,
 	cs\Session,
-	h;
+	h,
+	cs\modules\System\Packages_manipulation;
 
 trait components_save {
 	static function components_databases_save () {
@@ -290,7 +291,7 @@ trait components_save {
 					}
 					$module_dir  = MODULES."/$module_name";
 					$old_version = file_get_json("$module_dir/meta.json")['version'];
-					if (!static::update_extract($module_dir, TEMP.'/'.$Session->get_id().'_module_update.phar')) {
+					if (!Packages_manipulation::update_extract($module_dir, TEMP.'/'.$Session->get_id().'_module_update.phar')) {
 						$Page->warning($L->module_files_unpacking_error);
 						break;
 					}
@@ -298,7 +299,7 @@ trait components_save {
 					 * Updating of module
 					 */
 					if ($active != -1 && isset(file_get_json("$module_dir/meta.json")['update_versions'])) {
-						static::update_php_sql(
+						Packages_manipulation::update_php_sql(
 							$module_dir,
 							$old_version,
 							isset($module_data['db']) ? $module_data['db'] : null
@@ -347,7 +348,7 @@ trait components_save {
 					);
 					$module_dir  = MODULES.'/System';
 					$old_version = file_get_json("$module_dir/meta.json")['version'];
-					if (!static::update_extract(DIR, TEMP.'/'.$Session->get_id().'_update_system.phar', DIR.'/core', $module_dir)) {
+					if (!Packages_manipulation::update_extract(DIR, TEMP.'/'.$Session->get_id().'_update_system.phar', DIR.'/core', $module_dir)) {
 						$Page->warning($L->system_files_unpacking_error);
 						break;
 					}
@@ -355,7 +356,7 @@ trait components_save {
 					 * Updating of System
 					 */
 					if (isset(file_get_json("$module_dir/meta.json")['update_versions'])) {
-						static::update_php_sql(
+						Packages_manipulation::update_php_sql(
 							$module_dir,
 							$old_version,
 							$module_data['db']
@@ -542,7 +543,7 @@ trait components_save {
 					}
 					$plugin_dir  = PLUGINS."/$plugin";
 					$old_version = file_get_json("$plugin_dir/meta.json")['version'];
-					if (!static::update_extract($plugin_dir, TEMP.'/'.Session::instance()->get_id().'_plugin_update.phar.php')) {
+					if (!Packages_manipulation::update_extract($plugin_dir, TEMP.'/'.Session::instance()->get_id().'_plugin_update.phar.php')) {
 						$Page->warning($L->plugin_files_unpacking_error);
 						break;
 					}
@@ -550,7 +551,7 @@ trait components_save {
 					 * Updating of plugin
 					 */
 					if (isset(file_get_json("$plugin_dir/meta.json")['update_versions'])) {
-						static::update_php_sql(
+						Packages_manipulation::update_php_sql(
 							$plugin_dir,
 							$old_version
 						);
