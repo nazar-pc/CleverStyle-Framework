@@ -100,10 +100,10 @@ trait plugins {
 	 * @throws ExitException
 	 */
 	static function admin_plugins_delete () {
-		if (!isset($_POST['plugin'])) {
+		if (!isset($route_path[2])) {
 			throw new ExitException(400);
 		}
-		$plugin = $_POST['plugin'];
+		$plugin = $route_path[2];
 		$Config = Config::instance();
 		if (
 			!is_dir(PLUGINS."/$plugin") ||
