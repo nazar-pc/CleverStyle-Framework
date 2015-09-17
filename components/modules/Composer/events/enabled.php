@@ -60,7 +60,7 @@ Event::instance()
 		}
 	)
 	->on(
-		'admin/System/components/plugins/disable/prepare',
+		'admin/System/components/plugins/disable/prepare', // TODO use frontend events
 		function ($data) {
 			if (file_exists(PLUGINS."/$data[name]/meta.json")) {
 				$meta = file_get_json(PLUGINS."/$data[name]/meta.json");

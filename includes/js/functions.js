@@ -517,9 +517,11 @@
       cancel.innerHTML = L.cancel;
       cancel.action = 'close';
       cancel.bind = modal;
-      cancel.addEventListener('click', function() {
-        cancel_callback();
-      });
+      if (cancel_callback) {
+        cancel.addEventListener('click', function() {
+          cancel_callback();
+        });
+      }
       modal.cancel = cancel;
       modal.appendChild(cancel);
       modal.open();

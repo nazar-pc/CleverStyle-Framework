@@ -962,10 +962,6 @@ trait components {
 	 *
 	 *  admin/System/components/plugins/enable/prepare
 	 *  ['name' => plugin_name]
-	 *
-	 *  admin/System/components/plugins/disable/prepare
-	 *  ['name' => plugin_name]
-	 *
 	 */
 	static function components_plugins () {
 		$Config     = Config::instance();
@@ -1125,53 +1121,6 @@ trait components {
 						return;
 					}
 					break;
-				case 'disable':
-					if (in_array($rc[3], $Config->components['plugins'])) {
-						$Page->title($L->disabling_of_plugin($rc[3]));
-						$a->content(
-							h::{'h2.cs-text-center'}(
-								$L->disabling_of_plugin($rc[3])
-							)
-						);
-						if (!Event::instance()->fire(
-							'admin/System/components/plugins/disable/prepare',
-							[
-								'name' => $rc[3]
-							]
-						)
-						) {
-							break;
-						}
-						$dependent_packages = [];
-						if (file_exists(PLUGINS."/$rc[3]/meta.json")) {
-							$dependent_packages = Packages_manipulation::get_dependent_packages(file_get_json(PLUGINS."/$rc[3]/meta.json"));
-							if ($dependent_packages) {
-								static::print_dependent_packages($dependent_packages);
-								if ($Config->core['simple_admin_mode']) {
-									break;
-								}
-							}
-						}
-						$a->cancel_button_back = true;
-						$a->content(
-							h::{'button[is=cs-button][type=submit]'}(
-								$L->{!$dependent_packages ? 'disable' : 'force_disable_not_recommended'}
-							).
-							h::{'input[type=hidden]'}(
-								[
-									'name'  => 'mode',
-									'value' => $rc[2]
-								]
-							).
-							h::{'input[type=hidden]'}(
-								[
-									'name'  => 'plugin',
-									'value' => $rc[3]
-								]
-							)
-						);
-					}
-					return;
 			}
 		}
 		unset($rc);

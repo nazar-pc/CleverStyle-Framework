@@ -453,9 +453,6 @@ trait components_save {
 	 *  admin/System/components/plugins/enable/process
 	 *  ['name'    => plugin_name]
 	 *
-	 *  admin/System/components/plugins/disable/process
-	 *  ['name'    => plugin_name]
-	 *
 	 *  admin/System/components/plugins/update/process/before
 	 *  ['name'    => plugin_name]
 	 *
@@ -485,21 +482,6 @@ trait components_save {
 						clean_pcache();
 						Event::instance()->fire(
 							'admin/System/components/plugins/enable/process',
-							[
-								'name' => $plugin
-							]
-						);
-						unset($Cache->functionality);
-					}
-					clean_classes_cache();
-					break;
-				case 'disable':
-					if (in_array($plugin, $Config->components['plugins'])) {
-						unset($Config->components['plugins'][array_search($plugin, $Config->components['plugins'])]);
-						$Index->save();
-						clean_pcache();
-						Event::instance()->fire(
-							'admin/System/components/plugins/disable/process',
 							[
 								'name' => $plugin
 							]

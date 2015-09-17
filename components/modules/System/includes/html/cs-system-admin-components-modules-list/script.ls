@@ -64,7 +64,6 @@ Polymer(
 		@set('modules', modules)
 	/**
 	 * Provides next events:
-	 *
 	 *  admin/System/components/modules/default/before
 	 *  {name : module_name}
 	 *
@@ -72,21 +71,22 @@ Polymer(
 	 *  {name : module_name}
 	 */
 	_set_as_default : (e) !->
+		module = e.model.module.name
 		cs.Event.fire(
 			'admin/System/components/modules/default/before'
-			name	: e.model.module.name
+			name	: module
 		).then !~>
 			$.ajax(
 				url		: 'api/System/admin/modules/default'
 				type	: 'put'
 				data	:
-					module	: e.model.module.name
+					module	: module
 				success	: !~>
 					@reload()
 					cs.ui.notify(L.changes_saved, 'success', 5)
 					cs.Event.fire(
 						'admin/System/components/modules/default/after'
-						name	: e.model.module.name
+						name	: module
 					)
 			)
 	_remove_completely : (e) !->

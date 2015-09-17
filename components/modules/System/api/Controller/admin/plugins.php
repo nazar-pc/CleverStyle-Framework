@@ -9,7 +9,9 @@
  */
 namespace cs\modules\System\api\Controller\admin;
 use
+	cs\Cache,
 	cs\Config,
+	cs\Event,
 	cs\ExitException,
 	cs\Page,
 	cs\modules\System\Packages_manipulation;
@@ -93,6 +95,45 @@ trait plugins {
 				'content' => file_get_contents($file)
 			];
 		}
+	}
+	/**
+	 * Disable plugin
+	 *
+	 * Provides next events:
+	 *  admin/System/components/plugins/disable
+	 *  ['name'    => plugin_name]
+	 *
+	 * @param int[]    $route_ids
+	 * @param string[] $route_path
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_plugins_disable ($route_ids, $route_path) {
+		if (!isset($route_path[2])) {
+			throw new ExitException(400);
+		}
+		$plugin       = $route_path[2];
+		$Config       = Config::instance();
+		$plugin_index = array_search($plugin, $Config->components['plugins'], true);
+		if ($plugin_index !== false) {
+			throw new ExitException(400);
+		}
+		if (!Event::instance()->fire(
+			'admin/System/components/plugins/disable',
+			[
+				'name' => $plugin
+			]
+		)
+		) {
+			throw new ExitException(500);
+		}
+		unset($Config->components['plugins'][$plugin_index]);
+		if (!$Config->save()) {
+			throw new ExitException(500);
+		}
+		clean_pcache();
+		unset(Cache::instance()->functionality);
+		clean_classes_cache();
 	}
 	/**
 	 * Delete plugin completely

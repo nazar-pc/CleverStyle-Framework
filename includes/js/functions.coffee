@@ -388,10 +388,11 @@ do ->
 		cancel.innerHTML	= L.cancel
 		cancel.action		= 'close'
 		cancel.bind			= modal
-		cancel.addEventListener('click', ->
-			cancel_callback()
-			return
-		)
+		if cancel_callback
+			cancel.addEventListener('click', ->
+				cancel_callback()
+				return
+			)
 		modal.cancel		= cancel
 		modal.appendChild(cancel)
 		modal.open()
