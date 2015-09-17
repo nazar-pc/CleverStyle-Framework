@@ -273,13 +273,37 @@ trait Includes {
 		 * Base name for cache files
 		 */
 		$this->pcache_basename = "_{$this->theme}_".Language::instance()->clang;
-		$Index                 = Index::instance();
-		$Route                 = Route::instance();
-		$User                  = User::instance();
-		$current_module        = current_module();
 		/**
-		 * Some JS code required by system
+		 * Some JS configs required by system
 		 */
+		$this->add_system_configs();
+		/**
+		 * If CSS and JavaScript compression enabled
+		 */
+		if ($Config->core['cache_compress_js_css'] && !admin_path()) {
+			$includes = $this->get_includes_for_page_with_compression();
+		} else {
+			/**
+			 * Language translation is added explicitly only when compression is disabled, otherwise it will be in compressed JS file
+			 */
+			/**
+			 * @var \cs\Page $this
+			 */
+			$this->config_internal(Language::instance(), 'cs.Language', true);
+			$includes = $this->get_includes_for_page_without_compression($Config);
+		}
+		$this->css_internal($includes['css'], 'file', true);
+		$this->js_internal($includes['js'], 'file', true);
+		$this->html_internal($includes['html'], 'file', true);
+		$this->add_includes_on_page_manually_added($Config);
+		return $this;
+	}
+	protected function add_system_configs () {
+		$Config         = Config::instance();
+		$Index          = Index::instance();
+		$Route          = Route::instance();
+		$User           = User::instance();
+		$current_module = current_module();
 		/**
 		 * @var \cs\_SERVER $_SERVER
 		 */
@@ -309,26 +333,9 @@ trait Includes {
 		if ($User->guest()) {
 			$this->config_internal(get_core_ml_text('rules'), 'cs.rules_text', true);
 		}
-		/**
-		 * If CSS and JavaScript compression enabled
-		 */
-		if ($Config->core['cache_compress_js_css'] && !admin_path()) {
-			$includes = $this->get_includes_for_page_with_compression();
-		} else {
-			/**
-			 * Language translation is added explicitly only when compression is disabled, otherwise it will be in compressed JS file
-			 */
-			/**
-			 * @var \cs\Page $this
-			 */
-			$this->config_internal(Language::instance(), 'cs.Language', true);
-			$includes = $this->get_includes_for_page_without_compression($Config);
+		if ($User->admin()) {
+			$this->config_internal($Config->core['simple_admin_mode'], 'cs.simple_admin_mode', true);
 		}
-		$this->css_internal($includes['css'], 'file', true);
-		$this->js_internal($includes['js'], 'file', true);
-		$this->html_internal($includes['html'], 'file', true);
-		$this->add_includes_on_page_manually_added($Config);
-		return $this;
 	}
 	/**
 	 * @return array[]
