@@ -484,12 +484,6 @@ trait components_save {
 						$Index->save();
 						clean_pcache();
 						Event::instance()->fire(
-							'admin/System/components/plugins/enable',
-							[
-								'name' => $plugin
-							]
-						);
-						Event::instance()->fire(
 							'admin/System/components/plugins/enable/process',
 							[
 								'name' => $plugin
@@ -504,12 +498,6 @@ trait components_save {
 						unset($Config->components['plugins'][array_search($plugin, $Config->components['plugins'])]);
 						$Index->save();
 						clean_pcache();
-						Event::instance()->fire(
-							'admin/System/components/plugins/disable',
-							[
-								'name' => $plugin
-							]
-						);
 						Event::instance()->fire(
 							'admin/System/components/plugins/disable/process',
 							[
