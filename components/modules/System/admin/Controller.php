@@ -21,8 +21,7 @@ use
 	cs\modules\System\admin\Controller\users,
 	cs\modules\System\admin\Controller\components_save,
 	cs\modules\System\admin\Controller\users_save,
-	cs\modules\System\admin\Controller\layout_elements,
-	cs\modules\System\Packages_manipulation;
+	cs\modules\System\admin\Controller\layout_elements;
 
 class Controller {
 	use
