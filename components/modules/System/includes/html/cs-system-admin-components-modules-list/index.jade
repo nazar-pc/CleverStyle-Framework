@@ -38,7 +38,7 @@ dom-module(id="cs-system-admin-components-modules-list")
 						= ' '
 						a(is="cs-link-button" icon="sliders" href="[[concat('/admin/', module.name)]]" tooltip="[[L.module_admin_page]]" hidden$="[[!module.administration]]")
 						= ' '
-						a(is="cs-link-button" icon="minus" href="[[concat('/admin/System/components/modules/disable/', module.name)]]" tooltip="[[L.disable]]" hidden$="[[!equal(module.active, 1)]]")
+						a(is="cs-link-button" icon="minus" on-tap="_disable" tooltip="[[L.disable]]" hidden$="[[!equal(module.active, 1)]]")
 						= ' '
 						a(is="cs-link-button" icon="check" href="[[concat('/admin/System/components/modules/enable/', module.name)]]" force-compact hidden$="[[!equal(module.active, 0)]]") [[L.enable]]
 						= ' '

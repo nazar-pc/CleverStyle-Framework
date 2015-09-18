@@ -425,9 +425,6 @@ trait components {
 	 *
 	 *  admin/System/components/modules/enable/prepare
 	 *  ['name' => module_name]
-	 *
-	 *  admin/System/components/modules/disable/prepare
-	 *  ['name' => module_name]
 	 */
 	static function components_modules () {
 		$Config       = Config::instance();
@@ -852,35 +849,6 @@ trait components {
 						h::{'button[is=cs-button][type=submit]'}($L->{$check_dependencies ? 'yes' : 'force_enable_not_recommended'})
 					);
 					break;
-				case 'disable':
-					$show_modules       = false;
-					$dependent_packages = [];
-					if (file_exists(MODULES."/$rc[3]/meta.json")) {
-						$dependent_packages = Packages_manipulation::get_dependent_packages(file_get_json(MODULES."/$rc[3]/meta.json"));
-						if ($dependent_packages) {
-							static::print_dependent_packages($dependent_packages);
-							if ($Config->core['simple_admin_mode']) {
-								break;
-							}
-						}
-					}
-					Event::instance()->fire(
-						'admin/System/components/modules/disable/prepare',
-						[
-							'name' => $rc[3]
-						]
-					);
-					$Page->title($L->disabling_of_module($rc[3]));
-					$a->content(
-						h::{'h2.cs-text-center'}(
-							$L->disable_module($rc[3])
-						)
-					);
-					$a->cancel_button_back = true;
-					$a->content(
-						h::{'button[is=cs-button][type=submit]'}($L->{!$dependent_packages ? 'yes' : 'force_disable_not_recommended'})
-					);
-					break;
 			}
 			switch ($rc[2]) {
 				case 'install':
@@ -890,7 +858,6 @@ trait components {
 				case 'db':
 				case 'storage':
 				case 'enable':
-				case 'disable':
 					$a->content(
 						h::{'input[type=hidden]'}(
 							[

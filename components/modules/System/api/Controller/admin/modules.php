@@ -9,6 +9,7 @@
  */
 namespace cs\modules\System\api\Controller\admin;
 use
+	cs\Cache,
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
@@ -51,7 +52,7 @@ trait modules {
 	 * @throws ExitException
 	 */
 	protected static function get_dependent_packages_for_module ($module) {
-		if (!in_array($module, Config::instance()->components['plugins'])) {
+		if (!isset(Config::instance()->components['modules'][$module])) {
 			throw new ExitException(404);
 		}
 		$meta_file = MODULES."/$module/meta.json";
@@ -204,5 +205,51 @@ trait modules {
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}
+	}
+	/**
+	 * Disable module
+	 *
+	 * Provides next events:
+	 *  admin/System/components/modules/disable
+	 *  ['name'    => module_name]
+	 *
+	 * @param int[]    $route_ids
+	 * @param string[] $route_path
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_modules_disable ($route_ids, $route_path) {
+		if (!isset($route_path[2])) {
+			throw new ExitException(400);
+		}
+		$module  = $route_path[2];
+		$Cache   = Cache::instance();
+		$Config  = Config::instance();
+		$modules = &$Config->components['modules'];
+		if (
+			!isset($modules[$module]) ||
+			$modules[$module]['active'] != 1
+		) {
+			throw new ExitException(400);
+		}
+		if (!Event::instance()->fire(
+			'admin/System/components/modules/disable',
+			[
+				'name' => $module
+			]
+		)
+		) {
+			throw new ExitException(500);
+		}
+		$modules[$module]['active'] = 0;
+		if (!$Config->save()) {
+			throw new ExitException(500);
+		}
+		clean_pcache();
+		unset(
+			$Cache->functionality,
+			$Cache->languages
+		);
+		clean_classes_cache();
 	}
 }

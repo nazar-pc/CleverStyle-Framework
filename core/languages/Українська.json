@@ -276,7 +276,7 @@
 		"make_default_module"							: "Зробити модулем за замовчуванням",
 		"enabling_of_module"							: "Вмикання модулю %s",
 		"enable_module"									: "Увімкнути модуль %s?",
-		"disabling_of_module"							: "Виникання модулю %s",
+		"disabling_of_module"							: "Вимикання модулю %s",
 		"disable_module"								: "Вимкнути модуль %s?",
 		"completely_remove_module"						: "Видалити модуль %s повністю?",
 		"complete_module_removal"						: "Повне видалення модуля",

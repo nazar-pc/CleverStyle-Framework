@@ -96,9 +96,6 @@ trait components_save {
 	 *
 	 *  admin/System/components/modules/enable/process
 	 *  ['name'    => module_name]
-	 *
-	 *  admin/System/components/modules/disable/process
-	 *  ['name'    => module_name]
 	 */
 	static function components_modules_save () {
 		$Cache      = Cache::instance();
@@ -419,22 +416,6 @@ trait components_save {
 					clean_pcache();
 					Event::instance()->fire(
 						'admin/System/components/modules/enable/process',
-						[
-							'name' => $module_name
-						]
-					);
-					unset(
-						$Cache->functionality,
-						$Cache->languages
-					);
-					clean_classes_cache();
-					break;
-				case 'disable':
-					$module_data['active'] = 0;
-					$a->save();
-					clean_pcache();
-					Event::instance()->fire(
-						'admin/System/components/modules/disable/process',
 						[
 							'name' => $module_name
 						]

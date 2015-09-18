@@ -89,6 +89,51 @@ Polymer(
 						name	: module
 					)
 			)
+	/**
+	 * Provides next events:
+	 *  aadmin/System/components/modules/disable/before
+	 *  {name : module_name}
+	 *
+	 *  admin/System/components/modules/disable/after
+	 *  {name : module_name}
+	 */
+	_disable : (e) !->
+		module	= e.model.module.name
+		dependent_packages <~! $.getJSON("api/System/admin/modules/#module/dependent_packages", _)
+		title	= "<h3>#{L.disabling_of_module(module)}</h3>"
+		message	= ''
+		if Object.keys(dependent_packages).length
+			for type, packages of dependent_packages
+				translation_key = if type == 'modules' then 'this_package_is_used_by_module' else 'this_package_is_used_by_plugin'
+				for _package in packages
+					message += "<p>#{L[translation_key](_package)}</p>"
+			message += "<p>#{L.dependencies_not_satisfied}</p>"
+			if cs.simple_admin_mode
+				cs.ui.notify(message, 'error', 5)
+				return
+		modal	= cs.ui.confirm(
+			"#title#message"
+			!~>
+				cs.Event.fire(
+					'admin/System/components/modules/disable/before'
+					name	: module
+				).then !~>
+					$.ajax(
+						url		: 'api/System/admin/modules/' + module
+						type	: 'disable'
+						success	: !~>
+							@reload()
+							cs.ui.notify(L.changes_saved, 'success', 5)
+							cs.Event.fire(
+								'admin/System/components/modules/disable/after'
+								name	: module
+							)
+					)
+		)
+		modal.ok.innerHTML		= L[if !message then 'disable' else 'force_disable_not_recommended']
+		modal.ok.primary		= !message
+		modal.cancel.primary	= !modal.ok.primary
+		$(modal).find('p').addClass('cs-text-error cs-block-error')
 	_remove_completely : (e) !->
 		module = e.model.module.name
 		<~! cs.ui.confirm(L.completely_remove_module(module), _)
