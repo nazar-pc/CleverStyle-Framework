@@ -10,6 +10,11 @@ Polymer(
 		Polymer.cs.behaviors.this
 		Polymer.cs.behaviors.tooltip
 	]
+	hostAttributes		:
+		hidden	: true
+	observers			: [
+		'_icon_changed(icon)'
+	]
 	properties			:
 		icon			:
 			reflectToAttribute	: true
@@ -39,10 +44,27 @@ Polymer(
 			type				: Boolean
 			value				: false
 		multiple_icons	:
-			computed	: '_multiple_icons(icon)'
-			type		: Boolean
-	_multiple_icons : (icon) ->
-		icon.split(' ').length > 1
+			computed	: '_multiple_icons(icon, flipX, flipY, mono, rotate, spin, spinStep)'
+			type		: Array
+		single_icon		:
+			computed	: '_single_icon(icon, flipX, flipY, mono, rotate, spin, spinStep)'
+			type		: String
+	_icon_changed : (icon) ->
+		if !icon
+			@setAttribute('hidden', '')
+		else
+			@removeAttribute('hidden')
+		return
+	_multiple_icons : (icon, flipX, flipY, mono, rotate, spin, spinStep) ->
+		if icon.split(' ').length > 1
+			@icon_class(icon, flipX, flipY, mono, rotate, spin, spinStep)
+		else
+			[]
+	_single_icon : (icon, flipX, flipY, mono, rotate, spin, spinStep) ->
+		if icon.split(' ').length > 1
+			''
+		else
+			@icon_class(icon, flipX, flipY, mono, rotate, spin, spinStep)
 	icon_class : (icon, flipX, flipY, mono, rotate, spin, spinStep) ->
 		icons			= icon.split(' ')
 		multiple_icons	= icons.length > 1

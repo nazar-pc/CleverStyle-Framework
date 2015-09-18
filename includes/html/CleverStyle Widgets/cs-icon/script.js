@@ -11,6 +11,10 @@
   Polymer({
     'is': 'cs-icon',
     behaviors: [Polymer.cs.behaviors["this"], Polymer.cs.behaviors.tooltip],
+    hostAttributes: {
+      hidden: true
+    },
+    observers: ['_icon_changed(icon)'],
     properties: {
       icon: {
         reflectToAttribute: true,
@@ -47,12 +51,34 @@
         value: false
       },
       multiple_icons: {
-        computed: '_multiple_icons(icon)',
-        type: Boolean
+        computed: '_multiple_icons(icon, flipX, flipY, mono, rotate, spin, spinStep)',
+        type: Array
+      },
+      single_icon: {
+        computed: '_single_icon(icon, flipX, flipY, mono, rotate, spin, spinStep)',
+        type: String
       }
     },
-    _multiple_icons: function(icon) {
-      return icon.split(' ').length > 1;
+    _icon_changed: function(icon) {
+      if (!icon) {
+        this.setAttribute('hidden', '');
+      } else {
+        this.removeAttribute('hidden');
+      }
+    },
+    _multiple_icons: function(icon, flipX, flipY, mono, rotate, spin, spinStep) {
+      if (icon.split(' ').length > 1) {
+        return this.icon_class(icon, flipX, flipY, mono, rotate, spin, spinStep);
+      } else {
+        return [];
+      }
+    },
+    _single_icon: function(icon, flipX, flipY, mono, rotate, spin, spinStep) {
+      if (icon.split(' ').length > 1) {
+        return '';
+      } else {
+        return this.icon_class(icon, flipX, flipY, mono, rotate, spin, spinStep);
+      }
     },
     icon_class: function(icon, flipX, flipY, mono, rotate, spin, spinStep) {
       var icon_class, icons, icons_classes, index, multiple_icons;

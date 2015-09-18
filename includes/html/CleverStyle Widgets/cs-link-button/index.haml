@@ -2,9 +2,7 @@
 	%link(rel="import" href="style.css" type="css")
 	%template
 		#content
-			%template(is="dom-if" if="[[icon]]")
-				%cs-icon(icon="[[icon]]" mono)
+			%cs-icon(icon="[[icon]]" mono)
 			%content
-			%template(is="dom-if" if="[[iconAfter]]")
-				%cs-icon(icon="[[iconAfter]]" mono)
+			%cs-icon(icon="[[iconAfter]]" mono)
 	%script(src="script.js")
