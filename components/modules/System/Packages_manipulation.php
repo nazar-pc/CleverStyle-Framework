@@ -208,12 +208,11 @@ class Packages_manipulation {
 	/**
 	 * Check dependencies for new component (during installation/updating/enabling)
 	 *
-	 * @param array $meta        `meta.json` contents of target component
-	 * @param bool  $update_mode Whether target component is module that is going to update previous version
+	 * @param array $meta `meta.json` contents of target component
 	 *
 	 * @return bool
 	 */
-	static function check_dependencies ($meta, $update_mode = false) {
+	static function check_dependencies ($meta) {
 		/**
 		 * No `meta.json` - nothing to check, allow it
 		 */
@@ -257,7 +256,6 @@ class Packages_manipulation {
 				 * Unless it updates, in this case check whether update is possible from current version
 				 */
 				if (
-					$update_mode &&
 					isset($meta['update_from']) &&
 					version_compare($meta['update_from_version'], $module_meta['version'], '>')
 				) {

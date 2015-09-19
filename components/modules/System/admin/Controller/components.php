@@ -485,7 +485,7 @@ trait components {
 							) {
 								break;
 							}
-							$check_dependencies = Packages_manipulation::check_dependencies($meta, true);
+							$check_dependencies = Packages_manipulation::check_dependencies($meta);
 							if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 								break;
 							}
