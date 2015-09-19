@@ -212,7 +212,7 @@ class Packages_manipulation {
 	 *
 	 * @return bool
 	 */
-	static function check_dependencies ($meta) {
+	static function get_dependencies ($meta) {
 		/**
 		 * No `meta.json` - nothing to check, allow it
 		 */

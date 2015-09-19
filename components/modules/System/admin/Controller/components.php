@@ -485,7 +485,7 @@ trait components {
 							) {
 								break;
 							}
-							$check_dependencies = Packages_manipulation::check_dependencies($meta);
+							$check_dependencies = Packages_manipulation::get_dependencies($meta);
 							if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 								break;
 							}
@@ -549,7 +549,7 @@ trait components {
 					$check_dependencies = true;
 					if (file_exists(MODULES."/$rc[3]/meta.json")) {
 						$meta               = file_get_json(MODULES."/$rc[3]/meta.json");
-						$check_dependencies = Packages_manipulation::check_dependencies($meta);
+						$check_dependencies = Packages_manipulation::get_dependencies($meta);
 						if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 							break;
 						}
@@ -827,7 +827,7 @@ trait components {
 					$show_modules       = false;
 					$check_dependencies = true;
 					if (file_exists(MODULES."/$rc[3]/meta.json")) {
-						$check_dependencies = Packages_manipulation::check_dependencies(file_get_json(MODULES."/$rc[3]/meta.json"));
+						$check_dependencies = Packages_manipulation::get_dependencies(file_get_json(MODULES."/$rc[3]/meta.json"));
 						if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 							break;
 						}
@@ -986,7 +986,7 @@ trait components {
 							) {
 								break;
 							}
-							$check_dependencies = Packages_manipulation::check_dependencies($meta);
+							$check_dependencies = Packages_manipulation::get_dependencies($meta);
 							if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 								break;
 							}
@@ -1054,7 +1054,7 @@ trait components {
 						$check_dependencies = true;
 						if (file_exists(PLUGINS."/$rc[3]/meta.json")) {
 							$meta               = file_get_json(PLUGINS."/$rc[3]/meta.json");
-							$check_dependencies = Packages_manipulation::check_dependencies($meta);
+							$check_dependencies = Packages_manipulation::get_dependencies($meta);
 							if (!$check_dependencies && $Config->core['simple_admin_mode']) {
 								break;
 							}
