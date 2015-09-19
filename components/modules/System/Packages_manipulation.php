@@ -452,7 +452,7 @@ class Packages_manipulation {
 	 * @param array $new_meta      `meta.json` content of new component
 	 * @param array $existing_meta `meta.json` content of existing component
 	 *
-	 * @return bool
+	 * @return array
 	 */
 	protected static function get_dependencies_also_provided_by ($new_meta, $existing_meta) {
 		return array_intersect($new_meta['provide'], $existing_meta['provide']);
@@ -483,7 +483,7 @@ class Packages_manipulation {
 	 * @param array $new_meta      `meta.json` content of new component
 	 * @param array $existing_meta `meta.json` content of existing component
 	 *
-	 * @return bool
+	 * @return array
 	 */
 	protected static function get_dependencies_conflicts ($new_meta, $existing_meta) {
 		/**
@@ -500,7 +500,7 @@ class Packages_manipulation {
 	 * @param array $meta_from
 	 * @param array $meta_to
 	 *
-	 * @return bool
+	 * @return array
 	 */
 	protected static function get_dependencies_conflicts_one_step ($meta_from, $meta_to) {
 		/**
