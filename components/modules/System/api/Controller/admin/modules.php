@@ -31,6 +31,12 @@ trait modules {
 				case 'dependent_packages':
 					static::get_dependent_packages_for_module($route_path[2]);
 					break;
+				/**
+				 * Get dependencies for module (packages, databases, storages)
+				 */
+				case 'dependencies':
+					static::get_dependencies_for_module($route_path[2]);
+					break;
 				default:
 					throw new ExitException(400);
 			}
@@ -58,6 +64,20 @@ trait modules {
 		$meta_file = MODULES."/$module/meta.json";
 		Page::instance()->json(
 			file_exists($meta_file) ? Packages_manipulation::get_dependent_packages(file_get_json($meta_file)) : []
+		);
+	}
+	/**
+	 * @param string $module
+	 *
+	 * @throws ExitException
+	 */
+	protected static function get_dependencies_for_module ($module) {
+		if (!isset(Config::instance()->components['modules'][$module])) {
+			throw new ExitException(404);
+		}
+		$meta_file = MODULES."/$module/meta.json";
+		Page::instance()->json(
+			file_exists($meta_file) ? Packages_manipulation::get_dependencies(file_get_json($meta_file)) : []
 		);
 	}
 	protected static function get_modules_list () {
@@ -207,6 +227,52 @@ trait modules {
 		}
 	}
 	/**
+	 * Enable module
+	 *
+	 * Provides next events:
+	 *  admin/System/components/modules/enable
+	 *  ['name'    => module_name]
+	 *
+	 * @param int[]    $route_ids
+	 * @param string[] $route_path
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_modules_enable ($route_ids, $route_path) {
+		if (!isset($route_path[2])) {
+			throw new ExitException(400);
+		}
+		$module  = $route_path[2];
+		$Cache   = Cache::instance();
+		$Config  = Config::instance();
+		$modules = &$Config->components['modules'];
+		if (
+			!isset($modules[$module]) ||
+			$modules[$module]['active'] != 0
+		) {
+			throw new ExitException(400);
+		}
+		if (!Event::instance()->fire(
+			'admin/System/components/modules/enable',
+			[
+				'name' => $module
+			]
+		)
+		) {
+			throw new ExitException(500);
+		}
+		$modules[$module]['active'] = 1;
+		if (!$Config->save()) {
+			throw new ExitException(500);
+		}
+		clean_pcache();
+		unset(
+			$Cache->functionality,
+			$Cache->languages
+		);
+		clean_classes_cache();
+	}
+	/**
 	 * Disable module
 	 *
 	 * Provides next events:
@@ -228,6 +294,7 @@ trait modules {
 		$modules = &$Config->components['modules'];
 		if (
 			!isset($modules[$module]) ||
+			$Config->core['default_module'] === $module ||
 			$modules[$module]['active'] != 1
 		) {
 			throw new ExitException(400);

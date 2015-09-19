@@ -20,7 +20,7 @@
   };
   Polymer({
     'is': 'cs-system-admin-components-plugins-list',
-    behaviors: [cs.Polymer.behaviors.Language],
+    behaviors: [cs.Polymer.behaviors.Language, cs.Polymer.behaviors.admin.System.components],
     ready: function(){
       this.reload();
     },
@@ -76,63 +76,10 @@
      *  {name : plugin_name}
      */,
     _disable: function(e){
-      var plugin, this$ = this;
-      plugin = e.model.plugin.name;
-      $.getJSON("api/System/admin/plugins/" + plugin + "/dependent_packages", function(dependent_packages){
-        var title, message, type, packages, translation_key, i$, len$, _package, modal;
-        title = "<h3>" + L.disabling_of_plugin(plugin) + "</h3>";
-        message = '';
-        if (Object.keys(dependent_packages).length) {
-          for (type in dependent_packages) {
-            packages = dependent_packages[type];
-            translation_key = type === 'modules' ? 'this_package_is_used_by_module' : 'this_package_is_used_by_plugin';
-            for (i$ = 0, len$ = packages.length; i$ < len$; ++i$) {
-              _package = packages[i$];
-              message += "<p>" + L[translation_key](_package) + "</p>";
-            }
-          }
-          message += "<p>" + L.dependencies_not_satisfied + "</p>";
-          if (cs.simple_admin_mode) {
-            cs.ui.notify(message, 'error', 5);
-            return;
-          }
-        }
-        modal = cs.ui.confirm(title + "" + message, function(){
-          cs.Event.fire('admin/System/components/plugins/disable/before', {
-            name: plugin
-          }).then(function(){
-            $.ajax({
-              url: 'api/System/admin/plugins/' + plugin,
-              type: 'disable',
-              success: function(){
-                this$.reload();
-                cs.ui.notify(L.changes_saved, 'success', 5);
-                cs.Event.fire('admin/System/components/plugins/disable/after', {
-                  name: plugin
-                });
-              }
-            });
-          });
-        });
-        modal.ok.innerHTML = L[!message ? 'disable' : 'force_disable_not_recommended'];
-        modal.ok.primary = !message;
-        modal.cancel.primary = !modal.ok.primary;
-        $(modal).find('p').addClass('cs-text-error cs-block-error');
-      });
+      this._disable_component(e.model.plugin.name, 'plugin');
     },
     _remove_completely: function(e){
-      var plugin, this$ = this;
-      plugin = e.model.plugin.name;
-      cs.ui.confirm(L.completely_remove_plugin(plugin), function(){
-        $.ajax({
-          url: 'api/System/admin/plugins/' + plugin,
-          type: 'delete',
-          success: function(){
-            this$.reload();
-            cs.ui.notify(L.changes_saved, 'success', 5);
-          }
-        });
-      });
+      this._remove_completely_component(e.model.plugin.name, 'plugin');
     }
   });
 }).call(this);

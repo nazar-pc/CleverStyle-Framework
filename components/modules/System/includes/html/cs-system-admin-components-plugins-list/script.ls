@@ -13,7 +13,10 @@ active_switch	= (disabled, enabled) ->
 	| 1		=> enabled
 Polymer(
 	'is'		: 'cs-system-admin-components-plugins-list'
-	behaviors	: [cs.Polymer.behaviors.Language]
+	behaviors	: [
+		cs.Polymer.behaviors.Language
+		cs.Polymer.behaviors.admin.System.components
+	]
 	ready : !->
 		@reload()
 	reload : ->
@@ -56,50 +59,7 @@ Polymer(
 	 *  {name : plugin_name}
 	 */
 	_disable : (e) !->
-		plugin	= e.model.plugin.name
-		dependent_packages <~! $.getJSON("api/System/admin/plugins/#plugin/dependent_packages", _)
-		title	= "<h3>#{L.disabling_of_plugin(plugin)}</h3>"
-		message	= ''
-		if Object.keys(dependent_packages).length
-			for type, packages of dependent_packages
-				translation_key = if type == 'modules' then 'this_package_is_used_by_module' else 'this_package_is_used_by_plugin'
-				for _package in packages
-					message += "<p>#{L[translation_key](_package)}</p>"
-			message += "<p>#{L.dependencies_not_satisfied}</p>"
-			if cs.simple_admin_mode
-				cs.ui.notify(message, 'error', 5)
-				return
-		modal	= cs.ui.confirm(
-			"#title#message"
-			!~>
-				cs.Event.fire(
-					'admin/System/components/plugins/disable/before'
-					name	: plugin
-				).then !~>
-					$.ajax(
-						url		: 'api/System/admin/plugins/' + plugin
-						type	: 'disable'
-						success	: !~>
-							@reload()
-							cs.ui.notify(L.changes_saved, 'success', 5)
-							cs.Event.fire(
-								'admin/System/components/plugins/disable/after'
-								name	: plugin
-							)
-					)
-		)
-		modal.ok.innerHTML		= L[if !message then 'disable' else 'force_disable_not_recommended']
-		modal.ok.primary		= !message
-		modal.cancel.primary	= !modal.ok.primary
-		$(modal).find('p').addClass('cs-text-error cs-block-error')
+		@_disable_component(e.model.plugin.name, 'plugin')
 	_remove_completely : (e) !->
-		plugin = e.model.plugin.name
-		<~! cs.ui.confirm(L.completely_remove_plugin(plugin), _)
-		$.ajax(
-			url		: 'api/System/admin/plugins/' + plugin
-			type	: 'delete'
-			success	: !~>
-				@reload()
-				cs.ui.notify(L.changes_saved, 'success', 5)
-		)
+		@_remove_completely_component(e.model.plugin.name, 'plugin')
 )

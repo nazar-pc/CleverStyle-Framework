@@ -31,6 +31,12 @@ trait plugins {
 				case 'dependent_packages':
 					static::get_dependent_packages_for_plugin($route_path[2]);
 					break;
+				/**
+				 * Get dependencies for plugin
+				 */
+				case 'dependencies':
+					static::get_dependencies_for_plugin($route_path[2]);
+					break;
 				default:
 					throw new ExitException(400);
 			}
@@ -53,6 +59,20 @@ trait plugins {
 		$meta_file = PLUGINS."/$plugin/meta.json";
 		Page::instance()->json(
 			file_exists($meta_file) ? Packages_manipulation::get_dependent_packages(file_get_json($meta_file)) : []
+		);
+	}
+	/**
+	 * @param string $plugin
+	 *
+	 * @throws ExitException
+	 */
+	protected static function get_dependencies_for_plugin ($plugin) {
+		if (!in_array($plugin, Config::instance()->components['plugins'])) {
+			throw new ExitException(404);
+		}
+		$meta_file = PLUGINS."/$plugin/meta.json";
+		Page::instance()->json(
+			file_exists($meta_file) ? Packages_manipulation::get_dependencies(file_get_json($meta_file)) : []
 		);
 	}
 	protected static function get_plugins_list () {
@@ -115,7 +135,7 @@ trait plugins {
 		$plugin       = $route_path[2];
 		$Config       = Config::instance();
 		$plugin_index = array_search($plugin, $Config->components['plugins'], true);
-		if ($plugin_index !== false) {
+		if ($plugin_index === false) {
 			throw new ExitException(400);
 		}
 		if (!Event::instance()->fire(
