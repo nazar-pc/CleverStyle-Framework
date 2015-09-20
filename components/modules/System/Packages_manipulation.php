@@ -243,61 +243,7 @@ class Packages_manipulation {
 			if (file_exists(MODULES."/$module/meta.json")) {
 				$module_meta = file_get_json(MODULES."/$module/meta.json");
 			}
-			$module_meta = self::normalize_meta($module_meta);
-			/**
-			 * Do not compare component with itself
-			 */
-			if (self::check_dependencies_are_the_same($meta, $module_meta)) {
-				/**
-				 * Unless it updates, in this case check whether update is possible from current version
-				 */
-				if (
-					isset($meta['update_from']) &&
-					version_compare($meta['update_from_version'], $module_meta['version'], '>')
-				) {
-					$dependencies['update_problem'] = [
-						'from'            => $module_meta['version'],
-						'to'              => $meta['version'],
-						'can_update_from' => $meta['update_from_version']
-					];
-				}
-				continue;
-			}
-			/**
-			 * If module already provides the same functionality
-			 */
-			if ($already_provided = self::get_dependencies_also_provided_by($meta, $module_meta)) {
-				$dependencies['provide']['modules'][] = [
-					'name'     => $module,
-					'features' => $already_provided
-				];
-			}
-			/**
-			 * Check if module is required and satisfies requirement condition
-			 */
-			if ($dependencies_conflicts = self::check_requirement_satisfaction($meta, $module_meta)) {
-				$dependencies['require']['modules'][] = [
-					'name'      => $module,
-					'existing'  => $module_meta['version'],
-					'conflicts' => $dependencies_conflicts
-				];
-			}
-			unset($meta['require'][$module]);
-			/**
-			 * Satisfy provided required functionality
-			 */
-			foreach ($module_meta['provide'] as $p) {
-				unset($meta['require'][$p]);
-			}
-			/**
-			 * Check for conflicts
-			 */
-			if ($dependencies_conflicts = self::get_dependencies_conflicts($meta, $module_meta)) {
-				$dependencies['conflict']['modules'][] = [
-					'name'      => $module,
-					'conflicts' => $dependencies_conflicts
-				];
-			}
+			self::get_dependencies_common_checks($dependencies, $meta, $module_meta);
 		}
 		unset($module, $module_data, $module_meta);
 		/**
@@ -315,48 +261,7 @@ class Packages_manipulation {
 			if (file_exists(PLUGINS."/$plugin/meta.json")) {
 				$plugin_meta = file_get_json(PLUGINS."/$plugin/meta.json");
 			}
-			$plugin_meta = self::normalize_meta($plugin_meta);
-			/**
-			 * Do not compare component with itself
-			 */
-			if (self::check_dependencies_are_the_same($meta, $plugin_meta)) {
-				continue;
-			}
-			/**
-			 * If plugin already provides the same functionality
-			 */
-			if ($already_provided = self::get_dependencies_also_provided_by($meta, $plugin_meta)) {
-				$dependencies['provide']['plugins'][] = [
-					'name'     => $plugin,
-					'features' => $already_provided
-				];
-			}
-			/**
-			 * Check if plugin is required and satisfies requirement condition
-			 */
-			if ($dependencies_conflicts = self::check_requirement_satisfaction($meta, $plugin_meta)) {
-				$dependencies['require']['plugins'][] = [
-					'name'      => $plugin,
-					'existing'  => $plugin_meta['version'],
-					'conflicts' => $dependencies_conflicts
-				];
-			}
-			unset($meta['require'][$plugin]);
-			/**
-			 * Satisfy provided required functionality
-			 */
-			foreach ($plugin_meta['provide'] as $p) {
-				unset($meta['require'][$p]);
-			}
-			/**
-			 * Check for conflicts
-			 */
-			if ($dependencies_conflicts = self::get_dependencies_conflicts($meta, $plugin_meta)) {
-				$dependencies['conflict']['plugins'][] = [
-					'name'      => $plugin,
-					'conflicts' => $dependencies_conflicts
-				];
-			}
+			self::get_dependencies_common_checks($dependencies, $meta, $plugin_meta);
 		}
 		unset($plugin, $plugin_meta);
 		/**
@@ -378,6 +283,70 @@ class Packages_manipulation {
 			$dependencies['supported'] = $meta['storage_support'];
 		}
 		return $dependencies;
+	}
+	/**
+	 * @param array $dependencies
+	 * @param array $meta
+	 * @param array $component_meta
+	 */
+	protected static function get_dependencies_common_checks (&$dependencies, &$meta, $component_meta) {
+		$component_meta = self::normalize_meta($component_meta);
+		$package        = $component_meta['package'];
+		$category       = $component_meta['category'];
+		/**
+		 * Do not compare component with itself
+		 */
+		if (self::check_dependencies_are_the_same($meta, $component_meta)) {
+			/**
+			 * If update is supported - check whether update is possible from current version
+			 */
+			if (
+				isset($meta['update_from']) &&
+				version_compare($meta['update_from_version'], $component_meta['version'], '>')
+			) {
+				$dependencies['update_problem'] = [
+					'from'            => $component_meta['version'],
+					'to'              => $meta['version'],
+					'can_update_from' => $meta['update_from_version']
+				];
+			}
+			return;
+		}
+		/**
+		 * If component already provides the same functionality
+		 */
+		if ($already_provided = self::get_dependencies_also_provided_by($meta, $component_meta)) {
+			$dependencies['provide'][$category][] = [
+				'name'     => $package,
+				'features' => $already_provided
+			];
+		}
+		/**
+		 * Check if component is required and satisfies requirement condition
+		 */
+		if ($dependencies_conflicts = self::check_requirement_satisfaction($meta, $component_meta)) {
+			$dependencies['require'][$category][] = [
+				'name'      => $package,
+				'existing'  => $component_meta['version'],
+				'conflicts' => $dependencies_conflicts
+			];
+		}
+		unset($meta['require'][$package]);
+		/**
+		 * Satisfy provided required functionality
+		 */
+		foreach ($component_meta['provide'] as $p) {
+			unset($meta['require'][$p]);
+		}
+		/**
+		 * Check for conflicts
+		 */
+		if ($dependencies_conflicts = self::get_dependencies_conflicts($meta, $component_meta)) {
+			$dependencies['conflict'][$category][] = [
+				'name'      => $package,
+				'conflicts' => $dependencies_conflicts
+			];
+		}
 	}
 	/**
 	 * Check whether there is available supported DB engine
