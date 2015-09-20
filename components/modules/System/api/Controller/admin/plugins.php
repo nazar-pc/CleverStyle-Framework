@@ -121,7 +121,7 @@ trait plugins {
 	 *
 	 * Provides next events:
 	 *  admin/System/components/plugins/disable
-	 *  ['name'    => plugin_name]
+	 *  ['name' => plugin_name]
 	 *
 	 * @param int[]    $route_ids
 	 * @param string[] $route_path

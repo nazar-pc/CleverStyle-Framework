@@ -231,7 +231,7 @@ trait modules {
 	 *
 	 * Provides next events:
 	 *  admin/System/components/modules/enable
-	 *  ['name'    => module_name]
+	 *  ['name' => module_name]
 	 *
 	 * @param int[]    $route_ids
 	 * @param string[] $route_path
@@ -277,7 +277,7 @@ trait modules {
 	 *
 	 * Provides next events:
 	 *  admin/System/components/modules/disable
-	 *  ['name'    => module_name]
+	 *  ['name' => module_name]
 	 *
 	 * @param int[]    $route_ids
 	 * @param string[] $route_path

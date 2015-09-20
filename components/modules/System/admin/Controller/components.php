@@ -422,9 +422,6 @@ trait components {
 	 *
 	 *  admin/System/components/modules/storage/prepare
 	 *  ['name' => module_name]
-	 *
-	 *  admin/System/components/modules/enable/prepare
-	 *  ['name' => module_name]
 	 */
 	static function components_modules () {
 		$Config       = Config::instance();
@@ -823,32 +820,6 @@ trait components {
 						}
 					}
 					break;
-				case 'enable':
-					$show_modules       = false;
-					$check_dependencies = true;
-					if (file_exists(MODULES."/$rc[3]/meta.json")) {
-						$check_dependencies = Packages_manipulation::get_dependencies(file_get_json(MODULES."/$rc[3]/meta.json"));
-						if (!$check_dependencies && $Config->core['simple_admin_mode']) {
-							break;
-						}
-					}
-					Event::instance()->fire(
-						'admin/System/components/modules/enable/prepare',
-						[
-							'name' => $rc[3]
-						]
-					);
-					$Page->title($L->enabling_of_module($rc[3]));
-					$a->content(
-						h::{'h2.cs-text-center'}(
-							$L->enable_module($rc[3])
-						)
-					);
-					$a->cancel_button_back = true;
-					$a->content(
-						h::{'button[is=cs-button][type=submit]'}($L->{$check_dependencies ? 'yes' : 'force_enable_not_recommended'})
-					);
-					break;
 			}
 			switch ($rc[2]) {
 				case 'install':
@@ -857,7 +828,6 @@ trait components {
 				case 'update_system':
 				case 'db':
 				case 'storage':
-				case 'enable':
 					$a->content(
 						h::{'input[type=hidden]'}(
 							[

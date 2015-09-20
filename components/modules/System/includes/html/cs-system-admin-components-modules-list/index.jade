@@ -40,7 +40,7 @@ dom-module(id="cs-system-admin-components-modules-list")
 						= ' '
 						a(is="cs-link-button" icon="minus" on-tap="_disable" tooltip="[[L.disable]]" hidden$="[[!equal(module.active, 1)]]")
 						= ' '
-						a(is="cs-link-button" icon="check" href="[[concat('/admin/System/components/modules/enable/', module.name)]]" force-compact hidden$="[[!equal(module.active, 0)]]") [[L.enable]]
+						a(is="cs-link-button" icon="check" on-tap="_enable" force-compact hidden$="[[!equal(module.active, 0)]]") [[L.enable]]
 						= ' '
 						a(is="cs-link-button" icon="download" href="[[concat('/admin/System/components/modules/install/', module.name)]]" force-compact hidden$="[[!equal(module.active, -1)]]") [[L.install]]
 						= ' '

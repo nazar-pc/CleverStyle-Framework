@@ -93,9 +93,6 @@ trait components_save {
 	 *
 	 *  admin/System/components/modules/storage/process
 	 *  ['name'    => module_name]
-	 *
-	 *  admin/System/components/modules/enable/process
-	 *  ['name'    => module_name]
 	 */
 	static function components_modules_save () {
 		$Cache      = Cache::instance();
@@ -200,7 +197,7 @@ trait components_save {
 							h::{'a[is=cs-link-button]'}(
 								$L->enable_module($module_name),
 								[
-									'href' => "admin/System/components/modules/enable/$module_name"
+									'href' => ''// TODO fix this link when installation migrate to frontend
 								]
 							)
 						);
@@ -409,22 +406,6 @@ trait components_save {
 						$module_data['storage'] = xap($_POST['storage']);
 						$a->save();
 					}
-					break;
-				case 'enable':
-					$module_data['active'] = 1;
-					$a->save();
-					clean_pcache();
-					Event::instance()->fire(
-						'admin/System/components/modules/enable/process',
-						[
-							'name' => $module_name
-						]
-					);
-					unset(
-						$Cache->functionality,
-						$Cache->languages
-					);
-					clean_classes_cache();
 					break;
 			}
 		}

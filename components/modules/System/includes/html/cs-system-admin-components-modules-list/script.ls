@@ -94,6 +94,16 @@ Polymer(
 			)
 	/**
 	 * Provides next events:
+	 *  aadmin/System/components/modules/enable/before
+	 *  {name : module_name}
+	 *
+	 *  admin/System/components/modules/enable/after
+	 *  {name : module_name}
+	 */
+	_enable : (e) !->
+		@_enable_component(e.model.module.name, 'module', e.model.module.meta)
+	/**
+	 * Provides next events:
 	 *  aadmin/System/components/modules/disable/before
 	 *  {name : module_name}
 	 *
