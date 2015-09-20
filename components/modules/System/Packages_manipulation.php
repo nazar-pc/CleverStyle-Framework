@@ -461,7 +461,7 @@ class Packages_manipulation {
 	 * @param array $new_meta      `meta.json` content of new component
 	 * @param array $existing_meta `meta.json` content of existing component
 	 *
-	 * @return bool
+	 * @return array
 	 */
 	protected static function check_requirement_satisfaction ($new_meta, $existing_meta) {
 		if (
@@ -483,7 +483,7 @@ class Packages_manipulation {
 	 * @param string $component
 	 * @param string $version
 	 *
-	 * @return bool
+	 * @return array
 	 */
 	protected static function check_conflicts ($requirements, $component, $version) {
 		/**
