@@ -144,7 +144,7 @@ Event::instance()
 							];
 						},
 						$Cache->get(
-							'language/clangs',
+							'languages/clangs',
 							function () use ($Config) {
 								$clangs = [];
 								foreach ($Config->core['active_languages'] as $language) {
