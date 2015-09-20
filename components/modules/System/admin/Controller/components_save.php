@@ -412,9 +412,6 @@ trait components_save {
 	}
 	/**
 	 * Provides next events:
-	 *  admin/System/components/plugins/enable/process
-	 *  ['name'    => plugin_name]
-	 *
 	 *  admin/System/components/plugins/update/process/before
 	 *  ['name'    => plugin_name]
 	 *
@@ -433,25 +430,9 @@ trait components_save {
 		$Index   = Index::instance();
 		$L       = Language::instance();
 		$Page    = Page::instance();
-		$plugins = get_files_list(PLUGINS, false, 'd');
 		if (isset($_POST['mode'], $_POST['plugin'])) {
 			$plugin = $_POST['plugin'];
 			switch ($_POST['mode']) {
-				case 'enable':
-					if (in_array($plugin, $plugins) && !in_array($plugin, $Config->components['plugins'])) {
-						$Config->components['plugins'][] = $plugin;
-						$Index->save();
-						clean_pcache();
-						Event::instance()->fire(
-							'admin/System/components/plugins/enable/process',
-							[
-								'name' => $plugin
-							]
-						);
-						unset($Cache->functionality);
-					}
-					clean_classes_cache();
-					break;
 				case 'update':
 					/**
 					 * Temporary disable plugin

@@ -52,6 +52,16 @@ Polymer(
 		@set('plugins', plugins)
 	/**
 	 * Provides next events:
+	 *  aadmin/System/components/plugins/enable/before
+	 *  {name : module_name}
+	 *
+	 *  admin/System/components/plugins/enable/after
+	 *  {name : module_name}
+	 */
+	_enable : (e) !->
+		@_enable_component(e.model.plugin.name, 'plugin', e.model.plugin.meta)
+	/**
+	 * Provides next events:
 	 *  aadmin/System/components/plugins/disable/before
 	 *  {name : plugin_name}
 	 *

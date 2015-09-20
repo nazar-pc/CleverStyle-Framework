@@ -18,12 +18,13 @@
         var component_type_s, this$ = this;
         component_type_s = component_type + 's';
         $.getJSON("api/System/admin/" + component_type_s + "/" + component + "/dependencies", function(dependencies){
-          var translation_key, title, message, modal;
+          var translation_key, title, message, message_more, modal;
           delete dependencies.db_support;
           delete dependencies.storage_support;
           translation_key = component_type === 'module' ? 'enabling_of_module' : 'enabling_of_plugin';
           title = "<h3>" + L[translation_key](component) + "</h3>";
           message = '';
+          message_more = '';
           if (Object.keys(dependencies).length) {
             message = this$._compose_dependencies_message(component, dependencies);
             if (cs.simple_admin_mode) {
@@ -31,7 +32,10 @@
               return;
             }
           }
-          modal = cs.ui.confirm(title + "" + message, function(){
+          if (meta.optional) {
+            message_more += '<p class="cs-text-success cs-block-success">' + L.for_complete_feature_set(meta.optional.join(', ')) + '</p>';
+          }
+          modal = cs.ui.confirm(title + "" + message + message_more, function(){
             cs.Event.fire("admin/System/components/" + component_type_s + "/enable/before", {
               name: component
             }).then(function(){
@@ -51,7 +55,7 @@
           modal.ok.innerHTML = L[!message ? 'enable' : 'force_enable_not_recommended'];
           modal.ok.primary = !message;
           modal.cancel.primary = !modal.ok.primary;
-          $(modal).find('p').addClass('cs-text-error cs-block-error');
+          $(modal).find('p:not([class])').addClass('cs-text-error cs-block-error');
         });
       },
       _compose_dependencies_message: function(component, dependencies){

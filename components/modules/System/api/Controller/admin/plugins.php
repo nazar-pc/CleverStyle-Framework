@@ -67,7 +67,8 @@ trait plugins {
 	 * @throws ExitException
 	 */
 	protected static function get_dependencies_for_plugin ($plugin) {
-		if (!in_array($plugin, Config::instance()->components['plugins'])) {
+		$plugins = get_files_list(PLUGINS, false, 'd');
+		if (!in_array($plugin, $plugins, true)) {
 			throw new ExitException(404);
 		}
 		$meta_file = PLUGINS."/$plugin/meta.json";
@@ -120,6 +121,45 @@ trait plugins {
 	 * Disable plugin
 	 *
 	 * Provides next events:
+	 *  admin/System/components/plugins/enable
+	 *  ['name' => plugin_name]
+	 *
+	 * @param int[]    $route_ids
+	 * @param string[] $route_path
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_plugins_enable ($route_ids, $route_path) {
+		if (!isset($route_path[2])) {
+			throw new ExitException(400);
+		}
+		$Config  = Config::instance();
+		$plugin  = $route_path[2];
+		$plugins = get_files_list(PLUGINS, false, 'd');
+		if (!in_array($plugin, $plugins, true) || in_array($plugin, $Config->components['plugins'])) {
+			throw new ExitException(400);
+		}
+		if (!Event::instance()->fire(
+			'admin/System/components/plugins/enable',
+			[
+				'name' => $plugin
+			]
+		)
+		) {
+			throw new ExitException(500);
+		}
+		$Config->components['plugins'][] = $plugin;
+		if (!$Config->save()) {
+			throw new ExitException(500);
+		}
+		clean_pcache();
+		unset(Cache::instance()->functionality);
+		clean_classes_cache();
+	}
+	/**
+	 * Disable plugin
+	 *
+	 * Provides next events:
 	 *  admin/System/components/plugins/disable
 	 *  ['name' => plugin_name]
 	 *
@@ -132,8 +172,8 @@ trait plugins {
 		if (!isset($route_path[2])) {
 			throw new ExitException(400);
 		}
-		$plugin       = $route_path[2];
 		$Config       = Config::instance();
+		$plugin       = $route_path[2];
 		$plugin_index = array_search($plugin, $Config->components['plugins'], true);
 		if ($plugin_index === false) {
 			throw new ExitException(400);

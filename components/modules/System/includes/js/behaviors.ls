@@ -21,13 +21,16 @@ behaviors.admin.System	=
 			translation_key		= if component_type == 'module' then 'enabling_of_module' else 'enabling_of_plugin'
 			title				= "<h3>#{L[translation_key](component)}</h3>"
 			message				= ''
+			message_more		= ''
 			if Object.keys(dependencies).length
 				message	= @_compose_dependencies_message(component, dependencies)
 				if cs.simple_admin_mode
 					cs.ui.notify(message, 'error', 5)
 					return
+			if meta.optional
+				message_more	+= '<p class="cs-text-success cs-block-success">' + L.for_complete_feature_set(meta.optional.join(', ')) + '</p>'
 			modal	= cs.ui.confirm(
-				"#title#message"
+				"#title#message#message_more"
 				!~>
 					cs.Event.fire(
 						"admin/System/components/#component_type_s/enable/before"
@@ -48,7 +51,7 @@ behaviors.admin.System	=
 			modal.ok.innerHTML		= L[if !message then 'enable' else 'force_enable_not_recommended']
 			modal.ok.primary		= !message
 			modal.cancel.primary	= !modal.ok.primary
-			$(modal).find('p').addClass('cs-text-error cs-block-error')
+			$(modal).find('p:not([class])').addClass('cs-text-error cs-block-error')
 		# Compose HTML representation of dependencies details
 		_compose_dependencies_message : (component, dependencies) ->
 			message = ''

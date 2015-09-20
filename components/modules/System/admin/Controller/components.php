@@ -894,9 +894,6 @@ trait components {
 	 * Provides next events:
 	 *  admin/System/components/plugins/update/prepare
 	 *  ['name' => plugin_name]
-	 *
-	 *  admin/System/components/plugins/enable/prepare
-	 *  ['name' => plugin_name]
 	 */
 	static function components_plugins () {
 		$Config     = Config::instance();
@@ -1001,59 +998,6 @@ trait components {
 						}
 						$plugins[] = $plugin;
 						unset($tmp_file, $meta, $plugin);
-					}
-					/** @noinspection NotOptimalIfConditionsInspection */
-					if (!in_array($rc[3], $Config->components['plugins']) && in_array($rc[3], $plugins)) {
-						$Page->title($L->enabling_of_plugin($rc[3]));
-						$a->content(
-							h::{'h2.cs-text-center'}(
-								$L->enabling_of_plugin($rc[3])
-							)
-						);
-						if (!Event::instance()->fire(
-							'admin/System/components/plugins/enable/prepare',
-							[
-								'name' => $rc[3]
-							]
-						)
-						) {
-							break;
-						}
-						$check_dependencies = true;
-						if (file_exists(PLUGINS."/$rc[3]/meta.json")) {
-							$meta               = file_get_json(PLUGINS."/$rc[3]/meta.json");
-							$check_dependencies = Packages_manipulation::get_dependencies($meta);
-							if (!$check_dependencies && $Config->core['simple_admin_mode']) {
-								break;
-							}
-							if (isset($meta['optional'])) {
-								$Page->success(
-									$L->for_complete_feature_set(
-										implode(', ', (array)$meta['optional'])
-									)
-								);
-							}
-							unset($meta);
-						}
-						$a->cancel_button_back = true;
-						$a->content(
-							h::{'button[is=cs-button][type=submit]'}(
-								$L->{$check_dependencies ? 'enable' : 'force_enable_not_recommended'}
-							).
-							h::{'input[type=hidden]'}(
-								[
-									'name'  => 'mode',
-									'value' => $rc[2]
-								]
-							).
-							h::{'input[type=hidden]'}(
-								[
-									'name'  => 'plugin',
-									'value' => $rc[3]
-								]
-							)
-						);
-						return;
 					}
 					break;
 			}

@@ -24,7 +24,7 @@ dom-module#cs-system-admin-components-plugins-list
 						section(is="cs-section-modal" content="[[plugin.license.content]]")
 					td
 						a(is="cs-link-button" icon="minus" on-tap="_disable" tooltip="[[L.disable]]" hidden$="[[equal(plugin.active, 0)]]")
-						a(is="cs-link-button" icon="check" href="[[concat('/admin/System/components/plugins/enable/', plugin.name)]]" force-compact hidden$="[[equal(plugin.active, 1)]]") [[L.enable]]
+						a(is="cs-link-button" icon="check" on-tap="_enable" force-compact hidden$="[[equal(plugin.active, 1)]]") [[L.enable]]
 						= ' '
 						a(is="cs-link-button" icon="trash" on-tap="_remove_completely" tooltip="[[L.complete_plugin_removal]]" hidden$="[[equal(plugin.active, 1)]]")
 	script(src="script.js")
