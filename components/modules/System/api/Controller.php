@@ -23,6 +23,7 @@ class Controller {
 		admin\modules,
 		admin\permissions,
 		admin\plugins,
+		admin\upload,
 		admin\users,
 		profile,
 		profiles,

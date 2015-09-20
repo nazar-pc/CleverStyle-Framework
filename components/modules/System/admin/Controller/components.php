@@ -524,8 +524,6 @@ trait components {
 						unset($meta, $module_name);
 						ksort($Config->components['modules'], SORT_STRING | SORT_FLAG_CASE);
 						$Config->save();
-					} elseif ($rc[3] == 'upload') {
-						break;
 					}
 					$show_modules = false;
 					$Page->title($L->installation_of_module($rc[3]));
