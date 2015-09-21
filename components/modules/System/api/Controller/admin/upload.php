@@ -11,7 +11,8 @@ namespace cs\modules\System\api\Controller\admin;
 use
 	cs\ExitException,
 	cs\Language,
-	cs\Page;
+	cs\Page,
+	cs\Session;
 trait upload {
 	/**
 	 * @throws ExitException
@@ -38,7 +39,7 @@ trait upload {
 		if (!is_dir($target_directory) && !mkdir($target_directory, 0770, true)) {
 			throw new ExitException(500);
 		}
-		$tmp_filename = md5(random_bytes(1000)).'.phar';
+		$tmp_filename = Session::instance()->get_id().'.phar';
 		$tmp_location = "$target_directory/$tmp_filename";
 		// Cleanup
 		get_files_list(

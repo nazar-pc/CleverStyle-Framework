@@ -13,7 +13,9 @@ use
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
+	cs\Language,
 	cs\Page,
+	cs\Session,
 	cs\modules\System\Packages_manipulation;
 trait plugins {
 	/**
@@ -36,6 +38,12 @@ trait plugins {
 				 */
 				case 'dependencies':
 					static::get_dependencies_for_plugin($route_path[2]);
+					break;
+				/**
+				 * Get dependencies for plugin during update
+				 */
+				case 'update_dependencies':
+					static::get_update_dependencies_for_plugin($route_path[2]);
 					break;
 				default:
 					throw new ExitException(400);
@@ -74,6 +82,36 @@ trait plugins {
 		$meta_file = PLUGINS."/$plugin/meta.json";
 		Page::instance()->json(
 			file_exists($meta_file) ? Packages_manipulation::get_dependencies(file_get_json($meta_file)) : []
+		);
+	}
+	/**
+	 * @param string $plugin
+	 *
+	 * @throws ExitException
+	 */
+	protected static function get_update_dependencies_for_plugin ($plugin) {
+		$plugins = get_files_list(PLUGINS, false, 'd');
+		if (!in_array($plugin, $plugins, true)) {
+			throw new ExitException(404);
+		}
+		$tmp_location = TEMP.'/System/admin/'.Session::instance()->get_id().'.phar';
+		if (!file_exists($tmp_location) || !file_exists(PLUGINS."/$plugin/meta.json")) {
+			throw new ExitException(400);
+		}
+		$tmp_dir = "phar://$tmp_location";
+		if (!file_exists("$tmp_dir/meta.json")) {
+			throw new ExitException(400);
+		}
+		$existing_meta = file_get_json(PLUGINS."/$plugin/meta.json");
+		$new_meta      = file_get_json("$tmp_dir/meta.json");
+		if (
+			$existing_meta['package'] !== $new_meta['package'] ||
+			$existing_meta['category'] !== $new_meta['category']
+		) {
+			throw new ExitException(Language::instance()->this_is_not_plugin_installer_file, 400);
+		}
+		Page::instance()->json(
+			Packages_manipulation::get_dependencies(file_get_json($new_meta))
 		);
 	}
 	protected static function get_plugins_list () {

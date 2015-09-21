@@ -297,6 +297,13 @@ class Packages_manipulation {
 		 * Do not compare component with itself
 		 */
 		if (self::check_dependencies_are_the_same($meta, $component_meta)) {
+			if (version_compare($meta['version'], $component_meta['version'], '<')) {
+				$dependencies['update_older'] = [
+					'from' => $component_meta['version'],
+					'to'   => $meta['version']
+				];
+				return;
+			}
 			/**
 			 * If update is supported - check whether update is possible from current version
 			 */
@@ -304,7 +311,7 @@ class Packages_manipulation {
 				isset($meta['update_from']) &&
 				version_compare($meta['update_from_version'], $component_meta['version'], '>')
 			) {
-				$dependencies['update_problem'] = [
+				$dependencies['update_from'] = [
 					'from'            => $component_meta['version'],
 					'to'              => $meta['version'],
 					'can_update_from' => $meta['update_from_version']
