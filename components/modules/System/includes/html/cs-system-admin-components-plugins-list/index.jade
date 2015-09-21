@@ -29,5 +29,5 @@ dom-module#cs-system-admin-components-plugins-list
 						a(is="cs-link-button" icon="trash" on-tap="_remove_completely" tooltip="[[L.complete_plugin_removal]]" hidden$="[[equal(plugin.active, 1)]]")
 		p
 			input(is="cs-input-text" type="file" compact tight id="file")
-			button(is="cs-button" type="button" icon="upload" on-tap="") [[L.upload_and_install_update_plugin]]
+			button(is="cs-button" type="button" icon="upload" on-tap="_upload") [[L.upload_and_install_update_plugin]]
 	script(src="script.js")
