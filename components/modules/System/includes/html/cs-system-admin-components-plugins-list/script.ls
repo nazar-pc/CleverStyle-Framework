@@ -16,6 +16,7 @@ Polymer(
 	behaviors	: [
 		cs.Polymer.behaviors.Language
 		cs.Polymer.behaviors.admin.System.components
+		cs.Polymer.behaviors.admin.System.upload
 	]
 	ready : !->
 		@reload()
@@ -52,7 +53,7 @@ Polymer(
 		@set('plugins', plugins)
 	/**
 	 * Provides next events:
-	 *  aadmin/System/components/plugins/enable/before
+	 *  admin/System/components/plugins/enable/before
 	 *  {name : module_name}
 	 *
 	 *  admin/System/components/plugins/enable/after
@@ -62,7 +63,7 @@ Polymer(
 		@_enable_component(e.model.plugin.name, 'plugin', e.model.plugin.meta)
 	/**
 	 * Provides next events:
-	 *  aadmin/System/components/plugins/disable/before
+	 *  admin/System/components/plugins/disable/before
 	 *  {name : plugin_name}
 	 *
 	 *  admin/System/components/plugins/disable/after
@@ -72,4 +73,32 @@ Polymer(
 		@_disable_component(e.model.plugin.name, 'plugin')
 	_remove_completely : (e) !->
 		@_remove_completely_component(e.model.plugin.name, 'plugin')
+	/**
+	 * Provides next events:
+	 *  admin/System/components/plugins/update/before
+	 *  {name : plugin_name}
+	 *
+	 *  admin/System/components/plugins/update/after
+	 *  {name : plugin_name}
+	 */
+	_upload : !->
+		@_upload_package(@$.file).then (meta) !~>
+			if meta.category != 'plugins' || !meta.package || !meta.version
+				cs.ui.notify(L.this_is_not_plugin_installer_file, 'error', 5)
+				return
+			# Lookign for already installed plugin
+			for plugin in @plugins
+				if plugin.name == meta.package
+					@_update_component(plugin.meta, meta)
+					return
+			# If plugin is not installed yet - lest just extract it
+			@_extract(meta)
+	_extract : (meta) !->
+		$.ajax(
+			url		: 'api/System/admin/plugins'
+			type	: 'extract'
+			success	: !~>
+				@reload()
+				@enable_component(meta.package, 'plugin', meta)
+		)
 )

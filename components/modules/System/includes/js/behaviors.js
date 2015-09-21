@@ -15,9 +15,9 @@
   behaviors.admin.System = {
     components: {
       _enable_component: function(component, component_type, meta){
-        var component_type_s, this$ = this;
-        component_type_s = component_type + 's';
-        $.getJSON("api/System/admin/" + component_type_s + "/" + component + "/dependencies", function(dependencies){
+        var category, this$ = this;
+        category = component_type + 's';
+        $.getJSON("api/System/admin/" + category + "/" + component + "/dependencies", function(dependencies){
           var translation_key, title, message, message_more, modal;
           delete dependencies.db_support;
           delete dependencies.storage_support;
@@ -26,7 +26,7 @@
           message = '';
           message_more = '';
           if (Object.keys(dependencies).length) {
-            message = this$._compose_dependencies_message(component, dependencies);
+            message = compose_dependencies_message(component, dependencies);
             if (cs.simple_admin_mode) {
               cs.ui.notify(message, 'error', 5);
               return;
@@ -36,16 +36,16 @@
             message_more += '<p class="cs-text-success cs-block-success">' + L.for_complete_feature_set(meta.optional.join(', ')) + '</p>';
           }
           modal = cs.ui.confirm(title + "" + message + message_more, function(){
-            cs.Event.fire("admin/System/components/" + component_type_s + "/enable/before", {
+            cs.Event.fire("admin/System/components/" + category + "/enable/before", {
               name: component
             }).then(function(){
               $.ajax({
-                url: "api/System/admin/" + component_type_s + "/" + component,
+                url: "api/System/admin/" + category + "/" + component,
                 type: 'enable',
                 success: function(){
                   this$.reload();
                   cs.ui.notify(L.changes_saved, 'success', 5);
-                  cs.Event.fire("admin/System/components/" + component_type_s + "/enable/after", {
+                  cs.Event.fire("admin/System/components/" + category + "/enable/after", {
                     name: component
                   });
                 }
@@ -58,58 +58,10 @@
           $(modal).find('p:not([class])').addClass('cs-text-error cs-block-error');
         });
       },
-      _compose_dependencies_message: function(component, dependencies){
-        var message, what, components_types, component_type, details, i$, len$, detail, translation_key, conflict;
-        message = '';
-        for (what in dependencies) {
-          components_types = dependencies[what];
-          for (component_type in components_types) {
-            details = components_types[component_type];
-            for (i$ = 0, len$ = details.length; i$ < len$; ++i$) {
-              detail = details[i$];
-              message += "<p>" + (fn$()) + "</p>";
-            }
-          }
-        }
-        return message + "<p>" + L.dependencies_not_satisfied + "</p>";
-        function fn$(){
-          var i$, ref$, len$, results$ = [], results1$ = [];
-          switch (what) {
-          case 'update_problem':
-            return L.module_cant_be_updated_from_version_to_supported_only(component, detail.from, detail.to, detail.can_update_from);
-          case 'provide':
-            translation_key = component_type === 'modules' ? 'module_already_provides_functionality' : 'plugin_already_provides_functionality';
-            return L[translation_key](detail.name, detail.features.join('", "'));
-          case 'require':
-            for (i$ = 0, len$ = (ref$ = detail.conflicts).length; i$ < len$; ++i$) {
-              conflict = ref$[i$];
-              if (component_type === 'unknown') {
-                results$.push(L.package_or_functionality_not_found(conflict.name + conflict.required.join(' ')));
-              } else {
-                translation_key = component_type === 'modules' ? 'unsatisfactory_version_of_the_module' : 'unsatisfactory_version_of_the_plugin';
-                results$.push(L[translation_key](detail.name, conflict.join(' '), detail.existing));
-              }
-            }
-            return results$;
-            break;
-          case 'conflict':
-            for (i$ = 0, len$ = (ref$ = detail.conflicts).length; i$ < len$; ++i$) {
-              conflict = ref$[i$];
-              results1$.push(L.package_is_incompatible_with(conflict['package'], conflict.conflicts_with, conflict.of_versions.join(' ')));
-            }
-            return results1$;
-            break;
-          case 'db_support':
-            return L.compatible_databases_not_found(detail.supported.join('", "'));
-          case 'storage_support':
-            return L.compatible_storages_not_found(detail.supported.join('", "'));
-          }
-        }
-      },
       _disable_component: function(component, component_type){
-        var component_type_s, this$ = this;
-        component_type_s = component_type + 's';
-        $.getJSON("api/System/admin/" + component_type_s + "/" + component + "/dependent_packages", function(dependent_packages){
+        var category, this$ = this;
+        category = component_type + 's';
+        $.getJSON("api/System/admin/" + category + "/" + component + "/dependent_packages", function(dependent_packages){
           var translation_key, title, message, type, packages, i$, len$, _package, modal;
           translation_key = component_type === 'module' ? 'disabling_of_module' : 'disabling_of_plugin';
           title = "<h3>" + L[translation_key](component) + "</h3>";
@@ -130,16 +82,16 @@
             }
           }
           modal = cs.ui.confirm(title + "" + message, function(){
-            cs.Event.fire("admin/System/components/" + component_type_s + "/disable/before", {
+            cs.Event.fire("admin/System/components/" + category + "/disable/before", {
               name: component
             }).then(function(){
               $.ajax({
-                url: "api/System/admin/" + component_type_s + "/" + component,
+                url: "api/System/admin/" + category + "/" + component,
                 type: 'disable',
                 success: function(){
                   this$.reload();
                   cs.ui.notify(L.changes_saved, 'success', 5);
-                  cs.Event.fire("admin/System/components/" + component_type_s + "/disable/after", {
+                  cs.Event.fire("admin/System/components/" + category + "/disable/after", {
                     name: component
                   });
                 }
@@ -152,13 +104,59 @@
           $(modal).find('p').addClass('cs-text-error cs-block-error');
         });
       },
+      _update_component: function(existing_meta, new_meta){
+        var component, category, this$ = this;
+        component = new_meta['package'];
+        category = new_meta.category;
+        $.getJSON("api/System/admin/" + category + "/" + component + "/update_dependencies", function(dependencies){
+          var translation_key, title, message, message_more, modal;
+          delete dependencies.db_support;
+          delete dependencies.storage_support;
+          translation_key = category === 'modules' ? 'updating_of_module' : 'updating_of_plugin';
+          title = "<h3>" + L[translation_key](component) + "</h3>";
+          message = '';
+          translation_key = category === 'modules' ? 'update_moodule' : 'update_plugin';
+          message_more = L[translation_key].update_plugin(component, existing_meta.version, new_meta.version);
+          if (Object.keys(dependencies).length) {
+            message = compose_dependencies_message(component, dependencies);
+            if (cs.simple_admin_mode) {
+              cs.ui.notify(message, 'error', 5);
+              return;
+            }
+          }
+          if (new_meta.optional) {
+            message_more += '<p class="cs-text-success cs-block-success">' + L.for_complete_feature_set(new_meta.optional.join(', ')) + '</p>';
+          }
+          modal = cs.ui.confirm(title + "" + message + message_more, function(){
+            cs.Event.fire("admin/System/components/" + category + "/update/before", {
+              name: component
+            }).then(function(){
+              $.ajax({
+                url: "api/System/admin/" + category + "/" + component,
+                type: 'update',
+                success: function(){
+                  this$.reload();
+                  cs.ui.notify(L.changes_saved, 'success', 5);
+                  cs.Event.fire("admin/System/components/" + category + "/update/after", {
+                    name: component
+                  });
+                }
+              });
+            });
+          });
+          modal.ok.innerHTML = L[!message ? 'yes' : 'force_update_not_recommended'];
+          modal.ok.primary = !message;
+          modal.cancel.primary = !modal.ok.primary;
+          $(modal).find('p:not([class])').addClass('cs-text-error cs-block-error');
+        });
+      },
       _remove_completely_component: function(component, component_type){
-        var component_type_s, translation_key, this$ = this;
-        component_type_s = component_type + 's';
+        var category, translation_key, this$ = this;
+        category = component_type + 's';
         translation_key = component_type === 'module' ? 'completely_remove_module' : 'completely_remove_plugin';
         cs.ui.confirm(L[translation_key](component), function(){
           $.ajax({
-            url: "api/System/admin/" + component_type_s + "/" + component,
+            url: "api/System/admin/" + category + "/" + component,
             type: 'delete',
             success: function(){
               this$.reload();
@@ -167,6 +165,77 @@
           });
         });
       }
+    },
+    upload: {
+      _upload_package: function(file_input, progress){
+        var form_data;
+        if (!file_input.files.length) {
+          throw new Error('file should be selected');
+        }
+        form_data = new FormData;
+        form_data.append('file', file_input.files[0]);
+        return $.ajax({
+          url: 'api/System/admin/upload',
+          type: 'post',
+          data: form_data,
+          xhrFields: {
+            onprogress: progress || function(){}
+          },
+          processData: false,
+          contentType: false
+        });
+      }
     }
   };
+  function compose_dependencies_message(component, dependencies){
+    var message, what, categories, category, details, i$, len$, detail, translation_key, conflict;
+    message = '';
+    for (what in dependencies) {
+      categories = dependencies[what];
+      for (category in categories) {
+        details = categories[category];
+        for (i$ = 0, len$ = details.length; i$ < len$; ++i$) {
+          detail = details[i$];
+          message += "<p>" + (fn$()) + "</p>";
+        }
+      }
+    }
+    return message + "<p>" + L.dependencies_not_satisfied + "</p>";
+    function fn$(){
+      var i$, ref$, len$, results$ = [], results1$ = [];
+      switch (what) {
+      case 'update_from':
+        return L.module_cant_be_updated_from_version_to_supported_only(component, detail.from, detail.to, detail.can_update_from);
+      case 'update_older':
+        translation_key = category === 'modules' ? 'update_module_impossible_older_version' : 'update_plugin_impossible_older_version';
+        return L[translation_key](detail.from, detail.to);
+      case 'provide':
+        translation_key = category === 'modules' ? 'module_already_provides_functionality' : 'plugin_already_provides_functionality';
+        return L[translation_key](detail.name, detail.features.join('", "'));
+      case 'require':
+        for (i$ = 0, len$ = (ref$ = detail.conflicts).length; i$ < len$; ++i$) {
+          conflict = ref$[i$];
+          if (category === 'unknown') {
+            results$.push(L.package_or_functionality_not_found(conflict.name + conflict.required.join(' ')));
+          } else {
+            translation_key = category === 'modules' ? 'unsatisfactory_version_of_the_module' : 'unsatisfactory_version_of_the_plugin';
+            results$.push(L[translation_key](detail.name, conflict.join(' '), detail.existing));
+          }
+        }
+        return results$;
+        break;
+      case 'conflict':
+        for (i$ = 0, len$ = (ref$ = detail.conflicts).length; i$ < len$; ++i$) {
+          conflict = ref$[i$];
+          results1$.push(L.package_is_incompatible_with(conflict['package'], conflict.conflicts_with, conflict.of_versions.join(' ')));
+        }
+        return results1$;
+        break;
+      case 'db_support':
+        return L.compatible_databases_not_found(detail.supported.join('", "'));
+      case 'storage_support':
+        return L.compatible_storages_not_found(detail.supported.join('", "'));
+      }
+    }
+  }
 }).call(this);

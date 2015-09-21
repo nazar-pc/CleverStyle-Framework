@@ -107,7 +107,7 @@
     }
     /**
      * Provides next events:
-     *  aadmin/System/components/modules/enable/before
+     *  admin/System/components/modules/enable/before
      *  {name : module_name}
      *
      *  admin/System/components/modules/enable/after
@@ -118,7 +118,7 @@
     }
     /**
      * Provides next events:
-     *  aadmin/System/components/modules/disable/before
+     *  admin/System/components/modules/disable/before
      *  {name : module_name}
      *
      *  admin/System/components/modules/disable/after

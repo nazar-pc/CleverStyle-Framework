@@ -20,7 +20,7 @@
   };
   Polymer({
     'is': 'cs-system-admin-components-plugins-list',
-    behaviors: [cs.Polymer.behaviors.Language, cs.Polymer.behaviors.admin.System.components],
+    behaviors: [cs.Polymer.behaviors.Language, cs.Polymer.behaviors.admin.System.components, cs.Polymer.behaviors.admin.System.upload],
     ready: function(){
       this.reload();
     },
@@ -69,7 +69,7 @@
     }
     /**
      * Provides next events:
-     *  aadmin/System/components/plugins/enable/before
+     *  admin/System/components/plugins/enable/before
      *  {name : module_name}
      *
      *  admin/System/components/plugins/enable/after
@@ -80,7 +80,7 @@
     }
     /**
      * Provides next events:
-     *  aadmin/System/components/plugins/disable/before
+     *  admin/System/components/plugins/disable/before
      *  {name : plugin_name}
      *
      *  admin/System/components/plugins/disable/after
@@ -91,6 +91,43 @@
     },
     _remove_completely: function(e){
       this._remove_completely_component(e.model.plugin.name, 'plugin');
+    }
+    /**
+     * Provides next events:
+     *  admin/System/components/plugins/update/before
+     *  {name : plugin_name}
+     *
+     *  admin/System/components/plugins/update/after
+     *  {name : plugin_name}
+     */,
+    _upload: function(){
+      var this$ = this;
+      this._upload_package(this.$.file).then(function(meta){
+        var i$, ref$, len$, plugin;
+        if (meta.category !== 'plugins' || !meta['package'] || !meta.version) {
+          cs.ui.notify(L.this_is_not_plugin_installer_file, 'error', 5);
+          return;
+        }
+        for (i$ = 0, len$ = (ref$ = this$.plugins).length; i$ < len$; ++i$) {
+          plugin = ref$[i$];
+          if (plugin.name === meta['package']) {
+            this$._update_component(plugin.meta, meta);
+            return;
+          }
+        }
+        this$._extract(meta);
+      });
+    },
+    _extract: function(meta){
+      var this$ = this;
+      $.ajax({
+        url: 'api/System/admin/plugins',
+        type: 'extract',
+        success: function(){
+          this$.reload();
+          this$.enable_component(meta['package'], 'plugin', meta);
+        }
+      });
     }
   });
 }).call(this);
