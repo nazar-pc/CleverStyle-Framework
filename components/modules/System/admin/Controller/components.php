@@ -747,20 +747,6 @@ trait components {
 			)
 		);
 	}
-	/**
-	 * @param string[][] $dependent_packages
-	 */
-	protected static function print_dependent_packages ($dependent_packages) {
-		$L    = Language::instance();
-		$Page = Page::instance();
-		foreach ($dependent_packages as $type => $packages) {
-			$translation_key = $type == 'modules' ? 'this_package_is_used_by_module' : 'this_package_is_used_by_plugin';
-			foreach ($packages as $package) {
-				$Page->warning($L->$translation_key($package));
-			}
-		}
-		$Page->warning($L->dependencies_not_satisfied);
-	}
 	static function components_plugins () {
 		$Index       = Index::instance();
 		$Index->form = false;
