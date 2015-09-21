@@ -31,6 +31,7 @@
       return $.getJSON('api/System/admin/modules', function(modules){
         modules.forEach(function(module){
           var active_switch_local;
+          module.can_disable = module.active == 1 && module.name !== 'System';
           active_switch_local = active_switch.bind(module);
           module['class'] = active_switch_local('cs-block-error cs-text-error', 'cs-block-warning cs-text-warning', 'cs-block-success cs-text-success');
           module.icon = active_switch_local('times', 'minus', module.is_default ? 'home' : 'check');
@@ -126,6 +127,38 @@
      */,
     _disable: function(e){
       this._disable_component(e.model.module.name, 'module');
+    }
+    /**
+     * Provides next events:
+     *  admin/System/components/modules/uninstall/before
+     *  {name : module_name}
+     *
+     *  admin/System/components/modules/uninstall/after
+     *  {name : module_name}
+     */,
+    _uninstall: function(e){
+      var module, modal, this$ = this;
+      module = e.model.module.name;
+      modal = cs.ui.confirm(L.uninstallation_of_module(module), function(){
+        cs.Event.fire('admin/System/components/modules/uninstall/before', {
+          name: module
+        }).then(function(){
+          $.ajax({
+            url: "api/System/admin/modules/" + module,
+            type: 'disable',
+            success: function(){
+              this$.reload();
+              cs.ui.notify(L.changes_saved, 'success', 5);
+              cs.Event.fire('admin/System/components/modules/uninstall/after', {
+                name: module
+              });
+            }
+          });
+        });
+      });
+      modal.ok.innerHTML = L.uninstall;
+      modal.ok.primary = false;
+      modal.cancel.primary = true;
     },
     _remove_completely: function(e){
       this._remove_completely_component(e.model.module.name, 'module');

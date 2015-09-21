@@ -409,9 +409,6 @@ trait components {
 	 *  admin/System/components/modules/install/prepare
 	 *  ['name' => module_name]
 	 *
-	 *  admin/System/components/modules/uninstall/prepare
-	 *  ['name' => module_name]
-	 *
 	 *  admin/System/components/modules/update_system/prepare
 	 *
 	 *  admin/System/components/modules/db/prepare
@@ -513,40 +510,6 @@ trait components {
 					$a->content(
 						h::{'button[is=cs-button][type=submit]'}(
 							$L->{$check_dependencies ? 'install' : 'force_install_not_recommended'}
-						)
-					);
-					break;
-				case 'uninstall':
-					$show_modules = false;
-					$Page->title($L->uninstallation_of_module($rc[3]));
-					$a->content(
-						h::{'h2.cs-text-center'}(
-							$L->uninstallation_of_module($rc[3])
-						)
-					);
-					if (!Event::instance()->fire(
-						'admin/System/components/modules/uninstall/prepare',
-						[
-							'name' => $rc[3]
-						]
-					)
-					) {
-						break;
-					}
-					$dependent_packages = [];
-					if (file_exists(MODULES."/$rc[3]/meta.json")) {
-						$dependent_packages = Packages_manipulation::get_dependent_packages(file_get_json(MODULES."/$rc[3]/meta.json"));
-						if ($dependent_packages) {
-							static::print_dependent_packages($dependent_packages);
-							if ($Config->core['simple_admin_mode']) {
-								break;
-							}
-						}
-					}
-					$a->cancel_button_back = true;
-					$a->content(
-						h::{'button[is=cs-button][type=submit]'}(
-							$L->{!$dependent_packages ? 'uninstall' : 'force_uninstall_not_recommended'}
 						)
 					);
 					break;
@@ -740,7 +703,6 @@ trait components {
 			}
 			switch ($rc[2]) {
 				case 'install':
-				case 'uninstall':
 				case 'update_system':
 				case 'db':
 				case 'storage':

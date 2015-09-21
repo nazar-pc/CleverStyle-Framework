@@ -70,9 +70,6 @@ trait components_save {
 	 *  admin/System/components/modules/install/process
 	 *  ['name'    => module_name]
 	 *
-	 *  admin/System/components/modules/uninstall/process
-	 *  ['name'    => module_name]
-	 *
 	 *  admin/System/components/modules/update_system/process/before
 	 *  ['name'    => module_name]
 	 *
@@ -196,62 +193,6 @@ trait components_save {
 							)
 						);
 					}
-					clean_pcache();
-					unset($Cache->functionality);
-					clean_classes_cache();
-					break;
-				case 'uninstall':
-					if ($module_name == 'System' || $module_data['active'] == -1 || $module_name == $Config->core['default_module']) {
-						break;
-					}
-					unset($Cache->languages);
-					if (!Event::instance()->fire(
-						'admin/System/components/modules/uninstall/process',
-						[
-							'name' => $module_name
-						]
-					)
-					) {
-						break;
-					}
-					$module_data['active'] = -1;
-					Event::instance()->fire(
-						'admin/System/components/modules/disable',
-						[
-							'name' => $module_name
-						]
-					);
-					$Config->save();
-					if (isset($module_data['db'])) {
-						time_limit_pause();
-						foreach ($module_data['db'] as $db_name => $index) {
-							if ($index == 0) {
-								$db_type = $Core->db_type;
-							} else {
-								$db_type = $Config->db[$index]['type'];
-							}
-							$sql_file = MODULES."/$module_name/meta/uninstall_db/$db_name/$db_type.sql";
-							if (file_exists($sql_file)) {
-								$db->$index()->q(
-									explode(';', file_get_contents($sql_file))
-								);
-							}
-						}
-						unset($db_name, $db_type, $sql_file);
-						time_limit_pause(false);
-					}
-					$permissions_ids = array_merge(
-						$Permission->get(null, $module_name),
-						$Permission->get(null, "$module_name/admin"),
-						$Permission->get(null, "$module_name/api")
-					);
-					if (!empty($permissions_ids)) {
-						$Permission->del(
-							array_column($permissions_ids, 'id')
-						);
-					}
-					$module_data = ['active' => -1];
-					$a->save();
 					clean_pcache();
 					unset($Cache->functionality);
 					clean_classes_cache();

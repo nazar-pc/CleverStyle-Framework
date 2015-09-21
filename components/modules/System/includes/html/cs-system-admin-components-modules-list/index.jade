@@ -38,13 +38,13 @@ dom-module(id="cs-system-admin-components-modules-list")
 						= ' '
 						a(is="cs-link-button" icon="sliders" href="[[concat('/admin/', module.name)]]" tooltip="[[L.module_admin_page]]" hidden$="[[!module.administration]]")
 						= ' '
-						a(is="cs-link-button" icon="minus" on-tap="_disable" tooltip="[[L.disable]]" hidden$="[[!equal(module.active, 1)]]")
+						a(is="cs-link-button" icon="minus" on-tap="_disable" tooltip="[[L.disable]]" hidden$="[[!module.can_disable]]")
 						= ' '
 						a(is="cs-link-button" icon="check" on-tap="_enable" force-compact hidden$="[[!equal(module.active, 0)]]") [[L.enable]]
 						= ' '
 						a(is="cs-link-button" icon="download" href="[[concat('/admin/System/components/modules/install/', module.name)]]" force-compact hidden$="[[!equal(module.active, -1)]]") [[L.install]]
 						= ' '
-						a(is="cs-link-button" icon="trash" href="[[concat('/admin/System/components/modules/uninstall/', module.name)]]" tooltip="[[L.uninstall]]" hidden$="[[equal(module.active, -1)]]")
+						a(is="cs-link-button" icon="trash" on-tap="_uninstall" tooltip="[[L.uninstall]]" hidden$="[[!equal(module.active, 0)]]")
 						= ' '
 						a(is="cs-link-button" icon="trash" on-tap="_remove_completely" tooltip="[[L.complete_module_removal]]" hidden$="[[!equal(module.active, -1)]]")
 		p

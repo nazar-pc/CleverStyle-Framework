@@ -23,6 +23,7 @@ Polymer(
 	reload : ->
 		modules <~! $.getJSON('api/System/admin/modules', _)
 		modules.forEach (module) !->
+			module.can_disable		= module.active ~= 1 && module.name != 'System'
 			active_switch_local		= active_switch.bind(module)
 			module.class			= active_switch_local(
 				'cs-block-error cs-text-error'
@@ -112,6 +113,38 @@ Polymer(
 	 */
 	_disable : (e) !->
 		@_disable_component(e.model.module.name, 'module')
+	/**
+	 * Provides next events:
+	 *  admin/System/components/modules/uninstall/before
+	 *  {name : module_name}
+	 *
+	 *  admin/System/components/modules/uninstall/after
+	 *  {name : module_name}
+	 */
+	_uninstall : (e) !->
+		module = e.model.module.name
+		modal	= cs.ui.confirm(
+			L.uninstallation_of_module(module)
+			!~>
+				cs.Event.fire(
+					'admin/System/components/modules/uninstall/before'
+					name	: module
+				).then !~>
+					$.ajax(
+						url		: "api/System/admin/modules/#module"
+						type	: 'disable'
+						success	: !~>
+							@reload()
+							cs.ui.notify(L.changes_saved, 'success', 5)
+							cs.Event.fire(
+								'admin/System/components/modules/uninstall/after'
+								name	: module
+							)
+					)
+		)
+		modal.ok.innerHTML		= L.uninstall
+		modal.ok.primary		= false
+		modal.cancel.primary	= true
 	_remove_completely : (e) !->
 		@_remove_completely_component(e.model.module.name, 'module')
 	/**

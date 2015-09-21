@@ -11,10 +11,13 @@ namespace cs\modules\System\api\Controller\admin;
 use
 	cs\Cache as System_cache,
 	cs\Config,
+	cs\Core,
+	cs\DB,
 	cs\Event,
 	cs\ExitException,
 	cs\Language,
 	cs\Page,
+	cs\Permission,
 	cs\Session,
 	cs\modules\System\Packages_manipulation;
 trait modules {
@@ -299,6 +302,7 @@ trait modules {
 		$Config  = Config::instance();
 		$modules = &$Config->components['modules'];
 		if (
+			$module == 'System' ||
 			!isset($modules[$module]) ||
 			$Config->core['default_module'] === $module ||
 			$modules[$module]['active'] != 1
@@ -318,6 +322,91 @@ trait modules {
 		if (!$Config->save()) {
 			throw new ExitException(500);
 		}
+		clean_pcache();
+		unset(
+			$Cache->functionality,
+			$Cache->languages
+		);
+		clean_classes_cache();
+	}
+	/**
+	 * Uninstall module
+	 *
+	 * Provides next events:
+	 *  admin/System/components/modules/uninstall/before
+	 *  ['name' => module_name]
+	 *
+	 *  admin/System/components/modules/uninstall/after
+	 *  ['name' => module_name]
+	 *
+	 * @param int[]    $route_ids
+	 * @param string[] $route_path
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_modules_uninstall ($route_ids, $route_path) {
+		if (!isset($route_path[2])) {
+			throw new ExitException(400);
+		}
+		$module     = $route_path[2];
+		$Cache      = System_cache::instance();
+		$Config     = Config::instance();
+		$Core       = Core::instance();
+		$db         = DB::instance();
+		$Permission = Permission::instance();
+		$modules    = &$Config->components['modules'];
+		/**
+		 * Do not allow to uninstall enabled module, it should be explicitly disabled first
+		 */
+		if (
+			!isset($modules[$module]) ||
+			$modules[$module]['active'] != 0
+		) {
+			throw new ExitException(400);
+		}
+		if (!Event::instance()->fire(
+			'admin/System/components/modules/uninstall/before',
+			[
+				'name' => $module
+			]
+		)
+		) {
+			throw new ExitException(500);
+		}
+		if (isset($module_data['db'])) {
+			time_limit_pause();
+			foreach ($module_data['db'] as $db_name => $index) {
+				$db_type  = $index == 0 ? $Core->db_type : $Config->db[$index]['type'];
+				$sql_file = MODULES."/$module/meta/uninstall_db/$db_name/$db_type.sql";
+				if (file_exists($sql_file)) {
+					$db->$index()->q(
+						explode(';', file_get_contents($sql_file))
+					);
+				}
+			}
+			unset($db_name, $db_type, $sql_file);
+			time_limit_pause(false);
+		}
+		$permissions_ids = array_merge(
+			$Permission->get(null, $module),
+			$Permission->get(null, "$module/admin"),
+			$Permission->get(null, "$module/api")
+		);
+		if (!empty($permissions_ids)) {
+			$Permission->del(
+				array_column($permissions_ids, 'id')
+			);
+		}
+		$modules[$module] = ['active' => -1];
+		if (!$Config->save()) {
+			throw new ExitException(500);
+		}
+		Event::instance()->fire(
+			'admin/System/components/modules/uninstall/after',
+			[
+				'name' => $module
+			]
+		);
 		clean_pcache();
 		unset(
 			$Cache->functionality,
@@ -352,11 +441,7 @@ trait modules {
 		) {
 			throw new ExitException($L->module_files_unpacking_error, 500);
 		}
-		$Config->components['modules'][$new_meta['package']] = [
-			'active'  => -1,
-			'db'      => [],
-			'storage' => []
-		];
+		$Config->components['modules'][$new_meta['package']] = ['active' => -1];
 		ksort($Config->components['modules'], SORT_STRING | SORT_FLAG_CASE);
 		if (!$Config->save()) {
 			throw new ExitException(500);
