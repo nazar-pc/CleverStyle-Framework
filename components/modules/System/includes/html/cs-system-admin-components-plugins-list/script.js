@@ -125,7 +125,7 @@
         type: 'extract',
         success: function(){
           this$.reload();
-          this$.enable_component(meta['package'], 'plugin', meta);
+          this$._enable_component(meta['package'], 'plugin', meta);
         }
       });
     }

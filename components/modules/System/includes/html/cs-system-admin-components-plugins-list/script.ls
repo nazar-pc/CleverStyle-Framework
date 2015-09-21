@@ -99,6 +99,6 @@ Polymer(
 			type	: 'extract'
 			success	: !~>
 				@reload()
-				@enable_component(meta.package, 'plugin', meta)
+				@_enable_component(meta.package, 'plugin', meta)
 		)
 )
