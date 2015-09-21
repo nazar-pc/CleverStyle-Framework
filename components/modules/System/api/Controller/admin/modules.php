@@ -9,7 +9,7 @@
  */
 namespace cs\modules\System\api\Controller\admin;
 use
-	cs\Cache,
+	cs\Cache as System_cache,
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
@@ -280,7 +280,7 @@ trait modules {
 			throw new ExitException(400);
 		}
 		$module  = $route_path[2];
-		$Cache   = Cache::instance();
+		$Cache   = System_cache::instance();
 		$Config  = Config::instance();
 		$modules = &$Config->components['modules'];
 		if (
@@ -326,7 +326,7 @@ trait modules {
 			throw new ExitException(400);
 		}
 		$module  = $route_path[2];
-		$Cache   = Cache::instance();
+		$Cache   = System_cache::instance();
 		$Config  = Config::instance();
 		$modules = &$Config->components['modules'];
 		if (

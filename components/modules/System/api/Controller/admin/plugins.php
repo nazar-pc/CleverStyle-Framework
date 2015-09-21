@@ -9,7 +9,7 @@
  */
 namespace cs\modules\System\api\Controller\admin;
 use
-	cs\Cache,
+		cs\Cache as System_cache,
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
@@ -191,7 +191,7 @@ trait plugins {
 			throw new ExitException(500);
 		}
 		clean_pcache();
-		unset(Cache::instance()->functionality);
+		unset(System_cache::instance()->functionality);
 		clean_classes_cache();
 	}
 	/**
@@ -230,7 +230,7 @@ trait plugins {
 			throw new ExitException(500);
 		}
 		clean_pcache();
-		unset(Cache::instance()->functionality);
+		unset(System_cache::instance()->functionality);
 		clean_classes_cache();
 	}
 	/**
