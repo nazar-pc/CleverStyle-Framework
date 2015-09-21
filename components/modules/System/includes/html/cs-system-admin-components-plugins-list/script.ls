@@ -86,12 +86,12 @@ Polymer(
 			if meta.category != 'plugins' || !meta.package || !meta.version
 				cs.ui.notify(L.this_is_not_plugin_installer_file, 'error', 5)
 				return
-			# Lookign for already installed plugin
+			# Lookign for already present plugin
 			for plugin in @plugins
 				if plugin.name == meta.package
 					@_update_component(plugin.meta, meta)
 					return
-			# If plugin is not installed yet - lest just extract it
+			# If plugin is not present yet - lest just extract it
 			@_extract(meta)
 	_extract : (meta) !->
 		$.ajax(

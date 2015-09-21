@@ -180,37 +180,6 @@ trait modules {
 		);
 	}
 	/**
-	 * Delete module completely
-	 *
-	 * @param int[]    $route_ids
-	 * @param string[] $route_path
-	 *
-	 * @throws ExitException
-	 */
-	static function admin_modules_delete ($route_ids, $route_path) {
-		if (!isset($route_path[2])) {
-			throw new ExitException(400);
-		}
-		$module_name = $route_path[2];
-		$Config      = Config::instance();
-		if (!isset($Config->components['modules'][$module_name])) {
-			throw new ExitException(404);
-		}
-		if (
-			$module_name == 'System' ||
-			$Config->components['modules'][$module_name]['active'] != '-1'
-		) {
-			throw new ExitException(400);
-		}
-		if (!rmdir_recursive(MODULES."/$module_name")) {
-			throw new ExitException(500);
-		}
-		unset($Config->components['modules'][$module_name]);
-		if (!$Config->save()) {
-			throw new ExitException(500);
-		}
-	}
-	/**
 	 * Set current default module
 	 *
 	 * @param int[]    $route_ids
@@ -355,5 +324,154 @@ trait modules {
 			$Cache->languages
 		);
 		clean_classes_cache();
+	}
+	/**
+	 * Extract uploaded module
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_modules_extract () {
+		$Config       = Config::instance();
+		$L            = Language::instance();
+		$tmp_location = TEMP.'/System/admin/'.Session::instance()->get_id().'.phar';
+		$tmp_dir      = "phar://$tmp_location";
+		if (
+			!file_exists($tmp_location) ||
+			!file_exists("$tmp_dir/meta.json")
+		) {
+			throw new ExitException(400);
+		}
+		$new_meta = file_get_json("$tmp_dir/meta.json");
+		if ($new_meta['category'] !== 'modules') {
+			throw new ExitException($L->this_is_not_module_installer_file, 400);
+		}
+		$module_dir = MODULES."/$new_meta[package]";
+		if (
+			!mkdir($module_dir, 0770) ||
+			!Packages_manipulation::install_extract($module_dir, $tmp_location)
+		) {
+			throw new ExitException($L->module_files_unpacking_error, 500);
+		}
+		$Config->components['modules'][$new_meta['package']] = [
+			'active'  => -1,
+			'db'      => [],
+			'storage' => []
+		];
+		ksort($Config->components['modules'], SORT_STRING | SORT_FLAG_CASE);
+		if (!$Config->save()) {
+			throw new ExitException(500);
+		}
+	}
+	/**
+	 * Update module
+	 *
+	 * Provides next events:
+	 *  admin/System/components/modules/update/before
+	 *  ['name' => module_name]
+	 *
+	 *  admin/System/components/modules/update/after
+	 *  ['name' => module_name]
+	 *
+	 * @param int[]    $route_ids
+	 * @param string[] $route_path
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_modules_update ($route_ids, $route_path) {
+		if (!isset($route_path[2])) {
+			throw new ExitException(400);
+		}
+		$Config  = Config::instance();
+		$L       = Language::instance();
+		$module  = $route_path[2];
+		$modules = get_files_list(MODULES, false, 'd');
+		if (!in_array($module, $modules, true)) {
+			throw new ExitException(404);
+		}
+		$tmp_location = TEMP.'/System/admin/'.Session::instance()->get_id().'.phar';
+		$tmp_dir      = "phar://$tmp_location";
+		$module_dir   = MODULES."/$module";
+		if (
+			!file_exists($tmp_location) ||
+			!file_exists("$module_dir/meta.json") ||
+			!file_exists("$tmp_dir/meta.json")
+		) {
+			throw new ExitException(400);
+		}
+		$existing_meta = file_get_json("$module_dir/meta.json");
+		$new_meta      = file_get_json("$tmp_dir/meta.json");
+		$module_data   = $Config->components['modules'][$module];
+		$active        = $module_data['active'] == 1;
+		// If module is currently enabled - disable it temporary
+		if ($active) {
+			static::admin_modules_disable($route_ids, $route_path);
+		}
+		if (!$Config->save()) {
+			throw new ExitException(500);
+		}
+		if (
+			$new_meta['package'] !== $module ||
+			$new_meta['category'] !== 'modules'
+		) {
+			throw new ExitException($L->this_is_not_module_installer_file, 400);
+		}
+		if (!Event::instance()->fire(
+			'admin/System/components/modules/update/before',
+			[
+				'name' => $module
+			]
+		)
+		) {
+			throw new ExitException(500);
+		}
+		if (!is_writable($module_dir)) {
+			throw new ExitException($L->cant_unpack_module_no_write_permissions, 500);
+		}
+		if (!Packages_manipulation::update_extract($module_dir, $tmp_location)) {
+			throw new ExitException($L->module_files_unpacking_error, 500);
+		}
+		// Run PHP update scripts and SQL queries if any
+		Packages_manipulation::update_php_sql($module_dir, $existing_meta['version'], isset($module_data['db']) ? $module_data['db'] : null);
+		Event::instance()->fire(
+			'admin/System/components/modules/update/after',
+			[
+				'name' => $module
+			]
+		);
+		// If module was enabled before update - enable it back
+		if ($active) {
+			static::admin_modules_enable($route_ids, $route_path);
+		}
+	}
+	/**
+	 * Delete module completely
+	 *
+	 * @param int[]    $route_ids
+	 * @param string[] $route_path
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_modules_delete ($route_ids, $route_path) {
+		if (!isset($route_path[2])) {
+			throw new ExitException(400);
+		}
+		$module_name = $route_path[2];
+		$Config      = Config::instance();
+		if (!isset($Config->components['modules'][$module_name])) {
+			throw new ExitException(404);
+		}
+		if (
+			$module_name == 'System' ||
+			$Config->components['modules'][$module_name]['active'] != '-1'
+		) {
+			throw new ExitException(400);
+		}
+		if (!rmdir_recursive(MODULES."/$module_name")) {
+			throw new ExitException(500);
+		}
+		unset($Config->components['modules'][$module_name]);
+		if (!$Config->save()) {
+			throw new ExitException(500);
+		}
 	}
 }

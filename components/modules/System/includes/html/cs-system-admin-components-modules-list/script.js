@@ -130,5 +130,41 @@
     _remove_completely: function(e){
       this._remove_completely_component(e.model.module.name, 'module');
     }
+    /**
+     * Provides next events:
+     *  admin/System/components/modules/update/before
+     *  {name : plugin_name}
+     *
+     *  admin/System/components/modules/update/after
+     *  {name : plugin_name}
+     */,
+    _upload: function(){
+      var this$ = this;
+      this._upload_package(this.$.file).then(function(meta){
+        var i$, ref$, len$, module;
+        if (meta.category !== 'modules' || !meta['package'] || !meta.version) {
+          cs.ui.notify(L.this_is_not_plugin_installer_file, 'error', 5);
+          return;
+        }
+        for (i$ = 0, len$ = (ref$ = this$.modules).length; i$ < len$; ++i$) {
+          module = ref$[i$];
+          if (module.name === meta['package']) {
+            this$._update_component(module.meta, meta);
+            return;
+          }
+        }
+        this$._extract(meta);
+      });
+    },
+    _extract: function(meta){
+      var this$ = this;
+      $.ajax({
+        url: 'api/System/admin/modules',
+        type: 'extract',
+        success: function(){
+          this$.reload();
+        }
+      });
+    }
   });
 }).call(this);

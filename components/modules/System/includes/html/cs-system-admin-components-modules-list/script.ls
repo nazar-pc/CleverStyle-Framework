@@ -114,4 +114,32 @@ Polymer(
 		@_disable_component(e.model.module.name, 'module')
 	_remove_completely : (e) !->
 		@_remove_completely_component(e.model.module.name, 'module')
+	/**
+	 * Provides next events:
+	 *  admin/System/components/modules/update/before
+	 *  {name : plugin_name}
+	 *
+	 *  admin/System/components/modules/update/after
+	 *  {name : plugin_name}
+	 */
+	_upload : !->
+		@_upload_package(@$.file).then (meta) !~>
+			if meta.category != 'modules' || !meta.package || !meta.version
+				cs.ui.notify(L.this_is_not_plugin_installer_file, 'error', 5)
+				return
+			# Lookign for already present module
+			for module in @modules
+				if module.name == meta.package
+					@_update_component(module.meta, meta)
+					return
+			# If module is not present yet - lest just extract it
+			@_extract(meta)
+	_extract : (meta) !->
+		$.ajax(
+			url		: 'api/System/admin/modules'
+			type	: 'extract'
+			success	: !~>
+				@reload()
+				#TODO ask for installation right here
+		)
 )

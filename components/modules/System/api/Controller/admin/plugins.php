@@ -9,7 +9,7 @@
  */
 namespace cs\modules\System\api\Controller\admin;
 use
-		cs\Cache as System_cache,
+	cs\Cache as System_cache,
 	cs\Config,
 	cs\Event,
 	cs\ExitException,
@@ -241,21 +241,22 @@ trait plugins {
 	static function admin_plugins_extract () {
 		$L            = Language::instance();
 		$tmp_location = TEMP.'/System/admin/'.Session::instance()->get_id().'.phar';
-		if (!file_exists($tmp_location)) {
-			throw new ExitException(400);
-		}
-		$tmp_dir = "phar://$tmp_location";
-		if (!file_exists("$tmp_dir/meta.json")) {
+		$tmp_dir      = "phar://$tmp_location";
+		if (
+			!file_exists($tmp_location) ||
+			!file_exists("$tmp_dir/meta.json")
+		) {
 			throw new ExitException(400);
 		}
 		$new_meta = file_get_json("$tmp_dir/meta.json");
 		if ($new_meta['category'] !== 'plugins') {
 			throw new ExitException($L->this_is_not_plugin_installer_file, 400);
 		}
-		if (file_exists(PLUGINS."/$new_meta[package]")) {
-			throw new ExitException(400);
-		}
-		if (!Packages_manipulation::install_extract(PLUGINS."/$new_meta[package]", $tmp_location)) {
+		$plugin_dir = PLUGINS."/$new_meta[package]";
+		if (
+			!mkdir($plugin_dir, 0770) ||
+			!Packages_manipulation::install_extract($plugin_dir, $tmp_location)
+		) {
 			throw new ExitException($L->plugin_files_unpacking_error, 500);
 		}
 	}
@@ -286,14 +287,16 @@ trait plugins {
 			throw new ExitException(404);
 		}
 		$tmp_location = TEMP.'/System/admin/'.Session::instance()->get_id().'.phar';
-		if (!file_exists($tmp_location) || !file_exists(PLUGINS."/$plugin/meta.json")) {
+		$tmp_dir      = "phar://$tmp_location";
+		$plugin_dir   = PLUGINS."/$plugin";
+		if (
+			!file_exists($tmp_location) ||
+			!file_exists("$plugin_dir/meta.json") ||
+			!file_exists("$tmp_dir/meta.json")
+		) {
 			throw new ExitException(400);
 		}
-		$tmp_dir = "phar://$tmp_location";
-		if (!file_exists("$tmp_dir/meta.json")) {
-			throw new ExitException(400);
-		}
-		$existing_meta = file_get_json(PLUGINS."/$plugin/meta.json");
+		$existing_meta = file_get_json("$plugin_dir/meta.json");
 		$new_meta      = file_get_json("$tmp_dir/meta.json");
 		$active        = in_array($plugin, $Config->components['plugins']);
 		// If plugin is currently enabled - disable it temporary
@@ -317,6 +320,9 @@ trait plugins {
 		)
 		) {
 			throw new ExitException(500);
+		}
+		if (!is_writable($plugin_dir)) {
+			throw new ExitException($L->cant_unpack_plugin_no_write_permissions, 500);
 		}
 		if (!Packages_manipulation::update_extract(PLUGINS."/$plugin", $tmp_location)) {
 			throw new ExitException($L->plugin_files_unpacking_error, 500);

@@ -73,12 +73,6 @@ trait components_save {
 	 *  admin/System/components/modules/uninstall/process
 	 *  ['name'    => module_name]
 	 *
-	 *  admin/System/components/modules/update/process/before
-	 *  ['name'    => module_name]
-	 *
-	 *  admin/System/components/modules/update/process/after
-	 *  ['name'    => module_name]
-	 *
 	 *  admin/System/components/modules/update_system/process/before
 	 *  ['name'    => module_name]
 	 *
@@ -259,69 +253,6 @@ trait components_save {
 					$module_data = ['active' => -1];
 					$a->save();
 					clean_pcache();
-					unset($Cache->functionality);
-					clean_classes_cache();
-					break;
-				case 'update':
-					/**
-					 * Temporary disable module
-					 */
-					$active = $module_data['active'];
-					if ($active) {
-						$module_data['active'] = 0;
-						$Config->save();
-						Event::instance()->fire(
-							'admin/System/components/modules/disable',
-							[
-								'name' => $module_name
-							]
-						);
-						Event::instance()->fire(
-							'admin/System/components/modules/update/process/before',
-							[
-								'name' => $module_name
-							]
-						);
-					}
-					$module_dir  = MODULES."/$module_name";
-					$old_version = file_get_json("$module_dir/meta.json")['version'];
-					if (!Packages_manipulation::update_extract($module_dir, TEMP.'/'.$Session->get_id().'_module_update.phar')) {
-						$Page->warning($L->module_files_unpacking_error);
-						break;
-					}
-					/**
-					 * Updating of module
-					 */
-					if ($active != -1 && isset(file_get_json("$module_dir/meta.json")['update_versions'])) {
-						Packages_manipulation::update_php_sql(
-							$module_dir,
-							$old_version,
-							isset($module_data['db']) ? $module_data['db'] : null
-						);
-					}
-					unset($old_version);
-					/**
-					 * Restore previous module state
-					 */
-					if ($active) {
-						$module_data['active'] = 1;
-						$Config->save();
-						clean_pcache();
-						Event::instance()->fire(
-							'admin/System/components/modules/enable',
-							[
-								'name' => $module_name
-							]
-						);
-						Event::instance()->fire(
-							'admin/System/components/modules/update/process/after',
-							[
-								'name' => $module_name
-							]
-						);
-						unset($Cache->languages);
-					}
-					$a->save();
 					unset($Cache->functionality);
 					clean_classes_cache();
 					break;

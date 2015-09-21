@@ -409,9 +409,6 @@ trait components {
 	 *  admin/System/components/modules/install/prepare
 	 *  ['name' => module_name]
 	 *
-	 *  admin/System/components/modules/update/prepare
-	 *  ['name' => module_name]
-	 *
 	 *  admin/System/components/modules/uninstall/prepare
 	 *  ['name' => module_name]
 	 *
@@ -447,84 +444,6 @@ trait components {
 		) {
 			switch ($rc[2]) {
 				case 'install':
-					if ($rc[3] == 'upload') {
-						$tmp_file = Packages_manipulation::move_uploaded_file_to_tmp('upload_module');
-						if (!$tmp_file) {
-							break;
-						}
-						$tmp_dir = "phar://$tmp_file";
-						$meta    = file_exists("$tmp_dir/meta.json") ? file_get_json("$tmp_dir/meta.json") : false;
-						if (
-							!$meta ||
-							@$meta['category'] != 'modules' ||
-							!@$meta['package']
-						) {
-							$Page->warning($L->this_is_not_module_installer_file);
-							unlink($tmp_file);
-							break;
-						}
-						$module_name = $meta['package'];
-						$rc[3]       = $module_name;
-						if (isset($Config->components['modules'][$module_name])) {
-							$current_version = file_get_json(MODULES."/$module_name/meta.json")['version'];
-							$new_version     = $meta['version'];
-							if (!version_compare($current_version, $new_version, '<')) {
-								$Page->warning($L->update_module_impossible_older_version($module_name));
-								unlink($tmp_file);
-								break;
-							}
-							if (!Event::instance()->fire(
-								'admin/System/components/modules/update/prepare',
-								[
-									'name' => $module_name
-								]
-							)
-							) {
-								break;
-							}
-							$check_dependencies = Packages_manipulation::get_dependencies($meta);
-							if (!$check_dependencies && $Config->core['simple_admin_mode']) {
-								break;
-							}
-							$rc[2]        = 'update';
-							$show_modules = false;
-							$Page->title($L->updating_of_module($module_name));
-							rename($tmp_file, $tmp_file = TEMP.'/'.$Session->get_id().'_module_update.phar');
-							$a->content(
-								h::{'h2.cs-text-center'}(
-									$L->update_module(
-										$module_name,
-										$current_version,
-										$new_version
-									)
-								)
-							);
-							$a->cancel_button_back = true;
-							$a->content(
-								h::{'button[is=cs-button][type=submit]'}($L->{$check_dependencies ? $L->yes : 'force_update_not_recommended'})
-							);
-							break;
-						}
-						if (!file_exists(MODULES."/$module_name") && !mkdir(MODULES."/$module_name", 0770)) {
-							$Page->warning($L->cant_unpack_module_no_write_permissions);
-							unlink($tmp_file);
-							break;
-						}
-						$extract = Packages_manipulation::install_extract(MODULES."/$module_name", $tmp_file);
-						unset($tmp_file, $tmp_dir);
-						if (!$extract) {
-							$Page->warning($L->module_files_unpacking_error);
-							break;
-						}
-						$Config->components['modules'][$module_name] = [
-							'active'  => -1,
-							'db'      => [],
-							'storage' => []
-						];
-						unset($meta, $module_name);
-						ksort($Config->components['modules'], SORT_STRING | SORT_FLAG_CASE);
-						$Config->save();
-					}
 					$show_modules = false;
 					$Page->title($L->installation_of_module($rc[3]));
 					$a->content(
@@ -822,7 +741,6 @@ trait components {
 			switch ($rc[2]) {
 				case 'install':
 				case 'uninstall':
-				case 'update':
 				case 'update_system':
 				case 'db':
 				case 'storage':
@@ -848,16 +766,7 @@ trait components {
 		}
 		$a->file_upload = true;
 		$a->content(
-			h::{'cs-system-admin-components-modules-list'}().
-			h::p(
-				h::{'input[is=cs-input-text][compact][tight][type=file][name=upload_module]'}().
-				h::{'button[is=cs-button][icon=upload][type=submit]'}(
-					$L->upload_and_install_update_module,
-					[
-						'formaction' => "$a->action/install/upload"
-					]
-				)
-			).
+			h::cs_system_admin_components_modules_list().
 			h::p(
 				h::{'input[is=cs-input-text][compact][tight][type=file][name=upload_system]'}().
 				h::{'button[is=cs-button][icon=upload][type=submit]'}(
