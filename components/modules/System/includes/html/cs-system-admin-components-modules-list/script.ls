@@ -18,9 +18,9 @@ Polymer(
 		cs.Polymer.behaviors.Language
 		cs.Polymer.behaviors.admin.System.components
 	]
-	ready : ->
+	ready : !->
 		@reload()
-	reload : ->
+	reload : !->
 		modules <~! $.getJSON('api/System/admin/modules', _)
 		modules.forEach (module) !->
 			module.can_disable		= module.active ~= 1 && module.name != 'System'

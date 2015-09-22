@@ -24,11 +24,11 @@
     'is': 'cs-system-admin-components-modules-list',
     behaviors: [cs.Polymer.behaviors.Language, cs.Polymer.behaviors.admin.System.components],
     ready: function(){
-      return this.reload();
+      this.reload();
     },
     reload: function(){
       var this$ = this;
-      return $.getJSON('api/System/admin/modules', function(modules){
+      $.getJSON('api/System/admin/modules', function(modules){
         modules.forEach(function(module){
           var active_switch_local;
           module.can_disable = module.active == 1 && module.name !== 'System';

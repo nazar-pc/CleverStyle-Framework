@@ -26,7 +26,7 @@
     },
     reload: function(){
       var this$ = this;
-      return $.getJSON('api/System/admin/plugins', function(plugins){
+      $.getJSON('api/System/admin/plugins', function(plugins){
         plugins.forEach(function(plugin){
           var active_switch_local;
           active_switch_local = active_switch.bind(plugin);

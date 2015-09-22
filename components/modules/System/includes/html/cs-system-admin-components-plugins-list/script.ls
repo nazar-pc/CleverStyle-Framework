@@ -20,7 +20,7 @@ Polymer(
 	]
 	ready : !->
 		@reload()
-	reload : ->
+	reload : !->
 		plugins <~! $.getJSON('api/System/admin/plugins', _)
 		plugins.forEach (plugin) !->
 			active_switch_local		= active_switch.bind(plugin)

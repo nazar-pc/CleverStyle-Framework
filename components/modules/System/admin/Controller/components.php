@@ -897,72 +897,10 @@ trait components {
 					}
 			}
 		} else {
-			$a->buttons    = false;
-			$storages_list = [];
-			$Core          = Core::instance();
-			$storages      = $Config->storage;
-			if (!empty($storages)) {
-				foreach ($storages as $i => &$storage_data) {
-					$storages_list[] = [
-						[
-							($i ?
-								h::{'a[is=cs-link-button][icon=pencil][level=0]'}(
-									[
-										'href'    => "$a->action/edit/$i",
-										'tooltip' => "$L->edit $L->storage"
-									]
-								).
-								h::{'a[is=cs-link-button][icon=trash][level=0]'}(
-									[
-										'href'    => "$a->action/delete/$i",
-										'tooltip' => "$L->delete $L->storage"
-									]
-								).
-								h::{'a[is=cs-link-button][icon=signal][level=0]'}(
-									[
-										'onMouseDown' => "cs.storage_test($i);",
-										'tooltip'     => $L->test_connection
-									]
-								) : '-'),
-							[
-								'class' => $i ? '' : 'text-primary'
-							]
-						],
-						[
-							[
-								$i ? $storage_data['url'] : $Core->storage_url ?: url_by_source(PUBLIC_STORAGE),
-								$i ? $storage_data['host'] : $Core->storage_host,
-								$i ? $storage_data['connection'] : $Core->storage_type,
-								$i ? $storage_data['user'] : $Core->storage_user ?: '-'
-							],
-							[
-								'class' => $i ? '' : 'text-primary'
-							]
-						]
-					];
-				}
-				unset($i, $storage_data);
-			}
-			unset($storages);
+			$a->buttons = false;
 			$a->content(
-				static::list_center_table(
-					[
-						$L->action,
-						$L->storage_url,
-						$L->storage_host,
-						$L->storage_connection,
-						$L->storage_user
-					],
-					$storages_list
-				).
-				h::{'p a[is=cs-link-button]'}(
-					$L->add_storage,
-					[
-						'href' => "admin/System/$rc[0]/$rc[1]/add"
-					]
-				)
+				h::cs_system_admin_components_storages_list()
 			);
-			unset($storages_list);
 		}
 	}
 }
