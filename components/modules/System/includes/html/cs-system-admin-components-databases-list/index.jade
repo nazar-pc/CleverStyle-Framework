@@ -1,0 +1,46 @@
+dom-module(id="cs-system-admin-components-databases-list")
+	template
+		style(include="advanced-styles")
+		table.cs-table(center list)
+			tr
+				th [[L.action]]
+				th [[L.db_host]]
+				th [[L.db_type]]
+				th [[L.db_prefix]]
+				th [[L.db_name]]
+				th [[L.db_user]]
+				th [[L.db_charset]]
+			template(is="dom-repeat" items="[[databases]]" as="database")
+				tr(class$="[[if(index, '', 'cs-text-bold')]]")
+					td.cs-text-left
+						a(is="cs-link-button" href="[[concat('/admin/components/databases/add/', database.index)]]" icon="plus" tooltip="[[concat(L.add, ' ', L.mirror, ' ', L.of_db)]]")
+						template(is="dom-if" if="[[index]]")
+							= ' '
+							button(is="cs-button" on-tap="_test_connection" icon="signal" tooltip="[[L.test_connection]]")
+							= ' '
+							a(is="cs-link-button" href="[[concat('/admin/components/databases/edit/', database.index)]]" icon="pencil" tooltip="[[concat(L.edit, ' ', L.db)]]")
+							= ' '
+							a(is="cs-link-button" href="[[concat('/admin/components/databases/delete/', database.index)]]" icon="trash" tooltip="[[concat(L.delete, ' ', L.db)]]")
+					td [[database.host]]
+					td [[database.type]]
+					td [[database.prefix]]
+					td [[database.name]]
+					td [[if(database.user, database.user, '*****')]]
+					td [[database.charset]]
+				template(is="dom-repeat" items="[[database.mirrors]]" as="mirror")
+					tr
+						td.cs-text-right
+							button(is="cs-button" on-tap="_test_connection" icon="signal" tooltip="[[L.test_connection]]")
+							= ' '
+							a(is="cs-link-button" href="[[concat('/admin/components/databases/edit/', database.index, '/', mirror.index)]]" icon="pencil" tooltip="[[concat(L.edit, ' ', L.mirror, ' ', L.of_db)]]")
+							= ' '
+							a(is="cs-link-button" href="[[concat('/admin/components/databases/delete/', database.index, '/', mirror.index)]]" icon="trash" tooltip="[[concat(L.delete, ' ', L.mirror, ' ', L.of_db)]]")
+						td [[mirror.host]]
+						td [[mirror.type]]
+						td [[mirror.prefix]]
+						td [[mirror.name]]
+						td [[if(mirror.user, mirror.user, '*****')]]
+						td [[mirror.charset]]
+		p
+			a(is="cs-link-button" href="/admin/System/components/databases/add") [[L.add_database]]
+	script(src="script.js")

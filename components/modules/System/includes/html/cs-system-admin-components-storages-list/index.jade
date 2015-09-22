@@ -9,7 +9,7 @@ dom-module(id="cs-system-admin-components-storages-list")
 				th [[L.storage_connection]]
 				th [[L.storage_user]]
 			template(is="dom-repeat" items="[[storages]]" as="storage")
-				tr
+				tr(class$="[[if(index, '', 'cs-text-bold')]]")
 					td
 						template(is="dom-if" if="[[!index]]") -
 						template(is="dom-if" if="[[index]]")

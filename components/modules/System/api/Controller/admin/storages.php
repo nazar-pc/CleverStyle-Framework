@@ -38,6 +38,7 @@ trait storages {
 	 * Test storage connection
 	 */
 	static function admin_storages_test () {
+		// TODO explicit arguments when migrated to frontend completely
 		if (!Storage::instance()->test($_POST)) {
 			throw new ExitException(500);
 		}

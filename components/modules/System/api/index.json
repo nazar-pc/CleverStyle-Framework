@@ -9,6 +9,7 @@
 	"admin"    : {
 		"blocks"             : [],
 		"cache"              : [],
+		"databases"          : [],
 		"databases_test"     : [],
 		"email_sending_test" : [],
 		"groups"             : [

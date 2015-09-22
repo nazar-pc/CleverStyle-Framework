@@ -28,6 +28,9 @@ trait admin {
 			Config::instance()->core['active_languages']
 		);
 	}
+	/**
+	 * @todo drop when migrated to frontend
+	 */
 	static function admin_storages_test_get () {
 		$Storage = Storage::instance();
 		if (isset($_GET['index'])) {

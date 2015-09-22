@@ -264,105 +264,8 @@ trait components {
 			}
 		} else {
 			$a->apply_button = true;
-			$db_list         = [];
-			$databases       = $Config->db;
-			if (!empty($databases)) {
-				foreach ($databases as $i => &$db_data) {
-					$db_list[] = [
-						[
-							[
-								h::{'a[is=cs-link-button][icon=plus][level=0]'}(
-									[
-										'href'    => "$a->action/add/$i",
-										'tooltip' => "$L->add $L->mirror $L->of_db"
-									]
-								).
-								($i ? h::{'a[is=cs-link-button][icon=pencil][level=0]'}(
-									[
-										'href'    => "$a->action/edit/$i",
-										'tooltip' => "$L->edit $L->db"
-									]
-								) : false).
-								($i ? h::{'a[is=cs-link-button][icon=trash][level=0]'}(
-									[
-										'href'    => "$a->action/delete/$i",
-										'tooltip' => $L->delete.' '.$L->db
-									]
-								) : false).
-								h::{'a[is=cs-link-button][icon=signal][level=0]'}(
-									[
-										'onMouseDown' => "cs.db_test($i);",
-										'tooltip'     => $L->test_connection
-									]
-								),
-								[
-									'class' => 'cs-text-left'
-								]
-							],
-							$i ? $db_data['host'] : $Core->db_host,
-							$i ? $db_data['type'] : $Core->db_type,
-							$i ? $db_data['prefix'] : $Core->db_prefix,
-							$i ? $db_data['name'] : $Core->db_name,
-							$i ? $db_data['user'] : '*****',
-							$i ? $db_data['charset'] : $Core->db_charset
-						],
-						[
-							'class' => $i ? '' : 'text-primary'
-						]
-					];
-					foreach ($Config->db[$i]['mirrors'] as $m => &$mirror) {
-						if (is_array($mirror) && !empty($mirror)) {
-							$db_list[] = [
-								[
-									h::{'a[is=cs-link-button][icon=pencil][level=0]'}(
-										[
-											'href'    => "$a->action/edit/$i/$m",
-											'tooltip' => "$L->edit $L->mirror $L->of_db"
-										]
-									).
-									h::{'a[is=cs-link-button][icon=trash][level=0]'}(
-										[
-											'href'    => "$a->action/delete/$i/$m",
-											'tooltip' => "$L->delete $L->mirror $L->of_db"
-										]
-									).
-									h::{'a[is=cs-link-button][icon=signal][level=0]'}(
-										[
-											'onMouseDown' => "cs.db_test($i, $m);",
-											'tooltip'     => $L->test_connection
-										]
-									),
-									[
-										'class' => 'cs-text-right'
-									]
-								],
-								$mirror['host'],
-								$mirror['type'],
-								$mirror['prefix'],
-								$mirror['name'],
-								$mirror['user'],
-								$mirror['charset']
-							];
-						}
-					}
-					unset($m, $mirror);
-				}
-				unset($i, $db_data);
-			}
-			unset($databases);
 			$a->content(
-				static::list_center_table(
-					[
-						$L->action,
-						$L->db_host,
-						$L->db_type,
-						$L->db_prefix,
-						$L->db_name,
-						$L->db_user,
-						$L->db_charset
-					],
-					$db_list
-				).
+				h::cs_system_admin_components_databases_list().
 				static::vertical_table(
 					[
 						[
@@ -387,12 +290,6 @@ trait components {
 								]
 							)
 						]
-					]
-				).
-				h::{'p a[is=cs-link-button]'}(
-					$L->add_database,
-					[
-						'href' => "$a->action/add"
 					]
 				).
 				h::{'input[type=hidden]'}(
