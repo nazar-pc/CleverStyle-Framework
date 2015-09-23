@@ -91,11 +91,25 @@
       return this.set('selected', selected);
     },
     _selected_changed: function(selected) {
+      var s;
       if (selected === void 0) {
         return;
       }
+      selected = (function() {
+        var i, len, results;
+        if (selected instanceof Array) {
+          results = [];
+          for (i = 0, len = selected.length; i < len; i++) {
+            s = selected[i];
+            results.push(String(s));
+          }
+          return results;
+        } else {
+          return String(selected);
+        }
+      })();
       return [].slice.call(this.querySelectorAll('option')).forEach(function(option) {
-        return option.selected = selected && selected.indexOf(option.value) !== -1;
+        return option.selected = selected === option.value || (selected instanceof Array && selected.indexOf(option.value) !== -1);
       });
     }
   });

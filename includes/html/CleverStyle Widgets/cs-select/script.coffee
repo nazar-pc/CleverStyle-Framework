@@ -75,6 +75,17 @@ Polymer(
 	_selected_changed : (selected) ->
 		if selected == undefined
 			return
+		selected	=
+			if selected instanceof Array
+				for s in selected
+					String(s)
+			else
+				String(selected)
 		[].slice.call(@querySelectorAll('option')).forEach (option) ->
-			option.selected	= selected && selected.indexOf(option.value) != -1
+			option.selected	=
+				selected == option.value ||
+				(
+					selected instanceof Array &&
+					selected.indexOf(option.value) != -1
+				)
 )
