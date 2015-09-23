@@ -13,12 +13,12 @@ dom-module(id="cs-system-admin-components-databases-list")
 			template(is="dom-repeat" items="[[databases]]" as="database")
 				tr(class$="[[if(index, '', 'cs-text-bold')]]")
 					td.cs-text-left
-						a(is="cs-link-button" href="[[concat('/admin/components/databases/add/', database.index)]]" icon="plus" tooltip="[[concat(L.add, ' ', L.mirror, ' ', L.of_db)]]")
+						a(is="cs-link-button" on-tap="_add" icon="plus" tooltip="[[concat(L.add, ' ', L.mirror, ' ', L.of_db)]]")
 						template(is="dom-if" if="[[index]]")
 							= ' '
 							button(is="cs-button" on-tap="_test_connection" icon="signal" tooltip="[[L.test_connection]]")
 							= ' '
-							a(is="cs-link-button" href="[[concat('/admin/components/databases/edit/', database.index)]]" icon="pencil" tooltip="[[concat(L.edit, ' ', L.db)]]")
+							a(is="cs-link-button" on-tap="_edit" icon="pencil" tooltip="[[concat(L.edit, ' ', L.db)]]")
 							= ' '
 							a(is="cs-link-button" href="[[concat('/admin/components/databases/delete/', database.index)]]" icon="trash" tooltip="[[concat(L.delete, ' ', L.db)]]")
 					td [[database.host]]
@@ -32,7 +32,7 @@ dom-module(id="cs-system-admin-components-databases-list")
 						td.cs-text-right
 							button(is="cs-button" on-tap="_test_connection" icon="signal" tooltip="[[L.test_connection]]")
 							= ' '
-							a(is="cs-link-button" href="[[concat('/admin/components/databases/edit/', database.index, '/', mirror.index)]]" icon="pencil" tooltip="[[concat(L.edit, ' ', L.mirror, ' ', L.of_db)]]")
+							a(is="cs-link-button" on-tap="_edit" icon="pencil" tooltip="[[concat(L.edit, ' ', L.mirror, ' ', L.of_db)]]")
 							= ' '
 							a(is="cs-link-button" href="[[concat('/admin/components/databases/delete/', database.index, '/', mirror.index)]]" icon="trash" tooltip="[[concat(L.delete, ' ', L.mirror, ' ', L.of_db)]]")
 						td [[mirror.host]]
@@ -42,5 +42,5 @@ dom-module(id="cs-system-admin-components-databases-list")
 						td [[if(mirror.user, mirror.user, '*****')]]
 						td [[mirror.charset]]
 		p
-			a(is="cs-link-button" href="/admin/System/components/databases/add") [[L.add_database]]
+			a(is="cs-link-button" on-tap="_add") [[L.add_database]]
 	script(src="script.js")

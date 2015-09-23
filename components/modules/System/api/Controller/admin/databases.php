@@ -45,6 +45,98 @@ trait databases {
 		Page::instance()->json(array_values($databases));
 	}
 	/**
+	 * Update database of database mirror settings
+	 *
+	 * @param int[] $route_ids
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_databases_patch ($route_ids) {
+		if (
+			!isset($route_ids[0], $_POST['host'], $_POST['type'], $_POST['prefix'], $_POST['name'], $_POST['user'], $_POST['password'], $_POST['charset']) ||
+			!strlen($_POST['host']) ||
+			!in_array($_POST['type'], static::admin_databases_get_engines())
+		) {
+			throw new ExitException(400);
+		}
+		$Config         = Config::instance();
+		$databases      = &$Config->db;
+		$database_index = $route_ids[0];
+		if (!isset($databases[$database_index])) {
+			throw new ExitException(404);
+		}
+		$database = &$databases[$database_index];
+		// Maybe, we are changing database mirror
+		if (isset($route_ids[1])) {
+			if (!isset($database['mirrors'][$route_ids[1]])) {
+				throw new ExitException(404);
+			}
+			$database = &$database['mirrors'][$route_ids[1]];
+		} elseif ($database_index == 0) {
+			throw new ExitException(400);
+		}
+		$database['host']     = $_POST['host'];
+		$database['type']     = $_POST['type'];
+		$database['prefix']   = $_POST['prefix'];
+		$database['name']     = $_POST['name'];
+		$database['user']     = $_POST['user'];
+		$database['password'] = $_POST['password'];
+		$database['charset']  = $_POST['charset'];
+		if (!$Config->save()) {
+			throw new ExitException(500);
+		}
+	}
+	/**
+	 * @param int[] $route_ids
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_databases_post ($route_ids) {
+		if (
+			!isset($_POST['mirror'], $_POST['host'], $_POST['type'], $_POST['prefix'], $_POST['name'], $_POST['user'], $_POST['password'], $_POST['charset']) ||
+			!strlen($_POST['host']) ||
+			!in_array($_POST['type'], static::admin_databases_get_engines())
+		) {
+			throw new ExitException(400);
+		}
+		$Config    = Config::instance();
+		$databases = &$Config->db;
+		// Maybe, we are adding database mirror
+		if (isset($route_ids[0])) {
+			if (!isset($databases[$route_ids[0]])) {
+				throw new ExitException(404);
+			}
+			$databases = &$databases[$route_ids[0]]['mirrors'];
+		}
+		$databases[] = [
+			'mirror'   => $_POST['mirror'],
+			'host'     => $_POST['host'],
+			'type'     => $_POST['type'],
+			'prefix'   => $_POST['prefix'],
+			'name'     => $_POST['name'],
+			'user'     => $_POST['user'],
+			'password' => $_POST['password'],
+			'charset'  => $_POST['charset']
+		];
+		if (!$Config->save()) {
+			throw new ExitException(500);
+		}
+	}
+	/**
+	 * Get array of available database engines
+	 */
+	static function admin_databases_engines () {
+		Page::instance()->json(
+			static::admin_databases_get_engines()
+		);
+	}
+	/**
+	 * @return string[]
+	 */
+	protected static function admin_databases_get_engines () {
+		return _mb_substr(get_files_list(ENGINES.'/DB', '/^[^_].*?\.php$/i', 'f'), 0, -4);
+	}
+	/**
 	 * Test database connection
 	 */
 	static function admin_databases_test () {

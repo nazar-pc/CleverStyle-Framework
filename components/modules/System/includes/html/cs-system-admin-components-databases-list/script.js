@@ -36,6 +36,34 @@
           $modal.find('progress').replaceWith("<p class=\"cs-text-center cs-block-error cs-text-error\" style=text-transform:capitalize;\">" + L.failed + "</p>");
         }
       });
+    },
+    _add: function(e){
+      var database, this$ = this;
+      database = e.model && e.model.database;
+      $(cs.ui.simple_modal("<h3>" + L.addition_of_db + "</h3>\n<cs-system-admin-components-databases-form add database-index=\"" + (database && database.index) + "\"/>")).on('close', function(){
+        this$.reload();
+      });
+    },
+    _edit: function(e){
+      var database, mirror, name, master_db_name, this$ = this;
+      database = e.model.database;
+      mirror = e.model.mirror;
+      name = database.mirror
+        ? (master_db_name = function(){
+          var db;
+          for (db in this$.databases) {
+            if (db.index == database.index) {
+              return db.name;
+            }
+          }
+        }(), L.mirror + ' ' + (database.index
+          ? L.db + ' ' + master_db_name
+          : L.core_db))
+        : L.db;
+      name += " " + database.name + " " + database.host + "/" + database.type + ")";
+      $(cs.ui.simple_modal("<h3>" + L.editing_the_database(name) + "</h3>\n<cs-system-admin-components-databases-form database-index=\"" + database.index + "\" mirror-index=\"" + (mirror && mirror.index) + "\"/>")).on('close', function(){
+        this$.reload();
+      });
     }
   });
 }).call(this);

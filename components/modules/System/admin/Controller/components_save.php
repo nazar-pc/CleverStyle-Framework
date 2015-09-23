@@ -30,26 +30,7 @@ trait components_save {
 		$Index  = Index::instance();
 		$Config = Config::instance();
 		$update = false;
-		if ($_POST['mode'] == 'add') {
-			$_POST['db']['mirrors'] = [];
-			if ($_POST['db']['mirror'] == -1) {
-				$Config->db[] = $_POST['db'];
-			} else {
-				$Config->db[$_POST['db']['mirror']]['mirrors'][] = $_POST['db'];
-			}
-			$update = true;
-		} elseif ($_POST['mode'] == 'edit') {
-			if (isset($_POST['mirror'])) {
-				$current_db = &$Config->db[$_POST['database']]['mirrors'][$_POST['mirror']];
-			} elseif ($_POST['database'] > 0) {
-				$current_db = &$Config->db[$_POST['database']];
-			}
-			foreach ($_POST['db'] as $item => $value) {
-				$current_db[$item] = $value;
-			}
-			unset($current_db, $item, $value);
-			$update = true;
-		} elseif ($_POST['mode'] == 'delete' && isset($_POST['database'])) {
+		if ($_POST['mode'] == 'delete' && isset($_POST['database'])) {
 			if (isset($_POST['mirror'])) {
 				unset($Config->db[$_POST['database']]['mirrors'][$_POST['mirror']]);
 				$update = true;

@@ -35,5 +35,32 @@ Polymer(
 					.find('progress')
 					.replaceWith("""<p class="cs-text-center cs-block-error cs-text-error" style=text-transform:capitalize;">#{L.failed}</p>""")
 		)
-
+	_add : (e) !->
+		database	= e.model && e.model.database
+		$(cs.ui.simple_modal("""
+			<h3>#{L.addition_of_db}</h3>
+			<cs-system-admin-components-databases-form add database-index="#{database && database.index}"/>
+		""")).on('close', !~>
+			@reload()
+		)
+	_edit : (e) !->
+		database	= e.model.database
+		mirror		= e.model.mirror
+		name		=
+			if database.mirror
+				master_db_name = do !~>
+					for db of @databases
+						if db.index ~= database.index
+							return db.name
+				L.mirror + ' ' +
+				(if database.index then L.db + ' ' + master_db_name else L.core_db)
+			else
+				L.db
+		name += " #{database.name} #{database.host}/#{database.type})"
+		$(cs.ui.simple_modal("""
+			<h3>#{L.editing_the_database(name)}</h3>
+			<cs-system-admin-components-databases-form database-index="#{database.index}" mirror-index="#{mirror && mirror.index}"/>
+		""")).on('close', !~>
+			@reload()
+		)
 )
