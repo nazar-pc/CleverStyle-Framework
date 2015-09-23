@@ -34,7 +34,7 @@ Polymer(
 				clearTimeout(timeout)
 				timeout	= setTimeout (=>
 					@removeEventListener(callback)
-					if @selected
+					if @selected != undefined
 						@_selected_changed(@selected)
 					# Set select height relatively to font size
 					# Fixes select height in modal

@@ -40,7 +40,7 @@
             return timeout = setTimeout((function() {
               var font_size, height_in_px;
               _this.removeEventListener(callback);
-              if (_this.selected) {
+              if (_this.selected !== void 0) {
                 _this._selected_changed(_this.selected);
               }
               height_in_px = _this.querySelector('option').getBoundingClientRect().height * _this.size;
