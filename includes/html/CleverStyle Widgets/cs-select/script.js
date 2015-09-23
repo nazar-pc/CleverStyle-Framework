@@ -38,10 +38,14 @@
           callback = function() {
             clearTimeout(timeout);
             return timeout = setTimeout((function() {
+              var font_size, height_in_px;
               _this.removeEventListener(callback);
               if (_this.selected) {
-                return _this._selected_changed(_this.selected);
+                _this._selected_changed(_this.selected);
               }
+              height_in_px = _this.querySelector('option').getBoundingClientRect().height * _this.size;
+              font_size = parseFloat(getComputedStyle(_this).fontSize);
+              _this.style.height = "calc(" + height_in_px + "em / " + font_size + ")";
             }), 100);
           };
           return _this.addEventListener('dom-change', callback);
