@@ -146,7 +146,7 @@ trait Router {
 			$available_methods = implode(', ', $available_methods);
 			_header("Allow: $available_methods");
 			if ($this->request_method !== 'options') {
-				error_code(501);
+				throw new ExitException(501);
 			}
 		} else {
 			throw new ExitException(404);
