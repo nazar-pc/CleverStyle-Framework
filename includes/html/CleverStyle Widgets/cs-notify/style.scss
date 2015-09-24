@@ -18,6 +18,7 @@
 #content {
 	display     : inline-block;
 	margin-left : -50%;
+	max-width   : 45vw;
 	position    : relative;
 
 	@apply (--cs-notify-content);
@@ -46,6 +47,7 @@
 cs-icon {
 	display : none;
 }
+
 :host(:not([no-icon])) cs-icon {
 	display  : inline-block;
 	position : absolute;
