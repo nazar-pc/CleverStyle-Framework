@@ -13,6 +13,7 @@ use
 	cs\Core,
 	cs\DB,
 	cs\ExitException,
+	cs\Language,
 	cs\Page;
 trait databases {
 	/**
@@ -120,6 +121,58 @@ trait databases {
 		];
 		if (!$Config->save()) {
 			throw new ExitException(500);
+		}
+	}
+	/**
+	 * Delete database of database mirror
+	 *
+	 * @param int[] $route_ids
+	 *
+	 * @throws ExitException
+	 */
+	static function admin_databases_delete ($route_ids) {
+		if (!isset($route_ids[0])) {
+			throw new ExitException(400);
+		}
+		$Config         = Config::instance();
+		$databases      = &$Config->db;
+		$database_index = $route_ids[0];
+		if (!isset($databases[$database_index])) {
+			throw new ExitException(404);
+		}
+		// Maybe, we are deleting database mirror
+		if (isset($route_ids[1])) {
+			if (!isset($databases[$database_index]['mirrors'][$route_ids[1]])) {
+				throw new ExitException(404);
+			}
+			unset($databases[$database_index]['mirrors'][$route_ids[1]]);
+		} elseif ($database_index == 0) {
+			throw new ExitException(400);
+		} else {
+			static::admin_databases_delete_check_usages($database_index);
+			unset($databases[$database_index]);
+		}
+		if (!$Config->save()) {
+			throw new ExitException(500);
+		}
+	}
+	protected static function admin_databases_delete_check_usages ($database_index) {
+		$Config  = Config::instance();
+		$used_by = [];
+		foreach ($Config->components['modules'] as $module => $module_data) {
+			if (isset($module_data['db']) && is_array($module_data['db'])) {
+				foreach ($module_data['db'] as $index) {
+					if ($index == $database_index) {
+						$used_by[] = $module;
+					}
+				}
+			}
+		}
+		if ($used_by) {
+			throw new ExitException(
+				Language::instance()->db_used_by_modules.': '.implode(', ', $used_by),
+				409
+			);
 		}
 	}
 	/**

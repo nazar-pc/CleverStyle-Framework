@@ -10,7 +10,7 @@ dom-module(id="cs-system-admin-components-databases-list")
 				th [[L.db_name]]
 				th [[L.db_user]]
 				th [[L.db_charset]]
-			template(is="dom-repeat" items="[[databases]]" as="database")
+			template(is="dom-repeat" items="[[databases]]" as="database" id="databases_list")
 				tr(class$="[[if(index, '', 'cs-text-bold')]]")
 					td.cs-text-left
 						a(is="cs-link-button" on-tap="_add" icon="plus" tooltip="[[concat(L.add, ' ', L.mirror, ' ', L.of_db)]]")
@@ -20,12 +20,12 @@ dom-module(id="cs-system-admin-components-databases-list")
 							= ' '
 							a(is="cs-link-button" on-tap="_edit" icon="pencil" tooltip="[[concat(L.edit, ' ', L.db)]]")
 							= ' '
-							a(is="cs-link-button" href="[[concat('/admin/components/databases/delete/', database.index)]]" icon="trash" tooltip="[[concat(L.delete, ' ', L.db)]]")
+							a(is="cs-link-button" on-tap="_delete" icon="trash" tooltip="[[concat(L.delete, ' ', L.db)]]")
 					td [[database.host]]
 					td [[database.type]]
 					td [[database.prefix]]
 					td [[database.name]]
-					td [[if(database.user, database.user, '*****')]]
+					td [[if(index, database.user, '*****')]]
 					td [[database.charset]]
 				template(is="dom-repeat" items="[[database.mirrors]]" as="mirror")
 					tr
@@ -34,12 +34,12 @@ dom-module(id="cs-system-admin-components-databases-list")
 							= ' '
 							a(is="cs-link-button" on-tap="_edit" icon="pencil" tooltip="[[concat(L.edit, ' ', L.mirror, ' ', L.of_db)]]")
 							= ' '
-							a(is="cs-link-button" href="[[concat('/admin/components/databases/delete/', database.index, '/', mirror.index)]]" icon="trash" tooltip="[[concat(L.delete, ' ', L.mirror, ' ', L.of_db)]]")
+							a(is="cs-link-button" on-tap="_delete" icon="trash" tooltip="[[concat(L.delete, ' ', L.mirror, ' ', L.of_db)]]")
 						td [[mirror.host]]
 						td [[mirror.type]]
 						td [[mirror.prefix]]
 						td [[mirror.name]]
-						td [[if(mirror.user, mirror.user, '*****')]]
+						td [[mirror.user]]
 						td [[mirror.charset]]
 		p
 			a(is="cs-link-button" on-tap="_add") [[L.add_database]]

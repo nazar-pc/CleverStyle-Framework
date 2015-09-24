@@ -396,7 +396,6 @@
 		"of_db"					: "БД",
 		"addition_of_db"		: "Додавання БД",
 		"editing_the_database"	: "Редагування %s",
-		"deletion_of_database"	: "Видаленння %s",
 		//Storages
 		"storages"					: "Сховища",
 		"storage"					: "Сховище",

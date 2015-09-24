@@ -395,7 +395,6 @@
 		"of_db"					: "of DB",
 		"addition_of_db"		: "Addition of DB",
 		"editing_the_database"	: "Editing the DB %s",
-		"deletion_of_database"	: "Deletion of DB %s",
 		//Storages
 		"storages"					: "Storages",
 		"storage"					: "Storage",

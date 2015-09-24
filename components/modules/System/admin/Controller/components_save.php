@@ -23,29 +23,6 @@ use
 	cs\modules\System\Packages_manipulation;
 
 trait components_save {
-	static function components_databases_save () {
-		if (!isset($_POST['mode'])) {
-			return;
-		}
-		$Index  = Index::instance();
-		$Config = Config::instance();
-		$update = false;
-		if ($_POST['mode'] == 'delete' && isset($_POST['database'])) {
-			if (isset($_POST['mirror'])) {
-				unset($Config->db[$_POST['database']]['mirrors'][$_POST['mirror']]);
-				$update = true;
-			} elseif ($_POST['database'] > 0) {
-				unset($Config->db[$_POST['database']]);
-				$update = true;
-			}
-		} elseif ($_POST['mode'] == 'config') {
-			static::save();
-		}
-		if ($update) {
-			$Index->save();
-		}
-		unset($update);
-	}
 	/**
 	 * Provides next events:
 	 *  admin/System/components/modules/install/process

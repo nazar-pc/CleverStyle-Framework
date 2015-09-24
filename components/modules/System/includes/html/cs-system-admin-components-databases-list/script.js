@@ -45,24 +45,49 @@
       });
     },
     _edit: function(e){
-      var database, mirror, name, master_db_name, this$ = this;
-      database = e.model.database;
+      var database_model, database, mirror, name, this$ = this;
+      database_model = this.$.databases_list.modelForElement(e.target);
+      database = e.model.database || database_model.database;
       mirror = e.model.mirror;
-      name = database.mirror
-        ? (master_db_name = function(){
-          var db;
-          for (db in this$.databases) {
-            if (db.index == database.index) {
-              return db.name;
-            }
-          }
-        }(), L.mirror + ' ' + (database.index
-          ? L.db + ' ' + master_db_name
-          : L.core_db))
-        : L.db;
-      name += " " + database.name + " " + database.host + "/" + database.type + ")";
+      name = this._database_name(database, mirror);
       $(cs.ui.simple_modal("<h3>" + L.editing_the_database(name) + "</h3>\n<cs-system-admin-components-databases-form database-index=\"" + database.index + "\" mirror-index=\"" + (mirror && mirror.index) + "\"/>")).on('close', function(){
         this$.reload();
+      });
+    },
+    _database_name: function(database, mirror){
+      var master_db_name, this$ = this;
+      if (mirror) {
+        master_db_name = function(){
+          var i$, ref$, len$, db;
+          for (i$ = 0, len$ = (ref$ = this$.databases).length; i$ < len$; ++i$) {
+            db = ref$[i$];
+            if (db.index == database.index) {
+              return db.name + " " + db.host + "/" + db.type;
+            }
+          }
+        }();
+        return L.mirror + ' ' + (database.index
+          ? L.db + ' ' + master_db_name
+          : L.core_db) + (", " + mirror.name + " " + mirror.host + "/" + mirror.type);
+      } else {
+        return L.db + " " + database.name + " " + database.host + "/" + database.type;
+      }
+    },
+    _delete: function(e){
+      var database_model, database, mirror, name, this$ = this;
+      database_model = this.$.databases_list.modelForElement(e.target);
+      database = e.model.database || database_model.database;
+      mirror = e.model.mirror;
+      name = this._database_name(database, mirror);
+      cs.ui.confirm(L.sure_to_delete + " " + name + "?", function(){
+        $.ajax({
+          url: 'api/System/admin/databases/' + database.index + (mirror ? '/' + mirror.index : ''),
+          type: 'delete',
+          success: function(){
+            cs.ui.notify(L.changes_saved, 'success', 5);
+            this$.reload();
+          }
+        });
       });
     }
   });

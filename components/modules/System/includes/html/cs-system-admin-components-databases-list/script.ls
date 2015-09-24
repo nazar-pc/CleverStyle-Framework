@@ -44,23 +44,48 @@ Polymer(
 			@reload()
 		)
 	_edit : (e) !->
-		database	= e.model.database
-		mirror		= e.model.mirror
-		name		=
-			if database.mirror
-				master_db_name = do !~>
-					for db of @databases
-						if db.index ~= database.index
-							return db.name
-				L.mirror + ' ' +
-				(if database.index then L.db + ' ' + master_db_name else L.core_db)
-			else
-				L.db
-		name += " #{database.name} #{database.host}/#{database.type})"
+		# Hack: ugly, but the only way to do it while https://github.com/Polymer/polymer/issues/1865 not resolved
+		database_model	= @$.databases_list.modelForElement(e.target)
+		database		= e.model.database || database_model.database
+		mirror			= e.model.mirror
+		name			= @_database_name(database, mirror)
 		$(cs.ui.simple_modal("""
 			<h3>#{L.editing_the_database(name)}</h3>
 			<cs-system-admin-components-databases-form database-index="#{database.index}" mirror-index="#{mirror && mirror.index}"/>
 		""")).on('close', !~>
 			@reload()
+		)
+	_database_name : (database, mirror) ->
+		if mirror
+			master_db_name = do !~>
+				for db in @databases
+					if db.index ~= database.index
+						return "#{db.name} #{db.host}/#{db.type}"
+			L.mirror + ' ' + (if database.index then L.db + ' ' + master_db_name else L.core_db) + ", #{mirror.name} #{mirror.host}/#{mirror.type}"
+		else
+			"#{L.db} #{database.name} #{database.host}/#{database.type}"
+	_delete : (e) !->
+		# Hack: ugly, but the only way to do it while https://github.com/Polymer/polymer/issues/1865 not resolved
+		database_model	= @$.databases_list.modelForElement(e.target)
+		database		= e.model.database || database_model.database
+		mirror			= e.model.mirror
+		name			= @_database_name(database, mirror)
+		cs.ui.confirm(
+			"#{L.sure_to_delete} #name?"
+			!~>
+				$.ajax(
+					url		:
+						'api/System/admin/databases/' + database.index +
+						(
+							if mirror
+								'/' + mirror.index
+							else
+								''
+						)
+					type	: 'delete'
+					success	: !~>
+						cs.ui.notify(L.changes_saved, 'success', 5)
+						@reload()
+				)
 		)
 )

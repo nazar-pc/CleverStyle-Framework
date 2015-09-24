@@ -395,7 +395,6 @@
 		"of_db"					: "БД",
 		"addition_of_db"		: "Добавление БД",
 		"editing_the_database"	: "Редактирование %s",
-		"deletion_of_database"	: "Удаление %s",
 		//Storages
 		"storages"					: "Хранилища",
 		"storage"					: "Хранилище",

@@ -20,7 +20,6 @@ use
 	cs\Session,
 	h,
 	cs\modules\System\Packages_manipulation;
-
 trait components {
 	static function components_blocks () {
 		$Index       = Index::instance();
@@ -29,117 +28,40 @@ trait components {
 			h::cs_system_admin_components_blocks_list()
 		);
 	}
-	static function components_databases ($route_ids, $route_path) {
-		$Config       = Config::instance();
-		$L            = Language::instance();
-		$Page         = Page::instance();
-		$a            = Index::instance();
-		$action       = isset($route_path[2]) ? $route_path[2] : null;
-		$db_id        = isset($route_ids[0]) ? $route_ids[0] : false;
-		$db_mirror_id = isset($route_ids[1]) ? $route_ids[1] : false;
-		if ($action) {
-			$a->cancel_button_back = true;
-			switch ($action) {
-				case 'delete':
-					$a->buttons = false;
-					$content    = [];
-					if ($db_mirror_id === false) {
-						foreach ($Config->components['modules'] as $module => &$mdata) {
-							if (isset($mdata['db']) && is_array($mdata['db'])) {
-								foreach ($mdata['db'] as $db_name) {
-									if ($db_name == $db_id) {
-										$content[] = h::b($module);
-										break;
-									}
-								}
-							}
-						}
-						unset($module, $mdata, $db_name);
-					}
-					if (!empty($content)) {
-						$Page->warning($L->db_used_by_modules.': '.implode(', ', $content));
-					} else {
-						$parent_db = $Config->db[$db_id];
-						if ($db_mirror_id !== false) {
-							$current_db_mirror = $Config->db[$db_id]['mirrors'][$db_mirror_id];
-							$name              =
-								"$L->mirror ".
-								($db_id !== false ? "$L->db $parent_db[name]" : $L->core_db).
-								", $current_db_mirror[name] ($current_db_mirror[host]/$current_db_mirror[type])?";
-							unset($current_db_mirror);
-						} else {
-							$name = "$L->db $parent_db[name] ($parent_db[host]/$parent_db[type])?";
-						}
-						unset($parent_db);
-						$Page->title($L->deletion_of_database($name));
-						$a->content(
-							h::{'h2.cs-text-center'}(
-								$L->sure_to_delete.' '.$name.
-								h::{'input[type=hidden]'}(
-									[
-										[
-											[
-												'name'  => 'mode',
-												'value' => $action
-											]
-										],
-										[
-											[
-												'name'  => 'database',
-												'value' => $db_id
-											]
-										]
-									]
-								).
-								($db_mirror_id !== false ? h::{'input[type=hidden]'}(
-									[
-										'name'  => 'mirror',
-										'value' => $db_mirror_id
-									]
-								) : '')
-							).
-							h::{'button[is=cs-button][type=submit]'}($L->yes)
-						);
-					}
-			}
-		} else {
-			$a->apply_button = true;
-			$a->content(
-				h::cs_system_admin_components_databases_list().
-				static::vertical_table(
+	static function components_databases () {
+		$Config              = Config::instance();
+		$L                   = Language::instance();
+		$Index               = Index::instance();
+		$Index->apply_button = true;
+		$Index->content(
+			h::cs_system_admin_components_databases_list().
+			static::vertical_table(
+				[
 					[
-						[
-							h::info('db_balance'),
-							h::radio(
-								[
-									'name'    => 'core[db_balance]',
-									'checked' => $Config->core['db_balance'],
-									'value'   => [0, 1],
-									'in'      => [$L->off, $L->on]
-								]
-							)
-						],
-						[
-							h::info('db_mirror_mode'),
-							h::radio(
-								[
-									'name'    => 'core[db_mirror_mode]',
-									'checked' => $Config->core['db_mirror_mode'],
-									'value'   => [DB::MIRROR_MODE_MASTER_MASTER, DB::MIRROR_MODE_MASTER_SLAVE],
-									'in'      => [$L->master_master, $L->master_slave]
-								]
-							)
-						]
-					]
-				).
-				h::{'input[type=hidden]'}(
+						h::info('db_balance'),
+						h::radio(
+							[
+								'name'    => 'core[db_balance]',
+								'checked' => $Config->core['db_balance'],
+								'value'   => [0, 1],
+								'in'      => [$L->off, $L->on]
+							]
+						)
+					],
 					[
-						'name'  => 'mode',
-						'value' => 'config'
+						h::info('db_mirror_mode'),
+						h::radio(
+							[
+								'name'    => 'core[db_mirror_mode]',
+								'checked' => $Config->core['db_mirror_mode'],
+								'value'   => [DB::MIRROR_MODE_MASTER_MASTER, DB::MIRROR_MODE_MASTER_SLAVE],
+								'in'      => [$L->master_master, $L->master_slave]
+							]
+						)
 					]
-				)
-			);
-		}
+				]
+			)
+		);
 	}
 	/**
 	 * Provides next events:
