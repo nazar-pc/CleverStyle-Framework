@@ -13,8 +13,7 @@ use
 	cs\Core,
 	cs\ExitException,
 	cs\Language,
-	cs\Page,
-	cs\Storage;
+	cs\Page;
 trait storages {
 	/**
 	 * Get array of storages
@@ -162,7 +161,7 @@ trait storages {
 		// TODO proper arguments check
 		$connection_class = "\\cs\\Storage\\$_POST[connection]";
 		/**
-		 * @var Storage\_Abstract $connection
+		 * @var \cs\Storage\_Abstract $connection
 		 */
 		$connection = new $connection_class(
 			$_POST['url'],

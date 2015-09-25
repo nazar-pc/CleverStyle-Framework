@@ -12,8 +12,7 @@ use
 	cs\Config,
 	cs\ExitException,
 	cs\Mail,
-	cs\Page,
-	cs\Storage;
+	cs\Page;
 trait admin {
 	static function admin_email_sending_test_get () {
 		if (!isset($_GET['email'])) {

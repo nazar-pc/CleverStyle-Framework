@@ -11,7 +11,6 @@ namespace cs\modules\System\api\Controller\admin;
 use
 	cs\Config,
 	cs\Core,
-	cs\DB,
 	cs\ExitException,
 	cs\Language,
 	cs\Page;
@@ -201,7 +200,7 @@ trait databases {
 		errors_off();
 		$engine_class = '\\cs\\DB\\'.$_POST['type'];
 		/**
-		 * @var DB\_Abstract $connection
+		 * @var \cs\DB\_Abstract $connection
 		 */
 		$connection = new $engine_class(
 			$_POST['name'],
