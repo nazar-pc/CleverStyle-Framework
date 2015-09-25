@@ -407,12 +407,11 @@
 		"storage_connection_info"	: "Select connection type of storage",
 		"storage_user"				: "Select storage user",
 		"storage_user_info"			: "Enter username to access the storage",
-		"storage_pass"				: "Password of storage user",
-		"storage_pass_info"			: "Enter the password for DB user",
+		"storage_password"			: "Password of storage user",
+		"storage_password_info"		: "Enter the password for DB user",
 		"storage_used_by_modules"	: "Storage is used by modules",
 		"adding_of_storage"			: "Adding the storage",
 		"editing_of_storage"		: "Editing of storage %s",
-		"deletion_of_storage"		: "Deletion of storage %s",
 	//Users
 	"users"					: "Users",
 		//General

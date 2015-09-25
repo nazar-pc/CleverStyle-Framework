@@ -408,12 +408,11 @@
 		"storage_connection_info"	: "Вкажіть з'єднання зі сховищем",
 		"storage_user"				: "Ім'я користувача сховища",
 		"storage_user_info"			: "Введіть ім'я користувача для доступу до сховища",
-		"storage_pass"				: "Пароль користувача сховища",
-		"storage_pass_info"			: "Введіть пароль користувача для доступу до сховища",
-		"storage_used_by_modules"	: "Хранилище используется модулями",
+		"storage_password"			: "Пароль користувача сховища",
+		"storage_password_info"		: "Введіть пароль користувача для доступу до сховища",
+		"storage_used_by_modules"	: "Сховище використовується модулями",
 		"adding_of_storage"			: "Додавання сховища",
 		"editing_of_storage"		: "Редагування сховища %s",
-		"deletion_of_storage"		: "Видалення сховища %s",
 	//Users
 	"users"					: "Користувачі",
 		//General

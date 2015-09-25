@@ -240,29 +240,4 @@ trait components_save {
 			}
 		}
 	}
-	static function components_storages_save () {
-		if (!isset($_POST['mode'])) {
-			return;
-		}
-		$Config = Config::instance();
-		$update = false;
-		if ($_POST['mode'] == 'add') {
-			$Config->storage[] = $_POST['storage'];
-			$update            = true;
-		} elseif ($_POST['mode'] == 'edit' && $_POST['storage_id'] > 0) {
-			$current_storage = &$Config->storage[$_POST['storage_id']];
-			foreach ($_POST['storage'] as $item => $value) {
-				$current_storage[$item] = $value;
-			}
-			unset($current_storage, $item, $value);
-			$update = true;
-		} elseif ($_POST['mode'] == 'delete' && isset($_POST['storage']) && $_POST['storage'] > 0) {
-			unset($Config->storage[$_POST['storage']]);
-			$update = true;
-		}
-		if ($update) {
-			Index::instance()->save();
-		}
-		unset($update);
-	}
 }

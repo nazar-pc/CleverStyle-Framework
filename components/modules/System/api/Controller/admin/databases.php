@@ -46,7 +46,7 @@ trait databases {
 		Page::instance()->json(array_values($databases));
 	}
 	/**
-	 * Update database of database mirror settings
+	 * Update database or database mirror settings
 	 *
 	 * @param int[] $route_ids
 	 *
@@ -88,6 +88,8 @@ trait databases {
 		}
 	}
 	/**
+	 * Create database or database mirror
+	 *
 	 * @param int[] $route_ids
 	 *
 	 * @throws ExitException
@@ -124,7 +126,7 @@ trait databases {
 		}
 	}
 	/**
-	 * Delete database of database mirror
+	 * Delete database or database mirror
 	 *
 	 * @param int[] $route_ids
 	 *
@@ -191,6 +193,8 @@ trait databases {
 	}
 	/**
 	 * Test database connection
+	 *
+	 * @throws ExitException
 	 */
 	static function admin_databases_test () {
 		// TODO explicit arguments when migrated to frontend completely

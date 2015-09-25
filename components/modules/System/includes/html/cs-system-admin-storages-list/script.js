@@ -36,6 +36,37 @@
           $modal.find('progress').replaceWith("<p class=\"cs-text-center cs-block-error cs-text-error\" style=text-transform:capitalize;\">" + L.failed + "</p>");
         }
       });
+    },
+    _add: function(){
+      var this$ = this;
+      $(cs.ui.simple_modal("<h3>" + L.adding_of_storage + "</h3>\n<cs-system-admin-storages-form add/>")).on('close', function(){
+        this$.reload();
+      });
+    },
+    _edit: function(e){
+      var storage_model, storage, name, this$ = this;
+      storage_model = this.$.storages_list.modelForElement(e.target);
+      storage = e.model.storage || storage_model.storage;
+      name = storage.host + '/' + storage.connection;
+      $(cs.ui.simple_modal("<h3>" + L.editing_of_storage(name) + "</h3>\n<cs-system-admin-storages-form storage-index=\"" + storage.index + "\"/>")).on('close', function(){
+        this$.reload();
+      });
+    },
+    _delete: function(e){
+      var storage_model, storage, name, this$ = this;
+      storage_model = this.$.storages_list.modelForElement(e.target);
+      storage = e.model.storage || storage_model.storage;
+      name = storage.host + '/' + storage.connection;
+      cs.ui.confirm(L.sure_to_delete + " " + name + "?", function(){
+        $.ajax({
+          url: 'api/System/admin/storages/' + storage.index,
+          type: 'delete',
+          success: function(){
+            cs.ui.notify(L.changes_saved, 'success', 5);
+            this$.reload();
+          }
+        });
+      });
     }
   });
 }).call(this);
