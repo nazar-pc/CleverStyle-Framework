@@ -159,8 +159,18 @@ trait storages {
 	 * @throws ExitException
 	 */
 	static function admin_storages_test () {
-		// TODO explicit arguments when migrated to frontend completely
-		if (!Storage::instance()->test($_POST)) {
+		// TODO proper arguments check
+		$connection_class = "\\cs\\Storage\\$_POST[connection]";
+		/**
+		 * @var Storage\_Abstract $connection
+		 */
+		$connection = new $connection_class(
+			$_POST['url'],
+			$_POST['host'],
+			$_POST['user'],
+			$_POST['password']
+		);
+		if (!$connection->connected()) {
 			throw new ExitException(500);
 		}
 	}

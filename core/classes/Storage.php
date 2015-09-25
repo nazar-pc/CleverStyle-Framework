@@ -1,9 +1,9 @@
 <?php
 /**
- * @package		CleverStyle CMS
- * @author		Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright	Copyright (c) 2011-2015, Nazar Mokrynskyi
- * @license		MIT License, see license.txt
+ * @package        CleverStyle CMS
+ * @author         Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright      Copyright (c) 2011-2015, Nazar Mokrynskyi
+ * @license        MIT License, see license.txt
  */
 namespace cs;
 
@@ -11,17 +11,21 @@ namespace cs;
  * @method static Storage instance($check = false)
  */
 class Storage {
-	use	Singleton;
-	protected	$connections			= [];
-	protected	$successful_connections	= [];
-	protected	$failed_connections		= [];
+	use    Singleton;
+	/**
+	 * @var Storage\_Abstract[]|False_class[]
+	 */
+	protected $connections            = [];
+	protected $successful_connections = [];
+	protected $failed_connections     = [];
 	/**
 	 * Get list of connections of specified type
 	 *
-	 * @param	bool|null|string $status	<b>null</b>		- returns array of connections with objects<br>
-	 * 										<b>true|1</b>	- returns array of names of successful connections<br>
-	 * 										<b>false|0</b>	- returns array of names of failed connections<br>
-	 * @return	array|null
+	 * @param bool|null|string $status `null`    - returns array of connections with objects<br>
+	 *                                 `true|1`  - returns array of names of successful connections<br>
+	 *                                 `false|0` - returns array of names of failed connections
+	 *
+	 * @return array|null
 	 */
 	function get_connections_list ($status = null) {
 		if ($status === null) {
@@ -36,8 +40,9 @@ class Storage {
 	/**
 	 * Processing of getting storage instance
 	 *
-	 * @param	int								$connection
-	 * @return	Storage\_Abstract|False_class
+	 * @param int $connection
+	 *
+	 * @return Storage\_Abstract|False_class
 	 */
 	function storage ($connection) {
 		if (!is_int($connection) && $connection != '0') {
@@ -48,8 +53,9 @@ class Storage {
 	/**
 	 * Processing of getting storage instance
 	 *
-	 * @param	int								$connection
-	 * @return	Storage\_Abstract|False_class
+	 * @param int $connection
+	 *
+	 * @return Storage\_Abstract|False_class
 	 */
 	function __get ($connection) {
 		return $this->storage($connection);
@@ -57,7 +63,7 @@ class Storage {
 	/**
 	 * Processing of all storage requests
 	 *
-	 * @param int								$connection
+	 * @param int $connection
 	 *
 	 * @return Storage\_Abstract|False_class
 	 */
@@ -74,17 +80,17 @@ class Storage {
 		if (isset($this->connections[$connection])) {
 			return $this->connections[$connection];
 		}
-		$Config							= Config::instance();
+		$Config = Config::instance();
 		/**
 		 * If connection to the local storage
 		 */
 		if ($connection == 0) {
-			$Core					= Core::instance();
-			$storage['connection']	= $Core->storage_type;
-			$storage['url']			= $Core->storage_url;
-			$storage['host']		= $Core->storage_host;
-			$storage['user']		= $Core->storage_user;
-			$storage['password']	= $Core->storage_password;
+			$Core                  = Core::instance();
+			$storage['connection'] = $Core->storage_type;
+			$storage['url']        = $Core->storage_url;
+			$storage['host']       = $Core->storage_host;
+			$storage['user']       = $Core->storage_user;
+			$storage['password']   = $Core->storage_password;
 		} elseif (isset($Config->storage[$connection])) {
 			$storage = &$Config->storage[$connection];
 		} else {
@@ -93,8 +99,8 @@ class Storage {
 		/**
 		 * Create new Storage connection
 		 */
-		$engine_class					= "\\cs\\Storage\\$storage[connection]";
-		$this->connections[$connection]	= new $engine_class($storage['url'], $storage['host'], $storage['user'], $storage['password']);
+		$engine_class                   = "\\cs\\Storage\\$storage[connection]";
+		$this->connections[$connection] = new $engine_class($storage['url'], $storage['host'], $storage['user'], $storage['password']);
 		/**
 		 * If successfully - add connection to the list of success connections and return instance of DB engine object
 		 */
@@ -103,44 +109,17 @@ class Storage {
 			unset($storage);
 			$this->$connection = $this->connections[$connection];
 			return $this->connections[$connection];
-		/**
-		 * If failed - add connection to the list of failed connections and display connection error
-		 */
+			/**
+			 * If failed - add connection to the list of failed connections and display connection error
+			 */
 		} else {
 			unset($this->$connection);
 			$this->failed_connections[$connection] = "$connection/$storage[host]/$storage[connection]";
 			unset($storage);
 			trigger_error('Error connecting to storage '.$this->failed_connections[$connection], E_USER_WARNING);
-			$return			= False_class::instance();
-			$return->error	= 'Connection failed';
+			$return        = False_class::instance();
+			$return->error = 'Connection failed';
 			return $return;
-		}
-	}
-	/**
-	 * Test connection to the Storage
-	 *
-	 * @param bool|int[]|string[] $data	Array or string in JSON format of connection parameters
-	 *
-	 * @return bool
-	 */
-	function test ($data = false) {
-		if (empty($data)) {
-			return false;
-		} elseif (is_array_indexed($data)) {
-			if (isset($data[0])) {
-				$storage = Config::instance()->storage[$data[0]];
-			} else {
-				return false;
-			}
-		} else {
-			$storage = $data;
-		}
-		if (is_array($storage)) {
-			$connection_class	= "\\cs\\Storage\\$storage[connection]";
-			$test				= new $connection_class($storage['url'], $storage['host'], $storage['user'], $storage['password']);
-			return $test->connected();
-		} else {
-			return false;
 		}
 	}
 }

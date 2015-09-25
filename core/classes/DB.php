@@ -86,6 +86,8 @@ class DB {
 	 * @param int $database_id
 	 *
 	 * @return DB\_Abstract|False_class Returns instance of False_class on failure
+	 *
+	 * @throws ExitException
 	 */
 	function db ($database_id) {
 		return $this->generic_connecting($database_id, true);
@@ -96,6 +98,8 @@ class DB {
 	 * @param int $database_id
 	 *
 	 * @return DB\_Abstract|False_class Returns instance of False_class on failure
+	 *
+	 * @throws ExitException
 	 */
 	function __get ($database_id) {
 		return $this->db($database_id);
@@ -106,6 +110,8 @@ class DB {
 	 * @param int $database_id
 	 *
 	 * @return DB\_Abstract|False_class Returns instance of False_class on failure
+	 *
+	 * @throws ExitException
 	 */
 	function db_prime ($database_id) {
 		return $this->generic_connecting($database_id, false);
@@ -117,6 +123,8 @@ class DB {
 	 * @param array      $arguments
 	 *
 	 * @return DB\_Abstract|False_class Returns instance of False_class on failure
+	 *
+	 * @throws ExitException
 	 */
 	function __call ($method, $arguments) {
 		if (is_int($method) || $method == '0') {
@@ -305,55 +313,5 @@ class DB {
 			}
 		}
 		return self::MASTER_MIRROR;
-	}
-	/**
-	 * Test connection to the DB
-	 *
-	 * @param int[]|string[] $data Array or string in JSON format of connection parameters
-	 *
-	 * @return bool
-	 */
-	function test ($data) {
-		$Core = Core::instance();
-		if (empty($data)) {
-			return false;
-		} elseif (is_array_indexed($data)) {
-			$Config = Config::instance();
-			if (isset($data[1])) {
-				$db = $Config->db[$data[0]]['mirrors'][$data[1]];
-			} elseif (isset($data[0])) {
-				if ($data[0] == 0) {
-					$db = [
-						'type'     => $Core->db_type,
-						'host'     => $Core->db_host,
-						'name'     => $Core->db_name,
-						'user'     => $Core->db_user,
-						'password' => $Core->db_password,
-						'charset'  => $Core->db_charset
-					];
-				} else {
-					$db = $Config->db[$data[0]];
-				}
-			} else {
-				return false;
-			}
-		} else {
-			$db = $data;
-		}
-		if (is_array($db)) {
-			errors_off();
-			$engine_class = '\\cs\\DB\\'.$db['type'];
-			$test         = new $engine_class(
-				$db['name'],
-				$db['user'],
-				$db['password'],
-				$db['host'] ?: $Core->db_host,
-				$db['charset'] ?: $Core->db_charset
-			);
-			errors_on();
-			return $test->connected();
-		} else {
-			return false;
-		}
 	}
 }

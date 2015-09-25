@@ -28,20 +28,6 @@ trait admin {
 			Config::instance()->core['active_languages']
 		);
 	}
-	/**
-	 * @todo drop when migrated to frontend
-	 */
-	static function admin_storages_test_get () {
-		$Storage = Storage::instance();
-		if (isset($_GET['index'])) {
-			$result = $Storage->test([$_GET['index']]);
-		} else {
-			$result = $Storage->test($_GET['storage']);
-		}
-		Page::instance()->json(
-			(int)$result
-		);
-	}
 	static function admin_timezones_get () {
 		Page::instance()->json(
 			get_timezones_list()

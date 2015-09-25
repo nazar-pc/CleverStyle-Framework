@@ -197,27 +197,22 @@ trait databases {
 	 * @throws ExitException
 	 */
 	static function admin_databases_test () {
-		// TODO explicit arguments when migrated to frontend completely
-		if (!DB::instance()->test($_POST)) {
+		// TODO proper arguments check
+		errors_off();
+		$engine_class = '\\cs\\DB\\'.$_POST['type'];
+		/**
+		 * @var DB\_Abstract $connection
+		 */
+		$connection = new $engine_class(
+			$_POST['name'],
+			$_POST['user'],
+			$_POST['password'],
+			$_POST['host'],
+			$_POST['charset']
+		);
+		errors_on();
+		if (!$connection->connected()) {
 			throw new ExitException(500);
 		}
-	}
-	/**
-	 * Test database connection
-	 *
-	 * @todo drop when migrated to frontend
-	 */
-	static function admin_databases_test_get () {
-		$db = DB::instance();
-		if (isset($_GET['mirror_index'])) {
-			$result = $db->test([$_GET['index'], $_GET['mirror_index']]);
-		} elseif (isset($_GET['index'])) {
-			$result = $db->test([$_GET['index']]);
-		} else {
-			$result = $db->test($_GET['db']);
-		}
-		Page::instance()->json(
-			(int)$result
-		);
 	}
 }
