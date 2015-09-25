@@ -414,8 +414,8 @@ trait components {
 		);
 	}
 	static function components_storages () {
-		$Index          = Index::instance();
-		$Index->buttons = false;
+		$Index       = Index::instance();
+		$Index->form = false;
 		$Index->content(
 			h::cs_system_admin_storages_list()
 		);
