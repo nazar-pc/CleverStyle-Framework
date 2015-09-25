@@ -1,0 +1,27 @@
+dom-module(id="cs-system-admin-storages-list")
+	template
+		style(include="advanced-styles")
+		table.cs-table(center list)
+			tr
+				th [[L.action]]
+				th [[L.storage_url]]
+				th [[L.storage_host]]
+				th [[L.storage_connection]]
+				th [[L.storage_user]]
+			template(is="dom-repeat" items="[[storages]]" as="storage")
+				tr(class$="[[if(index, '', 'cs-text-bold')]]")
+					td
+						template(is="dom-if" if="[[!index]]") -
+						template(is="dom-if" if="[[index]]")
+							button(is="cs-button" on-tap="_test_connection" icon="signal" tooltip="[[L.test_connection]]")
+							= ' '
+							a(is="cs-link-button" href="[[concat('/admin/components/storages/edit/', storage.index)]]" icon="pencil" tooltip="[[concat(L.edit, ' ', L.storage)]]")
+							= ' '
+							a(is="cs-link-button" href="[[concat('/admin/components/storages/delete/', storage.index)]]" icon="trash" tooltip="[[concat(L.delete, ' ', L.storage)]]")
+					td [[storage.url]]
+					td [[storage.host]]
+					td [[storage.connection]]
+					td [[if(storage.user, storage.user, '-')]]
+		p
+			a(is="cs-link-button" href="/admin/System/components/storages/add") [[L.add_storage]]
+	script(src="script.js")

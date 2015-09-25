@@ -25,7 +25,7 @@ trait components {
 		$Index       = Index::instance();
 		$Index->form = false;
 		$Index->content(
-			h::cs_system_admin_components_blocks_list()
+			h::cs_system_admin_blocks_list()
 		);
 	}
 	static function components_databases () {
@@ -34,7 +34,7 @@ trait components {
 		$Index               = Index::instance();
 		$Index->apply_button = true;
 		$Index->content(
-			h::cs_system_admin_components_databases_list().
+			h::cs_system_admin_databases_list().
 			static::vertical_table(
 				[
 					[
@@ -387,7 +387,7 @@ trait components {
 		}
 		$a->file_upload = true;
 		$a->content(
-			h::cs_system_admin_components_modules_list().
+			h::cs_system_admin_modules_list().
 			h::p(
 				h::{'input[is=cs-input-text][compact][tight][type=file][name=upload_system]'}().
 				h::{'button[is=cs-button][icon=upload][type=submit]'}(
@@ -410,7 +410,7 @@ trait components {
 		$Index       = Index::instance();
 		$Index->form = false;
 		$Index->content(
-			h::cs_system_admin_components_plugins_list()
+			h::cs_system_admin_plugins_list()
 		);
 	}
 	static function components_storages () {
@@ -558,7 +558,7 @@ trait components {
 		} else {
 			$a->buttons = false;
 			$a->content(
-				h::cs_system_admin_components_storages_list()
+				h::cs_system_admin_storages_list()
 			);
 		}
 	}
