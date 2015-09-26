@@ -48,24 +48,7 @@ class Request {
 		ob_start();
 		try {
 			try {
-				try {
-					Config::instance(true)->reinit();
-					Language::instance();
-					Index::instance();
-				} catch (ExitException $e) {
-					if ($e->getCode()) {
-						throw $e;
-					}
-				}
-				try {
-					Index::instance(true)->__finish();
-					Page::instance()->__finish();
-					User::instance(true)->__finish();
-				} catch (ExitException $e) {
-					if ($e->getCode()) {
-						throw $e;
-					}
-				}
+				$this->execute_request();
 			} catch (ExitException $e) {
 				if ($e->getCode() >= 400) {
 					error_code($e->getCode());
@@ -73,11 +56,19 @@ class Request {
 				}
 			}
 		} catch (\Exception $e) {
+			// Handle generic exceptions to avoid server from stopping
 		}
 		$this->response->writeHead(_http_response_code(0, $request_id), _header(null));
 		$this->response->end(ob_get_clean());
 		$this->cleanup();
 		$request->close();
+	}
+	/**
+	 * Various preparations before processing of current request
+	 */
+	protected function bootstrap () {
+		_header('Content-Type: text/html; charset=utf-8');
+		_header('Vary: Accept-Language,User-Agent,Cookie');
 	}
 	/**
 	 * @param \React\HTTP\Request $request
@@ -147,11 +138,31 @@ class Request {
 		}
 	}
 	/**
-	 * Various preparations before processing of current request
+	 * @throws ExitException
 	 */
-	protected function bootstrap () {
-		_header('Content-Type: text/html; charset=utf-8');
-		_header('Vary: Accept-Language,User-Agent,Cookie');
+	protected function execute_request () {
+		try {
+			/**
+			 * @var \cs\custom\Config $Config
+			 */
+			$Config = Config::instance(true);
+			$Config->reinit();
+			Language::instance();
+			Index::instance();
+		} catch (ExitException $e) {
+			if ($e->getCode()) {
+				throw $e;
+			}
+		}
+		try {
+			Index::instance(true)->__finish();
+			Page::instance()->__finish();
+			User::instance(true)->__finish();
+		} catch (ExitException $e) {
+			if ($e->getCode()) {
+				throw $e;
+			}
+		}
 	}
 	/**
 	 * Various cleanups after processing of current request to free used memory
